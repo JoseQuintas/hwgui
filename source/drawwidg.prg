@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.4 2004-11-19 08:32:12 alkresin Exp $
+ * $Id: drawwidg.prg,v 1.5 2004-12-08 08:23:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -130,6 +130,7 @@ CLASS HPen INHERIT HObject
    DATA nCounter   INIT 1
 
    METHOD Add( nStyle,nWidth,nColor )
+   METHOD Get( nStyle,nWidth,nColor )
    METHOD Release()
 
 ENDCLASS
@@ -170,6 +171,35 @@ Local i
    Aadd( ::aPens, Self )
 
 Return Self
+
+METHOD Get( nStyle,nWidth,nColor ) CLASS HPen
+Local i
+
+   nStyle := Iif( nStyle == Nil,PS_SOLID,nStyle )
+   nWidth := Iif( nWidth == Nil,1,nWidth )
+   nColor := Iif( nColor == Nil,Vcolor("000000"),nColor )
+
+   #ifdef __XHARBOUR__
+   For EACH i in ::aPens 
+      IF i:style == nStyle .AND. ;
+         i:width == nWidth .AND. ;
+         i:color == nColor
+
+         Return i
+      ENDIF
+   NEXT
+   #else
+   For i := 1 TO Len( ::aPens )
+      IF ::aPens[i]:style == nStyle .AND. ;
+         ::aPens[i]:width == nWidth .AND. ;
+         ::aPens[i]:color == nColor
+
+         Return ::aPens[i]
+      ENDIF
+   NEXT
+   #endif
+
+Return Nil
 
 METHOD Release() CLASS HPen
 Local i, nlen := Len( ::aPens ), p

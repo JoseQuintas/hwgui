@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.12 2004-07-05 17:33:45 alkresin Exp $
+ * $Id: hctrl.prg,v 1.13 2004-12-08 08:23:17 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -39,6 +39,7 @@ CLASS HControlGen INHERIT HControl
    METHOD Paint( lpdis )
    METHOD GetProp( cName,i )
    METHOD SetProp( xName,xValue )
+   METHOD SetCoor( xName,nValue )
 
 ENDCLASS
 
@@ -124,6 +125,7 @@ Private value, oCtrl := Self
       j := Ascan( oDesigner:aDataDef, {|a|a[1]==cPropertyName} )
       IF value != Nil
          IF j != 0 .AND. oDesigner:aDataDef[ j,3 ] != Nil
+            // pArray := oDesigner:aDataDef[ j,6 ]
             EvalCode( oDesigner:aDataDef[ j,3 ] )
          ENDIF
       ELSEIF j != 0 .AND. value == Nil .AND. oDesigner:aDataDef[ j,7 ] != Nil
@@ -195,6 +197,20 @@ METHOD SetProp( xName,xValue )
    ENDIF
 Return xValue
 
+METHOD SetCoor( xName,nValue )
+
+   IF oDesigner:lReport
+      nValue := Round( nValue/::oParent:oParent:oParent:oParent:nKoeff,1 )
+   ENDIF
+   ::SetProp( xName,Ltrim(Str(nValue)) )
+   /*
+   IF oDesigner:lReport
+      nValue := Round( nValue*::oParent:oParent:oParent:oParent:nKoeff,0 )
+   ENDIF
+   */
+
+Return nValue
+
 // -----------------------------------------------
 
 Function ctrlOnSize( oCtrl, x, y )
@@ -202,8 +218,12 @@ Function ctrlOnSize( oCtrl, x, y )
    IF oCtrl:Adjust == 2
       oCtrl:Move( 0,y-oCtrl:nHeight,x )
       oCtrl:SetProp( "Left","0" )
-      oCtrl:SetProp( "Top",Ltrim(Str( oCtrl:nTop )) )
-      oCtrl:SetProp( "Width",Ltrim(Str( oCtrl:nWidth )) )
+      oCtrl:SetCoor( "Top",oCtrl:nTop )
+      oCtrl:SetCoor( "Width",oCtrl:nWidth )
+      IF oDesigner:lReport
+         oCtrl:SetCoor( "Right",oCtrl:nWidth-1 )
+         oCtrl:SetCoor( "Bottom",oCtrl:nTop+oCtrl:nHeight-1 )
+      ENDIF
    ENDIF
 Return Nil
 
@@ -252,8 +272,12 @@ Local i, dx, dy
       IF oCtrl:nTop + dy < 0
          dy := - oCtrl:nTop
       ENDIF
-      oCtrl:SetProp( "Left",Ltrim(Str( oCtrl:nLeft := oCtrl:nLeft + dx )) )
-      oCtrl:SetProp( "Top",Ltrim(Str( oCtrl:nTop := oCtrl:nTop + dy )) )
+      oCtrl:SetCoor( "Left",oCtrl:nLeft := oCtrl:nLeft + dx )
+      oCtrl:SetCoor( "Top",oCtrl:nTop := oCtrl:nTop + dy )
+      IF oDesigner:lReport
+         oCtrl:SetCoor( "Right",oCtrl:nLeft+oCtrl:nWidth-1 )
+         oCtrl:SetCoor( "Bottom",oCtrl:nTop+oCtrl:nHeight-1 )
+      ENDIF
       IF !lChild
          aBDown[2] := xPos
          aBDown[3] := yPos
@@ -263,7 +287,11 @@ Local i, dx, dy
                oCtrl:nLeft+oCtrl:nWidth+3,  ;
                oCtrl:nTop+oCtrl:nHeight+3 )
       MoveWindow( oCtrl:handle, oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth, oCtrl:nHeight )
-      oCtrl:oParent:oParent:lChanged := .T.
+      IF oDesigner:lReport
+         oCtrl:oParent:oParent:oParent:oParent:lChanged := .T.
+      ELSE
+         oCtrl:oParent:oParent:lChanged := .T.
+      ENDIF
       FOR i := 1 TO Len( oCtrl:aControls )
          CtrlMove( oCtrl:aControls[i],dx,dy,.F.,.T. )
       NEXT
@@ -287,24 +315,36 @@ Local dx, dy
          IF oCtrl:nWidth - dx < 4
             dx := oCtrl:nWidth - 4
          ENDIF
-         oCtrl:SetProp( "Left",Ltrim(Str( oCtrl:nLeft := oCtrl:nLeft + dx )) )
-         oCtrl:SetProp( "Width",Ltrim(Str( oCtrl:nWidth := oCtrl:nWidth - dx )) )
+         oCtrl:SetCoor( "Left",oCtrl:nLeft := oCtrl:nLeft + dx )
+         oCtrl:SetCoor( "Width",oCtrl:nWidth := oCtrl:nWidth - dx )
+         IF oDesigner:lReport
+            oCtrl:SetCoor( "Right",oCtrl:nLeft+oCtrl:nWidth-1 )
+         ENDIF
       ELSEIF aBDown[4] == 2
          IF oCtrl:nHeight - dy < 4
             dy := oCtrl:nHeight - 4
          ENDIF
-         oCtrl:SetProp( "Top",Ltrim(Str( oCtrl:nTop := oCtrl:nTop + dy )) )
-         oCtrl:SetProp( "Height",Ltrim(Str( oCtrl:nHeight := oCtrl:nHeight - dy )) )
+         oCtrl:SetCoor( "Top",oCtrl:nTop := oCtrl:nTop + dy )
+         oCtrl:SetCoor( "Height",oCtrl:nHeight := oCtrl:nHeight - dy )
+         IF oDesigner:lReport
+            oCtrl:SetCoor( "Bottom",oCtrl:nTop+oCtrl:nHeight-1 )
+         ENDIF
       ELSEIF aBDown[4] == 3
          IF oCtrl:nWidth + dx < 4
             dx := 4 - oCtrl:nWidth
          ENDIF
-         oCtrl:SetProp( "Width",Ltrim(Str( oCtrl:nWidth := oCtrl:nWidth + dx )) )
+         oCtrl:SetCoor( "Width",oCtrl:nWidth := oCtrl:nWidth + dx )
+         IF oDesigner:lReport
+            oCtrl:SetCoor( "Right",oCtrl:nLeft+oCtrl:nWidth-1 )
+         ENDIF
       ELSEIF aBDown[4] == 4
          IF oCtrl:nHeight + dy < 4
             dy := 4 - oCtrl:nHeight
          ENDIF
-         oCtrl:SetProp( "Height",Ltrim(Str( oCtrl:nHeight := oCtrl:nHeight + dy )) )
+         oCtrl:SetCoor( "Height",oCtrl:nHeight := oCtrl:nHeight + dy )
+         IF oDesigner:lReport
+            oCtrl:SetCoor( "Bottom",oCtrl:nTop+oCtrl:nHeight-1 )
+         ENDIF
       ENDIF
       aBDown[2] := xPos
       aBDown[3] := yPos
@@ -313,7 +353,11 @@ Local dx, dy
                oCtrl:nLeft+oCtrl:nWidth+3,  ;
                oCtrl:nTop+oCtrl:nHeight+3 )
       MoveWindow( oCtrl:handle, oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth, oCtrl:nHeight )
-      oCtrl:oParent:oParent:lChanged := .T.
+      IF oDesigner:lReport
+         oCtrl:oParent:oParent:oParent:oParent:lChanged := .T.
+      ELSE
+         oCtrl:oParent:oParent:lChanged := .T.
+      ENDIF
       InspUpdBrowse()
    ENDIF
 Return Nil
@@ -331,8 +375,8 @@ Return Nil
 Function GetBDown
 Return aBDown
 
-Function SetCtrlSelected( oDlg,oCtrl )
-Local oFrm := oDlg:oParent, handle, i
+Function SetCtrlSelected( oDlg,oCtrl,n )
+Local oFrm := Iif( oDlg:oParent:Classname()=="HPANEL",oDlg:oParent:oParent:oParent,oDlg:oParent ), handle, i
 
    IF ( oFrm:oCtrlSelected == Nil .AND. oCtrl != Nil ) .OR. ;
         ( oFrm:oCtrlSelected != Nil .AND. oCtrl == Nil ) .OR. ;
@@ -353,7 +397,11 @@ Local oFrm := oDlg:oParent, handle, i
                   oCtrl:nLeft+oCtrl:nWidth+3,  ;
                   oCtrl:nTop+oCtrl:nHeight+3 )
          IF oDesigner:oDlgInsp != Nil
-            i := Ascan( oDlg:aControls,{|o|o:handle==oCtrl:handle} )
+            IF n != Nil
+               i := n
+            ELSE
+               i := Ascan( oDlg:aControls,{|o|o:handle==oCtrl:handle} )
+            ENDIF
             InspUpdCombo( i )
          ENDIF
       ELSE
@@ -366,7 +414,7 @@ Local oFrm := oDlg:oParent, handle, i
 Return Nil
 
 Function GetCtrlSelected( oDlg )
-Return Iif( oDlg!=Nil,oDlg:oParent:oCtrlSelected,Nil )
+Return Iif( oDlg!=Nil,Iif( oDlg:oParent:Classname()=="HPANEL",oDlg:oParent:oParent:oParent:oCtrlSelected,oDlg:oParent:oCtrlSelected),Nil )
 
 Function CheckResize( oCtrl,xPos,yPos )
    IF xPos > oCtrl:nLeft-5 .AND. xPos < oCtrl:nLeft+3 .AND. ;

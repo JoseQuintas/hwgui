@@ -1,9 +1,11 @@
 /*
+ * $Id: procs7.prg,v 1.3 2004-12-08 08:23:17 alkresin Exp $
+ *
  * Common procedures
  *
  *
  * Author: Alexander S.Kresin <alex@belacy.belgorod.su>
- *         www - http://www.geocities.com/alkresin/
+ *         www - http://kresin.belgorod.su
 */
 *+께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께께
 *+

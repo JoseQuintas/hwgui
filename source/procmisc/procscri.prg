@@ -1,5 +1,5 @@
 /*
- * $Id: procscri.prg,v 1.7 2004-06-24 09:40:30 alkresin Exp $
+ * $Id: procscri.prg,v 1.8 2004-12-08 08:23:17 alkresin Exp $
  *
  * Common procedures
  * Scripts
@@ -283,6 +283,7 @@ Local cLine, lDebug := ( Len( rezArray ) == 3 )
 RETURN .T.
 
 STATIC FUNCTION MacroError( nm, e, stroka )
+Local n
 
 #ifdef __WINDOWS__
    IF nm == 1
@@ -291,6 +292,10 @@ STATIC FUNCTION MacroError( nm, e, stroka )
    ELSEIF nm == 2
       MsgStop( ErrorMessage( e ),"Script variables error" )
    ELSEIF nm == 3
+      n := 2
+      WHILE !Empty( ProcName( n ) )
+        stroka += Chr(13)+Chr(10) + "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
+      ENDDO
       MsgStop( ErrorMessage( e )+ Chr(10)+Chr(13) + stroka,"Script execution error" )
    ENDIF
 #else

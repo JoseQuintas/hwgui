@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.11 2004-11-25 11:09:40 alkresin Exp $
+ * $Id: editor.prg,v 1.12 2004-12-08 08:23:17 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -181,7 +181,7 @@ Local cParamString
       MENUITEM "&Exit" ACTION oDlg:Close()
    ENDMENU
 
-   @ 0,0 RICHEDIT oEdit TEXT "" SIZE 400,oDlg:nHeight                 ;
+   @ 0,0 RICHEDIT oEdit TEXT cMethod SIZE 400,oDlg:nHeight            ;
        STYLE ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL+ES_WANTRETURN ;
        ON INIT {||ChangeTheme( HDTheme():nSelected )}                 ;
        ON GETFOCUS {||Iif(oEdit:cargo,(SendMessage(oEdit:handle,EM_SETSEL,0,0),oEdit:cargo:=.F.),.F.)} ;
@@ -191,7 +191,7 @@ Local cParamString
 
    // oEdit:oParent:AddEvent( EN_SELCHANGE,oEdit:id,{||EnChange(1)},.T. )
 
-   oEdit:title := cMethod  
+   // oEdit:title := cMethod  
    /*
    @ 60,265 BUTTON "Ok" SIZE 100, 32     ;
        ON SIZE {|o,x,y|o:Move(,y-35,,)}  ;
@@ -229,25 +229,27 @@ Local oFont
    ENDIF
 Return Nil
 
-// re_SetDefault( hCtrl, nColor, cName, nHeight, nCharset )
+// re_SetDefault( hCtrl, nColor, cName, nHeight, lBold, lItalic, lUnderline, nCharset )
 // re_SetCharFormat( hCtrl, n1, n2, nColor, cName, nHeight, lBold, lItalic, lUnderline )
 
 Static Function editShow( cText,lRedraw )
 Local arrHi, oTheme := HDTheme():aThemes[HDTheme():nSelected]
 
    IF lRedraw != Nil .AND. lRedraw
-      cText := oEdit:Gettext()
+      // cText := oEdit:Gettext()
+      nTextLength := SendMessage( oEdit:handle, WM_GETTEXTLENGTH, 0, 0 )
+      cText := re_GetTextRange( oEdit:handle,1,nTextLength )
    ELSE
       IF cText == Nil
          cText := oEdit:title
       ENDIF
+      nTextLength := Len( cText )
    ENDIF
    SendMessage( oEdit:handle, EM_SETEVENTMASK, 0, 0 )
-   oEdit:SetText( cText )
-   nTextLength := Len( cText )
-   cText := re_GetTextRange( oEdit:handle,1,nTextLength )
-   re_SetDefault( oEdit:handle,oTheme:normal[1],,,oTheme:normal[3],oTheme:normal[4] )
+   re_SetDefault( oEdit:handle,oTheme:normal[1],oEdit:oFont:name,,oTheme:normal[3],oTheme:normal[4],,oEdit:oFont:charset )
    SendMessage( oEdit:handle,EM_SETBKGNDCOLOR,0,oTheme:normal[2] )
+   oEdit:SetText( cText )
+   cText := re_GetTextRange( oEdit:handle,1,nTextLength )
    IF !Empty( arrHi := CreateHiLight( cText ) )
       /*
       writelog( "re_SetCharFormat "+Str(Len(arrhi)) )

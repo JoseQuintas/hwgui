@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.13 2004-10-19 11:09:35 alkresin Exp $
+ * $Id: designer.prg,v 1.14 2004-12-08 08:23:17 alkresin Exp $
  *
  * Designer
  * Main file
@@ -19,20 +19,34 @@ REQUEST SETWINDOWFONT
 REQUEST INITMONTHCALENDAR
 REQUEST INITTRACKBAR
 
-Function Designer( p1, cForm )
+Function Designer( p0, p1, p2 )
 Local oPanel, oTab, oFont, cResForm, lSingleF := .F.
 Public oDesigner
 Public crossCursor, vertCursor, horzCursor
 Public ds_myPath
 
+   oDesigner := HDesigner():New()
+
+   IF p0 != Nil .AND. ( p0 == "-r" .OR. p0 == "/r" )
+      oDesigner:lReport := .T.
+      IF p1 != Nil 
+         IF Left( p1,1 ) $ "-/"
+            p0 := p1
+            p1 := p2
+         ELSE
+            p0 := "-f"
+         ENDIF
+      ENDIF
+   ENDIF
+
 #ifdef INTEGRATED
 #ifdef MODAL
-   IF p1 == "-s" .OR. p1 == "/s"
+   IF p0 == "-s" .OR. p0 == "/s"
       lSingleF := .T.
    ENDIF
 #endif
 #endif
-   oDesigner := HDesigner():New()
+
    IF !__mvExist( "cCurDir" )
       __mvPublic( "cCurDir" )
    ENDIF
@@ -55,7 +69,7 @@ Public ds_myPath
 #ifdef INTEGRATED
    INIT DIALOG oDesigner:oMainWnd AT 0,0 SIZE 280,200 TITLE "Designer" ;
       FONT oFont                          ;
-      ON INIT {|o|StartDes(o,p1,cForm)}   ;
+      ON INIT {|o|StartDes(o,p0,p1)}   ;
       ON EXIT {||EndIde()}
 #else
    INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE 280,200 TITLE "Designer" ;
@@ -157,7 +171,7 @@ Public ds_myPath
    ACTIVATE DIALOG oDesigner:oMainWnd NOMODAL
 #endif
 #else
-   StartDes( oDesigner:oMainWnd,p1,cForm )
+   StartDes( oDesigner:oMainWnd,p0,p1 )
    ACTIVATE WINDOW oDesigner:oMainWnd
 #endif
 
@@ -169,6 +183,7 @@ CLASS HDesigner
    DATA oMainWnd, oDlgInsp
    DATA oCtrlMenu, oTabMenu
    DATA oClipbrd
+   DATA lReport      INIT .F.
    DATA oWidgetsSet, oFormDesc
    DATA oBtnPressed, addItem
    DATA aFormats     INIT { { "Hwgui XML format","xml" } }
@@ -214,18 +229,25 @@ Return Nil
 
 Static Function ReadIniFiles()
 Local oIni := HXMLDoc():Read( "Designer.iml" )
-Local i, oNode, cWidgetsFileName
+Local i, oNode, cWidgetsFileName, cwitem, cfitem
 
+   IF oDesigner:lReport
+      cwItem := "rep_widgetset"
+      cfitem := "rep_format"
+   ELSE
+      cwItem := "widgetset"
+      cfitem := "format"
+   ENDIF
    IF Empty( oIni:aItems )
       CreateIni( oIni )
    ENDIF
    FOR i := 1 TO Len( oIni:aItems[1]:aItems )
       oNode := oIni:aItems[1]:aItems[i]
-      IF oNode:title == "widgetset"
+      IF oNode:title == cwitem
          IF !Empty( oNode:aItems)
             cWidgetsFileName := oNode:aItems[1]
          ENDIF
-      ELSEIF oNode:title == "format"
+      ELSEIF oNode:title == cfitem
          Aadd( oDesigner:aFormats, { oNode:GetAttribute("name"), oNode:GetAttribute("ext"), ;
              oNode:GetAttribute("file"),oNode:GetAttribute("rdscr"), ;
              oNode:GetAttribute("wrscr"),oNode:GetAttribute("cnvtable") } )
@@ -369,7 +391,11 @@ Local oDlg := HFormGen():oDlgSelected, oCtrl, i
             Asize( oCtrl:oContainer:aControls,Len(oCtrl:oContainer:aControls)-1 )
          ENDIF
       ENDIF
-      oDlg:DelControl( oCtrl )
+      IF oDesigner:lReport
+         oDlg:aControls[1]:aControls[1]:DelControl( oCtrl )
+      ELSE
+         oDlg:DelControl( oCtrl )
+      ENDIF
       SetCtrlSelected( oDlg )
       oDlg:oParent:lChanged := .T.
    ENDIF

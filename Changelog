@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.318 2004-12-07 17:20:59 alkresin Exp $
+ * $Id: Changelog,v 1.319 2004-12-08 08:23:09 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,33 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-12-08 11:24 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/drawwidg.prg
+    * HPen():Get() method has been added.
+  * source/hprinter.prg
+    ! Small fixes
+  * source/hfrmtmpl.prg
+    * HRepItem,HRepTmpl classes has been added, which provides printing
+      using the reports, created with the Designer
+  * source/procs7.prg
+  * source/procscri.prg
+    * Error messages become more informative
+  + utils/designer/resource/repwidg.xml
+  + utils/designer/resource/r_text.prg
+    + New files for the reports support has been added
+  * utils/designer/designer.iml
+  * utils/designer/designer.prg
+  * utils/designer/designer.rc
+  * utils/designer/hctrl.prg
+  * utils/designer/hformgen.prg
+  * utils/designer/inspect.prg
+    * The Designer is able to create reports now, it is supposed to be used
+      instead of Hwreport.
+      To work with reports it must be called with the -r switch:
+        designer.exe -r
+  * utils/designer/editor.prg
+    ! Appearance of a national characters is fixed.
 
 2004-12-07 20:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hbrowse.prg

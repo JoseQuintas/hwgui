@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.13 2004-12-01 10:24:25 alkresin Exp $
+ * $Id: hprinter.prg,v 1.14 2004-12-08 08:23:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -109,7 +109,7 @@ Local oFont
    ENDIF
    oFont := HFont():Add( fontName,, nHeight,          ;
        Iif( lBold!=Nil.AND.lBold,700,400 ), nCharset, ;
-       Iif( lItalic!=Nil.AND.lItalic,1,0 ), Iif( lUnderline!=Nil.AND.lUnderline,1,0 ) )
+       Iif( lItalic!=Nil.AND.lItalic,255,0 ), Iif( lUnderline!=Nil.AND.lUnderline,1,0 ) )
 
 Return oFont
 
@@ -152,14 +152,23 @@ METHOD Line( x1,y1,x2,y2,oPen ) CLASS HPrinter
 Return Nil
 
 METHOD Say( cString,x1,y1,x2,y2,nOpt,oFont ) CLASS HPrinter
+Local hFont
 
    IF oFont != Nil
-      SelectObject( ::hDC,oFont:handle )
+      hFont := SelectObject( ::hDC,oFont:handle )
+      /*
+      aMetr1 := Gettextmetric(::hDC)
+      aMetr2 := Gettextsize(::hDC,cString)
+      writelog( str(aMetr1[1])+str(aMetr2[1])+str(aMetr2[2]) )
+      */
    ENDIF
    IF ::lmm
       DrawText( ::hDC,cString,::nHRes*x1,::nVRes*y1,::nHRes*x2,::nVRes*y2,Iif(nOpt==Nil,DT_LEFT,nOpt) )
    ELSE
       DrawText( ::hDC,cString,x1,y1,x2,y2,Iif(nOpt==Nil,DT_LEFT,nOpt) )
+   ENDIF
+   IF oFont != Nil
+      SelectObject( ::hDC,hFont )
    ENDIF
 
 Return Nil
@@ -262,10 +271,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
      ON PAINT {||::PlayMeta(oCanvas)}
    oCanvas:brush := HBrush():Add( 11316396 )
 
-   @ 0,2 SAY oSayPage CAPTION "1:"+Ltrim(Str(Len(::aMeta))) OF oToolBar ;
-        SIZE oToolBar:nWidth,22 STYLE WS_BORDER+SS_CENTER FONT oFont BACKCOLOR 12507070
-
-   @ 3,26 OWNERBUTTON oBtn OF oToolBar ON CLICK {||EndDialog()} ;
+   @ 3,2 OWNERBUTTON oBtn OF oToolBar ON CLICK {||EndDialog()} ;
         SIZE oToolBar:nWidth-6,24 TEXT "Exit" FONT oFont        ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[1],"Exit Preview")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 1 .AND. aBitmaps[2] != Nil
@@ -274,9 +280,9 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 1,53 LINE LENGTH oToolBar:nWidth-1
+   @ 1,31 LINE LENGTH oToolBar:nWidth-1
 
-   @ 3,56 OWNERBUTTON oBtn OF oToolBar ON CLICK {||::PrintMeta(::nCurrPage)} ;
+   @ 3,36 OWNERBUTTON oBtn OF oToolBar ON CLICK {||::PrintMeta(::nCurrPage)} ;
         SIZE oToolBar:nWidth-6,24 TEXT "Print" FONT oFont         ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[2],"Print file")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 2 .AND. aBitmaps[3] != Nil
@@ -285,7 +291,8 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 1,83 LINE LENGTH oToolBar:nWidth-1
+   @ 0,62 SAY oSayPage CAPTION "1:"+Ltrim(Str(Len(::aMeta))) OF oToolBar ;
+        SIZE oToolBar:nWidth,22 STYLE WS_BORDER+SS_CENTER FONT oFont BACKCOLOR 12507070
 
    @ 3,86 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,0)} ;
         SIZE oToolBar:nWidth-6,24 TEXT "|<<" FONT oFont FLAT                ;

@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.9 2004-07-05 17:33:45 alkresin Exp $
+ * $Id: inspect.prg,v 1.10 2004-12-08 08:23:17 alkresin Exp $
  *
  * Designer
  * Object Inspector
@@ -232,6 +232,7 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
       oCtrl:aProp[ oBrw1:cargo,2 ] := value
    ENDIF
    IF j != 0 .AND. oDesigner:aDataDef[ j,3 ] != Nil
+      // pArray := oDesigner:aDataDef[ j,6 ]
       EvalCode( oDesigner:aDataDef[ j,3 ] )
       IF oDesigner:aDataDef[ j,4 ] != Nil
          EvalCode( oDesigner:aDataDef[ j,4 ] )
@@ -325,14 +326,15 @@ Static Function DlgCancel()
 Return Nil
 
 Function InspSetCombo()
-Local i, aControls, oCtrl, n := -1
+Local i, aControls, oCtrl, n := -1, oDlg := HFormGen():oDlgSelected
 
    oCombo:aItems := {}
-   IF HFormGen():oDlgSelected != Nil
+   IF oDlg != Nil
       n := 0
-      Aadd( oCombo:aItems, "Form." + HFormGen():oDlgSelected:title )
-      oCtrl := GetCtrlSelected( HFormGen():oDlgSelected )
-      aControls := HFormGen():oDlgSelected:aControls
+      Aadd( oCombo:aItems, "Form." + oDlg:title )
+      oCtrl := GetCtrlSelected( oDlg )
+      aControls := Iif( oDesigner:lReport, oDlg:aControls[1]:aControls[1]:aControls, ;
+          oDlg:aControls )
       FOR i := 1 TO Len( aControls )
          Aadd( oCombo:aItems, aControls[i]:cClass + "." + Iif(aControls[i]:title!=Nil,Left(aControls[i]:title,15),Ltrim(str(aControls[i]:id)) ) )
          IF oCtrl != Nil .AND. oCtrl:handle == aControls[i]:handle
@@ -349,7 +351,9 @@ Function InspUpdCombo( n )
 Local aControls, i
 
    IF n > 0
-      aControls := HFormGen():oDlgSelected:aControls
+      aControls := Iif( oDesigner:lReport, ;
+         HFormGen():oDlgSelected:aControls[1]:aControls[1]:aControls, ;
+         HFormGen():oDlgSelected:aControls )
       i := Len( aControls )
       IF i >= Len( oCombo:aItems )
          Aadd( oCombo:aItems, aControls[i]:cClass + "." + Iif(aControls[i]:title!=Nil,Left(aControls[i]:title,15),Ltrim(str(aControls[i]:id)) ) )
@@ -364,18 +368,19 @@ Return Nil
 
 Static Function ComboOnChg()
 Local oDlg := HFormGen():oDlgSelected, oCtrl, n
+Local aControls := Iif( oDesigner:lReport,oDlg:aControls[1]:aControls[1]:aControls,oDlg:aControls )
 
    oCombo:value := SendMessage( oCombo:handle,CB_GETCURSEL,0,0 ) + 1
-   n := oCombo:value - 1
    IF oDlg != Nil
+      n := oCombo:value - 1
       oCtrl := GetCtrlSelected( oDlg )
       IF n == 0
          IF oCtrl != Nil
             SetCtrlSelected( oDlg )
          ENDIF
       ELSEIF n > 0
-         IF oCtrl == Nil .OR. oCtrl:handle != oDlg:aControls[n]:handle
-            SetCtrlSelected( oDlg,oDlg:aControls[n] )
+         IF oCtrl == Nil .OR. oCtrl:handle != aControls[n]:handle
+            SetCtrlSelected( oDlg,aControls[n],n )
          ENDIF
       ENDIF
    ENDIF

@@ -1,9 +1,11 @@
 /*
+ * $Id: repexec.prg,v 1.3 2004-12-08 08:23:17 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * RepExec - Loading and executing of reports, built with RepBuild
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -19,6 +21,7 @@ REQUEST DBUSEAREA
 REQUEST RECNO
 REQUEST DBSKIP
 REQUEST DBGOTOP
+REQUEST DBCLOSEAREA
 
 Function ClonePaintRep( ar )
    aPaintRep := Aclone( ar )
@@ -513,3 +516,5 @@ Local nError, nLineEr
       Return .T.
    ENDIF
 Return .T.
+
+

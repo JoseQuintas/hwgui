@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.11 2004-08-25 16:15:59 sandrorrfreire Exp $
+ *$Id: htab.prg,v 1.12 2004-09-29 05:24:52 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -28,9 +28,7 @@ CLASS HTab INHERIT HControl
    DATA  bChange, bChange2
    DATA  hIml, aImages, Image1, Image2
    DATA  oTemp
-   DATA  bGotFocus  INIT Nil
-   DATA  bLostFocus INIT Nil
-   DATA  bAction    INIT Nil
+   DATA  bAction
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC,;
@@ -66,7 +64,7 @@ LOCAL i, aBmpSize
    ::bChange := bChange
    ::bChange2 := bChange
 
-   ::bGotFocus :=IIf( bGotFocus==Nil, Nil, bGotFocus)
+   ::bGetFocus :=IIf( bGotFocus==Nil, Nil, bGotFocus)
    ::bLostFocus:=IIf( bLostFocus==Nil, Nil, bLostFocus)
    ::bAction   :=IIf( bClick==Nil, Nil, bClick)
 

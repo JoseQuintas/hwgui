@@ -1,4 +1,6 @@
 /*
+ * $Id: listbox.c,v 1.4 2004-09-29 05:24:52 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HList class
  *
@@ -7,8 +9,6 @@
  * Listbox class and accompanying code added Feb 22nd, 2004 by
  * Vic McClung
 */
-
-
 
 #define HB_OS_WIN_32_USED
 

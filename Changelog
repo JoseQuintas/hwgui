@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.269 2004-09-23 14:30:48 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.270 2004-09-29 05:24:50 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-09-29 09:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * Standard CVS headers has been added where they was missed
+  * source/hcontrol.prg
+    * DATA cargo has been removed because the HControl has it already,
+      inherited from the HCustomWindow.
+  * source/htab.prg
+    * DATA bGotFocus,bLostFocus has been removed, because there are already
+      these variables, inherited from the HCustomWindow.
 
 2004-09-23 11-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
    Replace lMaxLenght with lMaxLength

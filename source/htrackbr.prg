@@ -1,4 +1,6 @@
 /*
+ * $Id: htrackbr.prg,v 1.6 2004-09-29 05:24:52 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTrackBar class
  *

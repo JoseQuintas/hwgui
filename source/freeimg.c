@@ -1,4 +1,6 @@
 /*
+ * $Id: freeimg.c,v 1.7 2004-09-29 05:24:52 alkresin Exp $
+ *
  * FreeImage wrappers for Harbour/HwGUI
  *
  * Copyright 2003 Alexander S.Kresin <alex@belacy.belgorod.su>

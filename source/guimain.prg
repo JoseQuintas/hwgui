@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.10 2004-07-22 19:20:11 sandrorrfreire Exp $
+ * $Id: guimain.prg,v 1.11 2004-07-26 18:17:44 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -330,6 +330,14 @@ FUNCTION SelectMultipleFiles(cDescr, cTip, cIniDir, cTitle )
 
    Return( aFiles )
  
+Function HWG_Version(oTip)
+Local oVersion
+if oTip==1
+  oVersion:="HwGUI "+HWG_VERSION+" "+Version()
+Else
+  oVersion:="HwGUI "+HWG_VERSION
+Endif
+Return oVersion
 
 
 

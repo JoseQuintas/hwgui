@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.232 2004-07-22 19:24:55 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.233 2004-07-26 18:17:42 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-07-26 16-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * include/guilib.ch
+    new variable HWG_VERSION //to control version of hwgui
+  * source/guimain.prg
+    New function Hwg_Version()
+       Hwg_Version(1) Return the version HwGUI and Version Compilator Harbour/xHarbour
+       Hwg_Version()  Return the version HwGUI
+  * samples/a.prg
+    Demonstrate the version using function.
+ 
 2004-07-22 16-15 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/commond.c
     New Function _getOpenfilename for use the other function

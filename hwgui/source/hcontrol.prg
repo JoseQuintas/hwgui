@@ -25,6 +25,10 @@ CLASS HControl INHERIT HCustomWindow
    METHOD SetColor( tcolor,bcolor,lRepaint )
    METHOD NewId()
    METHOD Move( x1,y1,width,height )
+   
+   METHOD Disable()	INLINE EnableWindow( ::handle, .F. )
+   METHOD Enable()	INLINE EnableWindow( ::handle, .T. )
+   METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
 
 ENDCLASS
 

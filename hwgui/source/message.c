@@ -1,5 +1,5 @@
 /*
- *$Id: message.c,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ *$Id: message.c,v 1.3 2004-02-07 15:24:22 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level messages functions
@@ -59,6 +59,24 @@ HB_FUNC( MSGYESNOCANCEL )
    hb_retni( MessageBox( h, hb_parc(1), cTitle, MB_YESNOCANCEL | MB_ICONQUESTION ) );
 }
 
+HB_FUNC( MSGEXCLAMATION )
+{
+   char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   HWND h = GetActiveWindow();
+
+   MessageBox( h, hb_parc(1), cTitle, MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL  );
+}
+
+HB_FUNC( MSGRETRYCANCEL )
+{
+   char* cTitle;
+   HWND h = GetActiveWindow();
+
+   cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+
+   hb_retni( MessageBox( h, hb_parc(1), cTitle, MB_RETRYCANCEL | MB_ICONQUESTION | MB_ICONQUESTION ) );
+}
+
 HB_FUNC( MSGBEEP )
 {
    MessageBeep( ( hb_pcount() == 0 )? 0xFFFFFFFF:hb_parnl(1) );
@@ -74,4 +92,5 @@ HB_FUNC( MSGTEMP )
    sprintf( cres,"WS_OVERLAPPEDWINDOW: %lu NM_FIRST: %lu ",WS_OVERLAPPEDWINDOW,NM_FIRST );
    hb_retni( MessageBox( GetActiveWindow(), cres, "DialogBaseUnits", MB_OKCANCEL | MB_ICONQUESTION ) );
 }
+
 

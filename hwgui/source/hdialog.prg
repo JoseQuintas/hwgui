@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ *$Id: hdialog.prg,v 1.3 2004-02-07 15:24:22 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -84,6 +84,7 @@ CLASS HDialog INHERIT HCustomWindow
    METHOD AddItem( oWnd,lModal )
    METHOD DelItem( oWnd,lModal )
    METHOD FindDialog( hWnd )
+   METHOD Close()	INLINE EndDialog()
 ENDCLASS
 
 METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;

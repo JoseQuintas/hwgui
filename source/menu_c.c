@@ -1,4 +1,6 @@
 /*
+ * $Id: 
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
  *
@@ -51,7 +53,7 @@ HB_FUNC( HWG__ADDMENUITEM )
    if( ISCHAR( 2 ) )
    {
       lpNewItem	 = (LPCTSTR) hb_parc(2);
-      uFlags |= MF_STRING;
+      uFlags |= MF_STRING ;
    }
    else
       uFlags |= MF_SEPARATOR;
@@ -62,7 +64,7 @@ HB_FUNC( HWG__ADDMENUITEM )
 
       uFlags |= MF_POPUP;
       InsertMenu( ( HMENU ) hb_parnl(1), hb_parni(3),
-       uFlags,	// menu item flags
+       uFlags,     	// menu item flags
        (UINT)hSubMenu,	// menu item identifier or handle of drop-down menu or submenu 
        lpNewItem	// menu item content
       );
@@ -285,6 +287,14 @@ HB_FUNC( SETMENUCAPTION )
 }
 
 HB_FUNC( SETMENUITEMBITMAPS )
-{
-   hb_retl(SetMenuItemBitmaps( (HMENU) hb_parnl(1), hb_parni(2), MF_BYCOMMAND, (HBITMAP) hb_parnl(3), (HBITMAP) hb_parnl(4))) ;
+{  
+    hb_retl(SetMenuItemBitmaps( (HMENU) hb_parnl(1), hb_parni(2), MF_BYCOMMAND, (HBITMAP) hb_parnl(3) , (HBITMAP) hb_parnl(4))) ;
 }
+
+HB_FUNC( GETMENUCHECKMARKDIMENSIONS )
+{
+    hb_retl( (LONG) GetMenuCheckMarkDimensions( ) );
+}
+  
+  
+ 

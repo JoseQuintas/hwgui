@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.9 2004-04-29 15:48:01 sandrorrfreire Exp $
+ * $Id: menu.prg,v 1.10 2004-04-29 19:46:04 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -159,6 +159,7 @@ Local hMenu, nPos, aMenu, i
                    aMenu[1,npos,4],.F. )
             if Len(_oBitmap)>0
                if _oBitmap[npos][1]                
+                   GetMenuCheckMarkDimensions()
                    SetMenuItemBitmaps(hMenu, aMenu[1,nPos,3], _oBitmap[npos][2],"")
                endIf    
             endif

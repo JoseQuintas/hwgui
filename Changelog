@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.111 2004-04-29 15:48:00 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.112 2004-04-29 19:46:03 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-04-28 16-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/menu_c.c
+    new function GetMenuCheckMarkDimensions( )
+   
 2004-04-29 11-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/guilib.ch.prg
     #xcommand MENUITEM <item> [ ID <nId> ]    ;

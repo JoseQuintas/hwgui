@@ -60,13 +60,13 @@ Private aName :=  { "SAY", "BUTTON", "CHECKBOX", "RADIOBUTTON", "EDITBOX", &&
 
    Fwrite( han, "FUNCTION " + oForm:name + _Chr(10)  )
    IF cName != Nil
-      Fwrite( han, "LOCAL " + cName )
+      Fwrite( han, "PRIVATE " + cName )
    ENDIF
    i := 1
    stroka := ""
    DO WHILE i <= aLen
       IF ( temp := aControls[i]:GetProp( "Name" ) ) != Nil .AND. !Empty( temp )
-         stroka += Iif( Empty(stroka),"LOCAL ",", " ) + temp
+         stroka += Iif( Empty(stroka),"PRIVATE ",", " ) + temp
       ENDIF
       i ++
    ENDDO
@@ -82,7 +82,7 @@ Private aName :=  { "SAY", "BUTTON", "CHECKBOX", "RADIOBUTTON", "EDITBOX", &&
       i ++
    ENDDO
    IF ! Empty( stroka )
-      stroka := "LOCAL " + stroka
+      stroka := "PRIVATE " + stroka
       Fwrite( han, _Chr(10) + stroka )
    ENDIF
    Fwrite( han, _Chr(10) + _Chr(10) + '   INIT DIALOG oDlg TITLE "' + oForm:oDlg:title + '" ;' + _Chr(10) )

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{318,148,508,193}</property>
+    <property name="Caption">[Example]</property>
+    <property name="lClipper">.F.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="Variables">{oForm1,oForm2,oForm3}</property>
+  </style>
+  <method name="onFormInit">
+    <![CDATA[oForm1 := HFormTmpl():Read( "testget1.xml" )
+oForm2 := HFormTmpl():Read( "testget2.xml" )
+oForm3 := HFormTmpl():Read( "testdbf1.xml" )]]>
+  </method>
+  <part class="toolbar">
+    <style>
+      <property name="Geometry">{0,0,507,48}</property>
+      <property name="Name">[oToolbar1]</property>
+    </style>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{2,3,48,42}</property>
+        <property name="Caption">[Exit]</property>
+        <property name="Flat">.T.</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[EndWindow()]]>
+      </method>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{51,3,75,42}</property>
+        <property name="Caption">[Test 1]</property>
+        <property name="Flat">.T.</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[oForm1:Show()]]>
+      </method>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{127,3,75,42}</property>
+        <property name="Caption">[Test 2]</property>
+        <property name="Flat">.T.</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[oForm2:Show()]]>
+      </method>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{202,3,75,42}</property>
+        <property name="Caption">[Test 3]</property>
+        <property name="Flat">.T.</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[oForm3:Show()]]>
+      </method>
+    </part>
+  </part>
+</part>

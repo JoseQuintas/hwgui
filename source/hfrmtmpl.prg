@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.11 2004-06-18 14:39:13 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.12 2004-06-20 11:21:27 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -58,6 +58,8 @@ CLASS HFormTmpl
 
    METHOD Read( fname )
    METHOD Show()
+   METHOD ShowMain()   INLINE ::Show(1)
+   METHOD ShowModal()  INLINE ::Show(2)
    METHOD Close()
    METHOD F( id )
 
@@ -66,6 +68,7 @@ ENDCLASS
 METHOD Read( fname ) CLASS HFormTmpl
 Local oDoc
 Local i, j, aItems, o, aProp := {}, aMethods := {}
+Local cPre
 
    IF Left( fname,5 ) == "<?xml"
       oDoc := HXMLDoc():ReadString( fname )
@@ -86,6 +89,7 @@ Local i, j, aItems, o, aProp := {}, aMethods := {}
    ::aProp := aProp
    ::aMethods := aMethods
 
+   __pp_init()  
    Aadd( ::aForms, Self )
    aItems := oDoc:aItems[1]:aItems
    FOR i := 1 TO Len( aItems )
@@ -100,10 +104,24 @@ Local i, j, aItems, o, aProp := {}, aMethods := {}
          NEXT
       ELSEIF aItems[i]:title == "method"
          Aadd( aMethods, { Lower(aItems[i]:GetAttribute("name")),CompileMethod(aItems[i]:aItems[1]:aItems[1],Self) } )
+         IF aMethods[ (j := Len(aMethods)),1 ] == "common"
+            ::aFuncs := ::aMethods[ j,2,2 ]
+            FOR j := 1 TO Len( ::aFuncs[2] )
+               cPre := "#xtranslate "+ ::aFuncs[2,j,1] + ;
+                     "( <params,...> ) => callfunc('"  + ;
+                     Upper(::aFuncs[2,j,1]) +"',\{ <params> \}, oDlg:oParent:aFuncs )"
+               __ppAddRule( cPre )
+               cPre := "#xtranslate "+ ::aFuncs[2,j,1] + ;
+                     "() => callfunc('"  + ;
+                     Upper(::aFuncs[2,j,1]) +"',, oDlg:oParent:aFuncs )"
+               __ppAddRule( cPre )
+            NEXT
+         ENDIF
       ELSEIF aItems[i]:title == "part"
          ReadCtrl( aItems[i],Self,Self )
       ENDIF
    NEXT
+   __pp_free()
 
 Return Self
 
@@ -173,8 +191,6 @@ Private oDlg
          ::oDlg:bDestroy := block
       ELSEIF ::aMethods[ i,1 ] == "onformexit"
          bFormExit := block
-      ELSEIF ::aMethods[ i,1 ] == "common"
-         ::aFuncs := ::aMethods[ i,2,2 ]
       ENDIF
    NEXT
 
@@ -236,13 +252,13 @@ Local nPos1, nPos2, nLines := 1, arr[3], arrExe
       arr[1] := Left( arr[1],Len(arr[1])-1 )
    ENDIF
    IF nLines == 1
-      Return &( "{||" + arr[1] + "}" )
+      Return &( "{||" + __Preprocess( arr[1] ) + "}" )
    ELSEIF Lower( Left( arr[1],11 ) ) == "parameters "
       IF nLines == 2
          IF Right( arr[2],1 ) < " "
             arr[2] := Left( arr[2],Len(arr[2])-1 )
          ENDIF
-         Return &( "{|" + Ltrim( Substr( arr[1],12 ) ) + "|" + arr[2] + "}" )
+         Return &( "{|" + Ltrim( Substr( arr[1],12 ) ) + "|" + __Preprocess( arr[2] ) + "}" )
       ELSE
          arrExe := Array(2)
          arrExe[1] := RdScript( ,cMethod,1 )
@@ -426,7 +442,7 @@ MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs
    ELSEIF oCtrlTmpl:cClass == "line"
       nLength := Iif( lVertical==Nil.OR.!lVertical, nWidth, nHeight )
    ELSEIF oCtrlTmpl:cClass == "browse"
-      brwType := Iif( brwType == "Dbf",BRW_DATABASE,BRW_ARRAY )
+      brwType := Iif( brwType == Nil .OR. brwType == "Dbf",BRW_DATABASE,BRW_ARRAY )
    ELSEIF oCtrlTmpl:cClass == "trackbar"
       IF TickStyle == Nil .OR. TickStyle == "Auto"
          TickStyle := TBS_AUTOTICKS

@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.5 2004-06-10 11:28:17 alkresin Exp $
+ * $Id: designer.prg,v 1.6 2004-06-20 11:21:28 alkresin Exp $
  *
  * Designer
  * Main file
@@ -29,6 +29,7 @@ Public oMainWnd, oDlgInsp := Nil
 Public mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
 Public crossCursor, vertCursor, horzCursor
 Public aFormats := { { "Hwgui XML format","xml" } }
+Public cCurDir := GetCurrentDir() + "\"
 
    IF !ReadIniFiles()
       Return Nil
@@ -166,7 +167,7 @@ Local i, oNode, cWidgetsFileName
    NEXT
 
    IF Valtype( cWidgetsFileName ) == "C"
-      oWidgetsSet := HXMLDoc():Read( cWidgetsFileName )
+      oWidgetsSet := HXMLDoc():Read( cCurDir + cWidgetsFileName )
    ENDIF
    IF oWidgetsSet == Nil .OR. Empty( oWidgetsSet:aItems )
       MsgStop( "Widgets file isn't found!","Designer error" )

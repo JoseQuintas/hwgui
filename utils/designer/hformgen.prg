@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.10 2004-06-18 14:39:13 alkresin Exp $
+ * $Id: hformgen.prg,v 1.11 2004-06-20 11:21:28 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -87,10 +87,10 @@ Private oForm := Self, aCtrlTable
          ReadForm( Self )
       ELSE
          IF Valtype( aFormats[ ::type,4 ] ) == "C"
-            aFormats[ ::type,4 ] := OpenScript( aFormats[ ::type,3 ], aFormats[ ::type,4 ] )
+            aFormats[ ::type,4 ] := OpenScript( cCurDir + aFormats[ ::type,3 ], aFormats[ ::type,4 ] )
          ENDIF
          IF Valtype( aFormats[ ::type,6 ] ) == "C"
-            aFormats[ ::type,6 ] := OpenScript( aFormats[ ::type,3 ], aFormats[ ::type,6 ] )
+            aFormats[ ::type,6 ] := OpenScript( cCurDir + aFormats[ ::type,3 ], aFormats[ ::type,6 ] )
          ENDIF
          IF Valtype( aFormats[ ::type,6 ] ) == "A"
             DoScript( aFormats[ ::type,6 ] )
@@ -161,10 +161,10 @@ Private oForm := Self, aCtrlTable
          aControls := WriteForm( Self )
       ELSE
          IF Valtype( aFormats[ ::type,5 ] ) == "C"
-            aFormats[ ::type,5 ] := OpenScript( aFormats[ ::type,3 ], aFormats[ ::type,5 ] )
+            aFormats[ ::type,5 ] := OpenScript( cCurDir + aFormats[ ::type,3 ], aFormats[ ::type,5 ] )
          ENDIF
          IF Valtype( aFormats[ ::type,6 ] ) == "C"
-            aFormats[ ::type,6 ] := OpenScript( aFormats[ ::type,3 ], aFormats[ ::type,6 ] )
+            aFormats[ ::type,6 ] := OpenScript( cCurDir + aFormats[ ::type,3 ], aFormats[ ::type,6 ] )
          ENDIF
          IF Valtype( aFormats[ ::type,6 ] ) == "A"
             DoScript( aFormats[ ::type,6 ] )

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.13 2004-06-09 11:57:56 alkresin Exp $
+ * $Id: control.c,v 1.14 2004-06-11 17:45:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -552,6 +552,29 @@ HB_FUNC ( SETTABNAME )
 
 }
 
+HB_FUNC ( TAB_HITTEST )
+{
+   TC_HITTESTINFO ht;
+   HWND hTab = (HWND)hb_parnl(1);
+   int res;
+
+   if( hb_pcount() > 1 && ISNUM(2) && ISNUM(3) )
+   {
+      ht.pt.x = hb_parni( 2 );
+      ht.pt.y = hb_parni( 3 );
+   }
+   else
+   {
+      GetCursorPos( &(ht.pt) );
+      ScreenToClient( hTab,&(ht.pt) );
+   }
+
+   res = (int) SendMessage( hTab, TCM_HITTEST, 0, (LPARAM)&ht );
+
+   hb_storni( ht.flags,4 );
+   hb_retni( res );
+
+}
 
 HB_FUNC ( CREATETREE )
 {

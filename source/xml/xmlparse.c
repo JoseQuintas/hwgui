@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.3 2004-04-02 10:16:20 alkresin Exp $
+ * $Id: xmlparse.c,v 1.4 2004-04-19 07:47:33 alkresin Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -11,8 +11,8 @@
 #include <stdio.h>
 #include "hbapi.h"
 #include "hbvm.h"
-// #include "hbstack.h"
 #include "filesys.api"
+#include "guilib.h"
 
 #define HB_SKIPTABSPACES( sptr ) while( *sptr == ' ' || *sptr == '\t' || \
          *sptr == '\r' || *sptr == '\n' ) ( sptr )++
@@ -250,11 +250,11 @@ PHB_ITEM hbxml_addnode( PHB_ITEM pParent )
    hb_vmPushNil();
    hb_vmDo( 0 );
 
-   hb_objSendMsg( &(hb_stack.Return), "NEW", 0 );
-   hb_itemCopy( pNode, &(hb_stack.Return) );
+   hb_objSendMsg( hb_stackReturn(), "NEW", 0 );
+   hb_itemCopy( pNode, hb_stackReturn() );
 
    hb_objSendMsg( pParent, "AITEMS", 0 );
-   hb_arrayAdd( &(hb_stack.Return), pNode );
+   hb_arrayAdd( hb_stackReturn(), pNode );
 
    return pNode;
 }
@@ -279,7 +279,7 @@ BOOL hbxml_readComment( PHB_ITEM pParent, unsigned char ** pBuffer )
    {
       pTemp = hb_itemPutCL( NULL, (char*)ptr, *pBuffer-ptr );
       hb_objSendMsg( pNode, "AITEMS", 0 );
-      hb_arrayAdd( &(hb_stack.Return), pTemp );
+      hb_arrayAdd( hb_stackReturn(), pTemp );
       hb_itemRelease( pTemp );
 
       (*pBuffer) += 3;
@@ -311,7 +311,7 @@ BOOL hbxml_readCDATA( PHB_ITEM pParent, unsigned char ** pBuffer )
    {
       pTemp = hb_itemPutCL( NULL, (char*)ptr, *pBuffer-ptr );
       hb_objSendMsg( pNode, "AITEMS", 0 );
-      hb_arrayAdd( &(hb_stack.Return), pTemp );
+      hb_arrayAdd( hb_stackReturn(), pTemp );
       hb_itemRelease( pTemp );
 
       (*pBuffer) += 3;
@@ -380,7 +380,7 @@ BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char ** pBuffer )
          {
             pTemp = hbxml_pp( ptr, *pBuffer-ptr );
             hb_objSendMsg( pNode, "AITEMS", 0 );
-            hb_arrayAdd( &(hb_stack.Return), pTemp );
+            hb_arrayAdd( hb_stackReturn(), pTemp );
             hb_itemRelease( pTemp );
          }
 

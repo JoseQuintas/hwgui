@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+# $Id: makefile.vc,v 1.3 2003-12-01 12:57:38 lculik Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -27,6 +27,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\message.obj \
    $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\registry.obj \
+   $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\richedit.obj \
    $(OBJ_DIR)\shellapi.obj  \
    $(OBJ_DIR)\wbrowse.obj \
@@ -59,6 +60,8 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\hupdown.obj \
    $(OBJ_DIR)\hwindow.obj \
    $(OBJ_DIR)\menu.obj \
+   $(OBJ_DIR)\video.obj \
+   $(OBJ_DIR)\tmci.obj \
    $(OBJ_DIR)\repexec.obj
   lib /out:$@ $**
 
@@ -83,6 +86,8 @@ $(OBJ_DIR)\message.obj  : $(SRC_DIR)\message.c
 $(OBJ_DIR)\misc.obj     : $(SRC_DIR)\misc.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
 $(OBJ_DIR)\registry.obj : $(SRC_DIR)\registry.c
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
+$(OBJ_DIR)\resource.obj : $(SRC_DIR)\resource.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
 $(OBJ_DIR)\richedit.obj  : $(SRC_DIR)\richedit.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
@@ -122,6 +127,8 @@ $(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
 $(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
 $(OBJ_DIR)\hwindow.obj  : $(OBJ_DIR)\hwindow.c
 $(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
+$(OBJ_DIR)\video.obj     : $(OBJ_DIR)\video.c
+$(OBJ_DIR)\tmci.obj     : $(OBJ_DIR)\tmci.c
 $(OBJ_DIR)\repexec.obj  : $(OBJ_DIR)\repexec.c
 
 $(OBJ_DIR)\errorsys.c   : $(SRC_DIR)\errorsys.prg
@@ -159,6 +166,10 @@ $(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
 $(OBJ_DIR)\guimain.c    : $(SRC_DIR)\guimain.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\menu.c       : $(SRC_DIR)\menu.prg
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\tmci.c       : $(SRC_DIR)\tmci.prg
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\video.c       : $(SRC_DIR)\video.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\hbrowse.c    : $(SRC_DIR)\hbrowse.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@

@@ -1,4 +1,6 @@
 /*
+ * $Id: menu.prg,v 1.3 2004-03-15 18:51:17 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
  *
@@ -9,6 +11,7 @@
 #include "windows.ch"
 #include "HBClass.ch"
 #include "guilib.ch"
+
 #define  MENU_FIRST_ID   32000
 #define  CONTEXTMENU_FIRST_ID   32900
 
@@ -51,14 +54,10 @@ Return { {},,, hMenu }
 
 Function Hwg_SetMenu( oWnd, aMenu )
 
-   Writelog("hwg_setmenu: iniciando para oWnd" + oWnd:title)
    IF oWnd:type == WND_MDICHILD
-      Writelog("hwg_setmenu: iniciando para oWnd" + oWnd:title + " tipo WND_MDICHILD" + " aMenu type:" + Valtype(aMenu) + " len:" + Str(len(aMenu)))
       oWnd:menu := aMenu
 
    ELSEIF oWnd:type == WND_MDI
-      Writelog("hwg_setmenu: iniciando para oWnd" + oWnd:title + " tipo WND_MDI")
-
       IF hwg__SetMenu( oWnd:handle, aMenu[5] )
          oWnd:menu := aMenu
       ELSE
@@ -66,8 +65,6 @@ Function Hwg_SetMenu( oWnd, aMenu )
       ENDIF
 
    ELSEIF oWnd:type == WND_MAIN
-      Writelog("hwg_setmenu: iniciando para oWnd" + oWnd:title + " tipo WND_MAIN")
-
       IF hwg__SetMenu( oWnd:handle, aMenu[5] )
          oWnd:menu := aMenu
       ELSE
@@ -75,8 +72,6 @@ Function Hwg_SetMenu( oWnd, aMenu )
       ENDIF
 
    ELSEIF oWnd:type == WND_CHILD
-      Writelog("hwg_setmenu: iniciando para oWnd" + oWnd:title + " tipo WND_CHILD")
-
       IF hwg__SetMenu( oWnd:handle, aMenu[5] )
          oWnd:menu := aMenu
       ELSE
@@ -200,7 +195,6 @@ Local hMenu, nPos, aMenu
       nPos ++
    ENDDO
    IF hWnd != Nil .AND. oWnd != Nil
-      Writelog("BuildMenu: chamando hwg_setmenu da oWnd " + oWnd:title )
       Hwg_SetMenu( oWnd, aMenu )
    ELSEIF _oMenu != Nil
       _oMenu:handle := aMenu[5]

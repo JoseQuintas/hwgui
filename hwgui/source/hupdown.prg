@@ -1,4 +1,6 @@
 /*
+ * $Id: hupdown.prg,v 1.3 2004-03-15 18:51:17 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
  *
@@ -10,8 +12,6 @@
 #include "HBClass.ch"
 #include "guilib.ch"
 
-#undef  UDS_SETBUDDYINT
-#undef  UDS_ALIGNRIGHT
 #define UDS_SETBUDDYINT     2
 #define UDS_ALIGNRIGHT      4
 

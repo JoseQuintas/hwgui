@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.3 2004-02-25 12:17:15 lculik Exp $
+ *$Id: htab.prg,v 1.4 2004-03-15 18:51:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -12,10 +12,6 @@
 #include "HBClass.ch"
 #include "guilib.ch"
 
-#undef  TCM_SETCURSEL
-#undef  TCM_SETCURFOCUS
-#undef  TCM_GETCURFOCUS
-#undef  TCM_GETITEMCOUNT
 #define TCM_SETCURSEL           4876     // (TCM_FIRST + 12)
 #define TCM_SETCURFOCUS         4912     // (TCM_FIRST + 48)
 #define TCM_GETCURFOCUS         4911     // (TCM_FIRST + 47)

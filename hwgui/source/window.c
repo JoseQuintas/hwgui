@@ -1,4 +1,6 @@
 /*
+ * $Id: window.c,v 1.7 2004-03-15 18:51:17 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
  *
@@ -32,15 +34,11 @@
 #define  FIRST_MDICHILD_ID     501
 #define  MAX_MDICHILD_WINDOWS  18
 
-
-
 extern HB_HANDLE hb_memvarGetVarHandle( char *szName );
 extern PHB_ITEM hb_memvarGetValueByHandle( HB_HANDLE hMemvar );
 extern BOOL RegisterBrowse(void);
 extern BOOL RegisterPanel(void);
 extern BOOL RegisterOwnBtn(void);
-
-
 
 void writelog( char* s );
 
@@ -167,8 +165,9 @@ void ProcessMdiMessage( HWND hJanBase, HWND hJanClient, MSG msg, HACCEL hAcceler
    }
 }
 
-
-
+/*
+ *  HWG_ACTIVATEMAINWINDOW( lShow, hAccel, lMaximize ) 
+ */
 HB_FUNC ( HWG_ACTIVATEMAINWINDOW )
 {
 
@@ -176,29 +175,15 @@ HB_FUNC ( HWG_ACTIVATEMAINWINDOW )
    MSG    msg;
 
    if( hb_parl(1) )
-      ShowWindow( aWindows[0],SW_SHOWNORMAL );
+   {
+      ShowWindow( aWindows[0],( ISLOG(3) && hb_parl(3) )? SW_SHOWMAXIMIZED : SW_SHOWNORMAL );
+   }
 
    while (GetMessage( &msg, NULL, 0, 0) )
    {
       ProcessMessage( msg, hAcceler, 0 );
    }
 
-}
-
-HB_FUNC ( HWG_ACTIVATEMAINWMAXIM )
-{
-
-   HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
-   MSG    msg;
-
-   if( hb_parl(1) )
-      ShowWindow( aWindows[0],SW_SHOWMAXIMIZED );
-
-   while (GetMessage( &msg, NULL, 0, 0) )
-   {
-      ProcessMessage( msg, hAcceler, 0 );
-   }
-          
 }
 
 HB_FUNC ( HWG_PROCESSMESSAGE )
@@ -422,44 +407,18 @@ HB_FUNC ( HWG_ACTIVATEMDIWINDOW )
 
    HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
    MSG  msg ;
-   HWND hJanBase;
-   HWND hJanClient;
-
-   hJanBase = aWindows[0];
-   hJanClient = aWindows[1];
-
 
    if( hb_parl(1) )
    {
-      ShowWindow( hJanBase, SW_SHOWNORMAL );
-      //UpdateWindow(aWindows[0]);
-      ShowWindow( hJanClient, SW_SHOW );
-   }
-
-   while (GetMessage (&msg, NULL, 0, 0))
-   {
-      ProcessMdiMessage( hJanBase, hJanClient, msg, hAcceler );
-   }
-}
-
-HB_FUNC ( HWG_ACTIVATEMDIWMAXIM )
-{
-
-   HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
-   MSG  msg ;
-
-   if( hb_parl(1) )
-   {
-      ShowWindow( aWindows[0], SW_SHOWMAXIMIZED  );
+      ShowWindow( aWindows[0],( ISLOG(3) && hb_parl(3) )? SW_SHOWMAXIMIZED : SW_SHOWNORMAL );
       ShowWindow( aWindows[1], SW_SHOW );
    }
 
-   while (GetMessage (&msg, NULL, 0, 0))
+   while( GetMessage (&msg, NULL, 0, 0) )
    {
-      ProcessMessage( msg, hAcceler, 0 );
+      ProcessMdiMessage( aWindows[0], aWindows[1], msg, hAcceler );
    }
 }
-
 
 /*  Creates child MDI window
     CreateMdiChildWindow( aChildWindow )
@@ -485,18 +444,17 @@ HB_FUNC ( HWG_CREATEMDICHILDWINDOW )
       return;
    }
 
-
-    hWnd = CreateMDIWindow(
-       (LPTSTR) szClassName,   // pointer to registered child class name 
-       (LPTSTR) cTitle,		// pointer to window name 
-       style,			// window style 
-       0,	// horizontal position of window 
-       0,	// vertical position of window 
-       300,	// width of window 
-       200,	// height of window 
-       (HWND) aWindows[1],	// handle to parent window (MDI client) 
-       GetModuleHandle( NULL ),		// handle to application instance 
-       0		 	// application-defined value 
+   hWnd = CreateMDIWindow(
+      (LPTSTR) szClassName,   // pointer to registered child class name 
+      (LPTSTR) cTitle,		// pointer to window name 
+      style,			// window style 
+      0,	// horizontal position of window 
+      0,	// vertical position of window 
+      300,	// width of window 
+      200,	// height of window 
+      (HWND) aWindows[1],	// handle to parent window (MDI client) 
+      GetModuleHandle( NULL ),		// handle to application instance 
+      0		 	// application-defined value 
    );
 
    aWindows[ iWindows++ ] = hWnd;
@@ -504,7 +462,6 @@ HB_FUNC ( HWG_CREATEMDICHILDWINDOW )
 
 }
 
-/*
 HB_FUNC ( SENDMESSAGE )
 {
     hb_retnl( (LONG) SendMessage(
@@ -514,8 +471,7 @@ HB_FUNC ( SENDMESSAGE )
                        (LPARAM) hb_parnl( 4 ) 	// second message parameter
                      ) );
 }
-*/
-/*
+
 HB_FUNC ( POSTMESSAGE )
 {
     hb_retnl( (LONG) PostMessage(
@@ -525,7 +481,6 @@ HB_FUNC ( POSTMESSAGE )
                        (LPARAM) hb_parnl( 4 ) 	// second message parameter
                      ) );
 }
-*/
 
 HB_FUNC ( SETFOCUS )
 {
@@ -535,11 +490,6 @@ HB_FUNC ( SETFOCUS )
 HB_FUNC ( GETFOCUS )
 {
    hb_retnl( (LONG) GetFocus() );
-}
-
-HB_FUNC ( HWG_SETDLGRESULT )
-{
-   SetWindowLong( (HWND) hb_parnl(1), DWL_MSGRESULT, hb_parni(2) );
 }
 
 HB_FUNC ( SETWINDOWOBJECT )
@@ -575,16 +525,6 @@ HB_FUNC ( GETWINDOWOBJECT )
       hb_itemReturn( pObj );
       hb_itemRelease( pObj );
    }
-}
-
-HB_FUNC ( SETCAPTURE )
-{
-   hb_retnl( (LONG) SetCapture( (HWND) hb_parnl(1) ) );
-}
-
-HB_FUNC ( RELEASECAPTURE )
-{
-   hb_retl( ReleaseCapture() );
 }
 
 HB_FUNC ( ENABLEWINDOW )
@@ -644,137 +584,6 @@ HB_FUNC ( GETINSTANCE )
    hb_retnl( (LONG) GetModuleHandle( NULL ) );
 }
 
-HB_FUNC ( COPYSTRINGTOCLIPBOARD )
-{
-   HGLOBAL hglbCopy;
-   char * lptstrCopy;
-   char * cStr = hb_parc( 1 );
-   int nLen = strlen( cStr );
-
-
-   if ( !OpenClipboard( GetActiveWindow() ) )
-      return;
-
-   EmptyClipboard(); 
-
-   hglbCopy = GlobalAlloc( GMEM_DDESHARE, (nLen+1) * sizeof(TCHAR) );
-   if (hglbCopy == NULL) 
-   { 
-       CloseClipboard(); 
-       return;
-   } 
-
-   // Lock the handle and copy the text to the buffer. 
- 
-   lptstrCopy = (char*) GlobalLock( hglbCopy );
-   memcpy( lptstrCopy, cStr, nLen * sizeof(TCHAR)); 
-   lptstrCopy[nLen] = (TCHAR) 0;    // null character 
-   GlobalUnlock(hglbCopy); 
- 
-   // Place the handle on the clipboard. 
-   SetClipboardData( CF_TEXT, hglbCopy );
-
-   CloseClipboard(); 
- 
-}
-
-HB_FUNC ( GETSTOCKOBJECT )
-{
-   hb_retnl( (LONG) GetStockObject( hb_parni(1) ) );
-}
-
-HB_FUNC ( LOWORD )
-{
-   hb_retni( (int) ( hb_parnl( 1 ) & 0xFFFF ) );
-}
-
-HB_FUNC ( HIWORD )
-{
-   hb_retni( (int) ( ( hb_parnl( 1 ) >> 16 ) & 0xFFFF ) );
-}
-
-HB_FUNC( HWG_BITOR )
-{
-   hb_retnl( hb_parnl(1) | hb_parnl(2) );
-}
-
-HB_FUNC( HWG_BITAND )
-{
-   hb_retnl( hb_parnl(1) & hb_parnl(2) );
-}
-
-HB_FUNC( HWG_BITANDINVERSE )
-{
-   hb_retnl( hb_parnl(1) & (~hb_parnl(2)) );
-}
-
-HB_FUNC ( SETBIT )
-{
-   if( hb_pcount() < 3 || hb_parni( 3 ) )
-      hb_retnl( hb_parnl(1) | ( 1 << (hb_parni(2)-1) ) );
-   else
-      hb_retnl( hb_parnl(1) & ~( 1 << (hb_parni(2)-1) ) );
-}
-
-HB_FUNC ( CHECKBIT )
-{
-   hb_retl( hb_parnl(1) & ( 1 << (hb_parni(2)-1) ) );
-}
-
-HB_FUNC( HWG_SIN )
-{
-   hb_retnd( sin( hb_parnd(1) ) );
-}
-
-HB_FUNC( HWG_COS )
-{
-   hb_retnd( cos( hb_parnd(1) ) );
-}
-
-HB_FUNC( CLIENTTOSCREEN )
-{
-   POINT pt;
-   PHB_ITEM aPoint = _itemArrayNew( 2 );
-   PHB_ITEM temp;
-
-   pt.x = hb_parnl(2);
-   pt.y = hb_parnl(3);
-   ClientToScreen( (HWND) hb_parnl(1), &pt );
-
-   temp = _itemPutNL( NULL, pt.x );
-   _itemArrayPut( aPoint, 1, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, pt.y );
-   _itemArrayPut( aPoint, 2, temp );
-   _itemRelease( temp );
-
-   _itemReturn( aPoint );
-   _itemRelease( aPoint );
-}
-
-HB_FUNC( SCREENTOCLIENT )
-{
-   POINT pt;
-   PHB_ITEM aPoint = _itemArrayNew( 2 );
-   PHB_ITEM temp;
-
-   pt.x = hb_parnl(2);
-   pt.y = hb_parnl(3);
-   ScreenToClient( (HWND) hb_parnl(1), &pt );
-
-   temp = _itemPutNL( NULL, pt.x );
-   _itemArrayPut( aPoint, 1, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, pt.y );
-   _itemArrayPut( aPoint, 2, temp );
-   _itemRelease( temp );
-
-   _itemReturn( aPoint );
-   _itemRelease( aPoint );
-}
-
 HB_FUNC ( HWG_INITEDITPROC )
 {
    wpOrigEditProc = (WNDPROC) SetWindowLong( (HWND) hb_parnl(1),
@@ -802,27 +611,6 @@ HB_FUNC ( HWG_SETFOREGROUNDWINDOW )
    hb_retl( SetForegroundWindow( (HWND) hb_parnl(1) ) );
 }
 
-HB_FUNC ( HWG_GETCURSORPOS )
-{
-   POINT pt;
-   PHB_ITEM aPoint = _itemArrayNew( 2 );
-   PHB_ITEM temp;
-
-   GetCursorPos( &pt );
-
-   temp = _itemPutNL( NULL, pt.x );
-   _itemArrayPut( aPoint, 1, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, pt.y );
-   _itemArrayPut( aPoint, 2, temp );
-   _itemRelease( temp );
-
-   _itemReturn( aPoint );
-   _itemRelease( aPoint );
-
-}
-
 HB_FUNC ( RESETWINDOWPOS )
 {
    RECT rc;
@@ -831,30 +619,16 @@ HB_FUNC ( RESETWINDOWPOS )
    MoveWindow( (HWND) hb_parnl(1),rc.left,rc.top,rc.right-rc.left+1,rc.bottom-rc.top,0 );
 }
 
-HB_FUNC ( WINEXEC )
-{
-   hb_retni( WinExec( (LPCSTR) hb_parc(1), (UINT) hb_parni(2) ) );
-}
-
-HB_FUNC ( GETCURRENTDIR )
-{
-   BYTE pbyBuffer[ _POSIX_PATH_MAX + 1 ];
-   GetCurrentDirectory( _POSIX_PATH_MAX, ( char * ) pbyBuffer );
-   hb_retc( (char*) pbyBuffer );
-}
-
-
 /*
    MainWndProc alteradas na HWGUI. Agora as funcoes em hWindow.prg
    retornam 0 para indicar que deve ser usado o processamento default.
 */
 
-LRESULT CALLBACK MainWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
    PHB_DYNS pSymTest;
    long int res;
-
 
    if( ( pSymTest = hb_dynsymFind( "DEFWNDPROC" ) ) != NULL )
    {
@@ -865,8 +639,8 @@ LRESULT CALLBACK MainWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmDo( 4 );
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-      if( res == 0 )
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );     
+      if( res == -1 )
          return( DefWindowProc( hWnd, message, wParam, lParam ));
       else
          return res;
@@ -908,8 +682,6 @@ LRESULT CALLBACK ChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
    else
       return( DefWindowProc( hWnd, message, wParam, lParam ));
 }
-
-
 
 LRESULT CALLBACK FrameWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -1059,57 +831,7 @@ void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )
    }
 }
 
-void writelog( char* s )
-{
-   FHANDLE handle;
-
-   if( hb_fsFile( (unsigned char *) "ac.log" ) )
-      handle = hb_fsOpen( (unsigned char *) "ac.log", FO_WRITE );
-   else
-      handle = hb_fsCreate( (unsigned char *) "ac.log", 0 );
-
-   hb_fsSeek( handle,0, SEEK_END );
-   hb_fsWrite( handle, (unsigned char *) s, strlen(s) );
-   hb_fsWrite( handle, (unsigned char *) "\n\r", 2 );
-
-   hb_fsClose( handle );
-}
-
-/*
-HB_FUNC ( DEFWINDOWPROC )
-{
-  hb_retnl( DefWindowProc( (HWND) hb_parnl(1), hb_parnl(2), hb_parnl(3), hb_parnl(4)));
-}
-
-//-----------------------------------------------------------------------------
-
-HB_FUNC ( DEFDLGPROC )
-{
-  hb_retnl( DefDlgProc( (HWND) hb_parnl(1), hb_parnl(2), hb_parnl(3), hb_parnl(4)));
-}
-
-//-----------------------------------------------------------------------------
-
-HB_FUNC ( DEFMDICHILDPROC )
-{
-  hb_retnl( DefMDIChildProc( (HWND) hb_parnl(1), hb_parnl(2), hb_parnl(3), hb_parnl(4)));
-}
-
-//-----------------------------------------------------------------------------
-
-HB_FUNC ( DEFFRAMEPROC )
-{
-  hb_retnl( DefFrameProc( (HWND) hb_parnl(1), (HWND) hb_parnl(2), hb_parnl(3), hb_parnl(4), hb_parnl(5)));
-}
-
-*/
-
 HB_FUNC ( EXITPROCESS )
 {
   ExitProcess(0);
 }
-
-
-
-
-

@@ -1,4 +1,6 @@
 /*
+ * $Id: commond.c,v 1.4 2004-03-15 18:51:17 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
  *
@@ -278,12 +280,3 @@ HB_FUNC( HDGETSERIAL)
 {
    hb_retnl( Get_SerialNumber(hb_parc(1)) );
 }
-
-HB_FUNC ( GETKEYBOARDSTATE )
-{
-   BYTE lpbKeyState[256];
-   GetKeyboardState( lpbKeyState );
-   lpbKeyState[255] = '\0';
-   hb_retclen( lpbKeyState,255 );
-}
-

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.15 2004-02-16 19:11:34 lculik Exp $
+ * $Id: Changelog,v 1.16 2004-02-18 11:32:24 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,29 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-02-18 08:40 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
+  + source/hmonthc.prg
+    !New class HMonthCalendar
+     Method New, Say, Activate, Init, SetValue, GetValue
+  * include/guilib.ch
+    !new commands
+    #xcommand @ <x>,<y> MONTHCALENDAR [ <oMonthCalendar> ] ;
+            [ OF <oWnd> ]                              ;
+            [ ID <nId> ]                               ;
+            [ SIZE <nWidth>,<nHeight> ]                ;
+            [ INIT <dInit> ]                           ;
+            [ ON INIT <bInit> ]                        ;
+            [ ON CHANGE <bChange> ]                    ;
+            [ STYLE <nStyle> ]                         ;
+            [ FONT <oFont> ]                           ;
+            [ TOOLTIP <cTooltip> ]                     ;
+            [ < notoday : NOTODAY > ]                  ;
+            [ < notodaycircle : NOTODAYCIRCLE > ]      ;
+            [ < weeknumbers : WEEKNUMBERS > ]          ;
+  * samples/testHMonth.prg
+    !The samples for use the new Class HMonthCalendar
+    All provided by Marcos Antonio Gambeta <marcos_gambeta@hotmail.com>
 
 2004-02-16 15:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   * include/guilib.ch

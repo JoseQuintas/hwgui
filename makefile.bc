@@ -10,7 +10,7 @@ SRC_DIR = source
 #H_DEFINES= -DHB_THREAD_SUPPORT
 
 C_DEFINES=
-H_DEFINES= 
+H_DEFINES=
 
 all: \
    $(LIB_DIR)\hwgui.lib \
@@ -65,7 +65,8 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\c_ipaddr.obj \
    $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\repexec.obj \
-   $(OBJ_DIR)\printdos.obj
+   $(OBJ_DIR)\printdos.obj \
+   $(OBJ_DIR)\hmonthc.obj
 
 $(LIB_DIR)\procmisc.lib : \
    $(OBJ_DIR)\misc.obj \
@@ -109,6 +110,7 @@ $(OBJ_DIR)\hipedit.c    : $(SRC_DIR)\hipedit.prg
 $(OBJ_DIR)\menu.c       : $(SRC_DIR)\menu.prg
 $(OBJ_DIR)\repexec.c    : $(SRC_DIR)\repexec.prg
 $(OBJ_DIR)\printdos.c   : $(SRC_DIR)\printdos.prg
+$(OBJ_DIR)\hmonthc.c  : $(SRC_DIR)\hmonthc.prg
 
 $(OBJ_DIR)\commond.obj  : $(SRC_DIR)\commond.c
 $(OBJ_DIR)\control.obj  : $(SRC_DIR)\control.c
@@ -159,6 +161,7 @@ $(OBJ_DIR)\hipedit.obj  : $(OBJ_DIR)\hipedit.c
 $(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
 $(OBJ_DIR)\repexec.obj  : $(OBJ_DIR)\repexec.c
 $(OBJ_DIR)\printdos.obj : $(OBJ_DIR)\printdos.c
+$(OBJ_DIR)\hmonthc.obj  : $(OBJ_DIR)\hmonthc.c
 
 $(OBJ_DIR)\procini.c   : $(SRC_DIR)\procmisc\procini.prg
 $(OBJ_DIR)\procs7.c    : $(SRC_DIR)\procmisc\procs7.prg
@@ -183,7 +186,7 @@ $(OBJ_DIR)\procscri.obj  : $(OBJ_DIR)\procscri.c
 
 $(OBJ_DIR)\hqhtm.c   : $(SRC_DIR)\qhtm\hqhtm.prg
 $(OBJ_DIR)\hwg_qhtm.obj  : $(SRC_DIR)\qhtm\hwg_qhtm.c
-  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $** 
+  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
   tlib $(LIB_DIR)\hwg_qhtm.lib -+$@,,
 $(OBJ_DIR)\hqhtm.obj  : $(OBJ_DIR)\hqhtm.c
   bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
@@ -194,5 +197,5 @@ $(OBJ_DIR)\hqhtm.obj  : $(OBJ_DIR)\hqhtm.c
   tlib $(LIB_DIR)\hwgui.lib -+$@,,
 
 .prg.c:
-  $(HRB_DIR)\bin\harbour.exe  $< -n -w -i$(INCLUDE_DIR) $(H_DEFINES) -o$@ 
+  $(HRB_DIR)\bin\harbour.exe  $< -n -w -i$(INCLUDE_DIR) $(H_DEFINES) -o$@
 

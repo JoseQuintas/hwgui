@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.9 2004-02-16 19:12:23 lculik Exp $
+ *$Id: guilib.ch,v 1.10 2004-02-18 11:32:24 lculik Exp $
  */
 
 #include "guilib.h"
@@ -892,7 +892,7 @@
 
 #xcommand SET PRINTER TO <oPrinter> OF <oPtrObj>     ;
            => ;
-      <oPtrObj>:=Printdos():New( <oPrinter>) 
+      <oPtrObj>:=Printdos():New( <oPrinter>)
 
 #xcommand @ <x>,<y> PSAY  <vari>  ;
             [ PICTURE <cPicture> ] OF <oPtrObj>   ;
@@ -902,4 +902,27 @@
 #xcommand  EJECT OF <oPtrObj> => <oPtrObj>:Eject()
 
 #xcommand  END PRINTER <oPtrObj> => <oPtrObj>:End()
-  
+
+/*
+Command for MonthCalendar Class
+Added by Marcos Antonio Gambeta
+*/
+
+#xcommand @ <x>,<y> MONTHCALENDAR [ <oMonthCalendar> ] ;
+            [ OF <oWnd> ]                              ;
+            [ ID <nId> ]                               ;
+            [ SIZE <nWidth>,<nHeight> ]                ;
+            [ INIT <dInit> ]                           ;
+            [ ON INIT <bInit> ]                        ;
+            [ ON CHANGE <bChange> ]                    ;
+            [ STYLE <nStyle> ]                         ;
+            [ FONT <oFont> ]                           ;
+            [ TOOLTIP <cTooltip> ]                     ;
+            [ < notoday : NOTODAY > ]                  ;
+            [ < notodaycircle : NOTODAYCIRCLE > ]      ;
+            [ < weeknumbers : WEEKNUMBERS > ]          ;
+          => ;
+    [<oMonthCalendar> :=] HMonthCalendar():New( <oWnd>,<nId>,<dInit>,<nStyle>,;
+        <x>,<y>,<nWidth>,<nHeight>,<oFont>,<bInit>,<bChange>,<cTooltip>,;
+        <.notoday.>,<.notodaycircle.>,<.weeknumbers.>)
+

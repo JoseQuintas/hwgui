@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.270 2004-09-29 05:24:50 alkresin Exp $
+ * $Id: Changelog,v 1.271 2004-09-29 12:28:32 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-09-29 16:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hwindow.prg
+  * source/window.c
+    ! Changed a bit handling of the WM_HSCROLL, WN_VSCROLL messages
+    * Removed redundant functions DefChildWndProc() and ChildWndProc()
 
 2004-09-29 09:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * Standard CVS headers has been added where they was missed

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.24 2004-09-14 11:54:43 sandrorrfreire Exp $
+ * $Id: window.c,v 1.25 2004-09-29 12:28:35 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -42,7 +42,6 @@ PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
 void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
 
 LRESULT CALLBACK MainWndProc (HWND, UINT, WPARAM, LPARAM) ;
-LRESULT CALLBACK ChildWndProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK FrameWndProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK MDIChildWndProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK MPMDIChildWndProc (HWND, UINT, WPARAM, LPARAM) ;
@@ -628,40 +627,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
       hb_vmDo( 4 );
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );     
       if( res == -1 )
-         return( DefWindowProc( hWnd, message, wParam, lParam ));
-      else
-         return res;
-   }
-   else
-      return( DefWindowProc( hWnd, message, wParam, lParam ));
-}
-
-
-LRESULT CALLBACK ChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-
-   PHB_DYNS pSymTest;
-   long int res;
-
-   /*
-   if( message == WM_DESTROY )
-   {
-      PostQuitMessage (0) ;
-      // return 0 ;
-   }
-   */
-
-   if( ( pSymTest = hb_dynsymFind( "DEFCHILDWNDPROC" ) ) != NULL )
-   {
-      hb_vmPushSymbol( pSymTest->pSymbol );
-      hb_vmPushNil();
-      hb_vmPushLong( (LONG ) hWnd );
-      hb_vmPushLong( (LONG ) message );
-      hb_vmPushLong( (LONG ) wParam );
-      hb_vmPushLong( (LONG ) lParam );
-      hb_vmDo( 4 );
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-      if( res == 0 )
          return( DefWindowProc( hWnd, message, wParam, lParam ));
       else
          return res;

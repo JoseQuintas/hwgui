@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.16 2004-10-19 16:27:24 sandrorrfreire Exp $
+ * $Id: printdos.prg,v 1.17 2004-11-16 15:57:23 sandrorrfreire Exp $
  *
  * CLASS PrintDos
  *
@@ -376,8 +376,12 @@ LOCAL strbuf := Space(2052), poz := 2052, stroka
 Local han := FOPEN( fname, FO_READ + FO_SHARED )
 Local i, itemName, aItem, res := .T., sFont
 Local oCol:=0, oPage:=1  //Added by  Por Fernando Athayde
-Local oFont := HFont():Add( "Courier New",0,oSize )
-Local oPrinter := HPrinter():New()
+Local oPrinter
+Local oFont
+
+INIT PRINTER oPrinter // HPrinter():New()
+
+oFont := oPrinter:AddFont( "Courier New", oSize )
 
 oPrinter:StartDoc( oPreview  )
 oPrinter:StartPage()

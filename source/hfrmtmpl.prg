@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.4 2004-06-06 15:35:32 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.5 2004-06-09 07:01:14 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -260,11 +260,18 @@ Local i, j, o, cName, aProp := {}, aMethods := {}, aItems := oCtrlDesc:aItems
 
 Return Nil
 
+#define TBS_AUTOTICKS                1
+#define TBS_TOP                      4
+#define TBS_BOTH                     8
+#define TBS_NOTICKS                 16
+
 Static Function CreateCtrl( oParent, oCtrlTmpl, oForm )
-Local aClass := { "label", "button", "checkbox",      ;
+Local aClass := { "label", "button", "checkbox",                    ;
                   "radiobutton", "editbox", "group", "radiogroup",  ;
-                  "datepicker", "updown", "combobox", ;
-                  "line", "toolbar", "ownerbutton","browse"   ;
+                  "bitmap","icon",                                  ;
+                  "richedit","datepicker", "updown", "combobox",    ;
+                  "line", "toolbar", "ownerbutton","browse",        ;
+                  "monthcalendar","trackbar" ;
                 }
 Local aCtrls := { ;
   "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctoolt,TextColor,BackColor,lTransp)", ;
@@ -274,18 +281,23 @@ Local aCtrls := { ;
   "HEdit():New(oPrnt,nId,cInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctoolt,TextColor,BackColor,cPicture,lNoBorder)", ;
   "HGroup():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor)", ;
   "RadioNew(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor,nInitValue,bSetGet)", ;
+  "HSayBmp():New(oPrnt,nId,nLeft,nTop,nWidth,nHeight,Bitmap,lResource,onInit,onSize,ctoolt)", ;
+  "HSayIcon():New(oPrnt,nId,nLeft,nTop,nWidth,nHeight,Icon,lResource,onInit,onSize,ctoolt)", ;
+  "HRichEdit():New(oPrnt,nId,cInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctoolt,TextColor,BackColor)", ;
   "HDatePicker():New(oPrnt,nId,dInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onGetFocus,onLostFocus,onChange,ctoolt,TextColor,BackColor)", ;
   "HUpDown():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctoolt,TextColor,BackColor,nUpDWidth,nLower,nUpper)", ;
   "HComboBox():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,Items,oFont,onInit,onSize,onPaint,onChange,cToolt,lEdit,lText,bWhen)", ;
-  "HLine():New(oPrnt,nId,lVert,nLeft,nTop,nLength,onSize)", ;
+  "HLine():New(oPrnt,nId,lVertical,nLeft,nTop,nLength,onSize)", ;
   "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,lDocked )", ;
-  "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,bmp,lResour,xb,yb,widthb,heightb,lTr,cTooltip)", ;
-  "Hbrowse():New(nType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg )" ;
+  "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,cTooltip)", ;
+  "Hbrowse():New(nType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg )", ;
+  "HMonthCalendar():New(oPrnt,nId,dInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onChange,cToolt,lNoToday,lNoTodayCircle,lWeekNumbers)", ;
+  "HTrackBar():New(oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,cToolt,onChange,nLower,nUpper,lVertical,TickStyle,TickMarks )" ;
                 }
 Local i, oCtrl, stroka, varname, xProperty, block, cType, cPName
 Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName
 MEMVAR oPrnt, nStyle, nLeft, nTop, nWidth, nHeight, oFont, lNoBorder, bSetGet
-MEMVAR name, nMaxLines, nLength, lVert, nType,brwType
+MEMVAR name, nMaxLines, nLength, lVert, nType, brwType, TickStyle, TickMarks
 
    IF nCtrl == 0
       Return Nil
@@ -312,6 +324,14 @@ MEMVAR name, nMaxLines, nLength, lVert, nType,brwType
          nTop    := Val(xProperty[2])
          nWidth  := Val(xProperty[3])
          nHeight := Val(xProperty[4])
+         IF __ObjHasMsg( oParent,"ID")
+            nLeft -= oParent:nLeft
+            nTop -= oParent:nTop
+            IF __ObjHasMsg( oParent:oParent,"ID")
+               nLeft -= oParent:oParent:nLeft
+               nTop -= oParent:oParent:nTop
+            ENDIF
+         ENDIF
       ELSEIF cPName == "font"
          oFont := FontFromXML( xProperty )
       ELSEIF cPName == "border"
@@ -325,6 +345,10 @@ MEMVAR name, nMaxLines, nLength, lVert, nType,brwType
       ELSEIF cPName == "multiline"
          IF xProperty
             nStyle += ES_MULTILINE
+         ENDIF
+      ELSEIF cPName == "password"
+         IF xProperty
+            nStyle += ES_PASSWORD
          ENDIF
       ELSE
          /* Assigning the value of the property to the variable with 
@@ -365,6 +389,21 @@ MEMVAR name, nMaxLines, nLength, lVert, nType,brwType
       nLength := Iif( lVert, nHeight, nWidth )
    ELSEIF oCtrlTmpl:cClass == "browse"
       nType := Iif( brwType == "Dbf",BRW_DATABASE,BRW_ARRAY )
+   ELSEIF oCtrlTmpl:cClass == "trackbar"
+      IF TickStyle == Nil .OR. TickStyle == "Auto"
+         TickStyle := TBS_AUTOTICKS
+      ELSEIF TickStyle == "None"
+         TickStyle := TBS_NOTICKS
+      ELSE
+         TickStyle := 0
+      ENDIF
+      IF TickMarks == Nil .OR. TickMarks == "Bottom"
+         TickMarks := 0
+      ELSEIF TickMarks == "Both"
+         TickMarks := TBS_BOTH
+      ELSE
+         TickMarks := TBS_TOP
+      ENDIF
    ENDIF
    oCtrl := &( aCtrls[nCtrl] )
    IF Type( "m->name" ) == "C"

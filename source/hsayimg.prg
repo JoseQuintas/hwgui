@@ -83,10 +83,10 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
                   bSize,ctoolt ) CLASS HSayBmp
 
    Super:New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctoolt )
-   // ::classname:= "HSAYBMP"
 
    ::style   += SS_BITMAP
 
+   IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := Iif( lRes .OR. Valtype(Image)=="N",     ;
                        HBitmap():AddResource( Image ), ;
                        Iif( Valtype(Image) == "C",     ;
@@ -98,8 +98,8 @@ Return Self
 METHOD Redefine( oWndParent,nId,xImage,lRes,bInit,bSize,ctoolt ) CLASS HSayBmp
 
    Super:Redefine( oWndParent,nId,bInit,bSize,ctoolt )
-   // ::classname:= "HSAYBMP"
 
+   IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := Iif( lRes .OR. Valtype(xImage)=="N",     ;
                        HBitmap():AddResource( xImage ), ;
                        Iif( Valtype(xImage) == "C",     ;
@@ -129,10 +129,10 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
                   bSize,ctoolt ) CLASS HSayIcon
 
    Super:New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctoolt )
-   // ::classname:= "HSAYICON"
 
    ::style   += SS_ICON
 
+   IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := Iif( lRes .OR. Valtype(Image)=="N",    ;
                        HIcon():AddResource( Image ),  ;
                        Iif( Valtype(Image) == "C",    ;
@@ -144,8 +144,8 @@ Return Self
 METHOD Redefine( oWndParent,nId,xImage,lRes,bInit,bSize,ctoolt ) CLASS HSayIcon
 
    Super:Redefine( oWndParent,nId,bInit,bSize,ctoolt )
-   // ::classname:= "HSAYICON"
 
+   IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := Iif( lRes .OR. Valtype(xImage)=="N",   ;
                        HIcon():AddResource( xImage ), ;
                        Iif( Valtype(xImage) == "C",   ;

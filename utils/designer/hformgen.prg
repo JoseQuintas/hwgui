@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.3 2004-06-06 15:35:33 alkresin Exp $
+ * $Id: hformgen.prg,v 1.4 2004-06-09 07:01:14 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -276,7 +276,7 @@ Return Iif( i == 0, Nil, Iif( l2,aCtrlTable[i,1],aCtrlTable[i,2] ) )
 
 Static Function FileDlg( oFrm,lOpen )
 Local oDlg
-Local aCombo := {}, oEdit1, oEdit2
+Local aCombo := {}, af := {}, oEdit1, oEdit2
 Local nType := 1, fname := Iif( lOpen,"",oFrm:filename )
 Local formname := Iif( lOpen,"",oFrm:name )
 Local i
@@ -285,6 +285,7 @@ Local i
       IF i == 1 .OR. ( lOpen .AND. aFormats[ i,4 ] != Nil ) .OR. ;
                      ( !lOpen .AND. aFormats[ i,5 ] != Nil )
          Aadd( aCombo, aFormats[ i,1 ] )
+         Aadd( af,i )
       ENDIF
    NEXT
    IF !lOpen
@@ -295,14 +296,14 @@ Local i
        AT 50, 100 SIZE 310,250 FONT oMainWnd:oFont
 
    @ 10,20 GET COMBOBOX nType ITEMS aCombo SIZE 140, 150 ;
-       ON CHANGE {||Iif(lOpen,.F.,(fname:=CutExten(fname)+"."+aFormats[nType,2],oEdit1:Refresh()))}
+       ON CHANGE {||Iif(lOpen,.F.,(fname:=CutExten(fname)+"."+aFormats[af[nType],2],oEdit1:Refresh()))}
 
    @ 10,70 GET oEdit1 VAR fname  ;
         STYLE ES_AUTOHSCROLL      ;
         SIZE 200, 26
  
    @ 210,70 BUTTON "Browse" SIZE 80, 26   ;
-        ON CLICK {||BrowFile(lOpen,nType,oEdit1,oEdit2)}
+        ON CLICK {||BrowFile(lOpen,af[nType],oEdit1,oEdit2)}
 
    @ 10,110 SAY "Form name:" SIZE 80,22
 
@@ -314,10 +315,10 @@ Local i
    oDlg:Activate()
 
    IF oDlg:lResult
-      oFrm:type := nType
+      oFrm:type := af[nType]
       oFrm:filename := CutPath( fname )
       IF Empty( FilExten( oFrm:filename ) )
-         oFrm:filename += "."+aFormats[ nType,2 ]
+         oFrm:filename += "."+aFormats[ af[nType],2 ]
       ENDIF
       oFrm:path := Iif( Empty( FilePath(fname) ), mypath, FilePath(fname) )
       Return .T.

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.37 2004-06-01 19:42:21 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.38 2004-06-09 07:01:14 alkresin Exp $
  */
 
 #define	WND_MAIN		1
@@ -1125,7 +1125,8 @@ Added by Marcos Antonio Gambeta
             [ < top : TOP > ]             ;
             [ < left : LEFT > ]           ;
           => ;
-    [<oTrackBar> :=] HTrackBar():New( <oWnd>,<nId>,<nInit>,<nStyle>,<x>,<y>, ;
+    [<oTrackBar> :=] HTrackBar():New( <oWnd>,<nId>,<nInit>,<nStyle>,<x>,<y>,      ;
         <width>,<height>,<bInit>,<cTooltip>,<bChange>,<nLow>,<nHigh>,<.vertical.>,;
-        <.autoticks.>,<.noticks.>,<.both.>,<.top.>,<.left.>)
+        Iif(<.autoticks.>,1,Iif(<.noticks.>,16,0)), ;
+        Iif(<.both.>,8,Iif(<.top.>.or.<.left.>,4,0)) )
 

@@ -1,6 +1,6 @@
 #SCRIPT WRITE
 FUNCTION Style2Prg( oCtrl )
-Local cStyle := ""
+Private cStyle := ""
 
    IF oCtrl:cClass == "label"
    ELSEIF oCtrl:cClass == "editbox"
@@ -67,6 +67,18 @@ Private aName :=  { "SAY", "BUTTON", "CHECKBOX", "RADIOBUTTON", "EDITBOX", &&
       ENDIF
       i ++
    ENDDO
+   stroka := ""
+   i := 1
+   DO WHILE i <= aLen
+      IF ( temp := aControls[i]:GetProp( "VarName" ) ) != Nil .AND. !Empty( temp )
+         stroka += Iif( !Empty(stroka),", ","" ) + temp
+      ENDIF
+      i ++
+   ENDDO
+   IF ! Empty( stroka )
+      stroka := "LOCAL " + stroka
+      Fwrite( han, _Chr(10) + stroka )
+   ENDIF
    Fwrite( han, _Chr(10) + _Chr(10) + '   INIT DIALOG oDlg TITLE "' + oForm:oDlg:title + '" ;' + _Chr(10) )
    Fwrite( han, Space(8) + "AT " + Ltrim( Str(oForm:oDlg:nLeft) ) + "," &&
       + Ltrim( Str(oForm:oDlg:nTop) ) + " SIZE " + &&

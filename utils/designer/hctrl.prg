@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.3 2004-06-06 15:35:33 alkresin Exp $
+ * $Id: hctrl.prg,v 1.4 2004-06-09 07:01:14 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -26,7 +26,8 @@ CLASS HControlGen INHERIT HControl
    DATA oXMLDesc
    DATA aProp         INIT {}
    DATA aMethods      INIT {}
-   DATA  aPaint, oBitmap
+   DATA aPaint, oBitmap
+   DATA cCreate
 
    METHOD New( oWndParent, xClass, aProp )
    METHOD Activate()
@@ -68,9 +69,17 @@ Private value, oCtrl := Self
             IF ( bmp := oPaint:GetAttribute( "bmp" ) ) != Nil
                IF Isdigit( Left( bmp,1 ) )
                   ::oBitmap := HBitmap():AddResource( Val(bmp) )
-               ELSE
+               ELSEIF "." $ bmp
                   ::oBitmap := HBitmap():AddFile( bmp )
+               ELSE
+                  ::oBitmap := HBitmap():AddResource( bmp)
                ENDIF
+            ENDIF
+         ELSEIF oXMLDesc:aItems[i]:title == "create"
+            oPaint := oXMLDesc:aItems[i]
+            IF !Empty( oPaint:aItems ) .AND. oPaint:aItems[1]:type == HBXML_TYPE_CDATA
+               ::cCreate := RdStr( ,oPaint:aItems[1]:aItems[1],1 )
+               ::style   := WS_VISIBLE+WS_CHILD+WS_DISABLED
             ENDIF
          ELSEIF oXMLDesc:aItems[i]:title == "property"
             IF !Empty( oXMLDesc:aItems[i]:aItems )
@@ -135,8 +144,13 @@ Return Self
 METHOD Activate() CLASS HControlGen
 
    IF ::oParent != Nil .AND. ::oParent:handle != 0
-      ::handle := CreateStatic( ::oParent:handle, ::id, ;
+      IF ::cCreate != Nil
+         Private oCtrl := Self
+         ::handle := &( ::cCreate )
+      ELSE
+         ::handle := CreateStatic( ::oParent:handle, ::id, ;
                ::style, ::nLeft, ::nTop, ::nWidth,::nHeight )
+      ENDIF
       ::Init()
    ENDIF
 Return Nil

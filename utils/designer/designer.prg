@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.3 2004-06-06 15:35:33 alkresin Exp $
+ * $Id: designer.prg,v 1.4 2004-06-09 07:01:14 alkresin Exp $
  *
  * Designer
  * Main file
@@ -12,8 +12,11 @@
 #include "guilib.ch"
 
 REQUEST DRAWEDGE
+REQUEST DRAWICON
 REQUEST ELLIPSE
 REQUEST SETWINDOWFONT
+REQUEST INITMONTHCALENDAR
+REQUEST INITTRACKBAR
 
 Function Designer()
 Local oPanel, oTab, oFont // , hDCwindow, aTermMetr
@@ -116,6 +119,7 @@ Public aFormats := { { "Hwgui XML format","xml" } }
    ENDMENU
 
    CheckMenuItem( oMainWnd:handle,1011,.T. )
+   HWG_InitCommonControlsEx()
 
 #ifdef INTEGRATED
    ACTIVATE DIALOG oMainWnd NOMODAL

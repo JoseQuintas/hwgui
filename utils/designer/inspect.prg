@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.2 2004-06-05 16:13:17 alkresin Exp $
+ * $Id: inspect.prg,v 1.3 2004-06-09 07:01:14 alkresin Exp $
  *
  * Designer
  * Object Inspector
@@ -97,6 +97,11 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
             IF varbuf != Nil
                lRes := .T.
             ENDIF
+         ELSEIF aDataDef[ j,5 ] == "file"
+            varbuf := SelectFile( "All files ( *.* )","*.*" )
+            IF varbuf != Nil
+               lRes := .T.
+            ENDIF
          ENDIF
       ELSE
          varbuf := EditArray( varbuf )
@@ -140,8 +145,8 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
             FONT ::oFont
          oBrw1:AddEvent( CBN_KILLFOCUS,oGet:id,{||VldBrwGet(oGet)} )
       ELSE
-         @ x1,y1-1 GET oGet VAR varbuf OF oBrw1  ;
-            SIZE nWidth, ::height+4        ;
+         @ x1,y1-2 GET oGet VAR varbuf OF oBrw1  ;
+            SIZE nWidth, ::height+6        ;
             STYLE ES_AUTOHSCROLL           ;
             FONT ::oFont                   ;
             VALID {||VldBrwGet(oGet)}
@@ -221,6 +226,7 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
          EvalCode( aDataDef[ j,4 ] )
       ENDIF
    ENDIF
+   RedrawWindow( oCtrl:handle,5 )
    HFormGen():oDlgSelected:oParent:lChanged := .T.
    oBrw1:lUpdated := .T.
    oBrw1:aEvents := {}

@@ -1,11 +1,9 @@
  /*
- * $Id: hgrid.prg,v 1.2 2004-04-10 22:24:13 andijahja Exp $
+ * $Id: hgrid.prg,v 1.3 2004-04-20 11:23:52 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
  *
- * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
  * Copyright 2004 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
  *
 */
@@ -78,22 +76,12 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
                bGfocus, bLfocus, lNoScroll, lNoBord, bKeyDown, bPosChg, bDispInfo,;
                nItemCount, lNoLines, color, bkcolor, lNoHeader ) CLASS HGrid
 
-   ::oParent := Iif( oWnd==Nil, ::oDefaultParent, oWnd )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), LVS_SHOWSELALWAYS + WS_TABSTOP + IIF( lNoBord, 0, WS_BORDER ) + LVS_REPORT + LVS_OWNERDATA + LVS_SINGLESEL )
+   Super:New( oWnd,nId,nStyle,x,y,Width,Height,oFont,bInit, ;
+                  bSize,bPaint )
 
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), LVS_SHOWSELALWAYS + WS_CHILD + WS_TABSTOP + WS_VISIBLE + IIF( lNoBord, 0, WS_BORDER ) + LVS_REPORT + LVS_OWNERDATA + LVS_SINGLESEL )
-   
    ::ItemCount := nItemCount
 
-   ::nLeft   := x
-   ::nTop    := y
-   ::nWidth  := Width
-   ::nHeight := Height
-   ::oFont   := oFont
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint   
-   
    ::bGfocus := bGfocus
    ::bLfocus := bLfocus
 
@@ -113,7 +101,6 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
    HWG_InitCommonControlsEx()
    
    ::Activate()
-   ::oParent:AddControl( Self )
    
    /*
    if bGfocus != Nil

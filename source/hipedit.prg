@@ -1,5 +1,5 @@
 /*
- * $Id: hipedit.prg,v 1.4 2004-04-02 10:16:20 alkresin Exp $
+ * $Id: hipedit.prg,v 1.5 2004-04-20 11:23:52 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -41,16 +41,11 @@ ENDCLASS
 METHOD New( oWndParent,nId,aValue,bSetGet, nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bGetFocus,bKillFocus ) CLASS HIPedit
 
-   // ::classname:= "HIPedit"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_TABSTOP )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont )
+
    ::title   := ""
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP )
-   ::oFont   := Iif( oFont==Nil, ::oParent:oFont, oFont )
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
+
    ::bSetGet := bSetGet
    DEFAULT aValue := {0,0,0,0}
    ::aValue  := aValue
@@ -60,7 +55,6 @@ METHOD New( oWndParent,nId,aValue,bSetGet, nStyle,nLeft,nTop,nWidth,nHeight, ;
    HWG_InitCommonControlsEx()
    ::Activate()
 
-   ::oParent:AddControl( Self )
 
    IF Valtype(bSetGet) == "B"
       // WriteLog("hIpEdit:New() -> bSetGet == Block")
@@ -101,18 +95,15 @@ Return Nil
 METHOD SetValue( aValue ) CLASS HIPedit
    SETIPADDRESS(::handle , aValue[1], aValue[2], aValue[3], aValue[4])
    ::aValue := aValue
-   // writelog( "SetValue()" )
 Return Nil
 
 
 METHOD GetValue( ) CLASS HIPedit
    ::aValue := GETIPADDRESS(::handle)
-   // writelog(  )
 Return (::aValue)
 
 METHOD Clear( ) CLASS HIPedit
    CLEARIPADDRESS(::handle)
-   // writelog(  )
    ::aValue := { 0,0,0,0 }
 Return (::aValue)
 
@@ -138,31 +129,23 @@ Static Function __Valid( oCtrl )
       SetFocus( oCtrl:handle )
    ENDIF
 
-   WriteLog("Saindo de valid do IP")
-
 Return .T.
 
 Static Function __GetFocus( oCtrl )
    Local xRet
-   WriteLog("Entrando em GetFocus do IP")
 
    IF Valtype(oCtrl:bGetFocus) == "B" 
       xRet := Eval( oCtrl:bGetFocus,oCtrl )
    ENDIF
-
-   WriteLog("Saindo de GetFocus do IP")
 
 Return xRet
 
 
 Static Function __KillFocus( oCtrl )
    Local xRet
-   WriteLog("Entrando em KillFocus do IP")
 
    IF Valtype(oCtrl:bKillFocus) == "B" 
       xRet := Eval( oCtrl:bKillFocus,oCtrl )
    ENDIF
-
-   WriteLog("Saindo de KillFocus do IP")
 
 Return xRet

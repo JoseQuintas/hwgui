@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.4 2004-04-03 17:39:38 alkresin Exp $
+ * $Id: hmonthc.prg,v 1.5 2004-04-20 11:23:52 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -46,25 +46,19 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
             oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, ;
             lWeekNumbers ) CLASS HMonthCalendar
 
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil, ::NewId(), nId )
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil, 0, nStyle ), WS_TABSTOP )
+   nStyle   += Iif( lNoToday      , MCS_NOTODAY      , 0 )
+   nStyle   += Iif( lNoTodayCircle, MCS_NOTODAYCIRCLE, 0 )
+   nStyle   += Iif( lWeekNumbers  , MCS_WEEKNUMBERS  , 0 )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  ,,ctooltip )
+
    ::value   := Iif( Valtype(vari)=="D" .And. !Empty(vari), vari, Date() )
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil, 0, nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP )
-   ::style   := ::style + Iif( lNoToday      , MCS_NOTODAY      , 0 )
-   ::style   := ::style + Iif( lNoTodayCircle, MCS_NOTODAYCIRCLE, 0 )
-   ::style   := ::style + Iif( lWeekNumbers  , MCS_WEEKNUMBERS  , 0 )
-   ::oFont   := Iif( oFont==Nil, ::oParent:oFont, oFont )
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bInit   := bInit
+
    ::bChange := bChange
-   ::tooltip := cTooltip
 
    HWG_InitCommonControlsEx()
    ::Activate()
-   ::oParent:AddControl( Self )
 
    If bChange != Nil
       ::oParent:AddEvent( MCN_SELECT, ::id, bChange, .T. )

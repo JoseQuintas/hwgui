@@ -1,11 +1,11 @@
 /*
- * HWGUI - Harbour Win32 GUI library source code:
- * HList class
+ * $Id: hlistbox.prg,v 1.4 2004-04-20 11:23:52 alkresin Exp $
  *
- * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
- * Listbox class and accompanying code added Feb 22nd, 2004 by
- * Vic McClung
+ * HWGUI - Harbour Win32 GUI library source code:
+ * HListBox class
+ *
+ * Copyright 2004 Vic McClung
+ * 
 */
 
 #include "windows.ch"
@@ -45,25 +45,16 @@ ENDCLASS
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,oFont, ;
                   bInit,bSize,bPaint,bChange,cTooltip ) CLASS HListBox
 
-   // ::classname:= "HLISTBOX"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_TABSTOP+WS_VSCROLL+LBS_DISABLENOSCROLL+LBS_NOTIFY+LBS_NOINTEGRALHEIGHT+WS_BORDER )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  bSize,bPaint,ctooltip )
+
    ::value   := Iif( vari==Nil .OR. Valtype(vari)!="N",1,vari )
    ::bSetGet := bSetGet
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_TABSTOP+WS_VISIBLE+WS_CHILD+WS_VSCROLL+LBS_DISABLENOSCROLL+LBS_NOTIFY+LBS_NOINTEGRALHEIGHT+WS_BORDER )
-   ::oFont   := oFont
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
+
    ::aItems  := aItems
-   ::tooltip := cTooltip
 
    ::Activate()
-   ::oParent:AddControl( Self )
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
@@ -84,20 +75,14 @@ Return Nil
 
 METHOD Redefine( oWndParent,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bPaint, ;
                   bChange,cTooltip ) CLASS HListBox
-   // ::classname:= "HLISTBOX"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := nId
+
+   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
+                  bSize,bPaint,ctooltip )
+
    ::value   := Iif( vari==Nil .OR. Valtype(vari)!="N",1,vari )
    ::bSetGet := bSetGet
-   ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
-   ::oFont   := oFont
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
    ::aItems  := aItems
-   ::tooltip := cTooltip
 
-   ::oParent:AddControl( Self )
    IF bSetGet != Nil
       ::bChangeSel := bChange
       ::oParent:AddEvent( LBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )

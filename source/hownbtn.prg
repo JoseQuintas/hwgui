@@ -1,9 +1,11 @@
 /*
+ * $Id: hownbtn.prg,v 1.2 2004-04-20 11:23:52 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -50,21 +52,12 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,      ;
                   cTooltip ) CLASS HOwnButton
 
-   // ::classname:= "HOWNBUTTON"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE )
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,,bInit, ;
+                  bSize,bPaint,ctooltip )
+
    ::lFlat   := lFlat
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
    ::bClick  := bClick
    ::state   := OBTN_INIT
-   ::tooltip := cToolTip
 
    ::text    := cText
    ::tcolor  := color
@@ -83,7 +76,6 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
    ::heightb := heightb
    ::lTransp := lTr
 
-   ::oParent:AddControl( Self )
    ::Activate()
 
 Return Self
@@ -108,17 +100,12 @@ METHOD Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,      ;
                   cTooltip ) CLASS HOwnButton
 
-   // ::classname:= "HOWNBUTTON"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := nId
-   ::style   := ::nLeft := ::nTop := ::nWidth := 0
+   Super:New( oWndParent,nId,0,0,0,0,0,,bInit, ;
+                  bSize,bPaint,ctooltip )
+
    ::lFlat   := lFlat
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint 
    ::bClick  := bClick
    ::state   := OBTN_INIT
-   ::tooltip := cToolTip
 
    ::text    := cText
    ::tcolor  := color
@@ -137,7 +124,6 @@ METHOD Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, ;
    ::heightb := heightb
    ::lTransp := lTr
 
-   ::oParent:AddControl( Self )
 Return Self
 
 METHOD Paint() CLASS HOwnButton

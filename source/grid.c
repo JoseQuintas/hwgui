@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.7 2004-07-13 19:55:40 marcosgambeta Exp $
+ * $Id: grid.c,v 1.8 2005-02-06 17:44:39 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -95,6 +95,7 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
         COL.pszText = pValue->item.asString.value;
         COL.iSubItem=hb_parni(2)-1;
         COL.fmt = hb_parni(5) ;
+        hb_itemRelease( pValue );
 
         ListView_InsertColumn( (HWND) hb_parnl( 1 ) , hb_parni(2)-1 , &COL );
 
@@ -146,9 +147,10 @@ HB_FUNC( LISTVIEW_SETDISPINFO )
         LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
         hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ));
         pDispInfo->item.pszText = pValue->item.asString.value;
-        
+        hb_itemRelease( pValue );
         if (pDispInfo->item.iSubItem == 0)
                 pDispInfo->item.state = 2;
+        
 }
 
 HB_FUNC( LISTVIEW_GETGRIDKEY )

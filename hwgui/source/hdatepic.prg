@@ -1,5 +1,5 @@
 /*
- *$Id: hdatepic.prg,v 1.3 2004-02-25 12:17:15 lculik Exp $
+ *$Id: hdatepic.prg,v 1.4 2004-03-07 20:38:51 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -90,7 +90,7 @@ Static Function __Valid( oCtrl,lLostFocus )
    oCtrl:value := GetDatePicker( oCtrl:handle )
 
    IF oCtrl:bSetGet != Nil
-      Eval( oCtrl:bSetGet,oCtrl:value )
+      Eval( oCtrl:bSetGet,oCtrl:value, oCtrl )
    ENDIF
    IF lLostFocus .AND. oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl )
       // SetFocus( oCtrl:handle )

@@ -122,7 +122,7 @@ Static Function __Valid( oCtrl )
    oCtrl:value := SendMessage( oCtrl:handle,CB_GETCURSEL,0,0 ) + 1
 
    IF oCtrl:bSetGet != Nil
-      Eval( oCtrl:bSetGet,oCtrl:value )
+      Eval( oCtrl:bSetGet,oCtrl:value, oCtrl )
    ENDIF
    IF oCtrl:bChangeSel != Nil
       Eval( oCtrl:bChangeSel, oCtrl:value, oCtrl )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.26 2004-03-03 14:00:40 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.27 2004-03-07 20:38:51 rodrigo_moreno Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-03-07 17-50 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
+  * source/hedit.prg
+    * changed focus, now enter/tab stop on all controls, and skip if control is disabled
+  * source/hcheck.prg
+  * source/hcombo.prg
+  * source/hdatepic.prg
+    * eval on bsetget, send oCtrl on evaluation, implemented on above control
 
 2004-03-03 09-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   + source\hlistbox.prg

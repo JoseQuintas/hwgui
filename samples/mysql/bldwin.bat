@@ -1,11 +1,11 @@
 @echo off
 
-set HB_INSTALL=%HB_PATH%
+set HRB_DIR=%HB_PATH%
 set HWGUI_INSTALL=..\..
 
-%HB_INSTALL%\bin\harbour hwmysql.prg -n -i%HB_INSTALL%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour hwmysql.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
 
-   bcc32 -c -O2 -tW -M -I%HB_INSTALL%\include hwmysql.c
+   bcc32 -c -O2 -tW -M -I%HRB_DIR%\include hwmysql.c
 
    brc32 -r hwmysql.rc
 
@@ -15,18 +15,18 @@ echo hwmysql.exe, + >> b32.bc
 echo hwmysql.map, + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
-echo %HB_INSTALL%\lib\rtl.lib + >> b32.bc
-echo %HB_INSTALL%\lib\vm.lib + >> b32.bc
-echo %HB_INSTALL%\lib\gtwin.lib + >> b32.bc
-echo %HB_INSTALL%\lib\lang.lib + >> b32.bc
-echo %HB_INSTALL%\lib\macro.lib + >> b32.bc
-echo %HB_INSTALL%\lib\rdd.lib + >> b32.bc
-echo %HB_INSTALL%\lib\dbfntx.lib + >> b32.bc
-echo %HB_INSTALL%\lib\dbfdbt.lib + >> b32.bc
-echo %HB_INSTALL%\lib\common.lib + >> b32.bc
-echo %HB_INSTALL%\lib\dbfdbt.lib + >> b32.bc
-echo %HB_INSTALL%\lib\pp.lib + >> b32.bc
-echo %HB_INSTALL%\lib\mysql.lib + >> b32.bc
+echo %HRB_DIR%\lib\rtl.lib + >> b32.bc
+echo %HRB_DIR%\lib\vm.lib + >> b32.bc
+echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
+echo %HRB_DIR%\lib\lang.lib + >> b32.bc
+echo %HRB_DIR%\lib\macro.lib + >> b32.bc
+echo %HRB_DIR%\lib\rdd.lib + >> b32.bc
+echo %HRB_DIR%\lib\dbfntx.lib + >> b32.bc
+echo %HRB_DIR%\lib\dbfdbt.lib + >> b32.bc
+echo %HRB_DIR%\lib\common.lib + >> b32.bc
+echo %HRB_DIR%\lib\dbfdbt.lib + >> b32.bc
+echo %HRB_DIR%\lib\pp.lib + >> b32.bc
+echo %HRB_DIR%\lib\mysql.lib + >> b32.bc
 echo libmysql.lib + >> b32.bc
 
 echo cw32.lib + >> b32.bc

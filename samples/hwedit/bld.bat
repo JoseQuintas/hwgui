@@ -1,15 +1,15 @@
 @echo off
 
-set HB_INSTALL=%HB_PATH%
+set HRB_DIR=%HB_PATH%
 set HWGUI_INSTALL=..\..
 
-%HB_INSTALL%\bin\harbour editor.prg    -n -i%HB_INSTALL%\include;%HWGUI_INSTALL%\include
-%HB_INSTALL%\bin\harbour fclass1.prg -n -i%HB_INSTALL%\include;%HWGUI_INSTALL%\include
-%HB_INSTALL%\bin\harbour ft_funcs.prg -n -i%HB_INSTALL%\include;%HWGUI_INSTALL%\include
-%HB_INSTALL%\bin\harbour ffile1.prg     -n -i%HB_INSTALL%\include;%HWGUI_INSTALL%\include
-%HB_INSTALL%\bin\harbour pesqtext.prg    -n -i%HB_INSTALL%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour editor.prg    -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour fclass1.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour ft_funcs.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour ffile1.prg     -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour pesqtext.prg    -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
 
-   bcc32 -c -O2 -tW -M -I%HB_INSTALL%\include editor.c fclass1.c ft_funcs.c ffile1.c pesqtext.c
+   bcc32 -c -O2 -tW -M -I%HRB_DIR%\include editor.c fclass1.c ft_funcs.c ffile1.c pesqtext.c
 
    brc32 -r editor.rc
 
@@ -23,16 +23,16 @@ echo hwedit.exe, + >> b32.bc
 echo editor.map, + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
-echo %HB_INSTALL%\lib\rtl.lib + >> b32.bc
-echo %HB_INSTALL%\lib\vm.lib + >> b32.bc
-echo %HB_INSTALL%\lib\gtwin.lib + >> b32.bc
-echo %HB_INSTALL%\lib\lang.lib + >> b32.bc
-echo %HB_INSTALL%\lib\macro.lib + >> b32.bc
-echo %HB_INSTALL%\lib\rdd.lib + >> b32.bc
-echo %HB_INSTALL%\lib\dbfntx.lib + >> b32.bc
-echo %HB_INSTALL%\lib\dbfdbt.lib + >> b32.bc
-echo %HB_INSTALL%\lib\common.lib + >> b32.bc
-echo %HB_INSTALL%\lib\pp.lib + >> b32.bc
+echo %HRB_DIR%\lib\rtl.lib + >> b32.bc
+echo %HRB_DIR%\lib\vm.lib + >> b32.bc
+echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
+echo %HRB_DIR%\lib\lang.lib + >> b32.bc
+echo %HRB_DIR%\lib\macro.lib + >> b32.bc
+echo %HRB_DIR%\lib\rdd.lib + >> b32.bc
+echo %HRB_DIR%\lib\dbfntx.lib + >> b32.bc
+echo %HRB_DIR%\lib\dbfdbt.lib + >> b32.bc
+echo %HRB_DIR%\lib\common.lib + >> b32.bc
+echo %HRB_DIR%\lib\pp.lib + >> b32.bc
 
 echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc

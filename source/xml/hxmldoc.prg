@@ -1,5 +1,5 @@
 /*
- * $Id: hxmldoc.prg,v 1.2 2004-03-29 05:57:09 alkresin Exp $
+ * $Id: hxmldoc.prg,v 1.3 2004-04-18 14:03:56 alkresin Exp $
  *
  * Harbour XML Library
  * HXmlDoc class
@@ -56,7 +56,7 @@ METHOD SetAttribute( cName,cValue ) CLASS HXMLNode
 Local i := Ascan( ::aAttr,{|a|a[1]==cName} )
 
    IF i == 0
-      Return .F.
+      Aadd( ::aAttr,{ cName,cValue } )
    ELSE
       ::aAttr[ i,2 ] := cValue
    ENDIF

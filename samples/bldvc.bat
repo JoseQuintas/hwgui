@@ -1,25 +1,26 @@
 @echo off
 
-set HB_INSTALL=\harbour
+set HRB_DIR=\harbour
 set HWGUI_INSTALL=..
 
-%HB_INSTALL%\bin\harbour %1.prg -n -i%HB_INSTALL%\include;%HWGUI_INSTALL%\include %2 %3
+%HRB_DIR%\bin\harbour %1.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include %2 %3
 
-cl /c /TP /W3 /nologo /Fo -I%HB_INSTALL%\include -I%HWGUI_INSTALL%\include %1.c
+cl /c /TP /W3 /nologo /Fo -I%HRB_DIR%\include -I%HWGUI_INSTALL%\include %1.c
 
 
 echo %HWGUI_INSTALL%\lib\hwgui.lib  > b32.vc
 echo %HWGUI_INSTALL%\lib\procmisc.lib  >> b32.vc
-echo %HB_INSTALL%\lib\rtl.lib  >> b32.vc
-echo %HB_INSTALL%\lib\vm.lib  >> b32.vc
-echo %HB_INSTALL%\lib\gtwin.lib >> b32.vc
-echo %HB_INSTALL%\lib\lang.lib  >> b32.vc
-echo %HB_INSTALL%\lib\macro.lib >> b32.vc
-echo %HB_INSTALL%\lib\rdd.lib  >> b32.vc
-echo %HB_INSTALL%\lib\dbfntx.lib >> b32.vc
-echo %HB_INSTALL%\lib\common.lib >> b32.vc
-echo %HB_INSTALL%\lib\debug.lib >> b32.vc
-echo %HB_INSTALL%\lib\pp.lib >> b32.vc
+echo %HWGUI_INSTALL%\lib\hbxml.lib  >> b32.vc
+echo %HRB_DIR%\lib\rtl.lib  >> b32.vc
+echo %HRB_DIR%\lib\vm.lib  >> b32.vc
+echo %HRB_DIR%\lib\gtwin.lib >> b32.vc
+echo %HRB_DIR%\lib\lang.lib  >> b32.vc
+echo %HRB_DIR%\lib\macro.lib >> b32.vc
+echo %HRB_DIR%\lib\rdd.lib  >> b32.vc
+echo %HRB_DIR%\lib\dbfntx.lib >> b32.vc
+echo %HRB_DIR%\lib\common.lib >> b32.vc
+echo %HRB_DIR%\lib\debug.lib >> b32.vc
+echo %HRB_DIR%\lib\pp.lib >> b32.vc
 echo user32.lib >> b32.vc
 echo gdi32.lib >> b32.vc
 echo comdlg32.lib >> b32.vc

@@ -16,7 +16,7 @@ C_USR          = -tW -DHB_FM_STATISTICS_OFF -D__WIN32__ -D__EXPORT__ $(CFLAGS)
 CLIBFLAGS      = $(C_USR) -a8 -OS -O2 -6 -c -I$(INCLUDE_DIR) -d -w3 -DSIMPLEX -DHB_OS_WIN_32
 HARBOURFLAGS   = /D__EXPORT__ /DHB_FM_STATISTICS_OFF /i$(INCLUDE_DIR) /q0 /w0 /es2 /n1 /gc0
 
-                    
+
 all: \
    $(LIB_DIR)\hwguidll.lib \
 
@@ -76,6 +76,7 @@ $(LIB_DIR)\hwguidll.dll:   \
    $(OBJ_DIR)\printdos.obj \
    $(OBJ_DIR)\richtext.obj \
    $(OBJ_DIR)\hmonthc.obj \
+   $(OBJ_DIR)\htrackbr.obj \
    $(OBJ_DIR)\arr2str.obj \
    $(OBJ_DIR)\blowfish.obj \
    $(OBJ_DIR)\procini.obj \
@@ -85,7 +86,7 @@ $(LIB_DIR)\hwguidll.dll:   \
    $(OBJ_DIR)\hqhtm.obj \
    $(OBJ_DIR)\hgrid.obj \
    $(OBJ_DIR)\grid.obj
-   
+
   ILINK32 -Tpd -Gn /L$(BCC)\lib;$(BCC)\lib\PSDK;$(HRB_DIR)\lib\ @&&|
   $** c0d32w.obj , $(LIB_DIR)\hwguidll.dll, $(LIB_DIR)\hwguidll.map, cw32 harbour.lib import32.lib  uuid.lib
 |
@@ -124,6 +125,7 @@ $(OBJ_DIR)\repexec.c    : $(SRC_DIR)\repexec.prg
 $(OBJ_DIR)\printdos.c   : $(SRC_DIR)\printdos.prg
 $(OBJ_DIR)\richtext.c   : $(SRC_DIR)\richtext.prg
 $(OBJ_DIR)\hmonthc.c    : $(SRC_DIR)\hmonthc.prg
+$(OBJ_DIR)\htrackbr.c   : $(SRC_DIR)\htrackbr.prg
 $(OBJ_DIR)\hgrid.c      : $(SRC_DIR)\hgrid.prg
 
 # maindll DLL entry point. Harbour.dll uses maindllh.obj
@@ -181,6 +183,7 @@ $(OBJ_DIR)\repexec.obj  : $(OBJ_DIR)\repexec.c
 $(OBJ_DIR)\printdos.obj : $(OBJ_DIR)\printdos.c
 $(OBJ_DIR)\richtext.obj : $(OBJ_DIR)\richtext.c
 $(OBJ_DIR)\hmonthc.obj  : $(OBJ_DIR)\hmonthc.c
+$(OBJ_DIR)\htrackbr.obj : $(OBJ_DIR)\htrackbr.c
 $(OBJ_DIR)\grid.obj     : $(SRC_DIR)\grid.c
 $(OBJ_DIR)\hgrid.obj    : $(OBJ_DIR)\hgrid.c
 

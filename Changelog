@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.143 2004-05-21 16:45:37 mlacecilia Exp $
+ * $Id: Changelog,v 1.144 2004-05-23 01:19:10 marcosgambeta Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,9 +8,25 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-05-22 22:15 UTC-0300 Marcos Antonio Gambeta <marcos_gambeta@hotmail.com>
+  * source/hdialog.prg
+  * source/hwindow.prg
+    + Added code to process messages WM_HSCROLL and WM_VSCROLL (for new TrackBar class)
+  + source/htrackbr.prg
+    + New class: HTrackBar (Slider)
+  * include/guilib.ch
+    + New command: @ <x>,<y> TRACKBAR ...
+  * makedll.bc
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * makefile.vc
+  * makefile.wc
+    + Added file htrackbr.prg in the process of compilation
+
 2004-05-21 18:40 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
   * source/menu_c.c
-    ! fixed to long type the returning value of GetMenuCheckMarkDimensions() 
+    ! fixed to long type the returning value of GetMenuCheckMarkDimensions()
 
 2004-05-21 11:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   * source/hdialog.prg
@@ -75,7 +91,7 @@
   * source/menu.prg
     !Bug fix in exibition Bitmap
     * New function Hwg_SearchPosBitmap( nPos_Id )
-    
+
 2004-05-13 09:40 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
   * source/hcombo.prg
     * Fixed bug when refresh is used with text combobox

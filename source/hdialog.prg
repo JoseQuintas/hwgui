@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.20 2004-05-21 13:55:19 lculik Exp $
+ * $Id: hdialog.prg,v 1.21 2004-05-23 01:19:11 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -12,10 +12,14 @@
 #include "HBClass.ch"
 #include "guilib.ch"
 
+#define  TB_ENDTRACK	            8
+
 Static aSheet := Nil
 Static aMessModalDlg := { ;
          { WM_COMMAND,{|o,w,l|DlgCommand(o,w,l)} },         ;
          { WM_NOTIFY,{|o,w,l|DlgNotify(o,w,l)} },           ;
+         { WM_HSCROLL,{|o,w,l|DlgHScroll(o,w,l)} },         ;
+         { WM_VSCROLL,{|o,w,l|DlgVScroll(o,w,l)} },         ;
          { WM_PAINT,{|o,w,l|DlgPaint(o,w,l)} },             ;
          { WM_DRAWITEM,{|o,w,l|DlgDrawItem(o,w,l)} },       ;
          { WM_CTLCOLORSTATIC,{|o,w,l|DlgCtlColor(o,w,l)} }, ;
@@ -34,6 +38,8 @@ Static aMessModalDlg := { ;
 Static aMessDlg := { ;
          { WM_COMMAND,{|o,w,l|DlgCommand(o,w,l)} },         ;
          { WM_NOTIFY,{|o,w,l|DlgNotify(o,w,l)} },           ;
+         { WM_HSCROLL,{|o,w,l|DlgHScroll(o,w,l)} },         ;
+         { WM_VSCROLL,{|o,w,l|DlgVScroll(o,w,l)} },         ;
          { WM_PAINT,{|o,w,l|DlgPaint(o,w,l)} },             ;
          { WM_DRAWITEM,{|o,w,l|DlgDrawItem(o,w,l)} },       ;
          { WM_CTLCOLORSTATIC,{|o,w,l|DlgCtlColor(o,w,l)} }, ;
@@ -280,7 +286,7 @@ Local iParHigh := HiWord( wParam ), iParLow := LoWord( wParam )
 Local aMenu, i, hCtrl
 
    // WriteLog( Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
-   IF iParHigh == 0 
+   IF iParHigh == 0
       IF iParLow == IDOK
          hCtrl := GetFocus()
          FOR i := Len(oDlg:GetList) TO 1 STEP -1
@@ -707,9 +713,40 @@ Function DlgHelp( oDlg,wParam,lParam )
             if Empty( nHelpId )
                 oParent := oCtrl:oParent
                 nHelpId := oParent:HelpId
-            endif                
+            endif
             
             WinHelp( oDlg:handle, SetHelpFileName(), iif( Empty(nHelpId), 3, 1), nHelpId)
+
         EndIf
-    endif        
+    endif
+
 Return 0
+
+Function DlgHScroll( oDlg, wParam, lParam )
+
+   Local oCtrl
+
+   If ( oCtrl := oDlg:FindControl( , lParam ) ) != Nil
+      If LoWord (wParam) == TB_ENDTRACK
+         If ISBLOCK( oCtrl:bChange )
+            Eval( oCtrl:bChange )
+         EndIf
+      EndIf
+   EndIf
+
+Return 0
+
+Function DlgVScroll( oDlg, wParam, lParam )
+
+   Local oCtrl
+
+   If ( oCtrl := oDlg:FindControl( , lParam ) ) != Nil
+      If LoWord (wParam) == TB_ENDTRACK
+         If ISBLOCK( oCtrl:bChange )
+            Eval( oCtrl:bChange )
+         EndIf
+      EndIf
+   EndIf
+
+Return 0
+

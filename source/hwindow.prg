@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.22 2004-05-21 09:51:58 alkresin Exp $
+ *$Id: hwindow.prg,v 1.23 2004-05-23 01:19:11 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -16,6 +16,7 @@
 #define  MAX_MDICHILD_WINDOWS   18
 #define  WM_NOTIFYICON         WM_USER+1000
 #define  ID_NOTIFYICON           1
+#define  TB_ENDTRACK	            8
 
 CLASS HObject
    // DATA classname
@@ -253,7 +254,7 @@ Return ::FindWindow ( SendMessage( ::GetMain():handle, WM_MDIGETACTIVE,0,0 ) )
 Function DefWndProc( hWnd, msg, wParam, lParam )
 Local i, iItem, nHandle, aControls, nControls, iCont, hWndC, aMenu
 Local iParHigh, iParLow
-Local oWnd, oBtn, oitem
+Local oWnd, oBtn, oitem, oCtrl
 
    // WriteLog( "|Window: "+Str(hWnd,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10)  + "|" + PadR("DefWndProc -Inicio",40) + "|")
    if ( oWnd := HWindow():FindWindow(hWnd) ) == Nil
@@ -417,6 +418,14 @@ Local oWnd, oBtn, oitem
              endif
           endif
       endif
+   elseif msg == WM_HSCROLL .or. msg == WM_VSCROLL
+      if ( oCtrl := oWnd:FindControl( , lParam ) ) != Nil
+         if LoWord (wParam) == TB_ENDTRACK
+            if ISBLOCK( oCtrl:bChange )
+               Eval( oCtrl:bChange )
+            endif
+         endif
+      endif
    else
       if msg == WM_MOUSEMOVE
           DlgMouseMove()
@@ -425,13 +434,13 @@ Local oWnd, oBtn, oitem
           Eval( oWnd:bOther, oWnd, msg, wParam, lParam )
       endif
    endif
-   
+
 Return -1
 
 Function DefChildWndProc( hWnd, msg, wParam, lParam )
 Local i, iItem, nHandle, aControls, nControls, iCont, hWndC, aMenu
 Local iParHigh, iParLow
-Local oWnd, oBtn, oitem
+Local oWnd, oBtn, oitem, oCtrl
 
    //WriteLog( "|Window: "+Str(hWnd,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10)  + "|" + PadR("DefChildWndProc -Inicio",40) + "|")
    if ( oWnd := HWindow():FindWindow(hWnd) ) == Nil
@@ -609,6 +618,14 @@ Local oWnd, oBtn, oitem
              endif
           endif
       endif
+   elseif msg == WM_HSCROLL .or. msg == WM_VSCROLL
+      if ( oCtrl := oWnd:FindControl( , lParam ) ) != Nil
+         if LoWord (wParam) == TB_ENDTRACK
+            if ISBLOCK( oCtrl:bChange )
+               Eval( oCtrl:bChange )
+            endif
+         endif
+      endif
    else
       if msg == WM_MOUSEMOVE
           DlgMouseMove()
@@ -624,7 +641,7 @@ Return 0
 
 Function DefMdiChildProc( hWnd, msg, wParam, lParam )
 Local i, iItem, nHandle, aControls, nControls, iCont
-Local iParHigh, iParLow, oWnd, oBtn, oitem
+Local iParHigh, iParLow, oWnd, oBtn, oitem, oCtrl
 
    // WriteLog( "|WndChild"+Str(hWnd,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    if msg == WM_CREATE
@@ -735,6 +752,14 @@ Local iParHigh, iParLow, oWnd, oBtn, oitem
       #endif
       HWindow():DelItem( oWnd )
       return 1
+   elseif msg == WM_HSCROLL .or. msg == WM_VSCROLL
+      if ( oCtrl := oWnd:FindControl( , lParam ) ) != Nil
+         if LoWord (wParam) == TB_ENDTRACK
+            if ISBLOCK( oCtrl:bChange )
+               Eval( oCtrl:bChange )
+            endif
+         endif
+      endif
    else
       if oWnd:bOther != Nil
          Eval( oWnd:bOther, oWnd, msg, wParam, lParam )
@@ -755,7 +780,7 @@ Local oItem, iCont, nCont
    NEXT
    #else
    nCont := Len( HWindow():aWindows )
- 
+
    FOR iCont := nCont TO 1 STEP -1
 
       IF HWindow():aWindows[iCont]:oParent != Nil .AND. ;
@@ -768,7 +793,7 @@ Local oItem, iCont, nCont
 
    If HWindow():aWindows[1]:handle == hWnd
       PostQuitMessage( 0 )
-   Endif     
+   Endif
 
 return Nil
 

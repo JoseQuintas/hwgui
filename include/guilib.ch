@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.33 2004-05-21 14:03:54 lculik Exp $
+ *$Id: guilib.ch,v 1.34 2004-05-23 01:19:11 marcosgambeta Exp $
  */
 
 #define	WND_MAIN		1
@@ -1081,4 +1081,26 @@ Added by Marcos Antonio Gambeta
           => ;
     [<oBut> := ] HNicebutton():Redefine( <oWnd>,<nId>,<nStyleEx>, ;
              <bInit>,<bClick>,<caption>,<ctoolt>,<r>,<g>,<b> )
+
+// trackbar control
+#xcommand @ <x>,<y> TRACKBAR [ <oTrackBar> ]  ;
+            [ OF <oWnd> ]                 ;
+            [ ID <nId> ]                  ;
+            [ SIZE <width>, <height> ]    ;
+            [ RANGE <nLow>,<nHigh> ]      ;
+            [ INIT <nInit> ]              ;
+            [ ON INIT <bInit> ]           ;
+            [ ON CHANGE <bChange> ]       ;
+            [ STYLE <nStyle> ]            ;
+            [ TOOLTIP <cTooltip> ]        ;
+            [ < vertical : VERTICAL > ]   ;
+            [ < autoticks : AUTOTICKS > ] ;
+            [ < noticks : NOTICKS > ]     ;
+            [ < both : BOTH > ]           ;
+            [ < top : TOP > ]             ;
+            [ < left : LEFT > ]           ;
+          => ;
+    [<oTrackBar> :=] HTrackBar():New( <oWnd>,<nId>,<nInit>,<nStyle>,<x>,<y>, ;
+        <width>,<height>,<bInit>,<cTooltip>,<bChange>,<nLow>,<nHigh>,<.vertical.>,;
+        <.autoticks.>,<.noticks.>,<.both.>,<.top.>,<.left.>)
 

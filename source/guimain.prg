@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.9 2004-06-07 06:30:33 alkresin Exp $
+ * $Id: guimain.prg,v 1.10 2004-07-22 19:20:11 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -272,3 +272,64 @@ Function RefreshAllGets( oDlg )
 
    AEval( oDlg:GetList, {|o|o:Refresh()} )
 Return Nil
+
+/*
+
+cTitle:   Window Title
+cDescr:  'Data Bases','*.dbf'
+cTip  :   *.dbf
+cInitDir: Initial directory
+
+*/
+
+FUNCTION SelectMultipleFiles(cDescr, cTip, cIniDir, cTitle )
+
+   LOCAL aFiles, cRet, cFile, x, aFilter, cFilter := "", cItem, nAt, cChar,i
+   Local hWnd := 0
+   Local nFlags:=""
+   Local cPath := ""
+   Local nIndex:=1
+
+   cFilter += cDescr + Chr(0) + cTip + Chr(0)
+
+   cFile := Space( 32000 )
+
+
+   cRet := _GetOpenFileName( hWnd, @cFile, cTitle, cFilter, nFlags, cIniDir, Nil, @nIndex )
+
+   nAt := At( Chr(0) + Chr(0), cFile )
+
+   cFile := Left( cFile, nAt )
+
+   aFiles := {}
+
+   IF nAt == 0 // no double chr(0) user must have pressed cancel
+       RETURN( aFiles )
+   ENDIF
+
+   x := At( Chr(0), cFile ) // fist null
+   cPath := Left( cFile, x )
+
+   cFile := StrTran( cFile, cPath, "" )
+
+   IF ! Empty(cFile) // user selected more than 1 file
+      cItem := ""
+
+      FOR i:=1 to Len(cFile) //EACH cChar IN cFile
+          cChar:=cFile[i]
+          IF cChar == 0
+             aAdd( aFiles, StrTran( cPath, Chr(0), "" ) + '\' + cItem )
+             cItem := ""
+             LOOP
+          ENDIF
+          cItem += cChar
+      NEXT
+   ELSE
+       aFiles := { StrTran( cPath, CHR(0), "" ) }
+   ENDIF
+
+   Return( aFiles )
+ 
+
+
+

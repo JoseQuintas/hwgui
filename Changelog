@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.302 2004-11-17 11:10:18 alkresin Exp $
+ * $Id: Changelog,v 1.303 2004-11-19 08:32:10 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,18 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-11-19 11:33 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/procmisc/arr2str.c
+    * Fixed storing/retrieving of a long strings, added possibility to
+      save strings > 64Kb
+  * source/draw.c
+    * OpenImage( cFileName,lString ) function has been added - it reads some
+      picture files ( jpeg, gif ) and converts them to the HBitmap structure.
+  * source/drawwidg.prg
+    * HBitmap():AddFile( cFileName ) can load now jpeg and gif files.
+  * source/hsayimg.prg
+    * @ x,y BITMAP command now works with jpeg and gif.
 
 2004-11-17 14:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   - doc/classes.jpg

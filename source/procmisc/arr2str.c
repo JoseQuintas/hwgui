@@ -1,9 +1,11 @@
 /*
+ * $Id: arr2str.c,v 1.3 2004-11-19 08:32:12 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * Array / String conversion functions
  *
  * Copyright 2003 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #ifdef __EXPORT__
@@ -23,7 +25,7 @@ static char * ReadArray( char * ptr, PHB_ITEM pItem )
    PHB_ITEM temp;
 
    ptr ++;
-   iArLen = *( (short int*)ptr );
+   iArLen = ( *ptr + ( ( *(ptr+1) ) << 8 ) ) & 0xffff;
    ptr ++; ptr ++;
    hb_arrayNew( pItem, iArLen );
    for( i=0; i<iArLen; i++ )
@@ -35,9 +37,9 @@ static char * ReadArray( char * ptr, PHB_ITEM pItem )
       }
       else if( *ptr == '\1' )       // Char
       {
-         int iLen;
+         unsigned int iLen;
          ptr ++;
-         iLen = *( (short int*)ptr );
+         iLen = ( *ptr + ( ( *(ptr+1) ) << 8 ) ) & 0xffff;
          ptr ++; ptr ++;
          temp = hb_itemPutCL( NULL, ptr, iLen );
          ptr += iLen;
@@ -74,6 +76,16 @@ static char * ReadArray( char * ptr, PHB_ITEM pItem )
          ptr ++;
          temp = hb_itemPutL( NULL, (int) *ptr++ );
       }
+      else if( *ptr == '\7' )       // Long Char
+      {
+         unsigned int iLen;
+         ptr ++;
+         iLen = ( *ptr + ( ( *(ptr+1) ) << 8 ) + ( ( *(ptr+2) ) << 16 ) + 
+                  ( ( *(ptr+3) ) << 24 ) );
+         ptr ++; ptr ++; ptr ++; ptr ++;
+         temp = hb_itemPutCL( NULL, ptr, iLen );
+         ptr += iLen;
+      }
       else                            // Nil
       {
          ptr ++;
@@ -90,14 +102,15 @@ static char * ReadArray( char * ptr, PHB_ITEM pItem )
 static long int ArrayMemoSize( PHB_ITEM pArray )
 {
    long int lMemoSize = 3;
-   unsigned int i;
+   unsigned int i, iLen;
 
    for( i=1; i<=pArray->item.asArray.value->ulLen; i++ )
    {
       switch( ( pArray->item.asArray.value->pItems + i - 1 )->type )
       {
          case HB_IT_STRING:
-            lMemoSize += 3 + ( pArray->item.asArray.value->pItems + i - 1 )->item.asString.length;
+            iLen = ( pArray->item.asArray.value->pItems + i - 1 )->item.asString.length;
+            lMemoSize += ( ( ( iLen > 0xffff ) )? 5:3 ) + iLen;
             break;
 
          case HB_IT_DATE:
@@ -143,10 +156,21 @@ static char * WriteArray( char * ptr, PHB_ITEM pArray )
       switch( ( pArray->item.asArray.value->pItems + i - 1 )->type )
       {
          case HB_IT_STRING:
-            *ptr++ = '\1';
             iLen = ( pArray->item.asArray.value->pItems + i - 1 )->item.asString.length;
-            *( (short int*)ptr ) = iLen;
-            ptr++; ptr++;
+            if( iLen > 0xffff )
+            {
+               *ptr++ = '\7';
+               *ptr = iLen & 0xff; ptr ++;
+               *ptr = ( iLen & 0xff00 ) >> 8; ptr ++;
+               *ptr = ( iLen & 0xff0000 ) >> 16; ptr ++;
+               *ptr = ( iLen & 0xff000000 ) >> 24; ptr ++;
+            }
+            else
+            {
+               *ptr++ = '\1';
+               *ptr = iLen & 0xff; ptr ++;
+               *ptr = ( iLen & 0xff00 ) >> 8; ptr ++;
+            }
             memcpy( ptr, ( pArray->item.asArray.value->pItems + i - 1 )->item.asString.value, iLen );
             ptr += iLen;
             break;

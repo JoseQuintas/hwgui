@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.10 2004-07-29 06:16:11 alkresin Exp $
+ * $Id: draw.c,v 1.11 2004-11-19 08:32:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -595,4 +595,89 @@ HB_FUNC( DRAWGRAYBITMAP )
    DeleteDC( dcTrans );
 }
 
+#include <olectl.h>
+#include <ole2.h>
+#include <ocidl.h>
 
+HB_FUNC( OPENIMAGE )
+{
+   char* cFileName = hb_parc(1);
+   BOOL  lString = (ISNIL(2))? 0 : hb_parl(2);
+   int iFileSize;
+   FILE* fp;
+   // IPicture * pPic;
+   LPPICTURE pPic;
+   IStream * pStream;
+   HGLOBAL hG;
+   HBITMAP hBitmap = 0;
+
+   if( lString )
+   {
+      iFileSize = hb_parclen( 1 );
+      hG = GlobalAlloc( GPTR,iFileSize );
+      if( !hG )
+      {
+         hb_retnl(0);
+         return;
+      }
+      memcpy( (void*)hG, (void*)cFileName,iFileSize );
+   }
+   else
+   {
+      fp = fopen( cFileName,"rb" );
+      if( !fp )
+      {
+         hb_retnl(0);
+         return;
+      }
+
+      fseek( fp,0,SEEK_END );
+      iFileSize = ftell( fp );
+      hG = GlobalAlloc( GPTR,iFileSize );
+      if( !hG )
+      {
+         fclose( fp );
+         hb_retnl(0);
+         return;
+      }
+      fseek( fp,0,SEEK_SET );
+      fread( (void*)hG, 1, iFileSize, fp );
+      fclose( fp );
+   }
+   CreateStreamOnHGlobal( hG,0,&pStream );
+   if( !pStream )
+   {
+      GlobalFree( hG );
+      hb_retnl(0);
+      return;
+   }
+
+#if !defined(__BORLANDC__) && !defined(__MINGW32__)
+   OleLoadPicture( pStream,0,0,IID_IPicture,(void**)&pPic );
+   pStream->Release();
+#else
+   OleLoadPicture( pStream,0,0,&IID_IPicture,(void**)&pPic );
+   pStream->lpVtbl->Release( pStream );
+#endif
+
+   GlobalFree( hG );
+
+   if( !pPic )
+   {
+      hb_retnl(0);
+      return;
+   }
+
+#if !defined(__BORLANDC__) && !defined(__MINGW32__)
+   pPic->get_Handle( (OLE_HANDLE*)&hBitmap );
+#else
+   pPic->lpVtbl->get_Handle( pPic, (OLE_HANDLE*)&hBitmap );
+#endif
+
+   hb_retnl( (LONG) CopyImage( hBitmap,IMAGE_BITMAP,0,0,LR_COPYRETURNORG ) );
+#if !defined(__BORLANDC__) && !defined(__MINGW32__)
+   pPic->Release();
+#else
+   pPic->lpVtbl->Release( pPic );
+#endif
+}

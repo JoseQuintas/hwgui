@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.17 2004-04-02 11:53:42 sandrorrfreire Exp $
+ *$Id: hwindow.prg,v 1.18 2004-04-06 18:31:58 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -53,6 +53,7 @@ CLASS HCustomWindow INHERIT HObject
    METHOD FindControl( nId,nHandle )
    METHOD Hide() INLINE (::lHide:=.T.,HideWindow(::handle))
    METHOD Show() INLINE (::lHide:=.F.,ShowWindow(::handle))
+   METHOD Center()   INLINE Hwg_CenterWindow( ::handle )
    METHOD Restore()  INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_RESTORE, 0)
    METHOD Maximize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0)
    METHOD Minimize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MINIMIZE, 0)

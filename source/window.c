@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.10 2004-04-02 10:16:20 alkresin Exp $
+ * $Id: window.c,v 1.11 2004-04-06 18:31:58 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -131,6 +131,20 @@ HB_FUNC ( HWG_INITMAINWINDOW )
    aWindows[ iWindows++ ] = hWnd;
    hb_retnl( (LONG) hWnd );
 }
+
+HB_FUNC (HWG_CENTERWINDOW) 
+{
+	RECT rect;
+	int w, h, x, y;
+	GetWindowRect((HWND) hb_parnl (1), &rect);
+	w  = rect.right  - rect.left;
+	h = rect.bottom - rect.top;
+	x = GetSystemMetrics(SM_CXSCREEN);
+	y = GetSystemMetrics(SM_CYSCREEN);
+	SetWindowPos((HWND) hb_parnl (1), HWND_TOP, (x - w) / 2,
+	(y - h) / 2, 0, 0, SWP_NOSIZE);
+}
+
 
 void ProcessMessage( MSG msg, HACCEL hAcceler, BOOL lMdi )
 {

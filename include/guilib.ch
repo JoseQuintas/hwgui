@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.18 2004-03-22 21:15:03 rodrigo_moreno Exp $
+ *$Id: guilib.ch,v 1.19 2004-03-23 13:26:25 sandrorrfreire Exp $
  */
 
 #include "guilib.h"
@@ -965,3 +965,11 @@ Added by Marcos Antonio Gambeta
           => ;
     [<oListbox> := ] HListBox():Redefine( <oWnd>,<nId>,<nInit>,,<aItems>,<oFont>,<bInit>, ;
              <bSize>,<bDraw>,<bChange>,<ctoolt> )
+
+/* Add Sandro R. R. Freire */
+
+#xcommand SPLASH [<osplash> TO]  <oBitmap> ;
+            [<res: FROM RESOURCE>]         ;
+            [ TIME <otime> ]               ;    
+          => ;
+   [ <osplash> := ] HSplash():Create(<oBitmap>,<otime>,<.res.>)

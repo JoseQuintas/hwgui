@@ -79,6 +79,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\printdos.obj \
    $(OBJ_DIR)\richtext.obj \
    $(OBJ_DIR)\hlistbox.obj \
+   $(OBJ_DIR)\hsplash.obj \
    $(OBJ_DIR)\hmonthc.obj
 
 $(LIB_DIR)\procmisc.lib : \
@@ -129,6 +130,7 @@ $(OBJ_DIR)\repexec.c    : $(SRC_DIR)\repexec.prg
 $(OBJ_DIR)\printdos.c   : $(SRC_DIR)\printdos.prg
 $(OBJ_DIR)\richtext.c   : $(SRC_DIR)\richtext.prg
 $(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
+$(OBJ_DIR)\hsplash.c    : $(SRC_DIR)\hsplash.prg
 $(OBJ_DIR)\hmonthc.c  : $(SRC_DIR)\hmonthc.prg
 
 $(OBJ_DIR)\commond.obj  : $(SRC_DIR)\commond.c
@@ -181,7 +183,8 @@ $(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
 $(OBJ_DIR)\repexec.obj  : $(OBJ_DIR)\repexec.c
 $(OBJ_DIR)\printdos.obj : $(OBJ_DIR)\printdos.c
 $(OBJ_DIR)\richtext.obj : $(OBJ_DIR)\richtext.c
-$(OBJ_DIR)\hlistbox.obj : $(OBJ_DIR)\hlistbox.c
+$(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
+$(OBJ_DIR)\hsplash.c    : $(SRC_DIR)\hsplash.prg
 $(OBJ_DIR)\hmonthc.obj  : $(OBJ_DIR)\hmonthc.c
 
 $(OBJ_DIR)\procini.c   : $(SRC_DIR)\procmisc\procini.prg

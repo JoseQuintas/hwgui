@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.26 2004-05-27 10:37:00 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.27 2004-05-29 18:41:35 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1435,6 +1435,9 @@ STATIC FUNCTION FldStr( oBrw,numf )
          elseif type == "O" 
             rez := "<" + vartmp:Classname() + ">"
 
+         elseif type == "A" 
+            rez := "<Array>"
+
          else
             rez := Space( oBrw:aColumns[numf]:length )
          endif
@@ -1492,6 +1495,7 @@ Static keyCode := 0
 
             if msg == WM_PAINT
                oBrw:Paint()
+               return 1
 
             elseif msg == WM_ERASEBKGND
                if oBrw:brush != Nil

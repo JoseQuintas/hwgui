@@ -1,5 +1,5 @@
 /*
- * $Id: hxmldoc.prg,v 1.6 2004-05-27 05:27:23 alkresin Exp $
+ * $Id: hxmldoc.prg,v 1.7 2004-05-29 18:41:35 alkresin Exp $
  *
  * Harbour XML Library
  * HXmlDoc class
@@ -97,21 +97,36 @@ Local i, s, lNewLine
          lNewLine := .T.
       ENDIF
    ENDIF
-   FWrite( handle,s )
+   IF handle >= 0
+      FWrite( handle,s )
+   ENDIF
 
    FOR i := 1 TO Len( ::aItems )
       IF Valtype( ::aItems[i] ) == "C"
-        FWrite( handle, HBXML_Transform( ::aItems[i] ) )
+        IF handle >= 0
+           FWrite( handle, HBXML_Transform( ::aItems[i] ) )
+        ELSE
+           s += HBXML_Transform( ::aItems[i] )
+        ENDIF
       ELSE
-        ::aItems[i]:Save( handle, level+1 )
+        s += ::aItems[i]:Save( handle, level+1 )
       ENDIF
    NEXT
-   IF ::type == HBXML_TYPE_TAG
-      FWrite( handle, Iif(lNewLine,Space(level*2),"") + '</' + ::title + '>' + Chr(10 ) )
-   ELSEIF ::type == HBXML_TYPE_CDATA
-      FWrite( handle, ']]>' + Chr(10) )
+   IF handle >= 0
+      IF ::type == HBXML_TYPE_TAG
+         FWrite( handle, Iif(lNewLine,Space(level*2),"") + '</' + ::title + '>' + Chr(10 ) )
+      ELSEIF ::type == HBXML_TYPE_CDATA
+         FWrite( handle, ']]>' + Chr(10) )
+      ENDIF
+   ELSE
+      IF ::type == HBXML_TYPE_TAG
+         s += Iif(lNewLine,Space(level*2),"") + '</' + ::title + '>' + Chr(10 )
+      ELSEIF ::type == HBXML_TYPE_CDATA
+         s += ']]>' + Chr(10)
+      ENDIF
+      Return s
    ENDIF
-Return .T.
+Return ""
 
 METHOD Find( cTitle,nStart,block ) CLASS HXMLNode
 Local i
@@ -145,7 +160,9 @@ CLASS HXMLDoc INHERIT HXMLNode
 
    METHOD New( encoding )
    METHOD Read( fname )
+   METHOD ReadString( buffer )  INLINE hbxml_GetDoc( Self,buffer )
    METHOD Save( fname )
+   METHOD Save2String()  INLINE ::Save()
 ENDCLASS
 
 METHOD New( encoding ) CLASS HXMLDoc
@@ -167,17 +184,28 @@ Local han := FOpen( fname, FO_READ )
 Return Self
 
 METHOD Save( fname ) CLASS HXMLDoc
-Local handle := FCreate( fname )
-Local cEncod, i
+Local handle := -2
+Local cEncod, i, s
 
+   IF fname != Nil
+      handle := FCreate( fname )
+   ENDIF
    IF handle != -1
       IF ( cEncod := ::GetAttribute( "encoding" ) ) == Nil
          cEncod := "UTF-8"
       ENDIF
-      FWrite( handle, '<?xml version="1.0" encoding="'+cEncod+'"?>'+Chr(10 ) )
+
+      s := '<?xml version="1.0" encoding="'+cEncod+'"?>'+Chr(10 )
+      IF fname != Nil
+         FWrite( handle, s )
+      ENDIF
       FOR i := 1 TO Len( ::aItems )
-         ::aItems[i]:Save( handle, 0 )
+         s += ::aItems[i]:Save( handle, 0 )
       NEXT
-      FClose( handle )
+      IF fname != Nil
+         FClose( handle )
+      ELSE
+         Return s
+      ENDIF
    ENDIF
 Return .T.

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.22 2004-07-13 19:55:41 marcosgambeta Exp $
+ * $Id: window.c,v 1.23 2004-07-14 11:49:26 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -248,7 +248,7 @@ HB_FUNC( HWG_ACTIVATECHILDWINDOW )
 {
    if( hb_parl(1) )
    {
-      ShowWindow( (HWND) hb_parnl (1),SW_SHOWNORMAL );
+      ShowWindow( (HWND) hb_parnl (2),SW_SHOWNORMAL );
    }
    else
    {

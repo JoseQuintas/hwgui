@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.7 2004-03-22 21:15:03 rodrigo_moreno Exp $
+ * $Id: misc.c,v 1.8 2004-04-18 18:04:03 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -251,6 +251,31 @@ HB_FUNC( ACTIVATEKEYBOARDLAYOUT )
    while( i < num );
    if( i >= num )
       ActivateKeyboardLayout( curr,0 );
+}
+
+
+/*
+ * Pts2Pix( nPoints [,hDC] ) --> nPixels
+ * Conversion from points to pixels, provided by Vic McClung.
+ */
+
+HB_FUNC( PTS2PIX )
+{
+
+   HDC hDC;
+   BOOL lDC = 1;
+
+   if( hb_pcount() > 1 && !ISNIL(1) )
+   {
+      hDC = (HDC) hb_parnl(2);
+      lDC = 0;
+   }
+   else
+      hDC = CreateDC( "DISPLAY", NULL, NULL, NULL );
+
+   hb_retni( MulDiv( hb_parni(1), GetDeviceCaps( hDC, LOGPIXELSY ), 72 ) );
+   if( lDC )
+      DeleteDC( hDC );
 }
 
 /* Functions Contributed  By Luiz Rafael Culik Guimaraes( culikr@uol.com.br) */

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.19 2004-10-04 12:15:11 alkresin Exp $
+ * $Id: control.c,v 1.20 2004-10-05 10:24:28 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -393,15 +393,32 @@ HB_FUNC( ADDTOOLTIP ) // changed by MAG
       hb_retnl( 0 );
       return;
    }
-   ti.cbSize = sizeof(TOOLINFO);
    ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
    ti.hwnd = hWnd;
+   ti.uId = (UINT) hb_parnl( 2 );
+   // ti.uId = (UINT) GetDlgItem( hWnd, hb_parni( 2 ) );
    ti.hinst = GetModuleHandle( NULL );
-   ti.uId = (UINT) GetDlgItem( hWnd, hb_parni( 2 ) );
    ti.lpszText = (LPSTR) hb_parc( 3 );
 
-   hb_retnl( (LONG) SendMessage( hWndTT, TTM_ADDTOOL, 0, (LPARAM) (LPTOOLINFO) &ti) );
+   hb_retl( SendMessage( hWndTT, TTM_ADDTOOL, 0, (LPARAM) (LPTOOLINFO) &ti) );
 
+}
+
+HB_FUNC( DELTOOLTIP )
+{
+   TOOLINFO ti;
+
+   if( hWndTT )
+   {
+      ti.cbSize = sizeof(TOOLINFO);
+      ti.uFlags = TTF_IDISHWND;
+      ti.hwnd = (HWND) hb_parnl( 1 );
+      ti.uId = (UINT) hb_parnl( 2 );
+      // ti.uId = (UINT) GetDlgItem( hWnd, hb_parni( 2 ) );
+      ti.hinst = GetModuleHandle( NULL );
+
+      SendMessage( hWndTT, TTM_DELTOOL, 0, (LPARAM) (LPTOOLINFO) &ti);
+   }
 }
 
 /*

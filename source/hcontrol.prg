@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.17 2004-09-29 05:24:52 alkresin Exp $
+ * $Id: hcontrol.prg,v 1.18 2004-10-05 10:24:28 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -36,6 +36,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
    METHOD SetFocus()	INLINE ( SendMessage( ::oParent:handle,WM_NEXTDLGCTL,::handle,1),SetFocus( ::handle  ) )
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c )
+   METHOD End()
 
 ENDCLASS
 
@@ -72,12 +73,9 @@ Local nId := CONTROL_FIRST_ID + Len( ::oParent:aControls )
 Return nId
 
 METHOD INIT CLASS HControl
-Local i
 
    IF !::lInit
-      IF ::tooltip != Nil
-         i := AddToolTip( ::oParent:handle, ::id, ::tooltip )
-      ENDIF
+      AddToolTip( ::oParent:handle, ::handle, ::tooltip )
       IF ::oFont != Nil
          SetCtrlFont( ::oParent:handle, ::id, ::oFont:handle )
       ELSEIF ::oParent:oFont != Nil
@@ -112,6 +110,14 @@ METHOD SetColor( tcolor,bcolor,lRepaint ) CLASS HControl
    ENDIF
 
 Return Nil
+
+METHOD End() CLASS HControl
+
+   IF ::tooltip != Nil
+      DelToolTip( ::oParent:handle,::handle )
+   ENDIF
+Return Nil
+
 
 //- HStatus
 

@@ -83,7 +83,10 @@ $(LIB_DIR)\hwguidll.dll:   \
    $(OBJ_DIR)\procs7.obj \
    $(OBJ_DIR)\procscri.obj \
    $(OBJ_DIR)\hwg_qhtm.obj \
-   $(OBJ_DIR)\hqhtm.obj
+   $(OBJ_DIR)\hqhtm.obj \
+   $(OBJ_DIR)\hgrid.obj \
+   $(OBJ_DIR)\grid.obj
+   
   ILINK32 -Tpd -Gn /L$(BCC)\lib;$(BCC)\lib\PSDK;$(HRB_DIR)\lib\ @&&|
   $** c0d32w.obj , $(LIB_DIR)\hwguidll.dll, $(LIB_DIR)\hwguidll.map, cw32 harbour.lib import32.lib  uuid.lib
 |
@@ -121,7 +124,8 @@ $(OBJ_DIR)\menu.c       : $(SRC_DIR)\menu.prg
 $(OBJ_DIR)\repexec.c    : $(SRC_DIR)\repexec.prg
 $(OBJ_DIR)\printdos.c   : $(SRC_DIR)\printdos.prg
 $(OBJ_DIR)\richtext.c   : $(SRC_DIR)\richtext.prg
-$(OBJ_DIR)\hmonthc.c  : $(SRC_DIR)\hmonthc.prg
+$(OBJ_DIR)\hmonthc.c    : $(SRC_DIR)\hmonthc.prg
+$(OBJ_DIR)\hgrid.c      : $(SRC_DIR)\hgrid.prg
 
 # maindll DLL entry point. Harbour.dll uses maindllh.obj
 $(OBJ_DIR)\maindllh.obj   : $(HB_PATH)\source\vm\maindllh.c
@@ -178,6 +182,8 @@ $(OBJ_DIR)\repexec.obj  : $(OBJ_DIR)\repexec.c
 $(OBJ_DIR)\printdos.obj : $(OBJ_DIR)\printdos.c
 $(OBJ_DIR)\richtext.obj : $(OBJ_DIR)\richtext.c
 $(OBJ_DIR)\hmonthc.obj  : $(OBJ_DIR)\hmonthc.c
+$(OBJ_DIR)\grid.obj     : $(SRC_DIR)\grid.c
+$(OBJ_DIR)\hgrid.obj    : $(OBJ_DIR)\hgrid.c
 
 $(OBJ_DIR)\procini.c   : $(SRC_DIR)\procmisc\procini.prg
 $(OBJ_DIR)\procs7.c    : $(SRC_DIR)\procmisc\procs7.prg

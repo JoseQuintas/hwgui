@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.71 2004-04-04 17:43:20 alkresin Exp $
+ * $Id: Changelog,v 1.72 2004-04-05 14:16:33 rodrigo_moreno Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,53 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-04-05 11-35 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
+  * include/guilib.ch
+    + Add new commands
+        #xcommand @ <x>,<y> GRID <oGrid>    ;
+            [ OF <oWnd> ]               ;
+            [ ID <nId> ]                ;
+            [ STYLE <nStyle> ]          ;
+            [ SIZE <width>, <height> ]  ;
+            [ FONT <oFont> ]            ;
+            [ ON INIT <bInit> ]         ;
+            [ ON SIZE <bSize> ]         ;
+            [ ON PAINT <bPaint> ]       ;
+            [ ON CLICK <bEnter> ]       ;
+            [ ON GETFOCUS <bGfocus> ]   ;
+            [ ON LOSTFOCUS <bLfocus> ]  ;
+            [ ON KEYDOWN <bKeyDown> ]   ;
+            [ ON POSCHANGE <bPosChg> ]  ;
+            [ ON DISPINFO <bDispInfo> ] ; 
+            [ ITEMCOUNT <nItemCount> ]  ;
+            [ <lNoScroll: NOSCROLL> ]   ;
+            [ <lNoBord: NOBORDER> ]     ;
+            [ <lNoLines: NOGRIDLINES> ] ;
+            [ COLOR <color> ]           ;
+            [ BACKCOLOR <bkcolor> ]     ;
+            [ <lNoHeader: NO HEADER> ]
+
+        #xcommand ADD COLUMN TO GRID <oGrid>    ;
+            [ HEADER <cHeader> ]        ;
+            [ WIDTH <nWidth> ]          ;
+            [ JUSTIFY HEAD <nJusHead> ]
+    * source/hdialog.prg
+      * changed DlgNotify to handle grid messages
+    + source/grid.c
+    + source/hgrid.prg
+      ! new rotuines to handle new grid control
+    + samples/grid_1.prg                      
+    + samples/grid_2.prg                      
+    + samples/grid_3.prg                      
+    + samples/grid_4.prg                      
+    + samples/grid_5.prg                      
+      ! Samples to show how to use grid control  
+    * doc/hwgdoc.htm
+      + Add Grid Sintax
+    * makefile.bc
+    * makedll.bc
+      + Add rules to compile grid                    
 
 2004-04-04 21:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hdialog.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.10 2004-04-04 17:43:20 alkresin Exp $
+ * $Id: hdialog.prg,v 1.11 2004-04-05 14:16:35 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -399,6 +399,8 @@ Local iItem, oCtrl := oDlg:FindControl( wParam ), nCode, res, handle, oItem
          Return oCtrl:Notify( oDlg,lParam )
       ELSEIF oCtrl:ClassName() == "HTREE"
          Return TreeNotify( oCtrl,lParam )
+      ELSEIF oCtrl:ClassName() == "HGRID"         
+         Return ListViewNotify( oCtrl,lParam )               
       ELSE
          nCode := GetNotifyCode( lParam )
          IF oDlg:aNotify != Nil .AND. ;

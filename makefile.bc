@@ -80,7 +80,10 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\richtext.obj \
    $(OBJ_DIR)\hlistbox.obj \
    $(OBJ_DIR)\hsplash.obj \
-   $(OBJ_DIR)\hmonthc.obj
+   $(OBJ_DIR)\hmonthc.obj \
+   $(OBJ_DIR)\hgrid.obj \
+   $(OBJ_DIR)\grid.obj
+   
 
 $(LIB_DIR)\procmisc.lib : \
    $(OBJ_DIR)\misc.obj \
@@ -131,7 +134,8 @@ $(OBJ_DIR)\printdos.c   : $(SRC_DIR)\printdos.prg
 $(OBJ_DIR)\richtext.c   : $(SRC_DIR)\richtext.prg
 $(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
 $(OBJ_DIR)\hsplash.c    : $(SRC_DIR)\hsplash.prg
-$(OBJ_DIR)\hmonthc.c  : $(SRC_DIR)\hmonthc.prg
+$(OBJ_DIR)\hmonthc.c    : $(SRC_DIR)\hmonthc.prg
+$(OBJ_DIR)\hgrid.c      : $(SRC_DIR)\hgrid.prg
 
 $(OBJ_DIR)\commond.obj  : $(SRC_DIR)\commond.c
 $(OBJ_DIR)\control.obj  : $(SRC_DIR)\control.c
@@ -151,6 +155,7 @@ $(OBJ_DIR)\wprint.obj   : $(SRC_DIR)\wprint.c
 $(OBJ_DIR)\resource.obj : $(SRC_DIR)\resource.c
 $(OBJ_DIR)\c_ipaddr.obj : $(SRC_DIR)\c_ipaddr.c
 $(OBJ_DIR)\listbox.obj  : $(SRC_DIR)\listbox.c
+$(OBJ_DIR)\grid.obj     : $(SRC_DIR)\grid.c
 
 $(OBJ_DIR)\drawwidg.obj : $(OBJ_DIR)\drawwidg.c
 $(OBJ_DIR)\errorsys.obj : $(OBJ_DIR)\errorsys.c
@@ -186,6 +191,7 @@ $(OBJ_DIR)\richtext.obj : $(OBJ_DIR)\richtext.c
 $(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
 $(OBJ_DIR)\hsplash.c    : $(SRC_DIR)\hsplash.prg
 $(OBJ_DIR)\hmonthc.obj  : $(OBJ_DIR)\hmonthc.c
+$(OBJ_DIR)\hgrid.obj    : $(OBJ_DIR)\hgrid.c
 
 $(OBJ_DIR)\procini.c   : $(SRC_DIR)\procmisc\procini.prg
 $(OBJ_DIR)\procs7.c    : $(SRC_DIR)\procmisc\procs7.prg

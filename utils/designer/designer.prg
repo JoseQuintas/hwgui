@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.6 2004-06-20 11:21:28 alkresin Exp $
+ * $Id: designer.prg,v 1.7 2004-06-20 18:47:15 alkresin Exp $
  *
  * Designer
  * Main file
@@ -21,7 +21,7 @@ REQUEST INITTRACKBAR
 Function Designer()
 Local oPanel, oTab, oFont // , hDCwindow, aTermMetr
 Public oWidgetsSet, oFormDesc := Nil
-Public aDataDef := {}
+Public aDataDef := {}, aMethDef := {}
 Public oBtnPressed := Nil, addItem := Nil
 Public oClipbrd := Nil
 Public oCtrlMenu, oTabMenu, oDlgMenu
@@ -239,6 +239,13 @@ Local x1, cText,cBmp, oButton
                   ENDIF
                   Aadd( aDataDef, { Lower(oProperty:GetAttribute("name")), ;
                                      b1,b2,b3,cDlg,arr,b4 } )
+               ENDIF
+            NEXT
+         ELSEIF aSet[i]:title == "methods"
+            FOR j := 1 TO Len( aSet[i]:aItems )
+               IF aSet[i]:aItems[j]:title == "method"
+                  Aadd( aMethDef, { Lower(aSet[i]:aItems[j]:GetAttribute("name")), ;
+                                     aSet[i]:aItems[j]:GetAttribute("params") } )
                ENDIF
             NEXT
          ENDIF

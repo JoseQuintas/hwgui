@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.38 2004-06-09 07:01:14 alkresin Exp $
+ *$Id: guilib.ch,v 1.39 2004-06-20 18:47:15 alkresin Exp $
  */
 
 #define	WND_MAIN		1
@@ -357,12 +357,13 @@
             [ BACKCOLOR <bcolor> ]     ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
+            [ ON CLICK <bClick> ]      ;
             [ STYLE <nStyle> ]         ;
             [<lEdit: EDITABLE>]        ;
             [ BITMAP <aBmp>  [<res: FROM RESOURCE>] ]  ;
           => ;
     [<oTree> := ] HTree():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<oFont>,<bInit>,<bSize>,<color>,<bcolor>,<aBmp>,<.res.>,<.lEdit.> )
+             <height>,<oFont>,<bInit>,<bSize>,<color>,<bcolor>,<aBmp>,<.res.>,<.lEdit.>,<bClick> )
 
 #xcommand INSERT NODE [ <oNode> CAPTION ] <cTitle>  ;
             TO <oTree>                            ;

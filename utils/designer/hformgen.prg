@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.11 2004-06-20 11:21:28 alkresin Exp $
+ * $Id: hformgen.prg,v 1.12 2004-06-20 18:47:15 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -753,7 +753,7 @@ Local oCtrl := GetCtrlSelected( oDlg ), resizeDirection, flag, i
 Return Nil
 
 Static Function LButtonUp( oDlg, xPos, yPos )
-Local aBDown, oCtrl, oContainer, i, nLeft, aProp
+Local aBDown, oCtrl, oContainer, i, nLeft, aProp, j, name
 
    IF addItem == Nil
       aBDown := GetBDown()
@@ -770,15 +770,20 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp
    ELSE 
       oContainer := CtrlByPos( oDlg,xPos,yPos )
       IF addItem:classname() == "HCONTROLGEN"
-         aProp := { { "Left",Ltrim(Str(xPos)) },            ;
-                    { "Top",Ltrim(Str(yPos)) },             ;
-                    { "Width",Ltrim(Str(addItem:nWidth)) }, ;
-                    { "Height",Ltrim(Str(addItem:nHeight)) } }
-         IF addItem:tColor != Nil
-            Aadd( aProp, { "TextColor",Ltrim(Str(addItem:tColor)) } )
-         ENDIF
-         IF addItem:bColor != Nil
-            Aadd( aProp, { "BackColor",Ltrim(Str(addItem:bColor)) } )
+         aProp := AClone( addItem:aProp )
+         j := 0
+         FOR i := Len( aProp ) TO 1 STEP -1
+            IF ( name := Lower( aProp[i,1] ) ) == "name" .OR. name == "varname"
+               Adel( aProp,i )
+               j ++
+            ELSEIF name == "left"
+               aProp[i,2] := Ltrim(Str(xPos))
+            ELSEIF name == "top"
+               aProp[i,2] := Ltrim(Str(yPos))
+            ENDIF
+         NEXT
+         IF j > 0
+            Asize( aProp,Len(aProp)-j )
          ENDIF
          oCtrl := HControlGen():New( oDlg,addItem:oXMLDesc, aProp )
       ELSE

@@ -1,11 +1,11 @@
 /*
- * $Id: htree.prg,v 1.4 2004-06-16 23:24:19 rodrigo_moreno Exp $
+ * $Id: htree.prg,v 1.5 2004-06-20 18:47:15 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -199,11 +199,11 @@ CLASS HTree INHERIT HControl
    DATA aItems INIT {}
    DATA oSelected
    DATA hIml, aImages, Image1, Image2
-   DATA bItemChange, bExpand, bRClick
+   DATA bItemChange, bExpand, bRClick, bAction
    DATA lEmpty INIT .T.
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
-                  bInit,bSize,color,bcolor,aImages,lResour,lEditLabels )
+                  bInit,bSize,color,bcolor,aImages,lResour,lEditLabels,bAction )
    METHOD Init()
    METHOD Activate()
    METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages )
@@ -217,26 +217,18 @@ CLASS HTree INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
-                  bInit,bSize,color,bcolor,aImages,lResour,lEditLabels ) CLASS HTree
+                  bInit,bSize,color,bcolor,aImages,lResour,lEditLabels,bAction ) CLASS HTree
 LOCAL i, aBmpSize
 
-   // ::classname:= "HTREE"
-   ::title   := ""
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+ ;
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+ ;
          TVS_HASLINES+TVS_LINESATROOT+TVS_HASBUTTONS+TVS_SHOWSELALWAYS+ ;
          Iif(lEditLabels==Nil.OR.!lEditLabels,0,TVS_EDITLABELS) )
-   ::oFont   := oFont
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::tcolor  := color
-   ::bcolor  := bcolor
-   ::type    := lResour
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  bSize,,,color,bcolor )
+
+   ::title   := ""
+   ::type    := Iif( lResour==Nil,.F.,lResour )
+   ::bAction := bAction
 
    IF aImages != Nil
       ::aImages := {}
@@ -253,7 +245,6 @@ LOCAL i, aBmpSize
    ENDIF
 
    ::Activate()
-   ::oParent:AddControl( Self )
 
 Return Self
 
@@ -316,8 +307,12 @@ Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct
    IF nCode == TVN_SELCHANGED .or. nCode == TVN_SELCHANGEDW
       oItem := Tree_GetNotify( lParam,TREE_GETNOTIFY_PARAM )
       oItem:oTree:oSelected := oItem
-      IF !oItem:oTree:lEmpty .AND. oItem:bAction != Nil
-         Eval( oItem:bAction,oItem )
+      IF !oItem:oTree:lEmpty 
+         IF oItem:bAction != Nil
+            Eval( oItem:bAction,oItem )
+         ELSEIF oItem:oTree:bAction != Nil
+            Eval( oItem:oTree:bAction,oItem )
+         ENDIF
       ENDIF
    ELSEIF nCode == TVN_BEGINLABELEDIT
       // Return 1

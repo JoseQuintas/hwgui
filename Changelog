@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.190 2004-06-20 11:21:26 alkresin Exp $
+ * $Id: Changelog,v 1.191 2004-06-20 18:47:14 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,24 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-06-20 22:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * include/guilib.ch
+   * source/htree.prg
+     * Added new clause to TREE command - 'ON CLICK' - default onClick codeblock
+       for all tree items, added appropriate variable to HTree class.
+     * Changes to use the HControl():New()
+   * source/hfrmtmpl.prg
+     * Added initial tree support
+   * utils/designer/designer.prg
+   * utils/designer/designer.rc
+   * utils/designer/hformgen.prg
+   * utils/designer/hctrl.prg
+   * utils/designer/editor.prg
+   * utils/designer/resource/widgets.xml
+     * Some fixes and improvements
+     * New possibity added to the editor - inserting the line 'Parameters' with
+       the list of parameters, related to the method.
 
 2004-06-20 15:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/hfrmtmpl.prg

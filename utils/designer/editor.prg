@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.1 2004-06-03 10:44:02 alkresin Exp $
+ * $Id: editor.prg,v 1.2 2004-06-20 18:47:15 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -90,7 +90,10 @@ Return Nil
 Function EditMethod( oBrw, aMethods, oCombo )
 Local nRec := Eval( oBrw:bRecno,oBrw ), lRes := .F., i
 Local cMethod := aMethods[nRec,2], oFont := HDTheme():oFont
+Local cMethName := Lower( aMethods[nRec,1] ), cParamString
 
+   i := Ascan( aMethDef, {|a|a[1]==cMethName} )
+   cParamString := Iif( i == 0, "", aMethDef[i,2] )
    INIT DIALOG oDlg TITLE "Edit '"+aMethods[nRec,1]+"' method" ;
       AT 300,240  SIZE 400,300  FONT oMainWnd:oFont            ;
       ON INIT {||MoveWindow(oDlg:handle,300,240,400,310)}      ;
@@ -105,6 +108,7 @@ Local cMethod := aMethods[nRec,2], oFont := HDTheme():oFont
             NEXT
          ENDMENU
       ENDMENU
+      MENUITEM "&Parameters" ACTION Iif(!Empty(cParamString),editShow("Parameters "+cParamString+Chr(10)+oEdit:Gettext()),.F. )
    ENDMENU
 
    @ 0,0 RICHEDIT oEdit TEXT "" SIZE 400,oDlg:nHeight-45              ;

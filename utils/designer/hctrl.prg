@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.7 2004-06-15 10:40:50 alkresin Exp $
+ * $Id: hctrl.prg,v 1.8 2004-06-20 18:47:15 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -32,6 +32,7 @@ CLASS HControlGen INHERIT HControl
    DATA aMethods      INIT {}
    DATA aPaint, oBitmap
    DATA cCreate
+   DATA nAdjust       INIT 0
 
    METHOD New( oWndParent, xClass, aProp )
    METHOD Activate()
@@ -97,11 +98,6 @@ Private value, oCtrl := Self
                xProperty := Eval( oXMLDesc:aItems[i]:aItems[1]:aItems[1] )
             ELSE
                xProperty := oXMLDesc:aItems[i]:GetAttribute( "value" )
-               /*
-               IF oXMLDesc:aItems[i]:GetAttribute( "type" ) == "A" .AND. !Empty(xProperty)
-                  xProperty := Str2Arr( xProperty )
-               ENDIF
-               */
             ENDIF
             Aadd( ::aProp, { oXMLDesc:aItems[i]:GetAttribute( "name" ),  ;
                              xProperty, ;
@@ -115,11 +111,7 @@ Private value, oCtrl := Self
       FOR i := 1 TO Len( aProp )
          cPropertyName := Lower( aProp[ i,1 ] )
          IF ( j := Ascan( ::aProp, {|a|Lower(a[1])==cPropertyName} ) ) != 0
-            // IF !Empty( aProp[i,2] )
-               ::aProp[j,2] := aProp[i,2]
-            // ENDIF
-         ELSE
-            // Aadd( ::aProp, { aProp[i,1], aProp[i,2] } )
+            ::aProp[j,2] := aProp[i,2]
          ENDIF
       NEXT
    ENDIF
@@ -127,7 +119,7 @@ Private value, oCtrl := Self
       value := ::aProp[ i,2 ]
       cPropertyName := Lower( ::aProp[ i,1 ] )
       j := Ascan( aDataDef, {|a|a[1]==cPropertyName} )
-      IF value != Nil // .AND. !Empty( value )
+      IF value != Nil
          IF j != 0 .AND. aDataDef[ j,3 ] != Nil
             EvalCode( aDataDef[ j,3 ] )
          ENDIF

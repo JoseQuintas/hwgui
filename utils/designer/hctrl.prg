@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.5 2004-06-10 11:28:17 alkresin Exp $
+ * $Id: hctrl.prg,v 1.6 2004-06-13 14:48:32 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -243,8 +243,8 @@ Local i, dx, dy
       IF oCtrl:nTop + dy < 0
          dy := - oCtrl:nTop
       ENDIF
-      oCtrl:nLeft += dx
-      oCtrl:nTop  += dy
+      oCtrl:SetProp( "Left",Ltrim(Str( oCtrl:nLeft := oCtrl:nLeft + dx )) )
+      oCtrl:SetProp( "Top",Ltrim(Str( oCtrl:nTop := oCtrl:nTop + dy )) )
       IF !lChild
          aBDown[2] := xPos
          aBDown[3] := yPos
@@ -278,24 +278,24 @@ Local dx, dy
          IF oCtrl:nWidth - dx < 4
             dx := oCtrl:nWidth - 4
          ENDIF
-         oCtrl:nLeft += dx
-         oCtrl:nWidth -= dx
+         oCtrl:SetProp( "Left",Ltrim(Str( oCtrl:nLeft := oCtrl:nLeft + dx )) )
+         oCtrl:SetProp( "Width",Ltrim(Str( oCtrl:nWidth := oCtrl:nWidth - dx )) )
       ELSEIF aBDown[4] == 2
          IF oCtrl:nHeight - dy < 4
             dy := oCtrl:nHeight - 4
          ENDIF
-         oCtrl:nTop  += dy
-         oCtrl:nHeight  -= dy
+         oCtrl:SetProp( "Top",Ltrim(Str( oCtrl:nTop := oCtrl:nTop + dy )) )
+         oCtrl:SetProp( "Height",Ltrim(Str( oCtrl:nHeight := oCtrl:nHeight - dy )) )
       ELSEIF aBDown[4] == 3
          IF oCtrl:nWidth + dx < 4
             dx := 4 - oCtrl:nWidth
          ENDIF
-         oCtrl:nWidth += dx
+         oCtrl:SetProp( "Width",Ltrim(Str( oCtrl:nWidth := oCtrl:nWidth + dx )) )
       ELSEIF aBDown[4] == 4
          IF oCtrl:nHeight + dy < 4
             dy := 4 - oCtrl:nHeight
          ENDIF
-         oCtrl:nHeight  += dy
+         oCtrl:SetProp( "Height",Ltrim(Str( oCtrl:nHeight := oCtrl:nHeight + dy )) )
       ENDIF
       aBDown[2] := xPos
       aBDown[3] := yPos
@@ -420,15 +420,8 @@ Local lRes := .F., xPos, yPos, delta := 15
       ENDIF
    NEXT
    IF lRes
-      InvalidateRect( oCtrl:oParent:handle, 1, ;
-               oCtrl:nLeft-4, oCtrl:nTop-4,    ;
-               oCtrl:nLeft+oCtrl:nWidth+3,     ;
-               oCtrl:nTop+oCtrl:nHeight+3 )
-      oCtrl:Move( xPos, yPos )
-      InvalidateRect( oCtrl:oParent:handle, 1, ;
-               oCtrl:nLeft-4, oCtrl:nTop-4,    ;
-               oCtrl:nLeft+oCtrl:nWidth+3,     ;
-               oCtrl:nTop+oCtrl:nHeight+3 )
+      CtrlMove( oCtrl,xPos-oCtrl:nLeft,yPos-oCtrl:nTop,.F.,.T. )
+      Container( oCtrl:oParent,oCtrl,oCtrl:nLeft,oCtrl:nTop )
       InspUpdBrowse()
    ENDIF
 Return Nil

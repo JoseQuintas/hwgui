@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.10 2004-06-09 07:01:14 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.11 2004-06-13 14:48:32 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -259,6 +259,7 @@ METHOD MUp() CLASS HOwnButton
          PostMessage( ::handle, WM_PAINT, 0, 0 )
       ENDIF
       IF ::bClick != Nil
+         ReleaseCapture()
          Eval( ::bClick, ::oParent, ::id )
       ENDIF
    ENDIF

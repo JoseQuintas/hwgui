@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.6 2004-06-11 06:15:09 alkresin Exp $
+ * $Id: hformgen.prg,v 1.7 2004-06-13 14:48:32 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -52,6 +52,7 @@ CLASS HFormGen INHERIT HObject
    METHOD Save( lAs )
    METHOD CreateDialog( aProp )
    METHOD GetProp( cName )
+   METHOD SetProp( xName,xValue )
    METHOD End()
 
 ENDCLASS
@@ -182,7 +183,7 @@ Local i, j, cPropertyName, xProperty
 Private value, oCtrl
 
    INIT DIALOG ::oDlg                         ;
-          ON SIZE  {|o,h,w|InspUpdBrowse(),::lChanged:=.T.} ;
+          ON SIZE  {|o,h,w|dlgOnSize(o)}      ;
           ON PAINT {|o|PaintDlg(o)}           ;
           ON EXIT  {|o|o:oParent:End(.T.)}    ;
           ON GETFOCUS {|o|SetDlgSelected(o)}  ;
@@ -247,7 +248,27 @@ Local i
   i := Ascan( ::aProp,{|a|Lower(a[1])==cName} )
 Return Iif( i==0, Nil, ::aProp[i,2] )
 
+METHOD SetProp( xName,xValue )
+
+   IF Valtype( xName ) == "C"
+      xName := Lower( xName )
+      xName := Ascan( ::aProp,{|a|Lower(a[1])==xName} )
+   ENDIF
+   IF xName != 0
+      ::aProp[xName,2] := xValue
+   ENDIF
+Return Nil
+
 // ------------------------------------------
+
+Static Function dlgOnSize( oDlg )
+Local aCoors := GetClientRect( oDlg:handle )
+
+   oDlg:oParent:SetProp("Width",Ltrim(Str(oDlg:nWidth:=aCoors[3])))
+   oDlg:oParent:SetProp("Height",Ltrim(Str(oDlg:nHeight:=aCoors[4])))
+   InspUpdBrowse()
+   oDlg:oParent:lChanged:=.T.
+Return Nil
 
 Static Function SetDlgSelected( oDlg )
 
@@ -632,20 +653,10 @@ Local oCtrl, aCoors
    ELSEIF msg == WM_RBUTTONUP
       RButtonUp( oDlg, LoWord( lParam ), HiWord( lParam ) )
       Return 1
-   ELSEIF msg == WM_LBUTTONDBLCLK
-      /* SetStyle( oDlg ) */
-      Return 1
-   /*
-   ELSEIF msg == WM_SYSCOMMAND
-      IF LoWord( wParam ) == SC_CLOSE
-         oDlg:oParent:End()
-         Return 1
-      ENDIF
-   */
    ELSEIF msg == WM_MOVE
       aCoors := GetWindowRect( oDlg:handle )
-      oDlg:nLeft := aCoors[1]
-      oDlg:nTop  := aCoors[2]
+      oDlg:oParent:SetProp( "Left", Ltrim(Str(oDlg:nLeft := aCoors[1])) )
+      oDlg:oParent:SetProp( "Top", Ltrim(Str(oDlg:nTop  := aCoors[2])) )
       InspUpdBrowse()
       oDlg:oParent:lChanged := .T.
    ELSEIF msg == WM_KEYDOWN
@@ -750,43 +761,7 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp
             CtrlResize( oCtrl,xPos,yPos )
          ELSE
             CtrlMove( oCtrl,xPos,yPos,.T. )
-            nLeft := oCtrl:nLeft
-            oCtrl:nLeft := 9999
-            oContainer := CtrlByPos( oDlg,xPos,yPos )
-            IF oContainer != Nil .AND. ( ;
-                nLeft+oCtrl:nWidth > oContainer:nLeft+oContainer:nWidth .OR. ;
-                oCtrl:nTop+oCtrl:nHeight > oContainer:nTop+oContainer:nHeight )
-               oContainer := Nil
-            ENDIF
-            IF oCtrl:oContainer != Nil .AND. ( oContainer == Nil .OR. ;
-                   oCtrl:oContainer:handle != oContainer:handle )
-               i := Ascan( oCtrl:oContainer:aControls,{|o|o:handle==oCtrl:handle} )
-               IF i != 0
-                  Adel( oCtrl:oContainer:aControls,i )
-                  Asize( oCtrl:oContainer:aControls,Len(oCtrl:oContainer:aControls)-1 )
-               ENDIF
-               oCtrl:oContainer := Nil
-            ENDIF
-            IF oContainer != Nil .AND. oCtrl:oContainer == Nil
-               oContainer:AddControl( oCtrl )
-               oCtrl:oContainer := oContainer
-               IF Lower( oContainer:cClass ) == "page"
-                  oCtrl:nPage := GetCurrentTab( oContainer:handle )
-                  IF oCtrl:nPage == 0
-                     oCtrl:nPage ++
-                  ENDIF
-               ENDIF
-               IF ( i := Ascan( oDlg:aControls,{|o|o:handle==oCtrl:handle} ) ) ;
-                  < Ascan( oDlg:aControls,{|o|o:handle==oContainer:handle} )
-                  DestroyWindow( oCtrl:handle )
-                  aDel( oDlg:aControls,i )
-                  oDlg:aControls[Len(oDlg:aControls)] := oCtrl
-                  oCtrl:nLeft := nLeft
-                  oCtrl:lInit := .F.
-                  oCtrl:Activate()
-               ENDIF
-            ENDIF
-            oCtrl:nLeft := nLeft
+            Container( oDlg,oCtrl,xPos,yPos )
          ENDIF
          SetBDown( Nil,0,0,0 )
       ENDIF
@@ -848,6 +823,48 @@ Local oCtrl
          // oDlgMenu:Show( oDlg,xPos,yPos,.T. )
       ENDIF
    ENDIF
+
+Return Nil
+
+Function Container( oDlg,oCtrl,xPos,yPos )
+Local i, nLeft := oCtrl:nLeft
+
+   oCtrl:nLeft := 9999
+   oContainer := CtrlByPos( oDlg,xPos,yPos )
+   IF oContainer != Nil .AND. ( ;
+       nLeft+oCtrl:nWidth > oContainer:nLeft+oContainer:nWidth .OR. ;
+       oCtrl:nTop+oCtrl:nHeight > oContainer:nTop+oContainer:nHeight )
+      oContainer := Nil
+   ENDIF
+   IF oCtrl:oContainer != Nil .AND. ( oContainer == Nil .OR. ;
+          oCtrl:oContainer:handle != oContainer:handle )
+      i := Ascan( oCtrl:oContainer:aControls,{|o|o:handle==oCtrl:handle} )
+      IF i != 0
+         Adel( oCtrl:oContainer:aControls,i )
+         Asize( oCtrl:oContainer:aControls,Len(oCtrl:oContainer:aControls)-1 )
+      ENDIF
+      oCtrl:oContainer := Nil
+   ENDIF
+   IF oContainer != Nil .AND. oCtrl:oContainer == Nil
+      oContainer:AddControl( oCtrl )
+      oCtrl:oContainer := oContainer
+      IF Lower( oContainer:cClass ) == "page"
+         oCtrl:nPage := GetCurrentTab( oContainer:handle )
+         IF oCtrl:nPage == 0
+            oCtrl:nPage ++
+         ENDIF
+      ENDIF
+      IF ( i := Ascan( oDlg:aControls,{|o|o:handle==oCtrl:handle} ) ) ;
+         < Ascan( oDlg:aControls,{|o|o:handle==oContainer:handle} )
+         DestroyWindow( oCtrl:handle )
+         aDel( oDlg:aControls,i )
+         oDlg:aControls[Len(oDlg:aControls)] := oCtrl
+         oCtrl:nLeft := nLeft
+         oCtrl:lInit := .F.
+         oCtrl:Activate()
+      ENDIF
+   ENDIF
+   oCtrl:nLeft := nLeft
 
 Return Nil
 

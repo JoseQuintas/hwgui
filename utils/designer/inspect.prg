@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.4 2004-06-10 11:28:17 alkresin Exp $
+ * $Id: inspect.prg,v 1.5 2004-06-13 14:48:32 alkresin Exp $
  *
  * Designer
  * Object Inspector
@@ -402,27 +402,19 @@ Return Nil
 
 Function InspUpdBrowse()
 Local i, j, cPropertyName, lChg := .F.
-Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
+Private value, oCtrl
 
+   IF oCombo == Nil
+      Return Nil
+   ENDIF
+   oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
    IF oDlgInsp != Nil
       FOR i := 1 TO Len( aProp )
-         cPropertyName := Lower( aProp[ i,1 ] )
-         j := Ascan( aDataDef, {|a|a[1]==cPropertyName} )
-         IF j != 0 .AND. aDataDef[ j,2 ] != Nil
-            EvalCode( aDataDef[ j,2 ] )
-            // writelog( aProp[i,1]+" "+Iif(aProp[i,2]==Nil,"Nil",Valtype(aProp[i,2]))+" "+Iif(value==Nil,"Nil",Valtype(value)) )
-            IF aProp[ i,2 ] != Nil .AND. Valtype(aProp[ i,2 ]) == "O"
-               LOOP
-            ENDIF
-            IF aProp[ i,2 ] != value
-               aProp[ i,2 ] := value
-               IF oCombo:value == 1
-                  oCtrl:oParent:aProp[ i,2 ] := value
-               ELSE
-                  oCtrl:aProp[ i,2 ] := value
-               ENDIF
-               lChg := .T.
-            ENDIF
+         value := Iif( oCombo:value == 1,oCtrl:oParent:aProp[ i,2 ],oCtrl:aProp[ i,2 ] )
+         IF Valtype(aProp[ i,2 ]) != "O" .AND. Valtype(aProp[ i,2 ]) != "A" ;
+               .AND. ( aProp[ i,2 ] == Nil .OR. !( aProp[ i,2 ] == value ) )
+            aProp[ i,2 ] := value
+            lChg := .T.
          ENDIF
       NEXT
       IF lChg .AND. !oBrw1:lHide

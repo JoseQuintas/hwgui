@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.7 2004-06-11 06:15:09 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.8 2004-06-13 14:48:32 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -107,7 +107,7 @@ Local i, j, aItems, o, aProp := {}, aMethods := {}
 
 Return Self
 
-METHOD Show() CLASS HFormTmpl
+METHOD Show( nMode ) CLASS HFormTmpl
 Local i, j, cType
 Local nLeft, nTop, nWidth, nHeight, cTitle, oFont, lClipper := .F., lExitOnEnter := .F., xProperty, block, bFormExit
 Memvar oDlg
@@ -141,14 +141,20 @@ Private oDlg
       __mvPrivate( ::aVars[i] )
    NEXT
 
-   INIT DIALOG ::oDlg TITLE cTitle         ;
-       AT nLeft, nTop SIZE nWidth, nHeight ;
-       FONT oFont
+   IF nMode == Nil .OR. nMode == 2
+      INIT DIALOG ::oDlg TITLE cTitle         ;
+          AT nLeft, nTop SIZE nWidth, nHeight ;
+          FONT oFont
+      ::oDlg:lClipper := lClipper
+      ::oDlg:lExitOnEnter := lExitOnEnter
+      ::oDlg:oParent  := Self
+   ELSEIF nMode == 1
+      INIT WINDOW ::oDlg MAIN TITLE cTitle    ;
+          AT nLeft, nTop SIZE nWidth, nHeight ;
+          FONT oFont
+   ENDIF
 
    oDlg := ::oDlg
-   oDlg:lClipper := lClipper
-   oDlg:lExitOnEnter := lExitOnEnter
-   oDlg:oParent  := Self
 
    FOR i := 1 TO Len( ::aMethods )
       IF ( cType := Valtype( ::aMethods[ i,2 ] ) ) == "B"

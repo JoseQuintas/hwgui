@@ -433,22 +433,18 @@
          <code3><![CDATA[ SetWindowText( oCtrl:handle, value ) ]]></code3>
       </property>
       <property name="Left">
-         <code1><![CDATA[ value := Ltrim(Str(oCtrl:nLeft)) ]]></code1>
          <code2><![CDATA[ oCtrl:nLeft := Val(value) ]]></code2>
          <code3><![CDATA[ MoveCtrl( oCtrl ) ]]></code3>
       </property>
       <property name="Top">
-         <code1><![CDATA[ value := Ltrim(Str(oCtrl:nTop)) ]]></code1>
          <code2><![CDATA[ oCtrl:nTop := Val(value) ]]></code2>
          <code3><![CDATA[ MoveCtrl( oCtrl ) ]]></code3>
       </property>
       <property name="Width">
-         <code1><![CDATA[ value := Ltrim(Str(oCtrl:nWidth)) ]]></code1>
          <code2><![CDATA[ oCtrl:nWidth := Val(value) ]]></code2>
          <code3><![CDATA[ MoveCtrl( oCtrl ) ]]></code3>
       </property>
       <property name="Height">
-         <code1><![CDATA[ value := Ltrim(Str(oCtrl:nHeight)) ]]></code1>
          <code2><![CDATA[ oCtrl:nHeight := Val(value) ]]></code2>
          <code3><![CDATA[ MoveCtrl( oCtrl ) ]]></code3>
       </property>

@@ -19,8 +19,8 @@ if "%1" == "CLEAN" goto CLEAN
 :CLEAN
    del lib\*.lib
    del lib\*.bak
-   del obj\lib\*.obj
-   del obj\lib\*.c
+   del obj\*.obj
+   del obj\*.c
    del make_b32.log
 
    goto EXIT

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.8 2004-03-16 11:54:37 alkresin Exp $
+ * $Id: window.c,v 1.9 2004-04-02 08:50:43 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -60,7 +60,7 @@ extern int iDialogs;
 HWND aWindows[ MAX_MDICHILD_WINDOWS + 2 ];
 int iWindows = 0;
 HACCEL hAccel = NULL;
-/* static TCHAR szChild[] = TEXT ( "MDICHILD" ); */
+static TCHAR szChild[] = TEXT ( "MDICHILD" );
 static WNDPROC wpOrigEditProc, wpOrigTabProc;
 
 /*  Creates main application window
@@ -252,8 +252,6 @@ HB_FUNC ( HWG_INITCHILDWINDOW )
    hb_retnl( (LONG) hWnd );
 }
 
-
-
 HB_FUNC ( HWG_ACTIVATECHILDWINDOW )
 {
 
@@ -277,15 +275,14 @@ HB_FUNC ( HWG_ACTIVATECHILDWINDOW )
 
 }
 
-
-/*  Register frame MDI class
-    InitMDIWindow( cTitle, cMenu, cBitmap, hIcon, nBkColor, nStyle, nLeft, nTop, nWidth, nHeight )
+/*  Creates frame MDI and client window
+    InitMainWindow( cTitle, cMenu, cBitmap, hIcon, nBkColor, nStyle, nLeft, nTop, nWidth, nHeight )
 */
 
 HB_FUNC ( HWG_INITMDIWINDOW )
 {
    HWND         hWnd;
-   WNDCLASS wndclass;
+   WNDCLASS     wndclass, wc ;
    HANDLE hInstance = GetModuleHandle( NULL ) ;
    char *szAppName = hb_parc(1);
    char *cTitle = hb_parc( 2 );
@@ -300,7 +297,7 @@ HB_FUNC ( HWG_INITMDIWINDOW )
       hb_retni( -1 );
       return;
    }
-   // Register frame (base ) window
+   // Register frame window
    wndclass.style = 0;
    wndclass.lpfnWndProc   = FrameWndProc ;
    wndclass.cbClsExtra    = 0 ;
@@ -318,6 +315,25 @@ HB_FUNC ( HWG_INITMDIWINDOW )
       return;
    }
 
+   // Register client window
+   wc.lpfnWndProc   = (WNDPROC) MDIChildWndProc; 
+   wc.hIcon         = (hb_pcount()>3 && !ISNIL(4))? (HICON)hb_parnl(4) : LoadIcon ((HINSTANCE)hInstance,"" );
+   wc.hbrBackground = (HBRUSH)( ( (hb_pcount()>4 && !ISNIL(5)) ?hb_parnl(5):(COLOR_WINDOW+1) ) );
+   wc.lpszMenuName  = (LPCTSTR) NULL; 
+   wc.cbWndExtra    = 0;
+   wc.lpszClassName = szChild; 
+
+
+   wc.cbClsExtra    = 0 ;
+   wc.hInstance     = (HINSTANCE)hInstance ;
+   wc.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
+   wc.style = 0;
+
+   if (!RegisterClass(&wc)) 
+   {
+      hb_retni( -3 );
+      return;
+   }
    RegisterBrowse();
    RegisterPanel();
    RegisterOwnBtn();
@@ -340,43 +356,6 @@ HB_FUNC ( HWG_INITMDIWINDOW )
 
 
    hb_retnl( (LONG) hWnd );
-}
-
-
-/*  Creates child window class
-    InitMDIChildWindow( cTitle, cMenu, cBitmap, hIcon, nBkColor, nStyle, nLeft, nTop, nWidth, nHeight )
-*/
-
-HB_FUNC ( HWG_INITMDICHILDWINDOW )
-{
-   WNDCLASS wc ;
-   HANDLE hInstance = GetModuleHandle( NULL ) ;
-   char *szAppName = hb_parc(1);
-   char *cMenu = hb_parc( 3 );
-
-
-   // Register MDI CHILD window class
-   wc.lpfnWndProc   = (WNDPROC) MDIChildWndProc; 
-   wc.hIcon         = (hb_pcount()>3 && !ISNIL(4))? (HICON)hb_parnl(4) : LoadIcon ((HINSTANCE)hInstance,"" );
-   wc.hbrBackground = (HBRUSH)( ( (hb_pcount()>4 && !ISNIL(5)) ?  ( (hb_parnl(5)==-1)? (HBRUSH)(COLOR_WINDOW+1) : CreateSolidBrush( hb_parnl(5) ) ) : (HBRUSH)(COLOR_WINDOW+1) ) );
-
-   wc.lpszMenuName  = cMenu ;
-   // wc.lpszMenuName  = (LPCTSTR) NULL; 
-   wc.cbWndExtra    = 0;
-   wc.lpszClassName = szAppName; 
-
-
-   wc.cbClsExtra    = 0 ;
-   wc.hInstance     = (HINSTANCE)hInstance ;
-   wc.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-   wc.style = 0;
-
-   if (!RegisterClass(&wc)) 
-   {
-      hb_retni( -3 );
-      return;
-   }
-
 }
 
 HB_FUNC ( HWG_INITCLIENTWINDOW )
@@ -410,12 +389,13 @@ HB_FUNC ( HWG_ACTIVATEMDIWINDOW )
 
    if( hb_parl(1) )
    {
-      ShowWindow( aWindows[0],( ISLOG(3) && hb_parl(3) )? SW_SHOWMAXIMIZED : SW_SHOWNORMAL );
+      ShowWindow( aWindows[0], SW_SHOWNORMAL );
       ShowWindow( aWindows[1], SW_SHOW );
    }
 
-   while( GetMessage (&msg, NULL, 0, 0) )
+   while (GetMessage (&msg, NULL, 0, 0))
    {
+      // ProcessMessage( msg, hAcceler, 0 );
       ProcessMdiMessage( aWindows[0], aWindows[1], msg, hAcceler );
    }
 }
@@ -433,7 +413,6 @@ HB_FUNC ( HWG_CREATEMDICHILDWINDOW )
    PHB_ITEM pObj = hb_param( 1, HB_IT_OBJECT );
    char *cTitle = hb_itemGetCPtr( GetObjectVar( pObj,"TITLE") );
    DWORD style = (DWORD) hb_itemGetNL( GetObjectVar( pObj,"STYLE") );
-   char *szClassName = hb_itemGetCPtr( GetObjectVar( pObj,"SZAPPNAME") );
 
    if( !style )
       style = WS_VISIBLE | WS_OVERLAPPEDWINDOW | WS_MAXIMIZE;
@@ -444,17 +423,17 @@ HB_FUNC ( HWG_CREATEMDICHILDWINDOW )
       return;
    }
 
-   hWnd = CreateMDIWindow(
-      (LPTSTR) szClassName,   // pointer to registered child class name 
-      (LPTSTR) cTitle,		// pointer to window name 
-      style,			// window style 
-      0,	// horizontal position of window 
-      0,	// vertical position of window 
-      300,	// width of window 
-      200,	// height of window 
-      (HWND) aWindows[1],	// handle to parent window (MDI client) 
-      GetModuleHandle( NULL ),		// handle to application instance 
-      0		 	// application-defined value 
+    hWnd = CreateMDIWindow(
+       (LPTSTR) szChild,	// pointer to registered child class name 
+       (LPTSTR) cTitle,		// pointer to window name 
+       style,			// window style 
+       0,	// horizontal position of window 
+       0,	// vertical position of window 
+       300,	// width of window 
+       200,	// height of window 
+       (HWND) aWindows[1],	// handle to parent window (MDI client) 
+       GetModuleHandle( NULL ),		// handle to application instance 
+       0		 	// application-defined value 
    );
 
    aWindows[ iWindows++ ] = hWnd;
@@ -697,7 +676,7 @@ LRESULT CALLBACK FrameWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
    }
    */ 
 
-   if( ( pSymTest = hb_dynsymFind( "DEFMDIWNDPROC" ) ) != NULL )
+   if( ( pSymTest = hb_dynsymFind( "DEFWNDPROC" ) ) != NULL )
    {
       hb_vmPushSymbol( pSymTest->pSymbol );
       hb_vmPushNil();
@@ -707,7 +686,7 @@ LRESULT CALLBACK FrameWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
       hb_vmPushLong( (LONG ) lParam );
       hb_vmDo( 4 );
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-      if( res == 0 )
+      if( res == -1 )
          return( DefFrameProc( hWnd, aWindows[ 1 ], message, wParam, lParam ));
       else
          return res;
@@ -742,7 +721,7 @@ LRESULT CALLBACK MDIChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM
       hb_vmPushLong( (LONG ) lParam );
       hb_vmDo( 4 );
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-      if( res == 0 )
+      if( res == -1 )
          return( DefMDIChildProc( hWnd, message, wParam, lParam ));
       else
          return res;

@@ -43,7 +43,7 @@ typedef FIBITMAP* ( WINAPI *FREEIMAGE_LOAD)( FREE_IMAGE_FORMAT fif, char *filena
 typedef FIBITMAP* ( WINAPI *FREEIMAGE_LOAD)( FREE_IMAGE_FORMAT fif, char *filename, int flags FI_DEFAULT(0) );
 #endif
 typedef void ( WINAPI *FREEIMAGE_UNLOAD )( FIBITMAP *dib );
-typedef FIBITMAP* ( WINAPI *FREEIMAGE_ALLOCATE)( int width, int height, int bpp );
+typedef FIBITMAP* ( WINAPI *FREEIMAGE_ALLOCATE)( int width, int height, int bpp, unsigned red_mask FI_DEFAULT(0), unsigned green_mask FI_DEFAULT(0), unsigned blue_mask FI_DEFAULT(0) );
 #if defined(__WATCOMC__)
 typedef BOOL ( WINAPI *FREEIMAGE_SAVE)( FREE_IMAGE_FORMAT fif, FIBITMAP* dib, char *filename, int flags );
 #else
@@ -256,7 +256,7 @@ HB_FUNC( FI_BMP2FI )
          HDC hDC = GetDC( NULL );
 
          GetObject( hbmp, sizeof(BITMAP), (LPSTR) &bm );
-         dib = pAllocate( bm.bmWidth, bm.bmHeight, bm.bmBitsPixel );
+         dib = pAllocate( bm.bmWidth, bm.bmHeight, bm.bmBitsPixel, 0, 0, 0 );
          GetDIBits( hDC, hbmp, 0, pGetheight( dib ), 
             pGetbits( dib ), pGetinfo( dib ), DIB_RGB_COLORS );
          ReleaseDC( NULL, hDC );

@@ -1,5 +1,5 @@
 /*
- *$Id: hcheck.prg,v 1.4 2005-03-10 11:32:48 alkresin Exp $
+ *$Id: hcheck.prg,v 1.5 2005-03-11 12:16:18 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HCheckButton class 
@@ -46,7 +46,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaptio
    hwg_SetSignal( ::handle,"clicked",WM_LBUTTONUP,0,0 )
    // ::oParent:AddEvent( BN_CLICKED,::id,{|o,id|__Valid(o:FindControl(id))} )
    IF bGFocus != Nil
-      hwg_SetSignal( ::handle,"enter",BM_SETFOCUS,0,0 )
+      hwg_SetSignal( ::handle,"enter",BN_SETFOCUS,0,0 )
       // ::oParent:AddEvent( BN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
    ENDIF
 
@@ -74,7 +74,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCheckButton
 
    IF msg == WM_LBUTTONUP
       __Valid( Self )
-   ELSEIF msg == BM_SETFOCUS
+   ELSEIF msg == BN_SETFOCUS
       __When( Self )
    ENDIF
 Return Nil

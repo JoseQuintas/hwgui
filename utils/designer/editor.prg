@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.3 2004-06-24 05:44:36 alkresin Exp $
+ * $Id: editor.prg,v 1.4 2004-06-25 08:53:26 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -15,6 +15,8 @@
 #define ES_SAVESEL 0x00008000
 
 Static oDlg, oEdit
+Static nTextLength
+Static aKeyWords := { "DO","WHILE","ENDDO","IF","ELSEIF","ELSE","ENDIF","PARAMETERS","PRIVATE" }
 
 CLASS HDTheme
 
@@ -51,6 +53,14 @@ Local i, j, j1, cTheme, oTheme, oThemeXML, arr
                         oThemeXML:aItems[j1]:GetAttribute("bcolor"), ;
                         oThemeXML:aItems[j1]:GetAttribute("bold"),   ;
                         oThemeXML:aItems[j1]:GetAttribute("italic") }
+               IF arr[1] != Nil
+                  arr[1] := Val( arr[1] )
+               ENDIF
+               IF arr[2] != Nil
+                  arr[2] := Val( arr[2] )
+               ENDIF
+               arr[3] := ( arr[3] != Nil )
+               arr[4] := ( arr[4] != Nil )
                IF oThemeXML:aItems[j1]:title == "normal"
                   oTheme:normal := arr
                ELSEIF oThemeXML:aItems[j1]:title == "command"
@@ -114,11 +124,11 @@ Local cParamString
        STYLE ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL+ES_WANTRETURN ;
        ON SIZE {|o,x,y|o:Move(,,x,y-45)}                              ;
        ON INIT {||ChangeTheme( HDTheme():nSelected )}                 ;
-       ON GETFOCUS {||SendMessage(oEdit:handle,EM_SETSEL,0,0)}        ;
+       ON GETFOCUS {||Iif(oEdit:cargo,(SendMessage(oEdit:handle,EM_SETSEL,0,0),oEdit:cargo:=.F.),.F.)} ;
        FONT oFont
+   oEdit:cargo := .T.
 
-   // oEdit:oParent:AddEvent( EN_CHANGE,oEdit:id,{|o,id|EnChange(o,id,2)} )
-   // oEdit:oParent:AddEvent( EN_SELCHANGE,oEdit:id,{|o,id|EnChange(o,id,1)},.T. )
+   // oEdit:oParent:AddEvent( EN_SELCHANGE,oEdit:id,{||EnChange(1)},.T. )
 
    oEdit:title := cMethod  
 
@@ -142,7 +152,7 @@ Function ChangeTheme( nTheme )
    ENDIF
    CheckMenuItem( oDlg:handle,1020+nTheme, .T. )
    HDTheme():nSelected := nTheme
-   editShow()
+   editShow( ,.T. )
 Return Nil
 
 Static Function editChgFont()
@@ -158,7 +168,6 @@ Local oFont
    ENDIF
 Return Nil
 
-// Just to remind:
 // re_SetDefault( hCtrl, nColor, cName, nHeight, nCharset )
 // re_SetCharFormat( hCtrl, n1, n2, nColor, cName, nHeight, lBold, lItalic, lUnderline )
 
@@ -174,90 +183,105 @@ Local arrHi, oTheme := HDTheme():aThemes[HDTheme():nSelected]
    ENDIF
    SendMessage( oEdit:handle, EM_SETEVENTMASK, 0, 0 )
    oEdit:SetText( cText )
-   re_SetDefault( oEdit:handle,Val(oTheme:normal[1]) )
-   SendMessage( oEdit:handle,EM_SETBKGNDCOLOR,0,Val(oTheme:normal[2]) )
-   /*
-   IF !Empty( arrHi := CreateHiLight( arr[1],aRules  ) )
-      re_SetCharFormat( oEditNote:handle,arrHi )
+   nTextLength := Len( cText )
+   re_SetDefault( oEdit:handle,oTheme:normal[1],,,oTheme:normal[3],oTheme:normal[4] )
+   SendMessage( oEdit:handle,EM_SETBKGNDCOLOR,0,oTheme:normal[2] )
+   IF !Empty( arrHi := CreateHiLight( cText ) )
+      /*
+      writelog( "re_SetCharFormat "+Str(Len(arrhi)) )
+      for i := 1 to len( arrhi )
+         writelog( str(arrhi[i,1])+" "+str(arrhi[i,2])+": "+str(arrhi[i,3])+iif(arrhi[i,6]!=Nil.AND.arrhi[i,6]," T","") )
+      next
+      */
+      re_SetCharFormat( oEdit:handle,arrHi )
    ENDIF
-   */
    SendMessage( oEdit:handle, EM_SETEVENTMASK, 0, ENM_CHANGE + ENM_SELCHANGE )
+   oEdit:oParent:AddEvent( EN_CHANGE,oEdit:id,{||EnChange(2)} )
 
 Return Nil
 
-Static Function EnChange( o,id,nEvent )
-Local pos := SendMessage( oEditNote:handle, EM_GETSEL, 0, 0 )
+Static Function EnChange( nEvent )
+Local pos := SendMessage( oEdit:handle, EM_GETSEL, 0, 0 )
 Local nLength, pos1 := Loword(pos)+1, pos2 := Hiword(pos)+1
-Local cBuffer, nStart, nPos, nAdd:=0, aWords[3,3], arrHi, i
+Local cBuffer, nLine, arr := {}, nLinePos
+Local oTheme := HDTheme():aThemes[HDTheme():nSelected]
 
    IF nEvent == 1        // EN_SELCHANGE
       nEditPos1 := pos1
       nEditPos2 := pos2
    ELSE                  // EN_CHANGE
-      SendMessage( oEditNote:handle, EM_SETEVENTMASK, 0, 0 )
-      nLength := SendMessage( oEditNote:handle, WM_GETTEXTLENGTH, 0, 0 )
+      SendMessage( oEdit:handle, EM_SETEVENTMASK, 0, 0 )
+      nLength := SendMessage( oEdit:handle, WM_GETTEXTLENGTH, 0, 0 )
       IF nLength - nTextLength > 2 
          // writelog( "1: "+str(nLength,5)+" "+str(nTextLength,5) )
       ELSE
-         nPos := Max( pos1,1 )
-         cBuffer := re_GetTextRange( oEditNote:handle, Max( nPos-80,1 ), nPos+80 )
-         IF nPos > 81
-            nAdd := nPos - 81
-            nPos := 81
-         ENDIF
-         // writelog( "2: "+str(nLength,5)+" "+str(nTextLength,5)+" "+str(nPos,5)+" "+str(nAdd,5) )
-         aWords[2,3] := ThisWord( cBuffer,@nPos,@nStart )
-         aWords[2,1] := nStart
-         aWords[2,2] := nPos
-         IF nStart > 3
-            nPos := nStart - 1
-            aWords[1,3] := PrevWord( cBuffer,@nPos,@nStart )
-            aWords[1,1] := nStart
-            aWords[1,2] := nPos
-         ELSE
-            aWords[1,1] := aWords[1,2] := -1
-         ENDIF
-         nPos := aWords[2,2]
-         aWords[3,3] := NextWord( cBuffer,@nPos,@nStart )
-         aWords[3,1] := nStart
-         aWords[3,2] := nPos
-         re_SetCharFormat( oEditNote:handle,Iif(aWords[1,1]<0,aWords[2,1],aWords[1,1])+nAdd,nPos+nAdd,aNoteClr[1],,,.F.,.F.,.F. )
-         // writelog( str(aWords[1,1],4)+str(nPos,4)+" "+str(nAdd,4) )
-         arrhi := {}
-         FOR i := 1 TO 3
-            IF aWords[i,1] >= 0
-               // writelog( str(aWords[i,1],4)+str(aWords[i,2],4)+" "+aWords[i,3] )
-            ENDIF
-            IF aWords[i,1] >= 0 .AND. Eval( aRules[1,1],aWords[i,3] )
-               Aadd( arrhi, { aWords[i,1]+nAdd,aWords[i,2]+nAdd,aRules[1,2],aRules[1,3],aRules[1,4],aRules[1,5],aRules[1,6],aRules[1,7]} )
-            ENDIF
-         NEXT
-         IF !Empty( arrHi )
-            re_SetCharFormat( oEditNote:handle,arrHi )
+         nLine := SendMessage( oEdit:handle, EM_LINEFROMCHAR, pos1, 0 )
+         cBuffer := re_getline( oEdit:handle,nLine )
+         // writelog( str(nline)+" "+Str(Len(cBuffer))+"/"+cBuffer )
+         nLinePos := SendMessage( oEdit:handle, EM_LINEINDEX, nLine, 0 ) + 1
+         Aadd( arr, { nLinePos,nLinePos+Len(cBuffer), ;
+            oTheme:normal[1],,,oTheme:normal[3],oTheme:normal[4], } )
+         HiLightString( cBuffer, arr, nLinePos )
+         /*
+         writelog( "re_SetCharFormat "+Str(Len(arr)) )
+         for i := 1 to len( arr )
+            writelog( str(arr[i,1])+" "+str(arr[i,2])+": "+str(arr[i,3])+iif(arr[i,6]!=Nil.AND.arr[i,6]," T","") )
+         next
+         */
+         IF !Empty( arr )
+            re_SetCharFormat( oEdit:handle,arr )
          ENDIF
       ENDIF
       IF nTextLength != nLength
-         oEditNote:lChanged := .T.
+         oEdit:lChanged := .T.
       ENDIF
       nTextLength := nLength
-      SendMessage( oEditNote:handle, EM_SETEVENTMASK, 0, ENM_CHANGE + ENM_SELCHANGE )     
+      SendMessage( oEdit:handle, EM_SETEVENTMASK, 0, ENM_CHANGE + ENM_SELCHANGE )     
    ENDIF
    // writelog( "EnChange "+str(pos1)+" "+str(pos2) ) // +" Length: "+str(nLength) )
 Return Nil
 
-Static Function CreateHiLight( stroka,aR  )
-Local arr := {}, i, nRules := Len( aR )
-Local nStart, nPos := 1, sLen := Len( stroka ), cWord
+Static Function CreateHilight( cText )
+Local arr := {}, stroka, nPos, nLinePos := 1
 
+   DO WHILE .T.
+      IF ( nPos := At( Chr(10), cText, nLinePos ) ) != 0
+         HiLightString( SubStr( cText,nLinePos,nPos-nLinePos ), arr, nLinePos )
+         nLinePos := nPos + 1
+      ELSE
+         HiLightString( SubStr( cText,nLinePos ), arr, nLinePos )
+         EXIT
+      ENDIF
+   ENDDO
+Return arr
+
+Static Function HiLightString( stroka, arr, nLinePos )
+Local nStart, nPos := 1, sLen := Len( stroka ), cWord
+Local oTheme := HDTheme():aThemes[HDTheme():nSelected]
+
+   IF Left( Ltrim( stroka ), 2 ) == "//"
+      Aadd( arr, { nLinePos,nLinePos+Len(stroka), ;
+          oTheme:comment[1],,,oTheme:comment[3],oTheme:comment[4], } )
+      Return arr
+   ENDIF
+   SET EXACT ON
    DO WHILE nPos < sLen
       cWord := NextWord( stroka,@nPos,@nStart )
-      FOR i := 1 TO nRules
-         IF Eval( aR[i,1],cWord )
-            Aadd( arr, { nStart,nPos,aR[i,2],aR[i,3],aR[i,4],aR[i,5],aR[i,6],aR[i,7]} )
-            EXIT
+      // writelog( "-->"+str(nStart)+" "+str(nPos)+" "+str(len(cword))+" "+ str(asc(cword)))
+      IF !Empty( cWord )
+         IF Left( cWord,1 ) == '"' .OR. Left( cWord,1 ) == "'"
+            Aadd( arr, { nLinePos+nStart-1,nLinePos+nPos-1, ;
+               oTheme:quote[1],,,oTheme:quote[3],oTheme:quote[4], } )
+         ELSEIF Ascan( aKeyWords,Upper(cWord) ) != 0
+            Aadd( arr, { nLinePos+nStart-1,nLinePos+nPos-1, ;
+               oTheme:command[1],,,oTheme:command[3],oTheme:command[4], } )
+         ELSEIF IsDigit( cWord )
+            Aadd( arr, { nLinePos+nStart-1,nLinePos+nPos-1, ;
+               oTheme:number[1],,,oTheme:number[3],oTheme:number[4], } )
          ENDIF
-      NEXT
+      ENDIF
    ENDDO
+   SET EXACT OFF
 
 Return arr
 
@@ -288,75 +312,32 @@ int At_Any( char* cFind, char* cStr, int* nPos)
 
 HB_FUNC( NEXTWORD )
 {
-   char *cSep = " \t\n\r";
+   char *cSep = " \t,.()[]+-/%";
    char * cStr  = hb_parc( 1 );
-   char * ptr;
+   char * ptr, * ptr1;
    int nPos = hb_parni( 2 ) - 1;
 
    ptr = cStr + nPos;
-   while( *ptr && ( *ptr == cSep[0] || *ptr == cSep[1] || *ptr == cSep[2] || *ptr == cSep[3] ) )
+   while( *ptr && strchr( cSep,*ptr ) )
    {
       ptr++;
       nPos++;
    }
-   if( At_Any( cSep,cStr,&nPos ) )
-      hb_retclen( ptr,nPos-(ptr-cStr) );
-   else
-      hb_retc( ptr );
-   hb_storni( nPos+1,2 );
-   hb_storni( ptr-cStr+1,3 );
-}
-
-HB_FUNC( THISWORD )
-{
-   char *cSep = " \t\n\r";
-   char * cStr  = hb_parc( 1 );
-   char * ptr;
-   int nPos = hb_parni( 2 ) - 1;
-
-   ptr = cStr + nPos;
-   while( ptr>cStr && *ptr != cSep[0] && *ptr != cSep[1] && *ptr != cSep[2] && *ptr != cSep[3] )
+   if( *ptr == '\'' || *ptr == '\"' )
    {
-      ptr--;
-      nPos--;
+      ptr1 = strchr( ptr+1,*ptr );
+      if( ptr1 )
+      {
+         nPos = ptr1 - cStr + 1;
+         hb_retclen( ptr,ptr1-ptr+1 );
+      }
+      else
+      {
+         nPos = strlen( cStr );
+         hb_retc( ptr );
+      }
    }
-   if( *ptr == cSep[0] || *ptr == cSep[1] || *ptr == cSep[2] || *ptr == cSep[3] )
-   {
-      ptr++;
-      nPos++;
-   }
-   if( At_Any( cSep,cStr,&nPos ) )
-      hb_retclen( ptr,nPos-(ptr-cStr) );
-   else
-      hb_retc( ptr );
-   hb_storni( nPos+1,2 );
-   hb_storni( ptr-cStr+1,3 );
-}
-
-HB_FUNC( PREVWORD )
-{
-   char *cSep = " \t\n\r";
-   char * cStr  = hb_parc( 1 );
-   char * ptr;
-   int nPos = hb_parni( 2 ) - 1;
-
-   ptr = cStr + nPos;
-   while( ptr>cStr && ( *ptr == cSep[0] || *ptr == cSep[1] || *ptr == cSep[2] || *ptr == cSep[3] ) )
-   {
-      ptr--;
-      nPos--;
-   }
-   while( ptr>cStr && *ptr != cSep[0] && *ptr != cSep[1] && *ptr != cSep[2] && *ptr != cSep[3] )
-   {
-      ptr--;
-      nPos--;
-   }
-   if( *ptr == cSep[0] || *ptr == cSep[1] || *ptr == cSep[2] || *ptr == cSep[3] )
-   {
-      ptr++;
-      nPos++;
-   }
-   if( At_Any( cSep,cStr,&nPos ) )
+   else if( At_Any( cSep,cStr,&nPos ) )
       hb_retclen( ptr,nPos-(ptr-cStr) );
    else
       hb_retc( ptr );

@@ -4,28 +4,28 @@
   <format name="Plain text format" ext="frm" file="resource\f_text.prg" rdscr="read" cnvtable="table"/>
   <format name="Hwgui source file" ext="prg" file="resource\f_hwgprg.prg" wrscr="write"/>
   <editor>
-    <font name="MS Sans Serif" width="0" height="-17" weight="400" charset="204"/>
+    <font name="Courier New" width="0" height="-17" weight="400" charset="204"/>
     <themes selected="Default">
       <theme name="Default">
-        <normal tcolor="4276545" bcolor="16777215"/>
+        <normal tcolor="0" bcolor="16777215"/>
         <command tcolor="0" bold="True"/>
-        <comment tcolor="8404992"/>
-        <quote tcolor="8404992"/>
-        <number tcolor="8404992"/>
+        <comment tcolor="10485760" italic="True"/>
+        <quote tcolor="32768"/>
+        <number tcolor="10485760"/>
       </theme>
       <theme name="Far">
-        <normal tcolor="16777215" bcolor="10624800"/>
-        <command tcolor="0" bold="True"/>
-        <comment tcolor="8404992"/>
-        <quote tcolor="8404992"/>
-        <number tcolor="8404992"/>
+        <normal tcolor="16777088" bcolor="12124160"/>
+        <command tcolor="16777215" bold="True"/>
+        <comment tcolor="12882032" bold="True" italic="True"/>
+        <quote tcolor="65535" bold="True" />
+        <number tcolor="65280"/>
       </theme>
       <theme name="Hacker">
         <normal tcolor="16777215" bcolor="0"/>
-        <command tcolor="0" bold="True"/>
-        <comment tcolor="8404992"/>
-        <quote tcolor="8404992"/>
-        <number tcolor="8404992"/>
+        <command tcolor="16777215" bold="True"/>
+        <comment tcolor="32768" italic="True"/>
+        <quote tcolor="65535"/>
+        <number tcolor="32768"/>
       </theme>
     </themes>
   </editor>

@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.7 2004-05-31 11:53:45 alkresin Exp $
+ * $Id: richedit.c,v 1.8 2004-06-25 08:53:26 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -114,18 +114,16 @@ HB_FUNC ( RE_SETCHARFORMAT )
          if( ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 5) )->type != HB_IT_NIL && hb_itemGetL( pArr1->item.asArray.value->pItems + 5 ) )
          {
             cf.dwEffects |= CFE_BOLD;
-            cf.dwMask |= CFM_BOLD;
          }
          if( ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 6) )->type != HB_IT_NIL && hb_itemGetL( pArr1->item.asArray.value->pItems + 6 ) )
          {
             cf.dwEffects |= CFE_ITALIC;
-            cf.dwMask |= CFM_ITALIC;
          }
          if( ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 7) )->type != HB_IT_NIL && hb_itemGetL( pArr1->item.asArray.value->pItems + 7 ) )
          {
             cf.dwEffects |= CFE_UNDERLINE;
-            cf.dwMask |= CFM_UNDERLINE;
          }
+         cf.dwMask |= ( CFM_BOLD | CFM_ITALIC | CFM_UNDERLINE );
          SendMessage( hCtrl, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM) &cf );
       }
    }
@@ -180,7 +178,7 @@ HB_FUNC ( RE_SETCHARFORMAT )
 }
 
 /*
- * re_SetDefault( hCtrl, nColor, cName, nHeight, nCharset )
+ * re_SetDefault( hCtrl, nColor, cName, nHeight, lBold, lItalic, lUnderline, nCharset )
  */
 HB_FUNC ( RE_SETDEFAULT )
 {
@@ -207,12 +205,26 @@ HB_FUNC ( RE_SETDEFAULT )
       cf.dwMask |= CFM_SIZE;
    }
 
-   if( ISNUM( 5 ) )
+   if( !ISNIL(5) )
    {
-      cf.bCharSet = hb_parnl( 5 );
+      cf.dwEffects |= (hb_parl(5))? CFE_BOLD:0;
+   }
+   if( !ISNIL(6) )
+   {
+      cf.dwEffects |= (hb_parl(6))? CFE_ITALIC:0;
+   }
+   if( !ISNIL(7) )
+   {
+      cf.dwEffects |= (hb_parl(7))? CFE_UNDERLINE:0;
+   }
+
+   if( ISNUM( 8 ) )
+   {
+      cf.bCharSet = hb_parnl( 8 );
       cf.dwMask |= CFM_CHARSET;
    }
 
+   cf.dwMask |= ( CFM_BOLD | CFM_ITALIC | CFM_UNDERLINE );
    SendMessage( hCtrl, EM_SETCHARFORMAT, SCF_ALL, (LPARAM) &cf );
 
 }
@@ -253,6 +265,25 @@ HB_FUNC ( RE_GETTEXTRANGE )
    ul = SendMessage( hCtrl, EM_GETTEXTRANGE, 0, (LPARAM)&tr );
    hb_retclen( tr.lpstrText, ul );
    hb_xfree( tr.lpstrText );
+
+}
+
+/*
+ * re_GetLine( hEdit, nLine )
+ */
+HB_FUNC ( RE_GETLINE )
+{
+   HWND hCtrl = (HWND) hb_parnl(1);
+   int nLine = hb_parni(2);
+   ULONG uLineIndex = SendMessage( hCtrl, EM_LINEINDEX, (WPARAM)nLine, 0 );
+   ULONG ul = SendMessage( hCtrl, EM_LINELENGTH, (WPARAM)uLineIndex, 0 );
+   char * cBuf = (char*) hb_xgrab( ul+4 );
+
+   *((ULONG*)cBuf) = ul;
+
+   ul = SendMessage( hCtrl, EM_GETLINE, nLine, (LPARAM)cBuf );
+   hb_retclen( cBuf, ul );
+   hb_xfree( cBuf );
 
 }
 

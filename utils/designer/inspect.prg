@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.7 2004-06-24 05:44:36 alkresin Exp $
+ * $Id: inspect.prg,v 1.8 2004-06-25 08:53:26 alkresin Exp $
  *
  * Designer
  * Object Inspector
@@ -73,7 +73,8 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
    ENDIF
    ::cargo := Eval( ::bRecno,Self )
    IF oTab:GetActivePage() == 2
-      IF ( value := EditMethod( aMethods[::cargo,1],aMethods[::cargo,2] ) ) != Nil
+      IF ( value := EditMethod( aMethods[::cargo,1],aMethods[::cargo,2] ) ) != Nil ;
+          .AND. !( aMethods[::cargo,2] == value )
          aMethods[::cargo,2] := value
          IF oCombo:value == 1
             HFormGen():oDlgSelected:oParent:aMethods[::cargo,2] := value

@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.9 2004-05-28 14:12:30 sandrorrfreire Exp $
+ * $Id: commond.c,v 1.10 2004-05-28 14:33:55 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -354,10 +354,10 @@ HB_FUNC ( PRINTPORTNAME )
 {
   if( ! bPName )
   {
-   	
    ULONG bRet;
    LPDEVNAMES lpDevNames;
     
+   bPName = TRUE;	
    lpDevNames = (LPDEVNAMES) GlobalLock( pd.hDevNames );
    bRet =( LPSTR ) lpDevNames + lpDevNames->wOutputOffset;   
    GlobalUnlock( pd.hDevNames );
@@ -371,25 +371,22 @@ HB_FUNC ( PRINTSETUPDOS )
 
    memset( (void*) &pd, 0, sizeof( PRINTDLG ) );
 
-   pd.lStructSize = sizeof(pd);
-   pd.hwndOwner   = GetActiveWindow();
-   pd.hDevMode    = NULL;     
-   pd.hDevNames   = NULL;     
-   pd.Flags       = PD_USEDEVMODECOPIESANDCOLLATE | PD_RETURNDC; 
-   pd.nCopies     = 1;
-   pd.nFromPage   = 0xFFFF; 
-   pd.nToPage     = 0xFFFF; 
-   pd.nMinPage    = 1; 
-   pd.nMaxPage    = 0xFFFF; 
-   bInit = FALSE;
-   if (PrintDlg(&pd)==TRUE) 
-   {
-   	  bPName = FALSE;      
-   	  hb_retnl( (LONG) pd.hDC );
-   }
+   pd.lStructSize = sizeof(PRINTDLG); 
+   pd.Flags = PD_RETURNDC; 
+   pd.hwndOwner = GetActiveWindow();
+   pd.nFromPage = 1; 
+   pd.nToPage = 1; 
+   pd.nCopies = 1; 
+    
+   if( PrintDlg(&pd) )
+   	  {
+   	  bPName = FALSE;
+      hb_retnl( (LONG) pd.hDC );
+      }
    else
-   {
+      {
    	  bPName = TRUE;
-      hb_retl(FALSE);
-   }    
-}   
+      hb_retnl( 0 );  
+      }
+}
+   

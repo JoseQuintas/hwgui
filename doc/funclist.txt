@@ -16,6 +16,10 @@ GUIMAIN.PRG:
   IsGetUpdated( aDlg,nId )
   dlgGet( aDlg,nId )
   dlgGetInitial( aDlg,nId )
+  WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel )
+  ShowProgress( nStep,maxPos,nRange,cTitle,oWnd,x1,y1,width,height )
+  HdSerial( cDrive )
+  
 
 HOWNBTN.PRG
   SetOwnBtnSelected( aBtn )

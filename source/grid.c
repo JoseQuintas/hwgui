@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.2 2004-04-07 12:05:44 alkresin Exp $
+ * $Id: grid.c,v 1.3 2004-04-07 12:30:49 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class

@@ -1,33 +1,32 @@
+
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
+
 HRB_DIR = $(HB_PATH)
 INCLUDE_DIR = include;$(HRB_DIR)\include
-OBJ_DIR = obj\lib
+OBJ_DIR = obj\dll
 LIB_DIR = lib
 SRC_DIR = source
-#C_DEFINES= -DHB_THREAD_SUPPORT
-#H_DEFINES= -DHB_THREAD_SUPPORT
 
-C_DEFINES=
-H_DEFINES=
-.AUTODEPEND
-
-!if !$d(ECHO)
-   ECHO = echo.
-!endif
-!if !$d(DEL)
-   DEL = del
-!endif
+HARBOUR_EXE = $(HB_PATH)\bin\harbour.exe
+CC          = bcc32
 
 
+C_USR          = -tW -DHB_FM_STATISTICS_OFF -D__WIN32__ -D__EXPORT__ 
+CLIBFLAGS      = $(C_USR) -a8 -OS -O2 -6 -c -I$(INCLUDE_DIR) -d -w3 -DSIMPLEX -DHB_OS_WIN_32
+HARBOURFLAGS   = /D__EXPORT__ /DHB_FM_STATISTICS_OFF /i$(INCLUDE_DIR) /q0 /w0 /es2 /n1 /gc0
 
+                    
 all: \
-   $(LIB_DIR)\hwgui.lib \
-   $(LIB_DIR)\procmisc.lib \
-   $(LIB_DIR)\hwg_qhtm.lib
+   $(LIB_DIR)\hwguidll.lib \
 
-$(LIB_DIR)\hwgui.lib :   \
+
+$(LIB_DIR)\hwguidll.lib: \
+   $(LIB_DIR)\hwguidll.dll
+
+
+$(LIB_DIR)\hwguidll.dll:   \
    $(OBJ_DIR)\hipedit.obj \
    $(OBJ_DIR)\commond.obj \
    $(OBJ_DIR)\control.obj \
@@ -73,25 +72,23 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\menu.obj \
    $(OBJ_DIR)\_winmsg.obj \
    $(OBJ_DIR)\c_ipaddr.obj \
-   $(OBJ_DIR)\listbox.obj \
    $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\repexec.obj \
    $(OBJ_DIR)\printdos.obj \
    $(OBJ_DIR)\richtext.obj \
-   $(OBJ_DIR)\hlistbox.obj \
-   $(OBJ_DIR)\hmonthc.obj
-
-$(LIB_DIR)\procmisc.lib : \
-   $(OBJ_DIR)\misc.obj \
+   $(OBJ_DIR)\hmonthc.obj \
    $(OBJ_DIR)\arr2str.obj \
    $(OBJ_DIR)\blowfish.obj \
    $(OBJ_DIR)\procini.obj \
    $(OBJ_DIR)\procs7.obj \
-   $(OBJ_DIR)\procscri.obj
-
-$(LIB_DIR)\hwg_qhtm.lib : \
+   $(OBJ_DIR)\procscri.obj \
    $(OBJ_DIR)\hwg_qhtm.obj \
    $(OBJ_DIR)\hqhtm.obj
+  ILINK32 -Tpd -Gn /L$(BCC)\lib;$(BCC)\lib\PSDK;$(HRB_DIR)\lib\ @&&|
+  $** c0d32w.obj , $(LIB_DIR)\hwguidll.dll, $(LIB_DIR)\hwguidll.map, cw32 harbour.lib import32.lib  uuid.lib
+|
+  copy $(LIB_DIR)\hwguidll.dll .\samples
+  copy $(HB_PATH)\lib\harbour.dll .\samples
 
 $(OBJ_DIR)\drawwidg.c   : $(SRC_DIR)\drawwidg.prg
 $(OBJ_DIR)\errorsys.c   : $(SRC_DIR)\errorsys.prg
@@ -124,8 +121,12 @@ $(OBJ_DIR)\menu.c       : $(SRC_DIR)\menu.prg
 $(OBJ_DIR)\repexec.c    : $(SRC_DIR)\repexec.prg
 $(OBJ_DIR)\printdos.c   : $(SRC_DIR)\printdos.prg
 $(OBJ_DIR)\richtext.c   : $(SRC_DIR)\richtext.prg
-$(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
 $(OBJ_DIR)\hmonthc.c  : $(SRC_DIR)\hmonthc.prg
+
+# maindll DLL entry point. Harbour.dll uses maindllh.obj
+$(OBJ_DIR)\maindllh.obj   : $(HB_PATH)\source\vm\maindllh.c
+$(OBJ_DIR)\maindllp.obj   : $(HB_PATH)\source\vm\maindllp.c
+$(OBJ_DIR)\maindll.obj    : $(HB_PATH)\source\vm\maindll.c
 
 $(OBJ_DIR)\commond.obj  : $(SRC_DIR)\commond.c
 $(OBJ_DIR)\control.obj  : $(SRC_DIR)\control.c
@@ -142,10 +143,9 @@ $(OBJ_DIR)\shellapi.obj : $(SRC_DIR)\shellapi.c
 $(OBJ_DIR)\wbrowse.obj  : $(SRC_DIR)\wbrowse.c
 $(OBJ_DIR)\window.obj   : $(SRC_DIR)\window.c
 $(OBJ_DIR)\wprint.obj   : $(SRC_DIR)\wprint.c
-$(OBJ_DIR)\_winmsg.obj  : $(SRC_DIR)\_winmsg.c
-$(OBJ_DIR)\resource.obj : $(SRC_DIR)\resource.c
-$(OBJ_DIR)\c_ipaddr.obj : $(SRC_DIR)\c_ipaddr.c
-$(OBJ_DIR)\listbox.obj  : $(SRC_DIR)\listbox.c
+$(OBJ_DIR)\_winmsg.obj   : $(SRC_DIR)\_winmsg.c
+$(OBJ_DIR)\resource.obj   : $(SRC_DIR)\resource.c
+$(OBJ_DIR)\c_ipaddr.obj   : $(SRC_DIR)\c_ipaddr.c
 
 $(OBJ_DIR)\drawwidg.obj : $(OBJ_DIR)\drawwidg.c
 $(OBJ_DIR)\errorsys.obj : $(OBJ_DIR)\errorsys.c
@@ -178,42 +178,35 @@ $(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
 $(OBJ_DIR)\repexec.obj  : $(OBJ_DIR)\repexec.c
 $(OBJ_DIR)\printdos.obj : $(OBJ_DIR)\printdos.c
 $(OBJ_DIR)\richtext.obj : $(OBJ_DIR)\richtext.c
-$(OBJ_DIR)\hlistbox.obj : $(OBJ_DIR)\hlistbox.c
 $(OBJ_DIR)\hmonthc.obj  : $(OBJ_DIR)\hmonthc.c
 
 $(OBJ_DIR)\procini.c   : $(SRC_DIR)\procmisc\procini.prg
 $(OBJ_DIR)\procs7.c    : $(SRC_DIR)\procmisc\procs7.prg
 $(OBJ_DIR)\procscri.c  : $(SRC_DIR)\procmisc\procscri.prg
+
 $(OBJ_DIR)\arr2str.obj : $(SRC_DIR)\procmisc\arr2str.c
 $(OBJ_DIR)\misc.obj    : $(SRC_DIR)\misc.c
-  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\procmisc.lib -+$@,,
 $(OBJ_DIR)\blowfish.obj : $(SRC_DIR)\procmisc\blowfish.c
-  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\procmisc.lib -+$@,,
 $(OBJ_DIR)\procini.obj  : $(OBJ_DIR)\procini.c
-  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\procmisc.lib -+$@,,
 $(OBJ_DIR)\procs7.obj  : $(OBJ_DIR)\procs7.c
-  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\procmisc.lib -+$@,,
 $(OBJ_DIR)\procscri.obj  : $(OBJ_DIR)\procscri.c
-  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\procmisc.lib -+$@,,
 
 
 $(OBJ_DIR)\hqhtm.c   : $(SRC_DIR)\qhtm\hqhtm.prg
+
 $(OBJ_DIR)\hwg_qhtm.obj  : $(SRC_DIR)\qhtm\hwg_qhtm.c
-  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\hwg_qhtm.lib -+$@,,
+
 $(OBJ_DIR)\hqhtm.obj  : $(OBJ_DIR)\hqhtm.c
-  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\hwg_qhtm.lib -+$@,,
+
+
+.dll.lib:
+   implib $@ $<
 
 .c.obj:
-  bcc32 -c $(C_DEFINES)  -O2 -tW -tWM -d -a8 -OS -5 -6 -I$(INCLUDE_DIR) -o$@ $<
-  tlib $(LIB_DIR)\hwgui.lib -+$@,,
+  $(CC) $(CLIBFLAGS) -o$@ $**
 
 .prg.c:
-  $(HRB_DIR)\bin\harbour.exe  $< -n -w -i$(INCLUDE_DIR) $(H_DEFINES) -o$@
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+
 

@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.4 2004-02-25 12:17:15 lculik Exp $
+ *$Id: hedit.prg,v 1.5 2004-03-07 20:38:51 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -12,7 +12,6 @@
 #include "HBClass.ch"
 #include "hblang.ch"
 #include "guilib.ch"
-
 
 CLASS HEdit INHERIT HControl
 
@@ -32,7 +31,7 @@ CLASS HEdit INHERIT HControl
    METHOD Redefine( oWnd,nId,vari,bSetGet,oFont,bInit,bSize,bDraw,bGfocus, ;
              bLfocus,ctoolt,tcolor,bcolor,cPicture )
    METHOD Init()
-   METHOD SetGet(value) INLINE Eval( ::bSetGet,value )
+   METHOD SetGet(value) INLINE Eval( ::bSetGet,value,self )
    METHOD Refresh() 
 
 ENDCLASS
@@ -149,7 +148,7 @@ METHOD Refresh()  CLASS HEdit
 Local vari
 
    IF ::bSetGet != Nil
-      vari := Eval( ::bSetGet )
+      vari := Eval( ::bSetGet,,self )
       IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
          vari := Transform( vari, ::cPicFunc + Iif(Empty(::cPicFunc),""," ") + ::cPicMask )
       ELSE
@@ -543,7 +542,7 @@ Local res
    oCtrl:Refresh()
    oCtrl:lFirst := .T.
    IF oCtrl:bGetFocus != Nil 
-      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet ), oCtrl )
+      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
       IF !res
          GetSkip( oCtrl:oParent,oCtrl:handle,1 )
       ENDIF
@@ -571,7 +570,7 @@ Local vari, oDlg
             oCtrl:title := Transform( vari, oCtrl:cPicFunc + Iif(Empty(oCtrl:cPicFunc),""," ") + oCtrl:cPicMask )
             SetDlgItemText( oCtrl:oParent:handle, oCtrl:id, oCtrl:title )
          ENDIF
-         Eval( oCtrl:bSetGet,vari )
+         Eval( oCtrl:bSetGet, vari, oCtrl )
          oDlg:nLastKey := 27
          IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, vari, oCtrl )
             SetFocus( oCtrl:handle )
@@ -750,14 +749,16 @@ Local i, aLen
       IF nSkip > 0
          aLen := Len( oParent:Getlist )
          DO WHILE ( i := i+nSkip ) <= aLen
-            IF !oParent:Getlist[i]:lHide .AND. oParent:Getlist[i]:ClassName() == "HEDIT"
+//            IF !oParent:Getlist[i]:lHide .AND. oParent:Getlist[i]:ClassName() == "HEDIT"
+            IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
                SetFocus( oParent:Getlist[i]:handle )
                Return .T.
             ENDIF
          ENDDO
       ELSE
          DO WHILE ( i := i+nSkip ) > 0
-            IF !oParent:Getlist[i]:lHide .AND. oParent:Getlist[i]:ClassName() == "HEDIT"
+//            IF !oParent:Getlist[i]:lHide .AND. oParent:Getlist[i]:ClassName() == "HEDIT"
+            IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle )
                SetFocus( oParent:Getlist[i]:handle )
                Return .T.
             ENDIF

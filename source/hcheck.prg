@@ -107,7 +107,7 @@ Static Function __Valid( oCtrl )
    oCtrl:value := IsDlgButtonChecked( oCtrl:oParent:handle, oCtrl:id )
 
    IF oCtrl:bSetGet != Nil
-      Eval( oCtrl:bSetGet,oCtrl:value )
+      Eval( oCtrl:bSetGet,oCtrl:value, oCtrl )
    ENDIF
    IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl )
       SetFocus( oCtrl:handle )

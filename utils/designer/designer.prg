@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.7 2004-06-20 18:47:15 alkresin Exp $
+ * $Id: designer.prg,v 1.8 2004-06-27 14:43:30 alkresin Exp $
  *
  * Designer
  * Main file
@@ -162,7 +162,7 @@ Local i, oNode, cWidgetsFileName
              oNode:GetAttribute("file"),oNode:GetAttribute("rdscr"), ;
              oNode:GetAttribute("wrscr"),oNode:GetAttribute("cnvtable") } )
       ELSEIF oNode:title == "editor"
-         LoadEdOptions( oNode )
+         LoadEdOptions( oNode:aItems[1] )
       ENDIF
    NEXT
 

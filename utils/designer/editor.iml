@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editor>
+  <font name="Courier New" width="0" height="-17" weight="400" charset="204"/>
+  <keywords>
+  {DO,WHILE,ENDDO,IF,ELSEIF,ELSE,ENDIF,PARAMETERS,PRIVATE,RETURN,LOOP,EXIT}
+  </keywords>
+  <themes selected="Default">
+    <theme name="Default">
+      <normal tcolor="0" bcolor="16777215"/>
+      <command tcolor="0" bold="True"/>
+      <comment tcolor="10485760" italic="True"/>
+      <quote tcolor="32768"/>
+      <number tcolor="10485760"/>
+    </theme>
+    <theme name="Far">
+      <normal tcolor="16777088" bcolor="12124160"/>
+      <command tcolor="16777215" bold="True"/>
+      <comment tcolor="12882032" bold="True" italic="True"/>
+      <quote tcolor="65535" bold="True"/>
+      <number tcolor="65280"/>
+    </theme>
+    <theme name="Hacker">
+      <normal tcolor="16777215" bcolor="0"/>
+      <command tcolor="16777215" bold="True"/>
+      <comment tcolor="32768" italic="True"/>
+      <quote tcolor="65535"/>
+      <number tcolor="32768"/>
+    </theme>
+  </themes>
+</editor>

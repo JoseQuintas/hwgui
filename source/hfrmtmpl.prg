@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.16 2004-06-26 15:01:14 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.17 2004-06-27 14:43:30 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -524,6 +524,28 @@ Local oCtrl := HGroup():New( oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,
    HRadioGroup():New( nInitValue,bSetGet )
 Return oCtrl
 
+
+Function Font2XML( oFont )
+Local aAttr := {}
+
+   Aadd( aAttr, { "name",oFont:name } )
+   Aadd( aAttr, { "width",Ltrim(Str(oFont:width,5)) } )
+   Aadd( aAttr, { "height",Ltrim(Str(oFont:height,5)) } )
+   IF oFont:weight != 0
+      Aadd( aAttr, { "weight",Ltrim(Str(oFont:weight,5)) } )
+   ENDIF
+   IF oFont:charset != 0
+      Aadd( aAttr, { "charset",Ltrim(Str(oFont:charset,5)) } )
+   ENDIF
+   IF oFont:Italic != 0
+      Aadd( aAttr, { "italic",Ltrim(Str(oFont:Italic,5)) } )
+   ENDIF
+   IF oFont:Underline != 0
+      Aadd( aAttr, { "underline",Ltrim(Str(oFont:Underline,5)) } )
+   ENDIF
+
+Return HXMLNode():New( "font", HBXML_TYPE_SINGLE, aAttr )
+
 Function hfrm_FontFromXML( oXmlNode )
 Local width  := oXmlNode:GetAttribute( "width" )
 Local height := oXmlNode:GetAttribute( "height" )
@@ -556,22 +578,35 @@ Return HFont():Add( oXmlNode:GetAttribute( "name" ),  ;
                     ita, under )
 
 Function hfrm_Str2Arr( stroka )
-Local arr := {}, pos, cItem
+Local arr := {}, pos1 := 2, pos2 := 1
 
-   stroka := Substr( stroka,2,Len(stroka)-2 )
-   IF !Empty( stroka )
-      DO WHILE .T. 
-         pos := Find_Z( stroka )
-         Aadd( arr, cItem := Iif( pos > 0, Left( stroka,pos-1 ), stroka ) )
-         IF pos > 0
-            stroka := Substr( stroka,pos+1 )
-         ELSE
-            EXIT
-         ENDIF
+   IF Len( stroka ) > 2
+      DO WHILE pos2 > 0
+         DO WHILE Substr( stroka,pos1,1 ) <= ' ' ; pos1 ++ ; ENDDO
+         pos2 := At( ',',stroka,pos1 )
+         Aadd( arr, Trim( Substr( stroka,pos1,Iif( pos2>0,pos2-pos1,At('}',stroka,pos1)-pos1 ) ) ) )
+         pos1 := pos2 + 1
       ENDDO
    ENDIF
 
 Return arr
+
+Function Arr2Str( arr )
+Local stroka := "{", i, cType
+
+   FOR i := 1 TO Len( arr )
+      IF i > 1
+         stroka += ","
+      ENDIF
+      cType := Valtype( arr[i] )
+      IF cType == "C"
+         stroka += arr[i]
+      ELSEIF cType == "N"
+         stroka += Ltrim( Str( arr[i] ) )
+      ENDIF
+   NEXT
+
+Return stroka + "}"
 
 Function GetProperty( xProp )
 Local c

@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.15 2004-06-26 15:01:15 alkresin Exp $
+ * $Id: hformgen.prg,v 1.16 2004-06-27 14:43:30 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -133,7 +133,8 @@ Local i, j, name := ::name, oDlgSel
    ELSE
       HFormGen():oDlgSelected := Nil
       IF oDlgInsp != Nil
-         InspSetCombo()
+         oDlgInsp:Close()
+         // InspSetCombo()
       ENDIF
    ENDIF
 
@@ -1009,122 +1010,3 @@ Return Nil
 Function _CHR( n )
 Return CHR( n )
 
-Function Arr2Str( arr )
-Local stroka := "{", i, cType
-
-   FOR i := 1 TO Len( arr )
-      IF i > 1
-         stroka += ","
-      ENDIF
-      cType := Valtype( arr[i] )
-      IF cType == "C"
-         stroka += arr[i]
-      ELSEIF cType == "N"
-         stroka += Ltrim( Str( arr[i] ) )
-      ENDIF
-   NEXT
-
-Return stroka + "}"
-
-Function Font2XML( oFont )
-Local aAttr := {}
-
-   Aadd( aAttr, { "name",oFont:name } )
-   Aadd( aAttr, { "width",Ltrim(Str(oFont:width,5)) } )
-   Aadd( aAttr, { "height",Ltrim(Str(oFont:height,5)) } )
-   IF oFont:weight != 0
-      Aadd( aAttr, { "weight",Ltrim(Str(oFont:weight,5)) } )
-   ENDIF
-   IF oFont:charset != 0
-      Aadd( aAttr, { "charset",Ltrim(Str(oFont:charset,5)) } )
-   ENDIF
-   IF oFont:Italic != 0
-      Aadd( aAttr, { "italic",Ltrim(Str(oFont:Italic,5)) } )
-   ENDIF
-   IF oFont:Underline != 0
-      Aadd( aAttr, { "underline",Ltrim(Str(oFont:Underline,5)) } )
-   ENDIF
-
-Return HXMLNode():New( "font", HBXML_TYPE_SINGLE, aAttr )
-
-Function hfrm_FontFromXML( oXmlNode )
-Local width  := oXmlNode:GetAttribute( "width" )
-Local height := oXmlNode:GetAttribute( "height" )
-Local weight := oXmlNode:GetAttribute( "weight" )
-Local charset := oXmlNode:GetAttribute( "charset" )
-Local ita   := oXmlNode:GetAttribute( "italic" )
-Local under := oXmlNode:GetAttribute( "underline" )
-
-  IF width != Nil
-     width := Val( width )
-  ENDIF
-  IF height != Nil
-     height := Val( height )
-  ENDIF
-  IF weight != Nil
-     weight := Val( weight )
-  ENDIF
-  IF charset != Nil
-     charset := Val( charset )
-  ENDIF
-  IF ita != Nil
-     ita := Val( ita )
-  ENDIF
-  IF under != Nil
-     under := Val( under )
-  ENDIF
-
-Return HFont():Add( oXmlNode:GetAttribute( "name" ),  ;
-                    width, height, weight, charset,   ;
-                    ita, under )
-
-Function hfrm_Str2Arr( stroka )
-Local arr := {}, pos, cItem
-
-   stroka := Substr( stroka,2,Len(stroka)-2 )
-   IF !Empty( stroka )
-      DO WHILE .T. 
-         pos := Find_Z( stroka )
-         Aadd( arr, cItem := Iif( pos > 0, Left( stroka,pos-1 ), stroka ) )
-         IF pos > 0
-            stroka := Substr( stroka,pos+1 )
-         ELSE
-            EXIT
-         ENDIF
-      ENDDO
-   ENDIF
-
-Return arr
-
-
-Function ParseMethod( cMethod )
-Local arr := {}, nPos1, nPos2, cLine
-
-   IF ( nPos1 := At( Chr(10),cMethod ) ) == 0
-      Aadd( arr, Alltrim( cMethod ) )
-   ELSE
-      Aadd( arr, Alltrim( Left( cMethod,nPos1-1 ) ) )
-      DO WHILE .T.
-         IF ( nPos2 := At( Chr(10),cMethod,nPos1+1 ) ) == 0
-            cLine := AllTrim( Substr( cMethod,nPos1+1 ) )
-         ELSE
-            cLine := AllTrim( Substr( cMethod,nPos1+1,nPos2-nPos1-1 ) )
-         ENDIF
-         IF !Empty( cLine )
-            Aadd( arr,cLine )
-         ENDIF
-         IF nPos2 == 0 .OR. Len( arr ) > 2
-            EXIT
-         ELSE
-            nPos1 := nPos2
-         ENDIF
-      ENDDO
-   ENDIF
-   IF Right( arr[1],1 ) < " "
-      arr[1] := Left( arr[1],Len(arr[1])-1 )
-   ENDIF
-   IF Len( arr ) > 1 .AND. Right( arr[2],1 ) < " "
-      arr[2] := Left( arr[2],Len(arr[2])-1 )
-   ENDIF
-
-Return arr

@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.5 2004-06-26 15:01:15 alkresin Exp $
+ * $Id: editor.prg,v 1.6 2004-06-27 14:43:30 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -14,9 +14,8 @@
 
 #define ES_SAVESEL 0x00008000
 
-Static oDlg, oEdit
+Static oDlg, oEdit, cIniName
 Static nTextLength
-Static aKeyWords := { "DO","WHILE","ENDDO","IF","ELSEIF","ELSE","ENDIF","PARAMETERS","PRIVATE","RETURN","LOOP","EXIT" }
 
 CLASS HDTheme
 
@@ -24,6 +23,7 @@ CLASS HDTheme
    CLASS VAR nSelected
    CLASS VAR oFont
    CLASS VAR lChanged INIT .F.
+   CLASS VAR aKeyWords
    DATA name
    DATA normal
    DATA command
@@ -34,12 +34,17 @@ CLASS HDTheme
    METHOD New( name )  INLINE ( ::name:=name,Aadd(::aThemes,Self),Self )
 ENDCLASS
 
-Function LoadEdOptions( oOptDesc )
+Function LoadEdOptions( cFileName )
+Local oIni := HXMLDoc():Read( cFileName )
 Local i, j, j1, cTheme, oTheme, oThemeXML, arr
 
+   cIniName := cFileName
+   oOptDesc := oIni:aItems[1]
    FOR i := 1 TO Len( oOptDesc:aItems )
       IF oOptDesc:aItems[i]:title == "font"
          HDTheme():oFont := hfrm_FontFromxml( oOptDesc:aItems[i] )
+      ELSEIF oOptDesc:aItems[i]:title == "keywords"
+         HDTheme():aKeyWords := hfrm_Str2Arr( oOptDesc:aItems[i]:aItems[1] )
       ELSEIF oOptDesc:aItems[i]:title == "themes"
          cTheme := oOptDesc:aItems[i]:GetAttribute( "selected" )
          FOR j := 1 TO Len( oOptDesc:aItems[i]:aItems )
@@ -79,21 +84,17 @@ Local i, j, j1, cTheme, oTheme, oThemeXML, arr
 Return Nil
 
 Function SaveEdOptions( oOptDesc )
-Local oIni := HXMLDoc():Read( "Designer.iml" )
+Local oIni := HXMLDoc():Read( cCurDir+cIniName )
 Local i, j, oNode, nStart
 
-   FOR i := 1 TO Len( oIni:aItems[1]:aItems )
-      oNode := oIni:aItems[1]:aItems[i]
-      IF oNode:title == "editor"
-         nStart := 1
-         IF oNode:Find( "font",@nStart ) == Nil
-            oNode:Add( Font2XML( HDTheme():oFont ) )
-         ELSE
-            oNode:aItems[nStart] := Font2XML( HDTheme():oFont )
-         ENDIF
-      ENDIF
-   NEXT
-   oIni:Save( "Designer.iml" )
+   oNode := oIni:aItems[1]
+   nStart := 1
+   IF oNode:Find( "font",@nStart ) == Nil
+      oNode:Add( Font2XML( HDTheme():oFont ) )
+   ELSE
+      oNode:aItems[nStart] := Font2XML( HDTheme():oFont )
+   ENDIF
+   oIni:Save( cCurDir+cIniName )
 
 Return Nil
 
@@ -272,7 +273,7 @@ Local oTheme := HDTheme():aThemes[HDTheme():nSelected]
          IF Left( cWord,1 ) == '"' .OR. Left( cWord,1 ) == "'"
             Aadd( arr, { nLinePos+nStart-1,nLinePos+nPos-1, ;
                oTheme:quote[1],,,oTheme:quote[3],oTheme:quote[4], } )
-         ELSEIF Ascan( aKeyWords,Upper(cWord) ) != 0
+         ELSEIF Ascan( HDTheme():aKeyWords,Upper(cWord) ) != 0
             Aadd( arr, { nLinePos+nStart-1,nLinePos+nPos-1, ;
                oTheme:command[1],,,oTheme:command[3],oTheme:command[4], } )
          ELSEIF IsDigit( cWord )

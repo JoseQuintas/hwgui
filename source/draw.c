@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.5 2004-06-01 18:57:48 sandrorrfreire Exp $
+ * $Id: draw.c,v 1.6 2004-06-24 21:52:04 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -543,8 +543,8 @@ HB_FUNC ( DRAWGRAYBITMAP )
 {
    HDC hDC = (HDC) hb_parnl( 1 );
    HBITMAP hBitmap = (HBITMAP) hb_parnl( 2 );
-   COLORREF crOldBack = SetBkColor( hDC, GetSysColor( COLOR_BTNHIGHLIGHT ) );
-   COLORREF crOldText = SetTextColor( hDC, GetSysColor( COLOR_BTNFACE   ) );
+   // COLORREF crOldBack = SetBkColor( hDC, GetSysColor( COLOR_BTNHIGHLIGHT ) );
+   // COLORREF crOldText = SetTextColor( hDC, GetSysColor( COLOR_BTNFACE   ) );
    HBITMAP bitmapgray;
    HBITMAP pOldBitmapImage, pOldbitmapgray;
    BITMAP  bitmap;

@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.11 2004-06-03 20:48:36 rodrigo_moreno Exp $
+ * $Id: commond.c,v 1.12 2004-06-24 21:52:04 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -359,7 +359,7 @@ HB_FUNC ( PRINTPORTNAME )
     
    bPName = TRUE;	
    lpDevNames = (LPDEVNAMES) GlobalLock( pd.hDevNames );
-   bRet =( LPSTR ) lpDevNames + lpDevNames->wOutputOffset;   
+   bRet = (ULONG) ( ( LPSTR ) lpDevNames + lpDevNames->wOutputOffset );
    GlobalUnlock( pd.hDevNames );
    hb_retc((LPSTR) bRet);
   }
@@ -408,7 +408,7 @@ HB_FUNC ( PRINTSETUPEX )
    if( PrintDlg(&pd) )
    {
       pDevMode = (LPDEVMODE) GlobalLock(pd.hDevMode);
-      strcpy(PrinterName, pDevMode->dmDeviceName);
+      strcpy(PrinterName, (char*) pDevMode->dmDeviceName);
       GlobalUnlock(pd.hDevMode);
       hb_retc(PrinterName);
    }        

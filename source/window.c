@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.19 2004-05-27 16:30:01 alkresin Exp $
+ * $Id: window.c,v 1.20 2004-06-24 21:52:04 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -700,7 +700,7 @@ LRESULT CALLBACK FrameWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 LRESULT CALLBACK MDIChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
-   int i;
+   // int i;
    long int res;
    PHB_DYNS pSymTest;
 

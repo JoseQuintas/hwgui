@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.198 2004-06-24 09:40:29 alkresin Exp $
+ * $Id: Changelog,v 1.199 2004-06-24 21:52:00 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,24 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2004-06-25 04:50 UTC+0700 Andi Jahja <harbour@cbn.net.id>
+  * source/commond.c
+  * source/freeimg.c
+    ! type casts for compilation under Open-Watcom
+
+  * source/nice.c
+    ! _GRADIENT_RECT already defined for Open-Watcom and MINGW32
+
+  * source/draw.c
+  * source/window.c
+    ! remove unused variables
+
+  * source/menu.prg
+    ! Function HWG_INSERTBITMAPMENU does not return a value
+
+  * source/xml/xmlparse.c
+    ! Function HBXML_TRANSFORM, changed:
+       while( c = *ptr ) =>  while( c == *ptr ) (Am I right?)
 
 2004-06-24 13:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/menu_c.c

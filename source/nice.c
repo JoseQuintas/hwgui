@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.2 2004-05-24 08:25:00 alkresin Exp $
+ * $Id: nice.c,v 1.3 2004-06-24 21:52:04 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -32,11 +32,13 @@
 #define GRADIENT_FILL_RECT_H 0
 #define GRADIENT_FILL_RECT_V 1
 
+#if !defined(__WATCOMC__) && !defined(__MINGW32__)
 typedef struct _GRADIENT_RECT
 {
     ULONG UpperLeft;
     ULONG LowerRight;
 }GRADIENT_RECT,*PGRADIENT_RECT,*LPGRADIENT_RECT;
+#endif
 
 #endif
 

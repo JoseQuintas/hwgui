@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.7 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hcheck.prg,v 1.8 2004-10-26 11:58:48 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -11,6 +11,10 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+
+#define BM_GETCHECK        240   // 0x00F0
+#define BM_SETCHECK        241   // 0x00F1
+#define BST_INDETERMINATE    2
 
 CLASS HCheckButton INHERIT HControl
 
@@ -24,14 +28,16 @@ CLASS HCheckButton INHERIT HControl
    METHOD Activate()
    METHOD Redefine( oWnd,nId,vari,bSetGet,oFont,bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor,bwhen )
    METHOD Init()
-   METHOD Refresh()     
+   METHOD Refresh()
+   METHOD Disable()
+   METHOD Enable()
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
                   bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor,bwhen ) CLASS HCheckButton
 
-   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_AUTOCHECKBOX+WS_TABSTOP )
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_AUTO3STATE+WS_TABSTOP )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor )
 
@@ -45,13 +51,15 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaptio
       ::bLostFocus := bClick
       ::bWhen := bWhen
 
-      ::oParent:AddEvent( BN_CLICKED,::id,{|o,id|__Valid(o:FindControl(id))} )
       ::oParent:AddEvent( BN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
+   /*
    ELSE
       IF bClick != Nil
          ::oParent:AddEvent( BN_CLICKED,::id,bClick )
       ENDIF
+   */
    ENDIF
+   ::oParent:AddEvent( BN_CLICKED,::id,{|o,id|__Valid(o:FindControl(id))} )
    if bWhen != Nil
       ::oParent:AddEvent( BN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
    endif
@@ -77,13 +85,15 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint,bClick,cto
    IF bSetGet != Nil
       ::bLostFocus := bClick
       ::bWhen := bWhen
-      ::oParent:AddEvent( BN_CLICKED,::id,{|o,id|__Valid(o:FindControl(id))} )
       ::oParent:AddEvent( BN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
+   /*
    ELSE
       IF bClick != Nil
          ::oParent:AddEvent( BN_CLICKED,::id,bClick )
       ENDIF
+   */
    ENDIF
+   ::oParent:AddEvent( BN_CLICKED,::id,{|o,id|__Valid(o:FindControl(id))} )
    if bWhen != Nil
       ::oParent:AddEvent( BN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
    endif
@@ -101,17 +111,36 @@ METHOD Init() CLASS HCheckButton
 Return Nil
 
 METHOD Refresh() CLASS HCheckButton
-   Local var
+Local var
+
    IF ::bSetGet != Nil
        var := Eval( ::bSetGet,,nil )
        ::value := Iif( var==Nil,.F.,var ) 
    ENDIF
 
-   CheckDlgButton( ::oParent:handle,::id,Iif( ::value==Nil,.F.,::value) )
+   CheckDlgButton( ::oParent:handle,::id,::value )
+Return Nil
+
+METHOD Disable() CLASS HCheckButton
+
+   Super:Disable()
+   SendMessage( ::handle,BM_SETCHECK,BST_INDETERMINATE,0 )
+
+Return Nil
+
+METHOD Enable() CLASS HCheckButton
+
+   Super:Enable()
+   CheckDlgButton( ::oParent:handle,::id,::value )
+
 Return Nil
 
 Static Function __Valid( oCtrl )
+Local l := SendMessage( oCtrl:handle,BM_GETCHECK,0,0 )
 
+   IF l == BST_INDETERMINATE
+      CheckDlgButton( oCtrl:oParent:handle, oCtrl:id, .F. )
+   ENDIF
    oCtrl:value := IsDlgButtonChecked( oCtrl:oParent:handle, oCtrl:id )
 
    IF oCtrl:bSetGet != Nil

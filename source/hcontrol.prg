@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.19 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: hcontrol.prg,v 1.20 2004-11-16 13:03:47 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -22,19 +22,18 @@ CLASS HControl INHERIT HCustomWindow
    DATA id
    DATA tooltip
    DATA lInit    INIT .F.
-   DATA Get      INIT "" // Used by simulated variables for method when and valid
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor )
    METHOD Init()
    METHOD SetColor( tcolor,bcolor,lRepaint )
    METHOD NewId()
-   METHOD GetText()     INLINE GetWindowText(::handle)
    
    METHOD Disable()	INLINE EnableWindow( ::handle, .F. )
    METHOD Enable()	INLINE EnableWindow( ::handle, .T. )
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
    METHOD SetFocus()	INLINE ( SendMessage( ::oParent:handle,WM_NEXTDLGCTL,::handle,1),SetFocus( ::handle  ) )
+   METHOD GetText()     INLINE GetWindowText(::handle)
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c )
    METHOD End()
 

@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.9 2004-10-04 12:15:12 alkresin Exp $
+ * $Id: htree.prg,v 1.10 2004-10-19 05:43:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -227,7 +227,7 @@ CLASS HTree INHERIT HControl
    METHOD Expand( oNode ) BLOCK {|Self,o|SendMessage(::handle,TVM_EXPAND,TVE_EXPAND,o:handle)}
    METHOD Select( oNode ) BLOCK {|Self,o|SendMessage(::handle,TVM_SELECTITEM,TVGN_CARET,o:handle)}
    METHOD Clean()
-   METHOD End()   INLINE ReleaseTree( ::aItems )
+   METHOD End()   INLINE ( Super:End(),ReleaseTree(::aItems) )
 
 ENDCLASS
 

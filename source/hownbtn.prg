@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.14 2004-10-07 07:02:58 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.15 2004-10-19 05:43:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -31,6 +31,7 @@ CLASS HOwnButton INHERIT HControl
                   cTooltip, lEnabled )
 
    METHOD Activate()
+   METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
    METHOD Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, ;
                   cText,color,font,xt,yt,widtht,heightt,     ;
@@ -99,7 +100,25 @@ METHOD Activate CLASS HOwnButton
    ENDIF
 Return Nil
 
+METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
+
+   IF msg == WM_PAINT
+      ::Paint()
+   ELSEIF msg == WM_LBUTTONDOWN
+      ::MDown()
+   ELSEIF msg == WM_LBUTTONUP
+      ::MUp()
+   ELSEIF msg == WM_MOUSEMOVE
+      ::MouseMove( wParam, lParam )
+   ELSEIF msg == WM_DESTROY
+      ::End()
+   ENDIF
+
+Return -1
+
 METHOD Init CLASS HOwnButton
+
+   ::nHolder := 1
    SetWindowObject( ::handle,Self )
    // Hwg_InitOwnbtnProc( ::handle )
    Super:Init()
@@ -284,7 +303,6 @@ METHOD End()  CLASS HOwnButton
       ::bitmap:Release()
       ::bitmap := Nil
    ENDIF
-   hwg_DecreaseHolders( Self )
 
 Return Nil
 
@@ -308,17 +326,12 @@ METHOD Disable() CLASS HOwnButton
 
 Return Nil
 
-
+/*
 FUNCTION OwnBtnProc( hBtn, msg, wParam, lParam )
 Local i, oBtn
    // WriteLog( "Obtn: "+Str(hBtn,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    if msg != WM_CREATE
       if Ascan( { WM_MOUSEMOVE, WM_PAINT, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK, WM_DESTROY }, msg ) > 0
-         /*
-         if ( oBtn := FindSelf( hBtn ) ) == Nil
-            return .F.
-         endif
-         */
          // writelog( str(oBtn:handle)+" "+str(GetWindowObject( hBtn ):handle) )
          oBtn := GetWindowObject( hBtn )
          if msg == WM_PAINT
@@ -327,15 +340,10 @@ Local i, oBtn
             oBtn:MDown()
          elseif msg == WM_LBUTTONUP
             oBtn:MUp()
-         elseif msg == WM_LBUTTONDBLCLK
          elseif msg == WM_MOUSEMOVE
             oBtn:MouseMove( wParam, lParam )
-         /*
-         elseif msg == WM_DESTROY
-            oBtn:End()
-            return .T.
-         */
          endif
       endif
    endif
 RETURN .F.
+*/

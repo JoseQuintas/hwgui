@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.18 2004-10-05 10:24:28 alkresin Exp $
+ * $Id: hcontrol.prg,v 1.19 2004-10-19 05:43:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -113,8 +113,10 @@ Return Nil
 
 METHOD End() CLASS HControl
 
+   Super:End()
    IF ::tooltip != Nil
       DelToolTip( ::oParent:handle,::handle )
+      ::tooltip := Nil
    ENDIF
 Return Nil
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hsplit.prg,v 1.4 2004-10-04 12:15:12 alkresin Exp $
+ * $Id: hsplit.prg,v 1.5 2004-10-19 05:43:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSplitter class
@@ -27,11 +27,11 @@ CLASS HSplitter INHERIT HControl
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight, ;
                   bSize,bPaint,color,bcolor,aLeft,aRight )
    METHOD Activate()
+   METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
    METHOD Paint( lpdis )
    METHOD Drag( lParam )
    METHOD DragAll()
-   METHOD End()  INLINE hwg_DecreaseHolders( Self )
 
 ENDCLASS
 
@@ -50,7 +50,7 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight, ;
 
 Return Self
 
-METHOD Activate()
+METHOD Activate() CLASS HSplitter
    IF ::oParent:handle != 0
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
@@ -58,10 +58,37 @@ METHOD Activate()
    ENDIF
 Return Nil
 
+METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
+
+   IF msg == WM_MOUSEMOVE
+      IF ::hCursor == Nil
+         ::hCursor := LoadCursor( Iif( ::lVertical,IDC_SIZEWE,IDC_SIZENS ) )
+      ENDIF
+      Hwg_SetCursor( ::hCursor )
+      IF ::lCaptured
+         ::Drag( lParam )
+      ENDIF
+   ELSEIF msg == WM_PAINT
+      ::Paint()
+   ELSEIF msg == WM_LBUTTONDOWN
+      Hwg_SetCursor( ::hCursor )
+      SetCapture( ::handle )
+      ::lCaptured := .T.
+   ELSEIF msg == WM_LBUTTONUP
+      ReleaseCapture()
+      ::DragAll()
+      ::lCaptured := .F.
+   ELSEIF msg == WM_DESTROY
+      ::End()
+   ENDIF
+
+Return -1
+
 METHOD Init CLASS HSplitter
    Super:Init()
+   ::nHolder := 1
    SetWindowObject( ::handle,Self )
-   Hwg_InitSplitProc( ::handle )
+   Hwg_InitWinCtrl( ::handle )
 Return Nil
 
 METHOD Paint( lpdis ) CLASS HSplitter
@@ -138,6 +165,7 @@ Local i, oCtrl, nDiff
 
 Return Nil
 
+/*
 Function DefSplitterProc( hCtrl, msg, wParam, lParam )
 Local oCtrl
    // writelog( "DefSplitterProc: " + Str(hCtrl,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
@@ -162,3 +190,4 @@ Local oCtrl
       oCtrl:lCaptured := .F.
    ENDIF
 Return -1
+*/

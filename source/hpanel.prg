@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.6 2004-10-04 12:15:11 alkresin Exp $
+ * $Id: hpanel.prg,v 1.7 2004-10-19 05:43:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -19,10 +19,10 @@ CLASS HPanel INHERIT HControl
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bInit,bSize,bPaint,lDocked )
    METHOD Activate()
+   METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
    METHOD Redefine( oWndParent,nId,nHeight,bInit,bSize,bPaint,lDocked )
    METHOD Paint()
-   METHOD End()  INLINE hwg_DecreaseHolders( Self )
 
 ENDCLASS
 
@@ -65,10 +65,22 @@ Local handle := ::oParent:handle, oClient
    ENDIF
 Return Nil
 
+METHOD onEvent( msg, wParam, lParam )  CLASS HPanel
+
+   IF msg == WM_PAINT
+      ::Paint()
+   ELSE
+      Return Super:onEvent( msg, wParam, lParam )
+   ENDIF
+
+Return -1
+
 METHOD Init CLASS HPanel
+
    Super:Init()
+   ::nHolder := 1
    SetWindowObject( ::handle,Self )
-   Hwg_InitPanelProc( ::handle )
+   Hwg_InitWinCtrl( ::handle )
 Return Nil
 
 
@@ -111,22 +123,3 @@ Local pps, hDC, aCoors, oPenLight, oPenGray
 
 Return Nil
 
-FUNCTION PanelProc( hPanel, msg, wParam, lParam )
-Local oPanel
-   // WriteLog( "Panel: "+Str(hPanel,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
-   if msg != WM_CREATE
-      /*
-      if ( oPanel := FindSelf( hPanel ) ) == Nil
-         Return .F.
-      endif
-      */
-      oPanel := GetWindowObject( hPanel )
-      if msg == WM_PAINT
-         oPanel:Paint()
-      elseif msg == WM_CTLCOLORSTATIC
-         Return DlgCtlColor( oPanel,wParam,lParam )
-      else
-         DefProc( oPanel, msg, wParam, lParam )
-      endif
-   endif
-RETURN -1

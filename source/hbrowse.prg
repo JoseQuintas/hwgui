@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.38 2004-09-29 17:22:21 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.39 2004-10-19 05:43:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -148,6 +148,8 @@ CLASS HBrowse INHERIT HControl
    METHOD InitBrw( nType )
    METHOD Rebuild()
    METHOD Activate()
+   METHOD Init()
+   METHOD onEvent( msg, wParam, lParam )
    METHOD Redefine( lType,oWnd,nId,oFont,bInit,bSize,bPaint,bEnter,bGfocus,bLfocus )
    METHOD FindBrowse( nId )
    METHOD AddColumn( oColumn )
@@ -219,6 +221,136 @@ METHOD Activate CLASS HBrowse
       ::Init()
    endif
 RETURN Nil
+
+//----------------------------------------------------//
+METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
+Local aCoors
+Static keyCode := 0
+
+   // WriteLog( "Brw: "+Str(hBrw,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   IF Ascan( { WM_MOUSEMOVE, WM_MOUSEWHEEL, WM_GETDLGCODE, WM_PAINT, WM_ERASEBKGND, WM_SETFOCUS, WM_KILLFOCUS,  WM_HSCROLL, WM_VSCROLL, WM_COMMAND, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK, WM_DESTROY }, msg ) > 0
+
+      IF ::active .AND. !Empty( ::aColumns )
+
+         // Si la variable "cargo" es codeblock se ejecuta ed cb.
+         // Sirve para ejecutar "algo" fuera del Browse. P/Ej.
+         // Mostrar una variable en la "dialog". Etc.Etc.
+         // 27.07.2002 - WHT.
+         IF Ascan( { WM_PAINT, WM_ERASEBKGND, WM_SETFOCUS, WM_KILLFOCUS, WM_HSCROLL, WM_VSCROLL, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK }, msg ) > 0
+            IF ::bOther != Nil
+               Eval( ::bOther )
+            ENDIF
+         ENDIF
+
+         IF msg == WM_PAINT
+            ::Paint()
+            return 1
+
+         ELSEIF msg == WM_ERASEBKGND
+            IF ::brush != Nil
+               aCoors := GetClientRect( ::handle )
+               FillRect( wParam, aCoors[1], aCoors[2], aCoors[3]+1, aCoors[4]+1, ::brush:handle )
+               Return 1
+            ENDIF
+
+         ELSEIF msg == WM_SETFOCUS
+            IF ::bGetFocus != Nil
+               Eval( ::bGetFocus, Self )
+            ENDIF
+
+         ELSEIF msg == WM_KILLFOCUS
+            IF ::bLostFocus != Nil
+               Eval( ::bLostFocus, Self )
+            ENDIF
+
+         ELSEIF msg == WM_HSCROLL
+            ::DoHScroll( wParam )
+
+         ELSEIF msg == WM_VSCROLL
+            ::DoVScroll( wParam )
+
+         ELSEIF msg == WM_GETDLGCODE
+            IF wParam != 0
+               keyCode := wParam
+            ENDIF
+            Return 1
+
+         ELSEIF msg == WM_COMMAND
+            // Super:onEvent( WM_COMMAND )
+            DlgCommand( Self, wParam, lParam )
+
+         ELSEIF msg == WM_KEYUP
+            IF wParam == 13 .AND. keyCode == 13
+               keyCode := 0
+               ::Edit()
+            ENDIF
+            Return 1
+
+         ELSEIF msg == WM_KEYDOWN
+            IF ::bKeyDown != Nil
+               IF !Eval( ::bKeyDown,Self,wParam )
+                  Return 1
+               ENDIF
+            ENDIF
+            IF wParam == 40        // Down
+               ::LINEDOWN()
+            ELSEIF wParam == 38    // Up
+               ::LINEUP()
+            ELSEIF wParam == 39    // Right
+               ::DoHScroll( SB_LINERIGHT )
+            ELSEIF wParam == 37    // Left
+               ::DoHScroll( SB_LINELEFT )
+            ELSEIF wParam == 36    // Home
+               ::TOP()
+            ELSEIF wParam == 35    // End
+               ::BOTTOM()
+            ELSEIF wParam == 34    // PageDown
+               ::PageDown()
+            ELSEIF wParam == 33    // PageUp
+               ::PageUp()
+            ELSEIF wParam == 13    // Enter
+               ::Edit()
+            ELSEIF (wParam >= 48 .and. wParam <= 90 .or. wParam >= 96 .and. wParam <= 111 ).and. ::lAutoEdit
+               ::Edit( wParam,lParam )
+            ENDIF
+            Return 1
+
+         ELSEIF msg == WM_LBUTTONDOWN
+            ::ButtonDown( lParam )
+
+         ELSEIF msg == WM_LBUTTONUP
+            ::ButtonUp( lParam )
+
+         ELSEIF msg == WM_LBUTTONDBLCLK
+            ::ButtonDbl( lParam )
+
+         ELSEIF msg == WM_MOUSEMOVE
+            ::MouseMove( wParam, lParam )
+
+         ELSEIF msg == WM_MOUSEWHEEL
+            ::MouseWheel( LoWord( wParam ),;
+                             If( HiWord( wParam ) > 32768,;
+                             HiWord( wParam ) - 65535, HiWord( wParam ) ),;
+                             LoWord( lParam ), HiWord( lParam ) )
+         ELSEIF msg == WM_DESTROY
+            ::End()
+         ENDIF
+
+      ENDIF
+
+   ENDIF
+
+Return -1
+
+//----------------------------------------------------//
+METHOD Init CLASS HBrowse
+
+   Super:Init()
+   ::nHolder := 1
+   SetWindowObject( ::handle,Self )
+
+Return Nil
+
 
 //----------------------------------------------------//
 METHOD Redefine( lType,oWndParent,nId,oFont,bInit,bSize,bPaint,bEnter,bGfocus,bLfocus ) CLASS HBrowse
@@ -296,10 +428,13 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD End() CLASS HBrowse
-   if ::brush != Nil
+
+   Super:End()
+   IF ::brush != Nil
       ::brush:Release()
       ::brushSel:Release()
-   endif
+   ENDIF  
+
 RETURN Nil
 
 //----------------------------------------------------//
@@ -1472,7 +1607,7 @@ STATIC FUNCTION FLDCOUNT( oBrw, xstrt, xend, fld1 )
    ENDDO
 RETURN IIF( klf = 0, 1, klf )
 
-//----------------------------------------------------//
+/*
 FUNCTION BrwProc( hBrw, msg, wParam, lParam )
 Local oBrw, aCoors
 Static keyCode := 0
@@ -1603,6 +1738,7 @@ Static keyCode := 0
       endif
    endif
 RETURN -1
+*/
 
 //----------------------------------------------------//
 FUNCTION CREATEARLIST( oBrw, arr )

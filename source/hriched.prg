@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.4 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hriched.prg,v 1.5 2004-10-19 05:43:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -20,6 +20,7 @@ CLASS HRichEdit INHERIT HControl
    METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight, ;
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor )
    METHOD Activate()
+   METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
 
 ENDCLASS
@@ -55,13 +56,32 @@ METHOD Activate CLASS HRichEdit
    ENDIF
 Return Nil
 
+METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
+
+   IF msg == WM_CHAR
+      ::lChanged := .T.
+   ELSEIF msg == WM_KEYDOWN 
+      IF wParam == 46     // Del
+         ::lChanged := .T.
+      ENDIF
+   ELSEIF msg == WM_DESTROY
+      ::End()
+   ELSEIF ::bOther != Nil
+      Return Eval( ::bOther, Self, msg, wParam, lParam )
+   ENDIF
+
+Return -1
+
 METHOD Init()  CLASS HRichEdit
    IF !::lInit
       Super:Init()
+      ::nHolder := 1
+      SetWindowObject( ::handle,Self )
       Hwg_InitRichProc( ::handle )
    ENDIF
 Return Nil
 
+/*
 Function DefRichProc( hEdit, msg, wParam, lParam )
 Local oEdit
    // writelog( "RichProc: " + Str(hEdit,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
@@ -76,3 +96,4 @@ Local oEdit
       Return Eval( oEdit:bOther, oEdit, msg, wParam, lParam )
    ENDIF
 Return -1
+*/

@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.13 2004-10-04 12:15:12 alkresin Exp $
+ *$Id: htab.prg,v 1.14 2004-10-19 05:43:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -42,7 +42,6 @@ CLASS HTab INHERIT HControl
    METHOD HidePage( nPage )
    METHOD ShowPage( nPage )
    METHOD GetActivePage( nFirst,nEnd )
-   METHOD End()  INLINE hwg_DecreaseHolders( Self )
 
    HIDDEN:
      DATA  nActive  INIT 0         // Active Page
@@ -99,6 +98,7 @@ Local i
    IF !::lInit
       Super:Init()
       InitTabControl( ::handle,::aTabs,IF( ::himl != Nil,::himl,0 ))
+      ::nHolder := 1
       SetWindowObject( ::handle,Self )
 
       IF ::himl != Nil
@@ -211,27 +211,3 @@ METHOD GetActivePage( nFirst,nEnd ) CLASS HTab
 
 Return ::nActive
 
-Function DefTabProc( hTab, msg, wParam, lParam )
-Local oTab, iParHigh := HiWord( wParam ), iParLow := LoWord( wParam ), iItem, res, nCode
-
-   // writelog( "TabProc: " + Str(hTab,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
-   oTab := GetWindowObject( hTab )
-   IF msg == WM_COMMAND
-      // oTab := FindSelf( hTab )
-      // writelog( "DefTabProc "+str(Len(oTab:aEvents)) )
-      IF oTab:aEvents != Nil .AND. ;
-         ( iItem := Ascan( oTab:aEvents, {|a|a[1]==iParHigh.and.a[2]==iParLow} ) ) > 0
-         Eval( oTab:aEvents[ iItem,3 ],oTab,iParLow )
-      ENDIF
-      Return 1
-   ELSEIF msg == WM_NOTIFY
-      Return DlgNotify( oTab,wParam,lParam )
-   ELSEIF msg == WM_DRAWITEM
-      Return DlgDrawItem( oTab,wParam,lParam )
-   ELSEIF msg == WM_CTLCOLORSTATIC
-      Return DlgCtlColor( oTab,wParam,lParam )
-   ELSE
-      DefProc( oTab, msg, wParam, lParam )
-   ENDIF
-
-Return -1

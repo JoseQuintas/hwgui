@@ -1,11 +1,11 @@
 /*
- * $Id: hsayimg.prg,v 1.5 2004-09-29 05:24:52 alkresin Exp $
+ * $Id: hsayimg.prg,v 1.6 2004-10-19 05:43:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
  *
  * Copyright 2003 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -26,7 +26,7 @@ CLASS HSayImage INHERIT HControl
                   bSize,ctoolt )
    METHOD Redefine( oWndParent,nId,bInit,bSize,ctoolt )
    METHOD Activate()
-   METHOD End()  INLINE ( iif(::oImage<>Nil,::oImage:Release(),::oImage:=Nil), ::oImage := Nil )
+   METHOD End()  INLINE ( Super:End(),iif(::oImage<>Nil,::oImage:Release(),::oImage:=Nil),::oImage := Nil )
 
 ENDCLASS
 

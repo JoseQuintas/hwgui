@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.31 2004-10-06 19:07:37 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.32 2004-10-19 05:43:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -31,6 +31,7 @@ CLASS HEdit INHERIT HControl
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture,lNoBorder, lMaxLength )
    METHOD Activate()
+   METHOD onEvent( msg, wParam, lParam )
    METHOD Redefine( oWnd,nId,vari,bSetGet,oFont,bInit,bSize,bDraw,bGfocus, ;
              bLfocus,ctoolt,tcolor,bcolor,cPicture, lMaxLength )
    METHOD Init()
@@ -38,7 +39,7 @@ CLASS HEdit INHERIT HControl
    METHOD Refresh() 
    METHOD SetText(c) 
 
-        ENDCLASS
+ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt, ;
@@ -109,6 +110,115 @@ METHOD Activate CLASS HEdit
    ENDIF
 Return Nil
 
+METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
+Local oParent := ::oParent, nPos, nctrl, cKeyb
+
+   // WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   IF ::bSetGet == Nil
+      Return -1
+   ENDIF
+
+   ::gLastkey:={msg,wParam}
+
+   IF !::lMultiLine
+
+      IF msg == WM_CHAR
+
+         IF wParam == 8
+            ::lFirst := .F.
+            SetGetUpdated( Self )
+            IF ::lPicComplex
+               DeleteChar( Self,.T. )
+               Return 0
+            ENDIF
+            Return -1
+         ELSEIF wParam == VK_RETURN .OR. wParam == VK_TAB .OR. wParam == VK_ESCAPE
+            Return -1
+         ENDIF
+         // ------- Change by NightWalker - Check HiBit -------
+         If (wParam <129).or.!Empty( ::cPicFunc ).OR.!Empty( ::cPicMask )
+            Return GetApplyKey( Self,Chr(wParam) )
+         Endif
+
+      ELSEIF msg == WM_KEYDOWN 
+
+         IF wParam == 40     // KeyDown
+            IF !IsCtrlShift()
+               GetSkip( oParent,::handle,1 )
+               Return 0
+            ENDIF
+         ELSEIF wParam == 38     // KeyUp
+            IF !IsCtrlShift()
+               GetSkip( oParent,::handle,-1 )
+               Return 0
+            ENDIF
+         ELSEIF wParam == 39     // KeyRight
+            IF !IsCtrlShift()
+               ::lFirst := .F.
+               Return KeyRight( Self )
+            ENDIF
+         ELSEIF wParam == 37     // KeyLeft
+               ::lFirst := .F.
+               Return KeyLeft( Self )
+         ELSEIF wParam == 35     // End
+               ::lFirst := .F.
+               IF ::cType == "C"
+                  nPos := Len( Trim( ::title ) )
+                  SendMessage( ::handle, EM_SETSEL, nPos, nPos )
+                  Return 0
+               ENDIF
+         ELSEIF wParam == 45     // Insert
+            IF !IsCtrlShift()
+               Set( _SET_INSERT, ! Set( _SET_INSERT ) )
+            ENDIF
+         ELSEIF wParam == 46     // Del
+            ::lFirst := .F.
+            SetGetUpdated( Self )
+            IF ::lPicComplex
+               DeleteChar( Self,.F. )
+               Return 0
+            ENDIF
+         ELSEIF wParam == VK_TAB     // Tab
+            IF Asc( Substr( GetKeyboardState(), VK_SHIFT+1, 1 ) ) >= 128
+               GetSkip( oParent,::handle,-1 )
+            ELSE
+               GetSkip( oParent,::handle,1 )
+            ENDIF
+            Return 0
+         ELSEIF wParam == VK_RETURN  // Enter
+            GetSkip( oParent,::handle,1,.T. )
+            Return 0
+         ENDIF
+
+      ELSEIF msg == WM_LBUTTONUP
+
+         IF Empty( GetEditText( oParent:handle, ::id ) )
+            SendMessage( ::handle, EM_SETSEL, 0, 0 )
+         ENDIF
+
+      ENDIF
+
+   ENDIF
+
+   IF msg == WM_KEYUP
+      IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
+         DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
+            oParent := oParent:oParent
+         ENDDO
+         IF oParent != Nil .AND. !Empty( oParent:KeyList )
+            cKeyb := GetKeyboardState()
+            nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
+            IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nctrl.AND.a[2]==wParam} ) ) > 0
+               Eval( oParent:KeyList[ nPos,3 ] )
+            ENDIF
+         ENDIF
+      ENDIF
+   ELSEIF msg == WM_DESTROY
+      ::End()
+   ENDIF
+ 
+Return -1
+
 METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint, ;
           bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture, lMaxLength )  CLASS HEdit
 
@@ -149,15 +259,15 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint, ;
 Return Self
 
 METHOD Init()  CLASS HEdit
+
    IF !::lInit
       Super:Init()
-      IF ::bSetGet != Nil
-         // IF !::lMultiLine
-            Hwg_InitEditProc( ::handle )
-         // ENDIF
-         ::Refresh()
-      ENDIF
+      ::nHolder := 1
+      SetWindowObject( ::handle,Self )
+      Hwg_InitEditProc( ::handle )
+      ::Refresh()
    ENDIF
+
 Return Nil
 
 METHOD Refresh()  CLASS HEdit
@@ -199,6 +309,7 @@ METHOD SetText( c ) CLASS HEdit
 
 RETURN NIL
 
+/*
 Function DefEditProc( hEdit, msg, wParam, lParam )
 Local oEdit, oParent, nPos, nctrl, cKeyb
    // writelog( "EditProc: " + Str(hEdit,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
@@ -306,6 +417,7 @@ Local oEdit, oParent, nPos, nctrl, cKeyb
  
  
 Return -1
+*/
 
 Static Function IsCtrlShift()
 Local cKeyb := GetKeyboardState()
@@ -390,6 +502,7 @@ Return .F.
 
 Static Function KeyRight( oEdit,nPos )
 Local i, masklen, newpos, vari
+
    IF oEdit == Nil
       Return -1
    ENDIF

@@ -1,11 +1,11 @@
 /*
- * $Id: hipedit.prg,v 1.6 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hipedit.prg,v 1.7 2004-10-19 05:43:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -111,6 +111,7 @@ Return (::aValue)
 METHOD End() CLASS HIPedit
 
    // Nothing to do here, yet!
+   Super:End()
 
 Return Nil
 

@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.11 2004-07-26 18:17:44 sandrorrfreire Exp $
+ * $Id: guimain.prg,v 1.12 2004-10-19 05:43:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -17,7 +17,7 @@ Local i, pArray := oWnd:aControls, lInit
    lNoActivate := Iif( lNoActivate==Nil,.F.,lNoActivate )
    IF pArray != Nil
       FOR i := 1 TO Len( pArray )
-         // writelog( "InitControl1"+str(pArray[i]:handle)+"/"+pArray[i]:classname )
+         // writelog( "InitControl1"+str(pArray[i]:handle)+"/"+pArray[i]:classname+" "+str(pArray[i]:nWidth)+"/"+str(pArray[i]:nHeight) )
          IF pArray[i]:handle == 0 .AND. !lNoActivate
             lInit := pArray[i]:lInit
             pArray[i]:lInit := .T.

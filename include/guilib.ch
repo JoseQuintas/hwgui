@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.47 2004-10-06 19:07:36 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.48 2004-10-19 05:43:42 alkresin Exp $
  */
 #define HWG_VERSION           "2.13"
 #define	WND_MAIN		1
@@ -18,12 +18,10 @@
 #define	BRW_DATABASE            2
 
 // Commands for windows, dialogs handling
-// Alterado por jamaj - CHILD window clause
+
 #xcommand INIT WINDOW <oWnd>                ;
              [ MAIN ]                       ;
              [<lMdi: MDI>]                  ;
-             [<lMdiChild: MDICHILD>]        ;
-             [<lChild: CHILD>]              ;
              [ APPNAME <appname> ]          ;
              [ TITLE <cTitle> ]             ;
              [ AT <x>, <y> ]                ;
@@ -46,10 +44,65 @@
              [ HELP <cHelp> ]               ;
              [ HELPID <nHelpId> ]           ;
           => ;
-   <oWnd> := HWindow():New( Iif(<.lMdi.>,WND_MDI,Iif(<.lMdiChild.>,WND_MDICHILD, Iif(<.lChild.>,WND_CHILD,WND_MAIN) )), ;
+   <oWnd> := HMainWindow():New( Iif(<.lMdi.>,WND_MDI,WND_MAIN), ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
-                   <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>, ;
-                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>,<cHelp>,<nHelpId>)
+                   <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>,;
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>,<cHelp>,<nHelpId> )
+
+#xcommand INIT WINDOW <oWnd> MDICHILD       ;
+             [ APPNAME <appname> ]          ;
+             [ TITLE <cTitle> ]             ;
+             [ AT <x>, <y> ]                ;
+             [ SIZE <width>, <height> ]     ;
+             [ ICON <ico> ]                 ;
+             [ COLOR <clr> ]                ;
+             [ BACKGROUND BITMAP <oBmp> ]   ;
+             [ STYLE <nStyle> ]             ;
+             [ FONT <oFont> ]               ;
+             [ MENU <cMenu> ]               ;
+             [ ON INIT <bInit> ]            ;
+             [ ON SIZE <bSize> ]            ;
+             [ ON PAINT <bPaint> ]          ;
+             [ ON GETFOCUS <bGfocus> ]      ;
+             [ ON LOSTFOCUS <bLfocus> ]     ;
+             [ ON OTHER MESSAGES <bOther> ] ;
+             [ ON EXIT <bExit> ]            ;
+             [<lMaximize: MAXIMIZE>]        ;
+             [ HELP <cHelp> ]               ;
+             [ HELPID <nHelpId> ]           ;
+          => ;
+   <oWnd> := HMdiChildWindow():New( ;
+                   <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
+                   <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>,<cHelp>,<nHelpId> )
+
+#xcommand INIT WINDOW <oWnd> CHILD          ;
+             [ APPNAME <appname> ]          ;
+             [ TITLE <cTitle> ]             ;
+             [ AT <x>, <y> ]                ;
+             [ SIZE <width>, <height> ]     ;
+             [ ICON <ico> ]                 ;
+             [ COLOR <clr> ]                ;
+             [ BACKGROUND BITMAP <oBmp> ]   ;
+             [ STYLE <nStyle> ]             ;
+             [ FONT <oFont> ]               ;
+             [ MENU <cMenu> ]               ;
+             [ ON INIT <bInit> ]            ;
+             [ ON SIZE <bSize> ]            ;
+             [ ON PAINT <bPaint> ]          ;
+             [ ON GETFOCUS <bGfocus> ]      ;
+             [ ON LOSTFOCUS <bLfocus> ]     ;
+             [ ON OTHER MESSAGES <bOther> ] ;
+             [ ON EXIT <bExit> ]            ;
+             [<lMaximize: MAXIMIZE>]        ;
+             [ HELP <cHelp> ]               ;
+             [ HELPID <nHelpId> ]           ;
+          => ;
+   <oWnd> := HChildWindow():New( ;
+                   <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
+                   <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>,<cHelp>,<nHelpId> )
+
 
 #xcommand INIT DIALOG <oDlg>                ;
              [<res: FROM RESOURCE> <Resid> ]         ;

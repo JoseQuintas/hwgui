@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.11 2004-09-09 12:20:14 lf_sfnet Exp $
+ * $Id: richedit.c,v 1.12 2004-10-19 05:43:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -31,6 +31,8 @@
 #include "hbstack.h"
 #include "hbdate.h"
 #include "guilib.h"
+
+extern PHB_DYNS pSym_onEvent;
 
 LRESULT APIENTRY RichSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
@@ -303,30 +305,35 @@ HB_FUNC( HWG_INITRICHPROC )
                                  GWL_WNDPROC, (LONG) RichSubclassProc );
 }
 
-
-LRESULT APIENTRY RichSubclassProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+LRESULT APIENTRY RichSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
-   if( msg == WM_KEYUP || msg == WM_KEYDOWN || msg == WM_CHAR ||
-      msg == WM_LBUTTONDBLCLK || msg == WM_MOUSEMOVE )
-   {
-      long int res;
-      PHB_DYNS pSymTest;
+   long int res;
+   LONG dwNewLong = GetWindowLong( hWnd, GWL_USERDATA );
 
-      if( ( pSymTest = hb_dynsymFind( "DEFRICHPROC" ) ) != NULL )
-      {
-         hb_vmPushSymbol( pSymTest->pSymbol );
-         hb_vmPushNil();
-         hb_vmPushLong( (LONG ) hWnd );
-         hb_vmPushLong( (LONG ) msg );
-         hb_vmPushLong( (LONG ) wParam );
-         hb_vmPushLong( (LONG ) lParam );
-         hb_vmDo( 4 );
-         res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-         if( res == -1 )
-            return CallWindowProc( wpOrigRichProc, hWnd, msg, wParam, lParam );
-         else
-            return res;
-      }
+   if( !pSym_onEvent )
+      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
+
+   if( pSym_onEvent && dwNewLong )
+   {
+      PHB_ITEM pObject = hb_itemNew( NULL );
+
+      pObject->type = HB_IT_OBJECT;
+      pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
+      pObject->item.asArray.value->ulHolders++;
+
+      hb_vmPushSymbol( pSym_onEvent->pSymbol );
+      hb_vmPush( pObject );
+      hb_vmPushLong( (LONG ) message );
+      hb_vmPushLong( (LONG ) wParam );
+      hb_vmPushLong( (LONG ) lParam );
+      hb_vmSend( 3 );
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+      hb_itemRelease( pObject );
+      if( res == -1 )
+         return( CallWindowProc( wpOrigRichProc, hWnd, message, wParam, lParam ) );
+      else
+         return res;
    }
-   return CallWindowProc( wpOrigRichProc, hWnd, msg, wParam, lParam );
+   else
+      return( CallWindowProc( wpOrigRichProc, hWnd, message, wParam, lParam ) );
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.11 2004-11-16 06:20:14 alkresin Exp $
+ * $Id: hprinter.prg,v 1.12 2004-11-27 08:23:51 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -100,14 +100,15 @@ Local hPrinter := ::hPrinter, hDC, aPrnCoors
 
 Return .F.
 
-METHOD AddFont( fontName, nHeight ,lBold, lItalic, lUnderline ) CLASS HPrinter
+METHOD AddFont( fontName, nHeight ,lBold, lItalic, lUnderline, nCharset ) CLASS HPrinter
 Local oFont
 
    IF ::lmm .AND. nHeight != Nil
       nHeight *= ::nVRes
    ENDIF
-   oFont := HFont():Add( fontName,, nHeight , Iif( lBold!=Nil.AND.lBold,700,400 ),, ;
-                  Iif( lItalic!=Nil.AND.lItalic,1,0 ), Iif( lUnderline!=Nil.AND.lUnderline,1,0 ) )
+   oFont := HFont():Add( fontName,, nHeight,          ;
+       Iif( lBold!=Nil.AND.lBold,700,400 ), nCharset, ;
+       Iif( lItalic!=Nil.AND.lItalic,1,0 ), Iif( lUnderline!=Nil.AND.lUnderline,1,0 ) )
 
 Return oFont
 

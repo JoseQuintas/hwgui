@@ -1,9 +1,11 @@
 /*
+ * $Id: hwreport.prg,v 1.4 2004-11-27 08:23:51 alkresin Exp $
+ *
  * Repbuild - Visual Report Builder
  * Main file
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -23,7 +25,7 @@ Static aMarkers := { "PH","SL","EL","PF","EPF","DF" }
 Static oPenDivider, oPenLine
 
 Function Main()
-Local aMainWindow, aPanel, oIcon := HIcon():AddResource("ICON_1")
+Local oMainWindow, aPanel, oIcon := HIcon():AddResource("ICON_1")
 Public mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
 Public aPaintRep := Nil
 Public oPenBorder, oFontSmall, oFontStandard, lastFont := Nil
@@ -39,36 +41,52 @@ Public aItemTypes := { "TEXT","HLINE","VLINE","BOX","BITMAP","MARKER" }
    oFontSmall := HFont():Add( "Small fonts",0,-8 )
    oFontStandard := HFont():Add( "Arial",0,-13,400,204 )
 
-   INIT WINDOW aMainWindow MAIN TITLE "Visual Report Builder"  ;
-       ICON oIcon COLOR COLOR_3DSHADOW MENU "APPMENU"       ;//    STYLE WS_VSCROLL                                        ;
-          ON PAINT {|o|PaintMain(o)} ON EXIT {||CloseReport()} ;
-          ON OTHER MESSAGES {|o,m,wp,lp|MessagesProc(o,m,wp,lp)}
-   ADD STATUS TO aMainWindow ID IDCW_STATUS PARTS 240,180,0
-   MENU FROM RESOURCE OF aMainWindow                  ;
-       ON IDM_ABOUT   ACTION   About()                ;
-       ON IDM_NEW     ACTION   EndNewRep(aMainWindow) ;
-       ON IDM_OPEN    ACTION   FileDlg(.T.)           ;
-       ON IDM_CLOSE   ACTION   CloseReport()          ;
-       ON IDM_SAVE    ACTION   SaveReport()           ;
-       ON IDM_SAVEAS  ACTION   FileDlg(.F.)           ;
-       ON IDM_PRINT   ACTION   PrintRpt()             ;
-       ON IDM_PREVIEW ACTION   (ClonePaintRep(aPaintRep),PrintReport(,,.T.))       ;
-       ON IDM_EXIT    ACTION   EndWindow()            ;
-       ON IDM_ITEMTEXT  ACTION nAddItem:=TYPE_TEXT    ;
-       ON IDM_ITEMHLINE ACTION nAddItem:=TYPE_HLINE   ;
-       ON IDM_ITEMVLINE ACTION nAddItem:=TYPE_VLINE   ;
-       ON IDM_ITEMBOX   ACTION nAddItem:=TYPE_BOX     ;
-       ON IDM_ITEMBITM  ACTION nAddItem:=TYPE_BITMAP  ;
-       ON IDM_ITEMPH    ACTION (nAddItem:=TYPE_MARKER,nMarkerType:=MARKER_PH) ;
-       ON IDM_ITEMSL    ACTION (nAddItem:=TYPE_MARKER,nMarkerType:=MARKER_SL) ;
-       ON IDM_ITEMEL    ACTION (nAddItem:=TYPE_MARKER,nMarkerType:=MARKER_EL) ;
-       ON IDM_ITEMPF    ACTION (nAddItem:=TYPE_MARKER,nMarkerType:=MARKER_PF) ;
-       ON IDM_ITEMEPF   ACTION (nAddItem:=TYPE_MARKER,nMarkerType:=MARKER_EPF);
-       ON IDM_ITEMDF    ACTION (nAddItem:=TYPE_MARKER,nMarkerType:=MARKER_DF) ;
-       ON IDM_ITEMDEL   ACTION DeleteItem()           ;
-       ON IDM_FOPT      ACTION FormOptions()          ;
-       ON IDM_VIEW1     ACTION (ShowScrollBar(aMainWindow:handle,SB_VERT,IsCheckedMenuItem(,IDM_VIEW1)),CheckMenuItem(,IDM_VIEW1,!IsCheckedMenuItem(,IDM_VIEW1)),Iif(IsCheckedMenuItem(,IDM_VIEW1),DeselectAll(),.F.),RedrawWindow(Hwindow():GetMain():handle,RDW_ERASE+RDW_INVALIDATE));
-       ON IDM_MOUSE2    ACTION (CheckMenuItem(,IDM_MOUSE2,!IsCheckedMenuItem(,IDM_MOUSE2)))
+   INIT WINDOW oMainWindow MAIN TITLE "Visual Report Builder"  ;
+       ICON oIcon COLOR COLOR_3DSHADOW                         ;
+       ON PAINT {|o|PaintMain(o)} ON EXIT {||CloseReport()}    ;
+       ON OTHER MESSAGES {|o,m,wp,lp|MessagesProc(o,m,wp,lp)}
+
+   ADD STATUS TO oMainWindow ID IDCW_STATUS PARTS 240,180,0
+
+   MENU OF oMainWindow
+      MENU TITLE "&File"
+         MENUITEM "&New" ID IDM_NEW ACTION NewReport(oMainWindow)
+         MENUITEM "&Open" ID IDM_OPEN ACTION FileDlg(.T.)
+         MENUITEM "&Close" ID IDM_CLOSE ACTION CloseReport()
+         SEPARATOR
+         MENUITEM "&Save" ID IDM_SAVE ACTION SaveReport()
+         MENUITEM "Save &as..." ID IDM_SAVEAS ACTION FileDlg(.F.)
+         SEPARATOR
+         MENUITEM "&Print static" ID IDM_PRINT ACTION PrintRpt()
+         MENUITEM "&Print full" ID IDM_PREVIEW ACTION (ClonePaintRep(aPaintRep),PrintReport(,,.T.))
+         SEPARATOR
+         MENUITEM "&Exit" ID IDM_EXIT ACTION EndWindow()
+      ENDMENU
+      MENU TITLE "&Items"
+         MENUITEM "&Text" ID IDM_ITEMTEXT ACTION nAddItem:=TYPE_TEXT
+         MENUITEM "&Horizontal Line" ID IDM_ITEMHLINE ACTION nAddItem:=TYPE_HLINE
+         MENUITEM "&Vertical Line" ID IDM_ITEMVLINE ACTION nAddItem:=TYPE_VLINE
+         MENUITEM "&Box" ID IDM_ITEMBOX ACTION nAddItem:=TYPE_BOX
+         MENUITEM "B&itmap" ID IDM_ITEMBITM ACTION nAddItem:=TYPE_BITMAP
+         SEPARATOR
+         MENU TITLE "&Markers"
+            MENUITEM "&Page Header" ID IDM_ITEMPH ACTION (nAddItem:=TYPE_MARKER,nMarkerType:=MARKER_PH)
+            MENUITEM "&Start line" ID IDM_ITEMSL ACTION (nAddItem:=TYPE_MARKER,nMarkerType:=MARKER_SL)
+            MENUITEM "&End line" ID IDM_ITEMEL ACTION (nAddItem:=TYPE_MARKER,nMarkerType:=MARKER_EL)
+            MENUITEM "Page &Footer" ID IDM_ITEMPF ACTION (nAddItem:=TYPE_MARKER,nMarkerType:=MARKER_PF)
+            MENUITEM "E&nd of Page Footer" ID IDM_ITEMEPF ACTION (nAddItem:=TYPE_MARKER,nMarkerType:=MARKER_EPF)
+            MENUITEM "&Document Footer" ID IDM_ITEMDF ACTION (nAddItem:=TYPE_MARKER,nMarkerType:=MARKER_DF)
+         ENDMENU
+         SEPARATOR
+         MENUITEM "&Delete item" ID IDM_ITEMDEL ACTION DeleteItem()
+      ENDMENU
+      MENU TITLE "&Options"
+         MENUITEM "&Form options" ID IDM_FOPT ACTION FormOptions()
+         MENUITEM "&Preview" ID IDM_VIEW1 ACTION (ShowScrollBar(oMainWindow:handle,SB_VERT,IsCheckedMenuItem(,IDM_VIEW1)),CheckMenuItem(,IDM_VIEW1,!IsCheckedMenuItem(,IDM_VIEW1)),Iif(IsCheckedMenuItem(,IDM_VIEW1),DeselectAll(),.F.),RedrawWindow(Hwindow():GetMain():handle,RDW_ERASE+RDW_INVALIDATE))
+         MENUITEM "&Mouse limit" ID IDM_MOUSE2 ACTION (CheckMenuItem(,IDM_MOUSE2,!IsCheckedMenuItem(,IDM_MOUSE2)))
+      ENDMENU
+      MENUITEM "&About" ID IDM_ABOUT ACTION About()
+   ENDMENU
 
    EnableMenuItem( ,IDM_CLOSE, .F., .T. )
    EnableMenuItem( ,IDM_SAVE, .F., .T. )
@@ -79,7 +97,7 @@ Public aItemTypes := { "TEXT","HLINE","VLINE","BOX","BITMAP","MARKER" }
    EnableMenuItem( ,1, .F., .F. )
    CheckMenuItem( ,IDM_MOUSE2, .t. )
 
-   aMainWindow:Activate()
+   oMainWindow:Activate()
 
 Return Nil
 
@@ -96,60 +114,33 @@ Local aModDlg, oFont
    aModDlg:Activate()
 Return Nil
 
-Function NewReport( aMainWindow )
-Local aModDlg
+Static Function NewReport( oMainWindow )
+Local oDlg
 
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_NEWREP" ON INIT {|| InitNewrep() }
-   DIALOG ACTIONS OF aModDlg ;
-        ON 0,IDOK         ACTION {|| EndNewrep(aMainWindow)} ;
-        ON BN_CLICKED,IDC_RADIOBUTTON1 ACTION {|| OtherSize(0) } ;
-        ON BN_CLICKED,IDC_RADIOBUTTON2 ACTION {|| OtherSize(0) } ;
-        ON BN_CLICKED,IDC_RADIOBUTTON3 ACTION {|| OtherSize(1) }
-   aModDlg:Activate()
+   INIT DIALOG oDlg FROM RESOURCE "DLG_NEWREP" ON INIT {||CheckRadioButton( oDlg:handle,IDC_RADIOBUTTON1,IDC_RADIOBUTTON2,IDC_RADIOBUTTON1)}
+   DIALOG ACTIONS OF oDlg ;
+        ON 0,IDOK  ACTION {|| EndNewrep(oMainWindow,oDlg)}
+
+   oDlg:Activate()
 
 Return Nil
 
-Static Function InitNewrep
-Local hDlg := getmodalhandle()
-   CheckRadioButton( hDlg,IDC_RADIOBUTTON1,IDC_RADIOBUTTON3,IDC_RADIOBUTTON1 )
-   OtherSize( 0 )
-Return Nil
-
-Static Function OtherSize( iEnable )
-   SendMessage( GetDlgItem( getmodalhandle(),IDC_EDIT1 ), WM_ENABLE, iEnable, 0 )
-   SendMessage( GetDlgItem( getmodalhandle(),IDC_EDIT2 ), WM_ENABLE, iEnable, 0 )
-Return .T.
-
-Static Function EndNewrep( aMainWindow )
-Local hDlg := getmodalhandle(), nWidth, nHeight, aPanel, oWnd
+Static Function EndNewrep( oMainWindow,oDlg )
 
    aPaintRep := { 0,0,0,0,0,{},"","",.F.,0,Nil }
-//   IF IsDlgButtonChecked( hDlg,IDC_RADIOBUTTON1 )
-      nWidth := 210 ; nHeight := 297
-/*
-   ELSEIF IsDlgButtonChecked( hDlg,IDC_RADIOBUTTON2 )
-      nWidth := 297 ; nHeight := 210
+   IF IsDlgButtonChecked( oDlg:handle,IDC_RADIOBUTTON1 )
+      aPaintRep[FORM_WIDTH] := 210 ; aPaintRep[FORM_HEIGHT] := 297
    ELSE
-      nWidth := Val( GetEditText( hDlg,IDC_EDIT1 ) )
-      nHeight := Val( GetEditText( hDlg,IDC_EDIT2 ) )
-      IF nWidth == 0 .OR. nHeight == 0
-         SetFocus( GetDlgItem( hDlg,IDC_EDIT1 ) )
-         Return Nil
-      ENDIF
+      aPaintRep[FORM_WIDTH] := 297 ; aPaintRep[FORM_HEIGHT] := 210
    ENDIF
-*/
-
-   aPaintRep[FORM_WIDTH] := nWidth
-   aPaintRep[FORM_HEIGHT] := nHeight
 
    aPaintRep[FORM_Y] := 0
    EnableMenuItem( ,1, .T., .F. )
-   oWnd := Hwindow():GetMain()
-   WriteStatus( oWnd,2,Ltrim(Str(aPaintRep[FORM_WIDTH],4))+"x"+ ;
+   WriteStatus( oMainWindow,2,Ltrim(Str(aPaintRep[FORM_WIDTH],4))+"x"+ ;
                  Ltrim(Str(aPaintRep[FORM_HEIGHT],4))+"  Items: "+Ltrim(Str(Len(aPaintRep[FORM_ITEMS]))) )
-   RedrawWindow( oWnd:handle, RDW_ERASE + RDW_INVALIDATE )
+   RedrawWindow( oMainWindow:handle, RDW_ERASE + RDW_INVALIDATE )
 
-   // EndDialog( hDlg )
+   EndDialog()
 Return Nil
 
 Static Function PaintMain( oWnd )
@@ -177,7 +168,7 @@ Local step, kolsteps, nsteps
       lPreview := .T.
       aPaintRep[FORM_Y] := 0
       IF aPaintRep[FORM_WIDTH] > aPaintRep[FORM_HEIGHT]
-         nWidth := aCoors[3] - aCoors[1] - FULL_INDENT
+         nWidth := aCoors[3] - aCoors[1] - XINDENT
          nHeight := Round( nWidth * aPaintRep[FORM_HEIGHT] / aPaintRep[FORM_WIDTH], 0 )
          IF nHeight > aCoors[4] - aCoors[2] - YINDENT
             nHeight := aCoors[4] - aCoors[2] - YINDENT
@@ -434,9 +425,15 @@ Local aCoors := GetClientRect( hWnd )
       ENDIF
    ELSEIF nScrollCode == SB_THUMBTRACK
       IF --nNewPos != nsteps
+         kolsteps := Round( ( Round(aPaintRep[FORM_HEIGHT]*aPaintRep[FORM_XKOEF],0)- ;
+            (aCoors[4]-aCoors[2]-TOP_INDENT) ) / step, 0 ) + 1
          aPaintRep[FORM_Y] := nNewPos * step
-         InvalidateRect( hWnd, 0, 0, TOP_INDENT, aCoors[3], aCoors[4] )
-         PostMessage( hWnd, WM_PAINT, 0, 0 )
+         IF aPaintRep[FORM_Y]/step>=kolsteps
+            RedrawWindow( hWnd, RDW_ERASE + RDW_INVALIDATE )
+         ELSE
+            InvalidateRect( hWnd, 0, 0, TOP_INDENT, aCoors[3], aCoors[4] )
+            PostMessage( hWnd, WM_PAINT, 0, 0 )
+         ENDIF
       ENDIF
    ENDIF
 Return Nil

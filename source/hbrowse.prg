@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.42 2004-12-14 13:29:39 sandrorrfreire Exp $
+ * $Id: hbrowse.prg,v 1.43 2005-01-04 15:11:27 ptsarenko Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1405,7 +1405,7 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
          x1 := aCoors[1]
          y1 := aCoors[2]
 
-         lReadExit := ReadExit( .T. )
+         lReadExit := Set( _SET_EXIT, .t. )
          bInit := Iif( wParam==Nil, {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1)}, ;
             {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1),PostMessage(o:aControls[1]:handle,WM_KEYDOWN,wParam,lParam)} )
 
@@ -1501,7 +1501,7 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
             ::RefreshLine()
          ENDIF
          SetFocus( ::handle )
-         ReadExit( lReadExit )
+         Set(_SET_EXIT, lReadExit )
 
       ENDIF
    ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.235 2004-07-28 14:48:24 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.236 2004-07-29 06:16:10 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,20 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-07-29 10:18 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hbrowse.prg
+    ! Bug fixed with lAutoEdit, reported by Juan Jos©
+  * source/commond.c
+    * hb_parcx() call is replaced with hb_parc() to be compatible with Harbour.
+  * source/draw.c
+    ! Warnings fixed.
+  * source/hcontrol.c
+  * source/hwindow.c
+    * The Move() method is moved from HControl() to HCustomWindow(), the
+      Movewindow() method id removed from HWindow()
+  * samples/a.prg
+    * Changed the :Movewindow() call to :Move()
 
 2004-07-28 11-45 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/hwindow.prg

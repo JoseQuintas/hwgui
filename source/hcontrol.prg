@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.12 2004-06-15 06:59:24 alkresin Exp $
+ * $Id: hcontrol.prg,v 1.13 2004-07-29 06:16:11 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -28,7 +28,6 @@ CLASS HControl INHERIT HCustomWindow
    METHOD Init()
    METHOD SetColor( tcolor,bcolor,lRepaint )
    METHOD NewId()
-   METHOD Move( x1,y1,width,height )
    METHOD GetText()     INLINE GetWindowText(::handle)
    
    METHOD Disable()	INLINE EnableWindow( ::handle, .F. )
@@ -110,24 +109,6 @@ METHOD SetColor( tcolor,bcolor,lRepaint ) CLASS HControl
    IF lRepaint != Nil .AND. lRepaint
       RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
    ENDIF
-
-Return Nil
-
-METHOD Move( x1,y1,width,height )  CLASS HControl
-
-   IF x1 != Nil
-      ::nLeft := x1
-   ENDIF
-   IF y1 != Nil
-      ::nTop  := y1
-   ENDIF
-   IF width != Nil
-      ::nWidth := width
-   ENDIF
-   IF height != Nil
-      ::nHeight := height
-   ENDIF
-   MoveWindow( ::handle,::nLeft,::nTop,::nWidth,::nHeight )
 
 Return Nil
 

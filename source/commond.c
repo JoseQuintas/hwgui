@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.14 2004-07-22 19:20:11 sandrorrfreire Exp $
+ * $Id: commond.c,v 1.15 2004-07-29 06:16:11 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -419,7 +419,7 @@ HB_FUNC( _GETOPENFILENAME )
    OPENFILENAME ofn;
    char *szFileName =(char*) hb_xgrab( hb_parcsiz(2));
 
-   strcpy( szFileName, hb_parcx( 2 ) );
+   strcpy( szFileName, hb_parc( 2 ) );
 
    ZeroMemory( &ofn, sizeof(ofn) );
    ofn.hInstance       = GetModuleHandle(NULL)  ;

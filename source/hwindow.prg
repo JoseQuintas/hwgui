@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.31 2004-07-28 14:48:25 sandrorrfreire Exp $
+ *$Id: hwindow.prg,v 1.32 2004-07-29 06:16:11 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -54,6 +54,7 @@ CLASS HCustomWindow INHERIT HObject
    METHOD FindControl( nId,nHandle )
    METHOD Hide() INLINE (::lHide:=.T.,HideWindow(::handle))
    METHOD Show() INLINE (::lHide:=.F.,ShowWindow(::handle))
+   METHOD Move( x1,y1,width,height )
 
 ENDCLASS
 
@@ -93,6 +94,24 @@ Local i := Ascan( ::aControls,{|o|o:handle==h} )
    ENDIF
 Return Nil
 
+METHOD Move( x1,y1,width,height )  CLASS HCustomWindow
+
+   IF x1 != Nil
+      ::nLeft := x1
+   ENDIF
+   IF y1 != Nil
+      ::nTop  := y1
+   ENDIF
+   IF width != Nil
+      ::nWidth := width
+   ENDIF
+   IF height != Nil
+      ::nHeight := height
+   ENDIF
+   MoveWindow( ::handle,::nLeft,::nTop,::nWidth,::nHeight )
+
+Return Nil
+
 CLASS HWindow INHERIT HCustomWindow
 
    CLASS VAR aWindows   INIT {}
@@ -125,7 +144,6 @@ CLASS HWindow INHERIT HCustomWindow
    METHOD Maximize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0)
    METHOD Minimize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MINIMIZE, 0)
    METHOD Close()	INLINE SendMessage( ::handle, WM_SYSCOMMAND, SC_CLOSE, 0 )
-   METHOD MoveWindow(x,y,width,height) INLINE MoveWindow(::Handle,x,y,width,height)
 ENDCLASS
 
 METHOD NEW( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;

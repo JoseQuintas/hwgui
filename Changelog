@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.48 2004-03-18 16:16:52 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.49 2004-03-19 12:58:06 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-03-19 10-04 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * samples/testini.prg
+    * Sample to use ini file
 
 2004-03-18 13-22 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * samples/hwreport/hwreport.prg

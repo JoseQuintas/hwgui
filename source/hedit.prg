@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.13 2004-05-19 09:24:08 alkresin Exp $
+ *$Id: hedit.prg,v 1.14 2004-06-11 10:55:21 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -119,9 +119,9 @@ METHOD Init()  CLASS HEdit
    IF !::lInit
       Super:Init()
       IF ::bSetGet != Nil
-         IF !::lMultiLine
+         // IF !::lMultiLine
             Hwg_InitEditProc( ::handle )
-         ENDIF
+         // ENDIF
          ::Refresh()
       ENDIF
    ENDIF
@@ -148,31 +148,33 @@ Return Nil
 Function DefEditProc( hEdit, msg, wParam, lParam )
 Local oEdit, oParent, nPos, nctrl, cKeyb
    // writelog( "EditProc: " + Str(hEdit,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
-   IF msg == WM_CHAR
+   IF ( oParent := FindParent( hEdit ) ) == Nil .OR. ;
+        ( oEdit := oParent:FindControl(,hEdit) ) == Nil
+      Return -1
+   ENDIF
 
-      oEdit := FindSelf( hEdit )
-      IF wParam == 8
-         oEdit:lFirst := .F.
-         SetGetUpdated( oEdit )
-         IF oEdit:lPicComplex
-            DeleteChar( oEdit,.T. )
-            Return 0
+   IF !oEdit:lMultiLine
+
+      IF msg == WM_CHAR
+
+         IF wParam == 8
+            oEdit:lFirst := .F.
+            SetGetUpdated( oEdit )
+            IF oEdit:lPicComplex
+               DeleteChar( oEdit,.T. )
+               Return 0
+            ENDIF
+            Return -1
+         ELSEIF wParam == 13
+            Return -1
          ENDIF
-         Return -1
-      ELSEIF wParam == 13
-         Return -1
-      ENDIF
-      IF oEdit:bSetGet != Nil
          // ------- Change by NightWalker - Check HiBit -------
          If (wParam <129).or.!Empty( oEdit:cPicFunc ).OR.!Empty( oEdit:cPicMask )
             Return GetApplyKey( oEdit,Chr(wParam) )
          Endif
-      ENDIF
 
-   ELSEIF msg == WM_KEYDOWN 
+      ELSEIF msg == WM_KEYDOWN 
 
-      IF ( oParent := FindParent( hEdit ) ) != Nil
-         oEdit := oParent:FindControl(,hEdit)
          IF wParam == 40     // KeyDown
             IF !IsCtrlShift()
                GetSkip( oParent,hEdit,1 )
@@ -210,38 +212,32 @@ Local oEdit, oParent, nPos, nctrl, cKeyb
                Return 0
             ENDIF
          ENDIF
+
+      ELSEIF msg == WM_LBUTTONUP
+
+         IF Empty( GetEditText( oEdit:oParent:handle, oEdit:id ) )
+            SendMessage( oEdit:handle, EM_SETSEL, 0, 0 )
+         ENDIF
+
       ENDIF
 
-   ELSEIF msg == WM_KEYUP
+   ENDIF
 
+   IF msg == WM_KEYUP
       IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
-         IF ( oParent := FindParent( hEdit ) ) != Nil
-            DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
-               oParent := oParent:oParent
-            ENDDO
-            IF oParent != Nil
-               cKeyb := GetKeyboardState()
-               /*
-               nctrl := ""
-               for i := 16 to 32
-                  nctrl += Str(Asc(Substr(cKeyb,i,1)),4)
-               next
-               writelog(nctrl)
-               */
-               nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
-               IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nctrl.AND.a[2]==wParam} ) ) > 0
-                  Eval( oParent:KeyList[ nPos,3 ] )
-               ENDIF
+         DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
+            oParent := oParent:oParent
+         ENDDO
+         IF oParent != Nil .AND. !Empty( oParent:KeyList )
+            cKeyb := GetKeyboardState()
+            nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
+            IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nctrl.AND.a[2]==wParam} ) ) > 0
+               Eval( oParent:KeyList[ nPos,3 ] )
             ENDIF
          ENDIF
       ENDIF
-   ELSEIF msg == WM_LBUTTONUP
-      oEdit := FindSelf( hEdit )
-      IF Empty( GetEditText( oEdit:oParent:handle, oEdit:id ) )
-         SendMessage( oEdit:handle, EM_SETSEL, 0, 0 )
-      ENDIF
-      // writelog( str(HiWord(SendMessage(oEdit:handle,EM_GETSEL,0,0))) )
    ENDIF
+
 Return -1
 
 Static Function IsCtrlShift()

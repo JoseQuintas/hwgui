@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.5 2004-04-08 11:55:34 alkresin Exp $
+ *$Id: htab.prg,v 1.6 2004-05-04 22:46:12 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -17,6 +17,7 @@
 #define TCM_GETCURFOCUS         4911     // (TCM_FIRST + 47)
 #define TCM_GETITEMCOUNT        4868     // (TCM_FIRST + 4)
 
+#define TCM_SETIMAGELIST        4867
 //- HTab
 
 CLASS HTab INHERIT HControl
@@ -25,6 +26,7 @@ CLASS HTab INHERIT HControl
    DATA  aTabs
    DATA  aPages  INIT {}
    DATA  bChange, bChange2
+   DATA  hIml, aImages, Image1, Image2
    DATA  oTemp
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
@@ -38,6 +40,7 @@ CLASS HTab INHERIT HControl
    METHOD HidePage( nPage )
    METHOD ShowPage( nPage )
    METHOD GetActivePage( nFirst,nEnd )
+
    METHOD  End()
 
    HIDDEN:
@@ -46,8 +49,8 @@ CLASS HTab INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bInit,bSize,bPaint,aTabs,bChange ) CLASS HTab
-
+                  oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour ) CLASS HTab
+   LOCAL i, aBmpSize
    // ::classname:= "HTAB"
    ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
    ::id      := Iif( nId==Nil,::NewId(), nId )
@@ -64,6 +67,20 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
    ::aTabs   := Iif( aTabs==Nil,{},aTabs )
    ::bChange := bChange
    ::bChange2 := bChange
+
+   IF aImages != Nil
+      ::aImages := {}
+      FOR i := 1 TO Len( aImages )
+         Aadd( ::aImages, Upper(aImages[i]) )
+         aImages[i] := Iif( lResour,LoadBitmap( aImages[i] ),OpenBitmap( aImages[i] ) )
+      NEXT
+      aBmpSize := GetBitmapSize( aImages[1] )
+      ::himl := CreateImageList( aImages,aBmpSize[1],aBmpSize[2],12 )
+      ::Image1 := 0
+      IF Len( aImages ) > 1
+         ::Image2 := 1
+      ENDIF
+   ENDIF
 
    ::Activate()
    ::oParent:AddControl( Self )
@@ -83,8 +100,13 @@ Local i
 
    IF !::lInit
       Super:Init()
-      InitTabControl( ::handle,::aTabs )
+      InitTabControl( ::handle,::aTabs,IF( ::himl != Nil,::himl,0 ))
       SetWindowObject( ::handle,Self )
+
+      IF ::himl != Nil
+         SendMessage( ::handle, TCM_SETIMAGELIST, 0, ::himl )
+      ENDIF
+
       FOR i := 2 TO Len( ::aPages )
          ::HidePage( i )
       NEXT

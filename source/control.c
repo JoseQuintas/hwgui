@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.10 2004-04-09 12:39:07 lculik Exp $
+ * $Id: control.c,v 1.11 2004-05-04 22:46:11 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -502,11 +502,12 @@ HB_FUNC ( INITTABCONTROL )
 {
    HWND hTab = (HWND) hb_parnl(1);
    PHB_ITEM pArr = hb_param( 2, HB_IT_ARRAY );
+   int iItems = hb_parnl(3) ;
    TC_ITEM tie;
    int i, nTabs = pArr->item.asArray.value->ulLen;
 
    tie.mask = TCIF_TEXT | TCIF_IMAGE; 
-   tie.iImage = -1;
+   tie.iImage = iItems == 0 ? -1 : 0 ;
    for( i = 0; i < nTabs; i++) 
    {
       tie.pszText = hb_itemGetCPtr( pArr->item.asArray.value->pItems + i );
@@ -514,7 +515,9 @@ HB_FUNC ( INITTABCONTROL )
       {
          DestroyWindow(hTab);
          hTab = NULL; 
-      } 
+      }
+      if (tie.iImage > -1)
+          tie.iImage++;
    } 
 }
 

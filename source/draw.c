@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.4 2004-04-29 11:12:07 alkresin Exp $
+ * $Id: draw.c,v 1.5 2004-06-01 18:57:48 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -535,3 +535,49 @@ HB_FUNC( GETDRAWITEMINFO )
    _itemReturn( aMetr );
    _itemRelease( aMetr );
 }
+
+/*
+ * DrawGrayBitmap( hDC, hBitmap, x, y )
+ */
+HB_FUNC ( DRAWGRAYBITMAP )
+{
+   HDC hDC = (HDC) hb_parnl( 1 );
+   HBITMAP hBitmap = (HBITMAP) hb_parnl( 2 );
+   COLORREF crOldBack = SetBkColor( hDC, GetSysColor( COLOR_BTNHIGHLIGHT ) );
+   COLORREF crOldText = SetTextColor( hDC, GetSysColor( COLOR_BTNFACE   ) );
+   HBITMAP bitmapgray;
+   HBITMAP pOldBitmapImage, pOldbitmapgray;
+   BITMAP  bitmap;
+   HDC dcImage, dcTrans;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 4 );
+
+   // Create two memory dcs for the image and the mask
+   dcImage = CreateCompatibleDC( hDC );
+   dcTrans = CreateCompatibleDC( hDC );
+   // Select the image into the appropriate dc
+   pOldBitmapImage = (HBITMAP) SelectObject( dcImage, hBitmap );
+   GetObject( hBitmap, sizeof( BITMAP ), ( LPVOID ) &bitmap );
+   // Create the mask bitmap
+   bitmapgray = CreateBitmap( bitmap.bmWidth, bitmap.bmHeight, 1, 1, NULL);
+   // Select the mask bitmap into the appropriate dc
+   pOldbitmapgray = (HBITMAP) SelectObject( dcTrans, bitmapgray );
+   // Build mask based on transparent colour
+   SetBkColor( dcImage, RGB( 255, 255, 255 ) );
+   BitBlt( dcTrans, 0, 0, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0, SRCCOPY );
+   // Do the work - True Mask method - cool if not actual display
+   BitBlt( hDC, x, y, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0, SRCINVERT );
+   BitBlt( hDC, x, y, bitmap.bmWidth, bitmap.bmHeight, dcTrans, 0, 0, SRCAND );
+   BitBlt( hDC, x, y, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0, SRCINVERT );
+   // Restore settings
+   SelectObject( dcImage, pOldBitmapImage);
+   SelectObject( dcTrans, pOldbitmapgray );
+   SetBkColor( hDC, GetPixel (hDC, 0, 0 ) );
+   SetTextColor( hDC, 0 );
+
+   DeleteObject( bitmapgray );
+   DeleteDC( dcImage );
+   DeleteDC( dcTrans );
+}
+
+

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.161 2004-05-31 17:28:48 alkresin Exp $
+ * $Id: Changelog,v 1.162 2004-06-01 18:57:47 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2004-06-01 15-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/draw.c
+    !new function DrawGrayBitmap
+  * source/hownbtn.prg
+    !new classes Disable() and Enable(), to convert bitmap of Botton in Grayscalle
+     Please verify the sintaxe and other bugs
 
 2004-05-31 21:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/xml/hxmldoc.prg

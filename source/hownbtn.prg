@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.4 2004-05-28 06:24:45 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.5 2004-06-01 18:57:48 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -21,7 +21,8 @@ CLASS HOwnButton INHERIT HControl
    DATA bClick
    DATA lPress  INIT .F.
    DATA text,ofont,xt,yt,widtht,heightt
-   DATA bitmap,xb,yb,widthb,heightb,lTransp
+   DATA bitmap,xb,yb,widthb,heightb,lTransp, oBitmap
+   DATA lEnabled INIT .T.
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bInit,bSize,bPaint,bClick,lflat,           ;
@@ -42,6 +43,8 @@ CLASS HOwnButton INHERIT HControl
    METHOD Press()   INLINE ( ::lPress := .T., ::MDown() )
    METHOD Release()
    METHOD End()
+   METHOD Enable()
+   METHOD Disable()
 
 ENDCLASS
 
@@ -180,11 +183,20 @@ Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
                  Round( (aCoors[3]-aCoors[1]-::widthb) / 2, 0 ) )
       y1 := Iif( ::yb!=Nil .AND. ::yb!=0, ::yb, ;
                  Round( (aCoors[4]-aCoors[2]-::heightb) / 2, 0 ) )
-      IF ::lTransp
-         DrawTransparentBitmap( hDC, ::bitmap:handle, x1, y1 )
-      ELSE
-         DrawBitmap( hDC, ::bitmap:handle,, x1, y1, ::widthb, ::heightb )
-      ENDIF
+      if ::lEnabled
+         if ::oBitmap!=Nil
+            ::bitmap:handle:=::oBitmap
+            ::oBitmap:=Nil
+         EndIf
+         IF ::lTransp
+            DrawTransparentBitmap( hDC, ::bitmap:handle, x1, y1 )
+         ELSE
+            DrawBitmap( hDC, ::bitmap:handle,, x1, y1, ::widthb, ::heightb )
+         ENDIF
+      Else
+         ::oBitmap:=::bitmap:handle
+         DrawGrayBitmap( hDC, ::bitmap:handle, x1, y1 )         
+      EndIf
    ENDIF
    SetBkColor( hDC,oldBkColor )
    EndPaint( ::handle, pps )
@@ -281,3 +293,23 @@ Local i, oBtn
    endif
 RETURN .F.
 
+
+
+METHOD Disable() CLASS HOwnButton
+   ::lFlat   := .T.
+   ::state   := OBTN_INIT
+   ::lEnabled:=.F.
+   ::Paint()
+   EnableWindow( ::handle, .F. )
+
+Return Nil
+
+METHOD Enable() CLASS HOwnButton
+
+   EnableWindow( ::handle, .T. )
+   ::lEnabled:=.T.
+   ::Paint()
+   ::Init()
+Return Nil
+
+ 

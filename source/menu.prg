@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.10 2004-04-29 19:46:04 sandrorrfreire Exp $
+ * $Id: menu.prg,v 1.11 2004-05-05 18:27:14 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -159,7 +159,7 @@ Local hMenu, nPos, aMenu, i
                    aMenu[1,npos,4],.F. )
             if Len(_oBitmap)>0
                if _oBitmap[npos][1]                
-                   GetMenuCheckMarkDimensions()
+                    
                    SetMenuItemBitmaps(hMenu, aMenu[1,nPos,3], _oBitmap[npos][2],"")
                endIf    
             endif
@@ -264,3 +264,14 @@ Local oMenu:=aSubMenu
 Iif( aSubMenu == Nil,oMenu:=0, oMenu:=aSubMenu[5] )
 SetMenuItemBitmaps( oMenu, nId, abmp1, abmp2 ) 
 Return Nil
+
+Function Hwg_InsertBitmapMenu( aMenu, nId, lBitmap, oResource )
+Local aSubMenu := Hwg_FindMenuItem( aMenu, nId )
+Local oMenu:=aSubMenu, oBmp
+If !oResource .or. oResource==Nil
+     oBmp:=HBitmap():AddFile(lBitmap)
+else
+     oBmp:=HBitmap():AddResource(lBitmap)
+endif
+Iif( aSubMenu == Nil,oMenu:=0, oMenu:=aSubMenu[5] )
+HWG__InsertBitmapMenu( oMenu, nId, obmp:handle )

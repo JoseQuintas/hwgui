@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.27 2004-05-05 11:48:03 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.28 2004-05-05 18:27:14 sandrorrfreire Exp $
  */
 
 #define	WND_MAIN		1
@@ -887,6 +887,12 @@
             [<lDisabled: DISABLED>]       ;
           => ;
     Hwg_DefineMenuItem( <item>, <nId>, <{act}>, <.lDisabled.>, <flag>, <key>, <bmp>, <.res.>)
+
+#xcommand MENUITEMBITMAP <oMain>  ID <nId> ;
+            BITMAP <bmp>                  ;
+            [<res: FROM RESOURCE>]         ; 
+          => ;
+    Hwg_InsertBitmapMenu( <oMain>:menu, <nId>, <bmp>, <.res.>)
 
 #xcommand ACCELERATOR <flag>, <key>       ;
             [ ID <nId> ]                  ;

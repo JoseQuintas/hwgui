@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.11 2004-05-05 12:59:18 alkresin Exp $
+ * $Id: menu_c.c,v 1.12 2004-05-05 18:27:14 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -331,7 +331,7 @@ HB_FUNC( HWG__INSERTBITMAPMENU )
    mii.fMask = MIIM_ID | MIIM_BITMAP | MIIM_DATA; 
    mii.hbmpItem = (HBITMAP) hb_parnl( 3 ); 
 
-   hb_retnl( (LONG) SetMenuItemInfo( ( HMENU ) hb_parnl( 1 ), hb_parni( 2 ), 0, &mii ) );
+   hb_retl( (LONG) SetMenuItemInfo( ( HMENU ) hb_parnl( 1 ), hb_parni( 2 ), 0, &mii ) );
 }
 
 HB_FUNC( CHANGEMENU )

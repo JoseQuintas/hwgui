@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.11 2004-06-11 06:15:09 alkresin Exp $
+ * $Id: hcontrol.prg,v 1.12 2004-06-15 06:59:24 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -135,17 +135,19 @@ Return Nil
 
 CLASS HStatus INHERIT HControl
 
-   CLASS VAR winclass   INIT "STATUS"
+   CLASS VAR winclass   INIT "msctls_statusbar32"
    DATA aParts
    METHOD New( oWndParent,nId,nStyle,oFont,aParts,bInit,bSize,bPaint )
    METHOD Activate()
+   METHOD Init()
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,oFont,aParts,bInit,bSize,bPaint ) CLASS HStatus
 
    bSize := Iif( bSize!=Nil, bSize, {|o,x,y|MoveWindow(o:handle,0,y-20,x,y)} )
-   Super:New( oWndParent,nId,nStyle,,,,,oFont,bInit,bSize,bPaint )
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_OVERLAPPED+WS_CLIPSIBLINGS )
+   Super:New( oWndParent,nId,nStyle,0,0,0,0,oFont,bInit,bSize,bPaint )
 
    ::aParts  := aParts
 
@@ -157,12 +159,21 @@ METHOD Activate CLASS HStatus
 Local aCoors
 
    IF ::oParent:handle != 0
-      ::handle := CreateStatusWindow( ::oParent:handle, ::id, Len(::aParts), ::aParts )
-      aCoors := GetWindowRect( ::handle )
-      ::oParent:aOffset[4] := aCoors[4] - aCoors[2]
+      ::handle := CreateStatusWindow( ::oParent:handle, ::id )
+      ::Init()
+      IF __ObjHasMsg( ::oParent,"AOFFSET" )
+         aCoors := GetWindowRect( ::handle )
+         ::oParent:aOffset[4] := aCoors[4] - aCoors[2]
+      ENDIF
    ENDIF
 Return Nil
 
+METHOD Init CLASS HStatus
+   IF !::lInit
+      Super:Init()
+      hwg_InitStatus( ::oParent:handle, ::handle, Len(::aParts), ::aParts )
+   ENDIF
+Return  NIL
 
 //- HStatic
 
@@ -211,19 +222,21 @@ Return Self
 METHOD Activate CLASS HStatic
    IF ::oParent:handle != 0
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
-                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title, ::extStyle )
+                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::extStyle )
       ::Init()
    ENDIF
 Return Nil
 
-//- HButton
-
 METHOD Init CLASS HStatic
-::super:init()
-   IF ::Title != NIL
-      SETWINDOWTEXT( ::handle, ::title )
+   IF !::lInit
+      Super:init()
+      IF ::Title != NIL
+         SETWINDOWTEXT( ::handle, ::title )
+      ENDIF
    ENDIF
 Return  NIL
+
+//- HButton
 
 CLASS HButton INHERIT HControl
 
@@ -348,7 +361,7 @@ Return Self
 
 METHOD Activate CLASS hline
    IF ::oParent:handle != 0
-      ::handle := CreateStatic( ::oParent:handle, ::id,            ;
+      ::handle := CreateStatic( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth,::nHeight )
       ::Init()
    ENDIF

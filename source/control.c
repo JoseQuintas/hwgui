@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.14 2004-06-11 17:45:54 alkresin Exp $
+ * $Id: control.c,v 1.15 2004-06-15 06:59:24 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -169,7 +169,7 @@ HB_FUNC ( CREATEOWNBTN )
 HB_FUNC ( CREATESTATIC )
 {
    ULONG ulStyle = hb_parnl(3);
-   ULONG ulExStyle = ( ( !ISNIL(9) )? hb_parnl(9):0 ) | ( (ulStyle&WS_BORDER)? WS_EX_CLIENTEDGE:0 );
+   ULONG ulExStyle = ( ( !ISNIL(8) )? hb_parnl(8):0 ) | ( (ulStyle&WS_BORDER)? WS_EX_CLIENTEDGE:0 );
    HWND hWndCtrl = CreateWindowEx( 
                  ulExStyle,                    /* extended style */
                  "STATIC",                     /* predefined class  */
@@ -182,8 +182,10 @@ HB_FUNC ( CREATESTATIC )
                  GetModuleHandle( NULL ),
                  NULL);
 
+   /*
    if( hb_pcount() > 7 )
       SendMessage( hWndCtrl, WM_SETTEXT, 0, (LPARAM) hb_parc(8) );
+   */
 
    hb_retnl( (LONG) hWndCtrl );
 
@@ -303,13 +305,6 @@ HB_FUNC ( CREATESTATUSWINDOW )
 { 
    HWND hwndStatus, hwndParent = (HWND) hb_parnl( 1 ); 
 
-   RECT rcClient; 
-   HLOCAL hloc; 
-   LPINT lpParts; 
-   int i, nWidth, j, nParts = hb_parni( 3 );
-   PHB_ITEM pArray = ( hb_pcount()>3 && !ISNIL(4) )?
-                                   hb_param( 4, HB_IT_ARRAY ):NULL;
- 
     // Ensure that the common control DLL is loaded.
     InitCommonControls(); 
  
@@ -326,7 +321,20 @@ HB_FUNC ( CREATESTATUSWINDOW )
         (HMENU) hb_parni( 2 ),   // child window identifier
         GetModuleHandle( NULL ), // handle to application instance 
         NULL);                   // no window creation data 
- 
+
+    hb_retnl( (LONG) hwndStatus );
+}
+
+HB_FUNC( HWG_INITSTATUS )
+{
+   HWND hParent = (HWND) hb_parnl( 1 ); 
+   HWND hStatus = (HWND) hb_parnl( 2 ); 
+   RECT rcClient; 
+   HLOCAL hloc; 
+   LPINT lpParts; 
+   int i, nWidth, j, nParts = hb_parni( 3 );
+   PHB_ITEM pArray = hb_param( 4, HB_IT_ARRAY );
+
     // Allocate an array for holding the right edge coordinates. 
     hloc = LocalAlloc(LHND, sizeof(int) * nParts); 
     lpParts = (LPINT)LocalLock(hloc); 
@@ -334,7 +342,7 @@ HB_FUNC ( CREATESTATUSWINDOW )
     if( !pArray || hb_itemGetNI( pArray->item.asArray.value->pItems + 0 ) == 0 )
     {
        // Get the coordinates of the parent window's client area. 
-       GetClientRect(hwndParent, &rcClient); 
+       GetClientRect(hParent, &rcClient); 
        // Calculate the right edge coordinate for each part, and 
        // copy the coordinates to the array. 
        nWidth = rcClient.right / nParts; 
@@ -358,14 +366,12 @@ HB_FUNC ( CREATESTATUSWINDOW )
     }
 
     // Tell the status window to create the window parts. 
-    SendMessage( hwndStatus, SB_SETPARTS, (WPARAM) nParts, (LPARAM) lpParts );
+    SendMessage( hStatus, SB_SETPARTS, (WPARAM) nParts, (LPARAM) lpParts );
 
     // Free the array, and return. 
     LocalUnlock(hloc); 
     LocalFree(hloc); 
-
-    hb_retnl( (LONG) hwndStatus );
-} 
+}
 
 HB_FUNC ( ADDTOOLTIP ) // changed by MAG
 {
@@ -1128,4 +1134,3 @@ LRESULT CALLBACK WinCtrlProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
     else
        return( DefWindowProc( hWnd, message, wParam, lParam ));
 }
-

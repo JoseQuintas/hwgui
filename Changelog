@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.180 2004-06-14 19:02:11 rodrigo_moreno Exp $
+ * $Id: Changelog,v 1.181 2004-06-15 06:59:16 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-06-15 11:02 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/hcontrol.prg
+   * source/control.c
+   * source/hgraph.prg
+     * Now it is possible to use status bar in dialogs.
 
 2004-06-14 15:40 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
    * source/hedit.prg

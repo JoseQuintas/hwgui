@@ -1,6 +1,6 @@
 @echo off
 
-set HB_INSTALL=..\..\..\..
+set HB_INSTALL=%HB_PATH%
 set HWGUI_INSTALL=..\..
 
 %HB_INSTALL%\bin\harbour hwmysql.prg -n -i%HB_INSTALL%\include;%HWGUI_INSTALL%\include
@@ -22,6 +22,7 @@ echo %HB_INSTALL%\lib\lang.lib + >> b32.bc
 echo %HB_INSTALL%\lib\macro.lib + >> b32.bc
 echo %HB_INSTALL%\lib\rdd.lib + >> b32.bc
 echo %HB_INSTALL%\lib\dbfntx.lib + >> b32.bc
+echo %HB_INSTALL%\lib\dbfdbt.lib + >> b32.bc
 echo %HB_INSTALL%\lib\common.lib + >> b32.bc
 echo %HB_INSTALL%\lib\dbfdbt.lib + >> b32.bc
 echo %HB_INSTALL%\lib\pp.lib + >> b32.bc

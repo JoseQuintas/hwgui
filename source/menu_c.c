@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.13 2004-05-19 14:56:40 sandrorrfreire Exp $
+ * $Id: menu_c.c,v 1.14 2004-05-21 16:45:38 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -293,7 +293,7 @@ HB_FUNC( SETMENUITEMBITMAPS )
 
 HB_FUNC( GETMENUCHECKMARKDIMENSIONS )
 {
-    hb_retl( (LONG) GetMenuCheckMarkDimensions( ) );
+    hb_retnl( (LONG) GetMenuCheckMarkDimensions( ) );
 }
  
   

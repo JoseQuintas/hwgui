@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.77 2004-04-08 11:55:32 alkresin Exp $
+ * $Id: Changelog,v 1.78 2004-04-09 12:39:06 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2004-04-09 10:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
+  * source/window.c
+    source/controls.c
+    ! minor fix to compile with last xharbour on cvs(set CFLAGS to -DXHBCVS)
+  * makefile.bc
+    C_DEFINE read content of CFLAGS envar
 
 2004-04-08 16:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/window.c

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.9 2004-04-02 10:16:20 alkresin Exp $
+ * $Id: control.c,v 1.10 2004-04-09 12:39:07 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -572,7 +572,12 @@ HB_FUNC ( TREEADDNODE )
 
    tvi.mask    = TVIF_TEXT | TVIF_PARAM;
    tvi.pszText = hb_parc(6);
+
+   #ifdef  XHBCVS
+   pObject->item.asArray.value->ulHolders++;
+   #else
    pObject->item.asArray.value->uiHolders++;
+   #endif
    tvi.lParam  = (LPARAM)(pObject->item.asArray.value);
 
    if( hb_pcount() > 6 && !ISNIL(7) )
@@ -639,7 +644,11 @@ HB_FUNC ( TREEGETSELECTED )
       oNode->type = HB_IT_OBJECT;
       SendMessage( (HWND)hb_parnl(1), TVM_GETITEM, 0, (LPARAM)(&TreeItem) );
       oNode->item.asArray.value = (struct _HB_BASEARRAY*)TreeItem.lParam;
+   #ifdef  XHBCVS
+      oNode->item.asArray.value->ulHolders++;
+   #else
       oNode->item.asArray.value->uiHolders++;
+   #endif
    }
 
    hb_itemReturn( oNode );
@@ -726,7 +735,11 @@ HB_FUNC ( TREE_GETNOTIFY )
          oNode->item.asArray.value = (struct _HB_BASEARRAY*)(((TV_DISPINFO *) hb_parnl(1))->item.lParam);
       else
          oNode->item.asArray.value = (struct _HB_BASEARRAY*)(((NM_TREEVIEW *) hb_parnl(1))->itemNew.lParam);
+   #ifdef  XHBCVS
+      oNode->item.asArray.value->ulHolders++;
+   #else
       oNode->item.asArray.value->uiHolders++;
+   #endif
       hb_itemReturn( oNode );
       // oNode->type = HB_IT_NIL;
       hb_itemRelease( oNode );
@@ -778,7 +791,11 @@ HB_FUNC ( TREE_HITTEST )
 
       SendMessage( hTree, TVM_GETITEM, 0, (LPARAM)(&TreeItem) );
       oNode->item.asArray.value = (struct _HB_BASEARRAY*)TreeItem.lParam;
+   #ifdef  XHBCVS
+      oNode->item.asArray.value->ulHolders++;
+   #else
       oNode->item.asArray.value->uiHolders++;
+   #endif
       hb_itemReturn( oNode );
       hb_itemRelease( oNode );
       if( hb_pcount() > 3 )

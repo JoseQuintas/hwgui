@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.12 2004-04-08 11:55:34 alkresin Exp $
+ * $Id: window.c,v 1.13 2004-04-09 12:39:07 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -496,7 +496,11 @@ HB_FUNC ( SETWINDOWOBJECT )
    if( pObject )
    {
       // Must increase uiHolders as we now have additional copy of object.
+      #ifdef XHBCVS
+      pObject->item.asArray.value->ulHolders++;
+      #else
       pObject->item.asArray.value->uiHolders++;
+      #endif
       SetWindowLong( (HWND) hb_parnl(1), GWL_USERDATA, (LPARAM) (pObject->item.asArray.value) );
    }
    else
@@ -517,7 +521,11 @@ HB_FUNC ( GETWINDOWOBJECT )
       pObj->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
 
       // Must increase uiHolders as we will shortly release this unaccounted copy.
+      #ifdef XHBCVS
+      pObj->item.asArray.value->ulHolders++;
+      #else
       pObj->item.asArray.value->uiHolders++;
+      #endif
 
       hb_itemReturn( pObj );
       hb_itemRelease( pObj );

@@ -1,0 +1,122 @@
+/*
+ *$Id: hupdown.prg,v 1.1 2005-01-12 11:56:34 alkresin Exp $
+ *
+ * HWGUI - Harbour Linux (GTK) GUI library source code:
+ * HUpDown class 
+ *
+ * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
+ * www - http://kresin.belgorod.su
+*/
+
+#include "windows.ch"
+#include "hbclass.ch"
+#include "guilib.ch"
+
+#define UDS_SETBUDDYINT     2
+#define UDS_ALIGNRIGHT      4
+
+CLASS HUpDown INHERIT HControl
+
+   CLASS VAR winclass   INIT "EDIT"
+   DATA bSetGet
+   DATA value
+   DATA hUpDown, idUpDown, styleUpDown
+   DATA nLower INIT 0
+   DATA nUpper INIT 999
+   DATA nUpDownWidth INIT 12
+   DATA lChanged    INIT .F.
+
+   METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
+         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,nUpDWidth,nLower,nUpper )
+   METHOD Activate()
+   METHOD Refresh()
+
+ENDCLASS
+
+METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
+         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,   ;
+         nUpDWidth,nLower,nUpper ) CLASS HUpDown
+
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_TABSTOP )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  bSize,bPaint,ctoolt,tcolor,bcolor )
+
+   ::idUpDown := ::NewId()
+   IF vari != Nil
+      IF Valtype(vari) != "N"
+         vari := 0
+         Eval( bSetGet,vari )
+      ENDIF
+      ::title := Str(vari)
+   ENDIF
+   ::bSetGet := bSetGet
+
+   ::styleUpDown := UDS_SETBUDDYINT+UDS_ALIGNRIGHT
+
+   IF nLower != Nil ; ::nLower := nLower ; ENDIF
+   IF nUpper != Nil ; ::nUpper := nUpper ; ENDIF
+   IF nUpDWidth != Nil ; ::nUpDownWidth := nUpDWidth ; ENDIF
+
+   ::Activate()
+
+   IF bSetGet != Nil
+      ::bGetFocus := bGFocus
+      ::bLostFocus := bLFocus
+      ::oParent:AddEvent( EN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
+      ::oParent:AddEvent( EN_KILLFOCUS,::id,{|o,id|__Valid(o:FindControl(id))} )
+   ELSE
+      IF bGfocus != Nil
+         ::oParent:AddEvent( EN_SETFOCUS,::id,bGfocus )
+      ENDIF
+      IF bLfocus != Nil
+         ::oParent:AddEvent( EN_KILLFOCUS,::id,bLfocus )
+      ENDIF
+   ENDIF
+
+Return Self
+
+METHOD Activate CLASS HUpDown
+   IF ::oParent:handle != 0
+      ::handle := CreateUpDownControl( ::oParent:handle, ::idUpDown, ;
+          ::styleUpDown,0,0,::nUpDownWidth,0,::handle,::nUpper,::nLower,Val(::title) )
+      ::Init()
+   ENDIF
+Return Nil
+
+METHOD Refresh()  CLASS HUpDown
+Local vari
+
+   IF ::bSetGet != Nil
+      ::value := Eval( ::bSetGet )
+      IF Str(::value) != ::title
+         ::title := Str( ::value )
+         SetUpDown( ::hUpDown, ::value )
+      ENDIF
+   ELSE
+      SetUpDown( ::hUpDown, Val(::title) )
+   ENDIF
+
+Return Nil
+
+Static Function __When( oCtrl )
+
+   oCtrl:Refresh()
+   IF oCtrl:bGetFocus != Nil 
+      Return Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet ), oCtrl )
+   ENDIF
+
+Return .T.
+
+Static Function __Valid( oCtrl )
+
+   oCtrl:title := GetEditText( oCtrl:oParent:handle, oCtrl:id )
+   oCtrl:value := Val( Ltrim( oCtrl:title ) )
+   IF oCtrl:bSetGet != Nil
+      Eval( oCtrl:bSetGet,oCtrl:value )
+   ENDIF
+   IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl ) .OR. ;
+         oCtrl:value > oCtrl:nUpper .OR. oCtrl:value < oCtrl:nLower
+      SetFocus( oCtrl:handle )
+   ENDIF
+
+Return .T.

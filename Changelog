@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.337 2005-01-12 10:24:57 alkresin Exp $
+ * $Id: Changelog,v 1.338 2005-01-12 11:56:31 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,37 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-01-12 14:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  + hwgui/gtk
+  + hwgui/gtk/commond.c
+  + hwgui/gtk/control.c
+  + hwgui/gtk/errorsys.prg
+  + hwgui/gtk/gtkmain.prg
+  + hwgui/gtk/hcheck.prg
+  + hwgui/gtk/hcombo.prg
+  + hwgui/gtk/hcontrol.prg
+  + hwgui/gtk/hcwindow.prg
+  + hwgui/gtk/hdialog.prg
+  + hwgui/gtk/hedit.prg
+  + hwgui/gtk/hfrmtmpl.prg
+  + hwgui/gtk/htimer.prg
+  + hwgui/gtk/hupdown.prg
+  + hwgui/gtk/hwindow.prg
+  + hwgui/gtk/Makefile
+  + hwgui/gtk/menu.prg
+  + hwgui/gtk/menu_c.c
+  + hwgui/gtk/message.c
+  + hwgui/gtk/misc.c
+  + hwgui/gtk/window.c
+  + hwgui/gtk/samples
+  + hwgui/gtk/samples/build.sh
+  + hwgui/gtk/samples/example.prg
+  + hwgui/gtk/samples/example.xml
+  + hwgui/gtk/samples/testget2.prg
+  + hwgui/gtk/samples/testget2.xml
+    + GTK version first files has been added.
+      To build the library run the gtk/build.sh script.
 
 2004-01-12 13:28 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hupdown.prg

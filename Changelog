@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.257 2004-09-06 18:56:59 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.258 2004-09-08 11:32:10 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-09-08 08-34 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/hedit.prg                                                       
+    New variabel lMaxLenght to controle the Maxlenght in GET if not use Picture
+  * include/guilib.ch  
+    Add in control GET and REDEFINE GET the comand [ MAXLENGHT <lMaxLenght> ] 
+    to determine the maxlenght in GET if not use Picture, else picture determine
+    the maxlenght
+ 
 2004-09-06 16-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/hedit.prg
     See line 572

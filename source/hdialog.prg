@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.9 2004-04-02 11:02:05 alkresin Exp $
+ * $Id: hdialog.prg,v 1.10 2004-04-04 17:43:20 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -301,14 +301,13 @@ Local aMenu, i
    IF oDlg:aEvents != Nil .AND. ;
       ( i := Ascan( oDlg:aEvents, {|a|a[1]==iParHigh.and.a[2]==iParLow} ) ) > 0
       Eval( oDlg:aEvents[ i,3 ],oDlg,iParLow )
-   ELSEIF iParHigh == 0 
-      IF ( iParLow == IDOK .AND. oDlg:FindControl(IDOK) != Nil ) .OR. ;
-              iParLow == IDCANCEL
-         IF iParLow == IDOK
-            oDlg:lResult := .T.
-         ENDIF
-         EndDialog( oDlg:handle )
+   ELSEIF iParHigh == 0 .AND. ( ;
+        ( iParLow == IDOK .AND. oDlg:FindControl(IDOK) != Nil ) .OR. ;
+          iParLow == IDCANCEL )
+      IF iParLow == IDOK
+         oDlg:lResult := .T.
       ENDIF
+      EndDialog( oDlg:handle )
    ELSEIF __ObjHasMsg(oDlg,"OPOPUP") .AND. oDlg:oPopup != Nil .AND. ;
          ( aMenu := Hwg_FindMenuItem( oDlg:oPopup:aMenu,wParam,@i ) ) != Nil ;
          .AND. aMenu[ 1,i,1 ] != Nil

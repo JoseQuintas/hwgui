@@ -1,5 +1,5 @@
 /*
- * $Id: hxmldoc.prg,v 1.5 2004-05-05 10:12:13 alkresin Exp $
+ * $Id: hxmldoc.prg,v 1.6 2004-05-27 05:27:23 alkresin Exp $
  *
  * Harbour XML Library
  * HXmlDoc class
@@ -76,18 +76,18 @@ Local i, s, lNewLine
    ELSE
       s += ::title
    ENDIF
-   FOR i := 1 TO Len( ::aAttr )
-      s += ' ' + ::aAttr[i,1] + '="' + HBXML_Transform(::aAttr[i,2]) + '"'
-   NEXT
+   IF ::type == HBXML_TYPE_TAG .OR. ::type == HBXML_TYPE_SINGLE
+      FOR i := 1 TO Len( ::aAttr )
+         s += ' ' + ::aAttr[i,1] + '="' + HBXML_Transform(::aAttr[i,2]) + '"'
+      NEXT
+   ENDIF
    IF ::type == HBXML_TYPE_COMMENT
       s += '-->' + Chr(10)
-   ELSEIF ::type == HBXML_TYPE_CDATA
-      s += ']]>' + Chr(10)
    ELSEIF ::type == HBXML_TYPE_PI
       s += '?>' + Chr(10)
    ELSEIF ::type == HBXML_TYPE_SINGLE
       s += '/>' + Chr(10)
-   ELSE
+   ELSEIF ::type == HBXML_TYPE_TAG
       s += '>'
       IF Len(::aItems) == 1 .AND. Valtype(::aItems[1]) == "C" .AND. ;
                 Len(::aItems[1]) + Len(s) < 80
@@ -108,6 +108,8 @@ Local i, s, lNewLine
    NEXT
    IF ::type == HBXML_TYPE_TAG
       FWrite( handle, Iif(lNewLine,Space(level*2),"") + '</' + ::title + '>' + Chr(10 ) )
+   ELSEIF ::type == HBXML_TYPE_CDATA
+      FWrite( handle, ']]>' + Chr(10) )
    ENDIF
 Return .T.
 

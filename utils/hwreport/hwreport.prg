@@ -11,7 +11,6 @@
 #include "repbuild.h"
 #include "repmain.h"
 
-REQUEST OWNBTNPROC
 #define SB_VERT         1
 #define IDCW_STATUS  2001
 

@@ -12,8 +12,6 @@
 
 #define IDCW_PANEL   2001
 
-REQUEST OWNBTNPROC
-
 Function Main()
 Local oMainWindow, oPanel, oFont
 Local hDCwindow

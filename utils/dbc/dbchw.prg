@@ -14,8 +14,6 @@
    #include "ads.ch"
 #endif
 
-REQUEST OWNBTNPROC
-
 Function Main()
 Local aMainWindow, aPanel
 Public BrwFont := {"MS Sans Serif",0,-13}, oBrwFont := Nil

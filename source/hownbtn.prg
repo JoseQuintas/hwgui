@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.15 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.16 2004-10-22 13:21:18 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -326,24 +326,3 @@ METHOD Disable() CLASS HOwnButton
 
 Return Nil
 
-/*
-FUNCTION OwnBtnProc( hBtn, msg, wParam, lParam )
-Local i, oBtn
-   // WriteLog( "Obtn: "+Str(hBtn,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
-   if msg != WM_CREATE
-      if Ascan( { WM_MOUSEMOVE, WM_PAINT, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK, WM_DESTROY }, msg ) > 0
-         // writelog( str(oBtn:handle)+" "+str(GetWindowObject( hBtn ):handle) )
-         oBtn := GetWindowObject( hBtn )
-         if msg == WM_PAINT
-            oBtn:Paint()
-         elseif msg == WM_LBUTTONDOWN
-            oBtn:MDown()
-         elseif msg == WM_LBUTTONUP
-            oBtn:MUp()
-         elseif msg == WM_MOUSEMOVE
-            oBtn:MouseMove( wParam, lParam )
-         endif
-      endif
-   endif
-RETURN .F.
-*/

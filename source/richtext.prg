@@ -1,5 +1,5 @@
 /*
- * $Id: richtext.prg,v 1.2 2004-03-18 09:20:25 alkresin Exp $
+ * $Id: richtext.prg,v 1.3 2004-08-02 09:28:54 lf_sfnet Exp $
  */
 /*
 旼컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴커
@@ -42,7 +42,7 @@
 #include "guilib.ch"
 #include "windows.ch"
 
-#include "Richtext.ch"
+#include "richtext.ch"
 #define CRLF hb_osnewline()
 CLASS RichText
 

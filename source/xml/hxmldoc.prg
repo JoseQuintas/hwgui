@@ -1,5 +1,5 @@
 /*
- * $Id: hxmldoc.prg,v 1.9 2004-07-05 17:33:45 alkresin Exp $
+ * $Id: hxmldoc.prg,v 1.10 2004-08-02 09:28:54 lf_sfnet Exp $
  *
  * Harbour XML Library
  * HXmlDoc class
@@ -8,7 +8,7 @@
  * www - http://kresin.belgorod.su
 */
 
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "fileio.ch"
 #include "hxml.ch"
 

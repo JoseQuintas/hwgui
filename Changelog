@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.240 2004-07-30 14:18:14 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.241 2004-08-02 09:28:53 lf_sfnet Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-08-02 11:30 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
+  * */*
+    * Other small changes allow mingw-cross compiling under Linux
+    * mainly HBClass.ch -> hbclass.ch and RtfClass.ch -> rtfclass.ch
+    * After these I could build hwgui under Linux Fedora Core 2 with
+    * mingw cross compiler and samples under wine 20040617.
+    * With a.exe the childs don't get showed until called Windows/tile 
+    * and grid_5.exe does not work but it builds.
+  + samples/makefile.gcc
+    * added makefile.gcc to build samples under Linux. 
+    * Use: make_cross_mingw.sh -fmakefile.gcc 
+    * In makefile.gcc SOURCE=<sample>
 
 2004-07-30 11-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * samples/buildpelles.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.13 2004-03-31 11:37:40 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.14 2004-04-01 07:14:20 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1538,7 +1538,7 @@ Local kolf := FCOUNT()
 
 RETURN Nil
 
-Static Function VScrollPos( oBrw, nType, lEof, nPos )
+Function VScrollPos( oBrw, nType, lEof, nPos )
 Local minPos, maxPos, oldRecno, newRecno
 
    GetScrollRange( oBrw:handle, SB_VERT, @minPos, @maxPos )
@@ -1554,7 +1554,9 @@ Local minPos, maxPos, oldRecno, newRecno
       ELSEIF newRecno > oBrw:kolz
          newRecno := oBrw:kolz
       ENDIF
-      SetScrollPos( oBrw:handle, SB_VERT, nPos )
+      IF nType == SB_THUMBPOSITION
+         SetScrollPos( oBrw:handle, SB_VERT, nPos )
+      ENDIF
       IF newRecno != oldRecno
          EVAL( oBrw:bSkip, oBrw, newRecno - oldRecno )
          IF oBrw:rowCount - oBrw:rowPos > oBrw:kolz - newRecno

@@ -15,3 +15,5 @@ Limite de 18 janelas simultaniamente
 13/12/2003
   [+] Adicionado configuracao de cor de fundo
   [+] Adicionado configuracao de cor de fonte
+01/04/2004
+  [*] Changed calls of OLE objects to be Harbour compatible.

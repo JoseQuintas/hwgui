@@ -1,4 +1,7 @@
 /*
+ * $Id: richtext.prg,v 1.2 2004-03-18 09:20:25 alkresin Exp $
+ */
+/*
 ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 ³        Class: RichText                                                   ³
 ³  Description: System for generating simple RTF files.                    ³
@@ -34,7 +37,6 @@
 ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 */
 
-//#include "Fivewin.ch"
 #include "hbclass.ch"
 #include "common.ch"
 #include "guilib.ch"
@@ -311,7 +313,7 @@ IF ::hFile >= 0
 
 ENDIF
 
-RETURN NIL
+RETURN Self
 **************************  END OF New()  ***************************
 
 
@@ -2582,3 +2584,51 @@ RETURN NIL
 function cFileExt(cFile)
 return substr(cFile,At('.',cFile)+1)
 
+#ifndef __XHARBOUR__
+FUNCTION CStr( xExp )
+
+   LOCAL cType
+
+   IF xExp == NIL
+      RETURN 'NIL'
+   ENDIF
+
+   cType := ValType( xExp )
+
+   DO CASE
+      CASE cType == 'C'
+         RETURN xExp
+
+      CASE cType == 'D'
+         RETURN dToc( xExp )
+
+      CASE cType == 'L'
+         RETURN IIF( xExp, '.T.', '.F.' )
+
+      CASE cType == 'N'
+         RETURN Str( xExp )
+
+      CASE cType == 'M'
+         RETURN xExp
+
+      CASE cType == 'A'
+         RETURN "{ Array of " +  LTrim( Str( Len( xExp ) ) ) + " Items }"
+
+      CASE cType == 'B'
+         RETURN '{|| Block }'
+
+      CASE cType == 'O'
+         RETURN "{ " + xExp:ClassName() + " Object }"
+
+      CASE cType == 'P'
+         RETURN HB_NumToHex( xExp )
+
+      CASE cType == 'H'
+         RETURN "{ Hash of " +  LTrim( Str( Len( xExp ) ) ) + " Items }"
+
+      OTHERWISE
+         RETURN "Type: " + cType
+   ENDCASE
+
+RETURN ""
+#endif

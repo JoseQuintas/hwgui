@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.25 2004-06-02 09:38:57 alkresin Exp $
+ *$Id: hwindow.prg,v 1.26 2004-06-15 12:34:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -101,7 +101,12 @@ CLASS HWindow INHERIT HCustomWindow
    DATA menu, nMenuPos, oPopup, hAccel
    DATA oIcon, oBmp
    DATA oNotifyIcon, bNotify, oNotifyMenu
+   DATA lUpdated INIT .F.     // TRUE, if any GET is changed
    DATA lClipper
+   DATA GetList  INIT {}      // The array of GET items in the dialog
+   DATA KeyList  INIT {}      // The array of keys ( as Clipper's SET KEY )
+   DATA nLastKey INIT 0
+
    DATA lTray INIT .F.
    DATA aOffset
    DATA lMaximize INIT .F.
@@ -197,6 +202,7 @@ RETURN Self
 METHOD Activate( lShow ) CLASS HWindow
    Local oWndClient, handle
 
+   CreateGetList( Self )
    IF ::type == WND_MDICHILD
       Hwg_CreateMdiChildWindow( Self )
 

@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.16 2004-06-14 19:02:16 rodrigo_moreno Exp $
+ *$Id: hedit.prg,v 1.17 2004-06-15 12:34:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -165,7 +165,7 @@ Local oEdit, oParent, nPos, nctrl, cKeyb
                Return 0
             ENDIF
             Return -1
-         ELSEIF wParam == 13
+         ELSEIF wParam == VK_RETURN .OR. wParam == VK_TAB .OR. wParam == VK_ESCAPE
             Return -1
          ENDIF
          // ------- Change by NightWalker - Check HiBit -------
@@ -211,6 +211,13 @@ Local oEdit, oParent, nPos, nctrl, cKeyb
                DeleteChar( oEdit,.F. )
                Return 0
             ENDIF
+         ELSEIF wParam == VK_TAB     // Tab
+            IF Asc( Substr( GetKeyboardState(), VK_SHIFT+1, 1 ) ) >= 128
+               GetSkip( oParent,hEdit,-1 )
+            ELSE
+               GetSkip( oParent,hEdit,1 )
+            ENDIF
+            Return 0
          ENDIF
 
       ELSEIF msg == WM_LBUTTONUP

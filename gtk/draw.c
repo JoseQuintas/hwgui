@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.1 2005-01-20 08:38:26 alkresin Exp $
+ * $Id: draw.c,v 1.2 2005-03-10 11:32:48 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level painting functions
@@ -19,41 +19,44 @@
 #include "hbstack.h"
 #include "item.api"
 #include "gtk/gtk.h"
-
-typedef struct HWGUI_HDC_STRU
-{
-  GdkDrawable * window;
-  GdkGC * gc;
-} HWGUI_HDC, * PHWGUI_HDC;
-
-#define HWGUI_OBJECT_PEN    1
-#define HWGUI_OBJECT_BRUSH  2
-#define HWGUI_OBJECT_FONT   3
-
-typedef struct HWGUI_HDC_OBJECT_STRU
-{
-   short int type;
-} HWGUI_HDC_OBJECT;
-
-typedef struct HWGUI_PEN_STRU
-{
-   short int type;
-   gint width;
-   GdkLineStyle style;
-   GdkColor color;
-} HWGUI_PEN, * PHWGUI_PEN;
-
-typedef struct HWGUI_BRUSH_STRU
-{
-   short int type;
-   GdkColor color;
-} HWGUI_BRUSH, * PHWGUI_BRUSH;
+#include "hwgtk.h"
 
 // static HWGUI_PEN default_pen = { HWGUI_OBJECT_PEN,1,GDK_LINE_SOLID, };
 
+void hwg_parse_color( ULONG ncolor, GdkColor * pColor )
+{
+   char color[10];
+   
+   sprintf( color,"#%0*lX",6,ncolor );
+   color[8] = color[1]; color[9] = color[2]; 
+   color[1] = color[5]; color[2] = color[6];
+   color[5] = color[8]; color[6] = color[9];
+   color[7] = '\0';
+   gdk_color_parse( color,pColor );
+}
 
 HB_FUNC( INVALIDATERECT )
 {
+   GtkWidget * widget = (GtkWidget*) hb_parnl(1);
+   int x1, y1, x2, y2;
+
+   if( hb_pcount() > 2 )
+   {
+      x1 = hb_parni(3);
+      y1 = hb_parni(4);
+      x2 = hb_parni(5);
+      y2 = hb_parni(6);
+   }
+   else
+   {
+      x1 = y1 = 0;
+      x2 = widget->allocation.width;
+      y2 = widget->allocation.height;      
+   }
+   gtk_widget_queue_draw_area( widget, x1, y1,
+        x2 - x1 + 1, y2 - y1 + 1 );
+   
+/*
    GdkRectangle rc;
 
    if( hb_pcount() > 2 )
@@ -63,8 +66,9 @@ HB_FUNC( INVALIDATERECT )
       rc.width = hb_parni(5) - rc.x + 1;
       rc.height = hb_parni(6) - rc.y + 1;
    }
-   gdk_window_invalidate_rect( (GdkWindow*)hb_parnl(1),
+   gdk_window_invalidate_rect( ((GtkWidget*)hb_parnl(1))->window,
       ( hb_pcount() > 2 )? &rc:NULL, ( ISNUM(2) )? hb_parni(2):1 );
+*/
 }
 
 HB_FUNC( RECTANGLE )
@@ -166,49 +170,70 @@ HB_FUNC( ROUNDRECT )
 
 HB_FUNC( REDRAWWINDOW )
 {
-   GdkWindow * hwnd = (GdkWindow*) hb_parnl(1);
+   GtkWidget * widget = (GtkWidget*) hb_parnl(1);
+/*   
    GdkRectangle rc;
 
    if( hb_pcount() > 2 )
    {
       rc.x = 0;
       rc.y = 0;
-      rc.width = ((GtkWidget*)hwnd)->allocation.width;
-      rc.height = ((GtkWidget*)hwnd)->allocation.height;
+      rc.width = widget->allocation.width;
+      rc.height = widget->allocation.height;
    }
-   gdk_window_invalidate_rect( hwnd, &rc, TRUE );
+   gdk_window_invalidate_rect( widget->window, &rc, TRUE );
+*/   
+   gtk_widget_queue_draw_area( widget, 0, 0,
+        widget->allocation.width, widget->allocation.height );
 }
 
 HB_FUNC( DRAWBUTTON )
 {
-/*
-   RECT rc;
-   HDC hDC = (HDC) hb_parnl( 1 );
+   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
+   int left = hb_parni( 2 );
+   int top = hb_parni( 3 );
+   int right = hb_parni( 4 );
+   int bottom = hb_parni( 5 );
    UINT iType = hb_parni( 6 );
-
-   rc.left = hb_parni( 2 );
-   rc.top = hb_parni( 3 );
-   rc.right = hb_parni( 4 );
-   rc.bottom = hb_parni( 5 );
+   GtkStyle * style = hDC->widget->style;
 
    if( iType == 0 )
-      FillRect( hDC, &rc, (HBRUSH) (COLOR_3DFACE+1) );
+      // FillRect( hDC, &rc, (HBRUSH) (COLOR_3DFACE+1) );
+      gdk_draw_rectangle( hDC->window, style->bg_gc[0],
+                  1, left, top, right-left+1, bottom-top+1 );
    else
    {
-      FillRect( hDC, &rc, (HBRUSH) ( ( (iType & 2)? COLOR_3DSHADOW:COLOR_3DHILIGHT )+1) );
-      rc.left ++; rc.top ++;
-      FillRect( hDC, &rc, (HBRUSH) ( ( (iType & 2)? COLOR_3DHILIGHT:(iType & 4)? COLOR_3DDKSHADOW:COLOR_3DSHADOW )+1) );
-      rc.right --; rc.bottom --;
+      // FillRect( hDC, &rc, (HBRUSH) ( ( (iType & 2)? COLOR_3DSHADOW:COLOR_3DHILIGHT )+1) );
+      gdk_draw_rectangle( hDC->window, 
+          (iType & 2)? style->mid_gc[0] : style->light_gc[0],
+          1, left, top, right-left+1, bottom-top+1 );  
+      left ++; top ++;
+      // FillRect( hDC, &rc, (HBRUSH) ( ( (iType & 2)? COLOR_3DHILIGHT:(iType & 4)? COLOR_3DDKSHADOW:COLOR_3DSHADOW )+1) );
+      gdk_draw_rectangle( hDC->window, 
+          (iType & 2)? style->light_gc[0] : 
+          ( (iType & 4)? style->dark_gc[0] : style->mid_gc[0] ),
+          1, left, top, right-left+1, bottom-top+1 );
+      right --; bottom --;
+      right --; bottom --;
       if( iType & 4 )
       {
-         FillRect( hDC, &rc, (HBRUSH) ( ( (iType & 2)? COLOR_3DSHADOW:COLOR_3DLIGHT )+1) );
-         rc.left ++; rc.top ++;
-         FillRect( hDC, &rc, (HBRUSH) ( ( (iType & 2)? COLOR_3DLIGHT:COLOR_3DSHADOW )+1) );
-         rc.right --; rc.bottom --;
+         // FillRect( hDC, &rc, (HBRUSH) ( ( (iType & 2)? COLOR_3DSHADOW:COLOR_3DLIGHT )+1) );
+         gdk_draw_rectangle( hDC->window, 
+             (iType & 2)? style->mid_gc[0] : style->light_gc[0],
+             1, left, top, right-left+1, bottom-top+1 );  
+         left ++; top ++;
+	 // left ++; top ++;
+         // FillRect( hDC, &rc, (HBRUSH) ( ( (iType & 2)? COLOR_3DLIGHT:COLOR_3DSHADOW )+1) );
+         gdk_draw_rectangle( hDC->window, 
+             (iType & 2)? style->light_gc[0] : style->mid_gc[0],
+             1, left, top, right-left+1, bottom-top+1 );  	 
+         right --; bottom --;
+         // right --; bottom --;
       }
-      FillRect( hDC, &rc, (HBRUSH) (COLOR_3DFACE+1) );
+      // FillRect( hDC, &rc, (HBRUSH) (COLOR_3DFACE+1) );
+      gdk_draw_rectangle( hDC->window, style->bg_gc[0],
+                  1, left, top, right-left+1, bottom-top+1 );  
    }
-*/   
 }
 
 /*
@@ -334,14 +359,11 @@ HB_FUNC( CREATEPEN )
 {
    PHWGUI_PEN hpen = (PHWGUI_PEN) hb_xgrab( sizeof(HWGUI_PEN) );
    ULONG ncolor = (ULONG) hb_parnl(3);
-   char color[10];
-   // GdkColor color;
 
    hpen->type = HWGUI_OBJECT_PEN;
    hpen->style = ( hb_parni(1) == PS_SOLID )? GDK_LINE_SOLID : GDK_LINE_ON_OFF_DASH;  
    hpen->width = hb_parni(2);
-   sprintf( color,"#%0*lX",6,ncolor );  
-   gdk_color_parse( color,&(hpen->color) );
+   hwg_parse_color( ncolor, &(hpen->color) );
    gdk_colormap_alloc_color( gdk_colormap_get_system(),&(hpen->color),FALSE,TRUE );  
    
    hb_retnl( (LONG) hpen );
@@ -351,13 +373,10 @@ HB_FUNC( CREATESOLIDBRUSH )
 {
    PHWGUI_BRUSH hbrush = (PHWGUI_BRUSH) hb_xgrab( sizeof(HWGUI_BRUSH) );
    ULONG ncolor = (ULONG) hb_parnl(1);
-   char color[10];
-   // GdkColor color;
 
    hbrush->type = HWGUI_OBJECT_BRUSH;
-   sprintf( color,"#%0*lX",6,ncolor );
-
-   gdk_color_parse( color,&(hbrush->color) );
+   
+   hwg_parse_color( ncolor, &(hbrush->color) );
    gdk_colormap_alloc_color( gdk_colormap_get_system(),&(hbrush->color),FALSE,TRUE );
    
    hb_retnl( (LONG) hbrush );
@@ -385,13 +404,15 @@ HB_FUNC( SELECTOBJECT )
    }
    else if( obj->type == HWGUI_OBJECT_FONT )
    {
+      hDC->hFont = ((PHWGUI_FONT)obj)->hFont;
+      pango_layout_set_font_description( hDC->layout, hDC->hFont );
    }
 }
 
 HB_FUNC( DELETEOBJECT )
 {
    HWGUI_HDC_OBJECT * obj = (HWGUI_HDC_OBJECT*) hb_parnl(1);
-   
+
    if( obj->type == HWGUI_OBJECT_PEN )
    {
       hb_xfree( obj );
@@ -402,6 +423,8 @@ HB_FUNC( DELETEOBJECT )
    }
    else if( obj->type == HWGUI_OBJECT_FONT )
    {
+      pango_font_description_free( ( (PHWGUI_FONT)obj )->hFont );
+      hb_xfree( obj );
    }
 
 }
@@ -410,9 +433,13 @@ HB_FUNC( GETDC )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_xgrab( sizeof(HWGUI_HDC) );
    GtkWidget * widget = (GtkWidget*) hb_parnl(1);
-   
+
+   memset( hDC, 0, sizeof(HWGUI_HDC) );
+   hDC->widget = widget;   
    hDC->window = widget->window;
    hDC->gc = gdk_gc_new( widget->window );
+   hDC->layout = gtk_widget_create_pango_layout( hDC->widget,NULL );
+   hDC->fcolor = hDC->bcolor = -1;
 
    hb_retnl( (LONG) hDC );   
 }
@@ -421,6 +448,8 @@ HB_FUNC( RELEASEDC )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(2);
    
+   if( hDC->layout )
+      g_object_unref( (GObject*) hDC->layout );
    g_object_unref( (GObject*) hDC->gc );
    hb_xfree( hDC );
 }
@@ -472,3 +501,58 @@ HB_FUNC( DRAWGRAYBITMAP )
 {
 }
 
+HB_FUNC( GETCLIENTRECT )
+{
+   GtkWidget * widget = (GtkWidget*) hb_parnl(1);
+   PHB_ITEM aMetr = _itemArrayNew( 4 );
+   PHB_ITEM temp;
+
+   temp = _itemPutNL( NULL, 0 );
+   _itemArrayPut( aMetr, 1, temp );
+   _itemRelease( temp );
+
+   temp = _itemPutNL( NULL, 0 );
+   _itemArrayPut( aMetr, 2, temp );
+   _itemRelease( temp );
+
+   temp = _itemPutNL( NULL, widget->allocation.width );
+   _itemArrayPut( aMetr, 3, temp );
+   _itemRelease( temp );
+
+   temp = _itemPutNL( NULL, widget->allocation.height );
+   _itemArrayPut( aMetr, 4, temp );
+   _itemRelease( temp );
+
+   _itemReturn( aMetr );
+   _itemRelease( aMetr );
+}
+
+HB_FUNC( GETWINDOWRECT )
+{
+/*
+   RECT rc;
+   PHB_ITEM aMetr = _itemArrayNew( 4 );
+   PHB_ITEM temp;
+
+   GetWindowRect( (HWND) hb_parnl( 1 ),	&rc );
+
+   temp = _itemPutNL( NULL, rc.left );
+   _itemArrayPut( aMetr, 1, temp );
+   _itemRelease( temp );
+
+   temp = _itemPutNL( NULL, rc.top );
+   _itemArrayPut( aMetr, 2, temp );
+   _itemRelease( temp );
+
+   temp = _itemPutNL( NULL, rc.right );
+   _itemArrayPut( aMetr, 3, temp );
+   _itemRelease( temp );
+
+   temp = _itemPutNL( NULL, rc.bottom );
+   _itemArrayPut( aMetr, 4, temp );
+   _itemRelease( temp );
+
+   _itemReturn( aMetr );
+   _itemRelease( aMetr );
+*/   
+}

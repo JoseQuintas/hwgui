@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.2 2005-01-19 17:38:31 lf_sfnet Exp $
+ *$Id: hdialog.prg,v 1.3 2005-03-10 11:32:48 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
@@ -105,7 +105,7 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
 RETURN Self
 
 METHOD Activate( lNoModal ) CLASS HDialog
-Local hParent,oWnd
+Local hParent
 
    CreateGetList( Self )
 
@@ -238,7 +238,7 @@ Local aMenu, i, hCtrl
       IF iParLow == IDOK
          hCtrl := GetFocus()
          FOR i := Len(oDlg:GetList) TO 1 STEP -1
-            IF !oDlg:GetList[i]:lHide // .AND. IsWindowEnabled( oDlg:Getlist[i]:Handle )
+            IF !oDlg:GetList[i]:lHide .AND. IsWindowEnabled( oDlg:Getlist[i]:Handle )
                EXIT
             ENDIF
          NEXT

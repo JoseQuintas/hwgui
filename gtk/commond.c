@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.2 2005-01-20 08:38:26 alkresin Exp $
+ * $Id: commond.c,v 1.3 2005-03-10 11:32:48 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
@@ -20,9 +20,57 @@
 #include "item.api"
 #include "guilib.h"
 #include "gtk/gtk.h"
+#include "hwgtk.h"
 
 void store_font( gpointer fontseldlg )
 {
+   PHB_ITEM aMetr = hb_itemArrayNew( 9 ), temp;
+   char * szFontName = (char*) gtk_font_selection_dialog_get_font_name( (GtkFontSelectionDialog*)fontseldlg );
+   PangoFontDescription * hFont = pango_font_description_from_string( szFontName );
+   PHWGUI_FONT h = (PHWGUI_FONT) hb_xgrab( sizeof(HWGUI_FONT) );
+
+   h->type = HWGUI_OBJECT_FONT;
+   h->hFont = hFont;
+   
+   temp = hb_itemPutNL( NULL, (LONG) h );
+   hb_itemArrayPut( aMetr, 1, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutC( NULL, (char*) pango_font_description_get_family( hFont ) );
+   hb_itemArrayPut( aMetr, 2, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, 0 );
+   hb_itemArrayPut( aMetr, 3, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, (LONG) pango_font_description_get_size( hFont ) );
+   hb_itemArrayPut( aMetr, 4, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, (LONG) pango_font_description_get_weight( hFont ) );
+   hb_itemArrayPut( aMetr, 5, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNI( NULL, 0 );
+   hb_itemArrayPut( aMetr, 6, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNI( NULL, (LONG) pango_font_description_get_style( hFont ) );
+   hb_itemArrayPut( aMetr, 7, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNI( NULL, 0 );
+   hb_itemArrayPut( aMetr, 8, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNI( NULL, 0 );
+   hb_itemArrayPut( aMetr, 9, temp );
+   hb_itemRelease( temp );
+
+   hb_itemReturn( aMetr );
+   hb_itemRelease( aMetr );
+   
    gtk_widget_destroy( (GtkWidget*) fontseldlg );
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hgraph.prg,v 1.1 2005-01-20 08:38:26 alkresin Exp $
+ * $Id: hgraph.prg,v 1.2 2005-03-10 11:32:48 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HGraph class
@@ -160,6 +160,8 @@ Local px1, px2, py1, py2, nWidth
             FillRect( hDC, px1, py1, px1+nWidth, y2-2, ::tbrush:handle )
          NEXT
       ELSEIF ::nType == 3
+         DrawButton( hDC,5,5,80,30,5 )
+         DrawButton( hDC,5,35,80,55,6 )	 
          /*
          IF ::tbrush == Nil
             ::tbrush := HBrush():Add( ::tcolor )

@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.1 2005-01-20 08:38:26 alkresin Exp $
+ * $Id: drawwidg.prg,v 1.2 2005-03-10 11:32:48 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -66,9 +66,10 @@ Local i, nlen := Len( ::aFonts )
    NEXT
 
    IF nHandle == Nil
-      // ::handle := CreateFont( fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut )
+      ::handle := CreateFont( fontName, nWidth, nHeight*1024 ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut )
    ELSE
       ::handle := nHandle
+      nHeight := nHeight / 1024
    ENDIF
 
    ::name      := fontName
@@ -85,7 +86,7 @@ Local i, nlen := Len( ::aFonts )
 Return Self
 
 METHOD Select( oFont ) CLASS HFont
-Local af // := SelectFont( oFont )
+Local af := SelectFont( oFont )
 
    IF af == Nil
       Return Nil
@@ -530,13 +531,13 @@ Local i
       DeleteObject( HBrush():aBrushes[i]:handle )
    NEXT
    For i := 1 TO Len( HFont():aFonts )
-      // DeleteObject( HFont():aFonts[i]:handle )
+      DeleteObject( HFont():aFonts[i]:handle )
    NEXT
    For i := 1 TO Len( HBitmap():aBitmaps )
-      DeleteObject( HBitmap():aBitmaps[i]:handle )
+      // DeleteObject( HBitmap():aBitmaps[i]:handle )
    NEXT
    For i := 1 TO Len( HIcon():aIcons )
-      DeleteObject( HIcon():aIcons[i]:handle )
+      // DeleteObject( HIcon():aIcons[i]:handle )
    NEXT
 
 Return

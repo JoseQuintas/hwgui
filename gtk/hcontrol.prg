@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.4 2005-01-20 09:48:41 alkresin Exp $
+ *$Id: hcontrol.prg,v 1.5 2005-03-10 11:32:48 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -30,10 +30,10 @@ CLASS HControl INHERIT HCustomWindow
    METHOD SetColor( tcolor,bcolor,lRepaint )
    METHOD NewId()
 
-   /*
    METHOD Disable()	INLINE EnableWindow( ::handle, .F. )
    METHOD Enable()	INLINE EnableWindow( ::handle, .T. )
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
+   /*
    METHOD SetFocus()	INLINE ( SendMessage( ::oParent:handle,WM_NEXTDLGCTL,::handle,1),SetFocus( ::handle  ) )
    METHOD GetText()     INLINE GetWindowText(::handle)
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c )
@@ -79,9 +79,9 @@ METHOD INIT CLASS HControl
    IF !::lInit
       AddToolTip( ::oParent:handle, ::handle, ::tooltip )
       IF ::oFont != Nil
-         // SetCtrlFont( ::oParent:handle, ::id, ::oFont:handle )
+         hwg_SetCtrlFont( ::handle, ::oFont:handle )
       ELSEIF ::oParent:oFont != Nil
-         // SetCtrlFont( ::oParent:handle, ::id, ::oParent:oFont:handle )
+         hwg_SetCtrlFont( ::handle, ::oParent:oFont:handle )
       ENDIF
       IF ISBLOCK(::bInit)
          Eval( ::bInit, Self )
@@ -108,7 +108,7 @@ METHOD SetColor( tcolor,bcolor,lRepaint ) CLASS HControl
    ENDIF
 
    IF lRepaint != Nil .AND. lRepaint
-      // RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
    ENDIF
 
 Return Nil
@@ -227,6 +227,11 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
    ::title   := cCaption
    ::Activate()
 
+   IF ::id == IDOK
+      bClick := {||::oParent:lResult:=.T.,::oParent:Close()}
+   ELSEIF ::id == IDCANCEL
+      bClick := {||::oParent:Close()}
+   ENDIF
    IF bClick != Nil
       // ::oParent:AddEvent( 0,::id,bClick )
       ::bClick := bClick

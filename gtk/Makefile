@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 2005-01-20 08:38:26 alkresin Exp $
+# $Id: Makefile,v 1.5 2005-03-10 11:32:48 alkresin Exp $
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 HRB_DIR = /apps/harbour
@@ -19,6 +19,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/commond.o \
    $(OBJ_DIR)/control.o \
    $(OBJ_DIR)/draw.o \
+   $(OBJ_DIR)/drawtext.o \
    $(OBJ_DIR)/window.o \
    $(OBJ_DIR)/menu_c.o \
    $(OBJ_DIR)/message.o \
@@ -49,6 +50,9 @@ $(OBJ_DIR)/control.o   : control.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $^
 
 $(OBJ_DIR)/draw.o   : draw.c
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $^
+
+$(OBJ_DIR)/drawtext.o   : drawtext.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $^
 
 $(OBJ_DIR)/window.o   : window.c

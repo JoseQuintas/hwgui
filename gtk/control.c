@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.6 2005-01-20 09:48:41 alkresin Exp $
+ * $Id: control.c,v 1.7 2005-03-10 11:32:48 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -33,8 +33,11 @@
 #define WM_PAINT            15
 
 extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
+extern void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
+extern void SetWindowObject( GtkWidget * hWnd, PHB_ITEM pObject );
 extern void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 );
 extern void cb_signal( GtkWidget *widget,gchar* data );
+extern GtkWidget * GetActiveWindow( void );
 
 static GtkTooltips * pTooltip = NULL;
 static PHB_DYNS pSymTimerProc = NULL;
@@ -78,29 +81,30 @@ HB_FUNC( CREATESTATIC )
 {
    ULONG ulStyle = hb_parnl(3);
    char * cTitle = ( hb_pcount() > 8 )? hb_parc(9) : "";
-   GtkWidget * hCtrl;
+   GtkWidget * hCtrl, * hLabel;
+   GtkFixed * box;
 
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
       hCtrl = gtk_drawing_area_new();
    else
    {
+      hCtrl = gtk_event_box_new();
       cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
-      hCtrl = gtk_label_new( cTitle );
+      hLabel = gtk_label_new( cTitle );
       g_free( cTitle );
+      gtk_container_add( GTK_CONTAINER(hCtrl), hLabel );
+      g_object_set_data( (GObject*) hCtrl, "label", (gpointer) hLabel );
+      if( !( ulStyle & SS_CENTER ) )
+         gtk_misc_set_alignment( GTK_MISC(hLabel), ( ulStyle & SS_RIGHT )? 1 : 0, 0 );
    }
-   GtkFixed * box = getFixedBox( (GObject*) hb_parnl(1) );
+   box = getFixedBox( (GObject*) hb_parnl(1) );
    if ( box )
       gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );  
    gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
 
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
    {
-      set_event( (gpointer)hCtrl, "expose_event", WM_PAINT, 0, 0 );   
-   }
-   else
-   {
-      if( !( ulStyle & SS_CENTER ) )
-         gtk_label_set_justify( (GtkLabel*)hCtrl, ( ulStyle & SS_RIGHT )? GTK_JUSTIFY_RIGHT : GTK_JUSTIFY_LEFT );
+      set_event( (gpointer)hCtrl, "expose_event", WM_PAINT, 0, 0 );
    }
 
    hb_retnl( (LONG) hCtrl );
@@ -110,7 +114,8 @@ HB_FUNC( CREATESTATIC )
 HB_FUNC( HWG_STATIC_SETTEXT )
 {
    char * cTitle = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
-   gtk_label_set_text( (GtkLabel*)hb_parnl(1), cTitle );
+   GtkLabel * hLabel = (GtkLabel*) g_object_get_data( (GObject*) hb_parnl(1),"label" );
+   gtk_label_set_text( hLabel, cTitle );
    g_free( cTitle );
 }
 
@@ -123,6 +128,7 @@ HB_FUNC( CREATEBUTTON )
    GtkWidget * hCtrl;
    ULONG ulStyle = hb_parnl( 3 );
    char * cTitle = ( hb_pcount() > 7 )? hb_parc(8) : "";
+   GtkFixed * box;
 
    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
    if( ( ulStyle & 0xf ) == BS_AUTORADIOBUTTON )
@@ -140,7 +146,7 @@ HB_FUNC( CREATEBUTTON )
       hCtrl = gtk_button_new_with_label( cTitle );
 
    g_free( cTitle );
-   GtkFixed * box = getFixedBox( (GObject*) hb_parnl(1) );
+   box = getFixedBox( (GObject*) hb_parnl(1) );
    if ( box )
       gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );  
    gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
@@ -291,6 +297,9 @@ HB_FUNC( HWG_GETUPDOWN )
    hb_retnl( gtk_spin_button_get_value_as_int( (GtkSpinButton*)hb_parnl(1) ) );
 }
 
+#define WS_VSCROLL          2097152    // 0x00200000L
+#define WS_HSCROLL          1048576    // 0x00100000L
+
 HB_FUNC( CREATEBROWSE )
 {
    GtkWidget *vbox, *hbox;
@@ -303,6 +312,7 @@ HB_FUNC( CREATEBROWSE )
    int nTop = hb_itemGetNI( GetObjectVar( pObject, "NTOP" ) );
    int nWidth = hb_itemGetNI( GetObjectVar( pObject, "NWIDTH" ) );
    int nHeight = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
+   unsigned long int ulStyle = hb_itemGetNL( GetObjectVar( pObject, "STYLE" ) );
    
    temp = GetObjectVar( pObject, "OPARENT" );
    handle = (GObject*) hb_itemGetNL( GetObjectVar( temp, "HANDLE" ) );
@@ -310,20 +320,44 @@ HB_FUNC( CREATEBROWSE )
    hbox = gtk_hbox_new( FALSE, 0 );
    vbox = gtk_vbox_new( FALSE, 0 );
    
-   vscroll = gtk_vscrollbar_new( NULL );
-   hscroll = gtk_hscrollbar_new( NULL );
    area    = gtk_drawing_area_new();
 
    gtk_box_pack_start( GTK_BOX( hbox ), vbox, TRUE, TRUE, 0 );
-   gtk_box_pack_end( GTK_BOX( hbox ), vscroll, FALSE, FALSE, 0 );
+   if( ulStyle & WS_VSCROLL )
+   {
+      vscroll = gtk_vscrollbar_new( NULL );   
+      gtk_box_pack_end( GTK_BOX( hbox ), vscroll, FALSE, FALSE, 0 );
+   }
 
    gtk_box_pack_start( GTK_BOX( vbox ), area, TRUE, TRUE, 0 );
-   gtk_box_pack_end( GTK_BOX( vbox ), hscroll, FALSE, FALSE, 0 );
+   if( ulStyle & WS_HSCROLL )
+   { 
+      hscroll = gtk_hscrollbar_new( NULL );
+      gtk_box_pack_end( GTK_BOX( vbox ), hscroll, FALSE, FALSE, 0 );
+   }
    
    box = getFixedBox( handle );
    if ( box )
       gtk_fixed_put( box, hbox, nLeft, nTop );
    gtk_widget_set_size_request( hbox, nWidth, nHeight );
+
+   temp = hb_itemPutNL( NULL, (ULONG)area );
+   SetObjectVar( pObject, "_AREA", temp );
+   hb_itemRelease( temp );
+
+   SetWindowObject( area, pObject );
+   set_event( (gpointer)area, "expose_event", WM_PAINT, 0, 0 );
+
+   GTK_WIDGET_SET_FLAGS( area,GTK_CAN_FOCUS );
+   
+   gtk_widget_add_events( area, GDK_BUTTON_PRESS_MASK | 
+        GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK |
+	GDK_MOTION_NOTIFY );
+   set_event( (gpointer)area, "button_press_event", 0, 0, 0 );
+   set_event( (gpointer)area, "button_release_event", 0, 0, 0 );
+   set_event( (gpointer)area, "motion_notify_event", 0, 0, 0 );
+   set_event( (gpointer)area, "key_press_event", 0, 0, 0 );
+   set_event( (gpointer)area, "key_release_event", 0, 0, 0 );
    
    hb_retnl( (LONG) hbox );
 }
@@ -332,13 +366,14 @@ HB_FUNC( HWG_CREATESEP )
 {
    BOOL lVert = hb_parl(2);
    GtkWidget * hCtrl;
+   GtkFixed * box;
 
    if( lVert )
       hCtrl = gtk_vseparator_new();
    else
       hCtrl = gtk_hseparator_new();
    
-   GtkFixed * box = getFixedBox( (GObject*) hb_parnl(1) );
+   box = getFixedBox( (GObject*) hb_parnl(1) );
    if ( box )
       gtk_fixed_put( box, hCtrl, hb_parni(3), hb_parni(4) );  
    gtk_widget_set_size_request( hCtrl,hb_parni(5),hb_parni(6) );
@@ -397,4 +432,21 @@ HB_FUNC( HWG_KILLTIMER )
 HB_FUNC( GETPARENT )
 {
    hb_retnl( (LONG) ( (GtkWidget*) hb_parnl(1) )->parent );
+}
+
+HB_FUNC( LOADCURSOR )
+{
+   if( ISCHAR(1) )
+   {
+      // hb_retnl( (LONG) LoadCursor( GetModuleHandle( NULL ), hb_parc( 1 )  ) );
+   }
+   else
+      hb_retnl( (LONG) gdk_cursor_new( (GdkCursorType) hb_parnl(1) ) );
+}
+
+HB_FUNC( HWG_SETCURSOR )
+{
+   GtkWidget * widget = (ISNUM(2))? (GtkWidget*) hb_parnl(2) : GetActiveWindow();
+   gdk_window_set_cursor( widget->window,
+            (GdkCursor*) hb_parnl(1) );
 }

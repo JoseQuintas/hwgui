@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.3 2005-01-20 08:38:26 alkresin Exp $
+ * $Id: window.c,v 1.4 2005-03-10 11:32:48 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -17,6 +17,14 @@
 #include "gtk/gtk.h"
 
 #define WM_KEYDOWN                      256    // 0x0100
+#define WM_KEYUP                        257    // 0x0101
+#define WM_MOUSEMOVE                    512    // 0x0200
+#define WM_LBUTTONDOWN                  513    // 0x0201
+#define WM_LBUTTONUP                    514    // 0x0202
+#define WM_LBUTTONDBLCLK                515    // 0x0203
+#define WM_RBUTTONDOWN                  516    // 0x0204
+#define WM_RBUTTONUP                    517    // 0x0205
+
 
 extern void writelog( char*s );
 
@@ -163,6 +171,16 @@ HB_FUNC( HWG_ACTIVATEDIALOG )
    gtk_main();
 }
 
+void ProcessMessage( void )
+{
+   while( g_main_context_iteration( NULL, FALSE ) );
+}
+
+HB_FUNC( HWG_PROCESSMESSAGE )
+{
+   ProcessMessage();
+}
+
 void cb_signal( GtkWidget *widget,gchar* data )
 {
    gpointer gObject;
@@ -206,7 +224,7 @@ void cb_signal( GtkWidget *widget,gchar* data )
    }
 }
 
-static gint cb_event( GtkWidget *widget, GdkEventKey * event, gchar* data )
+static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
 {
    gpointer gObject = g_object_get_data( (GObject*) widget, "obj" );
    LONG lRes;
@@ -219,13 +237,28 @@ static gint cb_event( GtkWidget *widget, GdkEventKey * event, gchar* data )
       PHB_ITEM pObject = hb_itemNew( NULL );
       LONG p1, p2, p3;
       
-      if( event->type == GDK_KEY_PRESS )
+      if( event->type == GDK_KEY_PRESS || event->type == GDK_KEY_RELEASE )
       {
-         p1 = WM_KEYDOWN;
-	 p2 = event->keyval;
-	 p3 = ( ( event->state & GDK_SHIFT_MASK )? 1 : 0 ) |
-	      ( ( event->state & GDK_CONTROL_MASK )? 2 : 0 ) |
-	      ( ( event->state & GDK_MOD1_MASK )? 4 : 0 );
+         p1 = (event->type==GDK_KEY_PRESS)? WM_KEYDOWN : WM_KEYUP;
+	 p2 = ((GdkEventKey*)event)->keyval;
+	 p3 = ( ( ((GdkEventKey*)event)->state & GDK_SHIFT_MASK )? 1 : 0 ) |
+	      ( ( ((GdkEventKey*)event)->state & GDK_CONTROL_MASK )? 2 : 0 ) |
+	      ( ( ((GdkEventKey*)event)->state & GDK_MOD1_MASK )? 4 : 0 );
+      }
+      else if( event->type == GDK_BUTTON_PRESS || 
+               event->type == GDK_2BUTTON_PRESS ||
+	       event->type == GDK_BUTTON_RELEASE )
+      {
+         p1 = (event->type==GDK_BUTTON_PRESS)? WM_LBUTTONDOWN : 
+	      ( (event->type==GDK_BUTTON_RELEASE)? WM_LBUTTONUP : WM_LBUTTONDBLCLK );
+	 p2 = 0;
+	 p3 = ( ((ULONG)(((GdkEventButton*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventButton*)event)->y)) << 16 ) & 0xFFFF0000 );
+      }
+      else if( event->type == GDK_MOTION_NOTIFY )
+      {
+         p1 = WM_MOUSEMOVE;
+	 p2 = ( ((GdkEventKey*)event)->state & GDK_BUTTON1_MASK )? 1:0;
+	 p3 = ( ((ULONG)(((GdkEventMotion*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
       }
       else
          sscanf( (char*)data,"%ld %ld %ld",&p1,&p2,&p3 );
@@ -359,20 +392,26 @@ HB_FUNC( SETWINDOWTEXT )
 
 HB_FUNC( GETWINDOWTEXT )
 {
-   /*
-   GtkWidget *  hWnd = (GtkWidget *) hb_parnl( 1 );
+   char * cTitle = (char*) gtk_window_get_title( GTK_WINDOW( hb_parnl(1) ) );
 
-   USHORT iLen = (USHORT)SendMessage( hWnd, WM_GETTEXTLENGTH, 0, 0 );
-   char *cText = (char*) hb_xgrab( iLen+2 );
-
-   iLen = (USHORT)SendMessage( hWnd, WM_GETTEXT, (WPARAM)(iLen+1), (LPARAM)cText );
-   if( iLen > 0 )
-      hb_retc( cText );
+   if( cTitle )
+      hb_retc( cTitle );
    else
       hb_retc( "" );
-   hb_xfree( cText );
-   */
 }
+
+HB_FUNC( ENABLEWINDOW )
+{
+   GtkWidget * widget = (GtkWidget*) hb_parnl( 1 );
+   BOOL lEnable = hb_parl( 2 );
+   gtk_widget_set_sensitive( widget, lEnable );
+}
+
+HB_FUNC( ISWINDOWENABLED )
+{
+   hb_retl( GTK_WIDGET_IS_SENSITIVE( (GtkWidget*) hb_parnl(1) ) );
+}
+
 
 HB_FUNC( MOVEWINDOW )
 {

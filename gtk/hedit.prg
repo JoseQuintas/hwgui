@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.2 2005-01-13 11:31:35 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.3 2005-03-10 11:32:48 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HEdit class 
@@ -819,7 +819,7 @@ Local i, aLen
       IF nSkip > 0
          aLen := Len( oParent:Getlist )
          DO WHILE ( i := i+nSkip ) <= aLen
-            IF !oParent:Getlist[i]:lHide // .AND. IsWindowEnabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
+            IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
                SetFocus( oParent:Getlist[i]:handle )
 	       hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
                Return .T.
@@ -827,7 +827,7 @@ Local i, aLen
          ENDDO
       ELSE
          DO WHILE ( i := i+nSkip ) > 0
-            IF !oParent:Getlist[i]:lHide // .AND. IsWindowEnabled( oParent:Getlist[i]:Handle )
+            IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle )
                SetFocus( oParent:Getlist[i]:handle )
 	       hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
                Return .T.

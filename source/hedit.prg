@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.38 2004-11-22 08:14:45 alkresin Exp $
+ *$Id: hedit.prg,v 1.39 2004-11-25 13:58:18 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -124,7 +124,9 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
                Return 0
             ENDIF
             Return -1
-         ELSEIF wParam == VK_RETURN .OR. wParam == VK_ESCAPE .OR. wParam == VK_TAB
+         ELSEIF wParam == VK_RETURN .OR. wParam == VK_ESCAPE
+            Return -1
+         ELSEIF wParam == VK_TAB
             Return 0
          ENDIF
          // ------- Change by NightWalker - Check HiBit -------

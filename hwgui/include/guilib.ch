@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.12 2004-02-27 14:44:54 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.13 2004-03-03 12:15:56 sandrorrfreire Exp $
  */
 
 #include "guilib.h"
@@ -938,3 +938,37 @@ Added by Marcos Antonio Gambeta
 #translate DEFINE LANGUAGE CROATIAN     =>  Hb_LangSelect("HR852" )      
 #translate DEFINE LANGUAGE SLOVENIAN    =>  Hb_LangSelect("SLWIN" )      
 
+
+/*By Vitor Maclung */ 
+// Commands for Listbox handling
+
+
+#xcommand @ <x>,<y> LISTBOX [ <oListbox> ITEMS ] <aItems> ;
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
+            [ INIT <nInit> ]           ;
+            [ SIZE <width>, <height> ] ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CHANGE <bChange> ]    ;
+            [ STYLE <nStyle> ]         ;
+            [ FONT <oFont> ]           ;
+            [ TOOLTIP <ctoolt> ]       ;
+          => ;
+    [<oListbox> := ] HListBox():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
+                  <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt> )
+
+#xcommand REDEFINE LISTBOX [ <oListbox> ITEMS ] <aItems> ;
+            [ OF <oWnd> ]              ;
+            ID <nId>                   ;
+            [ INIT <nInit>    ]        ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CHANGE <bChange> ]    ;
+            [ FONT <oFont> ]           ;
+            [ TOOLTIP <ctoolt> ]       ;
+          => ;
+    [<oListbox> := ] HListBox():Redefine( <oWnd>,<nId>,<nInit>,,<aItems>,<oFont>,<bInit>, ;
+             <bSize>,<bDraw>,<bChange>,<ctoolt> )

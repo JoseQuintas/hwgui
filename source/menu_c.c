@@ -266,8 +266,20 @@ HB_FUNC( DRAWMENUBAR )
 }
 
 /*
-HB_FUNC( GETSUBMENU )
+ *  SetMenuCaption( hMenu, nMenuId, cCaption )
+ */
+HB_FUNC( SETMENUCAPTION )
 {
-   hb_retl( GetSubMenu( (HMENU) hb_parnl(1), hb_parni(2) ) );
+
+   MENUITEMINFO mii;
+
+   mii.cbSize = sizeof( MENUITEMINFO );
+   mii.fMask = MIIM_TYPE;
+   mii.fType = MFT_STRING;
+   mii.dwTypeData = hb_parc( 3 );
+
+   if( SetMenuItemInfo( ( HMENU ) hb_parnl( 1 ), hb_parni( 2 ), 0, &mii ) )
+      hb_retl( 1 );
+   else
+      hb_retl( 0 );
 }
-*/

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.56 2004-03-23 15:42:32 rodrigo_moreno Exp $
+ * $Id: Changelog,v 1.57 2004-03-24 13:36:16 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-03-24 16:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/menu.prg
+  * source/menu_c.c
+    ! Small fix
+    * New function has been added: SetMenuCaption( hMenu, nMenuId, cCaption ),
+      which allows to change the menu item caption.
+      hMenu is a handle of the submenu where that menu item is, it can be
+      found using the Hwg_GetSubMenuHandle( aMenu,nMenuId )
 
 2004-03-23 12-45 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
   * hdialog.prg

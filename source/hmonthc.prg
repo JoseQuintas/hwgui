@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.3 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: hmonthc.prg,v 1.4 2004-04-03 17:39:38 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -78,7 +78,7 @@ METHOD Activate CLASS HMonthCalendar
 
    If ::oParent:handle != 0
       ::handle := InitMonthCalendar ( ::oParent:handle, ::id, ::style, ;
-                  ::nLeft, ::nTop, ::nWidth, ::nHeight, ::oFont:handle )
+                  ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    EndIf
 
@@ -152,8 +152,6 @@ HB_FUNC ( INITMONTHCALENDAR )
                          (HMENU) hb_parni(2),
                          GetModuleHandle(NULL),
                          NULL );
-
-	SendMessage( hMC, (UINT) WM_SETFONT, (WPARAM) (HFONT) hb_parnl(8), 1 );
 
    MonthCal_GetMinReqRect( hMC, &rc );
 

@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.8 2004-03-18 09:20:25 alkresin Exp $
+ *$Id: hedit.prg,v 1.9 2004-04-03 17:39:38 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -154,9 +154,7 @@ Local vari
       ELSE
          vari := Iif(::cType=="D",Dtoc(vari),Iif(::cType=="N",Str(vari),Iif(::cType=="C",vari,"")))
       ENDIF
-      IF vari != ::title
-         ::title := vari
-      ENDIF
+      ::title := vari
       SetDlgItemText( ::oParent:handle,::id,vari )
    ELSE
       SetDlgItemText( ::oParent:handle,::id,::title )

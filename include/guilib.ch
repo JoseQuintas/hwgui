@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.30 2004-05-11 13:55:40 rodrigo_moreno Exp $
+ *$Id: guilib.ch,v 1.31 2004-05-12 15:50:50 lculik Exp $
  */
 
 #define	WND_MAIN		1
@@ -779,11 +779,12 @@
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
+            [ WHEN <bWhen> ]           ;
           => ;
     [<oCheck> := ] HCheckButton():New( <oWnd>,<nId>,<vari>,              ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},                   ;
                     <nStyle>,<x>,<y>,<width>,<height>,<caption>,<oFont>, ;
-                    ,,,<bClick>,<ctoolt>,<color>,<bcolor> )
+                    ,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen> )
 
 #xcommand REDEFINE GET CHECKBOX [ <oCheck> VAR ] <vari>  ;
             [ OF <oWnd> ]              ;
@@ -793,10 +794,11 @@
             [ <valid: VALID, ON CLICK> <bClick> ] ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
+            [ WHEN <bWhen> ]           ;
           => ;
     [<oCheck> := ] HCheckButton():Redefine( <oWnd>,<nId>,<vari>, ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},           ;
-                    <oFont>,,,,<bClick>,<ctoolt>,<color>,<bcolor> )
+                    <oFont>,,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen> )
 
 #xcommand @ <x>,<y> GET COMBOBOX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;
@@ -809,12 +811,13 @@
             [ TOOLTIP <ctoolt> ]       ;
             [ <edit: EDIT> ]           ;
             [ <text: TEXT> ]           ;
+            [ WHEN <bWhen> ]           ;
           => ;
     [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<vari>,    ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
                     <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
-                    <.edit.>,<.text.> )
+                    <.edit.>,<.text.>,<bWhen> )
 
 #xcommand REDEFINE GET COMBOBOX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;
@@ -823,10 +826,11 @@
             [ ON CHANGE <bChange> ]    ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
+            [ WHEN <bWhen> ]           ;
           => ;
     [<oCombo> := ] HComboBox():Redefine( <oWnd>,<nId>,<vari>, ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},        ;
-                    <aItems>,<oFont>,,,,<bChange>,<ctoolt> )
+                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>, <bWhen> )
 
 #xcommand @ <x>,<y> GET UPDOWN [ <oUpd> VAR ]  <vari>  ;
             RANGE <nLower>,<nUpper>    ;

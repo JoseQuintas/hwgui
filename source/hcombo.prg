@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.11 2004-05-11 17:17:41 rodrigo_moreno Exp $
+ * $Id: hcombo.prg,v 1.12 2004-05-12 15:50:51 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -31,22 +31,23 @@ CLASS HComboBox INHERIT HControl
    DATA  aItems
    DATA  bSetGet
    DATA  bValid   INIT {||.T.}
+   DATA  bWhen
    DATA  value    INIT 1
    DATA  bChangeSel
    DATA  lText    INIT .F.
    DATA  lEdit    INIT .F.
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  aItems,oFont,bInit,bSize,bPaint,bChange,cToolt,lEdit,lText )
+                  aItems,oFont,bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bWhen )
    METHOD Activate()
-   METHOD Redefine( oWnd,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bDraw,bChange,cToolt )
+   METHOD Redefine( oWnd,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bDraw,bChange,cToolt,bWhen )
    METHOD Init( aCombo, nCurrent )
    METHOD Refresh()     
    METHOD Setitem( nPos )        
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,oFont, ;
-                  bInit,bSize,bPaint,bChange,cToolt,lEdit,lText ) CLASS HComboBox
+                  bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bWhen ) CLASS HComboBox
 
    if lEdit == Nil; lEdit := .f.; endif
    if lText == Nil; lText := .f.; endif
@@ -74,6 +75,8 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
+      ::bwhen := bWhen
+      ::oParent:AddEvent( CBN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
       ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
    ELSEIF bChange != Nil
       ::oParent:AddEvent( CBN_SELCHANGE,::id,bChange )
@@ -81,7 +84,11 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
    
    if ::lEdit
       ::oParent:AddEvent( CBN_KILLFOCUS,::id,{|o,id|__KillFocus(o:FindControl(id))} )
-   endif      
+   endif
+
+   if bWhen != NIL
+      ::oParent:AddEvent( CBN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
+   endif
 
 Return Self
 
@@ -94,7 +101,7 @@ METHOD Activate CLASS HComboBox
 Return Nil
 
 METHOD Redefine( oWndParent,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bPaint, ;
-                  bChange,cToolt ) CLASS HComboBox
+                  bChange,cToolt,bWhen ) CLASS HComboBox
 
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit,bSize,bPaint,ctoolt )
    
@@ -217,3 +224,19 @@ Static Function __KillFocus( oCtrl )
       Eval( oCtrl:bSetGet, oCtrl:value, oCtrl )
    ENDIF
 Return .T.   
+
+Static Function __When( oCtrl )
+Local res
+
+   oCtrl:Refresh()
+
+   IF oCtrl:bWhen != Nil 
+      res := Eval( oCtrl:bWhen, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
+      IF !res
+         GetSkip( oCtrl:oParent,oCtrl:handle,1 )
+      ENDIF
+      Return res
+   ENDIF
+
+Return .T.
+

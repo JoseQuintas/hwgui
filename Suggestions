@@ -1,5 +1,5 @@
 /*
- * $Id: Suggestions,v 1.2 2004-07-23 11:54:27 sandrorrfreire Exp $
+ * $Id: Suggestions,v 1.3 2004-08-13 15:24:10 sandrorrfreire Exp $
  */
 
 /
@@ -11,6 +11,12 @@
  * Analyzed for          
  * Made For
  /
+
+2004-08-13 12-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+DESIGNER
+Open and save project in format PRG
+New control HGrid
+
 
 2004-07-23 08-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
 In GET(hEdit)  include the comand ON ENTER that it does not depend on
@@ -25,5 +31,4 @@ In Browse include the comand ON CLICKHEADER
 Analyzed for ->
 Made For     ->
 It's possible (  ) Yes   (  ) No
-
 

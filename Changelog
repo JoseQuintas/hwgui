@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.323 2004-12-10 07:36:43 alkresin Exp $
+ * $Id: Changelog,v 1.324 2004-12-10 09:25:01 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-12-09 12:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/procmisc/arr2str.c
+    ! Yet another fix for string reading
+  * source/hfrmtmpl.prg
+    * New variable 'cargo' has been added to the HFrmTmpl class.
 
 2004-12-09 10:37 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/htree.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.23 2004-12-08 08:23:17 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.24 2004-12-10 09:25:03 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -86,6 +86,7 @@ CLASS HFormTmpl
    DATA cId
    DATA nContainer    INIT 0
    DATA nCtrlId       INIT CONTROL_FIRST_ID
+   DATA cargo
 
    METHOD Read( fname,cId )
    METHOD Show( nMode,params )

@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.3 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: menu.prg,v 1.4 2004-03-22 09:56:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -188,9 +188,11 @@ Local hMenu, nPos, aMenu
    DO WHILE nPos <= Len( aMenu[1] )
       IF Valtype( aMenu[ 1,nPos,1 ] ) == "A"
          BuildMenu( aMenu,,,nPos )
-      ELSE
-         hwg__AddMenuItem( hMenu, aMenu[1,npos,2], nPos, .T., aMenu[1,nPos,3], ;
+      ELSE 
+         IF aMenu[ 1,nPos,1 ] == Nil .OR. aMenu[ 1,nPos,2 ] != Nil
+            hwg__AddMenuItem( hMenu, aMenu[1,npos,2], nPos, .T., aMenu[1,nPos,3], ;
                    aMenu[1,npos,4],.F. )
+         ENDIF
       ENDIF
       nPos ++
    ENDDO
@@ -257,4 +259,15 @@ Local aMenu, i
    IF accFlag != Nil .AND. accKey != Nil
       Aadd( _aAccel, { accFlag,accKey,nId } )
    ENDIF
+Return .T.
+
+Function Hwg_DefineAccelItem( nId, bItem, accFlag, accKey )
+Local aMenu, i
+   aMenu := _aMenuDef
+   FOR i := 1 TO _nLevel
+      aMenu := Atail(aMenu)[1]
+   NEXT
+   nId := Iif( nId == Nil, ++ _Id, nId )
+   Aadd( aMenu, { bItem,Nil,nId,.T. } )
+   Aadd( _aAccel, { accFlag,accKey,nId } )
 Return .T.

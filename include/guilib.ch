@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.16 2004-03-15 18:51:17 alkresin Exp $
+ *$Id: guilib.ch,v 1.17 2004-03-22 09:56:54 alkresin Exp $
  */
 
 #include "guilib.h"
@@ -827,6 +827,12 @@
             [<lDisabled: DISABLED>]       ;
           => ;
     Hwg_DefineMenuItem( <item>, <nId>, <{act}>, <.lDisabled.>, <flag>, <key> )
+
+#xcommand ACCELERATOR <flag>, <key>       ;
+            [ ID <nId> ]                  ;
+            ACTION <act>                  ;
+          => ;
+    Hwg_DefineAccelItem( <nId>, <{act}>, <flag>, <key> )
 
 #xcommand SEPARATOR         => Hwg_DefineMenuItem()
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.50 2004-03-19 22:20:42 lculik Exp $
+ * $Id: Changelog,v 1.51 2004-03-22 09:56:50 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,28 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-03-22 13:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/guilib.ch
+    + New command has been added to define accelerators independently of
+      menu items:
+
+         #xcommand ACCELERATOR <flag>, <key>       ;
+                     [ ID <nId> ]                  ;
+                     ACTION <act>
+      This command may be used inside MENU OF ... ENDMENU only.
+
+  * source/hbrowse.prg
+    + oFont variable is added to the HColumn class, it is possible now to have
+      different fonts for columns in browse.
+
+  * source/menu.prg
+    * Support of ACCELERATOR command is added
+
+  * source/misc.c
+    + ActivateKeyboardLayout( cLayout ) function has been added. It is intended
+      to switch the keyboard between English and national layouts, which are set
+      in the system ( cLayout = "00000409" for English, "00000419" for Russian ).
 
 2004-03-19 19:30 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   * source/richedit.c

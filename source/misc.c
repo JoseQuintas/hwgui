@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.5 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: misc.c,v 1.6 2004-03-22 09:56:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -231,6 +231,26 @@ HB_FUNC ( GETKEYBOARDSTATE )
    GetKeyboardState( lpbKeyState );
    lpbKeyState[255] = '\0';
    hb_retclen( ( char *) lpbKeyState,255 );
+}
+
+HB_FUNC( ACTIVATEKEYBOARDLAYOUT )
+{
+   char * cLayout = hb_parc(1);
+   HKL curr = GetKeyboardLayout( 0 );
+   char sBuff[KL_NAMELENGTH];
+   UINT num = GetKeyboardLayoutList( 0, NULL ), i = 0;
+
+   do
+   {
+      GetKeyboardLayoutName( (LPTSTR)sBuff );
+      if( !strcmp( sBuff,cLayout ) )
+         break;
+      ActivateKeyboardLayout( 0,0 );
+      i ++;
+   }
+   while( i < num );
+   if( i >= num )
+      ActivateKeyboardLayout( curr,0 );
 }
 
 /* Functions Contributed  By Luiz Rafael Culik Guimaraes( culikr@uol.com.br) */

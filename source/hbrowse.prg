@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.7 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.8 2004-03-22 09:56:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -63,6 +63,7 @@ CLASS HColumn INHERIT HObject
                                  // de las columnas y lineas.
                                  // WHT. 27.07.2002
    DATA tcolor,bcolor,brush
+   DATA oFont
    DATA lEditable INIT .F.       // Is the column editable
    DATA aList                    // Array of possible values for a column -
                                  // combobox will be used while editing the cell
@@ -649,6 +650,7 @@ Local x, dx, i := 1, shablon, sviv, fif, fldname, slen, xSize
 Local j, ob, bw, bh, y1, hBReal
 Local oldBkColor, oldTColor, oldBk1Color, oldT1Color
 Local oLineBrush := Iif( lSelected, ::brushSel,::brush )
+Local lColumnFont := .F.
 
    ::xpos := x := ::x1
    IF lClear == Nil ; lClear := .F. ; ENDIF
@@ -708,6 +710,13 @@ Local oLineBrush := Iif( lSelected, ::brushSel,::brush )
                   IF ::aColumns[fif]:bColor != Nil
                      oldBk1Color := SetBkColor( hDC, ::aColumns[fif]:bColor )
                   ENDIF
+                  IF ::aColumns[fif]:oFont != Nil
+                     SelectObject( hDC, ::aColumns[fif]:oFont:handle )
+                     lColumnFont := .T.
+                  ELSEIF lColumnFont
+                     SelectObject( hDC, ::ofont:handle )
+                     lColumnFont := .F.
+                  ENDIF
                   DrawText( hDC, sviv, x, ::y1+(::height+1)*(nstroka-1)+1, x+xSize-2,::y1+(::height+1)*nstroka-1, ::aColumns[fif]:nJusLin )
                   IF ::aColumns[fif]:tColor != Nil
                      SetTextColor( hDC, oldT1Color )
@@ -727,6 +736,9 @@ Local oLineBrush := Iif( lSelected, ::brushSel,::brush )
       ENDDO
       SetTextColor( hDC,oldTColor )
       SetBkColor( hDC,oldBkColor )
+      IF lColumnFont
+         SelectObject( hDC, ::ofont:handle )
+      ENDIF
    ENDIF
 RETURN Nil
 

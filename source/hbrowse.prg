@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.34 2004-08-02 20:21:53 sandrorrfreire Exp $
+ * $Id: hbrowse.prg,v 1.35 2004-08-17 13:02:02 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1656,6 +1656,7 @@ FUNCTION CREATEARLIST( oBrw, arr )
       ENDIF
    ENDIF
    EVAL( oBrw:bGoTop,oBrw )
+   oBrw:Paint()
 RETURN Nil
 
 //----------------------------------------------------//
@@ -1741,7 +1742,7 @@ METHOD ShowSizes() CLASS HBrowse
 RETURN nil
 
 Function ColumnArBlock()
-Return {|value,o,n| Iif( value==Nil,o:msrec[o:tekzp,n],o:msrec[o:tekzp,n]:=value ) }
+Return {|value,o,n|o:Tekzp:=if(o:TekZp=0,1,o:TekZp),Iif( value==Nil,o:msrec[o:tekzp,n],o:msrec[o:tekzp,n]:=value ) }
 
 Static function HdrToken(cStr, nMaxLen, nCount)
 Local nL, nPos := 0

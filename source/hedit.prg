@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.21 2004-07-21 07:30:20 alkresin Exp $
+ *$Id: hedit.prg,v 1.22 2004-08-17 13:02:02 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -150,7 +150,10 @@ Return Nil
 METHOD SetText( c ) CLASS HEdit
 
   IF c != Nil
-
+     if valtype(c)="O"
+        //in run time return object
+        return nil
+     endif
      IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
         ::title := Transform( c, ::cPicFunc + Iif(Empty(::cPicFunc),""," ") + ::cPicMask )
      ELSE

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.252 2004-08-16 17:04:16 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.253 2004-08-17 13:01:59 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2004-08-17 10-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/hedit.prg
+    Bug line 153, in execution run time
+  * source/hbrowse.prg
+    Line 1745, replace parameter, if return 0 replace to 1
+  * source/hcontrol.prg
+    New variable get to simulate variables for methods valid and when  
+    Contribution by Ivanil Marcelino <ivanilm@ig.com.br>
 
 2004-08-16 14-10 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/HSayImg.prg

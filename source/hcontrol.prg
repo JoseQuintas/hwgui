@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.15 2004-08-11 19:42:05 rodrigo_moreno Exp $
+ * $Id: hcontrol.prg,v 1.16 2004-08-17 13:02:02 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -23,6 +23,7 @@ CLASS HControl INHERIT HCustomWindow
    DATA tooltip
    DATA lInit    INIT .F.
    DATA cargo    INIT NIL
+   DATA Get      INIT "" // Used by simulated variables for method when and valid
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor )

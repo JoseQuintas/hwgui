@@ -1,0 +1,37 @@
+GUILIB.CH:
+----------
+
+. Added the clause MESSAGE in the command "MENUITEM ..."
+
+
+HWINDOW.PRG:
+------------
+
+. Added the lines below to support menus with messages:
+
+#define WM_MENUSELECT   287
+#define MF_HILITE       128
+
+. Added this code on the function DefWndProc:
+
+   elseif msg == WM_MENUSELECT
+      if NumAnd( HiWord(wParam), MF_HILITE ) <> 0 // HIWORD(wParam) = FLAGS , function NUMAND of the LIBCT.LIB
+         if Valtype( oWnd:menu ) == "A"
+            if ( aMenu := Hwg_FindMenuItem( oWnd:menu, LoWord(wParam), @iCont ) ) != Nil
+               if aMenu[ 1,iCont,2 ][2] != Nil
+                  WriteStatus( oWnd, 1, aMenu[ 1,iCont,2 ][2] ) // show message on StatusBar
+               else
+                  WriteStatus( oWnd, 1, "" ) // clear message
+               endif
+            else
+               WriteStatus( oWnd, 1, "" ) // clear message
+            endif
+         endif
+      EndIf
+      Return 0
+
+
+MENU.PRG:
+---------
+
+Changes in the functions: BuildMenu, HWG_BeginMenu and HWG_DefineMenuItem. The original lines are commented.

@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.36 2004-11-11 08:37:12 alkresin Exp $
+ *$Id: hedit.prg,v 1.37 2004-11-12 08:44:56 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -29,8 +29,6 @@ CLASS HEdit INHERIT HControl
    DATA lFirst       INIT .T.
    DATA lChanged     INIT .F.
    DATA lMaxLength   INIT Nil
-   DATA isControlTab INIT .F.
-   DATA gLastkey     INIT {0,0}
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture,lNoBorder, lMaxLength )
@@ -55,12 +53,6 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
 
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
-
-   //To redirect focus in TAB control
-
-   IF oWndParent:ClassName()=="HTAB"
-      ::isControlTab:=.T.
-   ENDIF
 
    IF vari != Nil
       ::cType   := Valtype( vari )
@@ -99,8 +91,6 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ENDIF
       IF bLfocus != Nil
          ::oParent:AddEvent( EN_KILLFOCUS,::id,bLfocus )
-      ELSEIF bLfocus == Nil .AND. ::isControlTab
-         ::oParent:AddEvent( EN_KILLFOCUS,::id,bLfocus )
       ENDIF
    ENDIF
 
@@ -122,8 +112,6 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
       Return -1
    ENDIF
 
-   ::gLastkey:={msg,wParam}
-
    IF !::lMultiLine
 
       IF msg == WM_CHAR
@@ -140,9 +128,9 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
             Return -1
          ENDIF
          // ------- Change by NightWalker - Check HiBit -------
-         If (wParam <129).or.!Empty( ::cPicFunc ).OR.!Empty( ::cPicMask )
+         // If (wParam <129).or.!Empty( ::cPicFunc ).OR.!Empty( ::cPicMask )
             Return GetApplyKey( Self,Chr(wParam) )
-         Endif
+         // Endif
 
       ELSEIF msg == WM_KEYDOWN 
 
@@ -172,6 +160,7 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
                   Return 0
                ENDIF
          ELSEIF wParam == 45     // Insert
+            writelog("Insert")
             IF !IsCtrlShift()
                Set( _SET_INSERT, ! Set( _SET_INSERT ) )
             ENDIF
@@ -548,11 +537,11 @@ Return cChar
 
 Static Function GetApplyKey( oEdit,cKey )
 Local nPos, nGetLen, nLen, vari, i, x, newPos
-   x := SendMessage( oEdit:handle, EM_GETSEL, 0, 0 )
 
-   if HiWord(x) != LoWord(x)
-    SendMessage(oEdit:handle, WM_CLEAR, LoWord(x), HiWord(x)-1)
-   endif         
+   x := SendMessage( oEdit:handle, EM_GETSEL, 0, 0 )
+   IF HiWord(x) != LoWord(x)
+      SendMessage(oEdit:handle, WM_CLEAR, LoWord(x), HiWord(x)-1)
+   ENDIF         
 
    // writelog( "GetApplyKey "+str(asc(ckey)) )
    oEdit:title := GetEditText( oEdit:oParent:handle, oEdit:id )
@@ -639,7 +628,6 @@ Local res
    oCtrl:lFirst := .T.
    IF oCtrl:bGetFocus != Nil 
       res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
-
       IF !res
          GetSkip( oCtrl:oParent,oCtrl:handle,1 )
       ENDIF
@@ -682,24 +670,6 @@ Local vari, oDlg
             oDlg:nLastKey := 0
          ENDIF
       ENDIF
-   ENDIF
-   //writelog( "gLastKey "+STR( oCtrl:gLastKey[1] )+"|"+STR( oCtrl:gLastKey[2] )  )
-   //To focus in Control TAB
-   IF oCtrl:isControlTab
-
-      IF oCtrl:gLastKey[1]==514 .OR. oCtrl:gLastKey[2]==0
-         Return .T.
-      ENDIF 
-      IF oCtrl:gLastKey[2]==514 .OR. oCtrl:gLastKey[2]==257
-         Return .T.
-      ENDIF
-
-      IF oCtrl:gLastKey[2]>=37 .AND. oCtrl:gLastKey[2]<=40
-         Return .T.
-      ENDIF
-
-      GetSkip( oCtrl:oParent,oCtrl:handle,1 )
-
    ENDIF
 
 Return .T.
@@ -871,7 +841,6 @@ Local i, aLen
          aLen := Len( oParent:Getlist )
          DO WHILE ( i := i+nSkip ) <= aLen
             IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
-
                SetFocus( oParent:Getlist[i]:handle )
                Return .T.
             ENDIF
@@ -879,7 +848,6 @@ Local i, aLen
       ELSE
          DO WHILE ( i := i+nSkip ) > 0
             IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle )
-
                SetFocus( oParent:Getlist[i]:handle )
                Return .T.
             ENDIF

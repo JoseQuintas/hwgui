@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.16 2004-04-26 11:58:31 alkresin Exp $
+ * $Id: window.c,v 1.17 2004-05-06 11:55:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -371,7 +371,7 @@ HB_FUNC ( HWG_ACTIVATEMDIWINDOW )
 
    if( hb_parl(1) )
    {
-      ShowWindow( aWindows[0], SW_SHOWNORMAL );
+      ShowWindow( aWindows[0],( ISLOG(3) && hb_parl(3) )? SW_SHOWMAXIMIZED : SW_SHOWNORMAL );
       ShowWindow( aWindows[1], SW_SHOW );
    }
 

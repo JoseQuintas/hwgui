@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.21 2004-04-26 18:08:48 rodrigo_moreno Exp $
+ * $Id: hbrowse.prg,v 1.22 2004-05-06 11:55:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -828,7 +828,8 @@ STATIC FUNCTION LINERIGHT( oBrw )
          RETURN Nil
       endif
    endif
-   IF oBrw:nColumns + oBrw:nLeftCol - oBrw:freeze - 1 < Len(oBrw:aColumns)
+   IF oBrw:nColumns + oBrw:nLeftCol - oBrw:freeze - 1 < Len(oBrw:aColumns) ;
+        .AND. oBrw:nLeftCol < Len(oBrw:aColumns)
       i := oBrw:nLeftCol + oBrw:nColumns
       DO WHILE oBrw:nColumns + oBrw:nLeftCol - oBrw:freeze - 1 < Len(oBrw:aColumns) .AND. oBrw:nLeftCol + oBrw:nColumns = i
          oBrw:nLeftCol ++

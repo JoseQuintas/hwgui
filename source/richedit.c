@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.5 2004-04-02 10:16:20 alkresin Exp $
+ * $Id: richedit.c,v 1.6 2004-04-07 12:05:44 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -70,7 +70,7 @@ HB_FUNC ( RE_SETCHARFORMAT )
 {
    HWND hCtrl = (HWND) hb_parnl(1);
    CHARRANGE chrOld, chrNew;
-   CHARFORMAT2 cf;
+   CHARFORMAT cf;
    PHB_ITEM pArr;
 
    SendMessage( hCtrl, EM_EXGETSEL, 0, (LPARAM) &chrOld );
@@ -88,8 +88,8 @@ HB_FUNC ( RE_SETCHARFORMAT )
          chrNew.cpMax = hb_itemGetNL( pArr1->item.asArray.value->pItems + 1 )-1;
          SendMessage( hCtrl, EM_EXSETSEL, 0, (LPARAM) &chrNew );
 
-         memset( &cf, 0, sizeof(CHARFORMAT2) );
-         cf.cbSize = sizeof(CHARFORMAT2);
+         memset( &cf, 0, sizeof(CHARFORMAT) );
+         cf.cbSize = sizeof(CHARFORMAT);
          if( ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 2) )->type != HB_IT_NIL )
          {
             cf.crTextColor = (COLORREF) hb_itemGetNL( pArr1->item.asArray.value->pItems + 2 );
@@ -130,8 +130,8 @@ HB_FUNC ( RE_SETCHARFORMAT )
       chrNew.cpMax = hb_parnl(3)-1;
       SendMessage( hCtrl, EM_EXSETSEL, 0, (LPARAM) &chrNew );
 
-      memset( &cf, 0, sizeof(CHARFORMAT2) );
-      cf.cbSize = sizeof(CHARFORMAT2);
+      memset( &cf, 0, sizeof(CHARFORMAT) );
+      cf.cbSize = sizeof(CHARFORMAT);
 
       if( !ISNIL(4) )
       {
@@ -179,10 +179,10 @@ HB_FUNC ( RE_SETCHARFORMAT )
 HB_FUNC ( RE_SETDEFAULT )
 {
    HWND hCtrl = ( HWND ) hb_parnl( 1 );
-   CHARFORMAT2 cf;
+   CHARFORMAT cf;
 
-   memset( &cf, 0, sizeof(CHARFORMAT2) );
-   cf.cbSize = sizeof( CHARFORMAT2 );
+   memset( &cf, 0, sizeof(CHARFORMAT) );
+   cf.cbSize = sizeof( CHARFORMAT );
 
    if( ISNUM( 2 ) )
    {

@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.18 2004-04-06 18:31:58 sandrorrfreire Exp $
+ *$Id: hwindow.prg,v 1.19 2004-04-07 12:05:44 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -362,7 +362,7 @@ Local oWnd, oBtn, oitem
          NEXT
       #endif
       HWindow():DelItem( oWnd )
-      PostQuitMessage (0)
+      // PostQuitMessage (0)
       return 0
    elseif msg == WM_SYSCOMMAND
       if wParam == SC_CLOSE
@@ -553,7 +553,7 @@ Local oWnd, oBtn, oitem
 
       // Return 0  // Default
 
-      PostQuitMessage (0)
+      // PostQuitMessage (0)
       return 1
 
    elseif msg == WM_SYSCOMMAND
@@ -746,10 +746,10 @@ Local oItem, iCont, nCont
 
    NEXT
    #endif
-   
-   If HWindow():GetMain() == oWnd
-      ExitProcess(0)
-   Endif  
+
+   If HWindow():aWindows[1] == oWnd
+      PostQuitMessage( 0 )
+   Endif     
 
 return Nil
 

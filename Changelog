@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.213 2004-07-06 06:27:01 alkresin Exp $
+ * $Id: Changelog,v 1.214 2004-07-08 14:28:01 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-07-08 11-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/window.c
+  * source/hwindow.prg
+    !respect the clause NOSHOW in Windows MDI Child
+     Fixed by Ivanil Marcelino <ivanilm@ig.com.br>
 
 2004-07-06 10:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * utils/designer/bldlib.bat

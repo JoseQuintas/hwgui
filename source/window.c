@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.20 2004-06-24 21:52:04 andijahja Exp $
+ * $Id: window.c,v 1.21 2004-07-08 14:28:02 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -246,11 +246,17 @@ HB_FUNC ( HWG_INITCHILDWINDOW )
 
 HB_FUNC ( HWG_ACTIVATECHILDWINDOW )
 {
-
-   ShowWindow( (HWND) hb_parnl (1),SW_SHOWNORMAL );
+   if( hb_parl(1) )
+   {
+      ShowWindow( (HWND) hb_parnl (1),SW_SHOWNORMAL );
+   }
+   else
+   {
+      ShowWindow( (HWND) hb_parnl (2),SW_HIDE );
+   }
    return;
-
 }
+
 
 /*  Creates frame MDI and client window
     InitMainWindow( cTitle, cMenu, cBitmap, hIcon, nBkColor, nStyle, nLeft, nTop, nWidth, nHeight )

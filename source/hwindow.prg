@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.28 2004-07-01 05:34:08 alkresin Exp $
+ *$Id: hwindow.prg,v 1.29 2004-07-08 14:28:02 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -217,7 +217,7 @@ METHOD Activate( lShow ) CLASS HWindow
       Hwg_ActivateMainWindow( ( lShow==Nil .OR. lShow ),::hAccel,::lMaximize )
 
    ELSEIF ::type == WND_CHILD
-      Hwg_ActivateChildWindow( ::handle )
+      Hwg_ActivateChildWindow((lShow==Nil .OR. lShow),::handle )
       
    ENDIF
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.195 2004-06-23 12:05:12 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.196 2004-06-23 19:03:35 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-06-23 16-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * samples/dbc/dbchw.prg
+  * samples/dbc/query.prg
+    Update to compile for DBFCDX
+  + samples/dbc/bldcdx.bat
+    New BAT to compile for DBFCDX
+    Note: In mode DBFCDX not use information for SERVER
+ 
 2004-06-23 09-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * include/hwgui.ch
     Add file hwgui.ch

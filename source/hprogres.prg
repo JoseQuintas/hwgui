@@ -19,7 +19,7 @@ CLASS HProgressBar INHERIT HControl
    DATA  nLimit
 
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,maxPos,nRange )
-   METHOD NewBox( cTitle,nLeft,nTop,nWidth,nHeight,maxPos,nRange )
+   METHOD NewBox( cTitle,nLeft,nTop,nWidth,nHeight,maxPos,nRange,bExit )
    METHOD Activate()
    METHOD Increment() INLINE UpdateProgressBar( ::handle )
    METHOD Step()

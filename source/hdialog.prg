@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.30 2004-11-14 13:54:00 alkresin Exp $
+ * $Id: hdialog.prg,v 1.31 2004-11-19 15:10:32 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -50,6 +50,8 @@ CLASS HDialog INHERIT HCustomWindow
    DATA KeyList  INIT {}      // The array of keys ( as Clipper's SET KEY )
    DATA lExitOnEnter INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key,
                               // Added by Sandro Freire 
+   DATA lExitOnEsc   INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key,
+                              // Added by Sandro Freire 
    DATA nLastKey INIT 0
    DATA oIcon, oBmp
    DATA bActivate
@@ -57,7 +59,7 @@ CLASS HDialog INHERIT HCustomWindow
    DATA xResourceID
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
-                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID )
+                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc )
    METHOD Activate( lNoModal )
    METHOD onEvent( msg, wParam, lParam )
    METHOD AddItem( oWnd,lModal )
@@ -72,7 +74,7 @@ CLASS HDialog INHERIT HCustomWindow
 ENDCLASS
 
 METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
-                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId, xResourceID ) CLASS HDialog
+                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId, xResourceID, lExitOnEsc ) CLASS HDialog
 
    ::oDefaultParent := Self
    ::xResourceID := xResourceID
@@ -95,6 +97,7 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
    ::bOther     := bOther
    ::lClipper   := Iif( lClipper==Nil,.F.,lClipper )
    ::lExitOnEnter:=Iif( lExitOnEnter==Nil,.T.,!lExitOnEnter )
+   ::lExitOnEsc  :=Iif( lExitOnEsc==Nil,.T.,!lExitOnEsc )
    
    IF nHelpId != nil
       ::HelpId := nHelpId
@@ -301,7 +304,10 @@ Local aMenu, i, hCtrl
       IF iParLow == IDOK
          oDlg:lResult := .T.
       ENDIF
-      EndDialog( oDlg:handle )
+      //Replaced by Sandro
+      IF oDlg:lExitOnEsc
+         EndDialog( oDlg:handle )
+      ENDIF
    ELSEIF __ObjHasMsg(oDlg,"MENU") .AND. Valtype( oDlg:menu ) == "A" .AND. ;
         ( aMenu := Hwg_FindMenuItem( oDlg:menu,iParLow,@i ) ) != Nil ;
         .AND. aMenu[ 1,i,1 ] != Nil

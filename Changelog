@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.303 2004-11-19 08:32:10 alkresin Exp $
+ * $Id: Changelog,v 1.304 2004-11-19 15:10:28 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-11-19 13-10 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/hdialog.prg
+    added the variable lExitOnEsc it's possible no close dialog in press Key Esc
+  * include/guilib.ch
+    added in INIT DIALOG command NOEXITESC
+  * samples/a.prg
+    added samples noexit
 
 2004-11-19 11:33 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/procmisc/arr2str.c

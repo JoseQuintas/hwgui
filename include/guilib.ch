@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.50 2004-11-14 13:53:59 alkresin Exp $
+ *$Id: guilib.ch,v 1.51 2004-11-19 15:10:31 sandrorrfreire Exp $
  */
 #define HWG_VERSION           "2.13"
 #define	WND_MAIN		1
@@ -115,6 +115,7 @@
              [ FONT <oFont> ]               ;
              [<lClipper: CLIPPER>]          ;
              [<lExitOnEnter: NOEXIT>]       ; //Modified By Sandro
+             [<lExitOnEsc: NOEXITESC>]      ; //Modified By Sandro
              [ ON INIT <bInit> ]            ;
              [ ON SIZE <bSize> ]            ;
              [ ON PAINT <bPaint> ]          ;
@@ -126,7 +127,7 @@
           => ;
    <oDlg> := HDialog():New( Iif(<.res.>,WND_DLG_RESOURCE,WND_DLG_NORESOURCE), ;
                    <nStyle>,<x>,<y>,<width>,<height>,<cTitle>,<oFont>,<bInit>,<bExit>,;
-                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.>,<nHelpId>,<Resid> )
+                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.>,<nHelpId>,<Resid>,<.lExitOnEsc.> )
 
 #xcommand ACTIVATE WINDOW <oWnd> [<lNoShow: NOSHOW>]     ;
            => ;

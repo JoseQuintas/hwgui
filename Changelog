@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.9 2004-02-05 16:09:30 lculik Exp $
+ * $Id: Changelog,v 1.10 2004-02-06 11:38:22 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-02-06 09:34 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
+  * source/commond.c
+    !new function GetSerialNumber       
+    !new function HDGetSerial     
+  * source/guimain.prg
+    !new function HDSerial(Drive)      
+  * samples/textget2.prg
+    !Demo for using HdSerial function
+    Using HDSerial("C:\") Return de number of serie HD     
+ 
 2004-02-05 14:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   * source/control.c
     !new function Gettooltiphandle      

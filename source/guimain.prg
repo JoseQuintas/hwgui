@@ -240,3 +240,13 @@ Function EndWindow()
    ENDIF
 Return Nil
 
+FUNCTION HdSerial( cDrive )
+
+   Local n       :=  HDGETSERIAL( cDrive )
+   Local cHex    :=  HB_NUMTOHEX(n)
+   Local cResult := ""
+   cResult := Substr( cHex,1, 4 ) + '-' + Substr( cHex,5, 4 )
+
+return cResult
+
+

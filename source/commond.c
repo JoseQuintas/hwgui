@@ -257,3 +257,18 @@ HB_FUNC ( HWG_CHOOSECOLOR )
    else
       hb_ret();
 }
+
+
+unsigned long Get_SerialNumber(char* RootPathName)
+{
+   unsigned long SerialNumber;
+
+   GetVolumeInformation(RootPathName, NULL, 0, &SerialNumber,
+                        NULL, NULL, NULL, 0);
+   return SerialNumber;
+}
+
+HB_FUNC( HDGETSERIAL)
+{
+   hb_retnl( Get_SerialNumber(hb_parc(1)) );
+}

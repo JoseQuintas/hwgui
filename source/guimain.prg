@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.5 2004-03-16 19:07:44 sandrorrfreire Exp $
+ * $Id: guimain.prg,v 1.6 2004-03-22 21:15:03 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -253,7 +253,14 @@ return cResult
 
 Function Hwg_GetIni( cSection, cEntry, cDefault, cFile )
 RETURN GetPrivateProfileString(cSection, cEntry, cDefault, cFile )
-
  
 Function Hwg_WriteIni( cSection, cEntry, cValue, cFile )
 RETURN( WritePrivateProfileString( cSection, cEntry, cValue, cFile ) )
+
+Function SetHelpFileName ( cNewName )
+   Static cName := ""
+   Local cOldName := cName
+   if cNewName <> Nil
+      cName := cNewName
+   endif
+return cOldName

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.5 2004-03-16 18:33:59 alkresin Exp $
+ * $Id: hdialog.prg,v 1.6 2004-03-22 21:15:03 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -26,7 +26,8 @@ Static aMessModalDlg := { ;
          { WM_ERASEBKGND,{|o,w|DlgEraseBk(o,w)} },          ;
          { WM_DESTROY,{|o|DlgDestroy(o)} },                 ;
          { WM_ENTERIDLE,{|o,w,l|DlgEnterIdle(o,w,l)} },     ;
-         { WM_ACTIVATE,{|o,w,l|DlgActivate(o,w,l)} }        ;
+         { WM_ACTIVATE,{|o,w,l|DlgActivate(o,w,l)} },       ;
+         { WM_HELP,{|o,w,l|DlgHelp(o,w,l)} }                ;
       }
 
 
@@ -42,7 +43,8 @@ Static aMessDlg := { ;
          { WM_DESTROY,{|o|DlgDestroy(o)} },                 ;
          { WM_ERASEBKGND,{|o,w|DlgEraseBk(o,w)} },          ;
          { WM_ENTERIDLE,{|o,w,l|DlgEnterIdle(o,w,l)} },     ;
-         { WM_NCACTIVATE,{|o,w,l|DlgActivate(o,w,l)} }      ;
+         { WM_NCACTIVATE,{|o,w,l|DlgActivate(o,w,l)} },     ;
+         { WM_HELP,{|o,w,l|DlgHelp(o,w,l)} }                ;
       }
 
 Static aMessPsp := { ;
@@ -647,3 +649,14 @@ Local i, aKeys
    ENDIF
 
 Return .T.
+
+Function DlgHelp( oDlg,wParam,lParam )
+    Local oCtrl
+    
+    if ! Empty(SetHelpFileName())
+        oCtrl := oDlg:FindControl( nil, GetHelpData( lParam ) )
+        if oCtrl != nil
+            WinHelp ( oDlg:handle, SetHelpFileName(), iif( Empty(oCtrl:HelpId), 3, 1), oCtrl:helpid )
+        EndIf
+    endif        
+Return 0

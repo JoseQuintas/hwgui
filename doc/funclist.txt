@@ -21,6 +21,7 @@ GUIMAIN.PRG:
   HdSerial( cDrive )
   Hwg_GetIni
   Hwg_WriteIni
+  SetHelpFileName()
 
 HOWNBTN.PRG
   SetOwnBtnSelected( aBtn )
@@ -163,7 +164,8 @@ MISC.C
   Shellabout 
   Getdesktopwidth
   Getdesktopheight
-
+  Gethelpdata()
+  WinHelp()  
 
 WBROWSE.C:
   Setscrollinfo

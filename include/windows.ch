@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.7 2004-03-15 18:51:17 alkresin Exp $
+ *$Id: windows.ch,v 1.8 2004-03-22 21:15:03 rodrigo_moreno Exp $
  */
 
 #define WM_CREATE                       1
@@ -26,7 +26,7 @@
 #define WM_WINDOWPOSCHANGING            70   // 0x0046
 
 #define WM_NOTIFY                       78   // 0x004E
-
+#define WM_HELP	                        83
 #define WM_SETICON                      128    // 0x0080
 
 #define WM_NCCREATE                     129

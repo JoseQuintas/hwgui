@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.6 2004-03-22 09:56:54 alkresin Exp $
+ * $Id: misc.c,v 1.7 2004-03-22 21:15:03 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -332,5 +332,39 @@ HB_FUNC (GETDESKTOPWIDTH)
 HB_FUNC (GETDESKTOPHEIGHT)
 {
    hb_retni ( GetSystemMetrics(SM_CYSCREEN) ) ;
+}
+
+HB_FUNC ( GETHELPDATA )
+{
+   hb_retnl( (LONG) (((HELPINFO FAR *) hb_parnl(1))->hItemHandle) );
+}
+
+HB_FUNC ( WINHELP )
+{
+    DWORD context;
+    UINT style ;
+
+    int x = hb_parni(3);
+
+    switch( x )
+    {
+        case 0:  
+            style = HELP_FINDER ; 
+            context = 0 ; 
+            break;
+        case 1:  
+            style = HELP_CONTEXT ; 
+            context = hb_parni(4) ; 
+            break;
+        case 2:  
+            style = HELP_CONTEXTPOPUP ; 
+            context = hb_parni(4) ; 
+            break;
+        default: 
+            style = HELP_CONTENTS ; 
+            context = 0 ;
+    }
+ 
+    hb_retni(WinHelp(( HWND )hb_parnl ( 1 ), (LPCTSTR)hb_parc( 2 ), style, context));
 }
 

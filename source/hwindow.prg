@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.13 2004-03-16 15:56:59 alkresin Exp $
+ *$Id: hwindow.prg,v 1.14 2004-03-22 21:15:03 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -44,6 +44,7 @@ CLASS HCustomWindow INHERIT HObject
    DATA bLostFocus
    DATA bOther
    DATA cargo
+   DATA HelpId   INIT 0   
    
    METHOD AddControl( oCtrl ) INLINE Aadd( ::aControls,oCtrl )
    METHOD DelControl( oCtrl )
@@ -87,7 +88,7 @@ CLASS HWindow INHERIT HCustomWindow
    DATA lMaximize INIT .F.
 
    METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;
-          bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp, lMaximize )
+          bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,lMaximize,cHelp )
    METHOD Activate( lShow )
    METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu )
    METHOD AddItem( oWnd )
@@ -100,7 +101,7 @@ ENDCLASS
 
 METHOD NEW( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;
                   bInit,bExit,bSize, ;
-                  bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp, lMaximize) CLASS HWindow
+                  bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,lMaximize,cHelp) CLASS HWindow
    Local hParent
    Local oWndClient
 
@@ -138,6 +139,10 @@ METHOD NEW( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;
       ::handle := Hwg_InitMainWindow( ::szAppName,cTitle,cMenu,    ;
               Iif(oIcon!=Nil,oIcon:handle,Nil),Iif(oBmp!=Nil,-1,clr),::Style,::nLeft, ;
               ::nTop,::nWidth,::nHeight )
+    
+      if cHelp != NIL
+         SetHelpFileName(cHelp)
+      endif              
 
    ELSEIF lType == WND_MDI
 

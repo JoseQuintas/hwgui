@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.5 2004-11-14 13:54:00 alkresin Exp $
+ * $Id: hprinter.prg,v 1.6 2004-11-14 15:25:01 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -22,6 +22,10 @@ CLASS HPrinter INHERIT HObject
    DATA nWidth, nHeight
    DATA nHRes, nVRes                     // Resolution ( pixels/mm )
 
+   DATA lmm  INIT .F.
+   DATA nCurrPage, oTrackV, oTrackH
+   DATA nZoom, xOffset, yOffset, x1, y1, x2, y2
+
    METHOD New( cPrinter,lmm )
    METHOD AddFont( fontName, nHeight ,lBold, lItalic, lUnderline )
    METHOD SetFont( oFont )  INLINE SelectObject( ::hDC,oFont:handle )
@@ -38,11 +42,6 @@ CLASS HPrinter INHERIT HObject
    METHOD Line( x1,y1,x2,y2,oPen )
    METHOD Say( cString,x1,y1,x2,y2,nOpt,oFont )
    METHOD Bitmap( x1,y1,x2,y2,nOpt,hBitmap )
-
-   HIDDEN:
-      DATA lmm  INIT .F.
-      DATA nCurrPage, oTrackV, oTrackH
-      DATA nZoom, xOffset, yOffset, x1, y1, x2, y2
 
 ENDCLASS
 

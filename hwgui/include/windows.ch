@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.4 2003-12-29 20:20:43 lculik Exp $
+ *$Id: windows.ch,v 1.5 2004-02-25 12:17:15 lculik Exp $
  */
 
 #define WM_CREATE                       1

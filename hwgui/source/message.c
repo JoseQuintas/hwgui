@@ -1,5 +1,5 @@
 /*
- *$Id: message.c,v 1.3 2004-02-07 15:24:22 lculik Exp $
+ *$Id: message.c,v 1.4 2004-02-25 12:17:15 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level messages functions

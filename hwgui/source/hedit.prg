@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.3 2003-11-15 08:34:32 alkresin Exp $
+ *$Id: hedit.prg,v 1.4 2004-02-25 12:17:15 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class

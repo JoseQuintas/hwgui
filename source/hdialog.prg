@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.15 2004-04-30 10:41:23 alkresin Exp $
+ * $Id: hdialog.prg,v 1.16 2004-04-30 18:53:29 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -376,7 +376,7 @@ Return -1
 Static Function DlgSize( oDlg,wParam,lParam )
 Local aControls, iCont
 
-   aControls := GetWindowRect( hWnd )
+   aControls := GetWindowRect( oDlg:handle )
    oDlg:nWidth  := aControls[3]-aControls[1]
    oDlg:nHeight := aControls[4]-aControls[2]
    IF oDlg:bSize != Nil .AND. ;

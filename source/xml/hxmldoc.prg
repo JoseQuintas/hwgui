@@ -1,5 +1,5 @@
 /*
- * $Id: hxmldoc.prg,v 1.3 2004-04-18 14:03:56 alkresin Exp $
+ * $Id: hxmldoc.prg,v 1.4 2004-04-30 18:53:29 alkresin Exp $
  *
  * Harbour XML Library
  * HXmlDoc class
@@ -111,17 +111,23 @@ Local i, s, lNewLine
    ENDIF
 Return .T.
 
-METHOD Find( cTitle,nStart ) CLASS HXMLNode
+METHOD Find( cTitle,nStart,block ) CLASS HXMLNode
 Local i
 
    IF nStart == Nil
       nStart := 1
    ENDIF
-   i := Ascan( ::aItems,{|a|Valtype(a)!="C".AND.a:title==cTitle},nStart )
-   IF i != 0
-      nStart := i
-      Return ::aItems[i]
-   ENDIF
+   DO WHILE .T.
+      i := Ascan( ::aItems,{|a|Valtype(a)!="C".AND.a:title==cTitle},nStart )
+      IF i == 0
+         EXIT
+      ELSE
+         nStart := i
+         IF block == Nil .OR. Eval( block,::aItems[i] )
+            Return ::aItems[i]
+         ENDIF
+      ENDIF
+   ENDDO
 
 Return Nil
 

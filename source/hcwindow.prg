@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.1 2004-10-19 11:23:44 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.2 2004-10-21 09:12:34 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -129,6 +129,7 @@ Return Nil
 METHOD onEvent( msg, wParam, lParam )  CLASS HCustomWindow
 Local i
 
+   // Writelog( "== "+::Classname()+Str(msg)+Iif(wParam!=Nil,Str(wParam),"Nil")+Iif(lParam!=Nil,Str(lParam),"Nil") )
    IF ( i := Ascan( aCustomEvents[1],msg ) ) != 0
       Return Eval( aCustomEvents[2,i], Self, wParam, lParam )
    ELSEIF ::bOther != Nil
@@ -161,8 +162,8 @@ Local iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res, handle, oItem
                  Eval( oCtrl:bAction, oCtrl, GetCurrentTab( oCtrl:handle ) )
               endif
          CASE ( nCode := GetNotifyCode( lParam ) ) == TCN_SETFOCUS
-              if oCtrl != Nil .AND. oCtrl:bGotFocus != nil
-                 Eval( oCtrl:bGotFocus, oCtrl, GetCurrentTab( oCtrl:handle ) )
+              if oCtrl != Nil .AND. oCtrl:bGetFocus != nil
+                 Eval( oCtrl:bGetFocus, oCtrl, GetCurrentTab( oCtrl:handle ) )
               endif
          CASE ( nCode := GetNotifyCode( lParam ) ) == TCN_KILLFOCUS
               if oCtrl != Nil .AND. oCtrl:bLostFocus != nil

@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.14 2004-10-19 05:43:42 alkresin Exp $
+ *$Id: htab.prg,v 1.15 2004-10-21 09:12:34 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -32,7 +32,7 @@ CLASS HTab INHERIT HControl
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC,;
-                  bClick, bGotFocus, bLostFocus )
+                  bClick, bGetFocus, bLostFocus )
    METHOD Activate()
    METHOD Init()
    METHOD SetTab( n )
@@ -49,7 +49,7 @@ CLASS HTab INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC,bClick, bGotFocus, bLostFocus  ) CLASS HTab
+                  oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC,bClick, bGetFocus, bLostFocus  ) CLASS HTab
 LOCAL i, aBmpSize
 
    nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP )
@@ -62,7 +62,7 @@ LOCAL i, aBmpSize
    ::bChange := bChange
    ::bChange2 := bChange
 
-   ::bGetFocus :=IIf( bGotFocus==Nil, Nil, bGotFocus)
+   ::bGetFocus :=IIf( bGetFocus==Nil, Nil, bGetFocus)
    ::bLostFocus:=IIf( bLostFocus==Nil, Nil, bLostFocus)
    ::bAction   :=IIf( bClick==Nil, Nil, bClick)
 

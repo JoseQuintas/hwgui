@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.10 2004-05-11 13:51:34 rodrigo_moreno Exp $
+ * $Id: hcombo.prg,v 1.11 2004-05-11 17:17:41 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -48,14 +48,17 @@ ENDCLASS
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,oFont, ;
                   bInit,bSize,bPaint,bChange,cToolt,lEdit,lText ) CLASS HComboBox
 
-   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), IIF( lEdit, CBS_DROPDOWN, CBS_DROPDOWNLIST)  )
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  bSize,bPaint,ctoolt )
-   
-   ::lEdit := lEdit   
+   if lEdit == Nil; lEdit := .f.; endif
+   if lText == Nil; lText := .f.; endif
+
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), iif( lEdit, CBS_DROPDOWN, CBS_DROPDOWNLIST)  )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, bSize,bPaint,ctoolt )
+      
+   ::lEdit := lEdit
    ::lText := lText
+
    if lEdit
-      ::lText := .T.
+      ::lText := .t.
    endif
    
    if ::lText

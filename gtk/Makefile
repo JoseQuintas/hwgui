@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 2005-01-14 06:29:14 alkresin Exp $
+# $Id: Makefile,v 1.3 2005-01-14 11:23:20 alkresin Exp $
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 HRB_DIR = /apps/harbour
@@ -31,6 +31,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hdialog.o \
    $(OBJ_DIR)/hedit.o \
    $(OBJ_DIR)/hfrmtmpl.o \
+   $(OBJ_DIR)/hradio.o \
    $(OBJ_DIR)/htimer.o \
    $(OBJ_DIR)/hupdown.o \
    $(OBJ_DIR)/hwindow.o \
@@ -103,6 +104,11 @@ $(OBJ_DIR)/hfrmtmpl.c  : hfrmtmpl.prg
 $(OBJ_DIR)/htimer.o  : $(OBJ_DIR)/htimer.c
 
 $(OBJ_DIR)/htimer.c  : htimer.prg
+	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
+
+$(OBJ_DIR)/hradio.o  : $(OBJ_DIR)/hradio.c
+
+$(OBJ_DIR)/hradio.c  : hradio.prg
 	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
 
 $(OBJ_DIR)/hupdown.o  : $(OBJ_DIR)/hupdown.c

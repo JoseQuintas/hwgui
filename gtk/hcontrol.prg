@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.1 2005-01-12 11:56:33 alkresin Exp $
+ *$Id: hcontrol.prg,v 1.2 2005-01-14 11:23:20 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -352,7 +352,4 @@ Local hDC := drawInfo[3], x1 := drawInfo[4], y1 := drawInfo[5], x2 := drawInfo[6
 Return Nil
 
 CLASS HFont
-ENDCLASS
-
-CLASS HRadioGroup
 ENDCLASS

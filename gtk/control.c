@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.2 2005-01-14 06:29:14 alkresin Exp $
+ * $Id: control.c,v 1.3 2005-01-14 11:23:20 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -100,7 +100,10 @@ HB_FUNC( CREATEBUTTON )
    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
    if( ulStyle & BS_AUTORADIOBUTTON )
    {
-      // hCtrl = gtk_radio_button_new_with_label( cTitle );
+      GSList * group = (GSList*)hb_parnl(2);
+      hCtrl = gtk_radio_button_new_with_label( group,cTitle );
+      group = gtk_radio_button_get_group( (GtkRadioButton*)hCtrl );
+      hb_stornl( (LONG)group,2 );
    }  
    else if( ulStyle & BS_AUTO3STATE )
       hCtrl = gtk_check_button_new_with_label( cTitle );

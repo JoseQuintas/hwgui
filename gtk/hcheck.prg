@@ -1,5 +1,5 @@
 /*
- *$Id: hcheck.prg,v 1.1 2005-01-12 11:56:33 alkresin Exp $
+ *$Id: hcheck.prg,v 1.2 2005-01-14 11:23:20 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HCheckButton class 
@@ -91,13 +91,16 @@ Local var
 Return Nil
 
 Static Function __Valid( oCtrl )
+Local res
 
    oCtrl:value := hwg_IsButtonChecked( oCtrl:handle )
 
    IF oCtrl:bSetGet != Nil
       Eval( oCtrl:bSetGet,oCtrl:value, oCtrl )
    ENDIF
-   IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl )
+   IF oCtrl:bLostFocus != Nil .AND. ;
+         Valtype( res := Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl ) ) == "L" ;
+	 .AND. !res
       SetFocus( oCtrl:handle )
    ENDIF
 
@@ -110,8 +113,8 @@ Local res
 
    IF oCtrl:bGetFocus != Nil 
       res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
-      IF !res
-         // GetSkip( oCtrl:oParent,oCtrl:handle,1 )
+      IF Valtype(res) == "L" .AND. !res
+         GetSkip( oCtrl:oParent,oCtrl:handle,1 )
       ENDIF
       Return res
    ENDIF

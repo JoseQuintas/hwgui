@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.9 2004-05-28 14:54:24 sandrorrfreire Exp $
+ * $Id: printdos.prg,v 1.10 2004-07-12 16:05:34 sandrorrfreire Exp $
  *
  * CLASS PrintDos
  *
@@ -380,6 +380,8 @@ Local oFont := HFont():Add( "Courier New",0,-13 )
 Local oText := {"" }
 Local oDlg
 Local oEdit 
+Local oPrt:= iif(Empty(::oPorta), "LPT1", ::oPorta)
+ 
 IF han <> - 1
    DO WHILE .T.
       stroka := RDSTR( han,@strbuf,@poz,2052 )
@@ -387,8 +389,11 @@ IF han <> - 1
          EXIT
       ENDIF
       IF Left( stroka,1 ) == Chr(12)
-         AADD(oText,"")
-         ++oPage
+         If ::oAns2Oem
+            AADD(ANSITOOEM(oText),"")
+         Else
+            AADD(oText,"")
+         EndIf
       ENDIF
       oText[oPage]+=stroka + Chr(13) + Chr(10)
       oCol:=oCol+30  
@@ -411,16 +416,16 @@ INIT DIALOG oDlg TITLE cTitle ;
 //       COLOR 16711680 BACKCOLOR 16777215  //Black to Write      
    @ 6, 30 BUTTON "<<"    ON CLICK {||nPage:=PrintDosAnt(nPage,oText)} SIZE 69,32 
    @ 6, 80 BUTTON ">>"    ON CLICK {||nPage:=PrintDosNext(oPage,nPage,oText)} SIZE 69,32 
-   @ 6,130 BUTTON "Print" ON CLICK {||PrintDosPrint(oText)} SIZE 69,32 
+   @ 6,130 BUTTON "Print" ON CLICK {||PrintDosPrint(oText,oPrt)} SIZE 69,32 
    @ 6,180 BUTTON "Close" ON CLICK {||EndDialog()} SIZE 69,32 
 
    oDlg:Activate()
  
 Return .T.
 
-Static Function PrintDosPrint(oText)
+Static Function PrintDosPrint(oText, oPrt)
 Local i
-Local nText:=fCreate("LPT1")
+Local nText:=fCreate(oPrt)
 FOR i:=1 to Len(oText)
     fWrite( nText, oText[i])
 NEXT   

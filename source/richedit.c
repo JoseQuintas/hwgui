@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.3 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: richedit.c,v 1.4 2004-03-19 22:20:42 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -12,7 +12,7 @@
 
 #define _WIN32_WINNT 0x0400
 #define _WIN32_IE    0x0400
-#define OEMRESOURCE
+//#define OEMRESOURCE
 #include <windows.h>
 #if defined(__MINGW32__)
    #include <prsht.h>
@@ -70,7 +70,7 @@ HB_FUNC ( RE_SETCHARFORMAT )
 {
    HWND hCtrl = (HWND) hb_parnl(1);
    CHARRANGE chrOld, chrNew;
-   CHARFORMAT cf;
+   CHARFORMAT2 cf;
    PHB_ITEM pArr;
 
    SendMessage( hCtrl, EM_EXGETSEL, 0, (LPARAM) &chrOld );
@@ -88,8 +88,8 @@ HB_FUNC ( RE_SETCHARFORMAT )
          chrNew.cpMax = hb_itemGetNL( pArr1->item.asArray.value->pItems + 1 )-1;
          SendMessage( hCtrl, EM_EXSETSEL, 0, (LPARAM) &chrNew );
 
-         memset( &cf, 0, sizeof(CHARFORMAT) );
-         cf.cbSize = sizeof(CHARFORMAT);
+         memset( &cf, 0, sizeof(CHARFORMAT2) );
+         cf.cbSize = sizeof(CHARFORMAT2);
          if( ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 2) )->type != HB_IT_NIL )
          {
             cf.crTextColor = (COLORREF) hb_itemGetNL( pArr1->item.asArray.value->pItems + 2 );
@@ -130,8 +130,8 @@ HB_FUNC ( RE_SETCHARFORMAT )
       chrNew.cpMax = hb_parnl(3)-1;
       SendMessage( hCtrl, EM_EXSETSEL, 0, (LPARAM) &chrNew );
 
-      memset( &cf, 0, sizeof(CHARFORMAT) );
-      cf.cbSize = sizeof(CHARFORMAT);
+      memset( &cf, 0, sizeof(CHARFORMAT2) );
+      cf.cbSize = sizeof(CHARFORMAT2);
 
       if( !ISNIL(4) )
       {
@@ -178,30 +178,30 @@ HB_FUNC ( RE_SETCHARFORMAT )
  */
 HB_FUNC ( RE_SETDEFAULT )
 {
-   HWND hCtrl = (HWND) hb_parnl(1);
-   CHARFORMAT cf;
+   HWND hCtrl = ( HWND ) hb_parnl( 1 );
+   CHARFORMAT2 cf ={ 0 };
+   cf.cbSize = sizeof( CHARFORMAT2 );
 
-   memset( &cf, 0, sizeof(CHARFORMAT) );
-   cf.cbSize = sizeof(CHARFORMAT);
-
-   if( !ISNIL(2) )
+   if( ISNUM( 2 ) )
    {
-      cf.crTextColor = (COLORREF) hb_parnl(2);
+      cf.crTextColor = (COLORREF) hb_parnl( 2 );
       cf.dwMask |= CFM_COLOR;
    }
-   if( !ISNIL(3) )
-   {
-      strcpy( cf.szFaceName, hb_parc(3) );
+   if( ISCHAR( 3 ) )
+   {     
+      strcpy( cf.szFaceName, hb_parc( 3 ));
       cf.dwMask |= CFM_FACE;
    }
-   if( !ISNIL(4) )
+
+   if( ISNUM( 4 ) )
    {
-      cf.yHeight = hb_parnl(4);
+      cf.yHeight = hb_parnl( 4 );
       cf.dwMask |= CFM_SIZE;
    }
-   if( !ISNIL(5) )
+
+   if( ISNUM( 5 ) )
    {
-      cf.bCharSet = hb_parnl(5);
+      cf.bCharSet = hb_parnl( 5 );
       cf.dwMask |= CFM_CHARSET;
    }
 

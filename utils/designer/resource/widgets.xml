@@ -429,8 +429,8 @@
 
    <data>
       <property name="Caption">
-         <code2><![CDATA[ oCtrl:title := value ]]></code2>
-         <code3><![CDATA[ SetWindowText( oCtrl:handle, value ) ]]></code3>
+         <code2><![CDATA[ oCtrl:title := Iif(value==Nil,"",value) ]]></code2>
+         <code3><![CDATA[ SetWindowText( oCtrl:handle,oCtrl:title ) ]]></code3>
       </property>
       <property name="Left">
          <code2><![CDATA[ oCtrl:nLeft := Val(value) ]]></code2>

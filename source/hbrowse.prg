@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.28 2004-06-11 18:31:46 rodrigo_moreno Exp $
+ * $Id: hbrowse.prg,v 1.29 2004-06-17 15:51:56 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -197,7 +197,7 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
    ::bGetFocus   := bGFocus
    ::bLostFocus  := bLFocus
    
-   ::lAppable    := lAppend
+   ::lAppable    := Iif( lAppend==Nil,.F.,lAppend )
    ::lAutoEdit   := lAutoedit
    ::bUpdate     := bUpdate
    ::bKeyDown    := bKeyDown

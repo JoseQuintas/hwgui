@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.8 2004-06-15 10:40:50 alkresin Exp $
+ * $Id: hformgen.prg,v 1.9 2004-06-17 15:51:56 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -226,7 +226,7 @@ Private value, oCtrl
    ENDIF
    FOR i := 1 TO Len( ::aProp )
       value := ::aProp[ i,2 ]
-      IF value != Nil .AND. !Empty( value )
+      IF value != Nil // .AND. !Empty( value )
          cPropertyName := Lower( ::aProp[ i,1 ] )
          j := Ascan( aDataDef, {|a|a[1]==cPropertyName} )
          IF j != 0 .AND. aDataDef[ j,3 ] != Nil

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.9 2004-06-15 10:40:50 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.10 2004-06-17 15:51:56 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -325,7 +325,7 @@ Local aCtrls := { ;
 Local i, j, oCtrl, stroka, varname, xProperty, block, cType, cPName
 Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName
 MEMVAR oPrnt, nStyle, nLeft, nTop, nWidth, nHeight, oFont, lNoBorder, bSetGet
-MEMVAR name, nMaxLines, nLength, lVertical, nType, brwType, TickStyle, TickMarks, Tabs
+MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs
 
    IF nCtrl == 0
       IF Lower( oCtrlTmpl:cClass ) == "pagesheet"
@@ -423,7 +423,7 @@ MEMVAR name, nMaxLines, nLength, lVertical, nType, brwType, TickStyle, TickMarks
    ELSEIF oCtrlTmpl:cClass == "line"
       nLength := Iif( lVertical==Nil.OR.!lVertical, nWidth, nHeight )
    ELSEIF oCtrlTmpl:cClass == "browse"
-      nType := Iif( brwType == "Dbf",BRW_DATABASE,BRW_ARRAY )
+      brwType := Iif( brwType == "Dbf",BRW_DATABASE,BRW_ARRAY )
    ELSEIF oCtrlTmpl:cClass == "trackbar"
       IF TickStyle == Nil .OR. TickStyle == "Auto"
          TickStyle := TBS_AUTOTICKS

@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.5 2004-05-12 15:50:51 lculik Exp $
+ * $Id: hcheck.prg,v 1.6 2004-05-16 16:47:15 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -31,7 +31,7 @@ ENDCLASS
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
                   bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor,bwhen ) CLASS HCheckButton
 
-   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_AUTOCHECKBOX+WS_TABSTOP+BS_NOTIFY )
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_AUTOCHECKBOX+WS_TABSTOP )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor )
 

@@ -10,7 +10,6 @@
 #include "HBClass.ch"
 #include "guilib.ch"
 
-
 CLASS HCheckButton INHERIT HControl
 
    CLASS VAR winclass   INIT "BUTTON"
@@ -22,6 +21,7 @@ CLASS HCheckButton INHERIT HControl
    METHOD Activate()
    METHOD Redefine( oWnd,nId,vari,bSetGet,oFont,bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor )
    METHOD Init()
+   METHOD Refresh()     
 
 ENDCLASS
 
@@ -101,6 +101,15 @@ METHOD Init() CLASS HCheckButton
    ENDIF
 Return Nil
 
+METHOD Refresh() CLASS HCheckButton
+   Local var
+   IF ::bSetGet != Nil
+       var := Eval( ::bSetGet,,nil )
+       ::value := Iif( var==Nil,.F.,var ) 
+   ENDIF
+
+   CheckDlgButton( ::oParent:handle,::id,Iif( ::value==Nil,.F.,::value) )
+Return Nil
 
 Static Function __Valid( oCtrl )
 

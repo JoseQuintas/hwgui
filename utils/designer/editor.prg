@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.12 2004-12-08 08:23:17 alkresin Exp $
+ * $Id: editor.prg,v 1.13 2004-12-08 10:53:04 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -177,7 +177,7 @@ Local cParamString
          ENDMENU
          MENUITEM "&Configure" ACTION EditColors()
       ENDMENU
-      MENUITEM "&Parameters" ACTION Iif(!Empty(cParamString),editShow("Parameters "+cParamString+Chr(10)+oEdit:Gettext()),.F. )
+      MENUITEM "&Parameters" ACTION Iif(!Empty(cParamString).and.Upper(Left(oEdit:Gettext(),10))!="PARAMETERS",(editShow("Parameters "+cParamString+Chr(10)+oEdit:Gettext()),oEdit:lChanged:=.T.),.F.)
       MENUITEM "&Exit" ACTION oDlg:Close()
    ENDMENU
 

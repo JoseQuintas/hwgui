@@ -176,6 +176,9 @@ MISC.C
   IsCapsLockActive 
   IsNumLockActive  
   IsScrollLockActive 
+  DeleteFile
+  GetFileAttributes
+  SetFileAttributes
 
 WBROWSE.C:
   Setscrollinfo

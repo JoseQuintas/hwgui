@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ *$Id: hedit.prg,v 1.3 2003-11-15 08:34:32 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -183,7 +183,10 @@ Local oEdit, oParent, nPos, nctrl, cKeyb
          Return -1
       ENDIF
       IF oEdit:bSetGet != Nil
-          Return GetApplyKey( oEdit,Chr(wParam) )
+         // ------- Change by NightWalker - Check HiBit -------
+         If (wParam <129).or.!Empty( oEdit:cPicFunc ).OR.!Empty( oEdit:cPicMask )
+            Return GetApplyKey( oEdit,Chr(wParam) )
+         Endif
       ENDIF
 
    ELSEIF msg == WM_KEYDOWN 
@@ -201,7 +204,7 @@ Local oEdit, oParent, nPos, nctrl, cKeyb
                Return 0
             ENDIF
          ELSEIF wParam == 39     // KeyRight
-            IF !HEdit():lCtrl .AND. !IsCtrlShift()
+            IF !IsCtrlShift()
                oEdit:lFirst := .F.
                Return KeyRight( oParent:FindControl(,hEdit) )
             ENDIF
@@ -216,7 +219,7 @@ Local oEdit, oParent, nPos, nctrl, cKeyb
                   Return 0
                ENDIF
          ELSEIF wParam == 45     // Insert
-            IF !HEdit():lCtrl .AND. !IsCtrlShift()
+            IF !IsCtrlShift()
                Set( _SET_INSERT, ! Set( _SET_INSERT ) )
             ENDIF
          ELSEIF wParam == 46     // Del

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.108 2004-04-27 09:58:29 alkresin Exp $
+ * $Id: Changelog,v 1.109 2004-04-28 19:50:57 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,7 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
-
+2004-04-28 16-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/menu_c.c
+    new function SetMenuItemBitmaps
+  * source/menu.prg
+    new function HwG_SetMenuItemBitmaps  
+  + samples/TestMenuBitmap.prg
+    sample to insert Bitmap in Menu
+    Please verify the Size of itemmenu
+       
 2004-04-27 14:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/guimain.prg
     ! Bug fixed in InitControls()
@@ -826,12 +834,12 @@
   * include/guilib.h
     include/guilib.ch
     minor update
-    All provided by  Jos‚ Algusto Junior
+    All provided by  JosÂ Algusto Junior
 
 2003-12-29 18:20 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   + source/c_ipaddr.c
     source/_winmsg.c
-     New function to get ip. Provided by Jos‚ Augusto Junior
+     New function to get ip. Provided by JosÂ Augusto Junior
   * source/hwindow.prg
     Changes: Modified the the DefXXXWndProc ( hWindow.prg ) and  MainWndProc  (window.c) 
        The unprocessed messages of the windows return 0, not -1

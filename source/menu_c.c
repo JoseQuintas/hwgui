@@ -283,3 +283,8 @@ HB_FUNC( SETMENUCAPTION )
    else
       hb_retl( 0 );
 }
+
+HB_FUNC( SETMENUITEMBITMAPS )
+{
+   hb_retl(SetMenuItemBitmaps( (HMENU) hb_parnl(1), hb_parni(2), MF_BYCOMMAND, (HBITMAP) hb_parnl(3), (HBITMAP) hb_parnl(4))) ;
+}

@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.7 2004-04-26 08:55:07 alkresin Exp $
+ * $Id: menu.prg,v 1.8 2004-04-28 19:50:57 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -236,3 +236,11 @@ Local aMenu, i
    Aadd( aMenu, { bItem,Nil,nId,.T. } )
    Aadd( _aAccel, { accFlag,accKey,nId } )
 Return .T.
+
+
+Function Hwg_SetMenuItemBitmaps( aMenu, nId, abmp1, abmp2 )
+Local aSubMenu := Hwg_FindMenuItem( aMenu, nId )
+Local oMenu:=aSubMenu
+Iif( aSubMenu == Nil,oMenu:=0, oMenu:=aSubMenu[5] )
+SetMenuItemBitmaps( oMenu, nId, abmp1, abmp2 ) 
+Return Nil

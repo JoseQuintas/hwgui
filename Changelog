@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.25 2004-03-03 12:15:54 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.26 2004-03-03 14:00:40 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -22,12 +22,8 @@
     All provided by  Vitor Mclung 
  
 2004-03-01 11-47 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
-  * errorsys.ch
+  * errorsys.prg
     it presents the error in the screen with xHarbour
-
-2004-02-27 11-47 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
-  * guilib.ch
-    New commands DEFINE LANGUAGE <>
 
 2004-02-26 16-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * makefile.bc

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.59 2004-03-29 05:57:09 alkresin Exp $
+ * $Id: Changelog,v 1.60 2004-03-31 07:28:11 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-03-31 11:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hbrowse.prg
+    * Few changes, proposed by Vlad:
+      - bScrollPos variable has been added to HBrowse to handle the vertical
+        scroll position;
+      - SB_PAGELEFT and SB_PAGERIGHT handling added to DoHScroll();
+      - handling of bEnter is changed.
+  * source/hdatepic.prg
+    ! Small fix, provided by Alexey Mironenko.
 
 2004-03-29 10:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hbrowse.prg

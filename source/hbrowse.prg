@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.10 2004-03-29 05:57:09 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.11 2004-03-31 07:28:11 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -134,7 +134,7 @@ CLASS HBrowse INHERIT HControl
    DATA tcolorSel,bcolorSel,brushSel
    DATA bSkip,bGoTo,bGoTop,bGoBot,bEof,bBof
    DATA bRcou,bRecno
-   DATA bPosChanged, bLineOut
+   DATA bPosChanged, bLineOut, bScrollPos
    DATA bEnter, bKeyDown, bUpdate
    DATA internal
    DATA alias                                  // Alias name of browsed database
@@ -684,8 +684,8 @@ Local lColumnFont := .F.
             IF !lClear
                IF ::aColumns[fif]:aBitmaps != Nil .AND. !Empty( ::aColumns[fif]:aBitmaps )
                   FOR j := 1 TO Len( ::aColumns[fif]:aBitmaps )
-                     IF Eval( ::aColumns[fif]:aBitmaps[j,1],EVAL( ::aColumns[fif]:block,,Self,fif ),lSelected ) //vlad i change on j
-                        ob := ::aColumns[fif]:aBitmaps[j,2] //vlad i change on j
+                     IF Eval( ::aColumns[fif]:aBitmaps[j,1],EVAL( ::aColumns[fif]:block,,Self,fif ),lSelected )
+                        ob := ::aColumns[fif]:aBitmaps[j,2]
                         IF ob:nHeight > ::height
                            y1 := 0
                            bh := ::height
@@ -751,9 +751,9 @@ METHOD DoHScroll( wParam ) CLASS HBrowse
    GetScrollRange( ::handle, SB_HORZ, @minPos, @maxPos )
    nPos := GetScrollPos( ::handle, SB_HORZ )
 
-   IF nScrollCode == SB_LINELEFT
+   IF nScrollCode == SB_LINELEFT .OR. nScrollCode == SB_PAGELEFT
       LineLeft( Self )
-   ELSEIF nScrollCode == SB_LINERIGHT
+   ELSEIF nScrollCode == SB_LINERIGHT .OR. nScrollCode == SB_PAGERIGHT
       LineRight( Self )
    ENDIF
    IF ::nLeftCol != oldLeft .OR. ::colpos != oldpos
@@ -831,11 +831,8 @@ Local nScrollCode := LoWord( wParam )
 RETURN 0
 
 //----------------------------------------------------//
-METHOD LINEDOWN(lMouse) CLASS HBrowse
+METHOD LINEDOWN( lMouse ) CLASS HBrowse
 Local minPos, maxPos, nPos
-
-   GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-   nPos := GetScrollPos( ::handle, SB_VERT )
 
    Eval( ::bSkip, Self,1 )
    IF Eval( ::bEof,Self )
@@ -864,17 +861,25 @@ Local minPos, maxPos, nPos
    IF !::lAppMode  .OR. ::nLeftCol == 1
       ::internal[1] := SetBit( ::internal[1], 1, 0 )
    ENDIF
-   nPos += Int( (maxPos-minPos)/(::kolz-1) )
-   SetScrollPos( ::handle, SB_VERT, nPos )
+
+   IF ::bScrollPos != Nil
+      Eval( ::bScrollPos, Self, 1, .F. )
+   ELSE
+      GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
+      nPos := GetScrollPos( ::handle, SB_VERT )
+      nPos += Int( (maxPos-minPos)/(::kolz-1) )
+      SetScrollPos( ::handle, SB_VERT, nPos )
+   ENDIF
+
    PostMessage( ::handle, WM_PAINT, 0, 0 )
    SetFocus( ::handle )
+
 RETURN Nil
 
 //----------------------------------------------------//
 METHOD LINEUP() CLASS HBrowse
-   local minPos, maxPos, nPos
-   GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-   nPos := GetScrollPos( ::handle, SB_VERT )
+Local minPos, maxPos, nPos
+
    EVAL( ::bSkip, Self,- 1 )
    IF EVAL( ::bBof,Self )
       EVAL( ::bGoTop,Self )
@@ -888,8 +893,15 @@ METHOD LINEUP() CLASS HBrowse
          InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*::internal[2]-::height, ::x2, ::y1+(::height+1)*::internal[2] )
          InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*::rowPos-::height, ::x2, ::y1+(::height+1)*::rowPos )
       ENDIF
-      nPos -= Int( (maxPos-minPos)/(::kolz-1) )
-      SetScrollPos( ::handle, SB_VERT, nPos )
+
+      IF ::bScrollPos != Nil
+         Eval( ::bScrollPos, Self, -1, .F. )
+      ELSE
+         GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
+         nPos := GetScrollPos( ::handle, SB_VERT )
+         nPos -= Int( (maxPos-minPos)/(::kolz-1) )
+         SetScrollPos( ::handle, SB_VERT, nPos )
+      ENDIF
       ::internal[1] := SetBit( ::internal[1], 1, 0 )
       PostMessage( ::handle, WM_PAINT, 0, 0 )
    ENDIF
@@ -898,7 +910,8 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD PAGEUP() CLASS HBrowse
-   local minPos, maxPos, nPos, step
+Local minPos, maxPos, nPos, step, lBof := .F.
+
    GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
    nPos := GetScrollPos( ::handle, SB_VERT )
    IF ::rowPos > 1
@@ -912,11 +925,20 @@ METHOD PAGEUP() CLASS HBrowse
       EVAL( ::bSkip, Self,- step )
       IF EVAL( ::bBof,Self )
          EVAL( ::bGoTop,Self )
+         lBof := .T.
       ENDIF
       InvalidateRect( ::handle, 0 )
    ENDIF
-   nPos := Max( nPos - Int( (maxPos-minPos)*step/(::kolz-1) ), minPos )
-   SetScrollPos( ::handle, SB_VERT, nPos )
+
+   IF ::bScrollPos != Nil
+      Eval( ::bScrollPos, Self, - step, lBof )
+   ELSE
+      GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
+      nPos := GetScrollPos( ::handle, SB_VERT )
+      nPos := Max( nPos - Int( (maxPos-minPos)*step/(::kolz-1) ), minPos )
+      SetScrollPos( ::handle, SB_VERT, nPos )
+   ENDIF
+
    ::internal[1] := SetBit( ::internal[1], 1, 0 )
    PostMessage( ::handle, WM_PAINT, 0, 0 )
    SetFocus( ::handle )
@@ -924,20 +946,26 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD PAGEDOWN() CLASS HBrowse
-Local minPos, maxPos, nPos, nRows := ::rowCurrCount // Min( ::kolz,::rowCount )
+Local minPos, maxPos, nPos, nRows := ::rowCurrCount
 Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows )
-   GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-   nPos := GetScrollPos( ::handle, SB_VERT )
+
    EVAL( ::bSkip, Self, step )
    ::rowPos := Min( ::kolz, nRows )
-   IF EVAL( ::bEof,Self )
-      EVAL( ::bSkip, Self,- 1 )
-      nPos := maxPos
+
+   IF ::bScrollPos != Nil
+      Eval( ::bScrollPos, Self, step, EVAL( ::bEof,Self ) )
    ELSE
-      nPos := Min( nPos + Int( (maxPos-minPos)*step/(::kolz-1) ), maxPos )
+      GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
+      nPos := GetScrollPos( ::handle, SB_VERT )
+      IF EVAL( ::bEof,Self )
+         EVAL( ::bSkip, Self,- 1 )
+         nPos := maxPos
+      ELSE
+         nPos := Min( nPos + Int( (maxPos-minPos)*step/(::kolz-1) ), maxPos )
+      ENDIF
+      SetScrollPos( ::handle, SB_VERT, nPos )
    ENDIF
-   // writelog( "PageDown: "+str(minpos,3)+"-"+str(maxpos,3)+","+str(npos,3)+"/"+str(step,3)+"/"+str(::kolz) )
-   SetScrollPos( ::handle, SB_VERT, nPos )
+
    InvalidateRect( ::handle, 0 )
    ::internal[1] := SetBit( ::internal[1], 1, 0 )
    PostMessage( ::handle, WM_PAINT, 0, 0 )
@@ -995,11 +1023,15 @@ Local xm := LOWORD(lParam), x1, fif
          nrec := Recno()
          EVAL( ::bSkip, Self, step )
          IF !Eval( ::bEof,Self )
-            GetScrollRange( hBrw, SB_VERT, @minPos, @maxPos )
-            nPos := GetScrollPos( hBrw, SB_VERT )
-            ::rowPos := nLine
-            nPos := Min( nPos + Int( (maxPos-minPos)*step/(::kolz-1) ), maxPos )
-            SetScrollPos( hBrw, SB_VERT, nPos )
+            IF ::bScrollPos != Nil
+               Eval( ::bScrollPos, Self, step, .F. )
+            ELSE
+               GetScrollRange( hBrw, SB_VERT, @minPos, @maxPos )
+               nPos := GetScrollPos( hBrw, SB_VERT )
+               ::rowPos := nLine
+               nPos := Min( nPos + Int( (maxPos-minPos)*step/(::kolz-1) ), maxPos )
+               SetScrollPos( hBrw, SB_VERT, nPos )
+            ENDIF
             res := .T.
          ELSE
             Go nrec
@@ -1124,14 +1156,13 @@ return nil
 
 //----------------------------------------------------//
 METHOD Edit( wParam,lParam ) CLASS HBrowse
-Local fipos,varbuf, x1, y1, fif, lReadExit, rowPos
+Local fipos, lRes, varbuf, x1, y1, fif, lReadExit, rowPos
 Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
 
-   IF ::bEnter != Nil
-      Eval( ::bEnter, Self )
-   ELSE
-      IF ::lEditable
-         fipos := ::colpos + ::nLeftCol - 1 - ::freeze
+   fipos := ::colpos + ::nLeftCol - 1 - ::freeze
+   IF ::bEnter == Nil .OR. ;
+         ( Valtype( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. !lRes )
+      IF ::lEditable        
          oColumn := ::aColumns[fipos]
          IF oColumn:lEditable .AND. ;
               ( oColumn:bWhen = Nil .OR. EVAL( oColumn:bWhen ) )

@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.7 2004-03-17 10:52:39 alkresin Exp $
+ * $Id: hdatepic.prg,v 1.8 2004-03-31 07:28:11 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -44,6 +44,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    ::nTop    := nTop
    ::nWidth  := nWidth
    ::nHeight := nHeight
+   ::tooltip := ctoolt
    ::bInit   := bInit
    ::SetColor( tcolor,bcolor )
 

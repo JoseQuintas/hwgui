@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.36 2004-05-28 16:33:01 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.37 2004-06-01 19:42:21 sandrorrfreire Exp $
  */
 
 #define	WND_MAIN		1
@@ -664,6 +664,7 @@
             [ ON CLICK <bClick> ]   ;
             [ STYLE <nStyle> ]      ;
             [ <flat: FLAT> ]        ;
+            [ <enable: DISABLED> ]        ;
             [ TEXT <cText>          ;
                  [ COLOR <color>] [ FONT <font> ] ;
                  [ COORDINATES  <xt>, <yt>, <widtht>, <heightt> ] ;
@@ -677,7 +678,7 @@
           <height>,<bInit>,<bSize>,<bDraw>, ;
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>,<widtht>,<heightt>, ;
-              <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>, <ctoolt> )
+              <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>, <ctoolt>,!<.enable.> )
 
 
 #xcommand REDEFINE OWNERBUTTON [ <oOwnBtn> ]  ;
@@ -696,12 +697,13 @@
                  [ COORDINATES  <xb>, <yb>, <widthb>, <heightb> ] ;
             ] ;
             [ TOOLTIP <ctoolt> ]    ;
+            [ <enable: DISABLED> ]        ;
           => ;
     [<oOwnBtn> :=] HOWNBUTTON():Redefine( <oWnd>,<nId>, ;
           <bInit>,<bSize>,<bDraw>, ;
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>,<widtht>,<heightt>, ;
-              <bmp>,<.res.>,<xb>, <yb>,<widthb>,<heightb>,<.ltr.>, <ctoolt> )
+              <bmp>,<.res.>,<xb>, <yb>,<widthb>,<heightb>,<.ltr.>, <ctoolt>, !<.enable.>)
 
 #xcommand @ <x>,<y> DATEPICKER [ <oPick> ]  ;
             [ OF <oWnd> ]              ;

@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.6 2004-06-01 19:25:09 sandrorrfreire Exp $
+ * $Id: hownbtn.prg,v 1.7 2004-06-01 19:42:21 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -28,14 +28,14 @@ CLASS HOwnButton INHERIT HControl
                   bInit,bSize,bPaint,bClick,lflat,           ;
                   cText,color,font,xt,yt,widtht,heightt,     ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,      ;
-                  cTooltip )
+                  cTooltip, lEnabled )
 
    METHOD Activate()
    METHOD Init()
    METHOD Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, ;
                   cText,color,font,xt,yt,widtht,heightt,     ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,      ;
-                  cTooltip )
+                  cTooltip, lEnabled ) 
    METHOD Paint()
    METHOD MouseMove( wParam, lParam )
    METHOD MDown()
@@ -52,7 +52,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bInit,bSize,bPaint,bClick,lflat,           ;
                   cText,color,font,xt,yt,widtht,heightt,     ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,      ;
-                  cTooltip ) CLASS HOwnButton
+                  cTooltip, lEnabled  ) CLASS HOwnButton
 
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,,bInit, ;
                   bSize,bPaint,ctooltip )
@@ -69,6 +69,9 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
    ::widtht  := widtht
    ::heightt := heightt
 
+   if lEnabled!=Nil
+      ::lEnabled:=lEnabled
+   endif
    IF bmp != Nil
       ::bitmap  := Iif( lResour.OR.Valtype(bmp)=="N",HBitmap():AddResource( bmp ), HBitmap():AddFile( bmp ) )
    ENDIF
@@ -88,6 +91,10 @@ METHOD Activate CLASS HOwnButton
       ::handle := CreateOwnBtn( ::oParent:handle, ::id, ;
                   ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
+   if !::lEnabled
+      EnableWindow( ::handle, .f. )
+   EndIf
+
    ENDIF
 Return Nil
 
@@ -101,7 +108,7 @@ Return Nil
 METHOD Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, ;
                   cText,color,font,xt,yt,widtht,heightt,     ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,      ;
-                  cTooltip ) CLASS HOwnButton
+                  cTooltip, lEnabled ) CLASS HOwnButton
 
    Super:New( oWndParent,nId,0,0,0,0,0,,bInit, ;
                   bSize,bPaint,ctooltip )
@@ -117,6 +124,10 @@ METHOD Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, ;
    ::yt      := yt
    ::widtht  := widtht
    ::heightt := heightt
+
+   if lEnabled!=Nil
+      ::lEnabled:=lEnabled
+   endif
 
    IF bmp != Nil
       ::bitmap  := Iif( lResour,HBitmap():AddResource( bmp ), HBitmap():AddFile( bmp ) )

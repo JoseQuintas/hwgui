@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.8 2004-11-15 12:36:21 alkresin Exp $
+ * $Id: hprinter.prg,v 1.9 2004-11-15 13:43:00 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -235,7 +235,8 @@ Return Nil
 
 METHOD Preview( cTitle,aBitmaps,aTooltips ) CLASS HPrinter
 Local oDlg, oToolBar, oSayPage, oBtn, oCanvas
-Local oFont := HFont():Add( "Times New Roman",0,-13,700 )  
+Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
+Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] != Nil .AND. aBitmaps[10] )
 
    IF cTitle == Nil; cTitle := "Print preview"; ENDIF
    ::nZoom := 0
@@ -259,31 +260,23 @@ Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
         SIZE oToolBar:nWidth,22 STYLE WS_BORDER+SS_CENTER FONT oFont BACKCOLOR 12507070
 
    @ 3,26 OWNERBUTTON oBtn OF oToolBar ON CLICK {||EndDialog()} ;
-        SIZE oToolBar:nWidth-6,24 TEXT "Exit" FONT oFont FLAT   ;
+        SIZE oToolBar:nWidth-6,24 TEXT "Exit" FONT oFont        ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[1],"Exit Preview")
-   IF aBitmaps != Nil
-      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[2] ), HBitmap():AddFile( aBitmaps[2] ) )
-      oBtn:text   := Nil
-      If aBitmaps[10]<>Nil
-          IF aBitmaps[10]
-             oBtn:lTransp:=.T.
-          ENDIF
-      endif       
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 1 .AND. aBitmaps[2] != Nil
+      oBtn:bitmap  := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[2] ), HBitmap():AddFile( aBitmaps[2] ) )
+      oBtn:text    := Nil
+      oBtn:lTransp := lTransp
    ENDIF
 
    @ 1,53 LINE LENGTH oToolBar:nWidth-1
 
-   @ 3,56 OWNERBUTTON oBtn OF oToolBar ON CLICK {||::PrintMeta()} ;
-        SIZE oToolBar:nWidth-6,24 TEXT "Print" FONT oFont FLAT    ;
+   @ 3,56 OWNERBUTTON oBtn OF oToolBar ON CLICK {||::PrintMeta(::nCurrPage)} ;
+        SIZE oToolBar:nWidth-6,24 TEXT "Print" FONT oFont         ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[2],"Print file")
-   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 2
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 2 .AND. aBitmaps[3] != Nil
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[3] ), HBitmap():AddFile( aBitmaps[3] ) )
       oBtn:text   := Nil
-      If aBitmaps[10]<>Nil
-          IF aBitmaps[10]
-             oBtn:lTransp:=.T.
-          ENDIF
-      endif       
+      oBtn:lTransp := lTransp
    ENDIF
 
    @ 1,83 LINE LENGTH oToolBar:nWidth-1
@@ -291,53 +284,37 @@ Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
    @ 3,86 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,0)} ;
         SIZE oToolBar:nWidth-6,24 TEXT "|<<" FONT oFont FLAT                ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[3],"First page")
-   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 3
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 3 .AND. aBitmaps[4] != Nil
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[4] ), HBitmap():AddFile( aBitmaps[4] ) )
       oBtn:text   := Nil
-      If aBitmaps[10]<>Nil
-          IF aBitmaps[10]
-             oBtn:lTransp:=.T.
-          ENDIF
-      endif       
+      oBtn:lTransp := lTransp
    ENDIF
 
    @ 3,110 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,1)} ;
         SIZE oToolBar:nWidth-6,24 TEXT ">>" FONT oFont FLAT                 ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[4],"Next page")
-   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 4
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 4 .AND. aBitmaps[5] != Nil
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[5] ), HBitmap():AddFile( aBitmaps[5] ) )
       oBtn:text   := Nil
-      If aBitmaps[10]<>Nil
-          IF aBitmaps[10]
-             oBtn:lTransp:=.T.
-          ENDIF
-      endif       
+      oBtn:lTransp := lTransp
    ENDIF
 
    @ 3,134 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,-1)} ;
         SIZE oToolBar:nWidth-6,24 TEXT "<<" FONT oFont FLAT   ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[5],"Previous page")
-   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 5
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 5 .AND. aBitmaps[6] != Nil
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[6] ), HBitmap():AddFile( aBitmaps[6] ) )
       oBtn:text   := Nil
-      If aBitmaps[10]<>Nil
-          IF aBitmaps[10]
-             oBtn:lTransp:=.T.
-          ENDIF
-      endif       
+      oBtn:lTransp := lTransp
    ENDIF
 
    @ 3,158 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,2)} ;
         SIZE oToolBar:nWidth-6,24 TEXT ">>|" FONT oFont FLAT  ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[6],"Last page")
-   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 6
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 6 .AND. aBitmaps[7] != Nil
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[7] ), HBitmap():AddFile( aBitmaps[7] ) )
       oBtn:text   := Nil
-      If aBitmaps[10]<>Nil
-          IF aBitmaps[10]
-             oBtn:lTransp:=.T.
-          ENDIF
-      endif       
+      oBtn:lTransp := lTransp
    ENDIF
 
    @ 1,189 LINE LENGTH oToolBar:nWidth-1
@@ -345,27 +322,19 @@ Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
    @ 3,192 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ResizePreviewDlg(oCanvas,Self,-1)} ;
         SIZE oToolBar:nWidth-6,24 TEXT "(-)" FONT oFont FLAT  ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[7],"Zoom out")
-   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 7
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 7 .AND. aBitmaps[8] != Nil
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[8] ), HBitmap():AddFile( aBitmaps[8] ) )
       oBtn:text   := Nil
-      If aBitmaps[10]<>Nil
-          IF aBitmaps[10]
-             oBtn:lTransp:=.T.
-          ENDIF
-      endif       
+      oBtn:lTransp := lTransp
    ENDIF
 
    @ 3,216 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ResizePreviewDlg(oCanvas,Self,1)} ;
         SIZE oToolBar:nWidth-6,24 TEXT "(+)" FONT oFont FLAT  ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[8],"Zoom in")
-   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 8
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 8 .AND. aBitmaps[9] != Nil
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[9] ), HBitmap():AddFile( aBitmaps[9] ) )
       oBtn:text   := Nil
-      If aBitmaps[10]<>Nil
-          IF aBitmaps[10]
-             oBtn:lTransp:=.T.
-          ENDIF
-      endif       
+      oBtn:lTransp := lTransp
    ENDIF
 
    @ 1,243 LINE LENGTH oToolBar:nWidth-1

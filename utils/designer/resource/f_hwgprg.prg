@@ -45,7 +45,7 @@ PRIVATE stroka := "   @ ", classname, cStyle, i, j, cName, temp, varname, cMetho
     IF oCtrl:oContainer != Nil
       stroka += "OF " + oCtrl:oContainer:GetProp( "Name" ) + " "
     ENDIF
-    stroka +=  "SIZE " + Ltrim( Str(oCtrl:nWidth) ) + "," + Ltrim( Str(oCtrl:nHeight) ) + " "
+   stroka +=  "SIZE " + Ltrim( Str(oCtrl:nWidth) ) + "," + Ltrim( Str(oCtrl:nHeight) ) + " "
     stroka += CallFunc( "Style2Prg", { oCtrl } ) + " "
     IF oCtrl:GetProp( "Textcolor",@j ) != Nil .AND. !IsDefault( oCtrl,oCtrl:aProp[j] )
       stroka += Iif( Empty(cStyle),"",";" + _Chr(10) + Space(8) ) + ;
@@ -103,13 +103,20 @@ Private aClass := { "label", "button", "checkbox", "radiobutton", "editbox", ;
   "group", "datepicker", "updown", "combobox", "line", "toolbar", "ownerbutton", ;
   "browse" }
 Private aName :=  { {"SAY"}, {"BUTTON"}, {"CHECKBOX","GET CHECKBOX"}, {"RADIOBUTTON"}, {"EDITBOX","GET"}, ;
-  {"GROUP"}, {"DATEPICKER","GET DATEPICKER"}, {"UPDOWN","GET UPDOWN"}, ;
+  {"GROUPBOX"}, {"DATEPICKER","GET DATEPICKER"}, {"UPDOWN","GET UPDOWN"}, ;
   {"COMBOBOX","GET COMBOBOX"}, {"LINE"}, {"PANEL"}, {"OWNERBUTTON"}, ;
   {"BROWSE"} }
 
+//  Group subtituido por GroupBox
+//  {"GROUP"}, {"DATEPICKER","GET DATEPICKER"}, {"UPDOWN","GET UPDOWN"}, ;
+
   han := Fcreate( fname )
 
-  Fwrite( han, "FUNCTION " + "_"+Iif(cName!=Nil,cName,"") + _Chr(10)  )
+  //Add the lines to include
+  Fwrite( han,'#include "windows.ch"'+ _Chr(10)  )
+  Fwrite( han,'#include "guilib.ch"' + _Chr(10)+ _Chr(10) )
+
+  Fwrite( han, "FUNCTION " + "_"+Iif(cName!=Nil,cName,"Padrao") + _Chr(10)  )
   // Declare 'Private' variables
   IF cName != Nil
     Fwrite( han, "PRIVATE " + cName )
@@ -153,7 +160,11 @@ Private aName :=  { {"SAY"}, {"BUTTON"}, {"CHECKBOX","GET CHECKBOX"}, {"RADIOBUT
   Fwrite( han, _Chr(10) + _Chr(10) + '   INIT DIALOG oDlg TITLE "' + oForm:oDlg:title + '" ;' + _Chr(10) )
   Fwrite( han, Space(8) + "AT " + Ltrim( Str(oForm:oDlg:nLeft) ) + "," ;
      + Ltrim( Str(oForm:oDlg:nTop) ) + " SIZE " + ;
-       Ltrim( Str(oForm:oDlg:nHeight) ) + "," + Ltrim( Str(oForm:oDlg:nWidth) ) )
+       Ltrim( Str(oForm:oDlg:nWidth) ) + "," + Ltrim( Str(oForm:oDlg:nHeight) ) )
+
+// The line is inverted
+//       Ltrim( Str(oForm:oDlg:nHeight) ) + "," + Ltrim( Str(oForm:oDlg:nWidth) ) )
+
   i := 1
   DO WHILE i <= Len( oForm:aMethods )
     IF oForm:aMethods[i,2] != Nil .AND. !Empty(oForm:aMethods[i,2])

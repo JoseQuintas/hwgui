@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.3 2004-04-20 08:59:34 alkresin Exp $
+ * $Id: errorsys.prg,v 1.4 2005-01-07 16:52:23 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement
@@ -68,6 +68,15 @@ STATIC FUNCTION DefError( oError )
          cMessage += Chr(13)+Chr(10) + "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
       #endif
    ENDDO
+
+   //included aditional informations
+
+   cMessage+=Chr(13)+Chr(10)
+
+   cMessage+=Chr(13)+Chr(10)+hwg_version(1)
+   cMessage+=Chr(13)+Chr(10)+"Date:"+Dtoc(date())
+   cMessage+=Chr(13)+Chr(10)+"Time:"+time()
+
 
    MemoWrit( LogInitialPath + "Error.log", cMessage )
    ErrorPreview( cMessage )

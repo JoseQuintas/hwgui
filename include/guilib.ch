@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.29 2004-05-06 00:57:59 lculik Exp $
+ *$Id: guilib.ch,v 1.30 2004-05-11 13:55:40 rodrigo_moreno Exp $
  */
 
 #define	WND_MAIN		1
@@ -466,9 +466,12 @@
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
+            [ <edit: EDIT> ]           ;
+            [ <text: TEXT> ]           ;
           => ;
     [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
-                  <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt> )
+                  <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,;
+                  <.edit.>,<.text.> )
 
 #xcommand REDEFINE COMBOBOX [ <oCombo> ITEMS ] <aItems> ;
             [ OF <oWnd> ]              ;
@@ -804,11 +807,14 @@
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
+            [ <edit: EDIT> ]           ;
+            [ <text: TEXT> ]           ;
           => ;
     [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<vari>,    ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
-                    <aItems>,<oFont>,,,,<bChange>,<ctoolt> )
+                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
+                    <.edit.>,<.text.> )
 
 #xcommand REDEFINE GET COMBOBOX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;

@@ -1,3 +1,7 @@
+/*
+ *$Id: repmain.h,v 1.2 2004-03-15 18:51:17 alkresin Exp $
+ */
+
 #define FORM_WIDTH       1
 #define FORM_HEIGHT      2
 #define FORM_XKOEF       3

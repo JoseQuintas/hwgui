@@ -1,4 +1,6 @@
 /*
+ * $Id: media_c.c,v 1.5 2004-03-15 18:51:17 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level media functions
  *
@@ -85,10 +87,9 @@ HB_FUNC(  MCISENDCOMMAND )       // ()
 HB_FUNC(  NMCIOPEN )
 {
    MCI_OPEN_PARMS mciOpenParms;
-   DWORD dwFlags = 0;
+   DWORD dwFlags = MCI_OPEN_ELEMENT;
 
    mciOpenParms.lpstrDeviceType = hb_parc( 1 );
-   dwFlags = MCI_OPEN_ELEMENT;
 
    if( ISCHAR( 2 ) )
    {

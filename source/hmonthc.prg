@@ -1,4 +1,6 @@
 /*
+ * $Id: hmonthc.prg,v 1.3 2004-03-15 18:51:17 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
  *
@@ -12,11 +14,18 @@
 #include "HBClass.ch"
 #include "guilib.ch"
 
+#define MCN_SELECT      4294966550
+#define MCS_DAYSTATE             1
+#define MCS_MULTISELECT          2
+#define MCS_WEEKNUMBERS          4
+#define MCS_NOTODAYCIRCLE        8
+#define MCS_NOTODAY             16
+
 //--------------------------------------------------------------------------//
 
 CLASS HMonthCalendar INHERIT HControl
 
-   CLASS VAR winclass   INIT MONTHCAL_CLASS
+   CLASS VAR winclass   INIT "SysMonthCal32"
 
    DATA value
    DATA bChange

@@ -1,22 +1,16 @@
 /*
- *$Id: guilib.ch,v 1.15 2004-03-11 03:45:14 jamaj Exp $
+ *$Id: guilib.ch,v 1.16 2004-03-15 18:51:17 alkresin Exp $
  */
 
 #include "guilib.h"
-
-// Acrescentado por jamaj
-#ifndef WINCOMMCTRLAPI
-#include "commctrl.ch"
-#endif
-
 
 // Commands for windows, dialogs handling
 // Alterado por jamaj - CHILD window clause
 #xcommand INIT WINDOW <oWnd>                ;
              [ MAIN ]                       ;
              [<lMdi: MDI>]                  ;
-             [<lMdiChild: MDICHILD>]           ;
-             [<lChild: CHILD>]        ;
+             [<lMdiChild: MDICHILD>]        ;
+             [<lChild: CHILD>]              ;
              [ APPNAME <appname> ]          ;
              [ TITLE <cTitle> ]             ;
              [ AT <x>, <y> ]                ;

@@ -1,4 +1,6 @@
 /*
+ * $Id: hbrowse.prg,v 1.7 2004-03-15 18:51:17 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
  *
@@ -42,10 +44,7 @@ REQUEST BOF
 #define SB_CTL              2
 #define SB_BOTH             3
 
-#undef  HDM_GETITEMCOUNT
 #define HDM_GETITEMCOUNT    4608
-
-#undef  WM_MOUSEWHEEL
 #define WM_MOUSEWHEEL  0x020A
 
 static crossCursor := 0

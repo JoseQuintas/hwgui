@@ -1,4 +1,6 @@
 /*
+ * $Id: control.c,v 1.5 2004-03-15 18:51:17 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
  *
@@ -531,7 +533,7 @@ HB_FUNC( GETCURRENTTAB )
 
 HB_FUNC( SETTABSIZE )
 {
-   TabCtrl_SetItemSize( (HWND) hb_parnl(1),hb_parni(2),hb_parni(3) );
+   SendMessage( (HWND)hb_parnl(1), TCM_SETITEMSIZE, 0, MAKELPARAM( hb_parni(2),hb_parni(3) ) );
 }
 
 
@@ -551,9 +553,9 @@ HB_FUNC ( CREATETREE )
              GetModuleHandle(NULL), NULL );
 
    if( !ISNIL(8) )
-      TreeView_SetTextColor( hCtrl, hb_parnl(8) );
+      SendMessage( hCtrl, TVM_SETTEXTCOLOR, 0, (LPARAM)(hb_parnl(8)) );
    if( !ISNIL(9) )
-      TreeView_SetBkColor( hCtrl, hb_parnl(9) );
+      SendMessage( hCtrl, TVM_SETBKCOLOR, 0, (LPARAM)(hb_parnl(9)) );
 
    hb_retnl ( (LONG) hCtrl );
 }
@@ -1014,30 +1016,6 @@ HB_FUNC ( SETTOOLTIPBALLOON ) // added by MAG
 HB_FUNC ( GETTOOLTIPBALLOON ) // added by MAG
 {
    hb_retl( lToolTipBalloon );
-}
-
-
-/* Functions Contributed  By Luiz Rafael Culik Guimaraes( culikr@uol.com.br) */
-
-HB_FUNC( GETWINDOWSDIR )
-{
-   char szBuffer[ MAX_PATH + 1 ] = {0} ;
-   GetWindowsDirectory( szBuffer,MAX_PATH);
-   hb_retc(szBuffer);
-}
-
-HB_FUNC( GETSYSTEMDIR )
-{
-   char szBuffer[ MAX_PATH + 1 ] = {0} ;
-   GetSystemDirectory( szBuffer,MAX_PATH);
-   hb_retc(szBuffer);
-}
-
-HB_FUNC( GETTEMPDIR )
-{
-   char szBuffer[ MAX_PATH + 1 ] = {0} ;
-   GetTempPath(MAX_PATH, szBuffer);
-   hb_retc(szBuffer);
 }
 
 /* Contributed by Rodrigo Moreno rodrigo_moreno@yahoo.com base upon code minigui */

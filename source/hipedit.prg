@@ -1,4 +1,6 @@
 /*
+ * $Id: hipedit.prg,v 1.3 2004-03-15 18:51:17 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
  *
@@ -10,11 +12,13 @@
 #include "HBClass.ch"
 #include "guilib.ch"
 
+#define  IPN_FIELDCHANGED   4294966436
+
 //- HIPedit
 
 CLASS HIPedit INHERIT HControl
 
-   CLASS VAR winclass   INIT WC_IPADDRESS
+   CLASS VAR winclass   INIT "SysIPAddress32"
    DATA bSetGet
    DATA bChange
    DATA bKillFocus

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.79 2004-04-10 22:24:12 andijahja Exp $
+ * $Id: Changelog,v 1.80 2004-04-11 06:39:30 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,22 +7,26 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2004-04-11 13:50 UTC+0700 Andi Jahja <harbour@cbn.net.id>
+  * source/grid.c
+    + include <unknwn.h> for compilation with Pelles C, XCC and OW
+
 2004-04-11 05:40 UTC+0700 Andi Jahja <harbour@cbn.net.id>
   + makefile.wc
   + make_w32.bat
     ! makefiles for Open-Watcom (OW)
 
-  * source\hgrid.prg
+  * source/hgrid.prg
     ! fix ambiguous oCtrl in Method Row()
 
-  * source\dialog.c
-  * source\freeimg.c
+  * source/dialog.c
+  * source/freeimg.c
     ! minor midification for compilation with OW
 
-  * source\c_ipaddr.c
+  * source/c_ipaddr.c
     + include <unknwn.h> for compilation with Pelles C, XCC and OW
 
-  * include\freeimage.h
+  * include/freeimage.h
     ! minor modification for compilation with Pelles C, XCC and OW
 
 2004-04-09 10:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
@@ -424,21 +428,21 @@
     * Add new method Refresh()
   
 2004-03-08 08-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
-  + samples\hwedit\editor.prg
-  + samples\hwedit\hbtemp.c
-  + samples\hwedit\editor.rc
-  + samples\hwedit\editor.ico
-  + samples\hwedit\child.ico
-  + samples\hwedit\richedit.h
-  + samples\hwedit\ft_funcs.prg
-  + samples\hwedit\fclass1.prg
-  + samples\hwedit\ffile1.prg
-  + samples\hwedit\hbdocdef.ch
-  + samples\hwedit\ssay.ch
-  + samples\hwedit\config.dat
-  + samples\hwedit\changelog.txt
-  + samples\hwedit\pesqtxt.prg
-  + samples\hwedit\editor.bc
+  + samples/hwedit/editor.prg
+  + samples/hwedit/hbtemp.c
+  + samples/hwedit/editor.rc
+  + samples/hwedit/editor.ico
+  + samples/hwedit/child.ico
+  + samples/hwedit/richedit.h
+  + samples/hwedit/ft_funcs.prg
+  + samples/hwedit/fclass1.prg
+  + samples/hwedit/ffile1.prg
+  + samples/hwedit/hbdocdef.ch
+  + samples/hwedit/ssay.ch
+  + samples/hwedit/config.dat
+  + samples/hwedit/changelog.txt
+  + samples/hwedit/pesqtxt.prg
+  + samples/hwedit/editor.bc
       The editor of font using HwGUI
     All provided by  Rodnei Hernandes Lino <lhr@enetec.com.br> 
 
@@ -451,14 +455,14 @@
     * eval on bsetget, send oCtrl on evaluation, implemented on above control
 
 2004-03-03 09-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
-  + source\hlistbox.prg
-  + source\listbox.c
+  + source/hlistbox.prg
+  + source/listbox.c
     The class for use HListBox
-  + samples\demohlist.prg
+  + samples/demohlist.prg
     The sample for use hlistbox class
-  * include\guilib.ch
+  * include/guilib.ch
     new comands @ <x>, <y> LISTBOX and  REDEFINE LISTBOX
-  * include\guilib.h
+  * include/guilib.h
   * makefile.bc
       updated to include new dependencies
     All provided by  Vitor Mclung 
@@ -608,7 +612,7 @@
     !new function HDSerial(Drive)      
   * samples/textget2.prg
     !Demo for using HdSerial function
-    Using HDSerial("C:\") Return de number of serie HD     
+    Using HDSerial("C:/") Return de number of serie HD     
  
 2004-02-05 14:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   * source/control.c

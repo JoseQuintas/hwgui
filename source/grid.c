@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.3 2004-04-07 12:30:49 rodrigo_moreno Exp $
+ * $Id: grid.c,v 1.4 2004-04-11 06:39:30 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -18,6 +18,11 @@
 #define _WIN32_IE      0x0500
 #define HB_OS_WIN_32_USED
 #define _WIN32_WINNT   0x0400
+
+#if defined(__POCC__) || defined(__XCC__)
+#include <unknwn.h>
+#endif
+
 #include <shlobj.h>
 
 #include <windows.h>

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.23 2004-07-14 11:49:26 sandrorrfreire Exp $
+ * $Id: window.c,v 1.24 2004-09-14 11:54:43 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -823,3 +823,15 @@ PHB_ITEM hb_stackReturn( void )
 }
 #endif
 #endif
+
+HB_FUNC( SETTOPMOST )
+{
+    BOOL i = SetWindowPos( (HWND) hb_parnl( 1 ), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE );
+    hb_retl( i );
+}
+ 
+HB_FUNC( REMOVETOPMOST )
+{
+    BOOL i = SetWindowPos( (HWND) hb_parnl( 1 ), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE );
+    hb_retl( i );
+}

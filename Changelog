@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.263 2004-09-10 11:43:11 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.264 2004-09-14 11:54:41 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-09-14 09-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/window.c
+   New functions
+     SetTopMost(::Handle)    // Set TopMost
+     RemoveTopMost(::Handle) // Remove TopMost
+     Contribution Vailton Renato da Silva
+  * samples/a.prg
+     Demo to use TopMost
 
 2004-09-10 08-45 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/hedit.prg                                                       

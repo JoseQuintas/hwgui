@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.24 2004-12-10 09:25:03 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.25 2005-02-22 12:16:25 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -470,6 +470,7 @@ MEMVAR aImages, lEditLabels, aParts
                __mvPrivate( varname )
                IF Substr( varname, 2 ) == "InitValue"
                   cInitName  := varname
+                  xInitValue := Iif( Left(varname,1)=="n",1,Iif( Left(varname,1)=="c","",.F. ) )
                ENDIF
                stroka := Left( stroka,i-1 ) + "m->" + Substr( stroka,i )
                i := j+4

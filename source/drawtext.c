@@ -350,6 +350,22 @@ HB_FUNC( SETCTRLFONT )
                           (WPARAM) hb_parnl(3), 0L );
 }
 
+#ifndef __XHARBOUR__
+
+HB_FUNC( OEMTOANSI )
+{
+   char *buffer = hb_parc(1);
+   OemToChar( buffer, buffer );
+   hb_retc( buffer );
+}
+
+HB_FUNC( ANSITOOEM )
+{
+   char *buffer = hb_parc(1);
+   CharToOem( buffer, buffer );
+   hb_retc( buffer );
+}
+#else
 HB_FUNC( OEMTOANSI )
 {
    PHB_ITEM pString = hb_param( 1, HB_IT_STRING );
@@ -388,3 +404,4 @@ HB_FUNC( ANSITOOEM )
       hb_retc( "" );
    }
 }
+#endif

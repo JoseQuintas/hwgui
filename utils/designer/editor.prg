@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.10 2004-11-11 08:37:12 alkresin Exp $
+ * $Id: editor.prg,v 1.11 2004-11-25 11:09:40 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -155,15 +155,17 @@ Local i, j, oNode, nStart, oThemeDesc, aAttr
 Return Nil
 
 Function EditMethod( cMethName, cMethod )
-Local i, lRes := .T.
+Local i, lRes := .F.
 Local oFont := HDTheme():oFont
 Local cParamString
 
    i := Ascan( oDesigner:aMethDef, {|a|a[1]==Lower(cMethName)} )
    cParamString := Iif( i == 0, "", oDesigner:aMethDef[i,2] )
-   INIT DIALOG oDlg TITLE "Edit '"+cMethName+"' method" ;
-      AT 300,240  SIZE 400,300  FONT oDesigner:oMainWnd:oFont ;
-      ON INIT {||MoveWindow(oDlg:handle,300,240,400,310)}
+   INIT DIALOG oDlg TITLE "Edit '"+cMethName+"' method"          ;
+      AT 100,240  SIZE 600,300  FONT oDesigner:oMainWnd:oFont    ;
+      STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_MAXIMIZEBOX+WS_SIZEBOX ;
+      ON INIT {||MoveWindow(oDlg:handle,100,240,600,310)}        ;
+      ON EXIT {||Iif(lRes:=(oEdit:lChanged.AND.MsgYesNo("Code was changed! Save it?")),cMethod:=oEdit:GetText(),.F.),.T.}
 
    MENU OF oDlg
       MENU TITLE "&Options"
@@ -176,26 +178,27 @@ Local cParamString
          MENUITEM "&Configure" ACTION EditColors()
       ENDMENU
       MENUITEM "&Parameters" ACTION Iif(!Empty(cParamString),editShow("Parameters "+cParamString+Chr(10)+oEdit:Gettext()),.F. )
+      MENUITEM "&Exit" ACTION oDlg:Close()
    ENDMENU
 
-   @ 0,0 RICHEDIT oEdit TEXT "" SIZE 400,oDlg:nHeight-45              ;
+   @ 0,0 RICHEDIT oEdit TEXT "" SIZE 400,oDlg:nHeight                 ;
        STYLE ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL+ES_WANTRETURN ;
        ON INIT {||ChangeTheme( HDTheme():nSelected )}                 ;
        ON GETFOCUS {||Iif(oEdit:cargo,(SendMessage(oEdit:handle,EM_SETSEL,0,0),oEdit:cargo:=.F.),.F.)} ;
-       ON SIZE {|o,x,y|o:Move(,,x,y-45)}                              ;
+       ON SIZE {|o,x,y|o:Move(,,x,y)}                                 ;
        FONT oFont
    oEdit:cargo := .T.
 
    // oEdit:oParent:AddEvent( EN_SELCHANGE,oEdit:id,{||EnChange(1)},.T. )
 
    oEdit:title := cMethod  
-
+   /*
    @ 60,265 BUTTON "Ok" SIZE 100, 32     ;
        ON SIZE {|o,x,y|o:Move(,y-35,,)}  ;
        ON CLICK {||cMethod:=oEdit:GetText(),lRes:=.T.,EndDialog()}
    @ 240,265 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32 ;
        ON SIZE {|o,x,y|o:Move(,y-35,,)}
-
+   */
    ACTIVATE DIALOG oDlg
 
    IF lRes
@@ -274,9 +277,9 @@ Local oTheme := HDTheme():aThemes[HDTheme():nSelected]
       IF nLength - nTextLength > 2 
          // writelog( "1: "+str(nLength,5)+" "+str(nTextLength,5) )
       ELSE
-         nLine := SendMessage( oEdit:handle, EM_LINEFROMCHAR, pos1, 0 )
+         nLine := SendMessage( oEdit:handle, EM_LINEFROMCHAR, -1, 0 )
          cBuffer := re_getline( oEdit:handle,nLine )
-         // writelog( str(nline)+" "+Str(Len(cBuffer))+"/"+cBuffer )
+         // writelog( "pos: "+Ltrim(str(pos1))+" Line: "+Ltrim(str(nline))+" "+Str(Len(cBuffer))+"/"+cBuffer )
          nLinePos := SendMessage( oEdit:handle, EM_LINEINDEX, nLine, 0 ) + 1
          Aadd( arr, { nLinePos,nLinePos+Len(cBuffer), ;
             oTheme:normal[1],,,oTheme:normal[3],oTheme:normal[4], } )

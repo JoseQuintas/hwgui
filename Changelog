@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.237 2004-07-29 16:48:13 lf_sfnet Exp $
+ * $Id: Changelog,v 1.238 2004-07-29 18:19:38 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-07-29 15-15 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * samples/buildpelles.prg
+    * The file program destined to compile APP using the Pelles C Compiler
+    * Create BAT files, and build APP.
+    * Create and organize simple Build files.
 
 2004-07-29 18:45 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
   * */*

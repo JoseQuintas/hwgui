@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.39 2004-03-16 15:56:59 alkresin Exp $
+ * $Id: Changelog,v 1.40 2004-03-16 18:33:57 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-03-16 21:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hdialog.prg
+    * New method is added to HDialog class : GetActive(), it returns the
+      currently active GET item object. This method may be useful, for example,
+      in function, defined in SET KEY ... TO ... statement to define an
+      action for a certain GET item.
 
 2004-03-16 19:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hwindow.prg

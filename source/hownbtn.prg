@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.5 2004-06-01 18:57:48 sandrorrfreire Exp $
+ * $Id: hownbtn.prg,v 1.6 2004-06-01 19:25:09 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -162,9 +162,13 @@ Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
       IF ::ofont != Nil
          SelectObject( hDC, ::ofont:handle )
       ENDIF
-      IF ::tcolor != Nil
-         SetTextColor( hDC,::tcolor )
-      ENDIF
+      if ::lEnabled //if button is enabled
+         IF ::tcolor != Nil
+             SetTextColor( hDC,::tcolor )
+         ENDIF
+      Else
+          SetTextColor( hDC, RGB(255,255,255) )
+      EndIf
       x1 := Iif( ::xt!=Nil .AND. ::xt!=0, ::xt, aCoors[1]+2 )
       y1 := Iif( ::yt!=Nil .AND. ::yt!=0, ::yt, ;
                               Round( ( aCoors[4]-aCoors[2]-aMetr[1] ) / 2, 0 ) )
@@ -183,7 +187,7 @@ Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
                  Round( (aCoors[3]-aCoors[1]-::widthb) / 2, 0 ) )
       y1 := Iif( ::yb!=Nil .AND. ::yb!=0, ::yb, ;
                  Round( (aCoors[4]-aCoors[2]-::heightb) / 2, 0 ) )
-      if ::lEnabled
+      if ::lEnabled //if button is enabled
          if ::oBitmap!=Nil
             ::bitmap:handle:=::oBitmap
             ::oBitmap:=Nil

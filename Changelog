@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.162 2004-06-01 18:57:47 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.163 2004-06-01 19:25:07 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-06-01 16-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/hownbtn.prg
+    !Grayed the text of Ownerbutton
+
 2004-06-01 15-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/draw.c
     !new function DrawGrayBitmap

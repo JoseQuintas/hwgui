@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.4 2004-06-09 07:01:14 alkresin Exp $
+ * $Id: hctrl.prg,v 1.5 2004-06-10 11:28:17 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -13,7 +13,11 @@
 #include "guilib.ch"
 #include "hxml.ch"
 
+#define TCM_SETCURSEL           4876
+#define TCM_GETITEMCOUNT        4868
+
 Static aBDown := { Nil,0,0,.F. }
+Static oPenSel
 
 //- HControl
 
@@ -22,7 +26,7 @@ CLASS HControlGen INHERIT HControl
    CLASS VAR winclass INIT "STATIC"
    DATA  cClass
    DATA lContainer    INIT .F.
-   DATA oContainer
+   DATA oContainer, nPage
    DATA oXMLDesc
    DATA aProp         INIT {}
    DATA aMethods      INIT {}
@@ -33,7 +37,7 @@ CLASS HControlGen INHERIT HControl
    METHOD Activate()
    METHOD Paint( lpdis )
    METHOD GetProp( cName )
-   METHOD SetProp( xName,cValue )
+   METHOD SetProp( xName,xValue )
 
 ENDCLASS
 
@@ -42,6 +46,10 @@ Local oXMLDesc
 Local oPaint, bmp, cPropertyName
 Local i, j, xProperty
 Private value, oCtrl := Self
+
+   IF oPenSel == Nil
+      oPenSel := HPen():Add( PS_SOLID,1,255 )
+   ENDIF
 
    ::oParent := Iif( oWndParent==Nil,HFormGen():oDlgSelected,oWndParent )
    ::id      := ::NewId()
@@ -162,6 +170,11 @@ Private hDC := drawInfo[3], oCtrl := Self
    IF ::aPaint != Nil
       DoScript( ::aPaint )
    ENDIF
+   oCtrl := GetCtrlSelected( HFormGen():oDlgSelected )
+   IF oCtrl != Nil .AND. ::handle == oCtrl:handle
+      SelectObject( hDC, oPenSel:handle )
+      Rectangle( hDC, 0, 0, ::nWidth-1, ::nHeight-1 )
+   ENDIF
 
 Return Nil
 
@@ -172,14 +185,14 @@ Local i
   i := Ascan( ::aProp,{|a|Lower(a[1])==cName} )
 Return Iif( i==0, Nil, ::aProp[i,2] )
 
-METHOD SetProp( xName,cValue )
+METHOD SetProp( xName,xValue )
 
    IF Valtype( xName ) == "C"
       xName := Lower( xName )
       xName := Ascan( ::aProp,{|a|Lower(a[1])==xName} )
    ENDIF
    IF xName != 0
-      ::aProp[xName,2] := cValue
+      ::aProp[xName,2] := xValue
    ENDIF
 Return Nil
 
@@ -204,19 +217,26 @@ Local nLen := Len( cName )
 
 Return cName+Ltrim(Str(i))
 
-Function CtrlMove( oCtrl,xPos,yPos,lMouse )
+Function CtrlMove( oCtrl,xPos,yPos,lMouse,lChild )
 Local i, dx, dy
 
-   IF xPos != aBDown[2] .OR. yPos != aBDown[3]
-      IF lMouse .AND. Abs( xPos - aBDown[2] ) < 3 .AND. Abs( yPos - aBDown[3] ) < 3 
+   IF lChild == Nil .OR. !lChild
+      lChild := .F.
+      dx := xPos - aBDown[2]
+      dy := yPos - aBDown[3]
+   ELSE
+      dx := xPos
+      dy := yPos
+   ENDIF
+
+   IF dx != 0 .OR. dy != 0
+      IF !lChild .AND. lMouse .AND. Abs( xPos - aBDown[2] ) < 3 .AND. Abs( yPos - aBDown[3] ) < 3 
          Return Nil
       ENDIF
       InvalidateRect( oCtrl:oParent:handle, 1, ;
                oCtrl:nLeft-4, oCtrl:nTop-4, ;
                oCtrl:nLeft+oCtrl:nWidth+3,  ;
                oCtrl:nTop+oCtrl:nHeight+3 )
-      dx := xPos - aBDown[2]
-      dy := yPos - aBDown[3]
       IF oCtrl:nLeft + dx < 0
          dx := - oCtrl:nLeft
       ENDIF
@@ -225,8 +245,10 @@ Local i, dx, dy
       ENDIF
       oCtrl:nLeft += dx
       oCtrl:nTop  += dy
-      aBDown[2] := xPos
-      aBDown[3] := yPos
+      IF !lChild
+         aBDown[2] := xPos
+         aBDown[3] := yPos
+      ENDIF
       InvalidateRect( oCtrl:oParent:handle, 0, ;
                oCtrl:nLeft-4, oCtrl:nTop-4, ;
                oCtrl:nLeft+oCtrl:nWidth+3,  ;
@@ -234,11 +256,11 @@ Local i, dx, dy
       MoveWindow( oCtrl:handle, oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth, oCtrl:nHeight )
       oCtrl:oParent:oParent:lChanged := .T.
       FOR i := 1 TO Len( oCtrl:aControls )
-         oCtrl:aControls[i]:nLeft += dx
-         oCtrl:aControls[i]:nTop += dy
-         MoveWindow( oCtrl:aControls[i]:handle, oCtrl:aControls[i]:nLeft, oCtrl:aControls[i]:nTop, oCtrl:aControls[i]:nWidth, oCtrl:aControls[i]:nHeight )
+         CtrlMove( oCtrl:aControls[i],dx,dy,.F.,.T. )
       NEXT
-      InspUpdBrowse()
+      IF !lChild
+         InspUpdBrowse()
+      ENDIF
    ENDIF
 Return Nil
 
@@ -379,20 +401,22 @@ Local lRes := .F., xPos, yPos, delta := 15
       delta := 30
    ENDIF
    FOR i := Len( aControls ) To 1 STEP -1
-      IF lLeft .AND. aControls[i]:nLeft+aControls[i]:nWidth < oCtrl:nLeft .AND. ;
-         aControls[i]:nLeft+aControls[i]:nWidth + delta > oCtrl:nLeft .AND. ;
-         aControls[i]:nTop <= oCtrl:nTop .AND. aControls[i]:nTop + aControls[i]:nHeight > oCtrl:nTop
-         lRes := .T.
-         xPos := aControls[i]:nLeft+aControls[i]:nWidth + 1
-         yPos := aControls[i]:nTop
-         EXIT
-      ELSEIF lTop .AND. Abs( aControls[i]:nLeft-oCtrl:nLeft ) < delta .AND. ;
-             aControls[i]:nTop + aControls[i]:nHeight < oCtrl:nTop .AND. ;
-             aControls[i]:nTop + aControls[i]:nHeight + delta > oCtrl:nTop
-         lRes := .T.
-         xPos := aControls[i]:nLeft
-         yPos := aControls[i]:nTop + aControls[i]:nHeight + 1
-         EXIT
+      IF !aControls[i]:lHide
+         IF lLeft .AND. aControls[i]:nLeft+aControls[i]:nWidth < oCtrl:nLeft .AND. ;
+            aControls[i]:nLeft+aControls[i]:nWidth + delta > oCtrl:nLeft .AND. ;
+            aControls[i]:nTop <= oCtrl:nTop .AND. aControls[i]:nTop + aControls[i]:nHeight > oCtrl:nTop
+            lRes := .T.
+            xPos := aControls[i]:nLeft+aControls[i]:nWidth + 1
+            yPos := aControls[i]:nTop
+            EXIT
+         ELSEIF lTop .AND. Abs( aControls[i]:nLeft-oCtrl:nLeft ) < delta .AND. ;
+                aControls[i]:nTop + aControls[i]:nHeight < oCtrl:nTop .AND. ;
+                aControls[i]:nTop + aControls[i]:nHeight + delta > oCtrl:nTop
+            lRes := .T.
+            xPos := aControls[i]:nLeft
+            yPos := aControls[i]:nTop + aControls[i]:nHeight + 1
+            EXIT
+         ENDIF
       ENDIF
    NEXT
    IF lRes
@@ -407,4 +431,61 @@ Local lRes := .F., xPos, yPos, delta := 15
                oCtrl:nTop+oCtrl:nHeight+3 )
       InspUpdBrowse()
    ENDIF
+Return Nil
+
+Function Page_New( oTab )
+Local aTabs := oTab:GetProp( "Tabs" )
+
+   IF aTabs == Nil
+      aTabs := {}
+      oTab:SetProp( "Tabs",aTabs )
+   ENDIF
+   AddTab( oTab:handle, Len( aTabs ), "New Page" )
+   Aadd( aTabs,"New Page" )
+   InspUpdProp( "Tabs", aTabs )
+   RedrawWindow( oTab:handle,5 )
+Return Nil
+
+Function Page_Next( oTab )
+Return Nil
+
+Function Page_Prev( oTab )
+Return Nil
+
+Function Page_Upd( oTab, arr )
+Local i, nTabs := SendMessage( oTab:handle,TCM_GETITEMCOUNT,0,0 )
+
+   FOR i := 1 TO Len( arr )
+      IF i <= nTabs
+         SetTabName( oTab:handle, i-1, arr[i] )
+      ELSE
+         AddTab( oTab:handle, i-1, arr[i] )
+      ENDIF
+   NEXT
+
+Return Nil
+
+Function Page_Select( oTab, nTab, lForce )
+Local i, j, oCtrl
+
+   IF ( lForce != Nil .AND. lForce ) .OR. GetCurrentTab( oTab:handle ) != nTab
+
+      SendMessage( oTab:handle, TCM_SETCURSEL, nTab-1, 0 )
+      FOR i := 1 TO Len( oTab:aControls )
+         oCtrl := oTab:aControls[i]
+         IF oCtrl:nPage != nTab .AND. !oCtrl:lHide
+            oCtrl:Hide()
+            FOR j := 1 TO Len( oCtrl:aControls )
+               oCtrl:aControls[j]:Hide()
+            NEXT
+         ELSEIF oCtrl:nPage == nTab .AND. oCtrl:lHide
+            oCtrl:Show()
+            FOR j := 1 TO Len( oCtrl:aControls )
+               oCtrl:aControls[j]:Show()
+            NEXT
+         ENDIF
+      NEXT
+
+   ENDIF
+
 Return Nil

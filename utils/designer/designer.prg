@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.4 2004-06-09 07:01:14 alkresin Exp $
+ * $Id: designer.prg,v 1.5 2004-06-10 11:28:17 alkresin Exp $
  *
  * Designer
  * Main file
@@ -24,7 +24,7 @@ Public oWidgetsSet, oFormDesc := Nil
 Public aDataDef := {}
 Public oBtnPressed := Nil, addItem := Nil
 Public oClipbrd := Nil
-Public oCtrlMenu, oDlgMenu
+Public oCtrlMenu, oTabMenu, oDlgMenu
 Public oMainWnd, oDlgInsp := Nil
 Public mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
 Public crossCursor, vertCursor, horzCursor
@@ -118,6 +118,18 @@ Public aFormats := { { "Hwgui XML format","xml" } }
       MENUITEM "Delete" ACTION DeleteCtrl()
    ENDMENU
 
+   CONTEXT MENU oTabMenu
+      MENUITEM "New Page" ACTION Page_New( GetCtrlSelected(HFormGen():oDlgSelected) )
+      MENUITEM "Next Page" ACTION Page_Next( GetCtrlSelected(HFormGen():oDlgSelected) )
+      MENUITEM "Previous Page" ACTION Page_Prev( GetCtrlSelected(HFormGen():oDlgSelected) )
+      SEPARATOR
+      MENUITEM "Copy"   ACTION (oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oClipBrd!=Nil,EnableMenuItem(,1001,.T.,.T.),.F.))
+      MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.T.,.F. )
+      MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.T. )
+      SEPARATOR
+      MENUITEM "Delete" ACTION DeleteCtrl()
+   ENDMENU
+
    CheckMenuItem( oMainWnd:handle,1011,.T. )
    HWG_InitCommonControlsEx()
 
@@ -127,6 +139,7 @@ Public aFormats := { { "Hwgui XML format","xml" } }
    ACTIVATE WINDOW oMainWnd
 #endif
    oCtrlMenu:End()
+   oTabMenu:End()
 
 Return Nil
 
@@ -164,7 +177,7 @@ Return .T.
 
 Static Function BuildSet( oTab )
 Local i, j, j1, aSet, oWidget, oProperty, b1, b2, b3, cDlg, arr, b4
-Local x1, cBmp, oButton
+Local x1, cText,cBmp, oButton
 
    IF !Empty( oWidgetsSet:aItems )
       aSet := oWidgetsSet:aItems[1]:aItems
@@ -175,14 +188,17 @@ Local x1, cBmp, oButton
             FOR j := 1 TO Len( aSet[i]:aItems )
                IF aSet[i]:aItems[j]:title == "widget"
                   oWidget := aSet[i]:aItems[j]
+                  cText := oWidget:GetAttribute( "text" )
                   cBmp := oWidget:GetAttribute( "bmp" )
-                  oButton := HOwnButton():New( ,,,x1,28,30,26, ;
-                             ,,,{|o,id|ClickBtn(o,id)},.T.,    ;
-                             ,,,,,,,                           ;
-                             cBmp,At(".",cBmp)==0,,,,,.F.,     ;
-                             oWidget:GetAttribute( "name" ) )
-                  oButton:cargo := oWidget
-                  x1 += 30
+                  IF cText != Nil .OR. cBmp != Nil
+                    oButton := HOwnButton():New( ,,,x1,28,30,26, ;
+                               ,,,{|o,id|ClickBtn(o,id)},.T.,    ;
+                               cText,,,,,,,                      ;
+                               cBmp,At(".",cBmp)==0,,,,,.F.,     ;
+                               oWidget:GetAttribute( "name" ) )
+                    oButton:cargo := oWidget
+                    x1 += 30
+                  ENDIF
                ENDIF
             NEXT
             oTab:EndPage()

@@ -1,11 +1,11 @@
 /*
- *$Id: htab.prg,v 1.6 2004-05-04 22:46:12 lculik Exp $
+ *$Id: htab.prg,v 1.7 2004-06-10 11:28:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -44,26 +44,20 @@ CLASS HTab INHERIT HControl
    METHOD  End()
 
    HIDDEN:
-     DATA  nActive           // Active Page
+     DATA  nActive  INIT 0         // Active Page
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour ) CLASS HTab
-   LOCAL i, aBmpSize
-   // ::classname:= "HTAB"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
+LOCAL i, aBmpSize
+
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  bSize,bPaint )
+
    ::title   := ""
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP )
    ::oFont   := Iif( oFont==Nil, ::oParent:oFont, oFont )
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
    ::aTabs   := Iif( aTabs==Nil,{},aTabs )
    ::bChange := bChange
    ::bChange2 := bChange
@@ -83,7 +77,6 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
    ENDIF
 
    ::Activate()
-   ::oParent:AddControl( Self )
 
 Return Self
 
@@ -121,7 +114,7 @@ METHOD SetTab( n ) CLASS HTab
 Return Nil
 
 METHOD StartPage( cname ) CLASS HTab
-Local i := Ascan( ::aTabs,cname )
+Local i := Iif( cName==Nil, ::nActive+1, Ascan( ::aTabs,cname ) )
 Local lNew := ( i == 0 )
 
    ::oTemp := ::oDefaultParent

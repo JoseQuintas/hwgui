@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.5 2004-06-09 07:01:14 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.6 2004-06-10 11:28:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -12,6 +12,26 @@
 #include "HBClass.ch"
 #include "guilib.ch"
 #include "hxml.ch"
+
+REQUEST HSTATIC
+REQUEST HBUTTON
+REQUEST HCHECKBUTTON
+REQUEST HRADIOBUTTON
+REQUEST HEDIT
+REQUEST HGROUP
+REQUEST HSAYBMP
+REQUEST HSAYICON
+REQUEST HRICHEDIT
+REQUEST HDATEPICKER
+REQUEST HUPDOWN
+REQUEST HCOMBOBOX
+REQUEST HLINE
+REQUEST HPANEL
+REQUEST HOWNBUTTON
+REQUEST HBROWSE
+REQUEST HMONTHCALENDAR
+REQUEST HTRACKBAR
+REQUEST HTAB
 
 CLASS HCtrlTmpl
 
@@ -271,7 +291,7 @@ Local aClass := { "label", "button", "checkbox",                    ;
                   "bitmap","icon",                                  ;
                   "richedit","datepicker", "updown", "combobox",    ;
                   "line", "toolbar", "ownerbutton","browse",        ;
-                  "monthcalendar","trackbar" ;
+                  "monthcalendar","trackbar","page" ;
                 }
 Local aCtrls := { ;
   "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctoolt,TextColor,BackColor,lTransp)", ;
@@ -292,14 +312,22 @@ Local aCtrls := { ;
   "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,cTooltip)", ;
   "Hbrowse():New(nType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg )", ;
   "HMonthCalendar():New(oPrnt,nId,dInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onChange,cToolt,lNoToday,lNoTodayCircle,lWeekNumbers)", ;
-  "HTrackBar():New(oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,cToolt,onChange,nLower,nUpper,lVertical,TickStyle,TickMarks )" ;
+  "HTrackBar():New(oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,cToolt,onChange,nLower,nUpper,lVertical,TickStyle,TickMarks )", ;
+  "HTab():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,Tabs,onChange,aImages,lResource)" ;
                 }
-Local i, oCtrl, stroka, varname, xProperty, block, cType, cPName
+Local i, j, oCtrl, stroka, varname, xProperty, block, cType, cPName
 Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName
 MEMVAR oPrnt, nStyle, nLeft, nTop, nWidth, nHeight, oFont, lNoBorder, bSetGet
-MEMVAR name, nMaxLines, nLength, lVert, nType, brwType, TickStyle, TickMarks
+MEMVAR name, nMaxLines, nLength, lVertical, nType, brwType, TickStyle, TickMarks, Tabs
 
    IF nCtrl == 0
+      IF Lower( oCtrlTmpl:cClass ) == "pagesheet"
+         oParent:StartPage()
+         FOR i := 1 TO Len( oCtrlTmpl:aControls )
+            CreateCtrl( oParent, oCtrlTmpl:aControls[i], oForm )
+         NEXT
+         oParent:EndPage()
+      ENDIF
       Return Nil
    ENDIF
 
@@ -386,7 +414,7 @@ MEMVAR name, nMaxLines, nLength, lVert, nType, brwType, TickStyle, TickMarks
          nHeight := nHeight * 4
       ENDIF
    ELSEIF oCtrlTmpl:cClass == "line"
-      nLength := Iif( lVert, nHeight, nWidth )
+      nLength := Iif( lVertical, nHeight, nWidth )
    ELSEIF oCtrlTmpl:cClass == "browse"
       nType := Iif( brwType == "Dbf",BRW_DATABASE,BRW_ARRAY )
    ELSEIF oCtrlTmpl:cClass == "trackbar"

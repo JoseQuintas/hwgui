@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.4 2004-06-09 07:01:14 alkresin Exp $
+ * $Id: hformgen.prg,v 1.5 2004-06-10 11:28:17 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -348,7 +348,7 @@ Local fname, s1, s2
 
 Return Nil
 
-Static Function ReadCtrls( oDlg, oCtrlDesc, oContainer )
+Static Function ReadCtrls( oDlg, oCtrlDesc, oContainer, nPage )
 Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cProperty
 
    FOR i := 1 TO Len( aItems )
@@ -388,13 +388,29 @@ Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cPr
             oContainer:AddControl( oCtrl )
             oCtrl:oContainer := oContainer
          ENDIF
+         IF nPage != Nil
+            oCtrl:nPage := nPage
+         ENDIF
       ELSEIF aItems[i]:title == "method"
          cName := aItems[i]:GetAttribute( "name" )
          IF ( j := Ascan( oCtrl:aMethods, {|a|a[1]==cName} ) ) != 0
             oCtrl:aMethods[j,2] := aItems[i]:aItems[1]:aItems[1]
          ENDIF
       ELSEIF aItems[i]:title == "part"
-         ReadCtrls( oDlg,aItems[i],oCtrl )
+         IF Lower( aItems[i]:GetAttribute( "class" ) ) == "pagesheet"
+            FOR j := 1 TO Len( aItems[i]:aItems )
+               ReadCtrls( oDlg,aItems[i]:aItems[j],oCtrl,Val(aItems[i]:GetAttribute( "page" )) )
+            NEXT
+         ELSE
+            ReadCtrls( oDlg,aItems[i],oCtrl )
+         ENDIF
+         IF oCtrl != Nil .AND. Lower( oCtrl:cClass ) == "page"
+            aRect := oCtrl:GetProp( "Tabs" )
+            IF aRect != Nil .AND. !Empty( aRect )
+               Page_Upd( oCtrl, aRect )
+               Page_Select( oCtrl, 1, .T. )
+            ENDIF
+         ENDIF
       ENDIF
    NEXT
 
@@ -453,72 +469,85 @@ Local i, j, aItems, o, aProp := {}, cPropertyName, aRect, pos, cProperty
    NEXT
 Return Nil
 
-Static Function WriteCtrls( oParent,aControls,lRoot )
-Local i, j, j1, oNode, oNode1, oStyle, oMeth, oCtrl, aItems, cPropertyName, value, lDef
+Static Function WriteCtrl( oParent,oCtrl,lRoot )
+Local i, j, j1, oNode, oNode1, oStyle, oMeth, aItems, cPropertyName, value, lDef
 Local cProperty, i1
 
-   FOR i := 1 TO Len( aControls )
-      oCtrl := aControls[i]
-      IF !lRoot .OR. oCtrl:oContainer == Nil
-         aItems := oCtrl:oXMLDesc:aItems
-         oNode := oParent:Add( HXMLNode():New( "part",,{ { "class",oCtrl:cClass } } ) )
-         oStyle := oNode:Add( HXMLNode():New( "style" ) )
-         oStyle:Add( HXMLNode():New( "property",,{ { "name","Geometry" } }, ;
-             Arr2Str( { oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight } ) ) )
-         FOR j := 1 TO Len( oCtrl:aProp )
-            cPropertyName := Lower(oCtrl:aProp[j,1])
-            IF Ascan( aG,cPropertyName  ) != 0
-               lDef := .T.
-            ELSEIF ( cPropertyName == "textcolor" .AND. oCtrl:tColor == 0 ) .OR. ;
-                   ( cPropertyName == "backcolor" .AND. oCtrl:bColor == GetSysColor( COLOR_3DFACE ) )
-               lDef := .T.
-            ELSEIF ( cPropertyName == "name" .AND. Empty( oCtrl:aProp[j,2] ) )
-               lDef := .T.
-            ELSE
-               lDef := .F.
-               FOR j1 := 1 TO Len( aItems )
-                  IF aItems[j1]:title == "property" .AND. ;
-                      Lower(aItems[j1]:GetAttribute("name")) == cPropertyName  .AND. ;
-                      ( value := aItems[j1]:GetAttribute("value") ) != Nil .AND. ;
-                      value == oCtrl:aProp[j,2]
-                     lDef := .T.
-                     EXIT
+   IF !lRoot .OR. oCtrl:oContainer == Nil
+      aItems := oCtrl:oXMLDesc:aItems
+      oNode := oParent:Add( HXMLNode():New( "part",,{ { "class",oCtrl:cClass } } ) )
+      oStyle := oNode:Add( HXMLNode():New( "style" ) )
+      oStyle:Add( HXMLNode():New( "property",,{ { "name","Geometry" } }, ;
+          Arr2Str( { oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight } ) ) )
+      FOR j := 1 TO Len( oCtrl:aProp )
+         cPropertyName := Lower(oCtrl:aProp[j,1])
+         IF Ascan( aG,cPropertyName  ) != 0
+            lDef := .T.
+         ELSEIF ( cPropertyName == "textcolor" .AND. oCtrl:tColor == 0 ) .OR. ;
+                ( cPropertyName == "backcolor" .AND. oCtrl:bColor == GetSysColor( COLOR_3DFACE ) )
+            lDef := .T.
+         ELSEIF ( cPropertyName == "name" .AND. Empty( oCtrl:aProp[j,2] ) )
+            lDef := .T.
+         ELSE
+            lDef := .F.
+            FOR j1 := 1 TO Len( aItems )
+               IF aItems[j1]:title == "property" .AND. ;
+                   Lower(aItems[j1]:GetAttribute("name")) == cPropertyName  .AND. ;
+                   ( value := aItems[j1]:GetAttribute("value") ) != Nil .AND. ;
+                   value == oCtrl:aProp[j,2]
+                  lDef := .T.
+                  EXIT
+               ENDIF
+            NEXT
+         ENDIF
+         IF !lDef
+            IF Lower(oCtrl:aProp[j,1]) == "font"
+               IF oCtrl:oFont != Nil
+                  oNode1 := oStyle:Add( HXMLNode():New( "property",,{ { "name",oCtrl:aProp[j,1] } } ) )
+                  oNode1:Add( Font2XML( oCtrl:oFont ) )
+               ENDIF
+            ELSEIF oCtrl:aProp[j,2] != Nil
+               IF oCtrl:aProp[j,3] == "C"
+                  cProperty := '[' + oCtrl:aProp[j,2] + ']'
+               ELSEIF oCtrl:aProp[j,3] == "N"
+                  cProperty := oCtrl:aProp[j,2]
+               ELSEIF oCtrl:aProp[j,3] == "L"
+                  cProperty := Iif( Lower( oCtrl:aProp[j,2] ) == "true",".T.",".F." )
+               ELSEIF oCtrl:aProp[j,3] == "A"
+                  cProperty := Arr2Str( oCtrl:aProp[j,2] )
+               ELSE
+                  cProperty := ""
+               ENDIF
+               oStyle:Add( HXMLNode():New( "property",,{ { "name",oCtrl:aProp[j,1] } },cProperty ) )
+            ENDIF
+         ENDIF
+      NEXT
+      FOR j := 1 TO Len( oCtrl:aMethods )
+         IF !Empty( oCtrl:aMethods[j,2] )
+            oMeth := oNode:Add( HXMLNode():New( "method",,{ { "name",oCtrl:aMethods[j,1] } } ) )
+            oMeth:Add( HXMLNode():New( ,HBXML_TYPE_CDATA,,oCtrl:aMethods[j,2] ) )
+         ENDIF
+      NEXT
+      IF !Empty( oCtrl:aControls )
+         IF Lower( oCtrl:cClass ) == "page" .AND. ; 
+              ( aItems := oCtrl:GetProp("Tabs") ) != Nil .AND. ;
+              !Empty( aItems )
+            FOR j := 1 TO Len( aItems )
+               oNode1 := oNode:Add( HXMLNode():New( "part",,{ { "class","PageSheet" },{ "page",Ltrim(Str(j)) } } ) )
+               FOR i := 1 TO Len( oCtrl:aControls )
+                  IF oCtrl:aControls[i]:nPage == j
+                     WriteCtrl( oNode1,oCtrl:aControls[i],.F. )
                   ENDIF
                NEXT
-            ENDIF
-            IF !lDef
-               IF Lower(oCtrl:aProp[j,1]) == "font"
-                  IF oCtrl:oFont != Nil
-                     oNode1 := oStyle:Add( HXMLNode():New( "property",,{ { "name",oCtrl:aProp[j,1] } } ) )
-                     oNode1:Add( Font2XML( oCtrl:oFont ) )
-                  ENDIF
-               ELSEIF oCtrl:aProp[j,2] != Nil
-                  IF oCtrl:aProp[j,3] == "C"
-                     cProperty := '[' + oCtrl:aProp[j,2] + ']'
-                  ELSEIF oCtrl:aProp[j,3] == "N"
-                     cProperty := oCtrl:aProp[j,2]
-                  ELSEIF oCtrl:aProp[j,3] == "L"
-                     cProperty := Iif( Lower( oCtrl:aProp[j,2] ) == "true",".T.",".F." )
-                  ELSEIF oCtrl:aProp[j,3] == "A"
-                     cProperty := Arr2Str( oCtrl:aProp[j,2] )
-                  ELSE
-                     cProperty := ""
-                  ENDIF
-                  oStyle:Add( HXMLNode():New( "property",,{ { "name",oCtrl:aProp[j,1] } },cProperty ) )
-               ENDIF
-            ENDIF
-         NEXT
-         FOR j := 1 TO Len( oCtrl:aMethods )
-            IF !Empty( oCtrl:aMethods[j,2] )
-               oMeth := oNode:Add( HXMLNode():New( "method",,{ { "name",oCtrl:aMethods[j,1] } } ) )
-               oMeth:Add( HXMLNode():New( ,HBXML_TYPE_CDATA,,oCtrl:aMethods[j,2] ) )
-            ENDIF
-         NEXT
-         IF !Empty( oCtrl:aControls )
-            WriteCtrls( oNode,oCtrl:aControls,.F. )
+            NEXT
+         ELSE
+            FOR i := 1 TO Len( oCtrl:aControls )
+               WriteCtrl( oNode,oCtrl:aControls[i],.F. )
+            NEXT
          ENDIF
       ENDIF
-   NEXT
+   ENDIF
+
 Return Nil
 
 Static Function WriteForm( oForm )
@@ -558,7 +587,9 @@ Local oNode, oNode1, oStyle, i, i1, oMeth, cProperty
          oMeth:Add( HXMLNode():New( ,HBXML_TYPE_CDATA,,oForm:aMethods[i,2] ) )
       ENDIF
    NEXT
-   WriteCtrls( oNode,oForm:oDlg:aControls,.T. )
+   FOR i := 1 TO Len( oForm:oDlg:aControls )
+      WriteCtrl( oNode,oForm:oDlg:aControls[i],.T. )
+   NEXT
 
    oDoc:Save( oForm:path + oForm:filename )
 Return Nil
@@ -679,7 +710,7 @@ Local aBDown, oCtrl, resizeDirection
 Return Nil
 
 Static Function LButtonDown( oDlg, xPos, yPos )
-Local oCtrl := GetCtrlSelected( oDlg ), resizeDirection
+Local oCtrl := GetCtrlSelected( oDlg ), resizeDirection, flag, i
 
    IF addItem != Nil
       Return Nil
@@ -697,6 +728,12 @@ Local oCtrl := GetCtrlSelected( oDlg ), resizeDirection
          SetBDown( oCtrl,xPos,yPos,0 )
       ELSEIF ( oCtrl := GetCtrlSelected( oDlg ) ) != Nil
          SetCtrlSelected( oDlg )
+      ENDIF
+   ENDIF
+   IF oCtrl != Nil .AND. Lower( oCtrl:cClass ) == "page"
+      i := Tab_HitTest( oCtrl:handle,,,@flag )
+      IF i >= 0 .AND. flag == 4 .OR. flag == 6
+         Page_Select( oCtrl, i+1 )
       ENDIF
    ENDIF
 
@@ -733,6 +770,12 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp
             IF oContainer != Nil .AND. oCtrl:oContainer == Nil
                oContainer:AddControl( oCtrl )
                oCtrl:oContainer := oContainer
+               IF Lower( oContainer:cClass ) == "page"
+                  oCtrl:nPage := GetCurrentTab( oContainer:handle )
+                  IF oCtrl:nPage == 0
+                     oCtrl:nPage ++
+                  ENDIF
+               ENDIF
                IF ( i := Ascan( oDlg:aControls,{|o|o:handle==oCtrl:handle} ) ) ;
                   < Ascan( oDlg:aControls,{|o|o:handle==oContainer:handle} )
                   DestroyWindow( oCtrl:handle )
@@ -769,6 +812,12 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp
           oCtrl:nTop+oCtrl:nHeight <= oContainer:nTop+oContainer:nHeight )
          oContainer:AddControl( oCtrl )
          oCtrl:oContainer := oContainer
+         IF Lower( oContainer:cClass ) == "page"
+            oCtrl:nPage := GetCurrentTab( oContainer:handle )
+            IF oCtrl:nPage == 0
+               oCtrl:nPage ++
+            ENDIF
+         ENDIF
       ENDIF
 
       SetCtrlSelected( oDlg,oCtrl )
@@ -792,7 +841,11 @@ Local oCtrl
    IF addItem == Nil
       IF ( oCtrl := CtrlByPos( oDlg,xPos,yPos ) ) != Nil
          SetCtrlSelected( oDlg,oCtrl )
-         oCtrlMenu:Show( oDlg,xPos,yPos,.T. )
+         IF Lower( oCtrl:cClass ) == "page"
+            oTabMenu:Show( oDlg,xPos,yPos,.T. )
+         ELSE
+            oCtrlMenu:Show( oDlg,xPos,yPos,.T. )
+         ENDIF
       ELSE
          // oDlgMenu:Show( oDlg,xPos,yPos,.T. )
       ENDIF
@@ -805,9 +858,9 @@ Local i := 1, aControls := oDlg:aControls, alen := Len( aControls )
 Local oCtrl
 
    DO WHILE i <= alen
-     IF xPos >= aControls[i]:nLeft .AND. ;
+     IF !aControls[i]:lHide .AND. xPos >= aControls[i]:nLeft .AND. ;
            xPos < ( aControls[i]:nLeft+aControls[i]:nWidth ) .AND. ;
-           yPos >= aControls[i]:nTop .AND. ;
+           yPos >= aControls[i]:nTop .AND.                         ;
            yPos < ( aControls[i]:nTop+aControls[i]:nHeight )
         oCtrl := aControls[i]
         aControls := oCtrl:aControls
@@ -819,7 +872,7 @@ Local oCtrl
 Return oCtrl
 
 Static Function FrmSort( aControls,lSub )
-Local i, nLeft, nTop, lSorted := .T.
+Local i, nLeft, nTop, lSorted := .T., aTabs
 
    FOR i := 1 TO Len( aControls )
       IF i > 1 .AND. aControls[i]:nTop*10000+aControls[i]:nLeft < nTop*10000+nLeft
@@ -847,6 +900,15 @@ Local i, nLeft, nTop, lSorted := .T.
       FOR i := 1 TO Len( aControls )
          aControls[i]:lInit := .F.
          aControls[i]:Activate()
+         aControls[i]:lHide := .F.
+      NEXT
+      FOR i := 1 TO Len( aControls )
+         IF Lower( aControls[i]:cClass ) == "page" .AND. ;
+                   ( aTabs := aControls[i]:GetProp("Tabs") ) != Nil .AND. ;
+                   !Empty( aTabs )
+            Page_Upd( aControls[i], aTabs )
+            Page_Select( aControls[i], 1, .T. )
+         ENDIF
       NEXT
    ENDIF
 Return Nil

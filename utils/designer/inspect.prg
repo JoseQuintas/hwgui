@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.3 2004-06-09 07:01:14 alkresin Exp $
+ * $Id: inspect.prg,v 1.4 2004-06-10 11:28:17 alkresin Exp $
  *
  * Designer
  * Object Inspector
@@ -85,7 +85,7 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
    varbuf := Eval( oColumn:block,,Self,2 )
 
    IF ( j != 0 .AND. aDataDef[ j,5 ] != Nil ) .OR. aCtrlProp[ oBrw1:cargo,3 ] == "A"
-      IF j != 0
+      IF j != 0 .AND. aDataDef[ j,5 ] != Nil
          IF aDataDef[ j,5 ] == "color"
             varbuf := Hwg_ChooseColor( Val(varbuf),.F. )
             IF varbuf != Nil
@@ -121,6 +121,7 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
                EvalCode( aDataDef[ j,4 ] )
             ENDIF
          ENDIF
+         RedrawWindow( oCtrl:handle,5 )
          HFormGen():oDlgSelected:oParent:lChanged := .T.
          oBrw1:lUpdated := .T.
          oBrw1:Refresh()
@@ -431,7 +432,18 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
  
 Return Nil
 
-Function EditArray( arr )
+Function InspUpdProp( cName, xValue )
+Local i
+
+   cName := Lower( cName )
+   IF ( i := Ascan( aProp, {|a|Lower(a[1])==Lower(cName)} ) ) > 0
+      aProp[ i,2 ] := xValue
+      oBrw1:Refresh()
+   ENDIF
+
+Return Nil
+
+Static Function EditArray( arr )
 Local oDlg, oBrw, nRec := Eval( oBrw1:bRecno,oBrw1 )
 
    IF arr == Nil

@@ -319,6 +319,21 @@
          <method name="onInit" />
          <method name="onChange" />
       </widget>
+      <widget class="page" name="Page control" bmp="BMP_PAGE">
+         <create>
+            <![CDATA[CreateTabControl(oCtrl:oParent:handle,oCtrl:id,oCtrl:style,oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight,0,100)
+            ]]>
+         </create>
+         <property name="Name" type="C" />
+         <property name="Left" type="N" value="0" />
+         <property name="Top" type="N" value="0" />
+         <property name="Width" type="N" value="280" />
+         <property name="Height" type="N" value="160" />
+         <property name="Font" type="O" />
+         <property name="Tabs" type="A" />
+         <method name="onInit" />
+         <method name="onChange" />
+      </widget>
    </set>
    <set name="HwGUI">
       <widget class="line" name="Line" bmp="BMP_HLINE">
@@ -499,6 +514,9 @@
           ]]></code2>
       </property>
       <property name="BrwType" array="Dbf,Array">
+      </property>
+      <property name="Tabs">
+         <code2><![CDATA[ Page_Upd(oCtrl,value) ]]></code2>
       </property>
    </data>
    <temp>

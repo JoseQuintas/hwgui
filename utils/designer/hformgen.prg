@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.21 2004-11-25 11:46:31 alkresin Exp $
+ * $Id: hformgen.prg,v 1.22 2004-11-26 12:34:24 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -593,7 +593,7 @@ Local cProperty, i1
       oNode := oParent:Add( HXMLNode():New( "part",,{ { "class",oCtrl:cClass } } ) )
       oStyle := oNode:Add( HXMLNode():New( "style" ) )
       oStyle:Add( HXMLNode():New( "property",,{ { "name","Geometry" } }, ;
-          Arr2Str( { oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight } ) ) )
+          hfrm_Arr2Str( { oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight } ) ) )
       FOR j := 1 TO Len( oCtrl:aProp )
          cPropertyName := Lower(oCtrl:aProp[j,1])
          IF Ascan( aG,cPropertyName  ) != 0
@@ -625,7 +625,7 @@ Local cProperty, i1
                ELSEIF oCtrl:aProp[j,3] == "L"
                   cProperty := Iif( Lower( oCtrl:aProp[j,2] ) == "true",".T.",".F." )
                ELSEIF oCtrl:aProp[j,3] == "A"
-                  cProperty := Arr2Str( oCtrl:aProp[j,2] )
+                  cProperty := hfrm_Arr2Str( oCtrl:aProp[j,2] )
                ELSE
                   cProperty := ""
                ENDIF
@@ -668,7 +668,7 @@ Local oNode, oNode1, oStyle, i, i1, oMeth, cProperty
    oNode := oDoc:Add( HXMLNode():New( "part",,{ { "class","form" } } ) )
    oStyle := oNode:Add( HXMLNode():New( "style" ) )  
    oStyle:Add( HXMLNode():New( "property",,{ { "name","Geometry" } }, ;
-       Arr2Str( { oForm:oDlg:nLeft,oForm:oDlg:nTop,oForm:oDlg:nWidth,oForm:oDlg:nHeight } ) ) )
+       hfrm_Arr2Str( { oForm:oDlg:nLeft,oForm:oDlg:nTop,oForm:oDlg:nWidth,oForm:oDlg:nHeight } ) ) )
    FOR i := 1 TO Len( oForm:aProp )
       IF Ascan( aG, Lower(oForm:aProp[i,1]) ) == 0
          IF Lower(oForm:aProp[i,1]) == "font"
@@ -684,7 +684,7 @@ Local oNode, oNode1, oStyle, i, i1, oMeth, cProperty
             ELSEIF oForm:aProp[i,3] == "L"
                cProperty := Iif( Lower( oForm:aProp[i,2] ) == "true",".T.",".F." )
             ELSEIF oForm:aProp[i,3] == "A"
-               cProperty := Arr2Str( oForm:aProp[i,2] )
+               cProperty := hfrm_Arr2Str( oForm:aProp[i,2] )
             ELSE
                cProperty := ""
             ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.21 2004-11-24 08:13:34 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.22 2004-11-26 12:34:24 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -159,7 +159,7 @@ Memvar oDlg
 Private oDlg
 
    FOR i := 1 TO Len( ::aProp )
-      xProperty := GetProperty( ::aProp[ i,2 ] )
+      xProperty := hfrm_GetProperty( ::aProp[ i,2 ] )
       IF ::aProp[ i,1 ] == "geometry"
          nLeft   := Val(xProperty[1])
          nTop    := Val(xProperty[2])
@@ -370,9 +370,9 @@ Local i, j, o, cName, aProp := {}, aMethods := {}, aItems := oCtrlDesc:aItems
             o := aItems[i]:aItems[j]
             IF o:title == "property"
                IF ( cName := Lower( o:GetAttribute("name") ) ) == "varname"
-                  Aadd( oForm:aVars, GetProperty(o:aItems[1]) )
+                  Aadd( oForm:aVars, hfrm_GetProperty(o:aItems[1]) )
                ELSEIF cName == "name"
-                  Aadd( oForm:aNames, GetProperty(o:aItems[1]) )
+                  Aadd( oForm:aNames, hfrm_GetProperty(o:aItems[1]) )
                ENDIF
                IF cName == "atree"
                   Aadd( aProp, { cName, ReadTree( oForm,,o ) } )
@@ -476,7 +476,7 @@ MEMVAR aImages, lEditLabels, aParts
    nStyle := 0
 
    FOR i := 1 TO Len( oCtrlTmpl:aProp )
-      xProperty := GetProperty( oCtrlTmpl:aProp[ i,2 ] )
+      xProperty := hfrm_GetProperty( oCtrlTmpl:aProp[ i,2 ] )
       cPName := oCtrlTmpl:aProp[ i,1 ]
       IF cPName == "geometry"
          nLeft   := Val(xProperty[1])
@@ -661,7 +661,7 @@ Local arr := {}, pos1 := 2, pos2 := 1
 
 Return arr
 
-Function Arr2Str( arr )
+Function hfrm_Arr2Str( arr )
 Local stroka := "{", i, cType
 
    FOR i := 1 TO Len( arr )
@@ -678,7 +678,7 @@ Local stroka := "{", i, cType
 
 Return stroka + "}"
 
-Function GetProperty( xProp )
+Function hfrm_GetProperty( xProp )
 Local c
 
    IF Valtype( xProp ) == "C"

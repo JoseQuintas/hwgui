@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.4 2004-03-15 18:51:17 alkresin Exp $
+ *$Id: htab.prg,v 1.5 2004-04-08 11:55:34 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -214,13 +214,7 @@ Local oTab, iParHigh := HiWord( wParam ), iParLow := LoWord( wParam ), iItem, re
       ENDIF
       Return 1
    ELSEIF msg == WM_NOTIFY
-      nCode := GetNotifyCode( lParam )
-      IF oTab:aNotify != Nil .AND. ;
-         ( iItem := Ascan( oTab:aNotify, {|a|a[1]==nCode.and.a[2]==wParam} ) ) > 0
-         IF ( res := Eval( oTab:aNotify[ iItem,3 ],oTab,wParam ) ) != Nil
-            Return res
-         ENDIF
-      ENDIF
+      Return DlgNotify( oTab,wParam,lParam )
    ELSEIF msg == WM_DRAWITEM
       Return DlgDrawItem( oTab,wParam,lParam )
    ELSEIF msg == WM_CTLCOLORSTATIC

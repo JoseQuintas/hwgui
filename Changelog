@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.76 2004-04-07 12:05:43 alkresin Exp $
+ * $Id: Changelog,v 1.77 2004-04-08 11:55:32 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-04-08 16:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/window.c
+    * hwg_CreateMdiChildWindow() respects the coordinates now
+  * include/windows.ch
+    * WS_OVERLAPPEDWINDOW definition has been added
+  * include/guilib.ch
+    * Missed PICTURE clause has been added to REDEFINE GET command.
+    All above changes has been suggested by Vlad.
+  * source/htab.prg
+    ! DefTabProc() has been fixed.
 
 2004-04-07 16:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hwindow.prg

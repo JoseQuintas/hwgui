@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.21 2004-04-05 14:16:35 rodrigo_moreno Exp $
+ *$Id: guilib.ch,v 1.22 2004-04-08 11:55:34 alkresin Exp $
  */
 
 #include "guilib.h"
@@ -738,6 +738,7 @@
             ID <nId>                   ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
+            [ PICTURE <cPicture> ]     ;
             [ WHEN  <bGfocus> ]        ;
             [ VALID <bLfocus> ]        ;
             [ FONT <oFont> ]           ;
@@ -745,7 +746,7 @@
           => ;
     [<oEdit> := ] HEdit():Redefine( <oWnd>,<nId>,<vari>, ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},    ;
-                   <oFont>,,,,<bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor> )
+                   <oFont>,,,,<bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture> )
 
 
 #xcommand @ <x>,<y> GET CHECKBOX [ <oCheck> VAR ] <vari>  ;

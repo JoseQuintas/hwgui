@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.8 2004-03-22 21:15:03 rodrigo_moreno Exp $
+ *$Id: windows.ch,v 1.9 2004-04-08 11:55:34 alkresin Exp $
  */
 
 #define WM_CREATE                       1
@@ -302,6 +302,7 @@
 #define WS_MINIMIZEBOX      131072     // 0x00020000L
 #define WS_MAXIMIZEBOX      65536      // 0x00010000L
 #define WS_SIZEBOX          WS_THICKFRAME
+#define WS_OVERLAPPEDWINDOW WS_OVERLAPPED + WS_CAPTION + WS_SYSMENU + WS_THICKFRAME + WS_MINIMIZEBOX + WS_MAXIMIZEBOX
 
 #define WS_EX_DLGMODALFRAME     1      // 0x00000001L
 #define WS_EX_NOPARENTNOTIFY    4      // 0x00000004L

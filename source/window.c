@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.11 2004-04-06 18:31:58 sandrorrfreire Exp $
+ * $Id: window.c,v 1.12 2004-04-08 11:55:34 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -427,6 +427,10 @@ HB_FUNC ( HWG_CREATEMDICHILDWINDOW )
    PHB_ITEM pObj = hb_param( 1, HB_IT_OBJECT );
    char *cTitle = hb_itemGetCPtr( GetObjectVar( pObj,"TITLE") );
    DWORD style = (DWORD) hb_itemGetNL( GetObjectVar( pObj,"STYLE") );
+   int y = (int) hb_itemGetNL( GetObjectVar( pObj,"NTOP") );
+   int x = (int) hb_itemGetNL( GetObjectVar( pObj,"NLEFT") );
+   int width = (int) hb_itemGetNL( GetObjectVar( pObj,"NWIDTH") );
+   int height = (int) hb_itemGetNL( GetObjectVar( pObj,"NHEIGHT") );
 
    if( !style )
       style = WS_VISIBLE | WS_OVERLAPPEDWINDOW | WS_MAXIMIZE;
@@ -441,10 +445,10 @@ HB_FUNC ( HWG_CREATEMDICHILDWINDOW )
        (LPTSTR) szChild,	// pointer to registered child class name 
        (LPTSTR) cTitle,		// pointer to window name 
        style,			// window style 
-       0,	// horizontal position of window 
-       0,	// vertical position of window 
-       300,	// width of window 
-       200,	// height of window 
+       x,	// horizontal position of window 
+       y,	// vertical position of window 
+       width,	// width of window 
+       height,	// height of window 
        (HWND) aWindows[1],	// handle to parent window (MDI client) 
        GetModuleHandle( NULL ),		// handle to application instance 
        0		 	// application-defined value 

@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.5 2004-03-07 20:38:51 rodrigo_moreno Exp $
+ *$Id: hedit.prg,v 1.6 2004-03-10 12:13:29 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -522,8 +522,9 @@ Local nPos, nGetLen, nLen, vari
             ENDIF
 
             IF !Empty( oEdit:cPicMask ) .AND. Len( oEdit:cPicMask ) < Len( oEdit:title )
-               oEdit:title := Left( oEdit:title,nGetLen )
-            ENDIF
+               //oEdit:title := Left( oEdit:title,nGetLen ) + cKey //Bug fixed
+               oEdit:title := Left( oEdit:title,nPos-1 ) + cKey + SubStr( oEdit:title,nPos+1 )
+            ENDCIF
          ELSE
             oEdit:title := Left( oEdit:title,nPos-1 ) + cKey + SubStr( oEdit:title,nPos+1 )
          ENDIF

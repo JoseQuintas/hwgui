@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.46 2004-10-01 12:45:42 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.47 2004-10-06 19:07:36 sandrorrfreire Exp $
  */
 #define HWG_VERSION           "2.13"
 #define	WND_MAIN		1
@@ -267,12 +267,13 @@
             [ ON LOSTFOCUS <bLfocus> ] ;
             [ STYLE <nStyle> ]         ;
             [<lnoborder: NOBORDER>]    ;
+            [<lPassword: PASSWORD>]    ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<caption>,,<nStyle>,<x>,<y>,<width>, ;
                     <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
-                    <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.> )
+                    <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.>,,<.lPassword.> )
 
 
 #xcommand REDEFINE EDITBOX [ <oEdit> ] ;
@@ -784,6 +785,7 @@
             [ PICTURE <cPicture> ]     ;
             [ WHEN  <bGfocus> ]        ;
             [ VALID <bLfocus> ]        ;
+            [<lPassword: PASSWORD>]    ;
             [ MAXLENGTH <lMaxLength> ] ;
             [ STYLE <nStyle> ]         ;
             [<lnoborder: NOBORDER>]    ;
@@ -793,7 +795,7 @@
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<vari>,               ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;
                    <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,,,  ;
-                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<.lnoborder.>,<lMaxLength> )
+                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<.lnoborder.>,<lMaxLength>,<.lPassword.>)
 
 #xcommand REDEFINE GET [ <oEdit> VAR ] <vari>  ;
             [ OF <oWnd> ]              ;

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.276 2004-10-06 14:27:01 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.277 2004-10-06 19:07:34 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-10-06 16-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+   * source/hedit.prg
+     Use the style password
+     modify the method New
+   * include/guilib.ch
+     Update command @ x, y EDITBOX and @ x, y GET, add PASSWORD
+   * samples/testget2.prg
+     update using demo PASSWORD
+ 
 2004-10-06 11-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
    + samples/browse_3.prg
      Add samples for use Set relation in Browse

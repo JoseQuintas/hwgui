@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.30 2004-09-23 14:30:50 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.31 2004-10-06 19:07:37 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -42,10 +42,12 @@ CLASS HEdit INHERIT HControl
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt, ;
-                  tcolor,bcolor,cPicture,lNoBorder, lMaxLength ) CLASS HEdit
+                  tcolor,bcolor,cPicture,lNoBorder, lMaxLength, lPassword ) CLASS HEdit
  
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), ;
-                WS_TABSTOP+Iif(lNoBorder==Nil.OR.!lNoBorder,WS_BORDER,0) )
+                WS_TABSTOP+Iif(lNoBorder==Nil.OR.!lNoBorder,WS_BORDER,0)+;
+                Iif(lPassword==Nil .or. !lPassword, 0, ES_PASSWORD)  )
+
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
 
@@ -110,6 +112,7 @@ Return Nil
 METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint, ;
           bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture, lMaxLength )  CLASS HEdit
 
+  
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
 

@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.3 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: htree.prg,v 1.4 2004-06-16 23:24:19 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -55,6 +55,7 @@
 #define TVGN_LASTVISIBLE       10   // 0x000A
 
 #define TVN_SELCHANGED       (-402)
+#define TVN_SELCHANGEDW      (-451)
 #define TVN_ITEMEXPANDING    (-405)
 #define TVN_BEGINLABELEDIT   (-410)
 #define TVN_ENDLABELEDIT     (-411)
@@ -312,7 +313,7 @@ Return Nil
 Function TreeNotify( oTree,lParam )
 Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct
 
-   IF nCode == TVN_SELCHANGED
+   IF nCode == TVN_SELCHANGED .or. nCode == TVN_SELCHANGEDW
       oItem := Tree_GetNotify( lParam,TREE_GETNOTIFY_PARAM )
       oItem:oTree:oSelected := oItem
       IF !oItem:oTree:lEmpty .AND. oItem:bAction != Nil

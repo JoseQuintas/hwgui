@@ -423,6 +423,8 @@ void Blowfish_Init( BLOWFISH_CTX *ctx, unsigned char *key, int keyLen )
 
 
 #include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
 #include "hbapiitm.h"
 
 HB_FUNC( BF_ENCRYPT )

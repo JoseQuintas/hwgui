@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.26 2004-09-10 11:43:15 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.27 2004-09-10 11:52:23 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -397,14 +397,11 @@ Local i, masklen, newpos, vari
    //Added By Sandro Freire
 
    IF !Empty( oEdit:cPicMask )
-      IF Len(oEdit:cPicMask)==Len(TRIM(oEdit:Title)) .or.;
-         Len(oEdit:cPicMask)==Len(TRIM(oEdit:Title))+1  //if space in EditBox
-         newPos:=Len(oEdit:cPicMask)
+        newPos:=Len(oEdit:cPicMask)
         //writelog( "KeyRight-2 "+str(nPos) + " " +str(newPos) )
-         IF nPos>newPos
+        IF nPos>newPos .and. !empty(TRIM(oEdit:Title))
             SendMessage( oEdit:handle, EM_SETSEL, newPos, newPos )
-         ENDIF
-      ENDIF
+        ENDIF
    ENDIF
 
 Return 0

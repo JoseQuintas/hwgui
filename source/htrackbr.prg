@@ -103,7 +103,11 @@ Return (::value)
 #endif
 
 
-#include <hbapi.h>
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include "hbapiitm.h"
+
 
 HB_FUNC ( INITTRACKBAR )
 {

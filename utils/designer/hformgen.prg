@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.20 2004-10-19 11:09:35 alkresin Exp $
+ * $Id: hformgen.prg,v 1.21 2004-11-25 11:46:31 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -758,7 +758,7 @@ Local oCtrl, aCoors, nShift
          DeleteCtrl()
       ENDIF
    ELSEIF msg == WM_KEYUP
-      nShift := Iif( GetKeyState(17)!=0,10,1 )
+      nShift := Iif( GetKeyState(17)<0,10,1 )
       IF wParam == 40        // Down
          IF ( oCtrl := GetCtrlSelected( oDlg ) ) != Nil
             SetBDown( ,0,0,0 )

@@ -2,7 +2,7 @@
 if "%1" == "clean" goto CLEAN
 if "%1" == "CLEAN" goto CLEAN
 
-rem SET cflags=%cflags% -DXHBCVS - this is causing compiling errors that who not is using xharbour CVS or using harbour
+SET cflags=%cflags% -DXHBCVS 
 
 if not exist lib md lib
 if not exist obj md obj

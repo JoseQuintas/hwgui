@@ -1,5 +1,5 @@
 /*
- * $Id: procscri.prg,v 1.5 2004-06-05 16:13:16 alkresin Exp $
+ * $Id: procscri.prg,v 1.6 2004-06-18 14:39:13 alkresin Exp $
  *
  * Common procedures
  * Scripts
@@ -473,6 +473,9 @@ FUNCTION CompileErr( nLine )
 RETURN nLastError
 
 FUNCTION Codeblock( string )
+   IF Left( string,2 ) == "{|"
+      Return &( string )
+   ENDIF
 RETURN &("{||"+string+"}")
 
 #ifdef __WINDOWS__

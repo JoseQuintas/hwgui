@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.10 2004-06-17 15:51:56 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.11 2004-06-18 14:39:13 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -232,13 +232,16 @@ Local nPos1, nPos2, nLines := 1, arr[3], arrExe
          ENDIF
       ENDDO
    ENDIF
+   IF Right( arr[1],1 ) < " "
+      arr[1] := Left( arr[1],Len(arr[1])-1 )
+   ENDIF
    IF nLines == 1
-      IF Right( arr[1],1 ) < " "
-         arr[1] := Left( arr[1],Len(arr[1])-1 )
-      ENDIF
       Return &( "{||" + arr[1] + "}" )
    ELSEIF Lower( Left( arr[1],11 ) ) == "parameters "
       IF nLines == 2
+         IF Right( arr[2],1 ) < " "
+            arr[2] := Left( arr[2],Len(arr[2])-1 )
+         ENDIF
          Return &( "{|" + Ltrim( Substr( arr[1],12 ) ) + "|" + arr[2] + "}" )
       ELSE
          arrExe := Array(2)

@@ -59,14 +59,20 @@ Private aName :=  { "SAY", "BUTTON", "CHECKBOX", "RADIOBUTTON", "EDITBOX", &&
    han := Fcreate( fname )
 
    Fwrite( han, "FUNCTION " + oForm:name + _Chr(10)  )
-   Fwrite( han, "LOCAL " + cName )
+   IF cName != Nil
+      Fwrite( han, "LOCAL " + cName )
+   ENDIF
    i := 1
+   stroka := ""
    DO WHILE i <= aLen
       IF ( temp := aControls[i]:GetProp( "Name" ) ) != Nil .AND. !Empty( temp )
-         Fwrite( han, ", " + temp )
+         stroka += Iif( Empty(stroka),"LOCAL ",", " ) + temp
       ENDIF
       i ++
    ENDDO
+   IF !Empty( stroka )
+      Fwrite( han, stroka )
+   ENDIF
    stroka := ""
    i := 1
    DO WHILE i <= aLen

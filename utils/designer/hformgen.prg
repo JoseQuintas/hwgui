@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.9 2004-06-17 15:51:56 alkresin Exp $
+ * $Id: hformgen.prg,v 1.10 2004-06-18 14:39:13 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -309,11 +309,11 @@ Local i
                      ( !lOpen .AND. aFormats[ i,5 ] != Nil )
          Aadd( aCombo, aFormats[ i,1 ] )
          Aadd( af,i )
+         IF !lOpen .AND. oFrm:type == i
+            nType := Len( af ) 
+         ENDIF
       ENDIF
    NEXT
-   IF !lOpen
-      nType := oFrm:type
-   ENDIF
 
    INIT DIALOG oDlg TITLE Iif( lOpen,"Open form","Save form" ) ;
        AT 50, 100 SIZE 310,250 FONT oMainWnd:oFont

@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.8 2004-05-27 19:24:17 sandrorrfreire Exp $
+ * $Id: commond.c,v 1.9 2004-05-28 14:12:30 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -326,6 +326,7 @@ HB_FUNC( WRITEPRIVATEPROFILESTRING )
 
 static far PRINTDLG pd;
 static far BOOL bInit = FALSE;
+static far BOOL bPName = FALSE;
  
 static void StartPrn( void )
 {
@@ -338,17 +339,30 @@ static void StartPrn( void )
       pd.Flags       = PD_RETURNDEFAULT ;
       pd.nMinPage    = 1;
       pd.nMaxPage    = 65535;
-      PrintDlg( &pd );
-  }
+      if (PrintDlg(&pd)==TRUE) 
+      {
+      hb_retl(TRUE);
+      }
+      else
+      {
+      hb_retl(FALSE);
+      }    
+   }
 }
 
 HB_FUNC ( PRINTPORTNAME )
 {
+  if( ! bPName )
+  {
+   	
+   ULONG bRet;
    LPDEVNAMES lpDevNames;
-   StartPrn();
+    
    lpDevNames = (LPDEVNAMES) GlobalLock( pd.hDevNames );
-   hb_retc( ( LPSTR ) lpDevNames + lpDevNames->wOutputOffset );
+   bRet =( LPSTR ) lpDevNames + lpDevNames->wOutputOffset;   
    GlobalUnlock( pd.hDevNames );
+   hb_retc((LPSTR) bRet);
+  }
 }
 
 HB_FUNC ( PRINTSETUPDOS )
@@ -357,18 +371,25 @@ HB_FUNC ( PRINTSETUPDOS )
 
    memset( (void*) &pd, 0, sizeof( PRINTDLG ) );
 
-   pd.lStructSize = sizeof(PRINTDLG); 
-//   pd.Flags = PD_RETURNDC; 
-   pd.Flags = PD_PRINTSETUP | PD_USEDEVMODECOPIES; 
-   pd.hwndOwner = GetActiveWindow();
-   pd.nFromPage = 1; 
-   pd.nToPage = 1; 
-   pd.nCopies = 1; 
-    
-   if( PrintDlg(&pd) )
-      hb_retnl( (LONG) pd.hDC );
+   pd.lStructSize = sizeof(pd);
+   pd.hwndOwner   = GetActiveWindow();
+   pd.hDevMode    = NULL;     
+   pd.hDevNames   = NULL;     
+   pd.Flags       = PD_USEDEVMODECOPIESANDCOLLATE | PD_RETURNDC; 
+   pd.nCopies     = 1;
+   pd.nFromPage   = 0xFFFF; 
+   pd.nToPage     = 0xFFFF; 
+   pd.nMinPage    = 1; 
+   pd.nMaxPage    = 0xFFFF; 
+   bInit = FALSE;
+   if (PrintDlg(&pd)==TRUE) 
+   {
+   	  bPName = FALSE;      
+   	  hb_retnl( (LONG) pd.hDC );
+   }
    else
-      hb_retc( "NULL" );
-
-}
- 
+   {
+   	  bPName = TRUE;
+      hb_retl(FALSE);
+   }    
+}   

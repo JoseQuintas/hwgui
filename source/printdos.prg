@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.7 2004-05-27 17:31:39 sandrorrfreire Exp $
+ * $Id: printdos.prg,v 1.8 2004-05-28 14:12:30 sandrorrfreire Exp $
  *
  * CLASS PrintDos
  *
@@ -72,7 +72,7 @@ METHOD New(oPorta) CLASS PrintDos
      Local oDouble  :={oMATRIXDOUBLE,   oINKJETDOUBLE,   oLASER10CPI}
      Local oNormal  :={oMATRIXNORMAL,   oINKJETNORMAL,   oLASER12CPI}
      Local oCompress:={oMATRIXCOMPRESS, oINKJETCOMPRESS, oLASER18CPI}
-     Local oPtr, oPtrSetup
+     Local oPtr, oPtrSetup, oPtrName
 
      ::cCompr   := oCompress[::oPrintStyle]
      ::cNormal  := oNormal[::oPrintStyle]
@@ -89,14 +89,30 @@ METHOD New(oPorta) CLASS PrintDos
         ::oPorta       := "LPT1"
      Else
         If oPorta=="DEFAULT"
-          ::oPorta     := PrintPortName()
+          oPtrName:=PrintPortName()
+          if oPtrName==Nil
+             MsgInfo("Error, file to:ERROR.TXT")
+             ::oPorta :="Error.txt"
+          else
+             ::oPorta := oPtrName
+          EndIf   
         ElseIf oPorta=="SELECT"
           oPtrSetup:=PrintSetupDos()
           If oPtrSetup==Nil 
              MsgInfo("Error, file to:ERROR.TXT")
              ::oPorta :="Error.txt"
           Else
-             ::oPorta     := PrintPortName()
+             oPtrName:=PrintPortName()
+             if oPtrName==Nil
+                MsgInfo("Error, file to:ERROR.TXT")
+                ::oPorta :="Error.txt"
+             else
+                oPtrName:= Alltrim(oPtrName) 
+                if Substr( oPtrName, 1, 3 ) == "LPT"
+                   oPtrName:=Left( oPtrName, Len( oPtrName) -1 )
+                EndIF 
+                ::oPorta := oPtrName
+             EndIf   
           EndIf
         Else
           ::oPorta     := oPorta

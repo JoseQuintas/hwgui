@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.29 2004-07-08 14:28:02 sandrorrfreire Exp $
+ *$Id: hwindow.prg,v 1.30 2004-07-19 12:34:51 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 #define  FIRST_MDICHILD_ID     501
@@ -102,7 +102,7 @@ CLASS HWindow INHERIT HCustomWindow
    DATA oIcon, oBmp
    DATA oNotifyIcon, bNotify, oNotifyMenu
    DATA lUpdated INIT .F.     // TRUE, if any GET is changed
-   DATA lClipper
+   DATA lClipper INIT .F.
    DATA GetList  INIT {}      // The array of GET items in the dialog
    DATA KeyList  INIT {}      // The array of keys ( as Clipper's SET KEY )
    DATA nLastKey INIT 0

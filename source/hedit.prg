@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.19 2004-07-18 14:24:16 alkresin Exp $
+ *$Id: hedit.prg,v 1.20 2004-07-19 12:34:51 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -236,6 +236,9 @@ Local oEdit, oParent, nPos, nctrl, cKeyb
             ELSE
                GetSkip( oParent,hEdit,1 )
             ENDIF
+            Return 0
+         ELSEIF wParam == VK_RETURN  // Enter
+            GetSkip( oParent,hEdit,1,.T. )
             Return 0
          ENDIF
 
@@ -755,13 +758,13 @@ Local i, j, aLen1 := Len( oDlg:aControls ), aLen2
    NEXT
 Return Nil
 
-Function GetSkip( oParent,hCtrl,nSkip )
+Function GetSkip( oParent,hCtrl,nSkip,lClipper )
 Local i, aLen
 
    DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
       oParent := oParent:oParent
    ENDDO
-   IF oParent == Nil
+   IF oParent == Nil .OR. ( lClipper != Nil .AND. lClipper .AND. !oParent:lClipper )
       Return .F.
    ENDIF
    IF hCtrl == Nil

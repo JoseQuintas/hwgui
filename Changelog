@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.222 2004-07-18 14:24:15 alkresin Exp $
+ * $Id: Changelog,v 1.223 2004-07-19 12:34:50 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-07-19 16:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hedit.prg
+  * source/hwindow.prg
+    * Get system respects :lCLipper now for MDI CHILD and MAIN windows, too.
 
 2004-07-18 18:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hfrmtmpl.prg

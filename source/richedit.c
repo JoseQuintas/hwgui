@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.10 2004-07-18 14:24:16 alkresin Exp $
+ * $Id: richedit.c,v 1.11 2004-09-09 12:20:14 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -14,7 +14,7 @@
 #define _WIN32_IE    0x0400
 //#define OEMRESOURCE
 #include <windows.h>
-#if defined(__MINGW32__)
+#if defined(__MINGW32__) || defined(__WATCOMC__)
    #include <prsht.h>
 #endif
 #include <commctrl.h>

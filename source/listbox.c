@@ -15,9 +15,11 @@
 #define _WIN32_WINNT 0x0400
 // #define OEMRESOURCE
 #include <windows.h>
-#if defined(__MINGW32__)
+
+#if defined(__MINGW32__) || defined(__WATCOMC__)
    #include <prsht.h>
 #endif
+
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"

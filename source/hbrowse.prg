@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.35 2004-08-17 13:02:02 sandrorrfreire Exp $
+ * $Id: hbrowse.prg,v 1.36 2004-09-09 12:20:14 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -305,13 +305,13 @@ RETURN Nil
 //----------------------------------------------------//
 METHOD InitBrw( nType )  CLASS HBrowse
 Local dSkip:=::bSKip   
-      dGoTop:=::bGoTop  
-      dGoBot:=::bGoBot  
-      dEof:=::bEof    
-      dBof:=::bBof     
-      dRcou:=::bRcou    
-      dRecno:=::bRecno   
-      dGoTo:=::bGoTo   
+Local dGoTop:=::bGoTop  
+Local dGoBot:=::bGoBot  
+Local dEof:=::bEof    
+Local dBof:=::bBof     
+Local dRcou:=::bRcou    
+Local dRecno:=::bRecno   
+Local dGoTo:=::bGoTo   
 
    if nType != Nil
       ::type := nType

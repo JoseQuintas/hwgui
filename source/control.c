@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.17 2004-07-21 09:47:48 alkresin Exp $
+ * $Id: control.c,v 1.18 2004-09-09 12:20:14 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -14,9 +14,6 @@
 #define _WIN32_IE    0x0400
 #define OEMRESOURCE
 #include <windows.h>
-#if defined(__MINGW32__)
-   #include <prsht.h>
-#endif
 #include <commctrl.h>
 
 #ifdef __EXPORT__

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ *$Id: guilib.ch,v 1.3 2003-12-01 12:40:37 lculik Exp $
  */
 
 #include "guilib.h"
@@ -835,3 +835,11 @@
           => ;
     [<oGraph> := ] HGraph():New( <oWnd>,<nId>,<aData>,<x>,<y>,<width>, ;
         <height>,<oFont>,<bSize>,<ctoolt>,<color>,<bcolor> )
+
+/* open an .dll resource */
+#xcommand SET RESOURCES TO <cName1> ;
+       => ;
+            LoadResource( <cName1> )
+
+#xcommand SET RESOURCES TO => LOADRESOURCE( NIL )
+

@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ *$Id: windows.ch,v 1.3 2003-12-01 12:40:37 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -751,3 +751,12 @@
 #define TVHT_BELOW              512     // 0x0200
 #define TVHT_TORIGHT            1024    // 0x0400
 #define TVHT_TOLEFT             2048    // 0x0800
+
+/* For video controls */
+#define WIN_CHARPIX_H	16
+#define WIN_CHARPIX_W    8
+#define VID_CHARPIX_H	14
+#define VID_CHARPIX_W    8
+#define CS_VREDRAW                 1  // 0x0001
+#define CS_HREDRAW                 2  // 0x0002
+

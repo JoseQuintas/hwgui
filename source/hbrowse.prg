@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.20 2004-04-20 08:59:34 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.21 2004-04-26 18:08:48 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1261,8 +1261,14 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
          IF oColumn:aList != Nil
             oModDlg:brush := -1
             oModDlg:nHeight := ::height*5
-            varbuf := AllTrim(varbuf)
-            nChoic := Ascan( oColumn:aList,varbuf )
+            
+            if valtype(varbuf) == 'N'
+                nChoic := varbuf
+            else                
+                varbuf := AllTrim(varbuf)
+                nChoic := Ascan( oColumn:aList,varbuf )
+            endif
+                            
             @ 0,0 GET COMBOBOX nChoic           ;
                ITEMS oColumn:aList              ;
                SIZE oColumn:width, ::height*5   ;
@@ -1281,7 +1287,11 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
 
          IF oModDlg:lResult            
             IF oColumn:aList != Nil
-               varbuf := oColumn:aList[nChoic]
+               if valtype(varbuf) == 'N'
+                  varbuf := nChoic
+               else
+                  varbuf := oColumn:aList[nChoic]
+               endif                  
             ENDIF
             IF ::lAppMode
                ::lAppMode := .F.

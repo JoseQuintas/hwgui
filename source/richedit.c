@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.8 2004-06-25 08:53:26 alkresin Exp $
+ * $Id: richedit.c,v 1.9 2004-07-13 19:55:40 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -72,7 +72,7 @@ HB_FUNC( CREATERICHEDIT )
 /*
  * re_SetCharFormat( hCtrl, n1, n2, nColor, cName, nHeight, lBold, lItalic, lUnderline )
  */
-HB_FUNC ( RE_SETCHARFORMAT )
+HB_FUNC( RE_SETCHARFORMAT )
 {
    HWND hCtrl = (HWND) hb_parnl(1);
    CHARRANGE chrOld, chrNew;
@@ -180,7 +180,7 @@ HB_FUNC ( RE_SETCHARFORMAT )
 /*
  * re_SetDefault( hCtrl, nColor, cName, nHeight, lBold, lItalic, lUnderline, nCharset )
  */
-HB_FUNC ( RE_SETDEFAULT )
+HB_FUNC( RE_SETDEFAULT )
 {
    HWND hCtrl = ( HWND ) hb_parnl( 1 );
    CHARFORMAT cf;
@@ -232,7 +232,7 @@ HB_FUNC ( RE_SETDEFAULT )
 /*
  * re_CharFromPos( hEdit, xPos, yPos ) --> nPos
  */
-HB_FUNC ( RE_CHARFROMPOS )
+HB_FUNC( RE_CHARFROMPOS )
 {
    HWND hCtrl = (HWND) hb_parnl(1);
    int x = hb_parni( 2 );
@@ -252,7 +252,7 @@ HB_FUNC ( RE_CHARFROMPOS )
 /*
  * re_GetTextRange( hEdit, n1, n2 )
  */
-HB_FUNC ( RE_GETTEXTRANGE )
+HB_FUNC( RE_GETTEXTRANGE )
 {
    HWND hCtrl = (HWND) hb_parnl(1);
    TEXTRANGE tr;
@@ -271,7 +271,7 @@ HB_FUNC ( RE_GETTEXTRANGE )
 /*
  * re_GetLine( hEdit, nLine )
  */
-HB_FUNC ( RE_GETLINE )
+HB_FUNC( RE_GETLINE )
 {
    HWND hCtrl = (HWND) hb_parnl(1);
    int nLine = hb_parni(2);
@@ -287,7 +287,7 @@ HB_FUNC ( RE_GETLINE )
 
 }
 
-HB_FUNC ( HWG_INITRICHPROC )
+HB_FUNC( HWG_INITRICHPROC )
 {
    wpOrigRichProc = (WNDPROC) SetWindowLong( (HWND) hb_parnl(1),
                                  GWL_WNDPROC, (LONG) RichSubclassProc );

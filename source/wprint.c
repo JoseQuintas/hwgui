@@ -91,7 +91,7 @@ HB_FUNC( HWG_ENDPAGE )
    hb_retnl( (LONG) EndPage( (HDC) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC ( GETDEVICEAREA )
+HB_FUNC( GETDEVICEAREA )
 {
    HDC hDC = (HDC) hb_parnl( 1 );
    PHB_ITEM aMetr = hb_itemArrayNew( 7 );

@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.6 2004-06-11 18:31:46 rodrigo_moreno Exp $
+ * $Id: grid.c,v 1.7 2004-07-13 19:55:40 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -30,7 +30,7 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 
-HB_FUNC (LISTVIEW_CREATE)
+HB_FUNC( LISTVIEW_CREATE )
 {
         HWND hwnd;
         HWND handle;
@@ -78,12 +78,12 @@ HB_FUNC( LISTVIEW_INIT )
         ListView_SetItemCount( (HWND) hb_parnl(1), hb_parnl(2) ) ;
 }
 
-HB_FUNC (LISTVIEW_SETITEMCOUNT)
+HB_FUNC( LISTVIEW_SETITEMCOUNT )
 {
         ListView_SetItemCount( (HWND) hb_parnl (1) , hb_parni (2) ) ;
 }
     
-HB_FUNC ( LISTVIEW_ADDCOLUMN )
+HB_FUNC( LISTVIEW_ADDCOLUMN )
 {
         LV_COLUMN COL;
 
@@ -101,34 +101,34 @@ HB_FUNC ( LISTVIEW_ADDCOLUMN )
         RedrawWindow( (HWND) hb_parnl( 1 ), NULL , NULL , RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW ) ;
 }
 
-HB_FUNC ( LISTVIEW_DELETECOLUMN )
+HB_FUNC( LISTVIEW_DELETECOLUMN )
 {
         ListView_DeleteColumn( (HWND) hb_parnl (1) , hb_parni(2)-1 ) ;
         RedrawWindow( (HWND) hb_parnl( 1 ), NULL , NULL , RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW ) ;
 }
 
-HB_FUNC ( LISTVIEW_SETBKCOLOR )
+HB_FUNC( LISTVIEW_SETBKCOLOR )
 {
         ListView_SetBkColor( (HWND) hb_parnl (1) , (COLORREF) hb_parni(2) ) ;
 }
 
-HB_FUNC ( LISTVIEW_SETTEXTBKCOLOR )
+HB_FUNC( LISTVIEW_SETTEXTBKCOLOR )
 {
         ListView_SetTextBkColor( (HWND) hb_parnl (1) , (COLORREF) hb_parni(2) ) ;
 }
 
-HB_FUNC ( LISTVIEW_SETTEXTCOLOR )
+HB_FUNC( LISTVIEW_SETTEXTCOLOR )
 {
 	ListView_SetTextColor( (HWND) hb_parnl (1) , (COLORREF) hb_parni(2) ) ;
 }
 
 
-HB_FUNC ( LISTVIEW_GETFIRSTITEM ) // Current Line
+HB_FUNC( LISTVIEW_GETFIRSTITEM ) // Current Line
 {
         hb_retni( ListView_GetNextItem( (HWND) hb_parnl( 1 )  , -1 ,LVNI_ALL | LVNI_SELECTED) + 1);
 }
 
-HB_FUNC ( LISTVIEW_GETDISPINFO )
+HB_FUNC( LISTVIEW_GETDISPINFO )
 {
         LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
 
@@ -140,7 +140,7 @@ HB_FUNC ( LISTVIEW_GETDISPINFO )
         hb_storni( iSubItem + 1 , -1, 2 ); 
 }
 
-HB_FUNC ( LISTVIEW_SETDISPINFO )
+HB_FUNC( LISTVIEW_SETDISPINFO )
 {
         PHB_ITEM pValue = hb_itemNew( NULL );
         LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
@@ -151,7 +151,7 @@ HB_FUNC ( LISTVIEW_SETDISPINFO )
                 pDispInfo->item.state = 2;
 }
 
-HB_FUNC ( LISTVIEW_GETGRIDKEY )
+HB_FUNC( LISTVIEW_GETGRIDKEY )
 {
         #define pnm ((LV_KEYDOWN *) hb_parnl(1) ) 
 
@@ -160,88 +160,145 @@ HB_FUNC ( LISTVIEW_GETGRIDKEY )
         #undef pnm 
 }
 
-HB_FUNC ( LISTVIEW_GETTOPINDEX )
+HB_FUNC( LISTVIEW_GETTOPINDEX )
 {
         hb_retnl( ListView_GetTopIndex ( (HWND) hb_parnl(1) ) ) ;
 }
 
-HB_FUNC ( LISTVIEW_REDRAWITEMS )
+HB_FUNC( LISTVIEW_REDRAWITEMS )
 {
         hb_retnl( ListView_RedrawItems ( (HWND) hb_parnl(1) , hb_parni(2) , hb_parni(3) ) ) ;
 }
 
-HB_FUNC ( LISTVIEW_GETCOUNTPERPAGE )
+HB_FUNC( LISTVIEW_GETCOUNTPERPAGE )
 {
         hb_retnl( ListView_GetCountPerPage ( (HWND) hb_parnl (1) ) ) ;
 }
 
-HB_FUNC ( LISTVIEW_UPDATE )
+HB_FUNC( LISTVIEW_UPDATE )
 {
         ListView_Update( (HWND) hb_parnl (1) , hb_parni(2) - 1 );
 
 }
 
-HB_FUNC ( LISTVIEW_SCROLL )
+HB_FUNC( LISTVIEW_SCROLL )
 {
         ListView_Scroll( (HWND) hb_parnl (1), hb_parni(2) - 1, hb_parni(3) - 1 );
 }
 
-HB_FUNC ( LISTVIEW_HITTEST )
+HB_FUNC( LISTVIEW_HITTEST )
+
 {
+
 	POINT point ;
+
 	LVHITTESTINFO lvhti;
 
+
+
 	point.y = hb_parni(2) ;
+
 	point.x = hb_parni(3) ;
+
+
 
 	lvhti.pt = point;
 
+
+
 	ListView_SubItemHitTest ( (HWND) hb_parnl (1) , &lvhti ) ;
 
+
+
 	if(lvhti.flags & LVHT_ONITEM)
+
 	{
+
 		hb_reta( 2 );
+
 		hb_storni( lvhti.iItem + 1 , -1, 1 );
+
 		hb_storni( lvhti.iSubItem + 1 , -1, 2 );
+
 	}
+
 	else
+
 	{
+
 		hb_reta( 2 );
+
 		hb_storni( 0 , -1, 1 );
+
 		hb_storni( 0 , -1, 2 );
+
 	}
+
 }
 
-HB_FUNC (GETWINDOWROW) 
+
+HB_FUNC( GETWINDOWROW )
+
 {
+
 	RECT rect;
+
 	int y ;
+
 	GetWindowRect((HWND) hb_parnl (1), &rect) ;
+
 	y = rect.top ;
 
+
+
 	hb_retni(y);
+
 }
 
-HB_FUNC (GETWINDOWCOL) 
+
+
+HB_FUNC( GETWINDOWCOL )
+
 {
+
 	RECT rect;
+
 	int x ;
+
 	GetWindowRect((HWND) hb_parnl (1), &rect) ;
+
 	x = rect.left ;
 
+
+
 	hb_retni(x);
+
 }
 
-HB_FUNC ( GETCURSORROW )
+
+
+HB_FUNC( GETCURSORROW )
+
 {
+
         POINT pt;
+
         GetCursorPos( &pt );
+
         hb_retni( pt.y );
+
 }
 
-HB_FUNC ( GETCURSORCOL )
+
+
+HB_FUNC( GETCURSORCOL )
+
 {
+
         POINT pt;
+
         GetCursorPos( &pt );
+
         hb_retni( pt.x );
+
 }

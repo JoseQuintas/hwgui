@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.21 2004-07-08 14:28:02 sandrorrfreire Exp $
+ * $Id: window.c,v 1.22 2004-07-13 19:55:41 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -62,7 +62,7 @@ static WNDPROC wpOrigEditProc, wpOrigTabProc;
     InitMainWindow( szAppName, cTitle, cMenu, hIcon, nBkColor, nStyle, nLeft, nTop, nWidth, nHeight )
 */
 
-HB_FUNC ( HWG_INITMAINWINDOW )
+HB_FUNC( HWG_INITMAINWINDOW )
 {
    HWND         hWnd ;
    WNDCLASS     wndclass ;
@@ -111,7 +111,7 @@ HB_FUNC ( HWG_INITMAINWINDOW )
    hb_retnl( (LONG) hWnd );
 }
 
-HB_FUNC (HWG_CENTERWINDOW) 
+HB_FUNC( HWG_CENTERWINDOW )
 {
 	RECT rect;
 	int w, h, x, y;
@@ -161,7 +161,7 @@ void ProcessMdiMessage( HWND hJanBase, HWND hJanClient, MSG msg, HACCEL hAcceler
 /*
  *  HWG_ACTIVATEMAINWINDOW( lShow, hAccel, lMaximize ) 
  */
-HB_FUNC ( HWG_ACTIVATEMAINWINDOW )
+HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 {
 
    HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
@@ -179,7 +179,7 @@ HB_FUNC ( HWG_ACTIVATEMAINWINDOW )
 
 }
 
-HB_FUNC ( HWG_PROCESSMESSAGE )
+HB_FUNC( HWG_PROCESSMESSAGE )
 {
 
    MSG msg;
@@ -191,7 +191,7 @@ HB_FUNC ( HWG_PROCESSMESSAGE )
 
 
 
-HB_FUNC ( HWG_INITCHILDWINDOW )
+HB_FUNC( HWG_INITCHILDWINDOW )
 {
    HWND         hWnd ;
    WNDCLASS     wndclass ;
@@ -244,7 +244,7 @@ HB_FUNC ( HWG_INITCHILDWINDOW )
    hb_retnl( (LONG) hWnd );
 }
 
-HB_FUNC ( HWG_ACTIVATECHILDWINDOW )
+HB_FUNC( HWG_ACTIVATECHILDWINDOW )
 {
    if( hb_parl(1) )
    {
@@ -262,7 +262,7 @@ HB_FUNC ( HWG_ACTIVATECHILDWINDOW )
     InitMainWindow( cTitle, cMenu, cBitmap, hIcon, nBkColor, nStyle, nLeft, nTop, nWidth, nHeight )
 */
 
-HB_FUNC ( HWG_INITMDIWINDOW )
+HB_FUNC( HWG_INITMDIWINDOW )
 {
    HWND         hWnd;
    WNDCLASS     wndclass, wc ;
@@ -335,7 +335,7 @@ HB_FUNC ( HWG_INITMDIWINDOW )
    hb_retnl( (LONG) hWnd );
 }
 
-HB_FUNC ( HWG_INITCLIENTWINDOW )
+HB_FUNC( HWG_INITCLIENTWINDOW )
 {
    CLIENTCREATESTRUCT ccs;
    HWND         hWndClient;
@@ -358,7 +358,7 @@ HB_FUNC ( HWG_INITCLIENTWINDOW )
    hb_retnl( (LONG) hWndClient );
 }
 
-HB_FUNC ( HWG_ACTIVATEMDIWINDOW )
+HB_FUNC( HWG_ACTIVATEMDIWINDOW )
 {
 
    HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
@@ -384,7 +384,7 @@ HB_FUNC ( HWG_ACTIVATEMDIWINDOW )
     aActions = { { nMenuItemID, bAction }, ... }
 */
 
-HB_FUNC ( HWG_CREATEMDICHILDWINDOW )
+HB_FUNC( HWG_CREATEMDICHILDWINDOW )
 {
    HWND  hWnd;
    PHB_ITEM pObj = hb_param( 1, HB_IT_OBJECT );
@@ -421,7 +421,7 @@ HB_FUNC ( HWG_CREATEMDICHILDWINDOW )
 
 }
 
-HB_FUNC ( SENDMESSAGE )
+HB_FUNC( SENDMESSAGE )
 {
     hb_retnl( (LONG) SendMessage(
                        (HWND) hb_parnl( 1 ),	// handle of destination window
@@ -431,7 +431,7 @@ HB_FUNC ( SENDMESSAGE )
                      ) );
 }
 
-HB_FUNC ( POSTMESSAGE )
+HB_FUNC( POSTMESSAGE )
 {
     hb_retnl( (LONG) PostMessage(
                        (HWND) hb_parnl( 1 ),	// handle of destination window
@@ -441,17 +441,17 @@ HB_FUNC ( POSTMESSAGE )
                      ) );
 }
 
-HB_FUNC ( SETFOCUS )
+HB_FUNC( SETFOCUS )
 {
    hb_retnl( (LONG) SetFocus( (HWND) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC ( GETFOCUS )
+HB_FUNC( GETFOCUS )
 {
    hb_retnl( (LONG) GetFocus() );
 }
 
-HB_FUNC ( SETWINDOWOBJECT )
+HB_FUNC( SETWINDOWOBJECT )
 {
    PHB_ITEM pObject = hb_param( 2, HB_IT_OBJECT );
 
@@ -471,7 +471,7 @@ HB_FUNC ( SETWINDOWOBJECT )
    }
 }
 
-HB_FUNC ( GETWINDOWOBJECT )
+HB_FUNC( GETWINDOWOBJECT )
 {
    LONG dwNewLong = GetWindowLong( (HWND) hb_parnl(1), GWL_USERDATA );
 
@@ -494,7 +494,7 @@ HB_FUNC ( GETWINDOWOBJECT )
    }
 }
 
-HB_FUNC( SETWINDOWTEXT)
+HB_FUNC( SETWINDOWTEXT )
 {
    SetWindowText( (HWND) hb_parnl( 1 ), (LPCTSTR) hb_parc( 2 ) );
 }
@@ -519,7 +519,7 @@ HB_FUNC( SETWINDOWFONT )
        MAKELPARAM( (ISNIL(3))? 0 : hb_parl(3), 0 ) );
 }
 
-HB_FUNC ( ENABLEWINDOW )
+HB_FUNC( ENABLEWINDOW )
 {
    HWND hWnd = (HWND) hb_parnl( 1 );
    BOOL lEnable = hb_parl( 2 );
@@ -561,44 +561,44 @@ HB_FUNC( ISWINDOWENABLED )
    hb_retl( IsWindowEnabled( (HWND) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC ( GETACTIVEWINDOW )
+HB_FUNC( GETACTIVEWINDOW )
 {
    hb_retnl( (LONG) GetActiveWindow() );
 }
 
-HB_FUNC ( GETINSTANCE )
+HB_FUNC( GETINSTANCE )
 {
    hb_retnl( (LONG) GetModuleHandle( NULL ) );
 }
 
-HB_FUNC ( HWG_INITEDITPROC )
+HB_FUNC( HWG_INITEDITPROC )
 {
    wpOrigEditProc = (WNDPROC) SetWindowLong( (HWND) hb_parnl(1),
                                  GWL_WNDPROC, (LONG) EditSubclassProc );
 }
 
-HB_FUNC ( HWG_INITTABPROC )
+HB_FUNC( HWG_INITTABPROC )
 {
    wpOrigTabProc = (WNDPROC) SetWindowLong( (HWND) hb_parnl(1),
                                  GWL_WNDPROC, (LONG) TabSubclassProc );
 }
 
-HB_FUNC ( HWG_SETWINDOWSTYLE )
+HB_FUNC( HWG_SETWINDOWSTYLE )
 {
    hb_retnl( SetWindowLong( (HWND) hb_parnl(1), GWL_STYLE, hb_parnl(2) ) );
 }
 
-HB_FUNC ( HWG_FINDWINDOW )
+HB_FUNC( HWG_FINDWINDOW )
 {
    hb_retnl( (LONG) FindWindow( hb_parc(1),hb_parc(2) ) );
 }
 
-HB_FUNC ( HWG_SETFOREGROUNDWINDOW )
+HB_FUNC( HWG_SETFOREGROUNDWINDOW )
 {
    hb_retl( SetForegroundWindow( (HWND) hb_parnl(1) ) );
 }
 
-HB_FUNC ( RESETWINDOWPOS )
+HB_FUNC( RESETWINDOWPOS )
 {
    RECT rc;
 
@@ -809,7 +809,7 @@ void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )
    }
 }
 
-HB_FUNC ( EXITPROCESS )
+HB_FUNC( EXITPROCESS )
 {
   ExitProcess(0);
 }

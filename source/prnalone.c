@@ -21,7 +21,7 @@
 #include "hbvm.h"
 #include "hbstack.h"
 
-HB_FUNC ( PRINTSETUP )
+HB_FUNC( PRINTSETUP )
 {
    PRINTDLG pd;
 
@@ -108,12 +108,12 @@ HB_FUNC( ENDPAGE )
    hb_retnl( (LONG) EndPage( (HDC) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC (DELETEDC )
+HB_FUNC( DELETEDC )
 {
    DeleteDC( (HDC) hb_parnl( 1 ) );
 }
 
-HB_FUNC ( GETDEVICEAREA )
+HB_FUNC( GETDEVICEAREA )
 {
    HDC hDC = (HDC) hb_parnl( 1 );
    PHB_ITEM aMetr = hb_itemArrayNew( 7 );
@@ -151,7 +151,7 @@ HB_FUNC ( GETDEVICEAREA )
    hb_itemRelease( aMetr );
 }
 
-HB_FUNC ( DRAWTEXT )
+HB_FUNC( DRAWTEXT )
 {
    char *cText = hb_parc( 2 );
    RECT rc;

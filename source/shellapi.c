@@ -60,7 +60,7 @@ HB_FUNC( SELECTFOLDER )
  *  ShellNotifyIcon( lAdd, hWnd, hIcon, cTooltip )
  */
 
-HB_FUNC ( SHELLNOTIFYICON )
+HB_FUNC( SHELLNOTIFYICON )
 {
    NOTIFYICONDATA tnid;
 

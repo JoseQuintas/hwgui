@@ -1,5 +1,5 @@
 /*
- * $Id: resource.c,v 1.3 2004-03-16 11:54:37 alkresin Exp $
+ * $Id: resource.c,v 1.4 2004-07-13 19:55:40 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level resource functions
@@ -33,12 +33,12 @@
 HMODULE hModule ;
 void hb_resourcemodules( void );
 
-HB_FUNC(GETRESOURCES)
+HB_FUNC( GETRESOURCES )
 {
    hb_retnl( ( LONG ) hModule );
 }
 
-HB_FUNC(LOADSTRING)
+HB_FUNC( LOADSTRING )
 {
    char Buffer[ 2048 ];
    int  BuffRet ;
@@ -46,7 +46,7 @@ HB_FUNC(LOADSTRING)
    hb_retclen(Buffer, BuffRet);
 }
 
-HB_FUNC(LOADRESOURCE)
+HB_FUNC( LOADRESOURCE )
 {
 if ( ISCHAR( 1 ) )
     hModule = GetModuleHandle( hb_parc( 1 ) );

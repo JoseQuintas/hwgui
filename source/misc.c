@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.10 2004-05-13 12:46:35 rodrigo_moreno Exp $
+ * $Id: misc.c,v 1.11 2004-07-13 19:55:40 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -45,22 +45,22 @@ void writelog( char* s )
    hb_fsClose( handle );
 }
 
-HB_FUNC ( HWG_SETDLGRESULT )
+HB_FUNC( HWG_SETDLGRESULT )
 {
    SetWindowLong( (HWND) hb_parnl(1), DWL_MSGRESULT, hb_parni(2) );
 }
 
-HB_FUNC ( SETCAPTURE )
+HB_FUNC( SETCAPTURE )
 {
    hb_retnl( (LONG) SetCapture( (HWND) hb_parnl(1) ) );
 }
 
-HB_FUNC ( RELEASECAPTURE )
+HB_FUNC( RELEASECAPTURE )
 {
    hb_retl( ReleaseCapture() );
 }
 
-HB_FUNC ( COPYSTRINGTOCLIPBOARD )
+HB_FUNC( COPYSTRINGTOCLIPBOARD )
 {
    HGLOBAL hglbCopy;
    char * lptstrCopy;
@@ -94,17 +94,17 @@ HB_FUNC ( COPYSTRINGTOCLIPBOARD )
  
 }
 
-HB_FUNC ( GETSTOCKOBJECT )
+HB_FUNC( GETSTOCKOBJECT )
 {
    hb_retnl( (LONG) GetStockObject( hb_parni(1) ) );
 }
 
-HB_FUNC ( LOWORD )
+HB_FUNC( LOWORD )
 {
    hb_retni( (int) ( hb_parnl( 1 ) & 0xFFFF ) );
 }
 
-HB_FUNC ( HIWORD )
+HB_FUNC( HIWORD )
 {
    hb_retni( (int) ( ( hb_parnl( 1 ) >> 16 ) & 0xFFFF ) );
 }
@@ -125,7 +125,7 @@ HB_FUNC( HWG_BITANDINVERSE )
    hb_retnl( hb_parnl(1) & (~hb_parnl(2)) );
 }
 
-HB_FUNC ( SETBIT )
+HB_FUNC( SETBIT )
 {
    if( hb_pcount() < 3 || hb_parni( 3 ) )
       hb_retnl( hb_parnl(1) | ( 1 << (hb_parni(2)-1) ) );
@@ -133,7 +133,7 @@ HB_FUNC ( SETBIT )
       hb_retnl( hb_parnl(1) & ~( 1 << (hb_parni(2)-1) ) );
 }
 
-HB_FUNC ( CHECKBIT )
+HB_FUNC( CHECKBIT )
 {
    hb_retl( hb_parnl(1) & ( 1 << (hb_parni(2)-1) ) );
 }
@@ -192,7 +192,7 @@ HB_FUNC( SCREENTOCLIENT )
    _itemRelease( aPoint );
 }
 
-HB_FUNC ( HWG_GETCURSORPOS )
+HB_FUNC( HWG_GETCURSORPOS )
 {
    POINT pt;
    PHB_ITEM aPoint = _itemArrayNew( 2 );
@@ -213,19 +213,19 @@ HB_FUNC ( HWG_GETCURSORPOS )
 
 }
 
-HB_FUNC ( GETCURRENTDIR )
+HB_FUNC( GETCURRENTDIR )
 {
    BYTE pbyBuffer[ _POSIX_PATH_MAX + 1 ];
    GetCurrentDirectory( _POSIX_PATH_MAX, ( char * ) pbyBuffer );
    hb_retc( ( char *) pbyBuffer );
 }
 
-HB_FUNC ( WINEXEC )
+HB_FUNC( WINEXEC )
 {
    hb_retni( WinExec( (LPCSTR) hb_parc(1), (UINT) hb_parni(2) ) );
 }
 
-HB_FUNC ( GETKEYBOARDSTATE )
+HB_FUNC( GETKEYBOARDSTATE )
 {
    BYTE lpbKeyState[256];
    GetKeyboardState( lpbKeyState );
@@ -337,7 +337,7 @@ HB_FUNC( HB_NUMTOHEX )
 }
 #endif
 
-HB_FUNC ( POSTQUITMESSAGE )
+HB_FUNC( POSTQUITMESSAGE )
 {
   PostQuitMessage( hb_parni(1) );
 }
@@ -349,22 +349,22 @@ HB_FUNC( SHELLABOUT )
    ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) hb_parnl(3) );
 }
 
-HB_FUNC (GETDESKTOPWIDTH) 
+HB_FUNC( GETDESKTOPWIDTH )
 {
    hb_retni ( GetSystemMetrics(SM_CXSCREEN) ) ;
 }
 
-HB_FUNC (GETDESKTOPHEIGHT)
+HB_FUNC( GETDESKTOPHEIGHT )
 {
    hb_retni ( GetSystemMetrics(SM_CYSCREEN) ) ;
 }
 
-HB_FUNC ( GETHELPDATA )
+HB_FUNC( GETHELPDATA )
 {
    hb_retnl( (LONG) (((HELPINFO FAR *) hb_parnl(1))->hItemHandle) );
 }
 
-HB_FUNC ( WINHELP )
+HB_FUNC( WINHELP )
 {
     DWORD context;
     UINT style ;

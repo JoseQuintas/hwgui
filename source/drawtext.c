@@ -25,32 +25,32 @@
 #include "hbstack.h"
 #include "item.api"
 
-HB_FUNC (DEFINEPAINTSTRU )
+HB_FUNC( DEFINEPAINTSTRU )
 {
    PAINTSTRUCT *pps = (PAINTSTRUCT*) hb_xgrab( sizeof( PAINTSTRUCT ) );
    hb_retnl( (LONG) pps );
 }
 
-HB_FUNC ( BEGINPAINT )
+HB_FUNC( BEGINPAINT )
 {
    PAINTSTRUCT *pps = (PAINTSTRUCT*) hb_parnl( 2 );
    HDC hDC = BeginPaint( (HWND) hb_parnl( 1 ), pps );
    hb_retnl( (LONG) hDC );
 }
 
-HB_FUNC ( ENDPAINT )
+HB_FUNC( ENDPAINT )
 {
    PAINTSTRUCT *pps = (PAINTSTRUCT*) hb_parnl( 2 );
    EndPaint( (HWND) hb_parnl( 1 ), pps );
    hb_xfree( pps );
 }
 
-HB_FUNC (DELETEDC )
+HB_FUNC( DELETEDC )
 {
    DeleteDC( (HDC) hb_parnl( 1 ) );
 }
 
-HB_FUNC ( TEXTOUT )
+HB_FUNC( TEXTOUT )
 {
    char *cText = hb_parc( 4 );
    TextOut(
@@ -62,7 +62,7 @@ HB_FUNC ( TEXTOUT )
    );
 }
 
-HB_FUNC ( DRAWTEXT )
+HB_FUNC( DRAWTEXT )
 {
    char *cText = hb_parc( 2 );
    RECT rc;
@@ -81,7 +81,7 @@ HB_FUNC ( DRAWTEXT )
    );
 }
 
-HB_FUNC ( GETTEXTMETRIC )
+HB_FUNC( GETTEXTMETRIC )
 {
    TEXTMETRIC tm;
    PHB_ITEM aMetr = _itemArrayNew( 3 );
@@ -108,7 +108,7 @@ HB_FUNC ( GETTEXTMETRIC )
    _itemRelease( aMetr );
 }
 
-HB_FUNC ( GETTEXTSIZE )
+HB_FUNC( GETTEXTSIZE )
 {
    char * pstr = hb_parc(2);
    SIZE sz;
@@ -129,7 +129,7 @@ HB_FUNC ( GETTEXTSIZE )
    _itemRelease( aMetr );
 }
 
-HB_FUNC ( GETCLIENTRECT )
+HB_FUNC( GETCLIENTRECT )
 {
    RECT rc;
    PHB_ITEM aMetr = _itemArrayNew( 4 );
@@ -157,7 +157,7 @@ HB_FUNC ( GETCLIENTRECT )
    _itemRelease( aMetr );
 }
 
-HB_FUNC ( GETWINDOWRECT )
+HB_FUNC( GETWINDOWRECT )
 {
    RECT rc;
    PHB_ITEM aMetr = _itemArrayNew( 4 );
@@ -185,7 +185,7 @@ HB_FUNC ( GETWINDOWRECT )
    _itemRelease( aMetr );
 }
 
-HB_FUNC ( GETCLIENTAREA )
+HB_FUNC( GETCLIENTAREA )
 {
    PAINTSTRUCT *pps = (PAINTSTRUCT*) hb_parnl( 1 );
    PHB_ITEM aMetr = _itemArrayNew( 4 );
@@ -211,7 +211,7 @@ HB_FUNC ( GETCLIENTAREA )
    _itemRelease( aMetr );
 }
 
-HB_FUNC ( SETTEXTCOLOR )
+HB_FUNC( SETTEXTCOLOR )
 {
    COLORREF crColor = SetTextColor(
               (HDC) hb_parnl( 1 ),	// handle of device context  
@@ -220,7 +220,7 @@ HB_FUNC ( SETTEXTCOLOR )
    hb_retnl( (LONG) crColor );
 }
 
-HB_FUNC ( SETBKCOLOR )
+HB_FUNC( SETBKCOLOR )
 {
    COLORREF crColor = SetBkColor(
               (HDC) hb_parnl( 1 ),	// handle of device context  
@@ -229,7 +229,7 @@ HB_FUNC ( SETBKCOLOR )
    hb_retnl( (LONG) crColor );
 }
 
-HB_FUNC ( SETTRANSPARENTMODE )
+HB_FUNC( SETTRANSPARENTMODE )
 {
    int iMode = SetBkMode(
                  (HDC) hb_parnl( 1 ),	// handle of device context  
@@ -237,18 +237,18 @@ HB_FUNC ( SETTRANSPARENTMODE )
    hb_retl( iMode == TRANSPARENT );
 }
 
-HB_FUNC ( GETTEXTCOLOR )
+HB_FUNC( GETTEXTCOLOR )
 {
    hb_retnl( (LONG) GetTextColor( (HDC) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC ( GETBKCOLOR )
+HB_FUNC( GETBKCOLOR )
 {
    hb_retnl( (LONG) GetBkColor( (HDC) hb_parnl( 1 ) ) );
 }
 
 /*
-HB_FUNC ( GETTEXTSIZE )
+HB_FUNC( GETTEXTSIZE )
 {
 
    HDC hdc = GetDC( (HWND)hb_parnl(1) );
@@ -277,7 +277,7 @@ HB_FUNC ( GETTEXTSIZE )
 }
 */
 
-HB_FUNC ( EXTTEXTOUT )
+HB_FUNC( EXTTEXTOUT )
 {
 
    RECT rc;
@@ -300,12 +300,12 @@ HB_FUNC ( EXTTEXTOUT )
    );
 }
 
-HB_FUNC ( WRITESTATUSWINDOW )  
+HB_FUNC( WRITESTATUSWINDOW )
 {
    SendMessage( (HWND) hb_parnl( 1 ), SB_SETTEXT, hb_parni( 2 ), (LPARAM) hb_parc( 3 ) );
 }
 
-HB_FUNC ( WINDOWFROMDC )  
+HB_FUNC( WINDOWFROMDC )
 {
    hb_retnl( (LONG) WindowFromDC( (HDC) hb_parnl( 1 ) ) );
 }
@@ -313,7 +313,7 @@ HB_FUNC ( WINDOWFROMDC )
 /* CreateFont( fontName, nWidth, hHeight [,fnWeight] [,fdwCharSet], 
                [,fdwItalic] [,fdwUnderline] [,fdwStrikeOut]  )
 */
-HB_FUNC ( CREATEFONT )  
+HB_FUNC( CREATEFONT )
 {
    HFONT hFont;
    int fnWeight = ( ISNIL(4) )? 0:hb_parni(4);

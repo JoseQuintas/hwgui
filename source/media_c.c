@@ -1,5 +1,5 @@
 /*
- * $Id: media_c.c,v 1.6 2004-03-16 11:54:37 alkresin Exp $
+ * $Id: media_c.c,v 1.7 2004-07-13 19:55:40 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level media functions
@@ -28,7 +28,7 @@
 /*
  *  PlaySound( cName, lSync, lLoop )
  */
-HB_FUNC ( PLAYSOUND )
+HB_FUNC( PLAYSOUND )
 {
    LPCSTR pszSound = ( hb_pcount()>0 && ISCHAR(1) )? hb_parc(1):NULL;
    HMODULE hmod = NULL;
@@ -47,7 +47,7 @@ HB_FUNC ( PLAYSOUND )
 
 }
 
-HB_FUNC ( MCISENDSTRING )
+HB_FUNC( MCISENDSTRING )
 {
    BYTE cBuffer[128];
 
@@ -61,7 +61,7 @@ HB_FUNC ( MCISENDSTRING )
 
 /* Functions bellow for play video's and wav's*/
 
-HB_FUNC(  MCISENDCOMMAND )       // ()
+HB_FUNC( MCISENDCOMMAND )       // ()
 {
    hb_retnl( mciSendCommand( hb_parni( 1 ),      // Device ID
                            hb_parni( 2 ),      // Command Message
@@ -72,7 +72,7 @@ HB_FUNC(  MCISENDCOMMAND )       // ()
 //----------------------------------------------------------------------------//
 
 
-   HB_FUNC(  MCIGETERRORSTRING )  // ()
+HB_FUNC( MCIGETERRORSTRING )  // ()
 {
    BYTE bBuffer[ 200 ];
 
@@ -84,7 +84,7 @@ HB_FUNC(  MCISENDCOMMAND )       // ()
 
 //----------------------------------------------------------------------------//
 
-HB_FUNC(  NMCIOPEN )
+HB_FUNC( NMCIOPEN )
 {
    MCI_OPEN_PARMS mciOpenParms;
    DWORD dwFlags = MCI_OPEN_ELEMENT;
@@ -106,7 +106,7 @@ HB_FUNC(  NMCIOPEN )
 
 //----------------------------------------------------------------------------//
 
-HB_FUNC(  NMCIPLAY )
+HB_FUNC( NMCIPLAY )
 {
    MCI_PLAY_PARMS mciPlayParms;
    DWORD dwFlags = 0;
@@ -136,7 +136,7 @@ HB_FUNC(  NMCIPLAY )
 
 //----------------------------------------------------------------------------//
 
-HB_FUNC(  NMCIWINDOW )
+HB_FUNC( NMCIWINDOW )
 {
    MCI_ANIM_WINDOW_PARMS mciWindowParms;
    HWND hWnd = ( HWND ) hb_parnl( 2 );

@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.3 2004-06-24 21:52:04 andijahja Exp $
+ * $Id: nice.c,v 1.4 2004-07-13 19:55:40 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -123,12 +123,12 @@ HRGN Res = CreateRoundRectRgn( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ),
 }
 
 
-HB_FUNC( SETWINDOWRGN)
+HB_FUNC( SETWINDOWRGN )
 {
    hb_retni( SetWindowRgn((HWND) hb_parnl( 1 ), (HRGN) hb_parnl( 2 ), hb_parl( 3 ) ) );
 }
 
-HB_FUNC( HWG_REGNICE)
+HB_FUNC( HWG_REGNICE )
 {
 	// **********[ DLL Declarations ]**********
    static TCHAR szAppName[] = TEXT ( "NICEBUTT" );
@@ -158,7 +158,7 @@ HB_FUNC( HWG_REGNICE)
 }
 
 
-HB_FUNC ( CREATENICEBTN )
+HB_FUNC( CREATENICEBTN )
 {
    HWND hWndPanel;
    ULONG ulStyle = (!ISNIL(3) ? hb_parnl(3):  WS_CLIPCHILDREN | WS_CLIPSIBLINGS );
@@ -193,23 +193,23 @@ HB_FUNC( RGB )
    hb_retnl( RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) ) ;
 }
 
-HB_FUNC( DRAW_GRADIENT)
+HB_FUNC( DRAW_GRADIENT )
 {
    Draw_Gradient( (HDC) hb_parnl( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),hb_parni( 8 ) );
 }
 
-HB_FUNC(MAKELONG)
+HB_FUNC( MAKELONG )
 {
    hb_retnl( (LONG) MAKELONG( (WORD) hb_parnl( 1 ), (WORD) hb_parnl( 2 ) ) );
 }
 
 
-HB_FUNC(GETWINDOWLONG)
+HB_FUNC( GETWINDOWLONG )
 {
    hb_retnl( GetWindowLong( (HWND) hb_parnl( 1 ), hb_parni( 2 ) ) ) ;
 }
 
-HB_FUNC( SETBKMODE)
+HB_FUNC( SETBKMODE )
 {
    hb_retni( SetBkMode( (HDC) hb_parnl( 1 ), hb_parni( 2 ) ) );
 }

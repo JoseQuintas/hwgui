@@ -27,13 +27,13 @@
 
 
 
-HB_FUNC ( LISTBOXADDSTRING )
+HB_FUNC( LISTBOXADDSTRING )
 {
    char *cString = hb_parc( 2 );
    SendMessage( (HWND) hb_parnl( 1 ), LB_ADDSTRING, 0, (LPARAM) cString );
 }
 
-HB_FUNC ( LISTBOXSETSTRING )
+HB_FUNC( LISTBOXSETSTRING )
 {
    SendMessage( (HWND) hb_parnl( 1 ), LB_SETCURSEL, (WPARAM) hb_parni(2)-1, 0);
 }
@@ -42,7 +42,7 @@ HB_FUNC ( LISTBOXSETSTRING )
 /*
    CreateListbox( hParentWIndow, nListboxID, nStyle, x, y, nWidth, nHeight)
 */
-HB_FUNC ( CREATELISTBOX )
+HB_FUNC( CREATELISTBOX )
 {
    HWND hListbox =
          CreateWindow(

@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.17 2004-07-05 17:33:45 alkresin Exp $
+ * $Id: menu_c.c,v 1.18 2004-07-13 19:55:40 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -30,13 +30,13 @@ extern HWND aWindows[];
 /*
  *  CreateMenu() --> hMenu
  */
-HB_FUNC ( HWG__CREATEMENU )
+HB_FUNC( HWG__CREATEMENU )
 {
    HMENU hMenu = CreateMenu();
    hb_retnl( (LONG) hMenu );
 }
 
-HB_FUNC ( HWG__CREATEPOPUPMENU )
+HB_FUNC( HWG__CREATEPOPUPMENU )
 {
    HMENU hMenu = CreatePopupMenu();
    hb_retnl( (LONG) hMenu );
@@ -147,7 +147,7 @@ HB_FUNC( HWG__SETMENU )
    hb_retl( SetMenu( ( HWND ) hb_parnl( 1 ), ( HMENU ) hb_parnl( 2 ) ) );
 }
 
-HB_FUNC ( CHECKMENUITEM )
+HB_FUNC( CHECKMENUITEM )
 {
    HMENU hMenu = GetMenu( ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1):aWindows[0] );
    UINT  uCheck = ( hb_pcount() < 3 || !ISLOG( 3 ) || hb_parl( 3 ) )? MF_CHECKED:MF_UNCHECKED;
@@ -164,7 +164,7 @@ HB_FUNC ( CHECKMENUITEM )
    }
 }
 
-HB_FUNC ( ISCHECKEDMENUITEM )
+HB_FUNC( ISCHECKEDMENUITEM )
 {
    HMENU hMenu = GetMenu( ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1):aWindows[0] );
    UINT  uCheck;
@@ -182,7 +182,7 @@ HB_FUNC ( ISCHECKEDMENUITEM )
    }
 }
 
-HB_FUNC ( ENABLEMENUITEM )
+HB_FUNC( ENABLEMENUITEM )
 {
    // HMENU hMenu = GetMenu( ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1):aWindows[0] );
    HMENU hMenu = GetMenu( ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1) : aWindows[0] );
@@ -204,7 +204,7 @@ HB_FUNC ( ENABLEMENUITEM )
    }
 }
 
-HB_FUNC ( ISENABLEDMENUITEM )
+HB_FUNC( ISENABLEDMENUITEM )
 {
    HMENU hMenu = GetMenu( ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1):aWindows[0] );
    UINT  uCheck;
@@ -223,7 +223,7 @@ HB_FUNC ( ISENABLEDMENUITEM )
    }
 }
 
-HB_FUNC ( HWG_TRACKMENU )
+HB_FUNC( HWG_TRACKMENU )
 {
     hb_retl( TrackPopupMenu(
                   (HMENU) hb_parnl(1),  // handle of shortcut menu

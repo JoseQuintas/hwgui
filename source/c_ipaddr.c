@@ -61,7 +61,7 @@
 #include "hbstack.h"
 #include "hbapiitm.h"
 
-HB_FUNC ( INITIPADDRESS )
+HB_FUNC( INITIPADDRESS )
 {
 	HWND hWnd;
 	HWND hIpAddress;
@@ -84,7 +84,7 @@ HB_FUNC ( INITIPADDRESS )
 	hb_retnl ( (LONG) hIpAddress );
 }
 
-HB_FUNC ( SETIPADDRESS )
+HB_FUNC( SETIPADDRESS )
 {
 	HWND hWnd;
 	BYTE v1, v2, v3, v4;
@@ -99,7 +99,7 @@ HB_FUNC ( SETIPADDRESS )
 	SendMessage(hWnd, IPM_SETADDRESS, 0, MAKEIPADDRESS(v1,v2,v3,v4));
 }
 
-HB_FUNC ( GETIPADDRESS )
+HB_FUNC( GETIPADDRESS )
 {
 	HWND hWnd;
 	DWORD pdwAddr;
@@ -121,7 +121,7 @@ HB_FUNC ( GETIPADDRESS )
 	hb_storni( (INT) v4, -1, 4 );
 }
 
-HB_FUNC ( CLEARIPADDRESS )
+HB_FUNC( CLEARIPADDRESS )
 {
 	HWND hWnd;
 

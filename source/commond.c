@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.12 2004-06-24 21:52:04 andijahja Exp $
+ * $Id: commond.c,v 1.13 2004-07-13 19:55:40 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -26,7 +26,7 @@
 
 extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
 
-HB_FUNC ( SELECTFONT )
+HB_FUNC( SELECTFONT )
 {
 
    CHOOSEFONT cf;
@@ -136,7 +136,7 @@ HB_FUNC ( SELECTFONT )
 
 }
 
-HB_FUNC ( SELECTFILE )
+HB_FUNC( SELECTFILE )
 {
    OPENFILENAME ofn;
    char buffer[512];
@@ -173,7 +173,7 @@ HB_FUNC ( SELECTFILE )
    hb_xfree( strFilter );
 }
 
-HB_FUNC ( SAVEFILE )
+HB_FUNC( SAVEFILE )
 {
    OPENFILENAME ofn;
    char buffer[512];
@@ -211,7 +211,7 @@ HB_FUNC ( SAVEFILE )
    hb_xfree( strFilter );
 }
 
-HB_FUNC ( PRINTSETUP )
+HB_FUNC( PRINTSETUP )
 {
    PRINTDLG pd;
 
@@ -242,7 +242,7 @@ HB_FUNC ( PRINTSETUP )
       hb_retnl( 0 );  
 }
 
-HB_FUNC ( HWG_CHOOSECOLOR )
+HB_FUNC( HWG_CHOOSECOLOR )
 {
    CHOOSECOLOR cc;
    COLORREF rgb[16];
@@ -276,7 +276,7 @@ unsigned long Get_SerialNumber(char* RootPathName)
    return SerialNumber;
 }
 
-HB_FUNC( HDGETSERIAL)
+HB_FUNC( HDGETSERIAL )
 {
    hb_retnl( Get_SerialNumber(hb_parc(1)) );
 }
@@ -292,11 +292,11 @@ HB_FUNC( HDGETSERIAL)
  The functions added by extract for the Minigui Lib Open Source project
  Copyright 2002 Roberto Lopez <roblez@ciudad.com.ar>
  http://www.geocities.com/harbour_minigui/
- HB_FUNC (GETPRIVATEPROFILESTRING )
+ HB_FUNC( GETPRIVATEPROFILESTRING )
  HB_FUNC( WRITEPRIVATEPROFILESTRING )
 */
 
-HB_FUNC (GETPRIVATEPROFILESTRING )
+HB_FUNC( GETPRIVATEPROFILESTRING )
 {
    TCHAR bBuffer[ 1024 ] = { 0 };
    DWORD dwLen ;
@@ -350,7 +350,7 @@ static void StartPrn( void )
    }
 }
 
-HB_FUNC ( PRINTPORTNAME )
+HB_FUNC( PRINTPORTNAME )
 {
   if( ! bPName )
   {
@@ -365,7 +365,7 @@ HB_FUNC ( PRINTPORTNAME )
   }
 }
 
-HB_FUNC ( PRINTSETUPDOS )
+HB_FUNC( PRINTSETUPDOS )
 {
    StartPrn();
 
@@ -390,7 +390,7 @@ HB_FUNC ( PRINTSETUPDOS )
       }
 }
    
-HB_FUNC ( PRINTSETUPEX )
+HB_FUNC( PRINTSETUPEX )
 {
    PRINTDLG pd;
    DEVMODE *pDevMode;   

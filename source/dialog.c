@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.8 2004-05-06 00:59:17 lculik Exp $
+ *$Id: dialog.c,v 1.9 2004-07-13 19:55:40 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -40,7 +40,7 @@ extern HMODULE hModule ;
 HWND aDialogs[ 20 ];
 int iDialogs = 0;
 
-HB_FUNC ( HWG_DIALOGBOX )
+HB_FUNC( HWG_DIALOGBOX )
 {
 
    PHB_ITEM pObj = hb_param( 2, HB_IT_OBJECT );
@@ -52,7 +52,7 @@ HB_FUNC ( HWG_DIALOGBOX )
 /*  Creates modeless dialog
     CreateDialog( hParentWindow, aDialog )
 */
-HB_FUNC ( HWG_CREATEDIALOG )
+HB_FUNC( HWG_CREATEDIALOG )
 {
    HWND hDlg;
    PHB_ITEM pObj = hb_param( 2, HB_IT_OBJECT );
@@ -65,12 +65,12 @@ HB_FUNC ( HWG_CREATEDIALOG )
    hb_retnl( (LONG) hDlg );
 }
 
-HB_FUNC ( HWG_ENDDIALOG )
+HB_FUNC( HWG_ENDDIALOG )
 {
    EndDialog( (HWND) hb_parnl( 1 ), TRUE );
 }
 
-HB_FUNC ( GETDLGITEM )
+HB_FUNC( GETDLGITEM )
 {
    HWND hWnd = GetDlgItem(
                  (HWND) hb_parnl( 1 ),	// handle of dialog box
@@ -79,12 +79,12 @@ HB_FUNC ( GETDLGITEM )
    hb_retnl( (LONG) hWnd );
 }
 
-HB_FUNC ( GETDLGCTRLID )
+HB_FUNC( GETDLGCTRLID )
 {
    hb_retni( GetDlgCtrlID( (HWND) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC ( SETDLGITEMTEXT )
+HB_FUNC( SETDLGITEMTEXT )
 {
     SetDlgItemText(
        (HWND) hb_parnl( 1 ),	// handle of dialog box
@@ -93,7 +93,7 @@ HB_FUNC ( SETDLGITEMTEXT )
     );
 }
 
-HB_FUNC ( SETDLGITEMINT )
+HB_FUNC( SETDLGITEMINT )
 {
     SetDlgItemInt(
        (HWND) hb_parnl( 1 ),	// handle of dialog box
@@ -103,7 +103,7 @@ HB_FUNC ( SETDLGITEMINT )
     );
 }
 
-HB_FUNC ( GETDLGITEMTEXT )
+HB_FUNC( GETDLGITEMTEXT )
 {
    USHORT iLen = hb_parni( 3 );
    char *cText = (char*) hb_xgrab( iLen+1 );
@@ -118,7 +118,7 @@ HB_FUNC ( GETDLGITEMTEXT )
    hb_xfree( cText );
 }
 
-HB_FUNC ( GETEDITTEXT )
+HB_FUNC( GETEDITTEXT )
 {
    HWND   hDlg = (HWND) hb_parnl( 1 );
    int    id = hb_parni( 2 );
@@ -135,7 +135,7 @@ HB_FUNC ( GETEDITTEXT )
    hb_xfree( cText );
 }
 
-HB_FUNC ( CHECKDLGBUTTON )
+HB_FUNC( CHECKDLGBUTTON )
 {
     CheckDlgButton(
        (HWND) hb_parnl( 1 ),	// handle of dialog box
@@ -144,7 +144,7 @@ HB_FUNC ( CHECKDLGBUTTON )
     );
 }
 
-HB_FUNC ( CHECKRADIOBUTTON )
+HB_FUNC( CHECKRADIOBUTTON )
 {
     CheckRadioButton(
        (HWND) hb_parnl( 1 ),	// handle of dialog box
@@ -154,7 +154,7 @@ HB_FUNC ( CHECKRADIOBUTTON )
     );
 }
 
-HB_FUNC ( ISDLGBUTTONCHECKED )
+HB_FUNC( ISDLGBUTTONCHECKED )
 {
   UINT nRes = IsDlgButtonChecked(
                   (HWND) hb_parnl( 1 ),       // handle of dialog box
@@ -166,18 +166,18 @@ HB_FUNC ( ISDLGBUTTONCHECKED )
      hb_retl( FALSE );
 }
 
-HB_FUNC ( COMBOADDSTRING )
+HB_FUNC( COMBOADDSTRING )
 {
    char *cString = hb_parc( 2 );
    SendMessage( (HWND) hb_parnl( 1 ), CB_ADDSTRING, 0, (LPARAM) cString );
 }
 
-HB_FUNC ( COMBOSETSTRING )
+HB_FUNC( COMBOSETSTRING )
 {
    SendMessage( (HWND) hb_parnl( 1 ), CB_SETCURSEL, (WPARAM) hb_parni(2)-1, 0);
 }
 
-HB_FUNC ( GETNOTIFYCODE )
+HB_FUNC( GETNOTIFYCODE )
 {
    hb_retnl( (LONG) (((NMHDR *) hb_parnl(1))->code) );
 }
@@ -344,13 +344,13 @@ LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth, int 
 
 }
 
-HB_FUNC ( CREATEDLGTEMPLATE )
+HB_FUNC( CREATEDLGTEMPLATE )
 {
    hb_retnl( (LONG) CreateDlgTemplate( hb_param( 1, HB_IT_OBJECT ), hb_parni(2),
                          hb_parni(3), hb_parni(4), hb_parni(5), (ULONG)hb_parnd(6) ) );
 }
 
-HB_FUNC ( RELEASEDLGTEMPLATE )
+HB_FUNC( RELEASEDLGTEMPLATE )
 {
    LocalFree( LocalHandle( (LPDLGTEMPLATE) hb_parnl(1) ) );
 }
@@ -358,7 +358,7 @@ HB_FUNC ( RELEASEDLGTEMPLATE )
 /*
  *  _CreatePropertySheetPage( aDlg, x1, y1, nWidth, nHeight, nStyle ) --> hPage
  */
-HB_FUNC ( _CREATEPROPERTYSHEETPAGE )
+HB_FUNC( _CREATEPROPERTYSHEETPAGE )
 {
    PROPSHEETPAGE psp;
    PHB_ITEM pObj = hb_param( 1, HB_IT_OBJECT ), temp;
@@ -417,7 +417,7 @@ HB_FUNC ( _CREATEPROPERTYSHEETPAGE )
  * _PropertySheet( hWndParent, aPageHandles, nPageHandles, cTitle, 
  *                [ lModeless ], [ lNoApply ], [ lWizard ] ) --> hPropertySheet
  */
-HB_FUNC ( _PROPERTYSHEET )
+HB_FUNC( _PROPERTYSHEET )
 {
    PHB_ITEM pArr = hb_param( 2, HB_IT_ARRAY );
    int nPages = hb_parni(3), i;

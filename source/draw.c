@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.7 2004-07-01 13:43:51 sandrorrfreire Exp $
+ * $Id: draw.c,v 1.8 2004-07-13 19:55:40 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -25,7 +25,7 @@
 #include "hbstack.h"
 #include "item.api"
 
-HB_FUNC ( INVALIDATERECT )
+HB_FUNC( INVALIDATERECT )
 {
    RECT rc;
 
@@ -44,7 +44,7 @@ HB_FUNC ( INVALIDATERECT )
    );
 }
 
-HB_FUNC ( RECTANGLE )
+HB_FUNC( RECTANGLE )
 {
    HDC hDC = (HDC) hb_parnl( 1 );
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 ), x2 = hb_parni( 4 ), y2 = hb_parni( 5 );
@@ -64,7 +64,7 @@ HB_FUNC ( RECTANGLE )
 */
 }
 
-HB_FUNC ( DRAWLINE )
+HB_FUNC( DRAWLINE )
 {
    MoveToEx( (HDC) hb_parnl( 1 ), hb_parni( 2 ), hb_parni( 3 ), NULL );
    LineTo( (HDC) hb_parnl( 1 ), hb_parni( 4 ), hb_parni( 5 ) );
@@ -104,7 +104,7 @@ HB_FUNC( ELLIPSE )
      hb_retnl( 0 );
 }
 
-HB_FUNC ( FILLRECT )
+HB_FUNC( FILLRECT )
 {
    RECT rc;
 
@@ -120,7 +120,7 @@ HB_FUNC ( FILLRECT )
    );
 }
 
-HB_FUNC ( ROUNDRECT )
+HB_FUNC( ROUNDRECT )
 {
    hb_parl( RoundRect(
     (HDC) hb_parnl( 1 ),   // handle of device context 
@@ -133,7 +133,7 @@ HB_FUNC ( ROUNDRECT )
    ) );
 }
 
-HB_FUNC ( REDRAWWINDOW )
+HB_FUNC( REDRAWWINDOW )
 {
    RedrawWindow(
     (HWND) hb_parnl( 1 ),  // handle of window
@@ -143,7 +143,7 @@ HB_FUNC ( REDRAWWINDOW )
    );
 }
 
-HB_FUNC ( DRAWBUTTON )
+HB_FUNC( DRAWBUTTON )
 {
    RECT rc;
    HDC hDC = (HDC) hb_parnl( 1 );
@@ -176,7 +176,7 @@ HB_FUNC ( DRAWBUTTON )
 /*
  * DrawEdge( hDC,x1,y1,x2,y2,nFlag,nBorder )
  */
-HB_FUNC ( DRAWEDGE )
+HB_FUNC( DRAWEDGE )
 {
    RECT rc;
    HDC hDC = (HDC) hb_parnl( 1 );
@@ -191,7 +191,7 @@ HB_FUNC ( DRAWEDGE )
    hb_retl( DrawEdge( hDC, &rc, edge, grfFlags ) );
 }
 
-HB_FUNC ( LOADICON )
+HB_FUNC( LOADICON )
 {
    if( ISNUM(1) )
       hb_retnl( (LONG) LoadIcon( NULL, (LPCTSTR) hb_parnl( 1 ) ) );
@@ -199,7 +199,7 @@ HB_FUNC ( LOADICON )
       hb_retnl( (LONG) LoadIcon( GetModuleHandle( NULL ), (LPCTSTR) hb_parc( 1 ) ) );
 }
 
-HB_FUNC ( LOADIMAGE )
+HB_FUNC( LOADIMAGE )
 {
    hb_retnl( (LONG) 
           LoadImage( (HINSTANCE)hb_parnl(1),    // handle of the instance that contains the image
@@ -211,7 +211,7 @@ HB_FUNC ( LOADIMAGE )
    ) );
 }
 
-HB_FUNC ( LOADBITMAP )
+HB_FUNC( LOADBITMAP )
 {
    if( ISNUM(1) )
       hb_retnl( (LONG) LoadBitmap( NULL, (LPCTSTR) hb_parnl( 1 ) ) );
@@ -222,7 +222,7 @@ HB_FUNC ( LOADBITMAP )
 /*
  * Window2Bitmap( hWnd )
  */
-HB_FUNC ( WINDOW2BITMAP )
+HB_FUNC( WINDOW2BITMAP )
 {
    HWND hWnd = (HWND) hb_parnl(1);
    BOOL lFull = ( ISNIL(2) )? 0 : (BOOL)hb_parl(2);
@@ -248,7 +248,7 @@ HB_FUNC ( WINDOW2BITMAP )
 /*
  * DrawBitmap( hDC, hBitmap, style, x, y, width, height )
  */
-HB_FUNC ( DRAWBITMAP )
+HB_FUNC( DRAWBITMAP )
 {
    HDC hDC = (HDC) hb_parnl( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
@@ -276,7 +276,7 @@ HB_FUNC ( DRAWBITMAP )
 /*
  * DrawTransparentBitmap( hDC, hBitmap, x, y )
  */
-HB_FUNC ( DRAWTRANSPARENTBITMAP )
+HB_FUNC( DRAWTRANSPARENTBITMAP )
 {
    HDC hDC = (HDC) hb_parnl( 1 );
    HBITMAP hBitmap = (HBITMAP) hb_parnl( 2 );
@@ -319,7 +319,7 @@ HB_FUNC ( DRAWTRANSPARENTBITMAP )
 
 /*  SpreadBitmap( hDC, hWnd, hBitmap, style )
 */
-HB_FUNC ( SPREADBITMAP )
+HB_FUNC( SPREADBITMAP )
 {
    HDC hDC = (HDC) hb_parnl( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
@@ -346,7 +346,7 @@ HB_FUNC ( SPREADBITMAP )
    DeleteDC( hDCmem );
 }
 
-HB_FUNC ( GETBITMAPSIZE )
+HB_FUNC( GETBITMAPSIZE )
 {
    BITMAP  bitmap;
    PHB_ITEM aMetr = _itemArrayNew( 2 );
@@ -366,7 +366,7 @@ HB_FUNC ( GETBITMAPSIZE )
    _itemRelease( aMetr );
 }
 
-HB_FUNC ( OPENBITMAP )
+HB_FUNC( OPENBITMAP )
 {
    BITMAPFILEHEADER bmfh;
    BITMAPINFOHEADER bmih;
@@ -441,17 +441,17 @@ HB_FUNC ( OPENBITMAP )
    hb_retnl( (LONG) hbm );
 }
 
-HB_FUNC ( DRAWICON )
+HB_FUNC( DRAWICON )
 {
    DrawIcon( (HDC)hb_parnl( 1 ), hb_parni( 3 ), hb_parni( 4 ), (HICON)hb_parnl( 2 ) );
 }
 
-HB_FUNC ( GETSYSCOLOR )
+HB_FUNC( GETSYSCOLOR )
 {
    hb_retnl( (LONG) GetSysColor( hb_parni( 1 ) ) );
 }
 
-HB_FUNC ( CREATEPEN )
+HB_FUNC( CREATEPEN )
 {
    hb_retnl( (LONG) CreatePen(
                hb_parni( 1 ),	// pen style 
@@ -460,20 +460,20 @@ HB_FUNC ( CREATEPEN )
              ) );
 }
 
-HB_FUNC ( CREATESOLIDBRUSH )
+HB_FUNC( CREATESOLIDBRUSH )
 {
    hb_retnl( (LONG) CreateSolidBrush(
                (COLORREF) hb_parnl( 1 ) 	// brush color
              ) );
 }
 
-HB_FUNC ( CREATEHATCHBRUSH )
+HB_FUNC( CREATEHATCHBRUSH )
 {
    hb_retnl( (LONG) CreateHatchBrush(
                hb_parni(1), (COLORREF) hb_parnl(2) ) );
 }
 
-HB_FUNC ( SELECTOBJECT )
+HB_FUNC( SELECTOBJECT )
 {
    hb_retnl( (LONG) SelectObject(
               (HDC) hb_parnl( 1 ),	// handle of device context 
@@ -481,19 +481,19 @@ HB_FUNC ( SELECTOBJECT )
              ) );
 }
 
-HB_FUNC ( DELETEOBJECT )
+HB_FUNC( DELETEOBJECT )
 {
    DeleteObject(
       (HGDIOBJ) hb_parnl( 1 ) 	// handle of object  
    );
 }
 
-HB_FUNC ( GETDC )
+HB_FUNC( GETDC )
 {
    hb_retnl( (LONG) GetDC( (HWND) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC ( RELEASEDC )
+HB_FUNC( RELEASEDC )
 {
    hb_retnl( (LONG) ReleaseDC( (HWND) hb_parnl( 1 ), (HDC) hb_parnl( 2 ) ) );
 }
@@ -539,7 +539,7 @@ HB_FUNC( GETDRAWITEMINFO )
 /*
  * DrawGrayBitmap( hDC, hBitmap, x, y )
  */
-HB_FUNC ( DRAWGRAYBITMAP )
+HB_FUNC( DRAWGRAYBITMAP )
 {
    HDC hDC = (HDC) hb_parnl( 1 );
    HBITMAP hBitmap = (HBITMAP) hb_parnl( 2 );

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.217 2004-07-13 11:18:36 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.218 2004-07-13 19:55:39 marcosgambeta Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,14 +8,36 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-07-13 16:57 UTC-0300 Marcos Antonio Gambeta <marcosgambeta@uol.com.br>
+  * source/c_ipaddr.c
+  * source/commond.c
+  * source/control.c
+  * source/dialog.c
+  * source/draw.c
+  * source/drawtext.c
+  * source/grid.c
+  * source/listbox.c
+  * source/media_c.c
+  * source/menu_c.c
+  * source/misc.c
+  * source/nice.c
+  * source/prnalone.c
+  * source/resource.c
+  * source/richedit.c
+  * source/shellapi.c
+  * source/wbrowse.c
+  * source/window.c
+  * source/wprint.c
+    ! Some formating in the code.
+
 2004-07-13 08-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/hedit.prg
-    !New method GetText and SetText                
+    !New method GetText and SetText
      Contribution by Ivanil Marcelino <ivanilm@ig.com.br>
 
 2004-07-12 15-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/printdos.prg
-    !Minor fix 
+    !Minor fix
     new variable colorpreview to replace color in preview mode
 
 2004-07-12 13-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>

@@ -1,5 +1,15 @@
 #SCRIPT WRITE
 #DEBUG
+FUNCTION Font2Str
+PARAMETERS oFont 
+Return " ;" + _Chr(10) + Space(8) + ;
+       "FONT HFont():Add( '" + oFont:name + "'," + Ltrim(Str(oFont:width,5)) + "," + ;
+       Ltrim(Str(oFont:height,5)) + "," + Iif(oFont:weight!=0,Ltrim(Str(oFont:weight,5)),"") + "," + ;
+       Iif(oFont:charset!=0,Ltrim(Str(oFont:charset,5)),"") + "," + ;
+       Iif(oFont:italic!=0,Ltrim(Str(oFont:italic,5)),"") + "," + ;
+       Iif(oFont:underline!=0,Ltrim(Str(oFont:underline,5)),"") + ")"
+ENDFUNC
+
 FUNCTION Style2Prg
 PARAMETERS oCtrl
 Private cStyle := ""
@@ -27,12 +37,27 @@ ENDFUNC
 FUNCTION Ctrl2Prg
 PARAMETERS oCtrl
 PRIVATE stroka := "   @ ", classname, cStyle, i, j, cName, temp, varname, cMethod
+PRIVATE nLeft, nTop
 
   i := Ascan( aClass, oCtrl:cClass )
   IF i != 0
     varname := oCtrl:GetProp( "varName" )
-    stroka += Ltrim( Str(oCtrl:nLeft) ) + "," + Ltrim( Str(oCtrl:nTop) ) + " "
-    temp := oCtrl:GetProp( "Caption" )
+    nLeft := oCtrl:nLeft
+    nTop := oCtrl:nTop
+    temp := oCtrl:oContainer
+    DO WHILE temp != Nil
+      IF temp:lContainer
+        nLeft -= temp:nLeft
+        nTop -= temp:nTop
+      ENDIF
+      temp := temp:oContainer
+    ENDDO
+    stroka += Ltrim( Str(nLeft) ) + "," + Ltrim( Str(nTop) ) + " "
+    IF oCtrl:cClass == "editbox"
+      temp := oCtrl:GetProp( "cInitValue" )
+    ELSEIF oCtrl:cClass != "ownerbutton"
+      temp := oCtrl:GetProp( "Caption" )
+    ENDIF
     IF ( cName := oCtrl:GetProp( "Name" ) ) == Nil
       cName := ""
     ENDIF
@@ -40,58 +65,112 @@ PRIVATE stroka := "   @ ", classname, cStyle, i, j, cName, temp, varname, cMetho
       stroka += aName[i,1] + " " + cName + ;
             Iif( temp!=Nil,Iif( !Empty(cName),' CAPTION "'+temp,' "'+temp )+'"',"" ) + " "
     ELSE
-      stroka += aName[i,2] + Iif( !Empty(cName), cName+" VAR "," " ) + varname + " "
+      stroka += aName[i,2] + " " + Iif( !Empty(cName), cName+" VAR "," " ) + varname + " "
+    ENDIF
+    IF oCtrl:cClass == "page"
+      stroka += "ITEMS {} "
     ENDIF
     IF oCtrl:oContainer != Nil
-      stroka += "OF " + oCtrl:oContainer:GetProp( "Name" ) + " "
+      IF ( temp := oCtrl:oContainer:GetProp( "Name" ) ) == Nil .OR. Empty( temp )
+        IF oCtrl:oContainer:oContainer != Nil
+          temp := oCtrl:oContainer:oContainer:GetProp( "Name" )
+        ENDIF
+      ENDIF
+      stroka += "OF " + temp + " "
     ENDIF
-   stroka +=  "SIZE " + Ltrim( Str(oCtrl:nWidth) ) + "," + Ltrim( Str(oCtrl:nHeight) ) + " "
+    IF oCtrl:cClass == "line"
+      IF ( temp := oCtrl:GetProp( "lVertical" ) ) != Nil .AND. temp == "True"
+        stroka += "LENGTH " + Ltrim( Str(oCtrl:nHeight) ) + " VERTICAL "
+      ELSE
+        stroka += "LENGTH " + Ltrim( Str(oCtrl:nWidth) ) + " "
+      ENDIF
+    ELSE
+      stroka += "SIZE " + Ltrim( Str(oCtrl:nWidth) ) + "," + Ltrim( Str(oCtrl:nHeight) ) + " "
+    ENDIF
     stroka += CallFunc( "Style2Prg", { oCtrl } ) + " "
-    IF oCtrl:GetProp( "Textcolor",@j ) != Nil .AND. !IsDefault( oCtrl,oCtrl:aProp[j] )
-      stroka += Iif( Empty(cStyle),"",";" + _Chr(10) + Space(8) ) + ;
-            "COLOR " + Ltrim( Str(oCtrl:tcolor) ) + " "
+    IF oCtrl:cClass != "ownerbutton"
+      IF oCtrl:GetProp( "Textcolor",@j ) != Nil .AND. !IsDefault( oCtrl,oCtrl:aProp[j] )
+        stroka += Iif( Empty(cStyle),"",";" + _Chr(10) + Space(8) ) + ;
+              "COLOR " + Ltrim( Str(oCtrl:tcolor) ) + " "
+      ENDIF
+      IF oCtrl:GetProp( "Backcolor",@j ) != Nil .AND. !IsDefault( oCtrl,oCtrl:aProp[j] )
+        stroka += "BACKCOLOR " + Ltrim( Str(oCtrl:bcolor) )
+      ENDIF
     ENDIF
-    IF oCtrl:GetProp( "Backcolor",@j ) != Nil .AND. !IsDefault( oCtrl,oCtrl:aProp[j] )
-      stroka += "BACKCOLOR " + Ltrim( Str(oCtrl:bcolor) )
+    IF oCtrl:cClass == "ownerbutton"
+      IF ( temp := oCtrl:GetProp( "Flat" ) ) != Nil .AND. temp == "True"
+        stroka += " FLAT "
+      ENDIF
+      IF ( temp := oCtrl:GetProp( "Caption" ) ) != Nil
+        stroka += " ;" + _Chr(10) + Space(8) + "TEXT '" + temp + "' "
+        IF oCtrl:GetProp( "Textcolor",@j ) != Nil .AND. !IsDefault( oCtrl,oCtrl:aProp[j] )
+          stroka += "COLOR " + Ltrim( Str(oCtrl:tcolor) ) + " "
+        ENDIF
+      ENDIF
     ENDIF
+    IF ( temp := oCtrl:GetProp( "Font" ) ) != Nil
+      stroka += CallFunc( "FONT2STR",{temp} )
+    ENDIF
+
+    // Methods ( events ) for the control
+    i := 1
+    DO WHILE i <= Len( oCtrl:aMethods )
+      IF oCtrl:aMethods[i,2] != Nil .AND. !Empty(oCtrl:aMethods[i,2])
+        IF Lower( Left( oCtrl:aMethods[i,2],10 ) ) == "parameters"
+          j := At( _Chr(10),oCtrl:aMethods[i,2] )
+          temp := Substr( oCtrl:aMethods[i,2],12,j-12 )
+        ELSE
+          temp := ""
+        ENDIF
+        IF varname != Nil .AND. ( Lower(oCtrl:aMethods[i,1]) == "ongetfocus" ;
+                             .OR. Lower(oCtrl:aMethods[i,1]) == "onlostfocus" )
+           cMethod := Iif( Lower(oCtrl:aMethods[i,1]) == "ongetfocus","WHEN ","VALID " )
+        ELSE
+          cMethod := "ON " + Upper(Substr(oCtrl:aMethods[i,1],3))
+        ENDIF
+        IF Valtype( cName := Callfunc( "FUNC_NAME",{ oCtrl,i } ) ) == "C"
+          Fwrite( han, " ;" + _Chr(10) + Space(8) + cMethod + " {|" + ;
+               temp + "|" + cName + "(" + temp + ")}" )
+        ELSE
+          Fwrite( han, " ;" + _Chr(10) + Space(8) + cMethod + " {|" + ;
+               temp + "|" + Iif(Len(cName)==1,cName[1],cName[2]) + "}" )
+        ENDIF
+      ENDIF
+      i ++
+    ENDDO
+    Fwrite( han, _Chr(10) )
+    Fwrite( han, stroka )
   ENDIF
-  Fwrite( han, stroka )
-
-  // Methods ( events ) for the control
-  i := 1
-  DO WHILE i <= Len( oCtrl:aMethods )
-    IF oCtrl:aMethods[i,2] != Nil .AND. !Empty(oCtrl:aMethods[i,2])
-      IF Lower( Left( oCtrl:aMethods[i,2],10 ) ) == "parameters"
-        j := At( _Chr(10),oCtrl:aMethods[i,2] )
-        temp := Substr( oCtrl:aMethods[i,2],12,j-12 )
-      ELSE
-        temp := ""
-      ENDIF
-      IF varname != Nil .AND. ( Lower(oCtrl:aMethods[i,1]) == "ongetfocus" ;
-                           .OR. Lower(oCtrl:aMethods[i,1]) == "onlostfocus" )
-         cMethod := Iif( Lower(oCtrl:aMethods[i,1]) == "ongetfocus","WHEN ","VALID " )
-      ELSE
-        cMethod := "ON " + Upper(Substr(oCtrl:aMethods[i,1],3))
-      ENDIF
-      IF Valtype( cName := Callfunc( "FUNC_NAME",{ oCtrl,i } ) ) == "C"
-        Fwrite( han, " ;" + _Chr(10) + Space(8) + cMethod + " {|" + ;
-             temp + "|" + cName + "(" + temp + ")}" )
-      ELSE
-        Fwrite( han, " ;" + _Chr(10) + Space(8) + cMethod + " {|" + ;
-             temp + "|" + Iif(Len(cName)==1,cName[1],cName[2]) + "}" )
-      ENDIF
-    ENDIF
-    i ++
-  ENDDO
-
-  Fwrite( han, _Chr(10) )
 
   IF !Empty( oCtrl:aControls )
+    IF oCtrl:cClass == "page" .AND. ;
+         ( temp := oCtrl:GetProp("Tabs") ) != Nil .AND. !Empty( temp )
+      j := 1
+      DO WHILE j <= Len( temp )
+        Fwrite( han, _Chr(10) + "  BEGIN PAGE '" + temp[j] + "' OF " + oCtrl:GetProp( "Name" ) )
+        i := 1
+        DO WHILE i <= Len( oCtrl:aControls )
+          IF oCtrl:aControls[i]:nPage == j
+            CallFunc( "Ctrl2Prg", { oCtrl:aControls[i] } )
+          ENDIF
+          i ++
+        ENDDO
+        Fwrite( han, _Chr(10) + "  END PAGE OF " + oCtrl:GetProp( "Name" ) + _Chr(10) )
+        j ++
+      ENDDO
+      Return
+    ELSEIF oCtrl:cClass == "radiogroup"
+      Fwrite( han, _Chr(10) + "  RADIOGROUP" )
+    ENDIF
     i := 1
     DO WHILE i <= Len( oCtrl:aControls )
        CallFunc( "Ctrl2Prg", { oCtrl:aControls[i] } )
        i ++
     ENDDO
+    IF oCtrl:cClass == "radiogroup"
+      temp := oCtrl:GetProp("nInitValue")
+      Fwrite( han, _Chr(10) + "  END RADIOGROUP SELECTED " + Iif( temp==Nil,"1",temp ) + _Chr(10) )
+    ENDIF
   ENDIF
 Return
 ENDFUNC
@@ -101,14 +180,11 @@ Private aControls := oForm:oDlg:aControls, alen := Len( aControls ), i, j, j1
 Private cName := oForm:GetProp( "Name" ), temp
 Private aClass := { "label", "button", "checkbox", "radiobutton", "editbox", ;
   "group", "datepicker", "updown", "combobox", "line", "toolbar", "ownerbutton", ;
-  "browse" }
+  "browse","page" }
 Private aName :=  { {"SAY"}, {"BUTTON"}, {"CHECKBOX","GET CHECKBOX"}, {"RADIOBUTTON"}, {"EDITBOX","GET"}, ;
   {"GROUPBOX"}, {"DATEPICKER","GET DATEPICKER"}, {"UPDOWN","GET UPDOWN"}, ;
   {"COMBOBOX","GET COMBOBOX"}, {"LINE"}, {"PANEL"}, {"OWNERBUTTON"}, ;
-  {"BROWSE"} }
-
-//  Group subtituido por GroupBox
-//  {"GROUP"}, {"DATEPICKER","GET DATEPICKER"}, {"UPDOWN","GET UPDOWN"}, ;
+  {"BROWSE"},{"TAB"} }
 
   han := Fcreate( fname )
 
@@ -161,9 +237,9 @@ Private aName :=  { {"SAY"}, {"BUTTON"}, {"CHECKBOX","GET CHECKBOX"}, {"RADIOBUT
   Fwrite( han, Space(8) + "AT " + Ltrim( Str(oForm:oDlg:nLeft) ) + "," ;
      + Ltrim( Str(oForm:oDlg:nTop) ) + " SIZE " + ;
        Ltrim( Str(oForm:oDlg:nWidth) ) + "," + Ltrim( Str(oForm:oDlg:nHeight) ) )
-
-// The line is inverted
-//       Ltrim( Str(oForm:oDlg:nHeight) ) + "," + Ltrim( Str(oForm:oDlg:nWidth) ) )
+  IF ( temp := oForm:GetProp( "Font" ) ) != Nil
+    Fwrite( han, CallFunc( "FONT2STR",{temp} ) )
+  ENDIF
 
   i := 1
   DO WHILE i <= Len( oForm:aMethods )
@@ -209,6 +285,29 @@ Private aName :=  { {"SAY"}, {"BUTTON"}, {"CHECKBOX","GET CHECKBOX"}, {"RADIOBUT
   DO WHILE i <= Len( oForm:aMethods )
     IF oForm:aMethods[i,2] != Nil .AND. !Empty(oForm:aMethods[i,2])
       IF ( cName := Lower( oForm:aMethods[i,1] ) ) == "common"
+        j1 := 1
+        temp := .F.
+        DO WHILE .T.
+          stroka := RdStr( ,oForm:aMethods[i,2],@j1 )
+          IF Len(stroka) == 0
+            EXIT
+          ENDIF
+          IF Lower(Left(stroka,8)) == "function"
+            Fwrite( han, "STATIC " + stroka + _Chr(10) )
+            temp := .F.
+          ELSEIF Lower(Left(stroka,6)) == "return"
+            Fwrite( han, stroka + _Chr(10) )
+            temp := .T.
+          ELSEIF Lower(Left(stroka,7)) == "endfunc"
+            IF !temp
+              Fwrite( han, "Return Nil" +  _Chr(10) )
+            ENDIF
+            temp := .F.
+          ELSE
+            Fwrite( han, stroka + _Chr(10) )
+            temp := .F.
+          ENDIF
+        ENDDO
       ELSEIF cName != "onforminit" .AND. cName != "onformexit"
         Fwrite( han, "STATIC FUNCTION " + oForm:aMethods[i,1] + _Chr(10) )
         Fwrite( han, oForm:aMethods[i,2] )

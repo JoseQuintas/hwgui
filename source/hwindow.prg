@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.27 2004-06-15 15:05:20 alkresin Exp $
+ *$Id: hwindow.prg,v 1.28 2004-07-01 05:34:08 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -732,6 +732,8 @@ Local iParHigh, iParLow, oWnd, oBtn, oitem, oCtrl
             Eval( oBtn:bPaint, oBtn, wParam, lParam )
          endif
       endif
+   elseif msg == WM_NOTIFY
+      Return DlgNotify( oWnd,wParam,lParam )
    elseif msg == WM_DESTROY
       if oWnd:bDestroy != Nil
          Eval( oWnd:bDestroy, oWnd )

@@ -8,6 +8,7 @@
       <property name="Width" type="N" value="" />
       <property name="Height" type="N" value="" />
       <property name="Font" type="O" />
+      <property name="FormType" type="C" value="dlgModal" />
       <property name="lClipper" type="L" value="False"/>
       <property name="lExitOnEnter" type="L" value="False"/>
       <property name="Variables" type="A" />
@@ -331,7 +332,7 @@
          <method name="onInit" />
          <method name="onChange" />
       </widget>
-      <widget class="page" name="Page control" bmp="BMP_PAGE">
+      <widget class="page" name="Page control" bmp="BMP_PAGE" container="Yes">
          <create>
             <![CDATA[CreateTabControl(oCtrl:oParent:handle,oCtrl:id,oCtrl:style,oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight,0,100)
             ]]>
@@ -477,7 +478,7 @@
          <method name="onSize" />
          <method name="onPaint" />
       </widget>
-      <widget class="toolbar" name="Toolbar" bmp="BMP_PANEL">
+      <widget class="toolbar" name="Toolbar" bmp="BMP_PANEL"  container="Yes">
          <paint><![CDATA[
             DrawEdge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
          ]]></paint>
@@ -581,6 +582,8 @@
       </property>
       <property name="Adjust" array="None,Top,Bottom,Left,Right,Client">
          <code2><![CDATA[ oCtrl:Adjust := Ascan({"None","Top","Bottom","Left","Right","Client"},value)-1 ]]></code2>
+      </property>
+      <property name="FormType" array="Main,dlgModal,dlgNoModal,mdiMain,mdiChild,Child">
       </property>
    </data>
    <methods>

@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.16 2004-04-02 08:50:43 alkresin Exp $
+ *$Id: hwindow.prg,v 1.17 2004-04-02 11:53:42 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -183,10 +183,10 @@ METHOD Activate( lShow ) CLASS HWindow
       oWndClient := HWindow():New( 0,,,::style,::title,,::nMenuPos,::bInit,::bDestroy,::bSize, ;
                               ::bPaint,::bGetFocus,::bLostFocus,::bOther )
       oWndClient:handle = hwg_GetWindowHandle(2)
-      Hwg_ActivateMdiWindow( ( lShow==Nil .OR. lShow ),::hAccel )
+      Hwg_ActivateMdiWindow( ( lShow==Nil .OR. lShow ),::hAccel,::lMaximize )
 
    ELSEIF ::type == WND_MAIN
-      Hwg_ActivateMainWindow( ( lShow==Nil .OR. lShow ),::hAccel )
+      Hwg_ActivateMainWindow( ( lShow==Nil .OR. lShow ),::hAccel,::lMaximize )
 
    ELSEIF ::type == WND_CHILD
       Hwg_ActivateChildWindow( ::handle )

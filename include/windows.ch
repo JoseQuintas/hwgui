@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.5 2004-02-25 12:17:15 lculik Exp $
+ *$Id: windows.ch,v 1.6 2004-03-11 03:45:14 jamaj Exp $
  */
 
 #define WM_CREATE                       1
@@ -74,7 +74,9 @@
 #define WM_MDICASCADE                   551     // 0x0227
 #define WM_MDIICONARRANGE               552     // 0x0228
 #define WM_MDIGETACTIVE                 553     // 0x0229
+#define WM_MDISETMENU                   560     // 0x0230
 #define WM_ENTERSIZEMOVE                561     // 0x0231
+
 
 #define WM_CUT                          768     // 0x0300
 #define WM_COPY                         769     // 0x0301
@@ -287,6 +289,7 @@
 #define WS_VISIBLE          268435456  // 0x10000000L
 #define WS_DISABLED         134217728  // 0x08000000L
 #define WS_CLIPSIBLINGS     67108864   // 0x04000000L
+#define WS_CLIPCHILDREN     33554432   
 #define WS_CAPTION          12582912   // 0x00C00000L
 #define WS_BORDER           8388608    // 0x00800000L
 #define WS_DLGFRAME         4194304    // 0x00400000L

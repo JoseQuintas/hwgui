@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.14 2004-03-03 14:00:40 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.15 2004-03-11 03:45:14 jamaj Exp $
  */
 
 #include "guilib.h"
@@ -883,9 +883,13 @@
             [ ON GETFOCUS <bGfocus> ]      ;
             [ ON LOSTFOCUS <bLfocus> ]     ;
           => ;
-    [<oIp> := ] HIpEdit():New( <oWnd>,<nId>,{|v| iif(v==Nil,<vari>,<vari>:=v)},<nStyle>,<x>,<y>,<width>,<height>,<vari>,<oFont>, <bGfocus>, <bLfocus> )
+    [<oIp> := ] HIpEdit():New( <oWnd>,<nId>,<vari>,{|v| iif(v==Nil,<vari>,<vari>:=v)},<nStyle>,<x>,<y>,<width>,<height>,<oFont>, <bGfocus>, <bLfocus> )
 
 #define ISOBJECT(c)    ( Valtype(c) == "O" )
+#define ISBLOCK(c)    ( Valtype(c) == "B" )
+#define ISARRAY(c)    ( Valtype(c) == "A" )
+#define ISNUMBER(c)    ( Valtype(c) == "N" )
+#define ISLOGICAL(c)    ( Valtype(c) == "L" )
 
 
 /* Commands for PrintDos Class*/

@@ -1,5 +1,5 @@
  /*
- * $Id: hgrid.prg,v 1.1 2004-04-05 14:17:41 rodrigo_moreno Exp $
+ * $Id: hgrid.prg,v 1.2 2004-04-10 22:24:13 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -56,13 +56,13 @@ CLASS HGrid INHERIT HControl
    DATA bKeyDown  
    DATA bPosChg
    DATA bDispInfo
-   
+
    DATA bGfocus
    DATA bLfocus
 
    METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint, bEnter,;
                bGfocus, bLfocus, lNoScroll, lNoBord, bKeyDown, bPosChg, bDispInfo,;
-               nItemCount, lNoLines, color, bkcolor, lNoHeader )   
+               nItemCount, lNoLines, color, bkcolor, lNoHeader )
 
    METHOD Activate()
    METHOD Init()
@@ -70,7 +70,7 @@ CLASS HGrid INHERIT HControl
    METHOD Refresh()
    METHOD RefreshLine()                          INLINE Listview_update( ::handle, Listview_getfirstitem( ::handle ) )
    METHOD SetItemCount(nItem)                    INLINE Listview_setitemcount( ::handle, nItem )
-   METHOD Row()                                  INLINE Listview_getfirstitem( oCtrl:handle )
+   METHOD Row( oCtrl )                           INLINE Listview_getfirstitem( oCtrl:handle )
 ENDCLASS
 
 
@@ -124,12 +124,13 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
       ::oParent:AddEvent( NM_KILLFOCUS,::id,bLfocus,.T. )
    endif
    */
-   
+
 Return Self
 
 METHOD Activate CLASS HGrid
    if ::oParent:handle != 0      
       ::handle := ListView_Create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll ) 
+
       ::Init()
    endif
 Return Nil
@@ -147,6 +148,7 @@ METHOD Init() CLASS HGrid
 
       if ::color != nil
         ListView_SetTextColor( ::handle, ::color ) 
+
       endif
       
       if ::bkcolor != nil
@@ -160,7 +162,9 @@ METHOD Refresh() CLASS HGrid
     Local iFirst, iLast
     
     iFirst := ListView_GetTopIndex(::handle) 
+
     iLast := iFirst + ListView_GetCountPerPage(::handle)
+
     ListView_RedrawItems( ::handle , iFirst, iLast ) 
 Return Nil
 
@@ -187,7 +191,7 @@ Function ListViewNotify( oCtrl, lParam )
         
         oCtrl:nRow := aCord[1]
         oCtrl:nCol := aCord[2]
-        
+
         Listview_setdispinfo( lParam, Eval( oCtrl:bDispInfo, oCtrl, oCtrl:nRow, oCtrl:nCol ) )        
 
     endif

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.78 2004-04-09 12:39:06 lculik Exp $
+ * $Id: Changelog,v 1.79 2004-04-10 22:24:12 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,24 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2004-04-11 05:40 UTC+0700 Andi Jahja <harbour@cbn.net.id>
+  + makefile.wc
+  + make_w32.bat
+    ! makefiles for Open-Watcom (OW)
+
+  * source\hgrid.prg
+    ! fix ambiguous oCtrl in Method Row()
+
+  * source\dialog.c
+  * source\freeimg.c
+    ! minor midification for compilation with OW
+
+  * source\c_ipaddr.c
+    + include <unknwn.h> for compilation with Pelles C, XCC and OW
+
+  * include\freeimage.h
+    ! minor modification for compilation with Pelles C, XCC and OW
+
 2004-04-09 10:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   * source/window.c
     source/controls.c
@@ -50,8 +68,10 @@
             [ OF <oWnd> ]               ;
             [ ID <nId> ]                ;
             [ STYLE <nStyle> ]          ;
+
             [ SIZE <width>, <height> ]  ;
             [ FONT <oFont> ]            ;
+
             [ ON INIT <bInit> ]         ;
             [ ON SIZE <bSize> ]         ;
             [ ON PAINT <bPaint> ]       ;
@@ -64,10 +84,13 @@
             [ ITEMCOUNT <nItemCount> ]  ;
             [ <lNoScroll: NOSCROLL> ]   ;
             [ <lNoBord: NOBORDER> ]     ;
+
             [ <lNoLines: NOGRIDLINES> ] ;
             [ COLOR <color> ]           ;
             [ BACKCOLOR <bkcolor> ]     ;
+
             [ <lNoHeader: NO HEADER> ]
+
 
         #xcommand ADD COLUMN TO GRID <oGrid>    ;
             [ HEADER <cHeader> ]        ;

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.22 2004-05-28 06:24:45 alkresin Exp $
+ * $Id: hdialog.prg,v 1.23 2004-06-02 09:38:57 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -95,6 +95,10 @@ CLASS HDialog INHERIT HCustomWindow
    METHOD DelItem( oWnd,lModal )
    METHOD FindDialog( hWnd )
    METHOD GetActive()
+   METHOD Center()   INLINE Hwg_CenterWindow( ::handle )
+   METHOD Restore()  INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_RESTORE, 0)
+   METHOD Maximize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0)
+   METHOD Minimize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MINIMIZE, 0)
    METHOD Close()	INLINE EndDialog(::handle)
 ENDCLASS
 

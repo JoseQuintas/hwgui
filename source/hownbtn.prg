@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.7 2004-06-01 19:42:21 sandrorrfreire Exp $
+ * $Id: hownbtn.prg,v 1.8 2004-06-02 09:38:57 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -210,7 +210,7 @@ Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
          ENDIF
       Else
          ::oBitmap:=::bitmap:handle
-         DrawGrayBitmap( hDC, ::bitmap:handle, x1, y1 )         
+         DrawGrayBitmap( hDC, ::bitmap:handle, x1, y1 )
       EndIf
    ENDIF
    SetBkColor( hDC,oldBkColor )
@@ -254,7 +254,7 @@ Return Nil
 METHOD MUp() CLASS HOwnButton
    IF ::state == OBTN_PRESSED
       IF !::lPress
-         ::state := IIF( ::lFlat,OBTN_MOUSOVER,OBTN_NORMAL )
+         ::state := OBTN_NORMAL  // IIF( ::lFlat,OBTN_MOUSOVER,OBTN_NORMAL )
          InvalidateRect( ::handle, 0 )
          PostMessage( ::handle, WM_PAINT, 0, 0 )
       ENDIF
@@ -282,6 +282,28 @@ METHOD End()  CLASS HOwnButton
    ENDIF
 Return Nil
 
+METHOD Enable() CLASS HOwnButton
+
+   EnableWindow( ::handle, .T. )
+   ::lEnabled:=.T.
+   InvalidateRect( ::handle, 0 )
+   SendMessage( ::handle, WM_PAINT, 0, 0 )
+   ::Init()
+
+Return Nil
+
+METHOD Disable() CLASS HOwnButton
+
+   ::lFlat   := .T.
+   ::state   := OBTN_INIT
+   ::lEnabled:=.F.
+   InvalidateRect( ::handle, 0 )
+   SendMessage( ::handle, WM_PAINT, 0, 0 )
+   EnableWindow( ::handle, .F. )
+
+Return Nil
+
+
 FUNCTION OwnBtnProc( hBtn, msg, wParam, lParam )
 Local i, oBtn
    // WriteLog( "Obtn: "+Str(hBtn,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
@@ -307,24 +329,3 @@ Local i, oBtn
       endif
    endif
 RETURN .F.
-
-
-
-METHOD Disable() CLASS HOwnButton
-   ::lFlat   := .T.
-   ::state   := OBTN_INIT
-   ::lEnabled:=.F.
-   ::Paint()
-   EnableWindow( ::handle, .F. )
-
-Return Nil
-
-METHOD Enable() CLASS HOwnButton
-
-   EnableWindow( ::handle, .T. )
-   ::lEnabled:=.T.
-   ::Paint()
-   ::Init()
-Return Nil
-
- 

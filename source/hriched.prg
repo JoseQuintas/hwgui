@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.2 2004-05-31 11:53:45 alkresin Exp $
+ * $Id: hriched.prg,v 1.3 2004-06-02 09:38:57 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -21,7 +21,6 @@ CLASS HRichEdit INHERIT HControl
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor )
    METHOD Activate()
    METHOD Init()
-   METHOD SetText( cText )
 
 ENDCLASS
 
@@ -61,11 +60,6 @@ METHOD Init()  CLASS HRichEdit
       Super:Init()
       Hwg_InitRichProc( ::handle )
    ENDIF
-Return Nil
-
-METHOD SetText( cText )  CLASS HRichEdit
-
-   SetDlgItemText( ::oParent:handle,::id,cText )
 Return Nil
 
 Function DefRichProc( hEdit, msg, wParam, lParam )

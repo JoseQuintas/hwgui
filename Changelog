@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.164 2004-06-01 19:42:19 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.165 2004-06-02 09:38:55 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-06-02 13:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/hriched.prg
+     * Redundant method Settext() has been removed.
+   * source/hwindow.prg
+     ! Close() method is fixed.
+   * source/hownbtn.prg
+     ! Small fixes, related to MOUSEOVER state and in new Enable(), Disable() methods
 
 2004-06-01 16-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * include/guililb.ch

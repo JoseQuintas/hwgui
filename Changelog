@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.355 2005-02-24 13:59:52 alkresin Exp $
+ * $Id: Changelog,v 1.356 2005-02-25 09:45:55 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-02-25 12:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+  * source/hcontrol.prg
+    * Little change - now the status bar coordinates are updated.
 
 2004-02-24 17:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
   * source/hcombo.prg

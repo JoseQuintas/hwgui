@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.20 2004-11-16 13:03:47 alkresin Exp $
+ * $Id: hcontrol.prg,v 1.21 2005-02-25 09:45:57 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -134,7 +134,7 @@ ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,oFont,aParts,bInit,bSize,bPaint ) CLASS HStatus
 
-   bSize := Iif( bSize!=Nil, bSize, {|o,x,y|MoveWindow(o:handle,0,y-20,x,y)} )
+   bSize := Iif( bSize!=Nil, bSize, {|o,x,y|o:Move(0,y-20,x,20)} )
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_OVERLAPPED+WS_CLIPSIBLINGS )
    Super:New( oWndParent,nId,nStyle,0,0,0,0,oFont,bInit,bSize,bPaint )
 

@@ -162,6 +162,9 @@ MISC.C
   Getkeyboardstate 
   Getwindowsdir 
   Getsystemdir 
+  CreateDirectory
+  RemoveDirectory
+  SetCurrentDirectory
   Gettempdir 
   Shellabout 
   Getdesktopwidth

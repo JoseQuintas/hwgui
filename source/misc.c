@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.16 2005-01-05 15:47:07 sandrorrfreire Exp $
+ * $Id: misc.c,v 1.17 2005-01-07 11:07:40 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -537,3 +537,23 @@ HB_FUNC ( ISSCROLLLOCKACTIVE )
 {
    hb_retl ( GetKeyState( VK_SCROLL ) ) ;
 }
+
+/* Added By Sandro Freire sandrorrfreire_nospam_yahoo.com.br*/
+
+HB_FUNC ( CREATEDIRECTORY )
+{
+   CreateDirectory( (LPCTSTR) hb_parc(1), NULL );
+}
+
+HB_FUNC( REMOVEDIRECTORY )
+{
+   hb_retl( RemoveDirectory( (LPCSTR) hb_parc( 1 ) ) );
+}
+
+HB_FUNC ( SETCURRENTDIRECTORY )
+{
+   SetCurrentDirectory( (LPCTSTR) hb_parc(1) );
+}
+
+
+ 

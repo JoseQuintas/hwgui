@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.15 2004-06-11 18:31:47 rodrigo_moreno Exp $
+ *$Id: hedit.prg,v 1.16 2004-06-14 19:02:16 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -460,7 +460,7 @@ Local nPos, nGetLen, nLen, vari, i, x
 
    // writelog( "GetApplyKey "+str(asc(ckey)) )
    oEdit:title := GetEditText( oEdit:oParent:handle, oEdit:id )
-   IF oEdit:cType == "N" .and. cKey == ".," .AND. ;
+   IF oEdit:cType == "N" .and. cKey $ ".," .AND. ;
                      ( nPos := At( ".",oEdit:cPicMask ) ) != 0
       IF oEdit:lFirst
          vari := 0

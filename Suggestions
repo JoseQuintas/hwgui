@@ -1,0 +1,21 @@
+/*
+ * $Id: Suggestions,v 1.1 2004-07-22 11:48:14 sandrorrfreire Exp $
+ */
+
+/
+ * The archive if destines to inform new suggestions to be done
+ * Use This format
+ *
+ * Suggest By Name   DATE  UTC
+ * Suggestion
+ * Analyzed for          
+ * Made For
+ /
+
+2004-07-22 08-44 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+In Browse include the comand ON CLICKHEADER
+Analyzed for ->
+Made For     ->
+It's possible (  ) Yes   (  ) No
+
+

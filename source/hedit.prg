@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.37 2004-11-12 08:44:56 alkresin Exp $
+ *$Id: hedit.prg,v 1.38 2004-11-22 08:14:45 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -124,8 +124,8 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
                Return 0
             ENDIF
             Return -1
-         ELSEIF wParam == VK_RETURN .OR. wParam == VK_TAB .OR. wParam == VK_ESCAPE
-            Return -1
+         ELSEIF wParam == VK_RETURN .OR. wParam == VK_ESCAPE .OR. wParam == VK_TAB
+            Return 0
          ENDIF
          // ------- Change by NightWalker - Check HiBit -------
          // If (wParam <129).or.!Empty( ::cPicFunc ).OR.!Empty( ::cPicMask )
@@ -160,7 +160,6 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
                   Return 0
                ENDIF
          ELSEIF wParam == 45     // Insert
-            writelog("Insert")
             IF !IsCtrlShift()
                Set( _SET_INSERT, ! Set( _SET_INSERT ) )
             ENDIF

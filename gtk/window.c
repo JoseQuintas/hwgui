@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.1 2005-01-12 11:56:34 alkresin Exp $
+ * $Id: window.c,v 1.2 2005-01-19 17:38:31 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -236,7 +236,11 @@ static gint cb_event( GtkWidget *widget, GdkEventKey * event, gchar* data )
       hb_vmPushLong( p2 );
       hb_vmPushLong( p3 );
       hb_vmSend( 3 );
+#ifdef HARBOUR_CVS_VERSION
+      lRes = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
       lRes = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
       hb_itemRelease( pObject );
       return lRes;
    }
@@ -376,7 +380,11 @@ PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
 
       hb_vmDo( 0 );
    }
-   return ( hb_stackReturn() );
+#ifdef HARBOUR_CVS_VERSION
+   return ( hb_stackReturnItem() );
+#else   
+   return ( hb_stackReturn() );   
+#endif
 }
 
 void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )

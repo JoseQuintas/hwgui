@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.1 2005-01-12 11:56:33 alkresin Exp $
+ *$Id: hdialog.prg,v 1.2 2005-01-19 17:38:31 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
@@ -105,7 +105,7 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
 RETURN Self
 
 METHOD Activate( lNoModal ) CLASS HDialog
-Local hParent
+Local hParent,oWnd
 
    CreateGetList( Self )
 

@@ -52,7 +52,9 @@ PRG_SOURCES=\
 	hsayimg.prg \
 	richtext.prg \
 	hnice.prg \
-	hgrid.prg
+	hgrid.prg \
+	hrect.prg \
+	htrackbr.prg
 	
 LIBNAME=hwgui
 

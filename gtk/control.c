@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.3 2005-01-14 11:23:20 alkresin Exp $
+ * $Id: control.c,v 1.4 2005-01-19 17:38:31 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -48,7 +48,11 @@ GtkFixed * getFixedBox( GObject * handle )
          hb_vmPush( pObj );                  /* Push object */
          hb_vmDo( 0 );
       }
+#ifdef HARBOUR_CVS_VERSION
+      box = (GtkFixed *) hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else 
       box = (GtkFixed *) hb_itemGetNL( (PHB_ITEM) hb_stackReturn() ); 
+#endif
       hb_itemRelease( pObj );
       return box;
    }

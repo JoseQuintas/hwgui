@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.346 2005-01-16 14:09:00 alkresin Exp $
+ * $Id: Changelog,v 1.347 2005-01-19 17:38:20 lf_sfnet Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,27 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-01-19 18:45 UTC+0100 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
+  * source/Makefile
+    * added hrect.prg, htrackbr.prg
+  * samples/bldgw.bat
+    * added --Wl,--allow-multiple-definition since xHarbour
+	   has errorsys and rectangle functions
+    * added support resources in .rc files
+	 * link gtcgi instead of gtwin and gtwvt
+  + gtk/Makefile.contrib
+    standard [x]Harbour CVS Makefile
+  + gtk/samples/bldgw.bat
+    batch file to build gtk tests
+  * gtk/control.c
+  * gtk/window.c
+    added HARBOUR_CVS_VERSION support
+  * gtk/hcheck.prg
+    replace BM_SETFOCUS with BN_SETFOCUS ( may be wrong )
+  * gtk/hdialog.prg
+    added a missed oWnd local definition
+  
 
 2004-01-16 17:06 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
   * source/hedit.prg

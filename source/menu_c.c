@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.12 2004-05-05 18:27:14 sandrorrfreire Exp $
+ * $Id: menu_c.c,v 1.13 2004-05-19 14:56:40 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -305,6 +305,15 @@ HB_FUNC( GETSIZEMENUBITMAPHEIGHT )
 {
     hb_retni(   GetSystemMetrics(SM_CYMENUSIZE));
 }	
+HB_FUNC( GETMENUCHECKMARKWIDTH )
+{
+    hb_retni( GetSystemMetrics(SM_CXMENUCHECK) );
+}
+
+HB_FUNC( GETMENUCHECKMARKHEIGHT )
+{
+    hb_retni( GetSystemMetrics(SM_CYMENUCHECK) );
+}
 
 HB_FUNC( STRETCHBLT )
 {

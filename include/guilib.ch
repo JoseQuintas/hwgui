@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.8 2004-02-16 11:59:36 lculik Exp $
+ *$Id: guilib.ch,v 1.9 2004-02-16 19:12:23 lculik Exp $
  */
 
 #include "guilib.h"
@@ -517,7 +517,6 @@
           => ;
     [<oPanel> :=] HPanel():Redefine( <oWnd>,<nId>,<nHeight>,<bInit>,<bSize>,<bDraw> )
 
-
 #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;
             [ <lArr: ARRAY> ]          ;
             [ <lDb: DATABASE> ]        ;
@@ -534,10 +533,16 @@
             [ <lNoVScr: NO VSCROLL> ]  ;
             [ <lNoBord: NO BORDER> ]   ;
             [ FONT <oFont> ]           ;
+            [ <lAppend: APPEND> ]      ;
+            [ <lAutoedit: AUTOEDIT> ]  ;
+            [ ON UPDATE <bUpdate> ]    ;
+            [ ON KEYDOWN <bKeyDown> ]  ;
+            [ ON POSCHANGE <bPosChg> ] ;
           => ;
     [<oBrw> :=] HBrowse():New( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,0)),;
         <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>, ;
-        <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.> )
+        <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.>, <.lAppend.>,;
+        <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg> )
 
 #xcommand REDEFINE BROWSE [ <oBrw> ]   ;
             [ <lArr: ARRAY> ]          ;
@@ -561,8 +566,17 @@
             [ LENGTH <nLen> ]          ;
             [ DEC <nDec>    ]          ;
             [ <lEdit: EDITABLE> ]      ;
+            [ JUSTIFY HEAD <nJusHead> ];
+            [ JUSTIFY LINE <nJusLine> ];
+            [ PICTURE <cPict> ]        ;
+            [ VALID <bValid> ]         ;
+            [ WHEN <bWhen> ]           ;
+            [ ITEMS <aItem> ]          ;
+            [ BITMAP <oBmp> ]          ;
           => ;
-    <oBrw>:AddColumn( HColumn():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.> ) )
+    <oBrw>:AddColumn( HColumn():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
+                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <oBmp> ) )
+
 
 #xcommand @ <x>,<y> OWNERBUTTON [ <oOwnBtn> ]  ;
             [ OF <oWnd> ]             ;
@@ -588,6 +602,7 @@
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>,<widtht>,<heightt>, ;
               <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>, <ctoolt> )
+
 
 #xcommand REDEFINE OWNERBUTTON [ <oOwnBtn> ]  ;
             [ OF <oWnd> ]                     ;

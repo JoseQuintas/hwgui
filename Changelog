@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.14 2004-02-16 11:59:36 lculik Exp $
+ * $Id: Changelog,v 1.15 2004-02-16 19:11:34 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,26 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-02-16 15:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
+  * include/guilib.ch
+    !new clauses to browse command
+       APPEND
+       AUTOEDIT
+       UPDATE
+       KEYDOWN
+       POSCHANGE
+     !new clauses to add column command
+       JUSTIFY HEAD
+       JUSTIFY LINE
+       PICTURE
+       VALID
+       WHEN
+       ITEMS
+       BITMAP
+  + samples/browse_1.prg
+    test files to new clauses to browse
+    All provided by  Rodrigo Moreno <rodrigo_moreno@yahoo.com>
 
 2004-02-16 08:50 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   + source/printdos.prg

@@ -69,22 +69,39 @@ CLASS HColumn INHERIT HObject
    DATA cGrid
    DATA lSpandHead INIT .F.
    DATA lSpandFoot INIT .F.
+   DATA Picture
 
-   METHOD New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin )
+   METHOD New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin,cPict,bValid,bWhen,aItem,oBmp )
 
 ENDCLASS
 
 //----------------------------------------------------//
-METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin ) CLASS HColumn
+METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, oBmp ) CLASS HColumn
 
    ::heading   := iif( cHeading == nil,"",cHeading )
    ::block     := block
    ::type      := iif( type     == nil, "C", type )
-   ::length    := iif( length   == nil, 10 , length )
    ::dec       := iif( dec      == nil,  0 , dec )
    ::lEditable := Iif( lEditable != Nil,lEditable,.F. )
    ::nJusHead  := iif( nJusHead == nil,  DT_LEFT , nJusHead )  // Por default
    ::nJusLin   := iif( nJusLin  == nil,  DT_LEFT , nJusLin  )  // Justif.Izquierda
+   ::picture      := cPict
+   ::bValid    := bValid
+   ::bWhen     := bWhen
+   ::aList     := aItem
+   ::aBitmaps  := oBmp
+
+   if length == nil 
+        if cPict != nil
+             ::length := len(transform(eval(block), cPict))
+        else    
+             ::length := 10             
+        end                    
+        ::length := max(::length, len(cHeading))
+   else
+        ::length := length
+   end        
+                
 
 RETURN Self
 
@@ -114,7 +131,7 @@ CLASS HBrowse INHERIT HControl
    DATA bSkip,bGoTo,bGoTop,bGoBot,bEof,bBof
    DATA bRcou,bRecno
    DATA bPosChanged, bLineOut
-   DATA bEnter, bKeyDown
+   DATA bEnter, bKeyDown, bUpdate
    DATA internal
    DATA alias                                  // Alias name of browsed database
    DATA x1,y1,x2,y2,width,height
@@ -130,7 +147,8 @@ CLASS HBrowse INHERIT HControl
    DATA nFootRows INIT 0                       // Rows in footer
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
-                  bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder )
+                  bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
+                  lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg)
    METHOD InitBrw( nType )
    METHOD Rebuild()
    METHOD Activate()
@@ -167,7 +185,8 @@ ENDCLASS
 
 //----------------------------------------------------//
 METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
-                  bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder ) CLASS HBrowse
+                  bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,;
+                  lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg ) CLASS HBrowse
 
    // ::classname:= "HBROWSE"
    ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
@@ -185,8 +204,14 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
    ::bSize   := bSize
    ::bPaint  := bPaint
    ::bEnter  := bEnter
-   ::bGetFocus  := bGFocus
-   ::bLostFocus := bLFocus
+   ::bGetFocus   := bGFocus
+   ::bLostFocus  := bLFocus
+   
+   ::lAppable    := lAppend
+   ::lAutoEdit   := lAutoedit
+   ::bUpdate     := bUpdate
+   ::bKeyDown    := bKeyDown
+   ::bPosChanged := bPosChg
 
    ::oParent:AddControl( Self )
    ::InitBrw()
@@ -277,7 +302,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
 
    if ::type == BRW_DATABASE
       ::alias   := Alias()
-      ::bSKip   := &( "{|a, x|" + ::alias + "->(DBSKIP(x))}" )
+      ::bSKip   := &( "{|o, x|" + ::alias + "->(DBSKIP(x)) }" )
       ::bGoTop  := &( "{||" + ::alias + "->(DBGOTOP())}" )
       ::bGoBot  := &( "{||" + ::alias + "->(DBGOBOTTOM())}")
       ::bEof    := &( "{||" + ::alias + "->(EOF())}" )
@@ -1081,7 +1106,7 @@ return nil
 //----------------------------------------------------//
 METHOD Edit( wParam,lParam ) CLASS HBrowse
 Local fipos,varbuf, x1, y1, fif, lReadExit, rowPos
-Local oModDlg, oColumn, aCoors, nChoic, bInit
+Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
 
    IF ::bEnter != Nil
       Eval( ::bEnter, Self )
@@ -1136,17 +1161,18 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit
                SIZE oColumn:width, ::height+1   ;
                FONT ::oFont
          ELSE
-            @ 0,0 GET varbuf                    ;
+            @ 0,0 GET oGet VAR varbuf           ;
                SIZE oColumn:width, ::height+1   ;
-               VALID oColumn:bValid             ;
                NOBORDER                         ;
                STYLE ES_AUTOHSCROLL             ;
-               FONT ::oFont
+               FONT ::oFont                     ;
+               PICTURE oColumn:picture          ;
+               VALID oColumn:bValid
          ENDIF
 
          ACTIVATE DIALOG oModDlg
 
-         IF oModDlg:lResult
+         IF oModDlg:lResult            
             IF oColumn:aList != Nil
                varbuf := oColumn:aList[nChoic]
             ENDIF
@@ -1182,6 +1208,11 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit
                ::RefreshLine()
             ENDIF
 
+            /* Execute block after changes are made */
+            IF ::bUpdate != nil
+                Eval( ::bUpdate,  Self, fipos )         
+            END
+   
          ELSEIF ::lAppMode
             ::lAppMode := .F.
             InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*::rowPos, ::x2, ::y1+(::height+1)*(::rowPos+2) )
@@ -1189,6 +1220,7 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit
          ENDIF
          SetFocus( ::handle )
          ReadExit( lReadExit )
+         
       ENDIF
    ENDIF
 RETURN Nil
@@ -1217,27 +1249,34 @@ STATIC FUNCTION FldStr( oBrw,numf )
    local vartmp
    local nItem := numf
    local type
+   local pict
 
    if numf <= len( oBrw:aColumns )
 
       type := (oBrw:aColumns[numf]):type
-      vartmp := eval( oBrw:aColumns[numf]:block,,oBrw,numf )
+      pict := oBrw:aColumns[numf]:picture
 
-      if type == "C"
-         RETURN padr( vartmp, oBrw:aColumns[numf]:length )
+      if pict != nil
+         rez := transform(eval( oBrw:aColumns[numf]:block,,oBrw,numf ), pict) 
+         
+      else
+         vartmp := eval( oBrw:aColumns[numf]:block,,oBrw,numf )
 
-      elseif type == "N"
-         RETURN PADL( STR( vartmp, oBrw:aColumns[numf]:length, ;
+         if type == "C"
+            rez := padr( vartmp, oBrw:aColumns[numf]:length )
+
+         elseif type == "N"
+            rez := PADL( STR( vartmp, oBrw:aColumns[numf]:length, ;
                    oBrw:aColumns[numf]:dec ),oBrw:aColumns[numf]:length )
-      elseif type == "D"
-         RETURN PADR( DTOC( vartmp ),oBrw:aColumns[numf]:length )
+         elseif type == "D"
+            rez := PADR( DTOC( vartmp ),oBrw:aColumns[numf]:length )
 
-      elseif type == "L"
-         RETURN PADR( IIF( vartmp, "T", "F" ),oBrw:aColumns[numf]:length )
+         elseif type == "L"
+            rez := PADR( IIF( vartmp, "T", "F" ),oBrw:aColumns[numf]:length )
 
-      elseif type == "M"
-         RETURN "<Memo>"
-
+         elseif type == "M" 
+            rez := "<Memo>"
+         endif
       endif
    endif
 

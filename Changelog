@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.244 2004-08-02 20:21:52 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.245 2004-08-02 20:36:56 marcosgambeta Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-08-02 17:38 UTC-0300 Marcos Antonio Gambeta <marcosgambeta@uol.com.br>
+  + samples/trackbar.prg
+    New sample for the HTrackBar class.
 
 2004-08-02 17-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/hbrowse.prg
@@ -31,21 +35,21 @@
     * mainly HBClass.ch -> hbclass.ch and RtfClass.ch -> rtfclass.ch
     * After these I could build hwgui under Linux Fedora Core 2 with
     * mingw cross compiler and samples under wine 20040617.
-    * With a.exe the childs don't get showed until called Windows/tile 
+    * With a.exe the childs don't get showed until called Windows/tile
     * and grid_5.exe does not work but it builds.
   + samples/makefile.gcc
-    * added makefile.gcc to build samples under Linux. 
-    * Use: make_cross_mingw.sh -fmakefile.gcc 
+    * added makefile.gcc to build samples under Linux.
+    * Use: make_cross_mingw.sh -fmakefile.gcc
     * In makefile.gcc SOURCE=<sample>
 
 2004-07-30 11-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * samples/buildpelles.prg
     !Minor fix
-    
+
 2004-07-29 17-10 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * samples/buildpelles.prg
     * The program now create the makefile for use POMAKE.EXE
-    * I need Help to creation this makefile style pomake in special to include resource    
+    * I need Help to creation this makefile style pomake in special to include resource
 
 2004-07-29 15-15 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * samples/buildpelles.prg

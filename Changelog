@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.335 2005-01-10 14:57:47 alkresin Exp $
+ * $Id: Changelog,v 1.336 2005-01-11 14:05:25 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-01-11 17:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * samples/hwedit/editor.prg
+    ! HWindow():GetMdiActive() calls are replaced with HMainWindow():GetMdiActive()
 
 2004-01-10 17:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/misc.c

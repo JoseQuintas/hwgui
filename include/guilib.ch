@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.31 2004-05-12 15:50:50 lculik Exp $
+ *$Id: guilib.ch,v 1.32 2004-05-15 17:49:14 lculik Exp $
  */
 
 #define	WND_MAIN		1
@@ -297,6 +297,7 @@
 #xcommand REDEFINE BUTTON [ <oBut> ]   ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
+            [ CAPTION <cCaption> ]     ;    
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
             [ FONT <oFont> ]           ;
@@ -307,7 +308,7 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oBut> := ] HButton():Redefine( <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>, ;
-                    <bClick>,<ctoolt>,<color>,<bcolor> )
+                    <bClick>,<ctoolt>,<color>,<bcolor>,<cCaption> )
 
 #xcommand @ <x>,<y> GROUPBOX [ <oGroup> CAPTION ] <caption> ;
             [ OF <oWnd> ]              ;

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.9 2004-05-10 18:26:35 lculik Exp $
+ * $Id: hcontrol.prg,v 1.10 2004-05-15 17:49:14 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -176,7 +176,7 @@ CLASS HStatic INHERIT HControl
                   bSize,bPaint,ctoolt,tcolor,bcolor,lTransp )
    METHOD Activate()
    METHOD SetValue(value) INLINE SetDlgItemText( ::oParent:handle,::id,value )
-
+   METHOD Init()
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;
@@ -218,6 +218,13 @@ Return Nil
 
 //- HButton
 
+METHOD Init CLASS HStatic
+::super:init()
+   IF ::Title != NIL
+      SETWINDOWTEXT( ::handle, ::title )
+   ENDIF
+Return  NIL
+
 CLASS HButton INHERIT HControl
 
    CLASS VAR winclass   INIT "BUTTON"
@@ -225,7 +232,7 @@ CLASS HButton INHERIT HControl
                   bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor )
    METHOD Activate()
    METHOD Redefine( oWnd,nId,oFont,bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor )
-
+   METHOD Init()
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
@@ -253,15 +260,24 @@ METHOD Activate CLASS HButton
    ENDIF
 Return Nil
 
-METHOD Redefine( oWndParent,nId,oFont,bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor ) CLASS HButton
+METHOD Redefine( oWndParent,nId,oFont,bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor,cCaption ) CLASS HButton
 
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
               bSize,bPaint,ctoolt,tcolor,bcolor )
+
+   ::title   := cCaption
 
    IF bClick != Nil
       ::oParent:AddEvent( 0,::id,bClick )
    ENDIF
 Return Self
+
+METHOD Init CLASS HButton
+::super:init()
+   IF ::Title != NIL
+      SETWINDOWTEXT( ::handle, ::title )
+   ENDIF
+Return  NIL
 
 //- HGroup
 

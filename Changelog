@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.135 2004-05-14 19:17:01 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.136 2004-05-15 17:49:13 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-05-15 14:50 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
+  * source/hcontrol.prg
+    ! Added init method to HStatic(otherwise redefined caption is not show)
+    ! Added init Method to HButton
+  ! include/guilib.ch
+    ! Added CAPTION clause to REDEFINE Button
 
 2004-05-14 16-12 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/menu.prg

@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.3 2003-12-01 12:41:31 lculik Exp $
+ *$Id: dialog.c,v 1.4 2004-02-25 12:17:15 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions

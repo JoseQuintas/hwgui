@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.19 2004-02-25 11:55:08 lculik Exp $
+ * $Id: Changelog,v 1.20 2004-02-25 12:17:15 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,36 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-02-25 09-20 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
+  * Merged all changes while hwguiwas on xharbour cvs per entries bellow
+   2004-02-20 07:00 UTC+0700 Andi Jahja <xharbour@cbn.net.id>
+     * contrib/xhwgui/source/procmisc/blowfish.c
+      * casting for MSVC
+
+   2004-02-20 05:30 UTC+0700 Andi Jahja <xharbour@cbn.net.id>
+     * contrib/xhwgui/source/printdos.prg
+     * contrib/xhwgui/source/htree.prg
+     * contrib/xhwgui/source/htab.prg
+     * contrib/xhwgui/source/hdatepic.prg
+     * contrib/xhwgui/source/hupdown.prg
+     * contrib/xhwgui/source/control.c
+       * fix compiler warnings on defines
+   
+     * contrib/xhwgui/source/shellapi.c
+       * define BIF_USENEWUI if not defined
+       * define BIF_NEWDIALOGSTYLE if not defined
+
+     * contrib/xhwgui/source/window.c
+     * contrib/xhwgui/source/draw.c
+     * contrib/xhwgui/source/media_c.c
+       * casting for MSVC
+
+   2004-02-19 09:00 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
+     * source/hcombo.prg
+       ! Add new method, refresh(), setitem()
+      
+  
 
 2004-02-20 16:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   + ADD files QHTM

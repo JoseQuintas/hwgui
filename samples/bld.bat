@@ -1,6 +1,6 @@
 @echo off
 
-set HB_INSTALL=%HB_PATH%
+set HB_INSTALL=..\..\..
 set HWGUI_INSTALL=..
 
 SET HB_MT=

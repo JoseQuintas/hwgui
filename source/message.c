@@ -1,4 +1,6 @@
 /*
+ *$Id: message.c,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level messages functions
  *
@@ -40,13 +42,21 @@ HB_FUNC( MSGOKCANCEL )
 HB_FUNC( MSGYESNO )
 {
    char* cTitle;
-   // char cres[20];
    HWND h = GetActiveWindow();
 
    cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
-   // sprintf( cres,"-> %lu",h );
 
    hb_retl( MessageBox( h, hb_parc(1), cTitle, MB_YESNO | MB_ICONQUESTION ) == IDYES );
+}
+
+HB_FUNC( MSGYESNOCANCEL )
+{
+   char* cTitle;
+   HWND h = GetActiveWindow();
+
+   cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+
+   hb_retni( MessageBox( h, hb_parc(1), cTitle, MB_YESNOCANCEL | MB_ICONQUESTION ) );
 }
 
 HB_FUNC( MSGBEEP )
@@ -59,9 +69,9 @@ HB_FUNC( MSGBEEP )
 #include <richedit.h>
 HB_FUNC( MSGTEMP )
 {
-   char cres[40];
+   char cres[60];
 
-   sprintf( cres,"NM_RCLICK: %lu NM_FIRST: %lu ",NM_RCLICK,NM_FIRST );
+   sprintf( cres,"WS_OVERLAPPEDWINDOW: %lu NM_FIRST: %lu ",WS_OVERLAPPEDWINDOW,NM_FIRST );
    hb_retni( MessageBox( GetActiveWindow(), cres, "DialogBaseUnits", MB_OKCANCEL | MB_ICONQUESTION ) );
 }
 

@@ -1,4 +1,6 @@
 /*
+ *$Id: hdatepic.prg,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
  *
@@ -54,7 +56,8 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    ENDIF
    IF bSetGet != Nil
       ::bLostFocus := bLFocus
-      ::oParent:AddEvent( DTN_DATETIMECHANGE,::id,{|o,id|__Valid(o:FindControl(id))},.T. )
+      ::oParent:AddEvent( DTN_DATETIMECHANGE,::id,{|o,id|__Valid(o:FindControl(id),.F.)},.T. )
+      ::oParent:AddEvent( NM_KILLFOCUS,::id,{|o,id|__Valid(o:FindControl(id),.T.)},.T. )
    ELSE
       IF bLfocus != Nil
          ::oParent:AddEvent( NM_KILLFOCUS,::id,bLfocus,.T. )
@@ -80,15 +83,16 @@ METHOD Init() CLASS HDatePicker
    ENDIF
 Return Nil
 
-Static Function __Valid( oCtrl )
+Static Function __Valid( oCtrl,lLostFocus )
 
    oCtrl:value := GetDatePicker( oCtrl:handle )
 
    IF oCtrl:bSetGet != Nil
       Eval( oCtrl:bSetGet,oCtrl:value )
    ENDIF
-   IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl )
-      SetFocus( oCtrl:handle )
+   IF lLostFocus .AND. oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl )
+      // SetFocus( oCtrl:handle )
+      Return .F.
    ENDIF
 
 Return .T.

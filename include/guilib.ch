@@ -1,3 +1,7 @@
+/*
+ *$Id: guilib.ch,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ */
+
 #include "guilib.h"
 
 // Commands for windows, dialogs handling
@@ -40,6 +44,7 @@
              [ STYLE <nStyle> ]             ;
              [ FONT <oFont> ]               ;
              [<lClipper: CLIPPER>]          ;
+             [<lExitOnEnter: NOEXIT>]       ; //Modified By Sandro
              [ ON INIT <bInit> ]            ;
              [ ON SIZE <bSize> ]            ;
              [ ON PAINT <bPaint> ]          ;
@@ -50,7 +55,7 @@
           => ;
    <oDlg> := HDialog():New( Iif(<.res.>,WND_DLG_RESOURCE,WND_DLG_NORESOURCE), ;
                    <nStyle>,<x>,<y>,<width>,<height>,<cTitle>,<oFont>,<bInit>,<bExit>,;
-                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico> )
+                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.> )
 
 #xcommand ACTIVATE WINDOW <oWnd> [<lNoShow: NOSHOW>]    ;
           => ;
@@ -811,6 +816,11 @@
              VALUE <value> ACTION <bAction> ;
           => ;
     <oTimer> := HTimer():New( <oWnd>, <id>, <value>, <bAction> )
+
+
+#xcommand SET KEY <nctrl>,<nkey> [ OF <oDlg> ] [ TO <func> ] ;
+          => ;
+    SetDlgKey( <oDlg>, <nctrl>, <nkey>, <{func}> )
 
 /*             */
 #xcommand @ <x>,<y> GRAPH [ <oGraph> DATA ] <aData> ;

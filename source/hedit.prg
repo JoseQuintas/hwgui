@@ -1,4 +1,6 @@
 /*
+ *$Id: hedit.prg,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
  *
@@ -15,8 +17,6 @@
 CLASS HEdit INHERIT HControl
 
    CLASS VAR winclass   INIT "EDIT"
-   CLASS VAR lCtrl   INIT .F.
-   CLASS VAR lShift  INIT .F.
    DATA lMultiLine   INIT .F.
    DATA cType INIT "C"
    DATA bSetGet
@@ -166,7 +166,7 @@ Local vari
 Return Nil
 
 Function DefEditProc( hEdit, msg, wParam, lParam )
-Local oEdit, oParent, nPos
+Local oEdit, oParent, nPos, nctrl, cKeyb
    // writelog( "EditProc: " + Str(hEdit,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF msg == WM_CHAR
 
@@ -190,22 +190,18 @@ Local oEdit, oParent, nPos
 
       IF ( oParent := FindParent( hEdit ) ) != Nil
          oEdit := oParent:FindControl(,hEdit)
-         IF wParam == 17         // Ctrl
-            HEdit():lCtrl := .T.
-         ELSEIF wParam == 16     // Shift
-            HEdit():lShift := .T.
-         ELSEIF wParam == 40     // KeyDown
-            IF ReadExit() .AND. !HEdit():lCtrl .AND. !HEdit():lShift
+         IF wParam == 40     // KeyDown
+            IF ReadExit() .AND. !IsCtrlShift()
                GetSkip( oParent,hEdit,1 )
                Return 0
             ENDIF
          ELSEIF wParam == 38     // KeyUp
-            IF ReadExit() .AND. !HEdit():lCtrl .AND. !HEdit():lShift
+            IF ReadExit() .AND. !IsCtrlShift()
                GetSkip( oParent,hEdit,-1 )
                Return 0
             ENDIF
          ELSEIF wParam == 39     // KeyRight
-            IF !HEdit():lCtrl .AND. !HEdit():lShift
+            IF !HEdit():lCtrl .AND. !IsCtrlShift()
                oEdit:lFirst := .F.
                Return KeyRight( oParent:FindControl(,hEdit) )
             ENDIF
@@ -220,7 +216,7 @@ Local oEdit, oParent, nPos
                   Return 0
                ENDIF
          ELSEIF wParam == 45     // Insert
-            IF !HEdit():lCtrl .AND. !HEdit():lShift
+            IF !HEdit():lCtrl .AND. !IsCtrlShift()
                Set( _SET_INSERT, ! Set( _SET_INSERT ) )
             ENDIF
          ELSEIF wParam == 46     // Del
@@ -235,10 +231,26 @@ Local oEdit, oParent, nPos
 
    ELSEIF msg == WM_KEYUP
 
-      IF wParam == 17
-         HEdit():lCtrl := .F.
-      ELSEIF wParam == 16
-         HEdit():lShift := .F.
+      IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
+         IF ( oParent := FindParent( hEdit ) ) != Nil
+            DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
+               oParent := oParent:oParent
+            ENDDO
+            IF oParent != Nil
+               cKeyb := GetKeyboardState()
+               /*
+               nctrl := ""
+               for i := 16 to 32
+                  nctrl += Str(Asc(Substr(cKeyb,i,1)),4)
+               next
+               writelog(nctrl)
+               */
+               nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
+               IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nctrl.AND.a[2]==wParam} ) ) > 0
+                  Eval( oParent:KeyList[ nPos,3 ] )
+               ENDIF
+            ENDIF
+         ENDIF
       ENDIF
    ELSEIF msg == WM_LBUTTONUP
       oEdit := FindSelf( hEdit )
@@ -248,6 +260,10 @@ Local oEdit, oParent, nPos
       // writelog( str(HiWord(SendMessage(oEdit:handle,EM_GETSEL,0,0))) )
    ENDIF
 Return -1
+
+Static Function IsCtrlShift()
+Local cKeyb := GetKeyboardState()
+Return Asc(Substr(cKeyb,VK_CONTROL+1,1)) >= 128 .OR. Asc(Substr(cKeyb,VK_SHIFT+1,1)) >= 128
 
 Static Function ParsePict( oEdit,cPicture,vari )
 Local nAt, i, masklen, cChar
@@ -519,11 +535,16 @@ Local nPos, nGetLen, nLen, vari
 Return 0
 
 Static Function __When( oCtrl )
+Local res
 
    oCtrl:Refresh()
    oCtrl:lFirst := .T.
    IF oCtrl:bGetFocus != Nil 
-      Return Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet ), oCtrl )
+      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet ), oCtrl )
+      IF !res
+         GetSkip( oCtrl:oParent,oCtrl:handle,1 )
+      ENDIF
+      Return res
    ENDIF
 
 Return .T.

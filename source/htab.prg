@@ -1,4 +1,6 @@
 /*
+ *$Id: htab.prg,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
  *
@@ -167,6 +169,12 @@ Local i, nFirst, nEnd
    nEnd   := ::aPages[ nPage,1 ] + ::aPages[ nPage,2 ]
    FOR i := nFirst TO nEnd
       ::aControls[i]:Show()
+   NEXT
+   FOR i := nFirst TO nEnd
+      IF __ObjHasMsg( ::aControls[i],"BSETGET" ) .AND. ::aControls[i]:bSetGet != Nil
+         SetFocus( ::aControls[i]:handle )
+         Exit
+      ENDIF
    NEXT
 
 Return Nil

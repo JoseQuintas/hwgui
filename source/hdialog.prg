@@ -1,4 +1,6 @@
 /*
+ *$Id: hdialog.prg,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
  *
@@ -67,14 +69,17 @@ CLASS HDialog INHERIT HCustomWindow
    DATA lResult  INIT .F.     // Becomes TRUE if the OK button is pressed
    DATA lUpdated INIT .F.     // TRUE, if any GET is changed
    DATA lClipper INIT .F.     // Set it to TRUE for moving between GETs with ENTER key
-   DATA GetList  INIT {}
+   DATA GetList  INIT {}      // The array of GET items in the dialog
+   DATA KeyList  INIT {}      // The array of keys ( as Clipper's SET KEY )
+   DATA lExitOnEnter INIT .F. // Set it to True, if dialog shouldn't be ended after pressing ENTER key,
+                              // Added by Sandro Freire 
    DATA nLastKey INIT 0
    DATA oIcon, oBmp
    DATA bActivate
    DATA lActivated INIT .F.
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
-                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon )
+                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter )
    METHOD Activate( lNoModal )
    METHOD AddItem( oWnd,lModal )
    METHOD DelItem( oWnd,lModal )
@@ -82,9 +87,8 @@ CLASS HDialog INHERIT HCustomWindow
 ENDCLASS
 
 METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
-                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon ) CLASS HDialog
+                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter ) CLASS HDialog
 
-   // ::classname:= "HDIALOG"
    ::oDefaultParent := Self
    ::type     := lType
    ::title    := cTitle
@@ -104,6 +108,7 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
    ::bLostFocus := bLFocus
    ::bOther     := bOther
    ::lClipper   := Iif( lClipper==Nil,.F.,lClipper )
+   ::lExitOnEnter:=Iif( lExitOnEnter==Nil,.F.,lExitOnEnter )
 
 RETURN Self
 
@@ -257,15 +262,19 @@ Local aMenu, i
          IF i != 0 .AND. oDlg:GetList[i]:handle == GetFocus()
             IF __ObjHasMsg(oDlg:GetList[i],"BVALID") .AND. ;
                    Eval( oDlg:GetList[i]:bValid,oDlg:GetList[i] )
-               oDlg:lResult := .T.
-               EndDialog( oDlg:handle )
+               IF !oDlg:lExitOnEnter
+                  oDlg:lResult := .T.
+                  EndDialog( oDlg:handle )
+               ENDIF
                Return 1
             ENDIF
          ENDIF
          IF oDlg:lClipper
             IF !GetSkip( oDlg,GetFocus(),1 )
-               oDlg:lResult := .T.
-               EndDialog( oDlg:handle )
+               IF !oDlg:lExitOnEnter
+                  oDlg:lResult := .T.
+                  EndDialog( oDlg:handle )
+               ENDIF
             ENDIF
             Return 1
          ENDIF
@@ -604,3 +613,30 @@ Local oDlg
    ENDIF
 Return  Hwg_EndDialog( oDlg:handle )
 
+Function SetDlgKey( oDlg, nctrl, nkey, block )
+Local i, aKeys
+
+   IF oDlg == Nil ; oDlg := HCustomWindow():oDefaultParent ; ENDIF
+   IF nctrl == Nil ; nctrl := 0 ; ENDIF
+
+   IF !__ObjHasMsg( oDlg,"KEYLIST" )
+      Return .F.
+   ENDIF
+   aKeys := oDlg:KeyList
+   IF block == Nil
+
+      IF ( i := Ascan( aKeys,{|a|a[1]==nctrl.AND.a[2]==nkey} ) ) == 0
+         Return .F.
+      ELSE
+         Adel( oDlg:KeyList, i )
+         Asize( oDlg:KeyList, Len(oDlg:KeyList)-1 )
+      ENDIF
+   ELSE
+      IF ( i := Ascan( aKeys,{|a|a[1]==nctrl.AND.a[2]==nkey} ) ) == 0
+         Aadd( aKeys, { nctrl,nkey,block } )
+      ELSE
+         aKeys[i,3] := block
+      ENDIF
+   ENDIF
+
+Return .T.

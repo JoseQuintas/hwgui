@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.6 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: hsayimg.prg,v 1.7 2004-11-16 18:22:08 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -20,7 +20,6 @@ CLASS HSayImage INHERIT HControl
 
    CLASS VAR winclass   INIT "STATIC"
    DATA  oImage
-   DATA  oParent
 
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,bInit, ;
                   bSize,ctoolt )
@@ -33,32 +32,18 @@ ENDCLASS
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,bInit, ;
                   bSize,ctoolt ) CLASS HSayImage
 
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
-   ::title   := ""
-   ::style   := WS_VISIBLE+WS_CHILD
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := Iif( nWidth!=Nil,nWidth,0 )
-   ::nHeight := Iif( nHeight!=Nil,nHeight,0 )
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::tooltip := ctoolt
+   Super:New( oWndParent,nId,WS_VISIBLE+WS_CHILD,nLeft,nTop,               ;
+               Iif( nWidth!=Nil,nWidth,0 ),Iif( nHeight!=Nil,nHeight,0 ),, ;
+               bInit,bSize,,ctoolt )
 
-   ::oParent:AddControl( Self )
+   ::title   := ""
 
 Return Self
 
 METHOD Redefine( oWndParent,nId,bInit,bSize,ctoolt ) CLASS HSayImage
 
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := nId
-   ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::tooltip := ctoolt
+   Super:New( oWndParent,nId,0,0,0,0,0,,bInit,bSize,,ctoolt )
 
-   ::oParent:AddControl( Self )
 Return Self
 
 METHOD Activate CLASS HSayImage
@@ -79,11 +64,11 @@ CLASS HSayBmp INHERIT HSayImage
                   bSize,ctoolt )
    METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctoolt )
    METHOD Init()
-   METHOD ReplaceBitmap(Image, lRes)
+   METHOD ReplaceBitmap( Image, lRes )
 
 ENDCLASS
 
-METHOD ReplaceBitmap(Image, lRes) CLASS HSayBmp
+METHOD ReplaceBitmap( Image, lRes ) CLASS HSayBmp
 
    ::oImage := Iif( lRes .OR. Valtype(Image)=="N",     ;
                        HBitmap():AddResource( Image ), ;

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.14 2004-04-01 07:14:20 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.15 2004-04-02 06:52:40 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1196,19 +1196,22 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
          y1 := aCoors[2]
 
          lReadExit := ReadExit( .T. )
-         bInit := Iif( wParam==Nil, {|o|MoveWindow(o:handle,x1,y1,oColumn:width,::height+1)}, ;
-            {|o|MoveWindow(o:handle,x1,y1,oColumn:width,::height+1),PostMessage(o:aControls[1]:handle,WM_KEYDOWN,wParam,lParam)} )
+         bInit := Iif( wParam==Nil, {|o|MoveWindow(o:handle,x1,y1,oColumn:width,o:nHeight+1)}, ;
+            {|o|MoveWindow(o:handle,x1,y1,oColumn:width,o:nHeight+1),PostMessage(o:aControls[1]:handle,WM_KEYDOWN,wParam,lParam)} )
 
-         INIT DIALOG oModDlg STYLE WS_POPUP+1+WS_BORDER ;
+         INIT DIALOG oModDlg STYLE WS_POPUP+1+Iif(oColumn:aList==Nil,WS_BORDER,0) ;
             AT x1,y1                                    ;
             SIZE oColumn:width, ::height                ;
             ON INIT bInit
 
          IF oColumn:aList != Nil
+            oModDlg:brush := -1
+            oModDlg:nHeight := ::height*5
+            varbuf := AllTrim(varbuf)
             nChoic := Ascan( oColumn:aList,varbuf )
             @ 0,0 GET COMBOBOX nChoic           ;
                ITEMS oColumn:aList              ;
-               SIZE oColumn:width, ::height+1   ;
+               SIZE oColumn:width, ::height*5   ;
                FONT ::oFont
          ELSE
             @ 0,0 GET oGet VAR varbuf           ;
@@ -1229,7 +1232,7 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
             IF ::lAppMode
                ::lAppMode := .F.
                IF ::type == BRW_DATABASE
-                  APPEND BLANK
+                  (::alias)->( dbAppend() )
                   Eval( oColumn:block,varbuf,Self,fipos )
                   UNLOCK
                ELSE

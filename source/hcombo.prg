@@ -1,4 +1,6 @@
 /*
+ * $Id: hcombo.prg,v 1.6 2004-04-02 06:52:40 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
  *
@@ -28,6 +30,7 @@ CLASS HComboBox INHERIT HControl
    CLASS VAR winclass   INIT "COMBOBOX"
    DATA  aItems
    DATA  bSetGet
+   DATA  bValid   INIT {||.T.}
    DATA  value    INIT 1
    DATA  bChangeSel
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.7 2004-03-23 15:42:33 rodrigo_moreno Exp $
+ * $Id: hdialog.prg,v 1.8 2004-04-02 06:52:40 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -252,7 +252,9 @@ Local aCoors
       ELSE
         aCoors := GetClientRect( oDlg:handle )
         IF oDlg:brush != Nil
-           FillRect( hDC, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1,oDlg:brush:handle )
+           IF oDlg:brush >= 0
+              FillRect( hDC, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1,oDlg:brush:handle )
+           ENDIF
         ELSE
            FillRect( hDC, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1,COLOR_3DFACE+1 )
         ENDIF
@@ -273,9 +275,9 @@ Local aMenu, i
             ENDIF
          NEXT
          IF i != 0 .AND. oDlg:GetList[i]:handle == GetFocus()
-            IF __ObjHasMsg(oDlg:GetList[i],"BVALID") .AND. ;
-                   Eval( oDlg:GetList[i]:bValid,oDlg:GetList[i] )
-               IF !oDlg:lExitOnEnter
+            IF __ObjHasMsg(oDlg:GetList[i],"BVALID")
+               IF Eval( oDlg:GetList[i]:bValid,oDlg:GetList[i] ) .AND. ;
+                      !oDlg:lExitOnEnter
                   oDlg:lResult := .T.
                   EndDialog( oDlg:handle )
                ENDIF

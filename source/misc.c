@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.15 2004-11-21 12:33:16 alkresin Exp $
+ * $Id: misc.c,v 1.16 2005-01-05 15:47:07 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -520,4 +520,20 @@ HB_FUNC( SHOWSCROLLBAR )
       hb_parni( 2 ),	        // scroll bar flags
       hb_parl( 3 )              // scroll bar visibility
    );
+}
+
+
+HB_FUNC ( ISCAPSLOCKACTIVE )
+{
+   hb_retl ( GetKeyState( VK_CAPITAL ) ) ;
+}
+
+HB_FUNC ( ISNUMLOCKACTIVE )
+{
+   hb_retl ( GetKeyState( VK_NUMLOCK ) ) ;
+}
+
+HB_FUNC ( ISSCROLLLOCKACTIVE )
+{
+   hb_retl ( GetKeyState( VK_SCROLL ) ) ;
 }

@@ -170,6 +170,9 @@ MISC.C
   WinHelp
   Getnextdlgtabitem( window handle, start point handle, bool, start from current control )
   Sleep(miliseconds)
+  IsCapsLockActive 
+  IsNumLockActive  
+  IsScrollLockActive 
 
 WBROWSE.C:
   Setscrollinfo

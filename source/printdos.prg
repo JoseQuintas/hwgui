@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.8 2004-05-28 14:12:30 sandrorrfreire Exp $
+ * $Id: printdos.prg,v 1.9 2004-05-28 14:54:24 sandrorrfreire Exp $
  *
  * CLASS PrintDos
  *
@@ -34,6 +34,7 @@ CLASS PrintDos
      DATA oTopMar               AS NUMERIC
      DATA oLeftMar              AS NUMERIC
      DATA oAns2Oem              AS LOGIC
+     DATA LastError 
      DATA oPrintStyle INIT 1 //1 = Matricial   2 = InkJet    3 = LaserJet
 
      METHOD New(oPorta) CONSTRUCTOR  
@@ -119,10 +120,17 @@ METHOD New(oPorta) CLASS PrintDos
         EndIf
      EndIf
 
-     Iif( oPorta=="GRAPHIC" .or. ;
-          oPorta=="PREVIEW"     ,;
-          ::gText := ""         ,;      
-          ::gText:=fCreate(::oPorta))
+     If oPorta=="GRAPHIC" .or. oPorta=="PREVIEW"               
+          ::gText := ""         
+     Else           
+          ::gText:=fCreate(::oPorta)
+          if ::gText<0
+             ::LastError:=fError()
+          Else
+             ::LastError:=0
+          EndIf
+     EndIf           
+          
           
 RETURN SELF
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.157 2004-05-28 14:54:21 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.158 2004-05-28 14:54:56 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,11 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2004-05-27 11-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+2004-05-28 11-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/printdos.prg
     !new variable lasterror
 
-2004-05-27 10-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+2004-05-28 10-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/commond.c
     !bug fix (error GPF) in function PrintPortName
   * source/printdos.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.5 2004-06-24 21:52:05 andijahja Exp $
+ * $Id: xmlparse.c,v 1.6 2004-06-25 05:10:22 alkresin Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -57,7 +57,7 @@ HB_FUNC( HBXML_TRANSFORM )
    int iLenAdd = 0, iLen;
 
    ptr = pBuffer;
-   while( c == *ptr )
+   while( ( c = *ptr ) != 0 )
    {
       for( ptrs=predefinedEntity2; *ptrs; ptrs++ )
          if( *ptrs == c )

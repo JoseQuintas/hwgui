@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.53 2004-12-13 16:27:39 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.54 2005-02-21 11:39:13 lf_sfnet Exp $
  */
 #define HWG_VERSION           "2.14"
 #define	WND_MAIN		1
@@ -131,8 +131,8 @@
 
 #xcommand ACTIVATE WINDOW <oWnd> [<lNoShow: NOSHOW>]     ;
            => ;
-      <oWnd>:Activate( !<.lNoShow.>) 
-                                                        
+      <oWnd>:Activate( !<.lNoShow.>)
+
 #xcommand CENTER WINDOW <oWnd> ;
 	=>;
         <oWnd>:Center()
@@ -186,7 +186,7 @@
             <oPBar> :=  HProgressBar():New( <oWnd>,<nId>,<x>,<y>,<nWidth>, ;
                        <nHeight>,<maxpos>,<nRange> )
 
-#xcommand ADD STATUS [ TO <oWnd> ] ;
+#xcommand ADD STATUS [<oStat>] [ TO <oWnd> ] ;
             [ ID <nId> ]           ;
             [ ON INIT <bInit> ]    ;
             [ ON SIZE <bSize> ]    ;
@@ -195,7 +195,8 @@
             [ FONT <oFont> ]       ;
             [ PARTS <aparts,...> ] ;
           => ;
-    HStatus():New( <oWnd>,<nId>,<nStyle>,<oFont>,\{<aparts>\},<bInit>,<bSize>,<bDraw> )
+            [ <oStat> := ] HStatus():New( <oWnd>,<nId>,<nStyle>,<oFont>,\{<aparts>\},<bInit>,;
+                                          <bSize>,<bDraw> )
 
 
 #xcommand @ <x>,<y> SAY [ <oSay> CAPTION ] <caption> ;
@@ -386,7 +387,7 @@
 #xcommand REDEFINE BUTTON [ <oBut> ]   ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
-            [ CAPTION <cCaption> ]     ;    
+            [ CAPTION <cCaption> ]     ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
             [ FONT <oFont> ]           ;
@@ -703,7 +704,7 @@
             [ ON LOSTFOCUS <bLfocus> ]  ;
             [ ON KEYDOWN <bKeyDown> ]   ;
             [ ON POSCHANGE <bPosChg> ]  ;
-            [ ON DISPINFO <bDispInfo> ] ; 
+            [ ON DISPINFO <bDispInfo> ] ;
             [ ITEMCOUNT <nItemCount> ]  ;
             [ <lNoScroll: NOSCROLL> ]   ;
             [ <lNoBord: NOBORDER> ]     ;
@@ -847,7 +848,7 @@
             [<lnoborder: NOBORDER>]    ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
-          => ;                          
+          => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<vari>,               ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;
                    <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,,,  ;
@@ -1004,7 +1005,7 @@
 
 #xcommand MENUITEMBITMAP <oMain>  ID <nId> ;
             BITMAP <bmp>                  ;
-            [<res: FROM RESOURCE>]         ; 
+            [<res: FROM RESOURCE>]         ;
           => ;
     Hwg_InsertBitmapMenu( <oMain>:menu, <nId>, <bmp>, <.res.>)
 
@@ -1047,7 +1048,7 @@
 
 #xcommand SET RESOURCES TO => LOADRESOURCE( NIL )
 
-// Addded by jamaj 
+// Addded by jamaj
 #xcommand DEFAULT <uVar1> := <uVal1> ;
                [, <uVarN> := <uValN> ] => ;
                   <uVar1> := IIf( <uVar1> == nil, <uVal1>, <uVar1> ) ;;
@@ -1123,9 +1124,9 @@ Added by Marcos Antonio Gambeta
     [<oMonthCalendar> :=] HMonthCalendar():New( <oWnd>,<nId>,<dInit>,<nStyle>,;
         <x>,<y>,<nWidth>,<nHeight>,<oFont>,<bInit>,<bChange>,<cTooltip>,;
         <.notoday.>,<.notodaycircle.>,<.weeknumbers.>)
- 
 
-/*By Vitor Maclung */ 
+
+/*By Vitor Maclung */
 // Commands for Listbox handling
 
 
@@ -1163,7 +1164,7 @@ Added by Marcos Antonio Gambeta
 
 #xcommand SPLASH [<osplash> TO]  <oBitmap> ;
             [<res: FROM RESOURCE>]         ;
-            [ TIME <otime> ]               ;    
+            [ TIME <otime> ]               ;
           => ;
    [ <osplash> := ] HSplash():Create(<oBitmap>,<otime>,<.res.>)
 
@@ -1238,7 +1239,7 @@ Added by Marcos Antonio Gambeta
 	=>;
     [<oAnimation> :=] HAnimation():New( <oWnd>,<nId>,<nStyle>,<x>,<y>, ;
         <nWidth>,<nHeight>,<cFile>,<.autoplay.>,<.center.>,<.transparent.>)
- 
-//Contribution   Ricardo de Moura Marques 
+
+//Contribution   Ricardo de Moura Marques
 #xcommand @ <X>, <Y>, <X2>, <Y2> RECT <oRect> [<lPress: PRESS>] [OF <oWnd>] [RECT_STYLE <nST>];
           => <oRect> := HRect():New(<oWnd>,<X>,<Y>,<X2>,<Y2>, <.lPress.>, <nST> )

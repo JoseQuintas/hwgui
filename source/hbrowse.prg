@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.12 2004-03-31 10:47:52 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.13 2004-03-31 11:37:40 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -181,7 +181,7 @@ CLASS HBrowse INHERIT HControl
    METHOD Edit( wParam,lParam )
    METHOD Append() INLINE (::Bottom(.F.),::LineDown())
    METHOD RefreshLine()
-   METHOD Refresh()
+   METHOD Refresh( lFull )
    METHOD ShowSizes()
    METHOD End()
 
@@ -924,8 +924,6 @@ Local minPos, maxPos, nPos, step, lBof := .F.
       step := ( ::rowPos - 1 )
       EVAL( ::bSKip, Self,- step )
       ::rowPos := 1
-      InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*::internal[2]-::height, ::x2, ::y1+(::height+1)*::internal[2] )
-      InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*::rowPos-::height, ::x2, ::y1+(::height+1)*::rowPos )
    ELSE
       step := ::rowCurrCount    // Min( ::kolz,::rowCount )
       EVAL( ::bSkip, Self,- step )
@@ -933,7 +931,6 @@ Local minPos, maxPos, nPos, step, lBof := .F.
          EVAL( ::bGoTop,Self )
          lBof := .T.
       ENDIF
-      InvalidateRect( ::handle, 0 )
    ENDIF
 
    IF ::bScrollPos != Nil
@@ -945,8 +942,7 @@ Local minPos, maxPos, nPos, step, lBof := .F.
       SetScrollPos( ::handle, SB_VERT, nPos )
    ENDIF
 
-   ::internal[1] := SetBit( ::internal[1], 1, 0 )
-   PostMessage( ::handle, WM_PAINT, 0, 0 )
+   ::Refresh(.F.)
    SetFocus( ::handle )
 RETURN Nil
 
@@ -972,9 +968,7 @@ Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows )
       SetScrollPos( ::handle, SB_VERT, nPos )
    ENDIF
 
-   InvalidateRect( ::handle, 0 )
-   ::internal[1] := SetBit( ::internal[1], 1, 0 )
-   PostMessage( ::handle, WM_PAINT, 0, 0 )
+   ::Refresh(.F.)
    SetFocus( ::handle )
 RETURN Nil
 
@@ -1289,12 +1283,16 @@ METHOD RefreshLine() CLASS HBrowse
 RETURN Nil
 
 //----------------------------------------------------//
-METHOD Refresh() CLASS HBrowse
-   ::internal[1] := 15
-   // writelog( "Refresh - 1" )
-   RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
-   // InvalidateRect( ::handle, 0 )
-   // SendMessage( ::handle, WM_PAINT, 0, 0 )
+METHOD Refresh( lFull ) CLASS HBrowse
+
+   IF lFull == Nil .OR. lFull
+      ::internal[1] := 15
+      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+   ELSE
+      InvalidateRect( ::handle, 0 )
+      ::internal[1] := SetBit( ::internal[1], 1, 0 )
+      PostMessage( ::handle, WM_PAINT, 0, 0 )
+   ENDIF
 RETURN Nil
 
 //----------------------------------------------------//
@@ -1560,15 +1558,12 @@ Local minPos, maxPos, oldRecno, newRecno
       IF newRecno != oldRecno
          EVAL( oBrw:bSkip, oBrw, newRecno - oldRecno )
          IF oBrw:rowCount - oBrw:rowPos > oBrw:kolz - newRecno
-            oBrw:rowPos := Min( oBrw:rowCount,oBrw:kolz )
+            oBrw:rowPos := oBrw:rowCount - ( oBrw:kolz - newRecno )
          ENDIF
          IF oBrw:rowPos > newRecno
             oBrw:rowPos := newRecno
          ENDIF
-         // writelog( str(oldRecno)+str(newRecno)+str(oBrw:rowPos) )
-         InvalidateRect( oBrw:handle, 0 )
-         oBrw:internal[1] := SetBit( oBrw:internal[1], 1, 0 )
-         PostMessage( oBrw:handle, WM_PAINT, 0, 0 )
+         oBrw:Refresh(.F.)
       ENDIF
    ENDIF
 

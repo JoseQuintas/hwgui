@@ -64,7 +64,8 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\_winmsg.obj \
    $(OBJ_DIR)\c_ipaddr.obj \
    $(OBJ_DIR)\resource.obj \
-   $(OBJ_DIR)\repexec.obj
+   $(OBJ_DIR)\repexec.obj \
+   $(OBJ_DIR)\printdos.obj
 
 $(LIB_DIR)\procmisc.lib : \
    $(OBJ_DIR)\misc.obj \
@@ -107,6 +108,7 @@ $(OBJ_DIR)\hwindow.c    : $(SRC_DIR)\hwindow.prg
 $(OBJ_DIR)\hipedit.c    : $(SRC_DIR)\hipedit.prg
 $(OBJ_DIR)\menu.c       : $(SRC_DIR)\menu.prg
 $(OBJ_DIR)\repexec.c    : $(SRC_DIR)\repexec.prg
+$(OBJ_DIR)\printdos.c   : $(SRC_DIR)\printdos.prg
 
 $(OBJ_DIR)\commond.obj  : $(SRC_DIR)\commond.c
 $(OBJ_DIR)\control.obj  : $(SRC_DIR)\control.c
@@ -156,6 +158,7 @@ $(OBJ_DIR)\hwindow.obj  : $(OBJ_DIR)\hwindow.c
 $(OBJ_DIR)\hipedit.obj  : $(OBJ_DIR)\hipedit.c
 $(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
 $(OBJ_DIR)\repexec.obj  : $(OBJ_DIR)\repexec.c
+$(OBJ_DIR)\printdos.obj : $(OBJ_DIR)\printdos.c
 
 $(OBJ_DIR)\procini.c   : $(SRC_DIR)\procmisc\procini.prg
 $(OBJ_DIR)\procs7.c    : $(SRC_DIR)\procmisc\procs7.prg

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.7 2004-01-26 13:37:48 lculik Exp $
+ *$Id: guilib.ch,v 1.8 2004-02-16 11:59:36 lculik Exp $
  */
 
 #include "guilib.h"
@@ -871,3 +871,20 @@
     [<oIp> := ] HIpEdit():New( <oWnd>,<nId>,{|v| iif(v==Nil,<vari>,<vari>:=v)},<nStyle>,<x>,<y>,<width>,<height>,<vari>,<oFont>, <bGfocus>, <bLfocus> )
 
 #define ISOBJECT(c)    ( Valtype(c) == "O" )
+
+
+/* Commands for PrintDos Class*/
+
+#xcommand SET PRINTER TO <oPrinter> OF <oPtrObj>     ;
+           => ;
+      <oPtrObj>:=Printdos():New( <oPrinter>) 
+
+#xcommand @ <x>,<y> PSAY  <vari>  ;
+            [ PICTURE <cPicture> ] OF <oPtrObj>   ;
+          => ;
+          <oPtrObj>:Say(<x>, <y>, <vari>, <cPicture>)
+
+#xcommand  EJECT OF <oPtrObj> => <oPtrObj>:Eject()
+
+#xcommand  END PRINTER <oPtrObj> => <oPtrObj>:End()
+  

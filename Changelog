@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.13 2004-02-08 13:08:29 lculik Exp $
+ * $Id: Changelog,v 1.14 2004-02-16 11:59:36 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,22 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-02-16 08:50 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
+  + source/printdos.prg
+    !New class PrintDos
+     Method New, Say, Eject, SetPrc, Preview, PrintFile
+    !New functions
+     wProw(<>), wPcol(<>), wSetPrc(x,y,<>)
+  * include/guilib.ch
+    !new commands
+     SET PRINTER TO <> OF <>
+     @ x, y PSAY <> PICTURE <> OF <>
+     EJECT OF <>
+     END PRINTER <>
+  * samples/tstprdos.prg
+    !The samples for use the new Class PrintDos
+    All provided by  Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
 
 2004-02-08 10:10 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   + samples/test1.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.98 2004-04-20 17:31:58 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.99 2004-04-20 17:32:53 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -13,7 +13,7 @@
     new variable defined to print ::oPrintStyle 1 = Matricial  2 = DeskJet 3 = LaserJet
     new method ::double
     Otimized method Comando 
-  * tstprdos
+  * samples\tstprdos.prg
     new test to printdos
 
 

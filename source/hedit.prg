@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.29 2004-09-16 17:47:04 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.30 2004-09-23 14:30:50 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -24,15 +24,15 @@ CLASS HEdit INHERIT HControl
    DATA lPicComplex  INIT .F.
    DATA lFirst       INIT .T.
    DATA lChanged     INIT .F.
-   DATA lMaxLenght   INIT Nil
+   DATA lMaxLength   INIT Nil
    DATA isControlTab INIT .F.
    DATA gLastkey     INIT {0,0}
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture,lNoBorder, lMaxLenght )
+         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture,lNoBorder, lMaxLength )
    METHOD Activate()
    METHOD Redefine( oWnd,nId,vari,bSetGet,oFont,bInit,bSize,bDraw,bGfocus, ;
-             bLfocus,ctoolt,tcolor,bcolor,cPicture, lMaxLenght )
+             bLfocus,ctoolt,tcolor,bcolor,cPicture, lMaxLength )
    METHOD Init()
    METHOD SetGet(value) INLINE Eval( ::bSetGet,value,self )
    METHOD Refresh() 
@@ -42,7 +42,7 @@ CLASS HEdit INHERIT HControl
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt, ;
-                  tcolor,bcolor,cPicture,lNoBorder, lMaxLenght ) CLASS HEdit
+                  tcolor,bcolor,cPicture,lNoBorder, lMaxLength ) CLASS HEdit
  
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), ;
                 WS_TABSTOP+Iif(lNoBorder==Nil.OR.!lNoBorder,WS_BORDER,0) )
@@ -68,12 +68,12 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ::lMultiLine := .T.
    ENDIF
 
-   IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLenght !=Nil .or. !Empty(lMaxLenght)
-      ::lMaxLenght:= lMaxLenght
+   IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
+      ::lMaxLength:= lMaxLength
    ENDIF
-   IF ::lMaxLenght != Nil .and. !Empty(::lMaxLenght) 
+   IF ::lMaxLength != Nil .and. !Empty(::lMaxLength) 
       IF !Empty(cPicture) .or. cPicture==Nil
-         cPicture:=Replicate("X",::lMaxLenght)
+         cPicture:=Replicate("X",::lMaxLength)
       ENDIF
    ENDIF      
  
@@ -108,7 +108,7 @@ METHOD Activate CLASS HEdit
 Return Nil
 
 METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint, ;
-          bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture, lMaxLenght )  CLASS HEdit
+          bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture, lMaxLength )  CLASS HEdit
 
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
@@ -118,12 +118,12 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint, ;
    ENDIF
    ::bSetGet := bSetGet
 
-   IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLenght !=Nil .or. !Empty(lMaxLenght)
-      ::lMaxLenght:= lMaxLenght
+   IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
+      ::lMaxLength:= lMaxLength
    ENDIF
-   IF ::lMaxLenght != Nil .and. !Empty(::lMaxLenght) 
+   IF ::lMaxLength != Nil .and. !Empty(::lMaxLength) 
       IF !Empty(cPicture) .or. cPicture==Nil
-         cPicture:=Replicate("X",::lMaxLenght)
+         cPicture:=Replicate("X",::lMaxLength)
       ENDIF
    ENDIF      
  

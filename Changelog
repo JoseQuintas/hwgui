@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.268 2004-09-20 11:30:07 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.269 2004-09-23 14:30:48 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-09-23 11-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+   Replace lMaxLenght with lMaxLength
+   include guilib.ch
+   Replace in GET control [ MAXLENGHT <lMaxLenght> ] with [ MAXLENGTH <lMaxLength> ]
 
 2004-09-20 08-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/hbrowse.prg

@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.23 2004-09-06 17:32:37 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.24 2004-09-06 18:57:00 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -269,14 +269,8 @@ Local oEdit, oParent, nPos, nctrl, cKeyb
          ENDIF
       ENDIF
    ENDIF
-/*
-   IF !Empty( oEdit:cPicMask )
-      IF Len(oEdit:cPicMask)==Len(oEdit:Title)
-         nPos:=Len(oEdit:cPicMask)
-         SendMessage( oEdit:handle, EM_SETSEL, nPos, nPos )
-      ENDIF
-   ENDIF
-*/
+ 
+ 
 Return -1
 
 Static Function IsCtrlShift()
@@ -361,7 +355,7 @@ Local cChar
 Return .F.
 
 Static Function KeyRight( oEdit,nPos )
-Local i, masklen, newpos
+Local i, masklen, newpos, vari
    IF oEdit == Nil
       Return -1
    ENDIF
@@ -378,22 +372,20 @@ Local i, masklen, newpos
             SendMessage( oEdit:handle, EM_SETSEL, nPos-1, nPos-1 )
             EXIT
          ENDIF
-      ENDDO
+       ENDDO
    ENDIF
 
    //Added By Sandro Freire
 
-   IF oEdit:cType == "D" .OR. oEdit:cType == "C"
       IF !Empty( oEdit:cPicMask )
          IF Len(oEdit:cPicMask)==Len(TRIM(oEdit:Title))  
             newPos:=Len(oEdit:cPicMask)
-            writelog( "KeyRight-2 "+str(nPos) + " " +str(newPos) )
+            //writelog( "KeyRight-2 "+str(nPos) + " " +str(newPos) )
             IF nPos>newPos
                SendMessage( oEdit:handle, EM_SETSEL, newPos, newPos )
             ENDIF
          ENDIF
       ENDIF
-   ENDIF
 
 Return 0
 
@@ -505,7 +497,7 @@ Local cPic
 Return cChar
 
 Static Function GetApplyKey( oEdit,cKey )
-Local nPos, nGetLen, nLen, vari, i, x
+Local nPos, nGetLen, nLen, vari, i, x, newPos
    x := SendMessage( oEdit:handle, EM_GETSEL, 0, 0 )
 
    if HiWord(x) != LoWord(x)
@@ -533,6 +525,7 @@ Local nPos, nGetLen, nLen, vari, i, x
       SetDlgItemText( oEdit:oParent:handle, oEdit:id, oEdit:title )
       KeyRight( oEdit,nPos-1 )
    ELSE
+
       IF oEdit:cType == "N" .AND. oEdit:lFirst
          // SetDlgItemText( oEdit:oParent:handle, oEdit:id, "" )
          nGetLen := Len( oEdit:cPicMask )
@@ -573,6 +566,16 @@ Local nPos, nGetLen, nLen, vari, i, x
          SetDlgItemText( oEdit:oParent:handle, oEdit:id, oEdit:title )
          // writelog( "GetApplyKey "+oEdit:title+str(nPos-1) )
          KeyRight( oEdit,nPos )
+         //Added By Sandro Freire
+         IF oEdit:cType == "N"
+            IF !Empty(oEdit:cPicMask) 
+                newPos:=Len(oEdit:cPicMask)-3
+                IF "E" $ oEdit:cPicFunc .AND. nPos==newPos 
+                    GetApplyKey( oEdit, "," )
+                ENDIF
+            ENDIF
+         ENDIF
+
       ENDIF
    ENDIF
    oEdit:lFirst := .F.

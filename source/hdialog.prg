@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.21 2004-05-23 01:19:11 marcosgambeta Exp $
+ * $Id: hdialog.prg,v 1.22 2004-05-28 06:24:45 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -363,14 +363,15 @@ Local oCtrl
 Return 0
 
 Function DlgMouseMove()
-Local oBtn := SetOwnBtnSelected()
-
+Local oBtn // := SetOwnBtnSelected()
+   /*
    IF oBtn != Nil .AND. !oBtn:lPress .AND. oBtn:classname =="HOwnButton"
       oBtn:state := OBTN_NORMAL
       InvalidateRect( oBtn:handle, 0 )
       PostMessage( oBtn:handle, WM_PAINT, 0, 0 )
       SetOwnBtnSelected( Nil )
    ENDIF
+   */
 
    IF oBtn == Nil
       oBtn := SetNiceBtnSelected()

@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.3 2004-05-17 10:17:54 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.4 2004-05-28 06:24:45 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -16,7 +16,6 @@
 CLASS HOwnButton INHERIT HControl
 
    DATA winclass   INIT "OWNBTN"
-   CLASSDATA oSelected   INIT Nil
    DATA lFlat
    DATA state
    DATA bClick
@@ -192,26 +191,27 @@ Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
 Return Nil
 
 METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
-Local aCoors, xPos, yPos, otmp
+Local xPos, yPos, otmp
 Local res := .F.
 
    IF ::lFlat .AND. ::state != OBTN_INIT
-      otmp := SetOwnBtnSelected()
-      IF otmp != Nil .AND. otmp:id != ::id .AND. !oTmp:lPress
-         otmp:state := OBTN_NORMAL
-         InvalidateRect( otmp:handle, 0 )
-         PostMessage( otmp:handle, WM_PAINT, 0, 0 )
-         SetOwnBtnSelected( Nil )
-      ENDIF
-      aCoors := GetClientRect( ::handle )
       xPos := LoWord( lParam )
       yPos := HiWord( lParam )
-      IF ::state == OBTN_NORMAL
-         ::state := OBTN_MOUSOVER
-         // aBtn[ CTRL_HANDLE ] := hBtn
+      IF xPos > ::nWidth .OR. yPos > ::nHeight
+         ReleaseCapture()
+         res := .T.
+      ENDIF
+
+      IF res .AND. !::lPress
+         ::state := OBTN_NORMAL
          InvalidateRect( ::handle, 0 )
          PostMessage( ::handle, WM_PAINT, 0, 0 )
-         SetOwnBtnSelected( Self )
+      ENDIF
+      IF ::state == OBTN_NORMAL .AND. !res
+         ::state := OBTN_MOUSOVER
+         InvalidateRect( ::handle, 0 )
+         PostMessage( ::handle, WM_PAINT, 0, 0 )
+         SetCapture( ::handle )
       ENDIF
    ENDIF
 Return Nil
@@ -221,7 +221,6 @@ METHOD MDown()  CLASS HOwnButton
       ::state := OBTN_PRESSED
       InvalidateRect( ::handle, 0 )
       PostMessage( ::handle, WM_PAINT, 0, 0 )
-      SetOwnBtnSelected( Self )
    ENDIF
 Return Nil
 
@@ -231,9 +230,6 @@ METHOD MUp() CLASS HOwnButton
          ::state := IIF( ::lFlat,OBTN_MOUSOVER,OBTN_NORMAL )
          InvalidateRect( ::handle, 0 )
          PostMessage( ::handle, WM_PAINT, 0, 0 )
-      ENDIF
-      IF !::lFlat
-         SetOwnBtnSelected( Nil )
       ENDIF
       IF ::bClick != Nil
          Eval( ::bClick, ::oParent, ::id )
@@ -258,14 +254,6 @@ METHOD End()  CLASS HOwnButton
       ::bitmap := Nil
    ENDIF
 Return Nil
-
-Function SetOwnBtnSelected( oBtn )
-Local otmp := HOwnButton():oSelected
-   IF Pcount() > 0
-      HOwnButton():oSelected := oBtn
-   ENDIF
-Return otmp
-
 
 FUNCTION OwnBtnProc( hBtn, msg, wParam, lParam )
 Local i, oBtn

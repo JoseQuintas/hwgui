@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.23 2004-05-23 01:19:11 marcosgambeta Exp $
+ *$Id: hwindow.prg,v 1.24 2004-05-28 06:24:45 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -675,13 +675,7 @@ Local iParHigh, iParLow, oWnd, oBtn, oitem, oCtrl
       ENDIF
       return 0
    elseif msg == WM_MOUSEMOVE
-      oBtn := SetOwnBtnSelected()
-      if oBtn != Nil
-         oBtn:state := OBTN_NORMAL
-         InvalidateRect( oBtn:handle, 0 )
-         PostMessage( oBtn:handle, WM_PAINT, 0, 0 )
-         SetOwnBtnSelected( Nil )
-      endif
+      DlgMouseMove()
    elseif msg == WM_PAINT
       if oWnd:bPaint != Nil
          Eval( oWnd:bPaint, oWnd )

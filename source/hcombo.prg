@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.16 2004-11-11 08:37:12 alkresin Exp $
+ * $Id: hcombo.prg,v 1.17 2004-11-16 16:45:36 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -31,23 +31,22 @@ CLASS HComboBox INHERIT HControl
    DATA  aItems
    DATA  bSetGet
    DATA  bValid   INIT {||.T.}
-   DATA  bWhen
    DATA  value    INIT 1
    DATA  bChangeSel
    DATA  lText    INIT .F.
    DATA  lEdit    INIT .F.
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  aItems,oFont,bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bWhen,tcolor,bcolor )
+                  aItems,oFont,bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bGFocus,tcolor,bcolor )
    METHOD Activate()
-   METHOD Redefine( oWnd,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bDraw,bChange,cToolt,bWhen )
+   METHOD Redefine( oWnd,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bDraw,bChange,cToolt,bGFocus )
    METHOD Init( aCombo, nCurrent )
    METHOD Refresh()     
    METHOD Setitem( nPos )        
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,oFont, ;
-                  bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bWhen,tcolor,bcolor ) CLASS HComboBox
+                  bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bGFocus,tcolor,bcolor ) CLASS HComboBox
 
    if lEdit == Nil; lEdit := .f.; endif
    if lText == Nil; lText := .f.; endif
@@ -75,20 +74,20 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
-      ::bwhen := bWhen
+      ::bGetFocus  := bGFocus
       ::oParent:AddEvent( CBN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
       ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
    ELSEIF bChange != Nil
       ::oParent:AddEvent( CBN_SELCHANGE,::id,bChange )
    ENDIF
    
-   if ::lEdit
+   IF ::lEdit
       ::oParent:AddEvent( CBN_KILLFOCUS,::id,{|o,id|__KillFocus(o:FindControl(id))} )
-   endif
+   ENDIF
 
-   if bWhen != NIL
+   IF bGFocus != Nil .AND. bSetGet == Nil
       ::oParent:AddEvent( CBN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
-   endif
+   ENDIF
 
 Return Self
 
@@ -101,7 +100,7 @@ METHOD Activate CLASS HComboBox
 Return Nil
 
 METHOD Redefine( oWndParent,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bPaint, ;
-                  bChange,cToolt,bWhen ) CLASS HComboBox
+                  bChange,cToolt,bGFocus ) CLASS HComboBox
 
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit,bSize,bPaint,ctoolt )
    
@@ -230,8 +229,8 @@ Local res
 
    oCtrl:Refresh()
 
-   IF oCtrl:bWhen != Nil 
-      res := Eval( oCtrl:bWhen, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
+   IF oCtrl:bGetFocus != Nil 
+      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
       IF !res
          GetSkip( oCtrl:oParent,oCtrl:handle,1 )
       ENDIF

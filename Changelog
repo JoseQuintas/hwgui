@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.299 2004-11-16 15:57:22 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.300 2004-11-16 16:45:33 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-11-16 19:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hcheck.prg
+  * source/hcombo.prg
+    * The bWhen variable has been removed - the bGetFocus is used instead.
 
 2004-11-16 14-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/printdos.prg

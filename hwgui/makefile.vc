@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.3 2003-12-01 12:57:38 lculik Exp $
+# $Id: makefile.vc,v 1.4 2004-03-18 11:19:12 alkresin Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -13,6 +13,7 @@ SRC_DIR = source
 all: \
    $(LIB_DIR)\hwgui.lib \
    $(LIB_DIR)\procmisc.lib \
+   $(LIB_DIR)\hbxml.lib \
    $(LIB_DIR)\hwg_qhtm.lib
 
 $(LIB_DIR)\hwgui.lib :   \
@@ -223,6 +224,18 @@ $(OBJ_DIR)\hqhtm.c    : $(SRC_DIR)\qhtm\hqhtm.prg
 
 $(OBJ_DIR)\hqhtm.obj  : $(OBJ_DIR)\hqhtm.c
 $(OBJ_DIR)\hwg_qhtm.obj  : $(SRC_DIR)\qhtm\hwg_qhtm.c
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
+
+$(LIB_DIR)\hbxml.lib : \
+   $(OBJ_DIR)\hxmldoc.obj \
+   $(OBJ_DIR)\xmlparse.obj
+  lib /out:$@ $**
+
+$(OBJ_DIR)\hxmldoc.c    : $(SRC_DIR)\xml\hxmldoc.prg
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+
+$(OBJ_DIR)\hxmldoc.obj  : $(OBJ_DIR)\hxmldoc.c
+$(OBJ_DIR)\xmlparse.obj  : $(SRC_DIR)\xml\xmlparse.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
 
 .prg.c:

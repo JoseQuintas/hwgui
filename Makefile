@@ -1,4 +1,5 @@
-ROOT=./
+ROOT=../../
+
 DIRS=\
 	source \
 	source/procmisc \

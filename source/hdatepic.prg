@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.6 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: hdatepic.prg,v 1.7 2004-03-17 10:52:39 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -38,7 +38,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    ::id      := Iif( nId==Nil,::NewId(), nId )
    ::value   := Iif( vari==Nil .OR. Valtype(vari)!="D",CTOD(SPACE(8)),vari )
    ::bSetGet := bSetGet
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE )
+   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP )
    ::oFont   := oFont
    ::nLeft   := nLeft
    ::nTop    := nTop
@@ -69,7 +69,7 @@ Return Self
 METHOD Activate CLASS HDatePicker
    IF ::oParent:handle != 0
       ::handle := CreateDatePicker( ::oParent:handle, ::id, ;
-                  ::nLeft, ::nTop, ::nWidth, ::nHeight )
+                  ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
       ::Init()
    ENDIF
 Return Nil

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.330 2005-01-05 16:03:36 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.331 2005-01-05 16:51:42 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-01-05 14-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/window.c
+  * source/dialog.c
+  * source/control.c
+  * source/nice.c
+  * source/richedit.c
+    Replace function hb_stackReturn by hb_stackReturnItem for xHarbour
+    in Harbour continue using hb_stackReturn
+  
 2004-01-05 14-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/xml/xmlparce.c
     #Adapted for use in xHarbour because replace function in xHarbour

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.24 2004-12-01 10:24:25 alkresin Exp $
+ * $Id: control.c,v 1.25 2005-01-05 16:51:44 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1102,7 +1102,11 @@ LRESULT CALLBACK WinCtrlProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
+#ifdef __XHARBOUR__
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
       hb_itemRelease( pObject );
       if( res == -1 )
          return( DefWindowProc( hWnd, message, wParam, lParam ) );
@@ -1141,7 +1145,11 @@ LRESULT APIENTRY EditSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARA
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
+#ifdef __XHARBOUR__
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
       hb_itemRelease( pObject );
       if( res == -1 )
          return( CallWindowProc( wpOrigEditProc, hWnd, message, wParam, lParam ) );
@@ -1180,7 +1188,11 @@ LRESULT APIENTRY TrackSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
+#ifdef __XHARBOUR__
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
       hb_itemRelease( pObject );
       if( res == -1 )
          return( CallWindowProc( wpOrigTrackProc, hWnd, message, wParam, lParam ) );
@@ -1219,7 +1231,11 @@ LRESULT APIENTRY TabSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
+#ifdef __XHARBOUR__
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
       hb_itemRelease( pObject );
       if( res == -1 )
          return( CallWindowProc( wpOrigTabProc, hWnd, message, wParam, lParam ) );

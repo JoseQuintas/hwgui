@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.29 2004-12-01 10:24:25 alkresin Exp $
+ * $Id: window.c,v 1.30 2005-01-05 16:51:44 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -641,7 +641,11 @@ LRESULT CALLBACK MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
+#ifdef __XHARBOUR__
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
       hb_itemRelease( pObject );
       if( res == -1 )
          return( DefWindowProc( hWnd, message, wParam, lParam ) );
@@ -675,7 +679,11 @@ LRESULT CALLBACK FrameWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
+#ifdef __XHARBOUR__
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
       hb_itemRelease( pObject );
       if( res == -1 )
          return( DefFrameProc( hWnd, aWindows[ 1 ], message, wParam, lParam ) );
@@ -726,7 +734,11 @@ LRESULT CALLBACK MDIChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
+#ifdef __XHARBOUR__
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
       hb_itemRelease( pObject );
       if( res == -1 )
          return( DefMDIChildProc( hWnd, message, wParam, lParam ) );
@@ -749,7 +761,11 @@ PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
 
       hb_vmDo( 0 );
    }
+#ifdef __XHARBOUR__
+   return ( hb_stackReturnItem() );
+#else
    return ( hb_stackReturn() );
+#endif
 }
 
 void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )
@@ -779,6 +795,7 @@ PHB_ITEM hb_stackReturn( void )
    return &stack.Return;
 }
 #endif
+
 #endif
 
 HB_FUNC( HWG_DECREASEHOLDERS )

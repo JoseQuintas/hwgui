@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.11 2004-10-19 05:43:42 alkresin Exp $
+ *$Id: dialog.c,v 1.12 2005-01-05 16:51:44 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -548,7 +548,11 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
+#ifdef __XHARBOUR__
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
       hb_itemRelease( pObject );
       if( res == -1 )
          return FALSE;
@@ -568,7 +572,11 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
       hb_vmPushLong( (LONG) wParam );
       hb_vmPushLong( (LONG) lParam );
       hb_vmDo( 4 );  // where iArgCount is the number of pushed parameters
+#ifdef __XHARBOUR__
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
       if( res == -1 )
          return FALSE;
       else
@@ -637,7 +645,11 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
+#ifdef __XHARBOUR__
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
       hb_itemRelease( pObject );
       if( res == -1 )
          return FALSE;
@@ -682,7 +694,11 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPushLong( (LONG) wParam );
       hb_vmPushLong( (LONG) lParam );
       hb_vmDo( 4 );  // where iArgCount is the number of pushed parameters
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() ); 
+#ifdef __XHARBOUR__
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
       if( res == -1 )
          return FALSE;
       else
@@ -758,7 +774,11 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
+#ifdef __XHARBOUR__
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
       hb_itemRelease( pObject );
       if( res == -1 )
          return FALSE;
@@ -811,7 +831,11 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmDo( 4 );  // where iArgCount is the number of pushed parameters
+#ifdef __XHARBOUR__
+      return hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+#else
       return hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+#endif
     }
     else
        return FALSE;

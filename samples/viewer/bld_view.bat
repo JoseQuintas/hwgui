@@ -22,11 +22,9 @@ echo %HRB_DIR%\lib\lang.lib + >> b32.bc
 echo %HRB_DIR%\lib\macro.lib + >> b32.bc
 echo %HRB_DIR%\lib\rdd.lib + >> b32.bc
 echo %HRB_DIR%\lib\dbfntx.lib + >> b32.bc
-echo %HRB_DIR%\lib\dbfcdx.lib + >> b32.bc
+echo %HRB_DIR%\lib\dbfdbt.lib + >> b32.bc
 echo %HRB_DIR%\lib\common.lib + >> b32.bc
-rem echo %HRB_DIR%\lib\debug.lib + >> b32.bc
 echo %HRB_DIR%\lib\pp.lib + >> b32.bc
-echo %HRB_DIR%\lib\libct.lib + >> b32.bc
 
 echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc

@@ -1,15 +1,21 @@
 /*
- *$Id: guilib.ch,v 1.4 2003-12-29 20:20:43 lculik Exp $
+ *$Id: guilib.ch,v 1.5 2003-12-30 01:57:59 lculik Exp $
  */
 
 #include "guilib.h"
+
+// Acrescentado por jamaj
+#ifndef WINCOMMCTRLAPI
+#include "commctrl.ch"
+#endif
+
 
 // Commands for windows, dialogs handling
 // Alterado por jamaj - CHILD window clause
 #xcommand INIT WINDOW <oWnd>                ;
              [ MAIN ]                       ;
              [<lMdi: MDI>]                  ;
-             [<lChild: MDICHILD>]           ;
+             [<lMdiChild: MDICHILD>]           ;
              [<lChild: CHILD>]        ;
              [ APPNAME <appname> ]          ;
              [ TITLE <cTitle> ]             ;
@@ -30,7 +36,7 @@
              [ ON OTHER MESSAGES <bOther> ] ;
              [ ON EXIT <bExit> ]            ;
           => ;
-   <oWnd> := HWindow():New( Iif(<.lMdi.>,WND_MDI,Iif(<.lChild.>,WND_CHILD,WND_MAIN)), ;
+   <oWnd> := HWindow():New( Iif(<.lMdi.>,WND_MDI,Iif(<.lMdiChild.>,WND_MDICHILD, Iif(<.lChild.>,WND_CHILD,WND_MAIN) )), ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>, ;
                    <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp> )

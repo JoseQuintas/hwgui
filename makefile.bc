@@ -25,6 +25,7 @@ H_DEFINES=
 all: \
    $(LIB_DIR)\hwgui.lib \
    $(LIB_DIR)\procmisc.lib \
+   $(LIB_DIR)\hbxml.lib \
    $(LIB_DIR)\hwg_qhtm.lib
 
 $(LIB_DIR)\hwgui.lib :   \
@@ -91,6 +92,10 @@ $(LIB_DIR)\procmisc.lib : \
 $(LIB_DIR)\hwg_qhtm.lib : \
    $(OBJ_DIR)\hwg_qhtm.obj \
    $(OBJ_DIR)\hqhtm.obj
+
+$(LIB_DIR)\hbxml.lib :   \
+   $(OBJ_DIR)\hxmldoc.obj    \
+   $(OBJ_DIR)\xmlparse.obj
 
 $(OBJ_DIR)\drawwidg.c   : $(SRC_DIR)\drawwidg.prg
 $(OBJ_DIR)\errorsys.c   : $(SRC_DIR)\errorsys.prg
@@ -207,6 +212,14 @@ $(OBJ_DIR)\hwg_qhtm.obj  : $(SRC_DIR)\qhtm\hwg_qhtm.c
 $(OBJ_DIR)\hqhtm.obj  : $(OBJ_DIR)\hqhtm.c
   bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
   tlib $(LIB_DIR)\hwg_qhtm.lib -+$@,,
+
+$(OBJ_DIR)\hxmldoc.c    : $(SRC_DIR)\xml\hxmldoc.prg
+$(OBJ_DIR)\hxmldoc.obj  : $(OBJ_DIR)\hxmldoc.c
+  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
+  tlib $(LIB_DIR)\hbxml.lib -+$@,,
+$(OBJ_DIR)\xmlparse.obj : $(SRC_DIR)\xml\xmlparse.c
+  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
+  tlib $(LIB_DIR)\hbxml.lib -+$@,,
 
 .c.obj:
   bcc32 -c $(C_DEFINES)  -O2 -tW -tWM -d -a8 -OS -5 -6 -I$(INCLUDE_DIR) -o$@ $<

@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.7 2004-11-26 12:34:24 alkresin Exp $
+ * $Id: xmlparse.c,v 1.8 2005-01-05 16:03:42 sandrorrfreire Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -33,7 +33,7 @@
 #define HBXML_TYPE_COMMENT        2
 #define HBXML_TYPE_CDATA          3
 #define HBXML_TYPE_PI             4
-
+ 
 static unsigned char * cBuffer;
 static int nParseError;
 static ULONG  ulOffset;
@@ -252,11 +252,19 @@ PHB_ITEM hbxml_addnode( PHB_ITEM pParent )
    hb_vmPushNil();
    hb_vmDo( 0 );
 
+#ifdef __XHARBOUR__
+   hb_objSendMsg( hb_stackReturnItem(), "NEW", 0 );
+   hb_itemCopy( pNode, hb_stackReturnItem() );
+
+   hb_objSendMsg( pParent, "AITEMS", 0 );
+   hb_arrayAdd( hb_stackReturnItem(), pNode );
+#else
    hb_objSendMsg( hb_stackReturn(), "NEW", 0 );
    hb_itemCopy( pNode, hb_stackReturn() );
 
    hb_objSendMsg( pParent, "AITEMS", 0 );
    hb_arrayAdd( hb_stackReturn(), pNode );
+#endif
 
    return pNode;
 }
@@ -281,7 +289,11 @@ BOOL hbxml_readComment( PHB_ITEM pParent, unsigned char ** pBuffer )
    {
       pTemp = hb_itemPutCL( NULL, (char*)ptr, *pBuffer-ptr );
       hb_objSendMsg( pNode, "AITEMS", 0 );
+#ifdef __XHARBOUR__
+      hb_arrayAdd( hb_stackReturnItem(), pTemp );
+#else
       hb_arrayAdd( hb_stackReturn(), pTemp );
+#endif
       hb_itemRelease( pTemp );
 
       (*pBuffer) += 3;
@@ -313,7 +325,11 @@ BOOL hbxml_readCDATA( PHB_ITEM pParent, unsigned char ** pBuffer )
    {
       pTemp = hb_itemPutCL( NULL, (char*)ptr, *pBuffer-ptr );
       hb_objSendMsg( pNode, "AITEMS", 0 );
+#ifdef __XHARBOUR__
+      hb_arrayAdd( hb_stackReturnItem(), pTemp );
+#else
       hb_arrayAdd( hb_stackReturn(), pTemp );
+#endif
       hb_itemRelease( pTemp );
 
       (*pBuffer) += 3;
@@ -382,7 +398,11 @@ BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char ** pBuffer )
          {
             pTemp = hbxml_pp( ptr, *pBuffer-ptr );
             hb_objSendMsg( pNode, "AITEMS", 0 );
+#ifdef __XHARBOUR__
+            hb_arrayAdd( hb_stackReturnItem(), pTemp );
+#else
             hb_arrayAdd( hb_stackReturn(), pTemp );
+#endif
             hb_itemRelease( pTemp );
          }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.51 2004-03-22 09:56:50 alkresin Exp $
+ * $Id: Changelog,v 1.52 2004-03-22 21:15:01 rodrigo_moreno Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,25 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-03-22 18-30 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
+  * hdialog.prg
+    + Add DlgHelp event handler for help
+  * hwindow.prg
+    + Add HelpId property
+    * Changed HWindow:New() to set the Help File Name
+  * guimain.prg
+    + Add New Function SetHelpFileName() to handle help filename
+  * include/guilib.ch
+    + Changed init window, add suport for Help Filename
+  * include/windows.ch
+    + add WM_HELP definition
+  * misc.c
+    + Gethelpdata()
+    + WinHelp()
+  + samples/helpdemo.prg
+  + samples/helpdemo.cnt
+  + samples/helpdemo.hlp
+    
 2004-03-22 13:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/guilib.ch
     + New command has been added to define accelerators independently of

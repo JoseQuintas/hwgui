@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.17 2004-03-22 09:56:54 alkresin Exp $
+ *$Id: guilib.ch,v 1.18 2004-03-22 21:15:03 rodrigo_moreno Exp $
  */
 
 #include "guilib.h"
@@ -30,11 +30,12 @@
              [ ON OTHER MESSAGES <bOther> ] ;
              [ ON EXIT <bExit> ]            ;
              [<lMaximize: MAXIMIZE>]        ;
+             [ HELP <cHelp> ]               ;
           => ;
    <oWnd> := HWindow():New( Iif(<.lMdi.>,WND_MDI,Iif(<.lMdiChild.>,WND_MDICHILD, Iif(<.lChild.>,WND_CHILD,WND_MAIN) )), ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>, ;
-                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>)
+                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>,<cHelp>)
 
 #xcommand INIT DIALOG <oDlg>                ;
              [<res: FROM RESOURCE>]         ;

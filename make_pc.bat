@@ -1,14 +1,14 @@
 @echo off
 
-rem $Id: make_pc.bat,v 1.1 2004-04-12 19:01:40 andijahja Exp $
+rem $Id: make_pc.bat,v 1.2 2004-11-16 12:26:44 sandrorrfreire Exp $
 rem
 rem Batch file for building under Pelles C
 rem
 rem Please modify environment accordingly
 rem
 
-SET POCCDIR=C:\XCC
-SET HARBOURDIR=D:\XHRB
+SET POCCDIR=%POCC%
+SET HARBOURDIR=%HB_PATH%
 SET _PATH=%PATH%
 SET PATH=%POCCDIR%\BIN;%HARBOURDIR%\BIN\XCC;%_PATH%
 
@@ -17,6 +17,7 @@ if "%1" == "CLEAN" goto CLEAN
 
 if not exist lib md lib
 if not exist obj md obj
+ 
 
 :BUILD
 

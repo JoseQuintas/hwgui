@@ -1,4 +1,4 @@
-# $Id: makefile.pc,v 1.7 2004-10-19 05:43:42 alkresin Exp $
+# $Id: makefile.pc,v 1.8 2004-11-16 12:26:44 sandrorrfreire Exp $
 # makefile for Pelles C 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -174,7 +174,7 @@ $(OBJ_DIR)\hcontrol.c : $(SRC_DIR)\hcontrol.prg
 $(OBJ_DIR)\hcontrol.obj : $(OBJ_DIR)\hcontrol.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
-   $(OBJ_DIR)\hwindow.c : $(SRC_DIR)\hcwindow.prg
+$(OBJ_DIR)\hcwindow.c  : $(SRC_DIR)\hcwindow.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hcwindow.obj : $(OBJ_DIR)\hcwindow.c

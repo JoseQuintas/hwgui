@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.24 2004-04-22 06:39:19 alkresin Exp $
+ *$Id: guilib.ch,v 1.25 2004-04-29 15:48:01 sandrorrfreire Exp $
  */
 
 #define	WND_MAIN		1
@@ -625,6 +625,7 @@
     <oGrid>:AddColumn( <cHeader>, <nWidth>, <nJusHead> )
 
 
+
 #xcommand @ <x>,<y> OWNERBUTTON [ <oOwnBtn> ]  ;
             [ OF <oWnd> ]             ;
             [ ID <nId> ]              ;
@@ -879,10 +880,12 @@
 
 #xcommand MENUITEM <item> [ ID <nId> ]    ;
             ACTION <act>                  ;
+            [ IMAGE <bmp> ]               ; //ADDED by Sandro Freire
+            [<res: FROM RESOURCE>]        ; //true use image from resource
             [ ACCELERATOR <flag>, <key> ] ;
             [<lDisabled: DISABLED>]       ;
           => ;
-    Hwg_DefineMenuItem( <item>, <nId>, <{act}>, <.lDisabled.>, <flag>, <key> )
+    Hwg_DefineMenuItem( <item>, <nId>, <{act}>, <.lDisabled.>, <flag>, <key>, <bmp>, <.res.>)
 
 #xcommand ACCELERATOR <flag>, <key>       ;
             [ ID <nId> ]                  ;

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.285 2004-10-22 13:21:17 alkresin Exp $
+ * $Id: Changelog,v 1.286 2004-10-25 06:26:52 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-10-25 10:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/menu_c.c
+    + New function has been added - GetMenuHandle( hWnd ), which returns the 
+      window's menu handle.
+    * Functions Checkmenuitem(hMenu), Ischeckedmenuitem(hMenu), Enablemenuitem(hMenu),
+      Isenabledmenuitem(hMenu) accepts now the menu handle as a parameter
 
 2004-10-22 17:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hedit.prg

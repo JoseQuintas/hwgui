@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.18 2004-07-13 19:55:40 marcosgambeta Exp $
+ * $Id: menu_c.c,v 1.19 2004-10-25 06:26:52 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -147,9 +147,15 @@ HB_FUNC( HWG__SETMENU )
    hb_retl( SetMenu( ( HWND ) hb_parnl( 1 ), ( HMENU ) hb_parnl( 2 ) ) );
 }
 
+HB_FUNC( GETMENUHANDLE )
+{
+   HWND handle = ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1):aWindows[0];
+   hb_retnl( (LONG) GetMenu( handle ) );
+}
+
 HB_FUNC( CHECKMENUITEM )
 {
-   HMENU hMenu = GetMenu( ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1):aWindows[0] );
+   HMENU hMenu = ( hb_pcount()>0 && !ISNIL(1) )? ((HMENU)hb_parnl(1)):GetMenu(aWindows[0]);
    UINT  uCheck = ( hb_pcount() < 3 || !ISLOG( 3 ) || hb_parl( 3 ) )? MF_CHECKED:MF_UNCHECKED;
 
    if( !hMenu )
@@ -166,7 +172,7 @@ HB_FUNC( CHECKMENUITEM )
 
 HB_FUNC( ISCHECKEDMENUITEM )
 {
-   HMENU hMenu = GetMenu( ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1):aWindows[0] );
+   HMENU hMenu = ( hb_pcount()>0 && !ISNIL(1) )? ((HMENU)hb_parnl(1)):GetMenu(aWindows[0]);
    UINT  uCheck;
 
    if( !hMenu )
@@ -184,8 +190,7 @@ HB_FUNC( ISCHECKEDMENUITEM )
 
 HB_FUNC( ENABLEMENUITEM )
 {
-   // HMENU hMenu = GetMenu( ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1):aWindows[0] );
-   HMENU hMenu = GetMenu( ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1) : aWindows[0] );
+   HMENU hMenu = ( hb_pcount()>0 && !ISNIL(1) )? ((HMENU)hb_parnl(1)) : GetMenu(aWindows[0]);
    UINT  uEnable = ( hb_pcount() < 3 || !ISLOG( 3 ) || hb_parl( 3 ) )? MF_ENABLED:MF_GRAYED;
    UINT  uFlag = ( hb_pcount() < 4 || !ISLOG( 4 ) || hb_parl( 4 ) )? MF_BYCOMMAND:MF_BYPOSITION;
 
@@ -206,7 +211,7 @@ HB_FUNC( ENABLEMENUITEM )
 
 HB_FUNC( ISENABLEDMENUITEM )
 {
-   HMENU hMenu = GetMenu( ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1):aWindows[0] );
+   HMENU hMenu = ( hb_pcount()>0 && !ISNIL(1) )? ((HMENU)hb_parnl(1)):GetMenu(aWindows[0]);
    UINT  uCheck;
    UINT  uFlag = ( hb_pcount() < 3 || !ISLOG( 3 ) || hb_parl( 3 ) )? MF_BYCOMMAND:MF_BYPOSITION;
 

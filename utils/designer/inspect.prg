@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.5 2004-06-13 14:48:32 alkresin Exp $
+ * $Id: inspect.prg,v 1.6 2004-06-21 11:20:13 alkresin Exp $
  *
  * Designer
  * Object Inspector
@@ -381,7 +381,9 @@ Local i, o
    IF oCombo:value > 0
       o := Iif( oCombo:value == 1, HFormGen():oDlgSelected:oParent, GetCtrlSelected( HFormGen():oDlgSelected ) )
       FOR i := 1 TO Len( o:aProp )
-         Aadd( aProp, { o:aProp[i,1], o:aProp[i,2] } )
+         IF Len( o:aProp[i] ) == 3
+            Aadd( aProp, { o:aProp[i,1], o:aProp[i,2] } )
+         ENDIF
       NEXT
       FOR i := 1 TO Len( o:aMethods )
          Aadd( aMethods, { o:aMethods[i,1], o:aMethods[i,2] } )

@@ -354,6 +354,23 @@
          <method name="onSize" />
          <method name="onTreeClick" />
       </widget>
+      <widget class="status" name="Status control" bmp="BMP_STATUS">
+         <paint>
+            <![CDATA[
+            DrawEdge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,10 )
+            ]]>
+         </paint>
+         <property name="Name" type="C" />
+         <property name="Font" type="O" />
+         <property name="aParts" type="A" />
+         <property name="Left" type="N" value="0" hidden=""/>
+         <property name="Top" type="N" value="0" hidden=""/>
+         <property name="Width" type="N" value="150" hidden=""/>
+         <property name="Height" type="N" value="22"  hidden=""/>
+         <property name="Adjust" type="C" value="Bottom" hidden=""/>
+         <method name="onInit" />
+         <method name="onSize" />
+      </widget>
    </set>
    <set name="HwGUI">
       <widget class="line" name="Line" bmp="BMP_HLINE">
@@ -533,6 +550,9 @@
       </property>
       <property name="Tabs">
          <code2><![CDATA[ Page_Upd(oCtrl,value) ]]></code2>
+      </property>
+      <property name="Adjust" array="None,Top,Bottom,Left,Right,Client">
+         <code2><![CDATA[ oCtrl:Adjust := Ascan({"None","Top","Bottom","Left","Right","Client"},value)-1 ]]></code2>
       </property>
    </data>
    <methods>

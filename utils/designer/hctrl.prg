@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.8 2004-06-20 18:47:15 alkresin Exp $
+ * $Id: hctrl.prg,v 1.9 2004-06-21 11:20:13 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -32,7 +32,7 @@ CLASS HControlGen INHERIT HControl
    DATA aMethods      INIT {}
    DATA aPaint, oBitmap
    DATA cCreate
-   DATA nAdjust       INIT 0
+   DATA Adjust       INIT 0
 
    METHOD New( oWndParent, xClass, aProp )
    METHOD Activate()
@@ -102,6 +102,9 @@ Private value, oCtrl := Self
             Aadd( ::aProp, { oXMLDesc:aItems[i]:GetAttribute( "name" ),  ;
                              xProperty, ;
                              oXMLDesc:aItems[i]:GetAttribute( "type" ) } )
+            IF oXMLDesc:aItems[i]:GetAttribute( "hidden" ) != Nil
+               Aadd( Atail( ::aProp ),.T. )
+            ENDIF
          ELSEIF oXMLDesc:aItems[i]:title == "method"
             Aadd( ::aMethods, { oXMLDesc:aItems[i]:GetAttribute( "name" ),"" } )
          ENDIF
@@ -131,6 +134,7 @@ Private value, oCtrl := Self
    ::title   := Iif( ::title==Nil,xClass,::title )
 
    ::bPaint  := {|o,lp|o:Paint(lp)}
+   ::bSize   := {|o,x,y|ctrlOnSize(o,x,y)}
    ::SetColor( ::tcolor,::bcolor )
 
    ::oParent:AddControl( Self )
@@ -138,6 +142,7 @@ Private value, oCtrl := Self
    ::oXMLDesc := oXMLDesc
 
    ::Activate()
+   ctrlOnSize( Self, ::oParent:nWidth, ::oParent:nHeight )
 
 Return Self
 
@@ -189,6 +194,16 @@ METHOD SetProp( xName,xValue )
 Return Nil
 
 // -----------------------------------------------
+
+Function ctrlOnSize( oCtrl, x, y )
+
+   IF oCtrl:Adjust == 2
+      oCtrl:Move( 0,y-oCtrl:nHeight,x )
+      oCtrl:SetProp( "Left","0" )
+      oCtrl:SetProp( "Top",Ltrim(Str( oCtrl:nTop )) )
+      oCtrl:SetProp( "Width",Ltrim(Str( oCtrl:nWidth )) )
+   ENDIF
+Return Nil
 
 Function CreateName( cPropertyName, oCtrl )
 Local i, j, aControls := oCtrl:oParent:aControls, arr := {}

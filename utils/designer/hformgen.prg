@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.12 2004-06-20 18:47:15 alkresin Exp $
+ * $Id: hformgen.prg,v 1.13 2004-06-21 11:20:13 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -730,15 +730,26 @@ Local oCtrl := GetCtrlSelected( oDlg ), resizeDirection, flag, i
    ENDIF
    IF oCtrl != Nil .AND. ;
         ( resizeDirection := CheckResize( oCtrl,xPos,yPos ) ) > 0
-      SetBDown( oCtrl,xPos,yPos,resizeDirection )
       IF resizeDirection == 1 .OR. resizeDirection == 3
-         Hwg_SetCursor( horzCursor )
+         i := Ascan( oCtrl:aProp,{|a|Lower(a[1])=="height"} )
+         IF i != 0 .AND. Len( oCtrl:aProp[i] ) == 3
+            SetBDown( oCtrl,xPos,yPos,resizeDirection )
+            Hwg_SetCursor( horzCursor )
+         ENDIF
       ELSEIF resizeDirection == 2 .OR. resizeDirection == 4
-         Hwg_SetCursor( vertCursor )
+         i := Ascan( oCtrl:aProp,{|a|Lower(a[1])=="width"} )
+         IF i != 0 .AND. Len( oCtrl:aProp[i] ) == 3
+            SetBDown( oCtrl,xPos,yPos,resizeDirection )
+            Hwg_SetCursor( vertCursor )
+         ENDIF
       ENDIF            
    ELSE
       IF ( oCtrl := CtrlByPos( oDlg,xPos,yPos ) ) != Nil
-         SetBDown( oCtrl,xPos,yPos,0 )
+         IF oCtrl:Adjust == 0
+            SetBDown( oCtrl,xPos,yPos,0 )
+         ELSE
+            SetCtrlSelected( oCtrl:oParent,oCtrl )
+         ENDIF
       ELSEIF ( oCtrl := GetCtrlSelected( oDlg ) ) != Nil
          SetCtrlSelected( oDlg )
       ENDIF

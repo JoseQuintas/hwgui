@@ -509,6 +509,7 @@ Local nError, nLineEr
             Return .F.
          ENDIF
       ENDIF
-      Return DoScript( aItem[ITEM_SCRIPT] )
+      DoScript( aItem[ITEM_SCRIPT] )
+      Return .T.
    ENDIF
 Return .T.

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.13 2004-06-20 18:47:15 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.14 2004-06-21 11:20:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -166,6 +166,7 @@ Private oDlg
           FONT oFont
       ::oDlg:lClipper := lClipper
       ::oDlg:lExitOnEnter := lExitOnEnter
+      ::oDlg:oParent  := Self
    ELSEIF nMode == 1
       INIT WINDOW ::oDlg MAIN TITLE cTitle    ;
           AT nLeft, nTop SIZE nWidth, nHeight ;
@@ -173,7 +174,6 @@ Private oDlg
    ENDIF
 
    oDlg := ::oDlg
-   ::oDlg:oParent  := Self
 
    FOR i := 1 TO Len( ::aMethods )
       IF ( cType := Valtype( ::aMethods[ i,2 ] ) ) == "B"
@@ -317,7 +317,8 @@ Local aClass := { "label", "button", "checkbox",                    ;
                   "bitmap","icon",                                  ;
                   "richedit","datepicker", "updown", "combobox",    ;
                   "line", "toolbar", "ownerbutton","browse",        ;
-                  "monthcalendar","trackbar","page", "tree" ;
+                  "monthcalendar","trackbar","page", "tree",        ;
+                  "status"                                          ;
                 }
 Local aCtrls := { ;
   "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctoolt,TextColor,BackColor,lTransp)", ;
@@ -340,13 +341,14 @@ Local aCtrls := { ;
   "HMonthCalendar():New(oPrnt,nId,dInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onChange,cToolt,lNoToday,lNoTodayCircle,lWeekNumbers)", ;
   "HTrackBar():New(oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,cToolt,onChange,nLower,nUpper,lVertical,TickStyle,TickMarks)", ;
   "HTab():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,Tabs,onChange,aImages,lResource)", ;
-  "HTree():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,TextColor,BackColor,aImages,lResource,lEditLabels,onClick)" ;
+  "HTree():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,TextColor,BackColor,aImages,lResource,lEditLabels,onClick)", ;
+  "HStatus():New(oPrnt,nId,nStyle,oFont,aParts,onInit,onSize)" ;
                 }
 Local i, j, oCtrl, stroka, varname, xProperty, block, cType, cPName
 Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName
 MEMVAR oPrnt, nStyle, nLeft, nTop, nWidth, nHeight, oFont, lNoBorder, bSetGet
 MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs
-MEMVAR aImages, lEditLabels
+MEMVAR aImages, lEditLabels, aParts
 
    IF nCtrl == 0
       IF Lower( oCtrlTmpl:cClass ) == "pagesheet"
@@ -459,6 +461,12 @@ MEMVAR aImages, lEditLabels
          TickMarks := TBS_BOTH
       ELSE
          TickMarks := TBS_TOP
+      ENDIF
+   ELSEIF oCtrlTmpl:cClass == "status"
+      IF aParts != Nil
+         FOR i := 1 TO Len(aParts)
+            aParts[i] := Val(aParts[i])
+         NEXT
       ENDIF
    ENDIF
    oCtrl := &( aCtrls[nCtrl] )

@@ -1,8 +1,8 @@
 @echo off
 if "%1" == "clean" goto CLEAN
 if "%1" == "CLEAN" goto CLEAN
-if "%HB_PATH%" ==xharbour goto FLAG
-if "%HB_PATH%" ==XHARBOUR goto FLAG
+if "%HB_PATH%" ==c:\xharbour goto FLAG
+if "%HB_PATH%" ==C:\XHARBOUR goto FLAG
 if not exist lib md lib
 if not exist obj md obj
 

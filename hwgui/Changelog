@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.2 2003-11-15 08:34:32 alkresin Exp $
+ * $Id: Changelog,v 1.3 2003-11-30 17:42:35 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2003-11-30 20:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/hbrowse.prg
+     * Many additions, implemented by Pavel Tsarenko:
+       MouseWheel support;
+       DATA cGrid, lSpandHead, lSpandFoot has been added to HColumn class,
+       DATA lAdjRight, nHeadRows, nFootRows and METHOD FooterOut( hDC ) has 
+       been added to HBrowse class for multiline headers and footers support.
+     ! ButtonDown() fixed for ::freeze>0.        
 
 2003-11-15 11:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/hedit.prg

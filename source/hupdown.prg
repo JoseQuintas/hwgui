@@ -1,11 +1,11 @@
 /*
- * $Id: hupdown.prg,v 1.4 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hupdown.prg,v 1.5 2005-01-12 10:24:59 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -38,9 +38,10 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,   ;
          nUpDWidth,nLower,nUpper ) CLASS HUpDown
 
-   // ::classname:= "HUPDOWN"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_TABSTOP )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  bSize,bPaint,ctoolt,tcolor,bcolor )
+
    ::idUpDown := ::NewId()
    IF vari != Nil
       IF Valtype(vari) != "N"
@@ -50,24 +51,14 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ::title := Str(vari)
    ENDIF
    ::bSetGet := bSetGet
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP )
+
    ::styleUpDown := UDS_SETBUDDYINT+UDS_ALIGNRIGHT
-   ::oFont   := oFont
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
-   ::tooltip := ctoolt
+
    IF nLower != Nil ; ::nLower := nLower ; ENDIF
    IF nUpper != Nil ; ::nUpper := nUpper ; ENDIF
    IF nUpDWidth != Nil ; ::nUpDownWidth := nUpDWidth ; ENDIF
-   ::SetColor( tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
 
    ::Activate()
-   ::oParent:AddControl( Self )
 
    IF bSetGet != Nil
       ::bGetFocus := bGFocus

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.18 2004-07-18 14:24:16 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.19 2004-11-23 13:40:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -12,6 +12,8 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 #include "hxml.ch"
+
+#define  CONTROL_FIRST_ID   34000
 
 REQUEST HSTATIC
 REQUEST HBUTTON
@@ -37,11 +39,28 @@ REQUEST HANIMATION
 CLASS HCtrlTmpl
 
    DATA cClass
+   DATA oParent
+   DATA nId
    DATA aControls INIT {}
    DATA aProp, aMethods
 
-   METHOD New( oParent )   INLINE ( Aadd( oParent:aControls,Self ), Self )
+   METHOD New( oParent )   INLINE ( ::oParent:=oParent, Aadd( oParent:aControls,Self ), Self )
+   METHOD F( nId )
 ENDCLASS
+
+METHOD F( nId ) CLASS HCtrlTmpl
+Local i, aControls := ::aControls, nLen := Len( aControls ), o
+
+   FOR i := 1 TO nLen
+      IF aControls[i]:nId == nId
+         Return aControls[i]
+      ELSEIF !Empty( aControls[i]:aControls ) .AND. ( o := aControls[i]:F(nId) ) != Nil
+         Return o
+      ENDIF
+   NEXT
+
+Return Nil
+
 
 CLASS HFormTmpl
 
@@ -56,21 +75,22 @@ CLASS HFormTmpl
    DATA aFuncs
    DATA id
    DATA cId
-
+   DATA nContainer    INIT 0
+   DATA nCtrlId       INIT CONTROL_FIRST_ID
 
    METHOD Read( fname,cId )
    METHOD Show( nMode,params )
    METHOD ShowMain( params )   INLINE ::Show(1,params)
    METHOD ShowModal( params )  INLINE ::Show(2,params)
    METHOD Close()
-   METHOD F( id )
+   METHOD F( id,n )
    METHOD Find( cId )
 
 ENDCLASS
 
 METHOD Read( fname,cId ) CLASS HFormTmpl
 Local oDoc
-Local i, j, aItems, o, aProp := {}, aMethods := {}
+Local i, j, nCtrl := 0, aItems, o, aProp := {}, aMethods := {}
 Local cPre
 
    IF Left( fname,5 ) == "<?xml"
@@ -122,6 +142,8 @@ Local cPre
             NEXT
          ENDIF
       ELSEIF aItems[i]:title == "part"
+         nCtrl ++
+         ::nContainer := nCtrl
          ReadCtrl( aItems[i],Self,Self )
       ENDIF
    NEXT
@@ -211,8 +233,12 @@ Private oDlg
 
 Return Nil
 
-METHOD F( id ) CLASS HFormTmpl
+METHOD F( id,n ) CLASS HFormTmpl
 Local i := Ascan( ::aForms, {|o|o:id==id} )
+
+   IF i != 0 .AND. n != Nil
+      Return ::aForms[i]:aControls[n]
+   ENDIF
 Return Iif( i==0, Nil, ::aForms[i] )
 
 METHOD Find( cId ) CLASS HFormTmpl
@@ -283,10 +309,14 @@ Local arr := {}, nPos1, nPos2, cLine
 Return arr
 
 Static Function CompileMethod( cMethod, oForm, oCtrl )
-Local arr, arrExe
+Local arr, arrExe, nContainer := 0, cCode1, cCode
 
    IF cMethod = Nil .OR. Empty( cMethod )
       Return Nil
+   ENDIF
+   IF oCtrl != Nil .AND. Left( oCtrl:oParent:Classname(),2 ) == "HC"
+      // writelog( oCtrl:cClass+" "+oCtrl:oParent:cClass+" "+ oCtrl:oParent:oParent:Classname() )
+      nContainer := oForm:nContainer
    ENDIF
    arr := ParseMethod( cMethod )
    IF Len( arr ) == 1
@@ -295,24 +325,32 @@ Local arr, arrExe
       IF Len( arr ) == 2
          Return &( "{|" + Ltrim( Substr( arr[1],12 ) ) + "|" + __Preprocess( arr[2] ) + "}" )
       ELSE
+         cCode1 := Iif( nContainer==0, ;
+               "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]", ;
+               "F("+Ltrim(Str(oCtrl:nId))+")" )
          arrExe := Array(2)
          arrExe[2] := RdScript( ,cMethod,1 )
-         arrExe[1] := &( "{|" + Ltrim( Substr( arr[1],12 ) ) + ;
-            "|DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+"):" + ;
+         cCode :=  "{|" + Ltrim( Substr( arr[1],12 ) ) + ;
+            "|DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+Iif(nContainer!=0,","+Ltrim(Str(nContainer)),"")+"):" + ;
             Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2],{", ;
-                 "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]:aMethods["+ ;
+                   cCode1+":aMethods["+ ;
                    Ltrim(Str(Len(oCtrl:aMethods)+1))+",2,2],{" ) + ;
-                   Ltrim( Substr( arr[1],12 ) ) + "})" + "}" )
+                   Ltrim( Substr( arr[1],12 ) ) + "})" + "}" 
+         arrExe[1] := &cCode
          Return arrExe
       ENDIF
    ENDIF
 
+   cCode1 := Iif( nContainer==0, ;
+         "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]", ;
+         "F("+Ltrim(Str(oCtrl:nId))+")" )
    arrExe := Array(2)
    arrExe[2] := RdScript( ,cMethod )
-   arrExe[1] := &( "{||DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+"):" + ;
+   cCode :=  "{||DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+Iif(nContainer!=0,","+Ltrim(Str(nContainer)),"")+"):" + ;
       Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2])", ;
-           "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]:aMethods["+   ;
-             Ltrim(Str(Len(oCtrl:aMethods)+1))+",2,2])" ) + "}" )
+             cCode1+":aMethods["+   ;
+             Ltrim(Str(Len(oCtrl:aMethods)+1))+",2,2])" ) + "}" 
+   arrExe[1] := &cCode
 
 Return arrExe
 
@@ -320,8 +358,10 @@ Static Function ReadCtrl( oCtrlDesc, oContainer, oForm )
 Local oCtrl := HCtrlTmpl():New( oContainer )
 Local i, j, o, cName, aProp := {}, aMethods := {}, aItems := oCtrlDesc:aItems
 
-   oCtrl:cClass := oCtrlDesc:GetAttribute( "class" )
-   oCtrl:aProp := aProp
+   oCtrl:nId      := oForm:nCtrlId
+   oForm:nCtrlId ++
+   oCtrl:cClass   := oCtrlDesc:GetAttribute( "class" )
+   oCtrl:aProp    := aProp
    oCtrl:aMethods := aMethods
 
    FOR i := 1 TO Len( aItems )
@@ -431,17 +471,8 @@ MEMVAR aImages, lEditLabels, aParts
          ENDIF
       ENDDO
    ENDIF
-   /*
-   stroka := Substr( aCtrls[nCtrl],i+4 )
-   stroka := Left( stroka,Len(stroka)-1 )
-   DO WHILE !Empty( varName := getNextVar( @stroka ) )
-      __mvPrivate( varname )
-      IF Substr( varname, 2 ) == "InitValue"
-         cInitName  := varname
-      ENDIF
-   ENDDO
-   */
-   oPrnt := oParent
+   oPrnt  := oParent
+   nId    := oCtrlTmpl:nId
    nStyle := 0
 
    FOR i := 1 TO Len( oCtrlTmpl:aProp )

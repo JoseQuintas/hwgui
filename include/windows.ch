@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.14 2004-05-27 16:30:00 alkresin Exp $
+ *$Id: windows.ch,v 1.15 2004-06-15 11:48:26 alkresin Exp $
  */
 
 #define WM_CREATE                       1
@@ -101,6 +101,7 @@
 #define IDYES               6
 #define IDNO                7
 
+#define DS_ABSALIGN         1        // 0x01L
 #define DS_CENTER           2048     // 0x0800L
 
 /*
@@ -646,6 +647,8 @@
 #define FCONTROL  8   // 0x08
 #define FALT     16   // 0x10
 
+#define VK_BACK           0x08
+#define VK_TAB            0x09
 #define VK_SHIFT          0x10
 #define VK_CONTROL        0x11
 #define VK_MENU           0x12

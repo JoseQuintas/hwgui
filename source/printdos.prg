@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.13 2004-08-08 01:32:16 lculik Exp $
+ * $Id: printdos.prg,v 1.14 2004-08-11 18:13:12 sandrorrfreire Exp $
  *
  * CLASS PrintDos
  *
@@ -36,7 +36,10 @@ CLASS PrintDos
      DATA oAns2Oem              AS LOGIC
      DATA LastError 
      DATA oPrintStyle INIT 1 //1 = Matricial   2 = InkJet    3 = LaserJet
-     DATA colorPreview  
+     DATA colorPreview
+     DATA nStartPage init 1
+     DATA nEndPage init 0
+     DATA nCopy init 1
 
      METHOD New(oPorta) CONSTRUCTOR  
 
@@ -99,7 +102,7 @@ METHOD New(oPorta) CLASS PrintDos
              ::oPorta := oPtrName
           EndIf   
         ElseIf oPorta=="SELECT"
-          oPtrSetup:=PrintSetupDos()
+          oPtrSetup:=PrintSetupDos(@::nStartPage,@::nEndPage,@::nCopy)
           If oPtrSetup==Nil 
              MsgInfo("Error, file to:ERROR.TXT")
              ::oPorta :="Error.txt"

@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.15 2004-07-29 06:16:11 alkresin Exp $
+ * $Id: commond.c,v 1.16 2004-08-11 18:13:12 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -374,14 +374,19 @@ HB_FUNC( PRINTSETUPDOS )
    pd.lStructSize = sizeof(PRINTDLG); 
    pd.Flags = PD_RETURNDC; 
    pd.hwndOwner = GetActiveWindow();
-   pd.nFromPage = 1; 
-   pd.nToPage = 1; 
+   pd.nFromPage = 0xFFFF; 
+   pd.nToPage = 0xFFFF;
+   pd.nMinPage = 1;
+   pd.nMaxPage = 0xFFFF;
    pd.nCopies = 1; 
     
    if( PrintDlg(&pd) )
    	  {
    	  bPName = FALSE;
-      hb_retnl( (LONG) pd.hDC );
+          hb_stornl(pd.nFromPage,1);
+          hb_stornl(pd.nToPage,2);
+          hb_stornl(pd.nCopies,3);
+          hb_retnl( (LONG) pd.hDC );
       }
    else
       {

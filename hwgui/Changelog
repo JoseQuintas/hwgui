@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.27 2004-03-07 20:38:51 rodrigo_moreno Exp $
+ * $Id: Changelog,v 1.28 2004-03-08 16:41:10 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,24 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2004-03-08 08-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  + samples\hwedit\editor.prg
+  + samples\hwedit\hbtemp.c
+  + samples\hwedit\editor.rc
+  + samples\hwedit\editor.ico
+  + samples\hwedit\child.ico
+  + samples\hwedit\richedit.h
+  + samples\hwedit\ft_funcs.prg
+  + samples\hwedit\fclass1.prg
+  + samples\hwedit\ffile1.prg
+  + samples\hwedit\hbdocdef.ch
+  + samples\hwedit\ssay.ch
+  + samples\hwedit\config.dat
+  + samples\hwedit\changelog.txt
+  + samples\hwedit\pesqtxt.prg
+  + samples\hwedit\editor.bc
+      The editor of font using HwGUI
+    All provided by  Rodnei Hernandes Lino <lhr@enetec.com.br> 
 
 2004-03-07 17-50 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
   * source/hedit.prg

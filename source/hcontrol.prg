@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.10 2004-05-15 17:49:14 lculik Exp $
+ * $Id: hcontrol.prg,v 1.11 2004-06-11 06:15:09 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -330,8 +330,8 @@ METHOD New( oWndParent,nId,lVert,nLeft,nTop,nLength,bSize ) CLASS hline
    Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,,,,,bSize,{|o,lp|o:Paint(lp)} )
 
    ::title := ""
-   ::lVert := lVert
-   IF lVert
+   ::lVert := Iif( lVert==Nil, .F., lVert )
+   IF ::lVert
       ::nWidth  := 10
       ::nHeight := Iif( nLength==Nil,20,nLength )
    ELSE

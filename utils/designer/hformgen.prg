@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.5 2004-06-10 11:28:17 alkresin Exp $
+ * $Id: hformgen.prg,v 1.6 2004-06-11 06:15:09 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -830,8 +830,6 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp
          AdjustCtrl( oCtrl )
       ENDIF
    ENDIF
-   // SetFocus( oDlg:handle )
-   sendmessage(odlg:acontrols[1]:handle,WM_KILLFOCUS,oDlg:handle,0 )
 
 Return -1
 

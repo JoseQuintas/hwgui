@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.6 2004-06-10 11:28:17 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.7 2004-06-11 06:15:09 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -310,7 +310,7 @@ Local aCtrls := { ;
   "HLine():New(oPrnt,nId,lVertical,nLeft,nTop,nLength,onSize)", ;
   "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,lDocked )", ;
   "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,cTooltip)", ;
-  "Hbrowse():New(nType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg )", ;
+  "Hbrowse():New(BrwType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg )", ;
   "HMonthCalendar():New(oPrnt,nId,dInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onChange,cToolt,lNoToday,lNoTodayCircle,lWeekNumbers)", ;
   "HTrackBar():New(oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,cToolt,onChange,nLower,nUpper,lVertical,TickStyle,TickMarks )", ;
   "HTab():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,Tabs,onChange,aImages,lResource)" ;
@@ -414,7 +414,7 @@ MEMVAR name, nMaxLines, nLength, lVertical, nType, brwType, TickStyle, TickMarks
          nHeight := nHeight * 4
       ENDIF
    ELSEIF oCtrlTmpl:cClass == "line"
-      nLength := Iif( lVertical, nHeight, nWidth )
+      nLength := Iif( lVertical==Nil.OR.!lVertical, nWidth, nHeight )
    ELSEIF oCtrlTmpl:cClass == "browse"
       nType := Iif( brwType == "Dbf",BRW_DATABASE,BRW_ARRAY )
    ELSEIF oCtrlTmpl:cClass == "trackbar"

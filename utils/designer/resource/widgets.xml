@@ -127,7 +127,7 @@
       <widget class="group" name="Group box" bmp="BMP_GROUP">
          <paint>
             <![CDATA[
-            DrawEdge( hDC,3,6,oCtrl:nWidth-6,oCtrl:nHeight-9,6 )
+            DrawEdge( hDC,0,8,oCtrl:nWidth,oCtrl:nHeight,6 )
             DrawText( hDC,oCtrl:title,6,0,oCtrl:nWidth-9,oCtrl:nHeight )
             ]]>
          </paint>
@@ -143,7 +143,7 @@
       <widget class="radiogroup" name="Radio group" bmp="BMP_RGROUP">
          <paint>
             <![CDATA[
-            DrawEdge( hDC,3,6,oCtrl:nWidth-6,oCtrl:nHeight-9,6 )
+            DrawEdge( hDC,0,8,oCtrl:nWidth,oCtrl:nHeight,6 )
             DrawText( hDC,oCtrl:title,6,0,oCtrl:nWidth-9,oCtrl:nHeight )
             ]]>
          </paint>

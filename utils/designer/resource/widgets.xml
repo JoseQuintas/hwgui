@@ -477,6 +477,10 @@
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
+         <method name="onEnter" />
+         <method name="onGetFocus" />
+         <method name="onLostFocus" />
+         <method name="onUpdate" />
       </widget>
       <widget class="toolbar" name="Toolbar" bmp="BMP_PANEL"  container="Yes">
          <paint><![CDATA[

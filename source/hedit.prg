@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.18 2004-07-13 11:18:36 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.19 2004-07-18 14:24:16 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "hblang.ch"
 #include "guilib.ch"
 
@@ -33,7 +33,6 @@ CLASS HEdit INHERIT HControl
    METHOD Init()
    METHOD SetGet(value) INLINE Eval( ::bSetGet,value,self )
    METHOD Refresh() 
-   METHOD GetText()     
    METHOD SetText(c) 
 
 ENDCLASS
@@ -148,19 +147,21 @@ Local vari
 
 Return Nil
 
-METHOD GetText() CLASS hEdit
-Return alltrim(GetDlgItemText(::oParent:handle,::Id, 999999999999 ))
+METHOD SetText( c ) CLASS HEdit
 
-METHOD SetText(C) CLASS hEdit
-  if c<>Nil
-     ::title:=c
-     if ::bSetGet=Nil
-       ::Refresh()
-     else
-       Eval( ::bSetGet,c,self )
-       ::Refresh()
-     endif
-  endif
+  IF c != Nil
+
+     IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
+        ::title := Transform( c, ::cPicFunc + Iif(Empty(::cPicFunc),""," ") + ::cPicMask )
+     ELSE
+        ::title := c
+     ENDIF
+     Super:SetText()  
+     IF ::bSetGet != Nil
+       Eval( ::bSetGet, c, self )
+     ENDIF
+  ENDIF
+
 RETURN NIL
 
 Function DefEditProc( hEdit, msg, wParam, lParam )

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.17 2004-06-27 14:43:30 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.18 2004-07-18 14:24:16 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 #include "hxml.ch"
 
@@ -55,18 +55,20 @@ CLASS HFormTmpl
    DATA aNames        INIT {}
    DATA aFuncs
    DATA id
+   DATA cId
 
 
-   METHOD Read( fname )
-   METHOD Show()
-   METHOD ShowMain()   INLINE ::Show(1)
-   METHOD ShowModal()  INLINE ::Show(2)
+   METHOD Read( fname,cId )
+   METHOD Show( nMode,params )
+   METHOD ShowMain( params )   INLINE ::Show(1,params)
+   METHOD ShowModal( params )  INLINE ::Show(2,params)
    METHOD Close()
    METHOD F( id )
+   METHOD Find( cId )
 
 ENDCLASS
 
-METHOD Read( fname ) CLASS HFormTmpl
+METHOD Read( fname,cId ) CLASS HFormTmpl
 Local oDoc
 Local i, j, aItems, o, aProp := {}, aMethods := {}
 Local cPre
@@ -87,6 +89,7 @@ Local cPre
 
    ::maxId ++
    ::id := ::maxId
+   ::cId := cId
    ::aProp := aProp
    ::aMethods := aMethods
 
@@ -126,9 +129,10 @@ Local cPre
 
 Return Self
 
-METHOD Show( nMode ) CLASS HFormTmpl
+METHOD Show( nMode,p1,p2,p3 ) CLASS HFormTmpl
 Local i, j, cType
-Local nLeft, nTop, nWidth, nHeight, cTitle, oFont, lClipper := .F., lExitOnEnter := .F., xProperty, block, bFormExit
+Local nLeft, nTop, nWidth, nHeight, cTitle, oFont, lClipper := .F., lExitOnEnter := .F.
+Local xProperty, block, bFormExit
 Memvar oDlg
 Private oDlg
 
@@ -185,7 +189,7 @@ Private oDlg
       IF ::aMethods[ i,1 ] == "ondlginit"
          ::oDlg:bInit := block
       ELSEIF ::aMethods[ i,1 ] == "onforminit"
-         Eval( block,Self )
+         Eval( block,Self,p1,p2,p3 )
       ELSEIF ::aMethods[ i,1 ] == "onpaint"
          ::oDlg:bPaint := block
       ELSEIF ::aMethods[ i,1 ] == "ondlgexit"
@@ -202,13 +206,17 @@ Private oDlg
    ::oDlg:Activate()
 
    IF bFormExit != Nil
-      Eval( bFormExit )
+      Return Eval( bFormExit )
    ENDIF
 
 Return Nil
 
 METHOD F( id ) CLASS HFormTmpl
 Local i := Ascan( ::aForms, {|o|o:id==id} )
+Return Iif( i==0, Nil, ::aForms[i] )
+
+METHOD Find( cId ) CLASS HFormTmpl
+Local i := Ascan( ::aForms, {|o|o:cId!=Nil.and.o:cId==cId} )
 Return Iif( i==0, Nil, ::aForms[i] )
 
 METHOD Close() CLASS HFormTmpl
@@ -288,8 +296,13 @@ Local arr, arrExe
          Return &( "{|" + Ltrim( Substr( arr[1],12 ) ) + "|" + __Preprocess( arr[2] ) + "}" )
       ELSE
          arrExe := Array(2)
-         arrExe[1] := RdScript( ,cMethod,1 )
-         arrExe[2] := Ltrim( Substr( arr[1],12 ) )
+         arrExe[2] := RdScript( ,cMethod,1 )
+         arrExe[1] := &( "{|" + Ltrim( Substr( arr[1],12 ) ) + ;
+            "|DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+"):" + ;
+            Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2],{", ;
+                 "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]:aMethods["+ ;
+                   Ltrim(Str(Len(oCtrl:aMethods)+1))+",2,2],{" ) + ;
+                   Ltrim( Substr( arr[1],12 ) ) + "})" + "}" )
          Return arrExe
       ENDIF
    ENDIF
@@ -368,7 +381,7 @@ Local aCtrls := { ;
   "HLine():New(oPrnt,nId,lVertical,nLeft,nTop,nLength,onSize)", ;
   "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,lDocked)", ;
   "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,cTooltip)", ;
-  "Hbrowse():New(BrwType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg )", ;
+  "Hbrowse():New(BrwType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,onUpdate,onKeyDown,onPosChg )", ;
   "HMonthCalendar():New(oPrnt,nId,dInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onChange,cToolt,lNoToday,lNoTodayCircle,lWeekNumbers)", ;
   "HTrackBar():New(oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,cToolt,onChange,nLower,nUpper,lVertical,TickStyle,TickMarks)", ;
   "HTab():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,Tabs,onChange,aImages,lResource)", ;
@@ -379,7 +392,9 @@ Local aCtrls := { ;
                 }
 Local i, j, oCtrl, stroka, varname, xProperty, block, cType, cPName
 Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName
-MEMVAR oPrnt, nStyle, nLeft, nTop, nWidth, nHeight, oFont, lNoBorder, bSetGet
+MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop
+MEMVAR onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg
+MEMVAR nWidth, nHeight, oFont, lNoBorder, bSetGet
 MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs
 MEMVAR aImages, lEditLabels, aParts
 
@@ -395,7 +410,28 @@ MEMVAR aImages, lEditLabels, aParts
    ENDIF
 
    /* Declaring of variables, which are in the appropriate 'New()' function */
-   i := At( "New(", aCtrls[nCtrl] )
+   stroka := aCtrls[nCtrl]
+   IF ( i := At( "New(", stroka ) ) != 0
+      i += 4
+      DO WHILE .T.
+         IF ( j := At( ",",stroka,i ) ) != 0 .OR. ( j := At( ")",stroka,i ) ) != 0
+            IF j-i > 0
+               varname := Substr(stroka,i,j-i)
+               __mvPrivate( varname )
+               IF Substr( varname, 2 ) == "InitValue"
+                  cInitName  := varname
+               ENDIF
+               stroka := Left( stroka,i-1 ) + "m->" + Substr( stroka,i )
+               i := j+4
+            ELSE
+               i := j+1
+            ENDIF
+         ELSE
+            EXIT
+         ENDIF
+      ENDDO
+   ENDIF
+   /*
    stroka := Substr( aCtrls[nCtrl],i+4 )
    stroka := Left( stroka,Len(stroka)-1 )
    DO WHILE !Empty( varName := getNextVar( @stroka ) )
@@ -404,6 +440,7 @@ MEMVAR aImages, lEditLabels, aParts
          cInitName  := varname
       ENDIF
    ENDDO
+   */
    oPrnt := oParent
    nStyle := 0
 
@@ -504,7 +541,7 @@ MEMVAR aImages, lEditLabels, aParts
          NEXT
       ENDIF
    ENDIF
-   oCtrl := &( aCtrls[nCtrl] )
+   oCtrl := &stroka
    IF Type( "m->name" ) == "C"
       __mvPut( name, oCtrl )
    ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.221 2004-07-16 14:04:10 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.222 2004-07-18 14:24:15 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,30 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-07-18 18:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hfrmtmpl.prg
+    ! Some fixes; added possibility to pass parameters to the form and 
+      to get the result.
+  * source/hedit.prg
+    * Removed Gettext() method, because there is parent HControl():Gettext()
+      method, which does the same.
+      Fixed the Settext() method.
+  * source/htree.prg
+    * Added SetText() method.
+  * source/hownbtn.prg
+    ! Small fix
+  * source/richedit.c
+    ! RE_SETCHARFORMAT() is extended.
+  * utils/designer/designer.prg
+  * utils/designer/editor.prg
+  * utils/designer/hformgen.prg
+    ! Some fixes and additions
+  * utils/designer/resource/widgets.xml
+    * few methods added to the browse control.
+  * samples/a.prg
+    * Code to demonstrate the using of get items in the MDI CHILD window has
+      been added.
 
 2004-07-16 11-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * samples/bldpc.bat

@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.12 2004-07-05 19:24:37 sandrorrfreire Exp $
+ * $Id: hownbtn.prg,v 1.13 2004-07-18 14:24:16 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -10,7 +10,7 @@
 
 #include "windows.ch"
 #include "inkey.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 CLASS HOwnButton INHERIT HControl
@@ -296,7 +296,6 @@ Return Nil
 
 METHOD Disable() CLASS HOwnButton
 
-   ::lFlat   := .T.
    ::state   := OBTN_INIT
    ::lEnabled:=.F.
    InvalidateRect( ::handle, 0 )

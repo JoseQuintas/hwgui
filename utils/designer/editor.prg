@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.8 2004-07-05 17:33:45 alkresin Exp $
+ * $Id: editor.prg,v 1.9 2004-07-18 14:24:16 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -242,7 +242,7 @@ Local arrHi, oTheme := HDTheme():aThemes[HDTheme():nSelected]
    SendMessage( oEdit:handle, EM_SETEVENTMASK, 0, 0 )
    oEdit:SetText( cText )
    nTextLength := Len( cText )
-   re_SetDefault( oEdit:handle,oTheme:normal[1],,,oTheme:normal[3],oTheme:normal[4] )
+   re_SetDefault( oEdit:handle,oTheme:normal[1],,,oTheme:normal[3],oTheme:normal[4],,HDTheme():oFont:charset )
    SendMessage( oEdit:handle,EM_SETBKGNDCOLOR,0,oTheme:normal[2] )
    IF !Empty( arrHi := CreateHiLight( cText ) )
       /*

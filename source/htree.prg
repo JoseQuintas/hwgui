@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.5 2004-06-20 18:47:15 alkresin Exp $
+ * $Id: htree.prg,v 1.6 2004-07-18 14:24:16 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -62,6 +62,14 @@
 
 #define TVI_ROOT             (-65536)
 
+#define TREE_GETNOTIFY_HANDLE       1
+#define TREE_GETNOTIFY_PARAM        2
+#define TREE_GETNOTIFY_EDIT         3
+#define TREE_GETNOTIFY_EDITPARAM    4
+#define TREE_GETNOTIFY_ACTION       5
+
+#define TREE_SETITEM_TEXT           1
+
 CLASS HTreeNode INHERIT HObject
 
    DATA handle
@@ -75,6 +83,7 @@ CLASS HTreeNode INHERIT HObject
    METHOD Delete()
    METHOD FindChild( h )
    METHOD GetText()  INLINE TreeGetNodeText( ::oTree:handle,::handle )
+   METHOD SetText(cText) INLINE TreeSetItem( ::oTree:handle,::handle,TREE_SETITEM_TEXT,cText )
 
 ENDCLASS
 
@@ -292,14 +301,6 @@ METHOD Clean() CLASS HTree
    ::aItems := {}
 
 Return Nil
-
-#define TREE_GETNOTIFY_HANDLE       1
-#define TREE_GETNOTIFY_PARAM        2
-#define TREE_GETNOTIFY_EDIT         3
-#define TREE_GETNOTIFY_EDITPARAM    4
-#define TREE_GETNOTIFY_ACTION       5
-
-#define TREE_SETITEM_TEXT           1
 
 Function TreeNotify( oTree,lParam )
 Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct

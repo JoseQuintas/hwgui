@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.17 2004-07-05 17:33:45 alkresin Exp $
+ * $Id: hformgen.prg,v 1.18 2004-07-18 14:24:16 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -10,7 +10,7 @@
 
 #include "fileio.ch"
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 #include "hxml.ch"
 
@@ -49,6 +49,7 @@ CLASS HFormGen INHERIT HObject
 
    METHOD New() CONSTRUCTOR
    METHOD Open() CONSTRUCTOR
+   METHOD OpenR() CONSTRUCTOR
    METHOD Save( lAs )
    METHOD CreateDialog( aProp )
    METHOD GetProp( cName )
@@ -78,6 +79,19 @@ Local hDCwindow := GetDC( GetActiveWindow() ), aTermMetr := GetDeviceArea( hDCwi
    Aadd( ::aForms, Self )
 
 Return Self
+
+METHOD OpenR( fname )  CLASS HFormGen
+Local oForm := ::aForms[1]
+
+   IF !MsgYesNo( "The form will be opened INSTEAD of current ! Are you agree ?" )
+      Return Nil
+   ENDIF
+   oDesigner:lSingleForm := .F.
+   oForm:lChanged := .F.
+   oForm:End()
+   oDesigner:lSingleForm := .T.
+
+Return ::Open( fname )
 
 METHOD Open( fname,cForm )  CLASS HFormGen
 Local aFormats := oDesigner:aFormats
@@ -165,8 +179,8 @@ Private oForm := Self, aCtrlTable
       Return Nil
    ENDIF
 
-   IF oDesigner:lSingleForm .OR. ;
-         ( ( Empty( ::filename ) .OR. lAs ) .AND. FileDlg( Self,.F. ) ) .OR. !Empty( ::filename )
+   IF ( oDesigner:lSingleForm .AND. !lAs ) .OR. ;
+   ( ( Empty( ::filename ) .OR. lAs ) .AND. FileDlg( Self,.F. ) ) .OR. !Empty( ::filename )
       FrmSort( ::oDlg:aControls )
       IF ::type == 1
          aControls := WriteForm( Self )
@@ -185,7 +199,9 @@ Private oForm := Self, aCtrlTable
          ENDIF
       ENDIF
    ENDIF
-   ::lChanged := .F.
+   IF !lAs
+      ::lChanged := .F.
+   ENDIF
 
 RETURN Nil
 
@@ -311,7 +327,7 @@ Return Iif( i == 0, Nil, Iif( l2,aCtrlTable[i,1],aCtrlTable[i,2] ) )
 Static Function FileDlg( oFrm,lOpen )
 Local oDlg, aFormats := oDesigner:aFormats
 Local aCombo := {}, af := {}, oEdit1, oEdit2
-Local nType := 1, fname := Iif( lOpen,"",oFrm:filename )
+Local nType := 1, fname := Iif( lOpen.OR.oFrm:filename==Nil,"",oFrm:filename )
 Local formname := Iif( lOpen,"",oFrm:name )
 Local i
 
@@ -330,7 +346,7 @@ Local i
        AT 50, 100 SIZE 310,250 FONT oDesigner:oMainWnd:oFont
 
    @ 10,20 GET COMBOBOX nType ITEMS aCombo SIZE 140, 150 ;
-       ON CHANGE {||Iif(lOpen,.F.,(fname:=CutExten(fname)+"."+aFormats[af[nType],2],oEdit1:Refresh()))}
+       ON CHANGE {||Iif(lOpen,.F.,(fname:=CutExten(fname)+Iif(!Empty(fname),"."+aFormats[af[nType],2],""),oEdit1:Refresh()))}
 
    @ 10,70 GET oEdit1 VAR fname  ;
         STYLE ES_AUTOHSCROLL      ;

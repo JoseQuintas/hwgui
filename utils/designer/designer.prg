@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.9 2004-07-05 17:33:45 alkresin Exp $
+ * $Id: designer.prg,v 1.10 2004-07-18 14:24:16 alkresin Exp $
  *
  * Designer
  * Main file
@@ -10,7 +10,7 @@
 
 #include "windows.ch"
 #include "guilib.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 
 REQUEST DRAWEDGE
 REQUEST DRAWICON
@@ -72,8 +72,12 @@ Public ds_myPath
             MENUITEM "&Save Form"   ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(),MsgStop("No Form in use!"))
             MENUITEM "&Save as ..." ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(.T.),MsgStop("No Form in use!"))
             MENUITEM "&Close Form"  ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:End(),MsgStop("No Form in use!"))
+         ELSE
+            MENUITEM "&Open Form" ACTION HFormGen():OpenR()
             SEPARATOR
-         ENDIF
+            MENUITEM "&Save as ..." ACTION ( oDesigner:lSingleForm:=.F.,HFormGen():oDlgSelected:oParent:Save(.T.),oDesigner:lSingleForm:=.T. )
+         ENDIF        
+         SEPARATOR
          MENUITEM "&Exit" ACTION oDesigner:oMainWnd:Close()
       ENDMENU
       MENU TITLE "&Edit"

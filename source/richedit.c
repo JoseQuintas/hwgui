@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.9 2004-07-13 19:55:40 marcosgambeta Exp $
+ * $Id: richedit.c,v 1.10 2004-07-18 14:24:16 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -70,9 +70,9 @@ HB_FUNC( CREATERICHEDIT )
 }
 
 /*
- * re_SetCharFormat( hCtrl, n1, n2, nColor, cName, nHeight, lBold, lItalic, lUnderline )
+ * re_SetCharFormat( hCtrl, n1, n2, nColor, cName, nHeight, lBold, lItalic, lUnderline, nCharset )
  */
-HB_FUNC( RE_SETCHARFORMAT )
+HB_FUNC ( RE_SETCHARFORMAT )
 {
    HWND hCtrl = (HWND) hb_parnl(1);
    CHARRANGE chrOld, chrNew;
@@ -101,27 +101,32 @@ HB_FUNC( RE_SETCHARFORMAT )
             cf.crTextColor = (COLORREF) hb_itemGetNL( pArr1->item.asArray.value->pItems + 2 );
             cf.dwMask |= CFM_COLOR;
          }
-         if( ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 3) )->type != HB_IT_NIL )
+         if( pArr1->item.asArray.value->ulLen > 3 && ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 3) )->type != HB_IT_NIL )
          {
             strcpy( cf.szFaceName, hb_itemGetCPtr( pArr1->item.asArray.value->pItems + 3 ) );
             cf.dwMask |= CFM_FACE;
          }
-         if( ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 4) )->type != HB_IT_NIL )
+         if( pArr1->item.asArray.value->ulLen > 4 && ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 4) )->type != HB_IT_NIL )
          {
             cf.yHeight = hb_itemGetNL( pArr1->item.asArray.value->pItems + 4 );
             cf.dwMask |= CFM_SIZE;
          }
-         if( ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 5) )->type != HB_IT_NIL && hb_itemGetL( pArr1->item.asArray.value->pItems + 5 ) )
+         if( pArr1->item.asArray.value->ulLen > 5 && ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 5) )->type != HB_IT_NIL && hb_itemGetL( pArr1->item.asArray.value->pItems + 5 ) )
          {
             cf.dwEffects |= CFE_BOLD;
          }
-         if( ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 6) )->type != HB_IT_NIL && hb_itemGetL( pArr1->item.asArray.value->pItems + 6 ) )
+         if( pArr1->item.asArray.value->ulLen > 6 && ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 6) )->type != HB_IT_NIL && hb_itemGetL( pArr1->item.asArray.value->pItems + 6 ) )
          {
             cf.dwEffects |= CFE_ITALIC;
          }
-         if( ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 7) )->type != HB_IT_NIL && hb_itemGetL( pArr1->item.asArray.value->pItems + 7 ) )
+         if( pArr1->item.asArray.value->ulLen > 7 && ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 7) )->type != HB_IT_NIL && hb_itemGetL( pArr1->item.asArray.value->pItems + 7 ) )
          {
             cf.dwEffects |= CFE_UNDERLINE;
+         }
+         if( pArr1->item.asArray.value->ulLen > 8 && ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 8) )->type != HB_IT_NIL )
+         {
+            cf.bCharSet = hb_itemGetNL( pArr1->item.asArray.value->pItems + 8 );
+            cf.dwMask |= CFM_CHARSET;
          }
          cf.dwMask |= ( CFM_BOLD | CFM_ITALIC | CFM_UNDERLINE );
          SendMessage( hCtrl, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM) &cf );
@@ -166,6 +171,11 @@ HB_FUNC( RE_SETCHARFORMAT )
       {
          cf.dwEffects |= (hb_parl(9))? CFE_UNDERLINE:0;
          cf.dwMask |= CFM_UNDERLINE;
+      }
+      if( !ISNIL( 10 ) )
+      {
+         cf.bCharSet = hb_parnl( 10 );
+         cf.dwMask |= CFM_CHARSET;
       }
 
       SendMessage( hCtrl, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM) &cf );

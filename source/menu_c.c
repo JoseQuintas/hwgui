@@ -337,4 +337,19 @@ HB_FUNC( HWG__INSERTBITMAPMENU )
    else
       hb_retnl( 0 );
 }
- 
+
+HB_FUNC( CHANGEMENU )
+{
+   hb_retl( ChangeMenu( (HMENU) hb_parnl( 1 ), (UINT) hb_parni( 2 ) ,
+                        (LPCSTR) hb_parcx( 3 ),(UINT) hb_parni( 4 ) ,
+                        (UINT) hb_parni( 5 ) ) ) ;
+}
+
+HB_FUNC( MODIFYMENU )
+{
+   UINT_PTR uIDNewItem ;
+
+   hb_retl( ModifyMenu( (HMENU) hb_parnl( 1 ), (UINT) hb_parni( 2 ) ,
+                        (UINT) hb_parni( 3 ) ,  uIDNewItem          ,
+                        (LPCSTR) hb_parcx( 5 ) ) ) ;
+}  

@@ -1,5 +1,5 @@
 /*
- * $Id: hfreeimg.prg,v 1.3 2004-09-29 05:24:52 alkresin Exp $
+ * $Id: hfreeimg.prg,v 1.4 2004-11-23 07:25:05 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFreeImage - Image handling class
@@ -10,7 +10,7 @@
  *          Hervé Drolon (drolon@infonie.fr)
  *
  * Copyright 2003 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "hbclass.ch"
@@ -114,9 +114,14 @@ Return Nil
 
 CLASS HSayFImage INHERIT HSayImage
 
+   DATA nOffsetV  INIT 0
+   DATA nOffsetH  INIT 0
+   DATA nZoom
+
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,bInit, ;
                   bSize,ctoolt )
    METHOD Redefine( oWndParent,nId,Image,bInit,bSize,ctoolt )
+   METHOD ReplaceImage( Image )
    METHOD Paint( lpdis )
 
 ENDCLASS
@@ -124,15 +129,16 @@ ENDCLASS
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,bInit, ;
                   bSize,ctoolt ) CLASS HSayFImage
 
-   ::oImage := Iif( Valtype(Image) == "C", HFreeImage():AddFile( Image ), Image )
-   IF nWidth == Nil
-      nWidth  := ::oImage:nWidth
-      nHeight := ::oImage:nHeight
+   IF Image != Nil
+      ::oImage := Iif( Valtype(Image) == "C", HFreeImage():AddFile( Image ), Image )
+      IF nWidth == Nil
+         nWidth  := ::oImage:nWidth
+         nHeight := ::oImage:nHeight
+      ENDIF
    ENDIF
-   Super:New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctoolt )
+   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctoolt )
    // ::classname:= "HSAYFIMAGE"
 
-   ::style   += SS_OWNERDRAW
    ::bPaint  := {|o,lpdis|o:Paint(lpdis)}
 
    ::Activate()
@@ -150,11 +156,26 @@ METHOD Redefine( oWndParent,nId,Image,bInit,bSize,ctoolt ) CLASS HSayFImage
 
 Return Self
 
+METHOD ReplaceImage( Image )
+
+   IF ::oImage != Nil
+      ::oImage:Release()
+   ENDIF
+   ::oImage := Iif( Valtype(Image) == "C", HFreeImage():AddFile( Image ), Image )
+
+Return Nil
+
 METHOD Paint( lpdis ) CLASS HSayFImage
 Local drawInfo := GetDrawItemInfo( lpdis )
 Local hDC := drawInfo[3], x1 := drawInfo[4], y1 := drawInfo[5], x2 := drawInfo[6], y2 := drawInfo[7]
 
-   ::oImage:Draw( hDC, 0, 0, ::nWidth, ::nHeight )
+   IF ::oImage != Nil
+      IF ::nZoom == Nil
+         ::oImage:Draw( hDC, ::nOffsetH, ::nOffsetV, ::nWidth, ::nHeight )
+      ELSE
+         ::oImage:Draw( hDC, ::nOffsetH, ::nOffsetV, ::oImage:nWidth*::nZoom, ::oImage:nHeight*::nZoom )
+      ENDIF
+   ENDIF
 
 Return Self
 

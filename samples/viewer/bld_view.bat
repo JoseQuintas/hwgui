@@ -3,7 +3,7 @@
 set HRB_DIR=%HB_PATH%
 set HWGUI_INSTALL=..\..
 
-%HRB_DIR%\bin\harbour viewer.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour viewer.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include -d__FREEIMAGE__
 
 bcc32 -c -O2 -tW -M -I%HRB_DIR%\include;%HWGUI_INSTALL%\include viewer.c
 

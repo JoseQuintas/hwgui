@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.8 2004-11-19 08:32:12 alkresin Exp $
+ * $Id: hsayimg.prg,v 1.9 2004-11-23 07:25:05 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -60,6 +60,10 @@ Return Nil
 
 CLASS HSayBmp INHERIT HSayImage 
 
+   DATA nOffsetV  INIT 0
+   DATA nOffsetH  INIT 0
+   DATA nZoom
+
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
                   bSize,ctoolt )
    METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctoolt )
@@ -75,11 +79,13 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
 
    ::bPaint := {|o,lpdis|o:Paint(lpdis)}
 
-   IF lRes == Nil ; lRes := .F. ; ENDIF
-   ::oImage := Iif( lRes .OR. Valtype(Image)=="N",     ;
-                       HBitmap():AddResource( Image ), ;
-                       Iif( Valtype(Image) == "C",     ;
-                       HBitmap():AddFile( Image ), Image ) )
+   IF Image != Nil
+      IF lRes == Nil ; lRes := .F. ; ENDIF
+      ::oImage := Iif( lRes .OR. Valtype(Image)=="N",     ;
+                          HBitmap():AddResource( Image ), ;
+                          Iif( Valtype(Image) == "C",     ;
+                          HBitmap():AddFile( Image ), Image ) )
+   ENDIF
    ::Activate()
 
 Return Self
@@ -98,8 +104,15 @@ Return Self
 METHOD Paint( lpdis ) CLASS HSayBmp
 Local drawInfo := GetDrawItemInfo( lpdis )
 
-   DrawBitmap( drawInfo[3], ::oImage:handle,, drawInfo[4], drawInfo[5], ;
-               drawInfo[6]-drawInfo[4]+1, drawInfo[7]-drawInfo[5]+1 )
+   IF ::oImage != Nil
+      IF ::nZoom == Nil
+         DrawBitmap( drawInfo[3], ::oImage:handle,, drawInfo[4]+::nOffsetH, ;
+               drawInfo[5]+::nOffsetV, drawInfo[6]-drawInfo[4]+1, drawInfo[7]-drawInfo[5]+1 )
+      ELSE
+         DrawBitmap( drawInfo[3], ::oImage:handle,, drawInfo[4]+::nOffsetH, ;
+               drawInfo[5]+::nOffsetV, ::oImage:nWidth*::nZoom, ::oImage:nHeight*::nZoom )
+      ENDIF
+   ENDIF
 
 Return Nil
 
@@ -108,6 +121,7 @@ METHOD ReplaceBitmap( Image, lRes ) CLASS HSayBmp
    IF ::oImage != Nil
       ::oImage:Release()
    ENDIF
+   IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := Iif( lRes .OR. Valtype(Image)=="N",     ;
                        HBitmap():AddResource( Image ), ;
                        Iif( Valtype(Image) == "C",     ;

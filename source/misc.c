@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.8 2004-04-18 18:04:03 alkresin Exp $
+ * $Id: misc.c,v 1.9 2004-04-21 18:05:02 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -393,3 +393,18 @@ HB_FUNC ( WINHELP )
     hb_retni(WinHelp(( HWND )hb_parnl ( 1 ), (LPCTSTR)hb_parc( 2 ), style, context));
 }
 
+
+HB_FUNC( GETNEXTDLGTABITEM )
+{
+   /*
+   nextHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .t. )
+   
+   HWND GetNextDlgTabItem(HWND hDlg, HWND hCtl, BOOL bPrevious )
+   
+   hDlg - Handle to the dialog box to be searched. 
+   hCtl - Handle to the control to be used as the starting point for the search. If this parameter is NULL, the function uses the last (or first) control in the dialog box as the starting point for the search. 
+   bPrevious - Specifies how the function is to search the dialog box. If this parameter is TRUE, the function searches for the previous control in the dialog box. If this parameter is FALSE, the function searches for the next control in the dialog box. 
+   */
+   
+   hb_retnl( (LONG) GetNextDlgTabItem( (HWND) hb_parnl( 1 ), (HWND) hb_parnl( 2 ), hb_parl( 3 ) ) ) ;
+}

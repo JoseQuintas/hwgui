@@ -164,8 +164,9 @@ MISC.C
   Shellabout 
   Getdesktopwidth
   Getdesktopheight
-  Gethelpdata()
-  WinHelp()  
+  Gethelpdata
+  WinHelp
+  Getnextdlgtabitem( window handle, start point handle, bool, start from current control )
 
 WBROWSE.C:
   Setscrollinfo

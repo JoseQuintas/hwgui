@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.11 2004-02-25 12:17:15 lculik Exp $
+ *$Id: guilib.ch,v 1.12 2004-02-27 14:44:54 sandrorrfreire Exp $
  */
 
 #include "guilib.h"
@@ -925,4 +925,16 @@ Added by Marcos Antonio Gambeta
     [<oMonthCalendar> :=] HMonthCalendar():New( <oWnd>,<nId>,<dInit>,<nStyle>,;
         <x>,<y>,<nWidth>,<nHeight>,<oFont>,<bInit>,<bChange>,<cTooltip>,;
         <.notoday.>,<.notodaycircle.>,<.weeknumbers.>)
+
+#translate DEFINE LANGUAGE SPANISH      =>  Hb_LangSelect( "ES" )
+#translate DEFINE LANGUAGE ENGLISH      =>  Hb_LangSelect( "EN" )        
+#translate DEFINE LANGUAGE FRENCH       =>  Hb_LangSelect( "FR" )        
+#translate DEFINE LANGUAGE PORTUGUESE   =>  Hb_LangSelect( "PT" )        
+#translate DEFINE LANGUAGE GERMAN       =>  Hb_LangSelect( "DEWIN" )     
+#translate DEFINE LANGUAGE RUSSIAN      =>  Hb_LangSelect( "RUWIN" )     
+#translate DEFINE LANGUAGE ITALIAN      =>  Hb_LangSelect("IT" )         
+#translate DEFINE LANGUAGE POLISH       =>  Hb_LangSelect("PLWIN" )      
+#translate DEFINE LANGUAGE BASQUE       =>  Hb_LangSelect("EU" )         
+#translate DEFINE LANGUAGE CROATIAN     =>  Hb_LangSelect("HR852" )      
+#translate DEFINE LANGUAGE SLOVENIAN    =>  Hb_LangSelect("SLWIN" )      
 

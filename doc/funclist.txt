@@ -217,6 +217,8 @@ WINDOW.C:
   Copystringtoclipboard
   Setbit
   Checkbit
+  SetTopMost()
+  RemoveTopMost()
 
 PRINT.C:
   Openprinter

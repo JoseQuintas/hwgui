@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.210 2004-07-05 17:33:44 alkresin Exp $
+ * $Id: Changelog,v 1.211 2004-07-05 19:15:34 rodrigo_moreno Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-07-05 16:15 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
+   * source/hbrowse.prg
+     ! Change the Edit(), the Local varbuf moved to DATA varbuf
 
 2004-07-05 21:26 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/menu_c.c

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.30 2004-06-29 06:23:26 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.31 2004-07-05 19:15:34 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -10,7 +10,7 @@
 
 // Modificaciones y Agregados. 27.07.2002, WHT.de la Argentina ///////////////
 // 1) En el metodo HColumn se agregaron las DATA: "nJusHead" y "nJustLin",  //
-//    para poder justificar los encabezados de columnas y tambi‚n las       //
+//    para poder justificar los encabezados de columnas y tambien las       //
 //    lineas. Por default es DT_LEFT                                        //
 //    0-DT_LEFT, 1-DT_RIGHT y 2-DT_CENTER. 27.07.2002. WHT.                 //
 // 2) Ahora la variable "cargo" del metodo Hbrowse si es codeblock          //
@@ -122,6 +122,7 @@ CLASS HBrowse INHERIT HControl
    DATA headColor                              // Header text color
    DATA sepColor INIT 12632256                 // Separators color
    DATA lSep3d  INIT .F.
+   DATA varbuf                                 // Used on Edit()
    DATA tcolorSel,bcolorSel,brushSel
    DATA bSkip,bGoTo,bGoTop,bGoBot,bEof,bBof
    DATA bRcou,bRecno
@@ -1218,7 +1219,7 @@ return nil
 
 //----------------------------------------------------//
 METHOD Edit( wParam,lParam ) CLASS HBrowse
-Local fipos, lRes, varbuf, x1, y1, fif, nWidth, lReadExit, rowPos
+Local fipos, lRes, x1, y1, fif, nWidth, lReadExit, rowPos
 Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
@@ -1226,22 +1227,22 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
          ( Valtype( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. !lRes )
       oColumn := ::aColumns[fipos]
       IF ::type == BRW_DATABASE
-         varbuf := (::alias)->(Eval( oColumn:block,,Self,fipos ))
+         ::varbuf := (::alias)->(Eval( oColumn:block,,Self,fipos ))
       ELSE
-         varbuf := Eval( oColumn:block,,Self,fipos )
+         ::varbuf := Eval( oColumn:block,,Self,fipos )
       ENDIF
-      type := Iif( oColumn:type=="U".AND.varbuf!=Nil, Valtype( varbuf ), oColumn:type )
+      type := Iif( oColumn:type=="U".AND.::varbuf!=Nil, Valtype( ::varbuf ), oColumn:type )
       IF ::lEditable .AND. type != "O"        
          IF oColumn:lEditable .AND. ( oColumn:bWhen = Nil .OR. EVAL( oColumn:bWhen ) )
             IF ::lAppMode
                IF type == "D"
-                  varbuf := CtoD("")
+                  ::varbuf := CtoD("")
                ELSEIF type == "N"
-                  varbuf := 0
+                  ::varbuf := 0
                ELSEIF type == "L"
-                  varbuf := .F.
+                  ::varbuf := .F.
                ELSE
-                  varbuf := ""
+                  ::varbuf := ""
                ENDIF
             ENDIF
          ELSE
@@ -1281,11 +1282,11 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
             oModDlg:brush := -1
             oModDlg:nHeight := ::height*5
             
-            if valtype(varbuf) == 'N'
-                nChoic := varbuf
+            if valtype(::varbuf) == 'N'
+                nChoic := ::varbuf
             else                
-                varbuf := AllTrim(varbuf)
-                nChoic := Ascan( oColumn:aList,varbuf )
+                ::varbuf := AllTrim(::varbuf)
+                nChoic := Ascan( oColumn:aList,::varbuf )
             endif
                             
             @ 0,0 GET COMBOBOX nChoic         ;
@@ -1293,7 +1294,7 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
                SIZE nWidth, ::height*5        ;
                FONT ::oFont
          ELSE
-            @ 0,0 GET oGet VAR varbuf         ;
+            @ 0,0 GET oGet VAR ::varbuf         ;
                SIZE nWidth, ::height+1        ;
                NOBORDER                       ;
                STYLE ES_AUTOHSCROLL           ;
@@ -1306,17 +1307,17 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
 
          IF oModDlg:lResult            
             IF oColumn:aList != Nil
-               if valtype(varbuf) == 'N'
-                  varbuf := nChoic
+               if valtype(::varbuf) == 'N'
+                  ::varbuf := nChoic
                else
-                  varbuf := oColumn:aList[nChoic]
+                  ::varbuf := oColumn:aList[nChoic]
                endif                  
             ENDIF
             IF ::lAppMode
                ::lAppMode := .F.
                IF ::type == BRW_DATABASE
                   (::alias)->( dbAppend() )
-                  (::alias)->( Eval( oColumn:block,varbuf,Self,fipos ) )
+                  (::alias)->( Eval( oColumn:block,::varbuf,Self,fipos ) )
                   UNLOCK
                ELSE
                   IF Valtype(::msrec[1]) == "A"
@@ -1330,7 +1331,7 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
                      Aadd( ::msrec,Nil )
                   ENDIF
                   ::tekzp := Len( ::msrec )
-                  Eval( oColumn:block,varbuf,Self,fipos )
+                  Eval( oColumn:block,::varbuf,Self,fipos )
                ENDIF
                IF ::kolz > 0
                   ::rowPos ++
@@ -1339,9 +1340,9 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
                ::Refresh()
             ELSE
                IF ::type == BRW_DATABASE
-                  (::alias)->( Eval( oColumn:block,varbuf,Self,fipos ) )
+                  (::alias)->( Eval( oColumn:block,::varbuf,Self,fipos ) )
                ELSE
-                  Eval( oColumn:block,varbuf,Self,fipos )
+                  Eval( oColumn:block,::varbuf,Self,fipos )
                ENDIF
                
                ::lUpdated := .T.

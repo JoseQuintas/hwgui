@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.5 2004-03-11 03:31:19 jamaj Exp $
+ *$Id: dialog.c,v 1.6 2004-03-23 10:40:39 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -222,7 +222,7 @@ int nCopyAnsiToWideChar ( LPWORD lpWCStr, LPCSTR lpAnsiIn )
 */
 }
 
-LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth, int dheight, LONG lStyle )
+LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth, int dheight, ULONG ulStyle )
 {
    PWORD p, pdlgtemplate;
    PHB_ITEM pControls, pControl, temp;
@@ -267,8 +267,8 @@ LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth, int 
    *p++ = 0;          // HIWORD HelpID
    *p++ = 0;          // LOWORD (lExtendedStyle)
    *p++ = 0;          // HIWORD (lExtendedStyle)
-   *p++ = LOWORD (lStyle);
-   *p++ = HIWORD (lStyle);
+   *p++ = LOWORD (ulStyle);
+   *p++ = HIWORD (ulStyle);
    *p++ = nControls;  // NumberOfItems
    *p++ = x1;         // x
    *p++ = y1;         // y
@@ -303,7 +303,7 @@ LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth, int 
       
       p = lpwAlign (p);
 
-      lStyle = hb_itemGetNL( GetObjectVar( pControl, "STYLE" ) );
+      ulStyle = (ULONG)hb_itemGetNL( GetObjectVar( pControl, "STYLE" ) );
       lExtStyle = hb_itemGetNL( GetObjectVar( pControl, "EXTSTYLE" ) );
       x1 = ( hb_itemGetNI( GetObjectVar( pControl, "NLEFT" ) ) * 4) / baseunitX;
       dwidth = ( hb_itemGetNI( GetObjectVar( pControl, "NWIDTH" ) ) * 4) / baseunitX;
@@ -314,8 +314,8 @@ LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth, int 
       *p++ = 0;          // HIWORD (lHelpID)
       *p++ = LOWORD (lExtStyle);          // LOWORD (lExtendedStyle)
       *p++ = HIWORD (lExtStyle);          // HIWORD (lExtendedStyle)
-      *p++ = LOWORD (lStyle);
-      *p++ = HIWORD (lStyle);
+      *p++ = LOWORD (ulStyle);
+      *p++ = HIWORD (ulStyle);
       *p++ = x1;         // x
       *p++ = y1;         // y
       *p++ = dwidth;     // cx
@@ -348,7 +348,7 @@ LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth, int 
 HB_FUNC ( CREATEDLGTEMPLATE )
 {
    hb_retnl( (LONG) CreateDlgTemplate( hb_param( 1, HB_IT_OBJECT ), hb_parni(2),
-                         hb_parni(3), hb_parni(4), hb_parni(5), hb_parnl(6) ) );
+                         hb_parni(3), hb_parni(4), hb_parni(5), (ULONG)hb_parnd(6) ) );
 }
 
 HB_FUNC ( RELEASEDLGTEMPLATE )
@@ -466,10 +466,10 @@ HB_FUNC( HWG_CREATEDLGINDIRECT )
       pdlgtemplate = (LPDLGTEMPLATE) hb_parnl(8);
    else
    {
-      LONG lStyle = ( ( hb_pcount()>6 && !ISNIL(7) )? hb_parnl(7):WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX ); // | DS_SETFONT;
+      ULONG ulStyle = ( ( hb_pcount()>6 && !ISNIL(7) )? (ULONG)hb_parnd(7):WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX ); // | DS_SETFONT;
 
       pdlgtemplate = CreateDlgTemplate( pObj, hb_parni(3), hb_parni(4),
-                          hb_parni(5), hb_parni(6), lStyle );
+                          hb_parni(5), hb_parni(6), ulStyle );
    }
 
    CreateDialogIndirect( hModule, pdlgtemplate,
@@ -486,11 +486,11 @@ HB_FUNC( HWG_DLGBOXINDIRECT )
 {
    LPDLGTEMPLATE pdlgtemplate;
    PHB_ITEM pObj;
-   LONG lStyle = ( ( hb_pcount()>6 && !ISNIL(7) )? hb_parnl(7):WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU ); // | DS_SETFONT;
+   ULONG ulStyle = ( ( hb_pcount()>6 && !ISNIL(7) )? (ULONG)hb_parnd(7):WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU ); // | DS_SETFONT;
    int x1 = hb_parni(3), y1 = hb_parni(4), dwidth = hb_parni(5), dheight = hb_parni(6);
 
    pObj = hb_param( 2, HB_IT_OBJECT );
-   pdlgtemplate = CreateDlgTemplate( pObj, x1, y1, dwidth, dheight, lStyle );
+   pdlgtemplate = CreateDlgTemplate( pObj, x1, y1, dwidth, dheight, ulStyle );
 
    DialogBoxIndirect( hModule, pdlgtemplate,
                       (HWND) hb_parnl(1), (DLGPROC) ModalDlgProc );

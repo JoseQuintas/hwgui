@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.17 2004-06-15 12:34:02 alkresin Exp $
+ *$Id: hedit.prg,v 1.18 2004-07-13 11:18:36 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -33,6 +33,8 @@ CLASS HEdit INHERIT HControl
    METHOD Init()
    METHOD SetGet(value) INLINE Eval( ::bSetGet,value,self )
    METHOD Refresh() 
+   METHOD GetText()     
+   METHOD SetText(c) 
 
 ENDCLASS
 
@@ -132,6 +134,7 @@ Local vari
 
    IF ::bSetGet != Nil
       vari := Eval( ::bSetGet,,self )
+
       IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
          vari := Transform( vari, ::cPicFunc + Iif(Empty(::cPicFunc),""," ") + ::cPicMask )
       ELSE
@@ -144,6 +147,21 @@ Local vari
    ENDIF
 
 Return Nil
+
+METHOD GetText() CLASS hEdit
+Return alltrim(GetDlgItemText(::oParent:handle,::Id, 999999999999 ))
+
+METHOD SetText(C) CLASS hEdit
+  if c<>Nil
+     ::title:=c
+     if ::bSetGet=Nil
+       ::Refresh()
+     else
+       Eval( ::bSetGet,c,self )
+       ::Refresh()
+     endif
+  endif
+RETURN NIL
 
 Function DefEditProc( hEdit, msg, wParam, lParam )
 Local oEdit, oParent, nPos, nctrl, cKeyb
@@ -539,6 +557,7 @@ Local res
    oCtrl:lFirst := .T.
    IF oCtrl:bGetFocus != Nil 
       res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
+
       IF !res
          GetSkip( oCtrl:oParent,oCtrl:handle,1 )
       ENDIF
@@ -566,6 +585,7 @@ Local vari, oDlg
             SetDlgItemText( oCtrl:oParent:handle, oCtrl:id, oCtrl:title )
          ENDIF
          Eval( oCtrl:bSetGet, vari, oCtrl )
+
          IF oDlg != Nil
             oDlg:nLastKey := 27
          ENDIF
@@ -751,6 +771,7 @@ Local i, aLen
          aLen := Len( oParent:Getlist )
          DO WHILE ( i := i+nSkip ) <= aLen
             IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
+
                SetFocus( oParent:Getlist[i]:handle )
                Return .T.
             ENDIF
@@ -758,6 +779,7 @@ Local i, aLen
       ELSE
          DO WHILE ( i := i+nSkip ) > 0
             IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle )
+
                SetFocus( oParent:Getlist[i]:handle )
                Return .T.
             ENDIF

@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.2 2004-10-21 09:12:34 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.3 2004-11-11 08:37:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -178,7 +178,10 @@ Local iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res, handle, oItem
          Return ListViewNotify( oCtrl,lParam )               
       ELSE
          nCode := GetNotifyCode( lParam )
-         IF oWnd:aNotify != Nil .AND. ;
+         // writelog("Code: "+str(nCode))
+         IF nCode == EN_PROTECTED
+            Return 1
+         ELSEIF oWnd:aNotify != Nil .AND. ;
             ( iItem := Ascan( oWnd:aNotify, {|a|a[1]==nCode.and.a[2]==wParam} ) ) > 0
             IF ( res := Eval( oWnd:aNotify[ iItem,3 ],oWnd,wParam ) ) != Nil
                Return res

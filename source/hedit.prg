@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.35 2004-10-22 13:21:18 alkresin Exp $
+ *$Id: hedit.prg,v 1.36 2004-11-11 08:37:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -202,6 +202,15 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
 
       ENDIF
 
+   ELSE
+
+      IF msg == WM_MOUSEWHEEL
+         nPos := HiWord( wParam )
+         nPos := Iif( nPos > 32768, nPos - 65535, nPos )
+         SendMessage( ::handle,EM_SCROLL, Iif(nPos>0,SB_LINEUP,SB_LINEDOWN), 0 )
+         SendMessage( ::handle,EM_SCROLL, Iif(nPos>0,SB_LINEUP,SB_LINEDOWN), 0 )
+      ENDIF
+
    ENDIF
 
    IF msg == WM_KEYUP
@@ -314,116 +323,6 @@ METHOD SetText( c ) CLASS HEdit
   ENDIF
 
 RETURN NIL
-
-/*
-Function DefEditProc( hEdit, msg, wParam, lParam )
-Local oEdit, oParent, nPos, nctrl, cKeyb
-   // writelog( "EditProc: " + Str(hEdit,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
-   IF ( oParent := FindParent( hEdit ) ) == Nil .OR. ;
-        ( oEdit := oParent:FindControl(,hEdit) ) == Nil
-      Return -1
-   ENDIF
-
-   oEdit:gLastkey:={msg,wParam}
-
-   IF !oEdit:lMultiLine
-
-      IF msg == WM_CHAR
-
-         IF wParam == 8
-            oEdit:lFirst := .F.
-            SetGetUpdated( oEdit )
-            IF oEdit:lPicComplex
-               DeleteChar( oEdit,.T. )
-               Return 0
-            ENDIF
-            Return -1
-         ELSEIF wParam == VK_RETURN .OR. wParam == VK_TAB .OR. wParam == VK_ESCAPE
-            Return -1
-         ENDIF
-         // ------- Change by NightWalker - Check HiBit -------
-         If (wParam <129).or.!Empty( oEdit:cPicFunc ).OR.!Empty( oEdit:cPicMask )
-            Return GetApplyKey( oEdit,Chr(wParam) )
-         Endif
-
-      ELSEIF msg == WM_KEYDOWN 
-
-         IF wParam == 40     // KeyDown
-            IF !IsCtrlShift()
-               GetSkip( oParent,hEdit,1 )
-               Return 0
-            ENDIF
-         ELSEIF wParam == 38     // KeyUp
-            IF !IsCtrlShift()
-               GetSkip( oParent,hEdit,-1 )
-               Return 0
-            ENDIF
-         ELSEIF wParam == 39     // KeyRight
-            IF !IsCtrlShift()
-               oEdit:lFirst := .F.
-               Return KeyRight( oParent:FindControl(,hEdit) )
-            ENDIF
-         ELSEIF wParam == 37     // KeyLeft
-               oEdit:lFirst := .F.
-               Return KeyLeft( oParent:FindControl(,hEdit) )
-         ELSEIF wParam == 35     // End
-               oEdit:lFirst := .F.
-               IF oEdit:cType == "C"
-                  nPos := Len( Trim( oEdit:title ) )
-                  SendMessage( oEdit:handle, EM_SETSEL, nPos, nPos )
-                  Return 0
-               ENDIF
-         ELSEIF wParam == 45     // Insert
-            IF !IsCtrlShift()
-               Set( _SET_INSERT, ! Set( _SET_INSERT ) )
-            ENDIF
-         ELSEIF wParam == 46     // Del
-            oEdit:lFirst := .F.
-            SetGetUpdated( oEdit )
-            IF oEdit:lPicComplex
-               DeleteChar( oEdit,.F. )
-               Return 0
-            ENDIF
-         ELSEIF wParam == VK_TAB     // Tab
-            IF Asc( Substr( GetKeyboardState(), VK_SHIFT+1, 1 ) ) >= 128
-               GetSkip( oParent,hEdit,-1 )
-            ELSE
-               GetSkip( oParent,hEdit,1 )
-            ENDIF
-            Return 0
-         ELSEIF wParam == VK_RETURN  // Enter
-            GetSkip( oParent,hEdit,1,.T. )
-            Return 0
-         ENDIF
-
-      ELSEIF msg == WM_LBUTTONUP
-
-         IF Empty( GetEditText( oEdit:oParent:handle, oEdit:id ) )
-            SendMessage( oEdit:handle, EM_SETSEL, 0, 0 )
-         ENDIF
-
-      ENDIF
-
-   ENDIF
-
-   IF msg == WM_KEYUP
-      IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
-         DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
-            oParent := oParent:oParent
-         ENDDO
-         IF oParent != Nil .AND. !Empty( oParent:KeyList )
-            cKeyb := GetKeyboardState()
-            nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
-            IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nctrl.AND.a[2]==wParam} ) ) > 0
-               Eval( oParent:KeyList[ nPos,3 ] )
-            ENDIF
-         ENDIF
-      ENDIF
-   ENDIF
- 
- 
-Return -1
-*/
 
 Static Function IsCtrlShift()
 Local cKeyb := GetKeyboardState()
@@ -739,7 +638,7 @@ Local res
    oCtrl:Refresh()
    oCtrl:lFirst := .T.
    IF oCtrl:bGetFocus != Nil 
-      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
+      res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
 
       IF !res
          GetSkip( oCtrl:oParent,oCtrl:handle,1 )

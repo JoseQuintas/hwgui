@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.9 2004-07-18 14:24:16 alkresin Exp $
+ * $Id: editor.prg,v 1.10 2004-11-11 08:37:12 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -180,9 +180,9 @@ Local cParamString
 
    @ 0,0 RICHEDIT oEdit TEXT "" SIZE 400,oDlg:nHeight-45              ;
        STYLE ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL+ES_WANTRETURN ;
-       ON SIZE {|o,x,y|o:Move(,,x,y-45)}                              ;
        ON INIT {||ChangeTheme( HDTheme():nSelected )}                 ;
        ON GETFOCUS {||Iif(oEdit:cargo,(SendMessage(oEdit:handle,EM_SETSEL,0,0),oEdit:cargo:=.F.),.F.)} ;
+       ON SIZE {|o,x,y|o:Move(,,x,y-45)}                              ;
        FONT oFont
    oEdit:cargo := .T.
 
@@ -242,7 +242,8 @@ Local arrHi, oTheme := HDTheme():aThemes[HDTheme():nSelected]
    SendMessage( oEdit:handle, EM_SETEVENTMASK, 0, 0 )
    oEdit:SetText( cText )
    nTextLength := Len( cText )
-   re_SetDefault( oEdit:handle,oTheme:normal[1],,,oTheme:normal[3],oTheme:normal[4],,HDTheme():oFont:charset )
+   cText := re_GetTextRange( oEdit:handle,1,nTextLength )
+   re_SetDefault( oEdit:handle,oTheme:normal[1],,,oTheme:normal[3],oTheme:normal[4] )
    SendMessage( oEdit:handle,EM_SETBKGNDCOLOR,0,oTheme:normal[2] )
    IF !Empty( arrHi := CreateHiLight( cText ) )
       /*
@@ -303,7 +304,7 @@ Static Function CreateHilight( cText,oTheme )
 Local arr := {}, stroka, nPos, nLinePos := 1
 
    DO WHILE .T.
-      IF ( nPos := At( Chr(10), cText, nLinePos ) ) != 0
+      IF ( nPos := At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := At( Chr(13), cText, nLinePos ) ) != 0
          HiLightString( SubStr( cText,nLinePos,nPos-nLinePos ), arr, nLinePos,oTheme )
          nLinePos := nPos + 1
       ELSE

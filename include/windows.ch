@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.17 2004-08-25 16:15:59 sandrorrfreire Exp $
+ *$Id: windows.ch,v 1.18 2004-11-11 08:37:12 alkresin Exp $
  */
 
 #define WM_CREATE                       1
@@ -131,6 +131,7 @@
 #define EN_HSCROLL          1537   // 0x0601
 #define EN_VSCROLL          1538   // 0x0602
 #define EN_SELCHANGE        1794   // 0x0702
+#define EN_PROTECTED        1796   // 0x0702
 
 /*
  * Combo Box messages
@@ -376,6 +377,7 @@
 #define IDC_SIZEWE          32644
 #define IDC_SIZENS          32645
 #define IDC_UPARROW         32516
+#define IDC_HAND            32649
 
 /*
  * Key State Masks for Mouse Messages
@@ -563,6 +565,7 @@
 
 #define ENM_CHANGE             1        // 0x00000001
 #define ENM_SELCHANGE          524288   // 0x00080000
+#define ENM_PROTECTED			0x00200000
 
 #define IMAGE_BITMAP        0
 #define IMAGE_ICON          1
@@ -849,3 +852,4 @@
 #define WM_MOVING                       0x0216
 #define GWL_ID (-12)
 
+#define WM_MOUSEWHEEL  0x020A

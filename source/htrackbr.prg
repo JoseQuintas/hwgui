@@ -1,5 +1,5 @@
 /*
- * $Id: htrackbr.prg,v 1.6 2004-09-29 05:24:52 alkresin Exp $
+ * $Id: htrackbr.prg,v 1.7 2004-11-11 08:37:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTrackBar class
@@ -28,12 +28,15 @@ CLASS HTrackBar INHERIT HControl
 
    DATA value
    DATA bChange
+   DATA bThumbDrag
    DATA nLow
    DATA nHigh
+   DATA hCursor
 
    METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight,;
-               bInit,cTooltip,bChange,nLow,nHigh,lVertical,TickStyle,TickMarks )
+               bInit,bSize,bPaint,cTooltip,bChange,bDrag,nLow,nHigh,lVertical,TickStyle,TickMarks )
    METHOD Activate()
+   METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
    METHOD SetValue( nValue )
    METHOD GetValue()
@@ -41,16 +44,20 @@ CLASS HTrackBar INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight,;
-            bInit,cTooltip,bChange,nLow,nHigh,lVertical,TickStyle,TickMarks ) CLASS HTrackBar
+            bInit,bSize,bPaint,cTooltip,bChange,bDrag,nLow,nHigh,lVertical,TickStyle,TickMarks ) CLASS HTrackBar
 
    IF TickStyle == Nil ; TickStyle := TBS_AUTOTICKS ; ENDIF
    IF TickMarks == Nil ; TickMarks := 0 ; ENDIF
+   IF bPaint != Nil
+      TickStyle := Hwg_BitOr( TickStyle,TBS_AUTOTICKS )
+   ENDIF
    nstyle   := Hwg_BitOr( Iif( nStyle==Nil, 0, nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP )
    nstyle   += Iif( lVertical != Nil .AND. lVertical, TBS_VERT, 0 )
    nstyle   += TickStyle + TickMarks
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,,bInit,,,ctooltip )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,,bInit,bSize,bPaint,ctooltip )
    ::value   := Iif( Valtype(vari)=="N", vari, 0 )
    ::bChange := bChange
+   ::bThumbDrag := bDrag
    ::nLow    := Iif( nLow==Nil, 0, nLow )
    ::nHigh   := Iif( nHigh==Nil, 100, nHigh )
 
@@ -67,11 +74,41 @@ METHOD Activate CLASS HTrackBar
    ENDIF
 Return Nil
 
+METHOD onEvent( msg, wParam, lParam ) CLASS HTrackBar
+Local aCoors
+
+   IF msg == WM_PAINT
+      IF ::bPaint != Nil
+         Eval( ::bPaint, Self )
+         Return 0
+      ENDIF
+   ELSEIF msg == WM_MOUSEMOVE
+      IF ::hCursor != Nil
+         Hwg_SetCursor( ::hCursor )
+      ENDIF
+   ELSEIF msg == WM_ERASEBKGND
+      IF ::brush != Nil
+         aCoors := GetClientRect( ::handle )
+         FillRect( wParam, aCoors[1], aCoors[2], aCoors[3]+1, aCoors[4]+1, ::brush:handle )
+         Return 1
+      ENDIF
+   ELSEIF msg == WM_DESTROY
+      ::End()
+   ELSEIF ::bOther != Nil
+      Return Eval( ::bOther, Self, msg, wParam, lParam )
+   ENDIF
+
+Return -1
+
 METHOD Init() CLASS HTrackBar
    IF !::lInit
       Super:Init()
       TrackBarSetRange( ::handle, ::nLow, ::nHigh )
       SendMessage( ::handle, TBM_SETPOS, 1, ::value )
+      IF ::bPaint != Nil
+         SetWindowObject( ::handle,Self )
+         Hwg_InitTrackProc( ::handle )
+      ENDIF
    ENDIF
 Return Nil
 

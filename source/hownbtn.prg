@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.16 2004-10-22 13:21:18 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.17 2004-11-11 08:37:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -55,7 +55,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,      ;
                   cTooltip, lEnabled  ) CLASS HOwnButton
 
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,,bInit, ;
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,font,bInit, ;
                   bSize,bPaint,ctooltip )
 
    ::lFlat   := Iif( lFlat==Nil,.F.,lFlat )
@@ -64,7 +64,6 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
 
    ::text    := cText
    ::tcolor  := Iif( color==Nil, GetSysColor( COLOR_BTNTEXT ), color )
-   ::ofont   := font
    ::xt      := xt
    ::yt      := yt
    ::widtht  := widtht
@@ -168,7 +167,6 @@ Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
    pps := DefinePaintStru()
    hDC := BeginPaint( ::handle, pps )
    aCoors := GetClientRect( ::handle )
-   aMetr := GetTextMetric( hDC )
 
    oldBkColor := SetBkColor( hDC,GetSysColor(COLOR_3DFACE) )
    IF ::state == OBTN_INIT
@@ -195,6 +193,7 @@ Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
       ELSEIF ::oParent:oFont != Nil
          SelectObject( hDC, ::oParent:ofont:handle )
       ENDIF
+      aMetr := GetTextMetric( hDC )
       if ::lEnabled //if button is enabled
          SetTextColor( hDC,::tcolor )
       Else

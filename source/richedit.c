@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.12 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: richedit.c,v 1.13 2004-11-11 08:37:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -18,6 +18,7 @@
    #include <prsht.h>
 #endif
 #include <commctrl.h>
+#define _RICHEDIT_VER	0x0200
 #include <richedit.h>
 
 #ifdef __EXPORT__
@@ -42,7 +43,7 @@ static WNDPROC wpOrigRichProc;
 HB_FUNC( HWG_INITRICHEDIT )
 {
    if( !hRichEd )
-      hRichEd = LoadLibrary( "riched32.dll" );
+      hRichEd = LoadLibrary( "riched20.dll" );
 }
 
 HB_FUNC( CREATERICHEDIT )
@@ -50,11 +51,11 @@ HB_FUNC( CREATERICHEDIT )
    HWND hCtrl;
 
    if( !hRichEd )
-      hRichEd = LoadLibrary( "riched32.dll" );
+      hRichEd = LoadLibrary( "riched20.dll" );
 
    hCtrl = CreateWindowEx( 
                  0	,     /* extended style    */
-                 "RichEdit",  /* predefined class  */
+                 "RichEdit20A",  /* predefined class  */
                  NULL,        /* title   */
                  WS_CHILD | WS_VISIBLE | hb_parnl(3), /* style  */
                  hb_parni(4), hb_parni(5),            /* x, y   */
@@ -72,13 +73,14 @@ HB_FUNC( CREATERICHEDIT )
 }
 
 /*
- * re_SetCharFormat( hCtrl, n1, n2, nColor, cName, nHeight, lBold, lItalic, lUnderline, nCharset )
+ * re_SetCharFormat( hCtrl, n1, n2, nColor, cName, nHeight, lBold, lItalic, 
+           lUnderline, nCharset, lSuperScript/lSubscript(.T./.F.), lProtected )
  */
 HB_FUNC ( RE_SETCHARFORMAT )
 {
    HWND hCtrl = (HWND) hb_parnl(1);
    CHARRANGE chrOld, chrNew;
-   CHARFORMAT cf;
+   CHARFORMAT2 cf;
    PHB_ITEM pArr;
 
    SendMessage( hCtrl, EM_EXGETSEL, 0, (LPARAM) &chrOld );
@@ -96,8 +98,8 @@ HB_FUNC ( RE_SETCHARFORMAT )
          chrNew.cpMax = hb_itemGetNL( pArr1->item.asArray.value->pItems + 1 )-1;
          SendMessage( hCtrl, EM_EXSETSEL, 0, (LPARAM) &chrNew );
 
-         memset( &cf, 0, sizeof(CHARFORMAT) );
-         cf.cbSize = sizeof(CHARFORMAT);
+         memset( &cf, 0, sizeof(CHARFORMAT2) );
+         cf.cbSize = sizeof(CHARFORMAT2);
          if( ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 2) )->type != HB_IT_NIL )
          {
             cf.crTextColor = (COLORREF) hb_itemGetNL( pArr1->item.asArray.value->pItems + 2 );
@@ -130,7 +132,19 @@ HB_FUNC ( RE_SETCHARFORMAT )
             cf.bCharSet = hb_itemGetNL( pArr1->item.asArray.value->pItems + 8 );
             cf.dwMask |= CFM_CHARSET;
          }
-         cf.dwMask |= ( CFM_BOLD | CFM_ITALIC | CFM_UNDERLINE );
+         if( pArr1->item.asArray.value->ulLen > 9 && ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 9) )->type != HB_IT_NIL )
+         {
+            if( hb_itemGetL( pArr1->item.asArray.value->pItems + 9 ) )
+               cf.dwEffects |= CFE_SUPERSCRIPT;
+            else
+               cf.dwEffects |= CFE_SUBSCRIPT;
+            cf.dwMask |= CFM_SUPERSCRIPT;
+         }
+         if( pArr1->item.asArray.value->ulLen > 10 && ( (PHB_ITEM)(pArr1->item.asArray.value->pItems + 10) )->type != HB_IT_NIL && hb_itemGetL( pArr1->item.asArray.value->pItems + 10 ) )
+         {
+            cf.dwEffects |= CFE_PROTECTED;
+         }
+         cf.dwMask |= ( CFM_BOLD | CFM_ITALIC | CFM_UNDERLINE | CFM_PROTECTED );
          SendMessage( hCtrl, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM) &cf );
       }
    }
@@ -141,8 +155,8 @@ HB_FUNC ( RE_SETCHARFORMAT )
       chrNew.cpMax = hb_parnl(3)-1;
       SendMessage( hCtrl, EM_EXSETSEL, 0, (LPARAM) &chrNew );
 
-      memset( &cf, 0, sizeof(CHARFORMAT) );
-      cf.cbSize = sizeof(CHARFORMAT);
+      memset( &cf, 0, sizeof(CHARFORMAT2) );
+      cf.cbSize = sizeof(CHARFORMAT2);
 
       if( !ISNIL(4) )
       {
@@ -179,6 +193,19 @@ HB_FUNC ( RE_SETCHARFORMAT )
          cf.bCharSet = hb_parnl( 10 );
          cf.dwMask |= CFM_CHARSET;
       }
+      if( !ISNIL( 11 ) )
+      {
+         if( hb_parl( 9 ) )
+            cf.dwEffects |= CFE_SUPERSCRIPT;
+         else
+            cf.dwEffects |= CFE_SUBSCRIPT;
+         cf.dwMask |= CFM_SUPERSCRIPT;
+      }
+      if( !ISNIL( 12 ) )
+      {
+         cf.dwEffects |= CFE_PROTECTED;
+         cf.dwMask |= CFM_PROTECTED;
+      }
 
       SendMessage( hCtrl, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM) &cf );
    }
@@ -195,10 +222,10 @@ HB_FUNC ( RE_SETCHARFORMAT )
 HB_FUNC( RE_SETDEFAULT )
 {
    HWND hCtrl = ( HWND ) hb_parnl( 1 );
-   CHARFORMAT cf;
+   CHARFORMAT2 cf;
 
-   memset( &cf, 0, sizeof(CHARFORMAT) );
-   cf.cbSize = sizeof( CHARFORMAT );
+   memset( &cf, 0, sizeof(CHARFORMAT2) );
+   cf.cbSize = sizeof( CHARFORMAT2 );
 
    if( ISNUM( 2 ) )
    {
@@ -238,6 +265,7 @@ HB_FUNC( RE_SETDEFAULT )
 
    cf.dwMask |= ( CFM_BOLD | CFM_ITALIC | CFM_UNDERLINE );
    SendMessage( hCtrl, EM_SETCHARFORMAT, SCF_ALL, (LPARAM) &cf );
+
 
 }
 
@@ -297,6 +325,14 @@ HB_FUNC( RE_GETLINE )
    hb_retclen( cBuf, ul );
    hb_xfree( cBuf );
 
+}
+
+HB_FUNC( RE_INSERTTEXT )
+{
+   HWND hCtrl = (HWND) hb_parnl(1);
+   char * ptr = hb_parc(2);
+
+   SendMessage( hCtrl, EM_REPLACESEL, 0, (LPARAM)ptr );
 }
 
 HB_FUNC( HWG_INITRICHPROC )

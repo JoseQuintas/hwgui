@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.15 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hcombo.prg,v 1.16 2004-11-11 08:37:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -38,7 +38,7 @@ CLASS HComboBox INHERIT HControl
    DATA  lEdit    INIT .F.
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  aItems,oFont,bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bWhen )
+                  aItems,oFont,bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bWhen,tcolor,bcolor )
    METHOD Activate()
    METHOD Redefine( oWnd,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bDraw,bChange,cToolt,bWhen )
    METHOD Init( aCombo, nCurrent )
@@ -47,13 +47,13 @@ CLASS HComboBox INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,oFont, ;
-                  bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bWhen ) CLASS HComboBox
+                  bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bWhen,tcolor,bcolor ) CLASS HComboBox
 
    if lEdit == Nil; lEdit := .f.; endif
    if lText == Nil; lText := .f.; endif
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ),Iif( lEdit,CBS_DROPDOWN,CBS_DROPDOWNLIST )+WS_TABSTOP )
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, bSize,bPaint,ctoolt )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, bSize,bPaint,ctoolt,tcolor,bcolor )
       
    ::lEdit := lEdit
    ::lText := lText

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.39 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.40 2004-11-11 08:37:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -45,7 +45,6 @@ REQUEST BOF
 #define SB_BOTH             3
 
 #define HDM_GETITEMCOUNT    4608
-#define WM_MOUSEWHEEL  0x020A
 
 static crossCursor := 0
 static arrowCursor := 0
@@ -236,11 +235,11 @@ Static keyCode := 0
          // Sirve para ejecutar "algo" fuera del Browse. P/Ej.
          // Mostrar una variable en la "dialog". Etc.Etc.
          // 27.07.2002 - WHT.
-         IF Ascan( { WM_PAINT, WM_ERASEBKGND, WM_SETFOCUS, WM_KILLFOCUS, WM_HSCROLL, WM_VSCROLL, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK }, msg ) > 0
+         // IF Ascan( { WM_PAINT, WM_ERASEBKGND, WM_SETFOCUS, WM_KILLFOCUS, WM_HSCROLL, WM_VSCROLL, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK }, msg ) > 0
             IF ::bOther != Nil
-               Eval( ::bOther )
+               Eval( ::bOther,Self,msg,wParam,lParam )
             ENDIF
-         ENDIF
+         // ENDIF
 
          IF msg == WM_PAINT
             ::Paint()

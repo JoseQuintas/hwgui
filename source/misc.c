@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.13 2004-09-16 17:47:04 sandrorrfreire Exp $
+ * $Id: misc.c,v 1.14 2004-11-11 08:37:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -427,4 +427,18 @@ HB_FUNC( SLEEP )
 {
     if (hb_parinfo(1))
         Sleep(hb_parnl(1));         
+}
+
+HB_FUNC( KEYB_EVENT )
+{
+   DWORD dwFlags = ( !(ISNIL(2)) && hb_parl(2) )? KEYEVENTF_EXTENDEDKEY : 0;
+   int bShift = ( !(ISNIL(3)) && hb_parl(3) )? TRUE : FALSE;
+
+   if( bShift )
+      keybd_event( VK_SHIFT, 0, 0, 0 );
+   keybd_event( hb_parni(1), 0, dwFlags, 0 );
+   keybd_event( hb_parni(1), 0, dwFlags | KEYEVENTF_KEYUP, 0 );
+   if( bShift )
+      keybd_event( VK_SHIFT, 0, KEYEVENTF_KEYUP, 0 );
+
 }

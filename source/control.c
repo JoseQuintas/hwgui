@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.21 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: control.c,v 1.22 2004-11-11 08:37:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -34,6 +34,7 @@
 LRESULT CALLBACK WinCtrlProc (HWND, UINT, WPARAM, LPARAM);
 LRESULT APIENTRY SplitterProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY EditSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+LRESULT APIENTRY TrackSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY TabSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 void CALLBACK TimerProc (HWND, UINT, UINT, DWORD) ;
 
@@ -42,7 +43,7 @@ extern PHB_DYNS pSym_onEvent;
 static HWND hWndTT = 0;
 static BOOL lInitCmnCtrl = 0;
 static BOOL lToolTipBalloon = FALSE; // added by MAG
-static WNDPROC wpOrigEditProc, wpOrigTabProc;
+static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc;
 
 HB_FUNC( HWG_INITCOMMONCONTROLSEX )
 {
@@ -1119,6 +1120,45 @@ LRESULT APIENTRY EditSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARA
    }
    else
       return( CallWindowProc( wpOrigEditProc, hWnd, message, wParam, lParam ) );
+}
+
+HB_FUNC( HWG_INITTRACKPROC )
+{
+   wpOrigTrackProc = (WNDPROC) SetWindowLong( (HWND) hb_parnl(1),
+                                 GWL_WNDPROC, (LONG) TrackSubclassProc );
+}
+
+LRESULT APIENTRY TrackSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+   long int res;
+   LONG dwNewLong = GetWindowLong( hWnd, GWL_USERDATA );
+
+   if( !pSym_onEvent )
+      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
+
+   if( pSym_onEvent && dwNewLong )
+   {
+      PHB_ITEM pObject = hb_itemNew( NULL );
+
+      pObject->type = HB_IT_OBJECT;
+      pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
+      pObject->item.asArray.value->ulHolders++;
+
+      hb_vmPushSymbol( pSym_onEvent->pSymbol );
+      hb_vmPush( pObject );
+      hb_vmPushLong( (LONG ) message );
+      hb_vmPushLong( (LONG ) wParam );
+      hb_vmPushLong( (LONG ) lParam );
+      hb_vmSend( 3 );
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+      hb_itemRelease( pObject );
+      if( res == -1 )
+         return( CallWindowProc( wpOrigTrackProc, hWnd, message, wParam, lParam ) );
+      else
+         return res;
+   }
+   else
+      return( CallWindowProc( wpOrigTrackProc, hWnd, message, wParam, lParam ) );
 }
 
 HB_FUNC( HWG_INITTABPROC )

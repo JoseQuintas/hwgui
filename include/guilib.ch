@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.48 2004-10-19 05:43:42 alkresin Exp $
+ *$Id: guilib.ch,v 1.49 2004-11-11 08:37:11 alkresin Exp $
  */
 #define HWG_VERSION           "2.13"
 #define	WND_MAIN		1
@@ -553,6 +553,8 @@
             [ ID <nId> ]               ;
             [ INIT <nInit> ]           ;
             [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
@@ -565,7 +567,7 @@
           => ;
     [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
                   <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,;
-                  <.edit.>,<.text.> )
+                  <.edit.>,<.text.>,,<color>,<bcolor> )
 
 #xcommand REDEFINE COMBOBOX [ <oCombo> ITEMS ] <aItems> ;
             [ OF <oWnd> ]              ;
@@ -904,6 +906,8 @@
             [ OF <oWnd> ]              ;
             [ ID <nId> ]               ;
             [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
             [ ON CHANGE <bChange> ]    ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
@@ -916,7 +920,7 @@
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
                     <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
-                    <.edit.>,<.text.>,<bWhen> )
+                    <.edit.>,<.text.>,<bWhen>,<color>,<bcolor> )
 
 #xcommand REDEFINE GET COMBOBOX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;
@@ -1188,7 +1192,10 @@ Added by Marcos Antonio Gambeta
             [ RANGE <nLow>,<nHigh> ]      ;
             [ INIT <nInit> ]              ;
             [ ON INIT <bInit> ]           ;
+            [ ON SIZE <bSize> ]           ;
+            [ ON PAINT <bDraw> ]          ;
             [ ON CHANGE <bChange> ]       ;
+            [ ON DRAG <bDrag> ]           ;
             [ STYLE <nStyle> ]            ;
             [ TOOLTIP <cTooltip> ]        ;
             [ < vertical : VERTICAL > ]   ;
@@ -1199,7 +1206,7 @@ Added by Marcos Antonio Gambeta
             [ < left : LEFT > ]           ;
           => ;
     [<oTrackBar> :=] HTrackBar():New( <oWnd>,<nId>,<nInit>,<nStyle>,<x>,<y>,      ;
-        <width>,<height>,<bInit>,<cTooltip>,<bChange>,<nLow>,<nHigh>,<.vertical.>,;
+        <width>,<height>,<bInit>,<bSize>,<bDraw>,<cTooltip>,<bChange>,<bDrag>,<nLow>,<nHigh>,<.vertical.>,;
         Iif(<.autoticks.>,1,Iif(<.noticks.>,16,0)), ;
         Iif(<.both.>,8,Iif(<.top.>.or.<.left.>,4,0)) )
 

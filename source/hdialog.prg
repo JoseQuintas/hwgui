@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.28 2004-10-19 11:09:26 alkresin Exp $
+ * $Id: hdialog.prg,v 1.29 2004-11-11 08:37:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -13,7 +13,15 @@
 #include "guilib.ch"
 
 #define  WM_PSPNOTIFY         WM_USER+1010
-#define  TB_ENDTRACK	            8
+#define TB_LINEUP               0
+#define TB_LINEDOWN             1
+#define TB_PAGEUP               2
+#define TB_PAGEDOWN             3
+#define TB_THUMBPOSITION        4
+#define TB_THUMBTRACK           5
+#define TB_TOP                  6
+#define TB_BOTTOM               7
+#define TB_ENDTRACK             8
 
 Static aSheet := Nil
 Static aMessModalDlg := { ;
@@ -391,18 +399,21 @@ Static Function onHelp( oDlg,wParam,lParam )
 
 Return 0
 
-Static Function onScroll( oDlg, wParam, lParam )
+Static Function onScroll( oWnd,wParam,lParam )
+Local oCtrl := oWnd:FindControl( , lParam ), msg
 
-   Local oCtrl
-
-   If ( oCtrl := oDlg:FindControl( , lParam ) ) != Nil
-      If LoWord (wParam) == TB_ENDTRACK
-         If ISBLOCK( oCtrl:bChange )
-            Eval( oCtrl:bChange )
-         EndIf
-      EndIf
-   EndIf
-
+   IF oCtrl != Nil
+      msg := LoWord (wParam)
+      IF msg == TB_ENDTRACK
+         IF ISBLOCK( oCtrl:bChange )
+            Eval( oCtrl:bChange,oCtrl )
+         ENDIF
+      ELSEIF msg == TB_THUMBTRACK .OR. msg == TB_PAGEUP .OR. msg == TB_PAGEDOWN
+         IF ISBLOCK( oCtrl:bThumbDrag )
+            Eval( oCtrl:bThumbDrag,oCtrl )
+         ENDIF
+      ENDIF
+   ENDIF
 Return 0
 
 Static Function onPspNotify( oDlg,wParam,lParam )

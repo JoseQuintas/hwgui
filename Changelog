@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.287 2004-10-26 11:58:47 alkresin Exp $
+ * $Id: Changelog,v 1.288 2004-11-11 08:37:10 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,40 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-11-11 11:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/control.c
+    * added some code for trackbar support
+  * source/hbrowse.prg
+    ! Small fixes
+  * source/hcombo.prg
+    * added tcolor, bcolor parameters to the New() method - possibility
+      to colorize this control
+  * source/hcwindow.prg
+    * added support for EN_PROTECTED notify event of the richedit control
+  * source/hdialog.prg
+  * source/hwindow.prg
+    * changed onScroll method for better trackbar support ( thumb dragging )
+  * source/hedit.prg
+    * added support for the mouse wheel in a multiline edit control
+  * source/hownbtn.prg
+    ! Small fix
+  * source/hriched.prg
+    * added support for the mouse wheel, changes for the Richedit 2.0 support
+  * source/htrackbr.prg
+    * added support for ownerdrawn sliders
+  * source/misc.c
+    + New function added - keyb_event()
+  * source/richedit.c
+    * changed to support richedit 2.0
+    * added support for subscript, superscript and protected parts to re_setcharformat()
+    + re_Inserttext() function added
+  * inclide/windows.ch
+  * inclide/guilib.ch
+    + added COLOR and BACKCOLOR clauses to the combobox declaration
+    + added ON SIZE, ON PAINT, ON DRAG clauses to the trackbar declaration
+  * utils/designer/editor.prg
+    * Some fixes and changes for Richedit 2.0 support.
 
 2004-10-26 16:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hcheck.prg

@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.34 2004-10-19 05:43:42 alkresin Exp $
+ *$Id: hwindow.prg,v 1.35 2004-11-11 08:37:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -16,7 +16,17 @@
 #define  MAX_MDICHILD_WINDOWS   18
 #define  WM_NOTIFYICON         WM_USER+1000
 #define  ID_NOTIFYICON           1
-#define  TB_ENDTRACK	            8
+
+#define TB_LINEUP               0
+#define TB_LINEDOWN             1
+#define TB_PAGEUP               2
+#define TB_PAGEDOWN             3
+#define TB_THUMBPOSITION        4
+#define TB_THUMBTRACK           5
+#define TB_TOP                  6
+#define TB_BOTTOM               7
+#define TB_ENDTRACK             8
+
 
 Static Function onSize( oWnd,wParam,lParam )
 Local aCoors := GetWindowRect( oWnd:handle )
@@ -222,6 +232,7 @@ Return Nil
 METHOD onEvent( msg, wParam, lParam )  CLASS HMainWindow
 Local i
 
+   // writelog( str(msg) + str(wParam) + str(lParam) )
    IF ( i := Ascan( ::aMessages[1],msg ) ) != 0
       Return Eval( ::aMessages[2,i], Self, wParam, lParam )
    ELSE
@@ -472,16 +483,21 @@ Local ar
 Return -1
 
 Static Function onScroll( oWnd,wParam,lParam )
-Local oCtrl := oWnd:FindControl( , lParam )
+Local oCtrl := oWnd:FindControl( , lParam ), msg
 
    IF oCtrl != Nil
-      IF LoWord (wParam) == TB_ENDTRACK
+      msg := LoWord (wParam)
+      IF msg == TB_ENDTRACK
          IF ISBLOCK( oCtrl:bChange )
-            Eval( oCtrl:bChange )
+            Eval( oCtrl:bChange,oCtrl )
+         ENDIF
+      ELSEIF msg == TB_THUMBTRACK .OR. msg == TB_PAGEUP .OR. msg == TB_PAGEDOWN
+         IF ISBLOCK( oCtrl:bThumbDrag )
+            Eval( oCtrl:bThumbDrag,oCtrl )
          ENDIF
       ENDIF
    ENDIF
-Return -1
+Return 0
 
 Static Function onMdiCreate( oWnd,lParam )
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.5 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: hriched.prg,v 1.6 2004-11-11 08:37:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -14,7 +14,7 @@
 
 CLASS HRichEdit INHERIT HControl
 
-   CLASS VAR winclass   INIT "RichEdit"
+   CLASS VAR winclass   INIT "RichEdit20A"
    DATA lChanged    INIT .F.
 
    METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight, ;
@@ -57,13 +57,20 @@ METHOD Activate CLASS HRichEdit
 Return Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
+Local nDelta
 
+   // writelog( str(msg) + str(wParam) + str(lParam) )
    IF msg == WM_CHAR
       ::lChanged := .T.
    ELSEIF msg == WM_KEYDOWN 
       IF wParam == 46     // Del
          ::lChanged := .T.
       ENDIF
+   ELSEIF msg == WM_MOUSEWHEEL
+      nDelta := HiWord( wParam )
+      nDelta := Iif( nDelta > 32768, nDelta - 65535, nDelta )
+      SendMessage( ::handle,EM_SCROLL, Iif(nDelta>0,SB_LINEUP,SB_LINEDOWN), 0 )
+      SendMessage( ::handle,EM_SCROLL, Iif(nDelta>0,SB_LINEUP,SB_LINEDOWN), 0 )
    ELSEIF msg == WM_DESTROY
       ::End()
    ELSEIF ::bOther != Nil

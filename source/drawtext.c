@@ -352,14 +352,39 @@ HB_FUNC( SETCTRLFONT )
 
 HB_FUNC( OEMTOANSI )
 {
-   char *buffer = hb_parc(1);
-   OemToChar( buffer, buffer );
-   hb_retc( buffer );
+   PHB_ITEM pString = hb_param( 1, HB_IT_STRING );
+
+   if( pString )
+   {
+      DWORD ulLen = pString->item.asString.length;
+      char * pszDst = ( char * ) hb_xgrab( ulLen + 1 );
+
+      OemToCharBuff( ( LPCSTR ) pString->item.asString.value, ( LPSTR ) pszDst, ulLen );
+
+      hb_retclenAdopt( pszDst, ulLen );
+   }
+   else
+   {
+      hb_retc( "" );
+   }
 }
 
 HB_FUNC( ANSITOOEM )
 {
-   char *buffer = hb_parc(1);
-   CharToOem( buffer, buffer );
-   hb_retc( buffer );
+
+   PHB_ITEM pString = hb_param( 1, HB_IT_STRING );
+   if( pString )
+
+   {
+      DWORD ulLen = pString->item.asString.length;
+      char * pszDst = ( char * ) hb_xgrab( ulLen + 1 );
+
+      CharToOemBuff( ( LPCSTR ) pString->item.asString.value, ( LPSTR ) pszDst, ulLen );
+
+      hb_retclenAdopt( pszDst, ulLen );
+   }
+   else
+   {
+      hb_retc( "" );
+   }
 }

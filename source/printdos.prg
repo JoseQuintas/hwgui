@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.12 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: printdos.prg,v 1.13 2004-08-08 01:32:16 lculik Exp $
  *
  * CLASS PrintDos
  *
@@ -123,8 +123,10 @@ METHOD New(oPorta) CLASS PrintDos
 
      If oPorta=="GRAPHIC" .or. oPorta=="PREVIEW"               
           ::gText := ""         
-     Else           
+     Else
+           tracelog([          ::gText:=fCreate(::oPorta)])
           ::gText:=fCreate(::oPorta)
+          tracelog([depois           ::gText:=fCreate(::oPorta)],::gtext)
           if ::gText<0
              ::LastError:=fError()
           Else
@@ -157,7 +159,7 @@ METHOD Comando(oComm1,oComm2, oComm3, oComm4, oComm5, oComm6, oComm7,;
 
  
    If ::oAns2Oem
-     ::oText += ANSITOOEM(oStr)
+     ::oText += HB_ANSITOOEM(oStr)
    Else
      ::oText += oStr
    EndIf
@@ -167,24 +169,26 @@ Return Nil
 
 METHOD gWrite(oText)  CLASS PrintDos
 
+tracelog(otext)
     If ::oAns2Oem
-       ::oText += ANSITOOEM(oText)
-       ::nPcol += len(ANSITOOEM(oText))
+       ::oText += HB_ANSITOOEM(oText)
+       ::nPcol += len(HB_ANSITOOEM(oText))
     Else
        ::oText += oText
        ::nPcol += len(oText)
     EndIf
-
+tracelog(otext)
 
 Return Nil
 
 METHOD Eject()   CLASS PrintDos
+tracelog( ::gText, ::oText )
     
      fWrite( ::gText, ::oText )
      
      If ::oAns2Oem
-        fWrite( ::gText, ANSITOOEM(Chr(13)+Chr(10)+Chr(Val(::cEject))))
-        fWrite(::gText, ANSITOOEM(Chr(13)+Chr(10))) 
+        fWrite( ::gText, HB_ANSITOOEM(Chr(13)+Chr(10)+Chr(Val(::cEject))))
+        fWrite(::gText, HB_ANSITOOEM(Chr(13)+Chr(10))) 
      Else
         fWrite( ::gText,Chr(13)+Chr(10)+Chr(Val(::cEject)))
         fWrite(::gText, Chr(13)+Chr(10))
@@ -193,7 +197,7 @@ METHOD Eject()   CLASS PrintDos
      ::oText :=""
      ::nProw := 0
      ::nPcol := 0
-     
+    tracelog( ::gText, ::oText )     
 Return Nil
 
 METHOD Compress() CLASS PrintDos
@@ -217,7 +221,7 @@ Return Nil
 METHOD NewLine() CLASS PrintDos
  
     If ::oAns2Oem
-      ::oText += ANSITOOEM(Chr(13)+Chr(10))
+      ::oText += HB_ANSITOOEM(Chr(13)+Chr(10))
     Else
       ::oText += Chr(13)+Chr(10)
     EndIf
@@ -225,7 +229,7 @@ METHOD NewLine() CLASS PrintDos
 Return Nil
 
 METHOD Say(oProw, oPcol, oTexto, oPicture) CLASS PrintDos
- 
+     tracelog(oProw, oPcol, oTexto, oPicture)
     If Valtype(oTexto)=="N"
         
        If !Empty(oPicture) .or. oPicture#Nil
@@ -241,9 +245,9 @@ METHOD Say(oProw, oPcol, oTexto, oPicture) CLASS PrintDos
           oTexto:=Transform(oTexto, oPicture)
        Endif
     EndIf   
-    
+tracelog([antes     ::SetCols(oProw, oPcol)])
     ::SetCols(oProw, oPcol)
-
+tracelog([depois de ::SetCols(oProw, oPcol) e  antes         ::gWrite(oTexto))])
     ::gWrite(oTexto)
 
 Return Nil
@@ -393,7 +397,7 @@ IF han <> - 1
          AADD(oText,"")
       ENDIF
       If ::oAns2Oem
-          oText[oPage]+=ANSITOOEM(stroka) + Chr(13) + Chr(10)
+          oText[oPage]+=HB_ANSITOOEM(stroka) + Chr(13) + Chr(10)
       Else
           oText[oPage]+=stroka + Chr(13) + Chr(10)
       EndIf

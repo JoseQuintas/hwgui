@@ -1,5 +1,5 @@
 /*
- * $Id: hsplit.prg,v 1.5 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: hsplit.prg,v 1.6 2004-10-22 08:45:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSplitter class
@@ -22,7 +22,7 @@ CLASS HSplitter INHERIT HControl
    DATA hCursor
    DATA lCaptured INIT .F.
    DATA lMoved INIT .F.
-   // DATA oPenLight, oPenGray
+   DATA bEndDrag
 
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight, ;
                   bSize,bPaint,color,bcolor,aLeft,aRight )
@@ -78,6 +78,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
       ReleaseCapture()
       ::DragAll()
       ::lCaptured := .F.
+      IF ::bEndDrag != Nil
+         Eval( ::bEndDrag,Self )
+      ENDIF
    ELSEIF msg == WM_DESTROY
       ::End()
    ENDIF
@@ -165,29 +168,3 @@ Local i, oCtrl, nDiff
 
 Return Nil
 
-/*
-Function DefSplitterProc( hCtrl, msg, wParam, lParam )
-Local oCtrl
-   // writelog( "DefSplitterProc: " + Str(hCtrl,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
-   oCtrl := GetWindowObject( hCtrl )
-   IF msg == WM_MOUSEMOVE
-      IF oCtrl:hCursor == Nil
-         oCtrl:hCursor := LoadCursor( Iif( oCtrl:lVertical,IDC_SIZEWE,IDC_SIZENS ) )
-      ENDIF
-      Hwg_SetCursor( oCtrl:hCursor )
-      IF oCtrl:lCaptured
-         oCtrl:Drag( lParam )
-      ENDIF
-   ELSEIF msg == WM_PAINT
-      oCtrl:Paint()
-   ELSEIF msg == WM_LBUTTONDOWN
-      Hwg_SetCursor( oCtrl:hCursor )
-      SetCapture( hCtrl )
-      oCtrl:lCaptured := .T.
-   ELSEIF msg == WM_LBUTTONUP
-      ReleaseCapture()
-      oCtrl:DragAll()
-      oCtrl:lCaptured := .F.
-   ENDIF
-Return -1
-*/

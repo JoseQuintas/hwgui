@@ -29,6 +29,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD Disable()	INLINE EnableWindow( ::handle, .F. )
    METHOD Enable()	INLINE EnableWindow( ::handle, .T. )
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
+   METHOD SetFocus()	INLINE SetFocus( ::handle  )   
 
 ENDCLASS
 

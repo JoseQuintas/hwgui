@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.5 2005-01-20 08:38:26 alkresin Exp $
+ * $Id: control.c,v 1.6 2005-01-20 09:48:41 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -327,6 +327,26 @@ HB_FUNC( CREATEBROWSE )
    
    hb_retnl( (LONG) hbox );
 }
+
+HB_FUNC( HWG_CREATESEP )
+{
+   BOOL lVert = hb_parl(2);
+   GtkWidget * hCtrl;
+
+   if( lVert )
+      hCtrl = gtk_vseparator_new();
+   else
+      hCtrl = gtk_hseparator_new();
+   
+   GtkFixed * box = getFixedBox( (GObject*) hb_parnl(1) );
+   if ( box )
+      gtk_fixed_put( box, hCtrl, hb_parni(3), hb_parni(4) );  
+   gtk_widget_set_size_request( hCtrl,hb_parni(5),hb_parni(6) );
+
+   hb_retnl( (LONG) hCtrl );
+
+}
+
 
 HB_FUNC( ADDTOOLTIP )
 {

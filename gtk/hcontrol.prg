@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.3 2005-01-20 08:38:26 alkresin Exp $
+ *$Id: hcontrol.prg,v 1.4 2005-01-20 09:48:41 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -290,11 +290,9 @@ CLASS HLine INHERIT HControl
 
    CLASS VAR winclass   INIT "STATIC"
    DATA lVert
-   DATA oPenLight, oPenGray
 
    METHOD New( oWndParent,nId,lVert,nLeft,nTop,nLength,bSize )
    METHOD Activate()
-   METHOD Paint()
 
 ENDCLASS
 
@@ -313,41 +311,15 @@ METHOD New( oWndParent,nId,lVert,nLeft,nTop,nLength,bSize ) CLASS hline
       ::nHeight := 10
    ENDIF
 
-   // ::oPenLight := HPen():Add( BS_SOLID,1,GetSysColor(COLOR_3DHILIGHT) )
-   // ::oPenGray  := HPen():Add( BS_SOLID,1,GetSysColor(COLOR_3DSHADOW) )
-
    ::Activate()
 
 Return Self
 
 METHOD Activate CLASS hline
    IF ::oParent:handle != 0
-      ::handle := CreateStatic( ::oParent:handle, ::id, ;
-                  ::style, ::nLeft, ::nTop, ::nWidth,::nHeight )
+      ::handle := hwg_CreateSep( ::oParent:handle, ::lVert, ::nLeft, ::nTop, ;
+                                 ::nWidth,::nHeight )
       ::Init()
    ENDIF
-Return Nil
-
-METHOD Paint( lpdis ) CLASS hline
-/*
-Local drawInfo := GetDrawItemInfo( lpdis )
-Local hDC := drawInfo[3], x1 := drawInfo[4], y1 := drawInfo[5], x2 := drawInfo[6], y2 := drawInfo[7]
-
-   SelectObject( hDC, ::oPenLight:handle )
-   IF ::lVert
-      // DrawEdge( hDC,x1,y1,x1+2,y2,EDGE_SUNKEN,BF_RIGHT )
-      DrawLine( hDC, x1+1,y1,x1+1,y2 )
-   ELSE
-      // DrawEdge( hDC,x1,y1,x2,y1+2,EDGE_SUNKEN,BF_RIGHT )
-      DrawLine( hDC, x1,y1+1,x2,y1+1 )
-   ENDIF
-   
-   SelectObject( hDC, ::oPenGray:handle )
-   IF ::lVert
-      DrawLine( hDC, x1,y1,x1,y2 )
-   ELSE
-      DrawLine( hDC, x1,y1,x2,y1 )
-   ENDIF
-*/   
 Return Nil
 

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.22 2004-11-11 08:37:12 alkresin Exp $
+ * $Id: control.c,v 1.23 2004-11-21 12:33:16 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1001,6 +1001,32 @@ HB_FUNC( HWG_REGOWNBTN )
       wndclass.hIcon         = NULL;
       wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
       wndclass.hbrBackground = (HBRUSH)( COLOR_3DFACE+1 );
+      wndclass.lpszMenuName  = NULL;
+      wndclass.lpszClassName = szAppName ;
+
+      RegisterClass (&wndclass);
+      bRegistered = 1;
+   }
+}
+
+HB_FUNC( HWG_REGBROWSE )
+{
+
+   static TCHAR szAppName[] = TEXT ( "BROWSE" );
+   static BOOL  bRegistered = 0;
+   WNDCLASS     wndclass ;
+
+   if( !bRegistered )
+   {
+      wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
+      wndclass.lpfnWndProc   = WinCtrlProc;
+      wndclass.cbClsExtra    = 0 ;
+      wndclass.cbWndExtra    = 0 ;
+      wndclass.hInstance     = GetModuleHandle( NULL );
+      // wndclass.hIcon         = LoadIcon (NULL, IDI_APPLICATION) ;
+      wndclass.hIcon         = NULL;
+      wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
+      wndclass.hbrBackground = (HBRUSH)( COLOR_WINDOW+1 );
       wndclass.lpszMenuName  = NULL;
       wndclass.lpszClassName = szAppName ;
 

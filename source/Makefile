@@ -11,7 +11,6 @@ C_SOURCES=\
 	message.c \
 	misc.c \
 	registry.c \
-	wbrowse.c \
 	shellapi.c \
 	media_c.c \
 	richedit.c \

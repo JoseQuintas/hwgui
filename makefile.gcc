@@ -1,4 +1,4 @@
-# $Id: makefile.gcc,v 1.8 2004-10-19 05:43:41 alkresin Exp $
+# $Id: makefile.gcc,v 1.9 2004-11-21 12:33:14 alkresin Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -31,7 +31,6 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/resource.o \
    $(OBJ_DIR)/richedit.o \
    $(OBJ_DIR)/shellapi.o \
-   $(OBJ_DIR)/wbrowse.o \
    $(OBJ_DIR)/window.o \
    $(OBJ_DIR)/wprint.o \
    $(OBJ_DIR)/drawwidg.o \
@@ -102,8 +101,6 @@ $(OBJ_DIR)/resource.o : $(SRC_DIR)/resource.c
 $(OBJ_DIR)/richedit.o  : $(SRC_DIR)/richedit.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 $(OBJ_DIR)/shellapi.o : $(SRC_DIR)/shellapi.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
-$(OBJ_DIR)/wbrowse.o  : $(SRC_DIR)/wbrowse.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 $(OBJ_DIR)/window.o   : $(SRC_DIR)/window.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^

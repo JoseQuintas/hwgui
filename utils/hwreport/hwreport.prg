@@ -67,7 +67,7 @@ Public aItemTypes := { "TEXT","HLINE","VLINE","BOX","BITMAP","MARKER" }
        ON IDM_ITEMDF    ACTION (nAddItem:=TYPE_MARKER,nMarkerType:=MARKER_DF) ;
        ON IDM_ITEMDEL   ACTION DeleteItem()           ;
        ON IDM_FOPT      ACTION FormOptions()          ;
-       ON IDM_VIEW1     ACTION (CheckMenuItem(,IDM_VIEW1,!IsCheckedMenuItem(,IDM_VIEW1)),Iif(IsCheckedMenuItem(,IDM_VIEW1),DeselectAll(),.F.),RedrawWindow(Hwindow():GetMain():handle,RDW_ERASE+RDW_INVALIDATE));
+       ON IDM_VIEW1     ACTION (ShowScrollBar(aMainWindow:handle,SB_VERT,IsCheckedMenuItem(,IDM_VIEW1)),CheckMenuItem(,IDM_VIEW1,!IsCheckedMenuItem(,IDM_VIEW1)),Iif(IsCheckedMenuItem(,IDM_VIEW1),DeselectAll(),.F.),RedrawWindow(Hwindow():GetMain():handle,RDW_ERASE+RDW_INVALIDATE));
        ON IDM_MOUSE2    ACTION (CheckMenuItem(,IDM_MOUSE2,!IsCheckedMenuItem(,IDM_MOUSE2)))
 
    EnableMenuItem( ,IDM_CLOSE, .F., .T. )

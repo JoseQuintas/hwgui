@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.304 2004-11-19 15:10:28 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.305 2004-11-21 12:33:08 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,29 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-11-21 15:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hcwindow.prg
+  * source/hdialog.prg
+  * source/hwindow.prg
+  * source/hpanel.prg
+    ! Fixed handling of scroll messages
+  * source/control.c
+  * source/misc.c
+    ! Functions from wbrowse.c moved here
+    + New function added: ShowScrollBar()
+  - source/wbrowse.c
+  * source/Makefile
+  * makedll.bc
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * makefile.vc
+  * makefile.wc
+    * Makefiles are changed due to the wbrowse.c removing
+  * utils/hwreport/hwreport.prg
+  * utils/hwreport/opensave.prg
+    * Small interface fixes
 
 2004-11-19 13-10 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/hdialog.prg

@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.10 2004-10-19 05:43:42 alkresin Exp $
+# $Id: makefile.vc,v 1.11 2004-11-21 12:33:14 alkresin Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -33,7 +33,6 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\richedit.obj \
    $(OBJ_DIR)\shellapi.obj  \
-   $(OBJ_DIR)\wbrowse.obj \
    $(OBJ_DIR)\window.obj \
    $(OBJ_DIR)\wprint.obj \
    $(OBJ_DIR)\drawwidg.obj \
@@ -104,8 +103,6 @@ $(OBJ_DIR)\resource.obj : $(SRC_DIR)\resource.c
 $(OBJ_DIR)\richedit.obj  : $(SRC_DIR)\richedit.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
 $(OBJ_DIR)\shellapi.obj : $(SRC_DIR)\shellapi.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
-$(OBJ_DIR)\wbrowse.obj  : $(SRC_DIR)\wbrowse.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
 $(OBJ_DIR)\window.obj   : $(SRC_DIR)\window.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**

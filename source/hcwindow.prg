@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.4 2004-11-14 13:54:00 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.5 2004-11-21 12:33:16 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -14,7 +14,7 @@
 
 static aCustomEvents := { ;
       { WM_NOTIFY,WM_PAINT,WM_CTLCOLORSTATIC,WM_CTLCOLOREDIT,WM_CTLCOLORBTN, ;
-        WM_COMMAND,WM_DRAWITEM,WM_SIZE,WM_HSCROLL,WM_VSCROLL,WM_DESTROY }, ;
+        WM_COMMAND,WM_DRAWITEM,WM_SIZE,WM_DESTROY }, ;
       { ;
         {|o,w,l|onNotify(o,w,l)},                        ;
         {|o,w|Iif(o:bPaint!=Nil,Eval(o:bPaint,o,w),-1)}, ;
@@ -24,8 +24,6 @@ static aCustomEvents := { ;
         {|o,w,l|onCommand(o,w)},                         ;
         {|o,w,l|onDrawItem(o,w,l)},                      ;
         {|o,w,l|onSize(o,w,l)},                          ;
-        {|o,w,l|onScroll(o,w,l)},                        ;
-        {|o,w,l|onScroll(o,w,l)},                        ;
         {|o|onDestroy(o)}                                ;
       } ;
                         }
@@ -263,7 +261,7 @@ Local oItem, iCont
 
 Return -1
 
-Static Function onScroll( oWnd,wParam,lParam )
+Function onTrackScroll( oWnd,wParam,lParam )
 Local oCtrl := oWnd:FindControl( , lParam ), msg
 
    IF oCtrl != Nil
@@ -271,11 +269,14 @@ Local oCtrl := oWnd:FindControl( , lParam ), msg
       IF msg == TB_ENDTRACK
          IF ISBLOCK( oCtrl:bChange )
             Eval( oCtrl:bChange,oCtrl )
+            Return 0
          ENDIF
       ELSEIF msg == TB_THUMBTRACK .OR. msg == TB_PAGEUP .OR. msg == TB_PAGEDOWN
          IF ISBLOCK( oCtrl:bThumbDrag )
             Eval( oCtrl:bThumbDrag,oCtrl )
+            Return 0
          ENDIF
       ENDIF
    ENDIF
-Return 0
+
+Return -1

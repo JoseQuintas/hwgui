@@ -12,6 +12,8 @@
 #include "repmain.h"
 #include "fileio.ch"
 
+#define SB_VERT         1
+
 Function FileDlg( lOpen )
 Local oDlg
 
@@ -105,6 +107,7 @@ Local i, aItem
          ENDIF
       NEXT
       aPaintRep := Nil
+      ShowScrollBar( Hwindow():GetMain():handle,SB_VERT,.F. )
       RedrawWindow( Hwindow():GetMain():handle, RDW_ERASE + RDW_INVALIDATE )
       EnableMenuItem( ,1, .F., .F. )
    ENDIF

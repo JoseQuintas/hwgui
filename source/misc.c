@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.14 2004-11-11 08:37:12 alkresin Exp $
+ * $Id: misc.c,v 1.15 2004-11-21 12:33:16 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -441,4 +441,83 @@ HB_FUNC( KEYB_EVENT )
    if( bShift )
       keybd_event( VK_SHIFT, 0, KEYEVENTF_KEYUP, 0 );
 
+}
+
+/* SetScrollInfo( hWnd, nType, nRedraw, nPos, nPage )
+*/
+HB_FUNC( SETSCROLLINFO )
+{
+   SCROLLINFO si;
+   UINT fMask = (hb_pcount()<4)? SIF_DISABLENOSCROLL:0;
+
+   if( hb_pcount() > 3 && !ISNIL( 4 ) )
+   {
+      si.nPos = hb_parni( 4 );
+      fMask |= SIF_POS;
+   }
+   if( hb_pcount() > 4 && !ISNIL( 5 ) )
+   {
+      si.nPage = hb_parni( 5 );
+      fMask |= SIF_PAGE;
+   }
+
+   if( hb_pcount() > 5 && !ISNIL( 6 ) )
+   {
+      si.nMin = 1;
+      si.nMax = hb_parni( 6 );
+      fMask |= SIF_RANGE;
+   }
+
+   si.cbSize = sizeof( SCROLLINFO );
+   si.fMask = fMask;
+
+   SetScrollInfo(
+    (HWND) hb_parnl( 1 ), // handle of window with scroll bar
+    hb_parni( 2 ),	  // scroll bar flags
+    &si, hb_parni( 3 )    // redraw flag
+   );
+}
+
+HB_FUNC( GETSCROLLRANGE )
+{
+
+   int MinPos, MaxPos;
+
+   GetScrollRange(
+    (HWND) hb_parnl( 1 ),	// handle of window with scroll bar
+    hb_parni( 2 ),	// scroll bar flags
+    &MinPos,	// address of variable that receives minimum position
+    &MaxPos 	// address of variable that receives maximum position
+   );
+   hb_storni( MinPos, 3 );
+   hb_storni( MaxPos, 4 );
+}
+
+HB_FUNC( GETSCROLLPOS )
+{
+
+   hb_retni( GetScrollPos(
+               (HWND) hb_parnl( 1 ),	// handle of window with scroll bar
+               hb_parni( 2 )	// scroll bar flags
+             ) );
+}
+
+HB_FUNC( SETSCROLLPOS )
+{
+
+   SetScrollPos(
+      (HWND) hb_parnl( 1 ),	// handle of window with scroll bar
+      hb_parni( 2 ),	// scroll bar flags
+      hb_parni( 3 ),
+      TRUE
+   );
+}
+
+HB_FUNC( SHOWSCROLLBAR )
+{
+   ShowScrollBar(
+      (HWND) hb_parnl( 1 ),	// handle of window with scroll bar
+      hb_parni( 2 ),	        // scroll bar flags
+      hb_parl( 3 )              // scroll bar visibility
+   );
 }

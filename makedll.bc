@@ -40,7 +40,6 @@ $(LIB_DIR)\hwguidll.dll:   \
    $(OBJ_DIR)\registry.obj \
    $(OBJ_DIR)\richedit.obj \
    $(OBJ_DIR)\shellapi.obj  \
-   $(OBJ_DIR)\wbrowse.obj \
    $(OBJ_DIR)\window.obj \
    $(OBJ_DIR)\wprint.obj \
    $(OBJ_DIR)\drawwidg.obj \
@@ -149,7 +148,6 @@ $(OBJ_DIR)\message.obj  : $(SRC_DIR)\message.c
 $(OBJ_DIR)\registry.obj : $(SRC_DIR)\registry.c
 $(OBJ_DIR)\richedit.obj : $(SRC_DIR)\richedit.c
 $(OBJ_DIR)\shellapi.obj : $(SRC_DIR)\shellapi.c
-$(OBJ_DIR)\wbrowse.obj  : $(SRC_DIR)\wbrowse.c
 $(OBJ_DIR)\window.obj   : $(SRC_DIR)\window.c
 $(OBJ_DIR)\wprint.obj   : $(SRC_DIR)\wprint.c
 $(OBJ_DIR)\resource.obj   : $(SRC_DIR)\resource.c

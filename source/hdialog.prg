@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.31 2004-11-19 15:10:32 sandrorrfreire Exp $
+ * $Id: hdialog.prg,v 1.32 2004-11-21 12:33:16 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -164,6 +164,9 @@ Local i
    IF ( i := Ascan( aMessModalDlg, {|a|a[1]==msg} ) ) != 0
       Return Eval( aMessModalDlg[i,2], Self, wParam, lParam )
    ELSE
+      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
+         onTrackScroll( Self,wParam,lParam )
+      ENDIF
       Return Super:onEvent( msg, wParam, lParam )
    ENDIF
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.104 2004-04-22 06:39:17 alkresin Exp $
+ * $Id: Changelog,v 1.105 2004-04-26 08:55:06 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,21 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-04-26 12:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hdialog.prg
+  * source/menu.prg
+    * Added possibility to create main menu for a dialog
+  * source/window.c
+    * GetWindowText( handle ) function added.
+    * Some redundant code is removed.
+  * source/hwindow.prg
+  * source/guimain.prg
+    * Small changes due to the window.c cleanup.
+  * source/hcontrol.prg
+    * HControl():GetText() method added.
+  * samples/a.prg
+    * Main menu for a dialog sample added.
 
 2004-04-22 10:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/guilib.ch

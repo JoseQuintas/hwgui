@@ -1,11 +1,11 @@
 /*
- * $Id: window.c,v 1.14 2004-04-19 07:39:47 alkresin Exp $
+ * $Id: window.c,v 1.15 2004-04-26 08:55:07 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #define HB_OS_WIN_32_USED
@@ -32,7 +32,6 @@
 #include <limits.h>
 
 #define  FIRST_MDICHILD_ID     501
-#define  MAX_MDICHILD_WINDOWS  18
 
 extern HB_HANDLE hb_memvarGetVarHandle( char *szName );
 extern PHB_ITEM hb_memvarGetValueByHandle( HB_HANDLE hMemvar );
@@ -57,8 +56,7 @@ LRESULT APIENTRY TabSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 extern HWND aDialogs[];
 extern int iDialogs;
 
-HWND aWindows[ MAX_MDICHILD_WINDOWS + 2 ];
-int iWindows = 0;
+HWND aWindows[2] = { 0,0 };
 HACCEL hAccel = NULL;
 static TCHAR szChild[] = TEXT ( "MDICHILD" );
 static WNDPROC wpOrigEditProc, wpOrigTabProc;
@@ -66,17 +64,6 @@ static WNDPROC wpOrigEditProc, wpOrigTabProc;
 /*  Creates main application window
     InitMainWindow( szAppName, cTitle, cMenu, hIcon, nBkColor, nStyle, nLeft, nTop, nWidth, nHeight )
 */
-
-HB_FUNC ( HWG_GETWINDOWHANDLE )
-{
-   hb_retnl( (LONG)aWindows[ hb_parni(1)-1 ] );
-}
-
-
-HB_FUNC ( HWG_GETNUMWINDOWS )
-{
-   hb_retni( iWindows );
-}
 
 HB_FUNC ( HWG_INITMAINWINDOW )
 {
@@ -93,7 +80,7 @@ HB_FUNC ( HWG_INITMAINWINDOW )
    int width = hb_parnl(9);
    int height = hb_parnl(10);
 
-   if ( iWindows > 0 )
+   if ( aWindows[0] )
    {
       hb_retni( 0 );
       return;
@@ -128,7 +115,7 @@ HB_FUNC ( HWG_INITMAINWINDOW )
    (height==0)? CW_USEDEFAULT:height,
    NULL, NULL, (HINSTANCE)hInstance, NULL) ;
 
-   aWindows[ iWindows++ ] = hWnd;
+   aWindows[0] = hWnd;
    hb_retnl( (LONG) hWnd );
 }
 
@@ -262,7 +249,6 @@ HB_FUNC ( HWG_INITCHILDWINDOW )
    (height==0)? CW_USEDEFAULT:height,
    hParent, NULL, (HINSTANCE)hInstance, NULL) ;
 
-   aWindows[ iWindows++ ] = hWnd;
    hb_retnl( (LONG) hWnd );
 }
 
@@ -306,7 +292,7 @@ HB_FUNC ( HWG_INITMDIWINDOW )
    int width = hb_parnl(9);
    int height = hb_parnl(10);
 
-   if ( iWindows > 0 )
+   if ( aWindows[0] )
    {
       hb_retni( -1 );
       return;
@@ -365,10 +351,7 @@ HB_FUNC ( HWG_INITMDIWINDOW )
       return;
    }
 
-   iWindows = 1;
-   aWindows[ 0 ] = hWnd;
-
-
+   aWindows[0] = hWnd;
    hb_retnl( (LONG) hWnd );
 }
 
@@ -392,7 +375,7 @@ HB_FUNC ( HWG_INITCLIENTWINDOW )
                        aWindows[0], NULL, GetModuleHandle( NULL ), (LPSTR) &ccs );
 
    aWindows[1] = hWndClient;
-   iWindows = 2;
+   hb_retnl( (LONG) hWndClient );
 }
 
 HB_FUNC ( HWG_ACTIVATEMDIWINDOW )
@@ -435,7 +418,7 @@ HB_FUNC ( HWG_CREATEMDICHILDWINDOW )
    if( !style )
       style = WS_VISIBLE | WS_OVERLAPPEDWINDOW | WS_MAXIMIZE;
 
-   if( !iWindows || iWindows > MAX_MDICHILD_WINDOWS+1 )
+   if( !aWindows[0] )
    {
       hb_retni( 0 );
       return;
@@ -454,7 +437,6 @@ HB_FUNC ( HWG_CREATEMDICHILDWINDOW )
        0		 	// application-defined value 
    );
 
-   aWindows[ iWindows++ ] = hWnd;
    hb_retnl( (LONG) hWnd );
 
 }
@@ -532,6 +514,25 @@ HB_FUNC ( GETWINDOWOBJECT )
    }
 }
 
+HB_FUNC ( SETWINDOWTEXT)
+{
+   SetWindowText( (HWND) hb_parnl( 1 ), (LPCTSTR) hb_parc( 2 ) );
+}
+
+HB_FUNC ( GETWINDOWTEXT )
+{
+   HWND   hWnd = (HWND) hb_parnl( 1 );
+   USHORT iLen = (USHORT)SendMessage( hWnd, WM_GETTEXTLENGTH, 0, 0 );
+   char *cText = (char*) hb_xgrab( iLen+2 );
+
+   iLen = (USHORT)SendMessage( hWnd, WM_GETTEXT, (WPARAM)(iLen+1), (LPARAM)cText );
+   if( iLen > 0 )
+      hb_retc( cText );
+   else
+      hb_retc( "" );
+   hb_xfree( cText );
+}
+
 HB_FUNC ( ENABLEWINDOW )
 {
    HWND hWnd = (HWND) hb_parnl( 1 );
@@ -572,11 +573,6 @@ HB_FUNC( HWG_ISICONIC )
 HB_FUNC( ISWINDOWENABLED )
 {
    hb_retl( IsWindowEnabled( (HWND) hb_parnl( 1 ) ) );
-}
-
-HB_FUNC ( SETWINDOWTEXT)
-{
-   SetWindowText( (HWND) hb_parnl( 1 ), (LPCTSTR) hb_parc( 2 ) );
 }
 
 HB_FUNC ( GETACTIVEWINDOW )
@@ -727,15 +723,6 @@ LRESULT CALLBACK MDIChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM
    int i;
    long int res;
    PHB_DYNS pSymTest;
-
-   if( message == WM_DESTROY )
-   {
-      for( i=0;i<iWindows;i++ )
-         if( aWindows[ i ] == hWnd )  break;
-      iWindows --;
-      for( ;i<iWindows;i++ )
-         aWindows[ i ] = aWindows[ i+1 ];
-   }
 
    if( ( pSymTest = hb_dynsymFind( "DEFMDICHILDPROC" ) ) != NULL )
    {

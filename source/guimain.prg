@@ -1,11 +1,11 @@
 /*
- * $Id: guimain.prg,v 1.6 2004-03-22 21:15:03 rodrigo_moreno Exp $
+ * $Id: guimain.prg,v 1.7 2004-04-26 08:55:07 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -238,7 +238,7 @@ Return Nil
 
 Function EndWindow()
    IF HWindow():GetMain() != Nil
-      SendMessage( Hwg_GetWindowHandle(1), WM_SYSCOMMAND, SC_CLOSE, 0 )
+      SendMessage( HWindow():aWindows[1]:handle, WM_SYSCOMMAND, SC_CLOSE, 0 )
    ENDIF
 Return Nil
 

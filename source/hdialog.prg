@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.13 2004-04-21 12:14:08 alkresin Exp $
+ * $Id: hdialog.prg,v 1.14 2004-04-26 08:55:07 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -67,6 +67,7 @@ CLASS HDialog INHERIT HCustomWindow
    CLASS VAR aDialogs   INIT {}
    CLASS VAR aModalDialogs  INIT {}
 
+   DATA menu
    DATA oPopup                // Context menu for a dialog
    DATA lResult  INIT .F.     // Becomes TRUE if the OK button is pressed
    DATA lUpdated INIT .F.     // TRUE, if any GET is changed
@@ -193,12 +194,6 @@ Function DefModalDlgProc( hDlg, msg, wParam, lParam )
 Local oModalDlg, i
 
    // WriteLog( Str(hDlg,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
-   /*
-   IF ( oModalDlg := Atail( HDialog():aModalDialogs ) ) == Nil .OR. ;
-         ( oModalDlg:handle != Nil .AND. oModalDlg:handle != hDlg )
-      Return 0
-   ENDIF
-   */
    IF ( i := Ascan( HDialog():aModalDialogs, {|o|o:handle==hDlg} ) ) == 0 .AND. ;
       ( ( oModalDlg := Atail( HDialog():aModalDialogs ) ) == Nil .OR. oModalDlg:handle == Nil )
       Return 0
@@ -223,6 +218,9 @@ Static Function InitModalDlg( oDlg,wParam,lParam,hDlg )
 Local iCont
 
    oDlg:handle := hDlg
+   IF Valtype( oDlg:menu ) == "A"
+      hwg__SetMenu( hDlg, oDlg:menu[5] )
+   ENDIF
    InitControls( oDlg,.T. )
    IF oDlg:oIcon != Nil
       SendMessage( oDlg:handle,WM_SETICON,1,oDlg:oIcon:handle )
@@ -270,6 +268,7 @@ Static Function DlgCommand( oDlg,wParam,lParam )
 Local iParHigh := HiWord( wParam ), iParLow := LoWord( wParam )
 Local aMenu, i, hCtrl
 
+   // WriteLog( Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF iParHigh == 0 
       IF iParLow == IDOK
          hCtrl := GetFocus()
@@ -312,6 +311,10 @@ Local aMenu, i, hCtrl
          oDlg:lResult := .T.
       ENDIF
       EndDialog( oDlg:handle )
+   ELSEIF __ObjHasMsg(oDlg,"MENU") .AND. Valtype( oDlg:menu ) == "A" .AND. ;
+        ( aMenu := Hwg_FindMenuItem( oDlg:menu,iParLow,@i ) ) != Nil ;
+        .AND. aMenu[ 1,i,1 ] != Nil
+      Eval( aMenu[ 1,i,1 ] )
    ELSEIF __ObjHasMsg(oDlg,"OPOPUP") .AND. oDlg:oPopup != Nil .AND. ;
          ( aMenu := Hwg_FindMenuItem( oDlg:oPopup:aMenu,wParam,@i ) ) != Nil ;
          .AND. aMenu[ 1,i,1 ] != Nil
@@ -440,6 +443,9 @@ Local oDlg, i, aControls
       ENDIF
       oDlg := HDialog():aDialogs[ i ]
       oDlg:handle := hDlg
+      IF Valtype( oDlg:menu ) == "A"
+         hwg__SetMenu( hDlg, oDlg:menu[5] )
+      ENDIF
       InitControls( oDlg,.T. )
       aControls := oDlg:aControls
       IF aControls != Nil

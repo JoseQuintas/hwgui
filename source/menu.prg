@@ -1,11 +1,11 @@
 /*
- * $Id: menu.prg,v 1.6 2004-03-29 05:57:09 alkresin Exp $
+ * $Id: menu.prg,v 1.7 2004-04-26 08:55:07 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -54,32 +54,15 @@ Return { {},,, hMenu }
 
 Function Hwg_SetMenu( oWnd, aMenu )
 
-   IF oWnd:type == WND_MDICHILD
+   IF oWnd:handle != 0
+      IF hwg__SetMenu( oWnd:handle, aMenu[5] )
+         oWnd:menu := aMenu
+      ELSE
+         Return .F.
+      ENDIF
+   ELSE
       oWnd:menu := aMenu
-
-   ELSEIF oWnd:type == WND_MDI
-      IF hwg__SetMenu( oWnd:handle, aMenu[5] )
-         oWnd:menu := aMenu
-      ELSE
-         Return .F.
-      ENDIF
-
-   ELSEIF oWnd:type == WND_MAIN
-      IF hwg__SetMenu( oWnd:handle, aMenu[5] )
-         oWnd:menu := aMenu
-      ELSE
-         Return .F.
-      ENDIF
-
-   ELSEIF oWnd:type == WND_CHILD
-      IF hwg__SetMenu( oWnd:handle, aMenu[5] )
-         oWnd:menu := aMenu
-      ELSE
-         Return .F.
-      ENDIF
-
    ENDIF
-
 
 Return .T.
 

@@ -1,11 +1,11 @@
 /*
- *$Id: hwindow.prg,v 1.19 2004-04-07 12:05:44 alkresin Exp $
+ *$Id: hwindow.prg,v 1.20 2004-04-26 08:55:07 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -151,10 +151,9 @@ METHOD NEW( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;
 
       // Register MDI frame  class
       // Create   MDI frame  window -> aWindows[0]
-      Hwg_InitMdiWindow( ::szAppName,cTitle,cMenu,  ;
-              Iif(oIcon!=Nil,oIcon:handle,Nil),clr, ;
-              nStyle,::nLeft,::nTop,::nWidth,::nHeight )
-      ::handle = hwg_GetWindowHandle(1)
+      ::handle := Hwg_InitMdiWindow( ::szAppName,cTitle,cMenu,  ;
+                    Iif(oIcon!=Nil,oIcon:handle,Nil),clr, ;
+                    nStyle,::nLeft,::nTop,::nWidth,::nHeight )
 
    ELSEIF lType == WND_CHILD // Janelas modeless que pertencem a MAIN - jamaj
 
@@ -164,7 +163,7 @@ METHOD NEW( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;
              Iif(oIcon!=Nil,oIcon:handle,Nil),Iif(oBmp!=Nil,-1,clr),nStyle,::nLeft, ;
              ::nTop,::nWidth,::nHeight,::oParent:handle )
       Else
-          MsgStop("Nao eh possivel criar CHILD sem primeiro criar MAIN")
+          MsgStop("Create Main window first !")
           Return (NIL)
       Endif
 
@@ -174,16 +173,16 @@ RETURN Self
 
 // Alterado por jamaj - added WND_CHILD support
 METHOD Activate( lShow ) CLASS HWindow
-   Local oWndClient
+   Local oWndClient, handle
 
    IF ::type == WND_MDICHILD
       Hwg_CreateMdiChildWindow( Self )
 
    ELSEIF ::type == WND_MDI
-      Hwg_InitClientWindow( ::nMenuPos,::nLeft,::nTop+60,::nWidth,::nHeight )
+      handle := Hwg_InitClientWindow( ::nMenuPos,::nLeft,::nTop+60,::nWidth,::nHeight )
       oWndClient := HWindow():New( 0,,,::style,::title,,::nMenuPos,::bInit,::bDestroy,::bSize, ;
                               ::bPaint,::bGetFocus,::bLostFocus,::bOther )
-      oWndClient:handle = hwg_GetWindowHandle(2)
+      oWndClient:handle = handle
       Hwg_ActivateMdiWindow( ( lShow==Nil .OR. lShow ),::hAccel,::lMaximize )
 
    ELSEIF ::type == WND_MAIN

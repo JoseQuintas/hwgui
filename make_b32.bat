@@ -2,8 +2,6 @@
 if "%1" == "clean" goto CLEAN
 if "%1" == "CLEAN" goto CLEAN
 
-SET cflags=%cflags% -DXHBCVS 
-
 if not exist lib md lib
 if not exist obj md obj
 

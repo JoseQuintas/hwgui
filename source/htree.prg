@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.8 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: htree.prg,v 1.9 2004-10-04 12:15:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -188,6 +188,7 @@ Local h := ::handle, j, alen, aItems
       Adel( aItems,j )
       Asize( aItems,Len( aItems ) - 1 )
    ENDIF
+   hwg_DecreaseHolders( Self )
 
 Return Nil
 
@@ -226,6 +227,7 @@ CLASS HTree INHERIT HControl
    METHOD Expand( oNode ) BLOCK {|Self,o|SendMessage(::handle,TVM_EXPAND,TVE_EXPAND,o:handle)}
    METHOD Select( oNode ) BLOCK {|Self,o|SendMessage(::handle,TVM_SELECTITEM,TVGN_CARET,o:handle)}
    METHOD Clean()
+   METHOD End()   INLINE ReleaseTree( ::aItems )
 
 ENDCLASS
 
@@ -302,9 +304,20 @@ METHOD Clean() CLASS HTree
 
    ::lEmpty := .T.
    SendMessage( ::handle,TVM_DELETEITEM,0,TVI_ROOT )
+   ReleaseTree( ::aItems )
    ::aItems := {}
 
 Return Nil
+
+Static Procedure ReleaseTree( aItems )
+Local i, iLen := Len( aItems )
+
+   FOR i := 1 TO iLen
+      ReleaseTree( aItems[i]:aItems )
+      hwg_DecreaseHolders( aItems[i] )
+   NEXT
+
+Return
 
 Function TreeNotify( oTree,lParam )
 Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct

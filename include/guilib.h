@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.h,v 1.8 2004-08-02 10:26:50 lf_sfnet Exp $
+ *$Id: guilib.h,v 1.9 2004-10-04 12:15:11 alkresin Exp $
  */
 
 #define	WND_DLG_RESOURCE       10
@@ -11,6 +11,4 @@
   #else
     #define	hb_stackReturn()        (&hb_stack.Return)
   #endif
-#else
-  // #define XHBCVS    
 #endif

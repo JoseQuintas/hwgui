@@ -1,4 +1,4 @@
-# $Id: makefile.wc,v 1.5 2004-06-22 03:12:25 marcosgambeta Exp $
+# $Id: makefile.wc,v 1.6 2004-10-04 12:15:11 alkresin Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -15,10 +15,6 @@ CC_EXE = WPP386
 LIB_EXE = LIB386
 HARBOURFLAGS = -i$(INCLUDE_DIR) -n1 -q0 -w -es2 -gc0
 CFLAGS = -j -w3 -d0 -5 -fp5 -s -onaehtzr -oi+ -ei -zp8 -zq -zt0 -mf -bt=NT -i$(INCLUDE_DIR)
-
-!ifdef __XHARBOUR__
-CFLAGS = $(CFLAGS) -dXHBCVS
-!endif
 
 !ifndef ECHO
 ECHO = echo.

@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.12 2004-09-29 05:24:52 alkresin Exp $
+ *$Id: htab.prg,v 1.13 2004-10-04 12:15:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -42,8 +42,7 @@ CLASS HTab INHERIT HControl
    METHOD HidePage( nPage )
    METHOD ShowPage( nPage )
    METHOD GetActivePage( nFirst,nEnd )
-
-   METHOD  End()
+   METHOD End()  INLINE hwg_DecreaseHolders( Self )
 
    HIDDEN:
      DATA  nActive  INIT 0         // Active Page
@@ -211,15 +210,6 @@ METHOD GetActivePage( nFirst,nEnd ) CLASS HTab
    ENDIF
 
 Return ::nActive
-
-METHOD End() CLASS HTab
-Local aControls := ::aControls, nControls := Len( aControls ), i
-   FOR i := 1 TO nControls
-      IF __ObjHasMsg( aControls[i],"END" )
-         aControls[i]:End()
-      ENDIF
-   NEXT
-Return Nil
 
 Function DefTabProc( hTab, msg, wParam, lParam )
 Local oTab, iParHigh := HiWord( wParam ), iParLow := LoWord( wParam ), iItem, res, nCode

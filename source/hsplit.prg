@@ -1,5 +1,5 @@
 /*
- * $Id: hsplit.prg,v 1.3 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hsplit.prg,v 1.4 2004-10-04 12:15:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSplitter class
@@ -31,6 +31,7 @@ CLASS HSplitter INHERIT HControl
    METHOD Paint( lpdis )
    METHOD Drag( lParam )
    METHOD DragAll()
+   METHOD End()  INLINE hwg_DecreaseHolders( Self )
 
 ENDCLASS
 

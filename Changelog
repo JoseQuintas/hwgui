@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.273 2004-10-01 12:45:39 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.274 2004-10-04 12:15:11 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,25 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-10-04 16:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * make_b32.bat
+   * makedll.bat
+   * makefile.pc
+   * makefile.wc
+   * include/guilib.h
+     - Removed redundant XHBCVS environment variable
+   * source/control.c
+   * source/window.c
+     - Removed XHBCVS variable checking, UIHOLDERS is used instead. Now,
+       you should set the UIHOLDERS if you use an old [x]Harbour release.
+     + An internal function hwg_DecreaseHolders( o ) has been added
+   * source/hdialog.prg
+   * source/hpanel.prg
+   * source/hsplit.prg
+   * source/htab.prg
+   * source/htree.prg
+     ! Some fixes to decrease the object's ulHolders when the object is destroyed.
 
 2004-10-01 09-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
    * include/guilib.ch

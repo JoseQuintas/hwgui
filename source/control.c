@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.18 2004-09-09 12:20:14 lf_sfnet Exp $
+ * $Id: control.c,v 1.19 2004-10-04 12:15:11 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -616,7 +616,7 @@ HB_FUNC( TREEADDNODE )
    tvi.mask    = TVIF_TEXT | TVIF_PARAM;
    tvi.pszText = hb_parc(6);
 
-   #ifdef  XHBCVS
+   #ifndef  UIHOLDERS
    pObject->item.asArray.value->ulHolders++;
    #else
    pObject->item.asArray.value->uiHolders++;
@@ -687,7 +687,7 @@ HB_FUNC( TREEGETSELECTED )
       oNode->type = HB_IT_OBJECT;
       SendMessage( (HWND)hb_parnl(1), TVM_GETITEM, 0, (LPARAM)(&TreeItem) );
       oNode->item.asArray.value = (struct _HB_BASEARRAY*)TreeItem.lParam;
-   #ifdef  XHBCVS
+   #ifndef  UIHOLDERS
       oNode->item.asArray.value->ulHolders++;
    #else
       oNode->item.asArray.value->uiHolders++;
@@ -778,7 +778,7 @@ HB_FUNC( TREE_GETNOTIFY )
          oNode->item.asArray.value = (struct _HB_BASEARRAY*)(((TV_DISPINFO *) hb_parnl(1))->item.lParam);
       else
          oNode->item.asArray.value = (struct _HB_BASEARRAY*)(((NM_TREEVIEW *) hb_parnl(1))->itemNew.lParam);
-   #ifdef  XHBCVS
+   #ifndef  UIHOLDERS
       oNode->item.asArray.value->ulHolders++;
    #else
       oNode->item.asArray.value->uiHolders++;
@@ -834,7 +834,7 @@ HB_FUNC( TREE_HITTEST )
 
       SendMessage( hTree, TVM_GETITEM, 0, (LPARAM)(&TreeItem) );
       oNode->item.asArray.value = (struct _HB_BASEARRAY*)TreeItem.lParam;
-   #ifdef  XHBCVS
+   #ifndef  UIHOLDERS
       oNode->item.asArray.value->ulHolders++;
    #else
       oNode->item.asArray.value->uiHolders++;

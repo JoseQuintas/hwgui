@@ -1,4 +1,4 @@
-# $Id: makefile.pc,v 1.5 2004-06-22 03:12:25 marcosgambeta Exp $
+# $Id: makefile.pc,v 1.6 2004-10-04 12:15:11 alkresin Exp $
 # makefile for Pelles C 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -19,10 +19,6 @@ CFLAGS = /Ze /I"INCLUDE" /I"$(HRB_DIR)\INCLUDE" /I"$(POCCMAIN)\INCLUDE" /I"$(POC
 
 # Please Note that /Op and /Go requires POCC version 2.80 or later
 CFLAGS = $(CFLAGS) /Op /Go
-
-!ifdef __XHARBOUR__
-CFLAGS = $(CFLAGS) /D"XHBCVS"
-!endif
 
 !ifndef ECHO
 ECHO = echo.

@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.5 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hpanel.prg,v 1.6 2004-10-04 12:15:11 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -22,7 +22,7 @@ CLASS HPanel INHERIT HControl
    METHOD Init()
    METHOD Redefine( oWndParent,nId,nHeight,bInit,bSize,bPaint,lDocked )
    METHOD Paint()
-   METHOD End()
+   METHOD End()  INLINE hwg_DecreaseHolders( Self )
 
 ENDCLASS
 
@@ -110,16 +110,6 @@ Local pps, hDC, aCoors, oPenLight, oPenGray
    ENDIF
 
 Return Nil
-
-METHOD End() CLASS HPanel
-Local aControls := ::aControls, nControls := Len( aControls ), i
-   FOR i := 1 TO nControls
-      IF __ObjHasMsg( aControls[i],"END" )
-         aControls[i]:End()
-      ENDIF
-   NEXT
-Return Nil
-
 
 FUNCTION PanelProc( hPanel, msg, wParam, lParam )
 Local oPanel

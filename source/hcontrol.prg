@@ -390,3 +390,4 @@ Local hDC := drawInfo[3], x1 := drawInfo[4], y1 := drawInfo[5], x2 := drawInfo[6
    ENDIF
    
 Return Nil
+

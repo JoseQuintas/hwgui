@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.1 2004-06-03 10:44:02 alkresin Exp $
+ * $Id: designer.prg,v 1.2 2004-06-05 16:13:16 alkresin Exp $
  *
  * Designer
  * Main file
@@ -194,13 +194,13 @@ Local x1, cBmp, oButton
                   b1 := b2 := b3 := b4 := Nil
                   FOR j1 := 1 TO Len( oProperty:aItems )
                      IF oProperty:aItems[j1]:title == "code1"
-                        b1 := &( "{||" + oProperty:aItems[j1]:aItems[1]:aItems[1] + "}" )
+                        b1 := oProperty:aItems[j1]:aItems[1]:aItems[1]
                      ELSEIF oProperty:aItems[j1]:title == "code2"
-                        b2 := &( "{||" + oProperty:aItems[j1]:aItems[1]:aItems[1] + "}" )
+                        b2 := oProperty:aItems[j1]:aItems[1]:aItems[1]
                      ELSEIF oProperty:aItems[j1]:title == "code3"
-                        b3 := &( "{||" + oProperty:aItems[j1]:aItems[1]:aItems[1] + "}" )
+                        b3 := oProperty:aItems[j1]:aItems[1]:aItems[1]
                      ELSEIF oProperty:aItems[j1]:title == "code_def"
-                        b4 := &( "{||" + oProperty:aItems[j1]:aItems[1]:aItems[1] + "}" )
+                        b4 := oProperty:aItems[j1]:aItems[1]:aItems[1]
                      ENDIF
                   NEXT
 
@@ -292,6 +292,25 @@ Local i, aSet := oWidgetsSet:aItems[1]:aItems, oNode
          ENDIF
       ENDIF
    NEXT
+Return Nil
+
+Function Evalcode( xCode )
+Local nLines
+   
+   IF Valtype( xCode ) == "C"
+      nLines := mlCount( xCode )
+      IF nLines > 1
+         xCode := RdScript( ,xCode )
+      ELSE
+         xCode := &( "{||" + xCode + "}" )
+      ENDIF
+   ENDIF
+   IF Valtype( xCode ) == "A"
+      Return DoScript( xCode )
+   ELSE
+      Return Eval( xCode )
+   ENDIF
+
 Return Nil
 
 Static Function CreateIni( oIni )

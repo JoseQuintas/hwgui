@@ -1,5 +1,5 @@
 /*
- * $Id: procscri.prg,v 1.4 2004-05-13 10:04:28 alkresin Exp $
+ * $Id: procscri.prg,v 1.5 2004-06-05 16:13:16 alkresin Exp $
  *
  * Common procedures
  * Scripts
@@ -94,10 +94,12 @@ RETURN aScr
 *+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 *+
 FUNCTION RdScript( scrSource, strbuf, poz )
-
 LOCAL han
 LOCAL rezArray := { "", {} }
 
+   IF poz == Nil
+      poz := 1
+   ENDIF
    numlin := 1
    nLastError := 0
    IF scrSource == Nil
@@ -442,15 +444,18 @@ PRIVATE iscr := 1, bOldError
 
 RETURN scr_RetValue
 
-FUNCTION CallFunc( cProc, aParams )
+FUNCTION CallFunc( cProc, aParams, aScript )
 Local i := 1
 MEMVAR aScriptt
 
+   IF aScript == Nil
+      aScript := aScriptt
+   ENDIF
    scr_RetValue := Nil
    cProc := Upper( cProc )
-   DO WHILE VALTYPE( aScriptt[2,i] ) == "A"
-      IF aScriptt[2,i,1] == cProc
-         DoScript( aScriptt[2,i],aParams )
+   DO WHILE i <= Len(aScript[2]) .AND. VALTYPE( aScript[2,i] ) == "A"
+      IF aScript[2,i,1] == cProc
+         DoScript( aScript[2,i],aParams )
          EXIT
       ENDIF
       i ++

@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.1 2004-06-03 10:44:02 alkresin Exp $
+ * $Id: inspect.prg,v 1.2 2004-06-05 16:13:17 alkresin Exp $
  *
  * Designer
  * Object Inspector
@@ -84,33 +84,36 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
    j := Ascan( aDataDef, {|a|a[1]==cName} )
    varbuf := Eval( oColumn:block,,Self,2 )
 
-   IF ( j != 0 .AND. aDataDef[ j,5 ] != Nil )
-      IF aDataDef[ j,5 ] == "color"
-         varbuf := Hwg_ChooseColor( Val(varbuf),.F. )
-         IF varbuf != Nil
-            varbuf := Ltrim( Str( varbuf ) )
-            lRes := .T.
+   IF ( j != 0 .AND. aDataDef[ j,5 ] != Nil ) .OR. aCtrlProp[ oBrw1:cargo,3 ] == "A"
+      IF j != 0
+         IF aDataDef[ j,5 ] == "color"
+            varbuf := Hwg_ChooseColor( Val(varbuf),.F. )
+            IF varbuf != Nil
+               varbuf := Ltrim( Str( varbuf ) )
+               lRes := .T.
+            ENDIF
+         ELSEIF aDataDef[ j,5 ] == "font"
+            varbuf := HFont():Select( varbuf )
+            IF varbuf != Nil
+               lRes := .T.
+            ENDIF
          ENDIF
-      ELSEIF aDataDef[ j,5 ] == "font"
-         varbuf := HFont():Select( varbuf )
-         IF varbuf != Nil
-            lRes := .T.
-         ENDIF
-      ELSEIF aDataDef[ j,5 ] == "array"
+      ELSE
          varbuf := EditArray( varbuf )
          IF varbuf != Nil
             lRes := .T.
          ENDIF
       ENDIF
+
       IF lRes
          cName := Lower( aProp[ oBrw1:cargo,1 ] )
          j := Ascan( aDataDef, {|a|a[1]==cName} )
          value := aProp[ oBrw1:cargo,2 ] := varbuf
          aCtrlProp[ oBrw1:cargo,2 ] := value
          IF j != 0 .AND. aDataDef[ j,3 ] != Nil
-            Eval( aDataDef[ j,3 ] )
+            EvalCode( aDataDef[ j,3 ] )
             IF aDataDef[ j,4 ] != Nil
-               Eval( aDataDef[ j,4 ] )
+               EvalCode( aDataDef[ j,4 ] )
             ENDIF
          ENDIF
          HFormGen():oDlgSelected:oParent:lChanged := .T.
@@ -213,9 +216,9 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
       oCtrl:aProp[ oBrw1:cargo,2 ] := value
    ENDIF
    IF j != 0 .AND. aDataDef[ j,3 ] != Nil
-      Eval( aDataDef[ j,3 ] )
+      EvalCode( aDataDef[ j,3 ] )
       IF aDataDef[ j,4 ] != Nil
-         Eval( aDataDef[ j,4 ] )
+         EvalCode( aDataDef[ j,4 ] )
       ENDIF
    ENDIF
    HFormGen():oDlgSelected:oParent:lChanged := .T.
@@ -399,7 +402,7 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
          cPropertyName := Lower( aProp[ i,1 ] )
          j := Ascan( aDataDef, {|a|a[1]==cPropertyName} )
          IF j != 0 .AND. aDataDef[ j,2 ] != Nil
-            Eval( aDataDef[ j,2 ] )
+            EvalCode( aDataDef[ j,2 ] )
             // writelog( aProp[i,1]+" "+Iif(aProp[i,2]==Nil,"Nil",Valtype(aProp[i,2]))+" "+Iif(value==Nil,"Nil",Valtype(value)) )
             IF aProp[ i,2 ] != Nil .AND. Valtype(aProp[ i,2 ]) == "O"
                LOOP

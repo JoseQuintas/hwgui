@@ -8,8 +8,10 @@
       <property name="Width" type="N" value="" />
       <property name="Height" type="N" value="" />
       <property name="Font" type="O" />
-      <property name="lGetSystem" type="L" value="False"/>
+      <property name="lClipper" type="L" value="False"/>
+      <property name="lExitOnEnter" type="L" value="False"/>
       <property name="Variables" type="A" />
+      <method name="common" />
       <method name="onFormInit" />
       <method name="onDlgInit" />
       <method name="onPaint" />
@@ -219,7 +221,11 @@
       <widget class="line" name="Line" bmp="BMP_HLINE">
          <paint>
             <![CDATA[
-            DrawEdge( hDC,0,1,oCtrl:nWidth,1,6 )
+            if oCtrl:GetProp( "lVert" ) == "True"
+              DrawEdge( hDC,1,0,1,oCtrl:nHeight,6 )
+            else
+              DrawEdge( hDC,0,1,oCtrl:nWidth,1,6 )
+            endif
             ]]>
          </paint>
          <property name="Name" type="C" />
@@ -227,6 +233,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="100" />
          <property name="Height" type="N" value="2" />
+         <property name="lVert" type="L" value="False" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -245,9 +252,11 @@
          <property name="Width" type="N" value="28" />
          <property name="Height" type="N" value="28" />
          <property name="Font" type="O" />
+         <property name="Flat" type="L" value="False"/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
+         <method name="onClick" />
       </widget>
       <widget class="browse" name="Browse" bmp="BMP_BROWSE">
          <paint><![CDATA[
@@ -263,6 +272,7 @@
          <property name="Width" type="N" value="200" />
          <property name="Height" type="N" value="150" />
          <property name="Font" type="O" />
+         <property name="BrwType" type="C" value="Dbf" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -321,16 +331,28 @@
       </property>
       <property name="Justify" array="Left,Center,Right">
       </property>
-      <property name="Variables" dlg="Array">
-      </property>
       <property name="Name">
          <code_def><![CDATA[ CreateName( "Name",oCtrl ) ]]></code_def>
-      </property>
-      <property name="Items" dlg="Array">
       </property>
       <property name="cInitValue">
          <code2><![CDATA[ oCtrl:title := value ]]></code2>
          <code3><![CDATA[ SetWindowText( oCtrl:handle, value ) ]]></code3>
+      </property>
+      <property name="lVert">
+         <code2><![CDATA[ 
+            if (value=="True") .and. oCtrl:nHeight == 2
+               oCtrl:nHeight := oCtrl:nWidth
+               oCtrl:nWidth := 2
+            elseif !(value=="True") .and. oCtrl:nWidth == 2
+               oCtrl:nWidth := oCtrl:nHeight
+               oCtrl:nHeight := 2
+            endif
+            oCtrl:SetProp( "Height",Ltrim(Str(oCtrl:nHeight)) )
+            oCtrl:SetProp( "Width",Ltrim(Str(oCtrl:nWidth)) )
+          ]]></code2>
+         <code3><![CDATA[ oCtrl:Move(oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight) ]]></code3>
+      </property>
+      <property name="BrwType" array="Dbf,Array">
       </property>
    </data>
    <temp>

@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.1 2004-06-03 10:44:02 alkresin Exp $
+ * $Id: hctrl.prg,v 1.2 2004-06-05 16:13:17 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -32,6 +32,7 @@ CLASS HControlGen INHERIT HControl
    METHOD Activate()
    METHOD Paint( lpdis )
    METHOD GetProp( cName )
+   METHOD SetProp( xName,cValue )
 
 ENDCLASS
 
@@ -62,7 +63,7 @@ Private value, oCtrl := Self
          IF oXMLDesc:aItems[i]:title == "paint"
             oPaint := oXMLDesc:aItems[i]
             IF !Empty( oPaint:aItems ) .AND. oPaint:aItems[1]:type == HBXML_TYPE_CDATA
-               ::aPaint := RdScript( ,oPaint:aItems[1]:aItems[1],1 )
+               ::aPaint := RdScript( ,oPaint:aItems[1]:aItems[1] )
             ENDIF
             IF ( bmp := oPaint:GetAttribute( "bmp" ) ) != Nil
                IF Isdigit( Left( bmp,1 ) )
@@ -111,10 +112,10 @@ Private value, oCtrl := Self
       j := Ascan( aDataDef, {|a|a[1]==cPropertyName} )
       IF value != Nil // .AND. !Empty( value )
          IF j != 0 .AND. aDataDef[ j,3 ] != Nil
-            Eval( aDataDef[ j,3 ] )
+            EvalCode( aDataDef[ j,3 ] )
          ENDIF
       ELSEIF j != 0 .AND. value == Nil .AND. aDataDef[ j,7 ] != Nil
-         ::aProp[ i,2 ] := Eval( aDataDef[ j,7 ] )
+         ::aProp[ i,2 ] := EvalCode( aDataDef[ j,7 ] )
       ENDIF
    NEXT
 
@@ -152,9 +153,21 @@ Return Nil
 
 METHOD GetProp( cName ) CLASS HControlGen
 Local i
+
   cName := Lower( cName )
   i := Ascan( ::aProp,{|a|Lower(a[1])==cName} )
 Return Iif( i==0, Nil, ::aProp[i,2] )
+
+METHOD SetProp( xName,cValue )
+
+   IF Valtype( xName ) == "C"
+      xName := Lower( xName )
+      xName := Ascan( ::aProp,{|a|Lower(a[1])==xName} )
+   ENDIF
+   IF xName != 0
+      ::aProp[xName,2] := cValue
+   ENDIF
+Return Nil
 
 // -----------------------------------------------
 

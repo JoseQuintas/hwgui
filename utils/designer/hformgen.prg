@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.1 2004-06-03 10:44:02 alkresin Exp $
+ * $Id: hformgen.prg,v 1.2 2004-06-05 16:13:17 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -75,9 +75,6 @@ Local hDCwindow := GetDC( GetActiveWindow() ), aTermMetr := GetDeviceArea( hDCwi
    ::filename := ""
 
    Aadd( ::aForms, Self )
-   IF oDlgInsp == Nil
-      InspOpen()
-   ENDIF
 
 Return Self
 
@@ -104,11 +101,7 @@ Private oForm := Self, aCtrlTable
       IF ::oDlg != Nil
          ::name := ::oDlg:title
          Aadd( ::aForms, Self )
-         IF oDlgInsp == Nil
-            InspOpen()
-         ELSE
-            InspSetCombo()
-         ENDIF
+         InspSetCombo()
       ENDIF
       IF ::oDlg == Nil .OR. Empty( ::oDlg:aControls )
          MsgStop( "Can't load the form" )
@@ -235,12 +228,16 @@ Private value, oCtrl
          cPropertyName := Lower( ::aProp[ i,1 ] )
          j := Ascan( aDataDef, {|a|a[1]==cPropertyName} )
          IF j != 0 .AND. aDataDef[ j,3 ] != Nil
-            Eval( aDataDef[ j,3 ] )
+            EvalCode( aDataDef[ j,3 ] )
          ENDIF
       ENDIF
    NEXT
 
    ::oDlg:Activate(.T.)
+
+   IF oDlgInsp == Nil
+      InspOpen()
+   ENDIF
 
 RETURN Nil
 
@@ -780,6 +777,8 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp
       ENDIF
       addItem := Nil
    ENDIF
+   // SetFocus( oDlg:handle )
+   sendmessage(odlg:acontrols[1]:handle,WM_KILLFOCUS,oDlg:handle,0 )
 
 Return -1
 

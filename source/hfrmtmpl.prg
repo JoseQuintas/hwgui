@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.2 2004-06-03 10:44:02 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.3 2004-06-05 16:13:16 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -32,7 +32,7 @@ CLASS HFormTmpl
    DATA aMethods
    DATA aVars         INIT {}
    DATA aNames        INIT {}
-   DATA lGet          INIT .F.
+   DATA aFuncs
    DATA id
 
 
@@ -89,7 +89,7 @@ Return Self
 
 METHOD Show() CLASS HFormTmpl
 Local i, j, cType
-Local nLeft, nTop, nWidth, nHeight, cTitle, oFont, xProperty, block, bFormExit
+Local nLeft, nTop, nWidth, nHeight, cTitle, oFont, lClipper := .F., lExitOnEnter := .F., xProperty, block, bFormExit
 Memvar oDlg
 Private oDlg
 
@@ -104,8 +104,10 @@ Private oDlg
          cTitle := xProperty
       ELSEIF ::aProp[ i,1 ] == "font"
          oFont := FontFromXML( xProperty )
-      ELSEIF ::aProp[ i,1 ] == "lgetsystem"
-         ::lGet := xProperty
+      ELSEIF ::aProp[ i,1 ] == "lclipper"
+         lClipper := xProperty
+      ELSEIF ::aProp[ i,1 ] == "lexitonenter"
+         lExitOnEnter := xProperty
       ELSEIF ::aProp[ i,1 ] == "variables"
          FOR j := 1 TO Len( xProperty )
             __mvPrivate( xProperty[j] )
@@ -124,6 +126,9 @@ Private oDlg
        FONT oFont
 
    oDlg := ::oDlg
+   oDlg:lClipper := lClipper
+   oDlg:lExitOnEnter := lExitOnEnter
+   oDlg:oParent  := Self
 
    FOR i := 1 TO Len( ::aMethods )
       IF ( cType := Valtype( ::aMethods[ i,2 ] ) ) == "B"
@@ -141,6 +146,8 @@ Private oDlg
          ::oDlg:bDestroy := block
       ELSEIF ::aMethods[ i,1 ] == "onformexit"
          bFormExit := block
+      ELSEIF ::aMethods[ i,1 ] == "common"
+         ::aFuncs := ::aMethods[ i,2,2 ]
       ENDIF
    NEXT
 
@@ -215,7 +222,7 @@ Local nPos1, nPos2, nLines := 1, arr[3], arrExe
    ENDIF
 
    arrExe := Array(2)
-   arrExe[2] := RdScript( ,cMethod,1 )
+   arrExe[2] := RdScript( ,cMethod )
    arrExe[1] := &( "{||DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+"):" + ;
       Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2])", ;
            "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]:aMethods["+   ;
@@ -257,7 +264,7 @@ Static Function CreateCtrl( oParent, oCtrlTmpl, oForm )
 Local aClass := { "label", "button", "checkbox",      ;
                   "radiobutton", "editbox", "group", "radiogroup",  ;
                   "datepicker", "updown", "combobox", ;
-                  "line", "toolbar", "ownerbutton",   ;
+                  "line", "toolbar", "ownerbutton","browse"   ;
                 }
 Local aCtrls := { ;
   "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctoolt,TextColor,BackColor,lTransp)", ;
@@ -272,11 +279,13 @@ Local aCtrls := { ;
   "HComboBox():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,Items,oFont,onInit,onSize,onPaint,onChange,cToolt,lEdit,lText,bWhen)", ;
   "HLine():New(oPrnt,nId,lVert,nLeft,nTop,nLength,onSize)", ;
   "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,lDocked )", ;
-  "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,lflat,cText,color,oFont,xt,yt,widtht,heightt,bmp,lResour,xb,yb,widthb,heightb,lTr,cTooltip)" ;
+  "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,color,oFont,xt,yt,widtht,heightt,bmp,lResour,xb,yb,widthb,heightb,lTr,cTooltip)", ;
+  "Hbrowse():New(nType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg )" ;
                 }
 Local i, oCtrl, stroka, varname, xProperty, block, cType, cPName
 Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName
-MEMVAR oPrnt, nStyle, nLeft, nTop, nWidth, nHeight, oFont, lNoBorder, bSetGet, name, nMaxLines
+MEMVAR oPrnt, nStyle, nLeft, nTop, nWidth, nHeight, oFont, lNoBorder, bSetGet
+MEMVAR name, nMaxLines, nLength, lVert, nType,brwType
 
    IF nCtrl == 0
       Return Nil
@@ -352,9 +361,13 @@ MEMVAR oPrnt, nStyle, nLeft, nTop, nWidth, nHeight, oFont, lNoBorder, bSetGet, n
       ELSE
          nHeight := nHeight * 4
       ENDIF
+   ELSEIF oCtrlTmpl:cClass == "line"
+      nLength := Iif( lVert, nHeight, nWidth )
+   ELSEIF oCtrlTmpl:cClass == "browse"
+      nType := Iif( brwType == "Dbf",BRW_DATABASE,BRW_ARRAY )
    ENDIF
    oCtrl := &( aCtrls[nCtrl] )
-   IF Type( "name" ) == "C"
+   IF Type( "m->name" ) == "C"
       __mvPut( name, oCtrl )
    ENDIF
    IF !Empty( oCtrlTmpl:aControls )

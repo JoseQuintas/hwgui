@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.8 2004-06-02 09:38:57 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.9 2004-06-05 16:13:16 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -57,12 +57,12 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,,bInit, ;
                   bSize,bPaint,ctooltip )
 
-   ::lFlat   := lFlat
+   ::lFlat   := Iif( lFlat==Nil,.F.,lFlat )
    ::bClick  := bClick
    ::state   := OBTN_INIT
 
    ::text    := cText
-   ::tcolor  := color
+   ::tcolor  := Iif( color==Nil, GetSysColor( COLOR_BTNTEXT ), color )
    ::ofont   := font
    ::xt      := xt
    ::yt      := yt
@@ -113,12 +113,12 @@ METHOD Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, ;
    Super:New( oWndParent,nId,0,0,0,0,0,,bInit, ;
                   bSize,bPaint,ctooltip )
 
-   ::lFlat   := lFlat
+   ::lFlat   := Iif( lFlat==Nil,.F.,lFlat )
    ::bClick  := bClick
    ::state   := OBTN_INIT
 
    ::text    := cText
-   ::tcolor  := color
+   ::tcolor  := Iif( color==Nil, GetSysColor( COLOR_BTNTEXT ), color )
    ::ofont   := font
    ::xt      := xt
    ::yt      := yt
@@ -172,13 +172,13 @@ Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
    IF ::text != Nil
       IF ::ofont != Nil
          SelectObject( hDC, ::ofont:handle )
+      ELSEIF ::oParent:oFont != Nil
+         SelectObject( hDC, ::oParent:ofont:handle )
       ENDIF
       if ::lEnabled //if button is enabled
-         IF ::tcolor != Nil
-             SetTextColor( hDC,::tcolor )
-         ENDIF
+         SetTextColor( hDC,::tcolor )
       Else
-          SetTextColor( hDC, RGB(255,255,255) )
+         SetTextColor( hDC, RGB(255,255,255) )
       EndIf
       x1 := Iif( ::xt!=Nil .AND. ::xt!=0, ::xt, aCoors[1]+2 )
       y1 := Iif( ::yt!=Nil .AND. ::yt!=0, ::yt, ;

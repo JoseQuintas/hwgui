@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.7 2004-03-10 13:47:46 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.8 2004-03-18 09:20:25 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -474,7 +474,7 @@ Local cPic
 Return cChar
 
 Static Function GetApplyKey( oEdit,cKey )
-Local nPos, nGetLen, nLen, vari
+Local nPos, nGetLen, nLen, vari, i
 
    // writelog( "GetApplyKey "+str(asc(ckey)) )
    oEdit:title := GetEditText( oEdit:oParent:handle, oEdit:id )
@@ -483,7 +483,13 @@ Local nPos, nGetLen, nLen, vari
       IF oEdit:lFirst
          vari := 0
       ELSE
-         vari := Val( oEdit:title )
+         vari := Trim( oEdit:title )
+         FOR i := 2 TO Len( vari )
+            IF !IsDigit( Substr( vari,i,1 ) )
+               vari := Left( vari,i-1 ) + Substr( vari,i+1 )
+            ENDIF
+         NEXT
+         vari := Val( vari )
       ENDIF
       IF !Empty( oEdit:cPicFunc ) .OR. !Empty( oEdit:cPicMask )
          oEdit:title := Transform( vari, oEdit:cPicFunc + Iif(Empty(oEdit:cPicFunc),""," ") + oEdit:cPicMask )

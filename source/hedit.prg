@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.11 2004-04-20 08:59:34 alkresin Exp $
+ *$Id: hedit.prg,v 1.12 2004-04-21 12:14:08 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -543,8 +543,7 @@ Static Function __Valid( oCtrl )
 Local vari, oDlg
 
    IF oCtrl:bSetGet != Nil
-      oDlg := ParentGetDialog( oCtrl )
-      IF oDlg:nLastKey != 27
+      IF ( oDlg := ParentGetDialog( oCtrl ) ) == Nil .OR. oDlg:nLastKey != 27
          vari := UnTransform( oCtrl,GetEditText( oCtrl:oParent:handle, oCtrl:id ) )
          oCtrl:title := vari
          IF oCtrl:cType == "D"
@@ -559,13 +558,19 @@ Local vari, oDlg
             SetDlgItemText( oCtrl:oParent:handle, oCtrl:id, oCtrl:title )
          ENDIF
          Eval( oCtrl:bSetGet, vari, oCtrl )
-         oDlg:nLastKey := 27
+         IF oDlg != Nil
+            oDlg:nLastKey := 27
+         ENDIF
          IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, vari, oCtrl )
             SetFocus( oCtrl:handle )
-            oDlg:nLastKey := 0
+            IF oDlg != Nil
+               oDlg:nLastKey := 0
+            ENDIF
             Return .F.
          ENDIF
-         oDlg:nLastKey := 0
+         IF oDlg != Nil
+            oDlg:nLastKey := 0
+         ENDIF
       ENDIF
    ENDIF
 

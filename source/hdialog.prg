@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.12 2004-04-20 08:59:34 alkresin Exp $
+ * $Id: hdialog.prg,v 1.13 2004-04-21 12:14:08 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -268,16 +268,17 @@ Return 0
 
 Static Function DlgCommand( oDlg,wParam,lParam )
 Local iParHigh := HiWord( wParam ), iParLow := LoWord( wParam )
-Local aMenu, i
+Local aMenu, i, hCtrl
 
    IF iParHigh == 0 
       IF iParLow == IDOK
+         hCtrl := GetFocus()
          FOR i := Len(oDlg:GetList) TO 1 STEP -1
-            IF !oDlg:GetList[i]:lHide
+            IF !oDlg:GetList[i]:lHide .AND. IsWindowEnabled( oDlg:Getlist[i]:Handle )
                EXIT
             ENDIF
          NEXT
-         IF i != 0 .AND. oDlg:GetList[i]:handle == GetFocus()
+         IF i != 0 .AND. oDlg:GetList[i]:handle == hCtrl
             IF __ObjHasMsg(oDlg:GetList[i],"BVALID")
                IF Eval( oDlg:GetList[i]:bValid,oDlg:GetList[i] ) .AND. ;
                       !oDlg:lExitOnEnter
@@ -288,7 +289,7 @@ Local aMenu, i
             ENDIF
          ENDIF
          IF oDlg:lClipper
-            IF !GetSkip( oDlg,GetFocus(),1 )
+            IF !GetSkip( oDlg,hCtrl,1 )
                IF !oDlg:lExitOnEnter
                   oDlg:lResult := .T.
                   EndDialog( oDlg:handle )

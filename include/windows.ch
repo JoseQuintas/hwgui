@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.9 2004-04-08 11:55:34 alkresin Exp $
+ *$Id: windows.ch,v 1.10 2004-04-21 12:14:00 alkresin Exp $
  */
 
 #define WM_CREATE                       1
@@ -20,6 +20,7 @@
 #define WM_ERASEBKGND                   20   // 0x0014
 #define WM_ENDSESSION                   22   // 0x0016
 #define WM_GETMINMAXINFO                36   // 0x0024
+#define WM_NEXTDLGCTL                   40   // 0x0028
 #define WM_DRAWITEM                     43   // 0x002B
 #define WM_SETFONT                      48   // 0x0030
 

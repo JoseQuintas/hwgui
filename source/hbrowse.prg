@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.18 2004-04-17 13:39:08 rodrigo_moreno Exp $
+ * $Id: hbrowse.prg,v 1.19 2004-04-19 10:58:23 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -81,8 +81,12 @@ ENDCLASS
 
 //----------------------------------------------------//
 METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, oBmp ) CLASS HColumn
+
    ::heading   := iif( cHeading == nil,"",cHeading )
    ::block     := block
+   ::type      := type
+   ::length    := length
+   ::dec       := dec
    ::lEditable := Iif( lEditable != Nil,lEditable,.F. )
    ::nJusHead  := iif( nJusHead == nil,  DT_LEFT , nJusHead )  // Por default
    ::nJusLin   := iif( nJusLin  == nil,  DT_LEFT , nJusLin  )  // Justif.Izquierda
@@ -91,33 +95,6 @@ METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict
    ::bWhen     := bWhen
    ::aList     := aItem
    ::aBitmaps  := oBmp
-
-   if type == nil
-      ::type := valtype(eval(block))
-   else
-      ::type := type      
-   endif
-   
-   if dec == nil 
-      if ::type == "N" .and. at('.', str(eval(block))) != 0
-         ::dec := len(substr(str(eval(block)), at('.', str(eval(block))) + 1))
-      else
-         ::dec := 0
-      endif
-   else
-      ::dec := dec      
-   endif            
-
-   if length == nil 
-        if cPict != nil
-             ::length := len(transform(eval(block), cPict))
-        else    
-             ::length := 10             
-        end                    
-        ::length := max(::length, len(::heading))
-   else
-        ::length := length
-   end        
 
 RETURN Self
 
@@ -266,22 +243,53 @@ RETURN Self
 
 //----------------------------------------------------//
 METHOD FindBrowse( nId ) CLASS HBrowse
-   local i := Ascan( ::aItemsList,{|o|o:id==nId},1,::iItems )
+   Local i := Ascan( ::aItemsList,{|o|o:id==nId},1,::iItems )
 RETURN Iif( i>0,::aItemsList[i],Nil )
 
 //----------------------------------------------------//
 METHOD AddColumn( oColumn ) CLASS HBrowse
+Local n
+
    aadd( ::aColumns, oColumn )
    ::lChanged := .T.
+   InitColumn( Self, oColumn, Len( ::aColumns ) )
+
 RETURN oColumn
 
 //----------------------------------------------------//
 METHOD InsColumn( oColumn,nPos ) CLASS HBrowse
+
    aadd( ::aColumns,Nil )
    ains( ::aColumns,nPos )
    ::aColumns[ nPos ] := oColumn
    ::lChanged := .T.
+   InitColumn( Self, oColumn,nPos )
+
 RETURN oColumn
+
+Static Function InitColumn( oBrw, oColumn, n )
+
+   if oColumn:type == Nil
+      oColumn:type := Valtype( Eval( oColumn:block,,oBrw,n ) )
+   endif 
+   if oColumn:dec == Nil 
+      if oColumn:type == "N" .and. At( '.', Str( Eval( oColumn:block,,oBrw,n ) ) ) != 0
+         oColumn:dec := Len( Substr( Str( Eval( oColumn:block,,oBrw,n ) ), ;
+               At( '.', Str( Eval( oColumn:block,,oBrw,n ) ) ) + 1 ) )
+      else
+         oColumn:dec := 0
+      endif
+   endif
+   if oColumn:length == Nil 
+      if oColumn:picture != Nil
+         oColumn:length := Len( Transform( Eval( oColumn:block,,oBrw,n ), oColumn:picture ) )
+      else
+         oColumn:length := 10             
+      endif
+      oColumn:length := Max( oColumn:length, Len( oColumn:heading ) )
+   endif
+
+Return Nil
 
 //----------------------------------------------------//
 METHOD DelColumn( nPos ) CLASS HBrowse

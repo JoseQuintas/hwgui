@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.15 2004-04-26 08:55:07 alkresin Exp $
+ * $Id: window.c,v 1.16 2004-04-26 11:58:31 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -255,23 +255,8 @@ HB_FUNC ( HWG_INITCHILDWINDOW )
 HB_FUNC ( HWG_ACTIVATECHILDWINDOW )
 {
 
-	MSG Msg;
-	HWND hwnd;
-	hwnd = (HWND) hb_parnl (1);
-
-   
-   ShowWindow( hwnd,SW_SHOWNORMAL );
-
-	while(GetMessage(&Msg,NULL,0,0) )
-	{
-		if(!IsWindow(GetActiveWindow()) || !IsDialogMessage(GetActiveWindow(),&Msg))
-		{
-			TranslateMessage(&Msg);
-			DispatchMessage(&Msg);
-		}
-	}
-       
-	return;
+   ShowWindow( (HWND) hb_parnl (1),SW_SHOWNORMAL );
+   return;
 
 }
 

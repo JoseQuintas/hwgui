@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.20 2004-04-26 08:55:07 alkresin Exp $
+ *$Id: hwindow.prg,v 1.21 2004-04-26 11:58:31 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -342,7 +342,7 @@ Local oWnd, oBtn, oitem
       DlgEnterIdle( oWnd, wParam, lParam )
    
    elseif msg == WM_CLOSE
-      ReleaseAllWindows(oWnd,hWnd)
+      ReleaseAllWindows( hWnd )
 
    elseif msg == WM_DESTROY
       aControls := oWnd:aControls
@@ -722,7 +722,7 @@ Local iParHigh, iParLow, oWnd, oBtn, oitem
    endif
 Return -1
 
-function ReleaseAllWindows( oWnd, hWnd )
+function ReleaseAllWindows( hWnd )
 Local oItem, iCont, nCont
 
    //  Vamos mandar destruir as filhas
@@ -736,7 +736,7 @@ Local oItem, iCont, nCont
    #else
    nCont := Len( HWindow():aWindows )
  
-   FOR iCont := 1 TO nCont
+   FOR iCont := nCont TO 1 STEP -1
 
       IF HWindow():aWindows[iCont]:oParent != Nil .AND. ;
               HWindow():aWindows[iCont]:oParent:handle == hWnd
@@ -746,7 +746,7 @@ Local oItem, iCont, nCont
    NEXT
    #endif
 
-   If HWindow():aWindows[1] == oWnd
+   If HWindow():aWindows[1]:handle == hWnd
       PostQuitMessage( 0 )
    Endif     
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.99 2004-04-20 17:32:53 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.100 2004-04-20 17:34:17 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -9,11 +9,11 @@
 */
 
 2004-04-20 14-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
-  * printdos.prg
+  * source/printdos.prg
     new variable defined to print ::oPrintStyle 1 = Matricial  2 = DeskJet 3 = LaserJet
     new method ::double
     Otimized method Comando 
-  * samples\tstprdos.prg
+  * samples/tstprdos.prg
     new test to printdos
 
 

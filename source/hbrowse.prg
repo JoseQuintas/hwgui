@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.17 2004-04-15 17:41:21 rodrigo_moreno Exp $
+ * $Id: hbrowse.prg,v 1.18 2004-04-17 13:39:08 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -81,11 +81,8 @@ ENDCLASS
 
 //----------------------------------------------------//
 METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, oBmp ) CLASS HColumn
-
    ::heading   := iif( cHeading == nil,"",cHeading )
    ::block     := block
-   ::type      := iif( type     == nil, "C", type )
-   ::dec       := iif( dec      == nil,  0 , dec )
    ::lEditable := Iif( lEditable != Nil,lEditable,.F. )
    ::nJusHead  := iif( nJusHead == nil,  DT_LEFT , nJusHead )  // Por default
    ::nJusLin   := iif( nJusLin  == nil,  DT_LEFT , nJusLin  )  // Justif.Izquierda
@@ -94,6 +91,22 @@ METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict
    ::bWhen     := bWhen
    ::aList     := aItem
    ::aBitmaps  := oBmp
+
+   if type == nil
+      ::type := valtype(eval(block))
+   else
+      ::type := type      
+   endif
+   
+   if dec == nil 
+      if ::type == "N" .and. at('.', str(eval(block))) != 0
+         ::dec := len(substr(str(eval(block)), at('.', str(eval(block))) + 1))
+      else
+         ::dec := 0
+      endif
+   else
+      ::dec := dec      
+   endif            
 
    if length == nil 
         if cPict != nil
@@ -105,7 +118,6 @@ METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict
    else
         ::length := length
    end        
-                
 
 RETURN Self
 
@@ -1197,13 +1209,23 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
          ( Valtype( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. !lRes )
       IF ::lEditable        
          oColumn := ::aColumns[fipos]
-         IF oColumn:lEditable .AND. ;
-              ( oColumn:bWhen = Nil .OR. EVAL( oColumn:bWhen ) )
+         IF oColumn:lEditable .AND. ( oColumn:bWhen = Nil .OR. EVAL( oColumn:bWhen ) )
             IF ::lAppMode
-               varbuf := Iif( oColumn:type=="D",Ctod(Space(8)), ;
-                           Iif( oColumn:type=="N",0,"" ) )
+               IF oColumn:type == "D"
+                  varbuf := CtoD("")
+               ELSEIF oColumn:type == "N"
+                  varbuf := 0
+               ELSEIF oColumn:type == "L"
+                  varbuf := .F.
+               ELSE
+                  varbuf := ""
+               ENDIF
             ELSE
-               varbuf := Eval( oColumn:block,,Self,fipos )
+               IF ::type == BRW_DATABASE
+                  varbuf := (::alias)->(Eval( oColumn:block,,Self,fipos ))
+               ELSE
+                  varbuf := Eval( oColumn:block,,Self,fipos )
+               ENDIF                  
             ENDIF
          ELSE
             RETURN Nil
@@ -1266,7 +1288,7 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
                ::lAppMode := .F.
                IF ::type == BRW_DATABASE
                   (::alias)->( dbAppend() )
-                  Eval( oColumn:block,varbuf,Self,fipos )
+                  (::alias)->( Eval( oColumn:block,varbuf,Self,fipos ) )
                   UNLOCK
                ELSE
                   IF Valtype(::msrec[1]) == "A"
@@ -1288,7 +1310,12 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
                ::lAppended := .T.
                ::Refresh()
             ELSE
-               Eval( oColumn:block,varbuf,Self,fipos )
+               IF ::type == BRW_DATABASE
+                  (::alias)->( Eval( oColumn:block,varbuf,Self,fipos ) )
+               ELSE
+                  Eval( oColumn:block,varbuf,Self,fipos )
+               ENDIF
+               
                ::lUpdated := .T.
                InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*(::rowPos-2), ::x2, ::y1+(::height+1)*::rowPos )
                ::RefreshLine()

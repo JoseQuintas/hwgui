@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.84 2004-04-15 17:41:21 rodrigo_moreno Exp $
+ * $Id: Changelog,v 1.85 2004-04-17 13:39:08 rodrigo_moreno Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2004-04-17 10-35 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
+  * source/hbrowse.prg
+    ! Fixed bugs when used database clause ( when gettting values and in other alias )
+    ! Fixed bugs when TYPE is not defined in conjunction with database clause
+
 2004-04-15 14-40 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
   * source/hbrowse.prg
     ! Fixed problem on fldstr when used with database clause.

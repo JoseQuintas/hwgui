@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.266 2004-09-16 14:37:51 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.267 2004-09-16 17:47:00 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-09-16 14-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/hedit.prg
+    new variable gLastkey
+    if control HTAB, correct the focus in GET, simulate the false Valid.
+    The solution to skip GET using key tab
 
 2004-09-16 11-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/hedit.prg

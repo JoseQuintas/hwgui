@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.28 2004-09-16 14:37:52 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.29 2004-09-16 17:47:04 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -26,6 +26,7 @@ CLASS HEdit INHERIT HControl
    DATA lChanged     INIT .F.
    DATA lMaxLenght   INIT Nil
    DATA isControlTab INIT .F.
+   DATA gLastkey     INIT {0,0}
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture,lNoBorder, lMaxLenght )
@@ -92,7 +93,6 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       IF bLfocus != Nil
          ::oParent:AddEvent( EN_KILLFOCUS,::id,bLfocus )
       ELSEIF bLfocus == Nil .AND. ::isControlTab
-         ::bLostFocus := Return_Get_Default() 
          ::oParent:AddEvent( EN_KILLFOCUS,::id,bLfocus )
       ENDIF
    ENDIF
@@ -204,8 +204,10 @@ Local oEdit, oParent, nPos, nctrl, cKeyb
       Return -1
    ENDIF
 
+   oEdit:gLastkey:={msg,wParam}
+
    IF !oEdit:lMultiLine
- 
+
       IF msg == WM_CHAR
 
          IF wParam == 8
@@ -625,10 +627,10 @@ Local res
 
 Return .T.
 
-Static Function __Valid( oCtrl )
+Static Function __valid( oCtrl )
 Local vari, oDlg
 
-   IF oCtrl:bSetGet != Nil
+    IF oCtrl:bSetGet != Nil
       IF ( oDlg := ParentGetDialog( oCtrl ) ) == Nil .OR. oDlg:nLastKey != 27
          vari := UnTransform( oCtrl,GetEditText( oCtrl:oParent:handle, oCtrl:id ) )
          oCtrl:title := vari
@@ -660,9 +662,23 @@ Local vari, oDlg
          ENDIF
       ENDIF
    ENDIF
+   //writelog( "gLastKey "+STR( oCtrl:gLastKey[1] )+"|"+STR( oCtrl:gLastKey[2] )  )
    //To focus in Control TAB
    IF oCtrl:isControlTab
-        GetSkip( oCtrl:oParent,oCtrl:handle,1 )
+
+      IF oCtrl:gLastKey[1]==514 .OR. oCtrl:gLastKey[2]==0
+         Return .T.
+      ENDIF 
+      IF oCtrl:gLastKey[2]==514 .OR. oCtrl:gLastKey[2]==257
+         Return .T.
+      ENDIF
+
+      IF oCtrl:gLastKey[2]>=37 .AND. oCtrl:gLastKey[2]<=40
+         Return .T.
+      ENDIF
+
+      GetSkip( oCtrl:oParent,oCtrl:handle,1 )
+
    ENDIF
 
 Return .T.
@@ -874,5 +890,4 @@ Function ParentGetDialog( o )
    ENDDO
 Return o
 
-Function Return_Get_Default()
-Return .T.
+ 

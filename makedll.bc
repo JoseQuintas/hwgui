@@ -36,6 +36,7 @@ $(LIB_DIR)\hwguidll.dll:   \
    $(OBJ_DIR)\freeimg.obj \
    $(OBJ_DIR)\media_c.obj \
    $(OBJ_DIR)\menu_c.obj \
+   $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\message.obj \
    $(OBJ_DIR)\registry.obj \
    $(OBJ_DIR)\richedit.obj \
@@ -70,7 +71,6 @@ $(LIB_DIR)\hwguidll.dll:   \
    $(OBJ_DIR)\hupdown.obj \
    $(OBJ_DIR)\hwindow.obj \
    $(OBJ_DIR)\menu.obj \
-   $(OBJ_DIR)\_winmsg.obj \
    $(OBJ_DIR)\c_ipaddr.obj \
    $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\repexec.obj \
@@ -143,7 +143,6 @@ $(OBJ_DIR)\shellapi.obj : $(SRC_DIR)\shellapi.c
 $(OBJ_DIR)\wbrowse.obj  : $(SRC_DIR)\wbrowse.c
 $(OBJ_DIR)\window.obj   : $(SRC_DIR)\window.c
 $(OBJ_DIR)\wprint.obj   : $(SRC_DIR)\wprint.c
-$(OBJ_DIR)\_winmsg.obj   : $(SRC_DIR)\_winmsg.c
 $(OBJ_DIR)\resource.obj   : $(SRC_DIR)\resource.c
 $(OBJ_DIR)\c_ipaddr.obj   : $(SRC_DIR)\c_ipaddr.c
 

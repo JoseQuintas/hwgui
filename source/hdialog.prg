@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.27 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: hdialog.prg,v 1.28 2004-10-19 11:09:26 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -106,9 +106,15 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
 RETURN Self
 
 METHOD Activate( lNoModal ) CLASS HDialog
-Local oWnd
+Local oWnd, hParent
 
    CreateGetList( Self )
+   hParent := Iif( ::oParent!=Nil .AND. ;
+      __ObjHasMsg( ::oParent,"HANDLE") .AND. ::oParent:handle != Nil ;
+      .AND. ::oParent:handle > 0, ::oParent:handle, ;
+      Iif( ( oWnd:=HWindow():GetMain() ) != Nil,    ;
+        oWnd:handle,GetActiveWindow() ) )
+
    IF ::type == WND_DLG_RESOURCE
       IF lNoModal == Nil .OR. !lNoModal
          ::AddItem( Self,.T. )
@@ -118,8 +124,7 @@ Local oWnd
          ::handle  := 0
          ::lResult := .F.
          ::AddItem( Self,.F. )
-         Hwg_CreateDialog( Iif( ( oWnd:=HWindow():GetMain() ) != Nil, ;
-              oWnd:handle,GetActiveWindow() ), Self )
+         Hwg_CreateDialog( hParent, Self )
          /*
          IF ::oIcon != Nil
             SendMessage( ::handle,WM_SETICON,1,::oIcon:handle )
@@ -141,8 +146,7 @@ Local oWnd
          ::handle  := 0
          ::lResult := .F.
          ::AddItem( Self,.F. )
-         Hwg_CreateDlgIndirect( Iif( ( oWnd:=HWindow():GetMain() ) != Nil, ;
-              oWnd:handle,GetActiveWindow() ),Self,::nLeft,::nTop,::nWidth,::nHeight,::style )
+         Hwg_CreateDlgIndirect( hParent,Self,::nLeft,::nTop,::nWidth,::nHeight,::style )
          /*
          IF ::oIcon != Nil
             SendMessage( ::handle,WM_SETICON,1,::oIcon:handle )
@@ -210,6 +214,7 @@ Static Function InitModalDlg( oDlg,wParam,lParam )
 Local iCont
 
    // oDlg:handle := hDlg
+   // writelog( str(oDlg:handle)+" "+oDlg:title )
    IF Valtype( oDlg:menu ) == "A"
       hwg__SetMenu( oDlg:handle, oDlg:menu[5] )
    ENDIF

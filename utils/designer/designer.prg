@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.12 2004-10-07 07:02:59 alkresin Exp $
+ * $Id: designer.prg,v 1.13 2004-10-19 11:09:35 alkresin Exp $
  *
  * Designer
  * Main file
@@ -204,6 +204,7 @@ Static Function StartDes( oDlg,p1,cForm )
          ENDIF
          oDesigner:lSingleForm := .T.
          Hwg_SetForegroundWindow( HFormGen():aForms[1]:oDlg:handle )
+         SetFocus( HFormGen():aForms[1]:oDlg:handle )
 #endif
 #endif
       ENDIF

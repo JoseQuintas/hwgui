@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.19 2004-10-07 07:02:59 alkresin Exp $
+ * $Id: hformgen.prg,v 1.20 2004-10-19 11:09:35 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -39,6 +39,7 @@ CLASS HFormGen INHERIT HObject
    CLASS VAR oDlgSelected
    DATA oDlg
    DATA name
+   DATA handle
    DATA filename, path
    DATA type  INIT 1
    DATA lGet  INIT .T.
@@ -218,6 +219,7 @@ Private value, oCtrl
           ON OTHER MESSAGES {|o,m,wp,lp|MessagesProc(o,m,wp,lp)}
 
    ::oDlg:oParent := Self
+   ::handle := oDesigner:oMainWnd:handle
 
    oCtrl := ::oDlg
    IF oFormDesc != Nil

@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.10 2004-07-12 16:05:34 sandrorrfreire Exp $
+ * $Id: printdos.prg,v 1.11 2004-07-12 18:46:04 sandrorrfreire Exp $
  *
  * CLASS PrintDos
  *
@@ -36,6 +36,7 @@ CLASS PrintDos
      DATA oAns2Oem              AS LOGIC
      DATA LastError 
      DATA oPrintStyle INIT 1 //1 = Matricial   2 = InkJet    3 = LaserJet
+     DATA colorPreview  
 
      METHOD New(oPorta) CONSTRUCTOR  
 
@@ -378,7 +379,7 @@ Local i, itemName, aItem, res := .T., sFont
 Local oCol:=10, oPage:=1, nPage:=1
 Local oFont := HFont():Add( "Courier New",0,-13 )
 Local oText := {"" }
-Local oDlg
+Local oDlg, oColor1, oColor2
 Local oEdit 
 Local oPrt:= iif(Empty(::oPorta), "LPT1", ::oPorta)
  
@@ -389,13 +390,13 @@ IF han <> - 1
          EXIT
       ENDIF
       IF Left( stroka,1 ) == Chr(12)
-         If ::oAns2Oem
-            AADD(ANSITOOEM(oText),"")
-         Else
-            AADD(oText,"")
-         EndIf
+         AADD(oText,"")
       ENDIF
-      oText[oPage]+=stroka + Chr(13) + Chr(10)
+      If ::oAns2Oem
+          oText[oPage]+=ANSITOOEM(stroka) + Chr(13) + Chr(10)
+      Else
+          oText[oPage]+=stroka + Chr(13) + Chr(10)
+      EndIf
       oCol:=oCol+30  
    ENDDO
    Fclose( han )
@@ -405,6 +406,13 @@ ELSE
 ENDIF
 
 oEdit:=oText[nPage]
+if !Empty(::colorpreview)
+   oColor1:=::colorpreview[1]
+   oColor2:=::colorpreview[2]
+Else
+   oColor1:=16777088 
+   oColor2:=0
+EndIf   
 
 Iif(cTitle==Nil,cTitle:="Print Preview",cTitle:=cTitle)
 
@@ -412,7 +420,7 @@ INIT DIALOG oDlg TITLE cTitle ;
         AT 92,61 SIZE 673,499
 
    @ 88,19 EDITBOX oEdit ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
-        COLOR 16777088 BACKCOLOR 0  //Blue to Black
+        COLOR oColor1 BACKCOLOR oColor2  //Blue to Black
 //       COLOR 16711680 BACKCOLOR 16777215  //Black to Write      
    @ 6, 30 BUTTON "<<"    ON CLICK {||nPage:=PrintDosAnt(nPage,oText)} SIZE 69,32 
    @ 6, 80 BUTTON ">>"    ON CLICK {||nPage:=PrintDosNext(oPage,nPage,oText)} SIZE 69,32 

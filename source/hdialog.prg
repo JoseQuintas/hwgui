@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.14 2004-04-26 08:55:07 alkresin Exp $
+ * $Id: hdialog.prg,v 1.15 2004-04-30 10:41:23 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -88,7 +88,7 @@ CLASS HDialog INHERIT HCustomWindow
    METHOD DelItem( oWnd,lModal )
    METHOD FindDialog( hWnd )
    METHOD GetActive()
-   METHOD Close()	INLINE EndDialog()
+   METHOD Close()	INLINE EndDialog(::handle)
 ENDCLASS
 
 METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
@@ -376,6 +376,9 @@ Return -1
 Static Function DlgSize( oDlg,wParam,lParam )
 Local aControls, iCont
 
+   aControls := GetWindowRect( hWnd )
+   oDlg:nWidth  := aControls[3]-aControls[1]
+   oDlg:nHeight := aControls[4]-aControls[2]
    IF oDlg:bSize != Nil .AND. ;
        ( oDlg:oParent == Nil .OR. !__ObjHasMsg( oDlg:oParent,"ACONTROLS" ) )
       Eval( oDlg:bSize, oDlg, LoWord( lParam ), HiWord( lParam ) )

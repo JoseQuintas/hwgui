@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.1 2005-01-12 11:56:33 alkresin Exp $
+ * $Id: control.c,v 1.2 2005-01-14 06:29:14 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -234,18 +234,29 @@ HB_FUNC( HWG_COMBOGETSTRING )
 
 HB_FUNC( CREATEUPDOWNCONTROL )
 {
-   /*
-   hb_retnl( (LONG) CreateUpDownControl( WS_CHILD|WS_BORDER|WS_VISIBLE|hb_parni(3),
-     hb_parni(4),hb_parni(5),hb_parni(6),hb_parni(7),
-     (HWND) hb_parnl(1), hb_parni(2), GetModuleHandle( NULL ),
-     (HWND) hb_parnl(8),
-     hb_parni(9), hb_parni(10), hb_parni(11) ) );
-   */     
+   GtkObject * adj = gtk_adjustment_new( (gdouble) hb_parnl(6),  // value
+                             (gdouble) hb_parnl(7),  // lower
+                             (gdouble) hb_parnl(8),  // upper
+                               1, 1, 1 );
+   GtkWidget * hCtrl = gtk_spin_button_new( (GtkAdjustment*)adj,0.5,0 );
+   
+   GtkFixed * box = getFixedBox( (GObject*) hb_parnl(1) );
+   if ( box )
+      gtk_fixed_put( box, hCtrl, hb_parni(2), hb_parni(3) );  
+   gtk_widget_set_size_request( hCtrl,hb_parni(4),hb_parni(5) );
+   
+   hb_retnl( (LONG) hCtrl );
+			       
 }
 
-HB_FUNC( SETUPDOWN )
+HB_FUNC( HWG_SETUPDOWN )
 {
-   // SendMessage( (HWND) hb_parnl(1),UDM_SETPOS,0,hb_parnl(2) );
+   gtk_spin_button_set_value( (GtkSpinButton*)hb_parnl(1), (gdouble)hb_parnl(2) );
+}
+
+HB_FUNC( HWG_GETUPDOWN )
+{
+   hb_retnl( gtk_spin_button_get_value_as_int( (GtkSpinButton*)hb_parnl(1) ) );
 }
 
 HB_FUNC( ADDTOOLTIP )

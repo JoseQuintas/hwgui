@@ -1,5 +1,5 @@
 /*
- *$Id: hupdown.prg,v 1.1 2005-01-12 11:56:34 alkresin Exp $
+ *$Id: hupdown.prg,v 1.2 2005-01-14 06:29:14 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HUpDown class 
@@ -20,7 +20,6 @@ CLASS HUpDown INHERIT HControl
    CLASS VAR winclass   INIT "EDIT"
    DATA bSetGet
    DATA value
-   DATA hUpDown, idUpDown, styleUpDown
    DATA nLower INIT 0
    DATA nUpper INIT 999
    DATA nUpDownWidth INIT 12
@@ -41,7 +40,6 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor )
 
-   ::idUpDown := ::NewId()
    IF vari != Nil
       IF Valtype(vari) != "N"
          vari := 0
@@ -50,8 +48,6 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ::title := Str(vari)
    ENDIF
    ::bSetGet := bSetGet
-
-   ::styleUpDown := UDS_SETBUDDYINT+UDS_ALIGNRIGHT
 
    IF nLower != Nil ; ::nLower := nLower ; ENDIF
    IF nUpper != Nil ; ::nUpper := nUpper ; ENDIF
@@ -77,8 +73,8 @@ Return Self
 
 METHOD Activate CLASS HUpDown
    IF ::oParent:handle != 0
-      ::handle := CreateUpDownControl( ::oParent:handle, ::idUpDown, ;
-          ::styleUpDown,0,0,::nUpDownWidth,0,::handle,::nUpper,::nLower,Val(::title) )
+      ::handle := CreateUpDownControl( ::oParent:handle, ;
+          ::nLeft,::nTop,::nWidth,::nHeight,Val(::title),::nLower,::nUpper )
       ::Init()
    ENDIF
 Return Nil
@@ -90,10 +86,10 @@ Local vari
       ::value := Eval( ::bSetGet )
       IF Str(::value) != ::title
          ::title := Str( ::value )
-         SetUpDown( ::hUpDown, ::value )
+         hwg_SetUpDown( ::handle, ::value )
       ENDIF
    ELSE
-      SetUpDown( ::hUpDown, Val(::title) )
+      hwg_SetUpDown( ::handle, Val(::title) )
    ENDIF
 
 Return Nil
@@ -109,8 +105,8 @@ Return .T.
 
 Static Function __Valid( oCtrl )
 
-   oCtrl:title := GetEditText( oCtrl:oParent:handle, oCtrl:id )
-   oCtrl:value := Val( Ltrim( oCtrl:title ) )
+   oCtrl:value := hwg_SetUpDown( oCtrl:handle )
+   oCtrl:title := Str( oCtrl:value )
    IF oCtrl:bSetGet != Nil
       Eval( oCtrl:bSetGet,oCtrl:value )
    ENDIF

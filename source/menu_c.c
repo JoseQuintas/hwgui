@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.14 2004-05-21 16:45:38 mlacecilia Exp $
+ * $Id: menu_c.c,v 1.15 2004-05-24 08:25:00 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -10,7 +10,8 @@
 
 #define HB_OS_WIN_32_USED
 
-#define _WIN32_WINNT 0x0400
+#define _WIN32_WINNT 0x0500
+#define WINVER 0x0500
 #define OEMRESOURCE
 #include <windows.h>
 #include <commctrl.h>
@@ -352,9 +353,8 @@ HB_FUNC( CHANGEMENU )
 
 HB_FUNC( MODIFYMENU )
 {
-   UINT_PTR uIDNewItem ;
 
    hb_retl( ModifyMenu( (HMENU) hb_parnl( 1 ), (UINT) hb_parni( 2 ) ,
-                        (UINT) hb_parni( 3 ) ,  uIDNewItem          ,
+                        (UINT) hb_parni( 3 ) , (UINT) hb_parni( 4 ) ,
                         (LPCSTR) hb_parc( 5 ) ) ) ;
 }  

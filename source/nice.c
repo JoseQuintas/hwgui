@@ -1,6 +1,16 @@
+/*
+ * $Id: nice.c,v 1.2 2004-05-24 08:25:00 alkresin Exp $
+ *
+ * HWGUI - Harbour Win32 GUI library source code:
+ * 
+ *
+ * Copyright 2003 Luiz Rafael Culik Guimaraes <culikr@brtrubo.com>
+ * www - http://sites.uol.com.br/culikr/
+*/
+
 #define HB_OS_WIN_32_USED
 
-#define _WIN32_WINNT 0x0400
+#define _WIN32_WINNT 0x0500
 #define OEMRESOURCE
 #include <windows.h>
 #include <commctrl.h>
@@ -15,11 +25,25 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
+#include "guilib.h"
+
+#ifndef GRADIENT_FILL_RECT_H
 
 #define GRADIENT_FILL_RECT_H 0
 #define GRADIENT_FILL_RECT_V 1
-int     _stdcall (*Gradientfill) (HDC, PTRIVERTEX, int , PGRADIENT_RECT, int , int );
+
+typedef struct _GRADIENT_RECT
+{
+    ULONG UpperLeft;
+    ULONG LowerRight;
+}GRADIENT_RECT,*PGRADIENT_RECT,*LPGRADIENT_RECT;
+
+#endif
+
+typedef int  (_stdcall *GRADIENTFILL) (HDC, PTRIVERTEX, int , PVOID, int , int );
 LRESULT CALLBACK NiceButtProc (HWND, UINT, WPARAM, LPARAM );
+
+static GRADIENTFILL pGradientfill = NULL;
 
 void Draw_Gradient(HDC hdc, int x, int y, int w, int h, int r, int g, int b)
 {
@@ -43,7 +67,7 @@ void Draw_Gradient(HDC hdc, int x, int y, int w, int h, int r, int g, int b)
 	Rect.UpperLeft=0;
 	Rect.LowerRight=1;
 	// ******************************************************
-	Gradientfill(hdc,Vert,2,&Rect,1,GRADIENT_FILL_RECT_V);
+	pGradientfill(hdc,Vert,2,&Rect,1,GRADIENT_FILL_RECT_V);
 	// ******************************************************
 	Vert[0].x=0;
 	Vert[0].y=h/2;
@@ -62,7 +86,7 @@ void Draw_Gradient(HDC hdc, int x, int y, int w, int h, int r, int g, int b)
 	Rect.UpperLeft=0;
 	Rect.LowerRight=1;
 	// ******************************************************
-	Gradientfill(hdc,Vert,2,&Rect,1,GRADIENT_FILL_RECT_V);
+	pGradientfill(hdc,Vert,2,&Rect,1,GRADIENT_FILL_RECT_V);
 }
 
 
@@ -109,7 +133,7 @@ HB_FUNC( HWG_REGNICE)
    static BOOL  bRegistered = 0;
    static  WNDCLASS  wc;
 
-	Gradientfill = GetProcAddress(LoadLibrary("MSIMG32.DLL"),"GradientFill");
+	pGradientfill = (GRADIENTFILL) GetProcAddress(LoadLibrary("MSIMG32.DLL"),"GradientFill");
 //    if (Gradientfill == NULL)
 //        return FALSE;
    if( !bRegistered )
@@ -139,11 +163,11 @@ HB_FUNC ( CREATENICEBTN )
 
 
    hWndPanel = CreateWindowEx( hb_parni( 8 ),
-                 "NICEBUTT",                    /* predefined class  */
-                 hb_parcx(9),                        /* no window title   */
-                 WS_CHILD | WS_VISIBLE | ulStyle,  /* style  */
-                 hb_parni(4), hb_parni(5),           /* x, y       */
-                 hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
+                 "NICEBUTT",                      /* predefined class  */
+                 hb_parc(9),                      /* no window title   */
+                 WS_CHILD | WS_VISIBLE | ulStyle, /* style  */
+                 hb_parni(4), hb_parni(5),        /* x, y       */
+                 hb_parni(6), hb_parni(7),     /* nWidth, nHeight */
                  (HWND) hb_parnl(1),           /* parent window    */ 
                  (HMENU) hb_parni(2),          /* control ID  */ 
                  GetModuleHandle( NULL ), 

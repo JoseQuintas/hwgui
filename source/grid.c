@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.4 2004-04-11 06:39:30 andijahja Exp $
+ * $Id: grid.c,v 1.5 2004-05-24 08:25:00 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -28,6 +28,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
+#include "hbapiitm.h"
 
 HB_FUNC (LISTVIEW_CREATE)
 {

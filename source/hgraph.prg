@@ -1,9 +1,11 @@
 /*
+ * $Id: hgraph.prg,v 1.2 2004-04-19 15:24:11 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGraph class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -38,44 +40,27 @@ ENDCLASS
 METHOD New( oWndParent,nId,aValues,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bSize,ctoolt,tcolor,bcolor ) CLASS HGraph
 
-   // ::classname:= "HGRAPH"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
-   ::style   := WS_VISIBLE+WS_CHILD+SS_OWNERDRAW
-   ::oFont   := oFont
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bSize   := bSize
-   ::tooltip := ctoolt
-   ::SetColor( Iif( tcolor==Nil,Vcolor("FFFFFF"),tcolor ),Iif( bcolor==Nil,0,bcolor ) )
-
-   ::bPaint  := {|o,lpdis|o:Paint(lpdis)}
+   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,oFont,, ;
+                  bSize,{|o,lpdis|o:Paint(lpdis)},ctoolt, ;
+                  Iif( tcolor==Nil,Vcolor("FFFFFF"),tcolor ),Iif( bcolor==Nil,0,bcolor ) )
 
    ::aValues := aValues
    ::nType   := 1
    ::nGraphs := 1
 
    ::Activate()
-   ::oParent:AddControl( Self )
 
 Return Self
 
 METHOD Redefine( oWndParent,nId,aValues,oFont, ;
                   bSize,ctoolt,tcolor,bcolor )  CLASS HGraph
-   // ::classname:= "HGRAPH"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := nId
-   ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
-   ::oFont   := oFont
-   ::bSize   := bSize
-   ::tooltip := ctoolt
-   ::bPaint  := {|o,lpdis|o:Paint(lpdis)}
+
+   Super:New( oWndParent,nId,SS_OWNERDRAW,0,0,0,0,oFont,, ;
+                  bSize,{|o,lpdis|o:Paint(lpdis)},ctoolt, ;
+                  Iif( tcolor==Nil,Vcolor("FFFFFF"),tcolor ),Iif( bcolor==Nil,0,bcolor ) )
 
    ::aValues := aValues
 
-   ::oParent:AddControl( Self )
 Return Self
 
 METHOD Activate CLASS HGraph

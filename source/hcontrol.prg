@@ -1,9 +1,11 @@
 /*
+ * $Id: hcontrol.prg,v 1.6 2004-04-19 15:24:11 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
- * HControl class
+ * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -21,6 +23,8 @@ CLASS HControl INHERIT HCustomWindow
    DATA tooltip
    DATA lInit    INIT .F.
 
+   METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  bSize,bPaint,ctoolt,tcolor,bcolor )
    METHOD Init()
    METHOD SetColor( tcolor,bcolor,lRepaint )
    METHOD NewId()
@@ -32,6 +36,27 @@ CLASS HControl INHERIT HCustomWindow
    METHOD SetFocus()	INLINE SetFocus( ::handle  )   
 
 ENDCLASS
+
+METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  bSize,bPaint,ctoolt,tcolor,bcolor ) CLASS HControl
+
+   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
+   ::id      := Iif( nId==Nil,::NewId(), nId )
+   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ),WS_VISIBLE+WS_CHILD )
+   ::oFont   := oFont
+   ::nLeft   := nLeft
+   ::nTop    := nTop
+   ::nWidth  := nWidth
+   ::nHeight := nHeight
+   ::bInit   := bInit
+   ::bSize   := bSize
+   ::bPaint  := bPaint
+   ::tooltip := ctoolt
+   ::SetColor( tcolor,bcolor )
+
+   ::oParent:AddControl( Self )
+
+Return Self
 
 METHOD NewId() CLASS HControl
 Local nId := CONTROL_FIRST_ID + Len( ::oParent:aControls )
@@ -64,24 +89,26 @@ Local i
 RETURN Nil
 
 METHOD SetColor( tcolor,bcolor,lRepaint ) CLASS HControl
+
    IF tcolor != Nil
       ::tcolor  := tcolor
-   ENDIF
-   IF tColor != Nil .AND. bColor == Nil .AND. ::bColor == Nil
-      bColor := GetSysColor( COLOR_3DFACE )
-   ENDIF
-   IF bcolor != Nil
-      ::bcolor  := bcolor
-      IF bColor != Nil
-         IF ::brush != Nil
-            ::brush:Release()
-         ENDIF
-         ::brush := HBrush():Add( bcolor )
+      IF bColor == Nil .AND. ::bColor == Nil
+         bColor := GetSysColor( COLOR_3DFACE )
       ENDIF
    ENDIF
+
+   IF bcolor != Nil
+      ::bcolor  := bcolor
+      IF ::brush != Nil
+         ::brush:Release()
+      ENDIF
+      ::brush := HBrush():Add( bcolor )
+   ENDIF
+
    IF lRepaint != Nil .AND. lRepaint
       RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
    ENDIF
+
 Return Nil
 
 METHOD Move( x1,y1,width,height )  CLASS HControl
@@ -115,18 +142,12 @@ ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,oFont,aParts,bInit,bSize,bPaint ) CLASS HStatus
 
-   // ::classname:= "HSTATUS"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
-   ::style   := nStyle
-   ::oFont   := oFont
-   ::bInit   := bInit
-   ::bSize   := Iif( bSize!=Nil, bSize, {|o,x,y|MoveWindow(o:handle,0,y-20,x,y)} )
-   ::bPaint  := bPaint
+   bSize := Iif( bSize!=Nil, bSize, {|o,x,y|MoveWindow(o:handle,0,y-20,x,y)} )
+   Super:New( oWndParent,nId,nStyle,,,,,oFont,bInit,bSize,bPaint )
+
    ::aParts  := aParts
 
    ::Activate()
-   ::oParent:AddControl( Self )
 
 Return Self
 
@@ -159,48 +180,30 @@ ENDCLASS
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor,lTransp ) CLASS HStatic
 
-   // ::classname:= "HSTATIC"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  bSize,bPaint,ctoolt,tcolor,bcolor )
+
    ::title   := cCaption
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ),WS_VISIBLE+WS_CHILD )
    IF lTransp != Nil .AND. lTransp
       ::extStyle += WS_EX_TRANSPARENT
    ENDIF
-   ::oFont   := oFont
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
-   ::tooltip := ctoolt
-   ::SetColor( tcolor,bcolor )
 
    ::Activate()
-   ::oParent:AddControl( Self )
 
 Return Self
 
 METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor,lTransp )  CLASS HStatic
-   // ::classname:= "HSTATIC"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := nId
+
+   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
+                  bSize,bPaint,ctoolt,tcolor,bcolor )
+
    ::title   := cCaption
    ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
    IF lTransp != Nil .AND. lTransp
       ::extStyle += WS_EX_TRANSPARENT
    ENDIF
-   ::oFont   := oFont
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
-   ::tooltip := ctoolt
-   ::SetColor( tcolor,bcolor )
 
-   ::oParent:AddControl( Self )
 Return Self
 
 METHOD Activate CLASS HStatic
@@ -226,24 +229,14 @@ ENDCLASS
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
                   bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor ) CLASS HButton
 
-   // ::classname:= "HBUTTON"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
-   ::title   := cCaption
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_PUSHBUTTON+WS_CHILD+WS_VISIBLE )
-   ::oFont   := oFont
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := Iif( nWidth==Nil,90,nWidth )
-   ::nHeight := Iif( nHeight==Nil,30,nHeight )
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
-   ::tooltip := ctoolt
-   ::SetColor( tcolor,bcolor )
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_PUSHBUTTON )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,90,nWidth ),;
+              Iif( nHeight==Nil,30,nHeight ),oFont,bInit, ;
+              bSize,bPaint,ctoolt,tcolor,bcolor )
 
+   ::title   := cCaption
    ::Activate()
-   ::oParent:AddControl( Self )
+
    IF bClick != Nil
       ::oParent:AddEvent( 0,::id,bClick )
    ENDIF
@@ -259,18 +252,10 @@ METHOD Activate CLASS HButton
 Return Nil
 
 METHOD Redefine( oWndParent,nId,oFont,bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor ) CLASS HButton
-   // ::classname:= "HBUTTON"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := nId
-   ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
-   ::oFont   := oFont
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
-   ::tooltip := ctoolt
-   ::SetColor( tcolor,bcolor )
 
-   ::oParent:AddControl( Self )
+   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
+              bSize,bPaint,ctoolt,tcolor,bcolor )
+
    IF bClick != Nil
       ::oParent:AddEvent( 0,::id,bClick )
    ENDIF
@@ -290,23 +275,12 @@ ENDCLASS
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption, ;
                   oFont,bInit,bSize,bPaint,tcolor,bcolor ) CLASS HGroup
 
-   // ::classname:= "HGROUP"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
-   ::title   := cCaption
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_GROUPBOX+WS_CHILD+WS_VISIBLE )
-   ::oFont   := oFont
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
-   ::SetColor( tcolor,bcolor )
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_GROUPBOX )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  bSize,bPaint,,tcolor,bcolor )
 
+   ::title   := cCaption
    ::Activate()
-   ::oParent:AddControl( Self )
 
 Return Self
 
@@ -335,14 +309,10 @@ ENDCLASS
 
 METHOD New( oWndParent,nId,lVert,nLeft,nTop,nLength,bSize ) CLASS hline
 
-   // ::classname:= "HLine"
+   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,,,,,bSize,{|o,lp|o:Paint(lp)} )
+
    ::title := ""
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
-   ::style   := SS_OWNERDRAW+WS_CHILD+WS_VISIBLE
-   ::lVert   := lVert
-   ::nLeft   := nLeft
-   ::nTop    := nTop
+   ::lVert := lVert
    IF lVert
       ::nWidth  := 10
       ::nHeight := Iif( nLength==Nil,20,nLength )
@@ -350,13 +320,10 @@ METHOD New( oWndParent,nId,lVert,nLeft,nTop,nLength,bSize ) CLASS hline
       ::nWidth  := Iif( nLength==Nil,20,nLength )
       ::nHeight := 10
    ENDIF
-   ::bSize   := bSize
-   ::bPaint  := {|o,lp|o:Paint(lp)}
 
    ::oPenLight := HPen():Add( BS_SOLID,1,GetSysColor(COLOR_3DHILIGHT) )
    ::oPenGray  := HPen():Add( BS_SOLID,1,GetSysColor(COLOR_3DSHADOW) )
 
-   ::oParent:AddControl( Self )
    ::Activate()
 
 Return Self

@@ -1,11 +1,11 @@
 /*
- *$Id: hedit.prg,v 1.9 2004-04-03 17:39:38 alkresin Exp $
+ *$Id: hedit.prg,v 1.10 2004-04-19 15:24:11 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -40,9 +40,11 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt, ;
                   tcolor,bcolor,cPicture,lNoBorder ) CLASS HEdit
 
-   // ::classname:= "HEDIT"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), ;
+                WS_TABSTOP+Iif(lNoBorder==Nil.OR.!lNoBorder,WS_BORDER,0) )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  bSize,bPaint,ctoolt,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
+
    IF vari != Nil
       ::cType   := Valtype( vari )
    ENDIF
@@ -50,26 +52,15 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ::title := vari
    ENDIF
    ::bSetGet := bSetGet
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), ;
-       WS_CHILD+WS_VISIBLE+WS_TABSTOP+Iif(lNoBorder==Nil.OR.!lNoBorder,WS_BORDER,0) )
-   IF Hwg_BitAnd( ::style,ES_MULTILINE ) != 0
-      ::style := Hwg_BitOr( ::style,ES_WANTRETURN )
+
+   IF Hwg_BitAnd( nStyle,ES_MULTILINE ) != 0
+      ::style := Hwg_BitOr( nStyle,ES_WANTRETURN )
       ::lMultiLine := .T.
    ENDIF
-   ::oFont   := oFont
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
-   ::tooltip := ctoolt
+
    ParsePict( Self, cPicture, vari )
-   ::SetColor( tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
 
    ::Activate()
-   ::oParent:AddControl( Self )
 
    IF bSetGet != Nil
       ::bGetFocus := bGFocus
@@ -98,24 +89,16 @@ Return Nil
 
 METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint, ;
           bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture )  CLASS HEdit
-   // ::classname:= "HEDIT"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := nId
+
+   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
+                  bSize,bPaint,ctoolt,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
+
    IF vari != Nil
       ::cType   := Valtype( vari )
-      // ::title   := Iif(::cType=="D",Dtoc(vari),Iif(::cType=="N",Str(vari),Iif(::cType=="C",vari,"")))
    ENDIF
    ::bSetGet := bSetGet
-   ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
-   ::oFont   := oFont
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
-   ::tooltip := ctoolt
    ParsePict( Self, cPicture, vari )
-   ::SetColor( tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
 
-   ::oParent:AddControl( Self )
    IF bSetGet != Nil
       ::bGetFocus := bGFocus
       ::bLostFocus := bLFocus

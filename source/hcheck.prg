@@ -1,9 +1,11 @@
 /*
+ * $Id: hcheck.prg,v 1.4 2004-04-19 15:24:11 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -28,26 +30,15 @@ ENDCLASS
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
                   bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor ) CLASS HCheckButton
 
-   // ::classname:= "HCHECKBUTTON"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_AUTOCHECKBOX+WS_TABSTOP )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  bSize,bPaint,ctoolt,tcolor,bcolor )
+
    ::title   := cCaption
    ::value   := Iif( vari==Nil .OR. Valtype(vari)!="L",.F.,vari )
    ::bSetGet := bSetGet
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_AUTOCHECKBOX+WS_CHILD+WS_VISIBLE+WS_TABSTOP )
-   ::oFont   := oFont
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
-   ::tooltip := ctoolt
-   ::SetColor( tcolor,bcolor )
 
    ::Activate()
-   ::oParent:AddControl( Self )
 
    IF bSetGet != Nil
       ::bLostFocus := bClick
@@ -57,6 +48,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaptio
          ::oParent:AddEvent( BN_CLICKED,::id,bClick )
       ENDIF
    ENDIF
+
 Return Self
 
 METHOD Activate CLASS HCheckButton
@@ -68,20 +60,13 @@ METHOD Activate CLASS HCheckButton
 Return Nil
 
 METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor ) CLASS HCheckButton
-   // ::classname:= "HCHECKBUTTON"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := nId
+
+   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
+                  bSize,bPaint,ctoolt,tcolor,bcolor )
+
    ::value   := Iif( vari==Nil .OR. Valtype(vari)!="L",.F.,vari )
    ::bSetGet := bSetGet
-   ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
-   ::oFont   := oFont
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
-   ::tooltip := ctoolt
-   ::SetColor( tcolor,bcolor )
 
-   ::oParent:AddControl( Self )
    IF bSetGet != Nil
       ::bLostFocus := bClick
       ::oParent:AddEvent( BN_CLICKED,::id,{|o,id|__Valid(o:FindControl(id))} )
@@ -90,6 +75,7 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint,bClick,cto
          ::oParent:AddEvent( BN_CLICKED,::id,bClick )
       ENDIF
    ENDIF
+
 Return Self
 
 METHOD Init() CLASS HCheckButton

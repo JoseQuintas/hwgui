@@ -1,11 +1,11 @@
 /*
- * $Id: hdatepic.prg,v 1.8 2004-03-31 07:28:11 alkresin Exp $
+ * $Id: hdatepic.prg,v 1.9 2004-04-19 15:24:11 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -33,24 +33,15 @@ ENDCLASS
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bGfocus,bLfocus,ctoolt,tcolor,bcolor ) CLASS HDatePicker
 
-   // ::classname:= "HDATEPICKER"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_TABSTOP )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  ,,ctoolt,tcolor,bcolor )
+
    ::value   := Iif( vari==Nil .OR. Valtype(vari)!="D",CTOD(SPACE(8)),vari )
    ::bSetGet := bSetGet
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP )
-   ::oFont   := oFont
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::tooltip := ctoolt
-   ::bInit   := bInit
-   ::SetColor( tcolor,bcolor )
 
    HWG_InitCommonControlsEx()
    ::Activate()
-   ::oParent:AddControl( Self )
 
    IF bGfocus != Nil
       ::oParent:AddEvent( NM_SETFOCUS,::id,bGfocus,.T. )

@@ -1,11 +1,11 @@
 /*
- * $Id: hcombo.prg,v 1.8 2004-04-19 07:39:47 alkresin Exp $
+ * $Id: hcombo.prg,v 1.9 2004-04-19 15:24:11 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -35,36 +35,26 @@ CLASS HComboBox INHERIT HControl
    DATA  bChangeSel
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  aItems,oFont,bInit,bSize,bPaint,bChange,cTooltip )
+                  aItems,oFont,bInit,bSize,bPaint,bChange,cToolt )
    METHOD Activate()
-   METHOD Redefine( oWnd,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bDraw,bChange,cTooltip )
+   METHOD Redefine( oWnd,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bDraw,bChange,cToolt )
    METHOD Init( aCombo, nCurrent )
    METHOD Refresh()     
    METHOD Setitem( nPos )
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,oFont, ;
-                  bInit,bSize,bPaint,bChange,cTooltip ) CLASS HComboBox
+                  bInit,bSize,bPaint,bChange,cToolt ) CLASS HComboBox
 
-   // ::classname:= "HCOMBOBOX"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), CBS_DROPDOWNLIST )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  bSize,bPaint,ctoolt )
+
    ::value   := Iif( vari==Nil .OR. Valtype(vari)!="N",1,vari )
    ::bSetGet := bSetGet
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), CBS_DROPDOWNLIST+WS_CHILD+WS_VISIBLE )
-   ::oFont   := oFont
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
    ::aItems  := aItems
-   ::tooltip := cTooltip
 
    ::Activate()
-   ::oParent:AddControl( Self )
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
@@ -84,24 +74,20 @@ METHOD Activate CLASS HComboBox
 Return Nil
 
 METHOD Redefine( oWndParent,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bPaint, ;
-                  bChange,cTooltip ) CLASS HComboBox
-   // ::classname:= "HCOMBOBOX"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := nId
+                  bChange,cToolt ) CLASS HComboBox
+
+   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
+                  bSize,bPaint,ctoolt )
+
    ::value   := Iif( vari==Nil .OR. Valtype(vari)!="N",1,vari )
    ::bSetGet := bSetGet
-   ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
-   ::oFont   := oFont
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
    ::aItems  := aItems
-   ::tooltip := cTooltip
 
-   ::oParent:AddControl( Self )
    IF bSetGet != Nil
       ::bChangeSel := bChange
       ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
+   ELSEIF bChange != Nil
+      ::oParent:AddEvent( CBN_SELCHANGE,::id,bChange )
    ENDIF
 Return Self
 

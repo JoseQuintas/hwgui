@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.129 2004-05-08 20:13:13 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.130 2004-05-10 18:26:33 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-05-10 15:30 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
+  * source/hdialog.prg
+    ! on functon initmodaldlg, ajust window title if exist
+  * source/hcontrol.prg
+    ! added SetText method do dynamicaly change an control caption
 
 2004-05-08 17-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/hpanel.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.8 2004-04-26 08:55:07 alkresin Exp $
+ * $Id: hcontrol.prg,v 1.9 2004-05-10 18:26:35 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -35,6 +35,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD Enable()	INLINE EnableWindow( ::handle, .T. )
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
    METHOD SetFocus()	INLINE ( SendMessage( ::oParent:handle,WM_NEXTDLGCTL,::handle,1),SetFocus( ::handle  ) )
+   METHOD SetText( c )  INLINE SetWindowText( ::Handle, c )
 
 ENDCLASS
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.17 2004-05-06 00:59:17 lculik Exp $
+ * $Id: hdialog.prg,v 1.18 2004-05-10 18:26:35 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -234,6 +234,11 @@ Local iCont
    IF oDlg:bInit != Nil
       Eval( oDlg:bInit, oDlg )
    ENDIF
+
+   IF oDlg:Title != NIL
+      SetWindowText(oDlg:Handle,oDlg:Title)
+   ENDIF
+
 
 Return 1
 

@@ -295,6 +295,32 @@ HB_FUNC( GETMENUCHECKMARKDIMENSIONS )
 {
     hb_retl( (LONG) GetMenuCheckMarkDimensions( ) );
 }
+ 
+  
+HB_FUNC( GETSIZEMENUBITMAPWIDTH )
+{
+    hb_retni(   GetSystemMetrics(SM_CXMENUSIZE));
+}	
+HB_FUNC( GETSIZEMENUBITMAPHEIGHT )
+{
+    hb_retni(   GetSystemMetrics(SM_CYMENUSIZE));
+}	
+
+HB_FUNC( STRETCHBLT )
+{
+   hb_retl( StretchBlt( (HDC) hb_parnl( 1 )   ,
+                        hb_parni( 2 )         ,
+                        hb_parni( 3 )         ,
+                        hb_parni( 4 )         ,
+                        hb_parni( 5 )         ,
+                        (HDC) hb_parnl( 6 )   ,
+                        hb_parni( 7 )         ,
+                        hb_parni( 8 )         ,
+                        hb_parni( 9 )         ,
+                        hb_parni( 10 )        ,
+                        (DWORD) hb_parnl( 11 )
+                        ) ) ;
+}  
   
   
  

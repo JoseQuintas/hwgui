@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.114 2004-04-30 18:53:29 alkresin Exp $
+ * $Id: Changelog,v 1.115 2004-04-30 20:05:07 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-04-30 17-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/menu_c.c
+    new functions added
 
 2004-04-30 22:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hdialog.prg
@@ -22,7 +26,7 @@
     * Script routines has been extended - it is possible now to have procedures
       in scripts and to execute scripts in DEBUG mode.
 
-2004-04-28 16-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+2004-04-29 16-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/menu_c.c
     new function GetMenuCheckMarkDimensions( )
    

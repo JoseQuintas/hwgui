@@ -1,9 +1,11 @@
 /*
+ * $Id: hsplit.prg,v 1.2 2004-06-09 11:57:56 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSplitter class
  *
  * Copyright 2003 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -35,33 +37,21 @@ ENDCLASS
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight, ;
                   bSize,bDraw,color,bcolor,aLeft,aRight ) CLASS HSplitter
 
-   // ::classname:= "HSPLITTER"
+   Super:New( oWndParent,nId,WS_CHILD+WS_VISIBLE+SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,,, ;
+                  bSize,bDraw,,color,bcolor )
+
    ::title   := ""
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
-   ::style   := WS_CHILD+WS_VISIBLE+SS_OWNERDRAW
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bSize   := bSize
-   ::bPaint  := bDraw
-   ::tcolor  := color
-   ::bcolor  := bcolor
    ::aLeft   := Iif( aLeft==Nil, {}, aLeft )
    ::aRight  := Iif( aRight==Nil, {}, aRight )
    ::lVertical := ( ::nHeight > ::nWidth )
-   // ::oPenLight := HPen():Add( BS_SOLID,1,GetSysColor(COLOR_3DHILIGHT) )
-   // ::oPenGray  := HPen():Add( BS_SOLID,1,GetSysColor(COLOR_3DSHADOW) )
 
    ::Activate()
-   ::oParent:AddControl( Self )
 
 Return Self
 
 METHOD Activate()
    IF ::oParent:handle != 0
-      ::handle := CreatePanel( ::oParent:handle, ::id, ;
+      ::handle := CreateStatic( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.12 2004-05-17 10:17:54 alkresin Exp $
+ * $Id: control.c,v 1.13 2004-06-09 11:57:56 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -539,6 +539,17 @@ HB_FUNC( GETCURRENTTAB )
 HB_FUNC( SETTABSIZE )
 {
    SendMessage( (HWND)hb_parnl(1), TCM_SETITEMSIZE, 0, MAKELPARAM( hb_parni(2),hb_parni(3) ) );
+}
+
+HB_FUNC ( SETTABNAME )
+{
+   TC_ITEM tie;
+
+   tie.mask = TCIF_TEXT;
+   tie.pszText = hb_parc(3);
+
+   TabCtrl_SetItem( (HWND) hb_parnl(1), hb_parni(2), &tie );
+
 }
 
 

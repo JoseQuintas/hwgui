@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.9 2004-04-21 18:05:02 rodrigo_moreno Exp $
+ * $Id: misc.c,v 1.10 2004-05-13 12:46:35 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -393,7 +393,6 @@ HB_FUNC ( WINHELP )
     hb_retni(WinHelp(( HWND )hb_parnl ( 1 ), (LPCTSTR)hb_parc( 2 ), style, context));
 }
 
-
 HB_FUNC( GETNEXTDLGTABITEM )
 {
    /*
@@ -407,4 +406,10 @@ HB_FUNC( GETNEXTDLGTABITEM )
    */
    
    hb_retnl( (LONG) GetNextDlgTabItem( (HWND) hb_parnl( 1 ), (HWND) hb_parnl( 2 ), hb_parl( 3 ) ) ) ;
+}
+
+HB_FUNC( SLEEP )
+{
+    if (hb_parinfo(1))
+        Sleep(hb_parnl(1));         
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.12 2004-05-12 15:50:51 lculik Exp $
+ * $Id: hcombo.prg,v 1.13 2004-05-13 12:46:35 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -176,9 +176,9 @@ METHOD Refresh() CLASS HComboBox
       ENDIF                
    ELSE
       ComboSetString( ::handle, ::value )
+      ::SetItem(::value )
    ENDIF                    
 
-   ::SetItem(::value )
 Return Nil
 
 METHOD SetItem(nPos) CLASS HComboBox

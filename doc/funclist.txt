@@ -167,6 +167,7 @@ MISC.C
   Gethelpdata
   WinHelp
   Getnextdlgtabitem( window handle, start point handle, bool, start from current control )
+  Sleep(miliseconds)
 
 WBROWSE.C:
   Setscrollinfo

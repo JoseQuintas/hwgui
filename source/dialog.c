@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ *$Id: dialog.c,v 1.3 2003-12-01 12:41:31 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -28,6 +28,7 @@ LRESULT CALLBACK DlgProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK PSPProc (HWND, UINT, WPARAM, LPARAM);
 extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
 extern void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
+extern HMODULE hModule ;
 
 HWND aDialogs[ 20 ];
 int iDialogs = 0;
@@ -39,7 +40,7 @@ HB_FUNC ( HWG_DIALOGBOX )
 
    cIdDlg = hb_itemGetCPtr( GetObjectVar( pObj, "TITLE" ) );
 
-   DialogBox( GetModuleHandle( NULL ), cIdDlg, (HWND) hb_parnl( 1 ), (DLGPROC) ModalDlgProc );
+   DialogBox( hModule, cIdDlg, (HWND) hb_parnl( 1 ), (DLGPROC) ModalDlgProc );
 }
 
 /*  Creates modeless dialog
@@ -51,7 +52,7 @@ HB_FUNC ( HWG_CREATEDIALOG )
    PHB_ITEM pObj = hb_param( 2, HB_IT_OBJECT );
    char *cIdDlg = hb_itemGetCPtr( GetObjectVar( pObj, "TITLE" ) );
 
-   hDlg = CreateDialog( GetModuleHandle( NULL ), cIdDlg, (HWND) hb_parnl( 1 ), 
+   hDlg = CreateDialog( hModule, cIdDlg, (HWND) hb_parnl( 1 ), 
       (DLGPROC) DlgProc ); 
 
    ShowWindow( hDlg, SW_SHOW);
@@ -464,7 +465,7 @@ HB_FUNC( HWG_CREATEDLGINDIRECT )
                           hb_parni(5), hb_parni(6), lStyle );
    }
 
-   CreateDialogIndirect( GetModuleHandle( NULL ), pdlgtemplate,
+   CreateDialogIndirect( hModule, pdlgtemplate,
                       (HWND) hb_parnl(1), (DLGPROC) DlgProc );
 
    if( hb_pcount()<8 || ISNIL(8) )
@@ -484,7 +485,7 @@ HB_FUNC( HWG_DLGBOXINDIRECT )
    pObj = hb_param( 2, HB_IT_OBJECT );
    pdlgtemplate = CreateDlgTemplate( pObj, x1, y1, dwidth, dheight, lStyle );
 
-   DialogBoxIndirect( GetModuleHandle( NULL ), pdlgtemplate,
+   DialogBoxIndirect( hModule, pdlgtemplate,
                       (HWND) hb_parnl(1), (DLGPROC) ModalDlgProc );
    LocalFree (LocalHandle (pdlgtemplate));
 }

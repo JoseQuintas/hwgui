@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.120 2004-05-05 10:12:11 alkresin Exp $
+ * $Id: Changelog,v 1.121 2004-05-05 11:48:03 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-05-05 08-42 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/menu_c.c
+    change function HWG_INSERTMENUBITMAP
+  * include/guilib.ch  
+    renamed Clause IMAGE to MenuItem from BITMAP
+  * samples/testmenubitmap.prg
+    replaced command
+    
 2004-05-05 14:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/xml/hxmldoc.prg
   * source/procmisc/procscri.prg

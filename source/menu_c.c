@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.9 2004-05-03 18:58:29 sandrorrfreire Exp $
+ * $Id: menu_c.c,v 1.10 2004-05-05 11:48:03 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -326,16 +326,12 @@ HB_FUNC( STRETCHBLT )
 HB_FUNC( HWG__INSERTBITMAPMENU )
 {
    MENUITEMINFO mii;
-   HMENU hSubMenu = CreateMenu();
-
+   
    mii.cbSize = sizeof( MENUITEMINFO );
    mii.fMask = MIIM_ID | MIIM_BITMAP | MIIM_DATA; 
    mii.hbmpItem = (HBITMAP) hb_parnl( 3 ); 
 
-   if( SetMenuItemInfo( ( HMENU ) hb_parnl( 1 ), hb_parni( 2 ), 0, &mii ) )
-      hb_retnl( (LONG) hSubMenu );
-   else
-      hb_retnl( 0 );
+   hb_retnl( (LONG) SetMenuItemInfo( ( HMENU ) hb_parnl( 1 ), hb_parni( 2 ), 0, &mii ) );
 }
 
 HB_FUNC( CHANGEMENU )

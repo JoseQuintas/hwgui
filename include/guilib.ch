@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.26 2004-05-04 22:48:23 lculik Exp $
+ *$Id: guilib.ch,v 1.27 2004-05-05 11:48:03 sandrorrfreire Exp $
  */
 
 #define	WND_MAIN		1
@@ -881,7 +881,7 @@
 
 #xcommand MENUITEM <item> [ ID <nId> ]    ;
             ACTION <act>                  ;
-            [ IMAGE <bmp> ]               ; //ADDED by Sandro Freire
+            [ BITMAP <bmp> ]               ; //ADDED by Sandro Freire
             [<res: FROM RESOURCE>]        ; //true use image from resource
             [ ACCELERATOR <flag>, <key> ] ;
             [<lDisabled: DISABLED>]       ;

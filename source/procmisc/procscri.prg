@@ -1,9 +1,11 @@
 /*
+ * $Id: procscri.prg,v 1.4 2004-05-13 10:04:28 alkresin Exp $
+ *
  * Common procedures
  * Scripts
  *
  * Author: Alexander S.Kresin <alex@belacy.belgorod.su>
- *         www - http://www.geocities.com/alkresin/
+ *         www - http://kresin.belgorod.su
 */
 *+膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊
 *+
@@ -22,7 +24,8 @@
 #define __WINDOWS__
 
 Memvar iscr
-STATIC nLastError, numlin
+
+STATIC nLastError, numlin, scr_RetValue
 #ifndef __WINDOWS__
 STATIC y__size := 0, x__size := 0
 #endif
@@ -48,7 +51,7 @@ LOCAL aFormCode, aFormName
                   EXIT
                ENDIF
             ELSEIF LEFT( stroka, 6 ) == "#BLOCK"
-               scom := Upper( Ltrim( Substr( stroka,9 ) ) )
+               scom := Upper( Ltrim( Substr( stroka,8 ) ) )
                IF scom == scrkod
                   rejim     := - 1
                   aFormCode := {}
@@ -56,10 +59,15 @@ LOCAL aFormCode, aFormName
                ENDIF
             ENDIF
          ELSEIF rejim == -1 .AND. LEFT( stroka, 1 ) == "@"
-            Aadd( aFormCode, SUBSTR( stroka, 2, 3 ) )
-            Aadd( aFormName, SUBSTR( stroka, 6 ) )
+            i := AT( " ", stroka )
+            Aadd( aFormCode, SUBSTR( stroka, 2, i-2 ) )
+            Aadd( aFormName, SUBSTR( stroka, i+1 ) )
          ELSEIF rejim == -1 .AND. LEFT( stroka, 9 ) == "#ENDBLOCK"
+#ifdef __HARBOUR__
             i := WCHOICE( aFormName )
+#else
+            i := FCHOICE( aFormName )
+#endif
             IF i == 0
                FCLOSE( han )
                RETURN Nil
@@ -176,10 +184,14 @@ Local cLine, lDebug := ( Len( rezArray ) == 3 )
          poz1 := AT( " ", stroka )
          scom := UPPER( SUBSTR( stroka, 1, IIF( poz1 <> 0, poz1 - 1, 999 ) ) )
          DO CASE
-         CASE scom = "PRIVATE"
+         CASE scom = "PRIVATE" .OR. scom = "PARAMETERS"
             IF LEN( rezArray[2] ) == 0 .OR. ( i := VALTYPE( ATAIL( rezArray[2] ) ) ) == "C" ;
                     .OR. i == "A"
-               AADD( rezArray[2], ALLTRIM( SUBSTR( stroka, 9 ) ) )
+               IF Left( scom,2 ) == "PR"
+                  AADD( rezArray[2], " "+ALLTRIM( SUBSTR( stroka, 9 ) ) )
+               ELSE
+                  AADD( rezArray[2], "/"+ALLTRIM( SUBSTR( stroka, 12 ) ) )
+               ENDIF
                AADD( tmpArray, "" )
             ELSE
                nLastError := 1
@@ -223,9 +235,9 @@ Local cLine, lDebug := ( Len( rezArray ) == 3 )
                RETURN .F.
             ENDIF
          CASE scom = "RETURN"
-            AADD( rezArray[2], {||EndScript()} )
+            AADD( rezArray[2], &( "{||EndScript("+Ltrim( Substr( stroka,7 ) )+")}" ) )
             AADD( tmpArray, "" )
-         CASE scom = "PROCEDURE"
+         CASE scom = "FUNCTION"
             stroka := Ltrim( Substr( stroka,poz1+1 ) )
             poz1 := At( "(",stroka )
             scom := UPPER( SUBSTR( stroka, 1, IIF( poz1 <> 0, poz1 - 1, 999 ) ) )
@@ -234,11 +246,7 @@ Local cLine, lDebug := ( Len( rezArray ) == 3 )
             IF !CompileScr( han, @strbuf, @poz, rezArray[2,Len(rezArray[2])] )
                RETURN .F.
             ENDIF
-         CASE scom = "CALL"
-            stroka := Ltrim( Substr( stroka,poz1+1 ) )
-            AADD( rezArray[2], &( "{||CallProc('"+Upper(stroka)+"')}" ) )
-            AADD( tmpArray, "" )
-         CASE scom = "#ENDSCRIPT" .OR. Left( scom,7 ) == "ENDPROC"
+         CASE scom = "#ENDSCRIPT" .OR. Left( scom,7 ) == "ENDFUNC"
             RETURN .T.
          OTHERWISE
             bOldError := ERRORBLOCK( { | e | MacroError(1,e,stroka) } )
@@ -375,12 +383,12 @@ RETURN .F.
 *+
 *+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 *+
-FUNCTION DoScript( aScript )
-
-LOCAL arlen, stroka, varName, varValue, lDebug
+FUNCTION DoScript( aScript, aParams )
+LOCAL arlen, stroka, varName, varValue, lDebug, lParam, j
 MEMVAR iscr, bOldError, aScriptt
 PRIVATE iscr := 1, bOldError
 
+   scr_RetValue := Nil
    IF Type( "aScriptt" ) != "A"
       Private aScriptt := aScript
    ENDIF
@@ -390,14 +398,20 @@ PRIVATE iscr := 1, bOldError
    lDebug := ( Len( aScript ) == 3 )
    DO WHILE VALTYPE( aScript[ 2,iscr ] ) != "B"
       IF VALTYPE( aScript[ 2,iscr ] ) == "C"
-         stroka := aScript[ 2,iscr ]
+         stroka := Substr( aScript[ 2,iscr ],2 )
+         lParam := ( Left( aScript[ 2,iscr ],1 ) == "/" )
          bOldError := ERRORBLOCK( { | e | MacroError(2,e) } )
          BEGIN SEQUENCE
+         j := 1
          DO WHILE !EMPTY( varName := getNextVar( @stroka, @varValue ) )
             PRIVATE &varName
             IF varvalue != Nil
                &varName := &varValue
             ENDIF
+            IF lParam .AND. aParams != Nil .AND. Len(aParams) >= j
+               &varname = aParams[ j ]
+            ENDIF
+            j ++
          ENDDO
          RECOVER
             WndOut()
@@ -425,23 +439,27 @@ PRIVATE iscr := 1, bOldError
    END SEQUENCE
    ERRORBLOCK( bOldError )
    WndOut()
-RETURN .T.
 
-FUNCTION CallProc( cProc )
+RETURN scr_RetValue
+
+FUNCTION CallFunc( cProc, aParams )
 Local i := 1
 MEMVAR aScriptt
 
+   scr_RetValue := Nil
+   cProc := Upper( cProc )
    DO WHILE VALTYPE( aScriptt[2,i] ) == "A"
       IF aScriptt[2,i,1] == cProc
-         DoScript( aScriptt[2,i] )
+         DoScript( aScriptt[2,i],aParams )
          EXIT
       ENDIF
       i ++
    ENDDO
    
-RETURN Nil
+RETURN scr_RetValue
 
-FUNCTION EndScript
+FUNCTION EndScript( xRetValue )
+   scr_RetValue := xRetValue
    iscr := -99
 RETURN Nil
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.132 2004-05-12 15:50:48 lculik Exp $
+ * $Id: Changelog,v 1.133 2004-05-13 10:04:20 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-05-13 14:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/procmisc/procscri.prg
+    * Important extension of scripting capabilities:
+      it is possible now to write functions in scripts and call them.
 
 2004-05-12 13:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   * include/guilib.ch

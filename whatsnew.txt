@@ -9,6 +9,19 @@
 [*] Changes
 
 
+HWGUI 2.13 ( 04.04.2004 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[+] New controls - classes and appropriate commands has been added - 
+    see Changelog for details.
+
+[+] Support for Pelles C and Open Watcom C compilers has been added.
+
+[*] The Designer is fully rewritten.
+
+[*] Many bug fixes and enhancements - see Changelog for details.
+
+
 HWGUI 2.12 ( 04.04.2004 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

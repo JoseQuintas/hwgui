@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.19 2004-03-23 13:26:25 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.20 2004-03-23 15:42:33 rodrigo_moreno Exp $
  */
 
 #include "guilib.h"
@@ -31,11 +31,12 @@
              [ ON EXIT <bExit> ]            ;
              [<lMaximize: MAXIMIZE>]        ;
              [ HELP <cHelp> ]               ;
+             [ HELPID <nHelpId> ]           ;
           => ;
    <oWnd> := HWindow():New( Iif(<.lMdi.>,WND_MDI,Iif(<.lMdiChild.>,WND_MDICHILD, Iif(<.lChild.>,WND_CHILD,WND_MAIN) )), ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>, ;
-                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>,<cHelp>)
+                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>,<cHelp>,<nHelpId>)
 
 #xcommand INIT DIALOG <oDlg>                ;
              [<res: FROM RESOURCE>]         ;
@@ -55,10 +56,11 @@
              [ ON LOSTFOCUS <bLfocus> ]     ;
              [ ON OTHER MESSAGES <bOther> ] ;
              [ ON EXIT <bExit> ]            ;
+             [ HELPID <nHelpId> ]           ;
           => ;
    <oDlg> := HDialog():New( Iif(<.res.>,WND_DLG_RESOURCE,WND_DLG_NORESOURCE), ;
                    <nStyle>,<x>,<y>,<width>,<height>,<cTitle>,<oFont>,<bInit>,<bExit>,;
-                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.> )
+                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.>,<nHelpId> )
 
 #xcommand ACTIVATE WINDOW <oWnd> [<lNoShow: NOSHOW>]     ;
            => ;

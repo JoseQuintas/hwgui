@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.55 2004-03-23 13:26:25 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.56 2004-03-23 15:42:32 rodrigo_moreno Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-03-23 12-45 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
+  * hdialog.prg
+    * DlgHelp, use the helpid of window parent if not found in control
+  * hwindow.prg
+    * Add HelpId parameter to HWindow:new()
+  * include/guilib.ch
+    + Changed init window and init dialog to handle helpid
+  * samples/helpdemo.prg
+    * Changed to show how to use help when set the property helpid on Init Dialog
+  * doc/hwgdoc.htm
+    * Change documentation about help on INIT WINDOW and INIT DIALOG
+    
 2004-03-23 10-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   + source/hsplash.prg
     New class for Splash

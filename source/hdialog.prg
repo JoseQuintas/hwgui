@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.6 2004-03-22 21:15:03 rodrigo_moreno Exp $
+ * $Id: hdialog.prg,v 1.7 2004-03-23 15:42:33 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -81,7 +81,7 @@ CLASS HDialog INHERIT HCustomWindow
    DATA lActivated INIT .F.
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
-                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter )
+                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId )
    METHOD Activate( lNoModal )
    METHOD AddItem( oWnd,lModal )
    METHOD DelItem( oWnd,lModal )
@@ -91,7 +91,7 @@ CLASS HDialog INHERIT HCustomWindow
 ENDCLASS
 
 METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
-                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter ) CLASS HDialog
+                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId ) CLASS HDialog
 
    ::oDefaultParent := Self
    ::type     := lType
@@ -113,6 +113,10 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
    ::bOther     := bOther
    ::lClipper   := Iif( lClipper==Nil,.F.,lClipper )
    ::lExitOnEnter:=Iif( lExitOnEnter==Nil,.F.,lExitOnEnter )
+   
+   IF nHelpId != nil
+      ::HelpId := nHelpId
+   END
 
 RETURN Self
 
@@ -651,12 +655,18 @@ Local i, aKeys
 Return .T.
 
 Function DlgHelp( oDlg,wParam,lParam )
-    Local oCtrl
+    Local oCtrl, nHelpId, oParent
     
     if ! Empty(SetHelpFileName())
         oCtrl := oDlg:FindControl( nil, GetHelpData( lParam ) )
-        if oCtrl != nil
-            WinHelp ( oDlg:handle, SetHelpFileName(), iif( Empty(oCtrl:HelpId), 3, 1), oCtrl:helpid )
+        if oCtrl != nil        
+            nHelpId := oCtrl:HelpId 
+            if Empty( nHelpId )
+                oParent := oCtrl:oParent
+                nHelpId := oParent:HelpId
+            endif                
+            
+            WinHelp( oDlg:handle, SetHelpFileName(), iif( Empty(nHelpId), 3, 1), nHelpId)
         EndIf
     endif        
 Return 0

@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.14 2004-03-22 21:15:03 rodrigo_moreno Exp $
+ *$Id: hwindow.prg,v 1.15 2004-03-23 15:42:33 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -88,7 +88,7 @@ CLASS HWindow INHERIT HCustomWindow
    DATA lMaximize INIT .F.
 
    METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;
-          bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,lMaximize,cHelp )
+          bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,lMaximize,cHelp,nHelpId )
    METHOD Activate( lShow )
    METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu )
    METHOD AddItem( oWnd )
@@ -101,7 +101,7 @@ ENDCLASS
 
 METHOD NEW( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;
                   bInit,bExit,bSize, ;
-                  bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,lMaximize,cHelp) CLASS HWindow
+                  bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,lMaximize,cHelp,nHelpId) CLASS HWindow
    Local hParent
    Local oWndClient
 
@@ -129,6 +129,11 @@ METHOD NEW( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;
    IF cAppName != Nil
       ::szAppName := cAppName
    ENDIF
+   
+   IF nHelpId != nil
+      ::HelpId := nHelpId
+   END
+   
    // ::lClipper   := Iif( lClipper==Nil,.F.,lClipper )
    ::aOffset := Array( 4 )
    Afill( ::aOffset,0 )

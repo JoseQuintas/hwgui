@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.8 2004-03-22 09:56:54 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.9 2004-03-25 07:13:15 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -650,7 +650,7 @@ Local x, dx, i := 1, shablon, sviv, fif, fldname, slen, xSize
 Local j, ob, bw, bh, y1, hBReal
 Local oldBkColor, oldTColor, oldBk1Color, oldT1Color
 Local oLineBrush := Iif( lSelected, ::brushSel,::brush )
-Local lColumnFont := .F.
+Local hFont := 0
 
    ::xpos := x := ::x1
    IF lClear == Nil ; lClear := .F. ; ENDIF
@@ -711,11 +711,10 @@ Local lColumnFont := .F.
                      oldBk1Color := SetBkColor( hDC, ::aColumns[fif]:bColor )
                   ENDIF
                   IF ::aColumns[fif]:oFont != Nil
-                     SelectObject( hDC, ::aColumns[fif]:oFont:handle )
-                     lColumnFont := .T.
-                  ELSEIF lColumnFont
-                     SelectObject( hDC, ::ofont:handle )
-                     lColumnFont := .F.
+                     hFont := SelectObject( hDC, ::aColumns[fif]:oFont:handle )
+                  ELSEIF hFont != 0
+                     SelectObject( hDC, hFont )
+                     hFont := 0
                   ENDIF
                   DrawText( hDC, sviv, x, ::y1+(::height+1)*(nstroka-1)+1, x+xSize-2,::y1+(::height+1)*nstroka-1, ::aColumns[fif]:nJusLin )
                   IF ::aColumns[fif]:tColor != Nil
@@ -736,8 +735,8 @@ Local lColumnFont := .F.
       ENDDO
       SetTextColor( hDC,oldTColor )
       SetBkColor( hDC,oldBkColor )
-      IF lColumnFont
-         SelectObject( hDC, ::ofont:handle )
+      IF hFont != 0
+         SelectObject( hDC, hFont )
       ENDIF
    ENDIF
 RETURN Nil

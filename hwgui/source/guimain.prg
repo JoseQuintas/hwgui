@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.4 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: guimain.prg,v 1.5 2004-03-16 19:07:44 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -251,4 +251,9 @@ FUNCTION HdSerial( cDrive )
 
 return cResult
 
+Function Hwg_GetIni( cSection, cEntry, cDefault, cFile )
+RETURN GetPrivateProfileString(cSection, cEntry, cDefault, cFile )
 
+ 
+Function Hwg_WriteIni( cSection, cEntry, cValue, cFile )
+RETURN( WritePrivateProfileString( cSection, cEntry, cValue, cFile ) )

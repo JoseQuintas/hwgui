@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.243 2004-08-02 11:35:02 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.244 2004-08-02 20:21:52 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-08-02 17-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/hbrowse.prg
+    * see line 334
+      Now is possible to replace the original Function in new function in
+      Datas bSkip,bGoTo,bGoTop,bGoBot,bEof,bBof
+      Suggestion by Marcelo Sturm
 
 2004-08-02 08-33 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * utils/designer/resource/samples/f_hwgprg.prg
@@ -61,7 +68,7 @@
 
 2004-07-29 10:18 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hbrowse.prg
-    ! Bug fixed with lAutoEdit, reported by Juan Jos©
+    ! Bug fixed with lAutoEdit, reported by Juan Jos…ç
   * source/commond.c
     * hb_parcx() call is replaced with hb_parc() to be compatible with Harbour.
   * source/draw.c

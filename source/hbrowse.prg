@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.33 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hbrowse.prg,v 1.34 2004-08-02 20:21:53 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -304,6 +304,14 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD InitBrw( nType )  CLASS HBrowse
+Local dSkip:=::bSKip   
+      dGoTop:=::bGoTop  
+      dGoBot:=::bGoBot  
+      dEof:=::bEof    
+      dBof:=::bBof     
+      dRcou:=::bRcou    
+      dRecno:=::bRecno   
+      dGoTo:=::bGoTo   
 
    if nType != Nil
       ::type := nType
@@ -323,14 +331,46 @@ METHOD InitBrw( nType )  CLASS HBrowse
 
    if ::type == BRW_DATABASE
       ::alias   := Alias()
-      ::bSKip   := &( "{|o, x|" + ::alias + "->(DBSKIP(x)) }" )
-      ::bGoTop  := &( "{||" + ::alias + "->(DBGOTOP())}" )
-      ::bGoBot  := &( "{||" + ::alias + "->(DBGOBOTTOM())}")
-      ::bEof    := &( "{||" + ::alias + "->(EOF())}" )
-      ::bBof    := &( "{||" + ::alias + "->(BOF())}" )
-      ::bRcou   := &( "{||" + ::alias + "->(RECCOUNT())}" )
-      ::bRecno  := &( "{||" + ::alias + "->(RECNO())}" )
-      ::bGoTo   := &( "{|a,n|"  + ::alias + "->(DBGOTO(n))}" )
+      if dSkip==Nil
+         ::bSKip   := &( "{|o, x|" + ::alias + "->(DBSKIP(x)) }" )
+      Else
+         ::bSkip :=  &(dSkip)
+      Endif   
+      if dGoTop==Nil   
+         ::bGoTop  := &( "{||" + ::alias + "->(DBGOTOP())}" )
+      Else
+         ::bGoTop  :=  &(dGoTop)
+      Endif   
+      if dGoBot==Nil   
+         ::bGoBot  := &( "{||" + ::alias + "->(DBGOBOTTOM())}")
+      Else
+         ::bGoBot :=  &(dGoBot)
+      Endif   
+      if dEof==Nil   
+         ::bEof    := &( "{||" + ::alias + "->(EOF())}" )
+      Else
+         ::bEof :=  &(dEof)
+      Endif   
+      if dBof==Nil   
+         ::bBof    := &( "{||" + ::alias + "->(BOF())}" )
+      Else
+         ::bBof :=  &(dBof)
+      Endif   
+      if dRcou==Nil   
+         ::bRcou   := &( "{||" + ::alias + "->(RECCOUNT())}" )
+      Else
+         ::bRcou :=  &(dRcou)
+      Endif   
+      if dRecno==Nil   
+         ::bRecno  := &( "{||" + ::alias + "->(RECNO())}" )
+      Else
+         ::bRecno :=  &(dRecno)
+      Endif   
+      if dGoTo==Nil   
+         ::bGoTo   := &( "{|a,n|"  + ::alias + "->(DBGOTO(n))}" )
+      Else
+         ::bGoTo :=  &(dGoTo)
+      Endif   
    elseif ::type == BRW_ARRAY
       ::bSKip   := { | o, x | ARSKIP( o, x ) }
       ::bGoTop  := { | o | o:tekzp := 1 }

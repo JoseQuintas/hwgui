@@ -17,6 +17,7 @@ CLASS HPrinter INHERIT HObject
    DATA aMeta
    DATA lPreview
    DATA cMetaName
+   DATA nWidth, nHeight
 
    METHOD New( cPrinter )
    METHOD StartDoc( lPreview,cMetaName )
@@ -43,6 +44,8 @@ CLASS HPrinter INHERIT HObject
 ENDCLASS
 
 METHOD New( cPrinter ) CLASS HPrinter
+Local aPrnCoors
+
    IF cPrinter == Nil
       ::hDCPrn := PrintSetup()
    ELSEIF Empty( cPrinter )
@@ -50,6 +53,12 @@ METHOD New( cPrinter ) CLASS HPrinter
    ELSE
       ::hDCPrn := Hwg_OpenPrinter( cPrinter )
    ENDIF
+   IF ::hDCPrn != Nil
+      aPrnCoors := GetDeviceArea( ::hDCPrn )
+      ::nWidth  := aPrnCoors[1]
+      ::nHeight := aPrnCoors[2]
+   ENDIF
+
 Return Self
 
 METHOD End() CLASS HPrinter

@@ -3,7 +3,7 @@
 
 HRB_DIR = $(HB_PATH)
 INCLUDE_DIR = include;$(HRB_DIR)\include
-OBJ_DIR = obj\lib
+OBJ_DIR = obj
 LIB_DIR = lib
 SRC_DIR = source
 #C_DEFINES= -DHB_THREAD_SUPPORT

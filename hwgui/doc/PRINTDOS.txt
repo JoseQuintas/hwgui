@@ -1,0 +1,86 @@
+/*
+ * Manual for use Class Print Dos
+ *
+ * Copyright (c) Sandro Freire <sandrorrfreire@yahoo.com.br>
+ * for HwGUI By Alexander Kresin
+ *
+ */
+----------------------------------------------------------------------------
+IN ENGLISH
+----------------------------------------------------------------------------
+
+CLASS PrintDos
+
+Variables
+::nProw - Return the current pos of Prow
+::nPcol - Return the currente pos of Pcol
+::oAns2Oem - .T. Convert Ansi to Oem   .F. no Convert
+
+Methods
+
+::New(oPorta) - Start the class and define the source print, default to LPT1
+::Say(oProw, oCol, oTexto, oPicture) - Say the text
+::Eject() - Eject the print, and return nProw=0 and nPcol=0
+::NewLine() - NewLine() and return nPcol=0 and nProw+1
+::Compres() - Add Chr(15) 
+::DesCompres() - Add Chr(18) 
+::Comando() - Execute the Chr() 
+::SetPrc(x,y) - Similar to SetPrc
+
+::PrinterFile(oFile) - Print the file text 
+
+::TxttoGraphic(oFile,osize,oPreview) - Print the text PRN in graphic mode (in developement)
+
+::Preview(fname, cTitle) - Display in preview for text PRN.
+
+::End() - Finalize the print
+
+Comands associated
+
+SET PRINTER TO <oPrinter> OF <oPtrObj>  - Create de printer Spoll
+ 
+@ <x>,<y> PSAY  <vari> [ PICTURE <cPicture> ] OF <oPtrObj> - Similar to mode Say Clipper
+ 
+EJECT OF <oPtrObj> - Eject 
+
+END PRINTER <oPtrObj> - End Print
+
+----------------------------------------------------------------------------
+IN PORTUGUESE
+----------------------------------------------------------------------------
+
+CLASSE PrintDos
+
+Variables
+::nProw - Retorna a posicao atual de Prow
+::nPcol - Retorna a posicao atual de Pcol
+::oAns2Oem - .T. Converte Ansi para Oem    .F. nao Converte
+
+Metodos
+
+::New(oPorta) - Inicia a classe, e encaminha a impressao, o default e LPT1
+::Say(oProw, oCol, oTexto, oPicture) - Envia o texto para impressora
+::Eject() - Envia comando de eject para a impressora e retorna nProw=0 and nPcol=0
+::NewLine() - Nova linha retornando nPcol=0 and nProw+1
+::Compres() - Envia o caracter Chr(15) 
+::DesCompres() - Envia o caracter Chr(18) 
+::Comando() - Executa a fun‡Æo Chr() 
+::SetPrc(x,y) - Similar a SetPrc
+
+::PrinterFile(oFile) - Imprime arquivo texto 
+
+::TxttoGraphic(oFile,osize,oPreview) - Imprime arquivo texto no formato grafico (em desenvolvimento)
+
+::Preview(fname, cTitle) - Exibe na tela o arquivo texto impresso.
+
+::End() - Finaliza a impressao
+ 
+Comandos associados
+
+SET PRINTER TO <oPrinter> OF <oPtrObj>  - Create de printer Spoll
+ 
+@ <x>,<y> PSAY  <vari> [ PICTURE <cPicture> ] OF <oPtrObj> - Similar to mode Say Clipper
+ 
+EJECT OF <oPtrObj> - Eject 
+
+END PRINTER <oPtrObj> - End Print

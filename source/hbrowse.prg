@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.22 2004-05-06 11:55:54 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.23 2004-05-07 08:25:18 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1201,7 +1201,7 @@ return nil
 
 //----------------------------------------------------//
 METHOD Edit( wParam,lParam ) CLASS HBrowse
-Local fipos, lRes, varbuf, x1, y1, fif, lReadExit, rowPos
+Local fipos, lRes, varbuf, x1, y1, fif, nWidth, lReadExit, rowPos
 Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
@@ -1236,6 +1236,7 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
             x1 += ::aColumns[fif]:width
             fif := IIF( fif = ::freeze, ::nLeftCol, fif + 1 )
          ENDDO
+         nWidth := Min( ::aColumns[fif]:width, ::x2 - x1 - 1 )
          rowPos := ::rowPos - 1
          IF ::lAppMode .AND. ::kolz != 0
             rowPos ++
@@ -1251,12 +1252,12 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
          y1 := aCoors[2]
 
          lReadExit := ReadExit( .T. )
-         bInit := Iif( wParam==Nil, {|o|MoveWindow(o:handle,x1,y1,oColumn:width,o:nHeight+1)}, ;
-            {|o|MoveWindow(o:handle,x1,y1,oColumn:width,o:nHeight+1),PostMessage(o:aControls[1]:handle,WM_KEYDOWN,wParam,lParam)} )
+         bInit := Iif( wParam==Nil, {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1)}, ;
+            {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1),PostMessage(o:aControls[1]:handle,WM_KEYDOWN,wParam,lParam)} )
 
          INIT DIALOG oModDlg STYLE WS_POPUP+1+Iif(oColumn:aList==Nil,WS_BORDER,0) ;
-            AT x1,y1                                    ;
-            SIZE oColumn:width, ::height                ;
+            AT x1,y1                             ;
+            SIZE nWidth, ::height                ;
             ON INIT bInit
 
          IF oColumn:aList != Nil
@@ -1270,17 +1271,17 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
                 nChoic := Ascan( oColumn:aList,varbuf )
             endif
                             
-            @ 0,0 GET COMBOBOX nChoic           ;
-               ITEMS oColumn:aList              ;
-               SIZE oColumn:width, ::height*5   ;
+            @ 0,0 GET COMBOBOX nChoic         ;
+               ITEMS oColumn:aList            ;
+               SIZE nWidth, ::height*5        ;
                FONT ::oFont
          ELSE
-            @ 0,0 GET oGet VAR varbuf           ;
-               SIZE oColumn:width, ::height+1   ;
-               NOBORDER                         ;
-               STYLE ES_AUTOHSCROLL             ;
-               FONT ::oFont                     ;
-               PICTURE oColumn:picture          ;
+            @ 0,0 GET oGet VAR varbuf         ;
+               SIZE nWidth, ::height+1        ;
+               NOBORDER                       ;
+               STYLE ES_AUTOHSCROLL           ;
+               FONT ::oFont                   ;
+               PICTURE oColumn:picture        ;
                VALID oColumn:bValid
          ENDIF
 

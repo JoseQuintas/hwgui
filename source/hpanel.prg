@@ -1,9 +1,11 @@
 /*
+ * $Id: hpanel.prg,v 1.2 2004-05-07 08:25:18 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -28,21 +30,13 @@ ENDCLASS
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bInit,bSize,bPaint,lDocked ) CLASS HPanel
 
-   // ::classname:= "HPANEL"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE )
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := Iif( nWidth==Nil,0,nWidth )
-   ::nHeight := nHeight
-   ::oFont   := ::oParent:oFont
-   ::bInit   := bInit
    IF bSize == Nil
-      ::bSize := {|o,x,y|MoveWindow(o:handle,0,0,Iif(::nHeight!=0.and.(::nWidth>::nHeight.or.::nWidth==0),x,::nWidth),Iif(::nWidth!=0.and.(::nHeight>::nWidth.or.::nHeight==0),y,::nHeight))}
-   ELSE
-      ::bSize   := bSize
+      bSize := {|o,x,y|MoveWindow(o:handle,0,0,Iif(::nHeight!=0.and.(::nWidth>::nHeight.or.::nWidth==0),x,::nWidth),Iif(::nWidth!=0.and.(::nHeight>::nWidth.or.::nHeight==0),y,::nHeight))}
    ENDIF
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
+                  nHeight,::oParent:oFont,bInit, ;
+                  bSize,bPaint )
+
    ::bPaint  := bPaint
    IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI
       IF ::nWidth > ::nHeight .OR. ::nWidth == 0
@@ -56,7 +50,6 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ENDIF
    ENDIF
 
-   ::oParent:AddControl( Self )
    ::Activate()
 
 Return Self
@@ -79,16 +72,15 @@ Return Nil
 
 
 METHOD Redefine( oWndParent,nId,nHeight,bInit,bSize,bPaint,lDocked ) CLASS HPanel
-   // ::classname:= "HPANEL"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := nId
-   ::style   := ::nLeft := ::nTop := ::nWidth := 0
-   ::oFont   := ::oParent:oFont
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::nHeight := IIF( nHeight!=Nil,nHeight,0 )
 
-   ::oParent:AddControl( Self )
+   IF bSize == Nil
+      bSize := {|o,x,y|MoveWindow(o:handle,0,0,Iif(::nHeight!=0.and.(::nWidth>::nHeight.or.::nWidth==0),x,::nWidth),Iif(::nWidth!=0.and.(::nHeight>::nWidth.or.::nHeight==0),y,::nHeight))}
+   ENDIF
+   Super:New( oWndParent,nId,0,0,0,0, ;
+                  IIF( nHeight!=Nil,nHeight,0 ),::oParent:oFont,bInit, ;
+                  bSize,bPaint )
+
+   ::bPaint  := bPaint
 
 Return Self
 

@@ -62,7 +62,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\hipedit.obj \
    $(OBJ_DIR)\menu.obj \
    $(OBJ_DIR)\_winmsg.obj \
-   $(OBJ_DIR)\c_ipaddress.obj \
+   $(OBJ_DIR)\c_ipaddr.obj \
    $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\repexec.obj
 
@@ -125,7 +125,7 @@ $(OBJ_DIR)\window.obj   : $(SRC_DIR)\window.c
 $(OBJ_DIR)\wprint.obj   : $(SRC_DIR)\wprint.c
 $(OBJ_DIR)\_winmsg.obj   : $(SRC_DIR)\_winmsg.c
 $(OBJ_DIR)\resource.obj   : $(SRC_DIR)\resource.c
-$(OBJ_DIR)\c_ipaddress.obj   : $(SRC_DIR)\c_ipaddress.c
+$(OBJ_DIR)\c_ipaddr.obj   : $(SRC_DIR)\c_ipaddr.c
 
 $(OBJ_DIR)\drawwidg.obj : $(OBJ_DIR)\drawwidg.c
 $(OBJ_DIR)\errorsys.obj : $(OBJ_DIR)\errorsys.c

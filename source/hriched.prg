@@ -1,9 +1,11 @@
 /*
+ * $Id: hriched.prg,v 1.2 2004-05-31 11:53:45 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -12,7 +14,7 @@
 
 CLASS HRichEdit INHERIT HControl
 
-   CLASS VAR winclass   INIT "RICHEDIT"
+   CLASS VAR winclass   INIT "RichEdit"
    DATA lChanged    INIT .F.
 
    METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight, ;
@@ -27,24 +29,15 @@ METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt, ;
                   tcolor,bcolor ) CLASS HRichEdit
 
-   // ::classname:= "HRICHEDIT"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::id      := Iif( nId==Nil,::NewId(), nId )
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP+WS_BORDER )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+                  bSize,bPaint,ctoolt,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
+
    ::title   := vari
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP+WS_BORDER )
-   ::oFont   := oFont
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
-   ::tooltip := ctoolt
-   ::SetColor( tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
+
+   hwg_InitRichEdit()
 
    ::Activate()
-   ::oParent:AddControl( Self )
 
    IF bGfocus != Nil
       ::oParent:AddEvent( EN_SETFOCUS,::id,bGfocus )

@@ -1,11 +1,11 @@
 /*
- * $Id: richedit.c,v 1.6 2004-04-07 12:05:44 alkresin Exp $
+ * $Id: richedit.c,v 1.7 2004-05-31 11:53:45 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #define HB_OS_WIN_32_USED
@@ -36,6 +36,12 @@ LRESULT APIENTRY RichSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 
 static HINSTANCE hRichEd = 0;
 static WNDPROC wpOrigRichProc;
+
+HB_FUNC( HWG_INITRICHEDIT )
+{
+   if( !hRichEd )
+      hRichEd = LoadLibrary( "riched32.dll" );
+}
 
 HB_FUNC( CREATERICHEDIT )
 {

@@ -1,5 +1,5 @@
 /*
- * $Id: Suggestions,v 1.1 2004-07-22 11:48:14 sandrorrfreire Exp $
+ * $Id: Suggestions,v 1.2 2004-07-23 11:54:27 sandrorrfreire Exp $
  */
 
 /
@@ -11,6 +11,14 @@
  * Analyzed for          
  * Made For
  /
+
+2004-07-23 08-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+In GET(hEdit)  include the comand ON ENTER that it does not depend on
+ONLOSTFOCUS (VALID) that it needs .T. or .F. return
+Suggestion by Frank Lenon
+Analyzed for ->
+Made For     ->
+It's possible (  ) Yes   (  ) No
 
 2004-07-22 08-44 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
 In Browse include the comand ON CLICKHEADER

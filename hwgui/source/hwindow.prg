@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.11 2004-03-15 18:51:17 alkresin Exp $
+ *$Id: hwindow.prg,v 1.12 2004-03-16 10:48:06 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -356,12 +356,10 @@ Local oWnd, oBtn, oitem
       Return DlgNotify( oWnd,wParam,lParam )
    elseif msg == WM_ENTERIDLE
       DlgEnterIdle( oWnd, wParam, lParam )
-   /*
+   
    elseif msg == WM_CLOSE
-      //WriteLog( "|Window: "+Str(hWnd,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10)  + "|" + PadR("Main - WM_CLOSE",40) + "|")
-
       ReleaseAllWindows(oWnd,hWnd)
-   */
+
    elseif msg == WM_DESTROY
       //WriteLog( "|Window: "+Str(hWnd,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10)  + "|" + PadR("Main - DESTROY",40) + "|")
       aControls := oWnd:aControls
@@ -819,35 +817,35 @@ Local aMenu,hMenu,hSubMenu, nPosMenu
    nReturn := NIL
 Return (nReturn)
 
-/*
 function ReleaseAllWindows( oWnd, hWnd )
-   Local oItem, iCont
+Local oItem, iCont, nCont
 
    //  Vamos mandar destruir as filhas
    // Destroi as CHILD's desta MAIN
    #ifdef __XHARBOUR__
    FOR EACH oItem IN HWindow():aWindows
-      IF oItem:parent == hWnd
+      IF oItem:oParent:handle == hWnd
           SendMessage( oItem:handle,WM_CLOSE,0,0 )
       ENDIF
    NEXT
    #else
-   nCont:=pCount( HWindow():aWindows )
+   nCont := Len( HWindow():aWindows )
  
    FOR iCont := 1 TO nCont
 
-      IF oWnd[iCont] == hWnd
-          SendMessage( oItem:handle,WM_CLOSE,0,0 )
+      IF HWindow():aWindows[iCont]:oParent != Nil .AND. ;
+              HWindow():aWindows[iCont]:oParent:handle == hWnd
+          SendMessage( HWindow():aWindows[iCont]:handle,WM_CLOSE,0,0 )
       ENDIF
 
    NEXT
    #endif
+   
    If HWindow():GetMain() == oWnd
       ExitProcess(0)
-   Endif
+   Endif  
 
 return Nil
-*/
 
 // Processamento da janela frame (base) MDI
 
@@ -997,11 +995,10 @@ Local oWndClient
           Eval( oItem:bActivate, oItem )
        ENDIF
       endif
-   /*
+   
    elseif msg == WM_CLOSE
-      //WriteLog( "|Window: "+Str(hWnd,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10)  + "|" + PadR("Main - WM_CLOSE",40) + "|")
       ReleaseAllWindows(oWnd,hWnd)
-   */
+   
    elseif msg == WM_DESTROY
       //WriteLog( "|Window: "+Str(hWnd,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10)  + "|" + PadR("Main - DESTROY",40) + "|")
       aControls := oWnd:aControls

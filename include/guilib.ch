@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.23 2004-04-19 07:39:47 alkresin Exp $
+ *$Id: guilib.ch,v 1.24 2004-04-22 06:39:19 alkresin Exp $
  */
 
 #define	WND_MAIN		1
@@ -684,12 +684,13 @@
             [ ON INIT <bInit> ]        ;
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
+            [ ON CHANGE <bChange> ]    ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oPick> :=] HDatePicker():New( <oWnd>,<nId>,<dInit>,,<nStyle>,<x>,<y>, ;
-        <width>,<height>,<oFont>,<bInit>,<bGfocus>,<bLfocus>,<ctoolt>, ;
+        <width>,<height>,<oFont>,<bInit>,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>, ;
         <color>,<bcolor> )
 
 
@@ -849,6 +850,7 @@
             [ BACKCOLOR <bcolor> ]     ;
             [ WHEN <bGfocus> ]         ;
             [ VALID <bLfocus> ]        ;
+            [ ON CHANGE <bChange> ]    ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
@@ -856,7 +858,7 @@
     [<oPick> :=] HDatePicker():New( <oWnd>,<nId>,<vari>,    ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
-                    <oFont>,,<bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor> )
+                    <oFont>,,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>,<color>,<bcolor> )
 
 
 #xcommand SAY <value> TO <oDlg> ID <id> ;

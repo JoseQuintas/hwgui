@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.103 2004-04-21 18:04:59 rodrigo_moreno Exp $
+ * $Id: Changelog,v 1.104 2004-04-22 06:39:17 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-04-22 10:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/guilib.ch
+    * Clause ON CHANGE has been added to the @ ... DATEPICKER ... and
+      @ ... GET DATEPICKER ... commands
+  * source/hdatepic.prg
+    * Changed to support the ON CHANGE event
 
 2004-04-21 15:00 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
   * source/misc.c

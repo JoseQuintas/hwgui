@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.250 2004-08-11 19:42:04 rodrigo_moreno Exp $
+ * $Id: Changelog,v 1.251 2004-08-13 16:33:24 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+
+2004-08-13 13-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * samples/a.prg
+    Demo to send e-mail using function ShellExecute
 
 2004-08-11 16-40 UTC-0300 Rodrigo Moreno  <rodrigo_moreno@yahoo.com>
   * source/hcontrol.prg

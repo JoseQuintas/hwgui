@@ -1,5 +1,5 @@
 /*
- *$Id: hdatepic.prg,v 1.4 2004-03-07 20:38:51 rodrigo_moreno Exp $
+ *$Id: hdatepic.prg,v 1.5 2004-03-08 19:12:48 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -29,6 +29,7 @@ CLASS HDatePicker INHERIT HControl
                   oFont,bInit,bGfocus,bLfocus,ctoolt,tcolor,bcolor )
    METHOD Activate()
    METHOD Init()
+   METHOD Refresh()    
 
 ENDCLASS
 
@@ -82,6 +83,16 @@ METHOD Init() CLASS HDatePicker
       IF !Empty( ::value )
          SetDatePicker( ::handle,::value )
       ENDIF
+   ENDIF
+Return Nil
+
+METHOD Refresh() CLASS HDatePicker
+   IF ::bSetGet != Nil
+      ::value := Eval( ::bSetGet,,nil )
+   ENDIF
+        
+   IF ! Empty(::value)
+      SetDatePicker( ::handle,::value )
    ENDIF
 Return Nil
 

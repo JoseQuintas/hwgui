@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.25 2004-04-29 15:48:01 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.26 2004-05-04 22:48:23 lculik Exp $
  */
 
 #define	WND_MAIN		1
@@ -359,9 +359,10 @@
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ ON CHANGE <bChange> ]    ;
+            [ BITMAP <aBmp>  [<res: FROM RESOURCE>] ]  ;
           => ;
     [<oTab> := ] HTab():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<aItems>,<bChange> )
+             <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<aItems>,<bChange>, <aBmp>, <.res.> )
 
 #xcommand BEGIN PAGE <cname> OF <oTab> ;
           => ;

@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.8 2004-05-23 01:19:10 marcosgambeta Exp $
+# $Id: makefile.vc,v 1.9 2004-06-22 03:12:25 marcosgambeta Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -51,6 +51,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\hgraph.obj \
    $(OBJ_DIR)\hgrid.obj \
    $(OBJ_DIR)\htrackbr.obj \
+   $(OBJ_DIR)\hanimat.obj \
    $(OBJ_DIR)\hnice.obj \
    $(OBJ_DIR)\hownbtn.obj \
    $(OBJ_DIR)\hpanel.obj \
@@ -125,6 +126,7 @@ $(OBJ_DIR)\hfrmtmpl.obj : $(OBJ_DIR)\hfrmtmpl.c
 $(OBJ_DIR)\hgraph.obj   : $(OBJ_DIR)\hgraph.c
 $(OBJ_DIR)\hgrid.obj    : $(OBJ_DIR)\hgrid.c
 $(OBJ_DIR)\htrackbr.obj : $(OBJ_DIR)\htrackbr.c
+$(OBJ_DIR)\hanimat.obj  : $(OBJ_DIR)\hanimat.c
 $(OBJ_DIR)\hnice.obj    : $(OBJ_DIR)\hnice.c
 $(OBJ_DIR)\hradio.obj   : $(OBJ_DIR)\hradio.c
 $(OBJ_DIR)\hownbtn.obj  : $(OBJ_DIR)\hownbtn.c
@@ -207,6 +209,8 @@ $(OBJ_DIR)\hgraph.c     : $(SRC_DIR)\hgraph.prg
 $(OBJ_DIR)\hgrid.c      : $(SRC_DIR)\hgrid.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\htrackbr.c   : $(SRC_DIR)\htrackbr.prg
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hanimat.c    : $(SRC_DIR)\hanimat.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\hnice.c      : $(SRC_DIR)\hnice.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@

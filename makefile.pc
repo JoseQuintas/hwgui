@@ -1,4 +1,4 @@
-# $Id: makefile.pc,v 1.4 2004-05-23 01:19:10 marcosgambeta Exp $
+# $Id: makefile.pc,v 1.5 2004-06-22 03:12:25 marcosgambeta Exp $
 # makefile for Pelles C 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -90,6 +90,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hfrmtmpl.obj \
    $(OBJ_DIR)\hgraph.obj \
    $(OBJ_DIR)\htrackbr.obj \
+   $(OBJ_DIR)\hanimat.obj \
    $(OBJ_DIR)\hnice.obj \
    $(OBJ_DIR)\hownbtn.obj \
    $(OBJ_DIR)\hpanel.obj \
@@ -245,6 +246,9 @@ $(OBJ_DIR)\hgrid.obj : $(OBJ_DIR)\hgrid.c
 $(OBJ_DIR)\htrackbr.c : $(SRC_DIR)\htrackbr.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
+$(OBJ_DIR)\hanimat.c : $(SRC_DIR)\hanimat.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
 $(OBJ_DIR)\hnice.c : $(SRC_DIR)\hnice.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
@@ -279,6 +283,9 @@ $(OBJ_DIR)\hpanel.obj : $(OBJ_DIR)\hpanel.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\htrackbr.obj : $(OBJ_DIR)\htrackbr.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hanimat.obj : $(OBJ_DIR)\hanimat.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\hnice.obj : $(OBJ_DIR)\hnice.c

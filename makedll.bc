@@ -77,6 +77,7 @@ $(LIB_DIR)\hwguidll.dll:   \
    $(OBJ_DIR)\richtext.obj \
    $(OBJ_DIR)\hmonthc.obj \
    $(OBJ_DIR)\htrackbr.obj \
+   $(OBJ_DIR)\hanimat.obj \
    $(OBJ_DIR)\arr2str.obj \
    $(OBJ_DIR)\blowfish.obj \
    $(OBJ_DIR)\procini.obj \
@@ -126,6 +127,7 @@ $(OBJ_DIR)\printdos.c   : $(SRC_DIR)\printdos.prg
 $(OBJ_DIR)\richtext.c   : $(SRC_DIR)\richtext.prg
 $(OBJ_DIR)\hmonthc.c    : $(SRC_DIR)\hmonthc.prg
 $(OBJ_DIR)\htrackbr.c   : $(SRC_DIR)\htrackbr.prg
+$(OBJ_DIR)\hanimat.c    : $(SRC_DIR)\hanimat.prg
 $(OBJ_DIR)\hgrid.c      : $(SRC_DIR)\hgrid.prg
 
 # maindll DLL entry point. Harbour.dll uses maindllh.obj
@@ -184,6 +186,7 @@ $(OBJ_DIR)\printdos.obj : $(OBJ_DIR)\printdos.c
 $(OBJ_DIR)\richtext.obj : $(OBJ_DIR)\richtext.c
 $(OBJ_DIR)\hmonthc.obj  : $(OBJ_DIR)\hmonthc.c
 $(OBJ_DIR)\htrackbr.obj : $(OBJ_DIR)\htrackbr.c
+$(OBJ_DIR)\hanimat.obj  : $(OBJ_DIR)\hanimat.c
 $(OBJ_DIR)\grid.obj     : $(SRC_DIR)\grid.c
 $(OBJ_DIR)\hgrid.obj    : $(OBJ_DIR)\hgrid.c
 

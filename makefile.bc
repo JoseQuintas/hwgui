@@ -66,6 +66,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\hlistbox.obj \
    $(OBJ_DIR)\hmonthc.obj \
    $(OBJ_DIR)\htrackbr.obj \
+   $(OBJ_DIR)\hanimat.obj \
    $(OBJ_DIR)\hnice.obj \
    $(OBJ_DIR)\hownbtn.obj \
    $(OBJ_DIR)\hpanel.obj \
@@ -121,6 +122,7 @@ $(OBJ_DIR)\hgrid.c      : $(SRC_DIR)\hgrid.prg
 $(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
 $(OBJ_DIR)\hmonthc.c    : $(SRC_DIR)\hmonthc.prg
 $(OBJ_DIR)\htrackbr.c   : $(SRC_DIR)\htrackbr.prg
+$(OBJ_DIR)\hanimat.c    : $(SRC_DIR)\hanimat.prg
 $(OBJ_DIR)\hnice.c      : $(SRC_DIR)\hnice.prg
 $(OBJ_DIR)\hownbtn.c    : $(SRC_DIR)\hownbtn.prg
 $(OBJ_DIR)\hpanel.c     : $(SRC_DIR)\hpanel.prg
@@ -181,6 +183,7 @@ $(OBJ_DIR)\hgrid.obj    : $(OBJ_DIR)\hgrid.c
 $(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
 $(OBJ_DIR)\hmonthc.obj  : $(OBJ_DIR)\hmonthc.c
 $(OBJ_DIR)\htrackbr.obj : $(OBJ_DIR)\htrackbr.c
+$(OBJ_DIR)\hanimat.obj  : $(OBJ_DIR)\hanimat.c
 $(OBJ_DIR)\hnice.obj    : $(OBJ_DIR)\hnice.c
 $(OBJ_DIR)\hradio.obj   : $(OBJ_DIR)\hradio.c
 $(OBJ_DIR)\hownbtn.obj  : $(OBJ_DIR)\hownbtn.c

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.192 2004-06-21 11:20:09 alkresin Exp $
+ * $Id: Changelog,v 1.193 2004-06-22 03:12:25 marcosgambeta Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-06-22 00:12 UTC-0300 Marcos Antonio Gambeta <marcos_gambeta@hotmail.com>
+  + source/hanimat.prg
+    + New class: HAnimation
+  * include/guilib.ch
+    + New command: @ <x>,<y> ANIMATION ...
+  * makedll.bc
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * makefile.vc
+  * makefile.wc
+    + Added file hanimat.prg in the process of compilation
 
 2004-06-21 15:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/repexec.prg

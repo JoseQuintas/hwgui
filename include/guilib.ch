@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.39 2004-06-20 18:47:15 alkresin Exp $
+ *$Id: guilib.ch,v 1.40 2004-06-22 03:12:26 marcosgambeta Exp $
  */
 
 #define	WND_MAIN		1
@@ -1131,3 +1131,17 @@ Added by Marcos Antonio Gambeta
         Iif(<.autoticks.>,1,Iif(<.noticks.>,16,0)), ;
         Iif(<.both.>,8,Iif(<.top.>.or.<.left.>,4,0)) )
 
+// animation control
+#xcommand @ <x>,<y>  ANIMATION [ <oAnimation> ] ;
+            [ OF <oWnd> ]                       ;
+            [ ID <nId> ]                        ;
+            [ STYLE <nStyle> ]                  ;
+            [ SIZE <nWidth>, <nHeight> ]        ;
+            [ FILE <cFile> ]                    ;
+            [ < autoplay: AUTOPLAY > ]          ;
+            [ < center : CENTER > ]             ;
+            [ < transparent: TRANSPARENT > ]    ;
+	=>;
+    [<oAnimation> :=] HAnimation():New( <oWnd>,<nId>,<nStyle>,<x>,<y>, ;
+        <nWidth>,<nHeight>,<cFile>,<.autoplay.>,<.center.>,<.transparent.>)
+ 

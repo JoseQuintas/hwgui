@@ -80,6 +80,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\htab.obj \
    $(OBJ_DIR)\htimer.obj \
    $(OBJ_DIR)\htree.obj \
+   $(OBJ_DIR)\hrect.obj \
    $(OBJ_DIR)\hupdown.obj \
    $(OBJ_DIR)\hwindow.obj \
    $(OBJ_DIR)\menu.obj \
@@ -136,6 +137,7 @@ $(OBJ_DIR)\hsplit.c     : $(SRC_DIR)\hsplit.prg
 $(OBJ_DIR)\htab.c       : $(SRC_DIR)\htab.prg
 $(OBJ_DIR)\htimer.c     : $(SRC_DIR)\htimer.prg
 $(OBJ_DIR)\htree.c      : $(SRC_DIR)\htree.prg
+$(OBJ_DIR)\hrect.c      : $(SRC_DIR)\hrect.prg
 $(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
 $(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
 $(OBJ_DIR)\hwindow.c    : $(SRC_DIR)\hwindow.prg
@@ -198,6 +200,7 @@ $(OBJ_DIR)\hsplit.c     : $(SRC_DIR)\hsplit.prg
 $(OBJ_DIR)\htab.c       : $(SRC_DIR)\htab.prg
 $(OBJ_DIR)\htimer.c     : $(SRC_DIR)\htimer.prg
 $(OBJ_DIR)\htree.c      : $(SRC_DIR)\htree.prg
+$(OBJ_DIR)\hrect.c      : $(SRC_DIR)\hrect.prg
 $(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
 $(OBJ_DIR)\hwindow.obj  : $(OBJ_DIR)\hwindow.c
 $(OBJ_DIR)\hipedit.obj  : $(OBJ_DIR)\hipedit.c

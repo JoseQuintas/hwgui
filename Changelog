@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.325 2004-12-13 14:29:10 alkresin Exp $
+ * $Id: Changelog,v 1.326 2004-12-13 16:27:35 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-12-13 14-15 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  + source/hrect.prg
+    new class
+  * include/guilib.ch
+    new command @ <X>, <Y>, <X2>, <Y2> RECT ....
+  * samples/a.prg
+    added new sample class hrect
+  * makefile.bc
+  * makefile.pc
+  * makefile.gcc
+    update new dependencies
+    Contribution by 2004 Ricardo de Moura Marques <ricardo.m.marques@caixa.gov.br> 
+    
 2004-12-13 17:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/guilib.ch
     * Version number is set to 2.14

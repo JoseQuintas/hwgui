@@ -1,4 +1,4 @@
-# $Id: makefile.pc,v 1.9 2004-11-21 12:33:14 alkresin Exp $
+# $Id: makefile.pc,v 1.10 2004-12-13 16:27:35 sandrorrfreire Exp $
 # makefile for Pelles C 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -101,6 +101,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\htree.obj \
    $(OBJ_DIR)\hupdown.obj \
    $(OBJ_DIR)\hwindow.obj \
+   $(OBJ_DIR)\hrect.obj \
    $(OBJ_DIR)\menu.obj \
    $(OBJ_DIR)\c_ipaddr.obj \
    $(OBJ_DIR)\listbox.obj \
@@ -168,6 +169,9 @@ $(OBJ_DIR)\hcombo.obj : $(OBJ_DIR)\hcombo.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\hcontrol.c : $(SRC_DIR)\hcontrol.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hrect.c : $(SRC_DIR)\hrect.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hcontrol.obj : $(OBJ_DIR)\hcontrol.c
@@ -345,6 +349,9 @@ $(OBJ_DIR)\htree.c : $(SRC_DIR)\htree.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\htree.obj : $(OBJ_DIR)\htree.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hrect.obj : $(OBJ_DIR)\hrect.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\hupdown.c : $(SRC_DIR)\hupdown.prg

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.52 2004-12-13 14:29:12 alkresin Exp $
+ *$Id: guilib.ch,v 1.53 2004-12-13 16:27:39 sandrorrfreire Exp $
  */
 #define HWG_VERSION           "2.14"
 #define	WND_MAIN		1
@@ -1239,3 +1239,6 @@ Added by Marcos Antonio Gambeta
     [<oAnimation> :=] HAnimation():New( <oWnd>,<nId>,<nStyle>,<x>,<y>, ;
         <nWidth>,<nHeight>,<cFile>,<.autoplay.>,<.center.>,<.transparent.>)
  
+//Contribution   Ricardo de Moura Marques 
+#xcommand @ <X>, <Y>, <X2>, <Y2> RECT <oRect> [<lPress: PRESS>] [OF <oWnd>] [RECT_STYLE <nST>];
+          => <oRect> := HRect():New(<oWnd>,<X>,<Y>,<X2>,<Y2>, <.lPress.>, <nST> )

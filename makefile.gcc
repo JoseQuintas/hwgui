@@ -1,4 +1,4 @@
-# $Id: makefile.gcc,v 1.9 2004-11-21 12:33:14 alkresin Exp $
+# $Id: makefile.gcc,v 1.10 2004-12-13 16:27:35 sandrorrfreire Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -62,6 +62,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/htab.o \
    $(OBJ_DIR)/htimer.o \
    $(OBJ_DIR)/htree.o \
+   $(OBJ_DIR)/hrect.o \
    $(OBJ_DIR)/hupdown.o \
    $(OBJ_DIR)/hwindow.o \
    $(OBJ_DIR)/menu.o \
@@ -123,6 +124,7 @@ $(OBJ_DIR)/hsplit.o   : $(OBJ_DIR)/hsplit.c
 $(OBJ_DIR)/htab.o     : $(OBJ_DIR)/htab.c
 $(OBJ_DIR)/htimer.o   : $(OBJ_DIR)/htimer.c
 $(OBJ_DIR)/htree.o    : $(OBJ_DIR)/htree.c
+$(OBJ_DIR)/hrect.o    : $(OBJ_DIR)/hrect.c
 $(OBJ_DIR)/hriched.o  : $(OBJ_DIR)/hriched.c
 $(OBJ_DIR)/guimain.o  : $(OBJ_DIR)/guimain.c
 $(OBJ_DIR)/menu.o     : $(OBJ_DIR)/menu.c
@@ -174,6 +176,8 @@ $(OBJ_DIR)/htab.c       : $(SRC_DIR)/htab.prg
 $(OBJ_DIR)/htimer.c     : $(SRC_DIR)/htimer.prg
 	$(HRB_DIR)/bin\harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
 $(OBJ_DIR)/htree.c      : $(SRC_DIR)/htree.prg
+	$(HRB_DIR)/bin\harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+$(OBJ_DIR)/hrect.c      : $(SRC_DIR)/hrect.prg
 	$(HRB_DIR)/bin\harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
 $(OBJ_DIR)/htrackbr.c   : $(SRC_DIR)/htrackbr.prg
 	$(HRB_DIR)/bin\harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^

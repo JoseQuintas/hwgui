@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.30 2004-07-19 12:34:51 alkresin Exp $
+ *$Id: hwindow.prg,v 1.31 2004-07-28 14:48:25 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -125,6 +125,7 @@ CLASS HWindow INHERIT HCustomWindow
    METHOD Maximize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0)
    METHOD Minimize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MINIMIZE, 0)
    METHOD Close()	INLINE SendMessage( ::handle, WM_SYSCOMMAND, SC_CLOSE, 0 )
+   METHOD MoveWindow(x,y,width,height) INLINE MoveWindow(::Handle,x,y,width,height)
 ENDCLASS
 
 METHOD NEW( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;

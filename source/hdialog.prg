@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.19 2004-05-19 09:24:08 alkresin Exp $
+ * $Id: hdialog.prg,v 1.20 2004-05-21 13:55:19 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -359,11 +359,23 @@ Return 0
 Function DlgMouseMove()
 Local oBtn := SetOwnBtnSelected()
 
-   IF oBtn != Nil .AND. !oBtn:lPress
+   IF oBtn != Nil .AND. !oBtn:lPress .AND. oBtn:classname =="HOwnButton"
       oBtn:state := OBTN_NORMAL
       InvalidateRect( oBtn:handle, 0 )
       PostMessage( oBtn:handle, WM_PAINT, 0, 0 )
       SetOwnBtnSelected( Nil )
+   ENDIF
+
+   IF oBtn == Nil
+      oBtn := SetNiceBtnSelected()
+
+      IF oBtn != Nil .AND. !oBtn:lPress
+         oBtn:state := OBTN_NORMAL
+         InvalidateRect( oBtn:handle, 0 )
+         PostMessage( oBtn:handle, WM_PAINT, 0, 0 )
+         SetNiceBtnSelected( Nil )
+      ENDIF
+
    ENDIF
 
 Return 0
@@ -525,7 +537,7 @@ Local oDlg, i, aControls
 
    // WriteLog( Str(hDlg,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF msg == WM_INITDIALOG
-      IF (i := Ascan( aSheet, {|a|a[1]==lParam} ) ) == 0
+      IF (i := Ascan( aSheet, {|a|a[1]+8==lParam} ) ) == 0
          MsgStop( "WM_INITDIALOG: wrong page handle"+Str( hDlg ),"Error!" )
       ELSE
          oDlg := aSheet[ i,2 ]
@@ -620,7 +632,9 @@ Local hSheet, i, aHandles := Array( Len( aPages ) ), aTemplates := Array( Len( a
    hSheet := _PropertySheet( hParentWindow, aHandles, Len( aHandles ), cTitle, ;
                         lModeless, lNoApply, lWizard )
    FOR i := 1 TO Len( aPages )
-      ReleaseDlgTemplate( aTemplates[i] )
+      IF aPages[i]:type != WND_DLG_RESOURCE
+         ReleaseDlgTemplate( aTemplates[i] )
+      ENDIF
    NEXT
 
 Return hSheet

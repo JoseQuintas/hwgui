@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.1 2005-01-12 11:56:33 alkresin Exp $
+ *$Id: hedit.prg,v 1.2 2005-01-13 11:31:35 mlacecilia Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HEdit class 
@@ -89,11 +89,11 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
       ::lMaxLength:= lMaxLength
    ENDIF
-   IF ::lMaxLength != Nil .and. !Empty(::lMaxLength) 
+/*   IF ::lMaxLength != Nil .and. !Empty(::lMaxLength) 
       IF !Empty(cPicture) .or. cPicture==Nil
          cPicture:=Replicate("X",::lMaxLength)
       ENDIF
-   ENDIF      
+   ENDIF                        ----------------- commented out by Maurizio la Cecilia */
  
    ParsePict( Self, cPicture, vari )
    ::Activate()
@@ -336,6 +336,14 @@ Local nAt, i, masklen, cChar
          ENDIF
       NEXT
    ENDIF
+
+//                                         ------------ added by Maurizio la Cecilia
+
+   IF oEdit:lMaxLength != Nil .and. !Empty( oEdit:lMaxLength ) .and. Len( oEdit:cPicMask ) < oEdit:lMaxLength
+      oEdit:cPicMask := PadR( oEdit:cPicMask, oEdit:lMaxLength, "X" )
+   ENDIF
+
+//                                         ------------- end of added code
 
 Return Nil
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.21 2004-02-26 19:11:01 rodrigo_moreno Exp $
+ * $Id: Changelog,v 1.22 2004-02-26 19:30:17 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-02-26 16-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * makefile.bc
+      updated to include new dependencies
 
 2004-02-25 09-20 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   * Merged all changes while hwgui was on xharbour cvs per entries bellow

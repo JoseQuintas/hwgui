@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.339 2005-01-12 22:41:55 mlacecilia Exp $
+ * $Id: Changelog,v 1.340 2005-01-13 10:38:17 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-01-13 13:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/menu_c.c
+    ! The tray menu now closes normally after clicking outside the menu box -
+      the fix is provided by Valery Beloruscev.
 
 2004-01-12 23:45 UTC-0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
   * source/hedit.prg

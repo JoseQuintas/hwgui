@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.43 2005-01-04 15:11:27 ptsarenko Exp $
+ * $Id: hbrowse.prg,v 1.44 2005-01-13 10:38:19 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -580,7 +580,7 @@ Local oldBkColor, oldTColor
    ::y2 := aCoors[ 4 ]
 
    ::kolz := eval( ::bRcou,Self )
-   IF ::tekzp > ::kolz
+   IF ::tekzp > ::kolz .AND. ::kolz > 0
       ::tekzp := ::kolz
    ENDIF
 

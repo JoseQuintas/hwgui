@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.35 2004-11-11 08:37:12 alkresin Exp $
+ *$Id: hwindow.prg,v 1.36 2004-11-14 13:54:00 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -16,17 +16,6 @@
 #define  MAX_MDICHILD_WINDOWS   18
 #define  WM_NOTIFYICON         WM_USER+1000
 #define  ID_NOTIFYICON           1
-
-#define TB_LINEUP               0
-#define TB_LINEDOWN             1
-#define TB_PAGEUP               2
-#define TB_PAGEDOWN             3
-#define TB_THUMBPOSITION        4
-#define TB_THUMBTRACK           5
-#define TB_TOP                  6
-#define TB_BOTTOM               7
-#define TB_ENDTRACK             8
-
 
 Static Function onSize( oWnd,wParam,lParam )
 Local aCoors := GetWindowRect( oWnd:handle )
@@ -236,9 +225,11 @@ Local i
    IF ( i := Ascan( ::aMessages[1],msg ) ) != 0
       Return Eval( ::aMessages[2,i], Self, wParam, lParam )
    ELSE
+     /*
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
          onScroll( Self,wParam,lParam )
       ENDIF
+     */
       Return Super:onEvent( msg, wParam, lParam )
    ENDIF
 
@@ -259,15 +250,13 @@ CLASS HMDIChildWindow INHERIT HWindow
 
    CLASS VAR aMessages INIT { ;
       { WM_CREATE,WM_COMMAND,WM_MOVE,WM_SIZE,WM_NCACTIVATE, ;
-        WM_HSCROLL,WM_VSCROLL,WM_DESTROY }, ;
+        WM_DESTROY }, ;
       { ;
          {|o,w,l|onMdiCreate(o,l)},        ;
          {|o,w|onMdiCommand(o,w)},         ;
          {|o|onMove(o)},                   ;
          {|o,w,l|onSize(o,w,l)},           ;
          {|o,w|onMdiNcActivate(o,w)},      ;
-         {|o,w,l|onScroll(o,w,l)},         ;
-         {|o,w,l|onScroll(o,w,l)},         ;
          {|o|onDestroy(o)}                 ;
       } ;
    }
@@ -481,23 +470,6 @@ Local ar
        ENDIF
    ENDIF
 Return -1
-
-Static Function onScroll( oWnd,wParam,lParam )
-Local oCtrl := oWnd:FindControl( , lParam ), msg
-
-   IF oCtrl != Nil
-      msg := LoWord (wParam)
-      IF msg == TB_ENDTRACK
-         IF ISBLOCK( oCtrl:bChange )
-            Eval( oCtrl:bChange,oCtrl )
-         ENDIF
-      ELSEIF msg == TB_THUMBTRACK .OR. msg == TB_PAGEUP .OR. msg == TB_PAGEDOWN
-         IF ISBLOCK( oCtrl:bThumbDrag )
-            Eval( oCtrl:bThumbDrag,oCtrl )
-         ENDIF
-      ENDIF
-   ENDIF
-Return 0
 
 Static Function onMdiCreate( oWnd,lParam )
 

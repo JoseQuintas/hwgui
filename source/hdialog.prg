@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.29 2004-11-11 08:37:12 alkresin Exp $
+ * $Id: hdialog.prg,v 1.30 2004-11-14 13:54:00 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -13,21 +13,10 @@
 #include "guilib.ch"
 
 #define  WM_PSPNOTIFY         WM_USER+1010
-#define TB_LINEUP               0
-#define TB_LINEDOWN             1
-#define TB_PAGEUP               2
-#define TB_PAGEDOWN             3
-#define TB_THUMBPOSITION        4
-#define TB_THUMBTRACK           5
-#define TB_TOP                  6
-#define TB_BOTTOM               7
-#define TB_ENDTRACK             8
 
 Static aSheet := Nil
 Static aMessModalDlg := { ;
          { WM_COMMAND,{|o,w,l|DlgCommand(o,w,l)} },         ;
-         { WM_HSCROLL,{|o,w,l|onScroll(o,w,l)} },           ;
-         { WM_VSCROLL,{|o,w,l|onScroll(o,w,l)} },           ;
          { WM_SIZE,{|o,w,l|onSize(o,w,l)} },                ;
          { WM_INITDIALOG,{|o,w,l|InitModalDlg(o,w,l)} },    ;
          { WM_ERASEBKGND,{|o,w|onEraseBk(o,w)} },           ;
@@ -175,16 +164,6 @@ Local i
       Return Super:onEvent( msg, wParam, lParam )
    ENDIF
 
-/*
-   IF ( i := Ascan( ::aMessages[1],msg ) ) != 0
-      Return Eval( ::aMessages[2,i], Self, wParam, lParam )
-   ELSE
-      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
-         onScroll( Self,wParam,lParam )
-      ENDIF
-      Return Super:onEvent( msg, wParam, lParam )
-   ENDIF
-*/
 RETURN 0
 
 METHOD AddItem( oWnd,lModal ) CLASS HDialog
@@ -397,23 +376,6 @@ Static Function onHelp( oDlg,wParam,lParam )
         EndIf
     endif
 
-Return 0
-
-Static Function onScroll( oWnd,wParam,lParam )
-Local oCtrl := oWnd:FindControl( , lParam ), msg
-
-   IF oCtrl != Nil
-      msg := LoWord (wParam)
-      IF msg == TB_ENDTRACK
-         IF ISBLOCK( oCtrl:bChange )
-            Eval( oCtrl:bChange,oCtrl )
-         ENDIF
-      ELSEIF msg == TB_THUMBTRACK .OR. msg == TB_PAGEUP .OR. msg == TB_PAGEDOWN
-         IF ISBLOCK( oCtrl:bThumbDrag )
-            Eval( oCtrl:bThumbDrag,oCtrl )
-         ENDIF
-      ENDIF
-   ENDIF
 Return 0
 
 Static Function onPspNotify( oDlg,wParam,lParam )

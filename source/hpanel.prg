@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.7 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: hpanel.prg,v 1.8 2004-11-14 13:54:00 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -69,6 +69,13 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HPanel
 
    IF msg == WM_PAINT
       ::Paint()
+   ELSEIF msg == WM_ERASEBKGND
+      IF ::brush != Nil
+         IF Valtype( ::brush ) != "N"
+            FillRect( wParam, 0,0,::nWidth,::nHeight,::brush:handle )
+         ENDIF
+         Return 1
+      ENDIF
    ELSE
       Return Super:onEvent( msg, wParam, lParam )
    ENDIF

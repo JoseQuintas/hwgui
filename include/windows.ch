@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.18 2004-11-11 08:37:12 alkresin Exp $
+ *$Id: windows.ch,v 1.19 2004-11-14 13:53:59 alkresin Exp $
  */
 
 #define WM_CREATE                       1
@@ -853,3 +853,20 @@
 #define GWL_ID (-12)
 
 #define WM_MOUSEWHEEL  0x020A
+
+#define TB_LINEUP               0
+#define TB_LINEDOWN             1
+#define TB_PAGEUP               2
+#define TB_PAGEDOWN             3
+#define TB_THUMBPOSITION        4
+#define TB_THUMBTRACK           5
+#define TB_TOP                  6
+#define TB_BOTTOM               7
+#define TB_ENDTRACK             8
+
+#define TBM_GETPOS              (WM_USER)
+#define TBM_GETTIC              (WM_USER+3)
+#define TBM_GETTICPOS           (WM_USER+15)
+#define TBM_GETNUMTICS          (WM_USER+16)
+#define TBM_SETTHUMBLENGTH      (WM_USER+27)
+#define TBM_GETTHUMBLENGTH      (WM_USER+28)

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.289 2004-11-12 08:44:47 alkresin Exp $
+ * $Id: Changelog,v 1.290 2004-11-14 13:53:59 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,34 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-11-14 16:53 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/windows.ch
+  * include/guilib.ch
+    + New commands has been added:
+       INIT PRINTER <oPrinter> [ NAME <cPrinter> ] [ <lPixel: PIXEL> ]
+       INIT DEFAULT PRINTER <oPrinter> [ <lPixel: PIXEL> ]
+      By default ( if the PIXEL clause isn't used, all subsequent printer
+      operations accept coordinates as millimeters
+
+  * source/hcwindow.prg
+  * source/hdialog.prg
+  * source/hwindow.prg
+    * Some modifications, related to WM_HSCROLL, WM_VSCROLL handling
+  * source/hpanel.prg
+    * WM_ERASEBKGND handling added
+
+  * source/wprint.c
+  * source/hprinter.prg
+    * New parameter added to the HPrinter():New() method - lmm - if it is TRUE,
+      all subsequent printer operations accept coordinates as millimeters
+    * HPrinter():Preview() method and related functions are extended:
+      Zoom buttons, trackbars for preview image repositioning has been added.
+      New parameters added - optional arrays for button's bmps and tooltips.
+
+  * sample/a.prg
+    * prntest() function ( samples/Print preview ) has been modified to
+      demonstrate new possibilities.
 
 2004-11-12 11:48 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hedit.prg

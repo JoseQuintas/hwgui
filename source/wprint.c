@@ -91,6 +91,15 @@ HB_FUNC( HWG_ENDPAGE )
    hb_retnl( (LONG) EndPage( (HDC) hb_parnl( 1 ) ) );
 }
 
+/*
+ * HORZSIZE	Width, in millimeters, of the physical screen.
+ * VERTSIZE	Height, in millimeters, of the physical screen.
+ * HORZRES	Width, in pixels, of the screen.
+ * VERTRES	Height, in raster lines, of the screen.
+ * LOGPIXELSX	Number of pixels per logical inch along the screen width.
+ * LOGPIXELSY	Number of pixels per logical inch along the screen height.
+ *
+ */
 HB_FUNC( GETDEVICEAREA )
 {
    HDC hDC = (HDC) hb_parnl( 1 );

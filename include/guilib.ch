@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.49 2004-11-11 08:37:11 alkresin Exp $
+ *$Id: guilib.ch,v 1.50 2004-11-14 13:53:59 alkresin Exp $
  */
 #define HWG_VERSION           "2.13"
 #define	WND_MAIN		1
@@ -1085,6 +1085,20 @@
 #xcommand  EJECT OF <oPtrObj> => <oPtrObj>:Eject()
 
 #xcommand  END PRINTER <oPtrObj> => <oPtrObj>:End()
+
+/* Hprinter */
+
+#xcommand  INIT PRINTER <oPrinter>   ;
+             [ NAME <cPrinter> ]     ;
+             [ <lPixel: PIXEL> ]     ;
+          =>  ;
+          <oPrinter> := HPrinter():New( <cPrinter>,!<.lPixel.> )
+
+#xcommand  INIT DEFAULT PRINTER <oPrinter>   ;
+             [ <lPixel: PIXEL> ]             ;
+          =>  ;
+          <oPrinter> := HPrinter():New( "",!<.lPixel.> )
+
 
 /*
 Command for MonthCalendar Class

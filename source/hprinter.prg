@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.4 2004-09-29 05:24:52 alkresin Exp $
+ * $Id: hprinter.prg,v 1.5 2004-11-14 13:54:00 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -20,34 +20,38 @@ CLASS HPrinter INHERIT HObject
    DATA lPreview
    DATA cMetaName
    DATA nWidth, nHeight
+   DATA nHRes, nVRes                     // Resolution ( pixels/mm )
 
-   METHOD New( cPrinter )
+   METHOD New( cPrinter,lmm )
+   METHOD AddFont( fontName, nHeight ,lBold, lItalic, lUnderline )
+   METHOD SetFont( oFont )  INLINE SelectObject( ::hDC,oFont:handle )
    METHOD StartDoc( lPreview,cMetaName )
    METHOD EndDoc()
    METHOD StartPage()
    METHOD EndPage()
    METHOD ReleaseMeta()
-   METHOD PlayMeta( nPage, oWnd, x1, y1, x2, y2 )
+   METHOD PlayMeta( nPage, oWnd )
    METHOD PrintMeta( nPage )
    METHOD Preview( cTitle )
    METHOD End()
-   METHOD Box( x1,y1,x2,y2,oPen ) INLINE ;
-                  Iif(oPen!=Nil,SelectObject(::hDC,oPen:handle),.F.), ;
-                  Rectangle( ::hDC,x1,y1,x2,y2 )
-   METHOD Line( x1,y1,x2,y2,oPen ) INLINE ;
-                  Iif(oPen!=Nil,SelectObject(::hDC,oPen:handle),.F.), ;
-                  DrawLine( ::hDC,x1,y1,x2,y2 )
-   METHOD Say( cString,x1,y1,x2,y2,nOpt,oFont ) INLINE ;
-                  Iif(oFont!=Nil,SelectObject(::hDC,oFont:handle),.F.), ;
-                  DrawText( ::hDC,cString,x1,y1,x2,y2,Iif(nOpt==Nil,DT_LEFT,nOpt) )
-   METHOD Bitmap( x1,y1,x2,y2,nOpt,hBitmap )  INLINE ;
-                  DrawBitmap( ::hDC,hBitmap,Iif(nOpt==Nil,SRCAND,nOpt),x1,y1,x2-x1+1,y2-y1+1 )
+   METHOD Box( x1,y1,x2,y2,oPen )
+   METHOD Line( x1,y1,x2,y2,oPen )
+   METHOD Say( cString,x1,y1,x2,y2,nOpt,oFont )
+   METHOD Bitmap( x1,y1,x2,y2,nOpt,hBitmap )
+
+   HIDDEN:
+      DATA lmm  INIT .F.
+      DATA nCurrPage, oTrackV, oTrackH
+      DATA nZoom, xOffset, yOffset, x1, y1, x2, y2
 
 ENDCLASS
 
-METHOD New( cPrinter ) CLASS HPrinter
+METHOD New( cPrinter,lmm ) CLASS HPrinter
 Local aPrnCoors
 
+   IF lmm != Nil
+      ::lmm := lmm
+   ENDIF
    IF cPrinter == Nil
       ::hDCPrn := PrintSetup()
    ELSEIF Empty( cPrinter )
@@ -57,11 +61,25 @@ Local aPrnCoors
    ENDIF
    IF ::hDCPrn != Nil
       aPrnCoors := GetDeviceArea( ::hDCPrn )
-      ::nWidth  := aPrnCoors[1]
-      ::nHeight := aPrnCoors[2]
+      ::nWidth  := Iif( ::lmm, aPrnCoors[3], aPrnCoors[1] )
+      ::nHeight := Iif( ::lmm, aPrnCoors[4], aPrnCoors[2] )
+      ::nHRes   := aPrnCoors[1] / aPrnCoors[3]
+      ::nVRes   := aPrnCoors[2] / aPrnCoors[4]
+      // writelog( str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6]) )
    ENDIF
 
 Return Self
+
+METHOD AddFont( fontName, nHeight ,lBold, lItalic, lUnderline ) CLASS HPrinter
+Local oFont
+
+   IF ::lmm .AND. nHeight != Nil
+      nHeight *= ::nVRes
+   ENDIF
+   oFont := HFont():Add( fontName,, nHeight , Iif( lBold!=Nil.AND.lBold,700,400 ),, ;
+                  Iif( lItalic!=Nil.AND.lItalic,1,0 ), Iif( lUnderline!=Nil.AND.lUnderline,1,0 ) )
+
+Return oFont
 
 METHOD End() CLASS HPrinter
    IF ::hDCPrn != 0
@@ -70,6 +88,56 @@ METHOD End() CLASS HPrinter
    ENDIF
    ::ReleaseMeta()
 Return Nil
+
+METHOD Box( x1,y1,x2,y2,oPen ) CLASS HPrinter
+
+   IF oPen != Nil
+      SelectObject( ::hDC,oPen:handle )
+   ENDIF
+   IF ::lmm
+      Rectangle( ::hDC,::nHRes*x1,::nVRes*y1,::nHRes*x2,::nVRes*y2 )
+   ELSE
+      Rectangle( ::hDC,x1,y1,x2,y2 )
+   ENDIF
+
+Return Nil
+
+METHOD Line( x1,y1,x2,y2,oPen ) CLASS HPrinter
+
+   IF oPen != Nil
+      SelectObject( ::hDC,oPen:handle )
+   ENDIF
+   IF ::lmm
+      DrawLine( ::hDC,::nHRes*x1,::nVRes*y1,::nHRes*x2,::nVRes*y2 )
+   ELSE
+      DrawLine( ::hDC,x1,y1,x2,y2 )
+   ENDIF
+
+Return Nil
+
+METHOD Say( cString,x1,y1,x2,y2,nOpt,oFont ) CLASS HPrinter
+
+   IF oFont != Nil
+      SelectObject( ::hDC,oFont:handle )
+   ENDIF
+   IF ::lmm
+      DrawText( ::hDC,cString,::nHRes*x1,::nVRes*y1,::nHRes*x2,::nVRes*y2,Iif(nOpt==Nil,DT_LEFT,nOpt) )
+   ELSE
+      DrawText( ::hDC,cString,x1,y1,x2,y2,Iif(nOpt==Nil,DT_LEFT,nOpt) )
+   ENDIF
+
+Return Nil
+
+METHOD Bitmap( x1,y1,x2,y2,nOpt,hBitmap ) CLASS HPrinter
+
+   IF ::lmm
+      DrawBitmap( ::hDC,hBitmap,Iif(nOpt==Nil,SRCAND,nOpt),::nHRes*x1,::nVRes*y1,::nHRes*(x2-x1+1),::nVRes*(y2-y1+1) )
+   ELSE
+      DrawBitmap( ::hDC,hBitmap,Iif(nOpt==Nil,SRCAND,nOpt),x1,y1,x2-x1+1,y2-y1+1 )
+   ENDIF
+
+Return Nil
+
 
 METHOD StartDoc( lPreview,cMetaName ) CLASS HPrinter
 
@@ -134,98 +202,230 @@ Local i, nLen
 
 Return Nil
 
-METHOD Preview( cTitle ) CLASS HPrinter
-Local oDlg, oToolBar, oSayPage
-Local oFont := HFont():Add( "Times New Roman",0,-13 )
-Memvar x1, y1, x2, y2, nCurrPage
-Private x1, y1, x2, y2, nCurrPage := 1
+METHOD Preview( cTitle,aBitmaps,aTooltips ) CLASS HPrinter
+Local oDlg, oToolBar, oSayPage, oBtn, oCanvas
+Local oFont := HFont():Add( "Times New Roman",0,-13,700 )  
 
    IF cTitle == Nil; cTitle := "Print preview"; ENDIF
+   ::nZoom := 0
+   ::nCurrPage := 1
 
    INIT DIALOG oDlg TITLE cTitle                  ;
      AT 40,10 SIZE 600,440                        ;
-     STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+WS_MAXIMIZEBOX ;
-     ON PAINT {||::PlayMeta(nCurrPage,oDlg,x1,y1,x2,y2 )} ;
-     ON SIZE {|o,x,y|ResizePreviewDlg(o,x,y,Self)}
+     STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+WS_MAXIMIZEBOX
 
    oDlg:brush := HBrush():Add( 0 )
 
-   @ 0,0 PANEL oToolBar SIZE 36,oDlg:nHeight
+   @ 0,0 PANEL oToolBar SIZE 44,oDlg:nHeight
+
+   @ oToolBar:nWidth+2,3 PANEL oCanvas ;
+     SIZE oDlg:nWidth-oToolBar:nWidth-4,oDlg:nHeight-5 ;
+     ON SIZE {|o,x,y|o:Move(,,x-oToolBar:nWidth-4,y-5),ResizePreviewDlg(o,Self)} ;
+     ON PAINT {||::PlayMeta(oCanvas)}
+   oCanvas:brush := HBrush():Add( 11316396 )
 
    @ 0,2 SAY oSayPage CAPTION "1:"+Ltrim(Str(Len(::aMeta))) OF oToolBar ;
-        SIZE 36,22 STYLE WS_BORDER+SS_CENTER FONT oFont BACKCOLOR 12507070
+        SIZE oToolBar:nWidth,22 STYLE WS_BORDER+SS_CENTER FONT oFont BACKCOLOR 12507070
 
-   @ 1,26 OWNERBUTTON OF oToolBar ON CLICK {||::PrintMeta()} ;
-        SIZE 33,24 TEXT "Print" FONT oFont FLAT   ;
-        TOOLTIP "Print file"
-   @ 1,50 OWNERBUTTON OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,1)} ;
-        SIZE 33,24 TEXT ">>" FONT oFont FLAT                 ;
-        TOOLTIP "Next page"
-   @ 1,74 OWNERBUTTON OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,-1)} ;
-        SIZE 33,24 TEXT "<<" FONT oFont FLAT   ;
-        TOOLTIP "Previous page"
-   @ 1,98 OWNERBUTTON OF oToolBar ON CLICK {||EndDialog()} ;
-        SIZE 33,24 TEXT "Exit" FONT oFont FLAT     ;
-        TOOLTIP "Exit Preview"
+   @ 3,26 OWNERBUTTON oBtn OF oToolBar ON CLICK {||EndDialog()} ;
+        SIZE oToolBar:nWidth-6,24 TEXT "Exit" FONT oFont FLAT   ;
+        TOOLTIP Iif(aTooltips!=Nil,aTooltips[1],"Exit Preview")
+   IF aBitmaps != Nil
+      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[2] ), HBitmap():AddFile( aBitmaps[2] ) )
+      oBtn:text   := Nil
+   ENDIF
 
-   ResizePreviewDlg( oDlg, 600, 440, Self )
+   @ 1,53 LINE LENGTH oToolBar:nWidth-1
+
+   @ 3,56 OWNERBUTTON oBtn OF oToolBar ON CLICK {||::PrintMeta()} ;
+        SIZE oToolBar:nWidth-6,24 TEXT "Print" FONT oFont FLAT    ;
+        TOOLTIP Iif(aTooltips!=Nil,aTooltips[2],"Print file")
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 2
+      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[3] ), HBitmap():AddFile( aBitmaps[3] ) )
+      oBtn:text   := Nil
+   ENDIF
+
+   @ 1,83 LINE LENGTH oToolBar:nWidth-1
+
+   @ 3,86 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,0)} ;
+        SIZE oToolBar:nWidth-6,24 TEXT "|<<" FONT oFont FLAT                ;
+        TOOLTIP Iif(aTooltips!=Nil,aTooltips[3],"First page")
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 3
+      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[4] ), HBitmap():AddFile( aBitmaps[4] ) )
+      oBtn:text   := Nil
+   ENDIF
+
+   @ 3,110 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,1)} ;
+        SIZE oToolBar:nWidth-6,24 TEXT ">>" FONT oFont FLAT                 ;
+        TOOLTIP Iif(aTooltips!=Nil,aTooltips[4],"Next page")
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 4
+      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[5] ), HBitmap():AddFile( aBitmaps[5] ) )
+      oBtn:text   := Nil
+   ENDIF
+
+   @ 3,134 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,-1)} ;
+        SIZE oToolBar:nWidth-6,24 TEXT "<<" FONT oFont FLAT   ;
+        TOOLTIP Iif(aTooltips!=Nil,aTooltips[5],"Previous page")
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 5
+      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[6] ), HBitmap():AddFile( aBitmaps[6] ) )
+      oBtn:text   := Nil
+   ENDIF
+
+   @ 3,158 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,2)} ;
+        SIZE oToolBar:nWidth-6,24 TEXT ">>|" FONT oFont FLAT  ;
+        TOOLTIP Iif(aTooltips!=Nil,aTooltips[6],"Last page")
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 6
+      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[7] ), HBitmap():AddFile( aBitmaps[7] ) )
+      oBtn:text   := Nil
+   ENDIF
+
+   @ 1,189 LINE LENGTH oToolBar:nWidth-1
+
+   @ 3,192 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ResizePreviewDlg(oCanvas,Self,-1)} ;
+        SIZE oToolBar:nWidth-6,24 TEXT "(-)" FONT oFont FLAT  ;
+        TOOLTIP Iif(aTooltips!=Nil,aTooltips[7],"Zoom out")
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 7
+      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[8] ), HBitmap():AddFile( aBitmaps[8] ) )
+      oBtn:text   := Nil
+   ENDIF
+
+   @ 3,216 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ResizePreviewDlg(oCanvas,Self,1)} ;
+        SIZE oToolBar:nWidth-6,24 TEXT "(+)" FONT oFont FLAT  ;
+        TOOLTIP Iif(aTooltips!=Nil,aTooltips[8],"Zoom in")
+   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 8
+      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[9] ), HBitmap():AddFile( aBitmaps[9] ) )
+      oBtn:text   := Nil
+   ENDIF
+
+   @ 1,243 LINE LENGTH oToolBar:nWidth-1
+
+   @ 2,246 TRACKBAR ::oTrackH OF oToolBar ;
+      SIZE 40,20 ;
+      RANGE 1,20 ;
+      INIT 1 AUTOTICKS ;
+      ON DRAG {|o|ResizePreviewDlg(oCanvas,Self,,.T.)}
+
+   @ 10,270 TRACKBAR ::oTrackV OF oToolBar ;
+      SIZE 20,40 ;
+      RANGE 1,20 ;
+      INIT 1 AUTOTICKS VERTICAL ;
+      ON DRAG {|o|ResizePreviewDlg(oCanvas,Self,,.T.)}
 
    oDlg:Activate()
+
    oDlg:brush:Release()
+   oCanvas:brush:Release()
+   oFont:Release()
 
 Return Nil
 
 Static Function ChangePage( oDlg,oSayPage,oPrinter,n )
-Memvar nCurrPage
 
-   IF n > 0 .AND. nCurrPage < Len(oPrinter:aMeta)
-      nCurrPage ++
-   ELSEIF n < 0 .AND. nCurrPage > 1
-      nCurrPage --
+   IF n == 0
+      oPrinter:nCurrPage := 1
+   ELSEIF n == 2
+      oPrinter:nCurrPage := Len(oPrinter:aMeta)
+   ELSEIF n == 1 .AND. oPrinter:nCurrPage < Len(oPrinter:aMeta)
+      oPrinter:nCurrPage ++
+   ELSEIF n == -1 .AND. oPrinter:nCurrPage > 1
+      oPrinter:nCurrPage --
    ENDIF
-   oSayPage:SetValue( Ltrim(Str(nCurrPage))+":"+Ltrim(Str(Len(oPrinter:aMeta))) )
+   oSayPage:SetValue( Ltrim(Str(oPrinter:nCurrPage))+":"+Ltrim(Str(Len(oPrinter:aMeta))) )
    RedrawWindow( oDlg:handle, RDW_ERASE + RDW_INVALIDATE )
 Return Nil
 
-Static Function ResizePreviewDlg( oDlg, x, y, oPrinter )
-Local aPrnCoors := GetDeviceArea( oPrinter:hDCPrn )
-Local nWidth, nHeight
-Memvar x1, y1, x2, y2
+Static Function ResizePreviewDlg( oCanvas, oPrinter, nZoom, lTrack )
+Local nWidth, nHeight, k1, k2, x := oCanvas:nWidth, y := oCanvas:nHeight
+Local i, nPos
 
-   y -= 10
-   IF aPrnCoors[1] > aPrnCoors[2]
+   IF nZoom != Nil
+      IF nZoom < 0 .AND. oPrinter:nZoom == 0
+         Return Nil
+      ENDIF
+      oPrinter:nZoom += nZoom
+   ENDIF
+   k1 := oPrinter:nWidth / oPrinter:nHeight
+   k2 := oPrinter:nHeight / oPrinter:nWidth
+   IF oPrinter:nWidth > oPrinter:nHeight
       nWidth := x - 20
-      nHeight := Round( nWidth * aPrnCoors[2] / aPrnCoors[1], 0 )
+      nHeight := Round( nWidth * k2, 0 )
       IF nHeight > y - 20
          nHeight := y - 20
-         nWidth := Round( nHeight * aPrnCoors[1] / aPrnCoors[2], 0 )
+         nWidth := Round( nHeight * k1, 0 )
       ENDIF
    ELSE
       nHeight := y - 10
-      nWidth := Round( nHeight * aPrnCoors[1] / aPrnCoors[2], 0 )
+      nWidth := Round( nHeight * k1, 0 )
       IF nWidth > x - 20
          nWidth := x - 20
-         nHeight := Round( nWidth * aPrnCoors[2] / aPrnCoors[1], 0 )
+         nHeight := Round( nWidth * k2, 0 )
       ENDIF
    ENDIF
 
-   x1 := Round( (x-nWidth)/2,0 )
-   x2 := x1 + nWidth - 1
-   y1 := Round( (y-nHeight)/2+10,0 )
-   y2 := y1 + nHeight - 1
+   IF oPrinter:nZoom > 0
+      FOR i := 1 TO oPrinter:nZoom
+         nWidth := Round( nWidth*1.5,0 )
+         nHeight := Round( nHeight*1.5,0 )
+      NEXT
+   ENDIF
 
-   RedrawWindow( oDlg:handle, RDW_ERASE + RDW_INVALIDATE )
-   // InvalidateRect( oDlg:handle, 0 )
-   // SendMessage( oDlg:handle, WM_PAINT, 0, 0 )
+   oPrinter:xOffset := oPrinter:yOffset := 0
+   IF nHeight > y
+      IF !oPrinter:oTrackV:isEnabled()
+         oPrinter:oTrackV:Enable()
+         oPrinter:oTrackV:SetValue( oPrinter:oTrackV:nLow )
+      ELSE
+         nPos := SendMessage( oPrinter:oTrackV:handle, TBM_GETPOS, 0, 0 )
+         IF nPos > 0 
+            nPos := ( nPos - oPrinter:oTrackV:nLow ) / ( oPrinter:oTrackV:nHigh - oPrinter:oTrackV:nLow )
+            oPrinter:yOffset := Round( nPos * ( nHeight - y + 10 ),0 )
+         ENDIF
+      ENDIF
+   ELSEIF oPrinter:oTrackV:isEnabled()
+      oPrinter:oTrackV:SetValue( oPrinter:oTrackV:nLow )
+      oPrinter:oTrackV:Disable()
+   ENDIF
+
+   IF nWidth > x
+      IF !oPrinter:oTrackH:isEnabled()
+         oPrinter:oTrackH:Enable()
+         oPrinter:oTrackH:SetValue( oPrinter:oTrackH:nLow )
+      ELSE
+         nPos := SendMessage( oPrinter:oTrackH:handle, TBM_GETPOS, 0, 0 )
+         IF nPos > 0 
+            nPos := ( nPos - oPrinter:oTrackH:nLow ) / ( oPrinter:oTrackH:nHigh - oPrinter:oTrackH:nLow )
+            oPrinter:xOffset := Round( nPos * ( nWidth - x + 10 ),0 )
+         ENDIF
+      ENDIF
+   ELSEIF oPrinter:oTrackH:isEnabled()
+      oPrinter:oTrackH:SetValue( oPrinter:oTrackH:nLow )
+      oPrinter:oTrackH:Disable()
+   ENDIF
+
+   oPrinter:x1 := Iif( nWidth<x, Round( (x-nWidth)/2,0 ), 10 ) - oPrinter:xOffset
+   oPrinter:x2 := oPrinter:x1 + nWidth - 1
+   oPrinter:y1 := Iif( nHeight<y, Round( (y-nHeight)/2,0 ), 5 ) - oPrinter:yOffset
+   oPrinter:y2 := oPrinter:y1 + nHeight - 1
+
+   IF nZoom != Nil .OR. lTrack != Nil
+      RedrawWindow( oCanvas:handle, RDW_ERASE + RDW_INVALIDATE )
+   ENDIF
 
 Return Nil
 
-METHOD PlayMeta( nPage, oWnd, x1, y1, x2, y2 ) CLASS HPrinter
-Local pps := DefinePaintStru(), hDC := BeginPaint( oWnd:handle, pps )
+METHOD PlayMeta( oWnd ) CLASS HPrinter
+Local pps, hDC
 
-   FillRect( hDC, x1, y1, x2, y2, COLOR_3DHILIGHT+1 )
-   PlayEnhMetafile( hDC, ::aMeta[nPage], x1, y1, x2, y2 )
+   IF ::xOffset == Nil
+      ResizePreviewDlg( oWnd, Self )
+   ENDIF
+
+   pps := DefinePaintStru()
+   hDC := BeginPaint( oWnd:handle, pps )
+   FillRect( hDC, ::x1, ::y1, ::x2, ::y2, COLOR_3DHILIGHT+1 )
+   PlayEnhMetafile( hDC, ::aMeta[::nCurrPage], ::x1, ::y1, ::x2, ::y2 )
    EndPaint( oWnd:handle, pps )
+
 Return Nil
 
 METHOD PrintMeta( nPage ) CLASS HPrinter

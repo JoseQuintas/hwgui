@@ -49,6 +49,8 @@ COMMOND.C:
   Savefile
      Calls standard Windows dialog for file saving, returns file path and name
   Printsetup
+  GetSerialNumber       
+  HDGetSerial     
 
 CONTROL.C:
   Movewindow

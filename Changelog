@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.242 2004-08-02 10:26:49 lf_sfnet Exp $
+ * $Id: Changelog,v 1.243 2004-08-02 11:35:02 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-08-02 08-33 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * utils/designer/resource/samples/f_hwgprg.prg
+    Now create using Picture in GETs
+    By Frank Lenon Rodrigues
 
 2004-08-02 12:30 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
   * guilib.h

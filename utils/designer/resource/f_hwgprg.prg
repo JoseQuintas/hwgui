@@ -1,7 +1,7 @@
 #SCRIPT WRITE
 #DEBUG
 FUNCTION Font2Str
-PARAMETERS oFont 
+PARAMETERS oFont
 Return " ;" + _Chr(10) + Space(8) + ;
        "FONT HFont():Add( '" + oFont:name + "'," + Ltrim(Str(oFont:width,5)) + "," + ;
        Ltrim(Str(oFont:height,5)) + "," + Iif(oFont:weight!=0,Ltrim(Str(oFont:weight,5)),"") + "," + ;
@@ -87,32 +87,54 @@ PRIVATE nLeft, nTop
     ELSE
       stroka += "SIZE " + Ltrim( Str(oCtrl:nWidth) ) + "," + Ltrim( Str(oCtrl:nHeight) ) + " "
     ENDIF
+
     stroka += CallFunc( "Style2Prg", { oCtrl } ) + " "
+
     IF oCtrl:cClass != "ownerbutton"
       IF oCtrl:GetProp( "Textcolor",@j ) != Nil .AND. !IsDefault( oCtrl,oCtrl:aProp[j] )
         stroka += Iif( Empty(cStyle),"",";" + _Chr(10) + Space(8) ) + ;
               "COLOR " + Ltrim( Str(oCtrl:tcolor) ) + " "
       ENDIF
+
       IF oCtrl:GetProp( "Backcolor",@j ) != Nil .AND. !IsDefault( oCtrl,oCtrl:aProp[j] )
         stroka += "BACKCOLOR " + Ltrim( Str(oCtrl:bcolor) )
       ENDIF
+
+
     ENDIF
+
     IF oCtrl:cClass == "ownerbutton"
+
       IF ( temp := oCtrl:GetProp( "Flat" ) ) != Nil .AND. temp == "True"
         stroka += " FLAT "
       ENDIF
+
       IF ( temp := oCtrl:GetProp( "Caption" ) ) != Nil
         stroka += " ;" + _Chr(10) + Space(8) + "TEXT '" + temp + "' "
+
         IF oCtrl:GetProp( "Textcolor",@j ) != Nil .AND. !IsDefault( oCtrl,oCtrl:aProp[j] )
           stroka += "COLOR " + Ltrim( Str(oCtrl:tcolor) ) + " "
         ENDIF
+
+
       ENDIF
+
     ENDIF
+
+
+    IF oCtrl:cClass == "editbox"
+     IF ( cName := oCtrl:GetProp( "cPicture" ) ) != Nil
+         stroka += "PICTURE '" + Ltrim( oCtrl:GetProp( "cPicture" )) + "' "
+      ENDIF
+    EndIf
+
+
     IF ( temp := oCtrl:GetProp( "Font" ) ) != Nil
       stroka += CallFunc( "FONT2STR",{temp} )
     ENDIF
 
     // Methods ( events ) for the control
+
     i := 1
     DO WHILE i <= Len( oCtrl:aMethods )
       IF oCtrl:aMethods[i,2] != Nil .AND. !Empty(oCtrl:aMethods[i,2])
@@ -122,8 +144,10 @@ PRIVATE nLeft, nTop
         ELSE
           temp := ""
         ENDIF
+
+
         IF varname != Nil .AND. ( Lower(oCtrl:aMethods[i,1]) == "ongetfocus" ;
-                             .OR. Lower(oCtrl:aMethods[i,1]) == "onlostfocus" )
+                             .OR. Lower(oCtrl:aMethods[i,1]) == "onlostfocus")
            cMethod := Iif( Lower(oCtrl:aMethods[i,1]) == "ongetfocus","WHEN ","VALID " )
         ELSE
           cMethod := "ON " + Upper(Substr(oCtrl:aMethods[i,1],3))
@@ -135,9 +159,11 @@ PRIVATE nLeft, nTop
           Fwrite( han, " ;" + _Chr(10) + Space(8) + cMethod + " {|" + ;
                temp + "|" + Iif(Len(cName)==1,cName[1],cName[2]) + "}" )
         ENDIF
+
       ENDIF
       i ++
     ENDDO
+
     Fwrite( han, _Chr(10) )
     Fwrite( han, stroka )
   ENDIF
@@ -218,6 +244,8 @@ Private aName :=  { {"SAY"}, {"BUTTON"}, {"CHECKBOX","GET CHECKBOX"}, {"RADIOBUT
   ENDDO
   IF ! Empty( stroka )
     stroka := "PRIVATE " + stroka
+    Stroka += _Chr(10) + "PUBLIC oDlg"
+
     Fwrite( han, _Chr(10) + stroka )
   ENDIF
 

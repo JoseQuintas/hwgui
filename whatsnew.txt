@@ -9,7 +9,50 @@
 [*] Changes
 
 
-HWGUI 2.13 ( 04.04.2004 )
+HWGUI 2.14 ( 14.12.2004 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[*] An important Designer enhancement - it can be used to build reports.
+    Now it is the main HwGUI Report Builder instead of HWReport.
+    New classes are added - HRepItem,HRepTmpl, which provides printing
+    using the reports, created with the Designer.
+
+[+] OpenImage( cFileName,lString ) function has been added - it reads some
+      picture files ( jpeg, gif ) and converts them to the HBitmap structure,
+      so the HBitmap():AddFile( cFileName ) can load now jpeg and gif files,
+      @ x,y BITMAP command now works with jpeg and gif, too.
+
+[*] Important HPrinter enhancements:
+    - New parameter added to the HPrinter():New() method - lmm - if it is TRUE,
+      all subsequent printer operations accept coordinates as millimeters ;
+    - New commands has been added:
+       INIT PRINTER <oPrinter> [ NAME <cPrinter> ] [ <lPixel: PIXEL> ]
+       INIT DEFAULT PRINTER <oPrinter> [ <lPixel: PIXEL> ]
+      By default ( if the PIXEL clause isn't used, all subsequent printer
+      operations accept coordinates as millimeters ;
+    - New method for HPrinter has been implemented - SetMode( nOrientation )
+      to change the orientation:
+         portrait(nOrientation==1) / landscape(nOrientation==2) ;
+    - New variable nPage and automatic handling of pages numbers has been added ;
+    - HPrinter():Preview() method and related functions are extended:
+      Zoom buttons, trackbars for preview image repositioning has been added.
+      New parameters added - optional arrays for button's bmps and tooltips.
+
+[*] Richedit related code is changed to support the Richedit 2.0.
+
+[*] HTrackbar is modified to allow user defined sliders.
+
+[*] Internal messages processing has been changed. Now the callback *WndProc
+    functions calls onEvent() method instead of appropriate Def* function.
+    This allow to subclass window, dialog and control classes and, defining new
+    onEvent() methods for them, to change the default messages processing.
+    The HWindow() class is now a parent class for HMainWindow(), HMDIChildWindow()
+    and HChildWIndow() classes.
+
+[*] Many bug fixes and enhancements - see Changelog for details.
+
+
+HWGUI 2.13 ( 22.07.2004 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [+] New controls - classes and appropriate commands has been added - 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.324 2004-12-10 09:25:01 alkresin Exp $
+ * $Id: Changelog,v 1.325 2004-12-13 14:29:10 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-12-13 17:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/guilib.ch
+    * Version number is set to 2.14
+  * make_vc.bat
+    * Changed to use the 'HARBOUR_CVS_VERSION'
+  * whatsnew.txt
+    * Added the information about the new version
 
 2004-12-09 12:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/procmisc/arr2str.c

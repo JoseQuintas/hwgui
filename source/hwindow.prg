@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.6 2004-02-05 16:09:30 lculik Exp $
+ *$Id: hwindow.prg,v 1.7 2004-02-07 15:24:22 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -96,6 +96,7 @@ CLASS HWindow INHERIT HCustomWindow
    METHOD FindWindow( hWnd )
    METHOD GetMain()
    METHOD GetMdiActive()
+   METHOD Close()	INLINE EndWindow()
 ENDCLASS
 
 METHOD NEW( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;

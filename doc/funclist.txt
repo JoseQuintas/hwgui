@@ -124,6 +124,37 @@ MESSAGE.C:
   Msgokcancel( cMessage [, cTitle] )
   Msgyesno( cMessage [, cTitle] )
   MsgBeep( [ nSound ] )
+  MsgExclamation( cMessage, [, cTitle ] )
+  MsgRetryCancel( cMessage, [, cTitle ] )
+
+MISC.C
+  Hwg_setdlgresult 
+  Setcapture 
+  Releasecapture 
+  Copystringtoclipboard 
+  Getstockobject 
+  Loword 
+  Hiword 
+  Hwg_bitor 
+  Hwg_bitand 
+  Hwg_bitandinverse 
+  Setbit 
+  Checkbit 
+  Hwg_sin 
+  Hwg_cos 
+  Clienttoscreen 
+  Screentoclient 
+  Hwg_getcursorpos 
+  Getcurrentdir 
+  Winexec 
+  Getkeyboardstate 
+  Getwindowsdir 
+  Getsystemdir 
+  Gettempdir 
+  Shellabout 
+  Getdesktopwidth
+  Getdesktopheight
+
 
 WBROWSE.C:
   Setscrollinfo

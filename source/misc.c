@@ -1,5 +1,5 @@
 /*
- *$Id: misc.c,v 1.1 2003-11-13 18:38:32 alkresin Exp $
+ *$Id: misc.c,v 1.2 2004-02-07 15:24:22 lculik Exp $
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
  *
@@ -221,4 +221,44 @@ HB_FUNC ( GETKEYBOARDSTATE )
    GetKeyboardState( lpbKeyState );
    lpbKeyState[255] = '\0';
    hb_retclen( lpbKeyState,255 );
+}
+
+/* Functions Contributed  By Luiz Rafael Culik Guimaraes( culikr@uol.com.br) */
+
+HB_FUNC( GETWINDOWSDIR )
+{
+   char szBuffer[ MAX_PATH + 1 ] = {0} ;
+   GetWindowsDirectory( szBuffer,MAX_PATH);
+   hb_retc(szBuffer);
+}
+
+HB_FUNC( GETSYSTEMDIR )
+{
+   char szBuffer[ MAX_PATH + 1 ] = {0} ;
+   GetSystemDirectory( szBuffer,MAX_PATH);
+   hb_retc(szBuffer);
+}
+
+HB_FUNC( GETTEMPDIR )
+{
+   char szBuffer[ MAX_PATH + 1 ] = {0} ;
+   GetTempPath(MAX_PATH, szBuffer);
+   hb_retc(szBuffer);
+}
+
+/* Contributed by Rodrigo Moreno rodrigo_moreno@yahoo.com base upon code minigui */
+
+HB_FUNC( SHELLABOUT )
+{
+   ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) hb_parnl(3) );
+}
+
+HB_FUNC (GETDESKTOPWIDTH) 
+{
+   hb_retni ( GetSystemMetrics(SM_CXSCREEN) ) ;
+}
+
+HB_FUNC (GETDESKTOPHEIGHT)
+{
+   hb_retni ( GetSystemMetrics(SM_CYSCREEN) ) ;
 }

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.34 2004-05-23 01:19:11 marcosgambeta Exp $
+ *$Id: guilib.ch,v 1.35 2004-05-27 18:28:27 sandrorrfreire Exp $
  */
 
 #define	WND_MAIN		1
@@ -79,7 +79,30 @@
            => ;
       <oWnd>:Activate( !<.lNoShow.>) 
                                                         
-  
+#command CENTER WINDOW <oWnd> ;
+	=>;
+        <oWnd>:Center()
+
+#command MAXIMIZE WINDOW <oWnd> ;
+	=>;
+        <oWnd>:Maximize()
+
+#command MINIMIZE WINDOW <oWnd> ;
+	=>;
+        <oWnd>:Minimize()
+
+#command RESTORE WINDOW <oWnd> ;
+	=>;
+        <oWnd>:Restore()
+
+#command SHOW WINDOW <oWnd> ;
+	=>;
+        <oWnd>:Show()
+
+#command HIDE WINDOW <oWnd> ;
+	=>;
+        <oWnd>:Hide()
+
 #xcommand ACTIVATE DIALOG <oDlg>                        ;
             [ <lNoModal: NOMODAL> ]                     ;
           => ;

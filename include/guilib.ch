@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.28 2004-05-05 18:27:14 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.29 2004-05-06 00:57:59 lculik Exp $
  */
 
 #define	WND_MAIN		1
@@ -52,7 +52,7 @@
                    <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>,<cHelp>,<nHelpId>)
 
 #xcommand INIT DIALOG <oDlg>                ;
-             [<res: FROM RESOURCE>]         ;
+             [<res: FROM RESOURCE> <Resid> ]         ;
              [ TITLE <cTitle> ]             ;
              [ AT <x>, <y> ]                ;
              [ SIZE <width>, <height> ]     ;
@@ -73,7 +73,7 @@
           => ;
    <oDlg> := HDialog():New( Iif(<.res.>,WND_DLG_RESOURCE,WND_DLG_NORESOURCE), ;
                    <nStyle>,<x>,<y>,<width>,<height>,<cTitle>,<oFont>,<bInit>,<bExit>,;
-                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.>,<nHelpId> )
+                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.>,<nHelpId>,<Resid> )
 
 #xcommand ACTIVATE WINDOW <oWnd> [<lNoShow: NOSHOW>]     ;
            => ;

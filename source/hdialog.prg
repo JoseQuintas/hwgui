@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.16 2004-04-30 18:53:29 alkresin Exp $
+ * $Id: hdialog.prg,v 1.17 2004-05-06 00:59:17 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -80,9 +80,10 @@ CLASS HDialog INHERIT HCustomWindow
    DATA oIcon, oBmp
    DATA bActivate
    DATA lActivated INIT .F.
+   DATA xResourceID
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
-                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId )
+                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID )
    METHOD Activate( lNoModal )
    METHOD AddItem( oWnd,lModal )
    METHOD DelItem( oWnd,lModal )
@@ -92,9 +93,10 @@ CLASS HDialog INHERIT HCustomWindow
 ENDCLASS
 
 METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
-                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId ) CLASS HDialog
+                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId, xResourceID ) CLASS HDialog
 
    ::oDefaultParent := Self
+   ::xResourceID := xResourceID
    ::type     := lType
    ::title    := cTitle
    ::style    := Iif( nStyle==Nil,WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX,nStyle )
@@ -140,6 +142,10 @@ Local oWnd
             SendMessage( ::handle,WM_SETICON,1,::oIcon:handle )
          ENDIF
       ENDIF
+      IF ::title != NIL
+          SETWINDOWTEXT( ::handle, ::title )
+      ENDIF
+
    ELSEIF ::type == WND_DLG_NORESOURCE
       IF lNoModal == Nil .OR. !lNoModal
          ::AddItem( Self,.T. )

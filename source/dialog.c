@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.7 2004-04-10 22:24:13 andijahja Exp $
+ *$Id: dialog.c,v 1.8 2004-05-06 00:59:17 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -42,12 +42,11 @@ int iDialogs = 0;
 
 HB_FUNC ( HWG_DIALOGBOX )
 {
-   char *cIdDlg;
+
    PHB_ITEM pObj = hb_param( 2, HB_IT_OBJECT );
+   PHB_ITEM pData = GetObjectVar( pObj, "XRESOURCEID" );
 
-   cIdDlg = hb_itemGetCPtr( GetObjectVar( pObj, "TITLE" ) );
-
-   DialogBox( hModule, cIdDlg, (HWND) hb_parnl( 1 ), (DLGPROC) ModalDlgProc );
+   DialogBox( hModule, ( HB_IS_STRING( pData ) ? hb_itemGetCPtr( pData ) : MAKEINTRESOURCE( hb_itemGetNL( pData ) ) ), (HWND) hb_parnl( 1 ), (DLGPROC) ModalDlgProc );
 }
 
 /*  Creates modeless dialog
@@ -57,9 +56,9 @@ HB_FUNC ( HWG_CREATEDIALOG )
 {
    HWND hDlg;
    PHB_ITEM pObj = hb_param( 2, HB_IT_OBJECT );
-   char *cIdDlg = hb_itemGetCPtr( GetObjectVar( pObj, "TITLE" ) );
+   PHB_ITEM pData = GetObjectVar( pObj, "XRESOURCEID" );
 
-   hDlg = CreateDialog( hModule, cIdDlg, (HWND) hb_parnl( 1 ), 
+   hDlg = CreateDialog( hModule, ( HB_IS_STRING( pData ) ? hb_itemGetCPtr( pData ) : MAKEINTRESOURCE( hb_itemGetNL( pData ) ) ), (HWND) hb_parnl( 1 ), 
       (DLGPROC) DlgProc ); 
 
    ShowWindow( hDlg, SW_SHOW);
@@ -363,6 +362,7 @@ HB_FUNC ( _CREATEPROPERTYSHEETPAGE )
 {
    PROPSHEETPAGE psp;
    PHB_ITEM pObj = hb_param( 1, HB_IT_OBJECT ), temp;
+
    char *cTitle;
    LPDLGTEMPLATE pdlgtemplate;
 
@@ -384,9 +384,10 @@ HB_FUNC ( _CREATEPROPERTYSHEETPAGE )
    if( hb_itemGetNI( GetObjectVar( pObj, "TYPE" ) ) == WND_DLG_RESOURCE )
    {
       psp.dwFlags = 0;
-      temp = GetObjectVar( pObj, "TITLE" );
-      if( hb_itemType( temp ) == HB_IT_STRING )
-         cTitle = hb_itemGetCPtr( temp );
+
+      temp = GetObjectVar( pObj, "XRESOURCEID" );
+      if( HB_IS_STRING( temp) || HB_IS_NUMERIC( temp ) )
+         cTitle = ( HB_IS_STRING( temp ) ? hb_itemGetCPtr( temp ) : MAKEINTRESOURCE( hb_itemGetNL( temp ) ) );
       else
          cTitle = NULL;
 #if !defined(__BORLANDC__)

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.123 2004-05-05 18:27:14 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.124 2004-05-06 00:57:59 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-05-05 21:30 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
+  * include/guilib.ch
+    ! changes the init dialog command
+      now the resource name follow the FROM RESOURCE and not on Title any more    
+  * source/dialog.c
+    source/hdialog.prg
+    ! Changed to allow the usage of new Data (xResourceId> which hold the name
+      or value of resource
+  * samples/dbc/*.*
+    samples/hwreport/*.*
+    samples/propsh.prg
+    ! all samples that use from resource updated to use new syntax
 
 2004-05-05 15-10 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/menu_c.c

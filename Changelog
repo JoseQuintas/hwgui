@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.80 2004-04-11 06:39:30 andijahja Exp $
+ * $Id: Changelog,v 1.81 2004-04-12 10:06:15 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-04-12 14:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hbrowse.prg
+    ! Few bugs has been fixed, reported by P.Tsarenko
+    + New method has been added SetColumn( nCol ), which set/get the position
+      of a current column in browse, provided by P.Tsarenko
+
 2004-04-11 13:50 UTC+0700 Andi Jahja <harbour@cbn.net.id>
   * source/grid.c
     + include <unknwn.h> for compilation with Pelles C, XCC and OW

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.15 2004-04-02 06:52:40 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.16 2004-04-12 10:06:15 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -165,6 +165,7 @@ CLASS HBrowse INHERIT HControl
    METHOD LineOut()
    METHOD HeaderOut( hDC )
    METHOD FooterOut( hDC )
+   METHOD SetColumn( nCol )
    METHOD DoHScroll( wParam )
    METHOD DoVScroll( wParam )
    METHOD LineDown(lMouse)
@@ -347,8 +348,8 @@ METHOD Rebuild( hDC ) CLASS HBrowse
    IF ::bcolorSel != Nil
       ::brushSel  := HBrush():Add( ::bcolorSel )
    ENDIF
-   ::nLeftCol  := ::colPos := ::freeze + 1
-   ::tekzp     := ::rowPos := 1
+   ::nLeftCol  := ::freeze + 1
+   ::tekzp     := ::rowPos := ::colPos := 1
    ::lEditable := .F.
 
    ::minHeight := 0
@@ -743,6 +744,40 @@ Local lColumnFont := .F.
    ENDIF
 RETURN Nil
 
+
+//----------------------------------------------------//
+METHOD SetColumn( nCol ) CLASS HBrowse
+Local nColPos, lPaint := .f.
+
+   IF ::lEditable
+      IF nCol != nil .AND. nCol >= 1 .AND. nCol <= Len(::aColumns)
+         IF nCol <= ::freeze
+            ::colpos := nCol
+         ELSEIF nCol >= ::nLeftCol .AND. nCol <= ::nLeftCol + ::Columns - ::freeze - 1
+            ::colpos := nCol - ::nLeftCol + ::freeze + 1
+         ELSE
+            ::nLeftCol := nCol
+            ::colpos := ::freeze + 1
+            lPaint := .T.
+         ENDIF
+         IF !lPaint
+            ::RefreshLine()
+         ELSE
+            RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+         ENDIF
+      ENDIF
+
+      IF ::colpos <= ::freeze
+         nColPos := ::colpos
+      ELSE
+         nColPos := ::nLeftCol + ::colpos - ::freeze - 1
+      ENDIF
+      RETURN nColPos
+
+   ENDIF
+
+RETURN 1
+
 //----------------------------------------------------//
 METHOD DoHScroll( wParam ) CLASS HBrowse
 
@@ -918,8 +953,6 @@ RETURN Nil
 METHOD PAGEUP() CLASS HBrowse
 Local minPos, maxPos, nPos, step, lBof := .F.
 
-   GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-   nPos := GetScrollPos( ::handle, SB_VERT )
    IF ::rowPos > 1
       step := ( ::rowPos - 1 )
       EVAL( ::bSKip, Self,- step )
@@ -1546,6 +1579,9 @@ Local minPos, maxPos, oldRecno, newRecno
 
    GetScrollRange( oBrw:handle, SB_VERT, @minPos, @maxPos )
    IF nPos == Nil
+      IF nType > 0 .AND. lEof
+         EVAL( oBrw:bSkip, oBrw,- 1 )
+      ENDIF
       nPos := Round( ( (maxPos-minPos)/(oBrw:kolz-1) ) * ;
          ( EVAL( oBrw:bRecno,oBrw )-1 ),0 )
       SetScrollPos( oBrw:handle, SB_VERT, nPos )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.109 2004-04-28 19:50:57 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.110 2004-04-29 11:12:06 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-04-29 15:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/draw.c
+    ! DrawEdge() - added default values for 6-th and 7-th parameters.
+
 2004-04-28 16-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/menu_c.c
     new function SetMenuItemBitmaps

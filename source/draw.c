@@ -1,9 +1,11 @@
 /*
+ * $Id: draw.c,v 1.4 2004-04-29 11:12:07 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #define HB_OS_WIN_32_USED
@@ -178,8 +180,8 @@ HB_FUNC ( DRAWEDGE )
 {
    RECT rc;
    HDC hDC = (HDC) hb_parnl( 1 );
-   UINT edge = (UINT) hb_parni(6);
-   UINT grfFlags = (UINT) hb_parni(7);
+   UINT edge = (ISNIL(6))? EDGE_RAISED : (UINT) hb_parni(6);
+   UINT grfFlags = (ISNIL(7))? BF_RECT : (UINT) hb_parni(7);
 
    rc.left = hb_parni( 2 );
    rc.top = hb_parni( 3 );

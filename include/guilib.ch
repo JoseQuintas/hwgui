@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.45 2004-09-23 14:30:50 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.46 2004-10-01 12:45:42 sandrorrfreire Exp $
  */
 #define HWG_VERSION           "2.13"
 #define	WND_MAIN		1
@@ -120,6 +120,17 @@
 
 
 // Commands for control handling
+
+// Contribution ATZCT" <atzct@obukhov.kiev.ua
+#xcommand @ <x>,<y> PROGRESSBAR <oPBar>       ;
+            [ OF <oWnd> ]                       ;
+            [ ID <nId> ]                        ;
+            [ SIZE <nWidth>,<nHeight> ]         ;
+            [ BARWIDTH <maxpos> ]               ;
+            [ QUANTITY <nRange> ]               ;
+            =>                                  ;
+            <oPBar> :=  HProgressBar():New( <oWnd>,<nId>,<x>,<y>,<nWidth>, ;
+                       <nHeight>,<maxpos>,<nRange> )
 
 #xcommand ADD STATUS [ TO <oWnd> ] ;
             [ ID <nId> ]           ;

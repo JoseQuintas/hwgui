@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.272 2004-09-29 17:22:19 alkresin Exp $
+ * $Id: Changelog,v 1.273 2004-10-01 12:45:39 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,21 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-10-01 09-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+   * include/guilib.ch
+   !New Command by Contribution ATZCT  <atzct@obukhov.kiev.ua>
+   #xcommand @ <x>,<y> PROGRESSBAR <oPBar>       ;
+            [ OF <oWnd> ]                       ;
+            [ ID <nId> ]                        ;
+            [ SIZE <nWidth>,<nHeight> ]         ;
+            [ BARWIDTH <maxpos> ]               ;
+            [ QUANTITY <nRange> ]               ;
+            =>                                  ;
+            <oPBar> :=  HProgressBar():New( <oWnd>,<nId>,<x>,<y>,<nWidth>, ;
+                       <nHeight>,<maxpos>,<nRange> )
+   * samples/a.prg
+     demo new command PROGRESSBAR                       
 
 2004-09-29 21:24 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hbrowse.prg

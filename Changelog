@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.334 2005-01-07 16:52:19 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.335 2005-01-10 14:57:47 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,22 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-01-10 17:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/misc.c
+    ! hb_parcx() calls are replaced with hb_parc()
+  * source/control.c
+  * source/dialog.c
+  * source/nice.c
+  * source/window.c
+  * source/richedit.c
+  * source/xml/xmlparse.c
+    * Added #ifndef UIHOLDER where they was missed
+    * #ifdef __XHARBOUR__ are replaced with #ifdef HARBOUR_CVS_VERSION for
+      the hb_stackReturnItem() calls.
+  * source/hsayimg.prg
+    * HSayBmp():New() is changed - it uses the original bitmap size if the size
+      isn't set directly.
 
 2004-01-07 14-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/errorsys.prg

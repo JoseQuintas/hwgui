@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.9 2004-11-23 07:25:05 alkresin Exp $
+ * $Id: hsayimg.prg,v 1.10 2005-01-10 14:57:51 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -85,6 +85,10 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
                           HBitmap():AddResource( Image ), ;
                           Iif( Valtype(Image) == "C",     ;
                           HBitmap():AddFile( Image ), Image ) )
+      IF nWidth == Nil .OR. nHeight == Nil
+         ::nWidth  := ::oImage:nWidth
+         ::nHeight := ::oImage:nHeight
+      ENDIF
    ENDIF
    ::Activate()
 

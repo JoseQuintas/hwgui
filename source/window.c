@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.30 2005-01-05 16:51:44 sandrorrfreire Exp $
+ * $Id: window.c,v 1.31 2005-01-10 14:57:51 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -633,7 +633,11 @@ LRESULT CALLBACK MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
       pObject->type = HB_IT_OBJECT;
       pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
+      #ifndef UIHOLDERS
       pObject->item.asArray.value->ulHolders++;
+      #else
+      pObject->item.asArray.value->uiHolders++;
+      #endif
 
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
@@ -641,7 +645,7 @@ LRESULT CALLBACK MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef __XHARBOUR__
+#ifdef HARBOUR_CVS_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -671,7 +675,11 @@ LRESULT CALLBACK FrameWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
       pObject->type = HB_IT_OBJECT;
       pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
+      #ifndef UIHOLDERS
       pObject->item.asArray.value->ulHolders++;
+      #else
+      pObject->item.asArray.value->uiHolders++;
+      #endif
 
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
@@ -679,7 +687,7 @@ LRESULT CALLBACK FrameWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef __XHARBOUR__
+#ifdef HARBOUR_CVS_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -726,7 +734,11 @@ LRESULT CALLBACK MDIChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM
 
       pObject->type = HB_IT_OBJECT;
       pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
+      #ifndef UIHOLDERS
       pObject->item.asArray.value->ulHolders++;
+      #else
+      pObject->item.asArray.value->uiHolders++;
+      #endif
 
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
@@ -734,7 +746,7 @@ LRESULT CALLBACK MDIChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef __XHARBOUR__
+#ifdef HARBOUR_CVS_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -761,7 +773,7 @@ PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
 
       hb_vmDo( 0 );
    }
-#ifdef __XHARBOUR__
+#ifdef HARBOUR_CVS_VERSION
    return ( hb_stackReturnItem() );
 #else
    return ( hb_stackReturn() );

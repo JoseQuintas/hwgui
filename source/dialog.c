@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.12 2005-01-05 16:51:44 sandrorrfreire Exp $
+ *$Id: dialog.c,v 1.13 2005-01-10 14:57:51 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -540,7 +540,11 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
       pObject->type = HB_IT_OBJECT;
       pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
+      #ifndef UIHOLDERS
       pObject->item.asArray.value->ulHolders++;
+      #else
+      pObject->item.asArray.value->uiHolders++;
+      #endif
 
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
@@ -548,7 +552,7 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef __XHARBOUR__
+#ifdef HARBOUR_CVS_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -562,29 +566,6 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
    else
       return FALSE;
 
-/*
-   if( ( pSymTest = hb_dynsymFind( "DEFMODALDLGPROC" ) ) != NULL )
-   {
-      hb_vmPushSymbol( pSymTest->pSymbol );
-      hb_vmPushNil();                   // places NIL at self
-      hb_vmPushLong( (LONG ) hDlg );    // pushes parameters on to the hvm stack
-      hb_vmPushLong( (LONG ) uMsg );
-      hb_vmPushLong( (LONG) wParam );
-      hb_vmPushLong( (LONG) lParam );
-      hb_vmDo( 4 );  // where iArgCount is the number of pushed parameters
-#ifdef __XHARBOUR__
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-#else
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-#endif
-      if( res == -1 )
-         return FALSE;
-      else
-         return res;
-    }
-    else
-       return FALSE;
-*/
 }
 
 LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -637,7 +618,11 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 
       pObject->type = HB_IT_OBJECT;
       pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
+      #ifndef UIHOLDERS
       pObject->item.asArray.value->ulHolders++;
+      #else
+      pObject->item.asArray.value->uiHolders++;
+      #endif
 
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
@@ -645,7 +630,7 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef __XHARBOUR__
+#ifdef HARBOUR_CVS_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -659,54 +644,6 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
    else
       return FALSE;
 
-/*
-   PHB_DYNS pSymTest;
-   long int res;
-   int i;
-
-   if( uMsg == WM_INITDIALOG )
-   {
-      if( iDialogs == nDialogs )
-      {
-         nDialogs += 16;
-         if( nDialogs == 16 )
-            aDialogs = (HWND*)hb_xgrab( sizeof( HWND ) * nDialogs );
-         else
-            aDialogs = (HWND*)hb_xrealloc( aDialogs, sizeof( HWND ) * nDialogs );
-      }
-      aDialogs[ iDialogs++ ] = hDlg;
-   }
-   else if( uMsg == WM_DESTROY )
-   {
-      for( i=0;i<iDialogs;i++ )
-         if( aDialogs[ i ] == hDlg )  break;
-      iDialogs --;
-      for( ;i<iDialogs;i++ )
-         aDialogs[ i ] = aDialogs[ i+1 ];
-   }
-
-   if( ( pSymTest = hb_dynsymFind( "DEFDLGPROC" ) ) != NULL )
-   {
-      hb_vmPushSymbol( pSymTest->pSymbol );
-      hb_vmPushNil();                   // places NIL at self 
-      hb_vmPushLong( (LONG ) hDlg );    // pushes parameters on to the hvm stack
-      hb_vmPushLong( (LONG ) uMsg );
-      hb_vmPushLong( (LONG) wParam );
-      hb_vmPushLong( (LONG) lParam );
-      hb_vmDo( 4 );  // where iArgCount is the number of pushed parameters
-#ifdef __XHARBOUR__
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-#else
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-#endif
-      if( res == -1 )
-         return FALSE;
-      else
-         return res;
-    }
-    else
-       return FALSE;
-*/
 }
 
 LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -721,7 +658,11 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 
       pObj->type = HB_IT_OBJECT;
       pObj->item.asArray.value = (PHB_BASEARRAY) (((PROPSHEETPAGE *)lParam)->lParam);
+      #ifndef UIHOLDERS
       pObj->item.asArray.value->ulHolders++;
+      #else
+      pObj->item.asArray.value->uiHolders++;
+      #endif
 
       SetWindowObject( hDlg, pObj );
 
@@ -766,7 +707,11 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 
       pObject->type = HB_IT_OBJECT;
       pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
+      #ifndef UIHOLDERS
       pObject->item.asArray.value->ulHolders++;
+      #else
+      pObject->item.asArray.value->uiHolders++;
+      #endif
 
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
@@ -774,7 +719,7 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef __XHARBOUR__
+#ifdef HARBOUR_CVS_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -788,58 +733,6 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
    else
       return FALSE;
 
-/*
-   PHB_DYNS pSymTest;
-   int i;
-
-   if( uMsg == WM_INITDIALOG )
-   {
-      PHB_ITEM pObj = hb_itemNew( NULL );
-      char ss[30];
-
-      pObj->type = HB_IT_OBJECT;
-      pObj->item.asArray.value = (PHB_BASEARRAY) (((PROPSHEETPAGE *)lParam)->lParam);
-      sprintf( ss,"%s",hb_itemGetCPtr( GetObjectVar( pObj, "XRESOURCEID" ) ) );
-      writelog(ss);
-      hb_itemRelease( pObj );
-
-      if( iDialogs == nDialogs )
-      {
-         nDialogs += 16;
-         if( nDialogs == 16 )
-            aDialogs = (HWND*)hb_xgrab( sizeof( HWND ) * nDialogs );
-         else
-            aDialogs = (HWND*)hb_xrealloc( aDialogs, sizeof( HWND ) * nDialogs );
-      }
-      aDialogs[ iDialogs++ ] = hDlg;
-   }
-   else if( uMsg == WM_DESTROY )
-   {
-      for( i=0;i<iDialogs;i++ )
-         if( aDialogs[ i ] == hDlg )  break;
-      iDialogs --;
-      for( ;i<iDialogs;i++ )
-         aDialogs[ i ] = aDialogs[ i+1 ];
-   }
-
-   if( ( pSymTest = hb_dynsymFind( "DEFPSPPROC" ) ) != NULL )
-   {
-      hb_vmPushSymbol( pSymTest->pSymbol );
-      hb_vmPushNil();                 // places NIL at self
-      hb_vmPushLong( (LONG ) hDlg );    // pushes parameters on to the hvm stack
-      hb_vmPushLong( (LONG ) uMsg );
-      hb_vmPushLong( (LONG ) wParam );
-      hb_vmPushLong( (LONG ) lParam );
-      hb_vmDo( 4 );  // where iArgCount is the number of pushed parameters
-#ifdef __XHARBOUR__
-      return hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-#else
-      return hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-#endif
-    }
-    else
-       return FALSE;
-*/
 }
 
 HB_FUNC( HWG_EXITPROC )

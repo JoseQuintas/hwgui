@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.18 2005-01-07 12:10:23 sandrorrfreire Exp $
+ * $Id: misc.c,v 1.19 2005-01-10 14:57:51 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -557,16 +557,16 @@ HB_FUNC ( SETCURRENTDIRECTORY )
 
 HB_FUNC( DELETEFILE )
 {
-   hb_retl( DeleteFile( (LPCSTR) hb_parcx( 1 ) ) ) ;
+   hb_retl( DeleteFile( (LPCSTR) hb_parc( 1 ) ) ) ;
 }
 
 HB_FUNC( GETFILEATTRIBUTES )
 {
-   hb_retnl( (LONG) GetFileAttributes( (LPCSTR) hb_parcx( 1 ) ) ) ;
+   hb_retnl( (LONG) GetFileAttributes( (LPCSTR) hb_parc( 1 ) ) ) ;
 }
  
 HB_FUNC( SETFILEATTRIBUTES )
 {
-   hb_retl( SetFileAttributes( (LPCSTR) hb_parcx( 1 ), (DWORD) hb_parnl( 2 ) ) ) ;
+   hb_retl( SetFileAttributes( (LPCSTR) hb_parc( 1 ), (DWORD) hb_parnl( 2 ) ) ) ;
 }
 

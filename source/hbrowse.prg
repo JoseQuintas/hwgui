@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.40 2004-11-11 08:37:12 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.41 2004-12-07 17:21:09 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1307,7 +1307,7 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
    local x := ::x1, i := ::nLeftCol, res := .F.
 
    DlgMouseMove()
-   IF !::active .OR. Empty( ::aColumns ) .OR. ::height == Nil
+   IF !::active .OR. Empty( ::aColumns ) .OR. ::x1 == Nil
       Return Nil
    ENDIF
    IF ::lDispSep .AND. yPos <= ::height+1

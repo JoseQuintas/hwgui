@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.24 2004-03-01 14:15:19 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.25 2004-03-03 12:15:54 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-03-03 09-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  + source\hlistbox.prg
+  + source\listbox.c
+    The class for use HListBox
+  + samples\demohlist.prg
+    The sample for use hlistbox class
+  * include\guilib.ch
+    new comands @ <x>, <y> LISTBOX and  REDEFINE LISTBOX
+  * include\guilib.h
+  * makefile.bc
+      updated to include new dependencies
+    All provided by  Vitor Mclung 
+ 
 2004-03-01 11-47 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * errorsys.ch
     it presents the error in the screen with xHarbour

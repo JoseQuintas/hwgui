@@ -1,4 +1,6 @@
 /*
+ * $Id: resource.c,v 1.3 2004-03-16 11:54:37 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level resource functions
  *
@@ -53,7 +55,9 @@ else
 }
 
 
+#if ! defined(__GNUC__)
 #pragma startup hb_resourcemodules
+#endif
 
 void hb_resourcemodules( void )
 {

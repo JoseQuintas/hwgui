@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.5 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: control.c,v 1.6 2004-03-16 11:54:37 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1016,22 +1016,5 @@ HB_FUNC ( SETTOOLTIPBALLOON ) // added by MAG
 HB_FUNC ( GETTOOLTIPBALLOON ) // added by MAG
 {
    hb_retl( lToolTipBalloon );
-}
-
-/* Contributed by Rodrigo Moreno rodrigo_moreno@yahoo.com base upon code minigui */
-
-HB_FUNC( SHELLABOUT )
-{
-   ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) hb_parnl(3) );
-}
-
-HB_FUNC (GETDESKTOPWIDTH) 
-{
-   hb_retni ( GetSystemMetrics(SM_CXSCREEN) ) ;
-}
-
-HB_FUNC (GETDESKTOPHEIGHT)
-{
-   hb_retni ( GetSystemMetrics(SM_CYSCREEN) ) ;
 }
 

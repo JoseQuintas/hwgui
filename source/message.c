@@ -1,5 +1,5 @@
 /*
- *$Id: message.c,v 1.5 2004-03-11 03:31:19 jamaj Exp $
+ *$Id: message.c,v 1.6 2004-09-16 13:13:54 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level messages functions
@@ -53,6 +53,16 @@ HB_FUNC( MSGYESNO )
    cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
 
    hb_retl( MessageBox( h, hb_parc(1), cTitle, MB_YESNO | MB_ICONQUESTION ) == IDYES );
+}
+
+HB_FUNC( MSGNOYES )
+{
+   char* cTitle;
+   HWND h = GetActiveWindow();
+
+   cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+
+   hb_retl( MessageBox( h, hb_parc(1), cTitle, MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 ) == IDYES );
 }
 
 HB_FUNC( MSGYESNOCANCEL )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.275 2004-10-05 10:24:20 alkresin Exp $
+ * $Id: Changelog,v 1.276 2004-10-06 14:27:01 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-10-06 11-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+   + samples/browse_3.prg
+     Add samples for use Set relation in Browse
 
 2004-10-05 14:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/control.c

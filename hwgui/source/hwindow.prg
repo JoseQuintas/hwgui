@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.12 2004-03-16 10:48:06 alkresin Exp $
+ *$Id: hwindow.prg,v 1.13 2004-03-16 15:56:59 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -824,7 +824,7 @@ Local oItem, iCont, nCont
    // Destroi as CHILD's desta MAIN
    #ifdef __XHARBOUR__
    FOR EACH oItem IN HWindow():aWindows
-      IF oItem:oParent:handle == hWnd
+      IF oItem:oParent != Nil .AND. oItem:oParent:handle == hWnd
           SendMessage( oItem:handle,WM_CLOSE,0,0 )
       ENDIF
    NEXT

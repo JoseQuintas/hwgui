@@ -90,12 +90,19 @@ Return (::value)
 
 #pragma BEGINDUMP
 
+
 #define _WIN32_IE      0x0500
 #define HB_OS_WIN_32_USED
 #define _WIN32_WINNT   0x0400
 
 #include <windows.h>
 #include <commctrl.h>
+#ifdef __EXPORT__
+   #define HB_NO_DEFAULT_API_MACROS
+   #define HB_NO_DEFAULT_STACK_MACROS
+#endif
+
+
 #include <hbapi.h>
 
 HB_FUNC ( INITTRACKBAR )

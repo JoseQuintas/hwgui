@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.25 2004-05-19 09:24:08 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.26 2004-05-27 10:37:00 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -120,6 +120,7 @@ CLASS HBrowse INHERIT HControl
    DATA recCurr INIT 0
    DATA headColor                              // Header text color
    DATA sepColor INIT 12632256                 // Separators color
+   DATA lSep3d  INIT .F.
    DATA tcolorSel,bcolorSel,brushSel
    DATA bSkip,bGoTo,bGoTop,bGoBot,bEof,bBof
    DATA bRcou,bRecno
@@ -533,11 +534,14 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
 Local i, x, oldc, fif, xSize
 Local nRows := Min( ::kolz+Iif(::lAppMode,1,0),::rowCount )
 Local oPen, oldBkColor := SetBkColor( hDC,GetSysColor(COLOR_3DFACE) )
-Local oColumn, nLine, cStr, cNWSE, oPenHdr
+Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
 
    IF ::lDispSep
-      oPen := HPen():Add( BS_SOLID,1,::sepColor )
+      oPen := HPen():Add( PS_SOLID,1,::sepColor )
       SelectObject( hDC, oPen:handle )
+   ENDIF
+   IF ::lSep3d
+      oPenLight := HPen():Add( PS_SOLID,1,GetSysColor(COLOR_3DHILIGHT) )
    ENDIF
 
    x := ::x1
@@ -587,7 +591,14 @@ Local oColumn, nLine, cStr, cNWSE, oPenHdr
          next
       endif
       if ::lDispSep .AND. x > ::x1
-         DrawLine( hDC, x-1, ::y1+1, x-1, ::y1+(::height+1)*nRows )
+         IF ::lSep3d
+            SelectObject( hDC, oPenLight:handle )
+            DrawLine( hDC, x-1, ::y1+1, x-1, ::y1+(::height+1)*nRows )
+            SelectObject( hDC, oPen:handle )
+            DrawLine( hDC, x-2, ::y1+1, x-2, ::y1+(::height+1)*nRows )
+         ELSE
+            DrawLine( hDC, x-1, ::y1+1, x-1, ::y1+(::height+1)*nRows )
+         ENDIF
       endif
       x += xSize
       if ! ::lAdjRight .and. fif == Len( ::aColumns )
@@ -613,6 +624,9 @@ Local oColumn, nLine, cStr, cNWSE, oPenHdr
       oPen:Release()
       if oPenHdr != nil
          oPenHdr:Release()
+      endif
+      if oPenLight != nil
+         oPenLight:Release()
       endif
    ENDIF
 
@@ -695,7 +709,7 @@ Local lColumnFont := .F.
             hBReal := Iif( ::aColumns[fif]:brush != Nil, ;
                          ::aColumns[fif]:brush:handle,   ;
                          oLineBrush:handle )
-            FillRect( hDC, x, ::y1+(::height+1)*(nstroka-1)+1, x+xSize-1,::y1+(::height+1)*nstroka, hBReal )
+            FillRect( hDC, x, ::y1+(::height+1)*(nstroka-1)+1, x+xSize-Iif(::lSep3d,2,1),::y1+(::height+1)*nstroka, hBReal )
             IF !lClear
                IF ::aColumns[fif]:aBitmaps != Nil .AND. !Empty( ::aColumns[fif]:aBitmaps )
                   FOR j := 1 TO Len( ::aColumns[fif]:aBitmaps )

@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.18 2004-07-18 14:24:16 alkresin Exp $
+ * $Id: hformgen.prg,v 1.19 2004-10-07 07:02:59 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -730,7 +730,7 @@ Return Nil
 
 
 Static Function MessagesProc( oDlg, msg, wParam, lParam )
-Local oCtrl, aCoors
+Local oCtrl, aCoors, nShift
 
    // writelog( str(msg)+str(wParam)+str(lParam) )
    IF msg == WM_MOUSEMOVE
@@ -756,25 +756,26 @@ Local oCtrl, aCoors
          DeleteCtrl()
       ENDIF
    ELSEIF msg == WM_KEYUP
+      nShift := Iif( GetKeyState(17)!=0,10,1 )
       IF wParam == 40        // Down
          IF ( oCtrl := GetCtrlSelected( oDlg ) ) != Nil
             SetBDown( ,0,0,0 )
-            CtrlMove( oCtrl,0,1,.F. )
+            CtrlMove( oCtrl,0,nShift,.F. )
          ENDIF
       ELSEIF wParam == 38    // Up
          IF ( oCtrl := GetCtrlSelected( oDlg ) ) != Nil
             SetBDown( ,0,0,0 )
-            CtrlMove( oCtrl,0,-1,.F. )
+            CtrlMove( oCtrl,0,-nShift,.F. )
          ENDIF
       ELSEIF wParam == 39    // Right
          IF ( oCtrl := GetCtrlSelected( oDlg ) ) != Nil
             SetBDown( ,0,0,0 )
-            CtrlMove( oCtrl,1,0,.F. )
+            CtrlMove( oCtrl,nShift,0,.F. )
          ENDIF
       ELSEIF wParam == 37    // Left
          IF ( oCtrl := GetCtrlSelected( oDlg ) ) != Nil
             SetBDown( ,0,0,0 )
-            CtrlMove( oCtrl,-1,0,.F. )
+            CtrlMove( oCtrl,-nShift,0,.F. )
          ENDIF
       ENDIF
    ENDIF

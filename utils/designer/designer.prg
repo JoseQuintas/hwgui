@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.11 2004-08-04 20:08:24 sandrorrfreire Exp $
+ * $Id: designer.prg,v 1.12 2004-10-07 07:02:59 alkresin Exp $
  *
  * Designer
  * Main file
@@ -21,7 +21,6 @@ REQUEST INITTRACKBAR
 
 Function Designer( p1, cForm )
 Local oPanel, oTab, oFont, cResForm, lSingleF := .F.
-LOCAL oIcon:= HICon():AddResource("HWG")
 Public oDesigner
 Public crossCursor, vertCursor, horzCursor
 Public ds_myPath
@@ -55,12 +54,12 @@ Public ds_myPath
 
 #ifdef INTEGRATED
    INIT DIALOG oDesigner:oMainWnd AT 0,0 SIZE 280,200 TITLE "Designer" ;
-      FONT oFont                                    ;
-      ON INIT {|o|StartDes(o,p1,cForm)} ;
+      FONT oFont                          ;
+      ON INIT {|o|StartDes(o,p1,cForm)}   ;
       ON EXIT {||EndIde()}
 #else
    INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE 280,200 TITLE "Designer" ;
-      FONT oFont ICON oIcon                                                ;
+      FONT oFont                                                  ;
       ON EXIT {||EndIde()}
 #endif
 
@@ -204,6 +203,7 @@ Static Function StartDes( oDlg,p1,cForm )
             HFormGen():Open( ,cForm )
          ENDIF
          oDesigner:lSingleForm := .T.
+         Hwg_SetForegroundWindow( HFormGen():aForms[1]:oDlg:handle )
 #endif
 #endif
       ENDIF

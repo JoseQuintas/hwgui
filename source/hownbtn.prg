@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.13 2004-07-18 14:24:16 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.14 2004-10-07 07:02:58 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -100,7 +100,7 @@ METHOD Activate CLASS HOwnButton
 Return Nil
 
 METHOD Init CLASS HOwnButton
-   // SetWindowObject( ::handle,Self )
+   SetWindowObject( ::handle,Self )
    // Hwg_InitOwnbtnProc( ::handle )
    Super:Init()
 
@@ -274,6 +274,8 @@ METHOD Release()  CLASS HOwnButton
 Return Nil
 
 METHOD End()  CLASS HOwnButton
+
+   Super:End()
    IF ::ofont != Nil
        ::ofont:Release()
        ::ofont := Nil
@@ -282,6 +284,8 @@ METHOD End()  CLASS HOwnButton
       ::bitmap:Release()
       ::bitmap := Nil
    ENDIF
+   hwg_DecreaseHolders( Self )
+
 Return Nil
 
 METHOD Enable() CLASS HOwnButton
@@ -310,10 +314,13 @@ Local i, oBtn
    // WriteLog( "Obtn: "+Str(hBtn,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    if msg != WM_CREATE
       if Ascan( { WM_MOUSEMOVE, WM_PAINT, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK, WM_DESTROY }, msg ) > 0
+         /*
          if ( oBtn := FindSelf( hBtn ) ) == Nil
             return .F.
          endif
-         // oBtn := GetWindowObject( hBtn )
+         */
+         // writelog( str(oBtn:handle)+" "+str(GetWindowObject( hBtn ):handle) )
+         oBtn := GetWindowObject( hBtn )
          if msg == WM_PAINT
             oBtn:Paint()
          elseif msg == WM_LBUTTONDOWN
@@ -323,9 +330,11 @@ Local i, oBtn
          elseif msg == WM_LBUTTONDBLCLK
          elseif msg == WM_MOUSEMOVE
             oBtn:MouseMove( wParam, lParam )
+         /*
          elseif msg == WM_DESTROY
             oBtn:End()
             return .T.
+         */
          endif
       endif
    endif

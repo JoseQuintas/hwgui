@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.26 2004-10-04 12:15:12 alkresin Exp $
+ * $Id: window.c,v 1.27 2004-10-07 07:02:58 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -793,9 +793,11 @@ HB_FUNC( HWG_DECREASEHOLDERS )
 {
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
    #ifndef  UIHOLDERS
-   pObject->item.asArray.value->ulHolders--;
+   if( pObject->item.asArray.value->ulHolders )
+      pObject->item.asArray.value->ulHolders--;
    #else
-   pObject->item.asArray.value->uiHolders--;
+   if( pObject->item.asArray.value->uiHolders )
+      pObject->item.asArray.value->uiHolders--;
    #endif
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.277 2004-10-06 19:07:34 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.278 2004-10-07 07:02:58 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-10-07 11:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/window.c
+     ! Small fix in hwg_DecreaseHolders()
+   * source/hownbtn.prg
+     * Some changes in internal handling.
+  * utils/designer/designer.prg
+     * Small fix
+  * utils/designer/hformgen.prg
+     * Ctrl + Up, etc. now moves the widget to 10 pixels ( provided by
+       Ivanil Marcelino )
 
 2004-10-06 16-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
    * source/hedit.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.10 2004-06-24 05:44:36 alkresin Exp $
+ * $Id: hctrl.prg,v 1.11 2004-06-26 15:01:15 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -37,7 +37,7 @@ CLASS HControlGen INHERIT HControl
    METHOD New( oWndParent, xClass, aProp )
    METHOD Activate()
    METHOD Paint( lpdis )
-   METHOD GetProp( cName )
+   METHOD GetProp( cName,i )
    METHOD SetProp( xName,xValue )
 
 ENDCLASS
@@ -178,8 +178,7 @@ Private hDC := drawInfo[3], oCtrl := Self
 
 Return Nil
 
-METHOD GetProp( cName ) CLASS HControlGen
-Local i
+METHOD GetProp( cName,i ) CLASS HControlGen
 
   cName := Lower( cName )
   i := Ascan( ::aProp,{|a|Lower(a[1])==cName} )

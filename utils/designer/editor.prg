@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.4 2004-06-25 08:53:26 alkresin Exp $
+ * $Id: editor.prg,v 1.5 2004-06-26 15:01:15 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -16,7 +16,7 @@
 
 Static oDlg, oEdit
 Static nTextLength
-Static aKeyWords := { "DO","WHILE","ENDDO","IF","ELSEIF","ELSE","ENDIF","PARAMETERS","PRIVATE" }
+Static aKeyWords := { "DO","WHILE","ENDDO","IF","ELSEIF","ELSE","ENDIF","PARAMETERS","PRIVATE","RETURN","LOOP","EXIT" }
 
 CLASS HDTheme
 
@@ -39,7 +39,7 @@ Local i, j, j1, cTheme, oTheme, oThemeXML, arr
 
    FOR i := 1 TO Len( oOptDesc:aItems )
       IF oOptDesc:aItems[i]:title == "font"
-         HDTheme():oFont := FontFromXML( oOptDesc:aItems[i] )
+         HDTheme():oFont := hfrm_FontFromxml( oOptDesc:aItems[i] )
       ELSEIF oOptDesc:aItems[i]:title == "themes"
          cTheme := oOptDesc:aItems[i]:GetAttribute( "selected" )
          FOR j := 1 TO Len( oOptDesc:aItems[i]:aItems )

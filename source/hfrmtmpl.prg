@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.15 2004-06-24 05:44:36 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.16 2004-06-26 15:01:14 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -32,6 +32,7 @@ REQUEST HBROWSE
 REQUEST HMONTHCALENDAR
 REQUEST HTRACKBAR
 REQUEST HTAB
+REQUEST HANIMATION
 
 CLASS HCtrlTmpl
 
@@ -141,7 +142,7 @@ Private oDlg
       ELSEIF ::aProp[ i,1 ] == "caption"
          cTitle := xProperty
       ELSEIF ::aProp[ i,1 ] == "font"
-         oFont := FontFromXML( xProperty )
+         oFont := hfrm_FontFromxml( xProperty )
       ELSEIF ::aProp[ i,1 ] == "lclipper"
          lClipper := xProperty
       ELSEIF ::aProp[ i,1 ] == "lexitonenter"
@@ -241,28 +242,23 @@ Local i, aTree := {}, oNode, subarr
 
 Return Iif( Empty(aTree), Nil, aTree )
 
+Function ParseMethod( cMethod )
+Local arr := {}, nPos1, nPos2, cLine
 
-Static Function CompileMethod( cMethod, oForm, oCtrl )
-Local nPos1, nPos2, nLines := 1, arr[3], arrExe
-
-   IF cMethod = Nil .OR. Empty( cMethod )
-      Return Nil
-   ENDIF
    IF ( nPos1 := At( Chr(10),cMethod ) ) == 0
-      arr[1] := Alltrim( cMethod )
+      Aadd( arr, Alltrim( cMethod ) )
    ELSE
-      arr[1] := Alltrim( Left( cMethod,nPos1-1 ) )
+      Aadd( arr, Alltrim( Left( cMethod,nPos1-1 ) ) )
       DO WHILE .T.
-         nLines ++
          IF ( nPos2 := At( Chr(10),cMethod,nPos1+1 ) ) == 0
-            arr[nLines] := Substr( cMethod,nPos1+1 )
+            cLine := AllTrim( Substr( cMethod,nPos1+1 ) )
          ELSE
-            arr[nLines] := Substr( cMethod,nPos1+1,nPos2-nPos1-1 )
+            cLine := AllTrim( Substr( cMethod,nPos1+1,nPos2-nPos1-1 ) )
          ENDIF
-         IF Empty( arr[nLines] )
-            nLines --
+         IF !Empty( cLine )
+            Aadd( arr,cLine )
          ENDIF
-         IF nPos2 == 0 .OR. nLines > 2
+         IF nPos2 == 0 .OR. Len( arr ) > 2
             EXIT
          ELSE
             nPos1 := nPos2
@@ -272,13 +268,23 @@ Local nPos1, nPos2, nLines := 1, arr[3], arrExe
    IF Right( arr[1],1 ) < " "
       arr[1] := Left( arr[1],Len(arr[1])-1 )
    ENDIF
-   IF nLines == 1
+   IF Len( arr ) > 1 .AND. Right( arr[2],1 ) < " "
+      arr[2] := Left( arr[2],Len(arr[2])-1 )
+   ENDIF
+
+Return arr
+
+Static Function CompileMethod( cMethod, oForm, oCtrl )
+Local arr, arrExe
+
+   IF cMethod = Nil .OR. Empty( cMethod )
+      Return Nil
+   ENDIF
+   arr := ParseMethod( cMethod )
+   IF Len( arr ) == 1
       Return &( "{||" + __Preprocess( arr[1] ) + "}" )
    ELSEIF Lower( Left( arr[1],11 ) ) == "parameters "
-      IF nLines == 2
-         IF Right( arr[2],1 ) < " "
-            arr[2] := Left( arr[2],Len(arr[2])-1 )
-         ENDIF
+      IF Len( arr ) == 2
          Return &( "{|" + Ltrim( Substr( arr[1],12 ) ) + "|" + __Preprocess( arr[2] ) + "}" )
       ELSE
          arrExe := Array(2)
@@ -343,7 +349,7 @@ Local aClass := { "label", "button", "checkbox",                    ;
                   "richedit","datepicker", "updown", "combobox",    ;
                   "line", "toolbar", "ownerbutton","browse",        ;
                   "monthcalendar","trackbar","page", "tree",        ;
-                  "status","menu"                                   ;
+                  "status","menu","animation"                       ;
                 }
 Local aCtrls := { ;
   "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctoolt,TextColor,BackColor,lTransp)", ;
@@ -368,7 +374,8 @@ Local aCtrls := { ;
   "HTab():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,Tabs,onChange,aImages,lResource)", ;
   "HTree():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,TextColor,BackColor,aImages,lResource,lEditLabels,onClick)", ;
   "HStatus():New(oPrnt,nId,nStyle,oFont,aParts,onInit,onSize)", ;
-  ".F." ;
+  ".F.", ;
+  "HAnimation():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,Filename,AutoPlay,Center,Transparent)" ;
                 }
 Local i, j, oCtrl, stroka, varname, xProperty, block, cType, cPName
 Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName
@@ -417,7 +424,7 @@ MEMVAR aImages, lEditLabels, aParts
             ENDIF
          ENDIF
       ELSEIF cPName == "font"
-         oFont := FontFromXML( xProperty )
+         oFont := hfrm_FontFromxml( xProperty )
       ELSEIF cPName == "border"
          IF xProperty
             nStyle += WS_BORDER
@@ -435,9 +442,7 @@ MEMVAR aImages, lEditLabels, aParts
             nStyle += ES_PASSWORD
          ENDIF
       ELSEIF cPName == "atree"
-         // IF oForm:oDlg:handle != 0
-            BuildMenu( xProperty,oForm:oDlg:handle,oForm:oDlg )
-         // ENDIF
+         BuildMenu( xProperty,oForm:oDlg:handle,oForm:oDlg )
       ELSE
          /* Assigning the value of the property to the variable with 
             the same name as the property */
@@ -519,7 +524,7 @@ Local oCtrl := HGroup():New( oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,
    HRadioGroup():New( nInitValue,bSetGet )
 Return oCtrl
 
-Function FontFromXML( oXmlNode )
+Function hfrm_FontFromXML( oXmlNode )
 Local width  := oXmlNode:GetAttribute( "width" )
 Local height := oXmlNode:GetAttribute( "height" )
 Local weight := oXmlNode:GetAttribute( "weight" )
@@ -550,28 +555,7 @@ Return HFont():Add( oXmlNode:GetAttribute( "name" ),  ;
                     width, height, weight, charset,   ;
                     ita, under )
 
-Function Font2XML( oFont )
-Local aAttr := {}
-
-   Aadd( aAttr, { "name",oFont:name } )
-   Aadd( aAttr, { "width",Ltrim(Str(oFont:width,5)) } )
-   Aadd( aAttr, { "height",Ltrim(Str(oFont:height,5)) } )
-   IF oFont:weight != 0
-      Aadd( aAttr, { "weight",Ltrim(Str(oFont:weight,5)) } )
-   ENDIF
-   IF oFont:charset != 0
-      Aadd( aAttr, { "charset",Ltrim(Str(oFont:charset,5)) } )
-   ENDIF
-   IF oFont:Italic != 0
-      Aadd( aAttr, { "italic",Ltrim(Str(oFont:Italic,5)) } )
-   ENDIF
-   IF oFont:Underline != 0
-      Aadd( aAttr, { "underline",Ltrim(Str(oFont:Underline,5)) } )
-   ENDIF
-
-Return HXMLNode():New( "font", HBXML_TYPE_SINGLE, aAttr )
-
-Function Str2Arr( stroka )
+Function hfrm_Str2Arr( stroka )
 Local arr := {}, pos, cItem
 
    stroka := Substr( stroka,2,Len(stroka)-2 )
@@ -589,23 +573,6 @@ Local arr := {}, pos, cItem
 
 Return arr
 
-Function Arr2Str( arr )
-Local stroka := "{", i, cType
-
-   FOR i := 1 TO Len( arr )
-      IF i > 1
-         stroka += ","
-      ENDIF
-      cType := Valtype( arr[i] )
-      IF cType == "C"
-         stroka += arr[i]
-      ELSEIF cType == "N"
-         stroka += Ltrim( Str( arr[i] ) )
-      ENDIF
-   NEXT
-
-Return stroka + "}"
-
 Function GetProperty( xProp )
 Local c
 
@@ -616,7 +583,7 @@ Local c
       ELSEIF c == "."
          xProp := ( Substr( xProp,2,1 ) == "T" )
       ELSEIF c == "{"
-         xProp := Str2Arr( xProp )
+         xProp := hfrm_Str2Arr( xProp )
       ELSE
          xProp := Val( xProp )
       ENDIF

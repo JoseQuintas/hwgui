@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.14 2004-06-24 05:44:36 alkresin Exp $
+ * $Id: hformgen.prg,v 1.15 2004-06-26 15:01:15 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -399,13 +399,13 @@ Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cPr
             IF o:title == "property"
                cPropertyName := o:GetAttribute( "name" )
                IF Lower( cPropertyName ) == "geometry"
-                  aRect := Str2Arr( o:aItems[1] )
+                  aRect := hfrm_Str2Arr( o:aItems[1] )
                   Aadd( aProp, { "Left", aRect[1] } )
                   Aadd( aProp, { "Top", aRect[2] } )
                   Aadd( aProp, { "Width", aRect[3] } )
                   Aadd( aProp, { "Height", aRect[4] } )
                ELSEIF Lower( cPropertyName ) == "font"
-                  Aadd( aProp, { cPropertyName,FontFromXML( o:aItems[1] ) } )
+                  Aadd( aProp, { cPropertyName,hfrm_FontFromxml( o:aItems[1] ) } )
                ELSEIF Lower( cPropertyName ) == "atree"
                   Aadd( aProp, { cPropertyName,ReadTree( ,o ) } )
                ELSEIF !Empty(o:aItems)
@@ -415,7 +415,7 @@ Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cPr
                   ELSEIF cProperty == '.'
                      cProperty := Iif( Substr(o:aItems[1],2,1)=="T","True","False" )
                   ELSEIF cProperty == '{'
-                     cProperty := Str2Arr( o:aItems[1] )
+                     cProperty := hfrm_Str2Arr( o:aItems[1] )
                   ELSE
                      cProperty := o:aItems[1]
                   ENDIF
@@ -478,13 +478,13 @@ Local i, j, aItems, o, aProp := {}, cPropertyName, aRect, pos, cProperty
             IF o:title == "property"
                cPropertyName := o:GetAttribute( "name" )
                IF Lower( cPropertyName ) == "geometry"
-                  aRect := Str2Arr( o:aItems[1] )
+                  aRect := hfrm_Str2Arr( o:aItems[1] )
                   Aadd( aProp, { "Left", aRect[1] } )
                   Aadd( aProp, { "Top", aRect[2] } )
                   Aadd( aProp, { "Width", aRect[3] } )
                   Aadd( aProp, { "Height", aRect[4] } )
                ELSEIF Lower( cPropertyName ) == "font"
-                  Aadd( aProp, { cPropertyName,FontFromXML( o:aItems[1] ) } )
+                  Aadd( aProp, { cPropertyName,hfrm_FontFromxml( o:aItems[1] ) } )
                ELSEIF !Empty(o:aItems)
                   cProperty := Left( o:aItems[1],1 )
                   IF cProperty == '['
@@ -492,7 +492,7 @@ Local i, j, aItems, o, aProp := {}, cPropertyName, aRect, pos, cProperty
                   ELSEIF cProperty == '.'
                      cProperty := Iif( Substr(o:aItems[1],2,1)=="T","True","False" )
                   ELSEIF cProperty == '{'
-                     cProperty := Str2Arr( o:aItems[1] )
+                     cProperty := hfrm_Str2Arr( o:aItems[1] )
                   ELSE
                      cProperty := o:aItems[1]
                   ENDIF
@@ -511,6 +511,30 @@ Local i, j, aItems, o, aProp := {}, cPropertyName, aRect, pos, cProperty
       ENDIF
    NEXT
 Return Nil
+
+Function IsDefault( oCtrl,aPropItem )
+Local j1, aItems := oCtrl:oXMLDesc:aItems, xProperty, cPropName := Lower(aPropItem[1])
+
+   FOR j1 := 1 TO Len( aItems )
+      IF aItems[j1]:title == "property" .AND. ;
+                   Lower(aItems[j1]:GetAttribute("name")) == cPropName
+
+         IF !Empty( aItems[j1]:aItems )
+            IF Valtype( aItems[j1]:aItems[1]:aItems[1] ) == "C"
+               aItems[j1]:aItems[1]:aItems[1] := &( "{||" + aItems[j1]:aItems[1]:aItems[1] + "}" )
+            ENDIF
+            xProperty := Eval( aItems[j1]:aItems[1]:aItems[1] )
+         ELSE
+            xProperty := aItems[j1]:GetAttribute( "value" )
+         ENDIF
+
+         IF xProperty != Nil .AND. xProperty == aPropItem[2]
+            Return .T.
+         ENDIF
+      ENDIF
+   NEXT
+
+Return .F.
 
 Static Function WriteTree( aTree, oParent )
 Local i, oNode, type
@@ -546,22 +570,15 @@ Local cProperty, i1
          cPropertyName := Lower(oCtrl:aProp[j,1])
          IF Ascan( aG,cPropertyName  ) != 0
             lDef := .T.
+         /*
          ELSEIF ( cPropertyName == "textcolor" .AND. oCtrl:tColor == 0 ) .OR. ;
                 ( cPropertyName == "backcolor" .AND. oCtrl:bColor == GetSysColor( COLOR_3DFACE ) )
             lDef := .T.
+         */
          ELSEIF ( cPropertyName == "name" .AND. Empty( oCtrl:aProp[j,2] ) )
             lDef := .T.
          ELSE
-            lDef := .F.
-            FOR j1 := 1 TO Len( aItems )
-               IF aItems[j1]:title == "property" .AND. ;
-                   Lower(aItems[j1]:GetAttribute("name")) == cPropertyName  .AND. ;
-                   ( value := aItems[j1]:GetAttribute("value") ) != Nil .AND. ;
-                   value == oCtrl:aProp[j,2]
-                  lDef := .T.
-                  EXIT
-               ENDIF
-            NEXT
+            lDef := IsDefault( oCtrl, oCtrl:aProp[j] )
          ENDIF
          IF !lDef
             IF Lower(oCtrl:aProp[j,1]) == "font"
@@ -992,7 +1009,45 @@ Return Nil
 Function _CHR( n )
 Return CHR( n )
 
-Function FontFromXML( oXmlNode )
+Function Arr2Str( arr )
+Local stroka := "{", i, cType
+
+   FOR i := 1 TO Len( arr )
+      IF i > 1
+         stroka += ","
+      ENDIF
+      cType := Valtype( arr[i] )
+      IF cType == "C"
+         stroka += arr[i]
+      ELSEIF cType == "N"
+         stroka += Ltrim( Str( arr[i] ) )
+      ENDIF
+   NEXT
+
+Return stroka + "}"
+
+Function Font2XML( oFont )
+Local aAttr := {}
+
+   Aadd( aAttr, { "name",oFont:name } )
+   Aadd( aAttr, { "width",Ltrim(Str(oFont:width,5)) } )
+   Aadd( aAttr, { "height",Ltrim(Str(oFont:height,5)) } )
+   IF oFont:weight != 0
+      Aadd( aAttr, { "weight",Ltrim(Str(oFont:weight,5)) } )
+   ENDIF
+   IF oFont:charset != 0
+      Aadd( aAttr, { "charset",Ltrim(Str(oFont:charset,5)) } )
+   ENDIF
+   IF oFont:Italic != 0
+      Aadd( aAttr, { "italic",Ltrim(Str(oFont:Italic,5)) } )
+   ENDIF
+   IF oFont:Underline != 0
+      Aadd( aAttr, { "underline",Ltrim(Str(oFont:Underline,5)) } )
+   ENDIF
+
+Return HXMLNode():New( "font", HBXML_TYPE_SINGLE, aAttr )
+
+Function hfrm_FontFromXML( oXmlNode )
 Local width  := oXmlNode:GetAttribute( "width" )
 Local height := oXmlNode:GetAttribute( "height" )
 Local weight := oXmlNode:GetAttribute( "weight" )
@@ -1023,29 +1078,8 @@ Return HFont():Add( oXmlNode:GetAttribute( "name" ),  ;
                     width, height, weight, charset,   ;
                     ita, under )
 
-Function Font2XML( oFont )
-Local aAttr := {}
-
-   Aadd( aAttr, { "name",oFont:name } )
-   Aadd( aAttr, { "width",Ltrim(Str(oFont:width,5)) } )
-   Aadd( aAttr, { "height",Ltrim(Str(oFont:height,5)) } )
-   IF oFont:weight != 0
-      Aadd( aAttr, { "weight",Ltrim(Str(oFont:weight,5)) } )
-   ENDIF
-   IF oFont:charset != 0
-      Aadd( aAttr, { "charset",Ltrim(Str(oFont:charset,5)) } )
-   ENDIF
-   IF oFont:Italic != 0
-      Aadd( aAttr, { "italic",Ltrim(Str(oFont:Italic,5)) } )
-   ENDIF
-   IF oFont:Underline != 0
-      Aadd( aAttr, { "underline",Ltrim(Str(oFont:Underline,5)) } )
-   ENDIF
-
-Return HXMLNode():New( "font", HBXML_TYPE_SINGLE, aAttr )
-
-Function Str2Arr( stroka )
-Local arr := {}, pos
+Function hfrm_Str2Arr( stroka )
+Local arr := {}, pos, cItem
 
    stroka := Substr( stroka,2,Len(stroka)-2 )
    IF !Empty( stroka )
@@ -1059,21 +1093,38 @@ Local arr := {}, pos
          ENDIF
       ENDDO
    ENDIF
+
 Return arr
 
-Function Arr2Str( arr )
-Local stroka := "{", i, cType
 
-   FOR i := 1 TO Len( arr )
-      IF i > 1
-         stroka += ","
-      ENDIF
-      cType := Valtype( arr[i] )
-      IF cType == "C"
-         stroka += arr[i]
-      ELSEIF cType == "N"
-         stroka += Ltrim( Str( arr[i] ) )
-      ENDIF
-   NEXT
+Function ParseMethod( cMethod )
+Local arr := {}, nPos1, nPos2, cLine
 
-Return stroka + "}"
+   IF ( nPos1 := At( Chr(10),cMethod ) ) == 0
+      Aadd( arr, Alltrim( cMethod ) )
+   ELSE
+      Aadd( arr, Alltrim( Left( cMethod,nPos1-1 ) ) )
+      DO WHILE .T.
+         IF ( nPos2 := At( Chr(10),cMethod,nPos1+1 ) ) == 0
+            cLine := AllTrim( Substr( cMethod,nPos1+1 ) )
+         ELSE
+            cLine := AllTrim( Substr( cMethod,nPos1+1,nPos2-nPos1-1 ) )
+         ENDIF
+         IF !Empty( cLine )
+            Aadd( arr,cLine )
+         ENDIF
+         IF nPos2 == 0 .OR. Len( arr ) > 2
+            EXIT
+         ELSE
+            nPos1 := nPos2
+         ENDIF
+      ENDDO
+   ENDIF
+   IF Right( arr[1],1 ) < " "
+      arr[1] := Left( arr[1],Len(arr[1])-1 )
+   ENDIF
+   IF Len( arr ) > 1 .AND. Right( arr[2],1 ) < " "
+      arr[2] := Left( arr[2],Len(arr[2])-1 )
+   ENDIF
+
+Return arr

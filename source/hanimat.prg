@@ -37,9 +37,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
             cFilename, lAutoPlay, lCenter, lTransparent ) CLASS HAnimation
 
    nStyle     := Hwg_BitOr( Iif( nStyle==Nil, 0, nStyle ), WS_CHILD+WS_VISIBLE )
-   nStyle     := nStyle + Iif( lAutoplay   , ACS_AUTOPLAY   , 0 )
-   nStyle     := nStyle + Iif( lCenter     , ACS_CENTER     , 0 )
-   nStyle     := nStyle + Iif( lTransparent, ACS_TRANSPARENT, 0 )
+   nStyle     := nStyle + Iif( lAutoplay==Nil.OR.lAutoPlay, ACS_AUTOPLAY, 0 )
+   nStyle     := nStyle + Iif( lCenter==Nil.OR.!lCenter, 0, ACS_CENTER )
+   nStyle     := nStyle + Iif( lTransparent==Nil.OR.!lTransparent, 0, ACS_TRANSPARENT )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight )
    ::cFileName := cFilename
 

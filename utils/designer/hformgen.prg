@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.7 2004-06-13 14:48:32 alkresin Exp $
+ * $Id: hformgen.prg,v 1.8 2004-06-15 10:40:50 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -183,7 +183,8 @@ Local i, j, cPropertyName, xProperty
 Private value, oCtrl
 
    INIT DIALOG ::oDlg                         ;
-          ON SIZE  {|o,h,w|dlgOnSize(o)}      ;
+          STYLE DS_ABSALIGN+WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX ;
+          ON SIZE  {|o,h,w|dlgOnSize(o,h,w)}  ;
           ON PAINT {|o|PaintDlg(o)}           ;
           ON EXIT  {|o|o:oParent:End(.T.)}    ;
           ON GETFOCUS {|o|SetDlgSelected(o)}  ;
@@ -261,9 +262,10 @@ Return Nil
 
 // ------------------------------------------
 
-Static Function dlgOnSize( oDlg )
+Static Function dlgOnSize( oDlg,h,w )
 Local aCoors := GetClientRect( oDlg:handle )
 
+   // Writelog( "dlgOnSize "+Str(h)+Str(w) )
    oDlg:oParent:SetProp("Width",Ltrim(Str(oDlg:nWidth:=aCoors[3])))
    oDlg:oParent:SetProp("Height",Ltrim(Str(oDlg:nHeight:=aCoors[4])))
    InspUpdBrowse()

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.8 2004-06-13 14:48:32 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.9 2004-06-15 10:40:50 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -144,6 +144,7 @@ Private oDlg
    IF nMode == Nil .OR. nMode == 2
       INIT DIALOG ::oDlg TITLE cTitle         ;
           AT nLeft, nTop SIZE nWidth, nHeight ;
+          STYLE DS_ABSALIGN+WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX ;
           FONT oFont
       ::oDlg:lClipper := lClipper
       ::oDlg:lExitOnEnter := lExitOnEnter

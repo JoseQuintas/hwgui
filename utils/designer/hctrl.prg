@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.6 2004-06-13 14:48:32 alkresin Exp $
+ * $Id: hctrl.prg,v 1.7 2004-06-15 10:40:50 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -385,8 +385,12 @@ Return 0
 
 Function MoveCtrl( oCtrl )
 
-   MoveWindow( oCtrl:handle,oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight )
-   IF oCtrl:ClassName() != "HDIALOG"
+   // writelog( "MoveCtrl "+str(oCtrl:nWidth) + str(oCtrl:nHeight) )
+   IF oCtrl:ClassName() == "HDIALOG"
+      SendMessage( oCtrl:handle, WM_MOVE, 0, oCtrl:nLeft + oCtrl:nTop*65536 )
+      SendMessage( oCtrl:handle, WM_SIZE, 0, oCtrl:nWidth + oCtrl:nHeight*65536 )
+   ELSE
+      MoveWindow( oCtrl:handle,oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight )
       RedrawWindow( oCtrl:oParent:handle,RDW_ERASE + RDW_INVALIDATE )
    ENDIF
 Return Nil

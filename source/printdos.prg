@@ -1,4 +1,6 @@
 /*
+ * $Id: printdos.prg,v 1.4 2004-04-20 18:21:29 sandrorrfreire Exp $
+ *
  * CLASS PrintDos
  *
  * Copyright (c) Sandro Freire <sandrorrfreire@yahoo.com.br>

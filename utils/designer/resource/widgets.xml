@@ -251,8 +251,11 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="28" />
          <property name="Height" type="N" value="28" />
-         <property name="Font" type="O" />
          <property name="Flat" type="L" value="False"/>
+         <property name="Font" type="O" />
+         <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(8))) ]]></property>
+         <property name="TextLeft" type="N" value="0" />
+         <property name="TextTop" type="N" value="0" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />

@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.2 2004-06-05 16:13:16 alkresin Exp $
+ * $Id: designer.prg,v 1.3 2004-06-06 15:35:33 alkresin Exp $
  *
  * Designer
  * Main file
@@ -43,11 +43,12 @@ Public aFormats := { { "Hwgui XML format","xml" } }
 #ifdef INTEGRATED
    INIT DIALOG oMainWnd AT 0,0 SIZE 280,200 TITLE "Designer" ;
       FONT oFont                                             ;
-      ON INIT {||MoveWindow(oMainWnd:handle,0,0,280,210)}    ;
+      ON INIT {|o|MoveWindow(o:handle,0,0,280,210)}          ;
       ON EXIT {||EndIde()}
 #else
-   INIT WINDOW oMainWnd MAIN AT 0,0 SIZE 280,210 TITLE "Designer" ;
+   INIT WINDOW oMainWnd MAIN AT 0,0 SIZE 280,200 TITLE "Designer" ;
       FONT oFont                                                  ;
+      ON INIT {|o|MoveWindow(o:handle,0,0,280,210)}               ;
       ON EXIT {||EndIde()}
 #endif
 
@@ -72,12 +73,13 @@ Public aFormats := { { "Hwgui XML format","xml" } }
       MENU TITLE "&Control"
          MENUITEM "&Delete"  ACTION DeleteCtrl()
       ENDMENU
+      MENU TITLE "&Options"
+         MENUITEM "&AutoAdjust" ID 1011 ACTION CheckMenuItem(oMainWnd:handle,1011,!IsCheckedMenuItem(oMainWnd:handle,1011))
+      ENDMENU
       MENU TITLE "&Help"
          MENUITEM "&About" ACTION MsgInfo("About")
       ENDMENU
-   ENDMENU
-
-   EnableMenuItem( ,101, .F., .T. )
+   ENDMENU  
 
    @ 0,0 PANEL oPanel SIZE 280,200 ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,y)}
 
@@ -106,19 +108,14 @@ Public aFormats := { { "Hwgui XML format","xml" } }
    BuildSet( oTab )
 
    CONTEXT MENU oCtrlMenu
-      // MENUITEM "Style"  ACTION SetCtrlStyle( GetCtrlSelected(HFormGen():oDlgSelected) )
-      // MENUITEM "Extended..."  ACTION SetCtrlExt( GetCtrlSelected(HFormGen():oDlgSelected) )
       MENUITEM "Copy"   ACTION (oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oClipBrd!=Nil,EnableMenuItem(,1001,.T.,.T.),.F.))
+      MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.T.,.F. )
+      MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.T. )
       SEPARATOR
       MENUITEM "Delete" ACTION DeleteCtrl()
    ENDMENU
 
-/*
-   CONTEXT MENU oDlgMenu
-      MENUITEM "Style"  ACTION DlgStyle( HFormGen():oDlgSelected:oParent )
-      MENUITEM "Extended..."  ACTION DlgExten( HFormGen():oDlgSelected:oParent )
-   ENDMENU
-*/
+   CheckMenuItem( oMainWnd:handle,1011,.T. )
 
 #ifdef INTEGRATED
    ACTIVATE DIALOG oMainWnd NOMODAL

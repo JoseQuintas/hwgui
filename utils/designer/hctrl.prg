@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.2 2004-06-05 16:13:17 alkresin Exp $
+ * $Id: hctrl.prg,v 1.3 2004-06-06 15:35:33 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -28,7 +28,7 @@ CLASS HControlGen INHERIT HControl
    DATA aMethods      INIT {}
    DATA  aPaint, oBitmap
 
-   METHOD New( oWndParent, xClass, nLeft, nTop, nWidth, nHeight, nStyle, cCaption, oFont, tColor, bColor )
+   METHOD New( oWndParent, xClass, aProp )
    METHOD Activate()
    METHOD Paint( lpdis )
    METHOD GetProp( cName )
@@ -44,7 +44,7 @@ Private value, oCtrl := Self
 
    ::oParent := Iif( oWndParent==Nil,HFormGen():oDlgSelected,oWndParent )
    ::id      := ::NewId()
-   ::style   := WS_VISIBLE+WS_CHILD+SS_OWNERDRAW
+   ::style   := WS_VISIBLE+WS_CHILD+WS_DISABLED+SS_OWNERDRAW
 
    IF Valtype( xClass ) == "C"
       oXMLDesc := FindWidget( xClass )
@@ -352,5 +352,45 @@ Function MoveCtrl( oCtrl )
    MoveWindow( oCtrl:handle,oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight )
    IF oCtrl:ClassName() != "HDIALOG"
       RedrawWindow( oCtrl:oParent:handle,RDW_ERASE + RDW_INVALIDATE )
+   ENDIF
+Return Nil
+
+Function AdjustCtrl( oCtrl, lLeft, lTop )
+Local i, aControls := Iif( oCtrl:oContainer != Nil, oCtrl:oContainer:aControls, oCtrl:oParent:aControls )
+Local lRes := .F., xPos, yPos, delta := 15
+
+   IF lLeft == Nil .AND. lTop == Nil
+      lLeft := lTop := .T.
+   ELSE
+      delta := 30
+   ENDIF
+   FOR i := Len( aControls ) To 1 STEP -1
+      IF lLeft .AND. aControls[i]:nLeft+aControls[i]:nWidth < oCtrl:nLeft .AND. ;
+         aControls[i]:nLeft+aControls[i]:nWidth + delta > oCtrl:nLeft .AND. ;
+         aControls[i]:nTop <= oCtrl:nTop .AND. aControls[i]:nTop + aControls[i]:nHeight > oCtrl:nTop
+         lRes := .T.
+         xPos := aControls[i]:nLeft+aControls[i]:nWidth + 1
+         yPos := aControls[i]:nTop
+         EXIT
+      ELSEIF lTop .AND. Abs( aControls[i]:nLeft-oCtrl:nLeft ) < delta .AND. ;
+             aControls[i]:nTop + aControls[i]:nHeight < oCtrl:nTop .AND. ;
+             aControls[i]:nTop + aControls[i]:nHeight + delta > oCtrl:nTop
+         lRes := .T.
+         xPos := aControls[i]:nLeft
+         yPos := aControls[i]:nTop + aControls[i]:nHeight + 1
+         EXIT
+      ENDIF
+   NEXT
+   IF lRes
+      InvalidateRect( oCtrl:oParent:handle, 1, ;
+               oCtrl:nLeft-4, oCtrl:nTop-4,    ;
+               oCtrl:nLeft+oCtrl:nWidth+3,     ;
+               oCtrl:nTop+oCtrl:nHeight+3 )
+      oCtrl:Move( xPos, yPos )
+      InvalidateRect( oCtrl:oParent:handle, 1, ;
+               oCtrl:nLeft-4, oCtrl:nTop-4,    ;
+               oCtrl:nLeft+oCtrl:nWidth+3,     ;
+               oCtrl:nTop+oCtrl:nHeight+3 )
+      InspUpdBrowse()
    ENDIF
 Return Nil

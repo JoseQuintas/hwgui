@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.2 2004-06-05 16:13:17 alkresin Exp $
+ * $Id: hformgen.prg,v 1.3 2004-06-06 15:35:33 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -776,6 +776,9 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp
          oBtnPressed:Release()
       ENDIF
       addItem := Nil
+      IF IsCheckedMenuItem( oMainWnd:handle,1011 )
+         AdjustCtrl( oCtrl )
+      ENDIF
    ENDIF
    // SetFocus( oDlg:handle )
    sendmessage(odlg:acontrols[1]:handle,WM_KILLFOCUS,oDlg:handle,0 )

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.23 2004-06-02 09:38:57 alkresin Exp $
+ * $Id: hdialog.prg,v 1.24 2004-06-06 15:35:32 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -80,7 +80,7 @@ CLASS HDialog INHERIT HCustomWindow
    DATA lClipper INIT .F.     // Set it to TRUE for moving between GETs with ENTER key
    DATA GetList  INIT {}      // The array of GET items in the dialog
    DATA KeyList  INIT {}      // The array of keys ( as Clipper's SET KEY )
-   DATA lExitOnEnter INIT .F. // Set it to True, if dialog shouldn't be ended after pressing ENTER key,
+   DATA lExitOnEnter INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key,
                               // Added by Sandro Freire 
    DATA nLastKey INIT 0
    DATA oIcon, oBmp
@@ -125,7 +125,7 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
    ::bLostFocus := bLFocus
    ::bOther     := bOther
    ::lClipper   := Iif( lClipper==Nil,.F.,lClipper )
-   ::lExitOnEnter:=Iif( lExitOnEnter==Nil,.F.,lExitOnEnter )
+   ::lExitOnEnter:=Iif( lExitOnEnter==Nil,.T.,!lExitOnEnter )
    
    IF nHelpId != nil
       ::HelpId := nHelpId
@@ -301,7 +301,7 @@ Local aMenu, i, hCtrl
          IF i != 0 .AND. oDlg:GetList[i]:handle == hCtrl
             IF __ObjHasMsg(oDlg:GetList[i],"BVALID")
                IF Eval( oDlg:GetList[i]:bValid,oDlg:GetList[i] ) .AND. ;
-                      !oDlg:lExitOnEnter
+                      oDlg:lExitOnEnter
                   oDlg:lResult := .T.
                   EndDialog( oDlg:handle )
                ENDIF
@@ -310,7 +310,7 @@ Local aMenu, i, hCtrl
          ENDIF
          IF oDlg:lClipper
             IF !GetSkip( oDlg,hCtrl,1 )
-               IF !oDlg:lExitOnEnter
+               IF oDlg:lExitOnEnter
                   oDlg:lResult := .T.
                   EndDialog( oDlg:handle )
                ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.3 2004-06-05 16:13:16 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.4 2004-06-06 15:35:32 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -279,7 +279,7 @@ Local aCtrls := { ;
   "HComboBox():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,Items,oFont,onInit,onSize,onPaint,onChange,cToolt,lEdit,lText,bWhen)", ;
   "HLine():New(oPrnt,nId,lVert,nLeft,nTop,nLength,onSize)", ;
   "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,lDocked )", ;
-  "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,color,oFont,xt,yt,widtht,heightt,bmp,lResour,xb,yb,widthb,heightb,lTr,cTooltip)", ;
+  "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,bmp,lResour,xb,yb,widthb,heightb,lTr,cTooltip)", ;
   "Hbrowse():New(nType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg )" ;
                 }
 Local i, oCtrl, stroka, varname, xProperty, block, cType, cPName

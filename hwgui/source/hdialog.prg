@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.4 2004-02-25 12:17:15 lculik Exp $
+ * $Id: hdialog.prg,v 1.5 2004-03-16 18:33:59 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -84,6 +84,7 @@ CLASS HDialog INHERIT HCustomWindow
    METHOD AddItem( oWnd,lModal )
    METHOD DelItem( oWnd,lModal )
    METHOD FindDialog( hWnd )
+   METHOD GetActive()
    METHOD Close()	INLINE EndDialog()
 ENDCLASS
 
@@ -170,6 +171,11 @@ RETURN Nil
 METHOD FindDialog( hWnd ) CLASS HDialog
 Local i := Ascan( ::aDialogs, {|o|o:handle==hWnd} )
 Return Iif( i == 0, Nil, ::aDialogs[i] )
+
+METHOD GetActive() CLASS HDialog
+Local handle := GetFocus()
+Local i := Ascan( ::Getlist,{|o|o:handle==handle} )
+Return Iif( i == 0, Nil, ::Getlist[i] )
 
 // End of class
 // ------------------------------------

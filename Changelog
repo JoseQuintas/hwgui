@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.73 2004-04-06 18:31:56 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.74 2004-04-06 19:10:10 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -13,11 +13,11 @@
     new function hwg_centerwindow
 
   * source/hwindow.prg
-    new class ::Center
-    Centralize the window in Screen
+    new class ::Center()
+    Centralize the window in screen
 
   * samples/demomaximize.prg
-    Include the class center in demo
+    Include the method center in demo
 
 2004-04-05 11-35 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
   * include/guilib.ch

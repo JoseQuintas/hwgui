@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.251 2004-08-13 16:33:24 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.252 2004-08-16 17:04:16 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-08-16 14-10 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/HSayImg.prg
+    New method ::ReplaceBitmap(Image, lRes)
+    !bug fix in method ::END() for exit in dialog
 
 2004-08-13 13-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * samples/a.prg

@@ -18,12 +18,13 @@ CLASS HSayImage INHERIT HControl
 
    CLASS VAR winclass   INIT "STATIC"
    DATA  oImage
+   DATA  oParent
 
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,bInit, ;
                   bSize,ctoolt )
    METHOD Redefine( oWndParent,nId,bInit,bSize,ctoolt )
    METHOD Activate()
-   METHOD End()  INLINE ( ::oImage:Release(), ::oImage := Nil )
+   METHOD End()  INLINE ( iif(::oImage<>Nil,::oImage:Release(),::oImage:=Nil), ::oImage := Nil )
 
 ENDCLASS
 
@@ -70,14 +71,26 @@ Return Nil
 
 //- HSayBmp
 
-CLASS HSayBmp INHERIT HSayImage
+CLASS HSayBmp INHERIT HSayImage 
 
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
                   bSize,ctoolt )
    METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctoolt )
    METHOD Init()
+   METHOD ReplaceBitmap(Image, lRes)
 
 ENDCLASS
+
+METHOD ReplaceBitmap(Image, lRes) CLASS HSayBmp
+
+   ::oImage := Iif( lRes .OR. Valtype(Image)=="N",     ;
+                       HBitmap():AddResource( Image ), ;
+                       Iif( Valtype(Image) == "C",     ;
+                       HBitmap():AddFile( Image ), Image ) )
+
+    SendMessage( ::handle,STM_SETIMAGE,IMAGE_BITMAP,::oImage:handle )
+
+Return Nil
 
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
                   bSize,ctoolt ) CLASS HSayBmp

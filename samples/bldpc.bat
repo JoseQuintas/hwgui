@@ -1,5 +1,5 @@
 echo off
-  
+@echo.Building file %1.prg for Pelles C Compiler  
 ECHO %1.obj > make.tmp 
 echo %HRB_DIR%\lib\rtl%HB_MT%.lib  >> make.tmp
 echo %HRB_DIR%\lib\vm%HB_MT%.lib  >> make.tmp
@@ -43,5 +43,9 @@ ECHO %POCC%\LIB\portio.lib >> make.tmp
 %POCC%\bin\pocc %1.c /Ze /D"NEED_DUMMY_RETURN" /D"__XCC__" /I"INCLUDE" /I"%HRB_DIR%\INCLUDE" /I"%POCC%\INCLUDE" /I"%POCC%\INCLUDE\WIN" /I"%POCC%\INCLUDE\MSVC" /D"HB_STATIC_STARTUP" /c 
 
 %POCC%\bin\POLINK /LIBPATH:%POCC%\lib /OUT:%1.EXE /MACHINE:IX86 /OPT:WIN98 /SUBSYSTEM:CONSOLE /FORCE:MULTIPLE @make.tmp >error.log
+Echo.Building Complete
+DEL make.tmp
+del %1.c
+del %1.map
+del %1.obj
 
-//DEL make.tmp

@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.12 2004-05-14 19:17:02 sandrorrfreire Exp $
+ * $Id: menu.prg,v 1.13 2004-06-23 05:33:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -278,16 +278,18 @@ HWG__InsertBitmapMenu( oMenu, nId, obmp:handle )
 Function Hwg_SearchPosBitmap( nPos_Id )
 
    Local nPos := 1, lBmp:={.F.,""}
-   
-   DO WHILE nPos<=Len(_oBitmap )
 
-      if _oBitmap[nPos][4] == nPos_Id
-         lBmp:={_oBitmap[nPos][1], _oBitmap[nPos][2],_oBitmap[nPos][3]}     
-      Endif
+   IF _oBitmap != Nil
+      DO WHILE nPos<=Len(_oBitmap )
 
-      nPos ++
+         if _oBitmap[nPos][4] == nPos_Id
+            lBmp:={_oBitmap[nPos][1], _oBitmap[nPos][2],_oBitmap[nPos][3]}     
+         Endif
 
-   ENDDO
+         nPos ++
+
+      ENDDO
+   ENDIF
 
 Return lBmp
  

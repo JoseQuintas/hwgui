@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.40 2005-01-12 22:41:56 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.41 2005-01-16 14:09:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -15,6 +15,7 @@
 
 #define DLGC_WANTARROWS     1      /* Control wants arrow keys         */
 #define DLGC_WANTTAB        2      /* Control wants tab keys           */
+#define DLGC_WANTALLKEYS    0x0004      /* Control wants all keys           */
 #define DLGC_WANTCHARS    128      /* Want WM_CHAR messages            */
 
 CLASS HEdit INHERIT HControl
@@ -217,7 +218,9 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
          ENDIF
       ENDIF
    ELSEIF msg == WM_GETDLGCODE
-      Return DLGC_WANTARROWS + DLGC_WANTTAB + DLGC_WANTCHARS
+      IF !::lMultiLine
+         Return DLGC_WANTARROWS + DLGC_WANTTAB + DLGC_WANTCHARS
+      ENDIF
    ELSEIF msg == WM_DESTROY
       ::End()
    ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.345 2005-01-14 11:23:16 alkresin Exp $
+ * $Id: Changelog,v 1.346 2005-01-16 14:09:00 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-01-16 17:06 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+  * source/hedit.prg
+    ! Fixed "ENTER" key handling in multiline controls
+  * samples/hello.prg
+    ! small fix
 
 2004-01-14 14:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   + gtk/hradio.prg

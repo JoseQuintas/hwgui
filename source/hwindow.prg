@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.37 2004-11-21 12:33:16 alkresin Exp $
+ *$Id: hwindow.prg,v 1.38 2004-11-22 07:21:24 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -248,13 +248,14 @@ CLASS HMDIChildWindow INHERIT HWindow
 
    CLASS VAR aMessages INIT { ;
       { WM_CREATE,WM_COMMAND,WM_MOVE,WM_SIZE,WM_NCACTIVATE, ;
-        WM_DESTROY }, ;
+        WM_SYSCOMMAND,WM_DESTROY }, ;
       { ;
          {|o,w,l|onMdiCreate(o,l)},        ;
          {|o,w|onMdiCommand(o,w)},         ;
          {|o|onMove(o)},                   ;
          {|o,w,l|onSize(o,w,l)},           ;
          {|o,w|onMdiNcActivate(o,w)},      ;
+         {|o,w|onSysCommand(o,w)},         ;
          {|o|onDestroy(o)}                 ;
       } ;
    }

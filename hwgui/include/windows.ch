@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.3 2003-12-01 12:40:37 lculik Exp $
+ *$Id: windows.ch,v 1.4 2003-12-29 20:20:43 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -407,8 +407,9 @@
 #define PSN_WIZNEXT             -207   // (PSN_FIRST-7)
 #define PSN_WIZFINISH           -208   // (PSN_FIRST-8)
 #define PSN_QUERYCANCEL         -209   // (PSN_FIRST-9)
-
+/*
 #define TCN_SELCHANGE           -551   // (TCN_FIRST - 1)
+*/
 /*
  * Combo Box styles
  */
@@ -490,6 +491,7 @@
 #define OBM_OLD_ZOOM        32756
 #define OBM_OLD_RESTORE     32755
 
+/*
 #define TCS_SCROLLOPPOSITE      1       // 0x0001   // assumes multiline tab
 #define TCS_BOTTOM              2       // 0x0002
 #define TCS_RIGHT               2       // 0x0002
@@ -510,7 +512,7 @@
 #define TCS_OWNERDRAWFIXED      8192    // 0x2000
 #define TCS_TOOLTIPS            16384   // 0x4000
 #define TCS_FOCUSNEVER          32768   // 0x8000
-
+*/
 #define EM_GETSEL               176     // 0x00B0
 #define EM_SETSEL               177     // 0x00B1
 #define EM_GETRECT              178     // 0x00B2
@@ -737,7 +739,7 @@
 #define SW_SHOWNA           8
 #define SW_RESTORE          9
 #define SW_SHOWDEFAULT      10
-
+/*
 #define TVHT_NOWHERE            1       // 0x0001
 #define TVHT_ONITEMICON         2       // 0x0002
 #define TVHT_ONITEMLABEL        4       // 0x0004
@@ -751,7 +753,7 @@
 #define TVHT_BELOW              512     // 0x0200
 #define TVHT_TORIGHT            1024    // 0x0400
 #define TVHT_TOLEFT             2048    // 0x0800
-
+*/
 /* For video controls */
 #define WIN_CHARPIX_H	16
 #define WIN_CHARPIX_W    8

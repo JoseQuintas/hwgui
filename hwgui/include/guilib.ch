@@ -1,15 +1,16 @@
 /*
- *$Id: guilib.ch,v 1.3 2003-12-01 12:40:37 lculik Exp $
+ *$Id: guilib.ch,v 1.4 2003-12-29 20:20:43 lculik Exp $
  */
 
 #include "guilib.h"
 
 // Commands for windows, dialogs handling
-
+// Alterado por jamaj - CHILD window clause
 #xcommand INIT WINDOW <oWnd>                ;
              [ MAIN ]                       ;
              [<lMdi: MDI>]                  ;
              [<lChild: MDICHILD>]           ;
+             [<lChild: CHILD>]        ;
              [ APPNAME <appname> ]          ;
              [ TITLE <cTitle> ]             ;
              [ AT <x>, <y> ]                ;
@@ -843,3 +844,22 @@
 
 #xcommand SET RESOURCES TO => LOADRESOURCE( NIL )
 
+// Addded by jamaj 
+#xcommand DEFAULT <uVar1> := <uVal1> ;
+               [, <uVarN> := <uValN> ] => ;
+                  <uVar1> := IIf( <uVar1> == nil, <uVal1>, <uVar1> ) ;;
+                [ <uVarN> := IIf( <uVarN> == nil, <uValN>, <uVarN> ); ]
+
+#xcommand @ <x>,<y> GET IPADDRESS [ <oIp> VAR ] <vari> ;
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
+            [ SIZE <width>, <height> ] ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ STYLE <nStyle> ]         ;
+            [ FONT <oFont> ]           ;
+            [ ON GETFOCUS <bGfocus> ]      ;
+            [ ON LOSTFOCUS <bLfocus> ]     ;
+          => ;
+    [<oIp> := ] HIpEdit():New( <oWnd>,<nId>,{|v| iif(v==Nil,<vari>,<vari>:=v)},<nStyle>,<x>,<y>,<width>,<height>,<vari>,<oFont>, <bGfocus>, <bLfocus> )
+
+#define ISOBJECT(c)    ( Valtype(c) == "O" )

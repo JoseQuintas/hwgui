@@ -1,11 +1,11 @@
 /*
- * $Id: hprinter.prg,v 1.7 2004-11-14 21:46:28 sandrorrfreire Exp $
+ * $Id: hprinter.prg,v 1.8 2004-11-15 12:36:21 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -14,12 +14,14 @@
 
 CLASS HPrinter INHERIT HObject
 
-   DATA hDCPrn INIT 0
+   DATA hDCPrn     INIT 0
    DATA hDC
+   DATA cPrinterName
+   DATA hPrinter   INIT 0
    DATA aMeta
    DATA lPreview
    DATA cMetaName
-   DATA nWidth, nHeight
+   DATA nWidth, nHeight, nPWidth, nPHeight
    DATA nHRes, nVRes                     // Resolution ( pixels/mm )
 
    DATA lmm  INIT .F.
@@ -27,6 +29,7 @@ CLASS HPrinter INHERIT HObject
    DATA nZoom, xOffset, yOffset, x1, y1, x2, y2
 
    METHOD New( cPrinter,lmm )
+   METHOD SetMode( nOrientation )
    METHOD AddFont( fontName, nHeight ,lBold, lItalic, lUnderline )
    METHOD SetFont( oFont )  INLINE SelectObject( ::hDC,oFont:handle )
    METHOD StartDoc( lPreview,cMetaName )
@@ -46,28 +49,53 @@ CLASS HPrinter INHERIT HObject
 ENDCLASS
 
 METHOD New( cPrinter,lmm ) CLASS HPrinter
-Local aPrnCoors
+Local aPrnCoors, cPrinterName, cDriverName
 
    IF lmm != Nil
       ::lmm := lmm
    ENDIF
    IF cPrinter == Nil
-      ::hDCPrn := PrintSetup()
+      ::hDCPrn := PrintSetup( @cPrinterName )
+      ::cPrinterName := cPrinterName
    ELSEIF Empty( cPrinter )
-      ::hDCPrn := Hwg_OpenDefaultPrinter()
+      ::hDCPrn := Hwg_OpenDefaultPrinter( @cPrinterName )
+      ::cPrinterName := cPrinterName
    ELSE
       ::hDCPrn := Hwg_OpenPrinter( cPrinter )
+      ::cPrinterName := cPrinter
    ENDIF
    IF ::hDCPrn != Nil
       aPrnCoors := GetDeviceArea( ::hDCPrn )
       ::nWidth  := Iif( ::lmm, aPrnCoors[3], aPrnCoors[1] )
       ::nHeight := Iif( ::lmm, aPrnCoors[4], aPrnCoors[2] )
+      ::nPWidth  := Iif( ::lmm, aPrnCoors[8], aPrnCoors[1] )
+      ::nPHeight := Iif( ::lmm, aPrnCoors[9], aPrnCoors[2] )
       ::nHRes   := aPrnCoors[1] / aPrnCoors[3]
       ::nVRes   := aPrnCoors[2] / aPrnCoors[4]
-      // writelog( str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6]) )
+      writelog( ::cPrinterName + str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6])+str(aPrnCoors[8])+str(aPrnCoors[9]) )
    ENDIF
 
 Return Self
+
+METHOD SetMode( nOrientation ) CLASS HPrinter
+Local hPrinter := ::hPrinter, hDC, aPrnCoors
+
+   hDC := SetPrinterMode( ::cPrinterName, @hPrinter, nOrientation )
+   IF hDC != Nil
+      ::hDCPrn := hDC
+      ::hPrinter := hPrinter
+      aPrnCoors := GetDeviceArea( ::hDCPrn )
+      ::nWidth  := Iif( ::lmm, aPrnCoors[3], aPrnCoors[1] )
+      ::nHeight := Iif( ::lmm, aPrnCoors[4], aPrnCoors[2] )
+      ::nPWidth  := Iif( ::lmm, aPrnCoors[8], aPrnCoors[1] )
+      ::nPHeight := Iif( ::lmm, aPrnCoors[9], aPrnCoors[2] )
+      ::nHRes   := aPrnCoors[1] / aPrnCoors[3]
+      ::nVRes   := aPrnCoors[2] / aPrnCoors[4]
+      writelog( ":"+str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6])+str(aPrnCoors[8])+str(aPrnCoors[9]) )
+      Return .T.
+   ENDIF
+
+Return .F.
 
 METHOD AddFont( fontName, nHeight ,lBold, lItalic, lUnderline ) CLASS HPrinter
 Local oFont
@@ -81,9 +109,13 @@ Local oFont
 Return oFont
 
 METHOD End() CLASS HPrinter
+
    IF ::hDCPrn != 0
       DeleteDC( ::hDCPrn )
       ::hDCPrn := 0
+   ENDIF
+   IF ::hPrinter != 0
+      ClosePrinter( ::hPrinter )
    ENDIF
    ::ReleaseMeta()
 Return Nil

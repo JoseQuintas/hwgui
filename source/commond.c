@@ -1,11 +1,11 @@
 /*
- * $Id: commond.c,v 1.16 2004-08-11 18:13:12 sandrorrfreire Exp $
+ * $Id: commond.c,v 1.17 2004-11-15 12:36:21 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #define HB_OS_WIN_32_USED
@@ -237,7 +237,20 @@ HB_FUNC( PRINTSETUP )
    // pd.hSetupTemplate = (HANDLE) NULL; 
     
    if( PrintDlg(&pd) )
+   {
+      if( pd.hDevNames )
+      {
+         if( hb_pcount() > 0 )
+         {
+            LPDEVNAMES lpdn = (LPDEVNAMES)GlobalLock( pd.hDevNames );
+            hb_storc( (char*) lpdn + lpdn->wDeviceOffset,1 );
+            GlobalUnlock( pd.hDevNames );
+         }
+         GlobalFree( pd.hDevNames );
+         GlobalFree( pd.hDevMode );
+      }
       hb_retnl( (LONG) pd.hDC );
+   }
    else
       hb_retnl( 0 );  
 }

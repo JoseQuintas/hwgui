@@ -1,9 +1,11 @@
 /*
+ * $Id: wprint.c,v 1.5 2004-11-15 12:36:21 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #define HB_OS_WIN_32_USED
@@ -45,6 +47,8 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
      EnumPrinters (PRINTER_ENUM_DEFAULT, NULL, 5, (PBYTE) pinfo5,
            dwNeeded, &dwNeeded, &dwReturned) ;
      hDC = CreateDC (NULL, pinfo5->pPrinterName, NULL, NULL) ;
+     if( hb_pcount() > 0 )
+        hb_storc( pinfo5->pPrinterName,1 );
 
      free (pinfo5) ;
   }
@@ -58,10 +62,55 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
      EnumPrinters (PRINTER_ENUM_LOCAL, NULL, 4, (PBYTE) pinfo4,
            dwNeeded, &dwNeeded, &dwReturned) ;
      hDC = CreateDC (NULL, pinfo4->pPrinterName, NULL, NULL) ;
+     if( hb_pcount() > 0 )
+        hb_storc( pinfo4->pPrinterName,1 );
 
      free (pinfo4) ;
   }
   hb_retnl( (LONG) hDC );   
+}
+
+HB_FUNC( SETPRINTERMODE )
+{
+   LPTSTR pPrinterName = (LPTSTR) hb_parc(1);
+   HANDLE hPrinter = (ISNIL(2))? (HANDLE)NULL : (HANDLE)hb_parnl(2);
+   long int nSize;
+   PDEVMODE pdm;
+
+   if( !hPrinter )
+      if( !OpenPrinter( pPrinterName, &hPrinter, NULL ) )
+      {
+         return;
+      }
+
+   /* Determine the size of DEVMODE structure */
+   nSize = DocumentProperties( NULL, hPrinter, pPrinterName, NULL, NULL, 0 );
+   pdm = (PDEVMODE)GlobalAlloc( GPTR, nSize );
+
+   /* Get the printer mode */
+   DocumentProperties( NULL, hPrinter, pPrinterName, pdm, NULL, DM_OUT_BUFFER );
+    
+   /* Changing of values */
+   if( !ISNIL(3) )
+   {
+      pdm->dmOrientation = hb_parni(3);
+      pdm->dmFields = pdm->dmFields | DM_ORIENTATION;
+   }
+
+   // Call DocumentProperties() to change the values
+   DocumentProperties( NULL, hPrinter, pPrinterName, 
+                      pdm, pdm, DM_OUT_BUFFER | DM_IN_BUFFER );
+
+   // создадим контекст устройства принтера  
+   hb_retnl( (LONG) CreateDC( NULL, pPrinterName, NULL, pdm ) );
+   hb_stornl( (LONG)hPrinter,2 );
+   GlobalFree( pdm );
+}
+
+HB_FUNC( CLOSEPRINTER )
+{
+   HANDLE hPrinter = (HANDLE)hb_parnl(1);
+   ClosePrinter( hPrinter );
 }
 
 HB_FUNC( HWG_STARTDOC )
@@ -103,7 +152,7 @@ HB_FUNC( HWG_ENDPAGE )
 HB_FUNC( GETDEVICEAREA )
 {
    HDC hDC = (HDC) hb_parnl( 1 );
-   PHB_ITEM aMetr = hb_itemArrayNew( 7 );
+   PHB_ITEM aMetr = hb_itemArrayNew( 9 );
    PHB_ITEM temp;
 
    temp = hb_itemPutNL( NULL, GetDeviceCaps( hDC,HORZRES ) );
@@ -132,6 +181,14 @@ HB_FUNC( GETDEVICEAREA )
 
    temp = hb_itemPutNL( NULL, GetDeviceCaps( hDC,RASTERCAPS ) );
    hb_itemArrayPut( aMetr, 7, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, GetDeviceCaps( hDC,PHYSICALWIDTH ) );
+   hb_itemArrayPut( aMetr, 8, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, GetDeviceCaps( hDC,PHYSICALHEIGHT ) );
+   hb_itemArrayPut( aMetr, 9, temp );
    hb_itemRelease( temp );
 
    hb_itemReturn( aMetr );

@@ -321,6 +321,20 @@ HB_FUNC( STRETCHBLT )
                         (DWORD) hb_parnl( 11 )
                         ) ) ;
 }  
-  
-  
+   
+
+HB_FUNC( HWG__INSERTBITMAPMENU )
+{
+   MENUITEMINFO mii;
+   HMENU hSubMenu = CreateMenu();
+
+   mii.cbSize = sizeof( MENUITEMINFO );
+   mii.fMask = MIIM_ID | MIIM_BITMAP | MIIM_DATA; 
+   mii.hbmpItem = (HBITMAP) hb_parnl( 3 ); 
+
+   if( SetMenuItemInfo( ( HMENU ) hb_parnl( 1 ), hb_parni( 2 ), 0, &mii ) )
+      hb_retnl( (LONG) hSubMenu );
+   else
+      hb_retnl( 0 );
+}
  

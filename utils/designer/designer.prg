@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.14 2004-12-08 08:23:17 alkresin Exp $
+ * $Id: designer.prg,v 1.15 2005-02-24 13:59:53 alkresin Exp $
  *
  * Designer
  * Main file
@@ -229,7 +229,7 @@ Return Nil
 
 Static Function ReadIniFiles()
 Local oIni := HXMLDoc():Read( "Designer.iml" )
-Local i, oNode, cWidgetsFileName, cwitem, cfitem
+Local i, oNode, cWidgetsFileName, cwitem, cfitem, l_ds_mypath
 
    IF oDesigner:lReport
       cwItem := "rep_widgetset"
@@ -253,6 +253,11 @@ Local i, oNode, cWidgetsFileName, cwitem, cfitem
              oNode:GetAttribute("wrscr"),oNode:GetAttribute("cnvtable") } )
       ELSEIF oNode:title == "editor"
          LoadEdOptions( oNode:aItems[1] )
+      ELSEIF oNode:title == "dirpath"
+             l_ds_mypath := oNode:GetAttribute("default")
+             IF !Empty( l_ds_mypath )
+                ds_mypath := l_ds_mypath
+             ENDIF
       ENDIF
    NEXT
 

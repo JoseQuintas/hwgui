@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.23 2004-12-08 08:23:17 alkresin Exp $
+ * $Id: hformgen.prg,v 1.24 2005-02-24 13:59:53 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -107,6 +107,7 @@ Return ::Open( fname )
 
 METHOD Open( fname,cForm )  CLASS HFormGen
 Local aFormats := oDesigner:aFormats
+Local oIni, i
 Private oForm := Self, aCtrlTable
 
    IF fname != Nil
@@ -134,6 +135,18 @@ Private oForm := Self, aCtrlTable
          ::name := ::oDlg:title
          Aadd( ::aForms, Self )
          InspSetCombo()
+         oIni := HXMLDoc():Read( cCurDir+"Designer.iml" )
+         i := 1
+         IF oIni:aItems[1]:Find( "dirpath",@i ) == Nil
+            oIni:aItems[1]:Add( HXMLNode():New( "dirpath",HBXML_TYPE_SINGLE,{{"default",::path}} ) )
+            oIni:Save( cCurDir+"Designer.iml" )
+         ELSE
+            IF !( oIni:aItems[1]:aItems[i]:GetAttribute( "default" ) == ::path )
+               oIni:aItems[1]:aItems[i] := HXMLNode():New( "dirpath",HBXML_TYPE_SINGLE,{{"default",::path}} )
+               oIni:Save( cCurDir+"Designer.iml" )
+            ENDIF
+         ENDIF
+
       ENDIF
       IF ::oDlg == Nil .OR. Empty( ::oDlg:aControls )
          MsgStop( "Can't load the form" )

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.42 2004-07-26 18:17:44 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.43 2004-08-25 16:15:58 sandrorrfreire Exp $
  */
 #define HWG_VERSION           "2.13"
 #define	WND_MAIN		1
@@ -384,10 +384,14 @@
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ ON CHANGE <bChange> ]    ;
+            [ ON CLICK <bClick> ]      ;
+            [ ON GETFOCUS <bGetFocus> ];
+            [ ON LOSTFOCUS <bLostFocus>];
             [ BITMAP <aBmp>  [<res: FROM RESOURCE>] [ BITCOUNT <nBC> ] ]  ;
           => ;
     [<oTab> := ] HTab():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<aItems>,<bChange>, <aBmp>, <.res.>,<nBC> )
+             <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<aItems>,<bChange>, <aBmp>, <.res.>,<nBC>,;
+             <bClick>, <bGetFocus>, <bLostFocus> )
 
 #xcommand BEGIN PAGE <cname> OF <oTab> ;
           => ;

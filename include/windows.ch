@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.16 2004-06-15 12:34:02 alkresin Exp $
+ *$Id: windows.ch,v 1.17 2004-08-25 16:15:59 sandrorrfreire Exp $
  */
 
 #define WM_CREATE                       1
@@ -414,6 +414,10 @@
 #define PSN_QUERYCANCEL         -209   // (PSN_FIRST-9)
 
 #define TCN_SELCHANGE           -551   // (TCN_FIRST - 1)
+#define TCN_CLICK               -2
+#define TCN_SETFOCUS            -550
+#define TCN_GETFOCUS            -552
+#define TCN_KILLFOCUS           -552
 
 /*
  * Combo Box styles

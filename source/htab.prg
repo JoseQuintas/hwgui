@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.10 2004-07-29 16:48:15 lf_sfnet Exp $
+ *$Id: htab.prg,v 1.11 2004-08-25 16:15:59 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -28,9 +28,13 @@ CLASS HTab INHERIT HControl
    DATA  bChange, bChange2
    DATA  hIml, aImages, Image1, Image2
    DATA  oTemp
+   DATA  bGotFocus  INIT Nil
+   DATA  bLostFocus INIT Nil
+   DATA  bAction    INIT Nil
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC )
+                  oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC,;
+                  bClick, bGotFocus, bLostFocus )
    METHOD Activate()
    METHOD Init()
    METHOD SetTab( n )
@@ -49,7 +53,7 @@ CLASS HTab INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC ) CLASS HTab
+                  oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC,bClick, bGotFocus, bLostFocus  ) CLASS HTab
 LOCAL i, aBmpSize
 
    nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP )
@@ -61,6 +65,10 @@ LOCAL i, aBmpSize
    ::aTabs   := Iif( aTabs==Nil,{},aTabs )
    ::bChange := bChange
    ::bChange2 := bChange
+
+   ::bGotFocus :=IIf( bGotFocus==Nil, Nil, bGotFocus)
+   ::bLostFocus:=IIf( bLostFocus==Nil, Nil, bLostFocus)
+   ::bAction   :=IIf( bClick==Nil, Nil, bClick)
 
    IF aImages != Nil
       ::aImages := {}

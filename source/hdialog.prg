@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.25 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hdialog.prg,v 1.26 2004-08-25 16:15:59 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -434,11 +434,24 @@ Local iItem, oCtrl := oDlg:FindControl( wParam ), nCode, res, handle, oItem
 
    IF oCtrl != Nil
       IF oCtrl:ClassName() == "HTAB"
-         IF ( nCode := GetNotifyCode( lParam ) ) == TCN_SELCHANGE
+         DO CASE
+         CASE ( nCode := GetNotifyCode( lParam ) ) == TCN_SELCHANGE
             IF oCtrl != Nil .AND. oCtrl:bChange != Nil
                Eval( oCtrl:bChange, oCtrl, GetCurrentTab( oCtrl:handle ) )
             ENDIF
-         ENDIF
+         CASE ( nCode := GetNotifyCode( lParam ) ) == TCN_CLICK
+              if oCtrl != Nil .AND. oCtrl:bAction != nil
+                 Eval( oCtrl:bAction, oCtrl, GetCurrentTab( oCtrl:handle ) )
+              endif
+         CASE ( nCode := GetNotifyCode( lParam ) ) == TCN_SETFOCUS
+              if oCtrl != Nil .AND. oCtrl:bGotFocus != nil
+                 Eval( oCtrl:bGotFocus, oCtrl, GetCurrentTab( oCtrl:handle ) )
+              endif
+         CASE ( nCode := GetNotifyCode( lParam ) ) == TCN_KILLFOCUS
+              if oCtrl != Nil .AND. oCtrl:bLostFocus != nil
+                 Eval( oCtrl:bLostFocus, oCtrl, GetCurrentTab( oCtrl:handle ))
+              endif
+        ENDCASE
       ELSEIF oCtrl:ClassName() == "HQHTM"
          Return oCtrl:Notify( oDlg,lParam )
       ELSEIF oCtrl:ClassName() == "HTREE"

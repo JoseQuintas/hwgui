@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.253 2004-08-17 13:01:59 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.254 2004-08-25 16:15:57 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,20 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-08-25 13-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * include/windows.ch
+    Add new variables TCN_SETFOCUS, TCN_GETFOCUS, TCN_KILLFOCUS
+  * include/guilib.ch
+    Replaced TAB comand, include ON CLICK, ON GETFOCUS and ON LOSTFOCUS
+  * source/hdialog.prg
+    Modify function DlgNotify
+  * source/htab.prg
+    Add new variables, to control Click, Lost and Get Focus
+  * samples/a.prg
+    Samples to new comands to TAB
+  
+
 2004-08-17 10-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/hedit.prg
     Bug line 153, in execution run time

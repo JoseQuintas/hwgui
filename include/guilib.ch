@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.40 2004-06-22 03:12:26 marcosgambeta Exp $
+ *$Id: guilib.ch,v 1.41 2004-07-21 09:47:48 alkresin Exp $
  */
 
 #define	WND_MAIN		1
@@ -360,10 +360,10 @@
             [ ON CLICK <bClick> ]      ;
             [ STYLE <nStyle> ]         ;
             [<lEdit: EDITABLE>]        ;
-            [ BITMAP <aBmp>  [<res: FROM RESOURCE>] ]  ;
+            [ BITMAP <aBmp>  [<res: FROM RESOURCE>] [ BITCOUNT <nBC> ] ]  ;
           => ;
     [<oTree> := ] HTree():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<oFont>,<bInit>,<bSize>,<color>,<bcolor>,<aBmp>,<.res.>,<.lEdit.>,<bClick> )
+             <height>,<oFont>,<bInit>,<bSize>,<color>,<bcolor>,<aBmp>,<.res.>,<.lEdit.>,<bClick>,<nBC> )
 
 #xcommand INSERT NODE [ <oNode> CAPTION ] <cTitle>  ;
             TO <oTree>                            ;
@@ -384,10 +384,10 @@
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ ON CHANGE <bChange> ]    ;
-            [ BITMAP <aBmp>  [<res: FROM RESOURCE>] ]  ;
+            [ BITMAP <aBmp>  [<res: FROM RESOURCE>] [ BITCOUNT <nBC> ] ]  ;
           => ;
     [<oTab> := ] HTab():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<aItems>,<bChange>, <aBmp>, <.res.> )
+             <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<aItems>,<bChange>, <aBmp>, <.res.>,<nBC> )
 
 #xcommand BEGIN PAGE <cname> OF <oTab> ;
           => ;

@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.8 2004-06-26 17:30:05 alkresin Exp $
+ *$Id: htab.prg,v 1.9 2004-07-21 09:47:48 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -30,7 +30,7 @@ CLASS HTab INHERIT HControl
    DATA  oTemp
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bInit,bSize,bPaint,aTabs,bChange )
+                  oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC )
    METHOD Activate()
    METHOD Init()
    METHOD SetTab( n )
@@ -49,7 +49,7 @@ CLASS HTab INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour ) CLASS HTab
+                  oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC ) CLASS HTab
 LOCAL i, aBmpSize
 
    nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP )
@@ -69,7 +69,7 @@ LOCAL i, aBmpSize
          aImages[i] := Iif( lResour,LoadBitmap( aImages[i] ),OpenBitmap( aImages[i] ) )
       NEXT
       aBmpSize := GetBitmapSize( aImages[1] )
-      ::himl := CreateImageList( aImages,aBmpSize[1],aBmpSize[2],12 )
+      ::himl := CreateImageList( aImages,aBmpSize[1],aBmpSize[2],12,nBC )
       ::Image1 := 0
       IF Len( aImages ) > 1
          ::Image2 := 1

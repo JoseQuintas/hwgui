@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.8 2004-07-13 19:55:40 marcosgambeta Exp $
+ * $Id: draw.c,v 1.9 2004-07-21 09:47:48 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -414,10 +414,23 @@ HB_FUNC( OPENBITMAP )
    /*  Retrieve the color table. 
     * 1 << bmih.biBitCount == 2 ^ bmih.biBitCount 
    */ 
-   ReadFile(hfbm, lpbmi->bmiColors, 
-      ((1<<bmih.biBitCount) * sizeof(RGBQUAD)), 
-      &dwRead, (LPOVERLAPPED) NULL); 
- 
+   switch(bmih.biBitCount)
+   {
+      case 1  :
+      case 4  :
+      case 8  : ReadFile(hfbm, lpbmi->bmiColors,
+      ((1<<bmih.biBitCount) * sizeof(RGBQUAD)),
+      &dwRead, (LPOVERLAPPED) NULL);
+                break;
+      case 16 :
+      case 32 : if( bmih.biCompression == BI_BITFIELDS )
+                   ReadFile(hfbm, lpbmi->bmiColors,
+                   ( 3 * sizeof(RGBQUAD)),
+                   &dwRead, (LPOVERLAPPED) NULL);
+                break;
+      case 24 : break;
+   }
+   
    /* Allocate memory for the required number of  bytes. */ 
    hmem2 = GlobalAlloc( GHND, (bmfh.bfSize - bmfh.bfOffBits) );
    lpvBits = GlobalLock(hmem2); 
@@ -437,6 +450,8 @@ HB_FUNC( OPENBITMAP )
  
    GlobalUnlock(hmem1); 
    GlobalUnlock(hmem2); 
+   GlobalFree(hmem1);
+   GlobalFree(hmem2);
    CloseHandle(hfbm); 
    hb_retnl( (LONG) hbm );
 }

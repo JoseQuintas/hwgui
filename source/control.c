@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.16 2004-07-13 19:55:40 marcosgambeta Exp $
+ * $Id: control.c,v 1.17 2004-07-21 09:47:48 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -58,12 +58,15 @@ HB_FUNC( HWG_INITCOMMONCONTROLSEX )
 
 HB_FUNC( MOVEWINDOW )
 {
+   RECT rc;
+
+   GetWindowRect( (HWND) hb_parnl( 1 ), &rc );
    MoveWindow(
-    (HWND) hb_parnl( 1 ),	// handle of window
-    hb_parni( 2 ),	// horizontal position
-    hb_parni( 3 ),	// vertical position
-    hb_parni( 4 ),	// width
-    hb_parni( 5 ),	// height
+    (HWND) hb_parnl( 1 ),                         // handle of window
+    (ISNIL(2))? rc.left : hb_parni( 2 ),          // horizontal position
+    (ISNIL(3))? rc.top : hb_parni( 3 ),           // vertical position
+    (ISNIL(4))? rc.right-rc.left : hb_parni( 4 ), // width
+    (ISNIL(5))? rc.bottom-rc.top : hb_parni( 5 ), // height
     (hb_pcount()<6)? TRUE:hb_parl(6) 	// repaint flag
    );
 }
@@ -849,12 +852,12 @@ HB_FUNC( TREE_HITTEST )
 }
 
 /*
- * CreateImagelist( array, cx, cy, nGrow )
+ * CreateImagelist( array, cx, cy, nGrow, flags )
 */
 HB_FUNC( CREATEIMAGELIST )
 {
    PHB_ITEM pArray = hb_param( 1, HB_IT_ARRAY );
-   UINT flags = ILC_COLOR;
+   UINT flags = ( ISNIL(5) )? ILC_COLOR : hb_parni(5);
    HIMAGELIST himl;
    ULONG ul, ulLen = pArray->item.asArray.value->ulLen;
    HBITMAP hbmp;

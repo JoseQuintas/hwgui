@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.6 2004-07-18 14:24:16 alkresin Exp $
+ * $Id: htree.prg,v 1.7 2004-07-21 09:47:48 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -55,10 +55,14 @@
 #define TVGN_LASTVISIBLE       10   // 0x000A
 
 #define TVN_SELCHANGED       (-402)
-#define TVN_SELCHANGEDW      (-451)
 #define TVN_ITEMEXPANDING    (-405)
 #define TVN_BEGINLABELEDIT   (-410)
 #define TVN_ENDLABELEDIT     (-411)
+
+#define TVN_SELCHANGEDW       (-451)
+#define TVN_ITEMEXPANDINGW    (-454)
+#define TVN_BEGINLABELEDITW   (-459)
+#define TVN_ENDLABELEDITW     (-460)
 
 #define TVI_ROOT             (-65536)
 
@@ -212,7 +216,7 @@ CLASS HTree INHERIT HControl
    DATA lEmpty INIT .T.
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
-                  bInit,bSize,color,bcolor,aImages,lResour,lEditLabels,bAction )
+                  bInit,bSize,color,bcolor,aImages,lResour,lEditLabels,bAction,nBC )
    METHOD Init()
    METHOD Activate()
    METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages )
@@ -226,7 +230,7 @@ CLASS HTree INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
-                  bInit,bSize,color,bcolor,aImages,lResour,lEditLabels,bAction ) CLASS HTree
+                  bInit,bSize,color,bcolor,aImages,lResour,lEditLabels,bAction,nBC ) CLASS HTree
 LOCAL i, aBmpSize
 
    nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+ ;
@@ -246,7 +250,7 @@ LOCAL i, aBmpSize
          aImages[i] := Iif( lResour,LoadBitmap( aImages[i] ),OpenBitmap( aImages[i] ) )
       NEXT
       aBmpSize := GetBitmapSize( aImages[1] )
-      ::himl := CreateImageList( aImages,aBmpSize[1],aBmpSize[2],12 )
+      ::himl := CreateImageList( aImages,aBmpSize[1],aBmpSize[2],12,nBC )
       ::Image1 := 0
       IF Len( aImages ) > 1
          ::Image2 := 1
@@ -315,9 +319,9 @@ Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct
             Eval( oItem:oTree:bAction,oItem )
          ENDIF
       ENDIF
-   ELSEIF nCode == TVN_BEGINLABELEDIT
+   ELSEIF nCode == TVN_BEGINLABELEDIT .or. nCode == TVN_BEGINLABELEDITW
       // Return 1
-   ELSEIF nCode == TVN_ENDLABELEDIT
+   ELSEIF nCode == TVN_ENDLABELEDIT .or. nCode == TVN_ENDLABELEDITW
       IF !Empty( cText := Tree_GetNotify( lParam,TREE_GETNOTIFY_EDIT ) )
          oItem := Tree_GetNotify( lParam,TREE_GETNOTIFY_EDITPARAM )
          IF cText != oItem:GetText() .AND. ;
@@ -325,7 +329,7 @@ Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct
             TreeSetItem( oItem:oTree:handle,oItem:handle,TREE_SETITEM_TEXT,cText )
          ENDIF
       ENDIF
-   ELSEIF nCode == TVN_ITEMEXPANDING
+   ELSEIF nCode == TVN_ITEMEXPANDING .or. nCode == TVN_ITEMEXPANDINGW
       oItem := Tree_GetNotify( lParam,TREE_GETNOTIFY_PARAM )
       IF oTree:bExpand != Nil
          return Iif( Eval( oItem:oTree:bExpand,oItem, ;

@@ -12,15 +12,27 @@
 
 #define PF_BUFFERS   2048
 
+#define oFORMFEED               "12"
+#define oLASER10CPI             "27,40,115,49,48,72"
+#define oLASER12CPI             "27,40,115,49,50,72"
+#define oLASER18CPI             "27,40,115,49,56,72"
+#define oINKJETDOUBLE           "27,33,32"
+#define oINKJETNORMAL           "27,33,00"
+#define oINKJETCOMPRESS         "27,33,04"
+#define oMATRIXDOUBLE           "14"
+#define oMATRIXNORMAL           "18"
+#define oMATRIXCOMPRESS         "15"
+
 CLASS PrintDos
 
-     DATA cCompr, cNormal,oText AS CHARACTER
+     DATA cCompr, cNormal,oText, cDouble AS CHARACTER
      DATA oPorta, oPicture      AS CHARACTER
      DATA orow, oCol            AS NUMERIC
      DATA cEject, nProw, nPcol, fText, gText
      DATA oTopMar               AS NUMERIC
      DATA oLeftMar              AS NUMERIC
      DATA oAns2Oem              AS LOGIC
+     DATA oPrintStyle INIT 1 //1 = Matricial   2 = InkJet    3 = LaserJet
 
      METHOD New(oPorta) CONSTRUCTOR  
 
@@ -35,6 +47,8 @@ CLASS PrintDos
      METHOD Eject()
 
      METHOD Compress()
+
+     METHOD Double()
 
      METHOD DesCompress()
   
@@ -53,12 +67,16 @@ CLASS PrintDos
 ENDCLASS
 
 METHOD New(oPorta) CLASS PrintDos
+     Local oDouble  :={oMATRIXDOUBLE,   oINKJETDOUBLE,   oLASER10CPI}
+     Local oNormal  :={oMATRIXNORMAL,   oINKJETNORMAL,   oLASER12CPI}
+     Local oCompress:={oMATRIXCOMPRESS, oINKJETCOMPRESS, oLASER18CPI}
 
      ::oPorta       := Iif(Empty(oPorta),"LPT1",oPorta)
 
-     ::cCompr   := "15"
-     ::cNormal  := "18"
-     ::cEject   := "12"
+     ::cCompr   := oCompress[::oPrintStyle]
+     ::cNormal  := oNormal[::oPrintStyle]
+     ::cDouble  := oDouble[::oPrintStyle]
+     ::cEject   := oFORMFEED
      ::nProw    := 0
      ::nPcol    := 0
      ::oTopMar  := 0
@@ -74,12 +92,32 @@ METHOD New(oPorta) CLASS PrintDos
 RETURN SELF
 
 
-METHOD Comando(oComm)  CLASS PrintDos
-    If ::oAns2Oem
-      ::oText += ANSITOOEM(Chr(Val(oComm)))
-    Else
-      ::oText += Chr(Val(oComm))
-    EndIf
+METHOD Comando(oComm1,oComm2, oComm3, oComm4, oComm5, oComm6, oComm7,;
+               oComm8,oComm9, oComm10)  CLASS PrintDos
+
+   local nCont := 1
+   local cCont
+   local oStr := oComm1
+
+   oStr:=Chr( Val (oComm1) )
+
+   IF oComm2  != NIL ;  oStr +=Chr(Val(oComm2 ));   END
+   IF oComm3  != NIL ;  oStr +=Chr(Val(oComm3 ));   END
+   IF oComm4  != NIL ;  oStr +=Chr(Val(oComm4 ));   END
+   IF oComm5  != NIL ;  oStr +=Chr(Val(oComm5 ));   END
+   IF oComm6  != NIL ;  oStr +=Chr(Val(oComm6 ));   END
+   IF oComm7  != NIL ;  oStr +=Chr(Val(oComm7 ));   END
+   IF oComm8  != NIL ;  oStr +=Chr(Val(oComm8 ));   END
+   IF oComm9  != NIL ;  oStr +=Chr(Val(oComm9 ));   END
+   IF oComm10 != NIL ;  oStr +=Chr(Val(oComm10));   END
+
+ 
+   If ::oAns2Oem
+     ::oText += ANSITOOEM(oStr)
+   Else
+     ::oText += oStr
+   EndIf
+
 Return Nil
  
 
@@ -117,6 +155,12 @@ Return Nil
 METHOD Compress() CLASS PrintDos
 
      ::Comando(::cCompr)
+
+Return Nil
+
+METHOD Double() CLASS PrintDos
+
+     ::Comando(::cDouble)
 
 Return Nil
 

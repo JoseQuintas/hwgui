@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.96 2004-04-20 15:15:24 lculik Exp $
+ * $Id: Changelog,v 1.97 2004-04-20 17:22:16 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-04-20 14-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * printdos.prg
+    new variable defined to print ::oPrintStyle 1 = Matricial  2 = DeskJet 3 = LaserJet
+    new metho ::double
+    Otimized method Comando 
+    update to compile from xHarbour CVS
+  * tstprdos
+    new test to printdos
+
 
 2004-04-20 12:07 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   * make_b32.bat

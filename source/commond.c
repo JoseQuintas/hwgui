@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.5 2004-03-16 19:07:44 sandrorrfreire Exp $
+ * $Id: commond.c,v 1.6 2004-05-27 14:45:09 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -324,3 +324,29 @@ HB_FUNC( WRITEPRIVATEPROFILESTRING )
       hb_retl(FALSE);
 }
 
+static far PRINTDLG pd;
+static far BOOL bInit = FALSE;
+ 
+static void StartPrn( void )
+{
+  if( ! bInit )
+  {
+      bInit = TRUE;
+      memset( ( char * ) &pd, 0, sizeof( PRINTDLG ) );
+      pd.lStructSize = sizeof( PRINTDLG );
+      pd.hwndOwner   = GetActiveWindow();
+      pd.Flags       = PD_RETURNDEFAULT ;
+      pd.nMinPage    = 1;
+      pd.nMaxPage    = 65535;
+      PrintDlg( &pd );
+  }
+}
+
+HB_FUNC ( PRINTPORTNAME )
+{
+   LPDEVNAMES lpDevNames;
+   StartPrn();
+   lpDevNames = (LPDEVNAMES) GlobalLock( pd.hDevNames );
+   hb_retc( ( LPSTR ) lpDevNames + lpDevNames->wOutputOffset );
+   GlobalUnlock( pd.hDevNames );
+}

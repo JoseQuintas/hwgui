@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.5 2004-04-20 18:33:49 sandrorrfreire Exp $
+ * $Id: printdos.prg,v 1.6 2004-05-27 14:45:09 sandrorrfreire Exp $
  *
  * CLASS PrintDos
  *
@@ -73,8 +73,6 @@ METHOD New(oPorta) CLASS PrintDos
      Local oNormal  :={oMATRIXNORMAL,   oINKJETNORMAL,   oLASER12CPI}
      Local oCompress:={oMATRIXCOMPRESS, oINKJETCOMPRESS, oLASER18CPI}
 
-     ::oPorta       := Iif(Empty(oPorta),"LPT1",oPorta)
-
      ::cCompr   := oCompress[::oPrintStyle]
      ::cNormal  := oNormal[::oPrintStyle]
      ::cDouble  := oDouble[::oPrintStyle]
@@ -85,7 +83,17 @@ METHOD New(oPorta) CLASS PrintDos
      ::oAns2Oem :=.t.
      ::oLeftMar := 0
      ::oText    := ""
-     
+
+     if Empty(oPorta) //
+        ::oPorta       := "LPT1"
+     Else
+        If oPorta=="DEFAULT"
+          ::oPorta     := PrintPortName()
+        Else
+          ::oPorta     := oPorta
+        EndIf
+     EndIf
+
      Iif( oPorta=="GRAPHIC" .or. ;
           oPorta=="PREVIEW"     ,;
           ::gText := ""         ,;      

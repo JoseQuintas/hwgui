@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.148 2004-05-27 10:36:59 alkresin Exp $
+ * $Id: Changelog,v 1.149 2004-05-27 14:45:08 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-05-27 11-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/commond.c
+    * new function PRINTPORTNAME
+  * source/printdos.prg
+    * In method New() if definid DEFAULT use the port for the print default
+ 
 2004-05-27 14:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hbrowse.prg
     * lSep3d data has been added to HBrowse, it is intended for 3d vertical

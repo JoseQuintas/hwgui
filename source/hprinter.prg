@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.6 2004-11-14 15:25:01 alkresin Exp $
+ * $Id: hprinter.prg,v 1.7 2004-11-14 21:46:28 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -232,6 +232,11 @@ Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
    IF aBitmaps != Nil
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[2] ), HBitmap():AddFile( aBitmaps[2] ) )
       oBtn:text   := Nil
+      If aBitmaps[10]<>Nil
+          IF aBitmaps[10]
+             oBtn:lTransp:=.T.
+          ENDIF
+      endif       
    ENDIF
 
    @ 1,53 LINE LENGTH oToolBar:nWidth-1
@@ -242,6 +247,11 @@ Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 2
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[3] ), HBitmap():AddFile( aBitmaps[3] ) )
       oBtn:text   := Nil
+      If aBitmaps[10]<>Nil
+          IF aBitmaps[10]
+             oBtn:lTransp:=.T.
+          ENDIF
+      endif       
    ENDIF
 
    @ 1,83 LINE LENGTH oToolBar:nWidth-1
@@ -252,6 +262,11 @@ Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 3
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[4] ), HBitmap():AddFile( aBitmaps[4] ) )
       oBtn:text   := Nil
+      If aBitmaps[10]<>Nil
+          IF aBitmaps[10]
+             oBtn:lTransp:=.T.
+          ENDIF
+      endif       
    ENDIF
 
    @ 3,110 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,1)} ;
@@ -260,6 +275,11 @@ Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 4
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[5] ), HBitmap():AddFile( aBitmaps[5] ) )
       oBtn:text   := Nil
+      If aBitmaps[10]<>Nil
+          IF aBitmaps[10]
+             oBtn:lTransp:=.T.
+          ENDIF
+      endif       
    ENDIF
 
    @ 3,134 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,-1)} ;
@@ -268,6 +288,11 @@ Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 5
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[6] ), HBitmap():AddFile( aBitmaps[6] ) )
       oBtn:text   := Nil
+      If aBitmaps[10]<>Nil
+          IF aBitmaps[10]
+             oBtn:lTransp:=.T.
+          ENDIF
+      endif       
    ENDIF
 
    @ 3,158 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,2)} ;
@@ -276,6 +301,11 @@ Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 6
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[7] ), HBitmap():AddFile( aBitmaps[7] ) )
       oBtn:text   := Nil
+      If aBitmaps[10]<>Nil
+          IF aBitmaps[10]
+             oBtn:lTransp:=.T.
+          ENDIF
+      endif       
    ENDIF
 
    @ 1,189 LINE LENGTH oToolBar:nWidth-1
@@ -286,6 +316,11 @@ Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 7
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[8] ), HBitmap():AddFile( aBitmaps[8] ) )
       oBtn:text   := Nil
+      If aBitmaps[10]<>Nil
+          IF aBitmaps[10]
+             oBtn:lTransp:=.T.
+          ENDIF
+      endif       
    ENDIF
 
    @ 3,216 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ResizePreviewDlg(oCanvas,Self,1)} ;
@@ -294,6 +329,11 @@ Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 8
       oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[9] ), HBitmap():AddFile( aBitmaps[9] ) )
       oBtn:text   := Nil
+      If aBitmaps[10]<>Nil
+          IF aBitmaps[10]
+             oBtn:lTransp:=.T.
+          ENDIF
+      endif       
    ENDIF
 
    @ 1,243 LINE LENGTH oToolBar:nWidth-1

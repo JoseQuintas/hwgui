@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.6 2004-05-27 14:45:09 sandrorrfreire Exp $
+ * $Id: printdos.prg,v 1.7 2004-05-27 17:31:39 sandrorrfreire Exp $
  *
  * CLASS PrintDos
  *
@@ -72,6 +72,7 @@ METHOD New(oPorta) CLASS PrintDos
      Local oDouble  :={oMATRIXDOUBLE,   oINKJETDOUBLE,   oLASER10CPI}
      Local oNormal  :={oMATRIXNORMAL,   oINKJETNORMAL,   oLASER12CPI}
      Local oCompress:={oMATRIXCOMPRESS, oINKJETCOMPRESS, oLASER18CPI}
+     Local oPtr, oPtrSetup
 
      ::cCompr   := oCompress[::oPrintStyle]
      ::cNormal  := oNormal[::oPrintStyle]
@@ -89,6 +90,14 @@ METHOD New(oPorta) CLASS PrintDos
      Else
         If oPorta=="DEFAULT"
           ::oPorta     := PrintPortName()
+        ElseIf oPorta=="SELECT"
+          oPtrSetup:=PrintSetupDos()
+          If oPtrSetup==Nil 
+             MsgInfo("Error, file to:ERROR.TXT")
+             ::oPorta :="Error.txt"
+          Else
+             ::oPorta     := PrintPortName()
+          EndIf
         Else
           ::oPorta     := oPorta
         EndIf

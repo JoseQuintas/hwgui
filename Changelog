@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.150 2004-05-27 16:29:59 alkresin Exp $
+ * $Id: Changelog,v 1.151 2004-05-27 17:31:37 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2004-05-27 14-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/commond.c
+    * new function PRINTSETUPDOS
+  * source/printdos.prg
+    * In method New() if defined SELECT use to select printer
+      Is this possible
+         oPr:=PrintSetupdos() //Open the select printer
+         oPr:=Printdos():New(PrintPortName()) //Open port printer use printdos
 
 2004-05-27 20:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/windows.ch

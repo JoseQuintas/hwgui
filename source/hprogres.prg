@@ -47,7 +47,7 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,maxPos,nRange ) CLASS HProg
 
 Return Self
 
-METHOD NewBox( cTitle,nLeft,nTop,nWidth,nHeight,maxPos,nRange ) CLASS HProgressBar
+METHOD NewBox( cTitle,nLeft,nTop,nWidth,nHeight,maxPos,nRange,bExit ) CLASS HProgressBar
 
    // ::classname:= "HPROGRESSBAR"
    ::style   := WS_CHILD+WS_VISIBLE
@@ -66,7 +66,8 @@ METHOD NewBox( cTitle,nLeft,nTop,nWidth,nHeight,maxPos,nRange ) CLASS HProgressB
 
    INIT DIALOG ::oParent TITLE cTitle       ;
         AT nLeft,nTop SIZE nWidth,nHeight   ;
-        STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+Iif( nTop==0,DS_CENTER,0 )
+        STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+Iif( nTop==0,DS_CENTER,0 ) ;
+        ON EXIT bExit
 
    ACTIVATE DIALOG ::oParent NOMODAL
 

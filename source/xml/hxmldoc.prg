@@ -1,5 +1,5 @@
 /*
- * $Id: hxmldoc.prg,v 1.7 2004-05-29 18:41:35 alkresin Exp $
+ * $Id: hxmldoc.prg,v 1.8 2004-05-31 17:28:48 alkresin Exp $
  *
  * Harbour XML Library
  * HXmlDoc class
@@ -104,9 +104,17 @@ Local i, s, lNewLine
    FOR i := 1 TO Len( ::aItems )
       IF Valtype( ::aItems[i] ) == "C"
         IF handle >= 0
-           FWrite( handle, HBXML_Transform( ::aItems[i] ) )
+           IF ::type == HBXML_TYPE_CDATA
+              FWrite( handle, ::aItems[i] )
+           ELSE
+              FWrite( handle, HBXML_Transform( ::aItems[i] ) )
+           ENDIF
         ELSE
-           s += HBXML_Transform( ::aItems[i] )
+           IF ::type == HBXML_TYPE_CDATA
+              s += ::aItems[i]
+           ELSE
+              s += HBXML_Transform( ::aItems[i] )
+           ENDIF
         ENDIF
       ELSE
         s += ::aItems[i]:Save( handle, level+1 )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.17 2004-02-19 11:58:43 lculik Exp $
+ * $Id: Changelog,v 1.18 2004-02-20 19:03:04 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,11 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2004-02-19 09:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
-  * source/hcombo.prg
-    ! Add new method, refresh(), setitem()
-    All provided by Rodrigo Moreno <rodrigo_moreno@yahoo.com>
-
+2004-02-20 16:00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  + ADD files QHTM
+    + source/qhtm/qhtm.h
+  + source/richtext.prg Autor Tom Marchiori
+  + samples/testrtf.prg
+  + include/richtext.ch
+  * makefile.bc
+      updated to include new dependencies
+    All provided by  Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  
+  
 2004-02-18 08:40 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   + source/hmonthc.prg
     !New class HMonthCalendar
@@ -156,7 +162,7 @@
      * Ip classe
    * include/guimain.ch
       New Command @ x,y GET IPADDRESS <oIP> VAR <vari>
-   * makefile.bc
+|  * makefile.bc
       updated to include new dependencies
 
 

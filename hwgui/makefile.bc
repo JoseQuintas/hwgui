@@ -1,7 +1,7 @@
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
-HRB_DIR = $(HB_PATH)
+HRB_DIR = %HB_PATH%
 INCLUDE_DIR = include;$(HRB_DIR)\include
 OBJ_DIR = obj
 LIB_DIR = lib
@@ -11,6 +11,16 @@ SRC_DIR = source
 
 C_DEFINES=
 H_DEFINES=
+.AUTODEPEND
+
+!if !$d(ECHO)
+   ECHO = echo.
+!endif
+!if !$d(DEL)
+   DEL = del
+!endif
+
+
 
 all: \
    $(LIB_DIR)\hwgui.lib \
@@ -34,7 +44,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\window.obj \
    $(OBJ_DIR)\wprint.obj \
    $(OBJ_DIR)\drawwidg.obj \
-   $(OBJ_DIR)\errorsys.obj \
+   $(OBJ_DIR)\herrosys.obj \
    $(OBJ_DIR)\guimain.obj \
    $(OBJ_DIR)\hbrowse.obj \
    $(OBJ_DIR)\hcheck.obj \
@@ -66,6 +76,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\repexec.obj \
    $(OBJ_DIR)\printdos.obj \
+   $(OBJ_DIR)\richtext.obj \
    $(OBJ_DIR)\hmonthc.obj
 
 $(LIB_DIR)\procmisc.lib : \
@@ -81,7 +92,7 @@ $(LIB_DIR)\hwg_qhtm.lib : \
    $(OBJ_DIR)\hqhtm.obj
 
 $(OBJ_DIR)\drawwidg.c   : $(SRC_DIR)\drawwidg.prg
-$(OBJ_DIR)\errorsys.c   : $(SRC_DIR)\errorsys.prg
+$(OBJ_DIR)\herrosys.c   : $(SRC_DIR)\herrosys.prg
 $(OBJ_DIR)\guimain.c    : $(SRC_DIR)\guimain.prg
 $(OBJ_DIR)\hbrowse.c    : $(SRC_DIR)\hbrowse.prg
 $(OBJ_DIR)\hcheck.c     : $(SRC_DIR)\hcheck.prg
@@ -110,6 +121,7 @@ $(OBJ_DIR)\hipedit.c    : $(SRC_DIR)\hipedit.prg
 $(OBJ_DIR)\menu.c       : $(SRC_DIR)\menu.prg
 $(OBJ_DIR)\repexec.c    : $(SRC_DIR)\repexec.prg
 $(OBJ_DIR)\printdos.c   : $(SRC_DIR)\printdos.prg
+$(OBJ_DIR)\richtext.c   : $(SRC_DIR)\richtext.prg
 $(OBJ_DIR)\hmonthc.c  : $(SRC_DIR)\hmonthc.prg
 
 $(OBJ_DIR)\commond.obj  : $(SRC_DIR)\commond.c
@@ -132,7 +144,7 @@ $(OBJ_DIR)\resource.obj   : $(SRC_DIR)\resource.c
 $(OBJ_DIR)\c_ipaddr.obj   : $(SRC_DIR)\c_ipaddr.c
 
 $(OBJ_DIR)\drawwidg.obj : $(OBJ_DIR)\drawwidg.c
-$(OBJ_DIR)\errorsys.obj : $(OBJ_DIR)\errorsys.c
+$(OBJ_DIR)\herrosys.obj : $(OBJ_DIR)\herrosys.c
 $(OBJ_DIR)\guimain.obj  : $(OBJ_DIR)\guimain.c
 $(OBJ_DIR)\hbrowse.obj  : $(OBJ_DIR)\hbrowse.c
 $(OBJ_DIR)\hcheck.obj   : $(OBJ_DIR)\hcheck.c
@@ -161,6 +173,7 @@ $(OBJ_DIR)\hipedit.obj  : $(OBJ_DIR)\hipedit.c
 $(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
 $(OBJ_DIR)\repexec.obj  : $(OBJ_DIR)\repexec.c
 $(OBJ_DIR)\printdos.obj : $(OBJ_DIR)\printdos.c
+$(OBJ_DIR)\richtext.obj : $(OBJ_DIR)\richtext.c
 $(OBJ_DIR)\hmonthc.obj  : $(OBJ_DIR)\hmonthc.c
 
 $(OBJ_DIR)\procini.c   : $(SRC_DIR)\procmisc\procini.prg

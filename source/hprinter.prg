@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.10 2004-11-15 14:23:18 sandrorrfreire Exp $
+ * $Id: hprinter.prg,v 1.11 2004-11-16 06:20:14 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -72,7 +72,7 @@ Local aPrnCoors, cPrinterName, cDriverName
       ::nPHeight := Iif( ::lmm, aPrnCoors[9], aPrnCoors[2] )
       ::nHRes   := aPrnCoors[1] / aPrnCoors[3]
       ::nVRes   := aPrnCoors[2] / aPrnCoors[4]
-      writelog( ::cPrinterName + str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6])+str(aPrnCoors[8])+str(aPrnCoors[9]) )
+      // writelog( ::cPrinterName + str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6])+str(aPrnCoors[8])+str(aPrnCoors[9]) )
    ENDIF
 
 Return Self
@@ -82,6 +82,9 @@ Local hPrinter := ::hPrinter, hDC, aPrnCoors
 
    hDC := SetPrinterMode( ::cPrinterName, @hPrinter, nOrientation )
    IF hDC != Nil
+      IF ::hDCPrn != 0
+         DeleteDC( ::hDCPrn )
+      ENDIF
       ::hDCPrn := hDC
       ::hPrinter := hPrinter
       aPrnCoors := GetDeviceArea( ::hDCPrn )
@@ -91,7 +94,7 @@ Local hPrinter := ::hPrinter, hDC, aPrnCoors
       ::nPHeight := Iif( ::lmm, aPrnCoors[9], aPrnCoors[2] )
       ::nHRes   := aPrnCoors[1] / aPrnCoors[3]
       ::nVRes   := aPrnCoors[2] / aPrnCoors[4]
-      writelog( ":"+str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6])+str(aPrnCoors[8])+str(aPrnCoors[9]) )
+      // writelog( ":"+str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6])+str(aPrnCoors[8])+str(aPrnCoors[9]) )
       Return .T.
    ENDIF
 
@@ -197,7 +200,6 @@ Local fname
 
    IF ::lPreview
       fname := Iif( ::cMetaName!=Nil, ::cMetaName + Ltrim(Str(Len(::aMeta)+1)) + ".emf", Nil )
-      // Aadd( ::aMeta, CreateEnhMetaFile( HWindow():GetMain():handle,fname ) )
       Aadd( ::aMeta, CreateMetaFile( ::hDCPrn,fname ) )
       ::hDC := Atail( ::aMeta )
    ELSE
@@ -351,34 +353,25 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
       INIT 1 AUTOTICKS VERTICAL ;
       ON DRAG {|o|ResizePreviewDlg(oCanvas,Self,,.T.)}
       
-   if aBootUser!=Nil
+   IF aBootUser != Nil
   
-      @ 1,310 LINE LENGTH oToolBar:nWidth-1
+      @ 1,313 LINE LENGTH oToolBar:nWidth-1
 
-      if Len(aBootUser)==4
-         lText:=aBootUser[4]
-      else
-         lText:="Button User"
-      endif      
+      @ 3,316 OWNERBUTTON oBtn OF oToolBar  ;
+           SIZE oToolBar:nWidth-6,24        ;
+           TEXT Iif( Len(aBootUser)==4,aBootUser[4],"User Button" ) ;
+           FONT oFont FLAT                  ;
+           TOOLTIP Iif(aBootUser[3]!=Nil,aBootUser[3],"User Button")
       
-      @ 3,313 OWNERBUTTON oBtn OF oToolBar  ;
-           SIZE oToolBar:nWidth-6,24 TEXT lText FONT oFont FLAT  ;
-           TOOLTIP Iif(aBootUser[3]!=Nil,aBootUser[3],"Button User")
-      
-      oBtn:bCLICK :=aBootUser[1]
+      oBtn:bClick := aBootUser[1]
       
       IF aBootUser[2] != Nil  
          oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBootUser[2] ), HBitmap():AddFile( aBootUser[2] ) )
          oBtn:text   := Nil
-         If aBitmaps[10]<>Nil
-             IF aBitmaps[10]
-                oBtn:lTransp:=.T.
-             ENDIF
-         endif       
+         oBtn:lTransp := lTransp
       ENDIF
       
-   endif    
-
+   ENDIF    
 
    oDlg:Activate()
 

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.2 2005-01-19 17:38:31 lf_sfnet Exp $
+ * $Id: window.c,v 1.3 2005-01-20 08:38:26 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -189,7 +189,11 @@ void cb_signal( GtkWidget *widget,gchar* data )
       
       pObject->type = HB_IT_OBJECT;
       pObject->item.asArray.value = (PHB_BASEARRAY) gObject;
+      #ifndef UIHOLDERS
       pObject->item.asArray.value->ulHolders++;
+      #else
+      pObject->item.asArray.value->uiHolders++;
+      #endif
 
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
@@ -228,7 +232,11 @@ static gint cb_event( GtkWidget *widget, GdkEventKey * event, gchar* data )
       
       pObject->type = HB_IT_OBJECT;
       pObject->item.asArray.value = (PHB_BASEARRAY) gObject;
+      #ifndef UIHOLDERS
       pObject->item.asArray.value->ulHolders++;
+      #else
+      pObject->item.asArray.value->uiHolders++;
+      #endif  
 
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
@@ -236,11 +244,7 @@ static gint cb_event( GtkWidget *widget, GdkEventKey * event, gchar* data )
       hb_vmPushLong( p2 );
       hb_vmPushLong( p3 );
       hb_vmSend( 3 );
-#ifdef HARBOUR_CVS_VERSION
-      lRes = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-#else
       lRes = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-#endif
       hb_itemRelease( pObject );
       return lRes;
    }
@@ -262,23 +266,32 @@ void all_signal_connect( gpointer hWnd )
    }
 }
 
-HB_FUNC( HWG_SETSIGNAL )
+void set_signal( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 )
 {
    char buf[25];
    
-   sprintf( buf,"%ld %ld %ld",hb_parnl(3),hb_parnl(4),hb_parnl(5) );   
-   g_signal_connect( (gpointer)hb_parnl(1), hb_parc(2),
+   sprintf( buf, "%ld %ld %ld", p1, p2, p3 );
+   g_signal_connect( handle, cSignal,
                       G_CALLBACK (cb_signal), g_strdup(buf) );
+}
 
+HB_FUNC( HWG_SETSIGNAL )
+{
+   set_signal( (gpointer)hb_parnl(1), hb_parc(2), hb_parnl(3), hb_parnl(4), hb_parnl(5) );
+}
+
+void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 )
+{
+   char buf[25];
+   
+   sprintf( buf, "%ld %ld %ld", p1, p2, p3 );
+   g_signal_connect( handle, cSignal,
+                      G_CALLBACK (cb_event), g_strdup(buf) );
 }
 
 HB_FUNC( HWG_SETEVENT )
 {
-   char buf[25];
-   
-   sprintf( buf,"%ld %ld %ld",hb_parnl(3),hb_parnl(4),hb_parnl(5) );   
-   g_signal_connect( (gpointer)hb_parnl(1), hb_parc(2),
-                      G_CALLBACK (cb_event), g_strdup(buf) );
+   set_event( (gpointer)hb_parnl(1), hb_parc(2), hb_parnl(3), hb_parnl(4), hb_parnl(5) );
 }
 
 GtkWidget * GetActiveWindow( void )
@@ -380,11 +393,7 @@ PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
 
       hb_vmDo( 0 );
    }
-#ifdef HARBOUR_CVS_VERSION
-   return ( hb_stackReturnItem() );
-#else   
-   return ( hb_stackReturn() );   
-#endif
+   return ( hb_stackReturn() );
 }
 
 void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 2005-01-14 11:23:20 alkresin Exp $
+# $Id: Makefile,v 1.4 2005-01-20 08:38:26 alkresin Exp $
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 HRB_DIR = /apps/harbour
@@ -18,19 +18,23 @@ all: \
 $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/commond.o \
    $(OBJ_DIR)/control.o \
+   $(OBJ_DIR)/draw.o \
    $(OBJ_DIR)/window.o \
    $(OBJ_DIR)/menu_c.o \
    $(OBJ_DIR)/message.o \
    $(OBJ_DIR)/misc.o \
-   $(OBJ_DIR)/gtkmain.o \
-   $(OBJ_DIR)/hcwindow.o \
+   $(OBJ_DIR)/drawwidg.o \
    $(OBJ_DIR)/errorsys.o \
+   $(OBJ_DIR)/gtkmain.o \
+   $(OBJ_DIR)/hbrowse.o \
+   $(OBJ_DIR)/hcwindow.o \
    $(OBJ_DIR)/hcheck.o \
    $(OBJ_DIR)/hcombo.o \
    $(OBJ_DIR)/hcontrol.o \
    $(OBJ_DIR)/hdialog.o \
    $(OBJ_DIR)/hedit.o \
    $(OBJ_DIR)/hfrmtmpl.o \
+   $(OBJ_DIR)/hgraph.o \
    $(OBJ_DIR)/hradio.o \
    $(OBJ_DIR)/htimer.o \
    $(OBJ_DIR)/hupdown.o \
@@ -42,6 +46,9 @@ $(OBJ_DIR)/commond.o   : commond.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $^
 
 $(OBJ_DIR)/control.o   : control.c
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $^
+
+$(OBJ_DIR)/draw.o   : draw.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $^
 
 $(OBJ_DIR)/window.o   : window.c
@@ -56,20 +63,30 @@ $(OBJ_DIR)/message.o   : message.c
 $(OBJ_DIR)/misc.o   : misc.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $^
 
-$(OBJ_DIR)/gtkmain.o  : $(OBJ_DIR)/gtkmain.c
+$(OBJ_DIR)/drawwidg.o  : $(OBJ_DIR)/drawwidg.c
 
-$(OBJ_DIR)/gtkmain.c    : gtkmain.prg
+$(OBJ_DIR)/drawwidg.c  : drawwidg.prg
 	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
-
-$(OBJ_DIR)/hcwindow.o  : $(OBJ_DIR)/hcwindow.c
-
-$(OBJ_DIR)/hcwindow.c  : hcwindow.prg
-	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__LINUX_GTK__ -o$@ $^
 
 $(OBJ_DIR)/errorsys.o  : $(OBJ_DIR)/errorsys.c
 
 $(OBJ_DIR)/errorsys.c  : errorsys.prg
 	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
+
+$(OBJ_DIR)/gtkmain.o  : $(OBJ_DIR)/gtkmain.c
+
+$(OBJ_DIR)/gtkmain.c    : gtkmain.prg
+	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
+
+$(OBJ_DIR)/hbrowse.o  : $(OBJ_DIR)/hbrowse.c
+
+$(OBJ_DIR)/hbrowse.c  : hbrowse.prg
+	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__LINUX_GTK__ -o$@ $^
+
+$(OBJ_DIR)/hcwindow.o  : $(OBJ_DIR)/hcwindow.c
+
+$(OBJ_DIR)/hcwindow.c  : hcwindow.prg
+	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__LINUX_GTK__ -o$@ $^
 
 $(OBJ_DIR)/hcheck.o  : $(OBJ_DIR)/hcheck.c
 
@@ -101,14 +118,19 @@ $(OBJ_DIR)/hfrmtmpl.o  : $(OBJ_DIR)/hfrmtmpl.c
 $(OBJ_DIR)/hfrmtmpl.c  : hfrmtmpl.prg
 	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
 
-$(OBJ_DIR)/htimer.o  : $(OBJ_DIR)/htimer.c
+$(OBJ_DIR)/hgraph.o  : $(OBJ_DIR)/hgraph.c
 
-$(OBJ_DIR)/htimer.c  : htimer.prg
+$(OBJ_DIR)/hgraph.c  : hgraph.prg
 	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
 
 $(OBJ_DIR)/hradio.o  : $(OBJ_DIR)/hradio.c
 
 $(OBJ_DIR)/hradio.c  : hradio.prg
+	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
+
+$(OBJ_DIR)/htimer.o  : $(OBJ_DIR)/htimer.c
+
+$(OBJ_DIR)/htimer.c  : htimer.prg
 	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
 
 $(OBJ_DIR)/hupdown.o  : $(OBJ_DIR)/hupdown.c

@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.1 2005-01-12 11:56:33 alkresin Exp $
+ * $Id: commond.c,v 1.2 2005-01-20 08:38:26 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
@@ -95,12 +95,12 @@ void store_color( gpointer colorseldlg )
 {
    GtkColorSelection *colorsel;
    GdkColor color;
-   char ss[30];   
+   // char ss[30];   
 
    colorsel = GTK_COLOR_SELECTION( GTK_COLOR_SELECTION_DIALOG (colorseldlg)->colorsel );
    gtk_color_selection_get_current_color (colorsel, &color);
-   sprintf( ss,"%ld %ld %ld %ld \n\r",color.pixel,color.red,color.green,color.blue );
-   g_print(ss);
+   // sprintf( ss,"%ld %ld %ld %ld \n\r",color.pixel,color.red,color.green,color.blue );
+   // g_print(ss);
    
    hb_retnl( color.blue + color.green * 256 + color.red * 65536 );
    gtk_widget_destroy( (GtkWidget*) colorseldlg );
@@ -120,9 +120,9 @@ HB_FUNC( HWG_CHOOSECOLOR )
       char ss[30];
       GdkColor color;
       color.pixel = 0;
-      color.blue = hb_parnl(1) % 256;
-      color.green = ( hb_parnl(1) % 65536 ) / 256;
-      color.red = ( hb_parnl(1) % 16777216 ) / 65536;
+      color.blue =  ( hb_parnl(1) % 256 ) * 256;
+      color.green = ( hb_parnl(1) % 65536 );
+      color.red =   ( hb_parnl(1) % 16777216 ) / 256;
       sprintf( ss,"%ld %ld %ld %ld \n\r",hb_parnl(1),color.red,color.green,color.blue );
       g_print(ss);
       gtk_color_selection_set_previous_color( colorsel, &color );

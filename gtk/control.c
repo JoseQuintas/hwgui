@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.4 2005-01-19 17:38:31 lf_sfnet Exp $
+ * $Id: control.c,v 1.5 2005-01-20 08:38:26 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -25,7 +25,16 @@
 #define SS_RIGHT                  2
 
 #define BS_AUTO3STATE       6
+#define BS_GROUPBOX         7
 #define BS_AUTORADIOBUTTON  9
+
+#define SS_OWNERDRAW        13    // 0x0000000DL
+
+#define WM_PAINT            15
+
+extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
+extern void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 );
+extern void cb_signal( GtkWidget *widget,gchar* data );
 
 static GtkTooltips * pTooltip = NULL;
 static PHB_DYNS pSymTimerProc = NULL;
@@ -42,17 +51,19 @@ GtkFixed * getFixedBox( GObject * handle )
 
       pObj->type = HB_IT_OBJECT;
       pObj->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
+      #ifndef UIHOLDERS
+      pObj->item.asArray.value->ulHolders++;
+      #else
+      pObj->item.asArray.value->uiHolders++;
+      #endif
+ 
       if( pMsg )
       {
          hb_vmPushSymbol( pMsg->pSymbol );   /* Push message symbol */
          hb_vmPush( pObj );                  /* Push object */
          hb_vmDo( 0 );
       }
-#ifdef HARBOUR_CVS_VERSION
-      box = (GtkFixed *) hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-#else 
       box = (GtkFixed *) hb_itemGetNL( (PHB_ITEM) hb_stackReturn() ); 
-#endif
       hb_itemRelease( pObj );
       return box;
    }
@@ -69,16 +80,28 @@ HB_FUNC( CREATESTATIC )
    char * cTitle = ( hb_pcount() > 8 )? hb_parc(9) : "";
    GtkWidget * hCtrl;
 
-   cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
-   hCtrl = gtk_label_new( cTitle );
-   g_free( cTitle );
+   if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
+      hCtrl = gtk_drawing_area_new();
+   else
+   {
+      cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
+      hCtrl = gtk_label_new( cTitle );
+      g_free( cTitle );
+   }
    GtkFixed * box = getFixedBox( (GObject*) hb_parnl(1) );
    if ( box )
       gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );  
    gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
-   
-   if( !( ulStyle & SS_CENTER ) )
-      gtk_label_set_justify( (GtkLabel*)hCtrl, ( ulStyle & SS_RIGHT )? GTK_JUSTIFY_RIGHT : GTK_JUSTIFY_LEFT );
+
+   if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
+   {
+      set_event( (gpointer)hCtrl, "expose_event", WM_PAINT, 0, 0 );   
+   }
+   else
+   {
+      if( !( ulStyle & SS_CENTER ) )
+         gtk_label_set_justify( (GtkLabel*)hCtrl, ( ulStyle & SS_RIGHT )? GTK_JUSTIFY_RIGHT : GTK_JUSTIFY_LEFT );
+   }
 
    hb_retnl( (LONG) hCtrl );
 
@@ -102,15 +125,17 @@ HB_FUNC( CREATEBUTTON )
    char * cTitle = ( hb_pcount() > 7 )? hb_parc(8) : "";
 
    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
-   if( ulStyle & BS_AUTORADIOBUTTON )
+   if( ( ulStyle & 0xf ) == BS_AUTORADIOBUTTON )
    {
       GSList * group = (GSList*)hb_parnl(2);
       hCtrl = gtk_radio_button_new_with_label( group,cTitle );
       group = gtk_radio_button_get_group( (GtkRadioButton*)hCtrl );
       hb_stornl( (LONG)group,2 );
    }  
-   else if( ulStyle & BS_AUTO3STATE )
+   else if( ( ulStyle & 0xf ) == BS_AUTO3STATE )
       hCtrl = gtk_check_button_new_with_label( cTitle );
+   else if( ( ulStyle & 0xf ) == BS_GROUPBOX )
+      hCtrl = gtk_frame_new( cTitle );
    else
       hCtrl = gtk_button_new_with_label( cTitle );
 
@@ -264,6 +289,43 @@ HB_FUNC( HWG_SETUPDOWN )
 HB_FUNC( HWG_GETUPDOWN )
 {
    hb_retnl( gtk_spin_button_get_value_as_int( (GtkSpinButton*)hb_parnl(1) ) );
+}
+
+HB_FUNC( CREATEBROWSE )
+{
+   GtkWidget *vbox, *hbox;
+   GtkWidget *vscroll, *hscroll;
+   GtkWidget *area;
+   GtkFixed * box;
+   PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
+   GObject * handle;
+   int nLeft = hb_itemGetNI( GetObjectVar( pObject, "NLEFT" ) );
+   int nTop = hb_itemGetNI( GetObjectVar( pObject, "NTOP" ) );
+   int nWidth = hb_itemGetNI( GetObjectVar( pObject, "NWIDTH" ) );
+   int nHeight = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
+   
+   temp = GetObjectVar( pObject, "OPARENT" );
+   handle = (GObject*) hb_itemGetNL( GetObjectVar( temp, "HANDLE" ) );
+   
+   hbox = gtk_hbox_new( FALSE, 0 );
+   vbox = gtk_vbox_new( FALSE, 0 );
+   
+   vscroll = gtk_vscrollbar_new( NULL );
+   hscroll = gtk_hscrollbar_new( NULL );
+   area    = gtk_drawing_area_new();
+
+   gtk_box_pack_start( GTK_BOX( hbox ), vbox, TRUE, TRUE, 0 );
+   gtk_box_pack_end( GTK_BOX( hbox ), vscroll, FALSE, FALSE, 0 );
+
+   gtk_box_pack_start( GTK_BOX( vbox ), area, TRUE, TRUE, 0 );
+   gtk_box_pack_end( GTK_BOX( vbox ), hscroll, FALSE, FALSE, 0 );
+   
+   box = getFixedBox( handle );
+   if ( box )
+      gtk_fixed_put( box, hbox, nLeft, nTop );
+   gtk_widget_set_size_request( hbox, nWidth, nHeight );
+   
+   hb_retnl( (LONG) hbox );
 }
 
 HB_FUNC( ADDTOOLTIP )

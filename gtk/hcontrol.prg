@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.2 2005-01-14 11:23:20 alkresin Exp $
+ *$Id: hcontrol.prg,v 1.3 2005-01-20 08:38:26 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -91,11 +91,11 @@ METHOD INIT CLASS HControl
 RETURN Nil
 
 METHOD SetColor( tcolor,bcolor,lRepaint ) CLASS HControl
-/*
+
    IF tcolor != Nil
       ::tcolor  := tcolor
       IF bColor == Nil .AND. ::bColor == Nil
-         bColor := GetSysColor( COLOR_3DFACE )
+         // bColor := GetSysColor( COLOR_3DFACE )
       ENDIF
    ENDIF
 
@@ -108,9 +108,9 @@ METHOD SetColor( tcolor,bcolor,lRepaint ) CLASS HControl
    ENDIF
 
    IF lRepaint != Nil .AND. lRepaint
-      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+      // RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
    ENDIF
-*/
+
 Return Nil
 
 METHOD End() CLASS HControl
@@ -351,5 +351,3 @@ Local hDC := drawInfo[3], x1 := drawInfo[4], y1 := drawInfo[5], x2 := drawInfo[6
 */   
 Return Nil
 
-CLASS HFont
-ENDCLASS

@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.26 2004-06-15 12:34:02 alkresin Exp $
+ *$Id: hwindow.prg,v 1.27 2004-06-15 15:05:20 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -678,7 +678,7 @@ Local iParHigh, iParLow, oWnd, oBtn, oitem, oCtrl
       iParLow := LoWord( wParam )
       IF oWnd:aEvents != Nil .AND. ;
          ( iItem := Ascan( oWnd:aEvents, {|a|a[1]==iParHigh.and.a[2]==iParLow} ) ) > 0
-         Eval( oWnd:aEvents[ iItem,3 ] )
+         Eval( oWnd:aEvents[ iItem,3 ],oWnd,iParLow )
       ENDIF
       return 0
    elseif msg == WM_MOUSEMOVE

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.29 2004-06-17 15:51:56 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.30 2004-06-29 06:23:26 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -108,15 +108,16 @@ CLASS HBrowse INHERIT HControl
    DATA lDispSep   INIT .T.                    // Should I display separators ?
    DATA aColumns                               // HColumn's array
    DATA rowCount                               // Number of visible data rows
-   DATA rowPos                                 // Current row position
+   DATA rowPos     INIT 1                      // Current row position
    DATA rowCurrCount INIT 0                    // Current number of rows
-   DATA colPos                                 // Current column position
+   DATA colPos     INIT 1                      // Current column position
    DATA nColumns                               // Number of visible data columns
    DATA nLeftCol                               // Leftmost column
    DATA xpos
    DATA freeze                                 // Number of columns to freeze
    DATA kolz                                   // Number of records in browse
-   DATA tekzp,msrec
+   DATA tekzp      INIT 1
+   DATA msrec
    DATA recCurr INIT 0
    DATA headColor                              // Header text color
    DATA sepColor INIT 12632256                 // Separators color
@@ -363,7 +364,7 @@ METHOD Rebuild( hDC ) CLASS HBrowse
       ::brushSel  := HBrush():Add( ::bcolorSel )
    ENDIF
    ::nLeftCol  := ::freeze + 1
-   ::tekzp     := ::rowPos := ::colPos := 1
+   // ::tekzp     := ::rowPos := ::colPos := 1
    ::lEditable := .F.
 
    ::minHeight := 0

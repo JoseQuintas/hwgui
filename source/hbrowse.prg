@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.41 2004-12-07 17:21:09 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.42 2004-12-14 13:29:39 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -106,6 +106,8 @@ CLASS HBrowse INHERIT HControl
    DATA lDispHead  INIT .T.                    // Should I display headers ?
    DATA lDispSep   INIT .T.                    // Should I display separators ?
    DATA aColumns                               // HColumn's array
+   DATA aColAlias  INIT {}
+   DATA aRelation  INIT .F. 
    DATA rowCount                               // Number of visible data rows
    DATA rowPos     INIT 1                      // Current row position
    DATA rowCurrCount INIT 0                    // Current number of rows
@@ -1541,14 +1543,22 @@ STATIC FUNCTION FldStr( oBrw,numf )
 
       if pict != nil
          if oBrw:type == BRW_DATABASE
-             rez := (oBrw:alias)->(transform(eval( oBrw:aColumns[numf]:block,,oBrw,numf ), pict)) 
+             if oBrw:aRelation  
+                rez := (oBrw:aColAlias[numf])->(transform(eval( oBrw:aColumns[numf]:block,,oBrw,numf ), pict)) 
+             else 
+                rez := (oBrw:alias)->(transform(eval( oBrw:aColumns[numf]:block,,oBrw,numf ), pict)) 
+             endif   
          else
              rez := transform(eval( oBrw:aColumns[numf]:block,,oBrw,numf ), pict) 
          endif
          
       else
          if oBrw:type == BRW_DATABASE
-             vartmp := (oBrw:alias)->(eval( oBrw:aColumns[numf]:block,,oBrw,numf ))
+             if oBrw:aRelation  
+                 vartmp := (oBrw:aColAlias[numf])->(eval( oBrw:aColumns[numf]:block,,oBrw,numf ))
+             else
+                 vartmp := (oBrw:alias)->(eval( oBrw:aColumns[numf]:block,,oBrw,numf ))
+             endif    
          else
              vartmp := eval( oBrw:aColumns[numf]:block,,oBrw,numf )
          endif

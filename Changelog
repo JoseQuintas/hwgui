@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.326 2004-12-13 16:27:35 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.327 2004-12-14 13:29:37 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-12-14 11-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/hbrowse.prg
+    new variables ::acolAlias and ::aRelation
+    If hbrowse use set relation, the variables determine the alias to usein
+    function FldStr, see line 1546
 
 2004-12-13 14-15 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   + source/hrect.prg

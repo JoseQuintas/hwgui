@@ -1,5 +1,5 @@
 /*
- * $Id: hxmldoc.prg,v 1.1 2004-03-18 11:19:12 alkresin Exp $
+ * $Id: hxmldoc.prg,v 1.2 2004-03-29 05:57:09 alkresin Exp $
  *
  * Harbour XML Library
  * HXmlDoc class
@@ -29,6 +29,7 @@ CLASS HXMLNode
    METHOD GetAttribute( cName )
    METHOD SetAttribute( cName,cValue )
    METHOD Save( handle,level )
+   METHOD Find( cTitle,nStart )
 ENDCLASS
 
 METHOD New( cTitle, type, aAttr, cValue ) CLASS HXMLNode
@@ -109,6 +110,20 @@ Local i, s, lNewLine
       FWrite( handle, Iif(lNewLine,Space(level*2),"") + '</' + ::title + '>' + Chr(10 ) )
    ENDIF
 Return .T.
+
+METHOD Find( cTitle,nStart ) CLASS HXMLNode
+Local i
+
+   IF nStart == Nil
+      nStart := 1
+   ENDIF
+   i := Ascan( ::aItems,{|a|Valtype(a)!="C".AND.a:title==cTitle},nStart )
+   IF i != 0
+      nStart := i
+      Return ::aItems[i]
+   ENDIF
+
+Return Nil
 
 
 /*

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.9 2004-03-25 07:13:15 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.10 2004-03-29 05:57:09 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -650,7 +650,7 @@ Local x, dx, i := 1, shablon, sviv, fif, fldname, slen, xSize
 Local j, ob, bw, bh, y1, hBReal
 Local oldBkColor, oldTColor, oldBk1Color, oldT1Color
 Local oLineBrush := Iif( lSelected, ::brushSel,::brush )
-Local hFont := 0
+Local lColumnFont := .F.
 
    ::xpos := x := ::x1
    IF lClear == Nil ; lClear := .F. ; ENDIF
@@ -684,8 +684,8 @@ Local hFont := 0
             IF !lClear
                IF ::aColumns[fif]:aBitmaps != Nil .AND. !Empty( ::aColumns[fif]:aBitmaps )
                   FOR j := 1 TO Len( ::aColumns[fif]:aBitmaps )
-                     IF Eval( ::aColumns[fif]:aBitmaps[i,1],EVAL( ::aColumns[fif]:block,,Self,fif ),lSelected )
-                        ob := ::aColumns[fif]:aBitmaps[i,2]
+                     IF Eval( ::aColumns[fif]:aBitmaps[j,1],EVAL( ::aColumns[fif]:block,,Self,fif ),lSelected ) //vlad i change on j
+                        ob := ::aColumns[fif]:aBitmaps[j,2] //vlad i change on j
                         IF ob:nHeight > ::height
                            y1 := 0
                            bh := ::height
@@ -711,10 +711,11 @@ Local hFont := 0
                      oldBk1Color := SetBkColor( hDC, ::aColumns[fif]:bColor )
                   ENDIF
                   IF ::aColumns[fif]:oFont != Nil
-                     hFont := SelectObject( hDC, ::aColumns[fif]:oFont:handle )
-                  ELSEIF hFont != 0
-                     SelectObject( hDC, hFont )
-                     hFont := 0
+                     SelectObject( hDC, ::aColumns[fif]:oFont:handle )
+                     lColumnFont := .T.
+                  ELSEIF lColumnFont
+                     SelectObject( hDC, ::ofont:handle )
+                     lColumnFont := .F.
                   ENDIF
                   DrawText( hDC, sviv, x, ::y1+(::height+1)*(nstroka-1)+1, x+xSize-2,::y1+(::height+1)*nstroka-1, ::aColumns[fif]:nJusLin )
                   IF ::aColumns[fif]:tColor != Nil
@@ -735,8 +736,8 @@ Local hFont := 0
       ENDDO
       SetTextColor( hDC,oldTColor )
       SetBkColor( hDC,oldBkColor )
-      IF hFont != 0
-         SelectObject( hDC, hFont )
+      IF lColumnFont
+         SelectObject( hDC, ::ofont:handle )
       ENDIF
    ENDIF
 RETURN Nil
@@ -818,6 +819,10 @@ Local nScrollCode := LoWord( wParam )
       ::BOTTOM()
    elseif nScrollCode == SB_TOP
       ::TOP()
+   elseif nScrollCode == SB_PAGEDOWN
+      ::PAGEDOWN()
+   elseif nScrollCode == SB_PAGEUP
+      ::PAGEUP()
 
    elseif nScrollCode == SB_THUMBPOSITION
 

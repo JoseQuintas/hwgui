@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.5 2004-03-24 13:36:17 alkresin Exp $
+ * $Id: menu.prg,v 1.6 2004-03-29 05:57:09 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -84,55 +84,39 @@ Function Hwg_SetMenu( oWnd, aMenu )
 Return .T.
 
 /*
- *  AddMenuItem( aMenu,cItem,nMenuId,lSubMenu,[bItem] [,nPos [,lPos]] ) --> aMenuItem
+ *  AddMenuItem( aMenu,cItem,nMenuId,lSubMenu,[bItem] [,nPos] ) --> aMenuItem
  *
  *  If nPos is omitted, the function adds menu item to the end of menu,
- *  else if lPos is omitted or TRUE, it inserts menu item in nPos position,
- *  else if lPos is FALSE - before item with ID == nPos
+ *  else it inserts menu item in nPos position.
  */
-Function Hwg_AddMenuItem( aMenu,cItem,nMenuId,lSubMenu,bItem,nPos,lPos )
+Function Hwg_AddMenuItem( aMenu,cItem,nMenuId,lSubMenu,bItem,nPos )
 Local hSubMenu
 
    IF nPos == Nil
       nPos := Len( aMenu[1] ) + 1
-      lPos := .T.
-   ELSEIF lPos == Nil
-      lPos := .F.
    ENDIF
-   IF !lPos
-      IF ( aMenu := Hwg_FindMenuItem( aMenu, nMenuId, @nPos ) ) == Nil
-         Return Nil
-      ENDIF
-   ENDIF
+
    hSubMenu := aMenu[5]
-   hSubMenu := hwg__AddMenuItem( hSubMenu, cItem, nPos, .T., nMenuId,,lSubMenu )
-   /*
-   IF !hwg__AddMenuItem( hSubMenu, cItem, nPos, .T., nMenuId )
-      Return Nil
-   ENDIF
-   IF lSubmenu
-      IF ( hSubMenu := hwg__CreateSubMenu( hSubMenu,nMenuId ) ) == 0
-         Return Nil
-      ENDIF
-   ENDIF
-   */
+   hSubMenu := hwg__AddMenuItem( hSubMenu, cItem, nPos-1, .T., nMenuId,,lSubMenu )
+
    IF nPos > Len( aMenu[1] )
       IF lSubmenu
-         Aadd( aMenu[1],{ {},cItem,nMenuId,hSubMenu } )
+         Aadd( aMenu[1],{ {},cItem,nMenuId,.T.,hSubMenu } )
       ELSE
-         Aadd( aMenu[1],{ bItem,cItem,nMenuId } )
+         Aadd( aMenu[1],{ bItem,cItem,nMenuId,.T. } )
       ENDIF
       Return ATail( aMenu[1] )
    ELSE
       Aadd( aMenu[1],Nil )
       Ains( aMenu[1],nPos )
       IF lSubmenu
-         aMenu[ 1,nPos ] := { {},cItem,nMenuId,hSubMenu }
+         aMenu[ 1,nPos ] := { {},cItem,nMenuId,.T.,hSubMenu }
       ELSE
-         aMenu[ 1,nPos ] := { bItem,cItem,nMenuId }
+         aMenu[ 1,nPos ] := { bItem,cItem,nMenuId,.T. }
       ENDIF
       Return aMenu[ 1,nPos ]
    ENDIF
+
 Return Nil
 
 Function Hwg_FindMenuItem( aMenu, nId, nPos )

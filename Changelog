@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.149 2004-05-27 14:45:08 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.150 2004-05-27 16:29:59 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-05-27 20:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/windows.ch
+  * source/hnice.prg
+    * #define TRANSPARENT moved from windows.ch to hnice.prg, because it
+      interferes with declaration of OWNERBUTTON.
+  * source/window.c
+    * SetWindowFont( hWnd, hFont, lRedraw ) added.
 
 2004-05-27 11-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/commond.c

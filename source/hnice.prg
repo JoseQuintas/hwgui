@@ -1,8 +1,20 @@
+/*
+ * $Id: hnice.prg,v 1.2 2004-05-27 16:30:01 alkresin Exp $
+ *
+ * HWGUI - Harbour Win32 GUI library source code:
+ * 
+ *
+ * Copyright 2004 Luiz Rafael Culik Guimaraes <culikr@brtrubo.com>
+ * www - http://sites.uol.com.br/culikr/
+*/
+
 #include "windows.ch"
 #include "inkey.ch"
 #include "HBClass.ch"
 #include "guilib.ch"
 #include "common.ch"
+
+#define TRANSPARENT 1
 
 CLASS HNiceButton INHERIT HControl
 

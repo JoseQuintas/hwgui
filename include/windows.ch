@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.13 2004-05-21 14:03:54 lculik Exp $
+ *$Id: windows.ch,v 1.14 2004-05-27 16:30:00 alkresin Exp $
  */
 
 #define WM_CREATE                       1
@@ -839,4 +839,4 @@
 #define WM_CAPTURECHANGED               0x0215
 #define WM_MOVING                       0x0216
 #define GWL_ID (-12)
-#define TRANSPARENT 1
+

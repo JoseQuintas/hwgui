@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.18 2004-05-17 10:17:54 alkresin Exp $
+ * $Id: window.c,v 1.19 2004-05-27 16:30:01 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -488,12 +488,12 @@ HB_FUNC ( GETWINDOWOBJECT )
    }
 }
 
-HB_FUNC ( SETWINDOWTEXT)
+HB_FUNC( SETWINDOWTEXT)
 {
    SetWindowText( (HWND) hb_parnl( 1 ), (LPCTSTR) hb_parc( 2 ) );
 }
 
-HB_FUNC ( GETWINDOWTEXT )
+HB_FUNC( GETWINDOWTEXT )
 {
    HWND   hWnd = (HWND) hb_parnl( 1 );
    USHORT iLen = (USHORT)SendMessage( hWnd, WM_GETTEXTLENGTH, 0, 0 );
@@ -505,6 +505,12 @@ HB_FUNC ( GETWINDOWTEXT )
    else
       hb_retc( "" );
    hb_xfree( cText );
+}
+
+HB_FUNC( SETWINDOWFONT )
+{
+   SendMessage( (HWND) hb_parnl( 1 ), WM_SETFONT, (WPARAM) hb_parnl( 2 ), 
+       MAKELPARAM( (ISNIL(3))? 0 : hb_parl(3), 0 ) );
 }
 
 HB_FUNC ( ENABLEWINDOW )

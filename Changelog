@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.83 2004-04-12 19:01:39 andijahja Exp $
+ * $Id: Changelog,v 1.84 2004-04-15 17:41:21 rodrigo_moreno Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2004-04-15 14-40 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
+  * source/hbrowse.prg
+    ! Fixed problem on fldstr when used with database clause.
+
 2004-04-13 02:15 UTC+0700 Andi Jahja <harbour@cbn.net.id>
   + makefile.pc
   + make_pc.bat

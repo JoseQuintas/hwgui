@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.16 2004-04-12 10:06:15 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.17 2004-04-15 17:41:21 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1340,17 +1340,25 @@ STATIC FUNCTION FldStr( oBrw,numf )
    local nItem := numf
    local type
    local pict
-
+   
    if numf <= len( oBrw:aColumns )
 
       type := (oBrw:aColumns[numf]):type
       pict := oBrw:aColumns[numf]:picture
 
       if pict != nil
-         rez := transform(eval( oBrw:aColumns[numf]:block,,oBrw,numf ), pict) 
+         if oBrw:type == BRW_DATABASE
+             rez := (oBrw:alias)->(transform(eval( oBrw:aColumns[numf]:block,,oBrw,numf ), pict)) 
+         else
+             rez := transform(eval( oBrw:aColumns[numf]:block,,oBrw,numf ), pict) 
+         endif
          
       else
-         vartmp := eval( oBrw:aColumns[numf]:block,,oBrw,numf )
+         if oBrw:type == BRW_DATABASE
+             vartmp := (oBrw:alias)->(eval( oBrw:aColumns[numf]:block,,oBrw,numf ))
+         else
+             vartmp := eval( oBrw:aColumns[numf]:block,,oBrw,numf )
+         endif
 
          if type == "C"
             rez := padr( vartmp, oBrw:aColumns[numf]:length )

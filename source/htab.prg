@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.9 2004-07-21 09:47:48 alkresin Exp $
+ *$Id: htab.prg,v 1.10 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 #define TCM_SETCURSEL           4876     // (TCM_FIRST + 12)

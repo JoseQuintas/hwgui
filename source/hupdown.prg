@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.3 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: hupdown.prg,v 1.4 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 #define UDS_SETBUDDYINT     2

@@ -6,7 +6,7 @@
  * www - http://www.geocities.com/alkresin/
 */
 
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "windows.ch"
 #include "guilib.ch"
 

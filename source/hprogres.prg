@@ -7,7 +7,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 CLASS HProgressBar INHERIT HControl

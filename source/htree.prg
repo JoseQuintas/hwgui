@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.7 2004-07-21 09:47:48 alkresin Exp $
+ * $Id: htree.prg,v 1.8 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 #define TVM_DELETEITEM       4353   // (TV_FIRST + 1) 0x1101

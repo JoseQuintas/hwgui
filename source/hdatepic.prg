@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.10 2004-04-22 06:39:19 alkresin Exp $
+ * $Id: hdatepic.prg,v 1.11 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 #define DTN_DATETIMECHANGE    -759

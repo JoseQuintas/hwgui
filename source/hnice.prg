@@ -1,5 +1,5 @@
 /*
- * $Id: hnice.prg,v 1.2 2004-05-27 16:30:01 alkresin Exp $
+ * $Id: hnice.prg,v 1.3 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -10,7 +10,7 @@
 
 #include "windows.ch"
 #include "inkey.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 #include "common.ch"
 

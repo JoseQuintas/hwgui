@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.6 2004-05-16 16:47:15 lculik Exp $
+ * $Id: hcheck.prg,v 1.7 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 CLASS HCheckButton INHERIT HControl

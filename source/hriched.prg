@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.3 2004-06-02 09:38:57 alkresin Exp $
+ * $Id: hriched.prg,v 1.4 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 CLASS HRichEdit INHERIT HControl

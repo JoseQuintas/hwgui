@@ -18,6 +18,8 @@ C_SOURCES=\
 	resource.c \
 	wprint.c \
 	window.c \
+	nice.c \
+	grid.c
 	
 PRG_SOURCES=\
 	drawwidg.prg \
@@ -48,6 +50,9 @@ PRG_SOURCES=\
 	htree.prg \
 	hsplit.prg \
 	hsayimg.prg \
+	richtext.prg \
+	hnice.prg \
+	hgrid.prg
 	
 LIBNAME=hwgui
 

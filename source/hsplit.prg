@@ -1,5 +1,5 @@
 /*
- * $Id: hsplit.prg,v 1.2 2004-06-09 11:57:56 alkresin Exp $
+ * $Id: hsplit.prg,v 1.3 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSplitter class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 CLASS HSplitter INHERIT HControl

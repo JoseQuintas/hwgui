@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.236 2004-07-29 06:16:10 alkresin Exp $
+ * $Id: Changelog,v 1.237 2004-07-29 16:48:13 lf_sfnet Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-07-29 18:45 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
+  * */*
+    * Many small changes to allow mingw-cross compiling under Linux
+    * mainly HBClass.ch -> hbclass.ch and FreeImag.h -> freeimg.h
+    * Sync gnu Makefiles with latest additions
+    * added to bldgw.bat missing Windows libs
+    * Now if you put hwgui into the xHarbour's CVS contrib dir
+    * and issue make install you'll get a mingw build ready to
+    * build tests using bldgw <test>
+    * The only issue left is about ErrorSys. Mingw complains it is
+    * duplicated with xHarbour's errorsys. To build you need to rename it
+    * for example ErrorSysW.
 
 2004-07-29 10:18 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hbrowse.prg

@@ -7,7 +7,7 @@
 */
 
 
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "windows.ch"
 #include "guilib.ch"
 #include "common.ch"

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.13 2004-07-29 06:16:11 alkresin Exp $
+ * $Id: hcontrol.prg,v 1.14 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 #define  CONTROL_FIRST_ID   34000

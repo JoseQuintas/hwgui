@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.14 2004-06-24 21:52:04 andijahja Exp $
+ * $Id: menu.prg,v 1.15 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 #define  MENU_FIRST_ID   32000

@@ -1,5 +1,5 @@
 /*
- * $Id: hgraph.prg,v 1.4 2004-06-24 05:44:36 alkresin Exp $
+ * $Id: hgraph.prg,v 1.5 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGraph class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 CLASS HGraph INHERIT HControl

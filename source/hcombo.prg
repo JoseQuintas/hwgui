@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.14 2004-06-24 05:44:28 alkresin Exp $
+ * $Id: hcombo.prg,v 1.15 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 #define CB_ERR              (-1)

@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.4 2004-05-17 10:17:54 alkresin Exp $
+ * $Id: hpanel.prg,v 1.5 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 CLASS HPanel INHERIT HControl

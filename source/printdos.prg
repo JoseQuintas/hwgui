@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.11 2004-07-12 18:46:04 sandrorrfreire Exp $
+ * $Id: printdos.prg,v 1.12 2004-07-29 16:48:15 lf_sfnet Exp $
  *
  * CLASS PrintDos
  *
@@ -7,7 +7,7 @@
  * for HwGUI By Alexander Kresin
  *
  */
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "windows.ch"
 #include "guilib.ch"
 #include "fileio.ch"

@@ -34,7 +34,7 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "FreeImage.h"
+#include "freeimage.h"
 
 typedef char * ( WINAPI *FREEIMAGE_GETVERSION )( void );
 #if defined(__WATCOMC__)

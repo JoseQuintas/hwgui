@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.37 2004-09-20 11:30:11 sandrorrfreire Exp $
+ * $Id: hbrowse.prg,v 1.38 2004-09-29 17:22:21 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -304,14 +304,6 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD InitBrw( nType )  CLASS HBrowse
-Local dSkip:=::bSKip   
-Local dGoTop:=::bGoTop  
-Local dGoBot:=::bGoBot  
-Local dEof:=::bEof    
-Local dBof:=::bBof     
-Local dRcou:=::bRcou    
-Local dRecno:=::bRecno   
-Local dGoTo:=::bGoTo   
 
    if nType != Nil
       ::type := nType
@@ -331,46 +323,14 @@ Local dGoTo:=::bGoTo
 
    if ::type == BRW_DATABASE
       ::alias   := Alias()
-      if dSkip==Nil
-         ::bSKip   := &( "{|o, x|" + ::alias + "->(DBSKIP(x)) }" )
-      Else
-         ::bSkip :=  &(dSkip)
-      Endif   
-      if dGoTop==Nil   
-         ::bGoTop  := &( "{||" + ::alias + "->(DBGOTOP())}" )
-      Else
-         ::bGoTop  :=  &(dGoTop)
-      Endif   
-      if dGoBot==Nil   
-         ::bGoBot  := &( "{||" + ::alias + "->(DBGOBOTTOM())}")
-      Else
-         ::bGoBot :=  &(dGoBot)
-      Endif   
-      if dEof==Nil   
-         ::bEof    := &( "{||" + ::alias + "->(EOF())}" )
-      Else
-         ::bEof :=  &(dEof)
-      Endif   
-      if dBof==Nil   
-         ::bBof    := &( "{||" + ::alias + "->(BOF())}" )
-      Else
-         ::bBof :=  &(dBof)
-      Endif   
-      if dRcou==Nil   
-         ::bRcou   := &( "{||" + ::alias + "->(RECCOUNT())}" )
-      Else
-         ::bRcou :=  &(dRcou)
-      Endif   
-      if dRecno==Nil   
-         ::bRecno  := &( "{||" + ::alias + "->(RECNO())}" )
-      Else
-         ::bRecno :=  &(dRecno)
-      Endif   
-      if dGoTo==Nil   
-         ::bGoTo   := &( "{|a,n|"  + ::alias + "->(DBGOTO(n))}" )
-      Else
-         ::bGoTo :=  &(dGoTo)
-      Endif   
+      ::bSKip   := &( "{|o, x|" + ::alias + "->(DBSKIP(x)) }" )
+      ::bGoTop  := &( "{||" + ::alias + "->(DBGOTOP())}" )
+      ::bGoBot  := &( "{||" + ::alias + "->(DBGOBOTTOM())}")
+      ::bEof    := &( "{||" + ::alias + "->(EOF())}" )
+      ::bBof    := &( "{||" + ::alias + "->(BOF())}" )
+      ::bRcou   := &( "{||" + ::alias + "->(RECCOUNT())}" )
+      ::bRecno  := &( "{||" + ::alias + "->(RECNO())}" )
+      ::bGoTo   := &( "{|a,n|"  + ::alias + "->(DBGOTO(n))}" )
    elseif ::type == BRW_ARRAY
       ::bSKip   := { | o, x | ARSKIP( o, x ) }
       ::bGoTop  := { | o | o:tekzp := 1 }
@@ -1380,11 +1340,11 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
                ::Refresh()
             ELSE
                IF ::type == BRW_DATABASE
-                  if (::alias)->(Rlock())
+                  IF (::alias)->( Rlock() )
                      (::alias)->( Eval( oColumn:block,::varbuf,Self,fipos ) )
-                  else
-                     MsgStop("No possible edition!")
-                  endif
+                  ELSE
+                     MsgStop("Can't lock the record!")
+                  ENDIF
                ELSE
                   Eval( oColumn:block,::varbuf,Self,fipos )
                ENDIF
@@ -1660,7 +1620,7 @@ FUNCTION CREATEARLIST( oBrw, arr )
       ENDIF
    ENDIF
    EVAL( oBrw:bGoTop,oBrw )
-   oBrw:Paint()
+   oBrw:Refresh()
 RETURN Nil
 
 //----------------------------------------------------//
@@ -1746,7 +1706,7 @@ METHOD ShowSizes() CLASS HBrowse
 RETURN nil
 
 Function ColumnArBlock()
-Return {|value,o,n|o:Tekzp:=if(o:TekZp=0,1,o:TekZp),Iif( value==Nil,o:msrec[o:tekzp,n],o:msrec[o:tekzp,n]:=value ) }
+Return {|value,o,n| Iif( value==Nil,o:msrec[o:tekzp,n],o:msrec[o:tekzp,n]:=value ) }
 
 Static function HdrToken(cStr, nMaxLen, nCount)
 Local nL, nPos := 0

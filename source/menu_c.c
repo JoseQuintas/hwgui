@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.16 2004-06-24 09:40:30 alkresin Exp $
+ * $Id: menu_c.c,v 1.17 2004-07-05 17:33:45 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -185,7 +185,7 @@ HB_FUNC ( ISCHECKEDMENUITEM )
 HB_FUNC ( ENABLEMENUITEM )
 {
    // HMENU hMenu = GetMenu( ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1):aWindows[0] );
-   HMENU hMenu = ( hb_pcount()>0 && !ISNIL(1) )? (HMENU)hb_parnl(1) : GetMenu( aWindows[0] );
+   HMENU hMenu = GetMenu( ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1) : aWindows[0] );
    UINT  uEnable = ( hb_pcount() < 3 || !ISLOG( 3 ) || hb_parl( 3 ) )? MF_ENABLED:MF_GRAYED;
    UINT  uFlag = ( hb_pcount() < 4 || !ISLOG( 4 ) || hb_parl( 4 ) )? MF_BYCOMMAND:MF_BYPOSITION;
 

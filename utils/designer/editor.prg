@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.7 2004-06-29 06:23:27 alkresin Exp $
+ * $Id: editor.prg,v 1.8 2004-07-05 17:33:45 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -159,10 +159,10 @@ Local i, lRes := .T.
 Local oFont := HDTheme():oFont
 Local cParamString
 
-   i := Ascan( aMethDef, {|a|a[1]==Lower(cMethName)} )
-   cParamString := Iif( i == 0, "", aMethDef[i,2] )
+   i := Ascan( oDesigner:aMethDef, {|a|a[1]==Lower(cMethName)} )
+   cParamString := Iif( i == 0, "", oDesigner:aMethDef[i,2] )
    INIT DIALOG oDlg TITLE "Edit '"+cMethName+"' method" ;
-      AT 300,240  SIZE 400,300  FONT oMainWnd:oFont            ;
+      AT 300,240  SIZE 400,300  FONT oDesigner:oMainWnd:oFont ;
       ON INIT {||MoveWindow(oDlg:handle,300,240,400,310)}
 
    MENU OF oDlg
@@ -363,7 +363,7 @@ Private nScheme, nType := 2, oTheme := HDTheme():New(), cScheme := ""
    NEXT
 
    INIT DIALOG oDlg TITLE "Color schemes" ;
-      AT 200,140 SIZE 440,355  FONT oMainWnd:oFont ;
+      AT 200,140 SIZE 440,355  FONT oDesigner:oMainWnd:oFont ;
       ON INIT {||UpdSample()}
 
    @ 10,10 BUTTON "Delete scheme" SIZE 110,30 ON CLICK {||UpdSample(1)}

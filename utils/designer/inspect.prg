@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.8 2004-06-25 08:53:26 alkresin Exp $
+ * $Id: inspect.prg,v 1.9 2004-07-05 17:33:45 alkresin Exp $
  *
  * Designer
  * Object Inspector
@@ -65,6 +65,7 @@ Return Self
 
 METHOD Edit( wParam,lParam ) CLASS PBrowse
 Local varbuf, x1, y1, nWidth, j, cName, aCtrlProp
+Local aDataDef := oDesigner:aDataDef
 Local lRes := .F., oModDlg, oColumn, aCoors, nChoic, bInit, oGet, aItems
 Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
 
@@ -216,12 +217,8 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
 
    cName := Lower( aProp[ oBrw1:cargo,1 ] )
 
-   j := Ascan( aDataDef, {|a|a[1]==cName} )
-/*
-   IF j != 0 .AND. aDataDef[ j,6 ] != Nil
-      vari := SendMessage( oGet:handle,CB_GETCURSEL,0,0 ) + 1
-      value := aProp[ oBrw1:cargo,2 ] := aDataDef[ j,6,vari ]
-*/
+   j := Ascan( oDesigner:aDataDef, {|a|a[1]==cName} )
+
    IF oGet:Classname() == "HCOMBOBOX"
       vari := SendMessage( oGet:handle,CB_GETCURSEL,0,0 ) + 1
       value := aProp[ oBrw1:cargo,2 ] := oGet:aItems[ vari ]
@@ -234,10 +231,10 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
    ELSE
       oCtrl:aProp[ oBrw1:cargo,2 ] := value
    ENDIF
-   IF j != 0 .AND. aDataDef[ j,3 ] != Nil
-      EvalCode( aDataDef[ j,3 ] )
-      IF aDataDef[ j,4 ] != Nil
-         EvalCode( aDataDef[ j,4 ] )
+   IF j != 0 .AND. oDesigner:aDataDef[ j,3 ] != Nil
+      EvalCode( oDesigner:aDataDef[ j,3 ] )
+      IF oDesigner:aDataDef[ j,4 ] != Nil
+         EvalCode( oDesigner:aDataDef[ j,4 ] )
       ENDIF
    ENDIF
    RedrawWindow( oCtrl:handle,5 )
@@ -253,12 +250,12 @@ Return .T.
 
 Function InspOpen
 
-   INIT DIALOG oDlgInsp TITLE "Object Inspector" ;
+   INIT DIALOG oDesigner:oDlgInsp TITLE "Object Inspector" ;
       AT 0,280  SIZE 220,300                     ;
       STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SIZEBOX ;
-      FONT oMainWnd:oFont                        ;
-      ON INIT {||MoveWindow(oDlgInsp:handle,0,280,230,280)}   ;
-      ON EXIT {||oDlgInsp:=Nil,CheckMenuItem(oMainWnd:handle,1010,.F.),.T.}
+      FONT oDesigner:oMainWnd:oFont                   ;
+      ON INIT {||MoveWindow(oDesigner:oDlgInsp:handle,0,280,230,280)}   ;
+      ON EXIT {||oDesigner:oDlgInsp:=Nil,CheckMenuItem(oDesigner:oMainWnd:handle,1010,.F.),.T.}
 
    @ 0,0 COMBOBOX oCombo ITEMS {} SIZE 220,150 ;
           STYLE WS_VSCROLL                     ;
@@ -298,13 +295,13 @@ Function InspOpen
       oBrw2:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:msrec[o:tekzp,2]),"",":"+o:msrec[o:tekzp,1])},"C",100,0,.T. ) )
    END PAGE OF oTab
 
-   ACTIVATE DIALOG oDlgInsp NOMODAL
-   CheckMenuItem(oMainWnd:handle,1010,.T.)
+   ACTIVATE DIALOG oDesigner:oDlgInsp NOMODAL
+   CheckMenuItem(oDesigner:oMainWnd:handle,1010,.T.)
 
    InspSetCombo()
 
-   oDlgInsp:AddEvent( 0,IDOK,{||DlgOk()} )
-   oDlgInsp:AddEvent( 0,IDCANCEL,{||DlgCancel()} )
+   oDesigner:oDlgInsp:AddEvent( 0,IDOK,{||DlgOk()} )
+   oDesigner:oDlgInsp:AddEvent( 0,IDCANCEL,{||DlgCancel()} )
 
 Return Nil
 
@@ -422,7 +419,7 @@ Private value, oCtrl
       Return Nil
    ENDIF
    oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
-   IF oDlgInsp != Nil
+   IF oDesigner:oDlgInsp != Nil
       FOR i := 1 TO Len( aProp )
          value := Iif( oCombo:value == 1,oCtrl:oParent:aProp[ i,2 ],oCtrl:aProp[ i,2 ] )
          IF Valtype(aProp[ i,2 ]) != "O" .AND. Valtype(aProp[ i,2 ]) != "A" ;
@@ -459,7 +456,7 @@ Local oDlg, oBrw, nRec := Eval( oBrw1:bRecno,oBrw1 )
       Aadd( arr,"....." )
    ENDIF
    INIT DIALOG oDlg TITLE "Edit "+aProp[nRec,1]+" array" ;
-        AT 300,280 SIZE 400,300 FONT oMainWnd:oFont
+        AT 300,280 SIZE 400,300 FONT oDesigner:oMainWnd:oFont
 
    @ 0,0 BROWSE oBrw ARRAY SIZE 400,255  ;
        ON SIZE {|o,x,y|o:Move(,,x,y-45)}      

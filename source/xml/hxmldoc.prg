@@ -1,5 +1,5 @@
 /*
- * $Id: hxmldoc.prg,v 1.8 2004-05-31 17:28:48 alkresin Exp $
+ * $Id: hxmldoc.prg,v 1.9 2004-07-05 17:33:45 alkresin Exp $
  *
  * Harbour XML Library
  * HXmlDoc class
@@ -168,8 +168,8 @@ CLASS HXMLDoc INHERIT HXMLNode
 
    METHOD New( encoding )
    METHOD Read( fname )
-   METHOD ReadString( buffer )  INLINE hbxml_GetDoc( Self,buffer )
-   METHOD Save( fname )
+   METHOD ReadString( buffer )  INLINE ::Read( ,buffer )
+   METHOD Save( fname,lNoHeader )
    METHOD Save2String()  INLINE ::Save()
 ENDCLASS
 
@@ -182,16 +182,23 @@ METHOD New( encoding ) CLASS HXMLDoc
 
 Return Self
 
-METHOD Read( fname ) CLASS HXMLDoc
-Local han := FOpen( fname, FO_READ )
+METHOD Read( fname,buffer ) CLASS HXMLDoc
+Local han
 
-   IF han != -1
-      hbxml_GetDoc( Self,han )
-      FClose( han )
+   IF fname != Nil
+      han := FOpen( fname, FO_READ )
+      IF han != -1
+         hbxml_GetDoc( Self,han )
+         FClose( han )
+      ENDIF
+   ELSEIF buffer != Nil
+      hbxml_GetDoc( Self,buffer )
+   ELSE
+      Return Nil
    ENDIF
 Return Self
 
-METHOD Save( fname ) CLASS HXMLDoc
+METHOD Save( fname,lNoHeader ) CLASS HXMLDoc
 Local handle := -2
 Local cEncod, i, s
 
@@ -199,13 +206,16 @@ Local cEncod, i, s
       handle := FCreate( fname )
    ENDIF
    IF handle != -1
-      IF ( cEncod := ::GetAttribute( "encoding" ) ) == Nil
-         cEncod := "UTF-8"
-      ENDIF
-
-      s := '<?xml version="1.0" encoding="'+cEncod+'"?>'+Chr(10 )
-      IF fname != Nil
-         FWrite( handle, s )
+      IF lNoHeader == Nil .OR. !lNoHeader
+         IF ( cEncod := ::GetAttribute( "encoding" ) ) == Nil
+            cEncod := "UTF-8"
+         ENDIF
+         s := '<?xml version="1.0" encoding="'+cEncod+'"?>'+Chr(10 )
+         IF fname != Nil
+            FWrite( handle, s )
+         ENDIF
+      ELSE
+         s := ""
       ENDIF
       FOR i := 1 TO Len( ::aItems )
          s += ::aItems[i]:Save( handle, 0 )

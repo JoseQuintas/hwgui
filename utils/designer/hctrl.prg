@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.11 2004-06-26 15:01:15 alkresin Exp $
+ * $Id: hctrl.prg,v 1.12 2004-07-05 17:33:45 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -121,13 +121,13 @@ Private value, oCtrl := Self
    FOR i := 1 TO Len( ::aProp )
       value := ::aProp[ i,2 ]
       cPropertyName := Lower( ::aProp[ i,1 ] )
-      j := Ascan( aDataDef, {|a|a[1]==cPropertyName} )
+      j := Ascan( oDesigner:aDataDef, {|a|a[1]==cPropertyName} )
       IF value != Nil
-         IF j != 0 .AND. aDataDef[ j,3 ] != Nil
-            EvalCode( aDataDef[ j,3 ] )
+         IF j != 0 .AND. oDesigner:aDataDef[ j,3 ] != Nil
+            EvalCode( oDesigner:aDataDef[ j,3 ] )
          ENDIF
-      ELSEIF j != 0 .AND. value == Nil .AND. aDataDef[ j,7 ] != Nil
-         ::aProp[ i,2 ] := EvalCode( aDataDef[ j,7 ] )
+      ELSEIF j != 0 .AND. value == Nil .AND. oDesigner:aDataDef[ j,7 ] != Nil
+         ::aProp[ i,2 ] := EvalCode( oDesigner:aDataDef[ j,7 ] )
       ENDIF
    NEXT
 
@@ -352,12 +352,12 @@ Local oFrm := oDlg:oParent, handle, i
                   oCtrl:nLeft-4, oCtrl:nTop-4, ;
                   oCtrl:nLeft+oCtrl:nWidth+3,  ;
                   oCtrl:nTop+oCtrl:nHeight+3 )
-         IF oDlgInsp != Nil
+         IF oDesigner:oDlgInsp != Nil
             i := Ascan( oDlg:aControls,{|o|o:handle==oCtrl:handle} )
             InspUpdCombo( i )
          ENDIF
       ELSE
-         IF oDlgInsp != Nil
+         IF oDesigner:oDlgInsp != Nil
             InspUpdCombo( 0 )
          ENDIF
       ENDIF
@@ -513,7 +513,7 @@ Private nMaxId := 0
    NEXT
 
    INIT DIALOG oDlg TITLE "Edit Menu" ;
-        AT 300,280 SIZE 400,350 FONT oMainWnd:oFont ;
+        AT 300,280 SIZE 400,350 FONT oDesigner:oMainWnd:oFont ;
         STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SIZEBOX ;
         ON INIT {||BuildTree( oTree,aMenu )}
 

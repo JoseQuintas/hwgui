@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.16 2004-06-27 14:43:30 alkresin Exp $
+ * $Id: hformgen.prg,v 1.17 2004-07-05 17:33:45 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -79,12 +79,17 @@ Local hDCwindow := GetDC( GetActiveWindow() ), aTermMetr := GetDeviceArea( hDCwi
 
 Return Self
 
-METHOD Open()  CLASS HFormGen
+METHOD Open( fname,cForm )  CLASS HFormGen
+Local aFormats := oDesigner:aFormats
 Private oForm := Self, aCtrlTable
 
-   IF FileDlg( Self,.T. )
+   IF fname != Nil
+      ::path := Filepath( fname )
+      ::filename := CutPath( fname )
+   ENDIF
+   IF fname != Nil .OR. cForm != Nil .OR. FileDlg( Self,.T. )
       IF ::type == 1
-         ReadForm( Self )
+         ReadForm( Self,cForm )
       ELSE
          IF Valtype( aFormats[ ::type,4 ] ) == "C"
             aFormats[ ::type,4 ] := OpenScript( cCurDir + aFormats[ ::type,3 ], aFormats[ ::type,4 ] )
@@ -132,8 +137,8 @@ Local i, j, name := ::name, oDlgSel
       SetDlgSelected( oDlgSel )
    ELSE
       HFormGen():oDlgSelected := Nil
-      IF oDlgInsp != Nil
-         oDlgInsp:Close()
+      IF oDesigner:oDlgInsp != Nil
+         oDesigner:oDlgInsp:Close()
          // InspSetCombo()
       ENDIF
    ENDIF
@@ -141,13 +146,17 @@ Local i, j, name := ::name, oDlgSel
    Adel( ::aForms,j )
    Asize( ::aForms, Len(::aForms)-1 )
    IF !lDlg
-      ::oDlg :bDestroy := Nil
+      ::oDlg:bDestroy := Nil
       EndDialog( ::oDlg:handle )
+   ENDIF
+   IF oDesigner:lSingleForm
+      oDesigner:oMainWnd:Close()
    ENDIF
 
 RETURN .T.
 
 METHOD Save( lAs ) CLASS HFormGen
+Local aFormats := oDesigner:aFormats
 Private oForm := Self, aCtrlTable
 
    IF lAs == Nil; lAs := .F.; ENDIF
@@ -156,7 +165,8 @@ Private oForm := Self, aCtrlTable
       Return Nil
    ENDIF
 
-   IF ( ( Empty( ::filename ) .OR. lAs ) .AND. FileDlg( Self,.F. ) ) .OR. !Empty( ::filename )
+   IF oDesigner:lSingleForm .OR. ;
+         ( ( Empty( ::filename ) .OR. lAs ) .AND. FileDlg( Self,.F. ) ) .OR. !Empty( ::filename )
       FrmSort( ::oDlg:aControls )
       IF ::type == 1
          aControls := WriteForm( Self )
@@ -180,7 +190,7 @@ Private oForm := Self, aCtrlTable
 RETURN Nil
 
 METHOD CreateDialog( aProp ) CLASS HFormGen
-Local i, j, cPropertyName, xProperty
+Local i, j, cPropertyName, xProperty, oFormDesc := oDesigner:oFormDesc
 Private value, oCtrl
 
    INIT DIALOG ::oDlg                         ;
@@ -229,16 +239,16 @@ Private value, oCtrl
       value := ::aProp[ i,2 ]
       IF value != Nil // .AND. !Empty( value )
          cPropertyName := Lower( ::aProp[ i,1 ] )
-         j := Ascan( aDataDef, {|a|a[1]==cPropertyName} )
-         IF j != 0 .AND. aDataDef[ j,3 ] != Nil
-            EvalCode( aDataDef[ j,3 ] )
+         j := Ascan( oDesigner:aDataDef, {|a|a[1]==cPropertyName} )
+         IF j != 0 .AND. oDesigner:aDataDef[ j,3 ] != Nil
+            EvalCode( oDesigner:aDataDef[ j,3 ] )
          ENDIF
       ENDIF
    NEXT
 
    ::oDlg:Activate(.T.)
 
-   IF oDlgInsp == Nil
+   IF oDesigner:oDlgInsp == Nil
       InspOpen()
    ENDIF
 
@@ -277,7 +287,7 @@ Static Function SetDlgSelected( oDlg )
 
    IF HFormGen():oDlgSelected == Nil .OR. HFormGen():oDlgSelected:handle != oDlg:handle
       HFormGen():oDlgSelected := oDlg
-      IF oDlgInsp != Nil
+      IF oDesigner:oDlgInsp != Nil
          InspSetCombo()
       ENDIF
    ENDIF
@@ -299,7 +309,7 @@ Local i
 Return Iif( i == 0, Nil, Iif( l2,aCtrlTable[i,1],aCtrlTable[i,2] ) )
 
 Static Function FileDlg( oFrm,lOpen )
-Local oDlg
+Local oDlg, aFormats := oDesigner:aFormats
 Local aCombo := {}, af := {}, oEdit1, oEdit2
 Local nType := 1, fname := Iif( lOpen,"",oFrm:filename )
 Local formname := Iif( lOpen,"",oFrm:name )
@@ -317,7 +327,7 @@ Local i
    NEXT
 
    INIT DIALOG oDlg TITLE Iif( lOpen,"Open form","Save form" ) ;
-       AT 50, 100 SIZE 310,250 FONT oMainWnd:oFont
+       AT 50, 100 SIZE 310,250 FONT oDesigner:oMainWnd:oFont
 
    @ 10,20 GET COMBOBOX nType ITEMS aCombo SIZE 140, 150 ;
        ON CHANGE {||Iif(lOpen,.F.,(fname:=CutExten(fname)+"."+aFormats[af[nType],2],oEdit1:Refresh()))}
@@ -344,7 +354,7 @@ Local i
       IF Empty( FilExten( oFrm:filename ) )
          oFrm:filename += "."+aFormats[ af[nType],2 ]
       ENDIF
-      oFrm:path := Iif( Empty( FilePath(fname) ), mypath, FilePath(fname) )
+      oFrm:path := Iif( Empty( FilePath(fname) ), ds_mypath, FilePath(fname) )
       Return .T.
    ENDIF
 
@@ -353,20 +363,19 @@ Return .F.
 Static Function BrowFile( lOpen,nType,oEdit1, oEdit2 )
 Local fname, s1, s2
 
-   s2 := "*." + aFormats[ nType,2 ]
-   s1 := aFormats[ nType,1 ] + "( " + s2 + " )"
+   s2 := "*." + oDesigner:aFormats[ nType,2 ]
+   s1 := oDesigner:aFormats[ nType,1 ] + "( " + s2 + " )"
 
    IF lOpen
-      fname := SelectFile( s1, s2,mypath )
+      fname := SelectFile( s1, s2,ds_mypath )
    ELSE
-      fname := SaveFile( s2,s1,s2,mypath )
+      fname := SaveFile( s2,s1,s2,ds_mypath )
    ENDIF
    IF !Empty( fname )
-      mypath := FilePath( fname )
+      ds_mypath := FilePath( fname )
       fname := CutPath( fname )
       oEdit1:SetGet( fname )
       oEdit1:Refresh()
-      // SetDlgItemText( oEdit1:oParent:handle, oEdit1:id, fname )
       SetFocus( oEdit2:handle )
    ENDIF
 
@@ -460,8 +469,8 @@ Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cPr
 
 Return Nil
 
-Static Function ReadForm( oForm )
-Local oDoc := HXMLDoc():Read( oForm:path+oForm:filename )
+Static Function ReadForm( oForm,cForm )
+Local oDoc := Iif( cForm!=Nil, HXMLDoc():ReadString(cForm), HXMLDoc():Read( oForm:path+oForm:filename ) )
 Local i, j, aItems, o, aProp := {}, cPropertyName, aRect, pos, cProperty
 
    IF Empty( oDoc:aItems )
@@ -675,7 +684,11 @@ Local oNode, oNode1, oStyle, i, i1, oMeth, cProperty
       WriteCtrl( oNode,oForm:oDlg:aControls[i],.T. )
    NEXT
 
-   oDoc:Save( oForm:path + oForm:filename )
+   IF oDesigner:lSingleForm
+      oDesigner:cResForm := oDoc:Save()
+   ELSE
+      oDoc:Save( oForm:path + oForm:filename )
+   ENDIF
 Return Nil
 
 Static Function PaintDlg( oDlg )
@@ -755,7 +768,7 @@ Return -1
 Static Function MouseMove( oDlg, wParam, xPos, yPos )
 Local aBDown, oCtrl, resizeDirection
 
-   IF addItem != Nil
+   IF oDesigner:addItem != Nil
       Hwg_SetCursor( crossCursor )
    ELSE
       aBDown := GetBDown()
@@ -786,7 +799,7 @@ Return Nil
 Static Function LButtonDown( oDlg, xPos, yPos )
 Local oCtrl := GetCtrlSelected( oDlg ), resizeDirection, flag, i
 
-   IF addItem != Nil
+   IF oDesigner:addItem != Nil
       Return Nil
    ENDIF
    IF oCtrl != Nil .AND. ;
@@ -827,7 +840,7 @@ Return Nil
 Static Function LButtonUp( oDlg, xPos, yPos )
 Local aBDown, oCtrl, oContainer, i, nLeft, aProp, j, name
 
-   IF addItem == Nil
+   IF oDesigner:addItem == Nil
       aBDown := GetBDown()
       oCtrl := aBDown[1]
       IF oCtrl != Nil
@@ -841,8 +854,8 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp, j, name
       ENDIF
    ELSE 
       oContainer := CtrlByPos( oDlg,xPos,yPos )
-      IF addItem:classname() == "HCONTROLGEN"
-         aProp := AClone( addItem:aProp )
+      IF oDesigner:addItem:classname() == "HCONTROLGEN"
+         aProp := AClone( oDesigner:addItem:aProp )
          j := 0
          FOR i := Len( aProp ) TO 1 STEP -1
             IF ( name := Lower( aProp[i,1] ) ) == "name" .OR. name == "varname"
@@ -857,9 +870,9 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp, j, name
          IF j > 0
             Asize( aProp,Len(aProp)-j )
          ENDIF
-         oCtrl := HControlGen():New( oDlg,addItem:oXMLDesc, aProp )
+         oCtrl := HControlGen():New( oDlg,oDesigner:addItem:oXMLDesc, aProp )
       ELSE
-         oCtrl := HControlGen():New( oDlg,addItem, { { "Left",Ltrim(Str(xPos)) }, { "Top",Ltrim(Str(yPos)) } } )
+         oCtrl := HControlGen():New( oDlg,oDesigner:addItem, { { "Left",Ltrim(Str(xPos)) }, { "Top",Ltrim(Str(yPos)) } } )
       ENDIF
       IF oContainer != Nil .AND. ( ;
           oCtrl:nLeft+oCtrl:nWidth <= oContainer:nLeft+oContainer:nWidth .AND. ;
@@ -876,11 +889,11 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp, j, name
 
       SetCtrlSelected( oDlg,oCtrl )
       oDlg:oParent:lChanged := .T.
-      IF oBtnPressed != Nil
-         oBtnPressed:Release()
+      IF oDesigner:oBtnPressed != Nil
+         oDesigner:oBtnPressed:Release()
       ENDIF
-      addItem := Nil
-      IF IsCheckedMenuItem( oMainWnd:handle,1011 )
+      oDesigner:addItem := Nil
+      IF IsCheckedMenuItem( oDesigner:oMainWnd:handle,1011 )
          AdjustCtrl( oCtrl )
       ENDIF
    ENDIF
@@ -890,16 +903,14 @@ Return -1
 Static Function RButtonUp( oDlg, xPos, yPos )
 Local oCtrl
 
-   IF addItem == Nil
+   IF oDesigner:addItem == Nil
       IF ( oCtrl := CtrlByPos( oDlg,xPos,yPos ) ) != Nil
          SetCtrlSelected( oDlg,oCtrl )
          IF Lower( oCtrl:cClass ) == "page"
-            oTabMenu:Show( oDlg,xPos,yPos,.T. )
+            oDesigner:oTabMenu:Show( oDlg,xPos,yPos,.T. )
          ELSE
-            oCtrlMenu:Show( oDlg,xPos,yPos,.T. )
+            oDesigner:oCtrlMenu:Show( oDlg,xPos,yPos,.T. )
          ENDIF
-      ELSE
-         // oDlgMenu:Show( oDlg,xPos,yPos,.T. )
       ENDIF
    ENDIF
 

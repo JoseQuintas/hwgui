@@ -1,3 +1,4 @@
+
 @echo off
 
 set HB_INSTALL=%HB_PATH%
@@ -5,8 +6,8 @@ set HWGUI_INSTALL=..
 
 SET HB_MT=
 
-#SET C_DEFINES= -DHB_THREAD_SUPPORT
-#SET H_DEFINES= -DHB_THREAD_SUPPORT
+rem SET C_DEFINES= -DHB_THREAD_SUPPORT
+rem SET H_DEFINES= -DHB_THREAD_SUPPORT
 
 SET C_DEFINES= 
 SET H_DEFINES= 
@@ -15,7 +16,7 @@ SET H_DEFINES=
 
 bcc32  -c %C_DEFINES% -O2 -tW -M -I%HB_INSTALL%\include;%HWGUI_INSTALL%\include %1.c
 
-IF EXIST %1.rc brc32 -r %1
+IF EXIST %1.rc brc32 -r %1 -foobj\%1
 
 echo c0w32.obj + > b32.bc
 echo %1.obj, + >> b32.bc
@@ -41,11 +42,11 @@ rem echo %HB_INSTALL%\lib\libct.lib + >> b32.bc
 
 echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc
-IF EXIST %1.res echo %1.res >> b32.bc
+IF EXIST obj\%1.res echo obj\%1.res >> b32.bc
 ilink32 -Gn -Tpe -aa @b32.bc
 
 del *.tds
 del %1.c
 del %1.map
 del %1.obj
-del b32.bc
+rem del b32.bc

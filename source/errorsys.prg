@@ -1,9 +1,11 @@
 /*
+ * $Id: errorsys.prg,v 1.3 2004-04-20 08:59:34 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "common.ch"
@@ -63,14 +65,12 @@ STATIC FUNCTION DefError( oError )
       #ifdef __XHARBOUR__
          cMessage +=Chr(13)+Chr(10) + "Called from " + ProcFile(n) + "->" + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
       #else
-         cMessage += Chr(10) + "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
+         cMessage += Chr(13)+Chr(10) + "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
       #endif
    ENDDO
 
    MemoWrit( LogInitialPath + "Error.log", cMessage )
-   #ifdef __XHARBOUR__
-      ErrorPreview(cMessage)
-   #endif
+   ErrorPreview( cMessage )
    EndWindow()
    QUIT
 
@@ -133,15 +133,16 @@ Local nHand
 
 return nil
 
-Static Function ErrorPreview(oMen)
+Static Function ErrorPreview( cMess )
 Local oDlg
-INIT DIALOG oDlg TITLE "HwGUI Mensage <Error>" ;
-        AT 92,61 SIZE 673,499
 
-   @ 88,19 EDITBOX oMen ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
+   INIT DIALOG oDlg TITLE "Error.log" ;
+        AT 92,61 SIZE 400,400
+
+   @ 10,10 EDITBOX cMess SIZE 380,340 STYLE WS_VSCROLL+WS_HSCROLL+ES_MULTILINE ;
         COLOR 16777088 BACKCOLOR 0  //Blue to Black
 //       COLOR 16711680 BACKCOLOR 16777215  //Black to Write      
-   @ 6,30 BUTTON "Close" ON CLICK {||EndDialog()} SIZE 69,32 
+   @ 150,360 BUTTON "Close" ON CLICK {||EndDialog()} SIZE 100,32 
 
    oDlg:Activate()
 Return Nil 

@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.10 2004-04-19 15:24:11 alkresin Exp $
+ *$Id: hedit.prg,v 1.11 2004-04-20 08:59:34 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -54,7 +54,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    ::bSetGet := bSetGet
 
    IF Hwg_BitAnd( nStyle,ES_MULTILINE ) != 0
-      ::style := Hwg_BitOr( nStyle,ES_WANTRETURN )
+      ::style := Hwg_BitOr( ::style,ES_WANTRETURN )
       ::lMultiLine := .T.
    ENDIF
 

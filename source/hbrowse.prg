@@ -1,11 +1,11 @@
 /*
- * $Id: hbrowse.prg,v 1.19 2004-04-19 10:58:23 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.20 2004-04-20 08:59:34 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 // Modificaciones y Agregados. 27.07.2002, WHT.de la Argentina ///////////////
@@ -145,7 +145,7 @@ CLASS HBrowse INHERIT HControl
    METHOD InitBrw( nType )
    METHOD Rebuild()
    METHOD Activate()
-   METHOD Redefine( lType,oWnd,nId,oFont,bInit,bSize,bDraw,bEnter,bGfocus,bLfocus )
+   METHOD Redefine( lType,oWnd,nId,oFont,bInit,bSize,bPaint,bEnter,bGfocus,bLfocus )
    METHOD FindBrowse( nId )
    METHOD AddColumn( oColumn )
    METHOD InsColumn( oColumn,nPos )
@@ -182,21 +182,16 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,;
                   lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg ) CLASS HBrowse
 
-   // ::classname:= "HBROWSE"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
-   ::type    := lType
-   ::id      := Iif( nId==Nil,::NewId(), nId )
-   ::style   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+ ;
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+ ;
                     Iif(lNoBorder=Nil.OR.!lNoBorder,WS_BORDER,0)+            ;
                     Iif(lNoVScroll=Nil.OR.!lNoVScroll,WS_VSCROLL,0) )
-   ::oFont   := Iif( oFont==Nil,::oParent:oFont,oFont )
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := Iif( nWidth==Nil,0,nWidth )
-   ::nHeight := Iif( nHeight==Nil,0,nHeight )
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
+             Iif( nHeight==Nil,0,nHeight ),oFont,bInit,bSize,bPaint )
+
+   ::type    := lType
+   IF oFont == Nil
+      ::oFont := ::oParent:oFont
+   ENDIF
    ::bEnter  := bEnter
    ::bGetFocus   := bGFocus
    ::bLostFocus  := bLFocus
@@ -207,7 +202,6 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
    ::bKeyDown    := bKeyDown
    ::bPosChanged := bPosChg
 
-   ::oParent:AddControl( Self )
    ::InitBrw()
    ::Activate()
 
@@ -223,21 +217,18 @@ METHOD Activate CLASS HBrowse
 RETURN Nil
 
 //----------------------------------------------------//
-METHOD Redefine( lType,oWndParent,nId,oFont,bInit,bSize,bDraw,bEnter,bGfocus,bLfocus ) CLASS HBrowse
-   // ::classname:= "HBROWSE"
-   ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
+METHOD Redefine( lType,oWndParent,nId,oFont,bInit,bSize,bPaint,bEnter,bGfocus,bLfocus ) CLASS HBrowse
+
+   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit,bSize,bPaint )
+
    ::type    := lType
-   ::id      := nId
-   ::style   := ::nLeft := ::nTop := ::nWidth := 0
-   ::oFont   := Iif( oFont==Nil,::oParent:oFont,oFont )
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bDraw
+   IF oFont == Nil
+      ::oFont := ::oParent:oFont
+   ENDIF
    ::bEnter  := bEnter
    ::bGetFocus  := bGFocus
    ::bLostFocus := bLFocus
 
-   ::oParent:AddControl( Self )
    ::InitBrw()
 RETURN Self
 

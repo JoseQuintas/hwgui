@@ -1,11 +1,11 @@
 /*
- * $Id: hdialog.prg,v 1.11 2004-04-05 14:16:35 rodrigo_moreno Exp $
+ * $Id: hdialog.prg,v 1.12 2004-04-20 08:59:34 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -121,6 +121,7 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
 RETURN Self
 
 METHOD Activate( lNoModal ) CLASS HDialog
+Local oWnd
 
    CreateGetList( Self )
    IF ::type == WND_DLG_RESOURCE
@@ -132,7 +133,8 @@ METHOD Activate( lNoModal ) CLASS HDialog
          ::handle  := 0
          ::lResult := .F.
          ::AddItem( Self,.F. )
-         Hwg_CreateDialog( HWindow():GetMain():handle, Self )
+         Hwg_CreateDialog( Iif( ( oWnd:=HWindow():GetMain() ) != Nil, ;
+              oWnd:handle,GetActiveWindow() ), Self )
          IF ::oIcon != Nil
             SendMessage( ::handle,WM_SETICON,1,::oIcon:handle )
          ENDIF
@@ -146,7 +148,8 @@ METHOD Activate( lNoModal ) CLASS HDialog
          ::handle  := 0
          ::lResult := .F.
          ::AddItem( Self,.F. )
-         Hwg_CreateDlgIndirect( HWindow():GetMain():handle,Self,::nLeft,::nTop,::nWidth,::nHeight,::style )
+         Hwg_CreateDlgIndirect( Iif( ( oWnd:=HWindow():GetMain() ) != Nil, ;
+              oWnd:handle,GetActiveWindow() ),Self,::nLeft,::nTop,::nWidth,::nHeight,::style )
          IF ::oIcon != Nil
             SendMessage( ::handle,WM_SETICON,1,::oIcon:handle )
          ENDIF

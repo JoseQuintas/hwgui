@@ -1,5 +1,5 @@
 /*
- * $Id: procscri.prg,v 1.6 2004-06-18 14:39:13 alkresin Exp $
+ * $Id: procscri.prg,v 1.7 2004-06-24 09:40:30 alkresin Exp $
  *
  * Common procedures
  * Scripts
@@ -146,13 +146,22 @@ LOCAL rezArray := { "", {} }
 RETURN rezArray
 
 STATIC FUNCTION COMPILESCR( han, strbuf, poz, rezArray, scrSource )
-LOCAL scom, poz1, stroka, bOldError, i, tmpArray := {}
+LOCAL scom, poz1, stroka, strfull := "", bOldError, i, tmpArray := {}
 Local cLine, lDebug := ( Len( rezArray ) == 3 )
 
    DO WHILE .T.
       stroka := RDSTR( han, @strbuf, @poz, STR_BUFLEN )
       IF LEN( stroka ) = 0
          EXIT
+      ENDIF
+      IF Right( stroka,1 ) == ';'
+         strfull += Left( stroka,Len(stroka)-1 )
+         LOOP
+      ELSE
+         IF !Empty( strfull )
+            stroka := strfull + stroka
+         ENDIF
+         strfull := ""
       ENDIF
       numlin ++
       stroka := RTRIM( LTRIM( stroka ) )

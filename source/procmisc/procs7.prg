@@ -24,39 +24,33 @@
 *+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 *+
 FUNCTION RDSTR( han, strbuf, poz, buflen )
+LOCAL stro := "", rez, oldpoz, poz1
 
-LOCAL stro := "", rez, oldpoz, poz1 := 1
-   DO WHILE poz1 > 0
-      oldpoz := poz
-      poz    := AT( CHR( 10 ), SUBSTR( strbuf, poz ) )
-      IF poz = 0
-         IF han <> Nil
-            stro += SUBSTR( strbuf, oldpoz )
-            rez  := FREAD( han, @strbuf, buflen )
-            IF rez = 0
-               RETURN ""
-            ELSEIF rez < buflen
-               strbuf := SUBSTR( strbuf, 1, rez ) + CHR( 10 ) + CHR( 13 )
-            ENDIF
-            poz  := AT( CHR( 10 ), strbuf )
-            stro += SUBSTR( strbuf, 1, poz )
-         ELSE
-            stro += Rtrim( SUBSTR( strbuf, oldpoz ) )
-            poz  := oldpoz + Len( stro )
-            IF Len( stro ) == 0
-               RETURN ""
-            ENDIF
+   oldpoz := poz
+   poz    := AT( CHR( 10 ), SUBSTR( strbuf, poz ) )
+   IF poz = 0
+      IF han <> Nil
+         stro += SUBSTR( strbuf, oldpoz )
+         rez  := FREAD( han, @strbuf, buflen )
+         IF rez = 0
+            RETURN ""
+         ELSEIF rez < buflen
+            strbuf := SUBSTR( strbuf, 1, rez ) + CHR( 10 ) + CHR( 13 )
          ENDIF
+         poz  := AT( CHR( 10 ), strbuf )
+         stro += SUBSTR( strbuf, 1, poz )
       ELSE
-         stro += SUBSTR( strbuf, oldpoz, poz )
-         poz  += oldpoz - 1
+         stro += Rtrim( SUBSTR( strbuf, oldpoz ) )
+         poz  := oldpoz + Len( stro )
+         IF Len( stro ) == 0
+            RETURN ""
+         ENDIF
       ENDIF
-      poz ++
-      poz1 := AT( "&&", stro )
-      IF poz1 <> 0
-         stro := SUBSTR( stro, 1, poz1 - 1 )
-      ENDIF
-   ENDDO
+   ELSE
+      stro += SUBSTR( strbuf, oldpoz, poz )
+      poz  += oldpoz - 1
+   ENDIF
+   poz ++
    poz1 := LEN( stro )
    IF poz1 > 2 .AND. RIGHT( stro, 1 ) $ CHR( 13 ) + CHR( 10 )
       IF SUBSTR( stro, poz1 - 1, 1 ) $ CHR( 13 ) + CHR( 10 )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.197 2004-06-24 05:44:23 alkresin Exp $
+ * $Id: Changelog,v 1.198 2004-06-24 09:40:29 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,22 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-06-24 13:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/menu_c.c
+     * Changed to support separators in form description
+   * utils/designer/samples/example.xml
+     * Menu separator added
+   * source/procmisc/procs7.prg
+   * source/procmisc/procini.prg
+   * source/procmisc/procscri.prg
+     * Some modifications
+   * utils/designer/samples/testget1.xml
+   * utils/designer/samples/testget2.xml
+   * utils/designer/samples/testdbf1.xml
+     * Line continuation symbol is changed to the Clipper's ';'
+     ATTENTION. If you use scripts in forms, you must change line continuation
+     from '&&' to ';'.
 
 2004-06-24 09:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/hcombo.prg

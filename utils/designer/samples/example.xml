@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part class="form">
   <style>
-    <property name="Geometry">{125,145,508,169}</property>
+    <property name="Geometry">{125,145,508,144}</property>
     <property name="Caption">[Example]</property>
     <property name="lClipper">.F.</property>
     <property name="lExitOnEnter">.F.</property>
@@ -27,6 +27,7 @@ oForm3 := HFormTmpl():Read( "testdbf1.xml" )]]>
           <item name="Test3" id="32003">
             <![CDATA[oForm3:Show()]]>
           </item>
+          <item name="-" id="32007"/>
           <item name="Exit" id="32006">
             <![CDATA[EndWindow()]]>
           </item>
@@ -87,7 +88,7 @@ oForm3 := HFormTmpl():Read( "testdbf1.xml" )]]>
   </part>
   <part class="status">
     <style>
-      <property name="Geometry">{0,147,508,22}</property>
+      <property name="Geometry">{0,122,508,22}</property>
       <property name="Name">[oStatus1]</property>
       <property name="aParts">{120,0}</property>
     </style>

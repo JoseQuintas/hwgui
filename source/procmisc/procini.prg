@@ -60,6 +60,7 @@
 */
 
 #include "fileio.ch"
+#define STR_BUFLEN  1024
 
 *+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 *+
@@ -69,9 +70,9 @@
 *+
 FUNCTION RDINI( fname, prm1, prm2, prm3, prm4 )
 
-LOCAL han, stroka, kolstr, rez, poz1, vname, i, prblo, lTruncAr
+LOCAL han, stroka, strfull, kolstr, rez, poz1, vname, i, prblo, lTruncAr
 LOCAL lWinIni  := ( VALTYPE( prm1 ) == "A" )
-LOCAL strbuf := Space(512), poz := 513
+LOCAL strbuf := Space(STR_BUFLEN), poz := STR_BUFLEN+1
 LOCAL iniDbf := ( Upper( FilExten( fname ) ) == "DBF" )
 
    kolstr := 0
@@ -83,11 +84,21 @@ LOCAL iniDbf := ( Upper( FilExten( fname ) ) == "DBF" )
       han    := FOPEN( fname, FO_READ + FO_SHARED )
    ENDIF
    IF han <> - 1
+      strfull := ""
       DO WHILE .T.
          kolstr ++
-         stroka := Iif( iniDbf, RDSTRDBF(), RDSTR( han,@strbuf,@poz,512 ) )
+         stroka := Iif( iniDbf, RDSTRDBF(), RDSTR( han,@strbuf,@poz,STR_BUFLEN ) )
          IF LEN( stroka ) = 0
             EXIT
+         ENDIF
+         IF Right( stroka,2 ) == '&&'
+            strfull += Left( stroka,Len(stroka)-2 )
+            LOOP
+         ELSE
+            IF !Empty( strfull )
+               stroka := strfull + stroka
+            ENDIF
+            strfull := ""
          ENDIF
          //
          IF Left( stroka,1 ) = "["
@@ -224,8 +235,4 @@ FIELD INICOND, INITEXT
    ENDIF
    stroka := IIF( Empty( INICOND ) .OR. &( INICOND ), Trim(INITEXT), "" )
    SKIP
-   DO WHILE ( Empty( stroka ) .OR. Right( stroka,1 ) == "&" ) .AND. !Eof()
-      stroka += IIF( Empty( INICOND ) .OR. &( INICOND ), Trim(INITEXT), "" )
-      SKIP
-   ENDDO
 RETURN stroka

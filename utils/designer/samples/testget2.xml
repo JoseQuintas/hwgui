@@ -24,8 +24,8 @@ SetDlgKey(,4,0x72, Codeblock( 'MsgInfo("Shift-F3")' ) )
   </method>
   <method name="onDlgExit">
     <![CDATA[oTimer:End()
-MsgInfo( e1 + chr(10) + chr(13) + Dtoc(e2) + chr(10) + chr(13) &&
-    + Str(e3) + chr(10) + chr(13) + e4 + chr(10) + chr(13) &&
+MsgInfo( e1 + chr(10) + chr(13) + Dtoc(e2) + chr(10) + chr(13) ;
+    + Str(e3) + chr(10) + chr(13) + e4 + chr(10) + chr(13) ;
     + Str(e5) + chr(10) + chr(13), "Results:" )
 Return .T.]]>
   </method>

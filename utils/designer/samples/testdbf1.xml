@@ -66,11 +66,11 @@ ENDFUNC
   <method name="onFormInit">
     <![CDATA[Private dbfname := "forneced.dbf", indname := "forneced.ntx"
 if !File(dbfname)
-  dbCreate( dbfname, { &&
-      {"Cod", "C", 3, 0 }, &&
-      {"Name", "C",50, 0 }, &&
-      {"Adress", "C",50, 0 }, &&
-      {"Fone", "C",50, 0 }, &&
+  dbCreate( dbfname, { ;
+      {"Cod", "C", 3, 0 }, ;
+      {"Name", "C",50, 0 }, ;
+      {"Adress", "C",50, 0 }, ;
+      {"Fone", "C",50, 0 }, ;
       {"e_Mail  ", "C",30, 0 } } )
 endif
 Use (dbfname) Shared Alias TabDbf

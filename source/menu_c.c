@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.15 2004-05-24 08:25:00 alkresin Exp $
+ * $Id: menu_c.c,v 1.16 2004-06-24 09:40:30 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -53,8 +53,20 @@ HB_FUNC( HWG__ADDMENUITEM )
 
    if( ISCHAR( 2 ) )
    {
+      BOOL lString = 0;
+      LPCTSTR ptr;
       lpNewItem	 = (LPCTSTR) hb_parc(2);
-      uFlags |= MF_STRING ;
+      ptr = lpNewItem;
+      while( *ptr )
+      {
+         if( *ptr != ' ' && *ptr != '-' )
+         {
+            lString = 1;
+            break;
+         }
+         ptr ++;
+      }
+      uFlags |= (lString)? MF_STRING:MF_SEPARATOR ;
    }
    else
       uFlags |= MF_SEPARATOR;

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.7 2004-03-17 10:52:39 alkresin Exp $
+ * $Id: control.c,v 1.8 2004-03-24 00:37:25 jamaj Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -35,6 +35,7 @@
 
 LRESULT CALLBACK PanelProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK OwnBtnProc (HWND, UINT, WPARAM, LPARAM) ;
+LRESULT CALLBACK WinCtrlProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT APIENTRY SplitterProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 void CALLBACK TimerProc (HWND, UINT, UINT, DWORD) ;
 
@@ -1017,5 +1018,48 @@ HB_FUNC ( SETTOOLTIPBALLOON ) // added by MAG
 HB_FUNC ( GETTOOLTIPBALLOON ) // added by MAG
 {
    hb_retl( lToolTipBalloon );
+}
+
+// Added by jamaj - Used by WinCtrl
+
+BOOL RegisterWinCtrl(void)
+{
+
+   static TCHAR szAppName[] = TEXT ( "WINCTRL" );
+   WNDCLASS     wndclass ;
+
+   wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
+   wndclass.lpfnWndProc   = WinCtrlProc ;
+   wndclass.cbClsExtra    = 0 ;
+   wndclass.cbWndExtra    = 0 ;
+   wndclass.hInstance     = GetModuleHandle( NULL );
+   wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
+   wndclass.hbrBackground = (HBRUSH)( COLOR_3DFACE+1 );
+   wndclass.lpszMenuName  = NULL;
+   wndclass.lpszClassName = szAppName ;
+
+   return RegisterClass (&wndclass);
+}
+
+LRESULT CALLBACK WinCtrlProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+
+   PHB_DYNS pSymTest;
+   if( ( pSymTest = hb_dynsymFind( "WINCTRLPROC" ) ) != NULL )
+   {
+      hb_vmPushSymbol( pSymTest->pSymbol );
+      hb_vmPushNil();                 /* places NIL at self */
+      hb_vmPushLong( (LONG ) hWnd );    /* pushes parameters on to the hvm stack */
+      hb_vmPushLong( (LONG ) message );
+      hb_vmPushLong( (LONG ) wParam );
+      hb_vmPushLong( (LONG ) lParam );
+      hb_vmDo( 4 );  /* where iArgCount is the number of pushed parameters */
+      if( hb_itemGetL( (PHB_ITEM) hb_stackReturn() ) )
+         return 0;
+      else
+         return( DefWindowProc( hWnd, message, wParam, lParam ));
+    }
+    else
+       return( DefWindowProc( hWnd, message, wParam, lParam ));
 }
 

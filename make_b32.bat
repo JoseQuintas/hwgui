@@ -1,9 +1,11 @@
 @echo off
 if "%1" == "clean" goto CLEAN
 if "%1" == "CLEAN" goto CLEAN
-
+if "%HB_PATH%" ==xharbour goto FLAG
+if "%HB_PATH%" ==XHARBOUR goto FLAG
 if not exist lib md lib
 if not exist obj md obj
+
 
 :BUILD
 
@@ -18,6 +20,10 @@ if not exist obj md obj
 
    notepad make_b32.log
    goto EXIT
+
+:FLAG
+  SET cflags=%cflags%-DXHBCVS
+  goto BUILD
 
 :CLEAN
    del lib\*.lib

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.7 2004-01-25 22:38:27 lculik Exp $
+ * $Id: Changelog,v 1.8 2004-01-26 13:37:48 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,16 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2004-01-25 20:40 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
+2004-01-26 11:30 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   * source/hwindow.prg
-    !New class on Maximize() and Minimize()
-    !Added variable lMaximize          
-  * source/window.c
-    !New function Hwg_ActivateMainWMaxim
-    !New function Hwg_ActivateMDIWMaxim
+    !minor fix
+    New class Maximize()
+    New class Minimize()
+  * source/window.C
+    !new function Hwg_ActiveMainWMaxim  
+    !new function Hwg_ActiveMDIWMaxim  
   * include/guilib.ch
-       New Command MAXIMIZE in INIT WINDOW            
-    All provided by  Sandro Ricardo R. Freire <sandrorrfreire@yahoo.com.br>
+    New command MAXIMIZE in INIT WINDOW
+  * samples/demomaximize.prg
+    All provided by  Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+
 
 2003-12-30 00:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   * source/hwindow.prg

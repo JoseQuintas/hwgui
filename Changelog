@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.33 2004-03-15 18:51:16 alkresin Exp $
+ * $Id: Changelog,v 1.34 2004-03-16 10:48:05 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-03-16 14:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hwindow.prg
+    * The ReleaseAllWindows() fixed and uncommented - it seems to be really
+      needed if child windows are used.
 
 2004-03-15 21:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   - include/commctrl.ch

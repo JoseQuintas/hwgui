@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.20 2004-11-24 08:11:26 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.21 2004-11-24 08:13:34 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -574,7 +574,7 @@ MEMVAR aImages, lEditLabels, aParts
    ENDIF
    oCtrl := &stroka
    IF Type( "m->name" ) == "C"
-      writelog( oCtrlTmpl:cClass+" "+name )
+      // writelog( oCtrlTmpl:cClass+" "+name )
       __mvPut( name, oCtrl )
       name := Nil
    ENDIF

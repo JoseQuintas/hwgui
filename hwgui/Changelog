@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.3 2003-11-30 17:42:35 alkresin Exp $
+ * $Id: Changelog,v 1.4 2003-12-01 12:57:38 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,22 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2003-12-01 11:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
+   * makefile.bc
+     makefile.gcc
+     makefile.vc
+     ! added new files dependencies
+   * include/guilib.ch
+     + Set Resource command 
+   * include/windows.ch
+     + defined to video
+   + source/resource.c
+     ! function to use resource dll and strings inside resource (in .exe or .dll)
+   + source/tcmi.prg
+     source/video.prg
+     + Video and mci controls to hwgui
+   * source/dialog.c
+     ! enhaced to use dialogs, or from resource dll or from exes
 
 2003-11-30 20:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/hbrowse.prg

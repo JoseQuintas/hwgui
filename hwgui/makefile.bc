@@ -1,4 +1,4 @@
-# $Id: makefile.bc,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+# $Id: makefile.bc,v 1.3 2003-12-01 12:57:38 lculik Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -25,6 +25,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\message.obj \
    $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\registry.obj \
+   $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\richedit.obj \
    $(OBJ_DIR)\shellapi.obj  \
    $(OBJ_DIR)\wbrowse.obj \
@@ -57,6 +58,8 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\hupdown.obj \
    $(OBJ_DIR)\hwindow.obj \
    $(OBJ_DIR)\menu.obj \
+   $(OBJ_DIR)\tmci.obj \
+   $(OBJ_DIR)\video.obj \
    $(OBJ_DIR)\repexec.obj
 
 $(LIB_DIR)\procmisc.lib : \
@@ -97,6 +100,9 @@ $(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
 $(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
 $(OBJ_DIR)\hwindow.c    : $(SRC_DIR)\hwindow.prg
 $(OBJ_DIR)\menu.c       : $(SRC_DIR)\menu.prg
+$(OBJ_DIR)\tmci.c       : $(SRC_DIR)\tmci.prg
+$(OBJ_DIR)\video.c       : $(SRC_DIR)\video.prg
+
 $(OBJ_DIR)\repexec.c    : $(SRC_DIR)\repexec.prg
 
 $(OBJ_DIR)\commond.obj  : $(SRC_DIR)\commond.c
@@ -110,6 +116,7 @@ $(OBJ_DIR)\menu_c.obj   : $(SRC_DIR)\menu_c.c
 $(OBJ_DIR)\message.obj  : $(SRC_DIR)\message.c
 $(OBJ_DIR)\misc.obj     : $(SRC_DIR)\misc.c
 $(OBJ_DIR)\registry.obj : $(SRC_DIR)\registry.c
+$(OBJ_DIR)\resource.obj : $(SRC_DIR)\resource.c
 $(OBJ_DIR)\richedit.obj : $(SRC_DIR)\richedit.c
 $(OBJ_DIR)\shellapi.obj : $(SRC_DIR)\shellapi.c
 $(OBJ_DIR)\wbrowse.obj  : $(SRC_DIR)\wbrowse.c
@@ -143,6 +150,9 @@ $(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
 $(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
 $(OBJ_DIR)\hwindow.obj  : $(OBJ_DIR)\hwindow.c
 $(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
+$(OBJ_DIR)\video.obj    : $(OBJ_DIR)\video.c
+$(OBJ_DIR)\tmci.obj     : $(OBJ_DIR)\tmci.c
+
 $(OBJ_DIR)\repexec.obj  : $(OBJ_DIR)\repexec.c
 
 $(OBJ_DIR)\procini.c   : $(SRC_DIR)\procmisc\procini.prg

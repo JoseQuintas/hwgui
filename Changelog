@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.85 2004-04-17 13:39:08 rodrigo_moreno Exp $
+ * $Id: Changelog,v 1.86 2004-04-17 15:03:31 rodrigo_moreno Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2004-04-17 12:00 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
+  + samples/browse_2.prg
+    ! Showing like delphi style controls
+  * samples/bld.bat
+    ! add obj check dir
+  + samples/browse_2.rc
+    ! Add resource file
+
 2004-04-17 10-35 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
   * source/hbrowse.prg
     ! Fixed bugs when used database clause ( when gettting values and in other alias )

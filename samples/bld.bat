@@ -12,6 +12,8 @@ rem SET H_DEFINES= -DHB_THREAD_SUPPORT
 SET C_DEFINES= 
 SET H_DEFINES= 
 
+if not exist obj md obj
+
 %HB_INSTALL%\bin\harbour %1.prg %H_DEFINES% -n -i%HB_INSTALL%\include;%HWGUI_INSTALL%\include %2 %3
 
 bcc32  -c %C_DEFINES% -O2 -tW -M -I%HB_INSTALL%\include;%HWGUI_INSTALL%\include %1.c

@@ -45,12 +45,19 @@
 
 #include <windows.h>
 #include <commctrl.h>
+#include "winreg.h"
+#include "tchar.h"
+
+#ifdef __EXPORT__
+   #define HB_NO_DEFAULT_API_MACROS
+   #define HB_NO_DEFAULT_STACK_MACROS
+#endif
+
+
 #include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
-#include "winreg.h"
-#include "tchar.h"
 
 HB_FUNC ( INITIPADDRESS )
 {

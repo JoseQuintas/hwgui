@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.4 2004-02-25 12:17:15 lculik Exp $
+ *$Id: dialog.c,v 1.5 2004-03-11 03:31:19 jamaj Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -16,6 +16,13 @@
 #if defined(__MINGW32__)
    #include <prsht.h>
 #endif
+
+#ifdef __EXPORT__
+   #define HB_NO_DEFAULT_API_MACROS
+   #define HB_NO_DEFAULT_STACK_MACROS
+#endif
+
+
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
@@ -509,7 +516,7 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
       hb_vmPushLong( (LONG) wParam );
       hb_vmPushLong( (LONG) lParam );
       hb_vmDo( 4 );  /* where iArgCount is the number of pushed parameters */
-      res = hb_itemGetNL( (PHB_ITEM) &hb_stack.Return );
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
       if( res == -1 )
          return FALSE;
       else
@@ -545,7 +552,7 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPushLong( (LONG) wParam );
       hb_vmPushLong( (LONG) lParam );
       hb_vmDo( 4 );  /* where iArgCount is the number of pushed parameters */
-      res = hb_itemGetNL( (PHB_ITEM) &hb_stack.Return );
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() ); 
       if( res == -1 )
          return FALSE;
       else
@@ -580,7 +587,7 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmDo( 4 );  /* where iArgCount is the number of pushed parameters */
-      return hb_itemGetNL( (PHB_ITEM) &hb_stack.Return );
+      return hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
     }
     else
        return FALSE;

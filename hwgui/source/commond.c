@@ -11,6 +11,12 @@
 #define _WIN32_WINNT 0x0400
 #define OEMRESOURCE
 #include <windows.h>
+
+#ifdef __EXPORT__
+   #define HB_NO_DEFAULT_API_MACROS
+   #define HB_NO_DEFAULT_STACK_MACROS
+#endif
+
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
@@ -272,3 +278,12 @@ HB_FUNC( HDGETSERIAL)
 {
    hb_retnl( Get_SerialNumber(hb_parc(1)) );
 }
+
+HB_FUNC ( GETKEYBOARDSTATE )
+{
+   BYTE lpbKeyState[256];
+   GetKeyboardState( lpbKeyState );
+   lpbKeyState[255] = '\0';
+   hb_retclen( lpbKeyState,255 );
+}
+

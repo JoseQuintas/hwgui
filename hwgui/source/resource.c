@@ -16,6 +16,12 @@
 #if defined(__MINGW32__)
    #include <prsht.h>
 #endif
+
+#ifdef __EXPORT__
+   #define HB_NO_DEFAULT_API_MACROS
+   #define HB_NO_DEFAULT_STACK_MACROS
+#endif
+
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"

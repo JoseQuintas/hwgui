@@ -12,6 +12,11 @@
 #define OEMRESOURCE
 #include <windows.h>
 #include <commctrl.h>
+
+#ifdef __EXPORT__
+   #define HB_NO_DEFAULT_API_MACROS
+   #define HB_NO_DEFAULT_STACK_MACROS
+#endif
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
@@ -254,3 +259,15 @@ HB_FUNC( DESTROYACCELERATORTABLE )
 {
    hb_retl( DestroyAcceleratorTable( (HACCEL) hb_parnl(1) ) );
 }
+
+HB_FUNC( DRAWMENUBAR )
+{
+   hb_retl( (BOOL) DrawMenuBar( (HWND) hb_parnl(1) )   );
+}
+
+/*
+HB_FUNC( GETSUBMENU )
+{
+   hb_retl( GetSubMenu( (HMENU) hb_parnl(1), hb_parni(2) ) );
+}
+*/

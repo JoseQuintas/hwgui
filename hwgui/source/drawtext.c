@@ -12,6 +12,13 @@
 #define OEMRESOURCE
 #include <windows.h>
 #include <commctrl.h>
+
+#ifdef __EXPORT__
+   #define HB_NO_DEFAULT_API_MACROS
+   #define HB_NO_DEFAULT_STACK_MACROS
+#endif
+
+
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"

@@ -12,6 +12,8 @@
 Function InitControls( oWnd,lNoActivate )
 Local i, pArray := oWnd:aControls
 
+   writelog( "(guimain.prg) InitControls Entrando " )
+
    lNoActivate := Iif( lNoActivate==Nil,.F.,lNoActivate )
    IF pArray != Nil
       FOR i := 1 TO Len( pArray )
@@ -24,11 +26,15 @@ Local i, pArray := oWnd:aControls
             // writelog( "InitControl2"+str(pArray[i]:handle)+"/"+pArray[i]:classname )
          ENDIF
          IF !Empty( pArray[i]:aControls )
+            writelog( "(guimain.prg) InitControls Recurse pArray["+ str(i) + "]" + " handle:" + str(pArray[i]:handle)+"/"+pArray[i]:classname )
             InitControls( pArray[i] )
          ENDIF
+         writelog( "(guimain.prg) InitControls INIT pArray["+ str(i) + "]" + " handle:" + str(pArray[i]:handle)+"/"+pArray[i]:classname )
          pArray[i]:Init()
       NEXT
    ENDIF
+
+   writelog( "(guimain.prg) InitControls Saindo " )
 
 Return .T.
 

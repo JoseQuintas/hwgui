@@ -56,7 +56,7 @@ Local i
       ELSEIF ::oParent:oFont != Nil
          SetCtrlFont( ::oParent:handle, ::id, ::oParent:oFont:handle )
       ENDIF
-      IF ::bInit != Nil
+      IF ISBLOCK(::bInit)
          Eval( ::bInit, Self )
       ENDIF
       ::lInit := .T.

@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.12 2004-05-17 10:17:54 alkresin Exp $
+ *$Id: windows.ch,v 1.13 2004-05-21 14:03:54 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -833,3 +833,10 @@
 #define DS_3DLOOK               4       // 0x4L
 #define BS_NOTIFY               16384   // 0x00004000L
 
+// more messages
+#define WM_NEXTMENU                     0x0213
+#define WM_SIZING                       0x0214
+#define WM_CAPTURECHANGED               0x0215
+#define WM_MOVING                       0x0216
+#define GWL_ID (-12)
+#define TRANSPARENT 1

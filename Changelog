@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.141 2004-05-21 09:51:58 alkresin Exp $
+ * $Id: Changelog,v 1.142 2004-05-21 14:08:52 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,26 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-05-21 11:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
+  * source/hdialog.prg
+    ! fixed PropertySheet() function when dialog is build from resouce(also the property sheet function)
+    ! Change on DlgMouseMove function to handle NiceButtons
+  * include/guilib.ch
+    ! Added commands for redefine nicebutton/@ nicebutton
+  * include/windows.ch
+    ! Added new messages
+  + source/nice.c
+  + source/hnice.prg
+    ! source code for nicebutton control
+  * Makefile*
+    ! All makefiles updated to use new files
+  + samples/nice.prg
+  + samples/nice2.prg
+  + samples/nice.rc
+  + samples/nice.h
+    ! tests for nicebuttons
+
 
 2004-05-21 13:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hwindow.prg

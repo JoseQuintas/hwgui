@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.11 2004-11-19 08:32:12 alkresin Exp $
+ * $Id: draw.c,v 1.12 2004-12-03 12:34:19 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -652,7 +652,7 @@ HB_FUNC( OPENIMAGE )
       return;
    }
 
-#if !defined(__BORLANDC__) && !defined(__MINGW32__)
+#if !defined(__BORLANDC__) && !defined(__MINGW32__)  && !defined(__POCC__) && !defined(__XCC__)
    OleLoadPicture( pStream,0,0,IID_IPicture,(void**)&pPic );
    pStream->Release();
 #else
@@ -668,14 +668,14 @@ HB_FUNC( OPENIMAGE )
       return;
    }
 
-#if !defined(__BORLANDC__) && !defined(__MINGW32__)
+#if !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__POCC__) && !defined(__XCC__)
    pPic->get_Handle( (OLE_HANDLE*)&hBitmap );
 #else
    pPic->lpVtbl->get_Handle( pPic, (OLE_HANDLE*)&hBitmap );
 #endif
 
    hb_retnl( (LONG) CopyImage( hBitmap,IMAGE_BITMAP,0,0,LR_COPYRETURNORG ) );
-#if !defined(__BORLANDC__) && !defined(__MINGW32__)
+#if !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__POCC__) && !defined(__XCC__)
    pPic->Release();
 #else
    pPic->lpVtbl->Release( pPic );

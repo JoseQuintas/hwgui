@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.316 2004-12-01 10:24:11 alkresin Exp $
+ * $Id: Changelog,v 1.317 2004-12-03 12:34:17 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-12-03 10-35 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source\draw.c
+    Added in lines 655, 671 and 678 ->&& !defined(__POCC__) && !defined(__XCC__)
+    Thanks to Alexander Kresin
 
 2004-12-01 13:26 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hprinter.prg

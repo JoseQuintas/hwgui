@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.18 2004-05-10 18:26:35 lculik Exp $
+ * $Id: hdialog.prg,v 1.19 2004-05-19 09:24:08 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -275,7 +275,7 @@ Local aCoors
    ENDIF
 Return 0
 
-Static Function DlgCommand( oDlg,wParam,lParam )
+Function DlgCommand( oDlg,wParam,lParam )
 Local iParHigh := HiWord( wParam ), iParLow := LoWord( wParam )
 Local aMenu, i, hCtrl
 
@@ -461,10 +461,12 @@ Local oDlg, i, aControls
          hwg__SetMenu( hDlg, oDlg:menu[5] )
       ENDIF
       InitControls( oDlg,.T. )
+      /*
       aControls := oDlg:aControls
       IF aControls != Nil
          GetSkip( oDlg,,1 )
       ENDIF
+      */
       IF oDlg:bInit != Nil
          Eval( oDlg:bInit,oDlg )
       ENDIF

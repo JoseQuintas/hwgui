@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.24 2004-05-17 10:17:54 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.25 2004-05-19 09:24:08 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1204,30 +1204,30 @@ return nil
 //----------------------------------------------------//
 METHOD Edit( wParam,lParam ) CLASS HBrowse
 Local fipos, lRes, varbuf, x1, y1, fif, nWidth, lReadExit, rowPos
-Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet
+Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
    IF ::bEnter == Nil .OR. ;
          ( Valtype( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. !lRes )
-      IF ::lEditable        
-         oColumn := ::aColumns[fipos]
+      oColumn := ::aColumns[fipos]
+      IF ::type == BRW_DATABASE
+         varbuf := (::alias)->(Eval( oColumn:block,,Self,fipos ))
+      ELSE
+         varbuf := Eval( oColumn:block,,Self,fipos )
+      ENDIF
+      type := Iif( oColumn:type=="U".AND.varbuf!=Nil, Valtype( varbuf ), oColumn:type )
+      IF ::lEditable .AND. type != "O"        
          IF oColumn:lEditable .AND. ( oColumn:bWhen = Nil .OR. EVAL( oColumn:bWhen ) )
             IF ::lAppMode
-               IF oColumn:type == "D"
+               IF type == "D"
                   varbuf := CtoD("")
-               ELSEIF oColumn:type == "N"
+               ELSEIF type == "N"
                   varbuf := 0
-               ELSEIF oColumn:type == "L"
+               ELSEIF type == "L"
                   varbuf := .F.
                ELSE
                   varbuf := ""
                ENDIF
-            ELSE
-               IF ::type == BRW_DATABASE
-                  varbuf := (::alias)->(Eval( oColumn:block,,Self,fipos ))
-               ELSE
-                  varbuf := Eval( oColumn:block,,Self,fipos )
-               ENDIF                  
             ENDIF
          ELSE
             RETURN Nil
@@ -1383,7 +1383,6 @@ STATIC FUNCTION FldStr( oBrw,numf )
    
    if numf <= len( oBrw:aColumns )
 
-      type := (oBrw:aColumns[numf]):type
       pict := oBrw:aColumns[numf]:picture
 
       if pict != nil
@@ -1400,6 +1399,10 @@ STATIC FUNCTION FldStr( oBrw,numf )
              vartmp := eval( oBrw:aColumns[numf]:block,,oBrw,numf )
          endif
 
+         type := (oBrw:aColumns[numf]):type
+         if type == "U" .AND. vartmp != Nil
+            type := Valtype( vartmp )
+         endif
          if type == "C"
             rez := padr( vartmp, oBrw:aColumns[numf]:length )
 
@@ -1414,6 +1417,12 @@ STATIC FUNCTION FldStr( oBrw,numf )
 
          elseif type == "M" 
             rez := "<Memo>"
+
+         elseif type == "O" 
+            rez := "<" + vartmp:Classname() + ">"
+
+         else
+            rez := Space( oBrw:aColumns[numf]:length )
          endif
       endif
    endif
@@ -1447,7 +1456,7 @@ Static keyCode := 0
 
    // WriteLog( "Brw: "+Str(hBrw,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    if msg != WM_CREATE
-      if Ascan( { WM_MOUSEMOVE, WM_MOUSEWHEEL, WM_GETDLGCODE, WM_PAINT, WM_ERASEBKGND, WM_SETFOCUS, WM_KILLFOCUS,  WM_HSCROLL, WM_VSCROLL, WM_DESTROY, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK }, msg ) > 0
+      if Ascan( { WM_MOUSEMOVE, WM_MOUSEWHEEL, WM_GETDLGCODE, WM_PAINT, WM_ERASEBKGND, WM_SETFOCUS, WM_KILLFOCUS,  WM_HSCROLL, WM_VSCROLL, WM_COMMAND, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK, WM_DESTROY }, msg ) > 0
 
          if ( oBrw := FindSelf( hBrw ) ) == Nil
             // MsgStop( "WM: wrong browse handle "+Str( hBrw ),"Error!" )
@@ -1498,6 +1507,9 @@ Static keyCode := 0
                   keyCode := wParam
                ENDIF
                return 1
+
+            elseif msg == WM_COMMAND
+               DlgCommand( oBrw, wParam, lParam )
 
             elseif msg == WM_KEYUP
                IF wParam == 13 .AND. keyCode == 13

@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.12 2004-04-21 12:14:08 alkresin Exp $
+ *$Id: hedit.prg,v 1.13 2004-05-19 09:24:08 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -174,12 +174,12 @@ Local oEdit, oParent, nPos, nctrl, cKeyb
       IF ( oParent := FindParent( hEdit ) ) != Nil
          oEdit := oParent:FindControl(,hEdit)
          IF wParam == 40     // KeyDown
-            IF ReadExit() .AND. !IsCtrlShift()
+            IF !IsCtrlShift()
                GetSkip( oParent,hEdit,1 )
                Return 0
             ENDIF
          ELSEIF wParam == 38     // KeyUp
-            IF ReadExit() .AND. !IsCtrlShift()
+            IF !IsCtrlShift()
                GetSkip( oParent,hEdit,-1 )
                Return 0
             ENDIF
@@ -742,7 +742,6 @@ Local i, aLen
       IF nSkip > 0
          aLen := Len( oParent:Getlist )
          DO WHILE ( i := i+nSkip ) <= aLen
-//            IF !oParent:Getlist[i]:lHide .AND. oParent:Getlist[i]:ClassName() == "HEDIT"
             IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
                SetFocus( oParent:Getlist[i]:handle )
                Return .T.
@@ -750,7 +749,6 @@ Local i, aLen
          ENDDO
       ELSE
          DO WHILE ( i := i+nSkip ) > 0
-//            IF !oParent:Getlist[i]:lHide .AND. oParent:Getlist[i]:ClassName() == "HEDIT"
             IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle )
                SetFocus( oParent:Getlist[i]:handle )
                Return .T.

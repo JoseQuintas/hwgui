@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.22 2004-08-17 13:02:02 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.23 2004-09-06 17:32:37 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -24,7 +24,7 @@ CLASS HEdit INHERIT HControl
    DATA lPicComplex INIT .F.
    DATA lFirst      INIT .T.
    DATA lChanged    INIT .F.
-
+ 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture,lNoBorder )
    METHOD Activate()
@@ -176,7 +176,7 @@ Local oEdit, oParent, nPos, nctrl, cKeyb
    ENDIF
 
    IF !oEdit:lMultiLine
-
+ 
       IF msg == WM_CHAR
 
          IF wParam == 8
@@ -269,7 +269,14 @@ Local oEdit, oParent, nPos, nctrl, cKeyb
          ENDIF
       ENDIF
    ENDIF
-
+/*
+   IF !Empty( oEdit:cPicMask )
+      IF Len(oEdit:cPicMask)==Len(oEdit:Title)
+         nPos:=Len(oEdit:cPicMask)
+         SendMessage( oEdit:handle, EM_SETSEL, nPos, nPos )
+      ENDIF
+   ENDIF
+*/
 Return -1
 
 Static Function IsCtrlShift()
@@ -354,7 +361,7 @@ Local cChar
 Return .F.
 
 Static Function KeyRight( oEdit,nPos )
-Local i, masklen
+Local i, masklen, newpos
    IF oEdit == Nil
       Return -1
    ENDIF
@@ -364,7 +371,7 @@ Local i, masklen
    IF oEdit:cPicMask == Nil .OR. Empty( oEdit:cPicMask )
       SendMessage( oEdit:handle, EM_SETSEL, nPos, nPos )
    ELSE
-      masklen := Len( oEdit:cPicMask )
+      masklen := Len( oEdit:cPicMask ) 
       DO WHILE nPos <= masklen
          IF IsEditable( oEdit,++nPos )
             // writelog( "KeyRight-2 "+str(nPos) )
@@ -373,6 +380,21 @@ Local i, masklen
          ENDIF
       ENDDO
    ENDIF
+
+   //Added By Sandro Freire
+
+   IF oEdit:cType == "D" .OR. oEdit:cType == "C"
+      IF !Empty( oEdit:cPicMask )
+         IF Len(oEdit:cPicMask)==Len(TRIM(oEdit:Title))  
+            newPos:=Len(oEdit:cPicMask)
+            writelog( "KeyRight-2 "+str(nPos) + " " +str(newPos) )
+            IF nPos>newPos
+               SendMessage( oEdit:handle, EM_SETSEL, newPos, newPos )
+            ENDIF
+         ENDIF
+      ENDIF
+   ENDIF
+
 Return 0
 
 Static Function KeyLeft( oEdit,nPos )

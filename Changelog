@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.255 2004-08-31 14:32:36 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.256 2004-09-06 17:32:35 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-09-06 14-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/hedit.prg
+    See line 386
+    Fix bug all complete the GET, cursor fixed in Left
+    Valid to format DATE and CARACTER
+ 
 2004-08-31 11-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/misc.c
     New function GetKeyState()

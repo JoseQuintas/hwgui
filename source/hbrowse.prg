@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.36 2004-09-09 12:20:14 lf_sfnet Exp $
+ * $Id: hbrowse.prg,v 1.37 2004-09-20 11:30:11 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1380,7 +1380,11 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
                ::Refresh()
             ELSE
                IF ::type == BRW_DATABASE
-                  (::alias)->( Eval( oColumn:block,::varbuf,Self,fipos ) )
+                  if (::alias)->(Rlock())
+                     (::alias)->( Eval( oColumn:block,::varbuf,Self,fipos ) )
+                  else
+                     MsgStop("No possible edition!")
+                  endif
                ELSE
                   Eval( oColumn:block,::varbuf,Self,fipos )
                ENDIF
@@ -1402,7 +1406,7 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
          ENDIF
          SetFocus( ::handle )
          ReadExit( lReadExit )
-         
+
       ENDIF
    ENDIF
 RETURN Nil

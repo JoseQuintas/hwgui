@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.170 2004-06-06 15:35:32 alkresin Exp $
+ * $Id: Changelog,v 1.171 2004-06-07 06:30:32 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-06-07 10:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * utils/designer/testdbf1.xml
+   * utils/designer/example.prg
+     * Minor changes.
+   * utils/designer/readme.txt
+     * New info added.
+   * source/guimain.prg
+     * Function RefreshAllGets( oDlg ) added ( suggested by  Maurizio Lacecilia )
+   * source/hradio.prg
+     * Refresh() method added to HRadioGroup.
 
 2004-06-06 19:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/hfrmtmpl.prg
@@ -17,7 +28,7 @@
    * utils/designer/hctrl.prg
    * utils/designer/hformgen.prg
      * Some improvements, including autoadjusting of the controls
-   + utils/designer/testdbf1.xml
+   * utils/designer/testdbf1.xml
      ! Minor fix
 
 2004-06-05 20:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>

@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.8 2004-04-27 09:58:29 alkresin Exp $
+ * $Id: guimain.prg,v 1.9 2004-06-07 06:30:33 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -267,3 +267,8 @@ Function SetHelpFileName ( cNewName )
       cName := cNewName
    endif
 return cOldName
+
+Function RefreshAllGets( oDlg )
+
+   AEval( oDlg:GetList, {|o|o:Refresh()} )
+Return Nil

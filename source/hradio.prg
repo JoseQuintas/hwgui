@@ -19,6 +19,7 @@ CLASS HRadioGroup INHERIT HObject
    METHOD New( vari,bSetGet )
    METHOD EndGroup( nSelected )
    METHOD SetValue( nValue )
+   METHOD Refresh()   INLINE Iif( ::bSetGet!=Nil,::SetValue(Eval(::bSetGet)),.T. )
 ENDCLASS
 
 METHOD New( vari,bSetGet ) CLASS HRadioGroup

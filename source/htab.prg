@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.7 2004-06-10 11:28:17 alkresin Exp $
+ *$Id: htab.prg,v 1.8 2004-06-26 17:30:05 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -114,7 +114,7 @@ METHOD SetTab( n ) CLASS HTab
 Return Nil
 
 METHOD StartPage( cname ) CLASS HTab
-Local i := Iif( cName==Nil, ::nActive+1, Ascan( ::aTabs,cname ) )
+Local i := Iif( cName==Nil, Len(::aPages)+1, Ascan( ::aTabs,cname ) )
 Local lNew := ( i == 0 )
 
    ::oTemp := ::oDefaultParent

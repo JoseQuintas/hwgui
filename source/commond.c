@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.4 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: commond.c,v 1.5 2004-03-16 19:07:44 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -280,3 +280,47 @@ HB_FUNC( HDGETSERIAL)
 {
    hb_retnl( Get_SerialNumber(hb_parc(1)) );
 }
+
+#define HB_OS_WIN_32_USED
+#define _WIN32_WINNT   0x0400
+#include <windows.h>
+#include "hbapi.h"
+#include "hbapiitm.h"
+#include "hbapi.h"
+
+/*
+ The functions added by extract for the Minigui Lib Open Source project
+ Copyright 2002 Roberto Lopez <roblez@ciudad.com.ar>
+ http://www.geocities.com/harbour_minigui/
+ HB_FUNC (GETPRIVATEPROFILESTRING )
+ HB_FUNC( WRITEPRIVATEPROFILESTRING )
+*/
+
+HB_FUNC (GETPRIVATEPROFILESTRING )
+{
+   TCHAR bBuffer[ 1024 ] = { 0 };
+   DWORD dwLen ;
+   char * lpSection = hb_parc( 1 );
+   char * lpEntry = ISCHAR(2) ? hb_parc( 2 ) : NULL ;
+   char * lpDefault = hb_parc( 3 );
+   char * lpFileName = hb_parc( 4 );
+   dwLen = GetPrivateProfileString( lpSection , lpEntry ,lpDefault , bBuffer, sizeof( bBuffer ) , lpFileName);
+   if( dwLen )
+     hb_retclen( ( char * ) bBuffer, dwLen );
+   else
+      hb_retc( lpDefault );
+}
+
+HB_FUNC( WRITEPRIVATEPROFILESTRING )
+{
+   char * lpSection = hb_parc( 1 );
+   char * lpEntry = ISCHAR(2) ? hb_parc( 2 ) : NULL ;
+   char * lpData = ISCHAR(3) ? hb_parc( 3 ) : NULL ;
+   char * lpFileName= hb_parc( 4 );
+
+   if ( WritePrivateProfileString( lpSection , lpEntry , lpData , lpFileName ) )
+      hb_retl( TRUE ) ;
+   else
+      hb_retl(FALSE);
+}
+

@@ -19,7 +19,8 @@ GUIMAIN.PRG:
   WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel )
   ShowProgress( nStep,maxPos,nRange,cTitle,oWnd,x1,y1,width,height )
   HdSerial( cDrive )
-  
+  Hwg_GetIni
+  Hwg_WriteIni
 
 HOWNBTN.PRG
   SetOwnBtnSelected( aBtn )
@@ -51,6 +52,8 @@ COMMOND.C:
   Printsetup
   GetSerialNumber       
   HDGetSerial     
+  Getprivateprofilestring
+  Writeprivateprofilestring
 
 CONTROL.C:
   Movewindow

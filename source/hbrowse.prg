@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.11 2004-03-31 07:28:11 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.12 2004-03-31 10:47:52 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -323,6 +323,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::bRcou   := { | o | len( o:msrec ) }
       ::bRecno  := { | o | o:tekzp }
       ::bGoTo   := { | o, n | o:tekzp := n }
+      ::bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}
    endif
 RETURN Nil
 
@@ -825,8 +826,13 @@ Local nScrollCode := LoWord( wParam )
       ::PAGEUP()
 
    elseif nScrollCode == SB_THUMBPOSITION
-
+      IF ::bScrollPos != Nil
+         Eval( ::bScrollPos, Self, SB_THUMBPOSITION, .F., Hiword( wParam ) )
+      ENDIF
    elseif nScrollCode == SB_THUMBTRACK
+      IF ::bScrollPos != Nil
+         Eval( ::bScrollPos, Self, SB_THUMBTRACK, .F., Hiword( wParam ) )
+      ENDIF
    endif
 RETURN 0
 
@@ -1023,12 +1029,12 @@ Local xm := LOWORD(lParam), x1, fif
          nrec := Recno()
          EVAL( ::bSkip, Self, step )
          IF !Eval( ::bEof,Self )
+            ::rowPos := nLine
             IF ::bScrollPos != Nil
                Eval( ::bScrollPos, Self, step, .F. )
             ELSE
                GetScrollRange( hBrw, SB_VERT, @minPos, @maxPos )
                nPos := GetScrollPos( hBrw, SB_VERT )
-               ::rowPos := nLine
                nPos := Min( nPos + Int( (maxPos-minPos)*step/(::kolz-1) ), maxPos )
                SetScrollPos( hBrw, SB_VERT, nPos )
             ENDIF
@@ -1533,6 +1539,40 @@ Local kolf := FCOUNT()
    oBrw:Refresh()
 
 RETURN Nil
+
+Static Function VScrollPos( oBrw, nType, lEof, nPos )
+Local minPos, maxPos, oldRecno, newRecno
+
+   GetScrollRange( oBrw:handle, SB_VERT, @minPos, @maxPos )
+   IF nPos == Nil
+      nPos := Round( ( (maxPos-minPos)/(oBrw:kolz-1) ) * ;
+         ( EVAL( oBrw:bRecno,oBrw )-1 ),0 )
+      SetScrollPos( oBrw:handle, SB_VERT, nPos )
+   ELSE
+      oldRecno := EVAL( oBrw:bRecno,oBrw )
+      newRecno := Round( (oBrw:kolz-1)*nPos/(maxPos-minPos)+1,0 )
+      IF newRecno <= 0
+         newRecno := 1
+      ELSEIF newRecno > oBrw:kolz
+         newRecno := oBrw:kolz
+      ENDIF
+      SetScrollPos( oBrw:handle, SB_VERT, nPos )
+      IF newRecno != oldRecno
+         EVAL( oBrw:bSkip, oBrw, newRecno - oldRecno )
+         IF oBrw:rowCount - oBrw:rowPos > oBrw:kolz - newRecno
+            oBrw:rowPos := Min( oBrw:rowCount,oBrw:kolz )
+         ENDIF
+         IF oBrw:rowPos > newRecno
+            oBrw:rowPos := newRecno
+         ENDIF
+         // writelog( str(oldRecno)+str(newRecno)+str(oBrw:rowPos) )
+         InvalidateRect( oBrw:handle, 0 )
+         oBrw:internal[1] := SetBit( oBrw:internal[1], 1, 0 )
+         PostMessage( oBrw:handle, WM_PAINT, 0, 0 )
+      ENDIF
+   ENDIF
+
+Return Nil
 
 //----------------------------------------------------//
 // Agregado x WHT. 27.07.02

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.219 2004-07-14 11:49:26 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.220 2004-07-15 20:14:40 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-07-15 17-10 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * samples/bldpc.bat
+    !To build in Pelles C Compiler.
+     Andi please verify
+     
 2004-07-14 08-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/window.c
     !minor fix, line 251 parameter 1 subst for 2

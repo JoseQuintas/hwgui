@@ -1,12 +1,16 @@
-# $Id: makefile.bc,v 1.3 2003-12-01 12:57:38 lculik Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
-HRB_DIR = \harbour
+HRB_DIR = $(HB_PATH)
 INCLUDE_DIR = include;$(HRB_DIR)\include
 OBJ_DIR = obj
 LIB_DIR = lib
 SRC_DIR = source
+#C_DEFINES= -DHB_THREAD_SUPPORT
+#H_DEFINES= -DHB_THREAD_SUPPORT
+
+C_DEFINES=
+H_DEFINES= 
 
 all: \
    $(LIB_DIR)\hwgui.lib \
@@ -23,9 +27,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\media_c.obj \
    $(OBJ_DIR)\menu_c.obj \
    $(OBJ_DIR)\message.obj \
-   $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\registry.obj \
-   $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\richedit.obj \
    $(OBJ_DIR)\shellapi.obj  \
    $(OBJ_DIR)\wbrowse.obj \
@@ -57,12 +59,15 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\htree.obj \
    $(OBJ_DIR)\hupdown.obj \
    $(OBJ_DIR)\hwindow.obj \
+   $(OBJ_DIR)\hipedit.obj \
    $(OBJ_DIR)\menu.obj \
-   $(OBJ_DIR)\tmci.obj \
-   $(OBJ_DIR)\video.obj \
+   $(OBJ_DIR)\_winmsg.obj \
+   $(OBJ_DIR)\c_ipaddress.obj \
+   $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\repexec.obj
 
 $(LIB_DIR)\procmisc.lib : \
+   $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\arr2str.obj \
    $(OBJ_DIR)\blowfish.obj \
    $(OBJ_DIR)\procini.obj \
@@ -99,10 +104,8 @@ $(OBJ_DIR)\htree.c      : $(SRC_DIR)\htree.prg
 $(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
 $(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
 $(OBJ_DIR)\hwindow.c    : $(SRC_DIR)\hwindow.prg
+$(OBJ_DIR)\hipedit.c    : $(SRC_DIR)\hipedit.prg
 $(OBJ_DIR)\menu.c       : $(SRC_DIR)\menu.prg
-$(OBJ_DIR)\tmci.c       : $(SRC_DIR)\tmci.prg
-$(OBJ_DIR)\video.c       : $(SRC_DIR)\video.prg
-
 $(OBJ_DIR)\repexec.c    : $(SRC_DIR)\repexec.prg
 
 $(OBJ_DIR)\commond.obj  : $(SRC_DIR)\commond.c
@@ -114,14 +117,15 @@ $(OBJ_DIR)\freeimg.obj  : $(SRC_DIR)\freeimg.c
 $(OBJ_DIR)\media_c.obj  : $(SRC_DIR)\media_c.c
 $(OBJ_DIR)\menu_c.obj   : $(SRC_DIR)\menu_c.c
 $(OBJ_DIR)\message.obj  : $(SRC_DIR)\message.c
-$(OBJ_DIR)\misc.obj     : $(SRC_DIR)\misc.c
 $(OBJ_DIR)\registry.obj : $(SRC_DIR)\registry.c
-$(OBJ_DIR)\resource.obj : $(SRC_DIR)\resource.c
 $(OBJ_DIR)\richedit.obj : $(SRC_DIR)\richedit.c
 $(OBJ_DIR)\shellapi.obj : $(SRC_DIR)\shellapi.c
 $(OBJ_DIR)\wbrowse.obj  : $(SRC_DIR)\wbrowse.c
 $(OBJ_DIR)\window.obj   : $(SRC_DIR)\window.c
 $(OBJ_DIR)\wprint.obj   : $(SRC_DIR)\wprint.c
+$(OBJ_DIR)\_winmsg.obj   : $(SRC_DIR)\_winmsg.c
+$(OBJ_DIR)\resource.obj   : $(SRC_DIR)\resource.c
+$(OBJ_DIR)\c_ipaddress.obj   : $(SRC_DIR)\c_ipaddress.c
 
 $(OBJ_DIR)\drawwidg.obj : $(OBJ_DIR)\drawwidg.c
 $(OBJ_DIR)\errorsys.obj : $(OBJ_DIR)\errorsys.c
@@ -149,44 +153,43 @@ $(OBJ_DIR)\htree.c      : $(SRC_DIR)\htree.prg
 $(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
 $(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
 $(OBJ_DIR)\hwindow.obj  : $(OBJ_DIR)\hwindow.c
+$(OBJ_DIR)\hipedit.obj  : $(OBJ_DIR)\hipedit.c
 $(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
-$(OBJ_DIR)\video.obj    : $(OBJ_DIR)\video.c
-$(OBJ_DIR)\tmci.obj     : $(OBJ_DIR)\tmci.c
-
 $(OBJ_DIR)\repexec.obj  : $(OBJ_DIR)\repexec.c
 
 $(OBJ_DIR)\procini.c   : $(SRC_DIR)\procmisc\procini.prg
 $(OBJ_DIR)\procs7.c    : $(SRC_DIR)\procmisc\procs7.prg
 $(OBJ_DIR)\procscri.c  : $(SRC_DIR)\procmisc\procscri.prg
 $(OBJ_DIR)\arr2str.obj : $(SRC_DIR)\procmisc\arr2str.c
-  bcc32 -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
+$(OBJ_DIR)\misc.obj    : $(SRC_DIR)\misc.c
+  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
   tlib $(LIB_DIR)\procmisc.lib -+$@,,
 $(OBJ_DIR)\blowfish.obj : $(SRC_DIR)\procmisc\blowfish.c
-  bcc32 -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
+  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
   tlib $(LIB_DIR)\procmisc.lib -+$@,,
 $(OBJ_DIR)\procini.obj  : $(OBJ_DIR)\procini.c
-  bcc32 -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
+  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
   tlib $(LIB_DIR)\procmisc.lib -+$@,,
 $(OBJ_DIR)\procs7.obj  : $(OBJ_DIR)\procs7.c
-  bcc32 -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
+  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
   tlib $(LIB_DIR)\procmisc.lib -+$@,,
 $(OBJ_DIR)\procscri.obj  : $(OBJ_DIR)\procscri.c
-  bcc32 -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
+  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
   tlib $(LIB_DIR)\procmisc.lib -+$@,,
 
 
 $(OBJ_DIR)\hqhtm.c   : $(SRC_DIR)\qhtm\hqhtm.prg
 $(OBJ_DIR)\hwg_qhtm.obj  : $(SRC_DIR)\qhtm\hwg_qhtm.c
-  bcc32 -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
+  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $** 
   tlib $(LIB_DIR)\hwg_qhtm.lib -+$@,,
 $(OBJ_DIR)\hqhtm.obj  : $(OBJ_DIR)\hqhtm.c
-  bcc32 -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
+  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
   tlib $(LIB_DIR)\hwg_qhtm.lib -+$@,,
 
 .c.obj:
-  bcc32 -c -O2 -tW -tWM -d -a8 -OS -5 -6 -I$(INCLUDE_DIR) -o$@ $<
+  bcc32 -c $(C_DEFINES)  -O2 -tW -tWM -d -a8 -OS -5 -6 -I$(INCLUDE_DIR) -o$@ $<
   tlib $(LIB_DIR)\hwgui.lib -+$@,,
 
 .prg.c:
-  $(HRB_DIR)\bin\harbour.exe $< -n -w -i$(INCLUDE_DIR) -o$@
+  $(HRB_DIR)\bin\harbour.exe  $< -n -w -i$(INCLUDE_DIR) $(H_DEFINES) -o$@ 
 

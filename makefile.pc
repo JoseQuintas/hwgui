@@ -1,4 +1,4 @@
-# $Id: makefile.pc,v 1.1 2004-04-12 19:01:40 andijahja Exp $
+# $Id: makefile.pc,v 1.2 2004-04-19 07:39:44 alkresin Exp $
 # makefile for Pelles C 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -51,7 +51,6 @@ QHTM_LIB_OBJS = \
    $(OBJ_DIR)\hqhtm.obj
 
 PROCMISC_LIB_OBJS = \
-   $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\arr2str.obj \
    $(OBJ_DIR)\blowfish.obj \
    $(OBJ_DIR)\procini.obj \
@@ -69,6 +68,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\media_c.obj \
    $(OBJ_DIR)\menu_c.obj \
    $(OBJ_DIR)\message.obj \
+   $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\registry.obj \
    $(OBJ_DIR)\richedit.obj \
    $(OBJ_DIR)\shellapi.obj  \
@@ -404,6 +404,9 @@ $(OBJ_DIR)\menu_c.obj : $(SRC_DIR)\menu_c.c
 $(OBJ_DIR)\message.obj : $(SRC_DIR)\message.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
+$(OBJ_DIR)\misc.obj : $(SRC_DIR)\misc.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
 $(OBJ_DIR)\registry.obj : $(SRC_DIR)\registry.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
@@ -466,9 +469,6 @@ $(OBJ_DIR)\procscri.c : $(SRC_DIR)\procmisc\procscri.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\procscri.obj : $(OBJ_DIR)\procscri.c
-   $(CC_EXE) $(CFLAGS) /Fo$@ $**
-
-$(OBJ_DIR)\misc.obj : $(SRC_DIR)\misc.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 # 旼컴컴컴컴컴컴컴컴컴컴컴컴커

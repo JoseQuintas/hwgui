@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.13 2004-04-09 12:39:07 lculik Exp $
+ * $Id: window.c,v 1.14 2004-04-19 07:39:47 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -840,3 +840,13 @@ HB_FUNC ( EXITPROCESS )
 {
   ExitProcess(0);
 }
+
+#ifndef __XHARBOUR__
+#ifdef __EXPORT__
+PHB_ITEM hb_stackReturn( void )
+{
+   HB_STACK stack = hb_GetStack();
+   return &stack.Return;
+}
+#endif
+#endif

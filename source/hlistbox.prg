@@ -68,7 +68,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
    IF bSetGet != Nil
       ::bChangeSel := bChange
       ::oParent:AddEvent( LBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
-   ELSE
+   ELSEIF bChange != Nil
       ::oParent:AddEvent( LBN_SELCHANGE,::id,bChange )
    ENDIF
 

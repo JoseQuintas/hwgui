@@ -1,6 +1,8 @@
-rem @echo off
+@echo off
 if "%1" == "clean" goto CLEAN
 if "%1" == "CLEAN" goto CLEAN
+
+  SET cflags=%cflags%-DXHBCVS
 
 :BUILD
 
@@ -20,18 +22,14 @@ if "%1" == "CLEAN" goto CLEAN
    goto EXIT
 
 :CLEAN
-   del lib\*.dll
-   del lib\*.lib
-   del lib\*.tds
+   del lib\hwguidll.dll
+   del lib\hwguidll.lib
+   del lib\hwguidll.map
+   del lib\hwguidll.tds
    del obj\dll\*.obj
    del obj\dll\*.c
    del obj\dll\*.res
-   del obj\lib\*.obj
-   del obj\lib\*.c
-   del obj\lib\*.res
    del makedll.log
-
-   goto EXIT
 
 :EXIT
 

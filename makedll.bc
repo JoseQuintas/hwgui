@@ -1,6 +1,5 @@
-
 # makefile for Borland C/C++ 32 bits
-# Building of hwgui.lib - Harbour Win32 GUI library
+# Building of hwguidll.dll - Harbour Win32 GUI library
 
 
 HRB_DIR = $(HB_PATH)
@@ -9,11 +8,11 @@ OBJ_DIR = obj\dll
 LIB_DIR = lib
 SRC_DIR = source
 
-HARBOUR_EXE = $(HB_PATH)\bin\harbour.exe
+HARBOUR_EXE = $(HRB_DIR)\bin\harbour.exe
 CC          = bcc32
 
 
-C_USR          = -tW -DHB_FM_STATISTICS_OFF -D__WIN32__ -D__EXPORT__ 
+C_USR          = -tW -DHB_FM_STATISTICS_OFF -D__WIN32__ -D__EXPORT__ $(CFLAGS)
 CLIBFLAGS      = $(C_USR) -a8 -OS -O2 -6 -c -I$(INCLUDE_DIR) -d -w3 -DSIMPLEX -DHB_OS_WIN_32
 HARBOURFLAGS   = /D__EXPORT__ /DHB_FM_STATISTICS_OFF /i$(INCLUDE_DIR) /q0 /w0 /es2 /n1 /gc0
 
@@ -91,7 +90,7 @@ $(LIB_DIR)\hwguidll.dll:   \
   $** c0d32w.obj , $(LIB_DIR)\hwguidll.dll, $(LIB_DIR)\hwguidll.map, cw32 harbour.lib import32.lib  uuid.lib
 |
   copy $(LIB_DIR)\hwguidll.dll .\samples
-  copy $(HB_PATH)\lib\harbour.dll .\samples
+  copy $(HRB_DIR)\lib\harbour.dll .\samples
 
 $(OBJ_DIR)\drawwidg.c   : $(SRC_DIR)\drawwidg.prg
 $(OBJ_DIR)\errorsys.c   : $(SRC_DIR)\errorsys.prg
@@ -128,9 +127,9 @@ $(OBJ_DIR)\hmonthc.c    : $(SRC_DIR)\hmonthc.prg
 $(OBJ_DIR)\hgrid.c      : $(SRC_DIR)\hgrid.prg
 
 # maindll DLL entry point. Harbour.dll uses maindllh.obj
-$(OBJ_DIR)\maindllh.obj   : $(HB_PATH)\source\vm\maindllh.c
-$(OBJ_DIR)\maindllp.obj   : $(HB_PATH)\source\vm\maindllp.c
-$(OBJ_DIR)\maindll.obj    : $(HB_PATH)\source\vm\maindll.c
+$(OBJ_DIR)\maindllh.obj   : $(HRB_DIR)\source\vm\maindllh.c
+$(OBJ_DIR)\maindllp.obj   : $(HRB_DIR)\source\vm\maindllp.c
+$(OBJ_DIR)\maindll.obj    : $(HRB_DIR)\source\vm\maindll.c
 
 $(OBJ_DIR)\commond.obj  : $(SRC_DIR)\commond.c
 $(OBJ_DIR)\control.obj  : $(SRC_DIR)\control.c

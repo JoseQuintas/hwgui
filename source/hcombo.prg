@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.7 2004-04-18 18:04:03 alkresin Exp $
+ * $Id: hcombo.prg,v 1.8 2004-04-19 07:39:47 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -69,7 +69,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
    IF bSetGet != Nil
       ::bChangeSel := bChange
       ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
-   ELSE
+   ELSEIF bChange != Nil
       ::oParent:AddEvent( CBN_SELCHANGE,::id,bChange )
    ENDIF
 

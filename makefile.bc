@@ -36,10 +36,13 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\draw.obj \
    $(OBJ_DIR)\drawtext.obj \
    $(OBJ_DIR)\freeimg.obj \
+   $(OBJ_DIR)\grid.obj \
    $(OBJ_DIR)\media_c.obj \
    $(OBJ_DIR)\menu_c.obj \
    $(OBJ_DIR)\message.obj \
+   $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\registry.obj \
+   $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\richedit.obj \
    $(OBJ_DIR)\shellapi.obj  \
    $(OBJ_DIR)\wbrowse.obj \
@@ -58,6 +61,9 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\hfreeimg.obj \
    $(OBJ_DIR)\hfrmtmpl.obj \
    $(OBJ_DIR)\hgraph.obj \
+   $(OBJ_DIR)\hgrid.obj \
+   $(OBJ_DIR)\hlistbox.obj \
+   $(OBJ_DIR)\hmonthc.obj \
    $(OBJ_DIR)\hownbtn.obj \
    $(OBJ_DIR)\hpanel.obj \
    $(OBJ_DIR)\hprinter.obj \
@@ -65,6 +71,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\hradio.obj \
    $(OBJ_DIR)\hriched.obj \
    $(OBJ_DIR)\hsayimg.obj \
+   $(OBJ_DIR)\hsplash.obj \
    $(OBJ_DIR)\hsplit.obj \
    $(OBJ_DIR)\htab.obj \
    $(OBJ_DIR)\htimer.obj \
@@ -74,19 +81,12 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\menu.obj \
    $(OBJ_DIR)\c_ipaddr.obj \
    $(OBJ_DIR)\listbox.obj \
-   $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\repexec.obj \
    $(OBJ_DIR)\printdos.obj \
-   $(OBJ_DIR)\richtext.obj \
-   $(OBJ_DIR)\hlistbox.obj \
-   $(OBJ_DIR)\hsplash.obj \
-   $(OBJ_DIR)\hmonthc.obj \
-   $(OBJ_DIR)\hgrid.obj \
-   $(OBJ_DIR)\grid.obj
-   
+   $(OBJ_DIR)\richtext.obj
+
 
 $(LIB_DIR)\procmisc.lib : \
-   $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\arr2str.obj \
    $(OBJ_DIR)\blowfish.obj \
    $(OBJ_DIR)\procini.obj \
@@ -114,12 +114,16 @@ $(OBJ_DIR)\hedit.c      : $(SRC_DIR)\hedit.prg
 $(OBJ_DIR)\hfreeimg.c   : $(SRC_DIR)\hfreeimg.prg
 $(OBJ_DIR)\hfrmtmpl.c   : $(SRC_DIR)\hfrmtmpl.prg
 $(OBJ_DIR)\hgraph.c     : $(SRC_DIR)\hgraph.prg
+$(OBJ_DIR)\hgrid.c      : $(SRC_DIR)\hgrid.prg
+$(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
+$(OBJ_DIR)\hmonthc.c    : $(SRC_DIR)\hmonthc.prg
 $(OBJ_DIR)\hownbtn.c    : $(SRC_DIR)\hownbtn.prg
 $(OBJ_DIR)\hpanel.c     : $(SRC_DIR)\hpanel.prg
 $(OBJ_DIR)\hprinter.c   : $(SRC_DIR)\hprinter.prg
 $(OBJ_DIR)\hprogres.c   : $(SRC_DIR)\hprogres.prg
 $(OBJ_DIR)\hradio.c     : $(SRC_DIR)\hradio.prg
 $(OBJ_DIR)\hsayimg.c    : $(SRC_DIR)\hsayimg.prg
+$(OBJ_DIR)\hsplash.c    : $(SRC_DIR)\hsplash.prg
 $(OBJ_DIR)\hsplit.c     : $(SRC_DIR)\hsplit.prg
 $(OBJ_DIR)\htab.c       : $(SRC_DIR)\htab.prg
 $(OBJ_DIR)\htimer.c     : $(SRC_DIR)\htimer.prg
@@ -132,30 +136,27 @@ $(OBJ_DIR)\menu.c       : $(SRC_DIR)\menu.prg
 $(OBJ_DIR)\repexec.c    : $(SRC_DIR)\repexec.prg
 $(OBJ_DIR)\printdos.c   : $(SRC_DIR)\printdos.prg
 $(OBJ_DIR)\richtext.c   : $(SRC_DIR)\richtext.prg
-$(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
-$(OBJ_DIR)\hsplash.c    : $(SRC_DIR)\hsplash.prg
-$(OBJ_DIR)\hmonthc.c    : $(SRC_DIR)\hmonthc.prg
-$(OBJ_DIR)\hgrid.c      : $(SRC_DIR)\hgrid.prg
 
+$(OBJ_DIR)\c_ipaddr.obj : $(SRC_DIR)\c_ipaddr.c
 $(OBJ_DIR)\commond.obj  : $(SRC_DIR)\commond.c
 $(OBJ_DIR)\control.obj  : $(SRC_DIR)\control.c
 $(OBJ_DIR)\dialog.obj   : $(SRC_DIR)\dialog.c
 $(OBJ_DIR)\draw.obj     : $(SRC_DIR)\draw.c
 $(OBJ_DIR)\drawtext.obj : $(SRC_DIR)\drawtext.c
 $(OBJ_DIR)\freeimg.obj  : $(SRC_DIR)\freeimg.c
+$(OBJ_DIR)\grid.obj     : $(SRC_DIR)\grid.c
+$(OBJ_DIR)\listbox.obj  : $(SRC_DIR)\listbox.c
 $(OBJ_DIR)\media_c.obj  : $(SRC_DIR)\media_c.c
 $(OBJ_DIR)\menu_c.obj   : $(SRC_DIR)\menu_c.c
 $(OBJ_DIR)\message.obj  : $(SRC_DIR)\message.c
+$(OBJ_DIR)\misc.obj     : $(SRC_DIR)\misc.c
 $(OBJ_DIR)\registry.obj : $(SRC_DIR)\registry.c
+$(OBJ_DIR)\resource.obj : $(SRC_DIR)\resource.c
 $(OBJ_DIR)\richedit.obj : $(SRC_DIR)\richedit.c
 $(OBJ_DIR)\shellapi.obj : $(SRC_DIR)\shellapi.c
 $(OBJ_DIR)\wbrowse.obj  : $(SRC_DIR)\wbrowse.c
 $(OBJ_DIR)\window.obj   : $(SRC_DIR)\window.c
 $(OBJ_DIR)\wprint.obj   : $(SRC_DIR)\wprint.c
-$(OBJ_DIR)\resource.obj : $(SRC_DIR)\resource.c
-$(OBJ_DIR)\c_ipaddr.obj : $(SRC_DIR)\c_ipaddr.c
-$(OBJ_DIR)\listbox.obj  : $(SRC_DIR)\listbox.c
-$(OBJ_DIR)\grid.obj     : $(SRC_DIR)\grid.c
 
 $(OBJ_DIR)\drawwidg.obj : $(OBJ_DIR)\drawwidg.c
 $(OBJ_DIR)\errorsys.obj : $(OBJ_DIR)\errorsys.c
@@ -170,17 +171,21 @@ $(OBJ_DIR)\hedit.obj    : $(OBJ_DIR)\hedit.c
 $(OBJ_DIR)\hfreeimg.obj : $(OBJ_DIR)\hfreeimg.c
 $(OBJ_DIR)\hfrmtmpl.obj : $(OBJ_DIR)\hfrmtmpl.c
 $(OBJ_DIR)\hgraph.obj   : $(OBJ_DIR)\hgraph.c
+$(OBJ_DIR)\hgrid.obj    : $(OBJ_DIR)\hgrid.c
+$(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
+$(OBJ_DIR)\hmonthc.obj  : $(OBJ_DIR)\hmonthc.c
 $(OBJ_DIR)\hradio.obj   : $(OBJ_DIR)\hradio.c
 $(OBJ_DIR)\hownbtn.obj  : $(OBJ_DIR)\hownbtn.c
 $(OBJ_DIR)\hpanel.obj   : $(OBJ_DIR)\hpanel.c
 $(OBJ_DIR)\hprinter.obj : $(OBJ_DIR)\hprinter.c
 $(OBJ_DIR)\hprogres.obj : $(OBJ_DIR)\hprogres.c
+$(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
 $(OBJ_DIR)\hsayimg.c    : $(SRC_DIR)\hsayimg.prg
+$(OBJ_DIR)\hsplash.c    : $(SRC_DIR)\hsplash.prg
 $(OBJ_DIR)\hsplit.c     : $(SRC_DIR)\hsplit.prg
 $(OBJ_DIR)\htab.c       : $(SRC_DIR)\htab.prg
 $(OBJ_DIR)\htimer.c     : $(SRC_DIR)\htimer.prg
 $(OBJ_DIR)\htree.c      : $(SRC_DIR)\htree.prg
-$(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
 $(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
 $(OBJ_DIR)\hwindow.obj  : $(OBJ_DIR)\hwindow.c
 $(OBJ_DIR)\hipedit.obj  : $(OBJ_DIR)\hipedit.c
@@ -188,18 +193,11 @@ $(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
 $(OBJ_DIR)\repexec.obj  : $(OBJ_DIR)\repexec.c
 $(OBJ_DIR)\printdos.obj : $(OBJ_DIR)\printdos.c
 $(OBJ_DIR)\richtext.obj : $(OBJ_DIR)\richtext.c
-$(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
-$(OBJ_DIR)\hsplash.c    : $(SRC_DIR)\hsplash.prg
-$(OBJ_DIR)\hmonthc.obj  : $(OBJ_DIR)\hmonthc.c
-$(OBJ_DIR)\hgrid.obj    : $(OBJ_DIR)\hgrid.c
 
 $(OBJ_DIR)\procini.c   : $(SRC_DIR)\procmisc\procini.prg
 $(OBJ_DIR)\procs7.c    : $(SRC_DIR)\procmisc\procs7.prg
 $(OBJ_DIR)\procscri.c  : $(SRC_DIR)\procmisc\procscri.prg
 $(OBJ_DIR)\arr2str.obj : $(SRC_DIR)\procmisc\arr2str.c
-$(OBJ_DIR)\misc.obj    : $(SRC_DIR)\misc.c
-  bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\procmisc.lib -+$@,,
 $(OBJ_DIR)\blowfish.obj : $(SRC_DIR)\procmisc\blowfish.c
   bcc32 $(C_DEFINES) -c -O2 -tW -I$(INCLUDE_DIR) -o$@ $**
   tlib $(LIB_DIR)\procmisc.lib -+$@,,

@@ -1,4 +1,4 @@
-# $Id: makefile.gcc,v 1.3 2003-12-01 12:57:38 lculik Exp $
+# $Id: makefile.gcc,v 1.4 2004-04-19 07:39:44 alkresin Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -21,6 +21,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/draw.o \
    $(OBJ_DIR)/drawtext.o \
    $(OBJ_DIR)/freeimg.o \
+   $(OBJ_DIR)/grid.o \
    $(OBJ_DIR)/media_c.o \
    $(OBJ_DIR)/menu_c.o \
    $(OBJ_DIR)/message.o \
@@ -45,6 +46,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hfreeimg.o \
    $(OBJ_DIR)/hfrmtmpl.o \
    $(OBJ_DIR)/hgraph.o \
+   $(OBJ_DIR)/hgrid.o \
    $(OBJ_DIR)/hownbtn.o \
    $(OBJ_DIR)/hpanel.o \
    $(OBJ_DIR)/hprinter.o \
@@ -75,6 +77,8 @@ $(OBJ_DIR)/draw.o     : $(SRC_DIR)/draw.c
 $(OBJ_DIR)/drawtext.o : $(SRC_DIR)/drawtext.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 $(OBJ_DIR)/freeimg.o : $(SRC_DIR)/freeimg.c
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+$(OBJ_DIR)/grid.o : $(SRC_DIR)/grid.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 $(OBJ_DIR)/media_c.o   : $(SRC_DIR)/media_c.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
@@ -129,6 +133,7 @@ $(OBJ_DIR)/repexec.o  : $(OBJ_DIR)/repexec.c
 $(OBJ_DIR)/hfreeimg.o : $(OBJ_DIR)/hfreeimg.c
 $(OBJ_DIR)/hfrmtmpl.o : $(OBJ_DIR)/hfrmtmpl.c
 $(OBJ_DIR)/hgraph.o   : $(OBJ_DIR)/hgraph.c
+$(OBJ_DIR)/hgrid.o    : $(OBJ_DIR)/hgrid.c
 
 $(OBJ_DIR)/errorsys.c   : $(SRC_DIR)/errorsys.prg
 	$(HRB_DIR)/bin\harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
@@ -189,6 +194,8 @@ $(OBJ_DIR)/hfreeimg.c   : $(SRC_DIR)/hfreeimg.prg
 $(OBJ_DIR)/hfrmtmpl.c   : $(SRC_DIR)/hfrmtmpl.prg
 	$(HRB_DIR)/bin\harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
 $(OBJ_DIR)/hgraph.c     : $(SRC_DIR)/hgraph.prg
+	$(HRB_DIR)/bin\harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+$(OBJ_DIR)/hgrid.c      : $(SRC_DIR)/hgrid.prg
 	$(HRB_DIR)/bin\harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
 
 $(LIB_DIR)/libprocmisc.a : \

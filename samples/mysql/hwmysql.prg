@@ -3,19 +3,12 @@
  * Main file
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "fileio.ch"
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #include "hwmysql.h"
-
-#define IDCW_STATUS  2001
-#define IDCW_EDIT    2002
-#define IDCW_BROWSE  2003
-#define IDCW_PANEL1  2004
-#define IDCW_PANEL2  2005
 
 REQUEST BRWPROC
 REQUEST DEFWNDPROC
@@ -27,32 +20,34 @@ REQUEST OEMTOANSI
 REQUEST OPENREPORT
 
 Memvar connHandle, cServer, cDatabase, cUser, cDataDef, queHandle, nNumFields
-Memvar nNumRows, lMenu, lBrowse, aQueries
+Memvar nNumRows, aQueries
 
 Function Main()
-Local oMainWindow, oPanel, oPanelE, oFont, oIcon := HIcon():AddResource("ICON_1")
+Local oFont, oIcon := HIcon():AddResource("ICON_1")
 Public hBitmap := LoadBitmap( "BITMAP_1" )
 Public connHandle := 0, cServer := "", cDatabase := "", cUser := ""
 Public cDataDef := ""
 Public mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
 Public queHandle := 0, nNumFields, nNumRows
-Public lMenu := .F., lBrowse := .F.
 Public aQueries := {}, nHistCurr, nHistoryMax := 20
-Public oBrw, BrwFont := Nil, oBrwFont := Nil
+Private oBrw, BrwFont := Nil, oBrwFont := Nil
+Private oMainWindow, oEdit, oPanel, oPanelE
 
    SET EPOCH TO 1960
    SET DATE FORMAT "dd/mm/yyyy"
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -12
    INIT WINDOW oMainWindow MAIN ICON oIcon COLOR COLOR_3DLIGHT ;
-            TITLE "Harbour mySQL client"
+       TITLE "Harbour mySQL client"                            ;
+       AT 20,20 SIZE 500,500
 
-   ADD STATUS TO oMainWindow ID IDCW_STATUS PARTS 0,0,0
-   @ 0,0 EDITBOX "" OF oMainWindow ID IDCW_EDIT                         ;
-           ON SIZE {|o,x,y|ResizeEditQ(o,x,y)} ;
-              STYLE WS_DLGFRAME+ES_LEFT+ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL
+   ADD STATUS TO oMainWindow PARTS 0,0,0
+   @ 0,380 EDITBOX oEdit CAPTION ""      ;
+       SIZE 476,95                       ;
+       ON SIZE {|o,x,y|ResizeEditQ(x,y)} ;
+       STYLE ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL
 
-   @ 0,0 PANEL oPanel OF oMainWindow ID IDCW_PANEL1 SIZE 0,44
+   @ 0,0 PANEL oPanel SIZE 0,44
 
    @ 2,3 OWNERBUTTON OF oPanel ID 108 ON CLICK {||Connect()} ;
         SIZE 80,40 FLAT ;
@@ -79,10 +74,9 @@ Public oBrw, BrwFont := Nil, oBrwFont := Nil
         TEXT "Exit" FONT oFont COORDINATES 0,20,0,0;
         BITMAP "BMP_EXIT" FROM RESOURCE COORDINATES 0,4,0,0
 
-   @ 0,0 PANEL oPanelE OF oMainWindow ID IDCW_PANEL2 ;
-           SIZE 0,24 ON SIZE {||.T.}
+   @ 0,0 PANEL oPanelE OF oMainWindow SIZE 0,24 ON SIZE {||.T.}
 
-   @ 0,2 OWNERBUTTON OF oPanelE ID 114 ON CLICK {||SetDlgItemText( Hwindow():GetMain():handle, IDCW_EDIT, Memoread( SelectFile( "Script files( *.scr )", "*.scr", mypath )))} ;
+   @ 0,2 OWNERBUTTON OF oPanelE ID 114 ON CLICK {||oEdit:SetText( Memoread( SelectFile( "Script files( *.scr )", "*.scr", mypath )))} ;
         SIZE 20,22 FLAT ;
         BITMAP "BMP_OPEN" FROM RESOURCE TOOLTIP "Load script"
    @ 0,24 OWNERBUTTON OF oPanelE ID 115 ON CLICK {||SaveScript()} ;
@@ -91,11 +85,11 @@ Public oBrw, BrwFont := Nil, oBrwFont := Nil
    @ 0,46 OWNERBUTTON OF oPanelE ID 116 ON CLICK {||BrowHistory()} ;
         SIZE 20,22 FLAT ;
         BITMAP "BMP_HIST" FROM RESOURCE TOOLTIP "Show history"
-   @ 0,68 OWNERBUTTON OF oPanelE ID 117 ON CLICK {||SetDlgItemText(Hwindow():GetMain():handle,IDCW_EDIT,""),SetFocus(GetDlgItem(Hwindow():GetMain():handle,IDCW_EDIT))} ;
+   @ 0,68 OWNERBUTTON OF oPanelE ID 117 ON CLICK {||oEdit:SetText(""),SetFocus(oEdit:handle)} ;
         SIZE 20,22 FLAT ;
         BITMAP "BMP_CLEAR" FROM RESOURCE TOOLTIP "Clear"
 
-   @ 0,0 BROWSE oBrw ARRAY OF oMainWindow ID IDCW_BROWSE ;
+   @ 0,0 BROWSE oBrw ARRAY OF oMainWindow SIZE 500,376 ;
            ON SIZE {|o,x,y|ResizeBrwQ(o,x,y)}
    oBrw:active := .F.
 
@@ -106,9 +100,9 @@ Public oBrw, BrwFont := Nil, oBrwFont := Nil
    ReadHistory( "qhistory.txt" )
 
    WriteStatus( Hwindow():GetMain(),1,"Not Connected" )
-   SetFocus( GetDlgItem( Hwindow():GetMain():handle, IDCW_EDIT ) )
+   SetFocus( oEdit:handle )
    // HideWindow( oBrw:handle )
-   SetCtrlFont( Hwindow():GetMain():handle, IDCW_EDIT, oBrwFont:handle )
+   SetCtrlFont( oEdit:oParent:handle, oEdit:id, oBrwFont:handle )
 
    ACTIVATE WINDOW oMainWindow
 
@@ -119,7 +113,7 @@ Return Nil
 Function About
 Local oModDlg, oFont
 
-   INIT DIALOG oModDlg FROM RESOURCE TITLE "ABOUTDLG" ON PAINT {||AboutDraw()}
+   INIT DIALOG oModDlg FROM RESOURCE "ABOUTDLG" ON PAINT {||AboutDraw()}
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13 ITALIC UNDERLINE
 
    REDEFINE OWNERBUTTON OF oModDlg ID IDC_OWNB1 ON CLICK {|| EndDialog( getmodalhandle() )} ;
@@ -187,7 +181,7 @@ Return Nil
 Function Connect
 Local aModDlg
 
-   INIT DIALOG aModDlg FROM RESOURCE TITLE "DIALOG_1" ON INIT {|| InitConnect() }
+   INIT DIALOG aModDlg FROM RESOURCE "DIALOG_1" ON INIT {|| InitConnect() }
    DIALOG ACTIONS OF aModDlg ;
           ON 0,IDOK     ACTION {|| EndConnect() } ;
           ON 0,IDCANCEL ACTION {|| EndDialog( getmodalhandle() )}
@@ -246,46 +240,26 @@ Local hDlg := getmodalhandle()
          WriteStatus( Hwindow():GetMain(),2,"DataBase: " + cDataBase )
       ENDIF
       EndDialog( hDlg )
-      SetFocus( GetDlgItem( Hwindow():GetMain(), IDCW_EDIT ) )
+      SetFocus( oEdit:handle )
    ENDIF
 Return
 
-Function ResizeEditQ( oEdit, nWidth, nHeight )
-Local hWndStatus := 0, hPanelE
-Local aRect, i, aControls := (oEdit:oParent):aControls
-   FOR i := 1 TO Len( aControls )
-      IF aControls[i]:classname() == "HSTATUS"
-         hWndStatus := aControls[i]:handle
-         EXIT
-      ENDIF
-   NEXT
-   IF hWndStatus > 0
-      aRect := GetClientRect( hWndStatus )
-      nHeight -= aRect[4] - aRect[2]
-      MoveWindow( oEdit:handle, 0, nHeight * 3/4, nWidth-24, nHeight * 1/4 )
-      hPanelE := GetDlgItem( Hwindow():GetMain():handle,IDCW_PANEL2 )
-      MoveWindow( hPanelE, nWidth-23, nHeight * 3/4, 24, nHeight * 1/4 )
-   ENDIF
+Function ResizeEditQ( nWidth, nHeight )
+
+   MoveWindow( oEdit:handle, 0, nHeight-oMainWindow:aOffset[4]-95, nWidth-24, 95 )
+   MoveWindow( oPanelE:handle, nWidth-23, nHeight-oMainWindow:aOffset[4]-95, 24, 95 )
 Return Nil
 
 Function ResizeBrwQ( oBrw, nWidth, nHeight )
-Local hWndStatus, aControls := (oBrw:oParent):aControls
-Local aRect, i, nHbusy := 0, nH1 := 0
-   FOR i := 1 TO Len( aControls )
-      IF aControls[i]:winclass == "STATUS" .OR. aControls[i]:winclass == "EDIT"
-         hWndStatus := aControls[i]:handle
-         aRect := GetClientRect( hWndStatus )
-         nHbusy += aRect[ 4 ]
-      ENDIF
-      IF aControls[i]:id == IDCW_PANEL1
-         nH1 += aControls[i]:nheight
-      ENDIF
-   NEXT
-   MoveWindow( oBrw:handle, 0, nH1+1, nWidth, nHeight-nHBusy-nH1-8 )
+Local aRect, i, nHbusy := oMainWindow:aOffset[4]
+
+   aRect := GetClientRect( oEdit:handle )
+   nHbusy += aRect[ 4 ]
+   MoveWindow( oBrw:handle, 0, oPanel:nHeight+1, nWidth, nHeight-nHBusy-oPanel:nHeight-8 )
 Return Nil
 
 Function Execute
-Local cQuery := Ltrim( GetEditText( Hwindow():GetMain():handle, IDCW_EDIT ) )
+Local cQuery := Ltrim( oEdit:GetText() )
 Local arScr, nError, nLineEr
 
    IF Empty( cQuery )
@@ -359,7 +333,6 @@ Local aQueRows, i, j, vartmp, af := {}
    ENDIF
    oBrw:InitBrw()
    oBrw:active := .T.
-   // EnableWindow( oBrw:handle,.F. )
    nNumFields := sqlNumFi( queHandle )
    aQueRows := Array( nNumRows )
 
@@ -393,15 +366,15 @@ Local aQueRows, i, j, vartmp, af := {}
    NEXT
    oBrw:bcolorSel := VColor( "800080" )
    oBrw:ofont      := oBrwFont
-   // ShowWindow( aBrowse[CTRL_HANDLE], IDCW_BROWSE )
    RedrawWindow( oBrw:handle, RDW_ERASE + RDW_INVALIDATE )
 Return Nil
 
 Function BrowHistory()
+
    IF nHistCurr == 0
       Return Nil
    ENDIF
-   // EnableWindow( oBrw:handle,.F. )
+   oBrw:active := .T.
    oBrw:InitBrw()
    oBrw:msrec := aQueries
    oBrw:AddColumn( HColumn():New( "History of queries", ;
@@ -411,7 +384,6 @@ Function BrowHistory()
    oBrw:bcolorSel := VColor( "800080" )
    oBrw:ofont := oBrwFont
    oBrw:bEnter := {|h,o|GetFromHistory(h,o)}
-   // ShowWindow( aBrowse[CTRL_HANDLE], IDCW_BROWSE )
    RedrawWindow( oBrw:handle, RDW_ERASE + RDW_INVALIDATE )
 Return Nil
 
@@ -424,8 +396,8 @@ Local cQuery := "", i := oBrw:tekzp
          cQuery += Rtrim( oBrw:msrec[ i,1 ] ) + Chr( 13 ) + Chr( 10 )
          i++
       ENDDO
-      SetDlgItemText( Hwindow():GetMain():handle,IDCW_EDIT, cQuery )
-      SetFocus( GetDlgItem( Hwindow():GetMain():handle,IDCW_EDIT ) )
+      oEdit:SetText( cQuery )
+      SetFocus( oEdit:handle )
    ENDIF
 Return Nil
 
@@ -511,7 +483,7 @@ RETURN IIF( ( i := RAT( '.', fname ) ) = 0, "", SUBSTR( fname, i + 1 ) )
 
 Function SaveScript
 Local fname := SaveFile( "*.scr","Script files( *.scr )", "*.scr", mypath )
-   cQuery := GetDlgItemText( Hwindow():GetMain():handle, IDCW_EDIT, 32000 )
+   cQuery := oEdit:GetText()
    IF !Empty( fname )
       MemoWrit( fname,cQuery )
    ENDIF

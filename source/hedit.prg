@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.20 2004-07-19 12:34:51 alkresin Exp $
+ *$Id: hedit.prg,v 1.21 2004-07-21 07:30:20 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -156,7 +156,7 @@ METHOD SetText( c ) CLASS HEdit
      ELSE
         ::title := c
      ENDIF
-     Super:SetText()  
+     Super:SetText( ::title )
      IF ::bSetGet != Nil
        Eval( ::bSetGet, c, self )
      ENDIF

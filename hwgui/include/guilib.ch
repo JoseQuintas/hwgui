@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.5 2003-12-30 01:57:59 lculik Exp $
+ *$Id: guilib.ch,v 1.6 2004-01-25 22:38:30 lculik Exp $
  */
 
 #include "guilib.h"
@@ -35,11 +35,12 @@
              [ ON LOSTFOCUS <bLfocus> ]     ;
              [ ON OTHER MESSAGES <bOther> ] ;
              [ ON EXIT <bExit> ]            ;
+             [<lMaximize: MAXIMIZE>]        ;
           => ;
    <oWnd> := HWindow():New( Iif(<.lMdi.>,WND_MDI,Iif(<.lMdiChild.>,WND_MDICHILD, Iif(<.lChild.>,WND_CHILD,WND_MAIN) )), ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>, ;
-                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp> )
+                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>)
 
 #xcommand INIT DIALOG <oDlg>                ;
              [<res: FROM RESOURCE>]         ;
@@ -64,10 +65,11 @@
                    <nStyle>,<x>,<y>,<width>,<height>,<cTitle>,<oFont>,<bInit>,<bExit>,;
                    <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.> )
 
-#xcommand ACTIVATE WINDOW <oWnd> [<lNoShow: NOSHOW>]    ;
-          => ;
-      <oWnd>:Activate( !<.lNoShow.> )
-
+#xcommand ACTIVATE WINDOW <oWnd> [<lNoShow: NOSHOW>]     ;
+           => ;
+      <oWnd>:Activate( !<.lNoShow.>) 
+                                                        
+  
 #xcommand ACTIVATE DIALOG <oDlg>                        ;
             [ <lNoModal: NOMODAL> ]                     ;
           => ;

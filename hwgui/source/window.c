@@ -151,7 +151,7 @@ HB_FUNC ( HWG_ACTIVATEMAINWINDOW )
 
    HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
    MSG    msg;
-
+   
    if( hb_parl(1) )
       ShowWindow( aWindows[0],SW_SHOWNORMAL );
 
@@ -159,7 +159,23 @@ HB_FUNC ( HWG_ACTIVATEMAINWINDOW )
    {
       ProcessMessage( msg, hAcceler, 0 );
    }
+          
+}
 
+HB_FUNC ( HWG_ACTIVATEMAINWMAXIM )
+{
+
+   HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
+   MSG    msg;
+
+   if( hb_parl(1) )
+      ShowWindow( aWindows[0],SW_SHOWMAXIMIZED );
+
+   while (GetMessage( &msg, NULL, 0, 0) )
+   {
+      ProcessMessage( msg, hAcceler, 0 );
+   }
+          
 }
 
 HB_FUNC ( HWG_PROCESSMESSAGE )
@@ -402,6 +418,25 @@ HB_FUNC ( HWG_ACTIVATEMDIWINDOW )
       ProcessMessage( msg, hAcceler, 0 );
    }
 }
+
+HB_FUNC ( HWG_ACTIVATEMDIWMAXIM )
+{
+
+   HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
+   MSG  msg ;
+
+   if( hb_parl(1) )
+   {
+      ShowWindow( aWindows[0], SW_SHOWMAXIMIZED  );
+      ShowWindow( aWindows[1], SW_SHOW );
+   }
+
+   while (GetMessage (&msg, NULL, 0, 0))
+   {
+      ProcessMessage( msg, hAcceler, 0 );
+   }
+}
+
 
 /*  Creates child MDI window
     CreateMdiChildWindow( aChildWindow )

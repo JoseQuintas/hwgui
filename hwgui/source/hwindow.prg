@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.4 2003-12-30 01:57:59 lculik Exp $
+ *$Id: hwindow.prg,v 1.5 2004-01-25 22:38:32 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -45,7 +45,7 @@ CLASS HCustomWindow INHERIT HObject
    DATA bLostFocus
    DATA bOther
    DATA cargo
-
+   
    METHOD AddControl( oCtrl ) INLINE Aadd( ::aControls,oCtrl )
    METHOD DelControl( oCtrl )
    METHOD AddEvent( nEvent,nId,bAction,lNotify ) ;
@@ -53,7 +53,8 @@ CLASS HCustomWindow INHERIT HObject
    METHOD FindControl( nId,nHandle )
    METHOD Hide() INLINE (::lHide:=.T.,HideWindow(::handle))
    METHOD Show() INLINE (::lHide:=.F.,ShowWindow(::handle))
-
+   METHOD Maximize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0)
+   METHOD Minimize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MINIMIZE, 0)
 ENDCLASS
 
 METHOD FindControl( nId,nHandle ) CLASS HCustomWindow
@@ -84,9 +85,10 @@ CLASS HWindow INHERIT HCustomWindow
    DATA lTray INIT .F.
    DATA aOffset
    DATA parent
+   DATA lMaximize INIT .F.
 
    METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;
-          bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp )
+          bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp, lMaximize )
    METHOD Activate( lShow )
    METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu )
    METHOD AddItem( oWnd )
@@ -98,7 +100,7 @@ ENDCLASS
 
 METHOD NEW( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;
                   bInit,bExit,bSize, ;
-                  bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp ) CLASS HWindow
+                  bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp, lMaximize) CLASS HWindow
    Local hParent
    // ::classname:= "HWINDOW"
    ::oDefaultParent := Self
@@ -120,6 +122,7 @@ METHOD NEW( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;
    ::bGetFocus  := bGFocus
    ::bLostFocus := bLFocus
    ::bOther     := bOther
+   ::lMaximize  := lMaximize
    IF cAppName != Nil
       ::szAppName := cAppName
    ENDIF
@@ -166,20 +169,30 @@ RETURN Self
 
 METHOD Activate( lShow ) CLASS HWindow
 Local oWndClient
-
-   IF ::type == WND_MDICHILD
+  IF ::type == WND_MDICHILD
       Hwg_CreateMdiChildWindow( Self )
    ELSEIF ::type == WND_MDI
       Hwg_InitClientWindow( ::nMenuPos,::nLeft,::nTop+60,::nWidth,::nHeight )
       oWndClient := HWindow():New( 0,,,::style,::title,,::nMenuPos,::bInit,::bDestroy,::bSize, ;
-                              ::bPaint,::bGetFocus,::bLostFocus,::bOther )
+                              ::bPaint,::bGetFocus,::bLostFocus,::bOther,.f. )
       oWndClient:handle = hwg_GetWindowHandle(2)
       // oWndClient:aControls := ::aControls
       // InitControls( Self )
-      Hwg_ActivateMdiWindow( ( lShow==Nil .OR. lShow ),::hAccel )
+
+       If !::lMaximize
+           Hwg_ActivateMdiWindow( ( lShow==Nil .OR. lShow ),::hAccel )
+       Else
+           Hwg_ActivateMdiWMaxim( ( lShow==Nil .OR. lShow ),::hAccel )
+       EndIf
+
    ELSEIF ::type == WND_MAIN
-      Hwg_ActivateMainWindow( ( lShow==Nil .OR. lShow ),::hAccel )
+       If !::lMaximize
+          Hwg_ActivateMainWindow( ( lShow==Nil .OR. lShow ),::hAccel )
+       Else
+          Hwg_ActivateMainWMaxim( ( lShow==Nil .OR. lShow ),::hAccel )
+        Endif
    ENDIF
+   
 
 RETURN Nil
 
@@ -745,19 +758,31 @@ Return Len( HWindow():aWindows ) - 2
 
 
 function ReleaseAllWindows( oWnd, hWnd )
-   Local oItem
+   Local oItem, iCont
 
    //  Vamos mandar destruir as filhas
    // Destroi as CHILD's desta MAIN
+   #ifdef __XHARBOUR__
    FOR EACH oItem IN HWindow():aWindows
       IF oItem:parent == hWnd
           SendMessage( oItem:handle,WM_CLOSE,0,0 )
       ENDIF
    NEXT
+   #else
+   nCont:=pCount( HWindow():aWindows )
+ 
+   FOR iCont := 1 TO nCont
 
+      IF oWnd[iCont] == hWnd
+          SendMessage( oItem:handle,WM_CLOSE,0,0 )
+      ENDIF
+
+   NEXT
+   #endif
    If HWindow():oMainWindow == oWnd
       ExitProcess(0)
    Endif
 
-return (NIL)
+return Nil
 
+ 

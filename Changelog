@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.233 2004-07-26 18:17:42 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.234 2004-07-26 18:29:37 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -22,7 +22,7 @@
   * source/commond.c
     New Function _getOpenfilename for use the other function
   * source/guimain.prg
-    New function SelectMultipleFile
+    New function SelectMultipleFiles
        cDescr:  'Data Bases','*.dbf'
        cTip  :   *.dbf
        cInitDir: Initial directory

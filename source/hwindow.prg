@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.21 2004-04-26 11:58:31 alkresin Exp $
+ *$Id: hwindow.prg,v 1.22 2004-05-21 09:51:58 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -65,13 +65,33 @@ Local i := Iif( nId!=Nil,Ascan( ::aControls,{|o|o:id==nId} ), ;
 Return Iif( i==0,Nil,::aControls[i] )
 
 METHOD DelControl( oCtrl ) CLASS HCustomWindow
-Local h := oCtrl:handle
+Local h := oCtrl:handle, id := oCtrl:id
 Local i := Ascan( ::aControls,{|o|o:handle==h} )
 
    SendMessage( h,WM_CLOSE,0,0 )
    IF i != 0
       Adel( ::aControls,i )
       Asize( ::aControls,Len(::aControls)-1 )
+   ENDIF
+   h := 0
+   FOR i := Len( ::aEvents ) TO 1 STEP -1
+      IF ::aEvents[i,2] == id
+         Adel( ::aEvents,i )
+         h ++
+      ENDIF
+   NEXT
+   IF h > 0
+      Asize( ::aEvents,Len(::aEvents)-h )
+   ENDIF
+   h := 0
+   FOR i := Len( ::aNotify ) TO 1 STEP -1
+      IF ::aNotify[i,2] == id
+         Adel( ::aNotify,i )
+         h ++
+      ENDIF
+   NEXT
+   IF h > 0
+      Asize( ::aNotify,Len(::aNotify)-h )
    ENDIF
 Return Nil
 

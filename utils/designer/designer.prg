@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.10 2004-07-18 14:24:16 alkresin Exp $
+ * $Id: designer.prg,v 1.11 2004-08-04 20:08:24 sandrorrfreire Exp $
  *
  * Designer
  * Main file
@@ -21,6 +21,7 @@ REQUEST INITTRACKBAR
 
 Function Designer( p1, cForm )
 Local oPanel, oTab, oFont, cResForm, lSingleF := .F.
+LOCAL oIcon:= HICon():AddResource("HWG")
 Public oDesigner
 Public crossCursor, vertCursor, horzCursor
 Public ds_myPath
@@ -59,7 +60,7 @@ Public ds_myPath
       ON EXIT {||EndIde()}
 #else
    INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE 280,200 TITLE "Designer" ;
-      FONT oFont                                                  ;
+      FONT oFont ICON oIcon                                                ;
       ON EXIT {||EndIde()}
 #endif
 

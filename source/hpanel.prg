@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.2 2004-05-07 08:25:18 alkresin Exp $
+ * $Id: hpanel.prg,v 1.3 2004-05-08 20:13:13 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -29,12 +29,12 @@ ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bInit,bSize,bPaint,lDocked ) CLASS HPanel
-
+   Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
    IF bSize == Nil
       bSize := {|o,x,y|MoveWindow(o:handle,0,0,Iif(::nHeight!=0.and.(::nWidth>::nHeight.or.::nWidth==0),x,::nWidth),Iif(::nWidth!=0.and.(::nHeight>::nWidth.or.::nHeight==0),y,::nHeight))}
    ENDIF
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
-                  nHeight,::oParent:oFont,bInit, ;
+                  nHeight,oParent:oFont,bInit, ;
                   bSize,bPaint )
 
    ::bPaint  := bPaint
@@ -72,12 +72,13 @@ Return Nil
 
 
 METHOD Redefine( oWndParent,nId,nHeight,bInit,bSize,bPaint,lDocked ) CLASS HPanel
+   Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
 
    IF bSize == Nil
       bSize := {|o,x,y|MoveWindow(o:handle,0,0,Iif(::nHeight!=0.and.(::nWidth>::nHeight.or.::nWidth==0),x,::nWidth),Iif(::nWidth!=0.and.(::nHeight>::nWidth.or.::nHeight==0),y,::nHeight))}
    ENDIF
    Super:New( oWndParent,nId,0,0,0,0, ;
-                  IIF( nHeight!=Nil,nHeight,0 ),::oParent:oFont,bInit, ;
+                  IIF( nHeight!=Nil,nHeight,0 ),oParent:oFont,bInit, ;
                   bSize,bPaint )
 
    ::bPaint  := bPaint

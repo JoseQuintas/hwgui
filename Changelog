@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.128 2004-05-07 13:02:50 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.129 2004-05-08 20:13:13 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+
+2004-05-08 17-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/hpanel.prg
+    !bug fix
+    Lines 32 and 75 insert variable Local oParent
 
 2004-05-07 10-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * samples/designer/designer.prg

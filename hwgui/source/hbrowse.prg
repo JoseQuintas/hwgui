@@ -1,4 +1,6 @@
 /*
+ *$Id: hbrowse.prg,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
  *
@@ -1141,7 +1143,7 @@ Static keyCode := 0
 
    // WriteLog( "Brw: "+Str(hBrw,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    if msg != WM_CREATE
-      if Ascan( { WM_MOUSEMOVE, WM_GETDLGCODE, WM_PAINT, WM_ERASEBKGND, WM_NCACTIVATE, WM_HSCROLL, WM_VSCROLL, WM_DESTROY, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK }, msg ) > 0
+      if Ascan( { WM_MOUSEMOVE, WM_GETDLGCODE, WM_PAINT, WM_ERASEBKGND, WM_SETFOCUS, WM_KILLFOCUS,  WM_HSCROLL, WM_VSCROLL, WM_DESTROY, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK }, msg ) > 0
 
          if ( oBrw := FindSelf( hBrw ) ) == Nil
             // MsgStop( "WM: wrong browse handle "+Str( hBrw ),"Error!" )
@@ -1155,7 +1157,7 @@ Static keyCode := 0
             // Sirve para ejecutar "algo" fuera del Browse. P/Ej.
             // Mostrar una variable en la "dialog". Etc.Etc.
             // 27.07.2002 - WHT.
-            if Ascan( { WM_PAINT, WM_ERASEBKGND, WM_NCACTIVATE, WM_HSCROLL, WM_VSCROLL, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK }, msg ) > 0
+            if Ascan( { WM_PAINT, WM_ERASEBKGND, WM_SETFOCUS, WM_KILLFOCUS, WM_HSCROLL, WM_VSCROLL, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK }, msg ) > 0
                if oBrw:bOther != Nil
                   eval( oBrw:bOther )
                endif
@@ -1171,13 +1173,14 @@ Static keyCode := 0
                   return 1
                endif
 
-            elseif msg == WM_NCACTIVATE
-               if wParam == 1 .AND. oBrw:bGetFocus != Nil
+            elseif msg == WM_SETFOCUS
+               if oBrw:bGetFocus != Nil
                   eval( oBrw:bGetFocus, oBrw )
+               endif
 
-               elseif wParam == 0 .AND. oBrw:bLostFocus != Nil
+            elseif msg == WM_KILLFOCUS
+               if oBrw:bLostFocus != Nil
                   eval( oBrw:bLostFocus, oBrw )
-
                endif
 
             elseif msg == WM_HSCROLL

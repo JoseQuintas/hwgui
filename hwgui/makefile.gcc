@@ -1,3 +1,4 @@
+# $Id: makefile.gcc,v 1.2 2003-11-14 07:44:12 alkresin Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -23,6 +24,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/media_c.o \
    $(OBJ_DIR)/menu_c.o \
    $(OBJ_DIR)/message.o \
+   $(OBJ_DIR)/misc.o \
    $(OBJ_DIR)/registry.o \
    $(OBJ_DIR)/richedit.o \
    $(OBJ_DIR)/shellapi.o \
@@ -76,6 +78,8 @@ $(OBJ_DIR)/media_c.o   : $(SRC_DIR)/media_c.c
 $(OBJ_DIR)/menu_c.o   : $(SRC_DIR)/menu_c.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 $(OBJ_DIR)/message.o  : $(SRC_DIR)/message.c
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+$(OBJ_DIR)/misc.o  : $(SRC_DIR)/misc.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 $(OBJ_DIR)/registry.o : $(SRC_DIR)/registry.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^

@@ -9,6 +9,7 @@ C_SOURCES=\
 	freeimg.c \
 	menu_c.c \
 	message.c \
+	misc.c \
 	registry.c \
 	wbrowse.c \
 	shellapi.c \

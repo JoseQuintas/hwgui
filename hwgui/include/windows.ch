@@ -1,3 +1,7 @@
+/*
+ *$Id: windows.ch,v 1.2 2003-11-14 07:44:12 alkresin Exp $
+ */
+
 #define WM_CREATE                       1
 #define WM_DESTROY                      2
 #define WM_MOVE                         3
@@ -636,6 +640,12 @@
 #define FSHIFT    4   // 0x04
 #define FCONTROL  8   // 0x08
 #define FALT     16   // 0x10
+
+#define VK_SHIFT          0x10
+#define VK_CONTROL        0x11
+#define VK_MENU           0x12
+#define VK_PAUSE          0x13
+#define VK_CAPITAL        0x14
 
 #define VK_SPACE          0x20
 #define VK_PRIOR          0x21

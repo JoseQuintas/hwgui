@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.10 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: htree.prg,v 1.11 2004-12-10 07:36:46 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -213,7 +213,7 @@ CLASS HTree INHERIT HControl
    DATA aItems INIT {}
    DATA oSelected
    DATA hIml, aImages, Image1, Image2
-   DATA bItemChange, bExpand, bRClick, bAction
+   DATA bItemChange, bExpand, bRClick, bDblClick, bAction
    DATA lEmpty INIT .T.
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
@@ -322,6 +322,7 @@ Return
 Function TreeNotify( oTree,lParam )
 Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct
 
+   // writelog( str(ncode) )
    IF nCode == TVN_SELCHANGED .or. nCode == TVN_SELCHANGEDW
       oItem := Tree_GetNotify( lParam,TREE_GETNOTIFY_PARAM )
       oItem:oTree:oSelected := oItem
@@ -349,9 +350,14 @@ Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct
            CheckBit( Tree_GetNotify( lParam,TREE_GETNOTIFY_ACTION ),TVE_EXPAND ) ), ;
            0, 1 )
       ENDIF
-   ELSEIF nCode == -5
-      oItem  := tree_Hittest( oTree:handle,,,@nAct )
+   ELSEIF nCode == -3     
+      IF oTree:bDblClick != Nil
+         oItem  := tree_Hittest( oTree:handle,,,@nAct )
+         Eval( oTree:bDblClick, oTree, oItem, nAct )
+      ENDIF
+   ELSEIF nCode == -5      
       IF oTree:bRClick != Nil
+         oItem  := tree_Hittest( oTree:handle,,,@nAct )
          Eval( oTree:bRClick, oTree, oItem, nAct )
       ENDIF
    ENDIF

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.h,v 1.4 2004-03-15 18:51:17 alkresin Exp $
+ *$Id: guilib.h,v 1.5 2004-03-16 11:54:30 alkresin Exp $
  */
 
 #define	WND_MAIN		1
@@ -17,4 +17,6 @@
 #define	BRW_ARRAY               1
 #define	BRW_DATABASE            2
 
+#ifndef __XHARBOUR__
 #define	hb_stackReturn()        (&hb_stack.Return)
+#endif

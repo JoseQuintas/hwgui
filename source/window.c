@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.7 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: window.c,v 1.8 2004-03-16 11:54:37 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -60,7 +60,7 @@ extern int iDialogs;
 HWND aWindows[ MAX_MDICHILD_WINDOWS + 2 ];
 int iWindows = 0;
 HACCEL hAccel = NULL;
-static TCHAR szChild[] = TEXT ( "MDICHILD" );
+/* static TCHAR szChild[] = TEXT ( "MDICHILD" ); */
 static WNDPROC wpOrigEditProc, wpOrigTabProc;
 
 /*  Creates main application window
@@ -285,7 +285,7 @@ HB_FUNC ( HWG_ACTIVATECHILDWINDOW )
 HB_FUNC ( HWG_INITMDIWINDOW )
 {
    HWND         hWnd;
-   WNDCLASS     wndclass, wc ;
+   WNDCLASS wndclass;
    HANDLE hInstance = GetModuleHandle( NULL ) ;
    char *szAppName = hb_parc(1);
    char *cTitle = hb_parc( 2 );
@@ -349,7 +349,7 @@ HB_FUNC ( HWG_INITMDIWINDOW )
 
 HB_FUNC ( HWG_INITMDICHILDWINDOW )
 {
-   WNDCLASS     wndclass, wc ;
+   WNDCLASS wc ;
    HANDLE hInstance = GetModuleHandle( NULL ) ;
    char *szAppName = hb_parc(1);
    char *cMenu = hb_parc( 3 );

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.34 2004-03-16 10:48:05 alkresin Exp $
+ * $Id: Changelog,v 1.35 2004-03-16 11:54:27 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-03-16 15:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/guilib.h
+  * source/control.c
+  * source/media_c.c
+  * source/resource.c
+  * source/window.c
+    * Few warnings fixed, duplicated functions deleted from control.c ( they
+      was in misc.c, too )
 
 2004-03-16 14:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hwindow.prg
@@ -17,6 +26,9 @@
   - include/commctrl.ch
   - source/_winmsg.c
     - removed
+  * include/guilib.h
+  * include/guilib.ch
+  * include/window.ch
   * source/commond.c
   * source/control.c
   * source/guimain.prg

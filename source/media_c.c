@@ -1,5 +1,5 @@
 /*
- * $Id: media_c.c,v 1.5 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: media_c.c,v 1.6 2004-03-16 11:54:37 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level media functions
@@ -139,7 +139,6 @@ HB_FUNC(  NMCIPLAY )
 HB_FUNC(  NMCIWINDOW )
 {
    MCI_ANIM_WINDOW_PARMS mciWindowParms;
-   MCI_ANIM_RECT_PARMS mciRectParms;
    HWND hWnd = ( HWND ) hb_parnl( 2 );
 
    mciWindowParms.hWnd = hWnd;

@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.5 2004-11-15 12:36:21 alkresin Exp $
+ * $Id: wprint.c,v 1.6 2004-12-01 10:24:25 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -141,10 +141,10 @@ HB_FUNC( HWG_ENDPAGE )
 }
 
 /*
- * HORZSIZE	Width, in millimeters, of the physical screen.
- * VERTSIZE	Height, in millimeters, of the physical screen.
  * HORZRES	Width, in pixels, of the screen.
  * VERTRES	Height, in raster lines, of the screen.
+ * HORZSIZE	Width, in millimeters, of the physical screen.
+ * VERTSIZE	Height, in millimeters, of the physical screen.
  * LOGPIXELSX	Number of pixels per logical inch along the screen width.
  * LOGPIXELSY	Number of pixels per logical inch along the screen height.
  *

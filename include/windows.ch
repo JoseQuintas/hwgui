@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.19 2004-11-14 13:53:59 alkresin Exp $
+ *$Id: windows.ch,v 1.20 2004-12-01 10:24:24 alkresin Exp $
  */
 
 #define WM_CREATE                       1
@@ -866,7 +866,6 @@
 
 #define TBM_GETPOS              (WM_USER)
 #define TBM_GETTIC              (WM_USER+3)
+#define TBM_SETPOS              (WM_USER+5)
 #define TBM_GETTICPOS           (WM_USER+15)
 #define TBM_GETNUMTICS          (WM_USER+16)
-#define TBM_SETTHUMBLENGTH      (WM_USER+27)
-#define TBM_GETTHUMBLENGTH      (WM_USER+28)

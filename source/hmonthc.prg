@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.6 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hmonthc.prg,v 1.7 2004-12-01 10:24:25 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -161,7 +161,11 @@ HB_FUNC ( SETMONTHCALENDARDATE ) // adaptation of function SetDatePicker of file
    if( pDate )
    {
       SYSTEMTIME sysTime;
+      #ifdef HARBOUR_CVS_VERSION
+      int lYear, lMonth, lDay;
+      #else
       long lYear, lMonth, lDay;
+      #endif
 
       hb_dateDecode( hb_itemGetDL( pDate ), &lYear, &lMonth, &lDay );
 

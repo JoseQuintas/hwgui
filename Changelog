@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.315 2004-11-27 08:23:50 alkresin Exp $
+ * $Id: Changelog,v 1.316 2004-12-01 10:24:11 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,22 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-12-01 13:26 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hprinter.prg
+    * New variable nPage and automatic handling of pages numbers has been added
+  * source/hdialog.prg
+    ! Small fix
+  * source/control.c
+  * source/window.c
+  * source/wprint.c
+  * source/hmonthc.prg
+  * source/htrackbr.prg
+  * include/windows.ch
+    ! Compile time warnigs has been fixed
+  * make_b32.bat
+    * 'SET cflags=%cflags% -DHARBOUR_CVS_VERSION' line has been temporarily added
+      If you work with a stable [x]Harbour release, remove or comment it.
 
 2004-11-27 11:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hprinter.prg

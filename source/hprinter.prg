@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.12 2004-11-27 08:23:51 alkresin Exp $
+ * $Id: hprinter.prg,v 1.13 2004-12-01 10:24:25 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -23,6 +23,7 @@ CLASS HPrinter INHERIT HObject
    DATA cMetaName
    DATA nWidth, nHeight, nPWidth, nPHeight
    DATA nHRes, nVRes                     // Resolution ( pixels/mm )
+   DATA nPage
 
    DATA lmm  INIT .F.
    DATA nCurrPage, oTrackV, oTrackH
@@ -186,6 +187,7 @@ METHOD StartDoc( lPreview,cMetaName ) CLASS HPrinter
       ::hDC := ::hDCPrn
       Hwg_StartDoc( ::hDC )
    ENDIF
+   ::nPage := 0
 
 Return Nil
 
@@ -206,6 +208,7 @@ Local fname
    ELSE
       Hwg_StartPage( ::hDC )
    ENDIF
+   ::nPage ++
 
 Return Nil
 

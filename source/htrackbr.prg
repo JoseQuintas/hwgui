@@ -1,5 +1,5 @@
 /*
- * $Id: htrackbr.prg,v 1.7 2004-11-11 08:37:12 alkresin Exp $
+ * $Id: htrackbr.prg,v 1.8 2004-12-01 10:24:25 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTrackBar class
@@ -19,8 +19,6 @@
 #define TBS_BOTH                     8
 #define TBS_NOTICKS                 16
 
-#define TBM_GETPOS              (WM_USER)
-#define TBM_SETPOS              (WM_USER+5)
 
 CLASS HTrackBar INHERIT HControl
 

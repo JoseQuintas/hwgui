@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.28 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: window.c,v 1.29 2004-12-01 10:24:25 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -102,8 +102,8 @@ HB_FUNC( HWG_INITMAINWINDOW )
    hWnd = CreateWindowEx( ExStyle , szAppName ,TEXT ( cTitle ),
    WS_OVERLAPPEDWINDOW  | nStyle ,
    x,y,
-   (width==0)? CW_USEDEFAULT:width,
-   (height==0)? CW_USEDEFAULT:height,
+   (!width)? CW_USEDEFAULT:width,
+   (!height)? CW_USEDEFAULT:height,
    NULL, NULL, (HINSTANCE)hInstance, NULL) ;
 
    temp = hb_itemPutNL( NULL, 1 );
@@ -242,8 +242,8 @@ HB_FUNC( HWG_INITCHILDWINDOW )
    hWnd = CreateWindowEx( ExStyle , szAppName ,TEXT ( cTitle ),
    WS_OVERLAPPEDWINDOW  | nStyle ,
    x,y,
-   (width==0)? CW_USEDEFAULT:width,
-   (height==0)? CW_USEDEFAULT:height,
+   (!width)? CW_USEDEFAULT:width,
+   (!height)? CW_USEDEFAULT:height,
    hParent, NULL, (HINSTANCE)hInstance, NULL) ;
 
    temp = hb_itemPutNL( NULL, 1 );
@@ -333,8 +333,8 @@ HB_FUNC( HWG_INITMDIWINDOW )
    hWnd = CreateWindow ( szAppName, TEXT ( cTitle ),
                        WS_OVERLAPPEDWINDOW,
                        x,y,
-                       (width==0)? CW_USEDEFAULT:width,
-                       (height==0)? CW_USEDEFAULT:height,
+                       (!width)? CW_USEDEFAULT:width,
+                       (!height)? CW_USEDEFAULT:height,
                        NULL, NULL, (HINSTANCE)hInstance, NULL) ;
    if (!hWnd) 
    {
@@ -694,7 +694,7 @@ LRESULT CALLBACK MDIChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM
 
    if( message == WM_NCCREATE )
    {
-      LPMDICREATESTRUCT cs = ((LPCREATESTRUCT) lParam)->lpCreateParams;
+      LPMDICREATESTRUCT cs = (LPMDICREATESTRUCT)(((LPCREATESTRUCT) lParam)->lpCreateParams);
       PHB_ITEM * pObject = (PHB_ITEM*) ( cs->lParam );
       PHB_ITEM temp;
 

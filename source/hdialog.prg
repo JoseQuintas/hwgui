@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.32 2004-11-21 12:33:16 alkresin Exp $
+ * $Id: hdialog.prg,v 1.33 2004-12-01 10:24:25 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -360,7 +360,7 @@ Return 0
 Static Function onActivate( oDlg,wParam,lParam )
 Local iParLow := LoWord( wParam )
 
-   if iParLow == 1 .AND. oDlg:bGetFocus != Nil
+   if iParLow > 0 .AND. oDlg:bGetFocus != Nil
       Eval( oDlg:bGetFocus, oDlg )
    elseif iParLow == 0 .AND. oDlg:bLostFocus != Nil
       Eval( oDlg:bLostFocus, oDlg )

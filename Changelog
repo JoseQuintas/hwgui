@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.134 2004-05-13 12:46:19 rodrigo_moreno Exp $
+ * $Id: Changelog,v 1.135 2004-05-14 19:17:01 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-05-14 16-12 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/menu.prg
+    !Bug fix in exibition Bitmap
+    * New function Hwg_SearchPosBitmap( nPos_Id )
+    
 2004-05-13 09:40 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
   * source/hcombo.prg
     * Fixed bug when refresh is used with text combobox

@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.11 2004-05-05 18:27:14 sandrorrfreire Exp $
+ * $Id: menu.prg,v 1.12 2004-05-14 19:17:02 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -124,7 +124,7 @@ Local aSubMenu := Hwg_FindMenuItem( aMenu, nId )
 Return Iif( aSubMenu == Nil, 0, aSubMenu[5] )
 
 Function BuildMenu( aMenuInit, hWnd, oWnd, nPosParent,lPopup )
-Local hMenu, nPos, aMenu, i
+Local hMenu, nPos, aMenu, i, oBmp
 
    IF nPosParent == Nil   
       IF lPopup == Nil .OR. !lPopup
@@ -157,12 +157,11 @@ Local hMenu, nPos, aMenu, i
          IF aMenu[ 1,nPos,1 ] == Nil .OR. aMenu[ 1,nPos,2 ] != Nil
             hwg__AddMenuItem( hMenu, aMenu[1,npos,2], nPos, .T., aMenu[1,nPos,3], ;
                    aMenu[1,npos,4],.F. )
-            if Len(_oBitmap)>0
-               if _oBitmap[npos][1]                
-                    
-                   SetMenuItemBitmaps(hMenu, aMenu[1,nPos,3], _oBitmap[npos][2],"")
-               endIf    
-            endif
+            oBmp:=Hwg_SearchPosBitmap( aMenu[1,nPos,3]) 
+            if oBmp[1]       
+                   SetMenuItemBitmaps(hMenu, aMenu[1,nPos,3], oBmp[2],"")
+            endIf    
+            
          Endif
       ENDIF
       nPos ++
@@ -237,9 +236,9 @@ Local aMenu, i, oBmp
       else
          oBmp:=HBitmap():AddResource(lBitmap)
       endif
-      Aadd( _oBitmap, {.t., oBmp:Handle,cItem})
+      Aadd( _oBitmap, {.t., oBmp:Handle,cItem,nId} )
    Else   
-      Aadd( _oBitmap, {.F., "",cItem,cItem})
+      Aadd( _oBitmap, {.F., "",cItem, nID})
    Endif         
    IF accFlag != Nil .AND. accKey != Nil
       Aadd( _aAccel, { accFlag,accKey,nId } )
@@ -275,3 +274,20 @@ else
 endif
 Iif( aSubMenu == Nil,oMenu:=0, oMenu:=aSubMenu[5] )
 HWG__InsertBitmapMenu( oMenu, nId, obmp:handle )
+
+Function Hwg_SearchPosBitmap( nPos_Id )
+
+   Local nPos := 1, lBmp:={.F.,""}
+   
+   DO WHILE nPos<=Len(_oBitmap )
+
+      if _oBitmap[nPos][4] == nPos_Id
+         lBmp:={_oBitmap[nPos][1], _oBitmap[nPos][2],_oBitmap[nPos][3]}     
+      Endif
+
+      nPos ++
+
+   ENDDO
+
+Return lBmp
+ 

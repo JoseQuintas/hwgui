@@ -9,6 +9,7 @@
 #include "common.ch"
 #include "error.ch"
 #include "windows.ch"
+#include "guilib.ch"
 
 Static LogInitialPath := ""
 
@@ -60,13 +61,16 @@ STATIC FUNCTION DefError( oError )
    n := 2
    WHILE ! Empty( ProcName( n ) )
       #ifdef __XHARBOUR__
-         cMessage += Chr(10) + "Called from " + ProcFile(n) + "->" + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
+         cMessage +=Chr(13)+Chr(10) + "Called from " + ProcFile(n) + "->" + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
       #else
          cMessage += Chr(10) + "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
       #endif
    ENDDO
 
    MemoWrit( LogInitialPath + "Error.log", cMessage )
+   #ifdef __XHARBOUR__
+      ErrorPreview(cMessage)
+   #endif
    EndWindow()
    QUIT
 
@@ -128,3 +132,17 @@ Local nHand
   Fclose( nHand )
 
 return nil
+
+Static Function ErrorPreview(oMen)
+Local oDlg
+INIT DIALOG oDlg TITLE "HwGUI Mensage <Error>" ;
+        AT 92,61 SIZE 673,499
+
+   @ 88,19 EDITBOX oMen ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
+        COLOR 16777088 BACKCOLOR 0  //Blue to Black
+//       COLOR 16711680 BACKCOLOR 16777215  //Black to Write      
+   @ 6,30 BUTTON "Close" ON CLICK {||EndDialog()} SIZE 69,32 
+
+   oDlg:Activate()
+Return Nil 
+

@@ -33,7 +33,7 @@ LOCAL han, stroka, scom, aScr, rejim := 0, i
 LOCAL strbuf := Space(STR_BUFLEN), poz := STR_BUFLEN+1
 LOCAL aFormCode, aFormName
 
-   scrkod = IIF( scrkod=Nil,"000",scrkod )
+   scrkod = IIF( scrkod=Nil,"000",Upper(scrkod) )
    han := FOPEN( fname, FO_READ + FO_SHARED )
    IF han <> - 1
       DO WHILE .T.
@@ -70,7 +70,11 @@ LOCAL aFormCode, aFormName
       ENDDO
       FCLOSE( han )
    ELSE
-      ALERT( "Нет файла " + fname )
+#ifdef __WINDOWS__
+      MsgStop( fname + " can't be opened " )
+#else
+      ALERT( fname + " can't be opened " )
+#endif
       RETURN Nil
    ENDIF
 RETURN aScr

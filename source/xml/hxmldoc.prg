@@ -1,5 +1,5 @@
 /*
- * $Id: hxmldoc.prg,v 1.4 2004-04-30 18:53:29 alkresin Exp $
+ * $Id: hxmldoc.prg,v 1.5 2004-05-05 10:12:13 alkresin Exp $
  *
  * Harbour XML Library
  * HXmlDoc class
@@ -125,6 +125,8 @@ Local i
          nStart := i
          IF block == Nil .OR. Eval( block,::aItems[i] )
             Return ::aItems[i]
+         ELSE
+            nStart ++
          ENDIF
       ENDIF
    ENDDO
@@ -177,4 +179,3 @@ Local cEncod, i
       FClose( handle )
    ENDIF
 Return .T.
-

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.265 2004-09-16 13:13:53 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.266 2004-09-16 14:37:51 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-09-16 11-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/hedit.prg
+    new variable isControlTab default .F.
+    if control HTAB, correct the focus in GET, simulate the false Valid.
+ 
 2004-09-16 10-15 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/message.c
    New function MsgNoYes - default button No

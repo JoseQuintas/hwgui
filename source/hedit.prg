@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.27 2004-09-10 11:52:23 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.28 2004-09-16 14:37:52 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -21,11 +21,12 @@ CLASS HEdit INHERIT HControl
    DATA bSetGet
    DATA bValid
    DATA cPicFunc, cPicMask
-   DATA lPicComplex INIT .F.
-   DATA lFirst      INIT .T.
-   DATA lChanged    INIT .F.
-   DATA lMaxLenght  INIT Nil
- 
+   DATA lPicComplex  INIT .F.
+   DATA lFirst       INIT .T.
+   DATA lChanged     INIT .F.
+   DATA lMaxLenght   INIT Nil
+   DATA isControlTab INIT .F.
+
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture,lNoBorder, lMaxLenght )
    METHOD Activate()
@@ -36,16 +37,22 @@ CLASS HEdit INHERIT HControl
    METHOD Refresh() 
    METHOD SetText(c) 
 
-ENDCLASS
+        ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt, ;
                   tcolor,bcolor,cPicture,lNoBorder, lMaxLenght ) CLASS HEdit
-
+ 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), ;
                 WS_TABSTOP+Iif(lNoBorder==Nil.OR.!lNoBorder,WS_BORDER,0) )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
+
+   //To redirect focus in TAB control
+
+   IF oWndParent:ClassName()=="HTAB"
+      ::isControlTab:=.T.
+   ENDIF
 
    IF vari != Nil
       ::cType   := Valtype( vari )
@@ -72,10 +79,10 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    ParsePict( Self, cPicture, vari )
    ::Activate()
 
-   IF bSetGet != Nil
+   IF bSetGet != Nil  
       ::bGetFocus := bGFocus
       ::bLostFocus := bLFocus
-      ::oParent:AddEvent( EN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
+      ::oParent:AddEvent( EN_SETFOCUS, ::id,{|o,id|__When(o:FindControl(id))}  )
       ::oParent:AddEvent( EN_KILLFOCUS,::id,{|o,id|__Valid(o:FindControl(id))} )
       ::bValid := {|o|__Valid(o)}
    ELSE
@@ -83,6 +90,9 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
          ::oParent:AddEvent( EN_SETFOCUS,::id,bGfocus )
       ENDIF
       IF bLfocus != Nil
+         ::oParent:AddEvent( EN_KILLFOCUS,::id,bLfocus )
+      ELSEIF bLfocus == Nil .AND. ::isControlTab
+         ::bLostFocus := Return_Get_Default() 
          ::oParent:AddEvent( EN_KILLFOCUS,::id,bLfocus )
       ENDIF
    ENDIF
@@ -650,6 +660,10 @@ Local vari, oDlg
          ENDIF
       ENDIF
    ENDIF
+   //To focus in Control TAB
+   IF oCtrl:isControlTab
+        GetSkip( oCtrl:oParent,oCtrl:handle,1 )
+   ENDIF
 
 Return .T.
 
@@ -859,3 +873,6 @@ Function ParentGetDialog( o )
       ENDIF
    ENDDO
 Return o
+
+Function Return_Get_Default()
+Return .T.

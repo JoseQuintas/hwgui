@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.14 2004-08-11 18:13:12 sandrorrfreire Exp $
+ * $Id: printdos.prg,v 1.15 2004-09-08 19:55:34 sandrorrfreire Exp $
  *
  * CLASS PrintDos
  *
@@ -102,7 +102,12 @@ METHOD New(oPorta) CLASS PrintDos
              ::oPorta := oPtrName
           EndIf   
         ElseIf oPorta=="SELECT"
-          oPtrSetup:=PrintSetupDos(@::nStartPage,@::nEndPage,@::nCopy)
+
+#ifdef __XHARBOUR__
+        oPtrSetup:=PrintSetupDos(@::nStartPage,@::nEndPage,@::nCopy)
+#else
+        oPtrSetup:=PrintSetupDos()
+#endif
           If oPtrSetup==Nil 
              MsgInfo("Error, file to:ERROR.TXT")
              ::oPorta :="Error.txt"
@@ -127,9 +132,9 @@ METHOD New(oPorta) CLASS PrintDos
      If oPorta=="GRAPHIC" .or. oPorta=="PREVIEW"               
           ::gText := ""         
      Else
-           tracelog([          ::gText:=fCreate(::oPorta)])
+          // tracelog([          ::gText:=fCreate(::oPorta)])
           ::gText:=fCreate(::oPorta)
-          tracelog([depois           ::gText:=fCreate(::oPorta)],::gtext)
+          //tracelog([depois           ::gText:=fCreate(::oPorta)],::gtext)
           if ::gText<0
              ::LastError:=fError()
           Else
@@ -172,7 +177,7 @@ Return Nil
 
 METHOD gWrite(oText)  CLASS PrintDos
 
-tracelog(otext)
+    //tracelog(otext)
     If ::oAns2Oem
        ::oText += HB_ANSITOOEM(oText)
        ::nPcol += len(HB_ANSITOOEM(oText))
@@ -180,12 +185,12 @@ tracelog(otext)
        ::oText += oText
        ::nPcol += len(oText)
     EndIf
-tracelog(otext)
+    //tracelog(otext)
 
 Return Nil
 
 METHOD Eject()   CLASS PrintDos
-tracelog( ::gText, ::oText )
+//tracelog( ::gText, ::oText )
     
      fWrite( ::gText, ::oText )
      
@@ -200,7 +205,7 @@ tracelog( ::gText, ::oText )
      ::oText :=""
      ::nProw := 0
      ::nPcol := 0
-    tracelog( ::gText, ::oText )     
+    //tracelog( ::gText, ::oText )     
 Return Nil
 
 METHOD Compress() CLASS PrintDos
@@ -232,7 +237,7 @@ METHOD NewLine() CLASS PrintDos
 Return Nil
 
 METHOD Say(oProw, oPcol, oTexto, oPicture) CLASS PrintDos
-     tracelog(oProw, oPcol, oTexto, oPicture)
+    // tracelog(oProw, oPcol, oTexto, oPicture)
     If Valtype(oTexto)=="N"
         
        If !Empty(oPicture) .or. oPicture#Nil
@@ -248,9 +253,9 @@ METHOD Say(oProw, oPcol, oTexto, oPicture) CLASS PrintDos
           oTexto:=Transform(oTexto, oPicture)
        Endif
     EndIf   
-tracelog([antes     ::SetCols(oProw, oPcol)])
+    //tracelog([antes     ::SetCols(oProw, oPcol)])
     ::SetCols(oProw, oPcol)
-tracelog([depois de ::SetCols(oProw, oPcol) e  antes         ::gWrite(oTexto))])
+    //tracelog([depois de ::SetCols(oProw, oPcol) e  antes         ::gWrite(oTexto))])
     ::gWrite(oTexto)
 
 Return Nil

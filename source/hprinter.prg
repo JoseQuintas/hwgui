@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.9 2004-11-15 13:43:00 alkresin Exp $
+ * $Id: hprinter.prg,v 1.10 2004-11-15 14:23:18 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -233,7 +233,7 @@ Local i, nLen
 
 Return Nil
 
-METHOD Preview( cTitle,aBitmaps,aTooltips ) CLASS HPrinter
+METHOD Preview( cTitle,aBitmaps,aTooltips, aBootUser ) CLASS HPrinter
 Local oDlg, oToolBar, oSayPage, oBtn, oCanvas
 Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
 Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] != Nil .AND. aBitmaps[10] )
@@ -350,6 +350,35 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
       RANGE 1,20 ;
       INIT 1 AUTOTICKS VERTICAL ;
       ON DRAG {|o|ResizePreviewDlg(oCanvas,Self,,.T.)}
+      
+   if aBootUser!=Nil
+  
+      @ 1,310 LINE LENGTH oToolBar:nWidth-1
+
+      if Len(aBootUser)==4
+         lText:=aBootUser[4]
+      else
+         lText:="Button User"
+      endif      
+      
+      @ 3,313 OWNERBUTTON oBtn OF oToolBar  ;
+           SIZE oToolBar:nWidth-6,24 TEXT lText FONT oFont FLAT  ;
+           TOOLTIP Iif(aBootUser[3]!=Nil,aBootUser[3],"Button User")
+      
+      oBtn:bCLICK :=aBootUser[1]
+      
+      IF aBootUser[2] != Nil  
+         oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBootUser[2] ), HBitmap():AddFile( aBootUser[2] ) )
+         oBtn:text   := Nil
+         If aBitmaps[10]<>Nil
+             IF aBitmaps[10]
+                oBtn:lTransp:=.T.
+             ENDIF
+         endif       
+      ENDIF
+      
+   endif    
+
 
    oDlg:Activate()
 

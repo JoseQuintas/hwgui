@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.294 2004-11-15 13:42:58 alkresin Exp $
+ * $Id: Changelog,v 1.295 2004-11-15 14:23:18 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-11-15 12-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/hprinter.prg
+    Add new parameter in method preview for use Use Button user
+    Preview("Preview de impressao", aBitmaps, atooltips,{{||Msginfo('Teste')},"PRINT","Imprimir em Matriciais"})
+    {function, image button, tooltip, text button}
 
 2004-11-15 16:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hownbtn.prg

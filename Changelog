@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.230 2004-07-22 11:48:14 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.231 2004-07-22 19:20:10 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2004-07-22 16-15 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/commond.c
+    New Function _getOpenfilename for use the other function
+  * source/guimain.prg
+    New function SetMultipleFile
+       cDescr:  'Data Bases','*.dbf'
+       cTip  :   *.dbf
+       cInitDir: Initial directory
+       cTitle:   Window Title
+       SelectMultipleFiles(cDescr, cTip, cIniDir, cTitle )
+     Return the Array contain files selected
+
+   
 2004-07-22 08-45 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * Suggestions
     Add file to include the Suggestions for HwGUI

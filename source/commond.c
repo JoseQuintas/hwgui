@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.13 2004-07-13 19:55:40 marcosgambeta Exp $
+ * $Id: commond.c,v 1.14 2004-07-22 19:20:11 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -414,3 +414,35 @@ HB_FUNC( PRINTSETUPEX )
    }        
 }
 
+HB_FUNC( _GETOPENFILENAME )
+{
+   OPENFILENAME ofn;
+   char *szFileName =(char*) hb_xgrab( hb_parcsiz(2));
+
+   strcpy( szFileName, hb_parcx( 2 ) );
+
+   ZeroMemory( &ofn, sizeof(ofn) );
+   ofn.hInstance       = GetModuleHandle(NULL)  ;
+   ofn.lStructSize     = sizeof(ofn);
+   ofn.hwndOwner       = (ISNIL  (1) ? GetActiveWindow() : (HWND) hb_parnl(1));
+   ofn.lpstrTitle      = hb_parc (3);
+   ofn.lpstrFilter     = hb_parc (4);
+   ofn.Flags           = OFN_EXPLORER|OFN_ALLOWMULTISELECT;
+   ofn.lpstrInitialDir = hb_parc (6);
+   ofn.lpstrDefExt     = hb_parc (7);
+   ofn.nFilterIndex    = hb_parni(8);
+   ofn.lpstrFile       = szFileName;
+   ofn.nMaxFile        = hb_parcsiz(2);
+
+   if( GetOpenFileName( &ofn ) )
+   {
+      hb_stornl( ofn.nFilterIndex, 8 );
+      hb_storclen( szFileName, hb_parcsiz(2), 2 ) ;
+      hb_xfree( szFileName );
+      hb_retc( ( char * ) ofn.lpstrFile );
+   }
+   else
+   {
+      hb_retc( "" );
+   }
+}

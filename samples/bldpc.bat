@@ -46,7 +46,7 @@ echo obj\hwgui_xp.res >> make.tmp
 
 
 rem %HRB_DIR%\BIN\HARBOUR %1.prg -i%POCC%\INCLUDE;%HRB_DIR%\INCLUDE;%HWGUI_INSTALL%\INCLUDE -n -q0 -w -es2 -gc0
-%HRB_DIR%\BIN\HARBOUR %1.prg -i%POCC%\INCLUDE;%HRB_DIR%\INCLUDE;%HWGUI_INSTALL%\INCLUDE -n -q0 -es2 -gc0
+%HRB_DIR%\BIN\HARBOUR %1.prg -i%POCC%\INCLUDE;%HRB_DIR%\INCLUDE;%HWGUI_INSTALL%\INCLUDE  -n -q0 -es2 -gc0
 
 IF EXIST %1.rc %POCC%\BIN\porc -r %1 -foobj\%1
 echo 1 24 "..\image\WindowsXP.Manifest" > obj\hwgui_xp.rc
@@ -54,7 +54,7 @@ echo 1 24 "..\image\WindowsXP.Manifest" > obj\hwgui_xp.rc
 
 %POCC%\bin\pocc %1.c /Ze /D"NEED_DUMMY_RETURN" /D"__XCC__" /I"INCLUDE" /I"%HRB_DIR%\INCLUDE" /I"%POCC%\INCLUDE" /I"%POCC%\INCLUDE\WIN" /I"%POCC%\INCLUDE\MSVC" /D"HB_STATIC_STARTUP" /c
 
-%POCC%\bin\POLINK /LIBPATH:%POCC%\lib /OUT:%1.EXE /MACHINE:IX86 /OPT:WIN98 /SUBSYSTEM:CONSOLE /FORCE:MULTIPLE @make.tmp >error.log
+%POCC%\bin\POLINK /LIBPATH:%POCC%\lib /OUT:%1.EXE /MACHINE:IX86 /OPT:WIN98 /SUBSYSTEM:WINDOWS /FORCE:MULTIPLE @make.tmp >error.log
 Echo.Building Complete
 DEL make.tmp
 del %1.c

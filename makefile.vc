@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.4 2004-03-18 11:19:12 alkresin Exp $
+# $Id: makefile.vc,v 1.5 2004-04-02 10:16:19 alkresin Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -209,7 +209,9 @@ $(OBJ_DIR)\procscri.c   : $(SRC_DIR)\procmisc\procscri.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 
 $(OBJ_DIR)\arr2str.obj  : $(SRC_DIR)\procmisc\arr2str.c
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
 $(OBJ_DIR)\blowfish.obj : $(SRC_DIR)\procmisc\blowfish.c
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
 $(OBJ_DIR)\procini.obj  : $(OBJ_DIR)\procini.c
 $(OBJ_DIR)\procs7.obj   : $(OBJ_DIR)\procs7.c
 $(OBJ_DIR)\procscri.obj : $(OBJ_DIR)\procscri.c

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.9 2004-04-02 08:50:43 alkresin Exp $
+ * $Id: window.c,v 1.10 2004-04-02 10:16:20 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -226,7 +226,7 @@ HB_FUNC ( HWG_INITCHILDWINDOW )
    wndclass.lpszClassName = szAppName ;
 
 
-   UnregisterClass(szAppName,hInstance);
+   UnregisterClass( szAppName, (HINSTANCE)hInstance );
    if (!RegisterClass (&wndclass))
    {
          hb_retni( 0 );

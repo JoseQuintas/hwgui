@@ -1,5 +1,5 @@
 /*
- * $Id: hipedit.prg,v 1.3 2004-03-15 18:51:17 alkresin Exp $
+ * $Id: hipedit.prg,v 1.4 2004-04-02 10:16:20 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -57,6 +57,7 @@ METHOD New( oWndParent,nId,aValue,bSetGet, nStyle,nLeft,nTop,nWidth,nHeight, ;
    ::bGetFocus  := bGetFocus
    ::bKillFocus := bKillFocus
 
+   HWG_InitCommonControlsEx()
    ::Activate()
 
    ::oParent:AddControl( Self )

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.8 2004-03-24 00:37:25 jamaj Exp $
+ * $Id: control.c,v 1.9 2004-04-02 10:16:20 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -50,7 +50,7 @@ HB_FUNC ( HWG_INITCOMMONCONTROLSEX )
       INITCOMMONCONTROLSEX  i;
 
       i.dwSize = sizeof( INITCOMMONCONTROLSEX );
-      i.dwICC = ICC_DATE_CLASSES;
+      i.dwICC = ICC_DATE_CLASSES | ICC_INTERNET_CLASSES;
       InitCommonControlsEx( &i );
       lInitCmnCtrl = 1;
    }
@@ -486,11 +486,11 @@ HB_FUNC ( CREATETABCONTROL )
 
    hTab = CreateWindow( WC_TABCONTROL , 
                  NULL ,
-                 WS_CHILD | WS_VISIBLE | hb_parnl(3),                        /* style  */
+                 WS_CHILD | WS_VISIBLE | hb_parnl(3),  /* style  */
                  hb_parni(4), hb_parni(5) , 
                  hb_parni(6), hb_parni(7) ,
                  (HWND) hb_parnl(1),           /* parent window    */ 
-                 (HMENU) hb_parni(2),               /* control ID  */
+                 (HMENU) hb_parni(2),          /* control ID  */
                  GetModuleHandle( NULL ), 
                  NULL);
 

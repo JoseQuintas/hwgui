@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.4 2004-03-19 22:20:42 lculik Exp $
+ * $Id: richedit.c,v 1.5 2004-04-02 10:16:20 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -179,7 +179,9 @@ HB_FUNC ( RE_SETCHARFORMAT )
 HB_FUNC ( RE_SETDEFAULT )
 {
    HWND hCtrl = ( HWND ) hb_parnl( 1 );
-   CHARFORMAT2 cf ={ 0 };
+   CHARFORMAT2 cf;
+
+   memset( &cf, 0, sizeof(CHARFORMAT2) );
    cf.cbSize = sizeof( CHARFORMAT2 );
 
    if( ISNUM( 2 ) )

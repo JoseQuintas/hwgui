@@ -44,7 +44,6 @@
 #include <shlobj.h>
 
 #include <windows.h>
-#include <commctrl.h>
 #include "winreg.h"
 #include "tchar.h"
 

@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.1 2005-01-12 11:56:34 alkresin Exp $
+ * $Id: misc.c,v 1.2 2005-01-13 17:11:28 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Miscellaneous functions
@@ -144,13 +144,15 @@ HB_FUNC( HB_NUMTOHEX )
 
 HB_FUNC( GETDESKTOPWIDTH )
 {
-   // hb_retni ( GetSystemMetrics(SM_CXSCREEN) ) ;
+    hb_retni(gdk_screen_width());
 }
+
 
 HB_FUNC( GETDESKTOPHEIGHT )
 {
-   // hb_retni ( GetSystemMetrics(SM_CYSCREEN) ) ;
+    hb_retni(gdk_screen_height());
 }
+
 
 HB_FUNC( GETWINDOWRECT )
 {
@@ -158,10 +160,12 @@ HB_FUNC( GETWINDOWRECT )
 
 HB_FUNC( HIDEWINDOW )
 {
+    gtk_widget_hide( (GtkWidget *) hb_parnl(1) );
 }
 
 HB_FUNC( SHOWWINDOW )
 {
+    gtk_widget_show( (GtkWidget *) hb_parnl(1) );
 }
 
 HB_FUNC( SENDMESSAGE )
@@ -191,3 +195,5 @@ HB_FUNC( SETTEXTCOLOR )
 HB_FUNC( SETBKCOLOR )
 {
 }
+
+ 

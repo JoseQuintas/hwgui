@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.350 2005-02-06 17:44:36 lf_sfnet Exp $
+ * $Id: Changelog,v 1.351 2005-02-21 09:29:37 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-02-21 12:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+  * source/hbrowse.prg
+    * ascan() has been removed from onEvent() method to increase the performance
+      as was suggested by Maurilio Longo.
+  * source/hpanel.prg
+  * source/hsplit.prg
+    Some changes/fixes.
 
 2005-02-06 18:45 UTC+0100 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
   * source/grid.c

@@ -1,5 +1,5 @@
 /*
- * $Id: hsplit.prg,v 1.6 2004-10-22 08:45:17 alkresin Exp $
+ * $Id: hsplit.prg,v 1.7 2005-02-21 09:29:56 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSplitter class
@@ -151,7 +151,7 @@ Local i, oCtrl, nDiff
          oCtrl:nTop += nDiff
          oCtrl:nHeight -= nDiff
       ENDIF
-      MoveWindow( oCtrl:handle,oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight )
+      oCtrl:Move( oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight )
    NEXT
    FOR i := 1 TO Len( ::aLeft )
       oCtrl := ::aLeft[i]
@@ -162,7 +162,7 @@ Local i, oCtrl, nDiff
          nDiff := ::nTop - ( oCtrl:nTop + oCtrl:nHeight )
          oCtrl:nHeight += nDiff
       ENDIF
-      MoveWindow( oCtrl:handle,oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight )
+      oCtrl:Move( oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight )
    NEXT
    ::lMoved := .F.
 

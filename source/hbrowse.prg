@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.44 2005-01-13 10:38:19 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.45 2005-02-21 09:29:46 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -229,114 +229,104 @@ Local aCoors
 Static keyCode := 0
 
    // WriteLog( "Brw: "+Str(hBrw,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
-   IF Ascan( { WM_MOUSEMOVE, WM_MOUSEWHEEL, WM_GETDLGCODE, WM_PAINT, WM_ERASEBKGND, WM_SETFOCUS, WM_KILLFOCUS,  WM_HSCROLL, WM_VSCROLL, WM_COMMAND, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK, WM_DESTROY }, msg ) > 0
+   IF ::active .AND. !Empty( ::aColumns )
 
-      IF ::active .AND. !Empty( ::aColumns )
+      IF ::bOther != Nil
+         Eval( ::bOther,Self,msg,wParam,lParam )
+      ENDIF
 
-         // Si la variable "cargo" es codeblock se ejecuta ed cb.
-         // Sirve para ejecutar "algo" fuera del Browse. P/Ej.
-         // Mostrar una variable en la "dialog". Etc.Etc.
-         // 27.07.2002 - WHT.
-         // IF Ascan( { WM_PAINT, WM_ERASEBKGND, WM_SETFOCUS, WM_KILLFOCUS, WM_HSCROLL, WM_VSCROLL, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK }, msg ) > 0
-            IF ::bOther != Nil
-               Eval( ::bOther,Self,msg,wParam,lParam )
-            ENDIF
-         // ENDIF
+      IF msg == WM_PAINT
+         ::Paint()
+         return 1
 
-         IF msg == WM_PAINT
-            ::Paint()
-            return 1
-
-         ELSEIF msg == WM_ERASEBKGND
-            IF ::brush != Nil
-               aCoors := GetClientRect( ::handle )
-               FillRect( wParam, aCoors[1], aCoors[2], aCoors[3]+1, aCoors[4]+1, ::brush:handle )
-               Return 1
-            ENDIF
-
-         ELSEIF msg == WM_SETFOCUS
-            IF ::bGetFocus != Nil
-               Eval( ::bGetFocus, Self )
-            ENDIF
-
-         ELSEIF msg == WM_KILLFOCUS
-            IF ::bLostFocus != Nil
-               Eval( ::bLostFocus, Self )
-            ENDIF
-
-         ELSEIF msg == WM_HSCROLL
-            ::DoHScroll( wParam )
-
-         ELSEIF msg == WM_VSCROLL
-            ::DoVScroll( wParam )
-
-         ELSEIF msg == WM_GETDLGCODE
-            IF wParam != 0
-               keyCode := wParam
-            ENDIF
+      ELSEIF msg == WM_ERASEBKGND
+         IF ::brush != Nil
+            aCoors := GetClientRect( ::handle )
+            FillRect( wParam, aCoors[1], aCoors[2], aCoors[3]+1, aCoors[4]+1, ::brush:handle )
             Return 1
-
-         ELSEIF msg == WM_COMMAND
-            // Super:onEvent( WM_COMMAND )
-            DlgCommand( Self, wParam, lParam )
-
-         ELSEIF msg == WM_KEYUP
-            IF wParam == 13 .AND. keyCode == 13
-               keyCode := 0
-               ::Edit()
-            ENDIF
-            Return 1
-
-         ELSEIF msg == WM_KEYDOWN
-            IF ::bKeyDown != Nil
-               IF !Eval( ::bKeyDown,Self,wParam )
-                  Return 1
-               ENDIF
-            ENDIF
-            IF wParam == 40        // Down
-               ::LINEDOWN()
-            ELSEIF wParam == 38    // Up
-               ::LINEUP()
-            ELSEIF wParam == 39    // Right
-               ::DoHScroll( SB_LINERIGHT )
-            ELSEIF wParam == 37    // Left
-               ::DoHScroll( SB_LINELEFT )
-            ELSEIF wParam == 36    // Home
-               ::TOP()
-            ELSEIF wParam == 35    // End
-               ::BOTTOM()
-            ELSEIF wParam == 34    // PageDown
-               ::PageDown()
-            ELSEIF wParam == 33    // PageUp
-               ::PageUp()
-            ELSEIF wParam == 13    // Enter
-               ::Edit()
-            ELSEIF (wParam >= 48 .and. wParam <= 90 .or. wParam >= 96 .and. wParam <= 111 ).and. ::lAutoEdit
-               ::Edit( wParam,lParam )
-            ENDIF
-            Return 1
-
-         ELSEIF msg == WM_LBUTTONDOWN
-            ::ButtonDown( lParam )
-
-         ELSEIF msg == WM_LBUTTONUP
-            ::ButtonUp( lParam )
-
-         ELSEIF msg == WM_LBUTTONDBLCLK
-            ::ButtonDbl( lParam )
-
-         ELSEIF msg == WM_MOUSEMOVE
-            ::MouseMove( wParam, lParam )
-
-         ELSEIF msg == WM_MOUSEWHEEL
-            ::MouseWheel( LoWord( wParam ),;
-                             If( HiWord( wParam ) > 32768,;
-                             HiWord( wParam ) - 65535, HiWord( wParam ) ),;
-                             LoWord( lParam ), HiWord( lParam ) )
-         ELSEIF msg == WM_DESTROY
-            ::End()
          ENDIF
 
+      ELSEIF msg == WM_SETFOCUS
+         IF ::bGetFocus != Nil
+            Eval( ::bGetFocus, Self )
+         ENDIF
+
+      ELSEIF msg == WM_KILLFOCUS
+         IF ::bLostFocus != Nil
+            Eval( ::bLostFocus, Self )
+         ENDIF
+
+      ELSEIF msg == WM_HSCROLL
+         ::DoHScroll( wParam )
+
+      ELSEIF msg == WM_VSCROLL
+         ::DoVScroll( wParam )
+
+      ELSEIF msg == WM_GETDLGCODE
+         IF wParam != 0
+            keyCode := wParam
+         ENDIF
+         Return 1
+
+      ELSEIF msg == WM_COMMAND
+         // Super:onEvent( WM_COMMAND )
+         DlgCommand( Self, wParam, lParam )
+
+      ELSEIF msg == WM_KEYUP
+         IF wParam == 13 .AND. keyCode == 13
+            keyCode := 0
+            ::Edit()
+         ENDIF
+         Return 1
+
+      ELSEIF msg == WM_KEYDOWN
+         IF ::bKeyDown != Nil
+            IF !Eval( ::bKeyDown,Self,wParam )
+               Return 1
+            ENDIF
+         ENDIF
+         IF wParam == 40        // Down
+            ::LINEDOWN()
+         ELSEIF wParam == 38    // Up
+            ::LINEUP()
+         ELSEIF wParam == 39    // Right
+            ::DoHScroll( SB_LINERIGHT )
+         ELSEIF wParam == 37    // Left
+            ::DoHScroll( SB_LINELEFT )
+         ELSEIF wParam == 36    // Home
+            ::TOP()
+         ELSEIF wParam == 35    // End
+            ::BOTTOM()
+         ELSEIF wParam == 34    // PageDown
+            ::PageDown()
+         ELSEIF wParam == 33    // PageUp
+            ::PageUp()
+         ELSEIF wParam == 13    // Enter
+            ::Edit()
+         ELSEIF (wParam >= 48 .and. wParam <= 90 .or. wParam >= 96 .and. wParam <= 111 ).and. ::lAutoEdit
+            ::Edit( wParam,lParam )
+         ENDIF
+         Return 1
+
+      ELSEIF msg == WM_LBUTTONDOWN
+         ::ButtonDown( lParam )
+
+      ELSEIF msg == WM_LBUTTONUP
+         ::ButtonUp( lParam )
+
+      ELSEIF msg == WM_LBUTTONDBLCLK
+         ::ButtonDbl( lParam )
+
+      ELSEIF msg == WM_MOUSEMOVE
+         ::MouseMove( wParam, lParam )
+
+      ELSEIF msg == WM_MOUSEWHEEL
+         ::MouseWheel( LoWord( wParam ),;
+                          If( HiWord( wParam ) > 32768,;
+                          HiWord( wParam ) - 65535, HiWord( wParam ) ),;
+                          LoWord( lParam ), HiWord( lParam ) )
+      ELSEIF msg == WM_DESTROY
+         ::End()
       ENDIF
 
    ENDIF
@@ -368,6 +358,7 @@ METHOD Redefine( lType,oWndParent,nId,oFont,bInit,bSize,bPaint,bEnter,bGfocus,bL
 
    hwg_RegBrowse()
    ::InitBrw()
+
 RETURN Self
 
 //----------------------------------------------------//

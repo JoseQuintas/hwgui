@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.208 2004-07-01 05:34:07 alkresin Exp $
+ * $Id: Changelog,v 1.209 2004-07-01 13:43:51 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,7 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
-
+2004-07-01 10-40 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+  * source/draw.c
+    !Return the varibles crOldBack, crOldText to use in display Grayed
+     
 2004-07-01 09:38 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/hwindow.prg
      * Handling of notify events has been added for MDI Child windows

@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.13 2004-12-08 10:53:04 alkresin Exp $
+ * $Id: editor.prg,v 1.14 2004-12-09 10:28:05 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -237,7 +237,7 @@ Local arrHi, oTheme := HDTheme():aThemes[HDTheme():nSelected]
 
    IF lRedraw != Nil .AND. lRedraw
       // cText := oEdit:Gettext()
-      nTextLength := SendMessage( oEdit:handle, WM_GETTEXTLENGTH, 0, 0 )
+      nTextLength := SendMessage( oEdit:handle, WM_GETTEXTLENGTH, 0, 0 ) + 1
       cText := re_GetTextRange( oEdit:handle,1,nTextLength )
    ELSE
       IF cText == Nil

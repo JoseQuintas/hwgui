@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.14 2004-06-21 11:20:12 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.15 2004-06-24 05:44:36 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -221,6 +221,27 @@ Return Nil
 
 // ------------------------------
 
+Static Function ReadTree( oForm,aParent,oDesc )
+Local i, aTree := {}, oNode, subarr
+
+   FOR i := 1 TO Len( oDesc:aItems )
+      oNode := oDesc:aItems[i]
+      IF oNode:type == HBXML_TYPE_CDATA
+         aParent[1] := CompileMethod( oNode:aItems[1],oForm )
+      ELSE
+         Aadd( aTree, { Nil, oNode:GetAttribute("name"), ;
+                 Val( oNode:GetAttribute("id") ), .T. } )
+         IF !Empty( oNode:aItems )
+            IF ( subarr := ReadTree( oForm,aTail( aTree ),oNode ) ) != Nil
+               aTree[ Len(aTree),1 ] := subarr
+            ENDIF
+         ENDIF
+      ENDIF
+   NEXT
+
+Return Iif( Empty(aTree), Nil, aTree )
+
+
 Static Function CompileMethod( cMethod, oForm, oCtrl )
 Local nPos1, nPos2, nLines := 1, arr[3], arrExe
 
@@ -294,7 +315,11 @@ Local i, j, o, cName, aProp := {}, aMethods := {}, aItems := oCtrlDesc:aItems
                ELSEIF cName == "name"
                   Aadd( oForm:aNames, GetProperty(o:aItems[1]) )
                ENDIF
-               Aadd( aProp, { cName,Iif( Empty(o:aItems),"",o:aItems[1] ) } )
+               IF cName == "atree"
+                  Aadd( aProp, { cName, ReadTree( oForm,,o ) } )
+               ELSE
+                  Aadd( aProp, { cName,Iif( Empty(o:aItems),"",o:aItems[1] ) } )
+               ENDIF
             ENDIF
          NEXT
       ELSEIF aItems[i]:title == "method"
@@ -318,7 +343,7 @@ Local aClass := { "label", "button", "checkbox",                    ;
                   "richedit","datepicker", "updown", "combobox",    ;
                   "line", "toolbar", "ownerbutton","browse",        ;
                   "monthcalendar","trackbar","page", "tree",        ;
-                  "status"                                          ;
+                  "status","menu"                                   ;
                 }
 Local aCtrls := { ;
   "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctoolt,TextColor,BackColor,lTransp)", ;
@@ -342,7 +367,8 @@ Local aCtrls := { ;
   "HTrackBar():New(oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,cToolt,onChange,nLower,nUpper,lVertical,TickStyle,TickMarks)", ;
   "HTab():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,Tabs,onChange,aImages,lResource)", ;
   "HTree():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,TextColor,BackColor,aImages,lResource,lEditLabels,onClick)", ;
-  "HStatus():New(oPrnt,nId,nStyle,oFont,aParts,onInit,onSize)" ;
+  "HStatus():New(oPrnt,nId,nStyle,oFont,aParts,onInit,onSize)", ;
+  ".F." ;
                 }
 Local i, j, oCtrl, stroka, varname, xProperty, block, cType, cPName
 Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName
@@ -408,6 +434,10 @@ MEMVAR aImages, lEditLabels, aParts
          IF xProperty
             nStyle += ES_PASSWORD
          ENDIF
+      ELSEIF cPName == "atree"
+         // IF oForm:oDlg:handle != 0
+            BuildMenu( xProperty,oForm:oDlg:handle,oForm:oDlg )
+         // ENDIF
       ELSE
          /* Assigning the value of the property to the variable with 
             the same name as the property */

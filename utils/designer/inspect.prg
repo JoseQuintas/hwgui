@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.6 2004-06-21 11:20:13 alkresin Exp $
+ * $Id: inspect.prg,v 1.7 2004-06-24 05:44:36 alkresin Exp $
  *
  * Designer
  * Object Inspector
@@ -43,6 +43,7 @@
 
 Static oCombo, oBrw1, oBrw2
 Static aProp := {}, aMethods := {}
+Static oTab
 
 CLASS PBrowse INHERIT HBrowse
 
@@ -70,15 +71,26 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
    IF ::SetColumn() == 1 .AND. ::bEnter == Nil
       Return Nil
    ENDIF
-   IF ::bEnter != Nil
-      Return Eval( ::bEnter )
+   ::cargo := Eval( ::bRecno,Self )
+   IF oTab:GetActivePage() == 2
+      IF ( value := EditMethod( aMethods[::cargo,1],aMethods[::cargo,2] ) ) != Nil
+         aMethods[::cargo,2] := value
+         IF oCombo:value == 1
+            HFormGen():oDlgSelected:oParent:aMethods[::cargo,2] := value
+         ELSE
+            GetCtrlSelected( HFormGen():oDlgSelected ):aMethods[::cargo,2] := value
+         ENDIF
+         HFormGen():oDlgSelected:oParent:lChanged := .T.
+         oBrw2:lUpdated := .T.
+         oBrw2:Refresh()
+      ENDIF
+      Return Nil
    ENDIF
    IF oCombo:value == 1
       aCtrlProp := oCtrl:oParent:aProp
    ELSE
       aCtrlProp := oCtrl:aProp
    ENDIF
-   ::cargo := Eval( ::bRecno,Self )
    oColumn := ::aColumns[2]
    cName := Lower( aProp[::cargo,1] )
    j := Ascan( aDataDef, {|a|a[1]==cName} )
@@ -239,10 +251,10 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
 Return .T.
 
 Function InspOpen
-Local oTab
 
    INIT DIALOG oDlgInsp TITLE "Object Inspector" ;
       AT 0,280  SIZE 220,300                     ;
+      STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SIZEBOX ;
       FONT oMainWnd:oFont                        ;
       ON INIT {||MoveWindow(oDlgInsp:handle,0,280,230,280)}   ;
       ON EXIT {||oDlgInsp:=Nil,CheckMenuItem(oMainWnd:handle,1010,.F.),.T.}
@@ -281,7 +293,6 @@ Local oTab
       oBrw2:lSep3d := .T.
       oBrw2:sepColor  := GetSysColor( COLOR_BTNSHADOW )
       oBrw2:msrec := aMethods
-      oBrw2:bEnter := {||EditMethod(oBrw2,aMethods,oCombo)}
       oBrw2:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:msrec[o:tekzp,1]),"","  "+o:msrec[o:tekzp,1])},"C",12,0,.T. ) )
       oBrw2:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:msrec[o:tekzp,2]),"",":"+o:msrec[o:tekzp,1])},"C",100,0,.T. ) )
    END PAGE OF oTab

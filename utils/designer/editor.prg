@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.2 2004-06-20 18:47:15 alkresin Exp $
+ * $Id: editor.prg,v 1.3 2004-06-24 05:44:36 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -87,17 +87,16 @@ Local i, j, oNode, nStart
 
 Return Nil
 
-Function EditMethod( oBrw, aMethods, oCombo )
-Local nRec := Eval( oBrw:bRecno,oBrw ), lRes := .F., i
-Local cMethod := aMethods[nRec,2], oFont := HDTheme():oFont
-Local cMethName := Lower( aMethods[nRec,1] ), cParamString
+Function EditMethod( cMethName, cMethod )
+Local i, lRes := .T.
+Local oFont := HDTheme():oFont
+Local cParamString
 
-   i := Ascan( aMethDef, {|a|a[1]==cMethName} )
+   i := Ascan( aMethDef, {|a|a[1]==Lower(cMethName)} )
    cParamString := Iif( i == 0, "", aMethDef[i,2] )
-   INIT DIALOG oDlg TITLE "Edit '"+aMethods[nRec,1]+"' method" ;
+   INIT DIALOG oDlg TITLE "Edit '"+cMethName+"' method" ;
       AT 300,240  SIZE 400,300  FONT oMainWnd:oFont            ;
-      ON INIT {||MoveWindow(oDlg:handle,300,240,400,310)}      ;
-      ON EXIT {||onExitEdM(oBrw,oCombo,aMethods,lRes,nRec)}     
+      ON INIT {||MoveWindow(oDlg:handle,300,240,400,310)}
 
    MENU OF oDlg
       MENU TITLE "&Options"
@@ -125,28 +124,16 @@ Local cMethName := Lower( aMethods[nRec,1] ), cParamString
 
    @ 60,265 BUTTON "Ok" SIZE 100, 32     ;
        ON SIZE {|o,x,y|o:Move(,y-35,,)}  ;
-       ON CLICK {||lRes:=.T.,EndDialog()}
+       ON CLICK {||cMethod:=oEdit:GetText(),lRes:=.T.,EndDialog()}
    @ 240,265 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32 ;
        ON SIZE {|o,x,y|o:Move(,y-35,,)}
 
    ACTIVATE DIALOG oDlg
-Return Nil
 
-Static Function onExitEdM( oBrw, oCombo, aMethods, lRes, nRec )
-Local cMethod := oEdit:GetText()
-
-   IF lRes .AND. !( aMethods[nRec,2] == cMethod )
-      aMethods[nRec,2] := cMethod
-      IF oCombo:value == 1
-         HFormGen():oDlgSelected:oParent:aMethods[nRec,2] := cMethod
-      ELSE
-         GetCtrlSelected( HFormGen():oDlgSelected ):aMethods[nRec,2] := cMethod
-      ENDIF
-      HFormGen():oDlgSelected:oParent:lChanged := .T.
-      oBrw:lUpdated := .T.
-      oBrw:Refresh()
+   IF lRes
+      Return cMethod
    ENDIF
-Return .T.
+Return Nil
 
 Function ChangeTheme( nTheme )
 

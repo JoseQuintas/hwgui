@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.13 2004-06-21 11:20:13 alkresin Exp $
+ * $Id: hformgen.prg,v 1.14 2004-06-24 05:44:36 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -371,6 +371,24 @@ Local fname, s1, s2
 
 Return Nil
 
+Static Function ReadTree( aParent,oDesc )
+Local i, aTree := {}, oNode
+
+   FOR i := 1 TO Len( oDesc:aItems )
+      oNode := oDesc:aItems[i]
+      IF oNode:type == HBXML_TYPE_CDATA
+         aParent[4] := oNode:aItems[1]
+      ELSE
+         Aadd( aTree, { Nil, oNode:GetAttribute("name"), ;
+                 Val( oNode:GetAttribute("id") ), Nil } )
+         IF !Empty( oNode:aItems )
+            aTree[ Len(aTree),1 ] := ReadTree( aTail( aTree ),oNode )
+         ENDIF
+      ENDIF
+   NEXT
+
+Return Iif( Empty(aTree), Nil, aTree )
+
 Static Function ReadCtrls( oDlg, oCtrlDesc, oContainer, nPage )
 Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cProperty
 
@@ -388,6 +406,8 @@ Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cPr
                   Aadd( aProp, { "Height", aRect[4] } )
                ELSEIF Lower( cPropertyName ) == "font"
                   Aadd( aProp, { cPropertyName,FontFromXML( o:aItems[1] ) } )
+               ELSEIF Lower( cPropertyName ) == "atree"
+                  Aadd( aProp, { cPropertyName,ReadTree( ,o ) } )
                ELSEIF !Empty(o:aItems)
                   cProperty := Left( o:aItems[1],1 )
                   IF cProperty == '['
@@ -492,6 +512,26 @@ Local i, j, aItems, o, aProp := {}, cPropertyName, aRect, pos, cProperty
    NEXT
 Return Nil
 
+Static Function WriteTree( aTree, oParent )
+Local i, oNode, type
+
+   FOR i := 1 TO Len( aTree )
+      IF aTree[i,4] != Nil .OR. ( Valtype( aTree[i,1] ) == "A" .AND. !Empty( aTree[i,1] ) )
+         type := HBXML_TYPE_TAG
+      ELSE
+         type := HBXML_TYPE_SINGLE
+      ENDIF
+      oNode := oParent:Add( HXMLNode():New( "item", type, ;
+             { { "name",aTree[i,2] },{ "id",Ltrim(Str(aTree[i,3])) } } ) )
+      IF aTree[i,4] != Nil
+         oNode:Add( HXMLNode():New( ,HBXML_TYPE_CDATA,,aTree[i,4] ) )
+      ENDIF
+      IF Valtype( aTree[i,1] ) == "A" .AND. !Empty( aTree[i,1] )
+         WriteTree( aTree[i,1], oNode )
+      ENDIF
+   NEXT
+Return Nil
+
 Static Function WriteCtrl( oParent,oCtrl,lRoot )
 Local i, j, j1, oNode, oNode1, oStyle, oMeth, aItems, cPropertyName, value, lDef
 Local cProperty, i1
@@ -526,9 +566,12 @@ Local cProperty, i1
          IF !lDef
             IF Lower(oCtrl:aProp[j,1]) == "font"
                IF oCtrl:oFont != Nil
-                  oNode1 := oStyle:Add( HXMLNode():New( "property",,{ { "name",oCtrl:aProp[j,1] } } ) )
+                  oNode1 := oStyle:Add( HXMLNode():New( "property",,{ { "name","font" } } ) )
                   oNode1:Add( Font2XML( oCtrl:oFont ) )
                ENDIF
+            ELSEIF Lower(oCtrl:aProp[j,1]) == "atree"
+               oNode1 := oStyle:Add( HXMLNode():New( "property",,{ { "name","atree" } } ) )
+               WriteTree( oCtrl:aProp[j,2],oNode1 )
             ELSEIF oCtrl:aProp[j,2] != Nil
                IF oCtrl:aProp[j,3] == "C"
                   cProperty := '[' + oCtrl:aProp[j,2] + ']'
@@ -625,7 +668,7 @@ Local pps, hDC, aCoors, oCtrl := GetCtrlSelected( oDlg )
 
    // aCoors := GetClientRect( oDlg:handle )   
    // FillRect( hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4], oDlg:brush:handle )
-   IF oCtrl != Nil
+   IF oCtrl != Nil .AND. oCtrl:nTop >= 0
 
       Rectangle( hDC, oCtrl:nLeft-3, oCtrl:nTop-3, ;
                   oCtrl:nLeft+oCtrl:nWidth+2, oCtrl:nTop+oCtrl:nHeight+2 )

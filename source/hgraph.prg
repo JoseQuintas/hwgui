@@ -1,5 +1,5 @@
 /*
- * $Id: hgraph.prg,v 1.3 2004-06-15 06:59:24 alkresin Exp $
+ * $Id: hgraph.prg,v 1.4 2004-06-24 05:44:36 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGraph class
@@ -12,8 +12,9 @@
 #include "HBClass.ch"
 #include "guilib.ch"
 
-CLASS HGraph INHERIT HStatic
+CLASS HGraph INHERIT HControl
 
+   CLASS VAR winclass   INIT "STATIC"
    DATA aValues
    DATA nGraphs INIT 1
    DATA nType

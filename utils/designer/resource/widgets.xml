@@ -218,6 +218,18 @@
          <method name="onInit" />
          <method name="onSize" />
       </widget>
+      <widget class="menu" name="Menu" bmp="BMP_MENU">
+         <create>
+            <![CDATA[BuildMenu( {{{||EditMenu()},"Menu",32000,.t.}},oCtrl:oParent:handle,oCtrl:oParent )
+            ]]>
+         </create>
+         <property name="Name" type="C" />
+         <property name="Left" type="N" value="0" hidden="" />
+         <property name="Top" type="N" value="0" hidden="" />
+         <property name="Width" type="N" value="0" hidden="" />
+         <property name="Height" type="N" value="0" hidden=""/>
+         <property name="aTree" type="O" hidden=""/>
+      </widget>
    </set>
    <set name="Win32">
       <widget class="richedit" name="Rich Edit control" bmp="BMP_RICH">

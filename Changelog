@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.196 2004-06-23 19:03:35 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.197 2004-06-24 05:44:23 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,23 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-06-24 09:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/hcombo.prg
+   * source/hgraph.prg
+     ! Bugs fixed
+   * source/hfrmtmpl.prg
+     * Menu support has been added
+   * utils/designer/designer.rc
+   * utils/designer/hformgen.prg
+   * utils/designer/hctrl.prg
+   * utils/designer/inspect.prg
+   * utils/designer/editor.prg
+   * utils/designer/resource/widgets.xml
+     * Some changes, menu support has been added
+   * utils/designer/samples/example.prg
+   * utils/designer/samples/example.xml
+     * Samples modified to demonstrate how menu works
 
 2004-06-23 16-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * samples/dbc/dbchw.prg

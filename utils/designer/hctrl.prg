@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.9 2004-06-21 11:20:13 alkresin Exp $
+ * $Id: hctrl.prg,v 1.10 2004-06-24 05:44:36 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -131,14 +131,17 @@ Private value, oCtrl := Self
       ENDIF
    NEXT
 
-   ::title   := Iif( ::title==Nil,xClass,::title )
+   IF xClass == "menu"
+      ::nLeft := ::nTop := -1
+   ELSE
+      ::title   := Iif( ::title==Nil,xClass,::title )
 
-   ::bPaint  := {|o,lp|o:Paint(lp)}
-   ::bSize   := {|o,x,y|ctrlOnSize(o,x,y)}
-   ::SetColor( ::tcolor,::bcolor )
+      ::bPaint  := {|o,lp|o:Paint(lp)}
+      ::bSize   := {|o,x,y|ctrlOnSize(o,x,y)}
+      ::SetColor( ::tcolor,::bcolor )
+   ENDIF
 
    ::oParent:AddControl( Self )
-
    ::oXMLDesc := oXMLDesc
 
    ::Activate()
@@ -191,7 +194,7 @@ METHOD SetProp( xName,xValue )
    IF xName != 0
       ::aProp[xName,2] := xValue
    ENDIF
-Return Nil
+Return xValue
 
 // -----------------------------------------------
 
@@ -490,6 +493,150 @@ Local i, j, oCtrl
          ENDIF
       NEXT
 
+   ENDIF
+
+Return Nil
+
+Function EditMenu()
+Local oDlg, oTree, i, aMenu
+Private nMaxId := 0
+
+   oDlg := HFormGen():oDlgSelected
+   FOR i := 1 TO Len( oDlg:aControls )
+      IF oDlg:aControls[i]:cClass == "menu"
+         aMenu := oDlg:aControls[i]:GetProp( "aTree" )
+         IF aMenu == Nil
+            aMenu := oDlg:aControls[i]:SetProp( "aTree", { { ,"Menu",32000,Nil } } )
+         ENDIF
+         aMenu := aClone( aMenu )
+         EXIT
+      ENDIF
+   NEXT
+
+   INIT DIALOG oDlg TITLE "Edit Menu" ;
+        AT 300,280 SIZE 400,350 FONT oMainWnd:oFont ;
+        STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SIZEBOX ;
+        ON INIT {||BuildTree( oTree,aMenu )}
+
+   @ 10,20 TREE oTree OF oDlg SIZE 200,240 STYLE WS_BORDER EDITABLE
+   oTree:bItemChange := {|o,s|VldItemChange(aMenu,o,s)}
+
+   @ 240,20 BUTTON "Rename" SIZE 140,30 ON CLICK {||EditTree(aMenu,oTree,0)}
+   @ 240,60 BUTTON "Add item after" SIZE 140,30 ON CLICK {||EditTree(aMenu,oTree,1)}
+   @ 240,100 BUTTON "Add item before" SIZE 140,30 ON CLICK {||EditTree(aMenu,oTree,2)}
+   @ 240,140 BUTTON "Add child item" SIZE 140,30 ON CLICK {||EditTree(aMenu,oTree,3)}
+   @ 240,180 BUTTON "Delete" SIZE 140,30 ON CLICK {||EditTree(aMenu,oTree,4)}
+   @ 240,220 BUTTON "Edit code" SIZE 140,30 ON CLICK {||EditTree(aMenu,oTree,10)}
+
+   @ 40,290 BUTTON "Ok" SIZE 100,30 ON CLICK {||oDlg:lResult:=.T.,EndDialog()}
+   @ 260,290 BUTTON "Cancel" SIZE 100,30 ON CLICK {||EndDialog()}
+
+   oDlg:AddEvent( 0,IDOK,{||SetFocus(oDlg:aControls[2]:handle)} )
+   oDlg:AddEvent( 0,IDCANCEL,{||SetFocus(oDlg:aControls[2]:handle)} )
+
+   ACTIVATE DIALOG oDlg
+   IF oDlg:lResult
+      HFormGen():oDlgSelected:aControls[i]:SetProp( "aTree",aMenu )
+   ENDIF
+
+Return Nil
+
+Static Function BuildTree( oParent, aMenu )
+Local i := Len( aMenu ), oNode
+
+   FOR i := 1 TO Len( aMenu )
+      INSERT NODE oNode CAPTION aMenu[i,2] TO oParent
+      oNode:cargo := aMenu[i,3]
+      nMaxId := Max( nMaxId,aMenu[i,3] )
+      IF Valtype( aMenu[i,1] ) == "A"
+         BuildTree( oNode, aMenu[i,1] )
+      ENDIF
+   NEXT
+
+Return Nil
+
+Static Function VldItemChange( aTree,oNode,cText )
+Local nPos, aSubarr
+
+   IF ( aSubarr := FindTreeItem( aTree, oNode:cargo, @nPos ) ) != Nil
+      aSubarr[nPos,2] := cText
+   ENDIF
+Return .T.
+
+Static Function FindTreeItem( aTree, nId, nPos )
+Local nPos1, aSubarr
+   nPos := 1
+   DO WHILE nPos <= Len( aTree )
+      IF aTree[npos,3] == nId
+         Return aTree
+      ELSEIF Valtype(aTree[npos,1]) == "A"
+         IF ( aSubarr := FindTreeItem( aTree[nPos,1] , nId, @nPos1 ) ) != Nil
+            nPos := nPos1
+            Return aSubarr
+         ENDIF
+      ENDIF
+      nPos ++
+   ENDDO
+Return Nil
+
+Static Function EditTree( aTree,oTree,nAction )
+Local oNode, cMethod
+Local nPos, aSubarr
+
+   IF nAction == 0       // Rename
+      oTree:EditLabel( oTree:oSelected )
+   ELSEIF nAction == 1   // Insert after
+      IF oTree:oSelected:oParent == Nil
+         oNode := oTree:AddNode( "New",oTree:oSelected )
+      ELSE
+         oNode := oTree:oSelected:oParent:AddNode( "New",oTree:oSelected )
+      ENDIF
+      oTree:EditLabel( oNode )
+      nMaxId ++
+      oNode:cargo := nMaxId
+      IF ( aSubarr := FindTreeItem( aTree, oTree:oSelected:cargo, @nPos ) ) != Nil
+         Aadd( aSubarr,Nil )
+         Ains( aSubarr,nPos+1 )
+         aSubarr[nPos+1] := { Nil,"New",nMaxId,Nil }
+      ENDIF
+   ELSEIF nAction == 2   // Insert before
+      IF oTree:oSelected:oParent == Nil
+         oNode := oTree:AddNode( "New",,oTree:oSelected )
+      ELSE
+         oNode := oTree:oSelected:oParent:AddNode( "New",,oTree:oSelected )
+      ENDIF
+      oTree:EditLabel( oNode )
+      nMaxId ++
+      oNode:cargo := nMaxId
+      IF ( aSubarr := FindTreeItem( aTree, oTree:oSelected:cargo, @nPos ) ) != Nil
+         Aadd( aSubarr,Nil )
+         Ains( aSubarr,nPos )
+         aSubarr[nPos] := { Nil,"New",nMaxId,Nil }
+      ENDIF
+   ELSEIF nAction == 3   // Insert child
+      oNode := oTree:oSelected:AddNode( "New" )
+      oTree:Expand( oTree:oSelected )
+      oTree:EditLabel( oNode )
+      nMaxId ++
+      oNode:cargo := nMaxId
+      IF ( aSubarr := FindTreeItem( aTree, oTree:oSelected:cargo, @nPos ) ) != Nil
+         IF Valtype( aSubarr[nPos,1] ) != "A"
+            aSubarr[nPos,1] := {}
+         ENDIF
+         Aadd( aSubarr[nPos,1], { Nil,"New",nMaxId,Nil } )
+      ENDIF
+   ELSEIF nAction == 4   // Delete
+      IF ( aSubarr := FindTreeItem( aTree, oTree:oSelected:cargo, @nPos ) ) != Nil
+         Adel( aSubarr,nPos )
+         Asize( aSubarr,Len(aSubarr)-1 )
+      ENDIF
+      oTree:oSelected:Delete()
+   ELSEIF nAction == 10  // Edit code
+      IF ( aSubarr := FindTreeItem( aTree, oTree:oSelected:cargo, @nPos ) ) != Nil
+         IF ( cMethod := EditMethod( oTree:oSelected:GetText(), aSubarr[nPos,4] ) ) != Nil
+            aSubarr[nPos,4] := cMethod
+         ENDIF
+      ENDIF
    ENDIF
 
 Return Nil

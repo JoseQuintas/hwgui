@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.167 2004-06-03 17:02:34 alkresin Exp $
+ * $Id: Changelog,v 1.168 2004-06-03 20:48:35 rodrigo_moreno Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-06-03 17:45 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
+   + source/commond.c
+     + Add function PrintSetupEx()
+       ! Its allow the user choose a printer and returning printer name
+   * docs/funclist.txt
+       + Add function name and description 
 
 2004-06-03 21:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    + utils/designer/readme.txt

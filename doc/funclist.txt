@@ -51,6 +51,8 @@ COMMOND.C:
   Savefile
      Calls standard Windows dialog for file saving, returns file path and name
   Printsetup
+  PrintSetupEx()
+     Return the printer name, useful to use with set printer to
   GetSerialNumber       
   HDGetSerial     
   Getprivateprofilestring

@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.10 2004-05-28 14:33:55 sandrorrfreire Exp $
+ * $Id: commond.c,v 1.11 2004-06-03 20:48:36 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -390,3 +390,27 @@ HB_FUNC ( PRINTSETUPDOS )
       }
 }
    
+HB_FUNC ( PRINTSETUPEX )
+{
+   PRINTDLG pd;
+   DEVMODE *pDevMode;   
+   char PrinterName[512] ;
+
+   memset( (void*) &pd, 0, sizeof( PRINTDLG ) );
+
+   pd.lStructSize = sizeof(PRINTDLG); 
+   pd.Flags = PD_RETURNDC; 
+   pd.hwndOwner = GetActiveWindow();
+   pd.nFromPage = 1; 
+   pd.nToPage = 1; 
+   pd.nCopies = 1; 
+    
+   if( PrintDlg(&pd) )
+   {
+      pDevMode = (LPDEVMODE) GlobalLock(pd.hDevMode);
+      strcpy(PrinterName, pDevMode->dmDeviceName);
+      GlobalUnlock(pd.hDevMode);
+      hb_retc(PrinterName);
+   }        
+}
+

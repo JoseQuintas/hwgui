@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.14 2004-06-11 10:55:21 alkresin Exp $
+ *$Id: hedit.prg,v 1.15 2004-06-11 18:31:47 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -451,11 +451,16 @@ Local cPic
 Return cChar
 
 Static Function GetApplyKey( oEdit,cKey )
-Local nPos, nGetLen, nLen, vari, i
+Local nPos, nGetLen, nLen, vari, i, x
+   x := SendMessage( oEdit:handle, EM_GETSEL, 0, 0 )
+
+   if HiWord(x) != LoWord(x)
+    SendMessage(oEdit:handle, WM_CLEAR, LoWord(x), HiWord(x)-1)
+   endif         
 
    // writelog( "GetApplyKey "+str(asc(ckey)) )
    oEdit:title := GetEditText( oEdit:oParent:handle, oEdit:id )
-   IF oEdit:cType == "N" .and. cKey == "." .AND. ;
+   IF oEdit:cType == "N" .and. cKey == ".," .AND. ;
                      ( nPos := At( ".",oEdit:cPicMask ) ) != 0
       IF oEdit:lFirst
          vari := 0
@@ -488,8 +493,8 @@ Local nPos, nGetLen, nLen, vari, i
       ENDIF
       cKey := Input( oEdit,cKey,nPos )
       IF cKey != Nil
-         SetGetUpdated( oEdit )
-         IF Set( _SET_INSERT )
+         SetGetUpdated( oEdit )         
+         IF Set( _SET_INSERT ) .or. HiWord(x) != LoWord(x)
             IF oEdit:lPicComplex
                nGetLen := Len( oEdit:cPicMask )
                FOR nLen := 0 TO nGetLen

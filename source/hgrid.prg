@@ -1,5 +1,5 @@
  /*
- * $Id: hgrid.prg,v 1.3 2004-04-20 11:23:52 alkresin Exp $
+ * $Id: hgrid.prg,v 1.4 2004-06-11 18:31:47 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -68,7 +68,7 @@ CLASS HGrid INHERIT HControl
    METHOD Refresh()
    METHOD RefreshLine()                          INLINE Listview_update( ::handle, Listview_getfirstitem( ::handle ) )
    METHOD SetItemCount(nItem)                    INLINE Listview_setitemcount( ::handle, nItem )
-   METHOD Row( oCtrl )                           INLINE Listview_getfirstitem( oCtrl:handle )
+   METHOD Row()                                  INLINE Listview_getfirstitem( ::handle )
 ENDCLASS
 
 
@@ -162,6 +162,11 @@ Function ListViewNotify( oCtrl, lParam )
         Eval( oCtrl:bKeyDown, oCtrl, Listview_GetGridKey(lParam) )
                 
     elseif GetNotifyCode ( lParam ) == NM_DBLCLK .and. oCtrl:bEnter != nil
+        aCord := Listview_Hittest( octrl:handle, GetCursorRow() - GetWindowRow ( oCtrl:handle ), ;
+                                                 GetCursorCol() - GetWindowCol ( oCtrl:handle ) )
+        oCtrl:nRow := aCord[1]
+        oCtrl:nCol := aCord[2]
+                
         Eval( oCtrl:bEnter, oCtrl )
 
     elseif GetNotifyCode ( lParam ) == NM_SETFOCUS .and. oCtrl:bGfocus != nil
@@ -170,10 +175,14 @@ Function ListViewNotify( oCtrl, lParam )
     elseif GetNotifyCode ( lParam ) == NM_KILLFOCUS .and. oCtrl:bLfocus != nil
         Eval( oCtrl:bLfocus, oCtrl )
                 
-    elseIf GetNotifyCode ( lParam ) = LVN_ITEMCHANGED .and. oCtrl:bPosChg != nil
-        Eval( oCtrl:bPosChg, oCtrl, Listview_getfirstitem( oCtrl:handle ) )
+    elseif GetNotifyCode ( lParam ) = LVN_ITEMCHANGED 
+        oCtrl:nRow := oCtrl:Row()
 
-    elseIf GetNotifyCode ( lParam ) = LVN_GETDISPINFO .and. oCtrl:bDispInfo != nil
+        if oCtrl:bPosChg != nil
+            Eval( oCtrl:bPosChg, oCtrl, Listview_getfirstitem( oCtrl:handle ) )
+        endif            
+        
+    elseif GetNotifyCode ( lParam ) = LVN_GETDISPINFO .and. oCtrl:bDispInfo != nil
         aCord := Listview_getdispinfo( lParam )
         
         oCtrl:nRow := aCord[1]

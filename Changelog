@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.177 2004-06-11 17:45:48 alkresin Exp $
+ * $Id: Changelog,v 1.178 2004-06-11 18:35:02 rodrigo_moreno Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,22 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-06-11 15:00 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
+   * source/grid.c
+     + Listview_scroll
+     + Listview_hittest
+     + Getwindowrow
+     + Getwindowcol
+     + Getcursorrow
+     + Getcursorcol
+   * source/hgrid.prg
+     ! Fixed methods to handle new functions
+   * source/hedit.prg
+     * "," has the same behaviour as "." when used abnt2 keyaboard with decimal fields
+     * Add the function to clear selected text on GetApplyKey(), Need to fix problems when used with pictures
+   * source/hbrowse.prg
+     ! Fixed bug on numeric keyabord and lAutoEdit=true
 
 2004-06-11 21:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/control.c

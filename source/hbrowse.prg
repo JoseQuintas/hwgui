@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.27 2004-05-29 18:41:35 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.28 2004-06-11 18:31:46 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1562,7 +1562,7 @@ Static keyCode := 0
                   oBrw:PageUp()
                elseif wParam == 13    // Enter
                   oBrw:Edit()
-               elseif wParam >= 48 .and. wParam <= 90 .and. oBrw:lAutoEdit
+               elseif (wParam >= 48 .and. wParam <= 90 .or. wParam >= 96 .and. wParam <= 111 ).and. oBrw:lAutoEdit
                   oBrw:Edit( wParam,lParam )
                endif
 

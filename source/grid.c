@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.5 2004-05-24 08:25:00 alkresin Exp $
+ * $Id: grid.c,v 1.6 2004-06-11 18:31:46 rodrigo_moreno Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -179,4 +179,69 @@ HB_FUNC ( LISTVIEW_UPDATE )
 {
         ListView_Update( (HWND) hb_parnl (1) , hb_parni(2) - 1 );
 
+}
+
+HB_FUNC ( LISTVIEW_SCROLL )
+{
+        ListView_Scroll( (HWND) hb_parnl (1), hb_parni(2) - 1, hb_parni(3) - 1 );
+}
+
+HB_FUNC ( LISTVIEW_HITTEST )
+{
+	POINT point ;
+	LVHITTESTINFO lvhti;
+
+	point.y = hb_parni(2) ;
+	point.x = hb_parni(3) ;
+
+	lvhti.pt = point;
+
+	ListView_SubItemHitTest ( (HWND) hb_parnl (1) , &lvhti ) ;
+
+	if(lvhti.flags & LVHT_ONITEM)
+	{
+		hb_reta( 2 );
+		hb_storni( lvhti.iItem + 1 , -1, 1 );
+		hb_storni( lvhti.iSubItem + 1 , -1, 2 );
+	}
+	else
+	{
+		hb_reta( 2 );
+		hb_storni( 0 , -1, 1 );
+		hb_storni( 0 , -1, 2 );
+	}
+}
+
+HB_FUNC (GETWINDOWROW) 
+{
+	RECT rect;
+	int y ;
+	GetWindowRect((HWND) hb_parnl (1), &rect) ;
+	y = rect.top ;
+
+	hb_retni(y);
+}
+
+HB_FUNC (GETWINDOWCOL) 
+{
+	RECT rect;
+	int x ;
+	GetWindowRect((HWND) hb_parnl (1), &rect) ;
+	x = rect.left ;
+
+	hb_retni(x);
+}
+
+HB_FUNC ( GETCURSORROW )
+{
+        POINT pt;
+        GetCursorPos( &pt );
+        hb_retni( pt.y );
+}
+
+HB_FUNC ( GETCURSORCOL )
+{
+        POINT pt;
+        GetCursorPos( &pt );
+        hb_retni( pt.x );
 }

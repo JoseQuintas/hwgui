@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.3 2003-12-29 20:12:03 lculik Exp $
+ *$Id: hwindow.prg,v 1.4 2003-12-30 01:57:59 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Window class
@@ -143,6 +143,8 @@ METHOD NEW( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, ;
               nStyle,::nLeft,::nTop,::nWidth,::nHeight )
       ::handle = hwg_GetWindowHandle(1)
 
+      ::oMainWindow := Self  // Precisamos guardar a janela principal
+
    ELSEIF lType == WND_CHILD // Janelas que pertencem a MAIN
 
       IF ISOBJECT( ::oMainWindow )
@@ -165,7 +167,7 @@ RETURN Self
 METHOD Activate( lShow ) CLASS HWindow
 Local oWndClient
 
-   IF ::type == WND_CHILD
+   IF ::type == WND_MDICHILD
       Hwg_CreateMdiChildWindow( Self )
    ELSEIF ::type == WND_MDI
       Hwg_InitClientWindow( ::nMenuPos,::nLeft,::nTop+60,::nWidth,::nHeight )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.5 2003-12-29 20:20:43 lculik Exp $
+ * $Id: Changelog,v 1.6 2003-12-30 01:57:58 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,10 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2003-12-30 00:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
+  * source/hwindow.prg
+    !minor fix
+  * include/guilib.h
+    include/guilib.ch
+    minor update
+    All provided by  Jos‚ Algusto Junior
+
 2003-12-29 18:20 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   + source/c_ipaddr.c
     source/_winmsg.c
-     New function to get ip. Provided by Jos‚ Algusto Junior
+     New function to get ip. Provided by Jos‚ Augusto Junior
   * source/hwindow.prg
     Changes: Modified the the DefXXXWndProc ( hWindow.prg ) and  MainWndProc  (window.c) 
        The unprocessed messages of the windows return 0, not -1

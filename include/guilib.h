@@ -1,6 +1,7 @@
 #define	WND_MAIN		1
 #define	WND_MDI 		2
-#define	WND_CHILD		3
+#define  WND_MDICHILD      3
+#define  WND_CHILD      4
 #define	WND_DLG_RESOURCE       10
 #define	WND_DLG_NORESOURCE     11
 

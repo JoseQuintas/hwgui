@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.17 2004-05-06 11:55:54 alkresin Exp $
+ * $Id: window.c,v 1.18 2004-05-17 10:17:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -35,9 +35,6 @@
 
 extern HB_HANDLE hb_memvarGetVarHandle( char *szName );
 extern PHB_ITEM hb_memvarGetValueByHandle( HB_HANDLE hMemvar );
-extern BOOL RegisterBrowse(void);
-extern BOOL RegisterPanel(void);
-extern BOOL RegisterOwnBtn(void);
 
 void writelog( char* s );
 
@@ -102,11 +99,6 @@ HB_FUNC ( HWG_INITMAINWINDOW )
         hb_retni( 0 );
         return;
    }
-
-   RegisterBrowse();
-   RegisterPanel();
-   RegisterOwnBtn();
-
 
    hWnd = CreateWindowEx( ExStyle , szAppName ,TEXT ( cTitle ),
    WS_OVERLAPPEDWINDOW  | nStyle ,
@@ -319,9 +311,6 @@ HB_FUNC ( HWG_INITMDIWINDOW )
       hb_retni( -3 );
       return;
    }
-   RegisterBrowse();
-   RegisterPanel();
-   RegisterOwnBtn();
 
    // Create frame window
    hWnd = CreateWindow ( szAppName, TEXT ( cTitle ),

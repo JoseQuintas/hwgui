@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.3 2004-05-08 20:13:13 sandrorrfreire Exp $
+ * $Id: hpanel.prg,v 1.4 2004-05-17 10:17:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -50,6 +50,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ENDIF
    ENDIF
 
+   hwg_RegPanel()
    ::Activate()
 
 Return Self
@@ -82,6 +83,7 @@ METHOD Redefine( oWndParent,nId,nHeight,bInit,bSize,bPaint,lDocked ) CLASS HPane
                   bSize,bPaint )
 
    ::bPaint  := bPaint
+   hwg_RegPanel()
 
 Return Self
 

@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.11 2004-05-13 13:33:02 lculik Exp $
+ *$Id: windows.ch,v 1.12 2004-05-17 10:17:54 alkresin Exp $
  */
 
 #define WM_CREATE                       1
@@ -830,6 +830,6 @@
 #define LB_SETCOUNT             0x01A7
 
 
-#define DS_3DLOOK 0x4L
-#define BS_NOTIFY           0x00004000L
+#define DS_3DLOOK               4       // 0x4L
+#define BS_NOTIFY               16384   // 0x00004000L
 

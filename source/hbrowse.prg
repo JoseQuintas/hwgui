@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.23 2004-05-07 08:25:18 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.24 2004-05-17 10:17:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -202,6 +202,7 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
    ::bKeyDown    := bKeyDown
    ::bPosChanged := bPosChg
 
+   hwg_RegBrowse()
    ::InitBrw()
    ::Activate()
 
@@ -229,6 +230,7 @@ METHOD Redefine( lType,oWndParent,nId,oFont,bInit,bSize,bPaint,bEnter,bGfocus,bL
    ::bGetFocus  := bGFocus
    ::bLostFocus := bLFocus
 
+   hwg_RegBrowse()
    ::InitBrw()
 RETURN Self
 

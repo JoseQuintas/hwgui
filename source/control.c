@@ -1,11 +1,11 @@
 /*
- * $Id: control.c,v 1.11 2004-05-04 22:46:11 lculik Exp $
+ * $Id: control.c,v 1.12 2004-05-17 10:17:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #define HB_OS_WIN_32_USED
@@ -917,23 +917,29 @@ LRESULT APIENTRY SplitterProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
       return DefWindowProc( hWnd, msg, wParam, lParam );
 }
 
-BOOL RegisterPanel(void)
+HB_FUNC( HWG_REGPANEL )
 {
 
    static TCHAR szAppName[] = TEXT ( "PANEL" );
-   WNDCLASS     wndclass ;
+   static BOOL  bRegistered = 0;
 
-   wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
-   wndclass.lpfnWndProc   = DefWindowProc ;
-   wndclass.cbClsExtra    = 0 ;
-   wndclass.cbWndExtra    = 0 ;
-   wndclass.hInstance     = GetModuleHandle( NULL );
-   wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-   wndclass.hbrBackground = (HBRUSH)( COLOR_3DFACE+1 );
-   wndclass.lpszMenuName  = NULL;
-   wndclass.lpszClassName = szAppName ;
+   if( !bRegistered )
+   {
+      WNDCLASS     wndclass ;
+      wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
+      wndclass.lpfnWndProc   = DefWindowProc ;
+      wndclass.cbClsExtra    = 0 ;
+      wndclass.cbWndExtra    = 0 ;
+      wndclass.hInstance     = GetModuleHandle( NULL );
+      wndclass.hIcon         = NULL;
+      wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
+      wndclass.hbrBackground = (HBRUSH)( COLOR_3DFACE+1 );
+      wndclass.lpszMenuName  = NULL;
+      wndclass.lpszClassName = szAppName ;
 
-   return RegisterClass (&wndclass);
+      RegisterClass (&wndclass);
+      bRegistered = 1;     
+   }
 }
 
 LRESULT CALLBACK PanelProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -961,23 +967,29 @@ LRESULT CALLBACK PanelProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
        return( DefWindowProc( hWnd, message, wParam, lParam ));
 }
 
-BOOL RegisterOwnBtn(void)
+HB_FUNC( HWG_REGOWNBTN )
 {
 
    static TCHAR szAppName[] = TEXT ( "OWNBTN" );
+   static BOOL  bRegistered = 0;
    WNDCLASS     wndclass ;
 
-   wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
-   wndclass.lpfnWndProc   = OwnBtnProc ;
-   wndclass.cbClsExtra    = 0 ;
-   wndclass.cbWndExtra    = 0 ;
-   wndclass.hInstance     = GetModuleHandle( NULL );
-   wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-   wndclass.hbrBackground = (HBRUSH)( COLOR_3DFACE+1 );
-   wndclass.lpszMenuName  = NULL;
-   wndclass.lpszClassName = szAppName ;
+   if( !bRegistered )
+   {
+      wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
+      wndclass.lpfnWndProc   = OwnBtnProc ;
+      wndclass.cbClsExtra    = 0 ;
+      wndclass.cbWndExtra    = 0 ;
+      wndclass.hInstance     = GetModuleHandle( NULL );
+      wndclass.hIcon         = NULL;
+      wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
+      wndclass.hbrBackground = (HBRUSH)( COLOR_3DFACE+1 );
+      wndclass.lpszMenuName  = NULL;
+      wndclass.lpszClassName = szAppName ;
 
-   return RegisterClass (&wndclass);
+      RegisterClass (&wndclass);
+      bRegistered = 1;
+   }
 }
 
 LRESULT CALLBACK OwnBtnProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

@@ -1,305 +1,479 @@
 /*
- * HWGUI - Harbour Win32 GUI library source code:
- * HFormTemplate Class
+ * $Id: hfrmtmpl.prg,v 1.2 2004-06-03 10:44:02 alkresin Exp $
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * HWGUI - Harbour Win32 GUI library source code:
+ * HFormTmpl Class
+ *
+ * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
+ * www - http://kresin.belgorod.su
 */
 
-#include "fileio.ch"
 #include "windows.ch"
 #include "HBClass.ch"
 #include "guilib.ch"
+#include "hxml.ch"
 
-CLASS HFormTemplate
+CLASS HCtrlTmpl
 
-   DATA name
-   DATA file
-   DATA aControls
-   DATA lGet INIT .T.
-   DATA script1, script2
+   DATA cClass
+   DATA aControls INIT {}
+   DATA aProp, aMethods
 
-   METHOD Open( fname,formname )
-   METHOD End()
-   METHOD Execute()
+   METHOD New( oParent )   INLINE ( Aadd( oParent:aControls,Self ), Self )
+ENDCLASS
+
+CLASS HFormTmpl
+
+   CLASS VAR aForms   INIT {}
+   CLASS VAR maxId    INIT 0
+   DATA oDlg
+   DATA aControls     INIT {}
+   DATA aProp
+   DATA aMethods
+   DATA aVars         INIT {}
+   DATA aNames        INIT {}
+   DATA lGet          INIT .F.
+   DATA id
+
+
+   METHOD Read( fname )
+   METHOD Show()
+   METHOD Close()
+   METHOD F( id )
 
 ENDCLASS
 
-METHOD Open( fname,formname ) CLASS HFormTemplate
-LOCAL strbuf := Space(512), poz := 513, stroka, nMode := 0
-Local han
-Local aControls := {}, itemName, i
-Local cScript1 := "", cScript2 := "", nError, nLineEr
+METHOD Read( fname ) CLASS HFormTmpl
+Local oDoc
+Local i, j, aItems, o, aProp := {}, aMethods := {}
 
-   han := FOPEN( fname, FO_READ + FO_SHARED )
-   IF han == - 1
+   IF Left( fname,5 ) == "<?xml"
+      oDoc := HXMLDoc():ReadString( fname )
+   ELSE
+      oDoc := HXMLDoc():Read( fname )
+   ENDIF
+
+   IF Empty( oDoc:aItems )
       MsgStop( "Can't open "+fname )
       Return Nil
-   ENDIF
-   DO WHILE .T.
-      stroka := RDSTR( han,@strbuf,@poz,512 )
-      IF LEN( stroka ) = 0
-         EXIT
-      ENDIF
-      stroka := Ltrim( stroka )
-      IF nMode == 0
-         IF Left( stroka,1 ) == "#"
-            IF Upper( Substr( stroka,2,4 ) ) == "FORM"
-               stroka := Ltrim( Substr( stroka,7 ) )
-               itemName := NextItem( stroka,.T. )
-               IF Upper( itemName ) == Upper( formname )
-                  Aadd( aControls, "DIALOG;"+stroka )
-                  nMode := 1
-               ENDIF
-            ENDIF
-         ENDIF
-      ELSEIF nMode == 1
-         IF Left( stroka,1 ) == "#"
-            IF Upper( Substr( stroka,2,7 ) ) == "ENDFORM"
-               Exit
-            ELSEIF Upper( Substr( stroka,2,6 ) ) == "SCRIPT"
-               nMode := 2
-            ELSEIF Upper( Substr( stroka,2,4 ) ) == "CODE"
-               aControls[Len(aControls)] += Chr(1) + Ltrim( Substr(stroka,6) )
-            ENDIF
-         ELSE
-            itemName := NextItem( stroka,.T. )
-            Aadd( aControls, stroka )
-         ENDIF
-      ELSEIF nMode == 2
-         IF Left( stroka,1 ) == "#" .AND. Upper( Substr( stroka,2,6 ) ) == "ENDSCR"
-            nMode := 1
-         ELSE
-            IF Len( aControls ) == 1
-               cScript1 += stroka+Chr(13)+chr(10)
-            ELSE
-               cScript2 += stroka+Chr(13)+chr(10)
-            ENDIF
-         ENDIF
-      ENDIF
-   ENDDO
-   Fclose( han )
-
-   IF Empty( aControls )
-      MsgStop( formname + " not found or empty!" )
+   ELSEIF oDoc:aItems[1]:title != "part" .OR. oDoc:aItems[1]:GetAttribute( "class" ) != "form"
+      MsgStop( "Form description isn't found" )
       Return Nil
    ENDIF
 
-   ::file := fname
-   ::name := formname
-   ::aControls := aControls
-   IF !Empty( cScript1 )
-      IF ( ::script1 := RdScript( ,cScript1 ) ) == Nil
-         nError := CompileErr( @nLineEr )
-         MsgStop( "Script error ("+Ltrim(Str(nError))+"), line "+Ltrim(Str(nLineEr)) )
+   ::maxId ++
+   ::id := ::maxId
+   ::aProp := aProp
+   ::aMethods := aMethods
+
+   Aadd( ::aForms, Self )
+   aItems := oDoc:aItems[1]:aItems
+   FOR i := 1 TO Len( aItems )
+      IF aItems[i]:title == "style"
+         FOR j := 1 TO Len( aItems[i]:aItems )
+            o := aItems[i]:aItems[j]
+            IF o:title == "property"
+               IF !Empty( o:aItems )
+                  Aadd( aProp, { Lower(o:GetAttribute("name")),o:aItems[1] } )
+               ENDIF
+            ENDIF
+         NEXT
+      ELSEIF aItems[i]:title == "method"
+         Aadd( aMethods, { Lower(aItems[i]:GetAttribute("name")),CompileMethod(aItems[i]:aItems[1]:aItems[1],Self) } )
+      ELSEIF aItems[i]:title == "part"
+         ReadCtrl( aItems[i],Self,Self )
       ENDIF
-   ENDIF
-   IF !Empty( cScript2 )
-      IF ( ::script2 := RdScript( ,cScript2 ) ) == Nil
-         nError := CompileErr( @nLineEr )
-         MsgStop( "Script error ("+Ltrim(Str(nError))+"), line "+Ltrim(Str(nLineEr)) )
-      ENDIF
-   ENDIF
+   NEXT
 
 Return Self
 
-METHOD End() CLASS HFormTemplate
+METHOD Show() CLASS HFormTmpl
+Local i, j, cType
+Local nLeft, nTop, nWidth, nHeight, cTitle, oFont, xProperty, block, bFormExit
+Memvar oDlg
+Private oDlg
+
+   FOR i := 1 TO Len( ::aProp )
+      xProperty := GetProperty( ::aProp[ i,2 ] )
+      IF ::aProp[ i,1 ] == "geometry"
+         nLeft   := Val(xProperty[1])
+         nTop    := Val(xProperty[2])
+         nWidth  := Val(xProperty[3])
+         nHeight := Val(xProperty[4])
+      ELSEIF ::aProp[ i,1 ] == "caption"
+         cTitle := xProperty
+      ELSEIF ::aProp[ i,1 ] == "font"
+         oFont := FontFromXML( xProperty )
+      ELSEIF ::aProp[ i,1 ] == "lgetsystem"
+         ::lGet := xProperty
+      ELSEIF ::aProp[ i,1 ] == "variables"
+         FOR j := 1 TO Len( xProperty )
+            __mvPrivate( xProperty[j] )
+         NEXT
+      ENDIF
+   NEXT
+   FOR i := 1 TO Len( ::aNames )
+      __mvPrivate( ::aNames[i] )
+   NEXT
+   FOR i := 1 TO Len( ::aVars )
+      __mvPrivate( ::aVars[i] )
+   NEXT
+
+   INIT DIALOG ::oDlg TITLE cTitle         ;
+       AT nLeft, nTop SIZE nWidth, nHeight ;
+       FONT oFont
+
+   oDlg := ::oDlg
+
+   FOR i := 1 TO Len( ::aMethods )
+      IF ( cType := Valtype( ::aMethods[ i,2 ] ) ) == "B"
+         block := ::aMethods[ i,2 ]
+      ELSEIF cType == "A"
+         block := ::aMethods[ i,2,1 ]
+      ENDIF
+      IF ::aMethods[ i,1 ] == "ondlginit"
+         ::oDlg:bInit := block
+      ELSEIF ::aMethods[ i,1 ] == "onforminit"
+         Eval( block,Self )
+      ELSEIF ::aMethods[ i,1 ] == "onpaint"
+         ::oDlg:bPaint := block
+      ELSEIF ::aMethods[ i,1 ] == "ondlgexit"
+         ::oDlg:bDestroy := block
+      ELSEIF ::aMethods[ i,1 ] == "onformexit"
+         bFormExit := block
+      ENDIF
+   NEXT
+
+   FOR i := 1 TO Len( ::aControls )
+      CreateCtrl( ::oDlg, ::aControls[i], Self )
+   NEXT
+
+   ::oDlg:Activate()
+
+   IF bFormExit != Nil
+      Eval( bFormExit )
+   ENDIF
+
 Return Nil
 
-METHOD Execute() CLASS HFormTemplate
-Local oDlg, oFont, cFont, oCtrl
-Local x, y, nWidth, nHeight, nStyle, lClipper
-Local i, j, strCode, cObjName, cVarName, cInit, cValid
-Local aNames[Len(::aControls)-1,3]
-Local bOldError
+METHOD F( id ) CLASS HFormTmpl
+Local i := Ascan( ::aForms, {|o|o:id==id} )
+Return Iif( i==0, Nil, ::aForms[i] )
 
-   NextItem( ::aControls[1],.T. )
-   NextItem( ::aControls[1] )
-   x := Val( NextItem( ::aControls[1] ) )
-   y := Val( NextItem( ::aControls[1] ) )
-   nWidth := Val( NextItem( ::aControls[1] ) )
-   nHeight := Val( NextItem( ::aControls[1] ) )
-   nStyle := Val( NextItem( ::aControls[1] ) )
-   ::lGet := ( Upper( NextItem( ::aControls[1] ) ) == "T" )
-   lClipper := ( Upper( NextItem( ::aControls[1] ) ) == "T" )
-   cFont := NextItem( ::aControls[1] )
+METHOD Close() CLASS HFormTmpl
+Local i := Ascan( ::aForms, {|o|o:id==::id} )
 
-   IF !Empty( cFont )
-      oFont := HFont():Add( NextItem( cFont,.T.,"," ), ;
-            Val(NextItem( cFont,,"," )),Val(NextItem( cFont,,"," )), ;
-            Val(NextItem( cFont,,"," )),Val(NextItem( cFont,,"," )), ;
-            Val(NextItem( cFont,,"," )),Val(NextItem( cFont,,"," )), ;
-            Val(NextItem( cFont,,"," )) )
+   IF i != 0
+      Adel( ::aForms,i )
+      Asize( ::aForms, Len( ::aForms ) - 1 )
    ENDIF
+Return Nil
 
-   IF oFont == Nil
-      oFont := HFont():Add( "MS Sans Serif",0,-13 )
+// ------------------------------
+
+Static Function CompileMethod( cMethod, oForm, oCtrl )
+Local nPos1, nPos2, nLines := 1, arr[3], arrExe
+
+   IF cMethod = Nil .OR. Empty( cMethod )
+      Return Nil
    ENDIF
-
-   INIT DIALOG oDlg TITLE ::name                 ;
-          AT x,y  SIZE nWidth,nHeight            ;
-          FONT oFont
-
-   oDlg:lClipper := lClipper
-
-   FOR i := 2 TO Len( ::aControls )
-      IF ( j := At( Chr(1),::aControls[i] ) ) != 0
-         strCode := Substr( ::aControls[i],j+1 )
-         cObjName := NextItem(strCode,.T.)
-         IF Upper( NextItem(strCode) ) == "T"
-            __mvPrivate( cObjName )
-            aNames[i-1,1] := cObjName
-         ENDIF
-         cVarName := NextItem(strCode)
-         IF Upper( NextItem(strCode) ) == "T"
-            __mvPrivate( cVarName )
-            cInit := NextItem(strCode)
-            IF !Empty( cInit )
-               IF Left( cInit,1 ) == "'" .OR. Left( cInit,1 ) == '"'
-                  __mvPut( cVarName,SubStr( cInit,2,Len(cInit)-2 ) )
-               ELSEIF IsDigit( cInit )
-                  __mvPut( cVarName,Val( cInit ) )
-               ELSE
-                  bOldError := ERRORBLOCK( { | e | MacroError(1,e,cInit) } )
-                  BEGIN SEQUENCE
-                     __mvPut( cVarName,&cInit )
-                  RECOVER
-                     ERRORBLOCK( bOldError )
-                     RETURN .F.
-                  END SEQUENCE
-                  ERRORBLOCK( bOldError )
-               ENDIF
-            ENDIF
+   IF ( nPos1 := At( Chr(10),cMethod ) ) == 0
+      arr[1] := Alltrim( cMethod )
+   ELSE
+      arr[1] := Alltrim( Left( cMethod,nPos1-1 ) )
+      DO WHILE .T.
+         nLines ++
+         IF ( nPos2 := At( Chr(10),cMethod,nPos1+1 ) ) == 0
+            arr[nLines] := Substr( cMethod,nPos1+1 )
          ELSE
-            NextItem(strCode)
+            arr[nLines] := Substr( cMethod,nPos1+1,nPos2-nPos1-1 )
          ENDIF
-         aNames[i-1,2] := cVarName
-         aNames[i-1,3] := NextItem(strCode,,Chr(1))
+         IF Empty( arr[nLines] )
+            nLines --
+         ENDIF
+         IF nPos2 == 0 .OR. nLines > 2
+            EXIT
+         ELSE
+            nPos1 := nPos2
+         ENDIF
+      ENDDO
+   ENDIF
+   IF nLines == 1
+      IF Right( arr[1],1 ) < " "
+         arr[1] := Left( arr[1],Len(arr[1])-1 )
       ENDIF
-   NEXT
-
-   IF ::script1 != Nil
-      DoScript( ::script1 )
+      Return &( "{||" + arr[1] + "}" )
+   ELSEIF Lower( Left( arr[1],11 ) ) == "parameters "
+      IF nLines == 2
+         Return &( "{|" + Ltrim( Substr( arr[1],12 ) ) + "|" + arr[2] + "}" )
+      ELSE
+         arrExe := Array(2)
+         arrExe[1] := RdScript( ,cMethod,1 )
+         arrExe[2] := Ltrim( Substr( arr[1],12 ) )
+         Return arrExe
+      ENDIF
    ENDIF
 
-   FOR i := 2 TO Len( ::aControls )
+   arrExe := Array(2)
+   arrExe[2] := RdScript( ,cMethod,1 )
+   arrExe[1] := &( "{||DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+"):" + ;
+      Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2])", ;
+           "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]:aMethods["+   ;
+             Ltrim(Str(Len(oCtrl:aMethods)+1))+",2,2])" ) + "}" )
 
-      oCtrl := String2Ctrl( oDlg,::aControls[i],aNames[i-1,2] )
-      IF !Empty( aNames[i-1,1] )
-         __mvPut( aNames[i-1,1],oCtrl )
+Return arrExe
+
+Static Function ReadCtrl( oCtrlDesc, oContainer, oForm )
+Local oCtrl := HCtrlTmpl():New( oContainer )
+Local i, j, o, cName, aProp := {}, aMethods := {}, aItems := oCtrlDesc:aItems
+
+   oCtrl:cClass := oCtrlDesc:GetAttribute( "class" )
+   oCtrl:aProp := aProp
+   oCtrl:aMethods := aMethods
+
+   FOR i := 1 TO Len( aItems )
+      IF aItems[i]:title == "style"
+         FOR j := 1 TO Len( aItems[i]:aItems )
+            o := aItems[i]:aItems[j]
+            IF o:title == "property"
+               IF ( cName := Lower( o:GetAttribute("name") ) ) == "varname"
+                  Aadd( oForm:aVars, GetProperty(o:aItems[1]) )
+               ELSEIF cName == "name"
+                  Aadd( oForm:aNames, GetProperty(o:aItems[1]) )
+               ENDIF
+               Aadd( aProp, { cName,Iif( Empty(o:aItems),"",o:aItems[1] ) } )
+            ENDIF
+         NEXT
+      ELSEIF aItems[i]:title == "method"
+         Aadd( aMethods, { Lower(aItems[i]:GetAttribute("name")),CompileMethod(aItems[i]:aItems[1]:aItems[1],oForm,oCtrl) } )
+      ELSEIF aItems[i]:title == "part"
+         ReadCtrl( aItems[i],oCtrl,oForm )
       ENDIF
    NEXT
-
-   ACTIVATE DIALOG oDlg
-
-   IF ::script2 != Nil
-      DoScript( ::script2 )
-   ENDIF
 
 Return Nil
 
-Static Function String2Ctrl( oDlg,stroka,cVarName )
-Local oCtrl, aCtrl, oFont, i
+Static Function CreateCtrl( oParent, oCtrlTmpl, oForm )
+Local aClass := { "label", "button", "checkbox",      ;
+                  "radiobutton", "editbox", "group", "radiogroup",  ;
+                  "datepicker", "updown", "combobox", ;
+                  "line", "toolbar", "ownerbutton",   ;
+                }
+Local aCtrls := { ;
+  "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctoolt,TextColor,BackColor,lTransp)", ;
+  "HButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctoolt,TextColor,BackColor)",  ;
+  "HCheckButton():New(oPrnt,nId,lInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctoolt,TextColor,BackColor,bwhen)", ;
+  "HRadioButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctoolt,TextColor,BackColor)", ;
+  "HEdit():New(oPrnt,nId,cInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctoolt,TextColor,BackColor,cPicture,lNoBorder)", ;
+  "HGroup():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor)", ;
+  "RadioNew(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor,nInitValue,bSetGet)", ;
+  "HDatePicker():New(oPrnt,nId,dInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onGetFocus,onLostFocus,onChange,ctoolt,TextColor,BackColor)", ;
+  "HUpDown():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctoolt,TextColor,BackColor,nUpDWidth,nLower,nUpper)", ;
+  "HComboBox():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,Items,oFont,onInit,onSize,onPaint,onChange,cToolt,lEdit,lText,bWhen)", ;
+  "HLine():New(oPrnt,nId,lVert,nLeft,nTop,nLength,onSize)", ;
+  "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,lDocked )", ;
+  "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,lflat,cText,color,oFont,xt,yt,widtht,heightt,bmp,lResour,xb,yb,widthb,heightb,lTr,cTooltip)" ;
+                }
+Local i, oCtrl, stroka, varname, xProperty, block, cType, cPName
+Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName
+MEMVAR oPrnt, nStyle, nLeft, nTop, nWidth, nHeight, oFont, lNoBorder, bSetGet, name, nMaxLines
 
-   IF Empty( stroka )
+   IF nCtrl == 0
       Return Nil
    ENDIF
 
-   IF ( i := At( Chr(1),stroka ) ) != 0
-      stroka  := Left( stroka,i-1 )
+   /* Declaring of variables, which are in the appropriate 'New()' function */
+   i := At( "New(", aCtrls[nCtrl] )
+   stroka := Substr( aCtrls[nCtrl],i+4 )
+   stroka := Left( stroka,Len(stroka)-1 )
+   DO WHILE !Empty( varName := getNextVar( @stroka ) )
+      __mvPrivate( varname )
+      IF Substr( varname, 2 ) == "InitValue"
+         cInitName  := varname
+      ENDIF
+   ENDDO
+   oPrnt := oParent
+   nStyle := 0
+
+   FOR i := 1 TO Len( oCtrlTmpl:aProp )
+      xProperty := GetProperty( oCtrlTmpl:aProp[ i,2 ] )
+      cPName := oCtrlTmpl:aProp[ i,1 ]
+      IF cPName == "geometry"
+         nLeft   := Val(xProperty[1])
+         nTop    := Val(xProperty[2])
+         nWidth  := Val(xProperty[3])
+         nHeight := Val(xProperty[4])
+      ELSEIF cPName == "font"
+         oFont := FontFromXML( xProperty )
+      ELSEIF cPName == "border"
+         IF xProperty
+            nStyle += WS_BORDER
+         ELSE
+            lNoBorder := .T.
+         ENDIF
+      ELSEIF cPName == "justify"
+         nStyle += Iif( xProperty=="Center",SS_CENTER,Iif( xProperty=="Right",SS_RIGHT,0 ) )
+      ELSEIF cPName == "multiline"
+         IF xProperty
+            nStyle += ES_MULTILINE
+         ENDIF
+      ELSE
+         /* Assigning the value of the property to the variable with 
+            the same name as the property */
+         __mvPut( cPName, xProperty )
+
+         IF cPName == "varname"
+            bSetGet := &( "{|v|Iif(v==Nil,"+xProperty+","+xProperty+":=v)}" )
+            IF __mvGet( xProperty ) == Nil
+               /* If the variable with 'varname' name isn't initialized
+                  while onFormInit procedure, we assign her the init value */
+               __mvPut( xProperty, xInitValue )
+            ELSEIF cInitName != Nil
+               /* If it is initialized, we assign her value to the 'init' 
+                  variable ( cInitValue, nInitValue, ... ) */
+               __mvPut( cInitName, __mvGet( xProperty ) )
+            ENDIF
+         ELSEIF Substr( cPName, 2 ) == "initvalue"
+            xInitValue := xProperty
+         ENDIF
+      ENDIF
+   NEXT
+   FOR i := 1 TO Len( oCtrlTmpl:aMethods )
+      IF ( cType := Valtype( oCtrlTmpl:aMethods[ i,2 ] ) ) == "B"
+         __mvPut( oCtrlTmpl:aMethods[ i,1 ], oCtrlTmpl:aMethods[ i,2 ] )
+      ELSEIF cType == "A"
+         __mvPut( oCtrlTmpl:aMethods[ i,1 ], oCtrlTmpl:aMethods[ i,2,1 ] )
+      ENDIF
+   NEXT
+
+   IF oCtrlTmpl:cClass == "combobox"
+      IF ( i := Ascan( oCtrlTmpl:aProp,{|a|Lower(a[1])=="nmaxlines"} ) ) > 0
+         nHeight := nHeight * nMaxLines
+      ELSE
+         nHeight := nHeight * 4
+      ENDIF
+   ENDIF
+   oCtrl := &( aCtrls[nCtrl] )
+   IF Type( "name" ) == "C"
+      __mvPut( name, oCtrl )
+   ENDIF
+   IF !Empty( oCtrlTmpl:aControls )
+      FOR i := 1 TO Len( oCtrlTmpl:aControls )
+         CreateCtrl( Iif( oCtrlTmpl:cClass=="group".OR.oCtrlTmpl:cClass=="radiogroup",oParent,oCtrl ), oCtrlTmpl:aControls[i], oForm )
+      NEXT
+      IF oCtrlTmpl:cClass=="radiogroup"
+         HRadioGroup():EndGroup()
+      ENDIF
    ENDIF
 
-   aCtrl := { NextItem( stroka,.T. ),    ;
-              NextItem( stroka ),        ;
-              Val( NextItem( stroka ) ), ;
-              Val( NextItem( stroka ) ), ;
-              Val( NextItem( stroka ) ), ;
-              Val( NextItem( stroka ) ), ;
-              Val( NextItem( stroka ) ), ;
-              Val( NextItem( stroka ) ), ;
-              NextItem( stroka ),        ;
-              NextItem( stroka ),        ;
-              NextItem( stroka )         ;
-            }
-   oFont := Iif( Empty(aCtrl[9]), Nil, ;
-               HFont():Add( NextItem( aCtrl[9],.T.,"," ), ;
-               Val(NextItem( aCtrl[9],,"," )),Val(NextItem( aCtrl[9],,"," )), ;
-               Val(NextItem( aCtrl[9],,"," )),Val(NextItem( aCtrl[9],,"," )), ;
-               Val(NextItem( aCtrl[9],,"," )),Val(NextItem( aCtrl[9],,"," )), ;
-               Val(NextItem( aCtrl[9],,"," )) ) )
+Return Nil
 
-   IF aCtrl[8] == 0
-      aCtrl[8] := Nil
-   ENDIF
-   IF aCtrl[3] == 0
-      aCtrl[3] := Nil
-   ENDIF
-   IF aCtrl[1] == "STATIC"
-      oCtrl := HStatic():New( oDlg,aCtrl[3],aCtrl[8], ;
-          aCtrl[4],aCtrl[5],aCtrl[6],aCtrl[7],aCtrl[2],oFont,,,,, ;
-          Iif(Empty(aCtrl[10]),Nil,Val(aCtrl[10])),Iif(Empty(aCtrl[11]),Nil,Val(aCtrl[11]) ) )
-   ELSEIF aCtrl[1] == "BUTTON"
-      oCtrl := HButton():New( oDlg,aCtrl[3],aCtrl[8], ;
-          aCtrl[4],aCtrl[5],aCtrl[6],aCtrl[7],aCtrl[2],oFont,,,,,, ;
-          Iif(Empty(aCtrl[10]),Nil,Val(aCtrl[10])),Iif(Empty(aCtrl[11]),Nil,Val(aCtrl[11]) ) )
-   ELSEIF aCtrl[1] == "GROUP"
-      oCtrl := HGroup():New( oDlg,aCtrl[3],aCtrl[8], ;
-          aCtrl[4],aCtrl[5],aCtrl[6],aCtrl[7],aCtrl[2],oFont,,,, ;
-          Iif(Empty(aCtrl[10]),Nil,Val(aCtrl[10])),Iif(Empty(aCtrl[11]),Nil,Val(aCtrl[11]) ) )
-   ELSEIF aCtrl[1] == "EDITBOX"
-      oCtrl := HEdit():New( oDlg,aCtrl[3],Iif(cVarName==Nil,aCtrl[2],&cVarName),     ;
-          Iif(cVarName==Nil,Nil,&("{|v|Iif(v==Nil,"+&cVarName+","+&cVarName+":=v)}")),    ;
-          aCtrl[8],aCtrl[4],aCtrl[5],aCtrl[6],aCtrl[7],oFont,,,,,,,          ;
-          Iif(Empty(aCtrl[10]),Nil,Val(aCtrl[10])),Iif(Empty(aCtrl[11]),Nil,Val(aCtrl[11]) ) )
-   ELSEIF aCtrl[1] == "CHECKBOX"
-      oCtrl := HCheckButton():New( oDlg,aCtrl[3],cVarName, ;
-          Iif(cVarName==Nil,Nil,&("{|v|Iif(v==Nil,"+&cVarName+","+&cVarName+":=v)}")),    ;
-          aCtrl[8],aCtrl[4],aCtrl[5],aCtrl[6],aCtrl[7],aCtrl[2],oFont,,,,,,,;
-          Iif(Empty(aCtrl[10]),Nil,Val(aCtrl[10])),Iif(Empty(aCtrl[11]),Nil,Val(aCtrl[11]) ) )
-   ELSEIF aCtrl[1] == "RADIOBUTTON"
-      oCtrl := HRadioButton():New( oDlg,aCtrl[3],aCtrl[8], ;
-          aCtrl[4],aCtrl[5],aCtrl[6],aCtrl[7],aCtrl[2],oFont,,,,,, ;
-          Iif(Empty(aCtrl[10]),Nil,Val(aCtrl[10])),Iif(Empty(aCtrl[11]),Nil,Val(aCtrl[11]) ) )
-   ELSEIF aCtrl[1] == "DATEPICKER"
-      oCtrl := HDatePicker():New( oDlg,aCtrl[3],cVarName, ;
-          Iif(cVarName==Nil,Nil,&("{|v|Iif(v==Nil,"+&cVarName+","+&cVarName+":=v)}")),    ;
-          aCtrl[8],aCtrl[4],aCtrl[5],aCtrl[6],aCtrl[7],,oFont,,,,,        ;
-          Iif(Empty(aCtrl[10]),Nil,Val(aCtrl[10])),Iif(Empty(aCtrl[11]),Nil,Val(aCtrl[11]) ) )
-   ELSEIF aCtrl[1] == "UPDOWN"
-      oCtrl := HUpDown():New( oDlg,aCtrl[3],cVarName, ;
-          Iif(cVarName==Nil,Nil,&("{|v|Iif(v==Nil,"+&cVarName+","+&cVarName+":=v)}")),    ;
-          aCtrl[8],aCtrl[4],aCtrl[5],aCtrl[6],aCtrl[7],oFont,,,,,,,       ;
-          Iif(Empty(aCtrl[10]),Nil,Val(aCtrl[10])),Iif(Empty(aCtrl[11]),Nil,Val(aCtrl[11]) ) )
-   ELSEIF aCtrl[1] == "COMBOBOX"
-      oCtrl := HComboBox():New( oDlg,aCtrl[3],cVarName, ;
-          Iif(cVarName==Nil,Nil,&("{|v|Iif(v==Nil,"+&cVarName+","+&cVarName+":=v)}")),    ;
-          aCtrl[8],aCtrl[4],aCtrl[5],aCtrl[6],aCtrl[7],,oFont )
-   ELSEIF aCtrl[1] == "HLINE"
-      oCtrl := hLine():New( oDlg,aCtrl[3],.F., ;
-          aCtrl[4],aCtrl[5],aCtrl[6] )
-   ELSEIF aCtrl[1] == "VLINE"
-      oCtrl := hLine():New( oDlg,aCtrl[3],.T., ;
-          aCtrl[4],aCtrl[5],aCtrl[7] )
-   ELSEIF aCtrl[1] == "PANEL"
-      oCtrl := HPanel():New( oDlg,aCtrl[3], ;
-          aCtrl[4],aCtrl[5],aCtrl[6],aCtrl[7] )
-   ELSEIF aCtrl[1] == "OWNERBUTTON"
-      oCtrl := HOwnButton():New( oDlg,aCtrl[3], ;
-          aCtrl[4],aCtrl[5],aCtrl[6],aCtrl[7] )
-   ELSEIF aCtrl[1] == "BROWSE"
-      oCtrl := HBrowse():New( ,oDlg,aCtrl[3], ;
-          aCtrl[4],aCtrl[5],aCtrl[6],aCtrl[7] )
-   ELSE
-      MsgStop( "Wrong item name: " + aCtrl[1] )
-   ENDIF
-
+Function RadioNew( oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor,nInitValue,bSetGet )
+Local oCtrl := HGroup():New( oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor )
+   HRadioGroup():New( nInitValue,bSetGet )
 Return oCtrl
 
-STATIC FUNCTION MacroError( nm, e, stroka )
+Function FontFromXML( oXmlNode )
+Local width  := oXmlNode:GetAttribute( "width" )
+Local height := oXmlNode:GetAttribute( "height" )
+Local weight := oXmlNode:GetAttribute( "weight" )
+Local charset := oXmlNode:GetAttribute( "charset" )
+Local ita   := oXmlNode:GetAttribute( "italic" )
+Local under := oXmlNode:GetAttribute( "underline" )
 
-   IF nm == 1
-      MsgStop( ErrorMessage( e ) + Chr(10)+Chr(13) + "in" + Chr(10)+Chr(13) + ;
-             AllTrim(stroka),"Variable initialization error" )
+  IF width != Nil
+     width := Val( width )
+  ENDIF
+  IF height != Nil
+     height := Val( height )
+  ENDIF
+  IF weight != Nil
+     weight := Val( weight )
+  ENDIF
+  IF charset != Nil
+     charset := Val( charset )
+  ENDIF
+  IF ita != Nil
+     ita := Val( ita )
+  ENDIF
+  IF under != Nil
+     under := Val( under )
+  ENDIF
+
+Return HFont():Add( oXmlNode:GetAttribute( "name" ),  ;
+                    width, height, weight, charset,   ;
+                    ita, under )
+
+Function Font2XML( oFont )
+Local aAttr := {}
+
+   Aadd( aAttr, { "name",oFont:name } )
+   Aadd( aAttr, { "width",Ltrim(Str(oFont:width,5)) } )
+   Aadd( aAttr, { "height",Ltrim(Str(oFont:height,5)) } )
+   IF oFont:weight != 0
+      Aadd( aAttr, { "weight",Ltrim(Str(oFont:weight,5)) } )
    ENDIF
-   BREAK
-RETURN .T.
+   IF oFont:charset != 0
+      Aadd( aAttr, { "charset",Ltrim(Str(oFont:charset,5)) } )
+   ENDIF
+   IF oFont:Italic != 0
+      Aadd( aAttr, { "italic",Ltrim(Str(oFont:Italic,5)) } )
+   ENDIF
+   IF oFont:Underline != 0
+      Aadd( aAttr, { "underline",Ltrim(Str(oFont:Underline,5)) } )
+   ENDIF
+
+Return HXMLNode():New( "font", HBXML_TYPE_SINGLE, aAttr )
+
+Function Str2Arr( stroka )
+Local arr := {}, pos, cItem
+
+   stroka := Substr( stroka,2,Len(stroka)-2 )
+   IF !Empty( stroka )
+      DO WHILE .T. 
+         pos := Find_Z( stroka )
+         Aadd( arr, cItem := Iif( pos > 0, Left( stroka,pos-1 ), stroka ) )
+         IF pos > 0
+            stroka := Substr( stroka,pos+1 )
+         ELSE
+            EXIT
+         ENDIF
+      ENDDO
+   ENDIF
+
+Return arr
+
+Function Arr2Str( arr )
+Local stroka := "{", i, cType
+
+   FOR i := 1 TO Len( arr )
+      IF i > 1
+         stroka += ","
+      ENDIF
+      cType := Valtype( arr[i] )
+      IF cType == "C"
+         stroka += arr[i]
+      ELSEIF cType == "N"
+         stroka += Ltrim( Str( arr[i] ) )
+      ENDIF
+   NEXT
+
+Return stroka + "}"
+
+Function GetProperty( xProp )
+Local c
+
+   IF Valtype( xProp ) == "C"
+      c := Left( xProp,1 )
+      IF c == "["
+         xProp := Substr( xProp,2,Len(xProp)-2 )
+      ELSEIF c == "."
+         xProp := ( Substr( xProp,2,1 ) == "T" )
+      ELSEIF c == "{"
+         xProp := Str2Arr( xProp )
+      ELSE
+         xProp := Val( xProp )
+      ENDIF
+   ENDIF
+
+Return xProp

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.165 2004-06-02 09:38:55 alkresin Exp $
+ * $Id: Changelog,v 1.166 2004-06-03 10:44:01 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,35 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2004-06-03 14:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   - samples/designer/*.*
+     - old version of the Designer has been removed
+   + utils/designer
+   + utils/designer/blddesig.bat
+   + utils/designer/designer.iml
+   + utils/designer/designer.prg
+   + utils/designer/designer.rc
+   + utils/designer/editor.prg
+   + utils/designer/hctrl.prg
+   + utils/designer/hformgen.prg
+   + utils/designer/inspect.prg
+     + New version of the Designer has been added
+   + utils/designer/testget1.xml
+   + utils/designer/testget2.xml
+     + sample forms, had been built with the Designer, they implement the
+       functionality of samples/testget1.prg and samples/testget2.prg
+   + utils/designer/bldexam.bat
+   + utils/designer/example.prg
+     + sample of using forms, had been built with the Designer
+   + utils/designer/resource
+   + utils/designer/resource/f_hwgprg.prg
+   + utils/designer/resource/f_text.prg
+     + scrips to produce prg output and read old frm files.
+   + utils/designer/resource/widgets.xml
+     + the configuration file for the Designer
+   * source/hfrmtmpl.prg
+     * Fully rewritten module to read/show forms, had been built with the Designer
 
 2004-06-02 13:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/hriched.prg

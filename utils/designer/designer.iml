@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<designer>
+  <widgetset>resource\widgets.xml</widgetset>
+  <format name="Plain text format" ext="frm" file="resource\f_text.prg" rdscr="read" cnvtable="table"/>
+  <format name="Hwgui source file" ext="prg" file="resource\f_hwgprg.prg" wrscr="write"/>
+  <editor>
+    <font name="MS Sans Serif" width="0" height="-17" weight="400" charset="204"/>
+    <themes selected="Default">
+      <theme name="Default">
+        <normal tcolor="4276545" bcolor="16777215"/>
+        <command tcolor="0" bold="True"/>
+        <comment tcolor="8404992"/>
+        <quote tcolor="8404992"/>
+        <number tcolor="8404992"/>
+      </theme>
+      <theme name="Far">
+        <normal tcolor="16777215" bcolor="10624800"/>
+        <command tcolor="0" bold="True"/>
+        <comment tcolor="8404992"/>
+        <quote tcolor="8404992"/>
+        <number tcolor="8404992"/>
+      </theme>
+      <theme name="Hacker">
+        <normal tcolor="16777215" bcolor="0"/>
+        <command tcolor="0" bold="True"/>
+        <comment tcolor="8404992"/>
+        <quote tcolor="8404992"/>
+        <number tcolor="8404992"/>
+      </theme>
+    </themes>
+  </editor>
+</designer>

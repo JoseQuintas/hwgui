@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.6 2004-03-16 11:54:37 alkresin Exp $
+ * $Id: control.c,v 1.7 2004-03-17 10:52:39 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -427,12 +427,13 @@ HB_FUNC ( SETUPDOWN )
 HB_FUNC ( CREATEDATEPICKER )
 {
    HWND hCtrl;
+   LONG nStyle = ( (!ISNIL(7))? hb_parnl(7):0 ) | WS_CHILD | WS_VISIBLE | WS_TABSTOP;
 
    hCtrl = CreateWindowEx( 
              WS_EX_CLIENTEDGE,
              "SYSDATETIMEPICK32",
              0,
-             WS_CHILD | WS_VISIBLE | WS_TABSTOP,
+             nStyle,
              hb_parni(3), hb_parni(4),         /* x, y       */
              hb_parni(5) ,hb_parni(6),         /* nWidth, nHeight */
              (HWND) hb_parnl(1),               /* parent window    */ 

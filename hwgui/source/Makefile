@@ -15,6 +15,7 @@ C_SOURCES=\
 	shellapi.c \
 	media_c.c \
 	richedit.c \
+	resource.c \
 	wprint.c \
 	window.c \
 	
@@ -40,13 +41,13 @@ PRG_SOURCES=\
 	hupdown.prg \
 	hwindow.prg \
 	menu.prg \
-	printer.prg \
 	repexec.prg \
 	hprogres.prg \
 	hdialog.prg \
 	htimer.prg \
 	htree.prg \
 	hsplit.prg \
+	hsayimg.prg \
 	
 LIBNAME=hwgui
 

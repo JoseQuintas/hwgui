@@ -9,7 +9,6 @@
 #include "windows.ch"
 #include "HBClass.ch"
 #include "guilib.ch"
-#include "commctrl.ch"
 
 //- HIPedit
 
@@ -21,8 +20,8 @@ CLASS HIPedit INHERIT HControl
    DATA bKillFocus
    DATA bGetFocus
 
-   METHOD New( oWndParent,nId,bSetGet, nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  aValue,oFont,bGetFocus,bKillFocus )
+   METHOD New( oWndParent,nId,aValue,bSetGet, nStyle,nLeft,nTop,nWidth,nHeight, ;
+                  oFont,bGetFocus,bKillFocus )
    METHOD Activate()
    METHOD Init()
    METHOD SetValue( aValue )
@@ -35,8 +34,8 @@ CLASS HIPedit INHERIT HControl
 
 ENDCLASS
 
-METHOD New( oWndParent,nId,bSetGet, nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  aValue,oFont,bGetFocus,bKillFocus ) CLASS HIPedit
+METHOD New( oWndParent,nId,aValue,bSetGet, nStyle,nLeft,nTop,nWidth,nHeight, ;
+                  oFont,bGetFocus,bKillFocus ) CLASS HIPedit
 
    // ::classname:= "HIPedit"
    ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
@@ -121,19 +120,20 @@ Return Nil
 
 
 Static Function __Valid( oCtrl )
-   //WriteLog("Entrando em valid do IP")
+   WriteLog("Entrando em valid do IP")
 
-   oCtrl:aValue := oCtrl:GetValue()
+   // oCtrl:aValue := oCtrl:GetValue()
 
    IF Valtype(oCtrl:bSetGet) == "B" 
-      Eval( oCtrl:bSetGet,oCtrl:aValue )
+      // Eval( oCtrl:bSetGet,oCtrl:aValue )
+      Eval( oCtrl:bSetGet, oCtrl:GetValue() )
    ENDIF
 
    IF Valtype(oCtrl:bLostFocus) == "B" .AND. !Eval( oCtrl:bLostFocus, oCtrl:aValue, oCtrl )
       SetFocus( oCtrl:handle )
    ENDIF
 
-   //WriteLog("Saindo de valid do IP")
+   WriteLog("Saindo de valid do IP")
 
 Return .T.
 

@@ -17,6 +17,12 @@
 #endif
 #include <commctrl.h>
 #include <richedit.h>
+
+#ifdef __EXPORT__
+   #define HB_NO_DEFAULT_API_MACROS
+   #define HB_NO_DEFAULT_STACK_MACROS
+#endif
+
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
@@ -263,7 +269,7 @@ LRESULT APIENTRY RichSubclassProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lP
          hb_vmPushLong( (LONG ) wParam );
          hb_vmPushLong( (LONG ) lParam );
          hb_vmDo( 4 );
-         res = hb_itemGetNL( (PHB_ITEM) &hb_stack.Return );
+         res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
          if( res == -1 )
             return CallWindowProc( wpOrigRichProc, hWnd, msg, wParam, lParam );
          else

@@ -16,6 +16,12 @@
    #include <prsht.h>
 #endif
 #include <commctrl.h>
+
+#ifdef __EXPORT__
+   #define HB_NO_DEFAULT_API_MACROS
+   #define HB_NO_DEFAULT_STACK_MACROS
+#endif
+
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
@@ -877,7 +883,7 @@ LRESULT APIENTRY SplitterProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmDo( 4 );
-      res = hb_itemGetNL( (PHB_ITEM) &hb_stack.Return );
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
       if( res == -1 )
          return DefWindowProc( hWnd, msg, wParam, lParam );
       else
@@ -921,7 +927,7 @@ LRESULT CALLBACK PanelProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmDo( 4 );  /* where iArgCount is the number of pushed parameters */
-      res = hb_itemGetNL( (PHB_ITEM) &hb_stack.Return );
+      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
       if( res == -1 )
          return DefWindowProc( hWnd, message, wParam, lParam );
       else
@@ -963,7 +969,7 @@ LRESULT CALLBACK OwnBtnProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmDo( 4 );  /* where iArgCount is the number of pushed parameters */
-      if( hb_itemGetL( (PHB_ITEM) &hb_stack.Return ) )
+      if( hb_itemGetL( (PHB_ITEM) hb_stackReturn() ) )
          return 0;
       else
          return( DefWindowProc( hWnd, message, wParam, lParam ));
@@ -1008,5 +1014,46 @@ HB_FUNC ( SETTOOLTIPBALLOON ) // added by MAG
 HB_FUNC ( GETTOOLTIPBALLOON ) // added by MAG
 {
    hb_retl( lToolTipBalloon );
+}
+
+
+/* Functions Contributed  By Luiz Rafael Culik Guimaraes( culikr@uol.com.br) */
+
+HB_FUNC( GETWINDOWSDIR )
+{
+   char szBuffer[ MAX_PATH + 1 ] = {0} ;
+   GetWindowsDirectory( szBuffer,MAX_PATH);
+   hb_retc(szBuffer);
+}
+
+HB_FUNC( GETSYSTEMDIR )
+{
+   char szBuffer[ MAX_PATH + 1 ] = {0} ;
+   GetSystemDirectory( szBuffer,MAX_PATH);
+   hb_retc(szBuffer);
+}
+
+HB_FUNC( GETTEMPDIR )
+{
+   char szBuffer[ MAX_PATH + 1 ] = {0} ;
+   GetTempPath(MAX_PATH, szBuffer);
+   hb_retc(szBuffer);
+}
+
+/* Contributed by Rodrigo Moreno rodrigo_moreno@yahoo.com base upon code minigui */
+
+HB_FUNC( SHELLABOUT )
+{
+   ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) hb_parnl(3) );
+}
+
+HB_FUNC (GETDESKTOPWIDTH) 
+{
+   hb_retni ( GetSystemMetrics(SM_CXSCREEN) ) ;
+}
+
+HB_FUNC (GETDESKTOPHEIGHT)
+{
+   hb_retni ( GetSystemMetrics(SM_CYSCREEN) ) ;
 }
 

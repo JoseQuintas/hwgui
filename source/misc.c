@@ -1,5 +1,5 @@
 /*
- *$Id: misc.c,v 1.3 2004-02-25 12:17:15 lculik Exp $
+ *$Id: misc.c,v 1.4 2004-03-11 03:31:19 jamaj Exp $
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
  *
@@ -13,6 +13,13 @@
 #define OEMRESOURCE
 #include <windows.h>
 #include <commctrl.h>
+#include <math.h>
+
+#ifdef __EXPORT__
+   #define HB_NO_DEFAULT_API_MACROS
+   #define HB_NO_DEFAULT_STACK_MACROS
+#endif
+
 #include "hbmath.h"
 #include "hbapifs.h"
 #include "hbapiitm.h"
@@ -100,6 +107,7 @@ HB_FUNC ( HIWORD )
 {
    hb_retni( (int) ( ( hb_parnl( 1 ) >> 16 ) & 0xFFFF ) );
 }
+
 
 HB_FUNC( HWG_BITOR )
 {

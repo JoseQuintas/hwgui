@@ -57,7 +57,9 @@ static xDrag
 //----------------------------------------------------//
 CLASS HColumn INHERIT HObject
 
-   DATA block,heading,footing,width,type,length,dec,cargo
+   DATA block,heading,footing,width,type
+   DATA length INIT 0
+   DATA dec,cargo
    DATA nJusHead, nJusLin        // Para poder Justificar los Encabezados
                                  // de las columnas y lineas.
                                  // WHT. 27.07.2002
@@ -87,7 +89,7 @@ METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict
    ::lEditable := Iif( lEditable != Nil,lEditable,.F. )
    ::nJusHead  := iif( nJusHead == nil,  DT_LEFT , nJusHead )  // Por default
    ::nJusLin   := iif( nJusLin  == nil,  DT_LEFT , nJusLin  )  // Justif.Izquierda
-   ::picture      := cPict
+   ::picture   := cPict
    ::bValid    := bValid
    ::bWhen     := bWhen
    ::aList     := aItem
@@ -99,7 +101,7 @@ METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict
         else    
              ::length := 10             
         end                    
-        ::length := max(::length, len(cHeading))
+        ::length := max(::length, len(::heading))
    else
         ::length := length
    end        

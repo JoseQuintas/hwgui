@@ -50,11 +50,42 @@ Local hMenu
 Return { {},,, hMenu }
 
 Function Hwg_SetMenu( oWnd, aMenu )
-   IF hwg__SetMenu( oWnd:handle, aMenu[5] )
+
+   Writelog("hwg_setmenu: iniciando para oWnd" + oWnd:title)
+   IF oWnd:type == WND_MDICHILD
+      Writelog("hwg_setmenu: iniciando para oWnd" + oWnd:title + " tipo WND_MDICHILD" + " aMenu type:" + Valtype(aMenu) + " len:" + Str(len(aMenu)))
       oWnd:menu := aMenu
-   ELSE
-      Return .F.
+
+   ELSEIF oWnd:type == WND_MDI
+      Writelog("hwg_setmenu: iniciando para oWnd" + oWnd:title + " tipo WND_MDI")
+
+      IF hwg__SetMenu( oWnd:handle, aMenu[5] )
+         oWnd:menu := aMenu
+      ELSE
+         Return .F.
+      ENDIF
+
+   ELSEIF oWnd:type == WND_MAIN
+      Writelog("hwg_setmenu: iniciando para oWnd" + oWnd:title + " tipo WND_MAIN")
+
+      IF hwg__SetMenu( oWnd:handle, aMenu[5] )
+         oWnd:menu := aMenu
+      ELSE
+         Return .F.
+      ENDIF
+
+   ELSEIF oWnd:type == WND_CHILD
+      Writelog("hwg_setmenu: iniciando para oWnd" + oWnd:title + " tipo WND_CHILD")
+
+      IF hwg__SetMenu( oWnd:handle, aMenu[5] )
+         oWnd:menu := aMenu
+      ELSE
+         Return .F.
+      ENDIF
+
    ENDIF
+
+
 Return .T.
 
 /*
@@ -169,6 +200,7 @@ Local hMenu, nPos, aMenu
       nPos ++
    ENDDO
    IF hWnd != Nil .AND. oWnd != Nil
+      Writelog("BuildMenu: chamando hwg_setmenu da oWnd " + oWnd:title )
       Hwg_SetMenu( oWnd, aMenu )
    ELSEIF _oMenu != Nil
       _oMenu:handle := aMenu[5]

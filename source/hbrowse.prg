@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.46 2005-02-22 11:28:30 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.47 2005-04-22 18:44:07 ptsarenko Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -73,6 +73,7 @@ CLASS HColumn INHERIT HObject
    DATA lSpandHead INIT .F.
    DATA lSpandFoot INIT .F.
    DATA Picture
+   DATA bHeadClick
 
    METHOD New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin,cPict,bValid,bWhen,aItem,oBmp )
 
@@ -1208,6 +1209,13 @@ Local step := nLine - ::rowPos, res := .F., nrec
 Local minPos, maxPos, nPos
 Local xm := LOWORD(lParam), x1, fif
 
+   x1  := ::x1
+   fif := IIF( ::freeze > 0, 1, ::nLeftCol )
+   DO WHILE fif < (::nLeftCol+::nColumns) .AND. x1 + ::aColumns[fif]:width < xm
+      x1 += ::aColumns[fif]:width
+      fif := IIF( fif = ::freeze, ::nLeftCol, fif + 1 )
+   ENDDO
+
    IF nLine > 0 .AND. nLine <= ::rowCurrCount
       IF step != 0
          nrec := Recno()
@@ -1228,12 +1236,6 @@ Local xm := LOWORD(lParam), x1, fif
          ENDIF
       ENDIF
       IF ::lEditable
-         x1  := ::x1
-         fif := IIF( ::freeze > 0, 1, ::nLeftCol )
-         DO WHILE fif < (::nLeftCol+::nColumns) .AND. x1 + ::aColumns[fif]:width < xm
-            x1 += ::aColumns[fif]:width
-            fif := IIF( fif = ::freeze, ::nLeftCol, fif + 1 )
-         ENDDO
          IF ::colpos != fif - ::nLeftCol + 1 + :: freeze
             ::colpos := fif - ::nLeftCol + 1 + :: freeze
             GetScrollRange( hBrw, SB_HORZ, @minPos, @maxPos )
@@ -1249,6 +1251,8 @@ Local xm := LOWORD(lParam), x1, fif
          ::internal[1] := SetBit( ::internal[1], 1, 0 )
          PostMessage( hBrw, WM_PAINT, 0, 0 )
       ENDIF
+   ELSEIF ::lDispHead .and. nLine >= -::nHeadRows .and. ::aColumns[fif]:bHeadClick != nil
+      Eval(::aColumns[fif]:bHeadClick, Self, fif)
    ELSEIF nLine == 0
       IF oCursor == crossCursor
          oCursor := vCursor

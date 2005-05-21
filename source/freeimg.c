@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.8 2005-05-19 19:54:21 lf_sfnet Exp $
+ * $Id: freeimg.c,v 1.9 2005-05-21 13:55:14 lculik Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -352,7 +352,7 @@ HB_FUNC( FI_2DIB )
 
 		GlobalUnlock( hdib );
 
-		hb_retnl( hdib );
+      hb_retnl( (LONG)hdib );
 
 	} else {
 		hb_retnl( 0 );
@@ -537,6 +537,7 @@ static LPBYTE DibBits(LPBITMAPINFOHEADER lpdib)
 HB_FUNC( FI_DIB2FI )
 {
    HANDLE hdib = (HANDLE) hb_parnl( 1 );
+   int i;
 
    if( hdib )
    {
@@ -571,7 +572,7 @@ HB_FUNC( FI_DIB2FI )
       		RGBQUAD *pal = pGetPalette(dib);
       		RGBQUAD *dibpal = (RGBQUAD *) (((LPBYTE)lpbi) + lpbi->biSize);
 
-      		for (int i = 0; i < BmiColorCount( lpbi ); i++)	{
+            for ( i = 0; i < BmiColorCount( lpbi ); i++) {
       			pal[i].rgbRed = dibpal[i].rgbRed;
       			pal[i].rgbGreen = dibpal[i].rgbGreen;
       			pal[i].rgbBlue = dibpal[i].rgbBlue;
@@ -597,7 +598,7 @@ HB_FUNC( FI_RESCALE )
 {
    pRescale = (FREEIMAGE_RESCALE) GetFunction( (FARPROC)pRescale,"_FreeImage_Rescale@16" );
 
-   hb_retnl( ( pRescale )? pRescale( (FIBITMAP*)hb_parnl(1), hb_parnl( 2 ), hb_parnl( 3 ), hb_parni( 4 ) ) : 0 );
+   hb_retnl( ( pRescale )? (LONG)pRescale( (FIBITMAP*)hb_parnl(1), hb_parnl( 2 ), hb_parnl( 3 ), hb_parni( 4 ) ) : 0 );
 }
 
 

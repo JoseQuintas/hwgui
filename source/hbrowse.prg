@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.47 2005-04-22 18:44:07 ptsarenko Exp $
+ * $Id: hbrowse.prg,v 1.48 2005-06-11 08:21:14 ptsarenko Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -910,7 +910,7 @@ Local nColPos, lPaint := .f.
       IF nCol != nil .AND. nCol >= 1 .AND. nCol <= Len(::aColumns)
          IF nCol <= ::freeze
             ::colpos := nCol
-         ELSEIF nCol >= ::nLeftCol .AND. nCol <= ::nLeftCol + ::Columns - ::freeze - 1
+         ELSEIF nCol >= ::nLeftCol .AND. nCol <= ::nLeftCol + ::nColumns - ::freeze - 1
             ::colpos := nCol - ::nLeftCol + ::freeze + 1
          ELSE
             ::nLeftCol := nCol

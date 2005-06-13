@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.362 2005-06-11 08:21:14 ptsarenko Exp $
+ * $Id: Changelog,v 1.363 2005-06-13 17:43:27 lf_sfnet Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2005-06-13 19:55 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
+  * source/hbrowse.prg
+    * changes sent by Maurilio Longo. Here is his comment:
+		Added bHScrollPos iVar and code block handling; if set to something it gets
+		called when a WM_HSCROLL message gets received and the scrollcode is
+		SB_THUMBPOSITION or SB_THUMBTRACK.
+		Example
+		oBrw:bHScrollPos := {| oObj, nType, lEof, nPos | HScrollPos( oObj, nType,
+		lEof, nPos ) }
+		HScrollPos() is the "default" handler and causes the movement of the highlited
+		cell.
+		 
 2005-06-11 11:00 UTC+0200 Pavel Tsarenko <tpe2@mail.ru>
   * source/hbrowse.prg
     ! fixed typo in HBrowse:SetColumn

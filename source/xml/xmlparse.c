@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.10 2005-01-13 16:50:27 alkresin Exp $
+ * $Id: xmlparse.c,v 1.11 2005-06-23 18:42:03 alkresin Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -474,7 +474,7 @@ HB_FUNC( HBXML_GETDOC )
 
       hb_fsSeek( hInput, 0, FS_SET );
       cBuffer = (unsigned char*) hb_xgrab( ulLen + 1 );
-      ulRead = hb_fsRead( hInput, (BYTE *) cBuffer, ulLen );
+      ulRead = hb_fsReadLarge( hInput, (BYTE *) cBuffer, ulLen );
       cBuffer[ulRead] = '\0';
       bFile = TRUE;
    }

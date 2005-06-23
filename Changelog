@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.363 2005-06-13 17:43:27 lf_sfnet Exp $
+ * $Id: Changelog,v 1.364 2005-06-23 10:15:29 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,32 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-06-23 14:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+  * source/draw.c
+    + added new optional parameter trColor to 
+      DrawTransparentBitmap( hDC,hBitmap,x,y [,trColor] ) -it allows to set the
+      transparent color.
+  * source/freeimg.c
+    + added a set of functions to load an image from memory.
+  * source/hbrowse.prg
+    ! Small fix, provided by Alexey Myronenko
+  * source/hdialog.prg
+    * Some changes in internal dialog's handling
+  * source/hfreeimg.prg
+    + added HFreeImage():AddFromVar(cImage,cType) method
+  * source/hfrmtmpl.prg
+    ! some fixes
+    * HRepTmpl():Print() method now sets automatically the paper orientation
+  * source/hownbtn.prg
+    * added support for transparent color in bitmaps
+  * source/richedit.c
+    ! some fixes
+    + Added re_FindText( hEdit, cFind, nStart, bCase, bWholeWord, bSearchUp )
+       function.
+  * include/guilib.ch
+    * Added new clause COLOR to the OwnerButton command to set the transparent
+      color.
 
 2005-06-13 19:55 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
   * source/hbrowse.prg
@@ -38,12 +64,12 @@
   * samples/a.prg
     * added sample for HColumn:bHeadClick
 
-2004-03-11 15:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+2005-03-11 15:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   + include/gtk.ch
   * gtk/hcheck.prg
     * BM_SETFOCUS has been replaced with  BN_SETFOCUS
 
-2004-03-10 14:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+2005-03-10 14:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   + gtk/hwgtk.h
   + gtk/drawtext.c
     * Some basic text drawing routines has been added
@@ -60,11 +86,11 @@
     * Many changes related to drawing routines, font handling, browse implementation
   * gtk/Makefile
 
-2004-02-25 12:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+2005-02-25 12:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
   * source/hcontrol.prg
     * Little change - now the status bar coordinates are updated.
 
-2004-02-24 17:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+2005-02-24 17:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
   * source/hcombo.prg
     ! Bug fixed
   * utils/designer/designer.prg
@@ -72,11 +98,11 @@
     * Last file path opened is saved now in designer.iml - code suggested
       by Alexey Myronenko
 
-2004-02-22 15:16 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+2005-02-22 15:16 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
   * source/hfrmtmpl.prg
     ! Fixed the problem with initvalue.
 
-2004-02-22 14:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+2005-02-22 14:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
   * source/hbrowse.prg
     ! Bug fixed in a VScrollPos()
 
@@ -85,7 +111,7 @@
   * utils/designer/resource/f_hwgprg.prg
     * fixes sent by Maurilio Longo.
 
-2004-02-21 12:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+2005-02-21 12:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
   * source/hbrowse.prg
     * ascan() has been removed from onEvent() method to increase the performance
       as was suggested by Maurilio Longo.
@@ -97,12 +123,12 @@
   * source/grid.c
     * fixed memory leaks
 
-2004-01-20 12:48 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+2005-01-20 12:48 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
   * source/gtk/control.c
   * source/gtk/hcontrol.prg
     * HLine class works now in GTK version
 
-2004-01-20 11:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+2005-01-20 11:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
   + source/gtk/draw.c
   + source/gtk/drawwidg.prg
     + Drawing classes and functions has been added
@@ -139,13 +165,13 @@
     added a missed oWnd local definition
   
 
-2004-01-16 17:06 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+2005-01-16 17:06 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
   * source/hedit.prg
     ! Fixed "ENTER" key handling in multiline controls
   * samples/hello.prg
     ! small fix
 
-2004-01-14 14:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+2005-01-14 14:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   + gtk/hradio.prg
     + GTK: Added HRadioButton, HRadioGroup classes
   * gtk/control.c
@@ -156,38 +182,38 @@
   * gtk/Makefile
     * GTK: included hradio.prg
 
-2004-01-14 9:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+2005-01-14 9:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/control.c
   * gtk/hupdown.prg
   * gtk/Makefile
     * GTK: Updown control ( spin in gtk terminology ) is implemented
 
-2004-01-13 15-10 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+2005-01-13 15-10 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * gtk/misc.c
     implemented functions getdesktopwidth, getdesktopheight, showwindow, hidewindow
 
-2004-01-13 19:52 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+2005-01-13 19:52 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/xml/xmlparse.c
     ! Bug fixed.
 
-2004-01-13 12:55 UTC-0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+2005-01-13 12:55 UTC-0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
   * gtk/hedit.prg
     * New() method, ParsePict() function changed to allow
       PICTURE and MAXLENGTH clauses coexists without loss of picture function
       and/or picture mask accordly with the win behaviour
 
-2004-01-13 13:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+2005-01-13 13:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/menu_c.c
     ! The tray menu now closes normally after clicking outside the menu box -
       the fix is provided by Valery Beloruscev.
 
-2004-01-12 23:45 UTC-0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+2005-01-12 23:45 UTC-0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
   * source/hedit.prg
     * New() and  Redefine() methods, ParsePict() function changed to allow
       PICTURE and MAXLENGTH clauses coexists without loss of picture function
       and/or picture mask
 
-2004-01-12 14:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+2005-01-12 14:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   + hwgui/gtk
   + hwgui/gtk/commond.c
   + hwgui/gtk/control.c
@@ -218,15 +244,15 @@
     + GTK version first files has been added.
       To build the library run the gtk/build.sh script.
 
-2004-01-12 13:28 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+2005-01-12 13:28 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hupdown.prg
     * The New() method is changed to use the Super:New().
 
-2004-01-11 17:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+2005-01-11 17:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * samples/hwedit/editor.prg
     ! HWindow():GetMdiActive() calls are replaced with HMainWindow():GetMdiActive()
 
-2004-01-10 17:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+2005-01-10 17:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/misc.c
     ! hb_parcx() calls are replaced with hb_parc()
   * source/control.c
@@ -242,23 +268,23 @@
     * HSayBmp():New() is changed - it uses the original bitmap size if the size
       isn't set directly.
 
-2004-01-07 14-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+2005-01-07 14-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/errorsys.prg
     included aditional information, Version HwGUI and compilator, date and time
 
-2004-01-07 10-10 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+2005-01-07 10-10 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/misc.c
     new functions, DeleteFile, GetFileAttributes, SetFileAttributes
   * dos/funclist.txt
     add to new functions
 
-2004-01-07 09-06 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+2005-01-07 09-06 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/misc.c
     new functions, CreateDirectory, RemoveDirectory, SetCurrentDirectory
   * dos/funclist.txt
     add to new functions
 
-2004-01-05 14-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+2005-01-05 14-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/window.c
   * source/dialog.c
   * source/control.c
@@ -267,13 +293,13 @@
     Replace function hb_stackReturn by hb_stackReturnItem for xHarbour
     in Harbour continue using hb_stackReturn
   
-2004-01-05 14-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+2005-01-05 14-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/xml/xmlparce.c
     #Adapted for use in xHarbour because replace function in xHarbour
       + added hb_stackReturnItem()
       - removed hb_stackReturn()
 
-2004-01-05 13-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+2005-01-05 13-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/misc.c
     ! New functions IsCapsLockActive,  IsNumLockActive and IsScrollLockActive 
   * doc/funclist.txt

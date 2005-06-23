@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.25 2005-02-22 12:16:25 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.26 2005-06-23 10:15:46 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -430,7 +430,7 @@ Local aCtrls := { ;
   "HComboBox():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,Items,oFont,onInit,onSize,onPaint,onChange,cToolt,lEdit,lText,bWhen)", ;
   "HLine():New(oPrnt,nId,lVertical,nLeft,nTop,nLength,onSize)", ;
   "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,lDocked)", ;
-  "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,cTooltip)", ;
+  "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,trColor,cTooltip)", ;
   "Hbrowse():New(BrwType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,onUpdate,onKeyDown,onPosChg )", ;
   "HMonthCalendar():New(oPrnt,nId,dInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onChange,cToolt,lNoToday,lNoTodayCircle,lWeekNumbers)", ;
   "HTrackBar():New(oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,cToolt,onChange,nLower,nUpper,lVertical,TickStyle,TickMarks)", ;
@@ -809,7 +809,7 @@ Return Self
 
 METHOD Print( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
 Local oPrinter := Iif( printer != Nil, Iif( Valtype(printer)=="O",printer,HPrinter():New(printer,.T.) ), HPrinter():New(,.T.) )
-Local i, j, aMethod, xProperty, oFont, cTemp, nPWidth, nPHeight
+Local i, j, aMethod, xProperty, oFont, cTemp, nPWidth, nPHeight, nOrientation := 1
 Memvar oReport
 Private oReport := Self
 
@@ -828,6 +828,7 @@ Private oReport := Self
             cTemp    := nPWidth
             nPWidth  := nPHeight
             nPHeight := cTemp
+            nOrientation := 2
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "font"
          xProperty := ::aProp[i,2]
@@ -837,6 +838,7 @@ Private oReport := Self
          NEXT
       ENDIF
    NEXT
+   oPrinter:SetMode( nOrientation )
    ::nKoefX := oPrinter:nWidth / nPWidth
    ::nKoefY := oPrinter:nHeight / nPHeight
    // writelog( str(::nKoefX) + str(::nKoefY) )
@@ -848,7 +850,6 @@ Private oReport := Self
    ENDIF
 
    oPrinter:StartDoc( lPreview )
-   oPrinter:SetFont( oFont )
    ::lNextPage := .F.
 
    ::lFinish := .T.
@@ -856,12 +857,13 @@ Private oReport := Self
    DO WHILE .T.
 
       oPrinter:StartPage()
+      IF oFont != Nil
+         oPrinter:SetFont( oFont )
+      ENDIF
       ::nTOffset := ::nAOffSet := ::ny := 0
       // Writelog( "Print-1 "+ str(oPrinter:nPage) )
       FOR i := 1 TO Len( ::aControls )
-         // Writelog("Print-2")
          ::PrintItem( ::aControls[i] )
-         // Writelog("Print-2A")
       NEXT
       oPrinter:EndPage()
       IF ::lFinish
@@ -1114,3 +1116,4 @@ Local under := oXmlNode:GetAttribute( "underline" )
 
 Return oPrinter:AddFont( oXmlNode:GetAttribute( "name" ),  ;
                     height, (weight>400), (ita>0), (under>0), charset )
+

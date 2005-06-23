@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.15 2005-01-10 14:57:51 alkresin Exp $
+ * $Id: richedit.c,v 1.16 2005-06-23 10:15:46 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -283,10 +283,7 @@ HB_FUNC( RE_CHARFROMPOS )
    pp.x = x;
    pp.y = y;
    ul = SendMessage( hCtrl, EM_CHARFROMPOS, 0, (LPARAM)&pp );
-   x = (int) ( ul & 0xFFFF );
-   y = (int) ( ( ul >> 16 ) & 0xFFFF );
-   ul = SendMessage( hCtrl, EM_LINEINDEX, (WPARAM) y, 0 );
-   hb_retnl( ul + x );
+   hb_retnl( ul );
 }
 
 /*
@@ -333,6 +330,26 @@ HB_FUNC( RE_INSERTTEXT )
    char * ptr = hb_parc(2);
 
    SendMessage( hCtrl, EM_REPLACESEL, 0, (LPARAM)ptr );
+}
+
+/*
+ * re_FindText( hEdit, cFind, nStart, bCase, bWholeWord, bSearchUp )
+ */
+HB_FUNC( RE_FINDTEXT )
+{
+   HWND hCtrl = (HWND) hb_parnl(1);
+   FINDTEXTEX ft;
+   LONG lPos;
+   LONG lFlag = ( ( ISNIL(4) || !hb_parl(4) )? 0 : FR_MATCHCASE ) |
+                ( ( ISNIL(5) || !hb_parl(5) )? 0 : FR_WHOLEWORD ) |
+                ( ( ISNIL(6) || !hb_parl(6) )? FR_DOWN : 0 );
+
+   ft.chrg.cpMin = ( ISNIL(3) )? 0 : hb_parnl(3);
+   ft.chrg.cpMax = -1;
+   ft.lpstrText = hb_parc(2);
+
+   lPos = (LONG) SendMessage( hCtrl, EM_FINDTEXTEX, (WPARAM)lFlag, (LPARAM)&ft );
+   hb_retnl( lPos );
 }
 
 HB_FUNC( HWG_INITRICHPROC )

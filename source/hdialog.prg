@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.33 2004-12-01 10:24:25 alkresin Exp $
+ * $Id: hdialog.prg,v 1.34 2005-06-23 10:15:46 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -30,7 +30,7 @@ Static aMessModalDlg := { ;
 Static Function onDestroy( oDlg )
 
    oDlg:Super:onEvent( WM_DESTROY )
-   HDialog():DelItem( oDlg,.T. )
+   oDlg:Del()
 
 Return 0
 
@@ -43,6 +43,7 @@ CLASS HDialog INHERIT HCustomWindow
 
    DATA menu
    DATA oPopup                // Context menu for a dialog
+   DATA lModal   INIT .T.
    DATA lResult  INIT .F.     // Becomes TRUE if the OK button is pressed
    DATA lUpdated INIT .F.     // TRUE, if any GET is changed
    DATA lClipper INIT .F.     // Set it to TRUE for moving between GETs with ENTER key
@@ -62,8 +63,8 @@ CLASS HDialog INHERIT HCustomWindow
                   bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc )
    METHOD Activate( lNoModal )
    METHOD onEvent( msg, wParam, lParam )
-   METHOD AddItem( oWnd,lModal )
-   METHOD DelItem( oWnd,lModal )
+   METHOD Add()      INLINE Aadd( Iif( ::lModal,::aModalDialogs,::aDialogs ), Self )
+   METHOD Del()
    METHOD FindDialog( hWnd )
    METHOD GetActive()
    METHOD Center()   INLINE Hwg_CenterWindow( ::handle )
@@ -117,13 +118,15 @@ Local oWnd, hParent
 
    IF ::type == WND_DLG_RESOURCE
       IF lNoModal == Nil .OR. !lNoModal
-         ::AddItem( Self,.T. )
+         ::lModal := .T.
+         ::Add()
          // Hwg_DialogBox( HWindow():GetMain():handle,Self )
          Hwg_DialogBox( GetActiveWindow(),Self )
       ELSE
+         ::lModal  := .F.
          ::handle  := 0
          ::lResult := .F.
-         ::AddItem( Self,.F. )
+         ::Add()
          Hwg_CreateDialog( hParent, Self )
          /*
          IF ::oIcon != Nil
@@ -139,13 +142,15 @@ Local oWnd, hParent
 
    ELSEIF ::type == WND_DLG_NORESOURCE
       IF lNoModal == Nil .OR. !lNoModal
-         ::AddItem( Self,.T. )
+         ::lModal := .T.
+         ::Add()
          // Hwg_DlgBoxIndirect( HWindow():GetMain():handle,Self,::nLeft,::nTop,::nWidth,::nHeight,::style )
          Hwg_DlgBoxIndirect( GetActiveWindow(),Self,::nLeft,::nTop,::nWidth,::nHeight,::style )
       ELSE
+         ::lModal  := .F.
          ::handle  := 0
          ::lResult := .F.
-         ::AddItem( Self,.F. )
+         ::Add()
          Hwg_CreateDlgIndirect( hParent,Self,::nLeft,::nTop,::nWidth,::nHeight,::style )
          /*
          IF ::oIcon != Nil
@@ -172,19 +177,16 @@ Local i
 
 RETURN 0
 
-METHOD AddItem( oWnd,lModal ) CLASS HDialog
-   Aadd( Iif( lModal,::aModalDialogs,::aDialogs ), oWnd )
-RETURN Nil
+METHOD Del() CLASS HDialog
+Local i
 
-METHOD DelItem( oWnd,lModal ) CLASS HDialog
-Local i, h := oWnd:handle
-   IF lModal
-      IF ( i := Ascan( ::aModalDialogs,{|o|o:handle==h} ) ) > 0
+   IF ::lModal
+      IF ( i := Ascan( ::aModalDialogs,{|o|o==Self} ) ) > 0
          Adel( ::aModalDialogs,i )
          Asize( ::aModalDialogs, Len(::aModalDialogs)-1 )
       ENDIF
    ELSE
-      IF ( i := Ascan( ::aDialogs,{|o|o:handle==h} ) ) > 0
+      IF ( i := Ascan( ::aDialogs,{|o|o==Self} ) ) > 0
          Adel( ::aDialogs,i )
          Asize( ::aDialogs, Len(::aDialogs)-1 )
       ENDIF
@@ -471,12 +473,12 @@ Local oDlg
    ENDIF
    IF oDlg:bDestroy != Nil
       IF Eval( oDlg:bDestroy, oDlg )
-         Return Hwg_EndDialog( oDlg:handle )
+         Return Iif( oDlg:lModal, Hwg_EndDialog( oDlg:handle ), DestroyWindow( oDlg:handle ) )
       ELSE
          Return Nil
       ENDIF
    ENDIF
-Return  Hwg_EndDialog( oDlg:handle )
+Return  Iif( oDlg:lModal, Hwg_EndDialog( oDlg:handle ), DestroyWindow( oDlg:handle ) )
 
 Function SetDlgKey( oDlg, nctrl, nkey, block )
 Local i, aKeys
@@ -510,3 +512,4 @@ Return .T.
 EXIT PROCEDURE Hwg_ExitProcedure
    Hwg_ExitProc()
 Return
+

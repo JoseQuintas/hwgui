@@ -1,26 +1,10 @@
 /*
- * $Id: freeimg.c,v 1.9 2005-05-21 13:55:14 lculik Exp $
+ * $Id: freeimg.c,v 1.10 2005-06-23 10:15:46 alkresin Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
  * Copyright 2003 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
-*/
-
-/*
-// How do I convert a HBITMAP to a FreeImage image ?
-
-   HBITMAP hbmp;
-   FIBITMAP *dib;
-   if(hbmp) {
-      BITMAP bm;
-      GetObject(hbmp, sizeof(BITMAP), (LPSTR) &bm);
-      dib = FreeImage_Allocate(bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
-      HDC dc = GetDC(NULL);
-      int Success = GetDIBits(dc, hbmp, 0, FreeImage_GetHeight(dib),
-         FreeImage_GetBits(dib), FreeImage_GetInfo(dib), DIB_RGB_COLORS);
-      ReleaseDC(NULL, dc);
-   }
+ * www - http://kresin.belgorod.su
 */
 
 #define HB_OS_WIN_32_USED
@@ -39,6 +23,11 @@
 #include "freeimage.h"
 
 typedef char * ( WINAPI *FREEIMAGE_GETVERSION )( void );
+#if defined(__WATCOMC__)
+typedef FIBITMAP* ( WINAPI *FREEIMAGE_LOADFROMHANDLE)( FREE_IMAGE_FORMAT fif, FreeImageIO *io, fi_handle handle, int flags );
+#else
+typedef FIBITMAP* ( WINAPI *FREEIMAGE_LOADFROMHANDLE)( FREE_IMAGE_FORMAT fif, FreeImageIO *io, fi_handle handle, int flags FI_DEFAULT(0) );
+#endif
 #if defined(__WATCOMC__)
 typedef FIBITMAP* ( WINAPI *FREEIMAGE_LOAD)( FREE_IMAGE_FORMAT fif, char *filename, int flags );
 #else
@@ -71,6 +60,7 @@ typedef unsigned ( WINAPI *FREEIMAGE_GETCOLORSUSED )(FIBITMAP *dib);
 
 static HINSTANCE hFreeImageDll = NULL;
 static FREEIMAGE_LOAD pLoad = NULL;
+static FREEIMAGE_LOADFROMHANDLE pLoadFromHandle = NULL;
 static FREEIMAGE_UNLOAD pUnload = NULL;
 static FREEIMAGE_ALLOCATE pAllocate = NULL;
 static FREEIMAGE_SAVE pSave = NULL;
@@ -91,6 +81,7 @@ static FREEIMAGE_GETPITCH pGetPitch = NULL;
 static FREEIMAGE_GETIMAGETYPE pGetImageType = NULL;
 static FREEIMAGE_GETCOLORSUSED pGetColorsUsed = NULL;
 
+fi_handle g_load_address;
 
 BOOL FreeImgInit( void )
 {
@@ -625,4 +616,83 @@ HB_FUNC( FI_REMOVECHANNEL )
 	}
 }
 
+/*
+ * Set of functions for loading the image from memory
+ */
+
+unsigned DLL_CALLCONV _ReadProc( void *buffer, unsigned size, unsigned count, fi_handle handle )
+{
+   BYTE *tmp = (BYTE *)buffer;
+   unsigned u;
+
+   for( u = 0; u < count; u++ )
+   {
+      memcpy( tmp, g_load_address, size );
+      g_load_address = (BYTE *)g_load_address + size;
+      tmp += size;
+   }
+   return count;
+}
+
+unsigned DLL_CALLCONV _WriteProc( void *buffer, unsigned size, unsigned count, fi_handle handle )
+{
+   return size;
+}
+
+int DLL_CALLCONV _SeekProc(fi_handle handle, long offset, int origin)
+{
+   /* assert( origin != SEEK_END ); */
+
+   g_load_address = ( (origin==SEEK_SET)? (BYTE *)handle : (BYTE *)g_load_address )
+            + offset;
+   return 0;
+}
+
+long DLL_CALLCONV _TellProc( fi_handle handle )
+{
+   /* assert( (long int)handle >= (long int)g_load_address ); */
+
+   return ( (long int)g_load_address - (long int)handle );
+}
+
+HB_FUNC( FI_LOADFROMMEM )
+{
+   pLoadFromHandle = (FREEIMAGE_LOADFROMHANDLE) GetFunction( (FARPROC)pLoadFromHandle,"_FreeImage_LoadFromHandle@16" );
+
+   if( pLoadFromHandle )
+   {
+      char *image = hb_parc( 1 );
+      char *cType;
+      FREE_IMAGE_FORMAT fif;
+      FreeImageIO io;
+
+      io.read_proc  = _ReadProc;
+      io.write_proc = _WriteProc;
+      io.tell_proc  = _TellProc;
+      io.seek_proc  = _SeekProc;
+
+      if( !ISNIL(2) )
+      {
+         cType = hb_parc( 2 );
+         hb_strLower( cType, hb_parclen(2) );
+         if( !strcmp( cType,"jpg" ) )
+            fif = FIF_JPEG;
+         else if( !strcmp( cType,"bmp" ) )
+            fif = FIF_BMP;
+         else if( !strcmp( cType,"png" ) )
+            fif = FIF_PNG;
+         else if( !strcmp( cType,"tiff" ) )
+            fif = FIF_TIFF;
+         else
+            fif = FIF_UNKNOWN;
+      }
+      else
+         fif = FIF_UNKNOWN;
+
+      g_load_address = (fi_handle) image;
+      hb_retnl( (LONG) pLoadFromHandle( fif, &io, (fi_handle)image, (hb_pcount()>2)? hb_parni(3) : 0 ) );
+   }
+   else
+      hb_retnl( 0 );
+}
 

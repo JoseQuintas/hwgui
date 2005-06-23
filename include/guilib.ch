@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.54 2005-02-21 11:39:13 lf_sfnet Exp $
+ *$Id: guilib.ch,v 1.55 2005-06-23 10:15:42 alkresin Exp $
  */
 #define HWG_VERSION           "2.14"
 #define	WND_MAIN		1
@@ -285,9 +285,10 @@
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ TOOLTIP <ctoolt> ]       ;
+            [ TYPE <ctype>     ]       ;
           => ;
     [<oImage> := ] HSayFImage():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-        <height>,<image>,<bInit>,<bSize>,<ctoolt> )
+        <height>,<image>,<bInit>,<bSize>,<ctoolt>,<ctype> )
 
 #xcommand REDEFINE IMAGE [ <oImage> SHOW ] <image> ;
             [ OF <oWnd> ]              ;
@@ -743,7 +744,7 @@
                  [ COLOR <color>] [ FONT <font> ] ;
                  [ COORDINATES  <xt>, <yt>, <widtht>, <heightt> ] ;
             ] ;
-            [ BITMAP <bmp>  [<res: FROM RESOURCE>] [<ltr: TRANSPARENT>] ;
+            [ BITMAP <bmp>  [<res: FROM RESOURCE>] [<ltr: TRANSPARENT> [COLOR  <trcolor> ]] ;
                  [ COORDINATES  <xb>, <yb>, <widthb>, <heightb> ] ;
             ] ;
             [ TOOLTIP <ctoolt> ]    ;
@@ -752,7 +753,7 @@
           <height>,<bInit>,<bSize>,<bDraw>, ;
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>,<widtht>,<heightt>, ;
-              <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>, <ctoolt>,!<.enable.> )
+              <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>,<trcolor>, <ctoolt>,!<.enable.> )
 
 
 #xcommand REDEFINE OWNERBUTTON [ <oOwnBtn> ]  ;
@@ -814,8 +815,8 @@
 
 #xcommand PREPARE FONT <oFont>       ;
              NAME <cName>            ;
-             WIDTH <nWidth>          ;
-             HEIGHT <nHeight>        ;
+             [ WIDTH <nWidth> ]      ;
+             [ HEIGHT <nHeight> ]     ;
              [ WEIGHT <nWeight> ]    ;
              [ CHARSET <charset> ]   ;
              [ <ita: ITALIC> ]       ;
@@ -1243,3 +1244,4 @@ Added by Marcos Antonio Gambeta
 //Contribution   Ricardo de Moura Marques
 #xcommand @ <X>, <Y>, <X2>, <Y2> RECT <oRect> [<lPress: PRESS>] [OF <oWnd>] [RECT_STYLE <nST>];
           => <oRect> := HRect():New(<oWnd>,<X>,<Y>,<X2>,<Y2>, <.lPress.>, <nST> )
+

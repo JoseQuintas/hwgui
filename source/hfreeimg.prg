@@ -1,5 +1,5 @@
 /*
- * $Id: hfreeimg.prg,v 1.4 2004-11-23 07:25:05 alkresin Exp $
+ * $Id: hfreeimg.prg,v 1.5 2005-06-23 10:15:46 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFreeImage - Image handling class
@@ -27,6 +27,7 @@ CLASS HFreeImage INHERIT HObject
    DATA nCounter   INIT 1
 
    METHOD AddFile( name )
+   METHOD AddFromVar( cImage,cType )
    METHOD FromBitmap( oBitmap )
    METHOD Draw( hDC,nLeft,nTop,nWidth,nHeight )
    METHOD Release()
@@ -60,7 +61,17 @@ Local i, aBmpSize
 
 Return Self
 
-METHOD FromBitmap( oBitmap )
+METHOD AddFromVar( cImage,cType ) CLASS HFreeImage
+
+   ::handle := FI_LoadFromMem( cImage,cType )
+   ::name := Ltrim( Str( ::handle ) )
+   ::nWidth  := FI_GetWidth( ::handle )
+   ::nHeight := FI_GetHeight( ::handle )
+   Aadd( ::aImages,Self )
+
+Return Self
+
+METHOD FromBitmap( oBitmap ) CLASS HFreeImage
 
    ::handle := FI_Bmp2FI( oBitmap:handle )
    ::name := Ltrim( Str( oBitmap:handle ) )
@@ -127,10 +138,11 @@ CLASS HSayFImage INHERIT HSayImage
 ENDCLASS
 
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,bInit, ;
-                  bSize,ctoolt ) CLASS HSayFImage
+                  bSize,ctoolt,cType ) CLASS HSayFImage
 
    IF Image != Nil
-      ::oImage := Iif( Valtype(Image) == "C", HFreeImage():AddFile( Image ), Image )
+      ::oImage := Iif( Valtype(Image) == "C", ;
+           Iif( cType!=Nil, HFreeImage():AddFromVar( Image,cType ), HFreeImage():AddFile( Image ) ), Image )
       IF nWidth == Nil
          nWidth  := ::oImage:nWidth
          nHeight := ::oImage:nHeight
@@ -156,12 +168,13 @@ METHOD Redefine( oWndParent,nId,Image,bInit,bSize,ctoolt ) CLASS HSayFImage
 
 Return Self
 
-METHOD ReplaceImage( Image )
+METHOD ReplaceImage( Image, cType )
 
    IF ::oImage != Nil
       ::oImage:Release()
    ENDIF
-   ::oImage := Iif( Valtype(Image) == "C", HFreeImage():AddFile( Image ), Image )
+   ::oImage := Iif( Valtype(Image) == "C", ;
+        Iif( cType!=Nil, HFreeImage():AddFromVar( Image,cType ), HFreeImage():AddFile( Image ) ), Image )
 
 Return Nil
 
@@ -192,3 +205,4 @@ Local i
    FI_End()
 
 Return
+

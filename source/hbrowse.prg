@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.49 2005-06-13 17:43:28 lf_sfnet Exp $
+ * $Id: hbrowse.prg,v 1.50 2005-06-23 10:15:46 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1351,7 +1351,7 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
    IF !::active .OR. Empty( ::aColumns ) .OR. ::x1 == Nil
       Return Nil
    ENDIF
-   IF ::lDispSep .AND. yPos <= ::height+1
+   IF ::lDispSep .AND. yPos <= ::height*::nHeadRows+1
       IF wParam == 1 .AND. ::lResizing
          Hwg_SetCursor( oCursor )
          res := .T.

@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.12 2004-12-03 12:34:19 sandrorrfreire Exp $
+ * $Id: draw.c,v 1.13 2005-06-23 10:15:46 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -274,12 +274,13 @@ HB_FUNC( DRAWBITMAP )
 }
 
 /*
- * DrawTransparentBitmap( hDC, hBitmap, x, y )
+ * DrawTransparentBitmap( hDC, hBitmap, x, y [,trColor] )
  */
 HB_FUNC( DRAWTRANSPARENTBITMAP )
 {
    HDC hDC = (HDC) hb_parnl( 1 );
    HBITMAP hBitmap = (HBITMAP) hb_parnl( 2 );
+   COLORREF trColor = (ISNIL(5))? 0x00FFFFFF : (COLORREF)hb_parnl(5);
    COLORREF crOldBack = SetBkColor( hDC, 0x00FFFFFF );
    COLORREF crOldText = SetTextColor( hDC, 0 );
    HBITMAP bitmapTrans;
@@ -300,7 +301,7 @@ HB_FUNC( DRAWTRANSPARENTBITMAP )
    // Select the mask bitmap into the appropriate dc
    pOldBitmapTrans = (HBITMAP) SelectObject( dcTrans, bitmapTrans );
    // Build mask based on transparent colour
-   SetBkColor( dcImage, 0x00FFFFFF );
+   SetBkColor( dcImage, trColor );
    BitBlt( dcTrans, 0, 0, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0, SRCCOPY );
    // Do the work - True Mask method - cool if not actual display
    BitBlt( hDC, x, y, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0, SRCINVERT );
@@ -681,3 +682,4 @@ HB_FUNC( OPENIMAGE )
    pPic->lpVtbl->Release( pPic );
 #endif
 }
+

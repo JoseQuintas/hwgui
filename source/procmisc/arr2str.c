@@ -1,5 +1,5 @@
 /*
- * $Id: arr2str.c,v 1.5 2004-12-10 09:25:04 alkresin Exp $
+ * $Id: arr2str.c,v 1.6 2005-06-24 10:05:47 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Array / String conversion functions
@@ -83,9 +83,9 @@ static char * ReadArray( char * ptr, PHB_ITEM pItem )
          unsigned int iLen;
          ptr ++;
          iLen = ( (unsigned int)*ptr & 0x00ff ) + 
-                ( (unsigned int)( ( *(ptr+1) ) << 8 ) ) & 0xff00 + 
-                ( (unsigned int)( ( *(ptr+2) ) << 16 ) ) & 0xff0000 + 
-                ( (unsigned int)( ( *(ptr+3) ) << 24 ) ) & 0xff000000;
+                ( ( (unsigned int)( ( *(ptr+1) ) << 8 ) ) & 0xff00 ) +
+                ( ( (unsigned int)( ( *(ptr+2) ) << 16 ) ) & 0xff0000 ) +
+                ( ( (unsigned int)( ( *(ptr+3) ) << 24 ) ) & 0xff000000 );
          ptr ++; ptr ++; ptr ++; ptr ++;
          temp = hb_itemPutCL( NULL, ptr, iLen );
          ptr += iLen;

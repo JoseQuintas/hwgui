@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.13 2004-12-08 08:23:17 alkresin Exp $
+ * $Id: hctrl.prg,v 1.14 2005-06-27 12:40:09 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -260,7 +260,7 @@ Local i, dx, dy
 
    IF dx != 0 .OR. dy != 0
       IF !lChild .AND. lMouse .AND. Abs( xPos - aBDown[2] ) < 3 .AND. Abs( yPos - aBDown[3] ) < 3 
-         Return Nil
+         Return .F.
       ENDIF
       InvalidateRect( oCtrl:oParent:handle, 1, ;
                oCtrl:nLeft-4, oCtrl:nTop-4, ;
@@ -298,8 +298,9 @@ Local i, dx, dy
       IF !lChild
          InspUpdBrowse()
       ENDIF
+      Return .T.
    ENDIF
-Return Nil
+Return .F.
 
 Function CtrlResize( oCtrl,xPos,yPos )
 Local dx, dy
@@ -482,7 +483,7 @@ Local lRes := .F., xPos, yPos, delta := 15
    NEXT
    IF lRes
       CtrlMove( oCtrl,xPos-oCtrl:nLeft,yPos-oCtrl:nTop,.F.,.T. )
-      Container( oCtrl:oParent,oCtrl,oCtrl:nLeft,oCtrl:nTop )
+      Container( oCtrl:oParent,oCtrl )
       InspUpdBrowse()
    ENDIF
 Return Nil

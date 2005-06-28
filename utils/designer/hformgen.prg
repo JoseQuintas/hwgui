@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.25 2005-06-27 12:40:09 alkresin Exp $
+ * $Id: hformgen.prg,v 1.26 2005-06-28 06:00:29 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -135,21 +135,11 @@ Private oForm := Self, aCtrlTable
          ::name := ::oDlg:title
          Aadd( ::aForms, Self )
          InspSetCombo()
-         oIni := HXMLDoc():Read( cCurDir+"Designer.iml" )
-         i := 1
-         IF oIni:aItems[1]:Find( "dirpath",@i ) == Nil
-            oIni:aItems[1]:Add( HXMLNode():New( "dirpath",HBXML_TYPE_SINGLE,{{"default",::path}} ) )
-            oIni:Save( cCurDir+"Designer.iml" )
-         ELSE
-            IF !( oIni:aItems[1]:aItems[i]:GetAttribute( "default" ) == ::path )
-               oIni:aItems[1]:aItems[i] := HXMLNode():New( "dirpath",HBXML_TYPE_SINGLE,{{"default",::path}} )
-               oIni:Save( cCurDir+"Designer.iml" )
-            ENDIF
-         ENDIF
-
       ENDIF
       IF ::oDlg == Nil .OR. Empty( ::oDlg:aControls )
          MsgStop( "Can't load the form" )
+      ELSEIF !oDesigner:lSingleForm
+         AddRecent( Self )
       ENDIF
    ENDIF
 
@@ -222,6 +212,9 @@ Private oForm := Self, aCtrlTable
          IF Valtype( aFormats[ ::type,5 ] ) == "A"
             DoScript( aFormats[ ::type,5 ] )
          ENDIF
+      ENDIF
+      IF !oDesigner:lSingleForm
+         AddRecent( Self )
       ENDIF
    ENDIF
    IF !lAs
@@ -449,25 +442,29 @@ Local i
       IF Empty( FilExten( oFrm:filename ) )
          oFrm:filename += "."+aFormats[ af[nType],2 ]
       ENDIF
-      oFrm:path := Iif( Empty( FilePath(fname) ), ds_mypath, FilePath(fname) )
+      oFrm:path := Iif( Empty( FilePath(fname) ), oDesigner:ds_mypath, FilePath(fname) )
       Return .T.
    ENDIF
 
 Return .F.
 
 Static Function BrowFile( lOpen,nType,oEdit1, oEdit2 )
-Local fname, s1, s2
+Local fname, s1, s2, l_ds_mypath
 
    s2 := "*." + oDesigner:aFormats[ nType,2 ]
    s1 := oDesigner:aFormats[ nType,1 ] + "( " + s2 + " )"
 
    IF lOpen
-      fname := SelectFile( s1, s2,ds_mypath )
+      fname := SelectFile( s1, s2,oDesigner:ds_mypath )
    ELSE
-      fname := SaveFile( s2,s1,s2,ds_mypath )
+      fname := SaveFile( s2,s1,s2,oDesigner:ds_mypath )
    ENDIF
    IF !Empty( fname )
-      ds_mypath := FilePath( fname )
+      l_ds_mypath := Lower( FilePath( fname ) )
+      IF oDesigner:ds_mypath != l_ds_mypath
+         oDesigner:ds_mypath := l_ds_mypath
+         oDesigner:lChgPath  := .T.
+      ENDIF
       fname := CutPath( fname )
       oEdit1:SetGet( fname )
       oEdit1:Refresh()

@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.15 2005-02-24 13:59:53 alkresin Exp $
+ * $Id: designer.prg,v 1.16 2005-06-28 06:00:29 alkresin Exp $
  *
  * Designer
  * Main file
@@ -11,6 +11,9 @@
 #include "windows.ch"
 #include "guilib.ch"
 #include "hbclass.ch"
+#include "hxml.ch"
+
+#define  MAX_RECENT_FILES  5
 
 REQUEST DRAWEDGE
 REQUEST DRAWICON
@@ -20,10 +23,9 @@ REQUEST INITMONTHCALENDAR
 REQUEST INITTRACKBAR
 
 Function Designer( p0, p1, p2 )
-Local oPanel, oTab, oFont, cResForm, lSingleF := .F.
+Local oPanel, oTab, oFont, cResForm, lSingleF := .F., i
 Public oDesigner
 Public crossCursor, vertCursor, horzCursor
-Public ds_myPath
 
    oDesigner := HDesigner():New()
 
@@ -53,7 +55,7 @@ Public ds_myPath
    IF Valtype( cCurDir ) != "C"
       cCurDir := GetCurrentDir() + "\"
    ENDIF
-   ds_mypath := cCurDir
+   oDesigner:ds_mypath := cCurDir
 
    IF !ReadIniFiles()
       Return Nil
@@ -90,7 +92,14 @@ Public ds_myPath
             MENUITEM "&Open Form" ACTION HFormGen():OpenR()
             SEPARATOR
             MENUITEM "&Save as ..." ACTION ( oDesigner:lSingleForm:=.F.,HFormGen():oDlgSelected:oParent:Save(.T.),oDesigner:lSingleForm:=.T. )
-         ENDIF        
+         ENDIF
+         SEPARATOR
+         i := 1
+         DO WHILE i <= MAX_RECENT_FILES .AND. oDesigner:aRecent[i] != Nil
+            Hwg_DefineMenuItem( CutPath(oDesigner:aRecent[i]), 1020+i, ;
+               &( "{||HFormGen():Open('"+oDesigner:aRecent[i]+"')}" ) )
+            i ++
+         ENDDO
          SEPARATOR
          MENUITEM "&Exit" ACTION oDesigner:oMainWnd:Close()
       ENDMENU
@@ -184,6 +193,10 @@ CLASS HDesigner
    DATA oCtrlMenu, oTabMenu
    DATA oClipbrd
    DATA lReport      INIT .F.
+   DATA ds_mypath
+   DATA lChgPath     INIT .F.
+   DATA aRecent      INIT Array(MAX_RECENT_FILES)
+   DATA lChgRecent   INIT .F.
    DATA oWidgetsSet, oFormDesc
    DATA oBtnPressed, addItem
    DATA aFormats     INIT { { "Hwgui XML format","xml" } }
@@ -229,14 +242,16 @@ Return Nil
 
 Static Function ReadIniFiles()
 Local oIni := HXMLDoc():Read( "Designer.iml" )
-Local i, oNode, cWidgetsFileName, cwitem, cfitem, l_ds_mypath
+Local i, oNode, cWidgetsFileName, cwitem, cfitem, critem, l_ds_mypath, j
 
    IF oDesigner:lReport
       cwItem := "rep_widgetset"
       cfitem := "rep_format"
+      critem := "rep_recent"
    ELSE
       cwItem := "widgetset"
       cfitem := "format"
+      critem := "recent"
    ENDIF
    IF Empty( oIni:aItems )
       CreateIni( oIni )
@@ -256,8 +271,12 @@ Local i, oNode, cWidgetsFileName, cwitem, cfitem, l_ds_mypath
       ELSEIF oNode:title == "dirpath"
              l_ds_mypath := oNode:GetAttribute("default")
              IF !Empty( l_ds_mypath )
-                ds_mypath := l_ds_mypath
+                oDesigner:ds_mypath := Lower( l_ds_mypath )
              ENDIF
+      ELSEIF oNode:title == critem .AND. !oDesigner:lSingleForm
+         FOR j := 1 TO Min( Len( oNode:aItems ),MAX_RECENT_FILES )
+            oDesigner:aRecent[j] := Lower( Trim( oNode:aItems[j]:aItems[1] ) )
+         NEXT
       ENDIF
    NEXT
 
@@ -445,8 +464,26 @@ Local oNode := oIni:Add( HXMLNode():New( "designer" ) )
    oIni:Save( "designer.iml" )
 Return Nil
 
+Function AddRecent( oForm )
+Local i, cItem := Lower( Trim( oForm:path+oForm:filename ) )
+
+   IF oDesigner:aRecent[1] == Nil .OR. !( oDesigner:aRecent[1] == cItem )
+      FOR i := 1 TO MAX_RECENT_FILES
+         IF oDesigner:aRecent[i] == Nil
+            EXIT
+         ELSEIF oDesigner:aRecent[i] == cItem
+            Adel( oDesigner:aRecent,i )
+         ENDIF
+      NEXT
+      Ains( oDesigner:aRecent, 1 )
+      oDesigner:aRecent[1] := cItem
+      oDesigner:lChgRecent := .T.
+   ENDIF
+
+Return Nil
+
 Static Function EndIde
-Local i, alen := Len( HFormGen():aForms ), lRes := .T.
+Local i, j, alen := Len( HFormGen():aForms ), lRes := .T., oIni, critem, oNode
 
   IF alen > 0
      IF MsgYesNo( "Are you really want to quit ?" )
@@ -456,6 +493,33 @@ Local i, alen := Len( HFormGen():aForms ), lRes := .T.
      ELSE
         lRes := .F.
      ENDIF
+  ENDIF
+  IF !oDesigner:lSingleForm .AND. ( oDesigner:lChgRecent .OR. oDesigner:lChgPath )
+     critem := Iif( oDesigner:lReport, "rep_recent", "recent" )
+     oIni := HXMLDoc():Read( cCurDir+"Designer.iml" )
+     IF oDesigner:lChgPath
+        i := 1
+        oNode := HXMLNode():New( "dirpath",HBXML_TYPE_SINGLE,{{"default",oDesigner:ds_myPath}} )
+        IF oIni:aItems[1]:Find( "dirpath",@i ) == Nil
+           oIni:aItems[1]:Add( oNode )
+        ELSE
+           oIni:aItems[1]:aItems[i] := oNode
+        ENDIF
+     ENDIF
+     IF oDesigner:lChgRecent
+        i := 1
+        IF oIni:aItems[1]:Find( critem,@i ) == Nil
+           oIni:aItems[1]:Add( HXMLNode():New( critem,, ) )
+           i := Len( oIni:aItems[1]:aItems )
+        ENDIF
+        j := 1
+        oIni:aItems[1]:aItems[i]:aItems := {}
+        DO WHILE j <= MAX_RECENT_FILES .AND. oDesigner:aRecent[j] != Nil
+           oIni:aItems[1]:aItems[i]:Add( HXMLNode():New( "file",,,oDesigner:aRecent[j] ) )
+           j ++
+        ENDDO   
+     ENDIF
+     oIni:Save( cCurDir+"Designer.iml" )
   ENDIF
   IF lRes
      oDesigner:oCtrlMenu:End()

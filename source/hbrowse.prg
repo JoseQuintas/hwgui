@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.50 2005-06-23 10:15:46 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.51 2005-06-28 12:09:08 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -531,7 +531,11 @@ METHOD Rebuild( hDC ) CLASS HBrowse
             endif
             ::nFootRows := Max(::nFootRows, nCount)
          endif
-         xSize := round( ( nColLen + 2 ) * 8, 0 )
+         IF ::oFont != Nil
+            xSize := round( ( nColLen + 2 ) * ((-::oFont:height)*0.6), 0 )  // Added by Fernando Athayde
+         ELSE
+            xSize := round( ( nColLen + 2 ) * 6, 0 )
+         ENDIF
       endif
 
       oColumn:width := xSize
@@ -1703,7 +1707,7 @@ Local kolf := FCOUNT()
       oBrw:AddColumn( HColumn():New( Fieldname(i),                      ;
                                      FieldWBlock( Fieldname(i),nArea ), ;
                                      dbFieldInfo( DBS_TYPE,i ),         ;
-                                     dbFieldInfo( DBS_LEN,i ),          ;
+                                     iif(dbFieldInfo( DBS_TYPE,i )=="D".AND.__SetCentury(),10,dbFieldInfo( DBS_LEN,i )), ;
                                      dbFieldInfo( DBS_DEC,i ),          ;
                                      lEditable ) )
    next

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.51 2005-06-28 12:09:08 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.52 2005-06-29 13:07:32 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1340,7 +1340,7 @@ METHOD ButtonDbl( lParam ) CLASS HBrowse
    local nLine := Int( HIWORD(lParam)/(::height+1) + Iif(::lDispHead,1-::nHeadRows,1) )
 
    // writelog( "ButtonDbl"+str(nLine)+ str(::rowCurrCount) )
-   if nLine <= ::rowCurrCount
+   if nLine > 0 .and. nLine <= ::rowCurrCount
       ::ButtonDown( lParam )
       ::Edit()
    endif

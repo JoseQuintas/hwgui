@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.55 2005-06-23 10:15:42 alkresin Exp $
+ *$Id: guilib.ch,v 1.56 2005-07-01 11:13:34 alkresin Exp $
  */
 #define HWG_VERSION           "2.14"
 #define	WND_MAIN		1
@@ -690,6 +690,23 @@
     <oBrw>:AddColumn( HColumn():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
                       <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <oBmp> ) )
 
+#xcommand INSERT COLUMN <block> TO <oBrw> ;
+            [ HEADER <cHeader> ]       ;
+            [ TYPE <cType> ]           ;
+            [ LENGTH <nLen> ]          ;
+            [ DEC <nDec>    ]          ;
+            [ <lEdit: EDITABLE> ]      ;
+            [ JUSTIFY HEAD <nJusHead> ];
+            [ JUSTIFY LINE <nJusLine> ];
+            [ PICTURE <cPict> ]        ;
+            [ VALID <bValid> ]         ;
+            [ WHEN <bWhen> ]           ;
+            [ ITEMS <aItem> ]          ;
+            [ BITMAP <oBmp> ]          ;
+            INTO <nPos>                ;
+          => ;
+    <oBrw>:InsColumn( HColumn():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
+                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <oBmp> ),<nPos> )
 
 #xcommand @ <x>,<y> GRID <oGrid>        ;
             [ OF <oWnd> ]               ;

@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.6 2004-12-01 10:24:25 alkresin Exp $
+ * $Id: wprint.c,v 1.7 2005-07-05 08:39:53 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -32,42 +32,106 @@ HB_FUNC( HWG_OPENPRINTER )
 
 HB_FUNC( HWG_OPENDEFAULTPRINTER )
 {
-  DWORD            dwNeeded, dwReturned ;
-  HDC              hDC;
-  PRINTER_INFO_4 * pinfo4;
-  PRINTER_INFO_5 * pinfo5;
+   DWORD            dwNeeded, dwReturned ;
+   HDC              hDC;
+   PRINTER_INFO_4 * pinfo4;
+   PRINTER_INFO_5 * pinfo5;
 
-  if (GetVersion () & 0x80000000)         // Windows 98
-  {
-     EnumPrinters (PRINTER_ENUM_DEFAULT, NULL, 5, NULL,
-           0, &dwNeeded, &dwReturned) ;
+   if( GetVersion() & 0x80000000 )         // Windows 98
+   {
+      EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, NULL,
+            0, &dwNeeded, &dwReturned );
 
-     pinfo5 = (PRINTER_INFO_5*)malloc (dwNeeded) ;
+      pinfo5 = (PRINTER_INFO_5*)malloc( dwNeeded );
 
-     EnumPrinters (PRINTER_ENUM_DEFAULT, NULL, 5, (PBYTE) pinfo5,
-           dwNeeded, &dwNeeded, &dwReturned) ;
-     hDC = CreateDC (NULL, pinfo5->pPrinterName, NULL, NULL) ;
-     if( hb_pcount() > 0 )
-        hb_storc( pinfo5->pPrinterName,1 );
+      EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, (PBYTE) pinfo5,
+            dwNeeded, &dwNeeded, &dwReturned );
 
-     free (pinfo5) ;
-  }
-  else                                    // Windows NT
-  {
-     EnumPrinters (PRINTER_ENUM_LOCAL, NULL, 4, NULL,
-           0, &dwNeeded, &dwReturned) ;
+      hDC = CreateDC( NULL, pinfo5->pPrinterName, NULL, NULL );
+      if( hb_pcount() > 0 )
+         hb_storc( pinfo5->pPrinterName,1 );
 
-     pinfo4 = (PRINTER_INFO_4*)malloc (dwNeeded) ;
+      free (pinfo5) ;
+   }
+   else                                    // Windows NT
+   {
+      EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, NULL,
+            0, &dwNeeded, &dwReturned );
 
-     EnumPrinters (PRINTER_ENUM_LOCAL, NULL, 4, (PBYTE) pinfo4,
-           dwNeeded, &dwNeeded, &dwReturned) ;
-     hDC = CreateDC (NULL, pinfo4->pPrinterName, NULL, NULL) ;
-     if( hb_pcount() > 0 )
-        hb_storc( pinfo4->pPrinterName,1 );
+      pinfo4 = (PRINTER_INFO_4*)malloc( dwNeeded );
 
-     free (pinfo4) ;
-  }
-  hb_retnl( (LONG) hDC );   
+      EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, (PBYTE) pinfo4,
+            dwNeeded, &dwNeeded, &dwReturned );
+      hDC = CreateDC( NULL, pinfo4->pPrinterName, NULL, NULL );
+      if( hb_pcount() > 0 )
+         hb_storc( pinfo4->pPrinterName,1 );
+
+      free( pinfo4 );
+   }
+   hb_retnl( (LONG) hDC );   
+}
+
+HB_FUNC( HWG_GETPRINTERS )
+{
+   DWORD            dwNeeded, dwReturned ;
+   PBYTE            pBuffer = NULL;
+   PRINTER_INFO_4 * pinfo4 = NULL;
+   PRINTER_INFO_5 * pinfo5 = NULL;
+   PHB_ITEM aMetr, temp;
+
+   if (GetVersion () & 0x80000000)         // Windows 98
+   {
+      EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 5, NULL,
+            0, &dwNeeded, &dwReturned );
+      if( dwNeeded )
+      {
+         pBuffer = (PBYTE) malloc( dwNeeded );
+         pinfo5  = (PRINTER_INFO_5*) pBuffer;
+         EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 5, pBuffer,
+             dwNeeded, &dwNeeded, &dwReturned );
+      }
+   }
+   else                                    // Windows NT
+   {
+      EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, NULL,
+            0, &dwNeeded, &dwReturned );
+      if( dwNeeded )
+      {
+         pBuffer = (PBYTE) malloc( dwNeeded );
+         pinfo4  = (PRINTER_INFO_4*) pBuffer;
+         EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, pBuffer,
+             dwNeeded, &dwNeeded, &dwReturned );
+      }
+   }
+   if( dwReturned )
+   {
+      int i;
+
+      aMetr = hb_itemArrayNew( dwReturned );
+      for( i=0; i<(int)dwReturned; i++ )
+      {
+         if( pinfo4 )
+         {
+            temp = hb_itemPutC( NULL, pinfo4->pPrinterName );
+            pinfo4++;
+         }
+         else
+         {
+            temp = hb_itemPutC( NULL, pinfo5->pPrinterName );
+            pinfo5++;
+         }
+         hb_itemArrayPut( aMetr, i+1, temp );
+         hb_itemRelease( temp );
+      }
+      hb_itemReturn( aMetr );
+      hb_itemRelease( aMetr );
+   }
+   else
+      hb_ret();
+
+   if( pBuffer )
+      free( pBuffer );
+
 }
 
 HB_FUNC( SETPRINTERMODE )

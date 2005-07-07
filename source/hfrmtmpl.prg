@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.26 2005-06-23 10:15:46 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.27 2005-07-07 17:56:14 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -813,7 +813,9 @@ Local i, j, aMethod, xProperty, oFont, cTemp, nPWidth, nPHeight, nOrientation :=
 Memvar oReport
 Private oReport := Self
 
-   // Writelog("Print-0")
+   IF oPrinter == Nil
+      Return Nil
+   ENDIF
    FOR i := 1 TO Len( ::aProp )
       IF ::aProp[ i,1 ] == "paper size"
          IF Lower(::aProp[i,2]) == "a4"

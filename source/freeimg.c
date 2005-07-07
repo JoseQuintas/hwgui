@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.10 2005-06-23 10:15:46 alkresin Exp $
+ * $Id: freeimg.c,v 1.11 2005-07-07 17:46:14 alkresin Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -533,7 +533,7 @@ HB_FUNC( FI_DIB2FI )
    if( hdib )
    {
       FIBITMAP *dib;
-      LPBITMAPINFOHEADER lpbi = GlobalLock( hdib );
+      LPBITMAPINFOHEADER lpbi = (LPBITMAPINFOHEADER) GlobalLock( hdib );
 
       pConvertFromRawBits = (FREEIMAGE_CONVERTFROMRAWBITS) GetFunction( (FARPROC)pConvertFromRawBits, "_FreeImage_ConvertFromRawBits@36" );
       pGetPalette = (FREEIMAGE_GETPALETTE) GetFunction( (FARPROC)pGetPalette, "_FreeImage_GetPalette@4" );
@@ -589,7 +589,8 @@ HB_FUNC( FI_RESCALE )
 {
    pRescale = (FREEIMAGE_RESCALE) GetFunction( (FARPROC)pRescale,"_FreeImage_Rescale@16" );
 
-   hb_retnl( ( pRescale )? (LONG)pRescale( (FIBITMAP*)hb_parnl(1), hb_parnl( 2 ), hb_parnl( 3 ), hb_parni( 4 ) ) : 0 );
+   hb_retnl( ( pRescale )? (LONG)pRescale( (FIBITMAP*)hb_parnl(1),
+       hb_parnl( 2 ), hb_parnl( 3 ), (FREE_IMAGE_FILTER) hb_parni( 4 ) ) : 0 );
 }
 
 
@@ -608,7 +609,7 @@ HB_FUNC( FI_REMOVECHANNEL )
 	dib8 = pAllocate( pGetwidth( dib ), pGetheight( dib), 8, 0, 0, 0 );
 
 	if ( dib8 ) {
-		hb_retl( pSetChannel( dib, dib8, hb_parni( 2 ) ) );
+		hb_retl( pSetChannel( dib, dib8, (FREE_IMAGE_COLOR_CHANNEL) hb_parni( 2 ) ) );
 		pUnload( dib8 );
 
 	} else {

@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.4 2005-01-07 16:52:23 sandrorrfreire Exp $
+ * $Id: errorsys.prg,v 1.5 2005-07-07 17:46:14 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement
@@ -143,14 +143,16 @@ Local nHand
 return nil
 
 Static Function ErrorPreview( cMess )
-Local oDlg
+Local oDlg, oEdit
 
    INIT DIALOG oDlg TITLE "Error.log" ;
         AT 92,61 SIZE 400,400
+        
 
-   @ 10,10 EDITBOX cMess SIZE 380,340 STYLE WS_VSCROLL+WS_HSCROLL+ES_MULTILINE ;
-        COLOR 16777088 BACKCOLOR 0  //Blue to Black
-//       COLOR 16711680 BACKCOLOR 16777215  //Black to Write      
+   @ 10,10 EDITBOX oEdit CAPTION cMess SIZE 380,340 STYLE WS_VSCROLL+WS_HSCROLL+ES_MULTILINE ;
+        COLOR 16777088 BACKCOLOR 0 ;
+        ON GETFOCUS {||SendMessage(oEdit:handle,EM_SETSEL,0,0)}
+
    @ 150,360 BUTTON "Close" ON CLICK {||EndDialog()} SIZE 100,32 
 
    oDlg:Activate()

@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.14 2004-12-08 08:23:17 alkresin Exp $
+ * $Id: hprinter.prg,v 1.15 2005-07-07 17:46:14 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -65,7 +65,9 @@ Local aPrnCoors, cPrinterName, cDriverName
       ::hDCPrn := Hwg_OpenPrinter( cPrinter )
       ::cPrinterName := cPrinter
    ENDIF
-   IF ::hDCPrn != Nil
+   IF ::hDCPrn == 0
+      Return Nil
+   ELSE
       aPrnCoors := GetDeviceArea( ::hDCPrn )
       ::nWidth  := Iif( ::lmm, aPrnCoors[3], aPrnCoors[1] )
       ::nHeight := Iif( ::lmm, aPrnCoors[4], aPrnCoors[2] )
@@ -259,7 +261,8 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
 
    INIT DIALOG oDlg TITLE cTitle                  ;
      AT 40,10 SIZE 600,440                        ;
-     STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+WS_MAXIMIZEBOX
+     STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+WS_MAXIMIZEBOX ;
+     ON INIT {|o|o:Maximize(),ResizePreviewDlg(oCanvas,Self,1)}
 
    oDlg:brush := HBrush():Add( 0 )
 

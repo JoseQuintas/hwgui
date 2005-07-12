@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.374 2005-07-07 17:56:14 alkresin Exp $
+ * $Id: Changelog,v 1.375 2005-07-12 15:10:30 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-07-12 19:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+  * source/hprinter.prg
+    + New method added: HPrinter():GetTextWidth( cString[, oFont] ), which
+      returns the cString width in currently used units ( mm or pixels )
+  * source/hbrowse.prg
+    ! Few bugs fixed ( zero divide )
 
 2005-07-07 21:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
   * source/hfrmtmpl.prg

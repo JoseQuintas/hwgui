@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.52 2005-06-29 13:07:32 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.53 2005-07-12 15:10:35 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -233,7 +233,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 Local aCoors
 Static keyCode := 0
 
-   // WriteLog( "Brw: "+Str(hBrw,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   // WriteLog( "Brw: "+Str(::handle,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::active .AND. !Empty( ::aColumns )
 
       IF ::bOther != Nil
@@ -1103,7 +1103,7 @@ Local minPos, maxPos, nPos
 
    IF ::bScrollPos != Nil
       Eval( ::bScrollPos, Self, 1, .F. )
-   ELSE
+   ELSEIF ::kolz > 1
       GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
       nPos := GetScrollPos( ::handle, SB_VERT )
       nPos += Int( (maxPos-minPos)/(::kolz-1) )
@@ -1135,7 +1135,7 @@ Local minPos, maxPos, nPos
 
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, -1, .F. )
-      ELSE
+      ELSEIF ::kolz > 1
          GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
          nPos := GetScrollPos( ::handle, SB_VERT )
          nPos -= Int( (maxPos-minPos)/(::kolz-1) )
@@ -1166,7 +1166,7 @@ Local minPos, maxPos, nPos, step, lBof := .F.
 
    IF ::bScrollPos != Nil
       Eval( ::bScrollPos, Self, - step, lBof )
-   ELSE
+   ELSEIF ::kolz > 1
       GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
       nPos := GetScrollPos( ::handle, SB_VERT )
       nPos := Max( nPos - Int( (maxPos-minPos)*step/(::kolz-1) ), minPos )
@@ -1193,10 +1193,12 @@ Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows )
       IF EVAL( ::bEof,Self )
          EVAL( ::bSkip, Self,- 1 )
          nPos := maxPos
-      ELSE
+         SetScrollPos( ::handle, SB_VERT, nPos )
+      ELSEIF ::kolz > 1
          nPos := Min( nPos + Int( (maxPos-minPos)*step/(::kolz-1) ), maxPos )
+         SetScrollPos( ::handle, SB_VERT, nPos )
       ENDIF
-      SetScrollPos( ::handle, SB_VERT, nPos )
+
    ENDIF
 
    ::Refresh(.F.)
@@ -1264,7 +1266,7 @@ Local xm := LOWORD(lParam), x1, fif
             ::rowPos := nLine
             IF ::bScrollPos != Nil
                Eval( ::bScrollPos, Self, step, .F. )
-            ELSE
+            ELSEIF ::kolz > 1
                GetScrollRange( hBrw, SB_VERT, @minPos, @maxPos )
                nPos := GetScrollPos( hBrw, SB_VERT )
                nPos := Min( nPos + Int( (maxPos-minPos)*step/(::kolz-1) ), maxPos )

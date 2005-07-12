@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.15 2005-07-07 17:46:14 alkresin Exp $
+ * $Id: hprinter.prg,v 1.16 2005-07-12 15:10:35 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -46,6 +46,7 @@ CLASS HPrinter INHERIT HObject
    METHOD Line( x1,y1,x2,y2,oPen )
    METHOD Say( cString,x1,y1,x2,y2,nOpt,oFont )
    METHOD Bitmap( x1,y1,x2,y2,nOpt,hBitmap )
+   METHOD GetTextWidth( cString, oFont )
 
 ENDCLASS
 
@@ -158,11 +159,6 @@ Local hFont
 
    IF oFont != Nil
       hFont := SelectObject( ::hDC,oFont:handle )
-      /*
-      aMetr1 := Gettextmetric(::hDC)
-      aMetr2 := Gettextsize(::hDC,cString)
-      writelog( str(aMetr1[1])+str(aMetr2[1])+str(aMetr2[2]) )
-      */
    ENDIF
    IF ::lmm
       DrawText( ::hDC,cString,::nHRes*x1,::nVRes*y1,::nHRes*x2,::nVRes*y2,Iif(nOpt==Nil,DT_LEFT,nOpt) )
@@ -185,6 +181,18 @@ METHOD Bitmap( x1,y1,x2,y2,nOpt,hBitmap ) CLASS HPrinter
 
 Return Nil
 
+METHOD GetTextWidth( cString, oFont ) CLASS HPrinter
+Local arr, hFont
+
+   IF oFont != Nil
+      hFont := SelectObject( ::hDC,oFont:handle )
+   ENDIF
+   arr := GetTextSize( ::hDC,cString )
+   IF oFont != Nil
+      SelectObject( ::hDC,hFont )
+   ENDIF
+
+Return Iif( ::lmm, Int( arr[1]/::nHRes ), arr[1] )
 
 METHOD StartDoc( lPreview,cMetaName ) CLASS HPrinter
 

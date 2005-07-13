@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.53 2005-07-12 15:10:35 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.54 2005-07-13 16:12:18 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -429,7 +429,11 @@ METHOD End() CLASS HBrowse
    Super:End()
    IF ::brush != Nil
       ::brush:Release()
+      ::brush := Nil
+   ENDIF
+   IF ::brushSel != Nil
       ::brushSel:Release()
+      ::brushSel := Nil
    ENDIF
 
 RETURN Nil

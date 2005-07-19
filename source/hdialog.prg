@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.34 2005-06-23 10:15:46 alkresin Exp $
+ * $Id: hdialog.prg,v 1.35 2005-07-19 13:04:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -263,6 +263,8 @@ Local aCoors
    ENDIF
 Return 0
 
+#define  FLAG_CHECK      2
+
 Function DlgCommand( oDlg,wParam,lParam )
 Local iParHigh := HiWord( wParam ), iParLow := LoWord( wParam )
 Local aMenu, i, hCtrl
@@ -314,9 +316,13 @@ Local aMenu, i, hCtrl
          EndDialog( oDlg:handle )
       ENDIF
    ELSEIF __ObjHasMsg(oDlg,"MENU") .AND. Valtype( oDlg:menu ) == "A" .AND. ;
-        ( aMenu := Hwg_FindMenuItem( oDlg:menu,iParLow,@i ) ) != Nil ;
-        .AND. aMenu[ 1,i,1 ] != Nil
-      Eval( aMenu[ 1,i,1 ] )
+        ( aMenu := Hwg_FindMenuItem( oDlg:menu,iParLow,@i ) ) != Nil
+      IF Hwg_BitAnd( aMenu[ 1,i,4 ],FLAG_CHECK ) > 0
+         CheckMenuItem( ,aMenu[1,i,3], !IsCheckedMenuItem( ,aMenu[1,i,3] ) )
+      ENDIF
+      IF aMenu[ 1,i,1 ] != Nil
+         Eval( aMenu[ 1,i,1 ] )
+      ENDIF
    ELSEIF __ObjHasMsg(oDlg,"OPOPUP") .AND. oDlg:oPopup != Nil .AND. ;
          ( aMenu := Hwg_FindMenuItem( oDlg:oPopup:aMenu,wParam,@i ) ) != Nil ;
          .AND. aMenu[ 1,i,1 ] != Nil
@@ -512,4 +518,3 @@ Return .T.
 EXIT PROCEDURE Hwg_ExitProcedure
    Hwg_ExitProc()
 Return
-

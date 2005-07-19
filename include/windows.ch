@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.20 2004-12-01 10:24:24 alkresin Exp $
+ *$Id: windows.ch,v 1.21 2005-07-19 13:04:17 alkresin Exp $
  */
 
 #define WM_CREATE                       1
@@ -869,3 +869,5 @@
 #define TBM_SETPOS              (WM_USER+5)
 #define TBM_GETTICPOS           (WM_USER+15)
 #define TBM_GETNUMTICS          (WM_USER+16)
+
+#define CW_USEDEFAULT           2147483648          // 0x80000000

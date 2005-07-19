@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.38 2004-11-22 07:21:24 alkresin Exp $
+ *$Id: hwindow.prg,v 1.39 2005-07-19 13:04:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -377,6 +377,8 @@ Local oItem, iCont, nCont
 
 return -1
 
+#define  FLAG_CHECK      2
+
 Static Function onCommand( oWnd,wParam,lParam )
 Local iItem, iCont, aMenu, iParHigh, iParLow, nHandle
 
@@ -402,9 +404,13 @@ Local iItem, iCont, aMenu, iParHigh, iParLow, nHandle
         ( iItem := Ascan( oWnd:aEvents, {|a|a[1]==iParHigh.and.a[2]==iParLow} ) ) > 0
         Eval( oWnd:aEvents[ iItem,3 ],oWnd,iParLow )
    ELSEIF Valtype( oWnd:menu ) == "A" .AND. ;
-        ( aMenu := Hwg_FindMenuItem( oWnd:menu,iParLow,@iCont ) ) != Nil ;
-        .AND. aMenu[ 1,iCont,1 ] != Nil
-      Eval( aMenu[ 1,iCont,1 ] )
+        ( aMenu := Hwg_FindMenuItem( oWnd:menu,iParLow,@iCont ) ) != Nil
+      IF Hwg_BitAnd( aMenu[ 1,iCont,4 ],FLAG_CHECK ) > 0
+         CheckMenuItem( ,aMenu[1,iCont,3], !IsCheckedMenuItem( ,aMenu[1,iCont,3] ) )
+      ENDIF
+      IF aMenu[ 1,iCont,1 ] != Nil
+         Eval( aMenu[ 1,iCont,1 ] )
+      ENDIF
    ELSEIF oWnd:oPopup != Nil .AND. ;
         ( aMenu := Hwg_FindMenuItem( oWnd:oPopup:aMenu,wParam,@iCont ) ) != Nil ;
         .AND. aMenu[ 1,iCont,1 ] != Nil

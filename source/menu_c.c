@@ -1,11 +1,11 @@
 /*
- * $Id: menu_c.c,v 1.20 2005-01-13 10:38:19 alkresin Exp $
+ * $Id: menu_c.c,v 1.21 2005-07-19 13:04:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #define HB_OS_WIN_32_USED
@@ -24,6 +24,8 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
+
+#define  FLAG_DISABLED   1
 
 extern HWND aWindows[];
 
@@ -48,8 +50,13 @@ HB_FUNC( HWG__CREATEPOPUPMENU )
 
 HB_FUNC( HWG__ADDMENUITEM )
 {
-   UINT uFlags = MF_BYPOSITION | ( ( ISNIL(6) || hb_parl(6) )? 0:MFS_DISABLED );
+   UINT uFlags = MF_BYPOSITION;
    LPCTSTR lpNewItem = NULL;
+
+   if( !ISNIL(6) && ( hb_parni(6) & FLAG_DISABLED ) )
+   {
+      uFlags |= MFS_DISABLED;
+   }
 
    if( ISCHAR( 2 ) )
    {

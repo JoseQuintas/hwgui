@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.376 2005-07-13 16:12:16 alkresin Exp $
+ * $Id: Changelog,v 1.377 2005-07-19 13:04:13 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,23 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-07-19 17:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/guilib.ch
+    + Command added MENUITEMCHECK to make using of check menu items more
+      convenient and to provide better compatibility with gtk version
+    * Changed ADD STATUS command as was suggested by Alex Strickland
+  * include/windows.ch
+    + added #define CW_USEDEFAULT
+  * source/menu.prg
+  * source/menu_c.c
+  * source/hdialog.prg
+  * source/hwindow.prg
+    * Changes, related to check menu items
+  * source/hradio.prg
+    + added GetValue() method
+  * source/hcheck.prg
+    + added GetValue() and SetValue() methods
 
 2005-07-13 20:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
   * source/hbrowse.prg

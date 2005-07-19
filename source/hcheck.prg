@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.9 2004-11-16 16:45:36 alkresin Exp $
+ * $Id: hcheck.prg,v 1.10 2005-07-19 13:04:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -30,6 +30,8 @@ CLASS HCheckButton INHERIT HControl
    METHOD Refresh()
    METHOD Disable()
    METHOD Enable()
+   METHOD SetValue( lValue )  INLINE CheckDlgButton( ::oParent:handle,::id,lValue )
+   METHOD GetValue()          INLINE IsDlgButtonChecked( ::oParent:handle, ::id )
 
 ENDCLASS
 
@@ -147,3 +149,4 @@ Local res
    ENDIF
 
 Return .T.
+

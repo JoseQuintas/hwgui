@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.4 2004-09-29 05:24:52 alkresin Exp $
+ * $Id: hradio.prg,v 1.5 2005-07-19 13:04:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -21,6 +21,7 @@ CLASS HRadioGroup INHERIT HObject
    METHOD New( vari,bSetGet )
    METHOD EndGroup( nSelected )
    METHOD SetValue( nValue )
+   METHOD GetValue()  INLINE ::value
    METHOD Refresh()   INLINE Iif( ::bSetGet!=Nil,::SetValue(Eval(::bSetGet)),.T. )
 ENDCLASS
 
@@ -70,6 +71,7 @@ Local nLen
             ::aButtons[1]:id,    ;
             ::aButtons[nLen]:id, ;
             ::aButtons[nValue]:id )
+      ::value := nValue
    ENDIF
 Return Nil
 

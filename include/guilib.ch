@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.56 2005-07-01 11:13:34 alkresin Exp $
+ *$Id: guilib.ch,v 1.57 2005-07-19 13:04:17 alkresin Exp $
  */
 #define HWG_VERSION           "2.14"
 #define	WND_MAIN		1
@@ -193,7 +193,7 @@
             [ ON PAINT <bDraw> ]   ;
             [ STYLE <nStyle> ]     ;
             [ FONT <oFont> ]       ;
-            [ PARTS <aparts,...> ] ;
+            PARTS <aparts,...>     ;
           => ;
             [ <oStat> := ] HStatus():New( <oWnd>,<nId>,<nStyle>,<oFont>,\{<aparts>\},<bInit>,;
                                           <bSize>,<bDraw> )
@@ -1019,7 +1019,14 @@
             [ ACCELERATOR <flag>, <key> ] ;
             [<lDisabled: DISABLED>]       ;
           => ;
-    Hwg_DefineMenuItem( <item>, <nId>, <{act}>, <.lDisabled.>, <flag>, <key>, <bmp>, <.res.>)
+    Hwg_DefineMenuItem( <item>, <nId>, <{act}>, <.lDisabled.>, <flag>, <key>, <bmp>, <.res.>, .f. )
+
+#xcommand MENUITEMCHECK <item> [ ID <nId> ]    ;
+            [ ACTION <act> ]              ;
+            [ ACCELERATOR <flag>, <key> ] ;
+            [<lDisabled: DISABLED>]       ;
+          => ;
+    Hwg_DefineMenuItem( <item>, <nId>, <{act}>, <.lDisabled.>, <flag>, <key>,,, .t. )
 
 #xcommand MENUITEMBITMAP <oMain>  ID <nId> ;
             BITMAP <bmp>                  ;

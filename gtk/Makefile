@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 2005-03-10 11:32:48 alkresin Exp $
+# $Id: Makefile,v 1.6 2005-08-29 09:35:02 alkresin Exp $
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 HRB_DIR = /apps/harbour
@@ -21,6 +21,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/draw.o \
    $(OBJ_DIR)/drawtext.o \
    $(OBJ_DIR)/window.o \
+   $(OBJ_DIR)/wprint.o \
    $(OBJ_DIR)/menu_c.o \
    $(OBJ_DIR)/message.o \
    $(OBJ_DIR)/misc.o \
@@ -36,10 +37,12 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hedit.o \
    $(OBJ_DIR)/hfrmtmpl.o \
    $(OBJ_DIR)/hgraph.o \
+   $(OBJ_DIR)/hprinter.o \
    $(OBJ_DIR)/hradio.o \
    $(OBJ_DIR)/htimer.o \
    $(OBJ_DIR)/hupdown.o \
    $(OBJ_DIR)/hwindow.o \
+   $(OBJ_DIR)/hwinprn.o \
    $(OBJ_DIR)/menu.o
 	ar rc $@ $^
 
@@ -57,6 +60,9 @@ $(OBJ_DIR)/drawtext.o   : drawtext.c
 
 $(OBJ_DIR)/window.o   : window.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $^
+
+$(OBJ_DIR)/wprint.o   : wprint.c
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags libgnomeprint-2.2` `pkg-config --cflags gtk+-2.0` -o $@ $^
 
 $(OBJ_DIR)/menu_c.o   : menu_c.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $^
@@ -127,6 +133,11 @@ $(OBJ_DIR)/hgraph.o  : $(OBJ_DIR)/hgraph.c
 $(OBJ_DIR)/hgraph.c  : hgraph.prg
 	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
 
+$(OBJ_DIR)/hprinter.o  : $(OBJ_DIR)/hprinter.c
+
+$(OBJ_DIR)/hprinter.c  : hprinter.prg
+	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
+
 $(OBJ_DIR)/hradio.o  : $(OBJ_DIR)/hradio.c
 
 $(OBJ_DIR)/hradio.c  : hradio.prg
@@ -147,10 +158,15 @@ $(OBJ_DIR)/hwindow.o  : $(OBJ_DIR)/hwindow.c
 $(OBJ_DIR)/hwindow.c  : hwindow.prg
 	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
 
+$(OBJ_DIR)/hwinprn.o  : $(OBJ_DIR)/hwinprn.c
+
+$(OBJ_DIR)/hwinprn.c  : hwinprn.prg
+	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__LINUX__ -o$@ $^
+	
 $(OBJ_DIR)/menu.o  : $(OBJ_DIR)/menu.c
 
 $(OBJ_DIR)/menu.c  : menu.prg
-	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__LINUX_GTK__ -o$@ $^
+	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
 
 
 $(LIB_DIR)/libprocmisc.a : \

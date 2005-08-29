@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.1 2005-01-12 11:56:34 alkresin Exp $
+ * $Id: menu_c.c,v 1.2 2005-08-29 09:35:02 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level menu functions
@@ -26,6 +26,9 @@ PHB_ITEM hb_stackReturn( void );
 #endif
 #endif
 
+#define  FLAG_DISABLED   1
+#define  FLAG_CHECK      2
+
 extern void cb_signal( GtkWidget *widget,gchar* data );
 extern GtkFixed * getFixedBox( GObject * handle );
 
@@ -49,7 +52,7 @@ HB_FUNC( HWG__CREATEPOPUPMENU )
 HB_FUNC( HWG__ADDMENUITEM )
 {
    GtkWidget * hMenu;
-   BOOL lString = FALSE;
+   BOOL lString = FALSE, lCheck = FALSE;
    char * lpNewItem;
    
    if( ISCHAR( 2 ) )
@@ -67,8 +70,16 @@ HB_FUNC( HWG__ADDMENUITEM )
          ptr ++;
       }
    }
-   
-   if( lString )
+   if( !ISNIL(6) && ( hb_parni(6) & FLAG_CHECK ) )
+      lCheck = TRUE;
+
+   if( lCheck )
+   {
+      char * cptr = g_locale_to_utf8( lpNewItem, -1, NULL, NULL, NULL);
+      hMenu = gtk_check_menu_item_new_with_label( cptr );
+      g_free( cptr );
+   }
+   else if( lString )
    {
       char * cptr = g_locale_to_utf8( lpNewItem, -1, NULL, NULL, NULL);
       hMenu = (GtkWidget *) gtk_menu_item_new_with_label( cptr );

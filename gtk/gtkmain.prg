@@ -1,5 +1,5 @@
 /*
- * $Id: gtkmain.prg,v 1.3 2005-03-10 11:32:48 alkresin Exp $
+ * $Id: gtkmain.prg,v 1.4 2005-08-29 09:35:02 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Main prg level functions
@@ -67,12 +67,12 @@ Return cRes
 Function WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel )
 Local oDlg, oBrw
 Local nChoice := 0, i, aLen := Len( arr ), nLen := 0, addX := 20, addY := 30
-Local hDC, aMetr, width, height, aArea, aRect
+Local hDC, aMetr, width, height, screenh
 
    IF cTitle == Nil; cTitle := ""; ENDIF
    IF nLeft == Nil; nLeft := 10; ENDIF
    IF nTop == Nil; nTop := 10; ENDIF
-   IF oFont == Nil; oFont := HFont():Add( "MS Sans Serif",0,-13 ); ENDIF
+   IF oFont == Nil; oFont := HFont():Add( "Times",0,12 ); ENDIF
 
    IF Valtype( arr[1] ) == "A"
       FOR i := 1 TO aLen
@@ -87,12 +87,11 @@ Local hDC, aMetr, width, height, aArea, aRect
    hDC := GetDC( GetActiveWindow() )
    SelectObject( hDC, ofont:handle )
    aMetr := GetTextMetric( hDC )
-   // aArea := GetDeviceArea( hDC )
-   aRect := GetWindowRect( GetActiveWindow() )
    ReleaseDC( GetActiveWindow(),hDC )
    height := (aMetr[1]+1)*aLen+4+addY
-   IF height > aArea[2]-aRect[2]-nTop-30
-      height := aArea[2]-aRect[2]-nTop-30
+   screenh := GETDESKTOPHEIGHT()
+   IF height > screenh * 2/3
+      height := Int( screenh *2/3 )
       addX := addY := 0
    ENDIF
    width := ( Round( (aMetr[3]+aMetr[2]) / 2,0 ) + 3 ) * nLen + addX
@@ -103,6 +102,7 @@ Local hDC, aMetr, width, height, aArea, aRect
          FONT oFont
 
    @ 0,0 BROWSE oBrw ARRAY          ;
+       SIZE  width,height           ;
        FONT oFont                   ;
        STYLE WS_BORDER              ;
        ON SIZE {|o,x,y|MoveWindow(o:handle,addX/2,addY/4,x-addX,y-addY)} ;
@@ -132,7 +132,6 @@ Local hDC, aMetr, width, height, aArea, aRect
    oFont:Release()
 
 Return nChoice
-
 
 
 INIT PROCEDURE GTKINIT()

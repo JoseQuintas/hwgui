@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.1 2005-01-12 11:56:34 alkresin Exp $
+ * $Id: menu.prg,v 1.2 2005-08-29 09:35:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -14,6 +14,8 @@
 
 #define  MENU_FIRST_ID   32000
 #define  CONTEXTMENU_FIRST_ID   32900
+#define  FLAG_DISABLED   1
+#define  FLAG_CHECK      2
 
 STATIC _aMenuDef, _oWnd, _aAccel, _nLevel, _Id, _oMenu, _oBitmap
 
@@ -84,18 +86,18 @@ Local hSubMenu
 
    IF nPos > Len( aMenu[1] )
       IF lSubmenu
-         Aadd( aMenu[1],{ {},cItem,nMenuId,.T.,hSubMenu } )
+         Aadd( aMenu[1],{ {},cItem,nMenuId,0,hSubMenu } )
       ELSE
-         Aadd( aMenu[1],{ bItem,cItem,nMenuId,.T. } )
+         Aadd( aMenu[1],{ bItem,cItem,nMenuId,0 } )
       ENDIF
       Return ATail( aMenu[1] )
    ELSE
       Aadd( aMenu[1],Nil )
       Ains( aMenu[1],nPos )
       IF lSubmenu
-         aMenu[ 1,nPos ] := { {},cItem,nMenuId,.T.,hSubMenu }
+         aMenu[ 1,nPos ] := { {},cItem,nMenuId,0,hSubMenu }
       ELSE
-         aMenu[ 1,nPos ] := { bItem,cItem,nMenuId,.T. }
+         aMenu[ 1,nPos ] := { bItem,cItem,nMenuId,0 }
       ENDIF
       Return aMenu[ 1,nPos ]
    ENDIF
@@ -153,12 +155,6 @@ Local hMenu, nPos, aMenu, i, oBmp
          IF aMenu[ 1,nPos,1 ] == Nil .OR. aMenu[ 1,nPos,2 ] != Nil
             hwg__AddMenuItem( hMenu, aMenu[1,npos,2], nPos, hWnd, aMenu[1,nPos,3], ;
                    aMenu[1,npos,4],.F. )
-	/*	   
-            oBmp:=Hwg_SearchPosBitmap( aMenu[1,nPos,3]) 
-            if oBmp[1]       
-                   SetMenuItemBitmaps(hMenu, aMenu[1,nPos,3], oBmp[2],"")
-            endIf    
-        */    
          Endif
       ENDIF
       nPos ++
@@ -188,7 +184,7 @@ Local aMenu, i
          aMenu := Atail(aMenu)[1]
       NEXT
       _nLevel++
-      Aadd( aMenu, { {},cTitle,nId,.T. } )
+      Aadd( aMenu, { {},cTitle,nId,0 } )
    ENDIF
 Return .T.
 
@@ -218,14 +214,19 @@ Function Hwg_EndMenu()
    ENDIF
 Return .T.
 
-Function Hwg_DefineMenuItem( cItem, nId, bItem, lDisabled, accFlag, accKey, lBitmap, lResource )
+Function Hwg_DefineMenuItem( cItem, nId, bItem, lDisabled, accFlag, accKey, lBitmap, lResource, lCheck )
 Local aMenu, i, oBmp
+
+   lCheck := Iif( lCheck==Nil, .F., lCheck )
+   lDisabled := Iif( lDisabled==Nil,.T.,!lDisabled )
+   nFlag := Hwg_BitOr( Iif( lCheck,FLAG_CHECK,0 ), Iif( lDisabled,0,FLAG_DISABLED ) )
+
    aMenu := _aMenuDef
    FOR i := 1 TO _nLevel
       aMenu := Atail(aMenu)[1]
    NEXT
    nId := Iif( nId == Nil .AND. cItem != Nil, ++ _Id, nId )
-   Aadd( aMenu, { bItem,cItem,nId,Iif(lDisabled==Nil,.T.,!lDisabled) } )
+   Aadd( aMenu, { bItem,cItem,nId,nFlag } )
    /*
    IF lBitmap!=Nil .or. !Empty(lBitmap)
       if lResource==Nil ;lResource:=.F.; Endif         

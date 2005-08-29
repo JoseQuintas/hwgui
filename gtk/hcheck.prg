@@ -1,5 +1,5 @@
 /*
- *$Id: hcheck.prg,v 1.5 2005-03-11 12:16:18 alkresin Exp $
+ *$Id: hcheck.prg,v 1.6 2005-08-29 09:35:02 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HCheckButton class 
@@ -24,6 +24,8 @@ CLASS HCheckButton INHERIT HControl
    METHOD Init()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Refresh()
+   METHOD SetValue( lValue )  INLINE hwg_CheckButton( ::handle,lValue )
+   METHOD GetValue()  INLINE ::value := hwg_IsButtonChecked( ::handle )
 
 ENDCLASS
 

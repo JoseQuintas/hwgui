@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.2 2005-03-10 11:32:48 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.3 2005-08-29 09:35:02 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -228,7 +228,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 Local aCoors
 Static keyCode := 0
 
-   WriteLog( "Brw: "+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   // WriteLog( "Brw: "+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::active .AND. !Empty( ::aColumns )
 
       IF ::bOther != Nil
@@ -1094,6 +1094,7 @@ Local minPos, maxPos, nPos, step, lBof := .F.
       step := ( ::rowPos - 1 )
       EVAL( ::bSKip, Self,- step )
       ::rowPos := 1
+      InvalidateRect( ::area, 0 )
    ELSE
       step := ::rowCurrCount    // Min( ::kolz,::rowCount )
       EVAL( ::bSkip, Self,- step )
@@ -1114,7 +1115,6 @@ Local minPos, maxPos, nPos, step, lBof := .F.
    ENDIF
    */
 
-   ::Refresh(.F.)
    SetFocus( ::area )
 RETURN Nil
 
@@ -1140,7 +1140,7 @@ Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows )
       SetScrollPos( ::handle, SB_VERT, nPos )
    ENDIF
 */
-   ::Refresh(.F.)
+   InvalidateRect( ::area, 0 )
    SetFocus( ::area )
 RETURN Nil
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.378 2005-08-29 08:33:54 alkresin Exp $
+ * $Id: Changelog,v 1.379 2005-08-29 09:04:56 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,28 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-08-29 13:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  + source/hwinprn.prg
+    + New class added - HWinPrn. It intended for printing old DOS reports to
+      any available printer in graphical mode, as some 3-rd party utilities
+      ( winprn, dosprn, ... ) do. This solves the problems with USB printers,
+      Winprinters. The program converts characters from OEM to ANSI, pseudo-
+      graphic symbols - to a line drawing and understands some most usable
+      EPSON printers codes. It works identically in Windows and Linux GTK
+      versions ( the GTK version will be added a bit later ).
+  * source/Makefile
+  * makedll.bc
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * makefile.vc
+  * makefile.wc
+    * Makefiles updated due to hwinprn.prg adding
+  * samples/testchild.prg
+    ! Bugs fixed
+  + samples/winprn.prg
+    + HWinPrn class sample added.
 
 2005-08-29 12:33 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/window.c

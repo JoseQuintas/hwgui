@@ -35,7 +35,7 @@ echo %HRB_DIR%\lib\rtl%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\vm%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
 echo %HRB_DIR%\lib\lang.lib + >> b32.bc
-rem echo %HRB_DIR%\lib\codepage.lib + >> b32.bc
+echo %HRB_DIR%\lib\codepage.lib + >> b32.bc
 echo %HRB_DIR%\lib\macro%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\rdd%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\dbfntx%HB_MT%.lib + >> b32.bc

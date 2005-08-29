@@ -3,7 +3,7 @@ ROOT=../../../
 C_SOURCES=\
 	commond.c \
 	control.c \
-   dialog.c \
+	dialog.c \
 	draw.c \
 	drawtext.c \
 	freeimg.c \
@@ -42,6 +42,7 @@ PRG_SOURCES=\
 	htab.prg \
 	hupdown.prg \
 	hwindow.prg \
+	hwinprn.prg \
 	menu.prg \
 	repexec.prg \
 	hprogres.prg \

@@ -1,4 +1,4 @@
-# $Id: makefile.wc,v 1.8 2004-11-21 12:33:14 alkresin Exp $
+# $Id: makefile.wc,v 1.9 2005-08-29 09:04:56 alkresin Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -94,6 +94,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\htree.obj \
    $(OBJ_DIR)\hupdown.obj \
    $(OBJ_DIR)\hwindow.obj \
+   $(OBJ_DIR)\hwinprn.obj \
    $(OBJ_DIR)\menu.obj \
    $(OBJ_DIR)\c_ipaddr.obj \
    $(OBJ_DIR)\listbox.obj \
@@ -353,6 +354,12 @@ $(OBJ_DIR)\hwindow.c : $(SRC_DIR)\hwindow.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hwindow.obj : $(OBJ_DIR)\hwindow.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hwinprn.c : $(SRC_DIR)\hwinprn.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hwinprn.obj : $(OBJ_DIR)\hwinprn.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\menu.c : $(SRC_DIR)\menu.prg

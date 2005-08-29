@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.57 2005-07-19 13:04:17 alkresin Exp $
+ *$Id: guilib.ch,v 1.58 2005-08-29 08:33:54 alkresin Exp $
  */
 #define HWG_VERSION           "2.14"
 #define	WND_MAIN		1
@@ -77,7 +77,7 @@
                    <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>,<cHelp>,<nHelpId> )
 
 #xcommand INIT WINDOW <oWnd> CHILD          ;
-             [ APPNAME <appname> ]          ;
+             APPNAME <appname>              ;
              [ TITLE <cTitle> ]             ;
              [ AT <x>, <y> ]                ;
              [ SIZE <width>, <height> ]     ;

@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.5 2004-12-08 08:23:17 alkresin Exp $
+ * $Id: drawwidg.prg,v 1.6 2005-08-29 08:33:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -140,7 +140,7 @@ Local i
 
    nStyle := Iif( nStyle == Nil,BS_SOLID,nStyle )
    nWidth := Iif( nWidth == Nil,1,nWidth )
-   nColor := Iif( nColor == Nil,Vcolor("000000"),nColor )
+   nColor := Iif( nColor == Nil,0,nColor )
 
    #ifdef __XHARBOUR__
    For EACH i in ::aPens 
@@ -177,7 +177,7 @@ Local i
 
    nStyle := Iif( nStyle == Nil,PS_SOLID,nStyle )
    nWidth := Iif( nWidth == Nil,1,nWidth )
-   nColor := Iif( nColor == Nil,Vcolor("000000"),nColor )
+   nColor := Iif( nColor == Nil,0,nColor )
 
    #ifdef __XHARBOUR__
    For EACH i in ::aPens 

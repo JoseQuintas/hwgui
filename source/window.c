@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.31 2005-01-10 14:57:51 alkresin Exp $
+ * $Id: window.c,v 1.32 2005-08-29 08:33:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -193,13 +193,11 @@ HB_FUNC( HWG_PROCESSMESSAGE )
 
 }
 
-
-
 HB_FUNC( HWG_INITCHILDWINDOW )
 {
    HWND         hWnd ;
    WNDCLASS     wndclass ;
-   HANDLE hInstance = GetModuleHandle( NULL );
+   HMODULE /*HANDLE*/ hInstance = GetModuleHandle( NULL );
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
    char *szAppName = hb_parc(2);
    char *cTitle = hb_parc( 3 );
@@ -212,39 +210,42 @@ HB_FUNC( HWG_INITCHILDWINDOW )
    HWND hParent = (HWND) hb_parnl(12);
    DWORD ExStyle;
 
-   wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
-   wndclass.lpfnWndProc   = MainWndProc ;
-   wndclass.cbClsExtra    = 0 ;
-   wndclass.cbWndExtra    = 0 ;
-   wndclass.hInstance     = (HINSTANCE)hInstance ;
-   wndclass.hIcon         = (hb_pcount()>4 && !ISNIL(5))? (HICON)hb_parnl(5) : LoadIcon ((HINSTANCE)hInstance,"" );
-   wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-   wndclass.hbrBackground = ( ( (hb_pcount()>5 && !ISNIL(6)) ?  ( (hb_parnl(6)==-1)? (HBRUSH)(COLOR_WINDOW+1) : CreateSolidBrush( hb_parnl(6) ) ) : (HBRUSH)(COLOR_WINDOW+1) ) );
-   wndclass.lpszMenuName  = cMenu ;
-   wndclass.lpszClassName = szAppName ;
-
-
-   UnregisterClass( szAppName, (HINSTANCE)hInstance );
-   if (!RegisterClass (&wndclass))
+   if (!GetClassInfo(hInstance, szAppName, &wndclass))
    {
+      wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
+      wndclass.lpfnWndProc   = MainWndProc ;
+      wndclass.cbClsExtra    = 0 ;
+      wndclass.cbWndExtra    = 0 ;
+      wndclass.hInstance     = (HINSTANCE)hInstance ;
+      wndclass.hIcon         = (hb_pcount()>4 && !ISNIL(5))? (HICON)hb_parnl(5) : LoadIcon ((HINSTANCE)hInstance,"" );
+      wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
+      wndclass.hbrBackground = ( ( (hb_pcount()>5 && !ISNIL(6))?
+                ( (hb_parnl(6)==-1)? (HBRUSH)(COLOR_WINDOW+1) :
+                                     CreateSolidBrush( hb_parnl(6) ) )
+                : (HBRUSH)(COLOR_WINDOW+1) ) );
+      wndclass.lpszMenuName  = cMenu ;
+      wndclass.lpszClassName = szAppName ;
+
+               //UnregisterClass( szAppName, (HINSTANCE)hInstance );
+      if (!RegisterClass (&wndclass))
+      {
          hb_retni( 0 );
 
          #ifdef __XHARBOUR__
-               MessageBox( GetActiveWindow(), szAppName, "Register Child Wnd Class", MB_OK | MB_ICONSTOP );
+            MessageBox( GetActiveWindow(), szAppName, "Register Child Wnd Class", MB_OK | MB_ICONSTOP );
          #endif
 
-
-        return;
+         return;
+      }
    }
 
    ExStyle = 0;
 
    hWnd = CreateWindowEx( ExStyle , szAppName ,TEXT ( cTitle ),
-   WS_OVERLAPPEDWINDOW  | nStyle ,
-   x,y,
-   (!width)? CW_USEDEFAULT:width,
-   (!height)? CW_USEDEFAULT:height,
-   hParent, NULL, (HINSTANCE)hInstance, NULL) ;
+              WS_OVERLAPPEDWINDOW  | nStyle , x,y,
+              (!width)? CW_USEDEFAULT:width,
+              (!height)? CW_USEDEFAULT:height,
+              hParent, NULL, (HINSTANCE)hInstance, NULL) ;
 
    temp = hb_itemPutNL( NULL, 1 );
    SetObjectVar( pObject, "_NHOLDER", temp );

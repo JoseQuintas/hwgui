@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.39 2005-07-19 13:04:17 alkresin Exp $
+ *$Id: hwindow.prg,v 1.40 2005-08-29 08:33:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -294,6 +294,8 @@ Return -1
 
 
 CLASS HChildWindow INHERIT HWindow
+
+   DATA oNotifyMenu
 
    METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                      bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,;

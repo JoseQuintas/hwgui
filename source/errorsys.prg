@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.5 2005-07-07 17:46:14 alkresin Exp $
+ * $Id: errorsys.prg,v 1.6 2005-08-29 08:33:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement
@@ -149,7 +149,7 @@ Local oDlg, oEdit
         AT 92,61 SIZE 400,400
         
 
-   @ 10,10 EDITBOX oEdit CAPTION cMess SIZE 380,340 STYLE WS_VSCROLL+WS_HSCROLL+ES_MULTILINE ;
+   @ 10,10 EDITBOX oEdit CAPTION cMess SIZE 380,340 STYLE WS_VSCROLL+WS_HSCROLL+ES_MULTILINE+ES_READONLY ;
         COLOR 16777088 BACKCOLOR 0 ;
         ON GETFOCUS {||SendMessage(oEdit:handle,EM_SETSEL,0,0)}
 

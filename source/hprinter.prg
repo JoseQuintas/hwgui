@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.16 2005-07-12 15:10:35 alkresin Exp $
+ * $Id: hprinter.prg,v 1.17 2005-08-29 08:33:54 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -263,7 +263,7 @@ Local oDlg, oToolBar, oSayPage, oBtn, oCanvas
 Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
 Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] != Nil .AND. aBitmaps[10] )
 
-   IF cTitle == Nil; cTitle := "Print preview"; ENDIF
+   IF cTitle == Nil; cTitle := "Print preview - "+::cPrinterName; ENDIF
    ::nZoom := 0
    ::nCurrPage := 1
 

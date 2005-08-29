@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.377 2005-07-19 13:04:13 alkresin Exp $
+ * $Id: Changelog,v 1.378 2005-08-29 08:33:54 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,18 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-08-29 12:33 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/window.c
+  * source/hwindow.prg
+  * include/guilib.ch
+    * Some changes in Child windows handling, provided by Alex Strickland
+  * source/errorsys.prg
+    * ES_READONLY added to the error dialog edit box styles, as suggested by Alex Strickland
+  * source/hprinter.prg
+    * Name of the printer added to the default preview dialog title
+  * source/drawwidg.prg
+    * Minor changes
 
 2005-07-19 17:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/guilib.ch

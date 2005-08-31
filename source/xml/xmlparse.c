@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.11 2005-06-23 18:42:03 alkresin Exp $
+ * $Id: xmlparse.c,v 1.12 2005-08-31 11:14:05 alkresin Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -110,20 +110,35 @@ PHB_ITEM hbxml_pp( unsigned char * ptr, ULONG ulLen )
    {
       if( *ptr == '&' )
       {
-         for( i=0; i<5; i++ )
+         if( *(ptr+1) == '#' )
          {
-            nlen = strlen( (char*)predefinedEntity1[i] );
-            if( !memcmp( ptr+1, predefinedEntity1[i], nlen ) )
-            {
-               *ptr = predefinedEntity2[i];
-               ulLen -= nlen;
-               for( ul1=ul+1; ul1<ulLen; ul1++ )
-                  *( ptrStart+ul1 ) = *( ptrStart+ul1+nlen );
-               break;
-            }
+            int iChar;
+            sscanf( ptr+2,"%d",&iChar );
+            *ptr = iChar;
+            i = 1;
+            while( *(ptr+i+1) >= '0' && *(ptr+i+1) <= '9' )
+               i++;
+            ulLen -= i;
+            for( ul1=ul+1; ul1<ulLen; ul1++ )
+               *( ptrStart+ul1 ) = *( ptrStart+ul1+i );
          }
-         if( i == 5 )
-            hbxml_error( HBXML_ERROR_WRONG_ENTITY, ptr );
+         else
+         {
+            for( i=0; i<5; i++ )
+            {
+               nlen = strlen( (char*)predefinedEntity1[i] );
+               if( !memcmp( ptr+1, predefinedEntity1[i], nlen ) )
+               {
+                  *ptr = predefinedEntity2[i];
+                  ulLen -= nlen;
+                  for( ul1=ul+1; ul1<ulLen; ul1++ )
+                     *( ptrStart+ul1 ) = *( ptrStart+ul1+nlen );
+                  break;
+               }
+            }
+            if( i == 5 )
+               hbxml_error( HBXML_ERROR_WRONG_ENTITY, ptr );
+         }
       }
       ptr ++;
       ul ++;

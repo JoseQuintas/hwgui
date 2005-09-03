@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.17 2004-11-15 12:36:21 alkresin Exp $
+ * $Id: commond.c,v 1.18 2005-09-03 23:01:30 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -23,6 +23,9 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
+#ifdef __XHARBOUR__
+#include "hbfast.h"
+#endif
 
 extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
 
@@ -32,29 +35,38 @@ HB_FUNC( SELECTFONT )
    CHOOSEFONT cf;
    LOGFONT lf;
    HFONT hfont;
-   PHB_ITEM aMetr = hb_itemArrayNew( 9 );
-   PHB_ITEM pObj = ( ISNIL(1) )? NULL:hb_param( 1, HB_IT_OBJECT ), temp;
+   PHB_ITEM pObj = ( ISNIL(1) )? NULL:hb_param( 1, HB_IT_OBJECT );
+   PHB_ITEM temp1;
+   #ifdef __XHARBOUR__
+   
+   HB_ITEM_NEW( aMetr) ;
+   HB_ITEM_NEW( temp ) ;   
+   
+   #else
+   PHB_ITEM aMetr = hb_itemArrayNew( 9 ),temp;
+   #endif
+
 
     /* Initialize members of the CHOOSEFONT structure. */
     if( pObj )
     {
        memset( &lf, 0, sizeof(LOGFONT) );
-       temp = GetObjectVar( pObj, "NAME" );
-       strcpy( lf.lfFaceName, hb_itemGetCPtr( temp ) );
-       temp = GetObjectVar( pObj, "WIDTH" );
-       lf.lfWidth = hb_itemGetNI( temp );
-       temp = GetObjectVar( pObj, "HEIGHT" );
-       lf.lfHeight = hb_itemGetNI( temp );
-       temp = GetObjectVar( pObj, "WEIGHT" );
-       lf.lfWeight = hb_itemGetNI( temp );
-       temp = GetObjectVar( pObj, "CHARSET" );
-       lf.lfCharSet = hb_itemGetNI( temp );
-       temp = GetObjectVar( pObj, "ITALIC" );
-       lf.lfItalic = hb_itemGetNI( temp );
-       temp = GetObjectVar( pObj, "UNDERLINE" );
-       lf.lfUnderline = hb_itemGetNI( temp );
-       temp = GetObjectVar( pObj, "STRIKEOUT" );
-       lf.lfStrikeOut = hb_itemGetNI( temp );
+       temp1 = GetObjectVar( pObj, "NAME" );
+       strcpy( lf.lfFaceName, hb_itemGetCPtr( temp1 ) );
+       temp1 = GetObjectVar( pObj, "WIDTH" );
+       lf.lfWidth = hb_itemGetNI( temp1 );
+       temp1 = GetObjectVar( pObj, "HEIGHT" );
+       lf.lfHeight = hb_itemGetNI( temp1 );
+       temp1 = GetObjectVar( pObj, "WEIGHT" );
+       lf.lfWeight = hb_itemGetNI( temp1 );
+       temp1 = GetObjectVar( pObj, "CHARSET" );
+       lf.lfCharSet = hb_itemGetNI( temp1 );
+       temp1 = GetObjectVar( pObj, "ITALIC" );
+       lf.lfItalic = hb_itemGetNI( temp1 );
+       temp1 = GetObjectVar( pObj, "UNDERLINE" );
+       lf.lfUnderline = hb_itemGetNI( temp1 );
+       temp1 = GetObjectVar( pObj, "STRIKEOUT" );
+       lf.lfStrikeOut = hb_itemGetNI( temp1 );
     }
 
     cf.lStructSize = sizeof(CHOOSEFONT);
@@ -84,7 +96,9 @@ HB_FUNC( SELECTFONT )
        hb_itemRelease( temp );
        hb_itemReturn( aMetr );
        */
+       #ifndef __XHARBOUR__
        hb_itemRelease( aMetr );
+       #endif
        hb_ret();
        return;
     }
@@ -94,7 +108,33 @@ HB_FUNC( SELECTFONT )
     /* that font.                                  */
 
     hfont = CreateFontIndirect(cf.lpLogFont);
+   #ifdef __XHARBOUR__
+   {
+   hb_arrayNew( &aMetr, 9 );
+   
+   hb_arraySetForward( &aMetr, 1, hb_itemPutNL( &temp, (LONG) hfont ) );   
+   
+   hb_arraySetForward( &aMetr, 2, hb_itemPutC( &temp, lf.lfFaceName ) );
+   
+   hb_arraySetForward( &aMetr, 3, hb_itemPutNL( &temp, lf.lfWidth ) );
+   
+   hb_arraySetForward( &aMetr, 4, hb_itemPutNL( &temp, lf.lfHeight ) );
+   
+   hb_arraySetForward( &aMetr, 5, hb_itemPutNL( &temp, lf.lfWeight ) );
+   
+   hb_arraySetForward( &aMetr, 6, hb_itemPutNI( &temp, lf.lfCharSet ) );
+   
+   hb_arraySetForward( &aMetr, 7, hb_itemPutNI( &temp, lf.lfItalic ) );
+   
+   hb_arraySetForward( &aMetr, 8, hb_itemPutNI( &temp, lf.lfUnderline ) );
+   
+   hb_arraySetForward( &aMetr, 9, hb_itemPutNI( &temp, lf.lfStrikeOut ) );
 
+   hb_itemClear( &temp );
+   hb_itemForwardValue( &(HB_VM_STACK).Return, &aMetr );
+   }
+   #else
+   {
    temp = hb_itemPutNL( NULL, (LONG) hfont );
    hb_itemArrayPut( aMetr, 1, temp );
    hb_itemRelease( temp );
@@ -133,7 +173,9 @@ HB_FUNC( SELECTFONT )
 
    hb_itemReturn( aMetr );
    hb_itemRelease( aMetr );
-
+   }
+   #endif
+   
 }
 
 HB_FUNC( SELECTFILE )

@@ -362,7 +362,7 @@
          <property name="Font" type="O" />
          <property name="aImages" type="A" />
          <property name="lResource" type="L" value="False" />
-         <property name="lEditLabels" type="L" value="True" />
+         <property name="lEditLabels" type="L" value="False" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onTreeClick" />

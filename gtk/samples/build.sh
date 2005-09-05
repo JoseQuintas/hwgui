@@ -1,6 +1,6 @@
 #!/bin/bash
 export SYSTEM_LIBS="-lm -lncurses"
-export HARBOUR_LIBS="-ldebug -lvm -lrtl -lgtcrs -llang -lrdd -lrtl -lvm -lmacro -lpp -ldbfntx -ldbfcdx -ldbfdbt -lcommon"
+export HARBOUR_LIBS="-ldebug -lvm -lrtl -lgtcrs -llang -lrdd -lrtl -lvm -lmacro -lpp -ldbfntx -ldbfcdx -ldbfdbt -lcommon -lcodepage"
 export HWGUI_LIBS="-lhwgui -lprocmisc -lhbxml"
 export HB_LIB=../../../lib
 export HB_INC=../../../include

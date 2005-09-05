@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.5 2005-03-10 11:32:48 alkresin Exp $
+ *$Id: hcontrol.prg,v 1.6 2005-09-05 05:08:56 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -33,8 +33,9 @@ CLASS HControl INHERIT HCustomWindow
    METHOD Disable()	INLINE EnableWindow( ::handle, .F. )
    METHOD Enable()	INLINE EnableWindow( ::handle, .T. )
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
+   METHOD SetFocus()	INLINE EnableWindow( ::handle, .T. )
+   METHOD Move( x1,y1,width,height )   INLINE hwg_MoveWidget( ::handle,x1,y1,width,height )
    /*
-   METHOD SetFocus()	INLINE ( SendMessage( ::oParent:handle,WM_NEXTDLGCTL,::handle,1),SetFocus( ::handle  ) )
    METHOD GetText()     INLINE GetWindowText(::handle)
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c )
    */

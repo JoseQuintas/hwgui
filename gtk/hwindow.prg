@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.1 2005-01-12 11:56:34 alkresin Exp $
+ *$Id: hwindow.prg,v 1.2 2005-09-05 05:08:56 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HWindow class
@@ -19,22 +19,18 @@ REQUEST ENDWINDOW
 #define  ID_NOTIFYICON           1
 
 Static Function onSize( oWnd,wParam,lParam )
-Local aCoors := GetWindowRect( oWnd:handle )
-/*
+
+   writelog( "OnSize: "+Str(oWnd:nWidth)+" "+Str(oWnd:nHeight)+" "+Str(Loword(lParam))+" "+Str(HiWord(lParam)) )
+
    oWnd:Super:onEvent( WM_SIZE,wParam,lParam )
 
-   oWnd:nWidth  := aCoors[3]-aCoors[1]
-   oWnd:nHeight := aCoors[4]-aCoors[2]
+   oWnd:nWidth  := Loword(lParam)
+   oWnd:nHeight := Hiword(lParam)
 
    IF ISBLOCK( oWnd:bSize )
        Eval( oWnd:bSize, oWnd, LoWord( lParam ), HiWord( lParam ) )
    ENDIF
-   IF oWnd:type == WND_MDI .AND. Len(HWindow():aWindows) > 1
-       aCoors := GetClientRect( oWnd:handle )
-       MoveWindow( HWindow():aWindows[2]:handle, oWnd:aOffset[1], oWnd:aOffset[2],aCoors[3]-oWnd:aOffset[1]-oWnd:aOffset[3],aCoors[4]-oWnd:aOffset[2]-oWnd:aOffset[4] )
-       Return 0
-   ENDIF
-*/
+
 Return -1
 
 Static Function onDestroy( oWnd )

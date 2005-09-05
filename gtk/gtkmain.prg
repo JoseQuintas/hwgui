@@ -1,5 +1,5 @@
 /*
- * $Id: gtkmain.prg,v 1.4 2005-08-29 09:35:02 alkresin Exp $
+ * $Id: gtkmain.prg,v 1.5 2005-09-05 05:08:56 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Main prg level functions
@@ -105,7 +105,7 @@ Local hDC, aMetr, width, height, screenh
        SIZE  width,height           ;
        FONT oFont                   ;
        STYLE WS_BORDER              ;
-       ON SIZE {|o,x,y|MoveWindow(o:handle,addX/2,addY/4,x-addX,y-addY)} ;
+       ON SIZE {|o,x,y|o:Move(,,x,y)} ;
        ON CLICK {|o|nChoice:=o:tekzp,EndDialog(o:oParent:handle)}
 
    IF Valtype( arr[1] ) == "A"

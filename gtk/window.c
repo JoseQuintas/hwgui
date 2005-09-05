@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.4 2005-03-10 11:32:48 alkresin Exp $
+ * $Id: window.c,v 1.5 2005-09-05 05:08:56 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -16,6 +16,7 @@
 #include "guilib.h"
 #include "gtk/gtk.h"
 
+#define WM_SIZE                           5
 #define WM_KEYDOWN                      256    // 0x0100
 #define WM_KEYUP                        257    // 0x0101
 #define WM_MOUSEMOVE                    512    // 0x0200
@@ -33,6 +34,8 @@ PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
 void SetWindowObject( GtkWidget * hWnd, PHB_ITEM pObject );
 void all_signal_connect( gpointer hWnd );
 void cb_signal( GtkWidget *widget,gchar* data );
+void cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data );
+void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 );
 
 PHB_DYNS pSym_onEvent = NULL;
 
@@ -109,6 +112,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    hb_itemRelease( temp );
    SetWindowObject( hWnd, pObject );
    all_signal_connect( G_OBJECT (hWnd) );
+   g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 
    hb_retnl( (LONG) hWnd );
 }
@@ -148,6 +152,7 @@ HB_FUNC( HWG_CREATEDLG )
    hb_itemRelease( temp );
    SetWindowObject( hWnd, pObject );
    all_signal_connect( G_OBJECT (hWnd) );
+   g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 
    hb_retnl( (LONG) hWnd );
 
@@ -179,6 +184,37 @@ void ProcessMessage( void )
 HB_FUNC( HWG_PROCESSMESSAGE )
 {
    ProcessMessage();
+}
+
+void cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data )
+{
+   gpointer gObject = g_object_get_data( (GObject*) widget->parent->parent, "obj" );
+   
+   if( !pSym_onEvent )
+      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
+
+   if( pSym_onEvent && gObject )
+   {
+      PHB_ITEM pObject = hb_itemNew( NULL );
+      LONG p3 = ( (ULONG)(allocation->width) & 0xFFFF ) | 
+                 ( ( (ULONG)(allocation->height) << 16 ) & 0xFFFF0000 );
+
+      pObject->type = HB_IT_OBJECT;
+      pObject->item.asArray.value = (PHB_BASEARRAY) gObject;
+      #ifndef UIHOLDERS
+      pObject->item.asArray.value->ulHolders++;
+      #else
+      pObject->item.asArray.value->uiHolders++;
+      #endif
+      
+      hb_vmPushSymbol( pSym_onEvent->pSymbol );
+      hb_vmPush( pObject );
+      hb_vmPushLong( WM_SIZE );
+      hb_vmPushLong( 0 );
+      hb_vmPushLong( p3 );
+      hb_vmSend( 3 );
+      hb_itemRelease( pObject );
+   }
 }
 
 void cb_signal( GtkWidget *widget,gchar* data )
@@ -232,6 +268,8 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
 
+   //if( !gObject )
+   //   gObject = g_object_get_data( (GObject*) (widget->parent->parent), "obj" );
    if( pSym_onEvent && gObject )
    {
       PHB_ITEM pObject = hb_itemNew( NULL );
@@ -260,6 +298,12 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
 	 p2 = ( ((GdkEventKey*)event)->state & GDK_BUTTON1_MASK )? 1:0;
 	 p3 = ( ((ULONG)(((GdkEventMotion*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
       }
+      else if( event->type == GDK_CONFIGURE )
+      {
+         p1 = WM_SIZE;
+	 p2 = ((GdkEventConfigure*)event)->width;
+	 p3 = ((GdkEventConfigure*)event)->height;
+      }
       else
          sscanf( (char*)data,"%ld %ld %ld",&p1,&p2,&p3 );
       
@@ -282,21 +326,6 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       return lRes;
    }
    return 0;
-}
-
-void all_signal_connect( gpointer hWnd )
-{
-   int i;
-   char buf[20];
-
-   // writelog( "all_signal-connect-0" );
-   for( i=0; i<NUMBER_OF_SIGNALS; i++ )
-   {
-      sprintf( buf,"%d 0 0",aSignals[i].msg );
-      // writelog(buf);
-      g_signal_connect( hWnd, aSignals[i].cName,
-        G_CALLBACK (cb_signal), g_strdup(buf) );
-   }
 }
 
 void set_signal( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 )
@@ -325,6 +354,21 @@ void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long 
 HB_FUNC( HWG_SETEVENT )
 {
    set_event( (gpointer)hb_parnl(1), hb_parc(2), hb_parnl(3), hb_parnl(4), hb_parnl(5) );
+}
+
+void all_signal_connect( gpointer hWnd )
+{
+   int i;
+   char buf[20];
+
+   // writelog( "all_signal-connect-0" );
+   for( i=0; i<NUMBER_OF_SIGNALS; i++ )
+   {
+      sprintf( buf,"%d 0 0",aSignals[i].msg );
+      // writelog(buf);
+      g_signal_connect( hWnd, aSignals[i].cName,
+        G_CALLBACK (cb_signal), g_strdup(buf) );
+   }
 }
 
 GtkWidget * GetActiveWindow( void )

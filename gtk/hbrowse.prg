@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.3 2005-08-29 09:35:02 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.4 2005-09-05 05:08:56 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -145,7 +145,9 @@ CLASS HBrowse INHERIT HControl
    DATA nHeadRows INIT 1                       // Rows in header
    DATA nFootRows INIT 0                       // Rows in footer
    
-   DATA area
+   DATA area, hScrollV, hScrollH
+   DATA nScrollV  INIT 0
+   DATA nScrollH  INIT 0
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
@@ -437,7 +439,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::bRcou   := { | o | len( o:msrec ) }
       ::bRecno  := { | o | o:tekzp }
       ::bGoTo   := { | o, n | o:tekzp := n }
-      /* ::bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)} */
+      ::bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}
    endif
 RETURN Nil
 
@@ -550,6 +552,16 @@ Local oldBkColor, oldTColor
    ::nColumns := FLDCOUNT( Self, ::x1 + 2, ::x2 - 2, ::nLeftCol )
    ::rowCount := Int( (::y2-::y1) / (::height+1) ) - ::nFootRows
    nRows := Min( ::kolz,::rowCount )
+   
+   IF ::hScrollV != Nil
+      tmp := Iif(::kolz<100,::kolz,100)
+      i := Iif(::kolz<100,1,::kolz/100)
+      hwg_SetAdjOptions( ::hScrollV,,tmp+nRows,i,nRows,nRows )
+   ENDIF 
+   IF ::hScrollH != Nil
+      tmp := Len( ::aColumns )
+      hwg_SetAdjOptions( ::hScrollH,,tmp+1,1,1,1 )
+   ENDIF 
 
    IF ::internal[1] == 0
       IF ::rowPos != ::internal[2] .AND. !::lAppMode
@@ -911,29 +923,27 @@ RETURN 1
 
 //----------------------------------------------------//
 METHOD DoHScroll( wParam ) CLASS HBrowse
+Local nScrollH := hwg_getAdjValue( ::hScrollH )
+Local maxPos, nPos, oldLeft := ::nLeftCol, oldPos := ::colpos, fif
 
-   local nScrollCode := LoWord( wParam )
-   local minPos, maxPos, nPos, oldLeft := ::nLeftCol, oldPos := ::colpos, fif
-/*
-   GetScrollRange( ::handle, SB_HORZ, @minPos, @maxPos )
-   nPos := GetScrollPos( ::handle, SB_HORZ )
-*/
-   IF nScrollCode == SB_LINELEFT .OR. nScrollCode == SB_PAGELEFT
+   IF nScrollH - ::nScrollH < 0
       LineLeft( Self )
-   ELSEIF nScrollCode == SB_LINERIGHT .OR. nScrollCode == SB_PAGERIGHT
+   ELSEIF nScrollH - ::nScrollH > 0
       LineRight( Self )
    ENDIF
    IF ::nLeftCol != oldLeft .OR. ::colpos != oldpos
-     /*
-      fif := Iif( ::lEditable, ::colpos+::nLeftCol-1, ::nLeftCol )
-      nPos := Iif( fif==1, minPos, Iif( fif=Len(::aColumns), maxpos, ;
-                   Int((maxPos-minPos+1)*fif/Len(::aColumns)) ) )
-      SetScrollPos( ::handle, SB_HORZ, nPos )
-     */
+      IF ::hScrollV != Nil
+         maxPos := hwg_getAdjValue( ::hScrollH,1 ) - hwg_getAdjValue( ::hScrollH,4 )
+         fif := Iif( ::lEditable, ::colpos+::nLeftCol-1, ::nLeftCol )
+         nPos := Iif( fif==1, 0, Iif( fif=Len(::aColumns), maxpos, ;
+                   Int((maxPos+1)*fif/Len(::aColumns)) ) )
+         hwg_SetAdjOptions( ::hScrollH,nPos )
+         ::nScrollH := nPos
+      ENDIF
       IF ::nLeftCol == oldLeft
          ::RefreshLine()
       ELSE
-         RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+         RedrawWindow( ::area, RDW_ERASE + RDW_INVALIDATE )
       ENDIF
    ENDIF
    SetFocus( ::handle )
@@ -942,8 +952,8 @@ RETURN Nil
 
 //----------------------------------------------------//
 STATIC FUNCTION LINERIGHT( oBrw )
-   locaL i
-
+LocaL i
+   
    if oBrw:lEditable
       IF oBrw:colpos < oBrw:nColumns
          oBrw:colpos ++
@@ -979,40 +989,35 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD DoVScroll( wParam ) CLASS HBrowse
-Local nScrollCode := LoWord( wParam )
+Local nScrollV := hwg_getAdjValue( ::hScrollV )
 
-   if nScrollCode == SB_LINEDOWN
+   if nScrollV - ::nScrollV == 1
       ::LINEDOWN(.T.)
-   elseif nScrollCode == SB_LINEUP
-      ::LINEUP()
-   elseif nScrollCode == SB_BOTTOM
-      ::BOTTOM()
-   elseif nScrollCode == SB_TOP
-      ::TOP()
-   elseif nScrollCode == SB_PAGEDOWN
-      ::PAGEDOWN()
-   elseif nScrollCode == SB_PAGEUP
-      ::PAGEUP()
-
-   elseif nScrollCode == SB_THUMBPOSITION
+   elseif nScrollV - ::nScrollV == -1
+      ::LINEUP(.T.)
+   elseif nScrollV - ::nScrollV == 10
+      ::PAGEDOWN(.T.)
+   elseif nScrollV - ::nScrollV == -10
+      ::PAGEUP(.T.)
+   else
       IF ::bScrollPos != Nil
-         Eval( ::bScrollPos, Self, SB_THUMBPOSITION, .F., Hiword( wParam ) )
-      ENDIF
-   elseif nScrollCode == SB_THUMBTRACK
-      IF ::bScrollPos != Nil
-         Eval( ::bScrollPos, Self, SB_THUMBTRACK, .F., Hiword( wParam ) )
+         Eval( ::bScrollPos, Self, SB_THUMBTRACK, .F., nScrollV )
       ENDIF
    endif
+   ::nScrollV := nScrollV
+   // writelog( "DoVScroll " + Ltrim(Str(::nScrollV)) + " " + Ltrim(Str(::tekzp)) + "( " + Ltrim(Str(::kolz)) + " )" )
 RETURN 0
 
 //----------------------------------------------------//
 METHOD LINEDOWN( lMouse ) CLASS HBrowse
-Local minPos, maxPos, nPos
+Local maxPos := hwg_getAdjValue( ::hScrollV,1 ) - hwg_getAdjValue( ::hScrollV,4 )
+Local nPos
 
+   lMouse := Iif( lMouse==Nil,.F.,lMouse )
    Eval( ::bSkip, Self,1 )
    IF Eval( ::bEof,Self )
       Eval( ::bSkip, Self,- 1 )
-      IF ::lAppable .AND. ( lMouse==Nil.OR.!lMouse )
+      IF ::lAppable .AND. !lMouse
          ::lAppMode := .T.
       ELSE
          SetFocus( ::handle )
@@ -1036,26 +1041,27 @@ Local minPos, maxPos, nPos
    IF !::lAppMode  .OR. ::nLeftCol == 1
       // ::internal[1] := SetBit( ::internal[1], 1, 0 )
    ENDIF
-/*
-   IF ::bScrollPos != Nil
-      Eval( ::bScrollPos, Self, 1, .F. )
-   ELSE
-      GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-      nPos := GetScrollPos( ::handle, SB_VERT )
-      nPos += Int( (maxPos-minPos)/(::kolz-1) )
-      SetScrollPos( ::handle, SB_VERT, nPos )
+   IF !lMouse .AND. ::hScrollV != Nil
+      IF ::bScrollPos != Nil
+         Eval( ::bScrollPos, Self, 1, .F. )
+      ELSE
+         nPos := hwg_getAdjValue( ::hScrollV )
+         nPos += Int( maxPos/(::kolz-1) )
+         hwg_SetAdjOptions( ::hScrollV,nPos )
+         ::nScrollV := nPos
+      ENDIF
    ENDIF
 
-   PostMessage( ::handle, WM_PAINT, 0, 0 )
-*/   
    SetFocus( ::area )
 
 RETURN Nil
 
 //----------------------------------------------------//
-METHOD LINEUP() CLASS HBrowse
-Local minPos, maxPos, nPos
+METHOD LINEUP( lMouse ) CLASS HBrowse
+Local maxPos := hwg_getAdjValue( ::hScrollV,1 ) - hwg_getAdjValue( ::hScrollV,4 )
+Local nPos
 
+   lMouse := Iif( lMouse==Nil,.F.,lMouse )
    EVAL( ::bSkip, Self,- 1 )
    IF EVAL( ::bBof,Self )
       EVAL( ::bGoTop,Self )
@@ -1069,32 +1075,33 @@ Local minPos, maxPos, nPos
          InvalidateRect( ::area, 0, ::x1, ::y1+(::height+1)*::internal[2]-::height, ::x2, ::y1+(::height+1)*::internal[2] )
          InvalidateRect( ::area, 0, ::x1, ::y1+(::height+1)*::rowPos-::height, ::x2, ::y1+(::height+1)*::rowPos )
       ENDIF
-/*
-      IF ::bScrollPos != Nil
-         Eval( ::bScrollPos, Self, -1, .F. )
-      ELSE
-         GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-         nPos := GetScrollPos( ::handle, SB_VERT )
-         nPos -= Int( (maxPos-minPos)/(::kolz-1) )
-         SetScrollPos( ::handle, SB_VERT, nPos )
+
+      IF !lMouse .AND. ::hScrollV != Nil
+         IF ::bScrollPos != Nil
+            Eval( ::bScrollPos, Self, -1, .F. )
+         ELSE
+            nPos := hwg_getAdjValue( ::hScrollV )
+            nPos -= Int( maxPos/(::kolz-1) )
+            hwg_SetAdjOptions( ::hScrollV,nPos )
+            ::nScrollV := nPos
+         ENDIF
       ENDIF
-*/      
-      // ::internal[1] := SetBit( ::internal[1], 1, 0 )
-      /* PostMessage( ::handle, WM_PAINT, 0, 0 ) */
+      
    ENDIF
    SetFocus( ::area )
    
 RETURN Nil
 
 //----------------------------------------------------//
-METHOD PAGEUP() CLASS HBrowse
-Local minPos, maxPos, nPos, step, lBof := .F.
+METHOD PAGEUP( lMouse ) CLASS HBrowse
+Local maxPos := hwg_getAdjValue( ::hScrollV,1 ) - hwg_getAdjValue( ::hScrollV,4 )
+Local nPos, step, lBof := .F.
 
+   lMouse := Iif( lMouse==Nil,.F.,lMouse )
    IF ::rowPos > 1
       step := ( ::rowPos - 1 )
       EVAL( ::bSKip, Self,- step )
       ::rowPos := 1
-      InvalidateRect( ::area, 0 )
    ELSE
       step := ::rowCurrCount    // Min( ::kolz,::rowCount )
       EVAL( ::bSkip, Self,- step )
@@ -1104,66 +1111,72 @@ Local minPos, maxPos, nPos, step, lBof := .F.
       ENDIF
    ENDIF
 
-   /*
-   IF ::bScrollPos != Nil
-      Eval( ::bScrollPos, Self, - step, lBof )
-   ELSE
-      GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-      nPos := GetScrollPos( ::handle, SB_VERT )
-      nPos := Max( nPos - Int( (maxPos-minPos)*step/(::kolz-1) ), minPos )
-      SetScrollPos( ::handle, SB_VERT, nPos )
+   IF !lMouse .AND. ::hScrollV != Nil
+      IF ::bScrollPos != Nil
+         Eval( ::bScrollPos, Self, - step, lBof )
+      ELSE
+         nPos := hwg_getAdjValue( ::hScrollV )
+         nPos -= Int( maxPos/(::kolz-1) )
+         nPos := Max( nPos - Int( maxPos*step/(::kolz-1) ), 0 )
+         hwg_SetAdjOptions( ::hScrollV,nPos )
+         ::nScrollV := nPos
+      ENDIF
    ENDIF
-   */
 
+   InvalidateRect( ::area, 0 )
    SetFocus( ::area )
 RETURN Nil
 
 //----------------------------------------------------//
-METHOD PAGEDOWN() CLASS HBrowse
-Local minPos, maxPos, nPos, nRows := ::rowCurrCount
-Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows )
+METHOD PAGEDOWN( lMouse ) CLASS HBrowse
+Local maxPos := hwg_getAdjValue( ::hScrollV,1 ) - hwg_getAdjValue( ::hScrollV,4 )
+Local nPos, nRows := ::rowCurrCount
+Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows ), lEof
 
+   lMouse := Iif( lMouse==Nil,.F.,lMouse )
    EVAL( ::bSkip, Self, step )
    ::rowPos := Min( ::kolz, nRows )
-/*
-   IF ::bScrollPos != Nil
-      Eval( ::bScrollPos, Self, step, EVAL( ::bEof,Self ) )
-   ELSE
-      GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-      nPos := GetScrollPos( ::handle, SB_VERT )
-      IF EVAL( ::bEof,Self )
-         EVAL( ::bSkip, Self,- 1 )
-         nPos := maxPos
-      ELSE
-         nPos := Min( nPos + Int( (maxPos-minPos)*step/(::kolz-1) ), maxPos )
-      ENDIF
-      SetScrollPos( ::handle, SB_VERT, nPos )
+   lEof := EVAL( ::bEof,Self )
+   IF lEof .AND. ::bScrollPos == Nil
+      EVAL( ::bSkip, Self,- 1 )
    ENDIF
-*/
+
+   IF !lMouse .AND. ::hScrollV != Nil
+      IF ::bScrollPos != Nil
+         Eval( ::bScrollPos, Self, step, lEof )
+      ELSE
+         nPos := hwg_getAdjValue( ::hScrollV )
+         IF lEof     
+            nPos := maxPos
+         ELSE
+            nPos := Min( nPos + Int( maxPos*step/(::kolz-1) ), maxPos )
+         ENDIF
+         hwg_SetAdjOptions( ::hScrollV,nPos )
+         ::nScrollV := nPos
+      ENDIF
+   ENDIF
+
    InvalidateRect( ::area, 0 )
    SetFocus( ::area )
 RETURN Nil
 
 //----------------------------------------------------//
 METHOD BOTTOM(lPaint) CLASS HBrowse
-Local minPos, maxPos, nPos
+Local nPos
 
    ::rowPos := lastrec()
    eval( ::bGoBot, Self )
    ::rowPos := min( ::kolz, ::rowCount )
 
-/*
-   GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-
-   nPos := GetScrollPos( ::handle, SB_VERT )
-   nPos := maxPos
-   SetScrollPos( ::handle, SB_VERT, nPos )
-*/   
+   IF ::hScrollV != Nil
+      nPos := hwg_getAdjValue( ::hScrollV,1 ) - hwg_getAdjValue( ::hScrollV,4 )
+      hwg_SetAdjOptions( ::hScrollV,nPos )
+      ::nScrollV := nPos
+   ENDIF
+   
    InvalidateRect( ::area, 0 )
 
-   // ::internal[1] := SetBit( ::internal[1], 1, 0 )
    IF lPaint == Nil .OR. lPaint
-      // PostMessage( ::handle, WM_PAINT, 0, 0 )
       SetFocus( ::area )
    ENDIF
 
@@ -1171,19 +1184,18 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD TOP() CLASS HBrowse
-Local minPos, maxPos, nPos
+Local nPos
 
    ::rowPos := 1
    EVAL( ::bGoTop,Self )
-/*
-   GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-   nPos := GetScrollPos( ::handle, SB_VERT )
-   nPos := minPos
-   SetScrollPos( ::handle, SB_VERT, nPos )
-*/   
+
+   IF ::hScrollV != Nil
+      nPos := 0
+      hwg_SetAdjOptions( ::hScrollV,nPos )
+      ::nScrollV := nPos
+   ENDIF
+   
    InvalidateRect( ::area, 0 )
-   // ::internal[1] := SetBit( ::internal[1], 1, 0 )
-   // PostMessage( ::handle, WM_PAINT, 0, 0 )
    SetFocus( ::area )
 
 RETURN Nil
@@ -1193,7 +1205,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
 Local hBrw := ::handle
 Local nLine := Int( HIWORD(lParam)/(::height+1) + Iif(::lDispHead,1-::nHeadRows,1) )
 Local step := nLine - ::rowPos, res := .F., nrec
-Local minPos, maxPos, nPos
+Local maxPos, nPos
 Local xm := LOWORD(lParam), x1, fif
 
    IF nLine > 0 .AND. nLine <= ::rowCurrCount
@@ -1202,16 +1214,16 @@ Local xm := LOWORD(lParam), x1, fif
          EVAL( ::bSkip, Self, step )
          IF !Eval( ::bEof,Self )
             ::rowPos := nLine
-	    /*
-            IF ::bScrollPos != Nil
-               Eval( ::bScrollPos, Self, step, .F. )
-            ELSE	    
-               GetScrollRange( hBrw, SB_VERT, @minPos, @maxPos )
-               nPos := GetScrollPos( hBrw, SB_VERT )
-               nPos := Min( nPos + Int( (maxPos-minPos)*step/(::kolz-1) ), maxPos )
-               SetScrollPos( hBrw, SB_VERT, nPos )
-            ENDIF
-	    */
+	    IF ::hScrollV != Nil
+               IF ::bScrollPos != Nil
+                  Eval( ::bScrollPos, Self, step, .F. )
+               ELSE	    
+                  nPos := hwg_getAdjValue( ::hScrollV )
+		  maxPos := hwg_getAdjValue( ::hScrollV,1 ) - hwg_getAdjValue( ::hScrollV,4 )
+                  nPos := Min( nPos + Int( maxPos*step/(::kolz-1) ), maxPos )
+   	          hwg_SetAdjOptions( ::hScrollV,nPos )
+               ENDIF
+	    ENDIF
             res := .T.
          ELSE
             Go nrec
@@ -1226,12 +1238,12 @@ Local xm := LOWORD(lParam), x1, fif
          ENDDO
          IF ::colpos != fif - ::nLeftCol + 1 + :: freeze
             ::colpos := fif - ::nLeftCol + 1 + :: freeze
-	    /*
-            GetScrollRange( hBrw, SB_HORZ, @minPos, @maxPos )
-            nPos := Iif( fif==1, minPos, Iif( fif=Len(::aColumns), maxpos, ;
-                         Int((maxPos-minPos+1)*fif/Len(::aColumns)) ) )
-            SetScrollPos( hBrw, SB_HORZ, nPos )
-	    */
+	    IF ::hScrollH != Nil
+	       maxPos := hwg_getAdjValue( ::hScrollH,1 ) - hwg_getAdjValue( ::hScrollH,4 )
+               nPos := Iif( fif==1, 0, Iif( fif=Len(::aColumns), maxpos, ;
+                         Int((maxPos+1)*fif/Len(::aColumns)) ) )
+	       hwg_SetAdjOptions( ::hScrollH,nPos )
+	    ENDIF
             res := .T.
          ENDIF
       ENDIF
@@ -1239,7 +1251,6 @@ Local xm := LOWORD(lParam), x1, fif
          InvalidateRect( ::area, 0, ::x1, ::y1+(::height+1)*::internal[2]-::height, ::x2, ::y1+(::height+1)*::internal[2] )
          InvalidateRect( ::area, 0, ::x1, ::y1+(::height+1)*::rowPos-::height, ::x2, ::y1+(::height+1)*::rowPos )
          ::internal[1] := SetBit( ::internal[1], 1, 0 )
-         /* PostMessage( hBrw, WM_PAINT, 0, 0 ) */
       ENDIF
    ELSEIF nLine == 0
       IF oCursor == crossCursor
@@ -1339,6 +1350,7 @@ return nil
 
 //----------------------------------------------------//
 METHOD Edit( wParam,lParam ) CLASS HBrowse
+/*
 Local fipos, lRes, x1, y1, fif, nWidth, lReadExit, rowPos
 Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
 
@@ -1380,16 +1392,15 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
             rowPos ++
          ENDIF
          y1 := ::y1+(::height+1)*rowPos
-
-         /* aCoors := ClientToScreen( ::handle,x1,y1 ) */
+         aCoors := ClientToScreen( ::handle,x1,y1 )
          x1 := aCoors[1]
          y1 := aCoors[2]
-
+	 
          lReadExit := ReadExit( .T. )
-	 /*
+	 
          bInit := Iif( wParam==Nil, {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1)}, ;
             {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1),PostMessage(o:aControls[1]:handle,WM_KEYDOWN,wParam,lParam)} )
-         */
+         
          INIT DIALOG oModDlg STYLE WS_POPUP+1+Iif(oColumn:aList==Nil,WS_BORDER,0) ;
             AT x1,y1                             ;
             SIZE nWidth, ::height                ;
@@ -1467,18 +1478,18 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
                ENDIF
                
                ::lUpdated := .T.
-               /* InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*(::rowPos-2), ::x2, ::y1+(::height+1)*::rowPos ) */
+               InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*(::rowPos-2), ::x2, ::y1+(::height+1)*::rowPos )
                ::RefreshLine()
             ENDIF
 
-            /* Execute block after changes are made */
+            // Execute block after changes are made
             IF ::bUpdate != nil
                 Eval( ::bUpdate,  Self, fipos )         
             END
    
          ELSEIF ::lAppMode
             ::lAppMode := .F.
-            /* InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*::rowPos, ::x2, ::y1+(::height+1)*(::rowPos+2) ) */
+            InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*::rowPos, ::x2, ::y1+(::height+1)*(::rowPos+2) )
             ::RefreshLine()
          ENDIF
          SetFocus( ::handle )
@@ -1486,13 +1497,13 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
 
       ENDIF
    ENDIF
+*/
 RETURN Nil
 
 //----------------------------------------------------//
 METHOD RefreshLine() CLASS HBrowse
    ::internal[1] := 0
    InvalidateRect( ::area, 0, ::x1, ::y1+(::height+1)*::rowPos-::height, ::x2, ::y1+(::height+1)*::rowPos )
-   // SendMessage( ::handle, WM_PAINT, 0, 0 )
 RETURN Nil
 
 //----------------------------------------------------//
@@ -1504,7 +1515,6 @@ METHOD Refresh( lFull ) CLASS HBrowse
    ELSE
       InvalidateRect( ::area, 0 )
       ::internal[1] := SetBit( ::internal[1], 1, 0 )
-      // PostMessage( ::handle, WM_PAINT, 0, 0 )
    ENDIF
    
 RETURN Nil
@@ -1644,26 +1654,23 @@ Local kolf := FCOUNT()
 RETURN Nil
 
 Function VScrollPos( oBrw, nType, lEof, nPos )
-Local minPos, maxPos, oldRecno, newRecno
-/*
-   GetScrollRange( oBrw:handle, SB_VERT, @minPos, @maxPos )
+Local maxPos := hwg_getAdjValue( oBrw:hScrollV,1 ) - hwg_getAdjValue( oBrw:hScrollV,4 )
+Local oldRecno, newRecno
+
    IF nPos == Nil
       IF nType > 0 .AND. lEof
          EVAL( oBrw:bSkip, oBrw,- 1 )
       ENDIF
-      nPos := Round( ( (maxPos-minPos)/(oBrw:kolz-1) ) * ;
-         ( EVAL( oBrw:bRecno,oBrw )-1 ),0 )
-      SetScrollPos( oBrw:handle, SB_VERT, nPos )
+      nPos := Round( ( maxPos/(oBrw:kolz-1) ) * ( EVAL( oBrw:bRecno,oBrw )-1 ),0 )
+      hwg_SetAdjOptions( oBrw:hScrollV,nPos )
+      oBrw:nScrollV := nPos
    ELSE
       oldRecno := EVAL( oBrw:bRecno,oBrw )
-      newRecno := Round( (oBrw:kolz-1)*nPos/(maxPos-minPos)+1,0 )
+      newRecno := Round( (oBrw:kolz-1)*nPos/maxPos+1,0 )
       IF newRecno <= 0
          newRecno := 1
       ELSEIF newRecno > oBrw:kolz
          newRecno := oBrw:kolz
-      ENDIF
-      IF nType == SB_THUMBPOSITION
-         SetScrollPos( oBrw:handle, SB_VERT, nPos )
       ENDIF
       IF newRecno != oldRecno
          EVAL( oBrw:bSkip, oBrw, newRecno - oldRecno )
@@ -1673,10 +1680,10 @@ Local minPos, maxPos, oldRecno, newRecno
          IF oBrw:rowPos > newRecno
             oBrw:rowPos := newRecno
          ENDIF
-         oBrw:Refresh(.F.)
+         oBrw:Refresh()
       ENDIF
    ENDIF
-*/
+
 Return Nil
 
 //----------------------------------------------------//

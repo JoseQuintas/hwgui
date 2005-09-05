@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.7 2005-03-10 11:32:48 alkresin Exp $
+ * $Id: control.c,v 1.8 2005-09-05 05:08:56 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -31,10 +31,13 @@
 #define SS_OWNERDRAW        13    // 0x0000000DL
 
 #define WM_PAINT            15
+#define WM_HSCROLL         276
+#define WM_VSCROLL         277
 
 extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
 extern void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
 extern void SetWindowObject( GtkWidget * hWnd, PHB_ITEM pObject );
+extern void set_signal( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 );
 extern void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 );
 extern void cb_signal( GtkWidget *widget,gchar* data );
 extern GtkWidget * GetActiveWindow( void );
@@ -148,7 +151,7 @@ HB_FUNC( CREATEBUTTON )
    g_free( cTitle );
    box = getFixedBox( (GObject*) hb_parnl(1) );
    if ( box )
-      gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );  
+      gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );
    gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
 
    hb_retnl( (LONG) hCtrl );
@@ -306,7 +309,7 @@ HB_FUNC( CREATEBROWSE )
    GtkWidget *vscroll, *hscroll;
    GtkWidget *area;
    GtkFixed * box;
-   PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
+   PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp; 
    GObject * handle;
    int nLeft = hb_itemGetNI( GetObjectVar( pObject, "NLEFT" ) );
    int nTop = hb_itemGetNI( GetObjectVar( pObject, "NTOP" ) );
@@ -325,15 +328,33 @@ HB_FUNC( CREATEBROWSE )
    gtk_box_pack_start( GTK_BOX( hbox ), vbox, TRUE, TRUE, 0 );
    if( ulStyle & WS_VSCROLL )
    {
-      vscroll = gtk_vscrollbar_new( NULL );   
+      GtkObject *adjV;
+      adjV = gtk_adjustment_new( 0.0, 0.0, 101.0, 1.0, 10.0, 10.0 );
+      vscroll = gtk_vscrollbar_new( GTK_ADJUSTMENT (adjV) );
       gtk_box_pack_end( GTK_BOX( hbox ), vscroll, FALSE, FALSE, 0 );
+      
+      temp = hb_itemPutNL( NULL, (ULONG)adjV );
+      SetObjectVar( pObject, "_HSCROLLV", temp );
+      hb_itemRelease( temp );
+      
+      SetWindowObject( (GtkWidget*)adjV, pObject );
+      set_signal( (gpointer)adjV, "value_changed", WM_VSCROLL, 0, 0 );
    }
 
    gtk_box_pack_start( GTK_BOX( vbox ), area, TRUE, TRUE, 0 );
    if( ulStyle & WS_HSCROLL )
    { 
-      hscroll = gtk_hscrollbar_new( NULL );
+      GtkObject *adjH;
+      adjH = gtk_adjustment_new( 0.0, 0.0, 101.0, 1.0, 10.0, 10.0 );
+      hscroll = gtk_hscrollbar_new( GTK_ADJUSTMENT (adjH) );
       gtk_box_pack_end( GTK_BOX( vbox ), hscroll, FALSE, FALSE, 0 );
+      
+      temp = hb_itemPutNL( NULL, (ULONG)adjH );
+      SetObjectVar( pObject, "_HSCROLLH", temp );
+      hb_itemRelease( temp );
+      
+      SetWindowObject( (GtkWidget*)adjH, pObject );
+      set_signal( (gpointer)adjH, "value_changed", WM_HSCROLL, 0, 0 );
    }
    
    box = getFixedBox( handle );
@@ -360,6 +381,63 @@ HB_FUNC( CREATEBROWSE )
    set_event( (gpointer)area, "key_release_event", 0, 0, 0 );
    
    hb_retnl( (LONG) hbox );
+}
+
+HB_FUNC( HWG_GETADJVALUE )
+{
+   GtkAdjustment *adj = (GtkAdjustment *) hb_parnl(1);
+   int iOption = (ISNIL(2))? 0 : hb_parni(2);
+   
+   if( iOption == 0 )
+      hb_retnl( (LONG) adj->value );
+   else if( iOption == 1 )
+      hb_retnl( (LONG) adj->upper );
+   else if( iOption == 2 )
+      hb_retnl( (LONG) adj->step_increment );
+   else if( iOption == 3 )
+      hb_retnl( (LONG) adj->page_increment );
+   else if( iOption == 4 )
+      hb_retnl( (LONG) adj->page_size );
+   else
+      hb_retnl( 0 );
+}
+
+/*
+ * hwg_SetAdjOptions( hAdj, value, maxpos, step, pagestep, pagesize )
+ */
+HB_FUNC( HWG_SETADJOPTIONS )
+{
+   GtkAdjustment *adj = (GtkAdjustment *) hb_parnl(1);
+   gdouble value;
+   int lChanged = 0;
+   
+   if( !ISNIL(2) && ( value = (gdouble)hb_parnl(2) ) != adj->value )
+   {
+      adj->value = value;
+      lChanged = 1;
+   }
+   if( !ISNIL(3) && ( value = (gdouble)hb_parnl(3) ) != adj->upper )
+   {
+      adj->upper = value;
+      lChanged = 1;
+   }
+   if( !ISNIL(4) && ( value = (gdouble)hb_parnl(4) ) != adj->step_increment )
+   {
+      adj->step_increment = value;
+      lChanged = 1;
+   }
+   if( !ISNIL(5) && ( value = (gdouble)hb_parnl(5) ) != adj->page_increment )
+   {
+      adj->page_increment = value;
+      lChanged = 1;
+   }
+   if( !ISNIL(6) && ( value = (gdouble)hb_parnl(6) ) != adj->page_size )
+   {
+      adj->page_size = value;
+      lChanged = 1;
+   }
+   if( lChanged )
+      gtk_adjustment_changed( adj );
 }
 
 HB_FUNC( HWG_CREATESEP )
@@ -417,7 +495,7 @@ HB_FUNC( HWG_SETTIMER )
 {
    char buf[10];
    sprintf( buf,"%ld",hb_parnl(1) );
-   hb_retni( (gint) gtk_timeout_add( (guint32)hb_parnl(2), G_CALLBACK (cb_timer), g_strdup(buf) ) );
+   hb_retni( (gint) gtk_timeout_add( (guint32)hb_parnl(2), (GtkFunction)cb_timer, g_strdup(buf) ) );
 }
 
 /*
@@ -449,4 +527,18 @@ HB_FUNC( HWG_SETCURSOR )
    GtkWidget * widget = (ISNUM(2))? (GtkWidget*) hb_parnl(2) : GetActiveWindow();
    gdk_window_set_cursor( widget->window,
             (GdkCursor*) hb_parnl(1) );
+}
+
+HB_FUNC( HWG_MOVEWIDGET )
+{
+   GtkWidget * widget = (GtkWidget*) hb_parnl(1);
+
+   if( !ISNIL(2) && !ISNIL(3) )
+   {
+      gtk_fixed_move( (GtkFixed*) widget->parent, widget, (gint)hb_parni(2), (gint)hb_parni(3) );
+   }
+   if( !ISNIL(4) && !ISNIL(5) )
+   { 
+      gtk_widget_set_size_request( widget, hb_parni(4), hb_parni(5) );
+   }
 }

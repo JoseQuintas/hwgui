@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.3 2005-03-10 11:32:48 alkresin Exp $
+ *$Id: hdialog.prg,v 1.4 2005-09-05 05:08:56 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
@@ -294,11 +294,6 @@ Return 1
 Static Function onSize( oDlg,wParam,lParam )
 Local aControls, iCont
 
-/*
-   aControls := GetWindowRect( oDlg:handle )
-   oDlg:nWidth  := aControls[3]-aControls[1]
-   oDlg:nHeight := aControls[4]-aControls[2]
-*/   
    IF oDlg:bSize != Nil .AND. ;
        ( oDlg:oParent == Nil .OR. !__ObjHasMsg( oDlg:oParent,"ACONTROLS" ) )
       Eval( oDlg:bSize, oDlg, LoWord( lParam ), HiWord( lParam ) )

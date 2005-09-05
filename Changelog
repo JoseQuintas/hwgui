@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.383 2005-09-03 23:01:29 lculik Exp $
+ * $Id: Changelog,v 1.384 2005-09-05 05:08:56 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-09-05 09:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/control.c
+  * gtk/gtkmain.prg
+  * gtk/hbrowse.prg
+    * HBrowse() significantly improved - scroll bars works now.
+  * gtk/hcontrol.prg
+  * gtk/hdialog.prg
+  * gtk/hwindow.prg
+  * gtk/window.c
+    * Implementation of onSize event added.
 
 2005-09-03 20:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/commond.c

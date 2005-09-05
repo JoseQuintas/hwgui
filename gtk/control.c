@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.8 2005-09-05 05:08:56 alkresin Exp $
+ * $Id: control.c,v 1.9 2005-09-05 10:59:26 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -535,10 +535,16 @@ HB_FUNC( HWG_MOVEWIDGET )
 
    if( !ISNIL(2) && !ISNIL(3) )
    {
-      gtk_fixed_move( (GtkFixed*) widget->parent, widget, (gint)hb_parni(2), (gint)hb_parni(3) );
+      gtk_fixed_move( (GtkFixed*) (widget->parent), widget, (gint)hb_parni(2), (gint)hb_parni(3) );
    }
-   if( !ISNIL(4) && !ISNIL(5) )
+   if( !ISNIL(4) || !ISNIL(5) )
    { 
-      gtk_widget_set_size_request( widget, hb_parni(4), hb_parni(5) );
+      gint w, h, w1, h1;
+      
+      gtk_widget_get_size_request( widget, &w, &h );
+      w1 = ( ISNIL(4) )? w : hb_parni(4);
+      h1 = ( ISNIL(5) )? h : hb_parni(5);
+      if( w != w1 || h != h1 )
+         gtk_widget_set_size_request( widget, w1, h1 );
    }
 }

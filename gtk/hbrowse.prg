@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.4 2005-09-05 05:08:56 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.5 2005-09-05 13:00:39 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -285,9 +285,9 @@ Static keyCode := 0
             ELSEIF wParam == GDK_Up    // Up
                ::LINEUP()
             ELSEIF wParam == GDK_Right    // Right
-               ::DoHScroll( SB_LINERIGHT )
+               LineRight( Self )
             ELSEIF wParam == GDK_Left    // Left
-               ::DoHScroll( SB_LINELEFT )
+               LineLeft( Self )
             ELSEIF wParam == GDK_Home    // Home
                ::TOP()
             ELSEIF wParam == GDK_End    // End
@@ -456,9 +456,6 @@ METHOD Rebuild( hDC ) CLASS HBrowse
    ENDIF
    IF ::bcolor != Nil
       ::brush     := HBrush():Add( ::bcolor )
-      IF hDC != Nil
-         /* SendMessage( ::handle, WM_ERASEBKGND, hDC, 0 ) */
-      ENDIF
    ENDIF
    IF ::bcolorSel != Nil
       ::brushSel  := HBrush():Add( ::bcolorSel )
@@ -846,7 +843,7 @@ Local lColumnFont := .F.
                   NEXT
 		 */
                ELSE
-                  sviv := FLDSTR( Self,fif )
+                  sviv := AllTrim( FldStr( Self,fif ) )
                   // Ahora lineas Justificadas !!
                   IF ::aColumns[fif]:tColor != Nil
                      oldT1Color := SetTextColor( hDC, ::aColumns[fif]:tColor )
@@ -924,54 +921,55 @@ RETURN 1
 //----------------------------------------------------//
 METHOD DoHScroll( wParam ) CLASS HBrowse
 Local nScrollH := hwg_getAdjValue( ::hScrollH )
-Local maxPos, nPos, oldLeft := ::nLeftCol, oldPos := ::colpos, fif
 
    IF nScrollH - ::nScrollH < 0
       LineLeft( Self )
    ELSEIF nScrollH - ::nScrollH > 0
       LineRight( Self )
    ENDIF
-   IF ::nLeftCol != oldLeft .OR. ::colpos != oldpos
-      IF ::hScrollV != Nil
-         maxPos := hwg_getAdjValue( ::hScrollH,1 ) - hwg_getAdjValue( ::hScrollH,4 )
-         fif := Iif( ::lEditable, ::colpos+::nLeftCol-1, ::nLeftCol )
-         nPos := Iif( fif==1, 0, Iif( fif=Len(::aColumns), maxpos, ;
-                   Int((maxPos+1)*fif/Len(::aColumns)) ) )
-         hwg_SetAdjOptions( ::hScrollH,nPos )
-         ::nScrollH := nPos
-      ENDIF
-      IF ::nLeftCol == oldLeft
-         ::RefreshLine()
-      ELSE
-         RedrawWindow( ::area, RDW_ERASE + RDW_INVALIDATE )
-      ENDIF
-   ENDIF
-   SetFocus( ::handle )
 
 RETURN Nil
 
 //----------------------------------------------------//
 STATIC FUNCTION LINERIGHT( oBrw )
-LocaL i
+Local maxPos, nPos, oldLeft := oBrw:nLeftCol, oldPos := oBrw:colpos, fif
+LocaL i, nColumns := Len(oBrw:aColumns)
    
-   if oBrw:lEditable
-      IF oBrw:colpos < oBrw:nColumns
+   IF oBrw:lEditable .AND. oBrw:colpos < oBrw:nColumns
          oBrw:colpos ++
-         RETURN Nil
-      endif
-   endif
-   IF oBrw:nColumns + oBrw:nLeftCol - oBrw:freeze - 1 < Len(oBrw:aColumns) ;
-        .AND. oBrw:nLeftCol < Len(oBrw:aColumns)
+   ELSEIF oBrw:nColumns + oBrw:nLeftCol - oBrw:freeze - 1 < nColumns ;
+               .AND. oBrw:nLeftCol < nColumns
       i := oBrw:nLeftCol + oBrw:nColumns
-      DO WHILE oBrw:nColumns + oBrw:nLeftCol - oBrw:freeze - 1 < Len(oBrw:aColumns) .AND. oBrw:nLeftCol + oBrw:nColumns = i
+      DO WHILE oBrw:nColumns + oBrw:nLeftCol - oBrw:freeze - 1 < nColumns .AND. oBrw:nLeftCol + oBrw:nColumns = i
          oBrw:nLeftCol ++
       ENDDO
       oBrw:colpos := i - oBrw:nLeftCol + 1
    ENDIF
+   
+   IF oBrw:nLeftCol != oldLeft .OR. oBrw:colpos != oldpos
+      IF oBrw:hScrollV != Nil
+         maxPos := hwg_getAdjValue( oBrw:hScrollH,1 ) - hwg_getAdjValue( oBrw:hScrollH,4 )
+         fif := Iif( oBrw:lEditable, oBrw:colpos+oBrw:nLeftCol-1, oBrw:nLeftCol )
+         nPos := Iif( fif==1, 0, Iif( fif=nColumns, maxpos, ;
+                   Int((maxPos+1)*fif/nColumns) ) )
+         hwg_SetAdjOptions( oBrw:hScrollH,nPos )
+         oBrw:nScrollH := nPos
+      ENDIF
+      IF oBrw:nLeftCol == oldLeft
+         oBrw:internal[1] := 1
+         InvalidateRect( oBrw:area, 0, oBrw:x1, oBrw:y1+(oBrw:height+1)*oBrw:internal[2]-oBrw:height, oBrw:x2, oBrw:y1+(oBrw:height+1)*(oBrw:rowPos+1) )
+      ELSE
+         InvalidateRect( oBrw:area, 0 )
+      ENDIF
+   ENDIF
+   SetFocus( oBrw:handle )
+   
 RETURN Nil
 
 //----------------------------------------------------//
 STATIC FUNCTION LINELEFT( oBrw )
+Local maxPos, nPos, oldLeft := oBrw:nLeftCol, oldPos := oBrw:colpos, fif
+LocaL nColumns := Len(oBrw:aColumns)
 
    IF oBrw:lEditable
       oBrw:colpos --
@@ -985,6 +983,24 @@ STATIC FUNCTION LINELEFT( oBrw )
    IF oBrw:colpos < 1
       oBrw:colpos := 1
    ENDIF
+   IF oBrw:nLeftCol != oldLeft .OR. oBrw:colpos != oldpos
+      IF oBrw:hScrollV != Nil
+         maxPos := hwg_getAdjValue( oBrw:hScrollH,1 ) - hwg_getAdjValue( oBrw:hScrollH,4 )
+         fif := Iif( oBrw:lEditable, oBrw:colpos+oBrw:nLeftCol-1, oBrw:nLeftCol )
+         nPos := Iif( fif==1, 0, Iif( fif=nColumns, maxpos, ;
+                   Int((maxPos+1)*fif/nColumns) ) )
+         hwg_SetAdjOptions( oBrw:hScrollH,nPos )
+         oBrw:nScrollH := nPos
+      ENDIF
+      IF oBrw:nLeftCol == oldLeft
+         oBrw:internal[1] := 1
+         InvalidateRect( oBrw:area, 0, oBrw:x1, oBrw:y1+(oBrw:height+1)*oBrw:internal[2]-oBrw:height, oBrw:x2, oBrw:y1+(oBrw:height+1)*(oBrw:rowPos+1) )
+      ELSE
+         InvalidateRect( oBrw:area, 0 )
+      ENDIF
+   ENDIF
+   SetFocus( oBrw:handle )
+
 RETURN Nil
 
 //----------------------------------------------------//
@@ -1037,9 +1053,6 @@ Local nPos
          ::rowPos --
       ENDIF
       ::colPos := ::nLeftCol := 1
-   ENDIF
-   IF !::lAppMode  .OR. ::nLeftCol == 1
-      // ::internal[1] := SetBit( ::internal[1], 1, 0 )
    ENDIF
    IF !lMouse .AND. ::hScrollV != Nil
       IF ::bScrollPos != Nil
@@ -1248,9 +1261,9 @@ Local xm := LOWORD(lParam), x1, fif
          ENDIF
       ENDIF
       IF res
+         ::internal[1] := 1
          InvalidateRect( ::area, 0, ::x1, ::y1+(::height+1)*::internal[2]-::height, ::x2, ::y1+(::height+1)*::internal[2] )
          InvalidateRect( ::area, 0, ::x1, ::y1+(::height+1)*::rowPos-::height, ::x2, ::y1+(::height+1)*::rowPos )
-         ::internal[1] := SetBit( ::internal[1], 1, 0 )
       ENDIF
    ELSEIF nLine == 0
       IF oCursor == crossCursor
@@ -1637,9 +1650,9 @@ Local i
 Local nArea := select()
 Local kolf := FCOUNT()
 
-   oBrw:alias   := alias()
-
+   oBrw:alias := alias()
    oBrw:aColumns := {}
+   
    for i := 1 TO kolf
       oBrw:AddColumn( HColumn():New( Fieldname(i),                      ;
                                      FieldWBlock( Fieldname(i),nArea ), ;

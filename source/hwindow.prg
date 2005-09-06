@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.40 2005-08-29 08:33:54 alkresin Exp $
+ *$Id: hwindow.prg,v 1.41 2005-09-06 16:10:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -159,7 +159,7 @@ CLASS HMainWindow INHERIT HWindow
                      cAppName,oBmp,lMaximize,cHelp,nHelpId )
    METHOD Activate( lShow )
    METHOD onEvent( msg, wParam, lParam )
-   METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu )
+   METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu, cTooltip )
    METHOD GetMdiActive()  INLINE ::FindWindow( SendMessage( ::GetMain():handle, WM_MDIGETACTIVE,0,0 ) )
 
 ENDCLASS

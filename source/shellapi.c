@@ -1,11 +1,11 @@
 /*
- * $Id: shellapi.c,v 1.5 2004-09-29 05:24:52 alkresin Exp $
+ * $Id: shellapi.c,v 1.6 2005-09-06 16:10:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Shell API wrappers
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #define HB_OS_WIN_32_USED
@@ -81,6 +81,33 @@ HB_FUNC( SHELLNOTIFYICON )
       Shell_NotifyIcon( NIM_ADD,&tnid );
    else
       Shell_NotifyIcon( NIM_DELETE,&tnid );
+}
+
+/*
+  *  ShellModifyIcon( hWnd, hIcon, cTooltip )
+  */
+
+HB_FUNC( SHELLMODIFYICON )
+{
+    NOTIFYICONDATA tnid;
+
+    memset( (void*) &tnid, 0, sizeof( NOTIFYICONDATA ) );
+
+    tnid.cbSize = sizeof( NOTIFYICONDATA );
+    tnid.hWnd   = (HWND) hb_parnl(1);
+    tnid.uID    = ID_NOTIFYICON;
+    if( ISNUM(2) )
+    {
+       tnid.uFlags |= NIF_ICON;
+       tnid.hIcon  = (HICON) hb_parnl(2);
+    }
+    if( ISCHAR(3) )
+    {
+       tnid.uFlags |= NIF_TIP;
+       lstrcpy( tnid.szTip,TEXT(hb_parc(3)) );
+    }
+
+    Shell_NotifyIcon( NIM_MODIFY,&tnid );
 }
 
 /*

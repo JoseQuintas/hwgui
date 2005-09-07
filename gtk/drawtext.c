@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.1 2005-03-10 11:32:48 alkresin Exp $
+ * $Id: drawtext.c,v 1.2 2005-09-07 05:06:45 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level text functions
@@ -21,6 +21,10 @@
 #include "item.api"
 #include "gtk/gtk.h"
 #include "hwgtk.h"
+
+#define DT_CENTER                   1
+#define DT_RIGHT                    2
+
 
 void hwg_parse_color( ULONG ncolor, GdkColor * pColor );
 
@@ -91,6 +95,13 @@ HB_FUNC( DRAWTEXT )
    }
    
    pango_layout_set_text( hDC->layout, cText, -1 );
+   
+   pango_layout_set_width( hDC->layout, (hb_parni(5)-hb_parni(3))*PANGO_SCALE );
+   pango_layout_set_wrap( hDC->layout, PANGO_WRAP_CHAR );
+   if( !ISNIL(7) && ( hb_parni(7) & ( DT_CENTER | DT_RIGHT ) ) )
+      pango_layout_set_alignment( hDC->layout, 
+          (hb_parni(7) & DT_CENTER)? PANGO_ALIGN_CENTER : PANGO_ALIGN_RIGHT );
+   
    gdk_draw_layout_with_colors( hDC->window, hDC->gc, 
                  hb_parni(3), hb_parni(4), hDC->layout,
 		 (hDC->fcolor != -1)? &fcolor : NULL,
@@ -98,23 +109,6 @@ HB_FUNC( DRAWTEXT )
    
    g_free( cText );
 
-/*
-   char *cText = hb_parc( 2 );
-   RECT rc;
-
-   rc.left = hb_parni( 3 );
-   rc.top = hb_parni( 4 );
-   rc.right = hb_parni( 5 );
-   rc.bottom = hb_parni( 6 );
-
-   DrawText(
-     (HDC) hb_parnl( 1 ),	// handle of device context 
-     (LPCTSTR) cText,	        // address of string 
-     strlen( cText ), 	        // number of characters in string 
-     &rc,
-     hb_parni( 7 )
-   );
-*/   
 }
 
 HB_FUNC( GETTEXTMETRIC )

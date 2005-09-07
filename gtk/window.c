@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.5 2005-09-05 05:08:56 alkresin Exp $
+ * $Id: window.c,v 1.6 2005-09-07 05:06:45 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -111,6 +111,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    SetObjectVar( pObject, "_NHOLDER", temp );
    hb_itemRelease( temp );
    SetWindowObject( hWnd, pObject );
+   g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
    all_signal_connect( G_OBJECT (hWnd) );
    g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 
@@ -151,6 +152,7 @@ HB_FUNC( HWG_CREATEDLG )
    SetObjectVar( pObject, "_NHOLDER", temp );
    hb_itemRelease( temp );
    SetWindowObject( hWnd, pObject );
+   g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
    all_signal_connect( G_OBJECT (hWnd) );
    g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 

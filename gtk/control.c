@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.9 2005-09-05 10:59:26 alkresin Exp $
+ * $Id: control.c,v 1.10 2005-09-07 05:06:45 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -47,6 +47,8 @@ static PHB_DYNS pSymTimerProc = NULL;
 
 GtkFixed * getFixedBox( GObject * handle )
 {
+   return (GtkFixed *) g_object_get_data( handle, "fbox" );
+/*
    gpointer dwNewLong = g_object_get_data( handle, "obj" );
    
    if( dwNewLong )
@@ -65,8 +67,8 @@ GtkFixed * getFixedBox( GObject * handle )
  
       if( pMsg )
       {
-         hb_vmPushSymbol( pMsg->pSymbol );   /* Push message symbol */
-         hb_vmPush( pObj );                  /* Push object */
+         hb_vmPushSymbol( pMsg->pSymbol );
+         hb_vmPush( pObj );
          hb_vmDo( 0 );
       }
       box = (GtkFixed *) hb_itemGetNL( (PHB_ITEM) hb_stackReturn() ); 
@@ -75,6 +77,7 @@ GtkFixed * getFixedBox( GObject * handle )
    }
    else
       return NULL;
+*/
 }
 
 /*
@@ -439,6 +442,41 @@ HB_FUNC( HWG_SETADJOPTIONS )
    if( lChanged )
       gtk_adjustment_changed( adj );
 }
+
+HB_FUNC( CREATETABCONTROL )
+{
+   GtkWidget * hCtrl = gtk_notebook_new();
+   
+   GtkFixed * box = getFixedBox( (GObject*) hb_parnl(1) );
+   if ( box )
+      gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );  
+   gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
+   
+   hb_retnl( (LONG) hCtrl );
+
+}
+
+HB_FUNC( ADDTAB )
+{
+   GtkNotebook * nb = (GtkNotebook*) hb_parnl(1);
+   GtkWidget * box = gtk_fixed_new();
+   GtkWidget * hLabel;
+   char * cLabel = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
+   
+   hLabel = gtk_label_new( cLabel );
+   g_free( cLabel );
+   
+   gtk_notebook_append_page( nb, box, hLabel );
+
+   g_object_set_data( (GObject*) nb, "fbox", (gpointer) box );
+   
+   hb_retnl( (LONG) box );
+}
+
+HB_FUNC( GETCURRENTTAB )
+{
+   hb_retni( gtk_notebook_get_current_page( (GtkNotebook*)hb_parnl(1) ) + 1 );
+}  
 
 HB_FUNC( HWG_CREATESEP )
 {

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.6 2005-08-29 09:35:02 alkresin Exp $
+# $Id: Makefile,v 1.7 2005-09-07 05:06:45 alkresin Exp $
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 HRB_DIR = /apps/harbour
@@ -39,6 +39,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hgraph.o \
    $(OBJ_DIR)/hprinter.o \
    $(OBJ_DIR)/hradio.o \
+   $(OBJ_DIR)/htab.o \
    $(OBJ_DIR)/htimer.o \
    $(OBJ_DIR)/hupdown.o \
    $(OBJ_DIR)/hwindow.o \
@@ -143,11 +144,15 @@ $(OBJ_DIR)/hradio.o  : $(OBJ_DIR)/hradio.c
 $(OBJ_DIR)/hradio.c  : hradio.prg
 	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
 
+$(OBJ_DIR)/htab.o  : $(OBJ_DIR)/htab.c
+
+$(OBJ_DIR)/htab.c  : htab.prg
+	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
+
 $(OBJ_DIR)/htimer.o  : $(OBJ_DIR)/htimer.c
 
 $(OBJ_DIR)/htimer.c  : htimer.prg
 	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
-
 $(OBJ_DIR)/hupdown.o  : $(OBJ_DIR)/hupdown.c
 
 $(OBJ_DIR)/hupdown.c  : hupdown.prg
@@ -166,7 +171,7 @@ $(OBJ_DIR)/hwinprn.c  : hwinprn.prg
 $(OBJ_DIR)/menu.o  : $(OBJ_DIR)/menu.c
 
 $(OBJ_DIR)/menu.c  : menu.prg
-	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -o$@ $^
+	$(HRB_DIR)/bin/harbour $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__LINUX_GTK__ -o$@ $^
 
 
 $(LIB_DIR)/libprocmisc.a : \

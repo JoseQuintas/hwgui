@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.3 2005-03-10 11:32:48 alkresin Exp $
+ * $Id: misc.c,v 1.4 2005-09-07 05:06:45 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Miscellaneous functions
@@ -172,10 +172,6 @@ HB_FUNC( GETNOTIFYCODE )
 {
 }
 
-HB_FUNC( GETCURRENTTAB )
-{
-}
-
 HB_FUNC( TREENOTIFY )
 {
 }
@@ -183,3 +179,4 @@ HB_FUNC( TREENOTIFY )
 HB_FUNC( LISTVIEWNOTIFY )
 {
 }
+

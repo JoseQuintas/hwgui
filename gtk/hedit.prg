@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.3 2005-03-10 11:32:48 alkresin Exp $
+ *$Id: hedit.prg,v 1.4 2005-09-08 12:39:36 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HEdit class 
@@ -8,10 +8,9 @@
  * www - http://kresin.belgorod.su
 */
 
-#include "windows.ch"
 #include "hbclass.ch"
 #include "hblang.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 #define DLGC_WANTARROWS     1      /* Control wants arrow keys         */
 #define DLGC_WANTTAB        2      /* Control wants tab keys           */
@@ -44,11 +43,13 @@ CLASS HEdit INHERIT HControl
    DATA cType INIT "C"
    DATA bSetGet
    DATA bValid
+   DATA bAnyEvent
    DATA cPicFunc, cPicMask
    DATA lPicComplex  INIT .F.
    DATA lFirst       INIT .T.
    DATA lChanged     INIT .F.
    DATA lMaxLength   INIT Nil
+   DATA nLastKey     INIT 0
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture,lNoBorder, lMaxLength )
@@ -103,8 +104,8 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ::bLostFocus := bLFocus
       ::bValid := {|o|__Valid(o)}
    ENDIF
-   hwg_SetEvent( ::handle,"focus_in_event",EN_SETFOCUS,0,0 )
-   hwg_SetEvent( ::handle,"focus_out_event",EN_KILLFOCUS,0,0 )   
+   hwg_SetEvent( ::handle,"focus_in_event",WM_SETFOCUS,0,0 )
+   hwg_SetEvent( ::handle,"focus_out_event",WM_KILLFOCUS,0,0 )   
    hwg_SetEvent( ::handle,"key_press_event",0,0,0 )
 
 Return Self
@@ -122,12 +123,16 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 Local oParent := ::oParent, nPos, nctrl, cKeyb
 
    // WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   IF ::bAnyEvent != Nil .AND. Eval( ::bAnyEvent,Self,msg,wParam,lParam ) != 0
+      Return 0
+   ENDIF
    IF ::bSetGet == Nil
       Return 0
    ENDIF
 
    IF !::lMultiLine
-      IF msg == WM_KEYDOWN 
+      IF msg == WM_KEYDOWN
+         ::nLastKey := wParam
          IF wParam == GDK_BackSpace
             ::lFirst := .F.
             SetGetUpdated( Self )
@@ -184,9 +189,11 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
             ENDIF
             Return 1
          ELSEIF wParam == GDK_Return  // Enter
-            GetSkip( oParent,::handle,1,.T. )
-            Return 1    
-         ELSEIF wParam >= 32 .AND. wParam < 255
+            IF !GetSkip( oParent,::handle,1,.T. ) .AND. ::bValid != Nil
+	       __Valid( Self )
+	    ENDIF
+            Return 1
+         ELSEIF wParam >= 32 .AND. wParam < 65000
             Return GetApplyKey( Self,Chr(wParam) )
 	 ELSE
 	    Return 1    
@@ -219,13 +226,13 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
 	    */
          ENDIF
       ENDIF
-   ELSEIF msg == EN_SETFOCUS
+   ELSEIF msg == WM_SETFOCUS
       IF ::bSetGet == Nil
          Eval( ::bGetFocus, hwg_Edit_GetText( ::handle ), Self )
       ELSE
          __When( Self )
       ENDIF
-   ELSEIF msg == EN_KILLFOCUS
+   ELSEIF msg == WM_KILLFOCUS
       IF ::bSetGet == Nil
          Eval( ::bLostFocus, hwg_Edit_GetText( ::handle ), Self )
       ELSE
@@ -516,11 +523,6 @@ Static Function GetApplyKey( oEdit,cKey )
 Local nPos, nGetLen, nLen, vari, i, x, newPos
 
    x := hwg_edit_Getpos( oEdit:handle )
-   /*
-   IF HiWord(x) != LoWord(x)
-      SendMessage(oEdit:handle, WM_CLEAR, LoWord(x), HiWord(x)-1)
-   ENDIF
-   */
 
    // writelog( "GetApplyKey "+str(asc(ckey)) )
    oEdit:title := hwg_edit_Gettext( oEdit:handle )
@@ -816,23 +818,24 @@ Local i, aLen
       i := 0
    ENDIF
    IF hCtrl == Nil .OR. ( i := Ascan( oParent:Getlist,{|o|o:handle==hCtrl} ) ) != 0
-      IF nSkip > 0
-         aLen := Len( oParent:Getlist )
-         DO WHILE ( i := i+nSkip ) <= aLen
-            IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
-               SetFocus( oParent:Getlist[i]:handle )
-	       hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
-               Return .T.
-            ENDIF
-         ENDDO
-      ELSE
-         DO WHILE ( i := i+nSkip ) > 0
-            IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle )
-               SetFocus( oParent:Getlist[i]:handle )
-	       hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
-               Return .T.
-            ENDIF
-         ENDDO
+      IF ( aLen := Len( oParent:Getlist ) ) > 1
+         IF nSkip > 0
+            DO WHILE ( i := i+nSkip ) <= aLen
+               IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
+                  SetFocus( oParent:Getlist[i]:handle )
+    	          hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
+                  Return .T.
+               ENDIF
+            ENDDO
+         ELSE
+            DO WHILE ( i := i+nSkip ) > 0
+               IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle )
+                  SetFocus( oParent:Getlist[i]:handle )
+   	          hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
+                  Return .T.
+               ENDIF
+            ENDDO
+         ENDIF
       ENDIF
    ENDIF
 

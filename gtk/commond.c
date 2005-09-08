@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.3 2005-03-10 11:32:48 alkresin Exp $
+ * $Id: commond.c,v 1.4 2005-09-08 12:39:36 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
@@ -111,6 +111,12 @@ void store_filename( gpointer file_selector )
    gtk_widget_destroy( (GtkWidget*) file_selector );
 }
 
+void cancel_filedlg( gpointer file_selector )
+{
+   hb_ret();
+   gtk_widget_destroy( (GtkWidget*) file_selector );
+}
+
 HB_FUNC( SELECTFILE )
 {
    GtkWidget * file_selector;
@@ -129,7 +135,7 @@ HB_FUNC( SELECTFILE )
    
    g_signal_connect_swapped( GTK_OBJECT (GTK_FILE_SELECTION (file_selector)->cancel_button),
                              "clicked",
-                             G_CALLBACK (gtk_widget_destroy),
+                             G_CALLBACK (cancel_filedlg),
                              (gpointer) file_selector); 
 			     
    if( cMask )

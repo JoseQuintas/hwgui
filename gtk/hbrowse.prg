@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.5 2005-09-05 13:00:39 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.6 2005-09-08 12:39:36 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -148,6 +148,8 @@ CLASS HBrowse INHERIT HControl
    DATA area, hScrollV, hScrollH
    DATA nScrollV  INIT 0
    DATA nScrollH  INIT 0
+   DATA oGet, nGetRec
+   DATA nLastMsg  INIT 0
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
@@ -214,7 +216,7 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
 
    ::InitBrw()
    ::Activate()
-
+   
 RETURN Self
 
 //----------------------------------------------------//
@@ -227,8 +229,7 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
-Local aCoors
-Static keyCode := 0
+Local aCoors, retValue := -1
 
    // WriteLog( "Brw: "+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::active .AND. !Empty( ::aColumns )
@@ -239,94 +240,92 @@ Static keyCode := 0
 
       IF msg == WM_PAINT
          ::Paint()
-         return 1
+         retValue := 1
 
       ELSEIF msg == WM_ERASEBKGND
-            IF ::brush != Nil
-               aCoors := GetClientRect( ::handle )
-               FillRect( wParam, aCoors[1], aCoors[2], aCoors[3]+1, aCoors[4]+1, ::brush:handle )
-               Return 1
-            ENDIF
-
-         ELSEIF msg == WM_SETFOCUS
-            IF ::bGetFocus != Nil
-               Eval( ::bGetFocus, Self )
-            ENDIF
-
-         ELSEIF msg == WM_KILLFOCUS
-            IF ::bLostFocus != Nil
-               Eval( ::bLostFocus, Self )
-            ENDIF
-
-         ELSEIF msg == WM_HSCROLL
-            ::DoHScroll( wParam )
-
-         ELSEIF msg == WM_VSCROLL
-            ::DoVScroll( wParam )
-
-         ELSEIF msg == WM_GETDLGCODE
-            IF wParam != 0
-               keyCode := wParam
-            ENDIF
-            Return 1
-
-         ELSEIF msg == WM_COMMAND
-            DlgCommand( Self, wParam, lParam )
-
-
-         ELSEIF msg == WM_KEYDOWN
-            IF ::bKeyDown != Nil
-               IF !Eval( ::bKeyDown,Self,wParam )
-                  Return 1
-               ENDIF
-            ENDIF
-            IF wParam == GDK_Down        // Down
-               ::LINEDOWN()
-            ELSEIF wParam == GDK_Up    // Up
-               ::LINEUP()
-            ELSEIF wParam == GDK_Right    // Right
-               LineRight( Self )
-            ELSEIF wParam == GDK_Left    // Left
-               LineLeft( Self )
-            ELSEIF wParam == GDK_Home    // Home
-               ::TOP()
-            ELSEIF wParam == GDK_End    // End
-               ::BOTTOM()
-            ELSEIF wParam == GDK_Page_Down    // PageDown
-               ::PageDown()
-            ELSEIF wParam == GDK_Page_Up    // PageUp
-               ::PageUp()
-            ELSEIF wParam == GDK_Return  // Enter
-               ::Edit()
-            ELSEIF (wParam >= 48 .and. wParam <= 90 .or. wParam >= 96 .and. wParam <= 111 ).and. ::lAutoEdit
-               ::Edit( wParam,lParam )
-            ENDIF
-            Return 1
-
-         ELSEIF msg == WM_LBUTTONDOWN
-            ::ButtonDown( lParam )
-
-         ELSEIF msg == WM_LBUTTONUP
-            ::ButtonUp( lParam )
-
-         ELSEIF msg == WM_LBUTTONDBLCLK
-            ::ButtonDbl( lParam )
-
-         ELSEIF msg == WM_MOUSEMOVE
-            ::MouseMove( wParam, lParam )
-
-         ELSEIF msg == WM_MOUSEWHEEL
-            ::MouseWheel( LoWord( wParam ),;
-                             If( HiWord( wParam ) > 32768,;
-                             HiWord( wParam ) - 65535, HiWord( wParam ) ),;
-                             LoWord( lParam ), HiWord( lParam ) )
-         ELSEIF msg == WM_DESTROY
-            ::End()
+         IF ::brush != Nil
+            aCoors := GetClientRect( ::handle )
+            FillRect( wParam, aCoors[1], aCoors[2], aCoors[3]+1, aCoors[4]+1, ::brush:handle )
+            retValue := 1
          ENDIF
 
+      ELSEIF msg == WM_SETFOCUS
+         IF ::bGetFocus != Nil
+            Eval( ::bGetFocus, Self )
+         ENDIF
+
+      ELSEIF msg == WM_KILLFOCUS
+         IF ::bLostFocus != Nil
+            Eval( ::bLostFocus, Self )
+         ENDIF
+
+      ELSEIF msg == WM_HSCROLL
+         ::DoHScroll( wParam )
+
+      ELSEIF msg == WM_VSCROLL
+         ::DoVScroll( wParam )
+
+      ELSEIF msg == WM_COMMAND
+         DlgCommand( Self, wParam, lParam )
+
+
+      ELSEIF msg == WM_KEYDOWN
+         IF ::bKeyDown != Nil
+            IF !Eval( ::bKeyDown,Self,wParam )
+               retValue := 1
+            ENDIF
+         ENDIF
+         IF wParam == GDK_Down        // Down
+            ::LINEDOWN()
+         ELSEIF wParam == GDK_Up    // Up
+            ::LINEUP()
+         ELSEIF wParam == GDK_Right    // Right
+            LineRight( Self )
+         ELSEIF wParam == GDK_Left    // Left
+            LineLeft( Self )
+         ELSEIF wParam == GDK_Home    // Home
+            ::TOP()
+         ELSEIF wParam == GDK_End    // End
+            ::BOTTOM()
+         ELSEIF wParam == GDK_Page_Down    // PageDown
+            ::PageDown()
+         ELSEIF wParam == GDK_Page_Up    // PageUp
+            ::PageUp()
+         ELSEIF wParam == GDK_Return  // Enter
+            ::Edit()
+         ELSEIF (wParam >= 48 .and. wParam <= 90 .or. wParam >= 96 .and. wParam <= 111 ).and. ::lAutoEdit
+            ::Edit( wParam,lParam )
+         ENDIF
+         retValue := 1
+
+      ELSEIF msg == WM_LBUTTONDOWN
+         ::ButtonDown( lParam )
+
+      ELSEIF msg == WM_LBUTTONUP
+         IF ::nLastMsg != WM_LBUTTONDBLCLK
+            ::ButtonUp( lParam )
+	   ENDIF
+
+      ELSEIF msg == WM_LBUTTONDBLCLK
+         ::ButtonDbl( lParam )
+
+      ELSEIF msg == WM_MOUSEMOVE
+         ::MouseMove( wParam, lParam )
+
+      ELSEIF msg == WM_MOUSEWHEEL
+         ::MouseWheel( LoWord( wParam ),;
+                          If( HiWord( wParam ) > 32768,;
+                          HiWord( wParam ) - 65535, HiWord( wParam ) ),;
+                          LoWord( lParam ), HiWord( lParam ) )
+      ELSEIF msg == WM_DESTROY
+         ::End()
       ENDIF
 
-Return -1
+   ENDIF
+      
+   ::nLastMsg := msg
+
+Return retValue
 
 //----------------------------------------------------//
 METHOD Init CLASS HBrowse
@@ -633,7 +632,7 @@ Local oldBkColor, oldTColor
 
    IF ( tmp := GetFocus() ) == ::oParent:handle .OR. ;
          ::oParent:FindControl(,tmp) != Nil
-      SetFocus( ::handle )
+      SetFocus( ::area )
    ENDIF
    ::lAppMode := .F.
 
@@ -962,7 +961,7 @@ LocaL i, nColumns := Len(oBrw:aColumns)
          InvalidateRect( oBrw:area, 0 )
       ENDIF
    ENDIF
-   SetFocus( oBrw:handle )
+   SetFocus( oBrw:area )
    
 RETURN Nil
 
@@ -999,7 +998,7 @@ LocaL nColumns := Len(oBrw:aColumns)
          InvalidateRect( oBrw:area, 0 )
       ENDIF
    ENDIF
-   SetFocus( oBrw:handle )
+   SetFocus( oBrw:area )
 
 RETURN Nil
 
@@ -1036,7 +1035,7 @@ Local nPos
       IF ::lAppable .AND. !lMouse
          ::lAppMode := .T.
       ELSE
-         SetFocus( ::handle )
+         SetFocus( ::area )
          Return Nil
       ENDIF
    ENDIF
@@ -1294,7 +1293,6 @@ Local xPos := LOWORD(lParam), x := ::x1, x1, i := ::nLeftCol
          Hwg_SetCursor( arrowCursor,::area )
          oCursor := 0
          InvalidateRect( hBrw, 0 )
-         // PostMessage( hBrw, WM_PAINT, 0, 0 )
       ENDIF
    ENDIF
 
@@ -1363,9 +1361,8 @@ return nil
 
 //----------------------------------------------------//
 METHOD Edit( wParam,lParam ) CLASS HBrowse
-/*
 Local fipos, lRes, x1, y1, fif, nWidth, lReadExit, rowPos
-Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
+Local oColumn, nChoic, type
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
    IF ::bEnter == Nil .OR. ;
@@ -1405,113 +1402,102 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
             rowPos ++
          ENDIF
          y1 := ::y1+(::height+1)*rowPos
-         aCoors := ClientToScreen( ::handle,x1,y1 )
-         x1 := aCoors[1]
-         y1 := aCoors[2]
 	 
-         lReadExit := ReadExit( .T. )
-	 
-         bInit := Iif( wParam==Nil, {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1)}, ;
-            {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1),PostMessage(o:aControls[1]:handle,WM_KEYDOWN,wParam,lParam)} )
-         
-         INIT DIALOG oModDlg STYLE WS_POPUP+1+Iif(oColumn:aList==Nil,WS_BORDER,0) ;
-            AT x1,y1                             ;
-            SIZE nWidth, ::height                ;
-            ON INIT bInit
-
-         IF oColumn:aList != Nil
-            oModDlg:brush := -1
-            oModDlg:nHeight := ::height*5
-            
-            if valtype(::varbuf) == 'N'
-                nChoic := ::varbuf
-            else                
-                ::varbuf := AllTrim(::varbuf)
-                nChoic := Ascan( oColumn:aList,::varbuf )
-            endif
-                            
-            @ 0,0 GET COMBOBOX nChoic         ;
-               ITEMS oColumn:aList            ;
-               SIZE nWidth, ::height*5        ;
-               FONT ::oFont
-         ELSE
-            @ 0,0 GET oGet VAR ::varbuf         ;
+         ::nGetRec := Eval( ::bRecno,Self )
+         @ x1,y1 GET ::oGet VAR ::varbuf      ;
+	       OF ::oParent                   ;
                SIZE nWidth, ::height+1        ;
-               NOBORDER                       ;
                STYLE ES_AUTOHSCROLL           ;
                FONT ::oFont                   ;
                PICTURE oColumn:picture        ;
-               VALID oColumn:bValid
-         ENDIF
-
-         ACTIVATE DIALOG oModDlg
-
-         IF oModDlg:lResult            
-            IF oColumn:aList != Nil
-               if valtype(::varbuf) == 'N'
-                  ::varbuf := nChoic
-               else
-                  ::varbuf := oColumn:aList[nChoic]
-               endif                  
-            ENDIF
-            IF ::lAppMode
-               ::lAppMode := .F.
-               IF ::type == BRW_DATABASE
-                  (::alias)->( dbAppend() )
-                  (::alias)->( Eval( oColumn:block,::varbuf,Self,fipos ) )
-                  UNLOCK
-               ELSE
-                  IF Valtype(::msrec[1]) == "A"
-                     Aadd( ::msrec,Array(Len(::msrec[1])) )
-                     FOR fif := 2 TO Len((::msrec[1]))
-                        ::msrec[Len(::msrec),fif] := ;
-                              Iif( ::aColumns[fif]:type=="D",Ctod(Space(8)), ;
-                                 Iif( ::aColumns[fif]:type=="N",0,"" ) )
-                     NEXT
-                  ELSE
-                     Aadd( ::msrec,Nil )
-                  ENDIF
-                  ::tekzp := Len( ::msrec )
-                  Eval( oColumn:block,::varbuf,Self,fipos )
-               ENDIF
-               IF ::kolz > 0
-                  ::rowPos ++
-               ENDIF
-               ::lAppended := .T.
-               ::Refresh()
-            ELSE
-               IF ::type == BRW_DATABASE
-                  IF (::alias)->( Rlock() )
-                     (::alias)->( Eval( oColumn:block,::varbuf,Self,fipos ) )
-                  ELSE
-                     MsgStop("Can't lock the record!")
-                  ENDIF
-               ELSE
-                  Eval( oColumn:block,::varbuf,Self,fipos )
-               ENDIF
-               
-               ::lUpdated := .T.
-               InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*(::rowPos-2), ::x2, ::y1+(::height+1)*::rowPos )
-               ::RefreshLine()
-            ENDIF
-
-            // Execute block after changes are made
-            IF ::bUpdate != nil
-                Eval( ::bUpdate,  Self, fipos )         
-            END
-   
-         ELSEIF ::lAppMode
-            ::lAppMode := .F.
-            InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*::rowPos, ::x2, ::y1+(::height+1)*(::rowPos+2) )
-            ::RefreshLine()
-         ENDIF
-         SetFocus( ::handle )
-         ReadExit( lReadExit )
+               VALID {||VldBrwEdit( Self,fipos )}
+	 ::oGet:Show()
+	 SetFocus( ::oGet:handle )
+	 hwg_edit_SetPos( ::oGet:handle, 0 )
+       ::oGet:bAnyEvent := {|o,msg,c|GetEventHandler(Self,msg,c)}
 
       ENDIF
    ENDIF
-*/
+
 RETURN Nil
+
+#define GDK_Escape          0xFF1B
+
+Static Function GetEventHandler( oBrw, msg, cod )
+
+   IF msg == WM_KEYDOWN .AND. cod == GDK_Escape
+      oBrw:oGet:nLastKey := GDK_Escape
+      SetFocus( oBrw:area )
+      Return 1
+   ENDIF
+Return 0
+
+Static Function VldBrwEdit( oBrw, fipos )
+Local oColumn := oBrw:aColumns[fipos], nRec
+
+   IF oBrw:oGet:nLastKey != GDK_Escape
+      IF oColumn:aList != Nil
+         IF valtype(oBrw:varbuf) == 'N'
+            oBrw:varbuf := nChoic
+         ELSE
+            oBrw:varbuf := oColumn:aList[nChoic]
+         ENDIF
+      ENDIF
+      IF oBrw:lAppMode
+         oBrw:lAppMode := .F.
+         IF oBrw:type == BRW_DATABASE
+            (oBrw:alias)->( dbAppend() )
+            (oBrw:alias)->( Eval( oColumn:block,oBrw:varbuf,oBrw,fipos ) )
+            UNLOCK
+         ELSE
+            IF Valtype(oBrw:msrec[1]) == "A"
+               Aadd( oBrw:msrec,Array(Len(oBrw:msrec[1])) )
+               FOR fif := 2 TO Len( (oBrw:msrec[1]) )
+                  oBrw:msrec[Len(oBrw:msrec),fif] := ;
+                              Iif( oBrw:aColumns[fif]:type=="D",Ctod(Space(8)), ;
+                                 Iif( oBrw:aColumns[fif]:type=="N",0,"" ) )
+               NEXT
+            ELSE
+               Aadd( oBrw:msrec,Nil )
+            ENDIF
+            oBrw:tekzp := Len( oBrw:msrec )
+            Eval( oColumn:block,oBrw:varbuf,oBrw,fipos )
+         ENDIF
+         IF oBrw:kolz > 0
+            oBrw:rowPos ++
+         ENDIF
+         oBrw:lAppended := .T.
+         oBrw:Refresh()
+      ELSE
+         IF ( nRec := Eval( oBrw:bRecno,oBrw ) ) != oBrw:nGetRec
+            Eval( oBrw:bGoTo,oBrw,oBrw:nGetRec )
+         ENDIF
+         IF oBrw:type == BRW_DATABASE
+            IF (oBrw:alias)->( Rlock() )
+               (oBrw:alias)->( Eval( oColumn:block,oBrw:varbuf,oBrw,fipos ) )
+            ELSE
+               MsgStop("Can't lock the record!")
+            ENDIF
+         ELSE
+            Eval( oColumn:block,oBrw:varbuf,oBrw,fipos )
+         ENDIF
+         IF nRec != oBrw:nGetRec
+            Eval( oBrw:bGoTo,oBrw,nRec )
+         ENDIF
+         oBrw:lUpdated := .T.
+      ENDIF
+   ENDIF
+
+   oBrw:Refresh()
+   // Execute block after changes are made
+   IF oBrw:oGet:nLastKey != GDK_Escape .AND. oBrw:bUpdate != nil
+       Eval( oBrw:bUpdate, oBrw, fipos )         
+   ENDIF
+   oBrw:oParent:DelControl( oBrw:oGet )
+   oBrw:oGet := Nil
+   SetFocus( oBrw:area )
+
+Return .T.
 
 //----------------------------------------------------//
 METHOD RefreshLine() CLASS HBrowse

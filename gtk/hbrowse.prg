@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.6 2005-09-08 12:39:36 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.7 2005-09-09 06:30:20 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1362,7 +1362,7 @@ return nil
 //----------------------------------------------------//
 METHOD Edit( wParam,lParam ) CLASS HBrowse
 Local fipos, lRes, x1, y1, fif, nWidth, lReadExit, rowPos
-Local oColumn, nChoic, type
+Local oColumn, type
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
    IF ::bEnter == Nil .OR. ;
@@ -1421,8 +1421,6 @@ Local oColumn, nChoic, type
 
 RETURN Nil
 
-#define GDK_Escape          0xFF1B
-
 Static Function GetEventHandler( oBrw, msg, cod )
 
    IF msg == WM_KEYDOWN .AND. cod == GDK_Escape
@@ -1433,7 +1431,7 @@ Static Function GetEventHandler( oBrw, msg, cod )
 Return 0
 
 Static Function VldBrwEdit( oBrw, fipos )
-Local oColumn := oBrw:aColumns[fipos], nRec
+Local oColumn := oBrw:aColumns[fipos], nRec, fif, nChoic
 
    IF oBrw:oGet:nLastKey != GDK_Escape
       IF oColumn:aList != Nil

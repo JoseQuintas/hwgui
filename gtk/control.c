@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.10 2005-09-07 05:06:45 alkresin Exp $
+ * $Id: control.c,v 1.11 2005-09-09 06:30:20 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -248,7 +248,7 @@ HB_FUNC( HWG_COMBOSETARRAY )
    char * cItem;
    int i;
 
-   for( i=0; i<pArr->item.asArray.value->ulLen; i++ )
+   for( i=0; (ULONG)i<pArr->item.asArray.value->ulLen; i++ )
    {
       cItem = g_locale_to_utf8( hb_itemGetCPtr( pArr->item.asArray.value->pItems + i ),-1,NULL,NULL,NULL );
       glist = g_list_append( glist, cItem );

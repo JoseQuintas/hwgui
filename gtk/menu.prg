@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.2 2005-08-29 09:35:02 alkresin Exp $
+ * $Id: menu.prg,v 1.3 2005-09-09 06:30:20 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -215,7 +215,7 @@ Function Hwg_EndMenu()
 Return .T.
 
 Function Hwg_DefineMenuItem( cItem, nId, bItem, lDisabled, accFlag, accKey, lBitmap, lResource, lCheck )
-Local aMenu, i, oBmp
+Local aMenu, i, oBmp, nFlag
 
    lCheck := Iif( lCheck==Nil, .F., lCheck )
    lDisabled := Iif( lDisabled==Nil,.T.,!lDisabled )

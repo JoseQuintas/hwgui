@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.11 2005-07-07 17:46:14 alkresin Exp $
+ * $Id: freeimg.c,v 1.12 2005-09-09 06:30:20 lf_sfnet Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -335,7 +335,7 @@ HB_FUNC( FI_2DIB )
 
 	if ( hdib ) {
 
-		int scan_width = pGetPitch( dib );
+		/* int scan_width = pGetPitch( dib ); unused */
 
 		lpbi = (LPBITMAPINFO) GlobalLock( hdib );
 
@@ -625,6 +625,7 @@ unsigned DLL_CALLCONV _ReadProc( void *buffer, unsigned size, unsigned count, fi
 {
    BYTE *tmp = (BYTE *)buffer;
    unsigned u;
+   HB_SYMBOL_UNUSED( handle );
 
    for( u = 0; u < count; u++ )
    {
@@ -637,6 +638,11 @@ unsigned DLL_CALLCONV _ReadProc( void *buffer, unsigned size, unsigned count, fi
 
 unsigned DLL_CALLCONV _WriteProc( void *buffer, unsigned size, unsigned count, fi_handle handle )
 {
+
+   HB_SYMBOL_UNUSED( buffer );
+   HB_SYMBOL_UNUSED( count );
+   HB_SYMBOL_UNUSED( handle );
+   
    return size;
 }
 

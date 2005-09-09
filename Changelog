@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.390 2005-09-08 12:39:35 alkresin Exp $
+ * $Id: Changelog,v 1.391 2005-09-09 06:30:19 lf_sfnet Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,29 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2005-09-09 08:30 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
+  * gtk/Makefile
+  * gtk/Makefile.contrib
+  * gtk/build.sh
+    * Makefile renamed to Makefile.linux and Makefile.contrib renamed Makefile
+  * gtk/commond.c
+  * gtk/control.c
+  * gtk/menu_c.c
+  * gtk/window.c
+  * source/freeimg.c
+  * source/message.c
+  * source/nice.c
+  * source/window.c
+  * source/xml/xmlparse.c
+  * source/procmisc/arr2str.c
+    * fixed warnings for mingw32
+  * gtk/wprint.c
+    * added #ifndef __MINGW32__
+  * gtk/hbrowse.prg
+  * gtk/hdialog.prg
+  * gtk/menu.prg
+    * fixed warnings for -W
+		 
 2005-09-08 16:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/commond.c
     ! SelectFile() fixed

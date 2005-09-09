@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.4 2005-09-08 12:39:36 alkresin Exp $
+ * $Id: commond.c,v 1.5 2005-09-09 06:30:20 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
@@ -177,7 +177,7 @@ HB_FUNC( HWG_CHOOSECOLOR )
       color.blue =  ( hb_parnl(1) % 256 ) * 256;
       color.green = ( hb_parnl(1) % 65536 );
       color.red =   ( hb_parnl(1) % 16777216 ) / 256;
-      sprintf( ss,"%ld %ld %ld %ld \n\r",hb_parnl(1),color.red,color.green,color.blue );
+      sprintf( ss,"%ld %d %d %d \n\r",hb_parnl(1),color.red,color.green,color.blue );
       g_print(ss);
       gtk_color_selection_set_previous_color( colorsel, &color );
       gtk_color_selection_set_current_color( colorsel, &color );

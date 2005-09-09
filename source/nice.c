@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.6 2005-01-10 14:57:51 alkresin Exp $
+ * $Id: nice.c,v 1.7 2005-09-09 06:30:20 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -51,6 +51,8 @@ void Draw_Gradient(HDC hdc, int x, int y, int w, int h, int r, int g, int b)
 {
 	TRIVERTEX  Vert[2];
 	GRADIENT_RECT  Rect;
+   HB_SYMBOL_UNUSED( x );
+   HB_SYMBOL_UNUSED( y );
 	// ******************************************************
 	Vert[0].x=0;
 	Vert[0].y=0;

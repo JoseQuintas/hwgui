@@ -1,5 +1,5 @@
 /*
- *$Id: message.c,v 1.6 2004-09-16 13:13:54 sandrorrfreire Exp $
+ *$Id: message.c,v 1.7 2005-09-09 06:30:20 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level messages functions
@@ -95,7 +95,7 @@ HB_FUNC( MSGRETRYCANCEL )
 
 HB_FUNC( MSGBEEP )
 {
-   MessageBeep( ( hb_pcount() == 0 )? 0xFFFFFFFF:hb_parnl(1) );
+   MessageBeep( ( hb_pcount() == 0 )? (LONG)0xFFFFFFFF:hb_parnl(1) );
 }
 
 
@@ -105,7 +105,7 @@ HB_FUNC( MSGTEMP )
 {
    char cres[60];
 
-   sprintf( cres,"WS_OVERLAPPEDWINDOW: %lu NM_FIRST: %lu ",WS_OVERLAPPEDWINDOW,NM_FIRST );
+   sprintf( cres,"WS_OVERLAPPEDWINDOW: %d NM_FIRST: %d ",WS_OVERLAPPEDWINDOW,NM_FIRST );
    hb_retni( MessageBox( GetActiveWindow(), cres, "DialogBaseUnits", MB_OKCANCEL | MB_ICONQUESTION ) );
 }
 

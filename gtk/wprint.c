@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.1 2005-08-29 09:35:02 alkresin Exp $
+ * $Id: wprint.c,v 1.2 2005-09-09 06:30:20 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level print functions
@@ -15,6 +15,9 @@
 #include "hbstack.h"
 
 #include "gtk/gtk.h"
+
+#if !defined(__MINGW32__)
+
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-job.h>
 
@@ -353,3 +356,6 @@ HB_FUNC( HWG_GP_GETTEXTSIZE )
    else
       hb_retni( 0 );
 }
+
+#endif
+

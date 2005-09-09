@@ -7,4 +7,4 @@ if ! [ -e obj ]; then
    mkdir obj
    chmod a+w+r+x obj
 fi
-make >a1.log 2>a2.log
+make -fMakefile.linux >a1.log 2>a2.log

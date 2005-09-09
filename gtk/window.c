@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.6 2005-09-07 05:06:45 alkresin Exp $
+ * $Id: window.c,v 1.7 2005-09-09 06:30:20 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -191,6 +191,7 @@ HB_FUNC( HWG_PROCESSMESSAGE )
 void cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data )
 {
    gpointer gObject = g_object_get_data( (GObject*) widget->parent->parent, "obj" );
+   HB_SYMBOL_UNUSED( data );
    
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -323,7 +324,11 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       hb_vmPushLong( p2 );
       hb_vmPushLong( p3 );
       hb_vmSend( 3 );
+      #ifndef __XHARBOUR__
       lRes = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
+      #else
+      lRes = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
+      #endif
       hb_itemRelease( pObject );
       return lRes;
    }
@@ -478,7 +483,11 @@ PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
 
       hb_vmDo( 0 );
    }
+   #ifndef __XHARBOUR__
    return ( hb_stackReturn() );
+   #else
+   return ( hb_stackReturnItem() );
+   #endif
 }
 
 void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )

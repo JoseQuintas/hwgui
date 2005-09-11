@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.7 2005-09-09 06:30:20 lf_sfnet Exp $
+ * $Id: window.c,v 1.8 2005-09-11 17:22:22 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -165,9 +165,12 @@ HB_FUNC( HWG_CREATEDLG )
  */
 HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 {
+   GtkWidget * hWnd = (GtkWidget*) hb_parnl(1);
    // HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
 
-   gtk_widget_show_all( (GtkWidget*) hb_parnl(1) );
+   if( !ISNIL(3) && hb_parl(3) )
+      gtk_window_maximize( (GtkWindow*) hWnd );
+   gtk_widget_show_all( hWnd );
    gtk_main();
 }
 
@@ -175,7 +178,8 @@ HB_FUNC( HWG_ACTIVATEDIALOG )
 {
    gtk_widget_show_all( (GtkWidget*) hb_parnl(1) );
    // gtk_dialog_run( (GtkDialog*) hb_parnl(1) );
-   gtk_main();
+   if( ISNIL(2) || !hb_parl(2) )
+      gtk_main();
 }
 
 void ProcessMessage( void )
@@ -468,9 +472,30 @@ HB_FUNC( MOVEWINDOW )
 {
    GtkWidget * hWnd = (GtkWidget*)hb_parnl(1);
    
-   gtk_window_move( GTK_WINDOW(hWnd), hb_parni(2), hb_parni(3) );
-   gtk_window_resize( GTK_WINDOW(hWnd), hb_parni(4), hb_parni(5) );
+   if( !ISNIL(2) || !ISNIL(3) )
+      gtk_window_move( GTK_WINDOW(hWnd), hb_parni(2), hb_parni(3) );
+   if( !ISNIL(4) || !ISNIL(5) )
+      gtk_window_resize( GTK_WINDOW(hWnd), hb_parni(4), hb_parni(5) );
 }
+
+HB_FUNC( HWG_WINDOWMAXIMIZE )
+{
+   
+   gtk_window_maximize( (GtkWindow*) hb_parnl(1) );
+}
+
+HB_FUNC( HWG_WINDOWRESTORE )
+{
+   
+   gtk_window_unmaximize( (GtkWindow*) hb_parnl(1) );
+}
+
+HB_FUNC( HWG_WINDOWMINIMIZE )
+{
+   
+   gtk_window_iconify( (GtkWindow*) hb_parnl(1) );
+}
+
 
 PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
 {

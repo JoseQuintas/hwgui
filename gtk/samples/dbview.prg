@@ -1,5 +1,5 @@
 /*
- *$Id: dbview.prg,v 1.1 2005-09-05 10:11:33 alkresin Exp $
+ *$Id: dbview.prg,v 1.2 2005-09-11 17:22:22 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code: 
  * dbview.prg - dbf browsing sample
@@ -16,11 +16,20 @@ REQUEST HB_CODEPAGE_RU866
 REQUEST HB_CODEPAGE_RUKOI8
 REQUEST HB_CODEPAGE_RU1251
 
+REQUEST DBFCDX
+REQUEST DBFFPT
+
+REQUEST ORDKEYNO
+REQUEST ORDKEYCOUNT
+
 Function Main
 Local oWndMain
-Private oBrw, oFont := HFont():Add( "Times",0,12 ), DataCP
+Private oBrw, oFont, DataCP
 Memvar oBrw, oFont
 
+   RDDSETDEFAULT( "DBFCDX" )
+   
+   oFont := HFont():Add( "Courier",0,14 )
    INIT WINDOW oWndMain MAIN TITLE "Dbf browse" AT 200,100 SIZE 300,300
 
    MENU OF oWndMain
@@ -30,6 +39,18 @@ Memvar oBrw, oFont
        MENUITEM "Список шрифтов" ACTION Wchoice(HWG_GP_FONTLIST(),"Fonts")
        SEPARATOR       
        MENUITEM "Exit" ACTION oWndMain:Close()
+     ENDMENU
+     MENU TITLE "Index"
+       MENUITEM "Select order" ACTION SelectIndex()
+       MENUITEM "New order" ACTION NewIndex()
+       MENUITEM "Open index file" ACTION OpenIndex()
+       SEPARATOR
+       MENUITEM "Reindex all" ACTION ReIndex()
+       SEPARATOR
+       MENUITEM "Close all indexes" ACTION CloseIndex()
+     ENDMENU
+     MENU TITLE "Structure"
+       MENUITEM "Modify structure" ACTION ModiStru( .F. )
      ENDMENU
      MENU TITLE "View"
        MENUITEM "Font" ACTION ChangeFont()
@@ -46,14 +67,14 @@ Memvar oBrw, oFont
        ENDMENU
      ENDMENU
      MENU TITLE "Help"
-       MENUITEM "About" ACTION MsgInfo("About")
+       MENUITEM "About" ACTION MsgInfo("Dbf Files Browser" + Chr(10) + "2005" )
      ENDMENU
    ENDMENU
    
    @ 0,0 BROWSE oBrw                 ;
       SIZE 300,300                   ;
       STYLE WS_VSCROLL + WS_HSCROLL  ;
-      FONT oFont             ;
+      FONT oFont                     ;
       ON SIZE {|o,x,y|o:Move(,,x-1,y-1)}
       
    oBrw:bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}
@@ -69,7 +90,6 @@ Local fname := SelectFile( "xBase files( *.dbf )", "*.dbf", mypath )
 Memvar oBrw, DataCP
 
    IF !Empty( fname )
-      mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
       close all
       
       IF DataCP != Nil
@@ -102,4 +122,214 @@ Static Function SetDataCP( cp )
 Memvar DataCP
 
    DataCP := cp
+Return Nil
+
+Static Function SelectIndex()
+Local aIndex := { { "None","   ","   " } }, i, indname, iLen := 0
+Local oDlg, oBrowse, width, height, nChoice := 0, nOrder := OrdNumber()+1
+Memvar oBrw, oFont
+
+   IF Len( oBrw:aColumns ) == 0
+      Return Nil
+   ENDIF
+   
+   i := 1   
+   DO WHILE !EMPTY( indname := ORDNAME( i ) )
+      AADD( aIndex, { indname, ORDKEY( i ), ORDBAGNAME( i ) } )
+      iLen := Max( iLen, Len( OrdKey( i ) ) )
+      i ++
+   ENDDO
+
+   width := Min( oBrw:width * ( iLen + 20 ), GetDesktopWidth() )
+   height := oBrw:height * ( Len( aIndex ) + 2 )
+   
+   INIT DIALOG oDlg TITLE "Select Order" ;
+         AT 0,0                  ;
+         SIZE width+2,height+2   ;
+         FONT oFont
+
+   @ 0,0 BROWSE oBrowse ARRAY       ;
+       SIZE width,height            ;
+       FONT oFont                   ;
+       STYLE WS_BORDER+WS_VSCROLL + WS_HSCROLL ;
+       ON SIZE {|o,x,y|o:Move(,,x,y)} ;
+       ON CLICK {|o|nChoice:=o:tekzp,EndDialog(o:oParent:handle)}
+
+   oBrowse:msrec := aIndex
+   oBrowse:AddColumn( HColumn():New( "OrdName",{|v,o|o:msrec[o:tekzp,1]},"C",10,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Order key",{|v,o|o:msrec[o:tekzp,2]},"C",Max(iLen,12),0 ) )
+   oBrowse:AddColumn( HColumn():New( "Filename",{|v,o|o:msrec[o:tekzp,3]},"C",10,0 ) )
+   
+   oBrowse:rowPos := nOrder
+   Eval( oBrowse:bGoTo,oBrowse,nOrder )
+   
+   oDlg:Activate()
+   
+   IF nChoice > 0
+      nChoice --
+      Set Order To nChoice
+      UpdBrowse()
+   ENDIF
+                           
+Return Nil
+
+Static Function NewIndex()
+Local oDlg, of := HFont():Add( "Courier",0,12 )
+Local cName := "", lMulti := .T., lUniq := .F., cTag := "", cExpr := "", cCond := ""
+Local oMsg
+Memvar oBrw
+
+   IF Len( oBrw:aColumns ) == 0
+      Return Nil
+   ENDIF
+
+   INIT DIALOG oDlg TITLE "Create Order" ;
+         AT 0,0         ;
+         SIZE 300,250   ;
+         FONT of
+         
+   @ 10,10 SAY "Order name:" SIZE 100,22
+   @ 110,1 GET cName SIZE 100,24
+   
+   @ 10,40 GET CHECKBOX lMulti CAPTION "Multibag" SIZE 100,22
+   @ 110,40 GET cTag SIZE 100,24
+   
+   @ 10,65 GET CHECKBOX lUniq CAPTION "Unique" SIZE 100,22
+   
+   @ 10,85 SAY "Expression:" SIZE 100,22
+   @ 10,107 GET cExpr SIZE 280,24
+         
+   @ 10,135 SAY "Condition:" SIZE 100,22
+   @ 10,157 GET cCond SIZE 280,24
+   
+   @  30,210  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult:=.T.,EndDialog()}
+   @ 170,210 BUTTON "Cancel" SIZE 100, 32 ON CLICK {||EndDialog()}
+
+   oDlg:Activate()
+   
+   IF oDlg:lResult
+      IF !Empty( cName ) .AND. ( !Empty( cTag ) .OR. !lMulti ) .AND. ;
+            !Empty( cExpr )
+         oMsg = DlgWait("Indexing")
+         IF lMulti
+            IF EMPTY( cCond )
+               ORDCREATE( RTRIM(cName),RTRIM(cTag),RTRIM(cExpr), &("{||"+RTRIM(cExpr)+"}"),Iif(lUniq,.T.,Nil) )
+            ELSE                     
+               ordCondSet( RTRIM(cCond), &("{||"+RTRIM(cCond) + "}" ),,,,, RECNO(),,,, )
+               ORDCREATE( RTRIM(cName), RTRIM(cTag), RTRIM(cExpr), &("{||"+RTRIM(cExpr)+"}"),Iif(lUniq,.T.,Nil) )
+            ENDIF
+         ELSE
+            IF EMPTY( cCond )
+               dbCreateIndex( RTRIM(cName),RTRIM(cExpr),&("{||"+RTRIM(cExpr)+"}"),Iif(lUniq,.T.,Nil) )
+            ELSE                     
+               ordCondSet( RTRIM(cCond), &("{||"+RTRIM(cCond) + "}" ),,,,, RECNO(),,,, )
+               ORDCREATE( RTRIM(cName), RTRIM(cTag), RTRIM(cExpr), &("{||"+RTRIM(cExpr)+"}"),Iif(lUniq,.T.,Nil) )
+            ENDIF
+         ENDIF
+         oMsg:Close()
+      ELSE
+         MsgStop( "Fill necessary fields" )
+      ENDIF
+   ENDIF
+   
+Return Nil
+
+Static Function OpenIndex()
+Local mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
+Local fname := SelectFile( "index files( *.cdx )", "*.cdx", mypath )
+Memvar oBrw
+
+   IF Len( oBrw:aColumns ) == 0
+      Return Nil
+   ENDIF
+
+   IF !Empty( fname )
+      Set Index To (fname)
+      UpdBrowse()
+   ENDIF
+
+Return Nil
+
+Static Function ReIndex()
+Local oMsg
+Memvar oBrw
+
+   IF Len( oBrw:aColumns ) == 0
+      Return Nil
+   ENDIF
+
+   oMsg = DlgWait("Reindexing")
+   REINDEX
+   oMsg:Close()
+   oBrw:Refresh()
+   
+Return Nil
+
+Static Function CloseIndex()
+Memvar oBrw
+
+   IF Len( oBrw:aColumns ) == 0
+      Return Nil
+   ENDIF
+   
+   OrdListClear()
+   Set Order To 0
+   UpdBrowse()
+   
+Return Nil
+
+Static Function UpdBrowse()
+Memvar oBrw
+
+   IF OrdNumber() == 0
+      oBrw:bRcou := &( "{||" + oBrw:alias + "->(RECCOUNT())}" )
+      oBrw:bRecnoLog := &( "{||" + oBrw:alias + "->(RECNO())}" )
+   ELSE
+      oBrw:bRcou := &( "{||" + oBrw:alias + "->(ORDKEYCOUNT())}" )
+      oBrw:bRecnoLog := &( "{||" + oBrw:alias + "->(ORDKEYNO())}" )
+   ENDIF
+   oBrw:Refresh()
+Return Nil
+
+Static Function DlgWait( cTitle )
+Local oDlg
+
+   INIT DIALOG oDlg TITLE cTitle ;
+         AT 0,0                  ;
+         SIZE 100,50  STYLE DS_CENTER
+
+   @ 10, 20 SAY "Wait, please ..." SIZE 80,22
+
+   ACTIVATE DIALOG oDlg NOMODAL
+
+Return oDlg
+
+Static Function ModiStru( lNew )
+Local oDlg, oBrowse, of := HFont():Add( "Courier",0,12 )
+Local af
+
+   IF lNew
+      af := { {"","",0,0} }
+   ELSE
+      af := dbStruct()
+   ENDIF
+
+   INIT DIALOG oDlg TITLE "Modify structure" ;
+         AT 0,0                  ;
+         SIZE 300,300            ;
+         FONT of
+
+   @ 10,10 BROWSE oBrowse ARRAY  ;
+       SIZE 220,200              ;
+       STYLE WS_BORDER+WS_VSCROLL+WS_HSCROLL
+
+   oBrowse:msrec := af
+   oBrowse:AddColumn( HColumn():New( "Name",{|v,o|o:msrec[o:tekzp,1]},"C",10,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Type",{|v,o|o:msrec[o:tekzp,2]},"C",1,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Length",{|v,o|o:msrec[o:tekzp,3]},"N",5,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Dec",{|v,o|o:msrec[o:tekzp,4]},"N",2,0 ) )
+
+
+   ACTIVATE DIALOG oDlg
+
 Return Nil

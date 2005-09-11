@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.7 2005-09-09 06:30:20 lf_sfnet Exp $
+ * $Id: hbrowse.prg,v 1.8 2005-09-11 17:22:22 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -128,7 +128,7 @@ CLASS HBrowse INHERIT HControl
    DATA varbuf                                 // Used on Edit()
    DATA tcolorSel,bcolorSel,brushSel
    DATA bSkip,bGoTo,bGoTop,bGoBot,bEof,bBof
-   DATA bRcou,bRecno
+   DATA bRcou,bRecno,bRecnoLog
    DATA bPosChanged, bLineOut, bScrollPos
    DATA bEnter, bKeyDown, bUpdate
    DATA internal
@@ -149,7 +149,7 @@ CLASS HBrowse INHERIT HControl
    DATA nScrollV  INIT 0
    DATA nScrollH  INIT 0
    DATA oGet, nGetRec
-   DATA nLastMsg  INIT 0
+   DATA lBtnDbl   INIT .F.
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
@@ -302,9 +302,7 @@ Local aCoors, retValue := -1
          ::ButtonDown( lParam )
 
       ELSEIF msg == WM_LBUTTONUP
-         IF ::nLastMsg != WM_LBUTTONDBLCLK
-            ::ButtonUp( lParam )
-	   ENDIF
+         ::ButtonUp( lParam )
 
       ELSEIF msg == WM_LBUTTONDBLCLK
          ::ButtonDbl( lParam )
@@ -323,8 +321,6 @@ Local aCoors, retValue := -1
 
    ENDIF
       
-   ::nLastMsg := msg
-
 Return retValue
 
 //----------------------------------------------------//
@@ -427,7 +423,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::bEof    := &( "{||" + ::alias + "->(EOF())}" )
       ::bBof    := &( "{||" + ::alias + "->(BOF())}" )
       ::bRcou   := &( "{||" + ::alias + "->(RECCOUNT())}" )
-      ::bRecno  := &( "{||" + ::alias + "->(RECNO())}" )
+      ::bRecnoLog := ::bRecno  := &( "{||" + ::alias + "->(RECNO())}" )
       ::bGoTo   := &( "{|a,n|"  + ::alias + "->(DBGOTO(n))}" )
    elseif ::type == BRW_ARRAY
       ::bSKip   := { | o, x | ARSKIP( o, x ) }
@@ -436,7 +432,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::bEof    := { | o | o:tekzp > o:kolz }
       ::bBof    := { | o | o:tekzp == 0 }
       ::bRcou   := { | o | len( o:msrec ) }
-      ::bRecno  := { | o | o:tekzp }
+      ::bRecnoLog := ::bRecno  := { | o | o:tekzp }
       ::bGoTo   := { | o, n | o:tekzp := n }
       ::bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}
    endif
@@ -630,8 +626,8 @@ Local oldBkColor, oldTColor
       ::Edit()
    ENDIF
 
-   IF ( tmp := GetFocus() ) == ::oParent:handle .OR. ;
-         ::oParent:FindControl(,tmp) != Nil
+   IF ::oGet == Nil .AND. ( ( tmp := GetFocus() ) == ::oParent:handle .OR. ;
+         ::oParent:FindControl(,tmp) != Nil )
       SetFocus( ::area )
    ENDIF
    ::lAppMode := .F.
@@ -1220,6 +1216,7 @@ Local step := nLine - ::rowPos, res := .F., nrec
 Local maxPos, nPos
 Local xm := LOWORD(lParam), x1, fif
 
+   ::lBtnDbl := .F.
    IF nLine > 0 .AND. nLine <= ::rowCurrCount
       IF step != 0
          nrec := Recno()
@@ -1279,6 +1276,10 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
 Local hBrw := ::handle
 Local xPos := LOWORD(lParam), x := ::x1, x1, i := ::nLeftCol
 
+   IF ::lBtnDbl
+      ::lBtnDbl := .F.
+      Return Nil
+   ENDIF
    IF oCursor == vCursor
       DO WHILE x < xDrag
          x += ::aColumns[i]:width
@@ -1308,6 +1309,7 @@ Local nLine := Int( HIWORD(lParam)/(::height+1) + Iif(::lDispHead,1-::nHeadRows,
       ::ButtonDown( lParam )
       ::Edit()
    endif
+   ::lBtnDbl := .T.
 RETURN Nil
 
 //----------------------------------------------------//
@@ -1658,11 +1660,11 @@ Local oldRecno, newRecno
       IF nType > 0 .AND. lEof
          EVAL( oBrw:bSkip, oBrw,- 1 )
       ENDIF
-      nPos := Round( ( maxPos/(oBrw:kolz-1) ) * ( EVAL( oBrw:bRecno,oBrw )-1 ),0 )
+      nPos := Round( ( maxPos/(oBrw:kolz-1) ) * ( EVAL( oBrw:bRecnoLog,oBrw )-1 ),0 )
       hwg_SetAdjOptions( oBrw:hScrollV,nPos )
       oBrw:nScrollV := nPos
    ELSE
-      oldRecno := EVAL( oBrw:bRecno,oBrw )
+      oldRecno := EVAL( oBrw:bRecnoLog,oBrw )
       newRecno := Round( (oBrw:kolz-1)*nPos/maxPos+1,0 )
       IF newRecno <= 0
          newRecno := 1

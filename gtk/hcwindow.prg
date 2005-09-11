@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.1 2005-01-12 11:56:33 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.2 2005-09-11 17:22:22 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -81,7 +81,7 @@ METHOD DelControl( oCtrl ) CLASS HCustomWindow
 Local h := oCtrl:handle, id := oCtrl:id
 Local i := Ascan( ::aControls,{|o|o:handle==h} )
 
-   SendMessage( h,WM_CLOSE,0,0 )
+   hwg_DestroyWindow( oCtrl:handle )
    IF i != 0
       Adel( ::aControls,i )
       Asize( ::aControls,Len(::aControls)-1 )

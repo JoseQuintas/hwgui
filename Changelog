@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.391 2005-09-09 06:30:19 lf_sfnet Exp $
+ * $Id: Changelog,v 1.392 2005-09-11 17:22:22 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,20 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-09-11 21:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/hbrowse.prg
+  * gtk/hcwindow.prg
+    ! Some fixes and enhancements
+  * gtk/hdialog.prg
+  * gtk/hwindow.prg
+    * Windows and dialogs now can be centered, maximized, minimized as in
+      Win32 version.
+  * gtk/window.c
+    * New functions added: Hwg_WindowMaximize(), Hwg_WindowRestore(), Hwg_WindowMinimize()
+    ! Some fixes
+  * gtk/samples/dbview.prg
+    * Some enhancements
 
 2005-09-09 08:30 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
   * gtk/Makefile

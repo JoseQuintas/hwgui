@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.5 2005-09-09 06:30:20 lf_sfnet Exp $
+ *$Id: hdialog.prg,v 1.6 2005-09-11 17:22:22 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
@@ -28,7 +28,9 @@ Static Function onDestroy( oDlg )
 
    oDlg:Super:onEvent( WM_DESTROY )
    HDialog():DelItem( oDlg,.T. )
-   hwg_gtk_exit()
+   IF oDlg:lModal
+      hwg_gtk_exit()
+   ENDIF
 
 Return 0
 
@@ -56,6 +58,7 @@ CLASS HDialog INHERIT HCustomWindow
    DATA bActivate
    DATA lActivated INIT .F.
    DATA xResourceID
+   DATA lModal
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
                   bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc )
@@ -65,12 +68,10 @@ CLASS HDialog INHERIT HCustomWindow
    METHOD DelItem( oWnd,lModal )
    METHOD FindDialog( hWnd )
    METHOD GetActive()
-   /*
-   METHOD Center()   INLINE Hwg_CenterWindow( ::handle )
-   METHOD Restore()  INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_RESTORE, 0)
-   METHOD Maximize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0)
-   METHOD Minimize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MINIMIZE, 0)
-   */
+   METHOD Center()   INLINE Hwg_CenterWindow( Self )
+   METHOD Restore()  INLINE hwg_WindowRestore( ::handle )
+   METHOD Maximize() INLINE hwg_WindowMaximize( ::handle )
+   METHOD Minimize() INLINE hwg_WindowMinimize( ::handle )
    METHOD Close()    INLINE EndDialog( ::handle )
 ENDCLASS
 
@@ -100,6 +101,10 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
    ::lExitOnEnter:=Iif( lExitOnEnter==Nil,.T.,!lExitOnEnter )
    ::lExitOnEsc  :=Iif( lExitOnEsc==Nil,.T.,!lExitOnEsc )
 
+   IF hwg_BitOr( ::style, DS_CENTER )
+      ::nLeft := Int( ( GetDesktopWidth() - ::nWidth ) / 2 )
+      ::nTop  := Int( ( GetDesktopHeight() - ::nHeight ) / 2 )
+   ENDIF
    ::handle := Hwg_CreateDlg( Self )
 
 RETURN Self
@@ -110,6 +115,7 @@ Local hParent,oWnd
    CreateGetList( Self )
 
    IF lNoModal==Nil ; lNoModal:=.F. ; ENDIF
+   ::lModal := !lNoModal
    ::lResult := .F.
    ::AddItem( Self,!lNoModal )
    IF !lNoModal
@@ -122,7 +128,7 @@ Local hParent,oWnd
       hwg_Set_Modal( ::handle, hParent )
    ENDIF
    InitModalDlg( Self )
-   hwg_ActivateDialog( ::handle )
+   hwg_ActivateDialog( ::handle,lNoModal  )
 
 RETURN Nil
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.393 2005-09-12 05:58:37 alkresin Exp $
+ * $Id: Changelog,v 1.394 2005-09-12 10:35:09 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -9,6 +9,12 @@
 */
 
 2005-09-12 10:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/hedit.prg
+    ! Small fix
+  * gtk/samples/dbview.prg
+    * Possibility to modify structure has been added.
+
+2005-09-12 14:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hdialog.prg
   * gtk/hwindow.prg
     ! Small fix

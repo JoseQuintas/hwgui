@@ -1,5 +1,5 @@
 /*
- *$Id: dbview.prg,v 1.2 2005-09-11 17:22:22 alkresin Exp $
+ *$Id: dbview.prg,v 1.3 2005-09-12 10:35:09 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code: 
  * dbview.prg - dbf browsing sample
@@ -22,9 +22,11 @@ REQUEST DBFFPT
 REQUEST ORDKEYNO
 REQUEST ORDKEYCOUNT
 
+Static aFieldTypes := { "C","N","D","L" }
+
 Function Main
 Local oWndMain
-Private oBrw, oFont, DataCP
+Private oBrw, oFont, DataCP, currentCP, currFname
 Memvar oBrw, oFont
 
    RDDSETDEFAULT( "DBFCDX" )
@@ -35,8 +37,6 @@ Memvar oBrw, oFont
    MENU OF oWndMain
      MENU TITLE "File"
        MENUITEM "Open" ACTION FileOpen()
-       SEPARATOR
-       MENUITEM "Список шрифтов" ACTION Wchoice(HWG_GP_FONTLIST(),"Fonts")
        SEPARATOR       
        MENUITEM "Exit" ACTION oWndMain:Close()
      ENDMENU
@@ -87,16 +87,18 @@ Return Nil
 Static Function FileOpen
 Local mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
 Local fname := SelectFile( "xBase files( *.dbf )", "*.dbf", mypath )
-Memvar oBrw, DataCP
+Memvar oBrw, DataCP, currentCP, currFname
 
    IF !Empty( fname )
       close all
       
       IF DataCP != Nil
          use (fname) new codepage (DataCP)
+         currentCP := DataCP
       ELSE
          use (fname) new
       ENDIF
+      currFname := CutExten( fname )
       
       oBrw:InitBrw( 2 )
       CreateList( oBrw,.T. )
@@ -305,31 +307,180 @@ Local oDlg
 Return oDlg
 
 Static Function ModiStru( lNew )
-Local oDlg, oBrowse, of := HFont():Add( "Courier",0,12 )
-Local af
+Local oDlg, oBrowse, of := HFont():Add( "Courier",0,12 ), oMsg 
+Local oGet1, oGet2, oGet3, oGet4
+Local af, af0, cName := "", nType := 1, cLen := "0", cDec := "0", i
+Local aTypes := { "Character","Numeric","Date","Logical" }
+Local fname, cAlias, nRec, nOrd, lOverFlow := .F., xValue
+Memvar oBrw, currentCP, currFname
 
    IF lNew
       af := { {"","",0,0} }
    ELSE
-      af := dbStruct()
+      af0 := dbStruct()
+      af  := dbStruct()
+      FOR i := 1 TO Len(af)
+         Aadd( af[i],i )
+      NEXT
    ENDIF
 
    INIT DIALOG oDlg TITLE "Modify structure" ;
          AT 0,0                  ;
-         SIZE 300,300            ;
+         SIZE 400,330            ;
          FONT of
 
    @ 10,10 BROWSE oBrowse ARRAY  ;
-       SIZE 220,200              ;
-       STYLE WS_BORDER+WS_VSCROLL+WS_HSCROLL
+       SIZE 250,200              ;
+       STYLE WS_BORDER+WS_VSCROLL+WS_HSCROLL ;
+       ON POSCHANGE {|o|brw_onPosChg(o,oGet1,oGet2,oGet3,oGet4)}
 
    oBrowse:msrec := af
    oBrowse:AddColumn( HColumn():New( "Name",{|v,o|o:msrec[o:tekzp,1]},"C",10,0 ) )
    oBrowse:AddColumn( HColumn():New( "Type",{|v,o|o:msrec[o:tekzp,2]},"C",1,0 ) )
    oBrowse:AddColumn( HColumn():New( "Length",{|v,o|o:msrec[o:tekzp,3]},"N",5,0 ) )
    oBrowse:AddColumn( HColumn():New( "Dec",{|v,o|o:msrec[o:tekzp,4]},"N",2,0 ) )
+   
+   @ 10,230 GET oGet1 VAR cName SIZE 100,24
+   @ 120,230 GET COMBOBOX oGet2 VAR nType ITEMS aTypes SIZE 100,24
+   @ 230,230 GET oGet3 VAR cLen SIZE 50,24
+   @ 290,230 GET oGet4 VAR cDec SIZE 40,24
 
+   @ 20,270 BUTTON "Add" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,1)}
+   @ 110,270 BUTTON "Insert" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,2)}
+   @ 200,270 BUTTON "Change" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,3)}
+   @ 290,270 BUTTON "Remove" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,4)}
+   
+   @ 280,10  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult:=.T.,EndDialog()}
+   @ 280,50 BUTTON "Cancel" SIZE 100, 32 ON CLICK {||EndDialog()}
 
    ACTIVATE DIALOG oDlg
+   
+   IF oDlg:lResult
 
+      oMsg = DlgWait("Restructuring")
+      cAlias := Alias()
+      nOrd := ordNumber()
+      nRec := RecNo()
+      SET ORDER TO 0
+      GO TOP
+      
+      fname := "a0_new"
+      dbCreate( fname,af )
+      IF currentCP != Nil
+         use (fname) new codepage (currentCP)
+      ELSE
+         use (fname) new
+      ENDIF
+      dbSelectArea( cAlias )
+      
+      DO WHILE !Eof()
+         dbSelectArea( fname )
+         APPEND BLANK
+         FOR i := 1 TO Len(af)
+            IF Len(af[i]) > 4
+               xValue := (cAlias)->(FieldGet(af[i,5]))
+               IF af[i,2] == af0[af[i,5],2] .AND. af[i,3] == af0[af[i,5],3]
+                  FieldPut( i, xValue )
+               ELSE
+                  IF af[i,2] != af0[af[i,5],2]
+                     IF af[i,2] == "C" .AND. af0[af[i,5],2] == "N"
+                        xValue := Str( xValue,af0[af[i,5],3],af0[af[i,5],4] )
+                     ELSEIF af[i,2] == "N" .AND. af0[af[i,5],2] == "C"
+                        xValue := Val( Ltrim( xValue ) )
+                     ELSE
+                        LOOP
+                     ENDIF
+                  ENDIF
+                  IF af[i,3] >= af0[af[i,5],3]
+                     FieldPut( i, xValue )
+                  ELSE
+                     IF af[i,2] =="C"
+                        FieldPut( i, Left( xValue,af[i,3] ) )
+                     ELSEIF af[i,2] =="N"
+                        FieldPut( i, 0 )
+                        lOverFlow := .T.
+                     ENDIF
+                  ENDIF
+               ENDIF
+            ENDIF
+         NEXT
+         IF (cAlias)->(Deleted())
+            DELETE
+         ENDIF
+         dbSelectArea( cAlias )
+         SKIP
+      ENDDO
+      IF lOverFlow
+         MsgInfo( "There was overflow in Numeric field","Warning!" )
+      ENDIF
+
+      Close All
+      Ferase( currFname+".bak" )
+      Frename( currFname + ".dbf", currFname + ".bak" )
+      Frename( "a0_new.dbf", currFname + ".dbf" )
+      IF File( "a0_new.fpt" )
+         Frename( "a0_new.fpt", currFname + ".fpt" )
+      ENDIF
+
+      IF currentCP != Nil
+         use (currFname) new codepage (currentCP)
+      ELSE
+         use (currFname) new
+      ENDIF
+      REINDEX
+
+      GO nRec
+      SET ORDER TO nOrd
+      oMsg:Close()
+      oBrw:Refresh()
+
+   ENDIF
+
+Return Nil
+
+Static Function brw_onPosChg( oBrowse, oGet1, oGet2, oGet3, oGet4 )
+
+
+   oGet1:SetGet( oBrowse:msrec[oBrowse:tekzp,1] )
+   oGet1:Refresh()
+
+   oGet2:SetItem( Ascan(aFieldTypes,oBrowse:msrec[oBrowse:tekzp,2]) )
+   
+   oGet3:SetGet( Ltrim(Str(oBrowse:msrec[oBrowse:tekzp,3])) )
+   oGet3:Refresh()
+
+   oGet4:SetGet( Ltrim(Str(oBrowse:msrec[oBrowse:tekzp,4])) )
+   oGet4:Refresh()
+   
+Return Nil
+
+Static Function UpdStru( oBrowse, oGet1, oGet2, oGet3, oGet4, nOperation )
+Local cName, cType, nLen, nDec
+
+   IF nOperation == 4
+      Adel( oBrowse:msrec,oBrowse:tekzp )
+      Asize( oBrowse:msrec, Len(oBrowse:msrec)-1 )
+      IF oBrowse:tekzp < Len(oBrowse:msrec) .AND. oBrowse:tekzp > 1
+         oBrowse:tekzp --
+      ENDIF
+   ELSE
+      cName := oGet1:SetGet()
+      cType := aFieldTypes[ Eval(oGet2:bSetGet,,oGet2) ]
+      nLen  := Val( oGet3:SetGet() )
+      nDec  := Val( oGet4:SetGet() )
+      IF nOperation == 1
+         Aadd( oBrowse:msrec,{ cName,cType,nLen,nDec } )
+      ELSE
+         IF nOperation == 2
+            Aadd( oBrowse:msrec, Nil )
+            Ains( oBrowse:msrec,oBrowse:tekzp )
+         ENDIF
+         oBrowse:msrec[oBrowse:tekzp,1] := cName
+         oBrowse:msrec[oBrowse:tekzp,2] := cType
+         oBrowse:msrec[oBrowse:tekzp,3] := nLen
+         oBrowse:msrec[oBrowse:tekzp,4] := nDec
+      ENDIF
+   ENDIF
+   oBrowse:Refresh()
+   
 Return Nil

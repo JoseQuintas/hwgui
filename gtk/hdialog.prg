@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.6 2005-09-11 17:22:22 alkresin Exp $
+ *$Id: hdialog.prg,v 1.7 2005-09-12 05:58:39 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
@@ -101,7 +101,7 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
    ::lExitOnEnter:=Iif( lExitOnEnter==Nil,.T.,!lExitOnEnter )
    ::lExitOnEsc  :=Iif( lExitOnEsc==Nil,.T.,!lExitOnEsc )
 
-   IF hwg_BitOr( ::style, DS_CENTER )
+   IF hwg_BitAnd( ::style, DS_CENTER ) > 0
       ::nLeft := Int( ( GetDesktopWidth() - ::nWidth ) / 2 )
       ::nTop  := Int( ( GetDesktopHeight() - ::nHeight ) / 2 )
    ENDIF

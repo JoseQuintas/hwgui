@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.11 2004-12-10 07:36:46 alkresin Exp $
+ * $Id: htree.prg,v 1.12 2005-09-13 05:25:53 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -245,7 +245,7 @@ LOCAL i, aBmpSize
    ::type    := Iif( lResour==Nil,.F.,lResour )
    ::bAction := bAction
 
-   IF aImages != Nil
+   IF aImages != Nil .AND. !Empty( aImages )
       ::aImages := {}
       FOR i := 1 TO Len( aImages )
          Aadd( ::aImages, Upper(aImages[i]) )

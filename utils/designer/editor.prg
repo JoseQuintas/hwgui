@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.14 2004-12-09 10:28:05 alkresin Exp $
+ * $Id: editor.prg,v 1.15 2005-09-13 05:25:53 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -400,8 +400,8 @@ Private nScheme, nType := 2, oTheme := HDTheme():New(), cScheme := ""
    @ 180,152 SAY "Background" SIZE 100,24
    @ 280,150 SAY oSayB CAPTION "" SIZE 24,24
    @ 305,152 BUTTON oBtn2 CAPTION "..." SIZE 20,20 ON CLICK {||Iif((temp:=Hwg_ChooseColor(aSchemes[nScheme,nType][2],.F.))!=Nil,(aSchemes[nScheme,nType][2]:=temp,UpdSample()),.F.)}
-   @ 350,125 CHECKBOX oCheckB CAPTION "Bold" SIZE 60,24 ON CLICK {||aSchemes[nScheme,nType][3]:=IsDlgButtonChecked(oCheckB:oParent:handle,oCheckB:id),UpdSample()}
-   @ 350,150 CHECKBOX oCheckI CAPTION "Italic" SIZE 60,24 ON CLICK {||aSchemes[nScheme,nType][4]:=IsDlgButtonChecked(oCheckI:oParent:handle,oCheckI:id),UpdSample()}
+   @ 350,125 CHECKBOX oCheckB CAPTION "Bold" SIZE 60,24 ON CLICK {||aSchemes[nScheme,nType][3]:=IsDlgButtonChecked(oCheckB:oParent:handle,oCheckB:id),UpdSample(),.t.}
+   @ 350,150 CHECKBOX oCheckI CAPTION "Italic" SIZE 60,24 ON CLICK {||aSchemes[nScheme,nType][4]:=IsDlgButtonChecked(oCheckI:oParent:handle,oCheckI:id),UpdSample(),.t.}
 
    @ 170,190 RICHEDIT oEditC TEXT cText SIZE 250,100 STYLE ES_MULTILINE
 

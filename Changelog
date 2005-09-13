@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.394 2005-09-12 10:35:09 alkresin Exp $
+ * $Id: Changelog,v 1.395 2005-09-13 05:25:53 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,13 +8,24 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2005-09-12 10:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+2005-09-13 09:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/control.c
+    * Multiline edit controls has been implemented
+  * gtk/errorsys.prg
+    * ErrorPreview() function now works as in Windows version
+  * source/htree.prg
+    ! Small fix
+  * source/hfrmtmpl.prg
+  * utils/designer/editor.prg
+    ! Small fixes, provided by Alexey Myronenko
+
+2005-09-12 14:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hedit.prg
     ! Small fix
   * gtk/samples/dbview.prg
     * Possibility to modify structure has been added.
 
-2005-09-12 14:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+2005-09-12 10:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hdialog.prg
   * gtk/hwindow.prg
     ! Small fix

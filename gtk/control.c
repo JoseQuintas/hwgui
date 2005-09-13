@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.11 2005-09-09 06:30:20 lf_sfnet Exp $
+ * $Id: control.c,v 1.12 2005-09-13 05:25:53 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -23,6 +23,9 @@
 
 #define SS_CENTER                 1
 #define SS_RIGHT                  2
+
+#define ES_MULTILINE        4
+#define ES_READONLY      2048
 
 #define BS_AUTO3STATE       6
 #define BS_GROUPBOX         7
@@ -177,9 +180,19 @@ HB_FUNC( HWG_ISBUTTONCHECKED )
 */
 HB_FUNC( CREATEEDIT )
 {
-   GtkWidget * hCtrl = gtk_entry_new();
+   GtkWidget * hCtrl;
    char * cTitle = ( hb_pcount() > 7 )? hb_parc(8) : "";
-   
+   unsigned long ulStyle = (ISNIL(3))? 0 : hb_parnl(3);
+
+   if( ulStyle & ES_MULTILINE )
+   {
+      hCtrl = gtk_text_view_new();
+      g_object_set_data( (GObject*) hCtrl, "multi", (gpointer) 1 );
+      if( ulStyle & ES_READONLY )
+         gtk_text_view_set_editable( (GtkTextView*)hCtrl, 0 );
+   }
+   else
+      hCtrl = gtk_entry_new();   
    GtkFixed * box = getFixedBox( (GObject*) hb_parnl(1) );
    if ( box )
       gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );  
@@ -187,8 +200,14 @@ HB_FUNC( CREATEEDIT )
    
    if( *cTitle )
    {
-      cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );   
-      gtk_entry_set_text( (GtkEntry*)hCtrl, hb_parc(8) );
+      cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
+      if( ulStyle & ES_MULTILINE )
+      {
+         GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (hCtrl));
+         gtk_text_buffer_set_text( buffer, cTitle, -1 );
+      }
+      else
+         gtk_entry_set_text( (GtkEntry*)hCtrl, cTitle );
       g_free( cTitle );
    }
 
@@ -198,14 +217,36 @@ HB_FUNC( CREATEEDIT )
 
 HB_FUNC( HWG_EDIT_SETTEXT )
 {
+   GtkWidget * hCtrl = (GtkWidget *)hb_parnl(1);
    char * cTitle = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
-   gtk_entry_set_text( (GtkEntry*)hb_parnl(1), cTitle );
+
+   if( g_object_get_data( (GObject *)hCtrl, "multi" ) )
+   {
+      GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (hCtrl));
+      gtk_text_buffer_set_text( buffer, cTitle, -1 );
+   }
+   else
+      gtk_entry_set_text( (GtkEntry*)hCtrl, cTitle );
    g_free( cTitle );
 }
 
 HB_FUNC( HWG_EDIT_GETTEXT )
 {
-   char * cptr = (char*) gtk_entry_get_text( (GtkEntry*)hb_parnl(1) );
+   GtkWidget * hCtrl = (GtkWidget *)hb_parnl(1);
+   char * cptr;
+   
+   if( g_object_get_data( (GObject *)hCtrl, "multi" ) )
+   {
+      GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (hCtrl));   
+      GtkTextIter * iterStart, * iterEnd;
+      
+      gtk_text_buffer_get_start_iter( buffer, iterStart );
+      gtk_text_buffer_get_end_iter( buffer, iterEnd );
+      cptr = gtk_text_buffer_get_text( buffer, iterStart, iterEnd, 1 );
+   }
+   else
+      cptr = (char*) gtk_entry_get_text( (GtkEntry*)hCtrl );
+   
    if( *cptr )
    {
       cptr = g_locale_from_utf8( cptr,-1,NULL,NULL,NULL );

@@ -8,7 +8,6 @@ if not exist obj md obj
 
 :BUILD
 
-   SET cflags=%cflags% -DHARBOUR_CVS_VERSION
    make -fmakefile.bc  > make_b32.log
    if errorlevel 1 goto BUILD_ERR
 

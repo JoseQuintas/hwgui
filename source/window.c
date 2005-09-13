@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.33 2005-09-09 06:30:20 lf_sfnet Exp $
+ * $Id: window.c,v 1.34 2005-09-13 11:06:15 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -645,7 +645,7 @@ LRESULT CALLBACK MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -687,7 +687,7 @@ LRESULT CALLBACK FrameWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -746,7 +746,7 @@ LRESULT CALLBACK MDIChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -773,7 +773,7 @@ PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
 
       hb_vmDo( 0 );
    }
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
    return ( hb_stackReturnItem() );
 #else
    return ( hb_stackReturn() );

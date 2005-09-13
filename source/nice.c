@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.7 2005-09-09 06:30:20 lf_sfnet Exp $
+ * $Id: nice.c,v 1.8 2005-09-13 11:06:15 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -107,7 +107,7 @@ LRESULT CALLBACK NiceButtProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmDo( 4 );  /* where iArgCount is the number of pushed parameters */
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
       if( hb_itemGetL( (PHB_ITEM) hb_stackReturnItem() ) )
 #else
       if( hb_itemGetL( (PHB_ITEM) hb_stackReturn() ) )

@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.13 2005-01-10 14:57:51 alkresin Exp $
+ *$Id: dialog.c,v 1.14 2005-09-13 11:06:15 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -552,7 +552,7 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -630,7 +630,7 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -719,7 +719,7 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );

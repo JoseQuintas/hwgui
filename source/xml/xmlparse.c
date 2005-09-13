@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.13 2005-09-09 06:30:21 lf_sfnet Exp $
+ * $Id: xmlparse.c,v 1.14 2005-09-13 11:06:15 alkresin Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -269,7 +269,7 @@ PHB_ITEM hbxml_addnode( PHB_ITEM pParent )
    hb_vmPushNil();
    hb_vmDo( 0 );
 
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
    hb_objSendMsg( hb_stackReturnItem(), "NEW", 0 );
    hb_itemCopy( pNode, hb_stackReturnItem() );
 
@@ -306,7 +306,7 @@ BOOL hbxml_readComment( PHB_ITEM pParent, unsigned char ** pBuffer )
    {
       pTemp = hb_itemPutCL( NULL, (char*)ptr, *pBuffer-ptr );
       hb_objSendMsg( pNode, "AITEMS", 0 );
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
       hb_arrayAdd( hb_stackReturnItem(), pTemp );
 #else
       hb_arrayAdd( hb_stackReturn(), pTemp );
@@ -342,7 +342,7 @@ BOOL hbxml_readCDATA( PHB_ITEM pParent, unsigned char ** pBuffer )
    {
       pTemp = hb_itemPutCL( NULL, (char*)ptr, *pBuffer-ptr );
       hb_objSendMsg( pNode, "AITEMS", 0 );
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
       hb_arrayAdd( hb_stackReturnItem(), pTemp );
 #else
       hb_arrayAdd( hb_stackReturn(), pTemp );
@@ -415,7 +415,7 @@ BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char ** pBuffer )
          {
             pTemp = hbxml_pp( ptr, *pBuffer-ptr );
             hb_objSendMsg( pNode, "AITEMS", 0 );
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
             hb_arrayAdd( hb_stackReturnItem(), pTemp );
 #else
             hb_arrayAdd( hb_stackReturn(), pTemp );

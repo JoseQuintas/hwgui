@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.26 2005-01-10 14:57:51 alkresin Exp $
+ * $Id: control.c,v 1.27 2005-09-13 11:06:15 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -479,7 +479,7 @@ HB_FUNC( SETDATEPICKER )
    if( pDate )
    {
       SYSTEMTIME sysTime;
-      #ifdef HARBOUR_CVS_VERSION
+      #ifndef HARBOUR_OLD_VERSION
       int lYear, lMonth, lDay;
       #else
       long lYear, lMonth, lDay;
@@ -1106,7 +1106,7 @@ LRESULT CALLBACK WinCtrlProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -1153,7 +1153,7 @@ LRESULT APIENTRY EditSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARA
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -1200,7 +1200,7 @@ LRESULT APIENTRY TrackSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
@@ -1247,7 +1247,7 @@ LRESULT APIENTRY TabSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifdef HARBOUR_CVS_VERSION
+#ifndef HARBOUR_OLD_VERSION
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
 #else
       res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );

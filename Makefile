@@ -8,5 +8,3 @@ DIRS=\
 	gtk
 
 include $(ROOT)config/dir.cf
-
-C_USR += -DHARBOUR_CVS_VERSION

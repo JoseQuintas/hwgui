@@ -1,3 +1,4 @@
+@echo off
 set MINGW=c:\mingw
 set HRB_DIR=c:\dvl\hrb
 set HWGUI_INSTALL=..
@@ -9,7 +10,7 @@ if not exist %1.rc goto link
 windres %1.rc %1_res.o
 set OBJ_LIST=%OBJ_LIST% %1_res.o
 :link
-gcc -Wall -o%1.exe %OBJ_LIST% -L%MINGW%\lib -L%HRB_DIR%\lib -L%HWGUI_INSTALL%\lib -mno-cygwin -Wl,--allow-multiple-definition -Wl,--start-group -lhwgui -lprocmisc -lhbxml -lvm -lrdd -lmacro -lpp -lrtl -lpp -llang -lcommon -lnulsys  -ldbfntx  -ldbfcdx -ldbfdbt -lgtnul -lgtcgi -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -Wl,--end-group
+gcc -Wall -o%1.exe %OBJ_LIST% -L%MINGW%\lib -L%HRB_DIR%\lib -L%HWGUI_INSTALL%\lib -mno-cygwin -Wl,--allow-multiple-definition -Wl,--start-group -lhwgui -lprocmisc -lhbxml -lvm -lrdd -lmacro -lpp -lrtl -lpp -llang -lcommon -lnulsys  -ldbfntx  -ldbfcdx -ldbfdbt -ldbffpt -lgtnul -lpcrepos -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -Wl,--end-group
 del %1.c
 del %1.o
 if exist %1_res.o del %1_res.o 

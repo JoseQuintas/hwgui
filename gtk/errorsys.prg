@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.2 2005-09-13 05:25:53 alkresin Exp $
+ * $Id: errorsys.prg,v 1.3 2005-09-14 09:32:10 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement
@@ -128,7 +128,7 @@ Local nHand
 return nil
 
 Static Function ErrorPreview( cMess )
-Local oDlg
+Local oDlg, oEdit
 
    INIT DIALOG oDlg TITLE "Error.log" ;
         AT 92,61 SIZE 400,400

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.34 2005-09-13 11:06:15 alkresin Exp $
+ * $Id: window.c,v 1.35 2005-09-14 09:32:10 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -163,7 +163,7 @@ void ProcessMdiMessage( HWND hJanBase, HWND hJanClient, MSG msg, HACCEL hAcceler
 }
 
 /*
- *  HWG_ACTIVATEMAINWINDOW( lShow, hAccel, lMaximize ) 
+ *  HWG_ACTIVATEMAINWINDOW( lShow, hAccel, lMaximize, lMinimize )
  */
 HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 {
@@ -173,7 +173,7 @@ HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 
    if( hb_parl(1) )
    {
-      ShowWindow( aWindows[0],( ISLOG(3) && hb_parl(3) )? SW_SHOWMAXIMIZED : SW_SHOWNORMAL );
+      ShowWindow( aWindows[0],( ISLOG(3) && hb_parl(3) )? SW_SHOWMAXIMIZED : ( ( ISLOG(4) && hb_parl(4) )? SW_SHOWMINIMIZED : SW_SHOWNORMAL ) );
    }
 
    while (GetMessage( &msg, NULL, 0, 0) )
@@ -383,7 +383,7 @@ HB_FUNC( HWG_ACTIVATEMDIWINDOW )
 
    if( hb_parl(1) )
    {
-      ShowWindow( aWindows[0],( ISLOG(3) && hb_parl(3) )? SW_SHOWMAXIMIZED : SW_SHOWNORMAL );
+   	  ShowWindow( aWindows[0],( ISLOG(3) && hb_parl(3) )? SW_SHOWMAXIMIZED : ( ( ISLOG(4) && hb_parl(4) )? SW_SHOWMINIMIZED : SW_SHOWNORMAL ) );
       ShowWindow( aWindows[1], SW_SHOW );
    }
 

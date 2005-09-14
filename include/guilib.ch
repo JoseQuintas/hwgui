@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.58 2005-08-29 08:33:54 alkresin Exp $
+ *$Id: guilib.ch,v 1.59 2005-09-14 09:32:10 lf_sfnet Exp $
  */
 #define HWG_VERSION           "2.14"
 #define	WND_MAIN		1
@@ -40,14 +40,13 @@
              [ ON LOSTFOCUS <bLfocus> ]     ;
              [ ON OTHER MESSAGES <bOther> ] ;
              [ ON EXIT <bExit> ]            ;
-             [<lMaximize: MAXIMIZE>]        ;
              [ HELP <cHelp> ]               ;
              [ HELPID <nHelpId> ]           ;
           => ;
    <oWnd> := HMainWindow():New( Iif(<.lMdi.>,WND_MDI,WND_MAIN), ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>,;
-                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>,<cHelp>,<nHelpId> )
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId> )
 
 #xcommand INIT WINDOW <oWnd> MDICHILD       ;
              [ APPNAME <appname> ]          ;
@@ -67,14 +66,13 @@
              [ ON LOSTFOCUS <bLfocus> ]     ;
              [ ON OTHER MESSAGES <bOther> ] ;
              [ ON EXIT <bExit> ]            ;
-             [<lMaximize: MAXIMIZE>]        ;
              [ HELP <cHelp> ]               ;
              [ HELPID <nHelpId> ]           ;
           => ;
    <oWnd> := HMdiChildWindow():New( ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
-                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>,<cHelp>,<nHelpId> )
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId> )
 
 #xcommand INIT WINDOW <oWnd> CHILD          ;
              APPNAME <appname>              ;
@@ -94,14 +92,13 @@
              [ ON LOSTFOCUS <bLfocus> ]     ;
              [ ON OTHER MESSAGES <bOther> ] ;
              [ ON EXIT <bExit> ]            ;
-             [<lMaximize: MAXIMIZE>]        ;
              [ HELP <cHelp> ]               ;
              [ HELPID <nHelpId> ]           ;
           => ;
    <oWnd> := HChildWindow():New( ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
-                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<.lMaximize.>,<cHelp>,<nHelpId> )
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId> )
 
 
 #xcommand INIT DIALOG <oDlg>                ;
@@ -129,9 +126,12 @@
                    <nStyle>,<x>,<y>,<width>,<height>,<cTitle>,<oFont>,<bInit>,<bExit>,;
                    <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.>,<nHelpId>,<Resid>,<.lExitOnEsc.> )
 
-#xcommand ACTIVATE WINDOW <oWnd> [<lNoShow: NOSHOW>]     ;
+#xcommand ACTIVATE WINDOW <oWnd> ;
+               [<lNoShow: NOSHOW>] ;
+               [<lMaximized: MAXIMIZED>] ;
+               [<lMinimized: MINIMIZED>] ;
            => ;
-      <oWnd>:Activate( !<.lNoShow.>)
+      <oWnd>:Activate( !<.lNoShow.>, <.lMaximized.>, <.lMinimized.> )
 
 #xcommand CENTER WINDOW <oWnd> ;
 	=>;

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.397 2005-09-14 09:08:15 alkresin Exp $
+ * $Id: Changelog,v 1.398 2005-09-14 09:32:10 lf_sfnet Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,25 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2005-09-14 11:15 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
+  * Makefile
+  + include/Makefile 
+    * added install of guilib.ch
+  * include/guilib.ch
+  * source/hwindow.prg
+  * source/window.c
+    * added MAXIMIZED and MINIMIZED to ACTIVATE WINDOW
+	 * removed MAXIMIZE from INIT WINDOW
+	 * added management to message WM_ENDSESSION
+  * source/Makefile
+    * added missed sources
+  * gtk/samples/bldgw.bat
+  * samples/bldgw.bat
+    * fixed for latest xHarbour
+  * gtk/control.c
+  * gtk/errorsys.prg
+    * fixed warnigns  
+  
 2005-09-14 13:08 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   + gtk/htab.prg
     + It seems that I didn't add it at 2005-09-07 09:10

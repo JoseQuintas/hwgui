@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.12 2005-09-13 05:25:53 alkresin Exp $
+ * $Id: control.c,v 1.13 2005-09-14 09:32:10 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -183,7 +183,7 @@ HB_FUNC( CREATEEDIT )
    GtkWidget * hCtrl;
    char * cTitle = ( hb_pcount() > 7 )? hb_parc(8) : "";
    unsigned long ulStyle = (ISNIL(3))? 0 : hb_parnl(3);
-
+   
    if( ulStyle & ES_MULTILINE )
    {
       hCtrl = gtk_text_view_new();
@@ -200,7 +200,7 @@ HB_FUNC( CREATEEDIT )
    
    if( *cTitle )
    {
-      cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
+      cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );   
       if( ulStyle & ES_MULTILINE )
       {
          GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (hCtrl));
@@ -238,7 +238,7 @@ HB_FUNC( HWG_EDIT_GETTEXT )
    if( g_object_get_data( (GObject *)hCtrl, "multi" ) )
    {
       GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (hCtrl));   
-      GtkTextIter * iterStart, * iterEnd;
+      GtkTextIter * iterStart = NULL, * iterEnd = NULL;
       
       gtk_text_buffer_get_start_iter( buffer, iterStart );
       gtk_text_buffer_get_end_iter( buffer, iterEnd );

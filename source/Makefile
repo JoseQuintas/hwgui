@@ -18,7 +18,8 @@ C_SOURCES=\
 	wprint.c \
 	window.c \
 	nice.c \
-	grid.c
+	grid.c \
+	c_ipaddr.c
 	
 PRG_SOURCES=\
 	drawwidg.prg \
@@ -55,7 +56,9 @@ PRG_SOURCES=\
 	hnice.prg \
 	hgrid.prg \
 	hrect.prg \
-	htrackbr.prg
+	htrackbr.prg \
+	hmonthc.prg \
+	hipedit.prg	
 	
 LIBNAME=hwgui
 

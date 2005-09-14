@@ -27,6 +27,7 @@ PRG_SOURCES=\
 	hgraph.prg \
 	hprinter.prg \
 	hradio.prg \
+	htab.prg \
 	htimer.prg \
 	hupdown.prg \
 	hwindow.prg \

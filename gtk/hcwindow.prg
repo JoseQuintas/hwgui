@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.2 2005-09-11 17:22:22 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.3 2005-09-15 17:07:51 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -136,7 +136,7 @@ Local i
       Return Eval( ::bOther, Self, msg, wParam, lParam )
    ENDIF
 
-Return -1
+Return 0
 
 METHOD End()  CLASS HCustomWindow
 
@@ -190,7 +190,7 @@ Local iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res, handle, oItem
       ENDIF
    ENDIF
 
-Return -1
+Return 0
 
 Static Function onDestroy( oWnd )
 Local aControls := oWnd:aControls
@@ -201,7 +201,7 @@ Local i, nLen := Len( aControls )
    NEXT
    oWnd:End()
 
-Return 1
+Return 0
 
 Static Function onCtlColor( oWnd,wParam,lParam )
 Local oCtrl  := oWnd:FindControl(,lParam)
@@ -227,7 +227,7 @@ Local oCtrl
       Return 1
    ENDIF
 
-Return -1
+Return 0
 
 Static Function onCommand( oWnd,wParam )
 Local iItem, iParHigh := HiWord( wParam ), iParLow := LoWord( wParam )
@@ -259,7 +259,7 @@ Local oItem, iCont
    NEXT
    #endif
 
-Return -1
+Return 0
 
 Function onTrackScroll( oWnd,wParam,lParam )
 Local oCtrl := oWnd:FindControl( , lParam ), msg
@@ -279,4 +279,4 @@ Local oCtrl := oWnd:FindControl( , lParam ), msg
       ENDIF
    ENDIF
 
-Return -1
+Return 0

@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.5 2005-09-15 09:33:47 lf_sfnet Exp $
+ *$Id: hwindow.prg,v 1.6 2005-09-15 17:07:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HWindow class
@@ -31,7 +31,7 @@ Static Function onSize( oWnd,wParam,lParam )
        Eval( oWnd:bSize, oWnd, LoWord( lParam ), HiWord( lParam ) )
    ENDIF
 
-Return -1
+Return 0
 
 Static Function onDestroy( oWnd )
 
@@ -142,7 +142,7 @@ CLASS HMainWindow INHERIT HWindow
       { ;
          {|o,w,l|onCommand(o,w,l)},        ;
          {|o,w|onEraseBk(o,w)},            ;
-         {|o|onMove(o)},                   ;
+         {|o,w,l|onMove(o,w,l)},           ;
          {|o,w,l|onSize(o,w,l)},           ;
          {|o,w|onSysCommand(o,w)},         ;
          {|o,w,l|onNotifyIcon(o,w,l)},     ;
@@ -227,7 +227,7 @@ Local i
       Return Super:onEvent( msg, wParam, lParam )
    ENDIF
 
-Return -1
+Return 0
 
 /*
 CLASS HMDIChildWindow INHERIT HWindow
@@ -238,7 +238,7 @@ CLASS HMDIChildWindow INHERIT HWindow
       { ;
          {|o,w,l|onMdiCreate(o,l)},        ;
          {|o,w|onMdiCommand(o,w)},         ;
-         {|o|onMove(o)},                   ;
+         {|o,w,l|onMove(o,w,l)},           ;
          {|o,w,l|onSize(o,w,l)},           ;
          {|o,w|onMdiNcActivate(o,w)},      ;
          {|o,w|onSysCommand(o,w)},         ;
@@ -404,14 +404,13 @@ Local iItem, iCont, aMenu, iParHigh, iParLow, nHandle
 
 Return 0
 
-Static Function onMove( oWnd )
-/*
-Local aControls := GetWindowRect( oWnd:handle )
+Static Function onMove( oWnd, wParam, lParam )
 
-   oWnd:nLeft := aControls[1]
-   oWnd:nTop  := aControls[2]
-*/
-Return -1
+   // writelog( "onMove: "+str(oWnd:nLeft)+" "+str(oWnd:nTop)+" -> "+str(Loword(lParam))+str(Hiword(lParam)) )
+   oWnd:nLeft := Loword(lParam)
+   oWnd:nTop  := Hiword(lParam)
+
+Return 0
 
 Static Function onEraseBk( oWnd,wParam )
 /*
@@ -420,7 +419,7 @@ Static Function onEraseBk( oWnd,wParam )
        Return 1
    ENDIF
 */   
-Return -1
+Return 0
 
 Static Function onSysCommand( oWnd,wParam )
 Local i
@@ -446,7 +445,7 @@ Local i
        ENDIF
    ENDIF
 */
-Return -1
+Return 0
 
 Static Function onNotifyIcon( oWnd,wParam,lParam )
 Local ar
@@ -464,7 +463,7 @@ Local ar
        ENDIF
    ENDIF
 */   
-Return -1
+Return 0
 
 Static Function onMdiCreate( oWnd,lParam )
 /*
@@ -473,7 +472,7 @@ Static Function onMdiCreate( oWnd,lParam )
       Eval( oWnd:bInit,oWnd )
    ENDIF  
 */
-Return -1
+Return 0
 
 Static Function onMdiCommand( oWnd,wParam )
 Local iParHigh, iParLow, iItem
@@ -498,7 +497,7 @@ Static Function onMdiNcActivate( oWnd,wParam )
       Eval( oWnd:bLostFocus, oWnd )
    ENDIF
 */
-Return -1
+Return 0
 
 Static Function onEnterIdle( oDlg, wParam, lParam )
 Local oItem

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.9 2005-09-15 09:33:47 lf_sfnet Exp $
+ * $Id: window.c,v 1.10 2005-09-15 17:07:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -16,6 +16,7 @@
 #include "guilib.h"
 #include "gtk/gtk.h"
 
+#define WM_MOVE                           3
 #define WM_SIZE                           5
 #define WM_KEYDOWN                      256    // 0x0100
 #define WM_KEYUP                        257    // 0x0101
@@ -114,6 +115,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
    all_signal_connect( G_OBJECT (hWnd) );
    g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
+   set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
 
    hb_retnl( (LONG) hWnd );
 }
@@ -155,6 +157,7 @@ HB_FUNC( HWG_CREATEDLG )
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
    all_signal_connect( G_OBJECT (hWnd) );
    g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
+   set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
 
    hb_retnl( (LONG) hWnd );
 
@@ -286,7 +289,7 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
    //   gObject = g_object_get_data( (GObject*) (widget->parent->parent), "obj" );
    if( pSym_onEvent && gObject )
    {
-      PHB_ITEM pObject = hb_itemNew( NULL );
+      PHB_ITEM pObject;
       LONG p1, p2, p3;
       
       if( event->type == GDK_KEY_PRESS || event->type == GDK_KEY_RELEASE )
@@ -314,13 +317,41 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       }
       else if( event->type == GDK_CONFIGURE )
       {
-         p1 = WM_SIZE;
-	 p2 = ((GdkEventConfigure*)event)->width;
-	 p3 = ((GdkEventConfigure*)event)->height;
+         /*
+         char s[100];
+         sprintf( s,"configure %d %d %d %d / %d %d %d %d", 
+            widget->allocation.x,
+            widget->allocation.y,
+            widget->allocation.width,
+            widget->allocation.height,
+            ((GdkEventConfigure*)event)->x,
+            ((GdkEventConfigure*)event)->y,
+            ((GdkEventConfigure*)event)->width,
+            ((GdkEventConfigure*)event)->height );
+   	   writelog(s);
+         */
+         p2 = 0;
+         if( widget->allocation.width != ((GdkEventConfigure*)event)->width ||
+             widget->allocation.height!= ((GdkEventConfigure*)event)->height )
+         {
+            /*
+            p1 = WM_SIZE;
+            p3 = ( ((GdkEventConfigure*)event)->width & 0xFFFF ) | 
+                 ( ( ((GdkEventConfigure*)event)->height << 16 ) & 0xFFFF0000 );
+            */
+            return 0;
+         }
+         else
+         {
+            p1 = WM_MOVE;
+            p3 = ( ((GdkEventConfigure*)event)->x & 0xFFFF ) | 
+                 ( ( ((GdkEventConfigure*)event)->y << 16 ) & 0xFFFF0000 );
+         }
       }
       else
          sscanf( (char*)data,"%ld %ld %ld",&p1,&p2,&p3 );
-      
+
+      pObject = hb_itemNew( NULL );      
       pObject->type = HB_IT_OBJECT;
       pObject->item.asArray.value = (PHB_BASEARRAY) gObject;
       #ifndef UIHOLDERS

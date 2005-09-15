@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.3 2005-09-09 06:30:20 lf_sfnet Exp $
+ * $Id: menu.prg,v 1.4 2005-09-15 09:33:47 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -184,6 +184,10 @@ Local aMenu, i
          aMenu := Atail(aMenu)[1]
       NEXT
       _nLevel++
+      if !empty( cTitle )
+         cTitle := strtran( cTitle, "\t", "" )
+         cTitle := strtran( cTitle, "&", "_" )
+      endif
       Aadd( aMenu, { {},cTitle,nId,0 } )
    ENDIF
 Return .T.
@@ -226,6 +230,10 @@ Local aMenu, i, oBmp, nFlag
       aMenu := Atail(aMenu)[1]
    NEXT
    nId := Iif( nId == Nil .AND. cItem != Nil, ++ _Id, nId )
+   if !empty( cItem )
+      cItem := strtran( cItem, "\t", "" )
+      cItem := strtran( cItem, "&", "_" )
+   endif
    Aadd( aMenu, { bItem,cItem,nId,nFlag } )
    /*
    IF lBitmap!=Nil .or. !Empty(lBitmap)

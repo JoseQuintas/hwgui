@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.3 2005-09-09 06:30:20 lf_sfnet Exp $
+ * $Id: menu_c.c,v 1.4 2005-09-15 09:33:47 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level menu functions
@@ -76,13 +76,13 @@ HB_FUNC( HWG__ADDMENUITEM )
    if( lCheck )
    {
       char * cptr = g_locale_to_utf8( lpNewItem, -1, NULL, NULL, NULL);
-      hMenu = gtk_check_menu_item_new_with_label( cptr );
+      hMenu = gtk_check_menu_item_new_with_mnemonic( cptr );
       g_free( cptr );
    }
    else if( lString )
    {
       char * cptr = g_locale_to_utf8( lpNewItem, -1, NULL, NULL, NULL);
-      hMenu = (GtkWidget *) gtk_menu_item_new_with_label( cptr );
+      hMenu = (GtkWidget *) gtk_menu_item_new_with_mnemonic( cptr );
       g_free( cptr );
    }
    else

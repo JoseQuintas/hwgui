@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.8 2005-09-11 17:22:22 alkresin Exp $
+ * $Id: window.c,v 1.9 2005-09-15 09:33:47 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -161,7 +161,7 @@ HB_FUNC( HWG_CREATEDLG )
 }
 
 /*
- *  HWG_ACTIVATEMAINWINDOW( lShow, hAccel, lMaximize ) 
+ *  HWG_ACTIVATEMAINWINDOW( lShow, hAccel, lMaximize, lMinimize ) 
  */
 HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 {
@@ -169,7 +169,14 @@ HB_FUNC( HWG_ACTIVATEMAINWINDOW )
    // HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
 
    if( !ISNIL(3) && hb_parl(3) )
+   {
       gtk_window_maximize( (GtkWindow*) hWnd );
+   }
+   if( !ISNIL(4) && hb_parl(4) )
+   {
+      gtk_window_iconify( (GtkWindow*) hWnd );
+   }
+
    gtk_widget_show_all( hWnd );
    gtk_main();
 }

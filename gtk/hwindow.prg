@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.4 2005-09-12 05:58:39 alkresin Exp $
+ *$Id: hwindow.prg,v 1.5 2005-09-15 09:33:47 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HWindow class
@@ -56,10 +56,9 @@ CLASS HWindow INHERIT HCustomWindow
    DATA nLastKey INIT 0
 
    DATA aOffset
-   DATA lMaximize INIT .F.
 
    METHOD New( Icon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
-          bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,lMaximize,cHelp,nHelpId )
+          bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,cHelp,nHelpId )
    METHOD AddItem( oWnd )
    METHOD DelItem( oWnd )
    METHOD FindWindow( hWnd )
@@ -72,7 +71,7 @@ ENDCLASS
 
 METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,;
-                  cAppName,oBmp,lMaximize,cHelp,nHelpId ) CLASS HWindow
+                  cAppName,oBmp,cHelp,nHelpId ) CLASS HWindow
 
    ::oDefaultParent := Self
    ::title    := cTitle
@@ -91,12 +90,11 @@ METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
    ::bGetFocus  := bGFocus
    ::bLostFocus := bLFocus
    ::bOther     := bOther
-   ::lMaximize  := lMaximize
    IF cAppName != Nil
       ::szAppName := cAppName
    ENDIF
    
-   IF hwg_BitAnd( ::style, DS_CENTER ) > 0
+   IF hwg_BitAnd( ::style, DS_CENTER ) > 0 
       ::nLeft := Int( ( GetDesktopWidth() - ::nWidth ) / 2 )
       ::nTop  := Int( ( GetDesktopHeight() - ::nHeight ) / 2 )
    ENDIF 
@@ -159,7 +157,7 @@ CLASS HMainWindow INHERIT HWindow
 
    METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
                      oFont,bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, ;
-                     cAppName,oBmp,lMaximize,cHelp,nHelpId )
+                     cAppName,oBmp,cHelp,nHelpId )
    METHOD Activate( lShow )
    METHOD onEvent( msg, wParam, lParam )
    // METHOD GetMdiActive()  INLINE ::FindWindow( SendMessage( ::GetMain():handle, WM_MDIGETACTIVE,0,0 ) )
@@ -168,11 +166,11 @@ ENDCLASS
 
 METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
                      oFont,bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, ;
-                     cAppName,oBmp,lMaximize,cHelp,nHelpId ) CLASS HMainWindow
+                     cAppName,oBmp,cHelp,nHelpId ) CLASS HMainWindow
 
    Super:New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,  ;
-                  cAppName,oBmp,lMaximize,cHelp,nHelpId )
+                  cAppName,oBmp,cHelp,nHelpId )
    ::type := lType
 
    IF lType == WND_MDI
@@ -195,7 +193,7 @@ METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
 
 Return Self
 
-METHOD Activate( lShow ) CLASS HMainWindow
+METHOD Activate( lShow, lMaximize, lMinimize ) CLASS HMainWindow
 Local oWndClient, handle
 
    // CreateGetList( Self )
@@ -210,7 +208,7 @@ Local oWndClient, handle
 */
    ELSEIF ::type == WND_MAIN
 
-      Hwg_ActivateMainWindow( ::handle,::hAccel,::lMaximize )
+      Hwg_ActivateMainWindow( ::handle,::hAccel, lMaximize, lMinimize )
 
    ENDIF
 
@@ -285,7 +283,7 @@ CLASS HChildWindow INHERIT HWindow
 
    METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                      bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,;
-                     cAppName,oBmp,lMaximize,cHelp,nHelpId )
+                     cAppName,oBmp,cHelp,nHelpId )
    METHOD Activate( lShow )
    METHOD onEvent( msg, wParam, lParam )
 
@@ -293,11 +291,11 @@ ENDCLASS
 
 METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,;
-                  cAppName,oBmp,lMaximize,cHelp,nHelpId ) CLASS HChildWindow
+                  cAppName,oBmp,cHelp,nHelpId ) CLASS HChildWindow
 
    Super:New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,  ;
-                  cAppName,oBmp,lMaximize,cHelp,nHelpId )
+                  cAppName,oBmp,cHelp,nHelpId )
    ::oParent := HWindow():GetMain()
    IF ISOBJECT( ::oParent )  
        ::handle := Hwg_InitChildWindow( Self, ::szAppName,cTitle,cMenu, ;

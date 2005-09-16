@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.2 2005-03-10 11:32:48 alkresin Exp $
+ * $Id: drawwidg.prg,v 1.3 2005-09-16 11:13:29 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -40,7 +40,7 @@ METHOD Add( fontName, nWidth, nHeight ,fnWeight, ;
 
 Local i, nlen := Len( ::aFonts )
 
-   nHeight  := Iif( nHeight==Nil,-13,nHeight )
+   nHeight  := Iif( nHeight==Nil,13,Abs(nHeight) )
    fnWeight := Iif( fnWeight==Nil,0,fnWeight )
    fdwCharSet := Iif( fdwCharSet==Nil,0,fdwCharSet )
    fdwItalic := Iif( fdwItalic==Nil,0,fdwItalic )

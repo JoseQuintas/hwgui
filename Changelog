@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.401 2005-09-15 17:07:51 alkresin Exp $
+ * $Id: Changelog,v 1.402 2005-09-16 11:13:29 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,23 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-09-16 15:12 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/hbrowse.prg
+    * bHeadClick variable added to the HColumn class - synhronized with
+      Windows version.
+  * gtk/drawwidg.prg
+    * HFont():Add() - converting nHeight with Abs() - to provide compatibility
+      with Windows version.
+  * gtk/hdialog.prg
+    ! Small fixes
+  * gtk/hprinter.prg
+    * Added Preview() method - empty for now.
+  * gtk/menu.prg
+  * gtk/menu_c.c
+    * CheckMenuItem() and IsCheckedMenuItem() functions implemented.
+  * source/menu_c.c
+    ! CheckMenuItem() and IsCheckedMenuItem() functions fixed.
 
 2005-09-15 21:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hwindow.prg

@@ -1,10 +1,10 @@
 /*
- * $Id: menu.prg,v 1.4 2005-09-15 09:33:47 lf_sfnet Exp $
+ * $Id: menu.prg,v 1.5 2005-09-16 11:13:29 alkresin Exp $
  *
- * HWGUI - Harbour Win32 GUI library source code:
+ * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Prg level menu functions
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
 */
 
@@ -88,7 +88,7 @@ Local hSubMenu
       IF lSubmenu
          Aadd( aMenu[1],{ {},cItem,nMenuId,0,hSubMenu } )
       ELSE
-         Aadd( aMenu[1],{ bItem,cItem,nMenuId,0 } )
+         Aadd( aMenu[1],{ bItem,cItem,nMenuId,0,hSubMenu } )
       ENDIF
       Return ATail( aMenu[1] )
    ELSE
@@ -97,7 +97,7 @@ Local hSubMenu
       IF lSubmenu
          aMenu[ 1,nPos ] := { {},cItem,nMenuId,0,hSubMenu }
       ELSE
-         aMenu[ 1,nPos ] := { bItem,cItem,nMenuId,0 }
+         aMenu[ 1,nPos ] := { bItem,cItem,nMenuId,0,hSubMenu }
       ENDIF
       Return aMenu[ 1,nPos ]
    ENDIF
@@ -110,7 +110,7 @@ Local nPos1, aSubMenu
    DO WHILE nPos <= Len( aMenu[1] )
       IF aMenu[ 1,npos,3 ] == nId
          Return aMenu
-      ELSEIF Len( aMenu[ 1,npos ] ) > 4
+      ELSEIF Valtype( aMenu[ 1,npos,1 ] ) == "A"
          IF ( aSubMenu := Hwg_FindMenuItem( aMenu[ 1,nPos ] , nId, @nPos1 ) ) != Nil
             nPos := nPos1
             Return aSubMenu
@@ -153,8 +153,8 @@ Local hMenu, nPos, aMenu, i, oBmp
          BuildMenu( aMenu,hWnd,,nPos )
       ELSE 
          IF aMenu[ 1,nPos,1 ] == Nil .OR. aMenu[ 1,nPos,2 ] != Nil
-            hwg__AddMenuItem( hMenu, aMenu[1,npos,2], nPos, hWnd, aMenu[1,nPos,3], ;
-                   aMenu[1,npos,4],.F. )
+            aMenu[1,npos,5] := hwg__AddMenuItem( hMenu, aMenu[1,npos,2], ;
+                          nPos, hWnd, aMenu[1,nPos,3], aMenu[1,npos,4],.F. )
          Endif
       ENDIF
       nPos ++
@@ -234,7 +234,7 @@ Local aMenu, i, oBmp, nFlag
       cItem := strtran( cItem, "\t", "" )
       cItem := strtran( cItem, "&", "_" )
    endif
-   Aadd( aMenu, { bItem,cItem,nId,nFlag } )
+   Aadd( aMenu, { bItem,cItem,nId,nFlag,0 } )
    /*
    IF lBitmap!=Nil .or. !Empty(lBitmap)
       if lResource==Nil ;lResource:=.F.; Endif         
@@ -303,3 +303,44 @@ Function Hwg_SearchPosBitmap( nPos_Id )
 
 Return lBmp
 */ 
+
+Static Function GetMenuByHandle( hWnd )
+Local i, aMenu
+
+   IF hWnd == Nil
+      aMenu := HWindow():GetMain():menu
+   ELSE
+      IF ( oDlg := HDialog():FindDialog(hWnd) ) != Nil
+         aMenu := oDlg:menu
+      ELSEIF ( i := Ascan( HDialog():aModalDialogs,{|o|o:handle==hWnd} ) ) != Nil
+         aMenu := HDialog():aModalDialogs[i]:menu
+      ELSEIF ( i := Ascan( HWindow():aWindows,{|o|o:handle==hWnd} ) ) != Nil
+         aMenu := HWindow():aWindows[i]:menu
+      ENDIF
+   ENDIF
+
+Return aMenu
+
+Function CheckMenuItem( hWnd, nId, lValue )
+Local aMenu, aSubMenu, nPos
+
+   aMenu := GetMenuByHandle( hWnd )   
+   IF aMenu != Nil
+      IF ( aSubMenu := Hwg_FindMenuItem( aMenu, nId, @nPos ) ) != Nil
+         hwg_CheckMenuItem( aSubmenu[1,nPos,5], lValue )
+      ENDIF   
+   ENDIF
+   
+Return Nil
+
+Function IsCheckedMenuItem( hWnd, nId )
+Local aMenu, aSubMenu, nPos, lRes := .F.
+   
+   aMenu := GetMenuByHandle( hWnd )
+   IF aMenu != Nil
+      IF ( aSubMenu := Hwg_FindMenuItem( aMenu, nId, @nPos ) ) != Nil
+         lRes := hwg_IsCheckedMenuItem( aSubmenu[1,nPos,5] )
+      ENDIF   
+   ENDIF
+   
+Return lRes

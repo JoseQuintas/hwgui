@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.4 2005-09-15 09:33:47 lf_sfnet Exp $
+ * $Id: menu_c.c,v 1.5 2005-09-16 11:13:29 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level menu functions
@@ -29,6 +29,7 @@ PHB_ITEM hb_stackReturn( void );
 #define  FLAG_DISABLED   1
 #define  FLAG_CHECK      2
 
+extern GtkWidget * aWindows[];
 extern void cb_signal( GtkWidget *widget,gchar* data );
 extern GtkFixed * getFixedBox( GObject * handle );
 
@@ -46,7 +47,7 @@ HB_FUNC( HWG__CREATEPOPUPMENU )
 }
 
 /*
- *  AddMenuItem( hMenu,cCaption,nPos,hWnd,nId,fState,lSubMenu ) --> lResult
+ *  AddMenuItem( hMenu,cCaption,nPos,hWnd,nId,fState,lSubMenu ) --> hMenuItem
  */
 
 HB_FUNC( HWG__ADDMENUITEM )
@@ -113,13 +114,11 @@ HB_FUNC( HWG__ADDMENUITEM )
  */
 HB_FUNC( HWG__SETMENU )
 {
-   GtkFixed * box = getFixedBox( (GObject*) hb_parnl(1) );
+   GObject * handle = (GObject*) hb_parnl(1);
+   GtkFixed * box = getFixedBox( handle );
    GtkWidget * vbox = ( (GtkWidget*)box )->parent;
    gtk_box_pack_start( GTK_BOX (vbox), (GtkWidget*)hb_parnl(2), FALSE, FALSE, 2);
-   /*
-   if ( box )
-      gtk_fixed_put( box,(GtkWidget*)hb_parnl(2),0,0 );
-   */      
+   // g_object_set_data( handle, "menu", (gpointer) box );
    hb_retl(1);
 }
 
@@ -129,43 +128,23 @@ HB_FUNC( GETMENUHANDLE )
    // hb_retnl( (LONG) GetMenu( handle ) );
 }
 
-HB_FUNC( CHECKMENUITEM )
+HB_FUNC( HWG_CHECKMENUITEM )
 {
-/*
-   HMENU hMenu = ( hb_pcount()>0 && !ISNIL(1) )? ((HMENU)hb_parnl(1)):GetMenu(aWindows[0]);
-   UINT  uCheck = ( hb_pcount() < 3 || !ISLOG( 3 ) || hb_parl( 3 ) )? MF_CHECKED:MF_UNCHECKED;
+   GtkCheckMenuItem * check_menu_item = (GtkCheckMenuItem *) hb_parnl(1);
 
-   if( !hMenu )
-      MessageBox( GetActiveWindow(), "", "No Menu!", MB_OK | MB_ICONINFORMATION );
-   else
-   {
-      CheckMenuItem(
-         hMenu,	                // handle to menu 
-         hb_parni( 2 ),         // menu item to check or uncheck
-         MF_BYCOMMAND | uCheck  // menu item flags 
-      );
-   }
-*/   
+   g_signal_handlers_block_matched( (gpointer)check_menu_item, G_SIGNAL_MATCH_FUNC,
+       0, 0, 0, G_CALLBACK (cb_signal), 0 );
+   gtk_check_menu_item_set_active( check_menu_item, (ISNIL(2))? 1 : hb_parl(2) );
+   g_signal_handlers_unblock_matched( (gpointer)check_menu_item, G_SIGNAL_MATCH_FUNC,
+       0, 0, 0, G_CALLBACK (cb_signal), 0 );
+
 }
 
-HB_FUNC( ISCHECKEDMENUITEM )
+HB_FUNC( HWG_ISCHECKEDMENUITEM )
 {
-/*
-   HMENU hMenu = ( hb_pcount()>0 && !ISNIL(1) )? ((HMENU)hb_parnl(1)):GetMenu(aWindows[0]);
-   UINT  uCheck;
-
-   if( !hMenu )
-      hb_retl( 0 );
-   else
-   {
-      uCheck = GetMenuState(
-         hMenu,	                // handle to menu 
-         hb_parni( 2 ),         // menu item to check or uncheck
-         MF_BYCOMMAND           // menu item flags 
-      );
-      hb_retl( uCheck & MF_CHECKED );
-   }
-*/   
+   GtkCheckMenuItem * check_menu_item = (GtkCheckMenuItem *) hb_parnl(1);
+   
+   hb_retl( gtk_check_menu_item_get_active( check_menu_item ) );
 }
 
 HB_FUNC( ENABLEMENUITEM )

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.8 2005-09-11 17:22:22 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.9 2005-09-16 11:13:29 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -77,6 +77,7 @@ CLASS HColumn INHERIT HObject
    DATA lSpandHead INIT .F.
    DATA lSpandFoot INIT .F.
    DATA Picture
+   DATA bHeadClick
 
    METHOD New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin,cPict,bValid,bWhen,aItem,oBmp )
 
@@ -1217,6 +1218,13 @@ Local maxPos, nPos
 Local xm := LOWORD(lParam), x1, fif
 
    ::lBtnDbl := .F.
+   x1  := ::x1
+   fif := IIF( ::freeze > 0, 1, ::nLeftCol )
+   DO WHILE fif < (::nLeftCol+::nColumns) .AND. x1 + ::aColumns[fif]:width < xm
+      x1 += ::aColumns[fif]:width
+      fif := IIF( fif = ::freeze, ::nLeftCol, fif + 1 )
+   ENDDO
+
    IF nLine > 0 .AND. nLine <= ::rowCurrCount
       IF step != 0
          nrec := Recno()
@@ -1239,12 +1247,6 @@ Local xm := LOWORD(lParam), x1, fif
          ENDIF
       ENDIF
       IF ::lEditable
-         x1  := ::x1
-         fif := IIF( ::freeze > 0, 1, ::nLeftCol )
-         DO WHILE fif < (::nLeftCol+::nColumns) .AND. x1 + ::aColumns[fif]:width < xm
-            x1 += ::aColumns[fif]:width
-            fif := IIF( fif = ::freeze, ::nLeftCol, fif + 1 )
-         ENDDO
          IF ::colpos != fif - ::nLeftCol + 1 + :: freeze
             ::colpos := fif - ::nLeftCol + 1 + :: freeze
 	    IF ::hScrollH != Nil
@@ -1261,6 +1263,14 @@ Local xm := LOWORD(lParam), x1, fif
          InvalidateRect( ::area, 0, ::x1, ::y1+(::height+1)*::internal[2]-::height, ::x2, ::y1+(::height+1)*::internal[2] )
          InvalidateRect( ::area, 0, ::x1, ::y1+(::height+1)*::rowPos-::height, ::x2, ::y1+(::height+1)*::rowPos )
       ENDIF
+      
+   ELSEIF ::lDispHead .and.;
+          nLine >= -::nHeadRows .and.;
+          fif <= Len( ::aColumns ) .AND.;
+          ::aColumns[fif]:bHeadClick != nil
+
+      Eval(::aColumns[fif]:bHeadClick, Self, fif)
+
    ELSEIF nLine == 0
       IF oCursor == crossCursor
          oCursor := vCursor

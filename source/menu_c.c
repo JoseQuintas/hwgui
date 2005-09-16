@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.21 2005-07-19 13:04:17 alkresin Exp $
+ * $Id: menu_c.c,v 1.22 2005-09-16 11:13:30 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -162,7 +162,8 @@ HB_FUNC( GETMENUHANDLE )
 
 HB_FUNC( CHECKMENUITEM )
 {
-   HMENU hMenu = ( hb_pcount()>0 && !ISNIL(1) )? ((HMENU)hb_parnl(1)):GetMenu(aWindows[0]);
+   HWND handle = ( hb_pcount()>0 && !ISNIL(1) )? ((HWND)hb_parnl(1)):aWindows[0];
+   HMENU hMenu = GetMenu( handle );
    UINT  uCheck = ( hb_pcount() < 3 || !ISLOG( 3 ) || hb_parl( 3 ) )? MF_CHECKED:MF_UNCHECKED;
 
    if( !hMenu )
@@ -179,7 +180,8 @@ HB_FUNC( CHECKMENUITEM )
 
 HB_FUNC( ISCHECKEDMENUITEM )
 {
-   HMENU hMenu = ( hb_pcount()>0 && !ISNIL(1) )? ((HMENU)hb_parnl(1)):GetMenu(aWindows[0]);
+   HWND handle = ( hb_pcount()>0 && !ISNIL(1) )? ((HWND)hb_parnl(1)):aWindows[0];
+   HMENU hMenu = GetMenu( handle );
    UINT  uCheck;
 
    if( !hMenu )

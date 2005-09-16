@@ -1,5 +1,5 @@
 /*
- *$Id: hprinter.prg,v 1.1 2005-08-29 09:35:02 alkresin Exp $
+ *$Id: hprinter.prg,v 1.2 2005-09-16 11:13:29 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HPrinter class
@@ -39,6 +39,7 @@ CLASS HPrinter INHERIT HObject
    METHOD Line( x1,y1,x2,y2,oPen )
    METHOD Say( cString,x1,y1,x2,y2,nOpt,oFont )
    METHOD Bitmap( x1,y1,x2,y2,nOpt,hBitmap )
+   METHOD Preview()  INLINE Nil
    METHOD GetTextWidth( cString, oFont )  INLINE hwg_gp_GetTextSize( ::hDC,cString,Iif(oFont==Nil,Nil,oFont:handle) )
 
 ENDCLASS
@@ -203,21 +204,6 @@ METHOD Bitmap( x1,y1,x2,y2,nOpt,hBitmap ) CLASS HPrinter
    DrawBitmap( ::hDC,hBitmap,Iif(nOpt==Nil,SRCAND,nOpt),x1,y1,x2-x1+1,y2-y1+1 )
 
 Return Nil
-
-/*
-METHOD GetTextWidth( cString, oFont ) CLASS HPrinter
-Local arr, hFont
-
-   IF oFont != Nil
-      hFont := SelectObject( ::hDC,oFont:handle )
-   ENDIF
-   arr := GetTextSize( ::hDC,cString )
-   IF oFont != Nil
-      SelectObject( ::hDC,hFont )
-   ENDIF
-
-Return Iif( ::lmm, Int( arr[1]/::nHRes ), arr[1] )
-*/
 
 METHOD StartDoc( lPreview, cFileName ) CLASS HPrinter
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.404 2005-09-16 11:38:36 alkresin Exp $
+ * $Id: Changelog,v 1.405 2005-09-16 16:52:23 lf_sfnet Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-09-16 18:55 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
+  * gtk/samples/bldgw.bat
+  * samples/bldgw.bat
+    * added -lhbsix for latest xHarbour CVS
+  * source/hownbtn.prg
+  * source/hnice.prg
+    * added ::nOrder properties
+	 * added Self as first parameter of Eval( ::bClick, Self, ... )
+  * source/menu.prg
+    * declared local var
 
 2005-09-16 15:38 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/samples/dbview.prg

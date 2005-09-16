@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.5 2005-09-16 11:13:29 alkresin Exp $
+ * $Id: menu.prg,v 1.6 2005-09-16 16:52:23 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Prg level menu functions
@@ -305,7 +305,7 @@ Return lBmp
 */ 
 
 Static Function GetMenuByHandle( hWnd )
-Local i, aMenu
+Local i, aMenu, oDlg
 
    IF hWnd == Nil
       aMenu := HWindow():GetMain():menu

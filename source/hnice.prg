@@ -1,5 +1,5 @@
 /*
- * $Id: hnice.prg,v 1.3 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hnice.prg,v 1.4 2005-09-16 16:52:23 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -30,6 +30,8 @@ CLASS HNiceButton INHERIT HControl
    DATA g INIT 90
    DATA b INIT 90
    DATA lFlat
+   DATA nOrder
+
    METHOD New( oWndParent, nId, nStyle, nStyleEx, nLeft, nTop, nWidth, nHeight, ;
    bInit, bClick, ;
    cText, cTooltip, r, g, b )
@@ -64,6 +66,7 @@ METHOD New( oWndParent, nId, nStyle, nStyleEx, nLeft, nTop, nWidth, nHeight, ;
    DEFAULT r := ::r
    ::lFlat  := .t.
    ::bClick := bClick
+   ::nOrder  := iif( oWndParent==nil, 0, len( oWndParent:aControls ) )
 
    ::ExStyle := nStyleEx
    ::text    := cText

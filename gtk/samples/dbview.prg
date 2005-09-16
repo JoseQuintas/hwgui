@@ -1,5 +1,5 @@
 /*
- *$Id: dbview.prg,v 1.3 2005-09-12 10:35:09 alkresin Exp $
+ *$Id: dbview.prg,v 1.4 2005-09-16 11:38:36 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code: 
  * dbview.prg - dbf browsing sample
@@ -31,7 +31,7 @@ Memvar oBrw, oFont
 
    RDDSETDEFAULT( "DBFCDX" )
    
-   oFont := HFont():Add( "Courier",0,14 )
+   oFont := HFont():Add( "Courier",0,-14 )
    INIT WINDOW oWndMain MAIN TITLE "Dbf browse" AT 200,100 SIZE 300,300
 
    MENU OF oWndMain
@@ -176,7 +176,7 @@ Memvar oBrw, oFont
 Return Nil
 
 Static Function NewIndex()
-Local oDlg, of := HFont():Add( "Courier",0,12 )
+Local oDlg, of := HFont():Add( "Courier",0,-12 )
 Local cName := "", lMulti := .T., lUniq := .F., cTag := "", cExpr := "", cCond := ""
 Local oMsg
 Memvar oBrw
@@ -307,7 +307,7 @@ Local oDlg
 Return oDlg
 
 Static Function ModiStru( lNew )
-Local oDlg, oBrowse, of := HFont():Add( "Courier",0,12 ), oMsg 
+Local oDlg, oBrowse, of := HFont():Add( "Courier",0,-12 ), oMsg 
 Local oGet1, oGet2, oGet3, oGet4
 Local af, af0, cName := "", nType := 1, cLen := "0", cDec := "0", i
 Local aTypes := { "Character","Numeric","Date","Logical" }

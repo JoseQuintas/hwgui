@@ -3,14 +3,12 @@
  * 
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
 #include "guilib.ch"
 
-// REQUEST HB_CODEPAGE_RU866
-// REQUEST HB_CODEPAGE_RU1251
 
 function Main
 Private oMainWindow, oPanel
@@ -34,8 +32,7 @@ Private nColor, oBmp2
          MENUITEM "&Exit" ACTION EndWindow()
       ENDMENU
       MENU TITLE "&Samples"
-         MENUITEM "&Checked" ID 1001 ;
-               ACTION CheckMenuItem( ,1001, !IsCheckedMenuItem( ,1001 ) )
+         MENUITEMCHECK "&Checked" ID 1001 
          SEPARATOR
          MENUITEM "&Test Tab" ACTION TestTab()
          SEPARATOR
@@ -43,6 +40,7 @@ Private nColor, oBmp2
                ACTION CopyStringToClipboard(MsgGet("Dialog Sample","Input table name"))
          MENUITEM "&Dialog from prg" ACTION DialogFromPrg()
          SEPARATOR
+         MENUITEM "&Print Preview" ACTION PrnTest()
       ENDMENU
 
    ENDMENU
@@ -59,7 +57,6 @@ Local nId
 
    IF !Empty( fname )
       mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
-      // use &fname new codepage RU866
       use &fname new
       nId := 111
 
@@ -107,13 +104,13 @@ Local han := fcreate( "LPT1",0 )
   endif
 return nil
 
-Function DialogFromPrg( o )
+Function DialogFromPrg()
 Local cTitle := "Dialog from prg", cText := "Input something"
-Local oModDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
+Local oModDlg, oFont := HFont():Add( "Serif",0,-13 ), oTab
 Local cRes, aCombo := { "First","Second" }, oEdit, vard := "Monday"
-// Local aTabs := { "Monday","Tuesday","Wednesday","Thursday","Friday" }
 
-   // o:bGetFocus := Nil
+   CheckMenuItem( ,1001, !IsCheckedMenuItem( ,1001 ) )
+   
    INIT DIALOG oModDlg TITLE cTitle           ;
    AT 210,10  SIZE 300,300                    ;
    FONT oFont                                 ;
@@ -138,16 +135,16 @@ Local cRes, aCombo := { "First","Second" }, oEdit, vard := "Monday"
    END RADIOGROUP SELECTED 2
 
    @ 20,120 COMBOBOX aCombo STYLE WS_TABSTOP ;
-        SIZE 100, 150
+        SIZE 100, 25
 
    @ 20,160 UPDOWN 10 RANGE -10,50 SIZE 50,32 STYLE WS_BORDER
 
    @ 160,160 TAB oTab ITEMS {} SIZE 130,56
    BEGIN PAGE "Monday" OF oTab
-      @ 20,28 GET vard SIZE 80,22 STYLE WS_BORDER
+      @ 20,10 GET vard SIZE 80,22 STYLE WS_BORDER
    END PAGE OF oTab
    BEGIN PAGE "Tuesday" OF oTab
-      @ 20,28 EDITBOX "" SIZE 80,22 STYLE WS_BORDER
+      @ 20,10 EDITBOX "" SIZE 80,22 STYLE WS_BORDER
    END PAGE OF oTab
 
    @ 100,220 LINE LENGTH 100
@@ -168,11 +165,12 @@ Local oDlg, oTAB
 Local oGet1, oGet2, oVar1:="1", oVar2:="2"
 Local oGet3, oGet4, oVar3:="3", oVar4:="4", oGet5, oVar5 := "5"
 
-INIT DIALOG oDlg CLIPPER NOEXIT AT 0, 0 SIZE 200, 200
+INIT DIALOG oDlg CLIPPER NOEXIT AT 0, 0 SIZE 200, 200 ;
+   ON INIT  {||SetFocus(oDlg:getlist[1]:handle)}
 
 @ 10, 10 TAB oTab ITEMS {} SIZE 180, 180 ;
-   ON LOSTFOCUS {||MsgInfo("Lost Focus")};
-   ON INIT  {||SetFocus(oDlg:getlist[1]:handle)}
+   ON LOSTFOCUS {||MsgInfo("Lost Focus")}
+
 
 BEGIN PAGE "Page 01" of oTab
 
@@ -192,3 +190,34 @@ END PAGE of oTab
 ACTIVATE DIALOG oDlg
 
 return nil
+
+
+Function PrnTest
+Local oPrinter, oFont
+
+   INIT PRINTER oPrinter
+   IF oPrinter == Nil      
+      Return Nil         
+   ENDIF            
+                              
+   oFont := oPrinter:AddFont( "Courier Regular",10 )
+                  
+   oPrinter:StartDoc( .T.,"/tmp/_a.ps" )
+   oPrinter:StartPage()
+   oPrinter:SetFont( oFont )
+   oPrinter:Box( 5,5,oPrinter:nWidth-5,oPrinter:nHeight-5 )
+   oPrinter:Say( "Windows printing first sample !", 50,10,165,26,DT_CENTER,oFont  )
+   oPrinter:Line( 45,30,170,30 )
+   oPrinter:Line( 45,5,45,30 )
+   oPrinter:Line( 170,5,170,30 )
+   oPrinter:Say( "----------", 50,120,150,132,DT_CENTER  )
+   oPrinter:Box( 50,134,160,146 )
+   oPrinter:Say( "End Of Report", 50,135,160,146,DT_CENTER  )
+   oPrinter:EndPage()
+   oPrinter:EndDoc()
+   oPrinter:Preview()
+   oPrinter:End()
+
+Return Nil
+                                                               
+                                                               

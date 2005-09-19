@@ -1,5 +1,5 @@
 /*
- * $Id: hsplit.prg,v 1.7 2005-02-21 09:29:56 alkresin Exp $
+ * $Id: hsplit.prg,v 1.8 2005-09-19 10:00:35 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSplitter class
@@ -14,7 +14,7 @@
 
 CLASS HSplitter INHERIT HControl
 
-   CLASS VAR winclass   INIT "PANEL"
+   CLASS VAR winclass INIT "STATIC"
 
    DATA aLeft
    DATA aRight

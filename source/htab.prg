@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.15 2004-10-21 09:12:34 alkresin Exp $
+ *$Id: htab.prg,v 1.16 2005-09-19 13:31:55 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -39,6 +39,7 @@ CLASS HTab INHERIT HControl
    METHOD StartPage( cname )
    METHOD EndPage()
    METHOD ChangePage( nPage )
+   METHOD DeletePage( nPage )
    METHOD HidePage( nPage )
    METHOD ShowPage( nPage )
    METHOD GetActivePage( nFirst,nEnd )
@@ -208,6 +209,24 @@ METHOD GetActivePage( nFirst,nEnd ) CLASS HTab
       nFirst := 1
       nEnd   := Len( ::aControls )
    ENDIF
+
+Return ::nActive
+
+METHOD DeletePage( nPage ) CLASS HTab
+
+   if nPage == ::nActive
+      if nPage > 1
+         ::ChangePage( nPage - 1 )
+      else
+         ::ChangePage( 1 )
+      endif
+   endif
+
+   DeleteTab( ::handle, nPage-1 )
+
+   adel( ::aPages, nPage )
+
+   asize( ::aPages, len( ::aPages ) - 1 )
 
 Return ::nActive
 

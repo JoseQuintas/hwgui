@@ -1,5 +1,5 @@
 /*
- * $Id: repexec.prg,v 1.3 2004-12-08 08:23:17 alkresin Exp $
+ * $Id: repexec.prg,v 1.4 2005-09-19 13:00:41 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * RepExec - Loading and executing of reports, built with RepBuild
@@ -180,13 +180,11 @@ Return Nil
 
 Function PrintReport( printerName,oPrn,lPreview )
 Local oPrinter := Iif( oPrn != Nil, oPrn, HPrinter():New( printerName ) )
-Local hDCwindow
 Local aPrnCoors, prnXCoef, prnYCoef
 Local iItem, aItem, nLineStartY := 0, nLineHeight := 0, nPHStart := 0
 Local iPH := 0, iSL := 0, iEL := 0, iPF := 0, iEPF := 0, iDF := 0
-Local poz := 0, stroka, varName, varValue
-Local i, aMetr, aTmetr, aPmetr, dKoef, pKoef
-Local fontKoef, oFont
+Local poz := 0, stroka, varName, varValue, i
+Local oFont
 Local lAddMode := .F., nYadd := 0, nEndList := 0
 memvar lFirst, lFinish, lLastCycle, oFontStandard
 Private lFirst := .T., lFinish := .T., lLastCycle := .F.
@@ -196,29 +194,19 @@ Private lFirst := .T., lFinish := .T., lLastCycle := .F.
    ENDIF
 
    aPrnCoors := GetDeviceArea( oPrinter:hDCPrn )
-   prnXCoef := aPrnCoors[1]/aPaintRep[FORM_WIDTH]
-   prnYCoef := aPrnCoors[2]/aPaintRep[FORM_HEIGHT]
+   prnXCoef := ( aPrnCoors[1]/aPaintRep[FORM_WIDTH] ) / aPaintRep[FORM_XKOEF]
+   prnYCoef := ( aPrnCoors[2]/aPaintRep[FORM_HEIGHT] ) / aPaintRep[FORM_XKOEF]
+   // writelog( oPrinter:cPrinterName + str(aPrnCoors[1])+str(aPrnCoors[2])+" / "+str(aPaintRep[FORM_WIDTH])+" "+str(aPaintRep[FORM_HEIGHT])+str(aPaintRep[FORM_XKOEF])+" / "+str(prnXCoef)+str(prnYCoef) )
 
    IF Type( "oFontStandard" ) = "U"
       Private oFontStandard := HFont():Add( "Arial",0,-13,400,204 )
    ENDIF
 
-   hDCwindow := GetDC( Hwindow():GetMain():handle )
-   aMetr := GetDeviceArea( hDCwindow )
-   SelectObject( hDCwindow, oFontStandard:handle )
-   aTmetr := GetTextMetric( hDCwindow )
-   dKoef := ( aMetr[1]-XINDENT ) / aTmetr[2]
-   ReleaseDC( Hwindow():GetMain():handle,hDCwindow )
-
-   SelectObject( oPrinter:hDCPrn, oFontStandard:handle )
-   aPmetr := GetTextMetric( oPrinter:hDCPrn )
-   pKoef := aPrnCoors[1] / aPmetr[2]
-   fontKoef := pKoef / dKoef
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
       IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] == TYPE_TEXT
          oFont := aPaintRep[FORM_ITEMS,i,ITEM_FONT]
-         aPaintRep[FORM_ITEMS,i,ITEM_STATE] := HFont():Add( oFont:name,   ;
-              oFont:width,Round(oFont:height*fontKoef,0),oFont:weight, ;
+         aPaintRep[FORM_ITEMS,i,ITEM_STATE] := HFont():Add( oFont:name,;
+              oFont:width,Round(oFont:height*prnYCoef,0),oFont:weight, ;
               oFont:charset,oFont:italic )
       ENDIF
    NEXT
@@ -465,10 +453,10 @@ Local hBitmap, stroka
    x2 := x1+aItem[ITEM_WIDTH]-1
    y2 := y1+aItem[ITEM_HEIGHT]-1
    // writelog( Str(aItem[ITEM_TYPE])+": "+Iif(aItem[ITEM_TYPE]==TYPE_TEXT,aItem[ITEM_CAPTION],"")+str(x1)+str(y1)+str(x2)+str(y2) )
-   x1 := Round( x1*prnXCoef/aPaintRep[FORM_XKOEF],0 )
-   y1 := Round( y1*prnYCoef/aPaintRep[FORM_XKOEF],0 )
-   x2 := Round( x2*prnXCoef/aPaintRep[FORM_XKOEF],0 )
-   y2 := Round( y2*prnYCoef/aPaintRep[FORM_XKOEF],0 )
+   x1 := Round( x1*prnXCoef,0 )
+   y1 := Round( y1*prnYCoef,0 )
+   x2 := Round( x2*prnXCoef,0 )
+   y2 := Round( y2*prnYCoef,0 )
    // writelog( "PrintItem-2: "+str(x1)+str(y1)+str(x2)+str(y2))
 
 #ifdef __DEBUG__

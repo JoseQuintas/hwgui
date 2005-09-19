@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.407 2005-09-19 10:00:34 alkresin Exp $
+ * $Id: Changelog,v 1.408 2005-09-19 13:00:41 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-09-18 17:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/repexec.prg
+    * Some changes to allow the function PrintReport() be called, 
+      even if a main window doesn't exist ( from console applications )
+      by suggestion of Sauli Bueno <saulibueno@yahoo.com.br>
 
 2005-09-18 14:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hsplit.prg

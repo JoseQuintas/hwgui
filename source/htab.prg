@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.16 2005-09-19 13:31:55 lf_sfnet Exp $
+ *$Id: htab.prg,v 1.17 2005-09-19 16:32:44 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -121,6 +121,7 @@ Return Nil
 
 METHOD StartPage( cname ) CLASS HTab
 Local i := Iif( cName==Nil, Len(::aPages)+1, Ascan( ::aTabs,cname ) )
+
 Local lNew := ( i == 0 )
 
    ::oTemp := ::oDefaultParent
@@ -214,19 +215,19 @@ Return ::nActive
 
 METHOD DeletePage( nPage ) CLASS HTab
 
-   if nPage == ::nActive
-      if nPage > 1
-         ::ChangePage( nPage - 1 )
-      else
-         ::ChangePage( 1 )
-      endif
-   endif
-
    DeleteTab( ::handle, nPage-1 )
 
    adel( ::aPages, nPage )
 
    asize( ::aPages, len( ::aPages ) - 1 )
+
+   if nPage > 1
+      ::nActive := nPage - 1
+      ::SetTab( ::nActive )
+   elseif len( ::aPages ) > 0
+      ::nActive := 1
+      ::SetTab( 1 )
+   endif
 
 Return ::nActive
 

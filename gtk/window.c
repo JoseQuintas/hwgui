@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.10 2005-09-15 17:07:51 alkresin Exp $
+ * $Id: window.c,v 1.11 2005-09-19 05:56:42 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -93,6 +93,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
    gtk_window_set_title( GTK_WINDOW(hWnd), cTitle );
    g_free( cTitle );
+   gtk_window_set_policy( GTK_WINDOW(hWnd), TRUE, TRUE, FALSE );
    gtk_window_set_default_size( GTK_WINDOW(hWnd), width, height );
    gtk_window_move( GTK_WINDOW(hWnd), x, y );
    
@@ -137,6 +138,7 @@ HB_FUNC( HWG_CREATEDLG )
    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
    gtk_window_set_title( GTK_WINDOW(hWnd), cTitle );
    g_free( cTitle );
+   gtk_window_set_policy( GTK_WINDOW(hWnd), TRUE, TRUE, FALSE );
    gtk_window_set_default_size( GTK_WINDOW(hWnd), width, height );
    gtk_window_move( GTK_WINDOW(hWnd), x, y );
    
@@ -504,7 +506,6 @@ HB_FUNC( ISWINDOWENABLED )
 {
    hb_retl( GTK_WIDGET_IS_SENSITIVE( (GtkWidget*) hb_parnl(1) ) );
 }
-
 
 HB_FUNC( MOVEWINDOW )
 {

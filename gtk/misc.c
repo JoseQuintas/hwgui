@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.4 2005-09-07 05:06:45 alkresin Exp $
+ * $Id: misc.c,v 1.5 2005-09-20 17:20:56 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Miscellaneous functions
@@ -156,12 +156,21 @@ HB_FUNC( GETDESKTOPHEIGHT )
 
 HB_FUNC( HIDEWINDOW )
 {
+
+#ifdef __GTK_USE_POINTER__
+    gtk_widget_hide( (GtkWidget *) hb_parptr(1) );
+#else
     gtk_widget_hide( (GtkWidget *) hb_parnl(1) );
+#endif
 }
 
 HB_FUNC( SHOWWINDOW )
 {
+#ifdef __GTK_USE_POINTER__
+gtk_widget_show( (GtkWidget *) hb_parptr(1) );
+#else
     gtk_widget_show( (GtkWidget *) hb_parnl(1) );
+#endif
 }
 
 HB_FUNC( SENDMESSAGE )

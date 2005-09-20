@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.414 2005-09-20 14:09:53 lculik Exp $
+ * $Id: Changelog,v 1.415 2005-09-20 17:20:56 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,11 +8,21 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2005-09-20 11:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
-  * gtk/commond.c
-    gtk/control.c
+2005-09-20 14:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>                
+  * gtk/misc.c                                                                     
+    gtk/windows.c                                                                     
+    gtk/draw.c
+    gtk/drawtext.c
+    gtk/menu_c.c
     ! Change to use  [x]harbour Pointers types.Changes protect by __GTK_USE_POINTER__.
-    This is an work in progress
+    This is an work in progress                                                       
+
+
+2005-09-20 11:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>                
+  * gtk/commond.c                                                                     
+    gtk/control.c                                                                     
+    ! Change to use  [x]harbour Pointers types.Changes protect by __GTK_USE_POINTER__.
+    This is an work in progress                                                       
 
 2005-09-20 14:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/htab.prg

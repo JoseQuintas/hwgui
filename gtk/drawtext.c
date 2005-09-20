@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.2 2005-09-07 05:06:45 alkresin Exp $
+ * $Id: drawtext.c,v 1.3 2005-09-20 17:20:56 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level text functions
@@ -25,7 +25,9 @@
 #define DT_CENTER                   1
 #define DT_RIGHT                    2
 
-
+#ifdef __XHARBOUR__
+#include "hbfast.h"
+#endif
 void hwg_parse_color( ULONG ncolor, GdkColor * pColor );
 
 HB_FUNC( DEFINEPAINTSTRU )
@@ -58,7 +60,11 @@ HB_FUNC( DELETEDC )
  */
 HB_FUNC( TEXTOUT )
 {
+#ifdef __XHARBOUR__
+   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
+#else
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
+#endif
    char * cText = g_locale_to_utf8( hb_parc(4),-1,NULL,NULL,NULL );
    GdkColor fcolor, bcolor;
 
@@ -70,7 +76,7 @@ HB_FUNC( TEXTOUT )
    {
       hwg_parse_color( hDC->bcolor, &bcolor );
    }
-   
+
    pango_layout_set_text( hDC->layout, cText, -1 );
    gdk_draw_layout_with_colors( hDC->window, hDC->gc, 
                  hb_parni(2), hb_parni(3), hDC->layout,
@@ -81,7 +87,11 @@ HB_FUNC( TEXTOUT )
 
 HB_FUNC( DRAWTEXT )
 {
+#ifdef __XHARBOUR__
+   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
+#else
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
+#endif
    char * cText = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
    GdkColor fcolor, bcolor;
 
@@ -106,14 +116,18 @@ HB_FUNC( DRAWTEXT )
                  hb_parni(3), hb_parni(4), hDC->layout,
 		 (hDC->fcolor != -1)? &fcolor : NULL,
 		 (hDC->bcolor != -1)? &bcolor : NULL );
-   
+
    g_free( cText );
 
 }
 
 HB_FUNC( GETTEXTMETRIC )
 {
+#ifdef __XHARBOUR__
+   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
+#else
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
+#endif
    PangoContext * context;
    PangoFontMetrics * metrics;
 
@@ -126,7 +140,7 @@ HB_FUNC( GETTEXTMETRIC )
       PHB_ITEM aMetr = _itemArrayNew( 3 );
       PHB_ITEM temp;
       int height, width;
-   
+
       context = pango_layout_get_context( hDC->layout );
       metrics = pango_context_get_metrics( context, hDC->hFont, NULL );
       height = PANGO_PIXELS( pango_font_metrics_get_ascent  (metrics) ) +
@@ -154,15 +168,35 @@ HB_FUNC( GETTEXTMETRIC )
 
 HB_FUNC( GETTEXTSIZE )
 {
+   #ifdef __GTK_USE_POINTER__
+   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
+   #else
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
+   #endif
    PangoRectangle rc;
+   #ifdef __XHARBOUR__
+   HB_ITEM_NEW( aMetr);
+   HB_ITEM_NEW( temp);
+   hb_arrayNew( &aMetr, 2 );
+   #else
    PHB_ITEM aMetr = _itemArrayNew( 2 );
    PHB_ITEM temp;
+   #endif
 
    if( ISCHAR(2) )
       pango_layout_set_text( hDC->layout, hb_parc(2), -1 );
    pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
 
+#ifdef __XHARBOUR__
+{
+   hb_arraySetForward( &aMetr, 1, hb_itemPutNL( &temp, rc.width ) );
+   hb_arraySetForward( &aMetr, 2, hb_itemPutNL( &temp, rc.height ));
+
+   hb_itemClear( &temp );
+   hb_itemForwardValue( &(HB_VM_STACK).Return, &aMetr );
+}
+#else
+{
    temp = _itemPutNL( NULL, rc.width );
    _itemArrayPut( aMetr, 1, temp );
    _itemRelease( temp );
@@ -173,7 +207,8 @@ HB_FUNC( GETTEXTSIZE )
 
    _itemReturn( aMetr );
    _itemRelease( aMetr );
-   
+}
+#endif
 }
 
 HB_FUNC( GETCLIENTAREA )
@@ -206,8 +241,12 @@ HB_FUNC( GETCLIENTAREA )
 
 HB_FUNC( SETTEXTCOLOR )
 {
+#ifdef __XHARBOUR__
+   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
+#else
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-   
+#endif
+
    hb_retnl( hDC->fcolor );
    hDC->fcolor = hb_parnl(2);
 
@@ -215,8 +254,12 @@ HB_FUNC( SETTEXTCOLOR )
 
 HB_FUNC( SETBKCOLOR )
 {
+#ifdef __XHARBOUR__
+   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
+#else
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-   
+#endif
+
    hb_retnl( hDC->bcolor );
    hDC->bcolor = hb_parnl(2);
 
@@ -226,7 +269,7 @@ HB_FUNC( SETTRANSPARENTMODE )
 {
 /*
    int iMode = SetBkMode(
-                 (HDC) hb_parnl( 1 ),	// handle of device context  
+                 (HDC) hb_parnl( 1 ),	// handle of device context
                  ( hb_parl( 2 ) )? TRANSPARENT : OPAQUE );
    hb_retl( iMode == TRANSPARENT );
 */   
@@ -292,11 +335,15 @@ HB_FUNC( CREATEFONT )
    pango_font_description_set_size( hFont, hb_parni(3) );
    if( !ISNIL(4) )
       pango_font_description_set_weight( hFont, hb_parni(4) );
-      
+
    h->type = HWGUI_OBJECT_FONT;
    h->hFont = hFont;
-   
+
+#ifdef __XHARBOUR__
+   hb_retptr( (void*) h );
+#else
    hb_retnl( (LONG) h );
+#endif
    
 }
 
@@ -305,12 +352,20 @@ HB_FUNC( CREATEFONT )
 */
 HB_FUNC( HWG_SETCTRLFONT )
 {
+#ifdef __XHARBOUR__
+   GtkWidget * hCtrl = (GtkWidget*) hb_parptr(1);
+#else
    GtkWidget * hCtrl = (GtkWidget*) hb_parnl(1);
+#endif
    GtkStyle * style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
-  
+
+#ifdef __XHARBOUR__
+   style->font_desc = ( (PHWGUI_FONT) hb_parptr(2) )->hFont;
+#else
    style->font_desc = ( (PHWGUI_FONT) hb_parnl(2) )->hFont;
+#endif
    gtk_widget_set_style( hCtrl, style );
-	      	         
+
 }
 
 /*

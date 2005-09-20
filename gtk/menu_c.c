@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.5 2005-09-16 11:13:29 alkresin Exp $
+ * $Id: menu_c.c,v 1.6 2005-09-20 17:20:56 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level menu functions
@@ -25,7 +25,9 @@
 PHB_ITEM hb_stackReturn( void );
 #endif
 #endif
-
+#ifdef __XHARBOUR__
+#include "hbfast.h"
+#endif
 #define  FLAG_DISABLED   1
 #define  FLAG_CHECK      2
 
@@ -38,7 +40,11 @@ extern GtkFixed * getFixedBox( GObject * handle );
  */
 HB_FUNC( HWG__CREATEMENU )
 {
+#ifdef __GTK_USE_POINTER__
+   hb_retptr( (void*) gtk_menu_bar_new() );
+#else
    hb_retnl( (LONG) gtk_menu_bar_new() );
+#endif
 }
 
 HB_FUNC( HWG__CREATEPOPUPMENU )
@@ -55,7 +61,7 @@ HB_FUNC( HWG__ADDMENUITEM )
    GtkWidget * hMenu;
    BOOL lString = FALSE, lCheck = FALSE;
    char * lpNewItem = NULL;
-   
+
    if( ISCHAR( 2 ) )
    {
       char * ptr;
@@ -87,24 +93,40 @@ HB_FUNC( HWG__ADDMENUITEM )
       g_free( cptr );
    }
    else
-      hMenu = (GtkWidget *) gtk_separator_menu_item_new();  
+      hMenu = (GtkWidget *) gtk_separator_menu_item_new();
 
    if( hb_parl(7) )
    {
       GtkWidget * hSubMenu = gtk_menu_new();
       gtk_menu_item_set_submenu( GTK_MENU_ITEM (hMenu), hSubMenu );
+#ifdef __GTK_USE_POINTER__
+      hb_retptr( (void *) hSubMenu );
+#else
       hb_retnl( (LONG) hSubMenu );
+#endif
    }
    else
    {
-      char buf[20];
+      char buf[20]={0};
+      #ifdef __GTK_USE_POINTER__
+      sprintf( buf,"0 %ld %ld",hb_parnl(5),( LONG ) hb_parptr(4) );
+      #else
       sprintf( buf,"0 %ld %ld",hb_parnl(5),hb_parnl(4) );
+      #endif
       g_signal_connect(G_OBJECT (hMenu), "activate",
           G_CALLBACK (cb_signal), (gpointer) g_strdup (buf));
-   
+
+#ifdef __GTK_USE_POINTER__
+      hb_retptr( (void*) hMenu );
+#else
       hb_retnl( (LONG) hMenu );
+#endif
    }
+#ifdef __GTK_USE_POINTER__
+   gtk_menu_shell_append( GTK_MENU_SHELL( hb_parptr(1) ), hMenu );
+#else
    gtk_menu_shell_append( GTK_MENU_SHELL( hb_parnl(1) ), hMenu );
+#endif
 
    gtk_widget_show( hMenu );
 }
@@ -114,10 +136,21 @@ HB_FUNC( HWG__ADDMENUITEM )
  */
 HB_FUNC( HWG__SETMENU )
 {
+#ifdef __GTK_USE_POINTER__
+{
+  GObject * handle = (GObject*) hb_parptr(1);
+   GtkFixed * box = getFixedBox( handle );
+   GtkWidget * vbox = ( (GtkWidget*)box )->parent;
+   gtk_box_pack_start( GTK_BOX (vbox), (GtkWidget*)hb_parptr(2), FALSE, FALSE, 2);
+}
+#else
+{
    GObject * handle = (GObject*) hb_parnl(1);
    GtkFixed * box = getFixedBox( handle );
    GtkWidget * vbox = ( (GtkWidget*)box )->parent;
    gtk_box_pack_start( GTK_BOX (vbox), (GtkWidget*)hb_parnl(2), FALSE, FALSE, 2);
+}
+#endif
    // g_object_set_data( handle, "menu", (gpointer) box );
    hb_retl(1);
 }
@@ -130,7 +163,11 @@ HB_FUNC( GETMENUHANDLE )
 
 HB_FUNC( HWG_CHECKMENUITEM )
 {
+#ifdef __GTK_USE_POINTER__
+   GtkCheckMenuItem * check_menu_item = (GtkCheckMenuItem *) hb_parptr(1);
+#else
    GtkCheckMenuItem * check_menu_item = (GtkCheckMenuItem *) hb_parnl(1);
+#endif
 
    g_signal_handlers_block_matched( (gpointer)check_menu_item, G_SIGNAL_MATCH_FUNC,
        0, 0, 0, G_CALLBACK (cb_signal), 0 );
@@ -142,8 +179,12 @@ HB_FUNC( HWG_CHECKMENUITEM )
 
 HB_FUNC( HWG_ISCHECKEDMENUITEM )
 {
+#ifdef __GTK_USE_POINTER__
+   GtkCheckMenuItem * check_menu_item = (GtkCheckMenuItem *) hb_parptr(1);
+#else
    GtkCheckMenuItem * check_menu_item = (GtkCheckMenuItem *) hb_parnl(1);
-   
+#endif
+
    hb_retl( gtk_check_menu_item_get_active( check_menu_item ) );
 }
 
@@ -162,12 +203,12 @@ HB_FUNC( ENABLEMENUITEM )
    else
    {
       hb_retnl( (LONG) EnableMenuItem(
-         hMenu,	                // handle to menu 
+         hMenu,	                // handle to menu
          hb_parni( 2 ),         // menu item to check or uncheck
-         uFlag | uEnable // menu item flags 
+         uFlag | uEnable // menu item flags
       ) );
    }
-*/   
+*/
 }
 
 HB_FUNC( ISENABLEDMENUITEM )
@@ -182,13 +223,13 @@ HB_FUNC( ISENABLEDMENUITEM )
    else
    {
       uCheck = GetMenuState(
-         hMenu,	                // handle to menu 
+         hMenu,	                // handle to menu
          hb_parni( 3 ),         // menu item to check or uncheck
-         uFlag           // menu item flags 
+         uFlag           // menu item flags
       );
       hb_retl( !( uCheck & MF_GRAYED ) );
    }
-*/   
+*/
 }
 
 HB_FUNC( HWG_TRACKMENU )
@@ -203,14 +244,14 @@ HB_FUNC( HWG_TRACKMENU )
                   (HWND) hb_parnl(4),   // handle of owner window
                   NULL
     ) );
-*/    
+*/
 }
 
 HB_FUNC( HWG_DESTROYMENU )
 {
 /*
    hb_retl( DestroyMenu( (HMENU) hb_parnl(1) ) );
-*/   
+*/
 }
 
 /*

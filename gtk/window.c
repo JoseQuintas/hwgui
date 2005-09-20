@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.11 2005-09-19 05:56:42 alkresin Exp $
+ * $Id: window.c,v 1.12 2005-09-20 17:20:56 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -15,6 +15,9 @@
 #include "item.api"
 #include "guilib.h"
 #include "gtk/gtk.h"
+#ifdef __XHARBOUR__
+#include "hbfast.h"
+#endif
 
 #define WM_MOVE                           3
 #define WM_SIZE                           5
@@ -78,7 +81,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    GtkWidget * hWnd ;
    GtkWidget *vbox;   
    GtkFixed * box;
-   PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
+   PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
    // char *szAppName = hb_parc(2);
    char *cTitle = hb_parc( 3 );
    // LONG nStyle =  hb_parnl(7);
@@ -88,6 +91,11 @@ HB_FUNC( HWG_INITMAINWINDOW )
    int width = hb_parnl(10);
    int height = hb_parnl(11);
 
+   #ifdef __GTK_USE_POINTER__
+   HB_ITEM_NEW(temp);
+   #else
+   PHB_ITEM temp;
+   #endif
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
 
    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
@@ -96,42 +104,61 @@ HB_FUNC( HWG_INITMAINWINDOW )
    gtk_window_set_policy( GTK_WINDOW(hWnd), TRUE, TRUE, FALSE );
    gtk_window_set_default_size( GTK_WINDOW(hWnd), width, height );
    gtk_window_move( GTK_WINDOW(hWnd), x, y );
-   
+
    vbox = gtk_vbox_new (FALSE, 0);
    gtk_container_add (GTK_CONTAINER(hWnd), vbox);
    // gtk_widget_show (vbox);
-   
+
    box = (GtkFixed*)gtk_fixed_new();
    // gtk_container_add( GTK_CONTAINER(hWnd), (GtkWidget*)box );
    gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 2 );
-   
+
+   #ifdef __GTK_USE_POINTER__
+   {
+   SetObjectVar( pObject, "_FBOX", hb_itemPutPtr( &temp, (void*)box ) );
+   SetObjectVar( pObject, "_NHOLDER", hb_itemPutNL( NULL, 1 ) );
+   hb_itemClear( &temp );
+   }
+   #else
+   {
    temp = hb_itemPutNL( NULL, (LONG)box );
    SetObjectVar( pObject, "_FBOX", temp );
-   hb_itemRelease( temp );  
-   
+   hb_itemRelease( temp );
+
    temp = hb_itemPutNL( NULL, 1 );
    SetObjectVar( pObject, "_NHOLDER", temp );
    hb_itemRelease( temp );
+   }
+   #endif
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
    all_signal_connect( G_OBJECT (hWnd) );
    g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
 
+#ifdef __GTK_USE_POINTER__
+   hb_retptr( (void*) hWnd );
+#else
    hb_retnl( (LONG) hWnd );
+#endif
 }
 
 HB_FUNC( HWG_CREATEDLG )
 {
    GtkWidget * hWnd;
-   GtkWidget * vbox;   
+   GtkWidget * vbox;
    GtkFixed  * box;
-   PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
+   PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
    char *cTitle = hb_itemGetCPtr( GetObjectVar( pObject, "TITLE" ) );
    int x = hb_itemGetNI( GetObjectVar( pObject, "NLEFT" ) );
    int y = hb_itemGetNI( GetObjectVar( pObject, "NTOP" ) );
    int width = hb_itemGetNI( GetObjectVar( pObject, "NWIDTH" ) );
    int height = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
+   #ifdef __GTK_USE_POINTER__
+   HB_ITEM_NEW( temp);
+   #else
+   PHB_ITEM temp;
+   #endif
 
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
 
@@ -141,36 +168,53 @@ HB_FUNC( HWG_CREATEDLG )
    gtk_window_set_policy( GTK_WINDOW(hWnd), TRUE, TRUE, FALSE );
    gtk_window_set_default_size( GTK_WINDOW(hWnd), width, height );
    gtk_window_move( GTK_WINDOW(hWnd), x, y );
-   
+
    vbox = gtk_vbox_new (FALSE, 0);
    gtk_container_add (GTK_CONTAINER(hWnd), vbox);
-   
+
    box = (GtkFixed*)gtk_fixed_new();
    gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 2 );
-   
+   #ifdef __GTK_USE_POINTER__
+   {
+   SetObjectVar( pObject, "_FBOX", hb_itemPutPtr( &temp, (void*)box ) );
+   SetObjectVar( pObject, "_NHOLDER", hb_itemPutNL( &temp, 1 ) );
+   hb_itemClear( &temp );
+   }
+   #else
+   {
    temp = hb_itemPutNL( NULL, (LONG)box );
    SetObjectVar( pObject, "_FBOX", temp );
-   hb_itemRelease( temp );  
-   
+   hb_itemRelease( temp );
+
    temp = hb_itemPutNL( NULL, 1 );
    SetObjectVar( pObject, "_NHOLDER", temp );
    hb_itemRelease( temp );
+   }
+   #endif
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
    all_signal_connect( G_OBJECT (hWnd) );
    g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
 
+#ifdef __GTK_USE_POINTER__
+   hb_retptr( (void*) hWnd );
+#else
    hb_retnl( (LONG) hWnd );
+#endif
 
 }
 
 /*
- *  HWG_ACTIVATEMAINWINDOW( lShow, hAccel, lMaximize, lMinimize ) 
+ *  HWG_ACTIVATEMAINWINDOW( lShow, hAccel, lMaximize, lMinimize )
  */
 HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 {
+#ifdef __GTK_USE_POINTER__
+   GtkWidget * hWnd = (GtkWidget*) hb_parptr(1);
+#else
    GtkWidget * hWnd = (GtkWidget*) hb_parnl(1);
+#endif
    // HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
 
    if( !ISNIL(3) && hb_parl(3) )
@@ -188,7 +232,11 @@ HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 
 HB_FUNC( HWG_ACTIVATEDIALOG )
 {
+#ifdef __GTK_USE_POINTER__
+   gtk_widget_show_all( (GtkWidget*) hb_parptr(1) );
+#else
    gtk_widget_show_all( (GtkWidget*) hb_parnl(1) );
+#endif
    // gtk_dialog_run( (GtkDialog*) hb_parnl(1) );
    if( ISNIL(2) || !hb_parl(2) )
       gtk_main();
@@ -208,14 +256,14 @@ void cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data
 {
    gpointer gObject = g_object_get_data( (GObject*) widget->parent->parent, "obj" );
    HB_SYMBOL_UNUSED( data );
-   
+
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
 
    if( pSym_onEvent && gObject )
    {
       PHB_ITEM pObject = hb_itemNew( NULL );
-      LONG p3 = ( (ULONG)(allocation->width) & 0xFFFF ) | 
+      LONG p3 = ( (ULONG)(allocation->width) & 0xFFFF ) |
                  ( ( (ULONG)(allocation->height) << 16 ) & 0xFFFF0000 );
 
       pObject->type = HB_IT_OBJECT;
@@ -225,7 +273,7 @@ void cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data
       #else
       pObject->item.asArray.value->uiHolders++;
       #endif
-      
+
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
       hb_vmPushLong( WM_SIZE );
@@ -250,7 +298,7 @@ void cb_signal( GtkWidget *widget,gchar* data )
       widget = (GtkWidget*) p3;
       p3 = 0;
    }
-   
+
    gObject = g_object_get_data( (GObject*) widget, "obj" );
 
    if( !pSym_onEvent )
@@ -259,7 +307,7 @@ void cb_signal( GtkWidget *widget,gchar* data )
    if( pSym_onEvent && gObject )
    {
       PHB_ITEM pObject = hb_itemNew( NULL );
-      
+
       pObject->type = HB_IT_OBJECT;
       pObject->item.asArray.value = (PHB_BASEARRAY) gObject;
       #ifndef UIHOLDERS
@@ -272,7 +320,7 @@ void cb_signal( GtkWidget *widget,gchar* data )
       hb_vmPush( pObject );
       hb_vmPushLong( p1 );
       hb_vmPushLong( p2 );
-      hb_vmPushLong( p3 );
+      hb_vmPushLong( (LONG) p3 );
       hb_vmSend( 3 );
       // res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
       hb_itemRelease( pObject );
@@ -293,7 +341,7 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
    {
       PHB_ITEM pObject;
       LONG p1, p2, p3;
-      
+
       if( event->type == GDK_KEY_PRESS || event->type == GDK_KEY_RELEASE )
       {
          p1 = (event->type==GDK_KEY_PRESS)? WM_KEYDOWN : WM_KEYUP;
@@ -338,7 +386,7 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
          {
             /*
             p1 = WM_SIZE;
-            p3 = ( ((GdkEventConfigure*)event)->width & 0xFFFF ) | 
+            p3 = ( ((GdkEventConfigure*)event)->width & 0xFFFF ) |
                  ( ( ((GdkEventConfigure*)event)->height << 16 ) & 0xFFFF0000 );
             */
             return 0;
@@ -346,21 +394,21 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
          else
          {
             p1 = WM_MOVE;
-            p3 = ( ((GdkEventConfigure*)event)->x & 0xFFFF ) | 
+            p3 = ( ((GdkEventConfigure*)event)->x & 0xFFFF ) |
                  ( ( ((GdkEventConfigure*)event)->y << 16 ) & 0xFFFF0000 );
          }
       }
       else
          sscanf( (char*)data,"%ld %ld %ld",&p1,&p2,&p3 );
 
-      pObject = hb_itemNew( NULL );      
+      pObject = hb_itemNew( NULL );
       pObject->type = HB_IT_OBJECT;
       pObject->item.asArray.value = (PHB_BASEARRAY) gObject;
       #ifndef UIHOLDERS
       pObject->item.asArray.value->ulHolders++;
       #else
       pObject->item.asArray.value->uiHolders++;
-      #endif  
+      #endif
 
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
@@ -381,8 +429,8 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
 
 void set_signal( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 )
 {
-   char buf[25];
-   
+   char buf[25]={0};
+
    sprintf( buf, "%ld %ld %ld", p1, p2, p3 );
    g_signal_connect( handle, cSignal,
                       G_CALLBACK (cb_signal), g_strdup(buf) );
@@ -390,13 +438,18 @@ void set_signal( gpointer handle, char * cSignal, long int p1, long int p2, long
 
 HB_FUNC( HWG_SETSIGNAL )
 {
+#ifdef __GTK_USE_POINTER__
+   gpointer p = (gpointer) hb_parptr(1);
+   set_signal( (gpointer)p, hb_parc(2), hb_parnl(3), hb_parnl(4), ( long int ) hb_parptr( 5 ) );
+#else
    set_signal( (gpointer)hb_parnl(1), hb_parc(2), hb_parnl(3), hb_parnl(4), hb_parnl(5) );
+#endif
 }
 
 void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 )
 {
-   char buf[25];
-   
+   char buf[25]={0};
+
    sprintf( buf, "%ld %ld %ld", p1, p2, p3 );
    g_signal_connect( handle, cSignal,
                       G_CALLBACK (cb_event), g_strdup(buf) );
@@ -404,13 +457,18 @@ void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long 
 
 HB_FUNC( HWG_SETEVENT )
 {
+#ifdef __GTK_USE_POINTER__
+   gpointer p = (gpointer) hb_parptr(1);
+   set_event( p, hb_parc(2), hb_parnl(3), hb_parnl(4), hb_parnl(5) );
+#else
    set_event( (gpointer)hb_parnl(1), hb_parc(2), hb_parnl(3), hb_parnl(4), hb_parnl(5) );
+#endif
 }
 
 void all_signal_connect( gpointer hWnd )
 {
    int i;
-   char buf[20];
+   char buf[20]={0};
 
    // writelog( "all_signal-connect-0" );
    for( i=0; i<NUMBER_OF_SIGNALS; i++ )
@@ -429,12 +487,20 @@ GtkWidget * GetActiveWindow( void )
 
 HB_FUNC( GETACTIVEWINDOW )
 {
+#ifdef __GTK_USE_POINTER__
+   hb_retptr( (void*) GetActiveWindow() );
+#else
    hb_retnl( (LONG) GetActiveWindow() );
+#endif
 }
 
 HB_FUNC( SETWINDOWOBJECT )
 {
+#ifdef __GTK_USE_POINTER__
+   SetWindowObject( (GtkWidget *) hb_parptr(1),hb_param(2,HB_IT_OBJECT) );
+#else
    SetWindowObject( (GtkWidget *) hb_parnl(1),hb_param(2,HB_IT_OBJECT) );
+#endif
 }
 
 void SetWindowObject( GtkWidget * hWnd, PHB_ITEM pObject )
@@ -457,7 +523,11 @@ void SetWindowObject( GtkWidget * hWnd, PHB_ITEM pObject )
 
 HB_FUNC( GETWINDOWOBJECT )
 {
+#ifdef __GTK_USE_POINTER__
+   gpointer dwNewLong = g_object_get_data( (GObject*) hb_parptr(1), "obj" );
+#else
    gpointer dwNewLong = g_object_get_data( (GObject*) hb_parnl(1), "obj" );
+#endif
 
    if( dwNewLong )
    {
@@ -481,13 +551,21 @@ HB_FUNC( GETWINDOWOBJECT )
 HB_FUNC( SETWINDOWTEXT )
 {
    char * cTitle = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
+#ifdef __GTK_USE_POINTER__
+   gtk_window_set_title( GTK_WINDOW( hb_parptr(1) ), cTitle );
+#else
    gtk_window_set_title( GTK_WINDOW( hb_parnl(1) ), cTitle );
+#endif
    g_free( cTitle );
 }
 
 HB_FUNC( GETWINDOWTEXT )
 {
+#ifdef __GTK_USE_POINTER__
+   char * cTitle = (char*) gtk_window_get_title( GTK_WINDOW( hb_parptr(1) ) );
+#else
    char * cTitle = (char*) gtk_window_get_title( GTK_WINDOW( hb_parnl(1) ) );
+#endif
 
    if( cTitle )
       hb_retc( cTitle );
@@ -497,20 +575,32 @@ HB_FUNC( GETWINDOWTEXT )
 
 HB_FUNC( ENABLEWINDOW )
 {
+#ifdef __GTK_USE_POINTER__
+   GtkWidget * widget = (GtkWidget*) hb_parptr( 1 );
+#else
    GtkWidget * widget = (GtkWidget*) hb_parnl( 1 );
+#endif
    BOOL lEnable = hb_parl( 2 );
    gtk_widget_set_sensitive( widget, lEnable );
 }
 
 HB_FUNC( ISWINDOWENABLED )
 {
+   #ifdef __GTK_USE_POINTER__
+   hb_retl( GTK_WIDGET_IS_SENSITIVE( (GtkWidget*) hb_parptr(1) ) );
+   #else
    hb_retl( GTK_WIDGET_IS_SENSITIVE( (GtkWidget*) hb_parnl(1) ) );
+   #endif
 }
 
 HB_FUNC( MOVEWINDOW )
 {
+#ifdef __GTK_USE_POINTER__
+   GtkWidget * hWnd = (GtkWidget*)hb_parptr(1);
+#else
    GtkWidget * hWnd = (GtkWidget*)hb_parnl(1);
-   
+#endif
+
    if( !ISNIL(2) || !ISNIL(3) )
       gtk_window_move( GTK_WINDOW(hWnd), hb_parni(2), hb_parni(3) );
    if( !ISNIL(4) || !ISNIL(5) )
@@ -519,20 +609,32 @@ HB_FUNC( MOVEWINDOW )
 
 HB_FUNC( HWG_WINDOWMAXIMIZE )
 {
-   
+
+#ifdef __GTK_USE_POINTER__
+   gtk_window_maximize( (GtkWindow*) hb_parptr(1) );
+#else
    gtk_window_maximize( (GtkWindow*) hb_parnl(1) );
+#endif
 }
 
 HB_FUNC( HWG_WINDOWRESTORE )
 {
-   
+
+#ifdef __GTK_USE_POINTER__
+   gtk_window_unmaximize( (GtkWindow*) hb_parptr(1) );
+#else
    gtk_window_unmaximize( (GtkWindow*) hb_parnl(1) );
+#endif
 }
 
 HB_FUNC( HWG_WINDOWMINIMIZE )
 {
-   
+
+#ifdef __GTK_USE_POINTER__
+   gtk_window_iconify( (GtkWindow*) hb_parptr(1) );
+#else
    gtk_window_iconify( (GtkWindow*) hb_parnl(1) );
+#endif
 }
 
 
@@ -583,7 +685,11 @@ HB_FUNC( HWG_DECREASEHOLDERS )
 
 HB_FUNC( SETFOCUS )
 {
+#ifdef __GTK_USE_POINTER__
+   gtk_widget_grab_focus( (GtkWidget*) hb_parptr( 1 ) );
+#else
    gtk_widget_grab_focus( (GtkWidget*) hb_parnl( 1 ) );
+#endif
 }
 
 HB_FUNC( GETFOCUS )
@@ -594,11 +700,24 @@ HB_FUNC( GETFOCUS )
 
 HB_FUNC( HWG_DESTROYWINDOW )
 {
+#ifdef __GTK_USE_POINTER__
+    gtk_widget_destroy( (GtkWidget *) hb_parptr(1) );
+#else
     gtk_widget_destroy( (GtkWidget *) hb_parnl(1) );
+#endif
 }
 
 HB_FUNC( HWG_SET_MODAL )
 {
+#ifdef __GTK_USE_POINTER__
+{
+   gtk_window_set_modal( (GtkWindow *) hb_parptr(1), 1 );
+   gtk_window_set_transient_for( (GtkWindow *) hb_parptr(1), (GtkWindow *) hb_parptr(2) );
+}
+#else
+{
    gtk_window_set_modal( (GtkWindow *) hb_parnl(1), 1 );
    gtk_window_set_transient_for( (GtkWindow *) hb_parnl(1), (GtkWindow *) hb_parnl(2) );
+}
+#endif
 }

@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.17 2005-09-19 16:32:44 lf_sfnet Exp $
+ *$Id: htab.prg,v 1.18 2005-09-20 10:09:12 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -120,27 +120,24 @@ METHOD SetTab( n ) CLASS HTab
 Return Nil
 
 METHOD StartPage( cname ) CLASS HTab
-Local i := Iif( cName==Nil, Len(::aPages)+1, Ascan( ::aTabs,cname ) )
-
-Local lNew := ( i == 0 )
 
    ::oTemp := ::oDefaultParent
    ::oDefaultParent := Self
-   IF lNew
-      Aadd( ::aTabs,cname )
-      i := Len( ::aTabs )
+
+   IF Len( ::aTabs ) > 0 .AND. Len( ::aPages ) == 0
+      ::aTabs := {}
    ENDIF
-   DO WHILE Len( ::aPages ) < i
-      Aadd( ::aPages, { Len( ::aControls ),0,lNew } )
-   ENDDO
-   ::nActive := i
+   Aadd( ::aTabs,cname )
+
+   Aadd( ::aPages, { Len( ::aControls ),0 } )
+   ::nActive := Len( ::aPages )
 
 Return Nil
 
 METHOD EndPage() CLASS HTab
 
    ::aPages[ ::nActive,2 ] := Len( ::aControls ) - ::aPages[ ::nActive,1 ]
-   IF ::aPages[ ::nActive,3 ] .AND. ::handle != Nil .AND. ::handle > 0
+   IF ::handle != Nil .AND. ::handle > 0
       AddTab( ::handle,::nActive,::aTabs[::nActive] )
    ENDIF
    IF ::nActive > 1 .AND. ::handle != Nil .AND. ::handle > 0
@@ -217,17 +214,17 @@ METHOD DeletePage( nPage ) CLASS HTab
 
    DeleteTab( ::handle, nPage-1 )
 
-   adel( ::aPages, nPage )
+   Adel( ::aPages, nPage )
 
-   asize( ::aPages, len( ::aPages ) - 1 )
+   Asize( ::aPages, len( ::aPages ) - 1 )
 
-   if nPage > 1
+   IF nPage > 1
       ::nActive := nPage - 1
       ::SetTab( ::nActive )
-   elseif len( ::aPages ) > 0
+   ELSEIF Len( ::aPages ) > 0
       ::nActive := 1
       ::SetTab( 1 )
-   endif
+   ENDIF
 
 Return ::nActive
 

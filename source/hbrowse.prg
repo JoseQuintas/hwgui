@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.54 2005-07-13 16:12:18 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.55 2005-09-20 06:43:30 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -17,8 +17,6 @@
 //    ejectuta el CB. 27.07.2002. WHT                                       //
 // 3) Se agreg¢ el Metodo "ShowSizes". Para poder ver la "width" de cada    //
 //    columna. 27.07.2002. WHT.                                             //
-// Alex:                                                                    //
-// El metodo "DoVScroll" no se ejecuta correctamente. ¨¨¨???                //
 //////////////////////////////////////////////////////////////////////////////
 
 #include "windows.ch"
@@ -73,6 +71,10 @@ CLASS HColumn INHERIT HObject
    DATA lSpandFoot INIT .F.
    DATA Picture
    DATA bHeadClick
+   DATA bColorBlock              //   bColorBlock must return an array containing four colors values
+                                 //   oBrowse:aColumns[1]:bColorBlock := {|| IF (nNumber < 0, ;
+                                 //      {textColor, backColor, textColorSel, backColorSel} , ;
+                                 //      {textColor, backColor, textColorSel, backColorSel} ) }
 
    METHOD New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin,cPict,bValid,bWhen,aItem,oBmp )
 
@@ -126,7 +128,7 @@ CLASS HBrowse INHERIT HControl
    DATA varbuf                                 // Used on Edit()
    DATA tcolorSel,bcolorSel,brushSel
    DATA bSkip,bGoTo,bGoTop,bGoBot,bEof,bBof
-   DATA bRcou,bRecno
+   DATA bRcou,bRecno,bRecnoLog
    DATA bPosChanged, bLineOut
    DATA bScrollPos                             // Called when user move browse through vertical scroll bar
    DATA bHScrollPos                            // Called when user move browse through horizontal scroll bar
@@ -191,10 +193,9 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,;
                   lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg ) CLASS HBrowse
 
-   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+ ;
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+  ;
                     Iif(lNoBorder=Nil.OR.!lNoBorder,WS_BORDER,0)+            ;
-                    Iif(lNoVScroll=Nil.OR.!lNoVScroll,WS_VSCROLL,0) +;
-                    WS_HSCROLL )
+                    Iif(lNoVScroll=Nil.OR.!lNoVScroll,WS_VSCROLL,0) )
 
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
              Iif( nHeight==Nil,0,nHeight ),oFont,bInit,bSize,bPaint )
@@ -464,7 +465,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::bEof    := &( "{||" + ::alias + "->(EOF())}" )
       ::bBof    := &( "{||" + ::alias + "->(BOF())}" )
       ::bRcou   := &( "{||" + ::alias + "->(RECCOUNT())}" )
-      ::bRecno  := &( "{||" + ::alias + "->(RECNO())}" )
+      ::bRecnoLog := ::bRecno  := &( "{||" + ::alias + "->(RECNO())}" )
       ::bGoTo   := &( "{|a,n|"  + ::alias + "->(DBGOTO(n))}" )
    elseif ::type == BRW_ARRAY
       ::bSKip   := { | o, x | ARSKIP( o, x ) }
@@ -473,7 +474,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::bEof    := { | o | o:tekzp > o:kolz }
       ::bBof    := { | o | o:tekzp == 0 }
       ::bRcou   := { | o | len( o:msrec ) }
-      ::bRecno  := { | o | o:tekzp }
+      ::bRecnoLog := ::bRecno  := { | o | o:tekzp }
       ::bGoTo   := { | o, n | o:tekzp := n }
       ::bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}
    endif
@@ -576,7 +577,7 @@ Local oldBkColor, oldTColor
    aCoors := GetClientRect( ::handle )
    aMetr := GetTextMetric( hDC )
    ::width := Round( ( aMetr[ 3 ] + aMetr[ 2 ] ) / 2 - 1,0 )
-   ::height := Max( aMetr[ 1 ], ::minHeight )
+   ::height := Max( aMetr[ 1 ], ::minHeight ) + 1
    ::x1 := aCoors[ 1 ]
    ::y1 := aCoors[ 2 ] + Iif( ::lDispHead, ::height*::nHeadRows, 0 )
    ::x2 := aCoors[ 3 ]
@@ -821,6 +822,7 @@ Local j, ob, bw, bh, y1, hBReal
 Local oldBkColor, oldTColor, oldBk1Color, oldT1Color
 Local oLineBrush := Iif( lSelected, ::brushSel,::brush )
 Local lColumnFont := .F.
+Local aCores
 
    ::xpos := x := ::x1
    IF lClear == Nil ; lClear := .F. ; ENDIF
@@ -835,6 +837,17 @@ Local lColumnFont := .F.
       fif     := IIF( ::freeze > 0, 1, ::nLeftCol )
 
       WHILE x < ::x2 - 2
+         IF ::aColumns[fif]:bColorBlock != Nil
+            aCores := eval(::aColumns[fif]:bColorBlock)
+            IF lSelected
+              ::aColumns[fif]:tColor := aCores[3]
+              ::aColumns[fif]:bColor := aCores[4]
+            ELSE
+              ::aColumns[fif]:tColor := aCores[1]
+              ::aColumns[fif]:bColor := aCores[2]
+            ENDIF
+            ::aColumns[fif]:brush := HBrush():Add(::aColumns[fif]:bColor   )
+         ENDIF
          xSize := ::aColumns[fif]:width
          IF ::lAdjRight .and. fif == LEN( ::aColumns )
             xSize := Max( ::x2 - x, xSize )
@@ -851,6 +864,9 @@ Local lColumnFont := .F.
                          ::aColumns[fif]:brush:handle,   ;
                          oLineBrush:handle )
             FillRect( hDC, x, ::y1+(::height+1)*(nstroka-1)+1, x+xSize-Iif(::lSep3d,2,1),::y1+(::height+1)*nstroka, hBReal )
+            IF ::aColumns[fif]:bColorBlock != Nil
+               ::aColumns[fif]:brush:Release()
+            ENDIF
             IF !lClear
                IF ::aColumns[fif]:aBitmaps != Nil .AND. !Empty( ::aColumns[fif]:aBitmaps )
                   FOR j := 1 TO Len( ::aColumns[fif]:aBitmaps )
@@ -1731,10 +1747,10 @@ Function VScrollPos( oBrw, nType, lEof, nPos )
          EVAL( oBrw:bSkip, oBrw,- 1 )
       ENDIF
       nPos := Iif( oBrw:kolz>1, Round( ( (maxPos-minPos)/(oBrw:kolz-1) ) * ;
-                                 ( EVAL( oBrw:bRecno,oBrw )-1 ),0 ), minPos )
+                                 ( EVAL( oBrw:bRecnoLog,oBrw )-1 ),0 ), minPos )
       SetScrollPos( oBrw:handle, SB_VERT, nPos )
    ELSE
-      oldRecno := EVAL( oBrw:bRecno,oBrw )
+      oldRecno := EVAL( oBrw:bRecnoLog,oBrw )
       newRecno := Round( (oBrw:kolz-1)*nPos/(maxPos-minPos)+1,0 )
       IF newRecno <= 0
          newRecno := 1

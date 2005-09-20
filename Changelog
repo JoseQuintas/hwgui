@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.410 2005-09-19 16:32:43 lf_sfnet Exp $
+ * $Id: Changelog,v 1.411 2005-09-20 06:43:30 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,27 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-09-20 10:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hbrowse.prg
+    * Removed WS_HSCROLL, because sometimes horizontal bar was not necessary
+      by suggestion of Paulo Flecha pfflecha@yahoo.com.br
+    ! Fixed - some small letters ( g, y, p, q, ç, j ) wasn't displayed
+      correctly - lowermost pixels was cut.
+    * HColumn:bColorBlock => Codeblock that determines color of data items
+      bColorBlock must return an array containing four colors values
+      by suggestion of Paulo Flecha pfflecha@yahoo.com.br 
+    * added new variable - bRecnoLog - a block calculating the logical
+      record number to be used in VScrollPos ( the same was introduced in
+      GTK version recently ).
+      Now to force the VSCROLL to work with indexed files, you need to write:
+        oBrw:bRcou := &( "{||" + oBrw:alias + "->(ORDKEYCOUNT())}" )
+        oBrw:bRecnoLog := &( "{||" + oBrw:alias + "->(ORDKEYNO())}" )
+        oBrw:bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}
+
+  + samples/colrbloc.prg
+      * Show how to use the new parameter bColorBlock (HColumn class)
+      by Paulo Flecha pfflecha@yahoo.com.br changed by Marcelo Sturm masturmbr@yahoo.com.br
 
 2005-09-19 18:40 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
   + samples/testsdi.prg

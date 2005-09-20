@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.411 2005-09-20 06:43:30 alkresin Exp $
+ * $Id: Changelog,v 1.412 2005-09-20 07:19:40 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-09-20 11:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hedit.prg
+    * Allows the operation of the keys Ctrl+C Ctrl+V Ctrl+X
+    * Allows the operation of the keys shift+keyleft e Ctrl+keyleft
+      by suggestion of Paulo Flecha pfflecha@yahoo.com.br
 
 2005-09-20 10:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hbrowse.prg

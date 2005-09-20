@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.41 2005-01-16 14:09:02 alkresin Exp $
+ *$Id: hedit.prg,v 1.42 2005-09-20 07:19:40 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -132,7 +132,9 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
          ENDIF
          // ------- Change by NightWalker - Check HiBit -------
          // If (wParam <129).or.!Empty( ::cPicFunc ).OR.!Empty( ::cPicMask )
+         IF !IsCtrlShift( ,.F. )
             Return GetApplyKey( Self,Chr(wParam) )
+         ENDIF
          // Endif
 
       ELSEIF msg == WM_KEYDOWN 
@@ -153,8 +155,10 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
                Return KeyRight( Self )
             ENDIF
          ELSEIF wParam == 37     // KeyLeft
+            IF !IsCtrlShift()
                ::lFirst := .F.
                Return KeyLeft( Self )
+            ENDIF
          ELSEIF wParam == 35     // End
                ::lFirst := .F.
                IF ::cType == "C"
@@ -317,9 +321,13 @@ METHOD SetText( c ) CLASS HEdit
 
 RETURN NIL
 
-Static Function IsCtrlShift()
+Static Function IsCtrlShift( lCtrl,lShift )
 Local cKeyb := GetKeyboardState()
-Return Asc(Substr(cKeyb,VK_CONTROL+1,1)) >= 128 .OR. Asc(Substr(cKeyb,VK_SHIFT+1,1)) >= 128
+
+   IF lCtrl==Nil; lCtrl := .T.; ENDIF
+   IF lShift==Nil; lShift := .T.; ENDIF
+Return ( lCtrl .AND. ( Asc(Substr(cKeyb,VK_CONTROL+1,1)) >= 128 ) ) .OR. ;
+       ( lShift .AND. ( Asc(Substr(cKeyb,VK_SHIFT+1,1)) >= 128 ) )
 
 Static Function ParsePict( oEdit,cPicture,vari )
 Local nAt, i, masklen, cChar

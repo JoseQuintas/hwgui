@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.5 2005-09-09 06:30:20 lf_sfnet Exp $
+ * $Id: commond.c,v 1.6 2005-09-20 14:09:53 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
@@ -21,17 +21,51 @@
 #include "guilib.h"
 #include "gtk/gtk.h"
 #include "hwgtk.h"
+#ifdef __XHARBOUR__
+#include "hbfast.h"
+#endif
 
 void store_font( gpointer fontseldlg )
 {
-   PHB_ITEM aMetr = hb_itemArrayNew( 9 ), temp;
    char * szFontName = (char*) gtk_font_selection_dialog_get_font_name( (GtkFontSelectionDialog*)fontseldlg );
    PangoFontDescription * hFont = pango_font_description_from_string( szFontName );
    PHWGUI_FONT h = (PHWGUI_FONT) hb_xgrab( sizeof(HWGUI_FONT) );
+#ifdef __XHARBOUR__
+   HB_ITEM_NEW( aMetr);
+   HB_ITEM_NEW( temp );
+#else
+   PHB_ITEM aMetr = hb_itemArrayNew( 9 ), temp;
+#endif
 
    h->type = HWGUI_OBJECT_FONT;
    h->hFont = hFont;
+#ifdef __XHARBOUR__
+{
+   hb_arrayNew( &aMetr, 9 );
    
+   hb_arraySetForward( &aMetr, 1, hb_itemPutNL( &temp, ( void *) h ) );
+   
+   hb_arraySetForward( &aMetr, 2, hb_itemPutC( &temp, (char*) pango_font_description_get_family( hFont ) ) );
+
+   hb_arraySetForward( &aMetr, 3, hb_itemPutNL( &temp, 0 ) );
+   
+   hb_arraySetForward( &aMetr, 4, hb_itemPutNL( &temp, (LONG) pango_font_description_get_size( hFont ) ) );
+
+   hb_arraySetForward( &aMetr, 5, hb_itemPutNL( &temp, (LONG) pango_font_description_get_weight( hFont ) ));
+
+   hb_arraySetForward( &aMetr, 6, hb_itemPutNI( &temp, 0 ) );
+   
+   hb_arraySetForward( &aMetr, 7, hb_itemPutNI( &temp, (LONG) pango_font_description_get_style( hFont ) ) );
+   
+   hb_arraySetForward( &aMetr, 8, hb_itemPutNI( &temp, 0 ) );
+   
+   hb_arraySetForward( &aMetr, 9,hb_itemPutNI( &temp, 0 ) );
+
+   hb_itemClear( &temp );
+   hb_itemForwardValue( &(HB_VM_STACK).Return, &aMetr );
+}
+#else
+{
    temp = hb_itemPutNL( NULL, (LONG) h );
    hb_itemArrayPut( aMetr, 1, temp );
    hb_itemRelease( temp );
@@ -70,7 +104,8 @@ void store_font( gpointer fontseldlg )
 
    hb_itemReturn( aMetr );
    hb_itemRelease( aMetr );
-   
+}
+#endif   
    gtk_widget_destroy( (GtkWidget*) fontseldlg );
 }
 
@@ -79,7 +114,7 @@ HB_FUNC( SELECTFONT )
    GtkWidget *fontseldlg;
    GtkFontSelection *fontsel;
    char *cTitle = ( hb_pcount()>2 && ISCHAR(3) )? hb_parc(3):"Select Font";
-   
+
    fontseldlg = gtk_font_selection_dialog_new( cTitle );
    fontsel = GTK_FONT_SELECTION( GTK_FONT_SELECTION_DIALOG (fontseldlg)->fontsel );
 
@@ -88,7 +123,7 @@ HB_FUNC( SELECTFONT )
    }
    
    g_signal_connect( G_OBJECT (fontseldlg), "destroy",
-	              G_CALLBACK (gtk_main_quit), NULL);
+                      G_CALLBACK (gtk_main_quit), NULL);
 
    g_signal_connect_swapped( GTK_OBJECT (GTK_FONT_SELECTION_DIALOG (fontseldlg)->ok_button),
                      "clicked",
@@ -99,7 +134,7 @@ HB_FUNC( SELECTFONT )
                              "clicked",
                              G_CALLBACK (gtk_widget_destroy),
                              (gpointer) fontseldlg );
-			     
+                             
    gtk_widget_show( fontseldlg );
    gtk_main();   
 
@@ -126,7 +161,7 @@ HB_FUNC( SELECTFILE )
    file_selector = gtk_file_selection_new( cTitle );
    
    g_signal_connect (G_OBJECT (file_selector), "destroy",
-	              G_CALLBACK (gtk_main_quit), NULL);
+                      G_CALLBACK (gtk_main_quit), NULL);
 
    g_signal_connect_swapped( GTK_OBJECT (GTK_FILE_SELECTION (file_selector)->ok_button),
                      "clicked",
@@ -137,7 +172,7 @@ HB_FUNC( SELECTFILE )
                              "clicked",
                              G_CALLBACK (cancel_filedlg),
                              (gpointer) file_selector); 
-			     
+                             
    if( cMask )
       gtk_file_selection_complete( (GtkFileSelection*)file_selector, cMask );
    
@@ -171,7 +206,7 @@ HB_FUNC( HWG_CHOOSECOLOR )
 
    if( hb_pcount() > 0 && !ISNIL(1) )
    {
-      char ss[30];
+      char ss[30]={0};
       GdkColor color;
       color.pixel = 0;
       color.blue =  ( hb_parnl(1) % 256 ) * 256;
@@ -185,7 +220,7 @@ HB_FUNC( HWG_CHOOSECOLOR )
    gtk_color_selection_set_has_palette (colorsel, TRUE);
    
    g_signal_connect( G_OBJECT (colorseldlg), "destroy",
-	              G_CALLBACK (gtk_main_quit), NULL);
+                      G_CALLBACK (gtk_main_quit), NULL);
 
    g_signal_connect_swapped( GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (colorseldlg)->ok_button),
                      "clicked",
@@ -196,7 +231,7 @@ HB_FUNC( HWG_CHOOSECOLOR )
                              "clicked",
                              G_CALLBACK (gtk_widget_destroy),
                              (gpointer) colorseldlg );
-			     
+                             
    gtk_widget_show( colorseldlg );
    gtk_main();  
    

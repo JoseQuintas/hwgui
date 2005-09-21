@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.417 2005-09-21 13:20:30 lculik Exp $
+ * $Id: Changelog,v 1.418 2005-09-21 21:18:25 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,27 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2005-09-21 18:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>                
+   * gtk/control.c
+     gtk/hedit.prg
+     gtk/hcwindow.prg
+     gtk/hdialog.prg
+     gtk/hcontrol.prg
+     gtk/htab.prg
+     gtk/hgraph.prg
+     gtk/hcombo.prg
+     gtk/hradio.prg
+     gtk/menu.prg
+     gtk/hbrowse.prg
+     gtk/drawwidg.prg
+     gtk/hwindow.prg
+     gtk/hupdown.prg
+     gtk/hcheck.prg
+     gtk/htimer.prg
+     gtk/hwinprn.prg
+     ! Minor fix on defines names,
+       Now all samples work when compiled with -D__GTK_USE_POINTER__
+       
 2005-09-21 10:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>                
    * gtk/control.c
      gtk/hedit.prg

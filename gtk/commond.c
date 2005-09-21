@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.6 2005-09-20 14:09:53 lculik Exp $
+ * $Id: commond.c,v 1.7 2005-09-21 21:03:35 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
@@ -43,7 +43,7 @@ void store_font( gpointer fontseldlg )
 {
    hb_arrayNew( &aMetr, 9 );
    
-   hb_arraySetForward( &aMetr, 1, hb_itemPutNL( &temp, ( void *) h ) );
+   hb_arraySetForward( &aMetr, 1, hb_itemPutPtr( &temp, ( void *) h ) );
    
    hb_arraySetForward( &aMetr, 2, hb_itemPutC( &temp, (char*) pango_font_description_get_family( hFont ) ) );
 

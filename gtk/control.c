@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.15 2005-09-21 13:20:30 lculik Exp $
+ * $Id: control.c,v 1.16 2005-09-21 21:03:35 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -265,7 +265,11 @@ HB_FUNC( CREATEEDIT )
 
 HB_FUNC( HWG_EDIT_SETTEXT )
 {
+   #ifdef __GTK_USE_POINTER__
+   GtkWidget * hCtrl = (GtkWidget *)hb_parptr(1);
+   #else
    GtkWidget * hCtrl = (GtkWidget *)hb_parnl(1);
+   #endif
    char * cTitle = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
 
    if( g_object_get_data( (GObject *)hCtrl, "multi" ) )

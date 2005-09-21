@@ -45,7 +45,7 @@ Private nColor, oBmp2
 
    ENDMENU
 
-   ACTIVATE WINDOW oMainWindow MAXIMIZED
+   ACTIVATE WINDOW oMainWindow 
 
 return nil
 

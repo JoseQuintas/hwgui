@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.2 2005-09-21 13:20:30 lculik Exp $
+ *$Id: htab.prg,v 1.3 2005-09-21 21:03:36 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HTab class
@@ -68,7 +68,7 @@ LOCAL i, aBmpSize
 Return Self
 
 METHOD Activate CLASS HTab
-   #ifdef _GTK_USE_POINTER__
+   #ifdef __GTK_USE_POINTER__
    IF !Empty(::oParent:handle )
    #else
    IF ::oParent:handle != 0
@@ -124,7 +124,11 @@ Return Nil
 METHOD EndPage() CLASS HTab
 
    ::aPages[ ::nActive,2 ] := Len( ::aControls ) - ::aPages[ ::nActive,1 ]
+   #ifdef __GTK_USE_POINTER__
+   IF ::nActive > 1 .AND. ::handle != Nil .AND. !empty( ::handle )
+   #else
    IF ::nActive > 1 .AND. ::handle != Nil .AND. ::handle > 0
+   #endif
       ::HidePage( ::nActive )
    ENDIF
    ::nActive := 1

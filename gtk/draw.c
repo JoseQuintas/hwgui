@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.3 2005-09-20 17:20:56 lculik Exp $
+ * $Id: draw.c,v 1.4 2005-09-21 21:03:35 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level painting functions
@@ -563,12 +563,12 @@ HB_FUNC( DRAWGRAYBITMAP )
 
 HB_FUNC( GETCLIENTRECT )
 {
-   #ifdef __GTK_USE_POINTER____
+   #ifdef __GTK_USE_POINTER__
    GtkWidget * widget = (GtkWidget*) hb_parptr(1);
    #else
    GtkWidget * widget = (GtkWidget*) hb_parnl(1);
    #endif
-   #ifdef __XHARBOUR__
+   #ifdef __GTK_USE_POINTER__
    {
    HB_ITEM_NEW( aMetr );
    HB_ITEM_NEW(temp);

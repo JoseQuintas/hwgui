@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.10 2005-09-21 13:20:30 lculik Exp $
+ * $Id: hbrowse.prg,v 1.11 2005-09-21 21:03:35 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -60,8 +60,9 @@ static crossCursor := 0
 static arrowCursor := 0
 static vCursor     := 0
 static oCursor     := 0
-static xDrag
+
 #endif
+static xDrag
 //----------------------------------------------------//
 CLASS HColumn INHERIT HObject
 
@@ -236,7 +237,7 @@ METHOD Activate CLASS HBrowse
       ::handle := CreateBrowse( Self )
       ::Init()
    endif
-RETURN Nil
+RETURN Self
 
 //----------------------------------------------------//
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
@@ -255,6 +256,7 @@ Local aCoors, retValue := -1
 
       ELSEIF msg == WM_ERASEBKGND
          IF ::brush != Nil
+	    
             aCoors := GetClientRect( ::handle )
             FillRect( wParam, aCoors[1], aCoors[2], aCoors[3]+1, aCoors[4]+1, ::brush:handle )
             retValue := 1
@@ -340,7 +342,6 @@ METHOD Init CLASS HBrowse
    Super:Init()
    ::nHolder := 1
    SetWindowObject( ::handle,Self )
-
 Return Nil
 
 //----------------------------------------------------//

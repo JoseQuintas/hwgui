@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.6 2005-09-21 13:20:30 lculik Exp $
+ *$Id: hedit.prg,v 1.7 2005-09-21 21:03:36 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HEdit class 
@@ -111,7 +111,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
 Return Self
 
 METHOD Activate CLASS HEdit
-   #ifdef _GTK_USE_POINTER__
+   #ifdef __GTK_USE_POINTER__
    IF !Empty(::oParent:handle )
    #else
    IF ::oParent:handle != 0

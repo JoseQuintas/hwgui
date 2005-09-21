@@ -1,5 +1,5 @@
 /*
- * $Id: hgraph.prg,v 1.3 2005-09-21 13:20:30 lculik Exp $
+ * $Id: hgraph.prg,v 1.4 2005-09-21 21:03:36 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HGraph class
@@ -52,7 +52,7 @@ METHOD New( oWndParent,nId,aValues,nLeft,nTop,nWidth,nHeight,oFont, ;
 Return Self
 
 METHOD Activate CLASS HGraph
-   #ifdef _GTK_USE_POINTER__
+   #ifdef __GTK_USE_POINTER__
    IF !Empty(::oParent:handle )
    #else
    IF ::oParent:handle != 0

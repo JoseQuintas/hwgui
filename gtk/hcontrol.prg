@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.7 2005-09-21 13:20:30 lculik Exp $
+ *$Id: hcontrol.prg,v 1.8 2005-09-21 21:03:36 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -300,9 +300,8 @@ METHOD Activate CLASS HGroup
    #ifdef __GTK_USE_POINTER__
    IF !Empty(::oParent:handle )
    #else
-
    IF ::oParent:handle != 0
-   endif
+   #endif
       ::handle := CreateButton( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::Init()
@@ -351,4 +350,3 @@ METHOD Activate CLASS hline
       ::Init()
    ENDIF
 Return Nil
-

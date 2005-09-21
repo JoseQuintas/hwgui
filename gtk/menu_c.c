@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.6 2005-09-20 17:20:56 lculik Exp $
+ * $Id: menu_c.c,v 1.7 2005-09-21 21:03:36 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level menu functions
@@ -138,7 +138,7 @@ HB_FUNC( HWG__SETMENU )
 {
 #ifdef __GTK_USE_POINTER__
 {
-  GObject * handle = (GObject*) hb_parptr(1);
+   GObject * handle = (GObject*) hb_parptr(1);
    GtkFixed * box = getFixedBox( handle );
    GtkWidget * vbox = ( (GtkWidget*)box )->parent;
    gtk_box_pack_start( GTK_BOX (vbox), (GtkWidget*)hb_parptr(2), FALSE, FALSE, 2);

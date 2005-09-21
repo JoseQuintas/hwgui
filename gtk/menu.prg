@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.7 2005-09-21 13:20:30 lculik Exp $
+ * $Id: menu.prg,v 1.8 2005-09-21 21:03:36 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Prg level menu functions
@@ -47,7 +47,7 @@ Return Nil
 
 Function Hwg_CreateMenu
 Local hMenu
-#ifdef _GTK_USE_POINTER__
+#ifdef __GTK_USE_POINTER__
    IF ( EMPTY( hMenu := hwg__CreateMenu() ) )
       Return Nil
    ENDIF
@@ -61,7 +61,7 @@ Return { {},,, hMenu }
 
 Function Hwg_SetMenu( oWnd, aMenu )
 
-   #ifdef _GTK_USE_POINTER__
+   #ifdef __GTK_USE_POINTER__
    IF !Empty( oWnd:handle )
    #else 
    IF oWnd:handle != 0

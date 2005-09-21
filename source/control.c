@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.28 2005-09-19 13:31:55 lf_sfnet Exp $
+ * $Id: control.c,v 1.29 2005-09-21 12:17:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1112,11 +1112,7 @@ LRESULT CALLBACK WinCtrlProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifndef HARBOUR_OLD_VERSION
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-#else
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-#endif
+      res = hb_parnl( -1 );
       hb_itemRelease( pObject );
       if( res == -1 )
          return( DefWindowProc( hWnd, message, wParam, lParam ) );
@@ -1159,11 +1155,7 @@ LRESULT APIENTRY EditSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARA
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifndef HARBOUR_OLD_VERSION
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-#else
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-#endif
+      res = hb_parnl( -1 );
       hb_itemRelease( pObject );
       if( res == -1 )
          return( CallWindowProc( wpOrigEditProc, hWnd, message, wParam, lParam ) );
@@ -1206,11 +1198,7 @@ LRESULT APIENTRY TrackSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifndef HARBOUR_OLD_VERSION
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-#else
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-#endif
+      res = hb_parnl( -1 );
       hb_itemRelease( pObject );
       if( res == -1 )
          return( CallWindowProc( wpOrigTrackProc, hWnd, message, wParam, lParam ) );
@@ -1253,11 +1241,7 @@ LRESULT APIENTRY TabSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifndef HARBOUR_OLD_VERSION
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-#else
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-#endif
+      res = hb_parnl( -1 );
       hb_itemRelease( pObject );
       if( res == -1 )
          return( CallWindowProc( wpOrigTabProc, hWnd, message, wParam, lParam ) );

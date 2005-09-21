@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.35 2005-09-14 09:32:10 lf_sfnet Exp $
+ * $Id: window.c,v 1.36 2005-09-21 12:17:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -645,11 +645,7 @@ LRESULT CALLBACK MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifndef HARBOUR_OLD_VERSION
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-#else
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-#endif
+      res = hb_parnl( -1 );
       hb_itemRelease( pObject );
       if( res == -1 )
          return( DefWindowProc( hWnd, message, wParam, lParam ) );
@@ -687,11 +683,7 @@ LRESULT CALLBACK FrameWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifndef HARBOUR_OLD_VERSION
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-#else
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-#endif
+      res = hb_parnl( -1 );
       hb_itemRelease( pObject );
       if( res == -1 )
          return( DefFrameProc( hWnd, aWindows[ 1 ], message, wParam, lParam ) );
@@ -746,11 +738,7 @@ LRESULT CALLBACK MDIChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifndef HARBOUR_OLD_VERSION
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-#else
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-#endif
+      res = hb_parnl( -1 );
       hb_itemRelease( pObject );
       if( res == -1 )
          return( DefMDIChildProc( hWnd, message, wParam, lParam ) );
@@ -799,17 +787,6 @@ HB_FUNC( EXITPROCESS )
   ExitProcess(0);
 }
 
-#ifndef __XHARBOUR__
-#ifdef __EXPORT__
-PHB_ITEM hb_stackReturn( void )
-{
-   HB_STACK stack = hb_GetStack();
-   return &stack.Return;
-}
-#endif
-
-#endif
-
 HB_FUNC( HWG_DECREASEHOLDERS )
 {
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
@@ -834,3 +811,13 @@ HB_FUNC( REMOVETOPMOST )
     BOOL i = SetWindowPos( (HWND) hb_parnl( 1 ), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE );
     hb_retl( i );
 }
+
+#ifndef __XHARBOUR__
+#ifdef __EXPORT__
+PHB_ITEM hb_stackReturn( void )
+{
+   HB_STACK stack = hb_GetStack();
+   return &stack.Return;
+}
+#endif
+#endif

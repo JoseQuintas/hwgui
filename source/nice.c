@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.8 2005-09-13 11:06:15 alkresin Exp $
+ * $Id: nice.c,v 1.9 2005-09-21 12:17:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -96,7 +96,7 @@ void Draw_Gradient(HDC hdc, int x, int y, int w, int h, int r, int g, int b)
 
 LRESULT CALLBACK NiceButtProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-
+   long int res;
    PHB_DYNS pSymTest;
    if( ( pSymTest = hb_dynsymFind( "NICEBUTTPROC" ) ) != NULL )
    {
@@ -107,11 +107,8 @@ LRESULT CALLBACK NiceButtProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmDo( 4 );  /* where iArgCount is the number of pushed parameters */
-#ifndef HARBOUR_OLD_VERSION
-      if( hb_itemGetL( (PHB_ITEM) hb_stackReturnItem() ) )
-#else
-      if( hb_itemGetL( (PHB_ITEM) hb_stackReturn() ) )
-#endif
+      res = hb_parl( -1 );
+      if( res )
          return 0;
       else
          return( DefWindowProc( hWnd, message, wParam, lParam ));

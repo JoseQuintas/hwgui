@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.415 2005-09-20 17:20:56 lculik Exp $
+ * $Id: Changelog,v 1.416 2005-09-21 12:17:17 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-09-21 16:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/control.c
+  * source/dialog.c
+  * source/nice.c
+  * source/richedit.c
+  * source/windows.c
+    * hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() ) are replaced with
+      hb_retnl( -1 ), as adviced Przemyslaw Czerpak
+  * source/hownbtn.prg
+    * Reverted a last modification ( 2005-09-16 18:55 UTC+0200 )
 
 2005-09-20 14:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>                
   * gtk/misc.c                                                                     

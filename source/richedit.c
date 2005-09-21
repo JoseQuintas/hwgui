@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.17 2005-09-13 11:06:15 alkresin Exp $
+ * $Id: richedit.c,v 1.18 2005-09-21 12:17:17 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -384,11 +384,7 @@ LRESULT APIENTRY RichSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARA
       hb_vmPushLong( (LONG ) wParam );
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
-#ifndef HARBOUR_OLD_VERSION
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-#else
-      res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-#endif
+      res = hb_parnl( -1 );
       hb_itemRelease( pObject );
       if( res == -1 )
          return( CallWindowProc( wpOrigRichProc, hWnd, message, wParam, lParam ) );

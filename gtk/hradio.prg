@@ -1,5 +1,5 @@
 /*
- *$Id: hradio.prg,v 1.1 2005-01-14 11:23:20 alkresin Exp $
+ *$Id: hradio.prg,v 1.2 2005-09-21 13:20:30 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HRadioButton class
@@ -121,7 +121,11 @@ Return Self
 METHOD Activate CLASS HRadioButton
 Local groupHandle := ::oGroup:handle
 
-   IF ::oParent:handle != 0  
+   #ifdef _GTK_USE_POINTER__
+   IF !Empty(::oParent:handle )
+   #else
+   IF ::oParent:handle != 0
+   #ENDIF
       ::handle := CreateButton( ::oParent:handle, @groupHandle, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::oGroup:handle := groupHandle

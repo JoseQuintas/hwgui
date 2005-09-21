@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.9 2005-09-16 11:13:29 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.10 2005-09-21 13:20:30 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -49,13 +49,19 @@ REQUEST BOF
 
 #define GDK_End             0xFF57
 #define GDK_Insert          0xFF63
+#ifdef __GTK_USE_POINTER__
+static crossCursor := nil
+static arrowCursor := nil
+static vCursor     := nil
+static oCursor     := nil
+#else
 
 static crossCursor := 0
 static arrowCursor := 0
 static vCursor     := 0
 static oCursor     := 0
 static xDrag
-
+#endif
 //----------------------------------------------------//
 CLASS HColumn INHERIT HObject
 
@@ -222,7 +228,11 @@ RETURN Self
 
 //----------------------------------------------------//
 METHOD Activate CLASS HBrowse
+#ifdef __GTK_USE_POINTER__
+   if !Empty( ::oParent:handle )
+#else
    if ::oParent:handle != 0
+#endif
       ::handle := CreateBrowse( Self )
       ::Init()
    endif
@@ -408,7 +418,11 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::internal  := { 15,1 }
       ::msrec     := Nil
 
+#ifdef __GTK_USE_POINTER__
+      if empty(crossCursor) 
+#else
       if crossCursor == 0
+#endif      
          crossCursor := LoadCursor( GDK_CROSS )
          arrowCursor := LoadCursor( GDK_LEFT_PTR )
          vCursor := LoadCursor( GDK_SB_V_DOUBLE_ARROW )
@@ -1302,7 +1316,12 @@ Local xPos := LOWORD(lParam), x := ::x1, x1, i := ::nLeftCol
       IF xPos > x1
          ::aColumns[i]:width := xPos - x1
          Hwg_SetCursor( arrowCursor,::area )
+    #ifdef __GTK_USE_POINTER__
+         oCursor := nil
+	 #else
          oCursor := 0
+	 #endif
+       
          InvalidateRect( hBrw, 0 )
       ENDIF
    ENDIF
@@ -1347,9 +1366,16 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
             ENDIF
          ENDDO
       ENDIF
+      #ifdef __GTK_USE_POINTER__
+      IF !res .AND. !Empty( oCursor )
+         Hwg_SetCursor( arrowCursor,::area )
+         oCursor := nil
+      #else
       IF !res .AND. oCursor != 0
          Hwg_SetCursor( arrowCursor,::area )
          oCursor := 0
+      #endif
+
       ENDIF
    ENDIF
 RETURN Nil

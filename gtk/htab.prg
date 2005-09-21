@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.1 2005-09-14 09:08:15 alkresin Exp $
+ *$Id: htab.prg,v 1.2 2005-09-21 13:20:30 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HTab class
@@ -68,7 +68,11 @@ LOCAL i, aBmpSize
 Return Self
 
 METHOD Activate CLASS HTab
+   #ifdef _GTK_USE_POINTER__
+   IF !Empty(::oParent:handle )
+   #else
    IF ::oParent:handle != 0
+   #ENDIF
       ::handle := CreateTabControl( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()

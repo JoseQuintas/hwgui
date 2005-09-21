@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.7 2005-09-12 05:58:39 alkresin Exp $
+ *$Id: hdialog.prg,v 1.8 2005-09-21 13:20:30 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
@@ -119,12 +119,20 @@ Local hParent,oWnd
    ::lResult := .F.
    ::AddItem( Self,!lNoModal )
    IF !lNoModal
+   #ifdef __GTK_USE_POINTER__
+      hParent := Iif( ::oParent!=Nil .AND. ;
+             __ObjHasMsg( ::oParent,"HANDLE") .AND. ::oParent:handle != NIL ;
+             .AND. !Empty(::oParent:handle ), ::oParent:handle, ;
+             Iif( ( oWnd:=HWindow():GetMain() ) != Nil,    ;
+             oWnd:handle,GetActiveWindow() ) )
+   #else
+
       hParent := Iif( ::oParent!=Nil .AND. ;
              __ObjHasMsg( ::oParent,"HANDLE") .AND. ::oParent:handle != Nil ;
              .AND. ::oParent:handle > 0, ::oParent:handle, ;
              Iif( ( oWnd:=HWindow():GetMain() ) != Nil,    ;
              oWnd:handle,GetActiveWindow() ) )
-   
+   #endif   
       hwg_Set_Modal( ::handle, hParent )
    ENDIF
    InitModalDlg( Self )

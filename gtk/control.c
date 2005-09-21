@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.14 2005-09-20 14:09:53 lculik Exp $
+ * $Id: control.c,v 1.15 2005-09-21 13:20:30 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -643,9 +643,9 @@ HB_FUNC( ADDTAB )
    g_object_set_data( (GObject*) nb, "fbox", (gpointer) box );
 
 #ifdef __GTK_USE_POINTER__
-   hb_retptr( (void*) hCtrl );
+   hb_retptr( (void*) nb );
 #else
-   hb_retnl( (LONG) hCtrl );
+   hb_retnl( (LONG) nb );
 #endif
 }
 

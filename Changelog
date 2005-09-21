@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.416 2005-09-21 12:17:17 alkresin Exp $
+ * $Id: Changelog,v 1.417 2005-09-21 13:20:30 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,27 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2005-09-21 10:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>                
+   * gtk/control.c
+     gtk/hedit.prg
+     gtk/hcwindow.prg
+     gtk/hdialog.prg
+     gtk/hcontrol.prg
+     gtk/htab.prg
+     gtk/hgraph.prg
+     gtk/hcombo.prg
+     gtk/hradio.prg
+     gtk/menu.prg
+     gtk/hbrowse.prg
+     gtk/drawwidg.prg
+     gtk/hwindow.prg
+     gtk/hupdown.prg
+     gtk/hcheck.prg
+     gtk/htimer.prg
+     gtk/hwinprn.prg
+     ! Change to use  [x]harbour Pointers types.Changes protect by __GTK_USE_POINTER__.
+      This is an work in progress                                                       
+    
 2005-09-21 16:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/control.c
   * source/dialog.c

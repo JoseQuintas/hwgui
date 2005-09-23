@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.55 2005-09-20 06:43:30 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.56 2005-09-23 12:29:13 mauriliolongo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -568,6 +568,7 @@ Local oldBkColor, oldTColor
 
    pps := DefinePaintStru()
    hDC := BeginPaint( ::handle, pps )
+
    if ::ofont != Nil
       SelectObject( hDC, ::ofont:handle )
    endif
@@ -577,7 +578,7 @@ Local oldBkColor, oldTColor
    aCoors := GetClientRect( ::handle )
    aMetr := GetTextMetric( hDC )
    ::width := Round( ( aMetr[ 3 ] + aMetr[ 2 ] ) / 2 - 1,0 )
-   ::height := Max( aMetr[ 1 ], ::minHeight ) + 1
+   ::height := Max( aMetr[ 1 ], ::minHeight )
    ::x1 := aCoors[ 1 ]
    ::y1 := aCoors[ 2 ] + Iif( ::lDispHead, ::height*::nHeadRows, 0 )
    ::x2 := aCoors[ 3 ]
@@ -1273,9 +1274,10 @@ Local xm := LOWORD(lParam), x1, fif
 
    x1  := ::x1
    fif := IIF( ::freeze > 0, 1, ::nLeftCol )
-   DO WHILE fif < (::nLeftCol+::nColumns) .AND. x1 + ::aColumns[fif]:width < xm
-      x1 += ::aColumns[fif]:width
-      fif := IIF( fif = ::freeze, ::nLeftCol, fif + 1 )
+
+   DO WHILE fif < ( ::nLeftCol + ::nColumns ) .AND. x1 + ::aColumns[ fif ]:width < xm
+      x1 += ::aColumns[ fif ]:width
+      fif := IIF( fif == ::freeze, ::nLeftCol, fif + 1 )
    ENDDO
 
    IF nLine > 0 .AND. nLine <= ::rowCurrCount
@@ -1298,15 +1300,27 @@ Local xm := LOWORD(lParam), x1, fif
          ENDIF
       ENDIF
       IF ::lEditable
-         IF ::colpos != fif - ::nLeftCol + 1 + :: freeze
-            ::colpos := fif - ::nLeftCol + 1 + :: freeze
+
+         IF ::colpos != fif - ::nLeftCol + 1 + ::freeze
+
+            // Colpos should not go beyond last column or I get bound errors on ::Edit()
+            ::colpos := Min( ::nColumns, fif - ::nLeftCol + 1 + ::freeze )
+
             GetScrollRange( hBrw, SB_HORZ, @minPos, @maxPos )
-            nPos := Iif( fif==1, minPos, Iif( fif=Len(::aColumns), maxpos, ;
-                         Int((maxPos-minPos+1)*fif/Len(::aColumns)) ) )
+
+            nPos := Iif( fif == 1,;
+                         minPos,;
+                         Iif( fif == Len( ::aColumns ),;
+                              maxpos,;
+                              Int( ( maxPos - minPos + 1 ) * fif / Len( ::aColumns ) ) ) )
+
             SetScrollPos( hBrw, SB_HORZ, nPos )
             res := .T.
+
          ENDIF
+
       ENDIF
+
       IF res
          InvalidateRect( hBrw, 0, ::x1, ::y1+(::height+1)*::internal[2]-::height, ::x2, ::y1+(::height+1)*::internal[2] )
          InvalidateRect( hBrw, 0, ::x1, ::y1+(::height+1)*::rowPos-::height, ::x2, ::y1+(::height+1)*::rowPos )
@@ -1423,8 +1437,10 @@ return nil
 METHOD Edit( wParam,lParam ) CLASS HBrowse
 Local fipos, lRes, x1, y1, fif, nWidth, lReadExit, rowPos
 Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
+local oComboFont, oCombo
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
+
    IF ::bEnter == Nil .OR. ;
          ( Valtype( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. !lRes )
       oColumn := ::aColumns[fipos]
@@ -1475,14 +1491,15 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
          bInit := Iif( wParam==Nil, {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1)}, ;
             {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1),PostMessage(o:aControls[1]:handle,WM_KEYDOWN,wParam,lParam)} )
 
-         INIT DIALOG oModDlg STYLE WS_POPUP+1+Iif(oColumn:aList==Nil,WS_BORDER,0) ;
-            AT x1,y1                             ;
-            SIZE nWidth, ::height                ;
+         INIT DIALOG oModDlg;
+            STYLE WS_POPUP + 1 + iif( oColumn:aList == Nil, WS_BORDER, 0 ) ;
+            AT x1, y1 - Iif( oColumn:aList == Nil, 1, 0 ) ;
+            SIZE nWidth, ::height + Iif( oColumn:aList == Nil, 1, 0 ) ;
             ON INIT bInit
 
          IF oColumn:aList != Nil
             oModDlg:brush := -1
-            oModDlg:nHeight := ::height*5
+            oModDlg:nHeight := ::height * 5
 
             if valtype(::varbuf) == 'N'
                 nChoic := ::varbuf
@@ -1491,12 +1508,26 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
                 nChoic := Ascan( oColumn:aList,::varbuf )
             endif
 
-            @ 0,0 GET COMBOBOX nChoic         ;
+            /* 21/09/2005 - <maurilio.longo@libero.it>
+                            The combobox needs to use a font smaller than the one used
+                            by the browser or it will be taller than the browse row that
+                            has to contain it.
+            */
+            oComboFont := iif( Valtype( ::oFont ) == "U",;
+                               HFont():Add("MS Sans Serif", 0, -8 ),;
+                               HFont():Add( ::oFont:name, ::oFont:width, ::oFont:height + 2 ) )
+
+            @ 0,0 GET COMBOBOX oCombo VAR nChoic ;
                ITEMS oColumn:aList            ;
-               SIZE nWidth, ::height*5        ;
-               FONT ::oFont
+               SIZE nWidth, ::height * 5      ;
+               FONT oComboFont
+
+               if oColumn:bValid != NIL
+                  oCombo:bValid := oColumn:bValid
+               endif
+
          ELSE
-            @ 0,0 GET oGet VAR ::varbuf         ;
+            @ 0,0 GET oGet VAR ::varbuf       ;
                SIZE nWidth, ::height+1        ;
                NOBORDER                       ;
                STYLE ES_AUTOHSCROLL           ;
@@ -1506,6 +1537,10 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
          ENDIF
 
          ACTIVATE DIALOG oModDlg
+
+         IF oColumn:aList != Nil
+            oComboFont:Release()
+         ENDIF
 
          IF oModDlg:lResult
             IF oColumn:aList != Nil

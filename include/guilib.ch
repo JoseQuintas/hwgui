@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.59 2005-09-14 09:32:10 lf_sfnet Exp $
+ *$Id: guilib.ch,v 1.60 2005-09-23 12:29:13 mauriliolongo Exp $
  */
 #define HWG_VERSION           "2.14"
 #define	WND_MAIN		1
@@ -935,12 +935,13 @@
             [ <edit: EDIT> ]           ;
             [ <text: TEXT> ]           ;
             [ WHEN <bWhen> ]           ;
+            [ VALID <bValid> ]         ;
           => ;
     [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<vari>,    ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
                     <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
-                    <.edit.>,<.text.>,<bWhen>,<color>,<bcolor> )
+                    <.edit.>,<.text.>,<bWhen>,<color>,<bcolor>,<bValid> )
 
 #xcommand REDEFINE GET COMBOBOX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;

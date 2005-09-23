@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.36 2005-09-21 12:17:17 alkresin Exp $
+ * $Id: window.c,v 1.37 2005-09-23 12:29:13 mauriliolongo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -193,6 +193,26 @@ HB_FUNC( HWG_PROCESSMESSAGE )
 
 }
 
+
+
+/* 22/09/2005 - <maurilio.longo@libero.it>
+					 It can be used to see if there are messages awaiting of a certain
+					 type, but it does not retrieve them
+*/
+HB_FUNC( HWG_PEEKMESSAGE )
+{
+	MSG msg;
+
+   hb_retl( PeekMessage(
+    			&msg,
+    			(HWND) hb_parnl( 1 ),		// handle of window whose message queue will be searched
+    			(UINT) hb_parni( 2 ),		// wMsgFilterMin,
+    			(UINT) hb_parni( 3 ),		// wMsgFilterMax,
+    			PM_NOREMOVE ) );
+}
+
+
+
 HB_FUNC( HWG_INITCHILDWINDOW )
 {
    HWND         hWnd ;
@@ -311,12 +331,12 @@ HB_FUNC( HWG_INITMDIWINDOW )
    }
 
    // Register client window
-   wc.lpfnWndProc   = (WNDPROC) MDIChildWndProc; 
+   wc.lpfnWndProc   = (WNDPROC) MDIChildWndProc;
    wc.hIcon         = (hb_pcount()>4 && !ISNIL(5))? (HICON)hb_parnl(5) : LoadIcon ((HINSTANCE)hInstance,"" );
    wc.hbrBackground = (HBRUSH)( ( (hb_pcount()>5 && !ISNIL(6)) ?hb_parnl(6):(COLOR_WINDOW+1) ) );
-   wc.lpszMenuName  = (LPCTSTR) NULL; 
+   wc.lpszMenuName  = (LPCTSTR) NULL;
    wc.cbWndExtra    = 0;
-   wc.lpszClassName = szChild; 
+   wc.lpszClassName = szChild;
 
 
    wc.cbClsExtra    = 0 ;
@@ -324,7 +344,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
    wc.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
    wc.style = 0;
 
-   if (!RegisterClass(&wc)) 
+   if (!RegisterClass(&wc))
    {
       hb_retni( -3 );
       return;
@@ -337,7 +357,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
                        (!width)? (LONG)CW_USEDEFAULT:width,
                        (!height)? (LONG)CW_USEDEFAULT:height,
                        NULL, NULL, (HINSTANCE)hInstance, NULL) ;
-   if (!hWnd) 
+   if (!hWnd)
    {
       hb_retni( -4 );
       return;
@@ -396,7 +416,7 @@ HB_FUNC( HWG_ACTIVATEMDIWINDOW )
 
 /*  Creates child MDI window
     CreateMdiChildWindow( aChildWindow )
-    aChildWindow = { cWindowTitle, Nil, aActions, Nil, 
+    aChildWindow = { cWindowTitle, Nil, aActions, Nil,
                     nStatusWindowID, bStatusWrite }
     aActions = { { nMenuItemID, bAction }, ... }
 */
@@ -420,18 +440,18 @@ HB_FUNC( HWG_CREATEMDICHILDWINDOW )
       hb_retni( 0 );
       return;
    }
-    
+
     hWnd = CreateMDIWindow(
-       (LPTSTR) szChild,	// pointer to registered child class name 
-       (LPTSTR) cTitle,		// pointer to window name 
-       style,			// window style 
-       x,	// horizontal position of window 
-       y,	// vertical position of window 
-       width,	// width of window 
-       height,	// height of window 
-       (HWND) aWindows[1],	// handle to parent window (MDI client) 
-       GetModuleHandle( NULL ),		// handle to application instance 
-       (LPARAM)&pObj		 	// application-defined value 
+       (LPTSTR) szChild,	// pointer to registered child class name
+       (LPTSTR) cTitle,		// pointer to window name
+       style,			// window style
+       x,	// horizontal position of window
+       y,	// vertical position of window
+       width,	// width of window
+       height,	// height of window
+       (HWND) aWindows[1],	// handle to parent window (MDI client)
+       GetModuleHandle( NULL ),		// handle to application instance
+       (LPARAM)&pObj		 	// application-defined value
    );
 
    hb_retnl( (LONG) hWnd );
@@ -535,7 +555,7 @@ HB_FUNC( GETWINDOWTEXT )
 
 HB_FUNC( SETWINDOWFONT )
 {
-   SendMessage( (HWND) hb_parnl( 1 ), WM_SETFONT, (WPARAM) hb_parnl( 2 ), 
+   SendMessage( (HWND) hb_parnl( 1 ), WM_SETFONT, (WPARAM) hb_parnl( 2 ),
        MAKELPARAM( (ISNIL(3))? 0 : hb_parl(3), 0 ) );
 }
 
@@ -805,7 +825,7 @@ HB_FUNC( SETTOPMOST )
     BOOL i = SetWindowPos( (HWND) hb_parnl( 1 ), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE );
     hb_retl( i );
 }
- 
+
 HB_FUNC( REMOVETOPMOST )
 {
     BOOL i = SetWindowPos( (HWND) hb_parnl( 1 ), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE );

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.418 2005-09-21 21:18:25 lculik Exp $
+ * $Id: Changelog,v 1.419 2005-09-23 12:29:13 mauriliolongo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,7 +8,29 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2005-09-21 18:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>                
+2005-09-23 14:20 UTC+0200 Maurilio Longo <maurilio.longo@libero.it>
+   * include/guilib.ch
+     + added valid clause to @ x,y GET COMBOBOX
+   * source/hcombo.prg
+     + added valid clause to HComboBox
+   * source/control.c
+     * changed SetTimer() to accept a 4th NULL parameter to be able
+       to receive WM_TIMER messages
+   * source/freeimg.c
+     + added a few functions(), changed FI_2DIB() into FI_FI2DIB() to be
+       more consisten with the naming convention of functions inside the file.
+   * source/hbrowse.prg
+     ! ::MouseDown() could cause that a phantom column to the left of the last
+       one was selected when clicking just to the left of it.
+     * When a combobox is used to ::Edit() a column the ::bValid of the column is
+       used to validate it and it is created with a font smaller than the one used
+       for the browse or else the combobox is taller than the row where it is painted.
+   * source/window.c
+     + added hwg_PeekMessage() which calls PeekMessage() but it is not able to remove
+       a message from the queue, just to test if it is waiting.
+
+
+2005-09-21 18:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * gtk/control.c
      gtk/hedit.prg
      gtk/hcwindow.prg
@@ -28,8 +50,8 @@
      gtk/hwinprn.prg
      ! Minor fix on defines names,
        Now all samples work when compiled with -D__GTK_USE_POINTER__
-       
-2005-09-21 10:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>                
+
+2005-09-21 10:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * gtk/control.c
      gtk/hedit.prg
      gtk/hcwindow.prg
@@ -48,8 +70,8 @@
      gtk/htimer.prg
      gtk/hwinprn.prg
      ! Change to use  [x]harbour Pointers types.Changes protect by __GTK_USE_POINTER__.
-      This is an work in progress                                                       
-    
+      This is an work in progress
+
 2005-09-21 16:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/control.c
   * source/dialog.c
@@ -61,21 +83,21 @@
   * source/hownbtn.prg
     * Reverted a last modification ( 2005-09-16 18:55 UTC+0200 )
 
-2005-09-20 14:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>                
-  * gtk/misc.c                                                                     
-    gtk/windows.c                                                                     
+2005-09-20 14:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+  * gtk/misc.c
+    gtk/windows.c
     gtk/draw.c
     gtk/drawtext.c
     gtk/menu_c.c
     ! Change to use  [x]harbour Pointers types.Changes protect by __GTK_USE_POINTER__.
-    This is an work in progress                                                       
+    This is an work in progress
 
 
-2005-09-20 11:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>                
-  * gtk/commond.c                                                                     
-    gtk/control.c                                                                     
+2005-09-20 11:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+  * gtk/commond.c
+    gtk/control.c
     ! Change to use  [x]harbour Pointers types.Changes protect by __GTK_USE_POINTER__.
-    This is an work in progress                                                       
+    This is an work in progress
 
 2005-09-20 14:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/htab.prg
@@ -95,7 +117,7 @@
       correctly - lowermost pixels was cut.
     * HColumn:bColorBlock => Codeblock that determines color of data items
       bColorBlock must return an array containing four colors values
-      by suggestion of Paulo Flecha pfflecha@yahoo.com.br 
+      by suggestion of Paulo Flecha pfflecha@yahoo.com.br
     * added new variable - bRecnoLog - a block calculating the logical
       record number to be used in VScrollPos ( the same was introduced in
       GTK version recently ).
@@ -121,11 +143,11 @@
     * added ::DeletePage method
 	 * source/control.c
     * added DeleteTab function
-  * Still a work in progress committed to show the GPF instead the RT error 
+  * Still a work in progress committed to show the GPF instead the RT error
 
 2005-09-18 17:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/repexec.prg
-    * Some changes to allow the function PrintReport() be called, 
+    * Some changes to allow the function PrintReport() be called,
       even if a main window doesn't exist ( from console applications )
       by suggestion of Sauli Bueno <saulibueno@yahoo.com.br>
 
@@ -196,7 +218,7 @@
   * gtk/samples/bldgw.bat
     * synced with win32 modifications
   + gtk/samples/a.prg
-  + samples/dbview.prg	 
+  + samples/dbview.prg
     * tests to show the cross-platform features
 
 2005-09-14 17:30 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
@@ -209,7 +231,7 @@
 
 2005-09-14 11:15 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
   * Makefile
-  + include/Makefile 
+  + include/Makefile
     * added install of guilib.ch
   * include/guilib.ch
   * source/hwindow.prg
@@ -224,8 +246,8 @@
     * fixed for latest xHarbour
   * gtk/control.c
   * gtk/errorsys.prg
-    * fixed warnigns  
-  
+    * fixed warnigns
+
 2005-09-14 13:08 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   + gtk/htab.prg
     + It seems that I didn't add it at 2005-09-07 09:10
@@ -307,7 +329,7 @@
   * gtk/hdialog.prg
   * gtk/menu.prg
     * fixed warnings for -W
-		 
+
 2005-09-08 16:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/commond.c
     ! SelectFile() fixed
@@ -371,7 +393,7 @@
   * source/commond.c
     source/wprint.c
     source/prnalone.c
-    source/misc.c 
+    source/misc.c
      ! optimized some functions for xharbour (using xharbour api)
 
 2005-09-03 16:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
@@ -386,7 +408,7 @@
   + gtk/wprint.c
   + gtk/hprinter.prg
   + gtk/hwinprn.prg
-    + Printing subsystem, based on libgnomeprint library and compatible with 
+    + Printing subsystem, based on libgnomeprint library and compatible with
       the Windows version, added.
   * gtk/hbrowse.prg
     ! Small fixes
@@ -449,7 +471,7 @@
   * source/hcheck.prg
     + added GetValue() and SetValue() methods
 
-2005-07-13 20:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su> 
+2005-07-13 20:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hbrowse.prg
     ! Bug fixed in HBrowse():End() method.
   + ChangeLog

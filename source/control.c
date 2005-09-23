@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.29 2005-09-21 12:17:17 alkresin Exp $
+ * $Id: control.c,v 1.30 2005-09-23 12:29:13 mauriliolongo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -120,7 +120,7 @@ HB_FUNC( CREATEPROGRESSBAR )
 HB_FUNC( UPDATEPROGRESSBAR )
 {
    SendMessage( (HWND) hb_parnl(1), PBM_STEPIT, 0, 0 );
-}  
+}
 
 HB_FUNC( SETPROGRESSBAR )
 {
@@ -133,15 +133,15 @@ HB_FUNC( SETPROGRESSBAR )
 HB_FUNC( CREATEPANEL )
 {
    HWND hWndPanel;
-   hWndPanel = CreateWindow( 
+   hWndPanel = CreateWindow(
                  "PANEL",                      /* predefined class  */
                  NULL,                        /* no window title   */
                  WS_CHILD | WS_VISIBLE | SS_GRAYRECT | SS_OWNERDRAW | CCS_TOP | hb_parnl(3),    /* style  */
                  hb_parni(4), hb_parni(5),    /* x, y       */
                  hb_parni(6), hb_parni(7),    /* nWidth, nHeight */
-                 (HWND) hb_parnl(1),           /* parent window    */ 
+                 (HWND) hb_parnl(1),           /* parent window    */
                  (HMENU) hb_parni(2),          /* control ID  */
-                 GetModuleHandle( NULL ), 
+                 GetModuleHandle( NULL ),
                  NULL);
 
    hb_retnl( (LONG) hWndPanel );
@@ -154,15 +154,15 @@ HB_FUNC( CREATEPANEL )
 HB_FUNC( CREATEOWNBTN )
 {
    HWND hWndPanel;
-   hWndPanel = CreateWindow( 
+   hWndPanel = CreateWindow(
                  "OWNBTN",                    /* predefined class  */
                  NULL,                        /* no window title   */
                  WS_CHILD | WS_VISIBLE | SS_GRAYRECT | SS_OWNERDRAW,  /* style  */
                  hb_parni(3), hb_parni(4),           /* x, y       */
                  hb_parni(5), hb_parni(6),      /* nWidth, nHeight */
-                 (HWND) hb_parnl(1),           /* parent window    */ 
-                 (HMENU) hb_parni(2),          /* control ID  */ 
-                 GetModuleHandle( NULL ), 
+                 (HWND) hb_parnl(1),           /* parent window    */
+                 (HMENU) hb_parni(2),          /* control ID  */
+                 GetModuleHandle( NULL ),
                  NULL);
 
    hb_retnl( (LONG) hWndPanel );
@@ -175,14 +175,14 @@ HB_FUNC( CREATESTATIC )
 {
    ULONG ulStyle = hb_parnl(3);
    ULONG ulExStyle = ( ( !ISNIL(8) )? hb_parnl(8):0 ) | ( (ulStyle&WS_BORDER)? WS_EX_CLIENTEDGE:0 );
-   HWND hWndCtrl = CreateWindowEx( 
+   HWND hWndCtrl = CreateWindowEx(
                  ulExStyle,                    /* extended style */
                  "STATIC",                     /* predefined class  */
                  NULL,                         /* title   */
                  WS_CHILD | WS_VISIBLE | ulStyle, /* style  */
                  hb_parni(4), hb_parni(5),      /* x, y       */
                  hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
-                 (HWND) hb_parnl(1),            /* parent window    */ 
+                 (HWND) hb_parnl(1),            /* parent window    */
                  (HMENU) hb_parni(2),           /* control ID  */
                  GetModuleHandle( NULL ),
                  NULL);
@@ -197,21 +197,21 @@ HB_FUNC( CREATESTATIC )
 }
 
 /*
-   CreateButton( hParentWIndow, nButtonID, nStyle, x, y, nWidth, nHeight, 
+   CreateButton( hParentWIndow, nButtonID, nStyle, x, y, nWidth, nHeight,
                cCaption )
 */
 HB_FUNC( CREATEBUTTON )
 {
    HWND hBtn =
-         CreateWindow( 
+         CreateWindow(
                  "BUTTON",                    /* predefined class  */
                  hb_parc(8),                  /* button text   */
                  WS_CHILD | WS_VISIBLE | hb_parnl(3),    /* style  */
                  hb_parni(4), hb_parni(5),           /* x, y       */
                  hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
                  (HWND) hb_parnl(1),           /* parent window    */
-                 (HMENU) hb_parni(2),          /* button       ID  */ 
-                 GetModuleHandle( NULL ), 
+                 (HMENU) hb_parni(2),          /* button       ID  */
+                 GetModuleHandle( NULL ),
                  NULL);
 
    hb_retnl( (LONG) hBtn );
@@ -230,16 +230,16 @@ HB_FUNC( CREATEEDIT )
 
    if( ( ulStyle & WS_BORDER ) && ( ulStyle & WS_DLGFRAME ) )
       ulStyle &= ~WS_BORDER;
-   hWndEdit =  CreateWindowEx( 
+   hWndEdit =  CreateWindowEx(
                  ulStyleEx,
-                 "EDIT",                     
-                 NULL,                        
+                 "EDIT",
+                 NULL,
                  WS_CHILD | WS_VISIBLE | ulStyle,
-                 hb_parni(4), hb_parni(5),     
-                 hb_parni(6), hb_parni(7),     
-                 (HWND) hb_parnl(1),           
-                 (HMENU) hb_parni(2),          
-                 GetModuleHandle( NULL ), 
+                 hb_parni(4), hb_parni(5),
+                 hb_parni(6), hb_parni(7),
+                 (HWND) hb_parnl(1),
+                 (HMENU) hb_parni(2),
+                 GetModuleHandle( NULL ),
                  NULL);
 
    if( hb_pcount() > 7 )
@@ -280,7 +280,7 @@ HB_FUNC( CREATEBROWSE )
 {
    HWND hWndBrw;
    DWORD dwStyle = hb_parnl(3);
-   hWndBrw = CreateWindowEx( 
+   hWndBrw = CreateWindowEx(
                (dwStyle & WS_BORDER )? WS_EX_CLIENTEDGE:0, /* extended style */
                "BROWSE",                                   /* predefined class */
                (hb_pcount()>7)? hb_parc(8):NULL,           /* title */
@@ -288,72 +288,72 @@ HB_FUNC( CREATEBROWSE )
                dwStyle,                                    /* style */
                hb_parni(4), hb_parni(5),                   /* x, y  */
                hb_parni(6), hb_parni(7),                   /* nWidth, nHeight */
-               (HWND) hb_parnl(1),                         /* parent window */ 
+               (HWND) hb_parnl(1),                         /* parent window */
                (HMENU) hb_parni(2),                        /* control ID  */
-               GetModuleHandle( NULL ), 
+               GetModuleHandle( NULL ),
                NULL);
 
    hb_retnl( (LONG) hWndBrw );
 
 }
 
-/* CreateStatusWindow - creates a status window and divides it into  
-     the specified number of parts. 
- Returns the handle to the status window. 
- hwndParent - parent window for the status window 
- nStatusID - child window identifier 
- nParts - number of parts into which to divide the status window 
+/* CreateStatusWindow - creates a status window and divides it into
+     the specified number of parts.
+ Returns the handle to the status window.
+ hwndParent - parent window for the status window
+ nStatusID - child window identifier
+ nParts - number of parts into which to divide the status window
  pArray - Array with Lengths of parts, if first item == 0, status window
           will be divided into equal parts.
 */
 HB_FUNC( CREATESTATUSWINDOW )
-{ 
-   HWND hwndStatus, hwndParent = (HWND) hb_parnl( 1 ); 
+{
+   HWND hwndStatus, hwndParent = (HWND) hb_parnl( 1 );
 
     // Ensure that the common control DLL is loaded.
-    InitCommonControls(); 
- 
-    // Create the status window. 
-    hwndStatus = CreateWindowEx( 
+    InitCommonControls();
+
+    // Create the status window.
+    hwndStatus = CreateWindowEx(
         0,                       // style
-        STATUSCLASSNAME,         // name of status window class 
-        (LPCTSTR) NULL,          // no text when first created 
-        SBARS_SIZEGRIP |         // includes a sizing grip 
+        STATUSCLASSNAME,         // name of status window class
+        (LPCTSTR) NULL,          // no text when first created
+        SBARS_SIZEGRIP |         // includes a sizing grip
 
         WS_CHILD|WS_VISIBLE|WS_OVERLAPPED|WS_CLIPSIBLINGS,    // creates a child window
-        0, 0, 0, 0,              // ignores size and position 
-        hwndParent,              // handle to parent window 
+        0, 0, 0, 0,              // ignores size and position
+        hwndParent,              // handle to parent window
         (HMENU) hb_parni( 2 ),   // child window identifier
-        GetModuleHandle( NULL ), // handle to application instance 
-        NULL);                   // no window creation data 
+        GetModuleHandle( NULL ), // handle to application instance
+        NULL);                   // no window creation data
 
     hb_retnl( (LONG) hwndStatus );
 }
 
 HB_FUNC( HWG_INITSTATUS )
 {
-   HWND hParent = (HWND) hb_parnl( 1 ); 
-   HWND hStatus = (HWND) hb_parnl( 2 ); 
-   RECT rcClient; 
-   HLOCAL hloc; 
-   LPINT lpParts; 
+   HWND hParent = (HWND) hb_parnl( 1 );
+   HWND hStatus = (HWND) hb_parnl( 2 );
+   RECT rcClient;
+   HLOCAL hloc;
+   LPINT lpParts;
    int i, nWidth, j, nParts = hb_parni( 3 );
    PHB_ITEM pArray = hb_param( 4, HB_IT_ARRAY );
 
-    // Allocate an array for holding the right edge coordinates. 
-    hloc = LocalAlloc(LHND, sizeof(int) * nParts); 
-    lpParts = (LPINT)LocalLock(hloc); 
- 
+    // Allocate an array for holding the right edge coordinates.
+    hloc = LocalAlloc(LHND, sizeof(int) * nParts);
+    lpParts = (LPINT)LocalLock(hloc);
+
     if( !pArray || hb_itemGetNI( pArray->item.asArray.value->pItems + 0 ) == 0 )
     {
-       // Get the coordinates of the parent window's client area. 
-       GetClientRect(hParent, &rcClient); 
-       // Calculate the right edge coordinate for each part, and 
-       // copy the coordinates to the array. 
-       nWidth = rcClient.right / nParts; 
-       for (i = 0; i < nParts; i++) { 
-           lpParts[i] = nWidth; 
-           nWidth += nWidth; 
+       // Get the coordinates of the parent window's client area.
+       GetClientRect(hParent, &rcClient);
+       // Calculate the right edge coordinate for each part, and
+       // copy the coordinates to the array.
+       nWidth = rcClient.right / nParts;
+       for (i = 0; i < nParts; i++) {
+           lpParts[i] = nWidth;
+           nWidth += nWidth;
        }
     }
     else
@@ -370,12 +370,12 @@ HB_FUNC( HWG_INITSTATUS )
        }
     }
 
-    // Tell the status window to create the window parts. 
+    // Tell the status window to create the window parts.
     SendMessage( hStatus, SB_SETPARTS, (WPARAM) nParts, (LPARAM) lpParts );
 
-    // Free the array, and return. 
-    LocalUnlock(hloc); 
-    LocalFree(hloc); 
+    // Free the array, and return.
+    LocalUnlock(hloc);
+    LocalFree(hloc);
 }
 
 HB_FUNC( ADDTOOLTIP ) // changed by MAG
@@ -458,15 +458,15 @@ HB_FUNC( CREATEDATEPICKER )
    HWND hCtrl;
    LONG nStyle = ( (!ISNIL(7))? hb_parnl(7):0 ) | WS_CHILD | WS_VISIBLE | WS_TABSTOP;
 
-   hCtrl = CreateWindowEx( 
+   hCtrl = CreateWindowEx(
              WS_EX_CLIENTEDGE,
              "SYSDATETIMEPICK32",
              0,
              nStyle,
              hb_parni(3), hb_parni(4),         /* x, y       */
              hb_parni(5) ,hb_parni(6),         /* nWidth, nHeight */
-             (HWND) hb_parnl(1),               /* parent window    */ 
-             (HMENU)hb_parni(2),               /* control ID  */ 
+             (HWND) hb_parnl(1),               /* parent window    */
+             (HMENU)hb_parni(2),               /* control ID  */
              GetModuleHandle(NULL), NULL );
 
    hb_retnl ( (LONG) hCtrl );
@@ -495,7 +495,7 @@ HB_FUNC( SETDATEPICKER )
       sysTime.wMinute = 0;
       sysTime.wSecond = 0;
       sysTime.wMilliseconds = 0;
-	
+
       SendMessage( (HWND) hb_parnl (1), DTM_SETSYSTEMTIME,GDT_VALID, (LPARAM) &sysTime);
    }
 }
@@ -516,14 +516,14 @@ HB_FUNC( CREATETABCONTROL )
 {
    HWND hTab;
 
-   hTab = CreateWindow( WC_TABCONTROL , 
+   hTab = CreateWindow( WC_TABCONTROL ,
                  NULL ,
                  WS_CHILD | WS_VISIBLE | hb_parnl(3),  /* style  */
-                 hb_parni(4), hb_parni(5) , 
+                 hb_parni(4), hb_parni(5) ,
                  hb_parni(6), hb_parni(7) ,
-                 (HWND) hb_parnl(1),           /* parent window    */ 
+                 (HWND) hb_parnl(1),           /* parent window    */
                  (HMENU) hb_parni(2),          /* control ID  */
-                 GetModuleHandle( NULL ), 
+                 GetModuleHandle( NULL ),
                  NULL);
 
    hb_retnl( (LONG) hTab );
@@ -538,26 +538,26 @@ HB_FUNC( INITTABCONTROL )
    TC_ITEM tie;
    int i, nTabs = pArr->item.asArray.value->ulLen;
 
-   tie.mask = TCIF_TEXT | TCIF_IMAGE; 
+   tie.mask = TCIF_TEXT | TCIF_IMAGE;
    tie.iImage = iItems == 0 ? -1 : 0 ;
-   for( i = 0; i < nTabs; i++) 
+   for( i = 0; i < nTabs; i++)
    {
       tie.pszText = hb_itemGetCPtr( pArr->item.asArray.value->pItems + i );
       if( TabCtrl_InsertItem( hTab, i, &tie ) == -1 )
       {
          DestroyWindow(hTab);
-         hTab = NULL; 
+         hTab = NULL;
       }
       if (tie.iImage > -1)
           tie.iImage++;
-   } 
+   }
 }
 
 HB_FUNC( ADDTAB )
 {
    TC_ITEM tie;
 
-   tie.mask = TCIF_TEXT | TCIF_IMAGE; 
+   tie.mask = TCIF_TEXT | TCIF_IMAGE;
    tie.iImage = -1;
    tie.pszText = hb_parc(3);
    TabCtrl_InsertItem( (HWND) hb_parnl(1), hb_parni(2), &tie );
@@ -618,15 +618,15 @@ HB_FUNC( CREATETREE )
 {
    HWND hCtrl;
 
-   hCtrl = CreateWindowEx( 
+   hCtrl = CreateWindowEx(
              WS_EX_CLIENTEDGE,
              WC_TREEVIEW,
              0,
              WS_CHILD | WS_VISIBLE | WS_TABSTOP | hb_parnl(3),
              hb_parni(4), hb_parni(5),         /* x, y       */
              hb_parni(6) ,hb_parni(7),         /* nWidth, nHeight */
-             (HWND) hb_parnl(1),               /* parent window    */ 
-             (HMENU)hb_parni(2),               /* control ID  */ 
+             (HWND) hb_parnl(1),               /* parent window    */
+             (HMENU)hb_parni(2),               /* control ID  */
              GetModuleHandle(NULL), NULL );
 
    if( !ISNIL(8) )
@@ -680,7 +680,7 @@ HB_FUNC( TREEADDNODE )
    else if( nPos == 2 )
       is.hInsertAfter = TVI_LAST;
 
-   hb_retnl( (LONG) 
+   hb_retnl( (LONG)
          SendMessage( (HWND)hb_parnl(2), TVM_INSERTITEM, 0, (LPARAM)(&is) ) );
 
    if( tvi.mask & TVIF_IMAGE )
@@ -735,22 +735,22 @@ HB_FUNC( TREEGETSELECTED )
 /*
 HB_FUNC( TREENODEHASCHILDREN )
 {
-	
+
    TV_ITEM TreeItem;
 
    memset( &TreeItem, 0, sizeof(TV_ITEM) );
    TreeItem.mask = TVIF_HANDLE | TVIF_CHILDREN;
    TreeItem.hItem = (HTREEITEM) hb_parnl(2);
-  
+
    SendMessage( (HWND)hb_parnl(1), TVM_GETITEM, 0, (LPARAM)(&TreeItem) );
-   hb_retni( TreeItem.cChildren );	
+   hb_retni( TreeItem.cChildren );
 }
 
 */
 
 HB_FUNC( TREEGETNODETEXT )
 {
-	
+
    TV_ITEM TreeItem;
    char ItemText[256];
 
@@ -759,7 +759,7 @@ HB_FUNC( TREEGETNODETEXT )
    TreeItem.hItem = (HTREEITEM) hb_parnl(2);
    TreeItem.pszText = ItemText;
    TreeItem.cchTextMax = 256;
-  
+
    SendMessage( (HWND)hb_parnl(1), TVM_GETITEM, 0, (LPARAM)(&TreeItem) );
    hb_retc ( TreeItem.pszText );
 }
@@ -891,7 +891,7 @@ HB_FUNC( CREATEIMAGELIST )
    ULONG ul, ulLen = pArray->item.asArray.value->ulLen;
    HBITMAP hbmp;
 
-   himl = ImageList_Create( hb_parni(2), hb_parni(3), flags, 
+   himl = ImageList_Create( hb_parni(2), hb_parni(3), flags,
                    ulLen, hb_parni(4) );
 
    for( ul=0; ul<ulLen; ul++ )
@@ -914,10 +914,16 @@ HB_FUNC( IMAGELIST_ADD )
  *  SetTimer( hWnd, idTimer, i_MilliSeconds )
  */
 
+
+/* 22/09/2005 - <maurilio.longo@libero.it>
+					 If I pass a fourth parameter as 0 (zero) I don't set
+					 the TimerProc, this way I can receive WM_TIMER messages
+					 inside an ON OTHER MESSAGES code block
+*/
 HB_FUNC( SETTIMER )
 {
    SetTimer( (HWND) hb_parnl(1), (UINT) hb_parni(2), (UINT) hb_parni(3),
-               (TIMERPROC) TimerProc );
+             hb_pcount() == 3 ? (TIMERPROC) TimerProc : (TIMERPROC) NULL );
 }
 
 /*
@@ -990,7 +996,7 @@ HB_FUNC( HWG_REGPANEL )
       wndclass.lpszClassName = szAppName ;
 
       RegisterClass (&wndclass);
-      bRegistered = 1;     
+      bRegistered = 1;
    }
 }
 

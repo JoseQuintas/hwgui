@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.12 2005-09-09 06:30:20 lf_sfnet Exp $
+ * $Id: freeimg.c,v 1.13 2005-09-23 12:29:13 mauriliolongo Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -57,6 +57,17 @@ typedef void ( WINAPI *FREEIMAGE_CONVERTTORAWBITS )(BYTE *bits, FIBITMAP *dib, i
 typedef unsigned ( WINAPI *FREEIMAGE_GETPITCH )(FIBITMAP *dib);
 typedef short ( WINAPI *FREEIMAGE_GETIMAGETYPE )(FIBITMAP *dib);
 typedef unsigned ( WINAPI *FREEIMAGE_GETCOLORSUSED )(FIBITMAP *dib);
+typedef FIBITMAP* ( WINAPI *FREEIMAGE_ROTATECLASSIC )(FIBITMAP *dib, double angle);
+typedef unsigned ( WINAPI *FREEIMAGE_GETDOTSPERMETERX )(FIBITMAP *dib);
+typedef unsigned ( WINAPI *FREEIMAGE_GETDOTSPERMETERY )(FIBITMAP *dib);
+typedef void  ( WINAPI *FREEIMAGE_SETDOTSPERMETERX )(FIBITMAP *dib, unsigned res);
+typedef void  ( WINAPI *FREEIMAGE_SETDOTSPERMETERY )(FIBITMAP *dib, unsigned res);
+typedef BOOL ( WINAPI *FREEIMAGE_PASTE )(FIBITMAP *dst, FIBITMAP *src, int left, int top, int alpha);
+typedef FIBITMAP* ( WINAPI *FREEIMAGE_COPY )(FIBITMAP *dib, int left, int top, int right, int bottom);
+typedef BOOL ( WINAPI *FREEIMAGE_SETBACKGROUNDCOLOR )(FIBITMAP *dib, RGBQUAD *bkcolor);
+typedef BOOL ( WINAPI *FREEIMAGE_INVERT )(FIBITMAP *dib);
+typedef FIBITMAP* ( WINAPI *FREEIMAGE_CONVERTTO8BITS )(FIBITMAP *dib);
+typedef BOOL ( WINAPI *FREEIMAGE_FLIPVERTICAL )(FIBITMAP *dib);
 
 static HINSTANCE hFreeImageDll = NULL;
 static FREEIMAGE_LOAD pLoad = NULL;
@@ -80,6 +91,19 @@ static FREEIMAGE_CONVERTTORAWBITS pConvertToRawBits = NULL;
 static FREEIMAGE_GETPITCH pGetPitch = NULL;
 static FREEIMAGE_GETIMAGETYPE pGetImageType = NULL;
 static FREEIMAGE_GETCOLORSUSED pGetColorsUsed = NULL;
+static FREEIMAGE_ROTATECLASSIC pRotateClassic = NULL;
+static FREEIMAGE_GETDOTSPERMETERX pGetDotsPerMeterX = NULL;
+static FREEIMAGE_GETDOTSPERMETERY pGetDotsPerMeterY = NULL;
+static FREEIMAGE_SETDOTSPERMETERX pSetDotsPerMeterX = NULL;
+static FREEIMAGE_SETDOTSPERMETERY pSetDotsPerMeterY = NULL;
+static FREEIMAGE_PASTE pPaste = NULL;
+static FREEIMAGE_COPY pCopy = NULL;
+static FREEIMAGE_SETBACKGROUNDCOLOR pSetBackgroundColor = NULL;
+static FREEIMAGE_INVERT pInvert = NULL;
+static FREEIMAGE_CONVERTTO8BITS pConvertTo8Bits = NULL;
+static FREEIMAGE_FLIPVERTICAL pFlipVertical = NULL;
+
+
 
 fi_handle g_load_address;
 
@@ -143,6 +167,17 @@ HB_FUNC( FI_END )
 		pGetPitch = NULL;
 		pGetImageType = NULL;
 		pGetColorsUsed = NULL;
+		pRotateClassic = NULL;
+		pGetDotsPerMeterX = NULL;
+		pGetDotsPerMeterY = NULL;
+		pSetDotsPerMeterX = NULL;
+		pSetDotsPerMeterY = NULL;
+		pPaste = NULL;
+		pCopy = NULL;
+		pSetBackgroundColor = NULL;
+		pInvert = NULL;
+		pConvertTo8Bits = NULL;
+		pFlipVertical = NULL;
    }
 }
 
@@ -188,7 +223,7 @@ HB_FUNC( FI_SAVE )
       hb_retl( (BOOL) pSave( pGetfiffromfile(name), (FIBITMAP*)hb_parnl(1), name, (hb_pcount()>2)? hb_parni(3) : 0 ) );
    }
    else
-      hb_retnl( 0 );
+      hb_retl( FALSE );
 }
 
 HB_FUNC( FI_GETWIDTH )
@@ -317,9 +352,9 @@ static HANDLE CreateDIB(DWORD dwWidth, DWORD dwHeight, WORD wBitCount)
 #define FI_RGBA_BLUE_MASK		0x000000FF
 
 /* 24/02/2005 - <maurilio.longo@libero.it>
-  	Converts a FIBITMAP into a DIB, woerks OK only for 24bpp images, though
+  	Converts a FIBITMAP into a DIB, works OK only for 24bpp images, though
 */
-HB_FUNC( FI_2DIB )
+HB_FUNC( FI_FI2DIB )
 {
    FIBITMAP* dib = (FIBITMAP*) hb_parnl( 1 );
    HANDLE hdib = NULL;
@@ -642,7 +677,7 @@ unsigned DLL_CALLCONV _WriteProc( void *buffer, unsigned size, unsigned count, f
    HB_SYMBOL_UNUSED( buffer );
    HB_SYMBOL_UNUSED( count );
    HB_SYMBOL_UNUSED( handle );
-   
+
    return size;
 }
 
@@ -702,4 +737,140 @@ HB_FUNC( FI_LOADFROMMEM )
    else
       hb_retnl( 0 );
 }
+
+
+
+HB_FUNC( FI_ROTATECLASSIC )
+{
+   pRotateClassic = (FREEIMAGE_ROTATECLASSIC) GetFunction( (FARPROC)pRotateClassic,"_FreeImage_RotateClassic@12" );
+
+   hb_retnl( ( pRotateClassic )? (LONG)pRotateClassic( (FIBITMAP*)hb_parnl( 1 ), hb_parnd( 2 ) ) : 0 );
+}
+
+
+
+HB_FUNC( FI_GETDOTSPERMETERX )
+{
+   pGetDotsPerMeterX = (FREEIMAGE_GETDOTSPERMETERX) GetFunction( (FARPROC)pGetDotsPerMeterX,"_FreeImage_GetDotsPerMeterX@4" );
+
+   hb_retnl( ( pGetDotsPerMeterX )? pGetDotsPerMeterX( (FIBITMAP*) hb_parnl( 1 ) ) : 0 );
+}
+
+
+
+HB_FUNC( FI_GETDOTSPERMETERY )
+{
+   pGetDotsPerMeterY = (FREEIMAGE_GETDOTSPERMETERY) GetFunction( (FARPROC)pGetDotsPerMeterY,"_FreeImage_GetDotsPerMeterY@4" );
+
+   hb_retnl( ( pGetDotsPerMeterY )? pGetDotsPerMeterY( (FIBITMAP*) hb_parnl( 1 ) ) : 0 );
+}
+
+
+
+HB_FUNC( FI_SETDOTSPERMETERX )
+{
+   pSetDotsPerMeterX = (FREEIMAGE_SETDOTSPERMETERX) GetFunction( (FARPROC)pSetDotsPerMeterX,"_FreeImage_SetDotsPerMeterX@8" );
+
+   if ( pSetDotsPerMeterX )
+   	pSetDotsPerMeterX( (FIBITMAP*) hb_parnl( 1 ), hb_parnl( 2 ) );
+
+   hb_ret();
+}
+
+
+
+HB_FUNC( FI_SETDOTSPERMETERY )
+{
+   pSetDotsPerMeterY = (FREEIMAGE_SETDOTSPERMETERY) GetFunction( (FARPROC)pSetDotsPerMeterY,"_FreeImage_SetDotsPerMeterY@8" );
+
+   if ( pSetDotsPerMeterY )
+   	pSetDotsPerMeterY( (FIBITMAP*) hb_parnl( 1 ), hb_parnl( 2 ) );
+
+   hb_ret();
+}
+
+
+
+HB_FUNC( FI_ALLOCATE )
+{
+   pAllocate = (FREEIMAGE_ALLOCATE) GetFunction( (FARPROC)pAllocate,"_FreeImage_Allocate@24" );
+
+	// X, Y, DEPTH
+	hb_retnl( (ULONG) pAllocate( hb_parnl( 1 ), hb_parnl( 2 ), hb_parnl( 3 ), 0, 0, 0 ) );
+}
+
+
+
+HB_FUNC( FI_PASTE )
+{
+   pPaste = (FREEIMAGE_PASTE) GetFunction( (FARPROC)pPaste,"_FreeImage_Paste@20" );
+
+	hb_retl( pPaste( (FIBITMAP*) hb_parnl( 1 ),		// dest
+				    	  (FIBITMAP*) hb_parnl( 2 ),     // src
+						  hb_parnl( 3 ),                 // top
+						  hb_parnl( 4 ),                 // left
+						  hb_parnl( 5 ) ) );             // alpha
+}
+
+
+
+HB_FUNC( FI_COPY )
+{
+   pCopy = (FREEIMAGE_COPY) GetFunction( (FARPROC)pCopy,"_FreeImage_Copy@20" );
+
+	hb_retnl( (ULONG) pCopy( (FIBITMAP*) hb_parnl( 1 ),		// dib
+				    	  			 hb_parnl( 2 ),     					// left
+						  			 hb_parnl( 3 ),                 	// top
+						  			 hb_parnl( 4 ),                 	// right
+						  			 hb_parnl( 5 ) ) );             	// bottom
+}
+
+
+
+/* just a test, should receive a RGBQUAD structure, a xharbour array */
+HB_FUNC( FI_SETBACKGROUNDCOLOR )
+{
+   RGBQUAD rgbquad = { 255, 255, 255, 255 };
+
+   pSetBackgroundColor = (FREEIMAGE_SETBACKGROUNDCOLOR) GetFunction( (FARPROC)pSetBackgroundColor,"_FreeImage_SetBackgroundColor@8" );
+
+	hb_retl( pSetBackgroundColor( (FIBITMAP*) hb_parnl( 1 ), &rgbquad ) );
+}
+
+
+
+HB_FUNC( FI_INVERT )
+{
+   pInvert = (FREEIMAGE_INVERT) GetFunction( (FARPROC)pInvert,"_FreeImage_Invert@4" );
+
+	hb_retl( pInvert( (FIBITMAP*) hb_parnl( 1 ) ) );
+}
+
+
+
+HB_FUNC( FI_GETBITS )
+{
+   pGetbits = (FREEIMAGE_GETBITS) GetFunction( (FARPROC)pGetbits,"_FreeImage_GetBits@4" );
+
+	hb_retptr( pGetbits( (FIBITMAP*) hb_parnl( 1 ) ) );
+}
+
+
+
+HB_FUNC( FI_CONVERTTO8BITS )
+{
+   pConvertTo8Bits = (FREEIMAGE_CONVERTTO8BITS) GetFunction( (FARPROC)pConvertTo8Bits,"_FreeImage_ConvertTo8Bits@4" );
+
+	hb_retnl( pConvertTo8Bits( (FIBITMAP*) hb_parnl( 1 ) ) );
+}
+
+
+
+HB_FUNC( FI_FLIPVERTICAL )
+{
+   pFlipVertical = (FREEIMAGE_FLIPVERTICAL) GetFunction( (FARPROC)pFlipVertical,"_FreeImage_FlipVertical@4" );
+
+	hb_retl( pFlipVertical( (FIBITMAP*) hb_parnl( 1 ) ) );
+}
+
 

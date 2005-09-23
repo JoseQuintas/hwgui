@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.19 2005-02-24 13:59:53 alkresin Exp $
+ * $Id: hcombo.prg,v 1.20 2005-09-23 12:29:13 mauriliolongo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -37,36 +37,37 @@ CLASS HComboBox INHERIT HControl
    DATA  lEdit    INIT .F.
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  aItems,oFont,bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bGFocus,tcolor,bcolor )
+                  aItems,oFont,bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bGFocus,tcolor,bcolor,bValid )
    METHOD Activate()
    METHOD Redefine( oWnd,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bDraw,bChange,cToolt,bGFocus )
    METHOD Init( aCombo, nCurrent )
-   METHOD Refresh()     
-   METHOD Setitem( nPos )        
+   METHOD Refresh()
+   METHOD Setitem( nPos )
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,oFont, ;
-                  bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bGFocus,tcolor,bcolor ) CLASS HComboBox
+                  bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bGFocus,tcolor,bcolor,bValid ) CLASS HComboBox
 
    if lEdit == Nil; lEdit := .f.; endif
    if lText == Nil; lText := .f.; endif
+   if bValid != NIL; ::bValid := bValid; endif
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ),Iif( lEdit,CBS_DROPDOWN,CBS_DROPDOWNLIST )+WS_TABSTOP )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, bSize,bPaint,ctoolt,tcolor,bcolor )
-      
+
    ::lEdit := lEdit
    ::lText := lText
 
    if lEdit
       ::lText := .t.
    endif
-   
+
    if ::lText
       ::value := Iif( vari==Nil .OR. Valtype(vari)!="C","",vari )
    else
       ::value := Iif( vari==Nil .OR. Valtype(vari)!="N",1,vari )
-   endif      
-   
+   endif
+
    ::bSetGet := bSetGet
    ::aItems  := aItems
 
@@ -80,7 +81,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
    ELSEIF bChange != Nil
       ::oParent:AddEvent( CBN_SELCHANGE,::id,bChange )
    ENDIF
-   
+
    IF ::lEdit
       ::oParent:AddEvent( CBN_KILLFOCUS,::id,{|o,id|__KillFocus(o:FindControl(id))} )
    ENDIF
@@ -103,12 +104,12 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bPaint, ;
                   bChange,cToolt,bGFocus ) CLASS HComboBox
 
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit,bSize,bPaint,ctoolt )
-   
+
    if ::lText
       ::value := Iif( vari==Nil .OR. Valtype(vari)!="C","",vari )
    else
       ::value := Iif( vari==Nil .OR. Valtype(vari)!="N",1,vari )
-   endif      
+   endif
    ::bSetGet := bSetGet
    ::aItems  := aItems
 
@@ -130,8 +131,8 @@ METHOD Init() CLASS HComboBox
             IF ::lText
                 ::value := ::aItems[1]
             ELSE
-                ::value := 1                                                     
-            ENDIF                
+                ::value := 1
+            ENDIF
          ENDIF
          SendMessage( ::handle, CB_RESETCONTENT, 0, 0)
          FOR i := 1 TO Len( ::aItems )
@@ -142,10 +143,10 @@ METHOD Init() CLASS HComboBox
                 SetDlgItemText(getmodalhandle(), ::id, ::value)
             ELSE
                 ComboSetString( ::handle, AScan( ::aItems, ::value ) )
-            ENDIF                
+            ENDIF
          ELSE
             ComboSetString( ::handle, ::value )
-         ENDIF            
+         ENDIF
       ENDIF
    ENDIF
 Return Nil
@@ -158,11 +159,11 @@ METHOD Refresh() CLASS HComboBox
          ::value := Iif( vari==Nil .OR. Valtype(vari)!="C","",vari )
       else
          ::value := Iif( vari==Nil .OR. Valtype(vari)!="N",1,vari )
-      endif      
+      endif
    ENDIF
 
    SendMessage( ::handle, CB_RESETCONTENT, 0, 0)
-   
+
    FOR i := 1 TO Len( ::aItems )
       ComboAddString( ::handle, ::aItems[i] )
    NEXT
@@ -172,11 +173,11 @@ METHOD Refresh() CLASS HComboBox
         SetDlgItemText(getmodalhandle(), ::id, ::value)
       ELSE
         ComboSetString( ::handle, AScan( ::aItems, ::value ) )
-      ENDIF                
+      ENDIF
    ELSE
       ComboSetString( ::handle, ::value )
       ::SetItem(::value )
-   ENDIF                    
+   ENDIF
 
 Return Nil
 
@@ -186,13 +187,13 @@ METHOD SetItem(nPos) CLASS HComboBox
    ELSE
       ::value := nPos
    ENDIF
-                       
+
    SendMessage( ::handle, CB_SETCURSEL, nPos - 1, 0)
-   
+
    IF ::bSetGet != Nil
       Eval( ::bSetGet, ::value, self )
    ENDIF
-   
+
    IF ::bChangeSel != Nil
       Eval( ::bChangeSel, nPos, Self )
    ENDIF
@@ -208,13 +209,14 @@ Static Function __Valid( oCtrl )
    ELSE
       oCtrl:value := nPos
    ENDIF
-               
+
    IF oCtrl:bSetGet != Nil
       Eval( oCtrl:bSetGet, oCtrl:value, oCtrl )
    ENDIF
    IF oCtrl:bChangeSel != Nil
       Eval( oCtrl:bChangeSel, nPos, oCtrl )
    ENDIF
+
 Return .T.
 
 Static Function __KillFocus( oCtrl )
@@ -222,14 +224,14 @@ Static Function __KillFocus( oCtrl )
    IF oCtrl:bSetGet != Nil
       Eval( oCtrl:bSetGet, oCtrl:value, oCtrl )
    ENDIF
-Return .T.   
+Return .T.
 
 Static Function __When( oCtrl )
 Local res
 
    oCtrl:Refresh()
 
-   IF oCtrl:bGetFocus != Nil 
+   IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
       IF !res
          GetSkip( oCtrl:oParent,oCtrl:handle,1 )

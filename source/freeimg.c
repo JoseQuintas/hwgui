@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.13 2005-09-23 12:29:13 mauriliolongo Exp $
+ * $Id: freeimg.c,v 1.14 2005-09-24 15:36:18 lculik Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -861,7 +861,7 @@ HB_FUNC( FI_CONVERTTO8BITS )
 {
    pConvertTo8Bits = (FREEIMAGE_CONVERTTO8BITS) GetFunction( (FARPROC)pConvertTo8Bits,"_FreeImage_ConvertTo8Bits@4" );
 
-	hb_retnl( pConvertTo8Bits( (FIBITMAP*) hb_parnl( 1 ) ) );
+   hb_retnl( (LONG)pConvertTo8Bits( (FIBITMAP*) hb_parnl( 1 ) ) );
 }
 
 

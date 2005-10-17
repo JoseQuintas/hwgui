@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.56 2005-09-23 12:29:13 mauriliolongo Exp $
+ * $Id: hbrowse.prg,v 1.57 2005-10-17 15:16:06 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -459,14 +459,14 @@ METHOD InitBrw( nType )  CLASS HBrowse
 
    if ::type == BRW_DATABASE
       ::alias   := Alias()
-      ::bSKip   := &( "{|o, x|" + ::alias + "->(DBSKIP(x)) }" )
-      ::bGoTop  := &( "{||" + ::alias + "->(DBGOTOP())}" )
-      ::bGoBot  := &( "{||" + ::alias + "->(DBGOBOTTOM())}")
-      ::bEof    := &( "{||" + ::alias + "->(EOF())}" )
-      ::bBof    := &( "{||" + ::alias + "->(BOF())}" )
-      ::bRcou   := &( "{||" + ::alias + "->(RECCOUNT())}" )
-      ::bRecnoLog := ::bRecno  := &( "{||" + ::alias + "->(RECNO())}" )
-      ::bGoTo   := &( "{|a,n|"  + ::alias + "->(DBGOTO(n))}" )
+      ::bSKip   :=  {|o, x| (::alias)->(DBSKIP(x)) }
+      ::bGoTop  :=  {|| (::alias)->(DBGOTOP())}
+      ::bGoBot  :=  {|| (::alias)->(DBGOBOTTOM())}
+      ::bEof    :=  {|| (::alias)->(EOF())}
+      ::bBof    :=  {|| (::alias)->(BOF())}
+      ::bRcou   :=  {|| (::alias)->(RECCOUNT())}
+      ::bRecnoLog := ::bRecno  := {||(::alias)->(RECNO())}
+      ::bGoTo   := {|a,n|(::alias)->(DBGOTO(n))}
    elseif ::type == BRW_ARRAY
       ::bSKip   := { | o, x | ARSKIP( o, x ) }
       ::bGoTop  := { | o | o:tekzp := 1 }

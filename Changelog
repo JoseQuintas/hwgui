@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.421 2005-10-17 15:16:06 lculik Exp $
+ * $Id: Changelog,v 1.422 2005-10-17 21:24:35 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,8 +8,27 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2005-10-17 19:40 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+   * source/window.c
+     source/richedit.c
+     source/shellapi.c
+     source/prnalone.c
+     source/nice.c
+     source/misc.c
+     source/message.c
+     source/menu_c.c
+     source/media_c.c
+     source/grid.c
+     source/drawtext.c
+     source/draw.c
+     source/dialog.c
+     source/control.c
+     source/commond.c
+     source/c_ipaddr.c
+     ! Changes to init the structure as 0
+
 2005-10-17 13:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
-   * source/hbrowse.c
+   * source/hbrowse.prg
      ! minor change on initbrw() method
 
 2005-09-23 12:36 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>

@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.9 2005-09-21 12:17:17 alkresin Exp $
+ * $Id: nice.c,v 1.10 2005-10-17 21:24:35 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -50,7 +50,7 @@ static GRADIENTFILL pGradientfill = NULL;
 void Draw_Gradient(HDC hdc, int x, int y, int w, int h, int r, int g, int b)
 {
 	TRIVERTEX  Vert[2];
-	GRADIENT_RECT  Rect;
+   GRADIENT_RECT  Rect = { 0 } ;
    HB_SYMBOL_UNUSED( x );
    HB_SYMBOL_UNUSED( y );
 	// ******************************************************
@@ -136,7 +136,7 @@ HB_FUNC( HWG_REGNICE )
 	// **********[ DLL Declarations ]**********
    static TCHAR szAppName[] = TEXT ( "NICEBUTT" );
    static BOOL  bRegistered = 0;
-   static  WNDCLASS  wc;
+   static  WNDCLASS  wc = { 0 };
 
 	pGradientfill = (GRADIENTFILL) GetProcAddress(LoadLibrary("MSIMG32.DLL"),"GradientFill");
 //    if (Gradientfill == NULL)

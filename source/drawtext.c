@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.6 2004-09-29 05:24:52 alkresin Exp $
+ * $Id: drawtext.c,v 1.7 2005-10-17 21:24:35 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -67,7 +67,7 @@ HB_FUNC( TEXTOUT )
 HB_FUNC( DRAWTEXT )
 {
    char *cText = hb_parc( 2 );
-   RECT rc;
+   RECT rc= { 0 };
 
    rc.left = hb_parni( 3 );
    rc.top = hb_parni( 4 );
@@ -85,7 +85,7 @@ HB_FUNC( DRAWTEXT )
 
 HB_FUNC( GETTEXTMETRIC )
 {
-   TEXTMETRIC tm;
+   TEXTMETRIC tm = { 0 };
    PHB_ITEM aMetr = _itemArrayNew( 3 );
    PHB_ITEM temp;
 
@@ -113,7 +113,7 @@ HB_FUNC( GETTEXTMETRIC )
 HB_FUNC( GETTEXTSIZE )
 {
    char * pstr = hb_parc(2);
-   SIZE sz;
+   SIZE sz = { 0 };
    PHB_ITEM aMetr = _itemArrayNew( 2 );
    PHB_ITEM temp;
 
@@ -133,7 +133,7 @@ HB_FUNC( GETTEXTSIZE )
 
 HB_FUNC( GETCLIENTRECT )
 {
-   RECT rc;
+   RECT rc = { 0 };
    PHB_ITEM aMetr = _itemArrayNew( 4 );
    PHB_ITEM temp;
 
@@ -161,7 +161,7 @@ HB_FUNC( GETCLIENTRECT )
 
 HB_FUNC( GETWINDOWRECT )
 {
-   RECT rc;
+   RECT rc = { 0 };
    PHB_ITEM aMetr = _itemArrayNew( 4 );
    PHB_ITEM temp;
 
@@ -282,7 +282,7 @@ HB_FUNC( GETTEXTSIZE )
 HB_FUNC( EXTTEXTOUT )
 {
 
-   RECT rc;
+   RECT rc= { 0 };
    char *cText = hb_parc( 8 );
 
    rc.left = hb_parni( 4 );

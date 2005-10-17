@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.20 2005-09-03 23:01:30 lculik Exp $
+ * $Id: misc.c,v 1.21 2005-10-17 21:24:35 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -153,7 +153,7 @@ HB_FUNC( HWG_COS )
 
 HB_FUNC( CLIENTTOSCREEN )
 {
-   POINT pt;
+   POINT pt = { 0 };
    #ifdef __XHARBOUR__   
    HB_ITEM_NEW( aPoint );
    HB_ITEM_NEW( temp );
@@ -193,7 +193,7 @@ HB_FUNC( CLIENTTOSCREEN )
 
 HB_FUNC( SCREENTOCLIENT )
 {
-   POINT pt;
+   POINT pt = { 0 };
    #ifdef __XHARBOUR__
    HB_ITEM_NEW( aPoint );
    HB_ITEM_NEW( temp );
@@ -234,7 +234,7 @@ HB_FUNC( SCREENTOCLIENT )
 
 HB_FUNC( HWG_GETCURSORPOS )
 {
-   POINT pt;
+   POINT pt= { 0 };
    #ifdef __XHARBOUR__
    HB_ITEM_NEW( aPoint );
    HB_ITEM_NEW( temp );
@@ -505,7 +505,7 @@ HB_FUNC( KEYB_EVENT )
 */
 HB_FUNC( SETSCROLLINFO )
 {
-   SCROLLINFO si;
+   SCROLLINFO si = { 0 };
    UINT fMask = (hb_pcount()<4)? SIF_DISABLENOSCROLL:0;
 
    if( hb_pcount() > 3 && !ISNIL( 4 ) )

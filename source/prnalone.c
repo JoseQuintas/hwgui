@@ -87,7 +87,7 @@ HB_FUNC( OPENDEFAULTPRINTER )
 
 HB_FUNC( STARTDOC )
 {
-   DOCINFO di;
+   DOCINFO di = { 0 } ;
    di.cbSize = sizeof(DOCINFO); 
    di.lpszDocName = hb_parc( 2 );
    di.lpszOutput = (LPTSTR) NULL; 
@@ -189,7 +189,7 @@ HB_FUNC( GETDEVICEAREA )
 HB_FUNC( DRAWTEXT )
 {
    char *cText = hb_parc( 2 );
-   RECT rc;
+   RECT rc = { 0 } ;
 
    rc.left = hb_parni( 3 );
    rc.top = hb_parni( 4 );

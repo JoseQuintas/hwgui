@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.57 2005-10-17 15:16:06 lculik Exp $
+ * $Id: hbrowse.prg,v 1.58 2005-10-18 01:40:58 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -314,14 +314,14 @@ Static keyCode := 0
          ENDIF
          Return 1
 
+      ELSEIF msg == WM_LBUTTONDBLCLK
+         ::ButtonDbl( lParam )
+
       ELSEIF msg == WM_LBUTTONDOWN
          ::ButtonDown( lParam )
 
       ELSEIF msg == WM_LBUTTONUP
          ::ButtonUp( lParam )
-
-      ELSEIF msg == WM_LBUTTONDBLCLK
-         ::ButtonDbl( lParam )
 
       ELSEIF msg == WM_MOUSEMOVE
          ::MouseMove( wParam, lParam )
@@ -1274,7 +1274,7 @@ Local xm := LOWORD(lParam), x1, fif
 
    x1  := ::x1
    fif := IIF( ::freeze > 0, 1, ::nLeftCol )
-
+   
    DO WHILE fif < ( ::nLeftCol + ::nColumns ) .AND. x1 + ::aColumns[ fif ]:width < xm
       x1 += ::aColumns[ fif ]:width
       fif := IIF( fif == ::freeze, ::nLeftCol, fif + 1 )
@@ -1304,8 +1304,7 @@ Local xm := LOWORD(lParam), x1, fif
          IF ::colpos != fif - ::nLeftCol + 1 + ::freeze
 
             // Colpos should not go beyond last column or I get bound errors on ::Edit()
-            ::colpos := Min( ::nColumns, fif - ::nLeftCol + 1 + ::freeze )
-
+            ::colpos := Min( ::nColumns+1, fif - ::nLeftCol + 1 + ::freeze )
             GetScrollRange( hBrw, SB_HORZ, @minPos, @maxPos )
 
             nPos := Iif( fif == 1,;

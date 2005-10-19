@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.5 2004-11-21 12:33:16 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.6 2005-10-19 10:04:26 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -142,7 +142,7 @@ METHOD End()  CLASS HCustomWindow
 
    IF ::nHolder != 0
       ::nHolder := 0
-      hwg_DecreaseHolders( Self )
+      hwg_DecreaseHolders( ::handle ) // Self )
    ENDIF
 
 Return Nil

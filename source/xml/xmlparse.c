@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.14 2005-09-13 11:06:15 alkresin Exp $
+ * $Id: xmlparse.c,v 1.15 2005-10-19 10:04:27 alkresin Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -117,6 +117,8 @@ PHB_ITEM hbxml_pp( unsigned char * ptr, ULONG ulLen )
             *ptr = iChar;
             i = 1;
             while( *(ptr+i+1) >= '0' && *(ptr+i+1) <= '9' )
+               i++;
+            if( *(ptr+i+1) == ';' )
                i++;
             ulLen -= i;
             for( ul1=ul+1; ul1<ulLen; ul1++ )

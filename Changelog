@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.423 2005-10-18 01:40:57 lculik Exp $
+ * $Id: Changelog,v 1.424 2005-10-19 10:04:26 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,26 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-19 14:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/window.c
+   * source/richedit.c
+   * source/control.c
+   * source/dialog.c
+   * source/hbrowse.prg
+   * source/hcwindow.prg
+   * source/hownbtn.prg
+   * source/hpanel.prg
+   * source/hsplit.prg
+   * source/htree.prg
+     * Changed internal handling of objects, keeping as window data,
+       due to advice of Przemyslaw Czerpak
+   * source/hedit.prg
+     ! Small fix
+   * source/xml/xmlparse.c
+     ! Small fix
+   * utils/dbc/dbchw.prg
+     ! Small fix
 
 2005-10-17 13:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/hbrowse.prg

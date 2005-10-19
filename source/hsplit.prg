@@ -1,5 +1,5 @@
 /*
- * $Id: hsplit.prg,v 1.8 2005-09-19 10:00:35 alkresin Exp $
+ * $Id: hsplit.prg,v 1.9 2005-10-19 10:04:27 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSplitter class
@@ -88,10 +88,14 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
 Return -1
 
 METHOD Init CLASS HSplitter
-   Super:Init()
-   ::nHolder := 1
-   SetWindowObject( ::handle,Self )
-   Hwg_InitWinCtrl( ::handle )
+
+   IF !::lInit
+      Super:Init()
+      ::nHolder := 1
+      SetWindowObject( ::handle,Self )
+      Hwg_InitWinCtrl( ::handle )
+   ENDIF
+
 Return Nil
 
 METHOD Paint( lpdis ) CLASS HSplitter

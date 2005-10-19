@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.58 2005-10-18 01:40:58 lculik Exp $
+ * $Id: hbrowse.prg,v 1.59 2005-10-19 10:04:26 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -342,9 +342,11 @@ Return -1
 //----------------------------------------------------//
 METHOD Init CLASS HBrowse
 
-   Super:Init()
-   ::nHolder := 1
-   SetWindowObject( ::handle,Self )
+   IF !::lInit
+      Super:Init()
+      ::nHolder := 1
+      SetWindowObject( ::handle,Self )
+   ENDIF
 
 Return Nil
 
@@ -578,7 +580,7 @@ Local oldBkColor, oldTColor
    aCoors := GetClientRect( ::handle )
    aMetr := GetTextMetric( hDC )
    ::width := Round( ( aMetr[ 3 ] + aMetr[ 2 ] ) / 2 - 1,0 )
-   ::height := Max( aMetr[ 1 ], ::minHeight )
+   ::height := Max( aMetr[ 1 ], ::minHeight ) + 1
    ::x1 := aCoors[ 1 ]
    ::y1 := aCoors[ 2 ] + Iif( ::lDispHead, ::height*::nHeadRows, 0 )
    ::x2 := aCoors[ 3 ]

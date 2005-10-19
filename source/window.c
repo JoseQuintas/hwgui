@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.38 2005-10-17 21:24:35 lculik Exp $
+ * $Id: window.c,v 1.39 2005-10-19 10:04:27 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -63,7 +63,7 @@ static TCHAR szChild[] = TEXT ( "MDICHILD" );
 HB_FUNC( HWG_INITMAINWINDOW )
 {
    HWND         hWnd ;
-   WNDCLASS     wndclass={ 0 } ;
+   WNDCLASS     wndclass = { 0 };
    HANDLE hInstance = GetModuleHandle( NULL );
    DWORD ExStyle = 0;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
@@ -193,8 +193,6 @@ HB_FUNC( HWG_PROCESSMESSAGE )
 
 }
 
-
-
 /* 22/09/2005 - <maurilio.longo@libero.it>
 					 It can be used to see if there are messages awaiting of a certain
 					 type, but it does not retrieve them
@@ -211,12 +209,10 @@ HB_FUNC( HWG_PEEKMESSAGE )
     			PM_NOREMOVE ) );
 }
 
-
-
 HB_FUNC( HWG_INITCHILDWINDOW )
 {
    HWND         hWnd ;
-   WNDCLASS     wndclass={ 0 } ;
+   WNDCLASS     wndclass = { 0 };
    HMODULE /*HANDLE*/ hInstance = GetModuleHandle( NULL );
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
    char *szAppName = hb_parc(2);
@@ -296,7 +292,7 @@ HB_FUNC( HWG_ACTIVATECHILDWINDOW )
 HB_FUNC( HWG_INITMDIWINDOW )
 {
    HWND         hWnd;
-   WNDCLASS     wndclass={ 0 }, wc={ 0 } ;
+   WNDCLASS     wndclass = { 0 }, wc = { 0 };
    HANDLE hInstance = GetModuleHandle( NULL ) ;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
    char *szAppName = hb_parc(2);
@@ -331,12 +327,12 @@ HB_FUNC( HWG_INITMDIWINDOW )
    }
 
    // Register client window
-   wc.lpfnWndProc   = (WNDPROC) MDIChildWndProc;
+   wc.lpfnWndProc   = (WNDPROC) MDIChildWndProc; 
    wc.hIcon         = (hb_pcount()>4 && !ISNIL(5))? (HICON)hb_parnl(5) : LoadIcon ((HINSTANCE)hInstance,"" );
    wc.hbrBackground = (HBRUSH)( ( (hb_pcount()>5 && !ISNIL(6)) ?hb_parnl(6):(COLOR_WINDOW+1) ) );
-   wc.lpszMenuName  = (LPCTSTR) NULL;
+   wc.lpszMenuName  = (LPCTSTR) NULL; 
    wc.cbWndExtra    = 0;
-   wc.lpszClassName = szChild;
+   wc.lpszClassName = szChild; 
 
 
    wc.cbClsExtra    = 0 ;
@@ -344,7 +340,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
    wc.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
    wc.style = 0;
 
-   if (!RegisterClass(&wc))
+   if (!RegisterClass(&wc)) 
    {
       hb_retni( -3 );
       return;
@@ -357,7 +353,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
                        (!width)? (LONG)CW_USEDEFAULT:width,
                        (!height)? (LONG)CW_USEDEFAULT:height,
                        NULL, NULL, (HINSTANCE)hInstance, NULL) ;
-   if (!hWnd)
+   if (!hWnd) 
    {
       hb_retni( -4 );
       return;
@@ -374,7 +370,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
 
 HB_FUNC( HWG_INITCLIENTWINDOW )
 {
-   CLIENTCREATESTRUCT ccs ={ 0 };
+   CLIENTCREATESTRUCT ccs = { 0 };
    HWND hWnd;
    int nPos = (hb_pcount()>1 && !ISNIL(2))? hb_parni(2):0;
    int x = hb_parnl(3);
@@ -416,7 +412,7 @@ HB_FUNC( HWG_ACTIVATEMDIWINDOW )
 
 /*  Creates child MDI window
     CreateMdiChildWindow( aChildWindow )
-    aChildWindow = { cWindowTitle, Nil, aActions, Nil,
+    aChildWindow = { cWindowTitle, Nil, aActions, Nil, 
                     nStatusWindowID, bStatusWrite }
     aActions = { { nMenuItemID, bAction }, ... }
 */
@@ -440,18 +436,18 @@ HB_FUNC( HWG_CREATEMDICHILDWINDOW )
       hb_retni( 0 );
       return;
    }
-
+    
     hWnd = CreateMDIWindow(
-       (LPTSTR) szChild,	// pointer to registered child class name
-       (LPTSTR) cTitle,		// pointer to window name
-       style,			// window style
-       x,	// horizontal position of window
-       y,	// vertical position of window
-       width,	// width of window
-       height,	// height of window
-       (HWND) aWindows[1],	// handle to parent window (MDI client)
-       GetModuleHandle( NULL ),		// handle to application instance
-       (LPARAM)&pObj		 	// application-defined value
+       (LPTSTR) szChild,	// pointer to registered child class name 
+       (LPTSTR) cTitle,		// pointer to window name 
+       style,			// window style 
+       x,	// horizontal position of window 
+       y,	// vertical position of window 
+       width,	// width of window 
+       height,	// height of window 
+       (HWND) aWindows[1],	// handle to parent window (MDI client) 
+       GetModuleHandle( NULL ),		// handle to application instance 
+       (LPARAM)&pObj		 	// application-defined value 
    );
 
    hb_retnl( (LONG) hWnd );
@@ -497,41 +493,18 @@ void SetWindowObject( HWND hWnd, PHB_ITEM pObject )
 {
    if( pObject )
    {
-      // Must increase uiHolders as we now have additional copy of object.
-      #ifndef UIHOLDERS
-      pObject->item.asArray.value->ulHolders++;
-      #else
-      pObject->item.asArray.value->uiHolders++;
-      #endif
-      SetWindowLong( hWnd, GWL_USERDATA, (LPARAM) (pObject->item.asArray.value) );
+      SetWindowLongPtr( hWnd, GWL_USERDATA, (LPARAM) hb_itemNew( pObject ) );
    }
    else
    {
-      SetWindowLong( (HWND) hb_parnl(1), GWL_USERDATA, 0 );
+      SetWindowLongPtr( hWnd, GWL_USERDATA, 0 );
    }
 }
 
 HB_FUNC( GETWINDOWOBJECT )
 {
-   LONG dwNewLong = GetWindowLong( (HWND) hb_parnl(1), GWL_USERDATA );
-
-   if( dwNewLong )
-   {
-      PHB_ITEM pObj = hb_itemNew( NULL );
-
-      pObj->type = HB_IT_OBJECT;
-      pObj->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
-
-      // Must increase uiHolders as we will shortly release this unaccounted copy.
-      #ifndef UIHOLDERS
-      pObj->item.asArray.value->ulHolders++;
-      #else
-      pObj->item.asArray.value->uiHolders++;
-      #endif
-
-      hb_itemReturn( pObj );
-      hb_itemRelease( pObj );
-   }
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( (HWND) hb_parnl(1), GWL_USERDATA );
+   hb_itemReturn( pObject );
 }
 
 HB_FUNC( SETWINDOWTEXT )
@@ -555,7 +528,7 @@ HB_FUNC( GETWINDOWTEXT )
 
 HB_FUNC( SETWINDOWFONT )
 {
-   SendMessage( (HWND) hb_parnl( 1 ), WM_SETFONT, (WPARAM) hb_parnl( 2 ),
+   SendMessage( (HWND) hb_parnl( 1 ), WM_SETFONT, (WPARAM) hb_parnl( 2 ), 
        MAKELPARAM( (ISNIL(3))? 0 : hb_parl(3), 0 ) );
 }
 
@@ -642,22 +615,13 @@ LRESULT CALLBACK MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 {
 
    long int res;
-   LONG dwNewLong = GetWindowLong( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
 
-   if( pSym_onEvent && dwNewLong )
+   if( pSym_onEvent && pObject )
    {
-      PHB_ITEM pObject = hb_itemNew( NULL );
-
-      pObject->type = HB_IT_OBJECT;
-      pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
-      #ifndef UIHOLDERS
-      pObject->item.asArray.value->ulHolders++;
-      #else
-      pObject->item.asArray.value->uiHolders++;
-      #endif
 
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
@@ -666,7 +630,6 @@ LRESULT CALLBACK MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
-      hb_itemRelease( pObject );
       if( res == -1 )
          return( DefWindowProc( hWnd, message, wParam, lParam ) );
       else
@@ -680,23 +643,13 @@ LRESULT CALLBACK FrameWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 {
 
    long int res;
-   LONG dwNewLong = GetWindowLong( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
 
-   if( pSym_onEvent && dwNewLong )
+   if( pSym_onEvent && pObject )
    {
-      PHB_ITEM pObject = hb_itemNew( NULL );
-
-      pObject->type = HB_IT_OBJECT;
-      pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
-      #ifndef UIHOLDERS
-      pObject->item.asArray.value->ulHolders++;
-      #else
-      pObject->item.asArray.value->uiHolders++;
-      #endif
-
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) message );
@@ -704,7 +657,6 @@ LRESULT CALLBACK FrameWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
-      hb_itemRelease( pObject );
       if( res == -1 )
          return( DefFrameProc( hWnd, aWindows[ 1 ], message, wParam, lParam ) );
       else
@@ -718,40 +670,31 @@ LRESULT CALLBACK MDIChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM
 {
 
    long int res;
-   LONG dwNewLong;
+   PHB_ITEM pObject;
 
    if( message == WM_NCCREATE )
    {
       LPMDICREATESTRUCT cs = (LPMDICREATESTRUCT)(((LPCREATESTRUCT) lParam)->lpCreateParams);
-      PHB_ITEM * pObject = (PHB_ITEM*) ( cs->lParam );
+      PHB_ITEM * pObj = (PHB_ITEM*) ( cs->lParam );
       PHB_ITEM temp;
 
       temp = hb_itemPutNL( NULL, 1 );
-      SetObjectVar( *pObject, "_NHOLDER", temp );
+      SetObjectVar( *pObj, "_NHOLDER", temp );
       hb_itemRelease( temp );
-      SetWindowObject( hWnd, *pObject );
 
       temp = hb_itemPutNL( NULL, (LONG)hWnd );
-      SetObjectVar( *pObject, "_HANDLE", temp );
+      SetObjectVar( *pObj, "_HANDLE", temp );
       hb_itemRelease( temp );
+
+      SetWindowObject( hWnd, *pObj );
    }
-   dwNewLong = GetWindowLong( hWnd, GWL_USERDATA );
+   pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
 
-   if( pSym_onEvent && dwNewLong )
+   if( pSym_onEvent && pObject )
    {
-      PHB_ITEM pObject = hb_itemNew( NULL );
-
-      pObject->type = HB_IT_OBJECT;
-      pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
-      #ifndef UIHOLDERS
-      pObject->item.asArray.value->ulHolders++;
-      #else
-      pObject->item.asArray.value->uiHolders++;
-      #endif
-
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) message );
@@ -759,7 +702,6 @@ LRESULT CALLBACK MDIChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
-      hb_itemRelease( pObject );
       if( res == -1 )
          return( DefMDIChildProc( hWnd, message, wParam, lParam ) );
       else
@@ -772,34 +714,21 @@ LRESULT CALLBACK MDIChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM
 
 PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
 {
-   PHB_DYNS pMsg = hb_dynsymGet( varname );
-
-   if( pMsg )
-   {
-      hb_vmPushSymbol( pMsg->pSymbol );   /* Push message symbol */
-      hb_vmPush( pObject );               /* Push object */
-
-      hb_vmDo( 0 );
-   }
+#ifdef __XHARBOUR__
+   return hb_objSendMsg( pObject, varname, 0 );
+#else
+   hb_objSendMsg( pObject, varname, 0 );
 #ifndef HARBOUR_OLD_VERSION
    return ( hb_stackReturnItem() );
 #else
    return ( hb_stackReturn() );
 #endif
+#endif
 }
 
 void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )
 {
-   PHB_DYNS pMsg = hb_dynsymGet( varname );
-
-   if( pMsg )
-   {
-      hb_vmPushSymbol( pMsg->pSymbol );   /* Push message symbol */
-      hb_vmPush( pObject );               /* Push object */
-      hb_vmPush( pValue );                /* Push value */
-
-      hb_vmDo( 1 );
-   }
+   hb_objSendMsg( pObject, varname, 1, pValue );
 }
 
 HB_FUNC( EXITPROCESS )
@@ -807,10 +736,11 @@ HB_FUNC( EXITPROCESS )
   ExitProcess(0);
 }
 
+
 HB_FUNC( HWG_DECREASEHOLDERS )
 {
+/*
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
-
    #ifndef  UIHOLDERS
    if( pObject->item.asArray.value->ulHolders )
       pObject->item.asArray.value->ulHolders--;
@@ -818,14 +748,23 @@ HB_FUNC( HWG_DECREASEHOLDERS )
    if( pObject->item.asArray.value->uiHolders )
       pObject->item.asArray.value->uiHolders--;
    #endif
+*/
+   HWND hWnd = (HWND)hb_parnl(1);
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   if( pObject )
+   {
+      hb_itemRelease( pObject );
+      SetWindowLongPtr( hWnd, GWL_USERDATA, 0 );
+   }
 }
+
 
 HB_FUNC( SETTOPMOST )
 {
     BOOL i = SetWindowPos( (HWND) hb_parnl( 1 ), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE );
     hb_retl( i );
 }
-
+ 
 HB_FUNC( REMOVETOPMOST )
 {
     BOOL i = SetWindowPos( (HWND) hb_parnl( 1 ), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE );

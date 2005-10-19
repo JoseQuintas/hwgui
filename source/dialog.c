@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.15 2005-09-21 12:17:17 alkresin Exp $
+ *$Id: dialog.c,v 1.16 2005-10-19 10:04:26 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -381,7 +381,7 @@ HB_FUNC( _CREATEPROPERTYSHEETPAGE )
    psp.hInstance = (HINSTANCE) NULL;
    psp.pszTitle = NULL;
    psp.pfnDlgProc = (DLGPROC) PSPProc;
-   psp.lParam = (LPARAM)pObj->item.asArray.value;
+   psp.lParam = (LPARAM) pObj;
    psp.pfnCallback = NULL;
    psp.pcRefParent = 0;
 #if !defined(__BORLANDC__)
@@ -514,12 +514,11 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 {
    // PHB_DYNS pSymTest;
    long int res;
-   LONG dwNewLong;
+   PHB_ITEM pObject;
 
    if( uMsg == WM_INITDIALOG )
    {
       PHB_ITEM temp;
-      SetWindowObject( hDlg, (PHB_ITEM) lParam );
 
       temp = hb_itemPutNL( NULL, 1 );
       SetObjectVar( (PHB_ITEM) lParam, "_NHOLDER", temp );
@@ -528,24 +527,16 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
       temp = hb_itemPutNL( NULL, (LONG)hDlg );
       SetObjectVar( (PHB_ITEM) lParam, "_HANDLE", temp );
       hb_itemRelease( temp );
+
+      SetWindowObject( hDlg, (PHB_ITEM) lParam );
    }
-   dwNewLong = GetWindowLong( hDlg, GWL_USERDATA );
+   pObject = ( PHB_ITEM ) GetWindowLongPtr( hDlg, GWL_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
 
-   if( pSym_onEvent && dwNewLong )
+   if( pSym_onEvent && pObject )
    {
-      PHB_ITEM pObject = hb_itemNew( NULL );
-
-      pObject->type = HB_IT_OBJECT;
-      pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
-      #ifndef UIHOLDERS
-      pObject->item.asArray.value->ulHolders++;
-      #else
-      pObject->item.asArray.value->uiHolders++;
-      #endif
-
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) uMsg );
@@ -553,7 +544,6 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
-      hb_itemRelease( pObject );
       if( res == -1 )
          return FALSE;
       else
@@ -567,13 +557,11 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
    long int res;
-   LONG dwNewLong;
+   PHB_ITEM pObject;
 
    if( uMsg == WM_INITDIALOG )
    {
       PHB_ITEM temp;
-
-      SetWindowObject( hDlg, (PHB_ITEM) lParam );
 
       temp = hb_itemPutNL( NULL, 1 );
       SetObjectVar( (PHB_ITEM) lParam, "_NHOLDER", temp );
@@ -582,6 +570,8 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       temp = hb_itemPutNL( NULL, (LONG)hDlg );
       SetObjectVar( (PHB_ITEM) lParam, "_HANDLE", temp );
       hb_itemRelease( temp );
+
+      SetWindowObject( hDlg, (PHB_ITEM) lParam );
 
       if( iDialogs == nDialogs )
       {
@@ -603,23 +593,13 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
          aDialogs[ i ] = aDialogs[ i+1 ];
    }
 
-   dwNewLong = GetWindowLong( hDlg, GWL_USERDATA );
+   pObject = ( PHB_ITEM ) GetWindowLongPtr( hDlg, GWL_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
 
-   if( pSym_onEvent && dwNewLong )
+   if( pSym_onEvent && pObject )
    {
-      PHB_ITEM pObject = hb_itemNew( NULL );
-
-      pObject->type = HB_IT_OBJECT;
-      pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
-      #ifndef UIHOLDERS
-      pObject->item.asArray.value->ulHolders++;
-      #else
-      pObject->item.asArray.value->uiHolders++;
-      #endif
-
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) uMsg );
@@ -627,7 +607,6 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
-      hb_itemRelease( pObject );
       if( res == -1 )
          return FALSE;
       else
@@ -640,23 +619,14 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 
 LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-
    long int res;
-   LONG dwNewLong;
+   PHB_ITEM pObject;
 
    if( uMsg == WM_INITDIALOG )
    {
-      PHB_ITEM pObj = hb_itemNew( NULL ), temp;
+      PHB_ITEM pObj, temp;
 
-      pObj->type = HB_IT_OBJECT;
-      pObj->item.asArray.value = (PHB_BASEARRAY) (((PROPSHEETPAGE *)lParam)->lParam);
-      #ifndef UIHOLDERS
-      pObj->item.asArray.value->ulHolders++;
-      #else
-      pObj->item.asArray.value->uiHolders++;
-      #endif
-
-      SetWindowObject( hDlg, pObj );
+      pObj = (PHB_ITEM) (((PROPSHEETPAGE *)lParam)->lParam);
 
       temp = hb_itemPutNL( NULL, 1 );
       SetObjectVar( pObj, "_NHOLDER", temp );
@@ -665,6 +635,9 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       temp = hb_itemPutNL( NULL, (LONG)hDlg );
       SetObjectVar( pObj, "_HANDLE", temp );
       hb_itemRelease( temp );
+
+      SetWindowObject( hDlg, pObj );
+
       if( iDialogs == nDialogs )
       {
          nDialogs += 16;
@@ -674,7 +647,7 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
             aDialogs = (HWND*)hb_xrealloc( aDialogs, sizeof( HWND ) * nDialogs );
       }
       aDialogs[ iDialogs++ ] = hDlg;
-      hb_itemRelease( pObj );
+      // hb_itemRelease( pObj );
    }
    else if( uMsg == WM_NOTIFY )
       uMsg = WM_PSPNOTIFY;
@@ -688,23 +661,13 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
          aDialogs[ i ] = aDialogs[ i+1 ];
    }
 
-   dwNewLong = GetWindowLong( hDlg, GWL_USERDATA );
+   pObject = ( PHB_ITEM ) GetWindowLongPtr( hDlg, GWL_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
 
-   if( pSym_onEvent && dwNewLong )
+   if( pSym_onEvent && pObject )
    {
-      PHB_ITEM pObject = hb_itemNew( NULL );
-
-      pObject->type = HB_IT_OBJECT;
-      pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
-      #ifndef UIHOLDERS
-      pObject->item.asArray.value->ulHolders++;
-      #else
-      pObject->item.asArray.value->uiHolders++;
-      #endif
-
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) uMsg );
@@ -712,7 +675,6 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
-      hb_itemRelease( pObject );
       if( res == -1 )
          return FALSE;
       else

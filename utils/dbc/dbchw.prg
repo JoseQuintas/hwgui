@@ -477,7 +477,7 @@ Local oWindow, aControls, oBrowse, i
       Return 0
    ENDIF
 
-   IF GetChildWindowsNumber() == 0
+   IF Len( HWindow():aWindows ) == 2
       EnableMenuItem( ,1, .T., .F. )
       EnableMenuItem( ,2, .T., .F. )
       EnableMenuItem( ,3, .T., .F. )
@@ -628,7 +628,7 @@ Local i, aControls, oBrw
                nQueryWndHandle := 0
             ENDIF
             FiClose()
-            IF GetChildWindowsNumber() == 1
+            IF Len( HWindow():aWindows ) == 3
                EnableMenuItem( ,1, .F., .F. )
                EnableMenuItem( ,2, .F., .F. )
                EnableMenuItem( ,3, .F., .F. )

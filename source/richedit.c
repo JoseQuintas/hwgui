@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.19 2005-10-17 21:24:35 lculik Exp $
+ * $Id: richedit.c,v 1.20 2005-10-19 10:04:27 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -361,23 +361,13 @@ HB_FUNC( HWG_INITRICHPROC )
 LRESULT APIENTRY RichSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
    long int res;
-   LONG dwNewLong = GetWindowLong( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
 
-   if( pSym_onEvent && dwNewLong )
+   if( pSym_onEvent && pObject )
    {
-      PHB_ITEM pObject = hb_itemNew( NULL );
-
-      pObject->type = HB_IT_OBJECT;
-      pObject->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
-      #ifndef UIHOLDERS
-      pObject->item.asArray.value->ulHolders++;
-      #else
-      pObject->item.asArray.value->uiHolders++;
-      #endif
-
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) message );
@@ -385,7 +375,6 @@ LRESULT APIENTRY RichSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARA
       hb_vmPushLong( (LONG ) lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
-      hb_itemRelease( pObject );
       if( res == -1 )
          return( CallWindowProc( wpOrigRichProc, hWnd, message, wParam, lParam ) );
       else

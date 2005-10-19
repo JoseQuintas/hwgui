@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.12 2005-09-13 05:25:53 alkresin Exp $
+ * $Id: htree.prg,v 1.13 2005-10-19 10:04:27 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -181,6 +181,7 @@ Local h := ::handle, j, alen, aItems
          ::aItems[j] := Nil
       NEXT
    ENDIF
+   tree_ReleaseNode( ::oTree:handle,::handle )
    SendMessage( ::oTree:handle,TVM_DELETEITEM,0,::handle )
    IF lInternal == Nil
       aItems := Iif( ::oParent==Nil,::oTree:aItems,::oParent:aItems )
@@ -188,7 +189,7 @@ Local h := ::handle, j, alen, aItems
       Adel( aItems,j )
       Asize( aItems,Len( aItems ) - 1 )
    ENDIF
-   hwg_DecreaseHolders( Self )
+   // hwg_DecreaseHolders( ::handle )
 
 Return Nil
 
@@ -265,9 +266,11 @@ Return Self
 
 METHOD Init CLASS HTree
 
-   Super:Init()
-   IF ::himl != Nil
-      SendMessage( ::handle, TVM_SETIMAGELIST, TVSIL_NORMAL, ::himl )
+   IF !::lInit
+      Super:Init()
+      IF ::himl != Nil
+         SendMessage( ::handle, TVM_SETIMAGELIST, TVSIL_NORMAL, ::himl )
+      ENDIF
    ENDIF
 
 Return Nil
@@ -303,8 +306,8 @@ Return Nil
 METHOD Clean() CLASS HTree
 
    ::lEmpty := .T.
-   SendMessage( ::handle,TVM_DELETEITEM,0,TVI_ROOT )
    ReleaseTree( ::aItems )
+   SendMessage( ::handle,TVM_DELETEITEM,0,TVI_ROOT )
    ::aItems := {}
 
 Return Nil
@@ -313,8 +316,9 @@ Static Procedure ReleaseTree( aItems )
 Local i, iLen := Len( aItems )
 
    FOR i := 1 TO iLen
+      tree_ReleaseNode( aItems[i]:oTree:handle,aItems[i]:handle )
       ReleaseTree( aItems[i]:aItems )
-      hwg_DecreaseHolders( aItems[i] )
+      // hwg_DecreaseHolders( aItems[i]:handle )
    NEXT
 
 Return
@@ -325,12 +329,14 @@ Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct
    // writelog( str(ncode) )
    IF nCode == TVN_SELCHANGED .or. nCode == TVN_SELCHANGEDW
       oItem := Tree_GetNotify( lParam,TREE_GETNOTIFY_PARAM )
-      oItem:oTree:oSelected := oItem
-      IF !oItem:oTree:lEmpty 
-         IF oItem:bAction != Nil
-            Eval( oItem:bAction,oItem )
-         ELSEIF oItem:oTree:bAction != Nil
-            Eval( oItem:oTree:bAction,oItem )
+      IF Valtype( oItem ) == "O"
+         oItem:oTree:oSelected := oItem
+         IF !oItem:oTree:lEmpty 
+            IF oItem:bAction != Nil
+               Eval( oItem:bAction,oItem )
+            ELSEIF oItem:oTree:bAction != Nil
+               Eval( oItem:oTree:bAction,oItem )
+            ENDIF
          ENDIF
       ENDIF
    ELSEIF nCode == TVN_BEGINLABELEDIT .or. nCode == TVN_BEGINLABELEDITW
@@ -338,17 +344,21 @@ Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct
    ELSEIF nCode == TVN_ENDLABELEDIT .or. nCode == TVN_ENDLABELEDITW
       IF !Empty( cText := Tree_GetNotify( lParam,TREE_GETNOTIFY_EDIT ) )
          oItem := Tree_GetNotify( lParam,TREE_GETNOTIFY_EDITPARAM )
-         IF cText != oItem:GetText() .AND. ;
-             ( oItem:oTree:bItemChange == Nil .OR. Eval( oItem:oTree:bItemChange,oItem,cText ) )
-            TreeSetItem( oItem:oTree:handle,oItem:handle,TREE_SETITEM_TEXT,cText )
+         IF Valtype( oItem ) == "O"
+            IF cText != oItem:GetText() .AND. ;
+                ( oItem:oTree:bItemChange == Nil .OR. Eval( oItem:oTree:bItemChange,oItem,cText ) )
+               TreeSetItem( oItem:oTree:handle,oItem:handle,TREE_SETITEM_TEXT,cText )
+            ENDIF
          ENDIF
       ENDIF
    ELSEIF nCode == TVN_ITEMEXPANDING .or. nCode == TVN_ITEMEXPANDINGW
       oItem := Tree_GetNotify( lParam,TREE_GETNOTIFY_PARAM )
-      IF oTree:bExpand != Nil
-         return Iif( Eval( oItem:oTree:bExpand,oItem, ;
-           CheckBit( Tree_GetNotify( lParam,TREE_GETNOTIFY_ACTION ),TVE_EXPAND ) ), ;
-           0, 1 )
+      IF Valtype( oItem ) == "O"
+         IF oTree:bExpand != Nil
+            return Iif( Eval( oItem:oTree:bExpand,oItem, ;
+              CheckBit( Tree_GetNotify( lParam,TREE_GETNOTIFY_ACTION ),TVE_EXPAND ) ), ;
+              0, 1 )
+         ENDIF
       ENDIF
    ELSEIF nCode == -3     
       IF oTree:bDblClick != Nil

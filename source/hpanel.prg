@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.10 2005-02-21 09:29:56 alkresin Exp $
+ * $Id: hpanel.prg,v 1.11 2005-10-19 10:04:27 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -85,18 +85,20 @@ Return -1
 
 METHOD Init CLASS HPanel
 
-   IF ::bSize == Nil
-      IF ::nHeight!=0 .AND. ( ::nWidth>::nHeight .OR. ::nWidth==0 )
-         ::bSize := {|o,x,y|o:Move( 0,::nTop,x,::nHeight )}
-      ELSEIF ::nWidth!=0 .AND. ( ::nHeight>::nWidth .OR. ::nHeight==0 )
-         ::bSize := {|o,x,y|o:Move( ::nLeft,0,::nWidth,y )}
+   IF !::lInit
+      IF ::bSize == Nil
+         IF ::nHeight!=0 .AND. ( ::nWidth>::nHeight .OR. ::nWidth==0 )
+            ::bSize := {|o,x,y|o:Move( 0,::nTop,x,::nHeight )}
+         ELSEIF ::nWidth!=0 .AND. ( ::nHeight>::nWidth .OR. ::nHeight==0 )
+            ::bSize := {|o,x,y|o:Move( ::nLeft,0,::nWidth,y )}
+         ENDIF
       ENDIF
-   ENDIF
 
-   Super:Init()
-   ::nHolder := 1
-   SetWindowObject( ::handle,Self )
-   Hwg_InitWinCtrl( ::handle )
+      Super:Init()
+      ::nHolder := 1
+      SetWindowObject( ::handle,Self )
+      Hwg_InitWinCtrl( ::handle )
+   ENDIF
 
 Return Nil
 

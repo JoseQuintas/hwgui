@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.14 2005-09-24 15:36:18 lculik Exp $
+ * $Id: freeimg.c,v 1.15 2005-10-19 15:47:43 lf_sfnet Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -47,13 +47,21 @@ typedef ULONG ( WINAPI *FREEIMAGE_GETHEIGHT )( FIBITMAP *dib );
 typedef BYTE * ( WINAPI *FREEIMAGE_GETBITS )( FIBITMAP *dib );
 typedef BITMAPINFO * ( WINAPI *FREEIMAGE_GETINFO )( FIBITMAP *dib );
 typedef BITMAPINFOHEADER * ( WINAPI *FREEIMAGE_GETINFOHEADER )( FIBITMAP *dib );
+#if defined(__WATCOMC__)
+typedef FIBITMAP* ( WINAPI *FREEIMAGE_CONVERTFROMRAWBITS)(BYTE *bits, int width, int height, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown );
+#else
 typedef FIBITMAP* ( WINAPI *FREEIMAGE_CONVERTFROMRAWBITS)(BYTE *bits, int width, int height, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown FI_DEFAULT(FALSE));
+#endif
 typedef FIBITMAP* ( WINAPI *FREEIMAGE_RESCALE )(FIBITMAP *dib, int dst_width, int dst_height, FREE_IMAGE_FILTER filter);
 typedef RGBQUAD* ( WINAPI *FREEIMAGE_GETPALETTE ) (FIBITMAP *dib);
 typedef ULONG ( WINAPI *FREEIMAGE_GETBPP ) (FIBITMAP *dib);
 typedef BOOL ( WINAPI *FREEIMAGE_SETCHANNEL ) (FIBITMAP *dib, FIBITMAP *dib8, FREE_IMAGE_COLOR_CHANNEL channel);
 typedef BYTE * ( WINAPI *FREEIMAGE_GETSCANLINE ) (FIBITMAP *dib, int scanline);
+#if defined(__WATCOMC__)
+typedef void ( WINAPI *FREEIMAGE_CONVERTTORAWBITS )(BYTE *bits, FIBITMAP *dib, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown );
+#else
 typedef void ( WINAPI *FREEIMAGE_CONVERTTORAWBITS )(BYTE *bits, FIBITMAP *dib, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown FI_DEFAULT(FALSE));
+#endif
 typedef unsigned ( WINAPI *FREEIMAGE_GETPITCH )(FIBITMAP *dib);
 typedef short ( WINAPI *FREEIMAGE_GETIMAGETYPE )(FIBITMAP *dib);
 typedef unsigned ( WINAPI *FREEIMAGE_GETCOLORSUSED )(FIBITMAP *dib);

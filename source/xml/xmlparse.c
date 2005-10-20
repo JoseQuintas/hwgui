@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.15 2005-10-19 10:04:27 alkresin Exp $
+ * $Id: xmlparse.c,v 1.16 2005-10-20 06:26:05 alkresin Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -113,7 +113,7 @@ PHB_ITEM hbxml_pp( unsigned char * ptr, ULONG ulLen )
          if( *(ptr+1) == '#' )
          {
             int iChar;
-            sscanf( ptr+2,"%d",&iChar );
+            sscanf( (char*)ptr+2,"%d",&iChar );
             *ptr = iChar;
             i = 1;
             while( *(ptr+i+1) >= '0' && *(ptr+i+1) <= '9' )
@@ -167,7 +167,7 @@ PHB_ITEM hbxml_getattr( unsigned char ** pBuffer, BOOL * lSingle )
    int    nlen;
    PHB_ITEM pArray = hb_itemNew( NULL );
    PHB_ITEM pSubArray = NULL;
-   PHB_ITEM pTemp = NULL;
+   PHB_ITEM pTemp;
    BOOL bPI = 0;
 
    hb_arrayNew( pArray, 0 );

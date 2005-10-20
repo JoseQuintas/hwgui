@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.32 2005-10-19 10:04:26 alkresin Exp $
+ * $Id: control.c,v 1.33 2005-10-20 07:20:26 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -592,7 +592,7 @@ HB_FUNC( SETTABNAME )
 
 HB_FUNC( TAB_HITTEST )
 {
-   TC_HITTESTINFO ht= { 0 };
+   TC_HITTESTINFO ht;
    HWND hTab = (HWND)hb_parnl(1);
    int res;
 
@@ -699,8 +699,6 @@ HB_FUNC( TREEDELALLNODES )
 
 HB_FUNC( TREEGETSELECTED )
 {
-
-   PHB_ITEM oNode;  // = hb_itemNew( NULL );
    TV_ITEM TreeItem;
 
    memset( &TreeItem, 0, sizeof(TV_ITEM) );
@@ -709,12 +707,11 @@ HB_FUNC( TREEGETSELECTED )
 
    if( TreeItem.hItem )
    {
+      PHB_ITEM oNode;  // = hb_itemNew( NULL );
       SendMessage( (HWND)hb_parnl(1), TVM_GETITEM, 0, (LPARAM)(&TreeItem) );
       oNode = (PHB_ITEM)TreeItem.lParam;
+      hb_itemReturn( oNode );
    }
-
-   hb_itemReturn( oNode );
-
 }
 
 /*

@@ -1,4 +1,3 @@
-@set PATH=d:\softools\mingw\bin
 @echo off
 if "%1" == "clean" goto CLEAN
 if "%1" == "CLEAN" goto CLEAN

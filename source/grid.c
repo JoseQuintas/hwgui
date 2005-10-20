@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.9 2005-10-17 21:24:35 lculik Exp $
+ * $Id: grid.c,v 1.10 2005-10-20 07:20:26 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -185,56 +185,35 @@ HB_FUNC( LISTVIEW_UPDATE )
 
 HB_FUNC( LISTVIEW_SCROLL )
 {
-        ListView_Scroll( (HWND) hb_parnl (1), hb_parni(2) - 1, hb_parni(3) - 1 );
+   ListView_Scroll( (HWND) hb_parnl (1), hb_parni(2) - 1, hb_parni(3) - 1 );
 }
 
 HB_FUNC( LISTVIEW_HITTEST )
 
 {
 
-   POINT point = { 0 };
+   POINT point;
+   LVHITTESTINFO lvhti;
 
-   LVHITTESTINFO lvhti= { 0 };
+   point.y = hb_parni(2) ;
+   point.x = hb_parni(3) ;
 
+   lvhti.pt = point;
 
+   ListView_SubItemHitTest ( (HWND) hb_parnl (1) , &lvhti ) ;
 
-	point.y = hb_parni(2) ;
-
-	point.x = hb_parni(3) ;
-
-
-
-	lvhti.pt = point;
-
-
-
-	ListView_SubItemHitTest ( (HWND) hb_parnl (1) , &lvhti ) ;
-
-
-
-	if(lvhti.flags & LVHT_ONITEM)
-
-	{
-
-		hb_reta( 2 );
-
-		hb_storni( lvhti.iItem + 1 , -1, 1 );
-
-		hb_storni( lvhti.iSubItem + 1 , -1, 2 );
-
-	}
-
-	else
-
-	{
-
-		hb_reta( 2 );
-
-		hb_storni( 0 , -1, 1 );
-
-		hb_storni( 0 , -1, 2 );
-
-	}
+   if(lvhti.flags & LVHT_ONITEM)
+   {
+      hb_reta( 2 );
+      hb_storni( lvhti.iItem + 1 , -1, 1 );
+      hb_storni( lvhti.iSubItem + 1 , -1, 2 );
+   }
+   else
+   {
+      hb_reta( 2 );
+      hb_storni( 0 , -1, 1 );
+      hb_storni( 0 , -1, 2 );
+   }
 
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.20 2005-10-19 10:04:27 alkresin Exp $
+ * $Id: richedit.c,v 1.21 2005-10-20 07:20:26 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -292,7 +292,7 @@ HB_FUNC( RE_CHARFROMPOS )
 HB_FUNC( RE_GETTEXTRANGE )
 {
    HWND hCtrl = (HWND) hb_parnl(1);
-   TEXTRANGE tr = { 0 };
+   TEXTRANGE tr;
    ULONG ul;
 
    tr.chrg.cpMin = hb_parnl(2)-1;
@@ -338,7 +338,7 @@ HB_FUNC( RE_INSERTTEXT )
 HB_FUNC( RE_FINDTEXT )
 {
    HWND hCtrl = (HWND) hb_parnl(1);
-   FINDTEXTEX ft = { 0 };
+   FINDTEXTEX ft;
    LONG lPos;
    LONG lFlag = ( ( ISNIL(4) || !hb_parl(4) )? 0 : FR_MATCHCASE ) |
                 ( ( ISNIL(5) || !hb_parl(5) )? 0 : FR_WHOLEWORD ) |

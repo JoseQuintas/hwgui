@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.427 2005-10-20 07:20:26 alkresin Exp $
+ * $Id: Changelog,v 1.428 2005-10-21 08:50:15 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,27 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-21 12:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * gtk/commond.c
+   * gtk/control.c
+   * gtk/draw.c
+   * gtk/drawtext.c
+   * gtk/window.c
+     ! Some fixes, related to __GTK_USE_POINTER__
+   * gtk/hbrowse.prg
+   * gtk/hcheck.prg
+   * gtk/hcombo.prg
+   * gtk/hcontrol.prg
+   * gtk/hedit.prg
+   * gtk/hgraph.prg
+   * gtk/hradio.prg
+   * gtk/htab.prg
+   * gtk/hupdown.prg
+   * gtk/menu.prg
+     * #ifdef __GTK_USE_POINTER__ has been removed
+   * gtk/hdialog.prg
+     ! Fixed problem with EndDialog(), which appeared with __GTK_USE_POINTER__
 
 2005-10-20 11:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * makefile.gcc

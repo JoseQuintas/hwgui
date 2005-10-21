@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.8 2005-09-21 21:03:36 lculik Exp $
+ *$Id: hcontrol.prg,v 1.9 2005-10-21 08:50:15 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -150,12 +150,8 @@ Return Self
 
 METHOD Activate CLASS HStatus
 Local aCoors
-   #ifdef __GTK_USE_POINTER__
-   IF !Empty(::oParent:handle )
-   #else
 
-   IF ::oParent:handle != 0
-   #endif
+   IF !Empty(::oParent:handle )
       ::handle := CreateStatusWindow( ::oParent:handle, ::id )
       ::Init()
       IF __ObjHasMsg( ::oParent,"AOFFSET" )
@@ -201,12 +197,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit
 Return Self
 
 METHOD Activate CLASS HStatic
-   #ifdef __GTK_USE_POINTER__
    IF !Empty(::oParent:handle )
-   #else
-
-   IF ::oParent:handle != 0
-   #endif
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::extStyle, ::title )
       ::Init()
@@ -251,12 +242,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
 Return Self
 
 METHOD Activate CLASS HButton
-   #ifdef __GTK_USE_POINTER__
    IF !Empty(::oParent:handle )
-   #else
-
-   IF ::oParent:handle != 0
-   #endif
       ::handle := CreateButton( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       SetWindowObject( ::handle,Self )
@@ -297,11 +283,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption, ;
 Return Self
 
 METHOD Activate CLASS HGroup
-   #ifdef __GTK_USE_POINTER__
    IF !Empty(::oParent:handle )
-   #else
-   IF ::oParent:handle != 0
-   #endif
       ::handle := CreateButton( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::Init()
@@ -340,11 +322,7 @@ METHOD New( oWndParent,nId,lVert,nLeft,nTop,nLength,bSize ) CLASS hline
 Return Self
 
 METHOD Activate CLASS hline
-   #ifdef __GTK_USE_POINTER__
    IF !Empty(::oParent:handle )
-   #else
-   IF ::oParent:handle != 0
-   #endif
       ::handle := hwg_CreateSep( ::oParent:handle, ::lVert, ::nLeft, ::nTop, ;
                                  ::nWidth,::nHeight )
       ::Init()

@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.4 2005-09-21 21:03:35 lculik Exp $
+ * $Id: draw.c,v 1.5 2005-10-21 08:50:15 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level painting functions
@@ -153,17 +153,15 @@ HB_FUNC( ELLIPSE )
 
 HB_FUNC( FILLRECT )
 {
-#ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
-#else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-#endif
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
 #ifdef __GTK_USE_POINTER__
+   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
    PHWGUI_BRUSH brush = (PHWGUI_BRUSH) hb_parptr(6);
 #else
+   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
    PHWGUI_BRUSH brush = (PHWGUI_BRUSH) hb_parnl(6);
 #endif
+
    // GdkColor color;
    GdkGCValues values;
 
@@ -568,7 +566,7 @@ HB_FUNC( GETCLIENTRECT )
    #else
    GtkWidget * widget = (GtkWidget*) hb_parnl(1);
    #endif
-   #ifdef __GTK_USE_POINTER__
+   #ifdef __XHARBOUR__
    {
    HB_ITEM_NEW( aMetr );
    HB_ITEM_NEW(temp);

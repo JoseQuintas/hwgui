@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.7 2005-09-21 21:03:35 lculik Exp $
+ * $Id: commond.c,v 1.8 2005-10-21 08:50:15 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
@@ -42,9 +42,11 @@ void store_font( gpointer fontseldlg )
 #ifdef __XHARBOUR__
 {
    hb_arrayNew( &aMetr, 9 );
-   
+#ifdef __GTK_USE_POINTER__   
    hb_arraySetForward( &aMetr, 1, hb_itemPutPtr( &temp, ( void *) h ) );
-   
+#else
+   hb_arraySetForward( &aMetr, 1, hb_itemPutNL( &temp, (LONG)h ) );
+#endif
    hb_arraySetForward( &aMetr, 2, hb_itemPutC( &temp, (char*) pango_font_description_get_family( hFont ) ) );
 
    hb_arraySetForward( &aMetr, 3, hb_itemPutNL( &temp, 0 ) );
@@ -66,7 +68,11 @@ void store_font( gpointer fontseldlg )
 }
 #else
 {
+#ifdef __GTK_USE_POINTER__
+   temp = hb_itemPutPtr( NULL, (void*) h );
+#else
    temp = hb_itemPutNL( NULL, (LONG) h );
+#endif
    hb_itemArrayPut( aMetr, 1, temp );
    hb_itemRelease( temp );
 

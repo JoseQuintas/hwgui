@@ -1,5 +1,5 @@
 /*
- *$Id: hupdown.prg,v 1.4 2005-09-21 21:03:36 lculik Exp $
+ *$Id: hupdown.prg,v 1.5 2005-10-21 08:50:15 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HUpDown class 
@@ -72,11 +72,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
 Return Self
 
 METHOD Activate CLASS HUpDown
-   #ifdef __GTK_USE_POINTER__
    IF !Empty(::oParent:handle )
-   #else
-   IF ::oParent:handle != 0
-   #ENDIF
       ::handle := CreateUpDownControl( ::oParent:handle, ;
           ::nLeft,::nTop,::nWidth,::nHeight,Val(::title),::nLower,::nUpper )
       ::Init()

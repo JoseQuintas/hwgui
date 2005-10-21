@@ -1,5 +1,5 @@
 /*
- *$Id: hcheck.prg,v 1.7 2005-09-21 13:20:30 lculik Exp $
+ *$Id: hcheck.prg,v 1.8 2005-10-21 08:50:15 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HCheckButton class 
@@ -55,11 +55,8 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaptio
 Return Self
 
 METHOD Activate CLASS HCheckButton
-   #ifdef __GTK_USE_POINTER__
+
    IF !Empty(::oParent:handle )
-   #else
-   IF ::oParent:handle != 0
-   #ENDIF
       ::handle := CreateButton( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       SetWindowObject( ::handle,Self )

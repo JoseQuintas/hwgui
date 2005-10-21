@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.3 2005-09-20 17:20:56 lculik Exp $
+ * $Id: drawtext.c,v 1.4 2005-10-21 08:50:15 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level text functions
@@ -60,7 +60,7 @@ HB_FUNC( DELETEDC )
  */
 HB_FUNC( TEXTOUT )
 {
-#ifdef __XHARBOUR__
+#ifdef __GTK_USE_POINTER__
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
 #else
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
@@ -87,7 +87,7 @@ HB_FUNC( TEXTOUT )
 
 HB_FUNC( DRAWTEXT )
 {
-#ifdef __XHARBOUR__
+#ifdef __GTK_USE_POINTER__
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
 #else
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
@@ -123,7 +123,7 @@ HB_FUNC( DRAWTEXT )
 
 HB_FUNC( GETTEXTMETRIC )
 {
-#ifdef __XHARBOUR__
+#ifdef __GTK_USE_POINTER__
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
 #else
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
@@ -241,7 +241,7 @@ HB_FUNC( GETCLIENTAREA )
 
 HB_FUNC( SETTEXTCOLOR )
 {
-#ifdef __XHARBOUR__
+#ifdef __GTK_USE_POINTER__
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
 #else
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
@@ -254,7 +254,7 @@ HB_FUNC( SETTEXTCOLOR )
 
 HB_FUNC( SETBKCOLOR )
 {
-#ifdef __XHARBOUR__
+#ifdef __GTK_USE_POINTER__
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
 #else
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
@@ -339,7 +339,7 @@ HB_FUNC( CREATEFONT )
    h->type = HWGUI_OBJECT_FONT;
    h->hFont = hFont;
 
-#ifdef __XHARBOUR__
+#ifdef __GTK_USE_POINTER__
    hb_retptr( (void*) h );
 #else
    hb_retnl( (LONG) h );
@@ -352,14 +352,14 @@ HB_FUNC( CREATEFONT )
 */
 HB_FUNC( HWG_SETCTRLFONT )
 {
-#ifdef __XHARBOUR__
+#ifdef __GTK_USE_POINTER__
    GtkWidget * hCtrl = (GtkWidget*) hb_parptr(1);
 #else
    GtkWidget * hCtrl = (GtkWidget*) hb_parnl(1);
 #endif
    GtkStyle * style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
 
-#ifdef __XHARBOUR__
+#ifdef __GTK_USE_POINTER__
    style->font_desc = ( (PHWGUI_FONT) hb_parptr(2) )->hFont;
 #else
    style->font_desc = ( (PHWGUI_FONT) hb_parnl(2) )->hFont;

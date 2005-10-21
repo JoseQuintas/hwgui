@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.16 2005-09-21 21:03:35 lculik Exp $
+ * $Id: control.c,v 1.17 2005-10-21 08:50:15 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -765,12 +765,10 @@ HB_FUNC( HWG_SETCURSOR )
 {
 #ifdef __GTK_USE_POINTER__
    GtkWidget * widget = (ISPOINTER(2))? (GtkWidget*) hb_parptr(2) : GetActiveWindow();
-   gdk_window_set_cursor( widget->window,
-            (GdkCursor*) hb_parptr(1) );
+   gdk_window_set_cursor( widget->window, (GdkCursor*) hb_parptr(1) );
 #else
    GtkWidget * widget = (ISNUM(2))? (GtkWidget*) hb_parnl(2) : GetActiveWindow();
-   gdk_window_set_cursor( widget->window,
-            (GdkCursor*) hb_parnl(1) );
+   gdk_window_set_cursor( widget->window, (GdkCursor*) hb_parnl(1) );
 #endif
 }
 

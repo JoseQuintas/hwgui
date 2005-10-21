@@ -1,5 +1,5 @@
 /*
- *$Id: hcombo.prg,v 1.2 2005-09-21 13:20:30 lculik Exp $
+ *$Id: hcombo.prg,v 1.3 2005-10-21 08:50:15 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HComboBox class 
@@ -94,11 +94,8 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
 Return Self
 
 METHOD Activate CLASS HComboBox
-   #ifdef __GTK_USE_POINTER__
+
    IF !Empty(::oParent:handle )
-   #else
-   IF ::oParent:handle != 0
-   #endif
       ::handle := CreateCombo( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::hEdit := hwg_ComboGetEdit( ::handle )

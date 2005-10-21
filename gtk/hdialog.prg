@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.8 2005-09-21 13:20:30 lculik Exp $
+ *$Id: hdialog.prg,v 1.9 2005-10-21 08:50:15 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
@@ -119,20 +119,11 @@ Local hParent,oWnd
    ::lResult := .F.
    ::AddItem( Self,!lNoModal )
    IF !lNoModal
-   #ifdef __GTK_USE_POINTER__
       hParent := Iif( ::oParent!=Nil .AND. ;
              __ObjHasMsg( ::oParent,"HANDLE") .AND. ::oParent:handle != NIL ;
              .AND. !Empty(::oParent:handle ), ::oParent:handle, ;
              Iif( ( oWnd:=HWindow():GetMain() ) != Nil,    ;
              oWnd:handle,GetActiveWindow() ) )
-   #else
-
-      hParent := Iif( ::oParent!=Nil .AND. ;
-             __ObjHasMsg( ::oParent,"HANDLE") .AND. ::oParent:handle != Nil ;
-             .AND. ::oParent:handle > 0, ::oParent:handle, ;
-             Iif( ( oWnd:=HWindow():GetMain() ) != Nil,    ;
-             oWnd:handle,GetActiveWindow() ) )
-   #endif   
       hwg_Set_Modal( ::handle, hParent )
    ENDIF
    InitModalDlg( Self )
@@ -172,8 +163,11 @@ Local i, h := oWnd:handle
 RETURN Nil
 
 METHOD FindDialog( hWnd ) CLASS HDialog
+/*
 Local i := Ascan( ::aDialogs, {|o|o:handle==hWnd} )
 Return Iif( i == 0, Nil, ::aDialogs[i] )
+*/
+Return GetWindowObject(hWnd)
 
 METHOD GetActive() CLASS HDialog
 Local handle := GetFocus()
@@ -345,20 +339,28 @@ Return Iif( i>0, HDialog():aModalDialogs[i]:handle, 0 )
 
 Function EndDialog( handle )
 Local oDlg
+   // writelog("EndDialog-0 "+Valtype(handle)+" "+str(pCount()))
    IF handle == Nil
       IF ( oDlg := Atail( HDialog():aModalDialogs ) ) == Nil
+         // writelog("EndDialog-1")
          Return Nil
       ENDIF
    ELSE
+      /*
       IF ( ( oDlg := Atail( HDialog():aModalDialogs ) ) == Nil .OR. ;
             oDlg:handle != handle ) .AND. ;
          ( oDlg := HDialog():FindDialog(handle) ) == Nil
+         // writelog("EndDialog-2")
          Return Nil
       ENDIF
+      */
+      oDlg := GetWindowObject( handle )
    ENDIF
    IF oDlg:bDestroy != Nil .AND. !Eval( oDlg:bDestroy, oDlg )
+      // writelog("EndDialog-3")
       Return Nil
    ENDIF
+   // writelog("EndDialog-10")
 Return  hwg_DestroyWindow( oDlg:handle )
 
 Function SetDlgKey( oDlg, nctrl, nkey, block )

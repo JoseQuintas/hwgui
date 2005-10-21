@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.12 2005-09-20 17:20:56 lculik Exp $
+ * $Id: window.c,v 1.13 2005-10-21 08:50:15 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -91,7 +91,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    int width = hb_parnl(10);
    int height = hb_parnl(11);
 
-   #ifdef __GTK_USE_POINTER__
+   #ifdef __XHARBOUR__
    HB_ITEM_NEW(temp);
    #else
    PHB_ITEM temp;
@@ -114,22 +114,17 @@ HB_FUNC( HWG_INITMAINWINDOW )
    gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 2 );
 
    #ifdef __GTK_USE_POINTER__
-   {
-   SetObjectVar( pObject, "_FBOX", hb_itemPutPtr( &temp, (void*)box ) );
-   SetObjectVar( pObject, "_NHOLDER", hb_itemPutNL( NULL, 1 ) );
-   hb_itemClear( &temp );
-   }
+   temp = hb_itemPutPtr( NULL, (void*)box );
    #else
-   {
    temp = hb_itemPutNL( NULL, (LONG)box );
+   #endif
    SetObjectVar( pObject, "_FBOX", temp );
    hb_itemRelease( temp );
 
    temp = hb_itemPutNL( NULL, 1 );
    SetObjectVar( pObject, "_NHOLDER", temp );
    hb_itemRelease( temp );
-   }
-   #endif
+   
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
    all_signal_connect( G_OBJECT (hWnd) );
@@ -154,7 +149,7 @@ HB_FUNC( HWG_CREATEDLG )
    int y = hb_itemGetNI( GetObjectVar( pObject, "NTOP" ) );
    int width = hb_itemGetNI( GetObjectVar( pObject, "NWIDTH" ) );
    int height = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
-   #ifdef __GTK_USE_POINTER__
+   #ifdef __XHARBOUR__
    HB_ITEM_NEW( temp);
    #else
    PHB_ITEM temp;
@@ -175,22 +170,17 @@ HB_FUNC( HWG_CREATEDLG )
    box = (GtkFixed*)gtk_fixed_new();
    gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 2 );
    #ifdef __GTK_USE_POINTER__
-   {
-   SetObjectVar( pObject, "_FBOX", hb_itemPutPtr( &temp, (void*)box ) );
-   SetObjectVar( pObject, "_NHOLDER", hb_itemPutNL( &temp, 1 ) );
-   hb_itemClear( &temp );
-   }
+   temp = hb_itemPutPtr( NULL, (void*)box );
    #else
-   {
    temp = hb_itemPutNL( NULL, (LONG)box );
+   #endif
    SetObjectVar( pObject, "_FBOX", temp );
    hb_itemRelease( temp );
 
    temp = hb_itemPutNL( NULL, 1 );
    SetObjectVar( pObject, "_NHOLDER", temp );
    hb_itemRelease( temp );
-   }
-   #endif
+   
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
    all_signal_connect( G_OBJECT (hWnd) );
@@ -416,11 +406,7 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       hb_vmPushLong( p2 );
       hb_vmPushLong( p3 );
       hb_vmSend( 3 );
-      #ifndef __XHARBOUR__
-      lRes = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-      #else
-      lRes = hb_itemGetNL( (PHB_ITEM) hb_stackReturnItem() );
-      #endif
+      lRes = hb_parnl( -1 );
       hb_itemRelease( pObject );
       return lRes;
    }
@@ -637,15 +623,34 @@ HB_FUNC( HWG_WINDOWMINIMIZE )
 #endif
 }
 
+PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
+{
+#ifdef __XHARBOUR__
+   return hb_objSendMsg( pObject, varname, 0 );
+#else
+   hb_objSendMsg( pObject, varname, 0 );
+#ifndef HARBOUR_OLD_VERSION
+   return ( hb_stackReturnItem() );
+#else
+   return ( hb_stackReturn() );
+#endif
+#endif
+}
+            
+void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )
+{
+   hb_objSendMsg( pObject, varname, 1, pValue );
+}
 
+/*               
 PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
 {
    PHB_DYNS pMsg = hb_dynsymGet( varname );
 
    if( pMsg )
    {
-      hb_vmPushSymbol( pMsg->pSymbol );   /* Push message symbol */
-      hb_vmPush( pObject );               /* Push object */
+      hb_vmPushSymbol( pMsg->pSymbol );
+      hb_vmPush( pObject );
 
       hb_vmDo( 0 );
    }
@@ -662,13 +667,14 @@ void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )
 
    if( pMsg )
    {
-      hb_vmPushSymbol( pMsg->pSymbol );   /* Push message symbol */
-      hb_vmPush( pObject );               /* Push object */
-      hb_vmPush( pValue );                /* Push value */
+      hb_vmPushSymbol( pMsg->pSymbol );
+      hb_vmPush( pObject );
+      hb_vmPush( pValue );
 
       hb_vmDo( 1 );
    }
 }
+*/
 
 HB_FUNC( HWG_DECREASEHOLDERS )
 {
@@ -710,14 +716,10 @@ HB_FUNC( HWG_DESTROYWINDOW )
 HB_FUNC( HWG_SET_MODAL )
 {
 #ifdef __GTK_USE_POINTER__
-{
    gtk_window_set_modal( (GtkWindow *) hb_parptr(1), 1 );
    gtk_window_set_transient_for( (GtkWindow *) hb_parptr(1), (GtkWindow *) hb_parptr(2) );
-}
 #else
-{
    gtk_window_set_modal( (GtkWindow *) hb_parnl(1), 1 );
    gtk_window_set_transient_for( (GtkWindow *) hb_parnl(1), (GtkWindow *) hb_parnl(2) );
-}
 #endif
 }

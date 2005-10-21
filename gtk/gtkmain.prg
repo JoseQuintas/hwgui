@@ -1,5 +1,5 @@
 /*
- * $Id: gtkmain.prg,v 1.5 2005-09-05 05:08:56 alkresin Exp $
+ * $Id: gtkmain.prg,v 1.6 2005-10-21 08:51:52 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Main prg level functions
@@ -50,8 +50,8 @@ Local cRes := ""
    @ 20,10 SAY cText SIZE 260,22
    @ 20,35 GET cres  SIZE 260,26 STYLE WS_DLGFRAME + WS_TABSTOP + nStyle
 
-   @ 20,95 BUTTON "Ok" ID IDOK SIZE 100,32 // ON CLICK {||oModDlg:lResult:=.T.,EndDialog()}
-   @ 180,95 BUTTON "Cancel" ID IDCANCEL SIZE 100,32 // ON CLICK {||EndDialog()}
+   @ 20,95 BUTTON "Ok" ID IDOK SIZE 100,32 ON CLICK {||oModDlg:lResult:=.T.,EndDialog()}
+   @ 180,95 BUTTON "Cancel" ID IDCANCEL SIZE 100,32 ON CLICK {||EndDialog()}
 
    ACTIVATE DIALOG oModDlg
 

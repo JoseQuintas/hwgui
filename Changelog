@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.428 2005-10-21 08:50:15 alkresin Exp $
+ * $Id: Changelog,v 1.429 2005-10-21 09:26:22 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-21 13:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/hbrowse.prg
+     * Added handling of keyboard events, defined with SET KEY 
+   * source/hedit.prg
+     * Handling of keyboard events, defined with SET KEY, is allowed for simple
+       ( non GET ) EDITBOX, too.
 
 2005-10-21 12:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * gtk/commond.c

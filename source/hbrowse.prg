@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.59 2005-10-19 10:04:26 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.60 2005-10-21 09:26:22 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -231,7 +231,7 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
-Local aCoors
+Local aCoors, oParent, cKeyb, nCtrl, nPos
 Static keyCode := 0
 
    // WriteLog( "Brw: "+Str(::handle,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
@@ -283,6 +283,20 @@ Static keyCode := 0
             keyCode := 0
             ::Edit()
          ENDIF
+         IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
+            oParent := ::oParent
+            DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
+               oParent := oParent:oParent
+            ENDDO
+            IF oParent != Nil .AND. !Empty( oParent:KeyList )
+               cKeyb := GetKeyboardState()
+               nCtrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
+               IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nCtrl.AND.a[2]==wParam} ) ) > 0
+                  Eval( oParent:KeyList[ nPos,3 ] )
+               ENDIF
+            ENDIF
+         ENDIF
+
          Return 1
 
       ELSEIF msg == WM_KEYDOWN

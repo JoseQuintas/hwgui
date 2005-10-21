@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.43 2005-10-19 10:04:26 alkresin Exp $
+ *$Id: hedit.prg,v 1.44 2005-10-21 09:26:22 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -207,17 +207,15 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
    ENDIF
 
    IF msg == WM_KEYUP
-      IF ::bSetGet != Nil
-         IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
-            DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
-               oParent := oParent:oParent
-            ENDDO
-            IF oParent != Nil .AND. !Empty( oParent:KeyList )
-               cKeyb := GetKeyboardState()
-               nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
-               IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nctrl.AND.a[2]==wParam} ) ) > 0
-                  Eval( oParent:KeyList[ nPos,3 ] )
-               ENDIF
+      IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
+         DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
+            oParent := oParent:oParent
+         ENDDO
+         IF oParent != Nil .AND. !Empty( oParent:KeyList )
+            cKeyb := GetKeyboardState()
+            nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
+            IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nctrl.AND.a[2]==wParam} ) ) > 0
+               Eval( oParent:KeyList[ nPos,3 ] )
             ENDIF
          ENDIF
       ENDIF

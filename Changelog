@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.430 2005-10-22 02:21:02 lculik Exp $
+ * $Id: Changelog,v 1.431 2005-10-22 13:14:22 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,18 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-22 11:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+   * source/hhyper.prg
+     ! source for an static text with hyper link control
+   * source/hdc.prg
+     ! an class with some HDC functions wrappers
+   * include/guilib.ch
+     ! Added Command for @ SAY link
+   * makefile.*
+     ! Updated to reflect new files added
+   * samples/a.prg
+     ! changed openabout function To add two links on the dialog
 
 2005-10-22 00:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/drawtext.c

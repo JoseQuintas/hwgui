@@ -66,6 +66,7 @@ $(LIB_DIR)\hwguidll.dll:   \
    $(OBJ_DIR)\hsplit.obj \
    $(OBJ_DIR)\htab.obj \
    $(OBJ_DIR)\htimer.obj \
+   $(OBJ_DIR)\hdc.obj \
    $(OBJ_DIR)\htree.obj \
    $(OBJ_DIR)\hupdown.obj \
    $(OBJ_DIR)\hwindow.obj \
@@ -87,7 +88,9 @@ $(LIB_DIR)\hwguidll.dll:   \
    $(OBJ_DIR)\hwg_qhtm.obj \
    $(OBJ_DIR)\hqhtm.obj \
    $(OBJ_DIR)\hgrid.obj \
-   $(OBJ_DIR)\grid.obj
+   $(OBJ_DIR)\grid.obj \
+   $(OBJ_DIR)\hdc.obj \
+   $(OBJ_DIR)\hhyper.obj 
 
   ILINK32 -Tpd -Gn /L$(BCC)\lib;$(BCC)\lib\PSDK;$(HRB_DIR)\lib\ @&&|
   $** c0d32w.obj , $(LIB_DIR)\hwguidll.dll, $(LIB_DIR)\hwguidll.map, cw32 harbour.lib import32.lib  uuid.lib
@@ -132,6 +135,8 @@ $(OBJ_DIR)\hmonthc.c    : $(SRC_DIR)\hmonthc.prg
 $(OBJ_DIR)\htrackbr.c   : $(SRC_DIR)\htrackbr.prg
 $(OBJ_DIR)\hanimat.c    : $(SRC_DIR)\hanimat.prg
 $(OBJ_DIR)\hgrid.c      : $(SRC_DIR)\hgrid.prg
+$(OBJ_DIR)\hhyper.c     : $(SRC_DIR)\hhyper.prg
+$(OBJ_DIR)\hdc.c        : $(SRC_DIR)\hdc.prg
 
 # maindll DLL entry point. Harbour.dll uses maindllh.obj
 $(OBJ_DIR)\maindllh.obj   : $(HRB_DIR)\source\vm\maindllh.c
@@ -193,6 +198,9 @@ $(OBJ_DIR)\htrackbr.obj : $(OBJ_DIR)\htrackbr.c
 $(OBJ_DIR)\hanimat.obj  : $(OBJ_DIR)\hanimat.c
 $(OBJ_DIR)\grid.obj     : $(SRC_DIR)\grid.c
 $(OBJ_DIR)\hgrid.obj    : $(OBJ_DIR)\hgrid.c
+$(OBJ_DIR)\hdc.obj      : $(OBJ_DIR)\hdc.c
+$(OBJ_DIR)\hhyper.obj   : $(OBJ_DIR)\hhyper.c
+
 
 $(OBJ_DIR)\procini.c   : $(SRC_DIR)\procmisc\procini.prg
 $(OBJ_DIR)\procs7.c    : $(SRC_DIR)\procmisc\procs7.prg

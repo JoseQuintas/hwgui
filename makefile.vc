@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.12 2005-08-29 09:04:56 alkresin Exp $
+# $Id: makefile.vc,v 1.13 2005-10-22 13:14:22 lculik Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -70,6 +70,8 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\menu.obj \
    $(OBJ_DIR)\video.obj \
    $(OBJ_DIR)\tmci.obj \
+   $(OBJ_DIR)\hhyper.obj \
+   $(OBJ_DIR)\hdc.obj \
    $(OBJ_DIR)\repexec.obj
   lib /out:$@ $**
 
@@ -141,6 +143,8 @@ $(OBJ_DIR)\htree.c      : $(SRC_DIR)\htree.prg
 $(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
 $(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
 $(OBJ_DIR)\hwindow.obj  : $(OBJ_DIR)\hwindow.c
+$(OBJ_DIR)\hhyper.obj   : $(OBJ_DIR)\hhyper.c
+$(OBJ_DIR)\hdc.obj      : $(OBJ_DIR)\hdc.c
 $(OBJ_DIR)\hwinprn.obj  : $(OBJ_DIR)\hwinprn.c
 $(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
 $(OBJ_DIR)\video.obj    : $(OBJ_DIR)\video.c
@@ -153,6 +157,11 @@ $(OBJ_DIR)\hdialog.c    : $(SRC_DIR)\hdialog.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\hwindow.c    : $(SRC_DIR)\hwindow.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hhyper.c    : $(SRC_DIR)\hhyper.prg
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hdc.c    : $(SRC_DIR)\hdc.prg
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+
 $(OBJ_DIR)\hwinprn.c    : $(SRC_DIR)\hwinprn.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\hcontrol.c   : $(SRC_DIR)\hcontrol.prg

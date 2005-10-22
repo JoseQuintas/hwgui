@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.60 2005-09-23 12:29:13 mauriliolongo Exp $
+ *$Id: guilib.ch,v 1.61 2005-10-22 13:14:22 lculik Exp $
  */
 #define HWG_VERSION           "2.14"
 #define	WND_MAIN		1
@@ -1270,3 +1270,46 @@ Added by Marcos Antonio Gambeta
 #xcommand @ <X>, <Y>, <X2>, <Y2> RECT <oRect> [<lPress: PRESS>] [OF <oWnd>] [RECT_STYLE <nST>];
           => <oRect> := HRect():New(<oWnd>,<X>,<Y>,<X2>,<Y2>, <.lPress.>, <nST> )
 
+//New Control
+#xcommand @ <x>,<y> SAY [ <oSay> CAPTION ] <caption> ;
+            [ OF <oWnd> ]              ;
+            LINK <cLink>               ;   
+            [ ID <nId> ]               ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [<lTransp: TRANSPARENT>]   ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ STYLE <nStyle> ]         ;
+            [ FONT <oFont> ]           ;
+            [ TOOLTIP <ctoolt> ]       ;
+            [ VISITCOLOR <vcolor> ]    ;
+            [ LINKCOLOR <lcolor> ]     ;
+            [ HOVERCOLOR <hcolor> ]    ;
+          => ;
+    [<oSay> := ] HStaticLink():New( <oWnd>, <nId>, <nStyle>, <x>, <y>, <width>, ;
+        <height>, <caption>, <oFont>, <bInit>, <bSize>, <bDraw>, <ctoolt>, ;
+        <color>, <bcolor>, <.lTransp.>, <cLink>, <vcolor>, <lcolor>, <hcolor> )
+
+
+#xcommand REDEFINE SAY [ <oSay> CAPTION ] <cCaption>      ;
+            [ OF <oWnd> ]              ;
+            ID <nId>                   ;
+            LINK <cLink>               ;   
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [<lTransp: TRANSPARENT>]   ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ FONT <oFont> ]           ;
+            [ TOOLTIP <ctoolt> ]       ;
+            [ VISITCOLOR <vcolor> ]    ;
+            [ LINKCOLOR <lcolor> ]     ;
+            [ HOVERCOLOR <hcolor> ]    ;
+          => ;
+    [<oSay> := ] HStaticLink():Redefine( <oWnd>, <nId>, <cCaption>, ;
+        <oFont>, <bInit>, <bSize>, <bDraw>, <ctoolt>, <color>, <bcolor>,;
+        <.lTransp.>, <cLink>, <vcolor>, <lcolor>, <hcolor> )

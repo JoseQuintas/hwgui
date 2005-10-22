@@ -1,4 +1,4 @@
-# $Id: makefile.wc,v 1.9 2005-08-29 09:04:56 alkresin Exp $
+# $Id: makefile.wc,v 1.10 2005-10-22 13:14:22 lculik Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -109,7 +109,10 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\htrackbr.obj \
    $(OBJ_DIR)\hanimat.obj \
    $(OBJ_DIR)\hnice.obj \
-   $(OBJ_DIR)\grid.obj
+   $(OBJ_DIR)\grid.obj \
+   $(OBJ_DIR)\hdc.obj \
+   $(OBJ_DIR)\hhyper.obj 
+
 
 $(HWGUI_LIB) : $(HWGUI_LIB_OBJS)
    $(LIB_EXE) /nologo /out:$@ $**
@@ -454,6 +457,19 @@ $(OBJ_DIR)\window.obj : $(SRC_DIR)\window.c
 
 $(OBJ_DIR)\wprint.obj : $(SRC_DIR)\wprint.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hdc.c : $(SRC_DIR)\hdc.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hdc.obj : $(OBJ_DIR)\hdc.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hhyper.c : $(SRC_DIR)\hhyper.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hhyper.obj : $(OBJ_DIR)\hhyper.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
 
 # 旼컴컴컴컴컴컴컴컴컴컴컴커
 # � QHTM.LIB Dependencies  넴

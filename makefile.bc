@@ -6,7 +6,7 @@ INCLUDE_DIR = include;$(HRB_DIR)\include
 OBJ_DIR = obj
 LIB_DIR = lib
 SRC_DIR = source
-#C_DEFINES= -DHB_THREAD_SUPPORT
+#C_DEFINES= -v -y
 #H_DEFINES= -DHB_THREAD_SUPPORT
 
 C_DEFINES= $(CFLAGS)
@@ -40,6 +40,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\media_c.obj \
    $(OBJ_DIR)\menu_c.obj \
    $(OBJ_DIR)\message.obj \
+   $(OBJ_DIR)\errorsys.obj \
    $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\registry.obj \
    $(OBJ_DIR)\nice.obj \
@@ -49,7 +50,6 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\window.obj \
    $(OBJ_DIR)\wprint.obj \
    $(OBJ_DIR)\drawwidg.obj \
-   $(OBJ_DIR)\errorsys.obj \
    $(OBJ_DIR)\guimain.obj \
    $(OBJ_DIR)\hbrowse.obj \
    $(OBJ_DIR)\hcheck.obj \
@@ -89,6 +89,8 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\listbox.obj \
    $(OBJ_DIR)\repexec.obj \
    $(OBJ_DIR)\printdos.obj \
+   $(OBJ_DIR)\hdc.obj \
+   $(OBJ_DIR)\hhyper.obj \
    $(OBJ_DIR)\richtext.obj
 
 
@@ -135,6 +137,8 @@ $(OBJ_DIR)\hradio.c     : $(SRC_DIR)\hradio.prg
 $(OBJ_DIR)\hsayimg.c    : $(SRC_DIR)\hsayimg.prg
 $(OBJ_DIR)\hsplash.c    : $(SRC_DIR)\hsplash.prg
 $(OBJ_DIR)\hsplit.c     : $(SRC_DIR)\hsplit.prg
+$(OBJ_DIR)\hdc.c        : $(SRC_DIR)\hdc.prg
+$(OBJ_DIR)\hhyper.c     : $(SRC_DIR)\hhyper.prg
 $(OBJ_DIR)\htab.c       : $(SRC_DIR)\htab.prg
 $(OBJ_DIR)\htimer.c     : $(SRC_DIR)\htimer.prg
 $(OBJ_DIR)\htree.c      : $(SRC_DIR)\htree.prg
@@ -180,6 +184,8 @@ $(OBJ_DIR)\hcontrol.obj : $(OBJ_DIR)\hcontrol.c
 $(OBJ_DIR)\hcwindow.obj : $(OBJ_DIR)\hcwindow.c
 $(OBJ_DIR)\hdatepic.c   : $(SRC_DIR)\hdatepic.prg
 $(OBJ_DIR)\hdialog.obj  : $(OBJ_DIR)\hdialog.c
+$(OBJ_DIR)\hdc.obj      : $(OBJ_DIR)\hdc.c
+$(OBJ_DIR)\hhyper.obj   : $(OBJ_DIR)\hhyper.c
 $(OBJ_DIR)\hedit.obj    : $(OBJ_DIR)\hedit.c
 $(OBJ_DIR)\hfreeimg.obj : $(OBJ_DIR)\hfreeimg.c
 $(OBJ_DIR)\hfrmtmpl.obj : $(OBJ_DIR)\hfrmtmpl.c
@@ -247,7 +253,7 @@ $(OBJ_DIR)\xmlparse.obj : $(SRC_DIR)\xml\xmlparse.c
   tlib $(LIB_DIR)\hbxml.lib -+$@,,
 
 .c.obj:
-  bcc32 -c $(C_DEFINES)  -I$(INCLUDE_DIR) -o$@ $<
+  bcc32 -c -tW  -I$(INCLUDE_DIR) -o$@ $<
   tlib $(LIB_DIR)\hwgui.lib /P128 -+$@,,
 
 .prg.c:

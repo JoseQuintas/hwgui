@@ -1,4 +1,4 @@
-# $Id: makefile.pc,v 1.11 2005-08-29 09:04:56 alkresin Exp $
+# $Id: makefile.pc,v 1.12 2005-10-22 13:14:22 lculik Exp $
 # makefile for Pelles C 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -114,8 +114,9 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hsplash.obj \
    $(OBJ_DIR)\hmonthc.obj \
    $(OBJ_DIR)\hgrid.obj \
-   $(OBJ_DIR)\grid.obj
-
+   $(OBJ_DIR)\grid.obj  \
+   $(OBJ_DIR)\hdc.obj  \
+   $(OBJ_DIR)\hhyper.obj 
 $(HWGUI_LIB) : $(HWGUI_LIB_OBJS)
    $(LIB_EXE) /out:$@ $**
 
@@ -465,6 +466,19 @@ $(OBJ_DIR)\window.obj : $(SRC_DIR)\window.c
 
 $(OBJ_DIR)\wprint.obj : $(SRC_DIR)\wprint.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hdc.c : $(SRC_DIR)\hdc.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hdc.obj : $(OBJ_DIR)\hdc.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hhyper.c : $(SRC_DIR)\hhyper.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hhyper.obj : $(OBJ_DIR)\hhyper.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
 
 # 旼컴컴컴컴컴컴컴컴컴컴컴커
 # � QHTM.LIB Dependencies  넴

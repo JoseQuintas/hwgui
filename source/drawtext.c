@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.8 2005-10-22 02:21:02 lculik Exp $
+ * $Id: drawtext.c,v 1.9 2005-10-22 02:56:58 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -412,14 +412,14 @@ HB_FUNC( ANSITOOEM )
 HB_FUNC( CREATERECTRGNINDIRECT )
 {
    HRGN reg  ;
-   RECT rc = (LPRECT) hb_parptr( 1 )  ;
+   RECT rc;
    rc.left = hb_parni( 2 );
    rc.top = hb_parni( 3 );
    rc.right = hb_parni( 4 );
    rc.bottom = hb_parni( 5 );
 
    reg =CreateRectRgnIndirect(  &rc);
-   hb_retnl( ( LONG) ) reg);
+   hb_retnl( ( LONG)  reg);
 }
 
 

@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.21 2005-07-19 13:04:17 alkresin Exp $
+ *$Id: windows.ch,v 1.22 2005-10-22 02:21:02 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -871,3 +871,19 @@
 #define TBM_GETNUMTICS          (WM_USER+16)
 
 #define CW_USEDEFAULT           2147483648          // 0x80000000
+#define CCM_FIRST               0x2000      // Common control shared messages
+#define CCM_LAST                (CCM_FIRST + 0x200)
+
+
+#define CCM_SETBKCOLOR          (CCM_FIRST + 1) // lParam is bkColor
+#define PBM_SETBARCOLOR         (WM_USER+9)             // lParam = bar color
+#define PBM_SETBKCOLOR          CCM_SETBKCOLOR  // lParam = bkColor
+#define TRANSPARENT         1
+#define DEFAULT_QUALITY         0
+#define DRAFT_QUALITY           1
+#define PROOF_QUALITY           2
+#define WM_SETCURSOR                    0x0020
+
+#define WM_REFLECT_BASE 0xBC00
+#define WM_CTLCOLOR     0x0019
+#define WM_CTLCOLOR_REFLECT  WM_CTLCOLOR+WM_REFLECT_BASE

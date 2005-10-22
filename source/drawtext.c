@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.7 2005-10-17 21:24:35 lculik Exp $
+ * $Id: drawtext.c,v 1.8 2005-10-22 02:21:02 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -283,7 +283,7 @@ HB_FUNC( EXTTEXTOUT )
 {
 
    RECT rc= { 0 };
-   char *cText = hb_parc( 8 );
+   char *cText =  ISCHAR(8) ? hb_parc( 8 ) : NULL;
 
    rc.left = hb_parni( 4 );
    rc.top = hb_parni( 5 );
@@ -296,8 +296,8 @@ HB_FUNC( EXTTEXTOUT )
     hb_parni( 3 ),	// y-coordinate of reference point 
     ETO_OPAQUE,  	// text-output options 
     &rc,	        // optional clipping and/or opaquing rectangle 
-    (LPCTSTR) cText,	// points to string 
-    strlen( cText ),	// number of characters in string 
+    ISCHAR(8)? (LPCTSTR) cText :NULL, // points to string 
+    ISCHAR(8)? strlen( cText ) : 0, // number of characters in string 
     NULL        	// pointer to array of intercharacter spacing values  
    );
 }
@@ -407,3 +407,44 @@ HB_FUNC( ANSITOOEM )
    }
 }
 #endif
+
+
+HB_FUNC( CREATERECTRGNINDIRECT )
+{
+   HRGN reg  ;
+   RECT rc = (LPRECT) hb_parptr( 1 )  ;
+   rc.left = hb_parni( 2 );
+   rc.top = hb_parni( 3 );
+   rc.right = hb_parni( 4 );
+   rc.bottom = hb_parni( 5 );
+
+   reg =CreateRectRgnIndirect(  &rc);
+   hb_retnl( ( LONG) ) reg);
+}
+
+
+HB_FUNC( EXTSELECTCLIPRGN)
+{
+   hb_retni(ExtSelectClipRgn((HDC)hb_parnl(1),(HRGN) hb_parnl(2),hb_parni(3)) );
+}
+
+HB_FUNC( SELECTCLIPRGN )
+{
+   hb_retni( SelectClipRgn( (HDC) hb_parnl( 1 ) , (HRGN) hb_parnl( 2 ) )  ) ;
+}
+
+
+HB_FUNC( CREATEFONTINDIRECT )
+{
+	LOGFONT lf;
+   HFONT f;
+	memset(&lf,0,sizeof(LOGFONT));
+   lf.lfQuality = hb_parni( 4 );
+   lf.lfHeight = hb_parni( 3 );
+   lf.lfWeight = hb_parni( 2 );
+   lstrcpy(lf.lfFaceName, hb_parc(1));
+
+   f =CreateFontIndirect( &lf );
+   hb_retnl( ( LONG ) f );
+}
+

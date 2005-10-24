@@ -1,8 +1,15 @@
+/*
+ * $Id: hhyper.prg,v 1.2 2005-10-24 11:17:01 alkresin Exp $
+ *
+ * HWGUI - Harbour Win32 GUI library source code:
+ * HStaticLink class
+ *
+*/
 
-#include "windows.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "common.ch"
+#include "hwgui.ch"
+
 #define _HYPERLINK_EVENT WM_USER + 101
 #define LBL_INIT    0 
 #define LBL_NORMAL  1
@@ -33,39 +40,25 @@ CLASS HStaticLink FROM HSTATIC
    DATA m_sLinkColor 
    DATA m_sVisitedColor 
 
-
    CLASS VAR winclass INIT "STATIC"
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-   bSize, bPaint, ctoolt, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
+              bSize, bPaint, ctoolt, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
    METHOD Redefine( oWndParent,nId,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor,lTransp, cLink, vColor, lColor, hColor )
-
+              bSize,bPaint,ctoolt,tcolor,bcolor,lTransp, cLink, vColor, lColor, hColor )
    METHOD INIT()
-
    METHOD onEvent( msg, wParam, lParam )
    METHOD GoToLinkUrl( csLink )
-
    METHOD GetLinkText()
-
    METHOD SetLinkUrl( csUrl )
-
    METHOD GetLinkUrl()
-
    METHOD SetVisitedColor( sVisitedColor )
-
    METHOD SetHoverColor( cHoverColor )
-
-   METHOD SetFireChild( nFlag )
-
+   METHOD SetFireChild( lFlag )  INLINE ::m_bFireChild := lFlag
    METHOD OnClicked()
-
    METHOD OnSetCursor( pWnd, nHitTest, message )
-
    METHOD SetLinkText( csLinkText )
-
    METHOD SetLinkColor( sLinkColor )
-
    METHOD PAINT()
    METHOD OnMouseMove( nFlags, point )
 
@@ -220,22 +213,10 @@ METHOD SetHoverColor( cHoverColor ) CLASS HStaticLink
 
 RETURN NIL
 
-METHOD SetFireChild( nFlag ) CLASS HStaticLink
-
-   IF ( nFlag )
-      m_bFireChild := .t.
-
-   ELSE
-      m_bFireChild := .f.
-   ENDIF
-
-RETURN NIL
-
 METHOD OnClicked() CLASS HStaticLink
-
 LOCAL nCtrlID
+
    IF ( ::m_bFireChild )
-      pParent := ::oparent
       nCtrlID := ::id
       ::SendMessage( ::oparent:Handle, _HYPERLINK_EVENT, nCtrlID, 0 )
       //::PostMessage(pParent->m_hWnd, __EVENT_ID_, (WPARAM)nCtrlID, 0)
@@ -292,14 +273,14 @@ LOCAL res  := .f.
          PostMessage( ::handle, WM_PAINT, 0, 0 )
       ENDIF
       IF (::state == LBL_NORMAL .AND. !res) .or. ;
-         (::state == LBL_NORMAL .AND. !res .and. ::m_bVisited )
+              (::state == LBL_NORMAL .AND. !res .and. ::m_bVisited )
          ::state := LBL_MOUSEOVER
          InvalidateRect( ::handle, 0 )
          PostMessage( ::handle, WM_PAINT, 0, 0 )
          SetCapture( ::handle )
       ENDIF
 
-ENDIF
+   ENDIF
 RETURN NIL
 
 METHOD PAint() CLASS HStaticLink
@@ -325,7 +306,6 @@ LOCAL rgn
 LOCAL rc
 LOCAL POLDFONT
 LOCAL DWSTYLE
-
 LOCAL hRect
 
    ::dc := HPAINTDC():new( ::handle )
@@ -337,24 +317,24 @@ LOCAL hRect
    nOldBkMode :=::dc:SetBkMode( TRANSPARENT )
    dwFlags    := 0
    dwstyle    := ::style
-#IFdef __XHARBOUR__
-   SWITCH( dwstyle & SS_TYPEMASK )
 
-CASE SS_RIGHT
-   dwFlags := DT_RIGHT | DT_WORDBREAK
-   EXIT
-CASE SS_CENTER
-   dwFlags := SS_CENTER | DT_WORDBREAK
-   EXIT
-CASE SS_LEFTNOWORDWRAP
-   dwFlags := DT_LEFT
-   EXIT
-   DEFAULT
-   dwFlags := DT_LEFT | DT_WORDBREAK
-   EXIT
+#ifdef __XHARBOUR__
+   SWITCH( dwstyle & SS_TYPEMASK )
+   CASE SS_RIGHT
+      dwFlags := DT_RIGHT | DT_WORDBREAK
+      EXIT
+   CASE SS_CENTER
+      dwFlags := SS_CENTER | DT_WORDBREAK
+      EXIT
+   CASE SS_LEFTNOWORDWRAP
+      dwFlags := DT_LEFT
+      EXIT
+      DEFAULT
+      dwFlags := DT_LEFT | DT_WORDBREAK
+      EXIT
    END
-#ENDIF
-   dwFlags  += ( DT_VCENTER | DT_END_ELLIPSIS )
+#endif
+   dwFlags  += ( DT_VCENTER + DT_END_ELLIPSIS )
 
    pOldFont :=::dc:SelectObject( ::oFont:handle )
    IF ::state == LBL_NORMAL
@@ -369,7 +349,6 @@ CASE SS_LEFTNOWORDWRAP
 
    ::dc:DrawText( strText, rcClient, dwFlags )
    ::dc:end()
+
 RETURN NIL
-
-
 

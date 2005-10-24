@@ -1,5 +1,5 @@
 /*
- * $Id: hdc.prg,v 1.1 2005-10-22 14:54:36 lculik Exp $
+ * $Id: hdc.prg,v 1.2 2005-10-24 11:17:01 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPAINTDC and HDC Classes    
@@ -8,18 +8,19 @@
  * www - http://sites.uol.com.br/culikr/
 */
 
-#include "windows.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 CLASS HPAINTDC FROM HDC
 
-   private:
+   DATA m_ps
+
+   METHOD NEW( nWnd )
+   METHOD END ()
+
+   HIDDEN:
       DATA m_hWnd
-   public:
-      DATA m_ps
-      METHOD NEW( nWnd )
-      METHOD END ()
+
 ENDCLASS
 
 METHOD NEW( nWnd ) CLASS HPAINTDC

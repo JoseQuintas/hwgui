@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.39 2005-10-19 10:04:27 alkresin Exp $
+ * $Id: window.c,v 1.40 2005-10-25 12:14:24 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -188,8 +188,13 @@ HB_FUNC( HWG_PROCESSMESSAGE )
 
    MSG msg;
    BOOL lMdi = (ISNIL(1))? 0 : hb_parl(1);
-   if( GetMessage( &msg, NULL, 0, 0) )
-      ProcessMessage( msg, 0, lMdi );
+   int nSleep = (ISNIL(2))? 1 : hb_parni(2);
+
+   if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
+   {
+         ProcessMessage( msg, 0, lMdi );
+   }
+   SleepEx( nSleep, TRUE );
 
 }
 

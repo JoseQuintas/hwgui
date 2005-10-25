@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.434 2005-10-25 01:37:26 lculik Exp $
+ * $Id: Changelog,v 1.435 2005-10-25 12:14:24 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-25 16:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * include/windows.ch
+     - removed #define TRANSPARENT, because it interferes with OWNERBUTTON
+       declaration
+   * source/window.c
+     * hwg_ProcessMessage(): PeekMessage() is used now instead of GetMessage(),
+       for to not stop the program execution. Second parameter is added - nSleep,
+       which is a number of milliseconds the thread to sleep ( default = 1 ).
 
 2005-10-24 23:35 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    *source/misc.c

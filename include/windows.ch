@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.22 2005-10-22 02:21:02 lculik Exp $
+ *$Id: windows.ch,v 1.23 2005-10-25 12:14:24 alkresin Exp $
  */
 
 #define WM_CREATE                       1
@@ -878,7 +878,6 @@
 #define CCM_SETBKCOLOR          (CCM_FIRST + 1) // lParam is bkColor
 #define PBM_SETBARCOLOR         (WM_USER+9)             // lParam = bar color
 #define PBM_SETBKCOLOR          CCM_SETBKCOLOR  // lParam = bkColor
-#define TRANSPARENT         1
 #define DEFAULT_QUALITY         0
 #define DRAFT_QUALITY           1
 #define PROOF_QUALITY           2

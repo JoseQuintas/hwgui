@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.8 2005-09-03 23:01:30 lculik Exp $
+ * $Id: wprint.c,v 1.9 2005-10-25 01:37:26 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -153,7 +153,7 @@ HB_FUNC( HWG_GETPRINTERS )
          #endif
       }
       #ifdef __XHARBOUR__
-      hb_itemForwardValue( &(HB_VM_STACK).Return, &aMetr );
+      hb_itemForwardValue( hb_stackReturnItem(), &aMetr );
       #else
       {
       hb_itemReturn( aMetr );
@@ -283,7 +283,7 @@ HB_FUNC( GETDEVICEAREA )
    hb_arraySetForward( &aMetr, 9, hb_itemPutNL( &temp, GetDeviceCaps( hDC,PHYSICALHEIGHT ) ) );
 
    hb_itemClear( &temp );
-   hb_itemForwardValue( &(HB_VM_STACK).Return, &aMetr );
+   hb_itemForwardValue( hb_stackReturnItem(), &aMetr );
    }
 
    #else

@@ -148,7 +148,7 @@ HB_FUNC( GETDEVICEAREA )
    hb_arraySetForward( &aMetr, 7, hb_itemPutNL( &temp, GetDeviceCaps( hDC,RASTERCAPS ) ) );
 
    hb_itemClear( &temp );
-   hb_itemForwardValue( &(HB_VM_STACK).Return, &aMetr );
+   hb_itemForwardValue( hb_stackReturnItem(), &aMetr );
    }
    #else
    {

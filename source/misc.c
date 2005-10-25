@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.21 2005-10-17 21:24:35 lculik Exp $
+ * $Id: misc.c,v 1.22 2005-10-25 01:37:26 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -173,7 +173,7 @@ HB_FUNC( CLIENTTOSCREEN )
    hb_arraySetForward( &aPoint, 2, hb_itemPutNL( &temp, pt.y ) );   
 
    hb_itemClear( &temp );
-   hb_itemForwardValue( &(HB_VM_STACK).Return, &aPoint );
+   hb_itemForwardValue(  hb_stackReturnItem(), &aPoint );
    }
    #else
    {
@@ -213,7 +213,7 @@ HB_FUNC( SCREENTOCLIENT )
    hb_arraySetForward( &aPoint, 2, hb_itemPutNL( &temp, pt.y ) );   
 
    hb_itemClear( &temp );
-   hb_itemForwardValue( &(HB_VM_STACK).Return, &aPoint );
+   hb_itemForwardValue(  hb_stackReturnItem(), &aPoint );
    }
    #else
    {
@@ -252,7 +252,7 @@ HB_FUNC( HWG_GETCURSORPOS )
    hb_arraySetForward( &aPoint, 2, hb_itemPutNL( &temp, pt.y ) );
  
    hb_itemClear( &temp );
-   hb_itemForwardValue( &(HB_VM_STACK).Return, &aPoint );
+   hb_itemForwardValue(  hb_stackReturnItem(), &aPoint );
    }
    #else
    {

@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.19 2005-10-17 21:24:35 lculik Exp $
+ * $Id: commond.c,v 1.20 2005-10-25 01:37:26 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -131,7 +131,7 @@ HB_FUNC( SELECTFONT )
    hb_arraySetForward( &aMetr, 9, hb_itemPutNI( &temp, lf.lfStrikeOut ) );
 
    hb_itemClear( &temp );
-   hb_itemForwardValue( &(HB_VM_STACK).Return, &aMetr );
+   hb_itemForwardValue( hb_stackReturnItem(), &aMetr );
    }
    #else
    {

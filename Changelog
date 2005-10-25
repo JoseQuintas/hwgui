@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.435 2005-10-25 12:14:24 alkresin Exp $
+ * $Id: Changelog,v 1.436 2005-10-25 16:01:46 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-25 14:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+   * source/hbrowse.prg
+     ! updated to use an colorblock
+   * samples/colrbloc.prg
+     ! new Zebra example, show how to create browse like zebra colors
+   * include/guilib.ch
+     ! changes to browses commands. All changes above provided by Marcelo Sturm
 
 2005-10-25 16:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * include/windows.ch

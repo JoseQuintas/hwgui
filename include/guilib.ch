@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.61 2005-10-22 13:14:22 lculik Exp $
+ *$Id: guilib.ch,v 1.62 2005-10-25 16:01:46 lculik Exp $
  */
 #define HWG_VERSION           "2.14"
 #define	WND_MAIN		1
@@ -686,9 +686,10 @@
             [ WHEN <bWhen> ]           ;
             [ ITEMS <aItem> ]          ;
             [ BITMAP <oBmp> ]          ;
+            [ COLORBLOCK <bClrBlck> ]  ;
           => ;
     <oBrw>:AddColumn( HColumn():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
-                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <oBmp> ) )
+                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <oBmp>, <{bClrBlck}> ) )
 
 #xcommand INSERT COLUMN <block> TO <oBrw> ;
             [ HEADER <cHeader> ]       ;
@@ -703,10 +704,11 @@
             [ WHEN <bWhen> ]           ;
             [ ITEMS <aItem> ]          ;
             [ BITMAP <oBmp> ]          ;
+            [ COLORBLOCK <bClrBlck> ]  ;
             INTO <nPos>                ;
           => ;
     <oBrw>:InsColumn( HColumn():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
-                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <oBmp> ),<nPos> )
+                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <oBmp>, <{bClrBlck}> ),<nPos> )
 
 #xcommand @ <x>,<y> GRID <oGrid>        ;
             [ OF <oWnd> ]               ;

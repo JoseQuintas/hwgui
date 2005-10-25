@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.60 2005-10-21 09:26:22 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.61 2005-10-25 16:01:46 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -76,12 +76,12 @@ CLASS HColumn INHERIT HObject
                                  //      {textColor, backColor, textColorSel, backColorSel} , ;
                                  //      {textColor, backColor, textColorSel, backColorSel} ) }
 
-   METHOD New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin,cPict,bValid,bWhen,aItem,oBmp )
+   METHOD New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin,cPict,bValid,bWhen,aItem,oBmp, bColorBlock )
 
 ENDCLASS
 
 //----------------------------------------------------//
-METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, oBmp ) CLASS HColumn
+METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, oBmp, bColorBlock ) CLASS HColumn
 
    ::heading   := iif( cHeading == nil,"",cHeading )
    ::block     := block
@@ -96,6 +96,7 @@ METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict
    ::bWhen     := bWhen
    ::aList     := aItem
    ::aBitmaps  := oBmp
+   ::bColorBlock := bColorBlock
 
 RETURN Self
 
@@ -147,6 +148,7 @@ CLASS HBrowse INHERIT HControl
    DATA nHeadRows INIT 1                       // Rows in header
    DATA nFootRows INIT 0                       // Rows in footer
    DATA lResizing INIT .F.                     // .T. while a column resizing is undergoing
+   DATA nPaintRow, nPaintCol                   // Row/Col being painted
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
@@ -834,7 +836,7 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
-Local x, dx, i := 1, shablon, sviv, fif, fldname, slen, xSize
+Local x, dx, i := 1, shablon, sviv, fldname, slen, xSize
 Local j, ob, bw, bh, y1, hBReal
 Local oldBkColor, oldTColor, oldBk1Color, oldT1Color
 Local oLineBrush := Iif( lSelected, ::brushSel,::brush )
@@ -851,22 +853,23 @@ Local aCores
       oldBkColor := SetBkColor( hDC, Iif( lSelected,::bcolorSel,::bcolor ) )
       oldTColor  := SetTextColor( hDC, Iif( lSelected,::tcolorSel,::tcolor ) )
       fldname := SPACE( 8 )
-      fif     := IIF( ::freeze > 0, 1, ::nLeftCol )
+      ::nPaintCol  := IIF( ::freeze > 0, 1, ::nLeftCol )
+      ::nPaintRow  := nstroka
 
       WHILE x < ::x2 - 2
-         IF ::aColumns[fif]:bColorBlock != Nil
-            aCores := eval(::aColumns[fif]:bColorBlock)
+         IF ::aColumns[::nPaintCol]:bColorBlock != Nil
+            aCores := eval(::aColumns[::nPaintCol]:bColorBlock)
             IF lSelected
-              ::aColumns[fif]:tColor := aCores[3]
-              ::aColumns[fif]:bColor := aCores[4]
+              ::aColumns[::nPaintCol]:tColor := aCores[3]
+              ::aColumns[::nPaintCol]:bColor := aCores[4]
             ELSE
-              ::aColumns[fif]:tColor := aCores[1]
-              ::aColumns[fif]:bColor := aCores[2]
+              ::aColumns[::nPaintCol]:tColor := aCores[1]
+              ::aColumns[::nPaintCol]:bColor := aCores[2]
             ENDIF
-            ::aColumns[fif]:brush := HBrush():Add(::aColumns[fif]:bColor   )
+            ::aColumns[::nPaintCol]:brush := HBrush():Add(::aColumns[::nPaintCol]:bColor   )
          ENDIF
-         xSize := ::aColumns[fif]:width
-         IF ::lAdjRight .and. fif == LEN( ::aColumns )
+         xSize := ::aColumns[::nPaintCol]:width
+         IF ::lAdjRight .and. ::nPaintCol == LEN( ::aColumns )
             xSize := Max( ::x2 - x, xSize )
          ENDIF
          IF i == ::colpos
@@ -874,66 +877,63 @@ Local aCores
          ENDIF
 
          IF vybfld == 0 .OR. vybfld == i
-            IF ::aColumns[fif]:bColor != Nil .AND. ::aColumns[fif]:brush == Nil
-               ::aColumns[fif]:brush := HBrush():Add( ::aColumns[fif]:bColor )
+            IF ::aColumns[::nPaintCol]:bColor != Nil .AND. ::aColumns[::nPaintCol]:brush == Nil
+               ::aColumns[::nPaintCol]:brush := HBrush():Add( ::aColumns[::nPaintCol]:bColor )
             ENDIF
-            hBReal := Iif( ::aColumns[fif]:brush != Nil, ;
-                         ::aColumns[fif]:brush:handle,   ;
+            hBReal := Iif( ::aColumns[::nPaintCol]:brush != Nil, ;
+                         ::aColumns[::nPaintCol]:brush:handle,   ;
                          oLineBrush:handle )
-            FillRect( hDC, x, ::y1+(::height+1)*(nstroka-1)+1, x+xSize-Iif(::lSep3d,2,1),::y1+(::height+1)*nstroka, hBReal )
-            IF ::aColumns[fif]:bColorBlock != Nil
-               ::aColumns[fif]:brush:Release()
-            ENDIF
+            FillRect( hDC, x, ::y1+(::height+1)*(::nPaintRow-1)+1, x+xSize-Iif(::lSep3d,2,1),::y1+(::height+1)*::nPaintRow, hBReal )
             IF !lClear
-               IF ::aColumns[fif]:aBitmaps != Nil .AND. !Empty( ::aColumns[fif]:aBitmaps )
-                  FOR j := 1 TO Len( ::aColumns[fif]:aBitmaps )
-                     IF Eval( ::aColumns[fif]:aBitmaps[j,1],EVAL( ::aColumns[fif]:block,,Self,fif ),lSelected )
-                        ob := ::aColumns[fif]:aBitmaps[j,2]
+               IF ::aColumns[::nPaintCol]:aBitmaps != Nil .AND. !Empty( ::aColumns[::nPaintCol]:aBitmaps )
+                  FOR j := 1 TO Len( ::aColumns[::nPaintCol]:aBitmaps )
+                     IF Eval( ::aColumns[::nPaintCol]:aBitmaps[j,1],EVAL( ::aColumns[::nPaintCol]:block,,Self,::nPaintCol ),lSelected )
+                        ob := ::aColumns[::nPaintCol]:aBitmaps[j,2]
                         IF ob:nHeight > ::height
                            y1 := 0
                            bh := ::height
                            bw := Int( ob:nWidth * ( ob:nHeight / ::height ) )
-                           DrawBitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(nstroka-1)+1, bw, bh )
+                           DrawBitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(::nPaintRow-1)+1, bw, bh )
                         ELSE
                            y1 := Int( (::height-ob:nHeight)/2 )
                            bh := ob:nHeight
                            bw := ob:nWidth
-                           DrawTransparentBitmap( hDC, ob:handle, x, y1+::y1+(::height+1)*(nstroka-1)+1 )
+                           DrawTransparentBitmap( hDC, ob:handle, x, y1+::y1+(::height+1)*(::nPaintRow-1)+1 )
                         ENDIF
-                        // DrawBitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(nstroka-1)+1, bw, bh )
+                        // DrawBitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(::nPaintRow-1)+1, bw, bh )
                         EXIT
                      ENDIF
                   NEXT
                ELSE
-                  sviv := FLDSTR( Self,fif )
+                  sviv := FLDSTR( Self,::nPaintCol )
                   // Ahora lineas Justificadas !!
-                  IF ::aColumns[fif]:tColor != Nil
-                     oldT1Color := SetTextColor( hDC, ::aColumns[fif]:tColor )
+                  IF ::aColumns[::nPaintCol]:tColor != Nil
+                     oldT1Color := SetTextColor( hDC, ::aColumns[::nPaintCol]:tColor )
                   ENDIF
-                  IF ::aColumns[fif]:bColor != Nil
-                     oldBk1Color := SetBkColor( hDC, ::aColumns[fif]:bColor )
+                  IF ::aColumns[::nPaintCol]:bColor != Nil
+                     oldBk1Color := SetBkColor( hDC, ::aColumns[::nPaintCol]:bColor )
                   ENDIF
-                  IF ::aColumns[fif]:oFont != Nil
-                     SelectObject( hDC, ::aColumns[fif]:oFont:handle )
+                  IF ::aColumns[::nPaintCol]:oFont != Nil
+                     SelectObject( hDC, ::aColumns[::nPaintCol]:oFont:handle )
                      lColumnFont := .T.
                   ELSEIF lColumnFont
                      SelectObject( hDC, ::ofont:handle )
                      lColumnFont := .F.
                   ENDIF
-                  DrawText( hDC, sviv, x, ::y1+(::height+1)*(nstroka-1)+1, x+xSize-2,::y1+(::height+1)*nstroka-1, ::aColumns[fif]:nJusLin )
-                  IF ::aColumns[fif]:tColor != Nil
+                  DrawText( hDC, sviv, x, ::y1+(::height+1)*(::nPaintRow-1)+1, x+xSize-2,::y1+(::height+1)*::nPaintRow-1, ::aColumns[::nPaintCol]:nJusLin )
+                  IF ::aColumns[::nPaintCol]:tColor != Nil
                      SetTextColor( hDC, oldT1Color )
                   ENDIF
-                  IF ::aColumns[fif]:bColor != Nil
+                  IF ::aColumns[::nPaintCol]:bColor != Nil
                      SetBkColor( hDC, oldBk1Color )
                   ENDIF
                ENDIF
             ENDIF
          ENDIF
          x += xSize
-         fif := IIF( fif = ::freeze, ::nLeftCol, fif + 1 )
+         ::nPaintCol := IIF( ::nPaintCol = ::freeze, ::nLeftCol, ::nPaintCol + 1 )
          i ++
-         IF ! ::lAdjRight .and. fif > LEN( ::aColumns )
+         IF ! ::lAdjRight .and. ::nPaintCol > LEN( ::aColumns )
             EXIT
          ENDIF
       ENDDO

@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.42 2005-09-14 09:32:10 lf_sfnet Exp $
+ *$Id: hwindow.prg,v 1.43 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -57,7 +57,7 @@ CLASS HWindow INHERIT HCustomWindow
    DATA nLastKey INIT 0
 
    DATA aOffset
-   
+
    METHOD New( Icon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
           bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,cHelp,nHelpId )
    METHOD AddItem( oWnd )
@@ -68,7 +68,7 @@ CLASS HWindow INHERIT HCustomWindow
    METHOD Restore()  INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_RESTORE, 0)
    METHOD Maximize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0)
    METHOD Minimize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MINIMIZE, 0)
-   METHOD Close()	INLINE SendMessage( ::handle, WM_SYSCOMMAND, SC_CLOSE, 0 )
+   METHOD Close()   INLINE SendMessage( ::handle, WM_SYSCOMMAND, SC_CLOSE, 0 )
 ENDCLASS
 
 METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
@@ -96,11 +96,11 @@ METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
    IF cAppName != Nil
       ::szAppName := cAppName
    ENDIF
-   
+
    IF nHelpId != nil
       ::HelpId := nHelpId
    END
-   
+
    ::aOffset := Array( 4 )
    Afill( ::aOffset,0 )
 
@@ -126,9 +126,9 @@ Return Iif( i == 0, Nil, ::aWindows[i] )
 
 METHOD GetMain CLASS HWindow
 Return Iif(Len(::aWindows)>0,              ;
-	 Iif(::aWindows[1]:type==WND_MAIN, ;
-	   ::aWindows[1],                  ;
-	   Iif(Len(::aWindows)>1,::aWindows[2],Nil)), Nil )
+     Iif(::aWindows[1]:type==WND_MAIN, ;
+       ::aWindows[1],                  ;
+       Iif(Len(::aWindows)>1,::aWindows[2],Nil)), Nil )
 
 
 
@@ -185,7 +185,7 @@ METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
       ::handle := Hwg_InitMainWindow( Self, ::szAppName,cTitle,cMenu, ;
               Iif(oIcon!=Nil,oIcon:handle,Nil),Iif(oBmp!=Nil,-1,clr),::Style,::nLeft, ;
               ::nTop,::nWidth,::nHeight )
-    
+
       IF cHelp != NIL
          SetHelpFileName(cHelp)
       ENDIF
@@ -269,12 +269,12 @@ METHOD Activate( lShow ) CLASS HMDIChildWindow
 
    CreateGetList( Self )
    // Hwg_CreateMdiChildWindow( Self )
-   
+
    ::handle := Hwg_CreateMdiChildWindow( Self )
    InitControls( Self )
    IF ::bInit != Nil
       Eval( ::bInit,Self )
-   ENDIF  
+   ENDIF
 
 Return Nil
 
@@ -313,7 +313,7 @@ METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,  ;
                   cAppName,oBmp,cHelp,nHelpId )
    ::oParent := HWindow():GetMain()
-   IF ISOBJECT( ::oParent )  
+   IF ISOBJECT( ::oParent )
        ::handle := Hwg_InitChildWindow( Self, ::szAppName,cTitle,cMenu, ;
           Iif(oIcon!=Nil,oIcon:handle,Nil),Iif(oBmp!=Nil,-1,clr),nStyle,::nLeft, ;
           ::nTop,::nWidth,::nHeight,::oParent:handle )
@@ -451,7 +451,7 @@ Local i
           IF !i
              Return 0
           ENDIF
-       ENDIF  
+       ENDIF
        IF __ObjHasMsg( oWnd,"ONOTIFYICON" ) .AND. oWnd:oNotifyIcon != Nil
           ShellNotifyIcon( .F., oWnd:handle, oWnd:oNotifyIcon:handle )
        ENDIF
@@ -477,7 +477,7 @@ Local i
       IF !i
          Return 0
       ENDIF
-   ENDIF  
+   ENDIF
 
 Return -1
 
@@ -503,7 +503,7 @@ Static Function onMdiCreate( oWnd,lParam )
    InitControls( oWnd )
    IF oWnd:bInit != Nil
       Eval( oWnd:bInit,oWnd )
-   ENDIF  
+   ENDIF
 
 Return -1
 

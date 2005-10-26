@@ -1,5 +1,5 @@
 /*
- * $Id: hhyper.prg,v 1.2 2005-10-24 11:17:01 alkresin Exp $
+ * $Id: hhyper.prg,v 1.3 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HStaticLink class
@@ -11,7 +11,7 @@
 #include "hwgui.ch"
 
 #define _HYPERLINK_EVENT WM_USER + 101
-#define LBL_INIT    0 
+#define LBL_INIT    0
 #define LBL_NORMAL  1
 #define LBL_VISITED 2
 #define LBL_MOUSEOVER 3
@@ -36,16 +36,16 @@ CLASS HStaticLink FROM HSTATIC
    DATA m_csUrl
    DATA dc
 
-   DATA m_sHoverColor 
-   DATA m_sLinkColor 
-   DATA m_sVisitedColor 
+   DATA m_sHoverColor
+   DATA m_sLinkColor
+   DATA m_sVisitedColor
 
    CLASS VAR winclass INIT "STATIC"
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-              bSize, bPaint, ctoolt, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
+              bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
    METHOD Redefine( oWndParent,nId,oFont,bInit, ;
-              bSize,bPaint,ctoolt,tcolor,bcolor,lTransp, cLink, vColor, lColor, hColor )
+              bSize,bPaint,ctooltip,tcolor,bcolor,lTransp, cLink, vColor, lColor, hColor )
    METHOD INIT()
    METHOD onEvent( msg, wParam, lParam )
    METHOD GoToLinkUrl( csLink )
@@ -65,11 +65,11 @@ CLASS HStaticLink FROM HSTATIC
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-               bSize, bPaint, ctoolt, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor ) CLASS HStaticLink
+               bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor ) CLASS HStaticLink
 Local oPrevFont
 
    super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-              bSize, bPaint, ctoolt, tcolor, bcolor, lTransp )
+              bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )
 
    DEFAULT vcolor TO RGB( 5, 34, 143 )
    DEFAULT lcolor TO RGB( 0, 0, 255 )
@@ -106,10 +106,10 @@ Local oPrevFont
 RETURN Self
 
 METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor,lTransp, cLink, vColor, lColor, hColor )  CLASS HStaticLink
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp, cLink, vColor, lColor, hColor )  CLASS HStaticLink
 Local oPrevFont
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor )
+                  bSize,bPaint,ctooltip,tcolor,bcolor )
 
    DEFAULT vcolor TO RGB( 5, 34, 143 )
    DEFAULT lcolor TO RGB( 0, 0, 255 )
@@ -159,7 +159,7 @@ RETURN NIL
 METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
 
 
-   IF msg == WM_PAINT      
+   IF msg == WM_PAINT
       ::PAint()
    ELSEIF msg == WM_MOUSEMOVE
       hwg_SetCursor( ::m_hHyperCursor )
@@ -225,7 +225,7 @@ LOCAL nCtrlID
    ENDIF
 
    ::m_bVisited := .T.
-   
+
    ::state := LBL_NORMAL
    InvalidateRect( ::handle, 0 )
    SetFocus( ::handle )
@@ -267,7 +267,7 @@ LOCAL res  := .f.
       ENDIF
 
       IF (res .AND. !::m_bVisited) .or. (res .AND. ::m_bVisited)
-         
+
          ::state := LBL_NORMAL
          InvalidateRect( ::handle, 0 )
          PostMessage( ::handle, WM_PAINT, 0, 0 )

@@ -1,5 +1,5 @@
 /*
- * $Id: htrackbr.prg,v 1.8 2004-12-01 10:24:25 alkresin Exp $
+ * $Id: htrackbr.prg,v 1.9 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTrackBar class
@@ -144,9 +144,9 @@ Return (::value)
 
 HB_FUNC ( INITTRACKBAR )
 {
-	HWND hTrackBar;
+    HWND hTrackBar;
 
-	hTrackBar = CreateWindow( TRACKBAR_CLASS,
+    hTrackBar = CreateWindow( TRACKBAR_CLASS,
                              0,
                              (LONG) hb_parnl(3),
                              hb_parni(4),
@@ -158,12 +158,12 @@ HB_FUNC ( INITTRACKBAR )
                              GetModuleHandle(NULL),
                              NULL ) ;
 
-	hb_retnl ( (LONG) hTrackBar );
+    hb_retnl ( (LONG) hTrackBar );
 }
 
 HB_FUNC ( TRACKBARSETRANGE )
 {
-	SendMessage( (HWND) hb_parnl(1), TBM_SETRANGE, TRUE, MAKELONG(hb_parni(2),hb_parni(3)) );
+    SendMessage( (HWND) hb_parnl(1), TBM_SETRANGE, TRUE, MAKELONG(hb_parni(2),hb_parni(3)) );
 }
 
 #pragma ENDDUMP

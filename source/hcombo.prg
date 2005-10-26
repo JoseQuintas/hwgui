@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.20 2005-09-23 12:29:13 mauriliolongo Exp $
+ * $Id: hcombo.prg,v 1.21 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -37,23 +37,23 @@ CLASS HComboBox INHERIT HControl
    DATA  lEdit    INIT .F.
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  aItems,oFont,bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bGFocus,tcolor,bcolor,bValid )
+                  aItems,oFont,bInit,bSize,bPaint,bChange,ctooltip,lEdit,lText,bGFocus,tcolor,bcolor,bValid )
    METHOD Activate()
-   METHOD Redefine( oWnd,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bDraw,bChange,cToolt,bGFocus )
+   METHOD Redefine( oWnd,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bDraw,bChange,ctooltip,bGFocus )
    METHOD Init( aCombo, nCurrent )
    METHOD Refresh()
    METHOD Setitem( nPos )
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,oFont, ;
-                  bInit,bSize,bPaint,bChange,cToolt,lEdit,lText,bGFocus,tcolor,bcolor,bValid ) CLASS HComboBox
+                  bInit,bSize,bPaint,bChange,ctooltip,lEdit,lText,bGFocus,tcolor,bcolor,bValid ) CLASS HComboBox
 
    if lEdit == Nil; lEdit := .f.; endif
    if lText == Nil; lText := .f.; endif
    if bValid != NIL; ::bValid := bValid; endif
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ),Iif( lEdit,CBS_DROPDOWN,CBS_DROPDOWNLIST )+WS_TABSTOP )
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, bSize,bPaint,ctoolt,tcolor,bcolor )
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, bSize,bPaint,ctooltip,tcolor,bcolor )
 
    ::lEdit := lEdit
    ::lText := lText
@@ -101,9 +101,9 @@ METHOD Activate CLASS HComboBox
 Return Nil
 
 METHOD Redefine( oWndParent,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bPaint, ;
-                  bChange,cToolt,bGFocus ) CLASS HComboBox
+                  bChange,ctooltip,bGFocus ) CLASS HComboBox
 
-   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit,bSize,bPaint,ctoolt )
+   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit,bSize,bPaint,ctooltip )
 
    if ::lText
       ::value := Iif( vari==Nil .OR. Valtype(vari)!="C","",vari )

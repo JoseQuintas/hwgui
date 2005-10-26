@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.10 2005-01-10 14:57:51 alkresin Exp $
+ * $Id: hsayimg.prg,v 1.11 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -22,27 +22,27 @@ CLASS HSayImage INHERIT HControl
    DATA  oImage
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,bInit, ;
-                  bSize,ctoolt )
-   METHOD Redefine( oWndParent,nId,bInit,bSize,ctoolt )
+                  bSize,ctooltip )
+   METHOD Redefine( oWndParent,nId,bInit,bSize,ctooltip )
    METHOD Activate()
    METHOD End()  INLINE ( Super:End(),iif(::oImage<>Nil,::oImage:Release(),::oImage:=Nil),::oImage := Nil )
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,bInit, ;
-                  bSize,ctoolt ) CLASS HSayImage
+                  bSize,ctooltip ) CLASS HSayImage
 
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,               ;
                Iif( nWidth!=Nil,nWidth,0 ),Iif( nHeight!=Nil,nHeight,0 ),, ;
-               bInit,bSize,,ctoolt )
+               bInit,bSize,,ctooltip )
 
    ::title   := ""
 
 Return Self
 
-METHOD Redefine( oWndParent,nId,bInit,bSize,ctoolt ) CLASS HSayImage
+METHOD Redefine( oWndParent,nId,bInit,bSize,ctooltip ) CLASS HSayImage
 
-   Super:New( oWndParent,nId,0,0,0,0,0,,bInit,bSize,,ctoolt )
+   Super:New( oWndParent,nId,0,0,0,0,0,,bInit,bSize,,ctooltip )
 
 Return Self
 
@@ -58,24 +58,24 @@ Return Nil
 
 //- HSayBmp
 
-CLASS HSayBmp INHERIT HSayImage 
+CLASS HSayBmp INHERIT HSayImage
 
    DATA nOffsetV  INIT 0
    DATA nOffsetH  INIT 0
    DATA nZoom
 
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
-                  bSize,ctoolt )
-   METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctoolt )
+                  bSize,ctooltip )
+   METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctooltip )
    METHOD Paint( lpdis )
    METHOD ReplaceBitmap( Image, lRes )
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
-                  bSize,ctoolt ) CLASS HSayBmp
+                  bSize,ctooltip ) CLASS HSayBmp
 
-   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctoolt )
+   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctooltip )
 
    ::bPaint := {|o,lpdis|o:Paint(lpdis)}
 
@@ -94,9 +94,9 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
 
 Return Self
 
-METHOD Redefine( oWndParent,nId,xImage,lRes,bInit,bSize,ctoolt ) CLASS HSayBmp
+METHOD Redefine( oWndParent,nId,xImage,lRes,bInit,bSize,ctooltip ) CLASS HSayBmp
 
-   Super:Redefine( oWndParent,nId,bInit,bSize,ctoolt )
+   Super:Redefine( oWndParent,nId,bInit,bSize,ctooltip )
 
    IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := Iif( lRes .OR. Valtype(xImage)=="N",     ;
@@ -139,16 +139,16 @@ Return Nil
 CLASS HSayIcon INHERIT HSayImage
 
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
-                  bSize,ctoolt )
-   METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctoolt )
+                  bSize,ctooltip )
+   METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctooltip )
    METHOD Init()
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
-                  bSize,ctoolt ) CLASS HSayIcon
+                  bSize,ctooltip ) CLASS HSayIcon
 
-   Super:New( oWndParent,nId,SS_ICON,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctoolt )
+   Super:New( oWndParent,nId,SS_ICON,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctooltip )
 
    IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := Iif( lRes .OR. Valtype(Image)=="N",    ;
@@ -159,9 +159,9 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
 
 Return Self
 
-METHOD Redefine( oWndParent,nId,xImage,lRes,bInit,bSize,ctoolt ) CLASS HSayIcon
+METHOD Redefine( oWndParent,nId,xImage,lRes,bInit,bSize,ctooltip ) CLASS HSayIcon
 
-   Super:Redefine( oWndParent,nId,bInit,bSize,ctoolt )
+   Super:Redefine( oWndParent,nId,bInit,bSize,ctooltip )
 
    IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := Iif( lRes .OR. Valtype(xImage)=="N",   ;

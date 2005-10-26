@@ -1,8 +1,8 @@
 /*
- * $Id: hnice.prg,v 1.4 2005-09-16 16:52:23 lf_sfnet Exp $
+ * $Id: hnice.prg,v 1.5 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
- * 
+ *
  *
  * Copyright 2004 Luiz Rafael Culik Guimaraes <culikr@brtrubo.com>
  * www - http://sites.uol.com.br/culikr/
@@ -38,7 +38,7 @@ CLASS HNiceButton INHERIT HControl
 
    METHOD Redefine( oWndParent, nId, nStyleEx, ;
    bInit, bClick, ;
-   cText, cTooltip, r, g, b ) 
+   cText, cTooltip, r, g, b )
 
    METHOD Activate()
    METHOD INIT()

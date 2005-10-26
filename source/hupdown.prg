@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.5 2005-01-12 10:24:59 alkresin Exp $
+ * $Id: hupdown.prg,v 1.6 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -27,7 +27,7 @@ CLASS HUpDown INHERIT HControl
    DATA lChanged    INIT .F.
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,nUpDWidth,nLower,nUpper )
+         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor,nUpDWidth,nLower,nUpper )
    METHOD Activate()
    METHOD Init()
    METHOD Refresh()
@@ -35,12 +35,12 @@ CLASS HUpDown INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,   ;
+         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor,   ;
          nUpDWidth,nLower,nUpper ) CLASS HUpDown
 
    nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_TABSTOP )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor )
+                  bSize,bPaint,ctooltip,tcolor,bcolor )
 
    ::idUpDown := ::NewId()
    IF vari != Nil
@@ -110,7 +110,7 @@ Return Nil
 Static Function __When( oCtrl )
 
    oCtrl:Refresh()
-   IF oCtrl:bGetFocus != Nil 
+   IF oCtrl:bGetFocus != Nil
       Return Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet ), oCtrl )
    ENDIF
 

@@ -139,26 +139,26 @@ CLASS HQhtmButton INHERIT HButton
    CLASS VAR winclass   INIT "BUTTON"
    DATA  cHtml
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
-                  bInit,bSize,bClick,ctoolt )
-   METHOD Redefine( oWnd,nId,cCaption,oFont,bInit,bSize,bClick,ctoolt )
+                  bInit,bSize,bClick,ctooltip )
+   METHOD Redefine( oWnd,nId,cCaption,oFont,bInit,bSize,bClick,ctooltip )
    METHOD Init()
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
-                  bInit,bSize,bClick,ctoolt ) CLASS HQhtmButton
+                  bInit,bSize,bClick,ctooltip ) CLASS HQhtmButton
 
    ::cHtml := cCaption
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,"",, ;
-                  bInit,bSize,,bClick,ctoolt )
+                  bInit,bSize,,bClick,ctooltip )
    // ::classname:= "HQHTMBUTTON"
 
 Return Self
 
-METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit,bSize,bClick,ctoolt) CLASS HQhtmButton
+METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit,bSize,bClick,ctooltip) CLASS HQhtmButton
 
    ::cHtml := cCaption
-   Super:Redefine( oWndParent,nId,,bInit,bSize,,bClick,ctoolt )
+   Super:Redefine( oWndParent,nId,,bInit,bSize,,bClick,ctooltip )
    // ::classname:= "HQHTMBUTTON"
 
 Return Self
@@ -176,4 +176,4 @@ Return Nil
 
 EXIT PROCEDURE FreeQHTM
    QHTM_End()
-Return 
+Return

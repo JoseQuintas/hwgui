@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.28 2005-09-13 05:25:53 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.29 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -123,7 +123,7 @@ Local cPre
    ::aProp := aProp
    ::aMethods := aMethods
 
-   __pp_init()  
+   __pp_init()
    Aadd( ::aForms, Self )
    aItems := oDoc:aItems[1]:aItems
    FOR i := 1 TO Len( aItems )
@@ -345,7 +345,7 @@ Local arr, arrExe, nContainer := 0, cCode1, cCode
             Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2],{", ;
                    cCode1+":aMethods["+ ;
                    Ltrim(Str(Len(oCtrl:aMethods)+1))+",2,2],{" ) + ;
-                   Ltrim( Substr( arr[1],12 ) ) + "})" + "}" 
+                   Ltrim( Substr( arr[1],12 ) ) + "})" + "}"
          arrExe[1] := &cCode
          Return arrExe
       ENDIF
@@ -359,7 +359,7 @@ Local arr, arrExe, nContainer := 0, cCode1, cCode
    cCode :=  "{||DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+Iif(nContainer!=0,","+Ltrim(Str(nContainer)),"")+"):" + ;
       Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2])", ;
              cCode1+":aMethods["+   ;
-             Ltrim(Str(Len(oCtrl:aMethods)+1))+",2,2])" ) + "}" 
+             Ltrim(Str(Len(oCtrl:aMethods)+1))+",2,2])" ) + "}"
    arrExe[1] := &cCode
 
 Return arrExe
@@ -415,25 +415,25 @@ Local aClass := { "label", "button", "checkbox",                    ;
                   "status","menu","animation"                       ;
                 }
 Local aCtrls := { ;
-  "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctoolt,TextColor,BackColor,lTransp)", ;
-  "HButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctoolt,TextColor,BackColor)",  ;
-  "HCheckButton():New(oPrnt,nId,lInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctoolt,TextColor,BackColor,bwhen)", ;
-  "HRadioButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctoolt,TextColor,BackColor)", ;
-  "HEdit():New(oPrnt,nId,cInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctoolt,TextColor,BackColor,cPicture,lNoBorder)", ;
+  "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctooltip,TextColor,BackColor,lTransp)", ;
+  "HButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctooltip,TextColor,BackColor)",  ;
+  "HCheckButton():New(oPrnt,nId,lInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctooltip,TextColor,BackColor,bwhen)", ;
+  "HRadioButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctooltip,TextColor,BackColor)", ;
+  "HEdit():New(oPrnt,nId,cInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctooltip,TextColor,BackColor,cPicture,lNoBorder)", ;
   "HGroup():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor)", ;
   "RadioNew(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor,nInitValue,bSetGet)", ;
-  "HSayBmp():New(oPrnt,nId,nLeft,nTop,nWidth,nHeight,Bitmap,lResource,onInit,onSize,ctoolt)", ;
-  "HSayIcon():New(oPrnt,nId,nLeft,nTop,nWidth,nHeight,Icon,lResource,onInit,onSize,ctoolt)", ;
-  "HRichEdit():New(oPrnt,nId,cInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctoolt,TextColor,BackColor)", ;
-  "HDatePicker():New(oPrnt,nId,dInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onGetFocus,onLostFocus,onChange,ctoolt,TextColor,BackColor)", ;
-  "HUpDown():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctoolt,TextColor,BackColor,nUpDWidth,nLower,nUpper)", ;
-  "HComboBox():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,Items,oFont,onInit,onSize,onPaint,onChange,cToolt,lEdit,lText,bWhen)", ;
+  "HSayBmp():New(oPrnt,nId,nLeft,nTop,nWidth,nHeight,Bitmap,lResource,onInit,onSize,ctooltip)", ;
+  "HSayIcon():New(oPrnt,nId,nLeft,nTop,nWidth,nHeight,Icon,lResource,onInit,onSize,ctooltip)", ;
+  "HRichEdit():New(oPrnt,nId,cInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctooltip,TextColor,BackColor)", ;
+  "HDatePicker():New(oPrnt,nId,dInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onGetFocus,onLostFocus,onChange,ctooltip,TextColor,BackColor)", ;
+  "HUpDown():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctooltip,TextColor,BackColor,nUpDWidth,nLower,nUpper)", ;
+  "HComboBox():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,Items,oFont,onInit,onSize,onPaint,onChange,cTooltip,lEdit,lText,bWhen)", ;
   "HLine():New(oPrnt,nId,lVertical,nLeft,nTop,nLength,onSize)", ;
   "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,lDocked)", ;
   "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,trColor,cTooltip)", ;
   "Hbrowse():New(BrwType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,onUpdate,onKeyDown,onPosChg )", ;
-  "HMonthCalendar():New(oPrnt,nId,dInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onChange,cToolt,lNoToday,lNoTodayCircle,lWeekNumbers)", ;
-  "HTrackBar():New(oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,cToolt,onChange,nLower,nUpper,lVertical,TickStyle,TickMarks)", ;
+  "HMonthCalendar():New(oPrnt,nId,dInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onChange,cTooltip,lNoToday,lNoTodayCircle,lWeekNumbers)", ;
+  "HTrackBar():New( oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,bPaint,cTooltip,onChange,onDrag,nLow,nHigh,lVertical,TickStyle,TickMarks )", ;
   "HTab():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,Tabs,onChange,aImages,lResource)", ;
   "HTree():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,TextColor,BackColor,aImages,lResource,lEditLabels,onTreeClick)", ;
   "HStatus():New(oPrnt,nId,nStyle,oFont,aParts,onInit,onSize)", ;
@@ -523,7 +523,10 @@ MEMVAR aImages, lEditLabels, aParts
       ELSEIF cPName == "atree"
          BuildMenu( xProperty,oForm:oDlg:handle,oForm:oDlg )
       ELSE
-         /* Assigning the value of the property to the variable with 
+        IF cPName == "tooltip"
+            cPName := "c" + cPName
+        ENDIF
+         /* Assigning the value of the property to the variable with
             the same name as the property */
          __mvPut( cPName, xProperty )
 
@@ -534,7 +537,7 @@ MEMVAR aImages, lEditLabels, aParts
                   while onFormInit procedure, we assign her the init value */
                __mvPut( xProperty, xInitValue )
             ELSEIF cInitName != Nil
-               /* If it is initialized, we assign her value to the 'init' 
+               /* If it is initialized, we assign her value to the 'init'
                   variable ( cInitValue, nInitValue, ... ) */
                __mvPut( cInitName, __mvGet( xProperty ) )
             ENDIF
@@ -771,7 +774,7 @@ Local cPre
    ::aProp := aProp
    ::aMethods := aMethods
 
-   __pp_init()  
+   __pp_init()
    Aadd( ::aReports, Self )
    aItems := oDoc:aItems[1]:aItems
    FOR i := 1 TO Len( aItems )
@@ -1113,7 +1116,7 @@ Local under := oXmlNode:GetAttribute( "underline" )
   IF charset != Nil
      charset := Val( charset )
   ENDIF
-  ita    := Iif( ita != Nil, Val( ita ), 0 )  
+  ita    := Iif( ita != Nil, Val( ita ), 0 )
   under  := Iif( under != Nil, Val( under ), 0 )
 
 Return oPrinter:AddFont( oXmlNode:GetAttribute( "name" ),  ;

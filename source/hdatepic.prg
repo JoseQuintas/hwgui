@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.11 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hdatepic.prg,v 1.12 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -26,19 +26,19 @@ CLASS HDatePicker INHERIT HControl
    DATA bChange
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bInit,bGfocus,bLfocus,bChange,ctoolt,tcolor,bcolor )
+                  oFont,bInit,bGfocus,bLfocus,bChange,ctooltip,tcolor,bcolor )
    METHOD Activate()
    METHOD Init()
-   METHOD Refresh()    
+   METHOD Refresh()
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bInit,bGfocus,bLfocus,bChange,ctoolt,tcolor,bcolor ) CLASS HDatePicker
+                  oFont,bInit,bGfocus,bLfocus,bChange,ctooltip,tcolor,bcolor ) CLASS HDatePicker
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_TABSTOP )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  ,,ctoolt,tcolor,bcolor )
+                  ,,ctooltip,tcolor,bcolor )
 
    ::value   := Iif( vari==Nil .OR. Valtype(vari)!="D",CTOD(SPACE(8)),vari )
    ::bSetGet := bSetGet
@@ -84,7 +84,7 @@ METHOD Refresh() CLASS HDatePicker
    IF ::bSetGet != Nil
       ::value := Eval( ::bSetGet,,nil )
    ENDIF
-        
+
    IF ! Empty(::value)
       SetDatePicker( ::handle,::value )
    ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.8 2005-09-13 11:06:15 alkresin Exp $
+ * $Id: hmonthc.prg,v 1.9 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -47,9 +47,9 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
             lWeekNumbers ) CLASS HMonthCalendar
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil, 0, nStyle ), WS_TABSTOP )
-   nStyle   += Iif( lNoToday      , MCS_NOTODAY      , 0 )
-   nStyle   += Iif( lNoTodayCircle, MCS_NOTODAYCIRCLE, 0 )
-   nStyle   += Iif( lWeekNumbers  , MCS_WEEKNUMBERS  , 0 )
+   nStyle   += Iif( lNoToday==Nil.OR.!lNoToday, 0, MCS_NOTODAY )
+   nStyle   += Iif( lNoTodayCircle==Nil.OR.!lNoTodayCircle, 0, MCS_NOTODAYCIRCLE )
+   nStyle   += Iif( lWeekNumbers==Nil.OR.!lWeekNumbers, 0, MCS_WEEKNUMBERS )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   ,,ctooltip )
 
@@ -151,7 +151,7 @@ HB_FUNC ( INITMONTHCALENDAR )
 
    SetWindowPos( hMC, NULL, hb_parni(4), hb_parni(5), rc.right, rc.bottom, SWP_NOZORDER );
 
-	hb_retnl( (LONG) hMC );
+    hb_retnl( (LONG) hMC );
 }
 
 HB_FUNC ( SETMONTHCALENDARDATE ) // adaptation of function SetDatePicker of file Control.c

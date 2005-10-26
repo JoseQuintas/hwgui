@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.5 2005-07-19 13:04:17 alkresin Exp $
+ * $Id: hradio.prg,v 1.6 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -82,14 +82,14 @@ CLASS HRadioButton INHERIT HControl
    DATA  oGroup
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
-                  bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor )
+                  bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor )
    METHOD Activate()
-   METHOD Redefine( oWnd,nId,oFont,bInit,bSize,bPaint,bClick,lInit,ctoolt,tcolor,bcolor )
+   METHOD Redefine( oWnd,nId,oFont,bInit,bSize,bPaint,bClick,lInit,ctooltip,tcolor,bcolor )
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
-                  bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor ) CLASS HRadioButton
+                  bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor ) CLASS HRadioButton
 
    // ::classname:= "HRADIOBUTTON"
    ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
@@ -107,7 +107,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
    ::bInit   := bInit
    ::bSize   := bSize
    ::bPaint  := bPaint
-   ::tooltip := ctoolt
+   ::tooltip := ctooltip
    ::tcolor  := tcolor
    IF tColor != Nil .AND. bColor == Nil
       bColor := GetSysColor( COLOR_3DFACE )
@@ -140,7 +140,7 @@ METHOD Activate CLASS HRadioButton
    ENDIF
 Return Nil
 
-METHOD Redefine( oWndParent,nId,oFont,bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor ) CLASS HRadioButton
+METHOD Redefine( oWndParent,nId,oFont,bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor ) CLASS HRadioButton
    // ::classname:= "HRADIOBUTTON"
    ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
    ::id      := nId
@@ -150,7 +150,7 @@ METHOD Redefine( oWndParent,nId,oFont,bInit,bSize,bPaint,bClick,ctoolt,tcolor,bc
    ::bInit   := bInit
    ::bSize   := bSize
    ::bPaint  := bPaint
-   ::tooltip := ctoolt
+   ::tooltip := ctooltip
    ::tcolor  := tcolor
    IF tColor != Nil .AND. bColor == Nil
       bColor := GetSysColor( COLOR_3DFACE )

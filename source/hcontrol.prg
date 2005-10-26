@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.21 2005-02-25 09:45:57 alkresin Exp $
+ * $Id: hcontrol.prg,v 1.22 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -24,15 +24,15 @@ CLASS HControl INHERIT HCustomWindow
    DATA lInit    INIT .F.
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor )
+                  bSize,bPaint,ctooltip,tcolor,bcolor )
    METHOD Init()
    METHOD SetColor( tcolor,bcolor,lRepaint )
    METHOD NewId()
-   
-   METHOD Disable()	INLINE EnableWindow( ::handle, .F. )
-   METHOD Enable()	INLINE EnableWindow( ::handle, .T. )
+
+   METHOD Disable() INLINE EnableWindow( ::handle, .F. )
+   METHOD Enable()  INLINE EnableWindow( ::handle, .T. )
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
-   METHOD SetFocus()	INLINE ( SendMessage( ::oParent:handle,WM_NEXTDLGCTL,::handle,1),SetFocus( ::handle  ) )
+   METHOD SetFocus()    INLINE ( SendMessage( ::oParent:handle,WM_NEXTDLGCTL,::handle,1),SetFocus( ::handle  ) )
    METHOD GetText()     INLINE GetWindowText(::handle)
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c )
    METHOD End()
@@ -40,7 +40,7 @@ CLASS HControl INHERIT HCustomWindow
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor ) CLASS HControl
+                  bSize,bPaint,ctooltip,tcolor,bcolor ) CLASS HControl
 
    ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
    ::id      := Iif( nId==Nil,::NewId(), nId )
@@ -53,7 +53,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
    ::bInit   := bInit
    ::bSize   := bSize
    ::bPaint  := bPaint
-   ::tooltip := ctoolt
+   ::tooltip := ctooltip
    ::SetColor( tcolor,bcolor )
 
    ::oParent:AddControl( Self )
@@ -171,19 +171,19 @@ CLASS HStatic INHERIT HControl
    CLASS VAR winclass   INIT "STATIC"
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor,lTransp )
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp )
    METHOD Redefine( oWndParent,nId,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor,lTransp )
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp )
    METHOD Activate()
    METHOD SetValue(value) INLINE SetDlgItemText( ::oParent:handle,::id,value )
    METHOD Init()
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor,lTransp ) CLASS HStatic
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp ) CLASS HStatic
 
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor )
+                  bSize,bPaint,ctooltip,tcolor,bcolor )
 
    ::title   := cCaption
    IF lTransp != Nil .AND. lTransp
@@ -195,10 +195,10 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit
 Return Self
 
 METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor,lTransp )  CLASS HStatic
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp )  CLASS HStatic
 
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor )
+                  bSize,bPaint,ctooltip,tcolor,bcolor )
 
    ::title   := cCaption
    ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
@@ -231,19 +231,19 @@ CLASS HButton INHERIT HControl
 
    CLASS VAR winclass   INIT "BUTTON"
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
-                  bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor )
+                  bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor )
    METHOD Activate()
-   METHOD Redefine( oWnd,nId,oFont,bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor )
+   METHOD Redefine( oWnd,nId,oFont,bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor )
    METHOD Init()
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
-                  bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor ) CLASS HButton
+                  bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor ) CLASS HButton
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_PUSHBUTTON )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,90,nWidth ),;
               Iif( nHeight==Nil,30,nHeight ),oFont,bInit, ;
-              bSize,bPaint,ctoolt,tcolor,bcolor )
+              bSize,bPaint,ctooltip,tcolor,bcolor )
 
    ::title   := cCaption
    ::Activate()
@@ -262,10 +262,10 @@ METHOD Activate CLASS HButton
    ENDIF
 Return Nil
 
-METHOD Redefine( oWndParent,nId,oFont,bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor,cCaption ) CLASS HButton
+METHOD Redefine( oWndParent,nId,oFont,bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor,cCaption ) CLASS HButton
 
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
-              bSize,bPaint,ctoolt,tcolor,bcolor )
+              bSize,bPaint,ctooltip,tcolor,bcolor )
 
    ::title   := cCaption
 
@@ -368,13 +368,13 @@ Local hDC := drawInfo[3], x1 := drawInfo[4], y1 := drawInfo[5], x2 := drawInfo[6
       // DrawEdge( hDC,x1,y1,x2,y1+2,EDGE_SUNKEN,BF_RIGHT )
       DrawLine( hDC, x1,y1+1,x2,y1+1 )
    ENDIF
-   
+
    SelectObject( hDC, ::oPenGray:handle )
    IF ::lVert
       DrawLine( hDC, x1,y1,x1,y2 )
    ELSE
       DrawLine( hDC, x1,y1,x2,y1 )
    ENDIF
-   
+
 Return Nil
 

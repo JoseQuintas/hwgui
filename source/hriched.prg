@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.6 2004-11-11 08:37:12 alkresin Exp $
+ * $Id: hriched.prg,v 1.7 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -18,7 +18,7 @@ CLASS HRichEdit INHERIT HControl
    DATA lChanged    INIT .F.
 
    METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight, ;
-         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor )
+         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -26,12 +26,12 @@ CLASS HRichEdit INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt, ;
+                  oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip, ;
                   tcolor,bcolor ) CLASS HRichEdit
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP+WS_BORDER )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
+                  bSize,bPaint,ctooltip,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
 
    ::title   := vari
 
@@ -62,7 +62,7 @@ Local nDelta
    // writelog( str(msg) + str(wParam) + str(lParam) )
    IF msg == WM_CHAR
       ::lChanged := .T.
-   ELSEIF msg == WM_KEYDOWN 
+   ELSEIF msg == WM_KEYDOWN
       IF wParam == 46     // Del
          ::lChanged := .T.
       ENDIF
@@ -95,7 +95,7 @@ Local oEdit
    oEdit := FindSelf( hEdit )
    IF msg == WM_CHAR
       oEdit:lChanged := .T.
-   ELSEIF msg == WM_KEYDOWN 
+   ELSEIF msg == WM_KEYDOWN
       IF wParam == 46     // Del
          oEdit:lChanged := .T.
       ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: hfreeimg.prg,v 1.5 2005-06-23 10:15:46 alkresin Exp $
+ * $Id: hfreeimg.prg,v 1.6 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFreeImage - Image handling class
@@ -130,15 +130,15 @@ CLASS HSayFImage INHERIT HSayImage
    DATA nZoom
 
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,bInit, ;
-                  bSize,ctoolt )
-   METHOD Redefine( oWndParent,nId,Image,bInit,bSize,ctoolt )
+                  bSize,ctooltip )
+   METHOD Redefine( oWndParent,nId,Image,bInit,bSize,ctooltip )
    METHOD ReplaceImage( Image )
    METHOD Paint( lpdis )
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,bInit, ;
-                  bSize,ctoolt,cType ) CLASS HSayFImage
+                  bSize,ctooltip,cType ) CLASS HSayFImage
 
    IF Image != Nil
       ::oImage := Iif( Valtype(Image) == "C", ;
@@ -148,7 +148,7 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,bInit, ;
          nHeight := ::oImage:nHeight
       ENDIF
    ENDIF
-   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctoolt )
+   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctooltip )
    // ::classname:= "HSAYFIMAGE"
 
    ::bPaint  := {|o,lpdis|o:Paint(lpdis)}
@@ -157,11 +157,11 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,bInit, ;
 
 Return Self
 
-METHOD Redefine( oWndParent,nId,Image,bInit,bSize,ctoolt ) CLASS HSayFImage
+METHOD Redefine( oWndParent,nId,Image,bInit,bSize,ctooltip ) CLASS HSayFImage
 
    ::oImage := Iif( Valtype(Image) == "C", HFreeImage():AddFile( Image ), Image )
 
-   Super:Redefine( oWndParent,nId,bInit,bSize,ctoolt )
+   Super:Redefine( oWndParent,nId,bInit,bSize,ctooltip )
    // ::classname:= "HSAYFIMAGE"
 
    ::bPaint  := {|o,lpdis|o:Paint(lpdis)}

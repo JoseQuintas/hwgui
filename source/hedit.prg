@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.44 2005-10-21 09:26:22 alkresin Exp $
+ *$Id: hedit.prg,v 1.45 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -32,28 +32,28 @@ CLASS HEdit INHERIT HControl
    DATA lMaxLength   INIT Nil
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture,lNoBorder, lMaxLength )
+         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor,cPicture,lNoBorder, lMaxLength )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Redefine( oWnd,nId,vari,bSetGet,oFont,bInit,bSize,bDraw,bGfocus, ;
-             bLfocus,ctoolt,tcolor,bcolor,cPicture, lMaxLength )
+             bLfocus,ctooltip,tcolor,bcolor,cPicture, lMaxLength )
    METHOD Init()
    METHOD SetGet(value) INLINE Eval( ::bSetGet,value,self )
-   METHOD Refresh() 
-   METHOD SetText(c) 
+   METHOD Refresh()
+   METHOD SetText(c)
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt, ;
+                  oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip, ;
                   tcolor,bcolor,cPicture,lNoBorder, lMaxLength, lPassword ) CLASS HEdit
- 
+
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), ;
                 WS_TABSTOP+Iif(lNoBorder==Nil.OR.!lNoBorder,WS_BORDER,0)+;
                 Iif(lPassword==Nil .or. !lPassword, 0, ES_PASSWORD)  )
 
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
+                  bSize,bPaint,ctooltip,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
 
    IF vari != Nil
       ::cType   := Valtype( vari )
@@ -71,16 +71,16 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
       ::lMaxLength:= lMaxLength
    ENDIF
-/*   IF ::lMaxLength != Nil .and. !Empty(::lMaxLength) 
+/*   IF ::lMaxLength != Nil .and. !Empty(::lMaxLength)
       IF !Empty(cPicture) .or. cPicture==Nil
          cPicture:=Replicate("X",::lMaxLength)
       ENDIF
    ENDIF                                        ------commented by Maurizio la Cecilia */
- 
+
    ParsePict( Self, cPicture, vari )
    ::Activate()
 
-   IF bSetGet != Nil  
+   IF bSetGet != Nil
       ::bGetFocus := bGFocus
       ::bLostFocus := bLFocus
       ::oParent:AddEvent( EN_SETFOCUS, ::id,{|o,id|__When(o:FindControl(id))}  )
@@ -134,7 +134,7 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
             ENDIF
             // Endif
 
-         ELSEIF msg == WM_KEYDOWN 
+         ELSEIF msg == WM_KEYDOWN
 
             IF wParam == 40     // KeyDown
                IF !IsCtrlShift()
@@ -226,15 +226,15 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
    ELSEIF msg == WM_DESTROY
       ::End()
    ENDIF
- 
+
 Return -1
 
 METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint, ;
-          bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture, lMaxLength )  CLASS HEdit
+          bGfocus,bLfocus,ctooltip,tcolor,bcolor,cPicture, lMaxLength )  CLASS HEdit
 
-  
+
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
+                  bSize,bPaint,ctooltip,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
 
    IF vari != Nil
       ::cType   := Valtype( vari )
@@ -244,12 +244,12 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint, ;
    IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
       ::lMaxLength:= lMaxLength
    ENDIF
-/*   IF ::lMaxLength != Nil .and. !Empty(::lMaxLength) 
+/*   IF ::lMaxLength != Nil .and. !Empty(::lMaxLength)
       IF !Empty(cPicture) .or. cPicture==Nil
          cPicture:=Replicate("X",::lMaxLength)
       ENDIF
-   ENDIF                                        ------ commented by Maurizio la Cecilia */      
- 
+   ENDIF                                        ------ commented by Maurizio la Cecilia */
+
    ParsePict( Self, cPicture, vari )
 
    IF bSetGet != Nil
@@ -353,7 +353,7 @@ Local nAt, i, masklen, cChar
       ENDIF
    ENDIF
 
-   IF Empty( oEdit:cPicMask ) 
+   IF Empty( oEdit:cPicMask )
       IF oEdit:cType == "D"
          oEdit:cPicMask := StrTran( Dtoc( Ctod( Space(8) ) ),' ','9' )
       ELSEIF oEdit:cType == "N"
@@ -424,7 +424,7 @@ Local i, masklen, newpos, vari
    IF oEdit:cPicMask == Nil .OR. Empty( oEdit:cPicMask )
       SendMessage( oEdit:handle, EM_SETSEL, nPos, nPos )
    ELSE
-      masklen := Len( oEdit:cPicMask ) 
+      masklen := Len( oEdit:cPicMask )
       DO WHILE nPos <= masklen
          IF IsEditable( oEdit,++nPos )
             // writelog( "KeyRight-2 "+str(nPos) )
@@ -491,7 +491,7 @@ Local nGetLen := Len( oEdit:cPicMask ), nLen
       SetDlgItemText( oEdit:oParent:handle, oEdit:id, oEdit:title )
       SendMessage( oEdit:handle, EM_SETSEL, nPos-1, nPos-1 )
    ENDIF
-   
+
 Return Nil
 
 Static Function Input( oEdit,cChar,nPos )
@@ -559,7 +559,7 @@ Local nPos, nGetLen, nLen, vari, i, x, newPos
    x := SendMessage( oEdit:handle, EM_GETSEL, 0, 0 )
    IF HiWord(x) != LoWord(x)
       SendMessage(oEdit:handle, WM_CLEAR, LoWord(x), HiWord(x)-1)
-   ENDIF         
+   ENDIF
 
    // writelog( "GetApplyKey "+str(asc(ckey)) )
    oEdit:title := GetEditText( oEdit:oParent:handle, oEdit:id )
@@ -597,7 +597,7 @@ Local nPos, nGetLen, nLen, vari, i, x, newPos
       ENDIF
       cKey := Input( oEdit,cKey,nPos )
       IF cKey != Nil
-         SetGetUpdated( oEdit )         
+         SetGetUpdated( oEdit )
          IF Set( _SET_INSERT ) .or. HiWord(x) != LoWord(x)
             IF oEdit:lPicComplex
                nGetLen := Len( oEdit:cPicMask )
@@ -625,9 +625,9 @@ Local nPos, nGetLen, nLen, vari, i, x, newPos
          KeyRight( oEdit,nPos )
          //Added By Sandro Freire
          IF oEdit:cType == "N"
-            IF !Empty(oEdit:cPicMask) 
+            IF !Empty(oEdit:cPicMask)
                 newPos:=Len(oEdit:cPicMask)-3
-                IF "E" $ oEdit:cPicFunc .AND. nPos==newPos 
+                IF "E" $ oEdit:cPicFunc .AND. nPos==newPos
                     GetApplyKey( oEdit, "," )
                 ENDIF
             ENDIF
@@ -644,7 +644,7 @@ Local res
 
    oCtrl:Refresh()
    oCtrl:lFirst := .T.
-   IF oCtrl:bGetFocus != Nil 
+   IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
       IF !res
          GetSkip( oCtrl:oParent,oCtrl:handle,1 )

@@ -1,5 +1,5 @@
 /*
- * $Id: hgraph.prg,v 1.5 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hgraph.prg,v 1.6 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGraph class
@@ -27,10 +27,10 @@ CLASS HGraph INHERIT HControl
    DATA xmax, ymax, xmin, ymin PROTECTED
 
    METHOD New( oWndParent,nId,aValues,nLeft,nTop,nWidth,nHeight,oFont, ;
-                  bSize,ctoolt,tcolor,bcolor )
+                  bSize,ctooltip,tcolor,bcolor )
    METHOD Activate()
    METHOD Redefine( oWndParent,nId,aValues,oFont, ;
-                  bSize,ctoolt,tcolor,bcolor )
+                  bSize,ctooltip,tcolor,bcolor )
    METHOD Init()
    METHOD CalcMinMax()
    METHOD Paint()
@@ -39,10 +39,10 @@ CLASS HGraph INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,aValues,nLeft,nTop,nWidth,nHeight,oFont, ;
-                  bSize,ctoolt,tcolor,bcolor ) CLASS HGraph
+                  bSize,ctooltip,tcolor,bcolor ) CLASS HGraph
 
    Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,oFont,, ;
-                  bSize,{|o,lpdis|o:Paint(lpdis)},ctoolt, ;
+                  bSize,{|o,lpdis|o:Paint(lpdis)},ctooltip, ;
                   Iif( tcolor==Nil,Vcolor("FFFFFF"),tcolor ),Iif( bcolor==Nil,0,bcolor ) )
 
    ::aValues := aValues
@@ -54,10 +54,10 @@ METHOD New( oWndParent,nId,aValues,nLeft,nTop,nWidth,nHeight,oFont, ;
 Return Self
 
 METHOD Redefine( oWndParent,nId,aValues,oFont, ;
-                  bSize,ctoolt,tcolor,bcolor )  CLASS HGraph
+                  bSize,ctooltip,tcolor,bcolor )  CLASS HGraph
 
    Super:New( oWndParent,nId,SS_OWNERDRAW,0,0,0,0,oFont,, ;
-                  bSize,{|o,lpdis|o:Paint(lpdis)},ctoolt, ;
+                  bSize,{|o,lpdis|o:Paint(lpdis)},ctooltip, ;
                   Iif( tcolor==Nil,Vcolor("FFFFFF"),tcolor ),Iif( bcolor==Nil,0,bcolor ) )
 
    ::aValues := aValues
@@ -156,7 +156,7 @@ Local px1, px2, py1, py2, nWidth
             py2 := Round(y2-(::aValues[i,j,2]-::ymin)/::scaleY,0)
             IF px2 != px1 .OR. py2 != py1
                Drawline( hDC, px1, py1, px2, py2 )
-            ENDIF   
+            ENDIF
          NEXT
       ELSEIF ::nType == 2
          IF ::tbrush == Nil

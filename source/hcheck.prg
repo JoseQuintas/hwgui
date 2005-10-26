@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.10 2005-07-19 13:04:17 alkresin Exp $
+ * $Id: hcheck.prg,v 1.11 2005-10-26 07:43:26 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -23,9 +23,9 @@ CLASS HCheckButton INHERIT HControl
    DATA value
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
-                  bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor,bGFocus )
+                  bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor,bGFocus )
    METHOD Activate()
-   METHOD Redefine( oWnd,nId,vari,bSetGet,oFont,bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor,bGFocus )
+   METHOD Redefine( oWnd,nId,vari,bSetGet,oFont,bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor,bGFocus )
    METHOD Init()
    METHOD Refresh()
    METHOD Disable()
@@ -36,11 +36,11 @@ CLASS HCheckButton INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
-                  bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor,bGFocus ) CLASS HCheckButton
+                  bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor,bGFocus ) CLASS HCheckButton
 
    nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_AUTO3STATE+WS_TABSTOP )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor )
+                  bSize,bPaint,ctooltip,tcolor,bcolor )
 
    ::title   := cCaption
    ::value   := Iif( vari==Nil .OR. Valtype(vari)!="L",.F.,vari )
@@ -66,11 +66,11 @@ METHOD Activate CLASS HCheckButton
    ENDIF
 Return Nil
 
-METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor,bGFocus ) CLASS HCheckButton
+METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor,bGFocus ) CLASS HCheckButton
 
 
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
-                  bSize,bPaint,ctoolt,tcolor,bcolor )
+                  bSize,bPaint,ctooltip,tcolor,bcolor )
 
    ::value   := Iif( vari==Nil .OR. Valtype(vari)!="L",.F.,vari )
    ::bSetGet := bSetGet
@@ -98,7 +98,7 @@ Local var
 
    IF ::bSetGet != Nil
        var := Eval( ::bSetGet,,nil )
-       ::value := Iif( var==Nil,.F.,var ) 
+       ::value := Iif( var==Nil,.F.,var )
    ENDIF
 
    CheckDlgButton( ::oParent:handle,::id,::value )
@@ -140,7 +140,7 @@ Local res
 
    oCtrl:Refresh()
 
-   IF oCtrl:bGetFocus != Nil 
+   IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
       IF !res
          GetSkip( oCtrl:oParent,oCtrl:handle,1 )

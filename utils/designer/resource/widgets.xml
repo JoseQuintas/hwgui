@@ -38,6 +38,7 @@
          <property name="Font" type="O" />
          <property name="Border" type="L" value="False"/>
          <property name="Justify" type="C" value="Left"/>
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -64,6 +65,7 @@
          <property name="Border" type="L" value="True"/>
          <property name="cPicture" type="C" />
          <property name="varName" type="C" />
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -83,6 +85,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="80" />
          <property name="Height" type="N" value="32" />
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onClick" />
@@ -103,6 +106,7 @@
          <property name="Height" type="N" value="22" />
          <property name="lInitValue" type="L" value="False"/>
          <property name="varName" type="C" />
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onClick" />
@@ -121,6 +125,7 @@
          <property name="Width" type="N" value="110" />
          <property name="Height" type="N" value="22" />
          <property name="lInitValue" type="L" value="False"/>
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onClick" />
@@ -176,6 +181,7 @@
          <property name="nInitValue" type="N" value="1"/>
          <property name="nMaxLines" type="N" value="4"/>
          <property name="varName" type="C" />
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
       </widget>
@@ -196,6 +202,7 @@
          <property name="Height" type="N" value="60" />
          <property name="Bitmap" type="C" value="" />
          <property name="lResource" type="L" value="False" />
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
       </widget>
@@ -216,6 +223,7 @@
          <property name="Height" type="N" value="32" />
          <property name="Icon" type="C" value="" />
          <property name="lResource" type="L" value="False" />
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
       </widget>
@@ -252,6 +260,7 @@
          <property name="Font" type="O" />
          <property name="Multiline" type="L" value="False"/>
          <property name="Border" type="L" value="True"/>
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -275,6 +284,7 @@
          <property name="nLower" type="N" value="1"/>
          <property name="nUpper" type="N" value="100"/>
          <property name="varName" type="C" />
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
       </widget>
@@ -294,6 +304,7 @@
          <property name="Width" type="N" value="80" />
          <property name="Height" type="N" value="24" />
          <property name="varName" type="C" />
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
       </widget>
@@ -307,9 +318,10 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="240" />
          <property name="Height" type="N" value="195" />
-         <property name="lNoToday" type="L" value="False" />
-         <property name="lNoTodayCircle" type="L" value="False" />
-         <property name="lWeekNumber" type="L" value="False" />
+         <property name="lNoToday" type="L" value="True" />
+         <property name="lNoTodayCircle" type="L" value="True" />
+         <property name="lWeekNumber" type="L" value="True" />
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onChange" />
       </widget>
@@ -329,6 +341,7 @@
          <property name="lVertical" type="L" value="False" />
          <property name="TickStyle" type="C" value="Auto" />
          <property name="TickMarks" type="C" value="Bottom" />
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onChange" />
       </widget>
@@ -454,6 +467,7 @@
          <property name="lResource" type="L" value="False" />
          <property name="BmpLeft" type="N" value="0" />
          <property name="BmpTop" type="N" value="0" />
+		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />

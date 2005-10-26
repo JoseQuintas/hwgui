@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.437 2005-10-26 08:42:27 alkresin Exp $
+ * $Id: Changelog,v 1.438 2005-10-26 11:46:09 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,31 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-26 14:06 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
+   *source/ hcheck.prg
+   *source/ hcombo.prg
+   *source/ hcontrol.prg
+   *source/ hdatepic.prg
+   *source/ hedit.prg
+   *source/ hfreeimg.prg
+   *source/ hgraph.prg
+   *source/ hhyper.prg
+   *source/ hmonthc.prg
+   *source/ hnice.prg
+   *source/ hradio.prg
+   *source/ hriched.prg
+   *source/ hsayimg.prg
+   *source/ htrackbr.prg
+   *source/ hupdown.prg
+   *source/ hwindow.prg
+     * Now Designer allow to use Tooltip
+       ctooltip is used now instead of ctoolt
+   *source/ hfrmtmpl.prg
+     + added processing of cTooltip clause
+   *utils/designer/resource/widgets.xml
+     + added properties ToolTip support
+     ! small fix on monthcalendar class
 
 2005-10-26 12:42 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/xml/xmlparse.c
@@ -61,11 +86,11 @@
    * source/drawtext.c
      + New functions
    * include/windows.ch
-     + New messages 
+     + New messages
 
 2005-10-21 13:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/hbrowse.prg
-     * Added handling of keyboard events, defined with SET KEY 
+     * Added handling of keyboard events, defined with SET KEY
    * source/hedit.prg
      * Handling of keyboard events, defined with SET KEY, is allowed for simple
        ( non GET ) EDITBOX, too.
@@ -106,7 +131,7 @@
 
 2005-10-19 17:50 UTC+0200 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
   * include/Makefile
-    * install windows.ch and hwgui.ch 
+    * install windows.ch and hwgui.ch
   * source/freeimg.c
     * added some #ifdefs for OpenWatcom
 
@@ -133,7 +158,7 @@
 2005-10-17 13:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/hbrowse.prg
      ! minor fix on  ButtonDown(  ) method.now designer work again
-     
+
 2005-10-17 19:40 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/window.c
      source/richedit.c
@@ -294,7 +319,7 @@
     * new example for sdi interface
   * source/htab.prg
     * added ::DeletePage method
-	 * source/control.c
+     * source/control.c
     * added DeleteTab function
   * Still a work in progress committed to show the GPF instead the RT error
 
@@ -324,7 +349,7 @@
   * source/hownbtn.prg
   * source/hnice.prg
     * added ::nOrder properties
-	 * added Self as first parameter of Eval( ::bClick, Self, ... )
+     * added Self as first parameter of Eval( ::bClick, Self, ... )
   * source/menu.prg
     * declared local var
 
@@ -390,8 +415,8 @@
   * source/hwindow.prg
   * source/window.c
     * added MAXIMIZED and MINIMIZED to ACTIVATE WINDOW
-	 * removed MAXIMIZE from INIT WINDOW
-	 * added management to message WM_ENDSESSION
+     * removed MAXIMIZE from INIT WINDOW
+     * added management to message WM_ENDSESSION
   * source/Makefile
     * added missed sources
   * gtk/samples/bldgw.bat

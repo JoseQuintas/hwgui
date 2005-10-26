@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.16 2005-06-28 06:00:29 alkresin Exp $
+ * $Id: designer.prg,v 1.17 2005-10-26 13:54:20 omm Exp $
  *
  * Designer
  * Main file
@@ -31,7 +31,7 @@ Public crossCursor, vertCursor, horzCursor
 
    IF p0 != Nil .AND. ( p0 == "-r" .OR. p0 == "/r" )
       oDesigner:lReport := .T.
-      IF p1 != Nil 
+      IF p1 != Nil
          IF Left( p1,1 ) $ "-/"
             p0 := p1
             p1 := p2
@@ -119,7 +119,7 @@ Public crossCursor, vertCursor, horzCursor
       MENU TITLE "&Help"
          MENUITEM "&About" ACTION MsgInfo("About")
       ENDMENU
-   ENDMENU  
+   ENDMENU
 
    @ 0,0 PANEL oPanel SIZE 280,200 ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,y)}
 
@@ -151,8 +151,10 @@ Public crossCursor, vertCursor, horzCursor
 
    CONTEXT MENU oDesigner:oCtrlMenu
       MENUITEM "Copy"   ACTION (oDesigner:oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oDesigner:oClipBrd!=Nil,EnableMenuItem(,1012,.T.,.T.),.F.))
-      MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.T.,.F. )
-      MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.T. )
+      MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.T.,.F.,.F.,.F. )
+      MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.T.,.F.,.F. )
+      MENUITEM "Adjust to right" ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.F.,.T.,.F. )
+      MENUITEM "Adjust to bottom" ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.F.,.F.,.T. )
       SEPARATOR
       MENUITEM "Delete" ACTION DeleteCtrl()
    ENDMENU
@@ -163,8 +165,10 @@ Public crossCursor, vertCursor, horzCursor
       MENUITEM "Previous Page" ACTION Page_Prev( GetCtrlSelected(HFormGen():oDlgSelected) )
       SEPARATOR
       MENUITEM "Copy"   ACTION (oDesigner:oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oDesigner:oClipBrd!=Nil,EnableMenuItem(,1012,.T.,.T.),.F.))
-      MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.T.,.F. )
-      MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.T. )
+      MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.T.,.F.,.F.,.F. )
+      MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.T.,.F.,.F. )
+      MENUITEM "Adjust to right" ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.F.,.T.,.F. )
+      MENUITEM "Adjust to bottom" ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.F.,.F.,.T. )
       SEPARATOR
       MENUITEM "Delete" ACTION DeleteCtrl()
    ENDMENU
@@ -439,7 +443,7 @@ Return Nil
 
 Function Evalcode( xCode )
 Local nLines
-   
+
    IF Valtype( xCode ) == "C"
       nLines := mlCount( xCode )
       IF nLines > 1
@@ -517,7 +521,7 @@ Local i, j, alen := Len( HFormGen():aForms ), lRes := .T., oIni, critem, oNode
         DO WHILE j <= MAX_RECENT_FILES .AND. oDesigner:aRecent[j] != Nil
            oIni:aItems[1]:aItems[i]:Add( HXMLNode():New( "file",,,oDesigner:aRecent[j] ) )
            j ++
-        ENDDO   
+        ENDDO
      ENDIF
      oIni:Save( cCurDir+"Designer.iml" )
   ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.14 2005-06-27 12:40:09 alkresin Exp $
+ * $Id: hctrl.prg,v 1.15 2005-10-26 13:54:20 omm Exp $
  *
  * Designer
  * HControlGen class
@@ -259,7 +259,7 @@ Local i, dx, dy
    ENDIF
 
    IF dx != 0 .OR. dy != 0
-      IF !lChild .AND. lMouse .AND. Abs( xPos - aBDown[2] ) < 3 .AND. Abs( yPos - aBDown[3] ) < 3 
+      IF !lChild .AND. lMouse .AND. Abs( xPos - aBDown[2] ) < 3 .AND. Abs( yPos - aBDown[3] ) < 3
          Return .F.
       ENDIF
       InvalidateRect( oCtrl:oParent:handle, 1, ;
@@ -453,12 +453,12 @@ Function MoveCtrl( oCtrl )
    ENDIF
 Return Nil
 
-Function AdjustCtrl( oCtrl, lLeft, lTop )
+Function AdjustCtrl( oCtrl, lLeft, lTop, lRight, lBottom )
 Local i, aControls := Iif( oCtrl:oContainer != Nil, oCtrl:oContainer:aControls, oCtrl:oParent:aControls )
 Local lRes := .F., xPos, yPos, delta := 15
 
-   IF lLeft == Nil .AND. lTop == Nil
-      lLeft := lTop := .T.
+   IF lLeft == Nil .AND. lTop == Nil .AND. lRight == Nil .AND. lBottom == Nil
+      lLeft := lTop := lRight := lBottom := .T.
    ELSE
       delta := 30
    ENDIF
@@ -478,12 +478,26 @@ Local lRes := .F., xPos, yPos, delta := 15
             xPos := aControls[i]:nLeft
             yPos := aControls[i]:nTop + aControls[i]:nHeight + 1
             EXIT
+         ELSEIF lRight .AND. oCtrl:nLeft+oCtrl:nWidth < aControls[i]:nLeft .AND. ;
+            oCtrl:nLeft+oCtrl:nWidth >= aControls[i]:nLeft - delta .AND. ;
+            oCtrl:nTop >= aControls[i]:nTop .AND. aControls[i]:nTop + aControls[i]:nHeight > oCtrl:nTop
+            lRes := .T.
+            xPos := aControls[i]:nLeft-oCtrl:nWidth - 1
+            yPos := aControls[i]:nTop
+            EXIT
+         ELSEIF lBottom .AND. Abs( aControls[i]:nLeft-oCtrl:nLeft ) <= delta .AND. ;
+                aControls[i]:nTop > oCtrl:nTop + oCtrl:nHeight .AND. ;
+                aControls[i]:nTop - delta <= oCtrl:nTop + oCtrl:nHeight
+            lRes := .T.
+            xPos := aControls[i]:nLeft
+            yPos := aControls[i]:nTop - oCtrl:nHeight - 1
+            EXIT
          ENDIF
       ENDIF
    NEXT
    IF lRes
       CtrlMove( oCtrl,xPos-oCtrl:nLeft,yPos-oCtrl:nTop,.F.,.T. )
-      Container( oCtrl:oParent,oCtrl )
+      Container( oCtrl:oParent,oCtrl,oCtrl:nLeft,oCtrl:nTop )
       InspUpdBrowse()
    ENDIF
 Return Nil

@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.16 2005-10-19 10:04:26 alkresin Exp $
+ *$Id: dialog.c,v 1.17 2005-10-26 01:22:33 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -43,6 +43,9 @@ extern void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
 
 extern HMODULE hModule ;
 extern PHB_DYNS pSym_onEvent;
+
+#define	WND_DLG_RESOURCE       10
+#define	WND_DLG_NORESOURCE     11
 
 HWND * aDialogs = NULL;
 // HWND aDialogs[ 20 ];

@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.17 2005-10-25 01:23:28 lculik Exp $
+ * $Id: xmlparse.c,v 1.18 2005-10-26 08:42:27 alkresin Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -10,13 +10,9 @@
 
 #include <stdio.h>
 #include "hbapi.h"
-#include "hbvm.h"
-#include "hbapi.h"
-#ifdef __XHARBOUR__
 #include "hbapiitm.h"
 #include "hbstack.h"
-#endif
-
+#include "hbvm.h"
 #include "filesys.api"
 #include "guilib.h"
 

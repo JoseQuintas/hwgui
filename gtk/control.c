@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.17 2005-10-21 08:50:15 alkresin Exp $
+ * $Id: control.c,v 1.18 2005-10-27 12:10:33 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -54,36 +54,6 @@ static PHB_DYNS pSymTimerProc = NULL;
 GtkFixed * getFixedBox( GObject * handle )
 {
    return (GtkFixed *) g_object_get_data( handle, "fbox" );
-/*
-   gpointer dwNewLong = g_object_get_data( handle, "obj" );
-   
-   if( dwNewLong )
-   {
-      PHB_ITEM pObj = hb_itemNew( NULL );
-      PHB_DYNS pMsg = hb_dynsymGet( "FBOX" );
-      GtkFixed * box;      
-
-      pObj->type = HB_IT_OBJECT;
-      pObj->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
-      #ifndef UIHOLDERS
-      pObj->item.asArray.value->ulHolders++;
-      #else
-      pObj->item.asArray.value->uiHolders++;
-      #endif
- 
-      if( pMsg )
-      {
-         hb_vmPushSymbol( pMsg->pSymbol );
-         hb_vmPush( pObj );
-         hb_vmDo( 0 );
-      }
-      box = (GtkFixed *) hb_itemGetNL( (PHB_ITEM) hb_stackReturn() ); 
-      hb_itemRelease( pObj );
-      return box;
-   }
-   else
-      return NULL;
-*/
 }
 
 /*
@@ -127,7 +97,6 @@ HB_FUNC( CREATESTATIC )
    #else
    hb_retnl( (LONG) hCtrl );
    #endif
-
 
 }
 
@@ -687,7 +656,6 @@ HB_FUNC( HWG_CREATESEP )
    hb_retnl( (LONG) hCtrl );
 #endif
 }
-
 
 HB_FUNC( ADDTOOLTIP )
 {

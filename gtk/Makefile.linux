@@ -1,4 +1,4 @@
-# $Id: Makefile.linux,v 1.2 2005-09-19 05:56:42 alkresin Exp $
+# $Id: Makefile.linux,v 1.3 2005-10-27 12:10:33 alkresin Exp $
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 ifeq ($(HB_ROOT),)
@@ -15,7 +15,7 @@ PROCMISC_DIR=../source/procmisc
 XML_DIR=../source/xml
 SRC_DIR=../source
 
-CFLAGS = -Wall -O3 -mcpu=pentium
+CFLAGS = -Wall -O3 -mcpu=pentium -D__GTK_USE_POINTER__
 
 vpath %.a $(LIB_DIR)
 vpath %.o $(OBJ_DIR)
@@ -62,8 +62,10 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hedit.o \
    $(OBJ_DIR)/hfrmtmpl.o \
    $(OBJ_DIR)/hgraph.o \
+   $(OBJ_DIR)/hpanel.o \
    $(OBJ_DIR)/hprinter.o \
    $(OBJ_DIR)/hradio.o \
+   $(OBJ_DIR)/hsayimg.o \
    $(OBJ_DIR)/htab.o \
    $(OBJ_DIR)/htimer.o \
    $(OBJ_DIR)/hupdown.o \

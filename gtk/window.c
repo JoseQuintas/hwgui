@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.13 2005-10-21 08:50:15 alkresin Exp $
+ * $Id: window.c,v 1.14 2005-10-27 12:10:33 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -111,7 +111,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
 
    box = (GtkFixed*)gtk_fixed_new();
    // gtk_container_add( GTK_CONTAINER(hWnd), (GtkWidget*)box );
-   gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 2 );
+   gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
 
    #ifdef __GTK_USE_POINTER__
    temp = hb_itemPutPtr( NULL, (void*)box );
@@ -168,7 +168,7 @@ HB_FUNC( HWG_CREATEDLG )
    gtk_container_add (GTK_CONTAINER(hWnd), vbox);
 
    box = (GtkFixed*)gtk_fixed_new();
-   gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 2 );
+   gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
    #ifdef __GTK_USE_POINTER__
    temp = hb_itemPutPtr( NULL, (void*)box );
    #else

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.440 2005-10-27 08:06:20 omm Exp $
+ * $Id: Changelog,v 1.441 2005-10-27 12:10:33 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,30 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-27 16:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * gtk/control.c
+     * Small cleanup
+   * gtk/draw.c
+     * Functions, compatible with appropriates from Win32 version,
+       has been implemented:
+        OpenBitmap()
+        OpenImage()
+        DrawBitmap()
+     * DeleteObject() is extended with pixbuf objects
+   * gtk/drawwidg.prg
+     * Class HBitmap has been implemented
+   + gtk/hpanel.prg
+   + gtk/hsayimg.prg
+     + Two files added
+   * gtk/hwgtk.h
+     * HWGUI_PIXBUF headers added
+   * gtk/menu_c.c
+   * gtk/window.c
+     ! Small fixes
+   * gtk/Makefile
+   * gtk/Makefile.linux
+     * Changed due to the adding of new files
 
 2005-10-27 11:10 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
    *utils/designer/resource/widgets.xml

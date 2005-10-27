@@ -1,5 +1,5 @@
 /*
- * $Id: hwgtk.h,v 1.1 2005-03-10 11:32:48 alkresin Exp $
+ * $Id: hwgtk.h,v 1.2 2005-10-27 12:10:33 alkresin Exp $
  */
 
 
@@ -16,6 +16,7 @@ typedef struct HWGUI_HDC_STRU
 #define HWGUI_OBJECT_PEN    1
 #define HWGUI_OBJECT_BRUSH  2
 #define HWGUI_OBJECT_FONT   3
+#define HWGUI_OBJECT_PIXBUF 4
 
 typedef struct HWGUI_HDC_OBJECT_STRU
 {
@@ -41,3 +42,9 @@ typedef struct HWGUI_FONT_STRU
    short int type;
    PangoFontDescription * hFont;
 } HWGUI_FONT, * PHWGUI_FONT;
+
+typedef struct HWGUI_PIXBUF_STRU
+{
+   short int type;
+   GdkPixbuf * handle;
+} HWGUI_PIXBUF, * PHWGUI_PIXBUF;

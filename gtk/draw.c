@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.5 2005-10-21 08:50:15 alkresin Exp $
+ * $Id: draw.c,v 1.6 2005-10-27 12:10:33 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level painting functions
@@ -330,6 +330,21 @@ HB_FUNC( WINDOW2BITMAP )
  */
 HB_FUNC( DRAWBITMAP )
 {
+#ifdef __GTK_USE_POINTER__
+   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
+   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) hb_parptr(2);
+#else
+   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
+   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) hb_parnl(2);
+#endif
+   gint x =  hb_parni(4);
+   gint y =  hb_parni(5);
+   gint width = hb_parni(6);
+   gint height = hb_parni(7);
+
+   gdk_draw_pixbuf( hDC->window, hDC->gc, obj->handle,
+         0, 0, x, y, width, height,
+         GDK_RGB_DITHER_NONE, 0, 0 );
 }
 
 /*
@@ -347,28 +362,61 @@ HB_FUNC( SPREADBITMAP )
 
 HB_FUNC( GETBITMAPSIZE )
 {
-/*
-   BITMAP  bitmap;
+   #ifdef __GTK_USE_POINTER__
+   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) hb_parptr(1);
+   #else
+   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) hb_parnl(1);
+   #endif
    PHB_ITEM aMetr = _itemArrayNew( 2 );
    PHB_ITEM temp;
 
-   GetObject( (HBITMAP) hb_parnl( 1 ), sizeof( BITMAP ), ( LPVOID ) &bitmap );
-
-   temp = _itemPutNL( NULL, bitmap.bmWidth );
+   temp = _itemPutNL( NULL, gdk_pixbuf_get_width ( obj->handle) );
    _itemArrayPut( aMetr, 1, temp );
    _itemRelease( temp );
 
-   temp = _itemPutNL( NULL, bitmap.bmHeight );
+   temp = _itemPutNL( NULL, gdk_pixbuf_get_height ( obj->handle) );
    _itemArrayPut( aMetr, 2, temp );
    _itemRelease( temp );
 
    _itemReturn( aMetr );
    _itemRelease( aMetr );
-*/   
+   
 }
 
 HB_FUNC( OPENBITMAP )
 {
+   PHWGUI_PIXBUF hpix;
+   GdkPixbuf * handle = gdk_pixbuf_new_from_file( hb_parc(1), NULL );
+   
+   if( handle )
+   {
+      hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );
+      hpix->type = HWGUI_OBJECT_PIXBUF;
+      hpix->handle = handle;
+      #ifdef __GTK_USE_POINTER__
+      hb_retptr( (void *) hpix );
+      #else
+      hb_retnl( (LONG) hpix );
+      #endif
+   }
+}
+
+HB_FUNC( OPENIMAGE )
+{
+   PHWGUI_PIXBUF hpix;
+   GdkPixbuf * handle = gdk_pixbuf_new_from_file( hb_parc(1), NULL );
+   
+   if( handle )
+   {
+      hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );
+      hpix->type = HWGUI_OBJECT_PIXBUF;
+      hpix->handle = handle;
+      #ifdef __GTK_USE_POINTER__
+      hb_retptr( (void *) hpix );
+      #else
+      hb_retnl( (LONG) hpix );
+      #endif
+   }
 }
 
 HB_FUNC( DRAWICON )
@@ -470,6 +518,11 @@ HB_FUNC( DELETEOBJECT )
    else if( obj->type == HWGUI_OBJECT_FONT )
    {
       pango_font_description_free( ( (PHWGUI_FONT)obj )->hFont );
+      hb_xfree( obj );
+   }
+   else if( obj->type == HWGUI_OBJECT_PIXBUF )
+   {
+      gdk_pixbuf_unref( ( (PHWGUI_PIXBUF)obj )->handle );
       hb_xfree( obj );
    }
 

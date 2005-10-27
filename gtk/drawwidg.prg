@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.3 2005-09-16 11:13:29 alkresin Exp $
+ * $Id: drawwidg.prg,v 1.4 2005-10-27 12:10:33 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -345,11 +345,15 @@ Local lPreDefined := .F., i, aBmpSize
    NEXT
    #endif
    ::handle :=   LoadBitmap( Iif( lPreDefined, Val(name),name ) )
-   ::name   := name
-   aBmpSize  := GetBitmapSize( ::handle )
-   ::nWidth  := aBmpSize[1]
-   ::nHeight := aBmpSize[2]
-   Aadd( ::aBitmaps,Self )
+   IF !Empty( ::handle )
+      ::name   := name
+      aBmpSize  := GetBitmapSize( ::handle )
+      ::nWidth  := aBmpSize[1]
+      ::nHeight := aBmpSize[2]
+      Aadd( ::aBitmaps,Self )
+   ELSE
+      Return Nil
+   ENDIF
 
 Return Self
 
@@ -371,16 +375,16 @@ Local i, aBmpSize
       ENDIF
    NEXT
    #endif
-   IF Lower( Right( name,4 ) ) == ".bmp"
-      ::handle := OpenBitmap( name, hDC )
+   ::handle := OpenImage( name )
+   IF !Empty( ::handle )
+      ::name := name
+      aBmpSize  := GetBitmapSize( ::handle )
+      ::nWidth  := aBmpSize[1]
+      ::nHeight := aBmpSize[2]
+      Aadd( ::aBitmaps,Self )
    ELSE
-      // ::handle := OpenImage( name )
+      Return Nil
    ENDIF
-   ::name := name
-   aBmpSize  := GetBitmapSize( ::handle )
-   ::nWidth  := aBmpSize[1]
-   ::nHeight := aBmpSize[2]
-   Aadd( ::aBitmaps,Self )
 
 Return Self
 
@@ -534,7 +538,7 @@ Local i
       DeleteObject( HFont():aFonts[i]:handle )
    NEXT
    For i := 1 TO Len( HBitmap():aBitmaps )
-      // DeleteObject( HBitmap():aBitmaps[i]:handle )
+      DeleteObject( HBitmap():aBitmaps[i]:handle )
    NEXT
    For i := 1 TO Len( HIcon():aIcons )
       // DeleteObject( HIcon():aIcons[i]:handle )

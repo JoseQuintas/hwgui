@@ -62,7 +62,9 @@
          <property name="Font" type="O" />
          <property name="Password" type="L" value="False"/>
          <property name="Multiline" type="L" value="False"/>
+		 <property name="AutoHScroll" type="L" value="False"/>
          <property name="Border" type="L" value="True"/>
+		 <property name="Justify" type="C" value="Left"/>
          <property name="cPicture" type="C" />
          <property name="varName" type="C" />
 		 <property name="ToolTip" type="C" value=""/>

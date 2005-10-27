@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.29 2005-10-26 07:43:26 omm Exp $
+ * $Id: hfrmtmpl.prg,v 1.30 2005-10-27 08:06:20 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -519,6 +519,10 @@ MEMVAR aImages, lEditLabels, aParts
       ELSEIF cPName == "password"
          IF xProperty
             nStyle += ES_PASSWORD
+         ENDIF
+      ELSEIF cPName == "autohscroll"
+         IF xProperty
+            nStyle += ES_AUTOHSCROLL
          ENDIF
       ELSEIF cPName == "atree"
          BuildMenu( xProperty,oForm:oDlg:handle,oForm:oDlg )

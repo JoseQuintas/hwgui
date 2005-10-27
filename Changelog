@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.439 2005-10-26 13:54:19 omm Exp $
+ * $Id: Changelog,v 1.440 2005-10-27 08:06:20 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-27 11:10 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
+   *utils/designer/resource/widgets.xml
+     + added properties AUTOHSCROLL and JUSTIFY to edit control
+   *source/hfrmtmpl.prg
+     + added processing of AUTOHSCROLL clause
 
 2005-10-26 16:55 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
    *utils/designer/designer.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.14 2005-10-27 12:10:33 alkresin Exp $
+ * $Id: window.c,v 1.15 2005-10-28 12:16:47 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -114,16 +114,25 @@ HB_FUNC( HWG_INITMAINWINDOW )
    gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
 
    #ifdef __GTK_USE_POINTER__
-   temp = hb_itemPutPtr( NULL, (void*)box );
+   {
+   
+   SetObjectVar( pObject, "_FBOX", hb_itemPutPtr( &temp, (void*)box ) );   
+   SetObjectVar( pObject, "_NHOLDER", hb_itemPutNL( &temp, 1 ) );
+   hb_itemRelease( &temp );
+
+   }
    #else
+   {
    temp = hb_itemPutNL( NULL, (LONG)box );
-   #endif
    SetObjectVar( pObject, "_FBOX", temp );
    hb_itemRelease( temp );
 
    temp = hb_itemPutNL( NULL, 1 );
    SetObjectVar( pObject, "_NHOLDER", temp );
    hb_itemRelease( temp );
+
+   }
+   #endif
    
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
@@ -170,16 +179,26 @@ HB_FUNC( HWG_CREATEDLG )
    box = (GtkFixed*)gtk_fixed_new();
    gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
    #ifdef __GTK_USE_POINTER__
-   temp = hb_itemPutPtr( NULL, (void*)box );
+   {
+   
+   SetObjectVar( pObject, "_FBOX", hb_itemPutPtr( &temp, (void*)box ) );
+   
+   SetObjectVar( pObject, "_NHOLDER", hb_itemPutNL( &temp, 1 ) );
+   hb_itemClear( &temp );
+
+   }
    #else
+   {
    temp = hb_itemPutNL( NULL, (LONG)box );
-   #endif
    SetObjectVar( pObject, "_FBOX", temp );
    hb_itemRelease( temp );
 
    temp = hb_itemPutNL( NULL, 1 );
    SetObjectVar( pObject, "_NHOLDER", temp );
    hb_itemRelease( temp );
+
+   }
+   #endif
    
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );

@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.4 2005-10-21 08:50:15 alkresin Exp $
+ * $Id: drawtext.c,v 1.5 2005-10-28 12:22:25 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level text functions
@@ -193,7 +193,7 @@ HB_FUNC( GETTEXTSIZE )
    hb_arraySetForward( &aMetr, 2, hb_itemPutNL( &temp, rc.height ));
 
    hb_itemClear( &temp );
-   hb_itemForwardValue( &(HB_VM_STACK).Return, &aMetr );
+   hb_itemForwardValue( hb_stackReturnItem(), &aMetr );
 }
 #else
 {

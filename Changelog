@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.443 2005-10-28 12:16:47 lculik Exp $
+ * $Id: Changelog,v 1.444 2005-10-28 12:22:25 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2005-10-28 10:25 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+   * gtk/draw.c
+     gtk/drawtext.c
+     gtk/commond.c
+     ! changed all call to &(HB_VM_STACK).Return to hb_stackReturnItem() under xharbour      
+     
 2005-10-28 10:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * gtk/window.c
      ! small fixes

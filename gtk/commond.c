@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.8 2005-10-21 08:50:15 alkresin Exp $
+ * $Id: commond.c,v 1.9 2005-10-28 12:22:25 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
@@ -64,7 +64,7 @@ void store_font( gpointer fontseldlg )
    hb_arraySetForward( &aMetr, 9,hb_itemPutNI( &temp, 0 ) );
 
    hb_itemClear( &temp );
-   hb_itemForwardValue( &(HB_VM_STACK).Return, &aMetr );
+   hb_itemForwardValue( hb_stackReturnItem(), &aMetr );
 }
 #else
 {

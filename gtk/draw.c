@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.6 2005-10-27 12:10:33 alkresin Exp $
+ * $Id: draw.c,v 1.7 2005-10-28 12:22:25 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level painting functions
@@ -633,7 +633,7 @@ HB_FUNC( GETCLIENTRECT )
    hb_arraySetForward( &aMetr, 4, hb_itemPutNL( &temp, widget->allocation.height ) );
 
    hb_itemClear( &temp );
-   hb_itemForwardValue( &(HB_VM_STACK).Return, &aMetr );
+   hb_itemForwardValue( hb_stackReturnItem(), &aMetr );
    }
    #else
    {

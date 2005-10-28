@@ -1,5 +1,5 @@
 /*
- * $Id: hhyper.prg,v 1.3 2005-10-26 07:43:26 omm Exp $
+ * $Id: hhyper.prg,v 1.4 2005-10-28 06:19:39 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HStaticLink class
@@ -10,11 +10,12 @@
 #include "common.ch"
 #include "hwgui.ch"
 
-#define _HYPERLINK_EVENT WM_USER + 101
-#define LBL_INIT    0
-#define LBL_NORMAL  1
-#define LBL_VISITED 2
-#define LBL_MOUSEOVER 3
+#define _HYPERLINK_EVENT   WM_USER + 101
+#define LBL_INIT           0
+#define LBL_NORMAL         1
+#define LBL_VISITED        2
+#define LBL_MOUSEOVER      3
+#define TRANSPARENT        1
 
 *+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 *+

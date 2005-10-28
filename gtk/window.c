@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.15 2005-10-28 12:16:47 lculik Exp $
+ * $Id: window.c,v 1.16 2005-10-28 18:02:04 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -91,11 +91,8 @@ HB_FUNC( HWG_INITMAINWINDOW )
    int width = hb_parnl(10);
    int height = hb_parnl(11);
 
-   #ifdef __XHARBOUR__
-   HB_ITEM_NEW(temp);
-   #else
    PHB_ITEM temp;
-   #endif
+
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
 
    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
@@ -114,25 +111,16 @@ HB_FUNC( HWG_INITMAINWINDOW )
    gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
 
    #ifdef __GTK_USE_POINTER__
-   {
-   
-   SetObjectVar( pObject, "_FBOX", hb_itemPutPtr( &temp, (void*)box ) );   
-   SetObjectVar( pObject, "_NHOLDER", hb_itemPutNL( &temp, 1 ) );
-   hb_itemRelease( &temp );
-
-   }
+   temp = hb_itemPutPtr( NULL, (void*)box );
    #else
-   {
    temp = hb_itemPutNL( NULL, (LONG)box );
+   #endif
    SetObjectVar( pObject, "_FBOX", temp );
    hb_itemRelease( temp );
 
    temp = hb_itemPutNL( NULL, 1 );
    SetObjectVar( pObject, "_NHOLDER", temp );
    hb_itemRelease( temp );
-
-   }
-   #endif
    
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
@@ -158,11 +146,8 @@ HB_FUNC( HWG_CREATEDLG )
    int y = hb_itemGetNI( GetObjectVar( pObject, "NTOP" ) );
    int width = hb_itemGetNI( GetObjectVar( pObject, "NWIDTH" ) );
    int height = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
-   #ifdef __XHARBOUR__
-   HB_ITEM_NEW( temp);
-   #else
    PHB_ITEM temp;
-   #endif
+
 
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
 
@@ -179,26 +164,16 @@ HB_FUNC( HWG_CREATEDLG )
    box = (GtkFixed*)gtk_fixed_new();
    gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
    #ifdef __GTK_USE_POINTER__
-   {
-   
-   SetObjectVar( pObject, "_FBOX", hb_itemPutPtr( &temp, (void*)box ) );
-   
-   SetObjectVar( pObject, "_NHOLDER", hb_itemPutNL( &temp, 1 ) );
-   hb_itemClear( &temp );
-
-   }
+   temp = hb_itemPutPtr( NULL, (void*)box );
    #else
-   {
    temp = hb_itemPutNL( NULL, (LONG)box );
+   #endif
    SetObjectVar( pObject, "_FBOX", temp );
    hb_itemRelease( temp );
 
    temp = hb_itemPutNL( NULL, 1 );
    SetObjectVar( pObject, "_NHOLDER", temp );
    hb_itemRelease( temp );
-
-   }
-   #endif
    
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.30 2005-10-27 08:06:20 omm Exp $
+ * $Id: hfrmtmpl.prg,v 1.31 2005-10-31 10:08:19 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -445,12 +445,13 @@ Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName
 MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop
 MEMVAR onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg
 MEMVAR nWidth, nHeight, oFont, lNoBorder, bSetGet
-MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs
+MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs, tmp_nSheet
 MEMVAR aImages, lEditLabels, aParts
 
    IF nCtrl == 0
       IF Lower( oCtrlTmpl:cClass ) == "pagesheet"
-         oParent:StartPage()
+         tmp_nSheet ++
+         oParent:StartPage( Tabs[tmp_nSheet] )
          FOR i := 1 TO Len( oCtrlTmpl:aControls )
             CreateCtrl( oParent, oCtrlTmpl:aControls[i], oForm )
          NEXT
@@ -597,6 +598,10 @@ MEMVAR aImages, lEditLabels, aParts
       name := Nil
    ENDIF
    IF !Empty( oCtrlTmpl:aControls )
+      IF oCtrlTmpl:cClass == "page"
+         __mvPrivate( "tmp_nSheet" )
+         __mvPut( "tmp_nSheet", 0 )
+      ENDIF
       FOR i := 1 TO Len( oCtrlTmpl:aControls )
          CreateCtrl( Iif( oCtrlTmpl:cClass=="group".OR.oCtrlTmpl:cClass=="radiogroup",oParent,oCtrl ), oCtrlTmpl:aControls[i], oForm )
       NEXT

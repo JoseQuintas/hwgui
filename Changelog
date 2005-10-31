@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.446 2005-10-31 08:29:41 alkresin Exp $
+ * $Id: Changelog,v 1.447 2005-10-31 10:08:19 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-31 13:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/hfrmtmpl.prg
+     ! Fixed problem with names of a tab sheets
 
 2005-10-31 11:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * gtk/control.c

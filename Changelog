@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.448 2005-10-31 15:00:30 lculik Exp $
+ * $Id: Changelog,v 1.449 2005-10-31 15:15:56 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,10 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2005-10-31 13:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+   * gtk/commond.c
+     gtk/draw.c
+     gtk/drawtext.c
+     ! optimized and removed the usage of hb_item_new macro
+     
 2005-10-31 13:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/commond.c
      source/wprint.c
-     misc.c
+     source/misc.c
      ! optimized and removed the usage of hb_item_new macro
 
 2005-10-31 13:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>

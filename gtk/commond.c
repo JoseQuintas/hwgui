@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.9 2005-10-28 12:22:25 lculik Exp $
+ * $Id: commond.c,v 1.10 2005-10-31 15:15:56 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
@@ -30,41 +30,42 @@ void store_font( gpointer fontseldlg )
    char * szFontName = (char*) gtk_font_selection_dialog_get_font_name( (GtkFontSelectionDialog*)fontseldlg );
    PangoFontDescription * hFont = pango_font_description_from_string( szFontName );
    PHWGUI_FONT h = (PHWGUI_FONT) hb_xgrab( sizeof(HWGUI_FONT) );
-#ifdef __XHARBOUR__
-   HB_ITEM_NEW( aMetr);
-   HB_ITEM_NEW( temp );
+   PHB_ITEM aMetr = hb_itemArrayNew( 9 );
+#ifdef __XHARBOUR__   
+   PHB_ITEM temp  = hb_itemNew( NULL );
 #else
-   PHB_ITEM aMetr = hb_itemArrayNew( 9 ), temp;
+   PHB_ITEM temp;
 #endif
 
    h->type = HWGUI_OBJECT_FONT;
    h->hFont = hFont;
 #ifdef __XHARBOUR__
 {
-   hb_arrayNew( &aMetr, 9 );
+   
 #ifdef __GTK_USE_POINTER__   
-   hb_arraySetForward( &aMetr, 1, hb_itemPutPtr( &temp, ( void *) h ) );
+   hb_arraySetForward( aMetr, 1, hb_itemPutPtr( temp, ( void *) h ) );
 #else
-   hb_arraySetForward( &aMetr, 1, hb_itemPutNL( &temp, (LONG)h ) );
+   hb_arraySetForward( aMetr, 1, hb_itemPutNL(  temp, (LONG)h ) );
 #endif
-   hb_arraySetForward( &aMetr, 2, hb_itemPutC( &temp, (char*) pango_font_description_get_family( hFont ) ) );
+   hb_arraySetForward( aMetr, 2, hb_itemPutC(   temp, (char*) pango_font_description_get_family( hFont ) ) );
 
-   hb_arraySetForward( &aMetr, 3, hb_itemPutNL( &temp, 0 ) );
+   hb_arraySetForward( aMetr, 3, hb_itemPutNL(  temp, 0 ) );
    
-   hb_arraySetForward( &aMetr, 4, hb_itemPutNL( &temp, (LONG) pango_font_description_get_size( hFont ) ) );
+   hb_arraySetForward( aMetr, 4, hb_itemPutNL(  temp, (LONG) pango_font_description_get_size( hFont ) ) );
 
-   hb_arraySetForward( &aMetr, 5, hb_itemPutNL( &temp, (LONG) pango_font_description_get_weight( hFont ) ));
+   hb_arraySetForward( aMetr, 5, hb_itemPutNL(  temp, (LONG) pango_font_description_get_weight( hFont ) ));
 
-   hb_arraySetForward( &aMetr, 6, hb_itemPutNI( &temp, 0 ) );
+   hb_arraySetForward( aMetr, 6, hb_itemPutNI(  temp, 0 ) );
    
-   hb_arraySetForward( &aMetr, 7, hb_itemPutNI( &temp, (LONG) pango_font_description_get_style( hFont ) ) );
+   hb_arraySetForward( aMetr, 7, hb_itemPutNI(  temp, (LONG) pango_font_description_get_style( hFont ) ) );
    
-   hb_arraySetForward( &aMetr, 8, hb_itemPutNI( &temp, 0 ) );
+   hb_arraySetForward( aMetr, 8, hb_itemPutNI(  temp, 0 ) );
    
-   hb_arraySetForward( &aMetr, 9,hb_itemPutNI( &temp, 0 ) );
+   hb_arraySetForward( aMetr, 9,hb_itemPutNI(   temp, 0 ) );
 
-   hb_itemClear( &temp );
-   hb_itemForwardValue( hb_stackReturnItem(), &aMetr );
+   hb_itemRelease( temp );
+   hb_itemForwardValue( hb_stackReturnItem(), aMetr );
+   hb_itemRelease( aMetr );
 }
 #else
 {

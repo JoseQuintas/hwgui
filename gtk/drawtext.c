@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.5 2005-10-28 12:22:25 lculik Exp $
+ * $Id: drawtext.c,v 1.6 2005-10-31 15:15:56 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level text functions
@@ -174,12 +174,11 @@ HB_FUNC( GETTEXTSIZE )
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
    #endif
    PangoRectangle rc;
+   PHB_ITEM aMetr = hb_itemArrayNew( 2 );   
    #ifdef __XHARBOUR__
-   HB_ITEM_NEW( aMetr);
-   HB_ITEM_NEW( temp);
-   hb_arrayNew( &aMetr, 2 );
+   PHB_ITEM  temp  = hb_itemNew( NULL ); 
    #else
-   PHB_ITEM aMetr = _itemArrayNew( 2 );
+   
    PHB_ITEM temp;
    #endif
 
@@ -189,11 +188,12 @@ HB_FUNC( GETTEXTSIZE )
 
 #ifdef __XHARBOUR__
 {
-   hb_arraySetForward( &aMetr, 1, hb_itemPutNL( &temp, rc.width ) );
-   hb_arraySetForward( &aMetr, 2, hb_itemPutNL( &temp, rc.height ));
+   hb_arraySetForward( aMetr, 1, hb_itemPutNL( temp, rc.width ) );
+   hb_arraySetForward( aMetr, 2, hb_itemPutNL( temp, rc.height ));
 
-   hb_itemClear( &temp );
-   hb_itemForwardValue( hb_stackReturnItem(), &aMetr );
+   hb_itemRelease( temp );
+   hb_itemForwardValue( hb_stackReturnItem(), aMetr );
+   hb_itemRelease( aMetr ) ;
 }
 #else
 {

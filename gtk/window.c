@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.16 2005-10-28 18:02:04 lculik Exp $
+ * $Id: window.c,v 1.17 2005-10-31 08:29:41 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -351,28 +351,10 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       }
       else if( event->type == GDK_CONFIGURE )
       {
-         /*
-         char s[100];
-         sprintf( s,"configure %d %d %d %d / %d %d %d %d", 
-            widget->allocation.x,
-            widget->allocation.y,
-            widget->allocation.width,
-            widget->allocation.height,
-            ((GdkEventConfigure*)event)->x,
-            ((GdkEventConfigure*)event)->y,
-            ((GdkEventConfigure*)event)->width,
-            ((GdkEventConfigure*)event)->height );
-   	   writelog(s);
-         */
          p2 = 0;
          if( widget->allocation.width != ((GdkEventConfigure*)event)->width ||
              widget->allocation.height!= ((GdkEventConfigure*)event)->height )
          {
-            /*
-            p1 = WM_SIZE;
-            p3 = ( ((GdkEventConfigure*)event)->width & 0xFFFF ) |
-                 ( ( ((GdkEventConfigure*)event)->height << 16 ) & 0xFFFF0000 );
-            */
             return 0;
          }
          else
@@ -381,6 +363,13 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
             p3 = ( ((GdkEventConfigure*)event)->x & 0xFFFF ) |
                  ( ( ((GdkEventConfigure*)event)->y << 16 ) & 0xFFFF0000 );
          }
+      }
+      else if( event->type == GDK_ENTER_NOTIFY || event->type == GDK_LEAVE_NOTIFY )
+      {
+         p1 = WM_MOUSEMOVE;
+         p2 = ( ((GdkEventCrossing*)event)->state & GDK_BUTTON1_MASK )? 1:0 | 
+              ( event->type == GDK_ENTER_NOTIFY )? 0x10:0;
+         p3 = ( ((ULONG)(((GdkEventCrossing*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
       }
       else
          sscanf( (char*)data,"%ld %ld %ld",&p1,&p2,&p3 );

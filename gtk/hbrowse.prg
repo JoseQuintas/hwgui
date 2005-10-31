@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.12 2005-10-21 08:50:15 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.13 2005-10-31 08:29:41 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -308,7 +308,7 @@ Local aCoors, retValue := -1
       ELSEIF msg == WM_LBUTTONDBLCLK
          ::ButtonDbl( lParam )
 
-      ELSEIF msg == WM_MOUSEMOVE
+      ELSEIF msg == WM_MOUSEMOVE      
          ::MouseMove( wParam, lParam )
 
       ELSEIF msg == WM_MOUSEWHEEL
@@ -817,26 +817,25 @@ Local lColumnFont := .F.
             FillRect( hDC, x, ::y1+(::height+1)*(nstroka-1)+1, x+xSize-Iif(::lSep3d,2,1)-1,::y1+(::height+1)*nstroka, hBReal )
             IF !lClear
                IF ::aColumns[fif]:aBitmaps != Nil .AND. !Empty( ::aColumns[fif]:aBitmaps )
-	         /*
                   FOR j := 1 TO Len( ::aColumns[fif]:aBitmaps )
                      IF Eval( ::aColumns[fif]:aBitmaps[j,1],EVAL( ::aColumns[fif]:block,,Self,fif ),lSelected )
                         ob := ::aColumns[fif]:aBitmaps[j,2]
-                        IF ob:nHeight > ::height
+                        // IF ob:nHeight > ::height
                            y1 := 0
                            bh := ::height
                            bw := Int( ob:nWidth * ( ob:nHeight / ::height ) )
                            DrawBitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(nstroka-1)+1, bw, bh )
+                        /*   
                         ELSE
                            y1 := Int( (::height-ob:nHeight)/2 )
                            bh := ob:nHeight
                            bw := ob:nWidth
                            DrawTransparentBitmap( hDC, ob:handle, x, y1+::y1+(::height+1)*(nstroka-1)+1 )
                         ENDIF
-                        // DrawBitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(nstroka-1)+1, bw, bh )
+                        */
                         EXIT
                      ENDIF
                   NEXT
-		 */
                ELSE
                   sviv := AllTrim( FldStr( Self,fif ) )
                   // Ahora lineas Justificadas !!
@@ -1327,6 +1326,7 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
    local xPos := LoWord( lParam ), yPos := HiWord( lParam )
    local x := ::x1, i := ::nLeftCol, res := .F.
 
+   // writelog( "Mmove: "+str(xPos)+" "+str(yPos) )
    IF !::active .OR. Empty( ::aColumns ) .OR. ::x1 == Nil
       Return Nil
    ENDIF

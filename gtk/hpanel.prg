@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.1 2005-10-27 12:10:33 alkresin Exp $
+ * $Id: hpanel.prg,v 1.2 2005-10-31 08:29:41 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HPanel class 
@@ -44,10 +44,8 @@ Return Self
 METHOD Activate CLASS HPanel
 
    IF !Empty( ::oParent:handle )
-      // ::handle := CreatePanel( ::oParent:handle, ::id, ;
-      //             ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-      ::handle := CreateStatic( ::oParent:handle, ::id, ;
-                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )               
+      ::handle := CreatePanel( ::oParent:handle, ::id, ;
+                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
 Return Nil

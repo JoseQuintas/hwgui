@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.18 2005-10-27 12:10:33 alkresin Exp $
+ * $Id: control.c,v 1.19 2005-10-31 08:29:41 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -497,7 +497,7 @@ HB_FUNC( CREATEBROWSE )
    
    gtk_widget_add_events( area, GDK_BUTTON_PRESS_MASK | 
         GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK |
-	GDK_MOTION_NOTIFY );
+	GDK_POINTER_MOTION_MASK );
    set_event( (gpointer)area, "button_press_event", 0, 0, 0 );
    set_event( (gpointer)area, "button_release_event", 0, 0, 0 );
    set_event( (gpointer)area, "motion_notify_event", 0, 0, 0 );
@@ -656,6 +656,78 @@ HB_FUNC( HWG_CREATESEP )
    hb_retnl( (LONG) hCtrl );
 #endif
 }
+
+/*
+   CreatePanel( hParentWindow, nControlID, nStyle, x, y, nWidth, nHeight, nExtStyle, cTitle )
+*/
+HB_FUNC( CREATEPANEL )
+{
+   GtkWidget *hCtrl;
+   GtkFixed *box, *fbox;
+
+   fbox = (GtkFixed*)gtk_fixed_new();
+   hCtrl = gtk_drawing_area_new();
+
+   #ifdef __GTK_USE_POINTER__
+   box = getFixedBox( (GObject*) hb_parptr(1) );
+   #else
+   box = getFixedBox( (GObject*) hb_parnl(1) );
+   #endif
+   if ( box )
+   {
+      gtk_fixed_put( box, (GtkWidget*)fbox, hb_parni(4), hb_parni(5) );
+      gtk_widget_set_size_request( (GtkWidget*)fbox,hb_parni(6),hb_parni(7) );
+   }
+   gtk_fixed_put( fbox, hCtrl, 0, 0 );
+   gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
+   g_object_set_data( (GObject*) hCtrl, "fbox", (gpointer) fbox );
+
+   set_event( (gpointer)hCtrl, "expose_event", WM_PAINT, 0, 0 );
+
+   #ifdef __GTK_USE_POINTER__
+   hb_retptr( ( void * ) hCtrl );
+   #else
+   hb_retnl( (LONG) hCtrl );
+   #endif
+
+}
+
+/*
+   CreateOwnBtn( hParentWindow, nControlID, x, y, nWidth, nHeight )
+*/
+HB_FUNC( CREATEOWNBTN )
+{
+   GtkWidget * hCtrl;
+   GtkFixed * box;
+
+   hCtrl = gtk_drawing_area_new();
+   
+   #ifdef __GTK_USE_POINTER__
+   box = getFixedBox( (GObject*) hb_parptr(1) );
+   #else
+   box = getFixedBox( (GObject*) hb_parnl(1) );
+   #endif
+   if ( box )
+   {
+      gtk_fixed_put( box, hCtrl, hb_parni(3), hb_parni(4) );
+      gtk_widget_set_size_request( hCtrl,hb_parni(5),hb_parni(6) );
+   }
+   set_event( (gpointer)hCtrl, "expose_event", WM_PAINT, 0, 0 );
+   gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK | 
+        GDK_BUTTON_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK );
+   set_event( (gpointer)hCtrl, "button_press_event", 0, 0, 0 );
+   set_event( (gpointer)hCtrl, "button_release_event", 0, 0, 0 );
+   set_event( (gpointer)hCtrl, "enter_notify_event", 0, 0, 0 );
+   set_event( (gpointer)hCtrl, "leave_notify_event", 0, 0, 0 );
+   
+   #ifdef __GTK_USE_POINTER__
+   hb_retptr( ( void * ) hCtrl );
+   #else
+   hb_retnl( (LONG) hCtrl );
+   #endif
+
+}
+
 
 HB_FUNC( ADDTOOLTIP )
 {

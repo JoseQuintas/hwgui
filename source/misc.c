@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.22 2005-10-25 01:37:26 lculik Exp $
+ * $Id: misc.c,v 1.23 2005-10-31 15:00:30 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -154,12 +154,11 @@ HB_FUNC( HWG_COS )
 HB_FUNC( CLIENTTOSCREEN )
 {
    POINT pt = { 0 };
-   #ifdef __XHARBOUR__   
-   HB_ITEM_NEW( aPoint );
-   HB_ITEM_NEW( temp );
-   hb_arrayNew( &aPoint, 2 );
+   
+   PHB_ITEM aPoint = hb_itemArrayNew( 2 );
+   #ifdef __XHARBOUR__
+   PHB_ITEM temp = hb_itemNew( NULL );
    #else
-   PHB_ITEM aPoint = _itemArrayNew( 2 );
    PHB_ITEM temp;
    #endif
 
@@ -169,11 +168,12 @@ HB_FUNC( CLIENTTOSCREEN )
 
    #ifdef __XHARBOUR__
    {   
-   hb_arraySetForward( &aPoint, 1, hb_itemPutNL( &temp, pt.x ) );      
-   hb_arraySetForward( &aPoint, 2, hb_itemPutNL( &temp, pt.y ) );   
+   hb_arraySetForward( aPoint, 1, hb_itemPutNL( temp, pt.x ) );      
+   hb_arraySetForward( aPoint, 2, hb_itemPutNL( temp, pt.y ) );   
 
-   hb_itemClear( &temp );
-   hb_itemForwardValue(  hb_stackReturnItem(), &aPoint );
+   hb_itemRelease( temp );   
+   hb_itemForwardValue( hb_stackReturnItem(), aPoint );
+   hb_itemRelease(  aPoint );             
    }
    #else
    {
@@ -194,26 +194,25 @@ HB_FUNC( CLIENTTOSCREEN )
 HB_FUNC( SCREENTOCLIENT )
 {
    POINT pt = { 0 };
+   
+   PHB_ITEM aPoint = hb_itemArrayNew( 2 );
    #ifdef __XHARBOUR__
-   HB_ITEM_NEW( aPoint );
-   HB_ITEM_NEW( temp );
-   hb_arrayNew( &aPoint, 2 );
+   PHB_ITEM temp = hb_itemNew( NULL );
    #else
-   PHB_ITEM aPoint = _itemArrayNew( 2 );
    PHB_ITEM temp;
    #endif
-
    pt.x = hb_parnl(2);
    pt.y = hb_parnl(3);
    ScreenToClient( (HWND) hb_parnl(1), &pt );
 
    #ifdef __XHARBOUR__
    {   
-   hb_arraySetForward( &aPoint, 1, hb_itemPutNL( &temp, pt.x ) );   
-   hb_arraySetForward( &aPoint, 2, hb_itemPutNL( &temp, pt.y ) );   
+   hb_arraySetForward( aPoint, 1, hb_itemPutNL( temp, pt.x ) );   
+   hb_arraySetForward( aPoint, 2, hb_itemPutNL( temp, pt.y ) );   
 
-   hb_itemClear( &temp );
-   hb_itemForwardValue(  hb_stackReturnItem(), &aPoint );
+   hb_itemRelease( temp );
+   hb_itemForwardValue( hb_stackReturnItem(), aPoint );
+   hb_itemRelease(  aPoint );             
    }
    #else
    {
@@ -235,24 +234,22 @@ HB_FUNC( SCREENTOCLIENT )
 HB_FUNC( HWG_GETCURSORPOS )
 {
    POINT pt= { 0 };
+   PHB_ITEM aPoint = hb_itemArrayNew( 2 );
    #ifdef __XHARBOUR__
-   HB_ITEM_NEW( aPoint );
-   HB_ITEM_NEW( temp );
-   hb_arrayNew( &aPoint, 2 );
+   PHB_ITEM temp = hb_itemNew( NULL );
    #else
-   PHB_ITEM aPoint = _itemArrayNew( 2 );
    PHB_ITEM temp;
    #endif
-
    GetCursorPos( &pt );
    #ifdef __XHARBOUR__
    {
    
-   hb_arraySetForward( &aPoint, 1, hb_itemPutNL( &temp, pt.x ) );    
-   hb_arraySetForward( &aPoint, 2, hb_itemPutNL( &temp, pt.y ) );
+   hb_arraySetForward( aPoint, 1, hb_itemPutNL( temp, pt.x ) );    
+   hb_arraySetForward( aPoint, 2, hb_itemPutNL( temp, pt.y ) );
  
-   hb_itemClear( &temp );
-   hb_itemForwardValue(  hb_stackReturnItem(), &aPoint );
+   hb_itemRelease( temp );
+   hb_itemForwardValue( hb_stackReturnItem(), aPoint );
+   hb_itemRelease(  aPoint );             
    }
    #else
    {

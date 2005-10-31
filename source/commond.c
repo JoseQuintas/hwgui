@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.20 2005-10-25 01:37:26 lculik Exp $
+ * $Id: commond.c,v 1.21 2005-10-31 15:00:30 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -37,14 +37,9 @@ HB_FUNC( SELECTFONT )
    HFONT hfont;
    PHB_ITEM pObj = ( ISNIL(1) )? NULL:hb_param( 1, HB_IT_OBJECT );
    PHB_ITEM temp1;
-   #ifdef __XHARBOUR__
    
-   HB_ITEM_NEW( aMetr) ;
-   HB_ITEM_NEW( temp ) ;   
-   
-   #else
    PHB_ITEM aMetr = hb_itemArrayNew( 9 ),temp;
-   #endif
+   
 
 
     /* Initialize members of the CHOOSEFONT structure. */
@@ -96,9 +91,9 @@ HB_FUNC( SELECTFONT )
        hb_itemRelease( temp );
        hb_itemReturn( aMetr );
        */
-       #ifndef __XHARBOUR__
+   
        hb_itemRelease( aMetr );
-       #endif
+   
        hb_ret();
        return;
     }
@@ -110,28 +105,30 @@ HB_FUNC( SELECTFONT )
     hfont = CreateFontIndirect(cf.lpLogFont);
    #ifdef __XHARBOUR__
    {
-   hb_arrayNew( &aMetr, 9 );
    
-   hb_arraySetForward( &aMetr, 1, hb_itemPutNL( &temp, (LONG) hfont ) );   
+   temp = hb_itemNew( NULL );   
    
-   hb_arraySetForward( &aMetr, 2, hb_itemPutC( &temp, lf.lfFaceName ) );
+   hb_arraySetForward( aMetr, 1, hb_itemPutNL( temp, (LONG) hfont ) );   
    
-   hb_arraySetForward( &aMetr, 3, hb_itemPutNL( &temp, lf.lfWidth ) );
+   hb_arraySetForward( aMetr, 2, hb_itemPutC(  temp, lf.lfFaceName ) );
    
-   hb_arraySetForward( &aMetr, 4, hb_itemPutNL( &temp, lf.lfHeight ) );
+   hb_arraySetForward( aMetr, 3, hb_itemPutNL( temp, lf.lfWidth ) );
    
-   hb_arraySetForward( &aMetr, 5, hb_itemPutNL( &temp, lf.lfWeight ) );
+   hb_arraySetForward( aMetr, 4, hb_itemPutNL( temp, lf.lfHeight ) );
    
-   hb_arraySetForward( &aMetr, 6, hb_itemPutNI( &temp, lf.lfCharSet ) );
+   hb_arraySetForward( aMetr, 5, hb_itemPutNL( temp, lf.lfWeight ) );
    
-   hb_arraySetForward( &aMetr, 7, hb_itemPutNI( &temp, lf.lfItalic ) );
+   hb_arraySetForward( aMetr, 6, hb_itemPutNI( temp, lf.lfCharSet ) );
    
-   hb_arraySetForward( &aMetr, 8, hb_itemPutNI( &temp, lf.lfUnderline ) );
+   hb_arraySetForward( aMetr, 7, hb_itemPutNI( temp, lf.lfItalic ) );
    
-   hb_arraySetForward( &aMetr, 9, hb_itemPutNI( &temp, lf.lfStrikeOut ) );
+   hb_arraySetForward( aMetr, 8, hb_itemPutNI( temp, lf.lfUnderline ) );
+   
+   hb_arraySetForward( aMetr, 9, hb_itemPutNI( temp, lf.lfStrikeOut ) );
 
-   hb_itemClear( &temp );
-   hb_itemForwardValue( hb_stackReturnItem(), &aMetr );
+   hb_itemRelease( temp );
+   hb_itemForwardValue( hb_stackReturnItem(), aMetr );
+   hb_itemRelease(aMetr);
    }
    #else
    {

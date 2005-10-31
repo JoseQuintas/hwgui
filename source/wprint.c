@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.9 2005-10-25 01:37:26 lculik Exp $
+ * $Id: wprint.c,v 1.10 2005-10-31 15:00:30 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -81,12 +81,9 @@ HB_FUNC( HWG_GETPRINTERS )
    PBYTE            pBuffer = NULL;
    PRINTER_INFO_4 * pinfo4 = NULL;
    PRINTER_INFO_5 * pinfo5 = NULL;
-   #ifdef __XHARBOUR__
-   HB_ITEM_NEW( aMetr );
-   HB_ITEM_NEW( temp );
-   #else
+   
    PHB_ITEM aMetr, temp;
-   #endif
+   
 
    if (GetVersion () & 0x80000000)         // Windows 98
    {
@@ -115,35 +112,25 @@ HB_FUNC( HWG_GETPRINTERS )
    if( dwReturned )
    {
       int i;
-      #ifdef __XHARBOUR__
-      hb_arrayNew( &aMetr,dwReturned );
-      #else
+      
       aMetr = hb_itemArrayNew( dwReturned );
-      #endif
+      
       for( i=0; i<(int)dwReturned; i++ )
       {
          if( pinfo4 )
          {
-            #ifdef __XHARBOUR__
-            hb_itemPutC( &temp, pinfo4->pPrinterName );
-            #else
-            temp = hb_itemPutC( NULL, pinfo4->pPrinterName );
-            #endif
+            temp = hb_itemPutC( NULL, pinfo4->pPrinterName );           
             pinfo4++;
          }
          else
          {
-            #ifdef __XHARBOUR__
-            hb_itemPutC( &temp, pinfo5->pPrinterName );
-            #else
             temp = hb_itemPutC( NULL, pinfo5->pPrinterName );
-            #endif
             pinfo5++;
          }
          #ifdef __XHARBOUR__
          {
-         hb_arraySetForward( &aMetr, i+1, &temp );
-         hb_itemClear( &temp );
+         hb_arraySetForward( aMetr, i+1, &temp );
+         hb_itemRelease( temp );
          }
          #else
          {
@@ -153,7 +140,8 @@ HB_FUNC( HWG_GETPRINTERS )
          #endif
       }
       #ifdef __XHARBOUR__
-      hb_itemForwardValue( hb_stackReturnItem(), &aMetr );
+      hb_itemForwardValue( hb_stackReturnItem(), aMetr );
+      hb_itemRelease(  aMetr );          
       #else
       {
       hb_itemReturn( aMetr );
@@ -251,39 +239,37 @@ HB_FUNC( HWG_ENDPAGE )
 HB_FUNC( GETDEVICEAREA )
 {
    HDC hDC = (HDC) hb_parnl( 1 );
-   #ifdef __XHARBOUR__
-   HB_ITEM_NEW( aMetr) ;
-   HB_ITEM_NEW( temp);
-
-   #else
-   PHB_ITEM aMetr = hb_itemArrayNew( 9 );
+   #ifdef __XHARBOUR__   
+   PHB_ITEM temp = hb_itemNew(NULL);
+   #else  
    PHB_ITEM temp;
    #endif
-
+   PHB_ITEM aMetr = hb_itemArrayNew( 9 );
+   
    #ifdef __XHARBOUR__
    {
-   hb_arrayNew( &aMetr, 9 );
-   
-   hb_arraySetForward( &aMetr, 1, hb_itemPutNL( &temp, GetDeviceCaps( hDC,HORZRES ) ) );
       
-   hb_arraySetForward( &aMetr, 2, hb_itemPutNL( &temp, GetDeviceCaps( hDC,VERTRES ) ) );   
+   hb_arraySetForward( aMetr, 1, hb_itemPutNL( temp, GetDeviceCaps( hDC,HORZRES ) ) );
+      
+   hb_arraySetForward( aMetr, 2, hb_itemPutNL( temp, GetDeviceCaps( hDC,VERTRES ) ) );   
    
-   hb_arraySetForward( &aMetr, 3, hb_itemPutNL( &temp, GetDeviceCaps( hDC,HORZSIZE ) ) );
+   hb_arraySetForward( aMetr, 3, hb_itemPutNL( temp, GetDeviceCaps( hDC,HORZSIZE ) ) );
    
-   hb_arraySetForward( &aMetr, 4, hb_itemPutNL( &temp, GetDeviceCaps( hDC,VERTSIZE ) ) );
+   hb_arraySetForward( aMetr, 4, hb_itemPutNL( temp, GetDeviceCaps( hDC,VERTSIZE ) ) );
    
-   hb_arraySetForward( &aMetr, 5, hb_itemPutNL( &temp, GetDeviceCaps( hDC,LOGPIXELSX ) ) );
+   hb_arraySetForward( aMetr, 5, hb_itemPutNL( temp, GetDeviceCaps( hDC,LOGPIXELSX ) ) );
    
-   hb_arraySetForward( &aMetr, 6, hb_itemPutNL( &temp, GetDeviceCaps( hDC,LOGPIXELSY ) ) );
+   hb_arraySetForward( aMetr, 6, hb_itemPutNL( temp, GetDeviceCaps( hDC,LOGPIXELSY ) ) );
    
-   hb_arraySetForward( &aMetr, 7, hb_itemPutNL( &temp, GetDeviceCaps( hDC,RASTERCAPS ) ) );
+   hb_arraySetForward( aMetr, 7, hb_itemPutNL( temp, GetDeviceCaps( hDC,RASTERCAPS ) ) );
    
-   hb_arraySetForward( &aMetr, 8, hb_itemPutNL( &temp, GetDeviceCaps( hDC,PHYSICALWIDTH ) ) );
+   hb_arraySetForward( aMetr, 8, hb_itemPutNL( temp, GetDeviceCaps( hDC,PHYSICALWIDTH ) ) );
    
-   hb_arraySetForward( &aMetr, 9, hb_itemPutNL( &temp, GetDeviceCaps( hDC,PHYSICALHEIGHT ) ) );
+   hb_arraySetForward( aMetr, 9, hb_itemPutNL( temp, GetDeviceCaps( hDC,PHYSICALHEIGHT ) ) );
 
-   hb_itemClear( &temp );
-   hb_itemForwardValue( hb_stackReturnItem(), &aMetr );
+   hb_itemRelease( temp );   
+   hb_itemForwardValue( hb_stackReturnItem(), aMetr );
+   hb_itemRelease(  aMetr );             
    }
 
    #else

@@ -1,4 +1,5 @@
 /*
+ * $Id: a.prg,v 1.4 2005-11-01 10:33:53 alkresin Exp $
  * HWGUI using sample
  * 
  *
@@ -10,15 +11,21 @@
 #include "guilib.ch"
 
 
-function Main
-Private oMainWindow, oPanel
-Private oFont := Nil, cImageDir := "\"+Curdir()+"\..\image\"
+Function Main
+Local oMainWindow,oPanel
+Private oFont := Nil, cImageDir := "/"+Curdir()+"/../../image/"
 Private nColor, oBmp2
 
    // hb_SetCodepage( "RU1251" )
 
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
      AT 200,0 SIZE 400,150
+     
+   @ 0,0 PANEL oPanel SIZE 0,32
+   @ 2,3 OWNERBUTTON OF oPanel ON CLICK {||FileOpen()} ;
+   SIZE 32,26 FLAT ;
+   BITMAP cImageDir+"new.bmp" TRANSPARENT COLOR 12632256 COORDINATES 0,4,0,0 ;
+   TOOLTIP "Open File"
 
    MENU OF oMainWindow
       MENU TITLE "&File"
@@ -56,6 +63,7 @@ Local fname := SelectFile( "xBase files( *.dbf )", "*.dbf", mypath )
 Local nId
 
    IF !Empty( fname )
+   
       mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
       use &fname new
       nId := 111
@@ -64,16 +72,16 @@ Local nId
             AT 210,10  SIZE 500,300                    ;
             ON INIT {|o|SetWindowText(o:handle,fname)} ;
             ON EXIT {|o|Fileclose(o)}
-
+/*
       MENU OF oModDlg
          MENUITEM "&Font" ACTION ( oBrw:oFont:=HFont():Select(oFont),oBrw:Refresh() )
          MENUITEM "&Exit" ACTION EndDialog( oModDlg:handle )
       ENDMENU
-
+*/
       @ 0,0 BROWSE oBrw DATABASE OF oModDlg ID nId ;
             SIZE 500,300                           ;
             STYLE WS_VSCROLL + WS_HSCROLL          ;
-            ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,y)} ;
+            ON SIZE {|o,x,y|o:Move(,,x,y)}         ;
             ON GETFOCUS {|o|dbSelectArea(o:alias)}
       CreateList( oBrw,.T. )
       oBrw:bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}

@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.8 2005-10-31 15:15:56 lculik Exp $
+ * $Id: draw.c,v 1.9 2005-11-01 10:33:53 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level painting functions
@@ -417,6 +417,38 @@ HB_FUNC( OPENIMAGE )
       hb_retnl( (LONG) hpix );
       #endif
    }
+}
+
+GdkPixbuf * alpha2pixbuf( GdkPixbuf * hPixIn, long int nColor )
+{
+   short int r, g, b;
+
+   r = nColor % 256;
+   g = ( ( nColor - r ) % 65536 ) / 256;
+   b = ( nColor - g - r ) / 65536;
+   return gdk_pixbuf_add_alpha( hPixIn, 1,
+            (guchar) r, (guchar) g, (guchar) b );
+}
+
+/*
+ * hwg_Alpha2Pixbuf( hBitmap, nColor )
+ */
+HB_FUNC( HWG_ALPHA2PIXBUF )
+{
+   #ifdef __GTK_USE_POINTER__
+   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) hb_parptr(1);
+   #else
+   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) hb_parnl(1);
+   #endif
+   GdkPixbuf * handle;
+
+   if( obj && obj->handle )
+   {
+      handle = alpha2pixbuf( obj->handle, hb_parnl(2) );
+      gdk_pixbuf_unref( obj->handle );
+      obj->handle = handle;
+   }
+   
 }
 
 HB_FUNC( DRAWICON )

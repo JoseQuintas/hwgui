@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.1 2005-10-31 08:29:41 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.2 2005-11-01 10:33:53 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -71,12 +71,15 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,   ;
    endif
    IF bmp != Nil
       ::bitmap  := Iif( (lResour!=Nil.AND.lResour).OR.Valtype(bmp)=="N", HBitmap():AddResource( bmp ), HBitmap():AddFile( bmp ) )
+      IF lTr != Nil .AND. lTr
+         ::lTransp := .T.
+         hwg_alpha2pixbuf( ::bitmap:handle, Iif( trColor!=Nil,trColor,16777215 ) )
+      ENDIF
    ENDIF
    ::xb      := xb
    ::yb      := yb
    ::widthb  := widthb
    ::heightb := heightb
-   ::lTransp := Iif( ltr!=Nil,lTr,.F. )
    ::trColor := trColor
 
    ::Activate()
@@ -163,11 +166,7 @@ Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
             ::bitmap:handle:=::oBitmap
             ::oBitmap:=Nil
          EndIf
-         IF ::lTransp
-            DrawTransparentBitmap( hDC, ::bitmap:handle, x1, y1, ::trColor )
-         ELSE
-            DrawBitmap( hDC, ::bitmap:handle,, x1, y1, ::widthb, ::heightb )
-         ENDIF
+         DrawBitmap( hDC, ::bitmap:handle,, x1, y1, ::widthb, ::heightb )
       Else
          ::oBitmap:=::bitmap:handle
          DrawGrayBitmap( hDC, ::bitmap:handle, x1, y1 )

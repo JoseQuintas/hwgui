@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.449 2005-10-31 15:15:56 lculik Exp $
+ * $Id: Changelog,v 1.450 2005-11-01 10:33:50 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-01 13:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * gtk/draw.c
+   * gtk/hownbtn.prg
+     * Support of transparent bitmaps added
+   * gtk/samples/a.prg
+     * Toolbar ( Panel ) and OwnerButton with a bitmap has been added to a main
+       window.
 
 2005-10-31 13:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * gtk/commond.c
@@ -37,7 +45,6 @@
      + OwnerButtons support added
    * gtk/Makefile.linux
      * Changed due to the adding of new file
-
 
 2005-10-28 16:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * gtk/window.c

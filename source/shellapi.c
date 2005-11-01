@@ -1,5 +1,5 @@
 /*
- * $Id: shellapi.c,v 1.7 2005-10-17 21:24:35 lculik Exp $
+ * $Id: shellapi.c,v 1.8 2005-11-01 17:48:38 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Shell API wrappers
@@ -39,7 +39,7 @@
 
 HB_FUNC( SELECTFOLDER )
 { 
-   BROWSEINFO bi = { 0 }; 
+   BROWSEINFO bi; 
    char *lpBuffer = (char*) hb_xgrab( MAX_PATH+1 );
    LPITEMIDLIST pidlBrowse;    // PIDL selected by user 
 

@@ -67,7 +67,7 @@ HB_FUNC( INITIPADDRESS )
 	HWND hIpAddress;
    int Style  ;
 
-   INITCOMMONCONTROLSEX  i= { 0 };
+   INITCOMMONCONTROLSEX  i;
 	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
 	i.dwICC = ICC_INTERNET_CLASSES;
 	InitCommonControlsEx(&i);

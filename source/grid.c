@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.10 2005-10-20 07:20:26 alkresin Exp $
+ * $Id: grid.c,v 1.11 2005-11-01 17:48:38 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -85,7 +85,7 @@ HB_FUNC( LISTVIEW_SETITEMCOUNT )
     
 HB_FUNC( LISTVIEW_ADDCOLUMN )
 {
-        LV_COLUMN COL = { 0 };
+        LV_COLUMN COL;
 
         PHB_ITEM pValue = hb_itemNew( NULL );
         hb_itemCopy( pValue, hb_param( 4, HB_IT_STRING ));

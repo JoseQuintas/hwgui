@@ -58,7 +58,9 @@ PRG_SOURCES=\
 	hrect.prg \
 	htrackbr.prg \
 	hmonthc.prg \
-	hipedit.prg	
+	hipedit.prg	\
+	hhyper.prg \
+	hdc.prg
 	
 LIBNAME=hwgui
 

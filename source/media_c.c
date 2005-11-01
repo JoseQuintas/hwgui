@@ -1,5 +1,5 @@
 /*
- * $Id: media_c.c,v 1.8 2005-10-17 21:24:35 lculik Exp $
+ * $Id: media_c.c,v 1.9 2005-11-01 17:48:38 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level media functions
@@ -49,7 +49,7 @@ HB_FUNC( PLAYSOUND )
 
 HB_FUNC( MCISENDSTRING )
 {
-   BYTE cBuffer[128] = { 0 };
+   BYTE cBuffer[128];
 
    hb_retnl( (LONG) mciSendString( (LPSTR) hb_parc(1), (LPSTR) cBuffer, 127,
                ( ISNIL(3) )? GetActiveWindow() : (HWND)hb_parnl(3) ) );
@@ -74,7 +74,7 @@ HB_FUNC( MCISENDCOMMAND )       // ()
 
 HB_FUNC( MCIGETERRORSTRING )  // ()
 {
-   BYTE bBuffer[ 200 ] = { 0 };
+   BYTE bBuffer[ 200 ];
 
    hb_retl( mciGetErrorString( hb_parnl( 1 ),       // Error Code
                              ( LPSTR ) bBuffer,
@@ -86,7 +86,7 @@ HB_FUNC( MCIGETERRORSTRING )  // ()
 
 HB_FUNC( NMCIOPEN )
 {
-   MCI_OPEN_PARMS mciOpenParms = { 0 };
+   MCI_OPEN_PARMS mciOpenParms;
    DWORD dwFlags = MCI_OPEN_ELEMENT;
 
    mciOpenParms.lpstrDeviceType = hb_parc( 1 );
@@ -108,7 +108,7 @@ HB_FUNC( NMCIOPEN )
 
 HB_FUNC( NMCIPLAY )
 {
-   MCI_PLAY_PARMS mciPlayParms = { 0 };
+   MCI_PLAY_PARMS mciPlayParms;
    DWORD dwFlags = 0;
 
    if( hb_parnl( 2 ) )
@@ -138,7 +138,7 @@ HB_FUNC( NMCIPLAY )
 
 HB_FUNC( NMCIWINDOW )
 {
-   MCI_ANIM_WINDOW_PARMS mciWindowParms = { 0 };
+   MCI_ANIM_WINDOW_PARMS mciWindowParms;
    HWND hWnd = ( HWND ) hb_parnl( 2 );
 
    mciWindowParms.hWnd = hWnd;

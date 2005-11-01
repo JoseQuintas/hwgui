@@ -1,5 +1,5 @@
 /*
- * $Id: a.prg,v 1.4 2005-11-01 10:33:53 alkresin Exp $
+ * $Id: a.prg,v 1.5 2005-11-01 17:48:38 lf_sfnet Exp $
  * HWGUI using sample
  * 
  *
@@ -10,6 +10,7 @@
 #include "windows.ch"
 #include "guilib.ch"
 
+#define TEST_PRINT
 
 Function Main
 Local oMainWindow,oPanel
@@ -46,8 +47,10 @@ Private nColor, oBmp2
          MENUITEM "&MsgGet" ;
                ACTION CopyStringToClipboard(MsgGet("Dialog Sample","Input table name"))
          MENUITEM "&Dialog from prg" ACTION DialogFromPrg()
+         #ifdef TEST_PRINT         
          SEPARATOR
          MENUITEM "&Print Preview" ACTION PrnTest()
+         #endif
       ENDMENU
 
    ENDMENU
@@ -199,7 +202,7 @@ ACTIVATE DIALOG oDlg
 
 return nil
 
-
+#ifdef TEST
 Function PrnTest
 Local oPrinter, oFont
 
@@ -227,5 +230,5 @@ Local oPrinter, oFont
    oPrinter:End()
 
 Return Nil
-                                                               
+#endif                                                               
                                                                

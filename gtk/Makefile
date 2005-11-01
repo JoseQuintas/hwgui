@@ -40,7 +40,7 @@ PRG_SOURCES=\
 	
 LIBNAME=hwgtk
 
-C_USR += -mms-bitfields -I"C:/GTK/include/glib-2.0" -I"C:/GTK/lib/glib-2.0/include" -I"C:/GTK/include/gtk-2.0" -I"C:/GTK/lib/gtk-2.0/include" -I"C:/GTK/include/atk-1.0" -I"C:/GTK/include/pango-1.0" -I"C:/GTK/include/libglade-2.0" -I"C:/GTK/include/libxml2" -I"C:/GTK/include"
+C_USR += -mms-bitfields -I"C:/GTK/include/glib-2.0" -I"C:/GTK/lib/glib-2.0/include" -I"C:/GTK/include/gtk-2.0" -I"C:/GTK/lib/gtk-2.0/include" -I"C:/GTK/include/atk-1.0" -I"C:/GTK/include/pango-1.0" -I"C:/GTK/include/libglade-2.0" -I"C:/GTK/include/libxml2" -I"C:/GTK/include/cairo" -I"C:/GTK/include"
 	
 include $(TOP)$(ROOT)config/lib.cf
 include $(TOP)$(ROOT)config/dir.cf

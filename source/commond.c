@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.21 2005-10-31 15:00:30 lculik Exp $
+ * $Id: commond.c,v 1.22 2005-11-01 17:48:38 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -32,7 +32,7 @@ extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
 HB_FUNC( SELECTFONT )
 {
 
-   CHOOSEFONT cf= { 0 };
+   CHOOSEFONT cf;
    LOGFONT lf;
    HFONT hfont;
    PHB_ITEM pObj = ( ISNIL(1) )? NULL:hb_param( 1, HB_IT_OBJECT );
@@ -350,7 +350,7 @@ HB_FUNC( HDGETSERIAL )
 
 HB_FUNC( GETPRIVATEPROFILESTRING )
 {
-   TCHAR bBuffer[ 1024 ] = { 0 };
+   TCHAR bBuffer[ 1024 ] ;
    DWORD dwLen ;
    char * lpSection = hb_parc( 1 );
    char * lpEntry = ISCHAR(2) ? hb_parc( 2 ) : NULL ;

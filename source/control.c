@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.33 2005-10-20 07:20:26 alkresin Exp $
+ * $Id: control.c,v 1.34 2005-11-01 17:48:38 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -49,7 +49,7 @@ HB_FUNC( HWG_INITCOMMONCONTROLSEX )
 {
    if( !lInitCmnCtrl )
    {
-      INITCOMMONCONTROLSEX  i= { 0 };
+      INITCOMMONCONTROLSEX  i;
 
       i.dwSize = sizeof( INITCOMMONCONTROLSEX );
       i.dwICC = ICC_DATE_CLASSES | ICC_INTERNET_CLASSES;
@@ -60,7 +60,7 @@ HB_FUNC( HWG_INITCOMMONCONTROLSEX )
 
 HB_FUNC( MOVEWINDOW )
 {
-   RECT rc= { 0 };
+   RECT rc;
 
    GetWindowRect( (HWND) hb_parnl( 1 ), &rc );
    MoveWindow(
@@ -79,7 +79,7 @@ HB_FUNC( MOVEWINDOW )
 HB_FUNC( CREATEPROGRESSBAR )
 {
    HWND hPBar, hParentWindow = (HWND) hb_parnl(1);
-   RECT rcClient= { 0 };
+   RECT rcClient;
    int cyVScroll = GetSystemMetrics( SM_CYVSCROLL );
    int x1, y1, nwidth, nheight;
 
@@ -380,7 +380,9 @@ HB_FUNC( HWG_INITSTATUS )
 
 HB_FUNC( ADDTOOLTIP ) // changed by MAG
 {
-   TOOLINFO ti= { 0 };
+   TOOLINFO ti
+
+;
    HWND hWnd = (HWND) hb_parnl( 1 );
    int iStyle = TTS_ALWAYSTIP;
 
@@ -429,7 +431,7 @@ HB_FUNC( DELTOOLTIP )
 /*
 HB_FUNC( SHOWTOOLTIP )
 {
-   MSG msg= { 0 };
+   MSG msg;
 
    msg.lParam = hb_parnl( 3 );
    msg.wParam = hb_parnl( 2 );
@@ -502,7 +504,9 @@ HB_FUNC( SETDATEPICKER )
 
 HB_FUNC( GETDATEPICKER )
 {
-   SYSTEMTIME st= { 0 };
+   SYSTEMTIME st
+
+;
    char szDate[9];
 
    SendMessage( (HWND) hb_parnl (1), DTM_GETSYSTEMTIME, 0, (LPARAM) &st);
@@ -535,7 +539,9 @@ HB_FUNC( INITTABCONTROL )
    HWND hTab = (HWND) hb_parnl(1);
    PHB_ITEM pArr = hb_param( 2, HB_IT_ARRAY );
    int iItems = hb_parnl(3) ;
-   TC_ITEM tie= { 0 };
+   TC_ITEM tie
+
+;
    int i, nTabs = pArr->item.asArray.value->ulLen;
 
    tie.mask = TCIF_TEXT | TCIF_IMAGE; 
@@ -555,7 +561,9 @@ HB_FUNC( INITTABCONTROL )
 
 HB_FUNC( ADDTAB )
 {
-   TC_ITEM tie= { 0 };
+   TC_ITEM tie
+
+;
 
    tie.mask = TCIF_TEXT | TCIF_IMAGE; 
    tie.iImage = -1;
@@ -581,7 +589,9 @@ HB_FUNC( SETTABSIZE )
 
 HB_FUNC( SETTABNAME )
 {
-   TC_ITEM tie= { 0 };
+   TC_ITEM tie
+
+;
 
    tie.mask = TCIF_TEXT;
    tie.pszText = hb_parc(3);
@@ -640,8 +650,12 @@ HB_FUNC( CREATETREE )
 HB_FUNC( TREEADDNODE )
 {
 
-   TV_ITEM tvi= { 0 };
-   TV_INSERTSTRUCT is= { 0 };
+   TV_ITEM tvi
+
+;
+   TV_INSERTSTRUCT is
+
+;
    int nPos = hb_parni(5);
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
 
@@ -968,7 +982,9 @@ HB_FUNC( HWG_REGPANEL )
 
    if( !bRegistered )
    {
-      WNDCLASS     wndclass = { 0 };
+      WNDCLASS     wndclass 
+
+;
       wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
       wndclass.lpfnWndProc   = DefWindowProc ;
       wndclass.cbClsExtra    = 0 ;
@@ -990,7 +1006,9 @@ HB_FUNC( HWG_REGOWNBTN )
 
    static TCHAR szAppName[] = TEXT ( "OWNBTN" );
    static BOOL  bRegistered = 0;
-   WNDCLASS     wndclass = { 0 };
+   WNDCLASS     wndclass 
+
+;
 
    if( !bRegistered )
    {
@@ -1015,7 +1033,9 @@ HB_FUNC( HWG_REGBROWSE )
 
    static TCHAR szAppName[] = TEXT ( "BROWSE" );
    static BOOL  bRegistered = 0;
-   WNDCLASS     wndclass = { 0 };
+   WNDCLASS     wndclass 
+
+;
 
    if( !bRegistered )
    {
@@ -1056,7 +1076,9 @@ BOOL RegisterWinCtrl(void)  // Added by jamaj - Used by WinCtrl
 {
 
    static TCHAR szAppName[] = TEXT ( "WINCTRL" );
-   WNDCLASS     wndclass = { 0 };
+   WNDCLASS     wndclass 
+
+;
 
    wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
    wndclass.lpfnWndProc   = WinCtrlProc ;

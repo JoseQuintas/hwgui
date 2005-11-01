@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.14 2005-10-17 21:24:35 lculik Exp $
+ * $Id: draw.c,v 1.15 2005-11-01 17:48:38 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -27,7 +27,7 @@
 
 HB_FUNC( INVALIDATERECT )
 {
-   RECT rc= { 0 };
+   RECT rc;
 
    if( hb_pcount() > 2 )
    {
@@ -106,7 +106,7 @@ HB_FUNC( ELLIPSE )
 
 HB_FUNC( FILLRECT )
 {
-   RECT rc= { 0 };
+   RECT rc;
 
    rc.left = hb_parni( 2 );
    rc.top = hb_parni( 3 );
@@ -145,7 +145,7 @@ HB_FUNC( REDRAWWINDOW )
 
 HB_FUNC( DRAWBUTTON )
 {
-   RECT rc= { 0 };
+   RECT rc;
    HDC hDC = (HDC) hb_parnl( 1 );
    UINT iType = hb_parni( 6 );
 
@@ -178,7 +178,7 @@ HB_FUNC( DRAWBUTTON )
  */
 HB_FUNC( DRAWEDGE )
 {
-   RECT rc= { 0 };
+   RECT rc;
    HDC hDC = (HDC) hb_parnl( 1 );
    UINT edge = (ISNIL(6))? EDGE_RAISED : (UINT) hb_parni(6);
    UINT grfFlags = (ISNIL(7))? BF_RECT : (UINT) hb_parni(7);
@@ -229,7 +229,7 @@ HB_FUNC( WINDOW2BITMAP )
    HDC hDC = ( lFull )? GetWindowDC( hWnd ) : GetDC( hWnd );
    HDC hDCmem = CreateCompatibleDC( hDC );
    HBITMAP hBitmap;
-   RECT rc= { 0 };
+   RECT rc;
 
    if( lFull )
       GetWindowRect( hWnd, &rc );
@@ -254,7 +254,7 @@ HB_FUNC( DRAWBITMAP )
    HDC hDCmem = CreateCompatibleDC( hDC );
    DWORD dwraster = (ISNIL(3))? SRCCOPY:hb_parnl(3);
    HBITMAP hBitmap = (HBITMAP) hb_parnl( 2 );
-   BITMAP  bitmap= { 0 };
+   BITMAP  bitmap;
    int nWidthDest = ( hb_pcount()>=5 && !ISNIL(6) )? hb_parni(6):0;
    int nHeightDest = ( hb_pcount()>=6 && !ISNIL(7) )? hb_parni(7):0;
 
@@ -285,7 +285,7 @@ HB_FUNC( DRAWTRANSPARENTBITMAP )
    COLORREF crOldText = SetTextColor( hDC, 0 );
    HBITMAP bitmapTrans;
    HBITMAP pOldBitmapImage, pOldBitmapTrans;
-   BITMAP  bitmap= { 0 };
+   BITMAP  bitmap;
    HDC dcImage, dcTrans;
    int x = hb_parni( 3 );
    int y = hb_parni( 4 );
@@ -326,8 +326,8 @@ HB_FUNC( SPREADBITMAP )
    HDC hDCmem = CreateCompatibleDC( hDC );
    DWORD dwraster = (ISNIL(4))? SRCCOPY:hb_parnl(4);
    HBITMAP hBitmap = (HBITMAP) hb_parnl( 3 );
-   BITMAP  bitmap= { 0 };
-   RECT rc= { 0 };
+   BITMAP  bitmap;
+   RECT rc;
 
    SelectObject( hDCmem, hBitmap );
    GetObject( hBitmap, sizeof( BITMAP ), ( LPVOID ) &bitmap );
@@ -349,7 +349,7 @@ HB_FUNC( SPREADBITMAP )
 
 HB_FUNC( GETBITMAPSIZE )
 {
-   BITMAP  bitmap= { 0 };
+   BITMAP  bitmap;
    PHB_ITEM aMetr = _itemArrayNew( 2 );
    PHB_ITEM temp;
 
@@ -369,8 +369,8 @@ HB_FUNC( GETBITMAPSIZE )
 
 HB_FUNC( OPENBITMAP )
 {
-   BITMAPFILEHEADER bmfh= { 0 };
-   BITMAPINFOHEADER bmih= { 0 };
+   BITMAPFILEHEADER bmfh;
+   BITMAPINFOHEADER bmih;
    LPBITMAPINFO lpbmi;
    DWORD dwRead;
    LPVOID lpvBits;
@@ -561,7 +561,7 @@ HB_FUNC( DRAWGRAYBITMAP )
    HBITMAP hBitmap = (HBITMAP) hb_parnl( 2 );
    HBITMAP bitmapgray;
    HBITMAP pOldBitmapImage, pOldbitmapgray;
-   BITMAP  bitmap= { 0 };
+   BITMAP  bitmap;
    HDC dcImage, dcTrans;
    int x = hb_parni( 3 );
    int y = hb_parni( 4 );

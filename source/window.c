@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.40 2005-10-25 12:14:24 alkresin Exp $
+ * $Id: window.c,v 1.41 2005-11-01 17:48:38 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -63,7 +63,7 @@ static TCHAR szChild[] = TEXT ( "MDICHILD" );
 HB_FUNC( HWG_INITMAINWINDOW )
 {
    HWND         hWnd ;
-   WNDCLASS     wndclass = { 0 };
+   WNDCLASS     wndclass;
    HANDLE hInstance = GetModuleHandle( NULL );
    DWORD ExStyle = 0;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
@@ -217,7 +217,7 @@ HB_FUNC( HWG_PEEKMESSAGE )
 HB_FUNC( HWG_INITCHILDWINDOW )
 {
    HWND         hWnd ;
-   WNDCLASS     wndclass = { 0 };
+   WNDCLASS     wndclass;
    HMODULE /*HANDLE*/ hInstance = GetModuleHandle( NULL );
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
    char *szAppName = hb_parc(2);
@@ -297,7 +297,7 @@ HB_FUNC( HWG_ACTIVATECHILDWINDOW )
 HB_FUNC( HWG_INITMDIWINDOW )
 {
    HWND         hWnd;
-   WNDCLASS     wndclass = { 0 }, wc = { 0 };
+   WNDCLASS     wndclass, wc;
    HANDLE hInstance = GetModuleHandle( NULL ) ;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
    char *szAppName = hb_parc(2);
@@ -375,7 +375,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
 
 HB_FUNC( HWG_INITCLIENTWINDOW )
 {
-   CLIENTCREATESTRUCT ccs = { 0 };
+   CLIENTCREATESTRUCT ccs;
    HWND hWnd;
    int nPos = (hb_pcount()>1 && !ISNIL(2))? hb_parni(2):0;
    int x = hb_parnl(3);

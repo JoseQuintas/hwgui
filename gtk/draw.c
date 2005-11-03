@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.9 2005-11-01 10:33:53 alkresin Exp $
+ * $Id: draw.c,v 1.10 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level painting functions
@@ -8,11 +8,7 @@
  * www - http://kresin.belgorod.su
 */
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
@@ -39,11 +35,7 @@ void hwg_parse_color( ULONG ncolor, GdkColor * pColor )
 
 HB_FUNC( INVALIDATERECT )
 {
-#ifdef __GTK_USE_POINTER__
-   GtkWidget * widget = (GtkWidget*) hb_parptr(1);
-#else
-   GtkWidget * widget = (GtkWidget*) hb_parnl(1);
-#endif
+   GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
    int x1, y1, x2, y2;
 
    if( hb_pcount() > 2 )
@@ -79,11 +71,7 @@ HB_FUNC( INVALIDATERECT )
 
 HB_FUNC( RECTANGLE )
 {
-#ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
-#else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-#endif
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
 
 /*
@@ -105,11 +93,7 @@ HB_FUNC( RECTANGLE )
 
 HB_FUNC( DRAWLINE )
 {
-#ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
-#else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-#endif
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    gdk_draw_line( hDC->window, hDC->gc, hb_parni(2), hb_parni(3), hb_parni(4), hb_parni(5) );
 }
 
@@ -154,13 +138,8 @@ HB_FUNC( ELLIPSE )
 HB_FUNC( FILLRECT )
 {
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
-#ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
-   PHWGUI_BRUSH brush = (PHWGUI_BRUSH) hb_parptr(6);
-#else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-   PHWGUI_BRUSH brush = (PHWGUI_BRUSH) hb_parnl(6);
-#endif
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   PHWGUI_BRUSH brush = (PHWGUI_BRUSH) HB_PARHANDLE(6);
 
    // GdkColor color;
    GdkGCValues values;
@@ -190,11 +169,7 @@ HB_FUNC( ROUNDRECT )
 
 HB_FUNC( REDRAWWINDOW )
 {
-   #ifdef __GTK_USE_POINTER__
-   GtkWidget * widget = (GtkWidget*) hb_parptr(1);
-   #else
-   GtkWidget * widget = (GtkWidget*) hb_parnl(1);
-   #endif
+   GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
 /*
    GdkRectangle rc;
 
@@ -213,11 +188,7 @@ HB_FUNC( REDRAWWINDOW )
 
 HB_FUNC( DRAWBUTTON )
 {
-#ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
-#else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-#endif
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    int left = hb_parni( 2 );
    int top = hb_parni( 3 );
    int right = hb_parni( 4 );
@@ -330,13 +301,8 @@ HB_FUNC( WINDOW2BITMAP )
  */
 HB_FUNC( DRAWBITMAP )
 {
-#ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
-   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) hb_parptr(2);
-#else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) hb_parnl(2);
-#endif
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) HB_PARHANDLE(2);
    gint x =  hb_parni(4);
    gint y =  hb_parni(5);
    gint width = hb_parni(6);
@@ -362,11 +328,7 @@ HB_FUNC( SPREADBITMAP )
 
 HB_FUNC( GETBITMAPSIZE )
 {
-   #ifdef __GTK_USE_POINTER__
-   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) hb_parptr(1);
-   #else
-   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) hb_parnl(1);
-   #endif
+   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) HB_PARHANDLE(1);
    PHB_ITEM aMetr = _itemArrayNew( 2 );
    PHB_ITEM temp;
 
@@ -393,11 +355,7 @@ HB_FUNC( OPENBITMAP )
       hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );
       hpix->type = HWGUI_OBJECT_PIXBUF;
       hpix->handle = handle;
-      #ifdef __GTK_USE_POINTER__
-      hb_retptr( (void *) hpix );
-      #else
-      hb_retnl( (LONG) hpix );
-      #endif
+      HB_RETHANDLE( hpix );
    }
 }
 
@@ -411,11 +369,7 @@ HB_FUNC( OPENIMAGE )
       hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );
       hpix->type = HWGUI_OBJECT_PIXBUF;
       hpix->handle = handle;
-      #ifdef __GTK_USE_POINTER__
-      hb_retptr( (void *) hpix );
-      #else
-      hb_retnl( (LONG) hpix );
-      #endif
+      HB_RETHANDLE( hpix );
    }
 }
 
@@ -435,11 +389,7 @@ GdkPixbuf * alpha2pixbuf( GdkPixbuf * hPixIn, long int nColor )
  */
 HB_FUNC( HWG_ALPHA2PIXBUF )
 {
-   #ifdef __GTK_USE_POINTER__
-   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) hb_parptr(1);
-   #else
-   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) hb_parnl(1);
-   #endif
+   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) HB_PARHANDLE(1);
    GdkPixbuf * handle;
 
    if( obj && obj->handle )
@@ -474,11 +424,7 @@ HB_FUNC( CREATEPEN )
    hwg_parse_color( ncolor, &(hpen->color) );
    gdk_colormap_alloc_color( gdk_colormap_get_system(),&(hpen->color),FALSE,TRUE );
 
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void *) hpen );
-#else
-   hb_retnl( (LONG) hpen );
-#endif
+   HB_RETHANDLE( hpen );
 }
 
 HB_FUNC( CREATESOLIDBRUSH )
@@ -491,24 +437,14 @@ HB_FUNC( CREATESOLIDBRUSH )
    hwg_parse_color( ncolor, &(hbrush->color) );
    gdk_colormap_alloc_color( gdk_colormap_get_system(),&(hbrush->color),FALSE,TRUE );
    
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void*) hbrush );
-#else
-   hb_retnl( (LONG) hbrush );
-#endif
-
+   HB_RETHANDLE( hbrush );
 }
 
 HB_FUNC( SELECTOBJECT )
 {
 
-#ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
-   HWGUI_HDC_OBJECT * obj = (HWGUI_HDC_OBJECT*) hb_parptr(2);
-#else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-   HWGUI_HDC_OBJECT * obj = (HWGUI_HDC_OBJECT*) hb_parnl(2);
-#endif
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   HWGUI_HDC_OBJECT * obj = (HWGUI_HDC_OBJECT*) HB_PARHANDLE(2);
    GdkGCValues values;
 
    if( obj->type == HWGUI_OBJECT_PEN )
@@ -533,11 +469,7 @@ HB_FUNC( SELECTOBJECT )
 
 HB_FUNC( DELETEOBJECT )
 {
-   #ifdef __GTK_USE_POINTER__
-   HWGUI_HDC_OBJECT * obj = (HWGUI_HDC_OBJECT*) hb_parptr(1);
-   #else
-   HWGUI_HDC_OBJECT * obj = (HWGUI_HDC_OBJECT*) hb_parnl(1);
-   #endif
+   HWGUI_HDC_OBJECT * obj = (HWGUI_HDC_OBJECT*) HB_PARHANDLE(1);
 
    if( obj->type == HWGUI_OBJECT_PEN )
    {
@@ -563,11 +495,7 @@ HB_FUNC( DELETEOBJECT )
 HB_FUNC( GETDC )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_xgrab( sizeof(HWGUI_HDC) );
-#ifdef __GTK_USE_POINTER__
-   GtkWidget * widget = (GtkWidget*) hb_parptr(1);
-#else
-   GtkWidget * widget = (GtkWidget*) hb_parnl(1);
-#endif
+   GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
 
    memset( hDC, 0, sizeof(HWGUI_HDC) );
    hDC->widget = widget;
@@ -576,20 +504,12 @@ HB_FUNC( GETDC )
    hDC->layout = gtk_widget_create_pango_layout( hDC->widget,NULL );
    hDC->fcolor = hDC->bcolor = -1;
 
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void*) hDC );
-#else
-   hb_retnl( (LONG) hDC );
-#endif
+   HB_RETHANDLE( hDC );
 }
 
 HB_FUNC( RELEASEDC )
 {
-#ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(2);
-#else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(2);
-#endif
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(2);
 
    if( hDC->layout )
       g_object_unref( (GObject*) hDC->layout );
@@ -646,11 +566,7 @@ HB_FUNC( DRAWGRAYBITMAP )
 
 HB_FUNC( GETCLIENTRECT )
 {
-   #ifdef __GTK_USE_POINTER__
-   GtkWidget * widget = (GtkWidget*) hb_parptr(1);
-   #else
-   GtkWidget * widget = (GtkWidget*) hb_parnl(1);
-   #endif
+   GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
    PHB_ITEM aMetr = hb_itemArrayNew( 4 );    
    #ifdef __XHARBOUR__
    {

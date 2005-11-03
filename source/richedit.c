@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.21 2005-10-20 07:20:26 alkresin Exp $
+ * $Id: richedit.c,v 1.22 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -21,17 +21,12 @@
 #define _RICHEDIT_VER	0x0200
 #include <richedit.h>
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbdate.h"
-#include "guilib.h"
 
 extern PHB_DYNS pSym_onEvent;
 

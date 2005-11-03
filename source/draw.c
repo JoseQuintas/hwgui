@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.15 2005-11-01 17:48:38 lf_sfnet Exp $
+ * $Id: draw.c,v 1.16 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -14,11 +14,7 @@
 #define OEMRESOURCE
 #include <windows.h>
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"

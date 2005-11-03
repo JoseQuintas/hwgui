@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.15 2005-10-19 15:47:43 lf_sfnet Exp $
+ * $Id: freeimg.c,v 1.16 2005-11-03 19:47:37 alkresin Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -12,11 +12,7 @@
 #define _WIN32_WINNT 0x0400
 #include <windows.h>
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"

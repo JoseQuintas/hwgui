@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.17 2005-10-26 01:22:33 lculik Exp $
+ *$Id: dialog.c,v 1.18 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -18,18 +18,12 @@
    #include <prsht.h>
 #endif
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
-
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
-#include "guilib.h"
 
 #define  WM_PSPNOTIFY         WM_USER+1010
 

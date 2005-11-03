@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.9 2005-11-03 12:50:20 alkresin Exp $
+ * $Id: menu_c.c,v 1.10 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level menu functions
@@ -8,16 +8,11 @@
  * www - http://kresin.belgorod.su
  */
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include "guilib.h"
 #include "gtk/gtk.h"
 
 #ifndef __XHARBOUR__
@@ -40,11 +35,7 @@ extern GtkFixed * getFixedBox( GObject * handle );
  */
 HB_FUNC( HWG__CREATEMENU )
 {
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void*) gtk_menu_bar_new() );
-#else
-   hb_retnl( (LONG) gtk_menu_bar_new() );
-#endif
+   HB_RETHANDLE( gtk_menu_bar_new() );
 }
 
 HB_FUNC( HWG__CREATEPOPUPMENU )
@@ -99,34 +90,18 @@ HB_FUNC( HWG__ADDMENUITEM )
    {
       GtkWidget * hSubMenu = gtk_menu_new();
       gtk_menu_item_set_submenu( GTK_MENU_ITEM (hMenu), hSubMenu );
-#ifdef __GTK_USE_POINTER__
-      hb_retptr( (void *) hSubMenu );
-#else
-      hb_retnl( (LONG) hSubMenu );
-#endif
+      HB_RETHANDLE( hSubMenu );
    }
    else
    {
       char buf[20]={0};
-      #ifdef __GTK_USE_POINTER__
-      sprintf( buf,"0 %ld %ld",hb_parnl(5),( LONG ) hb_parptr(4) );
-      #else
-      sprintf( buf,"0 %ld %ld",hb_parnl(5),hb_parnl(4) );
-      #endif
+      sprintf( buf,"0 %ld %ld",hb_parnl(5),( LONG ) HB_PARHANDLE(4) );
       g_signal_connect(G_OBJECT (hMenu), "activate",
           G_CALLBACK (cb_signal), (gpointer) g_strdup (buf));
 
-#ifdef __GTK_USE_POINTER__
-      hb_retptr( (void*) hMenu );
-#else
-      hb_retnl( (LONG) hMenu );
-#endif
+      HB_RETHANDLE( hMenu );
    }
-#ifdef __GTK_USE_POINTER__
-   gtk_menu_shell_append( GTK_MENU_SHELL( hb_parptr(1) ), hMenu );
-#else
-   gtk_menu_shell_append( GTK_MENU_SHELL( hb_parnl(1) ), hMenu );
-#endif
+   gtk_menu_shell_append( GTK_MENU_SHELL( HB_PARHANDLE(1) ), hMenu );
 
    gtk_widget_show( hMenu );
 }
@@ -136,22 +111,10 @@ HB_FUNC( HWG__ADDMENUITEM )
  */
 HB_FUNC( HWG__SETMENU )
 {
-#ifdef __GTK_USE_POINTER__
-{
-   GObject * handle = (GObject*) hb_parptr(1);
+   GObject * handle = (GObject*) HB_PARHANDLE(1);
    GtkFixed * box = getFixedBox( handle );
    GtkWidget * vbox = ( (GtkWidget*)box )->parent;
-   gtk_box_pack_start( GTK_BOX (vbox), (GtkWidget*)hb_parptr(2), FALSE, FALSE, 0);
-}
-#else
-{
-   GObject * handle = (GObject*) hb_parnl(1);
-   GtkFixed * box = getFixedBox( handle );
-   GtkWidget * vbox = ( (GtkWidget*)box )->parent;
-   gtk_box_pack_start( GTK_BOX (vbox), (GtkWidget*)hb_parnl(2), FALSE, FALSE, 0);
-}
-#endif
-   // g_object_set_data( handle, "menu", (gpointer) box );
+   gtk_box_pack_start( GTK_BOX (vbox), (GtkWidget*)HB_PARHANDLE(2), FALSE, FALSE, 0);
    hb_retl(1);
 }
 
@@ -163,11 +126,7 @@ HB_FUNC( GETMENUHANDLE )
 
 HB_FUNC( HWG_CHECKMENUITEM )
 {
-#ifdef __GTK_USE_POINTER__
-   GtkCheckMenuItem * check_menu_item = (GtkCheckMenuItem *) hb_parptr(1);
-#else
-   GtkCheckMenuItem * check_menu_item = (GtkCheckMenuItem *) hb_parnl(1);
-#endif
+   GtkCheckMenuItem * check_menu_item = (GtkCheckMenuItem *) HB_PARHANDLE(1);
 
    g_signal_handlers_block_matched( (gpointer)check_menu_item, G_SIGNAL_MATCH_FUNC,
        0, 0, 0, G_CALLBACK (cb_signal), 0 );
@@ -179,45 +138,21 @@ HB_FUNC( HWG_CHECKMENUITEM )
 
 HB_FUNC( HWG_ISCHECKEDMENUITEM )
 {
-#ifdef __GTK_USE_POINTER__
-   GtkCheckMenuItem * check_menu_item = (GtkCheckMenuItem *) hb_parptr(1);
-#else
-   GtkCheckMenuItem * check_menu_item = (GtkCheckMenuItem *) hb_parnl(1);
-#endif
+   GtkCheckMenuItem * check_menu_item = (GtkCheckMenuItem *) HB_PARHANDLE(1);
 
    hb_retl( gtk_check_menu_item_get_active( check_menu_item ) );
 }
 
 HB_FUNC( HWG_ENABLEMENUITEM )
 {
-#ifdef __GTK_USE_POINTER__
-   GtkMenuItem * menu_item = (GtkMenuItem *) hb_parptr(1);
-#else
-   GtkMenuItem * menu_item = (GtkMenuItem *) hb_parnl(1);
-#endif
+   GtkMenuItem * menu_item = (GtkMenuItem *) HB_PARHANDLE(1);
 
    gtk_widget_set_sensitive( (GtkWidget*)menu_item, (ISNIL(2))? 1 : hb_parl(2) );
 }
 
-HB_FUNC( ISENABLEDMENUITEM )
+HB_FUNC( HWG_ISENABLEDMENUITEM )
 {
-/*
-   HMENU hMenu = ( hb_pcount()>0 && !ISNIL(1) )? ((HMENU)hb_parnl(1)):GetMenu(aWindows[0]);
-   UINT  uCheck;
-   UINT  uFlag = ( hb_pcount() < 3 || !ISLOG( 3 ) || hb_parl( 3 ) )? MF_BYCOMMAND:MF_BYPOSITION;
-
-   if( !hMenu )
-      hb_retl( 0 );
-   else
-   {
-      uCheck = GetMenuState(
-         hMenu,	                // handle to menu
-         hb_parni( 3 ),         // menu item to check or uncheck
-         uFlag           // menu item flags
-      );
-      hb_retl( !( uCheck & MF_GRAYED ) );
-   }
-*/
+   hb_retl( GTK_WIDGET_IS_SENSITIVE( (GtkMenuItem*) HB_PARHANDLE(1) ) );
 }
 
 HB_FUNC( HWG_TRACKMENU )

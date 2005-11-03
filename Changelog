@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.452 2005-11-03 12:50:20 alkresin Exp $
+ * $Id: Changelog,v 1.453 2005-11-03 19:47:37 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,24 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-03 22:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/guilib.h
+    * Added macroses HB_RETHANDLE(h), HB_PARHANDLE( n ), HB_STOREHANDLE( h, n ),
+      HB_PUTHANDLE( i, h ), HB_GETHANDLE( i ), provided by Przemyslaw Czerpak
+  * gtk/menu.prg
+  * gtk/menu_c.c
+    * IsEnabledMenuItem() has been implemented
+  * gtk/commond.c
+    ! Small fix
+  * gtk/*.c
+    * Macroses from guilib.h are used instead of 
+      #ifdef GTK_USE_POINTER ... #else ...
+    * #ifdef __EXPORT__ ... is removed to guilib.h
+  * source/*.c
+    * #ifdef __EXPORT__ ... is removed to guilib.h
+    ( thanks for advices to Przemyslaw Czerpak )
+
 
 2005-11-03 15:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/menu.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.18 2005-11-03 12:50:20 alkresin Exp $
+ * $Id: window.c,v 1.19 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -8,12 +8,12 @@
  * www - http://kresin.belgorod.su
 */
 
+#include "guilib.h"
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
-#include "guilib.h"
 #include "gtk/gtk.h"
 #ifdef __XHARBOUR__
 #include "hbfast.h"
@@ -110,11 +110,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    // gtk_container_add( GTK_CONTAINER(hWnd), (GtkWidget*)box );
    gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
 
-   #ifdef __GTK_USE_POINTER__
-   temp = hb_itemPutPtr( NULL, (void*)box );
-   #else
-   temp = hb_itemPutNL( NULL, (LONG)box );
-   #endif
+   temp = HB_PUTHANDLE( NULL, box );
    SetObjectVar( pObject, "_FBOX", temp );
    hb_itemRelease( temp );
 
@@ -128,11 +124,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    g_signal_connect_after( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
 
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void*) hWnd );
-#else
-   hb_retnl( (LONG) hWnd );
-#endif
+   HB_RETHANDLE( hWnd );
 }
 
 HB_FUNC( HWG_CREATEDLG )
@@ -163,11 +155,7 @@ HB_FUNC( HWG_CREATEDLG )
 
    box = (GtkFixed*)gtk_fixed_new();
    gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
-   #ifdef __GTK_USE_POINTER__
-   temp = hb_itemPutPtr( NULL, (void*)box );
-   #else
-   temp = hb_itemPutNL( NULL, (LONG)box );
-   #endif
+   temp = HB_PUTHANDLE( NULL, box );
    SetObjectVar( pObject, "_FBOX", temp );
    hb_itemRelease( temp );
 
@@ -181,11 +169,7 @@ HB_FUNC( HWG_CREATEDLG )
    g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
 
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void*) hWnd );
-#else
-   hb_retnl( (LONG) hWnd );
-#endif
+   HB_RETHANDLE( hWnd );
 
 }
 
@@ -194,11 +178,7 @@ HB_FUNC( HWG_CREATEDLG )
  */
 HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 {
-#ifdef __GTK_USE_POINTER__
-   GtkWidget * hWnd = (GtkWidget*) hb_parptr(1);
-#else
-   GtkWidget * hWnd = (GtkWidget*) hb_parnl(1);
-#endif
+   GtkWidget * hWnd = (GtkWidget*) HB_PARHANDLE(1);
    // HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
 
    if( !ISNIL(3) && hb_parl(3) )
@@ -216,11 +196,7 @@ HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 
 HB_FUNC( HWG_ACTIVATEDIALOG )
 {
-#ifdef __GTK_USE_POINTER__
-   gtk_widget_show_all( (GtkWidget*) hb_parptr(1) );
-#else
-   gtk_widget_show_all( (GtkWidget*) hb_parnl(1) );
-#endif
+   gtk_widget_show_all( (GtkWidget*) HB_PARHANDLE(1) );
    // gtk_dialog_run( (GtkDialog*) hb_parnl(1) );
    if( ISNIL(2) || !hb_parl(2) )
       gtk_main();
@@ -414,12 +390,8 @@ void set_signal( gpointer handle, char * cSignal, long int p1, long int p2, long
 
 HB_FUNC( HWG_SETSIGNAL )
 {
-#ifdef __GTK_USE_POINTER__
-   gpointer p = (gpointer) hb_parptr(1);
-   set_signal( (gpointer)p, hb_parc(2), hb_parnl(3), hb_parnl(4), ( long int ) hb_parptr( 5 ) );
-#else
-   set_signal( (gpointer)hb_parnl(1), hb_parc(2), hb_parnl(3), hb_parnl(4), hb_parnl(5) );
-#endif
+   gpointer p = (gpointer) HB_PARHANDLE(1);
+   set_signal( (gpointer)p, hb_parc(2), hb_parnl(3), hb_parnl(4), ( long int ) HB_PARHANDLE( 5 ) );
 }
 
 void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 )
@@ -433,12 +405,8 @@ void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long 
 
 HB_FUNC( HWG_SETEVENT )
 {
-#ifdef __GTK_USE_POINTER__
-   gpointer p = (gpointer) hb_parptr(1);
+   gpointer p = (gpointer) HB_PARHANDLE(1);
    set_event( p, hb_parc(2), hb_parnl(3), hb_parnl(4), hb_parnl(5) );
-#else
-   set_event( (gpointer)hb_parnl(1), hb_parc(2), hb_parnl(3), hb_parnl(4), hb_parnl(5) );
-#endif
 }
 
 void all_signal_connect( gpointer hWnd )
@@ -463,20 +431,12 @@ GtkWidget * GetActiveWindow( void )
 
 HB_FUNC( GETACTIVEWINDOW )
 {
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void*) GetActiveWindow() );
-#else
-   hb_retnl( (LONG) GetActiveWindow() );
-#endif
+   HB_RETHANDLE( GetActiveWindow() );
 }
 
 HB_FUNC( SETWINDOWOBJECT )
 {
-#ifdef __GTK_USE_POINTER__
-   SetWindowObject( (GtkWidget *) hb_parptr(1),hb_param(2,HB_IT_OBJECT) );
-#else
-   SetWindowObject( (GtkWidget *) hb_parnl(1),hb_param(2,HB_IT_OBJECT) );
-#endif
+   SetWindowObject( (GtkWidget *) HB_PARHANDLE(1),hb_param(2,HB_IT_OBJECT) );
 }
 
 void SetWindowObject( GtkWidget * hWnd, PHB_ITEM pObject )
@@ -499,11 +459,7 @@ void SetWindowObject( GtkWidget * hWnd, PHB_ITEM pObject )
 
 HB_FUNC( GETWINDOWOBJECT )
 {
-#ifdef __GTK_USE_POINTER__
-   gpointer dwNewLong = g_object_get_data( (GObject*) hb_parptr(1), "obj" );
-#else
-   gpointer dwNewLong = g_object_get_data( (GObject*) hb_parnl(1), "obj" );
-#endif
+   gpointer dwNewLong = g_object_get_data( (GObject*) HB_PARHANDLE(1), "obj" );
 
    if( dwNewLong )
    {
@@ -527,21 +483,13 @@ HB_FUNC( GETWINDOWOBJECT )
 HB_FUNC( SETWINDOWTEXT )
 {
    char * cTitle = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
-#ifdef __GTK_USE_POINTER__
-   gtk_window_set_title( GTK_WINDOW( hb_parptr(1) ), cTitle );
-#else
-   gtk_window_set_title( GTK_WINDOW( hb_parnl(1) ), cTitle );
-#endif
+   gtk_window_set_title( GTK_WINDOW( HB_PARHANDLE(1) ), cTitle );
    g_free( cTitle );
 }
 
 HB_FUNC( GETWINDOWTEXT )
 {
-#ifdef __GTK_USE_POINTER__
-   char * cTitle = (char*) gtk_window_get_title( GTK_WINDOW( hb_parptr(1) ) );
-#else
-   char * cTitle = (char*) gtk_window_get_title( GTK_WINDOW( hb_parnl(1) ) );
-#endif
+   char * cTitle = (char*) gtk_window_get_title( GTK_WINDOW( HB_PARHANDLE(1) ) );
 
    if( cTitle )
       hb_retc( cTitle );
@@ -551,31 +499,19 @@ HB_FUNC( GETWINDOWTEXT )
 
 HB_FUNC( ENABLEWINDOW )
 {
-#ifdef __GTK_USE_POINTER__
-   GtkWidget * widget = (GtkWidget*) hb_parptr( 1 );
-#else
-   GtkWidget * widget = (GtkWidget*) hb_parnl( 1 );
-#endif
+   GtkWidget * widget = (GtkWidget*) HB_PARHANDLE( 1 );
    BOOL lEnable = hb_parl( 2 );
    gtk_widget_set_sensitive( widget, lEnable );
 }
 
 HB_FUNC( ISWINDOWENABLED )
 {
-   #ifdef __GTK_USE_POINTER__
-   hb_retl( GTK_WIDGET_IS_SENSITIVE( (GtkWidget*) hb_parptr(1) ) );
-   #else
-   hb_retl( GTK_WIDGET_IS_SENSITIVE( (GtkWidget*) hb_parnl(1) ) );
-   #endif
+   hb_retl( GTK_WIDGET_IS_SENSITIVE( (GtkWidget*) HB_PARHANDLE(1) ) );
 }
 
 HB_FUNC( MOVEWINDOW )
 {
-#ifdef __GTK_USE_POINTER__
-   GtkWidget * hWnd = (GtkWidget*)hb_parptr(1);
-#else
-   GtkWidget * hWnd = (GtkWidget*)hb_parnl(1);
-#endif
+   GtkWidget * hWnd = (GtkWidget*)HB_PARHANDLE(1);
 
    if( !ISNIL(2) || !ISNIL(3) )
       gtk_window_move( GTK_WINDOW(hWnd), hb_parni(2), hb_parni(3) );
@@ -586,31 +522,19 @@ HB_FUNC( MOVEWINDOW )
 HB_FUNC( HWG_WINDOWMAXIMIZE )
 {
 
-#ifdef __GTK_USE_POINTER__
-   gtk_window_maximize( (GtkWindow*) hb_parptr(1) );
-#else
-   gtk_window_maximize( (GtkWindow*) hb_parnl(1) );
-#endif
+   gtk_window_maximize( (GtkWindow*) HB_PARHANDLE(1) );
 }
 
 HB_FUNC( HWG_WINDOWRESTORE )
 {
 
-#ifdef __GTK_USE_POINTER__
-   gtk_window_unmaximize( (GtkWindow*) hb_parptr(1) );
-#else
-   gtk_window_unmaximize( (GtkWindow*) hb_parnl(1) );
-#endif
+   gtk_window_unmaximize( (GtkWindow*) HB_PARHANDLE(1) );
 }
 
 HB_FUNC( HWG_WINDOWMINIMIZE )
 {
 
-#ifdef __GTK_USE_POINTER__
-   gtk_window_iconify( (GtkWindow*) hb_parptr(1) );
-#else
-   gtk_window_iconify( (GtkWindow*) hb_parnl(1) );
-#endif
+   gtk_window_iconify( (GtkWindow*) HB_PARHANDLE(1) );
 }
 
 PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
@@ -681,11 +605,7 @@ HB_FUNC( HWG_DECREASEHOLDERS )
 
 HB_FUNC( SETFOCUS )
 {
-#ifdef __GTK_USE_POINTER__
-   gtk_widget_grab_focus( (GtkWidget*) hb_parptr( 1 ) );
-#else
-   gtk_widget_grab_focus( (GtkWidget*) hb_parnl( 1 ) );
-#endif
+   gtk_widget_grab_focus( (GtkWidget*) HB_PARHANDLE( 1 ) );
 }
 
 HB_FUNC( GETFOCUS )
@@ -696,20 +616,11 @@ HB_FUNC( GETFOCUS )
 
 HB_FUNC( HWG_DESTROYWINDOW )
 {
-#ifdef __GTK_USE_POINTER__
-    gtk_widget_destroy( (GtkWidget *) hb_parptr(1) );
-#else
-    gtk_widget_destroy( (GtkWidget *) hb_parnl(1) );
-#endif
+    gtk_widget_destroy( (GtkWidget *) HB_PARHANDLE(1) );
 }
 
 HB_FUNC( HWG_SET_MODAL )
 {
-#ifdef __GTK_USE_POINTER__
-   gtk_window_set_modal( (GtkWindow *) hb_parptr(1), 1 );
-   gtk_window_set_transient_for( (GtkWindow *) hb_parptr(1), (GtkWindow *) hb_parptr(2) );
-#else
-   gtk_window_set_modal( (GtkWindow *) hb_parnl(1), 1 );
-   gtk_window_set_transient_for( (GtkWindow *) hb_parnl(1), (GtkWindow *) hb_parnl(2) );
-#endif
+   gtk_window_set_modal( (GtkWindow *) HB_PARHANDLE(1), 1 );
+   gtk_window_set_transient_for( (GtkWindow *) HB_PARHANDLE(1), (GtkWindow *) HB_PARHANDLE(2) );
 }

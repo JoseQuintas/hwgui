@@ -2,7 +2,7 @@
  * QHTM wrappers for Harbour/HwGUI
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su/
 */
 
 #define HB_OS_WIN_32_USED
@@ -10,11 +10,7 @@
 #define _WIN32_WINNT 0x0400
 #include <windows.h>
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"

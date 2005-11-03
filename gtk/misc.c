@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.5 2005-09-20 17:20:56 lculik Exp $
+ * $Id: misc.c,v 1.6 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Miscellaneous functions
@@ -9,19 +9,13 @@
 */
 
 #include <math.h>
-
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbmath.h"
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
-#include "guilib.h"
 #include "gtk/gtk.h"
 
 void writelog( char* s )
@@ -156,21 +150,12 @@ HB_FUNC( GETDESKTOPHEIGHT )
 
 HB_FUNC( HIDEWINDOW )
 {
-
-#ifdef __GTK_USE_POINTER__
-    gtk_widget_hide( (GtkWidget *) hb_parptr(1) );
-#else
-    gtk_widget_hide( (GtkWidget *) hb_parnl(1) );
-#endif
+    gtk_widget_hide( (GtkWidget *) HB_PARHANDLE(1) );
 }
 
 HB_FUNC( SHOWWINDOW )
 {
-#ifdef __GTK_USE_POINTER__
-gtk_widget_show( (GtkWidget *) hb_parptr(1) );
-#else
-    gtk_widget_show( (GtkWidget *) hb_parnl(1) );
-#endif
+   gtk_widget_show( (GtkWidget *) HB_PARHANDLE(1) );
 }
 
 HB_FUNC( SENDMESSAGE )

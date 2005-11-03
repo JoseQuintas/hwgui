@@ -1,5 +1,5 @@
 /*
- * $Id: media_c.c,v 1.9 2005-11-01 17:48:38 lf_sfnet Exp $
+ * $Id: media_c.c,v 1.10 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level media functions
@@ -15,11 +15,7 @@
 #include <windows.h>
 #include <commctrl.h>
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"

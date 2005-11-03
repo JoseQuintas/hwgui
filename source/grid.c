@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.11 2005-11-01 17:48:38 lf_sfnet Exp $
+ * $Id: grid.c,v 1.12 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -9,11 +9,6 @@
  * Copyright 2004 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
  *
 */
-
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
 
 #define _WIN32_IE      0x0500
 #define HB_OS_WIN_32_USED
@@ -27,6 +22,7 @@
 
 #include <windows.h>
 #include <commctrl.h>
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 

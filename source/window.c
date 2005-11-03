@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.41 2005-11-01 17:48:38 lf_sfnet Exp $
+ * $Id: window.c,v 1.42 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -15,17 +15,12 @@
 #include <windows.h>
 #include <commctrl.h>
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
-#include "guilib.h"
 
 #include <math.h>
 #include <float.h>

@@ -1,5 +1,5 @@
 /*
- *$Id: message.c,v 1.9 2005-11-01 17:48:38 lf_sfnet Exp $
+ *$Id: message.c,v 1.10 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level messages functions
@@ -13,11 +13,7 @@
 #define _WIN32_WINNT 0x0400
 #include <windows.h>
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbapi.h"
 
 HB_FUNC( MSGINFO )

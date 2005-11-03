@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.10 2005-10-31 15:15:56 lculik Exp $
+ * $Id: commond.c,v 1.11 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
@@ -8,17 +8,12 @@
  * www - http://kresin.belgorod.su
 */
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
-#include "guilib.h"
 #include "gtk/gtk.h"
 #include "hwgtk.h"
 #ifdef __XHARBOUR__
@@ -31,49 +26,12 @@ void store_font( gpointer fontseldlg )
    PangoFontDescription * hFont = pango_font_description_from_string( szFontName );
    PHWGUI_FONT h = (PHWGUI_FONT) hb_xgrab( sizeof(HWGUI_FONT) );
    PHB_ITEM aMetr = hb_itemArrayNew( 9 );
-#ifdef __XHARBOUR__   
-   PHB_ITEM temp  = hb_itemNew( NULL );
-#else
    PHB_ITEM temp;
-#endif
 
    h->type = HWGUI_OBJECT_FONT;
    h->hFont = hFont;
-#ifdef __XHARBOUR__
-{
-   
-#ifdef __GTK_USE_POINTER__   
-   hb_arraySetForward( aMetr, 1, hb_itemPutPtr( temp, ( void *) h ) );
-#else
-   hb_arraySetForward( aMetr, 1, hb_itemPutNL(  temp, (LONG)h ) );
-#endif
-   hb_arraySetForward( aMetr, 2, hb_itemPutC(   temp, (char*) pango_font_description_get_family( hFont ) ) );
 
-   hb_arraySetForward( aMetr, 3, hb_itemPutNL(  temp, 0 ) );
-   
-   hb_arraySetForward( aMetr, 4, hb_itemPutNL(  temp, (LONG) pango_font_description_get_size( hFont ) ) );
-
-   hb_arraySetForward( aMetr, 5, hb_itemPutNL(  temp, (LONG) pango_font_description_get_weight( hFont ) ));
-
-   hb_arraySetForward( aMetr, 6, hb_itemPutNI(  temp, 0 ) );
-   
-   hb_arraySetForward( aMetr, 7, hb_itemPutNI(  temp, (LONG) pango_font_description_get_style( hFont ) ) );
-   
-   hb_arraySetForward( aMetr, 8, hb_itemPutNI(  temp, 0 ) );
-   
-   hb_arraySetForward( aMetr, 9,hb_itemPutNI(   temp, 0 ) );
-
-   hb_itemRelease( temp );
-   hb_itemForwardValue( hb_stackReturnItem(), aMetr );
-   hb_itemRelease( aMetr );
-}
-#else
-{
-#ifdef __GTK_USE_POINTER__
-   temp = hb_itemPutPtr( NULL, (void*) h );
-#else
-   temp = hb_itemPutNL( NULL, (LONG) h );
-#endif
+   temp = HB_PUTHANDLE( NULL, h );
    hb_itemArrayPut( aMetr, 1, temp );
    hb_itemRelease( temp );
 
@@ -111,9 +69,14 @@ void store_font( gpointer fontseldlg )
 
    hb_itemReturn( aMetr );
    hb_itemRelease( aMetr );
-}
-#endif   
+
    gtk_widget_destroy( (GtkWidget*) fontseldlg );
+}
+
+void cancel_font( gpointer fontseldlg )
+{
+   gtk_widget_destroy( (GtkWidget *) fontseldlg );
+   hb_ret();
 }
 
 HB_FUNC( SELECTFONT )
@@ -139,7 +102,7 @@ HB_FUNC( SELECTFONT )
    
    g_signal_connect_swapped( GTK_OBJECT (GTK_FONT_SELECTION_DIALOG (fontseldlg)->cancel_button),
                              "clicked",
-                             G_CALLBACK (gtk_widget_destroy),
+                             G_CALLBACK (cancel_font),
                              (gpointer) fontseldlg );
                              
    gtk_widget_show( fontseldlg );

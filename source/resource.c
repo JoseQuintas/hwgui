@@ -1,5 +1,5 @@
 /*
- * $Id: resource.c,v 1.5 2004-09-09 12:20:14 lf_sfnet Exp $
+ * $Id: resource.c,v 1.6 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level resource functions
@@ -20,17 +20,12 @@
    #include <prsht.h>
 #endif
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
-#include "guilib.h"
 HMODULE hModule ;
 void hb_resourcemodules( void );
 

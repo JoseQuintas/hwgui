@@ -50,12 +50,7 @@
 #include "winreg.h"
 #include "tchar.h"
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
-
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"

@@ -1,5 +1,5 @@
 /*
- * $Id: arr2str.c,v 1.7 2005-09-09 06:30:20 lf_sfnet Exp $
+ * $Id: arr2str.c,v 1.8 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Array / String conversion functions
@@ -8,11 +8,7 @@
  * www - http://kresin.belgorod.su
 */
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"

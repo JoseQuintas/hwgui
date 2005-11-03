@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.20 2005-11-03 12:50:20 alkresin Exp $
+ * $Id: control.c,v 1.21 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -8,17 +8,12 @@
  * www - http://kresin.belgorod.su
 */
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
+#include "guilib.h"
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
-#include "guilib.h"
 #include "gtk/gtk.h"
 #ifdef __XHARBOUR__
 #include "hbfast.h"
@@ -79,11 +74,7 @@ HB_FUNC( CREATESTATIC )
       if( !( ulStyle & SS_CENTER ) )
          gtk_misc_set_alignment( GTK_MISC(hLabel), ( ulStyle & SS_RIGHT )? 1 : 0, 0 );
    }
-   #ifdef __GTK_USE_POINTER__
-   box = getFixedBox( (GObject*) hb_parptr(1) );
-   #else
-   box = getFixedBox( (GObject*) hb_parnl(1) );
-   #endif
+   box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
       gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );
    gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
@@ -92,22 +83,14 @@ HB_FUNC( CREATESTATIC )
    {
       set_event( (gpointer)hCtrl, "expose_event", WM_PAINT, 0, 0 );
    }
-   #ifdef __GTK_USE_POINTER__
-   hb_retptr( ( void * ) hCtrl );
-   #else
-   hb_retnl( (LONG) hCtrl );
-   #endif
+   HB_RETHANDLE( hCtrl );
 
 }
 
 HB_FUNC( HWG_STATIC_SETTEXT )
 {
    char * cTitle = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
-   #ifdef __GTK_USE_POINTER__
-   GtkLabel * hLabel = (GtkLabel*) g_object_get_data( (GObject*) hb_parptr(1),"label" );
-   #else
-   GtkLabel * hLabel = (GtkLabel*) g_object_get_data( (GObject*) hb_parnl(1),"label" );
-   #endif
+   GtkLabel * hLabel = (GtkLabel*) g_object_get_data( (GObject*) HB_PARHANDLE(1),"label" );
    gtk_label_set_text( hLabel, cTitle );
    g_free( cTitle );
 }
@@ -126,18 +109,10 @@ HB_FUNC( CREATEBUTTON )
    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
    if( ( ulStyle & 0xf ) == BS_AUTORADIOBUTTON )
    {
-   #ifdef __GTK_USE_POINTER__
-      GSList * group = (GSList*)hb_parptr(2);
-   #else
-      GSList * group = (GSList*)hb_parnl(2);
-   #endif
+      GSList * group = (GSList*)HB_PARHANDLE(2);
       hCtrl = gtk_radio_button_new_with_label( group,cTitle );
       group = gtk_radio_button_get_group( (GtkRadioButton*)hCtrl );
-   #ifdef __GTK_USE_POINTER__
-      hb_storptr( (void*)group,2 );
-   #else
-      hb_stornl( (LONG)group,2 );
-   #endif
+      HB_STOREHANDLE( group,2 );
    }
    else if( ( ulStyle & 0xf ) == BS_AUTO3STATE )
       hCtrl = gtk_check_button_new_with_label( cTitle );
@@ -147,39 +122,23 @@ HB_FUNC( CREATEBUTTON )
       hCtrl = gtk_button_new_with_label( cTitle );
 
    g_free( cTitle );
-   #ifdef __GTK_USE_POINTER__
-   box = getFixedBox( (GObject*) hb_parptr(1) );
-   #else
-   box = getFixedBox( (GObject*) hb_parnl(1) );
-   #endif
+   box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
       gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );
    gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
 
-   #ifdef __GTK_USE_POINTER__
-   hb_retptr( (void*) hCtrl );
-   #else
-   hb_retnl( (LONG) hCtrl );
-   #endif
+   HB_RETHANDLE( hCtrl );
 
 }
 
 HB_FUNC( HWG_CHECKBUTTON )
 {
-   #ifdef __GTK_USE_POINTER__
-   gtk_toggle_button_set_active( (GtkToggleButton*)hb_parptr(1), hb_parl(2) );
-   #else
-   gtk_toggle_button_set_active( (GtkToggleButton*)hb_parnl(1), hb_parl(2) );
-   #endif
+   gtk_toggle_button_set_active( (GtkToggleButton*)HB_PARHANDLE(1), hb_parl(2) );
 }
 
 HB_FUNC( HWG_ISBUTTONCHECKED )
 {
-   #ifdef __GTK_USE_POINTER__
-   hb_retl( gtk_toggle_button_get_active( (GtkToggleButton*)hb_parptr(1) ) );
-   #else
-   hb_retl( gtk_toggle_button_get_active( (GtkToggleButton*)hb_parnl(1) ) );
-   #endif
+   hb_retl( gtk_toggle_button_get_active( (GtkToggleButton*)HB_PARHANDLE(1) ) );
 }
 
 /*
@@ -202,11 +161,7 @@ HB_FUNC( CREATEEDIT )
    else
       hCtrl = gtk_entry_new();
 
-   #ifdef __GTK_USE_POINTER__
-   GtkFixed * box = getFixedBox( (GObject*) hb_parptr(1) );
-   #else
-   GtkFixed * box = getFixedBox( (GObject*) hb_parnl(1) );
-   #endif
+   GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
       gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );
    gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
@@ -224,21 +179,13 @@ HB_FUNC( CREATEEDIT )
       g_free( cTitle );
    }
 
-   #ifdef __GTK_USE_POINTER__
-   hb_retptr( ( void *) hCtrl );
-   #else
-   hb_retnl( (LONG) hCtrl );
-   #endif
+   HB_RETHANDLE( hCtrl );
 
 }
 
 HB_FUNC( HWG_EDIT_SETTEXT )
 {
-   #ifdef __GTK_USE_POINTER__
-   GtkWidget * hCtrl = (GtkWidget *)hb_parptr(1);
-   #else
-   GtkWidget * hCtrl = (GtkWidget *)hb_parnl(1);
-   #endif
+   GtkWidget * hCtrl = (GtkWidget *)HB_PARHANDLE(1);
    char * cTitle = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
 
    if( g_object_get_data( (GObject *)hCtrl, "multi" ) )
@@ -253,11 +200,7 @@ HB_FUNC( HWG_EDIT_SETTEXT )
 
 HB_FUNC( HWG_EDIT_GETTEXT )
 {
-   #ifdef __GTK_USE_POINTER__
-   GtkWidget * hCtrl = (GtkWidget *)hb_parptr(1);
-   #else
-   GtkWidget * hCtrl = (GtkWidget *)hb_parnl(1);
-   #endif
+   GtkWidget * hCtrl = (GtkWidget *)HB_PARHANDLE(1);
    char * cptr;
 
    if( g_object_get_data( (GObject *)hCtrl, "multi" ) )
@@ -284,20 +227,12 @@ HB_FUNC( HWG_EDIT_GETTEXT )
 
 HB_FUNC( HWG_EDIT_SETPOS )
 {
-#ifdef __GTK_USE_POINTER__
-   gtk_editable_set_position( (GtkEditable*)hb_parptr(1), hb_parni(2) );
-#else
-   gtk_editable_set_position( (GtkEditable*)hb_parnl(1), hb_parni(2) );
-#endif
+   gtk_editable_set_position( (GtkEditable*)HB_PARHANDLE(1), hb_parni(2) );
 }
 
 HB_FUNC( HWG_EDIT_GETPOS )
 {
-#ifdef __GTK_USE_POINTER__
-   hb_retni( gtk_editable_get_position( (GtkEditable*)hb_parptr(1) ) );
-#else
-   hb_retni( gtk_editable_get_position( (GtkEditable*)hb_parnl(1) ) );
-#endif
+   hb_retni( gtk_editable_get_position( (GtkEditable*)HB_PARHANDLE(1) ) );
 }
 
 /*
@@ -306,20 +241,12 @@ HB_FUNC( HWG_EDIT_GETPOS )
 HB_FUNC( CREATECOMBO )
 {
    GtkWidget * hCtrl = gtk_combo_new();
-#ifdef __GTK_USE_POINTER__
-   GtkFixed * box = getFixedBox( (GObject*) hb_parptr(1) );
-#else
-   GtkFixed * box = getFixedBox( (GObject*) hb_parnl(1) );
-#endif
+   GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
       gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );
    gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
 
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void *) hCtrl );
-#else
-   hb_retnl( (LONG) hCtrl );
-#endif
+   HB_RETHANDLE( hCtrl );
 }
 
 HB_FUNC( HWG_COMBOSETARRAY )
@@ -336,21 +263,13 @@ HB_FUNC( HWG_COMBOSETARRAY )
       // g_free( cItem );
    }
 
-#ifdef __GTK_USE_POINTER__
-   gtk_combo_set_popdown_strings( GTK_COMBO( hb_parptr(1) ), glist );
-#else
-   gtk_combo_set_popdown_strings( GTK_COMBO( hb_parnl(1) ), glist );
-#endif
+   gtk_combo_set_popdown_strings( GTK_COMBO( HB_PARHANDLE(1) ), glist );
 
 }
 
 HB_FUNC( HWG_COMBOGETEDIT )
 {
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void *) (GTK_COMBO( hb_parptr(1) )->entry) );
-#else
-   hb_retnl( (LONG) (GTK_COMBO( hb_parnl(1) )->entry) );
-#endif
+   hb_retptr( (void *) (GTK_COMBO( HB_PARHANDLE(1) )->entry) );
 }
 
 /*
@@ -373,39 +292,23 @@ HB_FUNC( CREATEUPDOWNCONTROL )
                                1, 1, 1 );
    GtkWidget * hCtrl = gtk_spin_button_new( (GtkAdjustment*)adj,0.5,0 );
 
-#ifdef __GTK_USE_POINTER__
-   GtkFixed * box = getFixedBox( (GObject*) hb_parptr(1) );
-#else
-   GtkFixed * box = getFixedBox( (GObject*) hb_parnl(1) );
-#endif
+   GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
       gtk_fixed_put( box, hCtrl, hb_parni(2), hb_parni(3) );
    gtk_widget_set_size_request( hCtrl,hb_parni(4),hb_parni(5) );
 
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void *) hCtrl );
-#else
-   hb_retnl( (LONG) hCtrl );
-#endif
+   HB_RETHANDLE( hCtrl );
 
 }
 
 HB_FUNC( HWG_SETUPDOWN )
 {
-#ifdef __GTK_USE_POINTER__
-   gtk_spin_button_set_value( (GtkSpinButton*)hb_parptr(1), (gdouble)hb_parnl(2) );
-#else
-   gtk_spin_button_set_value( (GtkSpinButton*)hb_parnl(1), (gdouble)hb_parnl(2) );
-#endif
+   gtk_spin_button_set_value( (GtkSpinButton*)HB_PARHANDLE(1), (gdouble)hb_parnl(2) );
 }
 
 HB_FUNC( HWG_GETUPDOWN )
 {
-#ifdef __GTK_USE_POINTER__
-   hb_retnl( gtk_spin_button_get_value_as_int( (GtkSpinButton*)hb_parptr(1) ) );
-#else
-   hb_retnl( gtk_spin_button_get_value_as_int( (GtkSpinButton*)hb_parnl(1) ) );
-#endif
+   hb_retnl( gtk_spin_button_get_value_as_int( (GtkSpinButton*)HB_PARHANDLE(1) ) );
 }
 
 #define WS_VSCROLL          2097152    // 0x00200000L
@@ -426,11 +329,7 @@ HB_FUNC( CREATEBROWSE )
    unsigned long int ulStyle = hb_itemGetNL( GetObjectVar( pObject, "STYLE" ) );
    
    temp = GetObjectVar( pObject, "OPARENT" );
-   #ifdef __GTK_USE_POINTER__
-   handle = (GObject*) hb_itemGetPtr( GetObjectVar( temp, "HANDLE" ) );
-   #else
-   handle = (GObject*) hb_itemGetNL( GetObjectVar( temp, "HANDLE" ) );
-   #endif
+   handle = (GObject*) HB_GETHANDLE( GetObjectVar( temp, "HANDLE" ) );
 
    hbox = gtk_hbox_new( FALSE, 0 );
    vbox = gtk_vbox_new( FALSE, 0 );
@@ -445,11 +344,7 @@ HB_FUNC( CREATEBROWSE )
       vscroll = gtk_vscrollbar_new( GTK_ADJUSTMENT (adjV) );
       gtk_box_pack_end( GTK_BOX( hbox ), vscroll, FALSE, FALSE, 0 );
 
-      #ifdef __GTK_USE_POINTER__
-      temp = hb_itemPutPtr( NULL, (void*)adjV );
-      #else
-      temp = hb_itemPutNL( NULL, (ULONG)adjV );
-      #endif
+      temp = HB_PUTHANDLE( NULL, adjV );
       SetObjectVar( pObject, "_HSCROLLV", temp );
       hb_itemRelease( temp );
 
@@ -465,11 +360,7 @@ HB_FUNC( CREATEBROWSE )
       hscroll = gtk_hscrollbar_new( GTK_ADJUSTMENT (adjH) );
       gtk_box_pack_end( GTK_BOX( vbox ), hscroll, FALSE, FALSE, 0 );
 
-      #ifdef __GTK_USE_POINTER__
-      temp = hb_itemPutPtr( NULL, (void*)adjH );
-      #else
-      temp = hb_itemPutNL( NULL, (ULONG)adjH );
-      #endif
+      temp = HB_PUTHANDLE( NULL, adjH );
       SetObjectVar( pObject, "_HSCROLLH", temp );
       hb_itemRelease( temp );
 
@@ -482,11 +373,7 @@ HB_FUNC( CREATEBROWSE )
       gtk_fixed_put( box, hbox, nLeft, nTop );
    gtk_widget_set_size_request( hbox, nWidth, nHeight );
 
-   #ifdef __GTK_USE_POINTER__
-   temp = hb_itemPutPtr( NULL, (void *)area );
-   #else
-   temp = hb_itemPutNL( NULL, (ULONG)area );
-   #endif
+   temp = HB_PUTHANDLE( NULL, area );
    SetObjectVar( pObject, "_AREA", temp );
    hb_itemRelease( temp );
 
@@ -504,20 +391,12 @@ HB_FUNC( CREATEBROWSE )
    set_event( (gpointer)area, "key_press_event", 0, 0, 0 );
    set_event( (gpointer)area, "key_release_event", 0, 0, 0 );
 
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( ( void * ) hbox );
-#else
-   hb_retnl( (LONG) hbox );
-#endif
+   HB_RETHANDLE( hbox );
 }
 
 HB_FUNC( HWG_GETADJVALUE )
 {
-#ifdef __GTK_USE_POINTER__
-   GtkAdjustment *adj = (GtkAdjustment *) hb_parptr(1);
-#else
-   GtkAdjustment *adj = (GtkAdjustment *) hb_parnl(1);
-#endif
+   GtkAdjustment *adj = (GtkAdjustment *) HB_PARHANDLE(1);
    int iOption = (ISNIL(2))? 0 : hb_parni(2);
 
    if( iOption == 0 )
@@ -539,11 +418,7 @@ HB_FUNC( HWG_GETADJVALUE )
  */
 HB_FUNC( HWG_SETADJOPTIONS )
 {
-#ifdef __GTK_USE_POINTER__
-   GtkAdjustment *adj = (GtkAdjustment *) hb_parptr(1);
-#else
-   GtkAdjustment *adj = (GtkAdjustment *) hb_parnl(1);
-#endif
+   GtkAdjustment *adj = (GtkAdjustment *) HB_PARHANDLE(1);
    gdouble value;
    int lChanged = 0;
    
@@ -580,30 +455,18 @@ HB_FUNC( CREATETABCONTROL )
 {
    GtkWidget * hCtrl = gtk_notebook_new();
 
-#ifdef __GTK_USE_POINTER__
-   GtkFixed * box = getFixedBox( (GObject*) hb_parptr(1) );
-#else
-   GtkFixed * box = getFixedBox( (GObject*) hb_parnl(1) );
-#endif
+   GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
       gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );
    gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
 
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void*) hCtrl );
-#else
-   hb_retnl( (LONG) hCtrl );
-#endif
+   HB_RETHANDLE( hCtrl );
 
 }
 
 HB_FUNC( ADDTAB )
 {
-#ifdef __GTK_USE_POINTER__
-   GtkNotebook * nb = (GtkNotebook*) hb_parptr(1);
-#else
-   GtkNotebook * nb = (GtkNotebook*) hb_parnl(1);
-#endif
+   GtkNotebook * nb = (GtkNotebook*) HB_PARHANDLE(1);
    GtkWidget * box = gtk_fixed_new();
    GtkWidget * hLabel;
    char * cLabel = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
@@ -615,20 +478,12 @@ HB_FUNC( ADDTAB )
 
    g_object_set_data( (GObject*) nb, "fbox", (gpointer) box );
 
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void*) nb );
-#else
-   hb_retnl( (LONG) nb );
-#endif
+   HB_RETHANDLE( nb );
 }
 
 HB_FUNC( GETCURRENTTAB )
 {
-#ifdef __GTK_USE_POINTER__
-   hb_retni( gtk_notebook_get_current_page( (GtkNotebook*)hb_parptr(1) ) + 1 );
-#else
-   hb_retni( gtk_notebook_get_current_page( (GtkNotebook*)hb_parnl(1) ) + 1 );
-#endif
+   hb_retni( gtk_notebook_get_current_page( (GtkNotebook*)HB_PARHANDLE(1) ) + 1 );
 }
 
 HB_FUNC( HWG_CREATESEP )
@@ -641,20 +496,12 @@ HB_FUNC( HWG_CREATESEP )
       hCtrl = gtk_vseparator_new();
    else
       hCtrl = gtk_hseparator_new();
-#ifdef __GTK_USE_POINTER__
-   box = getFixedBox( (GObject*) hb_parptr(1) );
-#else
-   box = getFixedBox( (GObject*) hb_parnl(1) );
-#endif
+   box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
       gtk_fixed_put( box, hCtrl, hb_parni(3), hb_parni(4) );
    gtk_widget_set_size_request( hCtrl,hb_parni(5),hb_parni(6) );
 
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void*) hCtrl );
-#else
-   hb_retnl( (LONG) hCtrl );
-#endif
+   HB_RETHANDLE( hCtrl );
 }
 
 /*
@@ -668,11 +515,7 @@ HB_FUNC( CREATEPANEL )
    fbox = (GtkFixed*)gtk_fixed_new();
    hCtrl = gtk_drawing_area_new();
 
-   #ifdef __GTK_USE_POINTER__
-   box = getFixedBox( (GObject*) hb_parptr(1) );
-   #else
-   box = getFixedBox( (GObject*) hb_parnl(1) );
-   #endif
+   box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
    {
       gtk_fixed_put( box, (GtkWidget*)fbox, hb_parni(4), hb_parni(5) );
@@ -684,11 +527,7 @@ HB_FUNC( CREATEPANEL )
 
    set_event( (gpointer)hCtrl, "expose_event", WM_PAINT, 0, 0 );
 
-   #ifdef __GTK_USE_POINTER__
-   hb_retptr( ( void * ) hCtrl );
-   #else
-   hb_retnl( (LONG) hCtrl );
-   #endif
+   HB_RETHANDLE( hCtrl );
 
 }
 
@@ -702,11 +541,7 @@ HB_FUNC( CREATEOWNBTN )
 
    hCtrl = gtk_drawing_area_new();
    
-   #ifdef __GTK_USE_POINTER__
-   box = getFixedBox( (GObject*) hb_parptr(1) );
-   #else
-   box = getFixedBox( (GObject*) hb_parnl(1) );
-   #endif
+   box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
    {
       gtk_fixed_put( box, hCtrl, hb_parni(3), hb_parni(4) );
@@ -720,11 +555,7 @@ HB_FUNC( CREATEOWNBTN )
    set_event( (gpointer)hCtrl, "enter_notify_event", 0, 0, 0 );
    set_event( (gpointer)hCtrl, "leave_notify_event", 0, 0, 0 );
    
-   #ifdef __GTK_USE_POINTER__
-   hb_retptr( ( void * ) hCtrl );
-   #else
-   hb_retnl( (LONG) hCtrl );
-   #endif
+   HB_RETHANDLE( hCtrl );
 
 }
 
@@ -733,11 +564,7 @@ HB_FUNC( ADDTOOLTIP )
 {
    if( !pTooltip )
       pTooltip = gtk_tooltips_new();
-#ifdef __GTK_USE_POINTER__
-   gtk_tooltips_set_tip( pTooltip, (GtkWidget*)hb_parptr(2), hb_parc(3), NULL );
-#else
-   gtk_tooltips_set_tip( pTooltip, (GtkWidget*)hb_parnl(2), hb_parc(3), NULL );
-#endif
+   gtk_tooltips_set_tip( pTooltip, (GtkWidget*)HB_PARHANDLE(2), hb_parc(3), NULL );
 }
 
 static gint cb_timer( gchar * data )
@@ -780,11 +607,7 @@ HB_FUNC( HWG_KILLTIMER )
 
 HB_FUNC( GETPARENT )
 {
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void*) ( (GtkWidget*) hb_parptr(1) )->parent );
-#else
-   hb_retnl( (LONG) ( (GtkWidget*) hb_parnl(1) )->parent );
-#endif
+   hb_retptr( (void*) ( (GtkWidget*) HB_PARHANDLE(1) )->parent );
 }
 
 HB_FUNC( LOADCURSOR )
@@ -794,38 +617,28 @@ HB_FUNC( LOADCURSOR )
       // hb_retnl( (LONG) LoadCursor( GetModuleHandle( NULL ), hb_parc( 1 )  ) );
    }
    else
-#ifdef __GTK_USE_POINTER__
-      hb_retptr( (void*) gdk_cursor_new( (GdkCursorType) hb_parptr(1) ) );
-#else
-      hb_retnl( (LONG) gdk_cursor_new( (GdkCursorType) hb_parnl(1) ) );
-#endif
+      HB_RETHANDLE( gdk_cursor_new( (GdkCursorType) HB_PARHANDLE(1) ) );
 }
 
 HB_FUNC( HWG_SETCURSOR )
 {
-#ifdef __GTK_USE_POINTER__
-   GtkWidget * widget = (ISPOINTER(2))? (GtkWidget*) hb_parptr(2) : GetActiveWindow();
-   gdk_window_set_cursor( widget->window, (GdkCursor*) hb_parptr(1) );
-#else
-   GtkWidget * widget = (ISNUM(2))? (GtkWidget*) hb_parnl(2) : GetActiveWindow();
-   gdk_window_set_cursor( widget->window, (GdkCursor*) hb_parnl(1) );
-#endif
+   GtkWidget * widget = (ISPOINTER(2))? (GtkWidget*) HB_PARHANDLE(2) : GetActiveWindow();
+   gdk_window_set_cursor( widget->window, (GdkCursor*) HB_PARHANDLE(1) );
 }
 
 HB_FUNC( HWG_MOVEWIDGET )
 {
-#ifdef __GTK_USE_POINTER__
-   GtkWidget * widget = (GtkWidget*) hb_parptr(1);
-#else
-   GtkWidget * widget = (GtkWidget*) hb_parnl(1);
-#endif
+   GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
+   GtkWidget * ch_widget = NULL;
+
+   if( !ISNIL(6) && hb_parl(6) )
+   {
+      ch_widget = widget;
+      widget = widget->parent;
+   }
           
    if( !ISNIL(2) && !ISNIL(3) )
    {
-      if( !ISNIL(6) && hb_parl(6) )
-      {
-         widget = widget->parent;
-      }
       gtk_fixed_move( (GtkFixed*) (widget->parent), widget, hb_parni(2), hb_parni(3) );
    }
    if( !ISNIL(4) || !ISNIL(5) )
@@ -836,8 +649,11 @@ HB_FUNC( HWG_MOVEWIDGET )
       w1 = ( ISNIL(4) )? w : hb_parni(4);
       h1 = ( ISNIL(5) )? h : hb_parni(5);
       if( w != w1 || h != h1 )
+      {
          gtk_widget_set_size_request( widget, w1, h1 );
+         if( ch_widget )
+            gtk_widget_set_size_request( ch_widget, w1, h1 );
+      }
    }
 
 }
-

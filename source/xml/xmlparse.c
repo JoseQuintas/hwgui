@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.18 2005-10-26 08:42:27 alkresin Exp $
+ * $Id: xmlparse.c,v 1.19 2005-11-03 19:47:37 alkresin Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -8,13 +8,13 @@
  * www - http://kresin.belgorod.su
 */
 
+#include "guilib.h"
 #include <stdio.h>
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbstack.h"
 #include "hbvm.h"
 #include "filesys.api"
-#include "guilib.h"
 
 #define HB_SKIPTABSPACES( sptr ) while( *sptr == ' ' || *sptr == '\t' || \
          *sptr == '\r' || *sptr == '\n' ) ( sptr )++

@@ -426,7 +426,7 @@ void Blowfish_Init( BLOWFISH_CTX *ctx, unsigned char *key, int keyLen )
    #define HB_NO_DEFAULT_STACK_MACROS
 #endif
 
-
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"

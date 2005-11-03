@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.6 2005-10-31 15:15:56 lculik Exp $
+ * $Id: drawtext.c,v 1.7 2005-11-03 19:47:37 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level text functions
@@ -8,12 +8,7 @@
  * www - http://kresin.belgorod.su
 */
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
-
+#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
@@ -60,11 +55,7 @@ HB_FUNC( DELETEDC )
  */
 HB_FUNC( TEXTOUT )
 {
-#ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
-#else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-#endif
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    char * cText = g_locale_to_utf8( hb_parc(4),-1,NULL,NULL,NULL );
    GdkColor fcolor, bcolor;
 
@@ -87,11 +78,7 @@ HB_FUNC( TEXTOUT )
 
 HB_FUNC( DRAWTEXT )
 {
-#ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
-#else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-#endif
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    char * cText = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
    GdkColor fcolor, bcolor;
 
@@ -123,11 +110,7 @@ HB_FUNC( DRAWTEXT )
 
 HB_FUNC( GETTEXTMETRIC )
 {
-#ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
-#else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-#endif
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    PangoContext * context;
    PangoFontMetrics * metrics;
 
@@ -168,11 +151,7 @@ HB_FUNC( GETTEXTMETRIC )
 
 HB_FUNC( GETTEXTSIZE )
 {
-   #ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
-   #else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-   #endif
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    PangoRectangle rc;
    PHB_ITEM aMetr = hb_itemArrayNew( 2 );   
    #ifdef __XHARBOUR__
@@ -241,11 +220,7 @@ HB_FUNC( GETCLIENTAREA )
 
 HB_FUNC( SETTEXTCOLOR )
 {
-#ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
-#else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-#endif
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
 
    hb_retnl( hDC->fcolor );
    hDC->fcolor = hb_parnl(2);
@@ -254,11 +229,7 @@ HB_FUNC( SETTEXTCOLOR )
 
 HB_FUNC( SETBKCOLOR )
 {
-#ifdef __GTK_USE_POINTER__
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parptr(1);
-#else
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_parnl(1);
-#endif
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
 
    hb_retnl( hDC->bcolor );
    hDC->bcolor = hb_parnl(2);
@@ -339,11 +310,7 @@ HB_FUNC( CREATEFONT )
    h->type = HWGUI_OBJECT_FONT;
    h->hFont = hFont;
 
-#ifdef __GTK_USE_POINTER__
-   hb_retptr( (void*) h );
-#else
-   hb_retnl( (LONG) h );
-#endif
+   HB_RETHANDLE( h );
    
 }
 
@@ -352,18 +319,10 @@ HB_FUNC( CREATEFONT )
 */
 HB_FUNC( HWG_SETCTRLFONT )
 {
-#ifdef __GTK_USE_POINTER__
-   GtkWidget * hCtrl = (GtkWidget*) hb_parptr(1);
-#else
-   GtkWidget * hCtrl = (GtkWidget*) hb_parnl(1);
-#endif
+   GtkWidget * hCtrl = (GtkWidget*) HB_PARHANDLE(1);
    GtkStyle * style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
 
-#ifdef __GTK_USE_POINTER__
-   style->font_desc = ( (PHWGUI_FONT) hb_parptr(2) )->hFont;
-#else
-   style->font_desc = ( (PHWGUI_FONT) hb_parnl(2) )->hFont;
-#endif
+   style->font_desc = ( (PHWGUI_FONT) HB_PARHANDLE(2) )->hFont;
    gtk_widget_set_style( hCtrl, style );
 
 }

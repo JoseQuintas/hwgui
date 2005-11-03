@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.2 2005-10-31 08:29:41 alkresin Exp $
+ * $Id: hpanel.prg,v 1.3 2005-11-03 12:50:20 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HPanel class 
@@ -22,6 +22,7 @@ CLASS HPanel INHERIT HControl
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
    METHOD Paint()
+   METHOD Move( x1,y1,width,height )
 
 ENDCLASS
 
@@ -54,21 +55,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HPanel
 
    IF msg == WM_PAINT
       ::Paint()
-   /*
-   ELSEIF msg == WM_ERASEBKGND
-      IF ::brush != Nil
-         IF Valtype( ::brush ) != "N"
-            FillRect( wParam, 0,0,::nWidth,::nHeight,::brush:handle )
-         ENDIF
-         Return 1
-      ENDIF
-   */
    ELSE
-      /*
-      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
-         onTrackScroll( Self,wParam,lParam )
-      ENDIF
-      */
       Return Super:onEvent( msg, wParam, lParam )
    ENDIF
 
@@ -103,5 +90,30 @@ Local hDC, aCoors, oPenLight, oPenGray
       releaseDC( ::handle, hDC )
    ENDIF
 
+Return Nil
+
+METHOD Move( x1,y1,width,height )  CLASS HPanel
+Local lMove := .F., lSize := .F.
+
+   IF x1 != Nil .AND. x1 != ::nLeft
+      ::nLeft := x1
+      lMove := .T.
+   ENDIF   
+   IF y1 != Nil .AND. y1 != ::nTop
+      ::nTop := y1
+      lMove := .T.
+   ENDIF
+   IF width != Nil .AND. width != ::nWidth
+      ::nWidth := width
+      lSize := .T.
+   ENDIF   
+   IF height != Nil .AND. height != ::nHeight
+      ::nHeight := height
+      lSize := .T.
+   ENDIF
+   IF lMove .OR. lSize
+      hwg_MoveWidget( ::handle, Iif(lMove,::nLeft,Nil), Iif(lMove,::nTop,Nil), ;
+          Iif(lSize,::nWidth,Nil), Iif(lSize,::nHeight,Nil), .T. )
+   ENDIF
 Return Nil
 

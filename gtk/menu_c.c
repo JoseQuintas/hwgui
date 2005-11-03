@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.8 2005-10-27 12:10:33 alkresin Exp $
+ * $Id: menu_c.c,v 1.9 2005-11-03 12:50:20 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level menu functions
@@ -188,27 +188,15 @@ HB_FUNC( HWG_ISCHECKEDMENUITEM )
    hb_retl( gtk_check_menu_item_get_active( check_menu_item ) );
 }
 
-HB_FUNC( ENABLEMENUITEM )
+HB_FUNC( HWG_ENABLEMENUITEM )
 {
-/*
-   HMENU hMenu = ( hb_pcount()>0 && !ISNIL(1) )? ((HMENU)hb_parnl(1)) : GetMenu(aWindows[0]);
-   UINT  uEnable = ( hb_pcount() < 3 || !ISLOG( 3 ) || hb_parl( 3 ) )? MF_ENABLED:MF_GRAYED;
-   UINT  uFlag = ( hb_pcount() < 4 || !ISLOG( 4 ) || hb_parl( 4 ) )? MF_BYCOMMAND:MF_BYPOSITION;
+#ifdef __GTK_USE_POINTER__
+   GtkMenuItem * menu_item = (GtkMenuItem *) hb_parptr(1);
+#else
+   GtkMenuItem * menu_item = (GtkMenuItem *) hb_parnl(1);
+#endif
 
-   if( !hMenu )
-   {
-      MessageBox( GetActiveWindow(), "", "No Menu!", MB_OK | MB_ICONINFORMATION );
-      hb_retnl( -1 );
-   }
-   else
-   {
-      hb_retnl( (LONG) EnableMenuItem(
-         hMenu,	                // handle to menu
-         hb_parni( 2 ),         // menu item to check or uncheck
-         uFlag | uEnable // menu item flags
-      ) );
-   }
-*/
+   gtk_widget_set_sensitive( (GtkWidget*)menu_item, (ISNIL(2))? 1 : hb_parl(2) );
 }
 
 HB_FUNC( ISENABLEDMENUITEM )

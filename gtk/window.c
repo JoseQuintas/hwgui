@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.17 2005-10-31 08:29:41 alkresin Exp $
+ * $Id: window.c,v 1.18 2005-11-03 12:50:20 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -38,7 +38,7 @@ PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
 void SetWindowObject( GtkWidget * hWnd, PHB_ITEM pObject );
 void all_signal_connect( gpointer hWnd );
 void cb_signal( GtkWidget *widget,gchar* data );
-void cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data );
+gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data );
 void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 );
 
 PHB_DYNS pSym_onEvent = NULL;
@@ -125,7 +125,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
    all_signal_connect( G_OBJECT (hWnd) );
-   g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
+   g_signal_connect_after( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
 
 #ifdef __GTK_USE_POINTER__
@@ -236,7 +236,7 @@ HB_FUNC( HWG_PROCESSMESSAGE )
    ProcessMessage();
 }
 
-void cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data )
+gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data )
 {
    gpointer gObject = g_object_get_data( (GObject*) widget->parent->parent, "obj" );
    HB_SYMBOL_UNUSED( data );
@@ -258,6 +258,9 @@ void cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data
       pObject->item.asArray.value->uiHolders++;
       #endif
 
+      /* g_signal_handlers_block_matched( (gpointer)widget, G_SIGNAL_MATCH_FUNC,
+          0, 0, 0, G_CALLBACK (cb_signal_size), 0 ); */
+
       hb_vmPushSymbol( pSym_onEvent->pSymbol );
       hb_vmPush( pObject );
       hb_vmPushLong( WM_SIZE );
@@ -265,7 +268,11 @@ void cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data
       hb_vmPushLong( p3 );
       hb_vmSend( 3 );
       hb_itemRelease( pObject );
+      
+      /* g_signal_handlers_unblock_matched( (gpointer)widget, G_SIGNAL_MATCH_FUNC,
+          0, 0, 0, G_CALLBACK (cb_signal_size), 0 ); */   
    }
+   return 0;
 }
 
 void cb_signal( GtkWidget *widget,gchar* data )

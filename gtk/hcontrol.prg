@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.9 2005-10-21 08:50:15 alkresin Exp $
+ *$Id: hcontrol.prg,v 1.10 2005-11-03 12:50:20 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -34,7 +34,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD Enable()	INLINE EnableWindow( ::handle, .T. )
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
    METHOD SetFocus()	INLINE EnableWindow( ::handle, .T. )
-   METHOD Move( x1,y1,width,height )   INLINE hwg_MoveWidget( ::handle,x1,y1,width,height )
+   METHOD Move( x1,y1,width,height )
    /*
    METHOD GetText()     INLINE GetWindowText(::handle)
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c )
@@ -112,6 +112,31 @@ METHOD SetColor( tcolor,bcolor,lRepaint ) CLASS HControl
       RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
    ENDIF
 
+Return Nil
+
+METHOD Move( x1,y1,width,height )  CLASS HControl
+Local lMove := .F., lSize := .F.
+
+   IF x1 != Nil .AND. x1 != ::nLeft
+      ::nLeft := x1
+      lMove := .T.
+   ENDIF   
+   IF y1 != Nil .AND. y1 != ::nTop
+      ::nTop := y1
+      lMove := .T.
+   ENDIF
+   IF width != Nil .AND. width != ::nWidth
+      ::nWidth := width
+      lSize := .T.
+   ENDIF   
+   IF height != Nil .AND. height != ::nHeight
+      ::nHeight := height
+      lSize := .T.
+   ENDIF
+   IF lMove .OR. lSize
+      hwg_MoveWidget( ::handle, Iif(lMove,::nLeft,Nil), Iif(lMove,::nTop,Nil), ;
+          Iif(lSize,::nWidth,Nil), Iif(lSize,::nHeight,Nil) )
+   ENDIF
 Return Nil
 
 METHOD End() CLASS HControl

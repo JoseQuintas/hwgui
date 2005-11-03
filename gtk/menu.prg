@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.9 2005-10-21 08:50:15 alkresin Exp $
+ * $Id: menu.prg,v 1.10 2005-11-03 12:50:20 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Prg level menu functions
@@ -344,3 +344,15 @@ Local aMenu, aSubMenu, nPos, lRes := .F.
    ENDIF
    
 Return lRes
+
+Function EnableMenuItem( hWnd, nId, lValue )
+Local aMenu, aSubMenu, nPos
+
+   aMenu := GetMenuByHandle( Iif( hWnd==Nil,HWindow():GetMain():handle,hWnd ) )
+   IF aMenu != Nil
+      IF ( aSubMenu := Hwg_FindMenuItem( aMenu, nId, @nPos ) ) != Nil
+         hwg_EnableMenuItem( aSubmenu[1,nPos,5], lValue )
+      ENDIF   
+   ENDIF
+   
+Return Nil

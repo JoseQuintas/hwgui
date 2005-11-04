@@ -1,12 +1,19 @@
 /*
- * $Id: Changelog,v 1.454 2005-11-04 05:26:40 lf_sfnet Exp $
+ * $Id: Changelog,v 1.455 2005-11-04 21:26:59 lculik Exp $
  */
 
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
-*/
+
+2005-11-04 19:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>*/
+  * source/wprint.c
+    ! fix minor typo
+  * utils/designer/resource/widgets.xml
+    ! added some new properties( updated to hfrmtpml.prg to use this changes go tommorow)
+  * samples/colrbloc.prg
+    ! updated
 
 2005-11-04 06:30 UTC+0100 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
   * source/procmisc/Makefile

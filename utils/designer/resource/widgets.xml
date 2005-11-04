@@ -12,6 +12,15 @@
       <property name="lClipper" type="L" value="False"/>
       <property name="lExitOnEnter" type="L" value="False"/>
       <property name="Variables" type="A" />
+      <property name="FromStyle" type="C" value="Popup" />
+      <property name="Modal" type="L" value="False" />
+      <property name="SystemMenu" type="L" value="False" />
+      <property name="Minimizebox" type="L" value="False" />
+      <property name="Maximizebox" type="L" value="False" />
+      <property name="AbsAlign" type="L" value="True" />
+      <property name="SizeBox" type="L" value="True" />
+      <property name="Visible" type="L" value="True" />
+      <property name="3DLook" type="L" value="False" />
       <method name="common" />
       <method name="onFormInit" />
       <method name="onDlgInit" />
@@ -62,12 +71,12 @@
          <property name="Font" type="O" />
          <property name="Password" type="L" value="False"/>
          <property name="Multiline" type="L" value="False"/>
-		 <property name="AutoHScroll" type="L" value="False"/>
+         <property name="AutoHScroll" type="L" value="False"/>
          <property name="Border" type="L" value="True"/>
-		 <property name="Justify" type="C" value="Left"/>
+         <property name="Justify" type="C" value="Left"/>
          <property name="cPicture" type="C" />
          <property name="varName" type="C" />
-		 <property name="ToolTip" type="C" value=""/>
+         <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -108,6 +117,9 @@
          <property name="Height" type="N" value="22" />
          <property name="lInitValue" type="L" value="False"/>
          <property name="varName" type="C" />
+         <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(8))) ]]></property>
+         <property name="BackColor" type="N" value="16777215" />
+
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
@@ -127,6 +139,9 @@
          <property name="Width" type="N" value="110" />
          <property name="Height" type="N" value="22" />
          <property name="lInitValue" type="L" value="False"/>
+         <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(8))) ]]></property>
+         <property name="BackColor" type="N" value="16777215" />
+
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
@@ -183,6 +198,8 @@
          <property name="nInitValue" type="N" value="1"/>
          <property name="nMaxLines" type="N" value="4"/>
          <property name="varName" type="C" />
+         <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(8))) ]]></property>
+         <property name="BackColor" type="N" value="16777215" />
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
@@ -604,6 +621,8 @@
          <code2><![CDATA[ oCtrl:Adjust := Ascan({"None","Top","Bottom","Left","Right","Client"},value)-1 ]]></code2>
       </property>
       <property name="FormType" array="Main,dlgModal,dlgNoModal,mdiMain,mdiChild,Child">
+      </property>
+      <property name="FromStyle" array="Popup,Child,Overlapped">     
       </property>
    </data>
    <methods>

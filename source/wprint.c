@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.11 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: wprint.c,v 1.12 2005-11-04 21:26:59 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -125,7 +125,7 @@ HB_FUNC( HWG_GETPRINTERS )
          }
          #ifdef __XHARBOUR__
          {
-         hb_arraySetForward( aMetr, i+1, &temp );
+         hb_arraySetForward( aMetr, i+1, temp );
          hb_itemRelease( temp );
          }
          #else

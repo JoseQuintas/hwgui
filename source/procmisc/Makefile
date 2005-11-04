@@ -1,5 +1,7 @@
 ROOT=../../../../
 
+HB_INC_COMPILE=$(TOP)../include -I$(TOP)$(ROOT)include -I$(ROOT)include
+
 C_SOURCES=\
    arr2str.c \
 	blowfish.c \

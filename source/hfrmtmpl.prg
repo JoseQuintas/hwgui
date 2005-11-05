@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.31 2005-10-31 10:08:19 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.32 2005-11-05 20:55:47 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -164,12 +164,20 @@ Return Self
 METHOD Show( nMode,p1,p2,p3 ) CLASS HFormTmpl
 Local i, j, cType
 Local nLeft, nTop, nWidth, nHeight, cTitle, oFont, lClipper := .F., lExitOnEnter := .F.
-Local xProperty, block, bFormExit
+Local xProperty, block, bFormExit,nstyle := 0
+Local lModal := .f.
+Local lMdi :=.F.
+Local lMdiChild := .f.
+Local lval := .f.
+Local cBitmap := nil
+Local oBmp := NIL 
 Memvar oDlg
+
 Private oDlg
 
    FOR i := 1 TO Len( ::aProp )
       xProperty := hfrm_GetProperty( ::aProp[ i,2 ] )
+      
       IF ::aProp[ i,1 ] == "geometry"
          nLeft   := Val(xProperty[1])
          nTop    := Val(xProperty[2])
@@ -183,12 +191,70 @@ Private oDlg
          lClipper := xProperty
       ELSEIF ::aProp[ i,1 ] == "lexitonenter"
          lExitOnEnter := xProperty
+      ELSEIF ::aProp[ i,1 ] == "exstyle"
+         nStyle := xProperty
+      ELSEIF ::aProp[ i,1 ] == "modal"
+         lModal := xProperty
+      ELSEIF ::aProp[ i,1 ] == "formtype"
+
+         lMdi := AT( "mdimain", Lower( xProperty ) ) > 0
+         lMdiChild := AT( "mdichild", Lower( xProperty ) ) > 0
+         nMode := 1
+
       ELSEIF ::aProp[ i,1 ] == "variables"
          FOR j := 1 TO Len( xProperty )
             __mvPrivate( xProperty[j] )
          NEXT
+      // Styles bellow
+      ELSEIF ::aProp[ i,1 ] == "systemMenu"
+         IF xProperty 
+            nStyle += WS_SYSMENU            
+         endif
+      ELSEIF ::aProp[ i,1 ] == "minimizebox"
+         IF xProperty 
+            nStyle += WS_MINIMIZEBOX
+         ENDIF
+      ELSEIF ::aProp[ i,1 ] == "maximizebox"
+         IF xProperty 
+            nStyle += WS_MAXIMIZEBOX
+         ENDIF
+      ELSEIF ::aProp[ i,1 ] == "absalignent"
+         IF xProperty 
+            nStyle += DS_ABSALIGN
+         ENDIF
+      ELSEIF ::aProp[ i,1 ] == "sizeBox"
+         IF xProperty 
+            nStyle += WS_SIZEBOX
+         ENDIF
+      ELSEIF ::aProp[ i,1 ] == "visible"
+         IF xProperty 
+            nStyle += WS_VISIBLE
+         ENDIF
+      ELSEIF ::aProp[ i,1 ] == "3dLook"
+         IF xProperty 
+            nStyle += DS_3DLOOK
+         ENDIF
+      ELSEIF ::aProp[ i,1 ] == "clipsiblings"
+         IF xProperty
+            nStyle += WS_CLIPSIBLINGS
+         ENDIF
+      ELSEIF ::aProp[ i,1 ] == "clipchildren"
+         IF xProperty
+            nStyle += WS_CLIPCHILDREN
+         ENDIF
+
+      ELSEIF ::aProp[ i,1 ] == "fromstyle"
+         IF Lower( xProperty ) == "popup"
+            nStyle += WS_POPUP + WS_CAPTION
+         ELSEIF Lower( xProperty ) == "child"
+            nStyle += WS_CHILD
+         ENDIF
+
+      ELSEIF ::aProp[ i,1 ] == "bitmap"
+         cBitmap := xProperty
       ENDIF
    NEXT
+
    FOR i := 1 TO Len( ::aNames )
       __mvPrivate( ::aNames[i] )
    NEXT
@@ -196,18 +262,41 @@ Private oDlg
       __mvPrivate( ::aVars[i] )
    NEXT
 
+
+   oBmp := if( !Empty( cBitmap ), HBitmap():addfile( cBitmap, NIL ), NIL )
+
    IF nMode == Nil .OR. nMode == 2
       INIT DIALOG ::oDlg TITLE cTitle         ;
           AT nLeft, nTop SIZE nWidth, nHeight ;
-          STYLE DS_ABSALIGN+WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX ;
-          FONT oFont
+          STYLE if(nStyle >0 ,nStyle,DS_ABSALIGN+WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX) ;
+          FONT oFont ;
+          BACKGROUND BITMAP oBmp
       ::oDlg:lClipper := lClipper
       ::oDlg:lExitOnEnter := lExitOnEnter
       ::oDlg:oParent  := Self
+
    ELSEIF nMode == 1
+
+      if lMdi
+         INIT WINDOW ::oDlg MDI TITLE cTitle    ;
+         AT nLeft, nTop SIZE nWidth, nHeight ;
+         STYLE IF( nStyle >0 ,nStyle, NIL );
+         FONT oFont;
+         BACKGROUND BITMAP oBmp
+      elseif lMdiChild
+         INIT WINDOW ::oDlg  MDICHILD TITLE cTitle    ;
+         AT nLeft, nTop SIZE nWidth, nHeight ;
+         STYLE IF( nStyle >0 ,nStyle, NIL );
+         FONT oFont ;
+         BACKGROUND BITMAP oBmp
+      else
       INIT WINDOW ::oDlg MAIN TITLE cTitle    ;
           AT nLeft, nTop SIZE nWidth, nHeight ;
-          FONT oFont
+          FONT oFont;
+          BACKGROUND BITMAP oBmp;
+          STYLE IF( nStyle >0 ,nStyle, NIL )
+
+      ENDIF
    ENDIF
 
    oDlg := ::oDlg
@@ -235,7 +324,7 @@ Private oDlg
       CreateCtrl( ::oDlg, ::aControls[i], Self )
    NEXT
 
-   ::oDlg:Activate()
+   ::oDlg:Activate(lModal)
 
    IF bFormExit != Nil
       Return Eval( bFormExit )
@@ -525,6 +614,11 @@ MEMVAR aImages, lEditLabels, aParts
          IF xProperty
             nStyle += ES_AUTOHSCROLL
          ENDIF
+      ELSEIF cPName == "3dlook"
+         IF xProperty
+            nStyle += DS_3DLOOK
+         ENDIF
+
       ELSEIF cPName == "atree"
          BuildMenu( xProperty,oForm:oDlg:handle,oForm:oDlg )
       ELSE

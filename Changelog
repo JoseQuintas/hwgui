@@ -1,11 +1,17 @@
 /*
- * $Id: Changelog,v 1.455 2005-11-04 21:26:59 lculik Exp $
+ * $Id: Changelog,v 1.456 2005-11-05 20:55:47 lculik Exp $
  */
 
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
+
+2005-11-05 19:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>*/
+  * utils/designer/resource/widgets.xml
+    ! added some new properties  
+  * source/hfrmtpml.prg
+    ! added code to handle new properties. Old forms will use the default setting
 
 2005-11-04 19:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>*/
   * source/wprint.c

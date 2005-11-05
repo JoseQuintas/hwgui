@@ -13,14 +13,17 @@
       <property name="lExitOnEnter" type="L" value="False"/>
       <property name="Variables" type="A" />
       <property name="FromStyle" type="C" value="Popup" />
+      <property name="Bitmap" type="C" value="" />
       <property name="Modal" type="L" value="False" />
-      <property name="SystemMenu" type="L" value="False" />
+      <property name="SystemMenu" type="L" value="True" />
       <property name="Minimizebox" type="L" value="False" />
       <property name="Maximizebox" type="L" value="False" />
-      <property name="AbsAlign" type="L" value="True" />
+      <property name="AbsAlignent" type="L" value="True" />
       <property name="SizeBox" type="L" value="True" />
       <property name="Visible" type="L" value="True" />
-      <property name="3DLook" type="L" value="False" />
+      <property name="3DLook" type="L" value="False" />     
+      <property name="Clipsiblings" type="L" value="False" />
+      <property name="Clipchildren" type="L" value="False" />
       <method name="common" />
       <method name="onFormInit" />
       <method name="onDlgInit" />
@@ -47,6 +50,7 @@
          <property name="Font" type="O" />
          <property name="Border" type="L" value="False"/>
          <property name="Justify" type="C" value="Left"/>
+         <property name="3DLook" type="L" value="False" />
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
@@ -77,6 +81,7 @@
          <property name="cPicture" type="C" />
          <property name="varName" type="C" />
          <property name="ToolTip" type="C" value=""/>
+         <property name="3DLook" type="L" value="False" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -96,6 +101,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="80" />
          <property name="Height" type="N" value="32" />
+         <property name="3DLook" type="L" value="False" />
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
@@ -119,7 +125,7 @@
          <property name="varName" type="C" />
          <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(8))) ]]></property>
          <property name="BackColor" type="N" value="16777215" />
-
+         <property name="3DLook" type="L" value="False" />
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
@@ -141,8 +147,8 @@
          <property name="lInitValue" type="L" value="False"/>
          <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(8))) ]]></property>
          <property name="BackColor" type="N" value="16777215" />
-
-		 <property name="ToolTip" type="C" value=""/>
+         <property name="3DLook" type="L" value="False" />
+         <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onClick" />
@@ -160,6 +166,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="100" />
          <property name="Height" type="N" value="80" />
+         <property name="3DLook" type="L" value="False" />
          <method name="onInit" />
          <method name="onSize" />
       </widget>
@@ -178,6 +185,7 @@
          <property name="Height" type="N" value="80" />
          <property name="nInitValue" type="N" value="1"/>
          <property name="varName" type="C" />
+         <property name="3DLook" type="L" value="False" />
          <method name="onInit" />
          <method name="onSize" />
       </widget>
@@ -200,6 +208,7 @@
          <property name="varName" type="C" />
          <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(8))) ]]></property>
          <property name="BackColor" type="N" value="16777215" />
+         <property name="3DLook" type="L" value="False" />
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
@@ -303,6 +312,7 @@
          <property name="nLower" type="N" value="1"/>
          <property name="nUpper" type="N" value="100"/>
          <property name="varName" type="C" />
+         <property name="3DLook" type="L" value="False" />
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
@@ -323,6 +333,7 @@
          <property name="Width" type="N" value="80" />
          <property name="Height" type="N" value="24" />
          <property name="varName" type="C" />
+         <property name="3DLook" type="L" value="False" />
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
@@ -340,6 +351,7 @@
          <property name="lNoToday" type="L" value="True" />
          <property name="lNoTodayCircle" type="L" value="True" />
          <property name="lWeekNumber" type="L" value="True" />
+         <property name="3DLook" type="L" value="False" />
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onChange" />
@@ -360,6 +372,7 @@
          <property name="lVertical" type="L" value="False" />
          <property name="TickStyle" type="C" value="Auto" />
          <property name="TickMarks" type="C" value="Bottom" />
+         <property name="3DLook" type="L" value="False" />
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onChange" />
@@ -395,6 +408,7 @@
          <property name="aImages" type="A" />
          <property name="lResource" type="L" value="False" />
          <property name="lEditLabels" type="L" value="False" />
+         <property name="3DLook" type="L" value="False" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onTreeClick" />
@@ -413,6 +427,7 @@
          <property name="Width" type="N" value="150" hidden=""/>
          <property name="Height" type="N" value="22"  hidden=""/>
          <property name="Adjust" type="C" value="Bottom" hidden=""/>
+         <property name="3DLook" type="L" value="False" />
          <method name="onInit" />
          <method name="onSize" />
       </widget>
@@ -450,6 +465,7 @@
          <property name="Width" type="N" value="100" />
          <property name="Height" type="N" value="2" />
          <property name="lVertical" type="L" value="False" />
+         <property name="3DLook" type="L" value="False" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -524,6 +540,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="200" />
          <property name="Height" type="N" value="50" />
+         <property name="3DLook" type="L" value="False" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />

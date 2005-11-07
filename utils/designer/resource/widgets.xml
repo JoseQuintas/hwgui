@@ -13,7 +13,7 @@
       <property name="lExitOnEnter" type="L" value="False"/>
       <property name="Variables" type="A" />
       <property name="FromStyle" type="C" value="Popup" />
-      <property name="Bitmap" type="C" value="" />
+      <property name="Bitmap" type="C"  />
       <property name="Modal" type="L" value="False" />
       <property name="SystemMenu" type="L" value="True" />
       <property name="Minimizebox" type="L" value="False" />

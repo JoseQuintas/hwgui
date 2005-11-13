@@ -1,5 +1,5 @@
 /*
- * $Id: gtkmain.prg,v 1.6 2005-10-21 08:51:52 alkresin Exp $
+ * $Id: gtkmain.prg,v 1.7 2005-11-13 12:37:41 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Main prg level functions
@@ -143,3 +143,8 @@ EXIT PROCEDURE GTKEXIT()
    hwg_gtk_exit()
 Return
 */
+
+Function RefreshAllGets( oDlg )
+
+   AEval( oDlg:GetList, {|o|o:Refresh()} )
+Return Nil

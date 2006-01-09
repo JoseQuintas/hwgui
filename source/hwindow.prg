@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.43 2005-10-26 07:43:26 omm Exp $
+ *$Id: hwindow.prg,v 1.44 2006-01-09 02:14:29 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -157,7 +157,7 @@ CLASS HMainWindow INHERIT HWindow
    METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
                      oFont,bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, ;
                      cAppName,oBmp,cHelp,nHelpId )
-   METHOD Activate( lShow, lMaximized, lMinimized )
+   METHOD Activate( lShow, lMaximized, lMinimized, bActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu, cTooltip )
    METHOD GetMdiActive()  INLINE ::FindWindow( SendMessage( ::GetMain():handle, WM_MDIGETACTIVE,0,0 ) )
@@ -208,6 +208,11 @@ Local oWndClient, handle
                               ::bPaint,::bGetFocus,::bLostFocus,::bOther )
       handle := Hwg_InitClientWindow( oWndClient,::nMenuPos,::nLeft,::nTop+60,::nWidth,::nHeight )
       oWndClient:handle = handle
+
+      if ( bActivate  != NIL)
+         eVal(bActivate)
+      endif
+
       Hwg_ActivateMdiWindow( ( lShow==Nil .OR. lShow ),::hAccel, lMaximized, lMinimized )
 
    ELSEIF ::type == WND_MAIN
@@ -260,17 +265,21 @@ CLASS HMDIChildWindow INHERIT HWindow
       } ;
    }
 
-   METHOD Activate( lShow )
+   METHOD Activate( lShow, lMaximized, lMinimized, bActivate )
    METHOD onEvent( msg, wParam, lParam )
 
 ENDCLASS
 
-METHOD Activate( lShow ) CLASS HMDIChildWindow
+METHOD Activate( lShow, lMaximized, lMinimized, bActivate ) CLASS HMDIChildWindow 
 
    CreateGetList( Self )
    // Hwg_CreateMdiChildWindow( Self )
 
    ::handle := Hwg_CreateMdiChildWindow( Self )
+   IF bActivate != NIL     
+      EVAL( bActivate )    
+   ENDIF                   
+
    InitControls( Self )
    IF ::bInit != Nil
       Eval( ::bInit,Self )

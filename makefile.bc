@@ -1,16 +1,18 @@
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
-HRB_DIR = $(HB_PATH)
-INCLUDE_DIR = include;$(HRB_DIR)\include
-OBJ_DIR = obj
-LIB_DIR = lib
-SRC_DIR = source
-#C_DEFINES= -v -y
-#H_DEFINES= -DHB_THREAD_SUPPORT
+# ---------------------------------------------------------------
+# "echo." intentionally used instead of "echo", to avoid conflicts
+# with external commands named echo.
+# using macros for ECHO and DEL to allow overiding such as:
+#
+#    set ECHO=cmd /c echo
+#    set DEL=cmd /c del
+#
+# The above might be needed on Windows 2000 and XP.
+# The macros are referenced in makefile.bc
+# ---------------------------------------------------------------
 
-C_DEFINES= $(CFLAGS)
-H_DEFINES=
 .AUTODEPEND
 
 !if !$d(ECHO)
@@ -20,242 +22,662 @@ H_DEFINES=
    DEL = del
 !endif
 
+# SimpLex is the only supported Scanner in xHarbour.
+# HB_LEX = SIMPLEX
+
+HRB_DIR = $(HB_PATH)
+INCLUDE_DIR = include;$(HRB_DIR)\include
+HARBOUR_EXE = $(HRB_DIR)\bin\harbour.exe
+!if $d(B16)
+
+CC = bcc
+AS = tasm
+
+# Borland C/C++ (DOS 16 bits)
+CFLAGS = -mh $(CFLAGS)
+
+BIN_DIR = bin\b16
+OBJ_DIR = obj\b16
+LIB_DIR = lib\b16
+
+!else
+
+CC = bcc32
+LINKER = TLIB
+# NOTE: Using TASM for some reason, this should be normally TASM32.
+#       I'll leave it to TASM until a better solution is found
+# AS = tasm
+# This is obsolete (AJ: 2005-03-02)
+
+BIN_DIR  = $(HRB_DIR)\bin
+LIB_DIR  = lib
+
+HWGUI_OBJ_DIR      = $(OBJ_DIR)
+PROCMISC_OBJ_DIR   = $(OBJ_DIR)
+HBXML_OBJ_DIR      = $(OBJ_DIR)
+HWGQHTM_OBJ_DIR    = $(OBJ_DIR)
+
+# This is needed, otherwise the libs may overflow when
+# debug info is requested with -v -y
+# if debug info is requested, set ARFLAGS to /P64 in your environment
+!if !$d(ARFLAGS)
+   ARFLAGS = /0
+!endif
+
+!endif
+
+!if !$d(BCC_NOOPTIM)
+   CFLAGS = -O2 $(CFLAGS)
+!endif
+
+# uncomment this line if you want to build harbour with multi-gt capabilities
+# HB_MULTI_GT = yes
+
+#
+# Directory macros. These should never have to change.
+#
+
+#INCLUDE_DIR  = include
+PROCMISC_DIR = source\procmisc
+HWGUI_DIR    = source
+HBXML_DIR    = source\xml
+HWGQHTM_DIR  = source\qhtm
 
 
-all: \
-   $(LIB_DIR)\hwgui.lib \
-   $(LIB_DIR)\procmisc.lib \
-   $(LIB_DIR)\hbxml.lib \
-   $(LIB_DIR)\hwg_qhtm.lib
+#
+# C compiler definition and C flags. These should never have to change.
+#
 
-$(LIB_DIR)\hwgui.lib :   \
-   $(OBJ_DIR)\hipedit.obj \
-   $(OBJ_DIR)\commond.obj \
-   $(OBJ_DIR)\control.obj \
-   $(OBJ_DIR)\dialog.obj  \
-   $(OBJ_DIR)\draw.obj \
-   $(OBJ_DIR)\drawtext.obj \
-   $(OBJ_DIR)\freeimg.obj \
-   $(OBJ_DIR)\grid.obj \
-   $(OBJ_DIR)\media_c.obj \
-   $(OBJ_DIR)\menu_c.obj \
-   $(OBJ_DIR)\message.obj \
-   $(OBJ_DIR)\errorsys.obj \
-   $(OBJ_DIR)\misc.obj \
-   $(OBJ_DIR)\registry.obj \
-   $(OBJ_DIR)\nice.obj \
-   $(OBJ_DIR)\resource.obj \
-   $(OBJ_DIR)\richedit.obj \
-   $(OBJ_DIR)\shellapi.obj  \
-   $(OBJ_DIR)\window.obj \
-   $(OBJ_DIR)\wprint.obj \
-   $(OBJ_DIR)\drawwidg.obj \
-   $(OBJ_DIR)\guimain.obj \
-   $(OBJ_DIR)\hbrowse.obj \
-   $(OBJ_DIR)\hcheck.obj \
-   $(OBJ_DIR)\hcombo.obj \
-   $(OBJ_DIR)\hcontrol.obj \
-   $(OBJ_DIR)\hcwindow.obj \
-   $(OBJ_DIR)\hdatepic.obj \
-   $(OBJ_DIR)\hdialog.obj \
-   $(OBJ_DIR)\hedit.obj \
-   $(OBJ_DIR)\hfreeimg.obj \
-   $(OBJ_DIR)\hfrmtmpl.obj \
-   $(OBJ_DIR)\hgraph.obj \
-   $(OBJ_DIR)\hgrid.obj \
-   $(OBJ_DIR)\hlistbox.obj \
-   $(OBJ_DIR)\hmonthc.obj \
-   $(OBJ_DIR)\htrackbr.obj \
-   $(OBJ_DIR)\hanimat.obj \
-   $(OBJ_DIR)\hnice.obj \
-   $(OBJ_DIR)\hownbtn.obj \
-   $(OBJ_DIR)\hpanel.obj \
-   $(OBJ_DIR)\hprinter.obj \
-   $(OBJ_DIR)\hprogres.obj \
-   $(OBJ_DIR)\hradio.obj \
-   $(OBJ_DIR)\hriched.obj \
-   $(OBJ_DIR)\hsayimg.obj \
-   $(OBJ_DIR)\hsplash.obj \
-   $(OBJ_DIR)\hsplit.obj \
-   $(OBJ_DIR)\htab.obj \
-   $(OBJ_DIR)\htimer.obj \
-   $(OBJ_DIR)\htree.obj \
-   $(OBJ_DIR)\hrect.obj \
-   $(OBJ_DIR)\hupdown.obj \
-   $(OBJ_DIR)\hwindow.obj \
-   $(OBJ_DIR)\hwinprn.obj \
-   $(OBJ_DIR)\menu.obj \
-   $(OBJ_DIR)\c_ipaddr.obj \
-   $(OBJ_DIR)\listbox.obj \
-   $(OBJ_DIR)\repexec.obj \
-   $(OBJ_DIR)\printdos.obj \
-   $(OBJ_DIR)\hdc.obj \
-   $(OBJ_DIR)\hhyper.obj \
-   $(OBJ_DIR)\richtext.obj
+CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) -5 -6 -a8 $(CFLAGS) -D__WIN32__ -v -y
+!if $d(HB_MULTI_GT)
+CFLAGS               = $(CFLAGS) -DHB_MULTI_GT
+!endif
+
+CLIBFLAGS            = -c $(CFLAGS) $(CLIBFLAGS)
+CLIBFLAGSDEBUG       = -v $(CLIBFLAGS)
+HARBOURFLAGS         = -i$(INCLUDE_DIR) -n -q0 -w -es2 -gc0 $(PRG_USR) $(HARBOURFLAGS)
+LDFLAGS              = $(LDFLAGS)
+
+!if $d(HB_THREAD_SUPPORT)
+   CLIBFLAGS = -tWM -DHB_THREAD_SUPPORT $(CLIBFLAGS)
+!endif
 
 
-$(LIB_DIR)\procmisc.lib : \
-   $(OBJ_DIR)\arr2str.obj \
-   $(OBJ_DIR)\blowfish.obj \
-   $(OBJ_DIR)\procini.obj \
-   $(OBJ_DIR)\procs7.obj \
-   $(OBJ_DIR)\procscri.obj
+!if $d(HB_THREAD_SUPPORT)
+   HB_MT_FLAGS=-DHB_THREAD_SUPPORT
+   HARBOURFLAGS= $(HARBOURFLAGS) $(HB_MT_FLAGS)
+!endif
 
-$(LIB_DIR)\hwg_qhtm.lib : \
-   $(OBJ_DIR)\hwg_qhtm.obj \
-   $(OBJ_DIR)\hqhtm.obj
+CC_CMD = $(CC) $(CLIBFLAGS) -o$@ $**
+CC_CMD_DLL = $(CC) $(CLIBFLAGS) -DHB_EXEMEM_USED -o$@ $**
+HB_CMD = $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
-$(LIB_DIR)\hbxml.lib :   \
-   $(OBJ_DIR)\hxmldoc.obj    \
-   $(OBJ_DIR)\xmlparse.obj
+#
+# Macros to access our library names
+#
 
-$(OBJ_DIR)\drawwidg.c   : $(SRC_DIR)\drawwidg.prg
-$(OBJ_DIR)\errorsys.c   : $(SRC_DIR)\errorsys.prg
-$(OBJ_DIR)\guimain.c    : $(SRC_DIR)\guimain.prg
-$(OBJ_DIR)\hbrowse.c    : $(SRC_DIR)\hbrowse.prg
-$(OBJ_DIR)\hcheck.c     : $(SRC_DIR)\hcheck.prg
-$(OBJ_DIR)\hcombo.c     : $(SRC_DIR)\hcombo.prg
-$(OBJ_DIR)\hcontrol.c   : $(SRC_DIR)\hcontrol.prg
-$(OBJ_DIR)\hcwindow.c   : $(SRC_DIR)\hcwindow.prg
-$(OBJ_DIR)\hdatepic.c   : $(SRC_DIR)\hdatepic.prg
-$(OBJ_DIR)\hdialog.c    : $(SRC_DIR)\hdialog.prg
-$(OBJ_DIR)\hedit.c      : $(SRC_DIR)\hedit.prg
-$(OBJ_DIR)\hfreeimg.c   : $(SRC_DIR)\hfreeimg.prg
-$(OBJ_DIR)\hfrmtmpl.c   : $(SRC_DIR)\hfrmtmpl.prg
-$(OBJ_DIR)\hgraph.c     : $(SRC_DIR)\hgraph.prg
-$(OBJ_DIR)\hgrid.c      : $(SRC_DIR)\hgrid.prg
-$(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
-$(OBJ_DIR)\hmonthc.c    : $(SRC_DIR)\hmonthc.prg
-$(OBJ_DIR)\htrackbr.c   : $(SRC_DIR)\htrackbr.prg
-$(OBJ_DIR)\hanimat.c    : $(SRC_DIR)\hanimat.prg
-$(OBJ_DIR)\hnice.c      : $(SRC_DIR)\hnice.prg
-$(OBJ_DIR)\hownbtn.c    : $(SRC_DIR)\hownbtn.prg
-$(OBJ_DIR)\hpanel.c     : $(SRC_DIR)\hpanel.prg
-$(OBJ_DIR)\hprinter.c   : $(SRC_DIR)\hprinter.prg
-$(OBJ_DIR)\hprogres.c   : $(SRC_DIR)\hprogres.prg
-$(OBJ_DIR)\hradio.c     : $(SRC_DIR)\hradio.prg
-$(OBJ_DIR)\hsayimg.c    : $(SRC_DIR)\hsayimg.prg
-$(OBJ_DIR)\hsplash.c    : $(SRC_DIR)\hsplash.prg
-$(OBJ_DIR)\hsplit.c     : $(SRC_DIR)\hsplit.prg
-$(OBJ_DIR)\hdc.c        : $(SRC_DIR)\hdc.prg
-$(OBJ_DIR)\hhyper.c     : $(SRC_DIR)\hhyper.prg
-$(OBJ_DIR)\htab.c       : $(SRC_DIR)\htab.prg
-$(OBJ_DIR)\htimer.c     : $(SRC_DIR)\htimer.prg
-$(OBJ_DIR)\htree.c      : $(SRC_DIR)\htree.prg
-$(OBJ_DIR)\hrect.c      : $(SRC_DIR)\hrect.prg
-$(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
-$(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
-$(OBJ_DIR)\hwindow.c    : $(SRC_DIR)\hwindow.prg
-$(OBJ_DIR)\hwinprn.c    : $(SRC_DIR)\hwinprn.prg
-$(OBJ_DIR)\hipedit.c    : $(SRC_DIR)\hipedit.prg
-$(OBJ_DIR)\menu.c       : $(SRC_DIR)\menu.prg
-$(OBJ_DIR)\repexec.c    : $(SRC_DIR)\repexec.prg
-$(OBJ_DIR)\printdos.c   : $(SRC_DIR)\printdos.prg
-$(OBJ_DIR)\richtext.c   : $(SRC_DIR)\richtext.prg
-
-$(OBJ_DIR)\c_ipaddr.obj : $(SRC_DIR)\c_ipaddr.c
-$(OBJ_DIR)\commond.obj  : $(SRC_DIR)\commond.c
-$(OBJ_DIR)\control.obj  : $(SRC_DIR)\control.c
-$(OBJ_DIR)\dialog.obj   : $(SRC_DIR)\dialog.c
-$(OBJ_DIR)\draw.obj     : $(SRC_DIR)\draw.c
-$(OBJ_DIR)\drawtext.obj : $(SRC_DIR)\drawtext.c
-$(OBJ_DIR)\freeimg.obj  : $(SRC_DIR)\freeimg.c
-$(OBJ_DIR)\grid.obj     : $(SRC_DIR)\grid.c
-$(OBJ_DIR)\listbox.obj  : $(SRC_DIR)\listbox.c
-$(OBJ_DIR)\media_c.obj  : $(SRC_DIR)\media_c.c
-$(OBJ_DIR)\menu_c.obj   : $(SRC_DIR)\menu_c.c
-$(OBJ_DIR)\message.obj  : $(SRC_DIR)\message.c
-$(OBJ_DIR)\misc.obj     : $(SRC_DIR)\misc.c
-$(OBJ_DIR)\registry.obj : $(SRC_DIR)\registry.c
-$(OBJ_DIR)\nice.obj     : $(SRC_DIR)\nice.c
-$(OBJ_DIR)\resource.obj : $(SRC_DIR)\resource.c
-$(OBJ_DIR)\richedit.obj : $(SRC_DIR)\richedit.c
-$(OBJ_DIR)\shellapi.obj : $(SRC_DIR)\shellapi.c
-$(OBJ_DIR)\window.obj   : $(SRC_DIR)\window.c
-$(OBJ_DIR)\wprint.obj   : $(SRC_DIR)\wprint.c
-
-$(OBJ_DIR)\drawwidg.obj : $(OBJ_DIR)\drawwidg.c
-$(OBJ_DIR)\errorsys.obj : $(OBJ_DIR)\errorsys.c
-$(OBJ_DIR)\guimain.obj  : $(OBJ_DIR)\guimain.c
-$(OBJ_DIR)\hbrowse.obj  : $(OBJ_DIR)\hbrowse.c
-$(OBJ_DIR)\hcheck.obj   : $(OBJ_DIR)\hcheck.c
-$(OBJ_DIR)\hcombo.c     : $(SRC_DIR)\hcombo.prg
-$(OBJ_DIR)\hcontrol.obj : $(OBJ_DIR)\hcontrol.c
-$(OBJ_DIR)\hcwindow.obj : $(OBJ_DIR)\hcwindow.c
-$(OBJ_DIR)\hdatepic.c   : $(SRC_DIR)\hdatepic.prg
-$(OBJ_DIR)\hdialog.obj  : $(OBJ_DIR)\hdialog.c
-$(OBJ_DIR)\hdc.obj      : $(OBJ_DIR)\hdc.c
-$(OBJ_DIR)\hhyper.obj   : $(OBJ_DIR)\hhyper.c
-$(OBJ_DIR)\hedit.obj    : $(OBJ_DIR)\hedit.c
-$(OBJ_DIR)\hfreeimg.obj : $(OBJ_DIR)\hfreeimg.c
-$(OBJ_DIR)\hfrmtmpl.obj : $(OBJ_DIR)\hfrmtmpl.c
-$(OBJ_DIR)\hgraph.obj   : $(OBJ_DIR)\hgraph.c
-$(OBJ_DIR)\hgrid.obj    : $(OBJ_DIR)\hgrid.c
-$(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
-$(OBJ_DIR)\hmonthc.obj  : $(OBJ_DIR)\hmonthc.c
-$(OBJ_DIR)\htrackbr.obj : $(OBJ_DIR)\htrackbr.c
-$(OBJ_DIR)\hanimat.obj  : $(OBJ_DIR)\hanimat.c
-$(OBJ_DIR)\hnice.obj    : $(OBJ_DIR)\hnice.c
-$(OBJ_DIR)\hradio.obj   : $(OBJ_DIR)\hradio.c
-$(OBJ_DIR)\hownbtn.obj  : $(OBJ_DIR)\hownbtn.c
-$(OBJ_DIR)\hpanel.obj   : $(OBJ_DIR)\hpanel.c
-$(OBJ_DIR)\hprinter.obj : $(OBJ_DIR)\hprinter.c
-$(OBJ_DIR)\hprogres.obj : $(OBJ_DIR)\hprogres.c
-$(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
-$(OBJ_DIR)\hsayimg.c    : $(SRC_DIR)\hsayimg.prg
-$(OBJ_DIR)\hsplash.c    : $(SRC_DIR)\hsplash.prg
-$(OBJ_DIR)\hsplit.c     : $(SRC_DIR)\hsplit.prg
-$(OBJ_DIR)\htab.c       : $(SRC_DIR)\htab.prg
-$(OBJ_DIR)\htimer.c     : $(SRC_DIR)\htimer.prg
-$(OBJ_DIR)\htree.c      : $(SRC_DIR)\htree.prg
-$(OBJ_DIR)\hrect.c      : $(SRC_DIR)\hrect.prg
-$(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
-$(OBJ_DIR)\hwindow.obj  : $(OBJ_DIR)\hwindow.c
-$(OBJ_DIR)\hwinprn.obj  : $(OBJ_DIR)\hwinprn.c
-$(OBJ_DIR)\hipedit.obj  : $(OBJ_DIR)\hipedit.c
-$(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
-$(OBJ_DIR)\repexec.obj  : $(OBJ_DIR)\repexec.c
-$(OBJ_DIR)\printdos.obj : $(OBJ_DIR)\printdos.c
-$(OBJ_DIR)\richtext.obj : $(OBJ_DIR)\richtext.c
-
-$(OBJ_DIR)\procini.c   : $(SRC_DIR)\procmisc\procini.prg
-$(OBJ_DIR)\procs7.c    : $(SRC_DIR)\procmisc\procs7.prg
-$(OBJ_DIR)\procscri.c  : $(SRC_DIR)\procmisc\procscri.prg
-$(OBJ_DIR)\arr2str.obj : $(SRC_DIR)\procmisc\arr2str.c
-$(OBJ_DIR)\blowfish.obj : $(SRC_DIR)\procmisc\blowfish.c
-  bcc32 $(C_DEFINES) -c -O2  -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\procmisc.lib -+$@,,
-$(OBJ_DIR)\procini.obj  : $(OBJ_DIR)\procini.c
-  bcc32 $(C_DEFINES) -c -O2  -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\procmisc.lib -+$@,,
-$(OBJ_DIR)\procs7.obj  : $(OBJ_DIR)\procs7.c
-  bcc32 $(C_DEFINES) -c -O2  -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\procmisc.lib -+$@,,
-$(OBJ_DIR)\procscri.obj  : $(OBJ_DIR)\procscri.c
-  bcc32 $(C_DEFINES) -c -O2  -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\procmisc.lib -+$@,,
+HWGUI_LIB    =   $(LIB_DIR)\hwgui$(HB_MT).lib 
+PROCMISC_LIB =   $(LIB_DIR)\procmisc.lib 
+HBXML_LIB    =   $(LIB_DIR)\hbxml.lib 
+HWGQHTM_LIB  =   $(LIB_DIR)\hwg_qhtm.lib
 
 
-$(OBJ_DIR)\hqhtm.c   : $(SRC_DIR)\qhtm\hqhtm.prg
-$(OBJ_DIR)\hwg_qhtm.obj  : $(SRC_DIR)\qhtm\hwg_qhtm.c
-  bcc32 $(C_DEFINES) -c -O2  -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\hwg_qhtm.lib -+$@,,
-$(OBJ_DIR)\hqhtm.obj  : $(OBJ_DIR)\hqhtm.c
-  bcc32 $(C_DEFINES) -c -O2  -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\hwg_qhtm.lib -+$@,,
+#
+# Rules
+#
 
-$(OBJ_DIR)\hxmldoc.c    : $(SRC_DIR)\xml\hxmldoc.prg
-$(OBJ_DIR)\hxmldoc.obj  : $(OBJ_DIR)\hxmldoc.c
-  bcc32 $(C_DEFINES) -c -O2  -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\hbxml.lib -+$@,,
-$(OBJ_DIR)\xmlparse.obj : $(SRC_DIR)\xml\xmlparse.c
-  bcc32 $(C_DEFINES) -c -O2  -I$(INCLUDE_DIR) -o$@ $**
-  tlib $(LIB_DIR)\hbxml.lib -+$@,,
+#
+# RTL.LIB rules
+#
 
-.c.obj:
-  bcc32 -c -tW  -I$(INCLUDE_DIR) -o$@ $<
-  tlib $(LIB_DIR)\hwgui.lib /P128 -+$@,,
 
-.prg.c:
-  $(HRB_DIR)\bin\harbour.exe  $< -n -w -i$(INCLUDE_DIR) $(H_DEFINES) -o$@
+HWGUI_LIB_OBJS = \
+   $(HWGUI_OBJ_DIR)\hipedit.obj \
+   $(HWGUI_OBJ_DIR)\commond.obj \
+   $(HWGUI_OBJ_DIR)\control.obj \
+   $(HWGUI_OBJ_DIR)\dialog.obj  \
+   $(HWGUI_OBJ_DIR)\draw.obj \
+   $(HWGUI_OBJ_DIR)\drawtext.obj \
+   $(HWGUI_OBJ_DIR)\freeimg.obj \
+   $(HWGUI_OBJ_DIR)\grid.obj \
+   $(HWGUI_OBJ_DIR)\media_c.obj \
+   $(HWGUI_OBJ_DIR)\menu_c.obj \
+   $(HWGUI_OBJ_DIR)\message.obj \
+   $(HWGUI_OBJ_DIR)\errorsys.obj \
+   $(HWGUI_OBJ_DIR)\misc.obj \
+   $(HWGUI_OBJ_DIR)\registry.obj \
+   $(HWGUI_OBJ_DIR)\nice.obj \
+   $(HWGUI_OBJ_DIR)\resource.obj \
+   $(HWGUI_OBJ_DIR)\richedit.obj \
+   $(HWGUI_OBJ_DIR)\shellapi.obj  \
+   $(HWGUI_OBJ_DIR)\window.obj \
+   $(HWGUI_OBJ_DIR)\wprint.obj \
+   $(HWGUI_OBJ_DIR)\drawwidg.obj \
+   $(HWGUI_OBJ_DIR)\guimain.obj \
+   $(HWGUI_OBJ_DIR)\hbrowse.obj \
+   $(HWGUI_OBJ_DIR)\hcheck.obj \
+   $(HWGUI_OBJ_DIR)\hcombo.obj \
+   $(HWGUI_OBJ_DIR)\hcontrol.obj \
+   $(HWGUI_OBJ_DIR)\hcwindow.obj \
+   $(HWGUI_OBJ_DIR)\hdatepic.obj \
+   $(HWGUI_OBJ_DIR)\hdialog.obj \
+   $(HWGUI_OBJ_DIR)\hedit.obj \
+   $(HWGUI_OBJ_DIR)\hfreeimg.obj \
+   $(HWGUI_OBJ_DIR)\hfrmtmpl.obj \
+   $(HWGUI_OBJ_DIR)\hgraph.obj \
+   $(HWGUI_OBJ_DIR)\hgrid.obj \
+   $(HWGUI_OBJ_DIR)\hlistbox.obj \
+   $(HWGUI_OBJ_DIR)\hmonthc.obj \
+   $(HWGUI_OBJ_DIR)\htrackbr.obj \
+   $(HWGUI_OBJ_DIR)\hanimat.obj \
+   $(HWGUI_OBJ_DIR)\hnice.obj \
+   $(HWGUI_OBJ_DIR)\hownbtn.obj \
+   $(HWGUI_OBJ_DIR)\hpanel.obj \
+   $(HWGUI_OBJ_DIR)\hprinter.obj \
+   $(HWGUI_OBJ_DIR)\hprogres.obj \
+   $(HWGUI_OBJ_DIR)\hradio.obj \
+   $(HWGUI_OBJ_DIR)\hriched.obj \
+   $(HWGUI_OBJ_DIR)\hsayimg.obj \
+   $(HWGUI_OBJ_DIR)\hsplash.obj \
+   $(HWGUI_OBJ_DIR)\hsplit.obj \
+   $(HWGUI_OBJ_DIR)\htab.obj \
+   $(HWGUI_OBJ_DIR)\htimer.obj \
+   $(HWGUI_OBJ_DIR)\htree.obj \
+   $(HWGUI_OBJ_DIR)\hrect.obj \
+   $(HWGUI_OBJ_DIR)\hupdown.obj \
+   $(HWGUI_OBJ_DIR)\hwindow.obj \
+   $(HWGUI_OBJ_DIR)\hwinprn.obj \
+   $(HWGUI_OBJ_DIR)\menu.obj \
+   $(HWGUI_OBJ_DIR)\c_ipaddr.obj \
+   $(HWGUI_OBJ_DIR)\listbox.obj \
+   $(HWGUI_OBJ_DIR)\repexec.obj \
+   $(HWGUI_OBJ_DIR)\printdos.obj \
+   $(HWGUI_OBJ_DIR)\hdc.obj \
+   $(HWGUI_OBJ_DIR)\hhyper.obj \
+   $(HWGUI_OBJ_DIR)\richtext.obj
 
+
+#
+# PCREPOS.LIB rules
+#
+
+PROCMISC_LIB_OBJS = \
+   $(PROCMISC_OBJ_DIR)\arr2str.obj \
+   $(PROCMISC_OBJ_DIR)\blowfish.obj \
+   $(PROCMISC_OBJ_DIR)\procini.obj \
+   $(PROCMISC_OBJ_DIR)\procs7.obj \
+   $(PROCMISC_OBJ_DIR)\procscri.obj
+
+#
+# LANG.LIB rules
+#
+
+HWGQHTM_LIB_OBJS = \
+   $(HWGQHTM_OBJ_DIR)\hwg_qhtm.obj \
+   $(HWGQHTM_OBJ_DIR)\hqhtm.obj
+
+#
+# MACRO.LIB rules
+#
+HBXML_LIB_OBJS = \
+   $(HBXML_OBJ_DIR)\hxmldoc.obj    \
+   $(HBXML_OBJ_DIR)\xmlparse.obj
+
+
+#
+# Our default target
+#
+
+!if $d(HB_THREAD_SUPPORT)
+   PROJECT = \
+      $(HWGUI_LIB)
+!else
+   PROJECT = \
+      $(HWGUI_LIB)
+!endif
+
+PROJECT = \
+   $(PROJECT) \
+
+!if !$d(HB_THREAD_SUPPORT)
+
+PROJECT = \
+   $(PROJECT) \
+   $(PROCMISC_LIB) \
+   $(HBXML_LIB) \
+   $(HWGQHTM_LIB) 
+!endif
+
+ALL: $(PROJECT)
+
+#
+# Library dependencies and build rules
+#
+
+$(HWGUI_LIB) : $(HWGUI_LIB_OBJS)
+    IF EXIST "$(HWGUI_LIB)" $(DEL) "$(HWGUI_LIB)" > NUL
+    $(LINKER) "$(HWGUI_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+$(PROCMISC_LIB) : $(PROCMISC_LIB_OBJS)
+    IF EXIST "$(PROCMISC_LIB)" $(DEL) "$(PROCMISC_LIB)" > NUL
+    $(LINKER) "$(PROCMISC_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+$(HBXML_LIB) : $(HBXML_LIB_OBJS)
+    IF EXIST "$(HBXML_LIB)" $(DEL) "$(HBXML_LIB)" > NUL
+    $(LINKER) "$(HBXML_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+$(HWGQHTM_LIB) : $(HWGQHTM_LIB_OBJS)
+    IF EXIST "$(HWGQHTM_LIB)" $(DEL) "$(HWGQHTM_LIB)" > NUL
+    $(LINKER) "$(HWGQHTM_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+# ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+# ³ HWGUI.LIB Dependencies ³Û
+# ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÛ
+#  ßßßßßßßßßßßßßßßßßßßßßßßßßß
+
+$(HWGUI_OBJ_DIR)\drawwidg.c : $(HWGUI_DIR)\drawwidg.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\drawwidg.obj : $(HWGUI_OBJ_DIR)\drawwidg.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\errorsys.c : $(HWGUI_DIR)\errorsys.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\errorsys.obj : $(HWGUI_OBJ_DIR)\errorsys.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\guimain.c : $(HWGUI_DIR)\guimain.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\guimain.obj : $(HWGUI_OBJ_DIR)\guimain.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hbrowse.c : $(HWGUI_DIR)\hbrowse.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hbrowse.obj : $(HWGUI_OBJ_DIR)\hbrowse.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hcheck.c : $(HWGUI_DIR)\hcheck.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hcheck.obj : $(HWGUI_OBJ_DIR)\hcheck.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hcombo.c : $(HWGUI_DIR)\hcombo.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hcombo.obj : $(HWGUI_OBJ_DIR)\hcombo.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hcontrol.c : $(HWGUI_DIR)\hcontrol.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hrect.c : $(HWGUI_DIR)\hrect.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hcontrol.obj : $(HWGUI_OBJ_DIR)\hcontrol.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hcwindow.c  : $(HWGUI_DIR)\hcwindow.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hcwindow.obj : $(HWGUI_OBJ_DIR)\hcwindow.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hdatepic.c : $(HWGUI_DIR)\hdatepic.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hdatepic.obj : $(HWGUI_OBJ_DIR)\hdatepic.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hdialog.c : $(HWGUI_DIR)\hdialog.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hdialog.obj : $(HWGUI_OBJ_DIR)\hdialog.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hedit.c : $(HWGUI_DIR)\hedit.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hedit.obj : $(HWGUI_OBJ_DIR)\hedit.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\herrosys.c : $(HWGUI_DIR)\herrosys.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\herrosys.obj : $(HWGUI_OBJ_DIR)\herrosys.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hfreeimg.c : $(HWGUI_DIR)\hfreeimg.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hfreeimg.obj : $(HWGUI_OBJ_DIR)\hfreeimg.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hfrmtmpl.c : $(HWGUI_DIR)\hfrmtmpl.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hfrmtmpl.obj : $(HWGUI_OBJ_DIR)\hfrmtmpl.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hgraph.c : $(HWGUI_DIR)\hgraph.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hgraph.obj : $(HWGUI_OBJ_DIR)\hgraph.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hsplash.c : $(HWGUI_DIR)\hsplash.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hsplash.obj : $(HWGUI_OBJ_DIR)\hsplash.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hlistbox.c : $(HWGUI_DIR)\hlistbox.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hlistbox.obj : $(HWGUI_OBJ_DIR)\hlistbox.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hsplitbox.c : $(HWGUI_DIR)\hsplitbox.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hsplitbox.obj : $(HWGUI_OBJ_DIR)\hsplitbox.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hgrid.c : $(HWGUI_DIR)\hgrid.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hgrid.obj : $(HWGUI_OBJ_DIR)\hgrid.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\htrackbr.c : $(HWGUI_DIR)\htrackbr.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hanimat.c : $(HWGUI_DIR)\hanimat.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hnice.c : $(HWGUI_DIR)\hnice.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\grid.obj : $(HWGUI_DIR)\grid.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\listbox.obj : $(HWGUI_DIR)\listbox.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hipedit.c : $(HWGUI_DIR)\hipedit.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hipedit.obj : $(HWGUI_OBJ_DIR)\hipedit.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hmonthc.c : $(HWGUI_DIR)\hmonthc.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hmonthc.obj : $(HWGUI_OBJ_DIR)\hmonthc.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hownbtn.c : $(HWGUI_DIR)\hownbtn.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hownbtn.obj : $(HWGUI_OBJ_DIR)\hownbtn.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hpanel.c : $(HWGUI_DIR)\hpanel.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hpanel.obj : $(HWGUI_OBJ_DIR)\hpanel.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\htrackbr.obj : $(HWGUI_OBJ_DIR)\htrackbr.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hanimat.obj : $(HWGUI_OBJ_DIR)\hanimat.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hnice.obj : $(HWGUI_OBJ_DIR)\hnice.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hprinter.c : $(HWGUI_DIR)\hprinter.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hprinter.obj : $(HWGUI_OBJ_DIR)\hprinter.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hprogres.c : $(HWGUI_DIR)\hprogres.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hprogres.obj : $(HWGUI_OBJ_DIR)\hprogres.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hradio.c : $(HWGUI_DIR)\hradio.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hradio.obj : $(HWGUI_OBJ_DIR)\hradio.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hriched.c : $(HWGUI_DIR)\hriched.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hriched.obj : $(HWGUI_OBJ_DIR)\hriched.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hsayimg.c : $(HWGUI_DIR)\hsayimg.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hsayimg.obj : $(HWGUI_OBJ_DIR)\hsayimg.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hsplit.c : $(HWGUI_DIR)\hsplit.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hsplit.obj : $(HWGUI_OBJ_DIR)\hsplit.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\htab.c : $(HWGUI_DIR)\htab.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\htab.obj : $(HWGUI_OBJ_DIR)\htab.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\htimer.c : $(HWGUI_DIR)\htimer.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\htimer.obj : $(HWGUI_OBJ_DIR)\htimer.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\htree.c : $(HWGUI_DIR)\htree.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\htree.obj : $(HWGUI_OBJ_DIR)\htree.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hrect.obj : $(HWGUI_OBJ_DIR)\hrect.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hupdown.c : $(HWGUI_DIR)\hupdown.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hupdown.obj : $(HWGUI_OBJ_DIR)\hupdown.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hwindow.c : $(HWGUI_DIR)\hwindow.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hwindow.obj : $(HWGUI_OBJ_DIR)\hwindow.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hwinprn.c : $(HWGUI_DIR)\hwinprn.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hwinprn.obj : $(HWGUI_OBJ_DIR)\hwinprn.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\menu.c : $(HWGUI_DIR)\menu.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\menu.obj : $(HWGUI_OBJ_DIR)\menu.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\printdos.c : $(HWGUI_DIR)\printdos.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\printdos.obj : $(HWGUI_OBJ_DIR)\printdos.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\repexec.c : $(HWGUI_DIR)\repexec.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\repexec.obj : $(HWGUI_OBJ_DIR)\repexec.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\richtext.c : $(HWGUI_DIR)\richtext.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\richtext.obj : $(HWGUI_OBJ_DIR)\richtext.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\tmci.c : $(HWGUI_DIR)\tmci.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\tmci.obj : $(HWGUI_OBJ_DIR)\tmci.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\video.c : $(HWGUI_DIR)\video.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\video.obj : $(HWGUI_OBJ_DIR)\video.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\_winmsg.obj : $(HWGUI_DIR)\_winmsg.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\c_ipaddr.obj : $(HWGUI_DIR)\c_ipaddr.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\nice.obj : $(HWGUI_DIR)\nice.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\commond.obj : $(HWGUI_DIR)\commond.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\control.obj : $(HWGUI_DIR)\control.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\dialog.obj : $(HWGUI_DIR)\dialog.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\draw.obj : $(HWGUI_DIR)\draw.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\drawtext.obj : $(HWGUI_DIR)\drawtext.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\freeimg.obj : $(HWGUI_DIR)\freeimg.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\media_c.obj : $(HWGUI_DIR)\media_c.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\menu_c.obj : $(HWGUI_DIR)\menu_c.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\message.obj : $(HWGUI_DIR)\message.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\misc.obj : $(HWGUI_DIR)\misc.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\registry.obj : $(HWGUI_DIR)\registry.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\resource.obj : $(HWGUI_DIR)\resource.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\richedit.obj : $(HWGUI_DIR)\richedit.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\shellapi.obj : $(HWGUI_DIR)\shellapi.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\window.obj : $(HWGUI_DIR)\window.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\wprint.obj : $(HWGUI_DIR)\wprint.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hdc.c : $(HWGUI_DIR)\hdc.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hdc.obj : $(HWGUI_OBJ_DIR)\hdc.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hhyper.c : $(HWGUI_DIR)\hhyper.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hhyper.obj : $(HWGUI_OBJ_DIR)\hhyper.c
+   $(CC_CMD)
+
+#
+# PP.LIB dependencies
+#
+
+$(PROCMISC_OBJ_DIR)\procini.c   : $(PROCMISC_DIR)\procini.prg
+  $(HB_CMD)
+
+$(PROCMISC_OBJ_DIR)\procs7.c    : $(PROCMISC_DIR)\procs7.prg
+  $(HB_CMD)
+
+$(PROCMISC_OBJ_DIR)\procscri.c  : $(PROCMISC_DIR)\procscri.prg
+  $(HB_CMD)
+
+$(PROCMISC_OBJ_DIR)\arr2str.obj : $(PROCMISC_DIR)\arr2str.c
+  $(CC_CMD)
+
+$(PROCMISC_OBJ_DIR)\blowfish.obj : $(PROCMISC_DIR)\blowfish.c
+  $(CC_CMD)
+
+$(PROCMISC_OBJ_DIR)\procini.obj  : $(PROCMISC_OBJ_DIR)\procini.c
+  $(CC_CMD)
+
+$(PROCMISC_OBJ_DIR)\procs7.obj  : $(PROCMISC_OBJ_DIR)\procs7.c
+  $(CC_CMD)
+
+$(PROCMISC_OBJ_DIR)\procscri.obj  : $(PROCMISC_OBJ_DIR)\procscri.c
+  $(CC_CMD)
+
+$(HWGQHTM_OBJ_DIR)\hqhtm.c   : $(HWGQHTM_DIR)\hqhtm.prg
+  $(HB_CMD)
+
+$(HWGQHTM_OBJ_DIR)\hwg_qhtm.obj  : $(HWGQHTM_DIR)\hwg_qhtm.c
+  $(CC_CMD)
+
+$(HWGQHTM_OBJ_DIR)\hqhtm.obj  : $(HWGQHTM_OBJ_DIR)\hqhtm.c
+  $(CC_CMD)
+
+$(HBXML_OBJ_DIR)\hxmldoc.c    : $(HBXML_DIR)\hxmldoc.prg
+  $(HB_CMD)
+
+$(HBXML_OBJ_DIR)\hxmldoc.obj  : $(HBXML_OBJ_DIR)\hxmldoc.c
+  $(CC_CMD)
+  
+$(HBXML_OBJ_DIR)\xmlparse.obj : $(HBXML_DIR)\xmlparse.c
+  $(CC_CMD)

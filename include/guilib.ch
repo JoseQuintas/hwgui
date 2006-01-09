@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.62 2005-10-25 16:01:46 lculik Exp $
+ *$Id: guilib.ch,v 1.63 2006-01-09 02:14:29 lculik Exp $
  */
 #define HWG_VERSION           "2.14"
 #define	WND_MAIN		1
@@ -130,8 +130,9 @@
                [<lNoShow: NOSHOW>] ;
                [<lMaximized: MAXIMIZED>] ;
                [<lMinimized: MINIMIZED>] ;
+               [ ON ACTIVATE <bInit> ]            ;
            => ;
-      <oWnd>:Activate( !<.lNoShow.>, <.lMaximized.>, <.lMinimized.> )
+      <oWnd>:Activate( !<.lNoShow.>, <.lMaximized.>, <.lMinimized.>,<bInit> )
 
 #xcommand CENTER WINDOW <oWnd> ;
 	=>;

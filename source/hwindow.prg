@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.44 2006-01-09 02:14:29 lculik Exp $
+ *$Id: hwindow.prg,v 1.45 2006-01-10 10:22:18 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -197,7 +197,7 @@ METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
 
 Return Self
 
-METHOD Activate( lShow, lMaximized, lMinimized ) CLASS HMainWindow
+METHOD Activate( lShow, lMaximized, lMinimized,bActivate) CLASS HMainWindow
 Local oWndClient, handle
 
    CreateGetList( Self )

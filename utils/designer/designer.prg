@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.17 2005-10-26 13:54:20 omm Exp $
+ * $Id: designer.prg,v 1.18 2006-01-18 12:56:14 omm Exp $
  *
  * Designer
  * Main file
@@ -69,12 +69,12 @@ Public crossCursor, vertCursor, horzCursor
    ENDIF
 
 #ifdef INTEGRATED
-   INIT DIALOG oDesigner:oMainWnd AT 0,0 SIZE 280,200 TITLE "Designer" ;
+   INIT DIALOG oDesigner:oMainWnd AT 0,0 SIZE 280,200 TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
       FONT oFont                          ;
       ON INIT {|o|StartDes(o,p0,p1)}   ;
       ON EXIT {||EndIde()}
 #else
-   INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE 280,200 TITLE "Designer" ;
+   INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE 280,200 TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
       FONT oFont                                                  ;
       ON EXIT {||EndIde()}
 #endif
@@ -82,14 +82,14 @@ Public crossCursor, vertCursor, horzCursor
    MENU OF oDesigner:oMainWnd
       MENU TITLE "&File"
          IF !lSingleF
-            MENUITEM "&New Form" ACTION HFormGen():New()
-            MENUITEM "&Open Form" ACTION HFormGen():Open()
+            MENUITEM "&New "+iif(!oDesigner:lReport,"Form","Report")  ACTION HFormGen():New()
+            MENUITEM "&Open "+iif(!oDesigner:lReport,"Form","Report") ACTION HFormGen():Open()
             SEPARATOR
-            MENUITEM "&Save Form"   ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(),MsgStop("No Form in use!"))
+            MENUITEM "&Save "+iif(!oDesigner:lReport,"Form","Report")   ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(),MsgStop("No Form in use!"))
             MENUITEM "&Save as ..." ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(.T.),MsgStop("No Form in use!"))
-            MENUITEM "&Close Form"  ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:End(),MsgStop("No Form in use!"))
+            MENUITEM "&Close "+iif(!oDesigner:lReport,"Form","Report")  ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:End(),MsgStop("No Form in use!"))
          ELSE
-            MENUITEM "&Open Form" ACTION HFormGen():OpenR()
+            MENUITEM "&Open "+iif(!oDesigner:lReport,"Form","Report") ACTION HFormGen():OpenR()
             SEPARATOR
             MENUITEM "&Save as ..." ACTION ( oDesigner:lSingleForm:=.F.,HFormGen():oDlgSelected:oParent:Save(.T.),oDesigner:lSingleForm:=.T. )
          ENDIF

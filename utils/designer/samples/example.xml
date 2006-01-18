@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part class="form">
   <style>
-    <property name="Geometry">{125,145,508,144}</property>
+    <property name="Geometry">{124,144,508,87}</property>
     <property name="Caption">[Example]</property>
+    <property name="FormType">[dlgModal]</property>
     <property name="lClipper">.F.</property>
     <property name="lExitOnEnter">.F.</property>
-    <property name="Variables">{oForm1,oForm2,oForm3}</property>
+    <property name="Variables">{oForm1,oForm2,oForm3,oRep1}</property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="Modal">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.F.</property>
+    <property name="Maximizebox">.F.</property>
+    <property name="AbsAlignent">.T.</property>
+    <property name="SizeBox">.T.</property>
+    <property name="Visible">.T.</property>
+    <property name="3DLook">.F.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
   </style>
   <method name="onFormInit">
     <![CDATA[oForm1 := HFormTmpl():Read( "testget1.xml" )
@@ -52,7 +64,7 @@ oForm3 := HFormTmpl():Read( "testdbf1.xml" )]]>
         <property name="Flat">.T.</property>
       </style>
       <method name="onClick">
-        <![CDATA[EndWindow()]]>
+        <![CDATA[oDlg:Close()]]>
       </method>
     </part>
     <part class="ownerbutton">
@@ -85,10 +97,27 @@ oForm3 := HFormTmpl():Read( "testdbf1.xml" )]]>
         <![CDATA[oForm3:Show()]]>
       </method>
     </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{278,3,75,42}</property>
+        <property name="Name">[oOwnerbutton1]</property>
+        <property name="Caption">[Test report 1]</property>
+        <property name="Flat">.T.</property>
+        <property name="font">
+          <font name="" width="0" height="-12" weight="400" charset="204"/>
+        </property>
+      </style>
+      <method name="onClick">
+        <![CDATA[use ("..\..\hwreport\test.dbf")
+orep1 := hreptmpl():Read("testrep1.xml")
+orep1:print(,.t.)
+use]]>
+      </method>
+    </part>
   </part>
   <part class="status">
     <style>
-      <property name="Geometry">{0,122,508,22}</property>
+      <property name="Geometry">{0,65,508,22}</property>
       <property name="Name">[oStatus1]</property>
       <property name="aParts">{120,0}</property>
     </style>

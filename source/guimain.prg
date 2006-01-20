@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.12 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: guimain.prg,v 1.13 2006-01-20 02:02:34 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -248,7 +248,7 @@ Return Nil
 FUNCTION HdSerial( cDrive )
 
    Local n       :=  HDGETSERIAL( cDrive )
-   Local cHex    :=  HB_NUMTOHEX(n)
+   Local cHex    :=  NUMTOHEX(n)
    Local cResult := ""
    cResult := Substr( cHex,1, 4 ) + '-' + Substr( cHex,5, 4 )
 

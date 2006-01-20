@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.25 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: misc.c,v 1.26 2006-01-20 02:02:34 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -22,7 +22,6 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include "item.api"
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif

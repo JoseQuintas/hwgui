@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.26 2006-01-20 02:02:34 lculik Exp $
+ * $Id: misc.c,v 1.27 2006-01-20 10:30:41 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -171,16 +171,16 @@ HB_FUNC( CLIENTTOSCREEN )
    }
    #else
    {
-   temp = _itemPutNL( NULL, pt.x );
-   _itemArrayPut( aPoint, 1, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, pt.x );
+   hb_itemArrayPut( aPoint, 1, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, pt.y );
-   _itemArrayPut( aPoint, 2, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, pt.y );
+   hb_itemArrayPut( aPoint, 2, temp );
+   hb_itemRelease( temp );
 
-   _itemReturn( aPoint );
-   _itemRelease( aPoint );
+   hb_itemReturn( aPoint );
+   hb_itemRelease( aPoint );
    }
    #endif
 }
@@ -210,16 +210,16 @@ HB_FUNC( SCREENTOCLIENT )
    }
    #else
    {
-   temp = _itemPutNL( NULL, pt.x );
-   _itemArrayPut( aPoint, 1, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, pt.x );
+   hb_itemArrayPut( aPoint, 1, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, pt.y );
-   _itemArrayPut( aPoint, 2, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, pt.y );
+   hb_itemArrayPut( aPoint, 2, temp );
+   hb_itemRelease( temp );
 
-   _itemReturn( aPoint );
-   _itemRelease( aPoint );
+   hb_itemReturn( aPoint );
+   hb_itemRelease( aPoint );
    }
    #endif
 
@@ -247,16 +247,16 @@ HB_FUNC( HWG_GETCURSORPOS )
    }
    #else
    {
-   temp = _itemPutNL( NULL, pt.x );
-   _itemArrayPut( aPoint, 1, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, pt.x );
+   hb_itemArrayPut( aPoint, 1, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, pt.y );
-   _itemArrayPut( aPoint, 2, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, pt.y );
+   hb_itemArrayPut( aPoint, 2, temp );
+   hb_itemRelease( temp );
 
-   _itemReturn( aPoint );
-   _itemRelease( aPoint );
+   hb_itemReturn( aPoint );
+   hb_itemRelease( aPoint );
    }
    #endif
 

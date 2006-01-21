@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.27 2006-01-20 10:30:41 lculik Exp $
+ * $Id: misc.c,v 1.28 2006-01-21 00:49:03 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -21,7 +21,7 @@
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "hbstack.h"
+
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif
@@ -44,12 +44,12 @@ void writelog( char* s )
 
 HB_FUNC( HWG_SETDLGRESULT )
 {
-   SetWindowLong( (HWND) hb_parnl(1), DWL_MSGRESULT, hb_parni(2) );
+   SetWindowLong( (HWND) HB_PARHANDLE( 1 ), DWL_MSGRESULT, hb_parni(2) );
 }
 
 HB_FUNC( SETCAPTURE )
 {
-   hb_retnl( (LONG) SetCapture( (HWND) hb_parnl(1) ) );
+   hb_retnl( (LONG) SetCapture( (HWND) HB_PARHANDLE( 1 ) ) );
 }
 
 HB_FUNC( RELEASECAPTURE )
@@ -150,39 +150,13 @@ HB_FUNC( CLIENTTOSCREEN )
    POINT pt;
    
    PHB_ITEM aPoint = hb_itemArrayNew( 2 );
-   #ifdef __XHARBOUR__
-   PHB_ITEM temp = hb_itemNew( NULL );
-   #else
-   PHB_ITEM temp;
-   #endif
-
    pt.x = hb_parnl(2);
    pt.y = hb_parnl(3);
-   ClientToScreen( (HWND) hb_parnl(1), &pt );
+   ClientToScreen( ( HWND ) HB_PARHANDLE(1), &pt );
+   hb_itemPutNL( hb_arrayGetPtr( aPoint, 1 ), pt.x );
+   hb_itemPutNL( hb_arrayGetPtr( aPoint, 2 ), pt.y );
+   hb_itemRelease( hb_itemReturn( aPoint ) );
 
-   #ifdef __XHARBOUR__
-   {   
-   hb_arraySetForward( aPoint, 1, hb_itemPutNL( temp, pt.x ) );      
-   hb_arraySetForward( aPoint, 2, hb_itemPutNL( temp, pt.y ) );   
-
-   hb_itemRelease( temp );   
-   hb_itemForwardValue( hb_stackReturnItem(), aPoint );
-   hb_itemRelease(  aPoint );             
-   }
-   #else
-   {
-   temp = hb_itemPutNL( NULL, pt.x );
-   hb_itemArrayPut( aPoint, 1, temp );
-   hb_itemRelease( temp );
-
-   temp = hb_itemPutNL( NULL, pt.y );
-   hb_itemArrayPut( aPoint, 2, temp );
-   hb_itemRelease( temp );
-
-   hb_itemReturn( aPoint );
-   hb_itemRelease( aPoint );
-   }
-   #endif
 }
 
 HB_FUNC( SCREENTOCLIENT )
@@ -190,22 +164,22 @@ HB_FUNC( SCREENTOCLIENT )
    POINT pt;
    
    PHB_ITEM aPoint = hb_itemArrayNew( 2 );
-   #ifdef __XHARBOUR__
-   PHB_ITEM temp = hb_itemNew( NULL );
-   #else
-   PHB_ITEM temp;
-   #endif
    pt.x = hb_parnl(2);
    pt.y = hb_parnl(3);
-   ScreenToClient( (HWND) hb_parnl(1), &pt );
+   ScreenToClient( (HWND) HB_PARHANDLE( 1 ), &pt );
 
+   hb_itemPutNL( hb_arrayGetPtr( aPoint, 1 ), pt.x );
+   hb_itemPutNL( hb_arrayGetPtr( aPoint, 2 ), pt.y );
+   hb_itemRelease( hb_itemReturn( aPoint ) );
+
+/*
    #ifdef __XHARBOUR__
    {   
    hb_arraySetForward( aPoint, 1, hb_itemPutNL( temp, pt.x ) );   
    hb_arraySetForward( aPoint, 2, hb_itemPutNL( temp, pt.y ) );   
 
    hb_itemRelease( temp );
-   hb_itemForwardValue( hb_stackReturnItem(), aPoint );
+   hb_itemReturn( aPoint );
    hb_itemRelease(  aPoint );             
    }
    #else
@@ -222,19 +196,19 @@ HB_FUNC( SCREENTOCLIENT )
    hb_itemRelease( aPoint );
    }
    #endif
-
+*/
 }
 
 HB_FUNC( HWG_GETCURSORPOS )
 {
    POINT pt;
    PHB_ITEM aPoint = hb_itemArrayNew( 2 );
-   #ifdef __XHARBOUR__
-   PHB_ITEM temp = hb_itemNew( NULL );
-   #else
-   PHB_ITEM temp;
-   #endif
    GetCursorPos( &pt );
+   hb_itemPutNL( hb_arrayGetPtr( aPoint, 1 ), pt.x );
+   hb_itemPutNL( hb_arrayGetPtr( aPoint, 2 ), pt.y );
+   hb_itemRelease( hb_itemReturn( aPoint ) );
+
+/*
    #ifdef __XHARBOUR__
    {
    
@@ -242,7 +216,7 @@ HB_FUNC( HWG_GETCURSORPOS )
    hb_arraySetForward( aPoint, 2, hb_itemPutNL( temp, pt.y ) );
  
    hb_itemRelease( temp );
-   hb_itemForwardValue( hb_stackReturnItem(), aPoint );
+   hb_itemReturn( aPoint );
    hb_itemRelease(  aPoint );             
    }
    #else
@@ -259,7 +233,7 @@ HB_FUNC( HWG_GETCURSORPOS )
    hb_itemRelease( aPoint );
    }
    #endif
-
+*/
 }
 
 HB_FUNC( GETCURRENTDIR )
@@ -366,7 +340,7 @@ HB_FUNC( GETTEMPDIR )
 }
 
 #ifndef __XHARBOUR__
-HB_FUNC( HB_NUMTOHEX )
+HB_FUNC( NUMTOHEX )
 {
    ULONG ulNum;
    int iCipher;

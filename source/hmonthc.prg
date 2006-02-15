@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.9 2005-10-26 07:43:26 omm Exp $
+ * $Id: hmonthc.prg,v 1.10 2006-02-15 16:57:26 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -121,14 +121,7 @@ Return (::value)
 #include <windows.h>
 #include <commctrl.h>
 
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
-
 #include "hbapi.h"
-#include "hbvm.h"
-#include "hbstack.h"
 #include "hbapiitm.h"
 #include "hbdate.h"
 

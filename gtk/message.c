@@ -1,5 +1,5 @@
 /*
- * $Id: message.c,v 1.2 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: message.c,v 1.3 2006-02-15 16:56:58 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Message box functions
@@ -12,7 +12,6 @@
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "hbstack.h"
 #include "item.api"
 #include "gtk/gtk.h"
 

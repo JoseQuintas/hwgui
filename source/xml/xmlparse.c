@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.19 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: xmlparse.c,v 1.20 2006-02-15 16:57:26 lf_sfnet Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include "hbapi.h"
 #include "hbapiitm.h"
-#include "hbstack.h"
 #include "hbvm.h"
 #include "filesys.api"
 
@@ -267,25 +266,17 @@ void hbxml_getdoctype( PHB_ITEM pDoc, unsigned char ** pBuffer )
 PHB_ITEM hbxml_addnode( PHB_ITEM pParent )
 {
    PHB_ITEM pNode = hb_itemNew( NULL );
-   PHB_DYNS pSym = hb_dynsymFindName( "HXMLNODE" );
+   PHB_DYNS pSym = hb_dynsymGet( "HXMLNODE" );
 
-   hb_vmPushSymbol( pSym->pSymbol );
+   hb_vmPushSymbol( hb_dynsymSymbol( pSym ) );
    hb_vmPushNil();
    hb_vmDo( 0 );
 
-#ifndef HARBOUR_OLD_VERSION
-   hb_objSendMsg( hb_stackReturnItem(), "NEW", 0 );
-   hb_itemCopy( pNode, hb_stackReturnItem() );
+   hb_objSendMsg( hb_param( -1, HB_IT_ANY ), "NEW", 0 );
+   hb_itemCopy( pNode, hb_param( -1, HB_IT_ANY ) );
 
    hb_objSendMsg( pParent, "AITEMS", 0 );
-   hb_arrayAdd( hb_stackReturnItem(), pNode );
-#else
-   hb_objSendMsg( hb_stackReturn(), "NEW", 0 );
-   hb_itemCopy( pNode, hb_stackReturn() );
-
-   hb_objSendMsg( pParent, "AITEMS", 0 );
-   hb_arrayAdd( hb_stackReturn(), pNode );
-#endif
+   hb_arrayAdd( hb_param( -1, HB_IT_ANY ), pNode );
 
    return pNode;
 }
@@ -310,11 +301,7 @@ BOOL hbxml_readComment( PHB_ITEM pParent, unsigned char ** pBuffer )
    {
       pTemp = hb_itemPutCL( NULL, (char*)ptr, *pBuffer-ptr );
       hb_objSendMsg( pNode, "AITEMS", 0 );
-#ifndef HARBOUR_OLD_VERSION
-      hb_arrayAdd( hb_stackReturnItem(), pTemp );
-#else
-      hb_arrayAdd( hb_stackReturn(), pTemp );
-#endif
+      hb_arrayAdd( hb_param( -1, HB_IT_ANY ), pTemp );
       hb_itemRelease( pTemp );
 
       (*pBuffer) += 3;
@@ -346,11 +333,7 @@ BOOL hbxml_readCDATA( PHB_ITEM pParent, unsigned char ** pBuffer )
    {
       pTemp = hb_itemPutCL( NULL, (char*)ptr, *pBuffer-ptr );
       hb_objSendMsg( pNode, "AITEMS", 0 );
-#ifndef HARBOUR_OLD_VERSION
-      hb_arrayAdd( hb_stackReturnItem(), pTemp );
-#else
-      hb_arrayAdd( hb_stackReturn(), pTemp );
-#endif
+      hb_arrayAdd( hb_param( -1, HB_IT_ANY ), pTemp );
       hb_itemRelease( pTemp );
 
       (*pBuffer) += 3;
@@ -419,11 +402,7 @@ BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char ** pBuffer )
          {
             pTemp = hbxml_pp( ptr, *pBuffer-ptr );
             hb_objSendMsg( pNode, "AITEMS", 0 );
-#ifndef HARBOUR_OLD_VERSION
-            hb_arrayAdd( hb_stackReturnItem(), pTemp );
-#else
-            hb_arrayAdd( hb_stackReturn(), pTemp );
-#endif
+            hb_arrayAdd( hb_param( -1, HB_IT_ANY ), pTemp );
             hb_itemRelease( pTemp );
          }
 

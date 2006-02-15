@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.462 2006-01-21 00:49:02 lculik Exp $
+ * $Id: Changelog,v 1.463 2006-02-15 16:56:58 lf_sfnet Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,36 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-02-15 18:00 UTC+0100 Lorenzo Fiorini <lorenzo_fiorini/at/teamwork.it>
+  * source/Makefile
+  * source/hanimat.prg
+  * source/htrackbr.prg
+  * source/xml/xmlparse.c
+  * source/procmisc/blowfish.c
+  * source/procmisc/arr2str.c
+  * gtk/commond.c
+  * gtk/control.c
+  * gtk/draw.c
+  * gtk/drawtext.c
+  * gtk/menu_c.c
+  * gtk/message.c
+  * gtk/misc.c
+  * gtk/window.c
+  * gtk/wprint.c
+  * gtk/Makefile
+  * gtk/samples/a.prg
+    * I've updated gnu Makefiles and commit updates provided by Przemyslaw Czerpak 
+	 * with the comment:
+	 * ...	 
+	 * I've just updated HWGUI Linux/gtk to recent modifications in
+	 * Harbour API. It also clean the usage of HB_ITEM and the code.
+	 * I remove all unnecessary #ifdef __XHARBOUR__, etc. and accessing
+	 * the HVM stack.
+	 * ...	 
+  * samples/testray.rc
+    * icon changed to ../image/pim.ico to work with non Borlad rc compilers
+
 2006-01-20 22:50 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/misc.c
     ! Fixed compilation error on MT mode, Optimized some functions

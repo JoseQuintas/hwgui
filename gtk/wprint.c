@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.3 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: wprint.c,v 1.4 2006-02-15 16:56:58 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level print functions
@@ -13,7 +13,6 @@
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "hbstack.h"
 
 #include "gtk/gtk.h"
 

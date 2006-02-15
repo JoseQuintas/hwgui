@@ -1,5 +1,7 @@
 ROOT=../../
 
+ifeq ($(HB_ARCHITECTURE),w32)
+
 DIRS=\
 	include \
 	source \
@@ -8,6 +10,14 @@ DIRS=\
 	source/qhtm \
 	gtk
 
-include $(ROOT)config/dir.cf
+else
 
-#C_USR += -DHARBOUR_OLD_VERSION
+DIRS=\
+	include \
+	source/procmisc \
+	source/xml \
+	gtk
+
+endif
+
+include $(ROOT)config/dir.cf

@@ -1,5 +1,5 @@
 /*
- * $Id: a.prg,v 1.5 2005-11-01 17:48:38 lf_sfnet Exp $
+ * $Id: a.prg,v 1.6 2006-02-15 16:56:58 lf_sfnet Exp $
  * HWGUI using sample
  * 
  *
@@ -202,7 +202,7 @@ ACTIVATE DIALOG oDlg
 
 return nil
 
-#ifdef TEST
+#ifdef TEST_PRINT
 Function PrnTest
 Local oPrinter, oFont
 

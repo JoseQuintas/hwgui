@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.21 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: control.c,v 1.22 2006-02-15 16:56:58 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -12,7 +12,6 @@
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "hbstack.h"
 #include "item.api"
 #include "gtk/gtk.h"
 #ifdef __XHARBOUR__
@@ -251,16 +250,20 @@ HB_FUNC( CREATECOMBO )
 
 HB_FUNC( HWG_COMBOSETARRAY )
 {
-   PHB_ITEM pArr = hb_param( 2, HB_IT_ARRAY );
+   PHB_ITEM pArray = hb_param( 2, HB_IT_ARRAY );
    GList *glist = NULL;
-   char * cItem;
-   int i;
 
-   for( i=0; (ULONG)i<pArr->item.asArray.value->ulLen; i++ )
+   if( pArray )
    {
-      cItem = g_locale_to_utf8( hb_itemGetCPtr( pArr->item.asArray.value->pItems + i ),-1,NULL,NULL,NULL );
-      glist = g_list_append( glist, cItem );
-      // g_free( cItem );
+      ULONG ul, ulLen = hb_arrayLen( pArray );
+      char * cItem;
+
+      for( ul = 1; ul <= ulLen; ++ul )
+      {
+         cItem = g_locale_to_utf8( hb_arrayGetCPtr( pArray, ul ), -1, NULL, NULL, NULL );
+         glist = g_list_append( glist, cItem );
+         // g_free( cItem );
+      }
    }
 
    gtk_combo_set_popdown_strings( GTK_COMBO( HB_PARHANDLE(1) ), glist );
@@ -575,9 +578,10 @@ static gint cb_timer( gchar * data )
 
    if( !pSymTimerProc )
       pSymTimerProc = hb_dynsymFind( "TIMERPROC" );
+
    if( pSymTimerProc )
    {
-      hb_vmPushSymbol( pSymTimerProc->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSymTimerProc ) );
       hb_vmPushNil();
       hb_vmPushLong( (LONG ) p1 );
       hb_vmDo( 1 );

@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.10 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: menu_c.c,v 1.11 2006-02-15 16:56:58 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level menu functions
@@ -12,14 +12,8 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "hbstack.h"
 #include "gtk/gtk.h"
 
-#ifndef __XHARBOUR__
-#ifdef __EXPORT__
-PHB_ITEM hb_stackReturn( void );
-#endif
-#endif
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif

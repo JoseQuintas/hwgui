@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.11 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: commond.c,v 1.12 2006-02-15 16:56:58 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
@@ -12,7 +12,6 @@
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "hbstack.h"
 #include "item.api"
 #include "gtk/gtk.h"
 #include "hwgtk.h"

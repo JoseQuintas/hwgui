@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.7 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: drawtext.c,v 1.8 2006-02-15 16:56:58 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level text functions
@@ -12,7 +12,6 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "hbstack.h"
 #include "item.api"
 #include "gtk/gtk.h"
 #include "hwgtk.h"
@@ -154,40 +153,14 @@ HB_FUNC( GETTEXTSIZE )
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    PangoRectangle rc;
    PHB_ITEM aMetr = hb_itemArrayNew( 2 );   
-   #ifdef __XHARBOUR__
-   PHB_ITEM  temp  = hb_itemNew( NULL ); 
-   #else
-   
-   PHB_ITEM temp;
-   #endif
 
    if( ISCHAR(2) )
       pango_layout_set_text( hDC->layout, hb_parc(2), -1 );
    pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
 
-#ifdef __XHARBOUR__
-{
-   hb_arraySetForward( aMetr, 1, hb_itemPutNL( temp, rc.width ) );
-   hb_arraySetForward( aMetr, 2, hb_itemPutNL( temp, rc.height ));
-
-   hb_itemRelease( temp );
-   hb_itemForwardValue( hb_stackReturnItem(), aMetr );
-   hb_itemRelease( aMetr ) ;
-}
-#else
-{
-   temp = _itemPutNL( NULL, rc.width );
-   _itemArrayPut( aMetr, 1, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, rc.height );
-   _itemArrayPut( aMetr, 2, temp );
-   _itemRelease( temp );
-
-   _itemReturn( aMetr );
-   _itemRelease( aMetr );
-}
-#endif
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 1 ), rc.width );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 2 ), rc.height );
+   hb_itemRelease( hb_itemReturn( aMetr ) );
 }
 
 HB_FUNC( GETCLIENTAREA )

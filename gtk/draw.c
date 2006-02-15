@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.10 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: draw.c,v 1.11 2006-02-15 16:56:58 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level painting functions
@@ -12,7 +12,6 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "hbstack.h"
 #include "item.api"
 #include "gtk/gtk.h"
 #include "hwgtk.h"
@@ -568,48 +567,12 @@ HB_FUNC( GETCLIENTRECT )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
    PHB_ITEM aMetr = hb_itemArrayNew( 4 );    
-   #ifdef __XHARBOUR__
-   {
-   
-   PHB_ITEM temp = hb_itemNew(  NULL );;
 
-   hb_arraySetForward( aMetr, 1, hb_itemPutNL( temp, 0 ) );
-
-   hb_arraySetForward( aMetr, 2, hb_itemPutNL( temp, 0 ) );
-
-   hb_arraySetForward( aMetr, 3, hb_itemPutNL( temp, widget->allocation.width ) );
-
-   hb_arraySetForward( aMetr, 4, hb_itemPutNL( temp, widget->allocation.height ) );
-
-   hb_itemRelease( temp );
-   hb_itemForwardValue( hb_stackReturnItem(), aMetr );
-   hb_itemRelease( aMetr );
-   }
-   #else
-   {
-   
-   PHB_ITEM temp;
-
-   temp = _itemPutNL( NULL, 0 );
-   _itemArrayPut( aMetr, 1, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, 0 );
-   _itemArrayPut( aMetr, 2, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, widget->allocation.width );
-   _itemArrayPut( aMetr, 3, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, widget->allocation.height );
-   _itemArrayPut( aMetr, 4, temp );
-   _itemRelease( temp );
-
-   _itemReturn( aMetr );
-   _itemRelease( aMetr );
-}
-#endif
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 1 ), 0 );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 2 ), 0 );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 3 ), widget->allocation.width );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 4 ), widget->allocation.height );
+   hb_itemRelease( hb_itemReturn( aMetr ) );
 }
 
 HB_FUNC( GETWINDOWRECT )

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.19 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: window.c,v 1.20 2006-02-15 16:56:58 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -12,7 +12,6 @@
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "hbstack.h"
 #include "item.api"
 #include "gtk/gtk.h"
 #ifdef __XHARBOUR__
@@ -51,16 +50,6 @@ typedef struct
 
 #define NUMBER_OF_SIGNALS   1
 static HW_SIGNAL aSignals[NUMBER_OF_SIGNALS] = { { "destroy",2 } };
-
-#ifndef __XHARBOUR__
-#ifdef __EXPORT__
-PHB_ITEM hb_stackReturn( void )
-{
-   HB_STACK stack = hb_GetStack();
-   return &stack.Return;
-}
-#endif
-#endif
 
 HB_FUNC( HWG_GTK_INIT )
 {
@@ -112,10 +101,10 @@ HB_FUNC( HWG_INITMAINWINDOW )
 
    temp = HB_PUTHANDLE( NULL, box );
    SetObjectVar( pObject, "_FBOX", temp );
-   hb_itemRelease( temp );
 
-   temp = hb_itemPutNL( NULL, 1 );
+   hb_itemPutNL( temp, 1 );
    SetObjectVar( pObject, "_NHOLDER", temp );
+
    hb_itemRelease( temp );
    
    SetWindowObject( hWnd, pObject );
@@ -155,12 +144,13 @@ HB_FUNC( HWG_CREATEDLG )
 
    box = (GtkFixed*)gtk_fixed_new();
    gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
+
    temp = HB_PUTHANDLE( NULL, box );
    SetObjectVar( pObject, "_FBOX", temp );
-   hb_itemRelease( temp );
 
-   temp = hb_itemPutNL( NULL, 1 );
+   hb_itemPutNL( temp, 1 );
    SetObjectVar( pObject, "_NHOLDER", temp );
+
    hb_itemRelease( temp );
    
    SetWindowObject( hWnd, pObject );
@@ -222,29 +212,19 @@ gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data
 
    if( pSym_onEvent && gObject )
    {
-      PHB_ITEM pObject = hb_itemNew( NULL );
       LONG p3 = ( (ULONG)(allocation->width) & 0xFFFF ) |
                  ( ( (ULONG)(allocation->height) << 16 ) & 0xFFFF0000 );
-
-      pObject->type = HB_IT_OBJECT;
-      pObject->item.asArray.value = (PHB_BASEARRAY) gObject;
-      #ifndef UIHOLDERS
-      pObject->item.asArray.value->ulHolders++;
-      #else
-      pObject->item.asArray.value->uiHolders++;
-      #endif
 
       /* g_signal_handlers_block_matched( (gpointer)widget, G_SIGNAL_MATCH_FUNC,
           0, 0, 0, G_CALLBACK (cb_signal_size), 0 ); */
 
-      hb_vmPushSymbol( pSym_onEvent->pSymbol );
-      hb_vmPush( pObject );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
+      hb_vmPush( ( PHB_ITEM ) gObject );
       hb_vmPushLong( WM_SIZE );
       hb_vmPushLong( 0 );
       hb_vmPushLong( p3 );
       hb_vmSend( 3 );
-      hb_itemRelease( pObject );
-      
+
       /* g_signal_handlers_unblock_matched( (gpointer)widget, G_SIGNAL_MATCH_FUNC,
           0, 0, 0, G_CALLBACK (cb_signal_size), 0 ); */   
    }
@@ -273,24 +253,13 @@ void cb_signal( GtkWidget *widget,gchar* data )
 
    if( pSym_onEvent && gObject )
    {
-      PHB_ITEM pObject = hb_itemNew( NULL );
-
-      pObject->type = HB_IT_OBJECT;
-      pObject->item.asArray.value = (PHB_BASEARRAY) gObject;
-      #ifndef UIHOLDERS
-      pObject->item.asArray.value->ulHolders++;
-      #else
-      pObject->item.asArray.value->uiHolders++;
-      #endif
-
-      hb_vmPushSymbol( pSym_onEvent->pSymbol );
-      hb_vmPush( pObject );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
+      hb_vmPush( ( PHB_ITEM ) gObject );
       hb_vmPushLong( p1 );
       hb_vmPushLong( p2 );
       hb_vmPushLong( (LONG) p3 );
       hb_vmSend( 3 );
-      // res = hb_itemGetNL( (PHB_ITEM) hb_stackReturn() );
-      hb_itemRelease( pObject );
+      /* res = hb_parnl( -1 ); */
    }
 }
 
@@ -306,7 +275,6 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
    //   gObject = g_object_get_data( (GObject*) (widget->parent->parent), "obj" );
    if( pSym_onEvent && gObject )
    {
-      PHB_ITEM pObject;
       LONG p1, p2, p3;
 
       if( event->type == GDK_KEY_PRESS || event->type == GDK_KEY_RELEASE )
@@ -357,23 +325,13 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       else
          sscanf( (char*)data,"%ld %ld %ld",&p1,&p2,&p3 );
 
-      pObject = hb_itemNew( NULL );
-      pObject->type = HB_IT_OBJECT;
-      pObject->item.asArray.value = (PHB_BASEARRAY) gObject;
-      #ifndef UIHOLDERS
-      pObject->item.asArray.value->ulHolders++;
-      #else
-      pObject->item.asArray.value->uiHolders++;
-      #endif
-
-      hb_vmPushSymbol( pSym_onEvent->pSymbol );
-      hb_vmPush( pObject );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
+      hb_vmPush( ( PHB_ITEM ) gObject );
       hb_vmPushLong( p1 );
       hb_vmPushLong( p2 );
       hb_vmPushLong( p3 );
       hb_vmSend( 3 );
       lRes = hb_parnl( -1 );
-      hb_itemRelease( pObject );
       return lRes;
    }
    return 0;
@@ -441,15 +399,15 @@ HB_FUNC( SETWINDOWOBJECT )
 
 void SetWindowObject( GtkWidget * hWnd, PHB_ITEM pObject )
 {
+   gpointer gObject = g_object_get_data( (GObject*) hWnd, "obj" );
+
+   if( gObject )
+   {
+      hb_itemRelease( ( PHB_ITEM ) gObject );
+   }
    if( pObject )
    {
-      // Must increase uiHolders as we now have additional copy of object.
-      #ifndef UIHOLDERS
-      pObject->item.asArray.value->ulHolders++;
-      #else
-      pObject->item.asArray.value->uiHolders++;
-      #endif
-      g_object_set_data( (GObject*) hWnd, "obj", (gpointer) (pObject->item.asArray.value) );
+      g_object_set_data( (GObject*) hWnd, "obj", (gpointer) hb_itemNew( pObject ) );
    }
    else
    {
@@ -463,20 +421,11 @@ HB_FUNC( GETWINDOWOBJECT )
 
    if( dwNewLong )
    {
-      PHB_ITEM pObj = hb_itemNew( NULL );
-
-      pObj->type = HB_IT_OBJECT;
-      pObj->item.asArray.value = (PHB_BASEARRAY) dwNewLong;
-
-      // Must increase uiHolders as we will shortly release this unaccounted copy.
-      #ifndef UIHOLDERS
-      pObj->item.asArray.value->ulHolders++;
-      #else
-      pObj->item.asArray.value->uiHolders++;
-      #endif
-
-      hb_itemReturn( pObj );
-      hb_itemRelease( pObj );
+      hb_itemReturn( ( PHB_ITEM ) dwNewLong );
+   }
+   else
+   {
+      hb_ret();
    }
 }
 
@@ -543,11 +492,7 @@ PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
    return hb_objSendMsg( pObject, varname, 0 );
 #else
    hb_objSendMsg( pObject, varname, 0 );
-#ifndef HARBOUR_OLD_VERSION
-   return ( hb_stackReturnItem() );
-#else
-   return ( hb_stackReturn() );
-#endif
+   return hb_param( -1, HB_IT_ANY );
 #endif
 }
             
@@ -568,11 +513,7 @@ PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
 
       hb_vmDo( 0 );
    }
-   #ifndef __XHARBOUR__
-   return ( hb_stackReturn() );
-   #else
-   return ( hb_stackReturnItem() );
-   #endif
+   return hb_param( -1, HB_IT_ANY );
 }
 
 void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )
@@ -592,15 +533,8 @@ void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )
 
 HB_FUNC( HWG_DECREASEHOLDERS )
 {
-   PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
-
-   #ifndef  UIHOLDERS
-   if( pObject->item.asArray.value->ulHolders )
-      pObject->item.asArray.value->ulHolders--;
-   #else
-   if( pObject->item.asArray.value->uiHolders )
-      pObject->item.asArray.value->uiHolders--;
-   #endif
+   /* Do nothing such operation is not necessary in valid code */
+   ;
 }
 
 HB_FUNC( SETFOCUS )

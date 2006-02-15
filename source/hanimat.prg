@@ -1,5 +1,5 @@
 /*
- * $Id: hanimat.prg,v 1.4 2004-09-29 05:24:52 alkresin Exp $
+ * $Id: hanimat.prg,v 1.5 2006-02-15 16:57:26 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HAnimation class
@@ -106,15 +106,8 @@ Return Nil
 
 #include <windows.h>
 #include <commctrl.h>
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
 
 #include "hbapi.h"
-#include "hbvm.h"
-#include "hbstack.h"
-#include "hbapiitm.h"
 
 HB_FUNC ( ANIMATE_CREATE )
 {

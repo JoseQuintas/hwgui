@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.28 2006-01-21 00:49:03 lculik Exp $
+ * $Id: misc.c,v 1.29 2006-02-15 17:54:28 lf_sfnet Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -172,68 +172,21 @@ HB_FUNC( SCREENTOCLIENT )
    hb_itemPutNL( hb_arrayGetPtr( aPoint, 2 ), pt.y );
    hb_itemRelease( hb_itemReturn( aPoint ) );
 
-/*
-   #ifdef __XHARBOUR__
-   {   
-   hb_arraySetForward( aPoint, 1, hb_itemPutNL( temp, pt.x ) );   
-   hb_arraySetForward( aPoint, 2, hb_itemPutNL( temp, pt.y ) );   
-
-   hb_itemRelease( temp );
-   hb_itemReturn( aPoint );
-   hb_itemRelease(  aPoint );             
-   }
-   #else
-   {
-   temp = hb_itemPutNL( NULL, pt.x );
-   hb_itemArrayPut( aPoint, 1, temp );
-   hb_itemRelease( temp );
-
-   temp = hb_itemPutNL( NULL, pt.y );
-   hb_itemArrayPut( aPoint, 2, temp );
-   hb_itemRelease( temp );
-
-   hb_itemReturn( aPoint );
-   hb_itemRelease( aPoint );
-   }
-   #endif
-*/
 }
 
 HB_FUNC( HWG_GETCURSORPOS )
 {
    POINT pt;
    PHB_ITEM aPoint = hb_itemArrayNew( 2 );
+   PHB_ITEM temp = hb_itemNew( NULL );
    GetCursorPos( &pt );
-   hb_itemPutNL( hb_arrayGetPtr( aPoint, 1 ), pt.x );
-   hb_itemPutNL( hb_arrayGetPtr( aPoint, 2 ), pt.y );
-   hb_itemRelease( hb_itemReturn( aPoint ) );
-
-/*
-   #ifdef __XHARBOUR__
-   {
-   
    hb_arraySetForward( aPoint, 1, hb_itemPutNL( temp, pt.x ) );    
    hb_arraySetForward( aPoint, 2, hb_itemPutNL( temp, pt.y ) );
  
    hb_itemRelease( temp );
    hb_itemReturn( aPoint );
    hb_itemRelease(  aPoint );             
-   }
-   #else
-   {
-   temp = hb_itemPutNL( NULL, pt.x );
-   hb_itemArrayPut( aPoint, 1, temp );
-   hb_itemRelease( temp );
 
-   temp = hb_itemPutNL( NULL, pt.y );
-   hb_itemArrayPut( aPoint, 2, temp );
-   hb_itemRelease( temp );
-
-   hb_itemReturn( aPoint );
-   hb_itemRelease( aPoint );
-   }
-   #endif
-*/
 }
 
 HB_FUNC( GETCURRENTDIR )

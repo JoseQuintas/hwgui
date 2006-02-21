@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.18 2005-11-03 19:47:37 alkresin Exp $
+ *$Id: dialog.c,v 1.19 2006-02-21 22:44:58 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -30,7 +30,7 @@
 LRESULT WINAPI ModalDlgProc( HWND, UINT, WPARAM, LPARAM );
 LRESULT CALLBACK DlgProc (HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK PSPProc (HWND, UINT, WPARAM, LPARAM);
-
+LRESULT CALLBACK PSPProcRelease( HWND , UINT , LPPROPSHEETPAGE );
 extern void SetWindowObject( HWND hWnd, PHB_ITEM pObject );
 extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
 extern void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
@@ -378,8 +378,8 @@ HB_FUNC( _CREATEPROPERTYSHEETPAGE )
    psp.hInstance = (HINSTANCE) NULL;
    psp.pszTitle = NULL;
    psp.pfnDlgProc = (DLGPROC) PSPProc;
-   psp.lParam = (LPARAM) pObj;
-   psp.pfnCallback = NULL;
+   psp.lParam = (LPARAM) hb_itemNew(pObj);
+   psp.pfnCallback = (LPFNPSPCALLBACKA) PSPProcRelease;
    psp.pcRefParent = 0;
 #if !defined(__BORLANDC__)
    psp.hIcon = 0;
@@ -389,7 +389,7 @@ HB_FUNC( _CREATEPROPERTYSHEETPAGE )
 
    if( hb_itemGetNI( GetObjectVar( pObj, "TYPE" ) ) == WND_DLG_RESOURCE )
    {
-      psp.dwFlags = 0;
+      psp.dwFlags = 0|PSP_USECALLBACK;
 
       temp = GetObjectVar( pObj, "XRESOURCEID" );
       if( HB_IS_STRING( temp) || HB_IS_NUMERIC( temp ) )
@@ -406,7 +406,7 @@ HB_FUNC( _CREATEPROPERTYSHEETPAGE )
    {
       pdlgtemplate = (LPDLGTEMPLATE) hb_parnl(2);
 
-      psp.dwFlags = PSP_DLGINDIRECT;
+      psp.dwFlags = PSP_DLGINDIRECT|PSP_USECALLBACK;
 #if !defined(__BORLANDC__)
       psp.pResource = pdlgtemplate;
 #else
@@ -436,8 +436,8 @@ HB_FUNC( _PROPERTYSHEET )
       dwFlags |= PSH_NOAPPLYNOW;
    if( hb_pcount()>6 && !ISNIL(7) && hb_parl(7) )
       dwFlags |= PSH_WIZARD;
-   for( i=0;i<nPages;i++ )
-      psp[i] = (HPROPSHEETPAGE) hb_itemGetNL( pArr->item.asArray.value->pItems + i );
+     for( i = 0; i <nPages; i++ )
+        psp[i] = (HPROPSHEETPAGE) hb_arrayGetNL(pArr,i+1);
 
    psh.dwSize = sizeof(PROPSHEETHEADER);
    psh.dwFlags = dwFlags;
@@ -686,4 +686,18 @@ HB_FUNC( HWG_EXITPROC )
 {
    if( aDialogs )
       hb_xfree( aDialogs );
+}
+LRESULT CALLBACK PSPProcRelease ( HWND hwnd, UINT uMsg, LPPROPSHEETPAGE ppsp )
+{
+    if ( PSPCB_CREATE == uMsg )
+    {
+       return 1;
+    }
+    if ( PSPCB_RELEASE == uMsg )
+        {
+        
+        hb_itemRelease ( (PHB_ITEM) ppsp->lParam );
+        }
+
+    return 0;
 }

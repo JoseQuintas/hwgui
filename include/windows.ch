@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.23 2005-10-25 12:14:24 alkresin Exp $
+ *$Id: windows.ch,v 1.24 2006-02-28 14:23:46 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -886,3 +886,34 @@
 #define WM_REFLECT_BASE 0xBC00
 #define WM_CTLCOLOR     0x0019
 #define WM_CTLCOLOR_REFLECT  WM_CTLCOLOR+WM_REFLECT_BASE
+
+#define MM_TEXT             1
+#define MM_LOMETRIC         2
+#define MM_HIMETRIC         3
+#define MM_LOENGLISH        4
+#define MM_HIENGLISH        5
+#define MM_TWIPS            6
+#define MM_ISOTROPIC        7
+#define MM_ANISOTROPIC      8
+#define AD_COUNTERCLOCKWISE 1
+#define AD_CLOCKWISE        2
+#define PS_COSMETIC         0x00000000
+#define PS_GEOMETRIC        0x00010000
+#define PS_TYPE_MASK        0x000F0000
+#define R2_BLACK            1   /*  0       */
+#define R2_NOTMERGEPEN      2   /* DPon     */
+#define R2_MASKNOTPEN       3   /* DPna     */
+#define R2_NOTCOPYPEN       4   /* PN       */
+#define R2_MASKPENNOT       5   /* PDna     */
+#define R2_NOT              6   /* Dn       */
+#define R2_XORPEN           7   /* DPx      */
+#define R2_NOTMASKPEN       8   /* DPan     */
+#define R2_MASKPEN          9   /* DPa      */
+#define R2_NOTXORPEN        10  /* DPxn     */
+#define R2_NOP              11  /* D        */
+#define R2_MERGENOTPEN      12  /* DPno     */
+#define R2_COPYPEN          13  /* P        */
+#define R2_MERGEPENNOT      14  /* PDno     */
+#define R2_MERGEPEN         15  /* DPo      */
+#define R2_WHITE            16  /*  1       */
+#define R2_LAST             16

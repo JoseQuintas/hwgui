@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.16 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: draw.c,v 1.17 2006-02-28 14:23:46 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -10,7 +10,7 @@
 
 #define HB_OS_WIN_32_USED
 
-#define _WIN32_WINNT 0x0400
+#define _WIN32_WINNT 0x0500
 #define OEMRESOURCE
 #include <windows.h>
 
@@ -679,3 +679,96 @@ HB_FUNC( OPENIMAGE )
 #endif
 }
 
+HB_FUNC(PATBLT)
+{
+   hb_retl( PatBlt( (HDC) hb_parnl( 1 ),hb_parni(2),hb_parni(3),hb_parni(4),hb_parni(5),hb_parnl(6)));
+}
+
+HB_FUNC(SAVEDC)
+{
+   hb_retl(SaveDC((HDC) hb_parnl( 1 )));
+}
+
+HB_FUNC(RESTOREDC)
+{
+   hb_retl( RestoreDC((HDC) hb_parnl( 1 ),hb_parni( 2 ) ));
+}
+
+HB_FUNC(CREATECOMPATIBLEDC)
+{
+   HDC hDC=(HDC)hb_parnl( 1 ) ;
+   HDC hDCmem = CreateCompatibleDC( hDC );
+   hb_retnl( (LONG) hDCmem );
+}
+
+HB_FUNC(SETMAPMODE)
+{
+   HDC hDC=(HDC)hb_parnl( 1 ) ;
+   hb_retni(SetMapMode(hDC,hb_parni( 2 ) ) );
+}
+
+
+HB_FUNC(SETWINDOWORGEX)
+{
+   HDC hDC=(HDC)hb_parnl( 1 ) ;
+   POINT p;
+   SetWindowOrgEx(hDC,hb_parni( 2 ), hb_parni( 3 ) , NULL);
+   hb_stornl(0,4);
+}
+
+
+HB_FUNC(SETWINDOWEXTEX)
+{
+   HDC hDC=(HDC)hb_parnl( 1 ) ;
+   SIZE p;
+   SetWindowExtEx(hDC,hb_parni( 2 ), hb_parni( 3 ) , NULL);
+   hb_stornl(0,4);
+}
+
+
+HB_FUNC(SETVIEWPORTORGEX)
+{
+   HDC hDC=(HDC)hb_parnl( 1 ) ;
+   POINT p;
+   SetViewportOrgEx(hDC,hb_parni( 2 ), hb_parni( 3 ) , NULL);
+   hb_stornl(0,4);
+}
+
+
+HB_FUNC(SETVIEWPORTEXTEX)
+{
+   HDC hDC=(HDC)hb_parnl( 1 ) ;
+   SIZE p;
+   SetViewportExtEx(hDC,hb_parni( 2 ), hb_parni( 3 ) , NULL);
+   hb_stornl(0,4);
+}
+
+HB_FUNC(SETARCDIRECTION)
+{
+   HDC hDC=(HDC)hb_parnl( 1 ) ;
+   hb_retni(SetArcDirection(hDC,hb_parni( 2 ) )) ;
+}
+
+HB_FUNC(SETROP2)
+{
+   HDC hDC=(HDC)hb_parnl( 1 ) ;
+   hb_retni( SetROP2(hDC,hb_parni( 2 ) )) ;
+}
+
+
+HB_FUNC(BITBLT)
+{
+  HDC hDC=(HDC)hb_parnl( 1 ) ;
+  HDC hDC1=(HDC)hb_parnl( 6 ) ;
+  hb_retl( BitBlt(hDC,hb_parni(2), hb_parni(3),hb_parni(4), hb_parni(5), hDC1,
+      hb_parni(7), hb_parni(8), hb_parnl(9)));
+}
+
+HB_FUNC(CREATECOMPATIBLEBITMAP)
+{
+  HDC hDC=(HDC)hb_parnl( 1 ) ;
+  HBITMAP hBitmap;
+  hBitmap = CreateCompatibleBitmap( hDC, hb_parni(2),hb_parni(3) );
+  hb_retnl((LONG)hBitmap);
+
+}

@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.29 2006-02-15 17:54:28 lf_sfnet Exp $
+ * $Id: misc.c,v 1.30 2006-02-28 14:23:47 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -150,13 +150,25 @@ HB_FUNC( CLIENTTOSCREEN )
    POINT pt;
    
    PHB_ITEM aPoint = hb_itemArrayNew( 2 );
+   PHB_ITEM temp;
+
    pt.x = hb_parnl(2);
    pt.y = hb_parnl(3);
-   ClientToScreen( ( HWND ) HB_PARHANDLE(1), &pt );
-   hb_itemPutNL( hb_arrayGetPtr( aPoint, 1 ), pt.x );
-   hb_itemPutNL( hb_arrayGetPtr( aPoint, 2 ), pt.y );
-   hb_itemRelease( hb_itemReturn( aPoint ) );
+   ClientToScreen( (HWND) hb_parnl(1), &pt );
 
+
+   temp = hb_itemPutNL( NULL, pt.x );
+   hb_itemArrayPut( aPoint, 1, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, pt.y );
+   hb_itemArrayPut( aPoint, 2, temp );
+   hb_itemRelease( temp );
+
+   hb_itemReturn( aPoint );
+   hb_itemRelease( aPoint );
+   
+   
 }
 
 HB_FUNC( SCREENTOCLIENT )
@@ -164,13 +176,22 @@ HB_FUNC( SCREENTOCLIENT )
    POINT pt;
    
    PHB_ITEM aPoint = hb_itemArrayNew( 2 );
+   PHB_ITEM temp;
+
    pt.x = hb_parnl(2);
    pt.y = hb_parnl(3);
-   ScreenToClient( (HWND) HB_PARHANDLE( 1 ), &pt );
+   ScreenToClient( (HWND) hb_parnl(1), &pt );
 
-   hb_itemPutNL( hb_arrayGetPtr( aPoint, 1 ), pt.x );
-   hb_itemPutNL( hb_arrayGetPtr( aPoint, 2 ), pt.y );
-   hb_itemRelease( hb_itemReturn( aPoint ) );
+   temp = hb_itemPutNL( NULL, pt.x );
+   hb_itemArrayPut( aPoint, 1, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, pt.y );
+   hb_itemArrayPut( aPoint, 2, temp );
+   hb_itemRelease( temp );
+
+   hb_itemReturn( aPoint );
+   hb_itemRelease( aPoint );
 
 }
 
@@ -178,16 +199,22 @@ HB_FUNC( HWG_GETCURSORPOS )
 {
    POINT pt;
    PHB_ITEM aPoint = hb_itemArrayNew( 2 );
-   PHB_ITEM temp = hb_itemNew( NULL );
+   PHB_ITEM temp;
+
    GetCursorPos( &pt );
-   hb_arraySetForward( aPoint, 1, hb_itemPutNL( temp, pt.x ) );    
-   hb_arraySetForward( aPoint, 2, hb_itemPutNL( temp, pt.y ) );
- 
+   temp = hb_itemPutNL( NULL, pt.x );
+   hb_itemArrayPut( aPoint, 1, temp );
    hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, pt.y );
+   hb_itemArrayPut( aPoint, 2, temp );
+   hb_itemRelease( temp );
+
    hb_itemReturn( aPoint );
-   hb_itemRelease(  aPoint );             
+   hb_itemRelease( aPoint );
 
 }
+
 
 HB_FUNC( GETCURRENTDIR )
 {

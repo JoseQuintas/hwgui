@@ -22,7 +22,12 @@ echo %HRB_DIR%\lib\lang.lib + >> b32.bc
 echo %HRB_DIR%\lib\macro.lib + >> b32.bc
 echo %HRB_DIR%\lib\rdd.lib + >> b32.bc
 echo %HRB_DIR%\lib\dbfntx.lib + >> b32.bc
-echo %HRB_DIR%\lib\dbfdbt.lib + >> b32.bc
+echo %HRB_DIR%\lib\dbfcdx.lib + >> b32.bc
+echo %HRB_DIR%\lib\dbffpt.lib + >> b32.bc
+echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
+echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
+echo %HRB_DIR%\lib\hsx.lib + >> b32.bc
+
 echo %HRB_DIR%\lib\common.lib + >> b32.bc
 echo %HRB_DIR%\lib\pp.lib + >> b32.bc
 

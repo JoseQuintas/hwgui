@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.19 2006-02-21 22:44:58 lculik Exp $
+ *$Id: dialog.c,v 1.20 2006-04-06 16:18:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -22,7 +22,6 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "hbstack.h"
 #include "item.api"
 
 #define  WM_PSPNOTIFY         WM_USER+1010
@@ -233,9 +232,10 @@ LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth, int 
    PHB_ITEM pControls, pControl, temp;
    LONG baseUnit = GetDialogBaseUnits();
    int baseunitX = LOWORD( baseUnit ), baseunitY = HIWORD( baseUnit );
-   int nchar, nControls, i;
+   int nchar;
    long lTemplateSize = 36;
    LONG lExtStyle;
+   ULONG ul, ulControls;
 
    x1 = (x1 * 4) / baseunitX;
    dwidth = (dwidth * 4) / baseunitX;
@@ -243,23 +243,23 @@ LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth, int 
    dheight = (dheight * 8) / baseunitY;
 
    pControls = hb_itemNew( GetObjectVar( pObj, "ACONTROLS" ) );
-   nControls = pControls->item.asArray.value->ulLen;
+   ulControls = hb_arrayLen( pControls );
 
    temp = GetObjectVar( pObj, "TITLE" );
    if( hb_itemType( temp ) == HB_IT_STRING )
-      lTemplateSize += temp->item.asString.length * 2;
+      lTemplateSize += hb_itemGetCLen( temp ) * 2;
    else
       lTemplateSize += 2;
 
-   for( i=0;i<nControls;i++ )
+   for( ul=1; ul<=ulControls; ul++ )
    {
       lTemplateSize += 36;
-      pControl = (PHB_ITEM) (pControls->item.asArray.value->pItems + i);
+      pControl = hb_arrayGetItemPtr( pControls, ul );
       temp =  GetObjectVar( pControl, "WINCLASS" );
-      lTemplateSize += temp->item.asString.length * 2;
+      lTemplateSize += hb_itemGetCLen( temp ) * 2;
       temp =  GetObjectVar( pControl, "TITLE" );
       if( hb_itemType( temp ) == HB_IT_STRING )
-         lTemplateSize += temp->item.asString.length * 2;
+         lTemplateSize += hb_itemGetCLen( temp ) * 2;
       else
          lTemplateSize += 2;
    }
@@ -274,7 +274,7 @@ LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth, int 
    *p++ = 0;          // HIWORD (lExtendedStyle)
    *p++ = LOWORD (ulStyle);
    *p++ = HIWORD (ulStyle);
-   *p++ = nControls;  // NumberOfItems
+   *p++ = (UINT)ulControls;  // NumberOfItems
    *p++ = x1;         // x
    *p++ = y1;         // y
    *p++ = dwidth;     // cx
@@ -299,9 +299,9 @@ LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth, int 
       MessageBox( GetActiveWindow(), res, "", MB_OK | MB_ICONINFORMATION );
    } */
 
-   for( i=0;i<nControls;i++ )
+   for( ul=1;ul<=ulControls;ul++ )
    {
-      pControl = (PHB_ITEM) (pControls->item.asArray.value->pItems + i);
+      pControl = hb_arrayGetItemPtr( pControls,ul );
       temp = hb_itemPutNI( NULL, -1 );
       SetObjectVar( pControl, "_HANDLE", temp );
       hb_itemRelease( temp );
@@ -534,7 +534,7 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
    if( pSym_onEvent && pObject )
    {
-      hb_vmPushSymbol( pSym_onEvent->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) uMsg );
       hb_vmPushLong( (LONG ) wParam );
@@ -597,7 +597,7 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 
    if( pSym_onEvent && pObject )
    {
-      hb_vmPushSymbol( pSym_onEvent->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) uMsg );
       hb_vmPushLong( (LONG ) wParam );
@@ -665,7 +665,7 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 
    if( pSym_onEvent && pObject )
    {
-      hb_vmPushSymbol( pSym_onEvent->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent) );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) uMsg );
       hb_vmPushLong( (LONG ) wParam );

@@ -1,4 +1,5 @@
 /*
+ * $Id: hwg_qhtm.c,v 1.4 2006-04-06 16:18:03 alkresin Exp $
  * QHTM wrappers for Harbour/HwGUI
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
@@ -132,7 +133,7 @@ void CALLBACK FormCallback( HWND hWndQHTM, LPQHTMFORMSubmit pFormSubmit, LPARAM 
 
    if( ( pSymTest = hb_dynsymFind( "QHTMFORMPROC" ) ) != NULL )
    {
-      hb_vmPushSymbol( pSymTest->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSymTest ) );
       hb_vmPushNil();
       hb_vmPushLong( (LONG ) hWndQHTM );
       hb_vmPushString( (char*) pFormSubmit->pcszMethod,strlen(pFormSubmit->pcszMethod) );

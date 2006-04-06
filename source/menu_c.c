@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.25 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: menu_c.c,v 1.26 2006-04-06 16:18:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -263,20 +263,19 @@ HB_FUNC( CREATEACCELERATORTABLE )
 {
    PHB_ITEM pArray = hb_param( 1, HB_IT_ARRAY ), pSubArr;
    LPACCEL lpaccl;
-   int cEntries = (int) pArray->item.asArray.value->ulLen;
-   int i;
+   ULONG ul, ulEntries = hb_arrayLen( pArray );
    HACCEL h;
 
-   lpaccl = (LPACCEL) hb_xgrab( sizeof(ACCEL)*cEntries );
+   lpaccl = (LPACCEL) hb_xgrab( sizeof(ACCEL)*ulEntries );
 
-   for( i=0; i<cEntries; i++ )
+   for( ul=1; ul<=ulEntries; ul++ )
    {
-      pSubArr = pArray->item.asArray.value->pItems + i;
-      lpaccl[i].fVirt = (BYTE) hb_itemGetNL( pSubArr->item.asArray.value->pItems ) | FNOINVERT | FVIRTKEY;
-      lpaccl[i].key = (WORD) hb_itemGetNL( pSubArr->item.asArray.value->pItems + 1 );
-      lpaccl[i].cmd = (WORD) hb_itemGetNL( pSubArr->item.asArray.value->pItems + 2 );
+      pSubArr = hb_arrayGetItemPtr( pArray,ul );
+      lpaccl[ul-1].fVirt = (BYTE) hb_arrayGetNL( pSubArr,1 ) | FNOINVERT | FVIRTKEY;
+      lpaccl[ul-1].key = (WORD) hb_arrayGetNL( pSubArr,2 );
+      lpaccl[ul-1].cmd = (WORD) hb_arrayGetNL( pSubArr,3 );
    }
-   h = CreateAcceleratorTable( lpaccl,cEntries );
+   h = CreateAcceleratorTable( lpaccl,(int)ulEntries );
 
    hb_xfree( lpaccl );
    hb_retnl( (LONG) h );

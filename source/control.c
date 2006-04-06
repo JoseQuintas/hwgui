@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.35 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: control.c,v 1.36 2006-04-06 16:18:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -20,7 +20,6 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "hbstack.h"
 #include "hbdate.h"
 
 #define TTS_BALLOON             0x40 // added by MAG
@@ -339,7 +338,7 @@ HB_FUNC( HWG_INITSTATUS )
     hloc = LocalAlloc(LHND, sizeof(int) * nParts); 
     lpParts = (LPINT)LocalLock(hloc); 
  
-    if( !pArray || hb_itemGetNI( pArray->item.asArray.value->pItems + 0 ) == 0 )
+    if( !pArray || hb_arrayGetNI( pArray,1 ) == 0 )
     {
        // Get the coordinates of the parent window's client area. 
        GetClientRect(hParent, &rcClient); 
@@ -353,15 +352,16 @@ HB_FUNC( HWG_INITSTATUS )
     }
     else
     {
+       ULONG ul;
        nWidth = 0;
-       for (i = 0; i < nParts; i++)
+       for( ul = 1; ul <= (ULONG)nParts; ul++ )
        {
-          j = hb_itemGetNI( pArray->item.asArray.value->pItems + i );
-          if( i == nParts-1 && j == 0 )
+          j = hb_arrayGetNI( pArray,ul );
+          if( ul == (ULONG)nParts && j == 0 )
              nWidth = -1;
           else
              nWidth += j;
-          lpParts[i] = nWidth;
+          lpParts[ul-1] = nWidth;
        }
     }
 
@@ -534,17 +534,15 @@ HB_FUNC( INITTABCONTROL )
    HWND hTab = (HWND) hb_parnl(1);
    PHB_ITEM pArr = hb_param( 2, HB_IT_ARRAY );
    int iItems = hb_parnl(3) ;
-   TC_ITEM tie
-
-;
-   int i, nTabs = pArr->item.asArray.value->ulLen;
+   TC_ITEM tie;
+   ULONG ul, ulTabs = hb_arrayLen( pArr );
 
    tie.mask = TCIF_TEXT | TCIF_IMAGE; 
    tie.iImage = iItems == 0 ? -1 : 0 ;
-   for( i = 0; i < nTabs; i++) 
+   for( ul = 1; ul <= ulTabs; ul++) 
    {
-      tie.pszText = hb_itemGetCPtr( pArr->item.asArray.value->pItems + i );
-      if( TabCtrl_InsertItem( hTab, i, &tie ) == -1 )
+      tie.pszText = hb_arrayGetCPtr( pArr,ul );
+      if( TabCtrl_InsertItem( hTab, ul-1, &tie ) == -1 )
       {
          DestroyWindow(hTab);
          hTab = NULL; 
@@ -883,15 +881,15 @@ HB_FUNC( CREATEIMAGELIST )
    PHB_ITEM pArray = hb_param( 1, HB_IT_ARRAY );
    UINT flags = ( ISNIL(5) )? ILC_COLOR : hb_parni(5);
    HIMAGELIST himl;
-   ULONG ul, ulLen = pArray->item.asArray.value->ulLen;
+   ULONG ul, ulLen = hb_arrayLen( pArray );
    HBITMAP hbmp;
 
    himl = ImageList_Create( hb_parni(2), hb_parni(3), flags, 
                    ulLen, hb_parni(4) );
 
-   for( ul=0; ul<ulLen; ul++ )
+   for( ul=1; ul<=ulLen; ul++ )
    {
-      hbmp = (HBITMAP)hb_itemGetNL( pArray->item.asArray.value->pItems + ul );
+      hbmp = (HBITMAP)hb_arrayGetNL( pArray, ul );
       ImageList_Add( himl, hbmp, (HBITMAP) NULL );
       DeleteObject(hbmp);
    }
@@ -1058,7 +1056,7 @@ void CALLBACK TimerProc( HWND hWnd, UINT message, UINT idTimer, DWORD dwTime )
    HB_SYMBOL_UNUSED( message );
    if( ( pSymTest = hb_dynsymFind( "TIMERPROC" ) ) != NULL )
    {
-      hb_vmPushSymbol( pSymTest->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSymTest ) );
       hb_vmPushNil();                   /* places NIL at self */
       hb_vmPushLong( (LONG ) hWnd );    /* pushes parameters on to the hvm stack */
       hb_vmPushLong( (LONG ) idTimer );
@@ -1104,7 +1102,7 @@ LRESULT CALLBACK WinCtrlProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
    if( pSym_onEvent && pObject )
    {
-      hb_vmPushSymbol( pSym_onEvent->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) message );
       hb_vmPushLong( (LONG ) wParam );
@@ -1136,7 +1134,7 @@ LRESULT APIENTRY EditSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARA
 
    if( pSym_onEvent && pObject )
    {
-      hb_vmPushSymbol( pSym_onEvent->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) message );
       hb_vmPushLong( (LONG ) wParam );
@@ -1168,7 +1166,7 @@ LRESULT APIENTRY TrackSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPAR
 
    if( pSym_onEvent && pObject )
    {
-      hb_vmPushSymbol( pSym_onEvent->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) message );
       hb_vmPushLong( (LONG ) wParam );
@@ -1200,7 +1198,7 @@ LRESULT APIENTRY TabSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM
 
    if( pSym_onEvent && pObject )
    {
-      hb_vmPushSymbol( pSym_onEvent->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) message );
       hb_vmPushLong( (LONG ) wParam );

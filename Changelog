@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.468 2006-03-28 00:12:20 lculik Exp $
+ * $Id: Changelog,v 1.469 2006-04-06 16:14:59 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,28 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-04-06 19:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/menu_c.c
+  * source/richedit.c
+  * source/window.c
+  * source/wprint.c
+  * source/commond.c
+  * source/grid.c
+  * source/nice.c
+  * source/dialog.c
+  * source/control.c
+  * source/hfrmtmpl.prg
+  * source/video.prg
+  * source/hdc.prg
+    * updated due to [x]Harbour changes
+  * include/guilib.h
+    * HARBOUR_2005 must be set to compile HwGUI with old [x]Harbour versions
+  * samples/a.prg
+    ! Small fixes
+  * samples/bld.bat
+    * pcrepos.lib is removed from libraries list  
+
 2006-03-27 11:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   *.bat
     ! all .bat files updated to news libs

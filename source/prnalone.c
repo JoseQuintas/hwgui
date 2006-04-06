@@ -116,38 +116,9 @@ HB_FUNC( DELETEDC )
 HB_FUNC( GETDEVICEAREA )
 {
    HDC hDC = (HDC) hb_parnl( 1 );
-   #ifdef __XHARBOUR__
-   HB_ITEM_NEW( aMetr );
-   HB_ITEM_NEW( temp );
-
-   #else
    PHB_ITEM aMetr = hb_itemArrayNew( 7 );
    PHB_ITEM temp;
-   #endif
 
-   #ifdef __XHARBOUR__
-   {
-   hb_arrayNew(&aMetr , 7 );
-   
-   hb_arraySetForward( &aMetr, 1, hb_itemPutNL( &temp, GetDeviceCaps( hDC,HORZRES ) ) );
-   
-   hb_arraySetForward( &aMetr, 2, hb_itemPutNL( &temp, GetDeviceCaps( hDC,VERTRES ) ) );
-
-   hb_arraySetForward( &aMetr, 3, hb_itemPutNL( &temp, GetDeviceCaps( hDC,HORZSIZE ) ) );
-   
-   hb_arraySetForward( &aMetr, 4, hb_itemPutNL( &temp, GetDeviceCaps( hDC,VERTSIZE ) ) );
-   
-   hb_arraySetForward( &aMetr, 5, hb_itemPutNL( &temp, GetDeviceCaps( hDC,LOGPIXELSX ) ) );
-   
-   hb_arraySetForward( &aMetr, 6, hb_itemPutNL( &temp, GetDeviceCaps( hDC,LOGPIXELSY ) ) );
-   
-   hb_arraySetForward( &aMetr, 7, hb_itemPutNL( &temp, GetDeviceCaps( hDC,RASTERCAPS ) ) );
-
-   hb_itemClear( &temp );
-   hb_itemForwardValue( hb_stackReturnItem(), &aMetr );
-   }
-   #else
-   {
    temp = hb_itemPutNL( NULL, GetDeviceCaps( hDC,HORZRES ) );
    hb_itemArrayPut( aMetr, 1, temp );
    hb_itemRelease( temp );
@@ -178,8 +149,6 @@ HB_FUNC( GETDEVICEAREA )
 
    hb_itemReturn( aMetr );
    hb_itemRelease( aMetr );
-   }
-   #endif
 }
 
 HB_FUNC( DRAWTEXT )

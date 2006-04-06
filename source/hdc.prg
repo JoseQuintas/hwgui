@@ -1,5 +1,5 @@
 /*
- * $Id: hdc.prg,v 1.3 2006-02-28 14:23:47 lculik Exp $
+ * $Id: hdc.prg,v 1.4 2006-04-06 16:18:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPAINTDC and HDC Classes    
@@ -28,7 +28,6 @@ METHOD NEW( nWnd ) CLASS HPAINTDC
    ::super:new()
    ::m_ps   := DefinePaintStru()
    ::m_hWnd := nWnd
-   Tracelog(nWnd)
    ::Attach( BeginPaint( ::m_hWnd, ::m_ps ) )
 
 RETURN SELF

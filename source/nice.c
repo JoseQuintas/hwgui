@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.12 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: nice.c,v 1.13 2006-04-06 16:18:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -94,7 +94,7 @@ LRESULT CALLBACK NiceButtProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
    PHB_DYNS pSymTest;
    if( ( pSymTest = hb_dynsymFind( "NICEBUTTPROC" ) ) != NULL )
    {
-      hb_vmPushSymbol( pSymTest->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSymTest ) );
       hb_vmPushNil();                 /* places NIL at self */
       hb_vmPushLong( (LONG ) hWnd );    /* pushes parameters on to the hvm stack */
       hb_vmPushLong( (LONG ) message );

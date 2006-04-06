@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.23 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: commond.c,v 1.24 2006-04-06 16:18:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -18,7 +18,6 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "hbstack.h"
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif
@@ -99,35 +98,6 @@ HB_FUNC( SELECTFONT )
     /* that font.                                  */
 
     hfont = CreateFontIndirect(cf.lpLogFont);
-   #ifdef __XHARBOUR__
-   {
-   
-   temp = hb_itemNew( NULL );   
-   
-   hb_arraySetForward( aMetr, 1, hb_itemPutNL( temp, (LONG) hfont ) );   
-   
-   hb_arraySetForward( aMetr, 2, hb_itemPutC(  temp, lf.lfFaceName ) );
-   
-   hb_arraySetForward( aMetr, 3, hb_itemPutNL( temp, lf.lfWidth ) );
-   
-   hb_arraySetForward( aMetr, 4, hb_itemPutNL( temp, lf.lfHeight ) );
-   
-   hb_arraySetForward( aMetr, 5, hb_itemPutNL( temp, lf.lfWeight ) );
-   
-   hb_arraySetForward( aMetr, 6, hb_itemPutNI( temp, lf.lfCharSet ) );
-   
-   hb_arraySetForward( aMetr, 7, hb_itemPutNI( temp, lf.lfItalic ) );
-   
-   hb_arraySetForward( aMetr, 8, hb_itemPutNI( temp, lf.lfUnderline ) );
-   
-   hb_arraySetForward( aMetr, 9, hb_itemPutNI( temp, lf.lfStrikeOut ) );
-
-   hb_itemRelease( temp );
-   hb_itemForwardValue( hb_stackReturnItem(), aMetr );
-   hb_itemRelease(aMetr);
-   }
-   #else
-   {
    temp = hb_itemPutNL( NULL, (LONG) hfont );
    hb_itemArrayPut( aMetr, 1, temp );
    hb_itemRelease( temp );
@@ -166,8 +136,6 @@ HB_FUNC( SELECTFONT )
 
    hb_itemReturn( aMetr );
    hb_itemRelease( aMetr );
-   }
-   #endif
    
 }
 

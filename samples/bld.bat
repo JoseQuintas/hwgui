@@ -46,7 +46,7 @@ echo %HRB_DIR%\lib\debug.lib + >> b32.bc
 echo %HRB_DIR%\lib\pp.lib + >> b32.bc
 echo %HRB_DIR%\lib\hsx.lib + >> b32.bc
 echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
-echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
+rem echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
 rem echo %HRB_DIR%\lib\libct.lib + >> b32.bc
 
 echo cw32.lib + >> b32.bc

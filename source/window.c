@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.42 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: window.c,v 1.43 2006-04-06 16:18:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -623,7 +623,7 @@ LRESULT CALLBACK MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
    if( pSym_onEvent && pObject )
    {
 
-      hb_vmPushSymbol( pSym_onEvent->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) message );
       hb_vmPushLong( (LONG ) wParam );
@@ -650,7 +650,7 @@ LRESULT CALLBACK FrameWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
    if( pSym_onEvent && pObject )
    {
-      hb_vmPushSymbol( pSym_onEvent->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) message );
       hb_vmPushLong( (LONG ) wParam );
@@ -695,7 +695,7 @@ LRESULT CALLBACK MDIChildWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM
 
    if( pSym_onEvent && pObject )
    {
-      hb_vmPushSymbol( pSym_onEvent->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) message );
       hb_vmPushLong( (LONG ) wParam );
@@ -718,11 +718,7 @@ PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
    return hb_objSendMsg( pObject, varname, 0 );
 #else
    hb_objSendMsg( pObject, varname, 0 );
-#ifndef HARBOUR_OLD_VERSION
-   return ( hb_stackReturnItem() );
-#else
-   return ( hb_stackReturn() );
-#endif
+   return hb_param( -1, HB_IT_ANY );
 #endif
 }
 
@@ -771,12 +767,3 @@ HB_FUNC( REMOVETOPMOST )
     hb_retl( i );
 }
 
-#ifndef __XHARBOUR__
-#ifdef __EXPORT__
-PHB_ITEM hb_stackReturn( void )
-{
-   HB_STACK stack = hb_GetStack();
-   return &stack.Return;
-}
-#endif
-#endif

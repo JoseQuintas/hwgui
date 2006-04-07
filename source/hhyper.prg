@@ -1,5 +1,5 @@
 /*
- * $Id: hhyper.prg,v 1.4 2005-10-28 06:19:39 alkresin Exp $
+ * $Id: hhyper.prg,v 1.5 2006-04-07 12:17:48 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HStaticLink class
@@ -151,9 +151,10 @@ METHOD INIT CLASS HStaticLink
       IF ::Title != NIL
          SETWINDOWTEXT( ::handle, ::title )
       ENDIF
+      ::nHolder := 1
+      SetWindowObject( ::handle, Self )
+      Hwg_InitWinCtrl( ::handle )
    ENDIF
-   SetWindowObject( ::handle, Self )
-   Hwg_InitWinCtrl( ::handle )
 
 RETURN NIL
 

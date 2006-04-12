@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.24 2006-02-28 14:23:46 lculik Exp $
+ *$Id: windows.ch,v 1.25 2006-04-12 06:03:03 alkresin Exp $
  */
 
 #define WM_CREATE                       1
@@ -102,6 +102,7 @@
 #define IDNO                7
 
 #define DS_ABSALIGN         1        // 0x01L
+#define DS_SYSMODAL         2        // 0x02L
 #define DS_CENTER           2048     // 0x0800L
 
 /*

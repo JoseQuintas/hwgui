@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.20 2006-04-06 16:18:02 alkresin Exp $
+ *$Id: dialog.c,v 1.21 2006-04-13 06:39:35 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -689,15 +689,15 @@ HB_FUNC( HWG_EXITPROC )
 }
 LRESULT CALLBACK PSPProcRelease ( HWND hwnd, UINT uMsg, LPPROPSHEETPAGE ppsp )
 {
+    HB_SYMBOL_UNUSED( hwnd );
     if ( PSPCB_CREATE == uMsg )
     {
        return 1;
     }
     if ( PSPCB_RELEASE == uMsg )
-        {
-        
-        hb_itemRelease ( (PHB_ITEM) ppsp->lParam );
-        }
+    {      
+       hb_itemRelease ( (PHB_ITEM) ppsp->lParam );
+    }
 
     return 0;
 }

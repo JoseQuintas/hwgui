@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.17 2006-02-28 14:23:46 lculik Exp $
+ * $Id: draw.c,v 1.18 2006-04-13 06:39:35 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -711,7 +711,6 @@ HB_FUNC(SETMAPMODE)
 HB_FUNC(SETWINDOWORGEX)
 {
    HDC hDC=(HDC)hb_parnl( 1 ) ;
-   POINT p;
    SetWindowOrgEx(hDC,hb_parni( 2 ), hb_parni( 3 ) , NULL);
    hb_stornl(0,4);
 }
@@ -720,7 +719,6 @@ HB_FUNC(SETWINDOWORGEX)
 HB_FUNC(SETWINDOWEXTEX)
 {
    HDC hDC=(HDC)hb_parnl( 1 ) ;
-   SIZE p;
    SetWindowExtEx(hDC,hb_parni( 2 ), hb_parni( 3 ) , NULL);
    hb_stornl(0,4);
 }
@@ -729,7 +727,6 @@ HB_FUNC(SETWINDOWEXTEX)
 HB_FUNC(SETVIEWPORTORGEX)
 {
    HDC hDC=(HDC)hb_parnl( 1 ) ;
-   POINT p;
    SetViewportOrgEx(hDC,hb_parni( 2 ), hb_parni( 3 ) , NULL);
    hb_stornl(0,4);
 }
@@ -738,7 +735,6 @@ HB_FUNC(SETVIEWPORTORGEX)
 HB_FUNC(SETVIEWPORTEXTEX)
 {
    HDC hDC=(HDC)hb_parnl( 1 ) ;
-   SIZE p;
    SetViewportExtEx(hDC,hb_parni( 2 ), hb_parni( 3 ) , NULL);
    hb_stornl(0,4);
 }

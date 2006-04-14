@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.13 2005-10-22 13:14:22 lculik Exp $
+# $Id: makefile.vc,v 1.14 2006-04-14 08:45:31 alkresin Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -50,6 +50,9 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\hfrmtmpl.obj \
    $(OBJ_DIR)\hgraph.obj \
    $(OBJ_DIR)\hgrid.obj \
+   $(OBJ_DIR)\hipedit.obj \
+   $(OBJ_DIR)\hlistbox.obj \
+   $(OBJ_DIR)\hmonthc.obj \
    $(OBJ_DIR)\htrackbr.obj \
    $(OBJ_DIR)\hanimat.obj \
    $(OBJ_DIR)\hnice.obj \
@@ -60,10 +63,12 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\hradio.obj \
    $(OBJ_DIR)\hriched.obj \
    $(OBJ_DIR)\hsayimg.obj \
+   $(OBJ_DIR)\hsplash.obj \
    $(OBJ_DIR)\hsplit.obj \
    $(OBJ_DIR)\htab.obj \
    $(OBJ_DIR)\htimer.obj \
    $(OBJ_DIR)\htree.obj \
+   $(OBJ_DIR)\hrect.obj \
    $(OBJ_DIR)\hupdown.obj \
    $(OBJ_DIR)\hwindow.obj \
    $(OBJ_DIR)\hwinprn.obj \
@@ -71,6 +76,9 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\video.obj \
    $(OBJ_DIR)\tmci.obj \
    $(OBJ_DIR)\hhyper.obj \
+   $(OBJ_DIR)\listbox.obj \
+   $(OBJ_DIR)\printdos.obj \
+   $(OBJ_DIR)\richtext.obj \
    $(OBJ_DIR)\hdc.obj \
    $(OBJ_DIR)\repexec.obj
   lib /out:$@ $**

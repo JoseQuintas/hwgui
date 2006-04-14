@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.6 2005-10-19 10:04:26 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.7 2006-04-14 20:08:17 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -69,6 +69,8 @@ CLASS HCustomWindow INHERIT HObject
    METHOD Move( x1,y1,width,height )
    METHOD onEvent( msg, wParam, lParam )
    METHOD End()
+   METHOD RefreshCTRL( oControle )
+   METHOD SetFocusCTRL( oControle )
 
 ENDCLASS
 
@@ -144,6 +146,36 @@ METHOD End()  CLASS HCustomWindow
       ::nHolder := 0
       hwg_DecreaseHolders( ::handle ) // Self )
    ENDIF
+
+Return Nil
+
+//----------------------------------------------------------------------------//
+
+METHOD RefreshCTRL( oControle, nSeek ) CLASS HCustomWindow
+
+   Local nPos, n
+   DEFAULT nSeek := 1
+
+   If nSeek == 1; n := 1; Else; n := 3; EndIf
+
+   nPos := Ascan( ::aControls, {|x| x[n] == oControle } )
+
+   If nPos >0
+     ::aControls[nPos,2]:Refresh()
+   EndIf
+
+Return Nil
+
+//----------------------------------------------------------------------------//
+METHOD SetFocusCTRL( oControle ) CLASS HCustomWindow
+
+   Local nPos
+
+   nPos := Ascan( ::aControls, {|x| x[1] == oControle } )
+
+   If nPos >0
+     ::aControls[nPos,2]:SetFocus()
+   EndIf
 
 Return Nil
 

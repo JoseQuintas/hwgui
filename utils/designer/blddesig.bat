@@ -23,16 +23,23 @@ echo designer.map, + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hbxml.lib + >> b32.bc
-echo %HRB_DIR%\lib\rtl.lib + >> b32.bc
-echo %HRB_DIR%\lib\vm.lib + >> b32.bc
+echo %HRB_DIR%\lib\rtl%HB_MT%.lib + >> b32.bc
+echo %HRB_DIR%\lib\vm%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
 echo %HRB_DIR%\lib\lang.lib + >> b32.bc
-echo %HRB_DIR%\lib\macro.lib + >> b32.bc
-echo %HRB_DIR%\lib\rdd.lib + >> b32.bc
-echo %HRB_DIR%\lib\dbfntx.lib + >> b32.bc
-echo %HRB_DIR%\lib\dbfdbt.lib + >> b32.bc
+echo %HRB_DIR%\lib\codepage.lib + >> b32.bc
+echo %HRB_DIR%\lib\macro%HB_MT%.lib + >> b32.bc
+echo %HRB_DIR%\lib\rdd%HB_MT%.lib + >> b32.bc
+echo %HRB_DIR%\lib\dbfntx%HB_MT%.lib + >> b32.bc
+echo %HRB_DIR%\lib\dbfcdx%HB_MT%.lib + >> b32.bc
+echo %HRB_DIR%\lib\dbffpt%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\common.lib + >> b32.bc
+echo %HRB_DIR%\lib\debug.lib + >> b32.bc
 echo %HRB_DIR%\lib\pp.lib + >> b32.bc
+echo %HRB_DIR%\lib\hsx.lib + >> b32.bc
+echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
+rem echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
+rem echo %HRB_DIR%\lib\libct.lib + >> b32.bc
 
 echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc

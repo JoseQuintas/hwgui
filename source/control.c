@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.36 2006-04-06 16:18:02 alkresin Exp $
+ * $Id: control.c,v 1.37 2006-04-14 23:09:58 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -222,7 +222,7 @@ HB_FUNC( CREATEEDIT )
    ULONG ulStyleEx = (ulStyle&WS_BORDER)? WS_EX_CLIENTEDGE:0;
    HWND  hWndEdit;
 
-   if( ( ulStyle & WS_BORDER ) && ( ulStyle & WS_DLGFRAME ) )
+   if( ( ulStyle & WS_BORDER ) ) //&& ( ulStyle & WS_DLGFRAME ) )
       ulStyle &= ~WS_BORDER;
    hWndEdit =  CreateWindowEx( 
                  ulStyleEx,

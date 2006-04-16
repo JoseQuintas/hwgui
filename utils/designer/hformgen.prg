@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.26 2005-06-28 06:00:29 alkresin Exp $
+ * $Id: hformgen.prg,v 1.27 2006-04-16 14:10:01 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -461,7 +461,7 @@ Local fname, s1, s2, l_ds_mypath
    ENDIF
    IF !Empty( fname )
       l_ds_mypath := Lower( FilePath( fname ) )
-      IF oDesigner:ds_mypath != l_ds_mypath
+      IF !( oDesigner:ds_mypath == l_ds_mypath )
          oDesigner:ds_mypath := l_ds_mypath
          oDesigner:lChgPath  := .T.
       ENDIF

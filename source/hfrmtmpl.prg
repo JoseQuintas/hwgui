@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.34 2006-04-06 16:18:02 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.35 2006-04-16 14:10:01 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -35,7 +35,7 @@ Static aCtrls := { ;
   "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,trColor,cTooltip)", ;
   "Hbrowse():New(BrwType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,onUpdate,onKeyDown,onPosChg )", ;
   "HMonthCalendar():New(oPrnt,nId,dInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onChange,cTooltip,lNoToday,lNoTodayCircle,lWeekNumbers)", ;
-  "HTrackBar():New( oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,bPaint,cTooltip,onChange,onDrag,nLow,nHigh,lVertical,TickStyle,TickMarks )", ;
+  "HTrackBar():New(oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,bPaint,cTooltip,onChange,onDrag,nLow,nHigh,lVertical,TickStyle,TickMarks)", ;
   "HTab():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,Tabs,onChange,aImages,lResource)", ;
   "HTree():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,TextColor,BackColor,aImages,lResource,lEditLabels,onTreeClick)", ;
   "HStatus():New(oPrnt,nId,nStyle,oFont,aParts,onInit,onSize)", ;
@@ -199,7 +199,7 @@ Return Self
 METHOD Show( nMode,p1,p2,p3 ) CLASS HFormTmpl
 Local i, j, cType
 Local nLeft, nTop, nWidth, nHeight, cTitle, oFont, lClipper := .F., lExitOnEnter := .F.
-Local xProperty, block, bFormExit,nstyle := 0
+Local xProperty, block, bFormExit,nstyle
 Local lModal := .f.
 Local lMdi :=.F.
 Local lMdiChild := .f.
@@ -207,8 +207,9 @@ Local lval := .f.
 Local cBitmap := nil
 Local oBmp := NIL 
 Memvar oDlg
-
 Private oDlg
+
+   nStyle := DS_ABSALIGN+WS_VISIBLE+WS_SYSMENU+WS_SIZEBOX
 
    FOR i := 1 TO Len( ::aProp )
       xProperty := hfrm_GetProperty( ::aProp[ i,2 ] )
@@ -240,10 +241,10 @@ Private oDlg
          FOR j := 1 TO Len( xProperty )
             __mvPrivate( xProperty[j] )
          NEXT
-      // Styles bellow
+      // Styles below
       ELSEIF ::aProp[ i,1 ] == "systemMenu"
-         IF xProperty 
-            nStyle += WS_SYSMENU            
+         IF !xProperty 
+            nStyle := hwg_bitandinverse( nStyle,WS_SYSMENU )
          endif
       ELSEIF ::aProp[ i,1 ] == "minimizebox"
          IF xProperty 
@@ -254,16 +255,16 @@ Private oDlg
             nStyle += WS_MAXIMIZEBOX
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "absalignent"
-         IF xProperty 
-            nStyle += DS_ABSALIGN
+         IF !xProperty 
+            nStyle := hwg_bitandinverse( nStyle,DS_ABSALIGN )
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "sizeBox"
-         IF xProperty 
-            nStyle += WS_SIZEBOX
+         IF !xProperty 
+            nStyle := hwg_bitandinverse( nStyle,WS_SIZEBOX )
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "visible"
-         IF xProperty 
-            nStyle += WS_VISIBLE
+         IF !xProperty 
+            nStyle := hwg_bitandinverse( nStyle,WS_VISIBLE )
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "3dLook"
          IF xProperty 
@@ -277,7 +278,6 @@ Private oDlg
          IF xProperty
             nStyle += WS_CLIPCHILDREN
          ENDIF
-
       ELSEIF ::aProp[ i,1 ] == "fromstyle"
          IF Lower( xProperty ) == "popup"
             nStyle += WS_POPUP + WS_CAPTION
@@ -303,7 +303,7 @@ Private oDlg
    IF nMode == Nil .OR. nMode == 2
       INIT DIALOG ::oDlg TITLE cTitle         ;
           AT nLeft, nTop SIZE nWidth, nHeight ;
-          STYLE if(nStyle >0 ,nStyle,DS_ABSALIGN+WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX) ;
+          STYLE nStyle ;
           FONT oFont ;
           BACKGROUND BITMAP oBmp
       ::oDlg:lClipper := lClipper
@@ -355,7 +355,13 @@ Private oDlg
       ENDIF
    NEXT
 
-   FOR i := 1 TO Len( ::aControls )
+   j := Len( ::aControls )
+   IF j > 0 .AND. ::aControls[j]:cClass == "status"
+      CreateCtrl( ::oDlg, ::aControls[j], Self )
+      j--
+   ENDIF
+      
+   FOR i := 1 TO j
       CreateCtrl( ::oDlg, ::aControls[i], Self )
    NEXT
 
@@ -685,6 +691,7 @@ MEMVAR aImages, lEditLabels, aParts
             aParts[i] := Val(aParts[i])
          NEXT
       ENDIF
+      onInit := {|o|o:Move(,,o:nWidth-1)}
    ENDIF
    oCtrl := &stroka
    IF Type( "m->name" ) == "C"

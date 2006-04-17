@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.18 2006-01-18 12:56:14 omm Exp $
+ * $Id: designer.prg,v 1.19 2006-04-17 12:29:45 alkresin Exp $
  *
  * Designer
  * Main file
@@ -313,7 +313,7 @@ Local x1, cText,cBmp, oButton
                     oButton := HOwnButton():New( ,,,x1,28,30,26, ;
                                ,,,{|o,id|ClickBtn(o,id)},.T.,    ;
                                cText,,,,,,,                      ;
-                               cBmp,At(".",cBmp)==0,,,,,.F.,     ;
+                               cBmp,At(".",cBmp)==0,,,,,.F.,,    ;
                                oWidget:GetAttribute( "name" ) )
                     oButton:cargo := oWidget
                     x1 += 30

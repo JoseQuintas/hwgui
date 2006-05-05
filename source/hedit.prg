@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.45 2005-10-26 07:43:26 omm Exp $
+ *$Id: hedit.prg,v 1.46 2006-05-05 18:36:36 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -193,6 +193,21 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
             ENDIF
 
          ENDIF
+      /* bloco inserido por Sauli */
+      else
+         IF msg == WM_KEYDOWN
+            IF wParam == VK_TAB     // Tab
+               IF Asc( Substr( GetKeyboardState(), VK_SHIFT+1, 1 ) ) >= 128
+                  nextHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .t. )
+                  SetFocus( nextHandle )
+               ELSE
+                  nextHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .f. )
+                  SetFocus( nextHandle )
+               ENDIF
+               Return 0
+            end
+         end
+      /* fim do bloco inserido por Sauli */
       ENDIF
 
    ELSE

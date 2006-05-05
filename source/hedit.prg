@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.46 2006-05-05 18:36:36 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.47 2006-05-05 21:11:16 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -107,6 +107,7 @@ Return Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 Local oParent := ::oParent, nPos, nctrl, cKeyb
+Local nexthandle
 
    // WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF !::lMultiLine
@@ -570,6 +571,7 @@ Return cChar
 
 Static Function GetApplyKey( oEdit,cKey )
 Local nPos, nGetLen, nLen, vari, i, x, newPos
+Local nDecimals, nTmp
 
    x := SendMessage( oEdit:handle, EM_GETSEL, 0, 0 )
    IF HiWord(x) != LoWord(x)
@@ -640,12 +642,21 @@ Local nPos, nGetLen, nLen, vari, i, x, newPos
          KeyRight( oEdit,nPos )
          //Added By Sandro Freire
          IF oEdit:cType == "N"
+
             IF !Empty(oEdit:cPicMask)
-                newPos:=Len(oEdit:cPicMask)-3
+
+                nDecimals := Len( Substr(  oEdit:cPicMask, At( ".", oEdit:cPicMask ), Len( oEdit:cPicMask ) ) )
+                
+                IF nDecimals <= 0 
+                   nDecimals := 3
+                EndIF   
+                newPos:=Len(oEdit:cPicMask)-nDecimals
+                
                 IF "E" $ oEdit:cPicFunc .AND. nPos==newPos
                     GetApplyKey( oEdit, "," )
                 ENDIF
             ENDIF
+            
          ENDIF
 
       ENDIF

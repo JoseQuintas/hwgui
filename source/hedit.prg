@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.47 2006-05-05 21:11:16 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.48 2006-05-05 21:45:54 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -7,6 +7,9 @@
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
 */
+
+STATIC bColorOld
+STATIC lColorinFocus := .F.
 
 #include "windows.ch"
 #include "hbclass.ch"
@@ -30,6 +33,7 @@ CLASS HEdit INHERIT HControl
    DATA lFirst       INIT .T.
    DATA lChanged     INIT .F.
    DATA lMaxLength   INIT Nil
+   DATA nColorinFocus INIT vcolor('CCFFFF')
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor,cPicture,lNoBorder, lMaxLength )
@@ -108,7 +112,7 @@ Return Nil
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 Local oParent := ::oParent, nPos, nctrl, cKeyb
 Local nexthandle
-
+ 
    // WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF !::lMultiLine
 
@@ -194,7 +198,7 @@ Local nexthandle
             ENDIF
 
          ENDIF
-      /* bloco inserido por Sauli */
+      /* Added by Sauli */
       else
          IF msg == WM_KEYDOWN
             IF wParam == VK_TAB     // Tab
@@ -208,8 +212,17 @@ Local nexthandle
                Return 0
             end
          end
-      /* fim do bloco inserido por Sauli */
+      /* Sauli */
       ENDIF
+      
+      If lColorinFocus
+	      if msg == WM_SETFOCUS
+	         bColorOld := ::bcolor
+	         ::SetColor(::tcolor ,::nColorinFocus,.T. )
+	      elseif msg == WM_KILLFOCUS
+	         ::SetColor(::tcolor,bColorOld, .t.)
+	      endif
+	   EndIf   
 
    ELSE
 
@@ -923,3 +936,9 @@ Function ParentGetDialog( o )
    ENDDO
 Return o
 
+Function SetColorinFocus( lDef )
+	If ValType( lDef ) <> "L"
+	   Return .F.
+	EndIf   
+	lColorinFocus := lDef
+Return .T.

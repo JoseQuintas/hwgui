@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.63 2006-01-09 02:14:29 lculik Exp $
+ *$Id: guilib.ch,v 1.64 2006-05-12 13:08:45 lculik Exp $
  */
 #define HWG_VERSION           "2.14"
 #define	WND_MAIN		1
@@ -39,6 +39,7 @@
              [ ON GETFOCUS <bGfocus> ]      ;
              [ ON LOSTFOCUS <bLfocus> ]     ;
              [ ON OTHER MESSAGES <bOther> ] ;
+             [ ON CLOSEQUERY <bCloseQuery> ];
              [ ON EXIT <bExit> ]            ;
              [ HELP <cHelp> ]               ;
              [ HELPID <nHelpId> ]           ;
@@ -46,7 +47,7 @@
    <oWnd> := HMainWindow():New( Iif(<.lMdi.>,WND_MDI,WND_MAIN), ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>,;
-                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId> )
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>, <bCloseQuery> )
 
 #xcommand INIT WINDOW <oWnd> MDICHILD       ;
              [ APPNAME <appname> ]          ;

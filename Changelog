@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.480 2006-05-05 21:45:54 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.481 2006-05-12 13:08:44 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,19 +7,25 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2006-05-11 11:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+  * include/guilib.ch
+    ! Added [ ON CLOSEQUERY <bCloseQuery> ];  to init window command, this will execute , if defined when the use click on the X button on window title
+  * source/hwindow.prg
+    ! Added code to support  ON CLOSEQUERY <bCloseQuery>
+     Both changes was provided by  Sauli Bueno
 
-2005-05-05 18-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+2006-05-05 18-50 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source\hedit.prg
     Create Function SetColorinFocus if parameter true, get in focus replace the backcolor, default color CCFFFF
   * samples\testget2.prg
     Added in sample new implementation
     Thanks to Sauli Bueno
 
-2005-05-05 18-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+2006-05-05 18-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source\hedit.prg
     Fix bug in Picture @E, using 3 ou next decimals
 
-2005-05-05 15-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
+2006-05-05 15-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source\hedit.prg
     Implementation in focus to controls
     Thanks to Sauli for contribuition

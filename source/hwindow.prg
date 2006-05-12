@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.45 2006-01-10 10:22:18 lculik Exp $
+ *$Id: hwindow.prg,v 1.46 2006-05-12 13:08:45 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -55,11 +55,13 @@ CLASS HWindow INHERIT HCustomWindow
    DATA GetList  INIT {}      // The array of GET items in the dialog
    DATA KeyList  INIT {}      // The array of keys ( as Clipper's SET KEY )
    DATA nLastKey INIT 0
+   data bCloseQuery
 
    DATA aOffset
 
    METHOD New( Icon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
-          bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,cHelp,nHelpId )
+          bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,cHelp,;
+          nHelpId, bCloseQuery )
    METHOD AddItem( oWnd )
    METHOD DelItem( oWnd )
    METHOD FindWindow( hWnd )
@@ -73,7 +75,7 @@ ENDCLASS
 
 METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,;
-                  cAppName,oBmp,cHelp,nHelpId ) CLASS HWindow
+                  cAppName,oBmp,cHelp,nHelpId, bCloseQuery ) CLASS HWindow
 
    ::oDefaultParent := Self
    ::title    := cTitle
@@ -92,6 +94,7 @@ METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
    ::bGetFocus  := bGFocus
    ::bLostFocus := bLFocus
    ::bOther     := bOther
+   ::bCloseQuery := bCloseQuery
 
    IF cAppName != Nil
       ::szAppName := cAppName
@@ -145,7 +148,7 @@ CLASS HMainWindow INHERIT HWindow
          {|o,w|onSysCommand(o,w)},         ;
          {|o,w,l|onNotifyIcon(o,w,l)},     ;
          {|o,w,l|onEnterIdle(o,w,l)},      ;
-         {|o|ReleaseAllWindows(o:handle)}, ;
+         {|o|onCloseQuery(o)}, ;
          {|o|onDestroy(o)},                ;
          {|o,w|onEndSession(o,w)}          ;
       } ;
@@ -156,7 +159,7 @@ CLASS HMainWindow INHERIT HWindow
 
    METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
                      oFont,bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, ;
-                     cAppName,oBmp,cHelp,nHelpId )
+                     cAppName,oBmp,cHelp,nHelpId, bCloseQuery )
    METHOD Activate( lShow, lMaximized, lMinimized, bActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu, cTooltip )
@@ -166,11 +169,11 @@ ENDCLASS
 
 METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
                      oFont,bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, ;
-                     cAppName,oBmp,cHelp,nHelpId ) CLASS HMainWindow
+                     cAppName,oBmp,cHelp,nHelpId, bCloseQuery ) CLASS HMainWindow
 
    Super:New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,  ;
-                  cAppName,oBmp,cHelp,nHelpId )
+                  cAppName,oBmp,cHelp,nHelpId, bCloseQuery )
    ::type := lType
 
    IF lType == WND_MDI
@@ -552,3 +555,15 @@ Local oItem
       ENDIF
    ENDIF
 Return 0
+//add by sauli
+static function onCloseQuery(o)
+   if valType(o:bCloseQuery)='B'
+      if eval(o:bCloseQuery)
+         ReleaseAllWindows(o:handle)
+      end
+   else
+      ReleaseAllWindows(o:handle)
+   end
+
+return 0
+// end sauli

@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.7 2006-04-14 20:08:17 sandrorrfreire Exp $
+ *$Id: hcwindow.prg,v 1.8 2006-06-06 16:31:27 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -312,3 +312,6 @@ Local oCtrl := oWnd:FindControl( , lParam ), msg
    ENDIF
 
 Return -1
+
+PROCEDURE HB_GT_DEFAULT_NUL()
+RETURN

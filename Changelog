@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.481 2006-05-12 13:08:44 lculik Exp $
+ * $Id: Changelog,v 1.482 2006-06-06 16:31:26 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-06-06 20:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hcwindow.prg
+    * Added HB_GT_DEFAULT_NUL() procedure to prevent appearance of a
+      console window under Win98
+
 2006-05-11 11:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * include/guilib.ch
     ! Added [ ON CLOSEQUERY <bCloseQuery> ];  to init window command, this will execute , if defined when the use click on the X button on window title

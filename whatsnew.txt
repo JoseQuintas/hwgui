@@ -9,6 +9,20 @@
 [*] Changes
 
 
+HWGUI 2.15 ( 07.06.2006 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[+] Linux GTK version of HwGUI has been implemented. It haven't yet all
+    functionality of the Windows version, but most of the main subsystems
+    ( GET system, browse, printing, ... ) are ready to use.
+
+[+] Some new classes has been added, including HWinPrn.
+    New functions has been added. See Changelog for the details.
+
+[*] Important changes and fixes in core functions.
+
+[!] Many bug fixes and enhancements - see Changelog for details.
+
 HWGUI 2.14 ( 14.12.2004 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

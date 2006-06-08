@@ -1,8 +1,8 @@
-# $Id: Makefile.linux,v 1.4 2005-10-31 08:29:41 alkresin Exp $
+# $Id: Makefile.linux,v 1.5 2006-06-08 16:22:24 lculik Exp $
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 ifeq ($(HB_ROOT),)
-HRB_DIR = /apps/harbour
+HRB_DIR = /usr
 else
 HRB_DIR = $(HB_ROOT)
 endif
@@ -23,13 +23,13 @@ vpath %.c $(OBJ_DIR):$(PROCMISC_DIR):$(XML_DIR):$(SRC_DIR)
 vpath %.prg $(PROCMISC_DIR):$(XML_DIR):$(SRC_DIR)
 
 $(OBJ_DIR)/%.c : %.prg
-	$(HRB_DIR)/bin/harbour -n -w -es2 -I$(HRB_DIR)/include -I$(INC_DIR) -o$@ $<
+	$(HRB_DIR)/bin/xharbour -n -w -es2 -I$(HRB_DIR)/include/xharbour -I$(INC_DIR) -o$@ $<
 
 %.o : %.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $<
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include/xharbour `pkg-config --cflags libgnomeprint-2.2` `pkg-config --cflags gtk+-2.0` -o $@ $<
 
 $(OBJ_DIR)/%.o : %.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags libgnomeprint-2.2` `pkg-config --cflags gtk+-2.0` -o $@ $<
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include/xharbour `pkg-config --cflags libgnomeprint-2.2` `pkg-config --cflags gtk+-2.0` -o $@ $<
 
 
 $(LIB_DIR)/%.a ::

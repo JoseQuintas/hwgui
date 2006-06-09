@@ -1,4 +1,4 @@
-# $Id: Makefile.linux,v 1.5 2006-06-08 16:22:24 lculik Exp $
+# $Id: Makefile.linux,v 1.6 2006-06-09 11:06:59 alkresin Exp $
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 ifeq ($(HB_ROOT),)
@@ -15,7 +15,7 @@ PROCMISC_DIR=../source/procmisc
 XML_DIR=../source/xml
 SRC_DIR=../source
 
-CFLAGS = -Wall -O3 -mcpu=pentium -D__GTK_USE_POINTER__
+CFLAGS = -Wall -O3 -mcpu=pentium -DHWG_USE_POINTER_ITEM
 
 vpath %.a $(LIB_DIR)
 vpath %.o $(OBJ_DIR)

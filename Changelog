@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.484 2006-06-07 07:45:01 alkresin Exp $
+ * $Id: Changelog,v 1.485 2006-06-09 11:06:58 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,22 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-06-09 15:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hwindow.prg
+    ! An important fix, which prevents memory leaks under Harbour
+  * gtk/hbrowse.prg
+  * gtk/hcwindow.prg
+  * gtk/hedit.prg
+  * gtk/hownbtn.prg
+  * gtk/hpanel.prg
+  * gtk/hsayimg.prg
+  * gtk/htab.prg
+  * gtk/window.c
+    ! An important fixes, which prevents memory leaks under Harbour.
+    * An internal class variable nHolder has been removed.
+  * gtk/Makefile.linux
+    * -DHWG_USE_POINTER_ITEM has been added to compiler flags
 
 2006-06-07 11:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * whatsnew.txt

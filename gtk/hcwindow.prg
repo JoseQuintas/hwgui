@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.3 2005-09-15 17:07:51 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.4 2006-06-09 11:06:59 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -57,7 +57,6 @@ CLASS HCustomWindow INHERIT HObject
    DATA bOther
    DATA cargo
    DATA HelpId   INIT 0
-   DATA nHolder  INIT 0
    
    METHOD AddControl( oCtrl ) INLINE Aadd( ::aControls,oCtrl )
    METHOD DelControl( oCtrl )
@@ -139,11 +138,14 @@ Local i
 Return 0
 
 METHOD End()  CLASS HCustomWindow
+Local aControls := ::aControls
+Local i, nLen := Len( aControls )
 
-   IF ::nHolder != 0
-      ::nHolder := 0
-      hwg_DecreaseHolders( Self )
-   ENDIF
+   FOR i := 1 TO nLen
+       aControls[i]:End()
+   NEXT
+
+   hwg_ReleaseObject( ::handle )
 
 Return Nil
 
@@ -193,12 +195,6 @@ Local iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res, handle, oItem
 Return 0
 
 Static Function onDestroy( oWnd )
-Local aControls := oWnd:aControls
-Local i, nLen := Len( aControls )
-
-   FOR i := 1 TO nLen
-       aControls[i]:End()
-   NEXT
    oWnd:End()
 
 Return 0

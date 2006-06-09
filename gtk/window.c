@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.20 2006-02-15 16:56:58 lf_sfnet Exp $
+ * $Id: window.c,v 1.21 2006-06-09 11:06:59 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -102,9 +102,6 @@ HB_FUNC( HWG_INITMAINWINDOW )
    temp = HB_PUTHANDLE( NULL, box );
    SetObjectVar( pObject, "_FBOX", temp );
 
-   hb_itemPutNL( temp, 1 );
-   SetObjectVar( pObject, "_NHOLDER", temp );
-
    hb_itemRelease( temp );
    
    SetWindowObject( hWnd, pObject );
@@ -147,9 +144,6 @@ HB_FUNC( HWG_CREATEDLG )
 
    temp = HB_PUTHANDLE( NULL, box );
    SetObjectVar( pObject, "_FBOX", temp );
-
-   hb_itemPutNL( temp, 1 );
-   SetObjectVar( pObject, "_NHOLDER", temp );
 
    hb_itemRelease( temp );
    
@@ -531,10 +525,20 @@ void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )
 }
 */
 
-HB_FUNC( HWG_DECREASEHOLDERS )
+HB_FUNC( HWG_RELEASEOBJECT )
 {
-   /* Do nothing such operation is not necessary in valid code */
-   ;
+   GObject * hWnd = (GObject*) HB_PARHANDLE(1);
+   gpointer dwNewLong = g_object_get_data( hWnd, "obj" );
+
+   if( dwNewLong )
+   {
+      hb_itemRelease( ( PHB_ITEM ) dwNewLong );
+      g_object_set_data( hWnd, "obj", (gpointer) NULL );
+   }
+   else
+   {
+      hb_ret();
+   }
 }
 
 HB_FUNC( SETFOCUS )
@@ -558,3 +562,4 @@ HB_FUNC( HWG_SET_MODAL )
    gtk_window_set_modal( (GtkWindow *) HB_PARHANDLE(1), 1 );
    gtk_window_set_transient_for( (GtkWindow *) HB_PARHANDLE(1), (GtkWindow *) HB_PARHANDLE(2) );
 }
+

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.13 2005-10-31 08:29:41 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.14 2006-06-09 11:06:59 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -144,7 +144,9 @@ CLASS HBrowse INHERIT HControl
    DATA nHeadRows INIT 1                       // Rows in header
    DATA nFootRows INIT 0                       // Rows in footer
    
-   DATA area, hScrollV, hScrollH
+   DATA area
+   DATA hScrollV  INIT Nil
+   DATA hScrollH  INIT Nil
    DATA nScrollV  INIT 0
    DATA nScrollH  INIT 0
    DATA oGet, nGetRec
@@ -328,7 +330,6 @@ Return retValue
 METHOD Init CLASS HBrowse
 
    Super:Init()
-   ::nHolder := 1
    SetWindowObject( ::handle,Self )
 Return Nil
 
@@ -386,6 +387,14 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD End() CLASS HBrowse
+
+   hwg_ReleaseObject( ::area )
+   IF ::hScrollV != Nil
+      hwg_ReleaseObject( ::hScrollV )
+   ENDIF
+   IF ::hScrollH != Nil
+      hwg_ReleaseObject( ::hScrollH )
+   ENDIF
 
    Super:End()
    IF ::brush != Nil

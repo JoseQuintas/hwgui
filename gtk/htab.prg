@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.4 2005-10-21 08:50:15 alkresin Exp $
+ *$Id: htab.prg,v 1.5 2006-06-09 11:06:59 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HTab class
@@ -86,7 +86,6 @@ Local i, h
 	 Aadd( ::aPages, { 0,0,.F.,h } )
       NEXT
       
-      ::nHolder := 1
       SetWindowObject( ::handle,Self )
 
       FOR i := 2 TO Len( ::aPages )

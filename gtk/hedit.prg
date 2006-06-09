@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.8 2005-10-21 08:50:15 alkresin Exp $
+ *$Id: hedit.prg,v 1.9 2006-06-09 11:06:59 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HEdit class 
@@ -249,7 +249,6 @@ METHOD Init()  CLASS HEdit
 
    IF !::lInit
       Super:Init()
-      ::nHolder := 1
       ::Refresh()
    ENDIF
 

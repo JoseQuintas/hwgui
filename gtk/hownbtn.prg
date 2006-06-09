@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.2 2005-11-01 10:33:53 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.3 2006-06-09 11:06:59 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -119,7 +119,6 @@ METHOD Init CLASS HOwnButton
 
    IF !::lInit
       Super:Init()
-      ::nHolder := 1
       SetWindowObject( ::handle,Self )
    ENDIF
 

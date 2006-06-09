@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.46 2006-05-12 13:08:45 lculik Exp $
+ *$Id: hwindow.prg,v 1.47 2006-06-09 11:06:59 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -565,5 +565,5 @@ static function onCloseQuery(o)
       ReleaseAllWindows(o:handle)
    end
 
-return 0
+return -1
 // end sauli

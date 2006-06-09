@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.1 2005-10-27 12:10:33 alkresin Exp $
+ * $Id: hsayimg.prg,v 1.2 2006-06-09 11:06:59 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HSayImage class
@@ -92,7 +92,6 @@ Return Self
 METHOD INIT CLASS HSayBmp
    IF !::lInit
       Super:Init()
-      ::nHolder := 1
       SetWindowObject( ::handle,Self )
    ENDIF
 Return Nil

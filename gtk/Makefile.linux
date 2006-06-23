@@ -1,4 +1,4 @@
-# $Id: Makefile.linux,v 1.6 2006-06-09 11:06:59 alkresin Exp $
+# $Id: Makefile.linux,v 1.7 2006-06-23 20:41:46 lculik Exp $
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 ifeq ($(HB_ROOT),)
@@ -23,7 +23,7 @@ vpath %.c $(OBJ_DIR):$(PROCMISC_DIR):$(XML_DIR):$(SRC_DIR)
 vpath %.prg $(PROCMISC_DIR):$(XML_DIR):$(SRC_DIR)
 
 $(OBJ_DIR)/%.c : %.prg
-	$(HRB_DIR)/bin/xharbour -n -w -es2 -I$(HRB_DIR)/include/xharbour -I$(INC_DIR) -o$@ $<
+	$(HRB_DIR)/bin/harbour -n -w -es2 -I$(HRB_DIR)/include/xharbour -I$(INC_DIR) -o$@ $<
 
 %.o : %.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include/xharbour `pkg-config --cflags libgnomeprint-2.2` `pkg-config --cflags gtk+-2.0` -o $@ $<

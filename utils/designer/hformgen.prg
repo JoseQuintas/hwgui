@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.27 2006-04-16 14:10:01 alkresin Exp $
+ * $Id: hformgen.prg,v 1.28 2006-06-26 06:30:29 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -138,14 +138,14 @@ Private oForm := Self, aCtrlTable
       ENDIF
       IF ::oDlg == Nil .OR. Empty( ::oDlg:aControls )
          MsgStop( "Can't load the form" )
-      ELSEIF !oDesigner:lSingleForm
+      ELSEIF !oDesigner:lSingleForm .AND. fname != Nil
          AddRecent( Self )
       ENDIF
    ENDIF
 
 RETURN Self
 
-METHOD End( lDlg ) CLASS HFormGen
+METHOD End( lDlg,lCloseDes ) CLASS HFormGen
 Local i, j, name := ::name, oDlgSel
 
    IF lDlg == Nil; lDlg := .F.; ENDIF
@@ -178,7 +178,7 @@ Local i, j, name := ::name, oDlgSel
       ::oDlg:bDestroy := Nil
       EndDialog( ::oDlg:handle )
    ENDIF
-   IF oDesigner:lSingleForm
+   IF oDesigner:lSingleForm .AND. ( lCloseDes == Nil .OR. lCloseDes )
       oDesigner:oMainWnd:Close()
    ENDIF
 
@@ -291,7 +291,9 @@ Private value, oCtrl
       ::nKoeff := ( aMetr[1]/aMetr[3] + aMetr[2]/aMetr[4] ) / 2
       ReleaseDC( GetActiveWindow(),hDC )
       ::SetPaper( ::GetProp("Paper Size"),::GetProp("Orientation") )
-      ::oDlg:oFont := HFont():Add( "Arial",0,-13 )
+      IF ::oDlg:oFont == Nil
+         ::oDlg:oFont := HFont():Add( "Arial",0,-13 )
+      ENDIF
       ::oDlg:style := Hwg_BitOr( ::oDlg:style,WS_VSCROLL+WS_HSCROLL+WS_MAXIMIZEBOX )
 
       @ LEFT_INDENT,TOP_INDENT PANEL oPanel ;

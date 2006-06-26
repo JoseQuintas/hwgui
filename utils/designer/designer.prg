@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.19 2006-04-17 12:29:45 alkresin Exp $
+ * $Id: designer.prg,v 1.20 2006-06-26 06:30:29 alkresin Exp $
  *
  * Designer
  * Main file
@@ -23,7 +23,7 @@ REQUEST INITMONTHCALENDAR
 REQUEST INITTRACKBAR
 
 Function Designer( p0, p1, p2 )
-Local oPanel, oTab, oFont, cResForm, lSingleF := .F., i
+Local oPanel, oTab, oFont, cResForm, i
 Public oDesigner
 Public crossCursor, vertCursor, horzCursor
 
@@ -42,11 +42,11 @@ Public crossCursor, vertCursor, horzCursor
    ENDIF
 
 #ifdef INTEGRATED
-#ifdef MODAL
+// #ifdef MODAL
    IF p0 == "-s" .OR. p0 == "/s"
-      lSingleF := .T.
+      oDesigner:lSingleForm := .T.
    ENDIF
-#endif
+// #endif
 #endif
 
    IF !__mvExist( "cCurDir" )
@@ -81,7 +81,7 @@ Public crossCursor, vertCursor, horzCursor
 
    MENU OF oDesigner:oMainWnd
       MENU TITLE "&File"
-         IF !lSingleF
+         IF !oDesigner:lSingleForm
             MENUITEM "&New "+iif(!oDesigner:lReport,"Form","Report")  ACTION HFormGen():New()
             MENUITEM "&Open "+iif(!oDesigner:lReport,"Form","Report") ACTION HFormGen():Open()
             SEPARATOR
@@ -123,7 +123,7 @@ Public crossCursor, vertCursor, horzCursor
 
    @ 0,0 PANEL oPanel SIZE 280,200 ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,y)}
 
-   IF !lSingleF
+   IF !oDesigner:lSingleForm
       @ 2,3 OWNERBUTTON OF oPanel       ;
           ON CLICK {||HFormGen():New()} ;
           SIZE 24,24 FLAT               ;
@@ -227,17 +227,16 @@ Static Function StartDes( oDlg,p1,cForm )
             HFormGen():Open( cForm )
          ENDIF
 #ifdef INTEGRATED
-#ifdef MODAL
+// #ifdef MODAL
       ELSEIF p1 == "s"
          IF cForm == Nil
             HFormGen():New()
          ELSE
             HFormGen():Open( ,cForm )
          ENDIF
-         oDesigner:lSingleForm := .T.
          Hwg_SetForegroundWindow( HFormGen():aForms[1]:oDlg:handle )
          SetFocus( HFormGen():aForms[1]:oDlg:handle )
-#endif
+// #endif
 #endif
       ENDIF
    ENDIF
@@ -492,7 +491,7 @@ Local i, j, alen := Len( HFormGen():aForms ), lRes := .T., oIni, critem, oNode
   IF alen > 0
      IF MsgYesNo( "Are you really want to quit ?" )
         FOR i := Len( HFormGen():aForms ) TO 1 STEP -1
-           HFormGen():aForms[i]:End()
+           HFormGen():aForms[i]:End( ,.F. )
         NEXT
      ELSE
         lRes := .F.

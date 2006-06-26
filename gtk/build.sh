@@ -8,5 +8,3 @@ if ! [ -e obj ]; then
    chmod a+w+r+x obj
 fi
 make -fMakefile.linux >a1.log 2>a2.log
-cp -f lib/*.a /usr/lib/xharbour
-cp -f ../include/*.ch /usr/include/xharbour

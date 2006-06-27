@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.35 2006-04-16 14:10:01 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.36 2006-06-27 11:21:50 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -449,7 +449,7 @@ Local arr := {}, nPos1, nPos2, cLine
 Return arr
 
 Static Function CompileMethod( cMethod, oForm, oCtrl )
-Local arr, arrExe, nContainer := 0, cCode1, cCode
+Local arr, arrExe, nContainer := 0, cCode1, cCode, bOldError, bRes
 
    IF cMethod = Nil .OR. Empty( cMethod )
       Return Nil
@@ -460,10 +460,23 @@ Local arr, arrExe, nContainer := 0, cCode1, cCode
    ENDIF
    arr := ParseMethod( cMethod )
    IF Len( arr ) == 1
-      Return &( "{||" + __Preprocess( arr[1] ) + "}" )
+      cCode := Iif( Lower( Left(arr[1],6) ) == "return", Ltrim( Substr( arr[1],8 ) ), arr[1] )
+      bOldError := ERRORBLOCK( {|e|CompileErr(e,cCode)} )
+      BEGIN SEQUENCE
+         bRes := &( "{||" + __Preprocess( cCode ) + "}" )
+      END SEQUENCE
+      ERRORBLOCK( bOldError )
+      Return bRes
    ELSEIF Lower( Left( arr[1],11 ) ) == "parameters "
       IF Len( arr ) == 2
-         Return &( "{|" + Ltrim( Substr( arr[1],12 ) ) + "|" + __Preprocess( arr[2] ) + "}" )
+         cCode := Iif( Lower( Left(arr[2],6) ) == "return", Ltrim( Substr( arr[2],8 ) ), arr[2] )
+         cCode := "{|" + Ltrim( Substr( arr[1],12 ) ) + "|" + __Preprocess( cCode ) + "}"
+         bOldError := ERRORBLOCK( {|e|CompileErr(e,cCode)} )
+         BEGIN SEQUENCE
+            bRes := &cCode
+         END SEQUENCE
+         ERRORBLOCK( bOldError )
+         Return bRes
       ELSE
          cCode1 := Iif( nContainer==0, ;
                "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]", ;
@@ -493,6 +506,14 @@ Local arr, arrExe, nContainer := 0, cCode1, cCode
    arrExe[1] := &cCode
 
 Return arrExe
+
+STATIC FUNCTION CompileErr( e, stroka )
+Local n
+
+   MsgStop( ErrorMessage( e ) + Chr(10)+Chr(13) + "in" + Chr(10)+Chr(13) + ;
+          AllTrim(stroka),"Script compiling error" )
+   BREAK
+RETURN .T.
 
 Static Function ReadCtrl( oCtrlDesc, oContainer, oForm )
 Local oCtrl := HCtrlTmpl():New( oContainer )
@@ -1036,6 +1057,7 @@ Memvar lLastCycle, lSkipItem
       y   := Val( xProperty[2] ) * ::nKoefY
       x2  := Val( xProperty[5] ) * ::nKoefX
       y2  := Val( xProperty[6] ) * ::nKoefY
+      // writelog( xProperty[1]+" "+xProperty[2] )
 
       IF oItem:cClass == "area"
          oItem:y2 := y2

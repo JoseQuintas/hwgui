@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.13 2006-01-20 02:02:34 lculik Exp $
+ * $Id: guimain.prg,v 1.14 2006-06-28 07:44:04 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -123,15 +123,24 @@ Local cRes := ""
 
 Return cRes
 
-Function WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel )
-Local oDlg, oBrw
-Local nChoice := 0, i, aLen := Len( arr ), nLen := 0, addX := 20, addY := 30
+Function WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )
+Local oDlg, oBrw, nChoice := 0
+Local i, aLen := Len( arr ), nLen := 0, addX := 20, addY := 20, minWidth := 0, x1
 Local hDC, aMetr, width, height, aArea, aRect
+Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
 
    IF cTitle == Nil; cTitle := ""; ENDIF
-   IF nLeft == Nil; nLeft := 10; ENDIF
-   IF nTop == Nil; nTop := 10; ENDIF
+   IF nLeft == Nil .AND. nTop == Nil; nStyle += DS_CENTER; ENDIF
+   IF nLeft == Nil; nLeft := 0; ENDIF
+   IF nTop == Nil; nTop := 0; ENDIF
    IF oFont == Nil; oFont := HFont():Add( "MS Sans Serif",0,-13 ); ENDIF
+   IF cOk != Nil
+      minWidth += 120
+      IF cCancel != Nil
+         minWidth += 100
+      ENDIF
+      addY += 30
+   ENDIF
 
    IF Valtype( arr[1] ) == "A"
       FOR i := 1 TO aLen
@@ -149,23 +158,24 @@ Local hDC, aMetr, width, height, aArea, aRect
    aArea := GetDeviceArea( hDC )
    aRect := GetWindowRect( GetActiveWindow() )
    ReleaseDC( GetActiveWindow(),hDC )
-   height := (aMetr[1]+1)*aLen+4+addY
+   height := (aMetr[1]+1)*aLen+4+addY+4
    IF height > aArea[2]-aRect[2]-nTop-30
       height := aArea[2]-aRect[2]-nTop-30
-      addX := addY := 0
+      // addX := addY := 0
    ENDIF
-   width := ( Round( (aMetr[3]+aMetr[2]) / 2,0 ) + 3 ) * nLen + addX
+   width := Max( ( Round( (aMetr[3]+aMetr[2]) / 2,0 ) + 3 ) * nLen + addX, minWidth )
 
    INIT DIALOG oDlg TITLE cTitle ;
          AT nLeft,nTop           ;
-         SIZE width,height  ;
+         SIZE width,height       ;
+         STYLE nStyle            ;
          FONT oFont              ;
          ON INIT {|o|ResetWindowPos(o:handle)}
 
    @ 0,0 BROWSE oBrw ARRAY          ;
        FONT oFont                   ;
        STYLE WS_BORDER              ;
-       ON SIZE {|o,x,y|MoveWindow(o:handle,addX/2,addY/4,x-addX,y-addY)} ;
+       ON SIZE {|o,x,y|MoveWindow(o:handle,addX/2,10,x-addX,y-addY)} ;
        ON CLICK {|o|nChoice:=o:tekzp,EndDialog(o:oParent:handle)}
 
    IF Valtype( arr[1] ) == "A"
@@ -186,6 +196,14 @@ Local hDC, aMetr, width, height, aArea, aRect
    ENDIF
    IF clrBSel != Nil
       oBrw:bcolorSel := clrBSel
+   ENDIF
+
+   IF cOk != Nil
+      x1 := Int(width/2) - Iif( cCancel != Nil, 90, 40 )
+      @ x1,height-36 BUTTON cOk SIZE 80,30 ON CLICK {||nChoice:=oBrw:tekzp,EndDialog(oDlg:handle)}
+      IF cCancel != Nil
+         @ x1+60,height-36 BUTTON cCancel SIZE 80,30 ON CLICK {||EndDialog(oDlg:handle)}
+      ENDIF
    ENDIF
 
    oDlg:Activate()

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.23 2006-04-14 20:08:17 sandrorrfreire Exp $
+ * $Id: hcontrol.prg,v 1.24 2006-07-03 12:16:41 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -231,6 +231,7 @@ Return  NIL
 CLASS HButton INHERIT HControl
 
    CLASS VAR winclass   INIT "BUTTON"
+   Data bClick
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
                   bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor )
    METHOD Activate()
@@ -245,12 +246,16 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,90,nWidth ),;
               Iif( nHeight==Nil,30,nHeight ),oFont,bInit, ;
               bSize,bPaint,ctooltip,tcolor,bcolor )
-
+   ::bClick  := bClick
    ::title   := cCaption
    ::Activate()
 
    IF bClick != Nil
-      ::oParent:AddEvent( 0,::id,bClick )
+      IF ::oParent:className =="HSTATUS"
+         ::oParent:oParent:AddEvent( 0,::id,bClick )
+      else
+         ::oParent:AddEvent( 0,::id,bClick )
+      endif
    ENDIF
 
 Return Self

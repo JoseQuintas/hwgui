@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.65 2006-06-07 07:34:16 alkresin Exp $
+ *$Id: guilib.ch,v 1.66 2006-07-03 01:48:15 lculik Exp $
  */
 #define HWG_VERSION           "2.15"
 #define	WND_MAIN		1
@@ -1317,3 +1317,22 @@ Added by Marcos Antonio Gambeta
     [<oSay> := ] HStaticLink():Redefine( <oWnd>, <nId>, <cCaption>, ;
         <oFont>, <bInit>, <bSize>, <bDraw>, <ctoolt>, <color>, <bcolor>,;
         <.lTransp.>, <cLink>, <vcolor>, <lcolor>, <hcolor> )
+#xcommand TOOLBUTTON  <O> ;
+          ID <nId> ;
+          [ BITMAP <nBitIp> ];
+          [ STYLE <bstyle> ];
+          [ STATE <bstate>];
+          [ TEXT <ctext> ] ;
+           ON CLICK <bclick>;
+          =>;
+          <O>:AddButton(<nBitIp>,<nId>,<bstate>,<bstyle>,<ctext>,<bclick>)
+
+#xcommand @ <x>,<y> TOOLBAR [ <oTool> ] ;
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
+            [ SIZE <width>, <height> ] ;
+            [ STYLE <nStyle> ]         ;
+            [ ITEMS <aItems> ] ;
+          => ;
+    [<oTool> := ]        Htoolbar():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,,,<aItems> )
+

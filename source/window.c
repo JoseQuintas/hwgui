@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.43 2006-04-06 16:18:02 alkresin Exp $
+ * $Id: window.c,v 1.44 2006-07-03 01:47:12 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -767,3 +767,36 @@ HB_FUNC( REMOVETOPMOST )
     hb_retl( i );
 }
 
+
+HB_FUNC( CHILDWINDOWFROMPOINT )
+{
+   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   HWND child;
+
+   POINT pt;
+   pt.x = hb_parnl( 2 );
+   pt.y = hb_parnl( 3 );
+   child = ChildWindowFromPoint( hWnd, pt );
+   hb_retnl( ( LONG ) child );
+}
+
+HB_FUNC( WINDOWFROMPOINT )
+{
+   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   HWND child;
+
+   POINT pt;
+   pt.x = hb_parnl( 2 );
+   pt.y = hb_parnl( 3 );
+   ClientToScreen( hWnd, &pt );
+   child = WindowFromPoint( pt );
+   hb_retnl( ( LONG ) child );
+}
+
+
+HB_FUNC( MAKEWPARAM )
+{
+   WPARAM p;
+   p = MAKEWPARAM( ( WORD ) hb_parnl( 1 ), ( WORD ) hb_parnl( 2 ) );
+   hb_retnl( ( LONG ) p );
+}

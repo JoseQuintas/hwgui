@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.37 2006-04-14 23:09:58 sandrorrfreire Exp $
+ * $Id: control.c,v 1.38 2006-07-03 01:47:12 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1213,3 +1213,73 @@ LRESULT APIENTRY TabSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM
    else
       return( CallWindowProc( wpOrigTabProc, hWnd, message, wParam, lParam ) );
 }
+
+HB_FUNC(CREATETOOLBAR)
+{
+
+   ULONG ulStyle = hb_parnl(3);
+   ULONG ulExStyle = ( ( !ISNIL(8) )? hb_parnl(8):0 ) | ( (ulStyle&WS_BORDER)? WS_EX_CLIENTEDGE:0 );
+   HWND hWndCtrl = CreateWindowEx( 
+                 ulExStyle,                    /* extended style */
+                 TOOLBARCLASSNAME,                     /* predefined class  */
+                 NULL,                         /* title   */
+                 WS_CHILD | WS_VISIBLE |CCS_ADJUSTABLE| ulStyle, /* style  */
+                 hb_parni(4), hb_parni(5),      /* x, y       */
+                 hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
+                 (HWND) hb_parnl(1),            /* parent window    */ 
+                 (HMENU) hb_parni(2),           /* control ID  */
+                 GetModuleHandle( NULL ),
+                 NULL);
+
+
+   hb_retnl( (LONG) hWndCtrl );
+
+}
+
+HB_FUNC(TOOLBARADDBUTTONS)
+{
+
+   HWND hWndCtrl = (HWND) hb_parnl( 1 ) ;
+   PHB_ITEM pArray = hb_param(2,HB_IT_ARRAY);
+   int iButtons= hb_parni( 3 );
+   TBBUTTON  *tb = hb_xgrab(iButtons*sizeof(TBBUTTON));
+   TBADDBITMAP tbb;
+   PHB_ITEM pTemp;
+   ULONG ulCount;
+   int i;
+   HANDLE phInstance;
+   ULONG ulID;
+   hb_winmainArgGet(  &phInstance, NULL, 0);
+
+   SendMessage( hWndCtrl, TB_BUTTONSTRUCTSIZE, sizeof(TBBUTTON), 0L);
+   
+   for ( ulCount =0 ;  ( ulCount < hb_arrayLen( pArray ) ); ulCount++ )
+   {
+      pTemp = hb_arrayGetItemPtr( pArray , ulCount + 1 );
+      ulID=hb_arrayGetNI( pTemp, 1 );
+      if ( ulID>0 )
+      {
+       tbb.hInst = phInstance;
+       tbb.nID   = ulID;
+
+       i=SendMessage(   (HWND) hWndCtrl,  (UINT) TB_ADDBITMAP, (WPARAM) hb_arrayLen( pArray ),   (LPARAM) (LPTBADDBITMAP) &tbb );
+       tb[ ulCount ].iBitmap   = i ;
+      }
+      else
+      {
+            tb[ ulCount ].iBitmap   = hb_arrayGetNI( pTemp, 1 );
+      }
+      tb[ ulCount ].idCommand = hb_arrayGetNI( pTemp, 2 );
+      tb[ ulCount ].fsState   = hb_arrayGetNI( pTemp, 3 );
+      tb[ ulCount ].fsStyle   = hb_arrayGetNI( pTemp, 4 );
+      tb[ ulCount ].dwData    = hb_arrayGetNI( pTemp, 5 );
+      tb[ ulCount ].iString   = ( int ) hb_arrayGetCPtr( pTemp, 6 ); 
+   }
+
+   SendMessage( hWndCtrl, TB_ADDBUTTONS, (WPARAM) iButtons, (LPARAM) (LPTBBUTTON) tb);
+   SendMessage( hWndCtrl, TB_AUTOSIZE, 0, 0 ); 
+   ShowWindow( hWndCtrl, SW_SHOWNORMAL );
+
+   hb_xfree( tb );
+}
+

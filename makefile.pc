@@ -1,4 +1,4 @@
-# $Id: makefile.pc,v 1.12 2005-10-22 13:14:22 lculik Exp $
+# $Id: makefile.pc,v 1.13 2006-07-03 01:51:33 lculik Exp $
 # makefile for Pelles C 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -97,6 +97,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hsayimg.obj \
    $(OBJ_DIR)\hsplit.obj \
    $(OBJ_DIR)\htab.obj \
+   $(OBJ_DIR)\htool.obj \
    $(OBJ_DIR)\htimer.obj \
    $(OBJ_DIR)\htree.obj \
    $(OBJ_DIR)\hupdown.obj \
@@ -339,6 +340,12 @@ $(OBJ_DIR)\htab.c : $(SRC_DIR)\htab.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\htab.obj : $(OBJ_DIR)\htab.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\htool.c : $(SRC_DIR)\htool.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\htool.obj : $(OBJ_DIR)\htool.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\htimer.c : $(SRC_DIR)\htimer.prg

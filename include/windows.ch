@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.25 2006-04-12 06:03:03 alkresin Exp $
+ *$Id: windows.ch,v 1.26 2006-07-03 01:48:15 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -64,7 +64,7 @@
 #define WM_LBUTTONDBLCLK                515    // 0x0203
 #define WM_RBUTTONDOWN                  516    // 0x0204
 #define WM_RBUTTONUP                    517    // 0x0205
-
+#define WM_PARENTNOTIFY                 528    // 0x0210
 #define WM_MDICREATE                    544     // 0x0220
 #define WM_MDIDESTROY                   545     // 0x0221
 #define WM_MDIACTIVATE                  546     // 0x0222
@@ -918,3 +918,25 @@
 #define R2_MERGEPEN         15  /* DPo      */
 #define R2_WHITE            16  /*  1       */
 #define R2_LAST             16
+
+
+// States for tool Buttons
+#define TBSTATE_CHECKED         0x01
+#define TBSTATE_PRESSED         0x02
+#define TBSTATE_ENABLED         0x04
+#define TBSTATE_HIDDEN          0x08
+#define TBSTATE_INDETERMINATE   0x10
+#define TBSTATE_WRAP            0x20
+
+// Styles for button
+#define TBSTYLE_BUTTON          0x0000
+#define TBSTYLE_SEP             0x0001
+#define TBSTYLE_CHECK           0x0002
+#define TBSTYLE_GROUP           0x0004
+#define TBSTYLE_CHECKGROUP      0x0006
+
+#define BTNS_BUTTON     TBSTYLE_BUTTON      // 0x0000
+#define BTNS_SEP        TBSTYLE_SEP         // 0x0001
+#define BTNS_CHECK      TBSTYLE_CHECK       // 0x0002
+#define BTNS_GROUP      TBSTYLE_GROUP       // 0x0004
+#define BTNS_CHECKGROUP TBSTYLE_CHECKGROUP  // (TBSTYLE_GROUP | TBSTYLE_CHECK)

@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.11 2005-10-19 10:04:27 alkresin Exp $
+ * $Id: hpanel.prg,v 1.12 2006-07-05 11:57:45 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -88,9 +88,9 @@ METHOD Init CLASS HPanel
    IF !::lInit
       IF ::bSize == Nil
          IF ::nHeight!=0 .AND. ( ::nWidth>::nHeight .OR. ::nWidth==0 )
-            ::bSize := {|o,x,y|o:Move( 0,::nTop,x,::nHeight )}
+            ::bSize := {|o,x,y|o:Move( ,Iif(::nTop>0,y-::nHeight,0),x,::nHeight )}
          ELSEIF ::nWidth!=0 .AND. ( ::nHeight>::nWidth .OR. ::nHeight==0 )
-            ::bSize := {|o,x,y|o:Move( ::nLeft,0,::nWidth,y )}
+            ::bSize := {|o,x,y|o:Move( Iif(::nLeft>0,x-::nLeft,0),,::nWidth,y )}
          ENDIF
       ENDIF
 

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.38 2006-07-03 01:47:12 lculik Exp $
+ * $Id: control.c,v 1.39 2006-07-06 14:46:30 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -46,7 +46,7 @@ HB_FUNC( HWG_INITCOMMONCONTROLSEX )
       INITCOMMONCONTROLSEX  i;
 
       i.dwSize = sizeof( INITCOMMONCONTROLSEX );
-      i.dwICC = ICC_DATE_CLASSES | ICC_INTERNET_CLASSES;
+      i.dwICC = ICC_DATE_CLASSES | ICC_INTERNET_CLASSES | ICC_BAR_CLASSES;
       InitCommonControlsEx( &i );
       lInitCmnCtrl = 1;
    }

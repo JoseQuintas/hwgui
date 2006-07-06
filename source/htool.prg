@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.1 2006-07-03 01:47:12 lculik Exp $
+ * $Id: htool.prg,v 1.2 2006-07-06 14:47:43 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -60,6 +60,7 @@ METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
    Default  aItem to {}
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )
+   HWG_InitCommonControlsEx()
    ::aitem := aItem
 
    ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0

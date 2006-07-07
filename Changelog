@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.493 2006-07-06 14:46:29 lculik Exp $
+ * $Id: Changelog,v 1.494 2006-07-07 07:54:11 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-07-07 11:53 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/designer/hformgen.prg
+    ! Important fixes, which relates to container widgets.
+      There was problems when a widget must be inside other.
 
 2006-07-06 12:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
  * source/control.c

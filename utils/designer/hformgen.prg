@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.28 2006-06-26 06:30:29 alkresin Exp $
+ * $Id: hformgen.prg,v 1.29 2006-07-07 07:54:11 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -1076,10 +1076,9 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp, j, name
          IF aBDown[4] > 0
             CtrlResize( oCtrl,xPos,yPos )
          ELSE
-            // writelog( str(xpos)+str(abdown[2])+str(ypos)+str(abdown[3]) )
-            IF CtrlMove( oCtrl,xPos,yPos,.T. )
-               Container( oDlg,oCtrl )
-            ENDIF
+            // writelog( "LButtonUp-1 "+str(xpos)+str(abdown[2])+str(ypos)+str(abdown[3]) )
+            CtrlMove( oCtrl,xPos,yPos,.T. )
+            Container( oDlg,oCtrl )
          ENDIF
          SetBDown( Nil,0,0,0 )
       ENDIF
@@ -1173,31 +1172,23 @@ Return Nil
 Function Container( oDlg,oCtrl )
 Local i, nLeft := oCtrl:nLeft
 
+   oCtrl:nLeft := 9999
+   oContainer := CtrlByRect( oDlg,nLeft,oCtrl:nTop,nLeft+oCtrl:nWidth,oCtrl:nTop+oCtrl:nHeight )
+   oCtrl:nLeft := nLeft
+
    IF oCtrl:oContainer != Nil
-      oContainer := oCtrl:oContainer
-      IF oCtrl:nLeft >= oContainer:nLeft .AND. ;
-           ( oCtrl:nLeft+oCtrl:nWidth ) <= ( oContainer:nLeft+oContainer:nWidth ) .AND. ;
-           oCtrl:nTop >= oContainer:nTop .AND. ;
-           ( oCtrl:nTop+oCtrl:nHeight ) <= ( oContainer:nTop+oContainer:nHeight )
+      IF oContainer != Nil .AND. oContainer:handle == oCtrl:oContainer:handle
          Return Nil
       ELSE
-         i := Ascan( oContainer:aControls,{|o|o:handle==oCtrl:handle} )
+         i := Ascan( oCtrl:oContainer:aControls,{|o|o:handle==oCtrl:handle} )
          IF i != 0
-            Adel( oContainer:aControls,i )
-            Asize( oContainer:aControls,Len(oContainer:aControls)-1 )
+            Adel( oCtrl:oContainer:aControls,i )
+            Asize( oCtrl:oContainer:aControls,Len(oCtrl:oContainer:aControls)-1 )
          ENDIF
          oCtrl:oContainer := Nil
       ENDIF
    ENDIF
 
-   oCtrl:nLeft := 9999
-   oContainer := CtrlByPos( oDlg,nLeft+oCtrl:nWidth/2,oCtrl:nTop+oCtrl:nHeight/2 )
-   // writelog( "1) "+Iif(oContainer!=Nil,oContainer:cClass+" "+str(oContainer:nLeft)+" "+str(oContainer:nTop),"Nil") )
-   IF oContainer != Nil .AND. ( ;
-       nLeft+oCtrl:nWidth > oContainer:nLeft+oContainer:nWidth .OR. ;
-       oCtrl:nTop+oCtrl:nHeight > oContainer:nTop+oContainer:nHeight )
-      oContainer := Nil
-   ENDIF
    IF oContainer != Nil
       oContainer:AddControl( oCtrl )
       oCtrl:oContainer := oContainer
@@ -1212,14 +1203,49 @@ Local i, nLeft := oCtrl:nLeft
          DestroyWindow( oCtrl:handle )
          aDel( oDlg:aControls,i )
          oDlg:aControls[Len(oDlg:aControls)] := oCtrl
-         oCtrl:nLeft := nLeft
          oCtrl:lInit := .F.
          oCtrl:Activate()
       ENDIF
    ENDIF
-   oCtrl:nLeft := nLeft
 
 Return Nil
+
+Static Function CtrlByRect( oDlg,xPos1,yPos1,xPos2,yPos2 )
+Local i := 1, j := 0, aControls := oDlg:aControls, alen := Len( aControls )
+Local oCtrl
+
+   DO WHILE i <= alen
+     IF !aControls[i]:lHide .AND. xPos1 >= aControls[i]:nLeft .AND. ;
+           xPos2 < ( aControls[i]:nLeft+aControls[i]:nWidth ) .AND. ;
+           yPos1 >= aControls[i]:nTop .AND.                         ;
+           yPos2 < ( aControls[i]:nTop+aControls[i]:nHeight )
+        oCtrl := aControls[i]
+        IF j == 0
+           j := i
+        ENDIF
+        aControls := oCtrl:aControls
+        i := 0
+        alen := Len( aControls )
+     ENDIF
+     i ++
+   ENDDO
+   IF oCtrl != Nil
+      aControls := oDlg:aControls
+      alen := Len( aControls )
+      i := j + 1
+      DO WHILE i <= alen
+         IF !aControls[i]:lHide .AND. xPos1 >= aControls[i]:nLeft .AND. ;
+               xPos2 < ( aControls[i]:nLeft+aControls[i]:nWidth ) .AND. ;
+               yPos1 >= aControls[i]:nTop .AND.                         ;
+               yPos2 < ( aControls[i]:nTop+aControls[i]:nHeight ) .AND. ;
+               aControls[i]:nLeft > oCtrl:nLeft .AND. aControls[i]:nTop > oCtrl:nTop
+            oCtrl := aControls[i]
+            EXIT
+         ENDIF
+         i ++
+      ENDDO
+   ENDIF
+Return oCtrl
 
 Static Function CtrlByPos( oDlg,xPos,yPos )
 Local i := 1, j := 0, aControls := oDlg:aControls, alen := Len( aControls )

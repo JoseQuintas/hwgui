@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.36 2006-06-27 11:21:50 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.37 2006-07-07 10:20:52 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -1130,6 +1130,12 @@ Memvar lLastCycle, lSkipItem
             cText := aGetSecond( oItem:aProp,"caption" )
          ENDIF
          IF Valtype( cText ) == "C"
+            IF ( xProperty := aGetSecond( oItem:aProp,"border" ) ) != Nil ;
+                   .AND. xProperty
+               ::oPrinter:Box( x,y,x2,y2 )
+               x += 0.5
+               y += 0.5
+            ENDIF
             IF ( xProperty := aGetSecond( oItem:aProp,"justify" ) ) == Nil
                nJustify := 0
             ELSE

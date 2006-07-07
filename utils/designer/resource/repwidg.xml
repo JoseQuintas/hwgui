@@ -23,6 +23,9 @@
             Private pArray
             if Empty(oCtrl:title)
               FillRect( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,1 )
+              if oCtrl:GetProp("Border") == "True"
+                Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
+              endif
             else
               pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="justify"}),6]
               SetTransparentMode( hDC,.T. )

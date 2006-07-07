@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.494 2006-07-07 07:54:11 alkresin Exp $
+ * $Id: Changelog,v 1.495 2006-07-07 10:20:51 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-07-07 14:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/designer/resource/repwidg.xml
+  * source/hfrmtmpl.prg
+    * The "border" property of the Label item has been implemented.
 
 2006-07-07 11:53 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/designer/hformgen.prg

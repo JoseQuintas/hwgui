@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.26 2006-04-06 16:18:02 alkresin Exp $
+ * $Id: menu_c.c,v 1.27 2006-07-12 05:45:21 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -231,6 +231,20 @@ HB_FUNC( ISENABLEDMENUITEM )
          uFlag           // menu item flags 
       );
       hb_retl( !( uCheck & MF_GRAYED ) );
+   }
+}
+
+HB_FUNC( HWG_DELETEMENU )
+{
+   HMENU hMenu = ( hb_pcount()>0 && !ISNIL(1) )? ((HMENU)hb_parnl(1)):GetMenu(aWindows[0]);
+
+   if( hMenu )
+   {
+      DeleteMenu(
+         hMenu,	                // handle to menu 
+         hb_parni( 2 ),         // menu item id to delete
+         MF_BYCOMMAND           // menu item flags 
+      );
    }
 }
 

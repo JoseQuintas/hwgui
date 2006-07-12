@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.495 2006-07-07 10:20:51 alkresin Exp $
+ * $Id: Changelog,v 1.496 2006-07-12 05:45:20 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-07-11 09:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/menu.prg
+  * source/menu_c.c
+    * New function has been added DeleteMenuItem( oWindow, nId ), which
+      deletes a menu item.
 
 2006-07-07 14:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/designer/resource/repwidg.xml

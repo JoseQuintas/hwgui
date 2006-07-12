@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.17 2005-09-14 15:22:06 lf_sfnet Exp $
+ * $Id: menu.prg,v 1.18 2006-07-12 05:45:21 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -302,3 +302,13 @@ Function Hwg_SearchPosBitmap( nPos_Id )
 
 Return lBmp
  
+Function DeleteMenuItem( oWnd, nId )
+Local aSubMenu, nPos
+
+   IF ( aSubMenu := Hwg_FindMenuItem( oWnd:menu, nId, @nPos ) ) != Nil
+      Adel( aSubMenu[1], nPos )
+      Asize( aSubMenu[1], Len(aSubMenu[1])-1 )
+
+      hwg_DeleteMenu( GetMenuHandle( oWnd:handle ), nId )
+   ENDIF
+Return Nil

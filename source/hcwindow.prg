@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.8 2006-06-06 16:31:27 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.9 2006-07-14 11:10:27 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -182,6 +182,7 @@ Return Nil
 Static Function onNotify( oWnd,wParam,lParam )
 Local iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res, handle, oItem
 
+
    IF oCtrl != Nil
       IF oCtrl:ClassName() == "HTAB"
          DO CASE
@@ -207,7 +208,10 @@ Local iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res, handle, oItem
       ELSEIF oCtrl:ClassName() == "HTREE"
          Return TreeNotify( oCtrl,lParam )
       ELSEIF oCtrl:ClassName() == "HGRID"         
-         Return ListViewNotify( oCtrl,lParam )               
+         Return ListViewNotify( oCtrl,lParam )
+      ELSEIF oCtrl:ClassName() == "HTOOLBAR"
+         Return ToolbarNotify( oCtrl,wParam, lParam )
+
       ELSE
          nCode := GetNotifyCode( lParam )
          // writelog("Code: "+str(nCode))

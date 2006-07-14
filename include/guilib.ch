@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.67 2006-07-06 14:46:30 lculik Exp $
+ *$Id: guilib.ch,v 1.68 2006-07-14 11:10:27 lculik Exp $
  */
 #define HWG_VERSION           "2.15"
 #define	WND_MAIN		1
@@ -1323,9 +1323,10 @@ Added by Marcos Antonio Gambeta
           [ STYLE <bstyle> ];
           [ STATE <bstate>];
           [ TEXT <ctext> ] ;
+          [ TOOLTIP <c> ];
            ON CLICK <bclick>;
           =>;
-          <O>:AddButton(<nBitIp>,<nId>,<bstate>,<bstyle>,<ctext>,<bclick>)
+          <O>:AddButton(<nBitIp>,<nId>,<bstate>,<bstyle>,<ctext>,<bclick>,<c>)
 
 #xcommand @ <x>,<y> TOOLBAR [ <oTool> ] ;
             [ OF <oWnd> ]              ;

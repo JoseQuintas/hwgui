@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.26 2006-07-03 01:48:15 lculik Exp $
+ *$Id: windows.ch,v 1.27 2006-07-14 11:10:27 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -940,3 +940,27 @@
 #define BTNS_CHECK      TBSTYLE_CHECK       // 0x0002
 #define BTNS_GROUP      TBSTYLE_GROUP       // 0x0004
 #define BTNS_CHECKGROUP TBSTYLE_CHECKGROUP  // (TBSTYLE_GROUP | TBSTYLE_CHECK)
+
+#define TB_ENABLEBUTTON (WM_USER+1)
+
+#define TTN_FIRST -520
+#define TTN_LAST  -549
+#define TTN_GETDISPINFOA        (TTN_FIRST - 0)
+#define TTN_GETDISPINFOW        (TTN_FIRST - 10)
+#define TTN_SHOW                (TTN_FIRST - 1)
+#define TTN_POP                 (TTN_FIRST - 2)
+#define TTN_GETDISPINFO         TTN_GETDISPINFOA
+#define TB_SETTOOLTIPS          (WM_USER + 36)
+#define TBSTYLE_DROPDOWN        0x0008
+#define BTNS_DROPDOWN   TBSTYLE_DROPDOWN
+#define TBSTYLE_EX_DRAWDDARROWS 0x00000001
+#define TB_SETEXTENDEDSTYLE     (WM_USER + 84)  // For TBSTYLE_EX_*
+#define TB_GETEXTENDEDSTYLE     (WM_USER + 85)  // For TBSTYLE_EX_*
+#define TBN_FIRST               (-700)       // toolbar
+#define TBN_LAST                (-720)
+
+#define TBN_DROPDOWN            (TBN_FIRST - 10)
+#define TBN_GETINFOTIPA         (TBN_FIRST - 18)
+#define TBN_GETINFOTIP          TBN_GETINFOTIPA
+#define NM_FIRST                0
+#define NM_TOOLTIPSCREATED      (NM_FIRST-19)   // notify of when the tooltips window is create

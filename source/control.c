@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.39 2006-07-06 14:46:30 lculik Exp $
+ * $Id: control.c,v 1.40 2006-07-14 11:10:27 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -46,7 +46,7 @@ HB_FUNC( HWG_INITCOMMONCONTROLSEX )
       INITCOMMONCONTROLSEX  i;
 
       i.dwSize = sizeof( INITCOMMONCONTROLSEX );
-      i.dwICC = ICC_DATE_CLASSES | ICC_INTERNET_CLASSES | ICC_BAR_CLASSES;
+      i.dwICC = ICC_DATE_CLASSES | ICC_INTERNET_CLASSES | ICC_BAR_CLASSES | ICC_LISTVIEW_CLASSES |ICC_TAB_CLASSES |ICC_TREEVIEW_CLASSES ;
       InitCommonControlsEx( &i );
       lInitCmnCtrl = 1;
    }
@@ -1219,18 +1219,18 @@ HB_FUNC(CREATETOOLBAR)
 
    ULONG ulStyle = hb_parnl(3);
    ULONG ulExStyle = ( ( !ISNIL(8) )? hb_parnl(8):0 ) | ( (ulStyle&WS_BORDER)? WS_EX_CLIENTEDGE:0 );
+
    HWND hWndCtrl = CreateWindowEx( 
                  ulExStyle,                    /* extended style */
                  TOOLBARCLASSNAME,                     /* predefined class  */
                  NULL,                         /* title   */
-                 WS_CHILD | WS_VISIBLE |CCS_ADJUSTABLE| ulStyle, /* style  */
+                 TBSTYLE_FLAT | TBSTYLE_TOOLTIPS | CCS_TOP | WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_OVERLAPPED | WS_POPUP | WS_VISIBLE                 /*WS_CHILD | WS_VISIBLE |CCS_TOP|CCS_ADJUSTABLE| WS_CLIPCHILDREN|WS_CLIPSIBLINGS| TBSTYLE_TOOLTIPS |TBSTYLE_FLAT| ulStyle */, /* style  */
                  hb_parni(4), hb_parni(5),      /* x, y       */
                  hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
                  (HWND) hb_parnl(1),            /* parent window    */ 
                  (HMENU) hb_parni(2),           /* control ID  */
                  GetModuleHandle( NULL ),
                  NULL);
-
 
    hb_retnl( (LONG) hWndCtrl );
 
@@ -1239,31 +1239,40 @@ HB_FUNC(CREATETOOLBAR)
 HB_FUNC(TOOLBARADDBUTTONS)
 {
 
-   HWND hWndCtrl = (HWND) hb_parnl( 1 ) ;
-   PHB_ITEM pArray = hb_param(2,HB_IT_ARRAY);
+   HWND hWndCtrl = ( HWND ) hb_parnl( 1 ) ;
+   HWND hToolTip = ( HWND ) hb_parnl( 4 ) ;
+   PHB_ITEM pArray = hb_param( 2, HB_IT_ARRAY );
    int iButtons= hb_parni( 3 );
-   TBBUTTON  *tb = hb_xgrab(iButtons*sizeof(TBBUTTON));
+   TBBUTTON  *tb = hb_xgrab( iButtons * sizeof( TBBUTTON ) );
    TBADDBITMAP tbb;
    PHB_ITEM pTemp;
+
    ULONG ulCount;
    int i;
-   HANDLE phInstance;
+   HANDLE phInstance = GetModuleHandle( 0 );
    ULONG ulID;
-   hb_winmainArgGet(  &phInstance, NULL, 0);
+   DWORD style = GetWindowLong( hWndCtrl, GWL_STYLE );
+
+   SetWindowLong(hWndCtrl,GWL_STYLE,style|TBSTYLE_TOOLTIPS |TBSTYLE_FLAT);
 
    SendMessage( hWndCtrl, TB_BUTTONSTRUCTSIZE, sizeof(TBBUTTON), 0L);
    
    for ( ulCount =0 ;  ( ulCount < hb_arrayLen( pArray ) ); ulCount++ )
    {
+
       pTemp = hb_arrayGetItemPtr( pArray , ulCount + 1 );
       ulID=hb_arrayGetNI( pTemp, 1 );
+
       if ( ulID>0 )
       {
-       tbb.hInst = phInstance;
-       tbb.nID   = ulID;
 
-       i=SendMessage(   (HWND) hWndCtrl,  (UINT) TB_ADDBITMAP, (WPARAM) hb_arrayLen( pArray ),   (LPARAM) (LPTBADDBITMAP) &tbb );
-       tb[ ulCount ].iBitmap   = i ;
+         tbb.hInst = phInstance;
+         tbb.nID   = ulID;
+
+         i = SendMessage(   (HWND) hWndCtrl,  (UINT) TB_ADDBITMAP, (WPARAM) hb_arrayLen( pArray ),   (LPARAM) (LPTBADDBITMAP) &tbb );
+         tb[ ulCount ].iBitmap   = i ;
+
+
       }
       else
       {
@@ -1273,13 +1282,46 @@ HB_FUNC(TOOLBARADDBUTTONS)
       tb[ ulCount ].fsState   = hb_arrayGetNI( pTemp, 3 );
       tb[ ulCount ].fsStyle   = hb_arrayGetNI( pTemp, 4 );
       tb[ ulCount ].dwData    = hb_arrayGetNI( pTemp, 5 );
-      tb[ ulCount ].iString   = ( int ) hb_arrayGetCPtr( pTemp, 6 ); 
+      tb[ ulCount ].iString   = hb_arrayGetCLen( pTemp, 6 )  >0 ? ( int ) hb_arrayGetCPtr( pTemp, 6 ) : 0 ;
+
    }
 
    SendMessage( hWndCtrl, TB_ADDBUTTONS, (WPARAM) iButtons, (LPARAM) (LPTBBUTTON) tb);
-   SendMessage( hWndCtrl, TB_AUTOSIZE, 0, 0 ); 
-   ShowWindow( hWndCtrl, SW_SHOWNORMAL );
+   SendMessage( hWndCtrl, TB_AUTOSIZE, 0, 0 );
 
    hb_xfree( tb );
 }
 
+HB_FUNC( TOOLBAR_SETDISPINFO )
+{
+   PHB_ITEM pValue = hb_itemNew( NULL );
+   LPTOOLTIPTEXT pDispInfo = ( LPTOOLTIPTEXT ) hb_parnl( 1 );
+   hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
+   pDispInfo->lpszText  = hb_itemGetCPtr( pValue );
+   hb_itemRelease( pValue );        
+}
+
+HB_FUNC(TOOLBAR_GETDISPINFOID)
+{
+   PHB_ITEM pValue = hb_itemNew( NULL );
+   LPTOOLTIPTEXT pDispInfo = ( LPTOOLTIPTEXT )hb_parnl( 1 );
+   DWORD idButton = pDispInfo->hdr.idFrom;
+   hb_retnl( idButton );
+}
+
+HB_FUNC(TOOLBAR_GETINFOTIP)
+{
+   PHB_ITEM pValue = hb_itemNew( NULL );
+   LPNMTBGETINFOTIP pDispInfo = ( LPNMTBGETINFOTIP )hb_parnl( 1 );
+   hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
+   pDispInfo->pszText  = hb_itemGetCPtr( pValue );
+   hb_itemRelease( pValue );
+
+}
+
+HB_FUNC(TOOLBAR_GETINFOTIPID)
+{
+   LPNMTBGETINFOTIP pDispInfo = ( LPNMTBGETINFOTIP )hb_parnl( 1 );
+   DWORD idButton = pDispInfo->iItem;
+   hb_retnl(idButton);
+}

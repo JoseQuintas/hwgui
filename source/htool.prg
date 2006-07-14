@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.2 2006-07-06 14:47:43 lculik Exp $
+ * $Id: htool.prg,v 1.3 2006-07-14 11:10:27 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -37,7 +37,7 @@ CLASS HToolBar INHERIT HControl
 
    METHOD Activate()
    METHOD INIT()
-   method AddButton(a,s,d,f,g,h) // inline aadd(::aItem,aButton)
+   method AddButton(a,s,d,f,g,h) 
 ENDCLASS
 
 
@@ -92,7 +92,7 @@ Local n
       NEXT
 
       TOOLBARADDBUTTONS( ::handle, ::aItem, Len( ::aItem ) )
-
+      SendMessage( ::handle, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS )
    ENDIF
 RETURN Nil
 
@@ -100,16 +100,37 @@ RETURN Nil
 
 Function ToolbarNotify( oCtrl, wParam,lParam )
     Local aCord
+    Local nCode :=  GetNotifyCode( lParam )
+    Local nId
 
+    Local nButton 
+    Local nPos
 
+    IF nCode == TTN_GETDISPINFO
+
+       nButton :=TOOLBAR_GETDISPINFOID( lParam )
+       nPos := AScan( oCtrl:aItem,  { | x | x[ 2 ] == nButton })
+       TOOLBAR_SETDISPINFO( lParam, oCtrl:aItem[ nPos, 8 ] )
+
+    ELSEIF nCode == TBN_GETINFOTIP
+
+       nId := TOOLBAR_GETINFOTIPID(lParam)
+       nPos := AScan( oCtrl:aItem,  { | x | x[ 2 ] == nId })
+       TOOLBAR_GETINFOTIP( lParam, oCtrl:aItem[ nPos, 8 ] )
+
+    ELSEIF nCode == TBN_DROPDOWN
+    ENDIF
     
 Return 0
 
-METHOD AddButton(nBitIp,nId,bstate,bstyle,ctext,bclick) CLASS hToolBar
+METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c) CLASS hToolBar
 
    DEFAULT nBitIp to -1
    DEFAULT bstate to TBSTATE_ENABLED
    DEFAULT bstyle to 0x0000
+   DEFAULT c to ""
    DEFAULT ctext to ""
-   AAdd( ::aItem ,{ nBitIp, nId, bstate, bstyle, 0, ctext, bclick } )
+   AAdd( ::aItem ,{ nBitIp, nId, bState, bStyle, 0, cText, bClick ,c} )
+
 RETURN Self
+

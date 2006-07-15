@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.3 2006-07-14 11:10:27 lculik Exp $
+ * $Id: htool.prg,v 1.4 2006-07-15 14:00:50 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -82,26 +82,41 @@ METHOD Activate CLASS hToolBar
 RETURN Nil
 
 METHOD INIT CLASS hToolBar
-Local n
+Local n,n1
+Local aTemp
    IF !::lInit
       Super:Init()
       For n:=1 TO len( ::aItem )
+
          IF Valtype( ::aItem[ n, 7 ] ) == "B"
             ::oParent:AddEvent( BN_CLICKED, ::aItem[ n, 2 ], ::aItem[ n ,7 ] )
          ENDIF
+
+         IF Valtype (::aItem[ n, 9 ] ) == "A"
+
+            ::aItem[ n, 10 ] :=hwg__CreatePopupMenu()
+            aTemp := ::aItem[ n, 9 ]
+            
+            FOR n1 :=1 to Len( aTemp )
+               hwg__AddMenuItem( ::aItem[ n, 10 ], aTemp[ n1, 1 ], -1, .F., aTemp[ n1, 2 ], , .F. )
+               ::oParent:AddEvent( BN_CLICKED, aTemp[ n1, 2 ], aTemp[ n1,3 ] )
+            NEXT
+
+         ENDIF
+
       NEXT
 
       TOOLBARADDBUTTONS( ::handle, ::aItem, Len( ::aItem ) )
       SendMessage( ::handle, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS )
+
    ENDIF
+
 RETURN Nil
-
-
 
 Function ToolbarNotify( oCtrl, wParam,lParam )
     Local aCord
     Local nCode :=  GetNotifyCode( lParam )
-    Local nId
+    Local nId,e
 
     Local nButton 
     Local nPos
@@ -119,18 +134,25 @@ Function ToolbarNotify( oCtrl, wParam,lParam )
        TOOLBAR_GETINFOTIP( lParam, oCtrl:aItem[ nPos, 8 ] )
 
     ELSEIF nCode == TBN_DROPDOWN
+       if valtype(oCtrl:aItem[1,9]) ="A"
+       nid := TOOLBAR_SUBMENUEXGETID( lParam )
+       nPos := AScan( oCtrl:aItem,  { | x | x[ 2 ] == nId })
+       TOOLBAR_SUBMENUEx( lParam, oCtrl:aItem[ nPos, 10 ], oCtrl:oParent:handle )
+       else
+              TOOLBAR_SUBMENU(lParam,1,oCtrl:oParent:handle)
+       endif
     ENDIF
     
 Return 0
 
-METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c) CLASS hToolBar
-
+METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu) CLASS hToolBar
+   Local hMenu := Nil
    DEFAULT nBitIp to -1
    DEFAULT bstate to TBSTATE_ENABLED
    DEFAULT bstyle to 0x0000
    DEFAULT c to ""
    DEFAULT ctext to ""
-   AAdd( ::aItem ,{ nBitIp, nId, bState, bStyle, 0, cText, bClick ,c} )
+   AAdd( ::aItem ,{ nBitIp, nId, bState, bStyle, 0, cText, bClick, c, aMenu, hMenu } )
 
 RETURN Self
 

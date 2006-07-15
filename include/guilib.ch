@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.68 2006-07-14 11:10:27 lculik Exp $
+ *$Id: guilib.ch,v 1.69 2006-07-15 14:00:49 lculik Exp $
  */
 #define HWG_VERSION           "2.15"
 #define	WND_MAIN		1
@@ -874,7 +874,7 @@
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<vari>,               ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;
                    <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,,,  ;
-                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<.lnoborder.>,<lMaxLength>,<.lPassword.>)
+                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<.lnoborder.>,<lMaxLength>,<.lPassword.>,<(vari)>)
 
 #xcommand REDEFINE GET [ <oEdit> VAR ] <vari>  ;
             [ OF <oWnd> ]              ;
@@ -890,7 +890,7 @@
           => ;
     [<oEdit> := ] HEdit():Redefine( <oWnd>,<nId>,<vari>, ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},    ;
-                   <oFont>,,,,<bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<lMaxLenght> )
+                   <oFont>,,,,<bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<lMaxLenght>,<(vari)> )
 
 
 #xcommand @ <x>,<y> GET CHECKBOX [ <oCheck> VAR ] <vari>  ;
@@ -1324,9 +1324,10 @@ Added by Marcos Antonio Gambeta
           [ STATE <bstate>];
           [ TEXT <ctext> ] ;
           [ TOOLTIP <c> ];
+          [ MENU <d>];
            ON CLICK <bclick>;
           =>;
-          <O>:AddButton(<nBitIp>,<nId>,<bstate>,<bstyle>,<ctext>,<bclick>,<c>)
+          <O>:AddButton(<nBitIp>,<nId>,<bstate>,<bstyle>,<ctext>,<bclick>,<c>,<d>)
 
 #xcommand @ <x>,<y> TOOLBAR [ <oTool> ] ;
             [ OF <oWnd> ]              ;
@@ -1346,3 +1347,9 @@ Added by Marcos Antonio Gambeta
             [ ITEM <aitem>];
           => ;
     [<oSay> := ] Htoolbar():Redefine( <oWnd>,<nId>,<cCaption>,  ,<bInit>,<bSize>,<bDraw>, , , , ,<aitem> )
+
+#xcommand CREATE MENUBAR <o> => <o> := \{ \}
+#xcommand MENUBARITEM  <oWnd> CAPTION <c> ON <id1> ACTION <b1>      ;
+          => ;
+          Aadd( <oWnd>, \{ <c>, <id1>, <{b1}> \})
+

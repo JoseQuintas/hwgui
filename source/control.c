@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.40 2006-07-14 11:10:27 lculik Exp $
+ * $Id: control.c,v 1.41 2006-07-15 14:00:50 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1325,3 +1325,76 @@ HB_FUNC(TOOLBAR_GETINFOTIPID)
    DWORD idButton = pDispInfo->iItem;
    hb_retnl(idButton);
 }
+
+HB_FUNC(TOOLBAR_SUBMENU)
+{
+
+
+   LPNMHDR lpnm  = (LPNMHDR) hb_parnl(1);
+   LPNMTOOLBAR lpnmTB = (LPNMTOOLBAR) hb_parnl(1);
+   RECT      rc;
+   TPMPARAMS tpm;
+   HMENU     hPopupMenu = NULL;
+   HMENU     hMenuLoaded;
+   BOOL      bRet = FALSE;
+   HWND g_hwndMain=  (HWND) hb_parnl(3);
+   HANDLE g_hinst = GetModuleHandle( 0 );
+         SendMessage(lpnmTB->hdr.hwndFrom, TB_GETRECT,
+                     (WPARAM)lpnmTB->iItem, (LPARAM)&rc);
+
+         MapWindowPoints(lpnmTB->hdr.hwndFrom,
+                         HWND_DESKTOP, (LPPOINT)&rc, 2);                         
+
+         tpm.cbSize = sizeof(TPMPARAMS);
+         tpm.rcExclude = rc;
+         hMenuLoaded = LoadMenu(g_hinst, MAKEINTRESOURCE(hb_parni(2))); 
+         hPopupMenu = GetSubMenu(LoadMenu(g_hinst,
+            MAKEINTRESOURCE(hb_parni(2))),0);
+
+         TrackPopupMenuEx(hPopupMenu,
+            TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_VERTICAL,               
+            rc.left, rc.bottom, g_hwndMain, &tpm); 
+
+         DestroyMenu(hMenuLoaded);			
+
+}
+HB_FUNC(TOOLBAR_SUBMENUEX)
+{
+
+
+   LPNMHDR lpnm  = (LPNMHDR) hb_parnl(1);
+   LPNMTOOLBAR lpnmTB = (LPNMTOOLBAR) hb_parnl(1);
+   RECT      rc;
+   TPMPARAMS tpm;
+   HMENU     hPopupMenu = (HMENU)hb_parnl(2);
+   HMENU     hMenuLoaded;
+   BOOL      bRet = FALSE;
+   HWND g_hwndMain=  (HWND) hb_parnl(3);
+   HANDLE g_hinst = GetModuleHandle( 0 );
+         SendMessage(lpnmTB->hdr.hwndFrom, TB_GETRECT,
+                     (WPARAM)lpnmTB->iItem, (LPARAM)&rc);
+
+         MapWindowPoints(lpnmTB->hdr.hwndFrom,
+                         HWND_DESKTOP, (LPPOINT)&rc, 2);                         
+
+         tpm.cbSize = sizeof(TPMPARAMS);
+         tpm.rcExclude = rc;
+
+//         hPopupMenu = GetSubMenu(LoadMenu(g_hinst,
+//            MAKEINTRESOURCE(hb_parni(2))),0);
+
+         TrackPopupMenuEx(hPopupMenu,
+            TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_VERTICAL,               
+            rc.left, rc.bottom, g_hwndMain, &tpm); 
+
+         DestroyMenu(hMenuLoaded);			
+
+}
+
+HB_FUNC(TOOLBAR_SUBMENUEXGETID)
+{
+
+   LPNMTOOLBAR lpnmTB = (LPNMTOOLBAR) hb_parnl(1);
+   hb_retnl( ( LONG ) lpnmTB->iItem );
+}
+

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.498 2006-07-15 14:00:48 lculik Exp $
+ * $Id: Changelog,v 1.499 2006-07-15 14:21:26 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2006-07-15 11:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+  + samples/TESTGET.RH 
+  + samples/testget3.prg 
+  + samples/testget3.rc
+    ! samples to demostrate toolbar creation
+
 2006-07-15 11:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * include/guilib.ch
     ! update toolbars command to include tooltip clause

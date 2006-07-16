@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.41 2006-07-15 14:00:50 lculik Exp $
+ * $Id: control.c,v 1.42 2006-07-16 19:16:57 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -903,6 +903,11 @@ HB_FUNC( IMAGELIST_ADD )
    hb_retnl( ImageList_Add( (HIMAGELIST)hb_parnl(1), (HBITMAP)hb_parnl(2), (HBITMAP) NULL ) );
 }
 
+HB_FUNC( IMAGELIST_ADDMASKED )
+{
+   hb_retnl( ImageList_AddMasked( (HIMAGELIST)hb_parnl(1), (HBITMAP)hb_parnl(2), (COLORREF) hb_parnl(3) ) );
+}
+
 /*
  *  SetTimer( hWnd, idTimer, i_MilliSeconds )
  */
@@ -1263,21 +1268,21 @@ HB_FUNC(TOOLBARADDBUTTONS)
       pTemp = hb_arrayGetItemPtr( pArray , ulCount + 1 );
       ulID=hb_arrayGetNI( pTemp, 1 );
 
-      if ( ulID>0 )
-      {
+//      if ( ulID>0 )
+//      {
+//
+//         tbb.hInst = phInstance;
+//         tbb.nID   = ulID;
+//
+//         i = SendMessage(   (HWND) hWndCtrl,  (UINT) TB_ADDBITMAP, (WPARAM) hb_arrayLen( pArray ),   (LPARAM) (LPTBADDBITMAP) &tbb );
+//         tb[ ulCount ].iBitmap   = i ;
 
-         tbb.hInst = phInstance;
-         tbb.nID   = ulID;
 
-         i = SendMessage(   (HWND) hWndCtrl,  (UINT) TB_ADDBITMAP, (WPARAM) hb_arrayLen( pArray ),   (LPARAM) (LPTBADDBITMAP) &tbb );
-         tb[ ulCount ].iBitmap   = i ;
-
-
-      }
-      else
-      {
-            tb[ ulCount ].iBitmap   = hb_arrayGetNI( pTemp, 1 );
-      }
+//      }
+//      else
+//      {
+            tb[ ulCount ].iBitmap   = ulID>0 ? ulCount :hb_arrayGetNI( pTemp, 1 );
+//      }
       tb[ ulCount ].idCommand = hb_arrayGetNI( pTemp, 2 );
       tb[ ulCount ].fsState   = hb_arrayGetNI( pTemp, 3 );
       tb[ ulCount ].fsStyle   = hb_arrayGetNI( pTemp, 4 );

@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.4 2006-07-15 14:00:50 lculik Exp $
+ * $Id: htool.prg,v 1.5 2006-07-16 19:16:58 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -84,17 +84,23 @@ RETURN Nil
 METHOD INIT CLASS hToolBar
 Local n,n1
 Local aTemp
+Local hIm
+Local aButton :={}
+Local aBmpSize
+Local nPos
    IF !::lInit
       Super:Init()
-      For n:=1 TO len( ::aItem )
+      For n := 1 TO len( ::aItem )
 
          IF Valtype( ::aItem[ n, 7 ] ) == "B"
+
             ::oParent:AddEvent( BN_CLICKED, ::aItem[ n, 2 ], ::aItem[ n ,7 ] )
+
          ENDIF
 
-         IF Valtype (::aItem[ n, 9 ] ) == "A"
+         IF Valtype( ::aItem[ n, 9 ] ) == "A"
 
-            ::aItem[ n, 10 ] :=hwg__CreatePopupMenu()
+            ::aItem[ n, 10 ] := hwg__CreatePopupMenu()
             aTemp := ::aItem[ n, 9 ]
             
             FOR n1 :=1 to Len( aTemp )
@@ -103,10 +109,44 @@ Local aTemp
             NEXT
 
          ENDIF
+         
+        IF ::aItem[ n, 1 ] > 0
+           AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
+        ENDIF
 
       NEXT
 
+      IF Len(aButton ) >0
+
+          aBmpSize := GetBitmapSize( aButton[1] )
+
+          IF aBmpSize[ 3 ] == 4
+             hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR4 + ILC_MASK )
+          ELSEIF aBmpSize[ 3 ] == 8
+             hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR8 + ILC_MASK )
+          ELSEIF aBmpSize[ 3 ] == 24
+             hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLORDDB + ILC_MASK )
+          ENDIF
+
+          FOR nPos :=1 to len(aButton)
+
+             aBmpSize := GetBitmapSize( aButton[nPos] )
+
+             IF aBmpSize[3] == 24
+//             Imagelist_AddMasked( hIm,aButton[nPos],RGB(236,223,216) )
+                Imagelist_Add( hIm, aButton[ nPos ] )
+             ELSE
+                Imagelist_Add( hIm, aButton[ nPos ] )
+             ENDIF
+
+          NEXT
+
+       SendMessage( ::Handle, TB_SETIMAGELIST, 0, hIm )
+
+      ENDIF
+
       TOOLBARADDBUTTONS( ::handle, ::aItem, Len( ::aItem ) )
+
       SendMessage( ::handle, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS )
 
    ENDIF

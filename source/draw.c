@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.18 2006-04-13 06:39:35 alkresin Exp $
+ * $Id: draw.c,v 1.19 2006-07-16 19:16:57 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -197,20 +197,32 @@ HB_FUNC( LOADICON )
 
 HB_FUNC( LOADIMAGE )
 {
-   hb_retnl( (LONG) 
+   if ( ISNUM( 2 ) )
+      hb_retnl( (LONG) 
+          LoadImage( ISNIL( 1 ) ? GetModuleHandle(NULL) : (HINSTANCE) hb_parnl( 1 ),    // handle of the instance that contains the image
+                  (LPCTSTR)MAKEINTRESOURCE(hb_parnl(2)),          // name or identifier of image
+                  (UINT) hb_parni(3),           // type of image
+                  hb_parni(4),                  // desired width
+                  hb_parni(5),                  // desired height
+                  (UINT)hb_parni(6)             // load flags
+     ) ) ;
+
+   else
+      hb_retnl( (LONG) 
           LoadImage( (HINSTANCE)hb_parnl(1),    // handle of the instance that contains the image
                   (LPCTSTR)hb_parc(2),          // name or identifier of image
                   (UINT) hb_parni(3),           // type of image
                   hb_parni(4),                  // desired width
                   hb_parni(5),                  // desired height
                   (UINT)hb_parni(6)             // load flags
-   ) );
+      ) );
+
 }
 
 HB_FUNC( LOADBITMAP )
 {
    if( ISNUM(1) )
-      hb_retnl( (LONG) LoadBitmap( NULL, (LPCTSTR) hb_parnl( 1 ) ) );
+      hb_retnl( (LONG) LoadBitmap( GetModuleHandle( NULL ), (LPCTSTR) hb_parnl( 1 ) ) );
    else
       hb_retnl( (LONG) LoadBitmap( GetModuleHandle( NULL ), (LPCTSTR) hb_parc( 1 ) ) );
 }
@@ -346,7 +358,7 @@ HB_FUNC( SPREADBITMAP )
 HB_FUNC( GETBITMAPSIZE )
 {
    BITMAP  bitmap;
-   PHB_ITEM aMetr = _itemArrayNew( 2 );
+   PHB_ITEM aMetr = _itemArrayNew( 3 );
    PHB_ITEM temp;
 
    GetObject( (HBITMAP) hb_parnl( 1 ), sizeof( BITMAP ), ( LPVOID ) &bitmap );
@@ -357,6 +369,10 @@ HB_FUNC( GETBITMAPSIZE )
 
    temp = _itemPutNL( NULL, bitmap.bmHeight );
    _itemArrayPut( aMetr, 2, temp );
+   _itemRelease( temp );
+
+   temp = _itemPutNL( NULL, bitmap.bmBitsPixel );
+   _itemArrayPut( aMetr, 3, temp );
    _itemRelease( temp );
 
    _itemReturn( aMetr );

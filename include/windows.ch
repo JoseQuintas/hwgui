@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.27 2006-07-14 11:10:27 lculik Exp $
+ *$Id: windows.ch,v 1.28 2006-07-16 19:16:57 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -964,3 +964,17 @@
 #define TBN_GETINFOTIP          TBN_GETINFOTIPA
 #define NM_FIRST                0
 #define NM_TOOLTIPSCREATED      (NM_FIRST-19)   // notify of when the tooltips window is create
+#define ILC_MASK                0x0001
+#define ILC_COLOR               0x0000
+#define ILC_COLORDDB            0x00FE
+#define ILC_COLOR4              0x0004
+#define ILC_COLOR8              0x0008
+#define ILC_COLOR16             0x0010
+#define ILC_COLOR24             0x0018
+#define ILC_COLOR32             0x0020
+#define TB_SETIMAGELIST         (WM_USER + 48)
+#define TB_GETIMAGELIST         (WM_USER + 49)
+#define TB_LOADIMAGES           (WM_USER + 50)
+#define TB_GETRECT              (WM_USER + 51) // wParam is the Cmd instead of index
+#define TB_SETHOTIMAGELIST      (WM_USER + 52)
+#define TB_GETHOTIMAGELIST      (WM_USER + 53)

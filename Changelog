@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.499 2006-07-15 14:21:26 lculik Exp $
+ * $Id: Changelog,v 1.500 2006-07-16 19:16:57 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-07-16 16:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+  * source/htool.prg
+    ! Some changes to handle 24bits bitmp
+  * source/control.c
+    ! Some changes to handle 24bits bitmp
+  * source/draw.c
+    ! Changed LoadImge function to accept loadding bitmaps from resource
+    ! changed GETBITMAPSIZE() to return the number of pixes in the bitmap
+
 2006-07-15 11:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   + samples/TESTGET.RH 
   + samples/testget3.prg 

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.61 2005-10-25 16:01:46 lculik Exp $
+ * $Id: hbrowse.prg,v 1.62 2006-07-17 09:12:36 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -294,7 +294,7 @@ Static keyCode := 0
                cKeyb := GetKeyboardState()
                nCtrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
                IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nCtrl.AND.a[2]==wParam} ) ) > 0
-                  Eval( oParent:KeyList[ nPos,3 ] )
+                  Eval( oParent:KeyList[ nPos,3 ], Self )
                ENDIF
             ENDIF
          ENDIF

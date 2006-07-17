@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.48 2006-05-05 21:45:54 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.49 2006-07-17 09:12:36 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -244,7 +244,7 @@ Local nexthandle
             cKeyb := GetKeyboardState()
             nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
             IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nctrl.AND.a[2]==wParam} ) ) > 0
-               Eval( oParent:KeyList[ nPos,3 ] )
+               Eval( oParent:KeyList[ nPos,3 ], Self )
             ENDIF
          ENDIF
       ENDIF

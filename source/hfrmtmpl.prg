@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.37 2006-07-07 10:20:52 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.38 2006-07-17 09:12:36 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -558,7 +558,7 @@ Return Nil
 
 Static Function CreateCtrl( oParent, oCtrlTmpl, oForm )
 Local i, j, oCtrl, stroka, varname, xProperty, block, cType, cPName
-Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName
+Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName, cVarName
 MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop
 MEMVAR onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg
 MEMVAR nWidth, nHeight, oFont, lNoBorder, bSetGet
@@ -658,6 +658,7 @@ MEMVAR aImages, lEditLabels, aParts
          __mvPut( cPName, xProperty )
 
          IF cPName == "varname"
+            cVarName := xProperty
             bSetGet := &( "{|v|Iif(v==Nil,"+xProperty+","+xProperty+":=v)}" )
             IF __mvGet( xProperty ) == Nil
                /* If the variable with 'varname' name isn't initialized
@@ -715,6 +716,9 @@ MEMVAR aImages, lEditLabels, aParts
       onInit := {|o|o:Move(,,o:nWidth-1)}
    ENDIF
    oCtrl := &stroka
+   IF cVarName != Nil
+      oCtrl:cargo := cVarName
+   ENDIF
    IF Type( "m->name" ) == "C"
       // writelog( oCtrlTmpl:cClass+" "+name )
       __mvPut( name, oCtrl )

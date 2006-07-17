@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.500 2006-07-16 19:16:57 lculik Exp $
+ * $Id: Changelog,v 1.501 2006-07-17 09:12:35 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-07-17 13:12 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hfrmtmpl.prg
+    * Now, while creating a form, the "varname" is stored in ctrl's :cargo variable.
+  * source/hedit.prg
+  * source/hbrowse.prg
+    * Now the object is passed to the call of a codeblock, defined in SET KEY ...
 
 2006-07-16 16:20 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/htool.prg

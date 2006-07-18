@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.38 2006-07-17 09:12:36 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.39 2006-07-18 12:50:46 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -926,7 +926,7 @@ Local cPre
       ELSEIF aItems[i]:title == "method"
          Aadd( aMethods, { Lower(aItems[i]:GetAttribute("name")),RdScript(,aItems[i]:aItems[1]:aItems[1]) } )
          IF aMethods[ (j := Len(aMethods)),1 ] == "common"
-            ::aFuncs := ::aMethods[ j,2,2 ]
+            ::aFuncs := ::aMethods[ j,2 ]
             FOR j := 1 TO Len( ::aFuncs[2] )
                cPre := "#xtranslate "+ ::aFuncs[2,j,1] + ;
                      "( <params,...> ) => callfunc('"  + ;

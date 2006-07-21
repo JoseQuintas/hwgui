@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.64 2006-07-21 11:54:29 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.65 2006-07-21 17:25:30 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -385,7 +385,8 @@ RETURN Self
 
 //----------------------------------------------------//
 METHOD FindBrowse( nId ) CLASS HBrowse
-   Local i := Ascan( ::aItemsList,{|o|o:id==nId},1,::iItems )
+Local i := Ascan( ::aItemsList,{|o|o:id==nId},1,::iItems )
+
 RETURN Iif( i>0,::aItemsList[i],Nil )
 
 //----------------------------------------------------//
@@ -435,6 +436,7 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD DelColumn( nPos ) CLASS HBrowse
+
    Adel( ::aColumns,nPos )
    Asize( ::aColumns,Len( ::aColumns ) - 1 )
    ::lChanged := .T.
@@ -548,7 +550,7 @@ Local i, j, oColumn, xSize, nColLen, nHdrLen, nCount
             HdrToken( oColumn:footing, @nHdrLen, @nCount )
             IF ! oColumn:lSpandFoot
                nColLen := max( nColLen, nHdrLen )
-
+            ENDIF
             ::nFootRows := Max(::nFootRows, nCount)
          ENDIF
          IF ::oFont != Nil
@@ -610,35 +612,35 @@ Local oldBkColor, oldTColor
 
    IF ::internal[1] == 0
       IF ::rowPos != ::internal[2] .AND. !::lAppMode
-         EVAL( ::bSkip, Self, ::internal[2]-::rowPos )
+         Eval( ::bSkip, Self, ::internal[2]-::rowPos )
       ENDIF
       ::LineOut( ::internal[2], 0, hDC, .F. )
       IF ::rowPos != ::internal[2] .AND. !::lAppMode
-         EVAL( ::bSkip, Self, ::rowPos-::internal[2] )
+         Eval( ::bSkip, Self, ::rowPos-::internal[2] )
       ENDIF
    ELSE
-      IF EVAL( ::bEof,Self )
-         EVAL( ::bGoTop, Self )
+      IF Eval( ::bEof,Self )
+         Eval( ::bGoTop, Self )
          ::rowPos := 1
       ENDIF
       IF ::rowPos > nRows .AND. nRows > 0
          ::rowPos := nRows
       ENDIF
-      tmp := EVAL( ::bRecno,Self )
+      tmp := Eval( ::bRecno,Self )
       IF ::rowPos > 1
-         EVAL( ::bSkip, Self,-(::rowPos-1) )
+         Eval( ::bSkip, Self,-(::rowPos-1) )
       ENDIF
       i := 1
       DO WHILE .T.
-         IF EVAL( ::bRecno,Self ) == tmp
+         IF Eval( ::bRecno,Self ) == tmp
             ::rowPos := i
          ENDIF
-         IF i > nRows .OR. EVAL( ::bEof,Self )
+         IF i > nRows .OR. Eval( ::bEof,Self )
             EXIT
          ENDIF
          ::LineOut( i, 0, hDC, .F. )
          i ++
-         EVAL( ::bSkip, Self,1 )
+         Eval( ::bSkip, Self,1 )
       ENDDO
       ::rowCurrCount := i - 1
 
@@ -650,13 +652,13 @@ Local oldBkColor, oldTColor
          i ++
       ENDDO
 
-      EVAL( ::bGoTo, Self,tmp )
+      Eval( ::bGoTo, Self,tmp )
    ENDIF
    IF ::lAppMode
       ::LineOut( nRows+1, 0, hDC, .F.,.T. )
    ENDIF
 
-   ::LineOut( ::rowPos, IIF( ::lEditable, ::colpos, 0 ), hDC, .T. )
+   ::LineOut( ::rowPos, Iif( ::lEditable, ::colpos, 0 ), hDC, .T. )
    IF Checkbit( ::internal[1],1 ) .OR. ::lAppMode
       ::HeaderOut( hDC )
       IF ::nFootRows > 0
@@ -762,7 +764,7 @@ Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
       IF ! ::lAdjRight .and. fif == Len( ::aColumns )
          DrawLine( hDC, x-1, ::y1-(::height*::nHeadRows), x-1, ::y1+(::height+1)*nRows )
       ENDIF
-      fif := IIF( fif = ::freeze, ::nLeftCol, fif + 1 )
+      fif := Iif( fif = ::freeze, ::nLeftCol, fif + 1 )
       IF fif > Len( ::aColumns )
          exit
       ENDIF
@@ -818,7 +820,7 @@ Local oColumn
          NEXT
       ENDIF
       x += xSize
-      fif := IIF( fif = ::freeze, ::nLeftCol, fif + 1 )
+      fif := Iif( fif = ::freeze, ::nLeftCol, fif + 1 )
       IF fif > Len( ::aColumns )
          exit
       ENDIF
@@ -851,7 +853,7 @@ Local aCores
       oldBkColor := SetBkColor( hDC, Iif( lSelected,::bcolorSel,::bcolor ) )
       oldTColor  := SetTextColor( hDC, Iif( lSelected,::tcolorSel,::tcolor ) )
       fldname := SPACE( 8 )
-      nPaintCol  := IIF( ::freeze > 0, 1, ::nLeftCol )
+      nPaintCol  := Iif( ::freeze > 0, 1, ::nLeftCol )
       nPaintRow  := nstroka
 
       WHILE x < ::x2 - 2
@@ -885,7 +887,7 @@ Local aCores
             IF !lClear
                IF ::aColumns[nPaintCol]:aBitmaps != Nil .AND. !Empty( ::aColumns[nPaintCol]:aBitmaps )
                   FOR j := 1 TO Len( ::aColumns[nPaintCol]:aBitmaps )
-                     IF Eval( ::aColumns[nPaintCol]:aBitmaps[j,1],EVAL( ::aColumns[nPaintCol]:block,,Self,nPaintCol ),lSelected )
+                     IF Eval( ::aColumns[nPaintCol]:aBitmaps[j,1],Eval( ::aColumns[nPaintCol]:block,,Self,nPaintCol ),lSelected )
                         ob := ::aColumns[nPaintCol]:aBitmaps[j,2]
                         IF ob:nHeight > ::height
                            y1 := 0
@@ -929,7 +931,7 @@ Local aCores
             ENDIF
          ENDIF
          x += xSize
-         nPaintCol := IIF( nPaintCol = ::freeze, ::nLeftCol, nPaintCol + 1 )
+         nPaintCol := Iif( nPaintCol = ::freeze, ::nLeftCol, nPaintCol + 1 )
          i ++
          IF ! ::lAdjRight .and. nPaintCol > LEN( ::aColumns )
             EXIT
@@ -1149,9 +1151,9 @@ RETURN Nil
 METHOD LINEUP() CLASS HBrowse
 Local minPos, maxPos, nPos
 
-   EVAL( ::bSkip, Self,- 1 )
-   IF EVAL( ::bBof,Self )
-      EVAL( ::bGoTop,Self )
+   Eval( ::bSkip, Self,- 1 )
+   IF Eval( ::bBof,Self )
+      Eval( ::bGoTop,Self )
    ELSE
       ::rowPos --
       IF ::rowPos = 0
@@ -1183,13 +1185,13 @@ Local minPos, maxPos, nPos, step, lBof := .F.
 
    IF ::rowPos > 1
       step := ( ::rowPos - 1 )
-      EVAL( ::bSKip, Self,- step )
+      Eval( ::bSKip, Self,- step )
       ::rowPos := 1
    ELSE
       step := ::rowCurrCount    // Min( ::kolz,::rowCount )
-      EVAL( ::bSkip, Self,- step )
-      IF EVAL( ::bBof,Self )
-         EVAL( ::bGoTop,Self )
+      Eval( ::bSkip, Self,- step )
+      IF Eval( ::bBof,Self )
+         Eval( ::bGoTop,Self )
          lBof := .T.
       ENDIF
    ENDIF
@@ -1212,16 +1214,16 @@ METHOD PAGEDOWN() CLASS HBrowse
 Local minPos, maxPos, nPos, nRows := ::rowCurrCount
 Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows )
 
-   EVAL( ::bSkip, Self, step )
+   Eval( ::bSkip, Self, step )
    ::rowPos := Min( ::kolz, nRows )
 
    IF ::bScrollPos != Nil
-      Eval( ::bScrollPos, Self, step, EVAL( ::bEof,Self ) )
+      Eval( ::bScrollPos, Self, step, Eval( ::bEof,Self ) )
    ELSE
       GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
       nPos := GetScrollPos( ::handle, SB_VERT )
-      IF EVAL( ::bEof,Self )
-         EVAL( ::bSkip, Self,- 1 )
+      IF Eval( ::bEof,Self )
+         Eval( ::bSkip, Self,- 1 )
          nPos := maxPos
          SetScrollPos( ::handle, SB_VERT, nPos )
       ELSEIF ::kolz > 1
@@ -1242,9 +1244,9 @@ Local minPos, maxPos, nPos
    GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
 
    nPos := GetScrollPos( ::handle, SB_VERT )
-   ::rowPos := lastrec()
-   eval( ::bGoBot, Self )
-   ::rowPos := min( ::kolz, ::rowCount )
+   ::rowPos := Lastrec()
+   Eval( ::bGoBot, Self )
+   ::rowPos := Min( ::kolz, ::rowCount )
    nPos := maxPos
    SetScrollPos( ::handle, SB_VERT, nPos )
    InvalidateRect( ::handle, 0 )
@@ -1263,7 +1265,7 @@ Local minPos, maxPos, nPos
    GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
    nPos := GetScrollPos( ::handle, SB_VERT )
    ::rowPos := 1
-   EVAL( ::bGoTop,Self )
+   Eval( ::bGoTop,Self )
    nPos := minPos
    SetScrollPos( ::handle, SB_VERT, nPos )
    InvalidateRect( ::handle, 0 )
@@ -1282,17 +1284,17 @@ Local minPos, maxPos, nPos
 Local xm := LOWORD(lParam), x1, fif
 
    x1  := ::x1
-   fif := IIF( ::freeze > 0, 1, ::nLeftCol )
+   fif := Iif( ::freeze > 0, 1, ::nLeftCol )
    
    DO WHILE fif < ( ::nLeftCol + ::nColumns ) .AND. x1 + ::aColumns[ fif ]:width < xm
       x1 += ::aColumns[ fif ]:width
-      fif := IIF( fif == ::freeze, ::nLeftCol, fif + 1 )
+      fif := Iif( fif == ::freeze, ::nLeftCol, fif + 1 )
    ENDDO
 
    IF nLine > 0 .AND. nLine <= ::rowCurrCount
       IF step != 0
          nrec := Recno()
-         EVAL( ::bSkip, Self, step )
+         Eval( ::bSkip, Self, step )
          IF !Eval( ::bEof,Self )
             ::rowPos := nLine
             IF ::bScrollPos != Nil
@@ -1461,7 +1463,7 @@ Local oComboFont, oCombo
       ENDIF
       type := Iif( oColumn:type=="U".AND.::varbuf!=Nil, Valtype( ::varbuf ), oColumn:type )
       IF ::lEditable .AND. type != "O"
-         IF oColumn:lEditable .AND. ( oColumn:bWhen = Nil .OR. EVAL( oColumn:bWhen ) )
+         IF oColumn:lEditable .AND. ( oColumn:bWhen = Nil .OR. Eval( oColumn:bWhen ) )
             IF ::lAppMode
                IF type == "D"
                   ::varbuf := CtoD("")
@@ -1477,10 +1479,10 @@ Local oComboFont, oCombo
             RETURN Nil
          ENDIF
          x1  := ::x1
-         fif := IIF( ::freeze > 0, 1, ::nLeftCol )
+         fif := Iif( ::freeze > 0, 1, ::nLeftCol )
          DO WHILE fif < fipos
             x1 += ::aColumns[fif]:width
-            fif := IIF( fif = ::freeze, ::nLeftCol, fif + 1 )
+            fif := Iif( fif = ::freeze, ::nLeftCol, fif + 1 )
          ENDDO
          nWidth := Min( ::aColumns[fif]:width, ::x2 - x1 - 1 )
          rowPos := ::rowPos - 1
@@ -1682,7 +1684,7 @@ Local cRes, vartmp, type, pict
             cRes := Padr( DTOC( vartmp ),oBrw:aColumns[numf]:length )
 
          ELSEIF type == "L"
-            cRes := Padr( IIF( vartmp, "T", "F" ),oBrw:aColumns[numf]:length )
+            cRes := Padr( Iif( vartmp, "T", "F" ),oBrw:aColumns[numf]:length )
 
          ELSEIF type == "M"
             cRes := "<Memo>"
@@ -1703,7 +1705,7 @@ RETURN cRes
 
 //----------------------------------------------------//
 STATIC FUNCTION FLDCOUNT( oBrw, xstrt, xend, fld1 )
-Local klf := 0, i := IIF( oBrw:freeze > 0, 1, fld1 )
+Local klf := 0, i := Iif( oBrw:freeze > 0, 1, fld1 )
 
    DO WHILE .T.
       // xstrt += ( MAX( oBrw:aColumns[i]:length, LEN( oBrw:aColumns[i]:heading ) ) - 1 ) * oBrw:width
@@ -1746,7 +1748,7 @@ Local tekzp1
 
    IF oBrw:kolz != 0
       tekzp1   := oBrw:tekzp
-      oBrw:tekzp += kolskip + IIF( tekzp1 = 0, 1, 0 )
+      oBrw:tekzp += kolskip + Iif( tekzp1 = 0, 1, 0 )
       IF oBrw:tekzp < 1
          oBrw:tekzp := 0
       ELSEIF oBrw:tekzp > oBrw:kolz
@@ -1758,10 +1760,10 @@ RETURN
 //----------------------------------------------------//
 FUNCTION CreateList( oBrw,lEditable )
 Local i
-Local nArea := select()
-Local kolf := FCOUNT()
+Local nArea := Select()
+Local kolf := Fcount()
 
-   oBrw:alias   := alias()
+   oBrw:alias   := Alias()
 
    oBrw:aColumns := {}
    FOR i := 1 TO kolf
@@ -1783,13 +1785,13 @@ Local minPos, maxPos, oldRecno, newRecno
    GetScrollRange( oBrw:handle, SB_VERT, @minPos, @maxPos )
    IF nPos == Nil
       IF nType > 0 .AND. lEof
-         EVAL( oBrw:bSkip, oBrw,- 1 )
+         Eval( oBrw:bSkip, oBrw,- 1 )
       ENDIF
       nPos := Iif( oBrw:kolz>1, Round( ( (maxPos-minPos)/(oBrw:kolz-1) ) * ;
-                                 ( EVAL( oBrw:bRecnoLog,oBrw )-1 ),0 ), minPos )
+                                 ( Eval( oBrw:bRecnoLog,oBrw )-1 ),0 ), minPos )
       SetScrollPos( oBrw:handle, SB_VERT, nPos )
    ELSE
-      oldRecno := EVAL( oBrw:bRecnoLog,oBrw )
+      oldRecno := Eval( oBrw:bRecnoLog,oBrw )
       newRecno := Round( (oBrw:kolz-1)*nPos/(maxPos-minPos)+1,0 )
       IF newRecno <= 0
          newRecno := 1
@@ -1800,7 +1802,7 @@ Local minPos, maxPos, oldRecno, newRecno
          SetScrollPos( oBrw:handle, SB_VERT, nPos )
       ENDIF
       IF newRecno != oldRecno
-         EVAL( oBrw:bSkip, oBrw, newRecno - oldRecno )
+         Eval( oBrw:bSkip, oBrw, newRecno - oldRecno )
          IF oBrw:rowCount - oBrw:rowPos > oBrw:kolz - newRecno
             oBrw:rowPos := oBrw:rowCount - ( oBrw:kolz - newRecno )
          ENDIF

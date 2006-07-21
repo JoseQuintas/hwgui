@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.502 2006-07-18 12:50:45 alkresin Exp $
+ * $Id: Changelog,v 1.503 2006-07-21 05:49:06 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-07-21 09:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hbrowse.prg
+    * :nPaintCol, : nPaintRow class variables are replaced with local variables
+    * HColumn():New() - oBmp parameter has been removed
+  * include/guilib.ch
+    * BITMAP clause has been removed from ADD COLUMN command definition.
 
 2006-07-18 16:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   ! source/hfrmtmpl.prg

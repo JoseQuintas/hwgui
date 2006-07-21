@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.69 2006-07-15 14:00:49 lculik Exp $
+ *$Id: guilib.ch,v 1.70 2006-07-21 05:49:07 alkresin Exp $
  */
 #define HWG_VERSION           "2.15"
 #define	WND_MAIN		1
@@ -687,11 +687,10 @@
             [ VALID <bValid> ]         ;
             [ WHEN <bWhen> ]           ;
             [ ITEMS <aItem> ]          ;
-            [ BITMAP <oBmp> ]          ;
             [ COLORBLOCK <bClrBlck> ]  ;
           => ;
     <oBrw>:AddColumn( HColumn():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
-                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <oBmp>, <{bClrBlck}> ) )
+                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <{bClrBlck}> ) )
 
 #xcommand INSERT COLUMN <block> TO <oBrw> ;
             [ HEADER <cHeader> ]       ;

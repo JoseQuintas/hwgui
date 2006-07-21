@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.42 2006-07-16 19:16:57 lculik Exp $
+ * $Id: control.c,v 1.43 2006-07-21 21:01:36 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1219,7 +1219,7 @@ LRESULT APIENTRY TabSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM
       return( CallWindowProc( wpOrigTabProc, hWnd, message, wParam, lParam ) );
 }
 
-HB_FUNC(CREATETOOLBAR)
+HB_FUNC( CREATETOOLBAR )
 {
 
    ULONG ulStyle = hb_parnl(3);
@@ -1229,7 +1229,7 @@ HB_FUNC(CREATETOOLBAR)
                  ulExStyle,                    /* extended style */
                  TOOLBARCLASSNAME,                     /* predefined class  */
                  NULL,                         /* title   */
-                 TBSTYLE_FLAT | TBSTYLE_TOOLTIPS | CCS_TOP | WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_OVERLAPPED | WS_POPUP | WS_VISIBLE                 /*WS_CHILD | WS_VISIBLE |CCS_TOP|CCS_ADJUSTABLE| WS_CLIPCHILDREN|WS_CLIPSIBLINGS| TBSTYLE_TOOLTIPS |TBSTYLE_FLAT| ulStyle */, /* style  */
+                 TBSTYLE_ALTDRAG | TBSTYLE_FLAT | TBSTYLE_TOOLTIPS | TBSTYLE_TRANSPARENT | TBSTYLE_WRAPABLE | CCS_TOP | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, /* style  */
                  hb_parni(4), hb_parni(5),      /* x, y       */
                  hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
                  (HWND) hb_parnl(1),            /* parent window    */ 
@@ -1268,21 +1268,6 @@ HB_FUNC(TOOLBARADDBUTTONS)
       pTemp = hb_arrayGetItemPtr( pArray , ulCount + 1 );
       ulID=hb_arrayGetNI( pTemp, 1 );
 
-//      if ( ulID>0 )
-//      {
-//
-//         tbb.hInst = phInstance;
-//         tbb.nID   = ulID;
-//
-//         i = SendMessage(   (HWND) hWndCtrl,  (UINT) TB_ADDBITMAP, (WPARAM) hb_arrayLen( pArray ),   (LPARAM) (LPTBADDBITMAP) &tbb );
-//         tb[ ulCount ].iBitmap   = i ;
-
-
-//      }
-//      else
-//      {
-            tb[ ulCount ].iBitmap   = ulID>0 ? ulCount :hb_arrayGetNI( pTemp, 1 );
-//      }
       tb[ ulCount ].idCommand = hb_arrayGetNI( pTemp, 2 );
       tb[ ulCount ].fsState   = hb_arrayGetNI( pTemp, 3 );
       tb[ ulCount ].fsStyle   = hb_arrayGetNI( pTemp, 4 );
@@ -1376,23 +1361,20 @@ HB_FUNC(TOOLBAR_SUBMENUEX)
    BOOL      bRet = FALSE;
    HWND g_hwndMain=  (HWND) hb_parnl(3);
    HANDLE g_hinst = GetModuleHandle( 0 );
-         SendMessage(lpnmTB->hdr.hwndFrom, TB_GETRECT,
-                     (WPARAM)lpnmTB->iItem, (LPARAM)&rc);
 
-         MapWindowPoints(lpnmTB->hdr.hwndFrom,
-                         HWND_DESKTOP, (LPPOINT)&rc, 2);                         
+   SendMessage(lpnmTB->hdr.hwndFrom, TB_GETRECT,
+      (WPARAM)lpnmTB->iItem, (LPARAM)&rc);
 
-         tpm.cbSize = sizeof(TPMPARAMS);
-         tpm.rcExclude = rc;
+   MapWindowPoints(lpnmTB->hdr.hwndFrom,
+      HWND_DESKTOP, (LPPOINT)&rc, 2);                         
 
-//         hPopupMenu = GetSubMenu(LoadMenu(g_hinst,
-//            MAKEINTRESOURCE(hb_parni(2))),0);
+   tpm.cbSize = sizeof(TPMPARAMS);
+   tpm.rcExclude = rc;
 
-         TrackPopupMenuEx(hPopupMenu,
-            TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_VERTICAL,               
-            rc.left, rc.bottom, g_hwndMain, &tpm); 
 
-         DestroyMenu(hMenuLoaded);			
+   TrackPopupMenuEx(hPopupMenu,
+      TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_VERTICAL,               
+      rc.left, rc.bottom, g_hwndMain, &tpm); 
 
 }
 

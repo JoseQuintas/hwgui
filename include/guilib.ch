@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.70 2006-07-21 05:49:07 alkresin Exp $
+ *$Id: guilib.ch,v 1.71 2006-07-21 21:01:36 lculik Exp $
  */
 #define HWG_VERSION           "2.15"
 #define	WND_MAIN		1
@@ -1348,7 +1348,19 @@ Added by Marcos Antonio Gambeta
     [<oSay> := ] Htoolbar():Redefine( <oWnd>,<nId>,<cCaption>,  ,<bInit>,<bSize>,<bDraw>, , , , ,<aitem> )
 
 #xcommand CREATE MENUBAR <o> => <o> := \{ \}
+
 #xcommand MENUBARITEM  <oWnd> CAPTION <c> ON <id1> ACTION <b1>      ;
           => ;
           Aadd( <oWnd>, \{ <c>, <id1>, <{b1}> \})
 
+#xcommand ADD TOOLBUTTON  <O> ;
+          ID <nId> ;
+          [ BITMAP <nBitIp> ];
+          [ STYLE <bstyle> ];
+          [ STATE <bstate>];
+          [ TEXT <ctext> ] ;
+          [ TOOLTIP <c> ];
+          [ MENU <d>];
+           ON CLICK <bclick>;
+          =>;
+          aadd(<O> ,\{<nBitIp>,<nId>,<bstate>,<bstyle>,,<ctext>,<bclick>,<c>,<d>,\})

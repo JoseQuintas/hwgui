@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.39 2006-07-18 12:50:46 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.40 2006-07-26 07:01:13 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -138,6 +138,9 @@ Local oDoc
 Local i, j, nCtrl := 0, aItems, o, aProp := {}, aMethods := {}
 Local cPre
 
+   IF cId != Nil .AND. ( o := HFormTmpl():Find( cId ) ) != Nil
+      Return o
+   ENDIF
    IF Left( fname,5 ) == "<?xml"
       oDoc := HXMLDoc():ReadString( fname )
    ELSE
@@ -881,6 +884,7 @@ CLASS HRepTmpl
    METHOD Print( printer, lPreview, p1, p2, p3 )
    METHOD PrintItem( oItem )
    METHOD ReleaseObj( aControls )
+   METHOD Find( cId )
    METHOD Close()
 
 ENDCLASS
@@ -889,6 +893,10 @@ METHOD Read( fname,cId ) CLASS HRepTmpl
 Local oDoc
 Local i, j, aItems, o, aProp := {}, aMethods := {}
 Local cPre
+
+   IF cId != Nil .AND. ( o := HFormTmpl():Find( cId ) ) != Nil
+      Return o
+   ENDIF
 
    IF Left( fname,5 ) == "<?xml"
       oDoc := HXMLDoc():ReadString( fname )
@@ -1195,6 +1203,10 @@ Local i
    NEXT
 
 Return Nil
+
+METHOD Find( cId ) CLASS HRepTmpl
+Local i := Ascan( ::aReports, {|o|o:cId!=Nil.and.o:cId==cId} )
+Return Iif( i==0, Nil, ::aReports[i] )
 
 METHOD Close() CLASS HRepTmpl
 Local i := Ascan( ::aReports, {|o|o:id==::id} )

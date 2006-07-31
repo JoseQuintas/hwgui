@@ -1,5 +1,5 @@
  /*
- * $Id: hgrid.prg,v 1.6 2006-07-31 12:40:03 lculik Exp $
+ * $Id: hgrid.prg,v 1.7 2006-07-31 16:20:43 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -21,7 +21,7 @@ TODO: 1) In line edit
 #include "windows.ch"
 #include "guilib.ch"
 #include "hbclass.ch"
-
+#include "common.ch"
 #define LVS_REPORT              1
 #define LVS_SINGLESEL           4
 #define LVS_SHOWSELALWAYS       8

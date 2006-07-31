@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.43 2006-07-21 21:01:36 lculik Exp $
+ * $Id: control.c,v 1.44 2006-07-31 12:40:03 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1267,7 +1267,7 @@ HB_FUNC(TOOLBARADDBUTTONS)
 
       pTemp = hb_arrayGetItemPtr( pArray , ulCount + 1 );
       ulID=hb_arrayGetNI( pTemp, 1 );
-
+      tb[ ulCount ].iBitmap   = ulID > 0 ? ulCount : -1;
       tb[ ulCount ].idCommand = hb_arrayGetNI( pTemp, 2 );
       tb[ ulCount ].fsState   = hb_arrayGetNI( pTemp, 3 );
       tb[ ulCount ].fsStyle   = hb_arrayGetNI( pTemp, 4 );

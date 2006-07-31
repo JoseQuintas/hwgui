@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.13 2006-04-06 16:18:02 alkresin Exp $
+ * $Id: grid.c,v 1.14 2006-07-31 12:40:03 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -82,15 +82,16 @@ HB_FUNC( LISTVIEW_SETITEMCOUNT )
 HB_FUNC( LISTVIEW_ADDCOLUMN )
 {
         LV_COLUMN COL;
-
+        int iImage = hb_parni( 6 ) ;
         PHB_ITEM pValue = hb_itemNew( NULL );
         hb_itemCopy( pValue, hb_param( 4, HB_IT_STRING ));
 
-        COL.mask= LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM ;
+        COL.mask= LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM | LVCF_IMAGE;
         COL.cx= hb_parni(3);
         COL.pszText = hb_itemGetCPtr( pValue );
         COL.iSubItem=hb_parni(2)-1;
         COL.fmt = hb_parni(5) ;
+        COL.iImage = iImage > 0 ? hb_parni(2)-1 : -1;
         hb_itemRelease( pValue );
 
         ListView_InsertColumn( (HWND) hb_parnl( 1 ) , hb_parni(2)-1 , &COL );
@@ -279,3 +280,31 @@ HB_FUNC( GETCURSORCOL )
         hb_retni( pt.x );
 
 }
+
+
+HB_FUNC(LISTVIEW_SETIMAGELIST)
+{
+HWND hList = (HWND)hb_parnl( 1 ) ;
+HIMAGELIST p = (HIMAGELIST) hb_parnl(2) ;
+int iRes;
+iRes=    ListView_SetImageList(hList,(HIMAGELIST)p,LVSIL_NORMAL);
+iRes=    ListView_SetImageList(hList,(HIMAGELIST)p,LVSIL_SMALL);
+}
+
+HB_FUNC( LISTVIEW_SETVIEW)
+{ 
+HWND hWndListView =(HWND) hb_parnl(1);
+ DWORD dwView = hb_parnl(2);
+    // Retrieve the current window style. 
+    DWORD dwStyle = GetWindowLong(hWndListView, GWL_STYLE); 
+    
+    // Only set the window style if the view bits have changed.
+    if ((dwStyle & LVS_TYPEMASK) != dwView) 
+    {
+        SetWindowLong(hWndListView, 
+                      GWL_STYLE, 
+                      (dwStyle & ~LVS_TYPEMASK) | dwView);
+        RedrawWindow( (HWND) hb_parnl( 1 ), NULL , NULL , RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW ) ;
+    }
+} 
+

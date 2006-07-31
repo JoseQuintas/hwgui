@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.71 2006-07-21 21:01:36 lculik Exp $
+ *$Id: guilib.ch,v 1.72 2006-07-31 12:40:03 lculik Exp $
  */
 #define HWG_VERSION           "2.15"
 #define	WND_MAIN		1
@@ -218,7 +218,7 @@
     [<oSay> := ] HStatic():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
         <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lTransp.> )
 
-#xcommand REDEFINE SAY [ <oSay> CAPTION ] <cCaption>      ;
+#xcommand REDEFINE SAY   <oSay> [ CAPTION  <cCaption>   ]   ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
             [ COLOR <color> ]          ;
@@ -733,19 +733,21 @@
             [ COLOR <color> ]           ;
             [ BACKCOLOR <bkcolor> ]     ;
             [ <lNoHeader: NO HEADER> ]  ;
+            [BITMAP <aBit>];
           => ;
     <oGrid> := HGrid():New( <oWnd>, <nId>, <nStyle>, <x>, <y>, <width>, <height>,;
                             <oFont>, <{bInit}>, <{bSize}>, <{bPaint}>, <{bEnter}>,;
                             <{bGfocus}>, <{bLfocus}>, <.lNoScroll.>, <.lNoBord.>,;
                             <{bKeyDown}>, <{bPosChg}>, <{bDispInfo}>, <nItemCount>,;
-                             <.lNoLines.>, <color>, <bkcolor>, <.lNoHeader.> )
+                             <.lNoLines.>, <color>, <bkcolor>, <.lNoHeader.> ,<aBit>)
 
 #xcommand ADD COLUMN TO GRID <oGrid>    ;
             [ HEADER <cHeader> ]        ;
             [ WIDTH <nWidth> ]          ;
             [ JUSTIFY HEAD <nJusHead> ] ;
+            [ BITMAP <n> ]              ;
           => ;
-    <oGrid>:AddColumn( <cHeader>, <nWidth>, <nJusHead> )
+    <oGrid>:AddColumn( <cHeader>, <nWidth>, <nJusHead> ,<n>)
 
 
 
@@ -889,7 +891,7 @@
           => ;
     [<oEdit> := ] HEdit():Redefine( <oWnd>,<nId>,<vari>, ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},    ;
-                   <oFont>,,,,<bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<lMaxLenght>,<(vari)> )
+                   <oFont>,,,,<{bGfocus}>,<{bLfocus}>,<ctoolt>,<color>,<bcolor>,<cPicture>,<lMaxLenght>,<(vari)> )
 
 
 #xcommand @ <x>,<y> GET CHECKBOX [ <oCheck> VAR ] <vari>  ;
@@ -1194,8 +1196,10 @@ Added by Marcos Antonio Gambeta
 #xcommand SPLASH [<osplash> TO]  <oBitmap> ;
             [<res: FROM RESOURCE>]         ;
             [ TIME <otime> ]               ;
+            [WIDTH <w>];
+            [HEIGHT <h>];
           => ;
-   [ <osplash> := ] HSplash():Create(<oBitmap>,<otime>,<.res.>)
+   [ <osplash> := ] HSplash():Create(<oBitmap>,<otime>,<.res.>,<w>,<h>)
 
 // Nice Buttons by Luiz Rafael
 #xcommand @ <x>,<y> NICEBUTTON [ <oBut> CAPTION ] <caption> ;
@@ -1337,7 +1341,7 @@ Added by Marcos Antonio Gambeta
           => ;
     [<oTool> := ]        Htoolbar():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,,,<aItems> )
 
-#xcommand REDEFINE TOOLBAR [ <oSay> CAPTION ] <cCaption>      ;
+#xcommand REDEFINE TOOLBAR  <oSay>  ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
             [ ON INIT <bInit> ]        ;
@@ -1345,7 +1349,7 @@ Added by Marcos Antonio Gambeta
             [ ON PAINT <bDraw> ]       ;
             [ ITEM <aitem>];
           => ;
-    [<oSay> := ] Htoolbar():Redefine( <oWnd>,<nId>,<cCaption>,  ,<bInit>,<bSize>,<bDraw>, , , , ,<aitem> )
+    [<oSay> := ] Htoolbar():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<aitem> )
 
 #xcommand CREATE MENUBAR <o> => <o> := \{ \}
 

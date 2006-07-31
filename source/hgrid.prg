@@ -1,5 +1,5 @@
  /*
- * $Id: hgrid.prg,v 1.5 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hgrid.prg,v 1.6 2006-07-31 12:40:03 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -37,7 +37,7 @@ TODO: 1) In line edit
 CLASS HGrid INHERIT HControl
 
    CLASS VAR winclass INIT "SYSLISTVIEW32"
-
+   DATA aBitMaps   INIT {}
    DATA ItemCount
    DATA color   
    DATA bkcolor
@@ -60,11 +60,11 @@ CLASS HGrid INHERIT HControl
 
    METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint, bEnter,;
                bGfocus, bLfocus, lNoScroll, lNoBord, bKeyDown, bPosChg, bDispInfo,;
-               nItemCount, lNoLines, color, bkcolor, lNoHeader )
+               nItemCount, lNoLines, color, bkcolor, lNoHeader,aBit )
 
    METHOD Activate()
    METHOD Init()
-   METHOD AddColumn( cHeader, nWidth, nJusHead ) INLINE AADD( ::aColumns, { cHeader, nWidth, nJusHead } )
+   METHOD AddColumn( cHeader, nWidth, nJusHead, nBit ) INLINE AADD( ::aColumns, { cHeader, nWidth, nJusHead, nBit } )
    METHOD Refresh()
    METHOD RefreshLine()                          INLINE Listview_update( ::handle, Listview_getfirstitem( ::handle ) )
    METHOD SetItemCount(nItem)                    INLINE Listview_setitemcount( ::handle, nItem )
@@ -74,14 +74,14 @@ ENDCLASS
 
 METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint, bEnter,;
                bGfocus, bLfocus, lNoScroll, lNoBord, bKeyDown, bPosChg, bDispInfo,;
-               nItemCount, lNoLines, color, bkcolor, lNoHeader ) CLASS HGrid
+               nItemCount, lNoLines, color, bkcolor, lNoHeader,aBit ) CLASS HGrid
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), LVS_SHOWSELALWAYS + WS_TABSTOP + IIF( lNoBord, 0, WS_BORDER ) + LVS_REPORT + LVS_OWNERDATA + LVS_SINGLESEL )
    Super:New( oWnd,nId,nStyle,x,y,Width,Height,oFont,bInit, ;
                   bSize,bPaint )
-
+   Default aBit to {}
    ::ItemCount := nItemCount
-
+   ::aBitMaps := aBit
    ::bGfocus := bGfocus
    ::bLfocus := bLfocus
 
@@ -123,14 +123,50 @@ METHOD Activate CLASS HGrid
 Return Nil
 
 METHOD Init() CLASS HGrid
-   local i
+   local i,nPos
+   Local aButton :={}
+   Local aBmpSize
+   Local n
+
    if !::lInit
       Super:Init()
+      for n :=1 to Len(::aBitmaps)
+           AAdd( aButton, LoadImage( , ::aBitmaps[ n ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
+      next
+
+      IF Len(aButton ) >0
+
+          aBmpSize := GetBitmapSize( aButton[1] )
+
+          IF aBmpSize[ 3 ] == 4
+             ::hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR4 + ILC_MASK )
+          ELSEIF aBmpSize[ 3 ] == 8
+             ::hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR8 + ILC_MASK )
+          ELSEIF aBmpSize[ 3 ] == 24
+             ::hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLORDDB + ILC_MASK )
+          ENDIF
+
+          FOR nPos :=1 to len(aButton)
+
+             aBmpSize := GetBitmapSize( aButton[nPos] )
+
+             IF aBmpSize[3] == 24
+//             Imagelist_AddMasked( ::hIm,aButton[nPos],RGB(236,223,216) )
+                Imagelist_Add( ::hIm, aButton[ nPos ] )
+             ELSE
+                Imagelist_Add( ::hIm, aButton[ nPos ] )
+             ENDIF
+
+          NEXT
+
+     Listview_setimagelist(::handle,::him)
+
+endif
       
       Listview_Init( ::handle, ::ItemCount, ::lNoLines )
 
       for i := 1 to len( ::aColumns )
-        Listview_addcolumn( ::handle, i, ::aColumns[i, 2], ::aColumns[i, 1], ::aColumns[i, 3])
+        Listview_addcolumn( ::handle, i, ::aColumns[i, 2], ::aColumns[i, 1], ::aColumns[i, 3],if(::aColumns[i, 4]!=nil,::aColumns[i, 4],0))
       next        
 
       if ::color != nil

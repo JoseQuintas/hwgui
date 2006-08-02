@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.511 2006-08-02 19:28:58 fsgiudice Exp $
+ * $Id: Changelog,v 1.512 2006-08-02 19:31:21 fsgiudice Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,9 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-02 21:30 UTC+0200 Francesco Saverio Giudice <info@fsgiudice.com>
+  * fixed error in changelog
 
 2006-08-02 21:20 UTC+0200 Francesco Saverio Giudice <info@fsgiudice.com>
   * source\drawtext.c
@@ -23,12 +26,6 @@
   * source\htrackbr.prg
     + added GetNumTics() method to retrieve number of tics
     * reformatted
-
-  * source\wprint.c
-  * utils\designer\blddesig.bat
-  * utils\designer\samples\bldexam.bat
-  * utils\hwreport\bldexam.bat
-  * utils\hwreport\bldhwrep.bat
 
 2006-08-02 15:22 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hownbtn.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.512 2006-08-02 19:31:21 fsgiudice Exp $
+ * $Id: Changelog,v 1.513 2006-08-02 19:50:42 fsgiudice Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,8 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-08-02 21:50 UTC+0200 Francesco Saverio Giudice <info@fsgiudice.com>
+  * source\htrackbr.prg
+    * fixed typo
+
 2006-08-02 21:30 UTC+0200 Francesco Saverio Giudice <info@fsgiudice.com>
-  * fixed error in changelog
+  * Changelog
+    * fixed error in changelog
 
 2006-08-02 21:20 UTC+0200 Francesco Saverio Giudice <info@fsgiudice.com>
   * source\drawtext.c

@@ -2,7 +2,7 @@
 <editor>
   <font name="Courier New" width="0" height="-17" weight="400" charset="204"/>
   <keywords>
-  {DO,WHILE,ENDDO,IF,ELSEIF,ELSE,ENDIF,PARAMETERS,PRIVATE,RETURN,LOOP,EXIT}
+  {DO,WHILE,ENDDO,IF,ELSEIF,ELSE,ENDIF,PARAMETERS,PRIVATE,RETURN,LOOP,EXIT,AND,OR}
   </keywords>
   <themes selected="Default">
     <theme name="Default">

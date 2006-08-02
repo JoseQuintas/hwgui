@@ -1,5 +1,5 @@
 /*
- * $Id: gtkmain.prg,v 1.7 2005-11-13 12:37:41 lculik Exp $
+ * $Id: gtkmain.prg,v 1.8 2006-08-02 10:51:46 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Main prg level functions
@@ -148,3 +148,6 @@ Function RefreshAllGets( oDlg )
 
    AEval( oDlg:GetList, {|o|o:Refresh()} )
 Return Nil
+
+FUNCTION HWG_Version(oTip)
+RETURN "HwGUI " + HWG_VERSION + Iif( oTip==1," "+Version(), "" )

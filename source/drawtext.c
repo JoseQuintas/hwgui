@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.11 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: drawtext.c,v 1.12 2006-08-02 19:28:58 fsgiudice Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -51,11 +51,11 @@ HB_FUNC( TEXTOUT )
 {
    char *cText = hb_parc( 4 );
    TextOut(
-     (HDC) hb_parnl( 1 ),	// handle of device context 
-     hb_parni( 2 ),     	// x-coordinate of starting position  
-     hb_parni( 3 ),	        // y-coordinate of starting position  
-     (LPCTSTR) cText,	        // address of string 
-     strlen( cText ) 	        // number of characters in string 
+     (HDC) hb_parnl( 1 ),	// handle of device context
+     hb_parni( 2 ),     	// x-coordinate of starting position
+     hb_parni( 3 ),	        // y-coordinate of starting position
+     (LPCTSTR) cText,	        // address of string
+     strlen( cText ) 	        // number of characters in string
    );
 }
 
@@ -70,9 +70,9 @@ HB_FUNC( DRAWTEXT )
    rc.bottom = hb_parni( 6 );
 
    DrawText(
-     (HDC) hb_parnl( 1 ),	// handle of device context 
-     (LPCTSTR) cText,	        // address of string 
-     strlen( cText ), 	        // number of characters in string 
+     (HDC) hb_parnl( 1 ),	// handle of device context
+     (LPCTSTR) cText,	        // address of string
+     strlen( cText ), 	        // number of characters in string
      &rc,
      hb_parni( 7 )
    );
@@ -84,9 +84,9 @@ HB_FUNC( GETTEXTMETRIC )
    PHB_ITEM aMetr = _itemArrayNew( 3 );
    PHB_ITEM temp;
 
-   GetTextMetrics( 
-      (HDC) hb_parnl( 1 ),	// handle of device context 
-      &tm 	                // address of text metrics structure 
+   GetTextMetrics(
+      (HDC) hb_parnl( 1 ),	// handle of device context
+      &tm 	                // address of text metrics structure
    );
 
    temp = _itemPutNL( NULL, tm.tmHeight );
@@ -211,8 +211,8 @@ HB_FUNC( GETCLIENTAREA )
 HB_FUNC( SETTEXTCOLOR )
 {
    COLORREF crColor = SetTextColor(
-              (HDC) hb_parnl( 1 ),	// handle of device context  
-              (COLORREF) hb_parnl( 2 ) 	// text color 
+              (HDC) hb_parnl( 1 ),	// handle of device context
+              (COLORREF) hb_parnl( 2 ) 	// text color
             );
    hb_retnl( (LONG) crColor );
 }
@@ -220,8 +220,8 @@ HB_FUNC( SETTEXTCOLOR )
 HB_FUNC( SETBKCOLOR )
 {
    COLORREF crColor = SetBkColor(
-              (HDC) hb_parnl( 1 ),	// handle of device context  
-              (COLORREF) hb_parnl( 2 ) 	// text color 
+              (HDC) hb_parnl( 1 ),	// handle of device context
+              (COLORREF) hb_parnl( 2 ) 	// text color
             );
    hb_retnl( (LONG) crColor );
 }
@@ -229,7 +229,7 @@ HB_FUNC( SETBKCOLOR )
 HB_FUNC( SETTRANSPARENTMODE )
 {
    int iMode = SetBkMode(
-                 (HDC) hb_parnl( 1 ),	// handle of device context  
+                 (HDC) hb_parnl( 1 ),	// handle of device context
                  ( hb_parl( 2 ) )? TRANSPARENT : OPAQUE );
    hb_retl( iMode == TRANSPARENT );
 }
@@ -255,9 +255,9 @@ HB_FUNC( GETTEXTSIZE )
    PHB_ITEM temp;
 
    GetTextExtentPoint32( hdc, hb_parc(2),
-      lpString,         // address of text string 
-      strlen(cbString), // number of characters in string 
-      &size            // address of structure for string size  
+      lpString,         // address of text string
+      strlen(cbString), // number of characters in string
+      &size            // address of structure for string size
    );
 
    temp = _itemPutNI( NULL, size.cx );
@@ -286,14 +286,14 @@ HB_FUNC( EXTTEXTOUT )
    rc.bottom = hb_parni( 7 );
 
    ExtTextOut(
-    (HDC) hb_parnl( 1 ),	// handle to device context 
-    hb_parni( 2 ),	// x-coordinate of reference point 
-    hb_parni( 3 ),	// y-coordinate of reference point 
-    ETO_OPAQUE,  	// text-output options 
-    &rc,	        // optional clipping and/or opaquing rectangle 
-    ISCHAR(8)? (LPCTSTR) cText :NULL, // points to string 
-    ISCHAR(8)? strlen( cText ) : 0, // number of characters in string 
-    NULL        	// pointer to array of intercharacter spacing values  
+    (HDC) hb_parnl( 1 ),	// handle to device context
+    hb_parni( 2 ),	// x-coordinate of reference point
+    hb_parni( 3 ),	// y-coordinate of reference point
+    ETO_OPAQUE,  	// text-output options
+    &rc,	        // optional clipping and/or opaquing rectangle
+    ISCHAR(8)? (LPCTSTR) cText :NULL, // points to string
+    ISCHAR(8)? strlen( cText ) : 0, // number of characters in string
+    NULL        	// pointer to array of intercharacter spacing values
    );
 }
 
@@ -307,7 +307,7 @@ HB_FUNC( WINDOWFROMDC )
    hb_retnl( (LONG) WindowFromDC( (HDC) hb_parnl( 1 ) ) );
 }
 
-/* CreateFont( fontName, nWidth, hHeight [,fnWeight] [,fdwCharSet], 
+/* CreateFont( fontName, nWidth, hHeight [,fnWeight] [,fdwCharSet],
                [,fdwItalic] [,fdwUnderline] [,fdwStrikeOut]  )
 */
 HB_FUNC( CREATEFONT )
@@ -320,20 +320,20 @@ HB_FUNC( CREATEFONT )
    DWORD fdwStrikeOut = ( ISNIL(8) )? 0:hb_parni(8);
 
    hFont = CreateFont(
-    hb_parni( 3 ),	// logical height of font 
-    hb_parni( 2 ),	// logical average character width 
-    0,	// angle of escapement 
-    0,	// base-line orientation angle 
-    fnWeight,	// font weight 
-    fdwItalic,	// italic attribute flag 
-    fdwUnderline,	// underline attribute flag 
-    fdwStrikeOut,	// strikeout attribute flag 
-    fdwCharSet,	// character set identifier 
-    0,	// output precision 
-    0,	// clipping precision 
-    0,	// output quality 
-    0,	// pitch and family 
-    (LPCTSTR) hb_parc( 1 )	// pointer to typeface name string 
+    hb_parni( 3 ),	// logical height of font
+    hb_parni( 2 ),	// logical average character width
+    0,	// angle of escapement
+    0,	// base-line orientation angle
+    fnWeight,	// font weight
+    fdwItalic,	// italic attribute flag
+    fdwUnderline,	// underline attribute flag
+    fdwStrikeOut,	// strikeout attribute flag
+    fdwCharSet,	// character set identifier
+    0,	// output precision
+    0,	// clipping precision
+    0,	// output quality
+    0,	// pitch and family
+    (LPCTSTR) hb_parc( 1 )	// pointer to typeface name string
    );
    hb_retnl( (LONG) hFont );
 }
@@ -343,7 +343,7 @@ HB_FUNC( CREATEFONT )
 */
 HB_FUNC( SETCTRLFONT )
 {
-   SendDlgItemMessage( (HWND) hb_parnl(1), hb_parni(2), WM_SETFONT, 
+   SendDlgItemMessage( (HWND) hb_parnl(1), hb_parni(2), WM_SETFONT,
                           (WPARAM) hb_parnl(3), 0L );
 }
 
@@ -404,13 +404,24 @@ HB_FUNC( ANSITOOEM )
 #endif
 
 
+HB_FUNC( CREATERECTRGN )
+{
+   HRGN reg ;
+
+   reg = CreateRectRgn( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) );
+
+   hb_retnl( ( LONG) reg );
+}
+
+
 HB_FUNC( CREATERECTRGNINDIRECT )
 {
    HRGN reg  ;
    RECT rc;
-   rc.left = hb_parni( 2 );
-   rc.top = hb_parni( 3 );
-   rc.right = hb_parni( 4 );
+
+   rc.left   = hb_parni( 2 );
+   rc.top    = hb_parni( 3 );
+   rc.right  = hb_parni( 4 );
    rc.bottom = hb_parni( 5 );
 
    reg =CreateRectRgnIndirect(  &rc);

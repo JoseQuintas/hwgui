@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.510 2006-08-02 11:19:47 alkresin Exp $
+ * $Id: Changelog,v 1.511 2006-08-02 19:28:58 fsgiudice Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,28 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-02 21:20 UTC+0200 Francesco Saverio Giudice <info@fsgiudice.com>
+  * source\drawtext.c
+    + added CREATERECTRGN function
+    * some reformatting due to trimmed right spaces
+
+  * source\hcontrol.prg
+    + added SS_NOTIFY style to HStatic to show tooltips
+    * reformatted
+
+  * source\hcwindow.prg
+    * reformatted
+
+  * source\htrackbr.prg
+    + added GetNumTics() method to retrieve number of tics
+    * reformatted
+
+  * source\wprint.c
+  * utils\designer\blddesig.bat
+  * utils\designer\samples\bldexam.bat
+  * utils\hwreport\bldexam.bat
+  * utils\hwreport\bldhwrep.bat
 
 2006-08-02 15:22 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hownbtn.prg
@@ -44,7 +66,7 @@
     ! new command
   * source/control.c
     ! Minor update on styles for  CREATETOOLBAR  function
-    
+
 2006-07-21 21:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hbrowse.prg
     ! Minor bug fixed
@@ -81,8 +103,8 @@
     ! changed GETBITMAPSIZE() to return the number of pixes in the bitmap
 
 2006-07-15 11:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
-  + samples/TESTGET.RH 
-  + samples/testget3.prg 
+  + samples/TESTGET.RH
+  + samples/testget3.prg
   + samples/testget3.rc
     ! samples to demostrate toolbar creation
 
@@ -146,7 +168,7 @@
  * source/window.c
     ! Added few new functions
  * source/hcontrol.prg
-    ! Changed hbutton to add event to HStatus Father 
+    ! Changed hbutton to add event to HStatus Father
 
 2006-06-29 15:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/designer/resource/widgets.xml
@@ -291,7 +313,7 @@
   * samples/a.prg
     ! Small fixes
   * samples/bld.bat
-    * pcrepos.lib is removed from libraries list  
+    * pcrepos.lib is removed from libraries list
 
 2006-03-27 11:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   *.bat
@@ -335,14 +357,14 @@
   * gtk/wprint.c
   * gtk/Makefile
   * gtk/samples/a.prg
-    * I've updated gnu Makefiles and commit updates provided by Przemyslaw Czerpak 
+    * I've updated gnu Makefiles and commit updates provided by Przemyslaw Czerpak
 	 * with the comment:
-	 * ...	 
+	 * ...
 	 * I've just updated HWGUI Linux/gtk to recent modifications in
 	 * Harbour API. It also clean the usage of HB_ITEM and the code.
 	 * I remove all unnecessary #ifdef __XHARBOUR__, etc. and accessing
 	 * the HVM stack.
-	 * ...	 
+	 * ...
   * samples/testray.rc
     * icon changed to ../image/pim.ico to work with non Borlad rc compilers
 

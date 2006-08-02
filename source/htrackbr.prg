@@ -1,5 +1,5 @@
 /*
- * $Id: htrackbr.prg,v 1.10 2006-02-15 16:57:26 lf_sfnet Exp $
+ * $Id: htrackbr.prg,v 1.11 2006-08-02 19:28:58 fsgiudice Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTrackBar class
@@ -31,95 +31,110 @@ CLASS HTrackBar INHERIT HControl
    DATA nHigh
    DATA hCursor
 
-   METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight,;
-               bInit,bSize,bPaint,cTooltip,bChange,bDrag,nLow,nHigh,lVertical,TickStyle,TickMarks )
+   METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight,;
+               bInit, bSize, bPaint, cTooltip, bChange, bDrag, nLow, nHigh,;
+               lVertical, TickStyle, TickMarks )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
    METHOD SetValue( nValue )
    METHOD GetValue()
+   METHOD GetNumTics()  INLINE SendMessage( ::handle, TBM_GETNUMTICS, 0, 0 )
 
 ENDCLASS
 
-METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight,;
-            bInit,bSize,bPaint,cTooltip,bChange,bDrag,nLow,nHigh,lVertical,TickStyle,TickMarks ) CLASS HTrackBar
+METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight,;
+            bInit, bSize, bPaint, cTooltip, bChange, bDrag, nLow, nHigh,;
+            lVertical, TickStyle, TickMarks ) CLASS HTrackBar
 
-   IF TickStyle == Nil ; TickStyle := TBS_AUTOTICKS ; ENDIF
-   IF TickMarks == Nil ; TickMarks := 0 ; ENDIF
-   IF bPaint != Nil
-      TickStyle := Hwg_BitOr( TickStyle,TBS_AUTOTICKS )
+   IF TickStyle == NIL ; TickStyle := TBS_AUTOTICKS ; ENDIF
+   IF TickMarks == NIL ; TickMarks := 0 ; ENDIF
+   IF bPaint != NIL
+      TickStyle := Hwg_BitOr( TickStyle, TBS_AUTOTICKS )
    ENDIF
-   nstyle   := Hwg_BitOr( Iif( nStyle==Nil, 0, nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP )
-   nstyle   += Iif( lVertical != Nil .AND. lVertical, TBS_VERT, 0 )
+   nstyle   := Hwg_BitOr( IIF( nStyle==NIL, 0, nStyle ), ;
+                          WS_CHILD + WS_VISIBLE + WS_TABSTOP )
+   nstyle   += IIF( lVertical != NIL .AND. lVertical, TBS_VERT, 0 )
    nstyle   += TickStyle + TickMarks
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,,bInit,bSize,bPaint,ctooltip )
-   ::value   := Iif( Valtype(vari)=="N", vari, 0 )
-   ::bChange := bChange
+
+   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,,;
+              bInit, bSize, bPaint, cTooltip )
+
+   ::value      := IIF( Valtype(vari)=="N", vari, 0 )
+   ::bChange    := bChange
    ::bThumbDrag := bDrag
-   ::nLow    := Iif( nLow==Nil, 0, nLow )
-   ::nHigh   := Iif( nHigh==Nil, 100, nHigh )
+   ::nLow       := IIF( nLow==NIL, 0, nLow )
+   ::nHigh      := IIF( nHigh==NIL, 100, nHigh )
 
    HWG_InitCommonControlsEx()
    ::Activate()
 
-Return Self
+RETURN Self
 
 METHOD Activate CLASS HTrackBar
    IF ::oParent:handle != 0
       ::handle := InitTrackBar ( ::oParent:handle, ::id, ::style, ;
-                  ::nLeft, ::nTop, ::nWidth, ::nHeight, ::nLow, ::nHigh )
+                                 ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
+                                 ::nLow, ::nHigh )
       ::Init()
    ENDIF
-Return Nil
+RETURN NIL
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HTrackBar
-Local aCoors
+LOCAL aCoors
 
    IF msg == WM_PAINT
-      IF ::bPaint != Nil
+      IF ::bPaint != NIL
          Eval( ::bPaint, Self )
-         Return 0
+         RETURN 0
       ENDIF
+
    ELSEIF msg == WM_MOUSEMOVE
-      IF ::hCursor != Nil
+      IF ::hCursor != NIL
          Hwg_SetCursor( ::hCursor )
       ENDIF
+
    ELSEIF msg == WM_ERASEBKGND
-      IF ::brush != Nil
+      IF ::brush != NIL
          aCoors := GetClientRect( ::handle )
-         FillRect( wParam, aCoors[1], aCoors[2], aCoors[3]+1, aCoors[4]+1, ::brush:handle )
-         Return 1
+         FillRect( wParam, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ] + 1, ;
+                   aCoors[ 4 ] + 1, ::brush:handle )
+         RETURN 1
       ENDIF
+
    ELSEIF msg == WM_DESTROY
       ::End()
-   ELSEIF ::bOther != Nil
-      Return Eval( ::bOther, Self, msg, wParam, lParam )
+
+   ELSEIF ::bOther != NIL
+      RETURN Eval( ::bOther, Self, msg, wParam, lParam )
+
    ENDIF
 
-Return -1
+RETURN -1
 
 METHOD Init() CLASS HTrackBar
    IF !::lInit
       Super:Init()
       TrackBarSetRange( ::handle, ::nLow, ::nHigh )
       SendMessage( ::handle, TBM_SETPOS, 1, ::value )
-      IF ::bPaint != Nil
-         SetWindowObject( ::handle,Self )
+
+      IF ::bPaint != NIL
+         SetWindowObject( ::handle, Self )
          Hwg_InitTrackProc( ::handle )
       ENDIF
    ENDIF
-Return Nil
+RETURN NIL
 
 METHOD SetValue( nValue ) CLASS HTrackBar
-   IF Valtype(nValue)=="N"
+   IF Valtype( nValue ) == "N"
       SendMessage( ::handle, TBM_SETPOS, 1, nValue )
       ::value := nValue
    ENDIF
-Return Nil
+RETURN NIL
 
 METHOD GetValue() CLASS HTrackBar
    ::value := SendMessage( ::handle, TBM_GETPOS, 0, 0 )
-Return (::value)
+RETURN ( ::value )
 
 #pragma BEGINDUMP
 
@@ -139,14 +154,14 @@ HB_FUNC ( INITTRACKBAR )
 
     hTrackBar = CreateWindow( TRACKBAR_CLASS,
                              0,
-                             (LONG) hb_parnl(3),
-                             hb_parni(4),
-                             hb_parni(5),
-                             hb_parni(6),
-                             hb_parni(7),
-                             (HWND) hb_parnl(1),
-                             (HMENU) hb_parni(2),
-                             GetModuleHandle(NULL),
+                             ( LONG )  hb_parnl( 3 ),
+                                       hb_parni( 4 ),
+                                       hb_parni( 5 ),
+                                       hb_parni( 6 ),
+                                       hb_parni( 7 ),
+                             ( HWND )  hb_parnl( 1 ),
+                             ( HMENU ) hb_parni( 2 ),
+                             GetModuleHandle( NULL ),
                              NULL ) ;
 
     hb_retnl ( (LONG) hTrackBar );
@@ -154,7 +169,8 @@ HB_FUNC ( INITTRACKBAR )
 
 HB_FUNC ( TRACKBARSETRANGE )
 {
-    SendMessage( (HWND) hb_parnl(1), TBM_SETRANGE, TRUE, MAKELONG(hb_parni(2),hb_parni(3)) );
+    SendMessage( (HWND) hb_parnl( 1 ), TBM_SETRANGE, TRUE, ;
+                  MAKELONG( hb_parni( 2 ), hb_parni( 3 ) ) );
 }
 
 #pragma ENDDUMP

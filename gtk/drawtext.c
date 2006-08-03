@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.8 2006-02-15 16:56:58 lf_sfnet Exp $
+ * $Id: drawtext.c,v 1.9 2006-08-03 12:58:30 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level text functions
@@ -293,7 +293,13 @@ HB_FUNC( CREATEFONT )
 HB_FUNC( HWG_SETCTRLFONT )
 {
    GtkWidget * hCtrl = (GtkWidget*) HB_PARHANDLE(1);
-   GtkStyle * style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
+   GtkLabel * hLabel = (GtkLabel*) g_object_get_data( (GObject*) hCtrl,"label" );   
+   GtkStyle * style;
+   
+   if( hLabel )
+      hCtrl = (GtkWidget*) hLabel;
+      
+   style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
 
    style->font_desc = ( (PHWGUI_FONT) HB_PARHANDLE(2) )->hFont;
    gtk_widget_set_style( hCtrl, style );

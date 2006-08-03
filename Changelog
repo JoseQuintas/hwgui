@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.515 2006-08-03 11:55:50 alkresin Exp $
+ * $Id: Changelog,v 1.516 2006-08-03 12:58:30 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-03 17:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/drawtext.c
+    * SetCtrlFont() now works correctly for Label widgets
 
 2006-08-03 15:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hcontrol.prg

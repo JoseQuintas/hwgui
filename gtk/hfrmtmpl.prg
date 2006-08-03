@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.3 2006-08-02 10:51:46 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.4 2006-08-03 10:43:34 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -61,18 +61,23 @@ REQUEST HEDIT
 REQUEST HGROUP
 REQUEST HSAYBMP
 REQUEST HSAYICON
-// REQUEST HRICHEDIT
-// REQUEST HDATEPICKER
+/* LINUX
+REQUEST HRICHEDIT
+REQUEST HDATEPICKER
+*/
 REQUEST HUPDOWN
 REQUEST HCOMBOBOX
 REQUEST HLINE
 REQUEST HPANEL
 REQUEST HOWNBUTTON
 REQUEST HBROWSE
-// REQUEST HMONTHCALENDAR
-// REQUEST HTRACKBAR
+/* LINUX
+REQUEST HMONTHCALENDAR
+REQUEST HTRACKBAR
+REQUEST HANIMATION
+*/
 REQUEST HTAB
-// REQUEST HANIMATION
+
 
 REQUEST DBUSEAREA
 REQUEST RECNO
@@ -315,7 +320,7 @@ Private oDlg
 
    ELSEIF nMode == 1
 
-/*
+/* LINUX
       if lMdi
          INIT WINDOW ::oDlg MDI TITLE cTitle    ;
          AT nLeft, nTop SIZE nWidth, nHeight ;
@@ -688,11 +693,13 @@ MEMVAR aImages, lEditLabels, aParts
    NEXT
 
    IF oCtrlTmpl:cClass == "combobox"
+      /* LINUX
       IF ( i := Ascan( oCtrlTmpl:aProp,{|a|Lower(a[1])=="nmaxlines"} ) ) > 0
          nHeight := nHeight * nMaxLines
       ELSE
          nHeight := nHeight * 4
       ENDIF
+      */
    ELSEIF oCtrlTmpl:cClass == "line"
       nLength := Iif( lVertical==Nil.OR.!lVertical, nWidth, nHeight )
    ELSEIF oCtrlTmpl:cClass == "browse"

@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.9 2005-10-21 08:50:15 alkresin Exp $
+ *$Id: hdialog.prg,v 1.10 2006-08-03 11:55:53 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
@@ -59,6 +59,7 @@ CLASS HDialog INHERIT HCustomWindow
    DATA lActivated INIT .F.
    DATA xResourceID
    DATA lModal
+   DATA lActivated INIT .F.
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
                   bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc )
@@ -127,6 +128,7 @@ Local hParent,oWnd
       hwg_Set_Modal( ::handle, hParent )
    ENDIF
    InitModalDlg( Self )
+   ::lActivated := .T.
    hwg_ActivateDialog( ::handle,lNoModal  )
 
 RETURN Nil

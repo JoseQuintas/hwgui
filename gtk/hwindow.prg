@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.6 2005-09-15 17:07:51 alkresin Exp $
+ *$Id: hwindow.prg,v 1.7 2006-08-03 11:55:53 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HWindow class
@@ -153,7 +153,8 @@ CLASS HMainWindow INHERIT HWindow
    }
    DATA   nMenuPos
    DATA oNotifyIcon, bNotify, oNotifyMenu
-   DATA lTray INIT .F.
+   DATA lTray       INIT .F.
+   DATA lActivated  INIT .F.
 
    METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
                      oFont,bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, ;
@@ -208,6 +209,7 @@ Local oWndClient, handle
 */
    ELSEIF ::type == WND_MAIN
 
+      ::lActivated := .T.
       Hwg_ActivateMainWindow( ::handle,::hAccel, lMaximize, lMinimize )
 
    ENDIF

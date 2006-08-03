@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.514 2006-08-03 10:43:34 alkresin Exp $
+ * $Id: Changelog,v 1.515 2006-08-03 11:55:50 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-03 15:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/hcontrol.prg
+  * gtk/hdialog.prg
+  * gtk/hwindow.prg
+  * gtk/misc.c
+    * There was a problem with widgets, which was added after the parent window
+      or dialog was activated - now fixed.
 
 2006-08-03 14:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hfrmtmpl.prg

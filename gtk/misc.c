@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.7 2006-02-15 16:56:58 lf_sfnet Exp $
+ * $Id: misc.c,v 1.8 2006-08-03 11:55:53 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Miscellaneous functions
@@ -155,6 +155,11 @@ HB_FUNC( HIDEWINDOW )
 HB_FUNC( SHOWWINDOW )
 {
    gtk_widget_show( (GtkWidget *) HB_PARHANDLE(1) );
+}
+
+HB_FUNC( HWG_SHOWALL )
+{
+   gtk_widget_show_all( (GtkWidget *) HB_PARHANDLE(1) );
 }
 
 HB_FUNC( SENDMESSAGE )

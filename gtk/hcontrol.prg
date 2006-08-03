@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.10 2005-11-03 12:50:20 alkresin Exp $
+ *$Id: hcontrol.prg,v 1.11 2006-08-03 11:55:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -76,6 +76,7 @@ Local nId := CONTROL_FIRST_ID + Len( ::oParent:aControls )
 Return nId
 
 METHOD INIT CLASS HControl
+Local o
 
    IF !::lInit
       AddToolTip( ::oParent:handle, ::handle, ::tooltip )
@@ -86,6 +87,13 @@ METHOD INIT CLASS HControl
       ENDIF
       IF ISBLOCK(::bInit)
          Eval( ::bInit, Self )
+      ENDIF
+      o := ::oParent
+      DO WHILE o != Nil .AND. !__ObjHasMsg( o,"LACTIVATED")
+         o := o:oParent
+      ENDDO
+      IF o != Nil .AND. o:lActivated
+         hwg_ShowAll( o:handle )
       ENDIF
       ::lInit := .T.
    ENDIF

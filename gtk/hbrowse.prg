@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.14 2006-06-09 11:06:59 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.15 2006-08-04 08:49:35 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -329,8 +329,10 @@ Return retValue
 //----------------------------------------------------//
 METHOD Init CLASS HBrowse
 
-   Super:Init()
-   SetWindowObject( ::handle,Self )
+   IF !::lInit
+      Super:Init()
+      // SetWindowObject( ::handle,Self )
+   ENDIF
 Return Nil
 
 //----------------------------------------------------//
@@ -950,7 +952,7 @@ LocaL i, nColumns := Len(oBrw:aColumns)
    ENDIF
    
    IF oBrw:nLeftCol != oldLeft .OR. oBrw:colpos != oldpos
-      IF oBrw:hScrollV != Nil
+      IF oBrw:hScrollH != Nil
          maxPos := hwg_getAdjValue( oBrw:hScrollH,1 ) - hwg_getAdjValue( oBrw:hScrollH,4 )
          fif := Iif( oBrw:lEditable, oBrw:colpos+oBrw:nLeftCol-1, oBrw:nLeftCol )
          nPos := Iif( fif==1, 0, Iif( fif=nColumns, maxpos, ;
@@ -987,7 +989,7 @@ LocaL nColumns := Len(oBrw:aColumns)
       oBrw:colpos := 1
    ENDIF
    IF oBrw:nLeftCol != oldLeft .OR. oBrw:colpos != oldpos
-      IF oBrw:hScrollV != Nil
+      IF oBrw:hScrollH != Nil
          maxPos := hwg_getAdjValue( oBrw:hScrollH,1 ) - hwg_getAdjValue( oBrw:hScrollH,4 )
          fif := Iif( oBrw:lEditable, oBrw:colpos+oBrw:nLeftCol-1, oBrw:nLeftCol )
          nPos := Iif( fif==1, 0, Iif( fif=nColumns, maxpos, ;

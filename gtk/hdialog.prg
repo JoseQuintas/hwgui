@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.10 2006-08-03 11:55:53 alkresin Exp $
+ *$Id: hdialog.prg,v 1.11 2006-08-07 12:02:28 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
@@ -76,7 +76,7 @@ CLASS HDialog INHERIT HCustomWindow
    METHOD Close()    INLINE EndDialog( ::handle )
 ENDCLASS
 
-METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
+METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
                   bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId, xResourceID, lExitOnEsc ) CLASS HDialog
 
    ::oDefaultParent := Self
@@ -150,14 +150,14 @@ METHOD AddItem( oWnd,lModal ) CLASS HDialog
 RETURN Nil
 
 METHOD DelItem( oWnd,lModal ) CLASS HDialog
-Local i, h := oWnd:handle
+Local i
    IF lModal
-      IF ( i := Ascan( ::aModalDialogs,{|o|o:handle==h} ) ) > 0
+      IF ( i := Ascan( ::aModalDialogs,{|o|o==oWnd} ) ) > 0
          Adel( ::aModalDialogs,i )
          Asize( ::aModalDialogs, Len(::aModalDialogs)-1 )
       ENDIF
    ELSE
-      IF ( i := Ascan( ::aDialogs,{|o|o:handle==h} ) ) > 0
+      IF ( i := Ascan( ::aDialogs,{|o|o==oWnd} ) ) > 0
          Adel( ::aDialogs,i )
          Asize( ::aDialogs, Len(::aDialogs)-1 )
       ENDIF

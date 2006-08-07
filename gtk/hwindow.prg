@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.7 2006-08-03 11:55:53 alkresin Exp $
+ *$Id: hwindow.prg,v 1.8 2006-08-07 12:02:28 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HWindow class
@@ -115,19 +115,20 @@ METHOD AddItem( oWnd ) CLASS HWindow
 RETURN Nil
 
 METHOD DelItem( oWnd ) CLASS HWindow
-Local i, h := oWnd:handle
-   IF ( i := Ascan( ::aWindows,{|o|o:handle==h} ) ) > 0
+Local i
+   IF ( i := Ascan( ::aWindows,{|o|o==oWnd} ) ) > 0
       Adel( ::aWindows,i )
       Asize( ::aWindows, Len(::aWindows)-1 )
    ENDIF
 RETURN Nil
 
 METHOD FindWindow( hWnd ) CLASS HWindow
-Local i := Ascan( ::aWindows, {|o|o:handle==hWnd} )
-Return Iif( i == 0, Nil, ::aWindows[i] )
+// Local i := Ascan( ::aWindows, {|o|o:handle==hWnd} )
+// Return Iif( i == 0, Nil, ::aWindows[i] )
+Return GetWindowObject(hWnd)
 
 METHOD GetMain CLASS HWindow
-Return Iif(Len(::aWindows)>0,              ;
+Return Iif(Len(::aWindows)>0,            ;
 	 Iif(::aWindows[1]:type==WND_MAIN, ;
 	   ::aWindows[1],                  ;
 	   Iif(Len(::aWindows)>1,::aWindows[2],Nil)), Nil )

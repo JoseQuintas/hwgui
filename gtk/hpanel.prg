@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.4 2006-06-09 11:06:59 alkresin Exp $
+ * $Id: hpanel.prg,v 1.5 2006-08-07 11:14:29 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HPanel class 
@@ -66,14 +66,13 @@ METHOD Init CLASS HPanel
    IF !::lInit
       IF ::bSize == Nil
          IF ::nHeight!=0 .AND. ( ::nWidth>::nHeight .OR. ::nWidth==0 )
-            ::bSize := {|o,x,y|o:Move( ,,x,::nHeight )}
+            ::bSize := {|o,x,y|o:Move( ,Iif(::nTop>0,y-::nHeight,0),x,::nHeight )}
          ELSEIF ::nWidth!=0 .AND. ( ::nHeight>::nWidth .OR. ::nHeight==0 )
-            ::bSize := {|o,x,y|o:Move( ,,::nWidth,y )}
+            ::bSize := {|o,x,y|o:Move( Iif(::nLeft>0,x-::nLeft,0),,::nWidth,y )}
          ENDIF
       ENDIF
 
       Super:Init()
-      SetWindowObject( ::handle,Self )
    ENDIF
 
 Return Nil

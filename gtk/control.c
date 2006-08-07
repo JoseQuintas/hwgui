@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.22 2006-02-15 16:56:58 lf_sfnet Exp $
+ * $Id: control.c,v 1.23 2006-08-07 11:14:29 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -40,6 +40,7 @@ extern void SetWindowObject( GtkWidget * hWnd, PHB_ITEM pObject );
 extern void set_signal( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 );
 extern void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 );
 extern void cb_signal( GtkWidget *widget,gchar* data );
+extern void all_signal_connect( gpointer hWnd );
 extern GtkWidget * GetActiveWindow( void );
 
 static GtkTooltips * pTooltip = NULL;
@@ -178,6 +179,7 @@ HB_FUNC( CREATEEDIT )
       g_free( cTitle );
    }
 
+   all_signal_connect( (gpointer) hCtrl );
    HB_RETHANDLE( hCtrl );
 
 }
@@ -394,6 +396,8 @@ HB_FUNC( CREATEBROWSE )
    set_event( (gpointer)area, "key_press_event", 0, 0, 0 );
    set_event( (gpointer)area, "key_release_event", 0, 0, 0 );
 
+   // gtk_widget_show_all( hbox );
+   all_signal_connect( (gpointer) area );
    HB_RETHANDLE( hbox );
 }
 
@@ -529,9 +533,17 @@ HB_FUNC( CREATEPANEL )
    g_object_set_data( (GObject*) hCtrl, "fbox", (gpointer) fbox );
 
    set_event( (gpointer)hCtrl, "expose_event", WM_PAINT, 0, 0 );
+   all_signal_connect( (gpointer) hCtrl );
 
    HB_RETHANDLE( hCtrl );
 
+}
+
+HB_FUNC( DESTROYPANEL )
+{
+   GtkFixed *box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
+   if( box )
+      gtk_widget_destroy( (GtkWidget *) box );
 }
 
 /*
@@ -557,6 +569,7 @@ HB_FUNC( CREATEOWNBTN )
    set_event( (gpointer)hCtrl, "button_release_event", 0, 0, 0 );
    set_event( (gpointer)hCtrl, "enter_notify_event", 0, 0, 0 );
    set_event( (gpointer)hCtrl, "leave_notify_event", 0, 0, 0 );
+   all_signal_connect( (gpointer) hCtrl );
    
    HB_RETHANDLE( hCtrl );
 

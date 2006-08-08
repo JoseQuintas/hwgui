@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.22 2005-10-19 10:04:27 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.23 2006-08-08 12:56:33 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -15,6 +15,7 @@
 
 CLASS HOwnButton INHERIT HControl
 
+   CLASS VAR cPath SHARED
    DATA winclass   INIT "OWNBTN"
    DATA lFlat
    DATA state
@@ -75,7 +76,9 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,   ;
       ::lEnabled:=lEnabled
    endif
    IF bmp != Nil
-      ::bitmap  := Iif( (lResour!=Nil.AND.lResour).OR.Valtype(bmp)=="N", HBitmap():AddResource( bmp ), HBitmap():AddFile( bmp ) )
+      ::bitmap := Iif( (lResour!=Nil.AND.lResour).OR.Valtype(bmp)=="N", ;
+                     HBitmap():AddResource( bmp ), ;
+                     HBitmap():AddFile( Iif( ::cPath!=Nil,::cPath+bmp,bmp ) ) )
    ENDIF
    ::xb      := xb
    ::yb      := yb

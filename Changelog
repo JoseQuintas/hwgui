@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.519 2006-08-07 12:02:28 alkresin Exp $
+ * $Id: Changelog,v 1.520 2006-08-08 12:56:33 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-08 16:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/hownbtn.prg
+  * source/hownbtn.prg
+    * New class variable 'cPath' has been added, which is CLASS DATA SHARED
+      and may be used to define a directory ( if set ) for .bmp files for
+      ALL owner buttons.
 
 2006-08-07 16:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hdialog.prg

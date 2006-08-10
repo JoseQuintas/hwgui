@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.40 2006-07-26 07:01:13 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.41 2006-08-10 05:11:55 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -235,11 +235,11 @@ Private oDlg
       ELSEIF ::aProp[ i,1 ] == "modal"
          lModal := xProperty
       ELSEIF ::aProp[ i,1 ] == "formtype"
-
-         lMdi := AT( "mdimain", Lower( xProperty ) ) > 0
-         lMdiChild := AT( "mdichild", Lower( xProperty ) ) > 0
-         nMode := if(left(xProperty,3) =="dlg",2,1)
-
+         IF nMode == Nil
+            lMdi := AT( "mdimain", Lower( xProperty ) ) > 0
+            lMdiChild := AT( "mdichild", Lower( xProperty ) ) > 0
+            nMode := if(left(xProperty,3) =="dlg",2,1)
+         ENDIF
       ELSEIF ::aProp[ i,1 ] == "variables"
          FOR j := 1 TO Len( xProperty )
             __mvPrivate( xProperty[j] )

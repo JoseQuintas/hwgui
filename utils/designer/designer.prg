@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.20 2006-06-26 06:30:29 alkresin Exp $
+ * $Id: designer.prg,v 1.21 2006-08-10 05:11:55 alkresin Exp $
  *
  * Designer
  * Main file
@@ -21,6 +21,7 @@ REQUEST ELLIPSE
 REQUEST SETWINDOWFONT
 REQUEST INITMONTHCALENDAR
 REQUEST INITTRACKBAR
+REQUEST HTIMER, DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK
 
 Function Designer( p0, p1, p2 )
 Local oPanel, oTab, oFont, cResForm, i
@@ -109,6 +110,8 @@ Public crossCursor, vertCursor, horzCursor
       ENDMENU
       MENU TITLE "&View"
          MENUITEM "&Object Inspector" ID 1010 ACTION Iif( oDesigner:oDlgInsp==Nil,InspOpen(),oDesigner:oDlgInsp:Close() )
+         SEPARATOR
+         MENUITEM "&Preview"  ACTION DoPreview()
       ENDMENU
       MENU TITLE "&Control"
          MENUITEM "&Delete"  ACTION DeleteCtrl()
@@ -173,6 +176,11 @@ Public crossCursor, vertCursor, horzCursor
       MENUITEM "Delete" ACTION DeleteCtrl()
    ENDMENU
 
+   CONTEXT MENU oDesigner:oDlgMenu
+      MENUITEM "Paste" ACTION oDesigner:addItem := oDesigner:oClipbrd
+      MENUITEM "Preview" ACTION DoPreview()
+   ENDMENU
+
    HWG_InitCommonControlsEx()
 
 #ifdef INTEGRATED
@@ -194,7 +202,7 @@ Return cResForm
 CLASS HDesigner
 
    DATA oMainWnd, oDlgInsp
-   DATA oCtrlMenu, oTabMenu
+   DATA oCtrlMenu, oTabMenu, oDlgMenu
    DATA oClipbrd
    DATA lReport      INIT .F.
    DATA ds_mypath

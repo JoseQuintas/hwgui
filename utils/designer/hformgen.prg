@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.29 2006-07-07 07:54:11 alkresin Exp $
+ * $Id: hformgen.prg,v 1.30 2006-08-10 05:11:55 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -43,6 +43,7 @@ CLASS HFormGen INHERIT HObject
 
    CLASS VAR aForms INIT {}
    CLASS VAR oDlgSelected
+   DATA cEncoding
    DATA oDlg
    DATA name
    DATA handle
@@ -213,7 +214,7 @@ Private oForm := Self, aCtrlTable
             DoScript( aFormats[ ::type,5 ] )
          ENDIF
       ENDIF
-      IF !oDesigner:lSingleForm
+      IF !oDesigner:lSingleForm .AND. !( ::filename == "__tmp.xml" )
          AddRecent( Self )
       ENDIF
    ENDIF
@@ -306,9 +307,6 @@ Private value, oCtrl
       oPanel:aControls[1]:bOther := {|o,m,wp,lp|MessagesProc(o,m,wp,lp)}
       oPanel:bOther := {|o,m,wp,lp|Iif(m==WM_KEYUP,MessagesProc(o,m,wp,lp),-1)}
       ::oDlg:bOther := {|o,m,wp,lp|ScrollProc(o,m,wp,lp)}
-      MENU OF ::oDlg
-         MENUITEM "&Print" ACTION PrintReport()
-      ENDMENU
    ELSE
       ::oDlg:bOther := {|o,m,wp,lp|MessagesProc(o,m,wp,lp)}
    ENDIF
@@ -578,6 +576,7 @@ Local i, j, aItems, o, aProp := {}, cPropertyName, aRect, pos, cProperty
       MsgStop( "Form description isn't found" )
       Return Nil
    ENDIF
+   oForm:cEncoding := oDoc:GetAttribute( "encoding" )
    aItems := oDoc:aItems[1]:aItems
    FOR i := 1 TO Len( aItems )
       IF aItems[i]:title == "style"
@@ -747,7 +746,7 @@ Local cProperty, i1
 Return Nil
 
 Static Function WriteForm( oForm )
-Local oDoc := HXMLDoc():New()
+Local oDoc := HXMLDoc():New( oForm:cEncoding )
 Local oNode, oNode1, oStyle, i, i1, oMeth, cProperty, aControls
 
    oNode := oDoc:Add( HXMLNode():New( "part",,{ { "class",Iif(oDesigner:lReport,"report","form") } } ) )
@@ -1164,6 +1163,8 @@ Local oCtrl
          ELSE
             oDesigner:oCtrlMenu:Show( Iif(oDesigner:lReport,oDlg:oParent:oParent,oDlg),xPos,yPos,.T. )
          ENDIF
+      ELSE
+         oDesigner:oDlgMenu:Show( oDlg,xPos,yPos,.T. )
       ENDIF
    ENDIF
 
@@ -1335,32 +1336,42 @@ Local i, nLeft, nTop, lSorted := .T., aTabs
    ENDIF
 Return Nil
 
-Static Function PrintReport()
-Local oForm := HFormGen():oDlgSelected:oParent
+Function DoPreview()
+Local oForm
 Local cTemp1, cTemp2, lc := .F.
-Local hReport
+Local oTmpl
 
+   IF HFormGen():oDlgSelected == Nil
+      MsgStop( "No Form in use!" )
+      Return Nil
+   ENDIF
+
+   oForm := HFormGen():oDlgSelected:oParent
    IF oForm:lChanged .OR. oForm:type > 1
       lc := .T.
       cTemp1 := oForm:filename; cTemp2 := oForm:path
-      oForm:filename := "__tmprep.xml"
+      oForm:filename := "__tmp.xml"
       oForm:path     := ""
       oForm:type     := 1
       oForm:lChanged := .T.
       oForm:Save()
    ENDIF
 
-   hReport := HRepTmpl():Read( oForm:path+oForm:filename )
+   oTmpl := Iif( oDesigner:lReport, HRepTmpl():Read( oForm:path+oForm:filename ), ;
+               HFormTmpl():Read( oForm:path+oForm:filename ) )
 
    IF lc
-      // FErase( oForm:filename )
       oForm:filename := cTemp1
       oForm:path     := cTemp2
       oForm:lChanged := .T.
    ENDIF
 
-   hReport:Print( ,.T. )
-   hReport:Close()
+   IF oDesigner:lReport
+      oTmpl:Print( ,.T. )
+   ELSE
+      oTmpl:Show()
+   ENDIF
+   oTmpl:Close()
 
 Return Nil
 

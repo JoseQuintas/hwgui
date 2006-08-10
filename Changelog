@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.520 2006-08-08 12:56:33 alkresin Exp $
+ * $Id: Changelog,v 1.521 2006-08-10 05:11:55 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-10 09:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/designer/designer.prg
+  * utils/designer/hformgen.prg
+    * Form Preview has been added - thanks to Richard Roesnadi
+    ! Fix, related to 'encoding' attribute 
+  * source/hfrmtmpl.prg
+    * nMode parameter of a Show() method overrides now the value of a
+      'formtype' property.
+  * source/procmisc/procscri.prg
+    * Changed errors handling
 
 2006-08-08 16:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hownbtn.prg

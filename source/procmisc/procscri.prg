@@ -1,5 +1,5 @@
 /*
- * $Id: procscri.prg,v 1.8 2004-12-08 08:23:17 alkresin Exp $
+ * $Id: procscri.prg,v 1.9 2006-08-10 05:11:55 alkresin Exp $
  *
  * Common procedures
  * Scripts
@@ -283,20 +283,28 @@ Local cLine, lDebug := ( Len( rezArray ) == 3 )
 RETURN .T.
 
 STATIC FUNCTION MacroError( nm, e, stroka )
-Local n
+Local n, cTitle
 
 #ifdef __WINDOWS__
    IF nm == 1
-      MsgStop( ErrorMessage( e ) + Chr(10)+Chr(13) + "in" + Chr(10)+Chr(13) + ;
-             AllTrim(stroka),"Script compiling error" )
+      stroka := ErrorMessage( e ) + Chr(10)+Chr(13) + "in" + Chr(10)+Chr(13) + ;
+                      AllTrim(stroka)
+      cTitle := "Script compiling error"
    ELSEIF nm == 2
-      MsgStop( ErrorMessage( e ),"Script variables error" )
+      stroka := ErrorMessage( e )
+      cTitle := "Script variables error"
    ELSEIF nm == 3
       n := 2
       WHILE !Empty( ProcName( n ) )
         stroka += Chr(13)+Chr(10) + "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
       ENDDO
-      MsgStop( ErrorMessage( e )+ Chr(10)+Chr(13) + stroka,"Script execution error" )
+      stroka := ErrorMessage( e )+ Chr(10)+Chr(13) + stroka
+      cTitle := "Script execution error"
+   ENDIF
+   stroka += Chr(13)+Chr(10) + Chr(13)+Chr(10) + "Continue ?"
+   IF !msgYesNo( stroka, cTitle )
+      EndWindow()
+      QUIT
    ENDIF
 #else
    IF nm == 1

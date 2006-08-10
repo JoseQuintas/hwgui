@@ -3,7 +3,7 @@
   <style>
     <property name="Geometry">{124,144,508,87}</property>
     <property name="Caption">[Example]</property>
-    <property name="FormType">[dlgModal]</property>
+    <property name="FormType">[Main]</property>
     <property name="lClipper">.F.</property>
     <property name="lExitOnEnter">.F.</property>
     <property name="Variables">{oForm1,oForm2,oForm3,oRep1}</property>
@@ -22,7 +22,8 @@
   <method name="onFormInit">
     <![CDATA[oForm1 := HFormTmpl():Read( "testget1.xml" )
 oForm2 := HFormTmpl():Read( "testget2.xml" )
-oForm3 := HFormTmpl():Read( "testdbf1.xml" )]]>
+oForm3 := HFormTmpl():Read( "testdbf1.xml" )
+orep1 := hreptmpl():Read("testrep1.xml")]]>
   </method>
   <part class="menu">
     <style>
@@ -108,10 +109,7 @@ oForm3 := HFormTmpl():Read( "testdbf1.xml" )]]>
         </property>
       </style>
       <method name="onClick">
-        <![CDATA[use ("..\..\hwreport\test.dbf")
-orep1 := hreptmpl():Read("testrep1.xml")
-orep1:print(,.t.)
-use]]>
+        <![CDATA[orep1:print(,.t.)]]>
       </method>
     </part>
   </part>

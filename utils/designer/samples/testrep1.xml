@@ -8,11 +8,17 @@
     <property name="Font">
       <font name="Arial" width="0" height="-13"/>
     </property>
-    <property name="FontH">4.23</property>
+    <property name="FontH">4.21</property>
   </style>
+  <method name="onRepInit">
+    <![CDATA[use ("..\..\hwreport\test.dbf")]]>
+  </method>
+  <method name="onRepExit">
+    <![CDATA[dbCloseArea()]]>
+  </method>
   <part class="area">
     <style>
-      <property name="Geometry">{0.0,0.0,209.1,30.1,208.8,29.8}</property>
+      <property name="Geometry">{0.0,0.0,209.0,30.0,208.8,29.8}</property>
       <property name="AreaType">[DocHeader]</property>
     </style>
     <part class="label">
@@ -26,7 +32,7 @@
   </part>
   <part class="area">
     <style>
-      <property name="Geometry">{0.0,30.4,209.1,30.1,208.8,60.2}</property>
+      <property name="Geometry">{0.0,30.4,209.0,30.0,208.8,60.2}</property>
       <property name="AreaType">[PageHeader]</property>
       <property name="VarOffset">.T.</property>
     </style>
@@ -38,16 +44,16 @@
     </part>
     <part class="label">
       <style>
-        <property name="Geometry">{74.4,36.7,77.4,10.0,151.5,46.5}</property>
+        <property name="Geometry">{74.4,36.7,77.5,10.0,151.5,46.5}</property>
       </style>
       <method name="Expression">
-        <![CDATA[return "on page "+str(oRep1:oPrinter:npage)]]>
+        <![CDATA[return "on page "+str(oReport:oPrinter:npage)]]>
       </method>
     </part>
   </part>
   <part class="area">
     <style>
-      <property name="Geometry">{0.0,60.7,199.6,200.4,199.3,260.8}</property>
+      <property name="Geometry">{0.0,60.7,199.5,200.6,199.3,260.8}</property>
       <property name="AreaType">[Table]</property>
       <property name="VarOffset">.T.</property>
     </style>
@@ -57,7 +63,7 @@ lLastCycle := EOF()]]>
     </method>
     <part class="label">
       <style>
-        <property name="Geometry">{24.8,61.2,27.2,4.5,51.7,65.5}</property>
+        <property name="Geometry">{24.8,61.2,27.1,4.7,51.7,65.5}</property>
       </style>
       <method name="Expression">
         <![CDATA[return first]]>
@@ -65,7 +71,7 @@ lLastCycle := EOF()]]>
     </part>
     <part class="label">
       <style>
-        <property name="Geometry">{52.3,61.2,27.2,4.5,79.2,65.5}</property>
+        <property name="Geometry">{52.3,61.2,27.4,4.7,79.2,65.5}</property>
       </style>
       <method name="Expression">
         <![CDATA[return last]]>
@@ -73,7 +79,7 @@ lLastCycle := EOF()]]>
     </part>
     <part class="label">
       <style>
-        <property name="Geometry">{79.7,61.2,27.2,4.5,106.7,65.5}</property>
+        <property name="Geometry">{79.7,61.2,27.4,4.7,106.7,65.5}</property>
       </style>
       <method name="Expression">
         <![CDATA[return dtoc(hiredate)]]>
@@ -81,7 +87,7 @@ lLastCycle := EOF()]]>
     </part>
     <part class="label">
       <style>
-        <property name="Geometry">{107.2,61.2,27.2,4.5,134.1,65.5}</property>
+        <property name="Geometry">{107.2,61.2,27.1,4.7,134.1,65.5}</property>
       </style>
       <method name="Expression">
         <![CDATA[return str(age)]]>

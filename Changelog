@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.523 2006-08-10 20:22:38 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.524 2006-08-10 20:24:48 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -11,7 +11,7 @@
 2006-08-10 17-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * utils\designer\samples\Createfrm.prg
     Sample to convert XML in function FRM
-  * utils\designer\samples\Createfrm.prg  
+  * utils\designer\samples\example2.prg  
     Sample to compiling insert the xml into code.
     Is possible to create codes and compile all xml.
 

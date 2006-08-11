@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.44 2006-07-03 01:47:12 lculik Exp $
+ * $Id: window.c,v 1.45 2006-08-11 09:45:56 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -457,10 +457,11 @@ HB_FUNC( HWG_CREATEMDICHILDWINDOW )
 HB_FUNC( SENDMESSAGE )
 {
     hb_retnl( (LONG) SendMessage(
-                       (HWND) hb_parnl( 1 ),	// handle of destination window
-                       (UINT) hb_parni( 2 ),	// message to send
-                       (WPARAM) hb_parnl( 3 ),	// first message parameter
-                       (LPARAM) hb_parnl( 4 ) 	// second message parameter
+                       (HWND) hb_parnl( 1 ),	 // handle of destination window
+                       (UINT) hb_parni( 2 ),	 // message to send
+                       (WPARAM) hb_parnl( 3 ),	 // first message parameter
+                       (ISCHAR(4))? (LPARAM) hb_parc( 4 ) : 
+                          (LPARAM) hb_parnl( 4 ) // second message parameter
                      ) );
 }
 

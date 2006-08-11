@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.524 2006-08-10 20:24:48 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.525 2006-08-11 09:45:56 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-11 13:48 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hownbtn.prg
+    ! Small fix, provided by Fernando Athayde
+  * source/window.c
+    * SendMessage() changed to accept character parameter
 
 2006-08-10 17-20 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * utils\designer\samples\Createfrm.prg

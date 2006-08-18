@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.4 2005-10-27 12:10:33 alkresin Exp $
+ * $Id: drawwidg.prg,v 1.5 2006-08-18 07:55:09 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -29,25 +29,28 @@ CLASS HFont INHERIT HObject
    DATA charset, italic, Underline, StrikeOut
    DATA nCounter   INIT 1
 
-   METHOD Add( fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut, nHandle )
+   METHOD Add( fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut, nHandle, lLinux )
    METHOD Select( oFont )
    METHOD Release()
 
 ENDCLASS
 
-METHOD Add( fontName, nWidth, nHeight ,fnWeight, ;
-         fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut, nHandle ) CLASS HFont
+METHOD Add( fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic, ;
+                   fdwUnderline, fdwStrikeOut, nHandle, lLinux ) CLASS HFont
 
 Local i, nlen := Len( ::aFonts )
 
    nHeight  := Iif( nHeight==Nil,13,Abs(nHeight) )
+   IF lLinux == Nil .OR. !lLinux
+      nHeight -= 3
+   ENDIF
    fnWeight := Iif( fnWeight==Nil,0,fnWeight )
    fdwCharSet := Iif( fdwCharSet==Nil,0,fdwCharSet )
    fdwItalic := Iif( fdwItalic==Nil,0,fdwItalic )
    fdwUnderline := Iif( fdwUnderline==Nil,0,fdwUnderline )
    fdwStrikeOut := Iif( fdwStrikeOut==Nil,0,fdwStrikeOut )
 
-   For i := 1 TO nlen
+   FOR i := 1 TO nlen
       IF ::aFonts[i]:name == fontName .AND.          ;
          ::aFonts[i]:width == nWidth .AND.           ;
          ::aFonts[i]:height == nHeight .AND.         ;
@@ -92,7 +95,7 @@ Local af := SelectFont( oFont )
       Return Nil
    ENDIF
 
-Return ::Add( af[2],af[3],af[4],af[5],af[6],af[7],af[8],af[9],af[1] )
+Return ::Add( af[2],af[3],af[4],af[5],af[6],af[7],af[8],af[9],af[1],.T. )
 
 METHOD Release() CLASS HFont
 Local i, nlen := Len( ::aFonts )

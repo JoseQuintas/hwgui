@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.15 2006-08-04 08:49:35 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.16 2006-08-18 07:55:09 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -52,7 +52,6 @@ REQUEST BOF
 static crossCursor := nil
 static arrowCursor := nil
 static vCursor     := nil
-static oCursor     := nil
 static xDrag
 //----------------------------------------------------//
 CLASS HColumn INHERIT HObject
@@ -151,6 +150,7 @@ CLASS HBrowse INHERIT HControl
    DATA nScrollH  INIT 0
    DATA oGet, nGetRec
    DATA lBtnDbl   INIT .F.
+   DATA nCursor   INIT 0
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
@@ -1281,9 +1281,9 @@ Local xm := LOWORD(lParam), x1, fif
       Eval(::aColumns[fif]:bHeadClick, Self, fif)
 
    ELSEIF nLine == 0
-      IF oCursor == crossCursor
-         oCursor := vCursor
-         Hwg_SetCursor( oCursor,::area )
+      IF ::nCursor == 1
+         ::nCursor := 2
+         Hwg_SetCursor( vCursor,::area )
          xDrag := LoWord( lParam )
       ENDIF
    ENDIF
@@ -1299,7 +1299,7 @@ Local xPos := LOWORD(lParam), x := ::x1, x1, i := ::nLeftCol
       ::lBtnDbl := .F.
       Return Nil
    ENDIF
-   IF oCursor == vCursor
+   IF ::nCursor == 2
       DO WHILE x < xDrag
          x += ::aColumns[i]:width
          IF Abs( x-xDrag ) < 10
@@ -1311,7 +1311,7 @@ Local xPos := LOWORD(lParam), x := ::x1, x1, i := ::nLeftCol
       IF xPos > x1
          ::aColumns[i]:width := xPos - x1
          Hwg_SetCursor( arrowCursor,::area )
-         oCursor := nil
+         ::nCursor := 0
        
          InvalidateRect( hBrw, 0 )
       ENDIF
@@ -1334,33 +1334,32 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD MouseMove( wParam, lParam ) CLASS HBrowse
-   local xPos := LoWord( lParam ), yPos := HiWord( lParam )
-   local x := ::x1, i := ::nLeftCol, res := .F.
+Local xPos := LoWord( lParam ), yPos := HiWord( lParam )
+Local x := ::x1, i := ::nLeftCol, res := .F.
 
-   // writelog( "Mmove: "+str(xPos)+" "+str(yPos) )
    IF !::active .OR. Empty( ::aColumns ) .OR. ::x1 == Nil
       Return Nil
    ENDIF
    IF ::lDispSep .AND. yPos <= ::height+1
-      IF wParam == 1 .AND. oCursor == vCursor
-         Hwg_SetCursor( oCursor,::area )
+      IF wParam == 1 .AND. ::nCursor == 2
+         Hwg_SetCursor( vCursor,::area )
          res := .T.
       ELSE
          DO WHILE x < ::x2 - 2 .AND. i <= Len( ::aColumns )
             x += ::aColumns[i++]:width
             IF Abs( x - xPos ) < 8
-                  IF oCursor != vCursor
-                     oCursor := crossCursor
+                  IF ::nCursor != 2
+                     ::nCursor := 1
                   ENDIF
-                  Hwg_SetCursor( oCursor,::area )
+                  Hwg_SetCursor( Iif(::nCursor==1,crossCursor,vCursor),::area )
                res := .T.
                EXIT
             ENDIF
          ENDDO
       ENDIF
-      IF !res .AND. !Empty( oCursor )
+      IF !res .AND. ::nCursor != 0
          Hwg_SetCursor( arrowCursor,::area )
-         oCursor := nil
+         ::nCursor := 0
       ENDIF
    ENDIF
 RETURN Nil

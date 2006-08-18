@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.23 2006-08-07 11:14:29 alkresin Exp $
+ * $Id: control.c,v 1.24 2006-08-18 07:55:09 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -634,7 +634,7 @@ HB_FUNC( LOADCURSOR )
       // hb_retnl( (LONG) LoadCursor( GetModuleHandle( NULL ), hb_parc( 1 )  ) );
    }
    else
-      HB_RETHANDLE( gdk_cursor_new( (GdkCursorType) HB_PARHANDLE(1) ) );
+      HB_RETHANDLE( gdk_cursor_new( (GdkCursorType) hb_parni(1) ) );
 }
 
 HB_FUNC( HWG_SETCURSOR )

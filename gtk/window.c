@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.21 2006-06-09 11:06:59 alkresin Exp $
+ * $Id: window.c,v 1.22 2006-08-18 07:55:09 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -180,8 +180,7 @@ HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 
 HB_FUNC( HWG_ACTIVATEDIALOG )
 {
-   gtk_widget_show_all( (GtkWidget*) HB_PARHANDLE(1) );
-   // gtk_dialog_run( (GtkDialog*) hb_parnl(1) );
+   // gtk_widget_show_all( (GtkWidget*) HB_PARHANDLE(1) );
    if( ISNIL(2) || !hb_parl(2) )
       gtk_main();
 }
@@ -274,8 +273,8 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       if( event->type == GDK_KEY_PRESS || event->type == GDK_KEY_RELEASE )
       {
          p1 = (event->type==GDK_KEY_PRESS)? WM_KEYDOWN : WM_KEYUP;
-	 p2 = ((GdkEventKey*)event)->keyval;
-	 p3 = ( ( ((GdkEventKey*)event)->state & GDK_SHIFT_MASK )? 1 : 0 ) |
+         p2 = ((GdkEventKey*)event)->keyval;
+	   p3 = ( ( ((GdkEventKey*)event)->state & GDK_SHIFT_MASK )? 1 : 0 ) |
 	      ( ( ((GdkEventKey*)event)->state & GDK_CONTROL_MASK )? 2 : 0 ) |
 	      ( ( ((GdkEventKey*)event)->state & GDK_MOD1_MASK )? 4 : 0 );
       }
@@ -285,14 +284,14 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       {
          p1 = (event->type==GDK_BUTTON_PRESS)? WM_LBUTTONDOWN : 
 	      ( (event->type==GDK_BUTTON_RELEASE)? WM_LBUTTONUP : WM_LBUTTONDBLCLK );
-	 p2 = 0;
-	 p3 = ( ((ULONG)(((GdkEventButton*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventButton*)event)->y)) << 16 ) & 0xFFFF0000 );
+	   p2 = 0;
+	   p3 = ( ((ULONG)(((GdkEventButton*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventButton*)event)->y)) << 16 ) & 0xFFFF0000 );
       }
       else if( event->type == GDK_MOTION_NOTIFY )
       {
          p1 = WM_MOUSEMOVE;
-	 p2 = ( ((GdkEventKey*)event)->state & GDK_BUTTON1_MASK )? 1:0;
-	 p3 = ( ((ULONG)(((GdkEventMotion*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
+	   p2 = ( ((GdkEventMotion*)event)->state & GDK_BUTTON1_MASK )? 1:0;
+	   p3 = ( ((ULONG)(((GdkEventMotion*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
       }
       else if( event->type == GDK_CONFIGURE )
       {
@@ -562,4 +561,3 @@ HB_FUNC( HWG_SET_MODAL )
    gtk_window_set_modal( (GtkWindow *) HB_PARHANDLE(1), 1 );
    gtk_window_set_transient_for( (GtkWindow *) HB_PARHANDLE(1), (GtkWindow *) HB_PARHANDLE(2) );
 }
-

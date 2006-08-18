@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.22 2006-08-18 07:55:09 alkresin Exp $
+ * $Id: window.c,v 1.23 2006-08-18 12:05:59 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -277,6 +277,12 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
 	   p3 = ( ( ((GdkEventKey*)event)->state & GDK_SHIFT_MASK )? 1 : 0 ) |
 	      ( ( ((GdkEventKey*)event)->state & GDK_CONTROL_MASK )? 2 : 0 ) |
 	      ( ( ((GdkEventKey*)event)->state & GDK_MOD1_MASK )? 4 : 0 );
+      }
+      else if( event->type == GDK_SCROLL )
+      {
+         p1 = WM_KEYDOWN;
+         p2 = ( ( (GdkEventScroll*)event )->direction == GDK_SCROLL_DOWN )? 0xFF54 : 0xFF52;
+         p3 = 0;
       }
       else if( event->type == GDK_BUTTON_PRESS || 
                event->type == GDK_2BUTTON_PRESS ||

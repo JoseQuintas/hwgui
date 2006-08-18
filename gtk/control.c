@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.24 2006-08-18 07:55:09 alkresin Exp $
+ * $Id: control.c,v 1.25 2006-08-18 12:05:59 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -389,12 +389,13 @@ HB_FUNC( CREATEBROWSE )
    
    gtk_widget_add_events( area, GDK_BUTTON_PRESS_MASK | 
         GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK |
-	GDK_POINTER_MOTION_MASK );
+	GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK );
    set_event( (gpointer)area, "button_press_event", 0, 0, 0 );
    set_event( (gpointer)area, "button_release_event", 0, 0, 0 );
    set_event( (gpointer)area, "motion_notify_event", 0, 0, 0 );
    set_event( (gpointer)area, "key_press_event", 0, 0, 0 );
    set_event( (gpointer)area, "key_release_event", 0, 0, 0 );
+   set_event( (gpointer)area, "scroll_event", 0, 0, 0 );
 
    // gtk_widget_show_all( hbox );
    all_signal_connect( (gpointer) area );

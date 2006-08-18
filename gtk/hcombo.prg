@@ -1,5 +1,5 @@
 /*
- *$Id: hcombo.prg,v 1.3 2005-10-21 08:50:15 alkresin Exp $
+ *$Id: hcombo.prg,v 1.4 2006-08-18 12:05:59 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HComboBox class 
@@ -107,14 +107,12 @@ Return Nil
 METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
 
    IF msg == EN_SETFOCUS
-      writelog("SETFOCUS")
       IF ::bSetGet == Nil
          Eval( ::bGetFocus, hwg_Edit_GetText( ::handle ), Self )
       ELSE
          __When( Self )
       ENDIF
    ELSEIF msg == EN_KILLFOCUS
-      writelog("KILLFOCUS")
       IF ::bSetGet == Nil
          Eval( ::bLostFocus, hwg_Edit_GetText( ::handle ), Self )
       ELSE

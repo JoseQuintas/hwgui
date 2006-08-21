@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.25 2006-08-18 12:05:59 lf_sfnet Exp $
+ * $Id: control.c,v 1.26 2006-08-21 10:31:31 lf_sfnet Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -207,11 +207,11 @@ HB_FUNC( HWG_EDIT_GETTEXT )
    if( g_object_get_data( (GObject *)hCtrl, "multi" ) )
    {
       GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (hCtrl));
-      GtkTextIter * iterStart = NULL, * iterEnd = NULL;
+      GtkTextIter iterStart, iterEnd;
 
-      gtk_text_buffer_get_start_iter( buffer, iterStart );
-      gtk_text_buffer_get_end_iter( buffer, iterEnd );
-      cptr = gtk_text_buffer_get_text( buffer, iterStart, iterEnd, 1 );
+      gtk_text_buffer_get_start_iter( buffer, &iterStart );
+      gtk_text_buffer_get_end_iter( buffer, &iterEnd );
+      cptr = gtk_text_buffer_get_text( buffer, &iterStart, &iterEnd, 1 );
    }
    else
       cptr = (char*) gtk_entry_get_text( (GtkEntry*)hCtrl );

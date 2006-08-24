@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.9 2006-06-09 11:06:59 alkresin Exp $
+ *$Id: hedit.prg,v 1.10 2006-08-24 07:25:36 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HEdit class 
@@ -99,11 +99,8 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    ParsePict( Self, cPicture, vari )
    ::Activate()
 
-   IF bSetGet != Nil
-      ::bGetFocus := bGFocus
-      ::bLostFocus := bLFocus
-      ::bValid := {|o|__Valid(o)}
-   ENDIF
+   ::bGetFocus := bGFocus
+   ::bLostFocus := bLFocus
    hwg_SetEvent( ::handle,"focus_in_event",WM_SETFOCUS,0,0 )
    hwg_SetEvent( ::handle,"focus_out_event",WM_KILLFOCUS,0,0 )   
    hwg_SetEvent( ::handle,"key_press_event",0,0,0 )
@@ -127,6 +124,42 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
    IF ::bAnyEvent != Nil .AND. Eval( ::bAnyEvent,Self,msg,wParam,lParam ) != 0
       Return 0
    ENDIF
+   
+   IF msg == WM_KEYUP  
+      IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
+         DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
+            oParent := oParent:oParent
+         ENDDO
+         IF oParent != Nil .AND. !Empty( oParent:KeyList )
+	    /*
+            cKeyb := GetKeyboardState()
+            nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
+            IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nctrl.AND.a[2]==wParam} ) ) > 0
+               Eval( oParent:KeyList[ nPos,3 ] )
+            ENDIF
+	    */
+         ENDIF
+      ENDIF
+   ELSEIF msg == WM_SETFOCUS
+      IF ::bSetGet == Nil
+         IF ::bGetFocus != Nil
+            Eval( ::bGetFocus, hwg_Edit_GetText( ::handle ), Self )
+         ENDIF
+      ELSE
+         __When( Self )
+      ENDIF
+   ELSEIF msg == WM_KILLFOCUS
+      IF ::bSetGet == Nil
+         IF ::bLostFocus != Nil
+            Eval( ::bLostFocus, hwg_Edit_GetText( ::handle ), Self )
+         ENDIF
+      ELSE
+         __Valid( Self )
+      ENDIF
+   ELSEIF msg == WM_DESTROY
+      ::End()
+   ENDIF
+   
    IF ::bSetGet == Nil
       Return 0
    ENDIF
@@ -190,7 +223,7 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
             ENDIF
             Return 1
          ELSEIF wParam == GDK_Return  // Enter
-            IF !GetSkip( oParent,::handle,1,.T. ) .AND. ::bValid != Nil
+            IF !GetSkip( oParent,::handle,1,.T. ) .AND. ::bSetGet != Nil
 	       __Valid( Self )
 	    ENDIF
             Return 1
@@ -210,37 +243,6 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
          // SendMessage( ::handle,EM_SCROLL, Iif(nPos>0,SB_LINEUP,SB_LINEDOWN), 0 )
       ENDIF
 
-   ENDIF
-
-   IF msg == WM_KEYUP  
-      IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
-         DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
-            oParent := oParent:oParent
-         ENDDO
-         IF oParent != Nil .AND. !Empty( oParent:KeyList )
-	    /*
-            cKeyb := GetKeyboardState()
-            nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
-            IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nctrl.AND.a[2]==wParam} ) ) > 0
-               Eval( oParent:KeyList[ nPos,3 ] )
-            ENDIF
-	    */
-         ENDIF
-      ENDIF
-   ELSEIF msg == WM_SETFOCUS
-      IF ::bSetGet == Nil
-         Eval( ::bGetFocus, hwg_Edit_GetText( ::handle ), Self )
-      ELSE
-         __When( Self )
-      ENDIF
-   ELSEIF msg == WM_KILLFOCUS
-      IF ::bSetGet == Nil
-         Eval( ::bLostFocus, hwg_Edit_GetText( ::handle ), Self )
-      ELSE
-         __Valid( Self )
-      ENDIF
-   ELSEIF msg == WM_DESTROY
-      ::End()
    ENDIF
  
 Return 0
@@ -641,7 +643,7 @@ Local vari, oDlg
          ENDIF
          IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, vari, oCtrl )
             SetFocus( oCtrl:handle )
-	    hwg_edit_SetPos( oCtrl:handle,0 )
+	      hwg_edit_SetPos( oCtrl:handle,0 )
             IF oDlg != Nil
                oDlg:nLastKey := 0
             ENDIF

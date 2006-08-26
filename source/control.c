@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.44 2006-07-31 12:40:03 lculik Exp $
+ * $Id: control.c,v 1.45 2006-08-26 19:31:39 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -497,11 +497,14 @@ HB_FUNC( SETDATEPICKER )
    }
 }
 
+HB_FUNC ( SETDATEPICKERNULL )
+{
+   SendMessage((HWND) hb_parnl (1), DTM_SETSYSTEMTIME, GDT_NONE, (LPARAM) 0);
+}
+
 HB_FUNC( GETDATEPICKER )
 {
-   SYSTEMTIME st
-
-;
+   SYSTEMTIME st ;
    char szDate[9];
 
    SendMessage( (HWND) hb_parnl (1), DTM_GETSYSTEMTIME, 0, (LPARAM) &st);

@@ -1,22 +1,14 @@
  /*
- * $Id: hgrid.prg,v 1.8 2006-08-26 19:31:39 lculik Exp $
+ * $Id: hgridex.prg,v 1.1 2006-08-26 19:31:39 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
  *
  * Copyright 2004 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
  *
+ * Extended function Copyright 2006 Luiz Rafael Culik Guimaraes <luiz@xharbour.com.br>
 */
 
-/*
-TODO: 1) In line edit
-         The better way is using listview_hittest to determine the item and subitem position
-      2) Imagelist
-         The way is using the ListView_SetImageList
-      3) Checkbox
-         The way is using the NM_CUSTOMDRAW and DrawFrameControl()
-         
-*/
 
 #include "windows.ch"
 #include "guilib.ch"
@@ -34,16 +26,18 @@ TODO: 1) In line edit
 #define NM_KILLFOCUS           -8
 #define NM_SETFOCUS            -7
 
-CLASS HGrid INHERIT HControl
+CLASS HGridEX INHERIT HControl
 
    CLASS VAR winclass INIT "SYSLISTVIEW32"
    DATA aBitMaps   INIT {}
+   DATA aItems     INIT {}
    DATA ItemCount
    DATA color   
    DATA bkcolor
    DATA aColumns   INIT {}
    DATA nRow       INIT 0
    DATA nCol       INIT 0
+   DATA aColors    INIT {}
    
    DATA lNoScroll  INIT .F.
    DATA lNoBorder  INIT .F.
@@ -54,13 +48,17 @@ CLASS HGrid INHERIT HControl
    DATA bKeyDown  
    DATA bPosChg
    DATA bDispInfo
-
+   DATA him
    DATA bGfocus
    DATA bLfocus
+   DATA aRow       INIT {}
+   Data aRowBitMap INIT {}
+   Data aRowStyle  INIT {}
+   DATA iRowSelect INIT  0
 
    METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint, bEnter,;
                bGfocus, bLfocus, lNoScroll, lNoBord, bKeyDown, bPosChg, bDispInfo,;
-               nItemCount, lNoLines, color, bkcolor, lNoHeader,aBit )
+               nItemCount, lNoLines, color, bkcolor, lNoHeader,aBit,aItems )
 
    METHOD Activate()
    METHOD Init()
@@ -69,18 +67,25 @@ CLASS HGrid INHERIT HControl
    METHOD RefreshLine()                          INLINE Listview_update( ::handle, Listview_getfirstitem( ::handle ) )
    METHOD SetItemCount(nItem)                    INLINE Listview_setitemcount( ::handle, nItem )
    METHOD Row()                                  INLINE Listview_getfirstitem( ::handle )
+   METHOD AddRow( aRow )
+
+   METHOD DELETEROW()    INLINE IF( ::iRowSelect > 0 ,( SendMessage( ::HANDLE, LVM_DELETEITEM, ::iRowSelect , 0), ::iRowSelect := -1 ), .T. )
+   METHOD DELETEALLROW() INLINE ::aItems :=NIL, ::aColors := {}, SendMessage( ::Handle, LVM_DELETEALLITEMS, 0, 0 )
+   METHOD SELECTALL()    INLINE ListViewSelectAll( ::Handle )
+   METHOD SELECTLAST()   INLINE ListViewSelectLastItem( ::handle )
 ENDCLASS
 
 
 METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint, bEnter,;
                bGfocus, bLfocus, lNoScroll, lNoBord, bKeyDown, bPosChg, bDispInfo,;
-               nItemCount, lNoLines, color, bkcolor, lNoHeader,aBit ) CLASS HGrid
+               nItemCount, lNoLines, color, bkcolor, lNoHeader,aBit,aItems ) CLASS HGridEx
 
-   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), LVS_SHOWSELALWAYS + WS_TABSTOP + IIF( lNoBord, 0, WS_BORDER ) + LVS_REPORT + LVS_OWNERDATA + LVS_SINGLESEL )
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_VISIBLE|WS_CHILD|LVS_REPORT)
    Super:New( oWnd,nId,nStyle,x,y,Width,Height,oFont,bInit, ;
                   bSize,bPaint )
    Default aBit to {}
-   ::ItemCount := nItemCount
+   ::aItems := aItems
+   ::ItemCount := Len(aItems)
    ::aBitMaps := aBit
    ::bGfocus := bGfocus
    ::bLfocus := bLfocus
@@ -102,19 +107,10 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
    
    ::Activate()
    
-   /*
-   if bGfocus != Nil
-      ::oParent:AddEvent( NM_SETFOCUS,::id,bGfocus,.T. )
-   endif
-   
-   if bLfocus != Nil
-      ::oParent:AddEvent( NM_KILLFOCUS,::id,bLfocus,.T. )
-   endif
-   */
 
 Return Self
 
-METHOD Activate CLASS HGrid
+METHOD Activate CLASS HGridEx
    if ::oParent:handle != 0      
       ::handle := ListView_Create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll ) 
 
@@ -122,15 +118,20 @@ METHOD Activate CLASS HGrid
    endif
 Return Nil
 
-METHOD Init() CLASS HGrid
+METHOD Init() CLASS HGridEx
    local i,nPos
    Local aButton :={}
    Local aBmpSize
    Local n
+   Local n1
+   Local aItem
+   Local aTemp,aTemp1
 
    if !::lInit
       Super:Init()
-      for n :=1 to Len(::aBitmaps)
+      ::nHolder := 1
+
+      for n :=1 to Len( ::aBitmaps )
            AAdd( aButton, LoadImage( , ::aBitmaps[ n ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
       next
 
@@ -151,7 +152,6 @@ METHOD Init() CLASS HGrid
              aBmpSize := GetBitmapSize( aButton[nPos] )
 
              IF aBmpSize[3] == 24
-//             Imagelist_AddMasked( ::hIm,aButton[nPos],RGB(236,223,216) )
                 Imagelist_Add( ::hIm, aButton[ nPos ] )
              ELSE
                 Imagelist_Add( ::hIm, aButton[ nPos ] )
@@ -166,9 +166,19 @@ endif
       Listview_Init( ::handle, ::ItemCount, ::lNoLines )
 
       for i := 1 to len( ::aColumns )
-        Listview_addcolumn( ::handle, i, ::aColumns[i, 2], ::aColumns[i, 1], ::aColumns[i, 3],if(::aColumns[i, 4]!=nil,::aColumns[i, 4],0))
-      next        
+        Listview_addcolumnEX( ::handle, i, ::aColumns[i, 1], ::aColumns[i,2], ::aColumns[i, 3],if(::aColumns[ i, 4 ] !=nil ,::aColumns[i, 4],0))
 
+      next
+      if len(::aRow) >0
+       for n := 1 to len(::aRow)
+          aTemp := ::aRow[n]
+          aTemp1 := ::aRowBitMap[ n ]
+          for n1 := 1 to len(aTemp)
+             LISTVIEW_INSERTITEMEX(::handle,n,n1,atemp[n1],atemp1[n1])
+          next
+       next
+
+      endif
       if ::color != nil
         ListView_SetTextColor( ::handle, ::color ) 
 
@@ -181,7 +191,7 @@ endif
    endif
 Return Nil
 
-METHOD Refresh() CLASS HGrid
+METHOD Refresh() CLASS HGridEx
     Local iFirst, iLast
     
     iFirst := ListView_GetTopIndex(::handle) 
@@ -191,41 +201,41 @@ METHOD Refresh() CLASS HGrid
     ListView_RedrawItems( ::handle , iFirst, iLast ) 
 Return Nil
 
-Function ListViewNotify( oCtrl, lParam )
+
+METHOD AddRow( a ) Class HGRIDEX
+   Local nLen := Len( a ) 
+   Local n
+   Local aTmp := {}
+   Local aTmp1 := {}
+   Local aTmp2 := {}
+  
+
+   For n := 1 to nLen step 4
+      aadd( aTmp1, a[ n ] )
+      aadd( aTmp,  if( valtype(a[ n + 1 ] ) == "N", a[ n + 1 ], -1 ) )
+
+      aadd( aTmp2,  if( valtype(a[ n + 2  ] ) == "N", a[ n + 2 ], RGB(12,15,46) ) )
+
+
+      aadd( aTmp2,  if( valtype(a[ n + 3  ] ) == "N", a[ n + 3 ], RGB(192,192,192) ) )
+
+      aadd(::aColors,aTmp2)
+      aTmp2:={}
+   next
+  
+   aadd( ::aRowBitMap, aTmp )
+   aadd( ::aRow,    aTmp1 )
+
+return nil
+       
+
+
+Function ListViewNotifyEx( oCtrl, lParam )
     Local aCord,Res
 
-    If GetNotifyCode ( lParam ) = LVN_KEYDOWN .and. oCtrl:bKeydown != nil
-        Eval( oCtrl:bKeyDown, oCtrl, Listview_GetGridKey(lParam) )
-                
-    elseif GetNotifyCode ( lParam ) == NM_DBLCLK .and. oCtrl:bEnter != nil
-        aCord := Listview_Hittest( octrl:handle, GetCursorRow() - GetWindowRow ( oCtrl:handle ), ;
-                                                 GetCursorCol() - GetWindowCol ( oCtrl:handle ) )
-        oCtrl:nRow := aCord[1]
-        oCtrl:nCol := aCord[2]
-                
-        Eval( oCtrl:bEnter, oCtrl )
+    IF GetNotifyCode( lParam ) == NM_CUSTOMDRAW .and. GETNOTIFYCODEFROM(lParam) == oCtrl:Handle
+        Res := PROCESSCUSTU( oCtrl:handle, lParam, oCtrl:aColors )
+        return res
+    ENDIF
+Return ListViewNotify( oCtrl, lParam )
 
-    elseif GetNotifyCode ( lParam ) == NM_SETFOCUS .and. oCtrl:bGfocus != nil
-        Eval( oCtrl:bGfocus, oCtrl )
-
-    elseif GetNotifyCode ( lParam ) == NM_KILLFOCUS .and. oCtrl:bLfocus != nil
-        Eval( oCtrl:bLfocus, oCtrl )
-
-    elseif GetNotifyCode ( lParam ) = LVN_ITEMCHANGED 
-        oCtrl:nRow := oCtrl:Row()
-
-        if oCtrl:bPosChg != nil
-            Eval( oCtrl:bPosChg, oCtrl, Listview_getfirstitem( oCtrl:handle ) )
-        endif            
-        
-    elseif GetNotifyCode ( lParam ) = LVN_GETDISPINFO .and. oCtrl:bDispInfo != nil
-        aCord := Listview_getdispinfo( lParam )
-        
-        oCtrl:nRow := aCord[1]
-        oCtrl:nCol := aCord[2]
-
-        Listview_setdispinfo( lParam, Eval( oCtrl:bDispInfo, oCtrl, oCtrl:nRow, oCtrl:nCol ) )        
-
-    endif
-Return 0
-    

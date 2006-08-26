@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.530 2006-08-25 10:05:06 alkresin Exp $
+ * $Id: Changelog,v 1.531 2006-08-26 19:31:39 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,38 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-26 16:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * makefile.vc
+  * makefile.wc
+    ! aded hgridex.prg to list makefiles
+  + source/hgridex.prg
+    ! Added new grid controls with more options
+      Add Row with Data
+      Delete an Column
+      Delete all Columns
+      Each Column can have an color for text and background
+      Allow selection of the Last/ or All columns
+  * source/grid.c
+    ! added functions for new grid
+  * source/control.c
+    source/hdatepic.prg
+    ! minor changes
+  * source/dialog.c
+    ! added an new function
+  * include/windows.ch
+    ! added news defines
+  * include/guilib.ch
+    ! added commands for new grid
+  + source/grid_6.prg
+    source/grid_6.rc
+    ! Added samples  for new grid
+  * source/hcwindow.prg
+    ! added code for notify new grid control
+
 
 2006-08-25 14:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * makefile.gcc

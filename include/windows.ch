@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.29 2006-07-31 12:40:03 lculik Exp $
+ *$Id: windows.ch,v 1.30 2006-08-26 19:31:39 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -281,6 +281,12 @@
 #define ES_READONLY         2048       // 0x0800L
 #define ES_WANTRETURN       4096       // 0x1000L
 #define ES_NUMBER           8192       // 0x2000L
+
+/*
+ * DatePicker Control Styles
+*/
+
+#define DTS_SHOWNONE        2          // 0x0002
 
 /*
  * Window Styles
@@ -964,6 +970,7 @@
 #define TBN_GETINFOTIP          TBN_GETINFOTIPA
 #define NM_FIRST                0
 #define NM_TOOLTIPSCREATED      (NM_FIRST-19)   // notify of when the tooltips window is create
+#define NM_CUSTOMDRAW           (NM_FIRST-12)
 #define ILC_MASK                0x0001
 #define ILC_COLOR               0x0000
 #define ILC_COLORDDB            0x00FE
@@ -997,4 +1004,64 @@
 #define FW_DEMIBOLD    FW_SEMIBOLD
 #define FW_ULTRABOLD   FW_EXTRABOLD
 #define FW_BLACK       FW_HEAVY
+
+#define PGN_FIRST               -900       // Pager Control
+#define PGN_LAST                -950
+
+#define PGN_CALCSIZE        (PGN_FIRST-2)
+#define PGS_VERT                0x00000000
+#define PGS_HORZ                0x00000001
+#define PGS_AUTOSCROLL          0x00000002
+#define PGS_DRAGNDROP           0x00000004
+#define CCS_TOP                 0x00000001
+#define CCS_NOMOVEY             0x00000002
+#define CCS_BOTTOM              0x00000003
+#define CCS_NORESIZE            0x00000004
+#define CCS_NOPARENTALIGN       0x00000008
+#define CCS_ADJUSTABLE          0x00000020
+#define CCS_NODIVIDER           0x00000040
+
+#define CCS_VERT                0x00000080
+#define CCS_LEFT                (CCS_VERT + CCS_TOP)
+#define CCS_RIGHT               (CCS_VERT + CCS_BOTTOM)
+#define CCS_NOMOVEX             (CCS_VERT + CCS_NOMOVEY)
+
+#define TBSTYLE_BUTTON          0x0000  // obsolete; use BTNS_BUTTON instead
+#define TBSTYLE_SEP             0x0001  // obsolete; use BTNS_SEP instead
+#define TBSTYLE_CHECK           0x0002  // obsolete; use BTNS_CHECK instead
+#define TBSTYLE_GROUP           0x0004  // obsolete; use BTNS_GROUP instead
+#define TBSTYLE_CHECKGROUP      (TBSTYLE_GROUP + TBSTYLE_CHECK)     // obsolete; use BTNS_CHECKGROUP instead
+
+#define TBSTYLE_DROPDOWN        0x0008  // obsolete; use BTNS_DROPDOWN instead
+
+
+#define TBSTYLE_AUTOSIZE        0x0010  // obsolete; use BTNS_AUTOSIZE instead
+#define TBSTYLE_NOPREFIX        0x0020  // obsolete; use BTNS_NOPREFIX instead
+
+
+#define TBSTYLE_TOOLTIPS        0x0100
+#define TBSTYLE_WRAPABLE        0x0200
+#define TBSTYLE_ALTDRAG         0x0400
+
+#define TBSTYLE_FLAT            0x0800
+#define TBSTYLE_LIST            0x1000
+#define TBSTYLE_CUSTOMERASE     0x2000
+#define TBSTYLE_REGISTERDROP    0x4000
+#define TBSTYLE_TRANSPARENT     0x8000
+#define TBSTYLE_EX_DRAWDDARROWS 0x00000001
+#define NM_CLICK                (NM_FIRST-2)    // uses NMCLICK struct
+#define LVM_FIRST               0x1000      // ListView messages
+#define LVM_DELETEITEM          (LVM_FIRST + 8)
+#define LVM_DELETEALLITEMS      (LVM_FIRST + 9)
+#define LVM_GETNEXTITEM         (LVM_FIRST + 12)
+#define LVNI_ALL                0x0000
+#define LVNI_FOCUSED            0x0001
+#define LVNI_SELECTED           0x0002
+#define LVNI_CUT                0x0004
+#define LVNI_DROPHILITED        0x0008
+
+#define LVNI_ABOVE              0x0100
+#define LVNI_BELOW              0x0200
+#define LVNI_TOLEFT             0x0400
+#define LVNI_TORIGHT            0x0800
 

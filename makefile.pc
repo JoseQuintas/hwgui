@@ -1,4 +1,4 @@
-# $Id: makefile.pc,v 1.13 2006-07-03 01:51:33 lculik Exp $
+# $Id: makefile.pc,v 1.14 2006-08-26 19:31:39 lculik Exp $
 # makefile for Pelles C 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -115,6 +115,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hsplash.obj \
    $(OBJ_DIR)\hmonthc.obj \
    $(OBJ_DIR)\hgrid.obj \
+   $(OBJ_DIR)\hgridex.obj \
    $(OBJ_DIR)\grid.obj  \
    $(OBJ_DIR)\hdc.obj  \
    $(OBJ_DIR)\hhyper.obj 
@@ -250,6 +251,12 @@ $(OBJ_DIR)\hgrid.c : $(SRC_DIR)\hgrid.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hgrid.obj : $(OBJ_DIR)\hgrid.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hgridex.c : $(SRC_DIR)\hgridex.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hgridex.obj : $(OBJ_DIR)\hgridex.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\htrackbr.c : $(SRC_DIR)\htrackbr.prg

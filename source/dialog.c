@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.21 2006-04-13 06:39:35 alkresin Exp $
+ *$Id: dialog.c,v 1.22 2006-08-26 19:31:39 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -701,3 +701,9 @@ LRESULT CALLBACK PSPProcRelease ( HWND hwnd, UINT uMsg, LPPROPSHEETPAGE ppsp )
 
     return 0;
 }
+
+HB_FUNC( GETNOTIFYCODEFROM )
+{
+   hb_retnl( (LONG) (((NMHDR *) hb_parnl(1))->hwndFrom) );
+}
+

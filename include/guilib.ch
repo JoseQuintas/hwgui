@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.72 2006-07-31 12:40:03 lculik Exp $
+ *$Id: guilib.ch,v 1.73 2006-08-26 19:31:39 lculik Exp $
  */
 #define HWG_VERSION           "2.15"
 #define	WND_MAIN		1
@@ -1368,3 +1368,56 @@ Added by Marcos Antonio Gambeta
            ON CLICK <bclick>;
           =>;
           aadd(<O> ,\{<nBitIp>,<nId>,<bstate>,<bstyle>,,<ctext>,<bclick>,<c>,<d>,\})
+
+#xcommand @ <x>,<y> GRIDEX <oGrid>        ;
+            [ OF <oWnd> ]               ;
+            [ ID <nId> ]                ;
+            [ STYLE <nStyle> ]          ;
+            [ SIZE <width>, <height> ]  ;
+            [ FONT <oFont> ]            ;
+            [ ON INIT <bInit> ]         ;
+            [ ON SIZE <bSize> ]         ;
+            [ ON PAINT <bPaint> ]       ;
+            [ ON CLICK <bEnter> ]       ;
+            [ ON GETFOCUS <bGfocus> ]   ;
+            [ ON LOSTFOCUS <bLfocus> ]  ;
+            [ ON KEYDOWN <bKeyDown> ]   ;
+            [ ON POSCHANGE <bPosChg> ]  ;
+            [ ON DISPINFO <bDispInfo> ] ;
+            [ ITEMCOUNT <nItemCount> ]  ;
+            [ <lNoScroll: NOSCROLL> ]   ;
+            [ <lNoBord: NOBORDER> ]     ;
+            [ <lNoLines: NOGRIDLINES> ] ;
+            [ COLOR <color> ]           ;
+            [ BACKCOLOR <bkcolor> ]     ;
+            [ <lNoHeader: NO HEADER> ]  ;
+            [BITMAP <aBit>];
+            [ ITEMS <a>];
+          => ;
+    <oGrid> := HGridEx():New( <oWnd>, <nId>, <nStyle>, <x>, <y>, <width>, <height>,;
+                            <oFont>, <{bInit}>, <{bSize}>, <{bPaint}>, <{bEnter}>,;
+                            <{bGfocus}>, <{bLfocus}>, <.lNoScroll.>, <.lNoBord.>,;
+                            <{bKeyDown}>, <{bPosChg}>, <{bDispInfo}>, <nItemCount>,;
+                             <.lNoLines.>, <color>, <bkcolor>, <.lNoHeader.> ,<aBit>,<a>)
+
+#xcommand ADDROW TO GRID <oGrid>    ;
+            [ HEADER <cHeader> ]        ;
+            [ JUSTIFY HEAD <nJusHead> ] ;
+            [ BITMAP <n> ]              ;
+            [ HEADER <cHeadern> ]        ;
+            [ JUSTIFY HEAD <nJusHeadn> ] ;
+            [ BITMAP <nn> ]              ;
+            => <oGrid>:AddRow(<cHeader>,<nJusHead>,<n>) [;<oGrid>:AddRow(<cHeadern>,<nJusHeadn>,<nn>)]
+
+
+#xcommand ADDROWEX TO GRID <oGrid>    ;
+            [ HEADER <cHeader> ]        ;
+            [ BITMAP <n> ]              ;
+            [ COLOR <color> ]           ;
+            [ BACKCOLOR <bkcolor> ]     ;
+            [ HEADER <cHeadern> ]        ;
+            [ BITMAP <nn> ]              ;
+            [ COLOR <colorn> ]           ;
+            [ BACKCOLOR <bkcolorn> ]     ;
+            => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> [, <cHeadern>, <nn>,<colorn>,<bkcolorn> ]\})
+

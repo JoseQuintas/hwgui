@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.10 2006-08-02 19:28:58 fsgiudice Exp $
+ *$Id: hcwindow.prg,v 1.11 2006-08-26 19:31:39 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -229,8 +229,16 @@ LOCAL iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res, handle, oItem
       ELSEIF oCtrl:ClassName() == "HTREE"
          RETURN TreeNotify( oCtrl, lParam )
 
-      ELSEIF oCtrl:ClassName() == "HGRID"
+      ELSEIF oCtrl:ClassName() == "HGRID" 
          RETURN ListViewNotify( oCtrl, lParam )
+      ELSEIF  oCtrl:ClassName() == "HGRIDEX"
+         Res:= ListViewNotifyEx( oCtrl, lParam )
+         IF Valtype(res) =="N"
+            Hwg_SetDlgResult(oWnd:Handle, res )
+            return 1
+         ENDIF
+         RETURN Res
+
 
       ELSEIF oCtrl:ClassName() == "HTOOLBAR"
          RETURN ToolbarNotify( oCtrl, wParam, lParam )

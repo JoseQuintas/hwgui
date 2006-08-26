@@ -67,7 +67,7 @@ HWGQHTM_OBJ_DIR    = $(OBJ_DIR)
 !endif
 
 !if !$d(BCC_NOOPTIM)
-   CFLAGS = -O2 $(CFLAGS)
+#   CFLAGS = -O2 $(CFLAGS)
 !endif
 
 # uncomment this line if you want to build harbour with multi-gt capabilities
@@ -88,7 +88,8 @@ HWGQHTM_DIR  = source\qhtm
 # C compiler definition and C flags. These should never have to change.
 #
 
-CFLAGS               = -I$(INCLUDE_DIR) -5 -6 -a8 -d $(C_USR) $(CFLAGS) -D__WIN32__ 
+#CFLAGS               = -I$(INCLUDE_DIR) -5 -6 -a8 -d $(C_USR) $(CFLAGS) -D__WIN32__
+CFLAGS               = -I$(INCLUDE_DIR) -v -y $(C_USR) $(CFLAGS) -D__WIN32__ 
 !if $d(HB_MULTI_GT)
 CFLAGS               = $(CFLAGS) -DHB_MULTI_GT
 !endif
@@ -166,6 +167,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hfrmtmpl.obj \
    $(HWGUI_OBJ_DIR)\hgraph.obj \
    $(HWGUI_OBJ_DIR)\hgrid.obj \
+   $(HWGUI_OBJ_DIR)\hgridex.obj \
    $(HWGUI_OBJ_DIR)\hlistbox.obj \
    $(HWGUI_OBJ_DIR)\htool.obj \
    $(HWGUI_OBJ_DIR)\hmonthc.obj \
@@ -413,6 +415,12 @@ $(HWGUI_OBJ_DIR)\hgrid.c : $(HWGUI_DIR)\hgrid.prg
    $(HB_CMD)
 
 $(HWGUI_OBJ_DIR)\hgrid.obj : $(HWGUI_OBJ_DIR)\hgrid.c
+   $(CC_CMD)
+
+$(HWGUI_OBJ_DIR)\hgridex.c : $(HWGUI_DIR)\hgridex.prg
+   $(HB_CMD)
+
+$(HWGUI_OBJ_DIR)\hgridex.obj : $(HWGUI_OBJ_DIR)\hgridex.c
    $(CC_CMD)
 
 $(HWGUI_OBJ_DIR)\htrackbr.c : $(HWGUI_DIR)\htrackbr.prg

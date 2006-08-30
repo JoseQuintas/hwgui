@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.25 2006-08-02 19:28:58 fsgiudice Exp $
+ * $Id: hcontrol.prg,v 1.26 2006-08-30 10:44:03 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -171,7 +171,9 @@ RETURN NIL
 METHOD Init CLASS HStatus
    IF !::lInit
       Super:Init()
-      hwg_InitStatus( ::oParent:handle, ::handle, Len( ::aParts ), ::aParts )
+      IF !Empty( ::aParts )
+         hwg_InitStatus( ::oParent:handle, ::handle, Len( ::aParts ), ::aParts )
+      ENDIF
    ENDIF
 RETURN  NIL
 

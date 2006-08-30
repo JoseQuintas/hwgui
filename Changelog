@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.531 2006-08-26 19:31:39 lculik Exp $
+ * $Id: Changelog,v 1.532 2006-08-30 10:44:03 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-30 14:44 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/windows.ch
+    ! Some fixes
+  * source/hgridex.prg
+    ! Small fix
+  * include/guilib.ch
+    * ADD STATUS changed: PARTS is not mandatory clause now
+  * source/hcontrol.prg
+    * Changes in HStatus class for the PARTS clause could be absent.
 
 2006-08-26 16:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * makefile.bc

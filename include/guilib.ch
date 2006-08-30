@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.73 2006-08-26 19:31:39 lculik Exp $
+ *$Id: guilib.ch,v 1.74 2006-08-30 10:44:03 alkresin Exp $
  */
 #define HWG_VERSION           "2.15"
 #define	WND_MAIN		1
@@ -195,7 +195,7 @@
             [ ON PAINT <bDraw> ]   ;
             [ STYLE <nStyle> ]     ;
             [ FONT <oFont> ]       ;
-            PARTS <aparts,...>     ;
+            [ PARTS <aparts,...> ] ;
           => ;
             [ <oStat> := ] HStatus():New( <oWnd>,<nId>,<nStyle>,<oFont>,\{<aparts>\},<bInit>,;
                                           <bSize>,<bDraw> )

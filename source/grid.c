@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.15 2006-08-26 19:31:39 lculik Exp $
+ * $Id: grid.c,v 1.16 2006-08-31 22:36:03 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -321,7 +321,11 @@ HB_FUNC( LISTVIEW_ADDCOLUMNEX )
    int iResult;
    memset( &lvcolumn, 0, sizeof( lvcolumn ) );
 
-   lvcolumn.mask = LVCF_FMT | LVCF_TEXT | LVCF_SUBITEM | LVCF_IMAGE | LVCF_WIDTH;
+   if ( iImage > 0 )
+      lvcolumn.mask = LVCF_FMT | LVCF_TEXT | LVCF_SUBITEM | LVCF_IMAGE | LVCF_WIDTH;
+   else
+      lvcolumn.mask = LVCF_FMT | LVCF_TEXT | LVCF_SUBITEM | LVCF_WIDTH;
+   
    lvcolumn.pszText = text;
    lvcolumn.iSubItem = lCol;
    lvcolumn.cx = hb_parni( 4 );

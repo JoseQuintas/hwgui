@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.2 2006-08-30 10:44:03 alkresin Exp $
+ * $Id: hgridex.prg,v 1.3 2006-08-31 22:36:03 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -166,7 +166,7 @@ endif
       Listview_Init( ::handle, ::ItemCount, ::lNoLines )
 
       for i := 1 to len( ::aColumns )
-        Listview_addcolumnEX( ::handle, i, ::aColumns[i, 1], ::aColumns[i,2], ::aColumns[i, 3],if(::aColumns[ i, 4 ] !=nil ,::aColumns[i, 4],0))
+        Listview_addcolumnEX( ::handle, i, ::aColumns[ i, 1 ], ::aColumns[ i ,2 ], ::aColumns[i, 3], if( ::aColumns[ i, 4 ] != NIL, ::aColumns[ i, 4 ]  , -1))
 
       next
       if len(::aRow) >0

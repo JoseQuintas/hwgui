@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.534 2006-08-31 12:49:21 alkresin Exp $
+ * $Id: Changelog,v 1.535 2006-08-31 22:36:03 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2006-08-31 19:40 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+  * source/grid.c
+    ! minor fix when column definition dont use bitmap
+  * source/hgridex.prg
+     ! Small fix
 
 2006-08-31 16:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/guilib.ch

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.65 2006-07-21 17:25:30 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.66 2006-08-31 12:49:22 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -75,7 +75,6 @@ CLASS HColumn INHERIT HObject
                                  //   oBrowse:aColumns[1]:bColorBlock := {|| IF (nNumber < 0, ;
                                  //      {textColor, backColor, textColorSel, backColorSel} , ;
                                  //      {textColor, backColor, textColorSel, backColorSel} ) }
-
    METHOD New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin,cPict,bValid,bWhen,aItem,bColorBlock )
 
 ENDCLASS
@@ -147,10 +146,14 @@ CLASS HBrowse INHERIT HControl
    DATA nHeadRows INIT 1                       // Rows in header
    DATA nFootRows INIT 0                       // Rows in footer
    DATA lResizing INIT .F.                     // .T. while a column resizing is undergoing
+   // inicio bloco sauli - para controlar multiselecao
+   DATA lCtrlPress INIT .F.
+   DATA aSelected
+   // fim bloco sauli
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
-                  lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg)
+                  lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect )
    METHOD InitBrw( nType )
    METHOD Rebuild()
    METHOD Activate()
@@ -191,7 +194,7 @@ ENDCLASS
 //----------------------------------------------------//
 METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,;
-                  lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg ) CLASS HBrowse
+                  lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect ) CLASS HBrowse
 
    nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+  ;
                     Iif(lNoBorder=Nil.OR.!lNoBorder,WS_BORDER,0)+            ;
@@ -213,6 +216,9 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
    ::bUpdate     := bUpdate
    ::bKeyDown    := bKeyDown
    ::bPosChanged := bPosChg
+   IF lMultiSelect != Nil .AND. lMultiSelect
+      ::aSelected := {}
+   ENDIF
 
    hwg_RegBrowse()
    ::InitBrw()
@@ -279,6 +285,11 @@ Static keyCode := 0
          DlgCommand( Self, wParam, lParam )
 
       ELSEIF msg == WM_KEYUP
+         // inicio bloco sauli
+         IF wParam == 17
+            ::lCtrlPress := .F.
+         ENDIF
+         // fim bloco sauli
          IF wParam == 13 .AND. keyCode == 13
             keyCode := 0
             ::Edit()
@@ -323,6 +334,10 @@ Static keyCode := 0
             ::PageUp()
          ELSEIF wParam == 13    // Enter
             ::Edit()
+         // inicio bloco sauli
+         ELSEIF wParam == 17
+            ::lCtrlPress := .T.
+         // fim bloco sauli
          ELSEIF ::lAutoEdit .AND. (wParam >= 48 .and. wParam <= 90 .or. wParam >= 96 .and. wParam <= 111 )
             ::Edit( wParam,lParam )
          ENDIF
@@ -614,7 +629,13 @@ Local oldBkColor, oldTColor
       IF ::rowPos != ::internal[2] .AND. !::lAppMode
          Eval( ::bSkip, Self, ::internal[2]-::rowPos )
       ENDIF
-      ::LineOut( ::internal[2], 0, hDC, .F. )
+      // bloco sauli - multiselect
+      if ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
+         ::LineOut( ::internal[2], 0, hDC, .T. )
+      else
+         ::LineOut( ::internal[2], 0, hDC, .F. )
+      end
+      // fim bloco sauli
       IF ::rowPos != ::internal[2] .AND. !::lAppMode
          Eval( ::bSkip, Self, ::rowPos-::internal[2] )
       ENDIF
@@ -638,7 +659,13 @@ Local oldBkColor, oldTColor
          IF i > nRows .OR. Eval( ::bEof,Self )
             EXIT
          ENDIF
-         ::LineOut( i, 0, hDC, .F. )
+         // bloco sauli - multiselect
+         if ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
+            ::LineOut( i, 0, hDC, .T. )
+         else
+            ::LineOut( i, 0, hDC, .F. )
+         end
+         // fim bloco sauli
          i ++
          Eval( ::bSkip, Self,1 )
       ENDDO
@@ -648,7 +675,13 @@ Local oldBkColor, oldTColor
          ::rowPos := Iif( i > 1,i - 1,1 )
       ENDIF
       DO WHILE i <= nRows
-         ::LineOut( i, 0, hDC, .F.,.T. )
+         // bloco sauli - multiselect
+         if ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
+            ::LineOut( i, 0, hDC, .t.,.T. )
+         else
+            ::LineOut( i, 0, hDC, .F.,.T. )
+         end
+         // fim bloco sauli
          i ++
       ENDDO
 
@@ -659,6 +692,7 @@ Local oldBkColor, oldTColor
    ENDIF
 
    ::LineOut( ::rowPos, Iif( ::lEditable, ::colpos, 0 ), hDC, .T. )
+
    IF Checkbit( ::internal[1],1 ) .OR. ::lAppMode
       ::HeaderOut( hDC )
       IF ::nFootRows > 0
@@ -1358,9 +1392,11 @@ RETURN Nil
 //----------------------------------------------------//
 METHOD ButtonUp( lParam ) CLASS HBrowse
 Local hBrw := ::handle
-Local xPos := LOWORD(lParam), x := ::x1, x1, i := ::nLeftCol
+Local xPos := LOWORD(lParam), x, x1, i
 
    IF ::lResizing
+      x := ::x1
+      i := ::nLeftCol
       DO WHILE x < xDrag
          x += ::aColumns[i]:width
          IF Abs( x-xDrag ) < 10
@@ -1377,6 +1413,22 @@ Local xPos := LOWORD(lParam), x := ::x1, x1, i := ::nLeftCol
          InvalidateRect( hBrw, 0 )
          PostMessage( hBrw, WM_PAINT, 0, 0 )
       ENDIF
+   ELSEIF ::aSelected != Nil
+      // inicio bloco sauli - multiselect
+      IF ::lCtrlPress
+         IF ( i := Ascan( ::aSelected, Eval( ::bRecno,Self ) ) ) > 0
+            Adel( ::aSelected, i )
+            Asize( ::aSelected, Len(::aSelected)-1 )
+         ELSE
+            Aadd(::aSelected, Eval( ::bRecno,Self ) )
+         ENDIF
+      ELSE
+         IF Len( ::aSelected ) > 0
+            ::aSelected := {}
+            ::Refresh()
+         ENDIF
+      ENDIF
+      // fim bloco sauli
    ENDIF
    SetFocus( ::handle )
 RETURN Nil
@@ -1865,3 +1917,4 @@ Local nL, nPos := 0
       nCount ++
    ENDDO
 RETURN nil
+

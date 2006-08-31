@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.74 2006-08-30 10:44:03 alkresin Exp $
+ *$Id: guilib.ch,v 1.75 2006-08-31 12:49:22 alkresin Exp $
  */
 #define HWG_VERSION           "2.15"
 #define	WND_MAIN		1
@@ -653,11 +653,12 @@
             [ ON UPDATE <bUpdate> ]    ;
             [ ON KEYDOWN <bKeyDown> ]  ;
             [ ON POSCHANGE <bPosChg> ] ;
+            [ <lMulti: MULTISELECT> ]  ;
           => ;
     [<oBrw> :=] HBrowse():New( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,0)),;
         <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>, ;
         <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.>, <.lAppend.>,;
-        <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg> )
+        <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg>, <.lMulti.> )
 
 #xcommand REDEFINE BROWSE [ <oBrw> ]   ;
             [ <lArr: ARRAY> ]          ;

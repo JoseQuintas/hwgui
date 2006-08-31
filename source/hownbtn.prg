@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.24 2006-08-11 09:45:56 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.25 2006-08-31 10:44:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -242,7 +242,7 @@ Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
       y2 := Iif( ::heightt!=Nil .AND. ::heightt!=0, ;
                  ::yt+::heightt-1, y1+aMetr[1] )
       SetTransparentMode( hDC,.T. )
-      DrawText( hDC, ::text, x1, y1, x2, y2, DT_CENTER )
+      DrawText( hDC, ::text, x1, y1, x2, y2, Iif( ::xt!=Nil.AND.::xt!=0,DT_LEFT,DT_CENTER ) )
       SetTransparentMode( hDC,.F. )
    ENDIF
    SetBkColor( hDC,oldBkColor )

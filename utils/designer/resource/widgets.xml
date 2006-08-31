@@ -478,9 +478,9 @@
             private xt := Max(Val(oCtrl:GetProp("TextLeft")),2),yt
             DrawButton( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
             if ( yt := Val(oCtrl:GetProp("TextTop")) ) == 0
-              DrawText( hDC,oCtrl:title,xt,0,oCtrl:nWidth-xt*2,oCtrl:nHeight,37 )
+              DrawText( hDC,oCtrl:title,xt,0,oCtrl:nWidth-2,oCtrl:nHeight,37 )
             else
-              DrawText( hDC,oCtrl:title,xt,yt,oCtrl:nWidth-xt*2,yt+GetTextMetric(hDC)[1],37 )
+              DrawText( hDC,oCtrl:title,xt,yt,oCtrl:nWidth-2,yt+GetTextMetric(hDC)[1],37 )
             endif
             if oCtrl:oBitmap != Nil
               xt := Iif( (xt:=Val(oCtrl:GetProp("BmpLeft")))==0,(oCtrl:nWidth-oCtrl:oBitmap:nWidth)/2,xt )

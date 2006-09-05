@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.16 2006-08-31 22:36:03 lculik Exp $
+ * $Id: grid.c,v 1.17 2006-09-05 16:41:43 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -33,7 +33,7 @@ HB_FUNC( LISTVIEW_CREATE )
         HWND hwnd;
         HWND handle;
         int style ;
-        
+
         hwnd = (HWND) hb_parnl(1);
 
         style = hb_parni(7) ;
@@ -47,32 +47,32 @@ HB_FUNC( LISTVIEW_CREATE )
         {
                 style = style | LVS_NOSCROLL ;
         }
-        
+
         handle = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW,"",
         style ,
         hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
         hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
-        
+
         hb_retnl ( (LONG) handle );
 }
 
 HB_FUNC( LISTVIEW_INIT )
 {
         int style ;
-        
+
         style = 0;
-        
+
         if ( ! hb_parl(3) )
         {
                 style = style | LVS_EX_GRIDLINES ;
         }
-        
-        SendMessage( (HWND) hb_parnl(1), 
-                      LVM_SETEXTENDEDLISTVIEWSTYLE, 0, 
-                      LVS_EX_FULLROWSELECT | 
+
+        SendMessage( (HWND) hb_parnl(1),
+                      LVM_SETEXTENDEDLISTVIEWSTYLE, 0,
+                      LVS_EX_FULLROWSELECT |
                       LVS_EX_HEADERDRAGDROP |
                       LVS_EX_FLATSB | style);
-                      
+
         ListView_SetItemCount( (HWND) hb_parnl(1), hb_parnl(2) ) ;
 }
 
@@ -80,7 +80,7 @@ HB_FUNC( LISTVIEW_SETITEMCOUNT )
 {
         ListView_SetItemCount( (HWND) hb_parnl (1) , hb_parni (2) ) ;
 }
-    
+
 HB_FUNC( LISTVIEW_ADDCOLUMN )
 {
         LV_COLUMN COL;
@@ -136,8 +136,8 @@ HB_FUNC( LISTVIEW_GETDISPINFO )
         int iSubItem = pDispInfo->item.iSubItem;
 
         hb_reta( 2 );
-        hb_storni( iItem + 1 , -1, 1 ); 
-        hb_storni( iSubItem + 1 , -1, 2 ); 
+        hb_storni( iItem + 1 , -1, 1 );
+        hb_storni( iSubItem + 1 , -1, 2 );
 }
 
 HB_FUNC( LISTVIEW_SETDISPINFO )
@@ -149,16 +149,16 @@ HB_FUNC( LISTVIEW_SETDISPINFO )
         hb_itemRelease( pValue );
         if (pDispInfo->item.iSubItem == 0)
                 pDispInfo->item.state = 2;
-        
+
 }
 
 HB_FUNC( LISTVIEW_GETGRIDKEY )
 {
-        #define pnm ((LV_KEYDOWN *) hb_parnl(1) ) 
+        #define pnm ((LV_KEYDOWN *) hb_parnl(1) )
 
         hb_retnl( (LPARAM) (pnm->wVKey) ) ;
 
-        #undef pnm 
+        #undef pnm
 }
 
 HB_FUNC( LISTVIEW_GETTOPINDEX )
@@ -288,27 +288,27 @@ HB_FUNC(LISTVIEW_SETIMAGELIST)
 {
    HWND hList = ( HWND ) hb_parnl( 1 ) ;
    HIMAGELIST p = ( HIMAGELIST ) hb_parnl( 2 ) ;
-   int iRes;
-   iRes = ListView_SetImageList( hList, ( HIMAGELIST ) p, LVSIL_NORMAL );
-   iRes = ListView_SetImageList( hList,( HIMAGELIST ) p, LVSIL_SMALL );
+   /*int iRes; This causes an error in MSVC and why are we assigning it if we don't use it?*/
+   /*iRes =*/ ListView_SetImageList( hList, ( HIMAGELIST ) p, LVSIL_NORMAL );
+   /*iRes =*/ ListView_SetImageList( hList,( HIMAGELIST ) p, LVSIL_SMALL );
 }
 
 HB_FUNC( LISTVIEW_SETVIEW)
-{ 
+{
   HWND hWndListView = ( HWND ) hb_parnl( 1 );
   DWORD dwView = hb_parnl( 2 );
 
-    DWORD dwStyle = GetWindowLong( hWndListView, GWL_STYLE ); 
-    
+    DWORD dwStyle = GetWindowLong( hWndListView, GWL_STYLE );
+
     // Only set the window style if the view bits have changed.
-    if ( ( dwStyle & LVS_TYPEMASK ) != dwView) 
+    if ( ( dwStyle & LVS_TYPEMASK ) != dwView)
     {
-        SetWindowLong(hWndListView, 
-                      GWL_STYLE, 
+        SetWindowLong(hWndListView,
+                      GWL_STYLE,
                       (dwStyle & ~LVS_TYPEMASK) | dwView);
         RedrawWindow( (HWND) hb_parnl( 1 ), NULL , NULL , RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW ) ;
     }
-} 
+}
 
 HB_FUNC( LISTVIEW_ADDCOLUMNEX )
 {
@@ -316,8 +316,8 @@ HB_FUNC( LISTVIEW_ADDCOLUMNEX )
    LONG lCol = hb_parnl(2)-1;
    char* text = ( char *) hb_parc(3);
    int iImage = hb_parni( 6 ) ;
-   LVCOLUMN lvcolumn;	
-   
+   LVCOLUMN lvcolumn;
+
    int iResult;
    memset( &lvcolumn, 0, sizeof( lvcolumn ) );
 
@@ -325,16 +325,16 @@ HB_FUNC( LISTVIEW_ADDCOLUMNEX )
       lvcolumn.mask = LVCF_FMT | LVCF_TEXT | LVCF_SUBITEM | LVCF_IMAGE | LVCF_WIDTH;
    else
       lvcolumn.mask = LVCF_FMT | LVCF_TEXT | LVCF_SUBITEM | LVCF_WIDTH;
-   
+
    lvcolumn.pszText = text;
    lvcolumn.iSubItem = lCol;
    lvcolumn.cx = hb_parni( 4 );
    lvcolumn.fmt = hb_parni( 5 ) ;
    lvcolumn.iImage = iImage > 0 ? lCol : -1;
-   
-   if (SendMessage((HWND) hwndListView, (UINT) LVM_INSERTCOLUMN, (WPARAM) (int) lCol, (LPARAM) &lvcolumn) == -1) 
-      iResult = 0; 
-   else 
+
+   if (SendMessage((HWND) hwndListView, (UINT) LVM_INSERTCOLUMN, (WPARAM) (int) lCol, (LPARAM) &lvcolumn) == -1)
+      iResult = 0;
+   else
       iResult = 1;
 
    RedrawWindow( hwndListView, NULL , NULL , RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW ) ;
@@ -359,9 +359,9 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
 
    memset( &lvi, 0, sizeof( lvi ) );
 
-   if ( iBitMap >= 0 )   
-      lvi.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_STATE;  
-   else   
+   if ( iBitMap >= 0 )
+      lvi.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_STATE;
+   else
       lvi.mask = LVIF_TEXT | LVIF_STATE;
 
    lvi.iImage = iBitMap >= 0 ? lCol : -1 ;
@@ -371,23 +371,23 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
 
    lvi.iItem = lLin;
    lvi.iSubItem = lCol;
-	
+
    switch(iSubItemYesNo)
    {
       case 0:
-         if ( SendMessage( ( HWND ) hwndListView, (UINT) LVM_INSERTITEM, (WPARAM) 0, (LPARAM) &lvi ) == -1 ) 
-   	    iResult = 0; 
-	 else 
+         if ( SendMessage( ( HWND ) hwndListView, (UINT) LVM_INSERTITEM, (WPARAM) 0, (LPARAM) &lvi ) == -1 )
+   	    iResult = 0;
+	 else
 	    iResult = 1;
 	 break;
-      case 1:      
-         if ( SendMessage( ( HWND ) hwndListView, (UINT) LVM_SETITEM, (WPARAM) 0, (LPARAM) &lvi ) == FALSE ) 
-  	    iResult = 0; 
-	 else 
+      case 1:
+         if ( SendMessage( ( HWND ) hwndListView, (UINT) LVM_SETITEM, (WPARAM) 0, (LPARAM) &lvi ) == FALSE )
+  	    iResult = 0;
+	 else
 	    iResult = 1;
  	 break;
    }
-	
+
 //   RedrawWindow( hwndListView, NULL , NULL , RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW ) ;
    InvalidateRect(hwndListView, &rect, TRUE) ;
    hb_retni( iResult );
@@ -398,10 +398,10 @@ HB_FUNC( LISTVIEWSELECTALL )
 {
    HWND hList = ( HWND ) hb_parnl( 1 ) ;
    ListView_SetItemState( hList, -1, 0, LVIS_SELECTED );
-   SendMessage( hList, LVM_ENSUREVISIBLE ,( WPARAM ) -1, FALSE ); 
-   ListView_SetItemState( hList, -1, LVIS_SELECTED, LVIS_SELECTED );                
+   SendMessage( hList, LVM_ENSUREVISIBLE ,( WPARAM ) -1, FALSE );
+   ListView_SetItemState( hList, -1, LVIS_SELECTED, LVIS_SELECTED );
    hb_retl( 1 );
-}   
+}
 
 
 HB_FUNC( LISTVIEWSELECTLASTITEM )
@@ -410,12 +410,12 @@ HB_FUNC( LISTVIEWSELECTLASTITEM )
    int items;
    items = SendMessage( hList, LVM_GETITEMCOUNT ,( WPARAM ) 0, ( LPARAM ) 0 );
    items--;
-   ListView_SetItemState(hList, -1, 0, LVIS_SELECTED ); 
-   SendMessage( hList, LVM_ENSUREVISIBLE, ( WPARAM ) items, FALSE) ; 
+   ListView_SetItemState(hList, -1, 0, LVIS_SELECTED );
+   SendMessage( hList, LVM_ENSUREVISIBLE, ( WPARAM ) items, FALSE) ;
    ListView_SetItemState( hList, items, LVIS_SELECTED, LVIS_SELECTED );
    ListView_SetItemState( hList, items, LVIS_FOCUSED, LVIS_FOCUSED );
    hb_retl( 1 );
-}   
+}
 
 
 
@@ -424,18 +424,18 @@ LRESULT ProcessCustomDraw( LPARAM lParam,PHB_ITEM pArray )
     LPNMLVCUSTOMDRAW lplvcd = ( LPNMLVCUSTOMDRAW ) lParam;
     PHB_ITEM pColor;
 
-    switch( lplvcd->nmcd.dwDrawStage ) 
+    switch( lplvcd->nmcd.dwDrawStage )
     {
-        case CDDS_PREPAINT : 
+        case CDDS_PREPAINT :
             return CDRF_NOTIFYITEMDRAW;
-            
-        case CDDS_ITEMPREPAINT: 
+
+        case CDDS_ITEMPREPAINT:
         {
            return CDRF_NOTIFYSUBITEMDRAW;
         }
            break;
-    
-        case CDDS_SUBITEM | CDDS_ITEMPREPAINT: 
+
+        case CDDS_SUBITEM | CDDS_ITEMPREPAINT:
         {
 
            LONG ptemp ;
@@ -451,7 +451,7 @@ LRESULT ProcessCustomDraw( LPARAM lParam,PHB_ITEM pArray )
            return CDRF_NEWFONT;
 
            break;
-           
+
          }
     }
     return CDRF_DODEFAULT;

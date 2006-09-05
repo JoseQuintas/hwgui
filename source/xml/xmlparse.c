@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.20 2006-02-15 16:57:26 lf_sfnet Exp $
+ * $Id: xmlparse.c,v 1.21 2006-09-05 16:41:43 alexstrickland Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "hbapi.h"
 #include "hbapiitm.h"
+#include "hbapicls.h"
 #include "hbvm.h"
 #include "filesys.api"
 
@@ -34,7 +35,7 @@
 #define HBXML_TYPE_COMMENT        2
 #define HBXML_TYPE_CDATA          3
 #define HBXML_TYPE_PI             4
- 
+
 static unsigned char * cBuffer;
 static int nParseError;
 static ULONG  ulOffset;

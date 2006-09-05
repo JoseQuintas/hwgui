@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.45 2006-08-11 09:45:56 alkresin Exp $
+ * $Id: window.c,v 1.46 2006-09-05 16:41:43 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -16,6 +16,7 @@
 #include <commctrl.h>
 
 #include "guilib.h"
+#include "hbapicls.h"
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"

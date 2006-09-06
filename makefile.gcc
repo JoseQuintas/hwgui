@@ -1,4 +1,4 @@
-# $Id: makefile.gcc,v 1.17 2006-08-26 19:31:39 lculik Exp $
+# $Id: makefile.gcc,v 1.18 2006-09-06 11:56:23 alkresin Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -12,6 +12,7 @@ CFLAGS = -Wall -mno-cygwin -O3 -march=pentium
 all: \
    $(LIB_DIR)/libhwgui.a \
    $(LIB_DIR)/libprocmisc.a \
+   $(LIB_DIR)/libhbxml.a \
    $(LIB_DIR)/libhwg_qhtm.a
 
 $(LIB_DIR)/libhwgui.a : \
@@ -61,8 +62,8 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hsayimg.o \
    $(OBJ_DIR)/hsplit.o \
    $(OBJ_DIR)/htab.o \
-   $(OBJ_DIR)/htool.o \
    $(OBJ_DIR)/htimer.o \
+   $(OBJ_DIR)/htool.o \
    $(OBJ_DIR)/htree.o \
    $(OBJ_DIR)/hrect.o \
    $(OBJ_DIR)/hupdown.o \
@@ -260,6 +261,19 @@ $(OBJ_DIR)/procs7.c     : $(SRC_DIR)/procmisc/procs7.prg
 	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
 $(OBJ_DIR)/procscri.c   : $(SRC_DIR)/procmisc/procscri.prg
 	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+
+$(LIB_DIR)/libhbxml.a : \
+   $(OBJ_DIR)/xmlparse.o \
+   $(OBJ_DIR)/hxmldoc.o
+	ar rc $@ $^
+ 
+$(OBJ_DIR)/xmlparse.o  : $(SRC_DIR)/xml/xmlparse.c
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+$(OBJ_DIR)/hxmldoc.o : $(OBJ_DIR)/hxmldoc.c
+
+$(OBJ_DIR)/hxmldoc.c   : $(SRC_DIR)/xml/hxmldoc.prg
+	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+
 
 $(LIB_DIR)/libhwg_qhtm.a : $(OBJ_DIR)/hqhtm.o $(OBJ_DIR)/hwg_qhtm.o
 	ar rc $@ $^

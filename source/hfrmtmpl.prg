@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.41 2006-08-10 05:11:55 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.42 2006-09-07 04:44:03 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -655,6 +655,8 @@ MEMVAR aImages, lEditLabels, aParts
       ELSE
         IF cPName == "tooltip"
             cPName := "c" + cPName
+        ELSEIF cPName == "name"
+           __mvPrivate( cPName )
         ENDIF
          /* Assigning the value of the property to the variable with
             the same name as the property */

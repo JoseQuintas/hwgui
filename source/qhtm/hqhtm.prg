@@ -3,12 +3,11 @@
  * HQhtm class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "hwg_qhtm.ch"
 
 CLASS HQhtm INHERIT HControl
@@ -24,7 +23,7 @@ CLASS HQhtm INHERIT HControl
    METHOD Activate()
    METHOD Redefine( oWndParent,nId,caption,bInit,bSize,bLink,bSubmit,fname,resname )
    METHOD Init()
-   METHOD Notify( oDlg,lParam )
+   METHOD Notify( lParam )
 
 ENDCLASS
 
@@ -105,8 +104,9 @@ METHOD Init CLASS HQhtm
 
 Return Nil
 
-METHOD Notify( oDlg,lParam ) CLASS HQhtm
+METHOD Notify( lParam ) CLASS HQhtm
 Local cLink := QHTM_GetNotify( lParam )
+
    IF ::bLink == Nil .OR. !Eval( ::bLink,Self,cLink )
       IF "tp://" $ clink
          Return 0

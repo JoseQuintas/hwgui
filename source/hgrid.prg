@@ -1,5 +1,5 @@
  /*
- * $Id: hgrid.prg,v 1.8 2006-08-26 19:31:39 lculik Exp $
+ * $Id: hgrid.prg,v 1.9 2006-09-08 10:42:18 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -18,10 +18,10 @@ TODO: 1) In line edit
          
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
 #include "common.ch"
+
 #define LVS_REPORT              1
 #define LVS_SINGLESEL           4
 #define LVS_SHOWSELALWAYS       8
@@ -69,6 +69,7 @@ CLASS HGrid INHERIT HControl
    METHOD RefreshLine()                          INLINE Listview_update( ::handle, Listview_getfirstitem( ::handle ) )
    METHOD SetItemCount(nItem)                    INLINE Listview_setitemcount( ::handle, nItem )
    METHOD Row()                                  INLINE Listview_getfirstitem( ::handle )
+   METHOD Notify( lParam )
 ENDCLASS
 
 
@@ -191,6 +192,9 @@ METHOD Refresh() CLASS HGrid
     ListView_RedrawItems( ::handle , iFirst, iLast ) 
 Return Nil
 
+METHOD Notify( lParam ) CLASS HGrid
+Return ListViewNotify( Self, lParam )
+    
 Function ListViewNotify( oCtrl, lParam )
     Local aCord,Res
 

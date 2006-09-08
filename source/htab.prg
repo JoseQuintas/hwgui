@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.18 2005-09-20 10:09:12 alkresin Exp $
+ *$Id: htab.prg,v 1.19 2006-09-08 10:42:18 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -43,6 +43,7 @@ CLASS HTab INHERIT HControl
    METHOD HidePage( nPage )
    METHOD ShowPage( nPage )
    METHOD GetActivePage( nFirst,nEnd )
+   METHOD Notify( lParam )
 
    HIDDEN:
      DATA  nActive  INIT 0         // Active Page
@@ -228,3 +229,26 @@ METHOD DeletePage( nPage ) CLASS HTab
 
 Return ::nActive
 
+METHOD Notify( lParam ) CLASS HTab
+Local nCode := GetNotifyCode( lParam )
+
+   DO CASE
+      CASE nCode == TCN_SELCHANGE
+         IF ::bChange != Nil
+            Eval( ::bChange, Self, GetCurrentTab( ::handle ) )
+         ENDIF
+      CASE nCode == TCN_CLICK
+           IF ::bAction != Nil
+              Eval( ::bAction, Self, GetCurrentTab( ::handle ) )
+           ENDIF
+      CASE nCode == TCN_SETFOCUS
+           IF ::bGetFocus != NIL
+              Eval( ::bGetFocus, Self, GetCurrentTab( ::handle ) )
+           ENDIF
+      CASE nCode == TCN_KILLFOCUS
+           IF ::bLostFocus != NIL
+              Eval( ::bLostFocus, Self, GetCurrentTab( ::handle ) )
+           ENDIF
+   ENDCASE
+
+Return -1

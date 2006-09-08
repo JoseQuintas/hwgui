@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.5 2006-07-16 19:16:58 lculik Exp $
+ * $Id: htool.prg,v 1.6 2006-09-08 10:42:18 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -37,7 +37,8 @@ CLASS HToolBar INHERIT HControl
 
    METHOD Activate()
    METHOD INIT()
-   method AddButton(a,s,d,f,g,h) 
+   METHOD AddButton(a,s,d,f,g,h) 
+   METHOD Notify( lParam )
 ENDCLASS
 
 
@@ -153,7 +154,7 @@ Local nPos
 
 RETURN Nil
 
-Function ToolbarNotify( oCtrl, wParam,lParam )
+METHOD Notify( lParam ) CLASS hToolBar
     Local aCord
     Local nCode :=  GetNotifyCode( lParam )
     Local nId,e
@@ -164,22 +165,22 @@ Function ToolbarNotify( oCtrl, wParam,lParam )
     IF nCode == TTN_GETDISPINFO
 
        nButton :=TOOLBAR_GETDISPINFOID( lParam )
-       nPos := AScan( oCtrl:aItem,  { | x | x[ 2 ] == nButton })
-       TOOLBAR_SETDISPINFO( lParam, oCtrl:aItem[ nPos, 8 ] )
+       nPos := AScan( ::aItem,  { | x | x[ 2 ] == nButton })
+       TOOLBAR_SETDISPINFO( lParam, ::aItem[ nPos, 8 ] )
 
     ELSEIF nCode == TBN_GETINFOTIP
 
        nId := TOOLBAR_GETINFOTIPID(lParam)
-       nPos := AScan( oCtrl:aItem,  { | x | x[ 2 ] == nId })
-       TOOLBAR_GETINFOTIP( lParam, oCtrl:aItem[ nPos, 8 ] )
+       nPos := AScan( ::aItem,  { | x | x[ 2 ] == nId })
+       TOOLBAR_GETINFOTIP( lParam, ::aItem[ nPos, 8 ] )
 
     ELSEIF nCode == TBN_DROPDOWN
-       if valtype(oCtrl:aItem[1,9]) ="A"
+       if valtype(::aItem[1,9]) ="A"
        nid := TOOLBAR_SUBMENUEXGETID( lParam )
-       nPos := AScan( oCtrl:aItem,  { | x | x[ 2 ] == nId })
-       TOOLBAR_SUBMENUEx( lParam, oCtrl:aItem[ nPos, 10 ], oCtrl:oParent:handle )
+       nPos := AScan( ::aItem,  { | x | x[ 2 ] == nId })
+       TOOLBAR_SUBMENUEx( lParam, ::aItem[ nPos, 10 ], ::oParent:handle )
        else
-              TOOLBAR_SUBMENU(lParam,1,oCtrl:oParent:handle)
+              TOOLBAR_SUBMENU(lParam,1,::oParent:handle)
        endif
     ENDIF
     

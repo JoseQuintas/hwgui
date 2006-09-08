@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.13 2005-10-19 10:04:27 alkresin Exp $
+ * $Id: htree.prg,v 1.14 2006-09-08 10:42:18 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -228,6 +228,7 @@ CLASS HTree INHERIT HControl
    METHOD Expand( oNode ) BLOCK {|Self,o|SendMessage(::handle,TVM_EXPAND,TVE_EXPAND,o:handle)}
    METHOD Select( oNode ) BLOCK {|Self,o|SendMessage(::handle,TVM_SELECTITEM,TVGN_CARET,o:handle)}
    METHOD Clean()
+   METHOD Notify( lParam )
    METHOD End()   INLINE ( Super:End(),ReleaseTree(::aItems) )
 
 ENDCLASS
@@ -312,22 +313,10 @@ METHOD Clean() CLASS HTree
 
 Return Nil
 
-Static Procedure ReleaseTree( aItems )
-Local i, iLen := Len( aItems )
-
-   FOR i := 1 TO iLen
-      tree_ReleaseNode( aItems[i]:oTree:handle,aItems[i]:handle )
-      ReleaseTree( aItems[i]:aItems )
-      // hwg_DecreaseHolders( aItems[i]:handle )
-   NEXT
-
-Return
-
-Function TreeNotify( oTree,lParam )
+METHOD Notify( lParam )  CLASS HTree
 Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct
 
-   // writelog( str(ncode) )
-   IF nCode == TVN_SELCHANGED .or. nCode == TVN_SELCHANGEDW
+   IF nCode == TVN_SELCHANGED .OR. nCode == TVN_SELCHANGEDW
       oItem := Tree_GetNotify( lParam,TREE_GETNOTIFY_PARAM )
       IF Valtype( oItem ) == "O"
          oItem:oTree:oSelected := oItem
@@ -354,21 +343,33 @@ Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct
    ELSEIF nCode == TVN_ITEMEXPANDING .or. nCode == TVN_ITEMEXPANDINGW
       oItem := Tree_GetNotify( lParam,TREE_GETNOTIFY_PARAM )
       IF Valtype( oItem ) == "O"
-         IF oTree:bExpand != Nil
+         IF ::bExpand != Nil
             return Iif( Eval( oItem:oTree:bExpand,oItem, ;
               CheckBit( Tree_GetNotify( lParam,TREE_GETNOTIFY_ACTION ),TVE_EXPAND ) ), ;
               0, 1 )
          ENDIF
       ENDIF
    ELSEIF nCode == -3     
-      IF oTree:bDblClick != Nil
-         oItem  := tree_Hittest( oTree:handle,,,@nAct )
-         Eval( oTree:bDblClick, oTree, oItem, nAct )
+      IF ::bDblClick != Nil
+         oItem  := tree_Hittest( ::handle,,,@nAct )
+         Eval( ::bDblClick, Self, oItem, nAct )
       ENDIF
    ELSEIF nCode == -5      
-      IF oTree:bRClick != Nil
-         oItem  := tree_Hittest( oTree:handle,,,@nAct )
-         Eval( oTree:bRClick, oTree, oItem, nAct )
+      IF ::bRClick != Nil
+         oItem  := tree_Hittest( ::handle,,,@nAct )
+         Eval( ::bRClick, Self, oItem, nAct )
       ENDIF
    ENDIF
 Return 0
+
+Static Procedure ReleaseTree( aItems )
+Local i, iLen := Len( aItems )
+
+   FOR i := 1 TO iLen
+      tree_ReleaseNode( aItems[i]:oTree:handle,aItems[i]:handle )
+      ReleaseTree( aItems[i]:aItems )
+      // hwg_DecreaseHolders( aItems[i]:handle )
+   NEXT
+
+Return
+

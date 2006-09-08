@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.11 2006-08-26 19:31:39 lculik Exp $
+ *$Id: hcwindow.prg,v 1.12 2006-09-08 10:42:18 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -200,68 +200,24 @@ LOCAL nPos
 RETURN NIL
 
 STATIC FUNCTION onNotify( oWnd, wParam, lParam )
-LOCAL iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res, handle, oItem
+LOCAL iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res
+STATIC aCls := { "HTAB","HQHTM","HTREE","HGRID","HGRIDEX","HTOOLBAR" }
 
    IF oCtrl != NIL
-      IF oCtrl:ClassName() == "HTAB"
-         DO CASE
-            CASE ( nCode := GetNotifyCode( lParam ) ) == TCN_SELCHANGE
-               IF oCtrl != NIL .AND. oCtrl:bChange != NIL
-                  Eval( oCtrl:bChange     , oCtrl, GetCurrentTab( oCtrl:handle ) )
-               ENDIF
-            CASE ( nCode := GetNotifyCode( lParam ) ) == TCN_CLICK
-                 IF oCtrl != NIL .AND. oCtrl:bAction != NIL
-                    Eval( oCtrl:bAction   , oCtrl, GetCurrentTab( oCtrl:handle ) )
-                 ENDIF
-            CASE ( nCode := GetNotifyCode( lParam ) ) == TCN_SETFOCUS
-                 IF oCtrl != NIL .AND. oCtrl:bGetFocus != NIL
-                    Eval( oCtrl:bGetFocus , oCtrl, GetCurrentTab( oCtrl:handle ) )
-                 ENDIF
-            CASE ( nCode := GetNotifyCode( lParam ) ) == TCN_KILLFOCUS
-                 IF oCtrl != NIL .AND. oCtrl:bLostFocus != NIL
-                    Eval( oCtrl:bLostFocus, oCtrl, GetCurrentTab( oCtrl:handle ) )
-                 ENDIF
-         ENDCASE
-
-      ELSEIF oCtrl:ClassName() == "HQHTM"
-         RETURN oCtrl:Notify( oWnd, lParam )
-
-      ELSEIF oCtrl:ClassName() == "HTREE"
-         RETURN TreeNotify( oCtrl, lParam )
-
-      ELSEIF oCtrl:ClassName() == "HGRID" 
-         RETURN ListViewNotify( oCtrl, lParam )
-      ELSEIF  oCtrl:ClassName() == "HGRIDEX"
-         Res:= ListViewNotifyEx( oCtrl, lParam )
-         IF Valtype(res) =="N"
-            Hwg_SetDlgResult(oWnd:Handle, res )
-            return 1
-         ENDIF
-         RETURN Res
-
-
-      ELSEIF oCtrl:ClassName() == "HTOOLBAR"
-         RETURN ToolbarNotify( oCtrl, wParam, lParam )
-
+      IF Ascan( aCls, oCtrl:ClassName() ) != 0
+         Return oCtrl:Notify( lParam )
       ELSE
-
          nCode := GetNotifyCode( lParam )
          // writelog("Code: "+str(nCode))
-
          IF nCode == EN_PROTECTED
-
             RETURN 1
-
          ELSEIF oWnd:aNotify != NIL .AND. ;
             ( iItem := Ascan( oWnd:aNotify, {|a| a[ 1 ] == nCode .AND. ;
                                                  a[ 2 ] == wParam } ) ) > 0
-
             IF ( res := Eval( oWnd:aNotify[ iItem, 3 ], oWnd, wParam ) ) != NIL
                RETURN res
             ENDIF
-
          ENDIF
-
       ENDIF
    ENDIF
 

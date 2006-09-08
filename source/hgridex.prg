@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.3 2006-08-31 22:36:03 lculik Exp $
+ * $Id: hgridex.prg,v 1.4 2006-09-08 10:42:18 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -68,6 +68,7 @@ CLASS HGridEX INHERIT HControl
    METHOD SetItemCount(nItem)                    INLINE Listview_setitemcount( ::handle, nItem )
    METHOD Row()                                  INLINE Listview_getfirstitem( ::handle )
    METHOD AddRow( aRow )
+   METHOD Notify( lParam )
 
    METHOD DELETEROW()    INLINE IF( ::iRowSelect > 0 ,( SendMessage( ::HANDLE, LVM_DELETEITEM, ::iRowSelect , 0), ::iRowSelect := -1 ), .T. )
    METHOD DELETEALLROW() INLINE ::aItems :=NIL, ::aColors := {}, SendMessage( ::Handle, LVM_DELETEALLITEMS, 0, 0 )
@@ -227,15 +228,18 @@ METHOD AddRow( a ) Class HGRIDEX
    aadd( ::aRow,    aTmp1 )
 
 return nil
-       
-
-
-Function ListViewNotifyEx( oCtrl, lParam )
+      
+METHOD Notify( lParam )  Class HGRIDEX
     Local aCord,Res
 
-    IF GetNotifyCode( lParam ) == NM_CUSTOMDRAW .and. GETNOTIFYCODEFROM(lParam) == oCtrl:Handle
-        Res := PROCESSCUSTU( oCtrl:handle, lParam, oCtrl:aColors )
+    IF GetNotifyCode( lParam ) == NM_CUSTOMDRAW .and. GETNOTIFYCODEFROM(lParam) == ::Handle
+        Res := PROCESSCUSTU( ::handle, lParam, ::aColors )
         return res
     ENDIF
-Return ListViewNotify( oCtrl, lParam )
+    Res := ListViewNotify( Self, lParam )
+    IF Valtype(Res) == "N"
+       Hwg_SetDlgResult( ::oParent:Handle, res )
+       return 1
+    ENDIF
+return Res
 

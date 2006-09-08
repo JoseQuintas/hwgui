@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.541 2006-09-07 04:44:03 alkresin Exp $
+ * $Id: Changelog,v 1.542 2006-09-08 10:42:17 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,18 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-09-08 14:43 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hcwindow.prg
+  * source/hgrid.prg
+  * source/hgridex.prg
+  * source/htab.prg
+  * source/htool.prg
+  * source/htree.prg
+  * source/qhtm/hqhtm.prg
+    * Changed handling of WM_NOTIFY message
+      Notify( lParam ) methods has been added to HTAB, HQHTM, HTREE, HGRID,
+      HGRIDEX, HTOOLBAR classes.
 
 2006-09-07 08:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hfrmtmpl.prg

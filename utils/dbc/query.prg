@@ -51,6 +51,7 @@ Local hDlg := getmodalhandle()
 Local oldArea := Alias(), tmpdriv, tmprdonly
 Local id1
 Local aChildWnd, hChild
+Static lConnected := .F.
 
    IF lOk
       cQuery := GetEditText( hDlg, IDC_EDITQUERY )
@@ -64,12 +65,13 @@ Local aChildWnd, hChild
          Return .F.
       ENDIF
 #ifdef RDD_ADS
-      IF AdsGetConnectionHandle() == 0
+      IF !lConnected
          IF Empty( mypath )
             AdsConnect( "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" ) )
          ELSE
             AdsConnect( mypath )
          ENDIF
+         lConnected := .T.
       ENDIF
       IF Select( "ADSSQL" ) > 0
          Select ADSSQL

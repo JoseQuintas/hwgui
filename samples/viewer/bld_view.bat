@@ -17,14 +17,15 @@ echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
 echo %HRB_DIR%\lib\rtl.lib + >> b32.bc
 echo %HRB_DIR%\lib\vm.lib + >> b32.bc
-echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
+if exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtgui.lib + >> b32.bc
+if not exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
 echo %HRB_DIR%\lib\lang.lib + >> b32.bc
 echo %HRB_DIR%\lib\macro.lib + >> b32.bc
 echo %HRB_DIR%\lib\rdd.lib + >> b32.bc
 echo %HRB_DIR%\lib\dbfntx.lib + >> b32.bc
 echo %HRB_DIR%\lib\dbfcdx.lib + >> b32.bc
 echo %HRB_DIR%\lib\dbffpt.lib + >> b32.bc
-echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
+if exist %HRB_DIR%\lib\pcrepos.lib echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
 echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
 echo %HRB_DIR%\lib\hsx.lib + >> b32.bc
 

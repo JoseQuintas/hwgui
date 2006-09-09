@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.75 2006-08-31 12:49:22 alkresin Exp $
+ *$Id: guilib.ch,v 1.76 2006-09-09 09:46:20 alkresin Exp $
  */
 #define HWG_VERSION           "2.15"
 #define	WND_MAIN		1
@@ -218,7 +218,7 @@
     [<oSay> := ] HStatic():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
         <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lTransp.> )
 
-#xcommand REDEFINE SAY   <oSay> [ CAPTION  <cCaption>   ]   ;
+#xcommand REDEFINE SAY   [ <oSay> CAPTION ] <cCaption>   ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
             [ COLOR <color> ]          ;

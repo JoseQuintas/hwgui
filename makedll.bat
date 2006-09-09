@@ -4,7 +4,7 @@ if "%1" == "CLEAN" goto CLEAN
 
 :BUILD
 
-   del *.log
+   del makedll.log
    del *.@@@
    make -f makedll.bc %1 %2 %3 %4 %5 %6 > makedll.log
 

@@ -32,7 +32,7 @@ PUBLIC lWinChar := .F.
 PUBLIC nQueryWndHandle := 0
 
 #ifdef RDD_ADS
-   REQUEST _ADS
+   // REQUEST _ADS
    rddRegister("ADS",1)
    rddSetdefault("ADS")
 #else

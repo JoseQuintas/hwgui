@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.47 2006-09-06 11:56:23 alkresin Exp $
+ * $Id: control.c,v 1.48 2006-09-10 08:16:41 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1350,27 +1350,28 @@ HB_FUNC(TOOLBAR_SUBMENU)
    LPNMTOOLBAR lpnmTB = (LPNMTOOLBAR) hb_parnl(1);
    RECT      rc;
    TPMPARAMS tpm;
-   HMENU     hPopupMenu = NULL;
+   HMENU     hPopupMenu;
    HMENU     hMenuLoaded;
    HWND g_hwndMain=  (HWND) hb_parnl(3);
    HANDLE g_hinst = GetModuleHandle( 0 );
-         SendMessage(lpnmTB->hdr.hwndFrom, TB_GETRECT,
-                     (WPARAM)lpnmTB->iItem, (LPARAM)&rc);
 
-         MapWindowPoints(lpnmTB->hdr.hwndFrom,
-                         HWND_DESKTOP, (LPPOINT)&rc, 2);                         
+   SendMessage(lpnmTB->hdr.hwndFrom, TB_GETRECT,
+               (WPARAM)lpnmTB->iItem, (LPARAM)&rc);
 
-         tpm.cbSize = sizeof(TPMPARAMS);
-         tpm.rcExclude = rc;
-         hMenuLoaded = LoadMenu(g_hinst, MAKEINTRESOURCE(hb_parni(2))); 
-         hPopupMenu = GetSubMenu(LoadMenu(g_hinst,
-            MAKEINTRESOURCE(hb_parni(2))),0);
+   MapWindowPoints(lpnmTB->hdr.hwndFrom,
+                   HWND_DESKTOP, (LPPOINT)&rc, 2);                         
 
-         TrackPopupMenuEx(hPopupMenu,
-            TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_VERTICAL,               
-            rc.left, rc.bottom, g_hwndMain, &tpm); 
+   tpm.cbSize = sizeof(TPMPARAMS);
+   tpm.rcExclude = rc;
+   hMenuLoaded = LoadMenu(g_hinst, MAKEINTRESOURCE(hb_parni(2))); 
+   hPopupMenu = GetSubMenu(LoadMenu(g_hinst,
+      MAKEINTRESOURCE(hb_parni(2))),0);
 
-         DestroyMenu(hMenuLoaded);			
+   TrackPopupMenuEx(hPopupMenu,
+      TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_VERTICAL,               
+      rc.left, rc.bottom, g_hwndMain, &tpm); 
+
+   DestroyMenu(hMenuLoaded);			
 
 }
 HB_FUNC(TOOLBAR_SUBMENUEX)

@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.18 2006-09-06 11:56:23 alkresin Exp $
+ * $Id: grid.c,v 1.19 2006-09-10 08:16:41 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -177,12 +177,12 @@ HB_FUNC( LISTVIEW_REDRAWITEMS )
 
 HB_FUNC( LISTVIEW_GETCOUNTPERPAGE )
 {
-        hb_retnl( ListView_GetCountPerPage ( (HWND) hb_parnl (1) ) ) ;
+   hb_retnl( ListView_GetCountPerPage ( (HWND) hb_parnl (1) ) ) ;
 }
 
 HB_FUNC( LISTVIEW_UPDATE )
 {
-        ListView_Update( (HWND) hb_parnl (1) , hb_parni(2) - 1 );
+   ListView_Update( (HWND) hb_parnl (1) , hb_parni(2) - 1 );
 
 }
 
@@ -225,17 +225,13 @@ HB_FUNC( GETWINDOWROW )
 
 {
 
-	RECT rect;
+   RECT rect;
+   int y ;
 
-	int y ;
+   GetWindowRect((HWND) hb_parnl (1), &rect) ;
+   y = rect.top ;
 
-	GetWindowRect((HWND) hb_parnl (1), &rect) ;
-
-	y = rect.top ;
-
-
-
-	hb_retni(y);
+   hb_retni(y);
 
 }
 
@@ -245,17 +241,13 @@ HB_FUNC( GETWINDOWCOL )
 
 {
 
-	RECT rect;
+   RECT rect;
+   int x ;
 
-	int x ;
+   GetWindowRect((HWND) hb_parnl (1), &rect) ;
+   x = rect.left ;
 
-	GetWindowRect((HWND) hb_parnl (1), &rect) ;
-
-	x = rect.left ;
-
-
-
-	hb_retni(x);
+   hb_retni(x);
 
 }
 
@@ -265,11 +257,11 @@ HB_FUNC( GETCURSORROW )
 
 {
 
-        POINT pt;
+   POINT pt;
 
-        GetCursorPos( &pt );
+   GetCursorPos( &pt );
 
-        hb_retni( pt.y );
+   hb_retni( pt.y );
 
 }
 
@@ -279,11 +271,11 @@ HB_FUNC( GETCURSORCOL )
 
 {
 
-        POINT pt;
+   POINT pt;
 
-        GetCursorPos( &pt );
+   GetCursorPos( &pt );
 
-        hb_retni( pt.x );
+   hb_retni( pt.x );
 
 }
 
@@ -292,9 +284,9 @@ HB_FUNC(LISTVIEW_SETIMAGELIST)
 {
    HWND hList = ( HWND ) hb_parnl( 1 ) ;
    HIMAGELIST p = ( HIMAGELIST ) hb_parnl( 2 ) ;
-   int iRes;
-   iRes = ListView_SetImageList( hList, ( HIMAGELIST ) p, LVSIL_NORMAL );
-   iRes = ListView_SetImageList( hList,( HIMAGELIST ) p, LVSIL_SMALL );
+
+   ListView_SetImageList( hList, ( HIMAGELIST ) p, LVSIL_NORMAL );
+   ListView_SetImageList( hList,( HIMAGELIST ) p, LVSIL_SMALL );
 }
 
 HB_FUNC( LISTVIEW_SETVIEW)
@@ -427,13 +419,14 @@ LRESULT ProcessCustomDraw( LPARAM lParam,PHB_ITEM pArray )
     switch( lplvcd->nmcd.dwDrawStage ) 
     {
         case CDDS_PREPAINT : 
+        {
             return CDRF_NOTIFYITEMDRAW;
+        }
             
         case CDDS_ITEMPREPAINT: 
         {
            return CDRF_NOTIFYSUBITEMDRAW;
         }
-           break;
     
         case CDDS_SUBITEM | CDDS_ITEMPREPAINT: 
         {
@@ -450,9 +443,7 @@ LRESULT ProcessCustomDraw( LPARAM lParam,PHB_ITEM pArray )
 
            return CDRF_NEWFONT;
 
-           break;
-           
-         }
+        }
     }
     return CDRF_DODEFAULT;
 }
@@ -460,8 +451,9 @@ LRESULT ProcessCustomDraw( LPARAM lParam,PHB_ITEM pArray )
 
 HB_FUNC( PROCESSCUSTU )
 {
-   HWND hWnd = ( HWND ) hb_parnl( 1 ) ;
+   /* HWND hWnd = ( HWND ) hb_parnl( 1 ) ; */
    LPARAM lParam = ( LPARAM ) hb_parnl( 2 ) ;
    PHB_ITEM pColor = hb_param( 3, HB_IT_ARRAY );
+
    hb_retnl( ( LONG ) ProcessCustomDraw( lParam, pColor ));
 }

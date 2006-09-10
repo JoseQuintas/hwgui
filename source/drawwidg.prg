@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.6 2005-08-29 08:33:54 alkresin Exp $
+ * $Id: drawwidg.prg,v 1.7 2006-09-10 08:16:41 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -315,6 +315,7 @@ CLASS HBitmap INHERIT HObject
    DATA nCounter   INIT 1
 
    METHOD AddResource( name )
+   METHOD AddStandard( nId )
    METHOD AddFile( name,hDC )
    METHOD AddWindow( oWnd,lFull )
    METHOD Release()
@@ -344,6 +345,33 @@ Local lPreDefined := .F., i, aBmpSize
    NEXT
    #endif
    ::handle :=   LoadBitmap( Iif( lPreDefined, Val(name),name ) )
+   ::name   := name
+   aBmpSize  := GetBitmapSize( ::handle )
+   ::nWidth  := aBmpSize[1]
+   ::nHeight := aBmpSize[2]
+   Aadd( ::aBitmaps,Self )
+
+Return Self
+
+METHOD AddStandard( nId ) CLASS HBitmap
+Local i, aBmpSize, name := "s" + Ltrim( Str( nId ) )
+
+   #ifdef __XHARBOUR__
+   For EACH i  IN  ::aBitmaps 
+      IF i:name == name
+         i:nCounter ++
+         Return i
+      ENDIF
+   NEXT
+   #else
+   For i := 1 TO Len( ::aBitmaps )
+      IF ::aBitmaps[i]:name == name
+         ::aBitmaps[i]:nCounter ++
+         Return ::aBitmaps[i]
+      ENDIF
+   NEXT
+   #endif
+   ::handle :=   LoadBitmap( nId,.T. )
    ::name   := name
    aBmpSize  := GetBitmapSize( ::handle )
    ::nWidth  := aBmpSize[1]

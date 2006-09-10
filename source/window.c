@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.48 2006-09-06 06:29:55 alkresin Exp $
+ * $Id: window.c,v 1.49 2006-09-10 08:16:41 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -16,9 +16,6 @@
 #include <commctrl.h>
 
 #include "guilib.h"
-#ifndef __XHARBOUR__
-#include "hbapicls.h"
-#endif
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
@@ -31,8 +28,7 @@
 
 #define  FIRST_MDICHILD_ID     501
 
-extern HB_HANDLE hb_memvarGetVarHandle( char *szName );
-extern PHB_ITEM hb_memvarGetValueByHandle( HB_HANDLE hMemvar );
+extern void hb_objSendMsg( PHB_ITEM pObj, char *sMsg, ULONG ulArg, ... );
 
 void writelog( char* s );
 void SetWindowObject( HWND hWnd, PHB_ITEM pObject );

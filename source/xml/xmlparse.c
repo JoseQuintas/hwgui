@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.22 2006-09-06 06:29:55 alkresin Exp $
+ * $Id: xmlparse.c,v 1.23 2006-09-10 08:16:41 alkresin Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -12,11 +12,10 @@
 #include <stdio.h>
 #include "hbapi.h"
 #include "hbapiitm.h"
-#ifndef __XHARBOUR__
-#include "hbapicls.h"
-#endif
 #include "hbvm.h"
 #include "filesys.api"
+
+extern void hb_objSendMsg( PHB_ITEM pObj, char *sMsg, ULONG ulArg, ... );
 
 #define HB_SKIPTABSPACES( sptr ) while( *sptr == ' ' || *sptr == '\t' || \
          *sptr == '\r' || *sptr == '\n' ) ( sptr )++

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.543 2006-09-09 09:46:19 alkresin Exp $
+ * $Id: Changelog,v 1.544 2006-09-10 08:16:41 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,20 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-09-10 12:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/draw.c
+    * LoadBitmap() changed.
+  * source/drawwidg.prg
+    * New method has been added to HBitmap class - :AddStandard(), which creates
+      Windows predefined bitmaps
+  * source/control.c
+  * source/grid.c
+    ! Few warnings fixed
+  * source/xml/xmlparse.c
+  * source/window.c
+    * #include "hbapicls.h" has been replaced by extern void hb_objSendMsg( ...
+      to prevent conflicts with different versions of Harbour and xHarbour
 
 2006-09-09 13:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * makedll.bc

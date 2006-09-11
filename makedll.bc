@@ -1,5 +1,5 @@
 # makefile for Borland C/C++ 32 bits
-# Building of hwguidll.dll - Harbour Win32 GUI library
+# Building of hwgui-b32.dll - Harbour Win32 GUI library
 
 
 HRB_DIR = $(HB_PATH)
@@ -23,14 +23,14 @@ HB_CMD = $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 
 all: \
-   $(LIB_DIR)\hwguidll.lib \
+   $(LIB_DIR)\hwgui-b32.lib \
 
 
-$(LIB_DIR)\hwguidll.lib: \
-   $(LIB_DIR)\hwguidll.dll
+$(LIB_DIR)\hwgui-b32.lib: \
+   $(LIB_DIR)\hwgui-b32.dll
 
 
-$(LIB_DIR)\hwguidll.dll:   \
+$(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\hipedit.obj \
    $(OBJ_DIR)\commond.obj \
    $(OBJ_DIR)\control.obj \
@@ -108,10 +108,10 @@ $(LIB_DIR)\hwguidll.dll:   \
 
 
   ILINK32 -Tpd -Gn /L$(BCC)\lib;$(BCC)\lib\PSDK;$(HRB_DIR)\lib\ @&&|
-  $** c0d32w.obj , $(LIB_DIR)\hwguidll.dll, $(LIB_DIR)\hwguidll.map, cw32 harbour-b32.lib import32.lib  uuid.lib
+  $** c0d32w.obj , $(LIB_DIR)\hwgui-b32.dll, $(LIB_DIR)\hwgui-b32.map, cw32 harbour-b32.lib import32.lib  uuid.lib
 |
-  copy $(LIB_DIR)\hwguidll.dll .\samples
-  copy $(HRB_DIR)\lib\harbour.dll .\samples
+  copy $(LIB_DIR)\hwgui-b32.dll .\samples
+  copy $(HRB_DIR)\lib\harbour-b32.dll .\samples
 
 
 .dll.lib:

@@ -20,10 +20,10 @@ if "%1" == "CLEAN" goto CLEAN
    goto EXIT
 
 :CLEAN
-   del lib\hwguidll.dll
-   del lib\hwguidll.lib
-   del lib\hwguidll.map
-   del lib\hwguidll.tds
+   del lib\hwgui-b32.dll
+   del lib\hwgui-b32.lib
+   del lib\hwgui-b32.map
+   del lib\hwgui-b32.tds
    del obj\dll\*.obj
    del obj\dll\*.c
    del obj\dll\*.res

@@ -1,5 +1,5 @@
 /*
- * $Id: richtext.prg,v 1.3 2004-08-02 09:28:54 lf_sfnet Exp $
+ * $Id: richtext.prg,v 1.4 2006-09-11 13:02:42 alkresin Exp $
  */
 /*
 旼컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴커
@@ -2621,7 +2621,7 @@ FUNCTION CStr( xExp )
          RETURN "{ " + xExp:ClassName() + " Object }"
 
       CASE cType == 'P'
-         RETURN HB_NumToHex( xExp )
+         RETURN NumToHex( xExp )
 
       CASE cType == 'H'
          RETURN "{ Hash of " +  LTrim( Str( Len( xExp ) ) ) + " Items }"

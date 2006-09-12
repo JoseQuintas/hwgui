@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.23 2006-08-18 12:05:59 lf_sfnet Exp $
+ * $Id: window.c,v 1.24 2006-09-12 11:49:18 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -383,7 +383,8 @@ void all_signal_connect( gpointer hWnd )
 
 GtkWidget * GetActiveWindow( void )
 {
-   return gtk_window_list_toplevels()->data;
+   GList * pList = gtk_window_list_toplevels();
+   return ( pList )? pList->data : NULL;
 }
 
 HB_FUNC( GETACTIVEWINDOW )

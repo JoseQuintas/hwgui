@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.66 2006-08-31 12:49:22 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.67 2006-09-12 07:26:03 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -43,6 +43,8 @@ REQUEST BOF
 #define SB_BOTH             3
 
 #define HDM_GETITEMCOUNT    4608
+
+#define DLGC_WANTALLKEYS    0x0004      /* Control wants all keys */
 
 static ColSizeCursor := 0
 static arrowCursor := 0
@@ -278,7 +280,7 @@ Static keyCode := 0
          IF wParam != 0
             keyCode := wParam
          ENDIF
-         RETURN 1
+         RETURN DLGC_WANTALLKEYS
 
       ELSEIF msg == WM_COMMAND
          // Super:onEvent( WM_COMMAND )

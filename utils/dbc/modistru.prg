@@ -183,7 +183,7 @@ Local oPBar, nSch := 0
          SKIP
          oPBar:Step()
       ENDDO
-      oPBar:End()
+      oPBar:Close()
       SELECT( improc )
       USE
       SELECT 20
@@ -198,7 +198,7 @@ Local oPBar, nSch := 0
       SELECT( improc )
       USE (fi1)
 
-      oWindow := HWindow():GetMdiActive()
+      oWindow := HMainWindow():GetMdiActive()
       IF oWindow != Nil
          aControls := oWindow:aControls
          IF ( i := Ascan( aControls, {|o|o:classname()=="HBROWSE"} ) ) > 0

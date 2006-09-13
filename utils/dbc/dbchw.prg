@@ -259,7 +259,7 @@ Local msind := { { "0","None","","" } }, i, ordlen := 0
 Return Nil
 
 Static Function SetIndex( oBrw )
-Local oWindow := HWindow():GetMdiActive(), aControls, i
+Local oWindow := HMainWindow():GetMdiActive(), aControls, i
 
    SET ORDER TO oBrw:tekzp - 1
    WriteStatus( oWindow,2,"Order: "+oBrw:msrec[oBrw:tekzp,2] )
@@ -345,7 +345,7 @@ Local oWindow, aControls, i
          ORDCREATE( RTRIM( indname ),, RTRIM( expkey ), &( "{||" + RTRIM( expkey ) + "}" ), Iif( isUniq,.T.,Nil ) )
       ENDIF
    ENDIF
-   oWindow := HWindow():GetMdiActive()
+   oWindow := HMainWindow():GetMdiActive()
    WriteStatus( oWindow,2,"Order: "+Iif( isMulti,tagname,CutPath(indname) ) )
 
    IF oWindow != Nil
@@ -368,7 +368,7 @@ Local oWindow, aControls, i
    IF !Empty( fname := SelectFile( "Index files", mask, mypath ) )
       mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
       ORDLISTADD( fname )
-      oWindow := HWindow():GetMdiActive()
+      oWindow := HMainWindow():GetMdiActive()
       IF oWindow != Nil
          aControls := oWindow:aControls
          IF ( i := Ascan( aControls, {|o|o:classname()=="HBROWSE"} ) ) > 0
@@ -386,7 +386,7 @@ Local oWindow, aControls, i
 
    ORDLISTCLEAR()
    IF Indexord() != oldOrder
-      oWindow := HWindow():GetMdiActive()
+      oWindow := HMainWindow():GetMdiActive()
       IF oWindow != Nil
          aControls := oWindow:aControls
          IF ( i := Ascan( aControls, {|o|o:classname()=="HBROWSE"} ) ) > 0

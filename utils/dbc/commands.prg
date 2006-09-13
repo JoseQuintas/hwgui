@@ -59,7 +59,7 @@ Local nrest, nrec
 Local oWindow, aControls, i
 Private finame, cValue, cFor
 
-   oWindow := HWindow():GetMdiActive()
+   oWindow := HMainWindow():GetMdiActive()
 
    finame := GetDlgItemText( hDlg, IDC_COMBOBOX1, 12 )
    IF Empty( finame )
@@ -133,7 +133,7 @@ Local nrest, nsum, nRec := Recno()
 Local oWindow, aControls, i
 Private cFor
 
-   oWindow := HWindow():GetMdiActive()
+   oWindow := HMainWindow():GetMdiActive()
 
    cFor := GetDlgItemText( hDlg, IDC_EDITFOR, 60 )
    IF .NOT. EMPTY( cFor ) .AND. TYPE( cFor ) <> "L"

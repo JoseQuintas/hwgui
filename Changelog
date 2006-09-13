@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.552 2006-09-13 07:25:08 alkresin Exp $
+ * $Id: Changelog,v 1.553 2006-09-13 15:47:20 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,38 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-09-13 19:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/hbrowse.prg
+  * gtk/gtkmain.prg
+  * gtk/samples/dbview.prg
+
+  * samples/colrbloc.prg
+  * samples/testbrw.prg
+  * samples/buildpelles.prg
+  * samples/a.prg
+  * samples/dbview.prg
+  * samples/mysql/hwmysql.prg
+
+  * utils/designerinspect.prg
+  * utils/designer/editor.prg
+  * utils/dbc/commands.prg
+  * utils/dbc/modistru.prg
+  * utils/dbc/move.prg
+  * utils/dbc/query.prg
+  * utils/dbc/dbchw.prg
+
+  * source/guimain.prg
+  * source/hbrowse.prg
+
+    * HBrowse class variables renamed:
+      :kolz  --> nRecords
+      :tekzp --> nCurrent
+      :msrec --> aArray
+    * HBrowse: :Home() and End() methods has been added
+    * Key reactions are changed, now they are similar to Clipper's TBrowse:
+      Home and End keys moves browse into the left and right positions,
+      Ctrl+PgDn and Ctrl+PgUp - bottom and top.
 
 2006-09-13 11:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils\dbc\commands.prg

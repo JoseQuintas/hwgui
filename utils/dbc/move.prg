@@ -3,13 +3,15 @@
  * Move functions ( Locate, seek, ... )
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
 #include "guilib.ch"
 #include "dbchw.h"
+#ifdef RDD_ADS
 #include "ads.ch"
+#endif
 
 Static cLocate := "", cFilter := "", cSeek := ""
 Static klrecf := 200
@@ -103,14 +105,14 @@ Local nrec, i, res
       nrec := RECNO()
       block := &( "{||" + cLocate + "}" )
       IF oBrw:prflt
-         FOR i := 1 TO Min( oBrw:kolz,klrecf-1 )
-            GO oBrw:msrec[ i ]
+         FOR i := 1 TO Min( oBrw:nRecords,klrecf-1 )
+            GO oBrw:aArray[ i ]
             IF Eval( block )
                res := .T.
                EXIT
             ENDIF
          NEXT
-         IF !res .AND. i < oBrw:kolz
+         IF !res .AND. i < oBrw:nRecords
             SKIP
             DO WHILE !Eof()
                IF Eval( block )
@@ -130,7 +132,7 @@ Local nrec, i, res
       ELSE
          WriteStatus( HMainWindow():GetMdiActive(),3,"Found" )
          IF oBrw:prflt
-            oBrw:tekzp := i
+            oBrw:nCurrent := i
          ENDIF
       ENDIF
    ELSE
@@ -146,32 +148,32 @@ Local i, nrec
       dbSetFilter( &( "{||"+ cFilter + "}" ), cFilter )
       GO TOP
       i       := 1
-      oBrw:kolz := 0
-      IF oBrw:msrec == Nil
-         oBrw:msrec := Array( klrecf )
+      oBrw:nRecords := 0
+      IF oBrw:aArray == Nil
+         oBrw:aArray := Array( klrecf )
       ENDIF
       DO WHILE .NOT. EOF()
-         oBrw:msrec[ i ] = RECNO()
+         oBrw:aArray[ i ] = RECNO()
          IF i < klrecf
             i ++
          ENDIF
-         oBrw:kolz ++
+         oBrw:nRecords ++
          IF INKEY() = 27
-            oBrw:kolz := 0
+            oBrw:nRecords := 0
             EXIT
          ENDIF
          SKIP
       ENDDO
-      oBrw:tekzp := 1
-      IF oBrw:kolz > 0
-         GO oBrw:msrec[ 1 ]
+      oBrw:nCurrent := 1
+      IF oBrw:nRecords > 0
+         GO oBrw:aArray[ 1 ]
          oBrw:prflt := .T.
          oBrw:bSkip := &( "{|o,x|" + oBrw:alias + "->(FSKIP(o,x))}" )
          oBrw:bGoTop:= &( "{|o|" + oBrw:alias + "->(FGOTOP(o))}" )
          oBrw:bGoBot:= &( "{|o|" + oBrw:alias + "->(FGOBOT(o))}")
          oBrw:bEof  := &( "{|o|" + oBrw:alias + "->(FEOF(o))}" )
          oBrw:bBof  := &( "{|o|" + oBrw:alias + "->(FBOF(o))}" )
-         WriteStatus( HMainWindow():GetMdiActive(),1,Ltrim(Str(oBrw:kolz,10))+" records filtered" )
+         WriteStatus( HMainWindow():GetMdiActive(),1,Ltrim(Str(oBrw:nRecords,10))+" records filtered" )
       ELSE
          oBrw:prflt := .F.
          SET FILTER TO
@@ -190,41 +192,41 @@ Local i, nrec
 Return Nil
 
 FUNCTION FGOTOP( oBrw )
-   IF oBrw:kolz > 0
-      oBrw:tekzp := 1
-      GO oBrw:msrec[ 1 ]
+   IF oBrw:nRecords > 0
+      oBrw:nCurrent := 1
+      GO oBrw:aArray[ 1 ]
    ENDIF
 RETURN Nil
 
 FUNCTION FGOBOT( oBrw )
-   oBrw:tekzp := oBrw:kolz
-   GO IIF( oBrw:kolz < klrecf, oBrw:msrec[ oBrw:kolz ], oBrw:msrec[ klrecf ] )
+   oBrw:nCurrent := oBrw:nRecords
+   GO IIF( oBrw:nRecords < klrecf, oBrw:aArray[ oBrw:nRecords ], oBrw:aArray[ klrecf ] )
 RETURN Nil
 
 PROCEDURE FSKIP( oBrw, kolskip )
 LOCAL tekzp1
-   IF oBrw:kolz = 0
+   IF oBrw:nRecords = 0
       RETURN
    ENDIF
-   tekzp1   := oBrw:tekzp
-   oBrw:tekzp := oBrw:tekzp + kolskip + IIF( tekzp1 = 0, 1, 0 )
-   IF oBrw:tekzp < 1
-      oBrw:tekzp := 0
-      GO oBrw:msrec[ 1 ]
-   ELSEIF oBrw:tekzp > oBrw:kolz
-      oBrw:tekzp := oBrw:kolz + 1
-      GO IIF( oBrw:kolz < klrecf, oBrw:msrec[ oBrw:kolz ], oBrw:msrec[ klrecf ] )
+   tekzp1   := oBrw:nCurrent
+   oBrw:nCurrent := oBrw:nCurrent + kolskip + IIF( tekzp1 = 0, 1, 0 )
+   IF oBrw:nCurrent < 1
+      oBrw:nCurrent := 0
+      GO oBrw:aArray[ 1 ]
+   ELSEIF oBrw:nCurrent > oBrw:nRecords
+      oBrw:nCurrent := oBrw:nRecords + 1
+      GO IIF( oBrw:nRecords < klrecf, oBrw:aArray[ oBrw:nRecords ], oBrw:aArray[ klrecf ] )
    ELSE
-      IF oBrw:tekzp > klrecf - 1
-         SKIP IIF( tekzp1 = oBrw:kolz + 1, kolskip + 1, kolskip )
+      IF oBrw:nCurrent > klrecf - 1
+         SKIP IIF( tekzp1 = oBrw:nRecords + 1, kolskip + 1, kolskip )
       ELSE
-         GO oBrw:msrec[ oBrw:tekzp ]
+         GO oBrw:aArray[ oBrw:nCurrent ]
       ENDIF
    ENDIF
 RETURN
 
 FUNCTION FBOF( oBrw )
-RETURN IIF( oBrw:tekzp = 0, .T., .F. )
+RETURN IIF( oBrw:nCurrent = 0, .T., .F. )
 
 FUNCTION FEOF( oBrw )
-RETURN IIF( oBrw:tekzp > oBrw:kolz, .T., .F. )
+RETURN IIF( oBrw:nCurrent > oBrw:nRecords, .T., .F. )

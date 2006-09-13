@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.10 2004-12-08 08:23:17 alkresin Exp $
+ * $Id: inspect.prg,v 1.11 2006-09-13 15:47:25 alkresin Exp $
  *
  * Designer
  * Object Inspector
@@ -172,7 +172,7 @@ RETURN Nil
 
 METHOD HeaderOut( hDC ) CLASS PBrowse
 Local i, x, fif, xSize
-Local nRows := Min( ::kolz,::rowCount ), oColumn
+Local nRows := Min( ::nRecords,::rowCount ), oColumn
 Local oPen := HPen():Add( PS_SOLID,1,::sepColor )
 Local oPenLight := HPen():Add( PS_SOLID,1,GetSysColor(COLOR_3DHILIGHT) )
 Local oPenGray  := HPen():Add( PS_SOLID,1,GetSysColor(COLOR_3DSHADOW) )
@@ -276,8 +276,8 @@ Function InspOpen
       oBrw1:lDispHead := .F.
       oBrw1:lSep3d := .T.
       oBrw1:sepColor  := GetSysColor( COLOR_BTNSHADOW )
-      oBrw1:msrec := aProp
-      oBrw1:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:msrec[o:tekzp,1]),"","  "+o:msrec[o:tekzp,1])},"C",12,0,.T. ) )
+      oBrw1:aArray := aProp
+      oBrw1:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:aArray[o:nCurrent,1]),"","  "+o:aArray[o:nCurrent,1])},"C",12,0,.T. ) )
       oBrw1:AddColumn( HColumn():New( ,ColumnArBlock(),"U",100,0,.T. ) )
    END PAGE OF oTab
 
@@ -291,9 +291,9 @@ Function InspOpen
       oBrw2:lDispHead := .F.
       oBrw2:lSep3d := .T.
       oBrw2:sepColor  := GetSysColor( COLOR_BTNSHADOW )
-      oBrw2:msrec := aMethods
-      oBrw2:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:msrec[o:tekzp,1]),"","  "+o:msrec[o:tekzp,1])},"C",12,0,.T. ) )
-      oBrw2:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:msrec[o:tekzp,2]),"",":"+o:msrec[o:tekzp,1])},"C",100,0,.T. ) )
+      oBrw2:aArray := aMethods
+      oBrw2:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:aArray[o:nCurrent,1]),"","  "+o:aArray[o:nCurrent,1])},"C",12,0,.T. ) )
+      oBrw2:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:aArray[o:nCurrent,2]),"",":"+o:aArray[o:nCurrent,1])},"C",100,0,.T. ) )
    END PAGE OF oTab
 
    ACTIVATE DIALOG oDesigner:oDlgInsp NOMODAL
@@ -404,8 +404,8 @@ Local i, o
       NEXT
    ENDIF
 
-   oBrw1:msrec := aProp
-   oBrw2:msrec := aMethods
+   oBrw1:aArray := aProp
+   oBrw2:aArray := aMethods
 
    Eval( oBrw1:bGoTop,oBrw1 )
    Eval( oBrw2:bGoTop,oBrw2 )
@@ -469,8 +469,8 @@ Local oDlg, oBrw, nRec := Eval( oBrw1:bRecno,oBrw1 )
    oBrw:bcolor := 15132390
    oBrw:bcolorSel := VColor( "008000" )
    oBrw:lAppable := .T.
-   oBrw:msrec := arr
-   oBrw:AddColumn( HColumn():New( ,{|v,o|Iif(v!=Nil,o:msrec[o:tekzp]:=v,o:msrec[o:tekzp])},"C",100,0,.T. ) )
+   oBrw:aArray := arr
+   oBrw:AddColumn( HColumn():New( ,{|v,o|Iif(v!=Nil,o:aArray[o:nCurrent]:=v,o:aArray[o:nCurrent])},"C",100,0,.T. ) )
 
    @ 30,265 BUTTON "Ok" SIZE 100, 32     ;
        ON SIZE {|o,x,y|o:Move(,y-35,,)}  ;

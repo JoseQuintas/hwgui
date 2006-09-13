@@ -1,5 +1,5 @@
 /*
- * $Id: gtkmain.prg,v 1.8 2006-08-02 10:51:46 alkresin Exp $
+ * $Id: gtkmain.prg,v 1.9 2006-09-13 15:47:20 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Main prg level functions
@@ -106,12 +106,12 @@ Local hDC, aMetr, width, height, screenh
        FONT oFont                   ;
        STYLE WS_BORDER              ;
        ON SIZE {|o,x,y|o:Move(,,x,y)} ;
-       ON CLICK {|o|nChoice:=o:tekzp,EndDialog(o:oParent:handle)}
+       ON CLICK {|o|nChoice:=o:nCurrent,EndDialog(o:oParent:handle)}
 
    IF Valtype( arr[1] ) == "A"
-      oBrw:AddColumn( HColumn():New( ,{|value,o|o:msrec[o:tekzp,1]},"C",nLen ) )
+      oBrw:AddColumn( HColumn():New( ,{|value,o|o:aArray[o:nCurrent,1]},"C",nLen ) )
    ELSE
-      oBrw:AddColumn( HColumn():New( ,{|value,o|o:msrec[o:tekzp]},"C",nLen ) )
+      oBrw:AddColumn( HColumn():New( ,{|value,o|o:aArray[o:nCurrent]},"C",nLen ) )
    ENDIF
    CreateArList( oBrw, arr )
    oBrw:lDispHead := .F.

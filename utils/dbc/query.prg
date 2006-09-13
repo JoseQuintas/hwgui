@@ -3,13 +3,15 @@
  * SQL queries
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
 #include "guilib.ch"
 #include "dbchw.h"
+#ifdef RDD_ADS
 #include "ads.ch"
+#endif
 
 Static cQuery := ""
 

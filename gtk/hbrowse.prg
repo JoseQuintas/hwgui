@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.16 2006-08-18 07:55:09 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.17 2006-09-13 15:47:20 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -116,9 +116,9 @@ CLASS HBrowse INHERIT HControl
    DATA nLeftCol                               // Leftmost column
    DATA xpos
    DATA freeze                                 // Number of columns to freeze
-   DATA kolz                                   // Number of records in browse
-   DATA tekzp      INIT 1
-   DATA msrec
+   DATA nRecords                               // Number of records in browse
+   DATA nCurrent      INIT 1                   // Current record
+   DATA aArray                                 // An array browsed if this is BROWSE ARRAY
    DATA recCurr INIT 0
    DATA headColor                              // Header text color
    DATA sepColor INIT 12632256                 // Separators color
@@ -142,6 +142,8 @@ CLASS HBrowse INHERIT HControl
    DATA lAdjRight INIT .T.                     // Adjust last column to right
    DATA nHeadRows INIT 1                       // Rows in header
    DATA nFootRows INIT 0                       // Rows in footer
+   DATA lCtrlPress INIT .F.                    // .T. while Ctrl key is pressed
+   DATA aSelected                              // An array of selected records numbers
    
    DATA area
    DATA hScrollV  INIT Nil
@@ -413,10 +415,10 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::type := nType
    else
       ::aColumns := {}
-      ::rowPos    := ::tekzp  := ::colpos := ::nLeftCol := 1
+      ::rowPos    := ::nCurrent  := ::colpos := ::nLeftCol := 1
       ::freeze  := ::height := 0
       ::internal  := { 15,1 }
-      ::msrec     := Nil
+      ::aArray     := Nil
 
       if empty(crossCursor) 
          crossCursor := LoadCursor( GDK_CROSS )
@@ -438,13 +440,13 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::bGoTo   := &( "{|a,n|"  + ::alias + "->(DBGOTO(n))}" )
    elseif ::type == BRW_ARRAY
       ::bSKip   := { | o, x | ARSKIP( o, x ) }
-      ::bGoTop  := { | o | o:tekzp := 1 }
-      ::bGoBot  := { | o | o:tekzp := o:kolz }
-      ::bEof    := { | o | o:tekzp > o:kolz }
-      ::bBof    := { | o | o:tekzp == 0 }
-      ::bRcou   := { | o | len( o:msrec ) }
-      ::bRecnoLog := ::bRecno  := { | o | o:tekzp }
-      ::bGoTo   := { | o, n | o:tekzp := n }
+      ::bGoTop  := { | o | o:nCurrent := 1 }
+      ::bGoBot  := { | o | o:nCurrent := o:nRecords }
+      ::bEof    := { | o | o:nCurrent > o:nRecords }
+      ::bBof    := { | o | o:nCurrent == 0 }
+      ::bRcou   := { | o | len( o:aArray ) }
+      ::bRecnoLog := ::bRecno  := { | o | o:nCurrent }
+      ::bGoTo   := { | o, n | o:nCurrent := n }
       ::bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}
    endif
 RETURN Nil
@@ -547,18 +549,18 @@ Local oldBkColor, oldTColor
    ::x2 := aCoors[ 3 ]
    ::y2 := aCoors[ 4 ]
 
-   ::kolz := eval( ::bRcou,Self )
-   IF ::tekzp > ::kolz
-      ::tekzp := ::kolz
+   ::nRecords := eval( ::bRcou,Self )
+   IF ::nCurrent > ::nRecords
+      ::nCurrent := ::nRecords
    ENDIF
 
    ::nColumns := FLDCOUNT( Self, ::x1 + 2, ::x2 - 2, ::nLeftCol )
    ::rowCount := Int( (::y2-::y1) / (::height+1) ) - ::nFootRows
-   nRows := Min( ::kolz,::rowCount )
+   nRows := Min( ::nRecords,::rowCount )
    
    IF ::hScrollV != Nil
-      tmp := Iif(::kolz<100,::kolz,100)
-      i := Iif(::kolz<100,1,::kolz/100)
+      tmp := Iif(::nRecords<100,::nRecords,100)
+      i := Iif(::nRecords<100,1,::nRecords/100)
       hwg_SetAdjOptions( ::hScrollV,,tmp+nRows,i,nRows,nRows )
    ENDIF 
    IF ::hScrollH != Nil
@@ -648,7 +650,7 @@ RETURN Nil
 //----------------------------------------------------//
 METHOD HeaderOut( hDC ) CLASS HBrowse
 Local i, x, oldc, fif, xSize
-Local nRows := Min( ::kolz+Iif(::lAppMode,1,0),::rowCount )
+Local nRows := Min( ::nRecords+Iif(::lAppMode,1,0),::rowCount )
 Local oPen // , oldBkColor := SetBkColor( hDC,GetSysColor(COLOR_3DFACE) )
 Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
 
@@ -803,7 +805,7 @@ Local lColumnFont := .F.
    IF ::bLineOut != Nil
       Eval( ::bLineOut,Self,lSelected )
    ENDIF
-   IF ::kolz > 0
+   IF ::nRecords > 0
       oldBkColor := SetBkColor( hDC, Iif( lSelected,::bcolorSel,::bcolor ) )
       oldTColor  := SetTextColor( hDC, Iif( lSelected,::tcolorSel,::tcolor ) )
       fldname := SPACE( 8 )
@@ -1026,7 +1028,7 @@ Local nScrollV := hwg_getAdjValue( ::hScrollV )
       ENDIF
    endif
    ::nScrollV := nScrollV
-   // writelog( "DoVScroll " + Ltrim(Str(::nScrollV)) + " " + Ltrim(Str(::tekzp)) + "( " + Ltrim(Str(::kolz)) + " )" )
+   // writelog( "DoVScroll " + Ltrim(Str(::nScrollV)) + " " + Ltrim(Str(::nCurrent)) + "( " + Ltrim(Str(::nRecords)) + " )" )
 RETURN 0
 
 //----------------------------------------------------//
@@ -1064,7 +1066,7 @@ Local nPos
          Eval( ::bScrollPos, Self, 1, .F. )
       ELSE
          nPos := hwg_getAdjValue( ::hScrollV )
-         nPos += Int( maxPos/(::kolz-1) )
+         nPos += Int( maxPos/(::nRecords-1) )
          hwg_SetAdjOptions( ::hScrollV,nPos )
          ::nScrollV := nPos
       ENDIF
@@ -1099,7 +1101,7 @@ Local nPos
             Eval( ::bScrollPos, Self, -1, .F. )
          ELSE
             nPos := hwg_getAdjValue( ::hScrollV )
-            nPos -= Int( maxPos/(::kolz-1) )
+            nPos -= Int( maxPos/(::nRecords-1) )
             hwg_SetAdjOptions( ::hScrollV,nPos )
             ::nScrollV := nPos
          ENDIF
@@ -1121,7 +1123,7 @@ Local nPos, step, lBof := .F.
       EVAL( ::bSKip, Self,- step )
       ::rowPos := 1
    ELSE
-      step := ::rowCurrCount    // Min( ::kolz,::rowCount )
+      step := ::rowCurrCount    // Min( ::nRecords,::rowCount )
       EVAL( ::bSkip, Self,- step )
       IF EVAL( ::bBof,Self )
          EVAL( ::bGoTop,Self )
@@ -1134,8 +1136,8 @@ Local nPos, step, lBof := .F.
          Eval( ::bScrollPos, Self, - step, lBof )
       ELSE
          nPos := hwg_getAdjValue( ::hScrollV )
-         nPos -= Int( maxPos/(::kolz-1) )
-         nPos := Max( nPos - Int( maxPos*step/(::kolz-1) ), 0 )
+         nPos -= Int( maxPos/(::nRecords-1) )
+         nPos := Max( nPos - Int( maxPos*step/(::nRecords-1) ), 0 )
          hwg_SetAdjOptions( ::hScrollV,nPos )
          ::nScrollV := nPos
       ENDIF
@@ -1153,7 +1155,7 @@ Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows ), lEof
 
    lMouse := Iif( lMouse==Nil,.F.,lMouse )
    EVAL( ::bSkip, Self, step )
-   ::rowPos := Min( ::kolz, nRows )
+   ::rowPos := Min( ::nRecords, nRows )
    lEof := EVAL( ::bEof,Self )
    IF lEof .AND. ::bScrollPos == Nil
       EVAL( ::bSkip, Self,- 1 )
@@ -1167,7 +1169,7 @@ Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows ), lEof
          IF lEof     
             nPos := maxPos
          ELSE
-            nPos := Min( nPos + Int( maxPos*step/(::kolz-1) ), maxPos )
+            nPos := Min( nPos + Int( maxPos*step/(::nRecords-1) ), maxPos )
          ENDIF
          hwg_SetAdjOptions( ::hScrollV,nPos )
          ::nScrollV := nPos
@@ -1184,7 +1186,7 @@ Local nPos
 
    ::rowPos := lastrec()
    eval( ::bGoBot, Self )
-   ::rowPos := min( ::kolz, ::rowCount )
+   ::rowPos := min( ::nRecords, ::rowCount )
 
    IF ::hScrollV != Nil
       nPos := hwg_getAdjValue( ::hScrollV,1 ) - hwg_getAdjValue( ::hScrollV,4 )
@@ -1246,7 +1248,7 @@ Local xm := LOWORD(lParam), x1, fif
                ELSE	    
                   nPos := hwg_getAdjValue( ::hScrollV )
 		  maxPos := hwg_getAdjValue( ::hScrollV,1 ) - hwg_getAdjValue( ::hScrollV,4 )
-                  nPos := Min( nPos + Int( maxPos*step/(::kolz-1) ), maxPos )
+                  nPos := Min( nPos + Int( maxPos*step/(::nRecords-1) ), maxPos )
    	          hwg_SetAdjOptions( ::hScrollV,nPos )
                ENDIF
 	    ENDIF
@@ -1420,7 +1422,7 @@ Local oColumn, type
          ENDDO
          nWidth := Min( ::aColumns[fif]:width, ::x2 - x1 - 1 )
          rowPos := ::rowPos - 1
-         IF ::lAppMode .AND. ::kolz != 0
+         IF ::lAppMode .AND. ::nRecords != 0
             rowPos ++
          ENDIF
          y1 := ::y1+(::height+1)*rowPos
@@ -1470,20 +1472,20 @@ Local oColumn := oBrw:aColumns[fipos], nRec, fif, nChoic
             (oBrw:alias)->( Eval( oColumn:block,oBrw:varbuf,oBrw,fipos ) )
             UNLOCK
          ELSE
-            IF Valtype(oBrw:msrec[1]) == "A"
-               Aadd( oBrw:msrec,Array(Len(oBrw:msrec[1])) )
-               FOR fif := 2 TO Len( (oBrw:msrec[1]) )
-                  oBrw:msrec[Len(oBrw:msrec),fif] := ;
+            IF Valtype(oBrw:aArray[1]) == "A"
+               Aadd( oBrw:aArray,Array(Len(oBrw:aArray[1])) )
+               FOR fif := 2 TO Len( (oBrw:aArray[1]) )
+                  oBrw:aArray[Len(oBrw:aArray),fif] := ;
                               Iif( oBrw:aColumns[fif]:type=="D",Ctod(Space(8)), ;
                                  Iif( oBrw:aColumns[fif]:type=="N",0,"" ) )
                NEXT
             ELSE
-               Aadd( oBrw:msrec,Nil )
+               Aadd( oBrw:aArray,Nil )
             ENDIF
-            oBrw:tekzp := Len( oBrw:msrec )
+            oBrw:nCurrent := Len( oBrw:aArray )
             Eval( oColumn:block,oBrw:varbuf,oBrw,fipos )
          ENDIF
-         IF oBrw:kolz > 0
+         IF oBrw:nRecords > 0
             oBrw:rowPos ++
          ENDIF
          oBrw:lAppended := .T.
@@ -1621,7 +1623,7 @@ RETURN IIF( klf = 0, 1, klf )
 FUNCTION CREATEARLIST( oBrw, arr )
    local i
    oBrw:type  := BRW_ARRAY
-   oBrw:msrec := arr
+   oBrw:aArray := arr
    IF Len( oBrw:aColumns ) == 0
       // oBrw:aColumns := {}
       IF Valtype( arr[1] ) == "A"
@@ -1629,7 +1631,7 @@ FUNCTION CREATEARLIST( oBrw, arr )
             oBrw:AddColumn( HColumn():New( ,ColumnArBlock() ) )
          NEXT
       ELSE
-         oBrw:AddColumn( HColumn():New( ,{|value,o| o:msrec[ o:tekzp ] } ) )
+         oBrw:AddColumn( HColumn():New( ,{|value,o| o:aArray[ o:nCurrent ] } ) )
       ENDIF
    ENDIF
    EVAL( oBrw:bGoTop,oBrw )
@@ -1639,13 +1641,13 @@ RETURN Nil
 //----------------------------------------------------//
 PROCEDURE ARSKIP( oBrw, kolskip )
 Local tekzp1
-   if oBrw:kolz != 0
-      tekzp1   := oBrw:tekzp
-      oBrw:tekzp += kolskip + IIF( tekzp1 = 0, 1, 0 )
-      IF oBrw:tekzp < 1
-         oBrw:tekzp := 0
-      ELSEIF oBrw:tekzp > oBrw:kolz
-         oBrw:tekzp := oBrw:kolz + 1
+   if oBrw:nRecords != 0
+      tekzp1   := oBrw:nCurrent
+      oBrw:nCurrent += kolskip + IIF( tekzp1 = 0, 1, 0 )
+      IF oBrw:nCurrent < 1
+         oBrw:nCurrent := 0
+      ELSEIF oBrw:nCurrent > oBrw:nRecords
+         oBrw:nCurrent := oBrw:nRecords + 1
       ENDIF
    ENDIF
 RETURN
@@ -1680,21 +1682,21 @@ Local oldRecno, newRecno
       IF nType > 0 .AND. lEof
          EVAL( oBrw:bSkip, oBrw,- 1 )
       ENDIF
-      nPos := Round( ( maxPos/(oBrw:kolz-1) ) * ( EVAL( oBrw:bRecnoLog,oBrw )-1 ),0 )
+      nPos := Round( ( maxPos/(oBrw:nRecords-1) ) * ( EVAL( oBrw:bRecnoLog,oBrw )-1 ),0 )
       hwg_SetAdjOptions( oBrw:hScrollV,nPos )
       oBrw:nScrollV := nPos
    ELSE
       oldRecno := EVAL( oBrw:bRecnoLog,oBrw )
-      newRecno := Round( (oBrw:kolz-1)*nPos/maxPos+1,0 )
+      newRecno := Round( (oBrw:nRecords-1)*nPos/maxPos+1,0 )
       IF newRecno <= 0
          newRecno := 1
-      ELSEIF newRecno > oBrw:kolz
-         newRecno := oBrw:kolz
+      ELSEIF newRecno > oBrw:nRecords
+         newRecno := oBrw:nRecords
       ENDIF
       IF newRecno != oldRecno
          EVAL( oBrw:bSkip, oBrw, newRecno - oldRecno )
-         IF oBrw:rowCount - oBrw:rowPos > oBrw:kolz - newRecno
-            oBrw:rowPos := oBrw:rowCount - ( oBrw:kolz - newRecno )
+         IF oBrw:rowCount - oBrw:rowPos > oBrw:nRecords - newRecno
+            oBrw:rowPos := oBrw:rowCount - ( oBrw:nRecords - newRecno )
          ENDIF
          IF oBrw:rowPos > newRecno
             oBrw:rowPos := newRecno
@@ -1716,7 +1718,7 @@ METHOD ShowSizes() CLASS HBrowse
 RETURN nil
 
 Function ColumnArBlock()
-Return {|value,o,n| Iif( value==Nil,o:msrec[o:tekzp,n],o:msrec[o:tekzp,n]:=value ) }
+Return {|value,o,n| Iif( value==Nil,o:aArray[o:nCurrent,n],o:aArray[o:nCurrent,n]:=value ) }
 
 Static function HdrToken(cStr, nMaxLen, nCount)
 Local nL, nPos := 0

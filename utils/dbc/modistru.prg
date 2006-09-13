@@ -3,13 +3,15 @@
  * Database structure handling
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
 #include "guilib.ch"
 #include "dbchw.h"
+#ifdef RDD_ADS
 #include "ads.ch"
+#endif
 
 Function StruMan( lNew )
 Local oModDlg
@@ -35,11 +37,11 @@ LOCAL af, oBrw
           ON BN_CLICKED,IDC_PUSHBUTTON4 ACTION {|| ModiStru(3) }  ;
           ON BN_CLICKED,IDC_PUSHBUTTON5 ACTION {|| ModiStru(4) }
 
-   oBrw:msrec := af
-   oBrw:AddColumn( HColumn():New( "Name",{|value,o|o:msrec[o:tekzp,1] },"C",10,0  ) )
-   oBrw:AddColumn( HColumn():New( "Type",{|value,o|o:msrec[o:tekzp,2] },"C",4,0  ) )
-   oBrw:AddColumn( HColumn():New( "Length",{|value,o|o:msrec[o:tekzp,3] },"N",4,0  ) )
-   oBrw:AddColumn( HColumn():New( "Dec",{|value,o|o:msrec[o:tekzp,4] },"N",2,0  ) )
+   oBrw:aArray := af
+   oBrw:AddColumn( HColumn():New( "Name",{|value,o|o:aArray[o:nCurrent,1] },"C",10,0  ) )
+   oBrw:AddColumn( HColumn():New( "Type",{|value,o|o:aArray[o:nCurrent,2] },"C",4,0  ) )
+   oBrw:AddColumn( HColumn():New( "Length",{|value,o|o:aArray[o:nCurrent,3] },"N",4,0  ) )
+   oBrw:AddColumn( HColumn():New( "Dec",{|value,o|o:aArray[o:nCurrent,4] },"N",2,0  ) )
    oBrw:bcolorSel := VColor( "800080" )
    oBrw:ofont      := oBrwFont
 
@@ -48,12 +50,12 @@ Return Nil
 
 Static Function SetField( oBrw )
 Local hDlg := getmodalhandle(), i
-   SetDlgItemText( hDlg, IDC_EDIT2, oBrw:msrec[oBrw:tekzp,1] )
-   IF ( i := At( oBrw:msrec[oBrw:tekzp,2], "CNDLM" ) ) != 0
+   SetDlgItemText( hDlg, IDC_EDIT2, oBrw:aArray[oBrw:nCurrent,1] )
+   IF ( i := At( oBrw:aArray[oBrw:nCurrent,2], "CNDLM" ) ) != 0
       ComboSetString( GetDlgItem( hDlg, IDC_COMBOBOX2 ), i )
    ENDIF
-   SetDlgItemText( hDlg, IDC_EDIT3, Ltrim( Str( oBrw:msrec[oBrw:tekzp,3] ) ) )
-   SetDlgItemText( hDlg, IDC_EDIT4, Ltrim( Str( oBrw:msrec[oBrw:tekzp,4] ) ) )
+   SetDlgItemText( hDlg, IDC_EDIT3, Ltrim( Str( oBrw:aArray[oBrw:nCurrent,3] ) ) )
+   SetDlgItemText( hDlg, IDC_EDIT4, Ltrim( Str( oBrw:aArray[oBrw:nCurrent,4] ) ) )
 Return Nil
 
 Static Function ModiStru( nOper )
@@ -88,21 +90,21 @@ Local cName, cType, nLen, nDec := 0
             nDec  := Val( GetDlgItemText( hDlg, IDC_EDIT4, 10 ) )
          ENDIF
       ENDIF
-      IF nOper == 3 .OR. ( oBrowse:kolz == 1 .AND. Empty( oBrowse:msrec[1,1] ) )
-         oBrowse:msrec[ oBrowse:tekzp ] := { cName, cType, nLen, nDec }
+      IF nOper == 3 .OR. ( oBrowse:nRecords == 1 .AND. Empty( oBrowse:aArray[1,1] ) )
+         oBrowse:aArray[ oBrowse:nCurrent ] := { cName, cType, nLen, nDec }
       ELSEIF nOper == 1
-         Aadd( oBrowse:msrec, { cName, cType, nLen, nDec } )
-         oBrowse:kolz ++
+         Aadd( oBrowse:aArray, { cName, cType, nLen, nDec } )
+         oBrowse:nRecords ++
       ELSEIF nOper == 2
-         Aadd( oBrowse:msrec, Nil )
-         Ains( oBrowse:msrec, oBrowse:tekzp )
-         oBrowse:msrec[ oBrowse:tekzp ] := { cName, cType, nLen, nDec }
-         oBrowse:kolz ++
+         Aadd( oBrowse:aArray, Nil )
+         Ains( oBrowse:aArray, oBrowse:nCurrent )
+         oBrowse:aArray[ oBrowse:nCurrent ] := { cName, cType, nLen, nDec }
+         oBrowse:nRecords ++
       ENDIF
    ELSEIF nOper == 4
-      Adel( oBrowse:msrec,oBrowse:tekzp )
-      Asize( oBrowse:msrec,Len( oBrowse:msrec ) - 1 )
-      oBrowse:kolz --
+      Adel( oBrowse:aArray,oBrowse:nCurrent )
+      Asize( oBrowse:aArray,Len( oBrowse:aArray ) - 1 )
+      oBrowse:nRecords --
    ENDIF
    RedrawWindow( oBrowse:handle, RDW_ERASE + RDW_INVALIDATE )
 Return Nil
@@ -120,7 +122,7 @@ Local oPBar, nSch := 0
          Return Nil
       ENDIF
       mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
-      dbCreate( fname, oBrowse:msrec )
+      dbCreate( fname, oBrowse:aArray )
       OpenDbf( fname )
    ELSE
       alsname := Alias()
@@ -132,7 +134,7 @@ Local oPBar, nSch := 0
       AFIELDS( A1, A2, A3, A4 )
       SELECT 20
       fi1 := mypath + "a0_new"
-      dbCreate( fi1, oBrowse:msrec )
+      dbCreate( fi1, oBrowse:aArray )
       USE ( fi1 )
       kolf := Fcount()
       B1   := ARRAY( kolf )

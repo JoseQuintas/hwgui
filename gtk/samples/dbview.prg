@@ -1,5 +1,5 @@
 /*
- *$Id: dbview.prg,v 1.5 2005-11-03 12:50:20 alkresin Exp $
+ *$Id: dbview.prg,v 1.6 2006-09-13 15:47:20 alkresin Exp $
  *
  * HWGUI - Harbour Win32 and Linux (GTK) GUI library
  * dbview.prg - dbf browsing sample
@@ -190,12 +190,12 @@ Memvar oBrw, oFont
        FONT oFont                   ;
        STYLE WS_BORDER+WS_VSCROLL + WS_HSCROLL ;
        ON SIZE {|o,x,y|o:Move(,,x,y)} ;
-       ON CLICK {|o|nChoice:=o:tekzp,EndDialog(o:oParent:handle)}
+       ON CLICK {|o|nChoice:=o:nCurrent,EndDialog(o:oParent:handle)}
 
-   oBrowse:msrec := aIndex
-   oBrowse:AddColumn( HColumn():New( "OrdName",{|v,o|o:msrec[o:tekzp,1]},"C",10,0 ) )
-   oBrowse:AddColumn( HColumn():New( "Order key",{|v,o|o:msrec[o:tekzp,2]},"C",Max(iLen,12),0 ) )
-   oBrowse:AddColumn( HColumn():New( "Filename",{|v,o|o:msrec[o:tekzp,3]},"C",10,0 ) )
+   oBrowse:aArray := aIndex
+   oBrowse:AddColumn( HColumn():New( "OrdName",{|v,o|o:aArray[o:nCurrent,1]},"C",10,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Order key",{|v,o|o:aArray[o:nCurrent,2]},"C",Max(iLen,12),0 ) )
+   oBrowse:AddColumn( HColumn():New( "Filename",{|v,o|o:aArray[o:nCurrent,3]},"C",10,0 ) )
    
    oBrowse:rowPos := nOrder
    Eval( oBrowse:bGoTo,oBrowse,nOrder )
@@ -371,11 +371,11 @@ Memvar oBrw, currentCP, currFname
        STYLE WS_BORDER+WS_VSCROLL+WS_HSCROLL ;
        ON POSCHANGE {|o|brw_onPosChg(o,oGet1,oGet2,oGet3,oGet4)}
 
-   oBrowse:msrec := af
-   oBrowse:AddColumn( HColumn():New( "Name",{|v,o|o:msrec[o:tekzp,1]},"C",10,0 ) )
-   oBrowse:AddColumn( HColumn():New( "Type",{|v,o|o:msrec[o:tekzp,2]},"C",1,0 ) )
-   oBrowse:AddColumn( HColumn():New( "Length",{|v,o|o:msrec[o:tekzp,3]},"N",5,0 ) )
-   oBrowse:AddColumn( HColumn():New( "Dec",{|v,o|o:msrec[o:tekzp,4]},"N",2,0 ) )
+   oBrowse:aArray := af
+   oBrowse:AddColumn( HColumn():New( "Name",{|v,o|o:aArray[o:nCurrent,1]},"C",10,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Type",{|v,o|o:aArray[o:nCurrent,2]},"C",1,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Length",{|v,o|o:aArray[o:nCurrent,3]},"N",5,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Dec",{|v,o|o:aArray[o:nCurrent,4]},"N",2,0 ) )
    
    @ 10,230 GET oGet1 VAR cName SIZE 100,24
    @ 120,230 GET COMBOBOX oGet2 VAR nType ITEMS aTypes SIZE 100,24
@@ -478,15 +478,15 @@ Return Nil
 Static Function brw_onPosChg( oBrowse, oGet1, oGet2, oGet3, oGet4 )
 
 
-   oGet1:SetGet( oBrowse:msrec[oBrowse:tekzp,1] )
+   oGet1:SetGet( oBrowse:aArray[oBrowse:nCurrent,1] )
    oGet1:Refresh()
 
-   oGet2:SetItem( Ascan(aFieldTypes,oBrowse:msrec[oBrowse:tekzp,2]) )
+   oGet2:SetItem( Ascan(aFieldTypes,oBrowse:aArray[oBrowse:nCurrent,2]) )
    
-   oGet3:SetGet( Ltrim(Str(oBrowse:msrec[oBrowse:tekzp,3])) )
+   oGet3:SetGet( Ltrim(Str(oBrowse:aArray[oBrowse:nCurrent,3])) )
    oGet3:Refresh()
 
-   oGet4:SetGet( Ltrim(Str(oBrowse:msrec[oBrowse:tekzp,4])) )
+   oGet4:SetGet( Ltrim(Str(oBrowse:aArray[oBrowse:nCurrent,4])) )
    oGet4:Refresh()
    
 Return Nil
@@ -495,10 +495,10 @@ Static Function UpdStru( oBrowse, oGet1, oGet2, oGet3, oGet4, nOperation )
 Local cName, cType, nLen, nDec
 
    IF nOperation == 4
-      Adel( oBrowse:msrec,oBrowse:tekzp )
-      Asize( oBrowse:msrec, Len(oBrowse:msrec)-1 )
-      IF oBrowse:tekzp < Len(oBrowse:msrec) .AND. oBrowse:tekzp > 1
-         oBrowse:tekzp --
+      Adel( oBrowse:aArray,oBrowse:nCurrent )
+      Asize( oBrowse:aArray, Len(oBrowse:aArray)-1 )
+      IF oBrowse:nCurrent < Len(oBrowse:aArray) .AND. oBrowse:nCurrent > 1
+         oBrowse:nCurrent --
       ENDIF
    ELSE
       cName := oGet1:SetGet()
@@ -506,16 +506,16 @@ Local cName, cType, nLen, nDec
       nLen  := Val( oGet3:SetGet() )
       nDec  := Val( oGet4:SetGet() )
       IF nOperation == 1
-         Aadd( oBrowse:msrec,{ cName,cType,nLen,nDec } )
+         Aadd( oBrowse:aArray,{ cName,cType,nLen,nDec } )
       ELSE
          IF nOperation == 2
-            Aadd( oBrowse:msrec, Nil )
-            Ains( oBrowse:msrec,oBrowse:tekzp )
+            Aadd( oBrowse:aArray, Nil )
+            Ains( oBrowse:aArray,oBrowse:nCurrent )
          ENDIF
-         oBrowse:msrec[oBrowse:tekzp,1] := cName
-         oBrowse:msrec[oBrowse:tekzp,2] := cType
-         oBrowse:msrec[oBrowse:tekzp,3] := nLen
-         oBrowse:msrec[oBrowse:tekzp,4] := nDec
+         oBrowse:aArray[oBrowse:nCurrent,1] := cName
+         oBrowse:aArray[oBrowse:nCurrent,2] := cType
+         oBrowse:aArray[oBrowse:nCurrent,3] := nLen
+         oBrowse:aArray[oBrowse:nCurrent,4] := nDec
       ENDIF
    ENDIF
    oBrowse:Refresh()

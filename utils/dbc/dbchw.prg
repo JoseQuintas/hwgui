@@ -3,7 +3,7 @@
  * Main file
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -243,14 +243,14 @@ Local msind := { { "0","None","","" } }, i, ordlen := 0
    ENDDO
    INIT DIALOG oModDlg FROM RESOURCE "DLG_SEL_IND"
    REDEFINE BROWSE oBrw ARRAY OF oModDlg ID ID_BROWSE   ;
-       ON INIT {|o|o:rowPos:=o:tekzp:=IndexOrd()+1}       ;
+       ON INIT {|o|o:rowPos:=o:nCurrent:=IndexOrd()+1}       ;
        ON CLICK {|o|SetIndex(o)}
 
-   oBrw:msrec := msind
-   oBrw:AddColumn( HColumn():New( ,{|value,o|o:msrec[o:tekzp,1] },"C",1,0  ) )
-   oBrw:AddColumn( HColumn():New( "Tag",{|value,o|o:msrec[o:tekzp,2] },"C",8,0  ) )
-   oBrw:AddColumn( HColumn():New( "Expression",{|value,o|o:msrec[o:tekzp,3] },"C",ordlen,0  ) )
-   oBrw:AddColumn( HColumn():New( "File",{|value,o|o:msrec[o:tekzp,4] },"C",8,0  ) )
+   oBrw:aArray := msind
+   oBrw:AddColumn( HColumn():New( ,{|value,o|o:aArray[o:nCurrent,1] },"C",1,0  ) )
+   oBrw:AddColumn( HColumn():New( "Tag",{|value,o|o:aArray[o:nCurrent,2] },"C",8,0  ) )
+   oBrw:AddColumn( HColumn():New( "Expression",{|value,o|o:aArray[o:nCurrent,3] },"C",ordlen,0  ) )
+   oBrw:AddColumn( HColumn():New( "File",{|value,o|o:aArray[o:nCurrent,4] },"C",8,0  ) )
   
    oBrw:bColorSel    := VColor( "800080" )
    oBrw:ofont := oBrwFont
@@ -261,8 +261,8 @@ Return Nil
 Static Function SetIndex( oBrw )
 Local oWindow := HMainWindow():GetMdiActive(), aControls, i
 
-   SET ORDER TO oBrw:tekzp - 1
-   WriteStatus( oWindow,2,"Order: "+oBrw:msrec[oBrw:tekzp,2] )
+   SET ORDER TO oBrw:nCurrent - 1
+   WriteStatus( oWindow,2,"Order: "+oBrw:aArray[oBrw:nCurrent,2] )
    IF oWindow != Nil
       aControls := oWindow:aControls
       IF ( i := Ascan( aControls, {|o|o:classname()=="HBROWSE"} ) ) > 0

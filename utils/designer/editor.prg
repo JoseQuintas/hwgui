@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.15 2005-09-13 05:25:53 alkresin Exp $
+ * $Id: editor.prg,v 1.16 2006-09-13 15:47:25 alkresin Exp $
  *
  * Designer
  * Simple code editor
@@ -375,11 +375,11 @@ Private nScheme, nType := 2, oTheme := HDTheme():New(), cScheme := ""
    @ 10,10 BUTTON "Delete scheme" SIZE 110,30 ON CLICK {||UpdSample(1)}
 
    @ 140,10 BROWSE oBrw ARRAY SIZE 130,80
-   oBrw:bPosChanged := {||nScheme:=oBrw:tekzp,UpdSample()}
-   oBrw:msrec := aSchemes
-   oBrw:AddColumn( HColumn():New( ,{|v,o|o:msrec[o:tekzp,1]},"C",15,0,.T. ) )
+   oBrw:bPosChanged := {||nScheme:=oBrw:nCurrent,UpdSample()}
+   oBrw:aArray := aSchemes
+   oBrw:AddColumn( HColumn():New( ,{|v,o|o:aArray[o:nCurrent,1]},"C",15,0,.T. ) )
    oBrw:lDispHead := .F.
-   nScheme := oBrw:tekzp := oBrw:rowPos := HDTheme():nSelected
+   nScheme := oBrw:nCurrent := oBrw:rowPos := HDTheme():nSelected
 
    @ 290,10 GET cScheme SIZE 110,26
    @ 290,40 BUTTON "Add scheme" SIZE 110,30 ON CLICK {||UpdSample(2)}
@@ -445,7 +445,7 @@ Static Function UpdSample( nAction )
          IF MsgYesNo( "Really delete the '" + aSchemes[nScheme,1] + "' theme ?" )
             Adel( aSchemes,nScheme )
             Asize( aSchemes,Len(aSchemes)-1 )
-            nScheme := oBrw:tekzp := oBrw:rowPos := 1
+            nScheme := oBrw:nCurrent := oBrw:rowPos := 1
             oBrw:Refresh()
          ELSE
             Return Nil

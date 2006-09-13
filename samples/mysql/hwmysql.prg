@@ -375,9 +375,9 @@ Function BrowHistory()
    ENDIF
    oBrw:active := .T.
    oBrw:InitBrw()
-   oBrw:msrec := aQueries
+   oBrw:aArray := aQueries
    oBrw:AddColumn( HColumn():New( "History of queries", ;
-            {|value,o|o:msrec[o:tekzp,1] },             ;
+            {|value,o|o:aArray[o:nCurrent,1] },             ;
             "C",76,0  ) )
 
    oBrw:bcolorSel := VColor( "800080" )
@@ -387,12 +387,12 @@ Function BrowHistory()
 Return Nil
 
 Static Function GetFromHistory()
-Local cQuery := "", i := oBrw:tekzp
+Local cQuery := "", i := oBrw:nCurrent
 
-   IF !Empty( oBrw:msrec[ i,1 ] )
-      DO WHILE !oBrw:msrec[ i,2 ]; i--; ENDDO
-      DO WHILE i <= oBrw:kolz .AND. !Empty( oBrw:msrec[ i,1 ] )
-         cQuery += Rtrim( oBrw:msrec[ i,1 ] ) + Chr( 13 ) + Chr( 10 )
+   IF !Empty( oBrw:aArray[ i,1 ] )
+      DO WHILE !oBrw:aArray[ i,2 ]; i--; ENDDO
+      DO WHILE i <= oBrw:nRecords .AND. !Empty( oBrw:aArray[ i,1 ] )
+         cQuery += Rtrim( oBrw:aArray[ i,1 ] ) + Chr( 13 ) + Chr( 10 )
          i++
       ENDDO
       oEdit:SetText( cQuery )

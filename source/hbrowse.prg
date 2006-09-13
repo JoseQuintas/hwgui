@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.67 2006-09-12 07:26:03 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.68 2006-09-13 18:04:50 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -119,9 +119,9 @@ CLASS HBrowse INHERIT HControl
    DATA nLeftCol                               // Leftmost column
    DATA xpos
    DATA freeze                                 // Number of columns to freeze
-   DATA kolz                                   // Number of records in browse
-   DATA tekzp      INIT 1
-   DATA msrec
+   DATA nRecords                               // Number of records in browse
+   DATA nCurrent      INIT 1                   // Current record
+   DATA aArray                                 // An array browsed if this is BROWSE ARRAY
    DATA recCurr INIT 0
    DATA headColor                              // Header text color
    DATA sepColor INIT 12632256                 // Separators color
@@ -148,10 +148,8 @@ CLASS HBrowse INHERIT HControl
    DATA nHeadRows INIT 1                       // Rows in header
    DATA nFootRows INIT 0                       // Rows in footer
    DATA lResizing INIT .F.                     // .T. while a column resizing is undergoing
-   // inicio bloco sauli - para controlar multiselecao
-   DATA lCtrlPress INIT .F.
-   DATA aSelected
-   // fim bloco sauli
+   DATA lCtrlPress INIT .F.                    // .T. while Ctrl key is pressed
+   DATA aSelected                              // An array of selected records numbers
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
@@ -179,6 +177,8 @@ CLASS HBrowse INHERIT HControl
    METHOD PageDown()
    METHOD Bottom(lPaint)
    METHOD Top()
+   METHOD Home()  INLINE ::DoHScroll( SB_LEFT )
+   // METHOD End()   INLINE ::DoHScroll( SB_RIGHT )
    METHOD ButtonDown( lParam )
    METHOD ButtonUp( lParam )
    METHOD ButtonDbl( lParam )
@@ -327,13 +327,21 @@ Static keyCode := 0
          ELSEIF wParam == 37    // Left
             ::DoHScroll( SB_LINELEFT )
          ELSEIF wParam == 36    // Home
-            ::TOP()
+            ::DoHScroll( SB_LEFT )
          ELSEIF wParam == 35    // End
-            ::BOTTOM()
+            ::DoHScroll( SB_RIGHT )
          ELSEIF wParam == 34    // PageDown
-            ::PageDown()
+            IF ::lCtrlPress
+               ::BOTTOM()
+            ELSE
+               ::PageDown()
+            ENDIF
          ELSEIF wParam == 33    // PageUp
-            ::PageUp()
+            IF ::lCtrlPress
+               ::TOP()
+            ELSE
+               ::PageUp()
+            ENDIF
          ELSEIF wParam == 13    // Enter
             ::Edit()
          // inicio bloco sauli
@@ -481,10 +489,10 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::type := nType
    ELSE
       ::aColumns := {}
-      ::rowPos    := ::tekzp  := ::colpos := ::nLeftCol := 1
+      ::rowPos    := ::nCurrent  := ::colpos := ::nLeftCol := 1
       ::freeze  := ::height := 0
       ::internal  := { 15,1 }
-      ::msrec     := Nil
+      ::aArray     := Nil
 
       IF ColSizeCursor == 0
          ColSizeCursor := LoadCursor( IDC_SIZEWE )
@@ -504,13 +512,13 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::bGoTo   := {|a,n|(::alias)->(DBGOTO(n))}
    ELSEIF ::type == BRW_ARRAY
       ::bSKip   := { | o, x | ARSKIP( o, x ) }
-      ::bGoTop  := { | o | o:tekzp := 1 }
-      ::bGoBot  := { | o | o:tekzp := o:kolz }
-      ::bEof    := { | o | o:tekzp > o:kolz }
-      ::bBof    := { | o | o:tekzp == 0 }
-      ::bRcou   := { | o | len( o:msrec ) }
-      ::bRecnoLog := ::bRecno  := { | o | o:tekzp }
-      ::bGoTo   := { | o, n | o:tekzp := n }
+      ::bGoTop  := { | o | o:nCurrent := 1 }
+      ::bGoBot  := { | o | o:nCurrent := o:nRecords }
+      ::bEof    := { | o | o:nCurrent > o:nRecords }
+      ::bBof    := { | o | o:nCurrent == 0 }
+      ::bRcou   := { | o | len( o:aArray ) }
+      ::bRecnoLog := ::bRecno  := { | o | o:nCurrent }
+      ::bGoTo   := { | o, n | o:nCurrent := n }
       ::bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}
    ENDIF
 RETURN Nil
@@ -535,7 +543,7 @@ Local i, j, oColumn, xSize, nColLen, nHdrLen, nCount
       ::brushSel  := HBrush():Add( ::bcolorSel )
    ENDIF
    ::nLeftCol  := ::freeze + 1
-   // ::tekzp     := ::rowPos := ::colPos := 1
+   // ::nCurrent     := ::rowPos := ::colPos := 1
    ::lEditable := .F.
 
    ::minHeight := 0
@@ -618,14 +626,14 @@ Local oldBkColor, oldTColor
    ::x2 := aCoors[ 3 ]
    ::y2 := aCoors[ 4 ]
 
-   ::kolz := eval( ::bRcou,Self )
-   IF ::tekzp > ::kolz .AND. ::kolz > 0
-      ::tekzp := ::kolz
+   ::nRecords := eval( ::bRcou,Self )
+   IF ::nCurrent > ::nRecords .AND. ::nRecords > 0
+      ::nCurrent := ::nRecords
    ENDIF
 
    ::nColumns := FLDCOUNT( Self, ::x1 + 2, ::x2 - 2, ::nLeftCol )
    ::rowCount := Int( (::y2-::y1) / (::height+1) ) - ::nFootRows
-   nRows := Min( ::kolz,::rowCount )
+   nRows := Min( ::nRecords,::rowCount )
 
    IF ::internal[1] == 0
       IF ::rowPos != ::internal[2] .AND. !::lAppMode
@@ -728,7 +736,7 @@ RETURN Nil
 //----------------------------------------------------//
 METHOD HeaderOut( hDC ) CLASS HBrowse
 Local i, x, oldc, fif, xSize
-Local nRows := Min( ::kolz+Iif(::lAppMode,1,0),::rowCount )
+Local nRows := Min( ::nRecords+Iif(::lAppMode,1,0),::rowCount )
 Local oPen, oldBkColor := SetBkColor( hDC,GetSysColor(COLOR_3DFACE) )
 Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
 
@@ -885,7 +893,7 @@ Local aCores
    IF ::bLineOut != Nil
       Eval( ::bLineOut,Self,lSelected )
    ENDIF
-   IF ::kolz > 0
+   IF ::nRecords > 0
       oldBkColor := SetBkColor( hDC, Iif( lSelected,::bcolorSel,::bcolor ) )
       oldTColor  := SetTextColor( hDC, Iif( lSelected,::tcolorSel,::tcolor ) )
       fldname := SPACE( 8 )
@@ -1086,7 +1094,7 @@ RETURN 0
 METHOD DoHScroll( wParam ) CLASS HBrowse
 Local nScrollCode := LoWord( wParam )
 Local minPos, maxPos, nPos
-Local oldLeft := ::nLeftCol, oldPos := ::colpos, fif
+Local oldLeft := ::nLeftCol, nLeftCol, colpos, oldPos := ::colpos, fif
 Local lMoveThumb := .T.
 
    GetScrollRange( ::handle, SB_HORZ, @minPos, @maxPos )
@@ -1098,12 +1106,25 @@ Local lMoveThumb := .T.
    ELSEIF nScrollCode == SB_LINERIGHT .OR. nScrollCode == SB_PAGERIGHT
       LineRight( Self )
 
+   ELSEIF nScrollCode == SB_LEFT
+      nLeftCol := colPos := 0
+      DO WHILE nLeftCol != ::nLeftCol .OR. colPos != ::colPos
+         nLeftCol := ::nLeftCol
+         colPos := ::colPos
+         LineLeft( Self )
+      ENDDO
+   ELSEIF nScrollCode == SB_RIGHT
+      nLeftCol := colPos := 0
+      DO WHILE nLeftCol != ::nLeftCol .OR. colPos != ::colPos
+         nLeftCol := ::nLeftCol
+         colPos := ::colPos
+         LineRight( Self )
+      ENDDO
    ELSEIF nScrollCode == SB_THUMBPOSITION
       IF ::bHScrollPos != Nil
          Eval( ::bHScrollPos, Self, SB_THUMBPOSITION, .F., Hiword( wParam ) )
          lMoveThumb := .F.
       ENDIF
-
 
    ELSEIF nScrollCode == SB_THUMBTRACK
       IF ::bHScrollPos != Nil
@@ -1171,10 +1192,10 @@ Local minPos, maxPos, nPos
 
    IF ::bScrollPos != Nil
       Eval( ::bScrollPos, Self, 1, .F. )
-   ELSEIF ::kolz > 1
+   ELSEIF ::nRecords > 1
       GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
       nPos := GetScrollPos( ::handle, SB_VERT )
-      nPos += Int( (maxPos-minPos)/(::kolz-1) )
+      nPos += Int( (maxPos-minPos)/(::nRecords-1) )
       SetScrollPos( ::handle, SB_VERT, nPos )
    ENDIF
 
@@ -1203,10 +1224,10 @@ Local minPos, maxPos, nPos
 
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, -1, .F. )
-      ELSEIF ::kolz > 1
+      ELSEIF ::nRecords > 1
          GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
          nPos := GetScrollPos( ::handle, SB_VERT )
-         nPos -= Int( (maxPos-minPos)/(::kolz-1) )
+         nPos -= Int( (maxPos-minPos)/(::nRecords-1) )
          SetScrollPos( ::handle, SB_VERT, nPos )
       ENDIF
       ::internal[1] := SetBit( ::internal[1], 1, 0 )
@@ -1224,7 +1245,7 @@ Local minPos, maxPos, nPos, step, lBof := .F.
       Eval( ::bSKip, Self,- step )
       ::rowPos := 1
    ELSE
-      step := ::rowCurrCount    // Min( ::kolz,::rowCount )
+      step := ::rowCurrCount    // Min( ::nRecords,::rowCount )
       Eval( ::bSkip, Self,- step )
       IF Eval( ::bBof,Self )
          Eval( ::bGoTop,Self )
@@ -1234,10 +1255,10 @@ Local minPos, maxPos, nPos, step, lBof := .F.
 
    IF ::bScrollPos != Nil
       Eval( ::bScrollPos, Self, - step, lBof )
-   ELSEIF ::kolz > 1
+   ELSEIF ::nRecords > 1
       GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
       nPos := GetScrollPos( ::handle, SB_VERT )
-      nPos := Max( nPos - Int( (maxPos-minPos)*step/(::kolz-1) ), minPos )
+      nPos := Max( nPos - Int( (maxPos-minPos)*step/(::nRecords-1) ), minPos )
       SetScrollPos( ::handle, SB_VERT, nPos )
    ENDIF
 
@@ -1251,7 +1272,7 @@ Local minPos, maxPos, nPos, nRows := ::rowCurrCount
 Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows )
 
    Eval( ::bSkip, Self, step )
-   ::rowPos := Min( ::kolz, nRows )
+   ::rowPos := Min( ::nRecords, nRows )
 
    IF ::bScrollPos != Nil
       Eval( ::bScrollPos, Self, step, Eval( ::bEof,Self ) )
@@ -1262,8 +1283,8 @@ Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows )
          Eval( ::bSkip, Self,- 1 )
          nPos := maxPos
          SetScrollPos( ::handle, SB_VERT, nPos )
-      ELSEIF ::kolz > 1
-         nPos := Min( nPos + Int( (maxPos-minPos)*step/(::kolz-1) ), maxPos )
+      ELSEIF ::nRecords > 1
+         nPos := Min( nPos + Int( (maxPos-minPos)*step/(::nRecords-1) ), maxPos )
          SetScrollPos( ::handle, SB_VERT, nPos )
       ENDIF
 
@@ -1282,7 +1303,7 @@ Local minPos, maxPos, nPos
    nPos := GetScrollPos( ::handle, SB_VERT )
    ::rowPos := Lastrec()
    Eval( ::bGoBot, Self )
-   ::rowPos := Min( ::kolz, ::rowCount )
+   ::rowPos := Min( ::nRecords, ::rowCount )
    nPos := maxPos
    SetScrollPos( ::handle, SB_VERT, nPos )
    InvalidateRect( ::handle, 0 )
@@ -1335,10 +1356,10 @@ Local xm := LOWORD(lParam), x1, fif
             ::rowPos := nLine
             IF ::bScrollPos != Nil
                Eval( ::bScrollPos, Self, step, .F. )
-            ELSEIF ::kolz > 1
+            ELSEIF ::nRecords > 1
                GetScrollRange( hBrw, SB_VERT, @minPos, @maxPos )
                nPos := GetScrollPos( hBrw, SB_VERT )
-               nPos := Min( nPos + Int( (maxPos-minPos)*step/(::kolz-1) ), maxPos )
+               nPos := Min( nPos + Int( (maxPos-minPos)*step/(::nRecords-1) ), maxPos )
                SetScrollPos( hBrw, SB_VERT, nPos )
             ENDIF
             res := .T.
@@ -1540,7 +1561,7 @@ Local oComboFont, oCombo
          ENDDO
          nWidth := Min( ::aColumns[fif]:width, ::x2 - x1 - 1 )
          rowPos := ::rowPos - 1
-         IF ::lAppMode .AND. ::kolz != 0
+         IF ::lAppMode .AND. ::nRecords != 0
             rowPos ++
          ENDIF
          y1 := ::y1+(::height+1)*rowPos
@@ -1623,20 +1644,20 @@ Local oComboFont, oCombo
                   (::alias)->( Eval( oColumn:block,::varbuf,Self,fipos ) )
                   UNLOCK
                ELSE
-                  IF Valtype(::msrec[1]) == "A"
-                     Aadd( ::msrec,Array(Len(::msrec[1])) )
-                     FOR fif := 2 TO Len((::msrec[1]))
-                        ::msrec[Len(::msrec),fif] := ;
+                  IF Valtype(::aArray[1]) == "A"
+                     Aadd( ::aArray,Array(Len(::aArray[1])) )
+                     FOR fif := 2 TO Len((::aArray[1]))
+                        ::aArray[Len(::aArray),fif] := ;
                               Iif( ::aColumns[fif]:type=="D",Ctod(Space(8)), ;
                                  Iif( ::aColumns[fif]:type=="N",0,"" ) )
                      NEXT
                   ELSE
-                     Aadd( ::msrec,Nil )
+                     Aadd( ::aArray,Nil )
                   ENDIF
-                  ::tekzp := Len( ::msrec )
+                  ::nCurrent := Len( ::aArray )
                   Eval( oColumn:block,::varbuf,Self,fipos )
                ENDIF
-               IF ::kolz > 0
+               IF ::nRecords > 0
                   ::rowPos ++
                ENDIF
                ::lAppended := .T.
@@ -1781,7 +1802,7 @@ RETURN Iif( klf = 0, 1, klf )
 FUNCTION CREATEARLIST( oBrw, arr )
    Local i
    oBrw:type  := BRW_ARRAY
-   oBrw:msrec := arr
+   oBrw:aArray := arr
    IF Len( oBrw:aColumns ) == 0
       // oBrw:aColumns := {}
       IF Valtype( arr[1] ) == "A"
@@ -1789,7 +1810,7 @@ FUNCTION CREATEARLIST( oBrw, arr )
             oBrw:AddColumn( HColumn():New( ,ColumnArBlock() ) )
          NEXT
       ELSE
-         oBrw:AddColumn( HColumn():New( ,{|value,o| o:msrec[ o:tekzp ] } ) )
+         oBrw:AddColumn( HColumn():New( ,{|value,o| o:aArray[ o:nCurrent ] } ) )
       ENDIF
    ENDIF
    Eval( oBrw:bGoTop,oBrw )
@@ -1797,16 +1818,16 @@ FUNCTION CREATEARLIST( oBrw, arr )
 RETURN Nil
 
 //----------------------------------------------------//
-PROCEDURE ARSKIP( oBrw, kolskip )
-Local tekzp1
+PROCEDURE ARSKIP( oBrw, nSkip )
+Local nCurrent1
 
-   IF oBrw:kolz != 0
-      tekzp1   := oBrw:tekzp
-      oBrw:tekzp += kolskip + Iif( tekzp1 = 0, 1, 0 )
-      IF oBrw:tekzp < 1
-         oBrw:tekzp := 0
-      ELSEIF oBrw:tekzp > oBrw:kolz
-         oBrw:tekzp := oBrw:kolz + 1
+   IF oBrw:nRecords != 0
+      nCurrent1   := oBrw:nCurrent
+      oBrw:nCurrent += nSkip + Iif( nCurrent1 = 0, 1, 0 )
+      IF oBrw:nCurrent < 1
+         oBrw:nCurrent := 0
+      ELSEIF oBrw:nCurrent > oBrw:nRecords
+         oBrw:nCurrent := oBrw:nRecords + 1
       ENDIF
    ENDIF
 RETURN
@@ -1841,24 +1862,24 @@ Local minPos, maxPos, oldRecno, newRecno
       IF nType > 0 .AND. lEof
          Eval( oBrw:bSkip, oBrw,- 1 )
       ENDIF
-      nPos := Iif( oBrw:kolz>1, Round( ( (maxPos-minPos)/(oBrw:kolz-1) ) * ;
+      nPos := Iif( oBrw:nRecords>1, Round( ( (maxPos-minPos)/(oBrw:nRecords-1) ) * ;
                                  ( Eval( oBrw:bRecnoLog,oBrw )-1 ),0 ), minPos )
       SetScrollPos( oBrw:handle, SB_VERT, nPos )
    ELSE
       oldRecno := Eval( oBrw:bRecnoLog,oBrw )
-      newRecno := Round( (oBrw:kolz-1)*nPos/(maxPos-minPos)+1,0 )
+      newRecno := Round( (oBrw:nRecords-1)*nPos/(maxPos-minPos)+1,0 )
       IF newRecno <= 0
          newRecno := 1
-      ELSEIF newRecno > oBrw:kolz
-         newRecno := oBrw:kolz
+      ELSEIF newRecno > oBrw:nRecords
+         newRecno := oBrw:nRecords
       ENDIF
       IF nType == SB_THUMBPOSITION
          SetScrollPos( oBrw:handle, SB_VERT, nPos )
       ENDIF
       IF newRecno != oldRecno
          Eval( oBrw:bSkip, oBrw, newRecno - oldRecno )
-         IF oBrw:rowCount - oBrw:rowPos > oBrw:kolz - newRecno
-            oBrw:rowPos := oBrw:rowCount - ( oBrw:kolz - newRecno )
+         IF oBrw:rowCount - oBrw:rowPos > oBrw:nRecords - newRecno
+            oBrw:rowPos := oBrw:rowCount - ( oBrw:nRecords - newRecno )
          ENDIF
          IF oBrw:rowPos > newRecno
             oBrw:rowPos := newRecno
@@ -1868,8 +1889,6 @@ Local minPos, maxPos, oldRecno, newRecno
    ENDIF
 
 RETURN Nil
-
-
 
 Function HScrollPos( oBrw, nType, lEof, nPos )
 Local minPos, maxPos, i, nSize := 0, nColPixel
@@ -1907,7 +1926,7 @@ Local cText := ""
 RETURN nil
 
 Function ColumnArBlock()
-RETURN {|value,o,n| Iif( value==Nil,o:msrec[o:tekzp,n],o:msrec[o:tekzp,n]:=value ) }
+RETURN {|value,o,n| Iif( value==Nil,o:aArray[o:nCurrent,n],o:aArray[o:nCurrent,n]:=value ) }
 
 Static function HdrToken(cStr, nMaxLen, nCount)
 Local nL, nPos := 0
@@ -1919,4 +1938,3 @@ Local nL, nPos := 0
       nCount ++
    ENDDO
 RETURN nil
-

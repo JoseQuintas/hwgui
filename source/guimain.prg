@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.14 2006-06-28 07:44:04 alkresin Exp $
+ * $Id: guimain.prg,v 1.15 2006-09-13 18:04:50 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -176,12 +176,12 @@ Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
        FONT oFont                   ;
        STYLE WS_BORDER              ;
        ON SIZE {|o,x,y|MoveWindow(o:handle,addX/2,10,x-addX,y-addY)} ;
-       ON CLICK {|o|nChoice:=o:tekzp,EndDialog(o:oParent:handle)}
+       ON CLICK {|o|nChoice:=o:nCurrent,EndDialog(o:oParent:handle)}
 
    IF Valtype( arr[1] ) == "A"
-      oBrw:AddColumn( HColumn():New( ,{|value,o|o:msrec[o:tekzp,1]},"C",nLen ) )
+      oBrw:AddColumn( HColumn():New( ,{|value,o|o:aArray[o:nCurrent,1]},"C",nLen ) )
    ELSE
-      oBrw:AddColumn( HColumn():New( ,{|value,o|o:msrec[o:tekzp]},"C",nLen ) )
+      oBrw:AddColumn( HColumn():New( ,{|value,o|o:aArray[o:nCurrent]},"C",nLen ) )
    ENDIF
    CreateArList( oBrw, arr )
    oBrw:lDispHead := .F.
@@ -200,7 +200,7 @@ Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
 
    IF cOk != Nil
       x1 := Int(width/2) - Iif( cCancel != Nil, 90, 40 )
-      @ x1,height-36 BUTTON cOk SIZE 80,30 ON CLICK {||nChoice:=oBrw:tekzp,EndDialog(oDlg:handle)}
+      @ x1,height-36 BUTTON cOk SIZE 80,30 ON CLICK {||nChoice:=oBrw:nCurrent,EndDialog(oDlg:handle)}
       IF cCancel != Nil
          @ x1+60,height-36 BUTTON cCancel SIZE 80,30 ON CLICK {||EndDialog(oDlg:handle)}
       ENDIF
@@ -356,6 +356,7 @@ Else
   oVersion:="HwGUI "+HWG_VERSION
 Endif
 Return oVersion
+
 
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.17 2006-09-13 15:47:20 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.18 2006-09-14 07:24:24 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -46,9 +46,11 @@ REQUEST BOF
 #define GDK_Down            0xFF54
 #define GDK_Page_Up         0xFF55
 #define GDK_Page_Down       0xFF56
-
 #define GDK_End             0xFF57
 #define GDK_Insert          0xFF63
+#define GDK_Control_L       0xFFE3
+#define GDK_Control_R       0xFFE4
+
 static crossCursor := nil
 static arrowCursor := nil
 static vCursor     := nil
@@ -142,7 +144,7 @@ CLASS HBrowse INHERIT HControl
    DATA lAdjRight INIT .T.                     // Adjust last column to right
    DATA nHeadRows INIT 1                       // Rows in header
    DATA nFootRows INIT 0                       // Rows in footer
-   DATA lCtrlPress INIT .F.                    // .T. while Ctrl key is pressed
+   DATA nCtrlPress INIT 0                      // Left or Right Ctrl key code while Ctrl key is pressed
    DATA aSelected                              // An array of selected records numbers
    
    DATA area
@@ -156,7 +158,7 @@ CLASS HBrowse INHERIT HControl
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
-                  lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg)
+                  lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect )
    METHOD InitBrw( nType )
    METHOD Rebuild()
    METHOD Activate()
@@ -176,6 +178,7 @@ CLASS HBrowse INHERIT HControl
    METHOD LineUp()
    METHOD PageUp()
    METHOD PageDown()
+   METHOD Home()  INLINE ::DoHScroll( SB_LEFT )
    METHOD Bottom(lPaint)
    METHOD Top()
    METHOD ButtonDown( lParam )
@@ -195,7 +198,7 @@ ENDCLASS
 //----------------------------------------------------//
 METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,;
-                  lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg ) CLASS HBrowse
+                  lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect ) CLASS HBrowse
 
    nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+ ;
                     Iif(lNoBorder=Nil.OR.!lNoBorder,WS_BORDER,0)+            ;
@@ -216,6 +219,9 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
    ::bUpdate     := bUpdate
    ::bKeyDown    := bKeyDown
    ::bPosChanged := bPosChg
+   IF lMultiSelect != Nil .AND. lMultiSelect
+      ::aSelected := {}
+   ENDIF
 
    ::InitBrw()
    ::Activate()
@@ -265,7 +271,7 @@ Local aCoors, retValue := -1
          ENDIF
 
       ELSEIF msg == WM_HSCROLL
-         ::DoHScroll( wParam )
+         ::DoHScroll()
 
       ELSEIF msg == WM_VSCROLL
          ::DoVScroll( wParam )
@@ -274,6 +280,13 @@ Local aCoors, retValue := -1
          DlgCommand( Self, wParam, lParam )
 
 
+      ELSEIF msg == WM_KEYUP
+         IF wParam == GDK_Control_L .OR. wParam == GDK_Control_R
+            IF wParam == ::nCtrlPress
+               ::nCtrlPress := 0
+            ENDIF
+         ENDIF
+         retValue := 1
       ELSEIF msg == WM_KEYDOWN
          IF ::bKeyDown != Nil
             IF !Eval( ::bKeyDown,Self,wParam )
@@ -289,15 +302,27 @@ Local aCoors, retValue := -1
          ELSEIF wParam == GDK_Left    // Left
             LineLeft( Self )
          ELSEIF wParam == GDK_Home    // Home
-            ::TOP()
+            ::DoHScroll( SB_LEFT )
          ELSEIF wParam == GDK_End    // End
-            ::BOTTOM()
+            ::DoHScroll( SB_RIGHT )
          ELSEIF wParam == GDK_Page_Down    // PageDown
-            ::PageDown()
+            IF ::nCtrlPress != 0
+               ::BOTTOM()
+            ELSE
+               ::PageDown()
+            ENDIF
          ELSEIF wParam == GDK_Page_Up    // PageUp
-            ::PageUp()
+            IF ::nCtrlPress != 0
+               ::TOP()
+            ELSE
+               ::PageUp()
+            ENDIF
          ELSEIF wParam == GDK_Return  // Enter
             ::Edit()
+         ELSEIF wParam == GDK_Control_L .OR. wParam == GDK_Control_R
+            IF ::nCtrlPress == 0
+               ::nCtrlPress := wParam
+            ENDIF
          ELSEIF (wParam >= 48 .and. wParam <= 90 .or. wParam >= 96 .and. wParam <= 111 ).and. ::lAutoEdit
             ::Edit( wParam,lParam )
          ENDIF
@@ -572,7 +597,11 @@ Local oldBkColor, oldTColor
       IF ::rowPos != ::internal[2] .AND. !::lAppMode
          EVAL( ::bSkip, Self, ::internal[2]-::rowPos )
       ENDIF
-      ::LineOut( ::internal[2], 0, hDC, .F. )
+      IF ::aSelected != Nil .AND. Ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
+         ::LineOut( ::internal[2], 0, hDC, .T. )
+      ELSE
+         ::LineOut( ::internal[2], 0, hDC, .F. )
+      ENDIF
       IF ::rowPos != ::internal[2] .AND. !::lAppMode
          EVAL( ::bSkip, Self, ::rowPos-::internal[2] )
       ENDIF
@@ -596,7 +625,11 @@ Local oldBkColor, oldTColor
          IF i > nRows .OR. EVAL( ::bEof,Self )
             EXIT
          ENDIF
-         ::LineOut( i, 0, hDC, .F. )
+         IF ::aSelected != Nil .AND. Ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
+            ::LineOut( i, 0, hDC, .T. )
+         ELSE
+            ::LineOut( i, 0, hDC, .F. )
+         ENDIF
          i ++
          EVAL( ::bSkip, Self,1 )
       ENDDO
@@ -606,7 +639,11 @@ Local oldBkColor, oldTColor
          ::rowPos := Iif( i > 1,i - 1,1 )
       ENDIF
       DO WHILE i <= nRows
-         ::LineOut( i, 0, hDC, .F.,.T. )
+         IF ::aSelected != Nil .AND. Ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
+            ::LineOut( i, 0, hDC, .T.,.T. )
+         ELSE
+            ::LineOut( i, 0, hDC, .F.,.T. )
+         ENDIF
          i ++
       ENDDO
 
@@ -927,18 +964,38 @@ RETURN 1
 
 //----------------------------------------------------//
 METHOD DoHScroll( wParam ) CLASS HBrowse
-Local nScrollH := hwg_getAdjValue( ::hScrollH )
+Local nScrollH, nLeftCol, colpos
 
-   IF nScrollH - ::nScrollH < 0
-      LineLeft( Self )
-   ELSEIF nScrollH - ::nScrollH > 0
-      LineRight( Self )
+   IF wParam == Nil
+      nScrollH := hwg_getAdjValue( ::hScrollH )
+      IF nScrollH - ::nScrollH < 0
+         LineLeft( Self )
+      ELSEIF nScrollH - ::nScrollH > 0
+         LineRight( Self )
+      ENDIF
+   ELSE
+      IF wParam == SB_LEFT
+         nLeftCol := colPos := 0
+         DO WHILE nLeftCol != ::nLeftCol .OR. colPos != ::colPos
+            nLeftCol := ::nLeftCol
+            colPos := ::colPos
+            LineLeft( Self, .F. )
+         ENDDO
+      ELSE
+         nLeftCol := colPos := 0
+         DO WHILE nLeftCol != ::nLeftCol .OR. colPos != ::colPos
+            nLeftCol := ::nLeftCol
+            colPos := ::colPos
+            LineRight( Self,.F. )
+         ENDDO
+      ENDIF
+      InvalidateRect( ::area, 0 )
    ENDIF
 
 RETURN Nil
 
 //----------------------------------------------------//
-STATIC FUNCTION LINERIGHT( oBrw )
+STATIC FUNCTION LINERIGHT( oBrw, lRefresh )
 Local maxPos, nPos, oldLeft := oBrw:nLeftCol, oldPos := oBrw:colpos, fif
 LocaL i, nColumns := Len(oBrw:aColumns)
    
@@ -962,11 +1019,13 @@ LocaL i, nColumns := Len(oBrw:aColumns)
          hwg_SetAdjOptions( oBrw:hScrollH,nPos )
          oBrw:nScrollH := nPos
       ENDIF
-      IF oBrw:nLeftCol == oldLeft
-         oBrw:internal[1] := 1
-         InvalidateRect( oBrw:area, 0, oBrw:x1, oBrw:y1+(oBrw:height+1)*oBrw:internal[2]-oBrw:height, oBrw:x2, oBrw:y1+(oBrw:height+1)*(oBrw:rowPos+1) )
-      ELSE
-         InvalidateRect( oBrw:area, 0 )
+      IF lRefresh == Nil .OR. lRefresh
+         IF oBrw:nLeftCol == oldLeft
+            oBrw:internal[1] := 1
+            InvalidateRect( oBrw:area, 0, oBrw:x1, oBrw:y1+(oBrw:height+1)*oBrw:internal[2]-oBrw:height, oBrw:x2, oBrw:y1+(oBrw:height+1)*(oBrw:rowPos+1) )
+         ELSE
+            InvalidateRect( oBrw:area, 0 )
+         ENDIF
       ENDIF
    ENDIF
    SetFocus( oBrw:area )
@@ -974,7 +1033,7 @@ LocaL i, nColumns := Len(oBrw:aColumns)
 RETURN Nil
 
 //----------------------------------------------------//
-STATIC FUNCTION LINELEFT( oBrw )
+STATIC FUNCTION LINELEFT( oBrw, lRefresh )
 Local maxPos, nPos, oldLeft := oBrw:nLeftCol, oldPos := oBrw:colpos, fif
 LocaL nColumns := Len(oBrw:aColumns)
 
@@ -999,11 +1058,13 @@ LocaL nColumns := Len(oBrw:aColumns)
          hwg_SetAdjOptions( oBrw:hScrollH,nPos )
          oBrw:nScrollH := nPos
       ENDIF
-      IF oBrw:nLeftCol == oldLeft
-         oBrw:internal[1] := 1
-         InvalidateRect( oBrw:area, 0, oBrw:x1, oBrw:y1+(oBrw:height+1)*oBrw:internal[2]-oBrw:height, oBrw:x2, oBrw:y1+(oBrw:height+1)*(oBrw:rowPos+1) )
-      ELSE
-         InvalidateRect( oBrw:area, 0 )
+      IF lRefresh == Nil .OR. lRefresh
+         IF oBrw:nLeftCol == oldLeft
+            oBrw:internal[1] := 1
+            InvalidateRect( oBrw:area, 0, oBrw:x1, oBrw:y1+(oBrw:height+1)*oBrw:internal[2]-oBrw:height, oBrw:x2, oBrw:y1+(oBrw:height+1)*(oBrw:rowPos+1) )
+         ELSE
+            InvalidateRect( oBrw:area, 0 )
+         ENDIF
       ENDIF
    ENDIF
    SetFocus( oBrw:area )
@@ -1313,9 +1374,22 @@ Local xPos := LOWORD(lParam), x := ::x1, x1, i := ::nLeftCol
       IF xPos > x1
          ::aColumns[i]:width := xPos - x1
          Hwg_SetCursor( arrowCursor,::area )
-         ::nCursor := 0
-       
+         ::nCursor := 0     
          InvalidateRect( hBrw, 0 )
+      ENDIF
+   ELSEIF ::aSelected != Nil
+      IF ::nCtrlPress == GDK_Control_L
+         IF ( i := Ascan( ::aSelected, Eval( ::bRecno,Self ) ) ) > 0
+            Adel( ::aSelected, i )
+            Asize( ::aSelected, Len(::aSelected)-1 )
+         ELSE
+            Aadd(::aSelected, Eval( ::bRecno,Self ) )
+         ENDIF
+      ELSE
+         IF Len( ::aSelected ) > 0
+            ::aSelected := {}
+            ::Refresh()
+         ENDIF
       ENDIF
    ENDIF
 

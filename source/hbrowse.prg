@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.68 2006-09-13 18:04:50 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.69 2006-09-14 07:24:24 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -178,7 +178,6 @@ CLASS HBrowse INHERIT HControl
    METHOD Bottom(lPaint)
    METHOD Top()
    METHOD Home()  INLINE ::DoHScroll( SB_LEFT )
-   // METHOD End()   INLINE ::DoHScroll( SB_RIGHT )
    METHOD ButtonDown( lParam )
    METHOD ButtonUp( lParam )
    METHOD ButtonDbl( lParam )
@@ -639,13 +638,11 @@ Local oldBkColor, oldTColor
       IF ::rowPos != ::internal[2] .AND. !::lAppMode
          Eval( ::bSkip, Self, ::internal[2]-::rowPos )
       ENDIF
-      // bloco sauli - multiselect
-      if ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
+      IF ::aSelected != Nil .AND. Ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
          ::LineOut( ::internal[2], 0, hDC, .T. )
-      else
+      ELSE
          ::LineOut( ::internal[2], 0, hDC, .F. )
-      end
-      // fim bloco sauli
+      ENDIF
       IF ::rowPos != ::internal[2] .AND. !::lAppMode
          Eval( ::bSkip, Self, ::rowPos-::internal[2] )
       ENDIF
@@ -669,13 +666,11 @@ Local oldBkColor, oldTColor
          IF i > nRows .OR. Eval( ::bEof,Self )
             EXIT
          ENDIF
-         // bloco sauli - multiselect
-         if ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
+         IF ::aSelected != Nil .AND. Ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
             ::LineOut( i, 0, hDC, .T. )
-         else
+         ELSE
             ::LineOut( i, 0, hDC, .F. )
-         end
-         // fim bloco sauli
+         ENDIF
          i ++
          Eval( ::bSkip, Self,1 )
       ENDDO
@@ -685,13 +680,11 @@ Local oldBkColor, oldTColor
          ::rowPos := Iif( i > 1,i - 1,1 )
       ENDIF
       DO WHILE i <= nRows
-         // bloco sauli - multiselect
-         if ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
+         IF ::aSelected != Nil .AND. Ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
             ::LineOut( i, 0, hDC, .t.,.T. )
-         else
+         ELSE
             ::LineOut( i, 0, hDC, .F.,.T. )
-         end
-         // fim bloco sauli
+         ENDIF
          i ++
       ENDDO
 
@@ -1437,7 +1430,6 @@ Local xPos := LOWORD(lParam), x, x1, i
          PostMessage( hBrw, WM_PAINT, 0, 0 )
       ENDIF
    ELSEIF ::aSelected != Nil
-      // inicio bloco sauli - multiselect
       IF ::lCtrlPress
          IF ( i := Ascan( ::aSelected, Eval( ::bRecno,Self ) ) ) > 0
             Adel( ::aSelected, i )
@@ -1451,7 +1443,6 @@ Local xPos := LOWORD(lParam), x, x1, i
             ::Refresh()
          ENDIF
       ENDIF
-      // fim bloco sauli
    ENDIF
    SetFocus( ::handle )
 RETURN Nil

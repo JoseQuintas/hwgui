@@ -15,7 +15,13 @@ HWGUI 2.16 ( 14.09.2006 )
 
 [*] GTK's HBrowse, HPanel and HOwnButton synchronized with Win32 version.
 
-[!] Many bug fixes and enhancements in both GTK and Win32 versions - 
+[!] Three class variables in HBrowse has been renamed for better readability:
+       kolz  --> nRecords
+       tekzp --> nCurrent
+       msrec --> aArray
+    so you need to make search and replace in your programs to rename them.
+
+[*] Many bug fixes and enhancements in both GTK and Win32 versions - 
     see Changelog for details.
 
 HWGUI 2.15 ( 07.06.2006 )

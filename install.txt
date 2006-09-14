@@ -2,12 +2,22 @@
 
    Installation procedure is very simple.
 
-   You need to check and, possibly, fix these variables in makefile.bc:
+   There are few bat files to build HwGUI with C compiler of your choice:
 
-        HRB_DIR
+   make_b32.bat  - Borland C
+   make_pc.bat   - Pelles C
+   make_vc.bat   - Microsoft Visual C
+   make_w32.bat  - Open Watcom C
+   makemngw.bat  - Mingw
 
-   and then run MAKE_B32.BAT . This will build hwgui.lib, procmisc.lib and qhtm.lib,
-   you will find it in lib/ directory.
+   You need to set the environment variable HB_PATH, which must contain a path
+   to your Harbour directory. This can be done in your Windows environment or
+   by adding a line to appropriate bat file:
+
+      SET HB_PATH=c:\harbour
+
+   Then run the selected bat file and you'll get hwgui.lib, procmisc.lib,
+   hbxml.lib  and qhtm.lib in lib/ directory.
 
        To build samples you need to run appropriate .bat files, fixing environment
    variables there.

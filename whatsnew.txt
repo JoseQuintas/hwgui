@@ -9,6 +9,15 @@
 [*] Changes
 
 
+HWGUI 2.16 ( 14.09.2006 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] Native Win32 Toolbar, extended Grid control (HGridEX) has been added.
+
+[*] GTK's HBrowse, HPanel and HOwnButton synchronized with Win32 version.
+
+[!] Many bug fixes and enhancements in both GTK and Win32 versions - 
+    see Changelog for details.
+
 HWGUI 2.15 ( 07.06.2006 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

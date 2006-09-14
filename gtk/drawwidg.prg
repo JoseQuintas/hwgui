@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.5 2006-08-18 07:55:09 alkresin Exp $
+ * $Id: drawwidg.prg,v 1.6 2006-09-14 08:57:12 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -248,32 +248,25 @@ CLASS HBrush INHERIT HObject
 
 ENDCLASS
 
-METHOD Add( nColor,nHatch ) CLASS HBrush
+METHOD Add( nColor ) CLASS HBrush
 Local i
 
-   IF nHatch == Nil
-      nHatch := 99
-   ENDIF
    #ifdef __XHARBOUR__
    For EACH i IN ::aBrushes 
-      IF i:color == nColor .AND. i:nHatch == nHatch
+      IF i:color == nColor
          i:nCounter ++
          Return i
       ENDIF
    NEXT
    #else
    For i := 1 TO Len( ::aBrushes )
-      IF ::aBrushes[i]:color == nColor .AND. ::aBrushes[i]:nHatch == nHatch
+      IF ::aBrushes[i]:color == nColor
          ::aBrushes[i]:nCounter ++
          Return ::aBrushes[i]
       ENDIF
    NEXT
    #endif
-   IF nHatch != 99
-      // ::handle := CreateHatchBrush( nHatch,nColor )
-   ELSE
-      ::handle := CreateSolidBrush( nColor )
-   ENDIF
+   ::handle := CreateSolidBrush( nColor )
    ::color  := nColor
    Aadd( ::aBrushes,Self )
 

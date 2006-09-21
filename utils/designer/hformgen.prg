@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.30 2006-08-10 05:11:55 alkresin Exp $
+ * $Id: hformgen.prg,v 1.31 2006-09-21 07:16:18 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -1164,7 +1164,7 @@ Local oCtrl
             oDesigner:oCtrlMenu:Show( Iif(oDesigner:lReport,oDlg:oParent:oParent,oDlg),xPos,yPos,.T. )
          ENDIF
       ELSE
-         oDesigner:oDlgMenu:Show( oDlg,xPos,yPos,.T. )
+         oDesigner:oDlgMenu:Show( Iif(oDesigner:lReport,oDlg:oParent:oParent,oDlg),xPos,yPos,.T. )
       ENDIF
    ENDIF
 

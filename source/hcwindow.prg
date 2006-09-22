@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.12 2006-09-08 10:42:18 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.13 2006-09-22 09:30:24 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -201,14 +201,12 @@ RETURN NIL
 
 STATIC FUNCTION onNotify( oWnd, wParam, lParam )
 LOCAL iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res
-STATIC aCls := { "HTAB","HQHTM","HTREE","HGRID","HGRIDEX","HTOOLBAR" }
 
    IF oCtrl != NIL
-      IF Ascan( aCls, oCtrl:ClassName() ) != 0
+      IF __ObjHasMsg( oCtrl, "NOTIFY" )
          Return oCtrl:Notify( lParam )
       ELSE
          nCode := GetNotifyCode( lParam )
-         // writelog("Code: "+str(nCode))
          IF nCode == EN_PROTECTED
             RETURN 1
          ELSEIF oWnd:aNotify != NIL .AND. ;

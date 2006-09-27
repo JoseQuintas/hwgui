@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.35 2005-07-19 13:04:17 alkresin Exp $
+ * $Id: hdialog.prg,v 1.36 2006-09-27 12:42:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -28,6 +28,10 @@ Static aMessModalDlg := { ;
       }
 
 Static Function onDestroy( oDlg )
+
+   IF oDlg:oEmbedded != Nil
+      oDlg:oEmbedded:End()
+   ENDIF
 
    oDlg:Super:onEvent( WM_DESTROY )
    oDlg:Del()
@@ -58,6 +62,7 @@ CLASS HDialog INHERIT HCustomWindow
    DATA bActivate
    DATA lActivated INIT .F.
    DATA xResourceID
+   DATA oEmbedded
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
                   bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc )
@@ -345,6 +350,10 @@ Return 0
 
 Static Function onSize( oDlg,wParam,lParam )
 Local aControls, iCont
+
+   IF oDlg:oEmbedded != Nil
+      oDlg:oEmbedded:Resize( LoWord( lParam ), HiWord( lParam ) )
+   ENDIF
 
    aControls := GetWindowRect( oDlg:handle )
    oDlg:nWidth  := aControls[3]-aControls[1]

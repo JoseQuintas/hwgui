@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.47 2006-06-09 11:06:59 alkresin Exp $
+ *$Id: hwindow.prg,v 1.48 2006-09-27 12:42:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -20,6 +20,10 @@
 Static Function onSize( oWnd,wParam,lParam )
 Local aCoors := GetWindowRect( oWnd:handle )
 
+   IF oWnd:oEmbedded != Nil
+      oWnd:oEmbedded:Resize( LoWord( lParam ), HiWord( lParam ) )
+   ENDIF
+
    oWnd:Super:onEvent( WM_SIZE,wParam,lParam )
 
    oWnd:nWidth  := aCoors[3]-aCoors[1]
@@ -38,6 +42,9 @@ Return -1
 
 Static Function onDestroy( oWnd )
 
+   IF oWnd:oEmbedded != Nil
+      oWnd:oEmbedded:End()
+   ENDIF
    oWnd:Super:onEvent( WM_DESTROY )
    HWindow():DelItem( oWnd )
 
@@ -58,6 +65,7 @@ CLASS HWindow INHERIT HCustomWindow
    data bCloseQuery
 
    DATA aOffset
+   DATA oEmbedded
 
    METHOD New( Icon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
           bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,cHelp,;
@@ -349,7 +357,11 @@ Return Nil
 METHOD onEvent( msg, wParam, lParam )  CLASS HChildWindow
 Local i
 
-   IF ( i := Ascan( HMainWindow():aMessages[1],msg ) ) != 0
+   IF msg == WM_DESTROY
+      Return onDestroy( Self )
+   ELSEIF msg == WM_SIZE
+      Return onSize( Self, wParam, lParam )
+   ELSEIF ( i := Ascan( HMainWindow():aMessages[1],msg ) ) != 0
       Return Eval( HMainWindow():aMessages[2,i], Self, wParam, lParam )
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL

@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.12 2006-07-05 11:57:45 alkresin Exp $
+ * $Id: hpanel.prg,v 1.13 2006-09-27 12:42:02 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -15,6 +15,7 @@
 CLASS HPanel INHERIT HControl
 
    DATA winclass   INIT "PANEL"
+   DATA oEmbedded
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bInit,bSize,bPaint,lDocked )
@@ -74,6 +75,17 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HPanel
          ENDIF
          Return 1
       ENDIF
+   ELSEIF msg == WM_SIZE
+      IF ::oEmbedded != Nil
+         ::oEmbedded:Resize( LoWord( lParam ), HiWord( lParam ) )
+      ENDIF
+      ::Super:onEvent( WM_SIZE,wParam,lParam )
+   ELSEIF msg == WM_DESTROY
+      IF ::oEmbedded != Nil
+         ::oEmbedded:End()
+      ENDIF
+      ::Super:onEvent( WM_DESTROY )
+      Return 0
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
          onTrackScroll( Self,wParam,lParam )

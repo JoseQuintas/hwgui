@@ -1,0 +1,135 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <title>HwGUI documentation - functions</title>
+  <link rel="stylesheet" type="text/css" href="table.css">
+</head>
+<body bgcolor="#ffffff" text="#000000">
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="15%" align="left"><a href="http://kresin.belgorod.su">Home page</a></td>
+    <td width="70%" align="center"><strong class="title"> HwGUI 2.16 reference manual </strong></td>
+    <td width="15%" align="right">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
+    <td width="70%" align="center">Alexander S.Kresin, September 2006</td>
+    <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
+  </tr>
+</table>
+<hr align="left" width="100%">
+
+<br><strong class="title"><A NAME="Functions" HREF="hwgdoc.html#_Functions">
+ 5.  Functions</A></strong><br>
+<br><strong class="subhead"><A NAME="Functions1" HREF="hwgdoc.html#_Functions1">
+5.1.  Common dialogs</A></strong>
+ <UL>
+   <LI><A NAME="_Functions1_1" HREF="#Functions1_1">5.1.1.  SelectFont( oFont )</A>
+   <LI><A NAME="_Functions1_2" HREF="#Functions1_2">5.1.2.  SelectFile( cDescript,cMask,cInitDir,cTitle )</A>
+   <LI><A NAME="_Functions1_3" HREF="#Functions1_3">5.1.3.  SaveFile( cPrompt,cDescript,cMask,cInitDir,cTitle )</A>
+   <LI><A NAME="_Functions1_4" HREF="#Functions1_4">5.1.4.  PrintSetup()</A>
+   <LI><A NAME="_Functions1_5" HREF="#Functions1_5">5.1.5.  hwg_ChooseColor( nColorCurrent )</A>
+ </UL>
+<br><strong class="subhead"><A NAME="Functions1_1" HREF="#_Functions1_1">
+5.1.1.  SelectFont( [ oFont ] )</A></strong> 
+This function calls the standard dialog for font selecting.
+<UL>
+  <LI> oFont - optional parameter, the current font object ( HFont instance ).
+  <LI> Return value - the array with selected font characteristics ( nHandle, fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut )
+       or Nil, if the font wasn't selected.
+</UL>
+Usually it isn't needed to call this function directly, use HFont():Select( oFont )
+instead.<br>
+
+<br><strong class="subhead"><A NAME="Functions1_2" HREF="#_Functions1_2">
+5.1.2.  SelectFile( cDescript,cMask,[ cInitDir ], [ cTitle ] )</A></strong> 
+This function calls the standard dialog for file selecting.
+<UL>
+  <LI> cDescript - this string appears in the dialog as a description of a file type.
+  <LI> cMask - string type parameter, describing the file mask.
+  <LI> cInitDir - optional string parameter, the initial directory for file selecting.
+  <LI> cTitle - optional string parameter, the title of a dialog box.
+  <LI> Return value - a string with a selected file name, or an empty string, if a file wasn't selected.
+</UL>
+
+<br><strong class="subhead"><A NAME="Functions1_3" HREF="#_Functions1_3">
+5.1.3.  SaveFile( cPrompt,cDescript,cMask,cInitDir,cTitle )</A></strong> 
+This function calls the standard dialog for file saving.
+<UL>
+  <LI> cPrompt - this string appears as a prompt of a file name.
+  <LI> cDescript - this string appears in the dialog as a description of a file type.
+  <LI> cMask - string type parameter, describing the file mask.
+  <LI> cInitDir - optional string parameter, the initial directory for file selecting.
+  <LI> cTitle - optional string parameter, the title of a dialog box.
+  <LI> Return value - a string with a selected file name, or an empty string, if a file wasn't selected.
+</UL>
+
+<br><strong class="subhead"><A NAME="Functions1_4" HREF="#_Functions1_4">
+5.1.4.  PrintSetup( @cPrinterName )</A></strong> 
+This function calls the standard dialog for printer selecting.
+<UL>
+  <LI> Return value ( numeric ) - handle to device context ( hDC ) of selected printer, 0 - if printer wasn't selected.
+  <LI> Writes to the cPrinterName parameter the name of a selected printer.
+</UL>
+
+<br><strong class="subhead"><A NAME="Functions1_5" HREF="#_Functions1_5">
+5.1.5.  hwg_ChooseColor( nColorCurrent )</A></strong> 
+This function calls the standard dialog for color selecting.
+<UL>
+  <LI> nColorCurrent - a numeric parameter, initial value of a color,
+  <LI> Return value ( numeric ) - selected color.
+</UL>
+
+<br><strong class="subhead"><A NAME="Functions2" HREF="hwgdoc.html#_Functions2">
+5.2.  MessageBoxes and HwGUI dialogs</A></strong> 
+ <UL>
+   <LI><A NAME="_Functions2_1" HREF="#Functions2_1">5.2.1.  MsgInfo( cMessage,cTitle )</A>
+   <LI><A NAME="_Functions2_2" HREF="#Functions2_2">5.2.2.  MsgStop( cMessage,cTitle )</A>
+   <LI><A NAME="_Functions2_3" HREF="#Functions2_3">5.2.3.  MsgOkCancel( cMessage,cTitle )</A>
+   <LI><A NAME="_Functions2_4" HREF="#Functions2_4">5.2.4.  MsgYesNo( cMessage,cTitle )</A>
+   <LI><A NAME="_Functions2_5" HREF="#Functions2_5">5.2.5.  MsgBeep( nSound )</A>
+   <LI><A NAME="_Functions2_6" HREF="#Functions2_6">5.2.6.  MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle )</A>
+   <LI><A NAME="_Functions2_7" HREF="#Functions2_7">5.2.7.  WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )</A>
+ </UL>
+<br><strong class="subhead"><A NAME="Functions2_1" HREF="#_Functions2_1">
+5.2.1.  MsgInfo( cMessage,cTitle )</A></strong> 
+<p></p>
+<br><strong class="subhead"><A NAME="Functions2_2" HREF="#_Functions2_2">
+5.2.2.  MsgStop( cMessage,cTitle )</A></strong> 
+<p></p>
+<br><strong class="subhead"><A NAME="Functions2_3" HREF="#_Functions2_3">
+5.2.3. MsgOkCancel( cMessage,cTitle )</A></strong> 
+<p></p>
+<br><strong class="subhead"><A NAME="Functions2_4" HREF="#_Functions2_4">
+5.2.4.  MsgYesNo( cMessage,cTitle )</A></strong> 
+<p></p>
+<br><strong class="subhead"><A NAME="Functions2_5" HREF="#_Functions2_5">
+5.2.5.  MsgBeep( nSound )</A></strong> 
+<p></p>
+<br><strong class="subhead"><A NAME="Functions2_6" HREF="#_Functions2_6">
+5.2.6.  MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle )</A></strong> 
+<p></p>
+<br><strong class="subhead"><A NAME="Functions2_7" HREF="#_Functions2_7">
+5.2.7.  WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )</A></strong> 
+<p></p>
+<br><strong class="subhead"><A NAME="Functions3" HREF="hwgdoc.html#_Functions3">
+5.3.  Drawing functions.</A></strong> 
+<p></p>
+
+<hr align="left" width="100%">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="33%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
+    <td width="34%" align="center"><a href="hwgdoc.html">table of contents</a></td>
+    <td width="33%" align="right"><a href="hwgdoc_classes.html">next</a></td>
+  </tr>
+  <tr>
+    <td width="33%" align="left">commands</td>
+    <td width="34%" align="center">&nbsp;</td>
+    <td width="33%" align="right">classes</td>
+  </tr>
+</table>
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.15 2006-09-13 18:04:50 alkresin Exp $
+ * $Id: guimain.prg,v 1.16 2006-10-05 11:02:42 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -124,7 +124,7 @@ Local cRes := ""
 Return cRes
 
 Function WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )
-Local oDlg, oBrw, nChoice := 0
+Local oDlg, oBrw, nChoice := 0, lNewFont := .F.
 Local i, aLen := Len( arr ), nLen := 0, addX := 20, addY := 20, minWidth := 0, x1
 Local hDC, aMetr, width, height, aArea, aRect
 Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
@@ -133,7 +133,10 @@ Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
    IF nLeft == Nil .AND. nTop == Nil; nStyle += DS_CENTER; ENDIF
    IF nLeft == Nil; nLeft := 0; ENDIF
    IF nTop == Nil; nTop := 0; ENDIF
-   IF oFont == Nil; oFont := HFont():Add( "MS Sans Serif",0,-13 ); ENDIF
+   IF oFont == Nil
+      oFont := HFont():Add( "MS Sans Serif",0,-13 )
+      lNewFont := .T.
+   ENDIF
    IF cOk != Nil
       minWidth += 120
       IF cCancel != Nil
@@ -158,12 +161,11 @@ Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
    aArea := GetDeviceArea( hDC )
    aRect := GetWindowRect( GetActiveWindow() )
    ReleaseDC( GetActiveWindow(),hDC )
-   height := (aMetr[1]+1)*aLen+4+addY+4
+   height := (aMetr[1]+1)*aLen+4+addY+8
    IF height > aArea[2]-aRect[2]-nTop-30
       height := aArea[2]-aRect[2]-nTop-30
-      // addX := addY := 0
    ENDIF
-   width := Max( ( Round( (aMetr[3]+aMetr[2]) / 2,0 ) + 3 ) * nLen + addX, minWidth )
+   width := Max( aMetr[2] * 2 * nLen + addX, minWidth )
 
    INIT DIALOG oDlg TITLE cTitle ;
          AT nLeft,nTop           ;
@@ -202,12 +204,14 @@ Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
       x1 := Int(width/2) - Iif( cCancel != Nil, 90, 40 )
       @ x1,height-36 BUTTON cOk SIZE 80,30 ON CLICK {||nChoice:=oBrw:nCurrent,EndDialog(oDlg:handle)}
       IF cCancel != Nil
-         @ x1+60,height-36 BUTTON cCancel SIZE 80,30 ON CLICK {||EndDialog(oDlg:handle)}
+         @ x1+100,height-36 BUTTON cCancel SIZE 80,30 ON CLICK {||EndDialog(oDlg:handle)}
       ENDIF
    ENDIF
 
    oDlg:Activate()
-   oFont:Release()
+   IF lNewFont
+      oFont:Release()
+   ENDIF
 
 Return nChoice
 

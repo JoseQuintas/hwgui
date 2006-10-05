@@ -1,0 +1,316 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <title>HwGUI documentation - miscellaneous</title>
+  <link rel="stylesheet" type="text/css" href="table.css">
+</head>
+<body bgcolor="#ffffff" text="#000000">
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="15%" align="left"><a href="http://kresin.belgorod.su">Home page</a></td>
+    <td width="70%" align="center"><strong class="title"> HwGUI 2.16 reference manual </strong></td>
+    <td width="15%" align="right">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="15%" align="left"><a href="hwgdoc_classes.html">prev</a></td>
+    <td width="70%" align="center">Alexander S.Kresin, September 2006</td>
+    <td width="15%" align="right">&nbsp;</td>
+  </tr>
+</table>
+<hr align="left" width="100%">
+
+<br><strong class="subhead"><A NAME="Qhtm" HREF="hwgdoc.html#_Qhtm">
+7.  Qhtm integration</A></strong> 
+
+<br><strong class="subhead"><A NAME="Qhtm1" HREF="hwgdoc.html#_Qhtm1">
+7.1.  Overview</A></strong>
+<p>QHTM is a C++ library, which allows
+ to display and print HTML content in your application  - on any window, 
+ device context, on a report, on a button or in a tooltip. For more details look at
+ <a href="http://www.gipsysoft.com/"> http://www.gipsysoft.com</a>. 
+ HwGUI provides an interface for this library. To use it, you need to download
+ QHTM from the <a href="http://www.gipsysoft.com/qhtm/freedownload.shtml">
+  http://www.gipsysoft.com/qhtm/freedownload.shtml </a> and copy qhtm.dll to the same
+  directory, where your application is.<br>
+  <font color="FF0000" size+=1><b>Attention !!!</b></font> QHTM is released under other license
+  than Harbour and HwGUI, so don't forget to read it before using !
+</p>
+
+<br><strong class="subhead"><A NAME="Qhtm2" HREF="hwgdoc.html#_Qhtm2">
+7.2.  Commands</A></strong>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; QHTM [ &lt;oQhtm&gt; ]
+         [ CAPTION  &lt;caption&gt; ] 
+         [ FILE  &lt;fname&gt; ] 
+         [ RESOURCE  &lt;resname&gt; ] 
+	 [ OF &lt;oWnd&gt ]; 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON CLICK &lt;bLink&gt; ] 
+	 [ ON SUBMIT &lt;bSubmit&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ]
+</pre>
+<p>
+This command creates QHTM control. Html content may be assigned in three ways:
+<UL>
+<LI> You can write it after CAPTION clause.
+<LI> It may be in external html file, which name is designated after FILE clause.
+<LI> Resource file. In this case appropriate resource name is signed after RESOURCE clause.
+</UL>
+ON CLICK clause determines the codeblock, which will be executed when user clicks on
+an external link. 
+ON SUBMIT clause determines the codeblock, which will be executed when user submits
+form.
+</p>
+<pre class="code">
+REDEFINE QHTM [ &lt;oQhtm&gt; ]
+         [ CAPTION  &lt;caption&gt; ] 
+         [ FILE  &lt;fname&gt; ] 
+         [ RESOURCE  &lt;resname&gt; ] 
+	 [ OF &lt;oWnd&gt ]; 
+	 ID &lt;nId&gt; 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON CLICK &lt;bLink&gt; ] 
+	 [ ON SUBMIT &lt;bSubmit&gt; ]
+</pre>
+<p>
+This command redefines QHTM control from resources. Html content may be assigned
+ in three ways the same three ways as in @ ... QHTM command.
+</p>
+
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; QHTMBUTTON [ &lt;oButton&gt; CAPTION ] &lt;caption&gt;
+	 [ OF &lt;oWnd&gt ]; 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<p>
+This command works exactly as @ ... BUTTON, but &lt;caption&gt; may include html content.
+</p>
+
+<pre class="code">
+REDEFINE QHTMBUTTON &lt;oButton&gt;
+	 [ OF &lt;oWnd&gt; ] 
+	 ID &lt;nId&gt; 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<p>
+This command works exactly as REDEFINE BUTTON, but &lt;caption&gt; may include html content.
+</p>
+
+<br><strong class="subhead"><A NAME="Qhtm3" HREF="hwgdoc.html#_Qhtm3">
+7.3.  Functions</A></strong>
+<p>QHTM_Init( [ cDllName ] )
+</p>
+<p>QHTM_Message( cMessage [,cTitle ] [,nFlags ] )
+</p>
+<p>QHTM_LoadFile( handle, cFileName )
+</p>
+<p>QHTM_LoadRes( handle, cResourceName )
+</p>
+<p>QHTM_AddHtml( handle, cText )
+</p>
+<p>QHTM_GetTitle( handle )
+</p>
+<p>QHTM_GetSize( handle )
+</p>
+<p>QHTM_EnableCooltips()
+</p>
+<p>QHTM_PrintCreateContext() --> hContext
+</p>
+<p>QHTM_PrintSetText( hContext,cHtmlText )
+</p>
+<p>QHTM_PrintSetTextFile( hContext,cFileName )
+</p>
+<p>QHTM_PrintSetTextResource( hContext,cResourceName )
+</p>
+<p>QHTM_PrintLayOut( hDC,hContext ) --> nNumberOfPages
+</p>
+<p>QHTM_PrintPage( hDC,hContext,nPage )
+</p>
+<p>QHTM_PrintDestroyContext( hContext )
+</p>
+
+<br><strong class="subhead"><A NAME="Util" HREF="hwgdoc.html#_Util">
+8.  Utilities</A></strong> 
+
+<br><strong class="subhead"><A NAME="Util1" HREF="hwgdoc.html#_Util1">
+8.1.  Designer</A></strong>
+<p> The Designer is intended to create/modify input screen forms and reports.
+It's main features are:</p>
+  <UL>
+     <LI> The controls set is fully configurable. The list of
+ controls ( widgets ) is placed in a special configuration XML file.
+ The name of that file is specified in Designer's ini file
+ "Designer.iml", currently it is resource/widgets.xml. To add a new
+ control or even a controls set, or add new properties/methods for a
+ control is easy now - just edit the widgets.xml. This allows to use
+ the Designer not only for HwGUI based, but for any other
+ applications - you can create a fully new controls set for your
+ purposes. Report items, for example, has been added with an additional resource file -
+ resource/repwidg.xml.
+     <LI>The Designer can be built not only as standalone program, but
+ can be a part of other application where it is needed to edit forms
+ and/or reports at runtime. There is a bat file bldlib.bat, which builds the
+ designer.lib to link it in your application. To invoke the designer, you just need
+ to call the function Designer():  
+ &nbsp&nbsp&nbsp&nbsp&nbsp Designer() - call Designer to open/create/edit any form ; 
+ &nbsp&nbsp&nbsp&nbsp&nbsp Designer( "-r" ) - call Designer to open/create/edit any report ; 
+ &nbsp&nbsp&nbsp&nbsp&nbsp Designer( "-s" ) - call Designer to create a new form ( doesn't allow to open any other ) ; 
+ &nbsp&nbsp&nbsp&nbsp&nbsp Designer( "-s",cForm ) - call Designer to edit a form 'cForm' ( doesn't allow to open any other ),
+ the 'cForm' may be a file name or a string, containing the form ; 
+ &nbsp&nbsp&nbsp&nbsp&nbsp Designer( "-r","-s" ) - call Designer to create a new report ( doesn't allow to open any other ) ; 
+ &nbsp&nbsp&nbsp&nbsp&nbsp Designer( "-r","-s",cReport ) - call Designer to edit a report 'cReport' ( doesn't allow to open any other ),
+ the 'cReport' may be a file name or a string, containing the report ;  
+     <LI>The output formats are configurable via the external
+ scripts. The native HwGUI format support is included in Designer's
+ code, all others are included as plugins. 
+ Currently there are three plugins - for reading old .frm files (
+ resource/f_text.prg ), for reading old .rpt files (
+ resource/r_text.prg ) and for writing the prgs - f_hwgprg.prg ( not
+ fully functional yet ).
+     <LI>Designer allows to set not only properties, but methods, too,
+ - for every control / report item, so the resulting form description is a 
+ complete dialog procedure, and the resulting report description is a complete report program,
+ which opens/navigates/closes databases, calculates summs, etc.
+     <LI>HwGUI includes special classes to load / execute a form or report, created
+ with the Designer - HFormTmpl, HRepTmpl.  
+ &nbsp&nbsp&nbsp&nbsp&nbsp oForm := HFormTmpl():Read( cForm ) - loads a form,
+ 'cForm' may be a file name or a string, containing the form ; 
+ &nbsp&nbsp&nbsp&nbsp&nbsp oForm:Show() - executes the loaded form, shows it on the screen ; 
+ &nbsp&nbsp&nbsp&nbsp&nbsp oReport := HRepTmpl():Read( cReport ) - loads a report,
+ 'cReport' may be a file name or a string, containing the report ; 
+ &nbsp&nbsp&nbsp&nbsp&nbsp oReport:Print( cPrinterName,lPreview ) - prints the report.  
+  </UL>
+
+<p>Few notes for HwGUI applications about using of some properties and methods:
+</p>
+  <UL>
+    <LI>There is a method 'common' in a form methods list, it is intended for
+ functions, which are needed for the form and which can be called from
+ any other event handler of the form. 
+ Each function must be ended with the 'ENDFUNC' statement. The 'Return'
+ isn't obligatory, but may be used if the function must return some
+ value.
+    <LI>The form has a property 'Variables' - it is an array of variables,
+ which will be declared as 'Private' in the beginning of HFormTmpl():Show()
+ and may be used in any event handler of the form.
+    <LI>Each widget has a property 'Name' - this is a object name, which
+ also will be declared as 'Private' in the beginning of HFormTmpl():Show().
+    <LI>The widgets, which have corresponding 'GET' items, has a property
+ 'Varname' - the name of the correspondibg variable, which also will
+ be declared as 'Private' in the beginning of HFormTmpl():Show().
+  </UL>
+
+<p>Few notes about the reports builder. 
+For a few years there was another report designer in HwGUI - HwReport.
+Now the Designer becomes the main report builder utility. It has more modern and advanced engine than
+ Hwreport and, what is important, it is more easy to support one
+ engine than two different :). The important point is that now the
+ report builder may be integrated into the application and it is
+ convenient, IMO, that the same code, the same module, linked into the
+ application, implements two tasks - works with input forms and with
+ reports. 
+ The compatibility with the *.rpt files, created with Hwreport, is
+ implemented via the plugin ( resource/r_text.prg ) - you may open rpt
+ files, choosing the 'plain text format' and then save them in a new
+ format, which is exactly the same as for input forms. 
+ The new report engine uses a bit different approach than the old one.
+ There are no 'markers' - the widget 'area' is used instead.
+ You can convert any rpt file into the new
+ format and you will see how these 'areas' are used. The 'area' has
+ two main properties:
+  <UL>
+    <LI>AreaType - it may be Table, DocHeader, DocFooter, PageHeader,
+              PageFooter. The Table is the same as the space between
+              'Start line' and 'End line' markers in the old engine.
+    <LI>VarOffset - False/True, it determines, if the area position on the
+               paper is fixed ( False ), or it depends on the size of
+               previous area ( True ).
+  </UL>
+ The areas may be nested - to implement subtables, for example. 
+ The report itself has two methods:
+  <UL>
+    <LI>onRepInit, which is executed when the report starts ;
+    <LI>onRepExit.
+  </UL> 
+ Every print item ( Label, Box, Vline, HLine, Bitmap ) has three
+ methods:
+  <UL> 
+    <LI>onBegin  - it is executed before the item is being printed ;
+    <LI>Condition - it must return a logical value ( with the 'Return'
+                statement ), which determines, should this item be
+                printed or no ;
+    <LI>onExit  - it is executed after the item is being printed.
+  </UL> 
+ The 'Label' item has additionally a method 'Expression', which
+ calculates a string, which should be printed. 
+ The 'area' has additionally a method 'onNextLine', which is executed
+ for the each line in a 'Table' area - it is the same as script for
+ the 'End Line' marker in an old report engine.
+</p> 
+
+<br><strong class="subhead"><A NAME="License" HREF="hwgdoc.html#_License">
+9.  License</A></strong>
+<p>HwGUI is released under the same license, as Harbour itself.</p>
+<em>
+	<p>This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.</p>
+
+	<p>This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.</p>
+
+	<p>You should have received a copy of the GNU General Public License
+	along with this software; see the file COPYING.  If not, write to
+	the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+	Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).</p>
+
+	<p>As a special exception, you have permission for
+	additional uses of the text contained in its release of HWGUI.</p>
+  
+	<p>The exception is that, if you link the HWGUI library with other
+	files to produce an executable, this does not by itself cause the
+	resulting executable to be covered by the GNU General Public License.
+	Your use of that executable is in no way restricted on account of
+	linking the HWGUI library code into it.</p>
+</em>
+ 
+<br><strong class="subhead"><A NAME="Author" HREF="hwgdoc.html#_Author">
+10.  About the author</A></strong><br>
+<img src="author.jpg" border="0" align="texttop" vspace=n4>
+<br><br>
+
+<hr align="left" width="100%">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="33%" align="left"><a href="hwgdoc_classes.html">prev</a></td>
+    <td width="34%" align="center"><a href="hwgdoc.html">table of contents</a></td>
+    <td width="33%" align="right">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="33%" align="left">classes</td>
+    <td width="34%" align="center">&nbsp;</td>
+    <td width="33%" align="right">&nbsp;</td>
+  </tr>
+</table>
+
+</body>
+</html>

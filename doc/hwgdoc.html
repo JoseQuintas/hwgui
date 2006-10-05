@@ -1,0 +1,301 @@
+<html><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <title>HwGUI documentation</title>
+  <link rel="stylesheet" type="text/css" href="table.css">
+</head>
+<body bgcolor="#ffffff" text="#000000">
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="15%" align="left"><a href="http://kresin.belgorod.su">Home page</a></td>
+    <td width="70%" align="center"><strong class="title"> HwGUI 2.16 reference manual </strong></td>
+    <td width="15%" align="right">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="15%" align="left">&nbsp;</td>
+    <td width="70%" align="center">Alexander S.Kresin, September 2006</td>
+    <td width="15%" align="right"><a href="hwgdoc_commands.html">next</a></td>
+  </tr>
+</table>
+<hr align="left" width="100%">
+
+<UL>
+  <LI><A NAME="_Introduction" HREF="#Introduction">1. Introduction</A>
+  <UL>
+     <LI><A NAME="_Whatis" HREF="#Whatis">1.1.  What is HwGUI</A>
+     <LI><A NAME="_History" HREF="#History">1.2.  History of HwGUI</A>
+  </UL>
+  <LI><A NAME="_Install" HREF="#Install">2.  Installation of HwGUI</A>
+  <UL>
+     <LI><A NAME="_Package" HREF="#Package">2.1.  HwGUI package</A>  
+     <LI><A NAME="_Instlib" HREF="#Instlib">2.2.  How to build HwGUI library</A>
+     <LI><A NAME="_Instsamp" HREF="#Instsamp">2.3.  How to build HwGUI samples</A>
+  </UL>
+  <LI><A NAME="_Using" HREF="#Using">3.  How to use HwGUI</A>
+  <UL>
+     <LI><A NAME="_Using1" HREF="#Using1">3.1.  First HwGUI application</A>
+     <LI><A NAME="_Using2" HREF="#Using2">3.2.  Inside HwGUI</A>
+  </UL>
+  <LI><A NAME="_Commands" HREF="hwgdoc_commands.html#Commands">4.  Commands</A>
+  <UL>
+    <LI><A NAME="_Commands1" HREF="hwgdoc_commands.html#Commands1">4.1.  Commands for windows and dialogs handling</A>
+    <LI><A NAME="_Commands2" HREF="hwgdoc_commands.html#Commands2">4.2.  Menu commands</A>
+    <LI><A NAME="_Commands3" HREF="hwgdoc_commands.html#Commands3">4.3.  Commands for controls handling</A>
+    <LI><A NAME="_Commands4" HREF="hwgdoc_commands.html#Commands4">4.4.  Get system commands</A>
+    <LI><A NAME="_Commands5" HREF="hwgdoc_commands.html#Commands5">4.5.  Print commands</A>
+  </UL>
+  <LI><A NAME="_Functions" HREF="hwgdoc_functions.html#Functions">5.  Functions</A>
+  <UL>
+    <LI><A NAME="_Functions1" HREF="hwgdoc_functions.html#Functions1">5.1.  Common dialogs</A>
+    <LI><A NAME="_Functions2" HREF="hwgdoc_functions.html#Functions2">5.2.  MessageBoxes and HwGUI dialogs</A>
+    <LI><A NAME="_Functions3" HREF="hwgdoc_functions.html#Functions3">5.3.  Drawing functions.</A>
+    <UL>
+    </UL>
+  </UL>
+  <LI><A NAME="_Classes" HREF="hwgdoc_classes.html#Classes">6.  Classes</A>
+  <UL>
+    <LI><A NAME="_Classes1" HREF="hwgdoc_classes.html#Classes1">6.1.  Class hierarchy</A>
+  </UL>
+  <LI><A NAME="_Qhtm" HREF="#hwgdoc_misc.htmlQhtm">7.  QHTM integration</A>
+  <UL>
+    <LI><A NAME="_Qhtm1" HREF="hwgdoc_misc.html#Qhtm1">7.1.  Overview</A>
+    <LI><A NAME="_Qhtm2" HREF="hwgdoc_misc.html#Qhtm2">7.2.  Commands</A>
+    <LI><A NAME="_Qhtm3" HREF="hwgdoc_misc.html#Qhtm3">7.3.  Functions</A>
+  </UL>
+  <LI><A NAME="_Util" HREF="hwgdoc_misc.html#Util">8.  Utilities</A>
+  <UL>
+    <LI><A NAME="_Util1" HREF="hwgdoc_misc.html#Util1">8.1.  Designer</A>
+  </UL>
+  <LI><A NAME="_License" HREF="hwgdoc_misc.html#License">9.  License</A>
+  <LI><A NAME="_Author" HREF="hwgdoc_misc.html#Author">10.  About the author</A>
+</UL>
+
+<br><strong class="title"><A NAME="Introduction" HREF="#_Introduction">
+ 1.  Introduction</A></strong><br>
+<br><strong class="subhead"><A NAME="Whatis" HREF="#_Whatis"> 
+ 1.1.  What is HwGUI</A></strong><br>
+<p> HwGUI is an add-on library for <a href="http://www.Harbour-Project.org">Harbour</a>
+ and <a href="http://www.xHarbour.org">xHarbour</a>, intended for creating GUI
+ applications. There are two versions of HwGUI -  Win32 version, which is based on direct calls of Win32 API,
+ and GTK version, which uses GTK2 library and can be used under any platform where GTK is implemented ( Linux,
+ Windows, probably MacOS ). While developing HwGUI I
+ tried to hide from the end user - Harbour programmer technical details of
+ API calls and to build a set of commands and functions, which could allow
+ easily create and manage GUI objects.</p>
+<br><strong class="subhead"><A NAME="History" HREF="#_History"> 
+ 1.2.  History of HwGUI</A></strong><br> 
+<p> I began to work on HwGUI in August 2001 and the first version was released
+ on August 21. My initial intention was to create a small and fast GUI lib mainly
+ for my own needs. And already in October I had wrote the first small application
+ with HwGUI for my firm, it reads the databases, created and managed with the
+ accounting system, generates some documents and sends them by fax.</P>
+<p> Firstly, from the initial release and til the 1.3 HwGUI didn't use the
+ OOP paradigm - and I even had declared this as one of HwGUI features. My main
+ motivations was speed and stability. Harbour's implementation of classes at
+ that time had some bugs and I didn't want to add problems to myself. And,
+ of course, access to object's variables is more slow than access to the array
+ items. OOP is an additional level and using of it reduces application's
+ performance.</p>
+<p> But later I have arrived at a decision to make HwGUI OOP based - to simplify
+ user interface and make it better structured and more convenient. So starting from
+ the release 2.0 HwGUI is based on OOP paradigm.</p>
+<p> Since the autumn'2003 HwGUI is <a href="http://sourceforge.net/projects/hwgui/">hosted by SourceForge</a>,
+ and there is a group of developers working on it. Thanks to all of them for participation
+ and contributions.</p>
+<p> Yet another important milestone in HwGUI's timeline is a December,2005 - where
+ a development of GTK version has been started, so HwGUI became a cross-platform
+ tool.</p>
+ 
+<br><strong class="title"><A NAME="Install" HREF="#_Install">
+ 2.  Installation of HwGUI</A></strong><br>
+<br><strong class="subhead"><A NAME="Package" HREF="#_Package">
+2.1.  HwGUI package</A></strong><br>
+<p>HwGUI is distributed as a zip package. Currently it doesn't use any setup
+ utility, you need simply unzip it to any place you want. The zip package
+ includes following files and directories:</p>
+ <table  width=100% class="code-sample">
+ <tr><td width=10%><td width=20%><font size=-1>make_b32.bat</font><td><font size=-1>- Command file to build HwGUI libraries with Borland C</font>
+ <tr><td width=10%><td width=20%><font size=-1>makefile.bc</font><td>
+ <tr><td width=10%><td width=20%><font size=-1>make_vc.bat</font><td><font size=-1>- Command file to build HwGUI libraries with MSVC</font>
+ <tr><td width=10%><td width=20%><font size=-1>makefile.vc</font><td>
+ <tr><td width=10%><td width=20%><font size=-1>make_pc.bat</font><td><font size=-1>- Command file to build HwGUI libraries with Pelles C</font>
+ <tr><td width=10%><td width=20%><font size=-1>makefile.pc</font><td>
+ <tr><td width=10%><td width=20%><font size=-1>make_w32.bat</font><td><font size=-1>- Command file to build HwGUI libraries with Open Watcom C</font>
+ <tr><td width=10%><td width=20%><font size=-1>makefile.wc</font><td>
+ <tr><td width=10%><td width=20%><font size=-1>makemngw.bat</font><td><font size=-1>- Command file to build HwGUI libraries with Mingw</font>
+ <tr><td width=10%><td width=20%><font size=-1>makefile.gcc</font><td>
+ <tr><td width=10%><td width=20%><font size=-1>makedll.bat</font><td><font size=-1>- Command file to build HwGUI dll with Borland C</font>
+ <tr><td width=10%><td width=20%><font size=-1>makedll.bc</font><td>
+ <tr><td width=10%><td width=20%><font size=-1>license.txt</font><td>
+ <tr><td width=10%><td width=20%><font size=-1>install.txt</font><td>
+ <tr><td width=10%><td width=20%><font size=-1>whatsnew.txt</font><td>
+ <tr><td width=10%><td width=20%><font size=-1>DOC</font><td><font size=-1>- Folder with documentation</font>
+ <tr><td width=10%><td width=20%><font size=-1>GTK</font><td><font size=-1>- Folder with HwGUI GTK version sources and samples</font>
+ <tr><td width=10%><td width=20%><font size=-1>IMAGE</font><td><font size=-1>- Folder with sample image files</font>
+ <tr><td width=10%><td width=20%><font size=-1>INCLUDE</font><td><font size=-1>- Folder with HwGUI header files</font>
+ <tr><td width=10%><td width=20%><font size=-1>LIB</font><td><font size=-1>- Folder for HwGUI lib</font>
+ <tr><td width=10%><td width=20%><font size=-1>OBJ</font><td>
+ <tr><td width=10%><td width=20%><font size=-1>SAMPLES</font><td><font size=-1>- Folder with HwGUI samples</font>
+ <tr><td width=10%><td width=20%><font size=-1>SOURCE</font><td><font size=-1>- Folder with Hwgui sources</font>
+ <tr><td width=10%><td width=20%><font size=-1>UTILS</font><td><font size=-1>- Folder with Hwgui utilities - Dbc, Designer and HwReport</font>
+ </table>
+
+<br><strong class="subhead"><A NAME="Instlib" HREF="#_Instlib">
+2.2.  How to build HwGUI library</A></strong><br>
+<p>Before building the library you need to set the HB_PATH environment
+variable, it should point to the directory where your copy of Harbour or xHarbour is.
+You may set it on your Windows environment or in the appropriate command ( .bat ) file,
+including there a line:
+<pre class="code">
+   SET HB_PATH=c:\harbour
+</pre>
+Then run one of command files depending of the C compiler you use 
+( make_b32.bat for Borland C, make_pc.bat for Pelles C, make_vc.bat for MSVC,
+make_w32.bat for Open Watcom C, makemngw.bat for Mingw ) - this will build four libraries -
+hwgui.lib, procmisc.lib, hwg_qhtm.lib and hbxml.lib. That's all !</p>
+<br>
+<br><strong class="subhead"><A NAME="Instsamp" HREF="#_Instsamp">
+2.3.  How to build HwGUI samples</A></strong><br> 
+
+<br><strong class="title"><A NAME="Using" HREF="#_Using">
+3.  How to use HwGUI</A></strong><br>
+<br><strong class="subhead"><A NAME="Using1" HREF="#_Using1">
+3.1.  First HwGUI application</A></strong><br><br>
+<pre class="code">
+   #include "hwgui.ch"
+
+   Function Main
+   Local oMainWnd, oFont
+   Local aCombo := {"First","Second" }
+
+      PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+
+      INIT WINDOW oMainWnd TITLE "Example" ;
+         FONT oFont ;
+         ON EXIT {||MsgYesNo("Really want to quit ?")}
+
+      @ 20,10 EDITBOX "Hello, World!" SIZE 200,30
+
+      @ 270,10 COMBOBOX aCombo SIZE 100, 150 TOOLTIP "Combobox"
+
+      @ 120,60 BUTTON "Close" SIZE 150,30 ;
+         ON CLICK {||oMainWnd:Close()}
+
+      MENU OF oMainWnd
+         MENUITEM "About" ACTION MsgInfo("First HwGUI Application")
+      ENDMENU
+
+      ACTIVATE WINDOW oMainWnd
+
+  Return
+</pre>
+<p> First thing you will want to do, I think, is to create the main window.
+The best way to do this is the command <A HREF="#Commands1-1">INIT WINDOW</A>. In
+ this command you can define initial position and the size of the window, it's
+ style, icon, background color. You can set also event handlers - codeblocks, which
+ are evaluated for different events ( INIT, EXIT, PAINT, SIZE changing, GETFOCUS, LOSTFOCUS and
+ others ).</p>
+<p> Then you need to <A HREF="#Commands3">define controls</a> for that window and
+ the main menu ( <A HREF="#Commands2">MENU ... ENDMENU</a> commands), and, at least,
+ activate the window, ( <A HREF="#Commands1-3">ACTIVATE WINDOW</a> ) show it on the screen.
+ Let analyse the above sample.</p>
+<pre class="code">
+  PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+</pre>
+  At first, we create the font object for the main window. HwGUI works in such a way,
+  that if a font isn't defined for a control, this control uses the font, defined
+  for his parent window.
+<pre class="code">
+  INIT WINDOW oMainWnd MAIN TITLE "Example" ;
+     FONT oFont ;
+     ON EXIT {||MsgYesNo("Really want to quit ?")}
+</pre>
+  This command creates main window with the title "Example" and with previously created font.
+  ON EXIT clause will cause  appearance of a message box, user will need to choose "Yes" to quit the application.
+<pre class="code">
+  @ 20,10 EDITBOX "Hello, World!" ;
+     SIZE 200,30
+  @ 270,10 COMBOBOX aCombo ;
+     SIZE 100, 150 TOOLTIP "Combobox"
+  @ 120,60 BUTTON "Close" ;
+     SIZE 150,30 ;
+     ON CLICK {||EndWindow()}
+</pre>
+  The above commands creates appropriate controls - Edit, Combobox and Push Button.
+  ComboBox is initialized with aCombo array, which was declared before. Button has
+  an event handler defined - closing the application.
+<pre class="code">
+  MENU OF oMainWnd
+     MENUITEM "About" ACTION MsgInfo("First HwGUI Application")
+  ENDMENU
+</pre>
+   These commands creates the main menu, which includes the only item "About".
+<pre class="code">
+  ACTIVATE WINDOW oMainWnd
+</pre>
+   And, at least, this last command activates the main window. It appears on
+   the screen with menu and all controls defined.<br>
+
+<br><strong class="subhead"><A NAME="Using2" HREF="#_Using2">
+3.2.  Inside HwGUI</A></strong><br><br>
+<p>From the point of messages handling all HwGUI windows ( and controls,
+which, in fact, are windows, too ) may be divided in two groups:
+<blockquote>
+1) The windows, which messages are handled by HwGUI.<br>
+2) The windows, which messages are handled by Windows API only.
+</blockquote>
+The first group includes main, mdi, child windows and dialogs and such
+controls as ( I will use the appropriate classes names ) HBrowse,
+HEdit, HStaticLink, HOwnButton, HPanel, HRichEdit, HSplitter, HTab,
+HTrackBar.<br>
+The second - all other controls, such as HStatic, HStatus, HButton,
+HGroup, HCheckButton, etc.
+<p>Handling of messages for the first group is implemented in the
+following way:<br>
+Window ( control ) creation functions stores the pointer to the
+appropriate HwGUI object in a window extra memory, granted by Windows
+API - by calling the function SetWindowObject().
+Besides, the window creation functions sets the pointer to the window
+procedure ( an application-defined function that processes messages
+sent to a window ). This is implemented by setting the pointer in
+WNDCLASS structure ( see, for example, HWG_INITMAINWINDOW(),
+HWG_REGBROWSE() ) or by redefinition the window procedure (
+HWG_INITEDITPROC(), HWG_INITWINCTRL() ).<br>
+Thus, all windows of a first group has special messages processing
+procedures ( MainWndProc(), WinCtrlProc(), ... ), while messages for
+windows of a second groups are processed by Windows API internally.
+The messages processing procedure extracts the pointer to appropriate
+HwGUI object from a window extra memory and calls the :onEvent method
+for this object.<br>
+The :onEvent method may process the message itself, or pass it to the
+super method, or, returning -1, pass it to the default Windows API
+procedure.
+<p> For example, the HStatic and HStatus are a second
+ group controls, i.e. messages to this control aren't processed by HwGUI -
+ that's why Windows doesn't process notifications, messages for it
+ child controls.<br>
+ So, if you want to create ontop of them other controls, they are two ways:
+<blockquote>
+ 1) create a new class, derived from HStatic and make it a control of
+ a first group ( store a object pointer and redefine the window
+ procedure )<br>
+ 2) use as a place holder for a button not HStatic or HStatus, but,
+ for example, the HPanel. Hpanel is a general purpose control, which
+ I use and recommend you to use for such purposes.
+</blockquote>
+
+<hr align="left" width="100%">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="33%" align="left">&nbsp;</td>
+    <td width="34%" align="center"><a href="hwgdoc.html">table of contents</a></td>
+    <td width="33%" align="right"><a href="hwgdoc_commands.html">next</a></td>
+  </tr>
+  <tr>
+    <td width="33%" align="left">&nbsp;</td>
+    <td width="34%" align="center">&nbsp;</td>
+    <td width="33%" align="right">commands</td>
+  </tr>
+</table>
+
+</body></html>

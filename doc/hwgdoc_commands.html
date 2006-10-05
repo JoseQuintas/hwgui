@@ -1,0 +1,1147 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <title>HwGUI documentation - commands</title>
+  <link rel="stylesheet" type="text/css" href="table.css">
+</head>
+<body bgcolor="#ffffff" text="#000000">
+<div class="navheader">
+  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td width="15%" align="left"><a href="http://kresin.belgorod.su">Home page</a></td>
+      <td width="70%" align="center"><strong class="title"> HwGUI 2.16 reference manual </strong></td>
+      <td width="15%" align="right">&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="15%" align="left"><a href="hwgdoc.html">prev</a></td>
+      <td width="70%" align="center">Alexander S.Kresin, September 2006</td>
+      <td width="15%" align="right"><a href="hwgdoc_functions.html">next</a></td>
+    </tr>
+  </table>
+  <hr align="left" width="100%">
+</div>
+
+<br><strong class="title"><A NAME="Commands" HREF="hwgdoc.html#_Commands">
+4.  Commands</A></strong><br>
+<br><strong class="subhead"><A NAME="Commands1" HREF="hwgdoc.html#_Commands1">
+4.1.  Commands for windows and dialogs handling</A></strong><br>
+ <UL>
+   <LI><A NAME="_Commands1-1" HREF="#Commands1-1">4.1.1.  INIT WINDOW</A>
+   <LI><A NAME="_Commands1-2" HREF="#Commands1-2">4.1.2.  INIT DIALOG</A>
+   <LI><A NAME="_Commands1-3" HREF="#Commands1-3">4.1.3.  ACTIVATE WINDOW</A>
+   <LI><A NAME="_Commands1-4" HREF="#Commands1-4">4.1.4.  ACTIVATE DIALOG</A>
+   <LI><A NAME="_Commands1-5" HREF="#Commands1-5">4.1.5.  DIALOG ACTIONS OF</A>
+ </UL>
+<A NAME="Commands1-1" HREF="#_Commands1-1">4.1.1.  INIT WINDOW</A>
+<p>This command creates the window - main, MDI or MDI CHILD. To force this
+ window show up on the screen you need to activate it later. You can do this
+ with <A HREF="#Commands1-3">ACTIVATE WINDOW</A> command or with
+ <A HREF="#Classes4">Activate()</A> method of that window object.
+</p>
+<pre class="code">
+  INIT WINDOW &lt;oWnd&gt;
+	 [ MAIN ]
+	 [ MDI ]
+	 [ MDICHILD ]
+         [ APPNAME &lt;appname&gt; ]
+	 [ TITLE &lt;cTitle&gt; ]
+	 [ AT &lt;x&gt;, &lt;y&gt; ]
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ]
+	 [ ICON &lt;ico&gt; ]
+	 [ COLOR &lt;clr&gt; ]
+         [ BACKGROUND BITMAP &lt;oBmp>&gt; ]
+	 [ STYLE &lt;nStyle&gt; ]
+	 [ FONT &lt;oFont&gt; ]
+	 [ MENU &lt;cMenu&gt; ]
+	 [ MENUPOS &lt;nPos&gt; ]
+	 [ ON INIT &lt;bInit&gt; ]
+	 [ ON SIZE &lt;bSize&gt; ]
+	 [ ON PAINT &lt;bPaint&gt; ]
+	 [ ON GETFOCUS &lt;bGfocus&gt; ]
+	 [ ON LOSTFOCUS &lt;bLfocus&gt; ]
+	 [ ON CLOSEQUERY &lt;bCloseQuery&gt; ];
+	 [ ON OTHER MESSAGES &lt;bOther&gt; ]
+	 [ ON EXIT &lt;bExit&gt;]
+         [ HELP &lt;cHelp&gt; ]
+         [ HELPID &lt;nHelpId&gt; ]
+</pre>
+<br><b>MAIN,MDI,MDICHILD</b> clauses specifies the type of the window, only one of this
+clauses may be used in the command.<br>
+<b>cTitle</b> - title of the window;<br>
+<b>x,y,width,height</b> - left and top coordinates of the window, it's width and height;<br>
+<b>ico</b> - the name of the Icon in the resource file;<br>
+<b>clr</b> - the background color of the window;<br>
+<b>nStyle</b> - style of the window;<br>
+<b>oFont</b> - previously created HFont object;<br>
+<b>cMenu</b> - the name of menu declaration in the resource file ( if you specify menu
+in resources );<br>
+<b>nPos</b> - identifies the window menu used for controlling MDI child windows. 
+As child windows are created, the application adds their titles to the 
+Window menu as menu items. The user can then activate a child window by 
+choosing its title from the window menu.<br>
+<b>bSize</b> - codeblock, which is evaluated while resizing window;<br>
+<b>bPaint</b> - codeblock, which is evaluated while window drawing;<br>
+<b>bGFocus</b> - codeblock, which is evaluated when window gets focus;<br>
+<b>bLFocus</b> - codeblock, which is evaluated when window losts focus;<br>
+<b>bExit</b> - codeblock, which is evaluated when window is closed;<br>
+<b>bOther</b> - codeblock, which is evaluated for all other messages - you can write
+your own procedure for messages handling;<br>
+
+<br><A NAME="Commands1-2" HREF="#_Commands1-2">4.1.2.  INIT DIALOG</A>
+<p>This command creates the dialog box. To force the dialog
+ show up on the screen you need to activate it later. You can do this
+ with <A HREF="#Commands1-4">ACTIVATE DIALOG</A> command or with
+ <A HREF="#Classes5">Activate()</A> method of that window object.
+</p>
+<pre class="code">
+  INIT DIALOG &lt;oWnd&gt;
+	 [ FROM RESOURCE ] 
+	 [ TITLE &lt;cTitle&gt; ] 
+	 [ AT &lt;x&gt;, &lt;y&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+         [ ICON &lt;ico&gt; ] 
+         [ BACKGROUND BITMAP &lt;oBmp&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ CLIPPER ] 
+	 [ NOEXIT ] 
+	 [ NOEXITESC ]
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bPaint&gt; ] 
+	 [ ON GETFOCUS &lt;bGfocus&gt; ] 
+	 [ ON LOSTFOCUS &lt;bLfocus&gt; ] 
+	 [ ON OTHER MESSAGES &lt;bOther&gt; ] 
+	 [ ON EXIT &lt;bExit&gt; ] 
+	 [ HELPID &lt;nHelpId>&gt; ]
+</pre>
+<p>All clauses has the same meaning as in <A HREF="#Commands1-1">INIT WINDOW</A> command,
+ there is only three specific clause:<br>
+ <b>FROM RESOURCE</b> - it is used if you create the dialog box from resource file;<br>
+ <b>CLIPPER</b> - to force the Clipper like behavior - the Enter key is used for moving between GET's;<br>
+ <b>NOEXIT</b> - the Enter key doesn't cause closing of a dialog box.<br>
+</p>
+<A NAME="Commands1-3" HREF="#_Commands1-3">4.1.3.  ACTIVATE WINDOW</A>
+<pre class="code">
+  ACTIVATE WINDOW &lt;oWnd&gt;
+         [ NOSHOW ]
+         [ MAXIMIZED ]
+         [ MINIMIZED ]
+         [ ON ACTIVATE &lt;bInit&gt; ]
+</pre>
+<p>This command is equivalent to 'oWnd:Activate()' call. It shows the previously created
+window and starts messages processing for it.</p>
+<A NAME="Commands1-4" HREF="#_Commands1-4">4.1.4.  ACTIVATE DIALOG</A>
+<pre class="code">
+  ACTIVATE DIALOG &lt;oDlg&gt; [ NOMODAL ]
+</pre>
+<p>This command is equivalent to 'oDlg:Activate()' call. It shows the previously defined
+dialog and starts messages processing for it. By default, it creates modal dialog.
+You can create modeless dialog, specifying NOMODAL clause in this command.</p>
+<A NAME="Commands1-5" HREF="#_Commands1-5">4.1.5.  DIALOG ACTIONS OF</A>
+<p></p>
+<pre class="code">
+ DIALOG ACTIONS OF &lt;oWnd&gt;
+   ON &lt;id1&gt;,&lt;id2&gt; ACTION &lt;b1&gt; 
+   [ ON &lt;idn1&gt;,&lt;idn2&gt; ACTION &lt;bn&gt; ]
+</pre>
+<p>This is a compatibility command and therefore not recommended. The window
+gets WM_COMMAND message when the user selects a command item from a menu, 
+when a control sends a notification message to its parent window, 
+or when an accelerator keystroke is translated.<br>
+You can specify in this command the event, the source of the event and the appropriate action.
+id1 ...idn1 is the event code, id1 ... idn2 - is the identificator of the control,
+b1 ... bn - the codeblock.<br>
+Take a look at the samples to see how this command may be used.</p>
+<br><strong class="subhead"><A NAME="Commands2" HREF="hwgdoc.html#_Commands2">
+4.2.  Menu commands</A></strong><br> 
+ <UL>
+   <LI><A NAME="_Commands2-1" HREF="#Commands2-1">4.2.1.  MENU</A>
+   <LI><A NAME="_Commands2-2" HREF="#Commands2-2">4.2.2.  ENDMENU</A>
+   <LI><A NAME="_Commands2-3" HREF="#Commands2-3">4.2.3.  MENUITEM</A>
+   <LI><A NAME="_Commands2-4" HREF="#Commands2-4">4.2.4.  SEPARATOR</A>
+   <LI><A NAME="_Commands2-5" HREF="#Commands2-5">4.2.5.  MENU FROM RESOURCE OF</A>
+   <LI><A NAME="_Commands2-6" HREF="#Commands2-6">4.2.6.  CONTEXT MENU</A>
+   <LI><A NAME="_Commands2-7" HREF="#Commands2-7">4.2.7.  ACCELERATOR</A>
+ </UL>
+
+<br><A NAME="Commands2-1" HREF="#_Commands2-1">4.2.1.  MENU</A>
+<p></p>
+<pre class="code">
+  MENU [ OF &lt;oWnd&gt; ] [ ID &lt;nId&gt; ] [ TITLE &lt;cTitle&gt; ]
+</pre>
+
+<A NAME="Commands2-2" HREF="#_Commands2-2">4.2.2.  ENDMENU</A>
+<p></p>
+<pre class="code">
+  ENDMENU
+</pre>
+
+<A NAME="Commands2-3" HREF="#_Commands2-3">4.2.3.  MENUITEM</A>
+<p></p>
+<pre class="code">
+MENUITEM &lt;item&gt; [ ID &lt;nId&gt; ] 
+    ACTION &lt;act&gt; 
+    [ BITMAP &lt;bmp&gt; ] 
+    [ ACCELERATOR &lt;flag&gt;, &lt;key&gt; ] 
+    [ &lt;lDisabled: DISABLED&gt; ]
+</pre>
+
+<A NAME="Commands2-4" HREF="#_Commands2-4">4.2.4.  SEPARATOR</A>
+<p></p>
+<pre class="code">
+  SEPARATOR
+</pre>
+
+<A NAME="Commands2-5" HREF="#_Commands2-5">4.2.5.  MENU FROM RESOURCE OF</A>
+<p></p>
+<pre class="code">
+  MENU FROM RESOURCE OF &lt;oWnd&gt;
+	ON &lt;id1&gt; ACTION &lt;b1&gt; 
+	[ ON &lt;idn&gt; ACTION &lt;bn&gt; ]
+</pre>
+<p>This command is used if you specify menu in resource file, it defines actions
+for each menu item.</p>
+
+<A NAME="Commands2-6" HREF="#_Commands2-6">4.2.6.  CONTEXT MENU</A>
+<p></p>
+<pre class="code">
+  CONTEXT MENU &lt;oMenu&gt;
+</pre>
+
+<A NAME="Commands2-7" HREF="#_Commands2-7">4.2.7.  ACCELERATOR</A>
+<p></p>
+<pre class="code">
+  ACCELERATOR &lt;flag&gt;, &lt;key&gt;  
+            [ ID &lt;nId&gt; ] 
+            ACTION &lt;act&gt;
+</pre>
+
+<br><strong class="subhead"><A NAME="Commands3" HREF="hwgdoc.html#_Commands3">
+4.3.  Commands for controls handling</A></strong><br>
+ <UL>
+   <LI><A NAME="_Commands3-1" HREF="#Commands3-1">4.3.1.  ADD STATUS TO</A>
+   <LI><A NAME="_Commands3-2" HREF="#Commands3-2">4.3.2.  @ &lt;x&gt;,&lt;y&gt; SAY</A>
+   <LI><A NAME="_Commands3-3" HREF="#Commands3-3">4.3.3.  @ &lt;x&gt;,&lt;y&gt; EDITBOX</A>
+   <LI><A NAME="_Commands3-4" HREF="#Commands3-4">4.3.4.  REDEFINE EDITBOX</A>
+   <LI><A NAME="_Commands3-5" HREF="#Commands3-5">4.3.5.  @ &lt;x&gt;,&lt;y&gt; BUTTON</A>
+   <LI><A NAME="_Commands3-6" HREF="#Commands3-6">4.3.6.  REDEFINE BUTTON</A>
+   <LI><A NAME="_Commands3-7" HREF="#Commands3-7">4.3.7.  @ &lt;x&gt;,&lt;y&gt; CHECKBOX</A>
+   <LI><A NAME="_Commands3-8" HREF="#Commands3-8">4.3.8.  REDEFINE CHECKBOX</A>
+   <LI><A NAME="_Commands3-9" HREF="#Commands3-9">4.3.9.  @ &lt;x&gt;,&lt;y&gt; COMBOBOX</A>
+   <LI><A NAME="_Commands3-10" HREF="#Commands3-10">4.3.10.  REDEFINE COMBOBOX</A>
+   <LI><A NAME="_Commands3-11" HREF="#Commands3-11">4.3.11.  @ &lt;x&gt;,&lt;y&gt; RADIOBUTTON</A>
+   <LI><A NAME="_Commands3-12" HREF="#Commands3-12">4.3.12.  REDEFINE RADIOBUTTON</A>
+   <LI><A NAME="_Commands3-13" HREF="#Commands3-13">4.3.13.  RADIOGROUP</A>
+   <LI><A NAME="_Commands3-14" HREF="#Commands3-14">4.3.14.  END RADIOGROUP</A>
+   <LI><A NAME="_Commands3-15" HREF="#Commands3-15">4.3.15.  @ &lt;x&gt;,&lt;y&gt; PANEL</A>
+   <LI><A NAME="_Commands3-16" HREF="#Commands3-16">4.3.16.  REDEFINE PANEL</A>
+   <LI><A NAME="_Commands3-17" HREF="#Commands3-17">4.3.17.  @ &lt;x&gt;,&lt;y&gt; BROWSE</A>
+   <LI><A NAME="_Commands3-18" HREF="#Commands3-18">4.3.18.  REDEFINE BROWSE</A>
+   <LI><A NAME="_Commands3-19" HREF="#Commands3-19">4.3.19.  ADD COLUMN</A>
+   <LI><A NAME="_Commands3-20" HREF="#Commands3-20">4.3.20.  @ &lt;x&gt;,&lt;y&gt; OWNERBUTTON</A>
+   <LI><A NAME="_Commands3-21" HREF="#Commands3-21">4.3.21.  REDEFINE OWNERBUTTON</A>
+   <LI><A NAME="_Commands3-22" HREF="#Commands3-22">4.3.22.  @ &lt;x&gt;,&lt;y&gt; GROUPBOX</A>
+   <LI><A NAME="_Commands3-23" HREF="#Commands3-23">4.3.23. @ &lt;x&gt;,&lt;y&gt; DATEPICKER</A>
+   <LI><A NAME="_Commands3-24" HREF="#Commands3-24">4.3.24.  @ &lt;x&gt;,&lt;y&gt; UPDOWN</A>
+   <LI><A NAME="_Commands3-25" HREF="#Commands3-25">4.3.25.  @ &lt;x&gt;,&lt;y&gt; TAB</A>
+   <LI><A NAME="_Commands3-26" HREF="#Commands3-26">4.3.26.  BEGIN PAGE</A>
+   <LI><A NAME="_Commands3-27" HREF="#Commands3-27">4.3.27.  END PAGE</A>
+   <LI><A NAME="_Commands3-28" HREF="#Commands3-28">4.3.28.  @ &lt;x&gt;,&lt;y&gt; TREE</A>
+   <LI><A NAME="_Commands3-29" HREF="#Commands3-29">4.3.29.  INSERT NODE</A>
+   <LI><A NAME="_Commands3-30" HREF="#Commands3-30">4.3.30.  SET TIMER</A>
+   <LI><A NAME="_Commands3-31" HREF="#Commands3-31">4.3.31.  @ &lt;x&gt;,&lt;y&gt; BITMAP</A>
+   <LI><A NAME="_Commands3-32" HREF="#Commands3-32">4.3.32.  REDEFINE BITMAP</A>
+   <LI><A NAME="_Commands3-33" HREF="#Commands3-33">4.3.33.  @ &lt;x&gt;,&lt;y&gt; ICON</A>
+   <LI><A NAME="_Commands3-34" HREF="#Commands3-34">4.3.34.  REDEFINE ICON</A>
+   <LI><A NAME="_Commands3-35" HREF="#Commands3-35">4.3.35.  @ &lt;x&gt;,&lt;y&gt; IMAGE</A>
+   <LI><A NAME="_Commands3-36" HREF="#Commands3-36">4.3.36.  REDEFINE IMAGE</A>
+   <LI><A NAME="_Commands3-37" HREF="#Commands3-37">4.3.37.  @ &lt;x&gt;,&lt;y&gt; LINE</A>
+   <LI><A NAME="_Commands3-38" HREF="#Commands3-38">4.3.38.  @ &lt;x&gt;,&lt;y&gt; RICHEDIT</A>
+   <LI><A NAME="_Commands3-39" HREF="#Commands3-39">4.3.39.  @ &lt;x&gt;,&lt;y&gt; SPLITTER</A>
+   <LI><A NAME="_Commands3-40" HREF="#Commands3-40">4.3.40.  @ &lt;x&gt;,&lt;y&gt; GRAPH</A>
+   <LI><A NAME="_Commands3-41" HREF="#Commands3-41">4.3.41.  @ &lt;x&gt;,&lt;y&gt; PROGRESSBAR</A>
+   <LI><A NAME="_Commands3-42" HREF="#Commands3-42">4.3.42.  @ &lt;x&gt;,&lt;y&gt; MONTHCALENDAR</A>
+   <LI><A NAME="_Commands3-43" HREF="#Commands3-43">4.3.43.  @ &lt;x&gt;,&lt;y&gt; LISTBOX</A>
+   <LI><A NAME="_Commands3-44" HREF="#Commands3-36">4.3.44.  REDEFINE LISTBOX</A>
+   <LI><A NAME="_Commands3-45" HREF="#Commands3-44">4.3.45.  SPLASH</A>
+   <LI><A NAME="_Commands3-46" HREF="#Commands3-46">4.3.46.  @ &lt;x&gt;,&lt;y&gt; TRACKBAR</A>
+   <LI><A NAME="_Commands3-47" HREF="#Commands3-47">4.3.47.  @ &lt;x&gt;,&lt;y&gt; ANIMATION</A>
+ </UL>	
+<p>All the following commands creates the instances of classes, they
+are preprocessed into the New() or Redefine() method of appropriate class.</p>
+<A NAME="Commands3-1" HREF="#_Commands3-1">4.3.1.  ADD STATUS TO</A>
+<p></p>
+<pre class="code">
+ADD STATUS [ TO &lt;oWnd&gt; ]
+	 [ ID &lt;nId&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ PARTS &lt;aparts,...&gt; ]
+</pre>
+<A NAME="Commands3-2" HREF="#_Commands3-2">4.3.2.  @ &lt;x&gt;,&lt;y&gt; SAY</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; SAY [ &lt;oSay&gt; CAPTION ] &lt;caption&gt;
+	 [ OF &lt;oWnd&gt ]; 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ TRANSPARENT ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands3-3" HREF="#_Commands3-3">4.3.3.  @ &lt;x&gt;,&lt;y&gt; EDITBOX</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; EDITBOX [ &lt;oEdit&gt; CAPTION ] &lt;caption&gt;
+	 [ OF &lt;oWnd&gt ]; 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON GETFOCUS &lt;bGfocus&gt; ] 
+	 [ ON LOSTFOCUS &lt;bLfocus&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+         [ NOBORDER ] 
+         [ PASSWORD ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands3-4" HREF="#_Commands3-4">4.3.4.  REDEFINE EDITBOX</A>
+<p></p>
+<pre class="code">
+REDEFINE EDITBOX &lt;oEdit&gt;
+	 [ OF &lt;oWnd&gt; ] 
+	 ID &lt;nId&gt; 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON GETFOCUS &lt;bGfocus&gt; ] 
+	 [ ON LOSTFOCUS &lt;bLfocus&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands3-5" HREF="#_Commands3-5">4.3.5.  @ &lt;x&gt;,&lt;y&gt; BUTTON</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; BUTTON [ &lt;oButton&gt; CAPTION ] &lt;caption&gt;
+	 [ OF &lt;oWnd&gt ]; 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands3-6" HREF="#_Commands3-6">4.3.6.  REDEFINE BUTTON</A>
+<p></p>
+<pre class="code">
+REDEFINE BUTTON &lt;oButton&gt;
+	 [ OF &lt;oWnd&gt; ] 
+	 ID &lt;nId&gt; 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands3-7" HREF="#_Commands3-7">4.3.7.  @ &lt;x&gt;,&lt;y&gt; CHECKBOX</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; CHECKBOX [ &lt;oCheck&gt; CAPTION ] &lt;caption&gt;
+	 [ OF &lt;oWnd&gt ]; 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ INIT &lt;lInit&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands3-8" HREF="#_Commands3-8">4.3.8.  REDEFINE CHECKBOX</A>
+<p></p>
+<pre class="code">
+REDEFINE CHECKBOX &lt;oCheck&gt;
+	 [ OF &lt;oWnd&gt; ] 
+	 ID &lt;nId&gt; 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ INIT &lt;lInit&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands3-9" HREF="#_Commands3-9">4.3.9.  @ &lt;x&gt;,&lt;y&gt; COMBOBOX</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; COMBOBOX [ &lt;oCombo&gt; ITEMS ] &lt;aItems&gt;
+	 [ OF &lt;oWnd&gt ]; 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ INIT &lt;nInit&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON CHANGE &lt;bChange&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ] 
+	 [ EDIT ] 
+	 [ TEXT ]
+</pre>
+<A NAME="Commands3-10" HREF="#_Commands3-10">4.3.10.  REDEFINE COMBOBOX</A>
+<p></p>
+<pre class="code">
+REDEFINE COMBOBOX [ &lt;oCombo&gt; ITEMS ] &lt;aItems&gt;
+	 [ OF &lt;oWnd&gt; ] 
+	 ID &lt;nId&gt; 
+	 [ INIT &lt;nInit&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON CHANGE &lt;bChange&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands3-11" HREF="#_Commands3-11">4.3.11.  @ &lt;x&gt;,&lt;y&gt; RADIOBUTTON</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; RADIOBUTTON [ &lt;oRadio&gt; CAPTION ] &lt;caption&gt;
+	 [ OF &lt;oWnd&gt ]; 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands3-12" HREF="#_Commands3-12">4.3.12.  REDEFINE RADIOBUTTON</A>
+<p></p>
+<pre class="code">
+REDEFINE RADIOBUTTON &lt;oRadio&gt;
+	 [ OF &lt;oWnd&gt; ] 
+	 ID &lt;nId&gt; 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands3-13" HREF="#_Commands3-13">4.3.13.  RADIOGROUP</A>
+<pre class="code">
+   RADIOGROUP
+</pre>
+<A NAME="Commands3-14" HREF="#_Commands3-14">4.3.14.  END RADIOGROUP</A>
+<pre class="code">
+   END RADIOGROUP [ SELECTED &lt;nSel&gt; ]
+</pre>
+
+<A NAME="Commands3-15" HREF="#_Commands3-15">4.3.15.  @ &lt;x&gt;,&lt;y&gt; PANEL</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; PANEL &lt;oPanel&gt;
+	 [ OF &lt;oWnd&gt ]; 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ]
+</pre>
+<A NAME="Commands3-16" HREF="#_Commands3-16">4.3.16.  REDEFINE PANEL</A>
+<p></p>
+<pre class="code">
+REDEFINE PANEL &lt;oCheck&gt;
+	 [ OF &lt;oWnd&gt; ] 
+	 ID &lt;nId&gt; 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ]
+</pre>
+<A NAME="Commands3-17" HREF="#_Commands3-17">4.3.17.  @ &lt;x&gt;,&lt;y&gt; BROWSE</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; BROWSE &lt;oBrowse&gt;
+	 [ ARRAY ] 
+	 [ DATABASE ] 
+	 [ OF &lt;oWnd&gt ]; 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ] 
+	 [ ON GETFOCUS &lt;bGetFocus&gt; ] 
+	 [ ON LOSTFOCUS &lt;bLostFocus&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+         [ &lt;lNoVScr: NO VSCROLL&gt; ] 
+         [ &lt;lNoBord: NO BORDER&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+         [ APPEND ] 
+         [ AUTOEDIT ] 
+         [ ON UPDATE &lt;bUpdate&gt; ] 
+         [ ON KEYDOWN &lt;bKeyDown&gt; ] 
+         [ ON POSCHANGE &lt;bPosChg&gt; ]
+         [ MULTISELECT ]
+</pre>
+<A NAME="Commands3-18" HREF="#_Commands3-18">4.3.18.  REDEFINE BROWSE</A>
+<p></p>
+<pre class="code">
+REDEFINE BROWSE &lt;oBrowse&gt;
+	 [ ARRAY ] 
+	 [ DATABASE ] 
+	 [ OF &lt;oWnd&gt; ] 
+	 ID &lt;nId&gt; 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ] 
+	 [ ON GETFOCUS &lt;bGetFocus&gt; ] 
+	 [ ON LOSTFOCUS &lt;bLostFocus&gt; ] 
+	 [ FONT &lt;oFont&gt; ]
+</pre>
+<A NAME="Commands3-19" HREF="#_Commands3-19">4.3.19.  ADD COLUMN</A>
+<p></p>
+ADD COLUMN &lt;block&gt; &lt;
+	 TO &lt;oBrowse&gt;  
+	 [ HEADER &lt;cTitle&gt; ] 
+	 [ TYPE &lt;type&gt; ] 
+	 [ LENGTH &lt;length&gt; ] 
+	 [ DEC &lt;dec&gt; ] 
+         [ &lt;lEdit: EDITABLE&gt; ] 
+         [ JUSTIFY HEAD &lt;nJusHead&gt; ] 
+         [ JUSTIFY LINE &lt;nJusLine&gt; ] 
+         [ PICTURE &lt;cPict&gt; ] 
+         [ VALID &lt;bValid&gt; ] 
+         [ WHEN &lt;bWhen&gt; ] 
+         [ ITEMS &lt;aItem&gt; ] 
+         [ COLORBLOCK &lt;bClrBlck&gt; ]
+</pre>
+
+<A NAME="Commands3-20" HREF="#_Commands3-20">4.3.20.  @ &lt;x&gt;,&lt;y&gt; OWNERBUTTON</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; OWNERBUTTON &lt;oOwnBtn&gt;
+	 [ OF &lt;oWnd&gt ]; 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON DRAW &lt;bDraw&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FLAT ] 
+	 [ DISABLED ] 
+	 [ TEXT &lt;cText&gt; 
+	    [ COLOR &lt;color&gt; ] [ FONT &lt;font&gt; ] 
+	    [ COORDINATES &lt;xt&gt;, &lt;yt&gt;, &lt;widthtt&gt;, &lt;heightt&gt; ] 
+	 ] 
+	 [ BITMAP &lt;bmp&gt [ FROM RESOURCE ] [ TRANSPARENT [COLOR  &lt;trcolor&gt; ] ]
+	    [ COORDINATES &lt;xb&gt;, &lt;yb&gt;, &lt;widthtb&gt;, &lt;heightb&gt; ] 
+	 ] 
+</pre>
+<A NAME="Commands3-21" HREF="#_Commands3-21">4.3.21.  REDEFINE OWNERBUTTON</A>
+<p></p>
+<pre class="code">
+REDEFINE OWNERBUTTON &lt;oOwnBtn&gt;
+	 [ OF &lt;oWnd&gt; ] 
+	 ID &lt;nId&gt; 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FLAT ] 
+	 [ TEXT &lt;cText&gt; 
+	    [ COLOR &lt;color&gt; ] [ FONT &lt;font&gt; ] 
+	    [ COORDINATES &lt;xt&gt;, &lt;yt&gt;, &lt;widthtt&gt;, &lt;heightt&gt; ] 
+	 ] 
+	 [ BITMAP &lt;bmp&gt [ FROM RESOURCE ] [ TRANSPARENT ] 
+	    [ COORDINATES &lt;xb&gt;, &lt;yb&gt;, &lt;widthtb&gt;, &lt;heightb&gt; ] 
+	 ] 
+</pre>
+<A NAME="Commands3-22" HREF="#_Commands3-22">4.3.22.  @ &lt;x&gt;,&lt;y&gt; GROUPBOX</A>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; GROUPBOX [ &lt;oGroup&gt; CAPTION ] &lt;caption&gt;
+	 [ OF &lt;oWnd&gt ]; 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ]
+</pre>
+<A NAME="Commands3-23" HREF="#_Commands3-23">4.3.23.  @ &lt;x&gt;,&lt;y&gt; DATEPICKER</A>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; DATEPICKER [ &lt;oPicker&gt; CAPTION ] &lt;caption&gt;
+	 [ OF &lt;oWnd&gt; ] 
+	 [ ID &lt;nId&gt; ]
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ INIT &lt;value&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON GETFOCUS &lt;bGetFocus&gt; ] 
+	 [ ON LOSTFOCUS &lt;bLostFocus&gt; ]
+	 [ ON CHANGE &lt;bChange&gt; ]
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands3-24" HREF="#_Commands3-24">4.3.24.  @ &lt;x&gt;,&lt;y&gt; UPDOWN</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; UPDOWN [ &lt;oUpDown&gt; INIT ] &lt;nInit&gt;
+	 RANGE &lt;nLower&gt;, &lt;nUpper&gt; 
+	 [ OF &lt;oWnd&gt; ] 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ WIDTH &lt;nUpdWidth&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON GETFOCUS &lt;bGfocus&gt; ] 
+	 [ ON LOSTFOCUS &lt;bLfocus&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+
+<A NAME="Commands3-25" HREF="#_Commands3-25">4.3.25.  @ &lt;x&gt;,&lt;y&gt; TAB</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; TAB [ &lt;oTab&gt; ITEMS ] &lt;aTabs&gt;
+	 [ OF &lt;oWnd&gt; ] 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bDraw&gt; ] 
+	 [ ON CHANGE &lt;bChange&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ] 
+	 [ ON GETFOCUS &lt;bGfocus&gt; ] 
+	 [ ON LOSTFOCUS &lt;bLfocus&gt; ] 
+	 [ BITMAP &lt;aBmp&gt; [ FROM RESOURCE] [ BITCOUNT &lt;nBC&gt; ] ]
+</pre>
+
+<A NAME="Commands3-26" HREF="#_Commands3-26">4.3.26.  BEGIN PAGE</A>
+<p></p>
+<pre class="code">
+BEGIN PAGE &lt;cname&gt; OF &lt;oTab&gt;
+</pre>
+<p></p>
+<A NAME="Commands3-27" HREF="#_Commands3-27">4.3.27.  END PAGE</A>
+<p></p>
+<pre class="code">
+END PAGE OF &lt;oTab&gt;
+</pre>
+<p></p>
+<A NAME="Commands3-28" HREF="#_Commands3-28">4.3.28.  @ &lt;x&gt;,&lt;y&gt; TREE</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; TREE [ &lt;oTree&gt; ]
+	 [ OF &lt;oWnd&gt; ] 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ ON INIT &lt;bInit&gt; ] 
+	 [ ON SIZE &lt;bSize&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+         [ EDITABLE ] 
+         [ BITMAP &lt;aBmp&gt;  [ FROM RESOURCE ] ]
+</pre>
+<A NAME="Commands3-29" HREF="#_Commands3-29">4.3.29.  INSERT NODE</A>
+<p></p>
+<pre class="code">
+INSERT NODE [ &lt;oNode&gt; TITLE ] &lt;cTitle&gt;
+	 TO &lt;oTree&gt;  
+	 [ AFTER &lt;oPrev&gt; ] 
+	 [ BEFORE &lt;oNext&gt; ] 
+	 [ BITMAP &lt;aBmp&gt; ] 
+	 [ ON CLICK &lt;bClick&gt; ]
+</pre>
+
+<A NAME="Commands3-30" HREF="#_Commands3-30">4.3.30.  SET TIMER</A>
+<p></p>
+<pre class="code">
+SET TIMER [ &lt;oTimer&gt; ]
+	 [ OF &lt;oWnd&gt; ]  
+	 [ ID &lt;id&gt; ] 
+	 VALUE &lt;value&gt;  
+	 ACTION &lt;bAction&gt;
+</pre>
+
+<A NAME="Commands3-31" HREF="#_Commands3-31">4.3.31.  @ &lt;x&gt;,&lt;y&gt; BITMAP</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; BITMAP [ &lt;oBmp&gt; SHOW ] &lt;bitmap&gt; 
+         [&lt;res: FROM RESOURCE&gt; ] 
+            [ OF &lt;oWnd&gt; ] 
+            [ ID &lt;nId&gt; ] 
+            [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+            [ ON INIT &lt;bInit&gt; ] 
+            [ ON SIZE &lt;bSize&gt; ] 
+            [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands3-32" HREF="#_Commands3-32">4.3.32.  @ &lt;x&gt;,&lt;y&gt; REDEFINE BITMAP</A>
+<pre class="code">
+REDEFINE BITMAP [ &lt;oBmp&gt; SHOW ] &lt;bitmap&gt; 
+            [ OF &lt;oWnd&gt; ] 
+            [ ID &lt;nId&gt; ] 
+            [ ON INIT &lt;bInit&gt; ] 
+            [ ON SIZE &lt;bSize&gt; ] 
+            [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+
+<A NAME="Commands3-33" HREF="#_Commands3-33">4.3.33.  @ &lt;x&gt;,&lt;y&gt; ICON</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; ICON [ &lt;oBmp&gt; SHOW ] &lt;icon&gt; 
+         [&lt;res: FROM RESOURCE&gt; ] 
+            [ OF &lt;oWnd&gt; ] 
+            [ ID &lt;nId&gt; ] 
+            [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+            [ ON INIT &lt;bInit&gt; ] 
+            [ ON SIZE &lt;bSize&gt; ] 
+            [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+
+<A NAME="Commands3-34" HREF="#_Commands3-34">4.3.34.  @ &lt;x&gt;,&lt;y&gt; REDEFINE ICON</A>
+<pre class="code">
+REDEFINE ICON [ &lt;oBmp&gt; SHOW ] &lt;icon&gt; 
+            [ OF &lt;oWnd&gt; ] 
+            ID &lt;nId&gt; 
+            [ ON INIT &lt;bInit&gt; ] 
+            [ ON SIZE &lt;bSize&gt; ] 
+            [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+
+<A NAME="Commands3-35" HREF="#_Commands3-35">4.3.35.  @ &lt;x&gt;,&lt;y&gt; IMAGE</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; IMAGE [ &lt;oBmp&gt; SHOW ] &lt;image&gt; 
+            [ OF &lt;oWnd&gt; ] 
+            [ ID &lt;nId&gt; ] 
+            [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+            [ ON INIT &lt;bInit&gt; ] 
+            [ ON SIZE &lt;bSize&gt; ] 
+            [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+
+<A NAME="Commands3-36" HREF="#_Commands3-36">4.3.36.  @ &lt;x&gt;,&lt;y&gt; REDEFINE IMAGE</A>
+<pre class="code">
+REDEFINE IMAGE [ &lt;oBmp&gt; SHOW ] &lt;image&gt; 
+            [ OF &lt;oWnd&gt; ] 
+            ID &lt;nId&gt; 
+            [ ON INIT &lt;bInit&gt; ] 
+            [ ON SIZE &lt;bSize&gt; ] 
+            [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+
+<A NAME="Commands3-37" HREF="#_Commands3-37">4.3.37.  @ &lt;x&gt;,&lt;y&gt; LINE</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; LINE [ &lt;oLine&gt; ] 
+            [ LENGTH &lt;length&gt; ] 
+            [ OF &lt;oWnd&gt; ] 
+            [ ID &lt;nId&gt; ] 
+            [ VERTICAL] 
+            [ ON SIZE &lt;bSize&gt; ]
+</pre>
+
+<A NAME="Commands3-38" HREF="#_Commands3-38">4.3.38.  @ &lt;x&gt;,&lt;y&gt; RICHEDIT</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; RICHEDIT [ &lt;oEdit&gt; TEXT ] &lt;vari&gt; 
+         [ OF &lt;oWnd&gt; ] 
+         [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+         [ ON INIT &lt;bInit&gt; ] 
+         [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bPaint&gt; ] 
+	 [ ON GETFOCUS &lt;bGfocus&gt; ] 
+	 [ ON LOSTFOCUS &lt;bLfocus&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+         [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+
+<A NAME="Commands3-39" HREF="#_Commands3-39">4.3.39.  @ &lt;x&gt;,&lt;y&gt; SPLITTER</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; SPLITTER [ &lt;oSplit&gt; ]  
+         [ OF &lt;oWnd&gt; ] 
+         [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+         [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ DIVIDE  &lt;aLeft&gt; FROM &lt;aRight&gt; ]
+</pre>
+
+<A NAME="Commands3-40" HREF="#_Commands3-40">4.3.40.  @ &lt;x&gt;,&lt;y&gt; GRAPH</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; GRAPH [ &lt;oGraph&gt; DATA ] &lt;aData&gt; 
+         [ OF &lt;oWnd&gt; ] 
+         [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+         [ ON SIZE &lt;bSize&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+         [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+
+<A NAME="Commands3-41" HREF="#_Commands3-41">4.3.41.  @ &lt;x&gt;,&lt;y&gt; PROGRESSBAR</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; PROGRESSBAR &lt;oPBar&gt;  
+         [ OF &lt;oWnd&gt; ] 
+         [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+         [ BARWIDTH &lt;maxpos&gt; ] 
+         [ QUANTITY &lt;nRange&gt; ]
+</pre>
+
+<A NAME="Commands3-42" HREF="#_Commands3-42">4.3.42.  @ &lt;x&gt;,&lt;y&gt; MONTHCALENDAR</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; MONTHCALENDAR [ &lt;oCalendar&gt; ] 
+         [ OF &lt;oWnd&gt; ] 
+         [ ID &lt;nId&gt; ] 
+         [ INIT &lt;dInit&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+         [ ON INIT &lt;bInit&gt; ] 
+         [ ON CHANGE &lt;bChange&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+         [ TOOLTIP &lt;ctoolt&gt; ] 
+         [ NOTODAY ] 
+         [ NOTODAYCIRCLE ] 
+         [ WEEKNUMBERS ]
+</pre>
+
+<A NAME="Commands3-43" HREF="#_Commands3-43">4.3.43.  @ &lt;x&gt;,&lt;y&gt; LISTBOX</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; LISTBOX [ &lt;oList&gt; ITEMS ] &lt;aItems&gt;  
+         [ OF &lt;oWnd&gt; ] 
+         [ ID &lt;nId&gt; ] 
+         [ INIT &lt;dInit&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+         [ ON INIT &lt;bInit&gt; ] 
+         [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ ON CHANGE &lt;bChange&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+         [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+
+<A NAME="Commands3-44" HREF="#_Commands3-44">4.3.44.  @ &lt;x&gt;,&lt;y&gt; REDEFINE LISTBOX</A>
+<pre class="code">
+REDEFINE LISTBOX [ &lt;oList&gt; ITEMS ] &lt;aItems&gt; 
+            [ OF &lt;oWnd&gt; ] 
+            ID &lt;nId&gt; 
+            [ INIT &lt;dInit&gt; ] 
+            [ ON INIT &lt;bInit&gt; ] 
+            [ ON SIZE &lt;bSize&gt; ] 
+            [ ON PAINT &lt;bPaint&gt; ] 
+            [ ON CHANGE &lt;bChange&gt; ] 
+            [ FONT &lt;oFont&gt; ] 
+            [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+
+<A NAME="Commands3-45" HREF="#_Commands3-45">4.3.45.  SPLASH</A>
+<p></p>
+<pre class="code">
+SPLASH [ &lt;oPBar&gt; TO ] &lt;oBitmap&gt;  
+            [ FROM RESOURCE ] 
+            [ TIME &lt;otime&gt; ]
+            [WIDTH &lt;w&gt; ]
+            [HEIGHT &lt;h&gt; ]
+</pre>
+
+<A NAME="Commands3-46" HREF="#_Commands3-46">4.3.46.  @ &lt;x&gt;,&lt;y&gt; TRACKBAR</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; TRACKBAR [ &lt;oTrack&gt; ]  
+         [ OF &lt;oWnd&gt; ] 
+         [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ RANGE &lt;nLow&gt;, &lt;nHigh&gt; ] 
+         [ INIT &lt;dInit&gt; ] 
+         [ ON INIT &lt;bInit&gt; ] 
+         [ ON SIZE &lt;bSize&gt; ] 
+	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ ON CHANGE &lt;bChange&gt; ] 
+         [ ON DRAG &lt;bDrag&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+         [ TOOLTIP &lt;ctoolt&gt; ] 
+         [ VERTICAL ] 
+         [ AUTOTICKS ] 
+         [ NOTICKS ] 
+         [ BOTH ] 
+         [ TOP ] 
+         [ LEFT ]
+</pre>
+
+<A NAME="Commands3-47" HREF="#_Commands3-47">4.3.47.  @ &lt;x&gt;,&lt;y&gt; ANIMATION</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; ANIMATION [ &lt;oAnimation&gt; ]  
+         [ OF &lt;oWnd&gt; ] 
+         [ ID &lt;nId&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+         [ FILE &lt;cFile&gt; ] 
+         [ AUTOPLAY ] 
+         [ CENTER ] 
+         [ TRANSPARENT ]
+</pre>
+
+ <strong class="subhead"><A NAME="Commands4" HREF="hwgdoc.html#_Commands4">
+4.4.  Get system commands</A></strong>  
+ <UL>
+   <LI><A NAME="_Commands4-1" HREF="#Commands4-1">4.4.1.  @ &lt;x&gt;,&lt;y&gt; GET</A>
+   <LI><A NAME="_Commands4-2" HREF="#Commands4-2">4.4.2.  REDEFINE GET</A>
+   <LI><A NAME="_Commands4-3" HREF="#Commands4-3">4.4.3.  @ &lt;x&gt;,&lt;y&gt; GET CHECKBOX</A>
+   <LI><A NAME="_Commands4-4" HREF="#Commands4-4">4.4.4.  REDEFINE GET CHECKBOX</A>
+   <LI><A NAME="_Commands4-5" HREF="#Commands4-5">4.4.5.  @ &lt;x&gt;,&lt;y&gt; GET COMBOBOX</A>
+   <LI><A NAME="_Commands4-6" HREF="#Commands4-6">4.4.6.  REDEFINE GET COMBOBOX</A>
+   <LI><A NAME="_Commands4-7" HREF="#Commands4-7">4.4.7.  GET RADIOGROUP</A>
+   <LI><A NAME="_Commands4-8" HREF="#Commands4-8">4.4.8.  @ &lt;x&gt;,&lt;y&gt; GET DATEPICKER</A>
+   <LI><A NAME="_Commands4-9" HREF="#Commands4-9">4.4.9.  @ &lt;x&gt;,&lt;y&gt; GET UPDOWN</A>
+   <LI><A NAME="_Commands4-10" HREF="#Commands4-10">4.4.10.  SET KEY</A>
+ </UL>	
+<p>Get system doesn't use a special class, something like HGet. It uses the same
+control classes ( HEdit, HCheckButton, etc. ), as usual control creating commands,
+only add there some new behavour.
+</p>
+<A NAME="Commands4-1" HREF="#_Commands4-1">4.4.1.  @ &lt;x&gt;,&lt;y&gt; GET</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; GET [ &lt;oEdit&gt; VAR ] &lt;vari&gt;
+	 [ OF &lt;oWnd&gt; ] 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ PICTURE &lt;cPicture&gt; ] 
+	 [ WHEN &lt;bWhen&gt; ] 
+	 [ VALID &lt;bValid&gt; ] 
+         [ NOBORDER ] 
+         [ PASSWORD ] 
+         [ MAXLENGTH &lt;lMaxLength&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands4-2" HREF="#_Commands4-2">4.4.2.  REDEFINE GET</A>
+<p></p>
+<pre class="code">
+REDEFINE GET [ &lt;oEdit&gt; VAR ] &lt;vari&gt;
+	 [ OF &lt;oWnd&gt; ] 
+	 ID &lt;nId&gt; 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ WHEN &lt;bWhen&gt; ] 
+	 [ VALID &lt;bValid&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands4-3" HREF="#_Commands4-3">4.4.3.  @ &lt;x&gt;,&lt;y&gt; GET CHECKBOX</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; GET CHECKBOX [ &lt;oEdit&gt; VAR ] &lt;vari&gt;
+         CAPTION  &lt;caption&gt;
+	 [ OF &lt;oWnd&gt; ] 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ VALID,ON CLICK &lt;bValid&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+	 [ WHEN &lt;bWhen&gt; ]
+</pre>
+<A NAME="Commands4-4" HREF="#_Commands4-4">4.4.4.  REDEFINE GET CHECKBOX</A>
+<p></p>
+<pre class="code">
+REDEFINE GET CHECKBOX [ &lt;oEdit&gt; VAR ] &lt;vari&gt;
+	 [ OF &lt;oWnd&gt;]  
+	 ID &lt;nId&gt; 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ VALID,ON CLICK &lt;bValid&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands4-5" HREF="#_Commands4-5">4.4.5.  @ &lt;x&gt;,&lt;y&gt; GET COMBOBOX</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; GET COMBOBOX [ &lt;oCombo&gt; VAR ] &lt;vari&gt;
+         ITEMS ] &lt;aItems&gt; 
+	 [ OF &lt;oWnd&gt; ] 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ ON CHANGE &lt;bChange&gt; ]
+         [ WHEN &lt;bWhen&gt; ]
+         [ VALID &lt;bValid&gt; ]
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ EDIT ] 
+	 [ TEXT ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands4-6" HREF="#_Commands4-6">4.4.6.  REDEFINE GET COMBOBOX</A>
+<p></p>
+<pre class="code">
+REDEFINE GET COMBOBOX [ &lt;oCombo&gt; VAR ] &lt;vari&gt;
+         ITEMS ] &lt;aItems&gt; 
+	 [ OF &lt;oWnd&gt; ] 
+	 ID &lt;nId&gt; 
+	 [ ON CHANGE &lt;bChange&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+<A NAME="Commands4-7" HREF="#_Commands4-7">4.4.7.  GET RADIOGROUP</A>
+<p></p>
+<pre class="code">
+   GET RADIOGROUP [ &lt;ogr&gt; VAR ] &lt;vari&gt;
+</pre> 
+<A NAME="Commands4-8" HREF="#_Commands4-8">4.4.8.  @ &lt;x&gt;,&lt;y&gt; GET DATEPICKER</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; GET DATEPICKER [ &lt;oPick&gt; VAR ] &lt;vari&gt;
+	 [ OF &lt;oWnd&gt;]  
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ WHEN &lt;bWhen&gt; ] 
+	 [ VALID &lt;bValid&gt; ] 
+	 [ ON CHANGE &lt;bChange&gt; ]
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+
+<A NAME="Commands4-9" HREF="#_Commands4-9">4.4.9.  @ &lt;x&gt;,&lt;y&gt; GET UPDOWN</A>
+<p></p>
+<pre class="code">
+@ &lt;x&gt;,&lt;y&gt; GET UPDOWN[ &lt;oUpDown&gt; VAR ] &lt;vari&gt;
+	 RANGE &lt;nLower&gt;, &lt;nUpper&gt; 
+	 [ OF &lt;oWnd&gt; ] 
+	 [ ID &lt;nId&gt; ] 
+	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+	 [ WIDTH &lt;nUpdWidth&gt; ] 
+	 [ COLOR &lt;tcolor&gt; ] 
+	 [ BACKCOLOR &lt;bcolor&gt; ] 
+	 [ PICTURE &lt;cPicture&gt; ] 
+	 [ WHEN &lt;bWhen&gt; ] 
+	 [ VALID &lt;bValid&gt; ] 
+	 [ STYLE &lt;nStyle&gt; ] 
+	 [ FONT &lt;oFont&gt; ] 
+	 [ TOOLTIP &lt;ctoolt&gt; ]
+</pre>
+
+<A NAME="Commands4-10" HREF="#_Commands4-10">4.4.10.  SET KEY</A>
+<p></p>
+<pre class="code">
+ SET KEY &lt;nctrl&gt;, &lt;nkey&gt; [ OF &lt;oDlg&gt; ] [ TO &lt;func&gt; ]
+</pre>
+
+<br><strong class="subhead"><A NAME="Commands5" HREF="hwgdoc.html#_Commands5">
+4.5.  Print commands</A></strong>  
+ <UL>
+   <LI><A NAME="_Commands5-1" HREF="#Commands5-1">4.5.1.  INIT PRINTER</A>
+   <LI><A NAME="_Commands5-2" HREF="#Commands5-2">4.5.2.  INIT DEFAULT PRINTER</A>
+ </UL>	
+
+<A NAME="Commands5-1" HREF="#_Commands5-1">
+4.5.1. INIT PRINTER </A>
+<p></p>
+<pre class="code">
+INIT PRINTER &lt;oPrinter&gt;
+         [ NAME &lt;cPrinter&gt; ] 
+         [ PIXEL ]
+</pre>
+
+<A NAME="Commands5-2" HREF="#_Commands5-2">4.5.2. INIT DEFAULT PRINTER </A>
+<p></p>
+<pre class="code">
+INIT DEFAULT PRINTER &lt;oPrinter&gt;
+         [ PIXEL ]
+</pre>
+
+<hr align="left" width="100%">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="33%" align="left"><a href="hwgdoc.html#Introduction">prev</a></td>
+    <td width="34%" align="center"><a href="hwgdoc.html">table of contents</a></td>
+    <td width="33%" align="right"><a href="hwgdoc_functions.html">next</a></td>
+  </tr>
+  <tr>
+    <td width="33%" align="left">introduction</td>
+    <td width="34%" align="center">&nbsp;</td>
+    <td width="33%" align="right">functions</td>
+  </tr>
+</table>
+
+</body>
+</html>

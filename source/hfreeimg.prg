@@ -1,5 +1,5 @@
 /*
- * $Id: hfreeimg.prg,v 1.6 2005-10-26 07:43:26 omm Exp $
+ * $Id: hfreeimg.prg,v 1.7 2006-10-06 05:36:08 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFreeImage - Image handling class
@@ -52,8 +52,9 @@ Local i, aBmpSize
       ENDIF
    NEXT
    #endif
-   ::handle := FI_Load( name )
-   // ::hBitmap := FI_2Bitmap( ::handle )
+   IF Empty( ::handle := FI_Load( name ) )
+      Return Nil
+   ENDIF
    ::name := name
    ::nWidth  := FI_GetWidth( ::handle )
    ::nHeight := FI_GetHeight( ::handle )

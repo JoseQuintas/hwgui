@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.565 2006-10-05 11:02:41 alkresin Exp $
+ * $Id: Changelog,v 1.566 2006-10-06 05:36:07 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-06 09:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/drawwidg.prg
+  * source/hfreeimg.prg
+    ! :Addfile() returns Nil now if an image wasn't opened
 
 2006-10-05 15:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   - doc/hwgdoc.htm

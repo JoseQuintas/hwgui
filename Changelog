@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.566 2006-10-06 05:36:07 alkresin Exp $
+ * $Id: Changelog,v 1.567 2006-10-07 11:35:42 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-07 08:40 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+  * source/hcombo.prg
+    ! fixes to valid when using @ get combo with valif clause. fix by
+      Luiz Henrique dos Santos (luizhsantos@gmail.com) 
 
 2006-10-06 09:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/drawwidg.prg

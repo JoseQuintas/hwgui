@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.21 2005-10-26 07:43:26 omm Exp $
+ * $Id: hcombo.prg,v 1.22 2006-10-07 11:35:42 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -33,6 +33,7 @@ CLASS HComboBox INHERIT HControl
    DATA  value    INIT 1
    DATA  bValid   INIT {||.T.}
    DATA  bChangeSel
+
    DATA  lText    INIT .F.
    DATA  lEdit    INIT .F.
 
@@ -50,7 +51,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
 
    if lEdit == Nil; lEdit := .f.; endif
    if lText == Nil; lText := .f.; endif
-   if bValid != NIL; ::bValid := bValid; endif
+   //if bValid != NIL; ::bValid := bValid; endif
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ),Iif( lEdit,CBS_DROPDOWN,CBS_DROPDOWNLIST )+WS_TABSTOP )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, bSize,bPaint,ctooltip,tcolor,bcolor )
@@ -75,9 +76,19 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
-      ::bGetFocus  := bGFocus
+      ::bGetFocus := bGFocus
       ::oParent:AddEvent( CBN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
-      ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
+
+      // By Luiz Henrique dos Santos (luizhsantos@gmail.com) 03/06/2006
+      IF ::bChangeSel != NIL
+         ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
+      ENDIF
+      
+      IF bValid != NIL
+         ::bValid := bValid
+         ::oParent:AddEvent( CBN_KILLFOCUS,::id,{|o,id|__Valid(o:FindControl(id))} ) 
+      ENDIF
+      //---------------------------------------------------------------------------
    ELSEIF bChange != Nil
       ::oParent:AddEvent( CBN_SELCHANGE,::id,bChange )
    ENDIF
@@ -115,10 +126,14 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bPaint, ;
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
-      ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
+      // By Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
+      IF ::bChangeSel != NIL
+        ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
+      ENDIF
    ELSEIF bChange != Nil
       ::oParent:AddEvent( CBN_SELCHANGE,::id,bChange )
    ENDIF
+   ::Refresh() // By Luiz Henrique dos Santos
 Return Self
 
 METHOD Init() CLASS HComboBox
@@ -202,21 +217,30 @@ Return Nil
 Static Function __Valid( oCtrl )
    Local nPos
 
-   nPos := SendMessage( oCtrl:handle,CB_GETCURSEL,0,0 ) + 1
-
-   IF oCtrl:lText
-      oCtrl:value := oCtrl:aItems[nPos]
-   ELSE
-      oCtrl:value := nPos
+   IF oCtrl:oParent:nLastKey != 27 // "if" by Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
+     nPos := SendMessage( oCtrl:handle,CB_GETCURSEL,0,0 ) + 1
+  
+     IF oCtrl:lText
+        oCtrl:value := oCtrl:aItems[nPos]
+     ELSE
+        oCtrl:value := nPos
+     ENDIF
+  
+     IF oCtrl:bSetGet != Nil
+        Eval( oCtrl:bSetGet, oCtrl:value, oCtrl )
+     ENDIF
+     IF oCtrl:bChangeSel != Nil
+        Eval( oCtrl:bChangeSel, nPos, oCtrl )
+     ENDIF
+     
+     // By Luiz Henrique dos Santos (luizhsantos@gmail.com.br) 03/06/2006
+     IF oCtrl:bValid != NIL 
+       IF ! EVAL( oCtrl:bValid, oCtrl )
+         SetFocus( oCtrl:handle )
+         RETURN .F.
+       ENDIF
+     ENDIF
    ENDIF
-
-   IF oCtrl:bSetGet != Nil
-      Eval( oCtrl:bSetGet, oCtrl:value, oCtrl )
-   ENDIF
-   IF oCtrl:bChangeSel != Nil
-      Eval( oCtrl:bChangeSel, nPos, oCtrl )
-   ENDIF
-
 Return .T.
 
 Static Function __KillFocus( oCtrl )

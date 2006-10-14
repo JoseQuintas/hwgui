@@ -6,4 +6,12 @@
   <editor>editor.iml</editor>
   <rep_widgetset>resource/repwidg.xml</rep_widgetset>
   <rep_format name="Plain text format" ext="rpt" file="resource/r_text.prg" rdscr="read"/>
+  <dirpath default="d:\bvisual\source\"/>
+  <recent>
+    <file>d:\bvisual\source\painesql.prg</file>
+    <file>d:\bvisual\lixo\zz.prg</file>
+    <file>d:\bvisual\lixo\lixo.xml</file>
+    <file>d:\bvisual\source\dialogos.prg</file>
+    <file>d:\bvisual\lixo\mn.prg</file>
+  </recent>
 </designer>

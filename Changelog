@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.567 2006-10-07 11:35:42 lculik Exp $
+ * $Id: Changelog,v 1.568 2006-10-14 15:42:19 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-14 12-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
+  * utils/designer/designer.iml
+  * utils/designer/designer.prg
+    Added function SetOmmitMenuFile(lom) to disable itens in Menu Designer, is necessary to use in Designer.lib
+  * utils/designer/editor.prg
+  * utils/designer/hformgen.prg
+  * utils/designer/hformgen.prg
+  * utils/designer/samples/example.prg
+    Added in messages MsgInfo, MsgYesNo, parameter to (Designer)
 
 2006-10-07 08:40 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/hcombo.prg

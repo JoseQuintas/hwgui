@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.16 2006-09-13 15:47:25 alkresin Exp $
+ * $Id: editor.prg,v 1.17 2006-10-14 15:42:19 sandrorrfreire Exp $
  *
  * Designer
  * Simple code editor
@@ -165,7 +165,7 @@ Local cParamString
       AT 100,240  SIZE 600,300  FONT oDesigner:oMainWnd:oFont    ;
       STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_MAXIMIZEBOX+WS_SIZEBOX ;
       ON INIT {||MoveWindow(oDlg:handle,100,240,600,310)}        ;
-      ON EXIT {||Iif(lRes:=(oEdit:lChanged.AND.MsgYesNo("Code was changed! Save it?")),cMethod:=oEdit:GetText(),.F.),.T.}
+      ON EXIT {||Iif(lRes:=(oEdit:lChanged.AND.MsgYesNo("Code was changed! Save it?", "Designer")),cMethod:=oEdit:GetText(),.F.),.T.}
 
    MENU OF oDlg
       MENU TITLE "&Options"
@@ -439,10 +439,10 @@ Static Function UpdSample( nAction )
    IF nAction != Nil
       IF nAction == 1
          IF Len( aSchemes ) == 1
-            MsgStop( "Can't delete the only theme !" )
+            MsgStop( "Can't delete the only theme !", "Designer" )
             Return Nil
          ENDIF
-         IF MsgYesNo( "Really delete the '" + aSchemes[nScheme,1] + "' theme ?" )
+         IF MsgYesNo( "Really delete the '" + aSchemes[nScheme,1] + "' theme ?", "Designer" )
             Adel( aSchemes,nScheme )
             Asize( aSchemes,Len(aSchemes)-1 )
             nScheme := oBrw:nCurrent := oBrw:rowPos := 1
@@ -452,7 +452,7 @@ Static Function UpdSample( nAction )
          ENDIF
       ELSEIF nAction == 2
          IF Empty( cScheme )
-            MsgStop( "You must specify the theme name !" )
+            MsgStop( "You must specify the theme name !", "Designer" )
             Return Nil
          ENDIF
          IF Ascan( aSchemes,{|a|Lower(a[1])==Lower(cScheme)} ) == 0
@@ -461,7 +461,7 @@ Static Function UpdSample( nAction )
                 AClone(aSchemes[nScheme,5]), AClone(aSchemes[nScheme,6]) } )
             oBrw:Refresh()
          ELSE
-            MsgStop( "The " + cScheme + " theme exists already !" )
+            MsgStop( "The " + cScheme + " theme exists already !", "Designer" )
             Return Nil
          ENDIF
       ENDIF

@@ -9,6 +9,8 @@ REQUEST DBCREATEINDEX
 REQUEST DBSEEK
 REQUEST SHELLABOUT
 
+#include "example.frm"
+
 Function Main
 Local oForm := HFormTmpl():Read( "example.xml" )
 

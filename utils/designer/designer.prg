@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.21 2006-08-10 05:11:55 alkresin Exp $
+ * $Id: designer.prg,v 1.22 2006-10-14 15:42:19 sandrorrfreire Exp $
  *
  * Designer
  * Main file
@@ -14,6 +14,8 @@
 #include "hxml.ch"
 
 #define  MAX_RECENT_FILES  5
+
+STATIC lOmmitMenuFile := .F.
 
 REQUEST DRAWEDGE
 REQUEST DRAWICON
@@ -86,23 +88,27 @@ Public crossCursor, vertCursor, horzCursor
             MENUITEM "&New "+iif(!oDesigner:lReport,"Form","Report")  ACTION HFormGen():New()
             MENUITEM "&Open "+iif(!oDesigner:lReport,"Form","Report") ACTION HFormGen():Open()
             SEPARATOR
-            MENUITEM "&Save "+iif(!oDesigner:lReport,"Form","Report")   ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(),MsgStop("No Form in use!"))
+            MENUITEM "&Save "+iif(!oDesigner:lReport,"Form","Report")   ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(),MsgStop("No Form in use!", "Designer"))
             MENUITEM "&Save as ..." ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(.T.),MsgStop("No Form in use!"))
-            MENUITEM "&Close "+iif(!oDesigner:lReport,"Form","Report")  ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:End(),MsgStop("No Form in use!"))
+            MENUITEM "&Close "+iif(!oDesigner:lReport,"Form","Report")  ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:End(),MsgStop("No Form in use!", "Designer"))
          ELSE
-            MENUITEM "&Open "+iif(!oDesigner:lReport,"Form","Report") ACTION HFormGen():OpenR()
-            SEPARATOR
-            MENUITEM "&Save as ..." ACTION ( oDesigner:lSingleForm:=.F.,HFormGen():oDlgSelected:oParent:Save(.T.),oDesigner:lSingleForm:=.T. )
+            If !lOmmitMenuFile
+               MENUITEM "&Open "+iif(!oDesigner:lReport,"Form","Report") ACTION HFormGen():OpenR()
+               SEPARATOR
+               MENUITEM "&Save as ..." ACTION ( oDesigner:lSingleForm:=.F.,HFormGen():oDlgSelected:oParent:Save(.T.),oDesigner:lSingleForm:=.T. )
+            EndIf
          ENDIF
-         SEPARATOR
-         i := 1
-         DO WHILE i <= MAX_RECENT_FILES .AND. oDesigner:aRecent[i] != Nil
-            Hwg_DefineMenuItem( CutPath(oDesigner:aRecent[i]), 1020+i, ;
-               &( "{||HFormGen():Open('"+oDesigner:aRecent[i]+"')}" ) )
-            i ++
-         ENDDO
-         SEPARATOR
-         MENUITEM "&Exit" ACTION oDesigner:oMainWnd:Close()
+         If !lOmmitMenuFile
+            SEPARATOR
+            i := 1
+            DO WHILE i <= MAX_RECENT_FILES .AND. oDesigner:aRecent[i] != Nil
+               Hwg_DefineMenuItem( CutPath(oDesigner:aRecent[i]), 1020+i, ;
+                  &( "{||HFormGen():Open('"+oDesigner:aRecent[i]+"')}" ) )
+               i ++
+            ENDDO
+            SEPARATOR
+         EndIf
+         MENUITEM If(!lOmmitMenuFile,"&Exit","&Close Designer") ACTION oDesigner:oMainWnd:Close()
       ENDMENU
       MENU TITLE "&Edit"
          MENUITEM "&Copy control" ACTION (oDesigner:oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oDesigner:oClipBrd!=Nil,EnableMenuItem(,1012,.T.,.T.),.F.))
@@ -120,7 +126,7 @@ Public crossCursor, vertCursor, horzCursor
          MENUITEM "&AutoAdjust" ID 1011 ACTION CheckMenuItem(oDesigner:oMainWnd:handle,1011,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1011))
       ENDMENU
       MENU TITLE "&Help"
-         MENUITEM "&About" ACTION MsgInfo("About")
+         MENUITEM "&About" ACTION MsgInfo("Visual Designer", "Designer")
       ENDMENU
    ENDMENU
 
@@ -497,7 +503,7 @@ Static Function EndIde
 Local i, j, alen := Len( HFormGen():aForms ), lRes := .T., oIni, critem, oNode
 
   IF alen > 0
-     IF MsgYesNo( "Are you really want to quit ?" )
+     IF MsgYesNo( "Are you really want to quit ?", "Designer" )
         FOR i := Len( HFormGen():aForms ) TO 1 STEP -1
            HFormGen():aForms[i]:End( ,.F. )
         NEXT
@@ -544,3 +550,9 @@ Local i, j, alen := Len( HFormGen():aForms ), lRes := .T., oIni, critem, oNode
   ENDIF
 
 Return lRes
+
+
+
+Function SetOmmitMenuFile(lom)
+lOmmitMenuFile := lOm
+Return lOm

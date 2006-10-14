@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.31 2006-09-21 07:16:18 alkresin Exp $
+ * $Id: hformgen.prg,v 1.32 2006-10-14 15:42:19 sandrorrfreire Exp $
  *
  * Designer
  * HFormGen class
@@ -96,7 +96,7 @@ Return Self
 METHOD OpenR( fname )  CLASS HFormGen
 Local oForm := ::aForms[1]
 
-   IF !MsgYesNo( "The form will be opened INSTEAD of current ! Are you agree ?" )
+   IF !MsgYesNo( "The form will be opened INSTEAD of current ! Are you agree ?", "Designer")
       Return Nil
    ENDIF
    oDesigner:lSingleForm := .F.
@@ -138,7 +138,7 @@ Private oForm := Self, aCtrlTable
          InspSetCombo()
       ENDIF
       IF ::oDlg == Nil .OR. Empty( ::oDlg:aControls )
-         MsgStop( "Can't load the form" )
+         MsgStop( "Can't load the form", "Designer" )
       ELSEIF !oDesigner:lSingleForm .AND. fname != Nil
          AddRecent( Self )
       ENDIF
@@ -151,7 +151,7 @@ Local i, j, name := ::name, oDlgSel
 
    IF lDlg == Nil; lDlg := .F.; ENDIF
    IF ::lChanged
-      IF MsgYesNo( ::name + " was changed. Save it ?" )
+      IF MsgYesNo( ::name + " was changed. Save it ?", "Designer" )
          ::Save()
       ENDIF
    ENDIF
@@ -191,7 +191,7 @@ Private oForm := Self, aCtrlTable
 
    IF lAs == Nil; lAs := .F.; ENDIF
    IF !::lChanged .AND. !lAs
-      MsgStop( "Nothing to save" )
+      MsgStop( "Nothing to save", "Designer" )
       Return Nil
    ENDIF
 
@@ -570,10 +570,10 @@ Local oDoc := Iif( cForm!=Nil, HXMLDoc():ReadString(cForm), HXMLDoc():Read( oFor
 Local i, j, aItems, o, aProp := {}, cPropertyName, aRect, pos, cProperty
 
    IF Empty( oDoc:aItems )
-      MsgStop( "Can't open "+oForm:path+oForm:filename )
+      MsgStop( "Can't open "+oForm:path+oForm:filename, "Designer" )
       Return Nil
    ELSEIF oDoc:aItems[1]:title != "part" .OR. oDoc:aItems[1]:GetAttribute( "class" ) != Iif( oDesigner:lReport,"report","form" )
-      MsgStop( "Form description isn't found" )
+      MsgStop( "Form description isn't found", "Designer" )
       Return Nil
    ENDIF
    oForm:cEncoding := oDoc:GetAttribute( "encoding" )
@@ -1342,7 +1342,7 @@ Local cTemp1, cTemp2, lc := .F.
 Local oTmpl
 
    IF HFormGen():oDlgSelected == Nil
-      MsgStop( "No Form in use!" )
+      MsgStop( "No Form in use!", "Designer" )
       Return Nil
    ENDIF
 

@@ -1,5 +1,5 @@
 /*
- * $Id: procs7.prg,v 1.3 2004-12-08 08:23:17 alkresin Exp $
+ * $Id: procs7.prg,v 1.4 2006-10-18 11:37:56 alkresin Exp $
  *
  * Common procedures
  *
@@ -93,8 +93,8 @@ RETURN varName
 *+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 *+
 FUNCTION FIND_Z( stroka, symb )
+LOCAL poz, poz1 := 1, i, j, ms1 := "(){}[]'"+'"', ms2 := { 0, 0, 0, 0, 0, 0, 0, 0 }
 
-LOCAL poz, poz1 := 1, i, j, ms1 := "(){}[]", ms2 := { 0, 0, 0, 0, 0, 0 }
    symb := IIF( symb = Nil, ",", symb )
    DO WHILE .T.
       poz := AT( symb, SUBSTR( stroka, poz1 ) )
@@ -108,7 +108,8 @@ LOCAL poz, poz1 := 1, i, j, ms1 := "(){}[]", ms2 := { 0, 0, 0, 0, 0, 0 }
             ms2[ j ] ++
          ENDIF
       NEXT
-      IF ms2[ 1 ] = ms2[ 2 ] .AND. ms2[ 3 ] = ms2[ 4 ] .AND. ms2[ 5 ] = ms2[ 6 ]
+      IF ms2[ 1 ] == ms2[ 2 ] .AND. ms2[ 3 ] == ms2[ 4 ] .AND. ;
+         ms2[ 5 ] == ms2[ 6 ] .AND. ms2[7]%2 == 0 .AND. ms2[8]%2 == 0
          EXIT
       ELSE
          IF ( j := AT( SUBSTR( stroka, poz, 1 ), ms1 ) ) <> 0

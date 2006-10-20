@@ -1,5 +1,5 @@
 /*
- * $Id: hfreeimg.prg,v 1.7 2006-10-06 05:36:08 alkresin Exp $
+ * $Id: hfreeimg.prg,v 1.8 2006-10-20 09:49:52 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFreeImage - Image handling class
@@ -64,7 +64,9 @@ Return Self
 
 METHOD AddFromVar( cImage,cType ) CLASS HFreeImage
 
-   ::handle := FI_LoadFromMem( cImage,cType )
+   IF Empty( ::handle := FI_LoadFromMem( cImage,cType ) )
+      Return Nil
+   ENDIF
    ::name := Ltrim( Str( ::handle ) )
    ::nWidth  := FI_GetWidth( ::handle )
    ::nHeight := FI_GetHeight( ::handle )

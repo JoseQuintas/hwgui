@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.22 2006-10-07 11:35:42 lculik Exp $
+ * $Id: hcombo.prg,v 1.23 2006-10-31 13:58:40 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -80,7 +80,9 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
       ::oParent:AddEvent( CBN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
 
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com) 03/06/2006
-      IF ::bChangeSel != NIL
+      if ::bSetGet <> nil
+         ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
+      elseif ::bChangeSel != NIL
          ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
       ENDIF
       
@@ -216,8 +218,17 @@ Return Nil
 
 Static Function __Valid( oCtrl )
    Local nPos
-
-   IF oCtrl:oParent:nLastKey != 27 // "if" by Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
+   local lESC
+   // by sauli
+   if __ObjHasMsg(oCtrl:oParent,"nLastKey")
+      // caso o PARENT seja HDIALOG
+      lESC := oCtrl:oParent:nLastKey <> 27
+   else
+      // caso o PARENT seja HTAB, HPANEL
+      lESC := .t.
+   end
+   // end by sauli
+   IF lESC // "if" by Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
      nPos := SendMessage( oCtrl:handle,CB_GETCURSEL,0,0 ) + 1
   
      IF oCtrl:lText

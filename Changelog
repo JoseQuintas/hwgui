@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.572 2006-10-31 13:58:39 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.573 2006-10-31 15:34:51 mauriliolongo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-31 16:30 UTC+0100 Maurilio Longo <maurilio.longo@libero.it>
+   * source/freeimg.c
+     + Addede fi_LoadType() and fi_SaveType() to be able to save an image and
+       choose type without have to set an extension to specify it.
 
 2006-10-31 11-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
    * source\hcombo.prg
@@ -43,7 +48,7 @@
 2006-10-07 08:40 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/hcombo.prg
     ! fixes to valid when using @ get combo with valif clause. fix by
-      Luiz Henrique dos Santos (luizhsantos@gmail.com) 
+      Luiz Henrique dos Santos (luizhsantos@gmail.com)
 
 2006-10-06 09:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/drawwidg.prg
@@ -274,7 +279,7 @@
     * #include "hbapicls.h" is enclosed in #ifndef __XHARBOUR__
 
 2006-09-05 18:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
-  * source/window.c     
+  * source/window.c
     !  protected  #include "hbapicls.h" between #ifdef __HARBOUR__
 
 2006-09-05 18:30 UTC+0100 Alex Strickland <sscc@mweb.co.za>

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.573 2006-10-31 15:34:51 mauriliolongo Exp $
+ * $Id: Changelog,v 1.574 2006-10-31 15:43:23 mauriliolongo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-31 16:45 UTC+0100 Maurilio Longo <maurilio.longo@libero.it>
+   * source/hbrowse.prg
+     - Commented out lines 763-766 inside :Paint() or else every call
+       to :Paint() gives focus back to browse, and this can be a problem
+       when repainting one being inside some other control and wanting
+       this other control to maintain focus.
 
 2006-10-31 16:30 UTC+0100 Maurilio Longo <maurilio.longo@libero.it>
    * source/freeimg.c

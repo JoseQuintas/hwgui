@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.71 2006-10-31 13:58:40 sandrorrfreire Exp $
+ * $Id: hbrowse.prg,v 1.72 2006-10-31 15:43:23 mauriliolongo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -757,10 +757,15 @@ Local oldBkColor, oldTColor
       ::Edit()
    ENDIF
 
+   /* 30/09/2005 - <maurilio.longo@libero.it>
+                   I Had to remove this or else it is not possible to force a
+                   browse repaint which does not give it back focus
    IF ( tmp := GetFocus() ) == ::oParent:handle .OR. ;
          ::oParent:FindControl(,tmp) != Nil
       SetFocus( ::handle )
    ENDIF
+   */
+
    ::lAppMode := .F.
 
 RETURN Nil

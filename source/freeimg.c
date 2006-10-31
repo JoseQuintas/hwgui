@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.17 2006-04-13 06:39:35 alkresin Exp $
+ * $Id: freeimg.c,v 1.18 2006-10-31 15:33:48 mauriliolongo Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -18,46 +18,35 @@
 #include "hbvm.h"
 #include "freeimage.h"
 
+
 typedef char * ( WINAPI *FREEIMAGE_GETVERSION )( void );
 #if defined(__WATCOMC__) || defined(_MSC_VER)
 typedef FIBITMAP* ( WINAPI *FREEIMAGE_LOADFROMHANDLE)( FREE_IMAGE_FORMAT fif, FreeImageIO *io, fi_handle handle, int flags );
-#else
-typedef FIBITMAP* ( WINAPI *FREEIMAGE_LOADFROMHANDLE)( FREE_IMAGE_FORMAT fif, FreeImageIO *io, fi_handle handle, int flags FI_DEFAULT(0) );
-#endif
-#if defined(__WATCOMC__) || defined(_MSC_VER)
 typedef FIBITMAP* ( WINAPI *FREEIMAGE_LOAD)( FREE_IMAGE_FORMAT fif, char *filename, int flags );
-#else
-typedef FIBITMAP* ( WINAPI *FREEIMAGE_LOAD)( FREE_IMAGE_FORMAT fif, char *filename, int flags FI_DEFAULT(0) );
-#endif
-typedef void ( WINAPI *FREEIMAGE_UNLOAD )( FIBITMAP *dib );
-#if defined(__WATCOMC__) || defined(_MSC_VER)
 typedef BOOL ( WINAPI *FREEIMAGE_SAVE)( FREE_IMAGE_FORMAT fif, FIBITMAP* dib, char *filename, int flags );
 typedef FIBITMAP* ( WINAPI *FREEIMAGE_ALLOCATE)( int width, int height, int bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask );
+typedef FIBITMAP* ( WINAPI *FREEIMAGE_CONVERTFROMRAWBITS)(BYTE *bits, int width, int height, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown );
+typedef void ( WINAPI *FREEIMAGE_CONVERTTORAWBITS )(BYTE *bits, FIBITMAP *dib, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown );
 #else
+typedef FIBITMAP* ( WINAPI *FREEIMAGE_LOADFROMHANDLE)( FREE_IMAGE_FORMAT fif, FreeImageIO *io, fi_handle handle, int flags FI_DEFAULT(0) );
+typedef FIBITMAP* ( WINAPI *FREEIMAGE_LOAD)( FREE_IMAGE_FORMAT fif, char *filename, int flags FI_DEFAULT(0) );
 typedef FIBITMAP* ( WINAPI *FREEIMAGE_ALLOCATE)( int width, int height, int bpp, unsigned red_mask FI_DEFAULT(0), unsigned green_mask FI_DEFAULT(0), unsigned blue_mask FI_DEFAULT(0) );
 typedef BOOL ( WINAPI *FREEIMAGE_SAVE)( FREE_IMAGE_FORMAT fif, FIBITMAP* dib, char *filename, int flags FI_DEFAULT(0) );
+typedef FIBITMAP* ( WINAPI *FREEIMAGE_CONVERTFROMRAWBITS)(BYTE *bits, int width, int height, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown FI_DEFAULT(FALSE));
+typedef void ( WINAPI *FREEIMAGE_CONVERTTORAWBITS )(BYTE *bits, FIBITMAP *dib, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown FI_DEFAULT(FALSE));
 #endif
+typedef void ( WINAPI *FREEIMAGE_UNLOAD )( FIBITMAP *dib );
 typedef FREE_IMAGE_FORMAT ( WINAPI *FREEIMAGE_GETFIFFROMFILENAME)( char *filename);
 typedef ULONG ( WINAPI *FREEIMAGE_GETWIDTH )( FIBITMAP *dib );
 typedef ULONG ( WINAPI *FREEIMAGE_GETHEIGHT )( FIBITMAP *dib );
 typedef BYTE * ( WINAPI *FREEIMAGE_GETBITS )( FIBITMAP *dib );
 typedef BITMAPINFO * ( WINAPI *FREEIMAGE_GETINFO )( FIBITMAP *dib );
 typedef BITMAPINFOHEADER * ( WINAPI *FREEIMAGE_GETINFOHEADER )( FIBITMAP *dib );
-#if defined(__WATCOMC__) || defined(_MSC_VER)
-typedef FIBITMAP* ( WINAPI *FREEIMAGE_CONVERTFROMRAWBITS)(BYTE *bits, int width, int height, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown );
-#else
-typedef FIBITMAP* ( WINAPI *FREEIMAGE_CONVERTFROMRAWBITS)(BYTE *bits, int width, int height, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown FI_DEFAULT(FALSE));
-#endif
 typedef FIBITMAP* ( WINAPI *FREEIMAGE_RESCALE )(FIBITMAP *dib, int dst_width, int dst_height, FREE_IMAGE_FILTER filter);
 typedef RGBQUAD* ( WINAPI *FREEIMAGE_GETPALETTE ) (FIBITMAP *dib);
 typedef ULONG ( WINAPI *FREEIMAGE_GETBPP ) (FIBITMAP *dib);
 typedef BOOL ( WINAPI *FREEIMAGE_SETCHANNEL ) (FIBITMAP *dib, FIBITMAP *dib8, FREE_IMAGE_COLOR_CHANNEL channel);
 typedef BYTE * ( WINAPI *FREEIMAGE_GETSCANLINE ) (FIBITMAP *dib, int scanline);
-#if defined(__WATCOMC__) || defined(_MSC_VER)
-typedef void ( WINAPI *FREEIMAGE_CONVERTTORAWBITS )(BYTE *bits, FIBITMAP *dib, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown );
-#else
-typedef void ( WINAPI *FREEIMAGE_CONVERTTORAWBITS )(BYTE *bits, FIBITMAP *dib, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown FI_DEFAULT(FALSE));
-#endif
 typedef unsigned ( WINAPI *FREEIMAGE_GETPITCH )(FIBITMAP *dib);
 typedef short ( WINAPI *FREEIMAGE_GETIMAGETYPE )(FIBITMAP *dib);
 typedef unsigned ( WINAPI *FREEIMAGE_GETCOLORSUSED )(FIBITMAP *dib);
@@ -216,6 +205,22 @@ HB_FUNC( FI_LOAD )
       hb_retnl( 0 );
 }
 
+/* 24/03/2006 - <maurilio.longo@libero.it>
+                As the original freeimage's fi_Load() that has the filetype as first parameter
+*/
+HB_FUNC( FI_LOADTYPE )
+{
+   pLoad = (FREEIMAGE_LOAD) GetFunction( (FARPROC)pLoad,"_FreeImage_Load@12" );
+
+   if( pLoad )
+   {
+      char *name = hb_parc( 2 );
+      hb_retnl( (ULONG) pLoad( hb_parni( 1 ), name, ( hb_pcount() > 2 ) ? hb_parni( 3 ) : 0 ) );
+   }
+   else
+      hb_retnl( 0 );
+}
+
 HB_FUNC( FI_SAVE )
 {
    pSave = (FREEIMAGE_SAVE) GetFunction( (FARPROC)pSave,"_FreeImage_Save@16" );
@@ -225,6 +230,22 @@ HB_FUNC( FI_SAVE )
    {
       char *name = hb_parc( 2 );
       hb_retl( (BOOL) pSave( pGetfiffromfile(name), (FIBITMAP*)hb_parnl(1), name, (hb_pcount()>2)? hb_parni(3) : 0 ) );
+   }
+   else
+      hb_retl( FALSE );
+}
+
+/* 24/03/2006 - <maurilio.longo@libero.it>
+                As the original freeimage's fi_Save() that has the filetype as first parameter
+*/
+HB_FUNC( FI_SAVETYPE )
+{
+   pSave = (FREEIMAGE_SAVE) GetFunction( (FARPROC)pSave, "_FreeImage_Save@16" );
+
+   if( pSave )
+   {
+      char *name = hb_parc( 3 );
+      hb_retl( (BOOL) pSave( hb_parni( 1 ), (FIBITMAP*)hb_parnl( 2 ), name, ( hb_pcount() > 3 )? hb_parni( 4 ) : 0 ) );
    }
    else
       hb_retl( FALSE );
@@ -361,8 +382,8 @@ static HANDLE CreateDIB(DWORD dwWidth, DWORD dwHeight, WORD wBitCount)
 HB_FUNC( FI_FI2DIB )
 {
    FIBITMAP* dib = (FIBITMAP*) hb_parnl( 1 );
-   HANDLE hdib;
-   LPBITMAPINFO  lpbi;
+   HANDLE hdib = NULL;
+   LPBITMAPINFO  lpbi = NULL;
 
    pGetwidth = (FREEIMAGE_GETWIDTH) GetFunction( (FARPROC)pGetwidth,"_FreeImage_GetWidth@4" );
    pGetheight = (FREEIMAGE_GETHEIGHT) GetFunction( (FARPROC)pGetheight,"_FreeImage_GetHeight@4" );
@@ -634,7 +655,7 @@ HB_FUNC( FI_RESCALE )
 HB_FUNC( FI_REMOVECHANNEL )
 {
    FIBITMAP * dib = (FIBITMAP*) hb_parnl( 1 );
-   FIBITMAP * dib8;
+   FIBITMAP * dib8 = NULL;
 
    pAllocate = (FREEIMAGE_ALLOCATE) GetFunction( (FARPROC)pAllocate,"_FreeImage_Allocate@24" );
    pGetwidth = (FREEIMAGE_GETWIDTH) GetFunction( (FARPROC)pGetwidth,"_FreeImage_GetWidth@4" );
@@ -644,7 +665,7 @@ HB_FUNC( FI_REMOVECHANNEL )
 
    dib8 = pAllocate( pGetwidth( dib ), pGetheight( dib), 8, 0, 0, 0 );
 
-   if ( dib8 ) 
+   if ( dib8 )
    {
       hb_retl( pSetChannel( dib, dib8, (FREE_IMAGE_COLOR_CHANNEL) hb_parni( 2 ) ) );
       pUnload( dib8 );

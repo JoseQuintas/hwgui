@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.570 2006-10-20 09:49:51 alkresin Exp $
+ * $Id: Changelog,v 1.571 2006-10-31 13:20:53 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-31 10-15 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
+   * source\hbrowse.prg
+   * include\guilib.ch
+     Added New implementation by using filter condition in hbrowse
+   + samples\browsefilter\browsefilter.prg
+   + samples\browsefilter\mesas.dbf
+   + samples\browsefilter\itens.dbf
+     Added sample, demonstrate use
+     Contribution By Luiz Henrique lh.santos at ibest.com.br
 
 2006-10-20 13:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hfreeimg.prg

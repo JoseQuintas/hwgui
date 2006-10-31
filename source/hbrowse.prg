@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.69 2006-09-14 07:24:24 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.70 2006-10-31 13:20:53 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -150,6 +150,13 @@ CLASS HBrowse INHERIT HControl
    DATA lResizing INIT .F.                     // .T. while a column resizing is undergoing
    DATA lCtrlPress INIT .F.                    // .T. while Ctrl key is pressed
    DATA aSelected                              // An array of selected records numbers
+   // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+   DATA lFilter INIT .F.               // Filtered? (atribuition is automatic in method "New()").
+   DATA bFirst INIT {|| DBGOTOP()}     // Block to place pointer in first record of condition filter. (Ex.: DbGoTop(), DbSeek(), etc.).
+   DATA bWhile INIT {|| .T.}           // Clausule "while". Return logical.
+   DATA bFor INIT {|| .T.}             // Clausule "for". Return logical.
+   DATA nLastRecordFilter INIT 0       // Save the last record of filter.
+   DATA nFirstRecordFilter INIT 0      // Save the first record of filter.
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
@@ -219,6 +226,22 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
    ::bPosChanged := bPosChg
    IF lMultiSelect != Nil .AND. lMultiSelect
       ::aSelected := {}
+   ENDIF
+   
+   // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+   IF ISBLOCK(bFirst) .OR. ISBLOCK(bFor) .OR. ISBLOCK(bWhile)
+     ::lFilter := .T.
+     IF ISBLOCK(bFirst)
+       ::bFirst  := bFirst
+     ENDIF
+     IF ISBLOCK(bWhile)
+       ::bWhile  := bWhile
+     ENDIF
+     IF ISBLOCK(bFor)
+       ::bFor    := bFor
+     ENDIF
+   ELSE
+     ::lFilter := .F.
    ENDIF
 
    hwg_RegBrowse()
@@ -501,16 +524,30 @@ METHOD InitBrw( nType )  CLASS HBrowse
 
    IF ::type == BRW_DATABASE
       ::alias   := Alias()
-      ::bSKip   :=  {|o, x| (::alias)->(DBSKIP(x)) }
-      ::bGoTop  :=  {|| (::alias)->(DBGOTOP())}
-      ::bGoBot  :=  {|| (::alias)->(DBGOBOTTOM())}
-      ::bEof    :=  {|| (::alias)->(EOF())}
-      ::bBof    :=  {|| (::alias)->(BOF())}
-      ::bRcou   :=  {|| (::alias)->(RECCOUNT())}
-      ::bRecnoLog := ::bRecno  := {||(::alias)->(RECNO())}
-      ::bGoTo   := {|a,n|(::alias)->(DBGOTO(n))}
+      //Modified By Luiz Henrique dos Santos (luizhsantos@gmail.com.br)
+      IF ::lFilter 
+        ::nLastRecordFilter  := 0
+        ::nFirstRecordFilter := 0
+        ::bSkip     := { |o, n| (::alias)->(FltSkip(o, n)) }
+        ::bGoTop    := { |o| (::alias)->(FltGoTop(o)) }
+        ::bGoBot    := { |o| (::alias)->(FltGoBottom(o)) }
+        ::bEof      := { |o| (::alias)->(FltEOF(o)) }
+        ::bBof      := { |o| (::alias)->(FltBOF(o)) }
+        ::bRcou     := { |o| (::alias)->(FltRecCount(o)) }
+        ::bRecnoLog := ::bRecno := { |o| (::alias)->(FltRecNo(o)) }
+        ::bGoTo     := { |o, n|(::alias)->(FltGoTo(o, n)) }
+      ELSE
+        ::bSkip     :=  {|o, n| (::alias)->(DBSKIP(n)) }
+        ::bGoTop    :=  {|| (::alias)->(DBGOTOP())}
+        ::bGoBot    :=  {|| (::alias)->(DBGOBOTTOM())}
+        ::bEof      :=  {|| (::alias)->(EOF())}
+        ::bBof      :=  {|| (::alias)->(BOF())}
+        ::bRcou     :=  {|| (::alias)->(RECCOUNT())}
+        ::bRecnoLog := ::bRecno  := {||(::alias)->(RECNO())}
+        ::bGoTo     := {|a,n|(::alias)->(DBGOTO(n))}
+      ENDIF
    ELSEIF ::type == BRW_ARRAY
-      ::bSKip   := { | o, x | ARSKIP( o, x ) }
+      ::bSkip      := { | o, n | ARSKIP( o, n ) }
       ::bGoTop  := { | o | o:nCurrent := 1 }
       ::bGoBot  := { | o | o:nCurrent := o:nRecords }
       ::bEof    := { | o | o:nCurrent > o:nRecords }
@@ -647,7 +684,9 @@ Local oldBkColor, oldTColor
          Eval( ::bSkip, Self, ::rowPos-::internal[2] )
       ENDIF
    ELSE
-      IF Eval( ::bEof,Self )
+      // Modified by Luiz Henrique dos Santos (luizhsantos@gmail.com)
+      //IF Eval( ::bEof,Self ) 
+      IF Eval( ::bEof,Self ) .OR. Eval( ::bBof,Self ) 
          Eval( ::bGoTop, Self )
          ::rowPos := 1
       ENDIF
@@ -1698,6 +1737,11 @@ RETURN Nil
 METHOD Refresh( lFull ) CLASS HBrowse
 
    IF lFull == Nil .OR. lFull
+      IF ::lFilter
+        ::nLastRecordFilter := 0
+        ::nFirstRecordFilter := 0
+        FltGoTop(Self)
+      ENDIF
       ::internal[1] := 15
       RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ELSE
@@ -1929,3 +1973,129 @@ Local nL, nPos := 0
       nCount ++
    ENDDO
 RETURN nil
+// By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+STATIC FUNCTION FltSkip(oBrw, nLines)
+LOCAL n, r
+  IF nLines == NIL
+    nLines := 1
+  ENDIF
+  IF nLines > 0
+    FOR n := 1 TO nLines
+      DBSKIP()
+      WHILE ! EOF() .AND. EVAL(oBrw:bWhile) .AND. ! EVAL(oBrw:bFor)
+        DBSKIP()
+      ENDDO
+    NEXT
+  ELSEIF nLines < 0
+    FOR n := 1 TO (nLines*(-1))
+      IF EOF()
+        FltGoBottom(oBrw)
+      ELSE
+        DBSKIP(-1)
+      ENDIF
+      WHILE ! BOF() .AND. EVAL(oBrw:bWhile) .AND. ! EVAL(oBrw:bFor)
+        DBSKIP(-1)
+      ENDDO
+    NEXT
+  ENDIF  
+RETURN NIL
+
+STATIC FUNCTION FltGoTop(oBrw)
+  IF oBrw:nFirstRecordFilter == 0
+    EVAL(oBrw:bFirst)
+    IF ! EOF()
+      WHILE ! EOF() .AND. ! (EVAL(oBrw:bWhile) .AND. EVAL(oBrw:bFor))
+        DBSKIP()
+      ENDDO
+      oBrw:nFirstRecordFilter := FltRecNo(oBrw)
+    ELSE
+      oBrw:nFirstRecordFilter := 0
+    ENDIF
+  ELSE
+    FltGoTo(oBrw, oBrw:nFirstRecordFilter)
+  ENDIF
+RETURN NIL
+
+STATIC FUNCTION FltGoBottom(oBrw)
+  IF oBrw:nLastRecordFilter == 0
+    DBGOBOTTOM()
+    IF ! EVAL(oBrw:bWhile) .OR. ! EVAL(oBrw:bFor)
+      WHILE ! BOF() .AND. ! EVAL(oBrw:bWhile)
+        DBSKIP(-1)
+      ENDDO
+      WHILE ! BOF() .AND. EVAL(oBrw:bWhile) .AND. ! EVAL(oBrw:bFor)
+        DBSKIP(-1)
+      ENDDO
+    ENDIF
+    oBrw:nLastRecordFilter := FltRecNo(oBrw)
+  ELSE
+    FltGoTo(oBrw, oBrw:nLastRecordFilter)
+  ENDIF
+RETURN NIL
+
+STATIC FUNCTION FltBOF(oBrw)
+  LOCAL lRet := .F., cKey := "", nRecord := 0
+  LOCAL xValue, xFirstValue
+  IF BOF()
+    lRet := .T.
+  ELSE
+    cKey  := INDEXKEY()
+    nRecord := FltRecNo(oBrw)
+    
+    xValue := OrdKeyNo() //&(cKey)
+    
+    FltGoTop(oBrw)
+    xFirstValue := OrdKeyNo()//&(cKey)
+    
+    IF xValue < xFirstValue
+      lRet := .T.
+      FltGoTop(oBrw)
+    ELSE
+      FltGoTo(oBrw, nRecord)
+    ENDIF
+  ENDIF
+RETURN lRet
+   
+STATIC FUNCTION FltEOF(oBrw)
+  LOCAL lRet := .F., cKey := "", nRecord := 0
+  LOCAL xValue, xLastValue
+  IF EOF()
+    lRet := .T.
+  ELSE
+    cKey := INDEXKEY()
+    nRecord := FltRecNo(oBrw)
+    
+    xValue := OrdKeyNo() 
+    
+    FltGoBottom(oBrw)
+    xLastValue := OrdKeyNo()
+    
+    IF xValue > xLastValue
+      lRet := .T.
+      FltGoBottom(oBrw)
+      DBSKIP()
+    ELSE
+      FltGoTo(oBrw, nRecord)
+    ENDIF
+  ENDIF
+RETURN lRet
+
+STATIC FUNCTION FltRecCount(oBrw)
+  LOCAL nRecord := 0, nCount := 0
+  nRecord := FltRecNo(oBrw)
+  FltGoTop(oBrw)
+  WHILE ! EOF() .AND. EVAL(oBrw:bWhile)
+    IF EVAL(oBrw:bFor)
+      nCount++
+    ENDIF
+    DBSKIP()
+  ENDDO
+  FltGoTo(oBrw, nRecord)
+RETURN nCount
+
+STATIC FUNCTION FltGoTo(oBrw, nRecord)
+RETURN DBGOTO(nRecord)
+
+STATIC FUNCTION FltRecNo(oBrw)
+RETURN RECNO()
+//End Implementation by Luiz

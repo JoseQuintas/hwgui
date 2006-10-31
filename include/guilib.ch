@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.77 2006-09-14 11:05:20 alkresin Exp $
+ *$Id: guilib.ch,v 1.78 2006-10-31 13:20:53 sandrorrfreire Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -654,15 +654,19 @@
             [ ON KEYDOWN <bKeyDown> ]  ;
             [ ON POSCHANGE <bPosChg> ] ;
             [ <lMulti: MULTISELECT> ]  ;
+            [ FIRST <bFirst> ]         ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+            [ WHILE <bWhile> ]         ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+            [ FOR <bFor> ]             ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
           => ;
     [<oBrw> :=] HBrowse():New( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,0)),;
         <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>, ;
         <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.>, <.lAppend.>,;
-        <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg>, <.lMulti.> )
+        <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg>, <.lMulti.>, <bFirst>, <bWhile>, <bFor> )
 
 #xcommand REDEFINE BROWSE [ <oBrw> ]   ;
             [ <lArr: ARRAY> ]          ;
             [ <lDb: DATABASE> ]        ;
+            [ <lFlt: FILTER> ]        ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
             [ ON INIT <bInit> ]        ;
@@ -673,7 +677,7 @@
             [ ON LOSTFOCUS <bLfocus> ] ;
             [ FONT <oFont> ]           ;
           => ;
-    [<oBrw> :=] HBrowse():Redefine( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,0)),;
+    [<oBrw> :=] HBrowse():Redefine( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,Iif(<.lFlt.>,BRW_FILTER,0))),;
         <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>,<bEnter>,<bGfocus>,<bLfocus> )
 
 #xcommand ADD COLUMN <block> TO <oBrw> ;

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.42 2006-09-07 04:44:03 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.43 2006-11-01 12:38:55 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -73,6 +73,7 @@ REQUEST HMONTHCALENDAR
 REQUEST HTRACKBAR
 REQUEST HTAB
 REQUEST HANIMATION
+REQUEST HTREE
 
 REQUEST DBUSEAREA
 REQUEST RECNO

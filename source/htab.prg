@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.19 2006-09-08 10:42:18 alkresin Exp $
+ *$Id: htab.prg,v 1.20 2006-11-07 11:38:18 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -29,6 +29,7 @@ CLASS HTab INHERIT HControl
    DATA  hIml, aImages, Image1, Image2
    DATA  oTemp
    DATA  bAction
+   DATA  lResourceTab INIT .F.
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC,;
@@ -36,7 +37,7 @@ CLASS HTab INHERIT HControl
    METHOD Activate()
    METHOD Init()
    METHOD SetTab( n )
-   METHOD StartPage( cname )
+   METHOD StartPage( cname, oDlg )
    METHOD EndPage()
    METHOD ChangePage( nPage )
    METHOD DeletePage( nPage )
@@ -44,6 +45,8 @@ CLASS HTab INHERIT HControl
    METHOD ShowPage( nPage )
    METHOD GetActivePage( nFirst,nEnd )
    METHOD Notify( lParam )
+   METHOD Redefine( oWndParent,nId,oFont,bInit, ;
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp )
 
    HIDDEN:
      DATA  nActive  INIT 0         // Active Page
@@ -120,7 +123,7 @@ METHOD SetTab( n ) CLASS HTab
    // writelog( str(::handle )+" "+Str(SendMessage(::handle,TCM_GETCURFOCUS,0,0 ))+" "+Str(SendMessage(::handle,TCM_GETITEMCOUNT,0,0 )) )
 Return Nil
 
-METHOD StartPage( cname ) CLASS HTab
+METHOD StartPage( cname,oDlg ) CLASS HTab
 
    ::oTemp := ::oDefaultParent
    ::oDefaultParent := Self
@@ -129,17 +132,35 @@ METHOD StartPage( cname ) CLASS HTab
       ::aTabs := {}
    ENDIF
    Aadd( ::aTabs,cname )
-
-   Aadd( ::aPages, { Len( ::aControls ),0 } )
+   if ::lResourceTab
+      Aadd( ::aPages, { oDlg ,0 } )
+   else
+      Aadd( ::aPages, { Len( ::aControls ),0 } )
+   endif
    ::nActive := Len( ::aPages )
 
 Return Nil
 
 METHOD EndPage() CLASS HTab
+   if !::lResourceTab   
+      ::aPages[ ::nActive,2 ] := Len( ::aControls ) - ::aPages[ ::nActive,1 ]
+      IF ::handle != Nil .AND. ::handle > 0
+         AddTab( ::handle,::nActive,::aTabs[::nActive] )
+      ENDIF
+      IF ::nActive > 1 .AND. ::handle != Nil .AND. ::handle > 0
+         ::HidePage( ::nActive )
+      ENDIF
+      ::nActive := 1
 
-   ::aPages[ ::nActive,2 ] := Len( ::aControls ) - ::aPages[ ::nActive,1 ]
+      ::oDefaultParent := ::oTemp
+      ::oTemp := Nil
+
+      ::bChange = {|o,n|o:ChangePage(n)}
+   else
+//      ::aPages[ ::nActive,2 ] := Len( ::aControls ) - ::aPages[ ::nActive,1 ]
    IF ::handle != Nil .AND. ::handle > 0
-      AddTab( ::handle,::nActive,::aTabs[::nActive] )
+//         AddTab( ::handle,::nActive,::aTabs[::nActive] )
+         ADDTABDIALOG(::handle,::nActive,::aTabs[::nActive],::aPages[::nactive,1]:handle) 
    ENDIF
    IF ::nActive > 1 .AND. ::handle != Nil .AND. ::handle > 0
       ::HidePage( ::nActive )
@@ -150,6 +171,7 @@ METHOD EndPage() CLASS HTab
    ::oTemp := Nil
 
    ::bChange = {|o,n|o:ChangePage(n)}
+   endif
 
 Return Nil
 
@@ -173,18 +195,22 @@ Return Nil
 
 METHOD HidePage( nPage ) CLASS HTab
 Local i, nFirst, nEnd
-
+   if !::lResourceTab
    nFirst := ::aPages[ nPage,1 ] + 1
    nEnd   := ::aPages[ nPage,1 ] + ::aPages[ nPage,2 ]
    FOR i := nFirst TO nEnd
       ::aControls[i]:Hide()
    NEXT
+   else
+      ::aPages[nPage,1]:Hide()
+   endif
 
 Return Nil
 
 METHOD ShowPage( nPage ) CLASS HTab
 Local i, nFirst, nEnd
 
+   if !::lResourceTab
    nFirst := ::aPages[ nPage,1 ] + 1
    nEnd   := ::aPages[ nPage,1 ] + ::aPages[ nPage,2 ]
    FOR i := nFirst TO nEnd
@@ -196,6 +222,17 @@ Local i, nFirst, nEnd
          Exit
       ENDIF
    NEXT
+   else
+      ::aPages[nPage,1]:show()
+      for i :=1  to len(::aPages[nPage,1]:aControls)
+         Tracelog(::aPages[nPage,1]:aControls,::aPages[nPage,1]:aControls[i])
+         IF __ObjHasMsg( ::aPages[nPage,1]:aControls[i],"BSETGET" ) .AND. ::aPages[nPage,1]:aControls[i]:bSetGet != Nil
+            SetFocus( ::aPages[nPage,1]:aControls[i]:handle )
+            Exit
+         ENDIF
+
+      next
+   endif
 
 Return Nil
 
@@ -212,7 +249,12 @@ METHOD GetActivePage( nFirst,nEnd ) CLASS HTab
 Return ::nActive
 
 METHOD DeletePage( nPage ) CLASS HTab
+  if ::lResourceTab
+     aDel(::m_arrayStatusTab,nPage,,.t.)
+     DeleteTab( ::handle, nPage )
+     ::nActive := nPage - 1
 
+  else
    DeleteTab( ::handle, nPage-1 )
 
    Adel( ::aPages, nPage )
@@ -226,6 +268,7 @@ METHOD DeletePage( nPage ) CLASS HTab
       ::nActive := 1
       ::SetTab( 1 )
    ENDIF
+  endif
 
 Return ::nActive
 
@@ -252,3 +295,14 @@ Local nCode := GetNotifyCode( lParam )
    ENDCASE
 
 Return -1
+
+METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aItem )  CLASS hTab
+
+   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
+                  bSize,bPaint,ctooltip,tcolor,bcolor )
+   HWG_InitCommonControlsEx()
+   ::lResourceTab := .T.
+   ::aTabs  := {}
+   ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
+Return Self

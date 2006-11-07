@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.78 2006-10-31 13:20:53 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.79 2006-11-07 11:38:17 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -1425,4 +1425,16 @@ Added by Marcos Antonio Gambeta
             [ COLOR <colorn> ]           ;
             [ BACKCOLOR <bkcolorn> ]     ;
             => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> [, <cHeadern>, <nn>,<colorn>,<bkcolorn> ]\})
+
+
+#xcommand REDEFINE TAB  <oSay>  ;
+            [ OF <oWnd> ]              ;
+            ID <nId>                   ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ITEM <aitem>];
+          => ;
+    [<oSay> := ] Htab():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<aitem> )
+
 

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.50 2006-09-11 07:20:47 alkresin Exp $
+ * $Id: window.c,v 1.51 2006-11-07 11:38:18 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -800,4 +800,25 @@ HB_FUNC( MAKEWPARAM )
    WPARAM p;
    p = MAKEWPARAM( ( WORD ) hb_parnl( 1 ), ( WORD ) hb_parnl( 2 ) );
    hb_retnl( ( LONG ) p );
+}
+HB_FUNC(SETWINDOWPOS)
+{
+   BOOL res;
+   HWND hWnd = ISNUM(1) ? (HWND) hb_parnl(1) : NULL;
+   HWND hWndInsertAfter = ISNUM(2) ? (HWND) hb_parnl(2) : NULL;
+   int  X=   hb_parni(3) ;
+   int  Y=   hb_parni(4) ;
+   int  cx=  hb_parni(5) ;
+   int  cy=  hb_parni(6) ;
+   UINT uFlags=  hb_parni(7) ;
+
+   res= SetWindowPos(
+    hWnd,
+    hWndInsertAfter,
+    X,
+    Y,
+    cx,
+    cy,
+    uFlags);
+    hb_retl( res );
 }

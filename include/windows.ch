@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.31 2006-08-30 10:44:03 alkresin Exp $
+ *$Id: windows.ch,v 1.32 2006-11-07 11:38:17 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -1053,4 +1053,20 @@
 #define LVNI_BELOW              0x0200
 #define LVNI_TOLEFT             0x0400
 #define LVNI_TORIGHT            0x0800
+
+
+#define SWP_NOSIZE          0x0001
+#define SWP_NOMOVE          0x0002
+#define SWP_NOZORDER        0x0004
+#define SWP_NOREDRAW        0x0008
+#define SWP_NOACTIVATE      0x0010
+#define SWP_FRAMECHANGED    0x0020  /* The frame changed: send WM_NCCALCSIZE */
+#define SWP_SHOWWINDOW      0x0040
+#define SWP_HIDEWINDOW      0x0080
+#define SWP_NOCOPYBITS      0x0100
+#define SWP_NOOWNERZORDER   0x0200  /* Don't do owner Z ordering */
+#define SWP_NOSENDCHANGING  0x0400  /* Don't send WM_WINDOWPOSCHANGING */
+
+#define SWP_DRAWFRAME       SWP_FRAMECHANGED
+#define SWP_NOREPOSITION    SWP_NOOWNERZORDER
 

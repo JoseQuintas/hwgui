@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.48 2006-09-10 08:16:41 alkresin Exp $
+ * $Id: control.c,v 1.49 2006-11-07 11:38:18 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -567,6 +567,16 @@ HB_FUNC( ADDTAB )
    TabCtrl_InsertItem( (HWND) hb_parnl(1), hb_parni(2), &tie );
 }
 
+HB_FUNC( ADDTABDIALOG )
+{
+   TC_ITEM tie;
+   HWND pWnd = (HWND) hb_parnl(4);
+   tie.mask = TCIF_TEXT | TCIF_IMAGE |TCIF_PARAM;
+   tie.lParam = (LPARAM) pWnd; 
+   tie.iImage = -1;
+   tie.pszText = hb_parc(3);
+   TabCtrl_InsertItem( (HWND) hb_parnl(1), hb_parni(2), &tie );
+}
 HB_FUNC( DELETETAB )
 {
    TabCtrl_DeleteItem( (HWND) hb_parnl(1), hb_parni(2) );

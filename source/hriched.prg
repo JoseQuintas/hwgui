@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.7 2005-10-26 07:43:26 omm Exp $
+ * $Id: hriched.prg,v 1.8 2006-11-10 12:25:26 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -63,6 +63,12 @@ Local nDelta
    IF msg == WM_CHAR
       ::lChanged := .T.
    ELSEIF msg == WM_KEYDOWN
+      IF wParam == 27 // ESC 
+         IF GetParent(::oParent:handle) != Nil 
+            SendMessage( GetParent(::oParent:handle),WM_CLOSE,0,0 ) 
+         ENDIF 
+      ENDIF 
+
       IF wParam == 46     // Del
          ::lChanged := .T.
       ENDIF

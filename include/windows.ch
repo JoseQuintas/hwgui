@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.32 2006-11-07 11:38:17 lculik Exp $
+ *$Id: windows.ch,v 1.33 2006-11-10 12:25:26 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -1070,3 +1070,6 @@
 #define SWP_DRAWFRAME       SWP_FRAMECHANGED
 #define SWP_NOREPOSITION    SWP_NOOWNERZORDER
 
+#define MCN_FIRST (-750) 
+#define MCN_SELCHANGE (MCN_FIRST + 1) 
+#define MCN_SELECT (MCN_FIRST + 4) 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.576 2006-11-07 11:38:17 lculik Exp $
+ * $Id: Changelog,v 1.577 2006-11-10 12:25:26 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-10 10:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+   * include/windows.ch
+     + new defines
+   * source/hmonthc.prg
+     ! Added event to  month select change
+   * source/hriched.prg
+     ! Added fix to ESC handling 
+
+
 2006-11-06 09:40 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/window.c
      + SetwindowPos() Function

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.79 2006-11-07 11:38:17 lculik Exp $
+ *$Id: guilib.ch,v 1.80 2006-11-14 13:38:56 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -1433,8 +1433,18 @@ Added by Marcos Antonio Gambeta
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
-            [ ITEM <aitem>];
+            [ ON CHANGE <bChange> ]    ;
           => ;
-    [<oSay> := ] Htab():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<aitem> )
+    [<oSay> := ] Htab():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<bChange> )
 
 
+#xcommand REDEFINE STATUS  <oSay>  ;
+            [ OF <oWnd> ]              ;
+            ID <nId>                   ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ PARTS <bChange,...> ]    ;
+          => ;
+    [<oSay> := ] HStatus():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,\{<bChange>\} ) 
+                                                                                      

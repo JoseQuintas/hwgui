@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.20 2006-11-07 11:38:18 lculik Exp $
+ *$Id: htab.prg,v 1.21 2006-11-14 13:38:56 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -11,7 +11,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
-
+#include "common.ch"
 #define TCM_SETCURSEL           4876     // (TCM_FIRST + 12)
 #define TCM_SETCURFOCUS         4912     // (TCM_FIRST + 48)
 #define TCM_GETCURFOCUS         4911     // (TCM_FIRST + 47)
@@ -45,6 +45,7 @@ CLASS HTab INHERIT HControl
    METHOD ShowPage( nPage )
    METHOD GetActivePage( nFirst,nEnd )
    METHOD Notify( lParam )
+//   METHOD OnEvent(msg,wParam,lParam)
    METHOD Redefine( oWndParent,nId,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor,lTransp )
 
@@ -160,7 +161,8 @@ METHOD EndPage() CLASS HTab
 //      ::aPages[ ::nActive,2 ] := Len( ::aControls ) - ::aPages[ ::nActive,1 ]
    IF ::handle != Nil .AND. ::handle > 0
 //         AddTab( ::handle,::nActive,::aTabs[::nActive] )
-         ADDTABDIALOG(::handle,::nActive,::aTabs[::nActive],::aPages[::nactive,1]:handle) 
+         ADDTABDIALOG(::handle,::nActive,::aTabs[::nActive],::aPages[::nactive,1]:handle)
+//         aadd(::aControls,::aPages[::nactive,1])
    ENDIF
    IF ::nActive > 1 .AND. ::handle != Nil .AND. ::handle > 0
       ::HidePage( ::nActive )
@@ -237,7 +239,7 @@ Local i, nFirst, nEnd
 Return Nil
 
 METHOD GetActivePage( nFirst,nEnd ) CLASS HTab
-
+if !::lResourceTab
    IF !Empty( ::aPages )
       nFirst := ::aPages[ ::nActive,1 ] + 1
       nEnd   := ::aPages[ ::nActive,1 ] + ::aPages[ ::nActive,2 ]
@@ -245,6 +247,7 @@ METHOD GetActivePage( nFirst,nEnd ) CLASS HTab
       nFirst := 1
       nEnd   := Len( ::aControls )
    ENDIF
+endif
 
 Return ::nActive
 
@@ -306,3 +309,11 @@ METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
    ::aTabs  := {}
    ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
 Return Self
+
+//METHOD OnEvent(msg,wParam,lParam)
+//if msg == WM_PAINT
+//   return -1
+//elseif msg == WM_COMMAND
+//   SendMessage(::aPages[::nactive,1]:handle,msg,wParam,lParam)
+//endif
+//return -1

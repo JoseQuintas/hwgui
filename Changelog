@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.577 2006-11-10 12:25:26 lculik Exp $
+ * $Id: Changelog,v 1.578 2006-11-14 13:38:56 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,20 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-14 11:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+   * include/windows.ch
+     + new defines
+   * include/guilib.ch
+     ! added code to redefine statusbar and  tabs page controls from resources
+   * source/hcontrol.prg
+     ! added code to redefine status bar from resource
+   * source/htab.prg
+     ! Minor fix to GetActivePage() method then control is load from resource
+   * source/hdialog.prg
+     ! change onevent method to route commands when main dialog has an tab redefined control with dialog as children
+       to route the command set the dialog:lRoutecommand to .t.
+
 
 2006-11-10 10:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * include/windows.ch

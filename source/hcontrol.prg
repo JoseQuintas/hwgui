@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.26 2006-08-30 10:44:03 alkresin Exp $
+ * $Id: hcontrol.prg,v 1.27 2006-11-14 13:38:56 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -137,6 +137,8 @@ CLASS HStatus INHERIT HControl
    METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint )
    METHOD Activate()
    METHOD Init()
+   METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aParts )  
 
 ENDCLASS
 
@@ -176,6 +178,15 @@ METHOD Init CLASS HStatus
       ENDIF
    ENDIF
 RETURN  NIL
+METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aParts )  CLASS hStatus
+
+   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
+                  bSize,bPaint,ctooltip,tcolor,bcolor )
+   HWG_InitCommonControlsEx()
+   ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
+   ::aparts :=aparts
+Return Self
 
 //- HStatic
 

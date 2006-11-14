@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.36 2006-09-27 12:42:02 alkresin Exp $
+ * $Id: hdialog.prg,v 1.37 2006-11-14 13:38:56 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -56,17 +56,19 @@ CLASS HDialog INHERIT HCustomWindow
    DATA lExitOnEnter INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key,
                               // Added by Sandro Freire 
    DATA lExitOnEsc   INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key,
-                              // Added by Sandro Freire 
+                               // Added by Sandro Freire
+   DATA lRouteCommand  INIT .F.
    DATA nLastKey INIT 0
    DATA oIcon, oBmp
    DATA bActivate
    DATA lActivated INIT .F.
    DATA xResourceID
    DATA oEmbedded
+   DATA bOnActivate
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
                   bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc )
-   METHOD Activate( lNoModal )
+   METHOD Activate( lNoModal,bOnActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD Add()      INLINE Aadd( Iif( ::lModal,::aModalDialogs,::aDialogs ), Self )
    METHOD Del()
@@ -111,9 +113,9 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
 
 RETURN Self
 
-METHOD Activate( lNoModal ) CLASS HDialog
+METHOD Activate( lNoModal,bOnActivate ) CLASS HDialog
 Local oWnd, hParent
-
+   ::bOnActivate := bOnActivate
    CreateGetList( Self )
    hParent := Iif( ::oParent!=Nil .AND. ;
       __ObjHasMsg( ::oParent,"HANDLE") .AND. ::oParent:handle != Nil ;
@@ -164,14 +166,29 @@ Local oWnd, hParent
          */
       ENDIF
    ENDIF
-
 RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
 Local i
-
+Local oTab
+Local nPos
    // writelog( str(msg) + str(wParam) + str(lParam) )
    IF ( i := Ascan( aMessModalDlg, {|a|a[1]==msg} ) ) != 0
+      Tracelog("mensagem",msg, "id = ", self:xResourceID,self,wparam,lparam)
+      if ::lRouteCommand .and. (msg ==WM_COMMAND .or. msg == WM_NOTIFY)
+         
+         nPos := ascan(::aControls,{|x| x:className() == "HTAB"})
+         if nPos >0
+            oTab :=::aControls[ nPos ]
+            if len(oTab:aPages) >0
+            eval( aMessModalDlg[i,2], oTab:aPages[oTab:GetActivePage(),1], wParam, lParam )
+            return eval( aMessModalDlg[i,2], Self, wParam, lParam )
+            else
+            return eval( aMessModalDlg[i,2], Self, wParam, lParam )
+            endif
+         endif
+         return eval( aMessModalDlg[i,2], Self, wParam, lParam )
+      endif
       Return Eval( aMessModalDlg[i,2], Self, wParam, lParam )
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
@@ -232,6 +249,10 @@ Local iCont
    IF oDlg:bInit != Nil
       Eval( oDlg:bInit, oDlg )
    ENDIF
+  if valtype(oDlg:bOnActivate) == "B"
+     eval(oDlg:bOnActivate)
+   endif
+
 
 Return 1
 
@@ -273,7 +294,7 @@ Return 0
 Function DlgCommand( oDlg,wParam,lParam )
 Local iParHigh := HiWord( wParam ), iParLow := LoWord( wParam )
 Local aMenu, i, hCtrl
-
+//Tracelog(oDlg,odlg:xresourceid,wParam,lParam )
    // WriteLog( Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF iParHigh == 0
       IF iParLow == IDOK

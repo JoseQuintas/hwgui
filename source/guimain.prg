@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.16 2006-10-05 11:02:42 alkresin Exp $
+ * $Id: guimain.prg,v 1.17 2006-11-16 13:01:45 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -124,8 +124,8 @@ Local cRes := ""
 Return cRes
 
 Function WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )
-Local oDlg, oBrw, nChoice := 0, lNewFont := .F.
-Local i, aLen := Len( arr ), nLen := 0, addX := 20, addY := 20, minWidth := 0, x1
+Local oDlg, oBrw, nChoice := 0, lArray := .T., nField, lNewFont := .F.
+Local i, aLen, nLen := 0, addX := 20, addY := 20, minWidth := 0, x1
 Local hDC, aMetr, width, height, aArea, aRect
 Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
 
@@ -145,14 +145,24 @@ Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
       addY += 30
    ENDIF
 
-   IF Valtype( arr[1] ) == "A"
-      FOR i := 1 TO aLen
-         nLen := Max( nLen,Len(arr[i,1]) )
-      NEXT
+   IF Valtype( arr ) == "C"
+      lArray := .F.
+      aLen := RecCount()
+      IF ( nField := FieldPos( arr ) ) == 0
+         Return 0
+      ENDIF
+      nLen := dbFieldInfo( 3,nField )
    ELSE
-      FOR i := 1 TO aLen
-         nLen := Max( nLen,Len(arr[i]) )
-      NEXT
+      aLen := Len( arr )
+      IF Valtype( arr[1] ) == "A"
+         FOR i := 1 TO aLen
+            nLen := Max( nLen,Len(arr[i,1]) )
+         NEXT
+      ELSE
+         FOR i := 1 TO aLen
+            nLen := Max( nLen,Len(arr[i]) )
+         NEXT
+      ENDIF
    ENDIF
 
    hDC := GetDC( GetActiveWindow() )
@@ -162,8 +172,8 @@ Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
    aRect := GetWindowRect( GetActiveWindow() )
    ReleaseDC( GetActiveWindow(),hDC )
    height := (aMetr[1]+1)*aLen+4+addY+8
-   IF height > aArea[2]-aRect[2]-nTop-30
-      height := aArea[2]-aRect[2]-nTop-30
+   IF height > aArea[2]-aRect[2]-nTop-60
+      height := aArea[2]-aRect[2]-nTop-60
    ENDIF
    width := Max( aMetr[2] * 2 * nLen + addX, minWidth )
 
@@ -174,18 +184,23 @@ Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
          FONT oFont              ;
          ON INIT {|o|ResetWindowPos(o:handle)}
 
-   @ 0,0 BROWSE oBrw ARRAY          ;
-       FONT oFont                   ;
-       STYLE WS_BORDER              ;
-       ON SIZE {|o,x,y|MoveWindow(o:handle,addX/2,10,x-addX,y-addY)} ;
-       ON CLICK {|o|nChoice:=o:nCurrent,EndDialog(o:oParent:handle)}
-
-   IF Valtype( arr[1] ) == "A"
-      oBrw:AddColumn( HColumn():New( ,{|value,o|o:aArray[o:nCurrent,1]},"C",nLen ) )
+   IF lArray
+      @ 0,0 BROWSE oBrw ARRAY
+      oBrw:aArray := arr
+      IF Valtype( arr[1] ) == "A"
+         oBrw:AddColumn( HColumn():New( ,{|value,o|o:aArray[o:nCurrent,1]},"C",nLen ) )
+      ELSE
+         oBrw:AddColumn( HColumn():New( ,{|value,o|o:aArray[o:nCurrent]},"C",nLen ) )
+      ENDIF
    ELSE
-      oBrw:AddColumn( HColumn():New( ,{|value,o|o:aArray[o:nCurrent]},"C",nLen ) )
+      @ 0,0 BROWSE oBrw DATABASE
+      oBrw:AddColumn( HColumn():New( ,{|value,o|(o:alias)->(FieldGet(nField))},"C",nLen ) )
    ENDIF
-   CreateArList( oBrw, arr )
+
+   oBrw:oFont  := oFont
+   oBrw:bSize  := {|o,x,y|MoveWindow(o:handle,addX/2,10,x-addX,y-addY)}
+   oBrw:bEnter := {|o|nChoice:=o:nCurrent,EndDialog(o:oParent:handle)}
+
    oBrw:lDispHead := .F.
    IF clrT != Nil
       oBrw:tcolor := clrT

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.72 2006-10-31 15:43:23 mauriliolongo Exp $
+ * $Id: hbrowse.prg,v 1.73 2006-11-16 13:01:45 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -262,7 +262,6 @@ RETURN Nil
 //----------------------------------------------------//
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 Local aCoors, oParent, cKeyb, nCtrl, nPos
-Static keyCode := 0
 
    // WriteLog( "Brw: "+Str(::handle,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::active .AND. !Empty( ::aColumns )
@@ -299,9 +298,6 @@ Static keyCode := 0
          ::DoVScroll( wParam )
 
       ELSEIF msg == WM_GETDLGCODE
-         IF wParam != 0
-            keyCode := wParam
-         ENDIF
          RETURN DLGC_WANTALLKEYS
 
       ELSEIF msg == WM_COMMAND
@@ -314,10 +310,6 @@ Static keyCode := 0
             ::lCtrlPress := .F.
          ENDIF
          // fim bloco sauli
-         IF wParam == 13 .AND. keyCode == 13
-            keyCode := 0
-            ::Edit()
-         ENDIF
          IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
             oParent := ::oParent
             DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )

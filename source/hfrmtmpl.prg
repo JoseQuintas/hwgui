@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.43 2006-11-01 12:38:55 omm Exp $
+ * $Id: hfrmtmpl.prg,v 1.44 2006-11-16 13:01:45 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -183,11 +183,11 @@ Local cPre
                cPre := "#xtranslate "+ ::aFuncs[2,j,1] + ;
                      "( <params,...> ) => callfunc('"  + ;
                      Upper(::aFuncs[2,j,1]) +"',\{ <params> \}, oDlg:oParent:aFuncs )"
-               __ppAddRule( cPre )
+               __Preprocess( cPre )
                cPre := "#xtranslate "+ ::aFuncs[2,j,1] + ;
                      "() => callfunc('"  + ;
                      Upper(::aFuncs[2,j,1]) +"',, oDlg:oParent:aFuncs )"
-               __ppAddRule( cPre )
+               __Preprocess( cPre )
             NEXT
          ENDIF
       ELSEIF aItems[i]:title == "part"
@@ -942,11 +942,11 @@ Local cPre
                cPre := "#xtranslate "+ ::aFuncs[2,j,1] + ;
                      "( <params,...> ) => callfunc('"  + ;
                      Upper(::aFuncs[2,j,1]) +"',\{ <params> \}, oReport:aFuncs )"
-               __ppAddRule( cPre )
+               __Preprocess( cPre )
                cPre := "#xtranslate "+ ::aFuncs[2,j,1] + ;
                      "() => callfunc('"  + ;
                      Upper(::aFuncs[2,j,1]) +"',, oReport:aFuncs )"
-               __ppAddRule( cPre )
+               __Preprocess( cPre )
             NEXT
          ENDIF
       ELSEIF aItems[i]:title == "part"

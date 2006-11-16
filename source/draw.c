@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.20 2006-09-10 08:16:41 alkresin Exp $
+ * $Id: draw.c,v 1.21 2006-11-16 13:01:45 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -400,7 +400,7 @@ HB_FUNC( OPENBITMAP )
 
    if( ( (long int)hfbm ) <= 0 )
    {
-      hb_retnl( -1 );
+      hb_retnl(0);
       return;
    }
    /* Retrieve the BITMAPFILEHEADER structure. */ 

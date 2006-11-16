@@ -1,5 +1,5 @@
 /*
- * $Id: procscri.prg,v 1.9 2006-08-10 05:11:55 alkresin Exp $
+ * $Id: procscri.prg,v 1.10 2006-11-16 13:01:45 alkresin Exp $
  *
  * Common procedures
  * Scripts
@@ -182,7 +182,7 @@ Local cLine, lDebug := ( Len( rezArray ) == 3 )
                ENDIF
 #ifdef __HARBOUR__
             ELSE
-               __ppAddRule( stroka )
+               __Preprocess( stroka )
                LOOP
 #endif
             ENDIF

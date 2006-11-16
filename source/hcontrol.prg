@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.27 2006-11-14 13:38:56 lculik Exp $
+ * $Id: hcontrol.prg,v 1.28 2006-11-16 13:01:45 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -79,7 +79,9 @@ RETURN nId
 METHOD INIT CLASS HControl
 
    IF !::lInit
-      AddToolTip( ::oParent:handle, ::handle, ::tooltip )
+      IF ::tooltip != Nil
+         AddToolTip( ::oParent:handle, ::handle, ::tooltip )
+      ENDIF
       IF ::oFont != NIL
          SetCtrlFont( ::oParent:handle, ::id, ::oFont:handle )
       ELSEIF ::oParent:oFont != NIL

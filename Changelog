@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.578 2006-11-14 13:38:56 lculik Exp $
+ * $Id: Changelog,v 1.579 2006-11-16 13:01:45 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,20 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-16 16:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/draw.c
+     ! Small fix
+   * source/guimain.prg
+     * Wchoice() function extended
+   * source/hfrmtmpl.prg
+   * source/procmisc/procscri.prg
+     * Calls of __ppAddRule() are replaced by __Preprocess() to avoid unresolved
+       externals with latest Harbour changes
+   * source/hbrowse.prg
+     ! Double call of Enter() after ENTER key pressing fixed
+   * source/hcontrol.prg
+     ! Small fix
 
 2006-11-14 11:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * include/windows.ch

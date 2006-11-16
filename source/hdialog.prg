@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.37 2006-11-14 13:38:56 lculik Exp $
+ * $Id: hdialog.prg,v 1.38 2006-11-16 13:24:39 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -174,7 +174,6 @@ Local oTab
 Local nPos
    // writelog( str(msg) + str(wParam) + str(lParam) )
    IF ( i := Ascan( aMessModalDlg, {|a|a[1]==msg} ) ) != 0
-      Tracelog("mensagem",msg, "id = ", self:xResourceID,self,wparam,lparam)
       if ::lRouteCommand .and. (msg ==WM_COMMAND .or. msg == WM_NOTIFY)
          
          nPos := ascan(::aControls,{|x| x:className() == "HTAB"})
@@ -294,7 +293,6 @@ Return 0
 Function DlgCommand( oDlg,wParam,lParam )
 Local iParHigh := HiWord( wParam ), iParLow := LoWord( wParam )
 Local aMenu, i, hCtrl
-//Tracelog(oDlg,odlg:xresourceid,wParam,lParam )
    // WriteLog( Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF iParHigh == 0
       IF iParLow == IDOK

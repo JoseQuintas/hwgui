@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.579 2006-11-16 13:01:45 alkresin Exp $
+ * $Id: Changelog,v 1.580 2006-11-16 13:24:39 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-16 16:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/hmonthc.prg
+     ! #define MCN_SELECT removed, because it is in windows.ch
+   * source/hdialog.prg
+     ! Tracelog() calls removed
 
 2006-11-16 16:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/draw.c

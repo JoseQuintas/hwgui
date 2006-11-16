@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.11 2006-11-10 12:25:26 lculik Exp $
+ * $Id: hmonthc.prg,v 1.12 2006-11-16 13:24:39 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -14,7 +14,6 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 
-#define MCN_SELECT      4294966550
 #define MCS_DAYSTATE             1
 #define MCS_MULTISELECT          2
 #define MCS_WEEKNUMBERS          4

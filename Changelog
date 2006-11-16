@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.580 2006-11-16 13:24:39 alkresin Exp $
+ * $Id: Changelog,v 1.581 2006-11-16 13:30:01 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-16 11:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+   * include/guilib.ch
+     ! Added command to redefine an Gridex from resource
+   * source/hgridex.prg
+     ! Added code for redefine Gridex control from resource
+       Added method  UpdateData() to automaticaly refresh the last row added to grid
+   * source/grid.c
+     !minor fix
 
 2006-11-16 16:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/hmonthc.prg

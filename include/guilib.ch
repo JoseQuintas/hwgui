@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.80 2006-11-14 13:38:56 lculik Exp $
+ *$Id: guilib.ch,v 1.81 2006-11-16 13:30:01 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -1448,3 +1448,14 @@ Added by Marcos Antonio Gambeta
           => ;
     [<oSay> := ] HStatus():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,\{<bChange>\} ) 
                                                                                       
+
+#xcommand REDEFINE GRID  <oSay>  ;
+            [ OF <oWnd> ]              ;
+            ID <nId>                   ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ITEM <aitem>];
+          => ;
+    [<oSay> := ] HGRIDex():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<aitem> )
+

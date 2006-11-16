@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.4 2006-09-08 10:42:18 alkresin Exp $
+ * $Id: hgridex.prg,v 1.5 2006-11-16 13:30:02 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -74,6 +74,9 @@ CLASS HGridEX INHERIT HControl
    METHOD DELETEALLROW() INLINE ::aItems :=NIL, ::aColors := {}, SendMessage( ::Handle, LVM_DELETEALLITEMS, 0, 0 )
    METHOD SELECTALL()    INLINE ListViewSelectAll( ::Handle )
    METHOD SELECTLAST()   INLINE ListViewSelectLastItem( ::handle )
+   METHOD Redefine( oWndParent,nId,oFont,bInit, ;
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp ,aItem)
+METHOD UpdateData()
 ENDCLASS
 
 
@@ -203,7 +206,7 @@ METHOD Refresh() CLASS HGridEx
 Return Nil
 
 
-METHOD AddRow( a ) Class HGRIDEX
+METHOD AddRow( a ,bupdate ) Class HGRIDEX
    Local nLen := Len( a ) 
    Local n
    Local aTmp := {}
@@ -211,6 +214,7 @@ METHOD AddRow( a ) Class HGRIDEX
    Local aTmp2 := {}
   
 
+default bupdate to .t.
    For n := 1 to nLen step 4
       aadd( aTmp1, a[ n ] )
       aadd( aTmp,  if( valtype(a[ n + 1 ] ) == "N", a[ n + 1 ], -1 ) )
@@ -226,6 +230,9 @@ METHOD AddRow( a ) Class HGRIDEX
   
    aadd( ::aRowBitMap, aTmp )
    aadd( ::aRow,    aTmp1 )
+   if bUpdate
+      ::updatedata()
+   endif
 
 return nil
       
@@ -243,3 +250,27 @@ METHOD Notify( lParam )  Class HGRIDEX
     ENDIF
 return Res
 
+METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aItem )  CLASS hGridex
+   Default  aItem to {}
+   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
+                  bSize,bPaint,ctooltip,tcolor,bcolor )
+   HWG_InitCommonControlsEx()
+   ::arow := aItem
+
+   ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
+
+Return Self
+
+METHOD UpdateData()
+   Local n := Len( ::aRow )
+   Local aTemp,atemp1
+
+   aTemp := ::aRow[ n ]
+   aTemp1 := ::aRowBitMap[ n ]
+
+   FOR n1 := 1 TO Len( aTemp )   
+      LISTVIEW_INSERTITEMEX( ::handle, n, n1, atemp[ n1 ], atemp1[ n1 ] )
+   NEXT
+
+return .t.

@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.21 2006-11-14 13:38:56 lculik Exp $
+ *$Id: htab.prg,v 1.22 2006-11-17 07:43:59 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -227,7 +227,6 @@ Local i, nFirst, nEnd
    else
       ::aPages[nPage,1]:show()
       for i :=1  to len(::aPages[nPage,1]:aControls)
-         Tracelog(::aPages[nPage,1]:aControls,::aPages[nPage,1]:aControls[i])
          IF __ObjHasMsg( ::aPages[nPage,1]:aControls[i],"BSETGET" ) .AND. ::aPages[nPage,1]:aControls[i]:bSetGet != Nil
             SetFocus( ::aPages[nPage,1]:aControls[i]:handle )
             Exit

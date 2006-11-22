@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.583 2006-11-17 07:43:58 alkresin Exp $
+ * $Id: Changelog,v 1.584 2006-11-22 14:14:40 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-22 16:10 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
+   * source/hbrowse.prg
+     + Added code to edit the MEMO field in METHOD Edit( wParam,lParam ) CLASS HBrowse
 
 2006-11-17 10:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/htab.prg

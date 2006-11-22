@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.73 2006-11-16 13:01:45 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.74 2006-11-22 14:14:40 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1552,6 +1552,7 @@ METHOD Edit( wParam,lParam ) CLASS HBrowse
 Local fipos, lRes, x1, y1, fif, nWidth, lReadExit, rowPos
 Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
 Local oComboFont, oCombo
+Local oGet1, owb1, owb2
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
 
@@ -1603,13 +1604,17 @@ Local oComboFont, oCombo
 
          lReadExit := Set( _SET_EXIT, .t. )
          bInit := Iif( wParam==Nil, {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1)}, ;
-            {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1),PostMessage(o:aControls[1]:handle,WM_KEYDOWN,wParam,lParam)} )
+           {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1),PostMessage(o:aControls[1]:handle,WM_KEYDOWN,wParam,lParam)} )
 
-         INIT DIALOG oModDlg;
+         if type <> "M"
+		 INIT DIALOG oModDlg;
             STYLE WS_POPUP + 1 + iif( oColumn:aList == Nil, WS_BORDER, 0 ) ;
             AT x1, y1 - Iif( oColumn:aList == Nil, 1, 0 ) ;
             SIZE nWidth, ::height + Iif( oColumn:aList == Nil, 1, 0 ) ;
             ON INIT bInit
+		else
+			INIT DIALOG oModDlg title "memo edit" AT 0, 0 SIZE 400, 300 ON INIT {|o|o:center()}
+		endif
 
          IF oColumn:aList != Nil
             oModDlg:brush := -1
@@ -1641,6 +1646,7 @@ Local oComboFont, oCombo
                ENDIF
 
          ELSE
+			if type <> "M"
             @ 0,0 GET oGet VAR ::varbuf       ;
                SIZE nWidth, ::height+1        ;
                NOBORDER                       ;
@@ -1648,6 +1654,12 @@ Local oComboFont, oCombo
                FONT ::oFont                   ;
                PICTURE oColumn:picture        ;
                VALID oColumn:bValid
+			else
+				oGet1 := ::varbuf
+				@ 10,10 Get oGet1 SIZE oModDlg:nWidth-20,240 FONT ::oFont Style WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid
+				@ 010,252 ownerbutton owb2 text "Save" size 80,24 ON Click {||::varbuf:=oGet1,omoddlg:close(),oModDlg:lResult:=.t.}
+				@ 100,252 ownerbutton owb1 text "Close" size 80,24 ON CLICK {||oModDlg:close()}
+			endif
          ENDIF
 
          ACTIVATE DIALOG oModDlg
@@ -1776,7 +1788,7 @@ Local cRes, vartmp, type, pict
          ELSE
              vartmp := Eval( oBrw:aColumns[numf]:block,,oBrw,numf )
          ENDIF
-
+		 
          type := (oBrw:aColumns[numf]):type
          IF type == "U" .AND. vartmp != Nil
             type := Valtype( vartmp )
@@ -1794,7 +1806,7 @@ Local cRes, vartmp, type, pict
             cRes := Padr( Iif( vartmp, "T", "F" ),oBrw:aColumns[numf]:length )
 
          ELSEIF type == "M"
-            cRes := "<Memo>"
+            cRes := iif(Empty(vartmp),"<memo>","<MEMO>")
 
          ELSEIF type == "O"
             cRes := "<" + vartmp:Classname() + ">"

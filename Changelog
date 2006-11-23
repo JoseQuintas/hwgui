@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.584 2006-11-22 14:14:40 omm Exp $
+ * $Id: Changelog,v 1.585 2006-11-23 08:04:40 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-23 10:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/hedit.prg
+     * To prevent some problems handling of keys, defined with SET KEY,
+       is made during the WM_KEYDOWN instead of WM_KEYUP.
 
 2006-11-22 16:10 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
    * source/hbrowse.prg

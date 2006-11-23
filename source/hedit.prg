@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.49 2006-07-17 09:12:36 alkresin Exp $
+ *$Id: hedit.prg,v 1.50 2006-11-23 08:04:40 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -235,7 +235,7 @@ Local nexthandle
 
    ENDIF
 
-   IF msg == WM_KEYUP
+   IF msg == WM_KEYDOWN
       IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
          DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
             oParent := oParent:oParent

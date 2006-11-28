@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.18 2006-10-31 15:33:48 mauriliolongo Exp $
+ * $Id: freeimg.c,v 1.19 2006-11-28 11:16:56 alexstrickland Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -215,7 +215,7 @@ HB_FUNC( FI_LOADTYPE )
    if( pLoad )
    {
       char *name = hb_parc( 2 );
-      hb_retnl( (ULONG) pLoad( hb_parni( 1 ), name, ( hb_pcount() > 2 ) ? hb_parni( 3 ) : 0 ) );
+      hb_retnl( (ULONG) pLoad( ( enum FREE_IMAGE_FORMAT ) hb_parni( 1 ), name, ( hb_pcount() > 2 ) ? hb_parni( 3 ) : 0 ) );
    }
    else
       hb_retnl( 0 );
@@ -245,7 +245,7 @@ HB_FUNC( FI_SAVETYPE )
    if( pSave )
    {
       char *name = hb_parc( 3 );
-      hb_retl( (BOOL) pSave( hb_parni( 1 ), (FIBITMAP*)hb_parnl( 2 ), name, ( hb_pcount() > 3 )? hb_parni( 4 ) : 0 ) );
+      hb_retl( (BOOL) pSave( ( enum FREE_IMAGE_FORMAT ) hb_parni( 1 ), (FIBITMAP*)hb_parnl( 2 ), name, ( hb_pcount() > 3 )? hb_parni( 4 ) : 0 ) );
    }
    else
       hb_retl( FALSE );

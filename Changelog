@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.585 2006-11-23 08:04:40 alkresin Exp $
+ * $Id: Changelog,v 1.586 2006-11-28 11:15:44 alexstrickland Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-28 13:00 UTC+0200 Alex Strickland <sscc@mweb.co.za>
+   * source/control.c
+   * source/freeimg.c
+     * casts for MSC
+   * source/draw.c
+     * Added !defined(_MSC_VER) for pPic->lpVtbl->get_Handle( pPic, (OLE_HANDLE*)&hBitmap );
+       I hope it is appropriate for all MSC versions.
 
 2006-11-23 10:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/hedit.prg
@@ -74,7 +82,7 @@
    * source/hmonthc.prg
      ! Added event to  month select change
    * source/hriched.prg
-     ! Added fix to ESC handling 
+     ! Added fix to ESC handling
 
 
 2006-11-06 09:40 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
@@ -88,8 +96,8 @@
      + command for redefine tab control
    + samples/tab.prg
      samples/tab.rc
-     ! example to demostrate tabs pages with dialog redefined  
-     
+     ! example to demostrate tabs pages with dialog redefined
+
 
 2006-11-01 14:30 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
    * source/hfrmtmpl.prg

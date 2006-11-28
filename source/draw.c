@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.21 2006-11-16 13:01:45 alkresin Exp $
+ * $Id: draw.c,v 1.22 2006-11-28 11:16:56 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -34,9 +34,9 @@ HB_FUNC( INVALIDATERECT )
    }
 
    InvalidateRect(
-    (HWND) hb_parnl( 1 ),	// handle of window with changed update region  
-    ( hb_pcount() > 2 )? &rc:NULL,	// address of rectangle coordinates 
-    hb_parni( 2 )	// erase-background flag 
+    (HWND) hb_parnl( 1 ),	// handle of window with changed update region
+    ( hb_pcount() > 2 )? &rc:NULL,	// address of rectangle coordinates
+    hb_parni( 2 )	// erase-background flag
    );
 }
 
@@ -51,11 +51,11 @@ HB_FUNC( RECTANGLE )
    LineTo( hDC, x1, y1 );
 /*
    Rectangle(
-    (HDC) hb_parnl( 1 ),	// handle of device context 
-    hb_parni( 2 ),	// x-coord. of bounding rectangle's upper-left corner 
-    hb_parni( 3 ),	// y-coord. of bounding rectangle's upper-left corner 
-    hb_parni( 4 ),	// x-coord. of bounding rectangle's lower-right corner  
-    hb_parni( 5 ) 	// y-coord. of bounding rectangle's lower-right corner  
+    (HDC) hb_parnl( 1 ),	// handle of device context
+    hb_parni( 2 ),	// x-coord. of bounding rectangle's upper-left corner
+    hb_parni( 3 ),	// y-coord. of bounding rectangle's upper-left corner
+    hb_parni( 4 ),	// x-coord. of bounding rectangle's lower-right corner
+    hb_parni( 5 ) 	// y-coord. of bounding rectangle's lower-right corner
    );
 */
 }
@@ -69,15 +69,15 @@ HB_FUNC( DRAWLINE )
 HB_FUNC( PIE )
 {
    int res = Pie(
-    (HDC) hb_parnl(1),	// handle to device context 
-    hb_parni(2),	// x-coord. of bounding rectangle's upper-left corner 
-    hb_parni(3),	// y-coord. of bounding rectangle's upper-left corner  
-    hb_parni(4),	// x-coord. of bounding rectangle's lower-right corner  
-    hb_parni(5), 	// y-coord. bounding rectangle's f lower-right corner  
-    hb_parni(6),	// x-coord. of first radial's endpoint 
-    hb_parni(7),	// y-coord. of first radial's endpoint 
-    hb_parni(8),	// x-coord. of second radial's endpoint 
-    hb_parni(9) 	// y-coord. of second radial's endpoint 
+    (HDC) hb_parnl(1),	// handle to device context
+    hb_parni(2),	// x-coord. of bounding rectangle's upper-left corner
+    hb_parni(3),	// y-coord. of bounding rectangle's upper-left corner
+    hb_parni(4),	// x-coord. of bounding rectangle's lower-right corner
+    hb_parni(5), 	// y-coord. bounding rectangle's f lower-right corner
+    hb_parni(6),	// x-coord. of first radial's endpoint
+    hb_parni(7),	// y-coord. of first radial's endpoint
+    hb_parni(8),	// x-coord. of second radial's endpoint
+    hb_parni(9) 	// y-coord. of second radial's endpoint
    );
    if( !res )
      hb_retnl( (LONG) GetLastError() );
@@ -88,11 +88,11 @@ HB_FUNC( PIE )
 HB_FUNC( ELLIPSE )
 {
    int res =  Ellipse(
-    (HDC) hb_parnl(1),	// handle to device context 
-    hb_parni(2),	// x-coord. of bounding rectangle's upper-left corner 
-    hb_parni(3),	// y-coord. of bounding rectangle's upper-left corner  
-    hb_parni(4),	// x-coord. of bounding rectangle's lower-right corner  
-    hb_parni(5) 	// y-coord. bounding rectangle's f lower-right corner  
+    (HDC) hb_parnl(1),	// handle to device context
+    hb_parni(2),	// x-coord. of bounding rectangle's upper-left corner
+    hb_parni(3),	// y-coord. of bounding rectangle's upper-left corner
+    hb_parni(4),	// x-coord. of bounding rectangle's lower-right corner
+    hb_parni(5) 	// y-coord. bounding rectangle's f lower-right corner
    );
    if( !res )
      hb_retnl( (LONG) GetLastError() );
@@ -110,22 +110,22 @@ HB_FUNC( FILLRECT )
    rc.bottom = hb_parni( 5 );
 
    FillRect(
-    (HDC) hb_parnl( 1 ),      // handle to device context 
-    &rc,                      // pointer to structure with rectangle  
-    (HBRUSH) hb_parnl( 6 )    // handle to brush 
+    (HDC) hb_parnl( 1 ),      // handle to device context
+    &rc,                      // pointer to structure with rectangle
+    (HBRUSH) hb_parnl( 6 )    // handle to brush
    );
 }
 
 HB_FUNC( ROUNDRECT )
 {
    hb_parl( RoundRect(
-    (HDC) hb_parnl( 1 ),   // handle of device context 
-    hb_parni( 2 ),         // x-coord. of bounding rectangle's upper-left corner 
-    hb_parni( 3 ),         // y-coord. of bounding rectangle's upper-left corner 
-    hb_parni( 4 ),         // x-coord. of bounding rectangle's lower-right corner 
-    hb_parni( 5 ),         // y-coord. of bounding rectangle's lower-right corner 
-    hb_parni( 6 ),         // width of ellipse used to draw rounded corners  
-    hb_parni( 7 )          // height of ellipse used to draw rounded corners  
+    (HDC) hb_parnl( 1 ),   // handle of device context
+    hb_parni( 2 ),         // x-coord. of bounding rectangle's upper-left corner
+    hb_parni( 3 ),         // y-coord. of bounding rectangle's upper-left corner
+    hb_parni( 4 ),         // x-coord. of bounding rectangle's lower-right corner
+    hb_parni( 5 ),         // y-coord. of bounding rectangle's lower-right corner
+    hb_parni( 6 ),         // width of ellipse used to draw rounded corners
+    hb_parni( 7 )          // height of ellipse used to draw rounded corners
    ) );
 }
 
@@ -198,7 +198,7 @@ HB_FUNC( LOADICON )
 HB_FUNC( LOADIMAGE )
 {
    if ( ISNUM( 2 ) )
-      hb_retnl( (LONG) 
+      hb_retnl( (LONG)
           LoadImage( ISNIL( 1 ) ? GetModuleHandle(NULL) : (HINSTANCE) hb_parnl( 1 ),    // handle of the instance that contains the image
                   (LPCTSTR)MAKEINTRESOURCE(hb_parnl(2)),          // name or identifier of image
                   (UINT) hb_parni(3),           // type of image
@@ -208,7 +208,7 @@ HB_FUNC( LOADIMAGE )
      ) ) ;
 
    else
-      hb_retnl( (LONG) 
+      hb_retnl( (LONG)
           LoadImage( (HINSTANCE)hb_parnl(1),    // handle of the instance that contains the image
                   (LPCTSTR)hb_parc(2),          // name or identifier of image
                   (UINT) hb_parni(3),           // type of image
@@ -275,7 +275,7 @@ HB_FUNC( DRAWBITMAP )
    GetObject( hBitmap, sizeof( BITMAP ), ( LPVOID ) &bitmap );
    if( nWidthDest && ( nWidthDest != bitmap.bmWidth || nHeightDest != bitmap.bmHeight ))
    {
-      StretchBlt( hDC, hb_parni(4), hb_parni(5), nWidthDest, nHeightDest, hDCmem, 
+      StretchBlt( hDC, hb_parni(4), hb_parni(5), nWidthDest, nHeightDest, hDCmem,
                   0, 0, bitmap.bmWidth, bitmap.bmHeight, dwraster );
    }
    else
@@ -394,8 +394,8 @@ HB_FUNC( OPENBITMAP )
    HGLOBAL hmem1, hmem2;
    HBITMAP hbm;
    HDC hDC = (hb_pcount()>1 && !ISNIL(2))? (HDC)hb_parnl(2):NULL;
-   HANDLE hfbm = CreateFile( hb_parc( 1 ), GENERIC_READ, FILE_SHARE_READ, 
-                   (LPSECURITY_ATTRIBUTES) NULL, OPEN_EXISTING, 
+   HANDLE hfbm = CreateFile( hb_parc( 1 ), GENERIC_READ, FILE_SHARE_READ,
+                   (LPSECURITY_ATTRIBUTES) NULL, OPEN_EXISTING,
                    FILE_ATTRIBUTE_READONLY, (HANDLE) NULL );
 
    if( ( (long int)hfbm ) <= 0 )
@@ -403,35 +403,35 @@ HB_FUNC( OPENBITMAP )
       hb_retnl(0);
       return;
    }
-   /* Retrieve the BITMAPFILEHEADER structure. */ 
+   /* Retrieve the BITMAPFILEHEADER structure. */
    ReadFile( hfbm, &bmfh, sizeof(BITMAPFILEHEADER), &dwRead, NULL );
- 
-   /* Retrieve the BITMAPFILEHEADER structure. */ 
-   ReadFile( hfbm, &bmih, sizeof(BITMAPINFOHEADER), &dwRead, NULL );
- 
-   /* Allocate memory for the BITMAPINFO structure. */ 
- 
-   hmem1 = GlobalAlloc( GHND, sizeof(BITMAPINFOHEADER) + 
-             ((1<<bmih.biBitCount) * sizeof(RGBQUAD))); 
-   lpbmi = (LPBITMAPINFO)GlobalLock( hmem1 );
- 
-   /*  Load BITMAPINFOHEADER into the BITMAPINFO  structure. */ 
-   lpbmi->bmiHeader.biSize = bmih.biSize; 
-   lpbmi->bmiHeader.biWidth = bmih.biWidth; 
-   lpbmi->bmiHeader.biHeight = bmih.biHeight; 
-   lpbmi->bmiHeader.biPlanes = bmih.biPlanes; 
 
-   lpbmi->bmiHeader.biBitCount = bmih.biBitCount; 
-   lpbmi->bmiHeader.biCompression = bmih.biCompression; 
-   lpbmi->bmiHeader.biSizeImage = bmih.biSizeImage; 
-   lpbmi->bmiHeader.biXPelsPerMeter = bmih.biXPelsPerMeter; 
-   lpbmi->bmiHeader.biYPelsPerMeter = bmih.biYPelsPerMeter; 
-   lpbmi->bmiHeader.biClrUsed = bmih.biClrUsed; 
-   lpbmi->bmiHeader.biClrImportant = bmih.biClrImportant; 
- 
-   /*  Retrieve the color table. 
-    * 1 << bmih.biBitCount == 2 ^ bmih.biBitCount 
-   */ 
+   /* Retrieve the BITMAPFILEHEADER structure. */
+   ReadFile( hfbm, &bmih, sizeof(BITMAPINFOHEADER), &dwRead, NULL );
+
+   /* Allocate memory for the BITMAPINFO structure. */
+
+   hmem1 = GlobalAlloc( GHND, sizeof(BITMAPINFOHEADER) +
+             ((1<<bmih.biBitCount) * sizeof(RGBQUAD)));
+   lpbmi = (LPBITMAPINFO)GlobalLock( hmem1 );
+
+   /*  Load BITMAPINFOHEADER into the BITMAPINFO  structure. */
+   lpbmi->bmiHeader.biSize = bmih.biSize;
+   lpbmi->bmiHeader.biWidth = bmih.biWidth;
+   lpbmi->bmiHeader.biHeight = bmih.biHeight;
+   lpbmi->bmiHeader.biPlanes = bmih.biPlanes;
+
+   lpbmi->bmiHeader.biBitCount = bmih.biBitCount;
+   lpbmi->bmiHeader.biCompression = bmih.biCompression;
+   lpbmi->bmiHeader.biSizeImage = bmih.biSizeImage;
+   lpbmi->bmiHeader.biXPelsPerMeter = bmih.biXPelsPerMeter;
+   lpbmi->bmiHeader.biYPelsPerMeter = bmih.biYPelsPerMeter;
+   lpbmi->bmiHeader.biClrUsed = bmih.biClrUsed;
+   lpbmi->bmiHeader.biClrImportant = bmih.biClrImportant;
+
+   /*  Retrieve the color table.
+    * 1 << bmih.biBitCount == 2 ^ bmih.biBitCount
+   */
    switch(bmih.biBitCount)
    {
       case 1  :
@@ -448,29 +448,29 @@ HB_FUNC( OPENBITMAP )
                 break;
       case 24 : break;
    }
-   
-   /* Allocate memory for the required number of  bytes. */ 
+
+   /* Allocate memory for the required number of  bytes. */
    hmem2 = GlobalAlloc( GHND, (bmfh.bfSize - bmfh.bfOffBits) );
-   lpvBits = GlobalLock(hmem2); 
- 
-   /* Retrieve the bitmap data. */ 
- 
+   lpvBits = GlobalLock(hmem2);
+
+   /* Retrieve the bitmap data. */
+
    ReadFile(hfbm, lpvBits, (bmfh.bfSize - bmfh.bfOffBits), &dwRead, NULL );
 
    if( !hDC )
       hDC = GetDC( 0 );
-  /* Create a bitmap from the data stored in the .BMP file.  */ 
+  /* Create a bitmap from the data stored in the .BMP file.  */
    hbm = CreateDIBitmap( hDC, &bmih, CBM_INIT, lpvBits, lpbmi, DIB_RGB_COLORS );
    if( hb_pcount() < 2 || ISNIL(2) )
       ReleaseDC( 0, hDC );
- 
-  /* Unlock the global memory objects and close the .BMP file. */ 
- 
-   GlobalUnlock(hmem1); 
-   GlobalUnlock(hmem2); 
+
+  /* Unlock the global memory objects and close the .BMP file. */
+
+   GlobalUnlock(hmem1);
+   GlobalUnlock(hmem2);
    GlobalFree(hmem1);
    GlobalFree(hmem2);
-   CloseHandle(hfbm); 
+   CloseHandle(hfbm);
    hb_retnl( (LONG) hbm );
 }
 
@@ -487,9 +487,9 @@ HB_FUNC( GETSYSCOLOR )
 HB_FUNC( CREATEPEN )
 {
    hb_retnl( (LONG) CreatePen(
-               hb_parni( 1 ),	// pen style 
-               hb_parni( 2 ),	// pen width  
-               (COLORREF) hb_parnl( 3 ) 	// pen color 
+               hb_parni( 1 ),	// pen style
+               hb_parni( 2 ),	// pen width
+               (COLORREF) hb_parnl( 3 ) 	// pen color
              ) );
 }
 
@@ -509,15 +509,15 @@ HB_FUNC( CREATEHATCHBRUSH )
 HB_FUNC( SELECTOBJECT )
 {
    hb_retnl( (LONG) SelectObject(
-              (HDC) hb_parnl( 1 ),	// handle of device context 
-              (HGDIOBJ) hb_parnl( 2 ) 	// handle of object  
+              (HDC) hb_parnl( 1 ),	// handle of device context
+              (HGDIOBJ) hb_parnl( 2 ) 	// handle of object
              ) );
 }
 
 HB_FUNC( DELETEOBJECT )
 {
    DeleteObject(
-      (HGDIOBJ) hb_parnl( 1 ) 	// handle of object  
+      (HGDIOBJ) hb_parnl( 1 ) 	// handle of object
    );
 }
 
@@ -686,14 +686,14 @@ HB_FUNC( OPENIMAGE )
       return;
    }
 
-#if !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__POCC__) && !defined(__XCC__)
+#if !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__POCC__) && !defined(__XCC__) && !defined(_MSC_VER)
    pPic->get_Handle( (OLE_HANDLE*)&hBitmap );
 #else
    pPic->lpVtbl->get_Handle( pPic, (OLE_HANDLE*)&hBitmap );
 #endif
 
    hb_retnl( (LONG) CopyImage( hBitmap,IMAGE_BITMAP,0,0,LR_COPYRETURNORG ) );
-#if !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__POCC__) && !defined(__XCC__)
+#if !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__POCC__) && !defined(__XCC__) && !defined(_MSC_VER)
    pPic->Release();
 #else
    pPic->lpVtbl->Release( pPic );

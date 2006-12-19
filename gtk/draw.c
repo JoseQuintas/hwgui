@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.11 2006-02-15 16:56:58 lf_sfnet Exp $
+ * $Id: draw.c,v 1.12 2006-12-19 11:10:50 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level painting functions
@@ -119,6 +119,10 @@ HB_FUNC( PIE )
 
 HB_FUNC( ELLIPSE )
 {
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
+   
+   gdk_draw_arc( hDC->window, hDC->gc, 0, x1, y1, hb_parni(4)-x1+1, hb_parni(5)-y1+1, 0, 360*64 );
 /*
    int res =  Ellipse(
     (HDC) hb_parnl(1),	// handle to device context
@@ -489,6 +493,44 @@ HB_FUNC( DELETEOBJECT )
       hb_xfree( obj );
    }
 
+}
+
+HB_FUNC( DEFINEPAINTSTRU )
+{
+   PHWGUI_PPS pps = (PHWGUI_PPS) hb_xgrab( sizeof(HWGUI_PPS) );
+   
+   pps->hDC = NULL;
+   HB_RETHANDLE( pps );
+}
+
+HB_FUNC( BEGINPAINT )
+{
+   GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
+   PHWGUI_PPS pps = (PHWGUI_PPS) HB_PARHANDLE(2);
+   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_xgrab( sizeof(HWGUI_HDC) );   
+   
+   memset( hDC, 0, sizeof(HWGUI_HDC) );
+   hDC->widget = widget;
+   hDC->window = widget->window;
+   hDC->gc = gdk_gc_new( widget->window );
+   hDC->layout = gtk_widget_create_pango_layout( hDC->widget,NULL );
+   hDC->fcolor = hDC->bcolor = -1;
+   
+   pps->hDC = hDC;
+
+   HB_RETHANDLE( hDC );
+}
+
+HB_FUNC( ENDPAINT )
+{
+   PHWGUI_PPS pps = (PHWGUI_PPS) HB_PARHANDLE(2);
+   PHWGUI_HDC hDC = pps->hDC;
+
+   if( hDC->layout )
+      g_object_unref( (GObject*) hDC->layout );
+   g_object_unref( (GObject*) hDC->gc );
+   hb_xfree( hDC );
+   hb_xfree( pps );
 }
 
 HB_FUNC( GETDC )

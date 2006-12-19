@@ -1,5 +1,5 @@
 /*
- * $Id: hwgtk.h,v 1.2 2005-10-27 12:10:33 alkresin Exp $
+ * $Id: hwgtk.h,v 1.3 2006-12-19 11:10:50 alkresin Exp $
  */
 
 
@@ -12,6 +12,11 @@ typedef struct HWGUI_HDC_STRU
   PangoLayout * layout;
   LONG fcolor, bcolor;
 } HWGUI_HDC, * PHWGUI_HDC;
+
+typedef struct HWGUI_PPS_STRU
+{
+  PHWGUI_HDC hDC;
+} HWGUI_PPS, * PHWGUI_PPS;
 
 #define HWGUI_OBJECT_PEN    1
 #define HWGUI_OBJECT_BRUSH  2

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.586 2006-11-28 11:15:44 alexstrickland Exp $
+ * $Id: Changelog,v 1.587 2006-12-19 11:10:50 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-12-19 14:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * gtk/hwgtk.h
+   * gtk/control.c
+   * gtk/draw.c
+   * gtk/drawtext.c
+     * Few functions have been added to provide more compatibility with Win32 version
+   * gtk/hpanel.prg
+     * Fixed problem with drawing and added handling of mouse
+       related events on the panel
 
 2006-11-28 13:00 UTC+0200 Alex Strickland <sscc@mweb.co.za>
    * source/control.c

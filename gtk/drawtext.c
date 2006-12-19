@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.9 2006-08-03 12:58:30 alkresin Exp $
+ * $Id: drawtext.c,v 1.10 2006-12-19 11:10:50 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level text functions
@@ -23,26 +23,6 @@
 #include "hbfast.h"
 #endif
 void hwg_parse_color( ULONG ncolor, GdkColor * pColor );
-
-HB_FUNC( DEFINEPAINTSTRU )
-{
-   hb_retnl( (LONG) 0 );
-}
-
-HB_FUNC( BEGINPAINT )
-{
-   // HDC hDC = BeginPaint( (HWND) hb_parnl( 1 ), pps );
-   hb_retnl( (LONG) 0 );
-}
-
-HB_FUNC( ENDPAINT )
-{
-/*
-   PAINTSTRUCT *pps = (PAINTSTRUCT*) hb_parnl( 2 );
-   EndPaint( (HWND) hb_parnl( 1 ), pps );
-   hb_xfree( pps );
-*/   
-}
 
 HB_FUNC( DELETEDC )
 {

@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.5 2006-08-07 11:14:29 alkresin Exp $
+ * $Id: hpanel.prg,v 1.6 2006-12-19 11:10:50 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HPanel class 
@@ -73,6 +73,7 @@ METHOD Init CLASS HPanel
       ENDIF
 
       Super:Init()
+      SetWindowObject( ::handle,Self )
    ENDIF
 
 Return Nil

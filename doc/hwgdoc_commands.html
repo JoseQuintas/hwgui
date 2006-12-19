@@ -540,8 +540,9 @@ REDEFINE BROWSE &lt;oBrowse&gt;
 	 [ ON LOSTFOCUS &lt;bLostFocus&gt; ] 
 	 [ FONT &lt;oFont&gt; ]
 </pre>
-<A NAME="Commands3-19" HREF="#_Commands3-19">4.3.19.  ADD COLUMN</A>
+<br><A NAME="Commands3-19" HREF="#_Commands3-19">4.3.19.  ADD COLUMN</A>
 <p></p>
+<pre class="code">
 ADD COLUMN &lt;block&gt; &lt;
 	 TO &lt;oBrowse&gt;  
 	 [ HEADER &lt;cTitle&gt; ] 
@@ -557,8 +558,7 @@ ADD COLUMN &lt;block&gt; &lt;
          [ ITEMS &lt;aItem&gt; ] 
          [ COLORBLOCK &lt;bClrBlck&gt; ]
 </pre>
-
-<A NAME="Commands3-20" HREF="#_Commands3-20">4.3.20.  @ &lt;x&gt;,&lt;y&gt; OWNERBUTTON</A>
+<br><A NAME="Commands3-20" HREF="#_Commands3-20">4.3.20.  @ &lt;x&gt;,&lt;y&gt; OWNERBUTTON</A>
 <p></p>
 <pre class="code">
 @ &lt;x&gt;,&lt;y&gt; OWNERBUTTON &lt;oOwnBtn&gt;
@@ -580,7 +580,7 @@ ADD COLUMN &lt;block&gt; &lt;
 	    [ COORDINATES &lt;xb&gt;, &lt;yb&gt;, &lt;widthtb&gt;, &lt;heightb&gt; ] 
 	 ] 
 </pre>
-<A NAME="Commands3-21" HREF="#_Commands3-21">4.3.21.  REDEFINE OWNERBUTTON</A>
+<br><A NAME="Commands3-21" HREF="#_Commands3-21">4.3.21.  REDEFINE OWNERBUTTON</A>
 <p></p>
 <pre class="code">
 REDEFINE OWNERBUTTON &lt;oOwnBtn&gt;
@@ -600,6 +600,14 @@ REDEFINE OWNERBUTTON &lt;oOwnBtn&gt;
 	    [ COORDINATES &lt;xb&gt;, &lt;yb&gt;, &lt;widthtb&gt;, &lt;heightb&gt; ] 
 	 ] 
 </pre>
+<p> HwGUI core registers the OWNERBUTTON as a Window's class with a name "OWNBTN".
+So, if you add the OWNERBUTTON to the resourse file, there should something like:
+<pre class="code">
+   CONTROL "", 1001, "OWNBTN", 0 | WS_CHILD | WS_VISIBLE, 84, 79, 50, 14
+</pre>
+Such a line will be created, if you choose "Custom" from the "Control" menu in the Borland's Workshop,
+and write "OWNBTN" in a "Class" input field.
+<p></p>
 <A NAME="Commands3-22" HREF="#_Commands3-22">4.3.22.  @ &lt;x&gt;,&lt;y&gt; GROUPBOX</A>
 <pre class="code">
 @ &lt;x&gt;,&lt;y&gt; GROUPBOX [ &lt;oGroup&gt; CAPTION ] &lt;caption&gt;

@@ -1,5 +1,5 @@
 /*
- *$Id: hcombo.prg,v 1.4 2006-08-18 12:05:59 lf_sfnet Exp $
+ *$Id: hcombo.prg,v 1.5 2006-12-20 11:39:07 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HComboBox class 
@@ -43,6 +43,7 @@ CLASS HComboBox INHERIT HControl
    METHOD Init( aCombo, nCurrent )
    METHOD Refresh()     
    METHOD Setitem( nPos )
+   METHOD End()
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,oFont, ;
@@ -100,21 +101,25 @@ METHOD Activate CLASS HComboBox
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::hEdit := hwg_ComboGetEdit( ::handle )
       ::Init()
-      SetWindowObject( ::handle,Self )      
+      SetWindowObject( ::hEdit,Self )      
    ENDIF
 Return Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
-
+   
    IF msg == EN_SETFOCUS
       IF ::bSetGet == Nil
-         Eval( ::bGetFocus, hwg_Edit_GetText( ::handle ), Self )
+         IF ::bGetFocus != Nil
+            Eval( ::bGetFocus, hwg_Edit_GetText( ::hEdit ), Self )
+         ENDIF
       ELSE
          __When( Self )
       ENDIF
    ELSEIF msg == EN_KILLFOCUS
       IF ::bSetGet == Nil
-         Eval( ::bLostFocus, hwg_Edit_GetText( ::handle ), Self )
+         IF ::bLostFocus != Nil
+            Eval( ::bLostFocus, hwg_Edit_GetText( ::hEdit ), Self )
+         ENDIF
       ELSE
          __Valid( Self )
       ENDIF
@@ -188,6 +193,14 @@ METHOD SetItem( nPos ) CLASS HComboBox
    
 Return Nil
 
+METHOD End() CLASS HComboBox
+
+   hwg_ReleaseObject( ::hEdit )
+   Super:End()
+
+RETURN Nil
+
+
 Static Function __Valid( oCtrl )
 Local vari := hwg_edit_Gettext( oCtrl:hEdit )
 
@@ -196,7 +209,7 @@ Local vari := hwg_edit_Gettext( oCtrl:hEdit )
    ELSE
       oCtrl:value := Ascan( oCtrl:aItems,vari )
    ENDIF
-               
+
    IF oCtrl:bSetGet != Nil
       Eval( oCtrl:bSetGet, oCtrl:value, oCtrl )
    ENDIF

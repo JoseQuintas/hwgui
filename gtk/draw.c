@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.12 2006-12-19 11:10:50 alkresin Exp $
+ * $Id: draw.c,v 1.13 2006-12-20 10:32:25 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level painting functions
@@ -73,21 +73,7 @@ HB_FUNC( RECTANGLE )
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
 
-/*
-   GdkColor color1, color2;
-   gdk_color_parse( "#FF0000",&color1 );
-   gdk_colormap_alloc_color(gdk_colormap_get_system(),&color1,FALSE,TRUE);
-
-   color2.red = 0;
-   color2.green = 0;
-   color2.blue = 65535;
-   gdk_colormap_alloc_color(gdk_colormap_get_system(),&color2,FALSE,TRUE);
-   gdk_gc_set_foreground( hDC->gc, &color2 );
-   gdk_gc_set_foreground( hDC->gc, &color1 );
-*/
-
    gdk_draw_rectangle( hDC->window, hDC->gc, 0, x1, y1, hb_parni(4)-x1+1, hb_parni(5)-y1+1 );
-
 }
 
 HB_FUNC( DRAWLINE )
@@ -123,19 +109,6 @@ HB_FUNC( ELLIPSE )
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
    
    gdk_draw_arc( hDC->window, hDC->gc, 0, x1, y1, hb_parni(4)-x1+1, hb_parni(5)-y1+1, 0, 360*64 );
-/*
-   int res =  Ellipse(
-    (HDC) hb_parnl(1),	// handle to device context
-    hb_parni(2),	// x-coord. of bounding rectangle's upper-left corner
-    hb_parni(3),	// y-coord. of bounding rectangle's upper-left corner
-    hb_parni(4),	// x-coord. of bounding rectangle's lower-right corner
-    hb_parni(5) 	// y-coord. bounding rectangle's f lower-right corner
-   );
-   if( !res )
-     hb_retnl( (LONG) GetLastError() );
-   else
-     hb_retnl( 0 );
-*/
 }
 
 HB_FUNC( FILLRECT )
@@ -144,11 +117,9 @@ HB_FUNC( FILLRECT )
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    PHWGUI_BRUSH brush = (PHWGUI_BRUSH) HB_PARHANDLE(6);
 
-   // GdkColor color;
    GdkGCValues values;
 
    gdk_gc_get_values( hDC->gc, &values );
-   // gdk_color_parse( brush->color,&color );
    gdk_gc_set_foreground( hDC->gc, &(brush->color) );
    gdk_draw_rectangle( hDC->window, hDC->gc, 1, x1, y1, hb_parni(4)-x1+1, hb_parni(5)-y1+1 );
    gdk_gc_set_foreground( hDC->gc, &(values.foreground) );
@@ -445,29 +416,31 @@ HB_FUNC( CREATESOLIDBRUSH )
 
 HB_FUNC( SELECTOBJECT )
 {
-
-   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    HWGUI_HDC_OBJECT * obj = (HWGUI_HDC_OBJECT*) HB_PARHANDLE(2);
-   GdkGCValues values;
 
-   if( obj->type == HWGUI_OBJECT_PEN )
+   if( obj )
    {
-      // GdkColor color;
-      // gdk_color_parse( ((PHWGUI_PEN)obj)->color,&color );
-      // writelog(((PHWGUI_PEN)obj)->color);
-      gdk_gc_set_foreground( hDC->gc, &(((PHWGUI_PEN)obj)->color) );
-      gdk_gc_get_values( hDC->gc, &values );
-      gdk_gc_set_line_attributes( hDC->gc, ((PHWGUI_PEN)obj)->width, 
-          ((PHWGUI_PEN)obj)->style, values.cap_style, values.join_style );
+      PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+      GdkGCValues values;
+
+      if( obj->type == HWGUI_OBJECT_PEN )
+      {
+         gdk_gc_set_foreground( hDC->gc, &(((PHWGUI_PEN)obj)->color) );
+         gdk_gc_get_values( hDC->gc, &values );
+         gdk_gc_set_line_attributes( hDC->gc, ((PHWGUI_PEN)obj)->width, 
+             ((PHWGUI_PEN)obj)->style, values.cap_style, values.join_style );
+      }
+      else if( obj->type == HWGUI_OBJECT_BRUSH )
+      {
+         gdk_gc_set_background( hDC->gc, &(((PHWGUI_BRUSH)obj)->color) );
+      }
+      else if( obj->type == HWGUI_OBJECT_FONT )
+      {
+         hDC->hFont = ((PHWGUI_FONT)obj)->hFont;
+         pango_layout_set_font_description( hDC->layout, hDC->hFont );
+      }
    }
-   else if( obj->type == HWGUI_OBJECT_BRUSH )
-   {
-   }
-   else if( obj->type == HWGUI_OBJECT_FONT )
-   {
-      hDC->hFont = ((PHWGUI_FONT)obj)->hFont;
-      pango_layout_set_font_description( hDC->layout, hDC->hFont );
-   }
+   HB_RETHANDLE( NULL );
 }
 
 HB_FUNC( DELETEOBJECT )

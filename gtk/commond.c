@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.12 2006-02-15 16:56:58 lf_sfnet Exp $
+ * $Id: commond.c,v 1.13 2006-12-22 07:30:24 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
@@ -18,6 +18,9 @@
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif
+
+extern GtkWidget * GetActiveWindow( void );
+extern void hwg_parse_color( ULONG ncolor, GdkColor * pColor );
 
 void store_font( gpointer fontseldlg )
 {
@@ -153,14 +156,14 @@ void store_color( gpointer colorseldlg )
 {
    GtkColorSelection *colorsel;
    GdkColor color;
-   // char ss[30];   
+   // char ss[50];   
 
    colorsel = GTK_COLOR_SELECTION( GTK_COLOR_SELECTION_DIALOG (colorseldlg)->colorsel );
    gtk_color_selection_get_current_color (colorsel, &color);
    // sprintf( ss,"%ld %ld %ld %ld \n\r",color.pixel,color.red,color.green,color.blue );
    // g_print(ss);
    
-   hb_retnl( color.blue + color.green * 256 + color.red * 65536 );
+   hb_retnl( (ULONG) ( (color.red>>8) + (color.green&0xff00) + ((color.blue&0xff00)<<8) ) );
    gtk_widget_destroy( (GtkWidget*) colorseldlg );
 }
 
@@ -168,6 +171,7 @@ HB_FUNC( HWG_CHOOSECOLOR )
 {
    GtkWidget *colorseldlg;
    GtkColorSelection *colorsel;
+   GtkWidget * hParent = GetActiveWindow();
    char *cTitle = ( hb_pcount()>2 && ISCHAR(3) )? hb_parc(3):"Select color";
    
    colorseldlg = gtk_color_selection_dialog_new( cTitle );
@@ -175,14 +179,23 @@ HB_FUNC( HWG_CHOOSECOLOR )
 
    if( hb_pcount() > 0 && !ISNIL(1) )
    {
-      char ss[30]={0};
+      // char ss[30]={0};
+      ULONG ulColor = (ULONG) hb_parnl(1);
       GdkColor color;
+      hwg_parse_color( ulColor, &color );
+      /*
       color.pixel = 0;
-      color.blue =  ( hb_parnl(1) % 256 ) * 256;
-      color.green = ( hb_parnl(1) % 65536 );
-      color.red =   ( hb_parnl(1) % 16777216 ) / 256;
-      sprintf( ss,"%ld %d %d %d \n\r",hb_parnl(1),color.red,color.green,color.blue );
-      g_print(ss);
+      color.blue =  ( ulColor % 256 ) * 256;
+      color.green = ( ulColor % 65536 );
+      color.red =   ( ulColor % 16777216 ) / 256;
+      */
+      /*
+      color.red = ulColor % 256;
+      color.green = ( ( ulColor-color.red ) % 65536 ) / 256;
+      color.blue = ( ulColor-color.green*256-color.red ) / 65536;
+      */
+      // sprintf( ss,"%ld %d %d %d \n\r",hb_parnl(1),color.red,color.green,color.blue );
+      // g_print(ss);
       gtk_color_selection_set_previous_color( colorsel, &color );
       gtk_color_selection_set_current_color( colorsel, &color );
    }
@@ -200,6 +213,9 @@ HB_FUNC( HWG_CHOOSECOLOR )
                              "clicked",
                              G_CALLBACK (gtk_widget_destroy),
                              (gpointer) colorseldlg );
+
+   gtk_window_set_modal( (GtkWindow *) colorseldlg, 1 );
+   gtk_window_set_transient_for( (GtkWindow *) colorseldlg, (GtkWindow *) hParent );
                              
    gtk_widget_show( colorseldlg );
    gtk_main();  

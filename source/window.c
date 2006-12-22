@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.51 2006-11-07 11:38:18 lculik Exp $
+ * $Id: window.c,v 1.52 2006-12-22 07:30:24 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -587,7 +587,12 @@ HB_FUNC( GETINSTANCE )
 
 HB_FUNC( HWG_SETWINDOWSTYLE )
 {
-   hb_retnl( SetWindowLong( (HWND) hb_parnl(1), GWL_STYLE, hb_parnl(2) ) );
+   hb_retnl( SetWindowLongPtr( (HWND) hb_parnl(1), GWL_STYLE, hb_parnl(2) ) );
+}
+
+HB_FUNC( HWG_GETWINDOWSTYLE )
+{
+   hb_retnl( GetWindowLongPtr( (HWND) hb_parnl(1), GWL_STYLE ) );
 }
 
 HB_FUNC( HWG_FINDWINDOW )

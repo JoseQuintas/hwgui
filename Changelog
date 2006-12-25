@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.591 2006-12-22 07:30:22 alkresin Exp $
+ * $Id: Changelog,v 1.592 2006-12-25 07:57:00 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-12-25 10:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/htrackbr.prg
+     ! Bug fixed, which caused memory leaks if a paint procedure for
+       trackbar was set.
 
 2006-12-22 10:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * gtk/commond.c

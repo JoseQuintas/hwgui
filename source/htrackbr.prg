@@ -1,5 +1,5 @@
 /*
- * $Id: htrackbr.prg,v 1.12 2006-08-02 19:50:42 fsgiudice Exp $
+ * $Id: htrackbr.prg,v 1.13 2006-12-25 07:57:00 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTrackBar class
@@ -119,6 +119,7 @@ METHOD Init() CLASS HTrackBar
       SendMessage( ::handle, TBM_SETPOS, 1, ::value )
 
       IF ::bPaint != NIL
+         ::nHolder := 1
          SetWindowObject( ::handle, Self )
          Hwg_InitTrackProc( ::handle )
       ENDIF

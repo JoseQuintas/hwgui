@@ -104,6 +104,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hipedit.obj \
    $(HWGUI_OBJ_DIR)\commond.obj \
    $(HWGUI_OBJ_DIR)\control.obj \
+   $(HWGUI_OBJ_DIR)\cxshade.obj \
    $(HWGUI_OBJ_DIR)\dialog.obj  \
    $(HWGUI_OBJ_DIR)\draw.obj \
    $(HWGUI_OBJ_DIR)\drawtext.obj \
@@ -149,6 +150,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hradio.obj \
    $(HWGUI_OBJ_DIR)\hriched.obj \
    $(HWGUI_OBJ_DIR)\hsayimg.obj \
+   $(HWGUI_OBJ_DIR)\hshbtn.obj \
    $(HWGUI_OBJ_DIR)\hsplash.obj \
    $(HWGUI_OBJ_DIR)\hsplit.obj \
    $(HWGUI_OBJ_DIR)\htab.obj \

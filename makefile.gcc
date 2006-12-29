@@ -1,4 +1,4 @@
-# $Id: makefile.gcc,v 1.19 2006-09-09 09:46:19 alkresin Exp $
+# $Id: makefile.gcc,v 1.20 2006-12-29 10:18:54 alkresin Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -22,6 +22,7 @@ all: \
 $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/commond.o \
    $(OBJ_DIR)/control.o \
+   $(OBJ_DIR)/cxshade.o \
    $(OBJ_DIR)/dialog.o \
    $(OBJ_DIR)/draw.o \
    $(OBJ_DIR)/drawtext.o \
@@ -64,6 +65,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hradio.o \
    $(OBJ_DIR)/hriched.o \
    $(OBJ_DIR)/hsayimg.o \
+   $(OBJ_DIR)/hshbtn.o \
    $(OBJ_DIR)/hsplit.o \
    $(OBJ_DIR)/htab.o \
    $(OBJ_DIR)/htimer.o \

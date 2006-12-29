@@ -1,4 +1,4 @@
-# $Id: makefile.wc,v 1.12 2006-08-26 19:31:39 lculik Exp $
+# $Id: makefile.wc,v 1.13 2006-12-29 10:18:54 alkresin Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -53,6 +53,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hipedit.obj \
    $(OBJ_DIR)\commond.obj \
    $(OBJ_DIR)\control.obj \
+   $(OBJ_DIR)\cxshade.obj \
    $(OBJ_DIR)\dialog.obj  \
    $(OBJ_DIR)\draw.obj \
    $(OBJ_DIR)\drawtext.obj \
@@ -88,6 +89,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hradio.obj \
    $(OBJ_DIR)\hriched.obj \
    $(OBJ_DIR)\hsayimg.obj \
+   $(OBJ_DIR)\hshbtn.obj \
    $(OBJ_DIR)\hsplit.obj \
    $(OBJ_DIR)\htab.obj \
    $(OBJ_DIR)\htool.obj \
@@ -331,6 +333,9 @@ $(OBJ_DIR)\hsayimg.c : $(SRC_DIR)\hsayimg.prg
 $(OBJ_DIR)\hsayimg.obj : $(OBJ_DIR)\hsayimg.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
+$(OBJ_DIR)\hshbtn.obj : $(OBJ_DIR)\hshbtn.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
 $(OBJ_DIR)\hsplit.c : $(SRC_DIR)\hsplit.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
@@ -425,6 +430,9 @@ $(OBJ_DIR)\commond.obj : $(SRC_DIR)\commond.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\control.obj : $(SRC_DIR)\control.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\cxshade.obj : $(SRC_DIR)\cxshade.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\dialog.obj : $(SRC_DIR)\dialog.c

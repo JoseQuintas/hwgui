@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.8 2006-10-06 05:36:08 alkresin Exp $
+ * $Id: drawwidg.prg,v 1.9 2006-12-29 10:18:55 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -318,6 +318,7 @@ CLASS HBitmap INHERIT HObject
    METHOD AddStandard( nId )
    METHOD AddFile( name,hDC )
    METHOD AddWindow( oWnd,lFull )
+   METHOD Draw( hDC,x1,y1,width,height )  INLINE DrawBitmap( hDC,::handle,SRCCOPY,x1,y1,width,height )
    METHOD Release()
 
 ENDCLASS
@@ -462,16 +463,18 @@ CLASS HIcon INHERIT HObject
    CLASS VAR aIcons   INIT {}
    DATA handle
    DATA name
+   DATA nWidth, nHeight
    DATA nCounter   INIT 1
 
    METHOD AddResource( name )
    METHOD AddFile( name,hDC )
+   METHOD Draw( hDC, x, y )   INLINE DrawIcon( hDC, ::handle, x, y )
    METHOD Release()
 
 ENDCLASS
 
 METHOD AddResource( name ) CLASS HIcon
-Local lPreDefined := .F., i
+Local lPreDefined := .F., i, aIconSize
 
    IF Valtype( name ) == "N"
       name := Ltrim( Str( name ) )
@@ -495,12 +498,16 @@ Local lPreDefined := .F., i
    // ::classname:= "HICON"
    ::handle :=   LoadIcon( Iif( lPreDefined, Val(name),name ) )
    ::name   := name
+   aIconSize := GetIconSize( ::handle )
+   ::nWidth  := aIconSize[1]
+   ::nHeight := aIconSize[2]
+
    Aadd( ::aIcons,Self )
 
 Return Self
 
 METHOD AddFile( name ) CLASS HIcon
-Local i
+Local i, aIconSize
 
 #ifdef __XHARBOUR__
    For EACH i IN  ::aIcons 
@@ -520,6 +527,10 @@ Local i
    // ::classname:= "HICON"
    ::handle := LoadImage( 0, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE+LR_LOADFROMFILE )
    ::name := name
+   aIconSize := GetIconSize( ::handle )
+   ::nWidth  := aIconSize[1]
+   ::nHeight := aIconSize[2]
+
    Aadd( ::aIcons,Self )
 
 Return Self

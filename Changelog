@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.592 2006-12-25 07:57:00 alkresin Exp $
+ * $Id: Changelog,v 1.593 2006-12-29 10:18:54 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,33 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-12-29 13:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   - image/corn_1.gif
+   - image/pim.ico
+   + image/ok.ico
+   + image/cancel.ico
+     + added icon files for samples/shadebtn.prg
+   * include/guilib.ch
+     * Added @ ... SHADEBUTTON command and few constants for it
+   + source/cxshade.c
+   + source/hshbtn.prg
+     + shade buttons implementation
+   * source/hownbtn.prg
+     * code cleanup
+   * source/draw.c
+     * GetIconSize() function added
+   * source/drawwidg.prg
+     * nWidth, nHeight items, Draw() method added to the HIcon class
+     * Draw() method added to HBitmap class
+   + samples/shadebtn.prg
+     + added sample file for shade buttons
+   * makefile.bc
+   * makefile.vc
+   * makefile.gcc
+   * makefile.wc
+   * source/Makefile
+     makefiles has been updated
 
 2006-12-25 10:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/htrackbr.prg

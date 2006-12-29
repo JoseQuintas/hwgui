@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.22 2006-11-28 11:16:56 alexstrickland Exp $
+ * $Id: draw.c,v 1.23 2006-12-29 10:18:55 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -363,25 +363,45 @@ HB_FUNC( SPREADBITMAP )
 HB_FUNC( GETBITMAPSIZE )
 {
    BITMAP  bitmap;
-   PHB_ITEM aMetr = _itemArrayNew( 3 );
+   PHB_ITEM aMetr = hb_itemArrayNew( 3 );
    PHB_ITEM temp;
 
    GetObject( (HBITMAP) hb_parnl( 1 ), sizeof( BITMAP ), ( LPVOID ) &bitmap );
 
-   temp = _itemPutNL( NULL, bitmap.bmWidth );
-   _itemArrayPut( aMetr, 1, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, bitmap.bmWidth );
+   hb_itemArrayPut( aMetr, 1, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, bitmap.bmHeight );
-   _itemArrayPut( aMetr, 2, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, bitmap.bmHeight );
+   hb_itemArrayPut( aMetr, 2, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, bitmap.bmBitsPixel );
-   _itemArrayPut( aMetr, 3, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, bitmap.bmBitsPixel );
+   hb_itemArrayPut( aMetr, 3, temp );
+   hb_itemRelease( temp );
 
-   _itemReturn( aMetr );
-   _itemRelease( aMetr );
+   hb_itemReturn( aMetr );
+   hb_itemRelease( aMetr );
+}
+
+HB_FUNC( GETICONSIZE )
+{
+   ICONINFO iinfo;
+   PHB_ITEM aMetr = hb_itemArrayNew( 2 );
+   PHB_ITEM temp;
+
+   GetIconInfo( (HICON) hb_parnl( 1 ), &iinfo );
+
+   temp = hb_itemPutNL( NULL, iinfo.xHotspot * 2 );
+   hb_itemArrayPut( aMetr, 1, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, iinfo.yHotspot * 2 );
+   hb_itemArrayPut( aMetr, 2, temp );
+   hb_itemRelease( temp );
+
+   hb_itemReturn( aMetr );
+   hb_itemRelease( aMetr );
 }
 
 HB_FUNC( OPENBITMAP )

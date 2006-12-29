@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.25 2006-08-31 10:44:02 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.26 2006-12-29 10:18:55 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -21,8 +21,8 @@ CLASS HOwnButton INHERIT HControl
    DATA state
    DATA bClick
    DATA lPress  INIT .F.
-   DATA text,ofont,xt,yt,widtht,heightt
-   DATA bitmap,xb,yb,widthb,heightb,lTransp,trColor, oBitmap
+   DATA xt,yt,widtht,heightt
+   DATA oBitmap,xb,yb,widthb,heightb,lTransp,trColor
    DATA lEnabled INIT .T.
    DATA nOrder
 
@@ -40,6 +40,7 @@ CLASS HOwnButton INHERIT HControl
                   bmp,lResour,xb,yb,widthb,heightb,lTr,      ;
                   cTooltip, lEnabled ) 
    METHOD Paint()
+   METHOD DrawItems( hDC )
    METHOD MouseMove( wParam, lParam )
    METHOD MDown()
    METHOD MUp()
@@ -53,38 +54,45 @@ ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,   ;
                   bInit,bSize,bPaint,bClick,lflat,             ;
-                  cText,color,font,xt,yt,widtht,heightt,       ;
+                  cText,color,oFont,xt,yt,widtht,heightt,       ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,trColor,;
                   cTooltip, lEnabled  ) CLASS HOwnButton
 
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,font,bInit, ;
+   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip )
 
-   ::lFlat   := Iif( lFlat==Nil,.F.,lFlat )
+   IF oFont == Nil
+      ::oFont := ::oParent:oFont
+   ENDIF
+   ::lFlat   := Iif( lFlat==Nil, .F., lFlat )
    ::bClick  := bClick
    ::state   := OBTN_INIT
    ::nOrder  := iif( oWndParent==nil, 0, len( oWndParent:aControls ) )
    
-   ::text    := cText
+   ::title   := cText
    ::tcolor  := Iif( color==Nil, GetSysColor( COLOR_BTNTEXT ), color )
-   ::xt      := xt
-   ::yt      := yt
-   ::widtht  := widtht
-   ::heightt := heightt
+   ::xt      := Iif( xt==Nil, 0, xt )
+   ::yt      := Iif( yt==Nil, 0, yt )
+   ::widtht  := Iif( widtht==Nil, 0, widtht )
+   ::heightt := Iif( heightt==Nil, 0, heightt )
 
-   if lEnabled!=Nil
-      ::lEnabled:=lEnabled
-   endif
+   IF lEnabled != Nil
+      ::lEnabled := lEnabled
+   ENDIF
    IF bmp != Nil
-      ::bitmap := Iif( (lResour!=Nil.AND.lResour).OR.Valtype(bmp)=="N", ;
-                     HBitmap():AddResource( bmp ), ;
-                     HBitmap():AddFile( Iif( ::cPath!=Nil,::cPath+bmp,bmp ) ) )
+      IF Valtype( bmp ) == "O"
+         ::oBitmap := bmp
+      ELSE
+         ::oBitmap := Iif( (lResour!=Nil.AND.lResour).OR.Valtype(bmp)=="N", ;
+                    HBitmap():AddResource( bmp ), ;
+                    HBitmap():AddFile( Iif( ::cPath!=Nil,::cPath+bmp,bmp ) ) )
+      ENDIF
    ENDIF
    ::xb      := xb
    ::yb      := yb
-   ::widthb  := widthb
-   ::heightb := heightb
-   ::lTransp := Iif( ltr!=Nil,lTr,.F. )
+   ::widthb  := Iif( widthb==Nil, 0, widthb )
+   ::heightb := Iif( heightb==Nil, 0, heightb )
+   ::lTransp := Iif( ltr!=Nil, lTr, .F. )
    ::trColor := trColor
 
    hwg_RegOwnBtn()
@@ -97,24 +105,29 @@ METHOD Activate CLASS HOwnButton
       ::handle := CreateOwnBtn( ::oParent:handle, ::id, ;
                   ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
-   if !::lEnabled
-      EnableWindow( ::handle, .f. )
-      ::Disable()
-   EndIf
-
+      IF !::lEnabled
+         EnableWindow( ::handle, .f. )
+         ::Disable()
+      ENDIF
    ENDIF
 Return Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
 
    IF msg == WM_PAINT
-      ::Paint()
+      IF ::bPaint != Nil
+         Eval( ::bPaint, Self )
+      ELSE
+         ::Paint()
+      ENDIF
+   ELSEIF msg == WM_ERASEBKGND
+      Return 1
+   ELSEIF msg == WM_MOUSEMOVE
+      ::MouseMove( wParam, lParam )
    ELSEIF msg == WM_LBUTTONDOWN
       ::MDown()
    ELSEIF msg == WM_LBUTTONUP
       ::MUp()
-   ELSEIF msg == WM_MOUSEMOVE
-      ::MouseMove( wParam, lParam )
    ELSEIF msg == WM_DESTROY
       ::End()
    ENDIF
@@ -126,7 +139,6 @@ METHOD Init CLASS HOwnButton
    IF !::lInit
       ::nHolder := 1
       SetWindowObject( ::handle,Self )
-      // Hwg_InitOwnbtnProc( ::handle )
       Super:Init()
    ENDIF
 
@@ -137,32 +149,36 @@ METHOD Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,      ;
                   cTooltip, lEnabled ) CLASS HOwnButton
 
-   Super:New( oWndParent,nId,0,0,0,0,0,,bInit, ;
-                  bSize,bPaint,ctooltip )
+   Super:New( oWndParent, nId, 0, 0, 0, 0, 0,, bInit, bSize, bPaint, ctooltip )
 
-   ::lFlat   := Iif( lFlat==Nil,.F.,lFlat )
+   ::lFlat   := Iif( lFlat==Nil, .F., lFlat )
    ::bClick  := bClick
    ::state   := OBTN_INIT
 
-   ::text    := cText
+   ::title   := cText
    ::tcolor  := Iif( color==Nil, GetSysColor( COLOR_BTNTEXT ), color )
    ::ofont   := font
-   ::xt      := xt
-   ::yt      := yt
-   ::widtht  := widtht
-   ::heightt := heightt
+   ::xt      := Iif( xt==Nil, 0, xt )
+   ::yt      := Iif( yt==Nil, 0, yt )
+   ::widtht  := Iif( widtht==Nil, 0, widtht )
+   ::heightt := Iif( heightt==Nil, 0, heightt )
 
-   if lEnabled!=Nil
-      ::lEnabled:=lEnabled
-   endif
+   IF lEnabled != Nil
+      ::lEnabled := lEnabled
+   ENDIF
 
    IF bmp != Nil
-      ::bitmap  := Iif( lResour,HBitmap():AddResource( bmp ), HBitmap():AddFile( bmp ) )
+      IF Valtype( bmp ) == "O"
+         ::oBitmap := bmp
+      ELSE
+         ::oBitmap := Iif( lResour,HBitmap():AddResource( bmp ), ;
+                 HBitmap():AddFile( bmp ) )
+      ENDIF
    ENDIF
    ::xb      := xb
    ::yb      := yb
-   ::widthb  := widthb
-   ::heightb := heightb
+   ::widthb  := Iif( widthb==Nil, 0, widthb )
+   ::heightb := Iif( heightb==Nil, 0, heightb )
    ::lTransp := Iif( ltr!=Nil,lTr,.F. )
    hwg_RegOwnBtn()
 
@@ -170,83 +186,112 @@ Return Self
 
 METHOD Paint() CLASS HOwnButton
 Local pps, hDC
-Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
+Local aCoors
 
    pps := DefinePaintStru()
    hDC := BeginPaint( ::handle, pps )
+
    aCoors := GetClientRect( ::handle )
 
-   oldBkColor := SetBkColor( hDC,GetSysColor(COLOR_3DFACE) )
    IF ::state == OBTN_INIT
       ::state := OBTN_NORMAL
+   ENDIF
+   IF ::nWidth != aCoors[3] .OR. ::nHeight != aCoors[4]
+      ::nWidth  := aCoors[3]
+      ::nHeight := aCoors[4]
    ENDIF
 
    IF ::lFlat
       IF ::state == OBTN_NORMAL
-         DrawButton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],0 )
+         DrawButton( hDC,0,0,aCoors[3],aCoors[4],0 )
       ELSEIF ::state == OBTN_MOUSOVER
-         DrawButton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],1 )
+         DrawButton( hDC,0,0,aCoors[3],aCoors[4],1 )
       ELSEIF ::state == OBTN_PRESSED
-         DrawButton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],2 )
+         DrawButton( hDC,0,0,aCoors[3],aCoors[4],2 )
       ENDIF
    ELSE
       IF ::state == OBTN_NORMAL
-         DrawButton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],5 )
+         DrawButton( hDC,0,0,aCoors[3],aCoors[4],5 )
       ELSEIF ::state == OBTN_PRESSED
-         DrawButton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],6 )
+         DrawButton( hDC,0,0,aCoors[3],aCoors[4],6 )
       ENDIF
    ENDIF
 
-   IF ::bitmap != Nil
-      IF ::widthb == Nil .OR. ::widthb == 0
-         ::widthb := ::bitmap:nWidth
-         ::heightb := ::bitmap:nHeight
+   ::DrawItems( hDC )
+
+   EndPaint( ::handle, pps )
+Return Nil
+
+METHOD DrawItems( hDC )
+Local x1, y1, x2, y2
+
+   IF ::oBitmap != Nil
+      IF ::widthb == 0
+         ::widthb := ::oBitmap:nWidth
+         ::heightb := ::oBitmap:nHeight
       ENDIF
       x1 := Iif( ::xb!=Nil .AND. ::xb!=0, ::xb, ;
-                 Round( (aCoors[3]-aCoors[1]-::widthb) / 2, 0 ) )
+                 Round( (::nWidth-::widthb) / 2, 0 ) )
       y1 := Iif( ::yb!=Nil .AND. ::yb!=0, ::yb, ;
-                 Round( (aCoors[4]-aCoors[2]-::heightb) / 2, 0 ) )
-      if ::lEnabled //if button is enabled
-         if ::oBitmap!=Nil
-            ::bitmap:handle:=::oBitmap
-            ::oBitmap:=Nil
-         EndIf
-         IF ::lTransp
-            DrawTransparentBitmap( hDC, ::bitmap:handle, x1, y1, ::trColor )
+                 Round( (::nHeight-::heightb) / 2, 0 ) )
+      IF ::lEnabled
+         IF ::oBitmap:ClassName()=="HICON"
+            DrawIcon( hDC, ::oBitmap:handle, x1, y1 )
          ELSE
-            DrawBitmap( hDC, ::bitmap:handle,, x1, y1, ::widthb, ::heightb )
+            IF ::lTransp
+               DrawTransparentBitmap( hDC, ::oBitmap:handle, x1, y1, ::trColor )
+            ELSE
+               DrawBitmap( hDC, ::oBitmap:handle,, x1, y1, ::widthb, ::heightb )
+            ENDIF
          ENDIF
-      Else
-         ::oBitmap:=::bitmap:handle
-         DrawGrayBitmap( hDC, ::bitmap:handle, x1, y1 )
-      EndIf
+      ELSE
+         DrawGrayBitmap( hDC, ::oBitmap:handle, x1, y1 )
+      ENDIF
    ENDIF
 
-   IF ::text != Nil
-      IF ::ofont != Nil
-         SelectObject( hDC, ::ofont:handle )
-      ELSEIF ::oParent:oFont != Nil
-         SelectObject( hDC, ::oParent:ofont:handle )
+   IF ::oBitmap != Nil
+      IF ::widthb == 0
+         ::widthb := ::oBitmap:nWidth
+         ::heightb := ::oBitmap:nHeight
       ENDIF
-      aMetr := GetTextMetric( hDC )
-      if ::lEnabled //if button is enabled
+      x1 := Iif( ::xb!=Nil .AND. ::xb!=0, ::xb, ;
+                 Round( (::nWidth-::widthb) / 2, 0 ) )
+      y1 := Iif( ::yb!=Nil .AND. ::yb!=0, ::yb, ;
+                 Round( (::nHeight-::heightb) / 2, 0 ) )
+      IF ::lEnabled
+         IF ::oBitmap:ClassName()=="HICON"
+            DrawIcon( hDC, ::oBitmap:handle, x1, y1 )
+         ELSE
+            IF ::lTransp
+               DrawTransparentBitmap( hDC, ::oBitmap:handle, x1, y1, ::trColor )
+            ELSE
+               DrawBitmap( hDC, ::oBitmap:handle,, x1, y1, ::widthb, ::heightb )
+            ENDIF
+         ENDIF
+      ELSE
+         DrawGrayBitmap( hDC, ::oBitmap:handle, x1, y1 )
+      ENDIF
+   ENDIF
+
+   IF ::title != Nil
+      IF ::oFont != Nil
+         SelectObject( hDC, ::oFont:handle )
+      ENDIF
+      IF ::lEnabled
          SetTextColor( hDC,::tcolor )
-      Else
+      ELSE
          SetTextColor( hDC, RGB(255,255,255) )
-      EndIf
-      x1 := Iif( ::xt!=Nil .AND. ::xt!=0, ::xt, aCoors[1]+2 )
-      y1 := Iif( ::yt!=Nil .AND. ::yt!=0, ::yt, ;
-                              Round( ( aCoors[4]-aCoors[2]-aMetr[1] ) / 2, 0 ) )
-      x2 := Iif( ::widtht!=Nil .AND. ::widtht!=0, ;
-                          ::xt+::widtht-1, aCoors[3]-2 )
-      y2 := Iif( ::heightt!=Nil .AND. ::heightt!=0, ;
-                 ::yt+::heightt-1, y1+aMetr[1] )
+      ENDIF
+      x1 := Iif( ::xt!=0, ::xt, 4 )
+      y1 := Iif( ::yt!=0, ::yt, 4 )
+      x2 := ::nWidth - 4
+      y2 := ::nHeight - 4
       SetTransparentMode( hDC,.T. )
-      DrawText( hDC, ::text, x1, y1, x2, y2, Iif( ::xt!=Nil.AND.::xt!=0,DT_LEFT,DT_CENTER ) )
+      DrawText( hDC, ::title, x1, y1, x2, y2, ;
+         Iif( ::xt!=0,DT_LEFT,DT_CENTER ) + Iif( ::yt!=0,DT_TOP,DT_VCENTER+DT_SINGLELINE ) )
       SetTransparentMode( hDC,.F. )
    ENDIF
-   SetBkColor( hDC,oldBkColor )
-   EndPaint( ::handle, pps )
+
 Return Nil
 
 METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
@@ -288,13 +333,13 @@ METHOD MUp() CLASS HOwnButton
    IF ::state == OBTN_PRESSED
       IF !::lPress
          ::state := OBTN_NORMAL  // IIF( ::lFlat,OBTN_MOUSOVER,OBTN_NORMAL )
-         InvalidateRect( ::handle, 0 )
-         PostMessage( ::handle, WM_PAINT, 0, 0 )
       ENDIF
       IF ::bClick != Nil
          ReleaseCapture()
          Eval( ::bClick, ::oParent, ::id )
       ENDIF
+      InvalidateRect( ::handle, 0 )
+      SendMessage( ::handle, WM_PAINT, 0, 0 )
    ENDIF
 
 Return Nil
@@ -309,10 +354,10 @@ Return Nil
 METHOD End()  CLASS HOwnButton
 
    Super:End()
-   ::ofont := Nil
-   IF ::bitmap != Nil
-      ::bitmap:Release()
-      ::bitmap := Nil
+   ::oFont := Nil
+   IF ::oBitmap != Nil
+      ::oBitmap:Release()
+      ::oBitmap := Nil
    ENDIF
 
 Return Nil

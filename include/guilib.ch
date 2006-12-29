@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.81 2006-11-16 13:30:01 lculik Exp $
+ *$Id: guilib.ch,v 1.82 2006-12-29 10:18:55 alkresin Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -13,6 +13,19 @@
 #define	OBTN_NORMAL             1
 #define	OBTN_MOUSOVER           2
 #define	OBTN_PRESSED            3
+
+#define SHS_NOISE               0
+#define SHS_DIAGSHADE           1
+#define SHS_HSHADE              2
+#define SHS_VSHADE              3
+#define SHS_HBUMP               4
+#define SHS_VBUMP               5
+#define SHS_SOFTBUMP            6
+#define SHS_HARDBUMP            7
+#define SHS_METAL               8
+
+#define PAL_DEFAULT             0
+#define PAL_METAL               1
 
 #define	BRW_ARRAY               1
 #define	BRW_DATABASE            2
@@ -755,7 +768,6 @@
     <oGrid>:AddColumn( <cHeader>, <nWidth>, <nJusHead> ,<n>)
 
 
-
 #xcommand @ <x>,<y> OWNERBUTTON [ <oOwnBtn> ]  ;
             [ OF <oWnd> ]             ;
             [ ID <nId> ]              ;
@@ -806,6 +818,36 @@
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>,<widtht>,<heightt>, ;
               <bmp>,<.res.>,<xb>, <yb>,<widthb>,<heightb>,<.ltr.>, <ctoolt>, !<.enable.>)
+
+#xcommand @ <x>,<y> SHADEBUTTON [ <oShBtn> ]  ;
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
+            [ SIZE <width>, <height> ] ;
+            [ EFFECT <shadeID>  [ PALETTE <palet> ]             ;
+                 [ GRANULARITY <granul> ] [ HIGHLIGHT <highl> ] ;
+                 [ COLORING <coloring> ] [ SHCOLOR <shcolor> ] ];
+            [ ON INIT <bInit> ]     ;
+            [ ON SIZE <bSize> ]     ;
+            [ ON DRAW <bDraw> ]     ;
+            [ ON CLICK <bClick> ]   ;
+            [ STYLE <nStyle> ]      ;
+            [ <flat: FLAT> ]        ;
+            [ <enable: DISABLED> ]  ;
+            [ TEXT <cText>          ;
+                 [ COLOR <color>] [ FONT <font> ] ;
+                 [ COORDINATES  <xt>, <yt> ] ;
+            ] ;
+            [ BITMAP <bmp>  [<res: FROM RESOURCE>] [<ltr: TRANSPARENT> [COLOR  <trcolor> ]] ;
+                 [ COORDINATES  <xb>, <yb>, <widthb>, <heightb> ] ;
+            ] ;
+            [ TOOLTIP <ctoolt> ]    ;
+          => ;
+    [<oShBtn> :=] HSHADEBUTTON():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
+          <height>,<bInit>,<bSize>,<bDraw>, ;
+          <bClick>,<.flat.>, ;
+              <cText>,<color>,<font>,<xt>, <yt>, ;
+              <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>,<trcolor>, ;
+              <ctoolt>,!<.enable.>,<shadeID>,<palet>,<granul>,<highl>,<coloring>,<shcolor> )
 
 #xcommand @ <x>,<y> DATEPICKER [ <oPick> ]  ;
             [ OF <oWnd> ]              ;

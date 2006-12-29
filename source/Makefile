@@ -3,6 +3,7 @@ ROOT=../../../
 C_SOURCES=\
 	commond.c \
 	control.c \
+	cxshade.c \
 	dialog.c \
 	draw.c \
 	drawtext.c \
@@ -52,6 +53,7 @@ PRG_SOURCES=\
 	htree.prg \
 	hsplit.prg \
 	hsayimg.prg \
+	hshbtn.prg \
 	richtext.prg \
 	hnice.prg \
 	hgrid.prg \

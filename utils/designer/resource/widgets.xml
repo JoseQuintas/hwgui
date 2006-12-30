@@ -13,7 +13,8 @@
       <property name="lExitOnEnter" type="L" value="False"/>
       <property name="Variables" type="A" />
       <property name="FromStyle" type="C" value="Popup" />
-      <property name="Bitmap" type="C"  />
+      <property name="Icon" type="C" value=""/>
+      <property name="Bitmap" type="C" />
       <property name="Modal" type="L" value="False" />
       <property name="SystemMenu" type="L" value="True" />
       <property name="Minimizebox" type="L" value="False" />
@@ -21,7 +22,7 @@
       <property name="AbsAlignent" type="L" value="True" />
       <property name="SizeBox" type="L" value="True" />
       <property name="Visible" type="L" value="True" />
-      <property name="3DLook" type="L" value="False" />     
+      <property name="3DLook" type="L" value="False" />
       <property name="Clipsiblings" type="L" value="False" />
       <property name="Clipchildren" type="L" value="False" />
       <method name="common" />
@@ -51,7 +52,7 @@
          <property name="Border" type="L" value="False"/>
          <property name="Justify" type="C" value="Left"/>
          <property name="3DLook" type="L" value="False" />
-		 <property name="ToolTip" type="C" value=""/>
+	 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -206,12 +207,10 @@
          <property name="nInitValue" type="N" value="1"/>
          <property name="nMaxLines" type="N" value="4"/>
          <property name="varName" type="C" />
-	 <property name="lEdit" type="L" value="False" />
-	 <property name="lText" type="L" value="False" />
          <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(8))) ]]></property>
          <property name="BackColor" type="N" value="16777215" />
          <property name="3DLook" type="L" value="False" />
-	 <property name="ToolTip" type="C" value=""/>
+         <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
       </widget>
@@ -259,7 +258,7 @@
       </widget>
       <widget class="menu" name="Menu" bmp="BMP_MENU">
          <create>
-            <![CDATA[BuildMenu( {{{||EditMenu()},"Menu",32000,.t.}},oCtrl:oParent:handle,oCtrl:oParent )
+            <![CDATA[BuildMenu( {{{|| EditMenu()},"Menu",32000,.t.}},oCtrl:oParent:handle,oCtrl:oParent )
             ]]>
          </create>
          <property name="Name" type="C" />
@@ -478,9 +477,9 @@
             private xt := Max(Val(oCtrl:GetProp("TextLeft")),2),yt
             DrawButton( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
             if ( yt := Val(oCtrl:GetProp("TextTop")) ) == 0
-              DrawText( hDC,oCtrl:title,xt,0,oCtrl:nWidth-2,oCtrl:nHeight,37 )
+              DrawText( hDC,oCtrl:title,xt,0,oCtrl:nWidth-xt*2,oCtrl:nHeight,37 )
             else
-              DrawText( hDC,oCtrl:title,xt,yt,oCtrl:nWidth-2,yt+GetTextMetric(hDC)[1],37 )
+              DrawText( hDC,oCtrl:title,xt,yt,oCtrl:nWidth-xt*2,yt+GetTextMetric(hDC)[1],37 )
             endif
             if oCtrl:oBitmap != Nil
               xt := Iif( (xt:=Val(oCtrl:GetProp("BmpLeft")))==0,(oCtrl:nWidth-oCtrl:oBitmap:nWidth)/2,xt )
@@ -504,8 +503,6 @@
          <property name="lResource" type="L" value="False" />
          <property name="BmpLeft" type="N" value="0" />
          <property name="BmpTop" type="N" value="0" />
-         <property name="lTr" type="L" value="False" />
-         <property name="trColor" type="N" value="16777215" />
 	 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
@@ -578,9 +575,6 @@
       <property name="BackColor" dlg="Color">
          <code2><![CDATA[ oCtrl:SetColor(,Val(value)) ]]></code2>
       </property>
-      <property name="trColor" dlg="Color">
-         <code2><![CDATA[ oCtrl:SetColor(,Val(value)) ]]></code2>
-      </property>
       <property name="Font" dlg="Font">
          <code2><![CDATA[ oCtrl:oFont := value ]]></code2>
          <code3><![CDATA[ SetWindowFont( oCtrl:handle,oCtrl:oFont:handle,.T. ) ]]></code3>
@@ -599,7 +593,7 @@
          <code3><![CDATA[ SetWindowText( oCtrl:handle, value ) ]]></code3>
       </property>
       <property name="lVertical">
-         <code2><![CDATA[ 
+         <code2><![CDATA[
             private nTemp
             if (value=="True") .and. oCtrl:nHeight < oCtrl:nWidth
                nTemp := oCtrl:nHeight
@@ -617,24 +611,35 @@
       </property>
       <property name="Bitmap">
          <code2><![CDATA[
-            oCtrl:oBitmap := Iif( At(".",value)!=0,HBitmap():AddFile(value),Nil )
+	   if oCtrl:ClassName()=="HDIALOG"
+                oCtrl:oBmp := Iif( At(".",value)!=0,HBitmap():AddFile(value), HBitmap():AddResource(value) )
+	   else
+	    if !empty(value)
+                oCtrl:oBitmap := Iif( At(".",value)!=0,HBitmap():AddFile(value), HBitmap():AddResource(value) )
+	    endif
             if oCtrl:oBitmap != Nil
               oCtrl:nWidth := oCtrl:oBitmap:nWidth
-              oCtrl:nHeight := oCtrl:oBitmap:nHeight
+              oCtrl:nHeight:= oCtrl:oBitmap:nHeight
               oCtrl:SetProp( "Height",Ltrim(Str(oCtrl:nHeight)) )
               oCtrl:SetProp( "Width",Ltrim(Str(oCtrl:nWidth)) )
             endif
+	   endif
+
           ]]></code2>
       </property>
       <property name="BtnBitmap">
          <code2><![CDATA[
-            oCtrl:oBitmap := Iif( At(".",value)!=0,HBitmap():AddFile(value),Nil )
+            if !empty(value)
+            oCtrl:oBitmap := Iif( At(".",value)!=0,HBitmap():AddFile(value),  HBitmap():AddResource(value) )
+	    endif
           ]]></code2>
       </property>
       <property name="Icon">
-         <code2><![CDATA[
-            oCtrl:oBitmap := Iif( At(".",value)!=0,HIcon():AddFile(value),Nil )
-          ]]></code2>
+         <code3><![CDATA[
+           if !empty(value)
+              oCtrl:oBitmap := Iif( At(".",value)!=0,HIcon():AddFile(value),HIcon():Resource(value) )
+	   endif
+          ]]></code3>
       </property>
       <property name="BrwType" array="Dbf,Array">
       </property>
@@ -646,7 +651,7 @@
       </property>
       <property name="FormType" array="Main,dlgModal,dlgNoModal,mdiMain,mdiChild,Child">
       </property>
-      <property name="FromStyle" array="Popup,Child,Overlapped">     
+      <property name="FromStyle" array="Popup,Child,Overlapped">
       </property>
    </data>
    <methods>

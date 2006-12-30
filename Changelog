@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.594 2006-12-30 17:08:27 richardroesnadi Exp $
+ * $Id: Changelog,v 1.595 2006-12-30 18:18:22 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-12-31 1:11 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
+   * source/menu_c.c
+	!Fixed for designer editable when add menu object
+   * utils\designer\designer.rc   
+	+ add bmp resource to designer (must be recompile/blddesig.bat)
+   * utils\designer\resource\widgets.xml
+  	designer direct display bitmap resource just add resource's name 
+   + utils\designer\samples\test_bmp.xml
+	sample create icon or push button icon.
 
 2006-12-30 23:12 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
    * utils\designer\resource\bmp

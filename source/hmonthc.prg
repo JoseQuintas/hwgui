@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.12 2006-11-16 13:24:39 alkresin Exp $
+ * $Id: hmonthc.prg,v 1.13 2006-12-31 15:32:23 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -57,13 +57,14 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::bChange := bChange
 
    HWG_InitCommonControlsEx()
-   ::Activate()
+
 
    If bChange != Nil 
       ::oParent:AddEvent( MCN_SELECT, ::id, bChange, .T. ) 
       ::oParent:AddEvent( MCN_SELCHANGE, ::id, bChange, .T. ) 
    EndIf 
 
+   ::Activate()
 Return Self
 
 //--------------------------------------------------------------------------//

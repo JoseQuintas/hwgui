@@ -624,7 +624,6 @@
               oCtrl:SetProp( "Width",Ltrim(Str(oCtrl:nWidth)) )
             endif
 	   endif
-
           ]]></code2>
       </property>
       <property name="BtnBitmap">
@@ -636,9 +635,13 @@
       </property>
       <property name="Icon">
          <code3><![CDATA[
+           if oCtrl:ClassName()=="HDIALOG"
+              oCtrl:oIcon:= Iif( At(".",value)!=0,HIcon():AddFile(value),HIcon():Resource(value))
+           else
            if !empty(value)
-              oCtrl:oBitmap := Iif( At(".",value)!=0,HIcon():AddFile(value),HIcon():Resource(value) )
+              oCtrl:oBitmap := Iif( At(".",value)!=0,HIcon():AddFile(value),HIcon():Resource(value))
 	   endif
+           endif 
           ]]></code3>
       </property>
       <property name="BrwType" array="Dbf,Array">

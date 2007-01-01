@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.50 2006-11-23 08:04:40 alkresin Exp $
+ *$Id: hedit.prg,v 1.51 2007-01-01 21:55:55 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -216,13 +216,13 @@ Local nexthandle
       ENDIF
       
       If lColorinFocus
-	      if msg == WM_SETFOCUS
-	         bColorOld := ::bcolor
-	         ::SetColor(::tcolor ,::nColorinFocus,.T. )
-	      elseif msg == WM_KILLFOCUS
-	         ::SetColor(::tcolor,bColorOld, .t.)
-	      endif
-	   EndIf   
+         if msg == WM_SETFOCUS
+            bColorOld := ::bcolor
+            ::SetColor(::tcolor ,::nColorinFocus,.T. )
+         elseif msg == WM_KILLFOCUS
+            ::SetColor(::tcolor,bColorOld, .t.)
+         endif
+      EndIf   
 
    ELSE
 
@@ -235,7 +235,9 @@ Local nexthandle
 
    ENDIF
 
-   IF msg == WM_KEYDOWN
+   //IF msg == WM_KEYDOWN
+   IF msg == WM_KEYUP     /* BETTER FOR DESIGNER */  
+ 
       IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
          DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
             oParent := oParent:oParent
@@ -937,8 +939,8 @@ Function ParentGetDialog( o )
 Return o
 
 Function SetColorinFocus( lDef )
-	If ValType( lDef ) <> "L"
-	   Return .F.
-	EndIf   
-	lColorinFocus := lDef
+   If ValType( lDef ) <> "L"
+      Return .F.
+   EndIf   
+   lColorinFocus := lDef
 Return .T.

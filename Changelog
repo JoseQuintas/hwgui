@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.596 2006-12-31 15:32:22 lculik Exp $
+ * $Id: Changelog,v 1.597 2007-01-01 09:40:13 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-01-01 16:00 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>     	
+    + utils\designer\xmlrun	
+    Build portable runtime for xml-designer  
+	create bldxml.bat
 
 2006-12-31 12:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/hmonthc.prg

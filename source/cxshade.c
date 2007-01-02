@@ -1,5 +1,5 @@
 /*
- * $Id: cxshade.c,v 1.1 2006-12-29 10:18:55 alkresin Exp $
+ * $Id: cxshade.c,v 1.2 2007-01-02 11:46:59 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level functions for special drawing effects
@@ -435,6 +435,7 @@ void cxshade_SetShade( PCXSHADE pshade, UINT shadeID, BYTE palette, BYTE granula
    COLORREF locr  = (palette)?  8421504 : GetSysColor(COLOR_BTNSHADOW);
    long r, g, b;
    long a, x, y, d, xs, idxmax, idxmin;
+   long aa,bb;
    int grainx2;
    /*
    char ss[100];
@@ -624,7 +625,10 @@ void cxshade_SetShade( PCXSHADE pshade, UINT shadeID, BYTE palette, BYTE granula
          {
             for( j = 0; j < sXSize; j++ )
             {
-            	posDst[j] = (BYTE)(idxmin+a*i/sYSize+a*(sXSize-j)/sXSize);
+                bb = a * (sXSize-j) /sXSize ;
+                aa= idxmin + a *( i / sYSize);
+//                posDst[j] = (BYTE) ( idxmin + a *( i / sYSize) + a * (sXSize-j) /sXSize );
+                posDst[j] = (BYTE) ( aa +bb);
             	posDst[j] += rand()/grainx2-granularity;
             }
             posDst += bytes;

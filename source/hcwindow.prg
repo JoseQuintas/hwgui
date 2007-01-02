@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.13 2006-09-22 09:30:24 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.14 2007-01-02 11:46:59 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -143,8 +143,8 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HCustomWindow
 LOCAL i
 
    // Writelog( "== "+::Classname()+Str(msg)+IIF(wParam!=NIL,Str(wParam),"NIL")+IIF(lParam!=NIL,Str(lParam),"NIL") )
-   IF ( i := Ascan( aCustomEvents[ EVENTS_MESSAGES ], msg ) ) != 0
-
+    
+   IF ( i := Ascan( aCustomEvents[ EVENTS_MESSAGES ], msg ) ) != 0      
       RETURN Eval( aCustomEvents[ EVENTS_ACTIONS, i ], Self, wParam, lParam )
 
    ELSEIF ::bOther != NIL
@@ -201,8 +201,19 @@ RETURN NIL
 
 STATIC FUNCTION onNotify( oWnd, wParam, lParam )
 LOCAL iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res
+Local n
+
+IF oCtrl == NIL
+   FOR n := 1 TO Len( oWnd:aControls )
+      oCtrl := oWnd:aControls[ n ]:FindControl( wParam )
+      IF oCtrl != NIL
+         EXIT
+      ENDIF
+   NEXT
+ENDIF
 
    IF oCtrl != NIL
+
       IF __ObjHasMsg( oCtrl, "NOTIFY" )
          Return oCtrl:Notify( lParam )
       ELSE

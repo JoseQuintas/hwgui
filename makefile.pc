@@ -1,4 +1,4 @@
-# $Id: makefile.pc,v 1.14 2006-08-26 19:31:39 lculik Exp $
+# $Id: makefile.pc,v 1.15 2007-01-02 11:46:58 lculik Exp $
 # makefile for Pelles C 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -66,6 +66,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\message.obj \
    $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\nice.obj \
+   $(OBJ_DIR)\pager.obj \
    $(OBJ_DIR)\registry.obj \
    $(OBJ_DIR)\richedit.obj \
    $(OBJ_DIR)\shellapi.obj  \
@@ -90,6 +91,8 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hnice.obj \
    $(OBJ_DIR)\hownbtn.obj \
    $(OBJ_DIR)\hpanel.obj \
+   $(OBJ_DIR)\hrebar.obj \
+   $(OBJ_DIR)\hpager.obj \
    $(OBJ_DIR)\hprinter.obj \
    $(OBJ_DIR)\hprogres.obj \
    $(OBJ_DIR)\hradio.obj \
@@ -298,6 +301,18 @@ $(OBJ_DIR)\hpanel.c : $(SRC_DIR)\hpanel.prg
 $(OBJ_DIR)\hpanel.obj : $(OBJ_DIR)\hpanel.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
+$(OBJ_DIR)\hpager.c : $(SRC_DIR)\hpager.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hpager.obj : $(OBJ_DIR)\hpager.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hrebar.c : $(SRC_DIR)\hrebar.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hrebar.obj : $(OBJ_DIR)\hrebar.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
 $(OBJ_DIR)\htrackbr.obj : $(OBJ_DIR)\htrackbr.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
@@ -431,6 +446,9 @@ $(OBJ_DIR)\c_ipaddr.obj : $(SRC_DIR)\c_ipaddr.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\nice.obj : $(SRC_DIR)\nice.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\pager.obj : $(SRC_DIR)\pager.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\commond.obj : $(SRC_DIR)\commond.c

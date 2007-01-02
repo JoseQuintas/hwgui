@@ -45,9 +45,9 @@ ACTIVEX_OBJ_DIR    = $(OBJ_DIR)
     ARFLAGS = /0
 !endif
 
-!if !$d(BCC_NOOPTIM)
-    CFLAGS = -O2 $(CFLAGS)
-!endif
+#!if !$d(BCC_NOOPTIM)
+#    CFLAGS = -O2 $(CFLAGS)
+#!endif
 
 #
 # Directory macros. These should never have to change.
@@ -62,7 +62,8 @@ ACTIVEX_DIR  = source\activex
 # C compiler definition and C flags. These should never have to change.
 #
 
-CFLAGS               = -I$(INCLUDE_DIR) -5 -6 -d $(C_USR) $(CFLAGS) -D__WIN32__
+#CFLAGS               = -I$(INCLUDE_DIR) -5 -6 -d $(C_USR) $(CFLAGS) -D__WIN32__
+CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__
 !if $d(HB_MULTI_GT)
 CFLAGS               = $(CFLAGS) -DHB_MULTI_GT
 !endif
@@ -148,6 +149,8 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hprinter.obj \
    $(HWGUI_OBJ_DIR)\hprogres.obj \
    $(HWGUI_OBJ_DIR)\hradio.obj \
+   $(HWGUI_OBJ_DIR)\hpager.obj \
+   $(HWGUI_OBJ_DIR)\hrebar.obj \
    $(HWGUI_OBJ_DIR)\hriched.obj \
    $(HWGUI_OBJ_DIR)\hsayimg.obj \
    $(HWGUI_OBJ_DIR)\hshbtn.obj \
@@ -166,6 +169,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\repexec.obj \
    $(HWGUI_OBJ_DIR)\printdos.obj \
    $(HWGUI_OBJ_DIR)\hdc.obj \
+   $(HWGUI_OBJ_DIR)\pager.obj \
    $(HWGUI_OBJ_DIR)\hhyper.obj \
    $(HWGUI_OBJ_DIR)\richtext.obj
 

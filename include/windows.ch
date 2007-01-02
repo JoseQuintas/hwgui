@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.33 2006-11-10 12:25:26 lculik Exp $
+ *$Id: windows.ch,v 1.34 2007-01-02 11:46:59 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -1013,6 +1013,14 @@
 #define PGS_HORZ                0x00000001
 #define PGS_AUTOSCROLL          0x00000002
 #define PGS_DRAGNDROP           0x00000004
+#define PGN_SCROLL          (PGN_FIRST-1)
+
+#define PGF_SCROLLUP        1
+#define PGF_SCROLLDOWN      2
+#define PGF_SCROLLLEFT      4
+#define PGF_SCROLLRIGHT     8
+
+
 #define CCS_TOP                 0x00000001
 #define CCS_NOMOVEY             0x00000002
 #define CCS_BOTTOM              0x00000003
@@ -1073,3 +1081,24 @@
 #define MCN_FIRST (-750) 
 #define MCN_SELCHANGE (MCN_FIRST + 1) 
 #define MCN_SELECT (MCN_FIRST + 4) 
+#define RBS_TOOLTIPS        0x0100
+#define RBS_VARHEIGHT       0x0200
+#define RBS_BANDBORDERS     0x0400
+#define RBS_FIXEDORDER      0x0800
+#define RBS_REGISTERDROP    0x1000
+#define RBS_AUTOSIZE        0x2000
+#define RBS_VERTICALGRIPPER 0x4000  // this always has the vertical gripper (default for horizontal mode)
+#define RBS_DBLCLKTOGGLE    0x8000
+
+#define RBBS_BREAK          0x00000001  // break to new line
+#define RBBS_FIXEDSIZE      0x00000002  // band can't be sized
+#define RBBS_CHILDEDGE      0x00000004  // edge around top & bottom of child window
+#define RBBS_HIDDEN         0x00000008  // don't show
+#define RBBS_NOVERT         0x00000010  // don't show when vertical
+#define RBBS_FIXEDBMP       0x00000020  // bitmap doesn't move during band resize
+#define RBBS_VARIABLEHEIGHT 0x00000040  // allow autosizing of this child vertically
+#define RBBS_GRIPPERALWAYS  0x00000080  // always show the gripper
+#define RBBS_NOGRIPPER      0x00000100  // never show the gripper
+#define RBBS_USECHEVRON     0x00000200  // display drop-down button for this band if it's sized smaller than ideal width
+#define RBBS_HIDETITLE      0x00000400  // keep band title hidden
+

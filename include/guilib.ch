@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.82 2006-12-29 10:18:55 alkresin Exp $
+ *$Id: guilib.ch,v 1.83 2007-01-02 11:46:59 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -1386,7 +1386,7 @@ Added by Marcos Antonio Gambeta
             [ STYLE <nStyle> ]         ;
             [ ITEMS <aItems> ] ;
           => ;
-    [<oTool> := ]        Htoolbar():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,,,<aItems> )
+    [<oTool> := ]        Htoolbar():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,,,<aItems>  )
 
 #xcommand REDEFINE TOOLBAR  <oSay>  ;
             [ OF <oWnd> ]              ;
@@ -1501,3 +1501,30 @@ Added by Marcos Antonio Gambeta
           => ;
     [<oSay> := ] HGRIDex():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<aitem> )
 
+
+#xcommand @ <x>,<y> PAGER [ <oTool> ] ;
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
+            [ SIZE <width>, <height> ] ;
+            [ STYLE <nStyle> ]         ;
+            [ <lVert: VERTICAL> ] ;
+          => ;
+    [<oTool> := ]        HPager():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,,<.lVert.>)
+
+#xcommand @ <x>,<y> REBAR [ <oTool> ] ;
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
+            [ SIZE <width>, <height> ] ;
+            [ STYLE <nStyle> ]         ;
+          => ;
+    [<oTool> := ]        HREBAR():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,)
+
+#xcommand ADDBAND <hWnd> to <opage> ;
+          [BACKCOLOR <b> ] [FORECOLOR <f>] ;
+          [STYLE <nstyle>] [TEXT <t>] ;
+          => <opage>:ADDBARColor(<hWnd>,<f>,<b>,<t>,<nstyle>)
+
+#xcommand ADDBAND <hWnd> to <opage> ;
+          [BITMAP <b> ]  ;
+          [STYLE <nstyle>] [TEXT <t>] ;
+          => <opage>:ADDBARBITMAP(<hWnd>,<b>,<t>,<nstyle>)

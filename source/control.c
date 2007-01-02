@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.50 2006-11-28 11:16:56 alexstrickland Exp $
+ * $Id: control.c,v 1.51 2007-01-02 11:46:59 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -38,7 +38,9 @@ static HWND hWndTT = 0;
 static BOOL lInitCmnCtrl = 0;
 static BOOL lToolTipBalloon = FALSE; // added by MAG
 static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc;
-
+extern BOOL _AddBar( HWND pParent, HWND pBar, REBARBANDINFO* pRBBI );
+extern BOOL AddBar( HWND pParent, HWND pBar, LPCTSTR pszText, HBITMAP pbmp, DWORD dwStyle );
+extern BOOL AddBar1( HWND pParent, HWND pBar, COLORREF clrFore, COLORREF clrBack, LPCTSTR pszText, DWORD dwStyle );
 HB_FUNC( HWG_INITCOMMONCONTROLSEX )
 {
    if( !lInitCmnCtrl )
@@ -1269,7 +1271,7 @@ HB_FUNC( CREATETOOLBAR )
                  ulExStyle,                    /* extended style */
                  TOOLBARCLASSNAME,                     /* predefined class  */
                  NULL,                         /* title   */
-                 TBSTYLE_ALTDRAG | TBSTYLE_FLAT | TBSTYLE_TOOLTIPS | TBSTYLE_TRANSPARENT | TBSTYLE_WRAPABLE | CCS_TOP | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, /* style  */
+                 TBSTYLE_ALTDRAG | TBSTYLE_FLAT | TBSTYLE_TOOLTIPS | TBSTYLE_TRANSPARENT | TBSTYLE_WRAPABLE | CCS_TOP |CCS_NORESIZE | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, /* style  */
                  hb_parni(4), hb_parni(5),      /* x, y       */
                  hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
                  (HWND) hb_parnl(1),            /* parent window    */
@@ -1413,4 +1415,137 @@ HB_FUNC(TOOLBAR_SUBMENUEXGETID)
 
    LPNMTOOLBAR lpnmTB = (LPNMTOOLBAR) hb_parnl(1);
    hb_retnl( ( LONG ) lpnmTB->iItem );
+}
+
+
+HB_FUNC( CREATEPAGER )
+{
+   HWND hWndPanel;
+   BOOL bVert = hb_parl( 8 ) ;
+   hWndPanel = CreateWindow(
+                 WC_PAGESCROLLER,                      /* predefined class  */
+                 NULL,                        /* no window title   */
+                 WS_CHILD | WS_VISIBLE | bVert ? PGS_VERT : PGS_HORZ | hb_parnl(3),    /* style  */
+                 hb_parni(4), hb_parni(5),    /* x, y       */
+                 hb_parni(6), hb_parni(7),    /* nWidth, nHeight */
+                 (HWND) hb_parnl(1),           /* parent window    */
+                 (HMENU) hb_parni(2),          /* control ID  */
+                 GetModuleHandle( NULL ),
+                 NULL);
+
+   hb_retnl( (LONG) hWndPanel );
+
+}
+
+
+
+
+HB_FUNC( CREATEREBAR )
+{
+   ULONG ulStyle = hb_parnl(3);
+   ULONG ulExStyle = ( ( !ISNIL(8) )? hb_parnl(8):0 ) | ( (ulStyle&WS_BORDER)? WS_EX_CLIENTEDGE:0 ) | WS_EX_TOOLWINDOW ;
+   HWND hWndCtrl = CreateWindowEx(
+                 ulExStyle,                    /* extended style */
+                 REBARCLASSNAME,                     /* predefined class  */
+                 NULL,                         /* title   */
+                 WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN| RBS_VARHEIGHT| CCS_NODIVIDER | ulStyle, /* style  */
+                 hb_parni(4), hb_parni(5),      /* x, y       */
+                 hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
+                 (HWND) hb_parnl(1),            /* parent window    */
+                 (HMENU) hb_parni(2),           /* control ID  */
+                 GetModuleHandle( NULL ),
+                 NULL);
+
+
+   hb_retnl( (LONG) hWndCtrl );
+
+}
+
+
+HB_FUNC(REBARSETIMAGELIST)
+{
+   HWND hWnd =  ( HWND ) hb_parnl( 1 );
+   HIMAGELIST p = ISNUM( 2 ) ? ( HIMAGELIST ) hb_parnl( 2 ) : NULL;
+   REBARINFO rbi = { 0 };
+   rbi.cbSize = sizeof( REBARINFO );
+   rbi.fMask = ISNUM( 2 ) ? RBIM_IMAGELIST : 0 ;
+   rbi.himl =ISNUM( 2 ) ? (HIMAGELIST) p : (HIMAGELIST) NULL;
+   SendMessage( hWnd, RB_SETBARINFO, 0, ( LPARAM) &rbi ) ;
+}
+
+
+BOOL _AddBar(HWND pParent, HWND pBar, REBARBANDINFO* pRBBI)
+{
+    SIZE size;
+    RECT rect;
+    BOOL bResult;
+
+    pRBBI->cbSize = sizeof(REBARBANDINFO);
+    pRBBI->fMask |= RBBIM_CHILD | RBBIM_CHILDSIZE;
+    pRBBI->hwndChild = pBar;
+
+    GetWindowRect( pBar, &rect) ;
+
+    size.cx = rect.right - rect.left;
+    size.cy = rect.bottom - rect.top;
+    
+    pRBBI->cxMinChild = size.cx ;
+    pRBBI->cyMinChild = size.cy ;
+    bResult = SendMessage(pParent,RB_INSERTBAND, (WPARAM)-1, (LPARAM)pRBBI);
+
+    return bResult;
+}
+
+BOOL AddBar(HWND pParent,HWND pBar, LPCTSTR pszText, HBITMAP pbmp, DWORD dwStyle)
+{
+    REBARBANDINFO rbBand = { 0 };
+    rbBand.fMask = RBBIM_STYLE;
+    rbBand.fStyle = dwStyle;
+    if (pszText != NULL)
+    {
+        rbBand.fMask |= RBBIM_TEXT;
+        rbBand.lpText = (LPTSTR)pszText;
+    }
+    if (pbmp != NULL)
+    {
+        rbBand.fMask |= RBBIM_BACKGROUND;
+        rbBand.hbmBack = (HBITMAP)pbmp;
+    }
+    return _AddBar( pParent,pBar, &rbBand);
+}
+
+BOOL AddBar1(HWND pParent,HWND pBar, COLORREF clrFore, COLORREF clrBack, LPCTSTR pszText, DWORD dwStyle)
+{
+    REBARBANDINFO rbBand = { 0 };
+    rbBand.fMask = RBBIM_STYLE | RBBIM_COLORS;
+    rbBand.fStyle = dwStyle;
+    rbBand.clrFore = clrFore;
+    rbBand.clrBack = clrBack;
+    if (pszText != NULL)
+    {
+        rbBand.fMask |= RBBIM_TEXT;
+        rbBand.lpText = (LPTSTR)pszText;
+    }
+    return _AddBar( pParent,pBar, &rbBand);
+}
+HB_FUNC( ADDBARBITMAP )
+{
+   HWND pParent = ( HWND ) hb_parnl( 1 ) ;
+   HWND pBar = ( HWND ) hb_parnl( 2 ) ;
+   LPCTSTR pszText = hb_parc( 3 );
+   HBITMAP pbmp = ( HBITMAP ) hb_parnl( 4 );
+   DWORD dwStyle = hb_parnl( 5 ) ;
+   hb_retl( AddBar( pParent, pBar, pszText, pbmp, dwStyle) );
+}
+
+HB_FUNC( ADDBARCOLORS )
+{
+   HWND pParent= ( HWND ) hb_parnl( 1 ) ;
+   HWND pBar = ( HWND ) hb_parnl( 2 ) ;
+   COLORREF clrFore =  ( COLORREF ) hb_parnl( 3 ) ;
+   COLORREF clrBack =  ( COLORREF ) hb_parnl( 4 ) ;
+   LPCTSTR pszText = hb_parc( 5 );
+   DWORD dwStyle = hb_parnl( 6 ) ;
+
+   hb_retl( AddBar1( pParent, pBar, clrFore, clrBack, pszText, dwStyle) );
 }

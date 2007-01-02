@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.6 2006-09-08 10:42:18 alkresin Exp $
+ * $Id: htool.prg,v 1.7 2007-01-02 11:46:59 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -161,6 +161,7 @@ METHOD Notify( lParam ) CLASS hToolBar
 
     Local nButton 
     Local nPos
+    tracelog([ncode],ncode)
 
     IF nCode == TTN_GETDISPINFO
 

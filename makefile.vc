@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.18 2006-12-29 10:18:54 alkresin Exp $
+# $Id: makefile.vc,v 1.19 2007-01-02 11:46:58 lculik Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -32,6 +32,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\message.obj \
    $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\nice.obj \
+   $(OBJ_DIR)\pager.obj \
    $(OBJ_DIR)\registry.obj \
    $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\richedit.obj \
@@ -75,6 +76,8 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\htimer.obj \
    $(OBJ_DIR)\htree.obj \
    $(OBJ_DIR)\hrect.obj \
+   $(OBJ_DIR)\hpager.obj \
+   $(OBJ_DIR)\hrebar.obj \
    $(OBJ_DIR)\hupdown.obj \
    $(OBJ_DIR)\hwindow.obj \
    $(OBJ_DIR)\hwinprn.obj \
@@ -124,6 +127,9 @@ $(OBJ_DIR)\window.obj   : $(SRC_DIR)\window.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
 $(OBJ_DIR)\wprint.obj   : $(SRC_DIR)\wprint.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
+$(OBJ_DIR)\pager.obj  : $(SRC_DIR)\pager.c
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /TP /W3 /nologo /Fo$@ $**
+
 
 $(OBJ_DIR)\drawwidg.obj : $(OBJ_DIR)\drawwidg.c
 $(OBJ_DIR)\errorsys.obj : $(OBJ_DIR)\errorsys.c
@@ -150,6 +156,8 @@ $(OBJ_DIR)\hnice.obj    : $(OBJ_DIR)\hnice.c
 $(OBJ_DIR)\hradio.obj   : $(OBJ_DIR)\hradio.c
 $(OBJ_DIR)\hownbtn.obj  : $(OBJ_DIR)\hownbtn.c
 $(OBJ_DIR)\hpanel.obj   : $(OBJ_DIR)\hpanel.c
+$(OBJ_DIR)\hpager.obj   : $(OBJ_DIR)\hpager.c
+$(OBJ_DIR)\hrebar.obj   : $(OBJ_DIR)\hrebar.c
 $(OBJ_DIR)\hprinter.obj : $(OBJ_DIR)\hprinter.c
 $(OBJ_DIR)\hprogres.obj : $(OBJ_DIR)\hprogres.c
 $(OBJ_DIR)\hsayimg.c    : $(SRC_DIR)\hsayimg.prg
@@ -235,6 +243,11 @@ $(OBJ_DIR)\hownbtn.c    : $(SRC_DIR)\hownbtn.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\hpanel.c     : $(SRC_DIR)\hpanel.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hpager.c     : $(SRC_DIR)\hpager.prg
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hrebar.c     : $(SRC_DIR)\hrebar.prg
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+
 $(OBJ_DIR)\hprinter.c   : $(SRC_DIR)\hprinter.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\hprogres.c   : $(SRC_DIR)\hprogres.prg

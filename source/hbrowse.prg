@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.74 2006-11-22 14:14:40 omm Exp $
+ * $Id: hbrowse.prg,v 1.75 2007-01-13 18:56:43 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -151,16 +151,19 @@ CLASS HBrowse INHERIT HControl
    DATA lCtrlPress INIT .F.                    // .T. while Ctrl key is pressed
    DATA aSelected                              // An array of selected records numbers
    // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+   DATA lDescend INIT .F.              // Descend Order?
    DATA lFilter INIT .F.               // Filtered? (atribuition is automatic in method "New()").
    DATA bFirst INIT {|| DBGOTOP()}     // Block to place pointer in first record of condition filter. (Ex.: DbGoTop(), DbSeek(), etc.).
+   DATA bLast  INIT {|| DBGOBOTTOM()}  // Block to place pointer in last record of condition filter. (Ex.: DbGoBottom(), DbSeek(), etc.).
    DATA bWhile INIT {|| .T.}           // Clausule "while". Return logical.
    DATA bFor INIT {|| .T.}             // Clausule "for". Return logical.
    DATA nLastRecordFilter INIT 0       // Save the last record of filter.
    DATA nFirstRecordFilter INIT 0      // Save the first record of filter.
+   DATA nPaintRow, nPaintCol                   // Row/Col being painted
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
-                  lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect, bFirst, bWhile, bFor  )
+                  lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect, bWhile, bFirst, bLast, bFor )
    METHOD InitBrw( nType )
    METHOD Rebuild()
    METHOD Activate()
@@ -202,7 +205,8 @@ ENDCLASS
 //----------------------------------------------------//
 METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,;
-                  lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect, bFirst, bWhile, bFor  ) CLASS HBrowse
+                  lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect,;
+                  lDescend, bWhile, bFirst, bLast, bFor  ) CLASS HBrowse
 
    nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+  ;
                     Iif(lNoBorder=Nil.OR.!lNoBorder,WS_BORDER,0)+            ;
@@ -227,12 +231,16 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
    IF lMultiSelect != Nil .AND. lMultiSelect
       ::aSelected := {}
    ENDIF
+   ::lDescend    := Iif( lDescend==Nil,.F.,lDescend )
    
    // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
-   IF ISBLOCK(bFirst) .OR. ISBLOCK(bFor) .OR. ISBLOCK(bWhile)
+   IF ::lDescend .OR. ISBLOCK(bFirst) .OR. ISBLOCK(bFor) .OR. ISBLOCK(bWhile)
      ::lFilter := .T.
      IF ISBLOCK(bFirst)
        ::bFirst  := bFirst
+     ENDIF
+     IF ISBLOCK(bLast)
+       ::bLast   := bLast
      ENDIF
      IF ISBLOCK(bWhile)
        ::bWhile  := bWhile
@@ -518,13 +526,20 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::alias   := Alias()
       //Modified By Luiz Henrique dos Santos (luizhsantos@gmail.com.br)
       IF ::lFilter 
-        ::nLastRecordFilter  := 0
-        ::nFirstRecordFilter := 0
-        ::bSkip     := { |o, n| (::alias)->(FltSkip(o, n)) }
+        ::nLastRecordFilter  := ::nFirstRecordFilter := 0
+        IF ::lDescend
+           ::bSkip     := { |o, n| (::alias)->(FltSkip(o, n, .T.)) }
+           ::bGoTop    := { |o| (::alias)->(FltGoBottom(o)) }
+           ::bGoBot    := { |o| (::alias)->(FltGoTop(o)) }
+           ::bEof      := { |o| (::alias)->(FltBOF(o)) }
+           ::bBof      := { |o| (::alias)->(FltEOF(o)) }
+        ELSE
+           ::bSkip     := { |o, n| (::alias)->(FltSkip(o, n, .F.)) }
         ::bGoTop    := { |o| (::alias)->(FltGoTop(o)) }
         ::bGoBot    := { |o| (::alias)->(FltGoBottom(o)) }
         ::bEof      := { |o| (::alias)->(FltEOF(o)) }
         ::bBof      := { |o| (::alias)->(FltBOF(o)) }
+        ENDIF
         ::bRcou     := { |o| (::alias)->(FltRecCount(o)) }
         ::bRecnoLog := ::bRecno := { |o| (::alias)->(FltRecNo(o)) }
         ::bGoTo     := { |o, n|(::alias)->(FltGoTo(o, n)) }
@@ -913,7 +928,6 @@ Local j, ob, bw, bh, y1, hBReal
 Local oldBkColor, oldTColor, oldBk1Color, oldT1Color
 Local oLineBrush := Iif( lSelected, ::brushSel,::brush )
 Local lColumnFont := .F.
-Local nPaintCol, nPaintRow
 Local aCores
 
    ::xpos := x := ::x1
@@ -926,23 +940,23 @@ Local aCores
       oldBkColor := SetBkColor( hDC, Iif( lSelected,::bcolorSel,::bcolor ) )
       oldTColor  := SetTextColor( hDC, Iif( lSelected,::tcolorSel,::tcolor ) )
       fldname := SPACE( 8 )
-      nPaintCol  := Iif( ::freeze > 0, 1, ::nLeftCol )
-      nPaintRow  := nstroka
+      ::nPaintCol  := Iif( ::freeze > 0, 1, ::nLeftCol )
+      ::nPaintRow  := nstroka
 
       WHILE x < ::x2 - 2
-         IF ::aColumns[nPaintCol]:bColorBlock != Nil
-            aCores := eval(::aColumns[nPaintCol]:bColorBlock)
+         IF ::aColumns[::nPaintCol]:bColorBlock != Nil
+            aCores := eval(::aColumns[::nPaintCol]:bColorBlock)
             IF lSelected
-              ::aColumns[nPaintCol]:tColor := aCores[3]
-              ::aColumns[nPaintCol]:bColor := aCores[4]
+              ::aColumns[::nPaintCol]:tColor := aCores[3]
+              ::aColumns[::nPaintCol]:bColor := aCores[4]
             ELSE
-              ::aColumns[nPaintCol]:tColor := aCores[1]
-              ::aColumns[nPaintCol]:bColor := aCores[2]
+              ::aColumns[::nPaintCol]:tColor := aCores[1]
+              ::aColumns[::nPaintCol]:bColor := aCores[2]
             ENDIF
-            ::aColumns[nPaintCol]:brush := HBrush():Add(::aColumns[nPaintCol]:bColor   )
+            ::aColumns[::nPaintCol]:brush := HBrush():Add(::aColumns[::nPaintCol]:bColor   )
          ENDIF
-         xSize := ::aColumns[nPaintCol]:width
-         IF ::lAdjRight .and. nPaintCol == LEN( ::aColumns )
+         xSize := ::aColumns[::nPaintCol]:width
+         IF ::lAdjRight .and. ::nPaintCol == LEN( ::aColumns )
             xSize := Max( ::x2 - x, xSize )
          ENDIF
          IF i == ::colpos
@@ -950,63 +964,63 @@ Local aCores
          ENDIF
 
          IF vybfld == 0 .OR. vybfld == i
-            IF ::aColumns[nPaintCol]:bColor != Nil .AND. ::aColumns[nPaintCol]:brush == Nil
-               ::aColumns[nPaintCol]:brush := HBrush():Add( ::aColumns[nPaintCol]:bColor )
+            IF ::aColumns[::nPaintCol]:bColor != Nil .AND. ::aColumns[::nPaintCol]:brush == Nil
+               ::aColumns[::nPaintCol]:brush := HBrush():Add( ::aColumns[::nPaintCol]:bColor )
             ENDIF
-            hBReal := Iif( ::aColumns[nPaintCol]:brush != Nil, ;
-                         ::aColumns[nPaintCol]:brush:handle,   ;
+            hBReal := Iif( ::aColumns[::nPaintCol]:brush != Nil, ;
+                         ::aColumns[::nPaintCol]:brush:handle,   ;
                          oLineBrush:handle )
-            FillRect( hDC, x, ::y1+(::height+1)*(nPaintRow-1)+1, x+xSize-Iif(::lSep3d,2,1),::y1+(::height+1)*nPaintRow, hBReal )
+            FillRect( hDC, x, ::y1+(::height+1)*(::nPaintRow-1)+1, x+xSize-Iif(::lSep3d,2,1),::y1+(::height+1)*::nPaintRow, hBReal )
             IF !lClear
-               IF ::aColumns[nPaintCol]:aBitmaps != Nil .AND. !Empty( ::aColumns[nPaintCol]:aBitmaps )
-                  FOR j := 1 TO Len( ::aColumns[nPaintCol]:aBitmaps )
-                     IF Eval( ::aColumns[nPaintCol]:aBitmaps[j,1],Eval( ::aColumns[nPaintCol]:block,,Self,nPaintCol ),lSelected )
-                        ob := ::aColumns[nPaintCol]:aBitmaps[j,2]
+               IF ::aColumns[::nPaintCol]:aBitmaps != Nil .AND. !Empty( ::aColumns[::nPaintCol]:aBitmaps )
+                  FOR j := 1 TO Len( ::aColumns[::nPaintCol]:aBitmaps )
+                     IF Eval( ::aColumns[::nPaintCol]:aBitmaps[j,1],Eval( ::aColumns[::nPaintCol]:block,,Self,::nPaintCol ),lSelected )
+                        ob := ::aColumns[::nPaintCol]:aBitmaps[j,2]
                         IF ob:nHeight > ::height
                            y1 := 0
                            bh := ::height
                            bw := Int( ob:nWidth * ( ob:nHeight / ::height ) )
-                           DrawBitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(nPaintRow-1)+1, bw, bh )
+                           DrawBitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(::nPaintRow-1)+1, bw, bh )
                         ELSE
                            y1 := Int( (::height-ob:nHeight)/2 )
                            bh := ob:nHeight
                            bw := ob:nWidth
-                           DrawTransparentBitmap( hDC, ob:handle, x, y1+::y1+(::height+1)*(nPaintRow-1)+1 )
+                           DrawTransparentBitmap( hDC, ob:handle, x, y1+::y1+(::height+1)*(::nPaintRow-1)+1 )
                         ENDIF
-                        // DrawBitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(nPaintRow-1)+1, bw, bh )
+                        // DrawBitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(::nPaintRow-1)+1, bw, bh )
                         EXIT
                      ENDIF
                   NEXT
                ELSE
-                  sviv := FLDSTR( Self,nPaintCol )
+                  sviv := FLDSTR( Self,::nPaintCol )
                   // Ahora lineas Justificadas !!
-                  IF ::aColumns[nPaintCol]:tColor != Nil
-                     oldT1Color := SetTextColor( hDC, ::aColumns[nPaintCol]:tColor )
+                  IF ::aColumns[::nPaintCol]:tColor != Nil
+                     oldT1Color := SetTextColor( hDC, ::aColumns[::nPaintCol]:tColor )
                   ENDIF
-                  IF ::aColumns[nPaintCol]:bColor != Nil
-                     oldBk1Color := SetBkColor( hDC, ::aColumns[nPaintCol]:bColor )
+                  IF ::aColumns[::nPaintCol]:bColor != Nil
+                     oldBk1Color := SetBkColor( hDC, ::aColumns[::nPaintCol]:bColor )
                   ENDIF
-                  IF ::aColumns[nPaintCol]:oFont != Nil
-                     SelectObject( hDC, ::aColumns[nPaintCol]:oFont:handle )
+                  IF ::aColumns[::nPaintCol]:oFont != Nil
+                     SelectObject( hDC, ::aColumns[::nPaintCol]:oFont:handle )
                      lColumnFont := .T.
                   ELSEIF lColumnFont
                      SelectObject( hDC, ::ofont:handle )
                      lColumnFont := .F.
                   ENDIF
-                  DrawText( hDC, sviv, x, ::y1+(::height+1)*(nPaintRow-1)+1, x+xSize-2,::y1+(::height+1)*nPaintRow-1, ::aColumns[nPaintCol]:nJusLin )
-                  IF ::aColumns[nPaintCol]:tColor != Nil
+                  DrawText( hDC, sviv, x, ::y1+(::height+1)*(::nPaintRow-1)+1, x+xSize-2,::y1+(::height+1)*::nPaintRow-1, ::aColumns[::nPaintCol]:nJusLin )
+                  IF ::aColumns[::nPaintCol]:tColor != Nil
                      SetTextColor( hDC, oldT1Color )
                   ENDIF
-                  IF ::aColumns[nPaintCol]:bColor != Nil
+                  IF ::aColumns[::nPaintCol]:bColor != Nil
                      SetBkColor( hDC, oldBk1Color )
                   ENDIF
                ENDIF
             ENDIF
          ENDIF
          x += xSize
-         nPaintCol := Iif( nPaintCol = ::freeze, ::nLeftCol, nPaintCol + 1 )
+         ::nPaintCol := Iif( ::nPaintCol = ::freeze, ::nLeftCol, ::nPaintCol + 1 )
          i ++
-         IF ! ::lAdjRight .and. nPaintCol > LEN( ::aColumns )
+         IF ! ::lAdjRight .and. ::nPaintCol > LEN( ::aColumns )
             EXIT
          ENDIF
       ENDDO
@@ -1983,27 +1997,34 @@ Local nL, nPos := 0
    ENDDO
 RETURN nil
 // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
-STATIC FUNCTION FltSkip(oBrw, nLines)
+STATIC FUNCTION FltSkip(oBrw, nLines, lDesc)
 LOCAL n, r
   IF nLines == NIL
     nLines := 1
   ENDIF
+  IF lDesc == NIL
+     lDesc := .F.
+  ENDIF
   IF nLines > 0
     FOR n := 1 TO nLines
-      DBSKIP()
+      SKIP IF(lDesc, -1, +1)
       WHILE ! EOF() .AND. EVAL(oBrw:bWhile) .AND. ! EVAL(oBrw:bFor)
-        DBSKIP()
+        SKIP IF(lDesc, -1, +1)
       ENDDO
     NEXT
   ELSEIF nLines < 0
     FOR n := 1 TO (nLines*(-1))
       IF EOF()
+         IF lDesc
+            FltGoTop(oBrw)
+         ELSE
         FltGoBottom(oBrw)
+         ENDIF
       ELSE
-        DBSKIP(-1)
+         SKIP IF(lDesc, +1, -1)
       ENDIF
       WHILE ! BOF() .AND. EVAL(oBrw:bWhile) .AND. ! EVAL(oBrw:bFor)
-        DBSKIP(-1)
+        SKIP IF(lDesc, +1, -1)
       ENDDO
     NEXT
   ENDIF  
@@ -2027,7 +2048,7 @@ RETURN NIL
 
 STATIC FUNCTION FltGoBottom(oBrw)
   IF oBrw:nLastRecordFilter == 0
-    DBGOBOTTOM()
+    EVAL(oBrw:bLast)
     IF ! EVAL(oBrw:bWhile) .OR. ! EVAL(oBrw:bFor)
       WHILE ! BOF() .AND. ! EVAL(oBrw:bWhile)
         DBSKIP(-1)

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.599 2007-01-13 18:56:43 lculik Exp $
+ * $Id: Changelog,v 1.600 2007-01-30 12:05:37 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2007-01-30 09:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+   source/grid.c
+   * Added new  LISTVIEWGETITEM() to  get items from listview rows
+
 2007-01-13 16:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/hbrowse.prg
      * changes to allow zebra like browse
@@ -27,7 +31,7 @@
    ! source/control.c
      ! updated to add code for rebar control
    ! include/guilib.ch
-     ! added commands for rebar and pager control
+     ! added commands for rebar and pager control      
    ! include/windows.ch
      ! added new contants
    makefile.bc

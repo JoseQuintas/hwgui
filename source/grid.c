@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.20 2006-11-16 13:30:02 lculik Exp $
+ * $Id: grid.c,v 1.21 2007-01-30 12:05:37 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -458,4 +458,26 @@ HB_FUNC( PROCESSCUSTU )
    PHB_ITEM pColor = hb_param( 3, HB_IT_ARRAY );
 
    hb_retnl( ( LONG ) ProcessCustomDraw( lParam, pColor ));
+}
+
+HB_FUNC(LISTVIEWGETITEM)
+{
+  HWND hList = ( HWND ) hb_parnl( 1 ) ;
+  int Index=hb_parni(2);
+  int Index2=hb_parni(3);
+  LVITEM Item = {0};
+  char *Buffer= (char*)hb_xgrab(256);
+
+  Item.mask          = LVIF_TEXT | LVIF_PARAM;
+  Item.iItem         = Index;
+  Item.iSubItem      = Index2;
+  Item.pszText       = Buffer;
+  Item.cchTextMax    = 256;
+
+  if(!ListView_GetItem(hList, &Item))
+  {
+     hb_xfree(Buffer);
+        hb_retc("");
+        }
+  hb_retcAdopt(Buffer);
 }

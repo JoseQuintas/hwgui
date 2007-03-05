@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.34 2007-01-02 11:46:59 lculik Exp $
+ *$Id: windows.ch,v 1.35 2007-03-05 18:16:25 mauriliolongo Exp $
  */
 
 #define WM_CREATE                       1
@@ -77,6 +77,7 @@
 #define WM_MDIGETACTIVE                 553     // 0x0229
 #define WM_MDISETMENU                   560     // 0x0230
 #define WM_ENTERSIZEMOVE                561     // 0x0231
+#define WM_EXITSIZEMOVE                 562     // 0x0232
 
 #define WM_CUT                          768     // 0x0300
 #define WM_COPY                         769     // 0x0301
@@ -298,7 +299,7 @@
 #define WS_VISIBLE          268435456  // 0x10000000L
 #define WS_DISABLED         134217728  // 0x08000000L
 #define WS_CLIPSIBLINGS     67108864   // 0x04000000L
-#define WS_CLIPCHILDREN     33554432   
+#define WS_CLIPCHILDREN     33554432
 #define WS_CAPTION          12582912   // 0x00C00000L
 #define WS_BORDER           8388608    // 0x00800000L
 #define WS_DLGFRAME         4194304    // 0x00400000L
@@ -1078,9 +1079,9 @@
 #define SWP_DRAWFRAME       SWP_FRAMECHANGED
 #define SWP_NOREPOSITION    SWP_NOOWNERZORDER
 
-#define MCN_FIRST (-750) 
-#define MCN_SELCHANGE (MCN_FIRST + 1) 
-#define MCN_SELECT (MCN_FIRST + 4) 
+#define MCN_FIRST (-750)
+#define MCN_SELCHANGE (MCN_FIRST + 1)
+#define MCN_SELECT (MCN_FIRST + 4)
 #define RBS_TOOLTIPS        0x0100
 #define RBS_VARHEIGHT       0x0200
 #define RBS_BANDBORDERS     0x0400
@@ -1101,4 +1102,5 @@
 #define RBBS_NOGRIPPER      0x00000100  // never show the gripper
 #define RBBS_USECHEVRON     0x00000200  // display drop-down button for this band if it's sized smaller than ideal width
 #define RBBS_HIDETITLE      0x00000400  // keep band title hidden
+
 

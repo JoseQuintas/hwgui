@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.19 2006-11-28 11:16:56 alexstrickland Exp $
+ * $Id: freeimg.c,v 1.20 2007-03-05 18:16:25 mauriliolongo Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -60,7 +60,15 @@ typedef FIBITMAP* ( WINAPI *FREEIMAGE_COPY )(FIBITMAP *dib, int left, int top, i
 typedef BOOL ( WINAPI *FREEIMAGE_SETBACKGROUNDCOLOR )(FIBITMAP *dib, RGBQUAD *bkcolor);
 typedef BOOL ( WINAPI *FREEIMAGE_INVERT )(FIBITMAP *dib);
 typedef FIBITMAP* ( WINAPI *FREEIMAGE_CONVERTTO8BITS )(FIBITMAP *dib);
+typedef FIBITMAP* ( WINAPI *FREEIMAGE_CONVERTTOGREYSCALE )(FIBITMAP *dib);
 typedef BOOL ( WINAPI *FREEIMAGE_FLIPVERTICAL )(FIBITMAP *dib);
+typedef FIBITMAP* ( WINAPI *FREEIMAGE_THRESHOLD)(FIBITMAP *dib, BYTE T);
+
+typedef BOOL ( WINAPI *FREEIMAGE_GETPIXELINDEX )(FIBITMAP *dib, unsigned x, unsigned y, BYTE *value);
+typedef BOOL ( WINAPI *FREEIMAGE_GETPIXELCOLOR )(FIBITMAP *dib, unsigned x, unsigned y, RGBQUAD *value);
+typedef BOOL ( WINAPI *FREEIMAGE_SETPIXELINDEX )(FIBITMAP *dib, unsigned x, unsigned y, BYTE *value);
+typedef BOOL ( WINAPI *FREEIMAGE_SETPIXELCOLOR )(FIBITMAP *dib, unsigned x, unsigned y, RGBQUAD *value);
+
 
 static HINSTANCE hFreeImageDll = NULL;
 static FREEIMAGE_LOAD pLoad = NULL;
@@ -94,7 +102,13 @@ static FREEIMAGE_COPY pCopy = NULL;
 static FREEIMAGE_SETBACKGROUNDCOLOR pSetBackgroundColor = NULL;
 static FREEIMAGE_INVERT pInvert = NULL;
 static FREEIMAGE_CONVERTTO8BITS pConvertTo8Bits = NULL;
+static FREEIMAGE_CONVERTTOGREYSCALE pConvertToGreyscale = NULL;
 static FREEIMAGE_FLIPVERTICAL pFlipVertical = NULL;
+static FREEIMAGE_THRESHOLD pThreshold = NULL;
+static FREEIMAGE_GETPIXELINDEX pGetPixelIndex = NULL;
+static FREEIMAGE_GETPIXELCOLOR pGetPixelColor = NULL;
+static FREEIMAGE_SETPIXELINDEX pSetPixelIndex = NULL;
+static FREEIMAGE_SETPIXELCOLOR pSetPixelColor = NULL;
 
 
 
@@ -170,7 +184,13 @@ HB_FUNC( FI_END )
 		pSetBackgroundColor = NULL;
 		pInvert = NULL;
 		pConvertTo8Bits = NULL;
+		pConvertToGreyscale = NULL;
 		pFlipVertical = NULL;
+		pThreshold = NULL;
+		pGetPixelIndex = NULL;
+		pGetPixelColor = NULL;
+		pSetPixelIndex = NULL;
+		pSetPixelColor = NULL;
    }
 }
 
@@ -312,7 +332,7 @@ static HANDLE CreateDIB(DWORD dwWidth, DWORD dwHeight, WORD wBitCount)
     DWORD               dwBytesPerLine; // Number of bytes per scanline
 
 
-    // Make sure bits per pixel is valid
+                    // Make sure bits per pixel is valid
     if (wBitCount <= 1)
         wBitCount = 1;
     else if (wBitCount <= 4)
@@ -410,9 +430,19 @@ HB_FUNC( FI_FI2DIB )
 
 /* 24/02/2005 - <maurilio.longo@libero.it>
 	This comes straight from freeimage fipWinImage::copyToHandle()
-	but doesn't work, maybe some casting issue.
+*/
+static inline void SET_FREEIMAGE_MARKER(BITMAPINFOHEADER *bmih, FIBITMAP *dib) {
 
-HB_FUNC( FI_2DIBEX )
+	pGetImageType = (FREEIMAGE_GETIMAGETYPE) GetFunction( (FARPROC)pGetImageType, "_FreeImage_GetImageType@4" );
+
+	// Windows constants goes from 0L to 5L
+	// Add 0xFF to avoid conflicts
+	bmih->biCompression = 0xFF + pGetImageType(dib);
+}
+
+
+
+HB_FUNC( FI_FI2DIBEX )
 {
 	FIBITMAP* _dib = (FIBITMAP*) hb_parnl( 1 );
    HANDLE hMem = NULL;
@@ -421,11 +451,12 @@ HB_FUNC( FI_2DIBEX )
    pGetwidth = (FREEIMAGE_GETWIDTH) GetFunction( (FARPROC)pGetwidth,"_FreeImage_GetWidth@4" );
    pGetheight = (FREEIMAGE_GETHEIGHT) GetFunction( (FARPROC)pGetheight,"_FreeImage_GetHeight@4" );
 	pGetBPP = (FREEIMAGE_GETBPP) GetFunction( (FARPROC)pGetBPP, "_FreeImage_GetBPP@4" );
-	pGetPitch = (FREEIMAGE_GETPITCH) GetFunction( (FARPROC)pGetBPP, "_FreeImage_GetPitch@4" );
+	pGetPitch = (FREEIMAGE_GETPITCH) GetFunction( (FARPROC)pGetPitch, "_FreeImage_GetPitch@4" );
 	pGetinfoHead = (FREEIMAGE_GETINFOHEADER) GetFunction( (FARPROC)pGetinfoHead,"_FreeImage_GetInfoHeader@4" );
 	pGetinfo = (FREEIMAGE_GETINFO) GetFunction( (FARPROC)pGetinfo,"_FreeImage_GetInfo@4" );
 	pGetbits = (FREEIMAGE_GETBITS) GetFunction( (FARPROC)pGetbits,"_FreeImage_GetBits@4" );
 	pGetPalette = (FREEIMAGE_GETPALETTE) GetFunction( (FARPROC)pGetPalette, "_FreeImage_GetPalette@4" );
+	pGetImageType = (FREEIMAGE_GETIMAGETYPE) GetFunction( (FARPROC)pGetImageType, "_FreeImage_GetImageType@4" );
 
 	if( _dib ) {
 
@@ -445,13 +476,16 @@ HB_FUNC( FI_2DIBEX )
 		// Copy the BITMAPINFOHEADER
 		BITMAPINFOHEADER *bih = pGetinfoHead( _dib );
 		memcpy(p_dib, bih, sizeof(BITMAPINFOHEADER));
+		if( pGetImageType(_dib) != 1 /*FIT_BITMAP*/ ) {
+			// this hack is used to store the bitmap type in the biCompression member of the BITMAPINFOHEADER
+			SET_FREEIMAGE_MARKER((BITMAPINFOHEADER*)p_dib, _dib);
+		}
 		p_dib += sizeof(BITMAPINFOHEADER);
 
 		// Copy the palette
 		RGBQUAD *pal = pGetPalette(_dib);
 		memcpy(p_dib, pal, pGetColorsUsed(_dib) * sizeof(RGBQUAD));
 		p_dib += pGetColorsUsed(_dib) * sizeof(RGBQUAD);
-
 
 		// Copy the bitmap
 		BYTE *bits = pGetbits(_dib);
@@ -462,7 +496,7 @@ HB_FUNC( FI_2DIBEX )
 
 	hb_retnl( hMem );
 }
-*/
+
 
 
 HB_FUNC( FI_DRAW )
@@ -890,11 +924,59 @@ HB_FUNC( FI_CONVERTTO8BITS )
 
 
 
+HB_FUNC( FI_CONVERTTOGREYSCALE )
+{
+   pConvertToGreyscale = (FREEIMAGE_CONVERTTOGREYSCALE) GetFunction( (FARPROC)pConvertToGreyscale,"_FreeImage_ConvertToGreyscale@4" );
+
+   hb_retnl( (LONG)pConvertToGreyscale( (FIBITMAP*) hb_parnl( 1 ) ) );
+}
+
+
+
+HB_FUNC( FI_THRESHOLD )
+{
+   pThreshold = (FREEIMAGE_THRESHOLD) GetFunction( (FARPROC)pThreshold,"_FreeImage_Threshold@8" );
+
+   hb_retnl( (LONG)pThreshold( (FIBITMAP*) hb_parnl( 1 ), (BYTE) hb_parnl( 2 ) ) );
+}
+
+
+
 HB_FUNC( FI_FLIPVERTICAL )
 {
    pFlipVertical = (FREEIMAGE_FLIPVERTICAL) GetFunction( (FARPROC)pFlipVertical,"_FreeImage_FlipVertical@4" );
 
 	hb_retl( pFlipVertical( (FIBITMAP*) hb_parnl( 1 ) ) );
 }
+
+
+
+HB_FUNC( FI_GETPIXELINDEX )
+{
+   BYTE value = -1;
+   BOOL lRes;
+   pGetPixelIndex = (FREEIMAGE_GETPIXELINDEX) GetFunction( (FARPROC)pGetPixelIndex,"_FreeImage_GetPixelIndex@16" );
+
+	lRes = pGetPixelIndex( (FIBITMAP*) hb_parnl( 1 ), hb_parni( 2 ), hb_parni( 3 ), &value );
+	if ( lRes )
+		hb_stornl( (ULONG) value, 4 );
+	hb_retl( lRes );
+}
+
+
+
+HB_FUNC( FI_SETPIXELINDEX )
+{
+   BYTE value = hb_parni( 4 );
+   pSetPixelIndex = (FREEIMAGE_SETPIXELINDEX) GetFunction( (FARPROC)pSetPixelIndex,"_FreeImage_SetPixelIndex@16" );
+
+	hb_retl( pSetPixelIndex( (FIBITMAP*) hb_parnl( 1 ), hb_parni( 2 ), hb_parni( 3 ), &value ) );
+}
+
+
+/* todo
+typedef BOOL ( WINAPI *FREEIMAGE_GETPIXELCOLOR )(FIBITMAP *dib, unsigned x, unsigned y, RGBQUAD *value);
+typedef BOOL ( WINAPI *FREEIMAGE_SETPIXELCOLOR )(FIBITMAP *dib, unsigned x, unsigned y, RGBQUAD *value);
+*/
 
 

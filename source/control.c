@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.51 2007-01-02 11:46:59 lculik Exp $
+ * $Id: control.c,v 1.52 2007-03-05 18:16:25 mauriliolongo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -963,6 +963,11 @@ HB_FUNC( LOADCURSOR )
 HB_FUNC( HWG_SETCURSOR )
 {
    hb_retnl( (LONG) SetCursor( (HCURSOR) hb_parnl( 1 ) ) );
+}
+
+HB_FUNC( HWG_GETCURSOR )
+{
+   hb_retnl( (LONG) GetCursor() );
 }
 
 HB_FUNC( GETTOOLTIPHANDLE ) // added by MAG

@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.20 2007-03-05 18:16:25 mauriliolongo Exp $
+ * $Id: freeimg.c,v 1.21 2007-03-06 01:48:08 lculik Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -109,7 +109,7 @@ static FREEIMAGE_GETPIXELINDEX pGetPixelIndex = NULL;
 static FREEIMAGE_GETPIXELCOLOR pGetPixelColor = NULL;
 static FREEIMAGE_SETPIXELINDEX pSetPixelIndex = NULL;
 static FREEIMAGE_SETPIXELCOLOR pSetPixelColor = NULL;
-
+static  void  SET_FREEIMAGE_MARKER(BITMAPINFOHEADER *bmih, FIBITMAP *dib);
 
 
 fi_handle g_load_address;
@@ -431,7 +431,8 @@ HB_FUNC( FI_FI2DIB )
 /* 24/02/2005 - <maurilio.longo@libero.it>
 	This comes straight from freeimage fipWinImage::copyToHandle()
 */
-static inline void SET_FREEIMAGE_MARKER(BITMAPINFOHEADER *bmih, FIBITMAP *dib) {
+static  void  SET_FREEIMAGE_MARKER(BITMAPINFOHEADER *bmih, FIBITMAP *dib)
+ {
 
 	pGetImageType = (FREEIMAGE_GETIMAGETYPE) GetFunction( (FARPROC)pGetImageType, "_FreeImage_GetImageType@4" );
 
@@ -462,19 +463,23 @@ HB_FUNC( FI_FI2DIBEX )
 
 		// Get equivalent DIB size
 		long dib_size = sizeof(BITMAPINFOHEADER);
+        BYTE *dib;
+        BYTE *p_dib,*bits;
+        BITMAPINFOHEADER *bih ;
+        RGBQUAD *pal;
 		dib_size += pGetColorsUsed( _dib ) * sizeof(RGBQUAD);
 		dib_size += pGetPitch( _dib ) * pGetheight( _dib );
 
 		// Allocate a DIB
 		hMem = GlobalAlloc(GHND, dib_size);
-		BYTE *dib = (BYTE*)GlobalLock(hMem);
+        dib = (BYTE*)GlobalLock(hMem);
 
 		memset(dib, 0, dib_size);
 
-		BYTE *p_dib = (BYTE*)dib;
+        p_dib = (BYTE*)dib;
 
 		// Copy the BITMAPINFOHEADER
-		BITMAPINFOHEADER *bih = pGetinfoHead( _dib );
+        bih = pGetinfoHead( _dib );
 		memcpy(p_dib, bih, sizeof(BITMAPINFOHEADER));
 		if( pGetImageType(_dib) != 1 /*FIT_BITMAP*/ ) {
 			// this hack is used to store the bitmap type in the biCompression member of the BITMAPINFOHEADER
@@ -483,18 +488,18 @@ HB_FUNC( FI_FI2DIBEX )
 		p_dib += sizeof(BITMAPINFOHEADER);
 
 		// Copy the palette
-		RGBQUAD *pal = pGetPalette(_dib);
+        pal = pGetPalette(_dib);
 		memcpy(p_dib, pal, pGetColorsUsed(_dib) * sizeof(RGBQUAD));
 		p_dib += pGetColorsUsed(_dib) * sizeof(RGBQUAD);
 
 		// Copy the bitmap
-		BYTE *bits = pGetbits(_dib);
+        bits = pGetbits(_dib);
 		memcpy(p_dib, bits, pGetPitch(_dib) * pGetheight(_dib));
 
 		GlobalUnlock(hMem);
 	}
 
-	hb_retnl( hMem );
+    hb_retnl( (LONG)hMem );
 }
 
 

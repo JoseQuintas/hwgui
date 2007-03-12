@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.17 2004-11-16 15:57:23 sandrorrfreire Exp $
+ * $Id: printdos.prg,v 1.18 2007-03-12 17:16:29 mlacecilia Exp $
  *
  * CLASS PrintDos
  *
@@ -380,7 +380,11 @@ Local oPrinter
 Local oFont
 
 INIT PRINTER oPrinter // HPrinter():New()
-
+// added by Giuseppe Mastrangelo
+if oPrinter == nil
+	return .f.
+endif
+// end of added code
 oFont := oPrinter:AddFont( "Courier New", oSize )
 
 oPrinter:StartDoc( oPreview  )

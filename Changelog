@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.601 2007-03-05 18:16:25 mauriliolongo Exp $
+ * $Id: Changelog,v 1.602 2007-03-12 17:16:29 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-03-12 18:15 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+   This changes was made by Giuseppe Mastrangelo who asked me to commit hem to CVS
+   * source/hprinter.prg
+     * removed the ::nCurrPage parameter in PrintMeta() call from preview
+	   allowing the entire file to be printed as the tooltip says
+   * source/printdos.prg
+     + added in method TxttoGraphic a test to exit immediately if the user don't
+       select any printer, avoiding the actually generated error. 	 
 
 2007-03-05 19:15 UTC+0100 Maurilio Longo <maurilio.longo@libero.it>
    * include/windows.ch

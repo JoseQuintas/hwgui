@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.17 2005-08-29 08:33:54 alkresin Exp $
+ * $Id: hprinter.prg,v 1.18 2007-03-12 17:16:29 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -293,7 +293,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
 
    @ 1,31 LINE LENGTH oToolBar:nWidth-1
 
-   @ 3,36 OWNERBUTTON oBtn OF oToolBar ON CLICK {||::PrintMeta(::nCurrPage)} ;
+   @ 3,36 OWNERBUTTON oBtn OF oToolBar ON CLICK {||::PrintMeta()} ;   // removed ::nCurrPage by Giuseppe Mastrangelo
         SIZE oToolBar:nWidth-6,24 TEXT "Print" FONT oFont         ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[2],"Print file")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 2 .AND. aBitmaps[3] != Nil

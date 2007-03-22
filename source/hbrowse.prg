@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.75 2007-01-13 18:56:43 lculik Exp $
+ * $Id: hbrowse.prg,v 1.76 2007-03-22 16:25:44 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -232,7 +232,7 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
       ::aSelected := {}
    ENDIF
    ::lDescend    := Iif( lDescend==Nil,.F.,lDescend )
-   
+
    // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
    IF ::lDescend .OR. ISBLOCK(bFirst) .OR. ISBLOCK(bFor) .OR. ISBLOCK(bWhile)
      ::lFilter := .T.
@@ -525,7 +525,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
    IF ::type == BRW_DATABASE
       ::alias   := Alias()
       //Modified By Luiz Henrique dos Santos (luizhsantos@gmail.com.br)
-      IF ::lFilter 
+      IF ::lFilter
         ::nLastRecordFilter  := ::nFirstRecordFilter := 0
         IF ::lDescend
            ::bSkip     := { |o, n| (::alias)->(FltSkip(o, n, .T.)) }
@@ -692,8 +692,8 @@ Local oldBkColor, oldTColor
       ENDIF
    ELSE
       // Modified by Luiz Henrique dos Santos (luizhsantos@gmail.com)
-      //IF Eval( ::bEof,Self ) 
-      IF Eval( ::bEof,Self ) .OR. Eval( ::bBof,Self ) 
+      //IF Eval( ::bEof,Self )
+      IF Eval( ::bEof,Self ) .OR. Eval( ::bBof,Self )
          Eval( ::bGoTop, Self )
          ::rowPos := 1
       ENDIF
@@ -1385,7 +1385,7 @@ Local xm := LOWORD(lParam), x1, fif
 
    x1  := ::x1
    fif := Iif( ::freeze > 0, 1, ::nLeftCol )
-   
+
    DO WHILE fif < ( ::nLeftCol + ::nColumns ) .AND. x1 + ::aColumns[ fif ]:width < xm
       x1 += ::aColumns[ fif ]:width
       fif := Iif( fif == ::freeze, ::nLeftCol, fif + 1 )
@@ -1626,6 +1626,8 @@ Local oGet1, owb1, owb2
             AT x1, y1 - Iif( oColumn:aList == Nil, 1, 0 ) ;
             SIZE nWidth, ::height + Iif( oColumn:aList == Nil, 1, 0 ) ;
             ON INIT bInit
+	    //Serge (seohic) patch suggest
+	    oModDlg:bOther := {|| o,m,wp,lp|if(m == WM_NCACTIVATE .and. nd. wp == 0, o:Close(),),.t.} )) }
 		else
 			INIT DIALOG oModDlg title "memo edit" AT 0, 0 SIZE 400, 300 ON INIT {|o|o:center()}
 		endif
@@ -1802,7 +1804,7 @@ Local cRes, vartmp, type, pict
          ELSE
              vartmp := Eval( oBrw:aColumns[numf]:block,,oBrw,numf )
          ENDIF
-		 
+
          type := (oBrw:aColumns[numf]):type
          IF type == "U" .AND. vartmp != Nil
             type := Valtype( vartmp )
@@ -2027,7 +2029,7 @@ LOCAL n, r
         SKIP IF(lDesc, +1, -1)
       ENDDO
     NEXT
-  ENDIF  
+  ENDIF
 RETURN NIL
 
 STATIC FUNCTION FltGoTop(oBrw)
@@ -2071,12 +2073,12 @@ STATIC FUNCTION FltBOF(oBrw)
   ELSE
     cKey  := INDEXKEY()
     nRecord := FltRecNo(oBrw)
-    
+
     xValue := OrdKeyNo() //&(cKey)
-    
+
     FltGoTop(oBrw)
     xFirstValue := OrdKeyNo()//&(cKey)
-    
+
     IF xValue < xFirstValue
       lRet := .T.
       FltGoTop(oBrw)
@@ -2085,7 +2087,7 @@ STATIC FUNCTION FltBOF(oBrw)
     ENDIF
   ENDIF
 RETURN lRet
-   
+
 STATIC FUNCTION FltEOF(oBrw)
   LOCAL lRet := .F., cKey := "", nRecord := 0
   LOCAL xValue, xLastValue
@@ -2094,12 +2096,12 @@ STATIC FUNCTION FltEOF(oBrw)
   ELSE
     cKey := INDEXKEY()
     nRecord := FltRecNo(oBrw)
-    
-    xValue := OrdKeyNo() 
-    
+
+    xValue := OrdKeyNo()
+
     FltGoBottom(oBrw)
     xLastValue := OrdKeyNo()
-    
+
     IF xValue > xLastValue
       lRet := .T.
       FltGoBottom(oBrw)

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.76 2007-03-22 16:25:44 richardroesnadi Exp $
+ * $Id: hbrowse.prg,v 1.77 2007-03-24 00:45:05 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1627,7 +1627,7 @@ Local oGet1, owb1, owb2
             SIZE nWidth, ::height + Iif( oColumn:aList == Nil, 1, 0 ) ;
             ON INIT bInit
 	    //Serge (seohic) patch suggest
-	    oModDlg:bOther := {|| o,m,wp,lp|if(m == WM_NCACTIVATE .and. nd. wp == 0, o:Close(),),.t.} )) }
+        oModDlg:bOther := {|| o,m,wp,lp|if(m == WM_NCACTIVATE .and. wp == 0, o:Close(),),.t.} )) }
 		else
 			INIT DIALOG oModDlg title "memo edit" AT 0, 0 SIZE 400, 300 ON INIT {|o|o:center()}
 		endif

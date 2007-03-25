@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.77 2007-03-24 00:45:05 lculik Exp $
+ * $Id: hbrowse.prg,v 1.78 2007-03-25 05:43:09 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -127,7 +127,7 @@ CLASS HBrowse INHERIT HControl
    DATA sepColor INIT 12632256                 // Separators color
    DATA lSep3d  INIT .F.
    DATA varbuf                                 // Used on Edit()
-   DATA tcolorSel,bcolorSel,brushSel
+   DATA tcolorSel,bcolorSel,brushSel, htbColor, httColor // Hilite Text Back Color
    DATA bSkip,bGoTo,bGoTop,bGoBot,bEof,bBof
    DATA bRcou,bRecno,bRecnoLog
    DATA bPosChanged, bLineOut
@@ -138,7 +138,7 @@ CLASS HBrowse INHERIT HControl
    DATA alias                                  // Alias name of browsed database
    DATA x1,y1,x2,y2,width,height
    DATA minHeight INIT 0
-   DATA lEditable INIT .F.
+   DATA lEditable INIT .T.
    DATA lAppable  INIT .F.
    DATA lAppMode  INIT .F.
    DATA lAutoEdit INIT .F.
@@ -163,7 +163,7 @@ CLASS HBrowse INHERIT HControl
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
-                  lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect, bWhile, bFirst, bLast, bFor )
+                  lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect, bFirst, bWhile, bFor  )
    METHOD InitBrw( nType )
    METHOD Rebuild()
    METHOD Activate()
@@ -174,7 +174,7 @@ CLASS HBrowse INHERIT HControl
    METHOD AddColumn( oColumn )
    METHOD InsColumn( oColumn,nPos )
    METHOD DelColumn( nPos )
-   METHOD Paint()
+   METHOD Paint(lLostFocus)
    METHOD LineOut()
    METHOD HeaderOut( hDC )
    METHOD FooterOut( hDC )
@@ -234,7 +234,7 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
    ::lDescend    := Iif( lDescend==Nil,.F.,lDescend )
 
    // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
-   IF ::lDescend .OR. ISBLOCK(bFirst) .OR. ISBLOCK(bFor) .OR. ISBLOCK(bWhile)
+   IF ISBLOCK(bFirst) .OR. ISBLOCK(bFor) .OR. ISBLOCK(bWhile)
      ::lFilter := .T.
      IF ISBLOCK(bFirst)
        ::bFirst  := bFirst
@@ -292,6 +292,7 @@ Local aCoors, oParent, cKeyb, nCtrl, nPos
       ELSEIF msg == WM_SETFOCUS
          IF ::bGetFocus != Nil
             Eval( ::bGetFocus, Self )
+	    //::refreshLine()
          ENDIF
 
       ELSEIF msg == WM_KILLFOCUS
@@ -637,7 +638,7 @@ Local i, j, oColumn, xSize, nColLen, nHdrLen, nCount
 RETURN Nil
 
 //----------------------------------------------------//
-METHOD Paint()  CLASS HBrowse
+METHOD Paint(lLostFocus)  CLASS HBrowse
 Local aCoors, aMetr, i, oldAlias, tmp, nRows
 Local pps, hDC
 Local oldBkColor, oldTColor
@@ -646,8 +647,12 @@ Local oldBkColor, oldTColor
       RETURN Nil
    ENDIF
 
-   IF ::tcolor == Nil ; ::tcolor := 0 ; ENDIF
-   IF ::bcolor == Nil ; ::bcolor := VColor( "FFFFFF" ) ; ENDIF
+   IF ::tcolor    == Nil ; ::tcolor    := 0 ; ENDIF
+   IF ::bcolor    == Nil ; ::bcolor    := VColor( "FFFFFF" ) ; ENDIF
+
+   IF ::httcolor  == Nil ; ::httcolor  := VColor( "FFFFFF" ) ; ENDIF
+   IF ::htbcolor  == Nil ; ::htbcolor  := 2896388  ; ENDIF
+
    IF ::tcolorSel == Nil ; ::tcolorSel := VColor( "FFFFFF" ) ; ENDIF
    IF ::bcolorSel == Nil ; ::bcolorSel := VColor( "808080" ) ; ENDIF
 
@@ -740,7 +745,13 @@ Local oldBkColor, oldTColor
       ::LineOut( nRows+1, 0, hDC, .F.,.T. )
    ENDIF
 
-   ::LineOut( ::rowPos, Iif( ::lEditable, ::colpos, 0 ), hDC, .T. )
+   //::LineOut( ::rowPos, Iif( ::lEditable, ::colpos, 0 ), hDC, .T. )
+   ::LineOut( ::rowPos, 0, hDC, .T. )
+   //if ::lEditable
+   if lLostFocus==NIL
+     ::LineOut( ::rowPos,::colpos, hDC, .T. )
+   endif
+   //endif
 
    IF Checkbit( ::internal[1],1 ) .OR. ::lAppMode
       ::HeaderOut( hDC )
@@ -921,13 +932,14 @@ Local oColumn
 
 RETURN Nil
 
-//----------------------------------------------------//
+//-------------- -Row--  --Col-- ------------------------------//
 METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
 Local x, dx, i := 1, shablon, sviv, fldname, slen, xSize
 Local j, ob, bw, bh, y1, hBReal
 Local oldBkColor, oldTColor, oldBk1Color, oldT1Color
-Local oLineBrush := Iif( lSelected, ::brushSel,::brush )
+Local oLineBrush :=  iif(vybfld>=1, HBrush():Add(::htbColor), Iif( lSelected, ::brushSel,::brush ))
 Local lColumnFont := .F.
+//Local nPaintCol, nPaintRow
 Local aCores
 
    ::xpos := x := ::x1
@@ -937,10 +949,10 @@ Local aCores
       Eval( ::bLineOut,Self,lSelected )
    ENDIF
    IF ::nRecords > 0
-      oldBkColor := SetBkColor( hDC, Iif( lSelected,::bcolorSel,::bcolor ) )
-      oldTColor  := SetTextColor( hDC, Iif( lSelected,::tcolorSel,::tcolor ) )
+      oldBkColor := SetBkColor(   hDC, iif(vybfld>=1,::htbcolor, Iif( lSelected,::bcolorSel,::bcolor )))
+      oldTColor  := SetTextColor( hDC, iif(vybfld>=1,::httcolor, Iif( lSelected,::tcolorSel,::tcolor )))
       fldname := SPACE( 8 )
-      ::nPaintCol  := Iif( ::freeze > 0, 1, ::nLeftCol )
+      ::nPaintCol  := Iif( ::freeze>0, 1, ::nLeftCol )
       ::nPaintRow  := nstroka
 
       WHILE x < ::x2 - 2
@@ -968,9 +980,10 @@ Local aCores
                ::aColumns[::nPaintCol]:brush := HBrush():Add( ::aColumns[::nPaintCol]:bColor )
             ENDIF
             hBReal := Iif( ::aColumns[::nPaintCol]:brush != Nil, ;
-                         ::aColumns[::nPaintCol]:brush:handle,   ;
-                         oLineBrush:handle )
+                           ::aColumns[::nPaintCol]:brush:handle,   ;
+                           oLineBrush:handle )
             FillRect( hDC, x, ::y1+(::height+1)*(::nPaintRow-1)+1, x+xSize-Iif(::lSep3d,2,1),::y1+(::height+1)*::nPaintRow, hBReal )
+
             IF !lClear
                IF ::aColumns[::nPaintCol]:aBitmaps != Nil .AND. !Empty( ::aColumns[::nPaintCol]:aBitmaps )
                   FOR j := 1 TO Len( ::aColumns[::nPaintCol]:aBitmaps )
@@ -992,11 +1005,12 @@ Local aCores
                      ENDIF
                   NEXT
                ELSE
-                  sviv := FLDSTR( Self,::nPaintCol )
+                  sviv := FLDSTR( Self, ::nPaintCol)
                   // Ahora lineas Justificadas !!
                   IF ::aColumns[::nPaintCol]:tColor != Nil
                      oldT1Color := SetTextColor( hDC, ::aColumns[::nPaintCol]:tColor )
                   ENDIF
+
                   IF ::aColumns[::nPaintCol]:bColor != Nil
                      oldBk1Color := SetBkColor( hDC, ::aColumns[::nPaintCol]:bColor )
                   ENDIF
@@ -1007,10 +1021,13 @@ Local aCores
                      SelectObject( hDC, ::ofont:handle )
                      lColumnFont := .F.
                   ENDIF
+
                   DrawText( hDC, sviv, x, ::y1+(::height+1)*(::nPaintRow-1)+1, x+xSize-2,::y1+(::height+1)*::nPaintRow-1, ::aColumns[::nPaintCol]:nJusLin )
+
                   IF ::aColumns[::nPaintCol]:tColor != Nil
                      SetTextColor( hDC, oldT1Color )
                   ENDIF
+
                   IF ::aColumns[::nPaintCol]:bColor != Nil
                      SetBkColor( hDC, oldBk1Color )
                   ENDIF
@@ -1018,7 +1035,7 @@ Local aCores
             ENDIF
          ENDIF
          x += xSize
-         ::nPaintCol := Iif( ::nPaintCol = ::freeze, ::nLeftCol, ::nPaintCol + 1 )
+         ::nPaintCol := Iif( ::nPaintCol == ::freeze, ::nLeftCol, ::nPaintCol + 1 )
          i ++
          IF ! ::lAdjRight .and. ::nPaintCol > LEN( ::aColumns )
             EXIT
@@ -1626,8 +1643,8 @@ Local oGet1, owb1, owb2
             AT x1, y1 - Iif( oColumn:aList == Nil, 1, 0 ) ;
             SIZE nWidth, ::height + Iif( oColumn:aList == Nil, 1, 0 ) ;
             ON INIT bInit
-	    //Serge (seohic) patch suggest
-        oModDlg:bOther := {|| o,m,wp,lp|if(m == WM_NCACTIVATE .and. wp == 0, o:Close(),),.t.} )) }
+	    oModDlg:bOther := {|o,m,wp,lp| if(m == WM_NCACTIVATE .and. wp == 0, o:Close(),),.t.}
+
 		else
 			INIT DIALOG oModDlg title "memo edit" AT 0, 0 SIZE 400, 300 ON INIT {|o|o:center()}
 		endif
@@ -1810,8 +1827,8 @@ Local cRes, vartmp, type, pict
             type := Valtype( vartmp )
          ENDIF
          IF type == "C"
-            cRes := Padr( vartmp, oBrw:aColumns[numf]:length )
-
+            //cRes := Padr( vartmp, oBrw:aColumns[numf]:length )
+	    cRes := vartmp
          ELSEIF type == "N"
             cRes := Padl( STR( vartmp, oBrw:aColumns[numf]:length, ;
                    oBrw:aColumns[numf]:dec ),oBrw:aColumns[numf]:length )
@@ -2032,6 +2049,7 @@ LOCAL n, r
   ENDIF
 RETURN NIL
 
+
 STATIC FUNCTION FltGoTop(oBrw)
   IF oBrw:nFirstRecordFilter == 0
     EVAL(oBrw:bFirst)
@@ -2131,3 +2149,5 @@ RETURN DBGOTO(nRecord)
 STATIC FUNCTION FltRecNo(oBrw)
 RETURN RECNO()
 //End Implementation by Luiz
+
+

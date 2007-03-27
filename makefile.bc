@@ -87,9 +87,9 @@ HB_CMD = $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 # Macros to access our library names
 #
 
-HWGUI_LIB    =   $(LIB_DIR)\hwgui$(HB_MT).lib 
-PROCMISC_LIB =   $(LIB_DIR)\procmisc.lib 
-HBXML_LIB    =   $(LIB_DIR)\hbxml.lib 
+HWGUI_LIB    =   $(LIB_DIR)\hwgui$(HB_MT).lib
+PROCMISC_LIB =   $(LIB_DIR)\procmisc.lib
+HBXML_LIB    =   $(LIB_DIR)\hbxml.lib
 HWGQHTM_LIB  =   $(LIB_DIR)\hwg_qhtm.lib
 ACTIVEX_LIB  =   $(LIB_DIR)\hbactivex.lib
 
@@ -125,6 +125,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\wprint.obj \
    $(HWGUI_OBJ_DIR)\drawwidg.obj \
    $(HWGUI_OBJ_DIR)\guimain.obj \
+   $(HWGUI_OBJ_DIR)\barcode.obj \
    $(HWGUI_OBJ_DIR)\hbrowse.obj \
    $(HWGUI_OBJ_DIR)\hcheck.obj \
    $(HWGUI_OBJ_DIR)\hcombo.obj \
@@ -234,7 +235,7 @@ PROJECT = \
 !if "$(ACTIVEX_SUPPORT)" == "ON"
 PROJECT = \
    $(PROJECT) \
-   $(ACTIVEX_LIB) 
+   $(ACTIVEX_LIB)
 !endif
 
 

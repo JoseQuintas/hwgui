@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.22 2006-10-14 15:42:19 sandrorrfreire Exp $
+ * $Id: designer.prg,v 1.23 2007-03-27 21:07:02 richardroesnadi Exp $
  *
  * Designer
  * Main file
@@ -17,6 +17,7 @@
 
 STATIC lOmmitMenuFile := .F.
 
+
 REQUEST DRAWEDGE
 REQUEST DRAWICON
 REQUEST ELLIPSE
@@ -24,6 +25,7 @@ REQUEST SETWINDOWFONT
 REQUEST INITMONTHCALENDAR
 REQUEST INITTRACKBAR
 REQUEST HTIMER, DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK
+REQUEST BARCODE
 
 Function Designer( p0, p1, p2 )
 Local oPanel, oTab, oFont, cResForm, i

@@ -1,4 +1,4 @@
-# $Id: makefile.gcc,v 1.20 2006-12-29 10:18:54 alkresin Exp $
+# $Id: makefile.gcc,v 1.21 2007-03-27 21:07:02 richardroesnadi Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -42,6 +42,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/drawwidg.o \
    $(OBJ_DIR)/errorsys.o \
    $(OBJ_DIR)/guimain.o \
+   $(OBJ_DIR)/barcode.o \
    $(OBJ_DIR)/hbrowse.o \
    $(OBJ_DIR)/hcheck.o \
    $(OBJ_DIR)/hcombo.o \
@@ -95,7 +96,7 @@ $(LIB_DIR)/libhbxml.a : \
    $(OBJ_DIR)/xmlparse.o \
    $(OBJ_DIR)/hxmldoc.o
 	ar rc $@ $^
- 
+
 
 $(LIB_DIR)/libhwg_qhtm.a : \
    $(OBJ_DIR)/hqhtm.o \

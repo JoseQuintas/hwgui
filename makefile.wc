@@ -1,4 +1,4 @@
-# $Id: makefile.wc,v 1.13 2006-12-29 10:18:54 alkresin Exp $
+# $Id: makefile.wc,v 1.14 2007-03-27 21:07:02 richardroesnadi Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -71,6 +71,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\drawwidg.obj \
    $(OBJ_DIR)\errorsys.obj \
    $(OBJ_DIR)\guimain.obj \
+   $(OBJ_DIR)\barcode.obj \
    $(OBJ_DIR)\hbrowse.obj \
    $(OBJ_DIR)\hcheck.obj \
    $(OBJ_DIR)\hcombo.obj \
@@ -115,7 +116,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hnice.obj \
    $(OBJ_DIR)\grid.obj \
    $(OBJ_DIR)\hdc.obj \
-   $(OBJ_DIR)\hhyper.obj 
+   $(OBJ_DIR)\hhyper.obj
 
 
 $(HWGUI_LIB) : $(HWGUI_LIB_OBJS)

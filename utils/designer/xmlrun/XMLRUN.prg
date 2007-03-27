@@ -1,5 +1,5 @@
 /*
- * $Id: XMLRUN.prg,v 1.1 2007-01-01 09:35:16 richardroesnadi Exp $
+ * $Id: XMLRUN.prg,v 1.2 2007-03-27 21:07:02 richardroesnadi Exp $
  *
  * The Runtime for xml (create from designer.exe)
  *
@@ -55,6 +55,7 @@ REQUEST ELLIPSE
 REQUEST SETWINDOWFONT
 REQUEST INITMONTHCALENDAR
 REQUEST INITTRACKBAR
+REQUEST BARCODE
 
 
 EXTERNAL HTIMER,  SHELLABOUT, ENDDIALOG

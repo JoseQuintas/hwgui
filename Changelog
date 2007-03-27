@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.605 2007-03-27 20:20:48 richardroesnadi Exp $
+ * $Id: Changelog,v 1.606 2007-03-27 21:07:02 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+
+2007-03-28  4:22 UTC+0700 Richard Roesnadi
+ +source\barcode.prg
+  Add Barcode Class
+ +utils\designer\samples\barcode.xml
+  Samples for Barcode Using Designer/XML
+ *change some file makefile.*,xmlrun.prg and designer for support create barcode
+
 
 2007-03-27  9:15 UTC+0700 Richard Roesnadi
 *fixed source/hBrowse Bugs editable

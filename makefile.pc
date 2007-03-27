@@ -1,4 +1,4 @@
-# $Id: makefile.pc,v 1.15 2007-01-02 11:46:58 lculik Exp $
+# $Id: makefile.pc,v 1.16 2007-03-27 21:07:02 richardroesnadi Exp $
 # makefile for Pelles C 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -75,6 +75,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\drawwidg.obj \
    $(OBJ_DIR)\errorsys.obj \
    $(OBJ_DIR)\guimain.obj \
+   $(OBJ_DIR)\barcode.obj \
    $(OBJ_DIR)\hbrowse.obj \
    $(OBJ_DIR)\hcheck.obj \
    $(OBJ_DIR)\hcombo.obj \
@@ -121,7 +122,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hgridex.obj \
    $(OBJ_DIR)\grid.obj  \
    $(OBJ_DIR)\hdc.obj  \
-   $(OBJ_DIR)\hhyper.obj 
+   $(OBJ_DIR)\hhyper.obj
 $(HWGUI_LIB) : $(HWGUI_LIB_OBJS)
    $(LIB_EXE) /out:$@ $**
 

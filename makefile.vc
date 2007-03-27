@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.19 2007-01-02 11:46:58 lculik Exp $
+# $Id: makefile.vc,v 1.20 2007-03-27 21:07:02 richardroesnadi Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -42,6 +42,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\drawwidg.obj \
    $(OBJ_DIR)\errorsys.obj \
    $(OBJ_DIR)\guimain.obj \
+   $(OBJ_DIR)\barcode.obj \
    $(OBJ_DIR)\hbrowse.obj \
    $(OBJ_DIR)\hcheck.obj \
    $(OBJ_DIR)\hcombo.obj \

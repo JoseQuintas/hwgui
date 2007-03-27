@@ -89,6 +89,7 @@ $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\hwindow.obj \
    $(OBJ_DIR)\hwinprn.obj \
    $(OBJ_DIR)\menu.obj \
+   $(OBJ_DIR)\barcode.obj \
    $(OBJ_DIR)\c_ipaddr.obj \
    $(OBJ_DIR)\listbox.obj \
    $(OBJ_DIR)\repexec.obj \

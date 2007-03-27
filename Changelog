@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.604 2007-03-25 05:43:09 richardroesnadi Exp $
+ * $Id: Changelog,v 1.605 2007-03-27 20:20:48 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-03-27  9:15 UTC+0700 Richard Roesnadi
+*fixed source/hBrowse Bugs editable
+      +HColumn new(... for bHeadClick Syntax
+ include/guilib.ch
+   +ADD CLAUSE BHEADCLICK AT ADD COLUMN SYNTAX
+* samples/colrbloc.prg  minor fix PVALUE for xharbour
+
 
 2007-03-25  9:15 UTC+0700 Richard Roesnadi
 *fixed hBrowse Bugs 

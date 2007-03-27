@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.78 2007-03-25 05:43:09 richardroesnadi Exp $
+ * $Id: hbrowse.prg,v 1.79 2007-03-27 20:20:48 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -77,12 +77,12 @@ CLASS HColumn INHERIT HObject
                                  //   oBrowse:aColumns[1]:bColorBlock := {|| IF (nNumber < 0, ;
                                  //      {textColor, backColor, textColorSel, backColorSel} , ;
                                  //      {textColor, backColor, textColorSel, backColorSel} ) }
-   METHOD New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin,cPict,bValid,bWhen,aItem,bColorBlock )
+   METHOD New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin,cPict,bValid,bWhen,aItem,bColorBlock, bHeadClick )
 
 ENDCLASS
 
 //----------------------------------------------------//
-METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock ) CLASS HColumn
+METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick ) CLASS HColumn
 
    ::heading   := iif( cHeading == nil,"",cHeading )
    ::block     := block
@@ -97,6 +97,7 @@ METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict
    ::bWhen     := bWhen
    ::aList     := aItem
    ::bColorBlock := bColorBlock
+   ::bHeadClick  := bHeadClick
 
 RETURN Self
 
@@ -1643,8 +1644,6 @@ Local oGet1, owb1, owb2
             AT x1, y1 - Iif( oColumn:aList == Nil, 1, 0 ) ;
             SIZE nWidth, ::height + Iif( oColumn:aList == Nil, 1, 0 ) ;
             ON INIT bInit
-	    oModDlg:bOther := {|o,m,wp,lp| if(m == WM_NCACTIVATE .and. wp == 0, o:Close(),),.t.}
-
 		else
 			INIT DIALOG oModDlg title "memo edit" AT 0, 0 SIZE 400, 300 ON INIT {|o|o:center()}
 		endif

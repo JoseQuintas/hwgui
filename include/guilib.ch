@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.85 2007-03-27 20:20:48 richardroesnadi Exp $
+ *$Id: guilib.ch,v 1.86 2007-03-28 16:38:19 mlacecilia Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -712,7 +712,7 @@
             [ BHEADCLICK <bHeadClick> ]  ;
           => ;
     <oBrw>:AddColumn( HColumn():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
-                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <{bClrBlck}>, <{BheadClick}> ) )
+                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <{bClrBlck}>, <{bHeadClick}> ) )
 
 #xcommand INSERT COLUMN <block> TO <oBrw> ;
             [ HEADER <cHeader> ]       ;

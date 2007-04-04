@@ -527,7 +527,7 @@
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
-         <method name="onEnter" />
+         <method name="onClick" />
          <method name="onGetFocus" />
          <method name="onLostFocus" />
          <method name="onUpdate" />

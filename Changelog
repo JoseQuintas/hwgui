@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.607 2007-03-28 16:38:19 mlacecilia Exp $
+ * $Id: Changelog,v 1.608 2007-04-04 08:38:34 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,7 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
-
+2007-04-04 10:37 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+	* fixed utils/designer/resource/widgets.xml    changed in browse the method
+	  onEnter to onClick 
+	  
 2007-03-28 18:37 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
 	* fixed include/guilib.ch (case mismatch in bHeadClick parameter causing
 	  error at compiling time)

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.608 2007-04-04 08:38:34 mlacecilia Exp $
+ * $Id: Changelog,v 1.609 2007-04-05 14:44:48 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-04-05 16:37 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+    Changes made by Giuseppe Mastrangelo, who asked me to commit hem to CVS 
+	* fixed gtk/control.c   added in ownerbutton creation the setting of flag
+	  CAN_FOCUS (the ownerbutton never gain focus without this setting)  
+            
 2007-04-04 10:37 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
 	* fixed utils/designer/resource/widgets.xml    changed in browse the method
 	  onEnter to onClick 

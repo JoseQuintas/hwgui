@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.27 2006-12-19 11:10:50 alkresin Exp $
+ * $Id: control.c,v 1.28 2007-04-05 14:44:48 mlacecilia Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -532,7 +532,7 @@ HB_FUNC( CREATEPANEL )
    gtk_fixed_put( fbox, hCtrl, 0, 0 );
    gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
    g_object_set_data( (GObject*) hCtrl, "fbox", (gpointer) fbox );
-
+   GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
    set_event( (gpointer)hCtrl, "expose_event", WM_PAINT, 0, 0 );
    gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK | 
         GDK_BUTTON_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK );

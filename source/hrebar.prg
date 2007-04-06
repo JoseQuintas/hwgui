@@ -1,5 +1,5 @@
 /*
- * $Id: hrebar.prg,v 1.1 2007-01-02 11:46:59 lculik Exp $
+ * $Id: hrebar.prg,v 1.2 2007-04-06 10:30:24 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -34,8 +34,8 @@ CLASS hrebar INHERIT HControl
 
    METHOD Activate()
    METHOD INIT()
-   METHOD ADDBARColor( pBar, clrFore, clrBack, pszText, dwStyle ) inline ADDBARCOLORS( ::handle, pBar, clrFore, clrBack, pszText, dwStyle )
-   method ADDBARBITMAP( pBar, pszText, pbmp, dwStyle ) inline (::handle, pBar, pszText, pbmp, dwStyle )
+   METHOD ADDBARColor( pBar, clrFore, clrBack, pszText, dwStyle ) INLINE ADDBARCOLORS( ::handle, pBar, clrFore, clrBack, pszText, dwStyle )
+   METHOD ADDBARBITMAP( pBar, pszText, pbmp, dwStyle ) INLINE ADDBARBITMAP(::handle, pBar, pszText, pbmp, dwStyle )
 
 ENDCLASS
 

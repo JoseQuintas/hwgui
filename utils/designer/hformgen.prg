@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.32 2006-10-14 15:42:19 sandrorrfreire Exp $
+ * $Id: hformgen.prg,v 1.33 2007-04-06 11:26:08 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -455,7 +455,7 @@ Local fname, s1, s2, l_ds_mypath
    s1 := oDesigner:aFormats[ nType,1 ] + "( " + s2 + " )"
 
    IF lOpen
-      fname := SelectFile( s1, s2,oDesigner:ds_mypath )
+      fname := SelectFile( {s1,"All files"}, {s2,"*.*"},oDesigner:ds_mypath )
    ELSE
       fname := SaveFile( s2,s1,s2,oDesigner:ds_mypath )
    ENDIF

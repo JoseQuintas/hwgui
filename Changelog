@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.612 2007-04-06 11:16:24 alkresin Exp $
+ * $Id: Changelog,v 1.613 2007-04-06 11:26:08 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-04-06 15:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * utils/designer/hformgen.prg
+     * Call of SelectFile() has been changed to allow to open files with extensions,
+       other than xml.
 
 2007-04-06 15:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/commond.c

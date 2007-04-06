@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.24 2006-04-06 16:18:02 alkresin Exp $
+ * $Id: commond.c,v 1.25 2007-04-06 11:16:25 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -32,72 +32,61 @@ HB_FUNC( SELECTFONT )
    HFONT hfont;
    PHB_ITEM pObj = ( ISNIL(1) )? NULL:hb_param( 1, HB_IT_OBJECT );
    PHB_ITEM temp1;
-   
    PHB_ITEM aMetr = hb_itemArrayNew( 9 ),temp;
-   
 
+   /* Initialize members of the CHOOSEFONT structure. */
+   if( pObj )
+   {
+      memset( &lf, 0, sizeof(LOGFONT) );
+      temp1 = GetObjectVar( pObj, "NAME" );
+      strcpy( lf.lfFaceName, hb_itemGetCPtr( temp1 ) );
+      temp1 = GetObjectVar( pObj, "WIDTH" );
+      lf.lfWidth = hb_itemGetNI( temp1 );
+      temp1 = GetObjectVar( pObj, "HEIGHT" );
+      lf.lfHeight = hb_itemGetNI( temp1 );
+      temp1 = GetObjectVar( pObj, "WEIGHT" );
+      lf.lfWeight = hb_itemGetNI( temp1 );
+      temp1 = GetObjectVar( pObj, "CHARSET" );
+      lf.lfCharSet = hb_itemGetNI( temp1 );
+      temp1 = GetObjectVar( pObj, "ITALIC" );
+      lf.lfItalic = hb_itemGetNI( temp1 );
+      temp1 = GetObjectVar( pObj, "UNDERLINE" );
+      lf.lfUnderline = hb_itemGetNI( temp1 );
+      temp1 = GetObjectVar( pObj, "STRIKEOUT" );
+      lf.lfStrikeOut = hb_itemGetNI( temp1 );
+   }
 
-    /* Initialize members of the CHOOSEFONT structure. */
-    if( pObj )
-    {
-       memset( &lf, 0, sizeof(LOGFONT) );
-       temp1 = GetObjectVar( pObj, "NAME" );
-       strcpy( lf.lfFaceName, hb_itemGetCPtr( temp1 ) );
-       temp1 = GetObjectVar( pObj, "WIDTH" );
-       lf.lfWidth = hb_itemGetNI( temp1 );
-       temp1 = GetObjectVar( pObj, "HEIGHT" );
-       lf.lfHeight = hb_itemGetNI( temp1 );
-       temp1 = GetObjectVar( pObj, "WEIGHT" );
-       lf.lfWeight = hb_itemGetNI( temp1 );
-       temp1 = GetObjectVar( pObj, "CHARSET" );
-       lf.lfCharSet = hb_itemGetNI( temp1 );
-       temp1 = GetObjectVar( pObj, "ITALIC" );
-       lf.lfItalic = hb_itemGetNI( temp1 );
-       temp1 = GetObjectVar( pObj, "UNDERLINE" );
-       lf.lfUnderline = hb_itemGetNI( temp1 );
-       temp1 = GetObjectVar( pObj, "STRIKEOUT" );
-       lf.lfStrikeOut = hb_itemGetNI( temp1 );
-    }
+   cf.lStructSize = sizeof(CHOOSEFONT);
+   cf.hwndOwner = (HWND)NULL;
+   cf.hDC = (HDC)NULL;
+   cf.lpLogFont = &lf;
+   cf.iPointSize = 0;
+   cf.Flags = CF_SCREENFONTS | ( (pObj)? CF_INITTOLOGFONTSTRUCT:0 );
+   cf.rgbColors = RGB(0,0,0);
+   cf.lCustData = 0L;
+   cf.lpfnHook = (LPCFHOOKPROC)NULL;
+   cf.lpTemplateName = (LPSTR)NULL;
 
-    cf.lStructSize = sizeof(CHOOSEFONT);
-    cf.hwndOwner = (HWND)NULL;
-    cf.hDC = (HDC)NULL;
-    cf.lpLogFont = &lf;
-    cf.iPointSize = 0;
-    cf.Flags = CF_SCREENFONTS | ( (pObj)? CF_INITTOLOGFONTSTRUCT:0 );
-    cf.rgbColors = RGB(0,0,0);
-    cf.lCustData = 0L;
-    cf.lpfnHook = (LPCFHOOKPROC)NULL;
-    cf.lpTemplateName = (LPSTR)NULL;
+   cf.hInstance = (HINSTANCE) NULL;
+   cf.lpszStyle = (LPSTR)NULL;
+   cf.nFontType = SCREEN_FONTTYPE;
+   cf.nSizeMin = 0;
+   cf.nSizeMax = 0;
 
-    cf.hInstance = (HINSTANCE) NULL;
-    cf.lpszStyle = (LPSTR)NULL;
-    cf.nFontType = SCREEN_FONTTYPE;
-    cf.nSizeMin = 0;
-    cf.nSizeMax = 0;
+   /* Display the CHOOSEFONT common-dialog box. */
 
-    /* Display the CHOOSEFONT common-dialog box. */
+   if( !ChooseFont(&cf) )
+   {
+      hb_itemRelease( aMetr );
+      hb_ret();
+      return;
+   }
 
-    if( !ChooseFont(&cf) )
-    {
-       /*
-       temp = hb_itemPutNL( NULL, 0 );
-       hb_itemArrayPut( aMetr, 1, temp );
-       hb_itemRelease( temp );
-       hb_itemReturn( aMetr );
-       */
-   
-       hb_itemRelease( aMetr );
-   
-       hb_ret();
-       return;
-    }
+   /* Create a logical font based on the user's   */
+   /* selection and return a handle identifying   */
+   /* that font.                                  */
 
-    /* Create a logical font based on the user's   */
-    /* selection and return a handle identifying   */
-    /* that font.                                  */
-
-    hfont = CreateFontIndirect(cf.lpLogFont);
+   hfont = CreateFontIndirect(cf.lpLogFont);
    temp = hb_itemPutNL( NULL, (LONG) hfont );
    hb_itemArrayPut( aMetr, 1, temp );
    hb_itemRelease( temp );
@@ -143,20 +132,54 @@ HB_FUNC( SELECTFILE )
 {
    OPENFILENAME ofn;
    char buffer[512];
-   char *strFilter, *str1 = hb_parc( 1 ), *str2 = hb_parc( 2 );
+   char *strFilter;
    char *initDir = ( hb_pcount()>2 && ISCHAR(3) )? hb_parc(3):NULL;
    char *cTitle = ( hb_pcount()>3 && ISCHAR(4) )? hb_parc(4):NULL;
 
-
-   strFilter = (char*) hb_xgrab( strlen(str1) + strlen(str2) + 4 );
-   if( strFilter == NULL )
+   if( ISCHAR(1) && ISCHAR(2) )
    {
-      hb_retc( "NULL" );
+      char *str1 = hb_parc( 1 );
+      char *str2 = hb_parc( 2 );
+      strFilter = (char*) hb_xgrab( strlen(str1) + strlen(str2) + 4 );
+      memset( strFilter, 0, strlen(str1) + strlen(str2) + 4 );
+      strcpy( strFilter, str1 );
+      strcpy( strFilter+strlen(str1)+1, str2 );
+   }
+   else if( ISARRAY(1) && ISARRAY(2) )
+   {
+      PHB_ITEM pArr1 = hb_param( 1, HB_IT_ARRAY );
+      PHB_ITEM pArr2 = hb_param( 2, HB_IT_ARRAY );
+      PHB_ITEM pTemp;
+      int i, iArrLen = hb_arrayLen( pArr1 );
+      int iFltLen = 0;
+      char *ptr;
+
+      for( i=1; i<=iArrLen; i++ )
+      {
+         pTemp = hb_arrayGetItemPtr( pArr1, i );
+         iFltLen += hb_itemGetCLen( pTemp ) + 1;
+         pTemp = hb_arrayGetItemPtr( pArr2, i );
+         iFltLen += hb_itemGetCLen( pTemp ) + 1;
+      }
+      iFltLen += 2;
+      strFilter = (char*) hb_xgrab( iFltLen );
+      ptr = strFilter;
+      memset( strFilter, 0, iFltLen );
+      for( i=1; i<=iArrLen; i++ )
+      {
+         pTemp = hb_arrayGetItemPtr( pArr1, i );
+         strcpy( ptr, hb_itemGetCPtr( pTemp ) );
+         ptr += hb_itemGetCLen( pTemp ) + 1;
+         pTemp = hb_arrayGetItemPtr( pArr2, i );
+         strcpy( ptr, hb_itemGetCPtr( pTemp ) );
+         ptr += hb_itemGetCLen( pTemp ) + 1;
+      }
+   }
+   else
+   {
+      hb_retc( "" );
       return;
    }
-   memset( strFilter, 0, strlen(str1) + strlen(str2) + 4 );
-   strcpy( strFilter, str1 );
-   strcpy( strFilter+strlen(str1)+1, str2 );
 
    memset( (void*) &ofn, 0, sizeof( OPENFILENAME ) );
    ofn.lStructSize = sizeof(ofn);

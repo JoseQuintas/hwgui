@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.611 2007-04-06 10:30:23 alkresin Exp $
+ * $Id: Changelog,v 1.612 2007-04-06 11:16:24 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-04-06 15:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/commond.c
+     * SelectFile() extended. Now two first parameters can be array of strings
+       to allow multiply file masks, for example:
+       fname := SelectFile( {"Jpeg images","Bitmap images"}, {"*.jpg","*.bmp"}, "" )
 
 2007-04-06 14:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/hrebar.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.44 2006-11-16 13:01:45 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.45 2007-04-06 10:18:13 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -486,7 +486,7 @@ Local arr, arrExe, nContainer := 0, cCode1, cCode, bOldError, bRes
                "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]", ;
                "F("+Ltrim(Str(oCtrl:nId))+")" )
          arrExe := Array(2)
-         arrExe[2] := RdScript( ,cMethod,1 )
+         arrExe[2] := RdScript( ,cMethod,1,,.T. )
          cCode :=  "{|" + Ltrim( Substr( arr[1],12 ) ) + ;
             "|DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+Iif(nContainer!=0,","+Ltrim(Str(nContainer)),"")+"):" + ;
             Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2],{", ;
@@ -502,7 +502,7 @@ Local arr, arrExe, nContainer := 0, cCode1, cCode, bOldError, bRes
          "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]", ;
          "F("+Ltrim(Str(oCtrl:nId))+")" )
    arrExe := Array(2)
-   arrExe[2] := RdScript( ,cMethod )
+   arrExe[2] := RdScript( ,cMethod,,.T. )
    cCode :=  "{||DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+Iif(nContainer!=0,","+Ltrim(Str(nContainer)),"")+"):" + ;
       Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2])", ;
              cCode1+":aMethods["+   ;
@@ -935,7 +935,7 @@ Local cPre
             ENDIF
          NEXT
       ELSEIF aItems[i]:title == "method"
-         Aadd( aMethods, { Lower(aItems[i]:GetAttribute("name")),RdScript(,aItems[i]:aItems[1]:aItems[1]) } )
+         Aadd( aMethods, { Lower(aItems[i]:GetAttribute("name")),RdScript(,aItems[i]:aItems[1]:aItems[1],,.T.) } )
          IF aMethods[ (j := Len(aMethods)),1 ] == "common"
             ::aFuncs := ::aMethods[ j,2 ]
             FOR j := 1 TO Len( ::aFuncs[2] )
@@ -1238,7 +1238,7 @@ Local nPenWidth, nPenType
             ENDIF
          NEXT
       ELSEIF aItems[i]:title == "method"
-         Aadd( aMethods, { Lower(aItems[i]:GetAttribute("name")),RdScript(,aItems[i]:aItems[1]:aItems[1]) } )
+         Aadd( aMethods, { Lower(aItems[i]:GetAttribute("name")),RdScript(,aItems[i]:aItems[1]:aItems[1],,.T.) } )
       ELSEIF aItems[i]:title == "part"
          ReadRepItem( aItems[i],Iif(oCtrl:cClass=="area",oCtrl,oContainer) )
       ENDIF

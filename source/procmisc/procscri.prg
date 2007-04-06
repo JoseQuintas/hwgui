@@ -1,5 +1,5 @@
 /*
- * $Id: procscri.prg,v 1.10 2006-11-16 13:01:45 alkresin Exp $
+ * $Id: procscri.prg,v 1.11 2007-04-06 10:18:13 alkresin Exp $
  *
  * Common procedures
  * Scripts
@@ -63,7 +63,7 @@ LOCAL aFormCode, aFormName
             Aadd( aFormCode, SUBSTR( stroka, 2, i-2 ) )
             Aadd( aFormName, SUBSTR( stroka, i+1 ) )
          ELSEIF rejim == -1 .AND. LEFT( stroka, 9 ) == "#ENDBLOCK"
-#ifdef __HARBOUR__
+#ifdef __WINDOWS__
             i := WCHOICE( aFormName )
 #else
             i := FCHOICE( aFormName )
@@ -93,10 +93,13 @@ RETURN aScr
 *+
 *+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 *+
-FUNCTION RdScript( scrSource, strbuf, poz )
+FUNCTION RdScript( scrSource, strbuf, poz, lppNoInit )
 LOCAL han
 LOCAL rezArray := { "", {} }
 
+   IF lppNoInit == Nil
+      lppNoInit := .F.
+   ENDIF
    IF poz == Nil
       poz := 1
    ENDIF
@@ -113,6 +116,9 @@ LOCAL rezArray := { "", {} }
       han := scrSource
    ENDIF
    IF han == Nil .OR. han <> - 1
+      IF !lppNoInit
+         __pp_init()
+      ENDIF
       IF VALTYPE( scrSource ) == "C"
          WndOut( "Compiling ..." )
          WndOut( "" )
@@ -123,6 +129,9 @@ LOCAL rezArray := { "", {} }
       IF scrSource != Nil .AND. VALTYPE( scrSource ) == "C"
          WndOut()
          FCLOSE( han )
+      ENDIF
+      IF !lppNoInit
+         __pp_free()
       ENDIF
    ELSE
 #ifdef __WINDOWS__
@@ -312,6 +321,11 @@ Local n, cTitle
    ELSEIF nm == 2
       Alert( "Script variables error" )
    ELSEIF nm == 3
+      stroka += ";" + ErrorMessage( e )
+      n := 2
+      WHILE !Empty( ProcName( n ) )
+        stroka += ";Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
+      ENDDO
       Alert( "Script execution error:;"+stroka )
    ENDIF
 #endif

@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.9 2006-12-29 10:18:55 alkresin Exp $
+ * $Id: drawwidg.prg,v 1.10 2007-04-06 10:18:13 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -345,7 +345,7 @@ Local lPreDefined := .F., i, aBmpSize
       ENDIF
    NEXT
    #endif
-   ::handle :=   LoadBitmap( Iif( lPreDefined, Val(name),name ) )
+   ::handle :=   LoadBitmap( Iif( lPreDefined, Val(name),name ),lPreDefined )
    ::name   := name
    aBmpSize  := GetBitmapSize( ::handle )
    ::nWidth  := aBmpSize[1]

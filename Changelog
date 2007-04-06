@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.609 2007-04-05 14:44:48 mlacecilia Exp $
+ * $Id: Changelog,v 1.610 2007-04-06 10:18:11 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-04-06 14:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/procmisc/procscri.prg
+     * Added new parameter to the RdScript() function to avoid memory leaks
+   * source/drawwidg.prg
+     ! Small bug fixed in HBitmap():AddResource()
+   * source/hfrmtmpl.prg
+     ! RdScript() calls changed
+   * source/menu_c.c
+     * CheckMenuItem(), IsCheckedMenuItem(), EnableMenuItem(), IsEnabledMenuItem()
+       has been changed in such a way, that 1-st parameter can be a menu handle, as
+       it was before, or a menu object. This allows to manipulate with context menu
+       items.
 
 2007-04-05 16:37 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
     Changes made by Giuseppe Mastrangelo, who asked me to commit hem to CVS 

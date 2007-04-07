@@ -1,5 +1,5 @@
 /*
- * $Id: richtext.prg,v 1.4 2006-09-11 13:02:42 alkresin Exp $
+ * $Id: richtext.prg,v 1.5 2007-04-07 16:33:18 alkresin Exp $
  */
 /*
 旼컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴커
@@ -1538,13 +1538,13 @@ ELSE
         ENDIF
 ENDIF
 
-IIF(lAuto,::TextCode("chftn"),"")
+IF lAuto ; ::TextCode("chftn") ; ENDIF
 
 ::CloseGroup()
 
 ::OpenGroup()
 ::TextCode("footnote")
-IIF(lEnd,::TextCode("ftnalt"),"")
+IF lEnd ; ::TextCode("ftnalt") ; ENDIF
 
 ::NewFont( nFontNumber )
 ::SetFontSize( nFontSize )
@@ -1560,7 +1560,7 @@ ELSE
         ENDIF
 ENDIF
 
-IIF(lAuto,::TextCode("chftn"),"")
+IF lAuto ; ::TextCode("chftn") ; ENDIF
 
 ::CloseGroup()
 

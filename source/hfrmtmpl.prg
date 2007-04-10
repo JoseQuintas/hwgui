@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.45 2007-04-06 10:18:13 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.46 2007-04-10 17:42:19 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -486,7 +486,7 @@ Local arr, arrExe, nContainer := 0, cCode1, cCode, bOldError, bRes
                "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]", ;
                "F("+Ltrim(Str(oCtrl:nId))+")" )
          arrExe := Array(2)
-         arrExe[2] := RdScript( ,cMethod,1,,.T. )
+         arrExe[2] := RdScript( ,cMethod,1,.T. )
          cCode :=  "{|" + Ltrim( Substr( arr[1],12 ) ) + ;
             "|DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+Iif(nContainer!=0,","+Ltrim(Str(nContainer)),"")+"):" + ;
             Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2],{", ;

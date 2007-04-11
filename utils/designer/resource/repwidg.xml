@@ -20,7 +20,7 @@
       <widget class="label" name="Static text" bmp="BMP_STATIC">
          <paint>
             <![CDATA[
-            Private pArray
+            Private pArray, nJust, nLines, i, dy, nFirst, ny
             if Empty(oCtrl:title)
               FillRect( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,1 )
               if oCtrl:GetProp("Border") == "True"
@@ -28,13 +28,35 @@
               endif
             else
               pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="justify"}),6]
+              nJust := Ascan(pArray,oCtrl:GetProp("Justify"))-1
+              if oCtrl:GetProp( "Border" ) == "True"
+                Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
+              endif
               SetTransparentMode( hDC,.T. )
-              DrawText( hDC,oCtrl:title,2,2,oCtrl:nWidth,oCtrl:nHeight,Ascan(pArray,oCtrl:GetProp("Justify"))-1 )
+              if oCtrl:GetProp( "Multiline" ) == "True"
+                nLines := i := 1
+                do while ( i := At( ";",oCtrl:title,i ) ) > 0
+                  i ++
+                  nLines ++
+                enddo
+                dy := oCtrl:nHeight / nLines
+                nFirst := i := ny := 1
+                do while ( i := At( ";",oCtrl:title,i ) ) > 0
+                  DrawText( hDC,Substr(oCtrl:title,nFirst,i-nFirst),2,2+ny,oCtrl:nWidth,ny+dy,nJust )
+                  i ++
+                  nFirst := i
+                  ny += dy
+                enddo
+                DrawText( hDC,Substr(oCtrl:title,nFirst,Len(oCtrl:title)-nFirst+1),2,ny,oCtrl:nWidth,ny+dy,nJust )
+              else
+                DrawText( hDC,oCtrl:title,2,2,oCtrl:nWidth,oCtrl:nHeight,nJust )
+              endif
               SetTransparentMode( hDC,.F. )
             endif
             ]]>
          </paint>
          <property name="Caption" type="C" value="Label" />
+         <property name="Multiline" type="L" value="False"/>
          <property name="Left" type="N" value="0" />
          <property name="Top" type="N" value="0" />
          <property name="Right" type="N" value="0" />

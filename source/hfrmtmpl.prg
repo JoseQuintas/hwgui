@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.46 2007-04-10 17:42:19 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.47 2007-04-11 05:41:24 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -1037,7 +1037,7 @@ Return Nil
 
 METHOD PrintItem( oItem ) CLASS HRepTmpl
 Local aMethod, lRes := .T., i
-Local x, y, x2, y2, cText, nJustify, xProperty
+Local x, y, x2, y2, cText, nJustify, xProperty, nLines, dy, nFirst, ny
 Memvar lLastCycle, lSkipItem
 
    IF oItem:cClass == "area"
@@ -1162,7 +1162,26 @@ Memvar lLastCycle, lSkipItem
                ENDIF
             ENDIF
             SetTransparentMode( ::oPrinter:hDC,.T. )
-            ::oPrinter:Say( cText,x,y,x2,y2,nJustify,oItem:obj )
+            IF ( xProperty := aGetSecond( oItem:aProp,"multiline" ) ) != Nil ;
+                   .AND. xProperty
+               nLines := i := 1
+               DO WHILE ( i := At( ";",cText,i ) ) > 0
+                  i ++
+                  nLines ++
+               ENDDO
+               dy := ( y2 - y ) / nLines
+               nFirst := i := 1
+               ny := y
+               DO WHILE ( i := At( ";",cText,i ) ) > 0
+                  ::oPrinter:Say( Substr(cText,nFirst,i-nFirst),x,ny,x2,ny+dy,nJustify,oItem:obj )
+                  i ++
+                  nFirst := i
+                  ny += dy
+               ENDDO
+               ::oPrinter:Say( Substr(cText,nFirst,Len(cText)-nFirst+1),x,ny,x2,ny+dy,nJustify,oItem:obj )
+            ELSE
+               ::oPrinter:Say( cText,x,y,x2,y2,nJustify,oItem:obj )
+            ENDIF
             SetTransparentMode( ::oPrinter:hDC,.F. )
             // Writelog( str(x)+" "+str(y)+" "+str(x2)+" "+str(y2)+" "+str(::nAOffSet)+" "+str(::nTOffSet)+" Say: "+cText)
          ENDIF

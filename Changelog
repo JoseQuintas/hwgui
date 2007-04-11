@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.615 2007-04-10 17:42:18 alkresin Exp $
+ * $Id: Changelog,v 1.616 2007-04-11 05:41:24 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-04-11 09:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * utils/designer/resource/repwidg.xml
+     * Added new property - 'Multiline' into the Label item.
+       The line separator is ';'. So, if you need two lines in your label, you
+       should write in Caption something like:
+       'Line 1...;Line2...'
+   * source/hfrmtmpl.prg
+     * Added support for the 'Multiline' in the Label item.
 
 2007-04-10 21:42 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/hfrmtmpl.prg

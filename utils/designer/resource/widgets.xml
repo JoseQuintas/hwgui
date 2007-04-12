@@ -80,6 +80,7 @@
          <property name="Border" type="L" value="True"/>
          <property name="Justify" type="C" value="Left"/>
          <property name="cPicture" type="C" />
+		 <property name="nMaxLength" type="N" />
          <property name="varName" type="C" />
          <property name="ToolTip" type="C" value=""/>
          <property name="3DLook" type="L" value="False" />

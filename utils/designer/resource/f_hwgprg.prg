@@ -162,6 +162,9 @@ FUNCTION Ctrl2Prg
          IF ( cName := oCtrl:GetProp( "cPicture" ) ) != Nil
             stroka += "PICTURE '" + Ltrim( oCtrl:GetProp( "cPicture" )) + "' "
          ENDIF
+		 IF ( cName := oCtrl:GetProp( "nMaxLength" ) ) != Nil
+            stroka += "MAXLENGTH " + Ltrim( oCtrl:GetProp( "nMaxLength" )) + " "
+         ENDIF		  
       ENDIF
 
       IF ( temp := oCtrl:GetProp( "Font" ) ) != Nil

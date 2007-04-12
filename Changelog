@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.617 2007-04-12 07:22:34 alkresin Exp $
+ * $Id: Changelog,v 1.618 2007-04-12 14:37:55 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-04-12 16:25 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+	* include/guilib.ch - changed in redefine method of hedit the property
+                          name lMaxLenght to lMaxLength
+                        - changed the property name lMaxLength to nMaxLenght
+                          (property type is numeric)
+	+ source/hfrmtml.prg  added the parameters nMaxLength and lPassword to the
+                          hedit item in the declaration of the aCtrls array	
+	+ utils/designer/resource/f_hwgprg.prg   added the code for nMaxLenght 
+	                                         parameter in the hedit generation
+	+ utils/designer/resource/widgets.xml    added the nMaxLength property in
+                                             the hedit widget
+											 
 2007-04-12 11:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * utils/designer/designer.prg
    * utils/designer/hctrl.prg

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.86 2007-03-28 16:38:19 mlacecilia Exp $
+ *$Id: guilib.ch,v 1.87 2007-04-12 14:37:56 mlacecilia Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -917,7 +917,7 @@
             [ WHEN  <bGfocus> ]        ;
             [ VALID <bLfocus> ]        ;
             [<lPassword: PASSWORD>]    ;
-            [ MAXLENGTH <lMaxLength> ] ;
+            [ MAXLENGTH <nMaxLength> ] ;
             [ STYLE <nStyle> ]         ;
             [<lnoborder: NOBORDER>]    ;
             [ FONT <oFont> ]           ;
@@ -926,7 +926,7 @@
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<vari>,               ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;
                    <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,,,  ;
-                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<.lnoborder.>,<lMaxLength>,<.lPassword.>,<(vari)>)
+                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<.lnoborder.>,<nMaxLength>,<.lPassword.>,<(vari)>)
 
 #xcommand REDEFINE GET [ <oEdit> VAR ] <vari>  ;
             [ OF <oWnd> ]              ;
@@ -936,13 +936,13 @@
             [ PICTURE <cPicture> ]     ;
             [ WHEN  <bGfocus> ]        ;
             [ VALID <bLfocus> ]        ;
-            [ MAXLENGHT <lMaxLenght> ] ;
+            [ MAXLENGTH <nMaxLength> ] ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oEdit> := ] HEdit():Redefine( <oWnd>,<nId>,<vari>, ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},    ;
-                   <oFont>,,,,<{bGfocus}>,<{bLfocus}>,<ctoolt>,<color>,<bcolor>,<cPicture>,<lMaxLenght>,<(vari)> )
+                   <oFont>,,,,<{bGfocus}>,<{bLfocus}>,<ctoolt>,<color>,<bcolor>,<cPicture>,<nMaxLength>,<(vari)> )
 
 
 #xcommand @ <x>,<y> GET CHECKBOX [ <oCheck> VAR ] <vari>  ;

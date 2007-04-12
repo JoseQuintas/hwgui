@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.616 2007-04-11 05:41:24 alkresin Exp $
+ * $Id: Changelog,v 1.617 2007-04-12 07:22:34 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-04-12 11:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * utils/designer/designer.prg
+   * utils/designer/hctrl.prg
+   * utils/designer/hformgen.prg
+     * New option is added to the context menu in Reports Designer:
+       "Fit into box".
+       This option is enabled for the line item ( horizontal or vertical ),
+       which is inside a box item. Choosing this option, you resize the line, so
+       it fits into the parent box item. Moving of this line occurs now inside
+       of the box.
+       When I create a table for a report, I usually insert a box and separate
+       it with lines. This new option makes this procedure more simple.
 
 2007-04-11 09:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * utils/designer/resource/repwidg.xml

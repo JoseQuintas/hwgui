@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.23 2007-03-27 21:07:02 richardroesnadi Exp $
+ * $Id: designer.prg,v 1.24 2007-04-12 07:22:34 alkresin Exp $
  *
  * Designer
  * Main file
@@ -162,11 +162,16 @@ Public crossCursor, vertCursor, horzCursor
 
    CONTEXT MENU oDesigner:oCtrlMenu
       MENUITEM "Copy"   ACTION (oDesigner:oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oDesigner:oClipBrd!=Nil,EnableMenuItem(,1012,.T.,.T.),.F.))
+      SEPARATOR
       MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.T.,.F.,.F.,.F. )
       MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.T.,.F.,.F. )
       MENUITEM "Adjust to right" ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.F.,.T.,.F. )
       MENUITEM "Adjust to bottom" ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.F.,.F.,.T. )
       SEPARATOR
+      IF oDesigner:lReport
+         MENUITEM "Fit into box" ID 1030 ACTION FitLine( GetCtrlSelected(HFormGen():oDlgSelected) )
+         SEPARATOR
+      ENDIF
       MENUITEM "Delete" ACTION DeleteCtrl()
    ENDMENU
 

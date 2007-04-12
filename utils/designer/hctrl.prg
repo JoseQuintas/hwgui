@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.15 2005-10-26 13:54:20 omm Exp $
+ * $Id: hctrl.prg,v 1.16 2007-04-12 07:22:34 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -32,7 +32,8 @@ CLASS HControlGen INHERIT HControl
    DATA aMethods      INIT {}
    DATA aPaint, oBitmap
    DATA cCreate
-   DATA Adjust       INIT 0
+   DATA Adjust        INIT 0
+   DATA lEmbed        INIT .F.
 
    METHOD New( oWndParent, xClass, aProp )
    METHOD Activate()
@@ -257,6 +258,13 @@ Local i, dx, dy
       dx := xPos
       dy := yPos
    ENDIF
+   IF oCtrl:lEmbed
+      IF Lower( oCtrl:cClass ) == "hline"
+         dx := 0
+      ELSE
+         dy := 0
+      ENDIF
+   ENDIF
 
    IF dx != 0 .OR. dy != 0
       IF !lChild .AND. lMouse .AND. Abs( xPos - aBDown[2] ) < 3 .AND. Abs( yPos - aBDown[3] ) < 3
@@ -457,6 +465,9 @@ Function AdjustCtrl( oCtrl, lLeft, lTop, lRight, lBottom )
 Local i, aControls := Iif( oCtrl:oContainer != Nil, oCtrl:oContainer:aControls, oCtrl:oParent:aControls )
 Local lRes := .F., xPos, yPos, delta := 15
 
+   IF oCtrl:lEmbed
+      Return Nil
+   ENDIF
    IF lLeft == Nil .AND. lTop == Nil .AND. lRight == Nil .AND. lBottom == Nil
       lLeft := lTop := lRight := lBottom := .T.
    ELSE
@@ -500,6 +511,16 @@ Local lRes := .F., xPos, yPos, delta := 15
       Container( oCtrl:oParent,oCtrl,oCtrl:nLeft,oCtrl:nTop )
       InspUpdBrowse()
    ENDIF
+Return Nil
+
+Function FitLine( oCtrl )
+
+   IF Lower( oCtrl:cClass ) == "hline"
+      oCtrl:Move( oCtrl:oContainer:nLeft+1,,oCtrl:oContainer:nWidth-2 )
+   ELSE
+      oCtrl:Move( ,oCtrl:oContainer:nTop+1,,oCtrl:oContainer:nHeight-2 )
+   ENDIF
+   oCtrl:lEmbed := .T.
 Return Nil
 
 Function Page_New( oTab )

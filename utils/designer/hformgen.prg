@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.33 2007-04-06 11:26:08 alkresin Exp $
+ * $Id: hformgen.prg,v 1.34 2007-04-12 07:22:34 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -1161,6 +1161,12 @@ Local oCtrl
          IF Lower( oCtrl:cClass ) == "page"
             oDesigner:oTabMenu:Show( oDlg,xPos,yPos,.T. )
          ELSE
+            IF oDesigner:lReport .AND. Lower( oCtrl:cClass ) $ "hline.vline" ;
+               .AND. oCtrl:oContainer != Nil .AND. Lower( oCtrl:oContainer:cClass ) == "box"
+               EnableMenuItem( oDesigner:oCtrlMenu,1030,.T. )
+            ELSE
+               EnableMenuItem( oDesigner:oCtrlMenu,1030,.F. )
+            ENDIF
             oDesigner:oCtrlMenu:Show( Iif(oDesigner:lReport,oDlg:oParent:oParent,oDlg),xPos,yPos,.T. )
          ENDIF
       ELSE
@@ -1187,6 +1193,7 @@ Local i, nLeft := oCtrl:nLeft
             Asize( oCtrl:oContainer:aControls,Len(oCtrl:oContainer:aControls)-1 )
          ENDIF
          oCtrl:oContainer := Nil
+         oCtrl:lEmbed := .F.
       ENDIF
    ENDIF
 

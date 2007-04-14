@@ -3,7 +3,8 @@ if "%1" == "clean" goto CLEAN
 if "%1" == "CLEAN" goto CLEAN
 
 :BUILD
-
+   IF NOT EXIST OBJ MD OBJ
+   IF NOT EXIST OBJ\DLL MD OBJ\DLL
    del makedll.log
    del *.@@@
    make -f makedll.bc %1 %2 %3 %4 %5 %6 > makedll.log

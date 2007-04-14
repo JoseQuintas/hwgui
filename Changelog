@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.618 2007-04-12 14:37:55 mlacecilia Exp $
+ * $Id: Changelog,v 1.619 2007-04-14 18:19:13 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,9 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-04-14  0:15 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
+ * small fix makedll.bat check exist directory obj\dll
 
 2007-04-12 16:25 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
 	* include/guilib.ch - changed in redefine method of hedit the property

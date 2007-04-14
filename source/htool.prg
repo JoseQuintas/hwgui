@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.7 2007-01-02 11:46:59 lculik Exp $
+ * $Id: htool.prg,v 1.8 2007-04-14 18:34:41 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -37,7 +37,7 @@ CLASS HToolBar INHERIT HControl
 
    METHOD Activate()
    METHOD INIT()
-   METHOD AddButton(a,s,d,f,g,h) 
+   METHOD AddButton(a,s,d,f,g,h)
    METHOD Notify( lParam )
 ENDCLASS
 
@@ -103,14 +103,14 @@ Local nPos
 
             ::aItem[ n, 10 ] := hwg__CreatePopupMenu()
             aTemp := ::aItem[ n, 9 ]
-            
+
             FOR n1 :=1 to Len( aTemp )
                hwg__AddMenuItem( ::aItem[ n, 10 ], aTemp[ n1, 1 ], -1, .F., aTemp[ n1, 2 ], , .F. )
                ::oParent:AddEvent( BN_CLICKED, aTemp[ n1, 2 ], aTemp[ n1,3 ] )
             NEXT
 
          ENDIF
-         
+
         IF ::aItem[ n, 1 ] > 0
            AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
         ENDIF
@@ -159,9 +159,9 @@ METHOD Notify( lParam ) CLASS hToolBar
     Local nCode :=  GetNotifyCode( lParam )
     Local nId,e
 
-    Local nButton 
+    Local nButton
     Local nPos
-    tracelog([ncode],ncode)
+    //tracelog([ncode],ncode)
 
     IF nCode == TTN_GETDISPINFO
 
@@ -184,7 +184,7 @@ METHOD Notify( lParam ) CLASS hToolBar
               TOOLBAR_SUBMENU(lParam,1,::oParent:handle)
        endif
     ENDIF
-    
+
 Return 0
 
 METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu) CLASS hToolBar

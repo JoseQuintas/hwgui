@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.619 2007-04-14 18:19:13 richardroesnadi Exp $
+ * $Id: Changelog,v 1.620 2007-04-14 18:34:41 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-04-14  0:15 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
+ * source\htool.prg  add //tracelog([ncode],ncode)
+ + samples\bc4dll.bat
 
 2007-04-14  0:15 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
  * small fix makedll.bat check exist directory obj\dll
@@ -17,12 +21,12 @@
                         - changed the property name lMaxLength to nMaxLenght
                           (property type is numeric)
 	+ source/hfrmtml.prg  added the parameters nMaxLength and lPassword to the
-                          hedit item in the declaration of the aCtrls array	
-	+ utils/designer/resource/f_hwgprg.prg   added the code for nMaxLenght 
+                          hedit item in the declaration of the aCtrls array
+	+ utils/designer/resource/f_hwgprg.prg   added the code for nMaxLenght
 	                                         parameter in the hedit generation
 	+ utils/designer/resource/widgets.xml    added the nMaxLength property in
                                              the hedit widget
-											 
+
 2007-04-12 11:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * utils/designer/designer.prg
    * utils/designer/hctrl.prg
@@ -86,14 +90,14 @@
        items.
 
 2007-04-05 16:37 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
-    Changes made by Giuseppe Mastrangelo, who asked me to commit hem to CVS 
+    Changes made by Giuseppe Mastrangelo, who asked me to commit hem to CVS
 	* fixed gtk/control.c   added in ownerbutton creation the setting of flag
-	  CAN_FOCUS (the ownerbutton never gain focus without this setting)  
-            
+	  CAN_FOCUS (the ownerbutton never gain focus without this setting)
+
 2007-04-04 10:37 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
 	* fixed utils/designer/resource/widgets.xml    changed in browse the method
-	  onEnter to onClick 
-	  
+	  onEnter to onClick
+
 2007-03-28 18:37 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
 	* fixed include/guilib.ch (case mismatch in bHeadClick parameter causing
 	  error at compiling time)
@@ -115,11 +119,11 @@
 
 
 2007-03-25  9:15 UTC+0700 Richard Roesnadi
-*fixed hBrowse Bugs 
+*fixed hBrowse Bugs
 +::httColor and ::htbColor (hilite color, for support current
    position when ::lEditable==.F.)
 +Display character not limited length from HColumn() initial.
- if resize column length by mouse, string is display full. 
+ if resize column length by mouse, string is display full.
 
 
 2007-03-22  23:15 UTC+0700 Richard Roesnadi
@@ -133,7 +137,7 @@
 	   allowing the entire file to be printed as the tooltip says
    * source/printdos.prg
      + added in method TxttoGraphic a test to exit immediately if the user don't
-       select any printer, avoiding the actually generated error. 	 
+       select any printer, avoiding the actually generated error.
 
 2007-03-05 19:15 UTC+0100 Maurilio Longo <maurilio.longo@libero.it>
    * include/windows.ch

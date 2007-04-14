@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.620 2007-04-14 18:34:41 richardroesnadi Exp $
+ * $Id: Changelog,v 1.621 2007-04-14 20:05:41 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,9 +8,9 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2007-04-14  0:15 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
- * source\htool.prg  add //tracelog([ncode],ncode)
- + samples\bc4dll.bat
+2007-04-  3:15 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
+ + utils/designer/dlldesig.bat - create designer.exe based on 
+                                 hwgui-b32.dll & harbour-b32.dll
 
 2007-04-14  0:15 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
  * small fix makedll.bat check exist directory obj\dll

@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.24 2007-04-12 07:22:34 alkresin Exp $
+ * $Id: designer.prg,v 1.25 2007-04-16 21:48:10 richardroesnadi Exp $
  *
  * Designer
  * Main file
@@ -12,6 +12,7 @@
 #include "guilib.ch"
 #include "hbclass.ch"
 #include "hxml.ch"
+#include "extmodul.ch"
 
 #define  MAX_RECENT_FILES  5
 

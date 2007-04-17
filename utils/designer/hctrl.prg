@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.16 2007-04-12 07:22:34 alkresin Exp $
+ * $Id: hctrl.prg,v 1.17 2007-04-17 09:30:08 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -204,11 +204,6 @@ METHOD SetCoor( xName,nValue )
       nValue := Round( nValue/::oParent:oParent:oParent:oParent:nKoeff,1 )
    ENDIF
    ::SetProp( xName,Ltrim(Str(nValue)) )
-   /*
-   IF oDesigner:lReport
-      nValue := Round( nValue*::oParent:oParent:oParent:oParent:nKoeff,0 )
-   ENDIF
-   */
 
 Return nValue
 
@@ -254,16 +249,16 @@ Local i, dx, dy
       lChild := .F.
       dx := xPos - aBDown[2]
       dy := yPos - aBDown[3]
+      IF oCtrl:lEmbed
+         IF Lower( oCtrl:cClass ) == "hline"
+            dx := 0
+         ELSE
+            dy := 0
+         ENDIF
+      ENDIF
    ELSE
       dx := xPos
       dy := yPos
-   ENDIF
-   IF oCtrl:lEmbed
-      IF Lower( oCtrl:cClass ) == "hline"
-         dx := 0
-      ELSE
-         dy := 0
-      ENDIF
    ENDIF
 
    IF dx != 0 .OR. dy != 0
@@ -515,12 +510,22 @@ Return Nil
 
 Function FitLine( oCtrl )
 
-   IF Lower( oCtrl:cClass ) == "hline"
-      oCtrl:Move( oCtrl:oContainer:nLeft+1,,oCtrl:oContainer:nWidth-2 )
+   IF oCtrl:lEmbed
+      oCtrl:lEmbed := .F.
    ELSE
-      oCtrl:Move( ,oCtrl:oContainer:nTop+1,,oCtrl:oContainer:nHeight-2 )
+      IF Lower( oCtrl:cClass ) == "hline"
+         oCtrl:Move( oCtrl:oContainer:nLeft+1,,oCtrl:oContainer:nWidth-2 )
+         oCtrl:SetCoor( "Left",oCtrl:nLeft )
+         oCtrl:SetCoor( "Width",oCtrl:nWidth )
+         oCtrl:SetCoor( "Right",oCtrl:nLeft+oCtrl:nWidth-1 )
+      ELSE
+         oCtrl:Move( ,oCtrl:oContainer:nTop+1,,oCtrl:oContainer:nHeight-2 )
+         oCtrl:SetCoor( "Top",oCtrl:nTop )
+         oCtrl:SetCoor( "Height",oCtrl:nHeight )
+         oCtrl:SetCoor( "Bottom",oCtrl:nTop+oCtrl:nHeight-1 )
+      ENDIF
+      oCtrl:lEmbed := .T.
    ENDIF
-   oCtrl:lEmbed := .T.
 Return Nil
 
 Function Page_New( oTab )

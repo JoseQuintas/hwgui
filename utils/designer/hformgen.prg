@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.35 2007-04-17 05:43:32 alkresin Exp $
+ * $Id: hformgen.prg,v 1.36 2007-04-17 09:30:09 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -538,6 +538,10 @@ Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cPr
             oContainer:AddControl( oCtrl )
             oCtrl:oContainer := oContainer
          ENDIF
+         IF ( cProperty := oCtrlDesc:GetAttribute( "options" ) ) != Nil .AND. ;
+            "embed" $ cProperty
+            oCtrl:lEmbed := .T.
+         ENDIF
          IF nPage != Nil
             oCtrl:nPage := nPage
          ENDIF
@@ -671,6 +675,9 @@ Local cProperty, i1
    IF !lRoot .OR. oCtrl:oContainer == Nil
       aItems := oCtrl:oXMLDesc:aItems
       oNode := oParent:Add( HXMLNode():New( "part",,{ { "class",oCtrl:cClass } } ) )
+      IF oCtrl:lEmbed
+         oNode:SetAttribute( "options","embed" )
+      ENDIF
       oStyle := oNode:Add( HXMLNode():New( "style" ) )
       IF oDesigner:lReport
          oStyle:Add( HXMLNode():New( "property",,{ { "name","Geometry" } }, ;
@@ -1165,6 +1172,11 @@ Local oCtrl
             IF oDesigner:lReport .AND. Lower( oCtrl:cClass ) $ "hline.vline" ;
                .AND. oCtrl:oContainer != Nil .AND. Lower( oCtrl:oContainer:cClass ) == "box"
                EnableMenuItem( oDesigner:oCtrlMenu,1030,.T. )
+               IF oCtrl:lEmbed
+                  CheckMenuItem( oDesigner:oCtrlMenu,1030,.T. )
+               ELSE
+                  CheckMenuItem( oDesigner:oCtrlMenu,1030,.F. )
+               ENDIF
             ELSE
                EnableMenuItem( oDesigner:oCtrlMenu,1030,.F. )
             ENDIF

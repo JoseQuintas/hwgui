@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.35 2007-03-05 18:16:25 mauriliolongo Exp $
+ *$Id: windows.ch,v 1.36 2007-04-17 05:43:32 alkresin Exp $
  */
 
 #define WM_CREATE                       1
@@ -41,6 +41,8 @@
 #define WM_KEYDOWN                      256    // 0x0100
 #define WM_KEYUP                        257    // 0x0101
 #define WM_CHAR                         258    // 0x0102
+#define WM_SYSKEYDOWN                   260    // 0x0104
+#define WM_SYSKEYUP                     261    // 0x0105
 
 #define WM_INITDIALOG                   272
 #define WM_COMMAND                      273

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.48 2007-04-12 14:37:56 mlacecilia Exp $
+ * $Id: hfrmtmpl.prg,v 1.49 2007-04-17 05:43:32 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -861,6 +861,7 @@ CLASS HRepItem
    DATA aControls INIT {}
    DATA aProp, aMethods
    DATA oPen, obj
+   DATA lPen INIT .F.
    DATA y2
    DATA lMark INIT .F.
 
@@ -879,7 +880,8 @@ CLASS HRepTmpl
    DATA id
    DATA cId
 
-   DATA nKoefX, nKoefY, nTOffset, nAOffSet, ny
+   DATA nKoefX, nKoefY, nKoefPix
+   DATA nTOffset, nAOffSet, ny
    DATA lNextPage, lFinish
    DATA oPrinter
 
@@ -959,7 +961,7 @@ Return Self
 
 METHOD Print( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
 Local oPrinter := Iif( printer != Nil, Iif( Valtype(printer)=="O",printer,HPrinter():New(printer,.T.) ), HPrinter():New(,.T.) )
-Local i, j, aMethod, xProperty, oFont, cTemp, nPWidth, nPHeight, nOrientation := 1
+Local i, j, aMethod, xProperty, oFont, xTemp, nPWidth, nPHeight, nOrientation := 1
 Memvar oReport
 Private oReport := Self
 
@@ -977,9 +979,9 @@ Private oReport := Self
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "orientation"
          IF Lower(::aProp[i,2]) != "portrait"
-            cTemp    := nPWidth
+            xTemp    := nPWidth
             nPWidth  := nPHeight
-            nPHeight := cTemp
+            nPHeight := xTemp
             nOrientation := 2
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "font"
@@ -990,10 +992,11 @@ Private oReport := Self
          NEXT
       ENDIF
    NEXT
+   xTemp := GetDeviceArea( oPrinter:hDCPrn )
+   ::nKoefPix := ( ( xTemp[1]/xTemp[3] + xTemp[2]/xTemp[4] ) / 2 ) / 3.8
    oPrinter:SetMode( nOrientation )
    ::nKoefX := oPrinter:nWidth / nPWidth
    ::nKoefY := oPrinter:nHeight / nPHeight
-   // writelog( str(::nKoefX) + str(::nKoefY) )
    IF ( aMethod := aGetSecond( ::aMethods,"onrepinit" ) ) != Nil
       DoScript( aMethod,{ p1,p2,p3 } )
    ENDIF
@@ -1036,7 +1039,7 @@ Private oReport := Self
 Return Nil
 
 METHOD PrintItem( oItem ) CLASS HRepTmpl
-Local aMethod, lRes := .T., i
+Local aMethod, lRes := .T., i, nPenType, nPenWidth
 Local x, y, x2, y2, cText, nJustify, xProperty, nLines, dy, nFirst, ny
 Memvar lLastCycle, lSkipItem
 
@@ -1138,6 +1141,20 @@ Memvar lLastCycle, lSkipItem
          ENDIF
       ENDIF
 
+      IF oItem:lPen .AND. oItem:oPen == Nil
+         IF ( xProperty := aGetSecond( oItem:aProp,"pentype" ) ) != Nil
+            nPenType := Ascan( aPenType,xProperty ) - 1
+         ELSE
+            nPenType := 0
+         ENDIF
+         IF ( xProperty := aGetSecond( oItem:aProp,"penwidth" ) ) != Nil
+            nPenWidth := Round( xProperty * ::nKoefPix, 0 )
+         ELSE
+            nPenWidth := Round( ::nKoefPix, 0 )
+         ENDIF
+         oItem:oPen := HPen():Add( nPenType,nPenWidth )
+         // writelog( str(nPenWidth) + " " + str(::nKoefY) )
+      ENDIF
       IF oItem:cClass == "label"
          IF ( aMethod := aGetSecond( oItem:aMethods,"expression" ) ) != Nil
             cText := DoScript( aMethod )
@@ -1213,13 +1230,19 @@ Local i
    FOR i := 1 TO Len( aControls )
       IF !Empty( aControls[i]:aControls )
          ::ReleaseObj( aControls[i]:aControls )
-      ELSEIF aControls[i]:obj != Nil
-         IF aControls[i]:cClass == "bitmap"
-            DeleteObject( aControls[i]:obj )
-            aControls[i]:obj := Nil
-         ELSEIF aControls[i]:cClass == "label"
-            aControls[i]:obj:Release()
-            aControls[i]:obj := Nil
+      ELSE
+         IF aControls[i]:obj != Nil
+            IF aControls[i]:cClass == "bitmap"
+               DeleteObject( aControls[i]:obj )
+               aControls[i]:obj := Nil
+            ELSEIF aControls[i]:cClass == "label"
+               aControls[i]:obj:Release()
+               aControls[i]:obj := Nil
+            ENDIF
+         ENDIF
+         IF aControls[i]:oPen != Nil
+            aControls[i]:oPen:Release()
+            aControls[i]:oPen := Nil
          ENDIF
       ENDIF
    NEXT
@@ -1262,18 +1285,9 @@ Local nPenWidth, nPenType
          ReadRepItem( aItems[i],Iif(oCtrl:cClass=="area",oCtrl,oContainer) )
       ENDIF
    NEXT
-   IF oCtrl:cClass != "area"
-      IF ( xProperty := aGetSecond( oCtrl:aProp,"pentype" ) ) != Nil
-         nPenType := Ascan( aPenType,xProperty ) - 1
-      ELSE
-         nPenType := 0
-      ENDIF
-      IF ( xProperty := aGetSecond( oCtrl:aProp,"penwidth" ) ) != Nil
-         nPenWidth := xProperty
-      ELSE
-         nPenWidth := 1
-      ENDIF
-      oCtrl:oPen := HPen():Add( nPenType,nPenWidth )
+   IF oCtrl:cClass $ "box.vline.hline" .OR. ( oCtrl:cClass == "label" .AND. ;
+      ( xProperty := aGetSecond( oCtrl:aProp,"border" ) ) != Nil .AND. xProperty )
+      oCtrl:lPen := .T.
    ENDIF
 
 Return Nil

@@ -22,67 +22,74 @@
 
 <br><strong class="title"><A NAME="Functions" HREF="hwgdoc.html#_Functions">
  5.  Functions</A></strong><br>
+
 <br><strong class="subhead"><A NAME="Functions1" HREF="hwgdoc.html#_Functions1">
 5.1.  Common dialogs</A></strong>
  <UL>
    <LI><A NAME="_Functions1_1" HREF="#Functions1_1">5.1.1.  SelectFont( oFont )</A>
-   <LI><A NAME="_Functions1_2" HREF="#Functions1_2">5.1.2.  SelectFile( cDescript,cMask,cInitDir,cTitle )</A>
+   <LI><A NAME="_Functions1_2" HREF="#Functions1_2">5.1.2.  SelectFile( xDescript,xMask,cInitDir,cTitle )</A>
    <LI><A NAME="_Functions1_3" HREF="#Functions1_3">5.1.3.  SaveFile( cPrompt,cDescript,cMask,cInitDir,cTitle )</A>
    <LI><A NAME="_Functions1_4" HREF="#Functions1_4">5.1.4.  PrintSetup()</A>
    <LI><A NAME="_Functions1_5" HREF="#Functions1_5">5.1.5.  hwg_ChooseColor( nColorCurrent )</A>
  </UL>
 <br><strong class="subhead"><A NAME="Functions1_1" HREF="#_Functions1_1">
-5.1.1.  SelectFont( [ oFont ] )</A></strong> 
-This function calls the standard dialog for font selecting.
+5.1.1.  SelectFont( [ oFont ] )</A></strong>
+<p>This function calls the standard dialog for font selecting.</p>
 <UL>
-  <LI> oFont - optional parameter, the current font object ( HFont instance ).
-  <LI> Return value - the array with selected font characteristics ( nHandle, fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut )
+  <LI> <b>oFont</b> - optional parameter, the current font object ( HFont instance ).
+  <LI> <b>Return value</b> - the array with selected font characteristics ( nHandle, fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut )
        or Nil, if the font wasn't selected.
 </UL>
 Usually it isn't needed to call this function directly, use HFont():Select( oFont )
 instead.<br>
 
 <br><strong class="subhead"><A NAME="Functions1_2" HREF="#_Functions1_2">
-5.1.2.  SelectFile( cDescript,cMask,[ cInitDir ], [ cTitle ] )</A></strong> 
-This function calls the standard dialog for file selecting.
+5.1.2.  SelectFile( xDescript,xMask,[ cInitDir ], [ cTitle ] )</A></strong>
+<p>This function calls the standard dialog for file selecting.</p>
 <UL>
-  <LI> cDescript - this string appears in the dialog as a description of a file type.
-  <LI> cMask - string type parameter, describing the file mask.
-  <LI> cInitDir - optional string parameter, the initial directory for file selecting.
-  <LI> cTitle - optional string parameter, the title of a dialog box.
-  <LI> Return value - a string with a selected file name, or an empty string, if a file wasn't selected.
+  <LI> <b>xDescript</b> - this is a display string that describes the filter (for example, "dBase files")
+    or an array of such strings - in case if you need to have few file filters in a dialog box.
+  <LI> <b>xMask</b> - this parameter combines into a pair with the <b>xDescript</b>,
+    it specifies the filter pattern (for example, "*.dbf"), which is described by the <b>xDescript</b>.
+    If you need to specify multiple filter patterns for a single display string,
+    use a semicolon to separate the patterns (for example, "*.bmp;*.jpg;*.png").
+    The <b>xMask</b> must be an array of filter patterns, if the <b>xDescript</b> is an array - and
+    must have the same length as the <b>xDescript</b> array.
+  <LI> <b>cInitDir - optional string parameter, the initial directory for file selecting.
+  <LI> <b>cTitle</b> - optional string parameter, the title of a dialog box.
+  <LI> <b>Return value</b> - a string with a selected file name, or an empty string, if a file wasn't selected.
 </UL>
 
 <br><strong class="subhead"><A NAME="Functions1_3" HREF="#_Functions1_3">
-5.1.3.  SaveFile( cPrompt,cDescript,cMask,cInitDir,cTitle )</A></strong> 
-This function calls the standard dialog for file saving.
+5.1.3.  SaveFile( cPrompt,cDescript,cMask,cInitDir,cTitle )</A></strong>
+<p>This function calls the standard dialog for file saving.</p>
 <UL>
-  <LI> cPrompt - this string appears as a prompt of a file name.
-  <LI> cDescript - this string appears in the dialog as a description of a file type.
-  <LI> cMask - string type parameter, describing the file mask.
-  <LI> cInitDir - optional string parameter, the initial directory for file selecting.
-  <LI> cTitle - optional string parameter, the title of a dialog box.
-  <LI> Return value - a string with a selected file name, or an empty string, if a file wasn't selected.
+  <LI> <b>cPrompt</b> - this string appears as a prompt of a file name.
+  <LI> <b>cDescript</b> - this string appears in the dialog as a description of a file type.
+  <LI> <b>cMask</b> - string type parameter, describing the file mask.
+  <LI> <b>cInitDir</b> - optional string parameter, the initial directory for file selecting.
+  <LI> <b>cTitle</b> - optional string parameter, the title of a dialog box.
+  <LI> <b>Return value</b> - a string with a selected file name, or an empty string, if a file wasn't selected.
 </UL>
 
 <br><strong class="subhead"><A NAME="Functions1_4" HREF="#_Functions1_4">
-5.1.4.  PrintSetup( @cPrinterName )</A></strong> 
-This function calls the standard dialog for printer selecting.
+5.1.4.  PrintSetup( @cPrinterName )</A></strong>
+<p>This function calls the standard dialog for printer selecting.</p>
 <UL>
-  <LI> Return value ( numeric ) - handle to device context ( hDC ) of selected printer, 0 - if printer wasn't selected.
+  <LI> <b>Return value</b> ( numeric ) - handle to device context ( hDC ) of selected printer, 0 - if printer wasn't selected.
   <LI> Writes to the cPrinterName parameter the name of a selected printer.
 </UL>
 
 <br><strong class="subhead"><A NAME="Functions1_5" HREF="#_Functions1_5">
-5.1.5.  hwg_ChooseColor( nColorCurrent )</A></strong> 
-This function calls the standard dialog for color selecting.
+5.1.5.  hwg_ChooseColor( nColorCurrent )</A></strong>
+<p>This function calls the standard dialog for color selecting.</p>
 <UL>
-  <LI> nColorCurrent - a numeric parameter, initial value of a color,
-  <LI> Return value ( numeric ) - selected color.
+  <LI> <b>nColorCurrent</b> - a numeric parameter, initial value of a color,
+  <LI> <b>Return value</b> ( numeric ) - selected color.
 </UL>
 
 <br><strong class="subhead"><A NAME="Functions2" HREF="hwgdoc.html#_Functions2">
-5.2.  MessageBoxes and HwGUI dialogs</A></strong> 
+5.2.  MessageBoxes and HwGUI dialogs</A></strong>
  <UL>
    <LI><A NAME="_Functions2_1" HREF="#Functions2_1">5.2.1.  MsgInfo( cMessage,cTitle )</A>
    <LI><A NAME="_Functions2_2" HREF="#Functions2_2">5.2.2.  MsgStop( cMessage,cTitle )</A>
@@ -92,30 +99,118 @@ This function calls the standard dialog for color selecting.
    <LI><A NAME="_Functions2_6" HREF="#Functions2_6">5.2.6.  MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle )</A>
    <LI><A NAME="_Functions2_7" HREF="#Functions2_7">5.2.7.  WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )</A>
  </UL>
+
 <br><strong class="subhead"><A NAME="Functions2_1" HREF="#_Functions2_1">
-5.2.1.  MsgInfo( cMessage,cTitle )</A></strong> 
+5.2.1.  MsgInfo( cMessage,cTitle )</A></strong>
 <p></p>
+
 <br><strong class="subhead"><A NAME="Functions2_2" HREF="#_Functions2_2">
-5.2.2.  MsgStop( cMessage,cTitle )</A></strong> 
+5.2.2.  MsgStop( cMessage,cTitle )</A></strong>
 <p></p>
+
 <br><strong class="subhead"><A NAME="Functions2_3" HREF="#_Functions2_3">
-5.2.3. MsgOkCancel( cMessage,cTitle )</A></strong> 
+5.2.3. MsgOkCancel( cMessage,cTitle )</A></strong>
 <p></p>
+
 <br><strong class="subhead"><A NAME="Functions2_4" HREF="#_Functions2_4">
-5.2.4.  MsgYesNo( cMessage,cTitle )</A></strong> 
+5.2.4.  MsgYesNo( cMessage,cTitle )</A></strong>
 <p></p>
+
 <br><strong class="subhead"><A NAME="Functions2_5" HREF="#_Functions2_5">
-5.2.5.  MsgBeep( nSound )</A></strong> 
+5.2.5.  MsgBeep( nSound )</A></strong>
 <p></p>
+
 <br><strong class="subhead"><A NAME="Functions2_6" HREF="#_Functions2_6">
 5.2.6.  MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle )</A></strong> 
 <p></p>
+
 <br><strong class="subhead"><A NAME="Functions2_7" HREF="#_Functions2_7">
 5.2.7.  WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )</A></strong> 
 <p></p>
+
 <br><strong class="subhead"><A NAME="Functions3" HREF="hwgdoc.html#_Functions3">
-5.3.  Drawing functions.</A></strong> 
+5.3.  Drawing functions.</A></strong>
+ <UL>
+   <LI><A NAME="_Functions3_1" HREF="#Functions3_1">5.3.1.  Overview</A>
+ </UL>
+
+<br><strong class="subhead"><A NAME="Functions3_1" HREF="#_Functions3_1">
+5.3.1.  Overview</A></strong>
 <p></p>
+
+5.4.  Menu functions</A></strong>
+ <UL>
+   <LI><A NAME="_Functions4_1" HREF="#Functions4_1">5.4.1.  CheckMenuItem( [oMenu|hWindow], nId, lCheck )</A>
+   <LI><A NAME="_Functions4_2" HREF="#Functions4_2">5.4.2.  IsCheckedMenuItem( [oMenu|hWindow], nId )</A>
+   <LI><A NAME="_Functions4_3" HREF="#Functions4_3">5.4.3.  EnableMenuItem( [oMenu|hWindow], nId|nPos, lEnable[, lId] )</A>
+   <LI><A NAME="_Functions4_4" HREF="#Functions4_4">5.4.3.  IsEnabledMenuItem( [oMenu|hWindow], nId|nPos[, lId] )</A>
+   <LI><A NAME="_Functions4_5" HREF="#Functions4_5">5.4.5.  SetMenuCaption( [oMenu|hWindow], nId, cCaption )</A>
+ </UL>
+
+<br><strong class="subhead"><A NAME="Functions4_1" HREF="#_Functions4_1">
+5.4.1.  CheckMenuItem( [oMenu|hWindow], nId, lCheck )</A></strong>
+<p>Checks or unchecks a menu item.</p>
+<UL>
+  <LI> <b>oMenu|hWindow</b> - this parameter can be a menu object ( oMenu ), or a
+ handle of a window ( hWindow ), which owns the menu. If this parameter is omitted,
+ the main application menu is selected.
+  <LI> <b>nId</b> - the ID number of a menu item.
+  <LI> <b>lCheck</b> - a logical value, which shows, should the menu item be checked (.T.)
+  or unchecked (.F.).
+</UL>
+
+<br><strong class="subhead"><A NAME="Functions4_2" HREF="#_Functions4_2">
+5.4.2.  IsCheckedMenuItem( [oMenu|hWindow], nId )</A></strong>
+<p>Returns .T. if the menu item is checked, and .F. in other case. </p>
+<UL>
+  <LI> <b>oMenu|hWindow</b> - this parameter can be a menu object ( oMenu ), or a
+ handle of a window ( hWindow ), which owns the menu. If this parameter is omitted,
+ the main application menu is selected.
+  <LI> <b>nId</b> - the ID number of a menu item.
+  <LI> <b>Return value</b> ( logical ) - .T. if the menu item is checked, and .F. in other case.
+</UL>
+
+<br><strong class="subhead"><A NAME="Functions4_3" HREF="#_Functions4_3">
+5.4.3.  EnableMenuItem( [oMenu|hWindow], nId|nPos, lEnable[, lId] )</A></strong>
+<p>Enables or disables a menu item.</p>
+<UL>
+  <LI> <b>oMenu|hWindow</b> - this parameter can be a menu object ( oMenu ), or a
+ handle of a window ( hWindow ), which owns the menu. If this parameter is omitted,
+ the main application menu is selected.
+  <LI> <b>nId|nPos</b> - the ID number ( nId ) of a menu item or a position ( nPos )
+  in the menu. Forth parameter <b>lId</b> determines how to interpret this parameter.
+  <LI> <b>lEnable</b> - a logical value, which shows, should the menu item be enabled (.T.)
+  or disabled (.F.).
+  <LI> <b>lId</b> - a logical value, which determines, is the second parameter
+  an ID number (.T.) or a position (.F.). The default value is .T., so, if this parameter
+  is omitted, the second parameter is interpreted as ID number.
+</UL>
+
+<br><strong class="subhead"><A NAME="Functions4_4" HREF="#_Functions4_4">
+5.4.4.  IsEnabledMenuItem( [oMenu|hWindow], nId|nPos[, lId] )</A></strong>
+<p>Returns .T. if the menu item is Enabled, and .F. in other case. </p>
+<UL>
+  <LI> <b>oMenu|hWindow</b> - this parameter can be a menu object ( oMenu ), or a
+ handle of a window ( hWindow ), which owns the menu. If this parameter is omitted,
+ the main application menu is selected.
+  <LI> <b>nId|nPos</b> - the ID number ( nId ) of a menu item or a position ( nPos )
+  in the menu. Third parameter <b>lId</b> determines how to interpret this parameter.
+  <LI> <b>lId</b> - a logical value, which determines, is the second parameter
+  an ID number (.T.) or a position (.F.). The default value is .T., so, if this parameter
+  is omitted, the second parameter is interpreted as ID number.
+  <LI> <b>Return value</b> ( logical ) - .T. if the menu item is checked, and .F. in other case.
+</UL>
+
+<br><strong class="subhead"><A NAME="Functions4_5" HREF="#_Functions4_5">
+5.4.5.  SetMenuCaption( [oMenu|hWindow], nId, cCaption )</A></strong>
+<p>Change a caption of a menu item.</p>
+<UL>
+  <LI> <b>oMenu|hWindow</b> - this parameter can be a menu object ( oMenu ), or a
+ handle of a window ( hWindow ), which owns the menu. If this parameter is omitted,
+ the main application menu is selected.
+  <LI> <b>nId</b> - the ID number of a menu item.
+  <LI> <b>cCaption</b> - string value, new menu item caption.
+</UL>
 
 <hr align="left" width="100%">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">

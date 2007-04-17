@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.34 2007-04-12 07:22:34 alkresin Exp $
+ * $Id: hformgen.prg,v 1.35 2007-04-17 05:43:32 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -290,6 +290,7 @@ Private value, oCtrl
       aMetr := GetDeviceArea( hDC )
       // writelog( str(aMetr[1])+str(aMetr[2])+str(aMetr[3])+str(aMetr[4])+str(aMetr[5])+str(aMetr[6])+str(aMetr[7])+str(aMetr[8])+str(aMetr[9]) )
       ::nKoeff := ( aMetr[1]/aMetr[3] + aMetr[2]/aMetr[4] ) / 2
+      // writelog( str(::nKoeff) )
       ReleaseDC( GetActiveWindow(),hDC )
       ::SetPaper( ::GetProp("Paper Size"),::GetProp("Orientation") )
       IF ::oDlg:oFont == Nil
@@ -1224,9 +1225,9 @@ Local oCtrl
 
    DO WHILE i <= alen
      IF !aControls[i]:lHide .AND. xPos1 >= aControls[i]:nLeft .AND. ;
-           xPos2 < ( aControls[i]:nLeft+aControls[i]:nWidth ) .AND. ;
+           xPos2 <= ( aControls[i]:nLeft+aControls[i]:nWidth ) .AND. ;
            yPos1 >= aControls[i]:nTop .AND.                         ;
-           yPos2 < ( aControls[i]:nTop+aControls[i]:nHeight )
+           yPos2 <= ( aControls[i]:nTop+aControls[i]:nHeight )
         oCtrl := aControls[i]
         IF j == 0
            j := i
@@ -1243,9 +1244,9 @@ Local oCtrl
       i := j + 1
       DO WHILE i <= alen
          IF !aControls[i]:lHide .AND. xPos1 >= aControls[i]:nLeft .AND. ;
-               xPos2 < ( aControls[i]:nLeft+aControls[i]:nWidth ) .AND. ;
+               xPos2 <= ( aControls[i]:nLeft+aControls[i]:nWidth ) .AND. ;
                yPos1 >= aControls[i]:nTop .AND.                         ;
-               yPos2 < ( aControls[i]:nTop+aControls[i]:nHeight ) .AND. ;
+               yPos2 <= ( aControls[i]:nTop+aControls[i]:nHeight ) .AND. ;
                aControls[i]:nLeft > oCtrl:nLeft .AND. aControls[i]:nTop > oCtrl:nTop
             oCtrl := aControls[i]
             EXIT

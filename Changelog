@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.622 2007-04-16 21:48:10 richardroesnadi Exp $
+ * $Id: Changelog,v 1.623 2007-04-17 05:43:31 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,21 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-04-17 09:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * utils/designer/hformgen.prg
+     ! Small fixes
+   * source/hedit.prg
+     ! Small fix to allow handling of F10 and other system keys.
+   * source/hfrmtmpl.prg
+     * Some changes in pens handling while printing reports ( there was a problem
+       with a line/box pen width ).
+   * include/windows.ch
+     * Added definitions for WM_SYSKEYDOWN, WM_SYSKEYUP.
+   * doc/hwgdoc.html
+   * doc/hwgdoc_functions.html
+     * Fixed description of SelectFile() due to recent modifications.
+       Added info about menu functions.
 
 2007-04-16 4:32 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
  + util/designer/extmodul.ch

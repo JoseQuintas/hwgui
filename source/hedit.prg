@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.52 2007-04-17 05:43:32 alkresin Exp $
+ *$Id: hedit.prg,v 1.53 2007-04-18 09:16:34 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -112,14 +112,14 @@ Return Nil
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 Local oParent := ::oParent, nPos, nctrl, cKeyb
 Local nexthandle
- 
+
    // WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF !::lMultiLine
 
       IF ::bSetGet != Nil
          IF msg == WM_CHAR
 
-            IF wParam == 8
+            IF wParam == VK_BACK
                ::lFirst := .F.
                SetGetUpdated( Self )
                IF ::lPicComplex
@@ -214,7 +214,7 @@ Local nexthandle
          end
       /* Sauli */
       ENDIF
-      
+
       If lColorinFocus
          if msg == WM_SETFOCUS
             bColorOld := ::bcolor
@@ -222,7 +222,7 @@ Local nexthandle
          elseif msg == WM_KILLFOCUS
             ::SetColor(::tcolor,bColorOld, .t.)
          endif
-      EndIf   
+      EndIf
 
    ELSE
 
@@ -236,7 +236,7 @@ Local nexthandle
    ENDIF
 
    //IF msg == WM_KEYDOWN
-   IF msg == WM_KEYUP .OR. msg == WM_SYSKEYUP     /* BETTER FOR DESIGNER */  
+   IF msg == WM_KEYUP .OR. msg == WM_SYSKEYUP     /* BETTER FOR DESIGNER */
       IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
          DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
             oParent := oParent:oParent
@@ -660,17 +660,17 @@ Local nDecimals, nTmp
             IF !Empty(oEdit:cPicMask)
 
                 nDecimals := Len( Substr(  oEdit:cPicMask, At( ".", oEdit:cPicMask ), Len( oEdit:cPicMask ) ) )
-                
-                IF nDecimals <= 0 
+
+                IF nDecimals <= 0
                    nDecimals := 3
-                EndIF   
+                EndIF
                 newPos:=Len(oEdit:cPicMask)-nDecimals
-                
+
                 IF "E" $ oEdit:cPicFunc .AND. nPos==newPos
                     GetApplyKey( oEdit, "," )
                 ENDIF
             ENDIF
-            
+
          ENDIF
 
       ENDIF
@@ -940,6 +940,6 @@ Return o
 Function SetColorinFocus( lDef )
    If ValType( lDef ) <> "L"
       Return .F.
-   EndIf   
+   EndIf
    lColorinFocus := lDef
 Return .T.

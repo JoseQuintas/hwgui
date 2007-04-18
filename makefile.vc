@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.21 2007-04-18 06:59:39 alexstrickland Exp $
+# $Id: makefile.vc,v 1.22 2007-04-18 09:15:43 alexstrickland Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -11,6 +11,7 @@ INC_DIR = include
 OBJ_DIR = obj
 LIB_DIR = lib
 SRC_DIR = source
+CFLAGS = /TP /W3 /nologo
 
 all: \
    $(LIB_DIR)\hwgui.lib \
@@ -91,45 +92,45 @@ $(LIB_DIR)\hwgui.lib :   \
   lib /out:$@ $**
 
 $(OBJ_DIR)\control.obj  : $(SRC_DIR)\control.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\commond.obj  : $(SRC_DIR)\commond.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\cxshade.obj  : $(SRC_DIR)\cxshade.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\dialog.obj   : $(SRC_DIR)\dialog.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\draw.obj     : $(SRC_DIR)\draw.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\drawtext.obj : $(SRC_DIR)\drawtext.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\freeimg.obj : $(SRC_DIR)\freeimg.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\grid.obj : $(SRC_DIR)\grid.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\media_c.obj   : $(SRC_DIR)\media_c.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\menu_c.obj   : $(SRC_DIR)\menu_c.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\message.obj  : $(SRC_DIR)\message.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\misc.obj     : $(SRC_DIR)\misc.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\nice.obj     : $(SRC_DIR)\nice.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\registry.obj : $(SRC_DIR)\registry.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\resource.obj : $(SRC_DIR)\resource.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\richedit.obj  : $(SRC_DIR)\richedit.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\shellapi.obj : $(SRC_DIR)\shellapi.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\window.obj   : $(SRC_DIR)\window.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\wprint.obj   : $(SRC_DIR)\wprint.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\pager.obj  : $(SRC_DIR)\pager.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 
 
 $(OBJ_DIR)\drawwidg.obj : $(OBJ_DIR)\drawwidg.c
@@ -300,9 +301,9 @@ $(OBJ_DIR)\procscri.c   : $(SRC_DIR)\procmisc\procscri.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 
 $(OBJ_DIR)\arr2str.obj  : $(SRC_DIR)\procmisc\arr2str.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\blowfish.obj : $(SRC_DIR)\procmisc\blowfish.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\procini.obj  : $(OBJ_DIR)\procini.c
 $(OBJ_DIR)\procs7.obj   : $(OBJ_DIR)\procs7.c
 $(OBJ_DIR)\procscri.obj : $(OBJ_DIR)\procscri.c
@@ -317,7 +318,7 @@ $(OBJ_DIR)\hqhtm.c    : $(SRC_DIR)\qhtm\hqhtm.prg
 
 $(OBJ_DIR)\hqhtm.obj  : $(OBJ_DIR)\hqhtm.c
 $(OBJ_DIR)\hwg_qhtm.obj  : $(SRC_DIR)\qhtm\hwg_qhtm.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 
 $(LIB_DIR)\hbxml.lib : \
    $(OBJ_DIR)\hxmldoc.obj \
@@ -329,11 +330,11 @@ $(OBJ_DIR)\hxmldoc.c    : $(SRC_DIR)\xml\hxmldoc.prg
 
 $(OBJ_DIR)\hxmldoc.obj  : $(OBJ_DIR)\hxmldoc.c
 $(OBJ_DIR)\xmlparse.obj  : $(SRC_DIR)\xml\xmlparse.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 
 .prg.c:
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 
 .c.obj:
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /W3 /nologo /Fo$@ $**
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 

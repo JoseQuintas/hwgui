@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.38 2006-11-16 13:24:39 alkresin Exp $
+ * $Id: hdialog.prg,v 1.39 2007-04-18 09:16:34 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -54,7 +54,7 @@ CLASS HDialog INHERIT HCustomWindow
    DATA GetList  INIT {}      // The array of GET items in the dialog
    DATA KeyList  INIT {}      // The array of keys ( as Clipper's SET KEY )
    DATA lExitOnEnter INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key,
-                              // Added by Sandro Freire 
+                              // Added by Sandro Freire
    DATA lExitOnEsc   INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key,
                                // Added by Sandro Freire
    DATA lRouteCommand  INIT .F.
@@ -106,7 +106,7 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
    ::lClipper   := Iif( lClipper==Nil,.F.,lClipper )
    ::lExitOnEnter:=Iif( lExitOnEnter==Nil,.T.,!lExitOnEnter )
    ::lExitOnEsc  :=Iif( lExitOnEsc==Nil,.T.,!lExitOnEsc )
-   
+
    IF nHelpId != nil
       ::HelpId := nHelpId
    END
@@ -175,7 +175,7 @@ Local nPos
    // writelog( str(msg) + str(wParam) + str(lParam) )
    IF ( i := Ascan( aMessModalDlg, {|a|a[1]==msg} ) ) != 0
       if ::lRouteCommand .and. (msg ==WM_COMMAND .or. msg == WM_NOTIFY)
-         
+
          nPos := ascan(::aControls,{|x| x:className() == "HTAB"})
          if nPos >0
             oTab :=::aControls[ nPos ]
@@ -227,7 +227,7 @@ Return Iif( i == 0, Nil, ::Getlist[i] )
 // ------------------------------------
 
 Static Function InitModalDlg( oDlg,wParam,lParam )
-Local iCont
+Local nReturn := 1
 
    // oDlg:handle := hDlg
    // writelog( str(oDlg:handle)+" "+oDlg:title )
@@ -246,14 +246,15 @@ Local iCont
    ENDIF
 
    IF oDlg:bInit != Nil
-      Eval( oDlg:bInit, oDlg )
+      IF Valtype(nReturn := Eval( oDlg:bInit, oDlg )) != "N"
+         nReturn := 1
+      ENDIF
    ENDIF
-  if valtype(oDlg:bOnActivate) == "B"
-     eval(oDlg:bOnActivate)
-   endif
+   IF Valtype(oDlg:bOnActivate) == "B"
+      eval(oDlg:bOnActivate)
+   ENDIF
 
-
-Return 1
+Return nReturn
 
 Static Function onEnterIdle( oDlg, wParam, lParam )
 Local oItem
@@ -270,7 +271,7 @@ Return 0
 Static Function onEraseBk( oDlg,hDC )
 Local aCoors
 
-   IF __ObjHasMsg( oDlg,"OBMP") 
+   IF __ObjHasMsg( oDlg,"OBMP")
       IF oDlg:oBmp != Nil
          SpreadBitmap( hDC, oDlg:handle, oDlg:oBmp:handle )
          Return 1
@@ -406,16 +407,16 @@ Return 0
 
 Static Function onHelp( oDlg,wParam,lParam )
     Local oCtrl, nHelpId, oParent
-    
+
     if ! Empty(SetHelpFileName())
         oCtrl := oDlg:FindControl( nil, GetHelpData( lParam ) )
-        if oCtrl != nil        
-            nHelpId := oCtrl:HelpId 
+        if oCtrl != nil
+            nHelpId := oCtrl:HelpId
             if Empty( nHelpId )
                 oParent := oCtrl:oParent
                 nHelpId := oParent:HelpId
             endif
-            
+
             WinHelp( oDlg:handle, SetHelpFileName(), iif( Empty(nHelpId), 3, 1), nHelpId)
 
         EndIf
@@ -425,14 +426,14 @@ Return 0
 
 Static Function onPspNotify( oDlg,wParam,lParam )
 Local nCode := GetNotifyCode( lParam ), res := .T.
-   IF nCode == PSN_SETACTIVE 
+   IF nCode == PSN_SETACTIVE
       IF oDlg:bGetFocus != Nil
          res := Eval( oDlg:bGetFocus, oDlg )
       ENDIF
       // 'res' should be 0(Ok) or -1
       Hwg_SetDlgResult( oDlg:handle,Iif(res,0,-1) )
       Return 1
-   ELSEIF nCode == PSN_KILLACTIVE 
+   ELSEIF nCode == PSN_KILLACTIVE
       IF oDlg:bLostFocus != Nil
          res := Eval( oDlg:bLostFocus, oDlg )
       ENDIF

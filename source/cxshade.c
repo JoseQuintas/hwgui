@@ -1,5 +1,5 @@
 /*
- * $Id: cxshade.c,v 1.2 2007-01-02 11:46:59 lculik Exp $
+ * $Id: cxshade.c,v 1.3 2007-04-18 09:16:34 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level functions for special drawing effects
@@ -114,7 +114,7 @@ WORD cxdib_GetPaletteSize( PCXDIB pdib )
 }
 
 BYTE* cxdib_GetBits( PCXDIB pdib )
-{ 
+{
    if( pdib->hDib )
       return ( (BYTE*)pdib->hDib + *(LPDWORD)pdib->hDib + cxdib_GetPaletteSize( pdib ) );
    return NULL;
@@ -185,7 +185,7 @@ HDIB cxdib_Create( PCXDIB pdib, DWORD dwWidth, DWORD dwHeight, WORD wBitCount )
    pdib->m_bi.biHeight = dwHeight;       // fill in height from parameter
    pdib->m_bi.biPlanes = 1;              // must be 1
    pdib->m_bi.biBitCount = wBitCount;    // from parameter
-   pdib->m_bi.biCompression = BI_RGB;    
+   pdib->m_bi.biCompression = BI_RGB;
    pdib->m_bi.biSizeImage = pdib->m_LineWidth * dwHeight;
    pdib->m_bi.biXPelsPerMeter = 0;
    pdib->m_bi.biYPelsPerMeter = 0;
@@ -222,7 +222,7 @@ long cxdib_Draw( PCXDIB pdib, HDC pDC, long xoffset, long yoffset )
            pdib->m_bi.biHeight, cxdib_GetBits(pdib),
            (BITMAPINFO*)lpDIB, DIB_RGB_COLORS);
       return 1;
-   } 
+   }
    return 0;
 }
 
@@ -247,7 +247,7 @@ void cxdib_SetPaletteIndex( PCXDIB pdib, BYTE idx, BYTE r, BYTE g, BYTE b )
    {
       BYTE* iDst = (BYTE*)(pdib->hDib) + sizeof(BITMAPINFOHEADER);
       if( (idx >= 0 ) && ( idx < pdib->m_nColors ) )
-      {	
+      {
          long ldx = idx*sizeof(RGBQUAD);
          iDst[ldx++] = (BYTE) b;
          iDst[ldx++] = (BYTE) g;
@@ -337,11 +337,11 @@ void cxshade_Draw( PCXSHADE pshade, HDC pRealDC, short state )
    pDC = hdcMem;      //(just use pRealDC to paint directly the screen)
 
    hBitmap = CreateCompatibleBitmap( pRealDC, cx, cy );
-   holdBitmap = SelectObject( hdcMem, hBitmap ); //select the destination for MemDC
+   holdBitmap = (HBITMAP) SelectObject( hdcMem, hBitmap ); //select the destination for MemDC
 
    SetBkMode( pDC, TRANSPARENT );
 
-   // Select the correct skin 
+   // Select the correct skin
    if( state & STATE_DISABLED )
    {  // DISABLED BUTTON
       if( cxdib_IsValid( &(pshade->m_dDisabled) ) )	// paint the skin
@@ -359,7 +359,7 @@ void cxshade_Draw( PCXSHADE pshade, HDC pRealDC, short state )
          {
             cxdib_Draw( &(pshade->m_dDown), pDC, pshade->m_Border, pshade->m_Border);
          }
-         // if needed, draw the standard 3D rectangular border       
+         // if needed, draw the standard 3D rectangular border
          if( pshade->m_Border )
          {
             if(pshade->m_flat )
@@ -367,7 +367,7 @@ void cxshade_Draw( PCXSHADE pshade, HDC pRealDC, short state )
             else
                 DrawEdge( pDC, &r,EDGE_SUNKEN,BF_RECT );
          }
-         
+
       }
       else
       {
@@ -396,7 +396,7 @@ void cxshade_Draw( PCXSHADE pshade, HDC pRealDC, short state )
             {
                if( pshade->m_flat )
                   Draw3dRect( pDC,&r,GetSysColor(COLOR_BTNHILIGHT),GetSysColor(COLOR_BTNSHADOW) );
-               else 
+               else
                   DrawEdge( pDC, &r, EDGE_RAISED, BF_RECT );
             }
          }

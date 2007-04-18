@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.24 2007-04-18 07:00:09 alexstrickland Exp $
+ * $Id: draw.c,v 1.25 2007-04-18 09:16:34 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -690,7 +690,7 @@ HB_FUNC( OPENIMAGE )
       return;
    }
 
-#if !defined(__BORLANDC__) && !defined(__MINGW32__)  && !defined(__POCC__) && !defined(__XCC__) && !defined(_MSC_VER)
+#if !defined(__BORLANDC__) && !defined(__MINGW32__)  && !defined(__POCC__) && !defined(__XCC__) //&& !defined(_MSC_VER)
    OleLoadPicture( pStream,0,0,IID_IPicture,(void**)&pPic );
    pStream->Release();
 #else
@@ -706,14 +706,14 @@ HB_FUNC( OPENIMAGE )
       return;
    }
 
-#if !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__POCC__) && !defined(__XCC__) && !defined(_MSC_VER)
+#if !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__POCC__) && !defined(__XCC__) //&& !defined(_MSC_VER)
    pPic->get_Handle( (OLE_HANDLE*)&hBitmap );
 #else
    pPic->lpVtbl->get_Handle( pPic, (OLE_HANDLE*)&hBitmap );
 #endif
 
    hb_retnl( (LONG) CopyImage( hBitmap,IMAGE_BITMAP,0,0,LR_COPYRETURNORG ) );
-#if !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__POCC__) && !defined(__XCC__) && !defined(_MSC_VER)
+#if !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__POCC__) && !defined(__XCC__) //&& !defined(_MSC_VER)
    pPic->Release();
 #else
    pPic->lpVtbl->Release( pPic );

@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.53 2007-04-18 09:16:34 alexstrickland Exp $
+ *$Id: hedit.prg,v 1.54 2007-04-18 23:37:49 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -180,12 +180,26 @@ Local nexthandle
                   Return 0
                ENDIF
             ELSEIF wParam == VK_TAB     // Tab
-               IF Asc( Substr( GetKeyboardState(), VK_SHIFT+1, 1 ) ) >= 128
+/*               IF Asc( Substr( GetKeyboardState(), VK_SHIFT+1, 1 ) ) >= 128
                   GetSkip( oParent,::handle,-1 )
                ELSE
                   GetSkip( oParent,::handle,1 )
                ENDIF
+               Return 0   */
+*****   Paulo Flecha
+               IF Asc( Substr( GetKeyboardState(), VK_SHIFT+1, 1 ) ) >= 128
+                  IF !GetSkip( oParent,::handle,-1 ) // First Get
+                     nextHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .t. )
+                     PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nextHandle , 1)
+                  ENDIF
+               ELSE
+                  IF !GetSkip( oParent,::handle,1 ) // Last Get
+                     nextHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .f. )
+                     PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nextHandle , 1 )
+                  ENDIF
+               ENDIF
                Return 0
+***     End
             ELSEIF wParam == VK_RETURN  // Enter
                GetSkip( oParent,::handle,1,.T. )
                Return 0
@@ -232,7 +246,24 @@ Local nexthandle
          SendMessage( ::handle,EM_SCROLL, Iif(nPos>0,SB_LINEUP,SB_LINEDOWN), 0 )
          SendMessage( ::handle,EM_SCROLL, Iif(nPos>0,SB_LINEUP,SB_LINEDOWN), 0 )
       ENDIF
-
+*******  Tab  MULTILINE - Paulo Flecha
+      IF msg == WM_KEYDOWN
+        IF wParam == VK_TAB     // Tab
+           IF Asc( Substr( GetKeyboardState(), VK_SHIFT+1, 1 ) ) >= 128
+              IF !GetSkip( oParent,::handle,-1 ) // First Get
+                 nextHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .t. )
+                 PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nextHandle , 1)
+              ENDIF
+           ELSE
+              IF !GetSkip( oParent,::handle,1 ) // Last Get
+                 nextHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .f. )
+                 PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nextHandle , 1 )
+              ENDIF
+           ENDIF
+           Return 0
+        ENDIF
+     ENDIF
+*******  End Tab  MULTILINE
    ENDIF
 
    //IF msg == WM_KEYDOWN

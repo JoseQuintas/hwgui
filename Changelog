@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.626 2007-04-18 07:34:32 alkresin Exp $
+ * $Id: Changelog,v 1.627 2007-04-18 09:23:03 alexstrickland Exp $
  */
 
 /* Use this format for the entry headers:
@@ -13,6 +13,18 @@
      * small addition
    * source/procmisc/procscri.prg
      * added errors handling in 'Return' statement compiling.
+
+2007-04-18 11:06 UTC+0200 Alex Strickland <sscc@mweb.co.za>
+   * makefile.vc
+     * Restore /TP to compile line, use CFLAGS
+   * source/cxshade.c
+     * Cast for MSVC.
+   * source/draw.c
+     * Changed again to compile under MSVC
+   * source/hedit.prg
+     * Use VK_BACK instead of 8.
+   * source/hdialog.prg
+     * Return value of bInit codeblock if return is numeric.
 
 2007-04-18 08:52 UTC+0200 Alex Strickland <sscc@mweb.co.za>
    * makefile.vc

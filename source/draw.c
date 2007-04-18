@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.23 2006-12-29 10:18:55 alkresin Exp $
+ * $Id: draw.c,v 1.24 2007-04-18 07:00:09 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -690,7 +690,7 @@ HB_FUNC( OPENIMAGE )
       return;
    }
 
-#if !defined(__BORLANDC__) && !defined(__MINGW32__)  && !defined(__POCC__) && !defined(__XCC__)
+#if !defined(__BORLANDC__) && !defined(__MINGW32__)  && !defined(__POCC__) && !defined(__XCC__) && !defined(_MSC_VER)
    OleLoadPicture( pStream,0,0,IID_IPicture,(void**)&pPic );
    pStream->Release();
 #else

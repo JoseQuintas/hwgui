@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.624 2007-04-17 09:30:07 alkresin Exp $
+ * $Id: Changelog,v 1.625 2007-04-18 06:59:01 alexstrickland Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-04-18 08:52 UTC+0200 Alex Strickland <sscc@mweb.co.za>
+   * makefile.vc
+     * remove /TP from compile line, C++ mode is not necessary.
+   * source/draw.c
+     * Change to compile under MSVC in function OPENIMAGE
 
 2007-04-17 13:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * utils/designer/hformgen.prg
@@ -34,7 +40,7 @@
 
 
 2007-04-14  3:15 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
- + utils/designer/dlldesig.bat - create designer.exe based on 
+ + utils/designer/dlldesig.bat - create designer.exe based on
                                  hwgui-b32.dll & harbour-b32.dll
 
 2007-04-14  0:15 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>

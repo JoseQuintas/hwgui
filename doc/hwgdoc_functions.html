@@ -55,7 +55,7 @@ instead.<br>
     use a semicolon to separate the patterns (for example, "*.bmp;*.jpg;*.png").
     The <b>xMask</b> must be an array of filter patterns, if the <b>xDescript</b> is an array - and
     must have the same length as the <b>xDescript</b> array.
-  <LI> <b>cInitDir - optional string parameter, the initial directory for file selecting.
+  <LI> <b>cInitDir</b> - optional string parameter, the initial directory for file selecting.
   <LI> <b>cTitle</b> - optional string parameter, the title of a dialog box.
   <LI> <b>Return value</b> - a string with a selected file name, or an empty string, if a file wasn't selected.
 </UL>
@@ -136,7 +136,16 @@ instead.<br>
 
 <br><strong class="subhead"><A NAME="Functions3_1" HREF="#_Functions3_1">
 5.3.1.  Overview</A></strong>
-<p></p>
+<p>This is a set of functions, which is intended for drawing on a
+window or control surface. There are few things I want to note before these
+functions will be described:</p>
+ <UL>
+   <LI> You can draw while WM_PAINT message processing only.
+   <LI> You can draw on any kinds of windows/dialogs and on some kinds of controls:
+   panel, trackbar, owner button, splitter.
+   <LI> All drawing functions demands the device context handle ( hDC ) to work,
+   so you need to get the hDC to start drawing.
+ </UL>
 
 5.4.  Menu functions</A></strong>
  <UL>
@@ -178,13 +187,17 @@ instead.<br>
  handle of a window ( hWindow ), which owns the menu. If this parameter is omitted,
  the main application menu is selected.
   <LI> <b>nId|nPos</b> - the ID number ( nId ) of a menu item or a position ( nPos )
-  in the menu. Forth parameter <b>lId</b> determines how to interpret this parameter.
+  in the menu. Forth parameter <b>lId</b> determines how to interpret this parameter.<br>
+  If the menu item is a submenu itself, i.e. it has nested menu items, you <i>can't</i>
+  refer to it by ID number, only the position can be used.
   <LI> <b>lEnable</b> - a logical value, which shows, should the menu item be enabled (.T.)
   or disabled (.F.).
   <LI> <b>lId</b> - a logical value, which determines, is the second parameter
   an ID number (.T.) or a position (.F.). The default value is .T., so, if this parameter
   is omitted, the second parameter is interpreted as ID number.
 </UL>
+<p>If you enable/disable top level menu item, you need to call DrawMenuBar( hWindow ) function
+( where hWindow is a handle of the  window - menu owner ) to repaint the menu.</p>
 
 <br><strong class="subhead"><A NAME="Functions4_4" HREF="#_Functions4_4">
 5.4.4.  IsEnabledMenuItem( [oMenu|hWindow], nId|nPos[, lId] )</A></strong>

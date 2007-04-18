@@ -1,5 +1,5 @@
 /*
- * $Id: procscri.prg,v 1.11 2007-04-06 10:18:13 alkresin Exp $
+ * $Id: procscri.prg,v 1.12 2007-04-18 07:34:32 alkresin Exp $
  *
  * Common procedures
  * Scripts
@@ -255,7 +255,18 @@ Local cLine, lDebug := ( Len( rezArray ) == 3 )
                RETURN .F.
             ENDIF
          CASE scom = "RETURN"
-            AADD( rezArray[2], &( "{||EndScript("+Ltrim( Substr( stroka,7 ) )+")}" ) )
+            bOldError := ERRORBLOCK( { | e | MacroError(1,e,stroka) } )
+            BEGIN SEQUENCE
+               AADD( rezArray[2], &( "{||EndScript("+Ltrim( Substr( stroka,7 ) )+")}" ) )
+            RECOVER
+               IF scrSource != Nil .AND. VALTYPE( scrSource ) == "C"
+                  WndOut()
+                  FCLOSE( han )
+               ENDIF
+               ERRORBLOCK( bOldError )
+               RETURN .F.
+            END SEQUENCE
+            ERRORBLOCK( bOldError )
             AADD( tmpArray, "" )
          CASE scom = "FUNCTION"
             stroka := Ltrim( Substr( stroka,poz1+1 ) )

@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.18 2007-03-12 17:16:29 mlacecilia Exp $
+ * $Id: printdos.prg,v 1.19 2007-04-19 19:00:13 mlacecilia Exp $
  *
  * CLASS PrintDos
  *
@@ -431,7 +431,7 @@ Local oFont := HFont():Add( "Courier New",0,-13 )
 Local oText := {""}
 Local oDlg, oColor1, oColor2
 Local oEdit
-Local oPrt:= iif(Empty(::oPorta), "LPT1", ::oPorta)
+Local oPrt:= iif(Empty(::oPorta) .or. ::oPorta == "PREVIEW", "LPT1", ::oPorta)  
 
 IF han <> - 1
    DO WHILE .T.

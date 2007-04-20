@@ -34,6 +34,7 @@ echo %HRB_DIR%\lib\rdd%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\dbfntx%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\dbfcdx%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\dbffpt%HB_MT%.lib + >> b32.bc
+echo %HRB_DIR%\lib\sixcdx%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\common.lib + >> b32.bc
 echo %HRB_DIR%\lib\debug.lib + >> b32.bc
 echo %HRB_DIR%\lib\pp.lib + >> b32.bc

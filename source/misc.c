@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.30 2006-02-28 14:23:47 lculik Exp $
+ * $Id: misc.c,v 1.31 2007-04-23 19:49:03 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -68,27 +68,27 @@ HB_FUNC( COPYSTRINGTOCLIPBOARD )
    if ( !OpenClipboard( GetActiveWindow() ) )
       return;
 
-   EmptyClipboard(); 
+   EmptyClipboard();
 
    hglbCopy = GlobalAlloc( GMEM_DDESHARE, (nLen+1) * sizeof(TCHAR) );
-   if (hglbCopy == NULL) 
-   { 
-       CloseClipboard(); 
+   if (hglbCopy == NULL)
+   {
+       CloseClipboard();
        return;
-   } 
+   }
 
-   // Lock the handle and copy the text to the buffer. 
- 
+   // Lock the handle and copy the text to the buffer.
+
    lptstrCopy = (char*) GlobalLock( hglbCopy );
-   memcpy( lptstrCopy, cStr, nLen * sizeof(TCHAR)); 
-   lptstrCopy[nLen] = (TCHAR) 0;    // null character 
-   GlobalUnlock(hglbCopy); 
- 
-   // Place the handle on the clipboard. 
+   memcpy( lptstrCopy, cStr, nLen * sizeof(TCHAR));
+   lptstrCopy[nLen] = (TCHAR) 0;    // null character
+   GlobalUnlock(hglbCopy);
+
+   // Place the handle on the clipboard.
    SetClipboardData( CF_TEXT, hglbCopy );
 
-   CloseClipboard(); 
- 
+   CloseClipboard();
+
 }
 
 HB_FUNC( GETSTOCKOBJECT )
@@ -148,7 +148,7 @@ HB_FUNC( HWG_COS )
 HB_FUNC( CLIENTTOSCREEN )
 {
    POINT pt;
-   
+
    PHB_ITEM aPoint = hb_itemArrayNew( 2 );
    PHB_ITEM temp;
 
@@ -167,14 +167,14 @@ HB_FUNC( CLIENTTOSCREEN )
 
    hb_itemReturn( aPoint );
    hb_itemRelease( aPoint );
-   
-   
+
+
 }
 
 HB_FUNC( SCREENTOCLIENT )
 {
    POINT pt;
-   
+
    PHB_ITEM aPoint = hb_itemArrayNew( 2 );
    PHB_ITEM temp;
 
@@ -364,8 +364,10 @@ HB_FUNC( POSTQUITMESSAGE )
 
 HB_FUNC( SHELLABOUT )
 {
-   ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) hb_parnl(3) );
+	 /* ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) hb_parnl(3) ); */
+   hb_retni( ShellAbout( (HWND) hb_parnl(1), (LPCSTR) hb_parcx(1), (LPCSTR) hb_parcx(2) , (ISNIL(3) ? NULL : (HICON) hb_parnl(3)))) ;
 }
+
 
 HB_FUNC( GETDESKTOPWIDTH )
 {
@@ -391,23 +393,23 @@ HB_FUNC( WINHELP )
 
     switch( x )
     {
-        case 0:  
-            style = HELP_FINDER ; 
-            context = 0 ; 
+        case 0:
+            style = HELP_FINDER ;
+            context = 0 ;
             break;
-        case 1:  
-            style = HELP_CONTEXT ; 
-            context = hb_parni(4) ; 
+        case 1:
+            style = HELP_CONTEXT ;
+            context = hb_parni(4) ;
             break;
-        case 2:  
-            style = HELP_CONTEXTPOPUP ; 
-            context = hb_parni(4) ; 
+        case 2:
+            style = HELP_CONTEXTPOPUP ;
+            context = hb_parni(4) ;
             break;
-        default: 
-            style = HELP_CONTENTS ; 
+        default:
+            style = HELP_CONTENTS ;
             context = 0 ;
     }
- 
+
     hb_retni(WinHelp(( HWND )hb_parnl ( 1 ), (LPCTSTR)hb_parc( 2 ), style, context));
 }
 
@@ -415,21 +417,21 @@ HB_FUNC( GETNEXTDLGTABITEM )
 {
    /*
    nextHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .t. )
-   
+
    HWND GetNextDlgTabItem(HWND hDlg, HWND hCtl, BOOL bPrevious )
-   
-   hDlg - Handle to the dialog box to be searched. 
-   hCtl - Handle to the control to be used as the starting point for the search. If this parameter is NULL, the function uses the last (or first) control in the dialog box as the starting point for the search. 
-   bPrevious - Specifies how the function is to search the dialog box. If this parameter is TRUE, the function searches for the previous control in the dialog box. If this parameter is FALSE, the function searches for the next control in the dialog box. 
+
+   hDlg - Handle to the dialog box to be searched.
+   hCtl - Handle to the control to be used as the starting point for the search. If this parameter is NULL, the function uses the last (or first) control in the dialog box as the starting point for the search.
+   bPrevious - Specifies how the function is to search the dialog box. If this parameter is TRUE, the function searches for the previous control in the dialog box. If this parameter is FALSE, the function searches for the next control in the dialog box.
    */
-   
+
    hb_retnl( (LONG) GetNextDlgTabItem( (HWND) hb_parnl( 1 ), (HWND) hb_parnl( 2 ), hb_parl( 3 ) ) ) ;
 }
 
 HB_FUNC( SLEEP )
 {
     if (hb_parinfo(1))
-        Sleep(hb_parnl(1));         
+        Sleep(hb_parnl(1));
 }
 
 HB_FUNC( KEYB_EVENT )
@@ -567,9 +569,35 @@ HB_FUNC( GETFILEATTRIBUTES )
 {
    hb_retnl( (LONG) GetFileAttributes( (LPCSTR) hb_parc( 1 ) ) ) ;
 }
- 
+
 HB_FUNC( SETFILEATTRIBUTES )
 {
    hb_retl( SetFileAttributes( (LPCSTR) hb_parc( 1 ), (DWORD) hb_parnl( 2 ) ) ) ;
+}
+
+/* Add by Richard Roesnadi (based on What32) */
+// GETCOMPUTERNAME( [@nLengthChar] ) -> cComputerName
+HB_FUNC( GETCOMPUTERNAME )
+{
+	 char *cText;
+   DWORD nSize = 31+1;
+   cText = ( char * ) hb_xgrab( 32 );
+   GetComputerNameA( cText, &nSize );
+	 hb_retc(cText) ;
+   hb_stornl( nSize, 1 ) ;
+   hb_xfree( (void *) cText );
+}
+
+
+// GETUSERNAME( [@nLengthChar] ) -> cUserName
+HB_FUNC( GETUSERNAME )
+{
+   char *szUser ;
+   DWORD nSize  ;
+   szUser = ( char * ) hb_xgrab( 32 );
+	 GetUserNameA( szUser, &nSize )  ;
+	 hb_retc(szUser);
+   hb_xfree( (void *) szUser );
+   hb_stornl( nSize, 1 ) ;
 }
 

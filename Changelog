@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.629 2007-04-19 19:00:12 mlacecilia Exp $
+ * $Id: Changelog,v 1.630 2007-04-23 19:49:02 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,9 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2007-04-24 02:34 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
+   * source\misc.c new function
+       + GetUserName( [@nLengthChar] ) -> cUserName
+       + GetComputerName( [@nLengthChar] ) -> cComputerName
+       * modif ShellAbout()
+
+   * utils\designer\extmodul.ch
+     + Add External Function in Misc.c
+
+
 2007-04-19 21:10 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    * source/printdos.prg    print in preview forced to lpt1 (don't was printing
-                            anything before)      
+                            anything before)
 
 2007-04-18 20:40 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/hedit.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.25 2007-04-16 21:48:10 richardroesnadi Exp $
+ * $Id: designer.prg,v 1.26 2007-04-24 19:53:50 richardroesnadi Exp $
  *
  * Designer
  * Main file
@@ -30,8 +30,12 @@ REQUEST BARCODE
 
 Function Designer( p0, p1, p2 )
 Local oPanel, oTab, oFont, cResForm, i
-Public oDesigner
+Memvar oDesigner, cCurDir
+Memvar crossCursor, vertCursor, horzCursor
+
+Public oDesigner, cCurDir
 Public crossCursor, vertCursor, horzCursor
+
 
    oDesigner := HDesigner():New()
 
@@ -55,9 +59,10 @@ Public crossCursor, vertCursor, horzCursor
 // #endif
 #endif
 
-   IF !__mvExist( "cCurDir" )
-      __mvPublic( "cCurDir" )
-   ENDIF
+   //IF !__mvExist( "cCurDir" )
+   //   __mvPublic( "cCurDir" )
+   //ENDIF
+
    IF Valtype( cCurDir ) != "C"
       cCurDir := GetCurrentDir() + "\"
    ENDIF
@@ -268,6 +273,7 @@ Return Nil
 Static Function ReadIniFiles()
 Local oIni := HXMLDoc():Read( "Designer.iml" )
 Local i, oNode, cWidgetsFileName, cwitem, cfitem, critem, l_ds_mypath, j
+memvar oDesigner, cCurDir
 
    IF oDesigner:lReport
       cwItem := "rep_widgetset"
@@ -318,6 +324,7 @@ Return .T.
 Static Function BuildSet( oTab )
 Local i, j, j1, aSet, oWidget, oProperty, b1, b2, b3, cDlg, arr, b4
 Local x1, cText,cBmp, oButton
+Memvar oDesigner
 
    IF !Empty( oDesigner:oWidgetsSet:aItems )
       aSet := oDesigner:oWidgetsSet:aItems[1]:aItems
@@ -418,6 +425,7 @@ Return Nil
 
 Static Function ClickBtn( oTab,nId, cItem,cText,nWidth,nHeight )
 Local oBtn := oTab:FindControl( nId )
+Memvar oDesigner
 
    IF !Empty( HFormGen():aForms )
       oDesigner:addItem := oBtn:cargo
@@ -431,6 +439,7 @@ Return Nil
 
 Function DeleteCtrl()
 Local oDlg := HFormGen():oDlgSelected, oCtrl, i
+Memvar oDesigner
 
    IF oDlg != Nil .AND. ( oCtrl := GetCtrlSelected( oDlg ) ) != Nil
       IF oCtrl:oContainer != Nil
@@ -448,9 +457,11 @@ Local oDlg := HFormGen():oDlgSelected, oCtrl, i
       SetCtrlSelected( oDlg )
       oDlg:oParent:lChanged := .T.
    ENDIF
-Return
+
+Return Nil
 
 Function FindWidget( cClass )
+memvar  odesigner
 Local i, aSet := oDesigner:oWidgetsSet:aItems[1]:aItems, oNode
 
    FOR i := 1 TO Len( aSet )
@@ -491,6 +502,7 @@ Return Nil
 
 Function AddRecent( oForm )
 Local i, cItem := Lower( Trim( oForm:path+oForm:filename ) )
+Memvar oDesigner
 
    IF oDesigner:aRecent[1] == Nil .OR. !( oDesigner:aRecent[1] == cItem )
       FOR i := 1 TO MAX_RECENT_FILES
@@ -509,6 +521,7 @@ Return Nil
 
 Static Function EndIde
 Local i, j, alen := Len( HFormGen():aForms ), lRes := .T., oIni, critem, oNode
+Memvar oDesigner, cCurDir
 
   IF alen > 0
      IF MsgYesNo( "Are you really want to quit ?", "Designer" )

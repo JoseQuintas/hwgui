@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.17 2007-04-17 09:30:08 alkresin Exp $
+ * $Id: hctrl.prg,v 1.18 2007-04-24 19:53:50 richardroesnadi Exp $
  *
  * Designer
  * HControlGen class
@@ -47,7 +47,9 @@ ENDCLASS
 METHOD New( oWndParent, xClass, aProp ) CLASS HControlGen
 Local oXMLDesc
 Local oPaint, bmp, cPropertyName
-Local i, j, xProperty
+Local i, j, xProperty, cProperty
+
+Memvar  value, oCtrl, oDesigner
 Private value, oCtrl := Self
 
    IF oPenSel == Nil
@@ -154,6 +156,8 @@ Return Self
 
 METHOD Activate() CLASS HControlGen
 
+ Memvar oCtrl
+
    IF ::oParent != Nil .AND. ::oParent:handle != 0
       IF ::cCreate != Nil
          Private oCtrl := Self
@@ -168,6 +172,7 @@ Return Nil
 
 METHOD Paint( lpdis ) CLASS HControlGen
 Local drawInfo := GetDrawItemInfo( lpdis )
+Memvar hDC, oCtrl
 Private hDC := drawInfo[3], oCtrl := Self
 
    IF ::aPaint != Nil
@@ -199,6 +204,7 @@ METHOD SetProp( xName,xValue )
 Return xValue
 
 METHOD SetCoor( xName,nValue )
+memvar oDesigner
 
    IF oDesigner:lReport
       nValue := Round( nValue/::oParent:oParent:oParent:oParent:nKoeff,1 )
@@ -210,6 +216,7 @@ Return nValue
 // -----------------------------------------------
 
 Function ctrlOnSize( oCtrl, x, y )
+memvar oDesigner
 
    IF oCtrl:Adjust == 2
       oCtrl:Move( 0,y-oCtrl:nHeight,x )
@@ -244,6 +251,7 @@ Return cName+Ltrim(Str(i))
 
 Function CtrlMove( oCtrl,xPos,yPos,lMouse,lChild )
 Local i, dx, dy
+Memvar oDesigner
 
    IF lChild == Nil .OR. !lChild
       lChild := .F.
@@ -307,6 +315,7 @@ Return .F.
 
 Function CtrlResize( oCtrl,xPos,yPos )
 Local dx, dy
+Memvar oDesigner
 
    IF xPos != aBDown[2] .OR. yPos != aBDown[3]
       InvalidateRect( oCtrl:oParent:handle, 1, ;
@@ -381,6 +390,7 @@ Return aBDown
 
 Function SetCtrlSelected( oDlg,oCtrl,n )
 Local oFrm := Iif( oDlg:oParent:Classname()=="HPANEL",oDlg:oParent:oParent:oParent,oDlg:oParent ), handle, i
+Memvar oDesigner
 
    IF ( oFrm:oCtrlSelected == Nil .AND. oCtrl != Nil ) .OR. ;
         ( oFrm:oCtrlSelected != Nil .AND. oCtrl == Nil ) .OR. ;
@@ -587,6 +597,7 @@ Return Nil
 
 Function EditMenu()
 Local oDlg, oTree, i, aMenu
+Memvar nMaxID, oDesigner
 Private nMaxId := 0
 
    oDlg := HFormGen():oDlgSelected
@@ -631,6 +642,7 @@ Return Nil
 
 Static Function BuildTree( oParent, aMenu )
 Local i := Len( aMenu ), oNode
+Memvar nMaxId
 
    FOR i := 1 TO Len( aMenu )
       INSERT NODE oNode CAPTION aMenu[i,2] TO oParent
@@ -670,6 +682,7 @@ Return Nil
 Static Function EditTree( aTree,oTree,nAction )
 Local oNode, cMethod
 Local nPos, aSubarr
+Memvar nMaxID
 
    IF nAction == 0       // Rename
       oTree:EditLabel( oTree:oSelected )

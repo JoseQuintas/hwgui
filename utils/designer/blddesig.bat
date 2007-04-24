@@ -3,11 +3,11 @@
 set HRB_DIR=%HB_Path%
 set HWGUI_INSTALL=..\..
 
-%HRB_DIR%\bin\harbour designer.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
-%HRB_DIR%\bin\harbour hctrl.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
-%HRB_DIR%\bin\harbour hformgen.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
-%HRB_DIR%\bin\harbour inspect.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
-%HRB_DIR%\bin\harbour editor.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour designer.prg -w -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour hctrl.prg -w  -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour hformgen.prg -w -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour inspect.prg -w -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour editor.prg -w -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
 
    bcc32 -c -O2 -tW -M -I%HRB_DIR%\include designer.c hctrl.c hformgen.c inspect.c editor.c
    brc32 -r designer.rc
@@ -20,6 +20,7 @@ echo inspect.obj + >> b32.bc
 echo editor.obj, + >> b32.bc
 echo designer.exe, + >> b32.bc
 echo designer.map, + >> b32.bc
+echo %HRB_DIR%\lib\richgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hbxml.lib + >> b32.bc

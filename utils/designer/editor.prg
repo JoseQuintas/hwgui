@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.17 2006-10-14 15:42:19 sandrorrfreire Exp $
+ * $Id: editor.prg,v 1.18 2007-04-24 19:53:50 richardroesnadi Exp $
  *
  * Designer
  * Simple code editor
@@ -38,7 +38,7 @@ ENDCLASS
 
 Function LoadEdOptions( cFileName )
 Local oIni := HXMLDoc():Read( cFileName )
-Local i, j, j1, cTheme, oTheme, oThemeXML, arr
+Local i, j, j1, cTheme, oTheme, oThemeXML, arr, oOptDesc
 
    cIniName := cFileName
    oOptDesc := oIni:aItems[1]
@@ -86,7 +86,7 @@ Local i, j, j1, cTheme, oTheme, oThemeXML, arr
 Return Nil
 
 Function SaveEdOptions( oOptDesc )
-Local oIni := HXMLDoc():Read( cCurDir+cIniName )
+Local oIni := HXMLDoc():Read( m->cCurDir+cIniName )
 Local i, j, oNode, nStart, oThemeDesc, aAttr
 
    oNode := oIni:aItems[1]
@@ -150,7 +150,7 @@ Local i, j, oNode, nStart, oThemeDesc, aAttr
 
       NEXT
    ENDIF
-   oIni:Save( cCurDir+cIniName )
+   oIni:Save( m->cCurDir+cIniName )
 
 Return Nil
 
@@ -158,6 +158,7 @@ Function EditMethod( cMethName, cMethod )
 Local i, lRes := .F.
 Local oFont := HDTheme():oFont
 Local cParamString
+Memvar oDesigner
 
    i := Ascan( oDesigner:aMethDef, {|a|a[1]==Lower(cMethName)} )
    cParamString := Iif( i == 0, "", oDesigner:aMethDef[i,2] )
@@ -191,7 +192,7 @@ Local cParamString
 
    // oEdit:oParent:AddEvent( EN_SELCHANGE,oEdit:id,{||EnChange(1)},.T. )
 
-   // oEdit:title := cMethod  
+   // oEdit:title := cMethod
    /*
    @ 60,265 BUTTON "Ok" SIZE 100, 32     ;
        ON SIZE {|o,x,y|o:Move(,y-35,,)}  ;
@@ -269,6 +270,7 @@ Local pos := SendMessage( oEdit:handle, EM_GETSEL, 0, 0 )
 Local nLength, pos1 := Loword(pos)+1, pos2 := Hiword(pos)+1
 Local cBuffer, nLine, arr := {}, nLinePos
 Local oTheme := HDTheme():aThemes[HDTheme():nSelected]
+Local  nEditPos1, nEditPos2
 
    IF nEvent == 1        // EN_SELCHANGE
       nEditPos1 := pos1
@@ -276,7 +278,7 @@ Local oTheme := HDTheme():aThemes[HDTheme():nSelected]
    ELSE                  // EN_CHANGE
       SendMessage( oEdit:handle, EM_SETEVENTMASK, 0, 0 )
       nLength := SendMessage( oEdit:handle, WM_GETTEXTLENGTH, 0, 0 )
-      IF nLength - nTextLength > 2 
+      IF nLength - nTextLength > 2
          // writelog( "1: "+str(nLength,5)+" "+str(nTextLength,5) )
       ELSE
          nLine := SendMessage( oEdit:handle, EM_LINEFROMCHAR, -1, 0 )
@@ -300,7 +302,7 @@ Local oTheme := HDTheme():aThemes[HDTheme():nSelected]
          oEdit:lChanged := .T.
       ENDIF
       nTextLength := nLength
-      SendMessage( oEdit:handle, EM_SETEVENTMASK, 0, ENM_CHANGE + ENM_SELCHANGE )     
+      SendMessage( oEdit:handle, EM_SETEVENTMASK, 0, ENM_CHANGE + ENM_SELCHANGE )
    ENDIF
    // writelog( "EnChange "+str(pos1)+" "+str(pos2) ) // +" Length: "+str(nLength) )
 Return Nil
@@ -359,6 +361,10 @@ Local cText := "// The code sample" + Chr(10) + ;
                "  if aItems[ nItem ] == 'scheme'"+ Chr(10) + ;
                "    nFactor := 22.5"+ Chr(10) + ;
                "  endif"
+
+Memvar oBrw, oEditC, oSayT, oCheckB, oCheckI, oSayB, aSchemes
+Memvar nScheme, nType, oTheme, cScheme, oDesigner
+
 Private oBrw, oEditC, oSayT, oCheckB, oCheckI, oSayB, aSchemes := Array( Len( HDTheme():aThemes ) )
 Private nScheme, nType := 2, oTheme := HDTheme():New(), cScheme := ""
 
@@ -435,6 +441,8 @@ Private nScheme, nType := 2, oTheme := HDTheme():New(), cScheme := ""
 Return Nil
 
 Static Function UpdSample( nAction )
+Memvar aSchemes, nScheme, oBRW, cScheme, oSayT, nType, oSayB
+Memvar oTheme, oCheckB, oCheckI, oEditC
 
    IF nAction != Nil
       IF nAction == 1

@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.11 2006-09-13 15:47:25 alkresin Exp $
+ * $Id: inspect.prg,v 1.12 2007-04-24 19:53:50 richardroesnadi Exp $
  *
  * Designer
  * Object Inspector
@@ -64,9 +64,11 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
 Return Self
 
 METHOD Edit( wParam,lParam ) CLASS PBrowse
+Memvar oDesigner
 Local varbuf, x1, y1, nWidth, j, cName, aCtrlProp
 Local aDataDef := oDesigner:aDataDef
 Local lRes := .F., oModDlg, oColumn, aCoors, nChoic, bInit, oGet, aItems
+Memvar Value, oCtrl
 Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
 
    IF ::SetColumn() == 1 .AND. ::bEnter == Nil
@@ -213,6 +215,7 @@ RETURN Nil
 
 Static Function VldBrwGet( oGet )
 Local vari, j, cName
+Memvar Value, oCtrl, oDesigner
 Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
 
    cName := Lower( aProp[ oBrw1:cargo,1 ] )
@@ -250,6 +253,7 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
 Return .T.
 
 Function InspOpen
+Memvar oDesigner
 
    INIT DIALOG oDesigner:oDlgInsp TITLE "Object Inspector" ;
       AT 0,280  SIZE 220,300                     ;
@@ -327,6 +331,7 @@ Return Nil
 
 Function InspSetCombo()
 Local i, aControls, oCtrl, n := -1, oDlg := HFormGen():oDlgSelected
+Memvar oDesigner
 
    oCombo:aItems := {}
    IF oDlg != Nil
@@ -349,6 +354,7 @@ Return Nil
 
 Function InspUpdCombo( n )
 Local aControls, i
+Memvar oDesigner
 
    IF n > 0
       aControls := Iif( oDesigner:lReport, ;
@@ -367,6 +373,7 @@ Local aControls, i
 Return Nil
 
 Static Function ComboOnChg()
+Memvar oDesigner
 Local oDlg := HFormGen():oDlgSelected, oCtrl, n
 Local aControls := Iif( oDesigner:lReport,oDlg:aControls[1]:aControls[1]:aControls,oDlg:aControls )
 
@@ -418,6 +425,7 @@ Return Nil
 
 Function InspUpdBrowse()
 Local i, j, cPropertyName, lChg := .F.
+Memvar value, oCtrl, oDesigner
 Private value, oCtrl
 
    IF oCombo == Nil
@@ -437,7 +445,7 @@ Private value, oCtrl
          oBrw1:Refresh()
       ENDIF
    ENDIF
- 
+
 Return Nil
 
 Function InspUpdProp( cName, xValue )
@@ -453,6 +461,7 @@ Return Nil
 
 Static Function EditArray( arr )
 Local oDlg, oBrw, nRec := Eval( oBrw1:bRecno,oBrw1 )
+Memvar oDesigner
 
    IF arr == Nil
       arr := {}
@@ -464,7 +473,7 @@ Local oDlg, oBrw, nRec := Eval( oBrw1:bRecno,oBrw1 )
         AT 300,280 SIZE 400,300 FONT oDesigner:oMainWnd:oFont
 
    @ 0,0 BROWSE oBrw ARRAY SIZE 400,255  ;
-       ON SIZE {|o,x,y|o:Move(,,x,y-45)}      
+       ON SIZE {|o,x,y|o:Move(,,x,y-45)}
 
    oBrw:bcolor := 15132390
    oBrw:bcolorSel := VColor( "008000" )

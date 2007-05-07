@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.26 2007-04-24 19:53:50 richardroesnadi Exp $
+ * $Id: designer.prg,v 1.27 2007-05-07 22:52:51 richardroesnadi Exp $
  *
  * Designer
  * Main file
@@ -144,12 +144,12 @@ Public crossCursor, vertCursor, horzCursor
       @ 2,3 OWNERBUTTON OF oPanel       ;
           ON CLICK {||HFormGen():New()} ;
           SIZE 24,24 FLAT               ;
-          BITMAP "BMP_NEW" FROM RESOURCE COORDINATES 0,4,0,0 TRANSPARENT ;
+          BITMAP "BMP_NEW" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
           TOOLTIP "New Form"
       @ 26,3 OWNERBUTTON OF oPanel       ;
           ON CLICK {||HFormGen():Open()} ;
           SIZE 24,24 FLAT                ;
-          BITMAP "BMP_OPEN" FROM RESOURCE COORDINATES 0,4,0,0 TRANSPARENT ;
+          BITMAP "BMP_OPEN" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
           TOOLTIP "Open Form"
 
       @ 55,6 LINE LENGTH 18 VERTICAL
@@ -157,7 +157,7 @@ Public crossCursor, vertCursor, horzCursor
       @ 60,3 OWNERBUTTON OF oPanel       ;
           ON CLICK {||Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(),MsgStop("No Form in use!"))} ;
           SIZE 24,24 FLAT                ;
-          BITMAP "BMP_SAVE" FROM RESOURCE COORDINATES 0,4,0,0 TRANSPARENT ;
+          BITMAP "BMP_SAVE" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
           TOOLTIP "Save Form"
    ENDIF
 

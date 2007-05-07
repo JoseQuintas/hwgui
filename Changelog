@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.632 2007-05-07 22:52:50 richardroesnadi Exp $
+ * $Id: Changelog,v 1.633 2007-05-07 23:19:06 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -10,7 +10,9 @@
 
 2007-05-07 7:00 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
  * small fixed designer.prg  change "TRANSPARENT" clause before "coordinates" 
-
+ + add utils\designer\resource\bmp\OK.bmp * & CANCEL.bmp  
+ * modified utils\designer\designer.rc 
+ 
 2007-04-25 02:49 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
    * utils\designer\*.prg 
        !fixed compiler warn while compile with -w  

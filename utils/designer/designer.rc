@@ -1235,4 +1235,6 @@ BMP_AREA BITMAP
  smTrash       BITMAP resource\bmp\smTrash.bmp
  smUndo        BITMAP resource\bmp\smUndo.bmp
  smWorld       BITMAP resource\bmp\smWorld.bmp
+ OK            BITMAP resource\bmp\ok.bmp
+ CANCEL        BITMAP resource\bmp\cancel.bmp
 

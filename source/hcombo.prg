@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.23 2006-10-31 13:58:40 sandrorrfreire Exp $
+ * $Id: hcombo.prg,v 1.24 2007-05-08 10:40:06 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -44,6 +44,7 @@ CLASS HComboBox INHERIT HControl
    METHOD Init( aCombo, nCurrent )
    METHOD Refresh()
    METHOD Setitem( nPos )
+   METHOD GetValue()
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,oFont, ;
@@ -216,6 +217,16 @@ METHOD SetItem(nPos) CLASS HComboBox
    ENDIF
 Return Nil
 
+METHOD GetValue() CLASS HComboBox
+Local nPos := SendMessage( ::handle,CB_GETCURSEL,0,0 ) + 1
+
+   ::value := Iif( ::lText, ::aItems[nPos], nPos )
+   IF ::bSetGet != Nil
+      Eval( ::bSetGet, ::value, Self )
+   ENDIF
+
+Return ::value
+
 Static Function __Valid( oCtrl )
    Local nPos
    local lESC
@@ -231,11 +242,7 @@ Static Function __Valid( oCtrl )
    IF lESC // "if" by Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
      nPos := SendMessage( oCtrl:handle,CB_GETCURSEL,0,0 ) + 1
   
-     IF oCtrl:lText
-        oCtrl:value := oCtrl:aItems[nPos]
-     ELSE
-        oCtrl:value := nPos
-     ENDIF
+     oCtrl:value := Iif( oCtrl:lText, oCtrl:aItems[nPos], nPos )
   
      IF oCtrl:bSetGet != Nil
         Eval( oCtrl:bSetGet, oCtrl:value, oCtrl )

@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.11 2005-10-26 07:43:26 omm Exp $
+ * $Id: hcheck.prg,v 1.12 2007-05-08 10:40:05 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -30,8 +30,8 @@ CLASS HCheckButton INHERIT HControl
    METHOD Refresh()
    METHOD Disable()
    METHOD Enable()
-   METHOD SetValue( lValue )  INLINE CheckDlgButton( ::oParent:handle,::id,lValue )
-   METHOD GetValue()          INLINE IsDlgButtonChecked( ::oParent:handle, ::id )
+   METHOD SetValue( lValue )  INLINE SendMessage(::handle,BM_SETCHECK,Iif(lValue,1,0),0)
+   METHOD GetValue()          INLINE ( SendMessage(::handle,BM_GETCHECK,0,0)==1 )
 
 ENDCLASS
 
@@ -88,7 +88,7 @@ METHOD Init() CLASS HCheckButton
    IF !::lInit
       Super:Init()
       IF ::value
-         CheckDlgButton( ::oParent:handle,::id,.T. )
+         SendMessage(::handle,BM_SETCHECK,1,0)
       ENDIF
    ENDIF
 Return Nil
@@ -101,7 +101,8 @@ Local var
        ::value := Iif( var==Nil,.F.,var )
    ENDIF
 
-   CheckDlgButton( ::oParent:handle,::id,::value )
+   SendMessage(::handle,BM_SETCHECK,Iif(::value,1,0),0)
+
 Return Nil
 
 METHOD Disable() CLASS HCheckButton
@@ -114,7 +115,7 @@ Return Nil
 METHOD Enable() CLASS HCheckButton
 
    Super:Enable()
-   CheckDlgButton( ::oParent:handle,::id,::value )
+   SendMessage(::handle,BM_SETCHECK,Iif(::value,1,0),0)
 
 Return Nil
 
@@ -123,8 +124,11 @@ Local l := SendMessage( oCtrl:handle,BM_GETCHECK,0,0 )
 
    IF l == BST_INDETERMINATE
       CheckDlgButton( oCtrl:oParent:handle, oCtrl:id, .F. )
+      SendMessage( oCtrl:handle,BM_SETCHECK,0,0 )
+      oCtrl:value := .F.
+   ELSE
+      oCtrl:value := ( l == 1 )
    ENDIF
-   oCtrl:value := IsDlgButtonChecked( oCtrl:oParent:handle, oCtrl:id )
 
    IF oCtrl:bSetGet != Nil
       Eval( oCtrl:bSetGet,oCtrl:value, oCtrl )

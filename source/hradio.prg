@@ -1,16 +1,18 @@
 /*
- * $Id: hradio.prg,v 1.6 2005-10-26 07:43:26 omm Exp $
+ * $Id: hradio.prg,v 1.7 2007-05-08 10:40:08 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+
+#define BM_GETCHECK        0x00F0
 
 CLASS HRadioGroup INHERIT HObject
    CLASS VAR oGroupCurrent
@@ -85,13 +87,13 @@ CLASS HRadioButton INHERIT HControl
                   bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor )
    METHOD Activate()
    METHOD Redefine( oWnd,nId,oFont,bInit,bSize,bPaint,bClick,lInit,ctooltip,tcolor,bcolor )
+   METHOD GetValue()          INLINE ( SendMessage( ::handle,BM_GETCHECK,0,0)==1 )
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
                   bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor ) CLASS HRadioButton
 
-   // ::classname:= "HRADIOBUTTON"
    ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
    ::id      := Iif( nId==Nil,::NewId(), nId )
    ::title   := cCaption
@@ -124,10 +126,10 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
    ENDIF
    IF ::oGroup != Nil
       Aadd( ::oGroup:aButtons,Self )
-      IF ::oGroup:bSetGet != Nil
+      // IF ::oGroup:bSetGet != Nil
          ::bLostFocus := bClick
          ::oParent:AddEvent( BN_CLICKED,::id,{|o,id|__Valid(o:FindControl(id))} )
-      ENDIF
+      // ENDIF
    ENDIF
 
 Return Self
@@ -141,7 +143,6 @@ METHOD Activate CLASS HRadioButton
 Return Nil
 
 METHOD Redefine( oWndParent,nId,oFont,bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor ) CLASS HRadioButton
-   // ::classname:= "HRADIOBUTTON"
    ::oParent := Iif( oWndParent==Nil, ::oDefaultParent, oWndParent )
    ::id      := nId
    ::oGroup  := HRadioGroup():oGroupCurrent
@@ -166,10 +167,10 @@ METHOD Redefine( oWndParent,nId,oFont,bInit,bSize,bPaint,bClick,ctooltip,tcolor,
    ENDIF
    IF ::oGroup != Nil
       Aadd( ::oGroup:aButtons,Self )
-      IF ::oGroup:bSetGet != Nil
+      // IF ::oGroup:bSetGet != Nil
          ::bLostFocus := bClick
          ::oParent:AddEvent( BN_CLICKED,::id,{|o,id|__Valid(o:FindControl(id))} )
-      ENDIF
+      // ENDIF
    ENDIF
 Return Self
 

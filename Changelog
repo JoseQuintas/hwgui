@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.633 2007-05-07 23:19:06 richardroesnadi Exp $
+ * $Id: Changelog,v 1.634 2007-05-08 10:40:03 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,18 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-05-08 14:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * utils/designer/resource/widgets.xml
+     ! onClick is changed back to onEnter in Browse widget
+   * source/hcheck.prg
+     * Changed implementation of SetValue(), GetValue() methods
+   * source/hradio.prg
+     * Added GetValue() method
+   * source/hcombo.prg
+     ! Some fixes
+   * source/procmisc/procscri.prg
+     ! Small fix
 
 2007-05-07 7:00 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
  * small fixed designer.prg  change "TRANSPARENT" clause before "coordinates" 

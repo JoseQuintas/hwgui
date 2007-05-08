@@ -1,5 +1,5 @@
 /*
- * $Id: procscri.prg,v 1.12 2007-04-18 07:34:32 alkresin Exp $
+ * $Id: procscri.prg,v 1.13 2007-05-08 10:40:09 alkresin Exp $
  *
  * Common procedures
  * Scripts
@@ -433,7 +433,7 @@ RETURN .F.
 *+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 *+
 FUNCTION DoScript( aScript, aParams )
-LOCAL arlen, stroka, varName, varValue, lDebug, lParam, j
+LOCAL arlen, stroka, varName, varValue, lDebug, lParam, j, RetValue
 MEMVAR iscr, bOldError, aScriptt
 PRIVATE iscr := 1, bOldError
 
@@ -489,7 +489,9 @@ PRIVATE iscr := 1, bOldError
    ERRORBLOCK( bOldError )
    WndOut()
 
-RETURN scr_RetValue
+   RetValue := scr_RetValue
+   scr_RetValue := Nil
+RETURN RetValue
 
 FUNCTION CallFunc( cProc, aParams, aScript )
 Local i := 1

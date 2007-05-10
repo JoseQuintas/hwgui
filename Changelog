@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.634 2007-05-08 10:40:03 alkresin Exp $
+ * $Id: Changelog,v 1.635 2007-05-10 00:48:42 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,8 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2007-05-07 7:00 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
+	* utils/designer/extmodul.ch Add some message.c's funcs 
 
 2007-05-08 14:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * utils/designer/resource/widgets.xml

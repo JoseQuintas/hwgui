@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.635 2007-05-10 00:48:42 richardroesnadi Exp $
+ * $Id: Changelog,v 1.636 2007-05-14 15:59:07 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-05-14 23:15 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
+        * utils/designer/extmodul.ch 
+        * utils/designer/blddesig.bat
+        ADS supports
+
 2007-05-07 7:00 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
 	* utils/designer/extmodul.ch Add some message.c's funcs 
 
@@ -30,7 +36,6 @@
 2007-04-25 02:49 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
    * utils\designer\*.prg 
        !fixed compiler warn while compile with -w  
-
 
 2007-04-24 02:34 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
    * source\misc.c new function

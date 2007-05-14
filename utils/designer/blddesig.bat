@@ -20,7 +20,7 @@ echo inspect.obj + >> b32.bc
 echo editor.obj, + >> b32.bc
 echo designer.exe, + >> b32.bc
 echo designer.map, + >> b32.bc
-rem echo %HRB_DIR%\lib\richgui.lib + >> b32.bc
+echo %HRB_DIR%\lib\richgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hbxml.lib + >> b32.bc
@@ -41,6 +41,10 @@ echo %HRB_DIR%\lib\debug.lib + >> b32.bc
 echo %HRB_DIR%\lib\pp.lib + >> b32.bc
 echo %HRB_DIR%\lib\hsx.lib + >> b32.bc
 echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
+
+rem echo %HRB_DIR%\lib\rddads.lib + >> b32.bc
+rem echo ace32.lib + >> b32.bc
+
 if exist %HRB_DIR%\lib\pcrepos.lib echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
 rem echo %HRB_DIR%\lib\libct.lib + >> b32.bc
 

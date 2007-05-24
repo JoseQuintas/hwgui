@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.87 2007-04-12 14:37:56 mlacecilia Exp $
+ *$Id: guilib.ch,v 1.88 2007-05-24 12:44:47 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -691,10 +691,11 @@
             [ ON CLICK <bEnter> ]      ;
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
+            [ ON OTHER MESSAGE <bOther>] ;
             [ FONT <oFont> ]           ;
           => ;
     [<oBrw> :=] HBrowse():Redefine( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,Iif(<.lFlt.>,BRW_FILTER,0))),;
-        <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>,<bEnter>,<bGfocus>,<bLfocus> )
+        <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<bOther> )
 
 #xcommand ADD COLUMN <block> TO <oBrw> ;
             [ HEADER <cHeader> ]       ;
@@ -1532,3 +1533,22 @@ Added by Marcos Antonio Gambeta
           [BITMAP <b> ]  ;
           [STYLE <nstyle>] [TEXT <t>] ;
           => <opage>:ADDBARBITMAP(<hWnd>,<b>,<t>,<nstyle>)
+
+          
+#xcommand @ <x>,<y> GET LISTBOX [ <oListbox> ITEMS ] <aItems> ;
+             [ OF <oWnd> ]              ;
+             [ ID <nId> ]               ;
+             [ INIT <nInit> ]           ;
+             [ SIZE <width>, <height> ] ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+             [ ON PAINT <bDraw> ]       ;
+             [ ON CHANGE <bChange> ]    ;
+             [ STYLE <nStyle> ]         ;
+             [ FONT <oFont> ]           ;
+             [ TOOLTIP <ctoolt> ]       ;
+           => ;
+     [<oListbox> := ] HListBox():New( <oWnd>,<nId>,<nInit>,;
+                    {|v|Iif(v==Nil,<nInit>,<nInit>:=v)},;
+                    <nStyle>,<x>,<y>,<width>, ; 
+                    <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt> )

@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.36 2007-04-17 05:43:32 alkresin Exp $
+ *$Id: windows.ch,v 1.37 2007-05-24 12:44:47 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -1106,3 +1106,8 @@
 #define RBBS_HIDETITLE      0x00000400  // keep band title hidden
 
 
+#define ODS_SELECTED    0x0001
+#define ODS_GRAYED      0x0002
+#define ODS_DISABLED    0x0004
+#define ODS_CHECKED     0x0008
+#define ODS_FOCUS       0x0010

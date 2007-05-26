@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.79 2007-03-27 20:20:48 richardroesnadi Exp $
+ * $Id: hbrowse.prg,v 1.80 2007-05-26 19:48:52 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1586,7 +1586,7 @@ Local oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
 Local oComboFont, oCombo
 Local oGet1, owb1, owb2
 
-   fipos := ::colpos + ::nLeftCol - 1 - ::freeze
+   fipos := MIN( ::colpos + ::nLeftCol - 1 - ::freeze, LEN(::aColumns))
 
    IF ::bEnter == Nil .OR. ;
          ( Valtype( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. !lRes )

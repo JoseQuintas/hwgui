@@ -1,5 +1,5 @@
 /*
- * $Id: viewer.prg,v 1.2 2004-11-23 07:25:05 alkresin Exp $
+ * $Id: viewer.prg,v 1.3 2007-05-26 19:48:51 richardroesnadi Exp $
  *
  * JPEG, BMP, PNG, MNG, TIFF images viewer.
  * FreeImage.dll should present to use this sample
@@ -58,6 +58,8 @@ Private nVert, nHorz
 
    @ 0,0 PANEL oToolBar SIZE oMainWindow:nWidth,28 ;
       ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,o:nHeight)}
+
+
 
    @ 2,2 OWNERBUTTON OF oToolBar ON CLICK {||FileOpen(oMainWindow)} ;
         SIZE 24,24 BITMAP "BMP_OPEN" FROM RESOURCE FLAT             ;

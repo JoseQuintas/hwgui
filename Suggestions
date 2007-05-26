@@ -1,5 +1,5 @@
 /*
- * $Id: Suggestions,v 1.4 2004-09-08 16:52:29 sandrorrfreire Exp $
+ * $Id: Suggestions,v 1.5 2007-05-26 19:48:51 richardroesnadi Exp $
  */
 
 /
@@ -12,6 +12,28 @@
  * Made For
  /
 
+2007-05-27 02-30 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
+
+DESIGNER : 
+   + ADDITIONAL SOME HWGUI'S CONTROL LIKE:
+   1.REBAR
+   2.PAGER
+   3.NICEBUTTON
+   4.IPADDRESS
+   5.SPLITTER
+   6.SHADE BUTTON
+   7.GRID
+   8.BARCODE
+   9.ACTIVEX
+
+   * EDITOR :
+   DISPLAY FIELD'S OF DBF WHEN TYPE DBFNAME->{SPACE} LIKE MULTI-EDIT EDITOR 
+     
+   * MENU CONTROL : 
+   ADD BITMAP 
+    
+
+  
 2004-09-08 14-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
 New class similar to TBROWSE
 

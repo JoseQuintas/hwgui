@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.80 2007-05-26 19:48:52 richardroesnadi Exp $
+ * $Id: hbrowse.prg,v 1.81 2007-05-28 16:17:39 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -145,6 +145,7 @@ CLASS HBrowse INHERIT HControl
    DATA lAutoEdit INIT .F.
    DATA lUpdated  INIT .F.
    DATA lAppended INIT .F.
+   DATA lESC      INIT .F.
    DATA lAdjRight INIT .T.                     // Adjust last column to right
    DATA nHeadRows INIT 1                       // Rows in header
    DATA nFootRows INIT 0                       // Rows in footer
@@ -368,13 +369,20 @@ Local aCoors, oParent, cKeyb, nCtrl, nPos
             ENDIF
          ELSEIF wParam == 13    // Enter
             ::Edit()
+
+         ELSEIF wParam == 27 .AND. ::lESC
+            SendMessage( GetParent(::handle),WM_CLOSE,0,0 )
          // inicio bloco sauli
          ELSEIF wParam == 17
             ::lCtrlPress := .T.
          // fim bloco sauli
+
+
          ELSEIF ::lAutoEdit .AND. (wParam >= 48 .and. wParam <= 90 .or. wParam >= 96 .and. wParam <= 111 )
             ::Edit( wParam,lParam )
          ENDIF
+
+
          RETURN 1
 
       ELSEIF msg == WM_LBUTTONDBLCLK

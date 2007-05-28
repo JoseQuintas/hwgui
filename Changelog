@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.639 2007-05-26 19:48:51 richardroesnadi Exp $
+ * $Id: Changelog,v 1.640 2007-05-28 16:14:15 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-05-28 23:15 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
+ + utils\designer\samples\FT\Find_FV.XML (Find Future Value)
+   Add sample FT (financial Tool) using designer.exe
+ * source\hbrowse.prg  add ::lESC and ESC Keydown (suggest by seohic)
+ 
 2007-05-27 02:35 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
    * source\hbrowse.prg
      * small fix Edit browse reported by seohic

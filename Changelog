@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.640 2007-05-28 16:14:15 richardroesnadi Exp $
+ * $Id: Changelog,v 1.641 2007-06-06 18:53:20 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-06-7 02:15 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
+ + utils\designer\sample\testole\ole_xls.xml
+   add sample to using ole for excel (graphics)
+   
 2007-05-28 23:15 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
  + utils\designer\samples\FT\Find_FV.XML (Find Future Value)
    Add sample FT (financial Tool) using designer.exe

@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.6 2006-11-16 13:56:10 alkresin Exp $
+ * $Id: hgridex.prg,v 1.7 2007-06-06 22:53:27 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -214,7 +214,7 @@ METHOD AddRow( a ,bupdate ) Class HGRIDEX
    Local aTmp2 := {}
   
 
-default bupdate to .t.
+default bupdate to .F.
    For n := 1 to nLen step 4
       aadd( aTmp1, a[ n ] )
       aadd( aTmp,  if( valtype(a[ n + 1 ] ) == "N", a[ n + 1 ], -1 ) )

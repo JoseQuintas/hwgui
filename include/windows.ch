@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.37 2007-05-24 12:44:47 lculik Exp $
+ *$Id: windows.ch,v 1.38 2007-06-06 22:53:27 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -1111,3 +1111,20 @@
 #define ODS_DISABLED    0x0004
 #define ODS_CHECKED     0x0008
 #define ODS_FOCUS       0x0010
+#define BM_CLICK           0x00F5
+#define BM_GETIMAGE        0x00F6
+#define BM_SETIMAGE        0x00F7
+#define BS_TEXT             0x00000000
+#define BS_ICON             0x00000040
+#define BS_BITMAP           0x00000080
+#define BS_LEFT             0x00000100
+#define BS_RIGHT            0x00000200
+#define BS_CENTER           0x00000300
+#define BS_TOP              0x00000400
+#define BS_BOTTOM           0x00000800
+#define BS_VCENTER          0x00000C00
+#define BS_PUSHLIKE         0x00001000
+#define BS_MULTILINE        0x00002000
+#define BS_NOTIFY           0x00004000
+#define BS_FLAT             0x00008000
+#define BS_RIGHTBUTTON      BS_LEFTTEXT

@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.25 2007-04-18 09:16:34 alexstrickland Exp $
+ * $Id: draw.c,v 1.26 2007-06-06 22:53:27 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -20,6 +20,32 @@
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
+
+
+BOOL Array2Rect(PHB_ITEM aRect, RECT *rc )
+{
+   if (HB_IS_ARRAY(aRect) && hb_arrayLen(aRect) == 4) {
+      rc->left   = hb_arrayGetNL(aRect,1);
+      rc->top    = hb_arrayGetNL(aRect,2);
+      rc->right  = hb_arrayGetNL(aRect,3);
+      rc->bottom = hb_arrayGetNL(aRect,4);
+      return TRUE ;
+   }
+   return FALSE;
+}
+
+PHB_ITEM Rect2Array( RECT *rc  )
+{
+   PHB_ITEM aRect = hb_itemArrayNew(4);
+   PHB_ITEM element = hb_itemNew(NULL);
+
+   hb_arraySet(aRect, 1, hb_itemPutNL(element, rc->left));
+   hb_arraySet(aRect, 2, hb_itemPutNL(element, rc->top));
+   hb_arraySet(aRect, 3, hb_itemPutNL(element, rc->right));
+   hb_arraySet(aRect, 4, hb_itemPutNL(element, rc->bottom));
+   hb_itemRelease(element);
+   return aRect;
+}
 
 HB_FUNC( INVALIDATERECT )
 {
@@ -554,7 +580,7 @@ HB_FUNC( RELEASEDC )
 HB_FUNC( GETDRAWITEMINFO )
 {
    DRAWITEMSTRUCT * lpdis = (DRAWITEMSTRUCT*)hb_parnl(1);
-   PHB_ITEM aMetr = _itemArrayNew( 7 );
+   PHB_ITEM aMetr = _itemArrayNew( 8 );
    PHB_ITEM temp;
 
    temp = _itemPutNL( NULL, lpdis->itemID );
@@ -583,6 +609,10 @@ HB_FUNC( GETDRAWITEMINFO )
 
    temp = _itemPutNL( NULL, lpdis->rcItem.bottom );
    _itemArrayPut( aMetr, 7, temp );
+   _itemRelease( temp );
+
+   temp = _itemPutNL( NULL, (LONG)lpdis->hwndItem );
+   _itemArrayPut( aMetr, 8, temp );
    _itemRelease( temp );
 
    _itemReturn( aMetr );
@@ -809,3 +839,45 @@ HB_FUNC(CREATECOMPATIBLEBITMAP)
   hb_retnl((LONG)hBitmap);
 
 }
+
+HB_FUNC( INFLATERECT )
+{
+	
+   RECT pRect ;   
+   BOOL bRectOk = ( ISARRAY( 1 )  &&   Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect ) ) ;        
+   int x = hb_parni( 2) ;
+   int y = hb_parni( 3 );
+   hb_retl( InflateRect( &pRect, x, y )) ;
+   
+   hb_storni( pRect.left   , 1 , 1);
+   hb_storni( pRect.top    , 1 , 2);
+   hb_storni( pRect.right  , 1 , 3);
+   hb_storni( pRect.bottom , 1 , 4);   
+}   
+
+HB_FUNC( FRAMERECT )
+{
+	
+   HDC hdc=   (HDC ) hb_parnl( 1 ) ;
+   HBRUSH hbr = (HBRUSH) hb_parnl( 3 ) ;
+   RECT pRect ;   
+
+   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;        
+
+   hb_retni( FrameRect( hdc, &pRect, hbr )) ;
+   
+   
+}   
+
+HB_FUNC( DRAWFRAMECONTROL )
+{
+	
+   HDC hdc=   (HDC ) hb_parnl( 1 ) ;   
+   RECT pRect ;   
+   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;        
+   UINT uType = hb_parni( 3 ) ;  // frame-control type
+   UINT uState = hb_parni( 4 ) ;  // frame-control state
+   hb_retl( DrawFrameControl( hdc, &pRect, uType, uState ) ) ;
+   
+   
+}   

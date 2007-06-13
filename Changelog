@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.642 2007-06-06 22:53:27 lculik Exp $
+ * $Id: Changelog,v 1.643 2007-06-13 13:18:28 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-06-13 16:30 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
+   * source\htree.prg
+     * small fix to allow use bitmap from designer
 
 2007-06-06 20:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
  * include/windows.ch
@@ -19,16 +23,16 @@
 2007-06-7 02:15 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
  + utils\designer\sample\testole\ole_xls.xml
    add sample to using ole for excel (graphics)
-   
+
 2007-05-28 23:15 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
  + utils\designer\samples\FT\Find_FV.XML (Find Future Value)
    Add sample FT (financial Tool) using designer.exe
  * source\hbrowse.prg  add ::lESC and ESC Keydown (suggest by seohic)
- 
+
 2007-05-27 02:35 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
    * source\hbrowse.prg
      * small fix Edit browse reported by seohic
-   + Suggestions. Add suggestion 
+   + Suggestions. Add suggestion
 
 2007-05-24 10:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    *include/guilib.ch
@@ -37,14 +41,14 @@
 2007-05-23 13:31 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
    * source\hfrmtmpl.prg
      * small fix for error onPosChg
-	 
+
 2007-05-14 23:15 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
-        * utils/designer/extmodul.ch 
+        * utils/designer/extmodul.ch
         * utils/designer/blddesig.bat
         ADS supports
 
 2007-05-07 7:00 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
-	* utils/designer/extmodul.ch Add some message.c's funcs 
+    * utils/designer/extmodul.ch Add some message.c's funcs
 
 2007-05-08 14:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * utils/designer/resource/widgets.xml
@@ -59,13 +63,13 @@
      ! Small fix
 
 2007-05-07 7:00 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
- * small fixed designer.prg  change "TRANSPARENT" clause before "coordinates" 
- + add utils\designer\resource\bmp\OK.bmp * & CANCEL.bmp  
- * modified utils\designer\designer.rc 
- 
+ * small fixed designer.prg  change "TRANSPARENT" clause before "coordinates"
+ + add utils\designer\resource\bmp\OK.bmp * & CANCEL.bmp
+ * modified utils\designer\designer.rc
+
 2007-04-25 02:49 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
-   * utils\designer\*.prg 
-       !fixed compiler warn while compile with -w  
+   * utils\designer\*.prg
+       !fixed compiler warn while compile with -w
 
 2007-04-24 02:34 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
    * source\misc.c new function
@@ -143,15 +147,15 @@
  * small fix makedll.bat check exist directory obj\dll
 
 2007-04-12 16:25 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
-	* include/guilib.ch - changed in redefine method of hedit the property
+    * include/guilib.ch - changed in redefine method of hedit the property
                           name lMaxLenght to lMaxLength
                         - changed the property name lMaxLength to nMaxLenght
                           (property type is numeric)
-	+ source/hfrmtml.prg  added the parameters nMaxLength and lPassword to the
+    + source/hfrmtml.prg  added the parameters nMaxLength and lPassword to the
                           hedit item in the declaration of the aCtrls array
-	+ utils/designer/resource/f_hwgprg.prg   added the code for nMaxLenght
-	                                         parameter in the hedit generation
-	+ utils/designer/resource/widgets.xml    added the nMaxLength property in
+    + utils/designer/resource/f_hwgprg.prg   added the code for nMaxLenght
+                                             parameter in the hedit generation
+    + utils/designer/resource/widgets.xml    added the nMaxLength property in
                                              the hedit widget
 
 2007-04-12 11:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
@@ -218,16 +222,16 @@
 
 2007-04-05 16:37 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
     Changes made by Giuseppe Mastrangelo, who asked me to commit hem to CVS
-	* fixed gtk/control.c   added in ownerbutton creation the setting of flag
-	  CAN_FOCUS (the ownerbutton never gain focus without this setting)
+    * fixed gtk/control.c   added in ownerbutton creation the setting of flag
+      CAN_FOCUS (the ownerbutton never gain focus without this setting)
 
 2007-04-04 10:37 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
-	* fixed utils/designer/resource/widgets.xml    changed in browse the method
-	  onEnter to onClick
+    * fixed utils/designer/resource/widgets.xml    changed in browse the method
+      onEnter to onClick
 
 2007-03-28 18:37 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
-	* fixed include/guilib.ch (case mismatch in bHeadClick parameter causing
-	  error at compiling time)
+    * fixed include/guilib.ch (case mismatch in bHeadClick parameter causing
+      error at compiling time)
 
 2007-03-28  4:22 UTC+0700 Richard Roesnadi
  +source\barcode.prg
@@ -255,13 +259,13 @@
 
 2007-03-22  23:15 UTC+0700 Richard Roesnadi
 * Minor fix sugest from serge (seohic) hwgui-forum
-	menu bug prg 277 & browse cancelling edit mode with mouse
+    menu bug prg 277 & browse cancelling edit mode with mouse
 
 2007-03-12 18:15 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    This changes was made by Giuseppe Mastrangelo who asked me to commit hem to CVS
    * source/hprinter.prg
      * removed the ::nCurrPage parameter in PrintMeta() call from preview
-	   allowing the entire file to be printed as the tooltip says
+       allowing the entire file to be printed as the tooltip says
    * source/printdos.prg
      + added in method TxttoGraphic a test to exit immediately if the user don't
        select any printer, avoiding the actually generated error.
@@ -316,7 +320,7 @@
 2007-01-01 16:00 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
     + utils\designer\xmlrun
     Build portable runtime for xml-designer
-	create bldxml.bat
+    create bldxml.bat
 
 2006-12-31 12:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/hmonthc.prg
@@ -324,17 +328,17 @@
 
 2006-12-31 1:11 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
    * source/menu_c.c
-	!Fixed for designer editable when add menu object
+    !Fixed for designer editable when add menu object
    * utils\designer\designer.rc
-	+ add bmp resource to designer (must be recompile/blddesig.bat)
+    + add bmp resource to designer (must be recompile/blddesig.bat)
    * utils\designer\resource\widgets.xml
-  	designer direct display bitmap resource just add resource's name
+    designer direct display bitmap resource just add resource's name
    + utils\designer\samples\test_bmp.xml
-	sample create icon or push button icon.
+    sample create icon or push button icon.
 
 2006-12-30 23:12 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
    * utils\designer\resource\bmp
-	+ Add sm*.bmp Standar Icon  for prepare using designer button.
+    + Add sm*.bmp Standar Icon  for prepare using designer button.
 
 2006-12-29 13:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    - image/corn_1.gif
@@ -1304,13 +1308,13 @@
   * gtk/Makefile
   * gtk/samples/a.prg
     * I've updated gnu Makefiles and commit updates provided by Przemyslaw Czerpak
-	 * with the comment:
-	 * ...
-	 * I've just updated HWGUI Linux/gtk to recent modifications in
-	 * Harbour API. It also clean the usage of HB_ITEM and the code.
-	 * I remove all unnecessary #ifdef __XHARBOUR__, etc. and accessing
-	 * the HVM stack.
-	 * ...
+     * with the comment:
+     * ...
+     * I've just updated HWGUI Linux/gtk to recent modifications in
+     * Harbour API. It also clean the usage of HB_ITEM and the code.
+     * I remove all unnecessary #ifdef __XHARBOUR__, etc. and accessing
+     * the HVM stack.
+     * ...
   * samples/testray.rc
     * icon changed to ../image/pim.ico to work with non Borlad rc compilers
 

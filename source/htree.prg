@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.14 2006-09-08 10:42:18 alkresin Exp $
+ * $Id: htree.prg,v 1.15 2007-06-13 13:18:28 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -251,7 +251,7 @@ LOCAL i, aBmpSize
       ::aImages := {}
       FOR i := 1 TO Len( aImages )
          Aadd( ::aImages, Upper(aImages[i]) )
-         aImages[i] := Iif( lResour,LoadBitmap( aImages[i] ),OpenBitmap( aImages[i] ) )
+         aImages[i] := Iif( lResour<>NIL.and.lResour,LoadBitmap( aImages[i] ),OpenBitmap( aImages[i] ) )
       NEXT
       aBmpSize := GetBitmapSize( aImages[1] )
       ::himl := CreateImageList( aImages,aBmpSize[1],aBmpSize[2],12,nBC )
@@ -320,7 +320,7 @@ Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct
       oItem := Tree_GetNotify( lParam,TREE_GETNOTIFY_PARAM )
       IF Valtype( oItem ) == "O"
          oItem:oTree:oSelected := oItem
-         IF !oItem:oTree:lEmpty 
+         IF !oItem:oTree:lEmpty
             IF oItem:bAction != Nil
                Eval( oItem:bAction,oItem )
             ELSEIF oItem:oTree:bAction != Nil
@@ -349,12 +349,12 @@ Local nCode := GetNotifyCode( lParam ), oItem, cText, nAct
               0, 1 )
          ENDIF
       ENDIF
-   ELSEIF nCode == -3     
+   ELSEIF nCode == -3
       IF ::bDblClick != Nil
          oItem  := tree_Hittest( ::handle,,,@nAct )
          Eval( ::bDblClick, Self, oItem, nAct )
       ENDIF
-   ELSEIF nCode == -5      
+   ELSEIF nCode == -5
       IF ::bRClick != Nil
          oItem  := tree_Hittest( ::handle,,,@nAct )
          Eval( ::bRClick, Self, oItem, nAct )

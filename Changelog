@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.643 2007-06-13 13:18:28 omm Exp $
+ * $Id: Changelog,v 1.644 2007-06-13 19:01:57 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-06-13 21:00 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+   * source/hbrowse.prg    moved the evaluation of bWhen codeblock of the 
+                           current edited column to the get object. In this
+						   way the get object is passed by ref to bWhen
+						   codeblock giving more control on the get.
+   * include/windows.ch    commented out a double definition of BS_NOTIFY
 
 2007-06-13 16:30 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
    * source\htree.prg

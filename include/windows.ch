@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.38 2007-06-06 22:53:27 lculik Exp $
+ *$Id: windows.ch,v 1.39 2007-06-13 19:01:57 mlacecilia Exp $
  */
 
 #define WM_CREATE                       1
@@ -853,7 +853,7 @@
 
 
 #define DS_3DLOOK               4       // 0x4L
-#define BS_NOTIFY               16384   // 0x00004000L
+// #define BS_NOTIFY               16384   // 0x00004000L
 
 // more messages
 #define WM_NEXTMENU                     0x0213

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.81 2007-05-28 16:17:39 richardroesnadi Exp $
+ * $Id: hbrowse.prg,v 1.82 2007-06-13 19:01:58 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1606,7 +1606,7 @@ Local oGet1, owb1, owb2
       ENDIF
       type := Iif( oColumn:type=="U".AND.::varbuf!=Nil, Valtype( ::varbuf ), oColumn:type )
       IF ::lEditable .AND. type != "O"
-         IF oColumn:lEditable .AND. ( oColumn:bWhen = Nil .OR. Eval( oColumn:bWhen ) )
+         IF oColumn:lEditable 
             IF ::lAppMode
                IF type == "D"
                   ::varbuf := CtoD("")
@@ -1656,7 +1656,7 @@ Local oGet1, owb1, owb2
 			INIT DIALOG oModDlg title "memo edit" AT 0, 0 SIZE 400, 300 ON INIT {|o|o:center()}
 		endif
 
-         IF oColumn:aList != Nil
+         IF oColumn:aList != Nil .AND. ( oColumn:bWhen = Nil .OR. Eval( oColumn:bWhen ) )
             oModDlg:brush := -1
             oModDlg:nHeight := ::height * 5
 
@@ -1693,7 +1693,8 @@ Local oGet1, owb1, owb2
                STYLE ES_AUTOHSCROLL           ;
                FONT ::oFont                   ;
                PICTURE oColumn:picture        ;
-               VALID oColumn:bValid
+               VALID oColumn:bValid           ;
+			   WHEN oColumn:bWhen
 			else
 				oGet1 := ::varbuf
 				@ 10,10 Get oGet1 SIZE oModDlg:nWidth-20,240 FONT ::oFont Style WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid

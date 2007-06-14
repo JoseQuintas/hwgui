@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.50 2007-05-23 06:52:42 richardroesnadi Exp $
+ * $Id: hfrmtmpl.prg,v 1.51 2007-06-14 07:15:12 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -29,7 +29,7 @@ Static aCtrls := { ;
   "HRichEdit():New(oPrnt,nId,cInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctooltip,TextColor,BackColor)", ;
   "HDatePicker():New(oPrnt,nId,dInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onGetFocus,onLostFocus,onChange,ctooltip,TextColor,BackColor)", ;
   "HUpDown():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctooltip,TextColor,BackColor,nUpDWidth,nLower,nUpper)", ;
-  "HComboBox():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,Items,oFont,onInit,onSize,onPaint,onChange,cTooltip,lEdit,lText,bWhen)", ;
+  "HComboBox():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,Items,oFont,onInit,onSize,onPaint,onChange,cTooltip,lEdit,lText,bWhen,TextColor,BackColor)", ;
   "HLine():New(oPrnt,nId,lVertical,nLeft,nTop,nLength,onSize)", ;
   "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,lDocked)", ;
   "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,trColor,cTooltip)", ;
@@ -650,7 +650,10 @@ MEMVAR aImages, lEditLabels, aParts
          IF xProperty
             nStyle += DS_3DLOOK
          ENDIF
-
+      ELSEIF cPName == "vscroll"
+         IF xProperty
+            nStyle += WS_VSCROLL
+         ENDIF
       ELSEIF cPName == "atree"
          BuildMenu( xProperty,oForm:oDlg:handle,oForm:oDlg )
       ELSE

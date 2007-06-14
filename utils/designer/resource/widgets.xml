@@ -212,6 +212,8 @@
          <property name="BackColor" type="N" value="16777215" />
          <property name="3DLook" type="L" value="False" />
          <property name="ToolTip" type="C" value=""/>
+		 <property name="VSCROLL" type="L" value="False" />
+         <property name="Font" type="O" />
          <method name="onInit" />
          <method name="onSize" />
       </widget>

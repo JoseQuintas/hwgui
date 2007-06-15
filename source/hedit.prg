@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.54 2007-04-18 23:37:49 lculik Exp $
+ *$Id: hedit.prg,v 1.55 2007-06-15 18:13:08 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -122,11 +122,15 @@ Local nexthandle
             IF wParam == VK_BACK
                ::lFirst := .F.
                SetGetUpdated( Self )
-               IF ::lPicComplex
+// ---- Some line commented out by Maurizio la Cecilia
+//      Forced the deletion to HwGui because the hedit normally don't redraws
+//      the client area and buttons owned by the editbox are lost until any
+//      alphanumeric char is inserted 			   
+//               IF ::lPicComplex			      
                   DeleteChar( Self,.T. )
                   Return 0
-               ENDIF
-               Return -1
+//               ENDIF
+//               Return -1
             ELSEIF wParam == VK_RETURN .OR. wParam == VK_ESCAPE
                Return -1
             ELSEIF wParam == VK_TAB
@@ -175,10 +179,14 @@ Local nexthandle
             ELSEIF wParam == 46     // Del
                ::lFirst := .F.
                SetGetUpdated( Self )
-               IF ::lPicComplex
+// ---- Some line commented out by Maurizio la Cecilia			   
+//      Forced the deletion to HwGui because the hedit normally don't redraws
+//      the client area and buttons owned by the editbox are lost until any
+//      alphanumeric char is inserted	
+//               IF ::lPicComplex
                   DeleteChar( Self,.F. )
                   Return 0
-               ENDIF
+//               ENDIF
             ELSEIF wParam == VK_TAB     // Tab
 /*               IF Asc( Substr( GetKeyboardState(), VK_SHIFT+1, 1 ) ) >= 128
                   GetSkip( oParent,::handle,-1 )

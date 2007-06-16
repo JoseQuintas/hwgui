@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.646 2007-06-15 18:13:07 mlacecilia Exp $
+ * $Id: Changelog,v 1.647 2007-06-16 08:28:47 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,12 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-06-16 10:15 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+   * source/hedit.prg
+     * Small fix to force the max length of the string also if the
+       lMaxLength parameter is missed in object creation	 
+
 2007-06-15 20:15 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    * source/hedit.prg
      * Forced the deletion of chars (VK_DELETE and VK_BACK) to HwGui because 
 	   the hedit normally don't redraws the client area and buttons owned by
-	   the editbox are lost until any alphanumeric char is inserted		   
-
+	   the editbox are lost until any alphanumeric char is inserted	
 2007-06-14 10:30 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
    * utils\designer\resource\widgets.xml
      * added VSCROLL style and FONT to combobox class

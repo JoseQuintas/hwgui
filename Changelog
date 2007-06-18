@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.647 2007-06-16 08:28:47 mlacecilia Exp $
+ * $Id: Changelog,v 1.648 2007-06-18 06:46:24 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-06-16 10:15 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+   * source/hedit.prg
+     * New fix to avoid error when Len(::title) is'nt applicable
+	   Thanks to Gilberto Silverio
 
 2007-06-16 10:15 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    * source/hedit.prg

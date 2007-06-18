@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.56 2007-06-16 08:28:47 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.57 2007-06-18 06:46:25 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -72,7 +72,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ::lMultiLine := .T.
    ENDIF
    
-   ::lMaxLength := IIF(ValType(lMaxLength) != "N", Len(::title), lMaxLength)
+   ::lMaxLength := IIF(ValType(lMaxLength) != "N", Len(GetEditText( ::oParent:handle, ::id )), lMaxLength)
 /*   IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
       ::lMaxLength:= lMaxLength
    ENDIF
@@ -310,8 +310,8 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint, ;
       ::cType   := Valtype( vari )
    ENDIF
    ::bSetGet := bSetGet
-
-   ::lMaxLength := IIF(ValType(lMaxLength) != "N", Len(::title), lMaxLength)   
+ 
+   ::lMaxLength := IIF(ValType(lMaxLength) != "N", Len(GetEditText( ::oParent:handle, ::id )), lMaxLength)
 /*   IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
       ::lMaxLength:= lMaxLength
    ENDIF

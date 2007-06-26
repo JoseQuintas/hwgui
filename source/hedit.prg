@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.57 2007-06-18 06:46:25 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.58 2007-06-26 18:39:51 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -72,15 +72,9 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ::lMultiLine := .T.
    ENDIF
    
-   ::lMaxLength := IIF(ValType(lMaxLength) != "N", Len(GetEditText( ::oParent:handle, ::id )), lMaxLength)
-/*   IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
+   IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
       ::lMaxLength:= lMaxLength
    ENDIF
-   IF ::lMaxLength != Nil .and. !Empty(::lMaxLength)
-      IF !Empty(cPicture) .or. cPicture==Nil
-         cPicture:=Replicate("X",::lMaxLength)
-      ENDIF
-   ENDIF                                        ------commented by Maurizio la Cecilia */
 
    ParsePict( Self, cPicture, vari )
    ::Activate()
@@ -123,15 +117,8 @@ Local nexthandle
             IF wParam == VK_BACK
                ::lFirst := .F.
                SetGetUpdated( Self )
-// ---- Some line commented out by Maurizio la Cecilia
-//      Forced the deletion to HwGui because the hedit normally don't redraws
-//      the client area and buttons owned by the editbox are lost until any
-//      alphanumeric char is inserted 			   
-//               IF ::lPicComplex			      
-                  DeleteChar( Self,.T. )
-                  Return 0
-//               ENDIF
-//               Return -1
+               DeleteChar( Self,.T. )
+               Return 0
             ELSEIF wParam == VK_RETURN .OR. wParam == VK_ESCAPE
                Return -1
             ELSEIF wParam == VK_TAB
@@ -180,14 +167,8 @@ Local nexthandle
             ELSEIF wParam == 46     // Del
                ::lFirst := .F.
                SetGetUpdated( Self )
-// ---- Some line commented out by Maurizio la Cecilia			   
-//      Forced the deletion to HwGui because the hedit normally don't redraws
-//      the client area and buttons owned by the editbox are lost until any
-//      alphanumeric char is inserted	
-//               IF ::lPicComplex
-                  DeleteChar( Self,.F. )
-                  Return 0
-//               ENDIF
+               DeleteChar( Self,.F. )
+               Return 0
             ELSEIF wParam == VK_TAB     // Tab
 /*               IF Asc( Substr( GetKeyboardState(), VK_SHIFT+1, 1 ) ) >= 128
                   GetSkip( oParent,::handle,-1 )
@@ -311,15 +292,9 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint, ;
    ENDIF
    ::bSetGet := bSetGet
  
-   ::lMaxLength := IIF(ValType(lMaxLength) != "N", Len(GetEditText( ::oParent:handle, ::id )), lMaxLength)
-/*   IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
+   IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
       ::lMaxLength:= lMaxLength
    ENDIF
-   IF ::lMaxLength != Nil .and. !Empty(::lMaxLength)
-      IF !Empty(cPicture) .or. cPicture==Nil
-         cPicture:=Replicate("X",::lMaxLength)
-      ENDIF
-   ENDIF                                        ------ commented by Maurizio la Cecilia */
 
    ParsePict( Self, cPicture, vari )
 
@@ -449,13 +424,9 @@ Local nAt, i, masklen, cChar
       NEXT
    ENDIF
 
-//                                         ------------ added by Maurizio la Cecilia
-
    IF oEdit:lMaxLength != Nil .and. !Empty( oEdit:lMaxLength ) .and. Len( oEdit:cPicMask ) < oEdit:lMaxLength
       oEdit:cPicMask := PadR( oEdit:cPicMask, oEdit:lMaxLength, "X" )
    ENDIF
-
-//                                         ------------- end of added code
 
 Return Nil
 
@@ -541,6 +512,9 @@ Static Function DeleteChar( oEdit,lBack )
 Local nPos := HiWord( SendMessage( oEdit:handle, EM_GETSEL, 0, 0 ) ) + Iif( !lBack,1,0 )
 Local nGetLen := Len( oEdit:cPicMask ), nLen
 
+   IF nGetLen == 0
+      nGetLen:=len(oEdit:title)
+   ENDIF
    FOR nLen := 0 TO nGetLen
       IF !IsEditable( oEdit,nPos+nLen )
          Exit

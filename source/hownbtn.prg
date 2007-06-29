@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.26 2006-12-29 10:18:55 alkresin Exp $
+ * $Id: hownbtn.prg,v 1.27 2007-06-29 19:16:27 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -21,6 +21,7 @@ CLASS HOwnButton INHERIT HControl
    DATA state
    DATA bClick
    DATA lPress  INIT .F.
+   DATA lCheck  INIT .f.
    DATA xt,yt,widtht,heightt
    DATA oBitmap,xb,yb,widthb,heightb,lTransp,trColor
    DATA lEnabled INIT .T.
@@ -30,7 +31,7 @@ CLASS HOwnButton INHERIT HControl
                   bInit,bSize,bPaint,bClick,lflat,              ;
                   cText,color,font,xt,yt,widtht,heightt,        ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,trColor, ;
-                  cTooltip, lEnabled )
+                  cTooltip, lEnabled, lCheck )
 
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
@@ -38,7 +39,7 @@ CLASS HOwnButton INHERIT HControl
    METHOD Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, ;
                   cText,color,font,xt,yt,widtht,heightt,     ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,      ;
-                  cTooltip, lEnabled ) 
+                  cTooltip, lEnabled, lCheck ) 
    METHOD Paint()
    METHOD DrawItems( hDC )
    METHOD MouseMove( wParam, lParam )
@@ -56,7 +57,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,   ;
                   bInit,bSize,bPaint,bClick,lflat,             ;
                   cText,color,oFont,xt,yt,widtht,heightt,       ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,trColor,;
-                  cTooltip, lEnabled  ) CLASS HOwnButton
+                  cTooltip, lEnabled, lCheck  ) CLASS HOwnButton
 
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip )
@@ -79,6 +80,9 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,   ;
    IF lEnabled != Nil
       ::lEnabled := lEnabled
    ENDIF
+   IF lCheck != Nil
+	  ::lCheck := lCheck
+   ENDIF	  
    IF bmp != Nil
       IF Valtype( bmp ) == "O"
          ::oBitmap := bmp
@@ -147,7 +151,7 @@ Return Nil
 METHOD Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, ;
                   cText,color,font,xt,yt,widtht,heightt,     ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,      ;
-                  cTooltip, lEnabled ) CLASS HOwnButton
+                  cTooltip, lEnabled, lCheck ) CLASS HOwnButton
 
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0,, bInit, bSize, bPaint, ctooltip )
 
@@ -166,6 +170,12 @@ METHOD Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, ;
    IF lEnabled != Nil
       ::lEnabled := lEnabled
    ENDIF
+      IF lEnabled != Nil
+      ::lEnabled := lEnabled
+   ENDIF
+   IF lCheck != Nil
+	  ::lCheck := lCheck
+   ENDIF	  
 
    IF bmp != Nil
       IF Valtype( bmp ) == "O"
@@ -339,7 +349,14 @@ METHOD MUp() CLASS HOwnButton
          Eval( ::bClick, ::oParent, ::id )
       ENDIF
       InvalidateRect( ::handle, 0 )
-      SendMessage( ::handle, WM_PAINT, 0, 0 )
+//      SendMessage( ::handle, WM_PAINT, 0, 0 )
+	  IF ::lCheck
+		IF ::lPress
+			::Release()
+		else
+           ::Press()
+		ENDIF   
+	  ENDIF	   
    ENDIF
 
 Return Nil

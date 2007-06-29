@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.88 2007-05-24 12:44:47 lculik Exp $
+ *$Id: guilib.ch,v 1.89 2007-06-29 19:16:27 mlacecilia Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -792,12 +792,13 @@
                  [ COORDINATES  <xb>, <yb>, <widthb>, <heightb> ] ;
             ] ;
             [ TOOLTIP <ctoolt> ]    ;
+			[ <lCheck: CHECK> ]     ;
           => ;
     [<oOwnBtn> :=] HOWNBUTTON():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
           <height>,<bInit>,<bSize>,<bDraw>, ;
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>,<widtht>,<heightt>, ;
-              <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>,<trcolor>, <ctoolt>,!<.enable.> )
+              <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>,<trcolor>, <ctoolt>,!<.enable.>, <.lCheck.> )
 
 
 #xcommand REDEFINE OWNERBUTTON [ <oOwnBtn> ]  ;
@@ -816,13 +817,14 @@
                  [ COORDINATES  <xb>, <yb>, <widthb>, <heightb> ] ;
             ] ;
             [ TOOLTIP <ctoolt> ]    ;
-            [ <enable: DISABLED> ]        ;
+            [ <enable: DISABLED> ]  ;
+			[ <lCheck: CHECK> ]      ;
           => ;
     [<oOwnBtn> :=] HOWNBUTTON():Redefine( <oWnd>,<nId>, ;
           <bInit>,<bSize>,<bDraw>, ;
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>,<widtht>,<heightt>, ;
-              <bmp>,<.res.>,<xb>, <yb>,<widthb>,<heightb>,<.ltr.>, <ctoolt>, !<.enable.>)
+              <bmp>,<.res.>,<xb>, <yb>,<widthb>,<heightb>,<.ltr.>, <ctoolt>, !<.enable.>, <.lCheck.> )
 
 #xcommand @ <x>,<y> SHADEBUTTON [ <oShBtn> ]  ;
             [ OF <oWnd> ]              ;

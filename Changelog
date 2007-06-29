@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.649 2007-06-26 18:39:51 mlacecilia Exp $
+ * $Id: Changelog,v 1.650 2007-06-29 19:16:26 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-06-29 20:00 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+   * source/hownbtn.prg
+     * commented out the paint message in Up() method because when a system
+	   dialog overlaps the button, this disappears
+   + source/hownbtn.prg
+   + include/guilib.ch
+     + added the property CHECK to handle the press status of the button
+       (with this setting the button works like the "Bold"	button in Word 
+        toolbar, like a checkbox but with a button appearance)
 
 2007-06-26 20:35 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    * source/hedit.prg

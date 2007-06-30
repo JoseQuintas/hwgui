@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.30 2007-04-07 16:33:18 alkresin Exp $
+ * $Id: menu_c.c,v 1.31 2007-06-30 12:57:30 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -296,7 +296,7 @@ HB_FUNC( HWG_TRACKMENU )
    SetForegroundWindow( hWnd );
    hb_retl( TrackPopupMenu(
                   (HMENU) hb_parnl(1),  // handle of shortcut menu
-                  TPM_RIGHTALIGN,       // screen-position and mouse-button flags
+                  ISNIL( 5 ) ? TPM_RIGHTALIGN : hb_parni( 5 ),       // screen-position and mouse-button flags
                   hb_parni(2),          // horizontal position, in screen coordinates
                   hb_parni(3),          // vertical position, in screen coordinates
                   0,                    // reserved, must be zero

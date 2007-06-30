@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.39 2007-06-13 19:01:57 mlacecilia Exp $
+ *$Id: windows.ch,v 1.40 2007-06-30 12:57:30 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -1111,6 +1111,7 @@
 #define ODS_DISABLED    0x0004
 #define ODS_CHECKED     0x0008
 #define ODS_FOCUS       0x0010
+#define ODS_NOFOCUSRECT     0x0200
 #define BM_CLICK           0x00F5
 #define BM_GETIMAGE        0x00F6
 #define BM_SETIMAGE        0x00F7
@@ -1128,3 +1129,70 @@
 #define BS_NOTIFY           0x00004000
 #define BS_FLAT             0x00008000
 #define BS_RIGHTBUTTON      BS_LEFTTEXT
+
+#define BP_PUSHBUTTON 1
+#define PBS_NORMAL    1
+#define PBS_HOT       2
+#define PBS_PRESSED   3
+#define PBS_DISABLED  4
+#define PBS_DEFAULTED 5
+#define TMT_CONTENTMARGINS 3602
+
+
+#define DFC_CAPTION             1
+#define DFC_MENU                2
+#define DFC_SCROLL              3
+#define DFC_BUTTON              4
+
+#define DFC_POPUPMENU           5
+
+
+#define DFCS_CAPTIONCLOSE       0x0000
+#define DFCS_CAPTIONMIN         0x0001
+#define DFCS_CAPTIONMAX         0x0002
+#define DFCS_CAPTIONRESTORE     0x0003
+#define DFCS_CAPTIONHELP        0x0004
+
+#define DFCS_MENUARROW          0x0000
+#define DFCS_MENUCHECK          0x0001
+#define DFCS_MENUBULLET         0x0002
+#define DFCS_MENUARROWRIGHT     0x0004
+#define DFCS_SCROLLUP           0x0000
+#define DFCS_SCROLLDOWN         0x0001
+#define DFCS_SCROLLLEFT         0x0002
+#define DFCS_SCROLLRIGHT        0x0003
+#define DFCS_SCROLLCOMBOBOX     0x0005
+#define DFCS_SCROLLSIZEGRIP     0x0008
+#define DFCS_SCROLLSIZEGRIPRIGHT 0x0010
+
+#define DFCS_BUTTONCHECK        0x0000
+#define DFCS_BUTTONRADIOIMAGE   0x0001
+#define DFCS_BUTTONRADIOMASK    0x0002
+#define DFCS_BUTTONRADIO        0x0004
+#define DFCS_BUTTON3STATE       0x0008
+#define DFCS_BUTTONPUSH         0x0010
+
+#define DFCS_INACTIVE           0x0100
+#define DFCS_PUSHED             0x0200
+#define DFCS_CHECKED            0x0400
+
+
+#define DFCS_TRANSPARENT        0x0800
+#define DFCS_HOT                0x1000
+
+
+#define DFCS_ADJUSTRECT         0x2000
+#define DFCS_FLAT               0x4000
+#define DFCS_MONO               0x8000
+
+// Defines for the new buttons
+#define ST_ALIGN_HORIZ       0           // Icon/bitmap on the left, text on the right
+#define ST_ALIGN_VERT        1           // Icon/bitmap on the top, text on the bottom
+#define ST_ALIGN_HORIZ_RIGHT 2           // Icon/bitmap on the right, text on the left
+#define ST_ALIGN_OVERLAP     3           // Icon/bitmap on the same space as text
+
+#define WM_THEMECHANGED     0x031
+                                        
+#define TPM_LEFTALIGN   0x0000
+#define TPM_CENTERALIGN 0x0004
+#define TPM_RIGHTALIGN  0x0008

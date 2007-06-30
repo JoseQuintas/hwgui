@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.89 2007-06-29 19:16:27 mlacecilia Exp $
+ *$Id: guilib.ch,v 1.90 2007-06-30 12:57:30 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -1534,7 +1534,7 @@ Added by Marcos Antonio Gambeta
 #xcommand ADDBAND <hWnd> to <opage> ;
           [BITMAP <b> ]  ;
           [STYLE <nstyle>] [TEXT <t>] ;
-          => <opage>:ADDBARBITMAP(<hWnd>,<b>,<t>,<nstyle>)
+          => <opage>:ADDBARBITMAP(<hWnd>,<t>,<b>,<nstyle>)
 
           
 #xcommand @ <x>,<y> GET LISTBOX [ <oListbox> ITEMS ] <aItems> ;

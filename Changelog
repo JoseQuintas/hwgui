@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.651 2007-06-30 12:57:30 lculik Exp $
+ * $Id: Changelog,v 1.652 2007-07-02 08:29:11 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-07-02 10:15 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+   * source/hownbtn.prg
+     * moved the code handling the lCheck property before the bClick method
+	   evaluation. The lCheck now return consistently at cb evaluation time.
+	   Thanks to Giuseppe Mastrangelo who signaled this patch.
 
 2007-06-30 11:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * include/guilib.ch

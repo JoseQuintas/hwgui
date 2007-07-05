@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.30 2007-07-05 14:32:15 lculik Exp $
+ * $Id: hcontrol.prg,v 1.31 2007-07-05 15:11:51 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -20,6 +20,14 @@
 #include "guilib.ch"
 #include "common.ch"
 #define  CONTROL_FIRST_ID   34000
+#define TRANSPARENT 1
+#define BTNST_COLOR_BK_IN     1            // Background color when mouse is INside
+#define BTNST_COLOR_FG_IN     2            // Text color when mouse is INside
+#define BTNST_COLOR_BK_OUT    3             // Background color when mouse is OUTside
+#define BTNST_COLOR_FG_OUT    4             // Text color when mouse is OUTside
+#define BTNST_COLOR_BK_FOCUS  5           // Background color when the button is focused
+#define BTNST_COLOR_FG_FOCUS  6            // Text color when the button is focused
+
 
 static  bMouseOverButton := .f.
 //- HControl

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.29 2007-07-05 13:49:17 lculik Exp $
+ * $Id: hcontrol.prg,v 1.30 2007-07-05 14:32:15 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -485,8 +485,7 @@ LOCAL wndActive     := ::handle
 
       ::CancelHover()
       RETURN 0
-
-
+endif
 RETURN -1
 
 METHOD CancelHover() CLASS HBUTTONEx

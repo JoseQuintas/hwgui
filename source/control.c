@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.53 2007-07-05 13:49:16 lculik Exp $
+ * $Id: control.c,v 1.54 2007-07-05 14:31:00 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -28,6 +28,7 @@
 LRESULT CALLBACK WinCtrlProc (HWND, UINT, WPARAM, LPARAM);
 LRESULT APIENTRY SplitterProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY EditSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+LRESULT APIENTRY ButtonSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY TrackSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY TabSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 void CALLBACK TimerProc (HWND, UINT, UINT, DWORD) ;

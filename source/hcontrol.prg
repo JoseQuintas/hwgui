@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.31 2007-07-05 15:11:51 lculik Exp $
+ * $Id: hcontrol.prg,v 1.32 2007-07-05 18:42:39 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -604,17 +604,17 @@ LOCAL uAlign
       ENDIF
 
    ENDIF
+   if VALTYPE( ::hbitmap )
+      if ::iStyle ==  ST_ALIGN_HORIZ
+         uAlign := DT_RIGHT
+      else
+         uAlign := DT_LEFT
+      endif
 
-   if ::iStyle ==  ST_ALIGN_HORIZ
-      uAlign := DT_RIGHT
-   else
-      uAlign := DT_LEFT
+      IF VALTYPE( ::hbitmap ) == "N"
+         uAlign := DT_CENTER   
+      ENDIF
    endif
-
-   IF VALTYPE( ::hbitmap ) == "N"
-      uAlign := DT_CENTER
-
-   ENDIF
    uAlign += DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
 
    captionRect := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
@@ -695,8 +695,8 @@ LOCAL uAlign
             // if
          ELSE
 
-            SetTextColor( dc, ::GetSysColor( COLOR_BTNTEXT ) )
-            SetBkColor( dc, ::GetSysColor( COLOR_BTNFACE ) )
+            SetTextColor( dc, GetSysColor( COLOR_BTNTEXT ) )
+            SetBkColor( dc, GetSysColor( COLOR_BTNFACE ) )
             DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK + DT_CENTER )
          ENDIF
       ENDIF

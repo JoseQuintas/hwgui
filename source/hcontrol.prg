@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.32 2007-07-05 18:42:39 lculik Exp $
+ * $Id: hcontrol.prg,v 1.33 2007-07-05 19:03:52 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -604,17 +604,17 @@ LOCAL uAlign
       ENDIF
 
    ENDIF
-   if VALTYPE( ::hbitmap )
+
       if ::iStyle ==  ST_ALIGN_HORIZ
          uAlign := DT_RIGHT
       else
          uAlign := DT_LEFT
       endif
 
-      IF VALTYPE( ::hbitmap ) == "N"
+      IF VALTYPE( ::hbitmap ) != "N"
          uAlign := DT_CENTER   
       ENDIF
-   endif
+
    uAlign += DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
 
    captionRect := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }

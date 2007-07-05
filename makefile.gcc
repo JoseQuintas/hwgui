@@ -1,4 +1,4 @@
-# $Id: makefile.gcc,v 1.21 2007-03-27 21:07:02 richardroesnadi Exp $
+# $Id: makefile.gcc,v 1.22 2007-07-05 13:49:16 lculik Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -37,6 +37,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/resource.o \
    $(OBJ_DIR)/richedit.o \
    $(OBJ_DIR)/shellapi.o \
+   $(OBJ_DIR)/theme.o \
    $(OBJ_DIR)/window.o \
    $(OBJ_DIR)/wprint.o \
    $(OBJ_DIR)/drawwidg.o \

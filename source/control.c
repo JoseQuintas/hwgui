@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.52 2007-03-05 18:16:25 mauriliolongo Exp $
+ * $Id: control.c,v 1.53 2007-07-05 13:49:16 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -37,7 +37,7 @@ extern PHB_DYNS pSym_onEvent;
 static HWND hWndTT = 0;
 static BOOL lInitCmnCtrl = 0;
 static BOOL lToolTipBalloon = FALSE; // added by MAG
-static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc;
+static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc,wpOrigButtonProc;
 extern BOOL _AddBar( HWND pParent, HWND pBar, REBARBANDINFO* pRBBI );
 extern BOOL AddBar( HWND pParent, HWND pBar, LPCTSTR pszText, HBITMAP pbmp, DWORD dwStyle );
 extern BOOL AddBar1( HWND pParent, HWND pBar, COLORREF clrFore, COLORREF clrBack, LPCTSTR pszText, DWORD dwStyle );
@@ -1174,6 +1174,39 @@ LRESULT APIENTRY EditSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARA
    else
       return( CallWindowProc( wpOrigEditProc, hWnd, message, wParam, lParam ) );
 }
+
+HB_FUNC( HWG_INITBUTTONPROC )
+{
+   wpOrigButtonProc = (WNDPROC) SetWindowLong( (HWND) hb_parnl(1),
+                                 GWL_WNDPROC, (LONG) ButtonSubclassProc );
+}
+
+LRESULT APIENTRY ButtonSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+   long int res;
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+
+   if( !pSym_onEvent )
+      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
+
+   if( pSym_onEvent && pObject )
+   {
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
+      hb_vmPush( pObject );
+      hb_vmPushLong( (LONG ) message );
+      hb_vmPushLong( (LONG ) wParam );
+      hb_vmPushLong( (LONG ) lParam );
+      hb_vmSend( 3 );
+      res = hb_parnl( -1 );
+      if( res == -1 )
+         return( CallWindowProc( wpOrigButtonProc, hWnd, message, wParam, lParam ) );
+      else
+         return res;
+   }
+   else
+      return( CallWindowProc( wpOrigButtonProc, hWnd, message, wParam, lParam ) );
+}
+
 
 HB_FUNC( HWG_INITTRACKPROC )
 {

@@ -121,6 +121,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\resource.obj \
    $(HWGUI_OBJ_DIR)\richedit.obj \
    $(HWGUI_OBJ_DIR)\shellapi.obj  \
+   $(HWGUI_OBJ_DIR)\theme.obj \
    $(HWGUI_OBJ_DIR)\window.obj \
    $(HWGUI_OBJ_DIR)\wprint.obj \
    $(HWGUI_OBJ_DIR)\drawwidg.obj \

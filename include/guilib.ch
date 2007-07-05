@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.90 2007-06-30 12:57:30 lculik Exp $
+ *$Id: guilib.ch,v 1.91 2007-07-05 13:49:16 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -400,6 +400,25 @@
     [<oBut> := ] HButton():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
              <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> )
 
+#xcommand @ <x>,<y> BUTTONEX [ <oBut> CAPTION ] <caption> ;
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CLICK <bClick> ]      ;
+            [ STYLE <nStyle> ]         ;
+            [ FONT <oFont> ]           ;
+            [ TOOLTIP <ctoolt> ]       ;
+            [ BITMAP <hbit> ]          ;
+            [ BSTYLE <nBStyle> ]       ;
+          => ;
+    [<oBut> := ] HButtonEx():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<hbit>,<nBStyle> )
+
 #xcommand REDEFINE BUTTON [ <oBut> ]   ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
@@ -415,6 +434,24 @@
           => ;
     [<oBut> := ] HButton():Redefine( <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>, ;
                     <bClick>,<ctoolt>,<color>,<bcolor>,<cCaption> )
+
+#xcommand REDEFINE BUTTONEX [ <oBut> ]   ;
+            [ OF <oWnd> ]              ;
+            ID <nId>                   ;
+            [ CAPTION <cCaption> ]     ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ FONT <oFont> ]           ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CLICK <bClick> ]      ;
+            [ TOOLTIP <ctoolt> ]       ;
+            [ BITMAP <hbit> ]          ;
+            [ BSTYLE <nBStyle> ]       ;
+          => ;
+    [<oBut> := ] HButtonEx():Redefine( <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>, ;
+                    <bClick>,<ctoolt>,<color>,<bcolor>,<cCaption>,<hbit>,<nBStyle>  )
 
 #xcommand @ <x>,<y> GROUPBOX [ <oGroup> CAPTION ] <caption> ;
             [ OF <oWnd> ]              ;

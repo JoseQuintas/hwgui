@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.652 2007-07-02 08:29:11 mlacecilia Exp $
+ * $Id: Changelog,v 1.653 2007-07-05 13:49:16 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,25 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-07-05 11:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+   * include/guilib.ch
+     ! added @ buttonex and redefine buttonex commands
+   * include/windows.ch
+     ! added new defines
+   * source/hcontrol.prg
+     ! added new buttonex class
+   + source/theme.c
+     ! themes functions for hwgui
+   * makefile.*
+     ! updated to add theme.c
+   * source/control.c
+     ! added proc for buttonex control
+   * source/draw.c
+     ! enhaced getdrawiteminfo to return one more parameter
+     ! added the functions drawfocusrect and offsetrect
+   * source/drawtext.c
+     ! change drawtext() function to return the updated rect if passed as 8th parameter
 
 2007-07-02 10:15 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    * source/hownbtn.prg

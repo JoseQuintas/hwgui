@@ -16,7 +16,7 @@ if not exist obj md obj
 
 %HRB_DIR%\bin\harbour %1.prg %H_DEFINES% -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include %2 %3
 
-bcc32  -c %C_DEFINES% -O2 -tW -M -I%HRB_DIR%\include;%HWGUI_INSTALL%\include %1.c
+bcc32 -v -y -c %C_DEFINES% -O2 -tW -M -I%HRB_DIR%\include;%HWGUI_INSTALL%\include %1.c
 
 if exist %1.rc brc32 -r %1 -foobj\%1
 
@@ -56,9 +56,9 @@ echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc
 if exist obj\%1.res echo obj\%1.res + >> b32.bc
 echo obj\hwgui_xp.res >> b32.bc
-ilink32 -Gn -Tpe -aa @b32.bc
+ilink32 -v -Gn -Tpe -aa @b32.bc
 
-del *.tds
+rem del *.tds
 del %1.c
 del %1.map
 del %1.obj

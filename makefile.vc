@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.22 2007-04-18 09:15:43 alexstrickland Exp $
+# $Id: makefile.vc,v 1.23 2007-07-05 13:49:16 lculik Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -38,6 +38,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\richedit.obj \
    $(OBJ_DIR)\shellapi.obj  \
+   $(OBJ_DIR)\theme.obj \
    $(OBJ_DIR)\window.obj \
    $(OBJ_DIR)\wprint.obj \
    $(OBJ_DIR)\drawwidg.obj \
@@ -126,6 +127,8 @@ $(OBJ_DIR)\richedit.obj  : $(SRC_DIR)\richedit.c
 $(OBJ_DIR)\shellapi.obj : $(SRC_DIR)\shellapi.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\window.obj   : $(SRC_DIR)\window.c
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
+$(OBJ_DIR)\theme.obj   : $(SRC_DIR)\theme.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\wprint.obj   : $(SRC_DIR)\wprint.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**

@@ -1,20 +1,27 @@
 /*
- * $Id: hcontrol.prg,v 1.28 2006-11-16 13:01:45 alkresin Exp $
+ * $Id: hcontrol.prg,v 1.29 2007-07-05 13:49:17 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
+
+ * 
+ * ButtonEx class 
+ *
+ * Copyright 2007 Luiz Rafael Culik Guimaraes <luiz at xharbour.com.br >
+ * www - http://sites.uol.com.br/culikr/
+
 */
 
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
-
+#include "common.ch"
 #define  CONTROL_FIRST_ID   34000
 
-
+static  bMouseOverButton := .f.
 //- HControl
 
 CLASS HControl INHERIT HCustomWindow
@@ -286,6 +293,7 @@ CLASS HButton INHERIT HControl
    METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
                     tcolor, bColor )
    METHOD Init()
+
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -343,6 +351,361 @@ METHOD Init CLASS HButton
 RETURN  NIL
 
 //- HGroup
+
+
+
+CLASS HButtonEX INHERIT HButton
+
+   Data hBitmap
+   DATA m_bFirstTime INIT .T.
+   DATA Themed INIT .F.
+   DATA m_crColors INIT ARRAY( 6 )
+   DATA hTheme
+   DATA Caption
+   DATA state
+   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+   cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
+   bColor, lTransp, hBitmap )
+   Data iStyle
+
+   METHOD Paint( lpDis )
+   METHOD SetBitmap( )
+   METHOD INIT()
+   METHOD onevent( msg, wParam, lParam )
+   METHOD CancelHover()
+   METHOD End()
+   METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
+                    tcolor, bColor, hBitmap, iStyle )
+
+END CLASS
+
+METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+               cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
+               tcolor, bColor, hBitmap, iStyle ) CLASS HButtonEx
+   DEFAULT iStyle TO ST_ALIGN_HORIZ
+   ::Caption := cCaption
+   ::iStyle                             := iStyle
+   ::hBitmap                            := hBitmap
+   ::m_crColors[ BTNST_COLOR_BK_IN ]    := GetSysColor( COLOR_BTNFACE )
+   ::m_crColors[ BTNST_COLOR_FG_IN ]    := GetSysColor( COLOR_BTNTEXT )
+   ::m_crColors[ BTNST_COLOR_BK_OUT ]   := GetSysColor( COLOR_BTNFACE )
+   ::m_crColors[ BTNST_COLOR_FG_OUT ]   := GetSysColor( COLOR_BTNTEXT )
+   ::m_crColors[ BTNST_COLOR_BK_FOCUS ] := GetSysColor( COLOR_BTNFACE )
+   ::m_crColors[ BTNST_COLOR_FG_FOCUS ] := GetSysColor( COLOR_BTNTEXT )
+
+   IF VALTYPE( nStyle ) == "N"
+      nstyle += BS_OWNERDRAW
+   ELSE
+      nstyle := BS_OWNERDRAW
+   ENDIF
+
+   bPaint   := { | o, p | o:paint( p ) }
+
+   ::super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+                cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
+                tcolor, bColor )
+
+RETURN Self
+
+METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
+                 cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle  ) CLASS HButtonEx
+   DEFAULT iStyle TO ST_ALIGN_HORIZ
+   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+              bSize, bPaint, cTooltip, tcolor, bColor )
+
+   ::title   := cCaption
+
+   ::Caption := cCaption
+   ::iStyle                             := iStyle
+   ::hBitmap                            := hBitmap
+   ::m_crColors[ BTNST_COLOR_BK_IN ]    := GetSysColor( COLOR_BTNFACE )
+   ::m_crColors[ BTNST_COLOR_FG_IN ]    := GetSysColor( COLOR_BTNTEXT )
+   ::m_crColors[ BTNST_COLOR_BK_OUT ]   := GetSysColor( COLOR_BTNFACE )
+   ::m_crColors[ BTNST_COLOR_FG_OUT ]   := GetSysColor( COLOR_BTNTEXT )
+   ::m_crColors[ BTNST_COLOR_BK_FOCUS ] := GetSysColor( COLOR_BTNFACE )
+   ::m_crColors[ BTNST_COLOR_FG_FOCUS ] := GetSysColor( COLOR_BTNTEXT )
+
+   bPaint   := { | o, p | o:paint( p ) }
+
+   IF bClick != NIL
+      ::oParent:AddEvent( 0, ::id, bClick )
+   ENDIF
+
+RETURN Self
+
+METHOD SetBitmap() CLASS HButtonEX
+   IF VALTYPE( ::hBitmap ) == "N"
+      SendMessage( ::handle, BM_SETIMAGE, IMAGE_BITMAP, ::hBitmap )
+   ENDIF
+
+RETURN self
+
+METHOD End() CLASS HButtonEX
+   Super:end()
+RETURN self
+
+METHOD INIT CLASS HButtonEx
+
+   ::nHolder := 1
+   SetWindowObject( ::handle, Self )
+   HWG_INITBUTTONPROC( ::handle )
+   ::super:init()
+   ::SetBitmap()
+RETURN NIL
+
+
+METHOD onEvent( msg, wParam, lParam )
+
+LOCAL state
+LOCAL point,point2
+LOCAL wndUnderMouse := nil
+LOCAL wndActive     := ::handle
+
+   IF msg == WM_THEMECHANGED
+      IF ::Themed
+         IF VALTYPE( ::hTheme ) == "P"
+            HB_CLOSETHEMEDATA( ::htheme )
+            ::hTheme       := nil
+            ::m_bFirstTime := .T.
+         ENDIF
+      ENDIF
+      RETURN 0
+   ELSEIF msg == WM_MOUSEMOVE
+      if(!bMouseOverButton)
+    
+         bMouseOverButton := .T.
+         Invalidaterect( ::handle, .f. )
+         TRACKMOUSEVENT( ::handle )
+      endif
+
+      
+      RETURN 0
+
+   ELSEIF msg == WM_MOUSELEAVE
+
+      ::CancelHover()
+      RETURN 0
+
+
+RETURN -1
+
+METHOD CancelHover() CLASS HBUTTONEx
+
+   IF ( bMouseOverButton )
+      bMouseOverButton := .F.
+      Invalidaterect( ::handle, .f. )
+   ENDIF
+
+RETURN nil
+
+METHOD Paint( lpDis ) CLASS HBUTTONEx
+
+LOCAL drawInfo := GetDrawItemInfo( lpdis )
+
+LOCAL dc := drawInfo[ 3 ]
+
+LOCAL bIsPressed     := HWG_BITAND( DrawInfo[ 9 ], ODS_SELECTED ) != 0
+LOCAL bIsFocused     := HWG_BITAND( DrawInfo[ 9 ], ODS_FOCUS ) != 0
+LOCAL bIsDisabled    := HWG_BITAND( DrawInfo[ 9 ], ODS_DISABLED ) != 0
+LOCAL bDrawFocusRect := !HWG_BITAND( DrawInfo[ 9 ], ODS_NOFOCUSRECT ) != 0
+LOCAL sTitle
+LOCAL focusRect
+
+LOCAL captionRect
+LOCAL centerRect
+LOCAL bHasTitle
+LOCAL itemRect    := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
+
+LOCAL state
+
+LOCAL crColor
+LOCAL brBackground
+LOCAL br
+LOCAL brBtnShadow
+LOCAL uState
+LOCAL captionRectWidth
+LOCAL captionRectHeight
+LOCAL centerRectWidth
+LOCAL centerRectHeight
+LOCAL uAlign
+
+   IF ( ::m_bFirstTime )
+
+      ::m_bFirstTime := .F.
+
+      IF ( ISTHEMEDLOAD() )
+
+         IF VALTYPE( ::hTheme ) == "P"
+            HB_CLOSETHEMEDATA( ::htheme )
+         ENDIF
+         ::hTheme := nil
+         ::hTheme := hb_OpenThemeData( ::handle, "BUTTON" )
+
+      ENDIF
+   ENDIF
+
+   IF !EMPTY( ::hTheme )
+      ::Themed := .T.
+   ENDIF
+
+   SetBkMode( dc, TRANSPARENT )
+
+   // Prepare draw... paint button background
+
+   IF ::Themed
+
+      state := IF( bIsPressed, PBS_PRESSED, PBS_NORMAL )
+
+      IF state == PBS_NORMAL
+
+         IF bIsFocused
+            state := PBS_DEFAULTED
+         ENDIF
+         IF bMouseOverButton
+            state := PBS_HOT
+         ENDIF
+      ENDIF
+      hb_DrawThemeBackground( ::hTheme, dc, BP_PUSHBUTTON, state, itemRect, Nil )
+   ELSE
+
+      IF bIsFocused
+
+         br := HBRUSH():Add( RGB( 0, 0, 0 ) )
+         FrameRect( dc, itemRect, br:handle )
+         InflateRect( @itemRect, - 1, - 1 )
+
+      ENDIF
+
+      crColor := GetSysColor( COLOR_BTNFACE )
+
+      brBackground := HBRUSH():Add( crColor )
+
+      FillRect( dc, itemRect, brBackground:handle )
+
+      IF ( bIsPressed )
+         brBtnShadow := HBRUSH():Add( GetSysColor( COLOR_BTNSHADOW ) )
+         FrameRect( dc, itemRect, brBtnShadow:handle )
+
+      ELSE
+
+         uState := HWG_BITOR( ;
+                              HWG_BITOR( DFCS_BUTTONPUSH, ;
+                              IF( bMouseOverButton, DFCS_HOT, 0 ) ), ;
+                              IF( bIsPressed, DFCS_PUSHED, 0 ) )
+
+         DrawFrameControl( dc, itemRect, DFC_BUTTON, uState )
+      ENDIF
+
+   ENDIF
+
+   if ::iStyle ==  ST_ALIGN_HORIZ
+      uAlign := DT_RIGHT
+   else
+      uAlign := DT_LEFT
+   endif
+
+   IF VALTYPE( ::hbitmap ) == "N"
+      uAlign := DT_CENTER
+
+   ENDIF
+   uAlign += DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
+
+   captionRect := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
+
+   bHasTitle := valtype(::caption) =="C" .and. !EMPTY( ::Caption )
+
+   DrawTheIcon( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, bIsDisabled, nil, ::hbitmap, ::iStyle )
+
+   IF ( bHasTitle )
+
+      // If button is pressed then "press" title also
+      IF bIsPressed .and. !::Themed
+         OffsetRect( @captionRect, 3, 3 )
+      ENDIF
+
+      // Center text
+      centerRect := captionRect
+
+      DrawText( dc, ::caption, captionrect[ 1 ], captionrect[ 2 ], captionrect[ 3 ], captionrect[ 4 ], uAlign + DT_CALCRECT, @captionRect )
+
+      captionRectWidth  := captionrect[ 3 ] - captionrect[ 1 ]
+      captionRectHeight := captionrect[ 4 ] - captionrect[ 2 ]
+      centerRectWidth   := centerRect[ 3 ] - centerRect[ 1 ]
+      centerRectHeight  := centerRect[ 4 ] - centerRect[ 2 ]
+      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
+
+      SetBkMode( dc, TRANSPARENT )
+      IF ( bIsDisabled )
+
+         OffsetRect( @captionRect, 1, 1 )
+         SetTextColor( DC, GetSysColor( COLOR_3DHILIGHT ) )
+         DrawText( DC, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], DT_WORDBREAK + DT_CENTER, @captionRect )
+         OffsetRect( @captionRect, - 1, - 1 )
+         SetTextColor( DC, GetSysColor( COLOR_3DSHADOW ) )
+         DrawText( DC, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], DT_WORDBREAK + DT_VCENTER + DT_CENTER, @captionRect )
+
+      ELSE
+
+         IF ( bMouseOverButton .or. bIsPressed )
+
+            SetTextColor( DC, ::m_crColors[ BTNST_COLOR_FG_IN ] )
+            SetBkColor( DC, ::m_crColors[ BTNST_COLOR_BK_IN ] )
+
+         ELSE
+
+            IF ( bIsFocused )
+
+               SetTextColor( DC, ::m_crColors[ BTNST_COLOR_FG_FOCUS ] )
+               SetBkColor( DC, ::m_crColors[ BTNST_COLOR_BK_FOCUS ] )
+
+            ELSE
+
+               SetTextColor( DC, ::m_crColors[ BTNST_COLOR_FG_OUT ] )
+               SetBkColor( DC, ::m_crColors[ BTNST_COLOR_BK_OUT ] )
+            ENDIF
+         ENDIF
+      ENDIF
+
+      IF ::Themed
+
+         hb_DrawThemeText( ::hTheme, dc, BP_PUSHBUTTON, PBS_NORMAL, ;
+                           ::caption, ;
+                           uAlign, ;
+                           0, captionRect )
+
+      ELSE
+
+         SetBkMode( dc, TRANSPARENT )
+
+         IF ( bIsDisabled )
+
+            OffsetRect( @captionRect, 1, 1 )
+            SetTextColor( dc, GetSysColor( COLOR_3DHILIGHT ) )
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK + DT_CENTER )
+            OffsetRect( @captionRect, - 1, - 1 )
+            SetTextColor( dc, GetSysColor( COLOR_3DSHADOW ) )
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK + DT_CENTER )
+            // if
+         ELSE
+
+            SetTextColor( dc, ::GetSysColor( COLOR_BTNTEXT ) )
+            SetBkColor( dc, ::GetSysColor( COLOR_BTNFACE ) )
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK + DT_CENTER )
+         ENDIF
+      ENDIF
+   ENDIF
+
+   // Draw the focus rect
+   IF bIsFocused .and. bDrawFocusRect
+
+      focusRect := itemRect
+      InflateRect( @focusRect, - 3, - 3 )
+      DrawFocusRect( dc, focusRect )
+   ENDIF
+
+RETURN nil
+            
+
 
 CLASS HGroup INHERIT HControl
 
@@ -445,3 +808,10 @@ LOCAL x2  := drawInfo[6], y2 := drawInfo[7]
 
 RETURN NIL
 
+
+
+init procedure starttheme()
+INITTHEMELIB()
+
+exit procedure endtheme()
+ENDTHEMELIB()

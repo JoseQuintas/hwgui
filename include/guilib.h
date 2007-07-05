@@ -1,9 +1,14 @@
 /*
- *$Id: guilib.h,v 1.11 2006-04-06 16:15:04 alkresin Exp $
+ *$Id: guilib.h,v 1.12 2007-07-05 13:49:16 lculik Exp $
  */
 
 #define	WND_DLG_RESOURCE       10
 #define	WND_DLG_NORESOURCE     11
+#define ST_ALIGN_HORIZ       0           // Icon/bitmap on the left, text on the right
+#define ST_ALIGN_VERT        1           // Icon/bitmap on the top, text on the bottom
+#define ST_ALIGN_HORIZ_RIGHT 2           // Icon/bitmap on the right, text on the left
+#define ST_ALIGN_OVERLAP     3           // Icon/bitmap on the same space as text
+
 
 #ifdef __EXPORT__
    #define HB_NO_DEFAULT_API_MACROS

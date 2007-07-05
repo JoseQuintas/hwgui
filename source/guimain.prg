@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.17 2006-11-16 13:01:45 alkresin Exp $
+ * $Id: guimain.prg,v 1.18 2007-07-05 13:49:17 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -182,7 +182,7 @@ Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
          SIZE width,height       ;
          STYLE nStyle            ;
          FONT oFont              ;
-         ON INIT {|o|ResetWindowPos(o:handle)}
+         ON INIT {|o|ResetWindowPos(o:handle),oBrw:setfocus()}
 
    IF lArray
       @ 0,0 BROWSE oBrw ARRAY
@@ -219,7 +219,7 @@ Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
       x1 := Int(width/2) - Iif( cCancel != Nil, 90, 40 )
       @ x1,height-36 BUTTON cOk SIZE 80,30 ON CLICK {||nChoice:=oBrw:nCurrent,EndDialog(oDlg:handle)}
       IF cCancel != Nil
-         @ x1+100,height-36 BUTTON cCancel SIZE 80,30 ON CLICK {||EndDialog(oDlg:handle)}
+         @ x1+100,height-36 BUTTON cCancel SIZE 80,30 ON CLICK {||nChoice:=0,EndDialog(oDlg:handle)}
       ENDIF
    ENDIF
 

@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.12 2006-08-02 19:28:58 fsgiudice Exp $
+ * $Id: drawtext.c,v 1.13 2007-07-05 13:49:17 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -76,6 +76,14 @@ HB_FUNC( DRAWTEXT )
      &rc,
      hb_parni( 7 )
    );
+   if (ISBYREF(8))
+   {
+      hb_storni( rc.left   , 8,1 );
+      hb_storni( rc.top    , 8,1 );
+      hb_storni( rc.right  , 8,1 );
+      hb_storni( rc.bottom , 8,1 );
+    }
+
 }
 
 HB_FUNC( GETTEXTMETRIC )

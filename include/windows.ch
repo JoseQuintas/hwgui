@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.40 2007-06-30 12:57:30 lculik Exp $
+ *$Id: windows.ch,v 1.41 2007-07-05 13:49:16 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -1196,3 +1196,25 @@
 #define TPM_LEFTALIGN   0x0000
 #define TPM_CENTERALIGN 0x0004
 #define TPM_RIGHTALIGN  0x0008
+#define DS_CONTROL          0x0400
+
+#define BUTTON_UNCHECKED       0x00
+#define BUTTON_CHECKED         0x01
+#define BUTTON_3STATE          0x02
+#define BUTTON_HIGHLIGHTED     0x04
+#define BUTTON_HASFOCUS        0x08
+#define BUTTON_NSTATES         0x0F
+#define BUTTON_BTNPRESSED      0x40
+#define BUTTON_UNKNOWN2        0x20
+#define BUTTON_UNKNOWN3        0x10
+
+
+#define ODA_DRAWENTIRE  0x0001     
+#define ODA_SELECT      0x0002     
+#define ODA_FOCUS       0x0004     
+                                   
+#define WM_MOUSEHOVER                   0x02A1
+#define WM_MOUSELEAVE                   0x02A3
+#define WM_NCMOUSEHOVER                 0x02A0
+#define WM_NCMOUSELEAVE                 0x02A2
+

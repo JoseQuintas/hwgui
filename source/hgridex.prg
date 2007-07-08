@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.7 2007-06-06 22:53:27 lculik Exp $
+ * $Id: hgridex.prg,v 1.8 2007-07-08 21:58:59 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -38,6 +38,7 @@ CLASS HGridEX INHERIT HControl
    DATA nRow       INIT 0
    DATA nCol       INIT 0
    DATA aColors    INIT {}
+   DATA hSort
    
    DATA lNoScroll  INIT .F.
    DATA lNoBorder  INIT .F.
@@ -106,6 +107,7 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
    ::bKeyDown  := bKeyDown 
    ::bPosChg   := bPosChg  
    ::bDispInfo := bDispInfo
+
    
    HWG_InitCommonControlsEx()
    
@@ -243,6 +245,14 @@ METHOD Notify( lParam )  Class HGRIDEX
         Res := PROCESSCUSTU( ::handle, lParam, ::aColors )
         return res
     ENDIF
+    IF GetNotifyCode( lParam ) == LVN_COLUMNCLICK //.and. GETNOTIFYCODEFROM(lParam) == ::Handle
+       if empty(::hsort)
+          ::hSort := LISTVIEWSORTINFONEW( lParam,nil )
+       endif
+
+       LISTVIEWSORT( ::handle, lParam, ::hSort )
+       return  0
+    endif
     Res := ListViewNotify( Self, lParam )
     IF Valtype(Res) == "N"
        Hwg_SetDlgResult( ::oParent:Handle, res )

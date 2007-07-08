@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.41 2007-07-05 13:49:16 lculik Exp $
+ *$Id: windows.ch,v 1.42 2007-07-08 21:58:58 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -1218,3 +1218,7 @@
 #define WM_NCMOUSEHOVER                 0x02A0
 #define WM_NCMOUSELEAVE                 0x02A2
 
+#define LVM_COLUMNCLICK         (LVM_FIRST-8)
+#define LVN_FIRST               -100       // listview
+
+#define LVN_COLUMNCLICK         (LVN_FIRST-8)

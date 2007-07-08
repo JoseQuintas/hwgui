@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.21 2007-01-30 12:05:37 lculik Exp $
+ * $Id: grid.c,v 1.22 2007-07-08 21:58:59 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -30,6 +30,19 @@
 #include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
+
+
+
+static HWND hListSort=NULL;
+
+typedef struct tagSortInfo
+{
+	HWND pListControl;
+	int	nColumnNo;
+	BOOL nAscendingSortOrder;
+}SortInfo,*PSORTINFO;
+
+
 
 LRESULT ProcessCustomDraw (LPARAM lParam,PHB_ITEM pColor);
 HB_FUNC( LISTVIEW_CREATE )
@@ -344,19 +357,19 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
    int iSubItemYesNo = lCol == 0  ? 0 : 1 ;
    char * sText = hb_parc( 4 );
    int iBitMap = hb_parni(5);
-
    ULONG i;
    LVITEM lvi;
    int iResult;
-	RECT rect;
+   RECT rect;
+
 	GetClientRect(hwndListView, &rect);
 
    memset( &lvi, 0, sizeof( lvi ) );
 
    if ( iBitMap >= 0 )   
-      lvi.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_STATE;  
+      lvi.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_STATE ;  
    else   
-      lvi.mask = LVIF_TEXT | LVIF_STATE;
+      lvi.mask = LVIF_TEXT | LVIF_STATE ;
 
    lvi.iImage = iBitMap >= 0 ? lCol : -1 ;
    lvi.state = 0;
@@ -365,6 +378,7 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
 
    lvi.iItem = lLin;
    lvi.iSubItem = lCol;
+
 	
    switch(iSubItemYesNo)
    {
@@ -481,3 +495,73 @@ HB_FUNC(LISTVIEWGETITEM)
         }
   hb_retcAdopt(Buffer);
 }
+
+
+int CALLBACK CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
+
+{
+   PSORTINFO pSortInfo = (PSORTINFO)lParamSort;
+   int nResult 			= 0;
+	
+   int nColumnNo 			= pSortInfo->nColumnNo;
+   HWND  pListControl 	= pSortInfo->pListControl;
+   BOOL nAscendingSortOrder 	= pSortInfo->nAscendingSortOrder;
+   CHAR szA[256] = {0};
+   CHAR szB[256] = {0};
+   int rc;
+
+
+   ListView_GetItemText(pListControl, (INT)lParam1, nColumnNo, szA, 256);
+   ListView_GetItemText(pListControl, (INT)lParam2, nColumnNo, szB, 256);
+
+ 
+   if (nAscendingSortOrder)
+      rc = strcmp(szA, szB);
+   else
+     rc = strcmp(szA, szB) * -1;
+
+   return rc ;
+
+
+
+}
+HB_FUNC(LISTVIEWSORTINFONEW)
+{
+    //PSORTINFO p = (PSORTINFO) hb_xgrab(sizeof(SortInfo));
+   LPNMLISTVIEW phdNotify = ( LPNMLISTVIEW ) hb_parnl( 1 ) ;
+   PSORTINFO p ;
+   if ( ISPOINTER( 2 ) )
+   {
+      return ;
+   }
+   p = (PSORTINFO) hb_xgrab(sizeof(SortInfo));
+   if ( p )
+   {
+      p->pListControl = NULL;	
+      p->nColumnNo =-1;
+      p->nAscendingSortOrder = FALSE;   
+   }
+   hb_retptr((void*) p ) ;
+}
+
+HB_FUNC(LISTVIEWSORTINFOFREE)
+{
+        PSORTINFO p = ( PSORTINFO ) hb_parptr( 3 ) ;
+        if ( p ) 
+           hb_xfree( p );
+}
+
+HB_FUNC(LISTVIEWSORT)
+{
+    PSORTINFO p = ( PSORTINFO ) hb_parptr( 3 ) ;   
+    LPNMLISTVIEW phdNotify = ( LPNMLISTVIEW ) hb_parnl( 2 ) ; 
+    if (phdNotify->iSubItem == p->nColumnNo)
+       p->nAscendingSortOrder = !p->nAscendingSortOrder;
+    else
+       p->nAscendingSortOrder = TRUE;
+
+//    p->nColumnNo = phdNotify->iItem;
+    p->nColumnNo = phdNotify->iSubItem;
+    p->pListControl = ( HWND ) hb_parnl(1);
+    ListView_SortItemsEx( ( HWND ) hb_parnl( 1 ), CompareFunc, p );
+}	

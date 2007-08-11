@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.654 2007-07-08 21:58:58 lculik Exp $
+ * $Id: Changelog,v 1.655 2007-08-11 04:01:14 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-08-10 02:35 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
+   * utils\designer\designer.prg, hCtrl.prg, hFormgen.prg
+     { patch suggest from Francesco }
+     + Preview button & minor fixed
+       
 2007-07-08 19:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/grid.c
      ! added functions for listview sort

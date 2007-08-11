@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.27 2007-05-07 22:52:51 richardroesnadi Exp $
+ * $Id: designer.prg,v 1.28 2007-08-11 04:01:14 richardroesnadi Exp $
  *
  * Designer
  * Main file
@@ -159,6 +159,13 @@ Public crossCursor, vertCursor, horzCursor
           SIZE 24,24 FLAT                ;
           BITMAP "BMP_SAVE" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
           TOOLTIP "Save Form"
+      @ 84,6 LINE LENGTH 18 VERTICAL
+
+      @ 89,3 OWNERBUTTON OF oPanel       ;
+          ON CLICK {||doPreview()} ;
+          SIZE 24,24 FLAT                ;
+          BITMAP "smNext" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
+          TOOLTIP "Preview Form"
    ENDIF
 
    @ 3,30 TAB oTab ITEMS {} OF oPanel SIZE 280,210 FONT oFont ;
@@ -454,6 +461,7 @@ Memvar oDesigner
       ELSE
          oDlg:DelControl( oCtrl )
       ENDIF
+	  InspSetCombo( ) 
       SetCtrlSelected( oDlg )
       oDlg:oParent:lChanged := .T.
    ENDIF
@@ -524,7 +532,7 @@ Local i, j, alen := Len( HFormGen():aForms ), lRes := .T., oIni, critem, oNode
 Memvar oDesigner, cCurDir
 
   IF alen > 0
-     IF MsgYesNo( "Are you really want to quit ?", "Designer" )
+     IF MsgYesNo( "Do you really want to quit ?", "Designer" )
         FOR i := Len( HFormGen():aForms ) TO 1 STEP -1
            HFormGen():aForms[i]:End( ,.F. )
         NEXT

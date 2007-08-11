@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part class="form">
   <style>
-    <property name="Geometry">{382,167,425,400}</property>
+    <property name="Geometry">{382,265,424,301}</property>
     <property name="Caption">[OLE EXCEL EXAMPLE]</property>
     <property name="FormType">[dlgModal]</property>
     <property name="lClipper">.F.</property>
@@ -213,7 +213,7 @@ oChart:ChartTitle:Characters:Text := "TESTING OLE FROM XHARBOUR"
       <property name="Caption">[CREATE 2 SERIES XL GRAPH]</property>
     </style>
     <method name="onClick">
-      <![CDATA[pRIVATE DB,K OaPP, OwS, OcHARTS
+      <![CDATA[pRIVATE DB,K oApp, OwS, OcHARTS
 
 DB:= CreateObject("Excel.Application")
 DB:Visible      := .T.
@@ -226,7 +226,10 @@ oCharts         := DB:Charts
 
 //Define Constants
 xlLine := 4
-xlColumns := 2
+
+// 1=Kolom  2=Baris/Row
+xlColumns := 1
+
 xlLocationAsNewSheet := 1
 xlCategory := 1
 xlValue := 2
@@ -271,7 +274,6 @@ oWs:Range("B10"):Select
 DB:ActiveCell:FormulaR1C1 := "8"
 oWs:Range("B3:B10"):Select
 
-
 oWs:Range("C3"):Select
 DB:ActiveCell:FormulaR1C1 := "5"
 oWs:Range("C4"):Select
@@ -291,15 +293,15 @@ DB:ActiveCell:FormulaR1C1 := "7"
 oWs:Range("C3:C10"):Select
 
 
-
 oCharts:Add()
 DB:ActiveChart:ChartType :=  xlLine
 oSource := DB:Sheets("Sheet1"):Range("B3:C10")
 DB:ActiveChart:SetSourceData(Source:=oSource, PlotBy := xlColumns)
 DB:ActiveChart:SeriesCollection(1):XValues := "=Sheet1!R3C1:R10C1"
 
-DB:ActiveChart:SeriesCollection(1):Name:=DB:Sheets("Sheet1"):Range("B2")
-DB:ActiveChart:SeriesCollection(2):Name:=DB:Sheets("Sheet1"):Range("C2")
+
+//DB:ActiveChart:SeriesCollection(1):Name:=DB:Sheets("Sheet1"):Range("B2")
+//DB:ActiveChart:SeriesCollection(2):Name:=DB:Sheets("Sheet1"):Range("C2")
 
 
 
@@ -308,7 +310,7 @@ DB:ActiveChart:SeriesCollection(2):Name:=DB:Sheets("Sheet1"):Range("C2")
 //DB:ActiveChart:SeriesCollection(2):XValues := "=Sheet1!R3C1:R10C1"
 //DB:ActiveChart:SeriesCollection(1):Name := "=Series Name 5.1"
 
-DB:ActiveChart:Location(Where:=xlLocationAsNewSheet, Name:="save_new_sheet")
+DB:ActiveChart:Location(Where:=xlLocationAsNewSheet, Name:="Graph1")
 DB:ActiveChart:HasTitle := .T.
 DB:ActiveChart:ChartTitle:Characters:Text := "Transfer rates - chart title"
 DB:ActiveChart:Axes(xlCategory, xlPrimary):HasTitle := .T.

@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.37 2007-04-24 19:53:50 richardroesnadi Exp $
+ * $Id: hformgen.prg,v 1.38 2007-08-11 04:01:15 richardroesnadi Exp $
  *
  * Designer
  * HFormGen class
@@ -86,7 +86,9 @@ Local hDCwindow := GetDC( GetActiveWindow() ), aTermMetr := GetDeviceArea( hDCwi
 
    ::type := 1
    ::name := name
-   ::CreateDialog( { {"Left",Ltrim(Str(aTermMetr[1]-500))}, {"Top","120"},{"Width","500"},{"Height","400"},{"Caption",name} } )
+   //::CreateDialog( { {"Left",Ltrim(Str(aTermMetr[1]-500))},  //{"Top","120"},{"Width","500"},{"Height","400"},{"Caption",name} } )
+    ::CreateDialog( { {"Left","330"}, {"Top","220"},{"Width","500"},{"Height","400"},{"Caption",name} } )
+   
    ::filename := ""
 
    Aadd( ::aForms, Self )
@@ -96,7 +98,7 @@ Return Self
 METHOD OpenR( fname )  CLASS HFormGen
 Local oForm := ::aForms[1]
 Memvar oDesigner
-   IF !MsgYesNo( "The form will be opened INSTEAD of current ! Are you agree ?", "Designer")
+   IF !MsgYesNo( "The form will be opened INSTEAD of current ! Do you agree ?", "Designer")
       Return Nil
    ENDIF
    oDesigner:lSingleForm := .F.

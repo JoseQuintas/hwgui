@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.18 2007-04-24 19:53:50 richardroesnadi Exp $
+ * $Id: hctrl.prg,v 1.19 2007-08-11 04:01:15 richardroesnadi Exp $
  *
  * Designer
  * HControlGen class
@@ -39,6 +39,7 @@ CLASS HControlGen INHERIT HControl
    METHOD Activate()
    METHOD Paint( lpdis )
    METHOD GetProp( cName,i )
+   METHOD GetPropIndex( cName,i )
    METHOD SetProp( xName,xValue )
    METHOD SetCoor( xName,nValue )
 
@@ -187,20 +188,36 @@ Private hDC := drawInfo[3], oCtrl := Self
 Return Nil
 
 METHOD GetProp( cName,i ) CLASS HControlGen
-
-  cName := Lower( cName )
-  i := Ascan( ::aProp,{|a|Lower(a[1])==cName} )
+//FP get property index
+  i := ::GetPropIndex( cName )
 Return Iif( i==0, Nil, ::aProp[i,2] )
 
-METHOD SetProp( xName,xValue )
+METHOD GetPropIndex(cName ) CLASS HControlGen
+local i := 0
+   cName := Lower( cName )
+   i := Ascan( ::aProp,{|a|Lower(a[1])==cName} )
+Return (i)
 
+METHOD SetProp( xName,xValue )
+local iIndex := 0
    IF Valtype( xName ) == "C"
       xName := Lower( xName )
-      xName := Ascan( ::aProp,{|a|Lower(a[1])==xName} )
+      //xName := Ascan( ::aProp,{|a|Lower(a[1])==xName} )
+	  iIndex := ::GetPropIndex( xName )
+    ENDIF
+    IF Valtype( xName ) == "N"
+      iIndex := xName
+    ENDIF
+
+
+   //IF xName != 0
+   //   ::aProp[xName,2] := xValue
+   //ENDIF
+
+   IF iIndex != 0
+      ::aProp[iIndex,2] := xValue
    ENDIF
-   IF xName != 0
-      ::aProp[xName,2] := xValue
-   ENDIF
+
 Return xValue
 
 METHOD SetCoor( xName,nValue )

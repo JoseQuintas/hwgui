@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.656 2007-08-14 12:13:57 lculik Exp $
+ * $Id: Changelog,v 1.657 2007-08-14 18:39:55 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,11 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-08-15 01:30 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
+    + utils\designer\samples\ft\ft.xml
+		! Menu Financial Tool
+	* fix a.xml 
+		! Annuity
+		
+
 2007-08-14 19:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source\hlistbox.prg
      !added addItem method
 
 
+>>>>>>> 1.656
 2007-08-10 02:35 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
    * utils\designer\designer.prg, hCtrl.prg, hFormgen.prg
      { patch suggest from Francesco }

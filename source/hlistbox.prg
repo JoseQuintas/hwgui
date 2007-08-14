@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.5 2004-07-29 16:48:15 lf_sfnet Exp $
+ * $Id: hlistbox.prg,v 1.6 2007-08-14 12:09:49 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -40,6 +40,7 @@ CLASS HListBox INHERIT HControl
    METHOD Init( aListbox, nCurrent )
    METHOD Refresh()
    METHOD Setitem( nPos )
+   METHOD AddItems(p)
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,oFont, ;
@@ -66,6 +67,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
 Return Self
 
 METHOD Activate CLASS HListBox
+Tracelog(::oParent:handle )
    IF ::oParent:handle != 0
       ::handle := CreateListbox( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
@@ -130,6 +132,15 @@ METHOD SetItem(nPos) CLASS HListBox
         ENDIF
 Return Nil
 
+METHOD AddItems(p)
+Local i
+aadd(::aItems,p)
+         SendMessage( ::handle, LB_RESETCONTENT, 0, 0)
+         FOR i := 1 TO Len( ::aItems )
+            ListboxAddString( ::handle, ::aItems[i] )
+         NEXT
+         ListboxSetString( ::handle, ::value )
+return self
 Static Function __Valid( oCtrl )
 
    oCtrl:value := SendMessage( oCtrl:handle,LB_GETCURSEL,0,0 ) + 1

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part class="form">
   <style>
-    <property name="Geometry">{124,144,508,87}</property>
+    <property name="Geometry">{124,144,508,131}</property>
     <property name="Caption">[Example]</property>
     <property name="FormType">[Main]</property>
     <property name="lClipper">.F.</property>
     <property name="lExitOnEnter">.F.</property>
-    <property name="Variables">{oForm1,oForm2,oForm3,oRep1}</property>
+    <property name="Variables">{oForm1,oForm2,oForm3,oRep1,oForm4}</property>
     <property name="FromStyle">[Popup]</property>
+    <property name="Icon">[]</property>
     <property name="Modal">.F.</property>
     <property name="SystemMenu">.T.</property>
     <property name="Minimizebox">.F.</property>
@@ -23,6 +24,7 @@
     <![CDATA[oForm1 := HFormTmpl():Read( "testget1.xml" )
 oForm2 := HFormTmpl():Read( "testget2.xml" )
 oForm3 := HFormTmpl():Read( "testdbf1.xml" )
+oForm4 := HFormTmpl():Read( "test_ctrl.xml" )
 orep1 := hreptmpl():Read("testrep1.xml")]]>
   </method>
   <part class="menu">
@@ -112,10 +114,21 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
         <![CDATA[orep1:print(,.t.)]]>
       </method>
     </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{354,3,107,42}</property>
+        <property name="Name">[oOwnerbutton2]</property>
+        <property name="Caption">[ProgressBar]</property>
+        <property name="Flat">.T.</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[oForm4:Show()]]>
+      </method>
+    </part>
   </part>
   <part class="status">
     <style>
-      <property name="Geometry">{0,65,508,22}</property>
+      <property name="Geometry">{0,109,508,22}</property>
       <property name="Name">[oStatus1]</property>
       <property name="aParts">{120,0}</property>
     </style>

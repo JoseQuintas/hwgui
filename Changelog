@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.657 2007-08-14 18:39:55 richardroesnadi Exp $
+ * $Id: Changelog,v 1.658 2007-08-16 05:48:14 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,12 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-08-16 08:30 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
+    * utils\designer\resource\widgets.xml
+        + added ProgressBar control
+    * utils\designer\designer.rc
+        + added bitmap for progressbar control
+    * source\hfrmtmpl.prg
+        + added ProgressBar control support
+    * utils\designer\samples\example.xml
+    + utils\designer\samples\test_ctrl.xml
+        + added test for progressbar control created in designer
+
 2007-08-15 01:30 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
     + utils\designer\samples\ft\ft.xml
-		! Menu Financial Tool
-	* fix a.xml 
-		! Annuity
-		
+        ! Menu Financial Tool
+    * fix a.xml
+        ! Annuity
+
 
 2007-08-14 19:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source\hlistbox.prg
@@ -25,7 +36,7 @@
    * utils\designer\designer.prg, hCtrl.prg, hFormgen.prg
      { patch suggest from Francesco }
      + Preview button & minor fixed
-       
+
 2007-07-08 19:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/grid.c
      ! added functions for listview sort
@@ -54,8 +65,8 @@
 2007-07-02 10:15 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    * source/hownbtn.prg
      * moved the code handling the lCheck property before the bClick method
-	   evaluation. The lCheck now return consistently at cb evaluation time.
-	   Thanks to Giuseppe Mastrangelo who signaled this patch.
+       evaluation. The lCheck now return consistently at cb evaluation time.
+       Thanks to Giuseppe Mastrangelo who signaled this patch.
 
 2007-06-30 11:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * include/guilib.ch
@@ -69,34 +80,34 @@
 2007-06-29 20:00 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    * source/hownbtn.prg
      * commented out the paint message in Up() method because when a system
-	   dialog overlaps the button, this disappears
+       dialog overlaps the button, this disappears
    + source/hownbtn.prg
    + include/guilib.ch
      + added the property CHECK to handle the press status of the button
-       (with this setting the button works like the "Bold"	button in Word 
+       (with this setting the button works like the "Bold"  button in Word
         toolbar, like a checkbox but with a button appearance)
 
 2007-06-26 20:35 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    * source/hedit.prg
-     * Correction for the bad deletion signaled by Sauli Bueno and Gilberto 
-	   Silverio (Thanks to Giuseppe Mastrangelo for the suggestion of the
-	   fix)
+     * Correction for the bad deletion signaled by Sauli Bueno and Gilberto
+       Silverio (Thanks to Giuseppe Mastrangelo for the suggestion of the
+       fix)
 
 2007-06-16 10:15 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    * source/hedit.prg
      * New fix to avoid error when Len(::title) is'nt applicable
-	   Thanks to Gilberto Silverio
+       Thanks to Gilberto Silverio
 
 2007-06-16 10:15 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    * source/hedit.prg
      * Small fix to force the max length of the string also if the
-       lMaxLength parameter is missed in object creation	 
+       lMaxLength parameter is missed in object creation
 
 2007-06-15 20:15 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    * source/hedit.prg
-     * Forced the deletion of chars (VK_DELETE and VK_BACK) to HwGui because 
-	   the hedit normally don't redraws the client area and buttons owned by
-	   the editbox are lost until any alphanumeric char is inserted	
+     * Forced the deletion of chars (VK_DELETE and VK_BACK) to HwGui because
+       the hedit normally don't redraws the client area and buttons owned by
+       the editbox are lost until any alphanumeric char is inserted
 2007-06-14 10:30 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
    * utils\designer\resource\widgets.xml
      * added VSCROLL style and FONT to combobox class

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.51 2007-06-14 07:15:12 omm Exp $
+ * $Id: hfrmtmpl.prg,v 1.52 2007-08-16 05:48:15 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -14,7 +14,7 @@ Static aClass := { "label", "button", "checkbox",                    ;
                   "richedit","datepicker", "updown", "combobox",    ;
                   "line", "toolbar", "ownerbutton","browse",        ;
                   "monthcalendar","trackbar","page", "tree",        ;
-                  "status","menu","animation"                       ;
+                  "status","menu","animation" ,"progressbar"                      ;
                 }
 Static aCtrls := { ;
   "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctooltip,TextColor,BackColor,lTransp)", ;
@@ -40,7 +40,8 @@ Static aCtrls := { ;
   "HTree():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,TextColor,BackColor,aImages,lResource,lEditLabels,onTreeClick)", ;
   "HStatus():New(oPrnt,nId,nStyle,oFont,aParts,onInit,onSize)", ;
   ".F.", ;
-  "HAnimation():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,Filename,AutoPlay,Center,Transparent)" ;
+  "HAnimation():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,Filename,AutoPlay,Center,Transparent)", ;
+  "HProgressBar():New( oPrnt,nId,nLeft,nTop,nWidth,nHeight,maxPos,nRange )" ;
                 }
 
 #include "windows.ch"
@@ -74,6 +75,7 @@ REQUEST HTRACKBAR
 REQUEST HTAB
 REQUEST HANIMATION
 REQUEST HTREE
+REQUEST HPROGRESSBAR
 
 REQUEST DBUSEAREA
 REQUEST RECNO

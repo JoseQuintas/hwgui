@@ -451,6 +451,20 @@
          <property name="Center" type="L" value="False" />
          <property name="Transparent" type="L" value="False" />
       </widget>
+	  <widget class="progressbar" name="Progress bar control" bmp="BMP_PROGBAR">
+        <paint>
+           <![CDATA[
+           DrawEdge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,10 )
+           ]]>
+        </paint>
+        <property name="Name" type="C" />
+        <property name="Left" type="N" value="0"/>
+        <property name="Top" type="N" value="0" />
+        <property name="Width" type="N" value="100"/>
+        <property name="Height" type="N" value="18"/>
+        <property name="maxpos" type="N" value="0"/>
+        <property name="nRange" type="N" value="0"/>
+      </widget>
    </set>
    <set name="HwGUI">
       <widget class="line" name="Line" bmp="BMP_HLINE">

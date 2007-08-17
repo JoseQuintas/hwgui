@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{293,104,406,128}</property>
+    <property name="Caption">[Test ProgressBar Control]</property>
+    <property name="FormType">[dlgModal]</property>
+    <property name="lClipper">.F.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="Variables">{ct,ns}</property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="Icon">[]</property>
+    <property name="Modal">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.F.</property>
+    <property name="Maximizebox">.F.</property>
+    <property name="AbsAlignent">.T.</property>
+    <property name="SizeBox">.T.</property>
+    <property name="Visible">.T.</property>
+    <property name="3DLook">.F.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
+  </style>
+  <method name="onFormInit">
+    <![CDATA[ct := 1
+ns := 1]]>
+  </method>
+  <part class="progressbar">
+    <style>
+      <property name="Geometry">{6,12,393,18}</property>
+      <property name="Name">[op1]</property>
+      <property name="maxpos">10</property>
+      <property name="nRange">1000</property>
+    </style>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{345,39,52,28}</property>
+      <property name="Name">[oOwnerbutton1]</property>
+      <property name="Caption">[test]</property>
+      <property name="Flat">.T.</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[ct := 0
+while ct<1000
+  oP1:Step()
+  ++ct
+ Sleep(ns)
+EndDo]]>
+    </method>
+  </part>
+</part>

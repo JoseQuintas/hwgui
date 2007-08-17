@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.91 2007-07-05 13:49:16 lculik Exp $
+ *$Id: guilib.ch,v 1.92 2007-08-17 15:39:42 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -230,6 +230,7 @@
           => ;
     [<oSay> := ] HStatic():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
         <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lTransp.> )
+
 
 #xcommand REDEFINE SAY   [ <oSay> CAPTION ] <cCaption>   ;
             [ OF <oWnd> ]              ;
@@ -567,8 +568,11 @@
 #xcommand GET RADIOGROUP [ <ogr> VAR ] <vari>  ;
           => [<ogr> := ] HRadioGroup():New( <vari>, {|v|Iif(v==Nil,<vari>,<vari>:=v)} )
 
-#xcommand END RADIOGROUP [ SELECTED <nSel> ] ;
+#xcommand END RADIOGROUP [ SELECTED <nSel> ]  ;
           => HRadioGroup():EndGroup( <nSel> )
+
+#xcommand END RADIOGROUP <oGr> [ SELECTED <nSel> ]  ;
+          => <oGr>:EndGroup( <nSel> )
 
 #xcommand @ <x>,<y> RADIOBUTTON [ <oRadio> CAPTION ] <caption> ;
             [ OF <oWnd> ]              ;
@@ -598,9 +602,10 @@
             [ ON CLICK <bClick> ]      ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
+            [ GROUP <oGroup>]          ;
           => ;
     [<oRadio> := ] HRadioButton():Redefine( <oWnd>,<nId>,<oFont>,<bInit>,<bSize>, ;
-          <bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> )
+          <bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<oGroup> )
 
 
 #xcommand @ <x>,<y> COMBOBOX [ <oCombo> ITEMS ] <aItems> ;
@@ -1491,7 +1496,7 @@ Added by Marcos Antonio Gambeta
                             <{bKeyDown}>, <{bPosChg}>, <{bDispInfo}>, <nItemCount>,;
                              <.lNoLines.>, <color>, <bkcolor>, <.lNoHeader.> ,<aBit>,<a>)
 
-#xcommand ADDROW TO GRID <oGrid>    ;
+#xcommand ADDROW  to GRID <oGrid>    ;
             [ HEADER <cHeader> ]        ;
             [ JUSTIFY HEAD <nJusHead> ] ;
             [ BITMAP <n> ]              ;
@@ -1501,7 +1506,7 @@ Added by Marcos Antonio Gambeta
             => <oGrid>:AddRow(<cHeader>,<nJusHead>,<n>) [;<oGrid>:AddRow(<cHeadern>,<nJusHeadn>,<nn>)]
 
 
-#xcommand ADDROWEX TO GRID <oGrid>    ;
+#xcommand ADDROWEX  GRID <oGrid>    ;
             [ HEADER <cHeader> ]        ;
             [ BITMAP <n> ]              ;
             [ COLOR <color> ]           ;

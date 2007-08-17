@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.1 2007-07-05 14:46:30 lculik Exp $
+ * $Id: theme.c,v 1.2 2007-08-17 15:39:42 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -12,6 +12,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <uxtheme.h>
+
 //#include <tmschema.h>
 
 #ifndef BP_PUSHBUTTON
@@ -24,6 +25,42 @@
    #define TMT_CONTENTMARGINS 3602
    #define ODS_NOFOCUSRECT     0x0200
 #endif
+#ifndef CDRF_DODEFAULT
+#define CDRF_DODEFAULT  0x00000000
+#define CDRF_NEWFONT  0x00000002
+#define CDRF_SKIPDEFAULT  0x00000004
+
+#define CDRF_NOTIFYPOSTPAINT  0x00000010
+#define CDRF_NOTIFYITEMDRAW  0x00000020
+
+#define CDRF_NOTIFYSUBITEMDRAW  0x00000020
+
+#define CDRF_NOTIFYPOSTERASE  0x00000040
+
+#define CDDS_PREPAINT  0x00000001
+#define CDDS_POSTPAINT  0x00000002
+#define CDDS_PREERASE  0x00000003
+#define CDDS_POSTERASE  0x00000004
+#define CDDS_ITEM  0x00010000
+#define CDDS_ITEMPREPAINT  (CDDS_ITEM|CDDS_PREPAINT)
+#define CDDS_ITEMPOSTPAINT  (CDDS_ITEM|CDDS_POSTPAINT)
+#define CDDS_ITEMPREERASE  (CDDS_ITEM|CDDS_PREERASE)
+#define CDDS_ITEMPOSTERASE  (CDDS_ITEM|CDDS_POSTERASE)
+
+#define CDDS_SUBITEM  0x00020000
+
+
+#define CDIS_SELECTED  0x0001
+#define CDIS_GRAYED  0x0002
+#define CDIS_DISABLED  0x0004
+#define CDIS_CHECKED  0x0008
+#define CDIS_FOCUS  0x0010
+#define CDIS_DEFAULT  0x0020
+#define CDIS_HOT  0x0040
+#define CDIS_MARKED  0x0080
+#define CDIS_INDETERMINATE  0x0100
+#endif
+
 #define ST_ALIGN_HORIZ       0           // Icon/bitmap on the left, text on the right
 #define ST_ALIGN_VERT        1           // Icon/bitmap on the top, text on the bottom
 #define ST_ALIGN_HORIZ_RIGHT 2           // Icon/bitmap on the right, text on the left
@@ -174,15 +211,15 @@
 	typedef HRESULT (__stdcall *PFNENABLETHEMING)(BOOL fEnable);
 
 
-	static HRESULT EnableThemingFail(BOOL fEnable)
-	{return E_FAIL;}
+    static HRESULT EnableThemingFail(BOOL fenable) // fenable
+    {HB_SYMBOL_UNUSED( fenable ); return E_FAIL;}
 
-    static HRESULT DrawThemeBackgroundFail(HTHEME a, HDC s, int d, int f, const RECT * g, const RECT * h)
-	{return E_FAIL;}
-    static HRESULT CloseThemeDataFail(HTHEME s)
-	{return E_FAIL;}
-    static HTHEME OpenThemeDataFail(HWND s , LPCWSTR d)
-	{return NULL;}
+    static HRESULT DrawThemeBackgroundFail(HTHEME a, HDC s, int d, int f, const RECT * g, const RECT * h) //HTHEME a, HDC s, int d, int f, const RECT * , const RECT * 
+	{ HB_SYMBOL_UNUSED( a );  HB_SYMBOL_UNUSED( s ) ; HB_SYMBOL_UNUSED( d ); HB_SYMBOL_UNUSED( f ); HB_SYMBOL_UNUSED( g ); HB_SYMBOL_UNUSED( h );return E_FAIL;}
+    static HRESULT CloseThemeDataFail(HTHEME s ) //s
+    { HB_SYMBOL_UNUSED( s ) ;return E_FAIL;}
+    static HTHEME OpenThemeDataFail(HWND s , LPCWSTR d) //s d
+    {HB_SYMBOL_UNUSED( s ) ;HB_SYMBOL_UNUSED( d );return NULL;}
 
     static HRESULT DrawThemeTextFail(HTHEME a, HDC s, int d, int f, LPCWSTR g, int h, DWORD j, DWORD k, const RECT* z)
 	{return E_FAIL;}

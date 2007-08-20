@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.2 2007-08-17 15:39:42 lculik Exp $
+ * $Id: theme.c,v 1.3 2007-08-20 14:56:58 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -1105,9 +1105,9 @@ LRESULT OnButtonDraw( LPARAM  lParam)
   */
 
 
-void Calc_iconWidthHeight (HWND m_hWnd, DWORD *ccx, DWORD *ccy,HDC hDC)
+void Calc_iconWidthHeight (HWND m_hWnd, DWORD *ccx, DWORD *ccy,HDC hDC,HICON hIcon)
 {
-    HICON hIcon = (HICON)SendMessage(m_hWnd, BM_GETIMAGE, IMAGE_ICON, 0L);
+
 	ICONINFO ii;
 	BITMAPINFO bmi;
     int cx ;
@@ -1148,7 +1148,7 @@ void Calc_iconWidthHeight (HWND m_hWnd, DWORD *ccx, DWORD *ccy,HDC hDC)
 
 void Calc_bitmapWidthHeight(HWND m_hWnd,DWORD *ccx,DWORD *ccy,HDC hDC,HBITMAP hBitmap)
 {
-//    HBITMAP hBitmap = (HBITMAP)SendMessage(m_hWnd, BM_GETIMAGE, IMAGE_BITMAP, 0L);
+
     int x,y;
 	BITMAPINFO bmi;
     if (!hBitmap )
@@ -1327,15 +1327,15 @@ static void DrawTheIcon(HWND hButtonWnd, HDC dc, BOOL bHasTitle, RECT* rpItem, R
 	DWORD cx =0 ;
 	DWORD cy =0 ;
     if (hIco)
-      Calc_iconWidthHeight(hButtonWnd,&cx,&cy,dc);
-   if (hBitmap)
+      Calc_iconWidthHeight(hButtonWnd,&cx,&cy,dc,hIco);
+    if (hBitmap)
       Calc_bitmapWidthHeight(hButtonWnd,&cx,&cy,dc,hBitmap);
 
 
     PrepareImageRect(hButtonWnd, bHasTitle,rpItem, rpTitle, bIsPressed, cx, cy, &rImage,iStyle);
 
     if ( hIco )
-    DrawState(  dc,
+       DrawState(  dc,
 				NULL,
 				NULL,
                 (LPARAM)hIco,

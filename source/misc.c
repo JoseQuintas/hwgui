@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.31 2007-04-23 19:49:03 richardroesnadi Exp $
+ * $Id: misc.c,v 1.32 2007-08-20 14:56:58 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -25,7 +25,7 @@
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif
-
+extern BOOL Array2Rect(PHB_ITEM aRect, RECT *rc );
 void writelog( char* s )
 {
    FHANDLE handle;
@@ -174,13 +174,24 @@ HB_FUNC( CLIENTTOSCREEN )
 HB_FUNC( SCREENTOCLIENT )
 {
    POINT pt;
+   RECT R; 
 
    PHB_ITEM aPoint = hb_itemArrayNew( 2 );
    PHB_ITEM temp;
+   
+   if( hb_pcount() > 2)
+   {
+   
+      pt.x = hb_parnl(2);
+      pt.y = hb_parnl(3);
 
-   pt.x = hb_parnl(2);
-   pt.y = hb_parnl(3);
-   ScreenToClient( (HWND) hb_parnl(1), &pt );
+      ScreenToClient( (HWND) hb_parnl(1), &pt );
+   }
+   else
+   {
+      Array2Rect( hb_param(2,HB_IT_ARRAY),&R);
+      ScreenToClient( (HWND) hb_parnl(1), (LPPOINT)&pt );
+   }
 
    temp = hb_itemPutNL( NULL, pt.x );
    hb_itemArrayPut( aPoint, 1, temp );
@@ -599,5 +610,11 @@ HB_FUNC( GETUSERNAME )
 	 hb_retc(szUser);
    hb_xfree( (void *) szUser );
    hb_stornl( nSize, 1 ) ;
+}
+
+
+HB_FUNC ( ISDOWNPRESSESED )
+{
+   hb_retl ( HIWORD(GetKeyState( VK_DOWN)) >0 ) ;
 }
 

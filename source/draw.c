@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.27 2007-07-05 13:49:17 lculik Exp $
+ * $Id: draw.c,v 1.28 2007-08-20 14:56:57 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -250,7 +250,8 @@ HB_FUNC( LOADBITMAP )
    if( ISNUM(1) )
    {
       if( !ISNIL(2) && hb_parl(2) )
-         hb_retnl( (LONG) LoadBitmap( NULL, (LPCTSTR) hb_parnl( 1 ) ) );
+               hb_retnl( (LONG) LoadBitmap( GetModuleHandle( NULL ),  MAKEINTRESOURCE(hb_parnl( 1 ) )) );
+//         hb_retnl( (LONG) LoadBitmap( NULL, (LPCTSTR) hb_parnl( 1 ) ) );
       else
          hb_retnl( (LONG) LoadBitmap( GetModuleHandle( NULL ), (LPCTSTR) hb_parnl( 1 ) ) );
    }
@@ -910,3 +911,52 @@ HB_FUNC(DRAWFOCUSRECT)
    hb_retl( DrawFocusRect( hc,&pRect )) ;
 }
 
+BOOL Array2Point(PHB_ITEM aPoint, POINT *pt )
+{
+   if (HB_IS_ARRAY(aPoint) && hb_arrayLen(aPoint) == 2) {
+      pt->x = hb_arrayGetNL(aPoint,1);
+      pt->y = hb_arrayGetNL(aPoint,2);
+      return TRUE ;
+   }
+   return FALSE;
+}
+
+
+HB_FUNC(PTINRECT)
+{
+   POINT pt;
+   RECT rect;
+   Array2Rect(hb_param(1,HB_IT_ARRAY), &rect );
+   Array2Point(hb_param(2,HB_IT_ARRAY), &pt );
+   hb_retl(PtInRect(&rect,pt));
+}
+
+
+HB_FUNC (GETMEASUREITEMINFO)
+{
+   MEASUREITEMSTRUCT * lpdis = (MEASUREITEMSTRUCT*)hb_parnl(1);
+   PHB_ITEM aMetr = _itemArrayNew( 5 );
+   PHB_ITEM temp;
+
+   temp = _itemPutNL( NULL, lpdis->CtlType );
+   _itemArrayPut( aMetr, 1, temp );
+   _itemRelease( temp );
+
+   temp = _itemPutNL( NULL, lpdis->CtlID);
+   _itemArrayPut( aMetr, 2, temp );
+   _itemRelease( temp );
+
+   temp = _itemPutNL( NULL, lpdis->itemID);
+   _itemArrayPut( aMetr, 3, temp );
+   _itemRelease( temp );
+
+   temp = _itemPutNL( NULL, lpdis->itemWidth );
+   _itemArrayPut( aMetr, 4, temp );
+   _itemRelease( temp );
+
+   temp = _itemPutNL( NULL, lpdis->itemHeight );
+   _itemArrayPut( aMetr, 5, temp );
+   _itemRelease( temp );
+   _itemReturn( aMetr );
+   _itemRelease( aMetr );
+}

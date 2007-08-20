@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.54 2007-07-05 14:31:00 lculik Exp $
+ * $Id: control.c,v 1.55 2007-08-20 14:56:57 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -29,16 +29,17 @@ LRESULT CALLBACK WinCtrlProc (HWND, UINT, WPARAM, LPARAM);
 LRESULT APIENTRY SplitterProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY EditSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY ButtonSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+LRESULT APIENTRY ComboSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY TrackSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY TabSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 void CALLBACK TimerProc (HWND, UINT, UINT, DWORD) ;
 
 extern PHB_DYNS pSym_onEvent;
-
+extern PHB_ITEM Rect2Array( RECT *rc  );
 static HWND hWndTT = 0;
 static BOOL lInitCmnCtrl = 0;
 static BOOL lToolTipBalloon = FALSE; // added by MAG
-static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc,wpOrigButtonProc;
+static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc,wpOrigButtonProc,wpOrigComboProc;
 extern BOOL _AddBar( HWND pParent, HWND pBar, REBARBANDINFO* pRBBI );
 extern BOOL AddBar( HWND pParent, HWND pBar, LPCTSTR pszText, HBITMAP pbmp, DWORD dwStyle );
 extern BOOL AddBar1( HWND pParent, HWND pBar, COLORREF clrFore, COLORREF clrBack, LPCTSTR pszText, DWORD dwStyle );
@@ -1208,6 +1209,38 @@ LRESULT APIENTRY ButtonSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPA
       return( CallWindowProc( wpOrigButtonProc, hWnd, message, wParam, lParam ) );
 }
 
+LRESULT APIENTRY ComboSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+   long int res;
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+
+   if( !pSym_onEvent )
+      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
+
+   if( pSym_onEvent && pObject )
+   {
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
+      hb_vmPush( pObject );
+      hb_vmPushLong( (LONG ) message );
+      hb_vmPushLong( (LONG ) wParam );
+      hb_vmPushLong( (LONG ) lParam );
+      hb_vmSend( 3 );
+      res = hb_parnl( -1 );
+      if( res == -1 )
+         return( CallWindowProc( wpOrigComboProc, hWnd, message, wParam, lParam ) );
+      else
+         return res;
+   }
+   else
+      return( CallWindowProc( wpOrigComboProc, hWnd, message, wParam, lParam ) );
+}
+
+HB_FUNC( HWG_INITCOMBOPROC )
+{
+   wpOrigComboProc = (WNDPROC) SetWindowLong( (HWND) hb_parnl(1),
+                                 GWL_WNDPROC, (LONG) ComboSubclassProc );
+}
+
 
 HB_FUNC( HWG_INITTRACKPROC )
 {
@@ -1588,3 +1621,80 @@ HB_FUNC( ADDBARCOLORS )
 
    hb_retl( AddBar1( pParent, pBar, clrFore, clrBack, pszText, dwStyle) );
 }
+//Combo Box Procedure
+
+HB_FUNC(GETCOMBOWNDPROC)
+{
+hb_retnl((LONG)wpOrigComboProc);
+}
+
+HB_FUNC(COMBOGETITEMRECT)
+{
+   HWND hWnd = (HWND)hb_parnl(1);
+
+   int nIndex = hb_parnl(2);
+   RECT rcItem ;
+   SendMessage(hWnd, LB_GETITEMRECT, nIndex, (LONG)(VOID *)&rcItem);
+   hb_itemRelease(hb_itemReturn(Rect2Array(&rcItem)));
+}
+
+HB_FUNC(COMBOBOXGETITEMDATA)
+{
+   HWND hWnd = (HWND)hb_parnl(1);
+   int nIndex = hb_parnl(2);
+   DWORD_PTR p;
+   p=(DWORD_PTR)SendMessage((HWND)hWnd, CB_GETITEMDATA, nIndex, 0);
+   TraceLog("dword.log"," GetItemData DWORD_PTR p = %lu\r \n",p);
+   hb_retnl(p);
+
+}
+HB_FUNC(COMBOBOXSETITEMDATA)
+{
+   HWND hWnd = (HWND)hb_parnl(1);
+   int nIndex = hb_parnl(2);
+   DWORD_PTR dwItemData = (DWORD_PTR) hb_parnl( 3 ) ;
+   TraceLog("dword.log","SetItemData DWORD_PTR p = %lu\r \n",dwItemData);
+   hb_retnl(SendMessage((HWND)hWnd, CB_SETITEMDATA, nIndex, (LPARAM)dwItemData));
+}
+
+HB_FUNC(GETLOCALEINFO)
+{
+   TCHAR szBuffer[10] = {0};
+   GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SLIST, szBuffer, sizeof(szBuffer));
+   hb_retc(szBuffer);
+}
+
+
+HB_FUNC(COMBOBOXGETLBTEXT)
+{
+   HWND hWnd = (HWND)hb_parnl(1);
+   int nIndex = hb_parnl(2);
+   char lpszText[255]={0};
+   hb_retni(SendMessage(hWnd, CB_GETLBTEXT, nIndex, (LPARAM)&lpszText)); 
+   hb_storc((char*)lpszText,3);
+}
+
+HB_FUNC(DEFWINDOWPROC)
+{
+//   WNDPROC wpProc = (WNDPROC) hb_parnl(1);
+   HWND hWnd = (HWND)hb_parnl(1);
+   LONG message = hb_parnl(2);
+   WPARAM wParam = (WPARAM)hb_parnl(3);
+   LPARAM lParam = (LPARAM)hb_parnl(4);
+
+   hb_retnl(DefWindowProc(  hWnd, message, wParam, lParam ) );
+}
+
+
+HB_FUNC(CALLWINDOWPROC)
+{
+   WNDPROC wpProc = (WNDPROC) hb_parnl(1);
+   HWND hWnd = (HWND)hb_parnl(2);
+   LONG message = hb_parnl(3);
+   WPARAM wParam = (WPARAM)hb_parnl(4);
+   LPARAM lParam = (LPARAM)hb_parnl(5);
+
+   hb_retnl(CallWindowProc( wpProc, hWnd, message, wParam, lParam ) );
+}
+
+

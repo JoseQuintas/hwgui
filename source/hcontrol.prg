@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.33 2007-07-05 19:03:52 lculik Exp $
+ * $Id: hcontrol.prg,v 1.34 2007-08-20 14:56:58 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -102,6 +102,7 @@ METHOD INIT CLASS HControl
       ELSEIF ::oParent:oFont != NIL
          SetCtrlFont( ::oParent:handle, ::id, ::oParent:oFont:handle )
       ENDIF
+
       IF ISBLOCK( ::bInit )
          Eval( ::bInit, Self )
       ENDIF
@@ -139,6 +140,7 @@ METHOD End() CLASS HControl
    IF ::tooltip != NIL
       DelToolTip( ::oParent:handle, ::handle )
       ::tooltip := NIL
+
    ENDIF
 RETURN NIL
 
@@ -220,6 +222,7 @@ CLASS HStatic INHERIT HControl
    METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
                                                    value )
    METHOD Init()
+   METHOD PAINT(o)
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -234,15 +237,16 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
          nStyle := Hwg_BitOr( nStyle, SS_NOTIFY )
       ENDIF
    ENDIF
+//
+   IF lTransp != NIL .AND. lTransp
+      ::extStyle += WS_EX_TRANSPARENT
+      bPaint := {|o,p| o:paint(p)}
+   ENDIF
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,;
               bInit, bSize, bPaint, cTooltip, tcolor, bColor )
 
    ::title := cCaption
-
-   IF lTransp != NIL .AND. lTransp
-      ::extStyle += WS_EX_TRANSPARENT
-   ENDIF
 
    ::Activate()
 
@@ -250,6 +254,12 @@ RETURN Self
 
 METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                  bSize, bPaint, cTooltip, tcolor, bColor, lTransp ) CLASS HStatic
+
+   IF lTransp != NIL .AND. lTransp
+      ::extStyle += WS_EX_TRANSPARENT
+      
+      bPaint := {|o,p| o:paint(p)}
+   ENDIF
 
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint, cTooltip, tcolor, bColor )
@@ -260,10 +270,6 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    // Enabling style for tooltips
    IF ValType( cTooltip ) == "C"
       ::Style := SS_NOTIFY
-   ENDIF
-
-   IF lTransp != NIL .AND. lTransp
-      ::extStyle += WS_EX_TRANSPARENT
    ENDIF
 
 RETURN Self
@@ -285,6 +291,35 @@ METHOD Init CLASS HStatic
       ENDIF
    ENDIF
 RETURN  NIL
+
+METHOD Paint( lpDis ) CLASS HStatic
+
+LOCAL drawInfo := GetDrawItemInfo( lpdis )
+Local client_rect,szText,pfont,poldfont
+local dwtext,nstyle
+LOCAL dc := drawInfo[ 3 ]
+
+client_rect:=	GetClientRect(::handle)
+
+szText:=	GetWindowText(::handle)
+
+        //pFont = GetFont();
+//	pOldFont = dc.SelectObject(pFont);
+
+	// Map "Static Styles" to "Text Styles"
+   nstyle :=::style
+   SetaStyle(@nstyle,@dwtext )
+   
+	// Set transparent background
+	SetBkMode(dc,1)
+
+	// Draw the text
+	DrawText(dc,szText, client_rect[1],client_rect[2],client_rect[3],client_rect[4], dwText)
+
+	// Select old font
+//	dc.SelectObject(pOldFont);
+
+return nil
 
 //- HButton
 
@@ -365,35 +400,44 @@ RETURN  NIL
 CLASS HButtonEX INHERIT HButton
 
    Data hBitmap
+   DATA hIcon
+   DATA m_dcBk
    DATA m_bFirstTime INIT .T.
    DATA Themed INIT .F.
    DATA m_crColors INIT ARRAY( 6 )
    DATA hTheme
    DATA Caption
    DATA state
+   DATA m_bDrawTransparent INIT .f.
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
-   bColor, lTransp, hBitmap )
+   bColor, lTransp, hBitmap,hIcon )
    Data iStyle
+   DATA m_bmpBk,m_pbmpOldBk
 
    METHOD Paint( lpDis )
    METHOD SetBitmap( )
+   METHOD SetIcon()
    METHOD INIT()
    METHOD onevent( msg, wParam, lParam )
    METHOD CancelHover()
    METHOD End()
    METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
-                    tcolor, bColor, hBitmap, iStyle )
+                    tcolor, bColor, hBitmap, iStyle,hIcon )
+   METHOD PAINTBK(p)
 
 END CLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
-               tcolor, bColor, hBitmap, iStyle ) CLASS HButtonEx
+               tcolor, bColor, hBitmap, iStyle,hicon,Transp ) CLASS HButtonEx
    DEFAULT iStyle TO ST_ALIGN_HORIZ
+   DEFAULT Transp to .T.
    ::Caption := cCaption
    ::iStyle                             := iStyle
    ::hBitmap                            := hBitmap
+   ::hIcon                              := hIcon
+   ::m_bDrawTransparent                 := Transp
    ::m_crColors[ BTNST_COLOR_BK_IN ]    := GetSysColor( COLOR_BTNFACE )
    ::m_crColors[ BTNST_COLOR_FG_IN ]    := GetSysColor( COLOR_BTNTEXT )
    ::m_crColors[ BTNST_COLOR_BK_OUT ]   := GetSysColor( COLOR_BTNFACE )
@@ -416,7 +460,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 RETURN Self
 
 METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
-                 cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle  ) CLASS HButtonEx
+                 cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle,hIcon  ) CLASS HButtonEx
    DEFAULT iStyle TO ST_ALIGN_HORIZ
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint, cTooltip, tcolor, bColor )
@@ -426,6 +470,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::Caption := cCaption
    ::iStyle                             := iStyle
    ::hBitmap                            := hBitmap
+   ::hicon                              := hIcon
    ::m_crColors[ BTNST_COLOR_BK_IN ]    := GetSysColor( COLOR_BTNFACE )
    ::m_crColors[ BTNST_COLOR_FG_IN ]    := GetSysColor( COLOR_BTNTEXT )
    ::m_crColors[ BTNST_COLOR_BK_OUT ]   := GetSysColor( COLOR_BTNFACE )
@@ -448,6 +493,12 @@ METHOD SetBitmap() CLASS HButtonEX
 
 RETURN self
 
+METHOD SetIcon() CLASS HButtonEX
+   IF VALTYPE( ::hIcon ) == "N"
+      SendMessage( ::handle, BM_SETIMAGE, IMAGE_ICON, ::hIcon )
+   ENDIF
+RETURN self
+
 METHOD End() CLASS HButtonEX
    Super:end()
 RETURN self
@@ -464,10 +515,6 @@ RETURN NIL
 
 METHOD onEvent( msg, wParam, lParam )
 
-LOCAL state
-LOCAL point,point2
-LOCAL wndUnderMouse := nil
-LOCAL wndActive     := ::handle
 
    IF msg == WM_THEMECHANGED
       IF ::Themed
@@ -484,16 +531,20 @@ LOCAL wndActive     := ::handle
          bMouseOverButton := .T.
          Invalidaterect( ::handle, .f. )
          TRACKMOUSEVENT( ::handle )
-      endif
-
-      
+      endif      
       RETURN 0
 
    ELSEIF msg == WM_MOUSELEAVE
-
       ::CancelHover()
       RETURN 0
-endif
+   elseif msg ==WM_CHAR
+      if wParam == VK_RETURN
+         if Valtype(::bClick) =="B"
+            SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
+         endif
+      endif
+      return 0
+   endif
 RETURN -1
 
 METHOD CancelHover() CLASS HBUTTONEx
@@ -556,6 +607,10 @@ LOCAL uAlign
    ENDIF
 
    SetBkMode( dc, TRANSPARENT )
+   if (::m_bDrawTransparent)
+        ::PaintBk(DC)
+   endif
+
 
    // Prepare draw... paint button background
 
@@ -621,7 +676,7 @@ LOCAL uAlign
 
    bHasTitle := valtype(::caption) =="C" .and. !EMPTY( ::Caption )
 
-   DrawTheIcon( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, bIsDisabled, nil, ::hbitmap, ::iStyle )
+   DrawTheIcon( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, bIsDisabled, ::hIcon, ::hbitmap, ::iStyle )
 
    IF ( bHasTitle )
 
@@ -711,6 +766,29 @@ LOCAL uAlign
    ENDIF
 
 RETURN nil
+
+METHOD PAINTBK(hdc)
+
+    Local clDC:=HclientDc():New(::oparent:handle)
+    Local rect, rect1
+
+    rect:=GetClientRect(::handle)
+
+    rect1:=GetWindowRect(::handle)
+    ScreenToClient(::oparent:handle,rect1)
+    Tracelog("::m_dcBk",::m_dcBk,"Valtype(::m_dcBk)",Valtype(::m_dcBk))
+    if Valtype(::m_dcBk) =="U"
+    Tracelog("::m_dcBk",::m_dcBk,"Valtype(::m_dcBk)",Valtype(::m_dcBk))
+        ::m_dcBk:=Hdc():New()
+        ::m_dcBk:CreateCompatibleDC(clDC:m_hDC)
+        ::m_bmpBk := CreateCompatibleBitmap(clDC:m_hDC, rect[3]-rect[1], rect[4]-rect[2])
+        m_pbmpOldBk = ::m_dcBk:SelectObject(::m_bmpBk)
+        ::m_dcBk:BitBlt(0, 0, rect[3]-rect[1], rect[4]-rect[4], clDC:m_hDc, rect1[1], rect1[2], SRCCOPY)
+    endif
+
+    BitBlt(hdc,0, 0, rect[3]-rect[1], rect[4]-rect[4],::m_dcBk:m_hDC, 0, 0, SRCCOPY)
+return self
+
             
 
 
@@ -822,3 +900,5 @@ INITTHEMELIB()
 
 exit procedure endtheme()
 ENDTHEMELIB()
+
+

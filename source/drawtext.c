@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.13 2007-07-05 13:49:17 lculik Exp $
+ * $Id: drawtext.c,v 1.14 2007-08-20 14:56:57 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -89,7 +89,7 @@ HB_FUNC( DRAWTEXT )
 HB_FUNC( GETTEXTMETRIC )
 {
    TEXTMETRIC tm;
-   PHB_ITEM aMetr = _itemArrayNew( 3 );
+   PHB_ITEM aMetr = _itemArrayNew( 4 );
    PHB_ITEM temp;
 
    GetTextMetrics(
@@ -107,6 +107,10 @@ HB_FUNC( GETTEXTMETRIC )
 
    temp = _itemPutNL( NULL, tm.tmMaxCharWidth );
    _itemArrayPut( aMetr, 3, temp );
+   _itemRelease( temp );
+
+   temp = _itemPutNL( NULL, tm.tmExternalLeading );
+   _itemArrayPut( aMetr, 4, temp );
    _itemRelease( temp );
 
    _itemReturn( aMetr );

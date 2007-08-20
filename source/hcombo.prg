@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.26 2007-08-20 16:29:22 lculik Exp $
+ * $Id: hcombo.prg,v 1.27 2007-08-20 16:30:43 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -29,7 +29,9 @@
 #define CBN_CLOSEUP         8
 #define CBN_SELENDOK        9
 #define CBN_SELENDCANCEL    10
-
+#pragma begindump
+#include "windows.h"
+#pragma enddump
 
 CLASS HComboBox INHERIT HControl
 

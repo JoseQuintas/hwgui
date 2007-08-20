@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.25 2007-08-20 14:56:58 lculik Exp $
+ * $Id: hcombo.prg,v 1.26 2007-08-20 16:29:22 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -17,7 +17,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
-
+#include "common.ch"
 #define CB_ERR              (-1)
 #define CBN_SELCHANGE       1
 #define CBN_DBLCLK          2

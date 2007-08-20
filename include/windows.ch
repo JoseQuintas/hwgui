@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.42 2007-07-08 21:58:58 lculik Exp $
+ *$Id: windows.ch,v 1.43 2007-08-20 15:03:47 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -22,6 +22,7 @@
 #define WM_GETMINMAXINFO                36   // 0x0024
 #define WM_NEXTDLGCTL                   40   // 0x0028
 #define WM_DRAWITEM                     43   // 0x002B
+#define WM_MEASUREITEM                  0x002C
 #define WM_SETFONT                      48   // 0x0030
 
 #define WM_WINDOWPOSCHANGING            70   // 0x0046
@@ -155,6 +156,8 @@
 #define CB_FINDSTRING               332
 #define CB_SELECTSTRING             333
 #define CB_SETCURSEL                334
+#define CB_SETITEMHEIGHT            0x0153
+#define CB_GETITEMHEIGHT            0x0154
 
 /* Brush Styles */
 #define BS_SOLID            0
@@ -437,6 +440,15 @@
 #define CBS_SIMPLE            1        // 0x0001L
 #define CBS_DROPDOWN          2        // 0x0002L
 #define CBS_DROPDOWNLIST      3        // 0x0003L
+#define CBS_OWNERDRAWFIXED    0x0010
+#define CBS_OWNERDRAWVARIABLE 0x0020
+#define CBS_AUTOHSCROLL       0x0040
+#define CBS_OEMCONVERT        0x0080
+#define CBS_SORT              0x0100
+#define CBS_HASSTRINGS        0x0200
+#define CBS_NOINTEGRALHEIGHT  0x0400
+#define CBS_DISABLENOSCROLL   0x0800
+
 
 /*
  * MessageBox() Flags
@@ -1222,3 +1234,5 @@
 #define LVN_FIRST               -100       // listview
 
 #define LVN_COLUMNCLICK         (LVN_FIRST-8)
+#define SRCCOPY             0x00CC0020 /* dest = source                   */
+#define SRCPAINT            0x00EE0086 /* dest = source OR dest           */

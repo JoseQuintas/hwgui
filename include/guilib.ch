@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.92 2007-08-17 15:39:42 lculik Exp $
+ *$Id: guilib.ch,v 1.93 2007-08-20 15:03:47 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -416,9 +416,10 @@
             [ TOOLTIP <ctoolt> ]       ;
             [ BITMAP <hbit> ]          ;
             [ BSTYLE <nBStyle> ]       ;
+            [ ICON <hIco> ]          ;
           => ;
     [<oBut> := ] HButtonEx():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<hbit>,<nBStyle> )
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<hbit>,<nBStyle>,<hIco> )
 
 #xcommand REDEFINE BUTTON [ <oBut> ]   ;
             [ OF <oWnd> ]              ;
@@ -1057,6 +1058,20 @@
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},        ;
                     <aItems>,<oFont>,,,,<bChange>,<ctoolt>, <bWhen> )
 
+#xcommand REDEFINE GET COMBOBOXEX [ <oCombo> VAR ] <vari> ;
+            ITEMS  <aItems>            ;
+            [ OF <oWnd> ]              ;
+            ID <nId>                   ;
+            [ ON CHANGE <bChange> ]    ;
+            [ FONT <oFont> ]           ;
+            [ TOOLTIP <ctoolt> ]       ;
+            [ WHEN <bWhen> ]           ;
+            [ CHECK <acheck>] ;
+          => ;
+    [<oCombo> := ] HComboBox():Redefine( <oWnd>,<nId>,<vari>, ;
+                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},        ;
+                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>, <bWhen> ,<acheck>)
+
 #xcommand @ <x>,<y> GET UPDOWN [ <oUpd> VAR ]  <vari>  ;
             RANGE <nLower>,<nUpper>    ;
             [ OF <oWnd> ]              ;
@@ -1506,16 +1521,17 @@ Added by Marcos Antonio Gambeta
             => <oGrid>:AddRow(<cHeader>,<nJusHead>,<n>) [;<oGrid>:AddRow(<cHeadern>,<nJusHeadn>,<nn>)]
 
 
-#xcommand ADDROWEX  GRID <oGrid>    ;
+#xcommand ADDROWEX  GRID <oGrid>        ;
             [ HEADER <cHeader> ]        ;
             [ BITMAP <n> ]              ;
             [ COLOR <color> ]           ;
             [ BACKCOLOR <bkcolor> ]     ;
-            [ HEADER <cHeadern> ]        ;
-            [ BITMAP <nn> ]              ;
-            [ COLOR <colorn> ]           ;
-            [ BACKCOLOR <bkcolorn> ]     ;
-            => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> [, <cHeadern>, <nn>,<colorn>,<bkcolorn> ]\})
+             => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> \})
+//            [ HEADER <cHeadern> ]       ;
+//            [ BITMAP <nn> ]             ;
+//            [ COLOR <colorn> ]          ;
+//            [ BACKCOLOR <bkcolorn> ]    ;
+            
 
 
 #xcommand REDEFINE TAB  <oSay>  ;
@@ -1596,3 +1612,28 @@ Added by Marcos Antonio Gambeta
                     {|v|Iif(v==Nil,<nInit>,<nInit>:=v)},;
                     <nStyle>,<x>,<y>,<width>, ; 
                     <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt> )
+
+
+#xcommand @ <x>,<y> GET COMBOBOXEX [ <oCombo> VAR ] <vari> ;
+            ITEMS  <aItems>            ;
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ ON CHANGE <bChange> ]    ;
+            [ STYLE <nStyle> ]         ;
+            [ FONT <oFont> ]           ;
+            [ TOOLTIP <ctoolt> ]       ;
+            [ <edit: EDIT> ]           ;
+            [ <text: TEXT> ]           ;
+            [ WHEN <bWhen> ]           ;
+            [ VALID <bValid> ]         ;
+            [CHECK <acheck>];
+          => ;
+    [<oCombo> := ] HCheckComboBox():New( <oWnd>,<nId>,<vari>,    ;
+                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
+                    <nStyle>,<x>,<y>,<width>,<height>,      ;
+                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
+                    <.edit.>,<.text.>,<bWhen>,<color>,<bcolor>,<bValid>,<acheck> )
+

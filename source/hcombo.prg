@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.27 2007-08-20 16:30:43 lculik Exp $
+ * $Id: hcombo.prg,v 1.28 2007-08-21 12:20:16 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -441,7 +441,7 @@ LOCAL i
 RETURN Nil
 
 METHOD Refresh() CLASS hCheckComboBox
-
+local i
    ::super:refresh()
    IF LEN( ::acheck ) > 0
       FOR i := 1 TO LEN( ::acheck )
@@ -542,7 +542,7 @@ LOCAL rcBitmap := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
 LOCAL rcText   := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
 LOCAL strtext  := ""
 LOCAL ncheck
-LOCAL metricks
+LOCAL metrics
 LOCAL nstate
 
    IF ( DrawInfo[ 1 ] < 0 )
@@ -598,7 +598,7 @@ LOCAL nstate
 
    ExtTextOut( dc, 0, 0, rcText[ 1 ], rcText[ 2 ], rcText[ 3 ], rcText[ 4 ] )
 
-   DrawText( DC, ' ' + strText, rcText[ 1 ], rcText[ 2 ], rcText[ 3 ], rcText[ 4 ], DT_SINGLELINE | DT_VCENTER | DT_END_ELLIPSIS )
+   DrawText( DC, ' ' + strText, rcText[ 1 ], rcText[ 2 ], rcText[ 3 ], rcText[ 4 ], DT_SINGLELINE + DT_VCENTER + DT_END_ELLIPSIS )
 
    IF ( ( hwg_Bitand( DrawInfo[ 9 ], ODS_FOCUS | ODS_SELECTED ) ) == ( ODS_FOCUS | ODS_SELECTED ) )
       DrawFocusRect( dc, rcText )
@@ -616,7 +616,7 @@ LOCAL pFont
    pFont := dc:SelectObject( IF( VALTYPE( ::oFont ) == "O", ::oFont:handle, ::oParent:oFont:handle ) )
    IF ( pFont != 0 )
 
-      metrics := dc:GetTextMetric()
+          metrics := dc:GetTextMetric()
 
       lpMeasureItemStruct[ 5 ] := metrics[ 1 ] + metrics[ 4 ]
 
@@ -660,6 +660,7 @@ RETURN LEN( ::m_strText )
 
 METHOD GetAllCheck() CLASS hCheckComboBox
 Local aCheck :={}
+Local n
    For n := 1  to len(::aItems)
       aadd( aCheck ,::GetCheck(n))
    next

@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.8 2007-07-08 21:58:59 lculik Exp $
+ * $Id: hgridex.prg,v 1.9 2007-08-21 14:29:51 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -71,7 +71,7 @@ CLASS HGridEX INHERIT HControl
    METHOD AddRow( aRow )
    METHOD Notify( lParam )
 
-   METHOD DELETEROW()    INLINE IF( ::iRowSelect > 0 ,( SendMessage( ::HANDLE, LVM_DELETEITEM, ::iRowSelect , 0), ::iRowSelect := -1 ), .T. )
+   METHOD DELETEROW()    INLINE IF( ::iRowSelect >= 0 ,( SendMessage( ::HANDLE, LVM_DELETEITEM, ::iRowSelect , 0), ::iRowSelect := 0 ), .T. )
    METHOD DELETEALLROW() INLINE ::aItems :=NIL, ::aColors := {}, SendMessage( ::Handle, LVM_DELETEALLITEMS, 0, 0 )
    METHOD SELECTALL()    INLINE ListViewSelectAll( ::Handle )
    METHOD SELECTLAST()   INLINE ListViewSelectLastItem( ::handle )

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.52 2006-12-22 07:30:24 alkresin Exp $
+ * $Id: window.c,v 1.53 2007-08-21 17:37:46 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -605,6 +605,16 @@ HB_FUNC( HWG_SETFOREGROUNDWINDOW )
    hb_retl( SetForegroundWindow( (HWND) hb_parnl(1) ) );
 }
 
+HB_FUNC( HWG_BRINGWINDOWTOTOP )
+{
+   hb_retl( BringWindowToTop( (HWND) hb_parnl(1) ) );
+}
+
+HB_FUNC( HWG_SETACTIVEWINDOW )
+{
+   hb_retl( SetActiveWindow( (HWND) hb_parnl(1) ) );
+}
+
 HB_FUNC( RESETWINDOWPOS )
 {
    RECT rc;
@@ -826,4 +836,56 @@ HB_FUNC(SETWINDOWPOS)
     cy,
     uFlags);
     hb_retl( res );
+}
+
+
+HB_FUNC(   SETASTYLE ){
+   #define MAP_STYLE(src, dest) if(dwStyle & (src)) dwText |= (dest)
+   #define NMAP_STYLE(src, dest) if(!(dwStyle & (src))) dwText |= (dest)
+
+	DWORD dwStyle = hb_parnl(1), dwText = 0;
+
+	MAP_STYLE(	SS_RIGHT,			DT_RIGHT					);
+	MAP_STYLE(	SS_CENTER,			DT_CENTER					);
+	MAP_STYLE(	SS_CENTERIMAGE,		DT_VCENTER | DT_SINGLELINE	);
+	MAP_STYLE(	SS_NOPREFIX,		DT_NOPREFIX					);
+	MAP_STYLE(	SS_WORDELLIPSIS,	DT_WORD_ELLIPSIS			);
+	MAP_STYLE(	SS_ENDELLIPSIS,		DT_END_ELLIPSIS				);
+	MAP_STYLE(	SS_PATHELLIPSIS,	DT_PATH_ELLIPSIS			);
+
+	NMAP_STYLE(	SS_LEFTNOWORDWRAP |
+				SS_CENTERIMAGE |
+				SS_WORDELLIPSIS |
+				SS_ENDELLIPSIS |
+				SS_PATHELLIPSIS,	DT_WORDBREAK				);
+hb_stornl(dwStyle,1);
+hb_stornl(dwText,2);
+
+}
+
+HB_FUNC(BRINGTOTOP)
+{
+HWND hWnd  = (HWND) hb_parnl( 1) ;
+DWORD ForegroundThreadID;
+DWORD    ThisThreadID;
+DWORD      timeout;
+BOOL Res = FALSE;
+if (IsIconic(hWnd) )
+{
+   ShowWindow(hWnd,SW_RESTORE);
+   hb_retl(TRUE);
+   return;
+}
+//ForegroundThreadID = GetWindowThreadProcessID(GetForegroundWindow(),NULL);
+//ThisThreadID = GetWindowThreadPRocessId(hWnd, NULL);
+//   if (AttachThreadInput(ThisThreadID, ForegroundThreadID, TRUE) )
+//    {
+    BringWindowToTop(hWnd); // IE 5.5 related hack
+    SetForegroundWindow(hWnd);
+//    AttachThreadInput(ThisThreadID, ForegroundThreadID,FALSE);
+//    Res = (GetForegroundWindow() == hWnd);
+//    }
+
+
+//hb_retl(Res);
 }

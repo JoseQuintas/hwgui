@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.9 2007-08-21 14:29:51 lculik Exp $
+ * $Id: hgridex.prg,v 1.10 2007-08-21 21:51:05 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -32,7 +32,8 @@ CLASS HGridEX INHERIT HControl
    DATA aBitMaps   INIT {}
    DATA aItems     INIT {}
    DATA ItemCount
-   DATA color   
+   DATA color
+   DATA bFlag      INIT .f.
    DATA bkcolor
    DATA aColumns   INIT {}
    DATA nRow       INIT 0
@@ -71,7 +72,7 @@ CLASS HGridEX INHERIT HControl
    METHOD AddRow( aRow )
    METHOD Notify( lParam )
 
-   METHOD DELETEROW()    INLINE IF( ::iRowSelect >= 0 ,( SendMessage( ::HANDLE, LVM_DELETEITEM, ::iRowSelect , 0), ::iRowSelect := 0 ), .T. )
+   METHOD DELETEROW()    INLINE IF( ::bFlag ,( SendMessage( ::HANDLE, LVM_DELETEITEM, ::iRowSelect , 0), ::bFlag :=.f. ), .T. )
    METHOD DELETEALLROW() INLINE ::aItems :=NIL, ::aColors := {}, SendMessage( ::Handle, LVM_DELETEALLITEMS, 0, 0 )
    METHOD SELECTALL()    INLINE ListViewSelectAll( ::Handle )
    METHOD SELECTLAST()   INLINE ListViewSelectLastItem( ::handle )
@@ -239,12 +240,26 @@ default bupdate to .F.
 return nil
       
 METHOD Notify( lParam )  Class HGRIDEX
-    Local aCord,Res
+    Local aCord,Res,iSelect,index
 
     IF GetNotifyCode( lParam ) == NM_CUSTOMDRAW .and. GETNOTIFYCODEFROM(lParam) == ::Handle
         Res := PROCESSCUSTU( ::handle, lParam, ::aColors )
         return res
     ENDIF
+
+    if GetNotifyCode( lParam ) == NM_CLICK
+                
+       iSelect=SendMessage(::handle,LVM_GETNEXTITEM,-1,LVNI_FOCUSED)
+          
+       if(iSelect==-1)                                         
+          return 0
+       endif
+
+       ::iRowSelect:=iSelect
+       ::bFlag:=.t.
+       return 1
+     endif    
+
     IF GetNotifyCode( lParam ) == LVN_COLUMNCLICK //.and. GETNOTIFYCODEFROM(lParam) == ::Handle
        if empty(::hsort)
           ::hSort := LISTVIEWSORTINFONEW( lParam,nil )

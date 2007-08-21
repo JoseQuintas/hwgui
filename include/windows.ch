@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.43 2007-08-20 15:03:47 lculik Exp $
+ *$Id: windows.ch,v 1.44 2007-08-21 19:15:18 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -108,6 +108,7 @@
 #define DS_ABSALIGN         1        // 0x01L
 #define DS_SYSMODAL         2        // 0x02L
 #define DS_CENTER           2048     // 0x0800L
+#define DS_MODALFRAME       0x80
 
 /*
  * User Button Notification Codes

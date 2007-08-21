@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.34 2007-08-20 14:56:58 lculik Exp $
+ * $Id: hcontrol.prg,v 1.35 2007-08-21 19:15:18 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -386,11 +386,12 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
 RETURN Self
 
 METHOD Init CLASS HButton
-
-   ::super:init()
-   IF ::Title != NIL
-      SETWINDOWTEXT( ::handle, ::title )
-   ENDIF
+   IF !::lInit
+      ::super:init()
+      IF ::Title != NIL
+         SETWINDOWTEXT( ::handle, ::title )
+      ENDIF
+   endif
 RETURN  NIL
 
 //- HGroup
@@ -505,11 +506,13 @@ RETURN self
 
 METHOD INIT CLASS HButtonEx
 
-   ::nHolder := 1
-   SetWindowObject( ::handle, Self )
-   HWG_INITBUTTONPROC( ::handle )
-   ::super:init()
-   ::SetBitmap()
+   IF !::lInit
+      ::nHolder := 1
+      SetWindowObject( ::handle, Self )
+      HWG_INITBUTTONPROC( ::handle )
+      ::super:init()
+      ::SetBitmap()
+endif
 RETURN NIL
 
 
@@ -776,9 +779,9 @@ METHOD PAINTBK(hdc)
 
     rect1:=GetWindowRect(::handle)
     ScreenToClient(::oparent:handle,rect1)
-    Tracelog("::m_dcBk",::m_dcBk,"Valtype(::m_dcBk)",Valtype(::m_dcBk))
+    
     if Valtype(::m_dcBk) =="U"
-    Tracelog("::m_dcBk",::m_dcBk,"Valtype(::m_dcBk)",Valtype(::m_dcBk))
+    
         ::m_dcBk:=Hdc():New()
         ::m_dcBk:CreateCompatibleDC(clDC:m_hDC)
         ::m_bmpBk := CreateCompatibleBitmap(clDC:m_hDC, rect[3]-rect[1], rect[4]-rect[2])

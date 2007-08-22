@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.29 2007-08-22 12:52:16 lculik Exp $
+ * $Id: hcombo.prg,v 1.30 2007-08-22 18:05:05 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -31,6 +31,15 @@
 #define CBN_SELENDCANCEL    10
 #pragma begindump
 #include "windows.h"
+#include "hbapi.h"
+HB_FUNC(COPYDATA)
+     {
+   LPARAM lParam = ( LPARAM ) hb_parnl( 1 ) ;
+                     char * m_strText = hb_parc( 2 ) ;
+                     WPARAM wParam = ( WPARAM ) hb_parnl( 3 ) ;
+
+   lstrcpyn( ( LPSTR ) lParam, m_strText, ( INT ) wParam ) ;
+}
 #pragma enddump
 
 CLASS HComboBox INHERIT HControl
@@ -642,13 +651,7 @@ METHOD OnGetText( wParam, lParam ) CLASS hCheckComboBox
    ENDIF
 
    // Copy the 'fake' window text
-   hb_inline( lParam, ::m_strText, wParam )   {
-   LPARAM lParam = ( LPARAM ) hb_parnl( 1 ) ;
-                     char * m_strText = hb_parc( 2 ) ;
-                     WPARAM wParam = ( WPARAM ) hb_parnl( 3 ) ;
-
-   lstrcpyn( ( LPSTR ) lParam, m_strText, ( INT ) wParam ) ;
-             }
+   copydata( lParam, ::m_strText, wParam )
 
 RETURN LEN( ::m_strText )
 

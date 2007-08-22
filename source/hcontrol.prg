@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.35 2007-08-21 19:15:18 lculik Exp $
+ * $Id: hcontrol.prg,v 1.36 2007-08-22 12:52:16 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -785,7 +785,7 @@ METHOD PAINTBK(hdc)
         ::m_dcBk:=Hdc():New()
         ::m_dcBk:CreateCompatibleDC(clDC:m_hDC)
         ::m_bmpBk := CreateCompatibleBitmap(clDC:m_hDC, rect[3]-rect[1], rect[4]-rect[2])
-        m_pbmpOldBk = ::m_dcBk:SelectObject(::m_bmpBk)
+        ::m_pbmpOldBk = ::m_dcBk:SelectObject(::m_bmpBk)
         ::m_dcBk:BitBlt(0, 0, rect[3]-rect[1], rect[4]-rect[4], clDC:m_hDc, rect1[1], rect1[2], SRCCOPY)
     endif
 

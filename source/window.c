@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.53 2007-08-21 17:37:46 lculik Exp $
+ * $Id: window.c,v 1.54 2007-08-22 12:52:16 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -610,10 +610,10 @@ HB_FUNC( HWG_BRINGWINDOWTOTOP )
    hb_retl( BringWindowToTop( (HWND) hb_parnl(1) ) );
 }
 
-HB_FUNC( HWG_SETACTIVEWINDOW )
-{
-   hb_retl( SetActiveWindow( (HWND) hb_parnl(1) ) );
-}
+//HB_FUNC( HWG_SETACTIVEWINDOW )
+//{
+//   hb_retnl( SetActiveWindow( (HWND) hb_parnl(1) ) );
+//}
 
 HB_FUNC( RESETWINDOWPOS )
 {

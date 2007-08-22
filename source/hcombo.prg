@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.28 2007-08-21 12:20:16 lculik Exp $
+ * $Id: hcombo.prg,v 1.29 2007-08-22 12:52:16 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -642,8 +642,7 @@ METHOD OnGetText( wParam, lParam ) CLASS hCheckComboBox
    ENDIF
 
    // Copy the 'fake' window text
-   hb_inline( lParam, ::m_strText, wParam )
-   {
+   hb_inline( lParam, ::m_strText, wParam )   {
    LPARAM lParam = ( LPARAM ) hb_parnl( 1 ) ;
                      char * m_strText = hb_parc( 2 ) ;
                      WPARAM wParam = ( WPARAM ) hb_parnl( 3 ) ;

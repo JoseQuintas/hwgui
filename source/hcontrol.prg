@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.36 2007-08-22 12:52:16 lculik Exp $
+ * $Id: hcontrol.prg,v 1.37 2007-08-23 11:06:57 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -29,7 +29,7 @@
 #define BTNST_COLOR_FG_FOCUS  6            // Text color when the button is focused
 
 
-static  bMouseOverButton := .f.
+
 //- HControl
 
 CLASS HControl INHERIT HCustomWindow
@@ -415,6 +415,7 @@ CLASS HButtonEX INHERIT HButton
    bColor, lTransp, hBitmap,hIcon )
    Data iStyle
    DATA m_bmpBk,m_pbmpOldBk
+   DATA  bMouseOverButton INIT .f.
 
    METHOD Paint( lpDis )
    METHOD SetBitmap( )
@@ -529,9 +530,9 @@ METHOD onEvent( msg, wParam, lParam )
       ENDIF
       RETURN 0
    ELSEIF msg == WM_MOUSEMOVE
-      if(!bMouseOverButton)
+      if(!::bMouseOverButton)
     
-         bMouseOverButton := .T.
+         ::bMouseOverButton := .T.
          Invalidaterect( ::handle, .f. )
          TRACKMOUSEVENT( ::handle )
       endif      
@@ -552,8 +553,8 @@ RETURN -1
 
 METHOD CancelHover() CLASS HBUTTONEx
 
-   IF ( bMouseOverButton )
-      bMouseOverButton := .F.
+   IF ( ::bMouseOverButton )
+      ::bMouseOverButton := .F.
       Invalidaterect( ::handle, .f. )
    ENDIF
 
@@ -575,7 +576,7 @@ LOCAL focusRect
 LOCAL captionRect
 LOCAL centerRect
 LOCAL bHasTitle
-LOCAL itemRect    := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
+LOCAL itemRect    := copyrect({ DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] })
 
 LOCAL state
 
@@ -589,6 +590,7 @@ LOCAL captionRectHeight
 LOCAL centerRectWidth
 LOCAL centerRectHeight
 LOCAL uAlign
+Tracelog("Filho" , valtoprg(itemRect) , " pai = " ,valtoprg({DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }))
 
    IF ( ::m_bFirstTime )
 
@@ -626,7 +628,7 @@ LOCAL uAlign
          IF bIsFocused
             state := PBS_DEFAULTED
          ENDIF
-         IF bMouseOverButton
+         IF ::bMouseOverButton
             state := PBS_HOT
          ENDIF
       ENDIF
@@ -655,7 +657,7 @@ LOCAL uAlign
 
          uState := HWG_BITOR( ;
                               HWG_BITOR( DFCS_BUTTONPUSH, ;
-                              IF( bMouseOverButton, DFCS_HOT, 0 ) ), ;
+                              IF( ::bMouseOverButton, DFCS_HOT, 0 ) ), ;
                               IF( bIsPressed, DFCS_PUSHED, 0 ) )
 
          DrawFrameControl( dc, itemRect, DFC_BUTTON, uState )
@@ -663,17 +665,18 @@ LOCAL uAlign
 
    ENDIF
 
-      if ::iStyle ==  ST_ALIGN_HORIZ
-         uAlign := DT_RIGHT
-      else
-         uAlign := DT_LEFT
-      endif
-
-      IF VALTYPE( ::hbitmap ) != "N"
-         uAlign := DT_CENTER   
-      ENDIF
-
-   uAlign += DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
+//      if ::iStyle ==  ST_ALIGN_HORIZ
+//         uAlign := DT_RIGHT
+//      else
+//         uAlign := DT_LEFT
+//      endif
+//
+//      IF VALTYPE( ::hbitmap ) != "N"
+//         uAlign := DT_CENTER   
+//      ENDIF
+   uAlign:=0
+//             DT_CENTER | DT_VCENTER | DT_SINGLELINE
+   uAlign += DT_WORDBREAK | DT_CENTER | DT_CALCRECT |  DT_VCENTER | DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
 
    captionRect := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
 
@@ -689,14 +692,18 @@ LOCAL uAlign
       ENDIF
 
       // Center text
-      centerRect := captionRect
+//      centerRect := captionRect
+      centerRect:=copyrect(captionRect)
 
-      DrawText( dc, ::caption, captionrect[ 1 ], captionrect[ 2 ], captionrect[ 3 ], captionrect[ 4 ], uAlign + DT_CALCRECT, @captionRect )
+
+     DrawText( dc, ::caption, captionrect[ 1 ], captionrect[ 2 ], captionrect[ 3 ], captionrect[ 4 ], uAlign + DT_CALCRECT, @captionRect )
+
 
       captionRectWidth  := captionrect[ 3 ] - captionrect[ 1 ]
       captionRectHeight := captionrect[ 4 ] - captionrect[ 2 ]
       centerRectWidth   := centerRect[ 3 ] - centerRect[ 1 ]
       centerRectHeight  := centerRect[ 4 ] - centerRect[ 2 ]
+//ok      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
       OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
 
       SetBkMode( dc, TRANSPARENT )
@@ -711,7 +718,7 @@ LOCAL uAlign
 
       ELSE
 
-         IF ( bMouseOverButton .or. bIsPressed )
+         IF ( ::bMouseOverButton .or. bIsPressed )
 
             SetTextColor( DC, ::m_crColors[ BTNST_COLOR_FG_IN ] )
             SetBkColor( DC, ::m_crColors[ BTNST_COLOR_BK_IN ] )
@@ -763,7 +770,7 @@ LOCAL uAlign
    // Draw the focus rect
    IF bIsFocused .and. bDrawFocusRect
 
-      focusRect := itemRect
+      focusRect := COPYRECT(itemRect)
       InflateRect( @focusRect, - 3, - 3 )
       DrawFocusRect( dc, focusRect )
    ENDIF

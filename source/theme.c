@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.3 2007-08-20 14:56:58 lculik Exp $
+ * $Id: theme.c,v 1.4 2007-08-23 11:06:57 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -1116,7 +1116,7 @@ void Calc_iconWidthHeight (HWND m_hWnd, DWORD *ccx, DWORD *ccy,HDC hDC,HICON hIc
 
     if (!hIcon)
     {
-	   *ccx =0;
+       *ccx = 0;
 	   *ccy = 0;
 		return;
     }
@@ -1260,7 +1260,7 @@ static void PrepareImageRect(HWND hButtonWnd, BOOL bHasTitle, RECT* rpItem, RECT
 			if (bHasTitle == FALSE)
 			{
 				// Center image horizontally
-                rpImage->left += (((rpImage->right - rpImage->left) - (long)dwWidth)/2);
+                rpImage->left += ((rpImage->right - rpImage->left) - (long)dwWidth)/2;
 			}
 			else
 			{
@@ -1269,7 +1269,7 @@ static void PrepareImageRect(HWND hButtonWnd, BOOL bHasTitle, RECT* rpItem, RECT
                 rpTitle->left = 3;
                 rpImage->left = rBtn.right - dwWidth - 3;
 				// Center image vertically
-                rpImage->top += (((rpImage->bottom - rpImage->top) - (long)dwHeight)/2);
+                rpImage->top += ((rpImage->bottom - rpImage->top) - (long)dwHeight)/2;
 			}
 			break;
 		case ST_ALIGN_VERT:
@@ -1293,27 +1293,6 @@ static void PrepareImageRect(HWND hButtonWnd, BOOL bHasTitle, RECT* rpItem, RECT
 
 
 
-/*
-	GetClientRect(hButtonWnd, &rBtn);
-	if (bHasTitle == FALSE)
-	{
-		// Center image horizontally
-        rpImageWidth = rpImage->right - rpImage->left;
-		rpImage->left += ((rpImageWidth - (long)dwWidth)/2);
-	}
-	else
-	{
-		// Image must be placed just inside the focus rect
-		LONG rpTitleWidth = rpTitle->right - rpTitle->left;
-		rpTitle->right = rpTitleWidth - dwWidth - 30;
-		rpTitle->left = 30;
-		rpImage->left = rBtn.right - dwWidth - 30;
-		// Center image vertically
-        rpImageHeight = rpImage->bottom - rpImage->top;
-		rpImage->top += ((rpImageHeight - (long)dwHeight)/2);
-	}
-
-*/
 	// If button is pressed then press image also
 	if (bIsPressed && !Themed)
 		OffsetRect(rpImage, 1, 1);
@@ -1323,7 +1302,7 @@ static void PrepareImageRect(HWND hButtonWnd, BOOL bHasTitle, RECT* rpItem, RECT
 
 static void DrawTheIcon(HWND hButtonWnd, HDC dc, BOOL bHasTitle, RECT* rpItem, RECT* rpTitle, BOOL bIsPressed, BOOL bIsDisabled,HICON hIco,HBITMAP hBitmap ,int iStyle)
 {
-	RECT	rImage;
+    RECT  rImage;
 	DWORD cx =0 ;
 	DWORD cy =0 ;
     if (hIco)

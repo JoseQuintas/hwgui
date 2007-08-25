@@ -356,7 +356,7 @@
          <property name="lNoTodayCircle" type="L" value="True" />
          <property name="lWeekNumber" type="L" value="True" />
          <property name="3DLook" type="L" value="False" />
-		 <property name="ToolTip" type="C" value=""/>
+	<property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onChange" />
       </widget>
@@ -464,6 +464,10 @@
         <property name="Height" type="N" value="18"/>
         <property name="maxpos" type="N" value="0"/>
         <property name="nRange" type="N" value="0"/>
+	<property name="ToolTip" type="C" value=""/>
+        <method name="onInit" />
+        <method name="onSize" />
+        <method name="onPaint" />
       </widget>
    </set>
    <set name="HwGUI">
@@ -658,7 +662,7 @@
            if !empty(value)
               oCtrl:oBitmap := Iif( At(".",value)!=0,HIcon():AddFile(value),HIcon():Resource(value))
 	   endif
-           endif 
+           endif
           ]]></code3>
       </property>
       <property name="BrwType" array="Dbf,Array">

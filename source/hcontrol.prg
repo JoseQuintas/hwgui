@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.37 2007-08-23 11:06:57 lculik Exp $
+ * $Id: hcontrol.prg,v 1.38 2007-08-25 17:47:22 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -7,8 +7,8 @@
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
 
- * 
- * ButtonEx class 
+ *
+ * ButtonEx class
  *
  * Copyright 2007 Luiz Rafael Culik Guimaraes <luiz at xharbour.com.br >
  * www - http://sites.uol.com.br/culikr/
@@ -157,7 +157,7 @@ CLASS HStatus INHERIT HControl
    METHOD Activate()
    METHOD Init()
    METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aParts )  
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aParts )
 
 ENDCLASS
 
@@ -257,7 +257,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 
    IF lTransp != NIL .AND. lTransp
       ::extStyle += WS_EX_TRANSPARENT
-      
+
       bPaint := {|o,p| o:paint(p)}
    ENDIF
 
@@ -309,7 +309,7 @@ szText:=	GetWindowText(::handle)
 	// Map "Static Styles" to "Text Styles"
    nstyle :=::style
    SetaStyle(@nstyle,@dwtext )
-   
+
 	// Set transparent background
 	SetBkMode(dc,1)
 
@@ -531,11 +531,11 @@ METHOD onEvent( msg, wParam, lParam )
       RETURN 0
    ELSEIF msg == WM_MOUSEMOVE
       if(!::bMouseOverButton)
-    
+
          ::bMouseOverButton := .T.
          Invalidaterect( ::handle, .f. )
          TRACKMOUSEVENT( ::handle )
-      endif      
+      endif
       RETURN 0
 
    ELSEIF msg == WM_MOUSELEAVE
@@ -672,7 +672,7 @@ Tracelog("Filho" , valtoprg(itemRect) , " pai = " ,valtoprg({DrawInfo[ 4 ], Draw
 //      endif
 //
 //      IF VALTYPE( ::hbitmap ) != "N"
-//         uAlign := DT_CENTER   
+//         uAlign := DT_CENTER
 //      ENDIF
    uAlign:=0
 //             DT_CENTER | DT_VCENTER | DT_SINGLELINE
@@ -786,20 +786,20 @@ METHOD PAINTBK(hdc)
 
     rect1:=GetWindowRect(::handle)
     ScreenToClient(::oparent:handle,rect1)
-    
+
     if Valtype(::m_dcBk) =="U"
-    
+
         ::m_dcBk:=Hdc():New()
         ::m_dcBk:CreateCompatibleDC(clDC:m_hDC)
         ::m_bmpBk := CreateCompatibleBitmap(clDC:m_hDC, rect[3]-rect[1], rect[4]-rect[2])
         ::m_pbmpOldBk = ::m_dcBk:SelectObject(::m_bmpBk)
-        ::m_dcBk:BitBlt(0, 0, rect[3]-rect[1], rect[4]-rect[4], clDC:m_hDc, rect1[1], rect1[2], SRCCOPY)
+        ::m_dcBk:BitBlt(0, 0, rect[3]-rect[1], rect[4]-rect[4], clDC:m_hDc, rect1[1], rect1[2], _SRCCOPY)
     endif
 
     BitBlt(hdc,0, 0, rect[3]-rect[1], rect[4]-rect[4],::m_dcBk:m_hDC, 0, 0, SRCCOPY)
 return self
 
-            
+
 
 
 CLASS HGroup INHERIT HControl

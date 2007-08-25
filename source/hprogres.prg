@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.6 2006-04-12 06:03:03 alkresin Exp $
+ * $Id: hprogres.prg,v 1.7 2007-08-25 17:47:22 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class
@@ -20,8 +20,8 @@ CLASS HProgressBar INHERIT HControl
    DATA  nCount INIT 0
    DATA  nLimit
 
-   METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,maxPos,nRange )
-   METHOD NewBox( cTitle,nLeft,nTop,nWidth,nHeight,maxPos,nRange,bExit )
+   METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,maxPos,nRange, bInit,bSize,bPaint,ctooltip )
+   METHOD NewBox( cTitle,nLeft,nTop,nWidth,nHeight,maxPos,nRange,bExit,bInit,bSize,bPaint,ctooltip )
    METHOD Activate()
    METHOD Increment() INLINE UpdateProgressBar( ::handle )
    METHOD Step()
@@ -30,9 +30,9 @@ CLASS HProgressBar INHERIT HControl
 
 ENDCLASS
 
-METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,maxPos,nRange ) CLASS HProgressBar
+METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,maxPos,nRange,bInit,bSize,bPaint,ctooltip ) CLASS HProgressBar
 
-   Super:New( oWndParent,nId,,nLeft,nTop,nWidth,nHeight )
+   Super:New( oWndParent,nId,,nLeft,nTop,nWidth,nHeight,,bInit,bSize,bPaint,ctooltip )
 
    ::maxPos  := Iif( maxPos==Nil,20,maxPos )
    ::lNewBox := .F.

@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.44 2007-08-21 19:15:18 lculik Exp $
+ *$Id: windows.ch,v 1.45 2007-08-25 17:47:22 richardroesnadi Exp $
  */
 
 #define WM_CREATE                       1
@@ -1205,7 +1205,7 @@
 #define ST_ALIGN_OVERLAP     3           // Icon/bitmap on the same space as text
 
 #define WM_THEMECHANGED     0x031
-                                        
+
 #define TPM_LEFTALIGN   0x0000
 #define TPM_CENTERALIGN 0x0004
 #define TPM_RIGHTALIGN  0x0008
@@ -1222,10 +1222,10 @@
 #define BUTTON_UNKNOWN3        0x10
 
 
-#define ODA_DRAWENTIRE  0x0001     
-#define ODA_SELECT      0x0002     
-#define ODA_FOCUS       0x0004     
-                                   
+#define ODA_DRAWENTIRE  0x0001
+#define ODA_SELECT      0x0002
+#define ODA_FOCUS       0x0004
+
 #define WM_MOUSEHOVER                   0x02A1
 #define WM_MOUSELEAVE                   0x02A3
 #define WM_NCMOUSEHOVER                 0x02A0
@@ -1235,5 +1235,5 @@
 #define LVN_FIRST               -100       // listview
 
 #define LVN_COLUMNCLICK         (LVN_FIRST-8)
-#define SRCCOPY             0x00CC0020 /* dest = source                   */
-#define SRCPAINT            0x00EE0086 /* dest = source OR dest           */
+#define _SRCCOPY             0x00CC0020 /* dest = source                   */
+#define _SRCPAINT            0x00EE0086 /* dest = source OR dest           */

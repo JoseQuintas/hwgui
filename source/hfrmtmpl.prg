@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.52 2007-08-16 05:48:15 omm Exp $
+ * $Id: hfrmtmpl.prg,v 1.53 2007-08-25 17:47:22 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -41,7 +41,7 @@ Static aCtrls := { ;
   "HStatus():New(oPrnt,nId,nStyle,oFont,aParts,onInit,onSize)", ;
   ".F.", ;
   "HAnimation():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,Filename,AutoPlay,Center,Transparent)", ;
-  "HProgressBar():New( oPrnt,nId,nLeft,nTop,nWidth,nHeight,maxPos,nRange )" ;
+  "HProgressBar():New( oPrnt,nId,nLeft,nTop,nWidth,nHeight,maxPos,nRange,bInit,bSize,bPaint,ctooltip )" ;
                 }
 
 #include "windows.ch"
@@ -211,7 +211,7 @@ Local lMdi :=.F.
 Local lMdiChild := .f.
 Local lval := .f.
 Local cBitmap := nil
-Local oBmp := NIL 
+Local oBmp := NIL
 Memvar oDlg
 Private oDlg
 
@@ -219,7 +219,7 @@ Private oDlg
 
    FOR i := 1 TO Len( ::aProp )
       xProperty := hfrm_GetProperty( ::aProp[ i,2 ] )
-      
+
       IF ::aProp[ i,1 ] == "geometry"
          nLeft   := Val(xProperty[1])
          nTop    := Val(xProperty[2])
@@ -249,31 +249,31 @@ Private oDlg
          NEXT
       // Styles below
       ELSEIF ::aProp[ i,1 ] == "systemMenu"
-         IF !xProperty 
+         IF !xProperty
             nStyle := hwg_bitandinverse( nStyle,WS_SYSMENU )
          endif
       ELSEIF ::aProp[ i,1 ] == "minimizebox"
-         IF xProperty 
+         IF xProperty
             nStyle += WS_MINIMIZEBOX
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "maximizebox"
-         IF xProperty 
+         IF xProperty
             nStyle += WS_MAXIMIZEBOX
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "absalignent"
-         IF !xProperty 
+         IF !xProperty
             nStyle := hwg_bitandinverse( nStyle,DS_ABSALIGN )
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "sizeBox"
-         IF !xProperty 
+         IF !xProperty
             nStyle := hwg_bitandinverse( nStyle,WS_SIZEBOX )
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "visible"
-         IF !xProperty 
+         IF !xProperty
             nStyle := hwg_bitandinverse( nStyle,WS_VISIBLE )
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "3dLook"
-         IF xProperty 
+         IF xProperty
             nStyle += DS_3DLOOK
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "clipsiblings"
@@ -366,7 +366,7 @@ Private oDlg
       CreateCtrl( ::oDlg, ::aControls[j], Self )
       j--
    ENDIF
-      
+
    FOR i := 1 TO j
       CreateCtrl( ::oDlg, ::aControls[i], Self )
    NEXT

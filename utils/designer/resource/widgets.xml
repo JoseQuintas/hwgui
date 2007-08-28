@@ -210,12 +210,16 @@
          <property name="varName" type="C" />
          <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(8))) ]]></property>
          <property name="BackColor" type="N" value="16777215" />
+         <property name="lEdit" type="L" value="False" />
+         <property name="lText" type="L" value="False" />
          <property name="3DLook" type="L" value="False" />
          <property name="ToolTip" type="C" value=""/>
 		 <property name="VSCROLL" type="L" value="False" />
          <property name="Font" type="O" />
          <method name="onInit" />
          <method name="onSize" />
+         <method name="onChange" />
+         <method name="bSetGet" />
       </widget>
       <widget class="bitmap" name="Bitmap" bmp="BMP_BMP">
          <paint>
@@ -685,6 +689,7 @@
       <method name="onPaint" params="oCtrl,hDC" />
       <method name="onClick" params="oDlg,nId" />
       <method name="onTreeClick" params="oItem" />
+      <method name="bSetGet"   params="value,oCtrl" />
    </methods>
    <temp>
    </temp>

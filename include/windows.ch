@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.45 2007-08-25 17:47:22 richardroesnadi Exp $
+ *$Id: windows.ch,v 1.46 2007-08-31 15:03:29 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -1235,5 +1235,9 @@
 #define LVN_FIRST               -100       // listview
 
 #define LVN_COLUMNCLICK         (LVN_FIRST-8)
+#define NULL_BRUSH          5
+#define HOLLOW_BRUSH        NULL_BRUSH
+#define TTM_SETMAXTIPWIDTH      (WM_USER + 24)
+
 #define _SRCCOPY             0x00CC0020 /* dest = source                   */
 #define _SRCPAINT            0x00EE0086 /* dest = source OR dest           */

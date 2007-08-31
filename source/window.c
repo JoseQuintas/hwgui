@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.54 2007-08-22 12:52:16 lculik Exp $
+ * $Id: window.c,v 1.55 2007-08-31 15:03:29 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -888,4 +888,10 @@ if (IsIconic(hWnd) )
 
 
 //hb_retl(Res);
+}
+
+HB_FUNC(UPDATEWINDOW)
+{
+HWND hWnd  = (HWND) hb_parnl( 1) ;
+UpdateWindow(hWnd);
 }

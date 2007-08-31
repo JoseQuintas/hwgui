@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.38 2007-08-25 17:47:22 richardroesnadi Exp $
+ * $Id: hcontrol.prg,v 1.39 2007-08-31 15:03:29 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -17,7 +17,7 @@
 
 #include "windows.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
+#include "guilib.ch"                                          
 #include "common.ch"
 #define  CONTROL_FIRST_ID   34000
 #define TRANSPARENT 1
@@ -402,14 +402,14 @@ CLASS HButtonEX INHERIT HButton
 
    Data hBitmap
    DATA hIcon
-   DATA m_dcBk
+   DATA m_dcBk init Hdc():New()
    DATA m_bFirstTime INIT .T.
    DATA Themed INIT .F.
    DATA m_crColors INIT ARRAY( 6 )
    DATA hTheme
    DATA Caption
    DATA state
-   DATA m_bDrawTransparent INIT .f.
+   DATA m_bDrawTransparent INIT .T.
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
    bColor, lTransp, hBitmap,hIcon )
@@ -541,6 +541,9 @@ METHOD onEvent( msg, wParam, lParam )
    ELSEIF msg == WM_MOUSELEAVE
       ::CancelHover()
       RETURN 0
+   elseif msg == WM_CTLCOLORBTN
+      
+      return GetStockObject(NULL_BRUSH)
    elseif msg ==WM_CHAR
       if wParam == VK_RETURN
          if Valtype(::bClick) =="B"
@@ -590,7 +593,7 @@ LOCAL captionRectHeight
 LOCAL centerRectWidth
 LOCAL centerRectHeight
 LOCAL uAlign
-Tracelog("Filho" , valtoprg(itemRect) , " pai = " ,valtoprg({DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }))
+
 
    IF ( ::m_bFirstTime )
 
@@ -602,7 +605,7 @@ Tracelog("Filho" , valtoprg(itemRect) , " pai = " ,valtoprg({DrawInfo[ 4 ], Draw
             HB_CLOSETHEMEDATA( ::htheme )
          ENDIF
          ::hTheme := nil
-         ::hTheme := hb_OpenThemeData( ::handle, "BUTTON" )
+         ::hTheme := nil// hb_OpenThemeData( ::handle, "BUTTON" )
 
       ENDIF
    ENDIF
@@ -612,10 +615,6 @@ Tracelog("Filho" , valtoprg(itemRect) , " pai = " ,valtoprg({DrawInfo[ 4 ], Draw
    ENDIF
 
    SetBkMode( dc, TRANSPARENT )
-   if (::m_bDrawTransparent)
-        ::PaintBk(DC)
-   endif
-
 
    // Prepare draw... paint button background
 
@@ -676,7 +675,11 @@ Tracelog("Filho" , valtoprg(itemRect) , " pai = " ,valtoprg({DrawInfo[ 4 ], Draw
 //      ENDIF
    uAlign:=0
 //             DT_CENTER | DT_VCENTER | DT_SINGLELINE
-   uAlign += DT_WORDBREAK | DT_CENTER | DT_CALCRECT |  DT_VCENTER | DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
+   if ::Themed
+      uAlign += DT_WORDBREAK | DT_CENTER | DT_CALCRECT | DT_VCENTER | DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
+   else
+      uAlign += DT_WORDBREAK | DT_CENTER | DT_CALCRECT | DT_VCENTER | DT_SINGLELINE
+   endif
 
    captionRect := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
 
@@ -696,7 +699,7 @@ Tracelog("Filho" , valtoprg(itemRect) , " pai = " ,valtoprg({DrawInfo[ 4 ], Draw
       centerRect:=copyrect(captionRect)
 
 
-     DrawText( dc, ::caption, captionrect[ 1 ], captionrect[ 2 ], captionrect[ 3 ], captionrect[ 4 ], uAlign + DT_CALCRECT, @captionRect )
+     DrawText( dc, ::caption, captionrect[ 1 ], captionrect[ 2 ], captionrect[ 3 ], captionrect[ 4 ], uAlign , @captionRect )
 
 
       captionRectWidth  := captionrect[ 3 ] - captionrect[ 1 ]
@@ -704,17 +707,17 @@ Tracelog("Filho" , valtoprg(itemRect) , " pai = " ,valtoprg({DrawInfo[ 4 ], Draw
       centerRectWidth   := centerRect[ 3 ] - centerRect[ 1 ]
       centerRectHeight  := centerRect[ 4 ] - centerRect[ 2 ]
 //ok      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
-      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
+          OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
 
       SetBkMode( dc, TRANSPARENT )
       IF ( bIsDisabled )
 
          OffsetRect( @captionRect, 1, 1 )
          SetTextColor( DC, GetSysColor( COLOR_3DHILIGHT ) )
-         DrawText( DC, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], DT_WORDBREAK + DT_CENTER, @captionRect )
+         DrawText( DC, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], DT_WORDBREAK | DT_CENTER  | DT_VCENTER | DT_SINGLELINE, @captionRect )
          OffsetRect( @captionRect, - 1, - 1 )
          SetTextColor( DC, GetSysColor( COLOR_3DSHADOW ) )
-         DrawText( DC, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], DT_WORDBREAK + DT_VCENTER + DT_CENTER, @captionRect )
+         DrawText( DC, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], DT_WORDBREAK | DT_CENTER  | DT_VCENTER | DT_SINGLELINE, @captionRect )
 
       ELSE
 
@@ -753,16 +756,16 @@ Tracelog("Filho" , valtoprg(itemRect) , " pai = " ,valtoprg({DrawInfo[ 4 ], Draw
 
             OffsetRect( @captionRect, 1, 1 )
             SetTextColor( dc, GetSysColor( COLOR_3DHILIGHT ) )
-            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK + DT_CENTER )
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK | DT_CENTER  | DT_VCENTER | DT_SINGLELINE)
             OffsetRect( @captionRect, - 1, - 1 )
             SetTextColor( dc, GetSysColor( COLOR_3DSHADOW ) )
-            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK + DT_CENTER )
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK | DT_CENTER  | DT_VCENTER | DT_SINGLELINE)
             // if
          ELSE
 
             SetTextColor( dc, GetSysColor( COLOR_BTNTEXT ) )
             SetBkColor( dc, GetSysColor( COLOR_BTNFACE ) )
-            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK + DT_CENTER )
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK | DT_CENTER  | DT_VCENTER | DT_SINGLELINE )
          ENDIF
       ENDIF
    ENDIF
@@ -781,22 +784,28 @@ METHOD PAINTBK(hdc)
 
     Local clDC:=HclientDc():New(::oparent:handle)
     Local rect, rect1
-
+//    ButtonExPaintBK(::handle,::oparent:handle)
     rect:=GetClientRect(::handle)
+    
 
-    rect1:=GetWindowRect(::handle)
-    ScreenToClient(::oparent:handle,rect1)
-
-    if Valtype(::m_dcBk) =="U"
+    //rect1:=GetWindowRect(::handle)
+    
+    //Rect1:=ScreenToClient(::oparent:handle,rect1)
+    Rect1:=Button1GetScreenClient(::handle,::oparent:handle)
+    Tracelog(valtoprg(rect1))
+    
+    
+    if empty(::m_dcBk:m_hDC)     
 
         ::m_dcBk:=Hdc():New()
         ::m_dcBk:CreateCompatibleDC(clDC:m_hDC)
         ::m_bmpBk := CreateCompatibleBitmap(clDC:m_hDC, rect[3]-rect[1], rect[4]-rect[2])
         ::m_pbmpOldBk = ::m_dcBk:SelectObject(::m_bmpBk)
-        ::m_dcBk:BitBlt(0, 0, rect[3]-rect[1], rect[4]-rect[4], clDC:m_hDc, rect1[1], rect1[2], _SRCCOPY)
+
+        ::m_dcBk:BitBlt(0, 0, rect[3]-rect[1], rect[4]-rect[2], clDC:m_hDc, rect1[1], rect1[2], SRCCOPY)
     endif
 
-    BitBlt(hdc,0, 0, rect[3]-rect[1], rect[4]-rect[4],::m_dcBk:m_hDC, 0, 0, SRCCOPY)
+    BitBlt(hdc,0, 0, rect[3]-rect[1], rect[4]-rect[2],::m_dcBk:m_hDC, 0, 0, SRCCOPY)
 return self
 
 

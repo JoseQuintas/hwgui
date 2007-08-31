@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.39 2007-08-31 15:03:29 lculik Exp $
+ * $Id: hcontrol.prg,v 1.40 2007-08-31 20:20:45 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -426,7 +426,7 @@ CLASS HButtonEX INHERIT HButton
    METHOD End()
    METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
                     tcolor, bColor, hBitmap, iStyle,hIcon )
-   METHOD PAINTBK(p)
+
 
 END CLASS
 
@@ -779,34 +779,6 @@ LOCAL uAlign
    ENDIF
 
 RETURN nil
-
-METHOD PAINTBK(hdc)
-
-    Local clDC:=HclientDc():New(::oparent:handle)
-    Local rect, rect1
-//    ButtonExPaintBK(::handle,::oparent:handle)
-    rect:=GetClientRect(::handle)
-    
-
-    //rect1:=GetWindowRect(::handle)
-    
-    //Rect1:=ScreenToClient(::oparent:handle,rect1)
-    Rect1:=Button1GetScreenClient(::handle,::oparent:handle)
-    Tracelog(valtoprg(rect1))
-    
-    
-    if empty(::m_dcBk:m_hDC)     
-
-        ::m_dcBk:=Hdc():New()
-        ::m_dcBk:CreateCompatibleDC(clDC:m_hDC)
-        ::m_bmpBk := CreateCompatibleBitmap(clDC:m_hDC, rect[3]-rect[1], rect[4]-rect[2])
-        ::m_pbmpOldBk = ::m_dcBk:SelectObject(::m_bmpBk)
-
-        ::m_dcBk:BitBlt(0, 0, rect[3]-rect[1], rect[4]-rect[2], clDC:m_hDc, rect1[1], rect1[2], SRCCOPY)
-    endif
-
-    BitBlt(hdc,0, 0, rect[3]-rect[1], rect[4]-rect[2],::m_dcBk:m_hDC, 0, 0, SRCCOPY)
-return self
 
 
 

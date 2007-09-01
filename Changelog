@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.668 2007-08-31 15:03:29 lculik Exp $
+ * $Id: Changelog,v 1.669 2007-09-01 14:06:39 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2007-09-01 11:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+    * source/listbox.prg
+      !added LISTBOXDELETESTRING() function as requested by Serge
+
 2007-08-31 12:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
     * source/hcontrol.prg
       ! fix for hbuttonex on non Themed mode

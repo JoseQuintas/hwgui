@@ -1,5 +1,5 @@
 /*
- * $Id: listbox.c,v 1.4 2004-09-29 05:24:52 alkresin Exp $
+ * $Id: listbox.c,v 1.5 2007-09-01 14:06:40 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HList class
@@ -62,3 +62,8 @@ HB_FUNC( CREATELISTBOX )
 
 }
 
+HB_FUNC( LISTBOXDELETESTRING ) 
+{ 
+   char *cString = hb_parc( 2 ); 
+   SendMessage( (HWND) hb_parnl( 1 ), LB_DELETESTRING, 0, (LPARAM) 0 ); 
+} 

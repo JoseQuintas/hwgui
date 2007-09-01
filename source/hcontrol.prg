@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.40 2007-08-31 20:20:45 lculik Exp $
+ * $Id: hcontrol.prg,v 1.41 2007-09-01 12:03:26 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -7,8 +7,8 @@
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
 
- *
- * ButtonEx class
+ * 
+ * ButtonEx class 
  *
  * Copyright 2007 Luiz Rafael Culik Guimaraes <luiz at xharbour.com.br >
  * www - http://sites.uol.com.br/culikr/
@@ -17,7 +17,7 @@
 
 #include "windows.ch"
 #include "hbclass.ch"
-#include "guilib.ch"                                          
+#include "guilib.ch"
 #include "common.ch"
 #define  CONTROL_FIRST_ID   34000
 #define TRANSPARENT 1
@@ -257,7 +257,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 
    IF lTransp != NIL .AND. lTransp
       ::extStyle += WS_EX_TRANSPARENT
-
+      
       bPaint := {|o,p| o:paint(p)}
    ENDIF
 
@@ -309,7 +309,7 @@ szText:=	GetWindowText(::handle)
 	// Map "Static Styles" to "Text Styles"
    nstyle :=::style
    SetaStyle(@nstyle,@dwtext )
-
+   
 	// Set transparent background
 	SetBkMode(dc,1)
 
@@ -402,14 +402,14 @@ CLASS HButtonEX INHERIT HButton
 
    Data hBitmap
    DATA hIcon
-   DATA m_dcBk init Hdc():New()
+   DATA m_dcBk
    DATA m_bFirstTime INIT .T.
    DATA Themed INIT .F.
    DATA m_crColors INIT ARRAY( 6 )
    DATA hTheme
    DATA Caption
    DATA state
-   DATA m_bDrawTransparent INIT .T.
+   DATA m_bDrawTransparent INIT .f.
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
    bColor, lTransp, hBitmap,hIcon )
@@ -426,7 +426,7 @@ CLASS HButtonEX INHERIT HButton
    METHOD End()
    METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
                     tcolor, bColor, hBitmap, iStyle,hIcon )
-
+   METHOD PAINTBK(p)
 
 END CLASS
 
@@ -531,19 +531,16 @@ METHOD onEvent( msg, wParam, lParam )
       RETURN 0
    ELSEIF msg == WM_MOUSEMOVE
       if(!::bMouseOverButton)
-
+    
          ::bMouseOverButton := .T.
          Invalidaterect( ::handle, .f. )
          TRACKMOUSEVENT( ::handle )
-      endif
+      endif      
       RETURN 0
 
    ELSEIF msg == WM_MOUSELEAVE
       ::CancelHover()
       RETURN 0
-   elseif msg == WM_CTLCOLORBTN
-      
-      return GetStockObject(NULL_BRUSH)
    elseif msg ==WM_CHAR
       if wParam == VK_RETURN
          if Valtype(::bClick) =="B"
@@ -593,7 +590,7 @@ LOCAL captionRectHeight
 LOCAL centerRectWidth
 LOCAL centerRectHeight
 LOCAL uAlign
-
+Tracelog("Filho" , valtoprg(itemRect) , " pai = " ,valtoprg({DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }))
 
    IF ( ::m_bFirstTime )
 
@@ -605,7 +602,7 @@ LOCAL uAlign
             HB_CLOSETHEMEDATA( ::htheme )
          ENDIF
          ::hTheme := nil
-         ::hTheme := nil// hb_OpenThemeData( ::handle, "BUTTON" )
+         ::hTheme := hb_OpenThemeData( ::handle, "BUTTON" )
 
       ENDIF
    ENDIF
@@ -615,6 +612,10 @@ LOCAL uAlign
    ENDIF
 
    SetBkMode( dc, TRANSPARENT )
+   if (::m_bDrawTransparent)
+        ::PaintBk(DC)
+   endif
+
 
    // Prepare draw... paint button background
 
@@ -671,15 +672,11 @@ LOCAL uAlign
 //      endif
 //
 //      IF VALTYPE( ::hbitmap ) != "N"
-//         uAlign := DT_CENTER
+//         uAlign := DT_CENTER   
 //      ENDIF
    uAlign:=0
 //             DT_CENTER | DT_VCENTER | DT_SINGLELINE
-   if ::Themed
-      uAlign += DT_WORDBREAK | DT_CENTER | DT_CALCRECT | DT_VCENTER | DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
-   else
-      uAlign += DT_WORDBREAK | DT_CENTER | DT_CALCRECT | DT_VCENTER | DT_SINGLELINE
-   endif
+   uAlign += DT_WORDBREAK | DT_CENTER | DT_CALCRECT |  DT_VCENTER | DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
 
    captionRect := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
 
@@ -699,7 +696,7 @@ LOCAL uAlign
       centerRect:=copyrect(captionRect)
 
 
-     DrawText( dc, ::caption, captionrect[ 1 ], captionrect[ 2 ], captionrect[ 3 ], captionrect[ 4 ], uAlign , @captionRect )
+     DrawText( dc, ::caption, captionrect[ 1 ], captionrect[ 2 ], captionrect[ 3 ], captionrect[ 4 ], uAlign + DT_CALCRECT, @captionRect )
 
 
       captionRectWidth  := captionrect[ 3 ] - captionrect[ 1 ]
@@ -707,17 +704,17 @@ LOCAL uAlign
       centerRectWidth   := centerRect[ 3 ] - centerRect[ 1 ]
       centerRectHeight  := centerRect[ 4 ] - centerRect[ 2 ]
 //ok      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
-          OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
+      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
 
       SetBkMode( dc, TRANSPARENT )
       IF ( bIsDisabled )
 
          OffsetRect( @captionRect, 1, 1 )
          SetTextColor( DC, GetSysColor( COLOR_3DHILIGHT ) )
-         DrawText( DC, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], DT_WORDBREAK | DT_CENTER  | DT_VCENTER | DT_SINGLELINE, @captionRect )
+         DrawText( DC, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], DT_WORDBREAK + DT_CENTER, @captionRect )
          OffsetRect( @captionRect, - 1, - 1 )
          SetTextColor( DC, GetSysColor( COLOR_3DSHADOW ) )
-         DrawText( DC, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], DT_WORDBREAK | DT_CENTER  | DT_VCENTER | DT_SINGLELINE, @captionRect )
+         DrawText( DC, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], DT_WORDBREAK + DT_VCENTER + DT_CENTER, @captionRect )
 
       ELSE
 
@@ -756,16 +753,16 @@ LOCAL uAlign
 
             OffsetRect( @captionRect, 1, 1 )
             SetTextColor( dc, GetSysColor( COLOR_3DHILIGHT ) )
-            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK | DT_CENTER  | DT_VCENTER | DT_SINGLELINE)
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK + DT_CENTER )
             OffsetRect( @captionRect, - 1, - 1 )
             SetTextColor( dc, GetSysColor( COLOR_3DSHADOW ) )
-            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK | DT_CENTER  | DT_VCENTER | DT_SINGLELINE)
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK + DT_CENTER )
             // if
          ELSE
 
             SetTextColor( dc, GetSysColor( COLOR_BTNTEXT ) )
             SetBkColor( dc, GetSysColor( COLOR_BTNFACE ) )
-            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK | DT_CENTER  | DT_VCENTER | DT_SINGLELINE )
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK + DT_CENTER )
          ENDIF
       ENDIF
    ENDIF
@@ -780,7 +777,29 @@ LOCAL uAlign
 
 RETURN nil
 
+METHOD PAINTBK(hdc)
 
+    Local clDC:=HclientDc():New(::oparent:handle)
+    Local rect, rect1
+
+    rect:=GetClientRect(::handle)
+
+    rect1:=GetWindowRect(::handle)
+    ScreenToClient(::oparent:handle,rect1)
+    
+    if Valtype(::m_dcBk) =="U"
+    
+        ::m_dcBk:=Hdc():New()
+        ::m_dcBk:CreateCompatibleDC(clDC:m_hDC)
+        ::m_bmpBk := CreateCompatibleBitmap(clDC:m_hDC, rect[3]-rect[1], rect[4]-rect[2])
+        ::m_pbmpOldBk = ::m_dcBk:SelectObject(::m_bmpBk)
+        ::m_dcBk:BitBlt(0, 0, rect[3]-rect[1], rect[4]-rect[4], clDC:m_hDc, rect1[1], rect1[2], SRCCOPY)
+    endif
+
+    BitBlt(hdc,0, 0, rect[3]-rect[1], rect[4]-rect[4],::m_dcBk:m_hDC, 0, 0, SRCCOPY)
+return self
+
+            
 
 
 CLASS HGroup INHERIT HControl

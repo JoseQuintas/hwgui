@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.30 2007-08-22 18:05:05 lculik Exp $
+ * $Id: hcombo.prg,v 1.31 2007-09-05 08:06:08 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -103,10 +103,10 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
       elseif ::bChangeSel != NIL
          ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
       ENDIF
-      
+
       IF bValid != NIL
          ::bValid := bValid
-         ::oParent:AddEvent( CBN_KILLFOCUS,::id,{|o,id|__Valid(o:FindControl(id))} ) 
+         ::oParent:AddEvent( CBN_KILLFOCUS,::id,{|o,id|__Valid(o:FindControl(id))} )
       ENDIF
       //---------------------------------------------------------------------------
    ELSEIF bChange != Nil
@@ -258,18 +258,18 @@ Static Function __Valid( oCtrl )
    // end by sauli
    IF lESC // "if" by Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
      nPos := SendMessage( oCtrl:handle,CB_GETCURSEL,0,0 ) + 1
-  
+
      oCtrl:value := Iif( oCtrl:lText, oCtrl:aItems[nPos], nPos )
-  
+
      IF oCtrl:bSetGet != Nil
         Eval( oCtrl:bSetGet, oCtrl:value, oCtrl )
      ENDIF
      IF oCtrl:bChangeSel != Nil
         Eval( oCtrl:bChangeSel, nPos, oCtrl )
      ENDIF
-     
+
      // By Luiz Henrique dos Santos (luizhsantos@gmail.com.br) 03/06/2006
-     IF oCtrl:bValid != NIL 
+     IF oCtrl:bValid != NIL
        IF ! EVAL( oCtrl:bValid, oCtrl )
          SetFocus( oCtrl:handle )
          RETURN .F.
@@ -328,7 +328,7 @@ CLASS HCheckComboBox INHERIT HComboBox
    METHOD MeasureItem( l )
 
    METHOD onEvent
-   METHOD GetAllCheck() 
+   METHOD GetAllCheck()
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, aItems, oFont, ;
@@ -609,7 +609,7 @@ LOCAL nstate
 
    DrawText( DC, ' ' + strText, rcText[ 1 ], rcText[ 2 ], rcText[ 3 ], rcText[ 4 ], DT_SINGLELINE + DT_VCENTER + DT_END_ELLIPSIS )
 
-   IF ( ( hwg_Bitand( DrawInfo[ 9 ], ODS_FOCUS | ODS_SELECTED ) ) == ( ODS_FOCUS | ODS_SELECTED ) )
+   IF ( ( hwg_Bitand( DrawInfo[ 9 ], ODS_FOCUS + ODS_SELECTED ) ) == ( ODS_FOCUS + ODS_SELECTED ) )
       DrawFocusRect( dc, rcText )
    ENDIF
 

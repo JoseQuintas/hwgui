@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.669 2007-09-01 14:06:39 lculik Exp $
+ * $Id: Changelog,v 1.670 2007-09-05 08:06:08 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-09-05 11:15 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
+    * include\windows.ch
+      * resolve duplicate #define NULL_BRUSH
+    * source\hcombo.prg
+    * source\hcontrol.prg
+      ! small fixes
+
 2007-09-01 11:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
     * source/listbox.prg
       !added LISTBOXDELETESTRING() function as requested by Serge
@@ -16,28 +24,28 @@
       ! fix for hbuttonex on non Themed mode
 
 2007-08-28 23:30 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
-	* utils/designer/resource/widgets.xml
-	  new combo property : lText, lEdit
-	  new combo events	 : onChange, bSetGet				
-		  
-		  
+    * utils/designer/resource/widgets.xml
+      new combo property : lText, lEdit
+      new combo events   : onChange, bSetGet
+
+
 2007-08-24 12:30 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
-	* source/Hformtmpl.prg
-	  source/Hprogres.prg
+    * source/Hformtmpl.prg
+      source/Hprogres.prg
       utils\designer\resource\widgets.xml
-	  ! add Tooltip
-	  ! add some method
-	* resolve duplicate #define SRCCOPY
-	  
+      ! add Tooltip
+      ! add some method
+    * resolve duplicate #define SRCCOPY
+
 2007-08-23 08:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
     * source/theme.c
       source/hcontrol.prg
       source/draw.c
-      ! minor fix on text position on buttonex 
+      ! minor fix on text position on buttonex
 
 2007-08-21 19:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
     * source/hgridex.prg
-      ! fixed delete  of one row 
+      ! fixed delete  of one row
 
 2007-08-21 16:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
     * source/hcontrol.prg

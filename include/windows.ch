@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.46 2007-08-31 15:03:29 lculik Exp $
+ *$Id: windows.ch,v 1.47 2007-09-05 08:06:08 omm Exp $
  */
 
 #define WM_CREATE                       1
@@ -28,7 +28,7 @@
 #define WM_WINDOWPOSCHANGING            70   // 0x0046
 
 #define WM_NOTIFY                       78   // 0x004E
-#define WM_HELP	                        83
+#define WM_HELP                         83
 #define WM_SETICON                      128    // 0x0080
 
 #define WM_NCCREATE                     129
@@ -588,7 +588,7 @@
 
 #define ENM_CHANGE             1        // 0x00000001
 #define ENM_SELCHANGE          524288   // 0x00080000
-#define ENM_PROTECTED			0x00200000
+#define ENM_PROTECTED           0x00200000
 
 #define IMAGE_BITMAP        0
 #define IMAGE_ICON          1
@@ -793,9 +793,9 @@
 #define TVHT_TOLEFT             2048    // 0x0800
 
 /* For video controls */
-#define WIN_CHARPIX_H	16
+#define WIN_CHARPIX_H   16
 #define WIN_CHARPIX_W    8
-#define VID_CHARPIX_H	14
+#define VID_CHARPIX_H   14
 #define VID_CHARPIX_W    8
 #define CS_VREDRAW                 1  // 0x0001
 #define CS_HREDRAW                 2  // 0x0002
@@ -1235,7 +1235,6 @@
 #define LVN_FIRST               -100       // listview
 
 #define LVN_COLUMNCLICK         (LVN_FIRST-8)
-#define NULL_BRUSH          5
 #define HOLLOW_BRUSH        NULL_BRUSH
 #define TTM_SETMAXTIPWIDTH      (WM_USER + 24)
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.41 2007-09-01 12:03:26 lculik Exp $
+ * $Id: hcontrol.prg,v 1.42 2007-09-05 08:06:08 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -7,8 +7,8 @@
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
 
- * 
- * ButtonEx class 
+ *
+ * ButtonEx class
  *
  * Copyright 2007 Luiz Rafael Culik Guimaraes <luiz at xharbour.com.br >
  * www - http://sites.uol.com.br/culikr/
@@ -257,7 +257,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 
    IF lTransp != NIL .AND. lTransp
       ::extStyle += WS_EX_TRANSPARENT
-      
+
       bPaint := {|o,p| o:paint(p)}
    ENDIF
 
@@ -299,25 +299,25 @@ Local client_rect,szText,pfont,poldfont
 local dwtext,nstyle
 LOCAL dc := drawInfo[ 3 ]
 
-client_rect:=	GetClientRect(::handle)
+client_rect:=   GetClientRect(::handle)
 
-szText:=	GetWindowText(::handle)
+szText:=    GetWindowText(::handle)
 
         //pFont = GetFont();
-//	pOldFont = dc.SelectObject(pFont);
+//  pOldFont = dc.SelectObject(pFont);
 
-	// Map "Static Styles" to "Text Styles"
+    // Map "Static Styles" to "Text Styles"
    nstyle :=::style
    SetaStyle(@nstyle,@dwtext )
-   
-	// Set transparent background
-	SetBkMode(dc,1)
 
-	// Draw the text
-	DrawText(dc,szText, client_rect[1],client_rect[2],client_rect[3],client_rect[4], dwText)
+    // Set transparent background
+    SetBkMode(dc,1)
 
-	// Select old font
-//	dc.SelectObject(pOldFont);
+    // Draw the text
+    DrawText(dc,szText, client_rect[1],client_rect[2],client_rect[3],client_rect[4], dwText)
+
+    // Select old font
+//  dc.SelectObject(pOldFont);
 
 return nil
 
@@ -531,11 +531,11 @@ METHOD onEvent( msg, wParam, lParam )
       RETURN 0
    ELSEIF msg == WM_MOUSEMOVE
       if(!::bMouseOverButton)
-    
+
          ::bMouseOverButton := .T.
          Invalidaterect( ::handle, .f. )
          TRACKMOUSEVENT( ::handle )
-      endif      
+      endif
       RETURN 0
 
    ELSEIF msg == WM_MOUSELEAVE
@@ -672,11 +672,11 @@ Tracelog("Filho" , valtoprg(itemRect) , " pai = " ,valtoprg({DrawInfo[ 4 ], Draw
 //      endif
 //
 //      IF VALTYPE( ::hbitmap ) != "N"
-//         uAlign := DT_CENTER   
+//         uAlign := DT_CENTER
 //      ENDIF
    uAlign:=0
 //             DT_CENTER | DT_VCENTER | DT_SINGLELINE
-   uAlign += DT_WORDBREAK | DT_CENTER | DT_CALCRECT |  DT_VCENTER | DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
+   uAlign += DT_WORDBREAK + DT_CENTER + DT_CALCRECT +  DT_VCENTER + DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
 
    captionRect := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
 
@@ -786,9 +786,9 @@ METHOD PAINTBK(hdc)
 
     rect1:=GetWindowRect(::handle)
     ScreenToClient(::oparent:handle,rect1)
-    
+
     if Valtype(::m_dcBk) =="U"
-    
+
         ::m_dcBk:=Hdc():New()
         ::m_dcBk:CreateCompatibleDC(clDC:m_hDC)
         ::m_bmpBk := CreateCompatibleBitmap(clDC:m_hDC, rect[3]-rect[1], rect[4]-rect[2])
@@ -799,7 +799,7 @@ METHOD PAINTBK(hdc)
     BitBlt(hdc,0, 0, rect[3]-rect[1], rect[4]-rect[4],::m_dcBk:m_hDC, 0, 0, SRCCOPY)
 return self
 
-            
+
 
 
 CLASS HGroup INHERIT HControl

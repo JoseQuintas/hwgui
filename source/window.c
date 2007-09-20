@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.55 2007-08-31 15:03:29 lculik Exp $
+ * $Id: window.c,v 1.56 2007-09-20 14:59:31 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -42,11 +42,15 @@ LRESULT CALLBACK FrameWndProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK MDIChildWndProc (HWND, UINT, WPARAM, LPARAM) ;
 
 extern HWND * aDialogs;
+HWND hMytoolMenu = NULL;
+static HHOOK			OrigDockHookProc;
+
 extern int iDialogs;
 
 HWND aWindows[2] = { 0,0 };
 HACCEL hAccel = NULL;
 PHB_DYNS pSym_onEvent = NULL;
+PHB_DYNS pSym_onEven_Tool = NULL;
 // static PHB_DYNS pSym_MDIWnd = NULL;
 static TCHAR szChild[] = TEXT ( "MDICHILD" );
 
@@ -816,6 +820,13 @@ HB_FUNC( MAKEWPARAM )
    p = MAKEWPARAM( ( WORD ) hb_parnl( 1 ), ( WORD ) hb_parnl( 2 ) );
    hb_retnl( ( LONG ) p );
 }
+HB_FUNC( MAKELPARAM )
+{
+   LPARAM p;
+   p = MAKELPARAM( ( WORD ) hb_parnl( 1 ), ( WORD ) hb_parnl( 2 ) );
+   hb_retnl( ( LONG ) p );
+}
+
 HB_FUNC(SETWINDOWPOS)
 {
    BOOL res;
@@ -894,4 +905,151 @@ HB_FUNC(UPDATEWINDOW)
 {
 HWND hWnd  = (HWND) hb_parnl( 1) ;
 UpdateWindow(hWnd);
+}
+
+LONG  GetFontDialogUnits(HWND h,HFONT f)
+{
+
+   HFONT hFont;
+   HFONT hFontOld;
+   LONG avgWidth;
+   HDC hDc;
+   char * tmp="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+   SIZE sz;
+   
+  //get the hdc to the main window  
+   hDc = GetDC(h);
+   
+  //with the current font attributes, select the font  
+   hFont = f;//GetStockObject(ANSI_VAR_FONT)   ;
+   hFontOld = SelectObject(hDc, &hFont)   ;
+   
+  //get its length, then calculate the average character width  
+   
+   GetTextExtentPoint32(hDc, tmp, 52, &sz);
+   avgWidth = (sz.cx / 52)      ;
+   
+  //re-select the previous font & delete the hDc  
+   SelectObject(hDc, hFontOld) ;
+   DeleteObject(hFont)        ;
+   ReleaseDC(h, hDc);
+   
+ 
+  
+  return avgWidth ;
+
+}
+
+HB_FUNC(GETFONTDIALOGUNITS)
+{
+hb_retnl(GetFontDialogUnits((HWND)hb_parnl(1),(HFONT) hb_parnl(2 )) );
+}
+
+
+
+LRESULT CALLBACK KbdHook(int code, WPARAM wp, LPARAM lp) 
+{ 
+   int nId, nBtnNo; 
+   UINT uId;   
+   BOOL bPressed;    
+   if (code < 0) 
+   return CallNextHookEx(OrigDockHookProc, code, wp, lp); 
+   switch (code) 
+   { 
+   case HC_ACTION:
+     nBtnNo = SendMessage(hMytoolMenu, TB_BUTTONCOUNT, 0, 0);
+     nId = SendMessage(hMytoolMenu, TB_GETHOTITEM, 0, 0); 
+     if (HIWORD(lp) & KF_UP) bPressed = FALSE; 
+     else bPressed = TRUE; 
+     if ((wp == VK_F10 || wp == VK_MENU) && nId == -1 && bPressed) 
+     { 
+       SendMessage(hMytoolMenu, TB_SETHOTITEM, 0, 0);
+       return -100;
+     }
+     if (wp == VK_LEFT && nId != -1 && nId != 0 && bPressed) 
+     { 
+       SendMessage(hMytoolMenu, TB_SETHOTITEM, (WPARAM)nId - 1, 0); 
+       break;
+     } 
+     if (wp == VK_RIGHT && nId != -1 && nId < nBtnNo && bPressed) 
+     { 
+       SendMessage(hMytoolMenu, TB_SETHOTITEM, (WPARAM)nId + 1, 0);
+       break;
+     } 
+     if (SendMessage(hMytoolMenu, TB_MAPACCELERATOR, (WPARAM)wp, (LPARAM)&uId) != 0 && nId != -1 )
+     { 
+	     LRESULT Res;	     
+	     PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hMytoolMenu, GWL_USERDATA );
+	     Res = -200;
+        if( !pSym_onEven_Tool )
+           pSym_onEven_Tool = hb_dynsymFindName( "EXECUTETOOL" );		     
+           
+        if( pSym_onEven_Tool && pObject )
+        {
+
+        hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEven_Tool ) );
+        hb_vmPush( pObject );
+        hb_vmPushLong( (LONG ) uId );
+
+        hb_vmSend( 1 );
+        Res = hb_parnl( -1 );	     
+        if ( Res == 0 )
+        {
+           SendMessage(hMytoolMenu,WM_KEYUP,VK_MENU,0);
+           SendMessage(hMytoolMenu,WM_KEYUP,wp,0);
+        }   
+           
+       }
+       return Res;
+       
+     }
+        default: 
+          break;
+     } 
+        return CallNextHookEx(OrigDockHookProc, code, wp, lp);
+  }
+
+HB_FUNC(SETTOOLHANDLE)
+{
+	HWND h = (HWND) hb_parnl( 1 ) ;
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( h, GWL_USERDATA );
+
+
+   hMytoolMenu = (HWND)h;
+}
+
+
+HB_FUNC(SETHOOK)
+{
+	OrigDockHookProc = SetWindowsHookEx(WH_KEYBOARD, KbdHook, GetModuleHandle(0), 0); 
+}
+
+HB_FUNC(UNSETHOOK)
+{
+	if (OrigDockHookProc)
+				{
+					UnhookWindowsHookEx(OrigDockHookProc); 
+					OrigDockHookProc = 0;
+				}
+}				
+
+
+
+HB_FUNC(GETTOOLBARID)
+{
+	HWND hMytoolMenu = (HWND) hb_parnl(1);	
+	
+   WPARAM wp = (WPARAM) hb_parnl( 2 ) ;
+   int nId, nBtnNo;
+   UINT uId;	
+   if (SendMessage(hMytoolMenu, TB_MAPACCELERATOR, (WPARAM)wp, (LPARAM)&uId) != 0 )
+      hb_retnl(uId) ;
+    else
+    hb_retnl( -1 );
+}          
+   
+
+HB_FUNC(ISWINDOW)
+{
+   hb_retl(IsWindow((HWND) hb_parnl( 1 ) ) ) ;
 }

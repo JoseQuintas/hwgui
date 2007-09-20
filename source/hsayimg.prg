@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.11 2005-10-26 07:43:26 omm Exp $
+ * $Id: hsayimg.prg,v 1.12 2007-09-20 14:59:31 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -97,7 +97,7 @@ Return Self
 METHOD Redefine( oWndParent,nId,xImage,lRes,bInit,bSize,ctooltip ) CLASS HSayBmp
 
    Super:Redefine( oWndParent,nId,bInit,bSize,ctooltip )
-
+   ::bPaint := {|o,lpdis|o:Paint(lpdis)}
    IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := Iif( lRes .OR. Valtype(xImage)=="N",     ;
                        HBitmap():AddResource( xImage ), ;

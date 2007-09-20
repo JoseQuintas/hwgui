@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.8 2007-04-14 18:34:41 richardroesnadi Exp $
+ * $Id: htool.prg,v 1.9 2007-09-20 14:59:31 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -13,7 +13,7 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 #include "common.ch"
-
+static hHook
 #define TRANSPARENT 1
 
 CLASS HToolBar INHERIT HControl
@@ -198,3 +198,52 @@ METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu) CLASS hToolBar
 
 RETURN Self
 
+
+CLASS HToolBarEX INHERIT HToolBar
+
+//method onevent()
+method init()
+METHOD ExecuteTool(nid)
+DESTRUCTOR MyDestructor
+end class
+
+
+method init class htoolbarex
+   ::super:init()
+   SetWindowObject( ::handle,Self )
+   SETTOOLHANDLE(::handle)
+  Sethook()
+return self
+
+//method onEvent(msg,w,l) class htoolbarex
+//Local nId
+//Local nPos  
+//  if msg == WM_KEYDOWN
+//
+//  return -1
+//  elseif msg==WM_KEYUP
+//  unsethook()
+//  return -1
+//  endif
+//return 0
+
+method ExecuteTool(nid) class htoolbarex
+Local nPos
+Tracelog("ExecuteTool( id ) id = ",nid)
+nPos := ascan(::aItem,{|x| x[2] == nid})
+tracelog(nPos)
+if nId >0
+   SEndMessage(::oParent:handle,WM_COMMAND,makewparam(nid,BN_CLICKED),::handle)
+   return 0
+endif
+return -200
+Static Function IsAltShift( lAlt)
+Local cKeyb := GetKeyboardState()
+
+   IF lAlt==Nil; lAlt := .T.; ENDIF
+Return ( lAlt .AND. ( Asc(Substr(cKeyb,VK_MENU+1,1)) >= 128 ) ) 
+
+
+PROCEDURE MyDestructor CLASS htoolbarex
+  unsethook()
+return

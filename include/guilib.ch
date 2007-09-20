@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.93 2007-08-20 15:03:47 lculik Exp $
+ *$Id: guilib.ch,v 1.94 2007-09-20 14:59:30 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -1043,7 +1043,7 @@
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
                     <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
-                    <.edit.>,<.text.>,<bWhen>,<color>,<bcolor>,<bValid> )
+                    <.edit.>,<.text.>,<{bWhen}>,<color>,<bcolor>,<{bValid}> )
 
 #xcommand REDEFINE GET COMBOBOX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;

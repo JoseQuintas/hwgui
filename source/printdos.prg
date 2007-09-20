@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.19 2007-04-19 19:00:13 mlacecilia Exp $
+ * $Id: printdos.prg,v 1.20 2007-09-20 14:59:31 lculik Exp $
  *
  * CLASS PrintDos
  *
@@ -398,8 +398,14 @@ IF han <> - 1
       IF LEN( stroka ) = 0
          EXIT
       ENDIF
+      if oSize <0         
       oPrinter:Say( stroka, 0, ocol,2400, ocol+(-oSize+2),,oFont )  //Added by  Por Fernando Athayde
       oCol:=oCol+(-oSize+2)   //Added by  Por Fernando Athayde
+      else
+         oPrinter:Say( stroka, 0, ocol,2400, ocol+(oSize+2),,oFont )  //Added by  Por Fernando Athayde
+         oCol:=oCol+(oSize+2)   //Added by  Por Fernando Athayde
+      endif
+      
       IF Left( stroka,1 ) == Chr(12)
          oPrinter:EndPage()
          oPrinter:StartPage()
@@ -422,7 +428,7 @@ oFont:Release()
 Return .T.
 
 METHOD Preview(fName,cTitle) CLASS PrintDos
-
+Local oedit1
 LOCAL strbuf := Space(2052), poz := 2052, stroka
 Local han := FOPEN( fname, FO_READ + FO_SHARED )
 Local i, itemName, aItem, res := .T., sFont
@@ -469,17 +475,28 @@ EndIf
 Iif(cTitle==Nil,cTitle:="Print Preview",cTitle:=cTitle)
 
 INIT DIALOG oDlg TITLE cTitle ;
-     AT 92,61 SIZE 673,499
+     AT 0,0 SIZE GETDESKTOPWIDTH(),GETDESKTOPHEIGHT() on init {||Sendmessage(oEdit1:handle,WM_VSCROLL  ,SB_TOP,0)}
+
+
 
 *   @ 88,19 EDITBOX oEdit ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
 *        COLOR oColor1 BACKCOLOR oColor2  //Blue to Black  && Original
-   @ 88,19 EDITBOX oEdit ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
+//   @ 88,19 EDITBOX oEdit ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
+//        COLOR oColor1 BACKCOLOR oColor2 FONT oFont //Blue to Black  //Added by  por Fernando Athayde
+   @ 88,19 EDITBOX oedit1 CAPTION oEdit ID 1001 SIZE GETDESKTOPWIDTH()-100,GETDESKTOPHEIGHT()-100 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
         COLOR oColor1 BACKCOLOR oColor2 FONT oFont //Blue to Black  //Added by  por Fernando Athayde
+
+
+*   @ 88,19 EDITBOX oEdit ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
+*        COLOR oColor1 BACKCOLOR oColor2  //Blue to Black  && Original
+//   @ 88,19 EDITBOX oEdit ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
+//        COLOR oColor1 BACKCOLOR oColor2 FONT oFont //Blue to Black  //Added by  por Fernando Athayde
 //       COLOR 16711680 BACKCOLOR 16777215  //Black to Write
-   @ 6, 30 BUTTON "<<"    ON CLICK {||nPage:=PrintDosAnt(nPage,oText)} SIZE 69,32
-   @ 6, 80 BUTTON ">>"    ON CLICK {||nPage:=PrintDosNext(oPage,nPage,oText)} SIZE 69,32
-   @ 6,130 BUTTON "Print" ON CLICK {||PrintDosPrint(oText,oPrt)} SIZE 69,32
-   @ 6,180 BUTTON "Close" ON CLICK {||EndDialog()} SIZE 69,32
+   @ 6, 30 BUTTON "<<"    ON CLICK {||nPage:=PrintDosAnt(nPage,oText)} SIZE 69,32  STYLE if(nPage=1,WS_DISABLED,0)
+   @ 6, 80 BUTTON ">>"    ON CLICK {||nPage:=PrintDosNext(oPage,nPage,oText)} SIZE 69,32 STYLE if(nPage=1,WS_DISABLED,0)
+   @ 6,130 BUTTON "Imprimir" ON CLICK {||PrintDosPrint(oText,oPrt)} SIZE 69,32
+//   @ 6,180 BUTTON "Grafico" on Click {||EndDialog(),oDos2:TxttoGraphic(fName,2,.t.),oDos2:end()} SIZE 69,32
+   @ 6,230 BUTTON "Fechar" ON CLICK {||EndDialog()} SIZE 69,32
 
    oDlg:Activate()
 
@@ -512,3 +529,36 @@ nPage:=++nPage
 If nPage>oPage; nPage := oPage ; Endif
 SetDlgItemText( oDlg, 1001, oText[nPage] )
 Return nPage
+
+function regenfile(o,new)
+local leol := .f.
+Local leof := .t.
+local Aeol:={chr(13)+chr(10),chr(13)}
+Local han := fopen(o),stroka
+Local o1 :=printdos():new(new)
+local nLine :=0
+Local nChr12 :=0
+while leof
+   leol:=hb_freadline(han,@stroka,aeol)
+   if leol == -1
+      leof:=.f.
+   endif
+   stroka :=strtran(stroka,chr(13),"")
+   stroka :=strtran(stroka,chr(10),"")
+   nchr12 :=at(chr(12),stroka)
+   if nChr12 >0
+   
+     stroka:=substr(stroka,1,nchr12-1)
+   endif
+      o1:say(nline,0,stroka)
+   nLine++
+    IF nchr12 >0
+    
+       o1:eject()
+       nLine:=0         
+    ENDIF
+
+enddo
+o1:end()
+fclose(han)
+return nil

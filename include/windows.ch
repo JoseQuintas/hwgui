@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.47 2007-09-05 08:06:08 omm Exp $
+ *$Id: windows.ch,v 1.48 2007-09-20 14:59:31 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -983,6 +983,7 @@
 
 #define TBN_DROPDOWN            (TBN_FIRST - 10)
 #define TBN_GETINFOTIPA         (TBN_FIRST - 18)
+#define TBN_HOTITEMCHANGE       (TBN_FIRST - 13)
 #define TBN_GETINFOTIP          TBN_GETINFOTIPA
 #define NM_FIRST                0
 #define NM_TOOLTIPSCREATED      (NM_FIRST-19)   // notify of when the tooltips window is create
@@ -1240,3 +1241,4 @@
 
 #define _SRCCOPY             0x00CC0020 /* dest = source                   */
 #define _SRCPAINT            0x00EE0086 /* dest = source OR dest           */
+#define CB_SETDROPPEDWIDTH          0x0160

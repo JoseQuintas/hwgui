@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.32 2007-08-20 14:56:58 lculik Exp $
+ * $Id: misc.c,v 1.33 2007-09-20 14:59:31 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -26,6 +26,10 @@
 #include "hbfast.h"
 #endif
 extern BOOL Array2Rect(PHB_ITEM aRect, RECT *rc );
+extern PHB_ITEM Rect2Array( RECT *rc  );
+extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
+extern void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
+
 void writelog( char* s )
 {
    FHANDLE handle;
@@ -618,3 +622,80 @@ HB_FUNC ( ISDOWNPRESSESED )
    hb_retl ( HIWORD(GetKeyState( VK_DOWN)) >0 ) ;
 }
 
+HB_FUNC ( ISPGDOWNPRESSESED )
+{
+   hb_retl ( HIWORD(GetKeyState( VK_NEXT)) >0 ) ;
+}
+
+HB_FUNC(EDIT1UPDATECTRL)
+{
+HWND hChild = (HWND) hb_parnl( 1 ) ;
+HWND hParent= (HWND) hb_parnl( 2 ) ;
+RECT rect;
+    GetWindowRect(hChild,&rect);
+    ScreenToClient(hParent,(LPPOINT)&rect);
+    ScreenToClient(hParent,((LPPOINT)&rect)+1);
+    InflateRect(&rect,-2,-2);    
+    InvalidateRect(hParent,&rect, TRUE);
+    UpdateWindow(hParent);
+}
+
+
+HB_FUNC(BUTTON1GETSCREENCLIENT)
+{
+HWND hChild = (HWND) hb_parnl( 1 ) ;
+HWND hParent= (HWND) hb_parnl( 2 ) ;
+RECT rect;
+    GetWindowRect(hChild,&rect);
+    ScreenToClient(hParent,(LPPOINT)&rect);
+    ScreenToClient(hParent,((LPPOINT)&rect)+1);   
+    hb_itemRelease( hb_itemReturn( Rect2Array(&rect) ) );
+}
+
+HB_FUNC(HEDITEX_CTLCOLOR)
+{
+   HDC hdc = (HDC) hb_parnl( 1 ) ;
+   UINT h = hb_parni( 2 ) ;
+   PHB_ITEM pObject = hb_param( 3, HB_IT_OBJECT );
+   PHB_ITEM p,p1,p2,temp;
+   LONG i;
+   HBRUSH hBrush;
+   COLORREF cColor;
+   if (!pObject)
+   {
+      hb_retnl((LONG)GetStockObject(HOLLOW_BRUSH));
+      SetBkMode(hdc,TRANSPARENT);
+      return;
+   }
+   p = GetObjectVar( pObject, "M_BRUSH" );
+   p2 = GetObjectVar( pObject, "M_TEXTCOLOR" );
+   cColor = (COLORREF) hb_itemGetNL(p2);
+   hBrush = (HBRUSH)hb_itemGetNL(p);
+   DeleteObject(hBrush );
+   p1 = GetObjectVar( pObject, "M_BACKCOLOR" );
+   i = hb_itemGetNL(p1);
+   TraceLog("test.txt","%l \r\n", i );
+   if ( i == -1 )
+   {
+     hBrush = GetStockObject(HOLLOW_BRUSH);
+     SetBkMode(hdc,TRANSPARENT);
+   }
+   else
+   {
+     hBrush=CreateSolidBrush((COLORREF)i);
+     SetBkColor(hdc,(COLORREF)i);
+   }
+   temp = hb_itemPutNL( NULL,(LONG)hBrush  );
+   SetObjectVar( pObject, "_M_BRUSH", temp );
+   hb_itemRelease( temp );
+
+   SetTextColor(hdc,cColor);
+   hb_retnl((LONG)hBrush);
+}
+
+HB_FUNC(GETKEYBOARDCOUNT)
+{
+LPARAM lParam = (LPARAM) hb_parnl(1);
+
+hb_retni((WORD)lParam);
+}

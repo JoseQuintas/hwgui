@@ -1,5 +1,5 @@
 /*
- *$Id: dialog.c,v 1.22 2006-08-26 19:31:39 lculik Exp $
+ *$Id: dialog.c,v 1.23 2007-09-20 14:59:31 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -707,3 +707,7 @@ HB_FUNC( GETNOTIFYCODEFROM )
    hb_retnl( (LONG) (((NMHDR *) hb_parnl(1))->hwndFrom) );
 }
 
+HB_FUNC( GETNOTIFYIDFROM )
+{
+   hb_retnl( (LONG) (((NMHDR *) hb_parnl(1))->idFrom) );
+}

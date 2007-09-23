@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.22 2007-07-08 21:58:59 lculik Exp $
+ * $Id: grid.c,v 1.23 2007-09-23 12:07:15 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -31,7 +31,14 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 
+#ifndef LVM_SORTITEMSEX
+#define LVM_SORTITEMSEX          (LVM_FIRST + 81)
+#endif
 
+#ifndef ListView_SortItemsEx
+#define ListView_SortItemsEx(hwndLV, _pfnCompare, _lPrm) \
+  (BOOL)SNDMSG((hwndLV), LVM_SORTITEMSEX, (WPARAM)(LPARAM)(_lPrm), (LPARAM)(PFNLVCOMPARE)(_pfnCompare))
+#endif
 
 static HWND hListSort=NULL;
 
@@ -50,7 +57,7 @@ HB_FUNC( LISTVIEW_CREATE )
         HWND hwnd;
         HWND handle;
         int style ;
-        
+
         hwnd = (HWND) hb_parnl(1);
 
         style = hb_parni(7) ;
@@ -357,7 +364,7 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
    int iSubItemYesNo = lCol == 0  ? 0 : 1 ;
    char * sText = hb_parc( 4 );
    int iBitMap = hb_parni(5);
-   ULONG i;
+   // ULONG i;
    LVITEM lvi;
    int iResult;
    RECT rect;
@@ -447,7 +454,7 @@ LRESULT ProcessCustomDraw( LPARAM lParam,PHB_ITEM pArray )
         case CDDS_SUBITEM | CDDS_ITEMPREPAINT: 
         {
 
-           LONG ptemp ;
+           // LONG ptemp ;
            COLORREF ColorText ;
            COLORREF ColorBack ;
 

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.h,v 1.12 2007-07-05 13:49:16 lculik Exp $
+ *$Id: guilib.h,v 1.13 2007-09-23 12:07:15 andijahja Exp $
  */
 
 #define	WND_DLG_RESOURCE       10
@@ -9,6 +9,11 @@
 #define ST_ALIGN_HORIZ_RIGHT 2           // Icon/bitmap on the right, text on the left
 #define ST_ALIGN_OVERLAP     3           // Icon/bitmap on the same space as text
 
+#ifdef __MSC6__
+   #define GetWindowLongPtr    GetWindowLong
+   #define SetWindowLongPtr    SetWindowLong
+   #define DWORD_PTR           DWORD
+#endif
 
 #ifdef __EXPORT__
    #define HB_NO_DEFAULT_API_MACROS

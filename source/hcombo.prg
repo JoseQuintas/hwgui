@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.32 2007-09-20 14:59:31 lculik Exp $
+ * $Id: hcombo.prg,v 1.33 2007-10-02 10:30:15 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -189,7 +189,7 @@ METHOD Init() CLASS HComboBox
          ELSE
             ComboSetString( ::handle, ::value )
          ENDIF
-         avgwidth =GetFontDialogUnits(::oParent:handle,::oParent:oFont:handle)
+         avgwidth =GetFontDialogUnits(::oParent:handle) //,::oParent:oFont:handle)
          NewLongComboWidth = (LongComboWidth -2) *avgwidth     
          SendMessage(           ::handle,          CB_SETDROPPEDWIDTH,            NewLongComboWidth+50,           0        )
 

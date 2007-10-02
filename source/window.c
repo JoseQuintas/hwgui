@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.56 2007-09-20 14:59:31 lculik Exp $
+ * $Id: window.c,v 1.57 2007-10-02 00:22:49 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -921,8 +921,9 @@ LONG  GetFontDialogUnits(HWND h,HFONT f)
    hDc = GetDC(h);
    
   //with the current font attributes, select the font  
-   hFont = f;//GetStockObject(ANSI_VAR_FONT)   ;
-   hFontOld = SelectObject(hDc, &hFont)   ;
+//   hFont = f;//GetStockObject(ANSI_VAR_FONT)   ;
+   hFont    = (HFONT) GetStockObject(ANSI_VAR_FONT)   ;
+   hFontOld = (HFONT) SelectObject(hDc, hFont)   ;
    
   //get its length, then calculate the average character width  
    

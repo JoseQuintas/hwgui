@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.55 2007-08-20 14:56:57 lculik Exp $
+ * $Id: control.c,v 1.56 2007-10-02 00:22:49 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1644,7 +1644,6 @@ HB_FUNC(COMBOBOXGETITEMDATA)
    int nIndex = hb_parnl(2);
    DWORD_PTR p;
    p=(DWORD_PTR)SendMessage((HWND)hWnd, CB_GETITEMDATA, nIndex, 0);
-   TraceLog("dword.log"," GetItemData DWORD_PTR p = %lu\r \n",p);
    hb_retnl(p);
 
 }
@@ -1653,7 +1652,6 @@ HB_FUNC(COMBOBOXSETITEMDATA)
    HWND hWnd = (HWND)hb_parnl(1);
    int nIndex = hb_parnl(2);
    DWORD_PTR dwItemData = (DWORD_PTR) hb_parnl( 3 ) ;
-   TraceLog("dword.log","SetItemData DWORD_PTR p = %lu\r \n",dwItemData);
    hb_retnl(SendMessage((HWND)hWnd, CB_SETITEMDATA, nIndex, (LPARAM)dwItemData));
 }
 

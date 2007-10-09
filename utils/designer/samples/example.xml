@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part class="form">
   <style>
-    <property name="Geometry">{124,144,508,131}</property>
+    <property name="Geometry">{124,144,772,111}</property>
     <property name="Caption">[Example]</property>
     <property name="FormType">[Main]</property>
     <property name="lClipper">.F.</property>
     <property name="lExitOnEnter">.F.</property>
-    <property name="Variables">{oForm1,oForm2,oForm3,oRep1,oForm4}</property>
+    <property name="Variables">{oForm1,oForm2,oForm3,oRep1,oForm4,oForm5}</property>
     <property name="FromStyle">[Popup]</property>
     <property name="Icon">[]</property>
     <property name="Modal">.F.</property>
@@ -25,6 +25,7 @@
 oForm2 := HFormTmpl():Read( "testget2.xml" )
 oForm3 := HFormTmpl():Read( "testdbf1.xml" )
 oForm4 := HFormTmpl():Read( "test_ctrl.xml" )
+oForm5 := HFormTmpl():Read( "barcode.xml" )
 orep1 := hreptmpl():Read("testrep1.xml")]]>
   </method>
   <part class="menu">
@@ -57,7 +58,7 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
   </part>
   <part class="toolbar">
     <style>
-      <property name="Geometry">{0,0,507,48}</property>
+      <property name="Geometry">{0,0,710,48}</property>
       <property name="Name">[oToolbar1]</property>
     </style>
     <part class="ownerbutton">
@@ -125,10 +126,21 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
         <![CDATA[oForm4:Show()]]>
       </method>
     </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{462,3,107,42}</property>
+        <property name="Name">[oOwnerbutton3]</property>
+        <property name="Caption">[BarCode]</property>
+        <property name="Flat">.T.</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[oForm5:Show()]]>
+      </method>
+    </part>
   </part>
   <part class="status">
     <style>
-      <property name="Geometry">{0,109,508,22}</property>
+      <property name="Geometry">{0,89,772,22}</property>
       <property name="Name">[oStatus1]</property>
       <property name="aParts">{120,0}</property>
     </style>

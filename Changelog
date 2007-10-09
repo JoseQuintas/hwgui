@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.673 2007-09-27 19:53:12 richardroesnadi Exp $
+ * $Id: Changelog,v 1.674 2007-10-09 12:50:29 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,9 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-10-09 15:50 UTC+0200 Alexey Myronenko <atzct <at> obukhov.kiev.ua>
+    * utils\designer\samples\example.prg
+    * utils\designer\samples\example.xml
+    * utils\designer\samples\barcode.xml
+      + added barcode.xml in example.xml to demonstrate Barcode class
+      ! small fixes
+
 2007-09-28  2:30 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
     * utils/designer/EXTMODUL.CH
-	! Add Print runtime HWinPrn, HPrinter, PrintDOS for designer.exe
+    ! Add Print runtime HWinPrn, HPrinter, PrintDOS for designer.exe
 
 2007-09-23 19.00 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
    * include/guilib.h

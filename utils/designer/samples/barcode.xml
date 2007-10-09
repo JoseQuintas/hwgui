@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part class="form">
   <style>
-    <property name="Geometry">{318,62,502,459}</property>
+    <property name="Geometry">{318,62,502,439}</property>
     <property name="Caption">[Barcode]</property>
     <property name="Font">
       <font name="Verdana" width="0" height="-13" weight="400"/>
@@ -256,6 +256,7 @@ refreshAllGets(oDlg)
       <property name="Caption">[]</property>
       <property name="BtnBitmap">[smPrinter]</property>
       <property name="lResource">.T.</property>
+      <property name="ToolTip">[Print]</property>
     </style>
     <method name="onClick">
       <![CDATA[DT_CENTER:=1
@@ -322,6 +323,7 @@ setFocus(oEB2:handle)
       <property name="Caption">[]</property>
       <property name="BtnBitmap">[smExit]</property>
       <property name="lResource">.T.</property>
+      <property name="ToolTip">[Exit]</property>
     </style>
     <method name="onClick">
       <![CDATA[endDialog()]]>

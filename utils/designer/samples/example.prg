@@ -9,8 +9,11 @@ REQUEST DBCREATEINDEX
 REQUEST DBSEEK
 REQUEST SHELLABOUT
 REQUEST SLEEP
+REQUEST BARCODE
+REQUEST HWG_CHOOSECOLOR
 
-#include "example.frm"
+
+// #include "example.frm"
 
 Function Main
 Local oForm := HFormTmpl():Read( "example.xml" )

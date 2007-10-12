@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.53 2007-08-25 17:47:22 richardroesnadi Exp $
+ * $Id: hfrmtmpl.prg,v 1.54 2007-10-12 09:30:41 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -8,13 +8,14 @@
  * www - http://kresin.belgorod.su
 */
 
-Static aClass := { "label", "button", "checkbox",                    ;
+Static aClass := { "label", "button", "checkbox",                   ;
                   "radiobutton", "editbox", "group", "radiogroup",  ;
                   "bitmap","icon",                                  ;
                   "richedit","datepicker", "updown", "combobox",    ;
                   "line", "toolbar", "ownerbutton","browse",        ;
                   "monthcalendar","trackbar","page", "tree",        ;
-                  "status","menu","animation" ,"progressbar"                      ;
+                  "status","menu","animation" ,"progressbar",       ;
+                  "shadebutton" ;
                 }
 Static aCtrls := { ;
   "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctooltip,TextColor,BackColor,lTransp)", ;
@@ -41,8 +42,9 @@ Static aCtrls := { ;
   "HStatus():New(oPrnt,nId,nStyle,oFont,aParts,onInit,onSize)", ;
   ".F.", ;
   "HAnimation():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,Filename,AutoPlay,Center,Transparent)", ;
-  "HProgressBar():New( oPrnt,nId,nLeft,nTop,nWidth,nHeight,maxPos,nRange,bInit,bSize,bPaint,ctooltip )" ;
-                }
+  "HProgressBar():New( oPrnt,nId,nLeft,nTop,nWidth,nHeight,maxPos,nRange,bInit,bSize,bPaint,ctooltip )", ;
+  "HshadeButton():New( oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,lFlat,caption,color,font,xt,yt,bmp,lResour,xb,yb,widthb,heightb,lTr,trColor,cTooltip,lEnabled,shadeID,palette,granularity,highlight,coloring,shcolor)" ;
+  }
 
 #include "windows.ch"
 #include "hbclass.ch"
@@ -53,6 +55,8 @@ Static aCtrls := { ;
 
 Static aPenType  := { "SOLID","DASH","DOT","DASHDOT","DASHDOTDOT" }
 Static aJustify  := { "Left","Center","Right" }
+Static aShadeID := {"SHS_METAL","SHS_SOFTBUMP","SHS_NOISE","SHS_HARDBUMP","SHS_HSHADE","SHS_VSHADE","SHS_DIAGSHADE","SHS_HBUMP"}
+Static aPalette := {"PAL_DEFAULT","PAL_METAL"}
 
 REQUEST HSTATIC
 REQUEST HBUTTON
@@ -76,6 +80,7 @@ REQUEST HTAB
 REQUEST HANIMATION
 REQUEST HTREE
 REQUEST HPROGRESSBAR
+REQUEST HSHADEBUTTON
 
 REQUEST DBUSEAREA
 REQUEST RECNO
@@ -570,6 +575,7 @@ MEMVAR onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lAppend,l
 MEMVAR nWidth, nHeight, oFont, lNoBorder, bSetGet
 MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs, tmp_nSheet
 MEMVAR aImages, lEditLabels, aParts
+MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
 
    IF nCtrl == 0
       IF Lower( oCtrlTmpl:cClass ) == "pagesheet"
@@ -609,6 +615,13 @@ MEMVAR aImages, lEditLabels, aParts
    oPrnt  := oParent
    nId    := oCtrlTmpl:nId
    nStyle := 0
+   ShadeID := 0
+   lEnabled := .t.
+   palette :=  PAL_METAL
+   granularity := 0
+   highlight := 0
+   coloring := 0
+   shcolor := 0
 
    FOR i := 1 TO Len( oCtrlTmpl:aProp )
       xProperty := hfrm_GetProperty( oCtrlTmpl:aProp[ i,2 ] )
@@ -652,6 +665,10 @@ MEMVAR aImages, lEditLabels, aParts
          IF xProperty
             nStyle += DS_3DLOOK
          ENDIF
+      ELSEIF cPName == "effect"
+            ShadeID := Ascan( aShadeID, xProperty ) - 1
+      ELSEIF cPName == "palette"
+            palette := Ascan( aPalette, xProperty ) - 1
       ELSEIF cPName == "vscroll"
          IF xProperty
             nStyle += WS_VSCROLL

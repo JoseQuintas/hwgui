@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.676 2007-10-12 09:30:40 omm Exp $
+ * $Id: Changelog,v 1.677 2007-10-15 16:11:12 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,9 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2007-10-15  23:10 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
+    + utils\designer\samples\xchgbmp.xml
+      Add samples change bitmap of Ownerbutton Class
 
 2007-10-12 12:30 UTC+0200 Alexey Myronenko <atzct <at> obukhov.kiev.ua>
     + utils\designer\resource\widgets.xml

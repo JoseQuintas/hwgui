@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.677 2007-10-15 16:11:12 richardroesnadi Exp $
+ * $Id: Changelog,v 1.678 2007-10-19 14:16:07 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2007-10-19 12:18 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
+    * source\hcombo.prg
+      ! minor fix on hcombo redefine method( was not updating variable on  redefine getcombobox)
+
 2007-10-15  23:10 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
     + utils\designer\samples\xchgbmp.xml
       Add samples change bitmap of Ownerbutton Class

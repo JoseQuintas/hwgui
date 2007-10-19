@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.33 2007-10-02 10:30:15 lculik Exp $
+ * $Id: hcombo.prg,v 1.34 2007-10-19 14:16:08 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -147,6 +147,9 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bPaint, ;
    IF bSetGet != Nil
       ::bChangeSel := bChange
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
+      if ::bSetGet <> nil
+         ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
+      endif
       IF ::bChangeSel != NIL
         ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
       ENDIF

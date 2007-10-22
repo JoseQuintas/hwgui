@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.28 2007-07-02 08:29:11 mlacecilia Exp $
+ * $Id: hownbtn.prg,v 1.29 2007-10-22 19:22:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -134,10 +134,22 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
       ::MUp()
    ELSEIF msg == WM_DESTROY
       ::End()
+   ELSEIF msg == WM_SETFOCUS
+      IF !empty(::bGetfocus)
+         Eval(::bGetfocus, self, msg, wParam, lParam)
+      ENDIF
+   ELSEIF msg == WM_KILLFOCUS
+      IF !Empty(::bLostfocus)
+         Eval(::bLostfocus, self, msg, wParam, lParam)
+      ENDIF
+   ELSE
+      IF !Empty(::bOther)
+         Eval(::bOther, self, msg, wParam, lParam)
+      ENDIF
    ENDIF
-
-Return -1
-
+   
+Return -1   
+   
 METHOD Init CLASS HOwnButton
 
    IF !::lInit

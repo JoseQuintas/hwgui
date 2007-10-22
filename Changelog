@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.678 2007-10-19 14:16:07 lculik Exp $
+ * $Id: Changelog,v 1.679 2007-10-22 19:22:49 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-10-11 21:45 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+    * source/hownbtn.prg
+      + added the SetFocus, KillFocus and other messages to be handled 
+        in the events of ownerbutton
+
 2007-10-19 12:18 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
     * source\hcombo.prg
       ! minor fix on hcombo redefine method( was not updating variable on  redefine getcombobox)

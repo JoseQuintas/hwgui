@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.680 2007-10-28 20:26:59 richardroesnadi Exp $
+ * $Id: Changelog,v 1.681 2007-10-28 23:58:53 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-10-29  06:59 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
+    * source\wprint.c
+      + hwg_getdefaultPrinter() -> cPrinterName
+
+
 2007-10-29  03:23 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
     * utils\designer\EXTMODUL.CH 
 		+Add printer function hwg_*

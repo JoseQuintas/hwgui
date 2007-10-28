@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.13 2006-04-06 16:18:02 alkresin Exp $
+ * $Id: wprint.c,v 1.14 2007-10-28 23:58:54 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -68,7 +68,57 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
 
       free( pinfo4 );
    }
-   hb_retnl( (LONG) hDC );   
+   hb_retnl( (LONG) hDC );
+}
+
+/*
+	 richard roesnadi 29/10/07 06:56am
+	 hwg_GetdefaultPrinter() -> cPrinterName
+	 designer.exe test ok!
+
+ */
+
+HB_FUNC( HWG_GETDEFAULTPRINTER )
+{
+   DWORD            dwNeeded, dwReturned ;
+   HDC              hDC;
+   PRINTER_INFO_4 * pinfo4;
+   PRINTER_INFO_5 * pinfo5;
+	 char PrinterDefault [128];
+
+   if( GetVersion() & 0x80000000 )         // Windows 98
+   {
+      EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, NULL,
+            0, &dwNeeded, &dwReturned );
+
+      pinfo5 = (PRINTER_INFO_5*)malloc( dwNeeded );
+      EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, (LPBYTE) pinfo5,
+            dwNeeded, &dwNeeded, &dwReturned );
+      strcpy(PrinterDefault,pinfo5->pPrinterName);
+
+      free (pinfo5) ;
+   }
+   else                                    // Windows NT
+   {
+      EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, NULL,
+            0, &dwNeeded, &dwReturned );
+
+      pinfo4 = (PRINTER_INFO_4*)malloc( dwNeeded );
+
+      EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, (PBYTE) pinfo4,
+            dwNeeded, &dwNeeded, &dwReturned );
+
+      hb_retc( (char *) pinfo4->pPrinterName);
+      strcpy(PrinterDefault,pinfo4->pPrinterName);
+
+      free( pinfo4 );
+   }
+
+   // hb_retnl( (LONG) hDC );
+
+  hb_retc(PrinterDefault);
+  return ;
+
 }
 
 HB_FUNC( HWG_GETPRINTERS )
@@ -77,9 +127,9 @@ HB_FUNC( HWG_GETPRINTERS )
    PBYTE            pBuffer = NULL;
    PRINTER_INFO_4 * pinfo4 = NULL;
    PRINTER_INFO_5 * pinfo5 = NULL;
-   
+
    PHB_ITEM aMetr, temp;
-   
+
 
    if (GetVersion () & 0x80000000)         // Windows 98
    {
@@ -108,14 +158,14 @@ HB_FUNC( HWG_GETPRINTERS )
    if( dwReturned )
    {
       int i;
-      
+
       aMetr = hb_itemArrayNew( dwReturned );
-      
+
       for( i=0; i<(int)dwReturned; i++ )
       {
          if( pinfo4 )
          {
-            temp = hb_itemPutC( NULL, pinfo4->pPrinterName );           
+            temp = hb_itemPutC( NULL, pinfo4->pPrinterName );
             pinfo4++;
          }
          else
@@ -156,7 +206,7 @@ HB_FUNC( SETPRINTERMODE )
 
    /* Get the printer mode */
    DocumentProperties( NULL, hPrinter, pPrinterName, pdm, NULL, DM_OUT_BUFFER );
-    
+
    /* Changing of values */
    if( !ISNIL(3) )
    {
@@ -165,10 +215,10 @@ HB_FUNC( SETPRINTERMODE )
    }
 
    // Call DocumentProperties() to change the values
-   DocumentProperties( NULL, hPrinter, pPrinterName, 
+   DocumentProperties( NULL, hPrinter, pPrinterName,
                       pdm, pdm, DM_OUT_BUFFER | DM_IN_BUFFER );
 
-   // создадим контекст устройства принтера  
+   // создадим контекст устройства принтера
    hb_retnl( (LONG) CreateDC( NULL, pPrinterName, NULL, pdm ) );
    hb_stornl( (LONG)hPrinter,2 );
    GlobalFree( pdm );
@@ -183,11 +233,11 @@ HB_FUNC( CLOSEPRINTER )
 HB_FUNC( HWG_STARTDOC )
 {
    DOCINFO di;
-   di.cbSize = sizeof(DOCINFO); 
+   di.cbSize = sizeof(DOCINFO);
    di.lpszDocName = hb_parc( 2 );
-   di.lpszOutput = (LPTSTR) NULL; 
-   di.lpszDatatype = (LPTSTR) NULL; 
-   di.fwType = 0; 
+   di.lpszOutput = (LPTSTR) NULL;
+   di.lpszDatatype = (LPTSTR) NULL;
+   di.fwType = 0;
 
    hb_retnl( (LONG) StartDoc( (HDC) hb_parnl( 1 ), &di ) );
 }

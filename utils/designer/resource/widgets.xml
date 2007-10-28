@@ -319,11 +319,17 @@
          <property name="nInitValue" type="N" value="1"/>
          <property name="nLower" type="N" value="1"/>
          <property name="nUpper" type="N" value="100"/>
+         <property name="TextColor" type="N" value="0"/>
+         <property name="BackColor" type="N" value="16777215" />
+         <property name="Font" type="O" />
          <property name="varName" type="C" />
          <property name="3DLook" type="L" value="False" />
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
+         <method name="onPaint" />
+         <method name="onGetFocus" />
+         <method name="onLostFocus" />
       </widget>
       <widget class="datepicker" name="DatePicker control" bmp="BMP_DATE">
          <paint bmp="32752">

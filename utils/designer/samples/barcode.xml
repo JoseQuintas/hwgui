@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part class="form">
   <style>
-    <property name="Geometry">{318,62,502,439}</property>
+    <property name="Geometry">{318,62,502,495}</property>
     <property name="Caption">[Barcode]</property>
     <property name="Font">
       <font name="Verdana" width="0" height="-13" weight="400"/>

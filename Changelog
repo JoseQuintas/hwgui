@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.679 2007-10-22 19:22:49 mlacecilia Exp $
+ * $Id: Changelog,v 1.680 2007-10-28 20:26:59 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,7 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
-
+2007-10-29  03:23 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
+    * utils\designer\EXTMODUL.CH 
+		+Add printer function hwg_*
+    + utils\designer\source\bmp & designer.rc
+		+Add sm_Money.bmp & sm_Notepad.bmp 
+    * utils\designer\source\widgets.xml
+		+Add property & event updown control 
+	
 2007-10-11 21:45 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
     * source/hownbtn.prg
       + added the SetFocus, KillFocus and other messages to be handled 

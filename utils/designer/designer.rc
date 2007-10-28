@@ -1259,4 +1259,6 @@ BMP_PROGBAR BITMAP
  smWorld       BITMAP resource\bmp\smWorld.bmp
  OK            BITMAP resource\bmp\ok.bmp
  CANCEL        BITMAP resource\bmp\cancel.bmp
+ smMoney       BITMAP resource\bmp\smMoney.bmp
+ smNotepad     BITMAP resource\bmp\smNotepad.bmp
 

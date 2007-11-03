@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.58 2007-06-26 18:39:51 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.59 2007-11-03 11:01:13 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -21,6 +21,10 @@ STATIC lColorinFocus := .F.
 #define DLGC_WANTALLKEYS    0x0004      /* Control wants all keys           */
 #define DLGC_WANTCHARS    128      /* Want WM_CHAR messages            */
 
+#ifndef GWL_STYLE
+#define GWL_STYLE           -16
+#endif
+
 CLASS HEdit INHERIT HControl
 
    CLASS VAR winclass   INIT "EDIT"
@@ -40,11 +44,17 @@ CLASS HEdit INHERIT HControl
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Redefine( oWnd,nId,vari,bSetGet,oFont,bInit,bSize,bDraw,bGfocus, ;
-             bLfocus,ctooltip,tcolor,bcolor,cPicture, lMaxLength )
+             bLfocus,ctooltip,tcolor,bcolor,cPicture, lMaxLength, lMultiLine )
    METHOD Init()
    METHOD SetGet(value) INLINE Eval( ::bSetGet,value,self )
    METHOD Refresh()
    METHOD SetText(c)
+
+   /* AJ: 11-03-2007
+      For More Cl*per like :-)
+   */
+   METHOD VarPut( value ) INLINE ::SetGet( value )
+   METHOD VarGet() INLINE ::SetGet()
 
 ENDCLASS
 
@@ -71,7 +81,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ::style := Hwg_BitOr( ::style,ES_WANTRETURN )
       ::lMultiLine := .T.
    ENDIF
-   
+
    IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
       ::lMaxLength:= lMaxLength
    ENDIF
@@ -281,17 +291,21 @@ Local nexthandle
 Return -1
 
 METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint, ;
-          bGfocus,bLfocus,ctooltip,tcolor,bcolor,cPicture, lMaxLength )  CLASS HEdit
+          bGfocus,bLfocus,ctooltip,tcolor,bcolor,cPicture, lMaxLength, lMultiLine )  CLASS HEdit
 
 
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
 
+   IF ValType( lMultiLine ) == "L"
+      ::lMultiLine := lMultiLine
+   ENDIF
+
    IF vari != Nil
       ::cType   := Valtype( vari )
    ENDIF
    ::bSetGet := bSetGet
- 
+
    IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
       ::lMaxLength:= lMaxLength
    ENDIF
@@ -512,6 +526,11 @@ Static Function DeleteChar( oEdit,lBack )
 Local nPos := HiWord( SendMessage( oEdit:handle, EM_GETSEL, 0, 0 ) ) + Iif( !lBack,1,0 )
 Local nGetLen := Len( oEdit:cPicMask ), nLen
 
+   /* AJ: 11-03-2007 */
+   if Hwg_BitAnd( GetWindowLong( oEdit:handle, GWL_STYLE ), ES_READONLY ) != 0
+      Return Nil
+   endif
+
    IF nGetLen == 0
       nGetLen:=len(oEdit:title)
    ENDIF
@@ -601,6 +620,11 @@ Return cChar
 Static Function GetApplyKey( oEdit,cKey )
 Local nPos, nGetLen, nLen, vari, i, x, newPos
 Local nDecimals, nTmp
+
+   /* AJ: 11-03-2007 */
+   if Hwg_BitAnd( GetWindowLong( oEdit:handle, GWL_STYLE ), ES_READONLY ) != 0
+      Return 0
+   endif
 
    x := SendMessage( oEdit:handle, EM_GETSEL, 0, 0 )
    IF HiWord(x) != LoWord(x)

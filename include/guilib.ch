@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.95 2007-10-09 22:13:49 mlacecilia Exp $
+ *$Id: guilib.ch,v 1.96 2007-11-03 11:01:12 andijahja Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -974,6 +974,7 @@
                    <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,,,  ;
                    <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<.lnoborder.>,<nMaxLength>,<.lPassword.>,<(vari)>)
 
+/* Added MULTILINE: AJ: 11-03-2007*/
 #xcommand REDEFINE GET [ <oEdit> VAR ] <vari>  ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
@@ -985,10 +986,11 @@
             [ MAXLENGTH <nMaxLength> ] ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
+            [<lMultiLine: MULTILINE>]  ;
           => ;
     [<oEdit> := ] HEdit():Redefine( <oWnd>,<nId>,<vari>, ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},    ;
-                   <oFont>,,,,<{bGfocus}>,<{bLfocus}>,<ctoolt>,<color>,<bcolor>,<cPicture>,<nMaxLength>,<(vari)> )
+                   <oFont>,,,,<{bGfocus}>,<{bLfocus}>,<ctoolt>,<color>,<bcolor>,<cPicture>,<nMaxLength>,<.lMultiLine.> )
 
 
 #xcommand @ <x>,<y> GET CHECKBOX [ <oCheck> VAR ] <vari>  ;

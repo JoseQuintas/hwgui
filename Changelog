@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.681 2007-10-28 23:58:53 richardroesnadi Exp $
+ * $Id: Changelog,v 1.682 2007-11-03 11:01:11 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,10 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-11-03 18.00 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
+    * include/guilib.ch
+    * source/hedit.prg
+      + Add one parameter in METHOD REDEFINE to directly re-initialize lMultiLine
+      + Do not allow Edit/Delete REDEFINED GETs when READONLY
+        ( ES_READONLY attribute should be added to resource )
+      + Method Varput, Varget ( = SetGet, but I and others may probably prefer
+        the Cli*er like syntax )
+
 2007-10-29  06:59 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
     * source\wprint.c
       + hwg_getdefaultPrinter() -> cPrinterName
-
 
 2007-10-29  03:23 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
     * utils\designer\EXTMODUL.CH 
@@ -96,7 +104,6 @@
       new combo property : lText, lEdit
       new combo events   : onChange, bSetGet
 
-
 2007-08-24 12:30 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
     * source/Hformtmpl.prg
       source/Hprogres.prg
@@ -167,13 +174,10 @@
     * fix a.xml
         ! Annuity
 
-
 2007-08-14 19:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source\hlistbox.prg
      !added addItem method
 
-
->>>>>>> 1.656
 2007-08-10 02:35 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
    * utils\designer\designer.prg, hCtrl.prg, hFormgen.prg
      { patch suggest from Francesco }
@@ -217,7 +221,6 @@
      !added new constants
    * source/menu_c.c
      !added option parameter to HWG_TRACKMENU() to deternime the position of menu
-
 
 2007-06-29 20:00 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    * source/hownbtn.prg
@@ -336,7 +339,6 @@
    * utils\designer\extmodul.ch
      + Add External Function in Misc.c
 
-
 2007-04-19 21:10 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
    * source/printdos.prg    print in preview forced to lpt1 (don't was printing
                             anything before)
@@ -393,7 +395,6 @@
 2007-04-16 4:32 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
  + util/designer/extmodul.ch
    almost rdd functions can calling from designer.exe directly
-
 
 2007-04-14  3:15 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
  + utils/designer/dlldesig.bat - create designer.exe based on
@@ -496,14 +497,12 @@
   Samples for Barcode Using Designer/XML
  *change some file makefile.*,xmlrun.prg and designer for support create barcode
 
-
 2007-03-27  9:15 UTC+0700 Richard Roesnadi
 *fixed source/hBrowse Bugs editable
       +HColumn new(... for bHeadClick Syntax
  include/guilib.ch
    +ADD CLAUSE BHEADCLICK AT ADD COLUMN SYNTAX
 * samples/colrbloc.prg  minor fix PVALUE for xharbour
-
 
 2007-03-25  9:15 UTC+0700 Richard Roesnadi
 *fixed hBrowse Bugs
@@ -570,8 +569,6 @@
    makefile.vc
    source/makefile
      !updated with new source
-
-
 
 2007-01-01 16:00 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
     + utils\designer\xmlrun
@@ -732,7 +729,6 @@
    * source/hriched.prg
      ! Added fix to ESC handling
 
-
 2006-11-06 09:40 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/window.c
      + SetwindowPos() Function
@@ -745,7 +741,6 @@
    + samples/tab.prg
      samples/tab.rc
      ! example to demostrate tabs pages with dialog redefined
-
 
 2006-11-01 14:30 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
    * source/hfrmtmpl.prg
@@ -842,7 +837,6 @@
       which are freely available - mshtml.h, mshtmhst.h, ...
       If you have these files, uncomment the line 'set ACTIVEX_SUPPORT=ON' in
       make_b32.bat to build the hbactivex.lib
-
 
 2006-09-26 09:58 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * doc/hwgdoc.htm
@@ -1110,7 +1104,6 @@
     ! Added samples  for new grid
   * source/hcwindow.prg
     ! added code for notify new grid control
-
 
 2006-08-25 14:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * makefile.gcc
@@ -1535,7 +1528,6 @@
   * source/hdc.prg
     * Added some new method needed by new upcomming controls
 
-
 2006-02-21 20:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/dialog.c
     ! fixed the property pages functions.
@@ -1643,7 +1635,6 @@
   * source/*.c
     * #ifdef __EXPORT__ ... is removed to guilib.h
     ( thanks for advices to Przemyslaw Czerpak )
-
 
 2005-11-03 15:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/menu.prg
@@ -1973,7 +1964,6 @@
      + added hwg_PeekMessage() which calls PeekMessage() but it is not able to remove
        a message from the queue, just to test if it is waiting.
 
-
 2005-09-21 18:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * gtk/control.c
      gtk/hedit.prg
@@ -2035,7 +2025,6 @@
     gtk/menu_c.c
     ! Change to use  [x]harbour Pointers types.Changes protect by __GTK_USE_POINTER__.
     This is an work in progress
-
 
 2005-09-20 11:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * gtk/commond.c

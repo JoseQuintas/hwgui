@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.28 2007-08-11 04:01:14 richardroesnadi Exp $
+ * $Id: designer.prg,v 1.29 2007-11-10 18:09:53 lculik Exp $
  *
  * Designer
  * Main file
@@ -242,6 +242,7 @@ CLASS HDesigner
    DATA aMethDef     INIT {}
    DATA lSingleForm  INIT .F.
    DATA cResForm
+   DATA nPixelGrid   INIT 10
 
    METHOD New   INLINE Self
 ENDCLASS
@@ -306,6 +307,11 @@ memvar oDesigner, cCurDir
              oNode:GetAttribute("wrscr"),oNode:GetAttribute("cnvtable") } )
       ELSEIF oNode:title == "editor"
          LoadEdOptions( oNode:aItems[1] )
+      ELSEIF oNode:title == "grid"
+             l_ds_mypath := oNode:GetAttribute("default")
+             IF !Empty( l_ds_mypath )
+                oDesigner:nPixelGrid := val( l_ds_mypath )
+             ENDIF
       ELSEIF oNode:title == "dirpath"
              l_ds_mypath := oNode:GetAttribute("default")
              IF !Empty( l_ds_mypath )
@@ -540,7 +546,7 @@ Memvar oDesigner, cCurDir
         lRes := .F.
      ENDIF
   ENDIF
-  IF !oDesigner:lSingleForm .AND. ( oDesigner:lChgRecent .OR. oDesigner:lChgPath )
+  IF !oDesigner:lSingleForm .AND. ( oDesigner:lChgRecent .OR. oDesigner:lChgPath .OR. .T. )
      critem := Iif( oDesigner:lReport, "rep_recent", "recent" )
      oIni := HXMLDoc():Read( cCurDir+"Designer.iml" )
      IF oDesigner:lChgPath
@@ -565,6 +571,15 @@ Memvar oDesigner, cCurDir
            j ++
         ENDDO
      ENDIF
+
+        i := 1
+        oNode := HXMLNode():New( "grid",HBXML_TYPE_SINGLE,{{"default",alltrim(str(oDesigner:nPixelGrid))}} )
+        IF oIni:aItems[1]:Find( "grid",@i ) == Nil
+           oIni:aItems[1]:Add( oNode )
+        ELSE
+           oIni:aItems[1]:aItems[i] := oNode
+        ENDIF
+
      oIni:Save( cCurDir+"Designer.iml" )
   ENDIF
   IF lRes

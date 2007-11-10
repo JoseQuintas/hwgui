@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.38 2007-08-11 04:01:15 richardroesnadi Exp $
+ * $Id: hformgen.prg,v 1.39 2007-11-10 18:09:55 lculik Exp $
  *
  * Designer
  * HFormGen class
@@ -13,6 +13,8 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 #include "hxml.ch"
+
+#include "designer.ch"
 
 #define SB_HORZ             0
 #define SB_VERT             1
@@ -878,8 +880,22 @@ Memvar oDesigner
                      oCtrl:nLeft+oCtrl:nWidth+2, oCtrl:nTop+oCtrl:nHeight+2 )
          Rectangle( hDC, oCtrl:nLeft-1, oCtrl:nTop-1, ;
                      oCtrl:nLeft+oCtrl:nWidth, oCtrl:nTop+oCtrl:nHeight )
-
+	
       ENDIF
+      i := 0
+      aCoors := GetClientRect( oDlg:handle )
+      n1cm := oDesigner:nPixelGrid
+      x1 := n1cm
+      DO WHILE x1 < (aCoors[3]-aCoors[1])
+        y1 := n1cm
+        DO WHILE y1 < (aCoors[4]-aCoors[2])
+         DrawLine( hDC,x1,y1,x1+1,y1+1 )
+	 y1 += n1cm 
+        ENDDO
+        x1 += n1cm
+      ENDDO
+
+      
    ENDIF
 
    EndPaint( oDlg:handle, pps )
@@ -1032,16 +1048,16 @@ Memvar oDesigner, crossCursor, horzCursor, VertCursor
       Hwg_SetCursor( crossCursor )
    ELSE
       aBDown := GetBDown()
-      IF aBDown[1] != Nil
-         IF aBDown[4] > 0
-            IF aBDown[4] == 1 .OR. aBDown[4] == 3
+      IF aBDown[BDOWN_OCTRL] != Nil
+         IF aBDown[BDOWN_NBORDER] > 0
+            IF aBDown[BDOWN_NBORDER] == 1 .OR. aBDown[BDOWN_NBORDER] == 3
                Hwg_SetCursor( horzCursor )
-            ELSEIF aBDown[4] == 2 .OR. aBDown[4] == 4
+            ELSEIF aBDown[BDOWN_NBORDER] == 2 .OR. aBDown[BDOWN_NBORDER] == 4
                Hwg_SetCursor( vertCursor )
             ENDIF
-            CtrlResize( aBDown[1],xPos,yPos )
+            CtrlResize( aBDown[BDOWN_OCTRL],xPos,yPos )
          ELSE
-            CtrlMove( aBDown[1],xPos,yPos,.T. )
+            CtrlMove( aBDown[BDOWN_OCTRL],xPos,yPos,.T. )
          ENDIF
       ELSE
          IF ( oCtrl := GetCtrlSelected( oDlg ) ) != Nil
@@ -1104,9 +1120,9 @@ Memvar oDesigner
 
    IF oDesigner:addItem == Nil
       aBDown := GetBDown()
-      oCtrl := aBDown[1]
+      oCtrl := aBDown[BDOWN_OCTRL]
       IF oCtrl != Nil
-         IF aBDown[4] > 0
+         IF aBDown[BDOWN_NBORDER] > 0
             CtrlResize( oCtrl,xPos,yPos )
          ELSE
             // writelog( "LButtonUp-1 "+str(xpos)+str(abdown[2])+str(ypos)+str(abdown[3]) )

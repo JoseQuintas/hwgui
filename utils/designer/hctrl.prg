@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.19 2007-08-11 04:01:15 richardroesnadi Exp $
+ * $Id: hctrl.prg,v 1.20 2007-11-10 18:09:54 lculik Exp $
  *
  * Designer
  * HControlGen class
@@ -12,6 +12,8 @@
 #include "HBClass.ch"
 #include "guilib.ch"
 #include "hxml.ch"
+
+#include "designer.ch"
 
 #define TCM_SETCURSEL           4876
 #define TCM_GETITEMCOUNT        4868
@@ -272,8 +274,8 @@ Memvar oDesigner
 
    IF lChild == Nil .OR. !lChild
       lChild := .F.
-      dx := xPos - aBDown[2]
-      dy := yPos - aBDown[3]
+      dx := xPos - aBDown[BDOWN_XPOS]
+      dy := yPos - aBDown[BDOWN_YPOS]
       IF oCtrl:lEmbed
          IF Lower( oCtrl:cClass ) == "hline"
             dx := 0
@@ -287,7 +289,7 @@ Memvar oDesigner
    ENDIF
 
    IF dx != 0 .OR. dy != 0
-      IF !lChild .AND. lMouse .AND. Abs( xPos - aBDown[2] ) < 3 .AND. Abs( yPos - aBDown[3] ) < 3
+      IF !lChild .AND. lMouse .AND. Abs( xPos - aBDown[BDOWN_XPOS] ) < 3 .AND. Abs( yPos - aBDown[BDOWN_YPOS] ) < 3
          Return .F.
       ENDIF
       InvalidateRect( oCtrl:oParent:handle, 1, ;
@@ -307,8 +309,8 @@ Memvar oDesigner
          oCtrl:SetCoor( "Bottom",oCtrl:nTop+oCtrl:nHeight-1 )
       ENDIF
       IF !lChild
-         aBDown[2] := xPos
-         aBDown[3] := yPos
+         aBDown[BDOWN_XPOS] := xPos
+         aBDown[BDOWN_YPOS] := yPos
       ENDIF
       InvalidateRect( oCtrl:oParent:handle, 0, ;
                oCtrl:nLeft-4, oCtrl:nTop-4, ;
@@ -334,14 +336,14 @@ Function CtrlResize( oCtrl,xPos,yPos )
 Local dx, dy
 Memvar oDesigner
 
-   IF xPos != aBDown[2] .OR. yPos != aBDown[3]
+   IF xPos != aBDown[BDOWN_XPOS] .OR. yPos != aBDown[BDOWN_YPOS]
       InvalidateRect( oCtrl:oParent:handle, 1, ;
                oCtrl:nLeft-4, oCtrl:nTop-4, ;
                oCtrl:nLeft+oCtrl:nWidth+3,  ;
                oCtrl:nTop+oCtrl:nHeight+3 )
-      dx := xPos - aBDown[2]
-      dy := yPos - aBDown[3]
-      IF aBDown[4] == 1
+      dx := xPos - aBDown[BDOWN_XPOS]
+      dy := yPos - aBDown[BDOWN_YPOS]
+      IF aBDown[BDOWN_NBORDER] == 1
          IF oCtrl:nWidth - dx < 4
             dx := oCtrl:nWidth - 4
          ENDIF
@@ -350,7 +352,7 @@ Memvar oDesigner
          IF oDesigner:lReport
             oCtrl:SetCoor( "Right",oCtrl:nLeft+oCtrl:nWidth-1 )
          ENDIF
-      ELSEIF aBDown[4] == 2
+      ELSEIF aBDown[BDOWN_NBORDER] == 2
          IF oCtrl:nHeight - dy < 4
             dy := oCtrl:nHeight - 4
          ENDIF
@@ -359,7 +361,7 @@ Memvar oDesigner
          IF oDesigner:lReport
             oCtrl:SetCoor( "Bottom",oCtrl:nTop+oCtrl:nHeight-1 )
          ENDIF
-      ELSEIF aBDown[4] == 3
+      ELSEIF aBDown[BDOWN_NBORDER] == 3
          IF oCtrl:nWidth + dx < 4
             dx := 4 - oCtrl:nWidth
          ENDIF
@@ -367,7 +369,7 @@ Memvar oDesigner
          IF oDesigner:lReport
             oCtrl:SetCoor( "Right",oCtrl:nLeft+oCtrl:nWidth-1 )
          ENDIF
-      ELSEIF aBDown[4] == 4
+      ELSEIF aBDown[BDOWN_NBORDER] == 4
          IF oCtrl:nHeight + dy < 4
             dy := 4 - oCtrl:nHeight
          ENDIF
@@ -376,8 +378,8 @@ Memvar oDesigner
             oCtrl:SetCoor( "Bottom",oCtrl:nTop+oCtrl:nHeight-1 )
          ENDIF
       ENDIF
-      aBDown[2] := xPos
-      aBDown[3] := yPos
+      aBDown[BDOWN_XPOS] := xPos
+      aBDown[BDOWN_YPOS] := yPos
       InvalidateRect( oCtrl:oParent:handle, 0, ;
                oCtrl:nLeft-4, oCtrl:nTop-4, ;
                oCtrl:nLeft+oCtrl:nWidth+3,  ;
@@ -393,10 +395,10 @@ Memvar oDesigner
 Return Nil
 
 Function SetBDown( oCtrl,xPos,yPos,nBorder )
-   aBDown[1] := oCtrl
-   aBDown[2]  := xPos
-   aBDown[3]  := yPos
-   aBDown[4] := nBorder
+   aBDown[ BDOWN_OCTRL ] := oCtrl
+   aBDown[ BDOWN_XPOS ] := xPos
+   aBDown[ BDOWN_YPOS ] := yPos
+   aBDown[ BDOWN_NBORDER ] := nBorder
    IF oCtrl != Nil
       SetCtrlSelected( oCtrl:oParent,oCtrl )
    ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.12 2007-04-24 19:53:50 richardroesnadi Exp $
+ * $Id: inspect.prg,v 1.13 2007-11-10 18:09:56 lculik Exp $
  *
  * Designer
  * Object Inspector
@@ -341,10 +341,14 @@ Memvar oDesigner
       aControls := Iif( oDesigner:lReport, oDlg:aControls[1]:aControls[1]:aControls, ;
           oDlg:aControls )
       FOR i := 1 TO Len( aControls )
-         Aadd( oCombo:aItems, aControls[i]:cClass + "." + Iif(aControls[i]:title!=Nil,Left(aControls[i]:title,15),Ltrim(str(aControls[i]:id)) ) )
-         IF oCtrl != Nil .AND. oCtrl:handle == aControls[i]:handle
+        if ( oDesigner:lReport ) 
+            Aadd( oCombo:aItems, aControls[i]:cClass + "." + Iif(aControls[i]:title!=Nil,Left(aControls[i]:title,15),Ltrim(str(aControls[i]:id)) ) ) 
+        else 
+            Aadd( oCombo:aItems, aControls[i]:cClass + "." + aControls[i]:GetProp("Name",2) ) 
+        endif 
+        IF oCtrl != Nil .AND. oCtrl:handle == aControls[i]:handle
             n := i
-         ENDIF
+        ENDIF
       NEXT
    ENDIF
    oCombo:value := n + 1
@@ -362,7 +366,12 @@ Memvar oDesigner
          HFormGen():oDlgSelected:aControls )
       i := Len( aControls )
       IF i >= Len( oCombo:aItems )
-         Aadd( oCombo:aItems, aControls[i]:cClass + "." + Iif(aControls[i]:title!=Nil,Left(aControls[i]:title,15),Ltrim(str(aControls[i]:id)) ) )
+	if ( oDesigner:lReport ) 
+	   Aadd( oCombo:aItems, aControls[i]:cClass + "." + Iif(aControls[i]:title!=Nil,Left(aControls[i]:title,15),Ltrim(str(aControls[i]:id)) ) ) 
+	else 
+	   Aadd( oCombo:aItems, aControls[i]:cClass + "." + aControls[i]:GetProp("Name",2) ) 
+	endif 
+
       ELSEIF i + 1 < Len( oCombo:aItems )
          Return InspSetCombo()
       ENDIF

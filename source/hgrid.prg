@@ -1,5 +1,5 @@
  /*
- * $Id: hgrid.prg,v 1.9 2006-09-08 10:42:18 alkresin Exp $
+ * $Id: hgrid.prg,v 1.10 2007-11-10 17:44:37 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -15,7 +15,7 @@ TODO: 1) In line edit
          The way is using the ListView_SetImageList
       3) Checkbox
          The way is using the NM_CUSTOMDRAW and DrawFrameControl()
-         
+
 */
 
 #include "hwgui.ch"
@@ -39,19 +39,19 @@ CLASS HGrid INHERIT HControl
    CLASS VAR winclass INIT "SYSLISTVIEW32"
    DATA aBitMaps   INIT {}
    DATA ItemCount
-   DATA color   
+   DATA color
    DATA bkcolor
    DATA aColumns   INIT {}
    DATA nRow       INIT 0
    DATA nCol       INIT 0
-   
+
    DATA lNoScroll  INIT .F.
    DATA lNoBorder  INIT .F.
    DATA lNoLines   INIT .F.
    DATA lNoHeader  INIT .F.
 
    DATA bEnter
-   DATA bKeyDown  
+   DATA bKeyDown
    DATA bPosChg
    DATA bDispInfo
 
@@ -88,26 +88,26 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
 
    ::color   := color
    ::bkcolor := bkcolor
-   
+
    ::lNoScroll := lNoScroll
-   ::lNoBorder := lNoBord  
-   ::lNoLines  := lNoLines 
+   ::lNoBorder := lNoBord
+   ::lNoLines  := lNoLines
    ::lNoHeader := lNoHeader
-                         
-   ::bEnter    := bEnter   
-   ::bKeyDown  := bKeyDown 
-   ::bPosChg   := bPosChg  
+
+   ::bEnter    := bEnter
+   ::bKeyDown  := bKeyDown
+   ::bPosChg   := bPosChg
    ::bDispInfo := bDispInfo
-   
+
    HWG_InitCommonControlsEx()
-   
+
    ::Activate()
-   
+
    /*
    if bGfocus != Nil
       ::oParent:AddEvent( NM_SETFOCUS,::id,bGfocus,.T. )
    endif
-   
+
    if bLfocus != Nil
       ::oParent:AddEvent( NM_KILLFOCUS,::id,bLfocus,.T. )
    endif
@@ -116,8 +116,8 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
 Return Self
 
 METHOD Activate CLASS HGrid
-   if ::oParent:handle != 0      
-      ::handle := ListView_Create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll ) 
+   if ::oParent:handle != 0
+      ::handle := ListView_Create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll )
 
       ::Init()
    endif
@@ -163,50 +163,50 @@ METHOD Init() CLASS HGrid
      Listview_setimagelist(::handle,::him)
 
 endif
-      
+
       Listview_Init( ::handle, ::ItemCount, ::lNoLines )
 
       for i := 1 to len( ::aColumns )
         Listview_addcolumn( ::handle, i, ::aColumns[i, 2], ::aColumns[i, 1], ::aColumns[i, 3],if(::aColumns[i, 4]!=nil,::aColumns[i, 4],0))
-      next        
+      next
 
       if ::color != nil
-        ListView_SetTextColor( ::handle, ::color ) 
+        ListView_SetTextColor( ::handle, ::color )
 
       endif
-      
+
       if ::bkcolor != nil
-        Listview_setbkcolor( ::handle, ::bkcolor ) 
-        Listview_settextbkcolor( ::handle, ::bkcolor ) 
-      endif        
+        Listview_setbkcolor( ::handle, ::bkcolor )
+        Listview_settextbkcolor( ::handle, ::bkcolor )
+      endif
    endif
 Return Nil
 
 METHOD Refresh() CLASS HGrid
     Local iFirst, iLast
-    
-    iFirst := ListView_GetTopIndex(::handle) 
+
+    iFirst := ListView_GetTopIndex(::handle)
 
     iLast := iFirst + ListView_GetCountPerPage(::handle)
 
-    ListView_RedrawItems( ::handle , iFirst, iLast ) 
+    ListView_RedrawItems( ::handle , iFirst, iLast )
 Return Nil
 
 METHOD Notify( lParam ) CLASS HGrid
 Return ListViewNotify( Self, lParam )
-    
+
 Function ListViewNotify( oCtrl, lParam )
-    Local aCord,Res
+    Local aCord
 
     If GetNotifyCode ( lParam ) = LVN_KEYDOWN .and. oCtrl:bKeydown != nil
         Eval( oCtrl:bKeyDown, oCtrl, Listview_GetGridKey(lParam) )
-                
+
     elseif GetNotifyCode ( lParam ) == NM_DBLCLK .and. oCtrl:bEnter != nil
         aCord := Listview_Hittest( octrl:handle, GetCursorRow() - GetWindowRow ( oCtrl:handle ), ;
                                                  GetCursorCol() - GetWindowCol ( oCtrl:handle ) )
         oCtrl:nRow := aCord[1]
         oCtrl:nCol := aCord[2]
-                
+
         Eval( oCtrl:bEnter, oCtrl )
 
     elseif GetNotifyCode ( lParam ) == NM_SETFOCUS .and. oCtrl:bGfocus != nil
@@ -215,21 +215,21 @@ Function ListViewNotify( oCtrl, lParam )
     elseif GetNotifyCode ( lParam ) == NM_KILLFOCUS .and. oCtrl:bLfocus != nil
         Eval( oCtrl:bLfocus, oCtrl )
 
-    elseif GetNotifyCode ( lParam ) = LVN_ITEMCHANGED 
+    elseif GetNotifyCode ( lParam ) = LVN_ITEMCHANGED
         oCtrl:nRow := oCtrl:Row()
 
         if oCtrl:bPosChg != nil
             Eval( oCtrl:bPosChg, oCtrl, Listview_getfirstitem( oCtrl:handle ) )
-        endif            
-        
+        endif
+
     elseif GetNotifyCode ( lParam ) = LVN_GETDISPINFO .and. oCtrl:bDispInfo != nil
         aCord := Listview_getdispinfo( lParam )
-        
+
         oCtrl:nRow := aCord[1]
         oCtrl:nCol := aCord[2]
 
-        Listview_setdispinfo( lParam, Eval( oCtrl:bDispInfo, oCtrl, oCtrl:nRow, oCtrl:nCol ) )        
+        Listview_setdispinfo( lParam, Eval( oCtrl:bDispInfo, oCtrl, oCtrl:nRow, oCtrl:nCol ) )
 
     endif
 Return 0
-    
+

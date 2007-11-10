@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.20 2007-09-20 14:59:31 lculik Exp $
+ * $Id: printdos.prg,v 1.21 2007-11-10 17:44:53 mlacecilia Exp $
  *
  * CLASS PrintDos
  *
@@ -47,7 +47,7 @@ CLASS PrintDos
      DATA nEndPage init 0
      DATA nCopy init 1
 
-     METHOD New(oPorta) CONSTRUCTOR  
+     METHOD New(oPorta) CONSTRUCTOR
 
      METHOD Say(oProw, oCol, oTexto, oPicture)
 
@@ -89,7 +89,7 @@ METHOD New(oPorta) CLASS PrintDos
      Local oCompress:={oMATRIXCOMPRESS, oINKJETCOMPRESS, oLASER18CPI }
      Local oBold    :={oMATRIXBOLD,     oINKJETBOLD,     oLASERBOLD  }       //Added by  por Fernando Athayde
      Local oUnBold  :={oMATRIXUNBOLD,   oINKJETUNBOLD,   oLASERUNBOLD }       //Added by  por Fernando Athayde
-     Local oPtr, oPtrSetup, oPtrName
+     Local oPtrSetup, oPtrName
 
      ::cCompr   := oCompress[::oPrintStyle]
      ::cNormal  := oNormal[::oPrintStyle]
@@ -164,7 +164,6 @@ METHOD Comando(oComm1,oComm2, oComm3, oComm4, oComm5, oComm6, oComm7,;
                oComm8,oComm9, oComm10)  CLASS PrintDos
 
    local nCont := 1
-   local cCont
    local oStr := oComm1
 
    oStr:=Chr( Val (oComm1) )
@@ -179,7 +178,7 @@ METHOD Comando(oComm1,oComm2, oComm3, oComm4, oComm5, oComm6, oComm7,;
    IF oComm9  != NIL ;  oStr +=Chr(Val(oComm9 ));   ENDIF
    IF oComm10 != NIL ;  oStr +=Chr(Val(oComm10));   ENDIF
 
- 
+
    If ::oAns2Oem
      ::oText += HB_ANSITOOEM(oStr)
    Else
@@ -205,12 +204,12 @@ Return Nil
 
 METHOD Eject()   CLASS PrintDos
 //tracelog( ::gText, ::oText )
-    
+
      fWrite( ::gText, ::oText )
 
      If ::oAns2Oem
         fWrite( ::gText, HB_ANSITOOEM(Chr(13)+Chr(10)+Chr(Val(::cEject))))
-        fWrite(::gText, HB_ANSITOOEM(Chr(13)+Chr(10))) 
+        fWrite(::gText, HB_ANSITOOEM(Chr(13)+Chr(10)))
      Else
         fWrite( ::gText,Chr(13)+Chr(10)+Chr(Val(::cEject)))
         fWrite(::gText, Chr(13)+Chr(10))
@@ -219,7 +218,7 @@ METHOD Eject()   CLASS PrintDos
      ::oText :=""
      ::nProw := 0
      ::nPcol := 0
-    //tracelog( ::gText, ::oText )     
+    //tracelog( ::gText, ::oText )
 Return Nil
 
 METHOD Compress() CLASS PrintDos
@@ -340,7 +339,7 @@ Local han, nRead
          DO while .t.
 
             nRead := fRead(han, @strBuf, PF_BUFFERS)
-            
+
             if nRead=0 ; Exit ; Endif
 
             IF fWrite(::gText, Left(strbuf, nRead)) < nRead
@@ -352,12 +351,12 @@ Local han, nRead
          EndDo
 
    ELSE
-   
+
          MsgStop( "Can't Open port" )
          Fclose( han )
-         
+
    ENDIF
-     
+
 RETURN .T.
 
 Function wProw(oPrinter)
@@ -374,7 +373,7 @@ METHOD TxttoGraphic(fName,osize,oPreview) CLASS PrintDos
 
 LOCAL strbuf := Space(2052), poz := 2052, stroka
 Local han := FOPEN( fname, FO_READ + FO_SHARED )
-Local i, itemName, aItem, res := .T., sFont
+Local res := .T.
 Local oCol:=0, oPage:=1  //Added by  Por Fernando Athayde
 Local oPrinter
 Local oFont
@@ -382,7 +381,7 @@ Local oFont
 INIT PRINTER oPrinter // HPrinter():New()
 // added by Giuseppe Mastrangelo
 if oPrinter == nil
-	return .f.
+   return .f.
 endif
 // end of added code
 oFont := oPrinter:AddFont( "Courier New", oSize )
@@ -398,14 +397,14 @@ IF han <> - 1
       IF LEN( stroka ) = 0
          EXIT
       ENDIF
-      if oSize <0         
+      if oSize <0
       oPrinter:Say( stroka, 0, ocol,2400, ocol+(-oSize+2),,oFont )  //Added by  Por Fernando Athayde
       oCol:=oCol+(-oSize+2)   //Added by  Por Fernando Athayde
       else
          oPrinter:Say( stroka, 0, ocol,2400, ocol+(oSize+2),,oFont )  //Added by  Por Fernando Athayde
          oCol:=oCol+(oSize+2)   //Added by  Por Fernando Athayde
       endif
-      
+
       IF Left( stroka,1 ) == Chr(12)
          oPrinter:EndPage()
          oPrinter:StartPage()
@@ -431,13 +430,13 @@ METHOD Preview(fName,cTitle) CLASS PrintDos
 Local oedit1
 LOCAL strbuf := Space(2052), poz := 2052, stroka
 Local han := FOPEN( fname, FO_READ + FO_SHARED )
-Local i, itemName, aItem, res := .T., sFont
+Local res := .T.
 Local oCol:=10, oPage:=1, nPage:=1
 Local oFont := HFont():Add( "Courier New",0,-13 )
 Local oText := {""}
 Local oDlg, oColor1, oColor2
 Local oEdit
-Local oPrt:= iif(Empty(::oPorta) .or. ::oPorta == "PREVIEW", "LPT1", ::oPorta)  
+Local oPrt:= iif(Empty(::oPorta) .or. ::oPorta == "PREVIEW", "LPT1", ::oPorta)
 
 IF han <> - 1
    DO WHILE .T.
@@ -547,15 +546,15 @@ while leof
    stroka :=strtran(stroka,chr(10),"")
    nchr12 :=at(chr(12),stroka)
    if nChr12 >0
-   
+
      stroka:=substr(stroka,1,nchr12-1)
    endif
       o1:say(nline,0,stroka)
    nLine++
     IF nchr12 >0
-    
+
        o1:eject()
-       nLine:=0         
+       nLine:=0
     ENDIF
 
 enddo

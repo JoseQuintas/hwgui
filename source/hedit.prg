@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.59 2007-11-03 11:01:13 andijahja Exp $
+ *$Id: hedit.prg,v 1.60 2007-11-10 17:44:33 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -469,7 +469,7 @@ Local cChar
 Return .F.
 
 Static Function KeyRight( oEdit,nPos )
-Local i, masklen, newpos, vari
+Local masklen, newpos
 
    IF oEdit == Nil
       Return -1
@@ -503,7 +503,7 @@ Local i, masklen, newpos, vari
 Return 0
 
 Static Function KeyLeft( oEdit,nPos )
-Local i
+
    IF oEdit == Nil
       Return -1
    ENDIF
@@ -619,7 +619,7 @@ Return cChar
 
 Static Function GetApplyKey( oEdit,cKey )
 Local nPos, nGetLen, nLen, vari, i, x, newPos
-Local nDecimals, nTmp
+Local nDecimals
 
    /* AJ: 11-03-2007 */
    if Hwg_BitAnd( GetWindowLong( oEdit:handle, GWL_STYLE ), ES_READONLY ) != 0

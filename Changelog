@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.682 2007-11-03 11:01:11 andijahja Exp $
+ * $Id: Changelog,v 1.683 2007-11-10 17:44:16 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,38 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-10 18:45 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+	* source/barcode.prg
+	* source/drawwidg.prg
+	* source/errorsys.prg
+	* source/guimain.prg
+	* source/hbrowse.prg
+	* source/hcombo.prg
+	* source/hcontrol.prg
+	* source/hedit.prg
+	* source/hfreeimg.prg
+	* source/hfrmtmpl.prg
+	* source/hgrid.prg
+	* source/hgridex.prg
+	* source/hhyper.prg
+	* source/hipedit.prg
+	* source/hnice.prg
+	* source/hownbtn.prg
+	* source/hpager.prg
+	* source/hpanel.prg
+	* source/hprinter.prg
+	* source/hrebar.prg
+	* source/hrect.prg
+	* source/hshbtn.prg
+	* source/htool.prg
+	* source/htree.prg
+	* source/hupdown.prg
+	* source/menu.prg
+	* source/printdos.prg
+	* source/repexec.prg
+	* source/richtext.prg
+	  ! purged a lot of unused local variables 
 
 2007-11-03 18.00 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
     * include/guilib.ch

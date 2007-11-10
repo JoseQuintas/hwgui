@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.6 2005-10-26 07:43:26 omm Exp $
+ * $Id: hupdown.prg,v 1.7 2007-11-10 17:44:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -93,7 +93,6 @@ METHOD Init()  CLASS HUpDown
 Return Nil
 
 METHOD Refresh()  CLASS HUpDown
-Local vari
 
    IF ::bSetGet != Nil
       ::value := Eval( ::bSetGet )

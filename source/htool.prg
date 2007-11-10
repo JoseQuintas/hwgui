@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.9 2007-09-20 14:59:31 lculik Exp $
+ * $Id: htool.prg,v 1.10 2007-11-10 17:44:49 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -68,8 +68,6 @@ METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
 
 Return Self
 
-
-RETURN Self
 
 METHOD Activate CLASS hToolBar
 
@@ -155,9 +153,9 @@ Local nPos
 RETURN Nil
 
 METHOD Notify( lParam ) CLASS hToolBar
-    Local aCord
+
     Local nCode :=  GetNotifyCode( lParam )
-    Local nId,e
+    Local nId
 
     Local nButton
     Local nPos
@@ -217,7 +215,7 @@ return self
 
 //method onEvent(msg,w,l) class htoolbarex
 //Local nId
-//Local nPos  
+//Local nPos
 //  if msg == WM_KEYDOWN
 //
 //  return -1
@@ -241,7 +239,7 @@ Static Function IsAltShift( lAlt)
 Local cKeyb := GetKeyboardState()
 
    IF lAlt==Nil; lAlt := .T.; ENDIF
-Return ( lAlt .AND. ( Asc(Substr(cKeyb,VK_MENU+1,1)) >= 128 ) ) 
+Return ( lAlt .AND. ( Asc(Substr(cKeyb,VK_MENU+1,1)) >= 128 ) )
 
 
 PROCEDURE MyDestructor CLASS htoolbarex

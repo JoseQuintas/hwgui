@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.48 2006-09-27 12:42:02 alkresin Exp $
+ *$Id: hwindow.prg,v 1.49 2007-11-10 17:44:51 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -281,15 +281,15 @@ CLASS HMDIChildWindow INHERIT HWindow
 
 ENDCLASS
 
-METHOD Activate( lShow, lMaximized, lMinimized, bActivate ) CLASS HMDIChildWindow 
+METHOD Activate( lShow, lMaximized, lMinimized, bActivate ) CLASS HMDIChildWindow
 
    CreateGetList( Self )
    // Hwg_CreateMdiChildWindow( Self )
 
    ::handle := Hwg_CreateMdiChildWindow( Self )
-   IF bActivate != NIL     
-      EVAL( bActivate )    
-   ENDIF                   
+   IF bActivate != NIL
+      EVAL( bActivate )
+   ENDIF
 
    InitControls( Self )
    IF ::bInit != Nil

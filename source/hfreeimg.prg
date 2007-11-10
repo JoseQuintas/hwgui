@@ -1,5 +1,5 @@
 /*
- * $Id: hfreeimg.prg,v 1.8 2006-10-20 09:49:52 alkresin Exp $
+ * $Id: hfreeimg.prg,v 1.9 2007-11-10 17:44:35 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFreeImage - Image handling class
@@ -35,7 +35,7 @@ CLASS HFreeImage INHERIT HObject
 ENDCLASS
 
 METHOD AddFile( name ) CLASS HFreeImage
-Local i, aBmpSize
+Local i
 
    #ifdef __XHARBOUR__
    For EACH i IN ::aImages

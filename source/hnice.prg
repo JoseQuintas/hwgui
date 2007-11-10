@@ -1,5 +1,5 @@
 /*
- * $Id: hnice.prg,v 1.5 2005-10-26 07:43:26 omm Exp $
+ * $Id: hnice.prg,v 1.6 2007-11-10 17:44:44 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -259,7 +259,6 @@ METHOD PAINT() CLASS HNICEButton
    LOCAL Rct
    LOCAL Size
    LOCAL T         := Space( 2048 )
-   LOCAL i
    LOCAL XCtr
    LOCAL YCtr
    LOCAL x

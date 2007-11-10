@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.19 2007-03-22 16:25:44 richardroesnadi Exp $
+ * $Id: menu.prg,v 1.20 2007-11-10 17:44:52 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -126,7 +126,7 @@ Local aSubMenu := Hwg_FindMenuItem( aMenu, nId )
 Return Iif( aSubMenu == Nil, 0, aSubMenu[5] )
 
 Function BuildMenu( aMenuInit, hWnd, oWnd, nPosParent,lPopup )
-Local hMenu, nPos, aMenu, i, oBmp
+Local hMenu, nPos, aMenu, oBmp
 
    IF nPosParent == Nil
       IF lPopup == Nil .OR. !lPopup

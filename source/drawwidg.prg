@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.10 2007-04-06 10:18:13 alkresin Exp $
+ * $Id: drawwidg.prg,v 1.11 2007-11-10 17:44:27 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -416,7 +416,7 @@ Local i, aBmpSize
 Return Self
 
 METHOD AddWindow( oWnd,lFull ) CLASS HBitmap
-Local i, aBmpSize
+Local aBmpSize
 
    ::handle := Window2Bitmap( oWnd:handle,lFull )
    ::name := Ltrim( Str( oWnd:handle ) )

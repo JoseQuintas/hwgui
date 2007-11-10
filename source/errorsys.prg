@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.6 2005-08-29 08:33:54 alkresin Exp $
+ * $Id: errorsys.prg,v 1.7 2007-11-10 17:44:28 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement
@@ -25,9 +25,6 @@ PROCEDURE ErrorSys
 STATIC FUNCTION DefError( oError )
    LOCAL cMessage
    LOCAL cDOSError
-
-   LOCAL aOptions
-   LOCAL nChoice
 
    LOCAL n
 

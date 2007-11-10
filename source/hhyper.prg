@@ -1,5 +1,5 @@
 /*
- * $Id: hhyper.prg,v 1.5 2006-04-07 12:17:48 alkresin Exp $
+ * $Id: hhyper.prg,v 1.6 2007-11-10 17:44:41 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HStaticLink class
@@ -287,28 +287,13 @@ RETURN NIL
 
 METHOD PAint() CLASS HStaticLink
 
-LOCAL pps
-LOCAL hDC
-LOCAL aCoors
-LOCAL aMetr
-LOCAL oPen
-LOCAL oldBkColor
-LOCAL x1
-LOCAL y1
-LOCAL x2
-LOCAL y2
 LOCAL strtext    := ::Title
 LOCAL nOldBkMode
 LOCAL dwFlags
-LOCAL Brush
-LOCAL f
 LOCAL clrOldText
 LOCAL rcClient
-LOCAL rgn
-LOCAL rc
 LOCAL POLDFONT
 LOCAL DWSTYLE
-LOCAL hRect
 
    ::dc := HPAINTDC():new( ::handle )
    IF ::state == LBL_INIT

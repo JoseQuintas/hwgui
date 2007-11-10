@@ -1,16 +1,16 @@
 /*
- * $Id: hrect.prg,v 1.1 2004-12-13 16:27:39 sandrorrfreire Exp $
+ * $Id: hrect.prg,v 1.2 2007-11-10 17:44:48 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
  *
- * Copyright 2004 Ricardo de Moura Marques <ricardo.m.marques@caixa.gov.br> 
+ * Copyright 2004 Ricardo de Moura Marques <ricardo.m.marques@caixa.gov.br>
  * www - http://kresin.belgorod.su
 */
- 
+
 #include "windows.ch"
 #include "hbclass.ch"
- 
+
 //-----------------------------------------------------------------
 CLASS HRect INHERIT HControl
 
@@ -44,7 +44,7 @@ endif
     case nStyle = 1
        ::oLine1 = HRect_Line():New( oWndParent, ,.f., nLeft,  nTop,    nRight-nLeft, , nCor1 )
        ::oLine3 = HRect_Line():New( oWndParent, ,.f., nLeft,  nBottom, nRight-nLeft, , nCor2 )
-    
+
     case nStyle = 2
        ::oLine2 = HRect_Line():New( oWndParent, ,.t., nLeft,  nTop,    nBottom-nTop, , nCor1 )
        ::oLine4 = HRect_Line():New( oWndParent, ,.t., nRight, nTop,    nBottom-nTop, , nCor2 )
@@ -76,7 +76,7 @@ ENDCLASS
 METHOD New( oWndParent,nId,lVert,nLeft,nTop, nLength,bSize, nColor ) CLASS HRect_Line
 
    Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,,,,,bSize,{|o,lp|o:Paint(lp)} )
-   
+
 
    ::title := ""
    ::lVert := Iif( lVert==Nil, .F., lVert )
@@ -89,7 +89,7 @@ METHOD New( oWndParent,nId,lVert,nLeft,nTop, nLength,bSize, nColor ) CLASS HRect
    ENDIF
 
    ::oPen := HPen():Add( BS_SOLID,1,GetSysColor(nColor) )
-   
+
    ::Activate()
 
 Return Self
@@ -115,12 +115,11 @@ Local hDC := drawInfo[3], x1 := drawInfo[4], y1 := drawInfo[5], x2 := drawInfo[6
    ELSE
       DrawLine( hDC, x1,y1,x2,y1 )
    ENDIF
-   
+
 Return Nil
 
 //-----------------------------------------------------------------
 Function Rect(oWndParent,nLeft,nTop,nRight,nBottom, lPress, nST)
-Local nCor1, nCor2
 
 if lPress = NIL
    lPress := .f.

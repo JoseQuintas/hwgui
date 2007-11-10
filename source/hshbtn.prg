@@ -1,5 +1,5 @@
 /*
- * $Id: hshbtn.prg,v 1.1 2006-12-29 10:18:55 alkresin Exp $
+ * $Id: hshbtn.prg,v 1.2 2007-11-10 17:44:48 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HShadeButton class, inherited from HOwnButton
@@ -52,7 +52,7 @@ Return Self
 
 METHOD Paint() CLASS HShadeButton
 Local pps, hDC
-Local nState, x1, x2, y1, y2
+Local nState
 
    pps := DefinePaintStru()
    hDC := BeginPaint( ::handle, pps )

@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.15 2007-06-13 13:18:28 omm Exp $
+ * $Id: htree.prg,v 1.16 2007-11-10 17:44:49 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -167,7 +167,7 @@ Return Self
 
 METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages ) CLASS HTreeNode
 Local oParent := Self
-Local oNode := HTreeNode():New( ::oTree,oParent,oPrev,oNext,cTitle,bAction,aImages ), i, h
+Local oNode := HTreeNode():New( ::oTree,oParent,oPrev,oNext,cTitle,bAction,aImages )
 
 Return oNode
 

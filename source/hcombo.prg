@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.34 2007-10-19 14:16:08 lculik Exp $
+ * $Id: hcombo.prg,v 1.35 2007-11-10 17:44:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -162,7 +162,7 @@ Return Self
 METHOD Init() CLASS HComboBox
    Local i,numofchars
    Local LongComboWidth := 0
-   lOCAL NewLongComboWidth ,avgwidth     
+   lOCAL NewLongComboWidth ,avgwidth
 
    IF !::lInit
       Super:Init()
@@ -178,7 +178,7 @@ METHOD Init() CLASS HComboBox
          FOR i := 1 TO Len( ::aItems )
             ComboAddString( ::handle, ::aItems[i] )
             numofchars =SendMessage(::handle,CB_GETLBTEXTLEN,i-1,0)
-            if  numofchars > LongComboWidth 
+            if  numofchars > LongComboWidth
                 LongComboWidth=numofchars
             endif
 
@@ -193,7 +193,7 @@ METHOD Init() CLASS HComboBox
             ComboSetString( ::handle, ::value )
          ENDIF
          avgwidth =GetFontDialogUnits(::oParent:handle) //,::oParent:oFont:handle)
-         NewLongComboWidth = (LongComboWidth -2) *avgwidth     
+         NewLongComboWidth = (LongComboWidth -2) *avgwidth
          SendMessage(           ::handle,          CB_SETDROPPEDWIDTH,            NewLongComboWidth+50,           0        )
 
       ENDIF
@@ -512,7 +512,6 @@ METHOD RecalcText() CLASS hCheckComboBox
 
 LOCAL strtext
 LOCAL ncount
-LOCAL szBuffer
 LOCAL strSeparator
 LOCAL i
 LOCAL stritem

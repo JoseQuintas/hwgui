@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.29 2007-10-22 19:22:50 mlacecilia Exp $
+ * $Id: hownbtn.prg,v 1.30 2007-11-10 17:44:46 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -39,7 +39,7 @@ CLASS HOwnButton INHERIT HControl
    METHOD Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, ;
                   cText,color,font,xt,yt,widtht,heightt,     ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,      ;
-                  cTooltip, lEnabled, lCheck ) 
+                  cTooltip, lEnabled, lCheck )
    METHOD Paint()
    METHOD DrawItems( hDC )
    METHOD MouseMove( wParam, lParam )
@@ -69,7 +69,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,   ;
    ::bClick  := bClick
    ::state   := OBTN_INIT
    ::nOrder  := iif( oWndParent==nil, 0, len( oWndParent:aControls ) )
-   
+
    ::title   := cText
    ::tcolor  := Iif( color==Nil, GetSysColor( COLOR_BTNTEXT ), color )
    ::xt      := Iif( xt==Nil, 0, xt )
@@ -81,8 +81,8 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,   ;
       ::lEnabled := lEnabled
    ENDIF
    IF lCheck != Nil
-	  ::lCheck := lCheck
-   ENDIF	  
+     ::lCheck := lCheck
+   ENDIF
    IF bmp != Nil
       IF Valtype( bmp ) == "O"
          ::oBitmap := bmp
@@ -105,7 +105,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,   ;
 Return Self
 
 METHOD Activate CLASS HOwnButton
-   IF ::oParent:handle != 0    
+   IF ::oParent:handle != 0
       ::handle := CreateOwnBtn( ::oParent:handle, ::id, ;
                   ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
@@ -147,9 +147,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
          Eval(::bOther, self, msg, wParam, lParam)
       ENDIF
    ENDIF
-   
-Return -1   
-   
+
+Return -1
+
 METHOD Init CLASS HOwnButton
 
    IF !::lInit
@@ -186,8 +186,8 @@ METHOD Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, ;
       ::lEnabled := lEnabled
    ENDIF
    IF lCheck != Nil
-	  ::lCheck := lCheck
-   ENDIF	  
+     ::lCheck := lCheck
+   ENDIF
 
    IF bmp != Nil
       IF Valtype( bmp ) == "O"
@@ -317,7 +317,7 @@ Local x1, y1, x2, y2
 Return Nil
 
 METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
-Local xPos, yPos, otmp
+Local xPos, yPos
 Local res := .F.
 
    IF ::state != OBTN_INIT
@@ -356,13 +356,13 @@ METHOD MUp() CLASS HOwnButton
       IF !::lPress
          ::state := OBTN_NORMAL  // IIF( ::lFlat,OBTN_MOUSOVER,OBTN_NORMAL )
       ENDIF
-	  IF ::lCheck
-		IF ::lPress
-			::Release()
-		else
+     IF ::lCheck
+      IF ::lPress
+         ::Release()
+      else
            ::Press()
-		ENDIF   
-	  ENDIF	   
+      ENDIF
+     ENDIF
       IF ::bClick != Nil
          ReleaseCapture()
          Eval( ::bClick, ::oParent, ::id )

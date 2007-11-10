@@ -1,5 +1,5 @@
 /*
- * $Id: hrebar.prg,v 1.2 2007-04-06 10:30:24 alkresin Exp $
+ * $Id: hrebar.prg,v 1.3 2007-11-10 17:44:48 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -45,7 +45,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit
    Default  lVert  to .f.
    nstyle   := Hwg_BitOr( IIF( nStyle == NIL, 0, nStyle ), ;
                            WS_VISIBLE + WS_CHILD )
-   tracelog(nstyle)  
+   tracelog(nstyle)
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )
    HWG_InitCommonControlsEx()
@@ -69,8 +69,6 @@ METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
 Return Self
 
 
-RETURN Self
-
 METHOD Activate CLASS hrebar
 
    IF ::oParent:handle != 0
@@ -83,12 +81,9 @@ METHOD Activate CLASS hrebar
 RETURN Nil
 
 METHOD INIT CLASS hrebar
-Local n,n1
-Local aTemp
-Local hIm
+
 Local aButton :={}
-Local aBmpSize
-Local nPos
+
    IF !::lInit
       Super:Init()
 //      REBARSETIMAGELIST(::handle,nil)

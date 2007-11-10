@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.42 2007-09-05 08:06:08 omm Exp $
+ * $Id: hcontrol.prg,v 1.43 2007-11-10 17:44:32 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -295,7 +295,7 @@ RETURN  NIL
 METHOD Paint( lpDis ) CLASS HStatic
 
 LOCAL drawInfo := GetDrawItemInfo( lpdis )
-Local client_rect,szText,pfont,poldfont
+Local client_rect,szText
 local dwtext,nstyle
 LOCAL dc := drawInfo[ 3 ]
 
@@ -570,7 +570,6 @@ LOCAL bIsPressed     := HWG_BITAND( DrawInfo[ 9 ], ODS_SELECTED ) != 0
 LOCAL bIsFocused     := HWG_BITAND( DrawInfo[ 9 ], ODS_FOCUS ) != 0
 LOCAL bIsDisabled    := HWG_BITAND( DrawInfo[ 9 ], ODS_DISABLED ) != 0
 LOCAL bDrawFocusRect := !HWG_BITAND( DrawInfo[ 9 ], ODS_NOFOCUSRECT ) != 0
-LOCAL sTitle
 LOCAL focusRect
 
 LOCAL captionRect

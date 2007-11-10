@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.54 2007-10-12 09:30:41 omm Exp $
+ * $Id: hfrmtmpl.prg,v 1.55 2007-11-10 17:44:36 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -519,7 +519,6 @@ Local arr, arrExe, nContainer := 0, cCode1, cCode, bOldError, bRes
 Return arrExe
 
 STATIC FUNCTION CompileErr( e, stroka )
-Local n
 
    MsgStop( ErrorMessage( e ) + Chr(10)+Chr(13) + "in" + Chr(10)+Chr(13) + ;
           AllTrim(stroka),"Script compiling error" )
@@ -568,7 +567,7 @@ Return Nil
 #define TBS_NOTICKS                 16
 
 Static Function CreateCtrl( oParent, oCtrlTmpl, oForm )
-Local i, j, oCtrl, stroka, varname, xProperty, block, cType, cPName
+Local i, j, oCtrl, stroka, varname, xProperty, cType, cPName
 Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName, cVarName
 MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop
 MEMVAR onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg
@@ -1286,8 +1285,7 @@ Return Nil
 
 Static Function ReadRepItem( oCtrlDesc, oContainer )
 Local oCtrl := HRepItem():New( oContainer )
-Local i, j, o, cName, aProp := {}, aMethods := {}, aItems := oCtrlDesc:aItems, xProperty
-Local nPenWidth, nPenType
+Local i, j, o, aProp := {}, aMethods := {}, aItems := oCtrlDesc:aItems, xProperty
 
    oCtrl:cClass   := oCtrlDesc:GetAttribute( "class" )
    oCtrl:aProp    := aProp

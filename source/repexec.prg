@@ -1,5 +1,5 @@
 /*
- * $Id: repexec.prg,v 1.4 2005-09-19 13:00:41 alkresin Exp $
+ * $Id: repexec.prg,v 1.5 2007-11-10 17:44:53 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * RepExec - Loading and executing of reports, built with RepBuild
@@ -34,7 +34,7 @@ Return Nil
 Function OpenReport( fname,repName )
 LOCAL strbuf := Space(512), poz := 513, stroka, nMode := 0
 Local han
-Local itemName, aItem, res := .T., sFont
+Local itemName, aItem, res := .T.
 Local nFormWidth
 
    IF aPaintRep != Nil .AND. fname == aPaintRep[FORM_FILENAME] .AND. repName == aPaintRep[FORM_REPNAME]

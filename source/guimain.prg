@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.18 2007-07-05 13:49:17 lculik Exp $
+ * $Id: guimain.prg,v 1.19 2007-11-10 17:44:29 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -321,7 +321,7 @@ cInitDir: Initial directory
 
 FUNCTION SelectMultipleFiles(cDescr, cTip, cIniDir, cTitle )
 
-   LOCAL aFiles, cRet, cFile, x, aFilter, cFilter := "", cItem, nAt, cChar,i
+   LOCAL aFiles, cRet, cFile, x, cFilter := "", cItem, nAt, cChar,i
    Local hWnd := 0
    Local nFlags:=""
    Local cPath := ""

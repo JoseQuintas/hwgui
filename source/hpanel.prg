@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.13 2006-09-27 12:42:02 alkresin Exp $
+ * $Id: hpanel.prg,v 1.14 2007-11-10 17:44:46 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -55,7 +55,7 @@ Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
 Return Self
 
 METHOD Activate CLASS HPanel
-Local handle := ::oParent:handle, oClient
+Local handle := ::oParent:handle
 
    IF handle != 0
       ::handle := CreatePanel( handle, ::id, ;

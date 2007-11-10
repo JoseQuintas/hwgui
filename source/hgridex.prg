@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.10 2007-08-21 21:51:05 lculik Exp $
+ * $Id: hgridex.prg,v 1.11 2007-11-10 17:44:39 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -40,14 +40,14 @@ CLASS HGridEX INHERIT HControl
    DATA nCol       INIT 0
    DATA aColors    INIT {}
    DATA hSort
-   
+
    DATA lNoScroll  INIT .F.
    DATA lNoBorder  INIT .F.
    DATA lNoLines   INIT .F.
    DATA lNoHeader  INIT .F.
 
    DATA bEnter
-   DATA bKeyDown  
+   DATA bKeyDown
    DATA bPosChg
    DATA bDispInfo
    DATA him
@@ -98,28 +98,28 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
 
    ::color   := color
    ::bkcolor := bkcolor
-   
+
    ::lNoScroll := lNoScroll
-   ::lNoBorder := lNoBord  
-   ::lNoLines  := lNoLines 
+   ::lNoBorder := lNoBord
+   ::lNoLines  := lNoLines
    ::lNoHeader := lNoHeader
-                         
-   ::bEnter    := bEnter   
-   ::bKeyDown  := bKeyDown 
-   ::bPosChg   := bPosChg  
+
+   ::bEnter    := bEnter
+   ::bKeyDown  := bKeyDown
+   ::bPosChg   := bPosChg
    ::bDispInfo := bDispInfo
 
-   
+
    HWG_InitCommonControlsEx()
-   
+
    ::Activate()
-   
+
 
 Return Self
 
 METHOD Activate CLASS HGridEx
-   if ::oParent:handle != 0      
-      ::handle := ListView_Create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll ) 
+   if ::oParent:handle != 0
+      ::handle := ListView_Create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll )
 
       ::Init()
    endif
@@ -131,7 +131,6 @@ METHOD Init() CLASS HGridEx
    Local aBmpSize
    Local n
    Local n1
-   Local aItem
    Local aTemp,aTemp1
 
    if !::lInit
@@ -169,7 +168,7 @@ METHOD Init() CLASS HGridEx
      Listview_setimagelist(::handle,::him)
 
 endif
-      
+
       Listview_Init( ::handle, ::ItemCount, ::lNoLines )
 
       for i := 1 to len( ::aColumns )
@@ -187,35 +186,35 @@ endif
 
       endif
       if ::color != nil
-        ListView_SetTextColor( ::handle, ::color ) 
+        ListView_SetTextColor( ::handle, ::color )
 
       endif
-      
+
       if ::bkcolor != nil
-        Listview_setbkcolor( ::handle, ::bkcolor ) 
-        Listview_settextbkcolor( ::handle, ::bkcolor ) 
-      endif        
+        Listview_setbkcolor( ::handle, ::bkcolor )
+        Listview_settextbkcolor( ::handle, ::bkcolor )
+      endif
    endif
 Return Nil
 
 METHOD Refresh() CLASS HGridEx
     Local iFirst, iLast
-    
-    iFirst := ListView_GetTopIndex(::handle) 
+
+    iFirst := ListView_GetTopIndex(::handle)
 
     iLast := iFirst + ListView_GetCountPerPage(::handle)
 
-    ListView_RedrawItems( ::handle , iFirst, iLast ) 
+    ListView_RedrawItems( ::handle , iFirst, iLast )
 Return Nil
 
 
 METHOD AddRow( a ,bupdate ) Class HGRIDEX
-   Local nLen := Len( a ) 
+   Local nLen := Len( a )
    Local n
    Local aTmp := {}
    Local aTmp1 := {}
    Local aTmp2 := {}
-  
+
 
 default bupdate to .F.
    For n := 1 to nLen step 4
@@ -230,7 +229,7 @@ default bupdate to .F.
       aadd(::aColors,aTmp2)
       aTmp2:={}
    next
-  
+
    aadd( ::aRowBitMap, aTmp )
    aadd( ::aRow,    aTmp1 )
    if bUpdate
@@ -238,9 +237,9 @@ default bupdate to .F.
    endif
 
 return nil
-      
+
 METHOD Notify( lParam )  Class HGRIDEX
-    Local aCord,Res,iSelect,index
+    Local Res,iSelect
 
     IF GetNotifyCode( lParam ) == NM_CUSTOMDRAW .and. GETNOTIFYCODEFROM(lParam) == ::Handle
         Res := PROCESSCUSTU( ::handle, lParam, ::aColors )
@@ -248,17 +247,17 @@ METHOD Notify( lParam )  Class HGRIDEX
     ENDIF
 
     if GetNotifyCode( lParam ) == NM_CLICK
-                
+
        iSelect=SendMessage(::handle,LVM_GETNEXTITEM,-1,LVNI_FOCUSED)
-          
-       if(iSelect==-1)                                         
+
+       if(iSelect==-1)
           return 0
        endif
 
        ::iRowSelect:=iSelect
        ::bFlag:=.t.
        return 1
-     endif    
+     endif
 
     IF GetNotifyCode( lParam ) == LVN_COLUMNCLICK //.and. GETNOTIFYCODEFROM(lParam) == ::Handle
        if empty(::hsort)
@@ -294,7 +293,7 @@ METHOD UpdateData()
    aTemp := ::aRow[ n ]
    aTemp1 := ::aRowBitMap[ n ]
 
-   FOR n1 := 1 TO Len( aTemp )   
+   FOR n1 := 1 TO Len( aTemp )
       LISTVIEW_INSERTITEMEX( ::handle, n, n1, atemp[ n1 ], atemp1[ n1 ] )
    NEXT
 

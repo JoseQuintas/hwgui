@@ -1,5 +1,5 @@
 /*
- * $Id: hipedit.prg,v 1.7 2004-10-19 05:43:42 alkresin Exp $
+ * $Id: hipedit.prg,v 1.8 2007-11-10 17:44:44 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -69,7 +69,7 @@ METHOD New( oWndParent,nId,aValue,bSetGet, nStyle,nLeft,nTop,nWidth,nHeight, ;
    // Notificacoes de Ganho e perda de foco
    ::oParent:AddEvent( EN_SETFOCUS , ::id, {|o,id|__GetFocus(o:FindControl(id))} )
    ::oParent:AddEvent( EN_KILLFOCUS, ::id, {|o,id|__KillFocus(o:FindControl(id))} )
-   
+
 
 Return Self
 
@@ -82,7 +82,6 @@ METHOD Activate CLASS HIPedit
 Return Nil
 
 METHOD Init() CLASS HIPedit
-Local i
 
    IF !::lInit
       Super:Init()
@@ -121,7 +120,7 @@ Static Function __Valid( oCtrl )
 
    // oCtrl:aValue := oCtrl:GetValue()
 
-   IF Valtype(oCtrl:bSetGet) == "B" 
+   IF Valtype(oCtrl:bSetGet) == "B"
       // Eval( oCtrl:bSetGet,oCtrl:aValue )
       Eval( oCtrl:bSetGet, oCtrl:GetValue() )
    ENDIF
@@ -135,7 +134,7 @@ Return .T.
 Static Function __GetFocus( oCtrl )
    Local xRet
 
-   IF Valtype(oCtrl:bGetFocus) == "B" 
+   IF Valtype(oCtrl:bGetFocus) == "B"
       xRet := Eval( oCtrl:bGetFocus,oCtrl )
    ENDIF
 
@@ -145,7 +144,7 @@ Return xRet
 Static Function __KillFocus( oCtrl )
    Local xRet
 
-   IF Valtype(oCtrl:bKillFocus) == "B" 
+   IF Valtype(oCtrl:bKillFocus) == "B"
       xRet := Eval( oCtrl:bKillFocus,oCtrl )
    ENDIF
 

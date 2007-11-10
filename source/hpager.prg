@@ -1,5 +1,5 @@
 /*
- * $Id: hpager.prg,v 1.1 2007-01-02 11:46:59 lculik Exp $
+ * $Id: hpager.prg,v 1.2 2007-11-10 17:44:46 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -58,7 +58,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit
    ::lVert := lVert
    nstyle   := Hwg_BitOr( IIF( nStyle == NIL, 0, nStyle ), ;
                            WS_VISIBLE + WS_CHILD+if(lvert,PGS_VERT,PGS_HORZ) )
-   tracelog(nstyle)  
+   tracelog(nstyle)
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )
    HWG_InitCommonControlsEx()
@@ -82,8 +82,6 @@ METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
 Return Self
 
 
-RETURN Self
-
 METHOD Activate CLASS HPager
 
    IF ::oParent:handle != 0
@@ -96,30 +94,24 @@ METHOD Activate CLASS HPager
 RETURN Nil
 
 METHOD INIT CLASS HPager
-Local n,n1
-Local aTemp
-Local hIm
+
 Local aButton :={}
-Local aBmpSize
-Local nPos
+
    IF !::lInit
       Super:Init()
    endif
 RETURN Nil
 
 METHOD Notify( lParam ) CLASS HPager
-    Local aCord
-    Local nCode :=  GetNotifyCode( lParam )
-    Local nId,e
 
-    Local nButton 
-    Local nPos
+    Local nCode :=  GetNotifyCode( lParam )
+
     IF nCode == PGN_CALCSIZE
        PAGERONPAGERCALCSIZE( lParam,::hTool )
     ELSEIF nCode == PGN_SCROLL
        PAGERONPAGERSCROLL( lParam )
     ENDIF
-    
+
 Return 0
 
 

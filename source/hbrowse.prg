@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.82 2007-06-13 19:01:58 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.83 2007-11-10 17:44:30 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -294,7 +294,7 @@ Local aCoors, oParent, cKeyb, nCtrl, nPos
       ELSEIF msg == WM_SETFOCUS
          IF ::bGetFocus != Nil
             Eval( ::bGetFocus, Self )
-	    //::refreshLine()
+       //::refreshLine()
          ENDIF
 
       ELSEIF msg == WM_KILLFOCUS
@@ -448,7 +448,6 @@ RETURN Iif( i>0,::aItemsList[i],Nil )
 
 //----------------------------------------------------//
 METHOD AddColumn( oColumn ) CLASS HBrowse
-Local n
 
    aadd( ::aColumns, oColumn )
    ::lChanged := .T.
@@ -648,9 +647,8 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD Paint(lLostFocus)  CLASS HBrowse
-Local aCoors, aMetr, i, oldAlias, tmp, nRows
+Local aCoors, aMetr, i, tmp, nRows
 Local pps, hDC
-Local oldBkColor, oldTColor
 
    IF !::active .OR. Empty( ::aColumns )
       RETURN Nil
@@ -902,7 +900,7 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD FooterOut( hDC ) CLASS HBrowse
-Local i, x, fif, xSize, oPen, nLine, cStr
+Local x, fif, xSize, oPen, nLine, cStr
 Local oColumn
 
    IF ::lDispSep
@@ -943,7 +941,7 @@ RETURN Nil
 
 //-------------- -Row--  --Col-- ------------------------------//
 METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
-Local x, dx, i := 1, shablon, sviv, fldname, slen, xSize
+Local x, i := 1, sviv, fldname, xSize
 Local j, ob, bw, bh, y1, hBReal
 Local oldBkColor, oldTColor, oldBk1Color, oldT1Color
 Local oLineBrush :=  iif(vybfld>=1, HBrush():Add(::htbColor), Iif( lSelected, ::brushSel,::brush ))
@@ -1606,7 +1604,7 @@ Local oGet1, owb1, owb2
       ENDIF
       type := Iif( oColumn:type=="U".AND.::varbuf!=Nil, Valtype( ::varbuf ), oColumn:type )
       IF ::lEditable .AND. type != "O"
-         IF oColumn:lEditable 
+         IF oColumn:lEditable
             IF ::lAppMode
                IF type == "D"
                   ::varbuf := CtoD("")
@@ -1647,14 +1645,14 @@ Local oGet1, owb1, owb2
            {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1),PostMessage(o:aControls[1]:handle,WM_KEYDOWN,wParam,lParam)} )
 
          if type <> "M"
-		 INIT DIALOG oModDlg;
+       INIT DIALOG oModDlg;
             STYLE WS_POPUP + 1 + iif( oColumn:aList == Nil, WS_BORDER, 0 ) ;
             AT x1, y1 - Iif( oColumn:aList == Nil, 1, 0 ) ;
             SIZE nWidth, ::height + Iif( oColumn:aList == Nil, 1, 0 ) ;
             ON INIT bInit
-		else
-			INIT DIALOG oModDlg title "memo edit" AT 0, 0 SIZE 400, 300 ON INIT {|o|o:center()}
-		endif
+      else
+         INIT DIALOG oModDlg title "memo edit" AT 0, 0 SIZE 400, 300 ON INIT {|o|o:center()}
+      endif
 
          IF oColumn:aList != Nil .AND. ( oColumn:bWhen = Nil .OR. Eval( oColumn:bWhen ) )
             oModDlg:brush := -1
@@ -1686,7 +1684,7 @@ Local oGet1, owb1, owb2
                ENDIF
 
          ELSE
-			if type <> "M"
+         if type <> "M"
             @ 0,0 GET oGet VAR ::varbuf       ;
                SIZE nWidth, ::height+1        ;
                NOBORDER                       ;
@@ -1694,13 +1692,13 @@ Local oGet1, owb1, owb2
                FONT ::oFont                   ;
                PICTURE oColumn:picture        ;
                VALID oColumn:bValid           ;
-			   WHEN oColumn:bWhen
-			else
-				oGet1 := ::varbuf
-				@ 10,10 Get oGet1 SIZE oModDlg:nWidth-20,240 FONT ::oFont Style WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid
-				@ 010,252 ownerbutton owb2 text "Save" size 80,24 ON Click {||::varbuf:=oGet1,omoddlg:close(),oModDlg:lResult:=.t.}
-				@ 100,252 ownerbutton owb1 text "Close" size 80,24 ON CLICK {||oModDlg:close()}
-			endif
+            WHEN oColumn:bWhen
+         else
+            oGet1 := ::varbuf
+            @ 10,10 Get oGet1 SIZE oModDlg:nWidth-20,240 FONT ::oFont Style WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid
+            @ 010,252 ownerbutton owb2 text "Save" size 80,24 ON Click {||::varbuf:=oGet1,omoddlg:close(),oModDlg:lResult:=.t.}
+            @ 100,252 ownerbutton owb1 text "Close" size 80,24 ON CLICK {||oModDlg:close()}
+         endif
          ENDIF
 
          ACTIVATE DIALOG oModDlg
@@ -1836,7 +1834,7 @@ Local cRes, vartmp, type, pict
          ENDIF
          IF type == "C"
             //cRes := Padr( vartmp, oBrw:aColumns[numf]:length )
-	    cRes := vartmp
+       cRes := vartmp
          ELSEIF type == "N"
             cRes := Padl( STR( vartmp, oBrw:aColumns[numf]:length, ;
                    oBrw:aColumns[numf]:dec ),oBrw:aColumns[numf]:length )
@@ -2025,7 +2023,7 @@ Local nL, nPos := 0
 RETURN nil
 // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
 STATIC FUNCTION FltSkip(oBrw, nLines, lDesc)
-LOCAL n, r
+LOCAL n
   IF nLines == NIL
     nLines := 1
   ENDIF

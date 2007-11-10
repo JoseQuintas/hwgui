@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.18 2007-03-12 17:16:29 mlacecilia Exp $
+ * $Id: hprinter.prg,v 1.19 2007-11-10 17:44:47 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -51,7 +51,7 @@ CLASS HPrinter INHERIT HObject
 ENDCLASS
 
 METHOD New( cPrinter,lmm ) CLASS HPrinter
-Local aPrnCoors, cPrinterName, cDriverName
+Local aPrnCoors, cPrinterName
 
    IF lmm != Nil
       ::lmm := lmm
@@ -374,9 +374,9 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
       RANGE 1,20 ;
       INIT 1 AUTOTICKS VERTICAL ;
       ON DRAG {|o|ResizePreviewDlg(oCanvas,Self,,.T.)}
-      
+
    IF aBootUser != Nil
-  
+
       @ 1,313 LINE LENGTH oToolBar:nWidth-1
 
       @ 3,316 OWNERBUTTON oBtn OF oToolBar  ;
@@ -384,16 +384,16 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
            TEXT Iif( Len(aBootUser)==4,aBootUser[4],"User Button" ) ;
            FONT oFont FLAT                  ;
            TOOLTIP Iif(aBootUser[3]!=Nil,aBootUser[3],"User Button")
-      
+
       oBtn:bClick := aBootUser[1]
-      
-      IF aBootUser[2] != Nil  
+
+      IF aBootUser[2] != Nil
          oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBootUser[2] ), HBitmap():AddFile( aBootUser[2] ) )
          oBtn:text   := Nil
          oBtn:lTransp := lTransp
       ENDIF
-      
-   ENDIF    
+
+   ENDIF
 
    oDlg:Activate()
 
@@ -460,7 +460,7 @@ Local i, nPos
          oPrinter:oTrackV:SetValue( oPrinter:oTrackV:nLow )
       ELSE
          nPos := SendMessage( oPrinter:oTrackV:handle, TBM_GETPOS, 0, 0 )
-         IF nPos > 0 
+         IF nPos > 0
             nPos := ( nPos - oPrinter:oTrackV:nLow ) / ( oPrinter:oTrackV:nHigh - oPrinter:oTrackV:nLow )
             oPrinter:yOffset := Round( nPos * ( nHeight - y + 10 ),0 )
          ENDIF
@@ -476,7 +476,7 @@ Local i, nPos
          oPrinter:oTrackH:SetValue( oPrinter:oTrackH:nLow )
       ELSE
          nPos := SendMessage( oPrinter:oTrackH:handle, TBM_GETPOS, 0, 0 )
-         IF nPos > 0 
+         IF nPos > 0
             nPos := ( nPos - oPrinter:oTrackH:nLow ) / ( oPrinter:oTrackH:nHigh - oPrinter:oTrackH:nLow )
             oPrinter:xOffset := Round( nPos * ( nWidth - x + 10 ),0 )
          ENDIF

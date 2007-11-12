@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.30 2007-09-23 12:07:15 andijahja Exp $
+ * $Id: draw.c,v 1.31 2007-11-12 17:55:52 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -250,8 +250,8 @@ HB_FUNC( LOADBITMAP )
    if( ISNUM(1) )
    {
       if( !ISNIL(2) && hb_parl(2) )
-               hb_retnl( (LONG) LoadBitmap( GetModuleHandle( NULL ),  MAKEINTRESOURCE(hb_parnl( 1 ) )) );
-//         hb_retnl( (LONG) LoadBitmap( NULL, (LPCTSTR) hb_parnl( 1 ) ) );
+//               hb_retnl( (LONG) LoadBitmap( GetModuleHandle( NULL ),  MAKEINTRESOURCE(hb_parnl( 1 ) )) );
+         hb_retnl( (LONG) LoadBitmap( NULL, (LPCTSTR) hb_parnl( 1 ) ) );
       else
          hb_retnl( (LONG) LoadBitmap( GetModuleHandle( NULL ), (LPCTSTR) hb_parnl( 1 ) ) );
    }

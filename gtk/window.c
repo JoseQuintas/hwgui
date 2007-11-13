@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.24 2006-09-12 11:49:18 alkresin Exp $
+ * $Id: window.c,v 1.25 2007-11-13 16:58:54 druzus Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -16,6 +16,8 @@
 #include "gtk/gtk.h"
 #ifdef __XHARBOUR__
 #include "hbfast.h"
+#else
+#include "hbapicls.h"
 #endif
 
 #define WM_MOVE                           3

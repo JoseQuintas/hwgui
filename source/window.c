@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.58 2007-11-13 19:20:41 druzus Exp $
+ * $Id: window.c,v 1.59 2007-11-13 22:05:18 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -22,7 +22,9 @@
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
-#if defined(_MSC_VER) && !defined(__XHARBOUR__)
+#if defined(__XHARBOUR__)
+#include "hbfast.h"
+#else
 #include "hbapicls.h"
 #endif
 
@@ -947,15 +949,14 @@ HB_FUNC(GETFONTDIALOGUNITS)
 hb_retnl(GetFontDialogUnits((HWND)hb_parnl(1),(HFONT) hb_parnl(2 )) );
 }
 
-
-
-LRESULT CALLBACK KbdHook(int code, WPARAM wp, LPARAM lp) 
+LRESULT CALLBACK KbdHook( int code, WPARAM wp, LPARAM lp )
 { 
    int nId, nBtnNo; 
    UINT uId;   
    BOOL bPressed;    
    if (code < 0) 
-   return CallNextHookEx(OrigDockHookProc, code, wp, lp); 
+      return CallNextHookEx(OrigDockHookProc, code, wp, lp); 
+
    switch (code) 
    { 
    case HC_ACTION:
@@ -1003,55 +1004,48 @@ LRESULT CALLBACK KbdHook(int code, WPARAM wp, LPARAM lp)
            
        }
        return Res;
-       
-     }
-        default: 
-          break;
-     } 
-        return CallNextHookEx(OrigDockHookProc, code, wp, lp);
-  }
+      }
+      default: 
+         break;
+   } 
+   return CallNextHookEx( OrigDockHookProc, code, wp, lp );
+}
 
 HB_FUNC(SETTOOLHANDLE)
 {
-	HWND h = (HWND) hb_parnl( 1 ) ;
+   HWND h = (HWND) hb_parnl( 1 ) ;
    PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( h, GWL_USERDATA );
 
-
-   hMytoolMenu = (HWND)h;
+   hMytoolMenu = (HWND) h;
 }
-
 
 HB_FUNC(SETHOOK)
 {
 	OrigDockHookProc = SetWindowsHookEx(WH_KEYBOARD, KbdHook, GetModuleHandle(0), 0); 
 }
 
-HB_FUNC(UNSETHOOK)
+HB_FUNC( UNSETHOOK )
 {
-	if (OrigDockHookProc)
-				{
-					UnhookWindowsHookEx(OrigDockHookProc); 
-					OrigDockHookProc = 0;
-				}
-}				
+   if (OrigDockHookProc)
+   {
+      UnhookWindowsHookEx( OrigDockHookProc );
+      OrigDockHookProc = 0;
+   }
+}
 
-
-
-HB_FUNC(GETTOOLBARID)
+HB_FUNC( GETTOOLBARID )
 {
-	HWND hMytoolMenu = (HWND) hb_parnl(1);	
-	
-   WPARAM wp = (WPARAM) hb_parnl( 2 ) ;
-   int nId, nBtnNo;
-   UINT uId;	
-   if (SendMessage(hMytoolMenu, TB_MAPACCELERATOR, (WPARAM)wp, (LPARAM)&uId) != 0 )
-      hb_retnl(uId) ;
-    else
-    hb_retnl( -1 );
+   HWND hMytoolMenu = ( HWND ) hb_parnl( 1 );
+   WPARAM wp = ( WPARAM ) hb_parnl( 2 );
+   UINT uId;
+   if( SendMessage(hMytoolMenu, TB_MAPACCELERATOR, (WPARAM)wp, (LPARAM)&uId) != 0 )
+      hb_retnl( uId );
+   else
+      hb_retnl( -1 );
 }          
    
 
-HB_FUNC(ISWINDOW)
+HB_FUNC( ISWINDOW )
 {
-   hb_retl(IsWindow((HWND) hb_parnl( 1 ) ) ) ;
+   hb_retl( IsWindow( ( HWND ) hb_parnl( 1 ) ) );
 }

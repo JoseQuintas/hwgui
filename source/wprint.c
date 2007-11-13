@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.14 2007-10-28 23:58:54 richardroesnadi Exp $
+ * $Id: wprint.c,v 1.15 2007-11-13 22:05:18 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -81,10 +81,9 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
 HB_FUNC( HWG_GETDEFAULTPRINTER )
 {
    DWORD            dwNeeded, dwReturned ;
-   HDC              hDC;
    PRINTER_INFO_4 * pinfo4;
    PRINTER_INFO_5 * pinfo5;
-	 char PrinterDefault [128];
+   char PrinterDefault [128];
 
    if( GetVersion() & 0x80000000 )         // Windows 98
    {
@@ -114,11 +113,8 @@ HB_FUNC( HWG_GETDEFAULTPRINTER )
       free( pinfo4 );
    }
 
-   // hb_retnl( (LONG) hDC );
-
-  hb_retc(PrinterDefault);
-  return ;
-
+   hb_retc(PrinterDefault);
+   return ;
 }
 
 HB_FUNC( HWG_GETPRINTERS )

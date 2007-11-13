@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.23 2007-09-23 12:07:15 andijahja Exp $
+ * $Id: grid.c,v 1.24 2007-11-13 22:05:17 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -364,12 +364,11 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
    int iSubItemYesNo = lCol == 0  ? 0 : 1 ;
    char * sText = hb_parc( 4 );
    int iBitMap = hb_parni(5);
-   // ULONG i;
    LVITEM lvi;
-   int iResult;
+   int iResult = 0;
    RECT rect;
 
-	GetClientRect(hwndListView, &rect);
+   GetClientRect(hwndListView, &rect);
 
    memset( &lvi, 0, sizeof( lvi ) );
 
@@ -484,10 +483,12 @@ HB_FUNC( PROCESSCUSTU )
 HB_FUNC(LISTVIEWGETITEM)
 {
   HWND hList = ( HWND ) hb_parnl( 1 ) ;
-  int Index=hb_parni(2);
-  int Index2=hb_parni(3);
-  LVITEM Item = {0};
-  char *Buffer= (char*)hb_xgrab(256);
+  int Index = hb_parni(2);
+  int Index2 = hb_parni(3);
+  LVITEM Item;
+  char * Buffer = ( char * ) hb_xgrab( 256 );
+
+  memset( &Item, '\0', sizeof( Item ) );
 
   Item.mask          = LVIF_TEXT | LVIF_PARAM;
   Item.iItem         = Index;
@@ -498,8 +499,8 @@ HB_FUNC(LISTVIEWGETITEM)
   if(!ListView_GetItem(hList, &Item))
   {
      hb_xfree(Buffer);
-        hb_retc("");
-        }
+     hb_retc("");
+  }
   hb_retcAdopt(Buffer);
 }
 

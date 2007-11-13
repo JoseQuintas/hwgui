@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: make_gtk.sh,v 1.1 2007-11-13 16:50:52 druzus Exp $
+# $Id: make_gtk.sh,v 1.2 2007-11-13 19:20:36 druzus Exp $
 #
 
 # ---------------------------------------------------------------
@@ -10,6 +10,16 @@
 # Copyright 2007 by Przemyslaw Czerpak (druzus/at/priv.onet.pl)
 #
 # ---------------------------------------------------------------
+
+if [ "$1" = "-hb" ]
+then
+   export HB_PREF=hb
+   shift
+elif [ "$1" = "-xhb" ]
+then
+   export HB_PREF=xhb
+   shift
+fi
 
 if [ -z "${HB_PREF}" ]
 then

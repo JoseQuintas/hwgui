@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.4 2007-08-23 11:06:57 lculik Exp $
+ * $Id: theme.c,v 1.5 2007-11-13 19:20:40 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -93,7 +93,7 @@
 
 	void* GetProc(LPCSTR szProc, void* pfnFail);
 
-    typedef HTHEME(__stdcall *PFNOPENTHEMEDATA)(HWND hwnd, LPCWSTR pszClassList);
+	typedef HTHEME(__stdcall *PFNOPENTHEMEDATA)(HWND hwnd, LPCWSTR pszClassList);
 
 	typedef HRESULT(__stdcall *PFNCLOSETHEMEDATA)(HTHEME hTheme);
 
@@ -212,189 +212,378 @@
 
 
     static HRESULT EnableThemingFail(BOOL fenable) // fenable
-    {HB_SYMBOL_UNUSED( fenable ); return E_FAIL;}
+      { HB_SYMBOL_UNUSED( fenable );
+        return E_FAIL;}
 
     static HRESULT DrawThemeBackgroundFail(HTHEME a, HDC s, int d, int f, const RECT * g, const RECT * h) //HTHEME a, HDC s, int d, int f, const RECT * , const RECT * 
-	{ HB_SYMBOL_UNUSED( a );  HB_SYMBOL_UNUSED( s ) ; HB_SYMBOL_UNUSED( d ); HB_SYMBOL_UNUSED( f ); HB_SYMBOL_UNUSED( g ); HB_SYMBOL_UNUSED( h );return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( a );
+        HB_SYMBOL_UNUSED( s );
+        HB_SYMBOL_UNUSED( d );
+        HB_SYMBOL_UNUSED( f );
+        HB_SYMBOL_UNUSED( g );
+        HB_SYMBOL_UNUSED( h );
+        return E_FAIL;}
+
     static HRESULT CloseThemeDataFail(HTHEME s ) //s
-    { HB_SYMBOL_UNUSED( s ) ;return E_FAIL;}
+      { HB_SYMBOL_UNUSED( s );
+        return E_FAIL;}
     static HTHEME OpenThemeDataFail(HWND s , LPCWSTR d) //s d
-    {HB_SYMBOL_UNUSED( s ) ;HB_SYMBOL_UNUSED( d );return NULL;}
+      { HB_SYMBOL_UNUSED( s );
+        HB_SYMBOL_UNUSED( d );
+        return NULL;}
 
     static HRESULT DrawThemeTextFail(HTHEME a, HDC s, int d, int f, LPCWSTR g, int h, DWORD j, DWORD k, const RECT* z)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( a );
+        HB_SYMBOL_UNUSED( s );
+        HB_SYMBOL_UNUSED( d );
+        HB_SYMBOL_UNUSED( f );
+        HB_SYMBOL_UNUSED( g );
+        HB_SYMBOL_UNUSED( h );
+        HB_SYMBOL_UNUSED( j );
+        HB_SYMBOL_UNUSED( k );
+        HB_SYMBOL_UNUSED( z );
+        return E_FAIL;}
 
-	static HRESULT GetThemeBackgroundContentRectFail(HTHEME hTheme,  HDC hdc,
-		int iPartId, int iStateId,  const RECT *pBoundingRect,
-		RECT *pContentRect)
-	{return E_FAIL;}
+    static HRESULT GetThemeBackgroundContentRectFail(HTHEME hTheme,  HDC hdc,
+                        int iPartId, int iStateId,  const RECT *pBoundingRect,
+                        RECT *pContentRect)
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( hdc );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( pBoundingRect );
+        HB_SYMBOL_UNUSED( pContentRect );
+        return E_FAIL; }
 
-	static HRESULT GetThemeBackgroundExtentFail(HTHEME hTheme,  HDC hdc,
-		int iPartId, int iStateId, const RECT *pContentRect,
-		RECT *pExtentRect)
-	{return E_FAIL;}
+    static HRESULT GetThemeBackgroundExtentFail(HTHEME hTheme,  HDC hdc,
+                           int iPartId, int iStateId, const RECT *pContentRect,
+                           RECT *pExtentRect)
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( hdc );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( pContentRect );
+        HB_SYMBOL_UNUSED( pExtentRect );
+        return E_FAIL;}
 
     static HRESULT GetThemePartSizeFail(HTHEME a, HDC s, int d, int f, RECT * g, enum THEMESIZE h, SIZE * j)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( a );
+        HB_SYMBOL_UNUSED( s );
+        HB_SYMBOL_UNUSED( d );
+        HB_SYMBOL_UNUSED( f );
+        HB_SYMBOL_UNUSED( g );
+        HB_SYMBOL_UNUSED( h );
+        HB_SYMBOL_UNUSED( j );
+        return E_FAIL;}
 
 	static HRESULT GetThemeTextExtentFail(HTHEME hTheme, HDC hdc,
 		int iPartId, int iStateId, LPCWSTR pszText, int iCharCount,
 		DWORD dwTextFlags,  const RECT *pBoundingRect,
 		RECT *pExtentRect)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( hdc );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( pszText );
+        HB_SYMBOL_UNUSED( iCharCount );
+        HB_SYMBOL_UNUSED( dwTextFlags );
+        HB_SYMBOL_UNUSED( pBoundingRect );
+        HB_SYMBOL_UNUSED( pExtentRect );
+        return E_FAIL;}
 
 	static HRESULT GetThemeTextMetricsFail(HTHEME hTheme,  HDC hdc,
 		int iPartId, int iStateId,  TEXTMETRIC* ptm)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( hdc );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( ptm );
+        return E_FAIL;}
 
 	static HRESULT GetThemeBackgroundRegionFail(HTHEME hTheme,  HDC hdc,
 		int iPartId, int iStateId, const RECT *pRect,  HRGN *pRegion)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( hdc );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( pRect );
+        HB_SYMBOL_UNUSED( pRegion );
+        return E_FAIL;}
 
 	static HRESULT HitTestThemeBackgroundFail(HTHEME hTheme,  HDC hdc, int iPartId,
 		int iStateId, DWORD dwOptions, const RECT *pRect,  HRGN hrgn,
 		POINT ptTest,  WORD *pwHitTestCode)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( hdc );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( dwOptions );
+        HB_SYMBOL_UNUSED( pRect );
+        HB_SYMBOL_UNUSED( hrgn );
+        HB_SYMBOL_UNUSED( ptTest );
+        HB_SYMBOL_UNUSED( pwHitTestCode );
+        return E_FAIL;}
 
 	static HRESULT DrawThemeEdgeFail(HTHEME hTheme, HDC hdc, int iPartId, int iStateId,
-		const RECT *pDestRect, UINT uEdge, UINT uFlags,   RECT *pContentRect)
-	{return E_FAIL;}
+		const RECT *pDestRect, UINT uEdge, UINT uFlags, RECT *pContentRect)
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( hdc );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( pDestRect );
+        HB_SYMBOL_UNUSED( uEdge );
+        HB_SYMBOL_UNUSED( uFlags );
+        HB_SYMBOL_UNUSED( pContentRect );
+        return E_FAIL;}
 
 	static HRESULT DrawThemeIconFail(HTHEME hTheme, HDC hdc, int iPartId,
 		int iStateId, const RECT *pRect, HIMAGELIST himl, int iImageIndex)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( hdc );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( pRect );
+        HB_SYMBOL_UNUSED( himl );
+        HB_SYMBOL_UNUSED( iImageIndex );
+        return E_FAIL;}
 
 	static BOOL IsThemePartDefinedFail(HTHEME hTheme, int iPartId,
 		int iStateId)
-	{return FALSE;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        return E_FAIL;}
 
 	static BOOL IsThemeBackgroundPartiallyTransparentFail(HTHEME hTheme,
 		int iPartId, int iStateId)
-	{return FALSE;}
-
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        return E_FAIL;}
 
 	static HRESULT GetThemeColorFail(HTHEME hTheme, int iPartId,
 		int iStateId, int iPropId,  COLORREF *pColor)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( iPropId );
+        HB_SYMBOL_UNUSED( pColor );
+        return E_FAIL;}
 
-	static HRESULT GetThemeMetricFail(HTHEME hTheme,  HDC hdc, int iPartId,
+	static HRESULT GetThemeMetricFail(HTHEME hTheme, HDC hdc, int iPartId,
 		int iStateId, int iPropId,  int *piVal)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( hdc );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( iPropId );
+        HB_SYMBOL_UNUSED( piVal );
+        return E_FAIL;}
 
 	static HRESULT GetThemeStringFail(HTHEME hTheme, int iPartId,
 		int iStateId, int iPropId,  LPWSTR pszBuff, int cchMaxBuffChars)
-	{return E_FAIL;}
-
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( iPropId );
+        HB_SYMBOL_UNUSED( pszBuff );
+        HB_SYMBOL_UNUSED( cchMaxBuffChars );
+        return E_FAIL;}
 
 	static HRESULT GetThemeBoolFail(HTHEME hTheme, int iPartId,
 		int iStateId, int iPropId,  BOOL *pfVal)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( iPropId );
+        HB_SYMBOL_UNUSED( pfVal );
+        return E_FAIL;}
 
 	static HRESULT GetThemeIntFail(HTHEME hTheme, int iPartId,
 		int iStateId, int iPropId,  int *piVal)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( iPropId );
+        HB_SYMBOL_UNUSED( piVal );
+        return E_FAIL;}
 
 	static HRESULT GetThemeEnumValueFail(HTHEME hTheme, int iPartId,
 		int iStateId, int iPropId,  int *piVal)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( iPropId );
+        HB_SYMBOL_UNUSED( piVal );
+        return E_FAIL;}
 
 	static HRESULT GetThemePositionFail(HTHEME hTheme, int iPartId,
 		int iStateId, int iPropId,  POINT *pPoint)
-	{return E_FAIL;}
-
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( iPropId );
+        HB_SYMBOL_UNUSED( pPoint );
+        return E_FAIL;}
 
 	static HRESULT GetThemeFontFail(HTHEME hTheme,  HDC hdc, int iPartId,
 		int iStateId, int iPropId,  LOGFONT *pFont)
-	{return E_FAIL;}
-
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( hdc );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( iPropId );
+        HB_SYMBOL_UNUSED( pFont );
+        return E_FAIL;}
 
 	static HRESULT GetThemeRectFail(HTHEME hTheme, int iPartId,
 		int iStateId, int iPropId,  RECT *pRect)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( iPropId );
+        HB_SYMBOL_UNUSED( pRect );
+        return E_FAIL;}
 
 	static HRESULT GetThemeMarginsFail(HTHEME hTheme,  HDC hdc, int iPartId,
 		int iStateId, int iPropId,  RECT *prc,  MARGINS *pMargins)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( hdc );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( iPropId );
+        HB_SYMBOL_UNUSED( prc );
+        HB_SYMBOL_UNUSED( pMargins );
+        return E_FAIL;}
 
 	static HRESULT GetThemeIntListFail(HTHEME hTheme, int iPartId,
 		int iStateId, int iPropId,  INTLIST *pIntList)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( iPropId );
+        HB_SYMBOL_UNUSED( pIntList );
+        return E_FAIL;}
 
 	static HRESULT GetThemePropertyOriginFail(HTHEME hTheme, int iPartId,
 		int iStateId, int iPropId,  enum PROPERTYORIGIN *pOrigin)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( iPropId );
+        HB_SYMBOL_UNUSED( pOrigin );
+        return E_FAIL;}
 
 	static HRESULT SetWindowThemeFail(HWND hwnd, LPCWSTR pszSubAppName,
 		LPCWSTR pszSubIdList)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hwnd );
+        HB_SYMBOL_UNUSED( pszSubAppName );
+        HB_SYMBOL_UNUSED( pszSubIdList );
+        return E_FAIL;}
 
 	static HRESULT GetThemeFilenameFail(HTHEME hTheme, int iPartId,
-		int iStateId, int iPropId,  LPWSTR pszThemeFileName, int cchMaxBuffChars)
-	{return E_FAIL;}
+		int iStateId, int iPropId, LPWSTR pszThemeFileName, int cchMaxBuffChars)
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iPartId );
+        HB_SYMBOL_UNUSED( iStateId );
+        HB_SYMBOL_UNUSED( iPropId );
+        HB_SYMBOL_UNUSED( pszThemeFileName );
+        HB_SYMBOL_UNUSED( cchMaxBuffChars );
+        return E_FAIL;}
 
 	static HRESULT GetThemeSysFontFail(HTHEME hTheme, int iFontId,  LOGFONT *plf)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iFontId );
+        HB_SYMBOL_UNUSED( plf );
+        return E_FAIL;}
 
 	static COLORREF GetThemeSysColorFail(HTHEME hTheme, int iColorId)
-	{return RGB(255,255,255);}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iColorId );
+	  return RGB(255,255,255);}
 
 	static HBRUSH GetThemeSysColorBrushFail(HTHEME hTheme, int iColorId)
-	{return NULL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iColorId );
+	  return NULL;}
 
 	static BOOL GetThemeSysBoolFail(HTHEME hTheme, int iBoolId)
-	{return FALSE;}
-
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iBoolId );
+	  return FALSE;}
 
 	static int GetThemeSysSizeFail(HTHEME hTheme, int iSizeId)
-	{return 0;}
-
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iSizeId );
+	  return 0;}
 
 	static HRESULT GetThemeSysStringFail(HTHEME hTheme, int iStringId,
 		LPWSTR pszStringBuff, int cchMaxStringChars)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iStringId );
+        HB_SYMBOL_UNUSED( pszStringBuff );
+        HB_SYMBOL_UNUSED( cchMaxStringChars );
+        return E_FAIL;}
 
 	static HRESULT GetThemeSysIntFail(HTHEME hTheme, int iIntId, int *piValue)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hTheme );
+        HB_SYMBOL_UNUSED( iIntId );
+        HB_SYMBOL_UNUSED( piValue );
+        return E_FAIL;}
 
 	static BOOL IsThemeActiveFail()
-	{return FALSE;}
+	{ return FALSE;}
 
 	static BOOL IsAppThemedFail()
-	{return FALSE;}
+	{ return FALSE;}
 
 
 	static HTHEME GetWindowThemeFail(HWND hwnd)
-	{return NULL;}
+	{ HB_SYMBOL_UNUSED( hwnd );
+	  return NULL;}
 
 
 	static HRESULT EnableThemeDialogTextureFail(HWND hwnd, DWORD dwFlags)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( hwnd );
+        HB_SYMBOL_UNUSED( dwFlags );
+        return E_FAIL;}
 
 	static BOOL IsThemeDialogTextureEnabledFail(HWND hwnd)
-	{return FALSE;}
-
+	{ HB_SYMBOL_UNUSED( hwnd );
+        return FALSE;}
 
 	static DWORD GetThemeAppPropertiesFail()
-	{return 0;}
+	{ return 0;}
 
 	static void SetThemeAppPropertiesFail(DWORD dwFlags)
-	{return;}
+	{ HB_SYMBOL_UNUSED( dwFlags );
+        return;}
 
 	static HRESULT GetCurrentThemeNameFail(
 		LPWSTR pszThemeFileName, int cchMaxNameChars,
 		LPWSTR pszColorBuff, int cchMaxColorChars,
 		LPWSTR pszSizeBuff, int cchMaxSizeChars)
-	{return E_FAIL;}
-
+	{ HB_SYMBOL_UNUSED( pszThemeFileName );
+        HB_SYMBOL_UNUSED( cchMaxNameChars );
+        HB_SYMBOL_UNUSED( pszColorBuff );
+        HB_SYMBOL_UNUSED( cchMaxColorChars );
+        HB_SYMBOL_UNUSED( pszSizeBuff );
+        HB_SYMBOL_UNUSED( cchMaxSizeChars );
+        return E_FAIL;}
 
 	static HRESULT GetThemeDocumentationPropertyFail(LPCWSTR pszThemeName,
 		LPCWSTR pszPropertyName,  LPWSTR pszValueBuff, int cchMaxValChars)
-	{return E_FAIL;}
+	{ HB_SYMBOL_UNUSED( pszThemeName );
+        HB_SYMBOL_UNUSED( pszPropertyName );
+        HB_SYMBOL_UNUSED( pszValueBuff );
+        HB_SYMBOL_UNUSED( cchMaxValChars );
+        return E_FAIL;}
 
-	static HRESULT DrawThemeParentBackgroundFail(HWND hwnd, HDC hdc,  RECT* prc)
-	{return E_FAIL;}
-
-
+	static HRESULT DrawThemeParentBackgroundFail(HWND hwnd, HDC hdc, RECT* prc)
+	{ HB_SYMBOL_UNUSED( hwnd );
+        HB_SYMBOL_UNUSED( hdc );
+        HB_SYMBOL_UNUSED( prc );
+        return E_FAIL;}
 
 
 void* GetProc(LPCSTR szProc, void* pfnFail)

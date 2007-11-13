@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.688 2007-11-13 17:40:45 druzus Exp $
+ * $Id: Changelog,v 1.689 2007-11-13 19:20:36 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,33 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-13 20:20 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/make_gtk.sh
+    + added support for -hb and -xhb switches - I forgot to commit it.
+
+  - hwgui/source/BARCODE.PRG
+  - hwgui/source/HSPLASH.PRG
+  + hwgui/source/barcode.prg
+  + hwgui/source/hsplash.prg
+    * renamed to lower letters for case sensitive file systems
+
+  * hwgui/source/control.c
+  * hwgui/source/cxshade.c
+  * hwgui/source/listbox.c
+  * hwgui/source/pager.c
+  * hwgui/source/theme.c
+  * hwgui/source/window.c
+    * added missing _WIN32_WINNT and _WIN32_IE declarations
+    ! removed wrongly used TEXT() macro - this macro can be used _ONLY_
+      for literal strings, f.e.:  TEXT( "Hello World" ) but not for
+      variables, f.e.: TEXT( szText ) is wrong and breaks Unicode builds.
+    ! replaced some LP[C]TSTR with LP[C]STR - please remember that pointer
+      casting does not make any conversions with string body. When you
+      cast (char *) or (BYTE *) strings to LP[C]TSTR you only hide warnings
+      in Unicode builds so it's only harder to fix the code and make it
+      Unicode ready.
+    * cleaned some warnings
 
 2007-11-13 18:40 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/gtk/Makefile.scr

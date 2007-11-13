@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.56 2007-10-02 00:22:49 lculik Exp $
+ * $Id: control.c,v 1.57 2007-11-13 19:20:39 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1378,7 +1378,7 @@ HB_FUNC(TOOLBARADDBUTTONS)
 
       pTemp = hb_arrayGetItemPtr( pArray , ulCount + 1 );
       ulID=hb_arrayGetNI( pTemp, 1 );
-      tb[ ulCount ].iBitmap   = ulID > 0 ? ulCount : -1;
+      tb[ ulCount ].iBitmap   = ulID > 0 ? ( int ) ulCount : -1;
       tb[ ulCount ].idCommand = hb_arrayGetNI( pTemp, 2 );
       tb[ ulCount ].fsState   = hb_arrayGetNI( pTemp, 3 );
       tb[ ulCount ].fsStyle   = hb_arrayGetNI( pTemp, 4 );
@@ -1538,7 +1538,9 @@ HB_FUNC(REBARSETIMAGELIST)
 {
    HWND hWnd =  ( HWND ) hb_parnl( 1 );
    HIMAGELIST p = ISNUM( 2 ) ? ( HIMAGELIST ) hb_parnl( 2 ) : NULL;
-   REBARINFO rbi = { 0 };
+   REBARINFO rbi;
+
+   memset( &rbi, '\0', sizeof( rbi ) );
    rbi.cbSize = sizeof( REBARINFO );
    rbi.fMask = ISNUM( 2 ) ? RBIM_IMAGELIST : 0 ;
    rbi.himl =ISNUM( 2 ) ? (HIMAGELIST) p : (HIMAGELIST) NULL;
@@ -1570,7 +1572,10 @@ BOOL _AddBar(HWND pParent, HWND pBar, REBARBANDINFO* pRBBI)
 
 BOOL AddBar(HWND pParent,HWND pBar, LPCTSTR pszText, HBITMAP pbmp, DWORD dwStyle)
 {
-    REBARBANDINFO rbBand = { 0 };
+    REBARBANDINFO rbBand;
+
+    memset( &rbBand, '\0', sizeof( rbBand ) );
+
     rbBand.fMask = RBBIM_STYLE;
     rbBand.fStyle = dwStyle;
     if (pszText != NULL)
@@ -1588,7 +1593,8 @@ BOOL AddBar(HWND pParent,HWND pBar, LPCTSTR pszText, HBITMAP pbmp, DWORD dwStyle
 
 BOOL AddBar1(HWND pParent,HWND pBar, COLORREF clrFore, COLORREF clrBack, LPCTSTR pszText, DWORD dwStyle)
 {
-    REBARBANDINFO rbBand = { 0 };
+    REBARBANDINFO rbBand;
+    memset( &rbBand, '\0', sizeof( rbBand ) );
     rbBand.fMask = RBBIM_STYLE | RBBIM_COLORS;
     rbBand.fStyle = dwStyle;
     rbBand.clrFore = clrFore;

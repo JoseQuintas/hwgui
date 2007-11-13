@@ -1,6 +1,11 @@
-#include "windows.h"
-#include "commctrl.h"
+#define _WIN32_WINNT 0x0400
+#define _WIN32_IE    0x0400
+
+#include <windows.h>
+#include <commctrl.h>
+
 #include "hbapi.h"
+
 HB_FUNC( PAGERSETCHILD )
 {
     HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;

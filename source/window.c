@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.57 2007-10-02 00:22:49 lculik Exp $
+ * $Id: window.c,v 1.58 2007-11-13 19:20:41 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -11,6 +11,7 @@
 #define HB_OS_WIN_32_USED
 
 #define _WIN32_WINNT 0x0400
+#define _WIN32_IE    0x0400
 #define OEMRESOURCE
 #include <windows.h>
 #include <commctrl.h>
@@ -98,7 +99,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
         return;
    }
 
-   hWnd = CreateWindowEx( ExStyle , szAppName ,TEXT ( cTitle ),
+   hWnd = CreateWindowEx( ExStyle , szAppName , cTitle,
    WS_OVERLAPPEDWINDOW  | nStyle ,
    x,y,
    (!width)? (LONG)CW_USEDEFAULT:width,
@@ -261,7 +262,7 @@ HB_FUNC( HWG_INITCHILDWINDOW )
 
    ExStyle = 0;
 
-   hWnd = CreateWindowEx( ExStyle , szAppName ,TEXT ( cTitle ),
+   hWnd = CreateWindowEx( ExStyle, szAppName, cTitle,
               WS_OVERLAPPEDWINDOW  | nStyle , x,y,
               (!width)? (LONG)CW_USEDEFAULT:width,
               (!height)? (LONG)CW_USEDEFAULT:height,
@@ -351,7 +352,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
    }
 
    // Create frame window
-   hWnd = CreateWindow ( szAppName, TEXT ( cTitle ),
+   hWnd = CreateWindow ( szAppName, cTitle,
                        WS_OVERLAPPEDWINDOW,
                        x,y,
                        (!width)? (LONG)CW_USEDEFAULT:width,
@@ -442,8 +443,8 @@ HB_FUNC( HWG_CREATEMDICHILDWINDOW )
    }
     
     hWnd = CreateMDIWindow(
-       (LPTSTR) szChild,	// pointer to registered child class name 
-       (LPTSTR) cTitle,		// pointer to window name 
+       (LPSTR) szChild,	      // pointer to registered child class name 
+       (LPSTR) cTitle,		// pointer to window name 
        style,			// window style 
        x,	// horizontal position of window 
        y,	// vertical position of window 

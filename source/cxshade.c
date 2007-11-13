@@ -1,5 +1,5 @@
 /*
- * $Id: cxshade.c,v 1.3 2007-04-18 09:16:34 alexstrickland Exp $
+ * $Id: cxshade.c,v 1.4 2007-11-13 19:20:40 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level functions for special drawing effects
@@ -246,7 +246,7 @@ void cxdib_SetPaletteIndex( PCXDIB pdib, BYTE idx, BYTE r, BYTE g, BYTE b )
    if( (pdib->hDib) && (pdib->m_nColors) )
    {
       BYTE* iDst = (BYTE*)(pdib->hDib) + sizeof(BITMAPINFOHEADER);
-      if( (idx >= 0 ) && ( idx < pdib->m_nColors ) )
+      if( idx < pdib->m_nColors )
       {
          long ldx = idx*sizeof(RGBQUAD);
          iDst[ldx++] = (BYTE) b;

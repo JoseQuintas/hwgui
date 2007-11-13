@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.12 2007-05-08 10:40:05 alkresin Exp $
+ * $Id: hcheck.prg,v 1.13 2007-11-13 10:32:45 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -147,7 +147,7 @@ Local res
    IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
       IF !res
-         GetSkip( oCtrl:oParent,oCtrl:handle,1 )
+         GetSkip( oCtrl:oParent,oCtrl:handle )
       ENDIF
       Return res
    ENDIF

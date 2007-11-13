@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.39 2007-04-18 09:16:34 alexstrickland Exp $
+ * $Id: hdialog.prg,v 1.40 2007-11-13 10:32:46 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -65,6 +65,7 @@ CLASS HDialog INHERIT HCustomWindow
    DATA xResourceID
    DATA oEmbedded
    DATA bOnActivate
+   DATA nSkip INIT 1
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
                   bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc )
@@ -314,7 +315,8 @@ Local aMenu, i, hCtrl
             ENDIF
          ENDIF
          IF oDlg:lClipper
-            IF !GetSkip( oDlg,hCtrl,1 )
+            oDlg:nSkip := 1
+            IF !GetSkip( oDlg,hCtrl )
                IF oDlg:lExitOnEnter
                   oDlg:lResult := .T.
                   EndDialog( oDlg:handle )

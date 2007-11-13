@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.684 2007-11-10 18:18:19 lculik Exp $
+ * $Id: Changelog,v 1.685 2007-11-13 10:32:44 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-11-13 11:30 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+	* source/hcombo.prg
+	* source/hdialog.prg
+	* source/hedit.prg
+	* source/hcheck.prg
+	  ! update to correct the Shift-Tab and CursorUp navigation in dialog
+	    controls (if the previous control have a when block returning false
+		the focus was returning to the current get. now correctly goes to
+		the first previous control that can gain focus)
+	
 2007-11-10 16:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * utils/designer/*.prg
     ! updated to include grid support

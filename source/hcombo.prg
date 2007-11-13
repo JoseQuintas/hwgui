@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.35 2007-11-10 17:44:31 mlacecilia Exp $
+ * $Id: hcombo.prg,v 1.36 2007-11-13 10:32:46 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -307,7 +307,7 @@ Local res
    IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
       IF !res
-         GetSkip( oCtrl:oParent,oCtrl:handle,1 )
+         GetSkip( oCtrl:oParent,oCtrl:handle )
       ENDIF
       Return res
    ENDIF

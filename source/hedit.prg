@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.60 2007-11-10 17:44:33 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.61 2007-11-13 10:32:46 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -38,6 +38,7 @@ CLASS HEdit INHERIT HControl
    DATA lChanged     INIT .F.
    DATA lMaxLength   INIT Nil
    DATA nColorinFocus INIT vcolor('CCFFFF')
+   DATA nSkip        INIT 1
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor,cPicture,lNoBorder, lMaxLength )
@@ -134,23 +135,22 @@ Local nexthandle
             ELSEIF wParam == VK_TAB
                Return 0
             ENDIF
-            // ------- Change by NightWalker - Check HiBit -------
-            // If (wParam <129).or.!Empty( ::cPicFunc ).OR.!Empty( ::cPicMask )
             IF !IsCtrlShift( ,.F. )
                Return GetApplyKey( Self,Chr(wParam) )
             ENDIF
-            // Endif
 
          ELSEIF msg == WM_KEYDOWN
 
             IF wParam == 40     // KeyDown
                IF !IsCtrlShift()
-                  GetSkip( oParent,::handle,1 )
+                  ParentGetDialog(self):nSkip := 1
+                  GetSkip( oParent,::handle )
                   Return 0
                ENDIF
             ELSEIF wParam == 38     // KeyUp
                IF !IsCtrlShift()
-                  GetSkip( oParent,::handle,-1 )
+                  ParentGetDialog(self):nSkip := -1
+                  GetSkip( oParent,::handle )
                   Return 0
                ENDIF
             ELSEIF wParam == 39     // KeyRight
@@ -180,28 +180,23 @@ Local nexthandle
                DeleteChar( Self,.F. )
                Return 0
             ELSEIF wParam == VK_TAB     // Tab
-/*               IF Asc( Substr( GetKeyboardState(), VK_SHIFT+1, 1 ) ) >= 128
-                  GetSkip( oParent,::handle,-1 )
-               ELSE
-                  GetSkip( oParent,::handle,1 )
-               ENDIF
-               Return 0   */
-*****   Paulo Flecha
                IF Asc( Substr( GetKeyboardState(), VK_SHIFT+1, 1 ) ) >= 128
-                  IF !GetSkip( oParent,::handle,-1 ) // First Get
+                  ParentGetDialog(self):nSkip := -1
+                  IF !GetSkip( oParent,::handle ) // First Get
                      nextHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .t. )
                      PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nextHandle , 1)
                   ENDIF
                ELSE
-                  IF !GetSkip( oParent,::handle,1 ) // Last Get
+                  ::nSkip := 1
+                  IF !GetSkip( oParent,::handle ) // Last Get
                      nextHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .f. )
                      PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nextHandle , 1 )
                   ENDIF
                ENDIF
                Return 0
-***     End
             ELSEIF wParam == VK_RETURN  // Enter
-               GetSkip( oParent,::handle,1,.T. )
+               ParentGetDialog(self):nSkip := 1
+               GetSkip( oParent,::handle,.T. )
                Return 0
             ENDIF
 
@@ -250,12 +245,15 @@ Local nexthandle
       IF msg == WM_KEYDOWN
         IF wParam == VK_TAB     // Tab
            IF Asc( Substr( GetKeyboardState(), VK_SHIFT+1, 1 ) ) >= 128
-              IF !GetSkip( oParent,::handle,-1 ) // First Get
+              ParentGetDialog(self):nSkip := -1
+              IF !GetSkip( oParent,::handle ) // First Get
                  nextHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .t. )
                  PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nextHandle , 1)
+                 ParentGetDialog(self):nSkip := 1
               ENDIF
            ELSE
-              IF !GetSkip( oParent,::handle,1 ) // Last Get
+              ParentGetDialog(self):nSkip := 1
+              IF !GetSkip( oParent,::handle ) // Last Get
                  nextHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .f. )
                  PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nextHandle , 1 )
               ENDIF
@@ -726,7 +724,7 @@ Local res
    IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
       IF !res
-         GetSkip( oCtrl:oParent,oCtrl:handle,1 )
+         GetSkip( oCtrl:oParent,oCtrl:handle )
       ENDIF
       Return res
    ENDIF
@@ -921,7 +919,7 @@ Local i, j, aLen1 := Len( oDlg:aControls ), aLen2
    NEXT
 Return Nil
 
-Function GetSkip( oParent,hCtrl,nSkip,lClipper )
+Function GetSkip( oParent,hCtrl,lClipper )
 Local i, aLen
 
    DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
@@ -934,24 +932,24 @@ Local i, aLen
       i := 0
    ENDIF
    IF hCtrl == Nil .OR. ( i := Ascan( oParent:Getlist,{|o|o:handle==hCtrl} ) ) != 0
-      IF nSkip > 0
+      IF oParent:nSkip > 0
          aLen := Len( oParent:Getlist )
-         DO WHILE ( i := i+nSkip ) <= aLen
+         DO WHILE ( i := i+oParent:nSkip ) <= aLen
             IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
                SetFocus( oParent:Getlist[i]:handle )
                Return .T.
             ENDIF
          ENDDO
       ELSE
-         DO WHILE ( i := i+nSkip ) > 0
+         DO WHILE ( i := i+oParent:nSkip ) > 0
             IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle )
                SetFocus( oParent:Getlist[i]:handle )
+               oParent:nSkip := 1
                Return .T.
             ENDIF
          ENDDO
       ENDIF
    ENDIF
-
 Return .F.
 
 Function SetGetUpdated( o )
@@ -964,15 +962,7 @@ Function SetGetUpdated( o )
 Return Nil
 
 Function ParentGetDialog( o )
-   DO WHILE .T.
-      o := o:oParent
-      IF o == Nil
-         EXIT
-      ELSE
-         IF __ObjHasMsg( o,"GETLIST" )
-            EXIT
-         ENDIF
-      ENDIF
+   DO WHILE ( o := o:oParent ) != Nil .and. ! __ObjHasMsg( o,"GETLIST" )
    ENDDO
 Return o
 

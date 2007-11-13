@@ -11,7 +11,7 @@ C_SOURCES=\
 	menu_c.c \
 	message.c \
 	misc.c \
-    pager.c \
+	pager.c \
 	registry.c \
 	shellapi.c \
 	media_c.c \
@@ -59,8 +59,8 @@ PRG_SOURCES=\
 	hnice.prg \
 	hgrid.prg \
 	hrect.prg \
-    hpager.prg \
-    hrebar.c \
+	hpager.prg \
+	hrebar.c \
 	htrackbr.prg \
 	hmonthc.prg \
 	hipedit.prg	\

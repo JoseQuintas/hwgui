@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.685 2007-11-13 10:32:44 mlacecilia Exp $
+ * $Id: Changelog,v 1.686 2007-11-13 16:50:52 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,30 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-13 17:50 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  + hwgui/make_gtk.sh
+  + hwgui/gtk/Makefile.scr
+    + added new makefile and build script for GTK HWGUI builds.
+      It can be used on any platforms which support [x]Harbour [x]hb*
+      scripts to create Harbour or xHarbour GTK based HWGUI libraries
+      If you have installed Harbour or xHarbour with [x]hb* scripts
+      then you do not need to set any environment variables or PATH
+      but simply run ./make_gtk.sh
+      It will automatically detect if Harbour or xHarbour is installed.
+      When both are installed (Harbour and xHarbour) then by default
+      Harbour libraries are created. In such case you can force xHarbour
+      by passing -xhb as 1-st parameter to ./make_gtk.sh or setting
+      HB_PREF=xhb environment variable.
+
+  * hwgui/gtk/samples/dbview.prg
+    ! fixed declaration order - MEMVAR should be before PRIVATE
+
+  * hwgui/source/Makefile
+  * hwgui/source/procmisc/Makefile
+  * hwgui/source/qhtm/Makefile
+  * hwgui/source/xml/Makefile
+    * minor formatting
 
 2007-11-13 11:30 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
 	* source/hcombo.prg

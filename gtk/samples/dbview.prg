@@ -1,5 +1,5 @@
 /*
- *$Id: dbview.prg,v 1.6 2006-09-13 15:47:20 alkresin Exp $
+ *$Id: dbview.prg,v 1.7 2007-11-13 16:50:52 druzus Exp $
  *
  * HWGUI - Harbour Win32 and Linux (GTK) GUI library
  * dbview.prg - dbf browsing sample
@@ -27,8 +27,8 @@ Static dbv_cLocate, dbv_nRec, dbv_cSeek
 
 Function Main
 Local oWndMain, oPanel
-Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
 Memvar oBrw, oFont
+Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
 
    RDDSETDEFAULT( "DBFCDX" )
    

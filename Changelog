@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.687 2007-11-13 16:58:53 druzus Exp $
+ * $Id: Changelog,v 1.688 2007-11-13 17:40:45 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,32 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-13 18:40 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/gtk/Makefile.scr
+    ! do not use -kM switch in xHarbour builds - this is not supported
+      by normal xHarbour SF CVS version
+
+  * hwgui/gtk/drawwidg.prg
+    * removed some unused variables
+      QUESTION: some code is covered by
+         #ifdef __XHARBOUR__
+      f.e. in this file it's used for FOR EACH / NEXT
+      As I can see someone replaced all FOR/NEXT with FOR EACH/NEXT
+      also in places where it has to cause slowness - nothing more
+      then mechanical update. Now Harbour supports FOR EACH / NEXT
+      and some other constructions. If you agree then I suggest to
+      remove from code (also from .c code if possible) all
+         #ifdef __XHARBOUR__
+      by choosing some optimal for both compilers constructions.
+      In some places original or modified FOR/NEXT should be used
+      in some others FOR EACH/NEXT. Anyhow in most of cases the speed
+      difference is such small in final application (probably I lost
+      more time to write this text then total overhead from all
+      computers running HWGUI application ;-)) that I do not see any
+      reason to keep code in two versions what forces updating it
+      twice and can be source of bugs - developers usually test only
+      the code for one compiler used by them.
 
 2007-11-13 17:58 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/gtk/window.c

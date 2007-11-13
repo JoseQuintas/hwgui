@@ -1,4 +1,4 @@
-# $Id: Makefile.scr,v 1.1 2007-11-13 16:50:52 druzus Exp $
+# $Id: Makefile.scr,v 1.2 2007-11-13 17:40:45 druzus Exp $
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 # by default build Harbour platform native binaries
@@ -15,6 +15,10 @@ PROCMISC_DIR=../source/procmisc
 XML_DIR=../source/xml
 
 CFLAGS = -W -Wall -O3 -DHWG_USE_POINTER_ITEM $(C_USR)
+PRGFLAGS = -q -n -w -es2 $(PRG_USR)
+ifeq ($(findstring xhb,$(HB_PREF)),)
+PRGFLAGS += -kM
+endif
 
 vpath %.a $(LIB_DIR)
 vpath %.o $(OBJ_DIR)
@@ -22,7 +26,7 @@ vpath %.c $(PROCMISC_DIR):$(XML_DIR)
 vpath %.prg $(PROCMISC_DIR):$(XML_DIR)
 
 $(OBJ_DIR)/%.o : %.prg
-	$(HB_PREF)cmp -q -n -w -es2 -kM -I$(INC_DIR) -o$@ $<
+	$(HB_PREF)cmp $(PRGFLAGS) -I$(INC_DIR) -o$@ $<
 
 $(OBJ_DIR)/%.o : %.c
 	$(HB_PREF)cc $(CFLAGS) -c -I$(INC_DIR) `pkg-config --cflags libgnomeprint-2.2` `pkg-config --cflags gtk+-2.0` -o $@ $<

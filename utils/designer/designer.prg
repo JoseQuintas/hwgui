@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.29 2007-11-10 18:09:53 lculik Exp $
+ * $Id: designer.prg,v 1.30 2007-11-13 20:18:30 lculik Exp $
  *
  * Designer
  * Main file
@@ -124,6 +124,9 @@ Public crossCursor, vertCursor, horzCursor
       ENDMENU
       MENU TITLE "&View"
          MENUITEM "&Object Inspector" ID 1010 ACTION Iif( oDesigner:oDlgInsp==Nil,InspOpen(),oDesigner:oDlgInsp:Close() )
+	 SEPARATOR
+         MENUITEM "&Show Grid" ID 1050 ACTION CheckMenuItem(oDesigner:oMainWnd:handle,1050,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1050))
+         MENUITEM "S&nap to Grid" ID 1051 ACTION CheckMenuItem(oDesigner:oMainWnd:handle,1051,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1051))
          SEPARATOR
          MENUITEM "&Preview"  ACTION DoPreview()
       ENDMENU
@@ -243,6 +246,8 @@ CLASS HDesigner
    DATA lSingleForm  INIT .F.
    DATA cResForm
    DATA nPixelGrid   INIT 10
+   DATA lShowGrid    INIT .F.
+   DATA lSnapToGrid  INIT .F.
 
    METHOD New   INLINE Self
 ENDCLASS

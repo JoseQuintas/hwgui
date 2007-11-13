@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.39 2007-11-10 18:09:55 lculik Exp $
+ * $Id: hformgen.prg,v 1.40 2007-11-13 20:18:30 lculik Exp $
  *
  * Designer
  * HFormGen class
@@ -882,19 +882,22 @@ Memvar oDesigner
                      oCtrl:nLeft+oCtrl:nWidth, oCtrl:nTop+oCtrl:nHeight )
 	
       ENDIF
-      i := 0
-      aCoors := GetClientRect( oDlg:handle )
-      n1cm := oDesigner:nPixelGrid
-      x1 := n1cm
-      DO WHILE x1 < (aCoors[3]-aCoors[1])
-        y1 := n1cm
-        DO WHILE y1 < (aCoors[4]-aCoors[2])
-         DrawLine( hDC,x1,y1,x1+1,y1+1 )
-	 y1 += n1cm 
-        ENDDO
-        x1 += n1cm
-      ENDDO
 
+      oDesigner:addItem := Nil
+      IF IsCheckedMenuItem( oDesigner:oMainWnd:handle,1050 )
+        i := 0
+        aCoors := GetClientRect( oDlg:handle )
+        n1cm := oDesigner:nPixelGrid
+        x1 := n1cm
+        DO WHILE x1 < (aCoors[3]-aCoors[1])
+          y1 := n1cm
+          DO WHILE y1 < (aCoors[4]-aCoors[2])
+            DrawLine( hDC,x1,y1,x1+1,y1+1 )
+	    y1 += n1cm 
+          ENDDO
+          x1 += n1cm
+        ENDDO
+      ENDIF
       
    ENDIF
 
@@ -1066,6 +1069,7 @@ Memvar oDesigner, crossCursor, horzCursor, VertCursor
             ELSEIF resizeDirection == 2 .OR. resizeDirection == 4
                Hwg_SetCursor( vertCursor )
             ENDIF
+            SetvBDown( nil,xPos - oCtrl:nLeft , yPos - oCtrl:nTop,0 )
          ENDIF
       ENDIF
    ENDIF

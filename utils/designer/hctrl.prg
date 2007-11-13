@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.20 2007-11-10 18:09:54 lculik Exp $
+ * $Id: hctrl.prg,v 1.21 2007-11-13 20:18:30 lculik Exp $
  *
  * Designer
  * HControlGen class
@@ -19,6 +19,7 @@
 #define TCM_GETITEMCOUNT        4868
 
 Static aBDown := { Nil,0,0,.F. }
+Static vBDown := { Nil,0,0,.F. }
 Static oPenSel
 
 //- HControl
@@ -269,7 +270,7 @@ Local nLen := Len( cName )
 Return cName+Ltrim(Str(i))
 
 Function CtrlMove( oCtrl,xPos,yPos,lMouse,lChild )
-Local i, dx, dy
+Local i, dx, dy , vdx , vdy ,mdx , mdy
 Memvar oDesigner
 
    IF lChild == Nil .OR. !lChild
@@ -288,10 +289,44 @@ Memvar oDesigner
       dy := yPos
    ENDIF
 
+   // writelog( "V0=("+alltrim(str(oCtrl:nLeft))+","+alltrim(str(oCtrl:nTop))+") P1=("+alltrim(str(xPos,5))+","+alltrim(str(yPos,5)
+)+ ") B1=("+alltrim(str(aBDown[2]))+","+alltrim(str(aBDown[3]))+")  d=("+alltrim(str(dx,3))+","+alltrim(str(dy,3))+") " )
+   // writelog( "vBDown=("+alltrim(str(vBDown[2]))+","+alltrim(str(vBDown[3]))+") " )
+
    IF dx != 0 .OR. dy != 0
       IF !lChild .AND. lMouse .AND. Abs( xPos - aBDown[BDOWN_XPOS] ) < 3 .AND. Abs( yPos - aBDown[BDOWN_YPOS] ) < 3
          Return .F.
       ENDIF
+
+      IF IsCheckedMenuItem( oDesigner:oMainWnd:handle,1051 )
+        IF !lChild .AND. lMouse
+          vdx := xPos - vBDown[BDOWN_XPOS]
+          vdy := yPos - vBDown[BDOWN_YPOS]
+          mdx := vdx % oDesigner:nPixelGrid
+          mdy := vdy % oDesigner:nPixelGrid
+
+          if abs( int( ( ( mdx ) / oDesigner:nPixelGrid) * 10 ) ) <= 4
+            mdx := mdx
+          else
+            mdx := (mdx - oDesigner:nPixelGrid )
+          endif
+
+          // writelog( "coordinate normalizzate=" +"   N= " +str(dx)+"   mdx="+str(mdx) )
+
+          dx = ( vdx - oCtrl:nLeft ) - mdx
+
+          // writelog( "Output:   dx= " +str(dx)+"   NLeft="+str(oCtrl:nLeft+dx)+ "  aBBDown2="+ alltrim(str(mdy)) )
+
+          if abs( int( ( ( mdy ) / oDesigner:nPixelGrid) * 10 ) ) <= 4
+            mdy := mdy
+          else
+            mdy := (mdy - oDesigner:nPixelGrid )
+          endif
+
+          dy = ( vdy - oCtrl:nTop ) - mdy
+        ENDIF
+      ENDIF
+
       InvalidateRect( oCtrl:oParent:handle, 1, ;
                oCtrl:nLeft-4, oCtrl:nTop-4, ;
                oCtrl:nLeft+oCtrl:nWidth+3,  ;
@@ -302,8 +337,12 @@ Memvar oDesigner
       IF oCtrl:nTop + dy < 0
          dy := - oCtrl:nTop
       ENDIF
-      oCtrl:SetCoor( "Left",oCtrl:nLeft := oCtrl:nLeft + dx )
-      oCtrl:SetCoor( "Top",oCtrl:nTop := oCtrl:nTop + dy )
+
+      oCtrl:nLeft := oCtrl:nLeft + dx 
+      oCtrl:nTop := oCtrl:nTop + dy 
+      oCtrl:SetCoor( "Left",oCtrl:nLeft)
+      oCtrl:SetCoor( "Top",oCtrl:nTop)
+
       IF oDesigner:lReport
          oCtrl:SetCoor( "Right",oCtrl:nLeft+oCtrl:nWidth-1 )
          oCtrl:SetCoor( "Bottom",oCtrl:nTop+oCtrl:nHeight-1 )
@@ -406,6 +445,16 @@ Return Nil
 
 Function GetBDown
 Return aBDown
+
+Function SetvBDown( oCtrl,xPos,yPos,nBorder )
+   vBDown[ BDOWN_OCTRL ] := nil
+   vBDown[ BDOWN_XPOS ]  := xPos
+   vBDown[ BDOWN_YPOS ]  := yPos
+   vBDown[ BDOWN_NBORDER ] := 0
+Return Nil
+
+Function GetvBDown
+Return vBDown
 
 Function SetCtrlSelected( oDlg,oCtrl,n )
 Local oFrm := Iif( oDlg:oParent:Classname()=="HPANEL",oDlg:oParent:oParent:oParent,oDlg:oParent ), handle, i

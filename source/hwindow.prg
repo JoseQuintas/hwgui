@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.49 2007-11-10 17:44:51 mlacecilia Exp $
+ *$Id: hwindow.prg,v 1.50 2007-11-14 00:43:27 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -66,6 +66,7 @@ CLASS HWindow INHERIT HCustomWindow
 
    DATA aOffset
    DATA oEmbedded
+   DATA nSkip INIT 1
 
    METHOD New( Icon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
           bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,cHelp,;

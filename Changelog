@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.691 2007-11-13 22:05:17 druzus Exp $
+ * $Id: Changelog,v 1.692 2007-11-14 00:43:25 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-11-14 01:45 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
+    * source/hwindow
+	  ! added the ::nSkip property also for windows other than dialog
+        (thanks to Gilberto Silverio for the alert)	  
+	* source/hedit.prg
+	  ! changed DeleteChar() to erase the active selection and not only a
+	    single char (some other work is needed in case of picture with not
+		editable patterns)
+      *	changed	the property name lMaxLenght to nMaxLenght
+	  ! forced the lenght of edit string to nMaxLenght value when the
+	    property is setted
+	  
 2007-11-13 23:05 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/misc.c
     ! commented TraceLog() call

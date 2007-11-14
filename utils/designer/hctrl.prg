@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.21 2007-11-13 20:18:30 lculik Exp $
+ * $Id: hctrl.prg,v 1.22 2007-11-14 19:51:18 richardroesnadi Exp $
  *
  * Designer
  * HControlGen class
@@ -290,7 +290,7 @@ Memvar oDesigner
    ENDIF
 
    // writelog( "V0=("+alltrim(str(oCtrl:nLeft))+","+alltrim(str(oCtrl:nTop))+") P1=("+alltrim(str(xPos,5))+","+alltrim(str(yPos,5)
-)+ ") B1=("+alltrim(str(aBDown[2]))+","+alltrim(str(aBDown[3]))+")  d=("+alltrim(str(dx,3))+","+alltrim(str(dy,3))+") " )
+   // )+ ") B1=("+alltrim(str(aBDown[2]))+","+alltrim(str(aBDown[3]))+")  d=("+alltrim(str(dx,3))+","+alltrim(str(dy,3))+") " )
    // writelog( "vBDown=("+alltrim(str(vBDown[2]))+","+alltrim(str(vBDown[3]))+") " )
 
    IF dx != 0 .OR. dy != 0
@@ -338,8 +338,8 @@ Memvar oDesigner
          dy := - oCtrl:nTop
       ENDIF
 
-      oCtrl:nLeft := oCtrl:nLeft + dx 
-      oCtrl:nTop := oCtrl:nTop + dy 
+      oCtrl:nLeft := oCtrl:nLeft + dx
+      oCtrl:nTop := oCtrl:nTop + dy
       oCtrl:SetCoor( "Left",oCtrl:nLeft)
       oCtrl:SetCoor( "Top",oCtrl:nTop)
 

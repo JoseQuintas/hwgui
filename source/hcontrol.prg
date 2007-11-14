@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.43 2007-11-10 17:44:32 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.44 2007-11-14 06:55:49 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -589,7 +589,7 @@ LOCAL captionRectHeight
 LOCAL centerRectWidth
 LOCAL centerRectHeight
 LOCAL uAlign
-Tracelog("Filho" , valtoprg(itemRect) , " pai = " ,valtoprg({DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }))
+/*Tracelog("Filho" , valtoprg(itemRect) , " pai = " ,valtoprg({DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }))*/
 
    IF ( ::m_bFirstTime )
 

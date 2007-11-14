@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.692 2007-11-14 00:43:25 mlacecilia Exp $
+ * $Id: Changelog,v 1.693 2007-11-14 06:55:48 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,18 +8,22 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-11-14 08:45 UTC+0200 Alexey Myronenko <atzct <at> obukhov.kiev.ua>
+  * hwgui/source/hcontrol.prg
+    ! commented TraceLog() call
+
 2007-11-14 01:45 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
     * source/hwindow
-	  ! added the ::nSkip property also for windows other than dialog
-        (thanks to Gilberto Silverio for the alert)	  
-	* source/hedit.prg
-	  ! changed DeleteChar() to erase the active selection and not only a
-	    single char (some other work is needed in case of picture with not
-		editable patterns)
-      *	changed	the property name lMaxLenght to nMaxLenght
-	  ! forced the lenght of edit string to nMaxLenght value when the
-	    property is setted
-	  
+      ! added the ::nSkip property also for windows other than dialog
+        (thanks to Gilberto Silverio for the alert)
+    * source/hedit.prg
+      ! changed DeleteChar() to erase the active selection and not only a
+        single char (some other work is needed in case of picture with not
+        editable patterns)
+      * changed the property name lMaxLenght to nMaxLenght
+      ! forced the lenght of edit string to nMaxLenght value when the
+        property is setted
+
 2007-11-13 23:05 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/misc.c
     ! commented TraceLog() call
@@ -136,50 +140,50 @@
     * minor formatting
 
 2007-11-13 11:30 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
-	* source/hcombo.prg
-	* source/hdialog.prg
-	* source/hedit.prg
-	* source/hcheck.prg
-	  ! update to correct the Shift-Tab and CursorUp navigation in dialog
-	    controls (if the previous control have a when block returning false
-		the focus was returning to the current get. now correctly goes to
-		the first previous control that can gain focus)
-	
+    * source/hcombo.prg
+    * source/hdialog.prg
+    * source/hedit.prg
+    * source/hcheck.prg
+      ! update to correct the Shift-Tab and CursorUp navigation in dialog
+        controls (if the previous control have a when block returning false
+        the focus was returning to the current get. now correctly goes to
+        the first previous control that can gain focus)
+
 2007-11-10 16:10 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * utils/designer/*.prg
     ! updated to include grid support
 
 2007-11-10 18:45 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
-	* source/barcode.prg
-	* source/drawwidg.prg
-	* source/errorsys.prg
-	* source/guimain.prg
-	* source/hbrowse.prg
-	* source/hcombo.prg
-	* source/hcontrol.prg
-	* source/hedit.prg
-	* source/hfreeimg.prg
-	* source/hfrmtmpl.prg
-	* source/hgrid.prg
-	* source/hgridex.prg
-	* source/hhyper.prg
-	* source/hipedit.prg
-	* source/hnice.prg
-	* source/hownbtn.prg
-	* source/hpager.prg
-	* source/hpanel.prg
-	* source/hprinter.prg
-	* source/hrebar.prg
-	* source/hrect.prg
-	* source/hshbtn.prg
-	* source/htool.prg
-	* source/htree.prg
-	* source/hupdown.prg
-	* source/menu.prg
-	* source/printdos.prg
-	* source/repexec.prg
-	* source/richtext.prg
-	  ! purged a lot of unused local variables 
+    * source/barcode.prg
+    * source/drawwidg.prg
+    * source/errorsys.prg
+    * source/guimain.prg
+    * source/hbrowse.prg
+    * source/hcombo.prg
+    * source/hcontrol.prg
+    * source/hedit.prg
+    * source/hfreeimg.prg
+    * source/hfrmtmpl.prg
+    * source/hgrid.prg
+    * source/hgridex.prg
+    * source/hhyper.prg
+    * source/hipedit.prg
+    * source/hnice.prg
+    * source/hownbtn.prg
+    * source/hpager.prg
+    * source/hpanel.prg
+    * source/hprinter.prg
+    * source/hrebar.prg
+    * source/hrect.prg
+    * source/hshbtn.prg
+    * source/htool.prg
+    * source/htree.prg
+    * source/hupdown.prg
+    * source/menu.prg
+    * source/printdos.prg
+    * source/repexec.prg
+    * source/richtext.prg
+      ! purged a lot of unused local variables
 
 2007-11-03 18.00 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
     * include/guilib.ch
@@ -195,16 +199,16 @@
       + hwg_getdefaultPrinter() -> cPrinterName
 
 2007-10-29  03:23 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
-    * utils\designer\EXTMODUL.CH 
-		+Add printer function hwg_*
+    * utils\designer\EXTMODUL.CH
+        +Add printer function hwg_*
     + utils\designer\source\bmp & designer.rc
-		+Add sm_Money.bmp & sm_Notepad.bmp 
+        +Add sm_Money.bmp & sm_Notepad.bmp
     * utils\designer\source\widgets.xml
-		+Add property & event updown control 
-	
+        +Add property & event updown control
+
 2007-10-11 21:45 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
     * source/hownbtn.prg
-      + added the SetFocus, KillFocus and other messages to be handled 
+      + added the SetFocus, KillFocus and other messages to be handled
         in the events of ownerbutton
 
 2007-10-19 12:18 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>

@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.20 2007-11-10 17:44:52 mlacecilia Exp $
+ * $Id: menu.prg,v 1.21 2007-11-17 00:01:58 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -223,8 +223,8 @@ Function Hwg_DefineMenuItem( cItem, nId, bItem, lDisabled, accFlag, accKey, lBit
 Local aMenu, i, oBmp, nFlag
 
    lCheck := Iif( lCheck==Nil, .F., lCheck )
-   lDisabled := Iif( lDisabled==Nil,.T.,!lDisabled )
-   nFlag := Hwg_BitOr( Iif( lCheck,FLAG_CHECK,0 ), Iif( lDisabled,0,FLAG_DISABLED ) )
+   lDisabled := Iif( lDisabled==Nil,.f.,lDisabled )
+   nFlag := Hwg_BitOr( Iif( lCheck,FLAG_CHECK,0 ), Iif( lDisabled,FLAG_DISABLED,0 ) )
 
    aMenu := _aMenuDef
    FOR i := 1 TO _nLevel

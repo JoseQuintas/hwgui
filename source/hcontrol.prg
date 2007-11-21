@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.44 2007-11-14 06:55:49 omm Exp $
+ * $Id: hcontrol.prg,v 1.45 2007-11-21 12:53:15 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -541,6 +541,8 @@ METHOD onEvent( msg, wParam, lParam )
    ELSEIF msg == WM_MOUSELEAVE
       ::CancelHover()
       RETURN 0
+   elseif msg ==WM_GETDLGCODE
+       return ButtonGetDlgCode(lParam)     
    elseif msg ==WM_CHAR
       if wParam == VK_RETURN
          if Valtype(::bClick) =="B"
@@ -911,3 +913,190 @@ exit procedure endtheme()
 ENDTHEMELIB()
 
 
+                        /*
+ 
+CLASS HActiveX FROM HControl 
+ CLASS VAR winclass   INIT "ACTIVEX" READONLY 
+
+DATA oOle INIT nil 
+DATA cProgId INIT "" 
+ 
+METHOD Define 
+ 
+DELEGATE Set TO oOle 
+DELEGATE Get TO oOle 
+ERROR HANDLER __Error 
+ENDCLASS 
+ 
+*-----------------------------------------------------------------------------* 
+METHOD Define( ControlName, ParentForm, x, y, w, h, cProgId, ; 
+NoTabStop, lDisabled ) CLASS HActiveX 
+*-----------------------------------------------------------------------------* 
+LOCAL nStyle, oError, nControlHandle, hAtl, bErrorBlock 
+//
+Nstyle   := Hwg_BitOr( IIF( nStyle == NIL, 0, nStyle ), ;
+                           WS_VISIBLE + WS_CHILD )
+
+   super:New( Parentform, ,nstyle , x, y, w, h, ;
+               , , ,,, , )
+
+ 
+//::SetForm( ControlName, ParentForm ) 
+ 
+::cProgId :=  cProgId 
+ 
+//nStyle := ::InitStyle( ,,, NoTabStop, lDisabled ) 
+ 
+nControlHandle := InitActiveX( ::PARENT:HANDLE, ::cProgId, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle ) 
+hAtl := AtlAxGetDisp( nControlHandle ) 
+ 
+//::Register( nControlHandle, ControlName ) 
+ 
+bErrorBlock := ErrorBlock( { |x| break( x ) } ) 
+#ifdef __XHARBOUR__ 
+TRY 
+::oOle := ToleAuto():New( hAtl ) 
+CATCH 
+MsgInfo( oError:Description ) 
+END 
+#else 
+BEGIN SEQUENCE 
+::oOle := ToleAuto():New( hAtl ) 
+RECOVER USING oError 
+MsgInfo( oError:Description ) 
+END 
+#endif 
+ErrorBlock( bErrorBlock ) 
+ 
+Return Self 
+ 
+ 
+*-----------------------------------------------------------------------------* 
+METHOD __Error( uParam1, uParam2, uParam3, uParam4, uParam5, uParam6, uParam7, uParam8, uParam9 ) CLASS HActiveX 
+*-----------------------------------------------------------------------------* 
+Local cMessage, uRet 
+cMessage := __GetMessage() 
+If PCOUNT() == 0 
+uRet := ::oOle:Set( cMessage ) 
+ElseIf PCOUNT() == 1 
+uRet := ::oOle:Set( cMessage, uParam1 ) 
+ElseIf PCOUNT() == 2 
+uRet := ::oOle:Set( cMessage, uParam1, uParam2 ) 
+ElseIf PCOUNT() == 3 
+uRet := ::oOle:Set( cMessage, uParam1, uParam2, uParam3 ) 
+ElseIf PCOUNT() == 4 
+uRet := ::oOle:Set( cMessage, uParam1, uParam2, uParam3, uParam4 ) 
+ElseIf PCOUNT() == 5 
+uRet := ::oOle:Set( cMessage, uParam1, uParam2, uParam3, uParam4, uParam5 ) 
+ElseIf PCOUNT() == 6 
+uRet := ::oOle:Set( cMessage, uParam1, uParam2, uParam3, uParam4, uParam5, uParam6 ) 
+ElseIf PCOUNT() == 7 
+uRet := ::oOle:Set( cMessage, uParam1, uParam2, uParam3, uParam4, uParam5, uParam6, uParam7 ) 
+ElseIf PCOUNT() == 8 
+uRet := ::oOle:Set( cMessage, uParam1, uParam2, uParam3, uParam4, uParam5, uParam6, uParam7, uParam8 ) 
+Else 
+uRet := ::oOle:Set( cMessage, uParam1, uParam2, uParam3, uParam4, uParam5, uParam6, uParam7, uParam8, uParam9 ) 
+EndIf 
+Return uRet 
+ 
+ 
+//-----------------------------------------------------------------------------------------------*
+ 
+#pragma BEGINDUMP 
+#include <windows.h> 
+#include <commctrl.h> 
+#include <hbapi.h> 
+#include <hbvm.h> 
+#include <hbstack.h> 
+
+ 
+static WNDPROC lpfnOldWndProc = 0; 
+ 
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam ) 
+{ 
+return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc ); 
+} 
+ 
+#ifdef HB_ITEM_NIL 
+#define hb_dynsymSymbol( pDynSym ) ( ( pDynSym )->pSymbol ) 
+#endif 
+ 
+PHB_SYMB s___GetMessage = NULL; 
+ 
+// ----------------------------------------------------------------------------- 
+HB_FUNC_STATIC( TACTIVEX___ERROR ) 
+// ----------------------------------------------------------------------------- 
+{ 
+PHB_ITEM pSelf = hb_stackSelfItem(); 
+PHB_SYMB sMessage; 
+int iPCount; 
+ 
+if( ! s___GetMessage ) 
+{ 
+s___GetMessage = hb_dynsymSymbol( hb_dynsymFind( "__GETMESSAGE" ) ); 
+} 
+ 
+hb_vmPushSymbol( s___GetMessage ); 
+hb_vmPushNil(); 
+hb_vmDo( 0 ); 
+sMessage = hb_dynsymSymbol( hb_dynsymFind( hb_parc( -1 ) ) ); 
+ 
+_OOHG_Send( pSelf, s_oOle ); 
+hb_vmSend( 0 ); 
+ 
+hb_vmPushSymbol( sMessage ); 
+hb_vmPush( hb_param( -1, HB_IT_ANY ) ); 
+for( iPCount = 1; iPCount <= hb_pcount() ; iPCount++ ) 
+{ 
+hb_vmPush( hb_param( iPCount, HB_IT_ANY ) ); 
+} 
+hb_vmSend( hb_pcount() ); 
+} 
+ 
+typedef HRESULT ( WINAPI *LPAtlAxWinInit ) ( void ); 
+typedef HRESULT ( WINAPI *LPAtlAxGetControl ) ( HWND hwnd, IUnknown** unk ); 
+ 
+HMODULE hAtl = NULL; 
+LPAtlAxWinInit AtlAxWinInit; 
+LPAtlAxGetControl AtlAxGetControl; 
+ 
+static void _Ax_Init( void ) 
+{ 
+if( ! hAtl ) 
+{ 
+hAtl = LoadLibrary( "Atl.Dll" ); 
+AtlAxWinInit = ( LPAtlAxWinInit ) GetProcAddress( hAtl, "AtlAxWinInit" ); 
+AtlAxGetControl = ( LPAtlAxGetControl ) GetProcAddress( hAtl, "AtlAxGetControl" ); 
+( AtlAxWinInit )(); 
+} 
+} 
+ 
+HB_FUNC_STATIC( INITACTIVEX ) // hWnd, cProgId -> hActiveXWnd 
+{ 
+HWND hControl; 
+int iStyle, iStyleEx; 
+ 
+iStyle = WS_VISIBLE | WS_CHILD | hb_parni( 7 ); 
+iStyleEx = 0; // | WS_EX_CLIENTEDGE 
+ 
+_Ax_Init(); 
+hControl = CreateWindowEx( iStyleEx, "AtlAxWin", hb_parc( 2 ), iStyle, 
+hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), HWNDparam( 1 ), 0, 0, NULL ); 
+ 
+lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hControl, GWL_WNDPROC, ( LONG ) SubClassFunc ); 
+ 
+hb_retnl( (LONG) hControl ); 
+} 
+ 
+HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp 
+{ 
+IUnknown *pUnk; 
+IDispatch *pDisp; 
+_Ax_Init(); 
+AtlAxGetControl( (HWND) hb_parnl( 1 ), &pUnk ); 
+pUnk->lpVtbl->QueryInterface( pUnk, &IID_IDispatch, ( void ** ) &pDisp ); 
+hb_retnl( (LONG)  pDisp ); 
+} 
+ 
+#pragma ENDDUMP 
+*/

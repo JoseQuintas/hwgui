@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.57 2007-11-13 19:20:39 druzus Exp $
+ * $Id: control.c,v 1.58 2007-11-21 12:53:15 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1699,6 +1699,22 @@ HB_FUNC(CALLWINDOWPROC)
    LPARAM lParam = (LPARAM)hb_parnl(5);
 
    hb_retnl(CallWindowProc( wpProc, hWnd, message, wParam, lParam ) );
+}
+
+
+HB_FUNC(BUTTONGETDLGCODE)
+{
+   LPARAM lParam = (LPARAM)hb_parnl(1);
+   if (lParam)
+   {
+      MSG *pMsg = (MSG *) lParam;
+      if (pMsg && (pMsg->message == WM_KEYDOWN) && (pMsg->wParam == VK_TAB))
+      {
+         // don't interfere with tab processing
+         hb_retnl(0);
+      }
+   }
+   hb_retnl( DLGC_WANTALLKEYS);    // we want all keys except TAB key
 }
 
 

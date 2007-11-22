@@ -22,7 +22,7 @@
  contained in this release of Harbour Minigui.
 
  The exception is that, if you link the Harbour Minigui library with other
- files to produce an executable, this does not by itself cause the resulting 
+ files to produce an executable, this does not by itself cause the resulting
  executable to be covered by the GNU General Public License.
  Your use of that executable is in no way restricted on account of linking the 
  Harbour-Minigui library code into it.
@@ -56,6 +56,10 @@
 #include "hbstack.h"
 #include "hbapiitm.h"
 
+#if defined(__DMC__)
+#include "missing.h"
+#endif
+
 HB_FUNC( INITIPADDRESS )
 {
 	HWND hWnd;
@@ -66,7 +70,6 @@ HB_FUNC( INITIPADDRESS )
 	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
 	i.dwICC = ICC_INTERNET_CLASSES;
 	InitCommonControlsEx(&i);
-
 	hWnd = (HWND) hb_parnl (1);
 
    Style = hb_parni(3) ;

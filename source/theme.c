@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.5 2007-11-13 19:20:40 druzus Exp $
+ * $Id: theme.c,v 1.6 2007-11-22 23:43:55 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -8,10 +8,17 @@
  * www - http://sites.uol.com.br/culikr/
 */
 
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0400
+#endif
 
 #include <windows.h>
 #include <commctrl.h>
 #include <uxtheme.h>
+
+#if defined(__DMC__)
+#include "missing.h"
+#endif
 
 //#include <tmschema.h>
 

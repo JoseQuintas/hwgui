@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.83 2007-11-10 17:44:30 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.84 2007-11-22 23:43:55 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -44,7 +44,7 @@ REQUEST BOF
 
 #define HDM_GETITEMCOUNT    4608
 
-#define DLGC_WANTALLKEYS    0x0004      /* Control wants all keys */
+//#define DLGC_WANTALLKEYS    0x0004      /* Control wants all keys */
 
 static ColSizeCursor := 0
 static arrowCursor := 0

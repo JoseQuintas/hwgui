@@ -6,6 +6,10 @@
 
 #include "hbapi.h"
 
+#if ( defined(__DMC__) || defined(__WATCOMC__) )
+	#include "missing.h"
+#endif
+
 HB_FUNC( PAGERSETCHILD )
 {
     HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;

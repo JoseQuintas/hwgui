@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.58 2007-11-21 12:53:15 lculik Exp $
+ * $Id: control.c,v 1.59 2007-11-22 23:43:55 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -15,7 +15,9 @@
 #define OEMRESOURCE
 #include <windows.h>
 #include <commctrl.h>
-
+#if defined(__DMC__)
+#include "missing.h"
+#endif
 #include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
@@ -1447,8 +1449,10 @@ HB_FUNC(TOOLBAR_SUBMENU)
 
    tpm.cbSize = sizeof(TPMPARAMS);
    tpm.rcExclude = rc;
-   hMenuLoaded = LoadMenu((struct HINSTANCE__ *) g_hinst, MAKEINTRESOURCE(hb_parni(2)));
-   hPopupMenu = GetSubMenu(LoadMenu((struct HINSTANCE__ *) g_hinst,
+   //hMenuLoaded = LoadMenu((struct HINSTANCE__ *) g_hinst, MAKEINTRESOURCE(hb_parni(2)));
+   hMenuLoaded = LoadMenu((HINSTANCE) g_hinst, MAKEINTRESOURCE(hb_parni(2)));
+   //hPopupMenu = GetSubMenu(LoadMenu((struct HINSTANCE__ *) g_hinst,
+   hPopupMenu = GetSubMenu(LoadMenu((HINSTANCE) g_hinst,
       MAKEINTRESOURCE(hb_parni(2))),0);
 
    TrackPopupMenuEx(hPopupMenu,

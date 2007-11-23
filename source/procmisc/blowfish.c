@@ -294,13 +294,13 @@ unsigned long F( BLOWFISH_CTX *ctx, unsigned long x )
    unsigned short a, b, c, d;
    unsigned long  y;
 
-   d = x & 0x00FF;
+   d = (unsigned short) (x & 0x00FF);
    x >>= 8;
-   c = x & 0x00FF;
+   c = (unsigned short) (x & 0x00FF);
    x >>= 8;
-   b = x & 0x00FF;
+   b = (unsigned short) (x & 0x00FF);
    x >>= 8;
-   a = x & 0x00FF;
+   a = (unsigned short) (x & 0x00FF);
    y = ctx->S[0][a] + ctx->S[1][b];
    y = y ^ ctx->S[2][c];
    y = y + ctx->S[3][d];

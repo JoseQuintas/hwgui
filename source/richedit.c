@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.24 2007-11-23 08:30:42 andijahja Exp $
+ * $Id: richedit.c,v 1.25 2007-11-23 11:10:54 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -59,7 +59,7 @@ HB_FUNC( CREATERICHEDIT )
                  hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
                  (HWND) hb_parnl(1),           /* parent window    */ 
                  (HMENU) hb_parni(2),               /* control ID  */
-                 GetModuleHandle( NULL ), 
+                 GetModuleHandle( NULL ),
                  NULL);
 
    if( hb_pcount() > 7 )
@@ -128,7 +128,7 @@ HB_FUNC ( RE_SETCHARFORMAT )
          }
          if( ulLen1 > 8 && hb_itemType( hb_arrayGetItemPtr( pArr1,9 ) ) != HB_IT_NIL )
          {
-            cf.bCharSet = hb_arrayGetNL( pArr1,9 );
+            cf.bCharSet = (BYTE) hb_arrayGetNL( pArr1,9 );
             cf.dwMask |= CFM_CHARSET;
          }
          if( ulLen1 > 9 && hb_itemType( hb_arrayGetItemPtr( pArr1,10 ) ) != HB_IT_NIL )
@@ -189,7 +189,7 @@ HB_FUNC ( RE_SETCHARFORMAT )
       }
       if( !ISNIL( 10 ) )
       {
-         cf.bCharSet = hb_parnl( 10 );
+         cf.bCharSet = (BYTE) hb_parnl( 10 );
          cf.dwMask |= CFM_CHARSET;
       }
       if( !ISNIL( 11 ) )
@@ -258,7 +258,7 @@ HB_FUNC( RE_SETDEFAULT )
 
    if( ISNUM( 8 ) )
    {
-      cf.bCharSet = hb_parnl( 8 );
+      cf.bCharSet = (BYTE) hb_parnl( 8 );
       cf.dwMask |= CFM_CHARSET;
    }
 

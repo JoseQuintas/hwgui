@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.25 2007-04-06 11:16:25 alkresin Exp $
+ * $Id: commond.c,v 1.26 2007-11-23 11:10:54 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -249,19 +249,19 @@ HB_FUNC( PRINTSETUP )
    pd.hwndOwner = GetActiveWindow();
    // pd.hDC = (HDC) NULL; 
    pd.nFromPage = 1; 
-   pd.nToPage = 1; 
+   pd.nToPage = 1;
    // pd.nMinPage = 0; 
    // pd.nMaxPage = 0; 
    pd.nCopies = 1; 
    // pd.hInstance = (HANDLE) NULL; 
    // pd.lCustData = 0L; 
-   // pd.lpfnPrintHook = (LPPRINTHOOKPROC) NULL; 
+   // pd.lpfnPrintHook = (LPPRINTHOOKPROC) NULL;
    // pd.lpfnSetupHook = (LPSETUPHOOKPROC) NULL; 
    // pd.lpPrintTemplateName = (LPSTR) NULL; 
    // pd.lpSetupTemplateName = (LPSTR)  NULL; 
    // pd.hPrintTemplate = (HANDLE) NULL; 
    // pd.hSetupTemplate = (HANDLE) NULL; 
-    
+
    if( PrintDlg(&pd) )
    {
       if( pd.hDevNames )
@@ -278,7 +278,7 @@ HB_FUNC( PRINTSETUP )
       hb_retnl( (LONG) pd.hDC );
    }
    else
-      hb_retnl( 0 );  
+      hb_retnl( 0 );
 }
 
 HB_FUNC( HWG_CHOOSECOLOR )
@@ -366,7 +366,7 @@ HB_FUNC( WRITEPRIVATEPROFILESTRING )
 static far PRINTDLG pd;
 static far BOOL bInit = FALSE;
 static far BOOL bPName = FALSE;
- 
+
 static void StartPrn( void )
 {
   if( ! bInit )
@@ -378,63 +378,68 @@ static void StartPrn( void )
       pd.Flags       = PD_RETURNDEFAULT ;
       pd.nMinPage    = 1;
       pd.nMaxPage    = 65535;
-      if (PrintDlg(&pd)==TRUE) 
+
+      PrintDlg( &pd );
+
+      /*
+      if (PrintDlg(&pd)==TRUE)
       {
-      hb_retl(TRUE);
+         hb_retl(TRUE);
       }
       else
       {
-      hb_retl(FALSE);
-      }    
+         hb_retl(FALSE);
+      }
+      */
    }
 }
 
 HB_FUNC( PRINTPORTNAME )
 {
-  if( ! bPName )
-  {
-   ULONG bRet;
-   LPDEVNAMES lpDevNames;
-    
-   bPName = TRUE;	
-   lpDevNames = (LPDEVNAMES) GlobalLock( pd.hDevNames );
-   bRet = (ULONG) ( ( LPSTR ) lpDevNames + lpDevNames->wOutputOffset );
-   GlobalUnlock( pd.hDevNames );
-   hb_retc((LPSTR) bRet);
-  }
+   if( ! bPName )
+   {
+      ULONG bRet;
+      LPDEVNAMES lpDevNames;
+
+      bPName = TRUE;
+      lpDevNames = (LPDEVNAMES) GlobalLock( pd.hDevNames );
+      bRet = (ULONG) ( ( LPSTR ) lpDevNames + lpDevNames->wOutputOffset );
+      GlobalUnlock( pd.hDevNames );
+      hb_retc((LPSTR) bRet);
+   }
 }
 
 HB_FUNC( PRINTSETUPDOS )
 {
-   
+
    StartPrn();
 
    memset( (void*) &pd, 0, sizeof( PRINTDLG ) );
 
-   pd.lStructSize = sizeof(PRINTDLG); 
-   pd.Flags = PD_RETURNDC; 
+   pd.lStructSize = sizeof(PRINTDLG);
+   pd.Flags = PD_RETURNDC;
    pd.hwndOwner = GetActiveWindow();
-   pd.nFromPage = 0xFFFF; 
+   pd.nFromPage = 0xFFFF;
    pd.nToPage = 0xFFFF;
    pd.nMinPage = 1;
    pd.nMaxPage = 0xFFFF;
-   pd.nCopies = 1; 
-    
+   pd.nCopies = 1;
+
    if( PrintDlg(&pd) )
-   	  {
-   	  bPName = FALSE;
-          hb_stornl(pd.nFromPage,1);
-          hb_stornl(pd.nToPage,2);
-          hb_stornl(pd.nCopies,3);
-          hb_retnl( (LONG) pd.hDC );
-      }
+   {
+      bPName = FALSE;
+      hb_stornl(pd.nFromPage,1);
+      hb_stornl(pd.nToPage,2);
+      hb_stornl(pd.nCopies,3);
+      hb_retnl( (LONG) pd.hDC );
+   }
    else
-      {
-   	  bPName = TRUE;
-      hb_retnl( 0 );  
-      }
+   {
+      bPName = TRUE;
+      hb_retnl( 0 );
+   }
 }
-   
+
 HB_FUNC( PRINTSETUPEX )
 {
    PRINTDLG pd;

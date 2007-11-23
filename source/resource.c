@@ -1,5 +1,5 @@
 /*
- * $Id: resource.c,v 1.7 2007-11-23 05:04:55 andijahja Exp $
+ * $Id: resource.c,v 1.8 2007-11-23 11:10:54 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level resource functions
@@ -8,7 +8,6 @@
  * www - http://sites.uol.com.br/culikr/
 
 */
-
 
 #define HB_OS_WIN_32_USED
 
@@ -26,9 +25,13 @@
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
+#include "hbinit.h"
 
 HMODULE hModule ;
-void hb_resourcemodules( void );
+
+#if 0
+	void hb_resourcemodules( void );
+#endif
 
 HB_FUNC( GETRESOURCES )
 {
@@ -48,11 +51,47 @@ HB_FUNC( LOADRESOURCE )
    hModule = GetModuleHandle( ISCHAR( 1 ) ? hb_parc( 1 ) : NULL );
 }
 
-#if (! defined(__GNUC__) && ! defined(__DMC__))
-#pragma startup hb_resourcemodules
+#if 0
+	#if (! defined(__GNUC__) && ! defined(__DMC__) )
+		#pragma startup hb_resourcemodules
+	#endif
+
+	void hb_resourcemodules( void )
+	{
+	   hModule = GetModuleHandle( NULL ) ;
+	}
 #endif
 
-void hb_resourcemodules( void )
+HB_FUNC_INIT( HWG_INITRESOURCE )
 {
    hModule = GetModuleHandle( NULL ) ;
 }
+
+#ifdef __XHARBOUR__
+#define __PRG_SOURCE__ __FILE__
+#ifdef HB_PCODE_VER
+#  undef HB_PRG_PCODE_VER
+#  define HB_PRG_PCODE_VER HB_PCODE_VER
+#endif
+#endif
+
+HB_INIT_SYMBOLS_BEGIN( hwg_resource_INIT )
+#ifdef __XHARBOUR__
+{ "HWG_INITRESOURCE$", {HB_FS_INIT | HB_FS_LOCAL}, {HB_INIT_FUNCNAME( HWG_INITRESOURCE )}, &ModuleFakeDyn }
+#else
+{ "HWG_INITRESOURCE$", {HB_FS_INIT | HB_FS_LOCAL}, {HB_INIT_FUNCNAME( HWG_INITRESOURCE )}, NULL }
+#endif
+HB_INIT_SYMBOLS_END( hwg_resource_INIT )
+
+#if defined(HB_PRAGMA_STARTUP)
+   #pragma startup hwg_resource_INIT
+#elif defined(HB_MSC_STARTUP)
+   #if _MSC_VER >= 1010
+      #pragma data_seg( ".CRT$XIY" )
+      #pragma comment( linker, "/Merge:.CRT=.data" )
+   #else
+      #pragma data_seg( "XIY" )
+   #endif
+   static HB_$INITSYM hb_vm_auto_SymbolInit_INIT = hwg_resource_INIT;
+   #pragma data_seg()
+#endif

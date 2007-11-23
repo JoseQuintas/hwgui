@@ -1,5 +1,5 @@
 /*
- * $Id: listbox.c,v 1.6 2007-11-13 19:20:40 druzus Exp $
+ * $Id: listbox.c,v 1.7 2007-11-23 05:04:55 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HList class
@@ -28,7 +28,6 @@
 #include "guilib.h"
 
 
-
 HB_FUNC( LISTBOXADDSTRING )
 {
    char *cString = hb_parc( 2 );
@@ -39,7 +38,6 @@ HB_FUNC( LISTBOXSETSTRING )
 {
    SendMessage( (HWND) hb_parnl( 1 ), LB_SETCURSEL, (WPARAM) hb_parni(2)-1, 0);
 }
-
 
 /*
    CreateListbox( hParentWIndow, nListboxID, nStyle, x, y, nWidth, nHeight)
@@ -59,11 +57,10 @@ HB_FUNC( CREATELISTBOX )
                  NULL);
 
    hb_retnl( (LONG) hListbox );
-
 }
 
-HB_FUNC( LISTBOXDELETESTRING ) 
-{ 
-   char *cString = hb_parc( 2 ); 
-   SendMessage( (HWND) hb_parnl( 1 ), LB_DELETESTRING, 0, (LPARAM) 0 ); 
+HB_FUNC( LISTBOXDELETESTRING )
+{
+   //char *cString = hb_parc( 2 );
+   SendMessage( (HWND) hb_parnl( 1 ), LB_DELETESTRING, 0, (LPARAM) 0 );
 }

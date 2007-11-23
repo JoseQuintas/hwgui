@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.31 2007-11-12 17:55:52 lculik Exp $
+ * $Id: draw.c,v 1.32 2007-11-23 05:04:55 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -21,10 +21,16 @@
 #include "hbstack.h"
 #include "item.api"
 
+#ifdef __cplusplus
+#ifdef CINTERFACE
+   #undef CINTERFACE
+#endif
+#endif
 
 BOOL Array2Rect(PHB_ITEM aRect, RECT *rc )
 {
-   if (HB_IS_ARRAY(aRect) && hb_arrayLen(aRect) == 4) {
+   if (HB_IS_ARRAY(aRect) && hb_arrayLen(aRect) == 4)
+   {
       rc->left   = hb_arrayGetNL(aRect,1);
       rc->top    = hb_arrayGetNL(aRect,2);
       rc->right  = hb_arrayGetNL(aRect,3);
@@ -45,7 +51,7 @@ PHB_ITEM Rect2Array( RECT *rc  )
    hb_arraySet(aRect, 4, hb_itemPutNL(element, rc->bottom));
    hb_itemRelease(element);
    return aRect;
-}        
+}
 
 HB_FUNC( INVALIDATERECT )
 {
@@ -60,9 +66,9 @@ HB_FUNC( INVALIDATERECT )
    }
 
    InvalidateRect(
-    (HWND) hb_parnl( 1 ),	// handle of window with changed update region
-    ( hb_pcount() > 2 )? &rc:NULL,	// address of rectangle coordinates
-    hb_parni( 2 )	// erase-background flag
+    (HWND) hb_parnl( 1 ), // handle of window with changed update region
+    ( hb_pcount() > 2 )? &rc:NULL,  // address of rectangle coordinates
+    hb_parni( 2 ) // erase-background flag
    );
 }
 
@@ -77,11 +83,11 @@ HB_FUNC( RECTANGLE )
    LineTo( hDC, x1, y1 );
 /*
    Rectangle(
-    (HDC) hb_parnl( 1 ),	// handle of device context
-    hb_parni( 2 ),	// x-coord. of bounding rectangle's upper-left corner
-    hb_parni( 3 ),	// y-coord. of bounding rectangle's upper-left corner
-    hb_parni( 4 ),	// x-coord. of bounding rectangle's lower-right corner
-    hb_parni( 5 ) 	// y-coord. of bounding rectangle's lower-right corner
+    (HDC) hb_parnl( 1 ),  // handle of device context
+    hb_parni( 2 ),  // x-coord. of bounding rectangle's upper-left corner
+    hb_parni( 3 ),  // y-coord. of bounding rectangle's upper-left corner
+    hb_parni( 4 ),  // x-coord. of bounding rectangle's lower-right corner
+    hb_parni( 5 )   // y-coord. of bounding rectangle's lower-right corner
    );
 */
 }
@@ -95,15 +101,15 @@ HB_FUNC( DRAWLINE )
 HB_FUNC( PIE )
 {
    int res = Pie(
-    (HDC) hb_parnl(1),	// handle to device context
-    hb_parni(2),	// x-coord. of bounding rectangle's upper-left corner
-    hb_parni(3),	// y-coord. of bounding rectangle's upper-left corner
-    hb_parni(4),	// x-coord. of bounding rectangle's lower-right corner
-    hb_parni(5), 	// y-coord. bounding rectangle's f lower-right corner
-    hb_parni(6),	// x-coord. of first radial's endpoint
-    hb_parni(7),	// y-coord. of first radial's endpoint
-    hb_parni(8),	// x-coord. of second radial's endpoint
-    hb_parni(9) 	// y-coord. of second radial's endpoint
+    (HDC) hb_parnl(1),  // handle to device context
+    hb_parni(2),  // x-coord. of bounding rectangle's upper-left corner
+    hb_parni(3),  // y-coord. of bounding rectangle's upper-left corner
+    hb_parni(4),  // x-coord. of bounding rectangle's lower-right corner
+    hb_parni(5),  // y-coord. bounding rectangle's f lower-right corner
+    hb_parni(6),  // x-coord. of first radial's endpoint
+    hb_parni(7),  // y-coord. of first radial's endpoint
+    hb_parni(8),  // x-coord. of second radial's endpoint
+    hb_parni(9)   // y-coord. of second radial's endpoint
    );
    if( !res )
      hb_retnl( (LONG) GetLastError() );
@@ -114,11 +120,11 @@ HB_FUNC( PIE )
 HB_FUNC( ELLIPSE )
 {
    int res =  Ellipse(
-    (HDC) hb_parnl(1),	// handle to device context
-    hb_parni(2),	// x-coord. of bounding rectangle's upper-left corner
-    hb_parni(3),	// y-coord. of bounding rectangle's upper-left corner
-    hb_parni(4),	// x-coord. of bounding rectangle's lower-right corner
-    hb_parni(5) 	// y-coord. bounding rectangle's f lower-right corner
+    (HDC) hb_parnl(1),  // handle to device context
+    hb_parni(2),  // x-coord. of bounding rectangle's upper-left corner
+    hb_parni(3),  // y-coord. of bounding rectangle's upper-left corner
+    hb_parni(4),  // x-coord. of bounding rectangle's lower-right corner
+    hb_parni(5)   // y-coord. bounding rectangle's f lower-right corner
    );
    if( !res )
      hb_retnl( (LONG) GetLastError() );
@@ -250,8 +256,8 @@ HB_FUNC( LOADBITMAP )
    if( ISNUM(1) )
    {
       if( !ISNIL(2) && hb_parl(2) )
-//               hb_retnl( (LONG) LoadBitmap( GetModuleHandle( NULL ),  MAKEINTRESOURCE(hb_parnl( 1 ) )) );
-         hb_retnl( (LONG) LoadBitmap( NULL, (LPCTSTR) hb_parnl( 1 ) ) );
+               hb_retnl( (LONG) LoadBitmap( GetModuleHandle( NULL ),  MAKEINTRESOURCE(hb_parnl( 1 ) )) );
+//         hb_retnl( (LONG) LoadBitmap( NULL, (LPCTSTR) hb_parnl( 1 ) ) );
       else
          hb_retnl( (LONG) LoadBitmap( GetModuleHandle( NULL ), (LPCTSTR) hb_parnl( 1 ) ) );
    }
@@ -371,7 +377,7 @@ HB_FUNC( SPREADBITMAP )
 
    SelectObject( hDCmem, hBitmap );
    GetObject( hBitmap, sizeof( BITMAP ), ( LPVOID ) &bitmap );
-   GetClientRect( (HWND) hb_parnl( 2 ),	&rc );
+   GetClientRect( (HWND) hb_parnl( 2 ), &rc );
 
    while( rc.top < rc.bottom )
    {
@@ -534,16 +540,16 @@ HB_FUNC( GETSYSCOLOR )
 HB_FUNC( CREATEPEN )
 {
    hb_retnl( (LONG) CreatePen(
-               hb_parni( 1 ),	// pen style
-               hb_parni( 2 ),	// pen width
-               (COLORREF) hb_parnl( 3 ) 	// pen color
+               hb_parni( 1 ), // pen style
+               hb_parni( 2 ), // pen width
+               (COLORREF) hb_parnl( 3 )   // pen color
              ) );
 }
 
 HB_FUNC( CREATESOLIDBRUSH )
 {
    hb_retnl( (LONG) CreateSolidBrush(
-               (COLORREF) hb_parnl( 1 ) 	// brush color
+               (COLORREF) hb_parnl( 1 )   // brush color
              ) );
 }
 
@@ -556,15 +562,15 @@ HB_FUNC( CREATEHATCHBRUSH )
 HB_FUNC( SELECTOBJECT )
 {
    hb_retnl( (LONG) SelectObject(
-              (HDC) hb_parnl( 1 ),	// handle of device context
-              (HGDIOBJ) hb_parnl( 2 ) 	// handle of object
+              (HDC) hb_parnl( 1 ),  // handle of device context
+              (HGDIOBJ) hb_parnl( 2 )   // handle of object
              ) );
 }
 
 HB_FUNC( DELETEOBJECT )
 {
    DeleteObject(
-      (HGDIOBJ) hb_parnl( 1 ) 	// handle of object
+      (HGDIOBJ) hb_parnl( 1 )   // handle of object
    );
 }
 
@@ -744,6 +750,9 @@ HB_FUNC( OPENIMAGE )
 
 // #if !defined(__BORLANDC__) && !defined(__MINGW32__) && !defined(__POCC__) && !defined(__XCC__) //&& !defined(_MSC_VER)
 #if defined(__cplusplus)
+   #ifdef CINTERFACE
+      #undef CINTERFACE
+   #endif
    pPic->get_Handle( (OLE_HANDLE*)&hBitmap );
 #else
    pPic->lpVtbl->get_Handle( pPic, (OLE_HANDLE*)&hBitmap );
@@ -850,67 +859,67 @@ HB_FUNC(CREATECOMPATIBLEBITMAP)
 
 HB_FUNC( INFLATERECT )
 {
-	
-   RECT pRect ;   
-   BOOL bRectOk = ( ISARRAY( 1 )  &&   Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect ) ) ;        
+
+   RECT pRect ;
+   //BOOL bRectOk = ( ISARRAY( 1 )  &&   Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect ) ) ;
    int x = hb_parni( 2) ;
    int y = hb_parni( 3 );
    hb_retl( InflateRect( &pRect, x, y )) ;
-   
+
    hb_storni( pRect.left   , 1 , 1);
    hb_storni( pRect.top    , 1 , 2);
    hb_storni( pRect.right  , 1 , 3);
-   hb_storni( pRect.bottom , 1 , 4);   
-}   
+   hb_storni( pRect.bottom , 1 , 4);
+}
 
 HB_FUNC( FRAMERECT )
 {
-	
+
    HDC hdc=   (HDC ) hb_parnl( 1 ) ;
    HBRUSH hbr = (HBRUSH) hb_parnl( 3 ) ;
-   RECT pRect ;   
+   RECT pRect ;
 
-   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;        
+   //BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;
 
    hb_retni( FrameRect( hdc, &pRect, hbr )) ;
-   
-   
-}   
+
+
+}
 
 HB_FUNC( DRAWFRAMECONTROL )
 {
-	
+  
    HDC hdc=   (HDC ) hb_parnl( 1 ) ;   
    RECT pRect ;   
-   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;        
+   //BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;
    UINT uType = hb_parni( 3 ) ;  // frame-control type
    UINT uState = hb_parni( 4 ) ;  // frame-control state
    hb_retl( DrawFrameControl( hdc, &pRect, uType, uState ) ) ;
-   
-   
-}   
+
+
+}
 
 HB_FUNC( OFFSETRECT )
 {
-	
-   RECT pRect ;   
-   BOOL bRectOk = ( ISARRAY( 1 )  &&   Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect ) ) ;        
+
+   RECT pRect ;
+   //BOOL bRectOk = ( ISARRAY( 1 )  &&   Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect ) ) ;
    int x = hb_parni( 2) ;
    int y = hb_parni( 3 );
    hb_retl( OffsetRect( &pRect, x, y )) ;
-   
+
    hb_storni( pRect.left   , 1 , 1);
    hb_storni( pRect.top    , 1 , 2);
    hb_storni( pRect.right  , 1 , 3);
-   hb_storni( pRect.bottom , 1 , 4);   
-}   
+   hb_storni( pRect.bottom , 1 , 4);
+}
 
 HB_FUNC(DRAWFOCUSRECT)
 
 {
    RECT pRect ;
    HDC hc = (HDC) hb_parnl( 1) ;
-   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;        
+   //BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;
    hb_retl( DrawFocusRect( hc,&pRect )) ;
 }
 

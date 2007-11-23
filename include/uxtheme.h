@@ -41,11 +41,11 @@ typedef HANDLE HTHEME;
 #define SZ_THDOCPROP_TOOLTIP  L"ToolTip"
 #define SZ_THDOCPROP_AUTHOR  L"author"
 
-typedef enum THEMESIZE {
+typedef enum{
     TS_MIN,
     TS_TRUE,
     TS_DRAW,
-};
+} THEMESIZE ;
 
 typedef struct _MARGINS {
     int cxLeftWidth;
@@ -59,13 +59,13 @@ typedef struct _INTLIST {
     int iValues[MAX_INTLIST_COUNT];
 } INTLIST, *PINTLIST;
 
-typedef enum PROPERTYORIGIN {
+typedef enum{
     PO_STATE,
     PO_PART,
     PO_CLASS,
     PO_GLOBAL,
     PO_NOTFOUND
-};
+} PROPERTYORIGIN ;
 
 THEMEAPI_(HTHEME) OpenThemeData(HWND,LPCWSTR);
 THEMEAPI CloseThemeData(HTHEME);
@@ -73,7 +73,8 @@ THEMEAPI DrawThemeBackground(HTHEME,HDC,int,int,const RECT*,const RECT*);
 THEMEAPI DrawThemeText(HTHEME,HDC,int,int,LPCWSTR,int,DWORD,DWORD,const RECT*);
 THEMEAPI GetThemeBackgroundContentRect(HTHEME,HDC,int,int,const RECT*,RECT*);
 THEMEAPI GetThemeBackgroundExtent(HTHEME,HDC,int,int,const RECT*,RECT*);
-THEMEAPI GetThemePartSize(HTHEME,HDC,int,int,RECT*,enum THEMESIZE,SIZE*);
+//THEMEAPI GetThemePartSize(HTHEME,HDC,int,int,RECT*,enum THEMESIZE,SIZE*);
+THEMEAPI GetThemePartSize(HTHEME,HDC,int,int,RECT*,int,SIZE*);
 THEMEAPI GetThemeTextExtent(HTHEME,HDC,int,int,LPCWSTR,int,DWORD,const RECT*,RECT*);
 THEMEAPI GetThemeTextMetrics(HTHEME,HDC,int,int,TEXTMETRIC*);
 THEMEAPI GetThemeBackgroundRegion(HTHEME,HDC,int,int,const RECT*,HRGN*);
@@ -93,7 +94,8 @@ THEMEAPI GetThemeFont(HTHEME,HDC,int,int,int,LOGFONT*);
 THEMEAPI GetThemeRect(HTHEME,int,int,int,RECT*);
 THEMEAPI GetThemeMargins(HTHEME,HDC,int,int,int,RECT*,MARGINS*);
 THEMEAPI GetThemeIntList(HTHEME,int,int,int,INTLIST*);
-THEMEAPI GetThemePropertyOrigin(HTHEME,int,int,int,enum PROPERTYORIGIN*);
+//THEMEAPI GetThemePropertyOrigin(HTHEME,int,int,int,enum PROPERTYORIGIN*);
+THEMEAPI GetThemePropertyOrigin(HTHEME,int,int,int,int*);
 THEMEAPI SetWindowTheme(HWND,LPCWSTR,LPCWSTR);
 THEMEAPI GetThemeFilename(HTHEME,int,int,int,LPWSTR,int);
 THEMEAPI_(COLORREF) GetThemeSysColor(HTHEME,int);

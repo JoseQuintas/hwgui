@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.696 2007-11-22 23:43:55 andijahja Exp $
+ * $Id: Changelog,v 1.697 2007-11-23 05:04:55 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,26 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-23 11.50 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
+   * source/draw.c
+   * source/theme.c
+   * source/windows.c
+   * source/grid.c
+   * source/misc.c
+   * source/listbox.c
+   * source/freeimg.c
+     ! undef CINTERFACE when __cplusplus
+     ! commented unused variables
+     ! fix undeclared prototype warnings : func*() -> func*( void )
+     ! codes formatting
+     ! castings
+
+   * source/resource.c
+     ! pragma is unknown to DMC
+
+   * include/uxtheme.h
+     ! formatting typedef enums (GCC/WC warnings)
 
 2007-11-23 06.40 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
    + include/missing.h

@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.13 2006-04-06 16:18:02 alkresin Exp $
+ * $Id: nice.c,v 1.14 2007-11-23 08:30:42 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -32,6 +32,18 @@ typedef struct _GRADIENT_RECT
     ULONG UpperLeft;
     ULONG LowerRight;
 }GRADIENT_RECT,*PGRADIENT_RECT,*LPGRADIENT_RECT;
+#endif
+
+#if defined(__DMC__)
+typedef struct _TRIVERTEX
+{
+    LONG    x;
+    LONG    y;
+    USHORT Red;
+    USHORT Green;
+    USHORT Blue;
+    USHORT Alpha;
+}TRIVERTEX,*PTRIVERTEX,*LPTRIVERTEX;
 #endif
 
 #endif

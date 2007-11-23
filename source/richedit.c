@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.23 2006-04-06 16:18:02 alkresin Exp $
+ * $Id: richedit.c,v 1.24 2007-11-23 08:30:42 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -20,7 +20,9 @@
 #include <commctrl.h>
 #define _RICHEDIT_VER	0x0200
 #include <richedit.h>
-
+#if defined(__DMC__)
+#define GetWindowLongPtr GetWindowLong
+#endif
 #include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"

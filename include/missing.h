@@ -1,5 +1,5 @@
 /*
- *$Id: missing.h,v 1.1 2007-11-22 23:43:55 andijahja Exp $
+ *$Id: missing.h,v 1.2 2007-11-23 08:30:40 andijahja Exp $
  */
 #ifndef ___MISSING_H___
 #define ___MISSING_H___
@@ -91,6 +91,7 @@
 #define TVM_SETBKCOLOR				(TV_FIRST + 29)
 
 #define GetWindowLongPtr			GetWindowLong
+#define SetWindowLongPtr			SetWindowLong
 
 #define GDT_ERROR				-1
 #define GDT_VALID				0

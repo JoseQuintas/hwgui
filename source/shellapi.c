@@ -1,5 +1,5 @@
 /*
- * $Id: shellapi.c,v 1.9 2005-11-03 19:47:37 alkresin Exp $
+ * $Id: shellapi.c,v 1.10 2007-11-23 08:30:42 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Shell API wrappers
@@ -27,6 +27,9 @@
 #define BIF_NEWDIALOGSTYLE     0x0040   // Use the new dialog layout with the ability to resize
 #endif
 #define BIF_USENEWUI           (BIF_NEWDIALOGSTYLE | BIF_EDITBOX)
+#endif
+#ifndef BIF_EDITBOX
+#define BIF_EDITBOX            0x0010   // Add an editbox to the dialog
 #endif
 
 /*

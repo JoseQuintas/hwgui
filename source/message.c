@@ -1,5 +1,5 @@
 /*
- *$Id: message.c,v 1.10 2005-11-03 19:47:37 alkresin Exp $
+ *$Id: message.c,v 1.11 2007-11-23 08:30:42 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level messages functions
@@ -18,7 +18,7 @@
 
 HB_FUNC( MSGINFO )
 {
-   char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   char* cTitle = ( hb_pcount() == 1 )? (char*)"":hb_parc( 2 );
 
    MessageBox( GetActiveWindow(), hb_parc(1), cTitle, MB_OK | MB_ICONINFORMATION );
 }
@@ -27,7 +27,7 @@ HB_FUNC( MSGSTOP )
 {
    char* cTitle;
 
-   cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   cTitle = ( hb_pcount() == 1 )? (char*)"":hb_parc( 2 );
 
    MessageBox( GetActiveWindow(), hb_parc(1), cTitle, MB_OK | MB_ICONSTOP );
 }
@@ -36,7 +36,7 @@ HB_FUNC( MSGOKCANCEL )
 {
    char* cTitle;
 
-   cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   cTitle = ( hb_pcount() == 1 )? (char*)"":hb_parc( 2 );
 
    hb_retni( MessageBox( GetActiveWindow(), hb_parc(1), cTitle, MB_OKCANCEL | MB_ICONQUESTION ) );
 }
@@ -46,7 +46,7 @@ HB_FUNC( MSGYESNO )
    char* cTitle;
    HWND h = GetActiveWindow();
 
-   cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   cTitle = ( hb_pcount() == 1 )? (char*)"":hb_parc( 2 );
 
    hb_retl( MessageBox( h, hb_parc(1), cTitle, MB_YESNO | MB_ICONQUESTION ) == IDYES );
 }
@@ -56,7 +56,7 @@ HB_FUNC( MSGNOYES )
    char* cTitle;
    HWND h = GetActiveWindow();
 
-   cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   cTitle = ( hb_pcount() == 1 )? (char*)"":hb_parc( 2 );
 
    hb_retl( MessageBox( h, hb_parc(1), cTitle, MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 ) == IDYES );
 }
@@ -66,14 +66,14 @@ HB_FUNC( MSGYESNOCANCEL )
    char* cTitle;
    HWND h = GetActiveWindow();
 
-   cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   cTitle = ( hb_pcount() == 1 )? (char*)"":hb_parc( 2 );
 
    hb_retni( MessageBox( h, hb_parc(1), cTitle, MB_YESNOCANCEL | MB_ICONQUESTION ) );
 }
 
 HB_FUNC( MSGEXCLAMATION )
 {
-   char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   char* cTitle = ( hb_pcount() == 1 )? (char*)"":hb_parc( 2 );
    HWND h = GetActiveWindow();
 
    MessageBox( h, hb_parc(1), cTitle, MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL  );
@@ -84,7 +84,7 @@ HB_FUNC( MSGRETRYCANCEL )
    char* cTitle;
    HWND h = GetActiveWindow();
 
-   cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   cTitle = ( hb_pcount() == 1 )? (char*)"":hb_parc( 2 );
 
    hb_retni( MessageBox( h, hb_parc(1), cTitle, MB_RETRYCANCEL | MB_ICONQUESTION | MB_ICONQUESTION ) );
 }

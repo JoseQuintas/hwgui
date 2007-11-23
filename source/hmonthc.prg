@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.13 2006-12-31 15:32:23 lculik Exp $
+ * $Id: hmonthc.prg,v 1.14 2007-11-23 08:30:41 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -125,6 +125,10 @@ Return (::value)
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbdate.h"
+
+#if defined(__DMC__)
+#include "missing.h"
+#endif
 
 HB_FUNC ( INITMONTHCALENDAR )
 {

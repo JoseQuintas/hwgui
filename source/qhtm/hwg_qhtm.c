@@ -1,5 +1,5 @@
 /*
- * $Id: hwg_qhtm.c,v 1.4 2006-04-06 16:18:03 alkresin Exp $
+ * $Id: hwg_qhtm.c,v 1.5 2007-11-23 08:30:42 andijahja Exp $
  * QHTM wrappers for Harbour/HwGUI
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
@@ -154,7 +154,7 @@ HB_FUNC( QHTM_MESSAGE )
 {
    if( qhtmInit(NULL) )
    {
-      char* cTitle = ( hb_pcount() < 2 )? "":hb_parc( 2 );
+      char* cTitle = ( hb_pcount() < 2 )? (char*)"":hb_parc( 2 );
       UINT uType = ( hb_pcount() < 3 )? MB_OK:(UINT)hb_parni( 3 );
       QHTM_MESSAGEBOX pFunc = (QHTM_MESSAGEBOX) GetProcAddress( hQhtmDll,"QHTM_MessageBox" );
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.700 2007-11-25 22:04:46 andijahja Exp $
+ * $Id: Changelog,v 1.701 2007-11-25 22:57:20 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-26 05.50 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
+   * source/grid.c
+     ! BCC complains "code has no effect" in function LISTVIEW_SETIMAGELIST.
+       -> use direct calls instead of macros (I did not test yet)
 
 2007-11-26 05.00 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
    * source/window.c

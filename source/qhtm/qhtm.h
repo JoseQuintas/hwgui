@@ -1,4 +1,6 @@
 /*----------------------------------------------------------------------
+* $Id: qhtm.h,v 1.2 2007-11-25 22:04:47 andijahja Exp $
+
 Copyright (c) 1998 Gipsysoft. All Rights Reserved.
 Please see the file "licence.txt" for licencing details.
 

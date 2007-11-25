@@ -1,4 +1,6 @@
 /*
+ * $Id: blowfish.c,v 1.8 2007-11-25 22:04:47 andijahja Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * Encryption/Decryption functions, using BlowFish algorithm,
  * originally designed by Bruce Schneier.

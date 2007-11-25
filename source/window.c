@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.61 2007-11-23 11:10:54 andijahja Exp $
+ * $Id: window.c,v 1.62 2007-11-25 22:04:46 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -334,12 +334,10 @@ HB_FUNC( HWG_INITMDIWINDOW )
    wc.lpszMenuName  = (LPCTSTR) NULL;
    wc.cbWndExtra    = 0;
    wc.lpszClassName = szChild;
-
-
    wc.cbClsExtra    = 0 ;
    wc.hInstance     = (HINSTANCE)hInstance ;
    wc.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-   wc.style = 0;
+   wc.style         = 0;
 
    if (!RegisterClass(&wc))
    {
@@ -394,7 +392,7 @@ HB_FUNC( HWG_INITCLIENTWINDOW )
 
 HB_FUNC( HWG_ACTIVATEMDIWINDOW )
 {
-   HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
+   HACCEL hAcceler = ( ISNIL(2) ) ? NULL : (HACCEL) hb_parnl(2);
    MSG  msg ;
 
    if( hb_parl(1) )
@@ -491,20 +489,12 @@ HB_FUNC( SETWINDOWOBJECT )
 
 void SetWindowObject( HWND hWnd, PHB_ITEM pObject )
 {
-   if( pObject )
-   {
-      SetWindowLongPtr( hWnd, GWL_USERDATA, (LPARAM) hb_itemNew( pObject ) );
-   }
-   else
-   {
-      SetWindowLongPtr( hWnd, GWL_USERDATA, 0 );
-   }
+   SetWindowLongPtr( hWnd, GWL_USERDATA, pObject ? (LPARAM) hb_itemNew( pObject ) : 0 );
 }
 
 HB_FUNC( GETWINDOWOBJECT )
 {
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( (HWND) hb_parnl(1), GWL_USERDATA );
-   hb_itemReturn( pObject );
+   hb_itemReturn( ( PHB_ITEM ) GetWindowLongPtr( (HWND) hb_parnl(1), GWL_USERDATA ) );
 }
 
 HB_FUNC( SETWINDOWTEXT )
@@ -520,11 +510,7 @@ HB_FUNC( GETWINDOWTEXT )
 
    iLen = (USHORT)SendMessage( hWnd, WM_GETTEXT, (WPARAM)(iLen+1), (LPARAM)cText );
 
-   if( iLen > 0 )
-      hb_retc( cText );
-   else
-      hb_retc( "" );
-
+   hb_retc( ( iLen > 0 ) ? cText : "" );
    hb_xfree( cText );
 }
 
@@ -756,6 +742,7 @@ HB_FUNC( HWG_DECREASEHOLDERS )
 */
    HWND hWnd = (HWND)hb_parnl(1);
    PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+
    if( pObject )
    {
       hb_itemRelease( pObject );
@@ -766,12 +753,14 @@ HB_FUNC( HWG_DECREASEHOLDERS )
 HB_FUNC( SETTOPMOST )
 {
    BOOL i = SetWindowPos( (HWND) hb_parnl( 1 ), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE );
+
    hb_retl( i );
 }
 
 HB_FUNC( REMOVETOPMOST )
 {
    BOOL i = SetWindowPos( (HWND) hb_parnl( 1 ), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE );
+
    hb_retl( i );
 }
 
@@ -805,6 +794,7 @@ HB_FUNC( WINDOWFROMPOINT )
 HB_FUNC( MAKEWPARAM )
 {
    WPARAM p;
+
    p = MAKEWPARAM( ( WORD ) hb_parnl( 1 ), ( WORD ) hb_parnl( 2 ) );
    hb_retnl( ( LONG ) p );
 }
@@ -812,6 +802,7 @@ HB_FUNC( MAKEWPARAM )
 HB_FUNC( MAKELPARAM )
 {
    LPARAM p;
+
    p = MAKELPARAM( ( WORD ) hb_parnl( 1 ), ( WORD ) hb_parnl( 2 ) );
    hb_retnl( ( LONG ) p );
 }
@@ -835,6 +826,7 @@ HB_FUNC(SETWINDOWPOS)
     cx,
     cy,
     uFlags);
+
     hb_retl( res );
 }
 
@@ -864,7 +856,7 @@ HB_FUNC( SETASTYLE )
    hb_stornl(dwText,2);
 }
 
-HB_FUNC(BRINGTOTOP)
+HB_FUNC( BRINGTOTOP )
 {
    HWND hWnd  = (HWND) hb_parnl( 1) ;
    //DWORD ForegroundThreadID;
@@ -877,16 +869,18 @@ HB_FUNC(BRINGTOTOP)
       hb_retl(TRUE);
       return;
    }
-//ForegroundThreadID = GetWindowThreadProcessID(GetForegroundWindow(),NULL);
-//ThisThreadID = GetWindowThreadPRocessId(hWnd, NULL);
-//   if (AttachThreadInput(ThisThreadID, ForegroundThreadID, TRUE) )
-//    {
+
+   //ForegroundThreadID = GetWindowThreadProcessID(GetForegroundWindow(),NULL);
+   //ThisThreadID = GetWindowThreadPRocessId(hWnd, NULL);
+   //   if (AttachThreadInput(ThisThreadID, ForegroundThreadID, TRUE) )
+   //    {
+
    BringWindowToTop(hWnd); // IE 5.5 related hack
    SetForegroundWindow(hWnd);
-//    AttachThreadInput(ThisThreadID, ForegroundThreadID,FALSE);
-//    Res = (GetForegroundWindow() == hWnd);
-//    }
-//hb_retl(Res);
+   //    AttachThreadInput(ThisThreadID, ForegroundThreadID,FALSE);
+   //    Res = (GetForegroundWindow() == hWnd);
+   //    }
+   //hb_retl(Res);
 }
 
 HB_FUNC(UPDATEWINDOW)
@@ -897,13 +891,14 @@ HB_FUNC(UPDATEWINDOW)
 
 LONG GetFontDialogUnits(HWND h,HFONT f)
 {
-
    HFONT hFont;
    HFONT hFontOld;
    LONG avgWidth;
    HDC hDc;
    char * tmp="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
    SIZE sz;
+
+   HB_SYMBOL_UNUSED( f );
 
    //get the hdc to the main window
    hDc = GetDC(h);
@@ -991,16 +986,16 @@ LRESULT CALLBACK KbdHook( int code, WPARAM wp, LPARAM lp )
            return Res;
           }
 
-          default:
-             break;
+      default:
+         break;
    }
    return CallNextHookEx( OrigDockHookProc, code, wp, lp );
 }
 
-HB_FUNC(SETTOOLHANDLE)
+HB_FUNC( SETTOOLHANDLE )
 {
    HWND h = (HWND) hb_parnl( 1 ) ;
-   //PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( h, GWL_USERDATA );
+
    hMytoolMenu = (HWND) h;
 }
 

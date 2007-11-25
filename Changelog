@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.699 2007-11-23 11:10:54 andijahja Exp $
+ * $Id: Changelog,v 1.700 2007-11-25 22:04:46 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,25 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-26 05.00 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
+   * source/window.c
+   * source/dialog.c
+   * source/draw.c
+     ! Code clean up and formatting, function names to be directly using
+     [x]Harbour name space eg. _item* -> hb_item*
+
+   * include/uxtheme.h
+   * include/hwg_qhtm.ch
+   * include/freeimage.h
+   * source/procmisc/progini.prg
+   * source/procmisc/blowfish.c
+   * source/activex/htmlcore.h
+   * source/activex/hhtml.prg
+   * source/qhtm/hqhtm.prg
+   * source/qhtm/hwg_qhtm.c
+   * source/qhtm/qhtm.h
+     ! put CVS Ids
 
 2007-11-23 18.00 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
    * source/commond.c

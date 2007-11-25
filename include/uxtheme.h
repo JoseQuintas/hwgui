@@ -1,3 +1,8 @@
+/*
+ * $Id: uxtheme.h,v 1.3 2007-11-25 22:04:46 andijahja Exp $
+ *
+*/
+
 #ifndef _UXTHEME_H
 #define _UXTHEME_H
 

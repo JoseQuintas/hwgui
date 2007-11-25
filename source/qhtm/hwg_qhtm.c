@@ -1,5 +1,6 @@
 /*
- * $Id: hwg_qhtm.c,v 1.5 2007-11-23 08:30:42 andijahja Exp $
+ * $Id: hwg_qhtm.c,v 1.6 2007-11-25 22:04:47 andijahja Exp $
+
  * QHTM wrappers for Harbour/HwGUI
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>

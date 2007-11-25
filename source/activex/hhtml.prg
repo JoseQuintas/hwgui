@@ -1,4 +1,6 @@
 /*
+ * $Id: hhtml.prg,v 1.2 2007-11-25 22:04:46 andijahja Exp $
+ *
  * HWGUI - Harbour Win32 GUI library source code:
  * HHtml class
  *

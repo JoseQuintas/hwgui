@@ -1,4 +1,6 @@
 /*
+ * $Id: hqhtm.prg,v 1.5 2007-11-25 22:04:47 andijahja Exp $
+
  * HWGUI - Harbour Win32 GUI library source code:
  * HQhtm class
  *

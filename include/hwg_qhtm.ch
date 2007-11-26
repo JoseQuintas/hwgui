@@ -1,3 +1,10 @@
+/*
+ * $Id: hwg_qhtm.ch,v 1.2 2007-11-26 10:53:43 andijahja Exp $
+*/
+
+#ifndef __HWG_QHTM_CH__
+#define __HWG_QHTM_CH__
+
 #define QHTMN_HYPERLINK		1
 
 #xcommand @ <x>,<y> QHTM [ <oQhtm> ]    ;
@@ -55,3 +62,5 @@
           => ;
     [<oBut> := ] HQhtmButton():Redefine( <oWnd>,<nId>,<caption>,<oFont>,<bInit>,<bSize>, ;
                     <bClick>,<ctoolt> )
+
+#endif /* __HWG_QHTM_CH__ */

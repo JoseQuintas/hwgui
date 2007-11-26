@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.702 2007-11-26 04:48:43 andijahja Exp $
+ * $Id: Changelog,v 1.703 2007-11-26 10:53:12 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,20 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-26 18.00 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
+   * source/registry.c
+   * source/pager.c
+   * source/c_ipaddr.c
+   * source/hsplash.prg
+   * source/procmisc/procini.prg
+   * source/qhtm/hwg_qhtm.ch
+   * include/richtext.ch
+     ! Put CVS Ids
+
+   * source/c_ipaddr.c
+     ! use predefined procedure rather then re-init CommonControls
+     ! formatting
 
 2007-11-26 12.00 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
    * source/pager.c

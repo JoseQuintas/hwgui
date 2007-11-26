@@ -1,3 +1,7 @@
+/*
+ * $Id: c_ipaddr.c,v 1.11 2007-11-26 10:50:16 andijahja Exp $
+*/
+
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
 
@@ -13,12 +17,12 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License along with 
+ You should have received a copy of the GNU General Public License along with
  this software; see the file COPYING. If not, write to the Free Software 
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or 
  visit the web site http://www.gnu.org/).
 
- As a special exception, you have permission for additional uses of the text 
+ As a special exception, you have permission for additional uses of the text
  contained in this release of Harbour Minigui.
 
  The exception is that, if you link the Harbour Minigui library with other
@@ -60,72 +64,54 @@
 #include "missing.h"
 #endif
 
+HB_FUNC_EXTERN( HWG_INITCOMMONCONTROLSEX );
+
 HB_FUNC( INITIPADDRESS )
 {
-	HWND hWnd;
-	HWND hIpAddress;
-   int Style  ;
+   HWND hIpAddress;
 
-   INITCOMMONCONTROLSEX  i;
-	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
-	i.dwICC = ICC_INTERNET_CLASSES;
-	InitCommonControlsEx(&i);
-	hWnd = (HWND) hb_parnl (1);
+   HB_FUNC_EXEC( HWG_INITCOMMONCONTROLSEX );
 
-   Style = hb_parni(3) ;
+   hIpAddress = CreateWindowEx(WS_EX_CLIENTEDGE,WC_IPADDRESS,"",
+      hb_parni(3),
+      hb_parni(4), hb_parni(5), hb_parni(6), hb_parni(7),
+      (HWND) hb_parnl (1), (HMENU)hb_parni(2), GetModuleHandle(NULL), NULL ) ;
 
-	hIpAddress = CreateWindowEx(WS_EX_CLIENTEDGE,WC_IPADDRESS,"",
-	Style ,
-   hb_parni(4), hb_parni(5) ,hb_parni(6) ,hb_parni(7) ,
-	hWnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
-
-	hb_retnl ( (LONG) hIpAddress );
+   hb_retnl ( (LONG) hIpAddress );
 }
 
 HB_FUNC( SETIPADDRESS )
 {
-	HWND hWnd;
-	BYTE v1, v2, v3, v4;
+   BYTE v1, v2, v3, v4;
 
-	hWnd = (HWND) hb_parnl (1);
+   v1 = (BYTE) hb_parni(2);
+   v2 = (BYTE) hb_parni(3);
+   v3 = (BYTE) hb_parni(4);
+   v4 = (BYTE) hb_parni(5);
 
-	v1 = (BYTE) hb_parni(2);
-	v2 = (BYTE) hb_parni(3);
-	v3 = (BYTE) hb_parni(4);
-	v4 = (BYTE) hb_parni(5);
-
-	SendMessage(hWnd, IPM_SETADDRESS, 0, MAKEIPADDRESS(v1,v2,v3,v4));
+   SendMessage( (HWND) hb_parnl (1), IPM_SETADDRESS, 0, MAKEIPADDRESS(v1,v2,v3,v4));
 }
 
 HB_FUNC( GETIPADDRESS )
 {
-	HWND hWnd;
-	DWORD pdwAddr;
-	BYTE v1, v2, v3, v4;
+   DWORD pdwAddr;
+   BYTE v1, v2, v3, v4;
 
-	hWnd = (HWND) hb_parnl (1);
+   SendMessage( (HWND) hb_parnl (1), IPM_GETADDRESS, 0, (LPARAM)(LPDWORD)&pdwAddr);
 
-	SendMessage(hWnd, IPM_GETADDRESS, 0, (LPARAM)(LPDWORD)&pdwAddr);
+   v1 = (BYTE) FIRST_IPADDRESS( pdwAddr );
+   v2 = (BYTE) SECOND_IPADDRESS( pdwAddr );
+   v3 = (BYTE) THIRD_IPADDRESS( pdwAddr );
+   v4 = (BYTE) FOURTH_IPADDRESS( pdwAddr );
 
-	v1 = (BYTE) FIRST_IPADDRESS( pdwAddr );
-	v2 = (BYTE) SECOND_IPADDRESS( pdwAddr );
-	v3 = (BYTE) THIRD_IPADDRESS( pdwAddr );
-	v4 = (BYTE) FOURTH_IPADDRESS( pdwAddr );
-
-	hb_reta( 4 );
-	hb_storni( (INT) v1, -1, 1 );
-	hb_storni( (INT) v2, -1, 2 );
-	hb_storni( (INT) v3, -1, 3 );
-	hb_storni( (INT) v4, -1, 4 );
+   hb_reta( 4 );
+   hb_storni( (INT) v1, -1, 1 );
+   hb_storni( (INT) v2, -1, 2 );
+   hb_storni( (INT) v3, -1, 3 );
+   hb_storni( (INT) v4, -1, 4 );
 }
 
 HB_FUNC( CLEARIPADDRESS )
 {
-	HWND hWnd;
-
-	hWnd = (HWND) hb_parnl (1);
-
-	SendMessage(hWnd, IPM_CLEARADDRESS, 0, 0);
+   SendMessage( (HWND) hb_parnl (1), IPM_CLEARADDRESS, 0, 0);
 }
-
-

@@ -1,7 +1,9 @@
 /*
+ * $Id: hsplash.prg,v 1.2 2007-11-26 10:50:17 andijahja Exp $
+ *
  * HwGUI Harbour Win32 Gui Copyright (c) Alexander Kresin
  *
- * HwGUI HSplash Class           
+ * HwGUI HSplash Class
  *
  * Copyright (c) Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
  *

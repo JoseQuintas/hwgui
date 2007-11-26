@@ -1,4 +1,6 @@
 /*
+ * $Id: richtext.ch,v 1.2 2007-11-26 10:50:15 andijahja Exp $
+ *
 ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 ³        Class: RichText                                                   ³
 ³  Description: System for generating simple RTF files.                    ³
@@ -34,6 +36,8 @@
 ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 */
 
+#ifndef __RICHTEXT_CH__
+#define __RICHTEXT_CH__
 
 #define INCH_TO_TWIP 1440
 
@@ -461,3 +465,5 @@
 		[ FORMAT <cFormat: LONGFORMAT,SHORTFORMAT,HEADER> ] ;
 	=> ;
 		<oRTF>:CurrDate(<"cFormat">)
+
+#endif /* __RICHTEXT_CH__ */

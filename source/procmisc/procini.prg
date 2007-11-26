@@ -1,4 +1,6 @@
 /*
+ * $Id: procini.prg,v 1.3 2007-11-26 10:50:18 andijahja Exp $
+ *
  * Common procedures
  * Ini files reading
  *

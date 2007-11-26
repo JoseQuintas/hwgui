@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.33 2007-11-25 22:04:46 andijahja Exp $
+ * $Id: draw.c,v 1.34 2007-11-26 04:48:43 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -689,11 +689,11 @@ HB_FUNC( OPENIMAGE )
    BOOL  lString = (ISNIL(2))? 0 : hb_parl(2);
    int iFileSize;
    FILE* fp;
-   // IPicture * pPic;
-   LPPICTURE pPic;
+   IPicture * pPic = NULL;
+   // LPPICTURE pPic;
    IStream * pStream;
    HGLOBAL hG;
-   HBITMAP hBitmap = 0;
+   HBITMAP *hBitmap = 0;
 
    if( lString )
    {
@@ -739,10 +739,10 @@ HB_FUNC( OPENIMAGE )
    }
 
 #if defined(__cplusplus)
-   OleLoadPicture( pStream,0,0,IID_IPicture,(void**)&pPic );
+   OleLoadPicture( pStream,0,0,IID_IPicture,(void**)pPic );
    pStream->Release();
 #else
-   OleLoadPicture( pStream,0,0,&IID_IPicture,(void**)&pPic );
+   OleLoadPicture( pStream,0,0,&IID_IPicture,(void**)pPic );
    pStream->lpVtbl->Release( pStream );
 #endif
 
@@ -755,9 +755,9 @@ HB_FUNC( OPENIMAGE )
    }
 
 #if defined(__cplusplus)
-   pPic->get_Handle( (OLE_HANDLE*)&hBitmap );
+   pPic->get_Handle( (OLE_HANDLE*)hBitmap );
 #else
-   pPic->lpVtbl->get_Handle( pPic, (OLE_HANDLE*)&hBitmap );
+   pPic->lpVtbl->get_Handle( pPic, (OLE_HANDLE*)hBitmap );
 #endif
 
    hb_retnl( (LONG) CopyImage( hBitmap,IMAGE_BITMAP,0,0,LR_COPYRETURNORG ) );

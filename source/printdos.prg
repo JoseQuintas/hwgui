@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.21 2007-11-10 17:44:53 mlacecilia Exp $
+ * $Id: printdos.prg,v 1.22 2007-11-26 04:48:43 andijahja Exp $
  *
  * CLASS PrintDos
  *
@@ -533,31 +533,125 @@ function regenfile(o,new)
 local leol := .f.
 Local leof := .t.
 local Aeol:={chr(13)+chr(10),chr(13)}
-Local han := fopen(o),stroka
+Local aText := AFillText( o )
+Local stroka
 Local o1 :=printdos():new(new)
 local nLine :=0
 Local nChr12 :=0
-while leof
-   leol:=hb_freadline(han,@stroka,aeol)
-   if leol == -1
-      leof:=.f.
-   endif
-   stroka :=strtran(stroka,chr(13),"")
-   stroka :=strtran(stroka,chr(10),"")
-   nchr12 :=at(chr(12),stroka)
-   if nChr12 >0
+Local i
 
+FOR i := 1 To Len( aText )
+
+   stroka := aText[i]
+   nchr12 := at( chr(12), stroka )
+
+   if nChr12 >0
      stroka:=substr(stroka,1,nchr12-1)
    endif
       o1:say(nline,0,stroka)
    nLine++
-    IF nchr12 >0
 
-       o1:eject()
-       nLine:=0
-    ENDIF
+   IF nchr12 >0
+      o1:eject()
+      nLine:=0
+   ENDIF
 
-enddo
-o1:end()
-fclose(han)
-return nil
+NEXT
+
+Return Nil
+
+#PRAGMA BEGINDUMP
+/*
+   txtfile.c
+   AFILLTEXT( cFile ) -> aArray
+   NTXTLINE( cFile )  -> nLines
+*/
+
+#include "hbapi.h"
+#include "hbapiitm.h"
+#include "hbstack.h"
+#ifdef __XHARBOUR__
+#include "hbfast.h"
+#endif
+
+#undef LINE_MAX
+// #define LINE_MAX 4096
+// #define LINE_MAX 8192
+// #define LINE_MAX 16384
+#define LINE_MAX    0x20000
+//----------------------------------------------------------------------------//
+static BOOL file_read ( FILE *stream, char *string )
+{
+   int ch, cnbr = 0;
+
+   memset (string, ' ', LINE_MAX);
+
+   for (;;)
+   {
+      ch = fgetc (stream);
+
+      if ( (ch == '\n') ||  (ch == EOF) ||  (ch == 26) )
+      {
+         string [cnbr] = '\0';
+         return (ch == '\n' || cnbr);
+      }
+      else
+      {
+         if ( cnbr < LINE_MAX && ch != '\r' )
+         {
+            string [cnbr++] = (char) ch;
+         }
+      }
+
+      if (cnbr >= LINE_MAX)
+      {
+         string [LINE_MAX] = '\0';
+         return (TRUE);
+      }
+   }
+}
+
+//----------------------------------------------------------------------------//
+HB_FUNC( AFILLTEXT )
+{
+   FILE *inFile ;
+   char *pSrc = hb_parc(1) ;
+   PHB_ITEM pArray = hb_itemNew(NULL);
+   PHB_ITEM pTemp = hb_itemNew(NULL);
+   char *string ;
+
+   if ( !pSrc )
+   {
+      hb_reta( 0 );
+      return;
+   }
+
+   if ( strlen( pSrc ) == 0 )
+   {
+      hb_reta( 0 );
+      return;
+   }
+   inFile = fopen( pSrc, "r" );
+
+   if ( !inFile )
+   {
+      hb_reta( 0 );
+      return;
+   }
+
+   string = (char*) hb_xgrab( LINE_MAX + 1 );
+   hb_arrayNew( pArray, 0 );
+
+   while ( file_read ( inFile, string ) )
+   {
+     hb_arrayAddForward( pArray, hb_itemPutC( pTemp, string ));
+   }
+
+   hb_itemForwardValue( hb_stackReturnItem(), pArray );
+   hb_xfree( string );
+   hb_itemRelease( pArray );
+   hb_itemRelease( pTemp );
+   fclose( inFile );
+}
+
+#PRAGMA ENDDUMP

@@ -14,6 +14,14 @@
    #include "ads.ch"
 #endif
 
+MEMVAR BrwFont,oBrwFont
+MEMVAR msfile, msmode, msexp, lenmsf, improc, mypath
+MEMVAR dformat, memownd, prrdonly
+MEMVAR lWinChar
+MEMVAR nServerType
+MEMVAR msdriv, numdriv
+MEMVAR nQueryWndHandle
+
 Function Main()
 Local aMainWindow, aPanel
 Public BrwFont := {"MS Sans Serif",0,-13}, oBrwFont := Nil
@@ -234,6 +242,7 @@ Return .T.
 Static Function ListIndex
 Local oModDlg, oBrw
 Local msind := { { "0","None","","" } }, i, ordlen := 0
+Local indname
 
    i := 1
    DO WHILE .NOT. EMPTY( indname := ORDNAME( i ) )
@@ -737,7 +746,7 @@ RETURN .T.
 STATIC FUNCTION OpenError( e )
 
    BREAK e
-RETURN
+RETURN NIL
 
 FUNCTION FiClose
 

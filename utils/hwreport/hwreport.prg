@@ -1,5 +1,5 @@
 /*
- * $Id: hwreport.prg,v 1.4 2004-11-27 08:23:51 alkresin Exp $
+ * $Id: hwreport.prg,v 1.5 2007-11-26 04:48:43 andijahja Exp $
  *
  * Repbuild - Visual Report Builder
  * Main file
@@ -23,6 +23,11 @@ Static itemBorder := 0, itemSized := 0, resizeDirection := 0
 Static aInitialSize := { { 50,20 }, { 60,4 }, { 4,60 }, { 60,40 }, { 40,40 }, { 16,10 } }
 Static aMarkers := { "PH","SL","EL","PF","EPF","DF" }
 Static oPenDivider, oPenLine
+
+Memvar mypath
+Memvar aPaintRep
+Memvar oPenBorder, oFontSmall, oFontStandard, lastFont
+Memvar aItemTypes
 
 Function Main()
 Local oMainWindow, aPanel, oIcon := HIcon():AddResource("ICON_1")
@@ -82,7 +87,8 @@ Public aItemTypes := { "TEXT","HLINE","VLINE","BOX","BITMAP","MARKER" }
       ENDMENU
       MENU TITLE "&Options"
          MENUITEM "&Form options" ID IDM_FOPT ACTION FormOptions()
-         MENUITEM "&Preview" ID IDM_VIEW1 ACTION (ShowScrollBar(oMainWindow:handle,SB_VERT,IsCheckedMenuItem(,IDM_VIEW1)),CheckMenuItem(,IDM_VIEW1,!IsCheckedMenuItem(,IDM_VIEW1)),Iif(IsCheckedMenuItem(,IDM_VIEW1),DeselectAll(),.F.),RedrawWindow(Hwindow():GetMain():handle,RDW_ERASE+RDW_INVALIDATE))
+         MENUITEM "&Preview" ID IDM_VIEW1 ACTION (ShowScrollBar(oMainWindow:handle,SB_VERT,IsCheckedMenuItem(,IDM_VIEW1)),CheckMenuItem(,IDM_VIEW1,!IsCheckedMenuItem(,IDM_VIEW1)),Iif(IsCheckedMenuItem(,IDM_VIEW1),DeselectAll(),),RedrawWindow(Hwindow():GetMain():handle,RDW_ERASE+RDW_INVALIDATE))
+         // MENUITEM "&Preview" ID IDM_VIEW1 ACTION (ShowScrollBar(oMainWindow:handle,SB_VERT,IsCheckedMenuItem(,IDM_VIEW1)),CheckMenuItem(,IDM_VIEW1,!IsCheckedMenuItem(,IDM_VIEW1)),Iif(IsCheckedMenuItem(,IDM_VIEW1),DeselectAll(),.F.),RedrawWindow(Hwindow():GetMain():handle,RDW_ERASE+RDW_INVALIDATE))
          MENUITEM "&Mouse limit" ID IDM_MOUSE2 ACTION (CheckMenuItem(,IDM_MOUSE2,!IsCheckedMenuItem(,IDM_MOUSE2)))
       ENDMENU
       MENUITEM "&About" ID IDM_ABOUT ACTION About()

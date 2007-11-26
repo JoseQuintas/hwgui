@@ -13,6 +13,7 @@
 #include "ads.ch"
 #endif
 
+memvar mypath, numdriv
 Static cQuery := ""
 
 Function OpenQuery

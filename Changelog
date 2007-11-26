@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.701 2007-11-25 22:57:20 andijahja Exp $
+ * $Id: Changelog,v 1.702 2007-11-26 04:48:43 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,39 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-26 12.00 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
+   * source/pager.c
+     ! fix warnings for GCC, use direct calls instead of macros since there
+       seems no such macros defined in MinGW include dir.
+     ! replace some hb_par*() with hb_ret*()
+
+   * source/misc.c
+   * source/draw.c
+   * source/control.c
+     ! fixed dangerous GCC warnings ("deferencing type-punned.....")
+     ! formatting
+
+   * source/printdos.prg
+     ! add AFILLTEXT() function for text file manipulation in place
+       of proprietary xHarbour hb_freadline(), so that the code can
+       be used by Harbour and xHarbour
+
+   * utils/designer/editor.prg
+     ! fix compilation for Harbour and xHarbour
+
+   * utils/hwreport/hwreport.prg
+   * utils/hwreport/opensave.prg
+   * utils/hwreport/printrpt.prg
+   * utils/hwreport/propert.prg
+     ! fix compilation for Harbour and xHarbour
+
+   * utils/dbc/commands.prg
+   * utils/dbc/dbchw.prg
+   * utils/dbc/modistru.prg
+   * utils/dbc/move.prg
+   * utils/dbc/query.prg
+     ! fix compilation for Harbour and xHarbour
 
 2007-11-26 05.50 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
    * source/grid.c

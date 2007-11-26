@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.59 2007-11-22 23:43:55 andijahja Exp $
+ * $Id: control.c,v 1.60 2007-11-26 04:48:43 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -351,9 +351,10 @@ HB_FUNC( HWG_INITSTATUS )
        // Calculate the right edge coordinate for each part, and
        // copy the coordinates to the array.
        nWidth = rcClient.right / nParts;
-       for (i = 0; i < nParts; i++) {
-           lpParts[i] = nWidth;
-           nWidth += nWidth;
+       for (i = 0; i < nParts; i++)
+       {
+          lpParts[i] = nWidth;
+          nWidth += nWidth;
        }
     }
     else
@@ -381,15 +382,13 @@ HB_FUNC( HWG_INITSTATUS )
 
 HB_FUNC( ADDTOOLTIP ) // changed by MAG
 {
-   TOOLINFO ti
-
-;
+   TOOLINFO ti;
    HWND hWnd = (HWND) hb_parnl( 1 );
    int iStyle = TTS_ALWAYSTIP;
 
    if ( lToolTipBalloon )
    {
-   	iStyle = iStyle | TTS_BALLOON;
+      iStyle = iStyle | TTS_BALLOON;
    }
 
    if( !hWndTT )
@@ -548,14 +547,17 @@ HB_FUNC( INITTABCONTROL )
 
    tie.mask = TCIF_TEXT | TCIF_IMAGE;
    tie.iImage = iItems == 0 ? -1 : 0 ;
+
    for( ul = 1; ul <= ulTabs; ul++)
    {
       tie.pszText = hb_arrayGetCPtr( pArr,ul );
+
       if( TabCtrl_InsertItem( hTab, ul-1, &tie ) == -1 )
       {
          DestroyWindow(hTab);
          hTab = NULL;
       }
+
       if (tie.iImage > -1)
           tie.iImage++;
    }
@@ -563,9 +565,7 @@ HB_FUNC( INITTABCONTROL )
 
 HB_FUNC( ADDTAB )
 {
-   TC_ITEM tie
-
-;
+   TC_ITEM tie;
 
    tie.mask = TCIF_TEXT | TCIF_IMAGE;
    tie.iImage = -1;
@@ -577,12 +577,14 @@ HB_FUNC( ADDTABDIALOG )
 {
    TC_ITEM tie;
    HWND pWnd = (HWND) hb_parnl(4);
+
    tie.mask = TCIF_TEXT | TCIF_IMAGE |TCIF_PARAM;
    tie.lParam = (LPARAM) pWnd;
    tie.iImage = -1;
    tie.pszText = hb_parc(3);
    TabCtrl_InsertItem( (HWND) hb_parnl(1), hb_parni(2), &tie );
 }
+
 HB_FUNC( DELETETAB )
 {
    TabCtrl_DeleteItem( (HWND) hb_parnl(1), hb_parni(2) );
@@ -601,9 +603,7 @@ HB_FUNC( SETTABSIZE )
 
 HB_FUNC( SETTABNAME )
 {
-   TC_ITEM tie
-
-;
+   TC_ITEM tie;
 
    tie.mask = TCIF_TEXT;
    tie.pszText = hb_parc(3);
@@ -633,7 +633,6 @@ HB_FUNC( TAB_HITTEST )
 
    hb_storni( ht.flags,4 );
    hb_retni( res );
-
 }
 
 HB_FUNC( CREATETREE )
@@ -661,13 +660,9 @@ HB_FUNC( CREATETREE )
 
 HB_FUNC( TREEADDNODE )
 {
+   TV_ITEM tvi;
+   TV_INSERTSTRUCT is;
 
-   TV_ITEM tvi
-
-;
-   TV_INSERTSTRUCT is
-
-;
    int nPos = hb_parni(5);
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
 
@@ -706,7 +701,6 @@ HB_FUNC( TREEADDNODE )
       DeleteObject( (HGDIOBJ)tvi.iImage );
    if( tvi.mask & TVIF_SELECTEDIMAGE )
       DeleteObject( (HGDIOBJ)tvi.iSelectedImage );
-
 }
 
 /*
@@ -758,7 +752,6 @@ HB_FUNC( TREENODEHASCHILDREN )
 
 HB_FUNC( TREEGETNODETEXT )
 {
-
    TV_ITEM TreeItem;
    char ItemText[256];
 
@@ -776,7 +769,6 @@ HB_FUNC( TREEGETNODETEXT )
 
 HB_FUNC( TREESETITEM )
 {
-
    TV_ITEM TreeItem;
    int iType = hb_parni( 3 );
 
@@ -824,12 +816,8 @@ HB_FUNC( TREE_GETNOTIFY )
    {
       TV_DISPINFO * tv;
       tv = (TV_DISPINFO *) hb_parnl(1);
-      if( tv->item.pszText )
-      {
-         hb_retc( (char*)tv->item.pszText );
-      }
-      else
-         hb_retc( "" );
+
+      hb_retc( ( tv->item.pszText ) ? (char*) tv->item.pszText : (char*) "" );
    }
 }
 
@@ -875,7 +863,6 @@ HB_FUNC( TREE_HITTEST )
 
 HB_FUNC( TREE_RELEASENODE )
 {
-
    TV_ITEM TreeItem;
 
    memset( &TreeItem, 0, sizeof(TV_ITEM) );
@@ -898,7 +885,7 @@ HB_FUNC( TREE_RELEASENODE )
 HB_FUNC( CREATEIMAGELIST )
 {
    PHB_ITEM pArray = hb_param( 1, HB_IT_ARRAY );
-   UINT flags = ( ISNIL(5) )? ILC_COLOR : hb_parni(5);
+   UINT flags = ( ISNIL(5) ) ? ILC_COLOR : hb_parni(5);
    HIMAGELIST himl;
    ULONG ul, ulLen = hb_arrayLen( pArray );
    HBITMAP hbmp;
@@ -914,7 +901,6 @@ HB_FUNC( CREATEIMAGELIST )
    }
 
    hb_retnl( (LONG) himl );
-
 }
 
 HB_FUNC( IMAGELIST_ADD )
@@ -981,14 +967,7 @@ HB_FUNC( GETTOOLTIPHANDLE ) // added by MAG
 
 HB_FUNC( SETTOOLTIPBALLOON ) // added by MAG
 {
-   if( hb_parl( 1 ) )
-   {
-   	lToolTipBalloon = TRUE;
-   }
-   else
-   {
-   	lToolTipBalloon = FALSE;
-   }
+   lToolTipBalloon = hb_parl( 1 );
 }
 
 HB_FUNC( GETTOOLTIPBALLOON ) // added by MAG
@@ -998,16 +977,13 @@ HB_FUNC( GETTOOLTIPBALLOON ) // added by MAG
 
 HB_FUNC( HWG_REGPANEL )
 {
-
-   static TCHAR szAppName[] = TEXT ( "PANEL" );
-   static BOOL  bRegistered = 0;
+   static BOOL bRegistered = FALSE;
 
    if( !bRegistered )
    {
-      WNDCLASS     wndclass
+      WNDCLASS wndclass;
 
-;
-      wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
+      wndclass.style         = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
       wndclass.lpfnWndProc   = DefWindowProc ;
       wndclass.cbClsExtra    = 0 ;
       wndclass.cbWndExtra    = 0 ;
@@ -1016,21 +992,18 @@ HB_FUNC( HWG_REGPANEL )
       wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
       wndclass.hbrBackground = (HBRUSH)( COLOR_3DFACE+1 );
       wndclass.lpszMenuName  = NULL;
-      wndclass.lpszClassName = szAppName ;
+      wndclass.lpszClassName = "PANEL" ;
 
       RegisterClass (&wndclass);
-      bRegistered = 1;
+      bRegistered = TRUE;
    }
 }
 
 HB_FUNC( HWG_REGOWNBTN )
 {
+   static BOOL bRegistered = FALSE;
 
-   static TCHAR szAppName[] = TEXT ( "OWNBTN" );
-   static BOOL  bRegistered = 0;
-   WNDCLASS     wndclass
-
-;
+   WNDCLASS wndclass;
 
    if( !bRegistered )
    {
@@ -1043,25 +1016,23 @@ HB_FUNC( HWG_REGOWNBTN )
       wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
       wndclass.hbrBackground = (HBRUSH)( COLOR_3DFACE+1 );
       wndclass.lpszMenuName  = NULL;
-      wndclass.lpszClassName = szAppName ;
+      wndclass.lpszClassName = "OWNBTN";
 
       RegisterClass (&wndclass);
-      bRegistered = 1;
+      bRegistered = TRUE;
    }
 }
 
 HB_FUNC( HWG_REGBROWSE )
 {
 
-   static TCHAR szAppName[] = TEXT ( "BROWSE" );
-   static BOOL  bRegistered = 0;
-   WNDCLASS     wndclass
-
-;
+   static BOOL bRegistered = FALSE;
 
    if( !bRegistered )
    {
-      wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
+      WNDCLASS  wndclass ;
+
+      wndclass.style         = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
       wndclass.lpfnWndProc   = WinCtrlProc;
       wndclass.cbClsExtra    = 0 ;
       wndclass.cbWndExtra    = 0 ;
@@ -1071,18 +1042,18 @@ HB_FUNC( HWG_REGBROWSE )
       wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
       wndclass.hbrBackground = (HBRUSH)( COLOR_WINDOW+1 );
       wndclass.lpszMenuName  = NULL;
-      wndclass.lpszClassName = szAppName ;
+      wndclass.lpszClassName = "BROWSE";
 
       RegisterClass (&wndclass);
-      bRegistered = 1;
+      bRegistered = TRUE;
    }
 }
 
 void CALLBACK TimerProc( HWND hWnd, UINT message, UINT idTimer, DWORD dwTime )
 {
-
    PHB_DYNS pSymTest;
    HB_SYMBOL_UNUSED( message );
+
    if( ( pSymTest = hb_dynsymFind( "TIMERPROC" ) ) != NULL )
    {
       hb_vmPushSymbol( hb_dynsymSymbol( pSymTest ) );
@@ -1096,13 +1067,9 @@ void CALLBACK TimerProc( HWND hWnd, UINT message, UINT idTimer, DWORD dwTime )
 
 BOOL RegisterWinCtrl(void)  // Added by jamaj - Used by WinCtrl
 {
+   WNDCLASS wndclass;
 
-   static TCHAR szAppName[] = TEXT ( "WINCTRL" );
-   WNDCLASS     wndclass
-
-;
-
-   wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
+   wndclass.style         = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
    wndclass.lpfnWndProc   = WinCtrlProc ;
    wndclass.cbClsExtra    = 0 ;
    wndclass.cbWndExtra    = 0 ;
@@ -1110,7 +1077,7 @@ BOOL RegisterWinCtrl(void)  // Added by jamaj - Used by WinCtrl
    wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
    wndclass.hbrBackground = (HBRUSH)( COLOR_3DFACE+1 );
    wndclass.lpszMenuName  = NULL;
-   wndclass.lpszClassName = szAppName ;
+   wndclass.lpszClassName = "WINCTRL";
 
    return RegisterClass (&wndclass);
 }
@@ -1434,30 +1401,33 @@ HB_FUNC(TOOLBAR_GETINFOTIPID)
 HB_FUNC(TOOLBAR_SUBMENU)
 {
    LPNMTOOLBAR lpnmTB = (LPNMTOOLBAR) hb_parnl(1);
-   RECT      rc;
+   RECT      *rc = NULL;
    TPMPARAMS tpm;
    HMENU     hPopupMenu;
    HMENU     hMenuLoaded;
-   HWND g_hwndMain=  (HWND) hb_parnl(3);
-   HANDLE g_hinst = GetModuleHandle( 0 );
+   HWND g_hwndMain = (HWND) hb_parnl(3);
+   HANDLE g_hinst  = GetModuleHandle( 0 );
 
    SendMessage(lpnmTB->hdr.hwndFrom, TB_GETRECT,
-               (WPARAM)lpnmTB->iItem, (LPARAM)&rc);
+               (WPARAM)lpnmTB->iItem, (LPARAM)rc);
 
    MapWindowPoints(lpnmTB->hdr.hwndFrom,
-                   HWND_DESKTOP, (LPPOINT)&rc, 2);
+                   HWND_DESKTOP, (LPPOINT)rc, 2);
 
    tpm.cbSize = sizeof(TPMPARAMS);
-   tpm.rcExclude = rc;
-   //hMenuLoaded = LoadMenu((struct HINSTANCE__ *) g_hinst, MAKEINTRESOURCE(hb_parni(2)));
+   // tpm.rcExclude = rc;
+   tpm.rcExclude.left = rc->left;
+   tpm.rcExclude.top = rc->top;
+   tpm.rcExclude.bottom = rc->bottom;
+   tpm.rcExclude.right = rc->right;
    hMenuLoaded = LoadMenu((HINSTANCE) g_hinst, MAKEINTRESOURCE(hb_parni(2)));
-   //hPopupMenu = GetSubMenu(LoadMenu((struct HINSTANCE__ *) g_hinst,
    hPopupMenu = GetSubMenu(LoadMenu((HINSTANCE) g_hinst,
       MAKEINTRESOURCE(hb_parni(2))),0);
 
    TrackPopupMenuEx(hPopupMenu,
       TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_VERTICAL,
-      rc.left, rc.bottom, g_hwndMain, &tpm);
+      rc->left, rc->bottom, g_hwndMain, &tpm);
+      //rc.left, rc.bottom, g_hwndMain, &tpm);
 
    DestroyMenu(hMenuLoaded);
 
@@ -1465,24 +1435,28 @@ HB_FUNC(TOOLBAR_SUBMENU)
 HB_FUNC(TOOLBAR_SUBMENUEX)
 {
    LPNMTOOLBAR lpnmTB = (LPNMTOOLBAR) hb_parnl(1);
-   RECT      rc;
+   //RECT      rc;
+   RECT      *rc = NULL;
    TPMPARAMS tpm;
    HMENU     hPopupMenu = (HMENU)hb_parnl(2);
    HWND g_hwndMain=  (HWND) hb_parnl(3);
 
    SendMessage(lpnmTB->hdr.hwndFrom, TB_GETRECT,
-      (WPARAM)lpnmTB->iItem, (LPARAM)&rc);
+      (WPARAM)lpnmTB->iItem, (LPARAM)rc);
 
    MapWindowPoints(lpnmTB->hdr.hwndFrom,
-      HWND_DESKTOP, (LPPOINT)&rc, 2);
+      HWND_DESKTOP, (LPPOINT)rc, 2);
 
    tpm.cbSize = sizeof(TPMPARAMS);
-   tpm.rcExclude = rc;
-
-
+   //tpm.rcExclude = rc;
+   tpm.rcExclude.left = rc->left;
+   tpm.rcExclude.top = rc->top;
+   tpm.rcExclude.bottom = rc->bottom;
+   tpm.rcExclude.right = rc->right;
    TrackPopupMenuEx(hPopupMenu,
       TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_VERTICAL,
-      rc.left, rc.bottom, g_hwndMain, &tpm);
+      rc->left, rc->bottom, g_hwndMain, &tpm);
+      //rc.left, rc.bottom, g_hwndMain, &tpm);
 
 }
 

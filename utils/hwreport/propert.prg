@@ -16,7 +16,7 @@
 
 Static aPenStyles := { "SOLID","DASH","DOT","DASHDOT","DASHDOTDOT" }
 Static aVariables := { "Static", "Variable" }
-
+memvar apaintrep, mypath
 Function LButtonDbl( xPos, yPos )
 Local i, aItem
 

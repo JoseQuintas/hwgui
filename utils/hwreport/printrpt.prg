@@ -10,7 +10,7 @@
 #include "guilib.ch"
 #include "repbuild.h"
 #include "repmain.h"
-
+memvar aPaintRep, lAddMode, oFontStandard
 Function PrintRpt
 Local hDCwindow
 Local oPrinter := HPrinter():New()

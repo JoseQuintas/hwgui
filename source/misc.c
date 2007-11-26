@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.35 2007-11-23 05:04:55 andijahja Exp $
+ * $Id: misc.c,v 1.36 2007-11-26 04:48:43 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -625,13 +625,13 @@ HB_FUNC( EDIT1UPDATECTRL )
 {
    HWND hChild = (HWND) hb_parnl( 1 ) ;
    HWND hParent= (HWND) hb_parnl( 2 ) ;
-   RECT rect;
+   RECT *rect = NULL;
 
-   GetWindowRect(hChild,&rect);
-   ScreenToClient(hParent,(LPPOINT)&rect);
-   ScreenToClient(hParent,((LPPOINT)&rect)+1);
-   InflateRect(&rect,-2,-2);
-   InvalidateRect(hParent,&rect, TRUE);
+   GetWindowRect(hChild,rect);
+   ScreenToClient(hParent,(LPPOINT)rect);
+   ScreenToClient(hParent,((LPPOINT)rect)+1);
+   InflateRect(rect,-2,-2);
+   InvalidateRect(hParent,rect, TRUE);
    UpdateWindow(hParent);
 }
 
@@ -639,12 +639,12 @@ HB_FUNC( BUTTON1GETSCREENCLIENT )
 {
    HWND hChild = (HWND) hb_parnl( 1 ) ;
    HWND hParent= (HWND) hb_parnl( 2 ) ;
-   RECT rect;
+   RECT *rect = NULL;
 
-   GetWindowRect(hChild,&rect);
-   ScreenToClient(hParent,(LPPOINT)&rect);
-   ScreenToClient(hParent,((LPPOINT)&rect)+1);
-   hb_itemRelease( hb_itemReturn( Rect2Array(&rect) ) );
+   GetWindowRect(hChild,rect);
+   ScreenToClient(hParent,(LPPOINT)rect);
+   ScreenToClient(hParent,((LPPOINT)rect)+1);
+   hb_itemRelease( hb_itemReturn( Rect2Array(rect) ) );
 }
 
 HB_FUNC( HEDITEX_CTLCOLOR )

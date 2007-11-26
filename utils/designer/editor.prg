@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.18 2007-04-24 19:53:50 richardroesnadi Exp $
+ * $Id: editor.prg,v 1.19 2007-11-26 04:48:43 andijahja Exp $
  *
  * Designer
  * Simple code editor
@@ -166,7 +166,8 @@ Memvar oDesigner
       AT 100,240  SIZE 600,300  FONT oDesigner:oMainWnd:oFont    ;
       STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_MAXIMIZEBOX+WS_SIZEBOX ;
       ON INIT {||MoveWindow(oDlg:handle,100,240,600,310)}        ;
-      ON EXIT {||Iif(lRes:=(oEdit:lChanged.AND.MsgYesNo("Code was changed! Save it?", "Designer")),cMethod:=oEdit:GetText(),.F.),.T.}
+      ON EXIT {||Iif(lRes:=(oEdit:lChanged.AND.MsgYesNo("Code was changed! Save it?", "Designer")),cMethod:=oEdit:GetText(),.F.)}
+      //ON EXIT {||Iif(lRes:=(oEdit:lChanged.AND.MsgYesNo("Code was changed! Save it?", "Designer")),cMethod:=oEdit:GetText(),.F.),.T.}
 
    MENU OF oDlg
       MENU TITLE "&Options"

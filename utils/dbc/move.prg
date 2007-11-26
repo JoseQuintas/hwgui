@@ -99,7 +99,7 @@ Local hWnd, oWindow, aControls, iCont
 Return Nil
 
 Function F_Locate( oBrw, cExpres )
-Local nrec, i, res
+Local nrec, i, res, block
    cLocate := cExpres
    IF VALTYPE( &cLocate ) == "L"
       nrec := RECNO()

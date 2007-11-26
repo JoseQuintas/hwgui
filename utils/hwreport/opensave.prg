@@ -14,6 +14,8 @@
 
 #define SB_VERT         1
 
+Memvar aPaintRep , mypath,aitemtypes
+
 Function FileDlg( lOpen )
 Local oDlg
 

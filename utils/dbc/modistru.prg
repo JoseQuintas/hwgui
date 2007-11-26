@@ -13,6 +13,8 @@
 #include "ads.ch"
 #endif
 
+memvar mypath, obrwfont, improc,msfile
+
 Function StruMan( lNew )
 Local oModDlg
 Local at := { "Character", "Numeric", "Date", "Logical", "Memo" }

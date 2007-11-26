@@ -11,6 +11,7 @@
 #include "dbchw.h"
 // #include "ads.ch"
 
+MEMVAR finame, cValue, cFor, nSum, mypath, improc, msmode
 /* -----------------------  Replace --------------------- */
 
 Function C_REPL

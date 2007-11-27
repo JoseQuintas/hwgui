@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.4 2006-08-03 10:43:34 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.5 2007-11-27 14:00:10 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -7,6 +7,10 @@
  * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
 */
+
+#ifdef __XHARBOUR__
+#xtranslate HB_AT(<x,...>) => AT(<x>)
+#endif
 
 Static aClass := { "label", "button", "checkbox",                    ;
                   "radiobutton", "editbox", "group", "radiogroup",  ;
@@ -434,7 +438,7 @@ Local arr := {}, nPos1, nPos2, cLine
    ELSE
       Aadd( arr, Alltrim( Left( cMethod,nPos1-1 ) ) )
       DO WHILE .T.
-         IF ( nPos2 := At( Chr(10),cMethod,nPos1+1 ) ) == 0
+         IF ( nPos2 := hb_At( Chr(10),cMethod,nPos1+1 ) ) == 0
             cLine := AllTrim( Substr( cMethod,nPos1+1 ) )
          ELSE
             cLine := AllTrim( Substr( cMethod,nPos1+1,nPos2-nPos1-1 ) )
@@ -592,7 +596,7 @@ MEMVAR aImages, lEditLabels, aParts
    IF ( i := At( "New(", stroka ) ) != 0
       i += 4
       DO WHILE .T.
-         IF ( j := At( ",",stroka,i ) ) != 0 .OR. ( j := At( ")",stroka,i ) ) != 0
+         IF ( j := hb_At( ",",stroka,i ) ) != 0 .OR. ( j := hb_At( ")",stroka,i ) ) != 0
             IF j-i > 0
                varname := Substr(stroka,i,j-i)
                __mvPrivate( varname )
@@ -815,8 +819,8 @@ Local arr := {}, pos1 := 2, pos2 := 1
    IF Len( stroka ) > 2
       DO WHILE pos2 > 0
          DO WHILE Substr( stroka,pos1,1 ) <= ' ' ; pos1 ++ ; ENDDO
-         pos2 := At( ',',stroka,pos1 )
-         Aadd( arr, Trim( Substr( stroka,pos1,Iif( pos2>0,pos2-pos1,At('}',stroka,pos1)-pos1 ) ) ) )
+         pos2 := hb_At( ',',stroka,pos1 )
+         Aadd( arr, Trim( Substr( stroka,pos1,Iif( pos2>0,pos2-pos1,hb_At('}',stroka,pos1)-pos1 ) ) ) )
          pos1 := pos2 + 1
       ENDDO
    ENDIF

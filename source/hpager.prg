@@ -1,5 +1,5 @@
 /*
- * $Id: hpager.prg,v 1.2 2007-11-10 17:44:46 mlacecilia Exp $
+ * $Id: hpager.prg,v 1.3 2007-11-27 14:00:10 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -36,7 +36,7 @@ CLASS HPager INHERIT HControl
    METHOD INIT()
 
    METHOD Notify( lParam )
-   METHOD PAGERSETCHILD( b ) inline tracelog(b),::hTool:=b,PAGERSETCHILD( ::handle, b )
+   METHOD PAGERSETCHILD( b ) inline ::hTool:=b,PAGERSETCHILD( ::handle, b )
    METHOD PAGERRECALCSIZE( ) inline PAGERRECALCSIZE( ::handle )
    METHOD PAGERFORWARDMOUSE( b ) inline PAGERFORWARDMOUSE( ::handle, b )
    METHOD PAGERSETBKCOLOR(  b ) inline PAGERSETBKCOLOR( ::handle, b )
@@ -58,7 +58,6 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit
    ::lVert := lVert
    nstyle   := Hwg_BitOr( IIF( nStyle == NIL, 0, nStyle ), ;
                            WS_VISIBLE + WS_CHILD+if(lvert,PGS_VERT,PGS_HORZ) )
-   tracelog(nstyle)
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )
    HWG_InitCommonControlsEx()

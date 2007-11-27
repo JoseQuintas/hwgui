@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: make_gtk.sh,v 1.2 2007-11-13 19:20:36 druzus Exp $
+# $Id: make_gtk.sh,v 1.3 2007-11-27 14:00:09 druzus Exp $
 #
 
 # ---------------------------------------------------------------
@@ -38,5 +38,5 @@ then
 fi
 
 cd `dirname $0`/gtk
-mkdir -p lib obj
+mkdir -p obj lib
 make -fMakefile.scr $*

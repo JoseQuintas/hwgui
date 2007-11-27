@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: make_gnu.sh,v 1.1 2007-11-13 19:33:20 druzus Exp $
+# $Id: make_gnu.sh,v 1.2 2007-11-27 14:00:09 druzus Exp $
 #
 
 # ---------------------------------------------------------------
@@ -45,5 +45,5 @@ then
 fi
 
 cd `dirname $0`
-mkdir -p lib obj
+mkdir -p obj lib
 make -fMakefile.scr $*

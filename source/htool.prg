@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.10 2007-11-10 17:44:49 mlacecilia Exp $
+ * $Id: htool.prg,v 1.11 2007-11-27 14:00:10 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -159,7 +159,6 @@ METHOD Notify( lParam ) CLASS hToolBar
 
     Local nButton
     Local nPos
-    //tracelog([ncode],ncode)
 
     IF nCode == TTN_GETDISPINFO
 
@@ -227,9 +226,7 @@ return self
 
 method ExecuteTool(nid) class htoolbarex
 Local nPos
-Tracelog("ExecuteTool( id ) id = ",nid)
 nPos := ascan(::aItem,{|x| x[2] == nid})
-tracelog(nPos)
 if nId >0
    SEndMessage(::oParent:handle,WM_COMMAND,makewparam(nid,BN_CLICKED),::handle)
    return 0

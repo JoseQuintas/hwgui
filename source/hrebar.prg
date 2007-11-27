@@ -1,5 +1,5 @@
 /*
- * $Id: hrebar.prg,v 1.3 2007-11-10 17:44:48 mlacecilia Exp $
+ * $Id: hrebar.prg,v 1.4 2007-11-27 14:00:10 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -45,7 +45,6 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit
    Default  lVert  to .f.
    nstyle   := Hwg_BitOr( IIF( nStyle == NIL, 0, nStyle ), ;
                            WS_VISIBLE + WS_CHILD )
-   tracelog(nstyle)
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )
    HWG_InitCommonControlsEx()

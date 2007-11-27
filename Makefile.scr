@@ -1,4 +1,4 @@
-# $Id: Makefile.scr,v 1.1 2007-11-13 19:33:20 druzus Exp $
+# $Id: Makefile.scr,v 1.2 2007-11-27 14:00:09 druzus Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -15,22 +15,25 @@ HBXML_DIR    = source/xml
 HWGQHTM_DIR  = source/qhtm
 ACTIVEX_DIR  = source/activex
 
-CFLAGS = -W -Wall -O3 -mno-cygwin -DHWG_USE_POINTER_ITEM $(C_USR)
-PRGFLAGS = -q -n -w -es2 $(PRG_USR)
+CFLAGS = -W -Wall -O3 -mno-cygwin -DHWG_USE_POINTER_ITEM
+CFLAGS += -I$(INC_DIR)
+CFLAGS += $(C_USR)
+
+PRGFLAGS = -q -m -n -w -es2
 ifeq ($(findstring xhb,$(HB_PREF)),)
 PRGFLAGS += -kM
 endif
+PRGFLAGS += -I$(INC_DIR)
+PRGFLAGS += $(PRG_USR)
 
-vpath %.a $(LIB_DIR)
-vpath %.o $(OBJ_DIR)
 vpath %.c $(SRC_DIR):$(PROCMISC_DIR):$(HBXML_DIR):$(HWGQHTM_DIR):$(ACTIVEX_DIR)
 vpath %.prg $(SRC_DIR):$(PROCMISC_DIR):$(HBXML_DIR):$(HWGQHTM_DIR):$(ACTIVEX_DIR)
 
 $(OBJ_DIR)/%.o : %.prg
-	$(HB_PREF)cmp $(PRGFLAGS) -I$(INC_DIR) -o$@ $<
+	$(HB_PREF)cmp $(PRGFLAGS) -o$@ $<
 
 $(OBJ_DIR)/%.o : %.c
-	$(HB_PREF)cc $(CFLAGS) -c -I$(INC_DIR) -o $@ $<
+	$(HB_PREF)cc -c $(CFLAGS) -o $@ $<
 
 $(LIB_DIR)/%.a ::
 	ar rc $@ $^

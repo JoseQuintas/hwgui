@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.704 2007-11-27 13:51:41 andijahja Exp $
+ * $Id: Changelog,v 1.705 2007-11-27 14:00:09 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,29 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-27 14:59 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/make_gnu.sh
+  * hwgui/make_gtk.sh
+  * hwgui/Makefile.scr
+  * hwgui/gtk/Makefile.scr
+    * cleanup
+
+  * hwgui/gtk/hedit.prg
+    * removed repeated DLGC_* definitions
+
+  * hwgui/gtk/hfrmtmpl.prg
+  * hwgui/source/hfrmtmpl.prg
+    * use HB_AT() instead of AT() when extended AT() parameters are used
+      for Harbour builds created without HB_EXTENSION
+
+  * hwgui/source/hcontrol.prg
+  * hwgui/source/hlistbox.prg
+  * hwgui/source/hpager.prg
+  * hwgui/source/hrebar.prg
+  * hwgui/source/htool.prg
+  * hwgui/source/misc.c
+    ! removed TraceLog() calls
 
 2007-11-27 20.45 UTC+0700 Andi Jahja <harbour/AT/cbn/net/id>
    * source/hlistbox.prg

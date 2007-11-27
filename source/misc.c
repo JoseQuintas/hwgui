@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.36 2007-11-26 04:48:43 andijahja Exp $
+ * $Id: misc.c,v 1.37 2007-11-27 14:00:10 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -673,7 +673,6 @@ HB_FUNC( HEDITEX_CTLCOLOR )
 
    p1 = GetObjectVar( pObject, "M_BACKCOLOR" );
    i = hb_itemGetNL(p1);
-   /* TraceLog("test.txt","%l \r\n", i ); */
    if ( i == -1 )
    {
      hBrush = (HBRUSH) GetStockObject(HOLLOW_BRUSH);

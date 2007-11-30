@@ -1,5 +1,5 @@
 /*
- * $Id: procscri.prg,v 1.13 2007-05-08 10:40:09 alkresin Exp $
+ * $Id: procscri.prg,v 1.14 2007-11-30 11:35:10 sandrorrfreire Exp $
  *
  * Common procedures
  * Scripts
@@ -490,7 +490,7 @@ PRIVATE iscr := 1, bOldError
    WndOut()
 
    RetValue := scr_RetValue
-   scr_RetValue := Nil
+   //scr_RetValue := Nil
 RETURN RetValue
 
 FUNCTION CallFunc( cProc, aParams, aScript )

@@ -1,5 +1,5 @@
 /*
- * $Id: designer.prg,v 1.30 2007-11-13 20:18:30 lculik Exp $
+ * $Id: designer.prg,v 1.31 2007-11-30 11:35:11 sandrorrfreire Exp $
  *
  * Designer
  * Main file
@@ -125,7 +125,8 @@ Public crossCursor, vertCursor, horzCursor
       MENU TITLE "&View"
          MENUITEM "&Object Inspector" ID 1010 ACTION Iif( oDesigner:oDlgInsp==Nil,InspOpen(),oDesigner:oDlgInsp:Close() )
 	 SEPARATOR
-         MENUITEM "&Show Grid" ID 1050 ACTION CheckMenuItem(oDesigner:oMainWnd:handle,1050,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1050))
+         MENUITEM "&Show Grid 5px" ID 1050 ACTION ShowGrid5px()
+         MENUITEM "&Show Grid 10px" ID 1052 ACTION ShowGrid10px()
          MENUITEM "S&nap to Grid" ID 1051 ACTION CheckMenuItem(oDesigner:oMainWnd:handle,1051,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1051))
          SEPARATOR
          MENUITEM "&Preview"  ACTION DoPreview()
@@ -140,6 +141,12 @@ Public crossCursor, vertCursor, horzCursor
          MENUITEM "&About" ACTION MsgInfo("Visual Designer", "Designer")
       ENDMENU
    ENDMENU
+
+   if ( oDesigner:nPixelGrid == 5 )
+       CheckMenuItem(oDesigner:oMainWnd:handle,1050,.T.)
+   else
+       CheckMenuItem(oDesigner:oMainWnd:handle,1052,.T.)
+   endif
 
    @ 0,0 PANEL oPanel SIZE 280,200 ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,y)}
 
@@ -227,6 +234,42 @@ Public crossCursor, vertCursor, horzCursor
 
 Return cResForm
 
+static Function ShowGrid10px()
+local nForm, nForms
+memvar oDesigner
+if ( oDesigner:oDlgInsp == NIL )
+    CheckMenuItem(oDesigner:oMainWnd:handle,1052,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1052))
+    CheckMenuItem(oDesigner:oMainWnd:handle,1050,.F.)
+    if (IsCheckedMenuItem(oDesigner:oMainWnd:handle,1052))
+        oDesigner:nPixelGrid := 10
+	oDesigner:lShowGrid  := .T.
+    else
+        oDesigner:nPixelGrid := 0
+        oDesigner:lShowGrid  := .F.
+    endif
+else
+    msginfo( "Close the form(s) first to change the grid status","Warning")
+endif
+Return ( NIL )
+
+static Function ShowGrid5px()
+local nForm, nForms
+memvar oDesigner
+if ( oDesigner:oDlgInsp == NIL )
+    CheckMenuItem(oDesigner:oMainWnd:handle,1050,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1050))
+    CheckMenuItem(oDesigner:oMainWnd:handle,1052,.F.)
+    if (IsCheckedMenuItem(oDesigner:oMainWnd:handle,1050))
+        oDesigner:nPixelGrid := 5
+	oDesigner:lShowGrid  := .T.
+    else
+        oDesigner:nPixelGrid := 0
+        oDesigner:lShowGrid  := .F.
+    endif
+else
+    msginfo( "Close the form first to change the grid status","Warning")
+endif
+Return ( NIL )
+
 // -----------------
 CLASS HDesigner
 
@@ -245,7 +288,7 @@ CLASS HDesigner
    DATA aMethDef     INIT {}
    DATA lSingleForm  INIT .F.
    DATA cResForm
-   DATA nPixelGrid   INIT 10
+   DATA nPixelGrid   INIT 0
    DATA lShowGrid    INIT .F.
    DATA lSnapToGrid  INIT .F.
 
@@ -316,6 +359,11 @@ memvar oDesigner, cCurDir
              l_ds_mypath := oNode:GetAttribute("default")
              IF !Empty( l_ds_mypath )
                 oDesigner:nPixelGrid := val( l_ds_mypath )
+                if empty( oDesigner:nPixelGrid )
+                    oDesigner:lShowGrid := .F.
+                else
+                    oDesigner:lShowGrid := .T.
+		endif
              ENDIF
       ELSEIF oNode:title == "dirpath"
              l_ds_mypath := oNode:GetAttribute("default")

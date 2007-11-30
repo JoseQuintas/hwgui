@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.40 2007-11-13 20:18:30 lculik Exp $
+ * $Id: hformgen.prg,v 1.41 2007-11-30 11:35:12 sandrorrfreire Exp $
  *
  * Designer
  * HFormGen class
@@ -824,10 +824,10 @@ Memvar oDesigner
    ENDIF
 Return Nil
 
-Static Function PaintDlg( oDlg )
+static Function PaintDlg( oDlg )
 Local pps, hDC, aCoors, oCtrl := GetCtrlSelected( oDlg ), oForm := oDlg:oParent
 Local x1 := LEFT_INDENT, y1 := TOP_INDENT, x2, y2, i, n1cm, xt, yt
-Local oldBkColor
+Local oldBkColor, nTop, nLeft, nRight, nBottom
 Memvar oDesigner
 
    pps := DefinePaintStru()
@@ -874,6 +874,21 @@ Memvar oDesigner
       SetScrollInfo( oDlg:handle, SB_HORZ, 1, oForm:nXOffset/10+1, 1, Round((oForm:nPWidth-(aCoors[3]-LEFT_INDENT)/oForm:nKoeff)/10,0)+1 )
       SetScrollInfo( oDlg:handle, SB_VERT, 1, oForm:nYOffset/10+1, 1, Round((oForm:nPHeight-(aCoors[4]-TOP_INDENT)/oForm:nKoeff)/10,0)+1 )
    ELSE
+
+      if oDesigner:lShowGrid
+          aCoors := GetClientRect( oDlg:handle )
+          nTop   := aCoors[1]
+          nLeft  := aCoors[2]
+          nRight := aCoors[3]
+          nBottom := aCoors[4]
+          for i := nLeft to nRight step oDesigner:nPixelGrid
+              DrawLine( hDC, i, nTop,i, nBottom )
+          next
+          for i := nTop to nBottom step oDesigner:nPixelGrid
+              DrawLine( hDC, nLeft, i, nRight, i )
+          next
+      endif
+      
       IF oCtrl != Nil .AND. oCtrl:nTop >= 0
 
          Rectangle( hDC, oCtrl:nLeft-3, oCtrl:nTop-3, ;
@@ -882,7 +897,7 @@ Memvar oDesigner
                      oCtrl:nLeft+oCtrl:nWidth, oCtrl:nTop+oCtrl:nHeight )
 	
       ENDIF
-
+/*
       oDesigner:addItem := Nil
       IF IsCheckedMenuItem( oDesigner:oMainWnd:handle,1050 )
         i := 0
@@ -898,7 +913,7 @@ Memvar oDesigner
           x1 += n1cm
         ENDDO
       ENDIF
-      
+*/      
    ENDIF
 
    EndPaint( oDlg:handle, pps )

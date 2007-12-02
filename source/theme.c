@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.7 2007-11-23 05:04:55 andijahja Exp $
+ * $Id: theme.c,v 1.8 2007-12-02 14:53:57 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -1655,9 +1655,9 @@ HB_FUNC( HB_DRAWTHEMEBACKGROUND )
    int iPartId = hb_parni( 3 ) ;
    int iStateId = hb_parni( 4 ) ;
    RECT pRect ;
-   //RECT pClipRect;
-   //BOOL bRectOk = ( ISARRAY( 5 )  &&   Array2Rect( hb_param( 5, HB_IT_ARRAY ), &pRect ) ) ;
-   //BOOL bRectOk1 = ( ISARRAY( 6 )  &&   Array2Rect( hb_param( 6, HB_IT_ARRAY ), &pClipRect ) ) ;
+   RECT pClipRect;
+   BOOL bRectOk = ( ISARRAY( 5 )  &&   Array2Rect( hb_param( 5, HB_IT_ARRAY ), &pRect ) ) ;
+   BOOL bRectOk1 = ( ISARRAY( 6 )  &&   Array2Rect( hb_param( 6, HB_IT_ARRAY ), &pClipRect ) ) ;
 
    hb_retnl( hb_DrawThemeBackground(hTheme, hdc,
                        iPartId, iStateId, &pRect, NULL ) );
@@ -1672,8 +1672,8 @@ HB_FUNC( DRAWTHEICON )
    RECT rpTitle;
    BOOL bIsPressed = hb_parl( 6 );
    BOOL bIsDisabled= hb_parl( 7 );
-   //BOOL bRectOk = ( ISARRAY( 4 )  &&   Array2Rect( hb_param( 4, HB_IT_ARRAY ), &rpItem ) ) ;
-   //BOOL bRectOk1 = ( ISARRAY( 5 )  &&   Array2Rect( hb_param( 5, HB_IT_ARRAY ), &rpTitle ) ) ;
+   BOOL bRectOk = ( ISARRAY( 4 )  &&   Array2Rect( hb_param( 4, HB_IT_ARRAY ), &rpItem ) ) ;
+   BOOL bRectOk1 = ( ISARRAY( 5 )  &&   Array2Rect( hb_param( 5, HB_IT_ARRAY ), &rpTitle ) ) ;
    HICON   hIco = ISNUM(8) ? (HICON) hb_parnl( 8 ) : NULL;
    HBITMAP hBit = ISNUM(9) ? (HBITMAP) hb_parnl( 9 ) : NULL;
    int iStyle = hb_parni( 10 );
@@ -1702,7 +1702,7 @@ HB_FUNC( HB_DRAWTHEMETEXT )
    DWORD dwTextFlags2 = hb_parnl( 7 ) ;
 
    RECT pRect ;
-   //BOOL bRectOk = ( ISARRAY( 8 )  &&   Array2Rect( hb_param( 8, HB_IT_ARRAY ), &pRect ) ) ;
+   BOOL bRectOk = ( ISARRAY( 8 )  &&   Array2Rect( hb_param( 8, HB_IT_ARRAY ), &pRect ) ) ;
    int nTextLen = strlen(pText);
    int mlen = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (char *)pText, nTextLen + 1, NULL, 0);
    WCHAR* output =  (WCHAR*) hb_xgrab(mlen+10);

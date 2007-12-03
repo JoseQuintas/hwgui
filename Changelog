@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.707 2007-12-02 14:53:56 lculik Exp $
+ * $Id: Changelog,v 1.708 2007-12-03 06:45:34 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-12-03 08:45 UTC+0200 Alexey Myronenko <atzct <at> obukhov.kiev.ua>
+  * hwgui\utils\designer\editor.prg
+    * use HB_AT() instead of AT()
+
 2007-12-02 13:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/theme.c
     ! fixed some functions since some parameters was not being processed
@@ -186,10 +191,10 @@
       + new defines
 
 2007-11-17 01:10 UTC+0100 Maurizio la Cecilia <maurizio_lacecilia@yahoo.it>
-	* source/hmenu.prg
-	* source/menu_c.c
+    * source/hmenu.prg
+    * source/menu_c.c
     ! fixed the setting of menuitem disabled
-	  (error signaled by Paulo Flecha)
+      (error signaled by Paulo Flecha)
 
 2007-11-14 08:45 UTC+0200 Alexey Myronenko <atzct <at> obukhov.kiev.ua>
   * hwgui/source/hcontrol.prg

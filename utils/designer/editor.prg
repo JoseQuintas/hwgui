@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.19 2007-11-26 04:48:43 andijahja Exp $
+ * $Id: editor.prg,v 1.20 2007-12-03 06:45:34 omm Exp $
  *
  * Designer
  * Simple code editor
@@ -312,7 +312,7 @@ Static Function CreateHilight( cText,oTheme )
 Local arr := {}, stroka, nPos, nLinePos := 1
 
    DO WHILE .T.
-      IF ( nPos := At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := At( Chr(13), cText, nLinePos ) ) != 0
+      IF ( nPos := HB_At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := HB_At( Chr(13), cText, nLinePos ) ) != 0
          HiLightString( SubStr( cText,nLinePos,nPos-nLinePos ), arr, nLinePos,oTheme )
          nLinePos := nPos + 1
       ELSE

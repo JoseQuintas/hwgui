@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.21 2007-12-04 15:04:22 omm Exp $
+ * $Id: editor.prg,v 1.22 2007-12-05 17:54:29 richardroesnadi Exp $
  *
  * Designer
  * Simple code editor
@@ -155,13 +155,14 @@ Local i, j, oNode, nStart, oThemeDesc, aAttr
 Return Nil
 
 Function EditMethod( cMethName, cMethod )
-Local i, lRes := .F.
-Local oFont := HDTheme():oFont
-Local cParamString
-Memvar oDesigner
+ Local i, lRes := .F.
+ Local oFont := HDTheme():oFont
+ Local cParamString
+ Memvar oDesigner
 
    i := Ascan( oDesigner:aMethDef, {|a|a[1]==Lower(cMethName)} )
    cParamString := Iif( i == 0, "", oDesigner:aMethDef[i,2] )
+
    INIT DIALOG oDlg TITLE "Edit '"+cMethName+"' method"          ;
       AT 100,240  SIZE 600,300  FONT oDesigner:oMainWnd:oFont    ;
       STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_MAXIMIZEBOX+WS_SIZEBOX ;
@@ -178,7 +179,16 @@ Memvar oDesigner
          ENDMENU
          MENUITEM "&Configure" ACTION EditColors()
       ENDMENU
+
       MENUITEM "&Parameters" ACTION Iif(!Empty(cParamString).and.Upper(Left(oEdit:Gettext(),10))!="PARAMETERS",(editShow("Parameters "+cParamString+Chr(10)+oEdit:Gettext()),oEdit:lChanged:=.T.),.F.)
+
+      MENU TITLE "&Templates "+cMethName
+
+         MENUITEM "&Insert Field"     ACTION InsertField(1)
+         MENUITEM "&Field:=xVarField" ACTION InsertField(0)
+
+      ENDMENU
+
       MENUITEM "&Exit" ACTION oDlg:Close()
    ENDMENU
 
@@ -311,7 +321,8 @@ Static Function CreateHilight( cText,oTheme )
 Local arr := {}, stroka, nPos, nLinePos := 1
 
    DO WHILE .T.
-      IF ( nPos := HB_At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := HB_At( Chr(13), cText, nLinePos ) ) != 0
+      //IF ( nPos := HB_At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := HB_At( Chr(13), cText, nLinePos ) ) != 0
+      IF ( nPos := At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := At( Chr(13), cText, nLinePos ) ) != 0
          HiLightString( SubStr( cText,nLinePos,nPos-nLinePos ), arr, nLinePos,oTheme )
          nLinePos := nPos + 1
       ELSE
@@ -489,6 +500,23 @@ Memvar oTheme, oCheckB, oCheckI, oEditC
    SendMessage( oEditC:handle,EM_SETBKGNDCOLOR,0,oTheme:normal[2] )
    re_SetCharFormat( oEditC:handle,CreateHiLight(oEditC:GetText(),oTheme) )
 Return Nil
+
+
+static function InsertField(nModus)
+
+  LOCAL cDBF:=MsgGet("DBF Name","input table name")
+
+  IF FILE(cDBF)
+
+   MSGINFO("later..")
+
+
+  ELSE
+	MSGINFO(cDBF+chr(13)+"Not Found")
+  ENDIF
+
+  return (Nil)
+
 
 #pragma BEGINDUMP
 

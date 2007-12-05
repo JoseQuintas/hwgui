@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.33 2007-11-23 08:30:42 andijahja Exp $
+ * $Id: menu_c.c,v 1.34 2007-12-05 17:54:29 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -55,7 +55,7 @@ HB_FUNC( HWG__ADDMENUITEM )
 
    if( !ISNIL(6) && ( hb_parni(6) & FLAG_DISABLED ) )
    {
-      uFlags |= MFS_DISABLED;
+      uFlags |= MFS_ENABLED;
    }
 
    if( ISCHAR( 2 ) )

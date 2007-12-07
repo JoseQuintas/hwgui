@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.713 2007-12-07 20:52:21 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.714 2007-12-07 20:56:59 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -33,17 +33,10 @@
   * hwgui\utils\designer\editor.prg
     * use HB_AT() instead of AT()
     
-2006-11-30 09-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
-  * source\procmisc\procscri.prg
-    Uncomented line
-  * utils\designer\designer.prg
-  * utils\designer\hformgen.prg
-    Fix bug in designer to create files in format PRG
-    Thanks to João Carlos Rosseto
-
 2007-12-02 13:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/theme.c
     ! fixed some functions since some parameters was not being processed
+    
 2006-11-30 09-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * source\procmisc\procscri.prg
     Uncomented line

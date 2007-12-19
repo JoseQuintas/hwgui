@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.715 2007-12-14 13:02:51 druzus Exp $
+ * $Id: Changelog,v 1.716 2007-12-19 18:40:06 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-12-19 19:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hedit.prg
+    ! changed __When to avoid the first or the last get can gain focus
+      also if hidden or having a WHEN clause returning .f.
 
 2007-12-14 14:02 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/make_gnu.sh

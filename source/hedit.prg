@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.64 2007-12-04 00:13:00 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.65 2007-12-19 18:40:06 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -728,13 +728,22 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
    RETURN 0
 
 STATIC FUNCTION __When( oCtrl )
-   LOCAL res
+   LOCAL res, oParent
 
    oCtrl:Refresh()
    oCtrl:lFirst := .T.
    IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
       IF ! res
+         oParent := ParentGetDialog(oCtrl)
+         IF oParent:nSkip > 0
+            IF oCtrl == oParent:GetList[-1]
+               oParent:nSkip := -1
+            ENDIF
+         ELSE
+            IF oCtrl == oParent:getList[1]
+               oParent:nSkip := 1
+            ENDIF
          GetSkip( oCtrl:oParent, oCtrl:handle )
       ENDIF
       RETURN res

@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.11 2007-11-27 14:00:10 druzus Exp $
+ * $Id: htool.prg,v 1.12 2007-12-20 10:39:54 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -143,10 +143,11 @@ Local nPos
        SendMessage( ::Handle, TB_SETIMAGELIST, 0, hIm )
 
       ENDIF
+      if len( ::aItem ) >0
+         TOOLBARADDBUTTONS( ::handle, ::aItem, Len( ::aItem ) )
 
-      TOOLBARADDBUTTONS( ::handle, ::aItem, Len( ::aItem ) )
-
-      SendMessage( ::handle, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS )
+         SendMessage( ::handle, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS )
+      endif
 
    ENDIF
 

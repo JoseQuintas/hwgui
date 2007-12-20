@@ -1,5 +1,6 @@
+
 /*
- *$Id: hedit.prg,v 1.66 2007-12-20 10:29:17 lculik Exp $
+ *$Id: hedit.prg,v 1.67 2007-12-20 12:57:29 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -16,10 +17,10 @@ STATIC lColorinFocus := .F.
 #include "hblang.ch"
 #include "guilib.ch"
 
-//#define DLGC_WANTARROWS     1      /* Control wants arrow keys         */
-//#define DLGC_WANTTAB        2      /* Control wants tab keys           */
-//#define DLGC_WANTALLKEYS    0x0004      /* Control wants all keys           */
-//#define DLGC_WANTCHARS    128      /* Want WM_CHAR messages            */
+#define DLGC_WANTARROWS     1      /* Control wants arrow keys         */
+#define DLGC_WANTTAB        2      /* Control wants tab keys           */
+#define DLGC_WANTALLKEYS    0x0004      /* Control wants all keys           */
+#define DLGC_WANTCHARS    128      /* Want WM_CHAR messages            */
 
 #ifndef GWL_STYLE
    #define GWL_STYLE           - 16
@@ -748,7 +749,9 @@ STATIC FUNCTION __When( oCtrl )
             IF oCtrl == oParent:getList[1]
                oParent:nSkip := 1
             ENDIF
+         ENDIF
          GetSkip( oCtrl:oParent, oCtrl:handle )
+       
       ENDIF
       RETURN res
    ENDIF

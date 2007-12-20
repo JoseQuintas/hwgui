@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.46 2007-11-27 14:00:10 druzus Exp $
+ * $Id: hcontrol.prg,v 1.47 2007-12-20 10:29:17 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -464,8 +464,8 @@ RETURN Self
 METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
                  cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle,hIcon  ) CLASS HButtonEx
    DEFAULT iStyle TO ST_ALIGN_HORIZ
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
-              bSize, bPaint, cTooltip, tcolor, bColor )
+   bPaint   := { | o, p | o:paint( p ) }
+
 
    ::title   := cCaption
 
@@ -480,11 +480,17 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::m_crColors[ BTNST_COLOR_BK_FOCUS ] := GetSysColor( COLOR_BTNFACE )
    ::m_crColors[ BTNST_COLOR_FG_FOCUS ] := GetSysColor( COLOR_BTNTEXT )
 
-   bPaint   := { | o, p | o:paint( p ) }
 
-   IF bClick != NIL
-      ::oParent:AddEvent( 0, ::id, bClick )
-   ENDIF
+
+//   IF bClick != NIL
+//      ::oParent:AddEvent( 0, ::id, bClick )
+//   ENDIF
+::super:Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
+                 cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle,hIcon  ) 
+   ::title   := cCaption
+
+   ::Caption := cCaption
+   
 
 RETURN Self
 
@@ -592,6 +598,7 @@ LOCAL centerRectWidth
 LOCAL centerRectHeight
 LOCAL uAlign
 
+
    IF ( ::m_bFirstTime )
 
       ::m_bFirstTime := .F.
@@ -674,9 +681,17 @@ LOCAL uAlign
 //      IF VALTYPE( ::hbitmap ) != "N"
 //         uAlign := DT_CENTER
 //      ENDIF
-   uAlign:=0
+   uAlign:=DT_LEFT
+   if VALTYPE( ::hbitmap ) == "N"
+         uAlign := DT_CENTER
+   endif
+   if VALTYPE( ::hicon ) == "N"
+         uAlign := DT_CENTER
+   endif
+
 //             DT_CENTER | DT_VCENTER | DT_SINGLELINE
-   uAlign += DT_WORDBREAK + DT_CENTER + DT_CALCRECT +  DT_VCENTER + DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
+//   uAlign += DT_WORDBREAK + DT_CENTER + DT_CALCRECT +  DT_VCENTER + DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
+     uAlign += DT_SINGLELINE | DT_VCENTER | DT_WORDBREAK;
 
    captionRect := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
 
@@ -688,15 +703,19 @@ LOCAL uAlign
 
       // If button is pressed then "press" title also
       IF bIsPressed .and. !::Themed
-         OffsetRect( @captionRect, 3, 3 )
+         OffsetRect( @captionRect, 1, 1 )
       ENDIF
 
       // Center text
-//      centerRect := captionRect
+      centerRect := captionRect
+
       centerRect:=copyrect(captionRect)
 
 
-     DrawText( dc, ::caption, captionrect[ 1 ], captionrect[ 2 ], captionrect[ 3 ], captionrect[ 4 ], uAlign + DT_CALCRECT, @captionRect )
+
+      if VALTYPE( ::hicon ) == "N" .or. VALTYPE( ::hbitmap ) == "N"
+         DrawText( dc, ::caption, captionrect[ 1 ], captionrect[ 2 ], captionrect[ 3 ], captionrect[ 4 ], uAlign + DT_CALCRECT, @captionRect )
+      endif
 
 
       captionRectWidth  := captionrect[ 3 ] - captionrect[ 1 ]
@@ -704,9 +723,12 @@ LOCAL uAlign
       centerRectWidth   := centerRect[ 3 ] - centerRect[ 1 ]
       centerRectHeight  := centerRect[ 4 ] - centerRect[ 2 ]
 //ok      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
-      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
+//      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
+//      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
+      OffsetRect( @captionRect, 0, ( centerRectHeight - captionRectHeight ) / 2 )
 
-      SetBkMode( dc, TRANSPARENT )
+
+/*      SetBkMode( dc, TRANSPARENT )
       IF ( bIsDisabled )
 
          OffsetRect( @captionRect, 1, 1 )
@@ -737,6 +759,7 @@ LOCAL uAlign
             ENDIF
          ENDIF
       ENDIF
+  */
 
       IF ::Themed
 
@@ -753,16 +776,16 @@ LOCAL uAlign
 
             OffsetRect( @captionRect, 1, 1 )
             SetTextColor( dc, GetSysColor( COLOR_3DHILIGHT ) )
-            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK + DT_CENTER )
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign )
             OffsetRect( @captionRect, - 1, - 1 )
             SetTextColor( dc, GetSysColor( COLOR_3DSHADOW ) )
-            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK + DT_CENTER )
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign )
             // if
          ELSE
 
             SetTextColor( dc, GetSysColor( COLOR_BTNTEXT ) )
             SetBkColor( dc, GetSysColor( COLOR_BTNFACE ) )
-            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], DT_WORDBREAK + DT_CENTER )
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign )
          ENDIF
       ENDIF
    ENDIF

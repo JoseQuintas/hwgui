@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.65 2007-12-19 18:40:06 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.66 2007-12-20 10:29:17 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -118,6 +118,10 @@ METHOD Activate CLASS HEdit
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    LOCAL oParent := ::oParent, nPos, nctrl, cKeyb
    LOCAL nexthandle
+
+      IF ::bOther != Nil       
+         Eval( ::bOther,Self,msg,wParam,lParam )         
+      ENDIF
 
    // WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ! ::lMultiLine
@@ -616,7 +620,7 @@ STATIC FUNCTION Input( oEdit, cChar, nPos )
             cChar := Nil
          ENDIF
       ELSE
-         cChar := Nil
+         cChar:= Transform( cChar, cPic )
       ENDIF
    ENDIF
 

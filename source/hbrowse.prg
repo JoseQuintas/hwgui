@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.84 2007-11-22 23:43:55 andijahja Exp $
+ * $Id: hbrowse.prg,v 1.85 2007-12-21 16:11:15 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -24,7 +24,7 @@
 #include "dbstruct.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
-
+#include "common.ch"
 REQUEST DBGOTOP
 REQUEST DBGOTO
 REQUEST DBGOBOTTOM
@@ -467,6 +467,7 @@ METHOD InsColumn( oColumn,nPos ) CLASS HBrowse
 RETURN oColumn
 
 Static Function InitColumn( oBrw, oColumn, n )
+Local xres,ctype,nlen
 
    IF oColumn:type == Nil
       oColumn:type := Valtype( Eval( oColumn:block,,oBrw,n ) )
@@ -484,8 +485,12 @@ Static Function InitColumn( oBrw, oColumn, n )
          oColumn:length := Len( Transform( Eval( oColumn:block,,oBrw,n ), oColumn:picture ) )
       ELSE
          oColumn:length := 10
+       xRes     :=  Eval( oColumn:block,,oBrw,n ) 
+       cType    := Valtype( xRes )
+
       ENDIF
-      oColumn:length := Max( oColumn:length, Len( oColumn:heading ) )
+//      oColumn:length := Max( oColumn:length, Len( oColumn:heading ) )
+           oColumn:length := lenval1(xres,ctype,oColumn:picture)
    ENDIF
 
 RETURN Nil
@@ -2155,5 +2160,53 @@ RETURN DBGOTO(nRecord)
 STATIC FUNCTION FltRecNo(oBrw)
 RETURN RECNO()
 //End Implementation by Luiz
+
+
+
+function lenval1( xVal, cType, cPict )
+return LenVal( xVal, cType, cPict )
+
+static function LenVal( xVal, cType, cPict )
+   LOCAL nLen
+
+   if !ISCHARACTER( cType )
+      cType := Valtype( xVal )
+   endif
+
+   Switch cType
+      case "L"
+         nLen := 1
+         exit
+
+      case "N"
+      case "C"
+      case "D"
+         If !Empty( cPict )
+            nLen := Len( Transform( xVal, cPict ) )
+            exit
+         Endif
+
+         Switch cType
+            case "N"
+               nLen := Len( Str( xVal ) )
+               exit
+
+            case "C"
+               nLen := Len( xVal )
+               exit
+
+            case "D"
+               nLen := Len( DToC( xVal ) )
+               exit
+         end
+         exit
+
+      default
+         nLen := 0
+
+   end
+
+Return nLen
+
 
 

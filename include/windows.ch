@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.49 2007-11-21 12:53:15 lculik Exp $
+ *$Id: windows.ch,v 1.50 2007-12-21 16:14:44 lculik Exp $
  */
 
 #define WM_CREATE                       1
@@ -1129,6 +1129,12 @@
 #define BM_CLICK           0x00F5
 #define BM_GETIMAGE        0x00F6
 #define BM_SETIMAGE        0x00F7
+#define BM_GETCHECK        0x00F0
+#define BM_SETCHECK        0x00F1
+#define BM_GETSTATE        0x00F2
+#define BM_SETSTATE        0x00F3
+#define BM_SETSTYLE        0x00F4
+
 #define BS_TEXT             0x00000000
 #define BS_ICON             0x00000040
 #define BS_BITMAP           0x00000080

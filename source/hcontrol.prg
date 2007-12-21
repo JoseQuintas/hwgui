@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.47 2007-12-20 10:29:17 lculik Exp $
+ * $Id: hcontrol.prg,v 1.48 2007-12-21 10:24:41 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -29,7 +29,7 @@
 #define BTNST_COLOR_FG_FOCUS  6            // Text color when the button is focused
 
 
-
+#define BS_TYPEMASK SS_TYPEMASK
 //- HControl
 
 CLASS HControl INHERIT HCustomWindow
@@ -409,6 +409,9 @@ CLASS HButtonEX INHERIT HButton
    DATA hTheme
    DATA Caption
    DATA state
+   DATA  m_bIsDefault INIT .F.
+   DATA m_nTypeStyle  init 0
+
    DATA m_bDrawTransparent INIT .f.
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
@@ -428,13 +431,16 @@ CLASS HButtonEX INHERIT HButton
                     tcolor, bColor, hBitmap, iStyle,hIcon )
    METHOD PAINTBK(p)
 
+
 END CLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
                tcolor, bColor, hBitmap, iStyle,hicon,Transp ) CLASS HButtonEx
+
    DEFAULT iStyle TO ST_ALIGN_HORIZ
    DEFAULT Transp to .T.
+
    ::Caption := cCaption
    ::iStyle                             := iStyle
    ::hBitmap                            := hBitmap
@@ -447,11 +453,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::m_crColors[ BTNST_COLOR_BK_FOCUS ] := GetSysColor( COLOR_BTNFACE )
    ::m_crColors[ BTNST_COLOR_FG_FOCUS ] := GetSysColor( COLOR_BTNTEXT )
 
-   IF VALTYPE( nStyle ) == "N"
-      nstyle += BS_OWNERDRAW
-   ELSE
-      nstyle := BS_OWNERDRAW
-   ENDIF
 
    bPaint   := { | o, p | o:paint( p ) }
 
@@ -460,6 +461,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                 tcolor, bColor )
 
 RETURN Self
+
 
 METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
                  cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle,hIcon  ) CLASS HButtonEx
@@ -517,6 +519,29 @@ METHOD INIT CLASS HButtonEx
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       HWG_INITBUTTONPROC( ::handle )
+if Valtype(::handle) > 0
+   nbs:=HWG_GETWINDOWSTYLE(::handle)
+   Tracelog("::handle",::handle)
+   ::m_nTypeStyle :=  GetTheStyle(nBS , BS_TYPEMASK)
+
+	// Check if this is a checkbox
+
+	// Set initial default state flag
+	if (::m_nTypeStyle == BS_DEFPUSHBUTTON)
+	
+		// Set default state for a default button
+		::m_bIsDefault := .t.
+
+		// Adjust style for default button
+		::m_nTypeStyle := BS_PUSHBUTTON
+	endif
+//        nbs -= BS_TYPEMASK
+//        nbs += BS_OWNERDRAW
+        Nbs := modstyle(nbs,BS_TYPEMASK  ,BS_OWNERDRAW)
+        HWG_SETWINDOWSTYLE ( ::handle,nbs)
+
+endif
+
       ::super:init()
       ::SetBitmap()
 endif
@@ -535,6 +560,9 @@ METHOD onEvent( msg, wParam, lParam )
          ENDIF
       ENDIF
       RETURN 0
+   ELSEIF msg == BM_SETSTYLE
+//    altd()
+      return BUTTONEXONSETSTYLE(wParam,lParam,::handle,@::m_bIsDefault)
    ELSEIF msg == WM_MOUSEMOVE
       if(!::bMouseOverButton)
 

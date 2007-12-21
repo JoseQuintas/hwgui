@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.8 2007-12-02 14:53:57 lculik Exp $
+ * $Id: theme.c,v 1.9 2007-12-21 10:24:41 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -21,7 +21,7 @@
 #endif
 
 //#include <tmschema.h>
-
+#define BS_TYPEMASK SS_TYPEMASK
 #ifndef BP_PUSHBUTTON
    #define BP_PUSHBUTTON 1
    #define PBS_NORMAL    1
@@ -1589,6 +1589,9 @@ static void DrawTheIcon(HWND hButtonWnd, HDC dc, BOOL bHasTitle, RECT* rpItem, R
       Calc_iconWidthHeight(hButtonWnd,&cx,&cy,dc,hIco);
 
    if (hBitmap)
+   {
+      SetBkColor(dc,RGB(255,255,255));
+
       Calc_bitmapWidthHeight(hButtonWnd,&cx,&cy,dc,hBitmap);
 
     PrepareImageRect(hButtonWnd, bHasTitle,rpItem, rpTitle, bIsPressed, cx, cy, &rImage,iStyle);
@@ -1736,4 +1739,48 @@ HB_FUNC( TRACKMOUSEVENT )
    csTME.dwFlags = TME_LEAVE;
    csTME.hwndTrack = m_hWnd;
    _TrackMouseEvent(&csTME);
+}
+
+HB_FUNC(BUTTONEXONSETSTYLE)
+{
+WPARAM wParam = (WPARAM) hb_parnl(1);
+LPARAM lParam = (LPARAM) hb_parnl(2);
+HWND h = (HWND) hb_parnl( 3 ) ;
+
+	UINT nNewType = (wParam & BS_TYPEMASK);
+
+	// Update default state flag
+	if (nNewType == BS_DEFPUSHBUTTON)
+	{
+		//m_bIsDefault = TRUE;
+                hb_storl(TRUE,4);        
+	} // if
+	else if (nNewType == BS_PUSHBUTTON)
+	{
+		// Losing default state always allowed
+		
+                hb_storl(FALSE,4);
+	} // if
+
+	// Can't change control type after owner-draw is set.
+	// Let the system process changes to other style bits
+	// and redrawing, while keeping owner-draw style
+	hb_retnl( DefWindowProc(h,BM_SETSTYLE,
+		(wParam & ~BS_TYPEMASK) | BS_OWNERDRAW, lParam) );
+} // End of OnSetStyle
+
+
+HB_FUNC(GETTHESTYLE)
+{
+   LONG nBS  = hb_parnl(1);
+   LONG nBS1  = hb_parnl(2);
+   hb_retnl(nBS & nBS1 );
+}
+
+HB_FUNC(MODSTYLE)
+{
+   LONG nbs = hb_parnl( 1 );
+   LONG b   = hb_parnl( 2 );
+   LONG c   = hb_parnl( 3 );
+hb_retnl((nbs & ~b) | c);
 }

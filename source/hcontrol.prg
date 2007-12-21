@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.48 2007-12-21 10:24:41 lculik Exp $
+ * $Id: hcontrol.prg,v 1.49 2007-12-21 10:31:04 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -514,15 +514,15 @@ METHOD End() CLASS HButtonEX
 RETURN self
 
 METHOD INIT CLASS HButtonEx
-
+   local nbs
    IF !::lInit
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       HWG_INITBUTTONPROC( ::handle )
-if Valtype(::handle) > 0
-   nbs:=HWG_GETWINDOWSTYLE(::handle)
-   Tracelog("::handle",::handle)
-   ::m_nTypeStyle :=  GetTheStyle(nBS , BS_TYPEMASK)
+      if Valtype(::handle) > 0
+        nbs:=HWG_GETWINDOWSTYLE(::handle)
+   
+       ::m_nTypeStyle :=  GetTheStyle(nBS , BS_TYPEMASK)
 
 	// Check if this is a checkbox
 
@@ -535,8 +535,6 @@ if Valtype(::handle) > 0
 		// Adjust style for default button
 		::m_nTypeStyle := BS_PUSHBUTTON
 	endif
-//        nbs -= BS_TYPEMASK
-//        nbs += BS_OWNERDRAW
         Nbs := modstyle(nbs,BS_TYPEMASK  ,BS_OWNERDRAW)
         HWG_SETWINDOWSTYLE ( ::handle,nbs)
 

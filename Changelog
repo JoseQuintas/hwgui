@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.719 2007-12-21 10:24:41 lculik Exp $
+ * $Id: Changelog,v 1.720 2007-12-25 19:12:53 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2007-12-25 20:12 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hprinter.prg
+  * doc/hwgdoc_classes.html
+    ! add 2 new methods SetTextColor() ,SetTBkColor() and 2 new
+      parameters to method Say() for set text and background color.
+
 2007-12-21 08:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/hcontrol.prg
     ! Added BM_SETSTYLE suppor for buttonex

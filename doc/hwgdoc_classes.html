@@ -952,6 +952,8 @@ HPrinter</A></strong>
    <tr><td>SetMode( nOrientation )<td>
    <tr><td>AddFont( fontName, nHeight ,lBold, lItalic, lUnderline )<td>
    <tr><td>SetFont( oFont )<td>
+   <tr><td>SetTextColor( nColor )<td>Set text color.
+   <tr><td>SetTBkColor( nColor )<td>Set background color of a text.
    <tr><td>StartDoc( lPreview,cMetaName )<td>Starts printing of a document. lPreview should be TRUE, if you want to preview the printing result.
    <tr><td>EndDoc()<td>End of a document printing.
    <tr><td>StartPage()<td>
@@ -963,7 +965,7 @@ HPrinter</A></strong>
    <tr><td>End()<td>Releasing the printer.
    <tr><td>Box( x1,y1,x2,y2,oPen )<td>
    <tr><td>Line( x1,y1,x2,y2,oPen )<td>
-   <tr><td>Say( cString,x1,y1,x2,y2,nOpt,oFont )<td>
+   <tr><td>Say(cString,x1,y1,x2,y2,nOpt,oFont,nTextColor,nBkColor)<td>
    <tr><td>Bitmap( x1,y1,x2,y2,nOpt,hBitmap )<td>
    <tr><td>GetTextWidth( cString, oFont )<td>
   </table>

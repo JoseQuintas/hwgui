@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.19 2007-11-10 17:44:47 mlacecilia Exp $
+ * $Id: hprinter.prg,v 1.20 2007-12-25 19:13:59 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -33,6 +33,8 @@ CLASS HPrinter INHERIT HObject
    METHOD SetMode( nOrientation )
    METHOD AddFont( fontName, nHeight ,lBold, lItalic, lUnderline )
    METHOD SetFont( oFont )  INLINE SelectObject( ::hDC,oFont:handle )
+   METHOD SetTextColor( nColor )  INLINE SetTextColor( ::hDC,nColor )
+   METHOD SetTBkColor( nColor )   INLINE SetBKColor( ::hDC,nColor )
    METHOD StartDoc( lPreview,cMetaName )
    METHOD EndDoc()
    METHOD StartPage()
@@ -44,7 +46,7 @@ CLASS HPrinter INHERIT HObject
    METHOD End()
    METHOD Box( x1,y1,x2,y2,oPen )
    METHOD Line( x1,y1,x2,y2,oPen )
-   METHOD Say( cString,x1,y1,x2,y2,nOpt,oFont )
+   METHOD Say( cString,x1,y1,x2,y2,nOpt,oFont,nTextColor,nBkColor )
    METHOD Bitmap( x1,y1,x2,y2,nOpt,hBitmap )
    METHOD GetTextWidth( cString, oFont )
 
@@ -154,12 +156,20 @@ METHOD Line( x1,y1,x2,y2,oPen ) CLASS HPrinter
 
 Return Nil
 
-METHOD Say( cString,x1,y1,x2,y2,nOpt,oFont ) CLASS HPrinter
-Local hFont
+METHOD Say( cString,x1,y1,x2,y2,nOpt,oFont,nTextColor,nBkColor ) CLASS HPrinter
+Local hFont, nOldTC, nOldBC
 
    IF oFont != Nil
       hFont := SelectObject( ::hDC,oFont:handle )
    ENDIF
+   IF nTextColor != Nil
+      nOldTC:= SetTextColor(::hDC,nTextColor)
+      msginfo(str(noldtc))
+   ENDIf
+   IF nBkColor != Nil
+      nOldBC:= SetTextColor(::hDC,nBkColor)
+   ENDIf
+
    IF ::lmm
       DrawText( ::hDC,cString,::nHRes*x1,::nVRes*y1,::nHRes*x2,::nVRes*y2,Iif(nOpt==Nil,DT_LEFT,nOpt) )
    ELSE
@@ -168,6 +178,13 @@ Local hFont
    IF oFont != Nil
       SelectObject( ::hDC,hFont )
    ENDIF
+   IF nTextColor != Nil
+      SetTextColor(::hDC,nOldTC)
+   ENDIf
+   IF nBkColor != Nil
+      SetTextColor(::hDC,nOldBC)
+   ENDIf
+
 
 Return Nil
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.20 2007-12-25 19:13:59 giuseppem Exp $
+ * $Id: hprinter.prg,v 1.21 2007-12-27 17:26:24 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -164,10 +164,9 @@ Local hFont, nOldTC, nOldBC
    ENDIF
    IF nTextColor != Nil
       nOldTC:= SetTextColor(::hDC,nTextColor)
-      msginfo(str(noldtc))
    ENDIf
    IF nBkColor != Nil
-      nOldBC:= SetTextColor(::hDC,nBkColor)
+      nOldBC:= SetBKColor(::hDC,nBkColor)
    ENDIf
 
    IF ::lmm
@@ -175,14 +174,17 @@ Local hFont, nOldTC, nOldBC
    ELSE
       DrawText( ::hDC,cString,x1,y1,x2,y2,Iif(nOpt==Nil,DT_LEFT,nOpt) )
    ENDIF
+   
    IF oFont != Nil
       SelectObject( ::hDC,hFont )
    ENDIF
+   
    IF nTextColor != Nil
       SetTextColor(::hDC,nOldTC)
    ENDIf
+   
    IF nBkColor != Nil
-      SetTextColor(::hDC,nOldBC)
+      SetBKColor(::hDC,nOldBC)
    ENDIf
 
 

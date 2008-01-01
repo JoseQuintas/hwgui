@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.67 2007-12-20 12:57:29 lculik Exp $
+ *$Id: hedit.prg,v 1.68 2008-01-01 18:44:50 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -33,6 +33,7 @@ CLASS VAR winclass   INIT "EDIT"
    DATA cType INIT "C"
    DATA bSetGet
    DATA bValid
+   DATA bkeydown     ,bkeyup
    DATA cPicFunc, cPicMask
    DATA lPicComplex  INIT .F.
    DATA lFirst       INIT .T.
@@ -118,7 +119,8 @@ METHOD Activate CLASS HEdit
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    LOCAL oParent := ::oParent, nPos, nctrl, cKeyb
-   LOCAL nexthandle
+   LOCAL nexthandle,l
+   trACELOG(" MSG = " + STR(MSG) , "WpaRAM = " + STR(WPARAM))
 
       IF ::bOther != Nil       
          Eval( ::bOther,Self,msg,wParam,lParam )         
@@ -145,6 +147,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
 
          ELSEIF msg == WM_KEYDOWN
+            IF ::bKeyDown != Nil
+              IF !Eval( ::bKeyDown,Self,wParam )
+                  RETURN 0
+               ENDIF
+            ENDIF
 
             IF wParam == 40     // KeyDown
                IF ! IsCtrlShift()
@@ -248,6 +255,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ENDIF
 *******  Tab  MULTILINE - Paulo Flecha
       IF msg == WM_KEYDOWN
+         IF wParam == VK_ESCAPE
+            return 0
+         ENDIF
+
          IF wParam == VK_TAB     // Tab
             IF Asc( SubStr( GetKeyboardState(), VK_SHIFT + 1, 1 ) ) >= 128
                ParentGetDialog( Self ):nSkip := - 1
@@ -271,6 +282,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
    //IF msg == WM_KEYDOWN
    IF msg == WM_KEYUP .OR. msg == WM_SYSKEYUP     /* BETTER FOR DESIGNER */
+
+            IF ::bKeyUp != Nil
+              IF !Eval( ::bKeyUp,Self,wParam )
+                  RETURN -1
+               ENDIF
+            ENDIF
+       
       IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
          DO WHILE oParent != Nil .AND. ! __ObjHasMsg( oParent, "GETLIST" )
             oParent := oParent:oParent

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.56 2007-11-27 14:00:10 druzus Exp $
+ * $Id: hfrmtmpl.prg,v 1.57 2008-01-02 22:29:56 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -663,6 +663,10 @@ MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
       ELSEIF cPName == "autohscroll"
          IF xProperty
             nStyle += ES_AUTOHSCROLL
+         ENDIF
+      ELSEIF cPName == "autovscroll"
+         IF xProperty
+            nStyle += ES_AUTOVSCROLL
          ENDIF
       ELSEIF cPName == "3dlook"
          IF xProperty

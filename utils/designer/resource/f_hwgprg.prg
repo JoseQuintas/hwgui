@@ -25,8 +25,14 @@ FUNCTION Style2Prg
    IF oCtrl:cClass == "label"
 
    ELSEIF oCtrl:cClass == "editbox"
+       cStyle := cStyle + iif( oCtrl:GetProp("multiline") = "True" , "+ES_MULTILINE " , "" )
+       cStyle := cStyle + iif( oCtrl:GetProp("autohscroll") = "True" , "+ES_AUTOHSCROLL " , "" )
+       cStyle := cStyle + iif( oCtrl:GetProp("autovscroll") = "True" , "+ES_AUTOVSCROLL " , "" )
 
    ENDIF
+   if Len( cStyle ) > 0
+       cStyle := "STYLE " + substr(cStyle,2)
+   endif
 
    Return cStyle
 ENDFUNC

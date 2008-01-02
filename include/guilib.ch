@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.96 2007-11-03 11:01:12 andijahja Exp $
+ *$Id: guilib.ch,v 1.97 2008-01-02 12:22:47 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define	WND_MAIN		1
@@ -337,6 +337,7 @@
             [ ON PAINT <bDraw> ]       ;
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
+            [ ON KEYDOWN <bKeyDown>]   ;
             [ STYLE <nStyle> ]         ;
             [<lnoborder: NOBORDER>]    ;
             [<lPassword: PASSWORD>]    ;
@@ -345,7 +346,7 @@
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<caption>,,<nStyle>,<x>,<y>,<width>, ;
                     <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
-                    <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.>,,<.lPassword.> )
+                    <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.>,,<.lPassword.>,<bKeyDown> )
 
 
 #xcommand REDEFINE EDITBOX [ <oEdit> ] ;
@@ -359,10 +360,11 @@
             [ ON PAINT <bDraw> ]       ;
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
+            [ ON KEYDOWN <bKeyDown>]   ;
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oEdit> := ] HEdit():Redefine( <oWnd>,<nId>,,,<oFont>,<bInit>,<bSize>,<bDraw>, ;
-                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor> )
+                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,,,,<bKeyDown> )
 
 #xcommand @ <x>,<y> RICHEDIT [ <oEdit> TEXT ] <vari> ;
             [ OF <oWnd> ]              ;
@@ -968,11 +970,13 @@
             [<lnoborder: NOBORDER>]    ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
+            [ ON KEYDOWN <bKeyDown>   ];
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<vari>,               ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;
                    <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,,,  ;
-                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<.lnoborder.>,<nMaxLength>,<.lPassword.>,<(vari)>)
+                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,;
+                   <.lnoborder.>,<nMaxLength>,<.lPassword.>,<bKeyDown>)
 
 /* Added MULTILINE: AJ: 11-03-2007*/
 #xcommand REDEFINE GET [ <oEdit> VAR ] <vari>  ;
@@ -987,10 +991,11 @@
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
             [<lMultiLine: MULTILINE>]  ;
+            [ ON KEYDOWN <bKeyDown>]   ;
           => ;
     [<oEdit> := ] HEdit():Redefine( <oWnd>,<nId>,<vari>, ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},    ;
-                   <oFont>,,,,<{bGfocus}>,<{bLfocus}>,<ctoolt>,<color>,<bcolor>,<cPicture>,<nMaxLength>,<.lMultiLine.> )
+                   <oFont>,,,,<{bGfocus}>,<{bLfocus}>,<ctoolt>,<color>,<bcolor>,<cPicture>,<nMaxLength>,<.lMultiLine.>,<bKeyDown> )
 
 
 #xcommand @ <x>,<y> GET CHECKBOX [ <oCheck> VAR ] <vari>  ;

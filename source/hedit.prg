@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.68 2008-01-01 18:44:50 lculik Exp $
+ *$Id: hedit.prg,v 1.69 2008-01-02 12:22:48 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -63,7 +63,7 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
             oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
-            tcolor, bcolor, cPicture, lNoBorder, nMaxLenght, lPassword ) CLASS HEdit
+            tcolor, bcolor, cPicture, lNoBorder, nMaxLenght, lPassword, bKeyDown ) CLASS HEdit
 
    nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), ;
                         WS_TABSTOP + IIf( lNoBorder == Nil.OR. ! lNoBorder, WS_BORDER, 0 ) + ;
@@ -79,7 +79,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::title := vari
    ENDIF
    ::bSetGet := bSetGet
-
+   ::bKeyDown := bKeyDown
    IF Hwg_BitAnd( nStyle, ES_MULTILINE ) != 0
       ::style := Hwg_BitOr( ::style, ES_WANTRETURN )
       ::lMultiLine := .T.
@@ -312,12 +312,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    RETURN - 1
 
 METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
-                 bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, nMaxLenght, lMultiLine )  CLASS HEdit
+                 bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, nMaxLenght, lMultiLine, bKeyDown )  CLASS HEdit
 
 
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, IIf( bcolor == Nil, GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor ) )
-
+   ::bKeyDown := bKeyDown
    IF ValType( lMultiLine ) == "L"
       ::lMultiLine := lMultiLine
    ENDIF

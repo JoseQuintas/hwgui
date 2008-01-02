@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.724 2008-01-02 12:22:44 lculik Exp $
+ * $Id: Changelog,v 1.725 2008-01-02 16:26:28 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-01-02 17:20 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hprinter.prg
+  * doc/hwgdoc_classes.html
+    ! add method SetBkmode() for set transparent at the printing text
+      add new parameter to set the brush at the box method.
+
 2008-01-02 09:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/hedit.prg
     Added support for bkeydown on constructors

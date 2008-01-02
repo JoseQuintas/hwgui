@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.21 2007-12-27 17:26:24 giuseppem Exp $
+ * $Id: hprinter.prg,v 1.22 2008-01-02 16:28:07 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -35,6 +35,7 @@ CLASS HPrinter INHERIT HObject
    METHOD SetFont( oFont )  INLINE SelectObject( ::hDC,oFont:handle )
    METHOD SetTextColor( nColor )  INLINE SetTextColor( ::hDC,nColor )
    METHOD SetTBkColor( nColor )   INLINE SetBKColor( ::hDC,nColor )
+   METHOD SetBkmode( lmode )   INLINE SetBkmode( ::hDC,if(lmode,1,0) )
    METHOD StartDoc( lPreview,cMetaName )
    METHOD EndDoc()
    METHOD StartPage()
@@ -44,7 +45,7 @@ CLASS HPrinter INHERIT HObject
    METHOD PrintMeta( nPage )
    METHOD Preview( cTitle )
    METHOD End()
-   METHOD Box( x1,y1,x2,y2,oPen )
+   METHOD Box( x1,y1,x2,y2,oPen,oBrush )
    METHOD Line( x1,y1,x2,y2,oPen )
    METHOD Say( cString,x1,y1,x2,y2,nOpt,oFont,nTextColor,nBkColor )
    METHOD Bitmap( x1,y1,x2,y2,nOpt,hBitmap )
@@ -130,10 +131,13 @@ METHOD End() CLASS HPrinter
    ::ReleaseMeta()
 Return Nil
 
-METHOD Box( x1,y1,x2,y2,oPen ) CLASS HPrinter
+METHOD Box( x1,y1,x2,y2,oPen,oBrush ) CLASS HPrinter
 
    IF oPen != Nil
       SelectObject( ::hDC,oPen:handle )
+   ENDIF
+   IF oBrush != Nil
+      SelectObject( ::hDC,oBrush:handle )
    ENDIF
    IF ::lmm
       Rectangle( ::hDC,::nHRes*x1,::nVRes*y1,::nHRes*x2,::nVRes*y2 )

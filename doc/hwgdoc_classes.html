@@ -954,6 +954,7 @@ HPrinter</A></strong>
    <tr><td>SetFont( oFont )<td>
    <tr><td>SetTextColor( nColor )<td>Set text color.
    <tr><td>SetTBkColor( nColor )<td>Set background color of a text.
+   <tr><td>SetBkmode( lmode )<td>Set transparent mode for printing text.
    <tr><td>StartDoc( lPreview,cMetaName )<td>Starts printing of a document. lPreview should be TRUE, if you want to preview the printing result.
    <tr><td>EndDoc()<td>End of a document printing.
    <tr><td>StartPage()<td>
@@ -963,7 +964,7 @@ HPrinter</A></strong>
    <tr><td>PrintMeta( nPage )<td>
    <tr><td>Preview( cTitle,aBitmaps,aTooltips,aBtnUser )<td>Opening of a preview window, this should be used after EndDoc() call.
    <tr><td>End()<td>Releasing the printer.
-   <tr><td>Box( x1,y1,x2,y2,oPen )<td>
+   <tr><td>Box( x1,y1,x2,y2,oPen,oBrush )<td>
    <tr><td>Line( x1,y1,x2,y2,oPen )<td>
    <tr><td>Say(cString,x1,y1,x2,y2,nOpt,oFont,nTextColor,nBkColor)<td>
    <tr><td>Bitmap( x1,y1,x2,y2,nOpt,hBitmap )<td>

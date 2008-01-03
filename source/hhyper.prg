@@ -1,5 +1,5 @@
 /*
- * $Id: hhyper.prg,v 1.7 2007-12-26 15:54:45 lculik Exp $
+ * $Id: hhyper.prg,v 1.8 2008-01-03 15:12:27 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HStaticLink class
@@ -84,8 +84,6 @@ Local oPrevFont
    ::title := cCaption
 
    // Test The Font the underline must be 1
-   Tracelog(::oFont)
-   altd()
    IF ::oFont == NIL
       IF ::oParent:oFont != NIL
          ::OFont := HFONT():Add( ::oParent:oFont:name, ::oParent:oFont:width, ::oParent:oFont:height,;

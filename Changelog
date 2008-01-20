@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.727 2008-01-02 23:17:29 fperillo Exp $
+ * $Id: Changelog,v 1.728 2008-01-20 21:54:54 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-01-20 20:00 Luiz Rafael Culik <Luiz at xharbour.com.br>
+  + gtk/hprogress.prg  
+    ! progress bar class
+  + gtk/sample/progbars.prg
+    ! sample for progress bar
+  * gtk/control.c
+    ! Added functions for progressbar
+    gtk/Makefile.linux
+    gtk/Makefile.scr
+    ! updated to use new file
+            
 2008-01-03 00:08 UTC+0100 Francesco Perillo  <fperillo at gmail.com>
   * gtk/hfrmtmpl.prg
     ! updated the GTK side to use AutoVScroll style property in designer forms

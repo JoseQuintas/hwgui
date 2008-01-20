@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.28 2007-04-05 14:44:48 mlacecilia Exp $
+ * $Id: control.c,v 1.29 2008-01-20 21:54:54 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -679,5 +679,33 @@ HB_FUNC( HWG_MOVEWIDGET )
             gtk_widget_set_size_request( ch_widget, w1, h1 );
       }
    }
+
+}
+
+HB_FUNC(CREATEPROGRESSBAR)
+{
+   GtkWidget * hCtrl;
+   GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
+   hCtrl = gtk_progress_bar_new();
+
+   if ( box )
+      gtk_fixed_put( box, hCtrl, hb_parni(3), hb_parni(4) );
+   gtk_widget_set_size_request( hCtrl,hb_parni(5),hb_parni(6) );
+   HB_RETHANDLE( hCtrl );
+}
+
+HB_FUNC( UPDATEPROGRESSBAR )
+{
+  // SendMessage( (HWND) hb_parnl(1), PBM_STEPIT, 0, 0 );
+  gtk_progress_bar_pulse((GtkProgressBar*)HB_PARHANDLE(1));
+}
+
+HB_FUNC( SETPROGRESSBAR )
+{ 
+   GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);   
+   gdouble b= (gdouble) hb_parnd( 2) ;
+
+   gtk_progress_bar_update(GTK_PROGRESS_BAR(widget),b);
+   while (gtk_events_pending()) { gtk_main_iteration();}
 
 }

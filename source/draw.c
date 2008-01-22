@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.37 2008-01-02 16:27:35 giuseppem Exp $
+ * $Id: draw.c,v 1.38 2008-01-22 12:25:07 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -74,9 +74,9 @@ HB_FUNC( INVALIDATERECT )
 
 HB_FUNC( RECTANGLE )
 {
+/*
    HDC hDC = (HDC) hb_parnl( 1 );
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 ), x2 = hb_parni( 4 ), y2 = hb_parni( 5 );
-/*
    MoveToEx( hDC, x1, y1, NULL );
    LineTo( hDC, x2, y1 );
    LineTo( hDC, x2, y2 );

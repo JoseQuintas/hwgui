@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.86 2008-01-22 09:47:46 alexstrickland Exp $
+ * $Id: hbrowse.prg,v 1.87 2008-01-22 12:25:07 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -25,9 +25,6 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 #include "common.ch"
-#ifdef __HARBOUR__
-#include "hbcompat.ch"
-#endif
 
 REQUEST DBGOTOP
 REQUEST DBGOTO
@@ -2205,7 +2202,11 @@ static function LenVal( xVal, cType, cPict )
          end
          exit
 
+#ifdef __XHARBOUR__
       default
+#else
+      otherwise
+#endif
          nLen := 0
 
    end

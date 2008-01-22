@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.7 2007-05-08 10:40:08 alkresin Exp $
+ * $Id: hradio.prg,v 1.8 2008-01-22 12:25:12 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -11,8 +11,6 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
-
-#define BM_GETCHECK        0x00F0
 
 CLASS HRadioGroup INHERIT HObject
    CLASS VAR oGroupCurrent

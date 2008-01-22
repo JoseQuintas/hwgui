@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.50 2008-01-22 09:47:46 alexstrickland Exp $
+ * $Id: hcontrol.prg,v 1.51 2008-01-22 12:25:09 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -19,9 +19,6 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 #include "common.ch"
-#ifdef __HARBOUR__
-#include "hbcompat.ch"
-#endif
 
 #define  CONTROL_FIRST_ID   34000
 #define TRANSPARENT 1
@@ -721,7 +718,7 @@ LOCAL uAlign
 
 //             DT_CENTER | DT_VCENTER | DT_SINGLELINE
 //   uAlign += DT_WORDBREAK + DT_CENTER + DT_CALCRECT +  DT_VCENTER + DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
-     uAlign += DT_SINGLELINE | DT_VCENTER | DT_WORDBREAK;
+     uAlign += DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK;
 
    captionRect := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
 

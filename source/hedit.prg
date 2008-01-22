@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.69 2008-01-02 12:22:48 lculik Exp $
+ *$Id: hedit.prg,v 1.70 2008-01-22 12:25:10 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -16,11 +16,6 @@ STATIC lColorinFocus := .F.
 #include "hbclass.ch"
 #include "hblang.ch"
 #include "guilib.ch"
-
-#define DLGC_WANTARROWS     1      /* Control wants arrow keys         */
-#define DLGC_WANTTAB        2      /* Control wants tab keys           */
-#define DLGC_WANTALLKEYS    0x0004      /* Control wants all keys           */
-#define DLGC_WANTCHARS    128      /* Want WM_CHAR messages            */
 
 #ifndef GWL_STYLE
    #define GWL_STYLE           - 16

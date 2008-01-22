@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.729 2008-01-22 09:47:27 alexstrickland Exp $
+ * $Id: Changelog,v 1.730 2008-01-22 12:25:04 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,21 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-01-22 13:24 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/draw.c
+    * commented unused part of code to avoid warnings
+
+  * hwgui/source/hbrowse.prg
+  * hwgui/source/hcontrol.prg
+    * removed #include "hbcompat.ch" (it's not Harbour default header
+      file) and updated for Harbour compilation. Luiz if possible
+      please try to keep the code Harbour compatible in next commits
+
+  * hwgui/source/hcheck.prg
+  * hwgui/source/hedit.prg
+  * hwgui/source/hradio.prg
+    * removed repeated #DEFINEs
 
 2008-01-22 11:50 UTC+0200 Alex Strickland <sscc@mweb.co.za>
   * source/hcontrol.c

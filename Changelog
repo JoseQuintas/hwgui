@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.728 2008-01-20 21:54:54 lculik Exp $
+ * $Id: Changelog,v 1.729 2008-01-22 09:47:27 alexstrickland Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,8 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-01-22 11:50 UTC+0200 Alex Strickland <sscc@mweb.co.za>
+  * source/hcontrol.c
+    ! Add hbcompat.ch for C style | operator
+  * source hbrowse.prg
+    ! Add hbcompat.ch for C style switch
+
 2008-01-20 20:00 Luiz Rafael Culik <Luiz at xharbour.com.br>
-  + gtk/hprogress.prg  
+  + gtk/hprogress.prg
     ! progress bar class
   + gtk/sample/progbars.prg
     ! sample for progress bar
@@ -17,7 +24,7 @@
     gtk/Makefile.linux
     gtk/Makefile.scr
     ! updated to use new file
-            
+
 2008-01-03 00:08 UTC+0100 Francesco Perillo  <fperillo at gmail.com>
   * gtk/hfrmtmpl.prg
     ! updated the GTK side to use AutoVScroll style property in designer forms
@@ -45,11 +52,11 @@
 2008-01-01 17:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   *source/hedit.prg
     ! added support for on keydown command
-      fixed esc handling when multiline is active 
+      fixed esc handling when multiline is active
 
 2007-12-27 18:22 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hprinter.prg
-    ! minor fix 
+    ! minor fix
 
 2007-12-26 14:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/hhyper.prg
@@ -64,7 +71,7 @@
 2007-12-21 08:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/hcontrol.prg
     ! Added BM_SETSTYLE suppor for buttonex
-  * source/control.c 
+  * source/control.c
     ! minor changes
   * source/theme.c
     ! minor fix
@@ -74,7 +81,7 @@
 
 2007-12-20 08:40 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/htool.prg
-    ! minor fix 
+    ! minor fix
 
 2007-12-20 08:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/hcontrol.prg
@@ -82,7 +89,7 @@
   * source/hedit.prg
     ! fixed  X picture usage
     ! added possibility to execute bother codeblock before key handling
-         
+
 
 2007-12-19 19:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hedit.prg
@@ -94,7 +101,7 @@
   * hwgui/make_gtk.sh
     * added comments and minor cleanup
 
- 
+
 
 2007-12-06  01:59 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
     *source\menu_c.c        fixed for designer
@@ -118,11 +125,11 @@
 2007-12-03 08:45 UTC+0200 Alexey Myronenko <atzct <at> obukhov.kiev.ua>
   * hwgui\utils\designer\editor.prg
     * use HB_AT() instead of AT()
-    
+
 2007-12-02 13:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/theme.c
     ! fixed some functions since some parameters was not being processed
-    
+
 2006-11-30 09-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * source\procmisc\procscri.prg
     Uncomented line

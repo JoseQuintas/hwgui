@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.85 2007-12-21 16:11:15 lculik Exp $
+ * $Id: hbrowse.prg,v 1.86 2008-01-22 09:47:46 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -25,6 +25,10 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 #include "common.ch"
+#ifdef __HARBOUR__
+#include "hbcompat.ch"
+#endif
+
 REQUEST DBGOTOP
 REQUEST DBGOTO
 REQUEST DBGOBOTTOM

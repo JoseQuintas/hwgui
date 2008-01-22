@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.49 2007-12-21 10:31:04 lculik Exp $
+ * $Id: hcontrol.prg,v 1.50 2008-01-22 09:47:46 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -19,6 +19,10 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 #include "common.ch"
+#ifdef __HARBOUR__
+#include "hbcompat.ch"
+#endif
+
 #define  CONTROL_FIRST_ID   34000
 #define TRANSPARENT 1
 #define BTNST_COLOR_BK_IN     1            // Background color when mouse is INside

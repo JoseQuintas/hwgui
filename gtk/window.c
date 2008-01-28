@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.25 2007-11-13 16:58:54 druzus Exp $
+ * $Id: window.c,v 1.26 2008-01-28 16:05:56 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -14,6 +14,7 @@
 #include "hbvm.h"
 #include "item.api"
 #include "gtk/gtk.h"
+#include "gdk/gdkkeysyms.h"
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #else
@@ -44,6 +45,9 @@ void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long 
 
 PHB_DYNS pSym_onEvent = NULL;
 
+#define HB_IT_DEFAULT   ( ( HB_TYPE ) 0x40000 )
+LONG Prevp2  = -1;
+LONG prevp2=-1;   
 typedef struct
 {
    char * cName;
@@ -257,11 +261,184 @@ void cb_signal( GtkWidget *widget,gchar* data )
       /* res = hb_parnl( -1 ); */
    }
 }
+static LONG ToKey(LONG a,LONG b)
+{
+
+if ( a == GDK_asciitilde )
+{
+   if ( b== GDK_A) 
+      return (LONG)GDK_Atilde;
+   else if ( b == GDK_a )      
+      return (LONG)GDK_atilde;
+   else if ( b== GDK_N) 
+      return (LONG)GDK_Ntilde;
+   else if ( b == GDK_n )      
+      return (LONG)GDK_ntilde;
+   else if ( b== GDK_O) 
+      return (LONG)GDK_Otilde;
+   else if ( b == GDK_o )      
+      return (LONG)GDK_otilde;                   
+}      
+if  ( a == GDK_asciicircum ) 
+{
+   if ( b== GDK_A) 
+      return (LONG)GDK_Acircumflex;
+   else if ( b == GDK_a )      
+      return (LONG)GDK_acircumflex;
+   else if ( b== GDK_E) 
+      return (LONG)GDK_Ecircumflex;
+   else if ( b == GDK_e )      
+      return (LONG)GDK_ecircumflex;      
+   else if ( b== GDK_I) 
+      return (LONG)GDK_Icircumflex;
+   else if ( b == GDK_i )      
+      return (LONG)GDK_icircumflex;      
+   else if ( b== GDK_O) 
+      return (LONG)GDK_Ocircumflex;
+   else if ( b == GDK_o )      
+      return (LONG)GDK_ocircumflex;      
+   else if ( b== GDK_U) 
+      return (LONG)GDK_Ucircumflex;
+   else if ( b == GDK_u )      
+      return (LONG)GDK_ucircumflex;      
+   else if ( b== GDK_C) 
+      return (LONG)GDK_Ccircumflex;
+   else if ( b == GDK_C )      
+      return (LONG)GDK_Ccircumflex;
+   else if ( b== GDK_H) 
+      return (LONG)GDK_Hcircumflex;
+   else if ( b == GDK_h )      
+      return (LONG)GDK_hcircumflex;      
+   else if ( b== GDK_J) 
+      return (LONG)GDK_Jcircumflex;
+   else if ( b == GDK_j )      
+      return (LONG)GDK_jcircumflex;      
+   else if ( b== GDK_G) 
+      return (LONG)GDK_Gcircumflex;
+   else if ( b == GDK_g )      
+      return (LONG)GDK_gcircumflex;      
+   else if ( b== GDK_S) 
+      return (LONG)GDK_Scircumflex;
+   else if ( b == GDK_s )      
+      return (LONG)GDK_scircumflex;            
+}
+	
+if ( a == GDK_grave )
+{
+   if ( b== GDK_A) 
+      return (LONG)GDK_Agrave;
+   else if ( b == GDK_a )      
+      return (LONG)GDK_agrave;
+   else if ( b== GDK_E) 
+      return (LONG)GDK_Egrave;
+   else if ( b == GDK_e )      
+      return (LONG)GDK_egrave;      
+   else if ( b== GDK_I) 
+      return (LONG)GDK_Igrave;
+   else if ( b == GDK_i )      
+      return (LONG)GDK_igrave;      
+   else if ( b== GDK_O) 
+      return (LONG)GDK_Ograve;
+   else if ( b == GDK_o )      
+      return (LONG)GDK_ograve;      
+   else if ( b== GDK_U) 
+      return (LONG)GDK_Ugrave;
+   else if ( b == GDK_u )      
+      return (LONG)GDK_ugrave;      
+      
+}
+
+if ( a == GDK_acute )
+{
+  if ( b== GDK_A) 
+      return (LONG)GDK_Aacute;
+   else if ( b == GDK_a )      
+      return (LONG)GDK_aacute;
+   else if ( b== GDK_E) 
+      return (LONG)GDK_Eacute;
+   else if ( b == GDK_e )      
+      return (LONG)GDK_eacute;      
+   else if ( b== GDK_I) 
+      return (LONG)GDK_Iacute;
+   else if ( b == GDK_i )      
+      return (LONG)GDK_iacute;      
+   else if ( b== GDK_O) 
+      return (LONG)GDK_Oacute;
+   else if ( b == GDK_o )      
+      return (LONG)GDK_oacute;      
+   else if ( b== GDK_U) 
+      return (LONG)GDK_Uacute;
+   else if ( b == GDK_u )      
+      return (LONG)GDK_uacute;      
+   else if ( b== GDK_Y) 
+      return (LONG)GDK_Yacute;
+   else if ( b == GDK_y )      
+      return (LONG)GDK_yacute;            
+   else if ( b== GDK_C) 
+      return (LONG)GDK_Cacute;
+   else if ( b == GDK_c )      
+      return (LONG)GDK_cacute;
+   else if ( b== GDK_L) 
+      return (LONG)GDK_Lacute;
+   else if ( b == GDK_l )      
+      return (LONG)GDK_lacute;      
+   else if ( b== GDK_N) 
+      return (LONG)GDK_Nacute;
+   else if ( b == GDK_n )      
+      return (LONG)GDK_nacute;      
+   else if ( b== GDK_R) 
+      return (LONG)GDK_Racute;
+   else if ( b == GDK_r )      
+      return (LONG)GDK_racute;      
+   else if ( b== GDK_S) 
+      return (LONG)GDK_Sacute;
+   else if ( b == GDK_s )      
+      return (LONG)GDK_sacute;      
+   else if ( b== GDK_Z) 
+      return (LONG)GDK_Zacute;
+   else if ( b == GDK_z )      
+      return (LONG)GDK_zacute;                  
+}
+if ( a == GDK_diaeresis)	
+{
+  if ( b== GDK_A) 
+      return (LONG)GDK_Adiaeresis;
+   else if ( b == GDK_a )      
+      return (LONG)GDK_adiaeresis;
+   else if ( b== GDK_E) 
+      return (LONG)GDK_Ediaeresis;
+   else if ( b == GDK_e )      
+      return (LONG)GDK_ediaeresis;      
+   else if ( b== GDK_I) 
+      return (LONG)GDK_Idiaeresis;
+   else if ( b == GDK_i )      
+      return (LONG)GDK_idiaeresis;      
+   else if ( b== GDK_O) 
+      return (LONG)GDK_Odiaeresis;
+   else if ( b == GDK_o )      
+      return (LONG)GDK_odiaeresis;      
+   else if ( b== GDK_U) 
+      return (LONG)GDK_Udiaeresis;
+   else if ( b == GDK_u )      
+      return (LONG)GDK_udiaeresis;      
+   else if ( b== GDK_Y) 
+      return (LONG)GDK_Ydiaeresis;
+   else if ( b == GDK_y )      
+      return (LONG)GDK_ydiaeresis;       	
+
+}
+ return b;      
+ 
+}
 
 static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
 {
    gpointer gObject = g_object_get_data( (GObject*) widget, "obj" );
    LONG lRes;
+   gunichar uchar;   
+   guint ukeyval;
+   gchar* tmpbuf;
+   gchar *res = NULL;
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -274,8 +451,36 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
 
       if( event->type == GDK_KEY_PRESS || event->type == GDK_KEY_RELEASE )
       {
+      /*
          p1 = (event->type==GDK_KEY_PRESS)? WM_KEYDOWN : WM_KEYUP;
          p2 = ((GdkEventKey*)event)->keyval;
+	 */
+         p1 = (event->type==GDK_KEY_PRESS)? WM_KEYDOWN : WM_KEYUP;
+         p2 = ((GdkEventKey*)event)->keyval;
+	 uchar= gdk_keyval_to_unicode(((GdkEventKey*)event)->keyval);
+	 if ( p2 == GDK_asciitilde  ||    p2 == GDK_asciicircum  ||             p2 == GDK_grave )
+
+	 {
+	    prevp2 = p2 ;
+	    p2=-1;
+//	    return 0; 
+	 }    
+	 else 
+	 {
+	 if ( prevp2 != -1 )
+	 {
+	    p2 = ToKey(prevp2,(LONG)p2);
+	    uchar= gdk_keyval_to_unicode(p2);
+	    prevp2=-1;
+	 }
+	 }   
+	    
+	 tmpbuf=g_new0(gchar,7);
+	 g_unichar_to_utf8(uchar,tmpbuf);
+	 res=g_locale_from_utf8(tmpbuf,-1,NULL,NULL,NULL);
+         g_free(tmpbuf);	 
+//	 TraceLog("aa.txt" , " keyval = %lu p2 = %lu unicode = U+%04X char %s \n",ukeyval,p2,uchar,res);
+//	 TraceLog("cc.txt","{ %lu,\"%s\"}\n",p2,res);	 
 	   p3 = ( ( ((GdkEventKey*)event)->state & GDK_SHIFT_MASK )? 1 : 0 ) |
 	      ( ( ((GdkEventKey*)event)->state & GDK_CONTROL_MASK )? 2 : 0 ) |
 	      ( ( ((GdkEventKey*)event)->state & GDK_MOD1_MASK )? 4 : 0 );

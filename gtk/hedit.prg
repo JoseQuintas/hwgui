@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.11 2007-11-27 14:00:09 druzus Exp $
+ *$Id: hedit.prg,v 1.12 2008-01-28 16:05:56 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HEdit class 
@@ -157,6 +157,7 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
    ENDIF
    
    IF ::bSetGet == Nil
+      ::Title :=::GetText()
       Return 0
    ENDIF
 

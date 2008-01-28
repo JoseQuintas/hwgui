@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.6 2008-01-02 23:17:30 fperillo Exp $
+ * $Id: hfrmtmpl.prg,v 1.7 2008-01-28 13:19:24 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -65,6 +65,9 @@ REQUEST HEDIT
 REQUEST HGROUP
 REQUEST HSAYBMP
 REQUEST HSAYICON
+REQUEST HSTATUS
+REQUEST HBUTTONEX
+REQUEST HProgressBar
 /* LINUX
 REQUEST HRICHEDIT
 REQUEST HDATEPICKER

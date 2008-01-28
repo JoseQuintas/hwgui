@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.12 2008-01-28 11:51:20 lculik Exp $
+ *$Id: hcontrol.prg,v 1.13 2008-01-28 12:15:18 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -164,7 +164,6 @@ Return Nil
 
 
 //- HStatus
-/*
 CLASS HStatus INHERIT HControl
 
    CLASS VAR winclass   INIT "msctls_statusbar32"
@@ -172,6 +171,7 @@ CLASS HStatus INHERIT HControl
    METHOD New( oWndParent,nId,nStyle,oFont,aParts,bInit,bSize,bPaint )
    METHOD Activate()
    METHOD Init()
+   method SetText(t,n) inline  STATUSBARSETTEXT(::handle,n,t)
 
 ENDCLASS
 
@@ -182,7 +182,6 @@ METHOD New( oWndParent,nId,nStyle,oFont,aParts,bInit,bSize,bPaint ) CLASS HStatu
    Super:New( oWndParent,nId,nStyle,0,0,0,0,oFont,bInit,bSize,bPaint )
 
    ::aParts  := aParts
-
    ::Activate()
 
 Return Self
@@ -191,22 +190,22 @@ METHOD Activate CLASS HStatus
 Local aCoors
 
    IF !Empty(::oParent:handle )
+
       ::handle := CreateStatusWindow( ::oParent:handle, ::id )
+
       ::Init()
-      IF __ObjHasMsg( ::oParent,"AOFFSET" )
-         aCoors := GetWindowRect( ::handle )
-         ::oParent:aOffset[4] := aCoors[4] - aCoors[2]
-      ENDIF
+//      IF __ObjHasMsg( ::oParent,"AOFFSET" )
+//         aCoors := GetWindowRect( ::handle )
+//         ::oParent:aOffset[4] := aCoors[4] - aCoors[2]
+//      ENDIF
    ENDIF
 Return Nil
 
 METHOD Init CLASS HStatus
    IF !::lInit
       Super:Init()
-      hwg_InitStatus( ::oParent:handle, ::handle, Len(::aParts), ::aParts )
    ENDIF
 Return  NIL
-*/
 
 //- HStatic
 

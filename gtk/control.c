@@ -1,11 +1,17 @@
 /*
- * $Id: control.c,v 1.30 2008-01-28 11:51:20 lculik Exp $
+ * $Id: control.c,v 1.31 2008-01-28 12:15:18 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
  *
  * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
+ *
+ * StatusBar and ProgressBar Functions
+ *
+ * Copyright 2008 Luiz Rafael Culik Guimaraes <luiz at xharbour.com.br >
+ * www - http://sites.uol.com.br/culikr/
+ 
 */
 
 #include "guilib.h"
@@ -715,4 +721,37 @@ HB_FUNC( SETPROGRESSBAR )
    gtk_progress_bar_update(GTK_PROGRESS_BAR(widget),b);
    while (gtk_events_pending()) { gtk_main_iteration();}
 
+}
+
+HB_FUNC( CREATESTATUSWINDOW )
+{
+   GtkWidget * w;
+   GObject * handle = (GObject*) HB_PARHANDLE(1);
+   GtkFixed * box = getFixedBox( handle );
+   GtkWidget * vbox = ( (GtkWidget*)box )->parent;
+   w  = gtk_statusbar_new() ;   
+   gtk_box_pack_end( GTK_BOX (vbox), (GtkWidget*)w, FALSE, FALSE, 0);     
+   gtk_box_reorder_child(GTK_BOX(vbox) ,w,9999);
+
+  HB_RETHANDLE( w);
+}
+
+HB_FUNC( STATUSBARSETTEXT )
+{   
+    char *cTitle = hb_parcx(3);
+    GtkWidget *w = (GtkWidget *) hb_parptr(1);
+    int iStatus = hb_parni(2)-1;
+    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
+    hb_retni(gtk_statusbar_push(GTK_STATUSBAR(w), iStatus, cTitle));
+
+}
+
+/* ------------------------------------------------------------------------ */
+
+/* void gtk_statusbar_pop (GtkStatusbar *statusbar, guint context_id); */
+HB_FUNC( STATUSBARREMOVETEXT )
+{
+   GtkWidget *w = (GtkWidget *) hb_parptr(1);
+   int iStatus = hb_parni(2-1);
+   gtk_statusbar_pop(GTK_STATUSBAR(w), iStatus);
 }

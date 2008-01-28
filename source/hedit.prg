@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.70 2008-01-22 12:25:10 druzus Exp $
+ *$Id: hedit.prg,v 1.71 2008-01-28 19:02:45 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -47,6 +47,7 @@ CLASS VAR winclass   INIT "EDIT"
    METHOD SetGet( value ) INLINE Eval( ::bSetGet, value, Self )
    METHOD Refresh()
    METHOD SetText( c )
+   METHOD ParsePict( cPicture, vari ) INLINE ParsePict( Self, cPicture, vari )
 
    /* AJ: 11-03-2007
       For More Cl*per like :-)

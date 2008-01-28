@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.10 2006-12-19 11:10:50 alkresin Exp $
+ * $Id: drawtext.c,v 1.11 2008-01-28 12:27:20 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level text functions
@@ -234,11 +234,20 @@ HB_FUNC( EXTTEXTOUT )
 */   
 }
 
+//HB_FUNC( WRITESTATUSWINDOW )
+//{
+//   // SendMessage( (HWND) hb_parnl( 1 ), SB_SETTEXT, hb_parni( 2 ), (LPARAM) hb_parc( 3 ) );
+//}
 HB_FUNC( WRITESTATUSWINDOW )
 {
    // SendMessage( (HWND) hb_parnl( 1 ), SB_SETTEXT, hb_parni( 2 ), (LPARAM) hb_parc( 3 ) );
-}
+    char *cTitle = hb_parcx(3);
+    GtkWidget *w = (GtkWidget *) hb_parptr(1);
+    int iStatus = hb_parni(2)-1;
+    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
+    hb_retni(gtk_statusbar_push(GTK_STATUSBAR(w), iStatus, cTitle));
 
+}
 HB_FUNC( WINDOWFROMDC )
 {
    // hb_retnl( (LONG) WindowFromDC( (HDC) hb_parnl( 1 ) ) );

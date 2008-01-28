@@ -1,5 +1,5 @@
 /*
- * $Id: gtkmain.prg,v 1.9 2006-09-13 15:47:20 alkresin Exp $
+ * $Id: gtkmain.prg,v 1.10 2008-01-28 12:44:30 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Main prg level functions
@@ -151,3 +151,12 @@ Return Nil
 
 FUNCTION HWG_Version(oTip)
 RETURN "HwGUI " + HWG_VERSION + Iif( oTip==1," "+Version(), "" )
+
+Function WriteStatus( oWnd, nPart, cText, lRedraw )
+Local aControls, i
+   aControls := oWnd:aControls
+   IF ( i := Ascan( aControls, {|o|o:ClassName()=="HSTATUS"} ) ) > 0
+      WriteStatusWindow( aControls[i]:handle,nPart-1,cText )
+
+   ENDIF
+Return Nil

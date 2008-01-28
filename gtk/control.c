@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.29 2008-01-20 21:54:54 lculik Exp $
+ * $Id: control.c,v 1.30 2008-01-28 11:51:20 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -14,6 +14,7 @@
 #include "hbvm.h"
 #include "item.api"
 #include "gtk/gtk.h"
+#include "hwgtk.h"
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif
@@ -101,10 +102,11 @@ HB_FUNC( HWG_STATIC_SETTEXT )
 */
 HB_FUNC( CREATEBUTTON )
 {
-   GtkWidget * hCtrl;
+   GtkWidget * hCtrl,* img;
    ULONG ulStyle = hb_parnl( 3 );
    char * cTitle = ( hb_pcount() > 7 )? hb_parc(8) : "";
    GtkFixed * box;
+   PHWGUI_PIXBUF szFile = ISPOINTER(9) ? (PHWGUI_PIXBUF) HB_PARHANDLE(9): NULL;
 
    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
    if( ( ulStyle & 0xf ) == BS_AUTORADIOBUTTON )
@@ -119,7 +121,12 @@ HB_FUNC( CREATEBUTTON )
    else if( ( ulStyle & 0xf ) == BS_GROUPBOX )
       hCtrl = gtk_frame_new( cTitle );
    else
-      hCtrl = gtk_button_new_with_label( cTitle );
+      hCtrl = gtk_button_new_with_mnemonic( cTitle );
+   if (szFile )
+   {
+      img = gtk_image_new_from_pixbuf(szFile->handle);
+      gtk_button_set_image(GTK_BUTTON(hCtrl),img);
+   }
 
    g_free( cTitle );
    box = getFixedBox( (GObject*) HB_PARHANDLE(1) );

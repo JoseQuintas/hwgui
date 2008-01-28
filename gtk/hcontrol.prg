@@ -1,11 +1,17 @@
 /*
- *$Id: hcontrol.prg,v 1.11 2006-08-03 11:55:51 alkresin Exp $
+ *$Id: hcontrol.prg,v 1.12 2008-01-28 11:51:20 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
  *
  * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
+ *
+ * ButtonEx class
+ *
+ * Copyright 2008 Luiz Rafael Culik Guimaraes <luiz at xharbour.com.br >
+ * www - http://sites.uol.com.br/culikr/
+ 
 */
 
 #include "windows.ch"
@@ -291,6 +297,49 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HButton
       ENDIF
    ENDIF
 Return  NIL
+
+CLASS HButtonEX INHERIT HButton
+
+   Data hBitmap
+   DATA hIcon
+
+   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+   cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
+   bColor, lTransp, hBitmap,hIcon )
+
+METHOD Activate
+END CLASS
+
+METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+               cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
+               tcolor, bColor, hBitmap, iStyle,hicon,Transp ) CLASS HButtonEx
+
+
+   ::hBitmap                            := hBitmap
+   ::hIcon                              := hIcon
+
+   ::super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+                cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
+                tcolor, bColor )
+
+RETURN Self
+
+METHOD Activate CLASS HButtonEX
+   IF !Empty(::oParent:handle )
+      if !empty(::hBitmap)
+      ::handle := CreateButton( ::oParent:handle, ::id, ;
+                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title,::hBitmap) 
+      elseif !empty(::hIcon)     
+            ::handle := CreateButton( ::oParent:handle, ::id, ;
+                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title,::hIcon) 
+      else
+            ::handle := CreateButton( ::oParent:handle, ::id, ;
+                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title,nil) 
+      endif		  
+      SetWindowObject( ::handle,Self )
+      ::Init()
+   ENDIF
+Return Nil
 
 //- HGroup
 

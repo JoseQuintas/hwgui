@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.730 2008-01-22 12:25:04 druzus Exp $
+ * $Id: Changelog,v 1.731 2008-01-28 11:51:18 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,7 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
-
+2008-01-28 09:40 Luiz Rafael Culik <Luiz at xharbour.com.br>
+  * gtk/hcontrol.prg 
+    ! added Hbuttonex classe like windows version
+  * gtk/control.c    
+    ! enhaced CreateButton to accept an 9th parameter with image to display
+    
 2008-01-22 13:24 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/draw.c
     * commented unused part of code to avoid warnings

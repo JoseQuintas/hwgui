@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.87 2008-01-22 12:25:07 druzus Exp $
+ * $Id: hbrowse.prg,v 1.88 2008-01-30 17:35:40 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -152,6 +152,7 @@ CLASS HBrowse INHERIT HControl
    DATA nFootRows INIT 0                       // Rows in footer
    DATA lResizing INIT .F.                     // .T. while a column resizing is undergoing
    DATA lCtrlPress INIT .F.                    // .T. while Ctrl key is pressed
+   DATA lShiftPress INIT .F.                    // .T. while Shift key is pressed
    DATA aSelected                              // An array of selected records numbers
    // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
    DATA lDescend INIT .F.              // Descend Order?
@@ -179,6 +180,7 @@ CLASS HBrowse INHERIT HControl
    METHOD DelColumn( nPos )
    METHOD Paint(lLostFocus)
    METHOD LineOut()
+   METHOD Select()
    METHOD HeaderOut( hDC )
    METHOD FooterOut( hDC )
    METHOD SetColumn( nCol )
@@ -272,7 +274,7 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
-Local aCoors, oParent, cKeyb, nCtrl, nPos
+Local aCoors, oParent, cKeyb, nCtrl, nPos, lBEof
 
    // WriteLog( "Brw: "+Str(::handle,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::active .AND. !Empty( ::aColumns )
@@ -322,6 +324,9 @@ Local aCoors, oParent, cKeyb, nCtrl, nPos
             ::lCtrlPress := .F.
          ENDIF
          // fim bloco sauli
+         IF wParam == 16
+            ::lShiftPress := .F.
+         ENDIF
          IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
             oParent := ::oParent
             DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
@@ -345,9 +350,39 @@ Local aCoors, oParent, cKeyb, nCtrl, nPos
             ENDIF
          ENDIF
          IF wParam == 40        // Down
+            IF ::lShiftPress .AND. ::aSelected != Nil
+                 skip
+                 lBEof:=eof()
+                 skip -1
+                 IF !(lBEof .and. Ascan( ::aSelected, Eval( ::bRecno,Self ) )>0)
+                    ::select()
+                 ENDIF
+            ENDIF
             ::LINEDOWN()
+
          ELSEIF wParam == 38    // Up
-            ::LINEUP()
+
+            IF ::lShiftPress .AND. ::aSelected != Nil
+                 skip
+                 lBEof:=eof()
+                 skip -1
+                 IF !(lBEof .and. Ascan( ::aSelected, Eval( ::bRecno,Self ) )>0)
+                    ::LINEUP()
+                 ENDIF
+            ELSE
+                 ::LINEUP()
+            ENDIF
+
+            IF ::lShiftPress .AND. ::aSelected != Nil
+                 skip -1
+                 IF !lBEof:=bof()
+                    SKIP
+                 ENDIF
+                 IF !(lBEof .and. Ascan( ::aSelected, Eval( ::bRecno,Self ) )>0)
+                    ::select()
+                 ENDIF
+            ENDIF
+
          ELSEIF wParam == 39    // Right
             ::DoHScroll( SB_LINERIGHT )
          ELSEIF wParam == 37    // Left
@@ -377,6 +412,8 @@ Local aCoors, oParent, cKeyb, nCtrl, nPos
          ELSEIF wParam == 17
             ::lCtrlPress := .T.
          // fim bloco sauli
+         ELSEIF wParam == 16
+            ::lShiftPress := .T.
 
 
          ELSEIF ::lAutoEdit .AND. (wParam >= 48 .and. wParam <= 90 .or. wParam >= 96 .and. wParam <= 111 )
@@ -1511,12 +1548,7 @@ Local xPos := LOWORD(lParam), x, x1, i
       ENDIF
    ELSEIF ::aSelected != Nil
       IF ::lCtrlPress
-         IF ( i := Ascan( ::aSelected, Eval( ::bRecno,Self ) ) ) > 0
-            Adel( ::aSelected, i )
-            Asize( ::aSelected, Len(::aSelected)-1 )
-         ELSE
-            Aadd(::aSelected, Eval( ::bRecno,Self ) )
-         ENDIF
+         ::select()
       ELSE
          IF Len( ::aSelected ) > 0
             ::aSelected := {}
@@ -1525,6 +1557,19 @@ Local xPos := LOWORD(lParam), x, x1, i
       ENDIF
    ENDIF
    SetFocus( ::handle )
+RETURN Nil
+
+METHOD Select() CLASS HBrowse
+Local i
+
+   IF ( i := Ascan( ::aSelected, Eval( ::bRecno,Self ) ) ) > 0
+      Adel( ::aSelected, i )
+      Asize( ::aSelected, Len(::aSelected)-1 )
+   ELSE
+      Aadd(::aSelected, Eval( ::bRecno,Self ) )
+   ENDIF
+   ::RefreshLine()
+   
 RETURN Nil
 
 //----------------------------------------------------//

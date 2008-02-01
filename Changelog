@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.738 2008-01-30 17:35:07 giuseppem Exp $
+ * $Id: Changelog,v 1.739 2008-02-01 18:47:20 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-02-01 19:50 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hbrowse.prg  
+    ! added support for (SHIFT-PGUP), (CTRL-SHIFT-PGUP) and (SHIFT-PGDOWN), (CTRL-SHIFT-PGDOWN)
+      in Multiselect.
 
 2008-01-30 18:31 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg  

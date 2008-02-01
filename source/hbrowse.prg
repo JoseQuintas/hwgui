@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.88 2008-01-30 17:35:40 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.89 2008-02-01 18:48:01 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -275,7 +275,7 @@ RETURN Nil
 //----------------------------------------------------//
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 Local aCoors, oParent, cKeyb, nCtrl, nPos, lBEof
-
+Local nRecStart, nRecStop
    // WriteLog( "Brw: "+Str(::handle,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::active .AND. !Empty( ::aColumns )
 
@@ -356,6 +356,7 @@ Local aCoors, oParent, cKeyb, nCtrl, nPos, lBEof
                  skip -1
                  IF !(lBEof .and. Ascan( ::aSelected, Eval( ::bRecno,Self ) )>0)
                     ::select()
+                    ::refreshline()
                  ENDIF
             ENDIF
             ::LINEDOWN()
@@ -379,7 +380,7 @@ Local aCoors, oParent, cKeyb, nCtrl, nPos, lBEof
                     SKIP
                  ENDIF
                  IF !(lBEof .and. Ascan( ::aSelected, Eval( ::bRecno,Self ) )>0)
-                    ::select()
+                     ::select()
                  ENDIF
             ENDIF
 
@@ -392,17 +393,53 @@ Local aCoors, oParent, cKeyb, nCtrl, nPos, lBEof
          ELSEIF wParam == 35    // End
             ::DoHScroll( SB_RIGHT )
          ELSEIF wParam == 34    // PageDown
+            nRecStart:=recno()
             IF ::lCtrlPress
                ::BOTTOM()
             ELSE
                ::PageDown()
             ENDIF
+            IF ::lShiftPress .AND. ::aSelected != Nil
+                nRecStop:=recno()
+                 skip
+                 lBEof:=eof()
+                 skip -1
+                IF !(lBEof .and. Ascan( ::aSelected, Eval( ::bRecno,Self ) )>0)
+                    ::select()
+                ENDIF
+                DO WHILE recno() != nRecStart
+                     ::Select()
+                     SKIP -1
+                ENDDO
+                ::Select()
+                DBGOTO(nRecStop)
+                SKIP
+                IF eof()
+                   SKIP -1
+                   ::Select()
+                ELSE
+                   SKIP -1
+                ENDIF
+                ::Refresh()
+            ENDIF
          ELSEIF wParam == 33    // PageUp
+            nRecStop:=recno()
             IF ::lCtrlPress
                ::TOP()
             ELSE
                ::PageUp()
             ENDIF
+            IF ::lShiftPress .AND. ::aSelected != Nil
+                nRecStart:=recno()
+                DO WHILE recno() != nRecstop
+                     ::Select()
+                     SKIP
+                ENDDO
+
+                DBGOTO(nRecStart)
+                ::Refresh()
+            ENDIF
+
          ELSEIF wParam == 13    // Enter
             ::Edit()
 
@@ -1549,6 +1586,7 @@ Local xPos := LOWORD(lParam), x, x1, i
    ELSEIF ::aSelected != Nil
       IF ::lCtrlPress
          ::select()
+         ::refreshline()
       ELSE
          IF Len( ::aSelected ) > 0
             ::aSelected := {}
@@ -1568,8 +1606,7 @@ Local i
    ELSE
       Aadd(::aSelected, Eval( ::bRecno,Self ) )
    ENDIF
-   ::RefreshLine()
-   
+
 RETURN Nil
 
 //----------------------------------------------------//

@@ -21,6 +21,9 @@ echo editor.obj, + >> b32.bc
 echo designer.exe, + >> b32.bc
 echo designer.map, + >> b32.bc
 
+
+echo %HRB_DIR%\lib\richgui.lib + >> b32.bc
+
 echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hbxml.lib + >> b32.bc
@@ -31,6 +34,9 @@ if not exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
 echo %HRB_DIR%\lib\lang.lib + >> b32.bc
 echo %HRB_DIR%\lib\codepage.lib + >> b32.bc
 echo %HRB_DIR%\lib\macro%HB_MT%.lib + >> b32.bc
+
+rem echo %HRB_DIR%\lib\rddleto.lib + >> b32.bc
+
 echo %HRB_DIR%\lib\rdd%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\dbfntx%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\dbfcdx%HB_MT%.lib + >> b32.bc

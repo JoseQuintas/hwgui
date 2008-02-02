@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.739 2008-02-01 18:47:20 giuseppem Exp $
+ * $Id: Changelog,v 1.740 2008-02-02 11:47:41 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-02-02 19:55 UTC+0700 richard roesnadi  <roesnadi8@yahoo.co.id>
+  * utils/designer/extmodul.ch
+  * utils/designer/extmodul.ch
+	! designer to added support for leto DB 
+      leto DB is Harbour (new) RDD DBFCDX Engine Client Server for Windows/Linux
+      http://www.sourceforge.net/projects/letodb
+  
 2008-02-01 19:50 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg  
     ! added support for (SHIFT-PGUP), (CTRL-SHIFT-PGUP) and (SHIFT-PGDOWN), (CTRL-SHIFT-PGDOWN)

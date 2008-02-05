@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.39 2008-02-02 16:44:46 richardroesnadi Exp $
+ * $Id: draw.c,v 1.40 2008-02-05 18:40:36 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -83,6 +83,16 @@ HB_FUNC( RECTANGLE )
    LineTo( hDC, x1, y1 );
 }
 
+HB_FUNC( BOX )
+{
+   Rectangle(
+    (HDC) hb_parnl( 1 ),  // handle of device context
+    hb_parni( 2 ),  // x-coord. of bounding rectangle's upper-left corner
+    hb_parni( 3 ),  // y-coord. of bounding rectangle's upper-left corner
+    hb_parni( 4 ),  // x-coord. of bounding rectangle's lower-right corner
+    hb_parni( 5 )   // y-coord. of bounding rectangle's lower-right corner
+   );
+}
 
 
 

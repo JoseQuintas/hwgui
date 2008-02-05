@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.22 2008-01-02 16:28:07 giuseppem Exp $
+ * $Id: hprinter.prg,v 1.23 2008-02-05 18:43:21 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -140,9 +140,9 @@ METHOD Box( x1,y1,x2,y2,oPen,oBrush ) CLASS HPrinter
       SelectObject( ::hDC,oBrush:handle )
    ENDIF
    IF ::lmm
-      Rectangle( ::hDC,::nHRes*x1,::nVRes*y1,::nHRes*x2,::nVRes*y2 )
+      Box( ::hDC,::nHRes*x1,::nVRes*y1,::nHRes*x2,::nVRes*y2 )
    ELSE
-      Rectangle( ::hDC,x1,y1,x2,y2 )
+      Box( ::hDC,x1,y1,x2,y2 )
    ENDIF
 
 Return Nil

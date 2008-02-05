@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.71 2008-01-28 19:02:45 sandrorrfreire Exp $
+ *$Id: hedit.prg,v 1.72 2008-02-05 18:42:07 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -566,7 +566,7 @@ STATIC FUNCTION DeleteChar( oEdit, lBack )
       ELSE
          nPosEdit := FirstNotEditable( oEdit, nPosStart + 1 )
          IF nPosEdit > 0
-            cBuf := Left( oEdit:title, nPosStart ) + SubStr( oEdit:title, nPosStart + 2, 1 ) + "  " + SubStr( oEdit:title, nPosEdit + 1 )
+            cBuf := Left( oEdit:title, nPosStart ) + if(IsEditable(oedit,nposStart+2),SubStr( oEdit:title, nPosStart + 2, 1 ) + "  " ,"  ")+ SubStr( oEdit:title, nPosEdit + 1 )
          ELSE
             cBuf := Left( oEdit:title, nPosStart ) + SubStr( oEdit:title, nPosStart + 2 ) + Space( nPosEnd - nPosStart - 1 )
          ENDIF

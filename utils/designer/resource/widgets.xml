@@ -266,7 +266,7 @@
       </widget>
       <widget class="menu" name="Menu" bmp="BMP_MENU">
          <create>
-            <![CDATA[BuildMenu( {{{|| EditMenu()},"Menu",32000,.t.}},oCtrl:oParent:handle,oCtrl:oParent )
+            <![CDATA[BuildMenu( {{{|| EditMenu()},"Menu",32000,.f.}},oCtrl:oParent:handle,oCtrl:oParent )
             ]]>
          </create>
          <property name="Name" type="C" />

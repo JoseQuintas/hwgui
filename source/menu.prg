@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.21 2007-11-17 00:01:58 mlacecilia Exp $
+ * $Id: menu.prg,v 1.22 2008-02-08 23:18:32 richardroesnadi Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -139,6 +139,8 @@ Local hMenu, nPos, aMenu, oBmp
       hMenu := aMenuInit[5]
       nPos := Len( aMenuInit[1] )
       aMenu := aMenuInit[ 1,nPosParent ]
+      /* This code just for sure menu runtime hfrmtmpl.prg is enable */
+      IIF(VALTYPE(aMenu[4])=="L", aMenu[4]:=.f., )
       hMenu := hwg__AddMenuItem( hMenu, aMenu[2], nPos+1, .T., aMenu[3],aMenu[4],.T. )
       IF Len( aMenu ) < 5
          Aadd( aMenu,hMenu )
@@ -153,6 +155,8 @@ Local hMenu, nPos, aMenu, oBmp
          BuildMenu( aMenu,,,nPos )
       ELSE
          IF aMenu[ 1,nPos,1 ] == Nil .OR. aMenu[ 1,nPos,2 ] != Nil
+            /* This code just for sure menu runtime hfrmtmpl.prg is enable */
+            IIF(VALTYPE(aMenu[1,nPos,4])=="L", aMenu[1,nPos,4]:=.f., )
             hwg__AddMenuItem( hMenu, aMenu[1,npos,2], nPos, .T., ;
                    aMenu[1,nPos,3], aMenu[1,npos,4],.F. )
             oBmp:=Hwg_SearchPosBitmap( aMenu[1,nPos,3])

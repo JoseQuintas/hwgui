@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.50 2007-12-21 16:14:44 lculik Exp $
+ *$Id: windows.ch,v 1.51 2008-02-15 22:05:05 giuseppem Exp $
  */
 
 #define WM_CREATE                       1
@@ -255,6 +255,10 @@
 /*
  * Scroll Bar Commands
  */
+#define SB_HORZ             0
+#define SB_VERT             1
+#define SB_CTL              2
+#define SB_BOTH             3
 #define SB_LINEUP           0
 #define SB_LINELEFT         0
 #define SB_LINEDOWN         1

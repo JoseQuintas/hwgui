@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.37 2007-11-27 14:00:10 druzus Exp $
+ * $Id: misc.c,v 1.38 2008-02-15 22:05:37 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -510,6 +510,12 @@ HB_FUNC( GETSCROLLRANGE )
    hb_storni( MaxPos, 4 );
 }
 
+HB_FUNC( SETSCROLLRANGE )
+{
+   hb_retl( SetScrollRange((HWND) hb_parnl(1), hb_parni(2), hb_parni(3), hb_parni(4), hb_parl(5)) );
+}
+
+
 HB_FUNC( GETSCROLLPOS )
 {
    hb_retni( GetScrollPos(
@@ -536,6 +542,12 @@ HB_FUNC( SHOWSCROLLBAR )
       hb_parl( 3 )              // scroll bar visibility
    );
 }
+
+HB_FUNC (SCROLLWINDOW)
+{
+ ScrollWindow((HWND) hb_parnl(1), hb_parni(2),hb_parni(3),NULL,NULL);
+}
+
 
 HB_FUNC ( ISCAPSLOCKACTIVE )
 {

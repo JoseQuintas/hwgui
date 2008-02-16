@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.41 2007-11-30 11:35:12 sandrorrfreire Exp $
+ * $Id: hformgen.prg,v 1.42 2008-02-16 10:16:56 mlacecilia Exp $
  *
  * Designer
  * HFormGen class
@@ -15,9 +15,6 @@
 #include "hxml.ch"
 
 #include "designer.ch"
-
-#define SB_HORZ             0
-#define SB_VERT             1
 
 #define  LEFT_INDENT   40
 #define  TOP_INDENT    30

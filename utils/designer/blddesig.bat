@@ -22,7 +22,7 @@ echo designer.exe, + >> b32.bc
 echo designer.map, + >> b32.bc
 
 
-echo %HRB_DIR%\lib\richgui.lib + >> b32.bc
+rem echo %HRB_DIR%\lib\richgui.lib + >> b32.bc
 
 echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc

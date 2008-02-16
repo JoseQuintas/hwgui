@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.14 2007-01-02 11:46:59 lculik Exp $
+ *$Id: hcwindow.prg,v 1.15 2008-02-16 02:30:57 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -58,6 +58,7 @@ CLASS HCustomWindow INHERIT HObject
    DATA bPaint
    DATA bGetFocus
    DATA bLostFocus
+   DATA bScroll
    DATA bOther
    DATA cargo
    DATA HelpId        INIT 0
@@ -324,6 +325,11 @@ LOCAL oCtrl := oWnd:FindControl( , lParam ), msg
             Eval( oCtrl:bThumbDrag, oCtrl )
             RETURN 0
          ENDIF
+      ENDIF
+   ELSE
+      IF ISBLOCK( oWnd:bScroll )
+         Eval( oWnd:bScroll, oWnd, wParam, lParam )
+         RETURN 0
       ENDIF
    ENDIF
 

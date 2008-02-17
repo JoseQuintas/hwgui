@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.50 2007-11-14 00:43:27 mlacecilia Exp $
+ *$Id: hwindow.prg,v 1.51 2008-02-17 01:52:41 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -243,7 +243,7 @@ Local i
       Return Eval( ::aMessages[2,i], Self, wParam, lParam )
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
-         onTrackScroll( Self,wParam,lParam )
+         onTrackScroll( Self,msg,wParam,lParam )
       ENDIF
       Return Super:onEvent( msg, wParam, lParam )
    ENDIF
@@ -306,7 +306,7 @@ Local i
       Return Eval( ::aMessages[2,i], Self, wParam, lParam )
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
-         onTrackScroll( Self,wParam,lParam )
+         onTrackScroll( Self,msg,wParam,lParam )
       ENDIF
       Return Super:onEvent( msg, wParam, lParam )
    ENDIF
@@ -366,7 +366,7 @@ Local i
       Return Eval( HMainWindow():aMessages[2,i], Self, wParam, lParam )
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
-         onTrackScroll( Self,wParam,lParam )
+         onTrackScroll( Self,msg,wParam,lParam )
       ENDIF
       Return Super:onEvent( msg, wParam, lParam )
    ENDIF

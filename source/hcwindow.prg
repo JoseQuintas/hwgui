@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.15 2008-02-16 02:30:57 mlacecilia Exp $
+ *$Id: hcwindow.prg,v 1.16 2008-02-17 01:52:41 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -59,6 +59,7 @@ CLASS HCustomWindow INHERIT HObject
    DATA bGetFocus
    DATA bLostFocus
    DATA bScroll
+   DATA aScrollXY     INIT { 0, 0 }
    DATA bOther
    DATA cargo
    DATA HelpId        INIT 0
@@ -144,8 +145,8 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HCustomWindow
 LOCAL i
 
    // Writelog( "== "+::Classname()+Str(msg)+IIF(wParam!=NIL,Str(wParam),"NIL")+IIF(lParam!=NIL,Str(lParam),"NIL") )
-    
-   IF ( i := Ascan( aCustomEvents[ EVENTS_MESSAGES ], msg ) ) != 0      
+
+   IF ( i := Ascan( aCustomEvents[ EVENTS_MESSAGES ], msg ) ) != 0
       RETURN Eval( aCustomEvents[ EVENTS_ACTIONS, i ], Self, wParam, lParam )
 
    ELSEIF ::bOther != NIL
@@ -307,8 +308,8 @@ LOCAL oItem, iCont
 
 RETURN -1
 
-FUNCTION onTrackScroll( oWnd, wParam, lParam )
-LOCAL oCtrl := oWnd:FindControl( , lParam ), msg
+FUNCTION onTrackScroll( oWnd, msg, wParam, lParam )
+LOCAL oCtrl := oWnd:FindControl( , lParam )
 
    IF oCtrl != NIL
       msg := LoWord( wParam )
@@ -328,7 +329,7 @@ LOCAL oCtrl := oWnd:FindControl( , lParam ), msg
       ENDIF
    ELSE
       IF ISBLOCK( oWnd:bScroll )
-         Eval( oWnd:bScroll, oWnd, wParam, lParam )
+         Eval( oWnd:bScroll, oWnd, msg, wParam, lParam )
          RETURN 0
       ENDIF
    ENDIF

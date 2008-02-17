@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.748 2008-02-16 10:16:56 mlacecilia Exp $
+ * $Id: Changelog,v 1.749 2008-02-17 01:52:41 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-02-17 02:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hcwindow.prg
+    + new property aScrollXY - array of offset coords for scrollbars management
+    * added msg parameter in onTrackScroll()
+  * source/hwindow.prg	
+    source/hdialog.prg
+    source/hpanel.prg	
+	* added msg parameter calling onTrackScroll()
+  + samples/tstscrlbar.prg	
+    - sample for scrollbar management (not yet fully tested)
 
 2008-02-16 11:20 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * samples/tab3.xml

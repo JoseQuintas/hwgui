@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.23 2008-02-05 18:43:21 giuseppem Exp $
+ * $Id: hprinter.prg,v 1.24 2008-02-17 08:17:20 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -302,7 +302,10 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
    @ oToolBar:nWidth+2,3 PANEL oCanvas ;
      SIZE oDlg:nWidth-oToolBar:nWidth-4,oDlg:nHeight-5 ;
      ON SIZE {|o,x,y|o:Move(,,x-oToolBar:nWidth-4,y-5),ResizePreviewDlg(o,Self)} ;
-     ON PAINT {||::PlayMeta(oCanvas)}
+     ON PAINT {||::PlayMeta(oCanvas)} STYLE WS_VSCROLL+WS_HSCROLL
+     
+   oCanvas:bScroll:={|oWnd,msg,wParam,lParam| ResizePreviewDlg(oWnd,Self,,msg,wParam,lParam)}
+
    oCanvas:brush := HBrush():Add( 11316396 )
 
    @ 3,2 OWNERBUTTON oBtn OF oToolBar ON CLICK {||EndDialog()} ;
@@ -386,17 +389,6 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
 
    @ 1,243 LINE LENGTH oToolBar:nWidth-1
 
-   @ 2,246 TRACKBAR ::oTrackH OF oToolBar ;
-      SIZE 40,20 ;
-      RANGE 1,20 ;
-      INIT 1 AUTOTICKS ;
-      ON DRAG {|o|ResizePreviewDlg(oCanvas,Self,,.T.)}
-
-   @ 10,270 TRACKBAR ::oTrackV OF oToolBar ;
-      SIZE 20,40 ;
-      RANGE 1,20 ;
-      INIT 1 AUTOTICKS VERTICAL ;
-      ON DRAG {|o|ResizePreviewDlg(oCanvas,Self,,.T.)}
 
    IF aBootUser != Nil
 
@@ -426,6 +418,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
 
 Return Nil
 
+
 Static Function ChangePage( oDlg,oSayPage,oPrinter,n )
 
    IF n == 0
@@ -441,10 +434,72 @@ Static Function ChangePage( oDlg,oSayPage,oPrinter,n )
    RedrawWindow( oDlg:handle, RDW_ERASE + RDW_INVALIDATE )
 Return Nil
 
-Static Function ResizePreviewDlg( oCanvas, oPrinter, nZoom, lTrack )
+Static Function ResizePreviewDlg( oCanvas, oPrinter, nZoom, msg, wParam, lParam )
 Local nWidth, nHeight, k1, k2, x := oCanvas:nWidth, y := oCanvas:nHeight
-Local i, nPos
+Local i, nPos, wmsg, nPosVert, nPosHorz
 
+   nPosVert:=getscrollpos(oCanvas:handle,SB_VERT)
+   nPosHorz:=getscrollpos(oCanvas:handle,SB_HORZ)
+
+   IF msg=WM_VSCROLL
+      setscrollrange(oCanvas:handle,SB_VERT,1,20)
+      wmsg:=loword(wParam)
+      IF wmsg=SB_THUMBPOSITION .OR. wmsg=SB_THUMBTRACK
+         nPosVert:=hiword(wParam)
+      ELSEIF wmsg=SB_LINEUP
+         nPosVert:=nPosVert-1
+         IF nPosVert<1
+            nPosVert:=1
+         ENDIF
+      ELSEIF wmsg=SB_LINEDOWN
+         nPosVert:=nPosvert+1
+         IF nPosVert>20
+            nPosVert=20
+         ENDIF
+      ELSEIF wmsg=SB_PAGEDOWN
+         nPosVert:=nPosVert+4
+         IF nPosVert>20
+            nPosVert=20
+         ENDIF
+      ELSEIF wmsg=SB_PAGEUP
+         nPosVert:=nPosVert-4
+         IF nPosVert<1
+            nPosVert=1
+         ENDIF
+      ENDIF
+         setscrollpos(oCanvas:handle,SB_VERT,nPosVert)
+   ENDIF
+
+   IF msg=WM_HSCROLL
+      setscrollrange(oCanvas:handle,SB_HORZ,1,20)
+      wmsg:=loword(wParam)
+      IF wmsg=SB_THUMBPOSITION .OR. wmsg=SB_THUMBTRACK
+         nPosHorz:=hiword(wParam)
+      ELSEIF wmsg=SB_LINEUP
+         nPosHorz:=nPosHorz-1
+         IF nPosHorz<1
+            nPosHorz=1
+         ENDIF
+      ELSEIF wmsg=SB_LINEDOWN
+         nPosHorz:=nPosHorz+1
+         IF nPosHorz>20
+            nPosHorz=20
+         ENDIF
+      ELSEIF wmsg=SB_PAGEDOWN
+         nPosHorz:=nPosHorz+4
+         IF nPosHorz>20
+            nPosHorz=20
+         ENDIF
+      ELSEIF wmsg=SB_PAGEUP
+         nPosHorz:=nPosHorz-4
+         IF nPosHorz<1
+            nPosHorz=1
+         ENDIF
+      ENDIF
+         setscrollpos(oCanvas:handle,SB_HORZ,nPosHorz)
+   ENDIF
+
+  
    IF nZoom != Nil
       IF nZoom < 0 .AND. oPrinter:nZoom == 0
          Return Nil
@@ -453,6 +508,7 @@ Local i, nPos
    ENDIF
    k1 := oPrinter:nWidth / oPrinter:nHeight
    k2 := oPrinter:nHeight / oPrinter:nWidth
+   
    IF oPrinter:nWidth > oPrinter:nHeight
       nWidth := x - 20
       nHeight := Round( nWidth * k2, 0 )
@@ -478,35 +534,23 @@ Local i, nPos
 
    oPrinter:xOffset := oPrinter:yOffset := 0
    IF nHeight > y
-      IF !oPrinter:oTrackV:isEnabled()
-         oPrinter:oTrackV:Enable()
-         oPrinter:oTrackV:SetValue( oPrinter:oTrackV:nLow )
-      ELSE
-         nPos := SendMessage( oPrinter:oTrackV:handle, TBM_GETPOS, 0, 0 )
-         IF nPos > 0
-            nPos := ( nPos - oPrinter:oTrackV:nLow ) / ( oPrinter:oTrackV:nHigh - oPrinter:oTrackV:nLow )
-            oPrinter:yOffset := Round( nPos * ( nHeight - y + 10 ),0 )
-         ENDIF
+      npos:=nPosVert
+      IF nPos > 0
+         nPos := ( nPos - 1 ) / 19
+         oPrinter:yOffset := Round( nPos * ( nHeight - y + 10 ),0 )
       ENDIF
-   ELSEIF oPrinter:oTrackV:isEnabled()
-      oPrinter:oTrackV:SetValue( oPrinter:oTrackV:nLow )
-      oPrinter:oTrackV:Disable()
+   ELSE
+      setscrollpos(oCanvas:handle,SB_VERT,0)
    ENDIF
 
    IF nWidth > x
-      IF !oPrinter:oTrackH:isEnabled()
-         oPrinter:oTrackH:Enable()
-         oPrinter:oTrackH:SetValue( oPrinter:oTrackH:nLow )
-      ELSE
-         nPos := SendMessage( oPrinter:oTrackH:handle, TBM_GETPOS, 0, 0 )
-         IF nPos > 0
-            nPos := ( nPos - oPrinter:oTrackH:nLow ) / ( oPrinter:oTrackH:nHigh - oPrinter:oTrackH:nLow )
-            oPrinter:xOffset := Round( nPos * ( nWidth - x + 10 ),0 )
-         ENDIF
+      nPos := nPosHorz
+      IF nPos > 0
+         nPos := ( nPos - 1 ) / 19
+         oPrinter:xOffset := Round( nPos * ( nWidth - x + 10 ),0 )
       ENDIF
-   ELSEIF oPrinter:oTrackH:isEnabled()
-      oPrinter:oTrackH:SetValue( oPrinter:oTrackH:nLow )
-      oPrinter:oTrackH:Disable()
+   ELSE
+     setscrollpos(oCanvas:handle,SB_HORZ,0)
    ENDIF
 
    oPrinter:x1 := Iif( nWidth<x, Round( (x-nWidth)/2,0 ), 10 ) - oPrinter:xOffset
@@ -514,7 +558,7 @@ Local i, nPos
    oPrinter:y1 := Iif( nHeight<y, Round( (y-nHeight)/2,0 ), 5 ) - oPrinter:yOffset
    oPrinter:y2 := oPrinter:y1 + nHeight - 1
 
-   IF nZoom != Nil .OR. lTrack != Nil
+   IF nZoom != Nil .OR. msg != Nil
       RedrawWindow( oCanvas:handle, RDW_ERASE + RDW_INVALIDATE )
    ENDIF
 

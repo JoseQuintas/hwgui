@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.16 2008-02-17 01:52:41 mlacecilia Exp $
+ *$Id: hcwindow.prg,v 1.17 2008-02-20 00:15:10 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -59,7 +59,6 @@ CLASS HCustomWindow INHERIT HObject
    DATA bGetFocus
    DATA bLostFocus
    DATA bScroll
-   DATA aScrollXY     INIT { 0, 0 }
    DATA bOther
    DATA cargo
    DATA HelpId        INIT 0

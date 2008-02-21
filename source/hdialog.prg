@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.41 2008-02-17 01:52:41 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.42 2008-02-21 00:44:24 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -191,7 +191,7 @@ Local nPos
       endif
       Return Eval( aMessModalDlg[i,2], Self, wParam, lParam )
    ELSE
-      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
+      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
          onTrackScroll( Self,msg,wParam,lParam )
       ENDIF
       Return Super:onEvent( msg, wParam, lParam )

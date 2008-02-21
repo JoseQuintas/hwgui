@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.15 2008-02-17 01:52:41 mlacecilia Exp $
+ * $Id: hpanel.prg,v 1.16 2008-02-21 00:44:24 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -87,7 +87,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HPanel
       ::Super:onEvent( WM_DESTROY )
       Return 0
    ELSE
-      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
+      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
          onTrackScroll( Self,msg,wParam,lParam )
       ENDIF
       Return Super:onEvent( msg, wParam, lParam )

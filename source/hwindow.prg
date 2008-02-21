@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.51 2008-02-17 01:52:41 mlacecilia Exp $
+ *$Id: hwindow.prg,v 1.52 2008-02-21 00:44:24 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -242,7 +242,7 @@ Local i
    IF ( i := Ascan( ::aMessages[1],msg ) ) != 0
       Return Eval( ::aMessages[2,i], Self, wParam, lParam )
    ELSE
-      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
+      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
          onTrackScroll( Self,msg,wParam,lParam )
       ENDIF
       Return Super:onEvent( msg, wParam, lParam )
@@ -305,7 +305,7 @@ Local i
    IF ( i := Ascan( ::aMessages[1],msg ) ) != 0
       Return Eval( ::aMessages[2,i], Self, wParam, lParam )
    ELSE
-      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
+      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
          onTrackScroll( Self,msg,wParam,lParam )
       ENDIF
       Return Super:onEvent( msg, wParam, lParam )
@@ -365,7 +365,7 @@ Local i
    ELSEIF ( i := Ascan( HMainWindow():aMessages[1],msg ) ) != 0
       Return Eval( HMainWindow():aMessages[2,i], Self, wParam, lParam )
    ELSE
-      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
+      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
          onTrackScroll( Self,msg,wParam,lParam )
       ENDIF
       Return Super:onEvent( msg, wParam, lParam )

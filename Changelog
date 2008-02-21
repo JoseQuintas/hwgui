@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.753 2008-02-21 00:46:33 mlacecilia Exp $
+ * $Id: Changelog,v 1.754 2008-02-21 12:32:15 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,16 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-02-21 13:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * samples/tstscrlbar.prg	(omitted in previuos commit, sorry!!!)
+    * made some fix to behaviour and added demo of mousewheel management
+	  (i plan to elige the function stdScroll() as default management for 
+	  scrolling in windows having WM_xSCROLL style enabled leaving to bScroll
+	  the rule for custom scrolling event management)
+
 2008-02-21 01:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hwindow.prg	
     source/hdialog.prg
     source/hpanel.prg	
 	+ added the mouse wheel management to scrollbars
-  * samples/tstscrlbar.prg	
-    * made some fix to behaviour and added demo of mousewheel management
-	  (i plan to elige the function stdScroll() as default management for 
-	  scrolling in windows having WM_xSCROLL style enabled leaving to bScroll
-	  the rule for custom scrolling event management)
+
 
 2008-02-20 01:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hcwindow.prg

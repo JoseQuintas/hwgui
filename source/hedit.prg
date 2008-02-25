@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.72 2008-02-05 18:42:07 giuseppem Exp $
+ *$Id: hedit.prg,v 1.73 2008-02-25 00:38:04 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -116,13 +116,11 @@ METHOD Activate CLASS HEdit
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    LOCAL oParent := ::oParent, nPos, nctrl, cKeyb
    LOCAL nexthandle,l
-   trACELOG(" MSG = " + STR(MSG) , "WpaRAM = " + STR(WPARAM))
 
-      IF ::bOther != Nil       
-         Eval( ::bOther,Self,msg,wParam,lParam )         
+      IF ::bOther != Nil
+         Eval( ::bOther,Self,msg,wParam,lParam )
       ENDIF
 
-   // WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ! ::lMultiLine
 
       IF ::bSetGet != Nil
@@ -284,7 +282,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                   RETURN -1
                ENDIF
             ENDIF
-       
+
       IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
          DO WHILE oParent != Nil .AND. ! __ObjHasMsg( oParent, "GETLIST" )
             oParent := oParent:oParent
@@ -765,7 +763,7 @@ STATIC FUNCTION __When( oCtrl )
             ENDIF
          ENDIF
          GetSkip( oCtrl:oParent, oCtrl:handle )
-       
+
       ENDIF
       RETURN res
    ENDIF

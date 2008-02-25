@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.754 2008-02-21 12:32:15 mlacecilia Exp $
+ * $Id: Changelog,v 1.755 2008-02-25 00:38:04 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-02-25 01:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hprinter.prg
+    + added in preview mouse wheel scroll handling.
+  * source/hedit.prg
+    * striped out a tracelog  
 
 2008-02-21 13:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * samples/tstscrlbar.prg	(omitted in previuos commit, sorry!!!)

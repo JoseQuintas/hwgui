@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.24 2008-02-17 08:17:20 giuseppem Exp $
+ * $Id: hprinter.prg,v 1.25 2008-02-25 00:38:04 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -178,15 +178,15 @@ Local hFont, nOldTC, nOldBC
    ELSE
       DrawText( ::hDC,cString,x1,y1,x2,y2,Iif(nOpt==Nil,DT_LEFT,nOpt) )
    ENDIF
-   
+
    IF oFont != Nil
       SelectObject( ::hDC,hFont )
    ENDIF
-   
+
    IF nTextColor != Nil
       SetTextColor(::hDC,nOldTC)
    ENDIf
-   
+
    IF nBkColor != Nil
       SetBKColor(::hDC,nOldBC)
    ENDIf
@@ -292,9 +292,10 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
 
    INIT DIALOG oDlg TITLE cTitle                  ;
      AT 40,10 SIZE 600,440                        ;
-     STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+WS_MAXIMIZEBOX ;
+     STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+WS_MAXIMIZEBOX;
      ON INIT {|o|o:Maximize(),ResizePreviewDlg(oCanvas,Self,1)}
 
+   oDlg:bScroll:={|oWnd,msg,wParam,lParam| ResizePreviewDlg(oCanvas,Self,,msg,wParam,lParam)}
    oDlg:brush := HBrush():Add( 0 )
 
    @ 0,0 PANEL oToolBar SIZE 44,oDlg:nHeight
@@ -303,9 +304,8 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
      SIZE oDlg:nWidth-oToolBar:nWidth-4,oDlg:nHeight-5 ;
      ON SIZE {|o,x,y|o:Move(,,x-oToolBar:nWidth-4,y-5),ResizePreviewDlg(o,Self)} ;
      ON PAINT {||::PlayMeta(oCanvas)} STYLE WS_VSCROLL+WS_HSCROLL
-     
-   oCanvas:bScroll:={|oWnd,msg,wParam,lParam| ResizePreviewDlg(oWnd,Self,,msg,wParam,lParam)}
 
+   oCanvas:bScroll:={|oWnd,msg,wParam,lParam| ResizePreviewDlg(oCanvas,Self,,msg,wParam,lParam)}
    oCanvas:brush := HBrush():Add( 11316396 )
 
    @ 3,2 OWNERBUTTON oBtn OF oToolBar ON CLICK {||EndDialog()} ;
@@ -388,7 +388,6 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
    ENDIF
 
    @ 1,243 LINE LENGTH oToolBar:nWidth-1
-
 
    IF aBootUser != Nil
 
@@ -499,7 +498,20 @@ Local i, nPos, wmsg, nPosVert, nPosHorz
          setscrollpos(oCanvas:handle,SB_HORZ,nPosHorz)
    ENDIF
 
-  
+   IF msg == WM_MOUSEWHEEL
+      SetScrollRange( oCanvas:handle, SB_VERT, 1, 20)
+      IF HIWORD(wParam) > 32678
+         IF ++nPosVert > 20
+            nPosVert := 20
+         ENDIF
+      ELSE
+         IF --nPosVert < 1
+            nPosVert := 1
+         ENDIF
+      ENDIF
+      SetScrollPos( oCanvas:handle, SB_VERT, nPosVert )
+   ENDIF
+
    IF nZoom != Nil
       IF nZoom < 0 .AND. oPrinter:nZoom == 0
          Return Nil
@@ -508,7 +520,7 @@ Local i, nPos, wmsg, nPosVert, nPosHorz
    ENDIF
    k1 := oPrinter:nWidth / oPrinter:nHeight
    k2 := oPrinter:nHeight / oPrinter:nWidth
-   
+
    IF oPrinter:nWidth > oPrinter:nHeight
       nWidth := x - 20
       nHeight := Round( nWidth * k2, 0 )

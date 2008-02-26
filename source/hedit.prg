@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.73 2008-02-25 00:38:04 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.74 2008-02-26 17:32:35 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -115,7 +115,7 @@ METHOD Activate CLASS HEdit
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    LOCAL oParent := ::oParent, nPos, nctrl, cKeyb
-   LOCAL nexthandle,l
+   LOCAL nexthandle
 
       IF ::bOther != Nil
          Eval( ::bOther,Self,msg,wParam,lParam )
@@ -360,11 +360,10 @@ METHOD Refresh()  CLASS HEdit
 
    IF ::bSetGet != Nil
       vari := Eval( ::bSetGet,, Self )
-
       IF ! Empty( ::cPicFunc ) .OR. ! Empty( ::cPicMask )
          vari := Transform( vari, ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
       ELSE
-         vari := IIf( ::cType == "D", DToC( vari ), IIf( ::cType == "N", Str( vari ), IIf( ::cType == "C", vari, "" ) ) )
+         vari := IIf( ::cType == "D", DToC( vari ), IIf( ::cType == "N", Str( vari ), IIf( ::cType == "C" .and. ValType(vari) == "C", Trim(vari), "" ) ) )
       ENDIF
       ::title := vari
       SetDlgItemText( ::oParent:handle, ::id, vari )
@@ -452,11 +451,6 @@ STATIC FUNCTION ParsePict( oEdit, cPicture, vari )
          ENDIF
       NEXT
    ENDIF
-/*
-   IF oEdit:nMaxLenght != Nil .and. !Empty( oEdit:nMaxLenght ) .and. Len( oEdit:cPicMask ) < oEdit:nMaxLenght
-      oEdit:cPicMask := PadR( oEdit:cPicMask, oEdit:nMaxLenght, "X" )
-   ENDIF
-*/
    RETURN Nil
 
 STATIC FUNCTION IsEditable( oEdit, nPos )
@@ -498,7 +492,6 @@ STATIC FUNCTION KeyRight( oEdit, nPos )
       masklen := Len( oEdit:cPicMask )
       DO WHILE nPos <= masklen
          IF IsEditable( oEdit, ++ nPos )
-            // writelog( "KeyRight-2 "+str(nPos) )
             SendMessage( oEdit:handle, EM_SETSEL, nPos - 1, nPos - 1 )
             EXIT
          ENDIF
@@ -556,7 +549,11 @@ STATIC FUNCTION DeleteChar( oEdit, lBack )
    ELSE
       nPosEnd += 1
    ENDIF
-   cBuf := PadR( Left( oEdit:title, nPosStart ) + SubStr( oEdit:title, nPosEnd ), nGetLen )
+   IF Empty(SendMessage(oEdit:handle, EM_GETPASSWORDCHAR, 0, 0))
+      cBuf := PadR( Left( oEdit:title, nPosStart ) + SubStr( oEdit:title, nPosEnd ), nGetLen )
+   ELSE
+      cBuf := Trim( Left( oEdit:title, nPosStart ) + SubStr( oEdit:title, nPosEnd ) )
+   ENDIF
    IF oEdit:lPicComplex .AND. oEdit:cType <> "N" .and. ;
       ( nPosStart + nPosEnd > 0 )
       IF lBack .or. nPosStart <> ( nPosEnd - 2 )
@@ -589,7 +586,6 @@ STATIC FUNCTION Input( oEdit, cChar, nPos )
          IF nPos != 1
             RETURN Nil
          ENDIF
-         // ::minus := .t.
       ELSEIF ! ( cChar $ "0123456789" )
          RETURN Nil
       ENDIF
@@ -650,11 +646,9 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
 
    x := SendMessage( oEdit:handle, EM_GETSEL, 0, 0 )
    IF HIWORD( x ) != LOWORD( x )
-//      SendMessage(oEdit:handle, WM_CLEAR, LoWord(x), HiWord(x)-1)
       DeleteChar( oEdit, .f. )
    ENDIF
 
-   // writelog( "GetApplyKey "+str(asc(ckey)) )
    oEdit:title := GetEditText( oEdit:oParent:handle, oEdit:id )
    IF oEdit:cType == "N" .and. cKey $ ".," .AND. ;
       ( nPos := At( ".", oEdit:cPicMask ) ) != 0
@@ -677,7 +671,6 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
    ELSE
 
       IF oEdit:cType == "N" .AND. oEdit:lFirst
-         // SetDlgItemText( oEdit:oParent:handle, oEdit:id, "" )
          nGetLen := Len( oEdit:cPicMask )
          IF ( nPos := At( ".", oEdit:cPicMask ) ) == 0
             oEdit:title := Space( nGetLen )
@@ -707,17 +700,17 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
             ENDIF
 
             IF ! Empty( oEdit:cPicMask ) .AND. Len( oEdit:cPicMask ) < Len( oEdit:title )
-               //oEdit:title := Left( oEdit:title,nGetLen ) + cKey //Bug fixed
                oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + SubStr( oEdit:title, nPos + 1 )
             ENDIF
          ELSE
             oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + SubStr( oEdit:title, nPos + 1 )
          ENDIF
-         IF oEdit:nMaxLenght != nil
+         IF oEdit:nMaxLenght != nil  .and. Empty(SendMessage(oEdit, EM_GETPASSWORDCHAR, 0, 0))
             oEdit:title := PadR( oEdit:title, oEdit:nMaxLenght )
+         ELSE
+            oEdit:title := Trim(oEdit:title)
          ENDIF
          SetDlgItemText( oEdit:oParent:handle, oEdit:id, oEdit:title )
-         // writelog( "GetApplyKey "+oEdit:title+str(nPos-1) )
          KeyRight( oEdit, nPos )
          //Added By Sandro Freire
          IF oEdit:cType == "N"
@@ -763,7 +756,6 @@ STATIC FUNCTION __When( oCtrl )
             ENDIF
          ENDIF
          GetSkip( oCtrl:oParent, oCtrl:handle )
-
       ENDIF
       RETURN res
    ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.89 2008-02-01 18:48:01 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.90 2008-02-28 13:27:26 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -34,14 +34,6 @@ REQUEST RECCOUNT
 REQUEST RECNO
 REQUEST EOF
 REQUEST BOF
-
-/*
- * Scroll Bar Constants
- */
-#define SB_HORZ             0
-#define SB_VERT             1
-#define SB_CTL              2
-#define SB_BOTH             3
 
 #define HDM_GETITEMCOUNT    4608
 

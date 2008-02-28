@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.756 2008-02-26 17:32:33 mlacecilia Exp $
+ * $Id: Changelog,v 1.757 2008-02-28 13:27:24 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-02-28 16:28 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hbrowse.prg
+    ! Few declarations removed ( #define SB_HORZ, ... ), which are now
+      in windows.ch and caused and error while building under Harbour
 
 2008-02-26 18:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hedit.prg

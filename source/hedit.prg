@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.74 2008-02-26 17:32:35 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.75 2008-03-05 15:44:41 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -552,7 +552,7 @@ STATIC FUNCTION DeleteChar( oEdit, lBack )
    IF Empty(SendMessage(oEdit:handle, EM_GETPASSWORDCHAR, 0, 0))
       cBuf := PadR( Left( oEdit:title, nPosStart ) + SubStr( oEdit:title, nPosEnd ), nGetLen )
    ELSE
-      cBuf := Trim( Left( oEdit:title, nPosStart ) + SubStr( oEdit:title, nPosEnd ) )
+      cBuf := Left( oEdit:title, nPosStart ) + SubStr( oEdit:title, nPosEnd )
    ENDIF
    IF oEdit:lPicComplex .AND. oEdit:cType <> "N" .and. ;
       ( nPosStart + nPosEnd > 0 )
@@ -705,10 +705,10 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
          ELSE
             oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + SubStr( oEdit:title, nPos + 1 )
          ENDIF
-         IF oEdit:nMaxLenght != nil  .and. Empty(SendMessage(oEdit, EM_GETPASSWORDCHAR, 0, 0))
+         IF !Empty(SendMessage(oEdit, EM_GETPASSWORDCHAR, 0, 0))
+		    oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + Trim( SubStr( oEdit:title, nPos + 1 ) )
+         ELSEIF !Empty(oEdit:nMaxLenght)
             oEdit:title := PadR( oEdit:title, oEdit:nMaxLenght )
-         ELSE
-            oEdit:title := Trim(oEdit:title)
          ENDIF
          SetDlgItemText( oEdit:oParent:handle, oEdit:id, oEdit:title )
          KeyRight( oEdit, nPos )

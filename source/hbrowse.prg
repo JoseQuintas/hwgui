@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.91 2008-03-04 17:37:39 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.92 2008-03-05 15:44:41 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1771,7 +1771,7 @@ Local oGet1, owb1, owb2
                STYLE ES_AUTOHSCROLL           ;
                FONT ::oFont                   ;
                PICTURE oColumn:picture        ;
-               MAXLENGTH lEN(::varbuf)        ;
+               MAXLENGTH Len(::varbuf)        ;
                VALID oColumn:bValid           ;
                WHEN oColumn:bWhen
          else

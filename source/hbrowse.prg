@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.93 2008-03-06 13:00:12 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.94 2008-03-06 19:11:43 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1765,26 +1765,14 @@ Local oGet1, owb1, owb2
 
          ELSE
          if type <> "M"
-            IF VALTYPE(::varbuf)="N"
-               @ 0,0 GET oGet VAR ::varbuf       ;
-                  SIZE nWidth, ::height+1        ;
-                  NOBORDER                       ;
-                  STYLE ES_AUTOHSCROLL           ;
-                  FONT ::oFont                   ;
-                  PICTURE oColumn:picture        ;
-                  VALID oColumn:bValid           ;
-                  WHEN oColumn:bWhen
-            ELSE
-               @ 0,0 GET oGet VAR ::varbuf       ;
-                  SIZE nWidth, ::height+1        ;
-                  NOBORDER                       ;
-                  STYLE ES_AUTOHSCROLL           ;
-                  FONT ::oFont                   ;
-                  PICTURE oColumn:picture        ;
-                  MAXLENGTH Len(::varbuf)        ;
-                  VALID oColumn:bValid           ;
-                  WHEN oColumn:bWhen
-            ENDIF
+            @ 0,0 GET oGet VAR ::varbuf       ;
+               SIZE nWidth, ::height+1        ;
+               NOBORDER                       ;
+               STYLE ES_AUTOHSCROLL           ;
+               FONT ::oFont                   ;
+               PICTURE oColumn:picture        ;
+               VALID oColumn:bValid           ;
+               WHEN oColumn:bWhen
          else
             oGet1 := ::varbuf
             @ 10,10 Get oGet1 SIZE oModDlg:nWidth-20,240 FONT ::oFont Style WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid
@@ -1836,6 +1824,7 @@ Local oGet1, owb1, owb2
                IF ::type == BRW_DATABASE
                   IF (::alias)->( Rlock() )
                      (::alias)->( Eval( oColumn:block,::varbuf,Self,fipos ) )
+                     (::alias)->( Dbunlock() )
                   ELSE
                      MsgStop("Can't lock the record!")
                   ENDIF

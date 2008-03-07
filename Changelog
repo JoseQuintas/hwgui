@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.765 2008-03-07 17:01:25 mlacecilia Exp $
+ * $Id: Changelog,v 1.766 2008-03-07 22:51:05 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-03-07 23:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hcombo.prg
+    * added as parameter the current value when evaluating the bValid
+	  codeblock, consistently with all other controls having validation
 
 2008-03-07 18:00 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hbrowse.prg

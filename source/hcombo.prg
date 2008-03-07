@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.36 2007-11-13 10:32:46 mlacecilia Exp $
+ * $Id: hcombo.prg,v 1.37 2008-03-07 22:51:06 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -284,7 +284,7 @@ Static Function __Valid( oCtrl )
 
      // By Luiz Henrique dos Santos (luizhsantos@gmail.com.br) 03/06/2006
      IF oCtrl:bValid != NIL
-       IF ! EVAL( oCtrl:bValid, oCtrl )
+       IF ! EVAL( oCtrl:bValid, oCtrl:value, oCtrl )
          SetFocus( oCtrl:handle )
          RETURN .F.
        ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.94 2008-03-06 19:11:43 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.95 2008-03-07 17:01:27 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -552,12 +552,11 @@ Local xres,ctype,nlen
          oColumn:length := Len( Transform( Eval( oColumn:block,,oBrw,n ), oColumn:picture ) )
       ELSE
          oColumn:length := 10
-       xRes     :=  Eval( oColumn:block,,oBrw,n ) 
-       cType    := Valtype( xRes )
-
+         xRes     := Eval( oColumn:block,,oBrw,n )
+         cType    := Valtype( xRes )
       ENDIF
 //      oColumn:length := Max( oColumn:length, Len( oColumn:heading ) )
-           oColumn:length := lenval1(xres,ctype,oColumn:picture)
+      oColumn:length := LenVal(xres,ctype,oColumn:picture)
    ENDIF
 
 RETURN Nil
@@ -708,9 +707,9 @@ Local i, j, oColumn, xSize, nColLen, nHdrLen, nCount
             xSize := round( ( nColLen + 2 ) * 6, 0 )
          ENDIF
       ENDIF
-
-      oColumn:width := xSize
-
+      IF Empty( oColumn:width )
+         oColumn:width := xSize
+      ENDIF
    NEXT
 
    ::lChanged := .F.
@@ -2090,7 +2089,9 @@ Local cText := ""
 RETURN nil
 
 Function ColumnArBlock()
-RETURN {|value,o,n| Iif( value==Nil,o:aArray[o:nCurrent,n],o:aArray[o:nCurrent,n]:=value ) }
+   RETURN { | value, o, n | IIf( value == Nil, o:aArray[ IIf( o:nCurrent < 1, 1, o:nCurrent ), n ], ;
+                                               o:aArray[ IIf( o:nCurrent < 1, 1, o:nCurrent ), n ] := value ) }
+
 
 Static function HdrToken(cStr, nMaxLen, nCount)
 Local nL, nPos := 0
@@ -2236,11 +2237,6 @@ RETURN DBGOTO(nRecord)
 STATIC FUNCTION FltRecNo(oBrw)
 RETURN RECNO()
 //End Implementation by Luiz
-
-
-
-function lenval1( xVal, cType, cPict )
-return LenVal( xVal, cType, cPict )
 
 static function LenVal( xVal, cType, cPict )
    LOCAL nLen

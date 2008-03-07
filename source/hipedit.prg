@@ -1,5 +1,5 @@
 /*
- * $Id: hipedit.prg,v 1.8 2007-11-10 17:44:44 mlacecilia Exp $
+ * $Id: hipedit.prg,v 1.9 2008-03-07 09:19:12 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -116,7 +116,7 @@ Return Nil
 
 
 Static Function __Valid( oCtrl )
-   WriteLog("Entrando em valid do IP")
+   // WriteLog("Entrando em valid do IP")
 
    // oCtrl:aValue := oCtrl:GetValue()
 

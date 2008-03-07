@@ -1,18 +1,18 @@
 /*
- *$Id: guilib.ch,v 1.97 2008-01-02 12:22:47 lculik Exp $
+ *$Id: guilib.ch,v 1.98 2008-03-07 09:19:12 mlacecilia Exp $
  */
 #define HWG_VERSION           "2.16"
-#define	WND_MAIN		1
-#define	WND_MDI 		2
+#define   WND_MAIN      1
+#define   WND_MDI       2
 #define WND_MDICHILD            3
 #define WND_CHILD               4
-#define	WND_DLG_RESOURCE       10
-#define	WND_DLG_NORESOURCE     11
+#define   WND_DLG_RESOURCE       10
+#define   WND_DLG_NORESOURCE     11
 
-#define	OBTN_INIT               0
-#define	OBTN_NORMAL             1
-#define	OBTN_MOUSOVER           2
-#define	OBTN_PRESSED            3
+#define   OBTN_INIT               0
+#define   OBTN_NORMAL             1
+#define   OBTN_MOUSOVER           2
+#define   OBTN_PRESSED            3
 
 #define SHS_NOISE               0
 #define SHS_DIAGSHADE           1
@@ -27,8 +27,8 @@
 #define PAL_DEFAULT             0
 #define PAL_METAL               1
 
-#define	BRW_ARRAY               1
-#define	BRW_DATABASE            2
+#define   BRW_ARRAY               1
+#define   BRW_DATABASE            2
 
 // Commands for windows, dialogs handling
 
@@ -149,27 +149,27 @@
       <oWnd>:Activate( !<.lNoShow.>, <.lMaximized.>, <.lMinimized.>,<bInit> )
 
 #xcommand CENTER WINDOW <oWnd> ;
-	=>;
+   =>;
         <oWnd>:Center()
 
 #xcommand MAXIMIZE WINDOW <oWnd> ;
-	=>;
+   =>;
         <oWnd>:Maximize()
 
 #xcommand MINIMIZE WINDOW <oWnd> ;
-	=>;
+   =>;
         <oWnd>:Minimize()
 
 #xcommand RESTORE WINDOW <oWnd> ;
-	=>;
+   =>;
         <oWnd>:Restore()
 
 #xcommand SHOW WINDOW <oWnd> ;
-	=>;
+   =>;
         <oWnd>:Show()
 
 #xcommand HIDE WINDOW <oWnd> ;
-	=>;
+   =>;
         <oWnd>:Hide()
 
 #xcommand ACTIVATE DIALOG <oDlg>                        ;
@@ -338,6 +338,7 @@
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
             [ ON KEYDOWN <bKeyDown>]   ;
+            [ ON CHANGE <bChange>]     ;
             [ STYLE <nStyle> ]         ;
             [<lnoborder: NOBORDER>]    ;
             [<lPassword: PASSWORD>]    ;
@@ -346,7 +347,7 @@
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<caption>,,<nStyle>,<x>,<y>,<width>, ;
                     <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
-                    <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.>,,<.lPassword.>,<bKeyDown> )
+                    <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.>,,<.lPassword.>,<bKeyDown>, <bChange> )
 
 
 #xcommand REDEFINE EDITBOX [ <oEdit> ] ;
@@ -837,7 +838,7 @@
                  [ COORDINATES  <xb>, <yb>, <widthb>, <heightb> ] ;
             ] ;
             [ TOOLTIP <ctoolt> ]    ;
-			[ <lCheck: CHECK> ]     ;
+         [ <lCheck: CHECK> ]     ;
           => ;
     [<oOwnBtn> :=] HOWNBUTTON():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
           <height>,<bInit>,<bSize>,<bDraw>, ;
@@ -863,7 +864,7 @@
             ] ;
             [ TOOLTIP <ctoolt> ]    ;
             [ <enable: DISABLED> ]  ;
-			[ <lCheck: CHECK> ]      ;
+         [ <lCheck: CHECK> ]      ;
           => ;
     [<oOwnBtn> :=] HOWNBUTTON():Redefine( <oWnd>,<nId>, ;
           <bInit>,<bSize>,<bDraw>, ;
@@ -971,12 +972,13 @@
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
             [ ON KEYDOWN <bKeyDown>   ];
+            [ ON CHANGE <bChange> ]    ;
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<vari>,               ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;
                    <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,,,  ;
                    <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,;
-                   <.lnoborder.>,<nMaxLength>,<.lPassword.>,<bKeyDown>)
+                   <.lnoborder.>,<nMaxLength>,<.lPassword.>,<bKeyDown>, <bChange>)
 
 /* Added MULTILINE: AJ: 11-03-2007*/
 #xcommand REDEFINE GET [ <oEdit> VAR ] <vari>  ;
@@ -992,10 +994,11 @@
             [ TOOLTIP <ctoolt> ]       ;
             [<lMultiLine: MULTILINE>]  ;
             [ ON KEYDOWN <bKeyDown>]   ;
+            [ ON CHANGE <bChange> ]    ;
           => ;
     [<oEdit> := ] HEdit():Redefine( <oWnd>,<nId>,<vari>, ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},    ;
-                   <oFont>,,,,<{bGfocus}>,<{bLfocus}>,<ctoolt>,<color>,<bcolor>,<cPicture>,<nMaxLength>,<.lMultiLine.>,<bKeyDown> )
+                   <oFont>,,,,<{bGfocus}>,<{bLfocus}>,<ctoolt>,<color>,<bcolor>,<cPicture>,<nMaxLength>,<.lMultiLine.>,<bKeyDown>, <bChange>)
 
 
 #xcommand @ <x>,<y> GET CHECKBOX [ <oCheck> VAR ] <vari>  ;
@@ -1387,7 +1390,7 @@ Added by Marcos Antonio Gambeta
             [ < autoplay: AUTOPLAY > ]          ;
             [ < center : CENTER > ]             ;
             [ < transparent: TRANSPARENT > ]    ;
-	=>;
+   =>;
     [<oAnimation> :=] HAnimation():New( <oWnd>,<nId>,<nStyle>,<x>,<y>, ;
         <nWidth>,<nHeight>,<cFile>,<.autoplay.>,<.center.>,<.transparent.>)
 
@@ -1398,7 +1401,7 @@ Added by Marcos Antonio Gambeta
 //New Control
 #xcommand @ <x>,<y> SAY [ <oSay> CAPTION ] <caption> ;
             [ OF <oWnd> ]              ;
-            LINK <cLink>               ;   
+            LINK <cLink>               ;
             [ ID <nId> ]               ;
             [ SIZE <width>, <height> ] ;
             [ COLOR <color> ]          ;
@@ -1422,7 +1425,7 @@ Added by Marcos Antonio Gambeta
 #xcommand REDEFINE SAY [ <oSay> CAPTION ] <cCaption>      ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
-            LINK <cLink>               ;   
+            LINK <cLink>               ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
             [<lTransp: TRANSPARENT>]   ;
@@ -1538,7 +1541,7 @@ Added by Marcos Antonio Gambeta
 //            [ BITMAP <nn> ]             ;
 //            [ COLOR <colorn> ]          ;
 //            [ BACKCOLOR <bkcolorn> ]    ;
-            
+
 
 
 #xcommand REDEFINE TAB  <oSay>  ;
@@ -1560,8 +1563,8 @@ Added by Marcos Antonio Gambeta
             [ ON PAINT <bDraw> ]       ;
             [ PARTS <bChange,...> ]    ;
           => ;
-    [<oSay> := ] HStatus():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,\{<bChange>\} ) 
-                                                                                      
+    [<oSay> := ] HStatus():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,\{<bChange>\} )
+
 
 #xcommand REDEFINE GRID  <oSay>  ;
             [ OF <oWnd> ]              ;
@@ -1601,7 +1604,7 @@ Added by Marcos Antonio Gambeta
           [STYLE <nstyle>] [TEXT <t>] ;
           => <opage>:ADDBARBITMAP(<hWnd>,<t>,<b>,<nstyle>)
 
-          
+
 #xcommand @ <x>,<y> GET LISTBOX [ <oListbox> ITEMS ] <aItems> ;
              [ OF <oWnd> ]              ;
              [ ID <nId> ]               ;
@@ -1617,7 +1620,7 @@ Added by Marcos Antonio Gambeta
            => ;
      [<oListbox> := ] HListBox():New( <oWnd>,<nId>,<nInit>,;
                     {|v|Iif(v==Nil,<nInit>,<nInit>:=v)},;
-                    <nStyle>,<x>,<y>,<width>, ; 
+                    <nStyle>,<x>,<y>,<width>, ;
                     <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt> )
 
 

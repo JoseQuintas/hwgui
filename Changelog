@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.763 2008-03-06 19:11:07 giuseppem Exp $
+ * $Id: Changelog,v 1.764 2008-03-07 09:19:10 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,22 +7,26 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-03-07 10:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hedit.prg
+    + added bChange codeblock management for ON CHANGE behaviour
+	* now the bOther skips the usual message processing when the return value
+	  is other than -1, avoiding twice management of the overloaded messages
+  * include/guilib.ch  
+    + added ON CHANGE in @ ... EDITBOX, @ ... GET, REDEFINE GET commands
+  * source/hipedit.prg
+    * remmed active tracelog 
+
 2008-03-06 20:12 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! fix unlock record in edit mode
     ! Roll back get in edit mode
 
-
 2008-03-06 14:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! fix type for get edit with maxlenght
 
-
-2008-03-05 16:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
-  * source/hedit.prg
-    * corrected unfiltered trimming of trailing spaces
-  * source/hbrowse.prg
-    * corrected small typo  
 
 2008-02-15 23:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg

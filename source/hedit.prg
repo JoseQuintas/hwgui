@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.75 2008-03-05 15:44:41 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.76 2008-03-07 09:19:12 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -28,7 +28,7 @@ CLASS VAR winclass   INIT "EDIT"
    DATA cType INIT "C"
    DATA bSetGet
    DATA bValid
-   DATA bkeydown     ,bkeyup
+   DATA bkeydown, bkeyup
    DATA cPicFunc, cPicMask
    DATA lPicComplex  INIT .F.
    DATA lFirst       INIT .T.
@@ -59,7 +59,7 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
             oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
-            tcolor, bcolor, cPicture, lNoBorder, nMaxLenght, lPassword, bKeyDown ) CLASS HEdit
+            tcolor, bcolor, cPicture, lNoBorder, nMaxLenght, lPassword, bKeyDown, bChange ) CLASS HEdit
 
    nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), ;
                         WS_TABSTOP + IIf( lNoBorder == Nil.OR. ! lNoBorder, WS_BORDER, 0 ) + ;
@@ -102,7 +102,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
          ::oParent:AddEvent( EN_KILLFOCUS, ::id, bLfocus )
       ENDIF
    ENDIF
-
+   IF bChange != Nil
+      ::oParent:AddEvent( EN_CHANGE, ::id, bChange  )
+   ENDIF
    RETURN Self
 
 METHOD Activate CLASS HEdit
@@ -117,9 +119,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    LOCAL oParent := ::oParent, nPos, nctrl, cKeyb
    LOCAL nexthandle
 
-      IF ::bOther != Nil
-         Eval( ::bOther,Self,msg,wParam,lParam )
+   IF ::bOther != Nil
+      IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
+         RETURN 0
       ENDIF
+   ENDIF
 
    IF ! ::lMultiLine
 
@@ -306,7 +310,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    RETURN - 1
 
 METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
-                 bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, nMaxLenght, lMultiLine, bKeyDown )  CLASS HEdit
+                 bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, nMaxLenght, lMultiLine, bKeyDown, bChange )  CLASS HEdit
 
 
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
@@ -341,6 +345,10 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
          ::oParent:AddEvent( EN_KILLFOCUS, ::id, bLfocus )
       ENDIF
    ENDIF
+   IF bChange != Nil
+      ::oParent:AddEvent( EN_CHANGE, ::id, bChange  )
+   ENDIF
+
    RETURN Self
 
 METHOD Init()  CLASS HEdit
@@ -706,7 +714,7 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
             oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + SubStr( oEdit:title, nPos + 1 )
          ENDIF
          IF !Empty(SendMessage(oEdit, EM_GETPASSWORDCHAR, 0, 0))
-		    oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + Trim( SubStr( oEdit:title, nPos + 1 ) )
+          oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + Trim( SubStr( oEdit:title, nPos + 1 ) )
          ELSEIF !Empty(oEdit:nMaxLenght)
             oEdit:title := PadR( oEdit:title, oEdit:nMaxLenght )
          ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.95 2008-03-07 17:01:27 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.96 2008-03-12 13:31:17 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1331,10 +1331,13 @@ Local minPos, maxPos, nPos
    IF ::bScrollPos != Nil
       Eval( ::bScrollPos, Self, 1, .F. )
    ELSEIF ::nRecords > 1
-      GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
+/*      GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
       nPos := GetScrollPos( ::handle, SB_VERT )
       nPos += Int( (maxPos-minPos)/(::nRecords-1) )
       SetScrollPos( ::handle, SB_VERT, nPos )
+*/
+      VScrollPos( Self, 0, .f.)
+
    ENDIF
 
    PostMessage( ::handle, WM_PAINT, 0, 0 )
@@ -1363,10 +1366,14 @@ Local minPos, maxPos, nPos
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, -1, .F. )
       ELSEIF ::nRecords > 1
+/*
          GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
          nPos := GetScrollPos( ::handle, SB_VERT )
          nPos -= Int( (maxPos-minPos)/(::nRecords-1) )
          SetScrollPos( ::handle, SB_VERT, nPos )
+*/
+         VScrollPos( Self, 0, .f.)
+
       ENDIF
       ::internal[1] := SetBit( ::internal[1], 1, 0 )
       PostMessage( ::handle, WM_PAINT, 0, 0 )

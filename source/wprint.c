@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.15 2007-11-13 22:05:18 druzus Exp $
+ * $Id: wprint.c,v 1.16 2008-03-13 20:27:09 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -71,12 +71,6 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
    hb_retnl( (LONG) hDC );
 }
 
-/*
-	 richard roesnadi 29/10/07 06:56am
-	 hwg_GetdefaultPrinter() -> cPrinterName
-	 designer.exe test ok!
-
- */
 
 HB_FUNC( HWG_GETDEFAULTPRINTER )
 {
@@ -84,8 +78,16 @@ HB_FUNC( HWG_GETDEFAULTPRINTER )
    PRINTER_INFO_4 * pinfo4;
    PRINTER_INFO_5 * pinfo5;
    char PrinterDefault [128];
+   DWORD BuffSize = 256;
+   OSVERSIONINFO osvi;
+   BOOL bIsWindowsXPorLater;
 
-   if( GetVersion() & 0x80000000 )         // Windows 98
+   ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+   GetVersionEx(&osvi);
+
+   if(osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS )         // Windows 98
    {
       EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, NULL,
             0, &dwNeeded, &dwReturned );
@@ -97,20 +99,27 @@ HB_FUNC( HWG_GETDEFAULTPRINTER )
 
       free (pinfo5) ;
    }
-   else                                    // Windows NT
+   else if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
    {
-      EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, NULL,
-            0, &dwNeeded, &dwReturned );
+      if (osvi.dwMajorVersion >= 5) /* Windows 2000 or later */
+      {
+        GetDefaultPrinter(PrinterDefault,&BuffSize);
+      }
+      else                                   // Windows NT
+      {
+         EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, NULL,
+               0, &dwNeeded, &dwReturned );
 
-      pinfo4 = (PRINTER_INFO_4*)malloc( dwNeeded );
+         pinfo4 = (PRINTER_INFO_4*)malloc( dwNeeded );
 
-      EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, (PBYTE) pinfo4,
-            dwNeeded, &dwNeeded, &dwReturned );
+         EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, (PBYTE) pinfo4,
+              dwNeeded, &dwNeeded, &dwReturned );
 
-      hb_retc( (char *) pinfo4->pPrinterName);
-      strcpy(PrinterDefault,pinfo4->pPrinterName);
+         hb_retc( (char *) pinfo4->pPrinterName);
+         strcpy(PrinterDefault,pinfo4->pPrinterName);
 
-      free( pinfo4 );
+         free( pinfo4 );
+       }
    }
 
    hb_retc(PrinterDefault);

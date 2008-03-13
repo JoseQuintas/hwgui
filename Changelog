@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.767 2008-03-12 13:30:48 giuseppem Exp $
+ * $Id: Changelog,v 1.768 2008-03-13 20:25:37 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-03-13 21:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hprinter.prg
+  * source/wprint.c
+    ! For windows 2000 or later get the real default printer
 
 2008-03-12 14:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.25 2008-02-25 00:38:04 mlacecilia Exp $
+ * $Id: hprinter.prg,v 1.26 2008-03-13 20:26:33 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -63,7 +63,8 @@ Local aPrnCoors, cPrinterName
       ::hDCPrn := PrintSetup( @cPrinterName )
       ::cPrinterName := cPrinterName
    ELSEIF Empty( cPrinter )
-      ::hDCPrn := Hwg_OpenDefaultPrinter( @cPrinterName )
+      cPrinterName:=HWG_GETDEFAULTPRINTER()
+      ::hDCPrn := Hwg_OpenPrinter( cPrinterName )
       ::cPrinterName := cPrinterName
    ELSE
       ::hDCPrn := Hwg_OpenPrinter( cPrinter )

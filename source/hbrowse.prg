@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.96 2008-03-12 13:31:17 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.97 2008-03-17 21:03:49 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -2032,8 +2032,13 @@ Local minPos, maxPos, oldRecno, newRecno
       IF nType > 0 .AND. lEof
          Eval( oBrw:bSkip, oBrw,- 1 )
       ENDIF
-      nPos := Iif( oBrw:nRecords>1, Round( ( (maxPos-minPos)/(oBrw:nRecords-1) ) * ;
-                                 ( Eval( oBrw:bRecnoLog,oBrw )-1 ),0 ), minPos )
+      IF indexord()=0
+         nPos := Iif( oBrw:nRecords>1, Round( ( (maxPos-minPos)/(oBrw:nRecords-1) ) * ;
+                     ( Eval( oBrw:bRecnoLog,oBrw )-1 ),0 ), minPos )
+      ELSE
+         nPos := Iif( oBrw:nRecords>1, Round( ( (maxPos-minPos)/(oBrw:nRecords-1) ) * ;
+                     ( ordkeyno()-1 ),0 ), minPos )
+      ENDIF
       SetScrollPos( oBrw:handle, SB_VERT, nPos )
    ELSE
       oldRecno := Eval( oBrw:bRecnoLog,oBrw )

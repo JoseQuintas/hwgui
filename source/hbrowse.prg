@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.97 2008-03-17 21:03:49 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.98 2008-03-18 23:23:31 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1331,13 +1331,7 @@ Local minPos, maxPos, nPos
    IF ::bScrollPos != Nil
       Eval( ::bScrollPos, Self, 1, .F. )
    ELSEIF ::nRecords > 1
-/*      GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-      nPos := GetScrollPos( ::handle, SB_VERT )
-      nPos += Int( (maxPos-minPos)/(::nRecords-1) )
-      SetScrollPos( ::handle, SB_VERT, nPos )
-*/
       VScrollPos( Self, 0, .f.)
-
    ENDIF
 
    PostMessage( ::handle, WM_PAINT, 0, 0 )
@@ -1366,14 +1360,7 @@ Local minPos, maxPos, nPos
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, -1, .F. )
       ELSEIF ::nRecords > 1
-/*
-         GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-         nPos := GetScrollPos( ::handle, SB_VERT )
-         nPos -= Int( (maxPos-minPos)/(::nRecords-1) )
-         SetScrollPos( ::handle, SB_VERT, nPos )
-*/
          VScrollPos( Self, 0, .f.)
-
       ENDIF
       ::internal[1] := SetBit( ::internal[1], 1, 0 )
       PostMessage( ::handle, WM_PAINT, 0, 0 )
@@ -1401,10 +1388,7 @@ Local minPos, maxPos, nPos, step, lBof := .F.
    IF ::bScrollPos != Nil
       Eval( ::bScrollPos, Self, - step, lBof )
    ELSEIF ::nRecords > 1
-      GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-      nPos := GetScrollPos( ::handle, SB_VERT )
-      nPos := Max( nPos - Int( (maxPos-minPos)*step/(::nRecords-1) ), minPos )
-      SetScrollPos( ::handle, SB_VERT, nPos )
+       VScrollPos( Self, 0, .f.)
    ENDIF
 
    ::Refresh(.F.)
@@ -1416,23 +1400,13 @@ METHOD PAGEDOWN() CLASS HBrowse
 Local minPos, maxPos, nPos, nRows := ::rowCurrCount
 Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows )
 
-   Eval( ::bSkip, Self, step )
    ::rowPos := Min( ::nRecords, nRows )
+   Eval( ::bSkip, Self, step )
 
    IF ::bScrollPos != Nil
       Eval( ::bScrollPos, Self, step, Eval( ::bEof,Self ) )
    ELSE
-      GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-      nPos := GetScrollPos( ::handle, SB_VERT )
-      IF Eval( ::bEof,Self )
-         Eval( ::bSkip, Self,- 1 )
-         nPos := maxPos
-         SetScrollPos( ::handle, SB_VERT, nPos )
-      ELSEIF ::nRecords > 1
-         nPos := Min( nPos + Int( (maxPos-minPos)*step/(::nRecords-1) ), maxPos )
-         SetScrollPos( ::handle, SB_VERT, nPos )
-      ENDIF
-
+      VScrollPos( Self, 0, .f.)
    ENDIF
 
    ::Refresh(.F.)
@@ -1443,14 +1417,12 @@ RETURN Nil
 METHOD BOTTOM(lPaint) CLASS HBrowse
 Local minPos, maxPos, nPos
 
-   GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
+//   GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
 
-   nPos := GetScrollPos( ::handle, SB_VERT )
    ::rowPos := Lastrec()
    Eval( ::bGoBot, Self )
-   ::rowPos := Min( ::nRecords, ::rowCount )
-   nPos := maxPos
-   SetScrollPos( ::handle, SB_VERT, nPos )
+   VScrollPos( Self, 0, .f.)
+
    InvalidateRect( ::handle, 0 )
 
    ::internal[1] := SetBit( ::internal[1], 1, 0 )
@@ -1464,12 +1436,10 @@ RETURN Nil
 METHOD TOP() CLASS HBrowse
 Local minPos, maxPos, nPos
 
-   GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-   nPos := GetScrollPos( ::handle, SB_VERT )
    ::rowPos := 1
    Eval( ::bGoTop,Self )
-   nPos := minPos
-   SetScrollPos( ::handle, SB_VERT, nPos )
+   VScrollPos( Self, 0, .f.)
+
    InvalidateRect( ::handle, 0 )
    ::internal[1] := SetBit( ::internal[1], 1, 0 )
    PostMessage( ::handle, WM_PAINT, 0, 0 )
@@ -2025,21 +1995,27 @@ Local kolf := Fcount()
 RETURN Nil
 
 Function VScrollPos( oBrw, nType, lEof, nPos )
-Local minPos, maxPos, oldRecno, newRecno
+Local minPos, maxPos, oldRecno, newRecno, nrecno
 
    GetScrollRange( oBrw:handle, SB_VERT, @minPos, @maxPos )
    IF nPos == Nil
-      IF nType > 0 .AND. lEof
-         Eval( oBrw:bSkip, oBrw,- 1 )
-      ENDIF
-      IF indexord()=0
+      IF oBrw:type = BRW_ARRAY
+         IF nType > 0 .AND. lEof
+            Eval( oBrw:bSkip, oBrw,- 1 )
+         ENDIF
          nPos := Iif( oBrw:nRecords>1, Round( ( (maxPos-minPos)/(oBrw:nRecords-1) ) * ;
-                     ( Eval( oBrw:bRecnoLog,oBrw )-1 ),0 ), minPos )
-      ELSE
-         nPos := Iif( oBrw:nRecords>1, Round( ( (maxPos-minPos)/(oBrw:nRecords-1) ) * ;
-                     ( ordkeyno()-1 ),0 ), minPos )
-      ENDIF
-      SetScrollPos( oBrw:handle, SB_VERT, nPos )
+                    ( Eval( oBrw:bRecnoLog,oBrw )-1 ),0 ), minPos )
+         SetScrollPos( oBrw:handle, SB_VERT, npos )
+     ELSE
+         nrecno:=recno()
+         DBGOTOP()
+         minpos:=if(indexord()=0,recno(),ordkeyno())
+         DBGOBOTTOM()
+         maxpos:=if(indexord()=0,recno(),ordkeyno())
+         SetScrollRange( oBrw:handle, SB_VERT, minPos, maxPos )
+         dbgoto(nrecno)
+         SetScrollPos( oBrw:handle, SB_VERT, if(indexord()=0,recno(),ordkeyno()) )
+     ENDIF
    ELSE
       oldRecno := Eval( oBrw:bRecnoLog,oBrw )
       newRecno := Round( (oBrw:nRecords-1)*nPos/(maxPos-minPos)+1,0 )
@@ -2132,12 +2108,13 @@ LOCAL n
       ENDDO
     NEXT
   ELSEIF nLines < 0
+
     FOR n := 1 TO (nLines*(-1))
       IF EOF()
          IF lDesc
             FltGoTop(oBrw)
          ELSE
-        FltGoBottom(oBrw)
+            FltGoBottom(oBrw)
          ENDIF
       ELSE
          SKIP IF(lDesc, +1, -1)
@@ -2145,7 +2122,8 @@ LOCAL n
       WHILE ! BOF() .AND. EVAL(oBrw:bWhile) .AND. ! EVAL(oBrw:bFor)
         SKIP IF(lDesc, +1, -1)
       ENDDO
-    NEXT
+     NEXT
+
   ENDIF
 RETURN NIL
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.99 2008-03-19 14:01:05 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.100 2008-03-19 19:28:00 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1228,7 +1228,7 @@ Local nScrollCode := LoWord( wParam )
          Eval( ::bSkip, Self, 1 )
          Eval( ::bSkip, Self, -1 )
          VScrollPos( Self, 0, .f.)
-         ::REFRESH()
+         ::refresh(.F.)
       ENDIF
    ELSEIF nScrollCode == SB_THUMBTRACK
       IF ::bScrollPos != Nil
@@ -1255,9 +1255,6 @@ Local minPos, maxPos, nPos
 Local oldLeft := ::nLeftCol, nLeftCol, colpos, oldPos := ::colpos, fif
 Local lMoveThumb := .T.
 
-   GetScrollRange( ::handle, SB_HORZ, @minPos, @maxPos )
-   //nPos := GetScrollPos( ::handle, SB_HORZ )
-
    IF nScrollCode == SB_LINELEFT .OR. nScrollCode == SB_PAGELEFT
       LineLeft( Self )
 
@@ -1278,30 +1275,18 @@ Local lMoveThumb := .T.
          colPos := ::colPos
          LineRight( Self )
       ENDDO
-   ELSEIF nScrollCode == SB_THUMBPOSITION
-      IF ::bHScrollPos != Nil
-         Eval( ::bHScrollPos, Self, SB_THUMBPOSITION, .F., Hiword( wParam ) )
-         lMoveThumb := .F.
-      ENDIF
-
-   ELSEIF nScrollCode == SB_THUMBTRACK
-      IF ::bHScrollPos != Nil
-         Eval( ::bHScrollPos, Self, SB_THUMBTRACK, .F., Hiword( wParam ) )
-         lMoveThumb := .F.
-      ENDIF
+   ELSEIF nScrollCode == SB_THUMBTRACK .OR. nScrollCode == SB_THUMBPOSITION
+         SetScrollRange( ::handle, SB_HORZ, 1, Len( ::aColumns ) )
+         SetScrollPos( ::handle, SB_HORZ, Hiword( wParam ) )
+         ::SetColumn(Hiword( wParam ))
    ENDIF
 
    IF ::nLeftCol != oldLeft .OR. ::colpos != oldpos
 
-      /* Move scrollbar thumb if ::bHScrollPos has not been called, since, in this case,
-         movement of scrollbar thumb is done by that codeblock
-      */
       IF lMoveThumb
 
-         fif := Iif( ::lEditable, ::colpos + ::nLeftCol - 1, ::nLeftCol )
-         nPos := Iif( fif == 1, minPos,                        ;
-                    Iif( fif = Len( ::aColumns ), maxpos,      ;
-                    Int( ( maxPos - minPos + 1 ) * fif / Len( ::aColumns ) ) ) )
+         SetScrollRange( ::handle, SB_HORZ, 1, Len( ::aColumns ) )
+         nPos := Iif( ::lEditable, ::colpos + ::nLeftCol - 1, ::nLeftCol )
          SetScrollPos( ::handle, SB_HORZ, nPos )
 
       ENDIF
@@ -1443,8 +1428,6 @@ RETURN Nil
 METHOD BOTTOM(lPaint) CLASS HBrowse
 Local minPos, maxPos, nPos
 
-//   GetScrollRange( ::handle, SB_VERT, @minPos, @maxPos )
-
    ::rowPos := Lastrec()
    Eval( ::bGoBot, Self )
    VScrollPos( Self, 0, .f.)
@@ -1498,10 +1481,7 @@ Local xm := LOWORD(lParam), x1, fif
             IF ::bScrollPos != Nil
                Eval( ::bScrollPos, Self, step, .F. )
             ELSEIF ::nRecords > 1
-               GetScrollRange( hBrw, SB_VERT, @minPos, @maxPos )
-               nPos := GetScrollPos( hBrw, SB_VERT )
-               nPos := Min( nPos + Int( (maxPos-minPos)*step/(::nRecords-1) ), maxPos )
-               SetScrollPos( hBrw, SB_VERT, nPos )
+               VScrollPos( Self, 0, .f.)
             ENDIF
             res := .T.
          ELSE
@@ -1514,15 +1494,7 @@ Local xm := LOWORD(lParam), x1, fif
 
             // Colpos should not go beyond last column or I get bound errors on ::Edit()
             ::colpos := Min( ::nColumns+1, fif - ::nLeftCol + 1 + ::freeze )
-            GetScrollRange( hBrw, SB_HORZ, @minPos, @maxPos )
-
-            nPos := Iif( fif == 1,;
-                         minPos,;
-                         Iif( fif == Len( ::aColumns ),;
-                              maxpos,;
-                              Int( ( maxPos - minPos + 1 ) * fif / Len( ::aColumns ) ) ) )
-
-            SetScrollPos( hBrw, SB_HORZ, nPos )
+            VScrollPos( Self, 0, .f.)
             res := .T.
 
          ENDIF
@@ -2067,6 +2039,7 @@ Local minPos, maxPos, oldRecno, newRecno, nrecno
 
 RETURN Nil
 
+/*
 Function HScrollPos( oBrw, nType, lEof, nPos )
 Local minPos, maxPos, i, nSize := 0, nColPixel
 Local nBWidth := oBrw:nWidth // :width is _not_ browse width
@@ -2089,7 +2062,7 @@ Local nBWidth := oBrw:nWidth // :width is _not_ browse width
    SetScrollPos( oBrw:handle, SB_HORZ, nPos )
 
 RETURN Nil
-
+*/
 
 //----------------------------------------------------//
 // Agregado x WHT. 27.07.02

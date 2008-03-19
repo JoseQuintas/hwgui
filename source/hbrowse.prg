@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.98 2008-03-18 23:23:31 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.99 2008-03-19 14:01:05 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1219,10 +1219,30 @@ Local nScrollCode := LoWord( wParam )
    ELSEIF nScrollCode == SB_THUMBPOSITION
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, SB_THUMBPOSITION, .F., Hiword( wParam ) )
+      ELSE
+         IF indexord()=0
+            DbGoto(Hiword( wParam ))
+         ELSE
+            OrdKeyGoTo(Hiword( wParam ))
+         ENDIF
+         Eval( ::bSkip, Self, 1 )
+         Eval( ::bSkip, Self, -1 )
+         VScrollPos( Self, 0, .f.)
+         ::REFRESH()
       ENDIF
    ELSEIF nScrollCode == SB_THUMBTRACK
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, SB_THUMBTRACK, .F., Hiword( wParam ) )
+      ELSE
+         IF indexord()=0
+            DbGoto(Hiword( wParam ))
+         ELSE
+            OrdKeyGoTo(Hiword( wParam ))
+         ENDIF
+         Eval( ::bSkip, Self, 1 )
+         Eval( ::bSkip, Self, -1 )
+         VScrollPos( Self, 0, .f.)
+         ::refresh(.F.)
       ENDIF
    ENDIF
 RETURN 0
@@ -1400,17 +1420,23 @@ METHOD PAGEDOWN() CLASS HBrowse
 Local minPos, maxPos, nPos, nRows := ::rowCurrCount
 Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows )
 
-   ::rowPos := Min( ::nRecords, nRows )
+
    Eval( ::bSkip, Self, step )
+   ::rowPos := Min( ::nRecords, nRows )
 
    IF ::bScrollPos != Nil
       Eval( ::bScrollPos, Self, step, Eval( ::bEof,Self ) )
    ELSE
       VScrollPos( Self, 0, .f.)
    ENDIF
-
+   
+   IF EOF()
+      SKIP -1
+   ENDIF
+   
    ::Refresh(.F.)
    SetFocus( ::handle )
+
 RETURN Nil
 
 //----------------------------------------------------//
@@ -2125,6 +2151,7 @@ LOCAL n
      NEXT
 
   ENDIF
+
 RETURN NIL
 
 

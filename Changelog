@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.771 2008-03-18 23:23:00 giuseppem Exp $
+ * $Id: Changelog,v 1.772 2008-03-19 14:00:32 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,7 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2008-03-19 00:0 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+2008-03-19 15:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hbrowse.prg
+    ! add event SB_THUMBPOSITION and SB_THUMBTRACK to scrollbar for
+      database browse.
+
+2008-03-19 00:20 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! fix scrollbar for filter and setscope, and for browse array.
 

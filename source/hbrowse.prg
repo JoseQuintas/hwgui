@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.100 2008-03-19 19:28:00 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.101 2008-03-20 18:50:03 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1276,19 +1276,26 @@ Local lMoveThumb := .T.
          LineRight( Self )
       ENDDO
    ELSEIF nScrollCode == SB_THUMBTRACK .OR. nScrollCode == SB_THUMBPOSITION
-         SetScrollRange( ::handle, SB_HORZ, 1, Len( ::aColumns ) )
-         SetScrollPos( ::handle, SB_HORZ, Hiword( wParam ) )
-         ::SetColumn(Hiword( wParam ))
+         IF ::lEditable
+             SetScrollRange( ::handle, SB_HORZ, 1, Len( ::aColumns ))
+             SetScrollPos( ::handle, SB_HORZ, Hiword( wParam ) )
+             ::SetColumn(Hiword( wParam ))
+         ELSE
+             IF Hiword( wParam ) > (::colpos + ::nLeftCol - 1)
+                LineRight( Self )
+             ENDIF
+             IF Hiword( wParam ) < (::colpos + ::nLeftCol - 1)
+                LineLeft( Self )
+             ENDIF
+         ENDIF
    ENDIF
 
    IF ::nLeftCol != oldLeft .OR. ::colpos != oldpos
 
       IF lMoveThumb
-
          SetScrollRange( ::handle, SB_HORZ, 1, Len( ::aColumns ) )
-         nPos := Iif( ::lEditable, ::colpos + ::nLeftCol - 1, ::nLeftCol )
+         nPos :=  ::colpos + ::nLeftCol - 1
          SetScrollPos( ::handle, SB_HORZ, nPos )
-
       ENDIF
 
       IF ::nLeftCol == oldLeft
@@ -1997,7 +2004,7 @@ Local minPos, maxPos, oldRecno, newRecno, nrecno
 
    GetScrollRange( oBrw:handle, SB_VERT, @minPos, @maxPos )
    IF nPos == Nil
-      IF oBrw:type = BRW_ARRAY
+      IF oBrw:type <> BRW_DATABASE
          IF nType > 0 .AND. lEof
             Eval( oBrw:bSkip, oBrw,- 1 )
          ENDIF
@@ -2005,14 +2012,14 @@ Local minPos, maxPos, oldRecno, newRecno, nrecno
                     ( Eval( oBrw:bRecnoLog,oBrw )-1 ),0 ), minPos )
          SetScrollPos( oBrw:handle, SB_VERT, npos )
      ELSE
-         nrecno:=recno()
-         DBGOTOP()
-         minpos:=if(indexord()=0,recno(),ordkeyno())
-         DBGOBOTTOM()
-         maxpos:=if(indexord()=0,recno(),ordkeyno())
+         nrecno:=( oBrw:alias )->(recno())
+         eval(oBrw:bGotop)
+         minpos:=if(( oBrw:alias )->(indexord())=0,( oBrw:alias )->(recno()),( oBrw:alias )->(ordkeyno()))
+         eval(oBrw:bGobot)
+         maxpos:=if(( oBrw:alias )->(indexord())=0,( oBrw:alias )->(recno()),( oBrw:alias )->(ordkeyno()))
          SetScrollRange( oBrw:handle, SB_VERT, minPos, maxPos )
-         dbgoto(nrecno)
-         SetScrollPos( oBrw:handle, SB_VERT, if(indexord()=0,recno(),ordkeyno()) )
+         ( oBrw:alias )->(dbgoto(nrecno))
+         SetScrollPos( oBrw:handle, SB_VERT, if(( oBrw:alias )->(indexord())=0,( oBrw:alias )->(recno()),( oBrw:alias )->(ordkeyno())))
      ENDIF
    ELSE
       oldRecno := Eval( oBrw:bRecnoLog,oBrw )

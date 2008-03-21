@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.774 2008-03-20 18:49:32 giuseppem Exp $
+ * $Id: Changelog,v 1.775 2008-03-21 06:36:48 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,9 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-03-21 97:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hbrowse.prg
+    ! reviw suggested from Sergio for alias in browse.
+
 2008-03-20 19:50 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
-    ! minor fix + modify suggested from Sergio.
+    ! minor fix + review suggested from Sergio.
 
 2008-03-19 20:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg

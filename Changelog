@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.776 2008-03-21 06:38:33 giuseppem Exp $
+ * $Id: Changelog,v 1.777 2008-03-21 12:15:35 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-03-21 13:20 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hbrowse.prg
+    ! fixed pagedown setting scroll bar thumb position to top when attempting 
+	  to move beyond the end of file
+	* purged a lot of declarations referred to local unused variables 
 
 2008-03-21 07:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg

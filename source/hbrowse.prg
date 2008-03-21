@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.102 2008-03-21 06:39:06 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.103 2008-03-21 12:15:36 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -534,7 +534,7 @@ METHOD InsColumn( oColumn,nPos ) CLASS HBrowse
 RETURN oColumn
 
 Static Function InitColumn( oBrw, oColumn, n )
-Local xres,ctype,nlen
+Local xres,ctype
 
    IF oColumn:type == Nil
       oColumn:type := Valtype( Eval( oColumn:block,,oBrw,n ) )
@@ -1251,8 +1251,8 @@ RETURN 0
 //----------------------------------------------------//
 METHOD DoHScroll( wParam ) CLASS HBrowse
 Local nScrollCode := LoWord( wParam )
-Local minPos, maxPos, nPos
-Local oldLeft := ::nLeftCol, nLeftCol, colpos, oldPos := ::colpos, fif
+Local nPos
+Local oldLeft := ::nLeftCol, nLeftCol, colpos, oldPos := ::colpos
 Local lMoveThumb := .T.
 
    IF nScrollCode == SB_LINELEFT .OR. nScrollCode == SB_PAGELEFT
@@ -1310,7 +1310,6 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD LINEDOWN( lMouse ) CLASS HBrowse
-Local minPos, maxPos, nPos
 
    Eval( ::bSkip, Self,1 )
    IF Eval( ::bEof,Self )
@@ -1353,7 +1352,6 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD LINEUP() CLASS HBrowse
-Local minPos, maxPos, nPos
 
    Eval( ::bSkip, Self,- 1 )
    IF Eval( ::bBof,Self )
@@ -1382,7 +1380,7 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD PAGEUP() CLASS HBrowse
-Local minPos, maxPos, nPos, step, lBof := .F.
+Local step, lBof := .F.
 
    IF ::rowPos > 1
       step := ( ::rowPos - 1 )
@@ -1409,23 +1407,22 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD PAGEDOWN() CLASS HBrowse
-Local minPos, maxPos, nPos, nRows := ::rowCurrCount
+Local nRows := ::rowCurrCount
 Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows )
 
-
    Eval( ::bSkip, Self, step )
+
+   IF Eval(::bEof, Self)
+      Eval(::bSkip, Self, -1)
+   ENDIF
    ::rowPos := Min( ::nRecords, nRows )
 
    IF ::bScrollPos != Nil
-      Eval( ::bScrollPos, Self, step, Eval( ::bEof,Self ) )
+      Eval( ::bScrollPos, Self, step, .f. )
    ELSE
       VScrollPos( Self, 0, .f.)
    ENDIF
-   
-   IF (::alias)->(EOF())
-      (::alias)->(dbskip(-1))
-   ENDIF
-   
+
    ::Refresh(.F.)
    SetFocus( ::handle )
 
@@ -1433,7 +1430,6 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD BOTTOM(lPaint) CLASS HBrowse
-Local minPos, maxPos, nPos
 
    ::rowPos := Lastrec()
    Eval( ::bGoBot, Self )
@@ -1450,7 +1446,6 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD TOP() CLASS HBrowse
-Local minPos, maxPos, nPos
 
    ::rowPos := 1
    Eval( ::bGoTop,Self )
@@ -1468,7 +1463,6 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
 Local hBrw := ::handle
 Local nLine := Int( HIWORD(lParam)/(::height+1) + Iif(::lDispHead,1-::nHeadRows,1) )
 Local step := nLine - ::rowPos, res := .F., nrec
-Local minPos, maxPos, nPos
 Local xm := LOWORD(lParam), x1, fif
 
    x1  := ::x1

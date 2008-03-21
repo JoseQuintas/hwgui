@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.104 2008-03-21 18:42:29 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.105 2008-03-21 20:12:11 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -679,7 +679,15 @@ Local i, j, oColumn, xSize, nColLen, nHdrLen, nCount
       ENDIF
 
       IF oColumn:aBitmaps != Nil
-         xSize := 0
+         IF oColumn:heading != nil
+             IF ::oFont != Nil
+                xSize := round( ( len(oColumn:heading) + 2 ) * ((-::oFont:height)*0.6), 0 )
+             ELSE
+                xSize := round( ( len(oColumn:heading) + 2 ) * 6, 0 )
+             ENDIF
+         ELSE
+            xSize := 0
+         ENDIF
          FOR j := 1 TO len( oColumn:aBitmaps )
             xSize := max( xSize, oColumn:aBitmaps[j,2]:nWidth+2 )
             ::minHeight := max( ::minHeight,oColumn:aBitmaps[j,2]:nHeight )

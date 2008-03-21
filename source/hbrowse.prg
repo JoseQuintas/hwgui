@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.103 2008-03-21 12:15:36 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.104 2008-03-21 18:42:29 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1220,10 +1220,10 @@ Local nScrollCode := LoWord( wParam )
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, SB_THUMBPOSITION, .F., Hiword( wParam ) )
       ELSE
-         IF indexord()=0
-            DbGoto(Hiword( wParam ))
+         IF ( ::Alias ) -> ( IndexOrd() ) == 0              // sk
+            ( ::Alias ) -> ( DbGoto( HiWord( wParam ) ) )   // sk
          ELSE
-            OrdKeyGoTo(Hiword( wParam ))
+            ( ::alias )->( OrdKeyGoTo( Hiword( wParam ) ) ) // sk
          ENDIF
          Eval( ::bSkip, Self, 1 )
          Eval( ::bSkip, Self, -1 )
@@ -1234,10 +1234,10 @@ Local nScrollCode := LoWord( wParam )
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, SB_THUMBTRACK, .F., Hiword( wParam ) )
       ELSE
-         IF indexord()=0
-            DbGoto(Hiword( wParam ))
+         IF ( ::alias )->( indexord() ) == 0                // sk
+            ( ::alias )->( DbGoto( Hiword( wParam ) ) )     // sk
          ELSE
-            OrdKeyGoTo(Hiword( wParam ))
+            ( ::alias )->( OrdKeyGoTo( Hiword( wParam ) ) ) // sk
          ENDIF
          Eval( ::bSkip, Self, 1 )
          Eval( ::bSkip, Self, -1 )
@@ -1844,7 +1844,7 @@ METHOD Refresh( lFull ) CLASS HBrowse
       IF ::lFilter
         ::nLastRecordFilter := 0
         ::nFirstRecordFilter := 0
-        FltGoTop(Self)
+        ( ::alias )->( FltGoTop( Self ) ) // sk
       ENDIF
       ::internal[1] := 15
       RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )

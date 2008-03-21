@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.777 2008-03-21 12:15:35 mlacecilia Exp $
+ * $Id: Changelog,v 1.778 2008-03-21 18:42:28 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-03-21 19:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hbrowse.prg
+    ! added property ::alias previously omitted
+	  thanks to Sèrgio Kondo who signaled the needed changes
 
 2008-03-21 13:20 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hbrowse.prg

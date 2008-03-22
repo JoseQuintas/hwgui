@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.105 2008-03-21 20:12:11 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.106 2008-03-22 14:11:40 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1079,12 +1079,12 @@ Local aCores
                            y1 := 0
                            bh := ::height
                            bw := Int( ob:nWidth * ( ob:nHeight / ::height ) )
-                           DrawBitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(::nPaintRow-1)+1, bw, bh )
+                           DrawBitmap( hDC, ob:handle,, x+(int(::aColumns[::nPaintCol]:width-ob:nWidth)/2), y1+::y1+(::height+1)*(::nPaintRow-1)+1, bw, bh )
                         ELSE
                            y1 := Int( (::height-ob:nHeight)/2 )
                            bh := ob:nHeight
                            bw := ob:nWidth
-                           DrawTransparentBitmap( hDC, ob:handle, x, y1+::y1+(::height+1)*(::nPaintRow-1)+1 )
+                           DrawTransparentBitmap( hDC, ob:handle, x+(int(::aColumns[::nPaintCol]:width-ob:nWidth)/2), y1+::y1+(::height+1)*(::nPaintRow-1)+1 )
                         ENDIF
                         // DrawBitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(::nPaintRow-1)+1, bw, bh )
                         EXIT

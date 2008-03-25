@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.780 2008-03-22 14:11:04 giuseppem Exp $
+ * $Id: Changelog,v 1.781 2008-03-25 22:00:46 fperillo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-03-25 22:32 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
+  * source/window.c
+    + added hwg_doevents to process messages (the DoEvents command in Visual
+	  Basic)
+      
 2008-03-22 15:10 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! centered the Bmp in the cell when there is a header.

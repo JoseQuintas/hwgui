@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.62 2007-11-25 22:04:46 andijahja Exp $
+ * $Id: window.c,v 1.63 2008-03-25 22:00:46 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -41,6 +41,7 @@ void SetWindowObject( HWND hWnd, PHB_ITEM pObject );
 
 PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
 void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
+void DoEvents();
 
 LRESULT CALLBACK MainWndProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK FrameWndProc (HWND, UINT, WPARAM, LPARAM) ;
@@ -58,6 +59,29 @@ PHB_DYNS pSym_onEvent = NULL;
 PHB_DYNS pSym_onEven_Tool = NULL;
 // static PHB_DYNS pSym_MDIWnd = NULL;
 static TCHAR szChild[] = TEXT ( "MDICHILD" );
+
+/* Consume all queued events, useful to update all the controls... I split in 2 parts because I feel 
+ * that DoEvents should be called internally by some other functions...
+ */
+HB_FUNC( HWG_DOEVENTS )
+{
+   DoEvents();
+}
+
+void DoEvents()
+{
+   MSG msg;
+   long sts;
+
+   do
+   {
+      if (sts = PeekMessage(&msg, (HWND) NULL, 0, 0, PM_REMOVE))
+      {
+         TranslateMessage(&msg);
+         DispatchMessage(&msg);
+      }
+   } while (sts);
+}
 
 /*  Creates main application window
     InitMainWindow( szAppName, cTitle, cMenu, hIcon, nBkColor, nStyle, nLeft, nTop, nWidth, nHeight )

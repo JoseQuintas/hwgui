@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.9 2008-03-25 22:39:49 fperillo Exp $
+ * $Id: hlistbox.prg,v 1.10 2008-03-25 22:55:07 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -143,10 +143,11 @@ Return Nil
 METHOD AddItems(p)
 Local i
    aadd(::aItems,p)
-   SendMessage( ::handle, LB_RESETCONTENT, 0, 0)
-   FOR i := 1 TO Len( ::aItems )
-      ListboxAddString( ::handle, ::aItems[i] )
-   NEXT
+   ListboxAddString( ::handle, p )
+//   SendMessage( ::handle, LB_RESETCONTENT, 0, 0)
+//   FOR i := 1 TO Len( ::aItems )
+//      ListboxAddString( ::handle, ::aItems[i] )
+//   NEXT
    ListboxSetString( ::handle, ::value )
 return self
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.781 2008-03-25 22:00:46 fperillo Exp $
+ * $Id: Changelog,v 1.782 2008-03-25 22:39:48 fperillo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-03-25 23:32 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
+  * source/hlistbox.prg
+    + added method Clear() to empty the listbox
+	! ::aItems initialized to empty array if no parameter passed in New() o
+	  Redefine()
+      
 2008-03-25 22:32 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
   * source/window.c
     + added hwg_doevents to process messages (the DoEvents command in Visual

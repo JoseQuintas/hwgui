@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.8 2007-11-27 14:00:10 druzus Exp $
+ * $Id: hlistbox.prg,v 1.9 2008-03-25 22:39:49 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -41,6 +41,7 @@ CLASS HListBox INHERIT HControl
    METHOD Refresh()
    METHOD Setitem( nPos )
    METHOD AddItems(p)
+   METHOD Clear()
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,oFont, ;
@@ -53,7 +54,11 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
    ::value   := Iif( vari==Nil .OR. Valtype(vari)!="N",1,vari )
    ::bSetGet := bSetGet
 
-   ::aItems  := aItems
+   if aItems == Nil
+        ::aItems := {}
+   else
+        ::aItems  := aItems
+   endif
 
    ::Activate()
 
@@ -82,7 +87,11 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bPaint, ;
 
    ::value   := Iif( vari==Nil .OR. Valtype(vari)!="N",1,vari )
    ::bSetGet := bSetGet
-   ::aItems  := aItems
+   if aItems == Nil
+        ::aItems := {}
+   else
+        ::aItems  := aItems
+   endif
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
@@ -133,13 +142,21 @@ Return Nil
 
 METHOD AddItems(p)
 Local i
-aadd(::aItems,p)
-         SendMessage( ::handle, LB_RESETCONTENT, 0, 0)
-         FOR i := 1 TO Len( ::aItems )
-            ListboxAddString( ::handle, ::aItems[i] )
-         NEXT
-         ListboxSetString( ::handle, ::value )
+   aadd(::aItems,p)
+   SendMessage( ::handle, LB_RESETCONTENT, 0, 0)
+   FOR i := 1 TO Len( ::aItems )
+      ListboxAddString( ::handle, ::aItems[i] )
+   NEXT
+   ListboxSetString( ::handle, ::value )
 return self
+
+METHOD Clear()
+   ::aItems := {}
+   ::value := 1
+   SendMessage( ::handle, LB_RESETCONTENT, 0, 0)
+   ListboxSetString( ::handle, ::value )
+Return .T.
+
 Static Function __Valid( oCtrl )
 
    oCtrl:value := SendMessage( oCtrl:handle,LB_GETCURSEL,0,0 ) + 1

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.98 2008-03-07 09:19:12 mlacecilia Exp $
+ *$Id: guilib.ch,v 1.99 2008-03-26 10:47:03 mlacecilia Exp $
  */
 #define HWG_VERSION           "2.16"
 #define   WND_MAIN      1
@@ -116,7 +116,7 @@
 
 
 #xcommand INIT DIALOG <oDlg>                ;
-             [<res: FROM RESOURCE> <Resid> ]         ;
+             [<res: FROM RESOURCE> <Resid> ];
              [ TITLE <cTitle> ]             ;
              [ AT <x>, <y> ]                ;
              [ SIZE <width>, <height> ]     ;
@@ -1384,6 +1384,7 @@ Added by Marcos Antonio Gambeta
 #xcommand @ <x>,<y>  ANIMATION [ <oAnimation> ] ;
             [ OF <oWnd> ]                       ;
             [ ID <nId> ]                        ;
+            [ FROM RESOURCE <xResID> ]          ;
             [ STYLE <nStyle> ]                  ;
             [ SIZE <nWidth>, <nHeight> ]        ;
             [ FILE <cFile> ]                    ;
@@ -1392,7 +1393,7 @@ Added by Marcos Antonio Gambeta
             [ < transparent: TRANSPARENT > ]    ;
    =>;
     [<oAnimation> :=] HAnimation():New( <oWnd>,<nId>,<nStyle>,<x>,<y>, ;
-        <nWidth>,<nHeight>,<cFile>,<.autoplay.>,<.center.>,<.transparent.>)
+        <nWidth>,<nHeight>,<cFile>,<.autoplay.>,<.center.>,<.transparent.>,<xResID>)
 
 //Contribution   Ricardo de Moura Marques
 #xcommand @ <X>, <Y>, <X2>, <Y2> RECT <oRect> [<lPress: PRESS>] [OF <oWnd>] [RECT_STYLE <nST>];

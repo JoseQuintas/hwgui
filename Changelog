@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.783 2008-03-25 22:55:07 fperillo Exp $
+ * $Id: Changelog,v 1.784 2008-03-26 10:47:03 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,20 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-03-26 11:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hanimat.prg
+    * declared static function the macro wrappers of methods for better
+	  encapsulation (but why to use macros and not directly to send
+	  messages?)
+	+ added the use of avi files from resource files (also from external
+      files as system dll, exe, etc.)
+  * include/guilib.ch
+    + added to the @ ... ANIMATION command the parameter for passing 
+	  the resource ID of the avi file
+  * samples/tstAnimation.prg
+    * some enhancements due to the last hAnimation() changes
+
 2008-03-25 23:51 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
   * source/hlistbox.prg
     ! modified method AddItem() to just add the new item

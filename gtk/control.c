@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.31 2008-01-28 12:15:18 lculik Exp $
+ * $Id: control.c,v 1.32 2008-03-29 14:50:20 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -129,7 +129,7 @@ HB_FUNC( CREATEBUTTON )
    else
       hCtrl = gtk_button_new_with_mnemonic( cTitle );
    if (szFile )
-   {
+   {   
       img = gtk_image_new_from_pixbuf(szFile->handle);
       gtk_button_set_image(GTK_BUTTON(hCtrl),img);
    }
@@ -751,7 +751,89 @@ HB_FUNC( STATUSBARSETTEXT )
 /* void gtk_statusbar_pop (GtkStatusbar *statusbar, guint context_id); */
 HB_FUNC( STATUSBARREMOVETEXT )
 {
-   GtkWidget *w = (GtkWidget *) hb_parptr(1);
+   GtkWidget *w = (GtkWidget *) HB_PARHANDLE(1);
    int iStatus = hb_parni(2-1);
    gtk_statusbar_pop(GTK_STATUSBAR(w), iStatus);
 }
+
+HB_FUNC(CREATETOOLBAR)
+{
+   GtkWidget * hCtrl = gtk_toolbar_new ();
+
+//   GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
+  GtkWidget *tmp_image;
+  GtkWidget *toolbutton1;   
+  GtkWidget *toolbutton2;   
+  gint tmp_toolbar_icon_size;
+   GObject * handle = (GObject*) HB_PARHANDLE(1);
+   GtkFixed * box = getFixedBox( handle );
+   GtkWidget * vbox = ( (GtkWidget*)box )->parent;
+   gtk_box_pack_start( GTK_BOX (vbox), hCtrl, FALSE, FALSE, 0);  
+//   if ( box )
+  // gtk_box_pack_start (GTK_BOX (box), hCtrl, FALSE, FALSE, 0);
+//        gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );
+//   gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
+//   gtk_toolbar_set_style (GTK_TOOLBAR (hCtrl), GTK_TOOLBAR_BOTH);   
+//  tmp_toolbar_icon_size = gtk_toolbar_get_icon_size (GTK_TOOLBAR (hCtrl));
+//  tmp_image = gtk_image_new_from_stock ("gtk-new", tmp_toolbar_icon_size);
+  //gtk_widget_show (tmp_image);
+//  toolbutton1 = (GtkWidget*) gtk_tool_button_new (tmp_image, "New");
+//  toolbutton2 = (GtkWidget*) gtk_tool_button_new (tmp_image, "New");
+//  gtk_widget_show (toolbutton1);
+//  gtk_container_add (GTK_CONTAINER (hCtrl), toolbutton1);   
+//  gtk_container_add (GTK_CONTAINER (hCtrl), toolbutton2);   
+
+   HB_RETHANDLE( hCtrl );
+}   
+HB_FUNC(CREATETOOLBARBUTTON)
+{
+  GtkWidget *toolbutton1,*img;   
+  GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
+  PHWGUI_PIXBUF szFile = ISPOINTER(2) ? (PHWGUI_PIXBUF) HB_PARHANDLE(2): NULL;  
+  char * szLabel = ISCHAR( 3 ) ? hb_parc( 3 ) : NULL ;
+  BOOL lSep = hb_parl( 4 ) ;
+  if ( szLabel )
+  {
+     szLabel = g_locale_to_utf8( szLabel, -1, NULL, NULL, NULL );
+  }
+  if (lSep) 
+  {
+     toolbutton1 = ( GtkWidget * ) gtk_separator_tool_item_new();
+  }
+  else
+  {
+     if (szFile )
+     {   
+        img = gtk_image_new_from_pixbuf( szFile->handle );  
+	gtk_widget_show( img );
+        toolbutton1 = ( GtkWidget * ) gtk_tool_button_new( img, szLabel );      
+     }
+     else
+     { 
+        toolbutton1 = ( GtkWidget * ) gtk_tool_button_new( NULL, szLabel );      
+     }	 
+     if ( szLabel )
+     {
+        g_free( szLabel ) ;	 
+     }
+  }
+  gtk_widget_show ( toolbutton1 );   
+  gtk_container_add ( GTK_CONTAINER( hCtrl ), toolbutton1 );   
+      
+  HB_RETHANDLE( toolbutton1 );
+}   
+static void toolbar_clicked (GtkToolItem *item,
+	    gpointer     user_data)
+{
+  PHB_ITEM pData = (PHB_ITEM) user_data;
+  hb_vmEvalBlock( ( PHB_ITEM ) pData );	    
+}
+HB_FUNC(TOOLBAR_SETACTION)
+{
+  GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
+  PHB_ITEM pItem = hb_itemParam( 2 ) ;
+  g_signal_connect (hCtrl, "clicked",
+			    G_CALLBACK (toolbar_clicked), (void*) pItem);
+}			    
+
+   

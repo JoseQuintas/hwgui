@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.7 2007-11-13 17:40:46 druzus Exp $
+ * $Id: drawwidg.prg,v 1.8 2008-03-29 14:50:20 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -430,6 +430,7 @@ CLASS HIcon INHERIT HObject
    DATA handle
    DATA name
    DATA nCounter   INIT 1
+   DATA nWidth, nHeight
 
    METHOD AddResource( name )
    METHOD AddFile( name,HDC )
@@ -466,7 +467,7 @@ Local lPreDefined := .F., i
 Return Self
 
 METHOD AddFile( name ) CLASS HIcon
-Local i
+Local i, aBmpSize
 
 #ifdef __XHARBOUR__
    For EACH i IN  ::aIcons 
@@ -483,9 +484,22 @@ Local i
       ENDIF
    NEXT
 #endif
-   ::handle := LoadImage( 0, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE+LR_LOADFROMFILE )
-   ::name := name
-   Aadd( ::aIcons,Self )
+//   ::handle := LoadImage( 0, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE+LR_LOADFROMFILE )
+//   ::handle := OpenImage( name )
+//   ::name := name
+//   Aadd( ::aIcons,Self )
+   Tracelog("name = ",name)
+   ::handle := OpenImage( name )
+   tracelog("handle = ",::handle)
+   IF !Empty( ::handle )
+      ::name := name
+      aBmpSize  := GetBitmapSize( ::handle )
+      ::nWidth  := aBmpSize[1]
+      ::nHeight := aBmpSize[2]
+      Aadd( ::aIcons,Self )
+   ELSE
+      Return Nil
+   ENDIF
 
 Return Self
 

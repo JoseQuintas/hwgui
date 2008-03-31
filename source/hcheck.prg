@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.14 2008-01-22 12:25:08 druzus Exp $
+ * $Id: hcheck.prg,v 1.15 2008-03-31 13:51:02 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -36,7 +36,7 @@ ENDCLASS
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
                   bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor,bGFocus ) CLASS HCheckButton
 
-   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_AUTO3STATE+WS_TABSTOP )
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_CHECKBOX+WS_TABSTOP )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )
 
@@ -48,7 +48,6 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaptio
 
    ::bLostFocus := bClick
    ::bGetFocus  := bGFocus
-
    ::oParent:AddEvent( BN_CLICKED,::id,{|o,id|__Valid(o:FindControl(id))} )
    IF bGFocus != Nil
       ::oParent:AddEvent( BN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )

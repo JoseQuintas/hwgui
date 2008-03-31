@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.785 2008-03-29 14:50:17 lculik Exp $
+ * $Id: Changelog,v 1.786 2008-03-31 13:51:01 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-03-31 15:50 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hcheck.prg
+    * changed the default style of hCheckButton to BS_CHECKBOX because
+	  the old BS_AUTO2STATE don't manages the messages needed in VALID
+	  and WHEN clauses. In addition, the hard coded BS_AUTO2STATE 
+      style don't allows the setting of th BS_CHECKBOX style.
+      Stay tuned: setting a BS_AUTOxxxxxx state don't lets Windows to
+      pass to the parent window the management of the changed state of
+      the button.	  
+  
 2008-03-29 12:00 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * gtk/drawwing.prg
     ! fixed hicon class under linux

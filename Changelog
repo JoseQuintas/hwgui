@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.786 2008-03-31 13:51:01 mlacecilia Exp $
+ * $Id: Changelog,v 1.787 2008-03-31 15:34:48 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-03-31 15:50 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hcheck.prg
+    * fixed default style of hCheckButton(). Now sets automatically the
+	  button state AND activates the VALID and WHEN clauses if given. 
 
 2008-03-31 15:50 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hcheck.prg

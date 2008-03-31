@@ -1,0 +1,186 @@
+
+PREFACE:
+- Sorry for this long text.. but I wanted to tell a bit of history...
+- This code only works on xHarbour
+- I need some tests done
+
+Please please please test this code !
+
+Francesco
+
+--------------------------------
+
+COMPILING:
+
+Please remove the REM in the line
+rem   set ACTIVEX_SUPPORT=ON
+
+PLEASE NOTE that sometimes, creating the sample (rmsample) the linker
+reports this error:
+Error: Unresolved external '_hb_dwCurrentStack' referenced from LIB\HBACTIVEX.LIB|axev
+
+There is a reference to this variable in an included file....
+
+Deleting the library and compiling it again solves the problem.
+If anybody has a clue about this problem.....
+
+--------------------------------
+I've been working heavily on this code... and it is not mine !
+
+I took it from oohg and freewin (they use almost the same code) with one
+difference: freewin only uses HASH where oohg uses runtime checks to switch
+from HASH to array depending on compiler used.
+At first I used freewin code, then I switched to oohg but I met a problem 
+on __error method... I don't know if it is Harbour compatible... 
+and I don't know how to make it Harbour-comptible. 
+
+I decided to integrate activex/OLE2/ocx support into Hwgui when I casually
+arrived on a couple of sites where professional looking windows objects
+were developed as open-source or freeware.
+One of the sites is http://www.vbaccelerator.com (note 1). I really fall in
+love with same of their OCXs... and so I entered a new world !!!
+
+I started googling for xharbour and ocx. I found same references about the
+ use of RMChart OCX in ooHg (there are samples on their home page). I also
+ found a 2007 thread about OLE support in GUI framework.
+
+It must be said that OLE born to let a program interact with external
+objects/programs... this capability is already in xHarbour,
+it's handled by TOleAuto class. Using this class we can run Word/Excel and
+other OLE ready programs and interact with them, invoking methods
+and functions.
+
+Word methods are not present in Excel and viceversa, xHarbour doesn't know
+anything about these external programs but can use it. It can because the 
+OLE objects export method name, parameter names and type, return types, etc 
+from inside their code. When we create a Word object 
+and run oWord:Load( "filename.doc" ) xHarbour tries to run the Load method, 
+it doesn't exists (of course) and the error is trapped by the on error 
+TOleAuto method. This method then asks the Word object if it has a "Load" 
+functions to be called. If the reply is positive then xHarbour runtime 
+calls this method.
+
+I don't want ever talk about how these queries are done and methods called, 
+let's just say they use INTERFACEs. Some INTERFACEs are "standard" 
+(must be allways present), others are specific to specific objects.
+
+
+
+As you may easily try, you can use TOleAuto from a text mode application 
+and the called external application opens a... different window!
+
+This is OLE1 - fully supported by xHarbour but with the external window 
+limitation.
+
+
+With the advent of Visual Basic Microsoft developed OLE2: this time the 
+external object can be started "in-place" in the form of the calling program! 
+To achieve this effect some new INTERFACEs were defined, and of course 
+interactions between them got more complicated....  the calling programs  
+must now act as an "OLE container" in order to support these new objects: 
+it must send them methods invocation requests but also listen to requests 
+from the object itself... the object can be composed by several different 
+parts and it must signal the container if, for example, the user pressed 
+a button it hosts...
+New components were developed by independent software house and sold on 
+the market. And they still sell well !
+Visual Basic/C++ can transparently handle win32 and OLE objects. 
+And they can easily create OLE2 objects.
+
+
+Back to my work.
+Since I didn't know anything about OLE, I started reading texts from the 
+internet and slowly understanding all the pieces and how they work together.
+I downloaded freewin code and did some tests. I then ported the RMChart 
+sample found on ooHG site to freewin... I had it working in a short time. 
+Then I tried the vbaccelerator OCXx and I always got a crash!
+I went to freewin source code and saw that it used a microsoft library (ATL) 
+to interact with the OLE objects..... Since I had the OCXs I wanted to run 
+crash I decided to port OLE container function to hwgui... 
+but in the DIFFICULT way: in pure C/C++....
+When I approached the hwgui code, a grep revealed me that there is some OLE2 
+code in hwgui: it is in source\activex directory and you have to remove a rem 
+from the build makefile to have it compiled ! samples\iesample.prg is its 
+companion. Kresin adapted a code available on the net to work in xHarbour/hwgui. 
+Good work, except that that code was using a SPECIFIC INTERFACE, specific to 
+an internet explorer OLE server. NO code for event handling was present.
+That moment started one of my worst programming period, with these, simple, goals:
+1) make the routine generic, to handle any OLE2 object
+2) port the event functionality from other GUI
+3) don't use windows library, in order to better know OLE2 internal working
+
+Point 1 was done in about a week.... point 2, having to take care of INTERAFCEs 
+myself, almost no samples on the net.. I gave up.
+
+I decided to switch to freewin method: use the Microsft library that acts as 
+an OLE container and take care of great parts of the interaction...
+
+So I started to port freewin code, adapting it to the hwgui internal structure 
+(actually no great changes were done) but I had to study the internal working 
+of hwgui ...
+
+I was finally able to have OLE2 objects in place. A sample object built 
+with visual studio c++ was easily shown on the screen.
+I then started to implement the event manager on the C side, allways using 
+code from other projects. I then created a way to easily create xHarbour 
+code to run for these events.
+
+I haven't been a programmer for a long time, and, except a couple of VB projects, 
+I've never been a win32 programmer... I know something about win32 programming 
+but not a lot... porting the code was difficult because every system call I had 
+to lookup on msdn, I put debug code in every routine to see how were they invoked, 
+I had to make sure that my routines were actually called and with the correct parameters !
+
+And my inexperience on win32 programming make me lose another couple of days on a 
+problem with RMChart ! I was able to invoke the object (and infact I realized 
+that the image was correctly present in the clipboard)... but on the screen 
+no chart were displayed, just a box with the foreground color. 
+A full day of tests... no way :-(
+I then started modifying the rmsample code to handle form resizing... 
+and when I resized it the first time... the chart appeared !!! It seems that the 
+object writes on the screen not at the WM_PAINT message but on another one, sent 
+during resizing.... Running rmsample, resize the window to a really bigger size, 
+press "Redraw" button and resize the form of 2 pixels... you will have 
+a redraw at that time !
+I put a :Move() in rmsample code at start time, to have the object show itself.
+I told you this because you may probably use rmsample to test other OLE2 objects, 
+and they may have similar problems....
+
+
+Finally, I discovered that some users of hwgui are Harbour users... so I switched to 
+oohg source code, modyfying it where necessary. But I was not able to make it 100%
+harbour compatible... please test it.
+
+
+------------
+
+The code
+
+source\activex\c_activex.c
+source\activex\h_activex.prg
+samples\rmsample.prg
+samples\rmchart.ch
+
+
+h_activex.prg contains code for HACTIVEX class.
+c_activex.c contains the initialization code and the event management code
+
+In rmsample.prg I created a class to better handle the events... it's perhaps not
+the best code.... there are some comments.
+
+
+
+Just to add something on event handling.
+You need to use EventMap to map events -> code. 
+Creating a class inheriting from HACTIVEX you have the space to define in a quasi OOP 
+way the method associated to the object, like I did with the Clicked method. 
+I already know that in this way I may have problem if I have to use 2 RMChart 
+objects together... it was just a first hack... 
+
+Francesco
+
+Note 1: actually they don't work in the xHarbour/hwgui/freewin implementation. I finally 
+found the problems: one is due to one specific instruction dealing with font at 
+init time (I removed the line, recompiled it and now the OCX starts)... 
+I then found a more serious problem since parameter passing from harbour VM to the OCX 
+is not 100% perfect (problem is win32ole) -  more in another message.

@@ -207,7 +207,10 @@ HBXML_LIB_OBJS = \
 ACTIVEX_LIB_OBJS = \
    $(ACTIVEX_OBJ_DIR)\htmlcore.obj \
    $(ACTIVEX_OBJ_DIR)\htmlfunc.obj \
-   $(ACTIVEX_OBJ_DIR)\hhtml.obj
+   $(ACTIVEX_OBJ_DIR)\hhtml.obj \
+   $(ACTIVEX_OBJ_DIR)\h_activex.obj \
+   $(ACTIVEX_OBJ_DIR)\c_activex.obj
+
 
 #
 # Our default target

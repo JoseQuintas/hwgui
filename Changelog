@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.787 2008-03-31 15:34:48 mlacecilia Exp $
+ * $Id: Changelog,v 1.788 2008-03-31 23:07:56 fperillo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-04-01 00:51 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
+  * makefile.bc
+  * source/activex/h_active.prg
+  * source/activex/c_active.c
+    * Added OCX support
+  * samples/rmsample.prg
+  * samples/rmchart.ch
+	* Added sample to show rmchart ocx
+  * readme.activex
+    * Read this file to understand how to use OCX in hwgui
 
 2008-03-31 15:50 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hcheck.prg

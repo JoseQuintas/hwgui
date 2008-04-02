@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.106 2008-03-22 14:11:40 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.107 2008-04-02 17:42:39 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -289,7 +289,7 @@ Local nRecStart, nRecStop
       ELSEIF msg == WM_SETFOCUS
          IF ::bGetFocus != Nil
             Eval( ::bGetFocus, Self )
-       //::refreshLine()
+            //::refreshLine()
          ENDIF
 
       ELSEIF msg == WM_KILLFOCUS
@@ -2006,7 +2006,7 @@ Local minPos, maxPos, oldRecno, newRecno, nrecno
 
    GetScrollRange( oBrw:handle, SB_VERT, @minPos, @maxPos )
    IF nPos == Nil
-      IF oBrw:type <> BRW_DATABASE
+     IF oBrw:type <> BRW_DATABASE
          IF nType > 0 .AND. lEof
             Eval( oBrw:bSkip, oBrw,- 1 )
          ENDIF
@@ -2019,7 +2019,9 @@ Local minPos, maxPos, oldRecno, newRecno, nrecno
          minpos:=if(( oBrw:alias )->(indexord())=0,( oBrw:alias )->(recno()),( oBrw:alias )->(ordkeyno()))
          eval(oBrw:bGobot)
          maxpos:=if(( oBrw:alias )->(indexord())=0,( oBrw:alias )->(recno()),( oBrw:alias )->(ordkeyno()))
-         SetScrollRange( oBrw:handle, SB_VERT, minPos, maxPos )
+         IF minPos != maxPos
+            SetScrollRange( oBrw:handle, SB_VERT, minPos, maxPos )
+         ENDIF
          ( oBrw:alias )->(dbgoto(nrecno))
          SetScrollPos( oBrw:handle, SB_VERT, if(( oBrw:alias )->(indexord())=0,( oBrw:alias )->(recno()),( oBrw:alias )->(ordkeyno())))
      ENDIF

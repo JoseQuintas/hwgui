@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.12 2007-12-20 10:39:54 lculik Exp $
+ * $Id: htool.prg,v 1.13 2008-04-09 13:59:38 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -39,6 +39,7 @@ CLASS HToolBar INHERIT HControl
    METHOD INIT()
    METHOD AddButton(a,s,d,f,g,h)
    METHOD Notify( lParam )
+   METHOD REFRESH
 ENDCLASS
 
 
@@ -87,6 +88,7 @@ Local hIm
 Local aButton :={}
 Local aBmpSize
 Local nPos
+Local nmax
    IF !::lInit
       Super:Init()
       For n := 1 TO len( ::aItem )
@@ -109,21 +111,35 @@ Local nPos
 
          ENDIF
 
-        IF ::aItem[ n, 1 ] > 0
-           AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
-        ENDIF
+        if valtype(::aItem[ n, 1 ])  == "C"
+           AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION+ LR_LOADFROMFILE ) )
+           ::aItem[n ,1 ] := n
+
+        else
+           IF ::aItem[ n, 1 ] > 0
+              AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
+           ENDIF
+       endif
 
       NEXT
 
       IF Len(aButton ) >0
+         
 
           aBmpSize := GetBitmapSize( aButton[1] )
+          nmax :=aBmpSize[ 3 ]
 
-          IF aBmpSize[ 3 ] == 4
+          For n:=2 to len(aButton)
+             aBmpSize := GetBitmapSize( aButton[n] )
+             nMax:=max(nmax,aBmpSize[ 3 ])
+          next
+
+
+          IF nMax == 4
              hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR4 + ILC_MASK )
-          ELSEIF aBmpSize[ 3 ] == 8
+          ELSEIF nMax == 8
              hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR8 + ILC_MASK )
-          ELSEIF aBmpSize[ 3 ] == 24
+          ELSEIF nMax == 24
              hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLORDDB + ILC_MASK )
           ENDIF
 
@@ -185,10 +201,18 @@ METHOD Notify( lParam ) CLASS hToolBar
 
 Return 0
 
+METHOD REFRESH() class htoolbar
+if ::lInit
+::lInit := .f.
+endif
+::init()
+return nil
+
 METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu) CLASS hToolBar
    Local hMenu := Nil
-   DEFAULT nBitIp to -1
-   DEFAULT bstate to TBSTATE_ENABLED
+
+     DEFAULT nBitIp to -1
+     DEFAULT bstate to TBSTATE_ENABLED
    DEFAULT bstyle to 0x0000
    DEFAULT c to ""
    DEFAULT ctext to ""

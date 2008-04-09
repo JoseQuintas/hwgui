@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.13 2007-12-21 10:24:41 lculik Exp $
+ * $Id: hsayimg.prg,v 1.14 2008-04-09 13:59:38 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -95,9 +95,10 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
 Return Self
 
 METHOD Redefine( oWndParent,nId,xImage,lRes,bInit,bSize,ctooltip ) CLASS HSayBmp
-   ::bPaint := {|o,lpdis|o:Paint(lpdis)}
+
+
    Super:Redefine( oWndParent,nId,bInit,bSize,ctooltip )
-   
+   ::bPaint := {|o,lpdis|o:Paint(lpdis)}   
    IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := Iif( lRes .OR. Valtype(xImage)=="N",     ;
                        HBitmap():AddResource( xImage ), ;
@@ -107,7 +108,7 @@ Return Self
 
 METHOD Paint( lpdis ) CLASS HSayBmp
 Local drawInfo := GetDrawItemInfo( lpdis )
-
+   
    IF ::oImage != Nil
       IF ::nZoom == Nil
          DrawBitmap( drawInfo[3], ::oImage:handle,, drawInfo[4]+::nOffsetH, ;
@@ -121,7 +122,7 @@ Local drawInfo := GetDrawItemInfo( lpdis )
 Return Nil
 
 METHOD ReplaceBitmap( Image, lRes ) CLASS HSayBmp
-
+   altD()
    IF ::oImage != Nil
       ::oImage:Release()
    ENDIF

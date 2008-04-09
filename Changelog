@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.791 2008-04-02 17:42:37 mlacecilia Exp $
+ * $Id: Changelog,v 1.792 2008-04-09 13:59:37 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-04-09 11:00 Luiz Rafael Culik <Luiz at xharbour.com.br>
+  * source/htool.prg
+    ! added support to load bitmaps from files
+    ! added refresh() method to create toolbar when creating on an window
+  - source/graph.c
+    ! removed
 
 2008-04-02 19:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hbrowse.prg

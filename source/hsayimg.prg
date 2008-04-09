@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.14 2008-04-09 13:59:38 lculik Exp $
+ * $Id: hsayimg.prg,v 1.15 2008-04-09 19:03:04 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -122,7 +122,7 @@ Local drawInfo := GetDrawItemInfo( lpdis )
 Return Nil
 
 METHOD ReplaceBitmap( Image, lRes ) CLASS HSayBmp
-   altD()
+
    IF ::oImage != Nil
       ::oImage:Release()
    ENDIF

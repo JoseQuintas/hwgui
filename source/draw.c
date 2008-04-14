@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.40 2008-02-05 18:40:36 giuseppem Exp $
+ * $Id: draw.c,v 1.41 2008-04-14 08:02:29 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -869,7 +869,7 @@ HB_FUNC(CREATECOMPATIBLEBITMAP)
 HB_FUNC( INFLATERECT )
 {
    RECT pRect;
-   BOOL bRectOk = ( ISARRAY( 1 )  &&   Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect ) ) ;        
+/*   BOOL bRectOk = ( ISARRAY( 1 )  &&   Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect ) ) ; */
    int x = hb_parni( 2);
    int y = hb_parni( 3 );
    hb_retl( InflateRect( &pRect, x, y ));
@@ -886,7 +886,7 @@ HB_FUNC( FRAMERECT )
    HBRUSH hbr = (HBRUSH) hb_parnl( 3 );
    RECT pRect;
 
-   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;        
+/*   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;  */
 
    hb_retni( FrameRect( hdc, &pRect, hbr ));
 }
@@ -895,7 +895,7 @@ HB_FUNC( DRAWFRAMECONTROL )
 {
    HDC hdc = (HDC ) hb_parnl( 1 );
    RECT pRect;
-   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;        
+/*   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;    */
    UINT uType = hb_parni( 3 );  // frame-control type
    UINT uState = hb_parni( 4 );  // frame-control state
 
@@ -905,7 +905,7 @@ HB_FUNC( DRAWFRAMECONTROL )
 HB_FUNC( OFFSETRECT )
 {
    RECT pRect;
-   BOOL bRectOk = ( ISARRAY( 1 )  &&   Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect ) ) ;        
+/*   BOOL bRectOk = ( ISARRAY( 1 )  &&   Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect ) ) ;      */
    int x = hb_parni( 2);
    int y = hb_parni( 3 );
 
@@ -920,7 +920,7 @@ HB_FUNC( DRAWFOCUSRECT )
 {
    RECT pRect;
    HDC hc = (HDC) hb_parnl( 1);
-   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;        
+/*   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ; */
    hb_retl( DrawFocusRect( hc,&pRect ));
 }
 

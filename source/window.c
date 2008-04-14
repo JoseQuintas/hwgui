@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.63 2008-03-25 22:00:46 fperillo Exp $
+ * $Id: window.c,v 1.64 2008-04-14 08:02:29 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -41,7 +41,7 @@ void SetWindowObject( HWND hWnd, PHB_ITEM pObject );
 
 PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
 void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
-void DoEvents();
+void DoEvents(void);
 
 LRESULT CALLBACK MainWndProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK FrameWndProc (HWND, UINT, WPARAM, LPARAM) ;
@@ -71,16 +71,12 @@ HB_FUNC( HWG_DOEVENTS )
 void DoEvents()
 {
    MSG msg;
-   long sts;
 
-   do
-   {
-      if (sts = PeekMessage(&msg, (HWND) NULL, 0, 0, PM_REMOVE))
+   while ( PeekMessage( &msg, (HWND) NULL, 0, 0, PM_REMOVE) )
       {
          TranslateMessage(&msg);
          DispatchMessage(&msg);
-      }
-   } while (sts);
+      } ;
 }
 
 /*  Creates main application window

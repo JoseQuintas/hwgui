@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.76 2008-03-07 09:19:12 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.77 2008-04-14 08:02:29 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -145,8 +145,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
 
          ELSEIF msg == WM_KEYDOWN
-            IF ::bKeyDown != Nil
-              IF !Eval( ::bKeyDown,Self,wParam )
+            IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
+              IF !Eval( ::bKeyDown, Self, wParam )
                   RETURN 0
                ENDIF
             ENDIF

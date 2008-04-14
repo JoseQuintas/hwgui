@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.99 2008-03-26 10:47:03 mlacecilia Exp $
+ *$Id: guilib.ch,v 1.100 2008-04-14 08:02:29 mlacecilia Exp $
  */
 #define HWG_VERSION           "2.16"
 #define   WND_MAIN      1
@@ -1522,7 +1522,7 @@ Added by Marcos Antonio Gambeta
                             <{bKeyDown}>, <{bPosChg}>, <{bDispInfo}>, <nItemCount>,;
                              <.lNoLines.>, <color>, <bkcolor>, <.lNoHeader.> ,<aBit>,<a>)
 
-#xcommand ADDROW  to GRID <oGrid>    ;
+#xcommand ADDROW TO GRID <oGrid>    ;
             [ HEADER <cHeader> ]        ;
             [ JUSTIFY HEAD <nJusHead> ] ;
             [ BITMAP <n> ]              ;
@@ -1532,17 +1532,16 @@ Added by Marcos Antonio Gambeta
             => <oGrid>:AddRow(<cHeader>,<nJusHead>,<n>) [;<oGrid>:AddRow(<cHeadern>,<nJusHeadn>,<nn>)]
 
 
-#xcommand ADDROWEX  GRID <oGrid>        ;
+#xcommand ADDROWEX TO GRID <oGrid>        ;
             [ HEADER <cHeader> ]        ;
             [ BITMAP <n> ]              ;
             [ COLOR <color> ]           ;
             [ BACKCOLOR <bkcolor> ]     ;
-             => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> \})
-//            [ HEADER <cHeadern> ]       ;
-//            [ BITMAP <nn> ]             ;
-//            [ COLOR <colorn> ]          ;
-//            [ BACKCOLOR <bkcolorn> ]    ;
-
+            [ HEADER <cHeadern> ]       ;
+            [ BITMAP <nn> ]             ;
+            [ COLOR <colorn> ]          ;
+            [ BACKCOLOR <bkcolorn> ]    ;
+             => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> \}) [;<oGrid>:AddRow(\{<cHeadern>,<nn>,<colorn>,<bkcolorn> \})]
 
 
 #xcommand REDEFINE TAB  <oSay>  ;

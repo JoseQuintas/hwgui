@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.793 2008-04-09 19:02:22 giuseppem Exp $
+ * $Id: Changelog,v 1.794 2008-04-14 08:02:27 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,23 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-04-14 10:10 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * include/guilib.ch
+    * changed command to "ADDROWEX TO GRID" and added multiline add
+      (change suggested by seohic)
+  * source/hedit.prg
+    * added test for codeblock consistency in WM_KEYDOWN management
+      (change suggested by seohic)
+  * source/hgridex.prg
+    * added to METHOD UpdateData() the CLASS hGridex clause
+  * source/window.c
+    * changed DoEvents() template and code to avoid warnings at compile 
+      time
+  * source/grid.c
+  * source/theme.c
+    * commented out some var declarations causing warnings at compile time  
+  
 2008-04-09 21:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hsayimg.prg
     ! removed altd().

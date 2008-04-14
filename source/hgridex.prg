@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.11 2007-11-10 17:44:39 mlacecilia Exp $
+ * $Id: hgridex.prg,v 1.12 2008-04-14 08:02:29 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -286,7 +286,7 @@ METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
 
 Return Self
 
-METHOD UpdateData()
+METHOD UpdateData() CLASS hGridex
    Local n := Len( ::aRow ), n1
    Local aTemp,atemp1
 

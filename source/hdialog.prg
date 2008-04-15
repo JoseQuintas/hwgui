@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.42 2008-02-21 00:44:24 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.43 2008-04-15 21:24:09 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -294,7 +294,7 @@ Return 0
 
 Function DlgCommand( oDlg,wParam,lParam )
 Local iParHigh := HiWord( wParam ), iParLow := LoWord( wParam )
-Local aMenu, i, hCtrl
+Local aMenu, i, hCtrl, nexthandle
    // WriteLog( Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF iParHigh == 0
       IF iParLow == IDOK
@@ -306,11 +306,16 @@ Local aMenu, i, hCtrl
          NEXT
          IF i != 0 .AND. oDlg:GetList[i]:handle == hCtrl
             IF __ObjHasMsg(oDlg:GetList[i],"BVALID")
-               IF Eval( oDlg:GetList[i]:bValid,oDlg:GetList[i] ) .AND. ;
-                      oDlg:lExitOnEnter
-                  oDlg:lResult := .T.
-                  EndDialog( oDlg:handle )
+               IF Eval( oDlg:GetList[i]:bValid,oDlg:GetList[i] )
+                  IF  oDlg:lExitOnEnter
+                      oDlg:lResult := .T.
+                      EndDialog( oDlg:handle )
+                  ELSE
+                      nexthandle := GetNextDlgTabItem ( GetActiveWindow() , GetFocus() , .f. )
+                      PostMessage( oDlg:handle, WM_NEXTDLGCTL, nexthandle , 1 )
+                 ENDIF
                ENDIF
+
                Return 1
             ENDIF
          ENDIF

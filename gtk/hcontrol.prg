@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.13 2008-01-28 12:15:18 lculik Exp $
+ *$Id: hcontrol.prg,v 1.14 2008-04-28 01:20:20 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -98,6 +98,11 @@ Local o
       DO WHILE o != Nil .AND. !__ObjHasMsg( o,"LACTIVATED")
          o := o:oParent
       ENDDO
+      if ::tcolor != nil          
+            SETFGCOLOR(::handle,::tcolor)
+      endif	    
+      
+      
       IF o != Nil .AND. o:lActivated
          hwg_ShowAll( o:handle )
       ENDIF

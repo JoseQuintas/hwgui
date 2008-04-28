@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.5 2006-06-09 11:06:59 alkresin Exp $
+ *$Id: htab.prg,v 1.6 2008-04-28 01:20:20 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HTab class
@@ -57,6 +57,7 @@ LOCAL i, aBmpSize
    ::oFont   := Iif( oFont==Nil, ::oParent:oFont, oFont )
    ::aTabs   := Iif( aTabs==Nil,{},aTabs )
    ::bChange := bChange
+
    ::bChange2 := bChange
 
    ::bGetFocus :=IIf( bGetFocus==Nil, Nil, bGetFocus)
@@ -72,6 +73,7 @@ METHOD Activate CLASS HTab
    IF !Empty(::oParent:handle )
       ::handle := CreateTabControl( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+
       ::Init()
    ENDIF
 Return Nil

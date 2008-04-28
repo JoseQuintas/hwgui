@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.4 2006-02-15 16:56:58 lf_sfnet Exp $
+ * $Id: wprint.c,v 1.5 2008-04-28 01:20:20 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level print functions
@@ -50,8 +50,8 @@ HB_FUNC( HWG_OPENPRINTER )
    }
 // #endif
    print->config = gnome_print_config_default();
-   gnome_print_config_set( print->config, "Printer", "GENERIC" );
-   gnome_print_config_set( print->config, "Settings.Transport.Backend.Printer", hb_parc(1) );
+   gnome_print_config_set( print->config, (const guchar*)"Printer", (const guchar*)"GENERIC" );
+   gnome_print_config_set( print->config, (const guchar*)"Settings.Transport.Backend.Printer", (const guchar*)hb_parc(1) );
 
    print->job = gnome_print_job_new( print->config );
    print->gpc = gnome_print_job_get_context( print->job );
@@ -71,7 +71,7 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
    }
 // #endif
    print->config = gnome_print_config_default();
-   gnome_print_config_set( print->config, "Printer", "GENERIC" );
+   gnome_print_config_set( print->config, (const guchar*)"Printer", (const guchar*)"GENERIC" );
 
    print->job = gnome_print_job_new( print->config );
    print->gpc = gnome_print_job_get_context( print->job );
@@ -139,7 +139,7 @@ HB_FUNC( SETPRINTERMODE )
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
    
    gnome_print_config_set( print->config, 
-      GNOME_PRINT_KEY_PAPER_ORIENTATION, (hb_parni(2)==1)? "R0":"R90" );
+      (const guchar*)GNOME_PRINT_KEY_PAPER_ORIENTATION, (hb_parni(2)==1)? (const guchar*)"R0":(const guchar*)"R90" );
       
    // hb_retnl( (LONG) CreateDC( NULL, pPrinterName, NULL, pdm ) );
    // hb_stornl( (LONG)hPrinter,2 );
@@ -291,7 +291,7 @@ HB_FUNC( HWG_GP_DRAWTEXT )
 
 HB_FUNC( HWG_GP_ADDFONT )
 {
-   GnomeFont *font = gnome_font_find_closest ( hb_parc(1), hb_parni(2) );
+   GnomeFont *font = gnome_font_find_closest ( (const guchar*)hb_parc(1), hb_parni(2) );
    
    hb_retnl( (LONG) font );
 }

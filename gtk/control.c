@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.32 2008-03-29 14:50:20 lculik Exp $
+ * $Id: control.c,v 1.33 2008-04-28 01:20:20 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -7,7 +7,7 @@
  * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
  *
- * StatusBar and ProgressBar Functions
+ * StatusBar /ProgressBar and monthCalendar Functions
  *
  * Copyright 2008 Luiz Rafael Culik Guimaraes <luiz at xharbour.com.br >
  * www - http://sites.uol.com.br/culikr/
@@ -21,13 +21,14 @@
 #include "item.api"
 #include "gtk/gtk.h"
 #include "hwgtk.h"
+#include "hbdate.h"
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif
 
 #define SS_CENTER                 1
 #define SS_RIGHT                  2
-
+#define ES_PASSWORD 32
 #define ES_MULTILINE        4
 #define ES_READONLY      2048
 
@@ -49,7 +50,7 @@ extern void set_event( gpointer handle, char * cSignal, long int p1, long int p2
 extern void cb_signal( GtkWidget *widget,gchar* data );
 extern void all_signal_connect( gpointer hWnd );
 extern GtkWidget * GetActiveWindow( void );
-
+extern GdkPixbuf * alpha2pixbuf( GdkPixbuf * hPixIn, long int nColor );
 static GtkTooltips * pTooltip = NULL;
 static PHB_DYNS pSymTimerProc = NULL;
 
@@ -173,6 +174,9 @@ HB_FUNC( CREATEEDIT )
    }
    else
       hCtrl = gtk_entry_new();
+   if( ulStyle & ES_PASSWORD )
+      gtk_entry_set_visibility((GtkEntry*)hCtrl,FALSE);
+      
 
    GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
@@ -761,28 +765,14 @@ HB_FUNC(CREATETOOLBAR)
    GtkWidget * hCtrl = gtk_toolbar_new ();
 
 //   GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
-  GtkWidget *tmp_image;
-  GtkWidget *toolbutton1;   
-  GtkWidget *toolbutton2;   
-  gint tmp_toolbar_icon_size;
+//   GtkWidget *tmp_image;
+//   GtkWidget *toolbutton1;   
+//   GtkWidget *toolbutton2;   
+//   gint tmp_toolbar_icon_size;
    GObject * handle = (GObject*) HB_PARHANDLE(1);
    GtkFixed * box = getFixedBox( handle );
    GtkWidget * vbox = ( (GtkWidget*)box )->parent;
    gtk_box_pack_start( GTK_BOX (vbox), hCtrl, FALSE, FALSE, 0);  
-//   if ( box )
-  // gtk_box_pack_start (GTK_BOX (box), hCtrl, FALSE, FALSE, 0);
-//        gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );
-//   gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
-//   gtk_toolbar_set_style (GTK_TOOLBAR (hCtrl), GTK_TOOLBAR_BOTH);   
-//  tmp_toolbar_icon_size = gtk_toolbar_get_icon_size (GTK_TOOLBAR (hCtrl));
-//  tmp_image = gtk_image_new_from_stock ("gtk-new", tmp_toolbar_icon_size);
-  //gtk_widget_show (tmp_image);
-//  toolbutton1 = (GtkWidget*) gtk_tool_button_new (tmp_image, "New");
-//  toolbutton2 = (GtkWidget*) gtk_tool_button_new (tmp_image, "New");
-//  gtk_widget_show (toolbutton1);
-//  gtk_container_add (GTK_CONTAINER (hCtrl), toolbutton1);   
-//  gtk_container_add (GTK_CONTAINER (hCtrl), toolbutton2);   
-
    HB_RETHANDLE( hCtrl );
 }   
 HB_FUNC(CREATETOOLBARBUTTON)
@@ -836,4 +826,160 @@ HB_FUNC(TOOLBAR_SETACTION)
 			    G_CALLBACK (toolbar_clicked), (void*) pItem);
 }			    
 
+static void tabchange_clicked(GtkNotebook *item,
+            GtkNotebookPage * Page,
+	    guint pagenum,
+	    gpointer     user_data)
+{
+  PHB_ITEM pData = (PHB_ITEM) user_data;
+  gpointer dwNewLong = g_object_get_data( (GObject*) item, "obj" );    
+  PHB_ITEM pObject = (PHB_ITEM) dwNewLong ;
+  PHB_ITEM Disk=hb_itemPutNL( NULL, pagenum+1);
+  TraceLog(  "bb.txt","%lu\r\n",pagenum);  
+  hb_vmEvalBlockV( (PHB_ITEM) pData, 2,pObject,Disk  );
+  hb_itemRelease( Disk );
+
+}
+//static void tabchange_clicked1(GtkNotebook *item,
+//	    gint pagenum,
+//	    gpointer     user_data)
+//{
+//  PHB_ITEM pData = (PHB_ITEM) user_data;  
+//  gpointer dwNewLong = g_object_get_data( (GObject*) item, "obj" );    
+//  PHB_ITEM pObject = (PHB_ITEM) dwNewLong ;
+//  PHB_ITEM Disk=hb_itemPutNL( NULL, pagenum);
+//  TraceLog(  "aa.txt","%lu\r\n",pagenum);
+//  hb_vmEvalBlockV( ( PHB_ITEM ) pData ,2,pObject,Disk);	    
+//  hb_vmEvalBlockV( ChangeDiskBlock, 1, Disk  );
+//  hb_itemRelease( Disk );
+//}
+
+
+HB_FUNC(TAB_SETACTION  )
+{
+  GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
+//  gpointer dwNewLong = g_object_get_data( (GObject*) HB_PARHANDLE(1), "obj" );  
+  PHB_ITEM pItem = hb_itemParam( 2 ) ;
+  g_signal_connect (hCtrl, "switch-page",
+			    G_CALLBACK (tabchange_clicked), (void*) pItem);		    
+//TraceLog("ola.txt","ola %p 			    ", hCtrl);
+}
+
+HB_FUNC(INITMONTHCALENDAR)
+{
+   GtkWidget * hCtrl;
+   GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
+
+   hCtrl = gtk_calendar_new();
+
+   if ( box )
+      gtk_fixed_put( box, hCtrl, hb_parni(3), hb_parni(4) );
+   gtk_widget_set_size_request( hCtrl,hb_parni(5),hb_parni(6) );
+   HB_RETHANDLE( hCtrl );
+}
+
+HB_FUNC ( SETMONTHCALENDARDATE ) // adaptation of function SetDatePicker of file Control.c
+{
+   PHB_ITEM pDate = hb_param( 2, HB_IT_DATE );
+
+   if( pDate )
+   {
+      GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);    
+      #ifndef HARBOUR_OLD_VERSION
+      int lYear, lMonth, lDay;
+      #else
+      long lYear, lMonth, lDay;
+      #endif
+
+      hb_dateDecode( hb_itemGetDL( pDate ), &lYear, &lMonth, &lDay );
+
+      gtk_calendar_select_month(GTK_CALENDAR(hCtrl),lMonth,lYear);
+      gtk_calendar_select_day(GTK_CALENDAR(hCtrl),lDay);
+
+
+   }
+}
+HB_FUNC(GETMONTHCALENDARDATE)
+{
+   GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);    
+   char szDate[9];
+   #ifndef HARBOUR_OLD_VERSION
+   int lYear, lMonth, lDay;
+   #else
+   long lYear, lMonth, lDay;
+   #endif
+   gtk_calendar_get_date( GTK_CALENDAR(hCtrl),(guint*)&lYear, (guint*)&lMonth, (guint*)&lDay );
+
    
+   lMonth = lMonth + 1;
+    
+      
+   hb_dateStrPut( szDate, lYear, lMonth, lDay  );
+   szDate[8] = 0;
+   hb_retds( szDate );
+}   
+
+
+HB_FUNC(CREATEIMAGE)
+{
+   GtkWidget * hCtrl;
+   GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
+   GdkPixbuf * handle = gdk_pixbuf_new_from_file( hb_parc(2), NULL );   
+   GdkPixbuf * pHandle= alpha2pixbuf( handle, 16777215 );   
+
+   hCtrl = gtk_image_new_from_pixbuf(pHandle);
+
+   if ( box )
+      gtk_fixed_put( box, hCtrl, hb_parni(3), hb_parni(4) );
+   gtk_widget_set_size_request( hCtrl,hb_parni(5),hb_parni(6) );
+   HB_RETHANDLE( hCtrl );
+}
+
+HB_FUNC(MONTHCALENDAR_SETACTION)
+{
+  GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
+  PHB_ITEM pItem = hb_itemParam( 2 ) ;
+  g_signal_connect (hCtrl, "day-selected",
+			    G_CALLBACK (toolbar_clicked), (void*) pItem);
+}			    
+
+void hwg_parse_color( ULONG ncolor, GdkColor * pColor );
+HB_FUNC(SETFGCOLOR)
+{
+  GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
+  GdkColor fColor;
+  GtkWidget *label ;
+  ULONG hColor = hb_parnl( 2 ) ;
+
+  if (GTK_IS_BUTTON(hCtrl) )
+     label = gtk_bin_get_child(GTK_BIN(hCtrl));
+  else if (GTK_IS_EVENT_BOX(hCtrl) )
+     label = gtk_bin_get_child(GTK_BIN(hCtrl));               
+  else     
+     label = g_object_get_data( (GObject*) hCtrl, "label" );
+  TraceLog("cor.txt","cor = %lu\n" , hColor);
+  hwg_parse_color( hColor, &fColor );
+  gtk_widget_modify_fg(label,GTK_STATE_NORMAL,&fColor);
+//  gtk_widget_modify_fg(hCtrl,GTK_STATE_NORMAL,&fColor);  
+}  
+
+HB_FUNC(SETBGCOLOR)
+{
+  GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
+  GdkColor fColor;
+  GtkWidget *label ;
+  ULONG hColor = hb_parnl( 2 ) ;
+  TraceLog("cor.txt","cor = %lu control = %lu\n" , hColor,hCtrl);
+  hwg_parse_color( hColor, &fColor );
+//  label = g_object_get_data( (GObject*) hCtrl, "label" );  
+  if (GTK_IS_BUTTON(hCtrl) )
+     label = gtk_bin_get_child(GTK_BIN(hCtrl));
+  else if (GTK_IS_EVENT_BOX(hCtrl) )
+     label = gtk_bin_get_child(GTK_BIN(hCtrl));       
+  else  
+     label = g_object_get_data( (GObject*) hCtrl, "label" );
+//  gtk_widget_modify_bg(hCtrl,GTK_STATE_NORMAL,&fColor);
+  gtk_widget_modify_bg(label,GTK_STATE_NORMAL,&fColor);  
+//  gtk_widget_modify_bg(hCtrl,GTK_STATE_ACTIVE,&fColor);
+//  gtk_widget_modify_bg(hCtrl,GTK_STATE_PRELIGHT,&fColor);    
+}  

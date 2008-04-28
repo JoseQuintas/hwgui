@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.26 2008-01-28 16:05:56 lculik Exp $
+ * $Id: window.c,v 1.27 2008-04-28 01:20:20 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -20,7 +20,7 @@
 #else
 #include "hbapicls.h"
 #endif
-
+#include "hwgtk.h"
 #define WM_MOVE                           3
 #define WM_SIZE                           5
 #define WM_KEYDOWN                      256    // 0x0100
@@ -85,11 +85,17 @@ HB_FUNC( HWG_INITMAINWINDOW )
    int y = hb_parnl(9);
    int width = hb_parnl(10);
    int height = hb_parnl(11);
+   PHWGUI_PIXBUF szFile = ISPOINTER(5) ? (PHWGUI_PIXBUF) HB_PARHANDLE(5): NULL;  
+   
 
    PHB_ITEM temp;
 
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
-
+   if (szFile)
+   {
+      gtk_window_set_icon( GTK_WINDOW( hWnd ), szFile->handle  );
+   }      
+   
    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
    gtk_window_set_title( GTK_WINDOW(hWnd), cTitle );
    g_free( cTitle );
@@ -130,10 +136,20 @@ HB_FUNC( HWG_CREATEDLG )
    int y = hb_itemGetNI( GetObjectVar( pObject, "NTOP" ) );
    int width = hb_itemGetNI( GetObjectVar( pObject, "NWIDTH" ) );
    int height = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
+   PHB_ITEM pIcon = GetObjectVar( pObject, "OICON" );
+   PHWGUI_PIXBUF szFile = NULL;
    PHB_ITEM temp;
 
-
+   if (!HB_IS_NIL(pIcon))
+   {
+      szFile = (PHWGUI_PIXBUF) hb_itemGetPtr( GetObjectVar(pIcon,"HANDLE") );
+   }      
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
+   if (szFile)
+   {
+
+      gtk_window_set_icon(GTK_WINDOW(hWnd), szFile->handle  );
+   }      
 
    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
    gtk_window_set_title( GTK_WINDOW(hWnd), cTitle );
@@ -264,7 +280,7 @@ void cb_signal( GtkWidget *widget,gchar* data )
 static LONG ToKey(LONG a,LONG b)
 {
 
-if ( a == GDK_asciitilde )
+if ( a == GDK_asciitilde || a == GDK_dead_tilde)
 {
    if ( b== GDK_A) 
       return (LONG)GDK_Atilde;
@@ -279,7 +295,7 @@ if ( a == GDK_asciitilde )
    else if ( b == GDK_o )      
       return (LONG)GDK_otilde;                   
 }      
-if  ( a == GDK_asciicircum ) 
+if  ( a == GDK_asciicircum || a ==GDK_dead_circumflex) 
 {
    if ( b== GDK_A) 
       return (LONG)GDK_Acircumflex;
@@ -323,7 +339,7 @@ if  ( a == GDK_asciicircum )
       return (LONG)GDK_scircumflex;            
 }
 	
-if ( a == GDK_grave )
+if ( a == GDK_grave  || a==GDK_dead_grave ) 
 {
    if ( b== GDK_A) 
       return (LONG)GDK_Agrave;
@@ -345,10 +361,14 @@ if ( a == GDK_grave )
       return (LONG)GDK_Ugrave;
    else if ( b == GDK_u )      
       return (LONG)GDK_ugrave;      
+   else if ( b== GDK_C) 
+      return (LONG)GDK_Ccedilla;
+   else if ( b == GDK_c )      
+      return (LONG)GDK_ccedilla ;           
       
 }
 
-if ( a == GDK_acute )
+if ( a == GDK_acute  ||  a == GDK_dead_acute)
 {
   if ( b== GDK_A) 
       return (LONG)GDK_Aacute;
@@ -399,7 +419,7 @@ if ( a == GDK_acute )
    else if ( b == GDK_z )      
       return (LONG)GDK_zacute;                  
 }
-if ( a == GDK_diaeresis)	
+if ( a == GDK_diaeresis|| a==GDK_dead_diaeresis)	
 {
   if ( b== GDK_A) 
       return (LONG)GDK_Adiaeresis;
@@ -458,8 +478,10 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
          p1 = (event->type==GDK_KEY_PRESS)? WM_KEYDOWN : WM_KEYUP;
          p2 = ((GdkEventKey*)event)->keyval;
 	 uchar= gdk_keyval_to_unicode(((GdkEventKey*)event)->keyval);
-	 if ( p2 == GDK_asciitilde  ||    p2 == GDK_asciicircum  ||             p2 == GDK_grave )
-
+	      	 TraceLog("cc.txt"," p2= %lu unicode = U+%04x \n",p2,uchar);	 
+	 //if (p2 == GDK_dead_acute)
+//	    p2 == GDK_acute;
+	 if ( p2 == GDK_asciitilde  ||  p2 == GDK_asciicircum  ||  p2 == GDK_grave ||  p2 == GDK_acute ||  p2 == GDK_diaeresis || p2 == GDK_dead_acute ||	 p2 ==GDK_dead_tilde || p2==GDK_dead_circumflex || p2==GDK_dead_grave || p2 == GDK_dead_diaeresis)	
 	 {
 	    prevp2 = p2 ;
 	    p2=-1;
@@ -774,4 +796,8 @@ HB_FUNC( HWG_SET_MODAL )
 {
    gtk_window_set_modal( (GtkWindow *) HB_PARHANDLE(1), 1 );
    gtk_window_set_transient_for( (GtkWindow *) HB_PARHANDLE(1), (GtkWindow *) HB_PARHANDLE(2) );
+}
+HB_FUNC(WINDOWSETRESIZE)
+{
+  gtk_window_set_resizable( (GtkWindow*) HB_PARHANDLE(1) ,hb_parl(2));
 }

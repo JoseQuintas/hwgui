@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.13 2008-04-28 01:20:20 lculik Exp $
+ * $Id: hgridex.prg,v 1.14 2008-04-28 15:30:11 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -288,9 +288,8 @@ Return Self
 
 METHOD UpdateData() CLASS hGridex
    Local n := Len( ::aRow ), n1
-   Local aTemp,atemp
+   Local aTemp,atemp1
 
-   for n:=1 to len(row)
    aTemp := ::aRow[ n ]
    aTemp1 := ::aRowBitMap[ n ]
 
@@ -298,5 +297,5 @@ METHOD UpdateData() CLASS hGridex
 
       LISTVIEW_INSERTITEMEX( ::handle, n, n1, atemp[ n1 ], atemp1[ n1 ] )
    NEXT
-  next
+
 return .t.

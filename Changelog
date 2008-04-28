@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.797 2008-04-28 01:20:17 lculik Exp $
+ * $Id: Changelog,v 1.798 2008-04-28 15:30:10 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-04-28 17:25 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hgridex.prg
+    * reverted the METHOD UpdateData() after last commit code errors
+	
 2008-04-27 22:20 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * gtk/control.c
     ! added support for month Calendar and for correct tab change manipulation
@@ -17,6 +22,7 @@
   * gtk/Makefile.linux
     ! Added new depencencies
 
+	
 2008-04-15 23:20 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hdialog.prg
     ! Equated Enter key to Tab key in Dialog.

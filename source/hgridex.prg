@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.14 2008-04-28 15:30:11 mlacecilia Exp $
+ * $Id: hgridex.prg,v 1.15 2008-05-01 01:53:21 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -180,7 +180,7 @@ endif
           aTemp := ::aRow[n]
           aTemp1 := ::aRowBitMap[ n ]
           for n1 := 1 to len(aTemp)
-             LISTVIEW_INSERTITEMEX(::handle,n,n1,atemp[n1],atemp1[n1])
+             LISTVIEW_INSERTITEMEX(::handle,n-1,n1-1,atemp[n1],atemp1[n1])
           next
        next
 
@@ -295,7 +295,7 @@ METHOD UpdateData() CLASS hGridex
 
    FOR n1 := 1 TO Len( aTemp )
 
-      LISTVIEW_INSERTITEMEX( ::handle, n, n1, atemp[ n1 ], atemp1[ n1 ] )
+      LISTVIEW_INSERTITEMEX( ::handle, n-1, n1-1, atemp[ n1 ], atemp1[ n1 ] )
    NEXT
 
 return .t.

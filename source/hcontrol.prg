@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.51 2008-01-22 12:25:09 druzus Exp $
+ * $Id: hcontrol.prg,v 1.52 2008-05-03 12:58:57 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -28,8 +28,8 @@
 #define BTNST_COLOR_FG_OUT    4             // Text color when mouse is OUTside
 #define BTNST_COLOR_BK_FOCUS  5           // Background color when the button is focused
 #define BTNST_COLOR_FG_FOCUS  6            // Text color when the button is focused
-
-
+#define BTNST_MAX_COLORS      6
+#define WM_SYSCOLORCHANGE               0x0015
 #define BS_TYPEMASK SS_TYPEMASK
 //- HControl
 
@@ -431,6 +431,9 @@ CLASS HButtonEX INHERIT HButton
    METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
                     tcolor, bColor, hBitmap, iStyle,hIcon )
    METHOD PAINTBK(p)
+   METHOD SETDEFAULTCOLOR(lRepaint)
+   Method SetColorEx(nIndex,nColor,bPaint)
+
 
 
 END CLASS
@@ -447,12 +450,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::hBitmap                            := hBitmap
    ::hIcon                              := hIcon
    ::m_bDrawTransparent                 := Transp
-   ::m_crColors[ BTNST_COLOR_BK_IN ]    := GetSysColor( COLOR_BTNFACE )
-   ::m_crColors[ BTNST_COLOR_FG_IN ]    := GetSysColor( COLOR_BTNTEXT )
-   ::m_crColors[ BTNST_COLOR_BK_OUT ]   := GetSysColor( COLOR_BTNFACE )
-   ::m_crColors[ BTNST_COLOR_FG_OUT ]   := GetSysColor( COLOR_BTNTEXT )
-   ::m_crColors[ BTNST_COLOR_BK_FOCUS ] := GetSysColor( COLOR_BTNFACE )
-   ::m_crColors[ BTNST_COLOR_FG_FOCUS ] := GetSysColor( COLOR_BTNTEXT )
 
 
    bPaint   := { | o, p | o:paint( p ) }
@@ -549,7 +546,7 @@ RETURN NIL
 
 METHOD onEvent( msg, wParam, lParam )
 
-
+Tracelog("MSG = " + Str(msg) , " wParam =" + str(wParam))
    IF msg == WM_THEMECHANGED
       IF ::Themed
          IF VALTYPE( ::hTheme ) == "P"
@@ -575,9 +572,11 @@ METHOD onEvent( msg, wParam, lParam )
       ::CancelHover()
       RETURN 0
    elseif msg ==WM_GETDLGCODE
-       return ButtonGetDlgCode(lParam)     
-   elseif msg ==WM_CHAR
-      if wParam == VK_RETURN
+       return ButtonGetDlgCode(lParam)
+   elseif msg == WM_SYSCOLORCHANGE
+       ::SetDefaultColors()
+   elseif msg ==WM_CHAR .or. msg == WM_KEYUP
+      if wParam == VK_RETURN //.or. wParam == VK_SPACE
          if Valtype(::bClick) =="B"
             SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
          endif
@@ -594,6 +593,33 @@ METHOD CancelHover() CLASS HBUTTONEx
    ENDIF
 
 RETURN nil
+
+METHOD SetdefaultColor(lPaint)
+Default lPaint to .f.
+
+   ::m_crColors[ BTNST_COLOR_BK_IN ]    := GetSysColor( COLOR_BTNFACE )
+   ::m_crColors[ BTNST_COLOR_FG_IN ]    := GetSysColor( COLOR_BTNTEXT )
+   ::m_crColors[ BTNST_COLOR_BK_OUT ]   := GetSysColor( COLOR_BTNFACE )
+   ::m_crColors[ BTNST_COLOR_FG_OUT ]   := GetSysColor( COLOR_BTNTEXT )
+   ::m_crColors[ BTNST_COLOR_BK_FOCUS ] := GetSysColor( COLOR_BTNFACE )
+   ::m_crColors[ BTNST_COLOR_FG_FOCUS ] := GetSysColor( COLOR_BTNTEXT )
+   if lPaint
+      Invalidaterect( ::handle, .f. )
+   endif
+return Self
+
+
+METHOD SetColorEx(nIndex,nColor,lPaint)
+Default lPaint to .f.
+   if nIndex > BTNST_MAX_COLORS
+      return -1
+   endif
+   ::m_crColors[ nIndex ]    := nColor
+   if lPaint
+      Invalidaterect( ::handle, .f. )
+   endif
+return 0
+
 
 METHOD Paint( lpDis ) CLASS HBUTTONEx
 
@@ -810,9 +836,29 @@ LOCAL uAlign
             // if
          ELSE
 
-            SetTextColor( dc, GetSysColor( COLOR_BTNTEXT ) )
-            SetBkColor( dc, GetSysColor( COLOR_BTNFACE ) )
-            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign )
+  //          SetTextColor( dc, GetSysColor( COLOR_BTNTEXT ) )
+//            SetBkColor( dc, GetSysColor( COLOR_BTNFACE ) )
+//            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign )
+         IF ( ::bMouseOverButton .or. bIsPressed )
+
+            SetTextColor( DC, ::m_crColors[ BTNST_COLOR_FG_IN ] )
+            SetBkColor( DC, ::m_crColors[ BTNST_COLOR_BK_IN ] )
+
+         ELSE
+
+            IF ( bIsFocused )
+
+               SetTextColor( DC, ::m_crColors[ BTNST_COLOR_FG_FOCUS ] )
+               SetBkColor( DC, ::m_crColors[ BTNST_COLOR_BK_FOCUS ] )
+
+            ELSE
+
+               SetTextColor( DC, ::m_crColors[ BTNST_COLOR_FG_OUT ] )
+               SetBkColor( DC, ::m_crColors[ BTNST_COLOR_BK_OUT ] )
+            ENDIF
+         ENDIF
+         DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign )
+
          ENDIF
       ENDIF
    ENDIF

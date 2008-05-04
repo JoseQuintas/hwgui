@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.43 2008-04-15 21:24:09 giuseppem Exp $
+ * $Id: hdialog.prg,v 1.44 2008-05-04 21:09:03 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -311,8 +311,10 @@ Local aMenu, i, hCtrl, nexthandle
                       oDlg:lResult := .T.
                       EndDialog( oDlg:handle )
                   ELSE
-                      nexthandle := GetNextDlgTabItem ( GetActiveWindow() , GetFocus() , .f. )
-                      PostMessage( oDlg:handle, WM_NEXTDLGCTL, nexthandle , 1 )
+							IF hCtrl == GetFocus()
+       						nexthandle := GetNextDlgTabItem ( GetActiveWindow() , hCtrl, .f. )
+   	                  PostMessage( oDlg:handle, WM_NEXTDLGCTL, nexthandle , 1 )
+							ENDIF
                  ENDIF
                ENDIF
 
@@ -523,32 +525,32 @@ Local oDlg
 Return  Iif( oDlg:lModal, Hwg_EndDialog( oDlg:handle ), DestroyWindow( oDlg:handle ) )
 
 Function SetDlgKey( oDlg, nctrl, nkey, block )
-Local i, aKeys
+Local i, aKeys, bOldSet
 
    IF oDlg == Nil ; oDlg := HCustomWindow():oDefaultParent ; ENDIF
    IF nctrl == Nil ; nctrl := 0 ; ENDIF
 
    IF !__ObjHasMsg( oDlg,"KEYLIST" )
-      Return .F.
+      Return nil
    ENDIF
    aKeys := oDlg:KeyList
+   if (i := Ascan( aKeys,{|a|a[1]==nctrl.AND.a[2]==nkey} )) > 0
+      bOldSet := aKeys[i,3]
+   endif
    IF block == Nil
-
-      IF ( i := Ascan( aKeys,{|a|a[1]==nctrl.AND.a[2]==nkey} ) ) == 0
-         Return .F.
-      ELSE
+      IF i > 0
          Adel( oDlg:KeyList, i )
          Asize( oDlg:KeyList, Len(oDlg:KeyList)-1 )
       ENDIF
    ELSE
-      IF ( i := Ascan( aKeys,{|a|a[1]==nctrl.AND.a[2]==nkey} ) ) == 0
+      IF i == 0
          Aadd( aKeys, { nctrl,nkey,block } )
       ELSE
          aKeys[i,3] := block
       ENDIF
    ENDIF
 
-Return .T.
+Return bOldSet
 
 
 EXIT PROCEDURE Hwg_ExitProcedure

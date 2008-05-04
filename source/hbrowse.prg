@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.107 2008-04-02 17:42:39 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.108 2008-05-04 21:09:02 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -113,13 +113,13 @@ CLASS HBrowse INHERIT HControl
    DATA nLeftCol                               // Leftmost column
    DATA xpos
    DATA freeze                                 // Number of columns to freeze
-   DATA nRecords                               // Number of records in browse
-   DATA nCurrent      INIT 1                   // Current record
+   DATA nRecords     INIT 0                    // Number of records in browse
+   DATA nCurrent     INIT 1                    // Current record
    DATA aArray                                 // An array browsed if this is BROWSE ARRAY
-   DATA recCurr INIT 0
+   DATA recCurr 		INIT 0
    DATA headColor                              // Header text color
-   DATA sepColor INIT 12632256                 // Separators color
-   DATA lSep3d  INIT .F.
+   DATA sepColor 		INIT 12632256             // Separators color
+   DATA lSep3d  		INIT .F.
    DATA varbuf                                 // Used on Edit()
    DATA tcolorSel,bcolorSel,brushSel, htbColor, httColor // Hilite Text Back Color
    DATA bSkip,bGoTo,bGoTop,bGoBot,bEof,bBof

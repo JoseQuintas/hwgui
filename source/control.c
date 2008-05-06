@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.61 2007-12-21 10:24:41 lculik Exp $
+ * $Id: control.c,v 1.62 2008-05-06 20:34:50 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1401,7 +1401,8 @@ HB_FUNC(TOOLBAR_GETINFOTIPID)
 HB_FUNC(TOOLBAR_SUBMENU)
 {
    LPNMTOOLBAR lpnmTB = (LPNMTOOLBAR) hb_parnl(1);
-   RECT      *rc = NULL;
+//    RECT      *rc = NULL;
+ RECT      rc = {0};
    TPMPARAMS tpm;
    HMENU     hPopupMenu;
    HMENU     hMenuLoaded;
@@ -1409,24 +1410,24 @@ HB_FUNC(TOOLBAR_SUBMENU)
    HANDLE g_hinst  = GetModuleHandle( 0 );
 
    SendMessage(lpnmTB->hdr.hwndFrom, TB_GETRECT,
-               (WPARAM)lpnmTB->iItem, (LPARAM)rc);
+               (WPARAM)lpnmTB->iItem, (LPARAM)&rc);
 
    MapWindowPoints(lpnmTB->hdr.hwndFrom,
-                   HWND_DESKTOP, (LPPOINT)rc, 2);
+                   HWND_DESKTOP, (LPPOINT)&rc, 2);
 
    tpm.cbSize = sizeof(TPMPARAMS);
    // tpm.rcExclude = rc;
-   tpm.rcExclude.left = rc->left;
-   tpm.rcExclude.top = rc->top;
-   tpm.rcExclude.bottom = rc->bottom;
-   tpm.rcExclude.right = rc->right;
+   tpm.rcExclude.left = rc.left;
+   tpm.rcExclude.top = rc.top;
+   tpm.rcExclude.bottom = rc.bottom;
+   tpm.rcExclude.right = rc.right;
    hMenuLoaded = LoadMenu((HINSTANCE) g_hinst, MAKEINTRESOURCE(hb_parni(2)));
    hPopupMenu = GetSubMenu(LoadMenu((HINSTANCE) g_hinst,
       MAKEINTRESOURCE(hb_parni(2))),0);
 
    TrackPopupMenuEx(hPopupMenu,
       TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_VERTICAL,
-      rc->left, rc->bottom, g_hwndMain, &tpm);
+      rc.left, rc.bottom, g_hwndMain, &tpm);
       //rc.left, rc.bottom, g_hwndMain, &tpm);
 
    DestroyMenu(hMenuLoaded);
@@ -1435,27 +1436,27 @@ HB_FUNC(TOOLBAR_SUBMENU)
 HB_FUNC(TOOLBAR_SUBMENUEX)
 {
    LPNMTOOLBAR lpnmTB = (LPNMTOOLBAR) hb_parnl(1);
-   //RECT      rc;
-   RECT      *rc = NULL;
+   RECT      rc={0};
+//   RECT      *rc = NULL;
    TPMPARAMS tpm;
    HMENU     hPopupMenu = (HMENU)hb_parnl(2);
    HWND g_hwndMain=  (HWND) hb_parnl(3);
 
    SendMessage(lpnmTB->hdr.hwndFrom, TB_GETRECT,
-      (WPARAM)lpnmTB->iItem, (LPARAM)rc);
+      (WPARAM)lpnmTB->iItem, (LPARAM)&rc);
 
    MapWindowPoints(lpnmTB->hdr.hwndFrom,
-      HWND_DESKTOP, (LPPOINT)rc, 2);
+      HWND_DESKTOP, (LPPOINT)&rc, 2);
 
    tpm.cbSize = sizeof(TPMPARAMS);
    //tpm.rcExclude = rc;
-   tpm.rcExclude.left = rc->left;
-   tpm.rcExclude.top = rc->top;
-   tpm.rcExclude.bottom = rc->bottom;
-   tpm.rcExclude.right = rc->right;
+   tpm.rcExclude.left = rc.left;
+   tpm.rcExclude.top = rc.top;
+   tpm.rcExclude.bottom = rc.bottom;
+   tpm.rcExclude.right = rc.right;
    TrackPopupMenuEx(hPopupMenu,
       TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_VERTICAL,
-      rc->left, rc->bottom, g_hwndMain, &tpm);
+      rc.left, rc.bottom, g_hwndMain, &tpm);
       //rc.left, rc.bottom, g_hwndMain, &tpm);
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.801 2008-05-04 21:09:01 mlacecilia Exp $
+ * $Id: Changelog,v 1.802 2008-05-13 20:25:08 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-05-13 22:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/htab.prg
+    ! tab set focus at first tabstop control.
 
 2008-05-04 23:10 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    changes suggested by Luis Fernando Basso (lfbasso@via-rs.net)

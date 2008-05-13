@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.22 2006-11-17 07:43:59 alkresin Exp $
+ *$Id: htab.prg,v 1.23 2008-05-13 20:25:40 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -219,7 +219,7 @@ Local i, nFirst, nEnd
       ::aControls[i]:Show()
    NEXT
    FOR i := nFirst TO nEnd
-      IF __ObjHasMsg( ::aControls[i],"BSETGET" ) .AND. ::aControls[i]:bSetGet != Nil
+      IF (__ObjHasMsg( ::aControls[i],"BSETGET" ) .AND. ::aControls[i]:bSetGet != Nil) .OR. Hwg_BitAnd( ::aControls[i]:style, WS_TABSTOP ) != 0
          SetFocus( ::aControls[i]:handle )
          Exit
       ENDIF
@@ -227,7 +227,7 @@ Local i, nFirst, nEnd
    else
       ::aPages[nPage,1]:show()
       for i :=1  to len(::aPages[nPage,1]:aControls)
-         IF __ObjHasMsg( ::aPages[nPage,1]:aControls[i],"BSETGET" ) .AND. ::aPages[nPage,1]:aControls[i]:bSetGet != Nil
+         IF (__ObjHasMsg( ::aPages[nPage,1]:aControls[i],"BSETGET" ) .AND. ::aPages[nPage,1]:aControls[i]:bSetGet != Nil) .OR. Hwg_BitAnd( ::aPages[nPage,1]:aControls[i]:style, WS_TABSTOP ) != 0
             SetFocus( ::aPages[nPage,1]:aControls[i]:handle )
             Exit
          ENDIF

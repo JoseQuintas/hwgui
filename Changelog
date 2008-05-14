@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.802 2008-05-13 20:25:08 giuseppem Exp $
+ * $Id: Changelog,v 1.803 2008-05-14 13:56:37 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-05-14 15:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+   Changes suggested by Leonardo Machado (leonardo@sygecom.com.br)
+   * source/hcontrol.prg
+	 * removed Tracelog() and AltD() calls
+   * samples/demomaximize.prg
+   * samples/flashocx.prg   
+	 * corrected code allowing tha correct compilation with bld.bat
+ 
 2008-05-13 22:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/htab.prg
     ! tab set focus at first tabstop control.

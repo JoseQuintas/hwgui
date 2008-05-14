@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.52 2008-05-03 12:58:57 lculik Exp $
+ * $Id: hcontrol.prg,v 1.53 2008-05-14 13:56:38 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -546,7 +546,6 @@ RETURN NIL
 
 METHOD onEvent( msg, wParam, lParam )
 
-Tracelog("MSG = " + Str(msg) , " wParam =" + str(wParam))
    IF msg == WM_THEMECHANGED
       IF ::Themed
          IF VALTYPE( ::hTheme ) == "P"
@@ -557,7 +556,6 @@ Tracelog("MSG = " + Str(msg) , " wParam =" + str(wParam))
       ENDIF
       RETURN 0
    ELSEIF msg == BM_SETSTYLE
-//    altd()
       return BUTTONEXONSETSTYLE(wParam,lParam,::handle,@::m_bIsDefault)
    ELSEIF msg == WM_MOUSEMOVE
       if(!::bMouseOverButton)

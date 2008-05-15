@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.108 2008-05-04 21:09:02 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.109 2008-05-15 15:01:01 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1224,9 +1224,10 @@ Local nScrollCode := LoWord( wParam )
    ELSEIF nScrollCode == SB_PAGEUP
       ::PAGEUP()
 
-   ELSEIF nScrollCode == SB_THUMBPOSITION
+   ELSEIF nScrollCode == SB_THUMBPOSITION .OR. nScrollCode == SB_THUMBTRACK
+      SetFocus( ::handle )
       IF ::bScrollPos != Nil
-         Eval( ::bScrollPos, Self, SB_THUMBPOSITION, .F., Hiword( wParam ) )
+         Eval( ::bScrollPos, Self, nScrollCode, .F., Hiword( wParam ) )
       ELSE
          IF ( ::Alias ) -> ( IndexOrd() ) == 0              // sk
             ( ::Alias ) -> ( DbGoto( HiWord( wParam ) ) )   // sk
@@ -1238,7 +1239,9 @@ Local nScrollCode := LoWord( wParam )
          VScrollPos( Self, 0, .f.)
          ::refresh(.F.)
       ENDIF
+/*      
    ELSEIF nScrollCode == SB_THUMBTRACK
+   	SetFocus( ::handle )
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, SB_THUMBTRACK, .F., Hiword( wParam ) )
       ELSE
@@ -1251,7 +1254,7 @@ Local nScrollCode := LoWord( wParam )
          Eval( ::bSkip, Self, -1 )
          VScrollPos( Self, 0, .f.)
          ::refresh(.F.)
-      ENDIF
+      ENDIF    */
    ENDIF
 RETURN 0
 
@@ -1284,6 +1287,7 @@ Local lMoveThumb := .T.
          LineRight( Self )
       ENDDO
    ELSEIF nScrollCode == SB_THUMBTRACK .OR. nScrollCode == SB_THUMBPOSITION
+         SetFocus( ::handle )
          IF ::lEditable
              SetScrollRange( ::handle, SB_HORZ, 1, Len( ::aColumns ))
              SetScrollPos( ::handle, SB_HORZ, Hiword( wParam ) )

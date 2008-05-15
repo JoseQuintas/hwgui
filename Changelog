@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.803 2008-05-14 13:56:37 mlacecilia Exp $
+ * $Id: Changelog,v 1.804 2008-05-15 15:01:00 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-05-15 17:10 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+   * source/hbrowse.prg
+	 * forced the hbrowse to gain the focus when scrolled (if edit is
+	   pending, the edit control position was unchanged and the scoll
+	   was inconsistent, this was happening when the parent dialog hbrowse 
+	   is nomodal, as in the designer)
+	   better would be to reassign the focus to the edit control if
+	   even visible after the scroll, but not tried to do this at this
+	   commit
+	 * unified the code for thumb scroll movement
 
 2008-05-14 15:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    Changes suggested by Leonardo Machado (leonardo@sygecom.com.br)

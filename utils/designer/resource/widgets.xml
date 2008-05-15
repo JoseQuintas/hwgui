@@ -686,7 +686,9 @@
       <property name="Bitmap">
          <code2><![CDATA[
 	   if oCtrl:ClassName()=="HDIALOG"
+			if !empty(value)
                 oCtrl:oBmp := Iif( At(".",value)!=0,HBitmap():AddFile(value), HBitmap():AddResource(value) )
+			endif
 	   else
 	    if !empty(value)
                 oCtrl:oBitmap := Iif( At(".",value)!=0,HBitmap():AddFile(value), HBitmap():AddResource(value) )

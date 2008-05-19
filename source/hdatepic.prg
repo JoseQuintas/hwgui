@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.13 2006-08-26 19:31:39 lculik Exp $
+ * $Id: hdatepic.prg,v 1.14 2008-05-19 02:34:00 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -30,6 +30,10 @@ CLASS HDatePicker INHERIT HControl
    METHOD Activate()
    METHOD Init()
    METHOD Refresh()
+   METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit, ;
+                  bGfocus,bLfocus,bChange,ctooltip,tcolor,bcolor)
+
+
 
 ENDCLASS
 
@@ -94,6 +98,32 @@ METHOD Refresh() CLASS HDatePicker
    ENDIF
 Return Nil
 
+METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bSize,bInit, ;
+                  bGfocus,bLfocus,bChange,ctooltip,tcolor,bcolor) CLASS  HDatePicker
+   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
+                  bSize,,ctooltip,tcolor,bcolor )
+   HWG_InitCommonControlsEx()
+   ::value   := Iif( vari==Nil .OR. Valtype(vari)!="D",CTOD(SPACE(8)),vari )
+   ::bSetGet := bSetGet
+   ::bChange := bChange
+   IF bGfocus != Nil
+      ::oParent:AddEvent( NM_SETFOCUS,::id,bGfocus,.T. )
+   ENDIF
+   ::oParent:AddEvent( DTN_DATETIMECHANGE,::id,{|o,id|__Change(o:FindControl(id),DTN_DATETIMECHANGE)},.T. )
+   ::oParent:AddEvent( DTN_CLOSEUP,::id,{|o,id|__Change(o:FindControl(id),DTN_CLOSEUP)},.T. )
+   IF bSetGet != Nil
+      ::bLostFocus := bLFocus
+      ::oParent:AddEvent( NM_KILLFOCUS,::id,{|o,id|__Valid(o:FindControl(id))},.T. )
+   ELSE
+      IF bLfocus != Nil
+         ::oParent:AddEvent( NM_KILLFOCUS,::id,bLfocus,.T. )
+      ENDIF
+   ENDIF
+
+
+return self
+
+
 Static Function __Change( oCtrl, nMess )
 
    IF ( nMess == DTN_DATETIMECHANGE .AND. ;
@@ -121,3 +151,4 @@ Static Function __Valid( oCtrl )
    ENDIF
 
 Return .T.
+

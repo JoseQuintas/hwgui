@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.100 2008-04-14 08:02:29 mlacecilia Exp $
+ *$Id: guilib.ch,v 1.101 2008-05-19 02:34:00 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define   WND_MAIN      1
@@ -920,6 +920,25 @@
     [<oPick> :=] HDatePicker():New( <oWnd>,<nId>,<dInit>,,<nStyle>,<x>,<y>, ;
         <width>,<height>,<oFont>,<bInit>,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>, ;
         <color>,<bcolor> )
+
+#xcommand REDEFINE DATEPICKER [ <oPick> VAR  ] <vari> ;
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ INIT <dInit> ]           ;
+            [ ON SIZE <bSize>]         ;
+            [ ON INIT <bInit> ]        ;
+            [ ON GETFOCUS <bGfocus> ]  ;
+            [ ON LOSTFOCUS <bLfocus> ] ;
+            [ ON CHANGE <bChange> ]    ;
+            [ FONT <oFont> ]           ;
+            [ TOOLTIP <ctoolt> ]       ;
+          => ;
+    [<oPick> :=] HDatePicker():redefine( <oWnd>,<nId>,<dInit>,{|v|Iif(v==Nil,<vari>,<vari>:=v)}, ;
+        <oFont>,<bSize>,<bInit>,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>, ;
+        <color>,<bcolor> )
+
 
 
 #xcommand @ <x>,<y> SPLITTER [ <oSplit> ] ;

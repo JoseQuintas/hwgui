@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.809 2008-05-19 13:50:52 lculik Exp $
+ * $Id: Changelog,v 1.810 2008-05-19 17:19:58 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-05-19 19:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+   * source/theme.c
+     * HB_DRAWTHEMETEXT now takes in count correctly the lenght of unicode
+	   string of themed text 
+
 2008-05-19 10:40 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
    + utils\designer\resource\bmp\smalignbotton.bmp
    + utils\designer\resource\bmp\smalignleft.bmp
@@ -33,11 +39,6 @@
    ! source\hfrmtmpl.prg
      ! updated to reflect the changes to designer
      Add this changes provided by luis fernando basso 
-
-     
-     
-
-
 
 2008-05-19 09:15 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
    * minor fix in hbrowse.prg  

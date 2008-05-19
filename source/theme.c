@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.12 2008-04-14 13:15:39 lculik Exp $
+ * $Id: theme.c,v 1.13 2008-05-19 17:20:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -1700,19 +1700,16 @@ HB_FUNC( HB_DRAWTHEMETEXT )
    int iPartId = hb_parni(3);
    int iStateId = hb_parni( 4 );
    LPCSTR pText = hb_parc( 5 );
-   //int iCharCount;
    DWORD dwTextFlags= hb_parnl( 6 ) ;
    DWORD dwTextFlags2 = hb_parnl( 7 ) ;
 
    RECT pRect ;
    BOOL bRectOk = ( ISARRAY( 8 )  &&   Array2Rect( hb_param( 8, HB_IT_ARRAY ), &pRect ) ) ;
-   int nTextLen = strlen(pText);
-   int mlen = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (char *)pText, nTextLen + 1, NULL, 0);
-   WCHAR* output =  (WCHAR*) hb_xgrab(mlen+10);
-
+   int mlen = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (char *)pText, -1, NULL, 0); 
+   WCHAR* output =  (WCHAR*) hb_xgrab(mlen * sizeof(WCHAR));
    if(output)
    {
-      MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (char *)pText, nTextLen + 1, output, mlen);
+      MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (char *)pText, -1, output, mlen);
    }
 
    hb_DrawThemeText(hTheme, hdc, iPartId,

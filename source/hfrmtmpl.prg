@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.57 2008-01-02 22:29:56 fperillo Exp $
+ * $Id: hfrmtmpl.prg,v 1.58 2008-05-19 13:50:53 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -11,19 +11,23 @@
 #ifdef __XHARBOUR__
 #xtranslate HB_AT(<x,...>) => AT(<x>)
 #endif
-
-Static aClass := { "label", "button", "checkbox",                   ;
+// nando
+Static coName
+//
+Static aClass := { "label", "button", "buttonex", "toolbutton", "checkbox",                   ;
                   "radiobutton", "editbox", "group", "radiogroup",  ;
-                  "bitmap","icon",                                  ;
-                  "richedit","datepicker", "updown", "combobox",    ;
-                  "line", "toolbar", "ownerbutton","browse",        ;
-                  "monthcalendar","trackbar","page", "tree",        ;
-                  "status","menu","animation" ,"progressbar",       ;
-                  "shadebutton" ;
+                  "bitmap","icon", "richedit","datepicker","updown",;
+								  "combobox", "line", "toolbar", "panel", "ownerbutton",     ;
+								  "browse", "column", "monthcalendar","trackbar","page",      ;
+								  "tree", "status","menu","animation" ,             ;
+									"progressbar", "shadebutton","listbox","gridex",  ;
+									"timer", "link"                                   ;
                 }
 Static aCtrls := { ;
   "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctooltip,TextColor,BackColor,lTransp)", ;
   "HButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctooltip,TextColor,BackColor)",  ;
+  "HButtonex():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctooltip,TextColor,BackColor,hbmp,nBStyle,hIco )",  ;
+  "AddButton(nBitIp,nId,nState,nStyle,cCaption,onClick,ctooltip,amenu)",  ;
   "HCheckButton():New(oPrnt,nId,lInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctooltip,TextColor,BackColor,bwhen)", ;
   "HRadioButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctooltip,TextColor,BackColor)", ;
   "HEdit():New(oPrnt,nId,cInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctooltip,TextColor,BackColor,cPicture,lNoBorder,nMaxLength,lPassword)", ;
@@ -36,9 +40,11 @@ Static aCtrls := { ;
   "HUpDown():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctooltip,TextColor,BackColor,nUpDWidth,nLower,nUpper)", ;
   "HComboBox():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,Items,oFont,onInit,onSize,onPaint,onChange,cTooltip,lEdit,lText,bWhen,TextColor,BackColor)", ;
   "HLine():New(oPrnt,nId,lVertical,nLeft,nTop,nLength,onSize)", ;
+  "HToolBar():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,,,,,,,Items)", ;
   "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,lDocked)", ;
   "HOwnButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,trColor,cTooltip)", ;
-  "Hbrowse():New(BrwType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,onUpdate,onKeyDown,onPosChg)", ;
+  "Hbrowse():New(BrwType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,onUpdate,onKeyDown,onPosChange,lMultiSelect)", ;
+  "AddColumn(HColumn():New(cHeader,Fblock,cValType,nLength,nDec,lEdit,nJusHead, nJusLine, cPicture,bValid, bWhen, Items, ClrBlck, HeadClick ))",;  //oBrw:AddColumn
   "HMonthCalendar():New(oPrnt,nId,dInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onChange,cTooltip,lNoToday,lNoTodayCircle,lWeekNumbers)", ;
   "HTrackBar():New(oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,bPaint,cTooltip,onChange,onDrag,nLow,nHigh,lVertical,TickStyle,TickMarks)", ;
   "HTab():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,Tabs,onChange,aImages,lResource)", ;
@@ -47,7 +53,11 @@ Static aCtrls := { ;
   ".F.", ;
   "HAnimation():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,Filename,AutoPlay,Center,Transparent)", ;
   "HProgressBar():New( oPrnt,nId,nLeft,nTop,nWidth,nHeight,maxPos,nRange,bInit,bSize,bPaint,ctooltip )", ;
-  "HshadeButton():New( oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,lFlat,caption,color,font,xt,yt,bmp,lResour,xb,yb,widthb,heightb,lTr,trColor,cTooltip,lEnabled,shadeID,palette,granularity,highlight,coloring,shcolor)" ;
+  "HshadeButton():New( oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,lFlat,caption,color,font,xt,yt,bmp,lResour,xb,yb,widthb,heightb,lTr,trColor,cTooltip,lEnabled,shadeID,palette,granularity,highlight,coloring,shcolor)", ;
+  "HListBox():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,Items,oFont,onInit,onSize,onPaint,onChange,cTooltip)", ;  
+  "HGridEx():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,onKeyDown,onPosChg,onDispInfo,nItemCout,lNoLines,TextColor,BackColor,lNoHeader,aBit,Items)" ,;
+  "HTimer():New(oPrnt,nId,nInterval, onAction)" ,;
+  "HStaticLink():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,cTooltip,TextColor,BackColor,lTransp,Link,VisitedColor,LinkColor,HoverColor)" ;  
   }
 
 #include "windows.ch"
@@ -64,6 +74,7 @@ Static aPalette := {"PAL_DEFAULT","PAL_METAL"}
 
 REQUEST HSTATIC
 REQUEST HBUTTON
+REQUEST HBUTTONEX
 REQUEST HCHECKBUTTON
 REQUEST HRADIOBUTTON
 REQUEST HEDIT
@@ -75,9 +86,11 @@ REQUEST HDATEPICKER
 REQUEST HUPDOWN
 REQUEST HCOMBOBOX
 REQUEST HLINE
+REQUEST HTOOLBAR
 REQUEST HPANEL
 REQUEST HOWNBUTTON
 REQUEST HBROWSE
+REQUEST HCOLUMN
 REQUEST HMONTHCALENDAR
 REQUEST HTRACKBAR
 REQUEST HTAB
@@ -85,6 +98,12 @@ REQUEST HANIMATION
 REQUEST HTREE
 REQUEST HPROGRESSBAR
 REQUEST HSHADEBUTTON
+REQUEST HLISTBOX
+REQUEST HGRIDEX
+REQUEST HTIMER
+REQUEST HSTATICLINK
+
+REQUEST DIRECTORY
 
 REQUEST DBUSEAREA
 REQUEST RECNO
@@ -257,7 +276,7 @@ Private oDlg
             __mvPrivate( xProperty[j] )
          NEXT
       // Styles below
-      ELSEIF ::aProp[ i,1 ] == "systemMenu"
+      ELSEIF ::aProp[ i,1 ] == "systemmenu"
          IF !xProperty
             nStyle := hwg_bitandinverse( nStyle,WS_SYSMENU )
          endif
@@ -281,10 +300,14 @@ Private oDlg
          IF !xProperty
             nStyle := hwg_bitandinverse( nStyle,WS_VISIBLE )
          ENDIF
-      ELSEIF ::aProp[ i,1 ] == "3dLook"
+      ELSEIF ::aProp[ i,1 ] == "3dLook"      
          IF xProperty
-            nStyle += DS_3DLOOK
-         ENDIF
+         	IF ::aControls[j]:cClass == "button" .OR. ::aControls[j]:cClass == "ownerbutton"
+             nStyle += DS_3DLOOK 
+					ELSE
+						 nStyle += Iif(::aControls[j]:cClass = "checkbox",BS_PUSHLIKE,0)
+					ENDIF	 
+				 ENDIF	
       ELSEIF ::aProp[ i,1 ] == "clipsiblings"
          IF xProperty
             nStyle += WS_CLIPSIBLINGS
@@ -375,6 +398,12 @@ Private oDlg
       CreateCtrl( ::oDlg, ::aControls[j], Self )
       j--
    ENDIF
+   // nando
+   IF j > 0 .AND. ::aControls[j]:cClass == "timer"
+      CreateCtrl( ::oDlg, ::aControls[j], Self )
+      j--
+   ENDIF
+   // nando
 
    FOR i := 1 TO j
       CreateCtrl( ::oDlg, ::aControls[i], Self )
@@ -394,7 +423,7 @@ Local i := Ascan( ::aForms, {|o|o:id==id} )
    IF i != 0 .AND. n != Nil
       Return ::aForms[i]:aControls[n]
    ENDIF
-Return Iif( i==0, Nil, ::aForms[i] )
+Return Iif( i==0, Nil, ::aForms[i] )                 
 
 METHOD Find( cId ) CLASS HFormTmpl
 Local i := Ascan( ::aForms, {|o|o:cId!=Nil.and.o:cId==cId} )
@@ -571,14 +600,25 @@ Return Nil
 #define TBS_NOTICKS                 16
 
 Static Function CreateCtrl( oParent, oCtrlTmpl, oForm )
-Local i, j, oCtrl, stroka, varname, xProperty, cType, cPName
+Local i, j, temp, oCtrl, stroka, varname, xProperty, cType, cPName
 Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName, cVarName
+// LOCAL DE NANDO BROWSE
+Local cAliasdbf, caArray, nHeadRows:= 1, nFootRows:= 0, lDispHead := .T., lDispSep:= .T., lSep3d:= .F., ladjright:= .T.
+Local nheadColor:= 0, nsepColor:= 12632256, nLeftCol:= 0, nfreeze:= 0, nColumns := 0
+Local cKey:= "" ,cRelexpr:="", cLink:=""
+//
 MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop
 MEMVAR onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg
-MEMVAR nWidth, nHeight, oFont, lNoBorder, bSetGet
+MEMVAR nWidth, nHeight, oFont, lNoBorder, bSetGet, ctoolTip
 MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs, tmp_nSheet
-MEMVAR aImages, lEditLabels, aParts
+MEMVAR aImages, lEditLabels, aParts , Link
 MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
+// nando
+Public cOName 
+MEMVAR fBlock, cHeader, nJusHead, lEdit, nJusLine, bWhen, bValid, ClrBlck, HeadClick
+MEMVAR cValType, nDec, cPicture, lNoLines, lNoHeader,lMultiSelect, Items, nInterval, onAction
+MEMVAR nBitIp, nState, onClick, amenu, ccaption, hbmp, nBStyle, hIco
+//
 
    IF nCtrl == 0
       IF Lower( oCtrlTmpl:cClass ) == "pagesheet"
@@ -619,7 +659,39 @@ MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
    nId    := oCtrlTmpl:nId
    nStyle := 0
    ShadeID := 0
-   lEnabled := .t.
+   lEnabled := .T.
+   // nando
+   lAppend   := .F.
+	 lAutoedit := .F.
+	 lMultiSelect := .F.
+   lNoLines  := .F.
+   lNoHeader := .F.
+   lNoBorder := .F.
+   lNoVScroll:= .F.
+   // columns
+   //cValType := "C" 
+   caArray := {}
+   nLength := Nil
+   nDec := 0
+	 nJusHead := 0
+	 nJusLine := 0   
+	 lEdit    := .F.
+	 cpicture := Nil
+	 Items := {}
+	 nInterval := 0
+	 onAction := Nil
+	 bWhen := Nil
+	 bValid := Nil
+	 ClrBlck := Nil
+	 HeadClick := Nil
+	 // toolbar
+	 cCaption := ""
+	 nBitIp := 0
+	 nState := 4
+	 onClick := Nil
+	 ctoolTip := ""
+	 amenu := ""
+   //          
    palette :=  PAL_METAL
    granularity := 0
    highlight := 0
@@ -629,6 +701,7 @@ MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
    FOR i := 1 TO Len( oCtrlTmpl:aProp )
       xProperty := hfrm_GetProperty( oCtrlTmpl:aProp[ i,2 ] )
       cPName := oCtrlTmpl:aProp[ i,1 ]
+      //msginfo(cpname)
       IF cPName == "geometry"
          nLeft   := Val(xProperty[1])
          nTop    := Val(xProperty[2])
@@ -652,7 +725,7 @@ MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
          ENDIF
       ELSEIF cPName == "justify"
          nStyle += Iif( xProperty=="Center",SS_CENTER,Iif( xProperty=="Right",SS_RIGHT,0 ) )
-      ELSEIF cPName == "multiline"
+      ELSEIF cPName == "multiline" .or. cPName == "wordwrap"
          IF xProperty
             nStyle += ES_MULTILINE
          ENDIF
@@ -662,7 +735,7 @@ MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
          ENDIF
       ELSEIF cPName == "autohscroll"
          IF xProperty
-            nStyle += ES_AUTOHSCROLL
+            nStyle += ES_AUTOHSCROLL + IIF(oCtrlTmpl:cClass == "browse",WS_HSCROLL,0)
          ENDIF
       ELSEIF cPName == "autovscroll"
          IF xProperty
@@ -670,7 +743,11 @@ MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
          ENDIF
       ELSEIF cPName == "3dlook"
          IF xProperty
-            nStyle += DS_3DLOOK
+         	IF oCtrlTmpl:cClass == "button" .OR. oCtrlTmpl:cClass == "ownerbutton"
+             nStyle += DS_3DLOOK 
+					ELSE
+						 nStyle += Iif(oCtrlTmpl:cClass = "checkbox",BS_PUSHLIKE,0)
+					ENDIF	 
          ENDIF
       ELSEIF cPName == "effect"
             ShadeID := Ascan( aShadeID, xProperty ) - 1
@@ -680,6 +757,121 @@ MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
          IF xProperty
             nStyle += WS_VSCROLL
          ENDIF
+      // nando layout
+      ELSEIF cPName == "alignment"
+         nStyle += Iif( xProperty=="top",BS_TOP,Iif( xProperty=="bottom",BS_BOTTOM,0 ) )
+         nStyle += Iif( "right"$xProperty,BS_RIGHTBUTTON,0 )
+		  ELSEIF cPName == "layout"
+		     nStyle += val(xProperty)
+			ELSEIF cPName == "checked"
+				IF xProperty
+		      nStyle += 1
+		    ENDIF 
+		  ELSEIF cPName == "taborientation" //array="0-Top,2-Bottom,128-Left,129-Right">
+		 		nStyle += val(xProperty)
+      ELSEIF cPName == "tabstretch" //array="0-Single Row,1-Multiple Rows">
+				nStyle += val(xProperty)
+      // NANDO
+      ELSEIF cPName == "bitmap" .AND. oCtrlTmpl:cClass == "buttonex"
+        hBmp := HBitmap():addfile( trim(xProperty) )
+        hBmp := hBmp:handle
+      ELSEIF cPName == "icon" .AND. oCtrlTmpl:cClass == "buttonex"
+        hIco := HIcon():addfile( xProperty, NIL )       
+      ELSEIF cPName == "pictureposition"         
+        nBStyle := val(xProperty)
+      ELSEIF cPName == "style"         
+      	nStyle += xProperty
+      ELSEIF cPName == "state"         
+      	nState := xProperty   	
+      ELSEIF cPName == "header"         
+        IF xProperty
+  			   lNoHeader := .T.
+  			ENDIF   
+      ELSEIF cPName == "gridlines"         
+        IF xProperty
+          lNoLines  := .T.
+        ENDIF 
+      ELSEIF cPName == "append"         
+        IF xProperty
+          lAppend   := .F.
+        ENDIF 
+      ELSEIF cPName == "autoedit"         
+        IF xProperty
+        	lAutoedit := .F.
+        ENDIF	
+      ELSEIF cPName == "multiselect"         
+        IF xProperty
+        	lMultiSelect := .T.
+        ENDIF  
+      ELSEIF cPName == "interval"
+      	nInterval := xProperty
+      // browse - colunas
+      //  "cOName:AddColumn(HColumn():New(cHeader,block,cType,nLen,nDec,lEdit,nJusHead, nJusLine, cPicture,bValid, bWhen, Items, bClrBlck, bHeadClick ))",;  //oBrw:AddColumn
+      //ELSEIF cPName == "brwtype"            
+      //  brwtype := xProperty
+      ELSEIF cPName == "aarray"            
+        caArray := iif( xProperty != Nil .AND. !empty(xProperty),&(xProperty) , {} )
+      ELSEIF cPName == "childorder"
+        cKey := IIF( xProperty != Nil .AND. !empty(xProperty),trim(xProperty),"")    
+      ELSEIF cPName == "relationalexpr"            
+        crelexpr := IIF( xProperty != Nil .AND. !empty(xProperty),trim(xProperty),"")    
+      ELSEIF cPName == "linkmaster"            
+        clink := IIF( xProperty != Nil .AND. !empty(xProperty),trim(xProperty),"")    
+      ELSEIF cPName == "filedbf"            
+          IF !EMPTY(xProperty) 
+            cAliasdbf := LEFT(CutPath( xProperty ),AT(".",CutPath( xProperty ))-1)
+            IF select(LEFT(CutPath( xProperty ),AT(".",CutPath( xProperty ))-1)) = 0
+               USE (xProperty) NEW SHARED ALIAS (LEFT(CutPath( xProperty ),AT(".",CutPath( xProperty ))-1))  //ftmp
+            ENDIF
+            select (LEFT(CutPath( xProperty ),AT(".",CutPath( xProperty ))-1))
+      	 ENDIF 
+ 			ELSEIF cPName == "columnscount"                  	 
+ 			  nColumns :=  xProperty 
+ 			ELSEIF cPName == "columnsfreeze"                  	 
+      	nfreeze := xProperty
+			ELSEIF cPName == "headrows"                  	   
+      	nHeadRows := xProperty
+ 			ELSEIF cPName == "footerrows"                  	       
+    		nFootRows := xProperty
+ 			ELSEIF cPName == "showheader"                  	     	
+    		lDispHead := xProperty
+ 			ELSEIF cPName == "showgridlinessep"                  	     	
+      	lDispSep := xProperty
+ 			ELSEIF cPName == "gridlinessep3d"                  	       
+      	lSep3d := xProperty
+ 			ELSEIF cPName == "headtextcolor"                  	       
+        nheadColor := xProperty
+ 			ELSEIF cPName == "gridlinessepcolor"                  	 
+      	nsepColor := xProperty
+ 			ELSEIF cPName == "leftcol"                  	 
+      	nLeftCol := xProperty
+ 			ELSEIF cPName == "adjright"                  	 
+        ladjright := xProperty		  
+ 			// COLUNAS  
+      ELSEIF cPName == "heading"            
+        cHeader := Iif( xProperty != Nil ,xProperty ,"")
+      ELSEIF cPName == "fieldname" 
+        fblock  := Lower(Iif( xProperty != Nil .AND. !empty(xProperty),xProperty ,FieldName(i)))
+      ELSEIF cPName == "fieldexpr"                              
+        fblock  := Lower(Iif( xProperty != Nil .AND. !empty(xProperty),xProperty ,fblock))
+       // IF !(cAlias == cTmpAlias) .AND. cTmpAlias $ cCampo  
+       // 	cCampo := STRTRAN(cCampo,cTmpAlias,cAlias)
+			//	ENDIF        
+			ELSEIF cPName == "length"
+				nLength :=	xProperty  //iif(xProperty != Nil,xProperty,10)
+		  ELSEIF cPName == "picture"
+   			cPicture := IIF(empty(xProperty),Nil,xProperty)
+   	  ELSEIF cPName == "editable"
+   	    lEdit := xProperty
+   	  ELSEIF cPName == "justifyheader"   
+ 	     	 nJusHead := val(xProperty )
+      ELSEIF cPName == "justifyline"
+ 				nJusLine := val(xProperty )
+      // fim de column 
+      // toolbutton
+      ELSEIF cPName == "caption" .AND.oCtrlTmpl:cClass = "toolbutton"
+        ccaption := xProperty 
+			// FiM NANDO   			
       ELSEIF cPName == "atree"
          BuildMenu( xProperty,oForm:oDlg:handle,oForm:oDlg )
       ELSE
@@ -687,12 +879,13 @@ MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
             cPName := "c" + cPName
         ELSEIF cPName == "name"
            __mvPrivate( cPName )
+           cOName := IIF(oCtrlTmpl:cClass = "browse" .OR. oCtrlTmpl:cClass = "toolbar",xProperty ,cOname)
         ENDIF
          /* Assigning the value of the property to the variable with
             the same name as the property */
          __mvPut( cPName, xProperty )
 
-         IF cPName == "varname"
+         IF cPName == "varname" .AND.!empty(xProperty)
             cVarName := xProperty
             bSetGet := &( "{|v|Iif(v==Nil,"+xProperty+","+xProperty+":=v)}" )
             IF __mvGet( xProperty ) == Nil
@@ -717,6 +910,12 @@ MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
       ENDIF
    NEXT
 
+	 // NANDO
+   IF oCtrlTmpl:cClass == "updown"
+   		bSetGet := IIF(bSetGet == Nil,'1',bSetGet )
+   		xInitValue := IIF(xInitValue == Nil, '1', xInitValue)
+   ENDIF
+	 //
    IF oCtrlTmpl:cClass == "combobox"
       IF ( i := Ascan( oCtrlTmpl:aProp,{|a|Lower(a[1])=="nmaxlines"} ) ) > 0
          nHeight := nHeight * nMaxLines
@@ -726,18 +925,18 @@ MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
    ELSEIF oCtrlTmpl:cClass == "line"
       nLength := Iif( lVertical==Nil.OR.!lVertical, nWidth, nHeight )
    ELSEIF oCtrlTmpl:cClass == "browse"
-      brwType := Iif( brwType == Nil .OR. brwType == "Dbf",BRW_DATABASE,BRW_ARRAY )
+      brwType := Iif( brwType == Nil .OR. brwType == "dbf",BRW_DATABASE,BRW_ARRAY )
    ELSEIF oCtrlTmpl:cClass == "trackbar"
-      IF TickStyle == Nil .OR. TickStyle == "Auto"
+      IF TickStyle == Nil .OR. TickStyle == "auto"
          TickStyle := TBS_AUTOTICKS
-      ELSEIF TickStyle == "None"
+      ELSEIF TickStyle == "none"
          TickStyle := TBS_NOTICKS
       ELSE
          TickStyle := 0
       ENDIF
-      IF TickMarks == Nil .OR. TickMarks == "Bottom"
+      IF TickMarks == Nil .OR. TickMarks == "bottom"
          TickMarks := 0
-      ELSEIF TickMarks == "Both"
+      ELSEIF TickMarks == "both"
          TickMarks := TBS_BOTH
       ELSE
          TickMarks := TBS_TOP
@@ -750,7 +949,89 @@ MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
       ENDIF
       onInit := {|o|o:Move(,,o:nWidth-1)}
    ENDIF
+   // criacao
+   IF oCtrlTmpl:cClass == "column" 
+     cValType := TYPE("&fblock")
+	   IF &(coName):Type = BRW_DATABASE .AND.!EMPTY(ALIAS())
+       cAliasDbf := ALIAS()
+       temp = strtran(UPPER(fblock),alias()+"->","")
+       *- verificar se tem mais de um campo
+       temp = substr(temp,1,IIF(at('+',temp)>0,at('+',temp)-1,LEN(temp)))
+       j:={}
+       AEVAL( &cAliasDbf->((DBSTRUCT())), {|aField| aadd(j,aField[1])} )
+       IF m->nLength = Nil
+ 	        // m->nLength := &cTmpAlias->(fieldlen(ascan(j,temp)))
+          // m->nLength := IIF(m->nLength = 0 ,IIF(type("&cCampo") = "C",LEN(&cCampo),10),m->nLength)
+ 	        m->nLength := &cAliasDbf->(fieldlen(ascan(j,temp)))
+          m->nLength := IIF(m->nLength = 0 ,IIF(type("&fblock") = "C",LEN(&fblock),10),m->nLength)
+       ENDIF  
+ 	     m->nDec := &cAliasDbf->(FIELDDEC(ascan(j,temp)))
+       cHeader  := Iif( cHeader == Nil .OR. EMPTY(cHeader) ,temp,cHeader)
+       fblock   := {|| &fblock }
+     ELSE  //IF brwtype = 1
+       m->nLength := IIF(m->nLength = Nil ,10,m->nLength)
+       fblock := IIF(fblock = Nil,".T.",fblock)
+       fblock := IIF(cvaltype="B",&fblock,{|| &fblock })  
+		 ENDIF  
+ 	   IF !empty(cPicture) .AND. AT(".9",cPicture) > 0 .AND. nDec = 0
+	       m->nDec := LEN(SUBSTR(cPicture,AT(".9",cPicture)+1))
+		 ENDIF    
+   	 stroka   := cOName+":"+stroka
+   ENDIF
+   IF oCtrlTmpl:cClass == "toolbutton"
+   	 stroka   := cOname+":"+stroka
+   ENDIF	 
    oCtrl := &stroka
+   IF oCtrlTmpl:cClass == "browse" 
+   	  oCtrl:aColumns := {}
+   	  oCtrl:freeze:= nfreeze
+      oCtrl:nHeadRows:= nHeadRows
+    	oCtrl:nFootRows:= nFootRows
+    	oCtrl:lDispHead:= lDispHead
+      oCtrl:lDispSep:= lDispSep
+      oCtrl:lSep3d:= lSep3d
+      oCtrl:headColor:= nheadColor
+      oCtrl:sepColor:= nsepColor
+      oCtrl:nLeftCol:= nLeftCol
+      oCtrl:lAdjRight := ladjright
+      */
+      oCtrl:nColumns := nColumns
+      oCtrl:Type := brwType
+      IF brwtype = BRW_DATABASE   	    //oCtrl:type = 1         	  
+        // CRIAR AS RELA€OES E O LINK
+   	    oCtrl:alias := cAliasdbf
+        IF !empty(cKey)
+          &(oCtrl:alias)->(DBSETORDER(cKey))
+   	 	    cKey := (oCtrl:alias)->(ordkey(cKey))
+   		    ckey := IIF(At('+',ckey) > 0,LEFT(ckey, At('+',ckey)-1),ckey)
+        ENDIF		
+        crelexpr := IIF( !empty(crelexpr),crelexpr,cKey )   
+        IF !EMPTY(crelexpr+clink)
+          &clink->(DBSETRELATION(oCtrl:alias, {|| &crelexpr },crelexpr)) 
+   	      &(oCtrl:alias)->(DBSETFILTER(&("{|| "+crelexpr+" = "+clink+"->("+crelexpr+")}"), "&crelexpr = &clink->(&crelexpr) " ))
+ 	      ENDIF
+	      // fim dos relacionamentos
+ 		    IF Empty( oCtrlTmpl:aControls )
+          select (oCtrl:alias)        
+          j := (DBSTRUCT())  
+          //AEVAL( aStruct, {|aField| QOUT(aField[DBS_NAME])} )  
+          FOR i := 1 TO IIF(oCtrl:nColumns=0,FCOUNT(),oCtrl:nColumns)
+            //"AddColumn(HColumn():New(cHeader,Fblock,cValType,nLength,nDec,lEdit,nJusHead, nJusLine, cPicture,bValid, bWhen, Items, bClrBlck, bHeadClick ))",;  //oBrw:AddColumn	      
+            m->cHeader := FieldName(i)
+					  m->Fblock := FieldBlock(FieldName(i))          
+ 	          m->cValType := j[i,2]  //TYPE("FieldName(i)")
+ 	          m->nLength := j[i,3] //len(&(FieldName(i)))
+ 	          m->nDec := j[i,4]
+ 	          m->cPicture := Nil
+ 	          ledit := .t.
+ 	          oCtrl:AddColumn(HColumn():New(cHeader,Fblock,cValType,nLength,nDec,lEdit))
+          NEXT
+			  ENDIF
+			ELSE
+        oCtrl:aArray := caArray  //IIF(TYPE("caArray")="C",&(caArray),caArray)
+ 	      oCtrl:AddColumn( HColumn():New( ,{|v,o|Iif(v!=Nil,o:aArray[o:nCurrent]:=v,o:aArray[o:nCurrent])},'C',100,0))
+			ENDIF  
+   ENDIF
    IF cVarName != Nil
       oCtrl:cargo := cVarName
    ENDIF

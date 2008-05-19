@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.808 2008-05-19 12:18:47 lculik Exp $
+ * $Id: Changelog,v 1.809 2008-05-19 13:50:52 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,38 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-05-19 10:40 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
+   + utils\designer\resource\bmp\smalignbotton.bmp
+   + utils\designer\resource\bmp\smalignleft.bmp
+   + utils\designer\resource\bmp\smalignright.bmp
+   + utils\designer\resource\bmp\smaligntop.bmp
+   + utils\designer\resource\bmp\smcenterhorz.bmp
+   + utils\designer\resource\bmp\smcentervert.bmp
+   + utils\designer\resource\bmp\smcolumn.bmp
+   + utils\designer\resource\bmp\smproprie.bmp
+   + utils\designer\resource\bmp\smsameheight.bmp
+   + utils\designer\resource\bmp\smsamewidth.bmp
+   + utils\designer\resource\bmp\smtoolbar.bmp
+     ! new bitmaps for designer
+   ! utils\designer\resource\f_hwgprg.prg
+     utils\designer\resource\widget.xml 
+     ! updated to handle new controls and properties to generate correct .prg output
+   ! utils\designer\designer.prg
+   ! utils\designer\designer.rc
+   ! utils\designer\editor.prg
+   ! utils\designer\hctrl.prg
+   ! utils\designer\hformgen.prg
+   ! utils\designer\inspect.prg
+     ! updated to handle new controls and properties
+   ! source\hfrmtmpl.prg
+     ! updated to reflect the changes to designer
+     Add this changes provided by luis fernando basso 
+
+     
+     
+
+
+
 2008-05-19 09:15 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
    * minor fix in hbrowse.prg  
 

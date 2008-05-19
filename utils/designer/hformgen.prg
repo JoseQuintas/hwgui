@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.42 2008-02-16 10:16:56 mlacecilia Exp $
+ * $Id: hformgen.prg,v 1.43 2008-05-19 13:49:23 lculik Exp $
  *
  * Designer
  * HFormGen class
@@ -18,7 +18,9 @@
 
 #define  LEFT_INDENT   40
 #define  TOP_INDENT    30
-
+//NANDO
+Static oPenDivider, oPenLine
+//*-
 Static aG := { "left","top","width","height","right","bottom" }
 
 Static aStaticTypes := { { SS_LEFT,"SS_LEFT" }, { SS_CENTER,"SS_CENTER" }, ;
@@ -86,12 +88,18 @@ Local hDCwindow := GetDC( GetActiveWindow() ), aTermMetr := GetDeviceArea( hDCwi
    ::type := 1
    ::name := name
    //::CreateDialog( { {"Left",Ltrim(Str(aTermMetr[1]-500))},  //{"Top","120"},{"Width","500"},{"Height","400"},{"Caption",name} } )
-    ::CreateDialog( { {"Left","330"}, {"Top","220"},{"Width","500"},{"Height","400"},{"Caption",name} } )
-   
+   //::CreateDialog( { {"Left","325"}, {"Top","060"},{"Width","498"},{"Height","470"},{"Caption",name} } )
+   IF Getdesktopwidth() < 1024
+     ::CreateDialog( { {"Left","225"}, {"Top","110"},{"Width","550"},{"Height","400"},{"Caption",name} } )
+   ELSE
+     ::CreateDialog( { {"Left","125"}, {"Top","150"},{"Width","750"},{"Height","600"},{"Caption",name} } )
+   ENDIF
    ::filename := ""
 
    Aadd( ::aForms, Self )
-
+   // : LFB
+   statusbarmsg(name)
+   // :END LFB
 Return Self
 
 METHOD OpenR( fname )  CLASS HFormGen
@@ -138,7 +146,8 @@ Private oForm := Self, aCtrlTable
       IF ::oDlg != Nil
          ::name := ::oDlg:title
          Aadd( ::aForms, Self )
-         InspSetCombo()
+         // NANDO TIROU
+				 InspSetCombo()
       ENDIF
       IF ::oDlg == Nil .OR. Empty( ::oDlg:aControls )
          MsgStop( "Can't load the form", "Designer" )
@@ -146,7 +155,9 @@ Private oForm := Self, aCtrlTable
          AddRecent( Self )
       ENDIF
    ENDIF
-
+	 // : LFB
+	 statusbarmsg(fname)
+	 // : END LFB
 RETURN Self
 
 METHOD End( lDlg,lCloseDes ) CLASS HFormGen
@@ -175,6 +186,9 @@ Memvar oDesigner
          oDesigner:oDlgInsp:Close()
          // InspSetCombo()
       ENDIF
+     // : LFB
+	   statusbarmsg('')
+	   // :END LFB
    ENDIF
 
    Adel( ::aForms,j )
@@ -186,7 +200,6 @@ Memvar oDesigner
    IF oDesigner:lSingleForm .AND. ( lCloseDes == Nil .OR. lCloseDes )
       oDesigner:oMainWnd:Close()
    ENDIF
-
 RETURN .T.
 
 METHOD Save( lAs ) CLASS HFormGen
@@ -206,6 +219,19 @@ Private oForm := Self, aCtrlTable
       FrmSort( Self,Iif( oDesigner:lReport,::oDlg:aControls[1]:aControls[1]:aControls,::oDlg:aControls ) )
       IF ::type == 1
          aControls := WriteForm( Self )
+         // : LFB
+				 //  salvar PRG diretamente sem necessidade de ficar mudando
+         ::type := 3
+         ::filename := STRTRAN(::filename,'xml','prg')
+         IF Valtype( aFormats[ ::type,5 ] ) == "C"
+            aFormats[ ::type,5 ] := OpenScript( cCurDir + aFormats[ ::type,3 ], aFormats[ ::type,5 ] )
+         ENDIF
+         IF Valtype( aFormats[ ::type,5 ] ) == "A"
+            DoScript( aFormats[ ::type,5 ] )
+         ENDIF
+         ::type := 1
+         ::filename := STRTRAN(::filename,'prg','xml')
+        // :END LFB
       ELSE
          IF Valtype( aFormats[ ::type,5 ] ) == "C"
             aFormats[ ::type,5 ] := OpenScript( cCurDir + aFormats[ ::type,3 ], aFormats[ ::type,5 ] )
@@ -322,8 +348,13 @@ Private value, oCtrl
 
    ::oDlg:Activate(.T.)
 
-   IF oDesigner:oDlgInsp == Nil
-      InspOpen()
+   IF oDesigner:oDlgInsp == Nil 
+     //
+      InspOpen(IIF(Getdesktopwidth()>800,.T.,.F.))
+      IF Getdesktopwidth()<=800
+   	 	   oDesigner:oDlgInsp:HIDE()
+	 		ENDIF
+			//  NANDO escondeu ele
    ENDIF
 
 RETURN Nil
@@ -374,8 +405,15 @@ Memvar oDesigner
 
    // Writelog( "dlgOnSize "+Str(h)+Str(w) )
    IF !oDesigner:lReport
-      oDlg:oParent:SetProp("Width",Ltrim(Str(oDlg:nWidth:=aCoors[3])))
-      oDlg:oParent:SetProp("Height",Ltrim(Str(oDlg:nHeight:=aCoors[4])))
+     // : LFB
+	   IF  h=aCoors[3] .and. w=aCoors[4]
+      	oDlg:oParent:SetProp("Width",Ltrim(Str(oDlg:nWidth:=aCoors[3])))
+      	oDlg:oParent:SetProp("Height",Ltrim(Str(oDlg:nHeight:=aCoors[4])))
+      	*oDlg:oParent:SetProp("Height",Ltrim(Str(oDlg:nHeight:=aCoors[4]+21-21)))
+     ELSE
+       RedrawWindow( oDlg:handle, RDW_ERASE + RDW_INVALIDATE )
+       oDlg:show()
+     ENDIF 	
       InspUpdBrowse()
       oDlg:oParent:lChanged:=.T.
    ENDIF
@@ -388,6 +426,11 @@ Memvar oDesigner
       HFormGen():oDlgSelected := oDlg
       IF oDesigner:oDlgInsp != Nil
          InspSetCombo()
+        // :LFB 
+        IF odlg:oParent:filename != Nil
+	        statusbarmsg(IIF(odlg:oParent:path != Nil,odlg:oParent:path,"") + oDlg:oParent:filename,'','')
+	      ENDIF  
+        // :END LFB
       ENDIF
    ENDIF
 Return .T.
@@ -877,19 +920,29 @@ Memvar oDesigner
           nTop   := aCoors[1]
           nLeft  := aCoors[2]
           nRight := aCoors[3]
-          nBottom := aCoors[4]
-          for i := nLeft to nRight step oDesigner:nPixelGrid
-              DrawLine( hDC, i, nTop,i, nBottom )
+          nBottom := aCoors[4]           *  PS_DOT
+          // : LFB
+          SetROP2(hDC,9)          
+          oPenDivider := HPen():Add( PS_DOT ,1,VColor("606060") )
+          SelectObject( hDC,oPenDivider:handle )
+          // :END LFB
+          for i := nLeft+oDesigner:nPixelGrid to nRight step oDesigner:nPixelGrid
+              DrawLine( hDC, i, nTop,i, nBottom )  //v
           next
-          for i := nTop to nBottom step oDesigner:nPixelGrid
-              DrawLine( hDC, nLeft, i, nRight, i )
+          for i := nTop+oDesigner:nPixelGrid to nBottom step oDesigner:nPixelGrid
+             DrawLine( hDC, nLeft+2, i, nRight, i )    //h
           next
+          // : LFB
+          SetROP2(hDC,13)          
+          oPenDivider := HPen():Add( PS_SOLID ,1,VColor("0") )
+          SelectObject( hDC,oPenDivider:handle )
+          // :END LFB
       endif
       
       IF oCtrl != Nil .AND. oCtrl:nTop >= 0
-
-         Rectangle( hDC, oCtrl:nLeft-3, oCtrl:nTop-3, ;
-                     oCtrl:nLeft+oCtrl:nWidth+2, oCtrl:nTop+oCtrl:nHeight+2 )
+				 // : LFB tirei a borda do objeto selecionado
+         //Rectangle( hDC, oCtrl:nLeft-3, oCtrl:nTop-3, ;
+         //            oCtrl:nLeft+oCtrl:nWidth+2, oCtrl:nTop+oCtrl:nHeight+2 )
          Rectangle( hDC, oCtrl:nLeft-1, oCtrl:nTop-1, ;
                      oCtrl:nLeft+oCtrl:nWidth, oCtrl:nTop+oCtrl:nHeight )
 	
@@ -931,14 +984,15 @@ Local pps, hDC
 Return Nil
 
 Static Function MessagesProc( oDlg, msg, wParam, lParam )
-Local oCtrl, aCoors, nShift
+LOCAL oCtrl, aCoors, nShift, nKshift, asels,i
 Memvar oDesigner
-
    // writelog( str(msg)+str(wParam)+str(lParam) )
+   
    IF msg == WM_MOUSEMOVE
       MouseMove( oDlg, wParam, LoWord( lParam ), HiWord( lParam ) )
       Return 1
    ELSEIF msg == WM_LBUTTONDOWN
+      StatusBarMsg(,'','')  //
       LButtonDown( oDlg, LoWord( lParam ), HiWord( lParam ) )
       Return 1
    ELSEIF msg == WM_LBUTTONUP
@@ -946,6 +1000,14 @@ Memvar oDesigner
       Return 1
    ELSEIF msg == WM_RBUTTONUP
       RButtonUp( oDlg, LoWord( lParam ), HiWord( lParam ) )
+      Return 1
+   ELSEIF msg == WM_LBUTTONDBLCLK   
+   		nkShift := GetKeyState(VK_MENU)
+   		IF nkShift < 0  .OR. GetCtrlSelected( Iif(oDlg:oParent:Classname()=="HDIALOG",oDlg:oParent,oDlg) )!= Nil
+	 			Iif( oDesigner:oDlgInsp==Nil,InspOpen(),InspShow())      
+	 		ELSE
+	 		  socontroles() 
+			ENDIF	
       Return 1
    ELSEIF msg == WM_MOVE
       IF !oDesigner:lReport
@@ -959,30 +1021,90 @@ Memvar oDesigner
       IF wParam == 46    // Del
          DeleteCtrl()
       ENDIF
+      IF wParam == 34 .OR. wParam == 33       // PGDown /PGUP
+        oCtrl := GetCtrlSelected( Iif(oDlg:oParent:Classname()=="HDIALOG",oDlg:oParent,oDlg) )
+        IF oCtrl != Nil
+           asels := aselCtrls()
+    			 FOR i = 1 to IIF(len(asels) > 0,LEN(asels),1)
+    				 oCtrl:=asels[i]
+        		 SetBDown( ,0,0,0 )
+           	 CtrlMove( oCtrl,0,IIF(wParam == 34,1,-1),.F. )
+ 	         NEXT	
+           return 1
+        ENDIF
+			ENDIF
+      IF wParam == 35 .OR. wParam == 36       // HOME END
+        oCtrl := GetCtrlSelected( Iif(oDlg:oParent:Classname()=="HDIALOG",oDlg:oParent,oDlg) )
+        IF oCtrl != Nil
+           asels := aselCtrls()
+    			 FOR i = 1 to IIF(len(asels) > 0,LEN(asels),1)
+    				 oCtrl:=asels[i]
+        		 SetBDown( ,0,0,0 )
+            	CtrlMove( oCtrl,IIF(wParam == 35,1,-1),0,.F. )
+ 	         NEXT	
+         	return 1
+        ENDIF
+			ENDIF
+
    ELSEIF msg == WM_KEYUP
+      nkShift := GetKeyState(VK_SHIFT)
       nShift := Iif( GetKeyState(17)<0,10,1 )
       oCtrl := GetCtrlSelected( Iif(oDlg:oParent:Classname()=="HDIALOG",oDlg:oParent,oDlg) )
       IF wParam == 40        // Down
          IF oCtrl != Nil
-            SetBDown( ,0,0,0 )
-            CtrlMove( oCtrl,0,nShift,.F. )
+           IF nKshift >= 0
+         			SetBDown( ,0,0,0 )
+           		CtrlMove( oCtrl,0,nShift,.F. )
+           		return 1
+           ELSE
+           	 SetBDown( , oCtrl:nLeft,oCtrl:nTop,4 )
+             CtrlResize( OCTRL,oCtrl:nLeft,oCtrl:nTop+1)
+             return 1
+           ENDIF
          ENDIF
       ELSEIF wParam == 38    // Up
          IF oCtrl != Nil
-            SetBDown( ,0,0,0 )
-            CtrlMove( oCtrl,0,-nShift,.F. )
+           IF nKshift >= 0
+           		SetBDown( ,0,0,0 )
+		          CtrlMove( oCtrl,0,-nShift,.F. )
+           		return 1
+           ELSE
+           	 SetBDown( , oCtrl:nLeft,oCtrl:nTop,4 )
+             CtrlResize( OCTRL,oCtrl:nLeft,oCtrl:nTop-1)
+             return 1
+           ENDIF
          ENDIF
       ELSEIF wParam == 39    // Right
          IF oCtrl != Nil
-            SetBDown( ,0,0,0 )
-            CtrlMove( oCtrl,nShift,0,.F. )
+         	 IF nKshift >= 0
+             SetBDown( ,0,0,0 )
+             CtrlMove( oCtrl,nShift,0,.F. )
+           ELSE
+           	 SetBDown( , oCtrl:nLeft,oCtrl:nTop,3 )
+             CtrlResize( OCTRL,oCtrl:nLeft+1,oCtrl:nTop)
+             return 1
+           ENDIF
          ENDIF
       ELSEIF wParam == 37    // Left
          IF oCtrl != Nil
-            SetBDown( ,0,0,0 )
-            CtrlMove( oCtrl,-nShift,0,.F. )
-         ENDIF
+           IF nKshift >= 0
+             SetBDown( ,0,0,0 )
+             CtrlMove( oCtrl,-nShift,0,.F. )
+           ELSE
+           	 SetBDown( , oCtrl:nLeft,oCtrl:nTop,3 )
+             CtrlResize( OCTRL,oCtrl:nLeft-1,oCtrl:nTop)
+             return 1
+           ENDIF
+		     ENDIF
       ENDIF
+      // :LFB
+      IF oCtrl != Nil
+	      statusbarmsg(,'x: '+ltrim(str(oCtrl:nLeft))+'  y: '+ltrim(str(oCtrl:nTop)),;
+         'w: '+ltrim(str(oCtrl:nWidth))+'  h: '+ltrim(str(oCtrl:nHeight)))
+      ELSE
+         statusbarmsg(,'','')
+			ENDIF   
+      // : END LFB
    ENDIF
 
 Return -1
@@ -1057,12 +1179,21 @@ Return -1
 
 Static Function MouseMove( oDlg, wParam, xPos, yPos )
 Local aBDown, oCtrl, resizeDirection
-Memvar oDesigner, crossCursor, horzCursor, VertCursor
+Memvar oDesigner, crossCursor, horzCursor, VertCursor, handCursor
 
+      
    IF oDesigner:addItem != Nil
       Hwg_SetCursor( crossCursor )
-   ELSE
-      aBDown := GetBDown()
+   ELSE 
+      
+	    aBDown := GetBDown()
+	    // : LFB
+      IF aBDown[BDOWN_OCTRL]:CLASSNAME()="HDIALOG"
+        Hwg_SetCursor( handCursor )
+        RegionSelect(odlg,aBDown[ BDOWN_XPOS ],aBDown[ BDOWN_YPOS ],xpos,ypos)
+        RETURN Nil
+      ENDIF    
+      // : END LFB
       IF aBDown[BDOWN_OCTRL] != Nil
          IF aBDown[BDOWN_NBORDER] > 0
             IF aBDown[BDOWN_NBORDER] == 1 .OR. aBDown[BDOWN_NBORDER] == 3
@@ -1090,11 +1221,20 @@ Return Nil
 
 Static Function LButtonDown( oDlg, xPos, yPos )
 Local oCtrl := GetCtrlSelected( oDlg ), resizeDirection, flag, i
-Memvar oDesigner, crossCursor, horzCursor, VertCursor
+Memvar oDesigner, crossCursor, horzCursor, VertCursor, handCursor
 
+    // : LFB
+		IF oCtrl = Nil.and.oDesigner:addItem = Nil
+      Hwg_SetCursor( handCursor )
+      SetBDown(oDlg ,xPos,yPos)  //,resizeDirection )
+      // fazer o desenho da marca‡Æo
+		ENDIF
+		// : END LFB
+		
    IF oDesigner:addItem != Nil
       Return Nil
    ENDIF
+
    IF oCtrl != Nil .AND. ;
         ( resizeDirection := CheckResize( oCtrl,xPos,yPos ) ) > 0
       IF resizeDirection == 1 .OR. resizeDirection == 3
@@ -1115,10 +1255,13 @@ Memvar oDesigner, crossCursor, horzCursor, VertCursor
          IF oCtrl:Adjust == 0
             SetBDown( oCtrl,xPos,yPos,0 )
          ELSE
-            SetCtrlSelected( oCtrl:oParent,oCtrl )
-         ENDIF
+            SetCtrlSelected( oCtrl:oParent,oCtrl)
+				 ENDIF		             
       ELSEIF ( oCtrl := GetCtrlSelected( oDlg ) ) != Nil
+         // : LFB seleciona o DIALOG desmarcar todos
          SetCtrlSelected( oDlg )
+         Hwg_SetCursor( handCursor )
+         // :END LFB
       ENDIF
    ENDIF
    IF oCtrl != Nil .AND. Lower( oCtrl:cClass ) == "page"
@@ -1127,16 +1270,31 @@ Memvar oDesigner, crossCursor, horzCursor, VertCursor
          Page_Select( oCtrl, i+1 )
       ENDIF
    ENDIF
-
+   // :LFB 
+   IF oCtrl != Nil     
+     statusbarmsg(,'x: '+ltrim(str(oCtrl:nLeft))+'  y: '+ltrim(str(oCtrl:nTop)),;
+         'w: '+ltrim(str(oCtrl:nWidth))+'  h: '+ltrim(str(oCtrl:nHeight)))
+   ENDIF    
+   // :ENDLFB
+   
 Return Nil
 
-Static Function LButtonUp( oDlg, xPos, yPos )
+Static Function LButtonUp( oDlg, xPos, yPos ,nShift)
 Local aBDown, oCtrl, oContainer, i, nLeft, aProp, j, name
 Memvar oDesigner
 
    IF oDesigner:addItem == Nil
       aBDown := GetBDown()
       oCtrl := aBDown[BDOWN_OCTRL]
+      // :LFB - selecionar objetos com o mouse
+      IF oCtrl:CLASSNAME()="HDIALOG"
+        selsobjetos(odlg,aBDown[ BDOWN_XPOS ],aBDown[ BDOWN_YPOS ],xpos,ypos)
+        InvalidateRect( odlg:handle, 1, ;
+              0, 0,  oDlg:nWidth,oDlg:nHeight )
+        SetBDown( Nil,0,0,0 )      
+      	return -1
+      endif	
+      // :END LFB
       IF oCtrl != Nil
          IF aBDown[BDOWN_NBORDER] > 0
             CtrlResize( oCtrl,xPos,yPos )
@@ -1201,7 +1359,7 @@ Memvar oDesigner
          ENDIF
       ENDIF
 
-      SetCtrlSelected( oDlg,oCtrl )
+      SetCtrlSelected( oDlg,oCtrl)
       IF oDesigner:lReport
          oDlg:oParent:oParent:oParent:lChanged := .T.
       ELSE
@@ -1428,7 +1586,7 @@ Memvar oDesigner
    ENDIF
 
    oForm := HFormGen():oDlgSelected:oParent
-   IF oForm:lChanged .OR. oForm:type > 1
+   IF oForm:lChanged .OR. oForm:type > 1 .OR. oForm:path = Nil
       lc := .T.
       cTemp1 := oForm:filename; cTemp2 := oForm:path
       oForm:filename := "__tmp.xml"
@@ -1437,7 +1595,7 @@ Memvar oDesigner
       oForm:lChanged := .T.
       oForm:Save()
    ENDIF
-
+ 
    oTmpl := Iif( oDesigner:lReport, HRepTmpl():Read( oForm:path+oForm:filename ), ;
                HFormTmpl():Read( oForm:path+oForm:filename ) )
 

@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.22 2007-12-05 17:54:29 richardroesnadi Exp $
+ * $Id: editor.prg,v 1.23 2008-05-19 13:49:22 lculik Exp $
  *
  * Designer
  * Simple code editor
@@ -193,25 +193,21 @@ Function EditMethod( cMethName, cMethod )
    ENDMENU
 
    @ 0,0 RICHEDIT oEdit TEXT cMethod SIZE 400,oDlg:nHeight            ;
-       STYLE ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL+ES_WANTRETURN ;
+       STYLE WS_HSCROLL+WS_VSCROLL+ES_LEFT+ES_MULTILINE+ES_WANTRETURN ;
        ON INIT {||ChangeTheme( HDTheme():nSelected )}                 ;
        ON GETFOCUS {||Iif(oEdit:cargo,(SendMessage(oEdit:handle,EM_SETSEL,0,0),oEdit:cargo:=.F.),.F.)} ;
        ON SIZE {|o,x,y|o:Move(,,x,y)}                                 ;
        FONT oFont
+   //           STYLE ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL+ES_WANTRETURN+WS_VSCROLL+WS_HSCROLL 
    oEdit:cargo := .T.
 
    // oEdit:oParent:AddEvent( EN_SELCHANGE,oEdit:id,{||EnChange(1)},.T. )
 
    // oEdit:title := cMethod
-   /*
-   @ 60,265 BUTTON "Ok" SIZE 100, 32     ;
-       ON SIZE {|o,x,y|o:Move(,y-35,,)}  ;
-       ON CLICK {||cMethod:=oEdit:GetText(),lRes:=.T.,EndDialog()}
-   @ 240,265 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32 ;
-       ON SIZE {|o,x,y|o:Move(,y-35,,)}
-   */
+   *-SetDlgKey( odlg, 0,VK_TAB, {msginfo('tab')})
+	 *-{SendMessage(oEdit:handle,EM_SETTABSTOPS  ,space(2),0)})
    ACTIVATE DIALOG oDlg
-
+   *-SetDlgKey( oEdit, 0,9)
    IF lRes
       Return cMethod
    ENDIF

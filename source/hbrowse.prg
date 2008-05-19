@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.110 2008-05-15 21:39:36 fperillo Exp $
+ * $Id: hbrowse.prg,v 1.111 2008-05-19 12:18:49 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1479,7 +1479,7 @@ Local xm := LOWORD(lParam), x1, fif
 
    x1  := ::x1
    fif := Iif( ::freeze > 0, 1, ::nLeftCol )
-   DO WHILE fif < ::nColumns
+   DO WHILE fif <= ::nColumns
         if( ! (fif < ( ::nLeftCol + ::nColumns ) .AND. x1 + ::aColumns[ fif ]:width < xm ))
             exit
         endif

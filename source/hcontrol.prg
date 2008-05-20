@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.54 2008-05-20 10:14:48 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.55 2008-05-20 10:32:44 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -198,6 +198,7 @@ METHOD Init CLASS HStatus
       ENDIF
    ENDIF
 RETURN  NIL
+
 METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aParts )  CLASS hStatus
 
@@ -544,6 +545,8 @@ endif
 RETURN NIL
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
+
+   local pos
 
    IF msg == WM_THEMECHANGED
       IF ::Themed

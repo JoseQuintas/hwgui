@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.53 2008-05-14 13:56:38 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.54 2008-05-20 10:14:48 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -543,8 +543,7 @@ endif
 endif
 RETURN NIL
 
-
-METHOD onEvent( msg, wParam, lParam )
+METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
 
    IF msg == WM_THEMECHANGED
       IF ::Themed
@@ -557,31 +556,40 @@ METHOD onEvent( msg, wParam, lParam )
       RETURN 0
    ELSEIF msg == BM_SETSTYLE
       return BUTTONEXONSETSTYLE(wParam,lParam,::handle,@::m_bIsDefault)
+
    ELSEIF msg == WM_MOUSEMOVE
       if(!::bMouseOverButton)
-
          ::bMouseOverButton := .T.
          Invalidaterect( ::handle, .f. )
          TRACKMOUSEVENT( ::handle )
       endif
       RETURN 0
-
    ELSEIF msg == WM_MOUSELEAVE
       ::CancelHover()
-      RETURN 0
-   elseif msg ==WM_GETDLGCODE
-       return ButtonGetDlgCode(lParam)
+      RETURN 0                 
+     
+   elseif ( msg == WM_KEYDOWN .or. msg == WM_KEYUP ) .and. ;
+          ( wParam == VK_SPACE .or. wParam == VK_RETURN )
+      if Valtype(::bClick) =="B"
+           SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
+      endif
+      RETURN 0                              
+  
+	elseif msg == WM_GETDLGCODE
+      return ButtonGetDlgCode(lParam)
+
    elseif msg == WM_SYSCOLORCHANGE
        ::SetDefaultColors()
-   elseif msg ==WM_CHAR .or. msg == WM_KEYUP
-      if wParam == VK_RETURN //.or. wParam == VK_SPACE
+
+   elseif msg ==WM_SYSKEYUP .and. ( pos := At( "&", ::title ) ) > 0 .and. wParam == Asc( Upper( ::title[ ++ pos ] ) )
          if Valtype(::bClick) =="B"
             SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
          endif
-      endif
       return 0
    endif
 RETURN -1
+
+
 
 METHOD CancelHover() CLASS HBUTTONEx
 
@@ -592,7 +600,7 @@ METHOD CancelHover() CLASS HBUTTONEx
 
 RETURN nil
 
-METHOD SetdefaultColor(lPaint)
+METHOD SetdefaultColor(lPaint) CLASS HBUTTONEx
 Default lPaint to .f.
 
    ::m_crColors[ BTNST_COLOR_BK_IN ]    := GetSysColor( COLOR_BTNFACE )
@@ -607,7 +615,7 @@ Default lPaint to .f.
 return Self
 
 
-METHOD SetColorEx(nIndex,nColor,lPaint)
+METHOD SetColorEx(nIndex,nColor,lPaint) CLASS HBUTTONEx
 Default lPaint to .f.
    if nIndex > BTNST_MAX_COLORS
       return -1
@@ -871,7 +879,7 @@ LOCAL uAlign
 
 RETURN nil
 
-METHOD PAINTBK(hdc)
+METHOD PAINTBK(hdc) CLASS HBUTTONEx
 
     Local clDC:=HclientDc():New(::oparent:handle)
     Local rect, rect1

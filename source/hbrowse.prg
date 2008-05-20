@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.111 2008-05-19 12:18:49 lculik Exp $
+ * $Id: hbrowse.prg,v 1.112 2008-05-20 10:14:48 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -146,7 +146,9 @@ CLASS HBrowse INHERIT HControl
    DATA lCtrlPress INIT .F.                    // .T. while Ctrl key is pressed
    DATA lShiftPress INIT .F.                    // .T. while Shift key is pressed
    DATA aSelected                              // An array of selected records numbers
-   // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+   DATA nWheelPress INIT 0							   // wheel or central button mouse pressed flag
+	
+	// By Luiz Henrique dos Santos (luizhsantos@gmail.com)
    DATA lDescend INIT .F.              // Descend Order?
    DATA lFilter INIT .F.               // Filtered? (atribuition is automatic in method "New()").
    DATA bFirst INIT {|| DBGOTOP()}     // Block to place pointer in first record of condition filter. (Ex.: DbGoTop(), DbSeek(), etc.).
@@ -462,8 +464,20 @@ Local nRecStart, nRecStop
          ::ButtonUp( lParam )
 
       ELSEIF msg == WM_MOUSEMOVE
-         ::MouseMove( wParam, lParam )
-
+         IF ::nWheelPress > 0
+            ::MouseWheel( LoWord( wParam ),::nWheelPress - lParam)
+         ELSE   
+            ::MouseMove( wParam, lParam )
+			ENDIF
+			
+      ELSEIF msg == WM_MBUTTONUP                   
+         ::nWheelPress := IIF(::nWheelPress>0,0,lParam)
+         IF ::nWheelPress > 0
+           Hwg_SetCursor( LOADCURSOR(32652))
+         ELSE
+           Hwg_SetCursor( LOADCURSOR(IDC_ARROW))
+			ENDIF
+			  
       ELSEIF msg == WM_MOUSEWHEEL
          ::MouseWheel( LoWord( wParam ),;
                           If( HiWord( wParam ) > 32768,;

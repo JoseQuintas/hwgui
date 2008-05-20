@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.810 2008-05-19 17:19:58 mlacecilia Exp $
+ * $Id: Changelog,v 1.811 2008-05-20 10:14:46 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,22 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-05-20 12:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+   * source/hbrowse.prg
+   * include/windows.ch
+     change made by Luis Fernando Basso (lfbasso@via-rs.net)
+     * now is active the behaviour of the IntelliMouse: pressing the wheel
+	   button or the central button of the mouse and moving this, the browse
+	   scrolls and the mouse cursor is changed. pressing again the 
+	   wheel/button causes the reset of normal operations.
+   * source/hcontrol.prg
+     * in the buttonex on event method:
+       * handled return and space key press
+       * added the handle of button accelerator
+   + utils/designer/WindowsXP.Manifest
+   + utils/designer/resource/bmp/smTimer.bmp
+     + added some file requested at designer compile time   
+	 
 2008-05-19 19:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    * source/theme.c
      * HB_DRAWTHEMETEXT now takes in count correctly the lenght of unicode

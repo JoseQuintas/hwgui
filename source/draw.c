@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.42 2008-05-01 01:53:21 lculik Exp $
+ * $Id: draw.c,v 1.43 2008-05-21 21:50:11 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -979,4 +979,21 @@ HB_FUNC( COPYRECT )
 
    Array2Rect(hb_param( 1, HB_IT_ARRAY ),&p);
    hb_itemRelease(hb_itemReturn(Rect2Array(&p)));
+}
+
+HB_FUNC(GETWINDOWDC)
+{
+   HWND hWnd = (HWND) hb_parnl(1);
+   HDC hDC =  GetWindowDC( hWnd ) ;
+   hb_retnl( (LONG) hDC);
+}
+
+HB_FUNC(MODIFYSTYLE)
+{
+   HWND hWnd = (HWND) hb_parnl(1);
+   DWORD dwStyle = GetWindowLongPtr( (HWND) hWnd , GWL_STYLE );
+   DWORD a = hb_parnl( 2 ) ;
+   DWORD b = hb_parnl( 3 );
+   DWORD dwNewStyle = (dwStyle  & ~a)|b;
+   SetWindowLong(hWnd,GWL_STYLE ,dwNewStyle);
 }

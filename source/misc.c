@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.38 2008-02-15 22:05:37 giuseppem Exp $
+ * $Id: misc.c,v 1.39 2008-05-21 21:50:21 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -187,7 +187,11 @@ HB_FUNC( SCREENTOCLIENT )
    else
    {
       Array2Rect( hb_param(2,HB_IT_ARRAY),&R);
-      ScreenToClient( (HWND) hb_parnl(1), (LPPOINT)&pt );
+      ScreenToClient( (HWND) hb_parnl(1), (LPPOINT)&R );
+      ScreenToClient( (HWND) hb_parnl(1), ((LPPOINT)&R)+1 );
+      hb_itemRelease(hb_itemReturn(Rect2Array(&R)));
+      return ;
+
    }
 
    temp = hb_itemPutNL( NULL, pt.x );

@@ -1,5 +1,5 @@
 /*
- * $Id: hdc.prg,v 1.5 2007-08-20 14:56:58 lculik Exp $
+ * $Id: hdc.prg,v 1.6 2008-05-21 21:50:21 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPAINTDC and HDC Classes    
@@ -71,6 +71,7 @@ CLASS HDC
    method BitBlt( x,  y,  nWidth,  nHeight,  pSrcDC,  xSrc, ySrc,  dwRop) inline    BitBlt(::m_hDc, x, y, nWidth, nHeight,  pSrcDC,       xSrc,  ySrc,  dwRop)
 
    METHOD PIE(arect,apt1,apt2)
+   METHOD DeleteDc()
 ENDCLASS
 
 METHOD NEW( nWnd ) CLASS HDC
@@ -90,6 +91,12 @@ METHOD Attach( hDC ) CLASS HDC
 
    ::SetAttribDC( ::m_hDC )
    return.T.
+
+METHOD deletedc(  ) CLASS HDC
+   DeleteDc(::m_hDC)
+   ::m_hDC :=nil
+   ::m_hAttribDC := nil
+return nil
 
 METHOD SetAttribDC( hDC ) CLASS HDC
 

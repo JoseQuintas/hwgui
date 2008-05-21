@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.14 2007-08-20 14:56:57 lculik Exp $
+ * $Id: drawtext.c,v 1.15 2008-05-21 21:50:18 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -21,6 +21,7 @@
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
+extern BOOL Array2Rect(PHB_ITEM aRect, RECT *rc )    ;
 
 HB_FUNC( DEFINEPAINTSTRU )
 {
@@ -63,25 +64,36 @@ HB_FUNC( DRAWTEXT )
 {
    char *cText = hb_parc( 2 );
    RECT rc;
+   UINT uFormat = (hb_pcount() == 4 ? hb_parni( 4 ) : hb_parni( 7 ));
+   int uiPos = (hb_pcount() == 4 ? 3 : hb_parni( 8 ));
+   if (hb_pcount() > 4 )
+   {
 
    rc.left = hb_parni( 3 );
    rc.top = hb_parni( 4 );
    rc.right = hb_parni( 5 );
    rc.bottom = hb_parni( 6 );
 
+   }
+   else
+   {
+      Array2Rect( hb_param( 3, HB_IT_ARRAY ), &rc )  ;
+   }
+
+
    DrawText(
      (HDC) hb_parnl( 1 ),	// handle of device context
      (LPCTSTR) cText,	        // address of string
      strlen( cText ), 	        // number of characters in string
      &rc,
-     hb_parni( 7 )
+     uFormat
    );
-   if (ISBYREF(8))
+   if (ISBYREF(uiPos))
    {
-      hb_storni( rc.left   , 8,1 );
-      hb_storni( rc.top    , 8,1 );
-      hb_storni( rc.right  , 8,1 );
-      hb_storni( rc.bottom , 8,1 );
+      hb_storni( rc.left   , uiPos,1 );
+      hb_storni( rc.top    , uiPos,2 );
+      hb_storni( rc.right  , uiPos,3 );
+      hb_storni( rc.bottom , uiPos,4 );
     }
 
 }

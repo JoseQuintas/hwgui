@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.62 2008-05-06 20:34:50 lculik Exp $
+ * $Id: control.c,v 1.63 2008-05-21 21:50:11 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -41,7 +41,8 @@ extern PHB_ITEM Rect2Array( RECT *rc  );
 static HWND hWndTT = 0;
 static BOOL lInitCmnCtrl = 0;
 static BOOL lToolTipBalloon = FALSE; // added by MAG
-static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc,wpOrigButtonProc,wpOrigComboProc;
+static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc,wpOrigComboProc; //wpOrigButtonProc
+static LONG_PTR wpOrigButtonProc;
 extern BOOL _AddBar( HWND pParent, HWND pBar, REBARBANDINFO* pRBBI );
 extern BOOL AddBar( HWND pParent, HWND pBar, LPCTSTR pszText, HBITMAP pbmp, DWORD dwStyle );
 extern BOOL AddBar1( HWND pParent, HWND pBar, COLORREF clrFore, COLORREF clrBack, LPCTSTR pszText, DWORD dwStyle );
@@ -1148,8 +1149,11 @@ LRESULT APIENTRY EditSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARA
 
 HB_FUNC( HWG_INITBUTTONPROC )
 {
-   wpOrigButtonProc = (WNDPROC) SetWindowLong( (HWND) hb_parnl(1),
-                                 GWL_WNDPROC, (LONG) ButtonSubclassProc );
+//   wpOrigButtonProc = (WNDPROC) SetWindowLong( (HWND) hb_parnl(1),
+//                                 GWL_WNDPROC, (LONG) ButtonSubclassProc );
+   wpOrigButtonProc = (LONG_PTR) SetWindowLongPtr( (HWND) hb_parnl(1),
+                                 GWLP_WNDPROC, (LONG_PTR) ButtonSubclassProc );
+
 }
 
 LRESULT APIENTRY ButtonSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
@@ -1170,12 +1174,12 @@ LRESULT APIENTRY ButtonSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPA
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
       if( res == -1 )
-         return( CallWindowProc( wpOrigButtonProc, hWnd, message, wParam, lParam ) );
+         return( CallWindowProc( (WNDPROC) wpOrigButtonProc, hWnd, message, wParam, lParam ) );
       else
          return res;
    }
    else
-      return( CallWindowProc( wpOrigButtonProc, hWnd, message, wParam, lParam ) );
+      return( CallWindowProc( (WNDPROC)wpOrigButtonProc, hWnd, message, wParam, lParam ) );
 }
 
 LRESULT APIENTRY ComboSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
@@ -1687,22 +1691,18 @@ HB_FUNC(BUTTONGETDLGCODE)
    if (lParam)
    {
       MSG *pMsg = (MSG *) lParam;
-   
+
       if (pMsg && (pMsg->message == WM_KEYDOWN) && (pMsg->wParam == VK_TAB))
       {
          // don't interfere with tab processing
-         hb_retnl( DLGC_BUTTON | DLGC_UNDEFPUSHBUTTON);
+         hb_retnl(  0);
+         return ;
       }
-      if (pMsg && (pMsg->message == WM_KEYDOWN) && (pMsg->wParam == VK_SPACE))
-      {
-         // don't interfere with tab processing
-         hb_retnl(DLGC_BUTTON | DLGC_UNDEFPUSHBUTTON);
-      }
-
+      
 
    }
-//   hb_retnl( DLGC_WANTALLKEYS);    // we want all keys except TAB key
-     hb_retnl(DLGC_UNDEFPUSHBUTTON);
+   hb_retnl( DLGC_WANTALLKEYS);    // we want all keys except TAB key
+
 }
 
 

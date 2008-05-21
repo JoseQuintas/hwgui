@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.55 2008-05-20 10:32:44 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.56 2008-05-21 21:50:20 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -14,7 +14,15 @@
  * www - http://sites.uol.com.br/culikr/
 
 */
-
+#translate :hBitmap       => :m_csbitmaps\[ 1 \]
+#translate :dwWidth       => :m_csbitmaps\[ 2 \]
+#translate :dwHeight      => :m_csbitmaps\[ 3 \]
+#translate :hMask         => :m_csbitmaps\[ 4 \]
+#translate :crTransparent => :m_csbitmaps\[ 5 \]
+#pragma begindump
+#include "windows.h"
+#include "hbapi.h"
+#pragma enddump
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
@@ -413,6 +421,16 @@ CLASS HButtonEX INHERIT HButton
    DATA state
    DATA  m_bIsDefault INIT .F.
    DATA m_nTypeStyle  init 0
+   DATA m_bLButtonDown
+   DATA m_bSent,m_bLButtonDown,m_bIsToggle
+   DATA m_rectButton           // button rect in parent window coordinates
+   DATA m_dcParent init hdc():new()
+   DATA m_bmpParent
+   DATA m_pOldParentBitmap
+   DATA m_csbitmaps init {,,,,}
+
+
+
 
    DATA m_bDrawTransparent INIT .f.
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -434,7 +452,7 @@ CLASS HButtonEX INHERIT HButton
    METHOD PAINTBK(p)
    METHOD SETDEFAULTCOLOR(lRepaint)
    Method SetColorEx(nIndex,nColor,bPaint)
-
+   METHOD SaveParentBackground()
 
 
 END CLASS
@@ -445,13 +463,17 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    DEFAULT iStyle TO ST_ALIGN_HORIZ
    DEFAULT Transp to .T.
+   ::m_bLButtonDown := .f.
+   ::m_bSent :=.f.
+   ::m_bLButtonDown := .f.
+   ::m_bIsToggle := .f.
+
 
    ::Caption := cCaption
    ::iStyle                             := iStyle
    ::hBitmap                            := hBitmap
    ::hIcon                              := hIcon
    ::m_bDrawTransparent                 := Transp
-
 
    bPaint   := { | o, p | o:paint( p ) }
 
@@ -466,7 +488,11 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
                  cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle,hIcon  ) CLASS HButtonEx
    DEFAULT iStyle TO ST_ALIGN_HORIZ
    bPaint   := { | o, p | o:paint( p ) }
+   ::m_bLButtonDown := .f.
+   ::m_bIsToggle := .f.
 
+   ::m_bLButtonDown := .f.
+   ::m_bSent :=.f.
 
    ::title   := cCaption
 
@@ -546,7 +572,9 @@ RETURN NIL
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
 
-   local pos
+Local pt:={,},rectButton,acoor
+local cc
+local pos
 
    IF msg == WM_THEMECHANGED
       IF ::Themed
@@ -557,6 +585,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
          ENDIF
       ENDIF
       RETURN 0
+   elseif msg == WM_ERASEBKGND
+      return 0
    ELSEIF msg == BM_SETSTYLE
       return BUTTONEXONSETSTYLE(wParam,lParam,::handle,@::m_bIsDefault)
 
@@ -569,6 +599,85 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
       RETURN 0
    ELSEIF msg == WM_MOUSELEAVE
       ::CancelHover()
+<<<<<<< hcontrol.prg
+      RETURN 0
+   elseif msg ==WM_GETDLGCODE     
+      return ButtonGetDlgCode(lParam)
+   elseif msg == WM_KEYDOWN
+        
+      if hb_inline( lParam) { LPARAM l = (LPARAM) hb_parnl( 1 ); hb_retl( l & 0x40000000);}
+         return 0
+      endif
+      if ((wParam == VK_SPACE) .or. (wParam == VK_RETURN))
+         SendMessage(::handle,WM_LBUTTONDOWN, 0, MAKELPARAM(1, 1))
+         return 0
+      endif
+
+   elseif msg == WM_KEYUP
+
+      if ((wParam == VK_SPACE) .or. (wParam == VK_RETURN))
+         SendMessage(::handle, WM_LBUTTONUP, 0, MAKELPARAM(1, 1))
+         return 0
+      endif
+      
+   elseif msg == WM_LBUTTONUP
+
+     ::m_bLButtonDown := .f.
+     if (::m_bSent)
+        SendMessage(::handle,BM_SETSTATE, 0,0)
+	    ::m_bSent := .f.
+        
+            if valtype(::oParent)  == "O"            
+	       SendMessage(::oParent:handle, WM_COMMAND,makewparam(::id,BN_CLICKED),::handle)
+               return 0
+	    endif
+     else
+            if valtype(::oParent)  == "O"            
+	       SendMessage(::oParent:handle, WM_COMMAND,makewparam(::id,BN_CLICKED),::handle)
+               return 0
+	    endif
+
+     endif
+     if ::m_bIsToggle
+                        
+	    pt[1]:= loword( lParam )
+	    pt[2]:= hiword( lParam )
+	    acoor :=ClientToScreen(::handle,pt[1],pt[2])
+
+	    rectButton :=GetWindowRect(::handle )
+        
+            if (!PtInRect(rectButton,acoor))                      
+	       ::m_bToggled = !::m_bToggled
+	       InvalidateRect(::handle,0)
+        endif
+     endif
+     return 0
+
+   elseif msg == WM_LBUTTONDOWN
+		
+      ::m_bLButtonDown := .t.
+      if (::m_bIsToggle)	
+   	     ::m_bToggled := !::m_bToggled
+         InvalidateRect(::handle,0)
+      endif
+   return 0
+
+    elseif msg ==WM_LBUTTONDBLCLK
+                
+                      if (::m_bIsToggle)
+                        
+				// for toggle buttons, treat doubleclick as singleclick
+                                SendMessage(::handle,BM_SETSTATE, ::m_bToggled,0)
+                        
+			else
+                        
+                                SendMessage(::handle,BM_SETSTATE, 1,0)
+                                ::m_bSent := TRUE
+                        endif
+                        return 0
+                
+
+=======
       RETURN 0                 
      
    elseif ( msg == WM_KEYDOWN .or. msg == WM_KEYUP ) .and. ;
@@ -581,11 +690,29 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
 	elseif msg == WM_GETDLGCODE
       return ButtonGetDlgCode(lParam)
 
+>>>>>>> 1.55
    elseif msg == WM_SYSCOLORCHANGE
        ::SetDefaultColors()
+<<<<<<< hcontrol.prg
+   elseif msg ==WM_CHAR //.or. msg == WM_KEYUP
+      if wParam == VK_RETURN .or. wParam == VK_SPACE
+         if (::m_bIsToggle)
+                               
+            ::m_bToggled := !::m_bToggled
+            InvalidateRect(::handle,0)
+         else
+                               
+            SendMessage(::handle,BM_SETSTATE, 1,0)
+            ::m_bSent := .t. 
+         endif
+
+
+         if wParam == VK_RETURN
+=======
 
    elseif msg ==WM_SYSKEYUP .and. ( pos := At( "&", ::title ) ) > 0 .and. wParam == Asc( Upper( ::title[ ++ pos ] ) )
          if Valtype(::bClick) =="B"
+>>>>>>> 1.55
             SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
          endif
       return 0
@@ -659,6 +786,13 @@ LOCAL captionRectHeight
 LOCAL centerRectWidth
 LOCAL centerRectHeight
 LOCAL uAlign
+Local uStyleTmp
+Local  memDC:=HDC():New()
+Local Bmp,pOldBitmap
+memdc:CreateCompatibledc(dc)
+
+    SetBkMode(dc,1)
+
 
 
    IF ( ::m_bFirstTime )
@@ -674,14 +808,18 @@ LOCAL uAlign
          ::hTheme := hb_OpenThemeData( ::handle, "BUTTON" )
 
       ENDIF
+//      altd()
+      ::SaveParentBackground()
    ENDIF
 
    IF !EMPTY( ::hTheme )
       ::Themed := .T.
    ENDIF
 
-   SetBkMode( dc, TRANSPARENT )
+   SetBkMode( memDC:m_hdc, TRANSPARENT ) // dc ->memDC:m_hdc
    if (::m_bDrawTransparent)
+
+//   Tracelog("Paintbk")
         ::PaintBk(DC)
    endif
 
@@ -701,13 +839,18 @@ LOCAL uAlign
             state := PBS_HOT
          ENDIF
       ENDIF
+      hb_DrawThemeParentBackground( ::Oparent:handle, memdc:m_hDC, itemRect)
       hb_DrawThemeBackground( ::hTheme, dc, BP_PUSHBUTTON, state, itemRect, Nil )
+
+
    ELSE
 
       IF bIsFocused
 
          br := HBRUSH():Add( RGB( 0, 0, 0 ) )
+//         FrameRect( dc, itemRect, br:handle )
          FrameRect( dc, itemRect, br:handle )
+
          InflateRect( @itemRect, - 1, - 1 )
 
       ENDIF
@@ -720,6 +863,8 @@ LOCAL uAlign
 
       IF ( bIsPressed )
          brBtnShadow := HBRUSH():Add( GetSysColor( COLOR_BTNSHADOW ) )
+//         FrameRect( dc, itemRect, brBtnShadow:handle )
+
          FrameRect( dc, itemRect, brBtnShadow:handle )
 
       ELSE
@@ -729,7 +874,7 @@ LOCAL uAlign
                               IF( ::bMouseOverButton, DFCS_HOT, 0 ) ), ;
                               IF( bIsPressed, DFCS_PUSHED, 0 ) )
 
-         DrawFrameControl( dc, itemRect, DFC_BUTTON, uState )
+         DrawFrameControl( dc, itemRect, DFC_BUTTON, uState ) // dc -> memdc:m_hdc
       ENDIF
 
    ENDIF
@@ -753,13 +898,24 @@ LOCAL uAlign
 
 //             DT_CENTER | DT_VCENTER | DT_SINGLELINE
 //   uAlign += DT_WORDBREAK + DT_CENTER + DT_CALCRECT +  DT_VCENTER + DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
-     uAlign += DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK;
+     uAlign += DT_VCENTER
+     uStyleTmp := HWG_GETWINDOWSTYLE(::handle)
+     
+     if hb_inline(uStyleTmp) { ULONG ulStyle = (ULONG)hb_parnl( 1 ) ; hb_retl( ulStyle & BS_MULTILINE ); }
+        uAlign += DT_WORDBREAK 
+     else
+        uAlign += DT_SINGLELINE
+     endif
+     
+     
+   //if HWG_GETWINDOWSTYLE(::handle)
+//     uAlign += DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK;
 
    captionRect := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
 
    bHasTitle := valtype(::caption) =="C" .and. !EMPTY( ::Caption )
 
-   DrawTheIcon( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, bIsDisabled, ::hIcon, ::hbitmap, ::iStyle )
+   DrawTheIcon( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, bIsDisabled, ::hIcon, ::hbitmap, ::iStyle ) // dc ->memdc:m_hdc
 
    IF ( bHasTitle )
 
@@ -776,7 +932,8 @@ LOCAL uAlign
 
 
       if VALTYPE( ::hicon ) == "N" .or. VALTYPE( ::hbitmap ) == "N"
-         DrawText( dc, ::caption, captionrect[ 1 ], captionrect[ 2 ], captionrect[ 3 ], captionrect[ 4 ], uAlign + DT_CALCRECT, @captionRect )
+         //DrawText( dc, ::caption, captionrect[ 1 ], captionrect[ 2 ], captionrect[ 3 ], captionrect[ 4 ], uAlign + DT_CALCRECT, @captionRect )
+         DrawText( dc, ::caption, @captionrect, uAlign + DT_CALCRECT )         // dc -> memdc:m_hdc
       endif
 
 
@@ -786,8 +943,8 @@ LOCAL uAlign
       centerRectHeight  := centerRect[ 4 ] - centerRect[ 2 ]
 //ok      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
 //      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
-//      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
-      OffsetRect( @captionRect, 0, ( centerRectHeight - captionRectHeight ) / 2 )
+      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
+      //OffsetRect( @captionRect, 0, ( centerRectHeight - captionRectHeight ) / 2 ) esta era a ativa
 
 
 /*      SetBkMode( dc, TRANSPARENT )
@@ -825,10 +982,10 @@ LOCAL uAlign
 
       IF ::Themed
 
-         hb_DrawThemeText( ::hTheme, dc, BP_PUSHBUTTON, PBS_NORMAL, ;
+         hb_DrawThemeText( ::hTheme, dc, BP_PUSHBUTTON, if(bIsDisabled,PBS_DISABLED,PBS_NORMAL), ;
                            ::caption, ;
                            uAlign, ;
-                           0, captionRect )
+                           0, captionRect ) // dc ->memdc:m_hdc
 
       ELSE
 
@@ -837,11 +994,11 @@ LOCAL uAlign
          IF ( bIsDisabled )
 
             OffsetRect( @captionRect, 1, 1 )
-            SetTextColor( dc, GetSysColor( COLOR_3DHILIGHT ) )
-            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign )
+            SetTextColor( dc, GetSysColor( COLOR_3DHILIGHT ) ) //dc ->memdc:m_hdc
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign ) //dc -> memdc:m_hdc
             OffsetRect( @captionRect, - 1, - 1 )
-            SetTextColor( dc, GetSysColor( COLOR_3DSHADOW ) )
-            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign )
+            SetTextColor( dc, GetSysColor( COLOR_3DSHADOW ) ) // dc ->memdc:m_hdc
+            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign ) // dc ->memdc:m_hdc
             // if
          ELSE
 
@@ -850,23 +1007,23 @@ LOCAL uAlign
 //            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign )
          IF ( ::bMouseOverButton .or. bIsPressed )
 
-            SetTextColor( DC, ::m_crColors[ BTNST_COLOR_FG_IN ] )
-            SetBkColor( DC, ::m_crColors[ BTNST_COLOR_BK_IN ] )
+            SetTextColor( dc, ::m_crColors[ BTNST_COLOR_FG_IN ] )// dc ->memdc:m_hdc
+            SetBkColor( dc, ::m_crColors[ BTNST_COLOR_BK_IN ] ) // dc->memdc:m_hdc
 
          ELSE
 
             IF ( bIsFocused )
 
-               SetTextColor( DC, ::m_crColors[ BTNST_COLOR_FG_FOCUS ] )
-               SetBkColor( DC, ::m_crColors[ BTNST_COLOR_BK_FOCUS ] )
+               SetTextColor( dc, ::m_crColors[ BTNST_COLOR_FG_FOCUS ] ) //dc->memdc:m_hdc
+               SetBkColor( dc, ::m_crColors[ BTNST_COLOR_BK_FOCUS ] ) // dc->memdc:m_hdc
 
             ELSE
 
-               SetTextColor( DC, ::m_crColors[ BTNST_COLOR_FG_OUT ] )
-               SetBkColor( DC, ::m_crColors[ BTNST_COLOR_BK_OUT ] )
+               SetTextColor( dc, ::m_crColors[ BTNST_COLOR_FG_OUT ] ) //dc->memdc:m_hdc
+               SetBkColor( dc, ::m_crColors[ BTNST_COLOR_BK_OUT ] ) //dc->memdc:m_hdc
             ENDIF
          ENDIF
-         DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign )
+         DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign ) //dc ->memdc:m_hdc
 
          ENDIF
       ENDIF
@@ -877,12 +1034,86 @@ LOCAL uAlign
 
       focusRect := COPYRECT(itemRect)
       InflateRect( @focusRect, - 3, - 3 )
-      DrawFocusRect( dc, focusRect )
+      DrawFocusRect( dc, focusRect ) //dc->memdc:m_hdc
    ENDIF
+
 
 RETURN nil
 
+<<<<<<< hcontrol.prg
+METHOD SaveParentBackground()
+//=============================================================================	
+
+Local left,top,w,h,bVisible,rectClient,rectParent,pdcParent
+Local uStyleTmp
+    ::m_rectButton:=GetClientRect(::handle)
+                  
+     rectClient := ::m_rectButton
+     rectClient:=        ScreenToClient(::oparent:handle,rectClient)
+
+	// repaint rect for button on parent's window without button,
+	// to get the original background of the parent
+        uStyleTmp := HWG_GETWINDOWSTYLE(::handle)
+     
+        bVisible:= hb_inline(uStyleTmp) { ULONG ulStyle = (ULONG)hb_parnl( 1 ) ; hb_retl( ulStyle & WS_VISIBLE ); }
+
+        ModifyStyle(::handle,WS_VISIBLE, 0)
+        InvalidateRect(::oparent:handle,0,rectClient[1],rectClient[2],rectClient[3],rectClient[4])
+        UpdateWindow(::oparent:handle)
+
+	// get button position in parent window coordinates
+        rectParent:=GetWindowRect(::oparent:handle)
+        left := ::m_rectButton[ 1 ] - rectParent[ 1 ]
+        top := ::m_rectButton[ 2 ] - rectParent[ 2 ]
+        w := ::m_rectButton[ 3 ] - ::m_rectButton[ 1 ]
+        h := ::m_rectButton[ 4 ] - ::m_rectButton[ 2 ]
+        ::m_rectButton[ 1 ] := left
+        ::m_rectButton[ 2 ]  := top
+        ::m_rectButton[ 3 ] := left + w
+        ::m_rectButton[ 4 ]  := top + h
+        //TRACERECT(m_rectButton)
+
+        if !empty(::m_pOldParentBitmap)
+                ::m_dcParent:SelectObject(::m_pOldParentBitmap)
+        endif
+        ::m_pOldParentBitmap := nil
+
+        if !empty(::m_dcParent:m_hdc)
+                ::m_dcParent:DeleteDC()
+        endif
+
+        if !empty(::m_bmpParent)
+                DeleteObject(::m_bmpParent)
+        endif
+
+	// get dc for parent's window
+        pdcParent := GetWindowDC(::oParent:handle)
+
+
+        if !empty(pdcParent)
+        
+		// make a copy of the bits in the parent's window that will be
+		// covered by this button
+                ::m_dcParent:CreateCompatibleDC(pdcParent)
+                ::m_bmpParent:=CreateCompatibleBitmap(pdcParent, ::m_rectButton[ 3 ] - ::m_rectButton[ 1 ], ::m_rectButton[ 4 ] - ::m_rectButton[ 2 ])
+                ::m_pOldParentBitmap := ::m_dcParent:SelectObject(::m_bmpParent)
+                ::m_dcParent:BitBlt(0, 0, ::m_rectButton[ 3 ] - ::m_rectButton[ 1 ], ::m_rectButton[ 4 ] - ::m_rectButton[ 2 ],pdcParent, ::m_rectButton[ 1 ], ::m_rectButton[ 2 ], SRCCOPY)
+                ReleaseDC(::oParent:handle,pdcParent)
+        endif
+
+	// restore visibility
+	if (bVisible)
+        
+                ModifyStyle(::handle,0, WS_VISIBLE)
+               UpdateWindow(::oparent:handle)
+        endif
+return nil
+
+
+METHOD PAINTBK(hdc)
+=======
 METHOD PAINTBK(hdc) CLASS HBUTTONEx
+>>>>>>> 1.55
 
     Local clDC:=HclientDc():New(::oparent:handle)
     Local rect, rect1
@@ -890,7 +1121,7 @@ METHOD PAINTBK(hdc) CLASS HBUTTONEx
     rect:=GetClientRect(::handle)
 
     rect1:=GetWindowRect(::handle)
-    ScreenToClient(::oparent:handle,rect1)
+    rect1:=ScreenToClient(::oparent:handle,rect1)
 
     if Valtype(::m_dcBk) =="U"
 
@@ -898,10 +1129,10 @@ METHOD PAINTBK(hdc) CLASS HBUTTONEx
         ::m_dcBk:CreateCompatibleDC(clDC:m_hDC)
         ::m_bmpBk := CreateCompatibleBitmap(clDC:m_hDC, rect[3]-rect[1], rect[4]-rect[2])
         ::m_pbmpOldBk = ::m_dcBk:SelectObject(::m_bmpBk)
-        ::m_dcBk:BitBlt(0, 0, rect[3]-rect[1], rect[4]-rect[4], clDC:m_hDc, rect1[1], rect1[2], SRCCOPY)
+        ::m_dcBk:BitBlt(0, 0, rect[3]-rect[1], rect[4]-rect[2], clDC:m_hDc, rect1[1], rect1[2], SRCCOPY)
     endif
 
-    BitBlt(hdc,0, 0, rect[3]-rect[1], rect[4]-rect[4],::m_dcBk:m_hDC, 0, 0, SRCCOPY)
+    BitBlt(hdc,0, 0, rect[3]-rect[1], rect[4]-rect[2],::m_dcBk:m_hDC, 0, 0, SRCCOPY)
 return self
 
 
@@ -1204,3 +1435,18 @@ hb_retnl( (LONG)  pDisp );
  
 #pragma ENDDUMP 
 */
+
+Static Function IsAltShift( lAlt,cc)
+Local cKeyb := GetKeyboardState()
+local lRet:= .f.
+
+   default lAlt to .T.
+   lRet := ( lAlt .AND. ( Asc(Substr(cKeyb,VK_MENU+1,1)) >= 128 ) )
+   if lRet
+   cc :=Asc(Substr(cKeyb,VK_MENU+1,1))
+   else
+   cc:=""
+   endif
+
+Return  lRet
+

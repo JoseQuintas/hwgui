@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.13 2008-05-19 17:20:00 mlacecilia Exp $
+ * $Id: theme.c,v 1.14 2008-05-21 21:50:24 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -1590,7 +1590,7 @@ static void DrawTheIcon(HWND hButtonWnd, HDC dc, BOOL bHasTitle, RECT* rpItem, R
 
    if (hBitmap)
    {   
-      SetBkColor(dc,RGB(255,255,255));
+//      SetBkColor(dc,RGB(255,255,255));
 
       Calc_bitmapWidthHeight(hButtonWnd,&cx,&cy,dc,hBitmap);
     }
@@ -1781,3 +1781,17 @@ HB_FUNC(MODSTYLE)
    LONG c   = hb_parnl( 3 );
 hb_retnl((nbs & ~b) | c);
 }
+
+HB_FUNC( HB_DRAWTHEMEPARENTBACKGROUND )
+{
+   HWND hTheme = (HWND) hb_parnl(1 ) ;
+   HDC hdc = (HDC)hb_parnl( 2 ) ;
+   RECT pRect ;
+
+   BOOL bRectOk = ( ISARRAY( 3 )  &&   Array2Rect( hb_param( 3, HB_IT_ARRAY ), &pRect ) ) ;
+
+
+   hb_retnl( hb_DrawThemeParentBackground(hTheme, hdc,
+                        &pRect ) );
+}
+

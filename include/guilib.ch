@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.101 2008-05-19 02:34:00 lculik Exp $
+ *$Id: guilib.ch,v 1.102 2008-05-21 21:50:10 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define   WND_MAIN      1
@@ -420,9 +420,11 @@
             [ BITMAP <hbit> ]          ;
             [ BSTYLE <nBStyle> ]       ;
             [ ICON <hIco> ]          ;
+            [<lTransp: TRANSPARENT>]   ;
           => ;
     [<oBut> := ] HButtonEx():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<hbit>,<nBStyle>,<hIco> )
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<hbit>,<nBStyle>,<hIco>, <.lTransp.>)
+
 
 #xcommand REDEFINE BUTTON [ <oBut> ]   ;
             [ OF <oWnd> ]              ;

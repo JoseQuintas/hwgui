@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.57 2008-05-22 04:20:34 lculik Exp $
+ * $Id: hcontrol.prg,v 1.58 2008-05-22 12:30:54 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -454,7 +454,7 @@ CLASS HButtonEX INHERIT HButton
    METHOD PAINTBK(p)
    METHOD SETDEFAULTCOLOR(lRepaint)
    Method SetColorEx(nIndex,nColor,bPaint)
-   METHOD SaveParentBackground()
+//   METHOD SaveParentBackground()
 
 
 END CLASS

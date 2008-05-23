@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.43 2008-05-21 21:50:11 lculik Exp $
+ * $Id: draw.c,v 1.44 2008-05-23 09:13:44 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -229,26 +229,14 @@ HB_FUNC( LOADICON )
 
 HB_FUNC( LOADIMAGE )
 {
-   if ( ISNUM( 2 ) )
       hb_retnl( (LONG)
-          LoadImage( ISNIL( 1 ) ? GetModuleHandle(NULL) : (HINSTANCE) hb_parnl( 1 ),    // handle of the instance that contains the image
-                  (LPCTSTR)MAKEINTRESOURCE(hb_parnl(2)),          // name or identifier of image
-                  (UINT) hb_parni(3),           // type of image
-                  hb_parni(4),                  // desired width
-                  hb_parni(5),                  // desired height
-                  (UINT)hb_parni(6)             // load flags
-     ) );
-
-   else
-      hb_retnl( (LONG)
-          LoadImage( (HINSTANCE)hb_parnl(1),    // handle of the instance that contains the image
-                  (LPCTSTR)hb_parc(2),          // name or identifier of image
+          LoadImage( ISNIL( 1 ) ? GetModuleHandle(NULL) : (HINSTANCE) hb_parnl( 1 )  ,    // handle of the instance that contains the image
+                  (LPCTSTR) ISNUM( 2 ) ? MAKEINTRESOURCE(hb_parnl(2)) : hb_parc(2)  ,          // name or identifier of image
                   (UINT) hb_parni(3),           // type of image
                   hb_parni(4),                  // desired width
                   hb_parni(5),                  // desired height
                   (UINT)hb_parni(6)             // load flags
       ) );
-
 }
 
 HB_FUNC( LOADBITMAP )

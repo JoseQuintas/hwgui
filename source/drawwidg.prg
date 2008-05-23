@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.11 2007-11-10 17:44:27 mlacecilia Exp $
+ * $Id: drawwidg.prg,v 1.12 2008-05-23 09:13:45 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -466,17 +466,26 @@ CLASS HIcon INHERIT HObject
    DATA nWidth, nHeight
    DATA nCounter   INIT 1
 
-   METHOD AddResource( name )
+   METHOD AddResource( name, nWidth, nHeight, nFlags )
    METHOD AddFile( name,hDC )
    METHOD Draw( hDC, x, y )   INLINE DrawIcon( hDC, ::handle, x, y )
    METHOD Release()
 
 ENDCLASS
 
-METHOD AddResource( name ) CLASS HIcon
+METHOD AddResource( name, nWidth, nHeight, nFlags ) CLASS HIcon
 Local lPreDefined := .F., i, aIconSize
 
-   IF Valtype( name ) == "N"
+	if nWidth == nil
+	  nWidth := 0
+	endif
+	if nHeight == nil
+	  nHeight := 0
+	endif
+	if nFlags == nil
+     nFlags := 0
+   endif  
+	IF Valtype( name ) == "N"
       name := Ltrim( Str( name ) )
       lPreDefined := .T.
    ENDIF
@@ -496,7 +505,7 @@ Local lPreDefined := .F., i, aIconSize
    NEXT
    #endif
    // ::classname:= "HICON"
-   ::handle :=   LoadIcon( Iif( lPreDefined, Val(name),name ) )
+   ::handle :=   LoadImage( nil, Iif( lPreDefined, Val(name),name ), IMAGE_ICON, nWidth, nHeight, nFlags )
    ::name   := name
    aIconSize := GetIconSize( ::handle )
    ::nWidth  := aIconSize[1]

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.812 2008-05-21 21:50:06 lculik Exp $
+ * $Id: Changelog,v 1.813 2008-05-23 09:13:44 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-05-23 11:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+   * source/draw.c
+     * unified code of LoadImage()
+   * source/drawwidg.prg
+     * for resource icons used LoadImage() allowing resizing of the icon
+	 * changed LoadIcon() to LoadImage() for obtaining resize of the icon
+	   (note that the same changes could be made to bitmaps also. i wait
+	   for a feedback about this possibility before apply this changes
+	   because also hSayImage() could be involved causing program code
+	   rearrangement.)
 
 2008-05-21 18:40 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
    * source/theme.c 
@@ -23,10 +34,6 @@
      ! change hbuttoex to correct handle click, enter and space keys
    * source/control.c 
      ! change BUTTONGETDLGCODE to return correct code
-
-
-
-   
 
 2008-05-20 12:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    * source/hbrowse.prg

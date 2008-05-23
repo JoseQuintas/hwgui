@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.112 2008-05-20 10:14:48 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.113 2008-05-23 21:26:30 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1561,14 +1561,14 @@ Local xPos := LOWORD(lParam), x, x1, i
 
    IF ::lResizing
       x := ::x1
-      i := ::nLeftCol
+      i := Iif( ::freeze > 0, 1, ::nLeftCol )    // ::nLeftCol
       DO WHILE x < xDrag
          x += ::aColumns[i]:width
          IF Abs( x-xDrag ) < 10
             x1 := x - ::aColumns[i]:width
             EXIT
          ENDIF
-         i++
+         i := Iif( i == ::freeze, ::nLeftCol, i + 1 )
       ENDDO
       IF xPos > x1
          ::aColumns[i]:width := xPos - x1
@@ -1619,19 +1619,24 @@ RETURN Nil
 //----------------------------------------------------//
 METHOD MouseMove( wParam, lParam ) CLASS HBrowse
    Local xPos := LoWord( lParam ), yPos := HiWord( lParam )
-   Local x := ::x1, i := ::nLeftCol, res := .F.
+   Local x := ::x1, i, res := .F.
+   Local nLastColumn   
+
+   nLastColumn := iif( ::lAdjRight, len( ::aColumns )-1, len( ::aColumns ) )
 
    DlgMouseMove()
    IF !::active .OR. Empty( ::aColumns ) .OR. ::x1 == Nil
       RETURN Nil
    ENDIF
    IF ::lDispSep .AND. yPos <= ::height*::nHeadRows+1
-      IF wParam == 1 .AND. ::lResizing
+      IF wParam == MK_LBUTTON .AND. ::lResizing
          Hwg_SetCursor( oCursor )
          res := .T.
       ELSE
-         DO WHILE x < ::x2 - 2 .AND. i <= Len( ::aColumns )
-            x += ::aColumns[i++]:width
+         i := Iif( ::freeze > 0, 1, ::nLeftCol )
+         DO WHILE x < ::x2 - 2 .AND. i <= nLastColumn     // Len( ::aColumns )
+            // TraceLog( "Colonna "+str(i)+"    x="+str(x))
+            x += ::aColumns[i]:width
             IF Abs( x - xPos ) < 8
                IF oCursor != ColSizeCursor
                   oCursor := ColSizeCursor
@@ -1640,6 +1645,7 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
                res := .T.
                EXIT
             ENDIF
+            i := Iif( i == ::freeze, ::nLeftCol, i + 1 )
          ENDDO
       ENDIF
       IF !res .AND. oCursor != 0

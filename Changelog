@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.813 2008-05-23 09:13:44 mlacecilia Exp $
+ * $Id: Changelog,v 1.814 2008-05-23 21:26:30 fperillo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-05-23 23:17 UTC+0100 Francesco Perillo <fperillo at gmail dot com>
+   * include/windows.ch
+     * added a couple of definitions
+   * source/hbrowse.prg
+     * more changes for column resize when frozen columns are present
+	   ( ::freeze > 0 )
+   * samples/arbrow1.prg
+	 * sample to test column resize and show the problem still to solve
+	   (browse canvas paint when column are chanded smaller size)
 
 2008-05-23 11:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    * source/draw.c

@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.52 2008-05-20 10:14:48 mlacecilia Exp $
+ *$Id: windows.ch,v 1.53 2008-05-23 21:26:30 fperillo Exp $
  */
 
 #define WM_CREATE                       1
@@ -406,6 +406,8 @@
 #define MK_SHIFT            4       // 0x0004
 #define MK_CONTROL          8       // 0x0008
 #define MK_MBUTTON          16      // 0x0010
+#define MK_XBUTTON1         32      // 0x0020
+#define MK_XBUTTON2         64      // 0x0040
 
 /* Ternary raster operations */
 #define SRCCOPY             13369376   /* 0x00CC0020  dest = source          */

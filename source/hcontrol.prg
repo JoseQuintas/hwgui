@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.58 2008-05-22 12:30:54 lculik Exp $
+ * $Id: hcontrol.prg,v 1.59 2008-05-24 18:08:49 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -454,6 +454,12 @@ CLASS HButtonEX INHERIT HButton
    METHOD PAINTBK(p)
    METHOD SETDEFAULTCOLOR(lRepaint)
    Method SetColorEx(nIndex,nColor,bPaint)
+
+   Method settext(c) inline ::title:=c,::caption:=c,;
+                            sendmessage(::handle,WM_PAINT,0,0),;
+                            SETWINDOWTEXT( ::handle, ::title )
+
+
 //   METHOD SaveParentBackground()
 
 
@@ -611,14 +617,15 @@ local pos
       endif
       if ((wParam == VK_SPACE) .or. (wParam == VK_RETURN))
          SendMessage(::handle,WM_LBUTTONDOWN, 0, MAKELPARAM(1, 1))
-         return 0
+                  return 0
       endif
+
 
    elseif msg == WM_KEYUP
 
       if ((wParam == VK_SPACE) .or. (wParam == VK_RETURN))
          SendMessage(::handle, WM_LBUTTONUP, 0, MAKELPARAM(1, 1))
-         return 0
+
       endif
       
    elseif msg == WM_LBUTTONUP
@@ -775,7 +782,7 @@ LOCAL captionRectWidth
 LOCAL captionRectHeight
 LOCAL centerRectWidth
 LOCAL centerRectHeight
-LOCAL uAlign
+LOCAL uAlign,uStyleTmp
 
 
    IF ( ::m_bFirstTime )
@@ -870,7 +877,16 @@ LOCAL uAlign
 
 //             DT_CENTER | DT_VCENTER | DT_SINGLELINE
 //   uAlign += DT_WORDBREAK + DT_CENTER + DT_CALCRECT +  DT_VCENTER + DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
-     uAlign += DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK;
+     uAlign += DT_VCENTER
+     uStyleTmp := HWG_GETWINDOWSTYLE(::handle)
+     
+     if hb_inline(uStyleTmp) { ULONG ulStyle = (ULONG)hb_parnl( 1 ) ; hb_retl( ulStyle & BS_MULTILINE ); }
+        uAlign += DT_WORDBREAK 
+     else
+        uAlign += DT_SINGLELINE
+     endif
+     
+
 
    captionRect := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
 

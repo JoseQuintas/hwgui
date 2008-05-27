@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.60 2008-05-27 12:10:50 lculik Exp $
+ * $Id: hcontrol.prg,v 1.61 2008-05-27 16:15:12 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -625,7 +625,7 @@ local pos
 
       if ((wParam == VK_SPACE) .or. (wParam == VK_RETURN))
          SendMessage(::handle, WM_LBUTTONUP, 0, MAKELPARAM(1, 1))
-
+         return 0
       endif
       
    elseif msg == WM_LBUTTONUP

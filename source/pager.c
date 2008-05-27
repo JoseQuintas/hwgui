@@ -1,5 +1,5 @@
 /*
- * $Id: pager.c,v 1.5 2007-11-26 10:50:17 andijahja Exp $
+ * $Id: pager.c,v 1.6 2008-05-27 12:11:01 lculik Exp $
 */
 
 #define _WIN32_WINNT 0x0400
@@ -16,8 +16,8 @@
 
 HB_FUNC( PAGERSETCHILD )
 {
-   HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;
-   HWND hWnd = ( HWND ) hb_parnl( 2 ) ;
+   HWND m_hWnd = (HWND) HB_PARHANDLE( 1 ) ;
+   HWND hWnd = (HWND) HB_PARHANDLE( 2 ) ;
 
 #ifndef __GNUC__
    Pager_SetChild( m_hWnd, hWnd );
@@ -28,7 +28,7 @@ HB_FUNC( PAGERSETCHILD )
 
 HB_FUNC(PAGERRECALCSIZE)
 {
-   HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;
+   HWND m_hWnd = (HWND) HB_PARHANDLE( 1 ) ;
 
 #ifndef __GNUC__
    Pager_RecalcSize( m_hWnd );
@@ -39,7 +39,7 @@ HB_FUNC(PAGERRECALCSIZE)
 
 HB_FUNC(PAGERFORWARDMOUSE)
 {
-   HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;
+   HWND m_hWnd = (HWND) HB_PARHANDLE( 1 ) ;
    BOOL bForward = hb_parl( 2 ) ;
 
 #ifndef __GNUC__
@@ -51,7 +51,7 @@ HB_FUNC(PAGERFORWARDMOUSE)
 
 HB_FUNC( PAGERSETBKCOLOR)
 {
-   HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;
+   HWND m_hWnd = (HWND) HB_PARHANDLE( 1 ) ;
    COLORREF clr = (COLORREF) hb_parnl( 2 ) ;
 
 #ifndef __GNUC__
@@ -63,7 +63,7 @@ HB_FUNC( PAGERSETBKCOLOR)
 
 HB_FUNC( PAGERGETBKCOLOR )
 {
-   HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;
+   HWND m_hWnd = (HWND) HB_PARHANDLE( 1 ) ;
 
 #ifndef __GNUC__
    hb_retnl( (LONG) Pager_GetBkColor( m_hWnd ) );
@@ -74,7 +74,7 @@ HB_FUNC( PAGERGETBKCOLOR )
 
 HB_FUNC( PAGERSETBORDER)
 {
-   HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;
+   HWND m_hWnd = (HWND) HB_PARHANDLE( 1 ) ;
    int iBorder = hb_parni( 2 ) ;
 
 #ifndef __GNUC__
@@ -86,7 +86,7 @@ HB_FUNC( PAGERSETBORDER)
 
 HB_FUNC( PAGERGETBORDER)
 {
-   HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;
+   HWND m_hWnd = (HWND) HB_PARHANDLE( 1 ) ;
 
 #ifndef __GNUC__
    hb_retni( Pager_GetBorder( m_hWnd ) ) ;
@@ -97,7 +97,7 @@ HB_FUNC( PAGERGETBORDER)
 
 HB_FUNC( PAGERSETPOS)
 {
-   HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;
+   HWND m_hWnd = (HWND) HB_PARHANDLE( 1 ) ;
    int iPos = hb_parni( 2 ) ;
 
 #ifndef __GNUC__
@@ -109,7 +109,7 @@ HB_FUNC( PAGERSETPOS)
 
 HB_FUNC( PAGERGETPOS )
 {
-   HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;
+   HWND m_hWnd = (HWND) HB_PARHANDLE( 1 ) ;
 
 #ifndef __GNUC__
    hb_retni( Pager_GetPos( m_hWnd ) ) ;
@@ -120,7 +120,7 @@ HB_FUNC( PAGERGETPOS )
 
 HB_FUNC( PAGERSETBUTTONSIZE )
 {
-   HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;
+   HWND m_hWnd = (HWND) HB_PARHANDLE( 1 ) ;
    int iSize= hb_parni( 2 ) ;
 
 #ifndef __GNUC__
@@ -132,7 +132,7 @@ HB_FUNC( PAGERSETBUTTONSIZE )
 
 HB_FUNC( PAGERGETBUTTONSIZE )
 {
-   HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;
+   HWND m_hWnd = (HWND) HB_PARHANDLE( 1 ) ;
 
 #ifndef __GNUC__
    hb_retni( Pager_GetButtonSize( m_hWnd ) ) ;
@@ -143,7 +143,7 @@ HB_FUNC( PAGERGETBUTTONSIZE )
 
 HB_FUNC( PAGERGETBUTTONSTATE )
 {
-   HWND m_hWnd = ( HWND ) hb_parnl( 1 ) ;
+   HWND m_hWnd = (HWND) HB_PARHANDLE( 1 ) ;
    int iButton = hb_parni( 1 );
 
 #ifndef __GNUC__
@@ -156,7 +156,7 @@ HB_FUNC( PAGERGETBUTTONSTATE )
 HB_FUNC( PAGERONPAGERCALCSIZE)
 {
    LPNMPGCALCSIZE pNMPGCalcSize = (LPNMPGCALCSIZE ) hb_parnl( 1 );
-   HWND hwndToolbar = (HWND) hb_parnl( 2 ) ;
+   HWND hwndToolbar = (HWND) HB_PARHANDLE( 2 ) ;
    SIZE size;
 
    SendMessage(hwndToolbar, TB_GETMAXSIZE, 0,

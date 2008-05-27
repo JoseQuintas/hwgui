@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.16 2007-11-10 17:44:49 mlacecilia Exp $
+ * $Id: htree.prg,v 1.17 2008-05-27 12:10:58 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -278,7 +278,7 @@ Return Nil
 
 METHOD Activate CLASS HTree
 
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateTree( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::tcolor, ::bcolor )
       ::Init()

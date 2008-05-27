@@ -1,5 +1,5 @@
 /*
- * $Id: hgraph.prg,v 1.6 2005-10-26 07:43:26 omm Exp $
+ * $Id: hgraph.prg,v 1.7 2008-05-27 12:10:52 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGraph class
@@ -65,7 +65,7 @@ METHOD Redefine( oWndParent,nId,aValues,oFont, ;
 Return Self
 
 METHOD Activate CLASS HGraph
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()

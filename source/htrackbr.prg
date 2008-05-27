@@ -1,5 +1,5 @@
 /*
- * $Id: htrackbr.prg,v 1.13 2006-12-25 07:57:00 alkresin Exp $
+ * $Id: htrackbr.prg,v 1.14 2008-05-27 12:10:58 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTrackBar class
@@ -72,7 +72,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight,;
 RETURN Self
 
 METHOD Activate CLASS HTrackBar
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := InitTrackBar ( ::oParent:handle, ::id, ::style, ;
                                  ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
                                  ::nLow, ::nHigh )
@@ -146,7 +146,7 @@ RETURN ( ::value )
 
 #include <windows.h>
 #include <commctrl.h>
-
+#include "guilib.h"
 #include "hbapi.h"
 
 HB_FUNC ( INITTRACKBAR )
@@ -160,17 +160,17 @@ HB_FUNC ( INITTRACKBAR )
                                        hb_parni( 5 ),
                                        hb_parni( 6 ),
                                        hb_parni( 7 ),
-                             ( HWND )  hb_parnl( 1 ),
+                             ( HWND )  HB_PARHANDLE( 1 ),
                              ( HMENU ) hb_parni( 2 ),
                              GetModuleHandle( NULL ),
                              NULL ) ;
 
-    hb_retnl ( (LONG) hTrackBar );
+    HB_RETHANDLE(  hTrackBar );
 }
 
 HB_FUNC ( TRACKBARSETRANGE )
 {
-    SendMessage( (HWND) hb_parnl( 1 ), TBM_SETRANGE, TRUE,
+    SendMessage( (HWND) HB_PARHANDLE( 1 ), TBM_SETRANGE, TRUE,
                   MAKELONG( hb_parni( 2 ), hb_parni( 3 ) ) );
 }
 

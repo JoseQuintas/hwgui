@@ -1,5 +1,5 @@
 /*
- * $Id: barcode.prg,v 1.1 2007-11-13 19:20:38 druzus Exp $
+ * $Id: barcode.prg,v 1.2 2008-05-27 12:10:39 lculik Exp $
  *
  * Create Barcode for HWGUI application
  *
@@ -939,14 +939,14 @@ RETURN ( cBarra )
 
 #define HB_OS_WIN_32_USED
 #define _WIN32_WINNT   0x0400
-
+#include "guilib.h"
 #include <windows.h>
 #include "item.api"
 #include "hbapi.h"
 
 HB_FUNC( RICH_RECTANGLE )
 {
-   hb_retl( Rectangle( (HDC) hb_parnl( 1 ),
+   hb_retl( Rectangle( (HDC) HB_PARHANDLE( 1 ),
                        hb_parni( 2 )      ,
                        hb_parni( 3 )      ,
                        hb_parni( 4 )      ,
@@ -957,7 +957,7 @@ HB_FUNC( RICH_RECTANGLE )
 
 HB_FUNC( RICH_CREATEPEN )
 {
-   hb_retnl( (LONG) CreatePen(
+   HB_RETHANDLE( CreatePen(
                hb_parni( 1 ),   // pen style
                hb_parni( 2 ),   // pen width
                (COLORREF) hb_parnl( 3 )    // pen color
@@ -967,14 +967,14 @@ HB_FUNC( RICH_CREATEPEN )
 
 HB_FUNC( RICH_SELECTOBJECT )
 {
-   hb_retnl( (LONG) SelectObject( (HDC) hb_parnl( 1 ), (HGDIOBJ) hb_parnl( 2 ) ) ) ;
+   HB_RETHANDLE( SelectObject( (HDC) HB_PARHANDLE( 1 ), (HGDIOBJ) HB_PARHANDLE( 2 ) ) ) ;
 }
 
 
 
 HB_FUNC( RICH_CREATESOLIDBRUSH )
 {
-   hb_retnl( (LONG) CreateSolidBrush( (COLORREF) hb_parnl( 1 ) ) ) ;    // brush color
+   HB_RETHANDLE( CreateSolidBrush( (COLORREF) hb_parnl( 1 ) ) ) ;    // brush color
 }
 
 #pragma ENDDUMP

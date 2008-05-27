@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.22 2008-02-08 23:18:32 richardroesnadi Exp $
+ * $Id: menu.prg,v 1.23 2008-05-27 12:10:59 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -48,7 +48,7 @@ Return Nil
 Function Hwg_CreateMenu
 Local hMenu
 
-   IF ( hMenu := hwg__CreateMenu() ) == 0
+   IF empty( hMenu := hwg__CreateMenu() ) 
       Return Nil
    ENDIF
 
@@ -56,7 +56,7 @@ Return { {},,, hMenu }
 
 Function Hwg_SetMenu( oWnd, aMenu )
 
-   IF oWnd:handle != 0
+   IF !empty(oWnd:handle )
       IF hwg__SetMenu( oWnd:handle, aMenu[5] )
          oWnd:menu := aMenu
       ELSE

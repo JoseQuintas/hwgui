@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.22 2007-11-23 05:04:55 andijahja Exp $
+ * $Id: freeimg.c,v 1.23 2008-05-27 12:10:47 lculik Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -496,7 +496,7 @@ HB_FUNC( FI_FI2DIBEX )
 HB_FUNC( FI_DRAW )
 {
    FIBITMAP* dib = (FIBITMAP*) hb_parnl( 1 );
-   HDC hDC = (HDC) hb_parnl( 2 );
+   HDC hDC = (HDC) HB_PARHANDLE( 2 );
    int nWidth = (int) hb_parnl( 3 ), nHeight = (int) hb_parnl( 4 );
    int nDestWidth, nDestHeight;
    POINT pp[2];
@@ -538,7 +538,7 @@ HB_FUNC( FI_DRAW )
 
 HB_FUNC( FI_BMP2FI )
 {
-   HBITMAP hbmp = (HBITMAP) hb_parnl(1);
+   HBITMAP hbmp = (HBITMAP) HB_PARHANDLE(1);
 
    if( hbmp )
    {

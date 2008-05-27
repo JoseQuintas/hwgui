@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.113 2008-05-23 21:26:30 fperillo Exp $
+ * $Id: hbrowse.prg,v 1.114 2008-05-27 12:10:49 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -259,7 +259,7 @@ RETURN Self
 
 //----------------------------------------------------//
 METHOD Activate CLASS HBrowse
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateBrowse( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()

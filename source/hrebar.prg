@@ -1,5 +1,5 @@
 /*
- * $Id: hrebar.prg,v 1.4 2007-11-27 14:00:10 druzus Exp $
+ * $Id: hrebar.prg,v 1.5 2008-05-27 12:10:55 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -70,7 +70,7 @@ Return Self
 
 METHOD Activate CLASS hrebar
 
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
 
       ::handle := CREATEREBAR( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight)

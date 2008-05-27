@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.h,v 1.13 2007-09-23 12:07:15 andijahja Exp $
+ *$Id: guilib.h,v 1.14 2008-05-27 12:10:38 lculik Exp $
  */
 
 #define	WND_DLG_RESOURCE       10
@@ -26,12 +26,16 @@
    #define HB_STOREHANDLE( h, n )   hb_storptr( ( void * ) ( h ), n )
    #define HB_PUTHANDLE( i, h )     hb_itemPutPtr( i, ( void * ) ( h ) )
    #define HB_GETHANDLE( i )        hb_itemGetPtr( i )
+   #define HB_GETPTRHANDLE( i ,n )  hb_arrayGetPtr( i , n )
+   #define HB_PUSHITEM( i )         hb_vmPushPointer( ( void * )i ) 
 #else
    #define HB_RETHANDLE( h )        hb_retnl( ( LONG ) ( h ) )
-   #define HB_PARHANDLE( n )        ( ( void * ) hb_parnl( n ) )
+   #define HB_PARHANDLE( n )        ( ( LONG ) hb_parnl( n ) )
    #define HB_STOREHANDLE( h, n )   hb_stornl( ( LONG ) ( h ), n )
    #define HB_PUTHANDLE( i, h )     hb_itemPutNL( i, ( LONG ) ( h ) )
-   #define HB_GETHANDLE( i )        ( ( void * ) hb_itemGetNL( i ) )
+   #define HB_GETHANDLE( i )        ( ( LONG ) hb_itemGetNL( i ) )
+   #define HB_GETPTRHANDLE( i ,n )  hb_arrayGetNL( i , n )
+   #define HB_PUSHITEM( i )         hb_vmPushLong( ( LONG )i ) 
 #endif
 
 #ifdef HARBOUR_2005

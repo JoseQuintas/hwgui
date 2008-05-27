@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.8 2008-01-22 12:25:12 druzus Exp $
+ * $Id: hradio.prg,v 1.9 2008-05-27 12:10:55 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -133,7 +133,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
 Return Self
 
 METHOD Activate CLASS HRadioButton
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateButton( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::Init()

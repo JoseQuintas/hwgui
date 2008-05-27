@@ -1,5 +1,5 @@
 /*
- * $Id: cxshade.c,v 1.4 2007-11-13 19:20:40 druzus Exp $
+ * $Id: cxshade.c,v 1.5 2008-05-27 12:10:46 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level functions for special drawing effects
@@ -11,6 +11,7 @@
  * www - http://kresin.belgorod.su
 */
 
+#include "guilib.h"
 #include "windows.h"
 
 #define STATE_DEFAULT    1
@@ -694,7 +695,7 @@ HB_FUNC( SHADE_NEW )
 
    SetRect( &rect, hb_parni(1), hb_parni(2), hb_parni(3), hb_parni(4) );
    pshade = cxshade_New( &rect, (ISNIL(5))? 0 : hb_parl(5) );
-   hb_retnl( (ULONG) pshade );
+   HB_RETHANDLE(  pshade );
 }
 
 /*
@@ -702,7 +703,7 @@ HB_FUNC( SHADE_NEW )
  */
 HB_FUNC( SHADE_RELEASE )
 {
-   cxshade_Release( (PCXSHADE) hb_parnl(1) );
+   cxshade_Release( (PCXSHADE) HB_PARHANDLE(1) );
 }
 
 /*
@@ -710,7 +711,7 @@ HB_FUNC( SHADE_RELEASE )
  */
 HB_FUNC( SHADE_SET )
 {
-   PCXSHADE pshade = (PCXSHADE) hb_parnl(1);
+   PCXSHADE pshade = (PCXSHADE) HB_PARHANDLE(1);
    UINT shadeID = (ISNIL(2))? SHS_SOFTBUMP : hb_parni(2);
    BYTE palette = (ISNIL(3))? 0 : (BYTE)hb_parni(3);
    BYTE granularity = (ISNIL(4))? 8 : (BYTE)hb_parni(4);
@@ -731,5 +732,5 @@ HB_FUNC( SHADE_SET )
  */
 HB_FUNC( SHADE_DRAW )
 {
-   cxshade_Draw( (PCXSHADE) hb_parnl(1), (HDC) hb_parnl(2), hb_parni(3) );
+   cxshade_Draw( (PCXSHADE) HB_PARHANDLE(1), (HDC) HB_PARHANDLE(2), hb_parni(3) );
 }

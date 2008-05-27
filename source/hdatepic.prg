@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.14 2008-05-19 02:34:00 lculik Exp $
+ * $Id: hdatepic.prg,v 1.15 2008-05-27 12:10:51 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -68,7 +68,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
 Return Self
 
 METHOD Activate CLASS HDatePicker
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateDatePicker( ::oParent:handle, ::id, ;
                   ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
       ::Init()

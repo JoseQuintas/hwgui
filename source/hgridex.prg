@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.15 2008-05-01 01:53:21 lculik Exp $
+ * $Id: hgridex.prg,v 1.16 2008-05-27 12:10:52 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -118,7 +118,7 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
 Return Self
 
 METHOD Activate CLASS HGridEx
-   if ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := ListView_Create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll )
 
       ::Init()

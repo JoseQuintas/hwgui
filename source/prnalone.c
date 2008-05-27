@@ -35,14 +35,14 @@ HB_FUNC( PRINTSETUP )
    pd.nCopies = 1; 
     
    if( PrintDlg(&pd) )
-      hb_retnl( (LONG) pd.hDC );
+      HB_RETHANDLE( (LONG) pd.hDC );
    else
-      hb_retnl( 0 );  
+      HB_RETHANDLE( 0 );  
 }
 
 HB_FUNC( OPENPRINTER )
 {
-   hb_retnl( (LONG) CreateDC( NULL, hb_parc(1), NULL, NULL ) );
+   HB_RETHANDLE(  CreateDC( NULL, hb_parc(1), NULL, NULL ) );
 }
 
 HB_FUNC( OPENDEFAULTPRINTER )
@@ -78,7 +78,7 @@ HB_FUNC( OPENDEFAULTPRINTER )
 
      free (pinfo4) ;
   }
-  hb_retnl( (LONG) hDC );   
+  HB_RETHANDLE( hDC );   
 }
 
 HB_FUNC( STARTDOC )
@@ -90,35 +90,35 @@ HB_FUNC( STARTDOC )
    di.lpszDatatype = (LPTSTR) NULL; 
    di.fwType = 0; 
 
-   hb_retnl( (LONG) StartDoc( (HDC) hb_parnl( 1 ), &di ) );
+   hb_retnl( (LONG) StartDoc( (HDC) HB_PARHANDLE( 1 ), &di ) );
 }
 
 HB_FUNC( ENDDOC )
 {
-   EndDoc( (HDC) hb_parnl( 1 ) );
+   EndDoc( (HDC) HB_PARHANDLE( 1 ) );
 }
 
 HB_FUNC( STARTPAGE )
 {
-   hb_retnl( (LONG) StartPage( (HDC) hb_parnl( 1 ) ) );
+   hb_retnl( (LONG) StartPage( (HDC) HB_PARHANDLE( 1 ) ) );
 }
 
 HB_FUNC( ENDPAGE )
 {
-   hb_retnl( (LONG) EndPage( (HDC) hb_parnl( 1 ) ) );
+   hb_retnl( (LONG) EndPage( (HDC) HB_PARHANDLE( 1 ) ) );
 }
 
 HB_FUNC( DELETEDC )
 {
-   DeleteDC( (HDC) hb_parnl( 1 ) );
+   DeleteDC( (HDC) HB_PARHANDLE( 1 ) );
 }
 
 HB_FUNC( GETDEVICEAREA )
 {
-   HDC hDC = (HDC) hb_parnl( 1 );
-   PHB_ITEM aMetr = hb_itemArrayNew( 7 );
+   HDC hDC = (HDC) HB_PARHANDLE( 1 );
    PHB_ITEM temp;
-
+   PHB_ITEM aMetr = hb_itemArrayNew( 9 );
+   
    temp = hb_itemPutNL( NULL, GetDeviceCaps( hDC,HORZRES ) );
    hb_itemArrayPut( aMetr, 1, temp );
    hb_itemRelease( temp );
@@ -147,6 +147,14 @@ HB_FUNC( GETDEVICEAREA )
    hb_itemArrayPut( aMetr, 7, temp );
    hb_itemRelease( temp );
 
+   temp = hb_itemPutNL( NULL, GetDeviceCaps( hDC,PHYSICALWIDTH ) );
+   hb_itemArrayPut( aMetr, 8, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, GetDeviceCaps( hDC,PHYSICALHEIGHT ) );
+   hb_itemArrayPut( aMetr, 9, temp );
+   hb_itemRelease( temp );
+
    hb_itemReturn( aMetr );
    hb_itemRelease( aMetr );
 }
@@ -162,7 +170,7 @@ HB_FUNC( DRAWTEXT )
    rc.bottom = hb_parni( 6 );
 
    DrawText(
-     (HDC) hb_parnl( 1 ),	// handle of device context 
+     (HDC) HB_PARHANDLE( 1 ),       // handle of device context 
      (LPCTSTR) cText,	        // address of string 
      strlen( cText ), 	        // number of characters in string 
      &rc,

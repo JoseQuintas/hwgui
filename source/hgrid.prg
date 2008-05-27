@@ -1,5 +1,5 @@
  /*
- * $Id: hgrid.prg,v 1.10 2007-11-10 17:44:37 mlacecilia Exp $
+ * $Id: hgrid.prg,v 1.11 2008-05-27 12:10:52 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -116,7 +116,7 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
 Return Self
 
 METHOD Activate CLASS HGrid
-   if ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := ListView_Create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll )
 
       ::Init()

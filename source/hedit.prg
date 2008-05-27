@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.77 2008-04-14 08:02:29 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.78 2008-05-27 12:10:51 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -108,7 +108,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    RETURN Self
 
 METHOD Activate CLASS HEdit
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateEdit( ::oParent:handle, ::id, ;
                               ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::Init()

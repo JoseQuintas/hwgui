@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.14 2007-11-23 08:30:41 andijahja Exp $
+ * $Id: hmonthc.prg,v 1.15 2008-05-27 12:10:53 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -71,7 +71,7 @@ Return Self
 
 METHOD Activate CLASS HMonthCalendar
 
-   If ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := InitMonthCalendar ( ::oParent:handle, ::id, ::style, ;
                   ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
@@ -118,7 +118,7 @@ Return (::value)
 #define _WIN32_IE      0x0500
 #define HB_OS_WIN_32_USED
 #define _WIN32_WINNT   0x0400
-
+#include "guilib.h"
 #include <windows.h>
 #include <commctrl.h>
 
@@ -140,7 +140,7 @@ HB_FUNC ( INITMONTHCALENDAR )
                          "",
                          (LONG) hb_parnl(3),
                          0,0,0,0,
-                         (HWND) hb_parnl(1),
+                         (HWND) HB_PARHANDLE(1),
                          (HMENU) hb_parni(2),
                          GetModuleHandle(NULL),
                          NULL );
@@ -149,7 +149,7 @@ HB_FUNC ( INITMONTHCALENDAR )
 
    SetWindowPos( hMC, NULL, hb_parni(4), hb_parni(5), rc.right, rc.bottom, SWP_NOZORDER );
 
-    hb_retnl( (LONG) hMC );
+    HB_RETHANDLE(  hMC );
 }
 
 HB_FUNC ( SETMONTHCALENDARDATE ) // adaptation of function SetDatePicker of file Control.c
@@ -176,7 +176,7 @@ HB_FUNC ( SETMONTHCALENDARDATE ) // adaptation of function SetDatePicker of file
       sysTime.wSecond = 0;
       sysTime.wMilliseconds = 0;
 
-      MonthCal_SetCurSel( (HWND) hb_parnl (1), &sysTime);
+      MonthCal_SetCurSel( (HWND) HB_PARHANDLE (1), &sysTime);
 
    }
 }
@@ -186,7 +186,7 @@ HB_FUNC ( GETMONTHCALENDARDATE ) // adaptation of function GetDatePicker of file
    SYSTEMTIME st;
    char szDate[9];
 
-   SendMessage( (HWND) hb_parnl (1), MCM_GETCURSEL, 0, (LPARAM) &st);
+   SendMessage( (HWND) HB_PARHANDLE (1), MCM_GETCURSEL, 0, (LPARAM) &st);
 
    hb_dateStrPut( szDate, st.wYear, st.wMonth, st.wDay );
    szDate[8] = 0;

@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.15 2008-04-09 19:03:04 giuseppem Exp $
+ * $Id: hsayimg.prg,v 1.16 2008-05-27 12:10:56 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -48,7 +48,7 @@ Return Self
 
 METHOD Activate CLASS HSayImage
 
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()

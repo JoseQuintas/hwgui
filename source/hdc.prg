@@ -1,5 +1,5 @@
 /*
- * $Id: hdc.prg,v 1.6 2008-05-21 21:50:21 lculik Exp $
+ * $Id: hdc.prg,v 1.7 2008-05-27 12:10:51 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPAINTDC and HDC Classes    
@@ -83,7 +83,7 @@ RETURN SELF
 
 METHOD Attach( hDC ) CLASS HDC
 
-   IF ( hDC == 0 )
+   IF empty( hDC )
       RETURN .F.
    ENDIF
 
@@ -111,7 +111,7 @@ LOCAL nRetVal := - 1
       nRetVal := SelectClipRgn( ::m_hDC, pRgn )
    ENDIF
 
-   IF ( ::m_hAttribDC > 0 )
+   IF !empty( ::m_hAttribDC  )
       nRetVal := SelectClipRgn( ::m_hAttribDC, pRgn )
    ENDIF
 

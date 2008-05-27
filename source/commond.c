@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.26 2007-11-23 11:10:54 andijahja Exp $
+ * $Id: commond.c,v 1.27 2008-05-27 12:10:45 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -87,7 +87,7 @@ HB_FUNC( SELECTFONT )
    /* that font.                                  */
 
    hfont = CreateFontIndirect(cf.lpLogFont);
-   temp = hb_itemPutNL( NULL, (LONG) hfont );
+   temp = HB_PUTHANDLE( NULL,  hfont );
    hb_itemArrayPut( aMetr, 1, temp );
    hb_itemRelease( temp );
 
@@ -275,10 +275,10 @@ HB_FUNC( PRINTSETUP )
          GlobalFree( pd.hDevNames );
          GlobalFree( pd.hDevMode );
       }
-      hb_retnl( (LONG) pd.hDC );
+      HB_RETHANDLE( pd.hDC );
    }
    else
-      hb_retnl( 0 );
+      HB_RETHANDLE( 0 );
 }
 
 HB_FUNC( HWG_CHOOSECOLOR )
@@ -431,12 +431,12 @@ HB_FUNC( PRINTSETUPDOS )
       hb_stornl(pd.nFromPage,1);
       hb_stornl(pd.nToPage,2);
       hb_stornl(pd.nCopies,3);
-      hb_retnl( (LONG) pd.hDC );
+      HB_RETHANDLE( pd.hDC );
    }
    else
    {
       bPName = TRUE;
-      hb_retnl( 0 );
+      HB_RETHANDLE( 0 );
    }
 }
 
@@ -474,7 +474,7 @@ HB_FUNC( _GETOPENFILENAME )
    ZeroMemory( &ofn, sizeof(ofn) );
    ofn.hInstance       = GetModuleHandle(NULL)  ;
    ofn.lStructSize     = sizeof(ofn);
-   ofn.hwndOwner       = (ISNIL  (1) ? GetActiveWindow() : (HWND) hb_parnl(1));
+   ofn.hwndOwner       = (ISNIL  (1) ? GetActiveWindow() : (HWND) HB_PARHANDLE(1));
    ofn.lpstrTitle      = hb_parc (3);
    ofn.lpstrFilter     = hb_parc (4);
    ofn.Flags           = OFN_EXPLORER|OFN_ALLOWMULTISELECT;

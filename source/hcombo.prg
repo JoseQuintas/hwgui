@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.37 2008-03-07 22:51:06 mlacecilia Exp $
+ * $Id: hcombo.prg,v 1.38 2008-05-27 12:10:49 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -124,7 +124,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
 Return Self
 
 METHOD Activate CLASS HComboBox
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateCombo( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
@@ -636,7 +636,7 @@ LOCAL metrics
 LOCAL pFont
 
    pFont := dc:SelectObject( IF( VALTYPE( ::oFont ) == "O", ::oFont:handle, ::oParent:oFont:handle ) )
-   IF ( pFont != 0 )
+   IF !empty( pFont  )
 
           metrics := dc:GetTextMetric()
 

@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.19 2007-11-10 17:44:29 mlacecilia Exp $
+ * $Id: guimain.prg,v 1.20 2008-05-27 12:10:48 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -15,17 +15,22 @@ Function InitControls( oWnd,lNoActivate )
 Local i, pArray := oWnd:aControls, lInit
 
    lNoActivate := Iif( lNoActivate==Nil,.F.,lNoActivate )
+   altd()
    IF pArray != Nil
       FOR i := 1 TO Len( pArray )
          // writelog( "InitControl1"+str(pArray[i]:handle)+"/"+pArray[i]:classname+" "+str(pArray[i]:nWidth)+"/"+str(pArray[i]:nHeight) )
          IF pArray[i]:handle == 0 .AND. !lNoActivate
+//         IF empty(pArray[i]:handle ) .AND. !lNoActivate
             lInit := pArray[i]:lInit
             pArray[i]:lInit := .T.
             pArray[i]:Activate()
             pArray[i]:lInit := lInit
+
          ENDIF
-         IF pArray[i]:handle <= 0          
+//           IF empty(pArray[i]:handle)// <= 0        
+         IF pArray[i]:handle <= 0        
             pArray[i]:handle := GetDlgItem( oWnd:handle, pArray[i]:id )
+            
             // writelog( "InitControl2"+str(pArray[i]:handle)+"/"+pArray[i]:classname )
          ENDIF
          IF !Empty( pArray[i]:aControls )

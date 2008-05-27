@@ -1,5 +1,5 @@
 /*
- * $Id: shellapi.c,v 1.10 2007-11-23 08:30:42 andijahja Exp $
+ * $Id: shellapi.c,v 1.11 2008-05-27 12:11:03 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Shell API wrappers
@@ -68,11 +68,11 @@ HB_FUNC( SHELLNOTIFYICON )
    memset( (void*) &tnid, 0, sizeof( NOTIFYICONDATA ) );
 
    tnid.cbSize = sizeof( NOTIFYICONDATA );
-   tnid.hWnd   = (HWND) hb_parnl(2);
+   tnid.hWnd   = (HWND) HB_PARHANDLE(2);
    tnid.uID    = ID_NOTIFYICON;
    tnid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
    tnid.uCallbackMessage = WM_NOTIFYICON;
-   tnid.hIcon  = (HICON) hb_parnl(3);
+   tnid.hIcon  = (HICON) HB_PARHANDLE(3);
    if( ISCHAR(4) )
       lstrcpy( tnid.szTip,TEXT(hb_parc(4)) );
 
@@ -93,12 +93,12 @@ HB_FUNC( SHELLMODIFYICON )
     memset( (void*) &tnid, 0, sizeof( NOTIFYICONDATA ) );
 
     tnid.cbSize = sizeof( NOTIFYICONDATA );
-    tnid.hWnd   = (HWND) hb_parnl(1);
+    tnid.hWnd   = (HWND) HB_PARHANDLE(1);
     tnid.uID    = ID_NOTIFYICON;
-    if( ISNUM(2) )
+    if( ISNUM(2) || ISPOINTER( 2 ))
     {
        tnid.uFlags |= NIF_ICON;
-       tnid.hIcon  = (HICON) hb_parnl(2);
+       tnid.hIcon  = (HICON) HB_PARHANDLE(2);
     }
     if( ISCHAR(3) )
     {

@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.14 2008-05-21 21:50:24 lculik Exp $
+ * $Id: theme.c,v 1.15 2008-05-27 12:11:03 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -81,7 +81,7 @@
 #define BUTTON_UNKNOWN3        0x10
 
 #include <hbapi.h>
-
+#include "guilib.h"
     BOOL Themed = FALSE;
     HMODULE m_hThemeDll;
     BOOL ThemeLibLoaded = FALSE;
@@ -1624,7 +1624,7 @@ static void DrawTheIcon(HWND hButtonWnd, HDC dc, BOOL bHasTitle, RECT* rpItem, R
 
 HB_FUNC( HB_OPENTHEMEDATA )
 {
-   HWND hwnd = (HWND) hb_parnl( 1 ) ;
+   HWND hwnd = (HWND) HB_PARHANDLE( 1 ) ;
    LPCSTR pText = hb_parc(2);
    int nTextLen = strlen(pText);
    HTHEME p;
@@ -1654,7 +1654,7 @@ HB_FUNC( ISTHEMEDLOAD )
 HB_FUNC( HB_DRAWTHEMEBACKGROUND )
 {
    HTHEME hTheme = (HTHEME) hb_parptr(1 ) ;
-   HDC hdc = (HDC)hb_parnl( 2 ) ;
+   HDC hdc = (HDC)HB_PARHANDLE( 2 ) ;
    int iPartId = hb_parni( 3 ) ;
    int iStateId = hb_parni( 4 ) ;
    RECT pRect ;
@@ -1668,8 +1668,8 @@ HB_FUNC( HB_DRAWTHEMEBACKGROUND )
 
 HB_FUNC( DRAWTHEICON )
 {
-   HWND hButtonWnd = (HWND) hb_parnl( 1 ) ;
-   HDC dc = (HDC) hb_parnl( 2 ) ;
+   HWND hButtonWnd = (HWND) HB_PARHANDLE( 1 ) ;
+   HDC dc = (HDC) HB_PARHANDLE( 2 ) ;
    BOOL bHasTitle = hb_parl( 3 );
    RECT rpItem;
    RECT rpTitle;
@@ -1677,8 +1677,8 @@ HB_FUNC( DRAWTHEICON )
    BOOL bIsDisabled= hb_parl( 7 );
    BOOL bRectOk = ( ISARRAY( 4 )  &&   Array2Rect( hb_param( 4, HB_IT_ARRAY ), &rpItem ) ) ;
    BOOL bRectOk1 = ( ISARRAY( 5 )  &&   Array2Rect( hb_param( 5, HB_IT_ARRAY ), &rpTitle ) ) ;
-   HICON   hIco = ISNUM(8) ? (HICON) hb_parnl( 8 ) : NULL;
-   HBITMAP hBit = ISNUM(9) ? (HBITMAP) hb_parnl( 9 ) : NULL;
+   HICON   hIco = (ISNUM(8) || ISPOINTER( 8 ) ) ? (HICON)   HB_PARHANDLE( 8 ) : NULL;
+   HBITMAP hBit = (ISNUM(9) || ISPOINTER( 9 ) ) ? (HBITMAP) HB_PARHANDLE( 9 ) : NULL;
    int iStyle = hb_parni( 10 );
 
    DrawTheIcon(hButtonWnd, dc, bHasTitle, &rpItem, &rpTitle, bIsPressed, bIsDisabled, hIco, hBit,iStyle);
@@ -1696,7 +1696,7 @@ HB_FUNC( DRAWTHEICON )
 HB_FUNC( HB_DRAWTHEMETEXT )
 {
    HTHEME hTheme = (HTHEME) hb_parptr(1) ;
-   HDC hdc = (HDC) hb_parnl(2) ;
+   HDC hdc = (HDC) HB_PARHANDLE(2) ;
    int iPartId = hb_parni(3);
    int iStateId = hb_parni( 4 );
    LPCSTR pText = hb_parc( 5 );
@@ -1729,7 +1729,7 @@ HB_FUNC( HB_CLOSETHEMEDATA )
 
 HB_FUNC( TRACKMOUSEVENT )
 {
-   HWND m_hWnd = (HWND) hb_parnl( 1 );
+   HWND m_hWnd = (HWND) HB_PARHANDLE( 1 );
    TRACKMOUSEEVENT csTME;
 
    csTME.cbSize = sizeof( csTME );
@@ -1742,7 +1742,7 @@ HB_FUNC(BUTTONEXONSETSTYLE)
 {
 WPARAM wParam = (WPARAM) hb_parnl(1);
 LPARAM lParam = (LPARAM) hb_parnl(2);
-HWND h = (HWND) hb_parnl( 3 ) ;
+HWND h = (HWND) HB_PARHANDLE( 3 ) ;
 
 	UINT nNewType = (wParam & BS_TYPEMASK);
 
@@ -1784,8 +1784,8 @@ hb_retnl((nbs & ~b) | c);
 
 HB_FUNC( HB_DRAWTHEMEPARENTBACKGROUND )
 {
-   HWND hTheme = (HWND) hb_parnl(1 ) ;
-   HDC hdc = (HDC)hb_parnl( 2 ) ;
+   HWND hTheme = (HWND) HB_PARHANDLE(1 ) ;
+   HDC hdc = (HDC)HB_PARHANDLE( 2 ) ;
    RECT pRect ;
 
    BOOL bRectOk = ( ISARRAY( 3 )  &&   Array2Rect( hb_param( 3, HB_IT_ARRAY ), &pRect ) ) ;

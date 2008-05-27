@@ -1,5 +1,5 @@
 /*
- * $Id: hanimat.prg,v 1.6 2008-03-26 10:47:04 mlacecilia Exp $
+ * $Id: hanimat.prg,v 1.7 2008-05-27 12:10:48 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HAnimation class
@@ -53,7 +53,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 Return Self
 
 METHOD Activate CLASS HAnimation
-   If ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := Animate_Create( ::oParent:handle, ::id, ::style, ;
                   ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
@@ -110,51 +110,51 @@ Return Nil
 
 #include <windows.h>
 #include <commctrl.h>
-
+#include "guilib.h"
 #include "hbapi.h"
 
 HB_FUNC_STATIC ( ANIMATE_CREATE )
 {
    HWND hwnd;
 
-   hwnd = Animate_Create( (HWND) hb_parnl(1), (LONG) hb_parnl(2), (LONG) hb_parnl(3), GetModuleHandle(NULL) );
+   hwnd = Animate_Create( (HWND) HB_PARHANDLE(1), (LONG) hb_parnl(2), (LONG) hb_parnl(3), GetModuleHandle(NULL) );
    MoveWindow( hwnd, hb_parnl(4), hb_parnl(5), hb_parnl(6), hb_parnl(7), TRUE );
-   hb_retnl ( (LONG) hwnd );
+   HB_RETHANDLE(  hwnd );
 }
 
 HB_FUNC_STATIC ( ANIMATE_OPEN )
 {
-  Animate_Open( (HWND) hb_parnl(1), hb_parc(2) );
+  Animate_Open( (HWND) HB_PARHANDLE(1), hb_parc(2) );
 }
 
 HB_FUNC_STATIC ( ANIMATE_PLAY )
 {
-  Animate_Play( (HWND) hb_parnl(1), hb_parni(2), hb_parni(3), hb_parni(4) );
+  Animate_Play( (HWND) HB_PARHANDLE(1), hb_parni(2), hb_parni(3), hb_parni(4) );
 }
 
 HB_FUNC_STATIC ( ANIMATE_SEEK )
 {
-  Animate_Seek( (HWND) hb_parnl(1), hb_parni(2) );
+  Animate_Seek( (HWND) HB_PARHANDLE(1), hb_parni(2) );
 }
 
 HB_FUNC_STATIC ( ANIMATE_STOP )
 {
-  Animate_Stop( (HWND) hb_parnl(1) );
+  Animate_Stop( (HWND) HB_PARHANDLE(1) );
 }
 
 HB_FUNC_STATIC ( ANIMATE_CLOSE )
 {
-  Animate_Close( (HWND) hb_parnl(1) );
+  Animate_Close( (HWND) HB_PARHANDLE(1) );
 }
 
 HB_FUNC_STATIC ( ANIMATE_DESTROY )
 {
-  DestroyWindow( (HWND) hb_parnl(1) );
+  DestroyWindow( (HWND) HB_PARHANDLE(1) );
 }
 
 HB_FUNC_STATIC ( ANIMATE_OPENEX )
 {
-  Animate_OpenEx( (HWND) hb_parnl(1),
+  Animate_OpenEx( (HWND) HB_PARHANDLE(1),
                   ISNIL( 2 ) ? GetModuleHandle(NULL) : (HINSTANCE) hb_parnl( 2 ),
                   ISNUM( 3 ) ? (LPCTSTR)MAKEINTRESOURCE(hb_parnl(3)) : (LPCTSTR)hb_parc(3) );
 }

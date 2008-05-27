@@ -1,5 +1,5 @@
 /*
- * $Id: hnice.prg,v 1.6 2007-11-10 17:44:44 mlacecilia Exp $
+ * $Id: hnice.prg,v 1.7 2008-05-27 12:10:53 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -110,7 +110,7 @@ RETURN Self
 
 METHOD Activate CLASS HNiceButton
 
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateNiceBtn( ::oParent:handle, ::id, ;
                                  ::Style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::ExStyle, ::Text )
       ::Init()

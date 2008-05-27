@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.25 2007-11-23 11:10:54 andijahja Exp $
+ * $Id: richedit.c,v 1.26 2008-05-27 12:11:02 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -57,7 +57,7 @@ HB_FUNC( CREATERICHEDIT )
                  WS_CHILD | WS_VISIBLE | hb_parnl(3), /* style  */
                  hb_parni(4), hb_parni(5),            /* x, y   */
                  hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
-                 (HWND) hb_parnl(1),           /* parent window    */ 
+                 (HWND) HB_PARHANDLE(1),           /* parent window    */ 
                  (HMENU) hb_parni(2),               /* control ID  */
                  GetModuleHandle( NULL ),
                  NULL);
@@ -65,7 +65,7 @@ HB_FUNC( CREATERICHEDIT )
    if( hb_pcount() > 7 )
       SendMessage( hCtrl, WM_SETTEXT, 0, (LPARAM) hb_parc(8) );  
 
-   hb_retnl( (LONG) hCtrl );
+   HB_RETHANDLE( hCtrl );
 
 }
 
@@ -75,7 +75,7 @@ HB_FUNC( CREATERICHEDIT )
  */
 HB_FUNC ( RE_SETCHARFORMAT )
 {
-   HWND hCtrl = (HWND) hb_parnl(1);
+   HWND hCtrl = (HWND) HB_PARHANDLE(1);
    CHARRANGE chrOld, chrNew;
    CHARFORMAT2 cf;
    PHB_ITEM pArr;
@@ -220,7 +220,7 @@ HB_FUNC ( RE_SETCHARFORMAT )
  */
 HB_FUNC( RE_SETDEFAULT )
 {
-   HWND hCtrl = ( HWND ) hb_parnl( 1 );
+   HWND hCtrl = (HWND) HB_PARHANDLE( 1 );
    CHARFORMAT2 cf;
 
    memset( &cf, 0, sizeof(CHARFORMAT2) );
@@ -273,7 +273,7 @@ HB_FUNC( RE_SETDEFAULT )
  */
 HB_FUNC( RE_CHARFROMPOS )
 {
-   HWND hCtrl = (HWND) hb_parnl(1);
+   HWND hCtrl = (HWND) HB_PARHANDLE(1);
    int x = hb_parni( 2 );
    int y = hb_parni( 3 );
    ULONG ul;
@@ -290,7 +290,7 @@ HB_FUNC( RE_CHARFROMPOS )
  */
 HB_FUNC( RE_GETTEXTRANGE )
 {
-   HWND hCtrl = (HWND) hb_parnl(1);
+   HWND hCtrl = (HWND) HB_PARHANDLE(1);
    TEXTRANGE tr;
    ULONG ul;
 
@@ -309,7 +309,7 @@ HB_FUNC( RE_GETTEXTRANGE )
  */
 HB_FUNC( RE_GETLINE )
 {
-   HWND hCtrl = (HWND) hb_parnl(1);
+   HWND hCtrl = (HWND) HB_PARHANDLE(1);
    int nLine = hb_parni(2);
    ULONG uLineIndex = SendMessage( hCtrl, EM_LINEINDEX, (WPARAM)nLine, 0 );
    ULONG ul = SendMessage( hCtrl, EM_LINELENGTH, (WPARAM)uLineIndex, 0 );
@@ -325,7 +325,7 @@ HB_FUNC( RE_GETLINE )
 
 HB_FUNC( RE_INSERTTEXT )
 {
-   HWND hCtrl = (HWND) hb_parnl(1);
+   HWND hCtrl = (HWND) HB_PARHANDLE(1);
    char * ptr = hb_parc(2);
 
    SendMessage( hCtrl, EM_REPLACESEL, 0, (LPARAM)ptr );
@@ -336,7 +336,7 @@ HB_FUNC( RE_INSERTTEXT )
  */
 HB_FUNC( RE_FINDTEXT )
 {
-   HWND hCtrl = (HWND) hb_parnl(1);
+   HWND hCtrl = (HWND) HB_PARHANDLE(1);
    FINDTEXTEX ft;
    LONG lPos;
    LONG lFlag = ( ( ISNIL(4) || !hb_parl(4) )? 0 : FR_MATCHCASE ) |
@@ -353,7 +353,7 @@ HB_FUNC( RE_FINDTEXT )
 
 HB_FUNC( HWG_INITRICHPROC )
 {
-   wpOrigRichProc = (WNDPROC) SetWindowLong( (HWND) hb_parnl(1),
+   wpOrigRichProc = (WNDPROC) SetWindowLong( (HWND) HB_PARHANDLE(1),
                                  GWL_WNDPROC, (LONG) RichSubclassProc );
 }
 

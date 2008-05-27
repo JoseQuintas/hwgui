@@ -1,5 +1,5 @@
 /*
- * $Id: dialog.c,v 1.25 2007-11-25 22:04:46 andijahja Exp $
+ * $Id: dialog.c,v 1.26 2008-05-27 12:10:47 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -55,7 +55,7 @@ HB_FUNC( HWG_DIALOGBOX )
    PHB_ITEM pData = GetObjectVar( pObject, "XRESOURCEID" );
 
    DialogBoxParam( hModule, ( HB_IS_STRING( pData ) ? hb_itemGetCPtr( pData ) : MAKEINTRESOURCE( hb_itemGetNL( pData ) ) ), 
-         (HWND) hb_parnl( 1 ), (DLGPROC) ModalDlgProc, (LPARAM) pObject );
+         (HWND) HB_PARHANDLE( 1 ), (DLGPROC) ModalDlgProc, (LPARAM) pObject );
 }
 
 /*  Creates modeless dialog
@@ -67,36 +67,36 @@ HB_FUNC( HWG_CREATEDIALOG )
    HWND hDlg;
    PHB_ITEM pData = GetObjectVar( pObject, "XRESOURCEID" );
 
-   hDlg = CreateDialogParam( hModule, ( HB_IS_STRING( pData ) ? hb_itemGetCPtr( pData ) : MAKEINTRESOURCE( hb_itemGetNL( pData ) ) ), (HWND) hb_parnl( 1 ), 
+   hDlg = CreateDialogParam( hModule, ( HB_IS_STRING( pData ) ? hb_itemGetCPtr( pData ) : MAKEINTRESOURCE( hb_itemGetNL( pData ) ) ), (HWND) HB_PARHANDLE( 1 ), 
       (DLGPROC) DlgProc, (LPARAM) pObject );
 
    ShowWindow( hDlg, SW_SHOW);
-   hb_retnl( (LONG) hDlg );
+   HB_RETHANDLE( hDlg );
 }
 
 HB_FUNC( HWG_ENDDIALOG )
 {
-   EndDialog( (HWND) hb_parnl( 1 ), TRUE );
+   EndDialog( (HWND) HB_PARHANDLE( 1 ), TRUE );
 }
 
 HB_FUNC( GETDLGITEM )
 {
    HWND hWnd = GetDlgItem(
-                 (HWND) hb_parnl( 1 ),	// handle of dialog box
+                 (HWND) HB_PARHANDLE( 1 ),	// handle of dialog box
                  hb_parni( 2 )	        // identifier of control
                );
-   hb_retnl( (LONG) hWnd );
+  HB_RETHANDLE( hWnd );
 }
 
 HB_FUNC( GETDLGCTRLID )
 {
-   hb_retni( GetDlgCtrlID( (HWND) hb_parnl( 1 ) ) );
+   hb_retni( GetDlgCtrlID( (HWND) HB_PARHANDLE( 1 ) ) );
 }
 
 HB_FUNC( SETDLGITEMTEXT )
 {
     SetDlgItemText(
-       (HWND) hb_parnl( 1 ),	// handle of dialog box
+       (HWND) HB_PARHANDLE( 1 ),	// handle of dialog box
        hb_parni( 2 ),	        // identifier of control
        (LPCTSTR) hb_parc( 3 ) 	// text to set
     );
@@ -105,7 +105,7 @@ HB_FUNC( SETDLGITEMTEXT )
 HB_FUNC( SETDLGITEMINT )
 {
     SetDlgItemInt(
-       (HWND) hb_parnl( 1 ),	// handle of dialog box
+       (HWND) HB_PARHANDLE( 1 ),	// handle of dialog box
        hb_parni( 2 ),	        // identifier of control
        (UINT) hb_parni( 3 ), 	// text to set
        ( hb_pcount()<4 || ISNIL(4) || !hb_parl(4) )? 0:1
@@ -118,7 +118,7 @@ HB_FUNC( GETDLGITEMTEXT )
    char *cText = (char*) hb_xgrab( iLen+1 );
 
    GetDlgItemText(
-       (HWND) hb_parnl( 1 ),	// handle of dialog box
+       (HWND) HB_PARHANDLE( 1 ),	// handle of dialog box
     hb_parni( 2 ),          	// identifier of control
     (LPTSTR) cText,       	// address of buffer for text
     iLen                   	// maximum size of string
@@ -129,7 +129,7 @@ HB_FUNC( GETDLGITEMTEXT )
 
 HB_FUNC( GETEDITTEXT )
 {
-   HWND   hDlg = (HWND) hb_parnl( 1 );
+   HWND   hDlg = (HWND) HB_PARHANDLE( 1 );
    int    id = hb_parni( 2 );
    USHORT iLen = (USHORT)SendMessage( GetDlgItem( hDlg,id ), WM_GETTEXTLENGTH, 0, 0 );
    char *cText = (char*) hb_xgrab( iLen+2 );
@@ -147,7 +147,7 @@ HB_FUNC( GETEDITTEXT )
 HB_FUNC( CHECKDLGBUTTON )
 {
     CheckDlgButton(
-       (HWND) hb_parnl( 1 ),	// handle of dialog box
+       (HWND) HB_PARHANDLE( 1 ),	// handle of dialog box
        hb_parni( 2 ),	        // identifier of control
        ( hb_parl( 3 ) )? BST_CHECKED:BST_UNCHECKED 	// value to set
     );
@@ -156,7 +156,7 @@ HB_FUNC( CHECKDLGBUTTON )
 HB_FUNC( CHECKRADIOBUTTON )
 {
     CheckRadioButton(
-       (HWND) hb_parnl( 1 ),	// handle of dialog box
+       (HWND) HB_PARHANDLE( 1 ),	// handle of dialog box
        hb_parni( 2 ),	        // identifier of first radio button in group
        hb_parni( 3 ),	        // identifier of last radio button in group
        hb_parni( 4 )	        // identifier of radio button to select
@@ -166,7 +166,7 @@ HB_FUNC( CHECKRADIOBUTTON )
 HB_FUNC( ISDLGBUTTONCHECKED )
 {
   UINT nRes = IsDlgButtonChecked(
-                  (HWND) hb_parnl( 1 ),       // handle of dialog box
+                  (HWND) HB_PARHANDLE( 1 ),       // handle of dialog box
                    hb_parni( 2 )               // button identifier
               );
   if( nRes == BST_CHECKED )
@@ -178,17 +178,17 @@ HB_FUNC( ISDLGBUTTONCHECKED )
 HB_FUNC( COMBOADDSTRING )
 {
    char *cString = hb_parc( 2 );
-   SendMessage( (HWND) hb_parnl( 1 ), CB_ADDSTRING, 0, (LPARAM) cString );
+   SendMessage( (HWND) HB_PARHANDLE( 1 ), CB_ADDSTRING, 0, (LPARAM) cString );
 }
 
 HB_FUNC( COMBOSETSTRING )
 {
-   SendMessage( (HWND) hb_parnl( 1 ), CB_SETCURSEL, (WPARAM) hb_parni(2)-1, 0);
+   SendMessage( (HWND) HB_PARHANDLE( 1 ), CB_SETCURSEL, (WPARAM) hb_parni(2)-1, 0);
 }
 
 HB_FUNC( GETNOTIFYCODE )
 {
-   hb_retnl( (LONG) (((NMHDR *) hb_parnl(1))->code) );
+   hb_retnl( (LONG) (((NMHDR *) HB_PARHANDLE(1))->code) );
 }
 
 LPWORD lpwAlign ( LPWORD lpIn)
@@ -307,6 +307,7 @@ LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth, int 
    {
       pControl = hb_arrayGetItemPtr( pControls,ul );
       temp = hb_itemPutNI( NULL, -1 );
+//      temp = HB_PUTHANDLE( NULL, -1 );
       SetObjectVar( pControl, "_HANDLE", temp );
       hb_itemRelease( temp );
       
@@ -419,7 +420,7 @@ HB_FUNC( _CREATEPROPERTYSHEETPAGE )
    }
 
    h = CreatePropertySheetPage( &psp );
-   hb_retnl( (LONG)h );
+   HB_RETHANDLE( h );
    // if( pdlgtemplate )
    //   LocalFree (LocalHandle (pdlgtemplate));
 }
@@ -445,7 +446,7 @@ HB_FUNC( _PROPERTYSHEET )
 
    psh.dwSize = sizeof(PROPSHEETHEADER);
    psh.dwFlags = dwFlags;
-   psh.hwndParent = (HWND) hb_parnl(1);
+   psh.hwndParent = (HWND) HB_PARHANDLE(1);
    psh.hInstance = (HINSTANCE) NULL;
 #if !defined(__BORLANDC__)
    psh.pszIcon = NULL;
@@ -463,7 +464,7 @@ HB_FUNC( _PROPERTYSHEET )
 #endif
    psh.pfnCallback = NULL;
 
-   hb_retnl( (LONG) PropertySheet(&psh) );
+   HB_RETHANDLE(  PropertySheet(&psh) );
 }
 
 /* Hwg_CreateDlgIndirect( hParentWnd, pArray, x1, y1, nWidth, nHeight, nStyle )
@@ -485,7 +486,7 @@ HB_FUNC( HWG_CREATEDLGINDIRECT )
    }
 
    CreateDialogIndirectParam( hModule, pdlgtemplate,
-                      (HWND) hb_parnl(1), (DLGPROC) DlgProc, (LPARAM) pObject );
+                      (HWND) HB_PARHANDLE(1), (DLGPROC) DlgProc, (LPARAM) pObject );
 
    if( hb_pcount()<8 || ISNIL(8) )
       LocalFree( LocalHandle( pdlgtemplate ) );
@@ -502,7 +503,7 @@ HB_FUNC( HWG_DLGBOXINDIRECT )
    LPDLGTEMPLATE pdlgtemplate = CreateDlgTemplate( pObject, x1, y1, dwidth, dheight, ulStyle );
 
    DialogBoxIndirectParam( hModule, pdlgtemplate,
-                (HWND) hb_parnl(1), (DLGPROC) ModalDlgProc, (LPARAM) pObject );
+                (HWND) HB_PARHANDLE(1), (DLGPROC) ModalDlgProc, (LPARAM) pObject );
    LocalFree (LocalHandle (pdlgtemplate));
 }
 
@@ -525,7 +526,7 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
       SetObjectVar( (PHB_ITEM) lParam, "_NHOLDER", temp );
       hb_itemRelease( temp );
 
-      temp = hb_itemPutNL( NULL, (LONG)hDlg );
+      temp = HB_PUTHANDLE( NULL, hDlg );
       SetObjectVar( (PHB_ITEM) lParam, "_HANDLE", temp );
       hb_itemRelease( temp );
 
@@ -542,7 +543,8 @@ LRESULT CALLBACK ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) uMsg );
       hb_vmPushLong( (LONG ) wParam );
-      hb_vmPushLong( (LONG ) lParam );
+//      hb_vmPushLong( (LONG )  lParam );
+      HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
       if( res == -1 )
@@ -568,7 +570,7 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       SetObjectVar( (PHB_ITEM) lParam, "_NHOLDER", temp );
       hb_itemRelease( temp );
 
-      temp = hb_itemPutNL( NULL, (LONG)hDlg );
+      temp = HB_PUTHANDLE( NULL, hDlg );
       SetObjectVar( (PHB_ITEM) lParam, "_HANDLE", temp );
       hb_itemRelease( temp );
 
@@ -605,7 +607,8 @@ LRESULT CALLBACK DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) uMsg );
       hb_vmPushLong( (LONG ) wParam );
-      hb_vmPushLong( (LONG ) lParam );
+//      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM(  lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
       if( res == -1 )
@@ -633,7 +636,7 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       SetObjectVar( pObj, "_NHOLDER", temp );
       hb_itemRelease( temp );
 
-      temp = hb_itemPutNL( NULL, (LONG)hDlg );
+      temp = HB_PUTHANDLE( NULL, hDlg );
       SetObjectVar( pObj, "_HANDLE", temp );
       hb_itemRelease( temp );
 
@@ -673,7 +676,8 @@ LRESULT CALLBACK PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
       hb_vmPush( pObject );
       hb_vmPushLong( (LONG ) uMsg );
       hb_vmPushLong( (LONG ) wParam );
-      hb_vmPushLong( (LONG ) lParam );
+//      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM(  lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
       if( res == -1 )
@@ -708,10 +712,10 @@ LRESULT CALLBACK PSPProcRelease ( HWND hwnd, UINT uMsg, LPPROPSHEETPAGE ppsp )
 
 HB_FUNC( GETNOTIFYCODEFROM )
 {
-   hb_retnl( (LONG) (((NMHDR *) hb_parnl(1))->hwndFrom) );
+   hb_retnl( (LONG) (((NMHDR *) HB_PARHANDLE(1))->hwndFrom) );
 }
 
 HB_FUNC( GETNOTIFYIDFROM )
 {
-   hb_retnl( (LONG) (((NMHDR *) hb_parnl(1))->idFrom) );
+   hb_retnl( (LONG) (((NMHDR *) HB_PARHANDLE(1))->idFrom) );
 }

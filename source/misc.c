@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.39 2008-05-21 21:50:21 lculik Exp $
+ * $Id: misc.c,v 1.40 2008-05-27 12:11:00 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -97,17 +97,18 @@ HB_FUNC( COPYSTRINGTOCLIPBOARD )
 
 HB_FUNC( GETSTOCKOBJECT )
 {
-   hb_retnl( (LONG) GetStockObject( hb_parni(1) ) );
+   HB_RETHANDLE(  GetStockObject( hb_parni(1) ) );
 }
 
 HB_FUNC( LOWORD )
 {
-   hb_retni( (int) ( hb_parnl( 1 ) & 0xFFFF ) );
+   
+   hb_retni( (int) ( (ISPOINTER(1) ? PtrToUlong(hb_parptr(1 )) :hb_parnl( 1 )) & 0xFFFF ) );
 }
 
 HB_FUNC( HIWORD )
 {
-   hb_retni( (int) ( ( hb_parnl( 1 ) >> 16 ) & 0xFFFF ) );
+   hb_retni( (int) ( ( (ISPOINTER(1) ? PtrToUlong(hb_parptr(1 ) ): hb_parnl( 1 )) >> 16 ) & 0xFFFF ) );
 }
 
 HB_FUNC( HWG_BITOR )
@@ -156,7 +157,7 @@ HB_FUNC( CLIENTTOSCREEN )
 
    pt.x = hb_parnl(2);
    pt.y = hb_parnl(3);
-   ClientToScreen( (HWND) hb_parnl(1), &pt );
+   ClientToScreen( (HWND) HB_PARHANDLE(1), &pt );
 
    temp = hb_itemPutNL( NULL, pt.x );
    hb_itemArrayPut( aPoint, 1, temp );
@@ -182,13 +183,13 @@ HB_FUNC( SCREENTOCLIENT )
       pt.x = hb_parnl(2);
       pt.y = hb_parnl(3);
 
-      ScreenToClient( (HWND) hb_parnl(1), &pt );
+      ScreenToClient( (HWND) HB_PARHANDLE(1), &pt );
    }
    else
    {
       Array2Rect( hb_param(2,HB_IT_ARRAY),&R);
-      ScreenToClient( (HWND) hb_parnl(1), (LPPOINT)&R );
-      ScreenToClient( (HWND) hb_parnl(1), ((LPPOINT)&R)+1 );
+      ScreenToClient( (HWND) HB_PARHANDLE(1), (LPPOINT)&R );
+      ScreenToClient( (HWND) HB_PARHANDLE(1), ((LPPOINT)&R)+1 );
       hb_itemRelease(hb_itemReturn(Rect2Array(&R)));
       return ;
 
@@ -296,7 +297,7 @@ HB_FUNC( PTS2PIX )
 
    if( hb_pcount() > 1 && !ISNIL(1) )
    {
-      hDC = (HDC) hb_parnl(2);
+      hDC = (HDC) HB_PARHANDLE(2);
       lDC = 0;
    }
    else
@@ -377,8 +378,8 @@ Contributed by Rodrigo Moreno rodrigo_moreno@yahoo.com base upon code minigui
 
 HB_FUNC( SHELLABOUT )
 {
-   /* ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) hb_parnl(3) ); */
-   hb_retni( ShellAbout( (HWND) hb_parnl(1), (LPCSTR) hb_parcx(1), (LPCSTR) hb_parcx(2) , (ISNIL(3) ? NULL : (HICON) hb_parnl(3)))) ;
+   /* ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) HB_PARHANDLE(3) ); */
+   hb_retni( ShellAbout( (HWND) HB_PARHANDLE(1), (LPCSTR) hb_parcx(1), (LPCSTR) hb_parcx(2) , (ISNIL(3) ? NULL : (HICON) HB_PARHANDLE(3)))) ;
 }
 
 
@@ -439,7 +440,7 @@ HB_FUNC( GETNEXTDLGTABITEM )
    bPrevious - Specifies how the function is to search the dialog box. If this parameter is TRUE, the function searches for the previous control in the dialog box. If this parameter is FALSE, the function searches for the next control in the dialog box.
    */
 
-   hb_retnl( (LONG) GetNextDlgTabItem( (HWND) hb_parnl( 1 ), (HWND) hb_parnl( 2 ), hb_parl( 3 ) ) ) ;
+   HB_RETHANDLE(  GetNextDlgTabItem( (HWND) HB_PARHANDLE( 1 ), (HWND) HB_PARHANDLE( 2 ), hb_parl( 3 ) ) ) ;
 }
 
 HB_FUNC( SLEEP )
@@ -494,7 +495,7 @@ HB_FUNC( SETSCROLLINFO )
    si.fMask = fMask;
 
    SetScrollInfo(
-    (HWND) hb_parnl( 1 ), // handle of window with scroll bar
+    (HWND) HB_PARHANDLE( 1 ), // handle of window with scroll bar
     hb_parni( 2 ),    // scroll bar flags
     &si, hb_parni( 3 )    // redraw flag
    );
@@ -505,7 +506,7 @@ HB_FUNC( GETSCROLLRANGE )
    int MinPos, MaxPos;
 
    GetScrollRange(
-    (HWND) hb_parnl( 1 ), // handle of window with scroll bar
+    (HWND) HB_PARHANDLE( 1 ), // handle of window with scroll bar
     hb_parni( 2 ),  // scroll bar flags
     &MinPos,  // address of variable that receives minimum position
     &MaxPos   // address of variable that receives maximum position
@@ -516,14 +517,14 @@ HB_FUNC( GETSCROLLRANGE )
 
 HB_FUNC( SETSCROLLRANGE )
 {
-   hb_retl( SetScrollRange((HWND) hb_parnl(1), hb_parni(2), hb_parni(3), hb_parni(4), hb_parl(5)) );
+   hb_retl( SetScrollRange((HWND) HB_PARHANDLE(1), hb_parni(2), hb_parni(3), hb_parni(4), hb_parl(5)) );
 }
 
 
 HB_FUNC( GETSCROLLPOS )
 {
    hb_retni( GetScrollPos(
-               (HWND) hb_parnl( 1 ),  // handle of window with scroll bar
+               (HWND) HB_PARHANDLE( 1 ),  // handle of window with scroll bar
                hb_parni( 2 )  // scroll bar flags
              ) );
 }
@@ -531,7 +532,7 @@ HB_FUNC( GETSCROLLPOS )
 HB_FUNC( SETSCROLLPOS )
 {
    SetScrollPos(
-      (HWND) hb_parnl( 1 ), // handle of window with scroll bar
+      (HWND) HB_PARHANDLE( 1 ), // handle of window with scroll bar
       hb_parni( 2 ),  // scroll bar flags
       hb_parni( 3 ),
       TRUE
@@ -541,7 +542,7 @@ HB_FUNC( SETSCROLLPOS )
 HB_FUNC( SHOWSCROLLBAR )
 {
    ShowScrollBar(
-      (HWND) hb_parnl( 1 ), // handle of window with scroll bar
+      (HWND) HB_PARHANDLE( 1 ), // handle of window with scroll bar
       hb_parni( 2 ),          // scroll bar flags
       hb_parl( 3 )              // scroll bar visibility
    );
@@ -549,7 +550,7 @@ HB_FUNC( SHOWSCROLLBAR )
 
 HB_FUNC (SCROLLWINDOW)
 {
- ScrollWindow((HWND) hb_parnl(1), hb_parni(2),hb_parni(3),NULL,NULL);
+ ScrollWindow((HWND) HB_PARHANDLE(1), hb_parni(2),hb_parni(3),NULL,NULL);
 }
 
 
@@ -639,8 +640,8 @@ HB_FUNC ( ISPGDOWNPRESSESED )
 
 HB_FUNC( EDIT1UPDATECTRL )
 {
-   HWND hChild = (HWND) hb_parnl( 1 ) ;
-   HWND hParent= (HWND) hb_parnl( 2 ) ;
+   HWND hChild = (HWND) HB_PARHANDLE( 1 ) ;
+   HWND hParent= (HWND) HB_PARHANDLE( 2 ) ;
    RECT *rect = NULL;
 
    GetWindowRect(hChild,rect);
@@ -653,8 +654,8 @@ HB_FUNC( EDIT1UPDATECTRL )
 
 HB_FUNC( BUTTON1GETSCREENCLIENT )
 {
-   HWND hChild = (HWND) hb_parnl( 1 ) ;
-   HWND hParent= (HWND) hb_parnl( 2 ) ;
+   HWND hChild = (HWND) HB_PARHANDLE( 1 ) ;
+   HWND hParent= (HWND) HB_PARHANDLE( 2 ) ;
    RECT *rect = NULL;
 
    GetWindowRect(hChild,rect);
@@ -665,7 +666,7 @@ HB_FUNC( BUTTON1GETSCREENCLIENT )
 
 HB_FUNC( HEDITEX_CTLCOLOR )
 {
-   HDC hdc = (HDC) hb_parnl( 1 ) ;
+   HDC hdc = (HDC) HB_PARHANDLE( 1 ) ;
    //UINT h = hb_parni( 2 ) ;
    PHB_ITEM pObject = hb_param( 3, HB_IT_OBJECT );
    PHB_ITEM p,p1,p2,temp;
@@ -683,7 +684,7 @@ HB_FUNC( HEDITEX_CTLCOLOR )
    p = GetObjectVar( pObject, "M_BRUSH" );
    p2 = GetObjectVar( pObject, "M_TEXTCOLOR" );
    cColor = (COLORREF) hb_itemGetNL(p2);
-   hBrush = (HBRUSH)hb_itemGetNL(p);
+   hBrush = (HBRUSH)HB_GETHANDLE(p);
 
    DeleteObject(hBrush );
 
@@ -700,12 +701,12 @@ HB_FUNC( HEDITEX_CTLCOLOR )
      SetBkColor(hdc,(COLORREF)i);
    }
 
-   temp = hb_itemPutNL( NULL,(LONG)hBrush  );
+   temp = HB_PUTHANDLE( NULL,hBrush  );
    SetObjectVar( pObject, "_M_BRUSH", temp );
    hb_itemRelease( temp );
 
    SetTextColor(hdc,cColor);
-   hb_retnl((LONG)hBrush);
+   HB_RETHANDLE(hBrush);
 }
 
 HB_FUNC( GETKEYBOARDCOUNT )

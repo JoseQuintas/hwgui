@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.23 2008-05-13 20:25:40 giuseppem Exp $
+ *$Id: htab.prg,v 1.24 2008-05-27 12:10:57 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -91,7 +91,7 @@ LOCAL i, aBmpSize
 Return Self
 
 METHOD Activate CLASS HTab
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateTabControl( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()

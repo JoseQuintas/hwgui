@@ -1,5 +1,5 @@
 /*
- * $Id: c_ipaddr.c,v 1.11 2007-11-26 10:50:16 andijahja Exp $
+ * $Id: c_ipaddr.c,v 1.12 2008-05-27 12:10:41 lculik Exp $
 */
 
 /*----------------------------------------------------------------------------
@@ -75,9 +75,9 @@ HB_FUNC( INITIPADDRESS )
    hIpAddress = CreateWindowEx(WS_EX_CLIENTEDGE,WC_IPADDRESS,"",
       hb_parni(3),
       hb_parni(4), hb_parni(5), hb_parni(6), hb_parni(7),
-      (HWND) hb_parnl (1), (HMENU)hb_parni(2), GetModuleHandle(NULL), NULL ) ;
+      (HWND) HB_PARHANDLE(1), (HMENU)hb_parni(2), GetModuleHandle(NULL), NULL ) ;
 
-   hb_retnl ( (LONG) hIpAddress );
+   HB_RETHANDLE(  hIpAddress );
 }
 
 HB_FUNC( SETIPADDRESS )
@@ -89,7 +89,7 @@ HB_FUNC( SETIPADDRESS )
    v3 = (BYTE) hb_parni(4);
    v4 = (BYTE) hb_parni(5);
 
-   SendMessage( (HWND) hb_parnl (1), IPM_SETADDRESS, 0, MAKEIPADDRESS(v1,v2,v3,v4));
+   SendMessage( (HWND) HB_PARHANDLE(1), IPM_SETADDRESS, 0, MAKEIPADDRESS(v1,v2,v3,v4));
 }
 
 HB_FUNC( GETIPADDRESS )
@@ -97,7 +97,7 @@ HB_FUNC( GETIPADDRESS )
    DWORD pdwAddr;
    BYTE v1, v2, v3, v4;
 
-   SendMessage( (HWND) hb_parnl (1), IPM_GETADDRESS, 0, (LPARAM)(LPDWORD)&pdwAddr);
+   SendMessage( (HWND) HB_PARHANDLE(1), IPM_GETADDRESS, 0, (LPARAM)(LPDWORD)&pdwAddr);
 
    v1 = (BYTE) FIRST_IPADDRESS( pdwAddr );
    v2 = (BYTE) SECOND_IPADDRESS( pdwAddr );
@@ -113,5 +113,5 @@ HB_FUNC( GETIPADDRESS )
 
 HB_FUNC( CLEARIPADDRESS )
 {
-   SendMessage( (HWND) hb_parnl (1), IPM_CLEARADDRESS, 0, 0);
+   SendMessage( (HWND) HB_PARHANDLE(1), IPM_CLEARADDRESS, 0, 0);
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.7 2007-11-10 17:44:50 mlacecilia Exp $
+ * $Id: hupdown.prg,v 1.8 2008-05-27 12:10:58 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -77,7 +77,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
 Return Self
 
 METHOD Activate CLASS HUpDown
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateEdit( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::Init()

@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.7 2007-08-25 17:47:22 richardroesnadi Exp $
+ * $Id: hprogres.prg,v 1.8 2008-05-27 12:10:54 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class
@@ -77,7 +77,7 @@ Return Self
 
 METHOD Activate CLASS HProgressBar
 
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateProgressBar( ::oParent:handle, ::maxPos, ;
                   ::nLeft, ::nTop, ::nWidth )
       ::Init()

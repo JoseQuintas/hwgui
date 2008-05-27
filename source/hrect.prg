@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.2 2007-11-10 17:44:48 mlacecilia Exp $
+ * $Id: hrect.prg,v 1.3 2008-05-27 12:10:56 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -96,7 +96,7 @@ Return Self
 
 //---------------------------------------------------------------------------
 METHOD Activate CLASS HRect_Line
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth,::nHeight )
       ::Init()

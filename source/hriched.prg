@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.8 2006-11-10 12:25:26 lculik Exp $
+ * $Id: hriched.prg,v 1.9 2008-05-27 12:10:56 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -49,7 +49,7 @@ METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight, ;
 Return Self
 
 METHOD Activate CLASS HRichEdit
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateRichEdit( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::Init()

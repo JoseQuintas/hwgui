@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.16 2008-03-13 20:27:09 giuseppem Exp $
+ * $Id: wprint.c,v 1.17 2008-05-27 12:11:04 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -27,7 +27,7 @@
 
 HB_FUNC( HWG_OPENPRINTER )
 {
-   hb_retnl( (LONG) CreateDC( NULL, hb_parc(1), NULL, NULL ) );
+   HB_RETHANDLE( CreateDC( NULL, hb_parc(1), NULL, NULL ) );
 }
 
 HB_FUNC( HWG_OPENDEFAULTPRINTER )
@@ -68,7 +68,7 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
 
       free( pinfo4 );
    }
-   hb_retnl( (LONG) hDC );
+   HB_RETHANDLE( hDC );
 }
 
 
@@ -195,7 +195,7 @@ HB_FUNC( HWG_GETPRINTERS )
 HB_FUNC( SETPRINTERMODE )
 {
    LPTSTR pPrinterName = (LPTSTR) hb_parc(1);
-   HANDLE hPrinter = (ISNIL(2))? (HANDLE)NULL : (HANDLE)hb_parnl(2);
+   HANDLE hPrinter = (ISNIL(2))? (HANDLE)NULL : (HANDLE)HB_PARHANDLE(2);
    long int nSize;
    PDEVMODE pdm;
 
@@ -224,14 +224,14 @@ HB_FUNC( SETPRINTERMODE )
                       pdm, pdm, DM_OUT_BUFFER | DM_IN_BUFFER );
 
    // создадим контекст устройства принтера
-   hb_retnl( (LONG) CreateDC( NULL, pPrinterName, NULL, pdm ) );
-   hb_stornl( (LONG)hPrinter,2 );
+   HB_RETHANDLE(  CreateDC( NULL, pPrinterName, NULL, pdm ) );
+   HB_STOREHANDLE( hPrinter,2 );
    GlobalFree( pdm );
 }
 
 HB_FUNC( CLOSEPRINTER )
 {
-   HANDLE hPrinter = (HANDLE)hb_parnl(1);
+   HANDLE hPrinter = (HANDLE)HB_PARHANDLE(1);
    ClosePrinter( hPrinter );
 }
 
@@ -244,22 +244,22 @@ HB_FUNC( HWG_STARTDOC )
    di.lpszDatatype = (LPTSTR) NULL;
    di.fwType = 0;
 
-   hb_retnl( (LONG) StartDoc( (HDC) hb_parnl( 1 ), &di ) );
+   hb_retnl( (LONG) StartDoc( (HDC) HB_PARHANDLE( 1 ), &di ) );
 }
 
 HB_FUNC( HWG_ENDDOC )
 {
-   EndDoc( (HDC) hb_parnl( 1 ) );
+   EndDoc( (HDC) HB_PARHANDLE( 1 ) );
 }
 
 HB_FUNC( HWG_STARTPAGE )
 {
-   hb_retnl( (LONG) StartPage( (HDC) hb_parnl( 1 ) ) );
+   hb_retnl( (LONG) StartPage( (HDC) HB_PARHANDLE( 1 ) ) );
 }
 
 HB_FUNC( HWG_ENDPAGE )
 {
-   hb_retnl( (LONG) EndPage( (HDC) hb_parnl( 1 ) ) );
+   hb_retnl( (LONG) EndPage( (HDC) HB_PARHANDLE( 1 ) ) );
 }
 
 /*
@@ -273,7 +273,7 @@ HB_FUNC( HWG_ENDPAGE )
  */
 HB_FUNC( GETDEVICEAREA )
 {
-   HDC hDC = (HDC) hb_parnl( 1 );
+   HDC hDC = (HDC) HB_PARHANDLE( 1 );
    PHB_ITEM temp;
    PHB_ITEM aMetr = hb_itemArrayNew( 9 );
    
@@ -319,7 +319,7 @@ HB_FUNC( GETDEVICEAREA )
 
 HB_FUNC( CREATEENHMETAFILE )
 {
-   HWND hWnd = (HWND) hb_parnl( 1 );
+   HWND hWnd = (HWND) HB_PARHANDLE( 1 );
    HDC hDCref = GetDC( hWnd ), hDCmeta;
    LPCTSTR lpFilename = (hb_pcount()>1)? hb_parc(2):NULL;
    int iWidthMM, iHeightMM, iWidthPels, iHeightPels;
@@ -363,13 +363,13 @@ HB_FUNC( CREATEENHMETAFILE )
 
    hDCmeta = CreateEnhMetaFile( hDCref, lpFilename, &rc, NULL );
    ReleaseDC( hWnd, hDCref );
-   hb_retnl( (LONG) hDCmeta );
+   HB_RETHANDLE( hDCmeta );
 
 }
 
 HB_FUNC( CREATEMETAFILE )
 {
-   HDC hDCref = (HDC) hb_parnl( 1 ), hDCmeta;
+   HDC hDCref = (HDC) HB_PARHANDLE( 1 ), hDCmeta;
    LPCTSTR lpFilename = (hb_pcount()>1 && !ISNIL(2))? hb_parc(2):NULL;
    int iWidthMM, iHeightMM;
    RECT rc;
@@ -398,23 +398,23 @@ HB_FUNC( CREATEMETAFILE )
    rc.bottom = iHeightMM * 100;
 
    hDCmeta = CreateEnhMetaFile( hDCref, lpFilename, &rc, NULL );
-   hb_retnl( (LONG) hDCmeta );
+   HB_RETHANDLE(  hDCmeta );
 
 }
 
 HB_FUNC( CLOSEENHMETAFILE )
 {
-   hb_retnl( (LONG) CloseEnhMetaFile( (HDC) hb_parnl(1) ) );
+   HB_RETHANDLE(  CloseEnhMetaFile( (HDC) HB_PARHANDLE(1) ) );
 }
 
 HB_FUNC( DELETEENHMETAFILE )
 {
-   hb_retnl( (LONG) DeleteEnhMetaFile( (HENHMETAFILE) hb_parnl(1) ) );
+   HB_RETHANDLE( (LONG) DeleteEnhMetaFile( (HENHMETAFILE) HB_PARHANDLE(1) ) );
 }
 
 HB_FUNC( PLAYENHMETAFILE )
 {
-   HDC hDC = (HDC) hb_parnl(1);
+   HDC hDC = (HDC) HB_PARHANDLE(1);
    RECT rc;
 
    if( hb_pcount() > 2 )
@@ -426,12 +426,12 @@ HB_FUNC( PLAYENHMETAFILE )
    }
    else
       GetClientRect( WindowFromDC( hDC ), &rc );
-   hb_retnl( (LONG) PlayEnhMetaFile( hDC, (HENHMETAFILE)  hb_parnl(2), &rc ) );
+   hb_retnl( (LONG) PlayEnhMetaFile( hDC, (HENHMETAFILE)  HB_PARHANDLE(2), &rc ) );
 }
 
 HB_FUNC( PRINTENHMETAFILE )
 {
-   HDC hDC = (HDC) hb_parnl(1);
+   HDC hDC = (HDC) HB_PARHANDLE(1);
    // DOCINFO di;
    RECT rc;
 
@@ -447,7 +447,7 @@ HB_FUNC( PRINTENHMETAFILE )
 
    // StartDoc( hDC, &di );
    StartPage( hDC );
-   hb_retnl( (LONG) PlayEnhMetaFile( hDC, (HENHMETAFILE)  hb_parnl(2), &rc ) );
+   hb_retnl( (LONG) PlayEnhMetaFile( hDC, (HENHMETAFILE)  HB_PARHANDLE(2), &rc ) );
    EndPage( hDC );
    // EndDoc( hDC );
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.13 2008-04-09 13:59:38 lculik Exp $
+ * $Id: htool.prg,v 1.14 2008-05-27 12:10:57 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -72,7 +72,7 @@ Return Self
 
 METHOD Activate CLASS hToolBar
 
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
 
       ::handle := CREATETOOLBAR( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::extStyle )

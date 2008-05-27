@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.59 2008-05-24 18:08:49 lculik Exp $
+ * $Id: hcontrol.prg,v 1.60 2008-05-27 12:10:50 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -190,7 +190,7 @@ RETURN Self
 METHOD Activate CLASS HStatus
 LOCAL aCoors
 
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateStatusWindow( ::oParent:handle, ::id )
       ::Init()
       IF __ObjHasMsg( ::oParent, "AOFFSET" )
@@ -287,7 +287,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 RETURN Self
 
 METHOD Activate CLASS HStatic
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateStatic( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
                                 ::extStyle )
@@ -376,7 +376,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 RETURN Self
 
 METHOD Activate CLASS HButton
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateButton( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
                                 ::title )
@@ -806,7 +806,7 @@ LOCAL uAlign,uStyleTmp
 
    SetBkMode( dc, TRANSPARENT )
    if (::m_bDrawTransparent)
-        ::PaintBk(DC)
+//        ::PaintBk(DC)
    endif
 
 
@@ -1063,7 +1063,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
 RETURN Self
 
 METHOD Activate CLASS HGroup
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateButton( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
                                 ::title )
@@ -1110,7 +1110,7 @@ METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize ) CLASS HLine
 RETURN Self
 
 METHOD Activate CLASS HLine
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateStatic( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth,::nHeight )
       ::Init()

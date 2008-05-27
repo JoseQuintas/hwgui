@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.14 2007-11-23 08:30:42 andijahja Exp $
+ * $Id: nice.c,v 1.15 2008-05-27 12:11:00 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -128,13 +128,13 @@ HB_FUNC( CREATEROUNDRECTRGN )
 {
 HRGN Res = CreateRoundRectRgn( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ),
            hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) ) ;
-   hb_retnl( (LONG) Res );
+   HB_RETHANDLE(  Res );
 }
 
 
 HB_FUNC( SETWINDOWRGN )
 {
-   hb_retni( SetWindowRgn((HWND) hb_parnl( 1 ), (HRGN) hb_parnl( 2 ), hb_parl( 3 ) ) );
+   hb_retni( SetWindowRgn((HWND) HB_PARHANDLE( 1 ), (HRGN) hb_parnl( 2 ), hb_parl( 3 ) ) );
 }
 
 HB_FUNC( HWG_REGNICE )
@@ -179,19 +179,19 @@ HB_FUNC( CREATENICEBTN )
                  WS_CHILD | WS_VISIBLE | ulStyle, /* style  */
                  hb_parni(4), hb_parni(5),        /* x, y       */
                  hb_parni(6), hb_parni(7),     /* nWidth, nHeight */
-                 (HWND) hb_parnl(1),           /* parent window    */ 
+                 (HWND) HB_PARHANDLE(1),           /* parent window    */ 
                  (HMENU) hb_parni(2),          /* control ID  */ 
                  GetModuleHandle( NULL ), 
                  NULL);
 
-   hb_retnl( (LONG) hWndPanel );
+   HB_RETHANDLE( hWndPanel );
 }
 
 HB_FUNC( ISMOUSEOVER )
 {
 	RECT  Rect;
 	POINT  Pt;
-    GetWindowRect( (HWND) hb_parnl( 1 ), &Rect ) ;
+    GetWindowRect( (HWND) HB_PARHANDLE( 1 ), &Rect ) ;
     GetCursorPos( &Pt );
     hb_retl( PtInRect( &Rect, Pt ) );
 }
@@ -204,7 +204,7 @@ HB_FUNC( RGB )
 
 HB_FUNC( DRAW_GRADIENT )
 {
-   Draw_Gradient( (HDC) hb_parnl( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),hb_parni( 8 ) );
+   Draw_Gradient( (HDC) HB_PARHANDLE( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),hb_parni( 8 ) );
 }
 
 HB_FUNC( MAKELONG )
@@ -215,10 +215,10 @@ HB_FUNC( MAKELONG )
 
 HB_FUNC( GETWINDOWLONG )
 {
-   hb_retnl( GetWindowLong( (HWND) hb_parnl( 1 ), hb_parni( 2 ) ) ) ;
+   hb_retnl( GetWindowLong( (HWND) HB_PARHANDLE( 1 ), hb_parni( 2 ) ) ) ;
 }
 
 HB_FUNC( SETBKMODE )
 {
-   hb_retni( SetBkMode( (HDC) hb_parnl( 1 ), hb_parni( 2 ) ) );
+   hb_retni( SetBkMode( (HDC) HB_PARHANDLE( 1 ), hb_parni( 2 ) ) );
 }

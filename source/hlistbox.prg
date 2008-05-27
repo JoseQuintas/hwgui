@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.10 2008-03-25 22:55:07 fperillo Exp $
+ * $Id: hlistbox.prg,v 1.11 2008-05-27 12:10:52 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -72,7 +72,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
 Return Self
 
 METHOD Activate CLASS HListBox
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateListbox( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()

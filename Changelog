@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.815 2008-05-23 21:43:24 fperillo Exp $
+ * $Id: Changelog,v 1.816 2008-05-27 12:10:32 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-05-27 09:10 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
+  * include/guilib.h
+     ! added  HB_GETPTRHANDLE () macro
+  * source/*.c
+     ! change handle of hBitmap/hicon/hbrush/hfont/hdc/hkey/hwnd/handle (insted os using hb_parnl() use the HB_PARHANDLE() macro
+  source/*.prg
+     ! fix to check id handle is valid
 
 2008-05-23 23:34 UTC+0100 Francesco Perillo <fperillo at gmail dot com>
    * samples/arbrow1.prg

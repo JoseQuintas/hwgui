@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.17 2008-02-20 00:15:10 mlacecilia Exp $
+ *$Id: hcwindow.prg,v 1.18 2008-05-27 12:10:50 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -82,7 +82,10 @@ CLASS HCustomWindow INHERIT HObject
 ENDCLASS
 
 METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
-LOCAL i := IIF( nId != NIL, Ascan( ::aControls, {|o| o:id == nId } ), ;
+LOCAL i
+Tracelog(nId,nHandle)//,valtoprg(::aControls))
+
+I := IIF( nId != NIL, Ascan( ::aControls, {|o| o:id == nId } ), ;
                             Ascan( ::aControls, {|o| o:handle == nHandle } ) )
 RETURN IIF( i == 0, NIL, ::aControls[ i ] )
 
@@ -245,7 +248,11 @@ LOCAL i, nLen   := Len( aControls )
 RETURN 1
 
 STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
-LOCAL oCtrl := oWnd:FindControl( , lParam )
+LOCAL oCtrl
+//tracelog(lPAram)
+//lParam := HANDLETOPTR( lParam)
+//tracelog(lPAram)
+oCtrl := oWnd:FindControl( , lParam )
 
    IF oCtrl != NIL
       IF oCtrl:tcolor != NIL
@@ -262,9 +269,10 @@ RETURN -1
 
 STATIC FUNCTION onDrawItem( oWnd, wParam, lParam )
 LOCAL oCtrl
-
+tracelog(oWnd, wParam, lParam )
    IF wParam != 0 .AND. ( oCtrl := oWnd:FindControl( wParam ) ) != NIL .AND. ;
       oCtrl:bPaint != NIL
+      Tracelog(oCtrl,cstr(wParam),cstr(lParam))
 
       Eval( oCtrl:bPaint, oCtrl, lParam )
       RETURN 1

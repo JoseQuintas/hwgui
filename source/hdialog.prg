@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.44 2008-05-04 21:09:03 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.45 2008-05-27 12:10:51 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -120,7 +120,7 @@ Local oWnd, hParent
    CreateGetList( Self )
    hParent := Iif( ::oParent!=Nil .AND. ;
       __ObjHasMsg( ::oParent,"HANDLE") .AND. ::oParent:handle != Nil ;
-      .AND. ::oParent:handle > 0, ::oParent:handle, ;
+      .AND. !empty(::oParent:handle ) , ::oParent:handle, ;
       Iif( ( oWnd:=HWindow():GetMain() ) != Nil,    ;
         oWnd:handle,GetActiveWindow() ) )
 
@@ -174,6 +174,7 @@ Local i
 Local oTab
 Local nPos
    // writelog( str(msg) + str(wParam) + str(lParam) )
+
    IF ( i := Ascan( aMessModalDlg, {|a|a[1]==msg} ) ) != 0
       if ::lRouteCommand .and. (msg ==WM_COMMAND .or. msg == WM_NOTIFY)
 

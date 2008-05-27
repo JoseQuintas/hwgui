@@ -1,5 +1,5 @@
 /*
- * $Id: hsplit.prg,v 1.9 2005-10-19 10:04:27 alkresin Exp $
+ * $Id: hsplit.prg,v 1.10 2008-05-27 12:10:56 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSplitter class
@@ -51,7 +51,7 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight, ;
 Return Self
 
 METHOD Activate() CLASS HSplitter
-   IF ::oParent:handle != 0
+   IF !empty( ::oParent:handle ) 
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()

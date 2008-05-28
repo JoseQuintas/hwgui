@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.816 2008-05-27 12:10:32 lculik Exp $
+ * $Id: Changelog,v 1.817 2008-05-28 15:51:08 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-05-28 17:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+   * source/drawwidg.prg
+     + added parameter nFlags to hBitmap:AddResource() method 
+	 * changed LoadIcon() to LoadImage() in hBitmap:AddResource() method 
+	   to handle the nFlags parameter (by example, passing 
+	   LR_LOADTRANSPARENT now correctly displays transparency for bitmaps
+	   having indexed color and trasparent color at upperleft corner)
+   * source/hcontrol.prg (thanks to Luis Rafael Basso for suggestions)
+     * added m_bToggled missed property declaration to hButtonEx class
+     * changed WM_LBUTTONDOWN and WM_LBUTTONUP msgs handler in onEvent
+       of hButtonEx class because don't was triggering validation of
+       gets	   
 
 2008-05-27 09:10 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * include/guilib.h

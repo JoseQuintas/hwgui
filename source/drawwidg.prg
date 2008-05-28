@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.12 2008-05-23 09:13:45 mlacecilia Exp $
+ * $Id: drawwidg.prg,v 1.13 2008-05-28 15:51:08 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -323,9 +323,16 @@ CLASS HBitmap INHERIT HObject
 
 ENDCLASS
 
-METHOD AddResource( name ) CLASS HBitmap
+METHOD AddResource( name, nFlags ) CLASS HBitmap
 Local lPreDefined := .F., i, aBmpSize
 
+	if nFlags == nil
+     nFlags := LR_DEFAULTCOLOR
+   endif  
+	IF Valtype( name ) == "N"
+      name := Ltrim( Str( name ) )
+      lPreDefined := .T.
+   ENDIF
    IF Valtype( name ) == "N"
       name := Ltrim( Str( name ) )
       lPreDefined := .T.
@@ -345,7 +352,7 @@ Local lPreDefined := .F., i, aBmpSize
       ENDIF
    NEXT
    #endif
-   ::handle :=   LoadBitmap( Iif( lPreDefined, Val(name),name ),lPreDefined )
+   ::handle := LoadImage( nil, Iif( lPreDefined, Val(name),name ), IMAGE_BITMAP, nil, nil, nFlags )
    ::name   := name
    aBmpSize  := GetBitmapSize( ::handle )
    ::nWidth  := aBmpSize[1]

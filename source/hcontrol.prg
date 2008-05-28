@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.61 2008-05-27 16:15:12 lculik Exp $
+ * $Id: hcontrol.prg,v 1.62 2008-05-28 15:51:08 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -421,7 +421,7 @@ CLASS HButtonEX INHERIT HButton
    DATA hTheme
    DATA Caption
    DATA state
-   DATA  m_bIsDefault INIT .F.
+   DATA m_bIsDefault INIT .F.
    DATA m_nTypeStyle  init 0
    DATA m_bLButtonDown
    DATA m_bSent,m_bLButtonDown,m_bIsToggle
@@ -430,7 +430,7 @@ CLASS HButtonEX INHERIT HButton
    DATA m_bmpParent
    DATA m_pOldParentBitmap
    DATA m_csbitmaps init {,,,,}
-
+	DATA m_bToggled INIT .f.
 
 
 
@@ -582,7 +582,6 @@ RETURN NIL
 METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
 
 Local pt:={,},rectButton,acoor
-local cc
 local pos
 
    IF msg == WM_THEMECHANGED
@@ -617,7 +616,7 @@ local pos
       endif
       if ((wParam == VK_SPACE) .or. (wParam == VK_RETURN))
          SendMessage(::handle,WM_LBUTTONDOWN, 0, MAKELPARAM(1, 1))
-                  return 0
+         return 0
       endif
 
 
@@ -628,63 +627,51 @@ local pos
          return 0
       endif
       
-   elseif msg == WM_LBUTTONUP
-
+   elseif msg == WM_LBUTTONUP 
      ::m_bLButtonDown := .f.
      if (::m_bSent)
         SendMessage(::handle,BM_SETSTATE, 0,0)
        ::m_bSent := .f.
-        
-            if valtype(::oParent)  == "O"            
-          SendMessage(::oParent:handle, WM_COMMAND,makewparam(::id,BN_CLICKED),::handle)
-               return 0
-       endif
-     else
-            if valtype(::oParent)  == "O"            
-          SendMessage(::oParent:handle, WM_COMMAND,makewparam(::id,BN_CLICKED),::handle)
-               return 0
-       endif
-
      endif
      if ::m_bIsToggle
-                        
        pt[1]:= loword( lParam )
        pt[2]:= hiword( lParam )
        acoor :=ClientToScreen(::handle,pt[1],pt[2])
-
+ 
        rectButton :=GetWindowRect(::handle )
         
-            if (!PtInRect(rectButton,acoor))                      
-          ::m_bToggled = !::m_bToggled
-          InvalidateRect(::handle,0)
-        endif
+       if (!PtInRect(rectButton,acoor))                      
+           ::m_bToggled = !::m_bToggled
+           InvalidateRect(::handle,0)
+           SendMessage(::handle,BM_SETSTATE, 0,0)
+           ::m_bLButtonDown := .T.
+       endif
      endif
-     return 0
-
+     return -1
+     
    elseif msg == WM_LBUTTONDOWN
-      
       ::m_bLButtonDown := .t.
       if (::m_bIsToggle)   
-           ::m_bToggled := !::m_bToggled
+         ::m_bToggled := !::m_bToggled
          InvalidateRect(::handle,0)
       endif
-   return 0
+      return -1
 
     elseif msg ==WM_LBUTTONDBLCLK
                 
-                      if (::m_bIsToggle)
+         if (::m_bIsToggle)
                         
             // for toggle buttons, treat doubleclick as singleclick
-                                SendMessage(::handle,BM_SETSTATE, ::m_bToggled,0)
-                        
+            SendMessage(::handle,BM_SETSTATE, ::m_bToggled,0)                     
+
          else
-                        
-                                SendMessage(::handle,BM_SETSTATE, 1,0)
-                                ::m_bSent := TRUE
-                        endif
-                        return 0
+
+            SendMessage(::handle,BM_SETSTATE, 1,0)
+            ::m_bSent := TRUE
+
+         endif
+         return 0
                 
-  
    elseif msg == WM_GETDLGCODE
       return ButtonGetDlgCode(lParam)
 

@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.53 2008-05-23 21:26:30 fperillo Exp $
+ *$Id: windows.ch,v 1.54 2008-05-29 19:41:14 mlacecilia Exp $
  */
 
 #define WM_CREATE                       1
@@ -343,6 +343,8 @@
 #define RDW_ALLCHILDREN         128    // 0x0080
 #define RDW_UPDATENOW           256    // 0x0100
 #define RDW_ERASENOW            512    // 0x0200
+#define RDW_FRAME              1024    // 0x0400
+#define RDW_NOFRAME            2048    // 0x0800
 
 /*
  * Static Control Constants

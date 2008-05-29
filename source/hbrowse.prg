@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.114 2008-05-27 12:10:49 lculik Exp $
+ * $Id: hbrowse.prg,v 1.115 2008-05-29 19:41:14 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -270,7 +270,7 @@ RETURN Nil
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 Local aCoors, oParent, cKeyb, nCtrl, nPos, lBEof
 Local nRecStart, nRecStop
-   // WriteLog( "Brw: "+Str(::handle,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   WriteLog( "Brw: "+Str(::handle,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::active .AND. !Empty( ::aColumns )
 
       IF ::bOther != Nil
@@ -285,7 +285,8 @@ Local nRecStart, nRecStop
          IF ::brush != Nil
             aCoors := GetClientRect( ::handle )
             FillRect( wParam, aCoors[1], aCoors[2], aCoors[3]+1, aCoors[4]+1, ::brush:handle )
-            RETURN 1
+            ::refresh(.f.)
+			   RETURN 1
          ENDIF
 
       ELSEIF msg == WM_SETFOCUS
@@ -293,7 +294,8 @@ Local nRecStart, nRecStop
             Eval( ::bGetFocus, Self )
             //::refreshLine()
          ENDIF
-
+			::refresh()
+			
       ELSEIF msg == WM_KILLFOCUS
          IF ::bLostFocus != Nil
             Eval( ::bLostFocus, Self )

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.115 2008-05-29 19:41:14 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.116 2008-05-29 19:55:36 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -111,7 +111,6 @@ CLASS HBrowse INHERIT HControl
    DATA colPos     INIT 1                      // Current column position
    DATA nColumns                               // Number of visible data columns
    DATA nLeftCol                               // Leftmost column
-   DATA xpos
    DATA freeze                                 // Number of columns to freeze
    DATA nRecords     INIT 0                    // Number of records in browse
    DATA nCurrent     INIT 1                    // Current record
@@ -270,7 +269,7 @@ RETURN Nil
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 Local aCoors, oParent, cKeyb, nCtrl, nPos, lBEof
 Local nRecStart, nRecStop
-   WriteLog( "Brw: "+Str(::handle,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   // WriteLog( "Brw: "+Str(::handle,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::active .AND. !Empty( ::aColumns )
 
       IF ::bOther != Nil
@@ -345,7 +344,23 @@ Local nRecStart, nRecStop
                RETURN 1
             ENDIF
          ENDIF
-         IF wParam == 40        // Down
+         IF wParam == VK_TAB
+          IF ::lCtrlPress                                                              
+             nPos := AScan( ::oParent:acontrols, { | o | o:handle == ::HANDLE } )      
+             IF GetKeyState(VK_SHIFT) < 0                                              
+                nPos := IIF(nPos <= 1 ,len(::oParent:acontrols),nPos-1)                
+             ELSE                                                                      
+                nPos := IIF(nPos = 0 .OR. nPos=len(::oParent:acontrols),1,nPos+1)      
+             ENDIF                                                                     
+             ::oParent:acontrols[nPos]:setFocus()                                      
+          ELSE                                                                         
+             IF GetKeyState(VK_SHIFT) < 0                                              
+                ::DoHScroll( SB_LINELEFT )                                             
+             ELSE                                                                      
+                ::DoHScroll( SB_LINERIGHT )                                            
+             ENDIF                                                                     
+          endif                                                                        
+         elseIF wParam == 40        // Down
             IF ::lShiftPress .AND. ::aSelected != Nil
                  (::alias)->(dbskip())
                  lBEof:=(::alias)->(eof())
@@ -856,7 +871,9 @@ Local pps, hDC
    //endif
 
    IF Checkbit( ::internal[1],1 ) .OR. ::lAppMode
-      ::HeaderOut( hDC )
+      if ::nHeadRows > 0
+          ::HeaderOut( hDC )
+      ENDIF    
       IF ::nFootRows > 0
          ::FooterOut( hDC )
       ENDIF
@@ -1044,7 +1061,7 @@ Local lColumnFont := .F.
 //Local nPaintCol, nPaintRow
 Local aCores
 
-   ::xpos := x := ::x1
+   x := ::x1
    IF lClear == Nil ; lClear := .F. ; ENDIF
 
    IF ::bLineOut != Nil
@@ -1073,10 +1090,6 @@ Local aCores
          IF ::lAdjRight .and. ::nPaintCol == LEN( ::aColumns )
             xSize := Max( ::x2 - x, xSize )
          ENDIF
-         IF i == ::colpos
-            ::xpos := x
-         ENDIF
-
          IF vybfld == 0 .OR. vybfld == i
             IF ::aColumns[::nPaintCol]:bColor != Nil .AND. ::aColumns[::nPaintCol]:brush == Nil
                ::aColumns[::nPaintCol]:brush := HBrush():Add( ::aColumns[::nPaintCol]:bColor )
@@ -1255,22 +1268,6 @@ Local nScrollCode := LoWord( wParam )
          VScrollPos( Self, 0, .f.)
          ::refresh(.F.)
       ENDIF
-/*      
-   ELSEIF nScrollCode == SB_THUMBTRACK
-   	SetFocus( ::handle )
-      IF ::bScrollPos != Nil
-         Eval( ::bScrollPos, Self, SB_THUMBTRACK, .F., Hiword( wParam ) )
-      ELSE
-         IF ( ::alias )->( indexord() ) == 0                // sk
-            ( ::alias )->( DbGoto( Hiword( wParam ) ) )     // sk
-         ELSE
-            ( ::alias )->( OrdKeyGoTo( Hiword( wParam ) ) ) // sk
-         ENDIF
-         Eval( ::bSkip, Self, 1 )
-         Eval( ::bSkip, Self, -1 )
-         VScrollPos( Self, 0, .f.)
-         ::refresh(.F.)
-      ENDIF    */
    ENDIF
 RETURN 0
 
@@ -1280,7 +1277,6 @@ METHOD DoHScroll( wParam ) CLASS HBrowse
 Local nScrollCode := LoWord( wParam )
 Local nPos
 Local oldLeft := ::nLeftCol, nLeftCol, colpos, oldPos := ::colpos
-Local lMoveThumb := .T.
 
    IF nScrollCode == SB_LINELEFT .OR. nScrollCode == SB_PAGELEFT
       LineLeft( Self )
@@ -1320,11 +1316,9 @@ Local lMoveThumb := .T.
 
    IF ::nLeftCol != oldLeft .OR. ::colpos != oldpos
 
-      IF lMoveThumb
-         SetScrollRange( ::handle, SB_HORZ, 1, Len( ::aColumns ) )
-         nPos :=  ::colpos + ::nLeftCol - 1
-         SetScrollPos( ::handle, SB_HORZ, nPos )
-      ENDIF
+      SetScrollRange( ::handle, SB_HORZ, 1, Len( ::aColumns ) )
+      nPos :=  ::colpos + ::nLeftCol - 1
+      SetScrollPos( ::handle, SB_HORZ, nPos )
 
       IF ::nLeftCol == oldLeft
          ::RefreshLine()
@@ -1735,8 +1729,8 @@ Local oGet1, owb1, owb2
          bInit := Iif( wParam==Nil, {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1)}, ;
            {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1),PostMessage(o:aControls[1]:handle,WM_KEYDOWN,wParam,lParam)} )
 
-         if type <> "M"
-       INIT DIALOG oModDlg;
+      if type <> "M"
+			INIT DIALOG oModDlg;
             STYLE WS_POPUP + 1 + iif( oColumn:aList == Nil, WS_BORDER, 0 ) ;
             AT x1, y1 - Iif( oColumn:aList == Nil, 1, 0 ) ;
             SIZE nWidth, ::height + Iif( oColumn:aList == Nil, 1, 0 ) ;

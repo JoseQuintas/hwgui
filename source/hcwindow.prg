@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.18 2008-05-27 12:10:50 lculik Exp $
+ *$Id: hcwindow.prg,v 1.19 2008-05-30 05:40:32 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -83,7 +83,6 @@ ENDCLASS
 
 METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
 LOCAL i
-Tracelog(nId,nHandle)//,valtoprg(::aControls))
 
 I := IIF( nId != NIL, Ascan( ::aControls, {|o| o:id == nId } ), ;
                             Ascan( ::aControls, {|o| o:handle == nHandle } ) )
@@ -249,9 +248,7 @@ RETURN 1
 
 STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
 LOCAL oCtrl
-//tracelog(lPAram)
 //lParam := HANDLETOPTR( lParam)
-//tracelog(lPAram)
 oCtrl := oWnd:FindControl( , lParam )
 
    IF oCtrl != NIL
@@ -269,11 +266,8 @@ RETURN -1
 
 STATIC FUNCTION onDrawItem( oWnd, wParam, lParam )
 LOCAL oCtrl
-tracelog(oWnd, wParam, lParam )
    IF wParam != 0 .AND. ( oCtrl := oWnd:FindControl( wParam ) ) != NIL .AND. ;
       oCtrl:bPaint != NIL
-      Tracelog(oCtrl,cstr(wParam),cstr(lParam))
-
       Eval( oCtrl:bPaint, oCtrl, lParam )
       RETURN 1
 

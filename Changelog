@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.818 2008-05-29 19:41:11 mlacecilia Exp $
+ * $Id: Changelog,v 1.819 2008-05-30 05:40:32 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,29 +8,33 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-05-30 08:40 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
+  * hwgui/source/hcwindow.prg
+    ! TraceLog() call removed
+
 2008-05-29 21:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    * source/hbrowse.prg
      - avoided unneeded hBrowse xPos property
-	 * added handle of Tab and Shift-Tab keys for browsing row cells
-	 * added handle of Ctrl-Tab and Shift-Ctrl-Tab for moving to the next
-	   or previous tabbed control of dialog
-	 * forced repaint in WM_ERASEBKGND handle to avoid incorrect browse
-	   background when browse loose focus
+         * added handle of Tab and Shift-Tab keys for browsing row cells
+         * added handle of Ctrl-Tab and Shift-Ctrl-Tab for moving to the next
+           or previous tabbed control of dialog
+         * forced repaint in WM_ERASEBKGND handle to avoid incorrect browse
+           background when browse loose focus
    * include/windows.ch
-     + added some constants for RedrawWindow()   
- 
+     + added some constants for RedrawWindow()
+
 2008-05-28 17:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    * source/drawwidg.prg
-     + added parameter nFlags to hBitmap:AddResource() method 
-	 * changed LoadIcon() to LoadImage() in hBitmap:AddResource() method 
-	   to handle the nFlags parameter (by example, passing 
-	   LR_LOADTRANSPARENT now correctly displays transparency for bitmaps
-	   having indexed color and trasparent color at upperleft corner)
+     + added parameter nFlags to hBitmap:AddResource() method
+         * changed LoadIcon() to LoadImage() in hBitmap:AddResource() method
+           to handle the nFlags parameter (by example, passing
+           LR_LOADTRANSPARENT now correctly displays transparency for bitmaps
+           having indexed color and trasparent color at upperleft corner)
    * source/hcontrol.prg (thanks to Luis Fernando Basso for suggestions)
      * added m_bToggled missed property declaration to hButtonEx class
      * changed WM_LBUTTONDOWN and WM_LBUTTONUP msgs handler in onEvent
        of hButtonEx class because don't was triggering validation of
-       gets	   
+       gets
 
 2008-05-27 09:10 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * include/guilib.h
@@ -42,29 +46,29 @@
 
 2008-05-23 23:34 UTC+0100 Francesco Perillo <fperillo at gmail dot com>
    * samples/arbrow1.prg
-	 * sample to test column resize and show the problem still to solve
-	   (browse canvas paint when column are chanded smaller size)
+         * sample to test column resize and show the problem still to solve
+           (browse canvas paint when column are chanded smaller size)
 
 2008-05-23 23:17 UTC+0100 Francesco Perillo <fperillo at gmail dot com>
    * include/windows.ch
      * added a couple of definitions
    * source/hbrowse.prg
      * more changes for column resize when frozen columns are present
-	   ( ::freeze > 0 )
+           ( ::freeze > 0 )
 
 2008-05-23 11:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    * source/draw.c
      * unified code of LoadImage()
    * source/drawwidg.prg
      * for resource icons used LoadImage() allowing resizing of the icon
-	 * changed LoadIcon() to LoadImage() for obtaining resize of the icon
-	   (note that the same changes could be made to bitmaps also. i wait
-	   for a feedback about this possibility before apply this changes
-	   because also hSayImage() could be involved causing program code
-	   rearrangement.)
+         * changed LoadIcon() to LoadImage() for obtaining resize of the icon
+           (note that the same changes could be made to bitmaps also. i wait
+           for a feedback about this possibility before apply this changes
+           because also hSayImage() could be involved causing program code
+           rearrangement.)
 
 2008-05-21 18:40 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
-   * source/theme.c 
+   * source/theme.c
      ! added HB_DRAWTHEMEPARENTBACKGROUND() function
    * source/misc.c
      ! fixed return value when parameter is array on screen2client function
@@ -76,7 +80,7 @@
      ! added getwindowdc() and modifystyle() function
    * source/hcontrol.c
      ! change hbuttoex to correct handle click, enter and space keys
-   * source/control.c 
+   * source/control.c
      ! change BUTTONGETDLGCODE to return correct code
 
 2008-05-20 12:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
@@ -84,21 +88,21 @@
    * include/windows.ch
      change made by Luis Fernando Basso (lfbasso@via-rs.net)
      * now is active the behaviour of the IntelliMouse: pressing the wheel
-	   button or the central button of the mouse and moving this, the browse
-	   scrolls and the mouse cursor is changed. pressing again the 
-	   wheel/button causes the reset of normal operations.
+           button or the central button of the mouse and moving this, the browse
+           scrolls and the mouse cursor is changed. pressing again the
+           wheel/button causes the reset of normal operations.
    * source/hcontrol.prg
      * in the buttonex on event method:
        * handled return and space key press
        * added the handle of button accelerator
    + utils/designer/WindowsXP.Manifest
    + utils/designer/resource/bmp/smTimer.bmp
-     + added some file requested at designer compile time   
-	 
+     + added some file requested at designer compile time
+
 2008-05-19 19:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    * source/theme.c
      * HB_DRAWTHEMETEXT now takes in count correctly the lenght of unicode
-	   string of themed text 
+           string of themed text
 
    + utils\designer\resource\bmp\smalignbotton.bmp
    + utils\designer\resource\bmp\smalignleft.bmp
@@ -113,7 +117,7 @@
    + utils\designer\resource\bmp\smtoolbar.bmp
      ! new bitmaps for designer
    ! utils\designer\resource\f_hwgprg.prg
-     utils\designer\resource\widget.xml 
+     utils\designer\resource\widget.xml
      ! updated to handle new controls and properties to generate correct .prg output
    ! utils\designer\designer.prg
    ! utils\designer\designer.rc
@@ -124,10 +128,10 @@
      ! updated to handle new controls and properties
    ! source\hfrmtmpl.prg
      ! updated to reflect the changes to designer
-     Add this changes provided by luis fernando basso 
+     Add this changes provided by luis fernando basso
 
 2008-05-19 09:15 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
-   * minor fix in hbrowse.prg  
+   * minor fix in hbrowse.prg
 
 2008-05-18 23:40 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
    * source/hdatepic.prg
@@ -138,7 +142,7 @@
 2008-05-15 23:15 UTC+0100 Francesco Perillo (fperillo at gmail dot com)
    * source/hbrowse.prg
      * corrected a bug when you have a hBrowse larger that the sum
-	   of the width of all columns shorter than hbrowse canvas.
+           of the width of all columns shorter than hbrowse canvas.
        clicking near the right limit  of the rightmost
        column gave an error
 
@@ -149,23 +153,23 @@
 
 2008-05-15 17:10 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    * source/hbrowse.prg
-	 * forced the hbrowse to gain the focus when scrolled (if edit is
-	   pending, the edit control position was unchanged and the scoll
-	   was inconsistent, this was happening when the parent dialog hbrowse 
-	   is nomodal, as in the designer)
-	   better would be to reassign the focus to the edit control if
-	   even visible after the scroll, but not tried to do this at this
-	   commit
-	 * unified the code for thumb scroll movement
+         * forced the hbrowse to gain the focus when scrolled (if edit is
+           pending, the edit control position was unchanged and the scoll
+           was inconsistent, this was happening when the parent dialog hbrowse
+           is nomodal, as in the designer)
+           better would be to reassign the focus to the edit control if
+           even visible after the scroll, but not tried to do this at this
+           commit
+         * unified the code for thumb scroll movement
 
 2008-05-14 15:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    Changes suggested by Leonardo Machado (leonardo@sygecom.com.br)
    * source/hcontrol.prg
-	 * removed Tracelog() and AltD() calls
+         * removed Tracelog() and AltD() calls
    * samples/demomaximize.prg
-   * samples/flashocx.prg   
-	 * corrected code allowing tha correct compilation with bld.bat
- 
+   * samples/flashocx.prg
+         * corrected code allowing tha correct compilation with bld.bat
+
 2008-05-13 22:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/htab.prg
     ! tab set focus at first tabstop control.
@@ -173,7 +177,7 @@
 2008-05-04 23:10 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    changes suggested by Luis Fernando Basso (lfbasso@via-rs.net)
    * source/hbrowse.prg
-	 initialized the hBrowse:nRecords property to zero
+         initialized the hBrowse:nRecords property to zero
    * source/hdialog.prg
      fixed enter key navigation when pressed in the last get of form
 
@@ -190,7 +194,7 @@
 2008-04-28 17:25 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hgridex.prg
     * reverted the METHOD UpdateData() after last commit code errors
-	
+
 2008-04-27 22:20 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * gtk/control.c
     ! added support for month Calendar and for correct tab change manipulation
@@ -201,7 +205,7 @@
   * gtk/Makefile.linux
     ! Added new depencencies
 
-	
+
 2008-04-15 23:20 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hdialog.prg
     ! Equated Enter key to Tab key in Dialog.
@@ -221,12 +225,12 @@
   * source/hgridex.prg
     * added to METHOD UpdateData() the CLASS hGridex clause
   * source/window.c
-    * changed DoEvents() template and code to avoid warnings at compile 
+    * changed DoEvents() template and code to avoid warnings at compile
       time
   * source/grid.c
   * source/theme.c
-    * commented out some var declarations causing warnings at compile time  
-  
+    * commented out some var declarations causing warnings at compile time
+
 2008-04-09 21:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hsayimg.prg
     ! removed altd().
@@ -241,7 +245,7 @@
 2008-04-02 19:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hbrowse.prg
     * avoided the deletion of the vertical scrollbar when the browse contains a
-	  single row because was causing a bad repainting of headings
+          single row because was causing a bad repainting of headings
 
 2008-04-01 10:50 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * samples/flashocx.prg
@@ -260,25 +264,25 @@
     * Added OCX support
   * samples/rmsample.prg
   * samples/rmchart.ch
-	* Added sample to show rmchart ocx
+        * Added sample to show rmchart ocx
   * readme.activex
     * Read this file to understand how to use OCX in hwgui
 
 2008-03-31 15:50 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hcheck.prg
     * fixed default style of hCheckButton(). Now sets automatically the
-	  button state AND activates the VALID and WHEN clauses if given. 
+          button state AND activates the VALID and WHEN clauses if given.
 
 2008-03-31 15:50 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hcheck.prg
     * changed the default style of hCheckButton to BS_CHECKBOX because
-	  the old BS_AUTO2STATE don't manages the messages needed in VALID
-	  and WHEN clauses. In addition, the hard coded BS_AUTO2STATE 
+          the old BS_AUTO2STATE don't manages the messages needed in VALID
+          and WHEN clauses. In addition, the hard coded BS_AUTO2STATE
       style don't allows the setting of th BS_CHECKBOX style.
       Stay tuned: setting a BS_AUTOxxxxxx state don't lets Windows to
       pass to the parent window the management of the changed state of
-      the button.	  
-  
+      the button.
+
 2008-03-29 12:00 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * gtk/drawwing.prg
     ! fixed hicon class under linux
@@ -294,35 +298,35 @@
 2008-03-26 11:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hanimat.prg
     * declared static function the macro wrappers of methods for better
-	  encapsulation (but why to use macros and not directly to send
-	  messages?)
-	+ added the use of avi files from resource files (also from external
+          encapsulation (but why to use macros and not directly to send
+          messages?)
+        + added the use of avi files from resource files (also from external
       files as system dll, exe, etc.)
   * include/guilib.ch
-    + added to the @ ... ANIMATION command the parameter for passing 
-	  the resource ID of the avi file
+    + added to the @ ... ANIMATION command the parameter for passing
+          the resource ID of the avi file
   * samples/tstAnimation.prg
     * some enhancements due to the last hAnimation() changes
 
 2008-03-25 23:51 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
   * source/hlistbox.prg
     ! modified method AddItem() to just add the new item
-      
+
 2008-03-25 23:32 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
   * source/hlistbox.prg
     + added method Clear() to empty the listbox
-	! ::aItems initialized to empty array if no parameter passed in New() o
-	  Redefine()
-      
+        ! ::aItems initialized to empty array if no parameter passed in New() o
+          Redefine()
+
 2008-03-25 22:32 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
   * source/window.c
     + added hwg_doevents to process messages (the DoEvents command in Visual
-	  Basic)
-      
+          Basic)
+
 2008-03-22 15:10 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! centered the Bmp in the cell when there is a header.
-      
+
 2008-03-21 21:10 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! adjusted size of a cell with a bmp and the header is not empty.
@@ -330,13 +334,13 @@
 2008-03-21 19:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hbrowse.prg
     ! added property ::alias previously omitted
-	  thanks to Sèrgio Kondo who signaled the needed changes
+          thanks to Sèrgio Kondo who signaled the needed changes
 
 2008-03-21 13:20 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hbrowse.prg
-    ! fixed pagedown setting scroll bar thumb position to top when attempting 
-	  to move beyond the end of file
-	* purged a lot of declarations referred to local unused variables 
+    ! fixed pagedown setting scroll bar thumb position to top when attempting
+          to move beyond the end of file
+        * purged a lot of declarations referred to local unused variables
 
 2008-03-21 07:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
@@ -379,25 +383,25 @@
 2008-03-07 23:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hcombo.prg
     * added as parameter the current value when evaluating the bValid
-	  codeblock, consistently with all other controls having validation
+          codeblock, consistently with all other controls having validation
 
 2008-03-07 18:00 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hbrowse.prg
     (this changes was suggested by Sergio on the brasilian yahoo group)
-    * avoided the recalc of the column width in the rebuild method if the 
-      ::width property is already valorized	(thanks to Francesco)
-	* changed the ColumnArBlock() return value to correctly handle the
-	  browse of editable arrays
+    * avoided the recalc of the column width in the rebuild method if the
+      ::width property is already valorized     (thanks to Francesco)
+        * changed the ColumnArBlock() return value to correctly handle the
+          browse of editable arrays
 
 2008-03-07 10:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hedit.prg
     + added bChange codeblock management for ON CHANGE behaviour
-	* now the bOther skips the usual message processing when the return value
-	  is other than -1, avoiding twice management of the overloaded messages
-  * include/guilib.ch  
+        * now the bOther skips the usual message processing when the return value
+          is other than -1, avoiding twice management of the overloaded messages
+  * include/guilib.ch
     + added ON CHANGE in @ ... EDITBOX, @ ... GET, REDEFINE GET commands
   * source/hipedit.prg
-    * remmed active tracelog 
+    * remmed active tracelog
 
 2008-03-06 20:12 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
@@ -428,34 +432,34 @@
 
 2008-02-26 18:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hedit.prg
-    * corrected behaviour when EM_PASSWORD style is used  
+    * corrected behaviour when EM_PASSWORD style is used
 
 2008-02-25 01:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hprinter.prg
     + added in preview mouse wheel scroll handling.
   * source/hedit.prg
-    * striped out a tracelog  
+    * striped out a tracelog
 
 2008-02-21 13:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
-  * samples/tstscrlbar.prg	(omitted in previuos commit, sorry!!!)
+  * samples/tstscrlbar.prg      (omitted in previuos commit, sorry!!!)
     * made some fix to behaviour and added demo of mousewheel management
-	  (i plan to elige the function stdScroll() as default management for 
-	  scrolling in windows having WM_xSCROLL style enabled leaving to bScroll
-	  the rule for custom scrolling event management)
+          (i plan to elige the function stdScroll() as default management for
+          scrolling in windows having WM_xSCROLL style enabled leaving to bScroll
+          the rule for custom scrolling event management)
 
 2008-02-21 01:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
-  * source/hwindow.prg	
+  * source/hwindow.prg
     source/hdialog.prg
-    source/hpanel.prg	
-	+ added the mouse wheel management to scrollbars
+    source/hpanel.prg
+        + added the mouse wheel management to scrollbars
 
 
 2008-02-20 01:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hcwindow.prg
     - stripped out the new property aScrollXY as unneeded
-  * samples/tstscrlbar.prg	
+  * samples/tstscrlbar.prg
     - tested sample for scrollbar management
-	
+
 2008-02-17 09:20 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hprinter.prg
     ! Add in preview mode scrollbar.
@@ -464,11 +468,11 @@
   * source/hcwindow.prg
     + new property aScrollXY - array of offset coords for scrollbars management
     * added msg parameter in onTrackScroll()
-  * source/hwindow.prg	
+  * source/hwindow.prg
     source/hdialog.prg
-    source/hpanel.prg	
-	* added msg parameter calling onTrackScroll()
-  + samples/tstscrlbar.prg	
+    source/hpanel.prg
+        * added msg parameter calling onTrackScroll()
+  + samples/tstscrlbar.prg
     - sample for scrollbar management (not yet fully tested)
 
 2008-02-16 11:20 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
@@ -479,19 +483,19 @@
   * utils/designer/hformgen.prg
     * striped out duplicate definitions for scrollbars
   * utils/designer/blddesig.bat
-    * remmed out custom library inclusion in linking  
+    * remmed out custom library inclusion in linking
 
 2008-02-16 03:10 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hcwindow.prg
     + new property bScroll - a codeblock user defined for scrollbars management
     + added in onTrackScroll() the evaluation of bScroll for WM_xSCROLL messages
-	  when sended by scrollbars
+          when sended by scrollbars
 
 2008-02-15 23:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/misc.c
   * include/windows.ch
     ! New function SETSCROLLRANGE and SCROLLWINDOW
-	for implement the gestion of scrollbars.
+        for implement the gestion of scrollbars.
 
 2008-02-15 23:10 UTC+0700 richard roesnadi  <roesnadi8@yahoo.co.id>
   * samples\tab3.prg & Tab3.xml
@@ -504,7 +508,7 @@
 2008-02-06 24:46 UTC+0700 richard roesnadi  <roesnadi8@yahoo.co.id>
   * source\menu_c.c
     !Back To MFS_DISABLED (line 58) Paulo Correction
-  * widgets.xml  
+  * widgets.xml
     !fixed from disabled default.
 
 2008-02-05 19:40 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
@@ -522,17 +526,17 @@
 2008-02-02 19:55 UTC+0700 richard roesnadi  <roesnadi8@yahoo.co.id>
   * utils/designer/extmodul.ch
   * utils/designer/extmodul.ch
-	! designer to added support for leto DB 
+        ! designer to added support for leto DB
       leto DB is Harbour (new) RDD DBFCDX Engine Client Server for Windows/Linux
       http://www.sourceforge.net/projects/letodb
-  
+
 2008-02-01 19:50 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
-  * source/hbrowse.prg  
+  * source/hbrowse.prg
     ! added support for (SHIFT-PGUP), (CTRL-SHIFT-PGUP) and (SHIFT-PGDOWN), (CTRL-SHIFT-PGDOWN)
       in Multiselect.
 
 2008-01-30 18:31 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
-  * source/hbrowse.prg  
+  * source/hbrowse.prg
     ! added support for (SHIFT-UP) and (SHIFT-DOWN) in Multiselect.
 
 2008-01-28 17-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
@@ -542,8 +546,8 @@
 2008-01-28 14:00 Luiz Rafael Culik <Luiz at xharbour.com.br>
    * gtk/window.c
      ! added code to correct handle accented chars
-   * gtk/hedit.prg 
-     ! minor ajust on editbox mode     
+   * gtk/hedit.prg
+     ! minor ajust on editbox mode
 
 2008-01-28 10:40 Luiz Rafael Culik <Luiz at xharbour.com.br>
    * Changelog

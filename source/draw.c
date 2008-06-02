@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.46 2008-06-02 21:27:22 lculik Exp $
+ * $Id: draw.c,v 1.47 2008-06-02 21:51:38 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -388,7 +388,7 @@ HB_FUNC( GETBITMAPSIZE )
    BITMAP  bitmap;
    PHB_ITEM aMetr = hb_itemArrayNew( 4 );
    PHB_ITEM temp;
-   int nRet;
+   int nret;
 
    nret = GetObject( (HBITMAP) HB_PARHANDLE( 1 ), sizeof( BITMAP ), ( LPVOID ) &bitmap );
 
@@ -418,7 +418,7 @@ HB_FUNC( GETICONSIZE )
    ICONINFO iinfo;
    PHB_ITEM aMetr = hb_itemArrayNew( 3 );
    PHB_ITEM temp;
-   int nret
+   int nret;
 
    nret = GetIconInfo( (HICON) HB_PARHANDLE( 1 ), &iinfo );
 

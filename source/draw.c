@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.45 2008-05-27 12:10:47 lculik Exp $
+ * $Id: draw.c,v 1.46 2008-06-02 21:27:22 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -386,10 +386,11 @@ HB_FUNC( SPREADBITMAP )
 HB_FUNC( GETBITMAPSIZE )
 {
    BITMAP  bitmap;
-   PHB_ITEM aMetr = hb_itemArrayNew( 3 );
+   PHB_ITEM aMetr = hb_itemArrayNew( 4 );
    PHB_ITEM temp;
+   int nRet;
 
-   GetObject( (HBITMAP) HB_PARHANDLE( 1 ), sizeof( BITMAP ), ( LPVOID ) &bitmap );
+   nret = GetObject( (HBITMAP) HB_PARHANDLE( 1 ), sizeof( BITMAP ), ( LPVOID ) &bitmap );
 
    temp = hb_itemPutNL( NULL, bitmap.bmWidth );
    hb_itemArrayPut( aMetr, 1, temp );
@@ -403,6 +404,11 @@ HB_FUNC( GETBITMAPSIZE )
    hb_itemArrayPut( aMetr, 3, temp );
    hb_itemRelease( temp );
 
+   temp = hb_itemPutNL( NULL, nret );
+   hb_itemArrayPut( aMetr, 4, temp );
+   hb_itemRelease( temp );
+
+
    hb_itemReturn( aMetr );
    hb_itemRelease( aMetr );
 }
@@ -410,10 +416,11 @@ HB_FUNC( GETBITMAPSIZE )
 HB_FUNC( GETICONSIZE )
 {
    ICONINFO iinfo;
-   PHB_ITEM aMetr = hb_itemArrayNew( 2 );
+   PHB_ITEM aMetr = hb_itemArrayNew( 3 );
    PHB_ITEM temp;
+   int nret
 
-   GetIconInfo( (HICON) HB_PARHANDLE( 1 ), &iinfo );
+   nret = GetIconInfo( (HICON) HB_PARHANDLE( 1 ), &iinfo );
 
    temp = hb_itemPutNL( NULL, iinfo.xHotspot * 2 );
    hb_itemArrayPut( aMetr, 1, temp );
@@ -422,6 +429,11 @@ HB_FUNC( GETICONSIZE )
    temp = hb_itemPutNL( NULL, iinfo.yHotspot * 2 );
    hb_itemArrayPut( aMetr, 2, temp );
    hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, nret);
+   hb_itemArrayPut( aMetr, 3, temp );
+   hb_itemRelease( temp );
+
 
    hb_itemReturn( aMetr );
    hb_itemRelease( aMetr );

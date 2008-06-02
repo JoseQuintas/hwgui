@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.62 2008-05-28 15:51:08 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.63 2008-06-02 21:27:22 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -945,7 +945,7 @@ LOCAL uAlign,uStyleTmp
 
       IF ::Themed
 
-         hb_DrawThemeText( ::hTheme, dc, BP_PUSHBUTTON, PBS_NORMAL, ;
+         hb_DrawThemeText( ::hTheme, dc, BP_PUSHBUTTON, if( bIsDisabled, PBS_DISABLED, PBS_NORMAL), ;
                            ::caption, ;
                            uAlign, ;
                            0, captionRect )

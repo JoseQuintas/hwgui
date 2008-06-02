@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.819 2008-05-30 05:40:32 omm Exp $
+ * $Id: Changelog,v 1.820 2008-06-02 21:27:22 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-06-02 18:30 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
+  * source/draw.c
+    Changed array return from   GETBITMAPSIZE() and GETICONSIZE()
+    the last item of the array( 4 in getbitmapsize and 3 on GETICONSIZE
+    is the operation status return
+  * source/hcontrol.prg
+    ! fix disable text on buttonex
 
 2008-05-30 08:40 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
   * hwgui/source/hcwindow.prg

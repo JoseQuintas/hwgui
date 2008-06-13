@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.117 2008-06-03 16:21:11 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.118 2008-06-13 16:07:42 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -147,7 +147,6 @@ CLASS HBrowse INHERIT HControl
    DATA aSelected                              // An array of selected records numbers
    DATA nWheelPress INIT 0							   // wheel or central button mouse pressed flag
 	
-	// By Luiz Henrique dos Santos (luizhsantos@gmail.com)
    DATA lDescend INIT .F.              // Descend Order?
    DATA lFilter INIT .F.               // Filtered? (atribuition is automatic in method "New()").
    DATA bFirst INIT {|| DBGOTOP()}     // Block to place pointer in first record of condition filter. (Ex.: DbGoTop(), DbSeek(), etc.).
@@ -231,7 +230,6 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
    ENDIF
    ::lDescend    := Iif( lDescend==Nil,.F.,lDescend )
 
-   // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
    IF ISBLOCK(bFirst) .OR. ISBLOCK(bFor) .OR. ISBLOCK(bWhile)
      ::lFilter := .T.
      IF ISBLOCK(bFirst)
@@ -269,7 +267,7 @@ RETURN Nil
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 Local aCoors, oParent, cKeyb, nCtrl, nPos, lBEof
 Local nRecStart, nRecStop
-   // WriteLog( "Brw: "+Str(::handle,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+
    IF ::active .AND. !Empty( ::aColumns )
 
       IF ::bOther != Nil
@@ -281,20 +279,12 @@ Local nRecStart, nRecStop
          RETURN 1
 
       ELSEIF msg == WM_ERASEBKGND
-         IF ::brush != Nil
-            aCoors := GetClientRect( ::handle )
-            FillRect( wParam, aCoors[1], aCoors[2], aCoors[3]+1, aCoors[4]+1, ::brush:handle )
-*            ::refresh(.f.)
-             PostMessage( ::handle, WM_PAINT, 0, 0 )
-            RETURN 1
-         ENDIF
+         RETURN 0
 
       ELSEIF msg == WM_SETFOCUS
          IF ::bGetFocus != Nil
             Eval( ::bGetFocus, Self )
-            //::refreshLine()
          ENDIF
-         ::refresh()
 
       ELSEIF msg == WM_KILLFOCUS
          IF ::bLostFocus != Nil
@@ -315,11 +305,9 @@ Local nRecStart, nRecStop
          DlgCommand( Self, wParam, lParam )
 
       ELSEIF msg == WM_KEYUP
-         // inicio bloco sauli
          IF wParam == 17
             ::lCtrlPress := .F.
          ENDIF
-         // fim bloco sauli
          IF wParam == 16
             ::lShiftPress := .F.
          ENDIF
@@ -457,18 +445,13 @@ Local nRecStart, nRecStop
 
          ELSEIF wParam == 27 .AND. ::lESC
             SendMessage( GetParent(::handle),WM_CLOSE,0,0 )
-         // inicio bloco sauli
          ELSEIF wParam == 17
             ::lCtrlPress := .T.
-         // fim bloco sauli
          ELSEIF wParam == 16
             ::lShiftPress := .T.
-
-
          ELSEIF ::lAutoEdit .AND. (wParam >= 48 .and. wParam <= 90 .or. wParam >= 96 .and. wParam <= 111 )
             ::Edit( wParam,lParam )
          ENDIF
-
 
          RETURN 1
 
@@ -636,7 +619,6 @@ METHOD InitBrw( nType )  CLASS HBrowse
 
    IF ::type == BRW_DATABASE
       ::alias   := Alias()
-      //Modified By Luiz Henrique dos Santos (luizhsantos@gmail.com.br)
       IF ::lFilter
         ::nLastRecordFilter  := ::nFirstRecordFilter := 0
         IF ::lDescend
@@ -690,9 +672,9 @@ Local i, j, oColumn, xSize, nColLen, nHdrLen, nCount
    ENDIF
    IF ::bcolor != Nil
       ::brush     := HBrush():Add( ::bcolor )
-      IF hDC != Nil
-         SendMessage( ::handle, WM_ERASEBKGND, hDC, 0 )
-      ENDIF
+//      IF hDC != Nil
+//         SendMessage( ::handle, WM_ERASEBKGND, hDC, 0 )
+//      ENDIF
    ENDIF
    IF ::bcolorSel != Nil
       ::brushSel  := HBrush():Add( ::bcolorSel )
@@ -814,8 +796,6 @@ Local pps, hDC
          Eval( ::bSkip, Self, ::rowPos-::internal[2] )
       ENDIF
    ELSE
-      // Modified by Luiz Henrique dos Santos (luizhsantos@gmail.com)
-      //IF Eval( ::bEof,Self )
       IF Eval( ::bEof,Self ) .OR. Eval( ::bBof,Self )
          Eval( ::bGoTop, Self )
          ::rowPos := 1
@@ -895,14 +875,6 @@ Local pps, hDC
       ::Edit()
    ENDIF
 
-   /* 30/09/2005 - <maurilio.longo@libero.it>
-                   I Had to remove this or else it is not possible to force a
-                   browse repaint which does not give it back focus
-   IF ( tmp := GetFocus() ) == ::oParent:handle .OR. ;
-         ::oParent:FindControl(,tmp) != Nil
-      SetFocus( ::handle )
-   ENDIF
-   */
 
    ::lAppMode := .F.
 
@@ -1368,7 +1340,6 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
       VScrollPos( Self, 0, .f.)
    ENDIF
 
-   PostMessage( ::handle, WM_PAINT, 0, 0 )
    SetFocus( ::handle )
 
 RETURN Nil
@@ -1396,7 +1367,6 @@ METHOD LINEUP() CLASS HBrowse
          VScrollPos( Self, 0, .f.)
       ENDIF
       ::internal[1] := SetBit( ::internal[1], 1, 0 )
-      PostMessage( ::handle, WM_PAINT, 0, 0 )
    ENDIF
    SetFocus( ::handle )
 RETURN Nil
@@ -1462,7 +1432,6 @@ METHOD BOTTOM(lPaint) CLASS HBrowse
 
    ::internal[1] := SetBit( ::internal[1], 1, 0 )
    IF lPaint == Nil .OR. lPaint
-      PostMessage( ::handle, WM_PAINT, 0, 0 )
       SetFocus( ::handle )
    ENDIF
 RETURN Nil
@@ -1476,7 +1445,6 @@ METHOD TOP() CLASS HBrowse
 
    InvalidateRect( ::handle, 0 )
    ::internal[1] := SetBit( ::internal[1], 1, 0 )
-   PostMessage( ::handle, WM_PAINT, 0, 0 )
    SetFocus( ::handle )
 
 RETURN Nil
@@ -1528,10 +1496,8 @@ Local xm := LOWORD(lParam), x1, fif
       ENDIF
 
       IF res
-         InvalidateRect( hBrw, 0, ::x1, ::y1+(::height+1)*::internal[2]-::height, ::x2, ::y1+(::height+1)*::internal[2] )
-         InvalidateRect( hBrw, 0, ::x1, ::y1+(::height+1)*::rowPos-::height, ::x2, ::y1+(::height+1)*::rowPos )
-         ::internal[1] := SetBit( ::internal[1], 1, 0 )
-         PostMessage( hBrw, WM_PAINT, 0, 0 )
+         RedrawWindow( ::handle, RDW_INVALIDATE )
+
       ENDIF
 
    ELSEIF ::lDispHead .and.;
@@ -1557,6 +1523,7 @@ Local hBrw := ::handle
 Local xPos := LOWORD(lParam), x, x1, i
 
    IF ::lResizing
+
       x := ::x1
       i := Iif( ::freeze > 0, 1, ::nLeftCol )    // ::nLeftCol
       DO WHILE x < xDrag
@@ -1573,8 +1540,7 @@ Local xPos := LOWORD(lParam), x, x1, i
          oCursor := 0
          ::lResizing := .F.
          InvalidateRect( hBrw, 0 )
-         PostMessage( hBrw, WM_PAINT, 0, 0 )
-      ENDIF
+   ENDIF
    ELSEIF ::aSelected != Nil
       IF ::lCtrlPress
          ::select()
@@ -1751,11 +1717,6 @@ Local oGet1, owb1, owb2
                 nChoic := Ascan( oColumn:aList,::varbuf )
             ENDIF
 
-            /* 21/09/2005 - <maurilio.longo@libero.it>
-                            The combobox needs to use a font smaller than the one used
-                            by the browser or it will be taller than the browse row that
-                            has to contain it.
-            */
             oComboFont := iif( Valtype( ::oFont ) == "U",;
                                HFont():Add("MS Sans Serif", 0, -8 ),;
                                HFont():Add( ::oFont:name, ::oFont:width, ::oFont:height + 2 ) )
@@ -1865,7 +1826,6 @@ METHOD RefreshLine() CLASS HBrowse
 
    ::internal[1] := 0
    InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*::rowPos-::height, ::x2, ::y1+(::height+1)*::rowPos )
-   SendMessage( ::handle, WM_PAINT, 0, 0 )
 RETURN Nil
 
 //----------------------------------------------------//
@@ -2124,7 +2084,7 @@ Local nL, nPos := 0
       nCount ++
    ENDDO
 RETURN nil
-// By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+
 STATIC FUNCTION FltSkip(oBrw, nLines, lDesc)
 LOCAL n
   IF nLines == NIL

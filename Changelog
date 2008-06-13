@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.821 2008-06-03 16:20:27 giuseppem Exp $
+ * $Id: Changelog,v 1.822 2008-06-13 08:59:37 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-06-13 11:05 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+   * source/hcontrol.prg
+    ! fixed to the center the text alignment of hButtonEx if no bitmap or icon
+      is present. <change made by Luis Fernando Basso>
 
 2008-06-03 18:20 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg

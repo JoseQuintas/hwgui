@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.118 2008-06-13 16:07:42 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.119 2008-06-14 19:43:40 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1067,7 +1067,7 @@ Local aCores
             IF ::aColumns[::nPaintCol]:bColor != Nil .AND. ::aColumns[::nPaintCol]:brush == Nil
                ::aColumns[::nPaintCol]:brush := HBrush():Add( ::aColumns[::nPaintCol]:bColor )
             ENDIF
-            hBReal := Iif( ::aColumns[::nPaintCol]:brush != Nil, ;
+            hBReal := Iif( ::aColumns[::nPaintCol]:brush != Nil .AND. (::nPaintCol != ::colPos .OR. !lSelected), ;
                            ::aColumns[::nPaintCol]:brush:handle,   ;
                            oLineBrush:handle )
             FillRect( hDC, x, ::y1+(::height+1)*(::nPaintRow-1)+1, x+xSize-Iif(::lSep3d,2,1),::y1+(::height+1)*::nPaintRow, hBReal )
@@ -1095,11 +1095,11 @@ Local aCores
                ELSE
                   sviv := FLDSTR( Self, ::nPaintCol)
                   // Ahora lineas Justificadas !!
-                  IF ::aColumns[::nPaintCol]:tColor != Nil
+                  IF ::aColumns[::nPaintCol]:tColor != Nil .AND. (::nPaintCol != ::colPos .OR. !lSelected)
                      oldT1Color := SetTextColor( hDC, ::aColumns[::nPaintCol]:tColor )
                   ENDIF
 
-                  IF ::aColumns[::nPaintCol]:bColor != Nil
+                  IF ::aColumns[::nPaintCol]:bColor != Nil .AND. (::nPaintCol != ::colPos .OR. !lSelected)
                      oldBk1Color := SetBkColor( hDC, ::aColumns[::nPaintCol]:bColor )
                   ENDIF
                   IF ::aColumns[::nPaintCol]:oFont != Nil
@@ -1112,11 +1112,11 @@ Local aCores
 
                   DrawText( hDC, sviv, x, ::y1+(::height+1)*(::nPaintRow-1)+1, x+xSize-2,::y1+(::height+1)*::nPaintRow-1, ::aColumns[::nPaintCol]:nJusLin )
 
-                  IF ::aColumns[::nPaintCol]:tColor != Nil
+                  IF ::aColumns[::nPaintCol]:tColor != Nil .AND. (::nPaintCol != ::colPos .OR. !lSelected)
                      SetTextColor( hDC, oldT1Color )
                   ENDIF
 
-                  IF ::aColumns[::nPaintCol]:bColor != Nil
+                  IF ::aColumns[::nPaintCol]:bColor != Nil .AND. (::nPaintCol != ::colPos .OR. !lSelected)
                      SetBkColor( hDC, oldBk1Color )
                   ENDIF
                ENDIF
@@ -1540,7 +1540,8 @@ Local xPos := LOWORD(lParam), x, x1, i
          oCursor := 0
          ::lResizing := .F.
          InvalidateRect( hBrw, 0 )
-   ENDIF
+      ENDIF
+
    ELSEIF ::aSelected != Nil
       IF ::lCtrlPress
          ::select()

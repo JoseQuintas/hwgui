@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.120 2008-06-16 13:52:45 fperillo Exp $
+ * $Id: hbrowse.prg,v 1.121 2008-06-16 17:50:55 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -352,12 +352,14 @@ Local nRecStart, nRecStop
           endif                                                                        
          elseIF wParam == 40        // Down
             IF ::lShiftPress .AND. ::aSelected != Nil
-                 (::alias)->(dbskip())
-                 lBEof:=(::alias)->(eof())
-                 (::alias)->(dbskip(-1))
+                 Eval(::bskip, Self, 1)
+                 lBEof:=Eval(::beof, Self)
+                 Eval(::bskip, Self, -1)
                  IF !(lBEof .and. Ascan( ::aSelected, Eval( ::bRecno,Self ) )>0)
                     ::select()
-                    ::refreshline()
+                    if lBeof
+                       ::refreshline()
+                    endif
                  ENDIF
             ENDIF
             ::LINEDOWN()
@@ -365,9 +367,9 @@ Local nRecStart, nRecStop
          ELSEIF wParam == 38    // Up
 
             IF ::lShiftPress .AND. ::aSelected != Nil
-                 (::alias)->(dbskip())
-                 lBEof:=(::alias)->(eof())
-                 (::alias)->(dbskip(-1))
+                 Eval(::bskip, Self, 1)
+                 lBEof:=Eval(::beof, Self)
+                 Eval(::bskip, Self, -1)
                  IF !(lBEof .and. Ascan( ::aSelected, Eval( ::bRecno,Self ) )>0)
                     ::LINEUP()
                  ENDIF
@@ -376,12 +378,13 @@ Local nRecStart, nRecStop
             ENDIF
 
             IF ::lShiftPress .AND. ::aSelected != Nil
-                 (::alias)->(dbskip(-1))
-                 IF !lBEof:=(::alias)->(bof())
-                    (::alias)->(dbskip())
+                 Eval(::bskip, Self, -1)
+                 IF !lBEof:=Eval(::bBof, Self)
+                    Eval(::bskip, Self, 1)
                  ENDIF
                  IF !(lBEof .and. Ascan( ::aSelected, Eval( ::bRecno,Self ) )>0)
                      ::select()
+                     ::refresh(.f.)
                  ENDIF
             ENDIF
 
@@ -394,7 +397,7 @@ Local nRecStart, nRecStop
          ELSEIF wParam == 35    // End
             ::DoHScroll( SB_RIGHT )
          ELSEIF wParam == 34    // PageDown
-            nRecStart:=(::alias)->(recno())
+            nRecStart:=Eval(::brecno, Self)
             IF ::lCtrlPress
                 if( ::nRecords > ::rowCount )
                ::BOTTOM()
@@ -405,43 +408,43 @@ Local nRecStart, nRecStop
                ::PageDown()
             ENDIF
             IF ::lShiftPress .AND. ::aSelected != Nil
-                nRecStop:=(::alias)->(recno())
-                 (::alias)->(dbskip())
-                 lBEof:=(::alias)->(eof())
-                 (::alias)->(dbskip(-1))
+                nRecStop:=Eval(::brecno, Self)
+                Eval(::bskip, Self, 1)
+                lBEof:=Eval(::beof, Self)
+                Eval(::bskip, Self, -1)
                 IF !(lBEof .and. Ascan( ::aSelected, Eval( ::bRecno,Self ) )>0)
                     ::select()
                 ENDIF
-                DO WHILE (::alias)->(recno()) != nRecStart
+                DO WHILE Eval( ::bRecno,Self ) != nRecStart
                      ::Select()
-                     (::alias)->(dbskip(-1))
+                     Eval(::bskip, Self, -1)
                 ENDDO
                 ::Select()
-                (::alias)->(DBGOTO(nRecStop))
-                (::alias)->(dbskip())
-                IF (::alias)->(eof())
-                   (::alias)->(dbskip(-1))
+                Eval(::bgoto, Self, nRecStop)
+                Eval(::bskip, Self, 1)
+                IF Eval(::beof, self)
+                   Eval(::bskip, Self, -1)
                    ::Select()
                 ELSE
-                   (::alias)->(dbskip(-1))
+                   Eval(::bskip, Self, -1)
                 ENDIF
                 ::Refresh()
             ENDIF
          ELSEIF wParam == 33    // PageUp
-            nRecStop:=(::alias)->(recno())
+            nRecStop:=Eval(::brecno, Self)
             IF ::lCtrlPress
                ::TOP()
             ELSE
                ::PageUp()
             ENDIF
             IF ::lShiftPress .AND. ::aSelected != Nil
-                nRecStart:=(::alias)->(recno())
-                DO WHILE (::alias)->(recno()) != nRecstop
+                nRecStart:=Eval( ::bRecno,Self )
+                DO WHILE Eval( ::bRecno,Self ) != nRecstop
                      ::Select()
-                     (::alias)->(dbskip())
+                     Eval(::bskip, Self, 1)
                 ENDDO
 
-                (::alias)->(DBGOTO(nRecStart))
+                Eval(::bgoto, Self, nRecStart)
                 ::Refresh()
             ENDIF
 
@@ -895,11 +898,11 @@ Local pps, hDC
    // FP: Reenabled the lEditable check as it's not possible
    //     to move the "cursor cell" if lEditable is FALSE
    //     Actually: if lEditable is FALSE we can only have LINE selection
-   if ::lEditable
+//   if ::lEditable
       if lLostFocus==NIL
         ::LineOut( ::rowPos,::colpos, hDC, .T. )
       endif
-   endif
+//   endif
 
    // if bit-1 refresh header and footer
    IF Checkbit( ::internal[1],1 ) .OR. ::lAppMode
@@ -1557,7 +1560,7 @@ Local xm := LOWORD(lParam), x1, fif
 
    IF nLine > 0 .AND. nLine <= ::rowCurrCount
       IF step != 0
-         nrec := (::alias)->(Recno())
+         nrec := Eval(::brecno, Self)
          Eval( ::bSkip, Self, step )
          IF !Eval( ::bEof,Self )
             ::rowPos := nLine

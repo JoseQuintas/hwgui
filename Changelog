@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.825 2008-06-16 13:52:44 fperillo Exp $
+ * $Id: Changelog,v 1.826 2008-06-16 17:50:11 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-06-16 19:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hbrowse.prg
+    ! Resolved error in array browse with (SHIFT-UP), (SHIFT-DOWN),
+      (SHIFT-PGUP), (CTRL-SHIFT-PGUP) and (SHIFT-PGDOWN), (CTRL-SHIFT-PGDOWN)
+      in Multiselect.
+      The cell selection is show ever.
+
+
 2008-06-16 15:30 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
   * source/hbrowse.prg
     ! ctrl-pagedown is now handled correctly for ARRAY browse

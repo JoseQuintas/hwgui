@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.119 2008-06-14 19:43:40 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.120 2008-06-16 13:52:45 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -61,7 +61,8 @@ CLASS HColumn INHERIT HObject
    DATA aBitmaps
    DATA bValid,bWhen             // When and Valid codeblocks for cell editing
    DATA bEdit                    // Codeblock, which performs cell editing, if defined
-   DATA cGrid
+   DATA cGrid                    // Specify border for Header (SNWE), can be
+                                 // multiline if separated by ;
    DATA lSpandHead INIT .F.
    DATA lSpandFoot INIT .F.
    DATA Picture
@@ -395,7 +396,11 @@ Local nRecStart, nRecStop
          ELSEIF wParam == 34    // PageDown
             nRecStart:=(::alias)->(recno())
             IF ::lCtrlPress
+                if( ::nRecords > ::rowCount )
                ::BOTTOM()
+                else
+                   ::PageDown()
+                endif
             ELSE
                ::PageDown()
             ENDIF
@@ -740,12 +745,14 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD Paint(lLostFocus)  CLASS HBrowse
-Local aCoors, aMetr, i, tmp, nRows
+Local aCoors, aMetr, cursor_row, tmp, nRows
 Local pps, hDC
 
    IF !::active .OR. Empty( ::aColumns )
       RETURN Nil
    ENDIF
+
+// Validate some variables
 
    IF ::tcolor    == Nil ; ::tcolor    := 0 ; ENDIF
    IF ::bcolor    == Nil ; ::bcolor    := VColor( "FFFFFF" ) ; ENDIF
@@ -756,6 +763,8 @@ Local pps, hDC
    IF ::tcolorSel == Nil ; ::tcolorSel := VColor( "FFFFFF" ) ; ENDIF
    IF ::bcolorSel == Nil ; ::bcolorSel := VColor( "808080" ) ; ENDIF
 
+// Open Paint procedure
+
    pps := DefinePaintStru()
    hDC := BeginPaint( ::handle, pps )
 
@@ -765,6 +774,9 @@ Local pps, hDC
    IF ::brush == Nil .OR. ::lChanged
       ::Rebuild(hDC)
    ENDIF
+
+// Get client area coordinate
+
    aCoors := GetClientRect( ::handle )
    aMetr := GetTextMetric( hDC )
    ::width := Round( ( aMetr[ 3 ] + aMetr[ 2 ] ) / 2 - 1,0 )
@@ -779,8 +791,14 @@ Local pps, hDC
       ::nCurrent := ::nRecords
    ENDIF
 
+// Calculate number of columns visible
+
    ::nColumns := FLDCOUNT( Self, ::x1 + 2, ::x2 - 2, ::nLeftCol )
+
+// Calculate number of rows the canvas can host
    ::rowCount := Int( (::y2-::y1) / (::height+1) ) - ::nFootRows
+
+// nRows: if number of data rows are less than video rows available....
    nRows := Min( ::nRecords,::rowCount )
 
    IF ::internal[1] == 0
@@ -800,41 +818,65 @@ Local pps, hDC
          Eval( ::bGoTop, Self )
          ::rowPos := 1
       ENDIF
+
+// Se riga_cursore_video > numero_record
+//    metto il cursore sull'ultima riga
       IF ::rowPos > nRows .AND. nRows > 0
          ::rowPos := nRows
       ENDIF
+
+// Take record number
       tmp := Eval( ::bRecno,Self )
+
+// if riga_cursore_video > 1
+//   we skip ::rowPos-1 number of records back, 
+//   actually positioning video cursor on first line
       IF ::rowPos > 1
          Eval( ::bSkip, Self,-(::rowPos-1) )
       ENDIF
-      i := 1
+
+// Browse printing is split in two parts
+// first part starts from video row 1 and goes to end of data (EOF)
+//   or end of video lines
+
+// second part starts from where part 1 stopped - 
+
+      cursor_row := 1
       DO WHILE .T.
+         // if we are on the current record, set current video line
          IF Eval( ::bRecno,Self ) == tmp
-            ::rowPos := i
+            ::rowPos := cursor_row
          ENDIF
-         IF i > nRows .OR. Eval( ::bEof,Self )
+
+         // exit loop when at last row or eof()
+         IF cursor_row > nRows .OR. Eval( ::bEof,Self )
             EXIT
          ENDIF
+
+         // decide how to print the video row
          IF ::aSelected != Nil .AND. Ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
-            ::LineOut( i, 0, hDC, .T. )
+            ::LineOut( cursor_row, 0, hDC, .T. )
          ELSE
-            ::LineOut( i, 0, hDC, .F. )
+            ::LineOut( cursor_row, 0, hDC, .F. )
          ENDIF
-         i ++
+         cursor_row ++
          Eval( ::bSkip, Self,1 )
       ENDDO
-      ::rowCurrCount := i - 1
+      ::rowCurrCount := cursor_row - 1
 
-      IF ::rowPos >= i
-         ::rowPos := Iif( i > 1,i - 1,1 )
+      // set current_video_line depending on the situation
+      IF ::rowPos >= cursor_row
+         ::rowPos := Iif( cursor_row > 1,cursor_row - 1,1 )
       ENDIF
-      DO WHILE i <= nRows
+
+      // print the rest of the browse
+      DO WHILE cursor_row <= nRows
          IF ::aSelected != Nil .AND. Ascan(::aSelected, {|x| x=Eval( ::bRecno,Self )}) > 0
-            ::LineOut( i, 0, hDC, .t.,.T. )
+            ::LineOut( cursor_row, 0, hDC, .t.,.T. )
          ELSE
-            ::LineOut( i, 0, hDC, .F.,.T. )
+            ::LineOut( cursor_row, 0, hDC, .F.,.T. )
          ENDIF
-         i ++
+         cursor_row ++
       ENDDO
 
       Eval( ::bGoTo, Self,tmp )
@@ -844,13 +886,22 @@ Local pps, hDC
    ENDIF
 
    //::LineOut( ::rowPos, Iif( ::lEditable, ::colpos, 0 ), hDC, .T. )
-   ::LineOut( ::rowPos, 0, hDC, .T. )
-   //if ::lEditable
-   if lLostFocus==NIL
-     ::LineOut( ::rowPos,::colpos, hDC, .T. )
-   endif
-   //endif
 
+   // Highlights the selected ROW
+   // we can have a modality with CELL selection only or ROW selection
+   ::LineOut( ::rowPos, 0, hDC, .T. )
+
+   // Highligths the selected cell
+   // FP: Reenabled the lEditable check as it's not possible
+   //     to move the "cursor cell" if lEditable is FALSE
+   //     Actually: if lEditable is FALSE we can only have LINE selection
+   if ::lEditable
+      if lLostFocus==NIL
+        ::LineOut( ::rowPos,::colpos, hDC, .T. )
+      endif
+   endif
+
+   // if bit-1 refresh header and footer
    IF Checkbit( ::internal[1],1 ) .OR. ::lAppMode
       if ::nHeadRows > 0
           ::HeaderOut( hDC )
@@ -860,9 +911,14 @@ Local pps, hDC
       ENDIF
    ENDIF
 
+   // End paint block
    EndPaint( ::handle, pps )
+
+
    ::internal[1] := 15
    ::internal[2] := ::rowPos
+
+   // calculate current bRecno()
    tmp := eval( ::bRecno,Self )
    IF ::recCurr != tmp
       ::recCurr := tmp
@@ -881,6 +937,7 @@ Local pps, hDC
 RETURN Nil
 
 //----------------------------------------------------//
+// TODO: __StrToken can create problems.... can't have separator as first char
 METHOD HeaderOut( hDC ) CLASS HBrowse
 Local i, x, oldc, fif, xSize
 Local nRows := Min( ::nRecords+Iif(::lAppMode,1,0),::rowCount )
@@ -911,6 +968,7 @@ Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
          IF oColumn:cGrid == nil
             DrawButton( hDC, x-1,::y1-::height*::nHeadRows,x+xSize-1,::y1+1,1 )
          ELSE
+            // Draws a grid to the NWSE coordinate...
             DrawButton( hDC, x-1,::y1-::height*::nHeadRows,x+xSize-1,::y1+1,0 )
             IF oPenHdr == nil
                oPenHdr := HPen():Add( BS_SOLID,1,0 )
@@ -934,7 +992,7 @@ Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
             NEXT
             SelectObject( hDC, oPen:handle )
          ENDIF
-         // Ahora Titulos Justificados !!!
+         // Prints the column heading - justified
          cStr := oColumn:heading + ';'
          FOR nLine := 1 TO ::nHeadRows
             DrawText( hDC, __StrToken(@cStr, nLine, ';'), x, ::y1-(::height)*(::nHeadRows-nLine+1)+1, x+xSize-1,::y1-(::height)*(::nHeadRows-nLine),;
@@ -1026,7 +1084,7 @@ RETURN Nil
 
 //-------------- -Row--  --Col-- ------------------------------//
 METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
-Local x, i := 1, sviv, fldname, xSize
+Local x, nColumn, sviv, fldname, xSize
 Local j, ob, bw, bh, y1, hBReal
 Local oldBkColor, oldTColor, oldBk1Color, oldT1Color
 Local oLineBrush :=  iif(vybfld>=1, HBrush():Add(::htbColor), Iif( lSelected, ::brushSel,::brush ))
@@ -1034,6 +1092,7 @@ Local lColumnFont := .F.
 //Local nPaintCol, nPaintRow
 Local aCores
 
+   nColumn := 1
    x := ::x1
    IF lClear == Nil ; lClear := .F. ; ENDIF
 
@@ -1048,6 +1107,8 @@ Local aCores
       ::nPaintRow  := nstroka
 
       WHILE x < ::x2 - 2
+
+         // if bColorBlock defined get the colors
          IF ::aColumns[::nPaintCol]:bColorBlock != Nil
             aCores := eval(::aColumns[::nPaintCol]:bColorBlock)
             IF lSelected
@@ -1063,14 +1124,17 @@ Local aCores
          IF ::lAdjRight .and. ::nPaintCol == LEN( ::aColumns )
             xSize := Max( ::x2 - x, xSize )
          ENDIF
-         IF vybfld == 0 .OR. vybfld == i
+         IF vybfld == 0 .OR. vybfld == nColumn
             IF ::aColumns[::nPaintCol]:bColor != Nil .AND. ::aColumns[::nPaintCol]:brush == Nil
                ::aColumns[::nPaintCol]:brush := HBrush():Add( ::aColumns[::nPaintCol]:bColor )
             ENDIF
             hBReal := Iif( ::aColumns[::nPaintCol]:brush != Nil .AND. (::nPaintCol != ::colPos .OR. !lSelected), ;
                            ::aColumns[::nPaintCol]:brush:handle,   ;
                            oLineBrush:handle )
-            FillRect( hDC, x, ::y1+(::height+1)*(::nPaintRow-1)+1, x+xSize-Iif(::lSep3d,2,1),::y1+(::height+1)*::nPaintRow, hBReal )
+
+            // Fill background color of a cell
+            FillRect( hDC, x, ::y1+(::height+1)*(::nPaintRow-1)+1, ;
+                           x+xSize-Iif(::lSep3d,2,1),::y1+(::height+1)*::nPaintRow, hBReal )
 
             IF !lClear
                IF ::aColumns[::nPaintCol]:aBitmaps != Nil .AND. !Empty( ::aColumns[::nPaintCol]:aBitmaps )
@@ -1124,11 +1188,21 @@ Local aCores
          ENDIF
          x += xSize
          ::nPaintCol := Iif( ::nPaintCol == ::freeze, ::nLeftCol, ::nPaintCol + 1 )
-         i ++
+         nColumn ++
          IF ! ::lAdjRight .and. ::nPaintCol > LEN( ::aColumns )
             EXIT
          ENDIF
       ENDDO
+
+// Fill the browse canvas from x+::width to ::x2-2
+// when all columns width less than canvas width (lAdjRight == .F.)
+
+      IF ! ::lAdjRight .and. ::nPaintCol == LEN( ::aColumns ) + 1
+         xSize := Max( ::x2 - x, xSize )
+         FillRect( hDC, x, 0, ;
+            x+xSize-Iif(::lSep3d,2,1), ::y2, oLineBrush )
+      ENDIF
+
       SetTextColor( hDC,oldTColor )
       SetBkColor( hDC,oldBkColor )
       IF lColumnFont
@@ -1193,6 +1267,7 @@ Local i
 RETURN Nil
 
 //----------------------------------------------------//
+// Move the visible browse one step to the left
 STATIC FUNCTION LINELEFT( oBrw )
 
    IF oBrw:lEditable
@@ -1293,11 +1368,13 @@ Local oldLeft := ::nLeftCol, nLeftCol, colpos, oldPos := ::colpos
       nPos :=  ::colpos + ::nLeftCol - 1
       SetScrollPos( ::handle, SB_HORZ, nPos )
 
-      IF ::nLeftCol == oldLeft
-         ::RefreshLine()
-      ELSE
-         RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
-      ENDIF
+      // TODO: here I force a full repaint and HSCROLL appears...
+      //       but we should do more checks....
+      // IF ::nLeftCol == oldLeft
+      //   ::RefreshLine()
+      //ELSE
+         RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW )  // Force a complete redraw
+      //ENDIF
    ENDIF
    SetFocus( ::handle )
 
@@ -1399,6 +1476,12 @@ Local step, lBof := .F.
 RETURN Nil
 
 //----------------------------------------------------//
+/**
+ * 
+ * If cursor is in the last visible line, skip one page
+ * If cursor in not in the last line, go to the last
+ * 
+*/
 METHOD PAGEDOWN() CLASS HBrowse
 Local nRows := ::rowCurrCount
 Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows )
@@ -1424,8 +1507,14 @@ RETURN Nil
 //----------------------------------------------------//
 METHOD BOTTOM(lPaint) CLASS HBrowse
 
-   ::rowPos := Lastrec()
-   Eval( ::bGoBot, Self )
+   if ::type == BRW_ARRAY
+       ::nCurrent := ::nRecords
+       ::rowPos := ::rowCount + 1
+   else
+       ::rowPos := Lastrec()
+       Eval( ::bGoBot, Self )
+   endif
+
    VScrollPos( Self, 0, .f.)
 
    InvalidateRect( ::handle, 0 )
@@ -1999,9 +2088,9 @@ Local minPos, maxPos, oldRecno, newRecno, nrecno
          SetScrollPos( oBrw:handle, SB_VERT, npos )
      ELSE
          nrecno:=( oBrw:alias )->(recno())
-         eval(oBrw:bGotop)
+         eval(oBrw:bGotop, oBrw)
          minpos:=if(( oBrw:alias )->(indexord())=0,( oBrw:alias )->(recno()),( oBrw:alias )->(ordkeyno()))
-         eval(oBrw:bGobot)
+         eval(oBrw:bGobot, oBrw)
          maxpos:=if(( oBrw:alias )->(indexord())=0,( oBrw:alias )->(recno()),( oBrw:alias )->(ordkeyno()))
          IF minPos != maxPos
             SetScrollRange( oBrw:handle, SB_VERT, minPos, maxPos )

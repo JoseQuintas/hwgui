@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.824 2008-06-14 19:43:05 giuseppem Exp $
+ * $Id: Changelog,v 1.825 2008-06-16 13:52:44 fperillo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-06-16 15:30 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
+  * source/hbrowse.prg
+    ! ctrl-pagedown is now handled correctly for ARRAY browse
+    ! correct a bug in filtered DATABASE browse
+    ! since if lEditable is FALSE we can only have LINE selection, the cell
+      selection is shown only when lEditable is TRUE
+    ! changed variable name from "i" to a non-generic name
+  * samples/arbrow2.prg
+    + test scroll behaviour of ARRAY browse
+
 2008-06-14 21:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! Now when bColorBlock  is passed the selected column is dysplayed with

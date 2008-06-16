@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.58 2008-05-19 13:50:53 lculik Exp $
+ * $Id: hfrmtmpl.prg,v 1.59 2008-06-16 18:52:22 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -240,7 +240,7 @@ Local lMdiChild := .f.
 Local lval := .f.
 Local cBitmap := nil
 Local oBmp := NIL
-Memvar oDlg
+
 Private oDlg
 
    nStyle := DS_ABSALIGN+WS_VISIBLE+WS_SYSMENU+WS_SIZEBOX
@@ -605,7 +605,11 @@ Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName, cVarNam
 // LOCAL DE NANDO BROWSE
 Local cAliasdbf, caArray, nHeadRows:= 1, nFootRows:= 0, lDispHead := .T., lDispSep:= .T., lSep3d:= .F., ladjright:= .T.
 Local nheadColor:= 0, nsepColor:= 12632256, nLeftCol:= 0, nfreeze:= 0, nColumns := 0
+#ifdef __XHARBOUR__
 Local cKey:= "" ,cRelexpr:="", cLink:=""
+#else
+Local cKey:= ""
+#endif
 //
 MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop
 MEMVAR onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg
@@ -614,11 +618,15 @@ MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs,
 MEMVAR aImages, lEditLabels, aParts , Link
 MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
 // nando
-Public cOName 
 MEMVAR fBlock, cHeader, nJusHead, lEdit, nJusLine, bWhen, bValid, ClrBlck, HeadClick
 MEMVAR cValType, nDec, cPicture, lNoLines, lNoHeader,lMultiSelect, Items, nInterval, onAction
 MEMVAR nBitIp, nState, onClick, amenu, ccaption, hbmp, nBStyle, hIco
 //
+Public cOName 
+#ifndef __XHARBOUR__
+PRIVATE cLink := ""
+PRIVATE cRelexpr := ""
+#endif
 
    IF nCtrl == 0
       IF Lower( oCtrlTmpl:cClass ) == "pagesheet"
@@ -1272,7 +1280,7 @@ Return Self
 METHOD Print( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
 Local oPrinter := Iif( printer != Nil, Iif( Valtype(printer)=="O",printer,HPrinter():New(printer,.T.) ), HPrinter():New(,.T.) )
 Local i, j, aMethod, xProperty, oFont, xTemp, nPWidth, nPHeight, nOrientation := 1
-Memvar oReport
+
 Private oReport := Self
 
    IF oPrinter == Nil
@@ -1351,7 +1359,7 @@ Return Nil
 METHOD PrintItem( oItem ) CLASS HRepTmpl
 Local aMethod, lRes := .T., i, nPenType, nPenWidth
 Local x, y, x2, y2, cText, nJustify, xProperty, nLines, dy, nFirst, ny
-Memvar lLastCycle, lSkipItem
+
 
    IF oItem:cClass == "area"
       cText := aGetSecond( oItem:aProp,"areatype" )

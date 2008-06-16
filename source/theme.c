@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.15 2008-05-27 12:11:03 lculik Exp $
+ * $Id: theme.c,v 1.16 2008-06-16 18:52:23 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -1659,8 +1659,9 @@ HB_FUNC( HB_DRAWTHEMEBACKGROUND )
    int iStateId = hb_parni( 4 ) ;
    RECT pRect ;
    RECT pClipRect;
-   BOOL bRectOk = ( ISARRAY( 5 )  &&   Array2Rect( hb_param( 5, HB_IT_ARRAY ), &pRect ) ) ;
-   BOOL bRectOk1 = ( ISARRAY( 6 )  &&   Array2Rect( hb_param( 6, HB_IT_ARRAY ), &pClipRect ) ) ;
+   
+   if ( ISARRAY( 5 ) ) Array2Rect( hb_param( 5, HB_IT_ARRAY ), &pRect ) ;
+   if ( ISARRAY( 6 ) ) Array2Rect( hb_param( 6, HB_IT_ARRAY ), &pClipRect ) ;
 
    hb_retnl( hb_DrawThemeBackground(hTheme, hdc,
                        iPartId, iStateId, &pRect, NULL ) );
@@ -1675,11 +1676,12 @@ HB_FUNC( DRAWTHEICON )
    RECT rpTitle;
    BOOL bIsPressed = hb_parl( 6 );
    BOOL bIsDisabled= hb_parl( 7 );
-   BOOL bRectOk = ( ISARRAY( 4 )  &&   Array2Rect( hb_param( 4, HB_IT_ARRAY ), &rpItem ) ) ;
-   BOOL bRectOk1 = ( ISARRAY( 5 )  &&   Array2Rect( hb_param( 5, HB_IT_ARRAY ), &rpTitle ) ) ;
    HICON   hIco = (ISNUM(8) || ISPOINTER( 8 ) ) ? (HICON)   HB_PARHANDLE( 8 ) : NULL;
    HBITMAP hBit = (ISNUM(9) || ISPOINTER( 9 ) ) ? (HBITMAP) HB_PARHANDLE( 9 ) : NULL;
    int iStyle = hb_parni( 10 );
+   
+   if ( ISARRAY( 4 ) )  Array2Rect( hb_param( 4, HB_IT_ARRAY ), &rpItem ) ;
+   if ( ISARRAY( 5 ) )  Array2Rect( hb_param( 5, HB_IT_ARRAY ), &rpTitle ) ;
 
    DrawTheIcon(hButtonWnd, dc, bHasTitle, &rpItem, &rpTitle, bIsPressed, bIsDisabled, hIco, hBit,iStyle);
    hb_storni( rpItem.left   , 4 , 1);
@@ -1704,9 +1706,10 @@ HB_FUNC( HB_DRAWTHEMETEXT )
    DWORD dwTextFlags2 = hb_parnl( 7 ) ;
 
    RECT pRect ;
-   BOOL bRectOk = ( ISARRAY( 8 )  &&   Array2Rect( hb_param( 8, HB_IT_ARRAY ), &pRect ) ) ;
    int mlen = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (char *)pText, -1, NULL, 0); 
    WCHAR* output =  (WCHAR*) hb_xgrab(mlen * sizeof(WCHAR));
+   
+   if ( ISARRAY( 8 ) ) Array2Rect( hb_param( 8, HB_IT_ARRAY ), &pRect ) ;
    if(output)
    {
       MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (char *)pText, -1, output, mlen);
@@ -1788,8 +1791,7 @@ HB_FUNC( HB_DRAWTHEMEPARENTBACKGROUND )
    HDC hdc = (HDC)HB_PARHANDLE( 2 ) ;
    RECT pRect ;
 
-   BOOL bRectOk = ( ISARRAY( 3 )  &&   Array2Rect( hb_param( 3, HB_IT_ARRAY ), &pRect ) ) ;
-
+   if ( ISARRAY( 3 ) ) Array2Rect( hb_param( 3, HB_IT_ARRAY ), &pRect ) ;
 
    hb_retnl( hb_DrawThemeParentBackground(hTheme, hdc,
                         &pRect ) );

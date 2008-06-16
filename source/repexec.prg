@@ -1,5 +1,5 @@
 /*
- * $Id: repexec.prg,v 1.5 2007-11-10 17:44:53 mlacecilia Exp $
+ * $Id: repexec.prg,v 1.6 2008-06-16 18:52:23 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * RepExec - Loading and executing of reports, built with RepBuild
@@ -186,7 +186,7 @@ Local iPH := 0, iSL := 0, iEL := 0, iPF := 0, iEPF := 0, iDF := 0
 Local poz := 0, stroka, varName, varValue, i
 Local oFont
 Local lAddMode := .F., nYadd := 0, nEndList := 0
-memvar lFirst, lFinish, lLastCycle, oFontStandard
+
 Private lFirst := .T., lFinish := .T., lLastCycle := .F.
 
    IF oPrinter:hDCPrn == Nil .OR. oPrinter:hDCPrn == 0

@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.47 2008-06-02 21:51:38 lculik Exp $
+ * $Id: draw.c,v 1.48 2008-06-16 18:52:22 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -871,9 +871,10 @@ HB_FUNC(CREATECOMPATIBLEBITMAP)
 HB_FUNC( INFLATERECT )
 {
    RECT pRect;
-   BOOL bRectOk = ( ISARRAY( 1 )  &&   Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect ) ) ; 
    int x = hb_parni( 2);
    int y = hb_parni( 3 );
+   
+	if ( ISARRAY( 1 ) ) Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect ) ; 
    hb_retl( InflateRect( &pRect, x, y ));
 
    hb_storni( pRect.left   , 1 , 1);
@@ -888,7 +889,7 @@ HB_FUNC( FRAMERECT )
    HBRUSH hbr = (HBRUSH) HB_PARHANDLE( 3 );
    RECT pRect;
 
-   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;  
+   if ( ISARRAY( 2 ) ) Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect )  ;  
 
    hb_retni( FrameRect( hdc, &pRect, hbr ));
 }
@@ -897,9 +898,10 @@ HB_FUNC( DRAWFRAMECONTROL )
 {
    HDC hdc = (HDC ) HB_PARHANDLE( 1 );
    RECT pRect;
-   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ;    
    UINT uType = hb_parni( 3 );  // frame-control type
    UINT uState = hb_parni( 4 );  // frame-control state
+   
+   if ( ISARRAY( 2 ) ) Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ;    
 
    hb_retl( DrawFrameControl( hdc, &pRect, uType, uState ) );
 }
@@ -907,9 +909,10 @@ HB_FUNC( DRAWFRAMECONTROL )
 HB_FUNC( OFFSETRECT )
 {
    RECT pRect;
-   BOOL bRectOk = ( ISARRAY( 1 )  &&   Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect ) ) ;      
    int x = hb_parni( 2);
    int y = hb_parni( 3 );
+
+   if  ( ISARRAY( 1 ) ) Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect )  ;      
 
    hb_retl( OffsetRect( &pRect, x, y ));
    hb_storni( pRect.left   , 1 , 1);
@@ -922,7 +925,7 @@ HB_FUNC( DRAWFOCUSRECT )
 {
    RECT pRect;
    HDC hc = (HDC) HB_PARHANDLE( 1);
-   BOOL bRectOk = ( ISARRAY( 2 )  &&   Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ) ; 
+   if ( ISARRAY( 2 ) ) Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect ) ; 
    hb_retl( DrawFocusRect( hc,&pRect ));
 }
 

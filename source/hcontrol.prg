@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.64 2008-06-13 08:59:39 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.65 2008-06-16 18:52:22 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -553,7 +553,7 @@ METHOD INIT CLASS HButtonEx
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       HWG_INITBUTTONPROC( ::handle )
-      if Valtype(::handle) > 0
+      if HB_IsNumeric( ::handle ) .and. ::handle > 0
         nbs:=HWG_GETWINDOWSTYLE(::handle)
    
        ::m_nTypeStyle :=  GetTheStyle(nBS , BS_TYPEMASK)

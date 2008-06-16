@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.13 2008-05-28 15:51:08 mlacecilia Exp $
+ * $Id: drawwidg.prg,v 1.14 2008-06-16 18:52:22 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -202,16 +202,15 @@ Local i
 Return Nil
 
 METHOD Release() CLASS HPen
-Local i, nlen := Len( ::aPens ), p
+Local i, nlen := Len( ::aPens )
 
    ::nCounter --
    IF ::nCounter == 0
    #ifdef __XHARBOUR__
       For EACH i  in ::aPens 
-         p := hb_EnumIndex()
          IF i:handle == ::handle
             DeleteObject( ::handle )
-            Adel( ::aPens,p )
+            Adel( ::aPens, hb_EnumIndex() )
             Asize( ::aPens,nlen-1 )
             Exit
          ENDIF
@@ -276,16 +275,15 @@ Local i
 Return Self
 
 METHOD Release() CLASS HBrush
-Local i, nlen := Len( ::aBrushes ), p
+Local i, nlen := Len( ::aBrushes )
 
    ::nCounter --
    IF ::nCounter == 0
    #ifdef __XHARBOUR__
       For EACH i IN ::aBrushes 
-         p := hb_enumindex()
          IF i:handle == ::handle
             DeleteObject( ::handle )
-            Adel( ::aBrushes,p )
+            Adel( ::aBrushes, hb_enumindex())
             Asize( ::aBrushes,nlen-1 )
             Exit
          ENDIF
@@ -435,16 +433,15 @@ Local aBmpSize
 Return Self
 
 METHOD Release() CLASS HBitmap
-Local i, nlen := Len( ::aBitmaps ), p
+Local i, nlen := Len( ::aBitmaps )
 
    ::nCounter --
    IF ::nCounter == 0
    #ifdef __XHARBOUR__
       For EACH i IN ::aBitmaps
-      p := hB_enumIndex()
          IF i:handle == ::handle
             DeleteObject( ::handle )
-            Adel( ::aBitmaps,p )
+            Adel( ::aBitmaps, hB_enumIndex())
             Asize( ::aBitmaps,nlen-1 )
             Exit
          ENDIF
@@ -552,16 +549,15 @@ Local i, aIconSize
 Return Self
 
 METHOD Release() CLASS HIcon
-Local i, nlen := Len( ::aIcons ), p
+Local i, nlen := Len( ::aIcons )
 
    ::nCounter --
    IF ::nCounter == 0
    #ifdef __XHARBOUR__
       For EACH i IN ::aIcons
-      p:= hb_enumindex()
          IF i:handle == ::handle
             DeleteObject( ::handle )
-            Adel( ::aIcons,p )
+            Adel( ::aIcons, hb_enumindex())
             Asize( ::aIcons,nlen-1 )
             Exit
          ENDIF

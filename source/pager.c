@@ -1,5 +1,5 @@
 /*
- * $Id: pager.c,v 1.6 2008-05-27 12:11:01 lculik Exp $
+ * $Id: pager.c,v 1.7 2008-06-16 18:52:23 mlacecilia Exp $
 */
 
 #define _WIN32_WINNT 0x0400
@@ -9,6 +9,7 @@
 #include <commctrl.h>
 
 #include "hbapi.h"
+#include "guilib.h"
 
 #if ( defined(__DMC__) || defined(__WATCOMC__) )
 	#include "missing.h"

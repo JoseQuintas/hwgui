@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.826 2008-06-16 17:50:11 giuseppem Exp $
+ * $Id: Changelog,v 1.827 2008-06-16 18:52:22 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,14 +7,23 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-06-16 20:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/draw.c
+  * source/theme.c
+    - removed some unused variable declaration causing warnings in compilation
+  * source/drawwidg.prg 
+    - removed some unused local causing warnings in Harbour compilation
+  * source/pager.c
+    + added include file for Harbour compatibility (thanks to Viktor Szakáts)
+
 2008-06-16 19:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! Resolved error in array browse with (SHIFT-UP), (SHIFT-DOWN),
       (SHIFT-PGUP), (CTRL-SHIFT-PGUP) and (SHIFT-PGDOWN), (CTRL-SHIFT-PGDOWN)
       in Multiselect.
       The cell selection is show ever.
-
-
+    
 2008-06-16 15:30 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
   * source/hbrowse.prg
     ! ctrl-pagedown is now handled correctly for ARRAY browse
@@ -24,7 +33,7 @@
     ! changed variable name from "i" to a non-generic name
   * samples/arbrow2.prg
     + test scroll behaviour of ARRAY browse
-
+    
 2008-06-14 21:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! Now when bColorBlock  is passed the selected column is dysplayed with
@@ -36,7 +45,7 @@
       visible in Designer.
 
 2008-06-13 11:05 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
-   * source/hcontrol.prg
+  * source/hcontrol.prg
     ! fixed to the center the text alignment of hButtonEx if no bitmap or icon
       is present. <change made by Luis Fernando Basso>
 

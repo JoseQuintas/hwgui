@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.66 2008-06-17 13:41:51 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.67 2008-06-17 15:35:51 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -436,7 +436,7 @@ CLASS HButtonEX INHERIT HButton
 
    DATA m_bDrawTransparent INIT .f.
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
-   cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
+   cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, tcolor, ;
    bColor, lTransp, hBitmap,hIcon )
    Data iStyle
    DATA m_bmpBk,m_pbmpOldBk
@@ -694,7 +694,7 @@ local pos
          endif
 
 
-         if wParam == VK_RETURN
+         if wParam == VK_RETURN .or. wParam == VK_SPACE
             SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
          endif
       endif

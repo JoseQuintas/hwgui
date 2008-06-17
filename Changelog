@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.831 2008-06-17 15:35:10 giuseppem Exp $
+ * $Id: Changelog,v 1.832 2008-06-17 15:41:15 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,15 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-06-17 17:35 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hcontrol.prg
+    ! Buttonex now when SPACE is pressed bclick is execute as ENTER key.
 
 2008-06-17 15:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hfrmtmpl.prg
   * source/repexec.prg
     * rearranged code to compile in xHarbour without the /A flag 
-  
-2008-06-17 17:35 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
-  * source/hcontrol.prg
-    ! Buttonex now when SPACE is pressed bclick is execute as ENTER key.
 
 2008-06-17 15:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hcontrol.prg

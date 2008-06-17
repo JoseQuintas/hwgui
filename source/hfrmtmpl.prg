@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.59 2008-06-16 18:52:22 mlacecilia Exp $
+ * $Id: hfrmtmpl.prg,v 1.60 2008-06-17 14:37:40 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -240,7 +240,9 @@ Local lMdiChild := .f.
 Local lval := .f.
 Local cBitmap := nil
 Local oBmp := NIL
-
+#ifdef __XHARBOUR__
+Memvar oDlg
+#endif
 Private oDlg
 
    nStyle := DS_ABSALIGN+WS_VISIBLE+WS_SYSMENU+WS_SIZEBOX
@@ -1280,7 +1282,9 @@ Return Self
 METHOD Print( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
 Local oPrinter := Iif( printer != Nil, Iif( Valtype(printer)=="O",printer,HPrinter():New(printer,.T.) ), HPrinter():New(,.T.) )
 Local i, j, aMethod, xProperty, oFont, xTemp, nPWidth, nPHeight, nOrientation := 1
-
+#ifdef __XHARBOUR__
+Memvar oReport
+#endif
 Private oReport := Self
 
    IF oPrinter == Nil
@@ -1359,7 +1363,9 @@ Return Nil
 METHOD PrintItem( oItem ) CLASS HRepTmpl
 Local aMethod, lRes := .T., i, nPenType, nPenWidth
 Local x, y, x2, y2, cText, nJustify, xProperty, nLines, dy, nFirst, ny
-
+#ifdef __XHARBOUR__
+Memvar lLastCycle, lSkipItem
+#endif
 
    IF oItem:cClass == "area"
       cText := aGetSecond( oItem:aProp,"areatype" )

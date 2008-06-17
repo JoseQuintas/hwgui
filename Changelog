@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.829 2008-06-17 13:41:50 mlacecilia Exp $
+ * $Id: Changelog,v 1.830 2008-06-17 14:37:40 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-06-17 15:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hfrmtmpl.prg
+  * source/repexec.prg
+    * rearranged code to compile in xHarbour without the /A flag 
+  
 2008-06-17 15:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hcontrol.prg
     * minor changes for Harbour compilation support 

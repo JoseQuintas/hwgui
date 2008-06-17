@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.65 2008-06-16 18:52:22 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.66 2008-06-17 13:41:51 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -611,11 +611,15 @@ local pos
      
    elseif msg == WM_KEYDOWN
         
+#ifdef __XHARBOUR__
       if hb_inline( lParam) { LPARAM l = (LPARAM) hb_parnl( 1 ); hb_retl( l & 0x40000000);}
+#else
+		if hb_BitTest( lParam , 30 )  // the key was down before ?
+#endif
          return 0
       endif
       if ((wParam == VK_SPACE) .or. (wParam == VK_RETURN))
-         SendMessage(::handle,WM_LBUTTONDOWN, 0, MAKELPARAM(1, 1))
+         SendMessage(::handle, WM_LBUTTONDOWN, 0, MAKELPARAM(1, 1))
          return 0
       endif
 
@@ -867,7 +871,11 @@ LOCAL uAlign,uStyleTmp
      uAlign += DT_VCENTER
      uStyleTmp := HWG_GETWINDOWSTYLE(::handle)
      
+#ifdef __XHARBOUR
      if hb_inline(uStyleTmp) { ULONG ulStyle = (ULONG)hb_parnl( 1 ) ; hb_retl( ulStyle & BS_MULTILINE ); }
+#else
+	  if hb_BitAnd( uStyleTmp, BS_MULTILINE ) != 0
+#endif
         uAlign += DT_WORDBREAK 
      else
         uAlign += DT_SINGLELINE

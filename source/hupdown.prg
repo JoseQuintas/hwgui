@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.8 2008-05-27 12:10:58 lculik Exp $
+ * $Id: hupdown.prg,v 1.9 2008-06-17 13:41:52 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -43,13 +43,11 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )
 
    ::idUpDown := ::NewId()
-   IF vari != Nil
-      IF Valtype(vari) != "N"
-         vari := 0
-         Eval( bSetGet,vari )
-      ENDIF
-      ::title := Str(vari)
+   IF Valtype(vari) != "N"
+      vari := 0
+      Eval( bSetGet,vari )
    ENDIF
+   ::title := Str(vari)
    ::bSetGet := bSetGet
 
    ::styleUpDown := UDS_SETBUDDYINT+UDS_ALIGNRIGHT

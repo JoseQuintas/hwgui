@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.828 2008-06-17 12:08:40 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.829 2008-06-17 13:41:50 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-06-17 15:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hcontrol.prg
+    * minor changes for Harbour compilation support 
+  * source/hupdown.prg
+    * avoided nil value in counter variable
+ 
 2008-06-17 09-05 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * utils/designer/blddesig.bat
     ! fix to compile designer with xharbour

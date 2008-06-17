@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.121 2008-06-16 17:50:55 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.122 2008-06-17 20:01:16 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -92,7 +92,7 @@ METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict
    ::aList     := aItem
    ::bColorBlock := bColorBlock
    ::bHeadClick  := bHeadClick
-
+   ::footing := ""
 RETURN Self
 
 //----------------------------------------------------//
@@ -1063,14 +1063,15 @@ Local oColumn
       IF ::lAdjRight .and. fif == Len( ::aColumns )
          xSize := Max( ::x2 - x, xSize )
       ENDIF
-      IF oColumn:footing <> nil
-         cStr := oColumn:footing + ';'
-         FOR nLine := 1 TO ::nFootRows
-            DrawText( hDC, __StrToken(@cStr, nLine, ';'),;
-               x, ::y1+(::rowCount+nLine-1)*(::height+1)+1, x+xSize-1, ::y1+(::rowCount+nLine)*(::height+1),;
-               oColumn:nJusLin + if(oColumn:lSpandFoot, DT_NOCLIP, 0) )
-         NEXT
-      ENDIF
+      cStr := oColumn:footing + ';'
+      FOR nLine := 1 TO ::nFootRows
+         FillRect( hDC,x, ::y1+(::rowCount+nLine-1)*(::height+1)+1, ;
+                  x+xSize-1, ::y1+(::rowCount+nLine)*(::height+1), ::brush )
+
+         DrawText( hDC, __StrToken(@cStr, nLine, ';'),;
+                   x, ::y1+(::rowCount+nLine-1)*(::height+1)+1, x+xSize-1, ::y1+(::rowCount+nLine)*(::height+1),;
+                   oColumn:nJusLin + if(oColumn:lSpandFoot, DT_NOCLIP, 0) )
+      NEXT
       x += xSize
       fif := Iif( fif = ::freeze, ::nLeftCol, fif + 1 )
       IF fif > Len( ::aColumns )

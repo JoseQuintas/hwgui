@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.827 2008-06-16 18:52:22 mlacecilia Exp $
+ * $Id: Changelog,v 1.828 2008-06-17 12:08:40 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-06-17 09-05 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
+  * utils/designer/blddesig.bat
+    ! fix to compile designer with xharbour
+ 
 2008-06-16 20:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/draw.c
   * source/theme.c
@@ -49,6 +53,7 @@
     ! fixed to the center the text alignment of hButtonEx if no bitmap or icon
       is present. <change made by Luis Fernando Basso>
 
+>>>>>>> 1.827
 2008-06-03 18:20 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! adjusted repaint when browse lost focus.

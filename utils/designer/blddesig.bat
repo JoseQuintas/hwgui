@@ -52,6 +52,7 @@ rem echo %HRB_DIR%\lib\rddads.lib + >> b32.bc
 rem echo ace32.lib + >> b32.bc
 
 if exist %HRB_DIR%\lib\pcrepos.lib echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
+if exist %HRB_DIR%\lib\zlib.lib echo %HRB_DIR%\lib\zlib.lib + >> b32.bc
 rem echo %HRB_DIR%\lib\libct.lib + >> b32.bc
 
 echo cw32.lib + >> b32.bc

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.62 2008-06-18 16:09:34 mlacecilia Exp $
+ * $Id: hfrmtmpl.prg,v 1.63 2008-06-18 21:46:33 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -240,9 +240,7 @@ Local lMdiChild := .f.
 Local lval := .f.
 Local cBitmap := nil
 Local oBmp := NIL
-#ifdef __XHARBOUR__
 Memvar oDlg
-#endif
 Private oDlg
 
    nStyle := DS_ABSALIGN+WS_VISIBLE+WS_SYSMENU+WS_SIZEBOX
@@ -623,13 +621,15 @@ MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
 MEMVAR fBlock, cHeader, nJusHead, lEdit, nJusLine, bWhen, bValid, ClrBlck, HeadClick
 MEMVAR cValType, nDec, cPicture, lNoLines, lNoHeader,lMultiSelect, Items, nInterval, onAction
 MEMVAR nBitIp, nState, onClick, amenu, ccaption, hbmp, nBStyle, hIco
+
 //
-Public cOName 
+
 #ifndef __XHARBOUR__
+MEMVAR cLink, cRelExpr
 PRIVATE cLink := ""
 PRIVATE cRelexpr := ""
 #endif
-
+Public cOName
    IF nCtrl == 0
       IF Lower( oCtrlTmpl:cClass ) == "pagesheet"
          tmp_nSheet ++
@@ -1282,9 +1282,8 @@ Return Self
 METHOD Print( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
 Local oPrinter := Iif( printer != Nil, Iif( Valtype(printer)=="O",printer,HPrinter():New(printer,.T.) ), HPrinter():New(,.T.) )
 Local i, j, aMethod, xProperty, oFont, xTemp, nPWidth, nPHeight, nOrientation := 1
-#ifdef __XHARBOUR__
+
 Memvar oReport
-#endif
 Private oReport := Self
 
    IF oPrinter == Nil
@@ -1363,9 +1362,8 @@ Return Nil
 METHOD PrintItem( oItem ) CLASS HRepTmpl
 Local aMethod, lRes := .T., i, nPenType, nPenWidth
 Local x, y, x2, y2, cText, nJustify, xProperty, nLines, dy, nFirst, ny
-#ifdef __XHARBOUR__
+
 Memvar lLastCycle, lSkipItem
-#endif
 
    IF oItem:cClass == "area"
       cText := aGetSecond( oItem:aProp,"areatype" )

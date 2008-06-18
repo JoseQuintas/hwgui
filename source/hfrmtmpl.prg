@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.60 2008-06-17 14:37:40 mlacecilia Exp $
+ * $Id: hfrmtmpl.prg,v 1.61 2008-06-18 15:48:18 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -607,11 +607,11 @@ Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName, cVarNam
 // LOCAL DE NANDO BROWSE
 Local cAliasdbf, caArray, nHeadRows:= 1, nFootRows:= 0, lDispHead := .T., lDispSep:= .T., lSep3d:= .F., ladjright:= .T.
 Local nheadColor:= 0, nsepColor:= 12632256, nLeftCol:= 0, nfreeze:= 0, nColumns := 0
-#ifdef __XHARBOUR__
+//#ifdef __XHARBOUR__
 Local cKey:= "" ,cRelexpr:="", cLink:=""
-#else
-Local cKey:= ""
-#endif
+//#else
+//Local cKey:= "", cRelexpr:="", cLink:=""
+//#endif
 //
 MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop
 MEMVAR onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg
@@ -625,10 +625,10 @@ MEMVAR cValType, nDec, cPicture, lNoLines, lNoHeader,lMultiSelect, Items, nInter
 MEMVAR nBitIp, nState, onClick, amenu, ccaption, hbmp, nBStyle, hIco
 //
 Public cOName 
-#ifndef __XHARBOUR__
-PRIVATE cLink := ""
-PRIVATE cRelexpr := ""
-#endif
+//#ifndef __XHARBOUR__
+//PRIVATE cLink := ""
+//PRIVATE cRelexpr := ""
+//#endif
 
    IF nCtrl == 0
       IF Lower( oCtrlTmpl:cClass ) == "pagesheet"

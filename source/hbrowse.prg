@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.122 2008-06-17 20:01:16 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.123 2008-06-18 17:57:44 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -50,9 +50,8 @@ CLASS HColumn INHERIT HObject
    DATA block,heading,footing,width,type
    DATA length INIT 0
    DATA dec,cargo
-   DATA nJusHead, nJusLin        // Para poder Justificar los Encabezados
-                                 // de las columnas y lineas.
-                                 // WHT. 27.07.2002
+   DATA nJusHead, nJusLin, nJusFoot        // Para poder Justificar los Encabezados
+                                           // de las columnas y lineas.
    DATA tcolor,bcolor,brush
    DATA oFont
    DATA lEditable INIT .F.       // Is the column editable
@@ -67,6 +66,11 @@ CLASS HColumn INHERIT HObject
    DATA lSpandFoot INIT .F.
    DATA Picture
    DATA bHeadClick
+   DATA bColorFoot               //   bColorFoot must return an array containing two colors values
+                                 //   oBrowse:aColumns[1]:bColorFoot := {|| IF (nNumber < 0, ;
+                                 //      {textColor, backColor} , ;
+                                 //      {textColor, backColor} ) }
+
    DATA bColorBlock              //   bColorBlock must return an array containing four colors values
                                  //   oBrowse:aColumns[1]:bColorBlock := {|| IF (nNumber < 0, ;
                                  //      {textColor, backColor, textColorSel, backColorSel} , ;
@@ -86,6 +90,7 @@ METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict
    ::lEditable := Iif( lEditable != Nil,lEditable,.F. )
    ::nJusHead  := iif( nJusHead == nil,  DT_LEFT , nJusHead )  // Por default
    ::nJusLin   := iif( nJusLin  == nil,  DT_LEFT , nJusLin  )  // Justif.Izquierda
+   ::nJusFoot  := ::nJusLin
    ::picture   := cPict
    ::bValid    := bValid
    ::bWhen     := bWhen
@@ -117,7 +122,7 @@ CLASS HBrowse INHERIT HControl
    DATA nCurrent     INIT 1                    // Current record
    DATA aArray                                 // An array browsed if this is BROWSE ARRAY
    DATA recCurr 		INIT 0
-   DATA headColor                              // Header text color
+   DATA headColor                      // Header text color
    DATA sepColor 		INIT 12632256             // Separators color
    DATA lSep3d  		INIT .F.
    DATA varbuf                                 // Used on Edit()
@@ -1047,7 +1052,7 @@ RETURN Nil
 //----------------------------------------------------//
 METHOD FooterOut( hDC ) CLASS HBrowse
 Local x, fif, xSize, oPen, nLine, cStr
-Local oColumn
+Local oColumn, aColorFoot, oldBkColor, oldTColor, oBrush
 
    IF ::lDispSep
       oPen := HPen():Add( BS_SOLID,1,::sepColor )
@@ -1064,14 +1069,33 @@ Local oColumn
          xSize := Max( ::x2 - x, xSize )
       ENDIF
       cStr := oColumn:footing + ';'
+      aColorFoot:=Nil
+      IF oColumn:bColorFoot != Nil
+         aColorFoot := eval(oColumn:bColorFoot)
+         oldBkColor := SetBkColor(   hDC, aColorFoot[2])
+         oldTColor  := SetTextColor( hDC, aColorFoot[1])
+         oBrush := HBrush():Add( aColorFoot[2] )
+      ELSE
+         oBrush := ::brush
+      ENDIF
+
+      FillRect( hDC,x, ::y1+::rowCount*(::height+1)+1, ;
+                  x+xSize, ::y1+(::rowCount+::nFootRows)*(::height+1), oBrush:handle )
+
       FOR nLine := 1 TO ::nFootRows
-         FillRect( hDC,x, ::y1+(::rowCount+nLine-1)*(::height+1)+1, ;
-                  x+xSize-1, ::y1+(::rowCount+nLine)*(::height+1), ::brush )
 
          DrawText( hDC, __StrToken(@cStr, nLine, ';'),;
                    x, ::y1+(::rowCount+nLine-1)*(::height+1)+1, x+xSize-1, ::y1+(::rowCount+nLine)*(::height+1),;
-                   oColumn:nJusLin + if(oColumn:lSpandFoot, DT_NOCLIP, 0) )
+                   oColumn:nJusFoot + if(oColumn:lSpandFoot, DT_NOCLIP, 0) )
       NEXT
+
+      IF aColorFoot != Nil
+         SetBkColor(   hDC, oldBkColor)
+         SetTextColor( hDC, oldTColor)
+         oBrush:release()
+      ENDIF
+
+
       x += xSize
       fif := Iif( fif = ::freeze, ::nLeftCol, fif + 1 )
       IF fif > Len( ::aColumns )

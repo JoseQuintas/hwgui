@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.834 2008-06-18 16:09:34 mlacecilia Exp $
+ * $Id: Changelog,v 1.835 2008-06-18 17:57:06 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-06-18 20:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hbrowse.prg
+    ! Added nJusFoot and bColorFoot.
+      bColorFoot must return an array containing two colors values
+      oBrowse:aColumns[1]:bColorFoot := {|| IF (nNumber < 0, ;
+      {textColor, backColor} , ;
+      {textColor, backColor} ) } .
+  * sample/browse_3.prg
+  * doc/hwgdoc_classes.html
 
 2008-06-18 18:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hfrmtmpl.prg

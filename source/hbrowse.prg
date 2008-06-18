@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.124 2008-06-18 20:40:35 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.125 2008-06-18 23:53:45 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -271,7 +271,7 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
-Local aCoors, oParent, cKeyb, nCtrl, nPos, lBEof
+Local oParent, cKeyb, nCtrl, nPos, lBEof
 Local nRecStart, nRecStop
 
    IF ::active .AND. !Empty( ::aColumns )
@@ -674,7 +674,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
 RETURN Nil
 
 //----------------------------------------------------//
-METHOD Rebuild( hDC ) CLASS HBrowse
+METHOD Rebuild() CLASS HBrowse
 Local i, j, oColumn, xSize, nColLen, nHdrLen, nCount
 
    IF ::brush != Nil
@@ -780,7 +780,7 @@ Local pps, hDC
       SelectObject( hDC, ::ofont:handle )
    ENDIF
    IF ::brush == Nil .OR. ::lChanged
-      ::Rebuild(hDC)
+      ::Rebuild()
    ENDIF
 
 // Get client area coordinate
@@ -886,7 +886,10 @@ Local pps, hDC
          ENDIF
          cursor_row ++
       ENDDO
-
+      
+      if nRows < ::rowCount
+           FillRect( hDC, ::x1, ::y1 + (::height + 1) * nRows + 1, ::x2, ::y2, ::brush:handle )
+      endif
       Eval( ::bGoTo, Self,tmp )
    ENDIF
    IF ::lAppMode
@@ -921,7 +924,6 @@ Local pps, hDC
 
    // End paint block
    EndPaint( ::handle, pps )
-
 
    ::internal[1] := 15
    ::internal[2] := ::rowPos

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.123 2008-06-18 17:57:44 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.124 2008-06-18 20:40:35 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1071,7 +1071,7 @@ Local oColumn, aColorFoot, oldBkColor, oldTColor, oBrush
       cStr := oColumn:footing + ';'
       aColorFoot:=Nil
       IF oColumn:bColorFoot != Nil
-         aColorFoot := eval(oColumn:bColorFoot)
+         aColorFoot := eval(oColumn:bColorFoot,Self)
          oldBkColor := SetBkColor(   hDC, aColorFoot[2])
          oldTColor  := SetTextColor( hDC, aColorFoot[1])
          oBrush := HBrush():Add( aColorFoot[2] )

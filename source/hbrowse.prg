@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.125 2008-06-18 23:53:45 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.126 2008-06-19 04:38:48 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1097,6 +1097,9 @@ Local oColumn, aColorFoot, oldBkColor, oldTColor, oBrush
          oBrush:release()
       ENDIF
 
+      IF ::lDispSep .AND. x >= ::x1
+         DrawLine(hDC,x+xSize-1,::y1+::rowCount*(::height+1)+1 , x+xSize-1, ::y1+(::rowCount+::nFootRows)*(::height+1))
+      ENDIF
 
       x += xSize
       fif := Iif( fif = ::freeze, ::nLeftCol, fif + 1 )
@@ -1107,6 +1110,7 @@ Local oColumn, aColorFoot, oldBkColor, oldTColor, oBrush
 
    IF ::lDispSep
       DrawLine( hDC, ::x1, ::y1+(::rowCount)*(::height+1)+1, iif(::lAdjRight, ::x2, x), ::y1+(::rowCount)*(::height+1)+1 )
+      DrawLine( hDC, ::x1, ::y1+(::rowCount+::nFootRows)*(::height+1), iif(::lAdjRight, ::x2, x), ::y1+(::rowCount+::nFootRows)*(::height+1) )
       oPen:Release()
    ENDIF
 

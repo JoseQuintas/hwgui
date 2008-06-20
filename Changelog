@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.839 2008-06-19 04:38:10 giuseppem Exp $
+ * $Id: Changelog,v 1.840 2008-06-20 18:15:24 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-06-20 20:15 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hbrowse.prg
+    ! In edit mode now select cell withe mouse, when the cell is grater
+	then the max number of cells in the client area.
 
 2008-06-19 06:40 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg

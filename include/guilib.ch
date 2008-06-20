@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.102 2008-05-21 21:50:10 lculik Exp $
+ *$Id: guilib.ch,v 1.103 2008-06-20 23:43:00 mlacecilia Exp $
  */
 #define HWG_VERSION           "2.16"
 #define   WND_MAIN      1
@@ -29,6 +29,10 @@
 
 #define   BRW_ARRAY               1
 #define   BRW_DATABASE            2
+
+#ifdef __XHARBOUR__
+#define HB_SYMBOL_UNUSED( x )
+#endif
 
 // Commands for windows, dialogs handling
 

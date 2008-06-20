@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.38 2008-05-27 12:10:49 lculik Exp $
+ * $Id: hcombo.prg,v 1.39 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -146,16 +146,22 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bPaint, ;
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
+      ::bGetFocus := bGFocus
+      ::oParent:AddEvent( CBN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
       if ::bSetGet <> nil
          ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
-      endif
-      IF ::bChangeSel != NIL
+      elseif ::bChangeSel != NIL
         ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
       ENDIF
    ELSEIF bChange != Nil
       ::oParent:AddEvent( CBN_SELCHANGE,::id,bChange )
    ENDIF
+   
+   IF bGFocus != Nil .AND. bSetGet == Nil
+      ::oParent:AddEvent( CBN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
+   ENDIF
+
    ::Refresh() // By Luiz Henrique dos Santos
 Return Self
 
@@ -655,8 +661,6 @@ LOCAL pFont
 RETURN self
 
 METHOD OnGetText( wParam, lParam ) CLASS hCheckComboBox
-
-
    ::RecalcText()
 
    IF ( lParam == 0 )
@@ -669,6 +673,9 @@ METHOD OnGetText( wParam, lParam ) CLASS hCheckComboBox
 RETURN LEN( ::m_strText )
 
 METHOD OnGetTextLength( WPARAM, LPARAM ) CLASS hCheckComboBox
+
+HB_SYMBOL_UNUSED(wParam)
+HB_SYMBOL_UNUSED(lParam)
 
    ::RecalcText()
 RETURN LEN( ::m_strText )

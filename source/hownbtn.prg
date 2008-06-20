@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.31 2008-05-27 12:10:53 lculik Exp $
+ * $Id: hownbtn.prg,v 1.32 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -12,6 +12,7 @@
 #include "inkey.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#include "common.ch"
 
 CLASS HOwnButton INHERIT HControl
 
@@ -320,6 +321,8 @@ Return Nil
 METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
 Local xPos, yPos
 Local res := .F.
+
+HB_SYMBOL_UNUSED(wParam)
 
    IF ::state != OBTN_INIT
       xPos := LoWord( lParam )

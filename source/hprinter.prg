@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.26 2008-03-13 20:26:33 giuseppem Exp $
+ * $Id: hprinter.prg,v 1.27 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -11,6 +11,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#include "common.ch"
 
 CLASS HPrinter INHERIT HObject
 
@@ -296,7 +297,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
      STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+WS_MAXIMIZEBOX;
      ON INIT {|o|o:Maximize(),ResizePreviewDlg(oCanvas,Self,1)}
 
-   oDlg:bScroll:={|oWnd,msg,wParam,lParam| ResizePreviewDlg(oCanvas,Self,,msg,wParam,lParam)}
+   oDlg:bScroll:={|oWnd,msg,wParam,lParam|HB_SYMBOL_UNUSED(oWnd), ResizePreviewDlg(oCanvas,Self,,msg,wParam,lParam)}
    oDlg:brush := HBrush():Add( 0 )
 
    @ 0,0 PANEL oToolBar SIZE 44,oDlg:nHeight
@@ -306,7 +307,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
      ON SIZE {|o,x,y|o:Move(,,x-oToolBar:nWidth-4,y-5),ResizePreviewDlg(o,Self)} ;
      ON PAINT {||::PlayMeta(oCanvas)} STYLE WS_VSCROLL+WS_HSCROLL
 
-   oCanvas:bScroll:={|oWnd,msg,wParam,lParam| ResizePreviewDlg(oCanvas,Self,,msg,wParam,lParam)}
+   oCanvas:bScroll:={|oWnd,msg,wParam,lParam|HB_SYMBOL_UNUSED(oWnd), ResizePreviewDlg(oCanvas,Self,,msg,wParam,lParam)}
    oCanvas:brush := HBrush():Add( 11316396 )
 
    @ 3,2 OWNERBUTTON oBtn OF oToolBar ON CLICK {||EndDialog()} ;
@@ -437,6 +438,8 @@ Return Nil
 Static Function ResizePreviewDlg( oCanvas, oPrinter, nZoom, msg, wParam, lParam )
 Local nWidth, nHeight, k1, k2, x := oCanvas:nWidth, y := oCanvas:nHeight
 Local i, nPos, wmsg, nPosVert, nPosHorz
+
+HB_SYMBOL_UNUSED(lParam)
 
    nPosVert:=getscrollpos(oCanvas:handle,SB_VERT)
    nPosHorz:=getscrollpos(oCanvas:handle,SB_HORZ)

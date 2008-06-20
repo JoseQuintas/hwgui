@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.23 2008-05-19 13:49:22 lculik Exp $
+ * $Id: hctrl.prg,v 1.24 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * Designer
  * HControlGen class
@@ -90,7 +90,7 @@ Private value, oCtrl := Self
             ENDIF
             IF ( bmp := oPaint:GetAttribute( "bmp" ) ) != Nil
                IF Isdigit( Left( bmp,1 ) )
-                  ::oBitmap := HBitmap():AddResource( Val(bmp) )
+                  ::oBitmap := HBitmap():AddStandard( Val(bmp) )
                ELSEIF "." $ bmp
                   ::oBitmap := HBitmap():AddFile( bmp )
                ELSE

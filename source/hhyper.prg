@@ -1,5 +1,5 @@
 /*
- * $Id: hhyper.prg,v 1.8 2008-01-03 15:12:27 lculik Exp $
+ * $Id: hhyper.prg,v 1.9 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HStaticLink class
@@ -241,6 +241,10 @@ RETURN NIL
 
 METHOD OnSetCursor( pWnd, nHitTest, message ) CLASS HStaticLink
 
+HB_SYMBOL_UNUSED(pWnd)
+HB_SYMBOL_UNUSED(nHitTest)
+HB_SYMBOL_UNUSED(message)
+
    hwg_SetCursor( ::m_hHyperCursor )
 
 RETURN .t.
@@ -263,6 +267,8 @@ METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
 LOCAL xPos
 LOCAL yPos
 LOCAL res  := .f.
+
+HB_SYMBOL_UNUSED(nFlags)
 
    IF ::state != LBL_INIT
       xPos := LoWord( lParam )

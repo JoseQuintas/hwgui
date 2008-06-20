@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.19 2008-05-30 05:40:32 omm Exp $
+ *$Id: hcwindow.prg,v 1.20 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -11,6 +11,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#include "common.ch"
 
 #define EVENTS_MESSAGES 1
 #define EVENTS_ACTIONS  2
@@ -24,7 +25,7 @@ STATIC aCustomEvents := { ;
     {|o,w,l| onCtlColor( o, w, l ) }                               ,;
     {|o,w,l| onCtlColor( o, w, l ) }                               ,;
     {|o,w,l| onCtlColor( o, w, l ) }                               ,;
-    {|o,w,l| onCommand( o, w ) }                                   ,;
+    {|o,w,l| HB_SYMBOL_UNUSED(l),onCommand( o, w ) }               ,;
     {|o,w,l| onDrawItem( o, w, l ) }                               ,;
     {|o,w,l| onSize( o, w, l ) }                                   ,;
     {|o|     onDestroy( o ) }                                       ;
@@ -292,20 +293,28 @@ STATIC FUNCTION onSize( oWnd,wParam,lParam )
 LOCAL aControls := oWnd:aControls, nControls := Len( aControls )
 LOCAL oItem, iCont
 
-   #ifdef __XHARBOUR__
+HB_SYMBOL_UNUSED(wParam)
+
+#ifdef __XHARBOUR__
+
+HB_SYMBOL_UNUSED(iCont)
+
    FOR EACH oItem IN aControls
        IF oItem:bSize != NIL
           Eval( oItem:bSize, oItem, LoWord( lParam ), HiWord( lParam ) )
        ENDIF
    NEXT
-   #else
+#else
+
+HB_SYMBOL_UNUSED(oItem)
+
    FOR iCont := 1 TO nControls
        IF aControls[ iCont ]:bSize != NIL
           Eval( aControls[ iCont ]:bSize, aControls[ iCont ], ;
                 LoWord( lParam ), HiWord( lParam ) )
        ENDIF
    NEXT
-   #endif
+#endif
 
 RETURN -1
 

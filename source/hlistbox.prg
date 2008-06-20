@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.11 2008-05-27 12:10:52 lculik Exp $
+ * $Id: hlistbox.prg,v 1.12 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -11,6 +11,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#include "common.ch"
 
 #define LB_ERR              (-1)
 #define LBN_SELCHANGE       1
@@ -141,7 +142,7 @@ METHOD SetItem(nPos) CLASS HListBox
 Return Nil
 
 METHOD AddItems(p)
-Local i
+// Local i
    aadd(::aItems,p)
    ListboxAddString( ::handle, p )
 //   SendMessage( ::handle, LB_RESETCONTENT, 0, 0)

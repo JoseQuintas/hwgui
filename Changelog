@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.840 2008-06-20 18:15:24 giuseppem Exp $
+ * $Id: Changelog,v 1.841 2008-06-20 23:43:00 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,65 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-06-21 01:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * utils\designer\hctrl.prg
+    * changed to the correct method the load of standard bitmaps
+  * source\drawwidg.prg
+    * removed duplicated code
+    * added method parameter in class declaration
+  * source\hcombo.prg
+    * added the bGFocus in redefine method
+  + source\animat.c
+    * splitted c code from hanimat.prg
+  * source\hanimat.prg
+    * moved c code to animat.c
+    * removed the static clause from c coded methods as introducing
+      incompatibility with some compiler    
+  * include\windows.ch
+    * moved here the constants for hAnimation class
+  + samples\bldhrb.bat
+    + batch file from Viktor Szakàts for samples Harbour build
+  * all the files below are changed to obtain 2 things:
+    . compile without warnings in both Harbour and xHarbour with
+      /W2 /ES2 flags. I've tested many samples compiled in Harbour
+      and now all seems working fine, but you're invited to make
+      same thing and to signal or correct some mismatch.
+      Thanks to Viktor Szakàts for his precious suggestions and 
+      very effective and gentle collaboration in restoring Harbour
+      HwGUI compatibility.
+    . prepare the code for a deeper revisitation, hoping to release
+      a new stable version. I know ther'is a lot of HB_SYMBOL_UNUSED
+      included, but this would be a temporary stage of code and this
+      will be rearranged as soon as possible.
+    Now follows the list of changed files:      
+  * include\guilib.ch
+    + added th HB_SYMBOL_UNUSED dummy macro for xHarbour compilation
+  * source\guimain.prg
+  * source\hbrowse.prg
+  * source\hcontrol.prg
+  * source\hcwindow.prg
+  * source\hdc.prg
+  * source\hdialog.prg
+  * source\hfreeimg.prg
+  * source\hfrmtmpl.prg
+  * source\hgridex.prg
+  * source\hhyper.prg
+  * source\hlistbox.prg
+  * source\hnice.prg
+  * source\hownbtn.prg
+  * source\hpager.prg
+  * source\hpanel.prg
+  * source\hprinter.prg
+  * source\hrebar.prg
+  * source\hsplit.prg
+  * source\htab.prg
+  * source\htimer.prg
+  * source\htool.prg
+  * source\hwindow.prg
+  * source\repexec.prg
+  * source\richtext.prg
+
 2008-06-20 20:15 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! In edit mode now select cell withe mouse, when the cell is grater

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.67 2008-06-17 15:35:51 giuseppem Exp $
+ * $Id: hcontrol.prg,v 1.68 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -211,6 +211,9 @@ RETURN  NIL
 
 METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aParts )  CLASS hStatus
+
+HB_SYMBOL_UNUSED(cCaption)
+HB_SYMBOL_UNUSED(lTransp)
 
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )

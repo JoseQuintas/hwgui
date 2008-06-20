@@ -1,5 +1,5 @@
 /*
- * $Id: htimer.prg,v 1.3 2004-09-29 05:24:52 alkresin Exp $
+ * $Id: htimer.prg,v 1.4 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTimer class
@@ -11,6 +11,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#include "common.ch"
 
 #define  TIMER_FIRST_ID   33900
 
@@ -54,6 +55,8 @@ Return Nil
 
 Function TimerProc( hWnd, idTimer, time )
 Local i := Ascan( HTimer():aTimers,{|o|o:id==idTimer} )
+
+HB_SYMBOL_UNUSED(hWnd)
 
    IF i != 0
       Eval( HTimer():aTimers[i]:bAction,time )

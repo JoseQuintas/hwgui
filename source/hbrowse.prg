@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.127 2008-06-20 18:15:57 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.128 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -651,14 +651,14 @@ METHOD InitBrw( nType )  CLASS HBrowse
         ::bRecnoLog := ::bRecno := { |o| (::alias)->(FltRecNo(o)) }
         ::bGoTo     := { |o, n|(::alias)->(FltGoTo(o, n)) }
       ELSE
-        ::bSkip     :=  {|o, n| (::alias)->(DBSKIP(n)) }
+        ::bSkip     :=  {|o, n|HB_SYMBOL_UNUSED(o),(::alias)->(DBSKIP(n)) }
         ::bGoTop    :=  {|| (::alias)->(DBGOTOP())}
         ::bGoBot    :=  {|| (::alias)->(DBGOBOTTOM())}
         ::bEof      :=  {|| (::alias)->(EOF())}
         ::bBof      :=  {|| (::alias)->(BOF())}
         ::bRcou     :=  {|| (::alias)->(RECCOUNT())}
         ::bRecnoLog := ::bRecno  := {||(::alias)->(RECNO())}
-        ::bGoTo     := {|a,n|(::alias)->(DBGOTO(n))}
+        ::bGoTo     := {|a,n|HB_SYMBOL_UNUSED(a),(::alias)->(DBGOTO(n))}
       ENDIF
    ELSEIF ::type == BRW_ARRAY
       ::bSkip      := { | o, n | ARSKIP( o, n ) }
@@ -886,10 +886,11 @@ Local pps, hDC
          ENDIF
          cursor_row ++
       ENDDO
-      
+      // fill the remaining canvas area with background color if needed
       if nRows < ::rowCount
            FillRect( hDC, ::x1, ::y1 + (::height + 1) * nRows + 1, ::x2, ::y2, ::brush:handle )
       endif
+      
       Eval( ::bGoTo, Self,tmp )
    ENDIF
    IF ::lAppMode
@@ -1581,13 +1582,10 @@ Local xm := LOWORD(lParam), x1, fif
 
    x1  := ::x1
    fif := Iif( ::freeze > 0, 1, ::nLeftCol )
-
    DO WHILE fif <= len(::aColumns)
-
         if( ! (fif < ( ::nLeftCol + ::nColumns ) .AND. x1 + ::aColumns[ fif ]:width < xm ))
             exit
         endif
-
       x1 += ::aColumns[ fif ]:width
       fif := Iif( fif == ::freeze, ::nLeftCol, fif + 1 )
    ENDDO
@@ -1748,6 +1746,9 @@ RETURN Nil
 
 //----------------------------------------------------------------------------//
 METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
+
+HB_SYMBOL_UNUSED(nXPos)
+HB_SYMBOL_UNUSED(nYPos)
 
    IF Hwg_BitAnd( nKeys, MK_MBUTTON ) != 0
       IF nDelta > 0
@@ -2067,7 +2068,7 @@ FUNCTION CREATEARLIST( oBrw, arr )
             oBrw:AddColumn( HColumn():New( ,ColumnArBlock() ) )
          NEXT
       ELSE
-         oBrw:AddColumn( HColumn():New( ,{|value,o| o:aArray[ o:nCurrent ] } ) )
+         oBrw:AddColumn( HColumn():New( ,{|value,o|HB_SYMBOL_UNUSED(value),o:aArray[ o:nCurrent ] } ) )
       ENDIF
    ENDIF
    Eval( oBrw:bGoTop,oBrw )
@@ -2192,7 +2193,7 @@ METHOD ShowSizes() CLASS HBrowse
 Local cText := ""
 
    Aeval( ::aColumns,;
-          { | v,e | cText += ::aColumns[e]:heading + ": " + str( round(::aColumns[e]:width/8,0)-2  ) + chr(10)+chr(13) } )
+          { | v,e | HB_SYMBOL_UNUSED(v),cText += ::aColumns[e]:heading + ": " + str( round(::aColumns[e]:width/8,0)-2  ) + chr(10)+chr(13) } )
    MsgInfo( cText )
 RETURN nil
 
@@ -2343,9 +2344,11 @@ STATIC FUNCTION FltRecCount(oBrw)
 RETURN nCount
 
 STATIC FUNCTION FltGoTo(oBrw, nRecord)
+HB_SYMBOL_UNUSED(oBrw)
 RETURN DBGOTO(nRecord)
 
 STATIC FUNCTION FltRecNo(oBrw)
+HB_SYMBOL_UNUSED(oBrw)
 RETURN RECNO()
 //End Implementation by Luiz
 

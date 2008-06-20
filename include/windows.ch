@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.54 2008-05-29 19:41:14 mlacecilia Exp $
+ *$Id: windows.ch,v 1.55 2008-06-20 23:43:00 mlacecilia Exp $
  */
 
 #define WM_CREATE                       1
@@ -1271,3 +1271,9 @@
 #define DLGC_STATIC         0x0100      /* Static item: don't include       */
 #define DLGC_BUTTON         0x2000      /* Button item: can be checked      */
 
+/*
+Animation class defines
+*/
+#define ACS_CENTER              1
+#define ACS_TRANSPARENT         2
+#define ACS_AUTOPLAY            4

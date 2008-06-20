@@ -1,5 +1,5 @@
 /*
- * $Id: richtext.prg,v 1.6 2007-11-10 17:44:54 mlacecilia Exp $
+ * $Id: richtext.prg,v 1.7 2008-06-20 23:43:00 mlacecilia Exp $
  */
 /*
 旼컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴커
@@ -337,6 +337,8 @@ METHOD PageSetup( nLeft, nRight, nTop, nBottom, nWidth, nHeight, ;
 * 01/06/97   TRM         Creation
 *
 *********************************************************************
+
+HB_SYMBOL_UNUSED(cPgNumPos)
 
 DEFAULT lLandscape to .F.
 DEFAULT lNoWidow to .F.
@@ -862,6 +864,9 @@ METHOD WriteCell( cText, nFontNumber, nFontSize, cAppear, cHorzAlign, ;
 *
 *********************************************************************
 LOCAL i
+
+HB_SYMBOL_UNUSED(cCellBorder)
+HB_SYMBOL_UNUSED(nCellPct)
 
 DEFAULT cText to "", ;
     lDefault to .F.

@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.16 2008-05-27 12:10:52 lculik Exp $
+ * $Id: hgridex.prg,v 1.17 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -85,6 +85,8 @@ ENDCLASS
 METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint, bEnter,;
                bGfocus, bLfocus, lNoScroll, lNoBord, bKeyDown, bPosChg, bDispInfo,;
                nItemCount, lNoLines, color, bkcolor, lNoHeader,aBit,aItems ) CLASS HGridEx
+
+HB_SYMBOL_UNUSED(nItemCount)
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_VISIBLE+WS_CHILD+LVS_REPORT )
    Super:New( oWnd,nId,nStyle,x,y,Width,Height,oFont,bInit, ;
@@ -276,6 +278,10 @@ return Res
 
 METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aItem )  CLASS hGridex
+
+HB_SYMBOL_UNUSED(cCaption)
+HB_SYMBOL_UNUSED(lTransp)
+
    Default  aItem to {}
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )

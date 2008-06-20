@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.45 2008-05-27 12:10:51 lculik Exp $
+ * $Id: hdialog.prg,v 1.46 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -11,6 +11,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#include "common.ch"
 
 #define  WM_PSPNOTIFY         WM_USER+1010
 
@@ -231,6 +232,9 @@ Return Iif( i == 0, Nil, ::Getlist[i] )
 Static Function InitModalDlg( oDlg,wParam,lParam )
 Local nReturn := 1
 
+HB_SYMBOL_UNUSED(wParam)
+HB_SYMBOL_UNUSED(lParam)
+
    // oDlg:handle := hDlg
    // writelog( str(oDlg:handle)+" "+oDlg:title )
    IF Valtype( oDlg:menu ) == "A"
@@ -260,6 +264,8 @@ Return nReturn
 
 Static Function onEnterIdle( oDlg, wParam, lParam )
 Local oItem
+
+HB_SYMBOL_UNUSED(oDlg)
 
    IF wParam == 0 .AND. ( oItem := Atail( HDialog():aModalDialogs ) ) != Nil ;
          .AND. oItem:handle == lParam .AND. !oItem:lActivated
@@ -297,6 +303,9 @@ Function DlgCommand( oDlg,wParam,lParam )
 Local iParHigh := HiWord( wParam ), iParLow := LoWord( wParam )
 Local aMenu, i, hCtrl, nexthandle
    // WriteLog( Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+
+HB_SYMBOL_UNUSED(lParam)
+
    IF iParHigh == 0
       IF iParLow == IDOK
          hCtrl := GetFocus()
@@ -381,6 +390,8 @@ Return 0
 Static Function onSize( oDlg,wParam,lParam )
 Local aControls, iCont
 
+HB_SYMBOL_UNUSED(wParam)
+
    IF oDlg:oEmbedded != Nil
       oDlg:oEmbedded:Resize( LoWord( lParam ), HiWord( lParam ) )
    ENDIF
@@ -407,6 +418,8 @@ Return 0
 Static Function onActivate( oDlg,wParam,lParam )
 Local iParLow := LoWord( wParam )
 
+HB_SYMBOL_UNUSED(lParam)
+
    if iParLow > 0 .AND. oDlg:bGetFocus != Nil
       Eval( oDlg:bGetFocus, oDlg )
    elseif iParLow == 0 .AND. oDlg:bLostFocus != Nil
@@ -417,6 +430,8 @@ Return 0
 
 Static Function onHelp( oDlg,wParam,lParam )
     Local oCtrl, nHelpId, oParent
+
+HB_SYMBOL_UNUSED(wParam)
 
     if ! Empty(SetHelpFileName())
         oCtrl := oDlg:FindControl( nil, GetHelpData( lParam ) )
@@ -436,6 +451,9 @@ Return 0
 
 Static Function onPspNotify( oDlg,wParam,lParam )
 Local nCode := GetNotifyCode( lParam ), res := .T.
+
+HB_SYMBOL_UNUSED(wParam)
+
    IF nCode == PSN_SETACTIVE
       IF oDlg:bGetFocus != Nil
          res := Eval( oDlg:bGetFocus, oDlg )

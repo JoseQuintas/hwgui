@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.52 2008-02-21 00:44:24 mlacecilia Exp $
+ *$Id: hwindow.prg,v 1.53 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -11,6 +11,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#include "common.ch"
 
 #define  FIRST_MDICHILD_ID     501
 #define  MAX_MDICHILD_WINDOWS   18
@@ -85,6 +86,10 @@ ENDCLASS
 METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,;
                   cAppName,oBmp,cHelp,nHelpId, bCloseQuery ) CLASS HWindow
+
+HB_SYMBOL_UNUSED(clr)
+HB_SYMBOL_UNUSED(cMenu)
+HB_SYMBOL_UNUSED(cHelp)
 
    ::oDefaultParent := Self
    ::title    := cTitle
@@ -267,7 +272,7 @@ CLASS HMDIChildWindow INHERIT HWindow
       { WM_CREATE,WM_COMMAND,WM_MOVE,WM_SIZE,WM_NCACTIVATE, ;
         WM_SYSCOMMAND,WM_DESTROY }, ;
       { ;
-         {|o,w,l|onMdiCreate(o,l)},        ;
+         {|o,w,l|HB_SYMBOL_UNUSED(w),onMdiCreate(o,l)},        ;
          {|o,w|onMdiCommand(o,w)},         ;
          {|o|onMove(o)},                   ;
          {|o,w,l|onSize(o,w,l)},           ;
@@ -283,6 +288,10 @@ CLASS HMDIChildWindow INHERIT HWindow
 ENDCLASS
 
 METHOD Activate( lShow, lMaximized, lMinimized, bActivate ) CLASS HMDIChildWindow
+
+HB_SYMBOL_UNUSED(lShow)
+HB_SYMBOL_UNUSED(lMaximized)
+HB_SYMBOL_UNUSED(lMinimized)
 
    CreateGetList( Self )
    // Hwg_CreateMdiChildWindow( Self )
@@ -380,12 +389,19 @@ Local oItem, iCont, nCont
    //  Vamos mandar destruir as filhas
    // Destroi as CHILD's desta MAIN
    #ifdef __XHARBOUR__
+   
+HB_SYMBOL_UNUSED(iCont)
+HB_SYMBOL_UNUSED(nCont)
+
    FOR EACH oItem IN HWindow():aWindows
       IF oItem:oParent != Nil .AND. oItem:oParent:handle == hWnd
           SendMessage( oItem:handle,WM_CLOSE,0,0 )
       ENDIF
    NEXT
    #else
+   
+HB_SYMBOL_UNUSED(oItem)
+
    nCont := Len( HWindow():aWindows )
 
    FOR iCont := nCont TO 1 STEP -1
@@ -408,6 +424,8 @@ return -1
 
 Static Function onCommand( oWnd,wParam,lParam )
 Local iItem, iCont, aMenu, iParHigh, iParLow, nHandle
+
+HB_SYMBOL_UNUSED(lParam)
 
    IF wParam == SC_CLOSE
        IF Len(HWindow():aWindows)>2 .AND. ( nHandle := SendMessage( HWindow():aWindows[2]:handle, WM_MDIGETACTIVE,0,0 ) ) > 0
@@ -496,6 +514,8 @@ Static Function onEndSession( oWnd,wParam )
 
 Local i
 
+HB_SYMBOL_UNUSED(wParam)
+
    IF ISBLOCK( oWnd:bDestroy )
       i := Eval( oWnd:bDestroy, oWnd )
       i := IIf( Valtype(i) == "L",i,.t. )
@@ -524,6 +544,8 @@ Local ar
 Return -1
 
 Static Function onMdiCreate( oWnd,lParam )
+
+HB_SYMBOL_UNUSED(lParam)
 
    InitControls( oWnd )
    IF oWnd:bInit != Nil
@@ -559,6 +581,8 @@ Return -1
 
 Static Function onEnterIdle( oDlg, wParam, lParam )
 Local oItem
+
+HB_SYMBOL_UNUSED(oDlg)
 
    IF wParam == 0 .AND. ( oItem := Atail( HDialog():aModalDialogs ) ) != Nil ;
          .AND. oItem:handle == lParam .AND. !oItem:lActivated

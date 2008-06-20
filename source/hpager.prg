@@ -1,5 +1,5 @@
 /*
- * $Id: hpager.prg,v 1.4 2008-05-27 12:10:54 lculik Exp $
+ * $Id: hpager.prg,v 1.5 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -54,6 +54,9 @@ ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor,lvert) CLASS HPager
+
+HB_SYMBOL_UNUSED(cCaption)
+
    Default  lVert  to .f.
    ::lVert := lVert
    nstyle   := Hwg_BitOr( IIF( nStyle == NIL, 0, nStyle ), ;
@@ -71,6 +74,9 @@ Return Self
 
 METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor,lVert)  CLASS HPager
+
+HB_SYMBOL_UNUSED(cCaption)
+
    Default  lVert to .f.
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )

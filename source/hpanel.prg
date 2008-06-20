@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.16 2008-02-21 00:44:24 mlacecilia Exp $
+ * $Id: hpanel.prg,v 1.17 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -29,7 +29,7 @@ ENDCLASS
 
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  bInit,bSize,bPaint,lDocked ) CLASS HPanel
+                  bInit,bSize,bPaint ) CLASS HPanel
 Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
 
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
@@ -115,7 +115,7 @@ METHOD Init CLASS HPanel
 Return Nil
 
 
-METHOD Redefine( oWndParent,nId,nHeight,bInit,bSize,bPaint,lDocked ) CLASS HPanel
+METHOD Redefine( oWndParent,nId,nHeight,bInit,bSize,bPaint ) CLASS HPanel
 Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
 
    Super:New( oWndParent,nId,0,0,0,0, ;

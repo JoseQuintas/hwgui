@@ -1,5 +1,5 @@
 /*
- * $Id: repexec.prg,v 1.8 2008-06-18 21:46:33 mlacecilia Exp $
+ * $Id: repexec.prg,v 1.9 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * RepExec - Loading and executing of reports, built with RepBuild
@@ -12,6 +12,7 @@
 #include "guilib.ch"
 #include "repmain.h"
 #include "fileio.ch"
+#include "common.ch"
 
 // #define __DEBUG__
 
@@ -450,6 +451,8 @@ Return .T.
 Function PrintItem( oPrinter, aPaintRep, aItem, prnXCoef, prnYCoef, nYadd, lCalc )
 Local x1 := aItem[ITEM_X1], y1 := aItem[ITEM_Y1]+nYadd, x2, y2
 Local hBitmap, stroka
+
+HB_SYMBOL_UNUSED(aPaintRep)
 
    x2 := x1+aItem[ITEM_WIDTH]-1
    y2 := y1+aItem[ITEM_HEIGHT]-1

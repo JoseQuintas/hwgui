@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.14 2008-05-27 12:10:57 lculik Exp $
+ * $Id: htool.prg,v 1.15 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -45,6 +45,10 @@ ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor,lTransp ,aitem) CLASS hToolBar
+
+HB_SYMBOL_UNUSED(cCaption)
+HB_SYMBOL_UNUSED(lTransp)
+
    Default  aItem to {}
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )
@@ -59,6 +63,10 @@ Return Self
 
 METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aItem )  CLASS hToolBar
+
+HB_SYMBOL_UNUSED(cCaption)
+HB_SYMBOL_UNUSED(lTransp)
+
    Default  aItem to {}
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )

@@ -1,5 +1,5 @@
 /*
- * $Id: hdc.prg,v 1.7 2008-05-27 12:10:51 lculik Exp $
+ * $Id: hdc.prg,v 1.8 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPAINTDC and HDC Classes    
@@ -66,7 +66,7 @@ CLASS HDC
    METHOD SetViewportOrg( x, y )
    METHOD SetViewportExt( x, y )
    METHOD SetArcDirection( nArcDirection)
-   METHOD GetTextMetric(dc) inline GetTextMetric(::m_hDC)
+   METHOD GetTextMetric() inline GetTextMetric(::m_hDC)
    METHOD SetROP2( nDrawMode)
    method BitBlt( x,  y,  nWidth,  nHeight,  pSrcDC,  xSrc, ySrc,  dwRop) inline    BitBlt(::m_hDc, x, y, nWidth, nHeight,  pSrcDC,       xSrc,  ySrc,  dwRop)
 
@@ -74,7 +74,7 @@ CLASS HDC
    METHOD DeleteDc()
 ENDCLASS
 
-METHOD NEW( nWnd ) CLASS HDC
+METHOD NEW( ) CLASS HDC
 
    ::m_hDC       := NIL
    ::m_hAttribDC := NIL

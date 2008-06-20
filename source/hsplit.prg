@@ -1,5 +1,5 @@
 /*
- * $Id: hsplit.prg,v 1.10 2008-05-27 12:10:56 lculik Exp $
+ * $Id: hsplit.prg,v 1.11 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSplitter class
@@ -11,6 +11,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#include "common.ch"
 
 CLASS HSplitter INHERIT HControl
 
@@ -60,6 +61,8 @@ Return Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
 
+HB_SYMBOL_UNUSED(wParam)
+
    IF msg == WM_MOUSEMOVE
       IF ::hCursor == Nil
          ::hCursor := LoadCursor( Iif( ::lVertical,IDC_SIZEWE,IDC_SIZENS ) )
@@ -104,6 +107,8 @@ Local drawInfo := GetDrawItemInfo( lpdis )
 Local hDC := drawInfo[3], x1 := drawInfo[4], y1 := drawInfo[5], x2 := drawInfo[6], y2 := drawInfo[7]
 */
 Local pps, hDC, aCoors, x1, y1, x2, y2
+
+HB_SYMBOL_UNUSED(lpdis)
 
    pps := DefinePaintStru()
    hDC := BeginPaint( ::handle, pps )

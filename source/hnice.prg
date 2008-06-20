@@ -1,5 +1,5 @@
 /*
- * $Id: hnice.prg,v 1.7 2008-05-27 12:10:53 lculik Exp $
+ * $Id: hnice.prg,v 1.8 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -195,6 +195,8 @@ METHOD MouseMove( wParam, lParam ) CLASS HNICEButton
    LOCAL yPos
    LOCAL otmp
    LOCAL res    := .F.
+
+HB_SYMBOL_UNUSED(wParam)
 
    IF ::lFlat .AND. ::state != OBTN_INIT
       otmp := SetNiceBtnSelected()

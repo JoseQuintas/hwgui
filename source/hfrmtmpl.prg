@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.63 2008-06-18 21:46:33 mlacecilia Exp $
+ * $Id: hfrmtmpl.prg,v 1.64 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -555,7 +555,7 @@ STATIC FUNCTION CompileErr( e, stroka )
 
    MsgStop( ErrorMessage( e ) + Chr(10)+Chr(13) + "in" + Chr(10)+Chr(13) + ;
           AllTrim(stroka),"Script compiling error" )
-   BREAK
+   BREAK(nil)
 RETURN .T.
 
 Static Function ReadCtrl( oCtrlDesc, oContainer, oForm )

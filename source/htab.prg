@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.24 2008-05-27 12:10:57 lculik Exp $
+ *$Id: htab.prg,v 1.25 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -300,6 +300,10 @@ Return -1
 
 METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aItem )  CLASS hTab
+
+HB_SYMBOL_UNUSED(cCaption)
+HB_SYMBOL_UNUSED(lTransp)
+HB_SYMBOL_UNUSED(aItem)
 
    Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )

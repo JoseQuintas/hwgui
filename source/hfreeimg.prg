@@ -1,5 +1,5 @@
 /*
- * $Id: hfreeimg.prg,v 1.9 2007-11-10 17:44:35 mlacecilia Exp $
+ * $Id: hfreeimg.prg,v 1.10 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFreeImage - Image handling class
@@ -91,19 +91,18 @@ METHOD Draw( hDC,nLeft,nTop,nWidth,nHeight ) CLASS HFreeImage
 Return Nil
 
 METHOD Release() CLASS HFreeImage
-Local i, nlen := Len( ::aImages ), p
+Local i, nlen := Len( ::aImages )
 
    ::nCounter --
    IF ::nCounter == 0
    #ifdef __XHARBOUR__
       For EACH i IN ::aImages
-      p := hB_enumIndex()
          IF i:handle == ::handle
             FI_Unload( ::handle )
             IF ::hBitmap != Nil
                DeleteObject( ::hBitmap )
             ENDIF
-            Adel( ::aImages,p )
+            Adel( ::aImages,hB_enumIndex())
             Asize( ::aImages,nlen-1 )
             Exit
          ENDIF

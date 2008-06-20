@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.21 2008-05-27 16:25:51 lculik Exp $
+ * $Id: guimain.prg,v 1.22 2008-06-20 23:43:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -10,6 +10,7 @@
 
 #include "windows.ch"
 #include "guilib.ch"
+#include "common.ch"
 
 Function InitControls( oWnd,lNoActivate )
 Local i, pArray := oWnd:aControls, lInit
@@ -193,13 +194,13 @@ Local nStyle := WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX
       @ 0,0 BROWSE oBrw ARRAY
       oBrw:aArray := arr
       IF Valtype( arr[1] ) == "A"
-         oBrw:AddColumn( HColumn():New( ,{|value,o|o:aArray[o:nCurrent,1]},"C",nLen ) )
+         oBrw:AddColumn( HColumn():New( ,{|value,o|HB_SYMBOL_UNUSED(value),o:aArray[o:nCurrent,1]},"C",nLen ) )
       ELSE
-         oBrw:AddColumn( HColumn():New( ,{|value,o|o:aArray[o:nCurrent]},"C",nLen ) )
+         oBrw:AddColumn( HColumn():New( ,{|value,o|HB_SYMBOL_UNUSED(value),o:aArray[o:nCurrent]},"C",nLen ) )
       ENDIF
    ELSE
       @ 0,0 BROWSE oBrw DATABASE
-      oBrw:AddColumn( HColumn():New( ,{|value,o|(o:alias)->(FieldGet(nField))},"C",nLen ) )
+      oBrw:AddColumn( HColumn():New( ,{|value,o|HB_SYMBOL_UNUSED(value),(o:alias)->(FieldGet(nField))},"C",nLen ) )
    ENDIF
 
    oBrw:oFont  := oFont

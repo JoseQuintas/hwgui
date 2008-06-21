@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.841 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: Changelog,v 1.842 2008-06-21 01:09:43 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-06-21 03:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * include\guilib.ch
+    * fixed the HB_SYMBOL_UNUSED macro
 
 2008-06-21 01:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * utils\designer\hctrl.prg

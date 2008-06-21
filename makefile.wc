@@ -1,4 +1,4 @@
-# $Id: makefile.wc,v 1.15 2007-07-05 13:49:16 lculik Exp $
+# $Id: makefile.wc,v 1.16 2008-06-21 07:33:49 mlacecilia Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -51,6 +51,7 @@ PROCMISC_LIB_OBJS = \
 
 HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hipedit.obj \
+   $(OBJ_DIR)\animat.obj \
    $(OBJ_DIR)\commond.obj \
    $(OBJ_DIR)\control.obj \
    $(OBJ_DIR)\cxshade.obj \
@@ -431,6 +432,9 @@ $(OBJ_DIR)\c_ipaddr.obj : $(SRC_DIR)\c_ipaddr.c
 $(OBJ_DIR)\commond.obj : $(SRC_DIR)\commond.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
+$(OBJ_DIR)\animat.obj : $(SRC_DIR)\animat.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+   
 $(OBJ_DIR)\control.obj : $(SRC_DIR)\control.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 

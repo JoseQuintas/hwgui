@@ -32,6 +32,7 @@ $(LIB_DIR)\hwgui-b32.lib: \
 
 $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\hipedit.obj \
+   $(OBJ_DIR)\animat.obj \
    $(OBJ_DIR)\commond.obj \
    $(OBJ_DIR)\control.obj \
    $(OBJ_DIR)\dialog.obj  \

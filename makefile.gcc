@@ -1,4 +1,4 @@
-# $Id: makefile.gcc,v 1.22 2007-07-05 13:49:16 lculik Exp $
+# $Id: makefile.gcc,v 1.23 2008-06-21 07:33:49 mlacecilia Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -21,6 +21,7 @@ all: \
 
 $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/commond.o \
+   $(OBJ_DIR)/animat.o \
    $(OBJ_DIR)/control.o \
    $(OBJ_DIR)/cxshade.o \
    $(OBJ_DIR)/dialog.o \

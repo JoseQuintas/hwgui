@@ -103,6 +103,7 @@ ACTIVEX_LIB  =   $(LIB_DIR)\hbactivex.lib
 
 HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hipedit.obj \
+   $(HWGUI_OBJ_DIR)\animat.obj \
    $(HWGUI_OBJ_DIR)\commond.obj \
    $(HWGUI_OBJ_DIR)\control.obj \
    $(HWGUI_OBJ_DIR)\cxshade.obj \

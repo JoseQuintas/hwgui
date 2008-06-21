@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.842 2008-06-21 01:09:43 mlacecilia Exp $
+ * $Id: Changelog,v 1.843 2008-06-21 01:29:23 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-06-21 03:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * include\windows.ch
+    + added the WS_EX_TOOLWINDOW constant
+  * source\windows.c
+    + added HWG_SETWINDOWEXSTYLE and HWG_GETWINDOWEXSTYLE wrappers 
+    
 2008-06-21 03:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * include\guilib.ch
     * fixed the HB_SYMBOL_UNUSED macro

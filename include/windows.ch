@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.55 2008-06-20 23:43:00 mlacecilia Exp $
+ *$Id: windows.ch,v 1.56 2008-06-21 01:29:24 mlacecilia Exp $
  */
 
 #define WM_CREATE                       1
@@ -331,7 +331,7 @@
 #define WS_EX_TOPMOST           8      // 0x00000008L
 #define WS_EX_ACCEPTFILES      16      // 0x00000010L
 #define WS_EX_TRANSPARENT      32      // 0x00000020L
-
+#define WS_EX_TOOLWINDOW      128
 
 #define RDW_INVALIDATE          1      // 0x0001
 #define RDW_INTERNALPAINT       2      // 0x0002

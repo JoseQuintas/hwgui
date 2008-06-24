@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.128 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.129 2008-06-24 19:25:03 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1774,8 +1774,8 @@ Local oGet1, owb1, owb2
 
    fipos := MIN( ::colpos + ::nLeftCol - 1 - ::freeze, LEN(::aColumns))
 
-   IF ::bEnter == Nil .OR. ;
-         ( Valtype( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. !lRes )
+   IF  (!EVAL(::bEof,Self) .OR. ::lAppMode) .AND. ;
+       (::bEnter == Nil .OR. ( Valtype( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. !lRes ) )
       oColumn := ::aColumns[fipos]
       IF ::type == BRW_DATABASE
          ::varbuf := (::alias)->(Eval( oColumn:block,,Self,fipos ))
@@ -1895,7 +1895,7 @@ Local oGet1, owb1, owb2
                IF ::type == BRW_DATABASE
                   (::alias)->( dbAppend() )
                   (::alias)->( Eval( oColumn:block,::varbuf,Self,fipos ) )
-                  UNLOCK
+                  (::alias)->( Dbunlock() )
                ELSE
                   IF Valtype(::aArray[1]) == "A"
                      Aadd( ::aArray,Array(Len(::aArray[1])) )

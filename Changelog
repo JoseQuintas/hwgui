@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.845 2008-06-24 19:24:29 giuseppem Exp $
+ * $Id: Changelog,v 1.846 2008-06-25 18:51:11 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,7 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
-2008-06-24 21:300 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+2008-06-25 20:50 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hedit.prg
+    ! Fixed lColorinFocus in some case the color background isn't restored. 
+
+2008-06-24 21:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! If eof enter in edit mode only if lAppMode=.T. .
       Other minor fix.

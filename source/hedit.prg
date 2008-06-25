@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.78 2008-05-27 12:10:51 lculik Exp $
+ *$Id: hedit.prg,v 1.79 2008-06-25 18:51:48 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -9,7 +9,6 @@
  * www - http://kresin.belgorod.su
 */
 
-STATIC bColorOld
 STATIC lColorinFocus := .F.
 
 #include "windows.ch"
@@ -24,6 +23,7 @@ STATIC lColorinFocus := .F.
 CLASS HEdit INHERIT HControl
 
 CLASS VAR winclass   INIT "EDIT"
+   DATA bColorOld
    DATA lMultiLine   INIT .F.
    DATA cType INIT "C"
    DATA bSetGet
@@ -105,6 +105,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF bChange != Nil
       ::oParent:AddEvent( EN_CHANGE, ::id, bChange  )
    ENDIF
+   ::bColorOld:=::bColor
+
    RETURN Self
 
 METHOD Activate CLASS HEdit
@@ -236,10 +238,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
       IF lColorinFocus
          IF msg == WM_SETFOCUS
-            bColorOld := ::bcolor
+//            ::bColorOld := ::bcolor
             ::SetColor( ::tcolor , ::nColorinFocus, .T. )
          ELSEIF msg == WM_KILLFOCUS
-            ::SetColor( ::tcolor, bColorOld, .t. )
+            ::SetColor( ::tcolor, ::bColorOld, .t. )
          ENDIF
       ENDIF
 
@@ -348,6 +350,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
    IF bChange != Nil
       ::oParent:AddEvent( EN_CHANGE, ::id, bChange  )
    ENDIF
+   ::bOldcolor:=::bColor
 
    RETURN Self
 

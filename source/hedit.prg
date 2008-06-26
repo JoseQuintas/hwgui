@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.80 2008-06-26 04:57:17 giuseppem Exp $
+ *$Id: hedit.prg,v 1.81 2008-06-26 17:33:03 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -35,7 +35,6 @@ CLASS VAR winclass   INIT "EDIT"
    DATA lChanged     INIT .F.
    DATA nMaxLenght   INIT Nil
    DATA nColorinFocus INIT vcolor( 'CCFFFF' )
-   DATA nSkip        INIT 1
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, lNoBorder, nMaxLenght )
@@ -176,11 +175,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                   RETURN KeyLeft( Self )
                ENDIF
             ELSEIF wParam == 35     // End
-               ::lFirst := .F.
-               IF ::cType == "C"
-                  nPos := Len( Trim( ::title ) )
-                  SendMessage( ::handle, EM_SETSEL, nPos, nPos )
-                  RETURN 0
+               IF ! IsCtrlShift()
+					   ::lFirst := .F.
+                  IF ::cType == "C"
+                     nPos := Len( Trim( ::title ) )
+                     SendMessage( ::handle, EM_SETSEL, nPos, nPos )
+                     RETURN 0
+                  ENDIF
                ENDIF
             ELSEIF wParam == 45     // Insert
                IF ! IsCtrlShift()
@@ -199,7 +200,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                      PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nexthandle , 1 )
                   ENDIF
                ELSE
-                  ::nSkip := 1
+                  ParentGetDialog( Self ):nSkip := 1
                   IF ! GetSkip( oParent, ::handle ) // Last Get
                      nexthandle := GetNextDlgTabItem ( GetActiveWindow() , GetFocus() , .f. )
                      PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nexthandle , 1 )
@@ -758,7 +759,7 @@ STATIC FUNCTION __When( oCtrl )
       IF ! res
          oParent := ParentGetDialog(oCtrl)
          IF oParent:nSkip > 0
-            IF oCtrl == oParent:GetList[-1]
+            IF oCtrl == ATail(oParent:GetList)
                oParent:nSkip := -1
             ENDIF
          ELSE

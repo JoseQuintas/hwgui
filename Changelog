@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.847 2008-06-26 04:56:41 giuseppem Exp $
+ * $Id: Changelog,v 1.848 2008-06-26 17:33:01 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,27 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-06-26 19:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hedit.prg
+    - purged the unneeded nSkip property
+    * corrected the management of the End keypress
+    * corrected the nSkip assignment for Tab keypress
+    * avoided negative index using ATail function for better compatibility
+  * source/hcontrol.prg
+    + added the name property allowing to generate a custom named property for 
+      each control in his parent. From an initial idea of Luis Fernando Basso,
+      this could be very useful for referencing objects by name, even for 
+      constructing  and reusing standardized controls also in designer. 
+      Once defined oCtrl:name = "CustomName", where CustomName is really any 
+      name observing the naming conventions, you now can access the control by
+      name or in his class hierarchy using i.e.:
+      CustomName[:<prop/meth>] or oForm:oTabStocks:AnyCustomName[:<prop/meth>]
+    - striped out large remmed source code      
+  * utils/designer/extmodul.ch
+    + added HWG_SETWINDOWSTYLE, HWG_SETWINDOWEXSTYLE, HWG_GETWINDOWSTYLE,
+      HWG_GETWINDOWEXSTYLE external reference
+
 2008-06-26 07:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hedit.prg
     ! Fixed error in redefine thanks to Gilberto Silverio. 
@@ -19,7 +40,6 @@
   * source/hbrowse.prg
     ! If eof enter in edit mode only if lAppMode=.T. .
       Other minor fix.
-
 
 2008-06-21 09:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * Makefile.scr

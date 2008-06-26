@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.79 2008-06-25 18:51:48 giuseppem Exp $
+ *$Id: hedit.prg,v 1.80 2008-06-26 04:57:17 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -350,7 +350,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
    IF bChange != Nil
       ::oParent:AddEvent( EN_CHANGE, ::id, bChange  )
    ENDIF
-   ::bOldcolor:=::bColor
+   ::bColorOld := ::bColor
 
    RETURN Self
 

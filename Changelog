@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.848 2008-06-26 17:33:01 mlacecilia Exp $
+ * $Id: Changelog,v 1.849 2008-06-27 10:38:56 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-06-26 19:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hcheck.prg
+  * source\hcombo.prg
+  * source\hupdown.prg
+    * updated the __when function to obey to navigation on the form
+      (better would be to add a method in hcontrol, but this will make in
+       a subsequente code rearranging)
+  * source\misc.c
+    + added some parameters to keyb_event function allowing to combine key
+      press also with ctrl and alt keys. The new syntax is:
+      keyb_event( nKeyCode, lIsExtCode, lShiftPress, lCtrlPress, lAltPress)
+      
 2008-06-26 19:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hedit.prg
     - purged the unneeded nSkip property
@@ -22,7 +34,8 @@
       Once defined oCtrl:name = "CustomName", where CustomName is really any 
       name observing the naming conventions, you now can access the control by
       name or in his class hierarchy using i.e.:
-      CustomName[:<prop/meth>] or oForm:oTabStocks:AnyCustomName[:<prop/meth>]
+      oDlg:CustomName[:<prop/meth>] or 
+      oForm:oTabStocks:AnyCustomName[:<prop/meth>]
     - striped out large remmed source code      
   * utils/designer/extmodul.ch
     + added HWG_SETWINDOWSTYLE, HWG_SETWINDOWEXSTYLE, HWG_GETWINDOWSTYLE,

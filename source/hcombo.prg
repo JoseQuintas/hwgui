@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.39 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hcombo.prg,v 1.40 2008-06-27 10:38:58 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -306,16 +306,26 @@ Static Function __KillFocus( oCtrl )
 Return .T.
 
 Static Function __When( oCtrl )
-Local res
+Local res, oParent
 
    oCtrl:Refresh()
 
    IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
-      IF !res
-         GetSkip( oCtrl:oParent,oCtrl:handle )
+		IF ! res
+         oParent := ParentGetDialog(oCtrl)
+         IF oParent:nSkip > 0
+            IF oCtrl == ATail(oParent:GetList)
+               oParent:nSkip := -1
+            ENDIF
+         ELSE
+            IF oCtrl == oParent:getList[1]
+               oParent:nSkip := 1
+            ENDIF
+         ENDIF
+         GetSkip( oCtrl:oParent, oCtrl:handle )
       ENDIF
-      Return res
+      RETURN res
    ENDIF
 
 Return .T.

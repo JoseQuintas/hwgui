@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.40 2008-05-27 12:11:00 lculik Exp $
+ * $Id: misc.c,v 1.41 2008-06-27 10:39:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -453,16 +453,25 @@ HB_FUNC( KEYB_EVENT )
 {
    DWORD dwFlags = ( !(ISNIL(2)) && hb_parl(2) )? KEYEVENTF_EXTENDEDKEY : 0;
    int bShift = ( !(ISNIL(3)) && hb_parl(3) )? TRUE : FALSE;
+   int bCtrl = ( !(ISNIL(4)) && hb_parl(4) )? TRUE : FALSE;
+   int bAlt = ( !(ISNIL(5)) && hb_parl(5) )? TRUE : FALSE;
 
    if( bShift )
       keybd_event( VK_SHIFT, 0, 0, 0 );
+   if( bCtrl )
+      keybd_event( VK_CONTROL, 0, 0, 0 );
+   if( bAlt )
+      keybd_event( VK_MENU, 0, 0, 0 );
 
    keybd_event( hb_parni(1), 0, dwFlags, 0 );
    keybd_event( hb_parni(1), 0, dwFlags | KEYEVENTF_KEYUP, 0 );
 
    if( bShift )
       keybd_event( VK_SHIFT, 0, KEYEVENTF_KEYUP, 0 );
-
+   if( bCtrl )
+      keybd_event( VK_CONTROL, 0, KEYEVENTF_KEYUP, 0 );
+   if( bAlt )
+      keybd_event( VK_MENU, 0, KEYEVENTF_KEYUP, 0 );
 }
 
 /* SetScrollInfo( hWnd, nType, nRedraw, nPos, nPage )

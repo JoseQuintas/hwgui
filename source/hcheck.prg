@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.17 2008-05-27 12:10:49 lculik Exp $
+ * $Id: hcheck.prg,v 1.18 2008-06-27 10:38:57 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -137,17 +137,26 @@ Local l := SendMessage( oCtrl:handle,BM_GETCHECK,0,0 )
 Return .T.
 
 Static Function __When( oCtrl )
-Local res
+Local res, oParent
 
    oCtrl:Refresh()
 
    IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
-      IF !res
-         GetSkip( oCtrl:oParent,oCtrl:handle )
+		IF ! res
+         oParent := ParentGetDialog(oCtrl)
+         IF oParent:nSkip > 0
+            IF oCtrl == ATail(oParent:GetList)
+               oParent:nSkip := -1
+            ENDIF
+         ELSE
+            IF oCtrl == oParent:getList[1]
+               oParent:nSkip := 1
+            ENDIF
+         ENDIF
+         GetSkip( oCtrl:oParent, oCtrl:handle )
       ENDIF
-      Return res
+      RETURN res
    ENDIF
 
 Return .T.
-

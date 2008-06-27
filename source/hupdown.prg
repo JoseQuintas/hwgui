@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.9 2008-06-17 13:41:52 mlacecilia Exp $
+ * $Id: hupdown.prg,v 1.10 2008-06-27 10:38:59 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -105,10 +105,26 @@ METHOD Refresh()  CLASS HUpDown
 Return Nil
 
 Static Function __When( oCtrl )
+Local res, oParent
 
    oCtrl:Refresh()
+
    IF oCtrl:bGetFocus != Nil
-      Return Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet ), oCtrl )
+      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
+		IF ! res
+         oParent := ParentGetDialog(oCtrl)
+         IF oParent:nSkip > 0
+            IF oCtrl == ATail(oParent:GetList)
+               oParent:nSkip := -1
+            ENDIF
+         ELSE
+            IF oCtrl == oParent:getList[1]
+               oParent:nSkip := 1
+            ENDIF
+         ENDIF
+         GetSkip( oCtrl:oParent, oCtrl:handle )
+      ENDIF
+      RETURN res
    ENDIF
 
 Return .T.

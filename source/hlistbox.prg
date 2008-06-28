@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.12 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hlistbox.prg,v 1.13 2008-06-28 15:17:53 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -65,9 +65,9 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
-      ::oParent:AddEvent( LBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
+      ::oParent:AddEvent( LBN_SELCHANGE,self,{|o,id|__Valid(o:FindControl(id))},,"onChange" )
    ELSEIF bChange != Nil
-      ::oParent:AddEvent( LBN_SELCHANGE,::id,bChange )
+      ::oParent:AddEvent( LBN_SELCHANGE,self,bChange,,"onChange" )
    ENDIF
 
 Return Self
@@ -96,7 +96,7 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bPaint, ;
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
-      ::oParent:AddEvent( LBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
+      ::oParent:AddEvent( LBN_SELCHANGE,self,{|o,id|__Valid(o:FindControl(id))},"onChange" )
    ENDIF
 Return Self
 

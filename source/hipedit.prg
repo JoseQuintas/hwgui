@@ -1,5 +1,5 @@
 /*
- * $Id: hipedit.prg,v 1.10 2008-05-27 12:10:52 lculik Exp $
+ * $Id: hipedit.prg,v 1.11 2008-06-28 15:17:53 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -58,17 +58,17 @@ METHOD New( oWndParent,nId,aValue,bSetGet, nStyle,nLeft,nTop,nWidth,nHeight, ;
 
    IF Valtype(bSetGet) == "B"
       // WriteLog("hIpEdit:New() -> bSetGet == Block")
-      ::oParent:AddEvent( IPN_FIELDCHANGED,::id,{|o,id|__Valid(o:FindControl(id))} ,.t.)
+      ::oParent:AddEvent( IPN_FIELDCHANGED,self,{|o,id|__Valid(o:FindControl(id))} ,.t.,"onChange")
    ELSE
       // WriteLog("hIpEdit:New() -> bSetGet != Block")
       IF Valtype(::bLostFocus) == "B"
-         ::oParent:AddEvent( IPN_FIELDCHANGED,::id,::bLostFocus, .t. )
+         ::oParent:AddEvent( IPN_FIELDCHANGED,self,::bLostFocus, .t.,"onChange" )
       ENDIF
    ENDIF
 
    // Notificacoes de Ganho e perda de foco
-   ::oParent:AddEvent( EN_SETFOCUS , ::id, {|o,id|__GetFocus(o:FindControl(id))} )
-   ::oParent:AddEvent( EN_KILLFOCUS, ::id, {|o,id|__KillFocus(o:FindControl(id))} )
+   ::oParent:AddEvent( EN_SETFOCUS , self, {|o,id|__GetFocus(o:FindControl(id))},,"onGotFocus" )
+   ::oParent:AddEvent( EN_KILLFOCUS, self, {|o,id|__KillFocus(o:FindControl(id))},,"onLostFocus" )
 
 
 Return Self

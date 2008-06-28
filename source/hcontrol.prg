@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.70 2008-06-28 13:19:14 giuseppem Exp $
+ * $Id: hcontrol.prg,v 1.71 2008-06-28 15:17:52 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -374,9 +374,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    IF bClick != NIL
       IF ::oParent:className == "HSTATUS"
-         ::oParent:oParent:AddEvent( 0, ::id, bClick )
+         ::oParent:oParent:AddEvent( 0, self, bClick,,"onClick" )
       ELSE
-         ::oParent:AddEvent( 0, ::id, bClick )
+         ::oParent:AddEvent( 0, self, bClick, , "onClick" )
       ENDIF
    ENDIF
 
@@ -400,7 +400,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::title   := cCaption
 
    IF bClick != NIL
-      ::oParent:AddEvent( 0, ::id, bClick )
+      ::oParent:AddEvent( 0, self, bClick,,"onClick" )
    ENDIF
 RETURN Self
 
@@ -524,10 +524,6 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::m_crColors[ BTNST_COLOR_FG_FOCUS ] := GetSysColor( COLOR_BTNTEXT )
 
 
-
-//   IF bClick != NIL
-//      ::oParent:AddEvent( 0, ::id, bClick )
-//   ENDIF
 ::super:Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
                  cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle,hIcon  ) 
    ::title   := cCaption

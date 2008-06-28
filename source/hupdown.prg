@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.10 2008-06-27 10:38:59 mlacecilia Exp $
+ * $Id: hupdown.prg,v 1.11 2008-06-28 15:17:54 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -61,14 +61,14 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    IF bSetGet != Nil
       ::bGetFocus := bGFocus
       ::bLostFocus := bLFocus
-      ::oParent:AddEvent( EN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
-      ::oParent:AddEvent( EN_KILLFOCUS,::id,{|o,id|__Valid(o:FindControl(id))} )
+      ::oParent:AddEvent( EN_SETFOCUS,self,{|o,id|__When(o:FindControl(id))},,"onGotFocus" )
+      ::oParent:AddEvent( EN_KILLFOCUS,self,{|o,id|__Valid(o:FindControl(id))},,"onLostFocus" )
    ELSE
       IF bGfocus != Nil
-         ::oParent:AddEvent( EN_SETFOCUS,::id,bGfocus )
+         ::oParent:AddEvent( EN_SETFOCUS,self,bGfocus,,"onGotFocus"  )
       ENDIF
       IF bLfocus != Nil
-         ::oParent:AddEvent( EN_KILLFOCUS,::id,bLfocus )
+         ::oParent:AddEvent( EN_KILLFOCUS,self,bLfocus,,"onLostFocus"  )
       ENDIF
    ENDIF
 

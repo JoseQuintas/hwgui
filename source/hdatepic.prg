@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.15 2008-05-27 12:10:51 lculik Exp $
+ * $Id: hdatepic.prg,v 1.16 2008-06-28 15:17:52 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -52,16 +52,16 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    ::Activate()
 
    IF bGfocus != Nil
-      ::oParent:AddEvent( NM_SETFOCUS,::id,bGfocus,.T. )
+      ::oParent:AddEvent( NM_SETFOCUS,self,bGfocus,.T.,"onGotFocus" )
    ENDIF
-   ::oParent:AddEvent( DTN_DATETIMECHANGE,::id,{|o,id|__Change(o:FindControl(id),DTN_DATETIMECHANGE)},.T. )
-   ::oParent:AddEvent( DTN_CLOSEUP,::id,{|o,id|__Change(o:FindControl(id),DTN_CLOSEUP)},.T. )
+   ::oParent:AddEvent( DTN_DATETIMECHANGE,self,{|o,id|__Change(o:FindControl(id),DTN_DATETIMECHANGE)},.T.,"onChange" )
+   ::oParent:AddEvent( DTN_CLOSEUP,self,{|o,id|__Change(o:FindControl(id),DTN_CLOSEUP)},.T.,"onClose" )
    IF bSetGet != Nil
       ::bLostFocus := bLFocus
-      ::oParent:AddEvent( NM_KILLFOCUS,::id,{|o,id|__Valid(o:FindControl(id))},.T. )
+      ::oParent:AddEvent( NM_KILLFOCUS,self,{|o,id|__Valid(o:FindControl(id))},.T.,"onLostFocus" )
    ELSE
       IF bLfocus != Nil
-         ::oParent:AddEvent( NM_KILLFOCUS,::id,bLfocus,.T. )
+         ::oParent:AddEvent( NM_KILLFOCUS,self,bLfocus,.T.,"onLostFocus" )
       ENDIF
    ENDIF
 
@@ -107,16 +107,16 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bSize,bInit, ;
    ::bSetGet := bSetGet
    ::bChange := bChange
    IF bGfocus != Nil
-      ::oParent:AddEvent( NM_SETFOCUS,::id,bGfocus,.T. )
+      ::oParent:AddEvent( NM_SETFOCUS,self,bGfocus,.T.,"onGotFocus" )
    ENDIF
-   ::oParent:AddEvent( DTN_DATETIMECHANGE,::id,{|o,id|__Change(o:FindControl(id),DTN_DATETIMECHANGE)},.T. )
-   ::oParent:AddEvent( DTN_CLOSEUP,::id,{|o,id|__Change(o:FindControl(id),DTN_CLOSEUP)},.T. )
+   ::oParent:AddEvent( DTN_DATETIMECHANGE,self,{|o,id|__Change(o:FindControl(id),DTN_DATETIMECHANGE)},.T.,"onChange" )
+   ::oParent:AddEvent( DTN_CLOSEUP,self,{|o,id|__Change(o:FindControl(id),DTN_CLOSEUP)},.T.,"onClose" )
    IF bSetGet != Nil
       ::bLostFocus := bLFocus
-      ::oParent:AddEvent( NM_KILLFOCUS,::id,{|o,id|__Valid(o:FindControl(id))},.T. )
+      ::oParent:AddEvent( NM_KILLFOCUS,self,{|o,id|__Valid(o:FindControl(id))},.T.,"onLostFocus" )
    ELSE
       IF bLfocus != Nil
-         ::oParent:AddEvent( NM_KILLFOCUS,::id,bLfocus,.T. )
+         ::oParent:AddEvent( NM_KILLFOCUS,self,bLfocus,.T.,"onLostFocus" )
       ENDIF
    ENDIF
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.850 2008-06-28 13:18:33 giuseppem Exp $
+ * $Id: Changelog,v 1.851 2008-06-28 15:17:51 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,18 +7,50 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-06-28 17:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hcwindow.prg
+  * source\hcheck.prg
+  * source\hcombo.prg
+  * source\hcontrol.prg
+  * source\hdatepic.prg
+  * source\hedit.prg
+  * source\hgrid.prg
+  * source\hipedit.prg
+  * source\hlistbox.prg
+  * source\hmonthc.prg
+  * source\hradio.prg
+  * source\hriched.prg
+  * source\htool.prg
+  * source\hupdown.prg
+    + added named methods for events in controls, after a request of 
+      Luis Fernando Basso.
+      Each event added to the messages processed list have now a method
+      referenced in its class, inserted automatically at create time.
+      The methods have standard names, most easily comprehensible, as:
+      onClick, onChange, onGotFocus, onLostFocus.
+      Thus, now is possible to execute code as:
+      Eval(oDlg:oButSave:onClick) or
+      if Eval(oDlg:oTabStock:oAmount:onLostFocus)
+      A deeper test could show some side effect, then you are invited to
+      signal any side effect or error.
+  * samples\tstAnimation.prg
+    * enhanced code and form behaviour
+  + samples\tstAnimation.rc
+    + added the demo resource file previously omitted 
+
 2008-06-28 15:15 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hcontrol.prg
     ! In buttonex activated keys up, down, left and right to navigate
 	in controls with WS_TABSTOP. 
-
-2008-06-26 19:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  
+2008-06-27 13:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcheck.prg
   * source\hcombo.prg
   * source\hupdown.prg
     * updated the __when function to obey to navigation on the form
       (better would be to add a method in hcontrol, but this will make in
-       a subsequente code rearranging)
+       a subsequent code rearranging)
   * source\misc.c
     + added some parameters to keyb_event function allowing to combine key
       press also with ctrl and alt keys. The new syntax is:

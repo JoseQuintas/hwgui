@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.9 2008-05-27 12:10:56 lculik Exp $
+ * $Id: hriched.prg,v 1.10 2008-06-28 15:17:54 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -40,10 +40,10 @@ METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight, ;
    ::Activate()
 
    IF bGfocus != Nil
-      ::oParent:AddEvent( EN_SETFOCUS,::id,bGfocus )
+      ::oParent:AddEvent( EN_SETFOCUS,self,bGfocus,,"onGotFocus" )
    ENDIF
    IF bLfocus != Nil
-      ::oParent:AddEvent( EN_KILLFOCUS,::id,bLfocus )
+      ::oParent:AddEvent( EN_KILLFOCUS,self,bLfocus,,"onLostFocus" )
    ENDIF
 
 Return Self

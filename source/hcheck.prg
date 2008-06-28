@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.18 2008-06-27 10:38:57 mlacecilia Exp $
+ * $Id: hcheck.prg,v 1.19 2008-06-28 15:17:51 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -48,9 +48,9 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaptio
 
    ::bLostFocus := bClick
    ::bGetFocus  := bGFocus
-   ::oParent:AddEvent( BN_CLICKED,::id,{|o,id|__Valid(o:FindControl(id))} )
+   ::oParent:AddEvent( BN_CLICKED,self,{|o,id|__Valid(o:FindControl(id))},,"onClick" )
    IF bGFocus != Nil
-      ::oParent:AddEvent( BN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
+      ::oParent:AddEvent( BN_SETFOCUS,self,{|o,id|__When(o:FindControl(id))},,"onGotFocus" )
    ENDIF
 
 Return Self
@@ -74,9 +74,9 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,oFont,bInit,bSize,bPaint,bClick,cto
 
    ::bLostFocus := bClick
    ::bGetFocus  := bGFocus
-   ::oParent:AddEvent( BN_CLICKED,::id,{|o,id|__Valid(o:FindControl(id))} )
+   ::oParent:AddEvent( BN_CLICKED,self,{|o,id|__Valid(o:FindControl(id))},,"onClick" )
    IF bGFocus != Nil
-      ::oParent:AddEvent( BN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
+      ::oParent:AddEvent( BN_SETFOCUS,self,{|o,id|__When(o:FindControl(id))},,"onGotFocus" )
    ENDIF
 
 Return Self

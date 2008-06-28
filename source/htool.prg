@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.15 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: htool.prg,v 1.16 2008-06-28 15:17:54 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -13,7 +13,7 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 #include "common.ch"
-static hHook
+
 #define TRANSPARENT 1
 
 CLASS HToolBar INHERIT HControl
@@ -103,7 +103,7 @@ Local nmax
 
          IF Valtype( ::aItem[ n, 7 ] ) == "B"
 
-            ::oParent:AddEvent( BN_CLICKED, ::aItem[ n, 2 ], ::aItem[ n ,7 ] )
+            ::oParent:AddEvent( BN_CLICKED, ::oParent:FindControl(::aItem[ n, 2 ]), ::aItem[ n ,7 ],,"onClick" )
 
          ENDIF
 
@@ -114,7 +114,7 @@ Local nmax
 
             FOR n1 :=1 to Len( aTemp )
                hwg__AddMenuItem( ::aItem[ n, 10 ], aTemp[ n1, 1 ], -1, .F., aTemp[ n1, 2 ], , .F. )
-               ::oParent:AddEvent( BN_CLICKED, aTemp[ n1, 2 ], aTemp[ n1,3 ] )
+               ::oParent:AddEvent( BN_CLICKED, ::oParent:FindControl(aTemp[ n1, 2 ]), aTemp[ n1,3 ],,"onClick" )
             NEXT
 
          ENDIF
@@ -261,7 +261,7 @@ method ExecuteTool(nid) class htoolbarex
 Local nPos
 nPos := ascan(::aItem,{|x| x[2] == nid})
 if nId >0
-   SEndMessage(::oParent:handle,WM_COMMAND,makewparam(nid,BN_CLICKED),::handle)
+   SendMessage(::oParent:handle,WM_COMMAND,makewparam(nid,BN_CLICKED),::handle)
    return 0
 endif
 return -200

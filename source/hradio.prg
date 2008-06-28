@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.9 2008-05-27 12:10:55 lculik Exp $
+ * $Id: hradio.prg,v 1.10 2008-06-28 15:17:54 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -120,13 +120,13 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
    ::Activate()
    ::oParent:AddControl( Self )
    IF bClick != Nil .AND. ( ::oGroup == Nil .OR. ::oGroup:bSetGet == Nil )
-      ::oParent:AddEvent( 0,::id,bClick )
+      ::oParent:AddEvent( 0,self,bClick,,"onClick" )
    ENDIF
    IF ::oGroup != Nil
       Aadd( ::oGroup:aButtons,Self )
       // IF ::oGroup:bSetGet != Nil
          ::bLostFocus := bClick
-         ::oParent:AddEvent( BN_CLICKED,::id,{|o,id|__Valid(o:FindControl(id))} )
+         ::oParent:AddEvent( BN_CLICKED,self,{|o,id|__Valid(o:FindControl(id))},,"onClick" )
       // ENDIF
    ENDIF
 
@@ -161,13 +161,13 @@ METHOD Redefine( oWndParent,nId,oFont,bInit,bSize,bPaint,bClick,ctooltip,tcolor,
 
    ::oParent:AddControl( Self )
    IF bClick != Nil .AND. ( ::oGroup == Nil .OR. ::oGroup:bSetGet == Nil )
-      ::oParent:AddEvent( 0,::id,bClick )
+      ::oParent:AddEvent( 0,self,bClick,,"onClick" )
    ENDIF
    IF ::oGroup != Nil
       Aadd( ::oGroup:aButtons,Self )
       // IF ::oGroup:bSetGet != Nil
          ::bLostFocus := bClick
-         ::oParent:AddEvent( BN_CLICKED,::id,{|o,id|__Valid(o:FindControl(id))} )
+         ::oParent:AddEvent( BN_CLICKED,self,{|o,id|__Valid(o:FindControl(id))},,"onClick" )
       // ENDIF
    ENDIF
 Return Self

@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.20 2008-06-20 23:43:00 mlacecilia Exp $
+ *$Id: hcwindow.prg,v 1.21 2008-06-28 15:17:52 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -67,10 +67,11 @@ CLASS HCustomWindow INHERIT HObject
 
    METHOD AddControl( oCtrl ) INLINE Aadd( ::aControls, oCtrl )
    METHOD DelControl( oCtrl )
-   METHOD AddEvent( nEvent, nId, bAction, lNotify ) ;
-                              INLINE Aadd( IIF( lNotify == NIL .OR. !lNotify, ;
+   METHOD AddEvent( nEvent, oCtrl, bAction, lNotify, cMethName ) ;
+                              INLINE (Aadd( IIF( lNotify == NIL .OR. !lNotify, ;
                                                 ::aEvents, ::aNotify ), ;
-                                           { nEvent, nId, bAction } )
+                                                { nEvent, oCtrl:id, bAction } ), ;
+                                      __objAddInline(oCtrl, cMethName, bAction ) )
    METHOD FindControl( nId, nHandle )
    METHOD Hide()              INLINE (::lHide := .T., HideWindow( ::handle ) )
    METHOD Show()              INLINE (::lHide := .F., ShowWindow( ::handle ) )

@@ -1,5 +1,5 @@
  /*
- * $Id: hgrid.prg,v 1.11 2008-05-27 12:10:52 lculik Exp $
+ * $Id: hgrid.prg,v 1.12 2008-06-28 15:17:52 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -102,16 +102,6 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
    HWG_InitCommonControlsEx()
 
    ::Activate()
-
-   /*
-   if bGfocus != Nil
-      ::oParent:AddEvent( NM_SETFOCUS,::id,bGfocus,.T. )
-   endif
-
-   if bLfocus != Nil
-      ::oParent:AddEvent( NM_KILLFOCUS,::id,bLfocus,.T. )
-   endif
-   */
 
 Return Self
 

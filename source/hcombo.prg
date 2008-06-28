@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.40 2008-06-27 10:38:58 mlacecilia Exp $
+ * $Id: hcombo.prg,v 1.41 2008-06-28 15:17:51 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -95,30 +95,30 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
    IF bSetGet != Nil
       ::bChangeSel := bChange
       ::bGetFocus := bGFocus
-      ::oParent:AddEvent( CBN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
+      ::oParent:AddEvent( CBN_SETFOCUS,self,{|o,id|__When(o:FindControl(id))},,"onGotFocus" )
 
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com) 03/06/2006
       if ::bSetGet <> nil
-         ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
+         ::oParent:AddEvent( CBN_SELCHANGE,self,{|o,id|__Valid(o:FindControl(id))},,"onChange" )
       elseif ::bChangeSel != NIL
-         ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
+         ::oParent:AddEvent( CBN_SELCHANGE,self,{|o,id|__Valid(o:FindControl(id))},,"onChange" )
       ENDIF
 
       IF bValid != NIL
          ::bValid := bValid
-         ::oParent:AddEvent( CBN_KILLFOCUS,::id,{|o,id|__Valid(o:FindControl(id))} )
+         ::oParent:AddEvent( CBN_KILLFOCUS,self,{|o,id|__Valid(o:FindControl(id))},,"onLostFocus" )
       ENDIF
       //---------------------------------------------------------------------------
    ELSEIF bChange != Nil
-      ::oParent:AddEvent( CBN_SELCHANGE,::id,bChange )
+      ::oParent:AddEvent( CBN_SELCHANGE,self,bChange,,"onChange" )
    ENDIF
 
    IF ::lEdit
-      ::oParent:AddEvent( CBN_KILLFOCUS,::id,{|o,id|__KillFocus(o:FindControl(id))} )
+      ::oParent:AddEvent( CBN_KILLFOCUS,self,{|o,id|__KillFocus(o:FindControl(id))},,"onLostFocus" )
    ENDIF
 
    IF bGFocus != Nil .AND. bSetGet == Nil
-      ::oParent:AddEvent( CBN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
+      ::oParent:AddEvent( CBN_SETFOCUS,self,{|o,id|__When(o:FindControl(id))},,"onGotGocus" )
    ENDIF
 
 Return Self
@@ -147,19 +147,19 @@ METHOD Redefine( oWndParent,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bPaint, ;
    IF bSetGet != Nil
       ::bChangeSel := bChange
       ::bGetFocus := bGFocus
-      ::oParent:AddEvent( CBN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
+      ::oParent:AddEvent( CBN_SETFOCUS,self,{|o,id|__When(o:FindControl(id))},,"onGotFocus" )
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
       if ::bSetGet <> nil
-         ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
+         ::oParent:AddEvent( CBN_SELCHANGE,self,{|o,id|__Valid(o:FindControl(id))},,"onChange" )
       elseif ::bChangeSel != NIL
-        ::oParent:AddEvent( CBN_SELCHANGE,::id,{|o,id|__Valid(o:FindControl(id))} )
+        ::oParent:AddEvent( CBN_SELCHANGE,self,{|o,id|__Valid(o:FindControl(id))},,"onChange" )
       ENDIF
    ELSEIF bChange != Nil
-      ::oParent:AddEvent( CBN_SELCHANGE,::id,bChange )
+      ::oParent:AddEvent( CBN_SELCHANGE,self,bChange,,"onChange" )
    ENDIF
    
    IF bGFocus != Nil .AND. bSetGet == Nil
-      ::oParent:AddEvent( CBN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
+      ::oParent:AddEvent( CBN_SETFOCUS,self,{|o,id|__When(o:FindControl(id))},,"onGotFocus" )
    ENDIF
 
    ::Refresh() // By Luiz Henrique dos Santos

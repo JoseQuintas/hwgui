@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.81 2008-06-26 17:33:03 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.82 2008-06-28 15:17:52 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -90,19 +90,19 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF bSetGet != Nil
       ::bGetFocus := bGfocus
       ::bLostFocus := bLfocus
-      ::oParent:AddEvent( EN_SETFOCUS, ::id, { | o, id | __When( o:FindControl( id ) ) }  )
-      ::oParent:AddEvent( EN_KILLFOCUS, ::id, { | o, id | __Valid( o:FindControl( id ) ) } )
+      ::oParent:AddEvent( EN_SETFOCUS, self, { | o, id | __When( o:FindControl( id ) ) },,"onGotFocus"  )
+      ::oParent:AddEvent( EN_KILLFOCUS, self, { | o, id | __Valid( o:FindControl( id ) ) },,"onLostFocus" )
       ::bValid := { | o | __Valid( o ) }
    ELSE
       IF bGfocus != Nil
-         ::oParent:AddEvent( EN_SETFOCUS, ::id, bGfocus )
+         ::oParent:AddEvent( EN_SETFOCUS, self, bGfocus,,"onGotFocus" )
       ENDIF
       IF bLfocus != Nil
-         ::oParent:AddEvent( EN_KILLFOCUS, ::id, bLfocus )
+         ::oParent:AddEvent( EN_KILLFOCUS, self, bLfocus,,"onLostFocus"  )
       ENDIF
    ENDIF
    IF bChange != Nil
-      ::oParent:AddEvent( EN_CHANGE, ::id, bChange  )
+      ::oParent:AddEvent( EN_CHANGE, self, bChange,,"onChange"  )
    ENDIF
    ::bColorOld:=::bColor
 
@@ -337,19 +337,19 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
    IF bSetGet != Nil
       ::bGetFocus := bGfocus
       ::bLostFocus := bLfocus
-      ::oParent:AddEvent( EN_SETFOCUS, ::id, { | o, id | __When( o:FindControl( id ) ) } )
-      ::oParent:AddEvent( EN_KILLFOCUS, ::id, { | o, id | __Valid( o:FindControl( id ) ) } )
+      ::oParent:AddEvent( EN_SETFOCUS, self, { | o, id | __When( o:FindControl( id ) ) },,"onGotFocus" )
+      ::oParent:AddEvent( EN_KILLFOCUS, self, { | o, id | __Valid( o:FindControl( id ) ) },,"onLostFocus" )
       ::bValid := { | o | __Valid( o ) }
    ELSE
       IF bGfocus != Nil
-         ::oParent:AddEvent( EN_SETFOCUS, ::id, bGfocus )
+         ::oParent:AddEvent( EN_SETFOCUS, self, bGfocus,,"onGotFocus"  )
       ENDIF
       IF bLfocus != Nil
-         ::oParent:AddEvent( EN_KILLFOCUS, ::id, bLfocus )
+         ::oParent:AddEvent( EN_KILLFOCUS, self, bLfocus,,"onLostFocus" )
       ENDIF
    ENDIF
    IF bChange != Nil
-      ::oParent:AddEvent( EN_CHANGE, ::id, bChange  )
+      ::oParent:AddEvent( EN_CHANGE, self, bChange,,"onChange"  )
    ENDIF
    ::bColorOld := ::bColor
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.849 2008-06-27 10:38:56 mlacecilia Exp $
+ * $Id: Changelog,v 1.850 2008-06-28 13:18:33 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-06-28 15:15 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hcontrol.prg
+    ! In buttonex activated keys up, down, left and right to navigate
+	in controls with WS_TABSTOP. 
 
 2008-06-26 19:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcheck.prg

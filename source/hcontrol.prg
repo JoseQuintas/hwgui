@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.69 2008-06-26 17:33:03 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.70 2008-06-28 13:19:14 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -589,7 +589,7 @@ RETURN NIL
 METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
 
 Local pt:={,},rectButton,acoor
-local pos
+local pos, nexthandle
 
    IF msg == WM_THEMECHANGED
       IF ::Themed
@@ -629,8 +629,19 @@ local pos
          SendMessage(::handle, WM_LBUTTONDOWN, 0, MAKELPARAM(1, 1))
          return 0
       endif
+      if ((wParam == VK_DOWN) .or. (wParam == VK_RIGHT))
+       	nexthandle := GetNextDlgTabItem ( GetActiveWindow() , ::handle, .F. )
+   	   PostMessage( ::oParent:handle, WM_NEXTDLGCTL, nexthandle , 1 )
+         return 0
+      endif
+      
+      if ((wParam == VK_UP) .or. (wParam == VK_LEFT))
+       	nexthandle := GetNextDlgTabItem ( GetActiveWindow() , ::handle, .T. )
+   	   PostMessage( ::oParent:handle, WM_NEXTDLGCTL, nexthandle , 1 )
+         return 0
+      endif
 
-
+      RETURN
    elseif msg == WM_KEYUP
 
       if ((wParam == VK_SPACE) .or. (wParam == VK_RETURN))

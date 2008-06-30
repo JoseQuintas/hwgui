@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.41 2008-06-27 10:39:00 mlacecilia Exp $
+ * $Id: misc.c,v 1.42 2008-06-30 21:59:45 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -93,6 +93,27 @@ HB_FUNC( COPYSTRINGTOCLIPBOARD )
    SetClipboardData( CF_TEXT, hglbCopy );
 
    CloseClipboard();
+}
+
+HB_FUNC( GETCLIPBOARDTEXT )
+  {
+ HWND hwnd;
+ HANDLE hData;
+ char* buffer;
+
+ hwnd = (HWND) hb_parnl(1);
+
+ if (!OpenClipboard(hwnd))
+     hb_retc("");
+    else
+ {
+  hData = GetClipboardData(CF_TEXT);
+  buffer = (char*)GlobalLock(hData);
+
+  GlobalUnlock(hData);
+  CloseClipboard();
+  hb_retc( buffer);
+ }
 }
 
 HB_FUNC( GETSTOCKOBJECT )

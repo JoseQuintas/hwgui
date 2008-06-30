@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.851 2008-06-28 15:17:51 mlacecilia Exp $
+ * $Id: Changelog,v 1.852 2008-06-30 21:59:44 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,25 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-06-28 17:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hcwindow.prg
+    * enhanced the AddEvent method and moved from inline to separate
+      function
+    * changed the FindControl method to recursively search also in all
+      controls acting as containers.
+      BE AWARE: this new behaviour is working fine if none duplicated
+      ID exists in the same form. this is assured by the new way the
+      hControl:newID() generates automatically the ID number, but 
+      could generate errors if the ID are manually assigned and some
+      duplicate ID number exists not only in the same parent but also
+      in all the form controls
+  * source\hcontrol.prg
+    * changed the new ID assignment to assure no duplicates into the
+      same form also if have controls acting as containers
+    * enhancement in management of the cursor keys presses 
+  * source\misc.c
+    + added the GetClipboardText() function
 
 2008-06-28 17:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcwindow.prg
@@ -30,8 +49,9 @@
       The methods have standard names, most easily comprehensible, as:
       onClick, onChange, onGotFocus, onLostFocus.
       Thus, now is possible to execute code as:
-      Eval(oDlg:oButSave:onClick) or
-      if Eval(oDlg:oTabStock:oAmount:onLostFocus)
+      oDlg:oButSave:onClick()
+      or
+      oDlg:oTabStock:oAmount:onLostFocus()
       A deeper test could show some side effect, then you are invited to
       signal any side effect or error.
   * samples\tstAnimation.prg

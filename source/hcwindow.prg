@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.21 2008-06-28 15:17:52 mlacecilia Exp $
+ *$Id: hcwindow.prg,v 1.22 2008-06-30 21:59:45 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -67,11 +67,7 @@ CLASS HCustomWindow INHERIT HObject
 
    METHOD AddControl( oCtrl ) INLINE Aadd( ::aControls, oCtrl )
    METHOD DelControl( oCtrl )
-   METHOD AddEvent( nEvent, oCtrl, bAction, lNotify, cMethName ) ;
-                              INLINE (Aadd( IIF( lNotify == NIL .OR. !lNotify, ;
-                                                ::aEvents, ::aNotify ), ;
-                                                { nEvent, oCtrl:id, bAction } ), ;
-                                      __objAddInline(oCtrl, cMethName, bAction ) )
+   METHOD AddEvent( nEvent, oCtrl, bAction, lNotify, cMethName )
    METHOD FindControl( nId, nHandle )
    METHOD Hide()              INLINE (::lHide := .T., HideWindow( ::handle ) )
    METHOD Show()              INLINE (::lHide := .F., ShowWindow( ::handle ) )
@@ -83,12 +79,32 @@ CLASS HCustomWindow INHERIT HObject
 
 ENDCLASS
 
-METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
-LOCAL i
+METHOD AddEvent( nEvent, oCtrl, bAction, lNotify, cMethName ) CLASS HCustomWindow
 
-I := IIF( nId != NIL, Ascan( ::aControls, {|o| o:id == nId } ), ;
-                            Ascan( ::aControls, {|o| o:handle == nHandle } ) )
-RETURN IIF( i == 0, NIL, ::aControls[ i ] )
+   Aadd( IIF( lNotify == NIL .OR. !lNotify, ::aEvents, ::aNotify ), ;
+         { nEvent, oCtrl:id, bAction } )
+	if cMethName != nil
+	    __objAddInline(oCtrl, cMethName, bAction )
+	endif
+return nil
+
+METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
+
+local bSearch := IIF( nId != NIL, {|o| o:id == nId } , {|o| o:handle == nHandle } )
+Local i := Len(::aControls)
+Local oCtrl
+
+  DO While i > 0
+    IF Len(::aControls[i]:aControls) > 0 .and. ;
+		(oCtrl := ::aControls[i]:FindControl(nId, nHandle)) != nil
+      RETURN oCtrl
+    ENDIF
+	 IF Eval(bSearch, ::aControls[i])
+  	   Return ::aControls[i]
+    ENDIF
+    i --
+  ENDDO
+Return Nil
 
 METHOD DelControl( oCtrl ) CLASS HCustomWindow
 LOCAL h := oCtrl:handle, id := oCtrl:id

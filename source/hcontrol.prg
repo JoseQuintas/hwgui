@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.71 2008-06-28 15:17:52 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.72 2008-06-30 21:59:45 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -95,8 +95,14 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
 RETURN Self
 
 METHOD NewId() CLASS HControl
-LOCAL nId := CONTROL_FIRST_ID + Len( ::oParent:aControls )
 
+Local oparent := ::Oparent, i := 0, nId
+
+	DO WHILE oParent != Nil
+      nId := CONTROL_FIRST_ID + 1000 * i + Len( ::oParent:aControls )
+      oParent := oParent:oParent
+      i ++
+	ENDDO
    IF Ascan( ::oParent:aControls, {|o| o:id == nId } ) != 0
       nId --
       DO WHILE nId >= CONTROL_FIRST_ID .AND. ;
@@ -625,19 +631,16 @@ local pos, nexthandle
          SendMessage(::handle, WM_LBUTTONDOWN, 0, MAKELPARAM(1, 1))
          return 0
       endif
-      if ((wParam == VK_DOWN) .or. (wParam == VK_RIGHT))
-       	nexthandle := GetNextDlgTabItem ( GetActiveWindow() , ::handle, .F. )
-   	   PostMessage( ::oParent:handle, WM_NEXTDLGCTL, nexthandle , 1 )
-         return 0
-      endif
-      
-      if ((wParam == VK_UP) .or. (wParam == VK_LEFT))
-       	nexthandle := GetNextDlgTabItem ( GetActiveWindow() , ::handle, .T. )
-   	   PostMessage( ::oParent:handle, WM_NEXTDLGCTL, nexthandle , 1 )
-         return 0
-      endif
-
-      RETURN
+      IF	wParam = VK_LEFT  .OR. wParam = VK_UP
+      	nexthandle := GetNextDlgTabItem ( ::oParent:handle, getfocus(), .t. )
+			PostMessage(GetActiveWindow(), WM_NEXTDLGCTL, nexthandle , 1 )
+			return 0
+		endif
+		IF wParam = VK_RIGHT .OR. wParam = VK_DOWN
+		   nexthandle := GetNextDlgTabItem ( ::oParent:handle, getfocus(), .f. )
+			PostMessage(GetActiveWindow(), WM_NEXTDLGCTL, nexthandle , 1 )
+			return 0
+		endif
    elseif msg == WM_KEYUP
 
       if ((wParam == VK_SPACE) .or. (wParam == VK_RETURN))

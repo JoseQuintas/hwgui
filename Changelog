@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.852 2008-06-30 21:59:44 mlacecilia Exp $
+ * $Id: Changelog,v 1.853 2008-06-30 23:26:17 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-07-01 01:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hcwindow.prg
+    * now is possible to pass the control ID to AddEvent() in place of
+      the control itself
 
 2008-06-28 17:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcwindow.prg

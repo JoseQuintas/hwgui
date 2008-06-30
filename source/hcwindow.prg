@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.22 2008-06-30 21:59:45 mlacecilia Exp $
+ *$Id: hcwindow.prg,v 1.23 2008-06-30 23:26:18 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -82,7 +82,7 @@ ENDCLASS
 METHOD AddEvent( nEvent, oCtrl, bAction, lNotify, cMethName ) CLASS HCustomWindow
 
    Aadd( IIF( lNotify == NIL .OR. !lNotify, ::aEvents, ::aNotify ), ;
-         { nEvent, oCtrl:id, bAction } )
+         { nEvent, iif(ValType(oCtrl)=="N", oCtrl, oCtrl:id), bAction } )
 	if cMethName != nil
 	    __objAddInline(oCtrl, cMethName, bAction )
 	endif

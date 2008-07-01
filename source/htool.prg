@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.16 2008-06-28 15:17:54 mlacecilia Exp $
+ * $Id: htool.prg,v 1.17 2008-07-01 13:03:14 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -114,7 +114,7 @@ Local nmax
 
             FOR n1 :=1 to Len( aTemp )
                hwg__AddMenuItem( ::aItem[ n, 10 ], aTemp[ n1, 1 ], -1, .F., aTemp[ n1, 2 ], , .F. )
-               ::oParent:AddEvent( BN_CLICKED, ::oParent:FindControl(aTemp[ n1, 2 ]), aTemp[ n1,3 ],,"onClick" )
+               ::oParent:AddEvent( BN_CLICKED, ::oParent:FindControl(aTemp[ n1, 2 ]), aTemp[ n1,3 ] )
             NEXT
 
          ENDIF

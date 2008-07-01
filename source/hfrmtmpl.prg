@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.64 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hfrmtmpl.prg,v 1.65 2008-07-01 13:03:14 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -143,6 +143,7 @@ CLASS HFormTmpl
    CLASS VAR maxId    INIT 0
    DATA oDlg
    DATA aControls     INIT {}
+   DATA oParent
    DATA aProp
    DATA aMethods
    DATA aVars         INIT {}

@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.43 2008-05-19 13:49:23 lculik Exp $
+ * $Id: hformgen.prg,v 1.44 2008-07-01 13:03:16 mlacecilia Exp $
  *
  * Designer
  * HFormGen class
@@ -44,6 +44,7 @@ CLASS HFormGen INHERIT HObject
 
    CLASS VAR aForms INIT {}
    CLASS VAR oDlgSelected
+   DATA oParent
    DATA cEncoding
    DATA oDlg
    DATA name

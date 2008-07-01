@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.853 2008-06-30 23:26:17 mlacecilia Exp $
+ * $Id: Changelog,v 1.854 2008-07-01 13:03:11 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-07-01 15:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\htool.prg
+    * corrected the AddEvent() call parameter to comply with newID()
+      behaviour
+  * source\hfrmtmpl.prg
+  * utils\designer\hformgen.prg
+    + added the oParent property to the respective objects to comply
+      with newID() behaviour
+  
 2008-07-01 01:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcwindow.prg
     * now is possible to pass the control ID to AddEvent() in place of

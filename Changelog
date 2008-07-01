@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.854 2008-07-01 13:03:11 mlacecilia Exp $
+ * $Id: Changelog,v 1.855 2008-07-01 18:46:10 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,9 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-07-01 20:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hdialog.prg
+    ! Optimized execution of valid when keydown is Enter key.
 
 2008-07-01 15:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\htool.prg

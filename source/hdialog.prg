@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.46 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.47 2008-07-01 18:49:48 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -316,16 +316,20 @@ HB_SYMBOL_UNUSED(lParam)
          NEXT
          IF i != 0 .AND. oDlg:GetList[i]:handle == hCtrl
             IF __ObjHasMsg(oDlg:GetList[i],"BVALID")
-               IF Eval( oDlg:GetList[i]:bValid,oDlg:GetList[i] )
-                  IF  oDlg:lExitOnEnter
+               IF  oDlg:lExitOnEnter
+                   IF Eval( oDlg:GetList[i]:bValid,oDlg:GetList[i] )
                       oDlg:lResult := .T.
                       EndDialog( oDlg:handle )
-                  ELSE
-							IF hCtrl == GetFocus()
-       						nexthandle := GetNextDlgTabItem ( GetActiveWindow() , hCtrl, .f. )
-   	                  PostMessage( oDlg:handle, WM_NEXTDLGCTL, nexthandle , 1 )
-							ENDIF
-                 ENDIF
+                   ENDIF
+               ELSE
+						IF hCtrl == GetFocus()
+       					nexthandle := GetNextDlgTabItem ( GetActiveWindow() , hCtrl, .f. )
+                     IF nexthandle == hCtrl
+                        Eval( oDlg:GetList[i]:bValid,oDlg:GetList[i] )
+                     ELSE
+                        PostMessage( oDlg:handle, WM_NEXTDLGCTL, nexthandle , 1 )
+                     ENDIF
+						ENDIF
                ENDIF
 
                Return 1

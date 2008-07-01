@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.22 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: guimain.prg,v 1.23 2008-07-01 21:29:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -80,6 +80,16 @@ Local aControls, i
       ENDIF
    ENDIF
 Return Nil
+
+Function ReadStatus( oWnd, nPart)
+Local aControls, i, ntxtLen, cText := ""
+   aControls := oWnd:aControls
+   IF ( i := Ascan( aControls, {|o|o:ClassName()=="HSTATUS"} ) ) > 0
+      ntxtLen := SendMessage(aControls[i]:handle,SB_GETTEXTLENGTH, nPart-1, 0)
+      cText := replicate(chr(0),ntxtLen)
+      SendMessage( aControls[i]:handle, SB_GETTEXT, nPart-1, @cText )
+   ENDIF
+Return cText
 
 Function VColor( cColor )
 Local i,res := 0, n := 1, iValue

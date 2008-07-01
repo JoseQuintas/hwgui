@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.855 2008-07-01 18:46:10 giuseppem Exp $
+ * $Id: Changelog,v 1.856 2008-07-01 21:29:49 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-07-01 15:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * include\windows.ch
+    + added defines for hStatus control
+  * source\guimain.prg
+    + added the ReadStatus() function with syntax:
+      cText := ReadStatus( oWnd, nPart)
+      returning the text contained in the nPart (1 based)
+      of oWnd status bar, Null string is returned if no status bar
+      is present      
+  
 2008-07-01 20:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hdialog.prg
     ! Optimized execution of valid when keydown is Enter key.

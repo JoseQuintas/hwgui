@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.56 2008-06-21 01:29:24 mlacecilia Exp $
+ *$Id: windows.ch,v 1.57 2008-07-01 21:29:49 mlacecilia Exp $
  */
 
 #define WM_CREATE                       1
@@ -374,6 +374,19 @@
 #define SS_RIGHTJUST           1024    // 0x00000400L
 #define SS_REALSIZEIMAGE       2048    // 0x00000800L
 #define SS_SUNKEN              4096    // 0x00001000L
+
+/*
+ * Status bar Constants
+ */
+#define SB_SETTEXT              (WM_USER+1)
+#define SB_GETTEXT              (WM_USER+2)
+#define SB_GETTEXTLENGTH        (WM_USER+3)
+#define SB_SETPARTS             (WM_USER+4)
+#define SB_GETPARTS             (WM_USER+6)
+#define SB_GETBORDERS           (WM_USER+7)
+#define SB_SETMINHEIGHT         (WM_USER+8)
+#define SB_SIMPLE               (WM_USER+9)
+#define SB_GETRECT              (WM_USER+10)
 
 /*
  * Button Control Styles

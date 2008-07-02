@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.129 2008-06-24 19:25:03 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.130 2008-07-02 11:51:04 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -512,6 +512,8 @@ METHOD Init CLASS HBrowse
       Super:Init()
       ::nHolder := 1
       SetWindowObject( ::handle,Self )
+      VScrollPos( Self, 0, .f.)
+
    ENDIF
 
 RETURN Nil
@@ -671,6 +673,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::bGoTo   := { | o, n | o:nCurrent := n }
       ::bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}
    ENDIF
+
 RETURN Nil
 
 //----------------------------------------------------//

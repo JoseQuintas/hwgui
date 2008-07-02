@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.856 2008-07-01 21:29:49 mlacecilia Exp $
+ * $Id: Changelog,v 1.857 2008-07-02 11:50:19 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2008-07-02 13:50 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hbrowse.prg
+    ! Fixed the position of scrollbar when in the init the record
+	is not the first.
+
 2008-07-01 15:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * include\windows.ch
     + added defines for hStatus control

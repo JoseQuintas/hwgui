@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.17 2008-07-01 13:03:14 mlacecilia Exp $
+ * $Id: htool.prg,v 1.18 2008-07-03 07:36:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -103,7 +103,7 @@ Local nmax
 
          IF Valtype( ::aItem[ n, 7 ] ) == "B"
 
-            ::oParent:AddEvent( BN_CLICKED, ::oParent:FindControl(::aItem[ n, 2 ]), ::aItem[ n ,7 ],,"onClick" )
+            ::oParent:AddEvent( BN_CLICKED, ::oParent:FindControl(::aItem[ n, 2 ]), ::aItem[ n ,7 ] )
 
          ENDIF
 

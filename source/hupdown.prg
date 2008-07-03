@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.11 2008-06-28 15:17:54 mlacecilia Exp $
+ * $Id: hupdown.prg,v 1.12 2008-07-03 18:55:54 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -31,6 +31,8 @@ CLASS HUpDown INHERIT HControl
    METHOD Activate()
    METHOD Init()
    METHOD Refresh()
+   METHOD Hide() INLINE (::lHide := .T., HideWindow( ::handle ), HideWindow( ::hUpDown ) )
+   METHOD Show() INLINE (::lHide := .F., ShowWindow( ::handle ), ShowWindow( ::hUpDown ) )
 
 ENDCLASS
 
@@ -38,7 +40,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor,   ;
          nUpDWidth,nLower,nUpper ) CLASS HUpDown
 
-   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_TABSTOP )
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_TABSTOP + WS_BORDER + ES_RIGHT )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )
 

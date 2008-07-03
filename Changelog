@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.858 2008-07-03 07:36:00 mlacecilia Exp $
+ * $Id: Changelog,v 1.859 2008-07-03 18:55:53 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-07-03 20:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hupdown.prg (Luis Fernando Basso contribution)
+    * added customized :hide() and :show() methods because the inherited
+      ones don't worked in tab pages
+    * updated the default style for the object
+    
 2008-07-03 09:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\htool.prg
     * corrected the AddEvent() call parameter to comply with newID()

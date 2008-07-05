@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.131 2008-07-05 16:53:00 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.132 2008-07-05 21:29:55 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -162,6 +162,7 @@ CLASS HBrowse INHERIT HControl
    DATA nLastRecordFilter INIT 0       // Save the last record of filter.
    DATA nFirstRecordFilter INIT 0      // Save the first record of filter.
    DATA nPaintRow, nPaintCol                   // Row/Col being painted
+   DATA aMargin INIT { 0, 0, 0, 0 } HIDDEN    // Margin TOP-RIGHT-BOTTOM-LEFT
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
@@ -180,6 +181,7 @@ CLASS HBrowse INHERIT HControl
    METHOD LineOut()
    METHOD Select()
    METHOD HeaderOut( hDC )
+   METHOD SeparatorOut( hDC )
    METHOD FooterOut( hDC )
    METHOD SetColumn( nCol )
    METHOD DoHScroll( wParam )
@@ -202,6 +204,8 @@ CLASS HBrowse INHERIT HControl
    METHOD Refresh( lFull )
    METHOD ShowSizes()
    METHOD End()
+   METHOD SetMargin( nTop, nRight, nBottom, nLeft )
+   METHOD GetMargin( )
 
 ENDCLASS
 
@@ -268,6 +272,32 @@ METHOD Activate CLASS HBrowse
       ::Init()
    ENDIF
 RETURN Nil
+
+//----------------------------------------------------//
+METHOD SetMargin( nTop, nRight, nBottom, nLeft )  CLASS HBrowse
+
+if nTop == NIL
+    nTop := 0
+endif
+
+if nRight == NIL
+    nRight := nBottom := nLeft := nTop
+endif
+
+if nBottom == NIL
+    nBottom := nTop
+    nLeft := nRight
+endif
+
+::aMargin := { nTop, nRight, nBottom, nLeft }
+
+return Self
+
+
+//----------------------------------------------------//
+METHOD GetMargin( nTop, nRight, nBottom, nLeft )  CLASS HBrowse
+return( ::aMargin )
+
 
 //----------------------------------------------------//
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
@@ -625,6 +655,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::freeze  := ::height := 0
       ::internal  := { 15,1 }
       ::aArray     := Nil
+      ::aMargin := { 0, 0, 0, 0 }
 
       IF ColSizeCursor == 0
          ColSizeCursor := LoadCursor( IDC_SIZEWE )
@@ -721,6 +752,7 @@ Local i, j, oColumn, xSize, nColLen, nHdrLen, nCount
          FOR j := 1 TO len( oColumn:aBitmaps )
             xSize := max( xSize, oColumn:aBitmaps[j,2]:nWidth+2 )
             ::minHeight := max( ::minHeight,oColumn:aBitmaps[j,2]:nHeight )
+            ::minHeight := ::aMargin[1] + ::minHeight + ::aMargin[3]
          NEXT
       ELSE
          // xSize := round( (max( len( FldStr( Self,i ) ), len( oColumn:heading ) ) + 2 ) * 8, 0 )
@@ -745,6 +777,7 @@ Local i, j, oColumn, xSize, nColLen, nHdrLen, nCount
             xSize := round( ( nColLen + 2 ) * 6, 0 )
          ENDIF
       ENDIF
+      xSize := ::aMargin[4] + xSize + ::aMargin[2]
       IF Empty( oColumn:width )
          oColumn:width := xSize
       ENDIF
@@ -791,7 +824,7 @@ Local pps, hDC
    aCoors := GetClientRect( ::handle )
    aMetr := GetTextMetric( hDC )
    ::width := Round( ( aMetr[ 3 ] + aMetr[ 2 ] ) / 2 - 1,0 )
-   ::height := Max( aMetr[ 1 ], ::minHeight ) + 1
+   ::height := ::aMargin[1] + Max( aMetr[ 1 ], ::minHeight ) + 1 + ::aMargin[3]
    ::x1 := aCoors[ 1 ]
    ::y1 := aCoors[ 2 ] + Iif( ::lDispHead, ::height*::nHeadRows, 0 )
    ::x2 := aCoors[ 3 ]
@@ -918,6 +951,9 @@ Local pps, hDC
 
    // if bit-1 refresh header and footer
    IF Checkbit( ::internal[1],1 ) .OR. ::lAppMode
+      if ::lDispSep
+         ::SeparatorOut( hDC )
+      endif
       if ::nHeadRows > 0
           ::HeaderOut( hDC )
       ENDIF    
@@ -1009,9 +1045,74 @@ Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
          // Prints the column heading - justified
          cStr := oColumn:heading + ';'
          FOR nLine := 1 TO ::nHeadRows
-            DrawText( hDC, __StrToken(@cStr, nLine, ';'), x, ::y1-(::height)*(::nHeadRows-nLine+1)+1, x+xSize-1,::y1-(::height)*(::nHeadRows-nLine),;
+            DrawText( hDC, __StrToken(@cStr, nLine, ';'), ;
+              x + ::aMargin[4], ;
+              ::y1-(::height)*(::nHeadRows-nLine+1)+1 + ::aMargin[1], ;
+              x+xSize- (1+::aMargin[2]) , ;
+              ::y1-(::height)*(::nHeadRows-nLine), ;
                oColumn:nJusHead  + if(oColumn:lSpandHead, DT_NOCLIP, 0) )
          NEXT
+      ENDIF
+
+      x += xSize
+
+      fif := Iif( fif = ::freeze, ::nLeftCol, fif + 1 )
+      IF fif > Len( ::aColumns )
+         exit
+      ENDIF
+   ENDDO
+
+
+   SetBkColor( hDC,oldBkColor )
+   IF ::headColor <> Nil
+      SetTextColor( hDC,oldc )
+   ENDIF
+   IF ::lDispSep
+      oPen:Release()
+      IF oPenHdr != nil
+         oPenHdr:Release()
+      ENDIF
+      IF oPenLight != nil
+         oPenLight:Release()
+      ENDIF
+   ENDIF
+
+RETURN Nil
+
+//----------------------------------------------------//
+METHOD SeparatorOut( hDC ) CLASS HBrowse
+Local i, x, oldc, fif, xSize
+Local nRows 
+
+Local oColumn
+
+static oPen := NIL
+static oPenLight := NIL
+static oPenGray := NIL
+static oPenHdr := NIL
+
+   nRows := Min( ::nRecords+Iif(::lAppMode,1,0),::rowCount )
+
+   IF ::lDispSep
+      IF oPen == NIL
+         oPen := HPen():Add( PS_SOLID,1,::sepColor )
+      ENDIF
+      SelectObject( hDC, oPen:handle )
+   ENDIF
+   IF ::lSep3d
+      IF oPenLight == NIL
+         oPenLight := HPen():Add( PS_SOLID,1,GetSysColor(COLOR_3DHILIGHT) )
+      ENDIF
+   ENDIF
+
+   x := ::x1
+   fif := iif( ::freeze > 0, 1, ::nLeftCol )
+
+   DO WHILE x < ::x2 - 2
+      oColumn := ::aColumns[fif]
+      xSize := oColumn:width
+      IF ::lAdjRight .and. fif == Len( ::aColumns )
+         xSize := Max( ::x2 - x, xSize )
       ENDIF
       IF ::lDispSep .AND. x > ::x1
          IF ::lSep3d
@@ -1039,19 +1140,7 @@ Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
       NEXT
    ENDIF
 
-   SetBkColor( hDC,oldBkColor )
-   IF ::headColor <> Nil
-      SetTextColor( hDC,oldc )
-   ENDIF
-   IF ::lDispSep
-      oPen:Release()
-      IF oPenHdr != nil
-         oPenHdr:Release()
-      ENDIF
-      IF oPenLight != nil
-         oPenLight:Release()
-      ENDIF
-   ENDIF
+
 
 RETURN Nil
 
@@ -1091,7 +1180,10 @@ Local oColumn, aColorFoot, oldBkColor, oldTColor, oBrush
       FOR nLine := 1 TO ::nFootRows
 
          DrawText( hDC, __StrToken(@cStr, nLine, ';'),;
-                   x, ::y1+(::rowCount+nLine-1)*(::height+1)+1, x+xSize-1, ::y1+(::rowCount+nLine)*(::height+1),;
+                    x + ::aMargin[4], ;
+                    ::y1+(::rowCount+nLine-1)*(::height+1)+1 + ::aMargin[1], ;
+                    x+xSize-( 1+ ::aMargin[2]), ;
+                    ::y1+(::rowCount+nLine)*(::height+1),;
                    oColumn:nJusFoot + if(oColumn:lSpandFoot, DT_NOCLIP, 0) )
       NEXT
 
@@ -1212,7 +1304,14 @@ Local aCores
                      lColumnFont := .F.
                   ENDIF
 
-                  DrawText( hDC, sviv, x, ::y1+(::height+1)*(::nPaintRow-1)+1, x+xSize-2,::y1+(::height+1)*::nPaintRow-1, ::aColumns[::nPaintCol]:nJusLin )
+                  DrawText( hDC, sviv,  ;
+                    x + ::aMargin[4], ;
+                    ::y1+(::height+1)*(::nPaintRow-1)+1 + ::aMargin[1] , ;
+                    x+xSize-( 2 + ::aMargin[2] ) , ;
+                    ::y1+(::height+1)*::nPaintRow-( 1+::aMargin[3]) , ;
+                    ::aColumns[::nPaintCol]:nJusLin )
+
+
 
                   IF ::aColumns[::nPaintCol]:tColor != Nil .AND. (::nPaintCol != ::colPos .OR. !lSelected)
                      SetTextColor( hDC, oldT1Color )
@@ -1719,7 +1818,7 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
    IF !::active .OR. Empty( ::aColumns ) .OR. ::x1 == Nil
       RETURN Nil
    ENDIF
-   IF ::lDispSep .AND. yPos <= ::height*::nHeadRows+1
+   IF ::lDispSep .AND. ::lDispHead .AND. yPos <= ::height*::nHeadRows+1
       IF wParam == MK_LBUTTON .AND. ::lResizing
          Hwg_SetCursor( oCursor )
          res := .T.

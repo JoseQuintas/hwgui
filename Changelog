@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.860 2008-07-05 16:53:00 mlacecilia Exp $
+ * $Id: Changelog,v 1.861 2008-07-05 21:29:54 fperillo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-07-05 23:15 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
+  * source\hbrowse.prg
+    * Added SetMargin and GetMargin methods. With SetMargin you can set 
+	  the margin in pixel as in CSS margin (top, right, bottom, left).
+	  A MUST HAVE if you have right aligned columns next to left
+	  aligned ones... (bug tracker #0003)
+	* Added SeparatorOut method (called internally). The separator lines
+	  are now drawn by this method. Till now this job was a "side-effect"
+	  of HeaderOut
+	* For the above reason, the mouse pointer changed in the "resize"
+	  picture also when no header row was available. Set lDispHead to .F.
+	  and the pointer will not change (bug tracker #0015)
 
 2008-07-05 18:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * include\missing.h

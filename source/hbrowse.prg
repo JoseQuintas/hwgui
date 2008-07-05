@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.130 2008-07-02 11:51:04 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.131 2008-07-05 16:53:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -106,8 +106,8 @@ CLASS HBrowse INHERIT HControl
    DATA winclass   INIT "BROWSE"
    DATA active     INIT .T.
    DATA lChanged   INIT .F.
-   DATA lDispHead  INIT .T.                    // Should I display headers ?
-   DATA lDispSep   INIT .T.                    // Should I display separators ?
+   DATA lDispHead  INIT .t.                    // Should I display headers ?
+   DATA lDispSep   INIT .t.                    // Should I display separators ?
    DATA aColumns                               // HColumn's array
    DATA aColAlias  INIT {}
    DATA aRelation  INIT .F.
@@ -1100,11 +1100,11 @@ Local oColumn, aColorFoot, oldBkColor, oldTColor, oBrush
          SetTextColor( hDC, oldTColor)
          oBrush:release()
       ENDIF
-
+/*
       IF ::lDispSep .AND. x >= ::x1
          DrawLine(hDC,x+xSize-1,::y1+::rowCount*(::height+1)+1 , x+xSize-1, ::y1+(::rowCount+::nFootRows)*(::height+1))
       ENDIF
-
+*/
       x += xSize
       fif := Iif( fif = ::freeze, ::nLeftCol, fif + 1 )
       IF fif > Len( ::aColumns )
@@ -1509,7 +1509,7 @@ Local step, lBof := .F.
        VScrollPos( Self, 0, .f.)
    ENDIF
 
-   ::Refresh(.F.)
+   ::Refresh(::nFootRows > 0)
    SetFocus( ::handle )
 RETURN Nil
 
@@ -1537,7 +1537,7 @@ Local step := Iif( nRows>::rowPos,nRows-::rowPos+1,nRows )
       VScrollPos( Self, 0, .f.)
    ENDIF
 
-   ::Refresh(.F.)
+   ::Refresh(::nFootRows > 0)
    SetFocus( ::handle )
 
 RETURN Nil

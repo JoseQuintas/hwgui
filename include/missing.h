@@ -1,5 +1,5 @@
 /*
- *$Id: missing.h,v 1.2 2007-11-23 08:30:40 andijahja Exp $
+ *$Id: missing.h,v 1.3 2008-07-05 16:53:00 mlacecilia Exp $
  */
 #ifndef ___MISSING_H___
 #define ___MISSING_H___
@@ -258,6 +258,15 @@ typedef struct tagINITCOMMONCONTROLSEX {
 	DWORD dwSize;
 	DWORD dwICC;
 }	INITCOMMONCONTROLSEX, *LPINITCOMMONCONTROLSEX;
+
+typedef struct tagPAINTSTRUCT {
+    HDC         hdc;
+    BOOL        fErase;
+    RECT        rcPaint;
+    BOOL        fRestore;
+    BOOL        fIncUpdate;
+    BYTE        rgbReserved[32];
+} PAINTSTRUCT, *PPAINTSTRUCT, *NPPAINTSTRUCT, *LPPAINTSTRUCT;
 
 #ifdef __cplusplus
 	extern "C" {

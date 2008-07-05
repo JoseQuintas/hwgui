@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.48 2008-06-16 18:52:22 mlacecilia Exp $
+ * $Id: draw.c,v 1.49 2008-07-05 16:53:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -20,6 +20,7 @@
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
+#include "missing.h"
 
 #ifdef __cplusplus
 #ifdef CINTERFACE
@@ -52,6 +53,17 @@ PHB_ITEM Rect2Array( RECT *rc  )
    hb_itemRelease(element);
    return aRect;
 }
+
+HB_FUNC( GETPPSRECT )
+{
+   PAINTSTRUCT * pps = (PAINTSTRUCT *)HB_PARHANDLE( 1 );
+
+   PHB_ITEM aMetr = Rect2Array( &pps->rcPaint );
+
+   hb_itemReturn( aMetr );
+   hb_itemRelease( aMetr );
+}
+
 
 HB_FUNC( INVALIDATERECT )
 {

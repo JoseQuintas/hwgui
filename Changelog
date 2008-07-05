@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.859 2008-07-03 18:55:53 mlacecilia Exp $
+ * $Id: Changelog,v 1.860 2008-07-05 16:53:00 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,32 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-07-05 18:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * include\missing.h
+    + added PAINTSTRUCT, *PPAINTSTRUCT, *NPPAINTSTRUCT, *LPPAINTSTRUCT
+      typedefs
+  * source\draw.c
+    + added GetPPSrect() function returning the rect area array of pPS
+  * source\hbrowse.prg
+    * commented unuseful code (the thing a remake of those made by
+      ::paint()
+    * Issue 0014 of buf tracker solved (by Francesco Perillo submission)
+      the footers now don't disappears with some keystrokes or scroll
+      thumb moves
+  * source\hcontrol.prg
+    * deleted the unuseful ::nameAssign method and moved his code to
+      the assign name code
+  * source\hownbtn.prg
+    * removed duplicated block of code
+  * source\htimer.prg
+    * Issue 0016 of buf tracker solved (by Luis Fernando Basso
+      submission)
+      added the name property to allow same behaviour of other controls
+    + added the ::interval assigned property, allowing to change the 
+      timing value or, assigning a 0 value, killing the timer itself
+      use simply with:
+      oTimer:interval := somevalue
+      
 2008-07-03 20:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hupdown.prg (Luis Fernando Basso contribution)
     * added customized :hide() and :show() methods because the inherited

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.72 2008-06-30 21:59:45 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.73 2008-07-05 16:53:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -50,15 +50,15 @@ CLASS HControl INHERIT HCustomWindow
    DATA lInit           INIT .F.
    DATA xName           HIDDEN
    ACCESS Name         INLINE ::xName
-   ASSIGN Name(cName)  INLINE ::nameAssign(::xName := cName)
+   ASSIGN Name(cName)  INLINE ::xName := cName, ;
+	                           __objAddData(::oParent, cName),;
+                              ::oParent:&(cName) := self
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
    METHOD Init()
    METHOD SetColor( tcolor, bColor, lRepaint )
    METHOD NewId()
-   METHOD nameAssign(cName) INLINE __objAddData(::oParent, cName),;
-                                   ::oParent:&(cName) := self
    METHOD Disable()     INLINE EnableWindow( ::handle, .F. )
    METHOD Enable()      INLINE EnableWindow( ::handle, .T. )
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
@@ -96,7 +96,7 @@ RETURN Self
 
 METHOD NewId() CLASS HControl
 
-Local oparent := ::Oparent, i := 0, nId
+Local oParent := ::oParent, i := 0, nId
 
 	DO WHILE oParent != Nil
       nId := CONTROL_FIRST_ID + 1000 * i + Len( ::oParent:aControls )

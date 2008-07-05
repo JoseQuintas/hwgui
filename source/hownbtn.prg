@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.32 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hownbtn.prg,v 1.33 2008-07-05 16:53:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -246,32 +246,8 @@ Local aCoors
    EndPaint( ::handle, pps )
 Return Nil
 
-METHOD DrawItems( hDC )
+METHOD DrawItems( hDC ) CLASS HOwnButton
 Local x1, y1, x2, y2
-
-   IF ::oBitmap != Nil
-      IF ::widthb == 0
-         ::widthb := ::oBitmap:nWidth
-         ::heightb := ::oBitmap:nHeight
-      ENDIF
-      x1 := Iif( ::xb!=Nil .AND. ::xb!=0, ::xb, ;
-                 Round( (::nWidth-::widthb) / 2, 0 ) )
-      y1 := Iif( ::yb!=Nil .AND. ::yb!=0, ::yb, ;
-                 Round( (::nHeight-::heightb) / 2, 0 ) )
-      IF ::lEnabled
-         IF ::oBitmap:ClassName()=="HICON"
-            DrawIcon( hDC, ::oBitmap:handle, x1, y1 )
-         ELSE
-            IF ::lTransp
-               DrawTransparentBitmap( hDC, ::oBitmap:handle, x1, y1, ::trColor )
-            ELSE
-               DrawBitmap( hDC, ::oBitmap:handle,, x1, y1, ::widthb, ::heightb )
-            ENDIF
-         ENDIF
-      ELSE
-         DrawGrayBitmap( hDC, ::oBitmap:handle, x1, y1 )
-      ENDIF
-   ENDIF
 
    IF ::oBitmap != Nil
       IF ::widthb == 0

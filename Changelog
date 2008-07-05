@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.861 2008-07-05 21:29:54 fperillo Exp $
+ * $Id: Changelog,v 1.862 2008-07-05 22:12:11 fperillo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-07-05 23:55 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
+  * source\hprinter.prg
+    * In preview: solved the flickering (now uses "double- buffering"). 
+	  Added shadow, changed colors, removed canvas margins.
+  * samples\a.prg
+	* Added second printed page to "Print Preview"
 
 2008-07-05 23:15 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
   * source\hbrowse.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.27 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hprinter.prg,v 1.28 2008-07-05 22:12:13 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -29,6 +29,10 @@ CLASS HPrinter INHERIT HObject
    DATA lmm  INIT .F.
    DATA nCurrPage, oTrackV, oTrackH
    DATA nZoom, xOffset, yOffset, x1, y1, x2, y2
+
+   DATA memDC       HIDDEN    // dc offscreen
+   DATA memBitmap   HIDDEN    // bitmap offscreen
+   DATA NeedsRedraw INIT .T. HIDDEN // if offscreen needs redrawing...
 
    METHOD New( cPrinter,lmm )
    METHOD SetMode( nOrientation )
@@ -284,7 +288,7 @@ Local i, nLen
 Return Nil
 
 METHOD Preview( cTitle,aBitmaps,aTooltips, aBootUser ) CLASS HPrinter
-Local oDlg, oToolBar, oSayPage, oBtn, oCanvas
+Local oDlg, oToolBar, oSayPage, oBtn, oCanvas, oTimer
 Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
 Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] != Nil .AND. aBitmaps[10] )
 
@@ -292,23 +296,31 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
    ::nZoom := 0
    ::nCurrPage := 1
 
+   ::NeedsRedraw := .T.
+
    INIT DIALOG oDlg TITLE cTitle                  ;
      AT 40,10 SIZE 600,440                        ;
      STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+WS_MAXIMIZEBOX;
-     ON INIT {|o|o:Maximize(),ResizePreviewDlg(oCanvas,Self,1)}
+     ON INIT {|o|o:Maximize(),ResizePreviewDlg(oCanvas,Self,1), SetTimer(oCanvas, @oTimer)} ;
+     ON EXIT {|o|oCanvas:brush = NIL, .T. }
+
 
    oDlg:bScroll:={|oWnd,msg,wParam,lParam|HB_SYMBOL_UNUSED(oWnd), ResizePreviewDlg(oCanvas,Self,,msg,wParam,lParam)}
-   oDlg:brush := HBrush():Add( 0 )
+   oDlg:brush := HBrush():Add( 11316396 )
 
    @ 0,0 PANEL oToolBar SIZE 44,oDlg:nHeight
 
-   @ oToolBar:nWidth+2,3 PANEL oCanvas ;
-     SIZE oDlg:nWidth-oToolBar:nWidth-4,oDlg:nHeight-5 ;
-     ON SIZE {|o,x,y|o:Move(,,x-oToolBar:nWidth-4,y-5),ResizePreviewDlg(o,Self)} ;
+
+// Canvas should fill ALL the available space
+   @ oToolBar:nWidth,0 PANEL oCanvas ;
+     SIZE oDlg:nWidth-oToolBar:nWidth,oDlg:nHeight ;
+     ON SIZE {|o,x,y|o:Move(,,x-oToolBar:nWidth,y),ResizePreviewDlg(o,Self)} ;
      ON PAINT {||::PlayMeta(oCanvas)} STYLE WS_VSCROLL+WS_HSCROLL
 
    oCanvas:bScroll:={|oWnd,msg,wParam,lParam|HB_SYMBOL_UNUSED(oWnd), ResizePreviewDlg(oCanvas,Self,,msg,wParam,lParam)}
-   oCanvas:brush := HBrush():Add( 11316396 )
+   // DON'T CHANGE NOR REMOVE THE FOLLOWING LINE !
+   // I need it to have the correct side-effect to avoid flickering !!!
+   oCanvas:brush := 0 
 
    @ 3,2 OWNERBUTTON oBtn OF oToolBar ON CLICK {||EndDialog()} ;
         SIZE oToolBar:nWidth-6,24 TEXT "Exit" FONT oFont        ;
@@ -413,15 +425,26 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
 
    oDlg:Activate()
 
+   oTimer:End()
+
    oDlg:brush:Release()
-   oCanvas:brush:Release()
+   // oCanvas:brush:Release()
    oFont:Release()
 
 Return Nil
 
+Static function SetTimer( oDlg, oTimer )
+   SET TIMER oTimer OF oDlg VALUE 500 ACTION {||TimerFunc(oDlg)}
+Return Nil
+
+Static Function TimerFunc(o )
+   // RedrawWindow( o:handle, RDW_ERASE + RDW_INVALIDATE )
+   RedrawWindow( o:handle, RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW + RDW_INVALIDATE )  // Force a complete redraw
+Return Nil
 
 Static Function ChangePage( oDlg,oSayPage,oPrinter,n )
 
+   oPrinter:NeedsRedraw := .T.
    IF n == 0
       oPrinter:nCurrPage := 1
    ELSEIF n == 2
@@ -435,9 +458,17 @@ Static Function ChangePage( oDlg,oSayPage,oPrinter,n )
    RedrawWindow( oDlg:handle, RDW_ERASE + RDW_INVALIDATE )
 Return Nil
 
+
+
+/***
+ nZoom: zoom factor: -1 or 1, NIL if scroll message
+*/
 Static Function ResizePreviewDlg( oCanvas, oPrinter, nZoom, msg, wParam, lParam )
-Local nWidth, nHeight, k1, k2, x := oCanvas:nWidth, y := oCanvas:nHeight
+Local nWidth, nHeight, k1, k2, x, y
 Local i, nPos, wmsg, nPosVert, nPosHorz
+
+   x := oCanvas:nWidth
+   y := oCanvas:nHeight
 
 HB_SYMBOL_UNUSED(lParam)
 
@@ -471,6 +502,7 @@ HB_SYMBOL_UNUSED(lParam)
          ENDIF
       ENDIF
          setscrollpos(oCanvas:handle,SB_VERT,nPosVert)
+      oPrinter:NeedsRedraw := .T.
    ENDIF
 
    IF msg=WM_HSCROLL
@@ -500,6 +532,7 @@ HB_SYMBOL_UNUSED(lParam)
          ENDIF
       ENDIF
          setscrollpos(oCanvas:handle,SB_HORZ,nPosHorz)
+      oPrinter:NeedsRedraw := .T.
    ENDIF
 
    IF msg == WM_MOUSEWHEEL
@@ -514,13 +547,16 @@ HB_SYMBOL_UNUSED(lParam)
          ENDIF
       ENDIF
       SetScrollPos( oCanvas:handle, SB_VERT, nPosVert )
+      oPrinter:NeedsRedraw := .T.
    ENDIF
 
    IF nZoom != Nil
+      // If already at maximum zoom returns
       IF nZoom < 0 .AND. oPrinter:nZoom == 0
          Return Nil
       ENDIF
       oPrinter:nZoom += nZoom
+      oPrinter:NeedsRedraw := .T.
    ENDIF
    k1 := oPrinter:nWidth / oPrinter:nHeight
    k2 := oPrinter:nHeight / oPrinter:nWidth
@@ -532,6 +568,7 @@ HB_SYMBOL_UNUSED(lParam)
          nHeight := y - 20
          nWidth := Round( nHeight * k1, 0 )
       ENDIF
+      oPrinter:NeedsRedraw := .T.
    ELSE
       nHeight := y - 10
       nWidth := Round( nHeight * k1, 0 )
@@ -539,6 +576,7 @@ HB_SYMBOL_UNUSED(lParam)
          nWidth := x - 20
          nHeight := Round( nWidth * k2, 0 )
       ENDIF
+      oPrinter:NeedsRedraw := .T.
    ENDIF
 
    IF oPrinter:nZoom > 0
@@ -546,14 +584,17 @@ HB_SYMBOL_UNUSED(lParam)
          nWidth := Round( nWidth*1.5,0 )
          nHeight := Round( nHeight*1.5,0 )
       NEXT
+      oPrinter:NeedsRedraw := .T.
+   ELSEIF oPrinter:nZoom == 0
+      nWidth := Round( nWidth*0.93, 0 )
+      nHeight := Round( nHeight*0.93, 0 )
    ENDIF
 
    oPrinter:xOffset := oPrinter:yOffset := 0
    IF nHeight > y
       npos:=nPosVert
       IF nPos > 0
-         nPos := ( nPos - 1 ) / 19
-         oPrinter:yOffset := Round( nPos * ( nHeight - y + 10 ),0 )
+         oPrinter:yOffset := Round( ((nPos-1)/18) * ( nHeight - y + 10 ),0 )
       ENDIF
    ELSE
       setscrollpos(oCanvas:handle,SB_VERT,0)
@@ -562,7 +603,7 @@ HB_SYMBOL_UNUSED(lParam)
    IF nWidth > x
       nPos := nPosHorz
       IF nPos > 0
-         nPos := ( nPos - 1 ) / 19
+         nPos := ( nPos - 1 ) / 18
          oPrinter:xOffset := Round( nPos * ( nWidth - x + 10 ),0 )
       ENDIF
    ELSE
@@ -571,17 +612,32 @@ HB_SYMBOL_UNUSED(lParam)
 
    oPrinter:x1 := Iif( nWidth<x, Round( (x-nWidth)/2,0 ), 10 ) - oPrinter:xOffset
    oPrinter:x2 := oPrinter:x1 + nWidth - 1
-   oPrinter:y1 := Iif( nHeight<y, Round( (y-nHeight)/2,0 ), 5 ) - oPrinter:yOffset
+   oPrinter:y1 := Iif( nHeight<y, Round( (y-nHeight)/2,0 ), 10 ) - oPrinter:yOffset
    oPrinter:y2 := oPrinter:y1 + nHeight - 1
 
    IF nZoom != Nil .OR. msg != Nil
-      RedrawWindow( oCanvas:handle, RDW_ERASE + RDW_INVALIDATE )
+       RedrawWindow( oCanvas:handle, RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW + RDW_INVALIDATE )  // Force a complete redraw
+
    ENDIF
 
 Return Nil
 
 METHOD PlayMeta( oWnd ) CLASS HPrinter
 Local pps, hDC
+Local rect, rect1
+local aArray
+static lRefreshVideo := .T.
+static Brush := NIL
+static BrushShadow := NIL
+static BrushBorder := NIL
+static BrushWhite := NIL
+static BrushBlack := NIL
+static BrushLine := NIL
+static BrushBackground := NIL
+
+   rect:=GetClientRect(oWnd:handle)
+
+// offscreen canvas must be THE WHOLE CANVAS !
 
    IF ::xOffset == Nil
       ResizePreviewDlg( oWnd, Self )
@@ -589,8 +645,67 @@ Local pps, hDC
 
    pps := DefinePaintStru()
    hDC := BeginPaint( oWnd:handle, pps )
-   FillRect( hDC, ::x1, ::y1, ::x2, ::y2, COLOR_3DHILIGHT+1 )
-   PlayEnhMetafile( hDC, ::aMeta[::nCurrPage], ::x1, ::y1, ::x2, ::y2 )
+   aArray= GetPPSRect( pps )
+   // tracelog( "PPS"+str(aArray[1])+str(aArray[2])+str(aArray[3])+str(aArray[4]) )
+
+   if ( aArray[1] == 0 .AND. aArray[2] == 0)  // IF WHOLE AREA
+      if ( ::NeedsRedraw .OR. lRefreshVideo ) 
+         if Valtype( ::memDC ) =="U"
+            ::memDC := Hdc():New()
+            ::memDC:CreateCompatibleDC( hDC )
+            ::memBitmap := CreateCompatibleBitmap( hDC, rect[3]-rect[1], rect[4]-rect[2] )
+            ::memDC:SelectObject( ::memBitmap )
+            Brush           := HBrush():Add(GetSysColor( COLOR_3DHILIGHT+1 )):handle
+            BrushWhite      := HBrush():Add( RGB( 255, 255, 255 ) ):handle
+            BrushBlack      := HBrush():Add( RGB( 0, 0, 0 ) ):handle
+            BrushLine       := HBrush():Add( RGB( 102, 100, 92 ) ):handle
+            BrushBackground := HBrush():Add( RGB( 204, 200, 184 ) ):handle
+            BrushShadow     := HBrush():Add( RGB( 178, 175, 161 ) ):handle
+            BrushBorder     := HBrush():Add( RGB( 129, 126, 115 ) ):handle
+         endif
+
+         if ::NeedsRedraw
+            // Draw the canvas background (gray)
+            FillRect( ::memDC:m_hDC, rect[1], rect[2], rect[3], rect[4], BrushBackground )
+            FillRect( ::memDC:m_hDC, rect[1], rect[2], rect[1], rect[4], BrushBorder )
+            FillRect( ::memDC:m_hDC, rect[1], rect[2], rect[3], rect[2], BrushBorder )
+            // Draw the PAPER background (white)
+            FillRect( ::memDC:m_hDC, ::x1-1, ::y1-1, ::x2+1, ::y2+1, BrushLine )
+            FillRect( ::memDC:m_hDC, ::x1, ::y1, ::x2, ::y2, BrushWhite )
+            // Draw the actual printer data
+            PlayEnhMetafile( ::memDC:m_hDC, ::aMeta[::nCurrPage], ::x1, ::y1, ::x2, ::y2 )
+            // Draw 
+            // Rectangle( ::memDC:m_hDC, ::x1, ::y1, ::x2, ::y2 )
+
+            FillRect( ::memDC:m_hDC, ::x2, ::y1+2, ::x2+1, ::y2+2, BrushBlack )
+            FillRect( ::memDC:m_hDC, ::x2+1, ::y1+1, ::x2+2, ::y2+2, BrushShadow )
+            FillRect( ::memDC:m_hDC, ::x2+1, ::y1+2, ::x2+2, ::y2+2, BrushLine )
+            FillRect( ::memDC:m_hDC, ::x2+2, ::y1+2, ::x2+3, ::y2+2, BrushShadow )
+
+
+            FillRect( ::memDC:m_hDC, ::x1+2, ::y2, ::x2, ::y2+2, BrushBlack )
+            FillRect( ::memDC:m_hDC, ::x1+2, ::y2+1, ::x2+1, ::y2+2, BrushLine )
+            FillRect( ::memDC:m_hDC, ::x1+2, ::y2+2, ::x2+2, ::y2+3, BrushShadow )
+            ::NeedsRedraw := .F.
+         endif
+        // tracelog("bitblt")
+         lRefreshVideo := .F.
+         BitBlt(hDC, rect[1], rect[2], rect[3], rect[4], ::memDC:m_hDC, 0, 0, SRCCOPY)
+      else   // window fully uncovered... force a repaint
+         lRefreshVideo := .T.
+      endif
+   else
+      // tracelog("no refresh video" )
+      lRefreshVideo := .T.   // request a repaint
+   endif
+
+
+#if 0
+   // Draws a line from upper left to bottom right of the PAPER 
+   // used to check for PAPER dimension...
+   DrawLine( hDC, ::x1, ::y1, ::x2, ::y2 )
+#endif
+
    EndPaint( oWnd:handle, pps )
 
 Return Nil

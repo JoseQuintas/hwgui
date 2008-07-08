@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.862 2008-07-05 22:12:11 fperillo Exp $
+ * $Id: Changelog,v 1.863 2008-07-08 17:09:26 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-07-05 18:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\htool.prg
+    * corrected id parameter in addEvent call. Thanks to Boris who
+      signaled the bug on the HwGUI forum.
+  
 2008-07-05 23:55 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
   * source\hprinter.prg
     * In preview: solved the flickering (now uses "double- buffering"). 
@@ -37,7 +42,7 @@
   * source\hbrowse.prg
     * commented unuseful code (the thing a remake of those made by
       ::paint()
-    * Issue 0014 of buf tracker solved (by Francesco Perillo submission)
+    * Issue 0014 of bug tracker solved (by Francesco Perillo submission)
       the footers now don't disappears with some keystrokes or scroll
       thumb moves
   * source\hcontrol.prg
@@ -46,7 +51,7 @@
   * source\hownbtn.prg
     * removed duplicated block of code
   * source\htimer.prg
-    * Issue 0016 of buf tracker solved (by Luis Fernando Basso
+    * Issue 0016 of bug tracker solved (by Luis Fernando Basso
       submission)
       added the name property to allow same behaviour of other controls
     + added the ::interval assigned property, allowing to change the 

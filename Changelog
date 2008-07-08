@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.863 2008-07-08 17:09:26 mlacecilia Exp $
+ * $Id: Changelog,v 1.864 2008-07-08 17:40:47 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,7 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2008-07-05 18:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+2008-07-08 19:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hprinter.prg
+    * Issue 0020 of bug tracker solved
+      changed the typos in the customized preview ownerbuttons as  
+      Francesco correctly analyzed ( :bitmap -> :oBitmap and :text ->
+      :title )
+      purged some unused vars causing warnings at compile time
+    
+2008-07-08 19:10 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\htool.prg
     * corrected id parameter in addEvent call. Thanks to Boris who
       signaled the bug on the HwGUI forum.

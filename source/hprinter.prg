@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.28 2008-07-05 22:12:13 fperillo Exp $
+ * $Id: hprinter.prg,v 1.29 2008-07-08 17:40:47 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -302,7 +302,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
      AT 40,10 SIZE 600,440                        ;
      STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+WS_MAXIMIZEBOX;
      ON INIT {|o|o:Maximize(),ResizePreviewDlg(oCanvas,Self,1), SetTimer(oCanvas, @oTimer)} ;
-     ON EXIT {|o|oCanvas:brush = NIL, .T. }
+     ON EXIT {|| oCanvas:brush := NIL, .T. }
 
 
    oDlg:bScroll:={|oWnd,msg,wParam,lParam|HB_SYMBOL_UNUSED(oWnd), ResizePreviewDlg(oCanvas,Self,,msg,wParam,lParam)}
@@ -326,8 +326,8 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
         SIZE oToolBar:nWidth-6,24 TEXT "Exit" FONT oFont        ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[1],"Exit Preview")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 1 .AND. aBitmaps[2] != Nil
-      oBtn:bitmap  := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[2] ), HBitmap():AddFile( aBitmaps[2] ) )
-      oBtn:text    := Nil
+      oBtn:oBitmap  := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[2] ), HBitmap():AddFile( aBitmaps[2] ) )
+      oBtn:title    := Nil
       oBtn:lTransp := lTransp
    ENDIF
 
@@ -337,8 +337,8 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
         SIZE oToolBar:nWidth-6,24 TEXT "Print" FONT oFont         ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[2],"Print file")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 2 .AND. aBitmaps[3] != Nil
-      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[3] ), HBitmap():AddFile( aBitmaps[3] ) )
-      oBtn:text   := Nil
+      oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[3] ), HBitmap():AddFile( aBitmaps[3] ) )
+      oBtn:title   := Nil
       oBtn:lTransp := lTransp
    ENDIF
 
@@ -349,8 +349,8 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
         SIZE oToolBar:nWidth-6,24 TEXT "|<<" FONT oFont FLAT                ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[3],"First page")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 3 .AND. aBitmaps[4] != Nil
-      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[4] ), HBitmap():AddFile( aBitmaps[4] ) )
-      oBtn:text   := Nil
+      oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[4] ), HBitmap():AddFile( aBitmaps[4] ) )
+      oBtn:title   := Nil
       oBtn:lTransp := lTransp
    ENDIF
 
@@ -358,8 +358,8 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
         SIZE oToolBar:nWidth-6,24 TEXT ">>" FONT oFont FLAT                 ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[4],"Next page")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 4 .AND. aBitmaps[5] != Nil
-      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[5] ), HBitmap():AddFile( aBitmaps[5] ) )
-      oBtn:text   := Nil
+      oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[5] ), HBitmap():AddFile( aBitmaps[5] ) )
+      oBtn:title   := Nil
       oBtn:lTransp := lTransp
    ENDIF
 
@@ -367,8 +367,8 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
         SIZE oToolBar:nWidth-6,24 TEXT "<<" FONT oFont FLAT   ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[5],"Previous page")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 5 .AND. aBitmaps[6] != Nil
-      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[6] ), HBitmap():AddFile( aBitmaps[6] ) )
-      oBtn:text   := Nil
+      oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[6] ), HBitmap():AddFile( aBitmaps[6] ) )
+      oBtn:title   := Nil
       oBtn:lTransp := lTransp
    ENDIF
 
@@ -376,8 +376,8 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
         SIZE oToolBar:nWidth-6,24 TEXT ">>|" FONT oFont FLAT  ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[6],"Last page")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 6 .AND. aBitmaps[7] != Nil
-      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[7] ), HBitmap():AddFile( aBitmaps[7] ) )
-      oBtn:text   := Nil
+      oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[7] ), HBitmap():AddFile( aBitmaps[7] ) )
+      oBtn:title   := Nil
       oBtn:lTransp := lTransp
    ENDIF
 
@@ -387,8 +387,8 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
         SIZE oToolBar:nWidth-6,24 TEXT "(-)" FONT oFont FLAT  ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[7],"Zoom out")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 7 .AND. aBitmaps[8] != Nil
-      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[8] ), HBitmap():AddFile( aBitmaps[8] ) )
-      oBtn:text   := Nil
+      oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[8] ), HBitmap():AddFile( aBitmaps[8] ) )
+      oBtn:title   := Nil
       oBtn:lTransp := lTransp
    ENDIF
 
@@ -396,8 +396,8 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
         SIZE oToolBar:nWidth-6,24 TEXT "(+)" FONT oFont FLAT  ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[8],"Zoom in")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 8 .AND. aBitmaps[9] != Nil
-      oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[9] ), HBitmap():AddFile( aBitmaps[9] ) )
-      oBtn:text   := Nil
+      oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[9] ), HBitmap():AddFile( aBitmaps[9] ) )
+      oBtn:title   := Nil
       oBtn:lTransp := lTransp
    ENDIF
 
@@ -416,8 +416,8 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
       oBtn:bClick := aBootUser[1]
 
       IF aBootUser[2] != Nil
-         oBtn:bitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBootUser[2] ), HBitmap():AddFile( aBootUser[2] ) )
-         oBtn:text   := Nil
+         oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBootUser[2] ), HBitmap():AddFile( aBootUser[2] ) )
+         oBtn:title   := Nil
          oBtn:lTransp := lTransp
       ENDIF
 
@@ -624,7 +624,7 @@ Return Nil
 
 METHOD PlayMeta( oWnd ) CLASS HPrinter
 Local pps, hDC
-Local rect, rect1
+Local rect
 local aArray
 static lRefreshVideo := .T.
 static Brush := NIL

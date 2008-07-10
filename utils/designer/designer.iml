@@ -6,15 +6,8 @@
   <editor>editor.iml</editor>
   <rep_widgetset>resource/repwidg.xml</rep_widgetset>
   <rep_format name="Plain text format" ext="rpt" file="resource/r_text.prg" rdscr="read"/>
-  <dirpath default="c:\docume~1\maurizio\desktop\"/>
+  <dirpath default=""/>
   <recent>
-    <file>c:\hwgui\utils\designer\samples\tabbrw.prg</file>
-    <file>d:\bvisual\source\.xml</file>
-    <file>d:\bvisual\source\painesql.prg</file>
-    <file>d:\bvisual\lixo\zz.prg</file>
-    <file>d:\bvisual\lixo\lixo.xml</file>
-    <file>d:\bvisual\source\dialogos.prg</file>
-    <file>d:\bvisual\lixo\mn.prg</file>
   </recent>
   <grid default="5"/>
 </designer>

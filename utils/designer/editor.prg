@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.24 2008-07-10 06:04:54 omm Exp $
+ * $Id: editor.prg,v 1.25 2008-07-10 16:38:20 mlacecilia Exp $
  *
  * Designer
  * Simple code editor
@@ -317,7 +317,7 @@ Static Function CreateHilight( cText,oTheme )
 Local arr := {}, stroka, nPos, nLinePos := 1
 
    DO WHILE .T.
-      #ifdef __XHARBOUR
+      #ifdef __XHARBOUR__
       IF ( nPos := At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := At( Chr(13), cText, nLinePos ) ) != 0
       #else
       IF ( nPos := HB_At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := HB_At( Chr(13), cText, nLinePos ) ) != 0

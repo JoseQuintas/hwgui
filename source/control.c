@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.64 2008-05-27 12:10:45 lculik Exp $
+ * $Id: control.c,v 1.65 2008-07-10 14:11:15 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -943,6 +943,11 @@ HB_FUNC( KILLTIMER )
 HB_FUNC( GETPARENT )
 {
    HB_RETHANDLE(  GetParent( (HWND) HB_PARHANDLE( 1 ) ) );
+}
+
+HB_FUNC( GETANCESTOR )
+{
+   HB_RETHANDLE( GetAncestor( (HWND) HB_PARHANDLE( 1 ) , hb_parni(2) ) );
 }
 
 HB_FUNC( LOADCURSOR )

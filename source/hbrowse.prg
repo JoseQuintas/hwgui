@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.132 2008-07-05 21:29:55 fperillo Exp $
+ * $Id: hbrowse.prg,v 1.133 2008-07-10 14:11:15 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -205,7 +205,6 @@ CLASS HBrowse INHERIT HControl
    METHOD ShowSizes()
    METHOD End()
    METHOD SetMargin( nTop, nRight, nBottom, nLeft )
-   METHOD GetMargin( )
 
 ENDCLASS
 
@@ -276,6 +275,8 @@ RETURN Nil
 //----------------------------------------------------//
 METHOD SetMargin( nTop, nRight, nBottom, nLeft )  CLASS HBrowse
 
+local aOldMargin := AClone(::aMargin)
+
 if nTop == NIL
     nTop := 0
 endif
@@ -291,12 +292,7 @@ endif
 
 ::aMargin := { nTop, nRight, nBottom, nLeft }
 
-return Self
-
-
-//----------------------------------------------------//
-METHOD GetMargin( nTop, nRight, nBottom, nLeft )  CLASS HBrowse
-return( ::aMargin )
+return aOldMargin
 
 
 //----------------------------------------------------//
@@ -989,7 +985,7 @@ RETURN Nil
 //----------------------------------------------------//
 // TODO: __StrToken can create problems.... can't have separator as first char
 METHOD HeaderOut( hDC ) CLASS HBrowse
-Local i, x, oldc, fif, xSize
+Local x, oldc, fif, xSize
 Local nRows := Min( ::nRecords+Iif(::lAppMode,1,0),::rowCount )
 Local oPen, oldBkColor := SetBkColor( hDC,GetSysColor(COLOR_3DFACE) )
 Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
@@ -1081,7 +1077,7 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD SeparatorOut( hDC ) CLASS HBrowse
-Local i, x, oldc, fif, xSize
+Local i, x, fif, xSize
 Local nRows 
 
 Local oColumn
@@ -1451,7 +1447,7 @@ Local nScrollCode := LoWord( wParam )
          Eval( ::bSkip, Self, 1 )
          Eval( ::bSkip, Self, -1 )
          VScrollPos( Self, 0, .f.)
-         ::refresh(.F.)
+         ::refresh(::nFootRows > 0)
       ENDIF
    ENDIF
 RETURN 0
@@ -1960,6 +1956,8 @@ Local oGet1, owb1, owb2
                   oCombo:bValid := oColumn:bValid
                ENDIF
 
+            oModDlg:AddEvent( 0, IDOK, {|| oModDlg:close()} )
+
          ELSE
          if type <> "M"
             @ 0,0 GET oGet VAR ::varbuf       ;
@@ -1970,6 +1968,9 @@ Local oGet1, owb1, owb2
                PICTURE oColumn:picture        ;
                VALID oColumn:bValid           ;
                WHEN oColumn:bWhen
+
+            oModDlg:AddEvent( 0, IDOK, {|| oModDlg:close()} )
+
          else
             oGet1 := ::varbuf
             @ 10,10 Get oGet1 SIZE oModDlg:nWidth-20,240 FONT ::oFont Style WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid
@@ -2257,7 +2258,7 @@ Local minPos, maxPos, oldRecno, newRecno, nrecno
          IF oBrw:rowPos > newRecno
             oBrw:rowPos := newRecno
          ENDIF
-         oBrw:Refresh(.F.)
+         oBrw:Refresh(oBrw:nFootRows > 0)
       ENDIF
    ENDIF
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.47 2008-07-01 18:49:48 giuseppem Exp $
+ * $Id: hdialog.prg,v 1.48 2008-07-10 14:11:15 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -66,7 +66,6 @@ CLASS HDialog INHERIT HCustomWindow
    DATA xResourceID
    DATA oEmbedded
    DATA bOnActivate
-   DATA nSkip INIT 1
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
                   bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc )
@@ -301,7 +300,7 @@ Return 0
 
 Function DlgCommand( oDlg,wParam,lParam )
 Local iParHigh := HiWord( wParam ), iParLow := LoWord( wParam )
-Local aMenu, i, hCtrl, nexthandle
+Local aMenu, i, hCtrl, oCtrl
    // WriteLog( Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
 
 HB_SYMBOL_UNUSED(lParam)
@@ -309,41 +308,17 @@ HB_SYMBOL_UNUSED(lParam)
    IF iParHigh == 0
       IF iParLow == IDOK
          hCtrl := GetFocus()
-         FOR i := Len(oDlg:GetList) TO 1 STEP -1
-            IF !oDlg:GetList[i]:lHide .AND. IsWindowEnabled( oDlg:Getlist[i]:Handle )
-               EXIT
-            ENDIF
-         NEXT
-         IF i != 0 .AND. oDlg:GetList[i]:handle == hCtrl
-            IF __ObjHasMsg(oDlg:GetList[i],"BVALID")
-               IF  oDlg:lExitOnEnter
-                   IF Eval( oDlg:GetList[i]:bValid,oDlg:GetList[i] )
-                      oDlg:lResult := .T.
-                      EndDialog( oDlg:handle )
-                   ENDIF
-               ELSE
-						IF hCtrl == GetFocus()
-       					nexthandle := GetNextDlgTabItem ( GetActiveWindow() , hCtrl, .f. )
-                     IF nexthandle == hCtrl
-                        Eval( oDlg:GetList[i]:bValid,oDlg:GetList[i] )
-                     ELSE
-                        PostMessage( oDlg:handle, WM_NEXTDLGCTL, nexthandle , 1 )
-                     ENDIF
-						ENDIF
-               ENDIF
-
-               Return 1
-            ENDIF
+         oCtrl := oDlg:FindControl(,hctrl)
+         if oCtrl == nil
+            hCtrl := GetAncestor(hCtrl, GA_PARENT)
+            oCtrl := oDlg:FindControl( ,hctrl)
+            GetSkip( oCtrl:oParent, hCtrl, , 1 )
          ENDIF
-         IF oDlg:lClipper
-            oDlg:nSkip := 1
-            IF !GetSkip( oDlg,hCtrl )
-               IF oDlg:lExitOnEnter
-                  oDlg:lResult := .T.
-                  EndDialog( oDlg:handle )
-               ENDIF
+         IF !GetSkip( oCtrl:oParent, hCtrl, , 1)
+            IF oDlg:lExitOnEnter
+               oDlg:lResult := .T.
+               EndDialog( oDlg:handle )
             ENDIF
-            Return 1
          ENDIF
       ELSEIF iParLow == IDCANCEL
          oDlg:nLastKey := 27
@@ -354,7 +329,7 @@ HB_SYMBOL_UNUSED(lParam)
       ( i := Ascan( oDlg:aEvents, {|a|a[1]==iParHigh.and.a[2]==iParLow} ) ) > 0
       Eval( oDlg:aEvents[ i,3 ],oDlg,iParLow )
    ELSEIF iParHigh == 0 .AND. ( ;
-        ( iParLow == IDOK .AND. oDlg:FindControl(IDOK) != Nil ) .OR. ;
+        ( iParLow == IDOK .AND. oDlg:FindControl(IDOK) != nil ) .OR. ;
           iParLow == IDCANCEL )
       IF iParLow == IDOK
          oDlg:lResult := .T.

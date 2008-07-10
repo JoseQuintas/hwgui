@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.19 2008-06-28 15:17:51 mlacecilia Exp $
+ * $Id: hcheck.prg,v 1.20 2008-07-10 14:11:15 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -136,27 +136,21 @@ Local l := SendMessage( oCtrl:handle,BM_GETCHECK,0,0 )
 
 Return .T.
 
-Static Function __When( oCtrl )
-Local res, oParent
+STATIC FUNCTION __When( oCtrl )
+   LOCAL res := .t., oParent, nSkip
 
    oCtrl:Refresh()
-
+   nSkip := iif( GetKeyState( VK_UP ) + GetKeyState( VK_TAB ) < 0, -1, 1 )
    IF oCtrl:bGetFocus != Nil
-      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
-		IF ! res
+      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet, , oCtrl ), oCtrl )
+      IF ! res
          oParent := ParentGetDialog(oCtrl)
-         IF oParent:nSkip > 0
-            IF oCtrl == ATail(oParent:GetList)
-               oParent:nSkip := -1
-            ENDIF
-         ELSE
-            IF oCtrl == oParent:getList[1]
-               oParent:nSkip := 1
-            ENDIF
+         IF oCtrl == ATail(oParent:GetList)
+            nSkip := -1
+         ELSEIF oCtrl == oParent:getList[1]
+            nSkip := 1
          ENDIF
-         GetSkip( oCtrl:oParent, oCtrl:handle )
+         GetSkip( oCtrl:oParent, oCtrl:handle, , nSkip )
       ENDIF
-      RETURN res
    ENDIF
-
-Return .T.
+RETURN res

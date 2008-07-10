@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.82 2008-06-28 15:17:52 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.83 2008-07-10 14:11:15 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -117,8 +117,8 @@ METHOD Activate CLASS HEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
-   LOCAL oParent := ::oParent, nPos, nctrl, cKeyb
-   LOCAL nexthandle
+   LOCAL oParent := ::oParent, nPos, nctrl
+   LOCAL nextHandle
 
    IF ::bOther != Nil
       IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
@@ -154,14 +154,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
             IF wParam == 40     // KeyDown
                IF ! IsCtrlShift()
-                  ParentGetDialog( Self ):nSkip := 1
-                  GetSkip( oParent, ::handle )
+                  GetSkip( oParent, ::handle, , 1 )
                   RETURN 0
                ENDIF
             ELSEIF wParam == 38     // KeyUp
                IF ! IsCtrlShift()
-                  ParentGetDialog( Self ):nSkip := - 1
-                  GetSkip( oParent, ::handle )
+                  GetSkip( oParent, ::handle, , -1 )
                   RETURN 0
                ENDIF
             ELSEIF wParam == 39     // KeyRight
@@ -193,23 +191,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                DeleteChar( Self, .F. )
                RETURN 0
             ELSEIF wParam == VK_TAB     // Tab
-               IF Asc( SubStr( GetKeyboardState(), VK_SHIFT + 1, 1 ) ) >= 128
-                  ParentGetDialog( Self ):nSkip := - 1
-                  IF ! GetSkip( oParent, ::handle ) // First Get
-                     nexthandle := GetNextDlgTabItem ( GetActiveWindow() , GetFocus() , .t. )
-                     PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nexthandle , 1 )
-                  ENDIF
-               ELSE
-                  ParentGetDialog( Self ):nSkip := 1
-                  IF ! GetSkip( oParent, ::handle ) // Last Get
-                     nexthandle := GetNextDlgTabItem ( GetActiveWindow() , GetFocus() , .f. )
-                     PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nexthandle , 1 )
-                  ENDIF
-               ENDIF
+               GetSkip( oParent, ::handle, , ;
+					        iif( IsCtrlShift(.f., .t.), -1, 1) )
                RETURN 0
             ELSEIF wParam == VK_RETURN  // Enter
-               ParentGetDialog( Self ):nSkip := 1
-               GetSkip( oParent, ::handle, .T. )
+               GetSkip( oParent, ::handle, .T., 1 )
                RETURN 0
             ENDIF
 
@@ -220,23 +206,16 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
 
          ENDIF
-         /* Added by Sauli */
       ELSE
          IF msg == WM_KEYDOWN
             IF wParam == VK_TAB     // Tab
-               IF Asc( SubStr( GetKeyboardState(), VK_SHIFT + 1, 1 ) ) >= 128
-                  nexthandle := GetNextDlgTabItem ( GetActiveWindow() , GetFocus() , .t. )
-                  SetFocus( nexthandle )
-               ELSE
-                  nexthandle := GetNextDlgTabItem ( GetActiveWindow() , GetFocus() , .f. )
-                  SetFocus( nexthandle )
-               ENDIF
+               nexthandle := GetNextDlgTabItem ( GetActiveWindow(), GetFocus(), ;
+					                                  IsCtrlShift(.f., .t.) )
+               SetFocus( nexthandle )
                RETURN 0
             END
          END
-         /* Sauli */
       ENDIF
-
       IF lColorinFocus
          IF msg == WM_SETFOCUS
 //            ::bColorOld := ::bcolor
@@ -245,7 +224,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ::SetColor( ::tcolor, ::bColorOld, .t. )
          ENDIF
       ENDIF
-
    ELSE
 
       IF msg == WM_MOUSEWHEEL
@@ -254,31 +232,16 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          SendMessage( ::handle, EM_SCROLL, IIf( nPos > 0, SB_LINEUP, SB_LINEDOWN ), 0 )
          SendMessage( ::handle, EM_SCROLL, IIf( nPos > 0, SB_LINEUP, SB_LINEDOWN ), 0 )
       ENDIF
-*******  Tab  MULTILINE - Paulo Flecha
       IF msg == WM_KEYDOWN
          IF wParam == VK_ESCAPE
             return 0
          ENDIF
-
          IF wParam == VK_TAB     // Tab
-            IF Asc( SubStr( GetKeyboardState(), VK_SHIFT + 1, 1 ) ) >= 128
-               ParentGetDialog( Self ):nSkip := - 1
-               IF ! GetSkip( oParent, ::handle ) // First Get
-                  nexthandle := GetNextDlgTabItem ( GetActiveWindow() , GetFocus() , .t. )
-                  PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nexthandle , 1 )
-                  ParentGetDialog( Self ):nSkip := 1
-               ENDIF
-            ELSE
-               ParentGetDialog( Self ):nSkip := 1
-               IF ! GetSkip( oParent, ::handle ) // Last Get
-                  nexthandle := GetNextDlgTabItem ( GetActiveWindow() , GetFocus() , .f. )
-                  PostMessage( ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nexthandle , 1 )
-               ENDIF
-            ENDIF
+            GetSkip( oParent, ::handle, , ;
+				         iif( IsCtrlShift(.f., .t.), -1, 1) )
             RETURN 0
          ENDIF
       ENDIF
-*******  End Tab  MULTILINE
    ENDIF
 
    //IF msg == WM_KEYDOWN
@@ -295,8 +258,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             oParent := oParent:oParent
          ENDDO
          IF oParent != Nil .AND. ! Empty( oParent:KeyList )
-            cKeyb := GetKeyboardState()
-            nctrl := IIf( Asc( SubStr( cKeyb, VK_CONTROL + 1, 1 ) ) >= 128, FCONTROL, IIf( Asc( SubStr( cKeyb, VK_SHIFT + 1, 1 ) ) >= 128, FSHIFT, 0 ) )
+            nctrl := IIf( IsCtrlShift(.t., .f.), FCONTROL, iif(IsCtrlShift(.f., .t.), FSHIFT, 0 ) )
             IF ( nPos := AScan( oParent:KeyList, { | a | a[ 1 ] == nctrl.AND.a[ 2 ] == wParam } ) ) > 0
                Eval( oParent:KeyList[ nPos, 3 ], Self )
             ENDIF
@@ -750,29 +712,24 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
    RETURN 0
 
 STATIC FUNCTION __When( oCtrl )
-   LOCAL res, oParent
+   LOCAL res := .t., oParent, nSkip
 
    oCtrl:Refresh()
    oCtrl:lFirst := .T.
+   nSkip := iif( GetKeyState( VK_UP ) + GetKeyState( VK_TAB ) < 0, -1, 1 )
    IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
       IF ! res
          oParent := ParentGetDialog(oCtrl)
-         IF oParent:nSkip > 0
-            IF oCtrl == ATail(oParent:GetList)
-               oParent:nSkip := -1
-            ENDIF
-         ELSE
-            IF oCtrl == oParent:getList[1]
-               oParent:nSkip := 1
-            ENDIF
+         IF oCtrl == ATail(oParent:GetList)
+            nSkip := -1
+         ELSEIF oCtrl == oParent:getList[1]
+            nSkip := 1
          ENDIF
-         GetSkip( oCtrl:oParent, oCtrl:handle )
+         GetSkip( oCtrl:oParent, oCtrl:handle, , nSkip )
       ENDIF
-      RETURN res
    ENDIF
-
-   RETURN .T.
+RETURN res
 
 STATIC FUNCTION __valid( oCtrl )
    LOCAL vari, oDlg
@@ -973,38 +930,58 @@ FUNCTION CreateGetList( oDlg )
    NEXT
    RETURN Nil
 
-FUNCTION GetSkip( oParent, hCtrl, lClipper )
-   LOCAL i, aLen
+FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
+   LOCAL nextHandle
 
-   DO WHILE oParent != Nil .AND. ! __ObjHasMsg( oParent, "GETLIST" )
-      oParent := oParent:oParent
-   ENDDO
+   DEFAULT nSkip := 1
+
    IF oParent == Nil .OR. ( lClipper != Nil .AND. lClipper .AND. ! oParent:lClipper )
       RETURN .F.
    ENDIF
-   IF hCtrl == Nil
-      i := 0
-   ENDIF
-   IF hCtrl == Nil .OR. ( i := AScan( oParent:Getlist, { | o | o:handle == hCtrl } ) ) != 0
-      IF oParent:nSkip > 0
-         aLen := Len( oParent:Getlist )
-         DO WHILE ( i := i + oParent:nSkip ) <= aLen
-            IF ! oParent:Getlist[ i ]:lHide .AND. IsWindowEnabled( oParent:Getlist[ i ]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
-               SetFocus( oParent:Getlist[ i ]:handle )
-               RETURN .T.
-            ENDIF
+   nextHandle := iif(oParent:className == "HTAB", NextFocusTab(oParent, hCtrl, nSkip), ;
+	                                               NextFocus(oParent, hCtrl, nSkip))
+   PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle , 1 )
+RETURN .T.
+
+FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
+   Local nextHandle := 0, i, nFirst , nLast
+
+    IF oParent:classname = "HTAB"
+      if len(oParent:aPages) > 0
+         oParent:GetActivePage(@nFirst, @nLast)
+         i :=  AScan( oParent:acontrols, { | o | o:handle == hCtrl } )
+         i += IIF( i == 0, nLast, nSkip)
+         DO WHILE i >= nFirst .and. i <= nLast
+           IF ! oParent:acontrols[ i ]:lHide .AND. IsWindowEnabled( oParent:acontrols[ i ]:Handle ) // ;
+              nexthandle := GetNextDlgTabItem ( oParent:handle , hctrl, ( nSkip < 0 ) )
+              exit
+           ENDIF
+           i += nSkip
          ENDDO
-      ELSE
-         DO WHILE ( i := i + oParent:nSkip ) > 0
-            IF ! oParent:Getlist[ i ]:lHide .AND. IsWindowEnabled( oParent:Getlist[ i ]:Handle )
-               SetFocus( oParent:Getlist[ i ]:handle )
-               oParent:nSkip := 1
-               RETURN .T.
-            ENDIF
-         ENDDO
+         IF i > nLast .OR. i < nFirst  // ultimo objecto do tab
+            nexthandle := GetNextDlgTabItem ( GetActiveWindow(), hctrl, (nSkip < 0) )
+         ENDIF
       ENDIF
+  ENDIF
+ RETURN nextHandle
+
+FUNCTION NextFocus(oParent,hCtrl,nSkip)
+
+Local nextHandle :=0,  i
+
+   i := AScan( oparent:acontrols, { | o | o:handle == hCtrl } )
+   i += nSkip
+   DO While i > 0 .AND. i <= Len(oParent:aControls)
+      IF ! oParent:aControls[ i ]:lHide .AND. IsWindowEnabled( oParent:aControls[ i ]:handle ) // ;
+         nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
+         EXIT
+       ENDIF
+       i += nSkip
+   ENDDO
+   IF nextHandle = 0
+     nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
    ENDIF
-   RETURN .F.
+RETURN nextHandle
 
 FUNCTION SetGetUpdated( o )
 

@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.57 2008-07-01 21:29:49 mlacecilia Exp $
+ *$Id: windows.ch,v 1.58 2008-07-10 14:11:15 mlacecilia Exp $
  */
 
 #define WM_CREATE                       1
@@ -1290,3 +1290,10 @@ Animation class defines
 #define ACS_CENTER              1
 #define ACS_TRANSPARENT         2
 #define ACS_AUTOPLAY            4
+
+/*
+Ancestor() const defines
+*/
+#define     GA_PARENT       1
+#define     GA_ROOT         2
+#define     GA_ROOTOWNER    3

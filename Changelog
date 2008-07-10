@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.866 2008-07-10 07:35:13 omm Exp $
+ * $Id: Changelog,v 1.867 2008-07-10 14:11:14 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,41 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-07-10 15:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  (some of this changes was made with Luis Fernando Basso and
+  Francesco Perillo strict collaboration)
+  * include\windows.ch
+    + added the GetAncestor() constants
+  * source\control.c
+    + added the GetAncestor() function wrapper
+  * source\hbrowse.prg
+    * added the event trapping for edit controls
+    * fixed footers dissapearing when thumb scroll was moved
+    * purged some unused variables
+  * source\hcombo.prg
+    * fixed the refresh of the value edited for text combos
+    * updated __when() in accord with GetSkip() changes
+  * source\hcontrol.prg
+    * fixed browse with cursor and Tab/shiftTab keys
+    * purged some unused variables
+  * source\hdialog.prg
+    * fixed browse for controls having page tab as parent
+    * unified SetMargin() and GetMargin() to getset method
+      ::SetMargin() now returning always the old settings
+  * source\hedit.prg
+    * splitted code for dialog/window and tab browsing
+    * updated GetSkip() 
+  * source\hcheck.prg
+    * updated __when() in accord with GetSkip() changes
+  * source\hupdown.prg
+    * updated __when() in accord with GetSkip() changes
+  * source\hwindow.prg
+    * purged out unused ::nSkip property
+  * utils\designer\blddesig.bat
+    * updated for correct Harbour libs linking. However the
+      __ObjGetValueDiff() and GetPrinters() functions remain unresolved
+      waiting for some Harbour code integration.
 
 2008-07-10 10:35 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
   * hwgui\utils\designer\designer.iml

@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.41 2008-06-28 15:17:51 mlacecilia Exp $
+ * $Id: hcombo.prg,v 1.42 2008-07-10 14:11:15 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -187,7 +187,6 @@ METHOD Init() CLASS HComboBox
             if  numofchars > LongComboWidth
                 LongComboWidth=numofchars
             endif
-
          NEXT
          IF ::lText
             IF ::lEdit
@@ -195,13 +194,13 @@ METHOD Init() CLASS HComboBox
             ELSE
                 ComboSetString( ::handle, AScan( ::aItems, ::value ) )
             ENDIF
+            SendMessage( ::handle, CB_SELECTSTRING, 0, ::value)
          ELSE
             ComboSetString( ::handle, ::value )
          ENDIF
          avgwidth =GetFontDialogUnits(::oParent:handle) //,::oParent:oFont:handle)
-         NewLongComboWidth = (LongComboWidth -2) *avgwidth
-         SendMessage(           ::handle,          CB_SETDROPPEDWIDTH,            NewLongComboWidth+50,           0        )
-
+         NewLongComboWidth = (LongComboWidth - 2) * avgwidth
+         SendMessage( ::handle, CB_SETDROPPEDWIDTH, NewLongComboWidth + 50, 0 )
       ENDIF
    ENDIF
 Return Nil
@@ -306,29 +305,27 @@ Static Function __KillFocus( oCtrl )
 Return .T.
 
 Static Function __When( oCtrl )
-Local res, oParent
+Local res := .t., oParent, nSkip
 
-   oCtrl:Refresh()
-
-   IF oCtrl:bGetFocus != Nil
-      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
-		IF ! res
-         oParent := ParentGetDialog(oCtrl)
-         IF oParent:nSkip > 0
-            IF oCtrl == ATail(oParent:GetList)
-               oParent:nSkip := -1
-            ENDIF
-         ELSE
-            IF oCtrl == oParent:getList[1]
-               oParent:nSkip := 1
-            ENDIF
-         ENDIF
-         GetSkip( oCtrl:oParent, oCtrl:handle )
-      ENDIF
-      RETURN res
+   IF !oCtrl:lText
+      oCtrl:Refresh()
+   ELSE
+      SendMessage( oCtrl:handle, CB_SELECTSTRING, 0, oCtrl:value)
    ENDIF
-
-Return .T.
+   nSkip := iif( GetKeyState( VK_UP ) + GetKeyState( VK_TAB ) < 0, -1, 1 )
+   IF oCtrl:bGetFocus != Nil
+      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet, , oCtrl ), oCtrl )
+      IF ! res
+         oParent := ParentGetDialog(oCtrl)
+         IF oCtrl == ATail(oParent:GetList)
+            nSkip := -1
+         ELSEIF oCtrl == oParent:getList[1]
+            nSkip := 1
+         ENDIF
+         GetSkip( oCtrl:oParent, oCtrl:handle, , nSkip )
+      ENDIF
+   ENDIF
+RETURN res
 
 
 CLASS HCheckComboBox INHERIT HComboBox

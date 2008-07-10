@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.23 2008-05-19 13:49:22 lculik Exp $
+ * $Id: editor.prg,v 1.24 2008-07-10 06:04:54 omm Exp $
  *
  * Designer
  * Simple code editor
@@ -198,14 +198,14 @@ Function EditMethod( cMethName, cMethod )
        ON GETFOCUS {||Iif(oEdit:cargo,(SendMessage(oEdit:handle,EM_SETSEL,0,0),oEdit:cargo:=.F.),.F.)} ;
        ON SIZE {|o,x,y|o:Move(,,x,y)}                                 ;
        FONT oFont
-   //           STYLE ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL+ES_WANTRETURN+WS_VSCROLL+WS_HSCROLL 
+   //           STYLE ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL+ES_WANTRETURN+WS_VSCROLL+WS_HSCROLL
    oEdit:cargo := .T.
 
    // oEdit:oParent:AddEvent( EN_SELCHANGE,oEdit:id,{||EnChange(1)},.T. )
 
    // oEdit:title := cMethod
    *-SetDlgKey( odlg, 0,VK_TAB, {msginfo('tab')})
-	 *-{SendMessage(oEdit:handle,EM_SETTABSTOPS  ,space(2),0)})
+         *-{SendMessage(oEdit:handle,EM_SETTABSTOPS  ,space(2),0)})
    ACTIVATE DIALOG oDlg
    *-SetDlgKey( oEdit, 0,9)
    IF lRes
@@ -317,8 +317,11 @@ Static Function CreateHilight( cText,oTheme )
 Local arr := {}, stroka, nPos, nLinePos := 1
 
    DO WHILE .T.
-      //IF ( nPos := HB_At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := HB_At( Chr(13), cText, nLinePos ) ) != 0
+      #ifdef __XHARBOUR
       IF ( nPos := At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := At( Chr(13), cText, nLinePos ) ) != 0
+      #else
+      IF ( nPos := HB_At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := HB_At( Chr(13), cText, nLinePos ) ) != 0
+      #endif
          HiLightString( SubStr( cText,nLinePos,nPos-nLinePos ), arr, nLinePos,oTheme )
          nLinePos := nPos + 1
       ELSE
@@ -508,7 +511,7 @@ static function InsertField(nModus)
 
 
   ELSE
-	MSGINFO(cDBF+chr(13)+"Not Found")
+        MSGINFO(cDBF+chr(13)+"Not Found")
   ENDIF
 
   return (Nil)

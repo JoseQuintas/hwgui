@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.864 2008-07-08 17:40:47 mlacecilia Exp $
+ * $Id: Changelog,v 1.865 2008-07-10 06:04:54 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,38 +8,42 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-07-10 09:15 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
+  * hwgui\utils\designer\editor.prg
+    * use HB_AT() for Harbour and AT() for xHarbour
+
 2008-07-08 19:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hprinter.prg
     * Issue 0020 of bug tracker solved
-      changed the typos in the customized preview ownerbuttons as  
+      changed the typos in the customized preview ownerbuttons as
       Francesco correctly analyzed ( :bitmap -> :oBitmap and :text ->
       :title )
       purged some unused vars causing warnings at compile time
-    
+
 2008-07-08 19:10 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\htool.prg
     * corrected id parameter in addEvent call. Thanks to Boris who
       signaled the bug on the HwGUI forum.
-  
+
 2008-07-05 23:55 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
   * source\hprinter.prg
-    * In preview: solved the flickering (now uses "double- buffering"). 
-	  Added shadow, changed colors, removed canvas margins.
+    * In preview: solved the flickering (now uses "double- buffering").
+          Added shadow, changed colors, removed canvas margins.
   * samples\a.prg
-	* Added second printed page to "Print Preview"
+        * Added second printed page to "Print Preview"
 
 2008-07-05 23:15 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
   * source\hbrowse.prg
-    * Added SetMargin and GetMargin methods. With SetMargin you can set 
-	  the margin in pixel as in CSS margin (top, right, bottom, left).
-	  A MUST HAVE if you have right aligned columns next to left
-	  aligned ones... (bug tracker #0003)
-	* Added SeparatorOut method (called internally). The separator lines
-	  are now drawn by this method. Till now this job was a "side-effect"
-	  of HeaderOut
-	* For the above reason, the mouse pointer changed in the "resize"
-	  picture also when no header row was available. Set lDispHead to .F.
-	  and the pointer will not change (bug tracker #0015)
+    * Added SetMargin and GetMargin methods. With SetMargin you can set
+          the margin in pixel as in CSS margin (top, right, bottom, left).
+          A MUST HAVE if you have right aligned columns next to left
+          aligned ones... (bug tracker #0003)
+        * Added SeparatorOut method (called internally). The separator lines
+          are now drawn by this method. Till now this job was a "side-effect"
+          of HeaderOut
+        * For the above reason, the mouse pointer changed in the "resize"
+          picture also when no header row was available. Set lDispHead to .F.
+          and the pointer will not change (bug tracker #0015)
 
 2008-07-05 18:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * include\missing.h
@@ -62,17 +66,17 @@
     * Issue 0016 of bug tracker solved (by Luis Fernando Basso
       submission)
       added the name property to allow same behaviour of other controls
-    + added the ::interval assigned property, allowing to change the 
+    + added the ::interval assigned property, allowing to change the
       timing value or, assigning a 0 value, killing the timer itself
       use simply with:
       oTimer:interval := somevalue
-      
+
 2008-07-03 20:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hupdown.prg (Luis Fernando Basso contribution)
     * added customized :hide() and :show() methods because the inherited
       ones don't worked in tab pages
     * updated the default style for the object
-    
+
 2008-07-03 09:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\htool.prg
     * corrected the AddEvent() call parameter to comply with newID()
@@ -81,7 +85,7 @@
 2008-07-02 13:50 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! Fixed the position of scrollbar when in the init the record
-	is not the first.
+        is not the first.
 
 2008-07-01 15:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * include\windows.ch
@@ -91,8 +95,8 @@
       cText := ReadStatus( oWnd, nPart)
       returning the text contained in the nPart (1 based)
       of oWnd status bar, Null string is returned if no status bar
-      is present      
-  
+      is present
+
 2008-07-01 20:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hdialog.prg
     ! Optimized execution of valid when keydown is Enter key.
@@ -105,7 +109,7 @@
   * utils\designer\hformgen.prg
     + added the oParent property to the respective objects to comply
       with newID() behaviour
-  
+
 2008-07-01 01:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcwindow.prg
     * now is possible to pass the control ID to AddEvent() in place of
@@ -119,14 +123,14 @@
       controls acting as containers.
       BE AWARE: this new behaviour is working fine if none duplicated
       ID exists in the same form. this is assured by the new way the
-      hControl:newID() generates automatically the ID number, but 
+      hControl:newID() generates automatically the ID number, but
       could generate errors if the ID are manually assigned and some
       duplicate ID number exists not only in the same parent but also
       in all the form controls
   * source\hcontrol.prg
     * changed the new ID assignment to assure no duplicates into the
       same form also if have controls acting as containers
-    * enhancement in management of the cursor keys presses 
+    * enhancement in management of the cursor keys presses
   * source\misc.c
     + added the GetClipboardText() function
 
@@ -145,7 +149,7 @@
   * source\hriched.prg
   * source\htool.prg
   * source\hupdown.prg
-    + added named methods for events in controls, after a request of 
+    + added named methods for events in controls, after a request of
       Luis Fernando Basso.
       Each event added to the messages processed list have now a method
       referenced in its class, inserted automatically at create time.
@@ -160,13 +164,13 @@
   * samples\tstAnimation.prg
     * enhanced code and form behaviour
   + samples\tstAnimation.rc
-    + added the demo resource file previously omitted 
+    + added the demo resource file previously omitted
 
 2008-06-28 15:15 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hcontrol.prg
     ! In buttonex activated keys up, down, left and right to navigate
-	in controls with WS_TABSTOP. 
-  
+        in controls with WS_TABSTOP.
+
 2008-06-27 13:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcheck.prg
   * source\hcombo.prg
@@ -178,7 +182,7 @@
     + added some parameters to keyb_event function allowing to combine key
       press also with ctrl and alt keys. The new syntax is:
       keyb_event( nKeyCode, lIsExtCode, lShiftPress, lCtrlPress, lAltPress)
-      
+
 2008-06-26 19:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hedit.prg
     - purged the unneeded nSkip property
@@ -186,27 +190,27 @@
     * corrected the nSkip assignment for Tab keypress
     * avoided negative index using ATail function for better compatibility
   * source/hcontrol.prg
-    + added the name property allowing to generate a custom named property for 
+    + added the name property allowing to generate a custom named property for
       each control in his parent. From an initial idea of Luis Fernando Basso,
-      this could be very useful for referencing objects by name, even for 
-      constructing  and reusing standardized controls also in designer. 
-      Once defined oCtrl:name = "CustomName", where CustomName is really any 
+      this could be very useful for referencing objects by name, even for
+      constructing  and reusing standardized controls also in designer.
+      Once defined oCtrl:name = "CustomName", where CustomName is really any
       name observing the naming conventions, you now can access the control by
       name or in his class hierarchy using i.e.:
-      oDlg:CustomName[:<prop/meth>] or 
+      oDlg:CustomName[:<prop/meth>] or
       oForm:oTabStocks:AnyCustomName[:<prop/meth>]
-    - striped out large remmed source code      
+    - striped out large remmed source code
   * utils/designer/extmodul.ch
     + added HWG_SETWINDOWSTYLE, HWG_SETWINDOWEXSTYLE, HWG_GETWINDOWSTYLE,
       HWG_GETWINDOWEXSTYLE external reference
 
 2008-06-26 07:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hedit.prg
-    ! Fixed error in redefine thanks to Gilberto Silverio. 
+    ! Fixed error in redefine thanks to Gilberto Silverio.
 
 2008-06-25 20:50 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hedit.prg
-    ! Fixed lColorinFocus in some case the color background isn't restored. 
+    ! Fixed lColorinFocus in some case the color background isn't restored.
 
 2008-06-24 21:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
@@ -226,8 +230,8 @@
   * include\windows.ch
     + added the WS_EX_TOOLWINDOW constant
   * source\windows.c
-    + added HWG_SETWINDOWEXSTYLE and HWG_GETWINDOWEXSTYLE wrappers 
-    
+    + added HWG_SETWINDOWEXSTYLE and HWG_GETWINDOWEXSTYLE wrappers
+
 2008-06-21 03:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * include\guilib.ch
     * fixed the HB_SYMBOL_UNUSED macro
@@ -245,7 +249,7 @@
   * source\hanimat.prg
     * moved c code to animat.c
     * removed the static clause from c coded methods as introducing
-      incompatibility with some compiler    
+      incompatibility with some compiler
   * include\windows.ch
     * moved here the constants for hAnimation class
   + samples\bldhrb.bat
@@ -255,14 +259,14 @@
       /W2 /ES2 flags. I've tested many samples compiled in Harbour
       and now all seems working fine, but you're invited to make
       same thing and to signal or correct some mismatch.
-      Thanks to Viktor Szakàts for his precious suggestions and 
+      Thanks to Viktor Szakàts for his precious suggestions and
       very effective and gentle collaboration in restoring Harbour
       HwGUI compatibility.
     . prepare the code for a deeper revisitation, hoping to release
       a new stable version. I know ther'is a lot of HB_SYMBOL_UNUSED
       included, but this would be a temporary stage of code and this
       will be rearranged as soon as possible.
-    Now follows the list of changed files:      
+    Now follows the list of changed files:
   * include\guilib.ch
     + added th HB_SYMBOL_UNUSED dummy macro for xHarbour compilation
   * source\guimain.prg
@@ -293,7 +297,7 @@
 2008-06-20 20:15 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! In edit mode now select cell withe mouse, when the cell is grater
-	then the max number of cells in the client area.
+        then the max number of cells in the client area.
 
 2008-06-19 06:40 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
@@ -307,7 +311,7 @@
 2008-06-18 23:50 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hfrmtmpl.prg
   * source/repexec.prg
-    * rearranged code to compile in xHarbour without the /A flag 
+    * rearranged code to compile in xHarbour without the /A flag
 
 2008-06-18 22:40 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
@@ -339,23 +343,23 @@
 2008-06-17 15:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hfrmtmpl.prg
   * source/repexec.prg
-    * rearranged code to compile in xHarbour without the /A flag 
+    * rearranged code to compile in xHarbour without the /A flag
 
 2008-06-17 15:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hcontrol.prg
-    * minor changes for Harbour compilation support 
+    * minor changes for Harbour compilation support
   * source/hupdown.prg
     * avoided nil value in counter variable
- 
+
 2008-06-17 09-05 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * utils/designer/blddesig.bat
     ! fix to compile designer with xharbour
- 
+
 2008-06-16 20:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/draw.c
   * source/theme.c
     - removed some unused variable declaration causing warnings in compilation
-  * source/drawwidg.prg 
+  * source/drawwidg.prg
     - removed some unused local causing warnings in Harbour compilation
   * source/pager.c
     + added include file for Harbour compatibility (thanks to Viktor Szakáts)
@@ -366,7 +370,7 @@
       (SHIFT-PGUP), (CTRL-SHIFT-PGUP) and (SHIFT-PGDOWN), (CTRL-SHIFT-PGDOWN)
       in Multiselect.
       The cell selection is show ever.
-    
+
 2008-06-16 15:30 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
   * source/hbrowse.prg
     ! ctrl-pagedown is now handled correctly for ARRAY browse
@@ -376,7 +380,7 @@
     ! changed variable name from "i" to a non-generic name
   * samples/arbrow2.prg
     + test scroll behaviour of ARRAY browse
-    
+
 2008-06-14 21:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! Now when bColorBlock  is passed the selected column is dysplayed with
@@ -384,7 +388,7 @@
 
 2008-06-13 18:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
-    ! resolved some problem of repaint, 	
+    ! resolved some problem of repaint,
       visible in Designer.
 
 2008-06-13 11:05 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>

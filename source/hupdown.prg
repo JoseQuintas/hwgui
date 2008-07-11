@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.13 2008-07-10 14:11:15 mlacecilia Exp $
+ * $Id: hupdown.prg,v 1.14 2008-07-11 16:16:08 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -110,7 +110,7 @@ STATIC FUNCTION __When( oCtrl )
    LOCAL res := .t., oParent, nSkip
 
    oCtrl:Refresh()
-   nSkip := iif( GetKeyState( VK_UP ) + GetKeyState( VK_TAB ) < 0, -1, 1 )
+   nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
    IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
       IF ! res

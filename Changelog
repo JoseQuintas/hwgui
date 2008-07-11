@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.868 2008-07-10 16:38:20 mlacecilia Exp $
+ * $Id: Changelog,v 1.869 2008-07-11 16:16:06 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,8 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-07-11 18:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hcheck.prg
+    * corrected shift-tab behaviour in navigation within form controls
+  * source\hcombo.prg
+    * corrected shift-tab behaviour in navigation within form controls
+    * displayed text for edit combo also when the edited text isn't 
+      within list items
+  * source\hedit.prg
+    * corrected shift-tab behaviour in navigation within form controls
+    * patch for navigation in tab pages (needs some other patch for
+      complete solution in going out of tab, however, because now the
+      navigation loops in the tab and not goes to the dialog/window)     
+  * source\hupdown.prg
+    * corrected shift-tab behaviour in navigation within form controls
+
 2008-07-10 18:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
-  * hwgui\utils\designer\editor.prg
+  * utils\designer\editor.prg
     * fixed a little typo causing unresolved reference at link time
 
 2008-07-10 15:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>

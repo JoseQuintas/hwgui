@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.83 2008-07-10 14:11:15 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.84 2008-07-11 16:16:08 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -716,7 +716,7 @@ STATIC FUNCTION __When( oCtrl )
 
    oCtrl:Refresh()
    oCtrl:lFirst := .T.
-   nSkip := iif( GetKeyState( VK_UP ) + GetKeyState( VK_TAB ) < 0, -1, 1 )
+   nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
    IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
       IF ! res
@@ -943,29 +943,27 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
    PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle , 1 )
 RETURN .T.
 
-FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
+STATIC FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
    Local nextHandle := 0, i, nFirst , nLast
 
-    IF oParent:classname = "HTAB"
-      if len(oParent:aPages) > 0
-         oParent:GetActivePage(@nFirst, @nLast)
-         i :=  AScan( oParent:acontrols, { | o | o:handle == hCtrl } )
-         i += IIF( i == 0, nLast, nSkip)
-         DO WHILE i >= nFirst .and. i <= nLast
-           IF ! oParent:acontrols[ i ]:lHide .AND. IsWindowEnabled( oParent:acontrols[ i ]:Handle ) // ;
-              nexthandle := GetNextDlgTabItem ( oParent:handle , hctrl, ( nSkip < 0 ) )
-              exit
-           ENDIF
-           i += nSkip
-         ENDDO
-         IF i > nLast .OR. i < nFirst  // ultimo objecto do tab
-            nexthandle := GetNextDlgTabItem ( GetActiveWindow(), hctrl, (nSkip < 0) )
-         ENDIF
+   if len(oParent:aPages) > 0
+      oParent:GetActivePage(@nFirst, @nLast)
+      i :=  AScan( oParent:oParent:acontrols, { | o | o:handle == hCtrl } )
+      i += IIF( i == 0, nLast, nSkip)
+      DO WHILE i >= nFirst .and. i <= nLast
+        IF ! oParent:acontrols[ i ]:lHide .AND. IsWindowEnabled( oParent:acontrols[ i ]:Handle ) // ;
+           nexthandle := GetNextDlgTabItem ( oParent:handle , hctrl, ( nSkip < 0 ) )
+           exit
+        ENDIF
+        i += nSkip
+      ENDDO
+      IF i > nLast .OR. i < nFirst  // ultimo objecto do tab
+        nexthandle := GetNextDlgTabItem ( GetActiveWindow(), hctrl, (nSkip < 0) )
       ENDIF
-  ENDIF
- RETURN nextHandle
+   ENDIF
+RETURN nextHandle
 
-FUNCTION NextFocus(oParent,hCtrl,nSkip)
+STATIC FUNCTION NextFocus(oParent,hCtrl,nSkip)
 
 Local nextHandle :=0,  i
 
@@ -978,8 +976,8 @@ Local nextHandle :=0,  i
        ENDIF
        i += nSkip
    ENDDO
-   IF nextHandle = 0
-     nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
+   IF nextHandle == 0
+       nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
    ENDIF
 RETURN nextHandle
 

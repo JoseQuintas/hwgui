@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.42 2008-07-10 14:11:15 mlacecilia Exp $
+ * $Id: hcombo.prg,v 1.43 2008-07-11 16:16:07 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -195,6 +195,7 @@ METHOD Init() CLASS HComboBox
                 ComboSetString( ::handle, AScan( ::aItems, ::value ) )
             ENDIF
             SendMessage( ::handle, CB_SELECTSTRING, 0, ::value)
+            SetWindowText(::handle, ::value)
          ELSE
             ComboSetString( ::handle, ::value )
          ENDIF
@@ -311,8 +312,9 @@ Local res := .t., oParent, nSkip
       oCtrl:Refresh()
    ELSE
       SendMessage( oCtrl:handle, CB_SELECTSTRING, 0, oCtrl:value)
+      SetWindowText(oCtrl:handle, oCtrl:value)
    ENDIF
-   nSkip := iif( GetKeyState( VK_UP ) + GetKeyState( VK_TAB ) < 0, -1, 1 )
+   nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
    IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet, , oCtrl ), oCtrl )
       IF ! res

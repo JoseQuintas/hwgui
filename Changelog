@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.869 2008-07-11 16:16:06 mlacecilia Exp $
+ * $Id: Changelog,v 1.870 2008-07-14 11:52:02 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-07-14 13:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\guimain.prg
+    * changed FindSelf() function to search the control handle also 
+      in ancestor window
+  * source\hcontrol.prg (by suggestion of Luis Fernando Basso)
+    * routed hButton click event also to parent other than hStatus
+  * source\hdialog.prg
+    * changed DlgCommand to use the new FindSelf() version and
+      avoided an error in template dialogs kindly signaled by
+      Gilberto Silverio.
 
 2008-07-11 18:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcheck.prg

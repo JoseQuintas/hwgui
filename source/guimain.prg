@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.23 2008-07-01 21:29:50 mlacecilia Exp $
+ * $Id: guimain.prg,v 1.24 2008-07-14 11:52:02 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -65,7 +65,10 @@ Return Nil
 Function FindSelf( hCtrl )
 Local oParent
    oParent := FindParent( hCtrl )
-   IF oParent != Nil
+   if oParent == Nil
+		oParent := GetAncestor(hCtrl, GA_PARENT)
+	endif
+	IF oParent != Nil
       Return oParent:FindControl( ,hCtrl )
    ENDIF
 Return Nil

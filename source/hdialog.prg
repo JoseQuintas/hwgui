@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.48 2008-07-10 14:11:15 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.49 2008-07-14 11:52:03 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -179,16 +179,12 @@ Local nPos
       if ::lRouteCommand .and. (msg ==WM_COMMAND .or. msg == WM_NOTIFY)
 
          nPos := ascan(::aControls,{|x| x:className() == "HTAB"})
-         if nPos >0
-            oTab :=::aControls[ nPos ]
-            if len(oTab:aPages) >0
-            eval( aMessModalDlg[i,2], oTab:aPages[oTab:GetActivePage(),1], wParam, lParam )
-            return eval( aMessModalDlg[i,2], Self, wParam, lParam )
-            else
-            return eval( aMessModalDlg[i,2], Self, wParam, lParam )
+         if nPos > 0
+            oTab := ::aControls[ nPos ]
+            if len(oTab:aPages) > 0
+               eval( aMessModalDlg[i,2], oTab:aPages[oTab:GetActivePage(),1], wParam, lParam )
             endif
          endif
-         return eval( aMessModalDlg[i,2], Self, wParam, lParam )
       endif
       Return Eval( aMessModalDlg[i,2], Self, wParam, lParam )
    ELSE
@@ -308,12 +304,7 @@ HB_SYMBOL_UNUSED(lParam)
    IF iParHigh == 0
       IF iParLow == IDOK
          hCtrl := GetFocus()
-         oCtrl := oDlg:FindControl(,hctrl)
-         if oCtrl == nil
-            hCtrl := GetAncestor(hCtrl, GA_PARENT)
-            oCtrl := oDlg:FindControl( ,hctrl)
-            GetSkip( oCtrl:oParent, hCtrl, , 1 )
-         ENDIF
+			oCtrl := FindSelf(hCtrl)
          IF !GetSkip( oCtrl:oParent, hCtrl, , 1)
             IF oDlg:lExitOnEnter
                oDlg:lResult := .T.

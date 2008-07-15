@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.133 2008-07-10 14:11:15 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.134 2008-07-15 17:49:03 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1956,7 +1956,7 @@ Local oGet1, owb1, owb2
                   oCombo:bValid := oColumn:bValid
                ENDIF
 
-            oModDlg:AddEvent( 0, IDOK, {|| oModDlg:close()} )
+            oModDlg:AddEvent( 0, IDOK, {|| oModDlg:lResult := .T. , oModDlg:close()} )
 
          ELSE
          if type <> "M"
@@ -1969,7 +1969,7 @@ Local oGet1, owb1, owb2
                VALID oColumn:bValid           ;
                WHEN oColumn:bWhen
 
-            oModDlg:AddEvent( 0, IDOK, {|| oModDlg:close()} )
+            oModDlg:AddEvent( 0, IDOK, {|| oModDlg:lResult := .T., oModDlg:close()} )
 
          else
             oGet1 := ::varbuf

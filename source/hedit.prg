@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.84 2008-07-11 16:16:08 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.85 2008-07-15 17:49:03 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -25,7 +25,7 @@ CLASS HEdit INHERIT HControl
 CLASS VAR winclass   INIT "EDIT"
    DATA bColorOld
    DATA lMultiLine   INIT .F.
-   DATA cType INIT "C"
+   DATA cType        INIT "C"
    DATA bSetGet
    DATA bValid
    DATA bkeydown, bkeyup
@@ -79,7 +79,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::style := Hwg_BitOr( ::style, ES_WANTRETURN )
       ::lMultiLine := .T.
    ENDIF
-
+   IF ::cType == "N" .and. Hwg_BitAnd( nStyle, ES_LEFT + ES_CENTER ) == 0
+      ::style := Hwg_BitOr( ::style, ES_RIGHT + ES_NUMBER )
+   ENDIF
    IF ! Empty( cPicture ) .or. cPicture == Nil .And. nMaxLenght != Nil .or. ! Empty( nMaxLenght )
       ::nMaxLenght := nMaxLenght
    ENDIF
@@ -734,6 +736,9 @@ RETURN res
 STATIC FUNCTION __valid( oCtrl )
    LOCAL vari, oDlg
 
+   IF oCtrl:bGetFocus != Nil .AND. !Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
+      RETURN .T.
+   ENDIF
    IF oCtrl:bSetGet != Nil
       IF ( oDlg := ParentGetDialog( oCtrl ) ) == Nil .OR. oDlg:nLastKey != 27
          vari := UnTransform( oCtrl, GetEditText( oCtrl:oParent:handle, oCtrl:id ) )
@@ -954,10 +959,12 @@ STATIC FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
         IF ! oParent:acontrols[ i ]:lHide .AND. IsWindowEnabled( oParent:acontrols[ i ]:Handle ) // ;
            nexthandle := GetNextDlgTabItem ( oParent:handle , hctrl, ( nSkip < 0 ) )
            exit
+        ELSE
+           setFocus(oParent:aControls[ i + nSkip ]:handle)
         ENDIF
         i += nSkip
       ENDDO
-      IF i > nLast .OR. i < nFirst  // ultimo objecto do tab
+      IF i > nLast .OR. i <= nFirst  // ultimo objecto do tab
         nexthandle := GetNextDlgTabItem ( GetActiveWindow(), hctrl, (nSkip < 0) )
       ENDIF
    ENDIF
@@ -973,6 +980,8 @@ Local nextHandle :=0,  i
       IF ! oParent:aControls[ i ]:lHide .AND. IsWindowEnabled( oParent:aControls[ i ]:handle ) // ;
          nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
          EXIT
+       ELSE
+         setFocus(oParent:aControls[ i + nSkip ]:handle)
        ENDIF
        i += nSkip
    ENDDO

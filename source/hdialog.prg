@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.49 2008-07-14 11:52:03 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.50 2008-07-15 17:49:03 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -305,7 +305,10 @@ HB_SYMBOL_UNUSED(lParam)
       IF iParLow == IDOK
          hCtrl := GetFocus()
 			oCtrl := FindSelf(hCtrl)
-         IF !GetSkip( oCtrl:oParent, hCtrl, , 1)
+/*         IF oCtrl != Nil
+               GetSkip( oCtrl:oParent, hCtrl, , 1 )
+         ENDIF  */
+         IF oCtrl != Nil .AND. !GetSkip( oCtrl:oParent, hCtrl, , 1)
             IF oDlg:lExitOnEnter
                oDlg:lResult := .T.
                EndDialog( oDlg:handle )

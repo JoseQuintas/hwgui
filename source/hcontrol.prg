@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.75 2008-07-14 11:52:03 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.76 2008-07-15 17:49:03 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -45,10 +45,10 @@
 
 CLASS HControl INHERIT HCustomWindow
 
-   DATA id
-   DATA tooltip
-   DATA lInit           INIT .F.
-   DATA xName           HIDDEN
+   DATA   id
+   DATA   tooltip
+   DATA   lInit           INIT .F.
+   DATA   xName           HIDDEN
    ACCESS Name         INLINE ::xName
    ASSIGN Name(cName)  INLINE ::xName := cName, ;
 	                           __objAddData(::oParent, cName),;
@@ -361,6 +361,7 @@ CLASS HButton INHERIT HControl
    METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
                     tcolor, bColor )
    METHOD Init()
+   METHOD Notify(lParam )
 
 ENDCLASS
 
@@ -377,7 +378,14 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::bClick  := bClick
    ::title   := cCaption
    ::Activate()
-
+   IF ::classname == "HBUTTON"
+      IF ::oParent:oParent != Nil
+          ::oParent:AddEvent( BN_KILLFOCUS, self, {|l| ::Notify(WM_KEYDOWN)})
+          IF bClick != NIL
+             ::oParent:oParent:AddEvent( 0, self, bClick,,"onClick" )
+          ENDIF
+      ENDIF
+   ENDIF
    IF bClick != NIL
       IF ::oParent:oParent != nil    //  className == "HSTATUS"
          ::oParent:oParent:AddEvent( 0, self, bClick,,"onClick" )
@@ -419,9 +427,24 @@ METHOD Init CLASS HButton
    endif
 RETURN  NIL
 
+METHOD Notify(lParam ) CLASS HButton
+ //
+   IF lParam = WM_KEYDOWN
+      InvalidateRect(::handle,0)
+      SENDMESSAGE(::handle,BM_SETSTYLE ,BS_PUSHBUTTON ,1)
+      IF getkeystate(VK_LEFT) + getkeystate(VK_UP) < 0 .OR. ;
+        (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 )
+         GetSkip( ::oparent, ::handle, , -1 )
+         return 0
+      ENDIF
+      IF getkeystate(VK_RIGHT) + getkeystate(VK_DOWN) + GetKeyState( VK_TAB ) < 0
+         GetSkip(::oparent, ::handle, ,1 )
+         return 0
+     ENDIF
+   ENDIF
+RETURN -1
+
 //- HGroup
-
-
 
 CLASS HButtonEX INHERIT HButton
 

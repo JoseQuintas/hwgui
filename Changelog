@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.870 2008-07-14 11:52:02 mlacecilia Exp $
+ * $Id: Changelog,v 1.871 2008-07-15 17:49:02 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-07-14 19:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hbrowse.prg
+    * handled correctly the exit status of edit
+  * source\hcontrol.prg
+    * added for the hButton the notify method
+  * source\hdialog.prg
+    * fix to correctly give focus after previous commit changes
+  * source\hedit.prg
+    * forced to ES_RIGHT + ES_NUMBER the style if the variable type
+      to edit is numeric
+    * avoided endless loop signaled by Francesco when valid occurs on
+      a get with when resolving to .f.
+      this is a temporary workaround because a better solution i
+      believe don't would need a duplicated when evaluation
+    * assured that the focus always is assigned during navigation
+      between controls
+    
 2008-07-14 13:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\guimain.prg
     * changed FindSelf() function to search the control handle also 

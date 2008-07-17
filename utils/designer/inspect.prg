@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.14 2008-05-19 13:49:24 lculik Exp $
+ * $Id: inspect.prg,v 1.15 2008-07-17 19:45:11 mlacecilia Exp $
  *
  * Designer
  * Object Inspector
@@ -29,7 +29,7 @@
             [ ON LOSTFOCUS <bLfocus> ] ;
             [ STYLE <nStyle> ]         ;
             [ <lNoVScr: NO VSCROLL> ]  ;
-            [ <lNoBord: NO BORDER> ]   ;
+            [ <lNoBord: NOBORDER> ]    ;
             [ FONT <oFont> ]           ;
             [ <lAppend: APPEND> ]      ;
             [ <lAutoedit: AUTOEDIT> ]  ;

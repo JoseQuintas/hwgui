@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.76 2008-07-15 17:49:03 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.77 2008-07-17 19:45:10 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -380,7 +380,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::Activate()
    IF ::classname == "HBUTTON"
       IF ::oParent:oParent != Nil
-          ::oParent:AddEvent( BN_KILLFOCUS, self, {|l| ::Notify(WM_KEYDOWN)})
+          ::oParent:AddEvent( BN_KILLFOCUS, self, {|| ::Notify(WM_KEYDOWN)})
           IF bClick != NIL
              ::oParent:oParent:AddEvent( 0, self, bClick,,"onClick" )
           ENDIF

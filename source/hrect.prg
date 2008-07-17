@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.3 2008-05-27 12:10:56 lculik Exp $
+ * $Id: hrect.prg,v 1.4 2008-07-17 19:45:10 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -28,19 +28,19 @@ ENDCLASS
 METHOD New(oWndParent,nLeft,nTop,nRight,nBottom, lPress, nStyle) Class HRect
 Local nCor1, nCor2
 
-if nStyle = NIL
-   nStyle := 3
-endif
+  if nStyle = NIL
+     nStyle := 3
+  endif
+     nCor1 := COLOR_3DHILIGHT
+  if lPress
+     nCor2 := COLOR_3DHILIGHT
+     nCor1 := COLOR_3DSHADOW
+  else
+     nCor1 := COLOR_3DHILIGHT
+     nCor2 := COLOR_3DSHADOW
+  endif
 
-if lPress
-   nCor2 := COLOR_3DHILIGHT
-   nCor1 := COLOR_3DSHADOW
-else
-   nCor1 := COLOR_3DHILIGHT
-   nCor2 := COLOR_3DSHADOW
-endif
-
- do case
+  do case
     case nStyle = 1
        ::oLine1 = HRect_Line():New( oWndParent, ,.f., nLeft,  nTop,    nRight-nLeft, , nCor1 )
        ::oLine3 = HRect_Line():New( oWndParent, ,.f., nLeft,  nBottom, nRight-nLeft, , nCor2 )
@@ -54,7 +54,7 @@ endif
        ::oLine2 = HRect_Line():New( oWndParent, ,.t., nLeft,  nTop,    nBottom-nTop, , nCor1 )
        ::oLine3 = HRect_Line():New( oWndParent, ,.f., nLeft,  nBottom, nRight-nLeft, , nCor2 )
        ::oLine4 = HRect_Line():New( oWndParent, ,.t., nRight, nTop,    nBottom-nTop, , nCor2 )
- endcase
+  endcase
 
 Return Self
 
@@ -87,7 +87,6 @@ METHOD New( oWndParent,nId,lVert,nLeft,nTop, nLength,bSize, nColor ) CLASS HRect
       ::nWidth  := Iif( nLength==Nil,20,nLength )
       ::nHeight := 10
    ENDIF
-
    ::oPen := HPen():Add( BS_SOLID,1,GetSysColor(nColor) )
 
    ::Activate()
@@ -96,7 +95,7 @@ Return Self
 
 //---------------------------------------------------------------------------
 METHOD Activate CLASS HRect_Line
-   IF !empty( ::oParent:handle ) 
+   IF !empty( ::oParent:handle )
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth,::nHeight )
       ::Init()
@@ -110,13 +109,157 @@ Local hDC := drawInfo[3], x1 := drawInfo[4], y1 := drawInfo[5], x2 := drawInfo[6
 
 
    SelectObject( hDC, ::oPen:handle )
+
    IF ::lVert
       DrawLine( hDC, x1,y1,x1,y2 )
    ELSE
       DrawLine( hDC, x1,y1,x2,y1 )
    ENDIF
 
+
 Return Nil
+
+
+//Contribution   Luis Fernando Basso
+
+CLASS HShape INHERIT HControl
+
+  METHOD New(oWndParent,nId,nLeft,nTop,nWidth,nHeight, nBorder, nCurvature,;
+	           nbStyle, nfStyle, tcolor, bcolor, bSize)
+
+ENDCLASS
+
+METHOD New(oWndParent,nId,nLeft,nTop,nWidth,nHeight, nBorder, nCurvature,;
+	           nbStyle, nfStyle, tcolor, bcolor, bSize) Class HShape
+
+ 	nBorder := IIF(nBorder = Nil, 1, nBorder)
+	nbStyle := IIF(nbStyle = Nil, PS_SOLID, nbStyle )
+	nfStyle := IIF(nfStyle = Nil, BS_TRANSPARENT , nfStyle )
+	nCurvature := nCurvature
+
+   Self := HDrawShape():New( oWndParent,,nLeft,nTop,nWidth,nHeight,bSize,tColor,bColor,,,;
+	                             nBorder, nCurvature, nbStyle, nfStyle)
+
+Return Self
+
+//---------------------------------------------------------------------------
+
+CLASS HContainer INHERIT HControl
+
+   METHOD New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, nStyle, bSize, lnoBorder )
+
+ENDCLASS
+
+METHOD New(oWndParent,nId,nLeft,nTop,nWidth,nHeight, nStyle,bSize, lnoBorder) Class HContainer
+
+   nStyle := IIF(nStyle = NIL, 3, nStyle)  // FLAT
+   lnoBorder := IIF(lnoBorder = NIL, .F., lnoBorder)  // FLAT
+
+	Self := HDrawShape():New( oWndParent,, nLeft, nTop, nWidth, nHeight, bSize,,,nStyle, lnoBorder,,,,)
+
+Return Self
+
+
+//---------------------------------------------------------------------------
+
+CLASS HDrawShape INHERIT HControl
+
+   CLASS VAR winclass   INIT "STATIC"
+   DATA oPen, oBrush
+   DATA ncStyle, nbStyle, nfStyle
+   DATA nCurvature
+   DATA nBorder, lnoBorder
+   DATA ntColor, nbColor
+
+   METHOD New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor, nStyle, ;
+	             lnoBorder, nBorder, nCurvature, nbStyle, nfStyle)
+   METHOD Activate()
+   METHOD Paint()
+
+ENDCLASS
+
+
+METHOD New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor, ncStyle, ;
+	             lnoBorder, nBorder, nCurvature, nbStyle, nfStyle) CLASS HDrawShape
+
+   Super:New( oWndParent,nId,SS_OWNERDRAW+WS_GROUP,nLeft,nTop,,,,,bSize,{|o,lp|o:Paint(lp)} )
+
+   ::title := ""
+	::ncStyle :=  ncStyle  //0 -raised ,1-sunken 2-flat
+	::nLeft := nLeft
+	::nTop := nTop
+   ::nWidth := nWidth
+   ::nHeight := nHeight
+	tColor := IIF(tColor = Nil, 0, tColor)
+	bColor := IIF(bColor = Nil, GetSysColor( COLOR_BTNFACE )  , bColor)
+	::lnoBorder := lnoBorder
+	::nBorder := nBorder
+	::nbStyle := nbStyle
+	::nfStyle := nfStyle
+	::nCurvature := nCurvature
+   ::Activate()
+   // brush somente para os SHAPE
+   ::nbcolor := bcolor
+   ::ntColor := tcolor
+   IF ncStyle == Nil
+      ::oPen := HPen():Add(::nbStyle, ::nBorder, tColor)
+   ELSE  // CONTAINER
+	    ::oPen := HPen():Add( PS_SOLID, 1, GetSysColor( COLOR_3DHILIGHT ) )
+   ENDIF
+
+
+Return Self
+
+//---------------------------------------------------------------------------
+METHOD Activate CLASS HDrawShape
+   IF !empty( ::oParent:handle )
+      ::handle := CreateStatic( ::oParent:handle, ::id, ;
+                  ::style, ::nLeft, ::nTop, ::nWidth,::nHeight )
+      ::Init()
+   ENDIF
+Return Nil
+
+//---------------------------------------------------------------------------
+METHOD Paint( lpdis ) CLASS HDrawShape
+ Local drawInfo := GetDrawItemInfo( lpdis )
+ Local hDC := drawInfo[3], oBrush
+ Local  x1 := drawInfo[4], y1 := drawInfo[5]
+ Local  x2 := drawInfo[6], y2 := drawInfo[7]
+
+   SelectObject( hDC, ::oPen:handle )
+   IF ::ncStyle != Nil
+      IF ::lnoBorder = .F.
+         IF ::ncStyle == 0      // RAISED
+           DrawEdge( hDC, x1, y1, x2, y2,BDR_RAISED,BF_LEFT+BF_TOP+BF_RIGHT+BF_BOTTOM)  // raised  forte      8
+         ELSEIF ::ncStyle == 1  // sunken
+           DrawEdge( hDC, x1, y1, x2, y2,BDR_SUNKEN,BF_LEFT+BF_TOP+BF_RIGHT+BF_BOTTOM ) // sunken mais forte
+         ELSEIF ::ncStyle == 2  // FRAME
+           DrawEdge( hDC, x1, y1, x2, y2,BDR_RAISED+BDR_RAISEDOUTER,BF_LEFT+BF_TOP+BF_RIGHT+BF_BOTTOM) // FRAME
+         ELSE                   // FLAT
+           DrawEdge( hDC, x1, y1, x2, y2,BDR_SUNKENINNER,BF_TOP)
+           DrawEdge( hDC, x1, y1, x2, y2,BDR_RAISEDOUTER,BF_BOTTOM)
+           DrawEdge( hDC, x1, y2, x2, y1,BDR_SUNKENINNER,BF_LEFT)
+           DrawEdge( hDC, x1, y2, x2, y1,BDR_RAISEDOUTER,BF_RIGHT)
+         ENDIF
+      ELSE
+         DrawEdge( hDC, x1, y1, x2, y2,0,0)
+      ENDIF
+   ELSE
+      // CLASSE SHAPE
+      obrush := HBrush():Add(::nbColor)
+   	SelectObject( hDC, oBrush:handle )
+		RoundRect( hDC, x1,y1, x2, y2 , ::nCurvature, ::nCurvature)
+		IF ::nfStyle != BS_TRANSPARENT
+      	setbkmode(hdc,0)
+      	obrush := HBrush():Add(::ntColor,::nfstyle)
+      	SelectObject( hDC, oBrush:handle )
+      	RoundRect( hDC, x1,y1, x2, y2 , ::nCurvature, ::nCurvature)
+      ENDIF
+	ENDIF
+Return Nil
+
+// END NEW CLASSE
+
 
 //-----------------------------------------------------------------
 Function Rect(oWndParent,nLeft,nTop,nRight,nBottom, lPress, nST)

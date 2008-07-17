@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.85 2008-07-15 17:49:03 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.86 2008-07-17 19:45:10 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -10,6 +10,7 @@
 */
 
 STATIC lColorinFocus := .F.
+STATIC oCtrllWhen    := 0
 
 #include "windows.ch"
 #include "hbclass.ch"
@@ -30,11 +31,12 @@ CLASS VAR winclass   INIT "EDIT"
    DATA bValid
    DATA bkeydown, bkeyup
    DATA cPicFunc, cPicMask
-   DATA lPicComplex  INIT .F.
-   DATA lFirst       INIT .T.
-   DATA lChanged     INIT .F.
-   DATA nMaxLenght   INIT Nil
-   DATA nColorinFocus INIT vcolor( 'CCFFFF' )
+   DATA lPicComplex    INIT .F.
+   DATA lFirst         INIT .T.
+   DATA lChanged       INIT .F.
+   DATA nMaxLenght     INIT Nil
+   DATA nColorinFocus  INIT vcolor( 'CCFFFF' )
+   DATA lnoValid       INIT .F.
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, lNoBorder, nMaxLenght )
@@ -92,6 +94,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF bSetGet != Nil
       ::bGetFocus := bGfocus
       ::bLostFocus := bLfocus
+      IF bGfocus != Nil
+         ::lnoValid := .T.
+      ENDIF
       ::oParent:AddEvent( EN_SETFOCUS, self, { | o, id | __When( o:FindControl( id ) ) },,"onGotFocus"  )
       ::oParent:AddEvent( EN_KILLFOCUS, self, { | o, id | __Valid( o:FindControl( id ) ) },,"onLostFocus" )
       ::bValid := { | o | __Valid( o ) }
@@ -201,8 +206,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                RETURN 0
             ENDIF
 
-         ELSEIF msg == WM_LBUTTONUP
+         ELSEIF msg == WM_LBUTTONDOWN
+            IF GetFocus() != ::handle
+               SetFocus(::handle)
+               RETURN 0
+            ENDIF
 
+         ELSEIF msg == WM_LBUTTONUP
             IF Empty( GetEditText( oParent:handle, ::id ) )
                SendMessage( ::handle, EM_SETSEL, 0, 0 )
             ENDIF
@@ -716,11 +726,23 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
 STATIC FUNCTION __When( oCtrl )
    LOCAL res := .t., oParent, nSkip
 
+   IF  !IsWindowVisible(ParentGetDialog(oCtrl):handle) .OR. GetActiveWindow() == 0
+      ParentGetDialog(oCtrl):show()
+      SetFocus(ParentGetDialog(oCtrl):handle)
+      RETURN .T.
+   ENDIF
+   IF oCtrllWhen != 0
+      RETURN oCtrl:lnoValid
+   ENDIF
    oCtrl:Refresh()
    oCtrl:lFirst := .T.
    nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
    IF oCtrl:bGetFocus != Nil
-      res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
+      octrl:lnoValid := .T.
+      oCtrllWhen ++
+		res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
+      oCtrllWhen --
+      octrl:lnoValid := ! res
       IF ! res
          oParent := ParentGetDialog(oCtrl)
          IF oCtrl == ATail(oParent:GetList)
@@ -736,9 +758,17 @@ RETURN res
 STATIC FUNCTION __valid( oCtrl )
    LOCAL vari, oDlg
 
-   IF oCtrl:bGetFocus != Nil .AND. !Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
-      RETURN .T.
+   IF  !IsWindowVisible(ParentGetDialog(oCtrl):handle) .OR. GetActiveWindow() == 0
+      RETURN .F.
    ENDIF
+   IF oCtrl:lnoValid
+      octrl:lnoValid := .F.
+      IF oCtrllWhen < 0
+        oCtrllWhen ++
+      ENDIF
+      RETURN .T.
+  ENDIF
+  oCtrllWhen := 0
    IF oCtrl:bSetGet != Nil
       IF ( oDlg := ParentGetDialog( oCtrl ) ) == Nil .OR. oDlg:nLastKey != 27
          vari := UnTransform( oCtrl, GetEditText( oCtrl:oParent:handle, oCtrl:id ) )
@@ -759,6 +789,7 @@ STATIC FUNCTION __valid( oCtrl )
          IF oDlg != Nil
             oDlg:nLastKey := 27
          ENDIF
+         oCtrllWhen := 1
          IF oCtrl:bLostFocus != Nil .AND. ! Eval( oCtrl:bLostFocus, vari, oCtrl )
             SetFocus( oCtrl:handle )
             IF oDlg != Nil
@@ -766,6 +797,7 @@ STATIC FUNCTION __valid( oCtrl )
             ENDIF
             RETURN .F.
          ENDIF
+         oCtrllWhen --
          IF oDlg != Nil
             oDlg:nLastKey := 0
          ENDIF

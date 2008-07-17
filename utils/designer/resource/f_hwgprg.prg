@@ -782,7 +782,7 @@ FUNCTION Ctrl2Prg
          	stroka += IIF(oCtrl:GetProp("MultiSelect") = "True", "MULTISELECT "," ")
          	stroka += IIF(oCtrl:GetProp("Descend") = "True", "DESCEND "," ")
         	stroka += IIF(oCtrl:GetProp("NoVScroll") = "True", "NO VSCROLL "," ")
-        	stroka += IIF(oCtrl:GetProp("border") = "False", "NO BORDER "," ")
+        	stroka += IIF(oCtrl:GetProp("border") = "False", "NOBORDER "," ")
 			ENDIF
 
       IF ( temp := oCtrl:GetProp( "Font" ) ) != Nil

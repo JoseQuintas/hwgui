@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.58 2008-07-10 14:11:15 mlacecilia Exp $
+ *$Id: windows.ch,v 1.59 2008-07-17 19:45:10 mlacecilia Exp $
  */
 
 #define WM_CREATE                       1
@@ -1297,3 +1297,13 @@ Ancestor() const defines
 #define     GA_PARENT       1
 #define     GA_ROOT         2
 #define     GA_ROOTOWNER    3
+
+/* Brush fill Styles */
+#DEFINE HS_HORIZONTAL    0
+#DEFINE HS_VERTICAL      1
+#DEFINE HS_BDIAGONAL     2
+#DEFINE HS_FDIAGONAL     3
+#DEFINE HS_CROSS         4
+#DEFINE HS_DIAGCROSS     5
+#DEFINE HS_SOLID         8
+#DEFINE BS_TRANSPARENT  10

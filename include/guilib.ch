@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.104 2008-06-21 01:09:44 mlacecilia Exp $
+ *$Id: guilib.ch,v 1.105 2008-07-17 19:45:09 mlacecilia Exp $
  */
 #define HWG_VERSION           "2.16"
 #define   WND_MAIN      1
@@ -711,7 +711,7 @@
             [ ON LOSTFOCUS <bLfocus> ] ;
             [ STYLE <nStyle> ]         ;
             [ <lNoVScr: NO VSCROLL> ]  ;
-            [ <lNoBord: NO BORDER> ]   ;
+            [ <lNoBord: NOBORDER> ]    ;
             [ FONT <oFont> ]           ;
             [ <lAppend: APPEND> ]      ;
             [ <lAutoedit: AUTOEDIT> ]  ;
@@ -1467,6 +1467,7 @@ Added by Marcos Antonio Gambeta
     [<oSay> := ] HStaticLink():Redefine( <oWnd>, <nId>, <cCaption>, ;
         <oFont>, <bInit>, <bSize>, <bDraw>, <ctoolt>, <color>, <bcolor>,;
         <.lTransp.>, <cLink>, <vcolor>, <lcolor>, <hcolor> )
+        
 #xcommand TOOLBUTTON  <O> ;
           ID <nId> ;
           [ BITMAP <nBitIp> ];

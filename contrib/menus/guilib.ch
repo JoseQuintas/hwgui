@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.1 2004-03-18 12:05:54 marcosgambeta Exp $
+ *$Id: guilib.ch,v 1.2 2008-07-17 19:45:09 mlacecilia Exp $
  */
 
 #include "guilib.h"
@@ -525,7 +525,7 @@
             [ ON LOSTFOCUS <bLfocus> ] ;
             [ STYLE <nStyle> ]         ;
             [ <lNoVScr: NO VSCROLL> ]  ;
-            [ <lNoBord: NO BORDER> ]   ;
+            [ <lNoBord: NOBORDER> ]    ;
             [ FONT <oFont> ]           ;
             [ <lAppend: APPEND> ]      ;
             [ <lAutoedit: AUTOEDIT> ]  ;
@@ -959,3 +959,29 @@ Added by Marcos Antonio Gambeta
           => ;
     [<oListbox> := ] HListBox():Redefine( <oWnd>,<nId>,<nInit>,,<aItems>,<oFont>,<bInit>, ;
              <bSize>,<bDraw>,<bChange>,<ctoolt> )
+
+//Contribution   Luis Fernando Basso
+#xcommand @ <x>, <y> SHAPE [<oShape>] [OF <oWnd>] ;
+        [ ID <nId> ]               ;
+        [ SIZE <width>, <height> ] ;
+        [ BORDERWIDTH <nBorder>]   ;
+        [ CURVATURE <nCurvature>]  ;
+        [ COLOR <tcolor> ]         ;
+        [ BACKCOLOR <bcolor> ]     ;
+        [ BORDERSTYLE <nbStyle>]   ;
+        [ FILLSTYLE <nfStyle>]     ;
+        [ ON SIZE <bSize> ]        ;
+    =>  ;
+  <oShape> := HShape():New(<oWnd>, <nId>, <x>, <y>, <width>, <height>,;
+            <nBorder>, <nCurvature>, <nbStyle>, <nfStyle>, <tcolor>, <bcolor>, <bSize>)
+
+#xcommand @ <x>, <y> CONTAINER [<oCnt>] [OF <oWnd>] ;
+        [ ID <nId> ]               ;
+        [ SIZE <width>, <height> ] ;
+        [ STYLE <nStyle>]          ;
+        [ <lnoBorder: NOBORDER>]   ;
+        [ ON SIZE <bSize> ]        ;
+    =>  ;
+  <oCnt> := HContainer():New(<oWnd>, <nId>, <x>, <y>, <width>, <height>,;
+            <nStyle>, <bSize>, <.lnoBorder.>)
+//

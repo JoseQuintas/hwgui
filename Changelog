@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.871 2008-07-15 17:49:02 mlacecilia Exp $
+ * $Id: Changelog,v 1.872 2008-07-17 19:45:08 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,56 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-07-17 21:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * contrib\menus\guilib.ch
+  * utils\designer\inspect.prg
+  * utils\designer\resource\f_hwgprg.prg
+    * changed all occurences of NO BORDER to NOBORDER as is standard
+      for all controls and better for designer
+  * include\guilib.ch
+    + a contribution of Luis Fernando Basso
+      added the commands for the new classes hShape and hContainer
+    * changed all occurences of NO BORDER to NOBORDER as is standard
+      for all controls and better for designer
+  * include\windows.ch
+    + added the brush fill styles
+  * source\hcontrol.prg
+    * striped out unused parameter causing warning at compile time
+  * source\hdialog.prg
+    * minor fix to DlgCommand()
+  * source\hedit.prg
+    * Issue 0025 of bug tracker solved (by Luis Fernando Basso)
+      added the management of when and valid clauses in the cases in
+      which the when clause or both isn't present or empty
+    * given the focus to edit control when mouse button is pressed      
+  * source\hrect.prg
+    + a contribution of Luis Fernando Basso
+      added the hShape, hContainer clazsses and the base class
+      hDrawShape with the below syntax (better documentation and
+      samples will be published on wiki site):
+      hShape draws a rectangular or curve shape with custom colors, 
+      brushes, borders, etc.
+      @ <x>, <y> SHAPE [<oShape>] [OF <oWnd>] ;
+        [ ID <nId> ]               ;
+        [ SIZE <width>, <height> ] ;
+		[ BORDERWIDTH <nBorder>]   ; width of the border
+        [ CURVATURE <nCurvature>]  ; 0-90 value of angle curvature
+        [ COLOR <tcolor> ]         ;  
+        [ BACKCOLOR <bcolor> ]     ;
+        [ BORDERSTYLE <nbStyle>]   ; 0-raised 1-sunken 2-frame 3-flat  
+        [ FILLSTYLE <nfStyle>]     ; see windows.ch for fill brushes
+        [ ON SIZE <bSize> ]      
+      hContainer is a very much featured similar rect class
+      @ <x>, <y> CONTAINER [<oCnt>] [OF <oWnd>] ;
+        [ ID <nId> ]               ;
+        [ SIZE <width>, <height> ] ;
+        [ STYLE <nStyle>]          ; 0-raised 1-sunken 2-frame 3-flat 
+        [ <lnoBorder: NOBORDER>]   ;
+        [ ON SIZE <bSize> ]  
+  * source\window.c
+    + added the IsWindowVisible() wrapper with syntax:
+      <lResult> := IsWindowVisible( handle )
 
 2008-07-14 19:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hbrowse.prg

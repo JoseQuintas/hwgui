@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.66 2008-06-21 01:29:24 mlacecilia Exp $
+ * $Id: window.c,v 1.67 2008-07-17 19:45:10 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -580,6 +580,11 @@ HB_FUNC( HWG_ISICONIC )
 HB_FUNC( ISWINDOWENABLED )
 {
    hb_retl( IsWindowEnabled( (HWND) HB_PARHANDLE( 1 ) ) );
+}
+
+HB_FUNC( ISWINDOWVISIBLE )
+{
+   hb_retl( IsWindowVisible( (HWND) HB_PARHANDLE( 1 ) ) );
 }
 
 HB_FUNC( GETACTIVEWINDOW )

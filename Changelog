@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.872 2008-07-17 19:45:08 mlacecilia Exp $
+ * $Id: Changelog,v 1.873 2008-07-17 23:58:28 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-07-18 02:05 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hdialog.prg
+    * fixed behaviour of enter key in CLIPPER NOEXIT dialogs
+  * source\hrect.prg
+    * added missed parameter in create methods  
+   
 2008-07-17 21:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * contrib\menus\guilib.ch
   * utils\designer\inspect.prg

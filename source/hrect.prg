@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.4 2008-07-17 19:45:10 mlacecilia Exp $
+ * $Id: hrect.prg,v 1.5 2008-07-17 23:58:28 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -137,7 +137,7 @@ METHOD New(oWndParent,nId,nLeft,nTop,nWidth,nHeight, nBorder, nCurvature,;
 	nfStyle := IIF(nfStyle = Nil, BS_TRANSPARENT , nfStyle )
 	nCurvature := nCurvature
 
-   Self := HDrawShape():New( oWndParent,,nLeft,nTop,nWidth,nHeight,bSize,tColor,bColor,,,;
+   Self := HDrawShape():New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,bSize,tColor,bColor,,,;
 	                             nBorder, nCurvature, nbStyle, nfStyle)
 
 Return Self
@@ -155,7 +155,7 @@ METHOD New(oWndParent,nId,nLeft,nTop,nWidth,nHeight, nStyle,bSize, lnoBorder) Cl
    nStyle := IIF(nStyle = NIL, 3, nStyle)  // FLAT
    lnoBorder := IIF(lnoBorder = NIL, .F., lnoBorder)  // FLAT
 
-	Self := HDrawShape():New( oWndParent,, nLeft, nTop, nWidth, nHeight, bSize,,,nStyle, lnoBorder,,,,)
+	Self := HDrawShape():New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, bSize,,,nStyle, lnoBorder,,,,)
 
 Return Self
 

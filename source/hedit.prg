@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.87 2008-07-25 00:29:50 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.88 2008-07-25 17:21:33 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -967,7 +967,9 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
    ENDIF
    nextHandle := iif(oParent:className == "HTAB", NextFocusTab(oParent, hCtrl, nSkip), ;
 	                                               NextFocus(oParent, hCtrl, nSkip))
-   PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle , 1 )
+	if nextHandle != 0
+      PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle , 1 )
+	endif
 RETURN .T.
 
 STATIC FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
@@ -975,7 +977,7 @@ STATIC FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
 
    if len(oParent:aPages) > 0
       oParent:GetActivePage(@nFirst, @nLast)
-      i :=  AScan( oParent:oParent:acontrols, { | o | o:handle == hCtrl } )
+      i :=  AScan( oParent:acontrols, { | o | o:handle == hCtrl } )
       i += IIF( i == 0, nLast, nSkip)
       DO WHILE i >= nFirst .and. i <= nLast
         IF ! oParent:acontrols[ i ]:lHide .AND. IsWindowEnabled( oParent:acontrols[ i ]:Handle ) // ;
@@ -986,7 +988,7 @@ STATIC FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
         ENDIF
         i += nSkip
       ENDDO
-      IF i > nLast .OR. i <= nFirst  // ultimo objecto do tab
+      IF i > nLast .OR. i < nFirst  // ultimo objecto do tab
         nexthandle := GetNextDlgTabItem ( GetActiveWindow(), hctrl, (nSkip < 0) )
       ENDIF
    ENDIF
@@ -1002,13 +1004,14 @@ Local nextHandle :=0,  i
       IF ! oParent:aControls[ i ]:lHide .AND. IsWindowEnabled( oParent:aControls[ i ]:handle ) // ;
          nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
          EXIT
-       ELSE
+      ELSE
          setFocus(oParent:aControls[ i + nSkip ]:handle)
-       ENDIF
-       i += nSkip
+      ENDIF
+      i += nSkip
    ENDDO
    IF nextHandle == 0
-       nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
+      hctrl:=oparent:acontrols[1]:handle
+      nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
    ENDIF
 RETURN nextHandle
 

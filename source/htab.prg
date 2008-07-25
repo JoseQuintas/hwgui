@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.26 2008-07-25 00:29:50 mlacecilia Exp $
+ *$Id: htab.prg,v 1.27 2008-07-25 17:21:33 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -407,6 +407,7 @@ Local nCode := GetNotifyCode( lParam )
             Eval( ::bChange, Self, GetCurrentTab( ::handle ) )
          ENDIF
       CASE nCode == TCN_CLICK
+           SetFocus(::handle)
            IF ::bAction != Nil
               Eval( ::bAction, Self, GetCurrentTab( ::handle ) )
            ENDIF

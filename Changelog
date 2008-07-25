@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.875 2008-07-25 14:32:18 mlacecilia Exp $
+ * $Id: Changelog,v 1.876 2008-07-25 17:21:33 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-07-25 19:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hcontrol.prg
+    * now the button controls send BN_KILLFOCUS and BN_SETFOCUS 
+      notification messages to parent window (included tabs)
+  * source\hedit.prg
+    * corrected some mismatches in GetSkip() and related functions
+  * source\htab.prg
+    * given focus to tab when click occurs on it
 
 2008-07-25 16:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   patches from Luis Fernando Basso for errors kindly signaled by

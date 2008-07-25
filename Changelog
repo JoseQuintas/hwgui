@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.873 2008-07-17 23:58:28 mlacecilia Exp $
+ * $Id: Changelog,v 1.874 2008-07-25 00:38:48 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,63 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-07-18 02:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  added the updated changelog previously forgotten in commit. sorry
+
+2008-07-18 02:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  as usual most of this changes was made by Luis Ferdinando Basso
+  and/or concerted with him
+  * contrib\menus\guilib.ch
+    + added ENTER flag to CHECKBOX commands. This flag allows to
+      change of status of the check via the enter key press.
+    + added the commands for the new classes hShape and hContainer      
+      forgotten in the previous commit of 17th July
+  * include\windows.ch
+  * source\drawwidg.prg
+    * added/moved updown and checkbox related defines
+  * samples\bldhrb.bat
+    + added hbw32 lib as requested by some sample prg
+  * source\control.c
+    + added the functions TabItemPos() and GetTabName()
+  * source\guimain.prg
+    + added the function <aRect> := TxtRect(cTxt, oWin) returning
+      the array containing the width and the height needed by a
+      text string in the window oWin.
+  * source\hbrowse.prg
+  * source\hgridex.prg
+    * added the WS_TABSTOP style as default
+  * source\hcheck.prg
+    + added the flag lEnter. This flag allows to change of status
+      of the check via the enter key press.
+    * changed __valid and __when to avoid multiple calls when
+      focus changes during execution of their code
+  * source\hcontrol.prg
+    + class hStatic: added the property AutoSize allowing, when
+      set to .t., the automatic sizing of the control in base of
+      the text to display and of the current font
+    * class hButton: added the WS_TABSTOP style as default and 
+      corrected messages handling when control has a tab as parent
+  * source\hdatepic.prg
+  * source\hedit.prg
+  * source\hlistbox.prg
+  * source\hupdown.prg
+    * changed __valid and __when to avoid multiple calls when
+      focus changes during execution of their code    
+  * source\hdialog.prg
+    + added code for correct browse/combo validation   
+  * source\hradio.prg
+    * allowed navigation with up/down cursor keys
+  * source\hriched.prg
+    * moved the bOther evaluation to allow execution previously
+      inhibited custo management of events
+  * source\htab.prg
+    + added page class
+    + added method disable allowed on a single page of tab 
+    + added the propert caption for changing the text of the 
+      label of a page
+  * utils\designer\blddesig.bat
+    + added hbw32 lib for Harbour correct linking
+    
 2008-07-18 02:05 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hdialog.prg
     * fixed behaviour of enter key in CLIPPER NOEXIT dialogs

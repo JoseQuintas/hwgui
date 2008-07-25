@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.874 2008-07-25 00:38:48 mlacecilia Exp $
+ * $Id: Changelog,v 1.875 2008-07-25 14:32:18 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,10 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2008-07-18 02:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+2008-07-25 16:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  patches from Luis Fernando Basso for errors kindly signaled by
+  Gilberto Silverio
+  * source\hdialog.prg
+    * avoided evaluation of validation if related codeblock isn't given
+    * reactivated button IDOK action
+  * source\guimain.prg
+    * reactivated button IDOK action
+
+2008-07-25 02:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   added the updated changelog previously forgotten in commit. sorry
 
-2008-07-18 02:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+2008-07-25 02:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   as usual most of this changes was made by Luis Ferdinando Basso
   and/or concerted with him
   * contrib\menus\guilib.ch

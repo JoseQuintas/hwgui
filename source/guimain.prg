@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.25 2008-07-25 00:29:50 mlacecilia Exp $
+ * $Id: guimain.prg,v 1.26 2008-07-25 14:32:20 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -113,10 +113,13 @@ Local i,res := 0, n := 1, iValue
    next
 Return res
 
-Function MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle )
+Function MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cResIni )
 Local oModDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
-Local cRes := ""
+Local cRes := IIF(cResIni != Nil, Trim(cResIni), "")
 
+   IF !Empty(cRes)
+      Keyb_Event(VK_END)
+   ENDIF
    nStyle := Iif( nStyle == Nil, 0, nStyle )
    x := Iif( x == Nil, 210, x )
    y := Iif( y == Nil, 10, y )
@@ -126,7 +129,7 @@ Local cRes := ""
         FONT oFont CLIPPER STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+nDlgStyle
 
    @ 20,10 SAY cText SIZE 260,22
-   @ 20,35 GET cres  SIZE 260,26 STYLE WS_DLGFRAME + WS_TABSTOP + nStyle
+   @ 20,35 GET cres  SIZE 260,26 STYLE WS_TABSTOP + nStyle
 
    @ 20,95 BUTTON "Ok" ID IDOK SIZE 100,32
    @ 180,95 BUTTON "Cancel" ID IDCANCEL SIZE 100,32

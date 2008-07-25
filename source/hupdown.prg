@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.14 2008-07-11 16:16:08 mlacecilia Exp $
+ * $Id: hupdown.prg,v 1.15 2008-07-25 00:29:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -12,9 +12,6 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 
-#define UDS_SETBUDDYINT     2
-#define UDS_ALIGNRIGHT      4
-
 CLASS HUpDown INHERIT HControl
 
    CLASS VAR winclass   INIT "EDIT"
@@ -25,6 +22,7 @@ CLASS HUpDown INHERIT HControl
    DATA nUpper INIT 999
    DATA nUpDownWidth INIT 12
    DATA lChanged    INIT .F.
+   DATA lnoValid       INIT .F.
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor,nUpDWidth,nLower,nUpper )
@@ -67,6 +65,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ::oParent:AddEvent( EN_KILLFOCUS,self,{|o,id|__Valid(o:FindControl(id))},,"onLostFocus" )
    ELSE
       IF bGfocus != Nil
+         ::lnoValid := .T.
          ::oParent:AddEvent( EN_SETFOCUS,self,bGfocus,,"onGotFocus"  )
       ENDIF
       IF bLfocus != Nil
@@ -107,12 +106,19 @@ METHOD Refresh()  CLASS HUpDown
 Return Nil
 
 STATIC FUNCTION __When( oCtrl )
-   LOCAL res := .t., oParent, nSkip
+   LOCAL res := .t., oParent, nSkip, aMsgs
 
+	IF !CheckFocus(oCtrl, .f.)
+	   RETURN .t.
+	ENDIF
    oCtrl:Refresh()
    nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
    IF oCtrl:bGetFocus != Nil
-      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
+      octrl:lnoValid := .T.
+		aMsgs := SuspendMsgsHandling(oCtrl)
+      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet, , oCtrl ), oCtrl )
+      RestoreMsgsHandling(oCtrl, aMsgs)
+      octrl:lnoValid := ! res
       IF ! res
          oParent := ParentGetDialog(oCtrl)
          IF oCtrl == ATail(oParent:GetList)
@@ -126,15 +132,21 @@ STATIC FUNCTION __When( oCtrl )
 RETURN res
 
 Static Function __Valid( oCtrl )
+LOCAL res := .t., aMsgs
 
-   oCtrl:title := GetEditText( oCtrl:oParent:handle, oCtrl:id )
+   IF !CheckFocus(oCtrl, .t.)  .OR. oCtrl:lnoValid
+      RETURN .T.
+   ENDIF
+	oCtrl:title := GetEditText( oCtrl:oParent:handle, oCtrl:id )
    oCtrl:value := Val( Ltrim( oCtrl:title ) )
    IF oCtrl:bSetGet != Nil
       Eval( oCtrl:bSetGet,oCtrl:value )
    ENDIF
-   IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl ) .OR. ;
-         oCtrl:value > oCtrl:nUpper .OR. oCtrl:value < oCtrl:nLower
-      SetFocus( oCtrl:handle )
+   IF oCtrl:bLostFocus != Nil
+      aMsgs := SuspendMsgsHandling(oCtrl)
+	   res := oCtrl:value <= oCtrl:nUpper .and. ;
+	          oCtrl:value >= oCtrl:nLower .and. ;
+		       Eval( oCtrl:bLostFocus, oCtrl:value,  oCtrl )
+      RestoreMsgsHandling(oCtrl, aMsgs)
    ENDIF
-
-Return .T.
+Return res

@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.24 2008-07-14 11:52:02 mlacecilia Exp $
+ * $Id: guimain.prg,v 1.25 2008-07-25 00:29:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -395,6 +395,25 @@ Else
 Endif
 Return oVersion
 
+FUNCTION TxtRect( cTxt, oWin )
 
+   LOCAL hDC
+   LOCAL ASize
+   LOCAL hFont
+   LOCAL oFont := oWin:oFont
+
+   hDC       := GetDC( oWin:handle )
+	IF oFont == Nil
+		oFont := oWin:oParent:oFont
+	ENDIF
+	IF oFont != Nil
+      hFont := SelectObject( hDC, oFont:handle )
+   ENDIF
+   ASize     := GetTextSize( hDC, cTxt )
+   IF oFont != Nil
+      SelectObject( hDC, hFont )
+	endif
+	ReleaseDC( oWin:handle, hDC )
+   RETURN ASize
 
 

@@ -69,6 +69,7 @@ if exist %HRB_DIR%\lib\pcrepos.lib echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
 if exist %HRB_DIR%\lib\hbpcre.lib echo %HRB_DIR%\lib\hbpcre.lib + >> b32.bc
 if exist %HRB_DIR%\lib\zlib.lib echo %HRB_DIR%\lib\zlib.lib + >> b32.bc
 if exist %HRB_DIR%\lib\hbzlib.lib echo %HRB_DIR%\lib\hbzlib.lib + >> b32.bc
+if exist %HRB_DIR%\lib\hbw32.lib echo %HRB_DIR%\lib\hbw32.lib + >> b32.bc
 rem echo %HRB_DIR%\lib\libct.lib + >> b32.bc
 
 echo cw32.lib + >> b32.bc

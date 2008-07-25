@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.15 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: drawwidg.prg,v 1.16 2008-07-25 00:29:49 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -11,13 +11,6 @@
 #include "hbclass.ch"
 #include "windows.ch"
 #include "guilib.ch"
-
-#define HS_HORIZONTAL       0       /* ----- */
-#define HS_VERTICAL         1       /* ||||| */
-#define HS_FDIAGONAL        2       /* \\\\\ */
-#define HS_BDIAGONAL        3       /* ///// */
-#define HS_CROSS            4       /* +++++ */
-#define HS_DIAGCROSS        5       /* xxxxx */
 
 //- HFont
 

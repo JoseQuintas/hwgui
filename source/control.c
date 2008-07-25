@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.65 2008-07-10 14:11:15 mlacecilia Exp $
+ * $Id: control.c,v 1.66 2008-07-25 00:29:49 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -15,6 +15,7 @@
 #define OEMRESOURCE
 #include <windows.h>
 #include <commctrl.h>
+#include <winuser.h>
 #if defined(__DMC__)
 #include "missing.h"
 #endif
@@ -24,6 +25,7 @@
 #include "hbvm.h"
 #include "hbdate.h"
 #include "hbtrace.h"
+
 #define TTS_BALLOON             0x40 // added by MAG
 
 // LRESULT CALLBACK OwnBtnProc (HWND, UINT, WPARAM, LPARAM) ;
@@ -1728,3 +1730,24 @@ DWORD h = hb_parnl( 1 );
 #endif
 hb_retnl( (LONG)  h );
 }
+
+
+HB_FUNC(TABITEMPOS)
+{
+   RECT pRect;
+   TabCtrl_GetItemRect((HWND) hb_parnl(1), hb_parni(2), &pRect );
+   hb_itemRelease(hb_itemReturn(Rect2Array(&pRect)));
+}
+
+ HB_FUNC( GETTABNAME )
+{
+   TC_ITEM tie;
+   char d[255];
+
+   tie.mask = TCIF_TEXT;
+   tie.cchTextMax = 254;
+   tie.pszText = d;
+   strcpy( ( char * ) tie.pszText, d );
+   TabCtrl_GetItem( (HWND) hb_parnl(1), hb_parni(2)-1, (LPTCITEM)&tie );
+   hb_retc(( char * ) tie.pszText);
+ }

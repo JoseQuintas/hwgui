@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.13 2008-06-28 15:17:53 mlacecilia Exp $
+ * $Id: hlistbox.prg,v 1.14 2008-07-25 00:29:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -31,8 +31,9 @@ CLASS HListBox INHERIT HControl
    CLASS VAR winclass   INIT "LISTBOX"
    DATA  aItems
    DATA  bSetGet
-   DATA  value    INIT 1
+   DATA  value         INIT 1
    DATA  bChangeSel
+   DATA  lnoValid       INIT .F.
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   aItems,oFont,bInit,bSize,bPaint,bChange,cTooltip )
@@ -65,6 +66,9 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
+      IF bChange != Nil
+         ::lnoValid := .T.
+      ENDIF
       ::oParent:AddEvent( LBN_SELCHANGE,self,{|o,id|__Valid(o:FindControl(id))},,"onChange" )
    ELSEIF bChange != Nil
       ::oParent:AddEvent( LBN_SELCHANGE,self,bChange,,"onChange" )
@@ -160,15 +164,17 @@ METHOD Clear()
 Return .T.
 
 Static Function __Valid( oCtrl )
+Local  res := .t., aMsgs
 
-   oCtrl:value := SendMessage( oCtrl:handle,LB_GETCURSEL,0,0 ) + 1
-
+   IF oCtrl:lnoValid
+      RETURN .T.
+   ENDIF
    IF oCtrl:bSetGet != Nil
-      Eval( oCtrl:bSetGet,oCtrl:value )
+      oCtrl:value := SendMessage( oCtrl:handle,LB_GETCURSEL,0,0 ) + 1
    ENDIF
+   aMsgs := SuspendMsgsHandling(oCtrl)
    IF oCtrl:bChangeSel != Nil
-      Eval( oCtrl:bChangeSel, oCtrl:value, oCtrl )
+	   res := Eval( oCtrl:bLostFocus, oCtrl:value,  oCtrl )
    ENDIF
-
-Return .T.
-
+   RestoreMsgsHandling(oCtrl, aMsgs)
+Return res

@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.17 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hgridex.prg,v 1.18 2008-07-25 00:29:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -88,7 +88,7 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
 
 HB_SYMBOL_UNUSED(nItemCount)
 
-   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_VISIBLE+WS_CHILD+LVS_REPORT )
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_VISIBLE+WS_CHILD+WS_TABSTOP+LVS_REPORT )
    Super:New( oWnd,nId,nStyle,x,y,Width,Height,oFont,bInit, ;
                   bSize,bPaint )
    Default aBit to {}

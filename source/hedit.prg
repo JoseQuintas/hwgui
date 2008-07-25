@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.86 2008-07-17 19:45:10 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.87 2008-07-25 00:29:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -10,7 +10,6 @@
 */
 
 STATIC lColorinFocus := .F.
-STATIC oCtrllWhen    := 0
 
 #include "windows.ch"
 #include "hbclass.ch"
@@ -724,24 +723,21 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
    RETURN 0
 
 STATIC FUNCTION __When( oCtrl )
-   LOCAL res := .t., oParent, nSkip
+   LOCAL res := .t., oParent, nSkip, aMsgs
 
-   IF  !IsWindowVisible(ParentGetDialog(oCtrl):handle) .OR. GetActiveWindow() == 0
-      ParentGetDialog(oCtrl):show()
-      SetFocus(ParentGetDialog(oCtrl):handle)
-      RETURN .T.
-   ENDIF
-   IF oCtrllWhen != 0
-      RETURN oCtrl:lnoValid
-   ENDIF
+	IF !CheckFocus(oCtrl, .f.)
+	   RETURN .t.
+	ENDIF
    oCtrl:Refresh()
    oCtrl:lFirst := .T.
-   nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
+   nSkip := iif( GetKeyState( VK_UP ) < 0 .or. ;
+	             (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ),;
+					  -1, 1 )
    IF oCtrl:bGetFocus != Nil
-      octrl:lnoValid := .T.
-      oCtrllWhen ++
+		aMsgs := SuspendMsgsHandling(oCtrl)
+		octrl:lnoValid := .T.
 		res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
-      oCtrllWhen --
+      RestoreMsgsHandling(oCtrl, aMsgs)
       octrl:lnoValid := ! res
       IF ! res
          oParent := ParentGetDialog(oCtrl)
@@ -756,19 +752,11 @@ STATIC FUNCTION __When( oCtrl )
 RETURN res
 
 STATIC FUNCTION __valid( oCtrl )
-   LOCAL vari, oDlg
+   LOCAL res, vari, oDlg, aMsgs
 
-   IF  !IsWindowVisible(ParentGetDialog(oCtrl):handle) .OR. GetActiveWindow() == 0
-      RETURN .F.
-   ENDIF
-   IF oCtrl:lnoValid
-      octrl:lnoValid := .F.
-      IF oCtrllWhen < 0
-        oCtrllWhen ++
-      ENDIF
-      RETURN .T.
-  ENDIF
-  oCtrllWhen := 0
+	IF !CheckFocus(oCtrl, .t.) .or. oCtrl:lNoValid
+	   RETURN .t.
+	ENDIF
    IF oCtrl:bSetGet != Nil
       IF ( oDlg := ParentGetDialog( oCtrl ) ) == Nil .OR. oDlg:nLastKey != 27
          vari := UnTransform( oCtrl, GetEditText( oCtrl:oParent:handle, oCtrl:id ) )
@@ -785,19 +773,21 @@ STATIC FUNCTION __valid( oCtrl )
             SetDlgItemText( oCtrl:oParent:handle, oCtrl:id, oCtrl:title )
          ENDIF
          Eval( oCtrl:bSetGet, vari, oCtrl )
-
          IF oDlg != Nil
             oDlg:nLastKey := 27
          ENDIF
-         oCtrllWhen := 1
-         IF oCtrl:bLostFocus != Nil .AND. ! Eval( oCtrl:bLostFocus, vari, oCtrl )
-            SetFocus( oCtrl:handle )
-            IF oDlg != Nil
-               oDlg:nLastKey := 0
-            ENDIF
-            RETURN .F.
+         IF oCtrl:bLostFocus != Nil
+            aMsgs := SuspendMsgsHandling(oCtrl)
+			   res := Eval( oCtrl:bLostFocus, vari, oCtrl )
+            RestoreMsgsHandling(oCtrl, aMsgs)
+            if ! res
+               SetFocus( oCtrl:handle )
+               IF oDlg != Nil
+                  oDlg:nLastKey := 0
+               ENDIF
+               RETURN .F.
+            endif
          ENDIF
-         oCtrllWhen --
          IF oDlg != Nil
             oDlg:nLastKey := 0
          ENDIF
@@ -1042,3 +1032,58 @@ FUNCTION SetColorinFocus( lDef )
    ENDIF
    lColorinFocus := lDef
    RETURN .T.
+
+/*
+Luis Fernando Basso contribution
+*/
+
+FUNCTION SuspendMsgsHandling(oCtrl)
+LOCAL aEvent:={}, i, nMsgNum
+
+  IF oCtrl:Handle != getFocus()
+    RETURN {}
+  ENDIF
+  nMsgNum := Len(oCtrl:oparent:aNotify)
+  FOR i = 1 to nMsgNum
+     IF oCtrl:oParent:aNotify[i,2] == oCtrl:id
+        AAdd(aEvent, {.T.,i,oCtrl:oParent:aNotify[i]})
+        oCtrl:oParent:aNotify[i] := {oCtrl:oParent:aNotify[i,1],oCtrl:oParent:aNotify[i,2],{|| .t.}}
+     ENDIF
+  NEXT
+  nMsgNum := Len(oCtrl:oparent:aEvents)
+  FOR i = 1 to nMsgNum
+     IF oCtrl:oParent:aEvents[i,2] == oCtrl:id
+        AAdd(aEvent, {.F.,i,oCtrl:oParent:aEvents[i]})
+        oCtrl:oParent:aEvents[i] := {oCtrl:oParent:aEvents[i,1],oCtrl:oParent:aEvents[i,2],{|| .t.}}
+     ENDIF
+  NEXT
+RETURN aEvent
+
+FUNCTION RestoreMsgsHandling(oCtrl,aEvent)
+Local i, nMsgNum := Len(aEvent)
+
+  IF oCtrl:Handle != getFocus()
+    RETURN Nil
+  ENDIF
+  FOR i = 1 to nMsgNum
+    IF aEvent[i,3,2] == oCtrl:id //.AND. aEvent[i,2,3] != Nil
+       IF aEvent[i,1]
+          oCtrl:oParent:aNotify[aEvent[i,2]] := aEvent[i,3]
+       ELSE
+          oCtrl:oParent:aEvents[aEvent[i,2]] := aEvent[i,3]
+       ENDIF
+    ENDIF
+  NEXT
+RETURN Nil
+
+FUNCTION CheckFocus(oCtrl, nInside)
+
+  IF !IsWindowVisible(ParentGetDialog(oCtrl):handle) .OR. GetActiveWindow() == 0
+     IF nInside
+        ParentGetDialog(oCtrl):Show()
+        SetFocus(ParentGetDialog(oCtrl):handle)
+        SetFocus(GetFocus())
+		  RETURN .f.
+	  ENDIF
+  ENDIF
+RETURN .t.

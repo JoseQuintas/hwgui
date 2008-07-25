@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.16 2008-06-28 15:17:52 mlacecilia Exp $
+ * $Id: hdatepic.prg,v 1.17 2008-07-25 00:29:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -24,6 +24,7 @@ CLASS HDatePicker INHERIT HControl
    DATA bSetGet
    DATA value
    DATA bChange
+   DATA lnoValid       INIT .F.
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bGfocus,bLfocus,bChange,ctooltip,tcolor,bcolor )
@@ -51,19 +52,22 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    HWG_InitCommonControlsEx()
    ::Activate()
 
-   IF bGfocus != Nil
-      ::oParent:AddEvent( NM_SETFOCUS,self,bGfocus,.T.,"onGotFocus" )
-   ENDIF
-   ::oParent:AddEvent( DTN_DATETIMECHANGE,self,{|o,id|__Change(o:FindControl(id),DTN_DATETIMECHANGE)},.T.,"onChange" )
-   ::oParent:AddEvent( DTN_CLOSEUP,self,{|o,id|__Change(o:FindControl(id),DTN_CLOSEUP)},.T.,"onClose" )
    IF bSetGet != Nil
+      ::bGetFocus := bGFocus
       ::bLostFocus := bLFocus
+      ::oParent:AddEvent( NM_SETFOCUS,self,{|o,id|__When(o:FindControl(id))},.T.,"onGotFocus" )
       ::oParent:AddEvent( NM_KILLFOCUS,self,{|o,id|__Valid(o:FindControl(id))},.T.,"onLostFocus" )
-   ELSE
+	ELSE
+      IF bGfocus != Nil
+         ::lnoValid := .T.
+         ::oParent:AddEvent( NM_SETFOCUS,self,bGfocus,.T.,"onGotFocus" )
+      ENDIF
       IF bLfocus != Nil
          ::oParent:AddEvent( NM_KILLFOCUS,self,bLfocus,.T.,"onLostFocus" )
       ENDIF
    ENDIF
+   ::oParent:AddEvent( DTN_DATETIMECHANGE,self,{|o,id|__Change(o:FindControl(id),DTN_DATETIMECHANGE)},.T.,"onChange" )
+   ::oParent:AddEvent( DTN_CLOSEUP,self,{|o,id|__Change(o:FindControl(id),DTN_CLOSEUP)},.T.,"onClose" )
 
 Return Self
 
@@ -139,16 +143,45 @@ Static Function __Change( oCtrl, nMess )
    ENDIF
 Return .T.
 
-Static Function __Valid( oCtrl )
+STATIC FUNCTION __When( oCtrl )
+   LOCAL res := .t., oParent, nSkip, aMsgs
 
+	IF !CheckFocus(oCtrl, .f.)
+	   RETURN .t.
+	ENDIF
+   nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
+   IF oCtrl:bGetFocus != Nil
+      octrl:lnoValid := .T.
+		aMsgs := SuspendMsgsHandling(oCtrl)
+      res :=  Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
+      RestoreMsgsHandling(oCtrl, aMsgs)
+      octrl:lnoValid := ! res
+      IF ! res
+         oParent := ParentGetDialog(oCtrl)
+         IF oCtrl == ATail(oParent:GetList)
+            nSkip := -1
+         ELSEIF oCtrl == oParent:getList[1]
+            nSkip := 1
+         ENDIF
+         GetSkip( oCtrl:oParent, oCtrl:handle, , nSkip )
+      ENDIF
+    ENDIF
+
+RETURN res
+
+Static Function __Valid( oCtrl )
+Local  res := .t., aMsgs
+
+   IF !CheckFocus(oCtrl, .t.)  .OR. oCtrl:lnoValid
+      RETURN .T.
+   ENDIF
    oCtrl:value := GetDatePicker( oCtrl:handle )
    IF oCtrl:bSetGet != Nil
       Eval( oCtrl:bSetGet,oCtrl:value, oCtrl )
    ENDIF
-   IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl )
-      // SetFocus( oCtrl:handle )
-      Return .F.
+   IF oCtrl:bLostFocus != Nil
+      aMsgs := SuspendMsgsHandling(oCtrl)
+	   res := Eval( oCtrl:bLostFocus, oCtrl:value,  oCtrl )
+      RestoreMsgsHandling(oCtrl, aMsgs)
    ENDIF
-
-Return .T.
-
+Return res

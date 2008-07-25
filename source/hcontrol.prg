@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.77 2008-07-17 19:45:10 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.78 2008-07-25 00:29:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -238,6 +238,8 @@ CLASS HStatic INHERIT HControl
 
    CLASS VAR winclass   INIT "STATIC"
 
+   DATA   AutoSize INIT .F.
+
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
                bColor, lTransp )
@@ -246,7 +248,11 @@ CLASS HStatic INHERIT HControl
    METHOD Activate()
    METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
                                                    value )
-   METHOD Init()
+   METHOD SetValue( value ) INLINE ::Auto_Size(value),;
+	                                SetDlgItemText( ::oParent:handle, ::id, value )
+   METHOD Auto_Size()       HIDDEN
+
+	METHOD Init()
    METHOD PAINT(o)
 ENDCLASS
 
@@ -312,7 +318,8 @@ METHOD Init CLASS HStatic
    IF !::lInit
       Super:init()
       IF ::Title != NIL
-         SETWINDOWTEXT( ::handle, ::title )
+        ::Auto_Size(::Title)
+         SetWindowText( ::handle, ::title )
       ENDIF
    ENDIF
 RETURN  NIL
@@ -324,27 +331,31 @@ Local client_rect,szText
 local dwtext,nstyle
 LOCAL dc := drawInfo[ 3 ]
 
-client_rect:=   GetClientRect(::handle)
+   client_rect:=   GetClientRect(::handle)
 
-szText:=    GetWindowText(::handle)
+   szText:=    GetWindowText(::handle)
 
-        //pFont = GetFont();
-//  pOldFont = dc.SelectObject(pFont);
-
-    // Map "Static Styles" to "Text Styles"
+   // Map "Static Styles" to "Text Styles"
    nstyle :=::style
    SetaStyle(@nstyle,@dwtext )
 
-    // Set transparent background
-    SetBkMode(dc,1)
+   // Set transparent background
+   SetBkMode(dc,1)
 
-    // Draw the text
-    DrawText(dc,szText, client_rect[1],client_rect[2],client_rect[3],client_rect[4], dwText)
-
-    // Select old font
-//  dc.SelectObject(pOldFont);
-
+   // Draw the text
+   DrawText(dc,szText, client_rect[1],client_rect[2],client_rect[3],client_rect[4], dwText)
 return nil
+
+METHOD Auto_Size(cValue) CLASS HStatic
+Local  aSize
+
+   IF ::autosize
+     aSize :=  TxtRect(cValue, self)
+     ::nWidth := aSize[1] + 2
+     ::nHeight := aSize[2]
+     ::move(::nLeft, ::nTop)
+   ENDIF
+RETURN Nil
 
 //- HButton
 
@@ -369,7 +380,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
             cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
             tcolor, bColor ) CLASS HButton
 
-   nStyle := Hwg_BitOr( IIF( nStyle == NIL, 0, nStyle ), BS_PUSHBUTTON )
+   nStyle := Hwg_BitOr( IIF( nStyle == NIL, 0, nStyle ), BS_PUSHBUTTON+WS_TABSTOP )
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, ;
               IIF( nWidth  == NIL, 90, nWidth  ), ;
@@ -378,22 +389,15 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::bClick  := bClick
    ::title   := cCaption
    ::Activate()
-   IF ::classname == "HBUTTON"
-      IF ::oParent:oParent != Nil
-          ::oParent:AddEvent( BN_KILLFOCUS, self, {|| ::Notify(WM_KEYDOWN)})
-          IF bClick != NIL
-             ::oParent:oParent:AddEvent( 0, self, bClick,,"onClick" )
-          ENDIF
-      ENDIF
+   IF ::oParent:oParent != Nil .and. ::oParent:ClassName == "HTAB"
+       ::oParent:AddEvent( BN_KILLFOCUS, self, {|| ::Notify(WM_KEYDOWN)})
+       IF bClick != NIL
+          ::oParent:oParent:AddEvent( 0, self, bClick,,"onClick" )
+       ENDIF
    ENDIF
    IF bClick != NIL
-      IF ::oParent:oParent != nil    //  className == "HSTATUS"
-         ::oParent:oParent:AddEvent( 0, self, bClick,,"onClick" )
-      ELSE
-         ::oParent:AddEvent( 0, self, bClick, , "onClick" )
-      ENDIF
+      ::oParent:AddEvent( 0, self, bClick, , "onClick" )
    ENDIF
-
 RETURN Self
 
 METHOD Activate CLASS HButton

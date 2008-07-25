@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.52 2008-07-17 23:58:28 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.53 2008-07-25 00:29:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -310,6 +310,11 @@ HB_SYMBOL_UNUSED(lParam)
             oCtrl := oDlg:FindControl( ,hctrl)
             GetSkip( oCtrl:oParent, hCtrl, , 1 )
          ENDIF
+         IF oCtrl != Nil .AND. oCtrl:handle == hCtrl
+            IF __ObjHasMsg(oCtrl,"BVALID")
+                Eval( oCtrl:bValid, oCtrl )
+            ENDIF
+			ENDIF
          if oDlg:lClipper
   			   IF oCtrl != Nil .AND. !GetSkip( oCtrl:oParent, hCtrl, , 1)
          	   IF oDlg:lExitOnEnter

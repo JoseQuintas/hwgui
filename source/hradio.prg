@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.10 2008-06-28 15:17:54 mlacecilia Exp $
+ * $Id: hradio.prg,v 1.11 2008-07-25 00:29:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -174,6 +174,9 @@ Return Self
 
 Static Function __Valid( oCtrl )
 
+	if GetKeyState( VK_UP ) < 0 .or. GetKeyState( VK_DOWN ) < 0
+		return .t.
+	endif
    oCtrl:oGroup:value := Ascan( oCtrl:oGroup:aButtons,{|o|o:id==oCtrl:id} )
    IF oCtrl:oGroup:bSetGet != Nil
       Eval( oCtrl:oGroup:bSetGet,oCtrl:oGroup:value )

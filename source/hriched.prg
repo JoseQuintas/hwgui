@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.10 2008-06-28 15:17:54 mlacecilia Exp $
+ * $Id: hriched.prg,v 1.11 2008-07-25 00:29:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -57,30 +57,40 @@ METHOD Activate CLASS HRichEdit
 Return Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
-Local nDelta
+Local nDelta, nret
 
    // writelog( str(msg) + str(wParam) + str(lParam) )
    IF msg == WM_CHAR
       ::lChanged := .T.
-   ELSEIF msg == WM_KEYDOWN
-      IF wParam == 27 // ESC 
-         IF GetParent(::oParent:handle) != Nil 
-            SendMessage( GetParent(::oParent:handle),WM_CLOSE,0,0 ) 
-         ENDIF 
-      ENDIF 
-
-      IF wParam == 46     // Del
-         ::lChanged := .T.
+   ELSEIF msg == WM_KEYDOWN .AND. wParam = 46  //Del
+       ::lChanged := .T.
+   ELSEIF ::bOther != Nil
+      nRet := Eval( ::bOther, Self, msg, wParam, lParam )
+      IF valtype(nRet) != "N" .OR. nRet > -1
+         RETURN nRet
+   ENDIF
+   ENDIF
+  IF msg == WM_KEYDOWN
+      IF wParam == 27 // ESC
+         IF GetParent(::oParent:handle) != Nil
+            SendMessage( GetParent(::oParent:handle),WM_CLOSE,0,0 )
+         ENDIF
+      ELSEIF wParam = VK_TAB .AND. GETKEYSTATE(VK_CONTROL) < 0
+        IF GETKEYSTATE(VK_SHIFT) < 0  //IsCtrlShift()
+          GetSkip( ::oParent, getfocus(), , -1)
+        ELSE
+          GetSkip( ::oParent, GETFOCUS(), , 1)
+        ENDIF
       ENDIF
    ELSEIF msg == WM_MOUSEWHEEL
       nDelta := HiWord( wParam )
-      nDelta := Iif( nDelta > 32768, nDelta - 65535, nDelta )
+      if nDelta > 32768
+		  nDelta -= 65535
+		endif
       SendMessage( ::handle,EM_SCROLL, Iif(nDelta>0,SB_LINEUP,SB_LINEDOWN), 0 )
-      SendMessage( ::handle,EM_SCROLL, Iif(nDelta>0,SB_LINEUP,SB_LINEDOWN), 0 )
+//      SendMessage( ::handle,EM_SCROLL, Iif(nDelta>0,SB_LINEUP,SB_LINEDOWN), 0 )
    ELSEIF msg == WM_DESTROY
       ::End()
-   ELSEIF ::bOther != Nil
-      Return Eval( ::bOther, Self, msg, wParam, lParam )
    ENDIF
 
 Return -1

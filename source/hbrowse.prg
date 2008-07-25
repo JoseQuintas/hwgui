@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.134 2008-07-15 17:49:03 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.135 2008-07-25 00:29:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -214,7 +214,7 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect,;
                   lDescend, bWhile, bFirst, bLast, bFor  ) CLASS HBrowse
 
-   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+  ;
+   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP+ ;
                     Iif(lNoBorder=Nil.OR.!lNoBorder,WS_BORDER,0)+            ;
                     Iif(lNoVScroll=Nil.OR.!lNoVScroll,WS_VSCROLL,0) )
 

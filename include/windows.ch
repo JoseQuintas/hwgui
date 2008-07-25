@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.59 2008-07-17 19:45:10 mlacecilia Exp $
+ *$Id: windows.ch,v 1.60 2008-07-25 00:29:49 mlacecilia Exp $
  */
 
 #define WM_CREATE                       1
@@ -1298,7 +1298,9 @@ Ancestor() const defines
 #define     GA_ROOT         2
 #define     GA_ROOTOWNER    3
 
-/* Brush fill Styles */
+/*
+Brush fill Styles
+*/
 #DEFINE HS_HORIZONTAL    0
 #DEFINE HS_VERTICAL      1
 #DEFINE HS_BDIAGONAL     2
@@ -1307,3 +1309,25 @@ Ancestor() const defines
 #DEFINE HS_DIAGCROSS     5
 #DEFINE HS_SOLID         8
 #DEFINE BS_TRANSPARENT  10
+
+/*
+Up-Down const defines
+*/
+#define UDS_WRAP                0x0001
+#define UDS_SETBUDDYINT         0x0002
+#define UDS_ALIGNRIGHT          0x0004
+#define UDS_ALIGNLEFT           0x0008
+#define UDS_AUTOBUDDY           0x0010
+#define UDS_ARROWKEYS           0x0020
+#define UDS_HORZ                0x0040
+#define UDS_NOTHOUSANDS         0x0080
+#define UDS_HOTTRACK            0x0100
+
+/*
+Check button
+*/
+#define BST_UNCHECKED      0x0000
+#define BST_CHECKED        0x0001
+#define BST_INDETERMINATE  0x0002
+#define BST_PUSHED         0x0004
+#define BST_FOCUS          0x0008

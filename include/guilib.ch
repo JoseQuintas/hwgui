@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.105 2008-07-17 19:45:09 mlacecilia Exp $
+ *$Id: guilib.ch,v 1.106 2008-07-25 00:29:49 mlacecilia Exp $
  */
 #define HWG_VERSION           "2.16"
 #define   WND_MAIN      1
@@ -551,9 +551,10 @@
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
-          => ;
+            [ <lEnter: ENTER> ]        ;
+       => ;
     [<oCheck> := ] HCheckButton():New( <oWnd>,<nId>,<lInit>,,<nStyle>,<x>,<y>, ;
-         <width>,<height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> )
+         <width>,<height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,,<.lEnter.> )
 
 #xcommand REDEFINE CHECKBOX [ <oCheck> ] ;
             [ OF <oWnd> ]              ;
@@ -567,9 +568,10 @@
             [ ON CLICK <bClick> ]      ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
+            [ <lEnter: ENTER> ]        ;
           => ;
     [<oCheck> := ] HCheckButton():Redefine( <oWnd>,<nId>,<lInit>,,<oFont>, ;
-          <bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> )
+          <bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,,<.lEnter.> )
 
 
 #xcommand RADIOGROUP  ;
@@ -1038,11 +1040,12 @@
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
             [ WHEN <bWhen> ]           ;
+            [ <lEnter: ENTER> ]        ;
           => ;
     [<oCheck> := ] HCheckButton():New( <oWnd>,<nId>,<vari>,              ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},                   ;
                     <nStyle>,<x>,<y>,<width>,<height>,<caption>,<oFont>, ;
-                    ,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen> )
+                    ,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen>,<.lEnter.> )
 
 #xcommand REDEFINE GET CHECKBOX [ <oCheck> VAR ] <vari>  ;
             [ OF <oWnd> ]              ;
@@ -1053,10 +1056,11 @@
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
             [ WHEN <bWhen> ]           ;
+            [ <lEnter: ENTER> ]        ;
           => ;
     [<oCheck> := ] HCheckButton():Redefine( <oWnd>,<nId>,<vari>, ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},           ;
-                    <oFont>,,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen> )
+                    <oFont>,,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen>,<.lEnter.> )
 
 #xcommand @ <x>,<y> GET COMBOBOX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;
@@ -1673,3 +1677,28 @@ Added by Marcos Antonio Gambeta
                     <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
                     <.edit.>,<.text.>,<bWhen>,<color>,<bcolor>,<bValid>,<acheck> )
 
+//Contribution Luis Fernando Basso
+
+#xcommand @ <x>, <y>  SHAPE [<oShape>] [OF <oWnd>] ;
+        [ ID <nId> ]               ;
+        [ SIZE <width>, <height> ] ;
+        [ BORDERWIDTH <nBorder> ]  ;
+        [ CURVATURE <nCurvature>]  ;
+        [ COLOR <tcolor> ]         ;
+        [ BACKCOLOR <bcolor> ]     ;
+        [ BORDERSTYLE <nbStyle>]   ;
+        [ FILLSTYLE <nfStyle>]     ;
+        [ ON SIZE <bSize> ]        ;
+        =>  ;
+    <oShape> := HShape():New(<oWnd>, <nId>, <x>, <y>, <width>, <height>, ;
+                <nBorder>, <nCurvature>, <nbStyle>,<nfStyle>, <tcolor>, <bcolor>, <bSize>)
+            
+#xcommand @ <x>, <y>  CONTAINER [<oCnt>] [OF <oWnd>] ;
+        [ ID <nId> ]               ;
+        [ SIZE <width>, <height> ] ;
+        [ STYLE <nStyle>]          ;
+        [ <lnoBorder: NOBORDER> ]   ;
+        [ ON SIZE <bSize> ]        ;
+        =>  ;
+        <oCnt> := HContainer():New(<oWnd>, <nId>, <x>, <y>, <width>, <height>, ;
+                  <nStyle>, <bSize>, <.lnoBorder.>)

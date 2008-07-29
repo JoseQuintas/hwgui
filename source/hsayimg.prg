@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.16 2008-05-27 12:10:56 lculik Exp $
+ * $Id: hsayimg.prg,v 1.17 2008-07-29 16:12:42 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -152,10 +152,12 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
    Super:New( oWndParent,nId,SS_ICON,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctooltip )
 
    IF lRes == Nil ; lRes := .F. ; ENDIF
-   ::oImage := Iif( lRes .OR. Valtype(Image)=="N",    ;
+   IF ::oImage != nil
+      ::oImage := Iif( lRes .OR. Valtype(Image)=="N",    ;
                        HIcon():AddResource( Image ),  ;
                        Iif( Valtype(Image) == "C",    ;
                        HIcon():AddFile( Image ), Image ) )
+   ENDIF
    ::Activate()
 
 Return Self
@@ -165,10 +167,12 @@ METHOD Redefine( oWndParent,nId,xImage,lRes,bInit,bSize,ctooltip ) CLASS HSayIco
    Super:Redefine( oWndParent,nId,bInit,bSize,ctooltip )
 
    IF lRes == Nil ; lRes := .F. ; ENDIF
-   ::oImage := Iif( lRes .OR. Valtype(xImage)=="N",   ;
+   IF ::oImage != nil
+      ::oImage := Iif( lRes .OR. Valtype(xImage)=="N",   ;
                        HIcon():AddResource( xImage ), ;
                        Iif( Valtype(xImage) == "C",   ;
                        HIcon():AddFile( xImage ), xImage ) )
+	ENDIF
 Return Self
 
 METHOD Init() CLASS HSayIcon

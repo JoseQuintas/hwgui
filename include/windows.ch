@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.60 2008-07-25 00:29:49 mlacecilia Exp $
+ *$Id: windows.ch,v 1.61 2008-07-29 16:12:40 mlacecilia Exp $
  */
 
 #define WM_CREATE                       1
@@ -1255,6 +1255,16 @@
 #define ODA_SELECT      0x0002
 #define ODA_FOCUS       0x0004
 
+#define WM_NCMOUSEMOVE                  0x00A0
+#define WM_NCLBUTTONDOWN                0x00A1
+#define WM_NCLBUTTONUP                  0x00A2
+#define WM_NCLBUTTONDBLCLK              0x00A3
+#define WM_NCRBUTTONDOWN                0x00A4
+#define WM_NCRBUTTONUP                  0x00A5
+#define WM_NCRBUTTONDBLCLK              0x00A6
+#define WM_NCMBUTTONDOWN                0x00A7
+#define WM_NCMBUTTONUP                  0x00A8
+#define WM_NCMBUTTONDBLCLK              0x00A9
 #define WM_MOUSEHOVER                   0x02A1
 #define WM_MOUSELEAVE                   0x02A3
 #define WM_NCMOUSEHOVER                 0x02A0
@@ -1331,3 +1341,17 @@ Check button
 #define BST_INDETERMINATE  0x0002
 #define BST_PUSHED         0x0004
 #define BST_FOCUS          0x0008
+
+/*
+ListBox
+*/
+#define LBN_SELCHANGE       1
+#define LBN_DBLCLK          2
+#define LBN_SETFOCUS        3
+#define LBN_KILLFOCUS       4
+#define LBN_EDITCHANGE      5
+#define LBN_EDITUPDATE      6
+#define LBN_DROPDOWN        7
+#define LBN_CLOSEUP         8
+#define LBN_SELENDOK        9
+#define LBN_SELENDCANCEL    10

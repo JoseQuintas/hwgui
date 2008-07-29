@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.877 2008-07-26 15:44:16 giuseppem Exp $
+ * $Id: Changelog,v 1.878 2008-07-29 16:12:40 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,28 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-07-29 18:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * include\windows.ch
+    + added some no client area mouse event defines
+    * moved from hlistbox.prg the related event defines
+  * source\hbrowse.prg
+    * avoided error when alias property isn't initialized for database
+      browse
+  * source\hcontrol.prg
+    * changed the hstatic to respect the alignment style also when
+      ownerdrawn
+  * source\hedit.prg
+    - removed wrong code in NextFocus() function
+  * source\hyper.prg
+    * avoided error when the control has nil caption
+    * adjusted to comfortable the height of the font used in control
+  * source\hlistbox.prg
+    - removed unused code related to gotfocus event not yet managed
+    * fixed a typo in __valid function causing runtime error
+    * moved to include\windows.ch the defines of the control
+  * source\hsayimg.prg
+    * added test for valid icon in hSayIcon new and redefine methods
 
 2008-07-26 17:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hcontrol.prg

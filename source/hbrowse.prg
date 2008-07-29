@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.135 2008-07-25 00:29:50 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.136 2008-07-29 16:12:41 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -671,10 +671,10 @@ METHOD InitBrw( nType )  CLASS HBrowse
            ::bBof      := { |o| (::alias)->(FltEOF(o)) }
         ELSE
            ::bSkip     := { |o, n| (::alias)->(FltSkip(o, n, .F.)) }
-        ::bGoTop    := { |o| (::alias)->(FltGoTop(o)) }
-        ::bGoBot    := { |o| (::alias)->(FltGoBottom(o)) }
-        ::bEof      := { |o| (::alias)->(FltEOF(o)) }
-        ::bBof      := { |o| (::alias)->(FltBOF(o)) }
+           ::bGoTop    := { |o| (::alias)->(FltGoTop(o)) }
+           ::bGoBot    := { |o| (::alias)->(FltGoBottom(o)) }
+           ::bEof      := { |o| (::alias)->(FltEOF(o)) }
+           ::bBof      := { |o| (::alias)->(FltBOF(o)) }
         ENDIF
         ::bRcou     := { |o| (::alias)->(FltRecCount(o)) }
         ::bRecnoLog := ::bRecno := { |o| (::alias)->(FltRecNo(o)) }
@@ -2227,7 +2227,7 @@ Local minPos, maxPos, oldRecno, newRecno, nrecno
          nPos := Iif( oBrw:nRecords>1, Round( ( (maxPos-minPos)/(oBrw:nRecords-1) ) * ;
                     ( Eval( oBrw:bRecnoLog,oBrw )-1 ),0 ), minPos )
          SetScrollPos( oBrw:handle, SB_VERT, npos )
-     ELSE
+     ELSEIF !EMPTY(oBrw:alias)
          nrecno:=( oBrw:alias )->(recno())
          eval(oBrw:bGotop, oBrw)
          minpos:=if(( oBrw:alias )->(indexord())=0,( oBrw:alias )->(recno()),( oBrw:alias )->(ordkeyno()))

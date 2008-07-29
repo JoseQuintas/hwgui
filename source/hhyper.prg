@@ -1,5 +1,5 @@
 /*
- * $Id: hhyper.prg,v 1.9 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hhyper.prg,v 1.10 2008-07-29 16:12:42 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HStaticLink class
@@ -81,17 +81,15 @@ Local oPrevFont
    ::m_sVisitedColor := vColor
 
    ::state := LBL_INIT
-   ::title := cCaption
+   ::title := Iif(cCaption == Nil, "", cCaption)
 
    // Test The Font the underline must be 1
    IF ::oFont == NIL
       IF ::oParent:oFont != NIL
          ::OFont := HFONT():Add( ::oParent:oFont:name, ::oParent:oFont:width, ::oParent:oFont:height,;
          ::oParent:oFont:weight, ::oParent:oFont:charset, ::oParent:oFont:italic, 1, ::oParent:oFont:StrikeOut )
-      else
-         ::OFont := HFONT():Add( "Arial", 0, 12,;
-         , , , 1, )
-
+		ELSE
+         ::OFont := HFONT():Add( "Arial", 0, -12, , , , 1, )
       ENDIF
    ELSE
       IF ::oFont:Underline  == 0

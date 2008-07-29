@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.88 2008-07-25 17:21:33 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.89 2008-07-29 16:12:42 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -1010,7 +1010,6 @@ Local nextHandle :=0,  i
       i += nSkip
    ENDDO
    IF nextHandle == 0
-      hctrl:=oparent:acontrols[1]:handle
       nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
    ENDIF
 RETURN nextHandle

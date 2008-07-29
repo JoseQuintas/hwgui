@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.80 2008-07-26 15:44:53 giuseppem Exp $
+ * $Id: hcontrol.prg,v 1.81 2008-07-29 16:12:42 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -238,7 +238,9 @@ CLASS HStatic INHERIT HControl
 
    CLASS VAR winclass   INIT "STATIC"
 
-   DATA   AutoSize INIT .F.
+   DATA AutoSize    INIT .F.
+   DATA lownerDraw  INIT .F.
+   DATA nStyleOwner INIT 0
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
@@ -246,13 +248,13 @@ CLASS HStatic INHERIT HControl
    METHOD Redefine( oWndParent, nId, oFont, bInit, ;
                     bSize, bPaint, cTooltip, tcolor, bColor, lTransp )
    METHOD Activate()
-   METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
-                                                   value )
+  // METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
+  //                                                 value )
    METHOD SetValue( value ) INLINE ::Auto_Size(value),;
-	                                SetDlgItemText( ::oParent:handle, ::id, value )
+                                 SetDlgItemText( ::oParent:handle, ::id, value )
    METHOD Auto_Size()       HIDDEN
 
-	METHOD Init()
+ METHOD Init()
    METHOD PAINT(o)
 ENDCLASS
 
@@ -260,6 +262,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
             cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
             bColor, lTransp ) CLASS HStatic
 
+   ::lOwnerDraw := Hwg_BitAnd( nStyle, SS_OWNERDRAW ) + 1 >= SS_OWNERDRAW
    // Enabling style for tooltips
    IF ValType( cTooltip ) == "C"
       IF nStyle == NIL
@@ -268,14 +271,22 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
          nStyle := Hwg_BitOr( nStyle, SS_NOTIFY )
       ENDIF
    ENDIF
-//
-   IF lTransp != NIL .AND. lTransp
+   //
+   IF (lTransp != NIL .AND. lTransp) .OR. ::lOwnerDraw
       ::extStyle += WS_EX_TRANSPARENT
       bPaint := {|o,p| o:paint(p)}
+      IF ::lOwnerDraw
+        ::nStyleOwner := nStyle - SS_OWNERDRAW - Hwg_Bitand( nStyle, SS_NOTIFY )
+        nStyle := SS_OWNERDRAW + Hwg_Bitand( nStyle, SS_NOTIFY )
+     ENDIF
    ENDIF
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,;
               bInit, bSize, bPaint, cTooltip, tcolor, bColor )
+
+   IF ::oParent:oParent != Nil
+      bPaint := {|o,p| o:paint(p)}
+   ENDIF
 
    ::title := cCaption
 
@@ -286,9 +297,8 @@ RETURN Self
 METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                  bSize, bPaint, cTooltip, tcolor, bColor, lTransp ) CLASS HStatic
 
-   IF lTransp != NIL .AND. lTransp
+   IF (lTransp != NIL .AND. lTransp)  //.OR. ::lOwnerDraw
       ::extStyle += WS_EX_TRANSPARENT
-
       bPaint := {|o,p| o:paint(p)}
    ENDIF
 
@@ -297,16 +307,14 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 
    ::title := cCaption
    ::style := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
-
    // Enabling style for tooltips
    IF ValType( cTooltip ) == "C"
       ::Style := SS_NOTIFY
    ENDIF
-
 RETURN Self
 
 METHOD Activate CLASS HStatic
-   IF !empty( ::oParent:handle ) 
+   IF !empty( ::oParent:handle )
       ::handle := CreateStatic( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
                                 ::extStyle )
@@ -318,44 +326,55 @@ METHOD Init CLASS HStatic
    IF !::lInit
       Super:init()
       IF ::Title != NIL
-        ::Auto_Size(::Title)
+         ::Auto_Size(::Title, ::nStyleOwner)
          SetWindowText( ::handle, ::title )
       ENDIF
    ENDIF
 RETURN  NIL
 
 METHOD Paint( lpDis ) CLASS HStatic
-
 LOCAL drawInfo := GetDrawItemInfo( lpdis )
 Local client_rect,szText
 local dwtext,nstyle
 LOCAL dc := drawInfo[ 3 ]
 
-   client_rect:=   GetClientRect(::handle)
-
-   szText:=    GetWindowText(::handle)
+   client_rect := GetClientRect(::handle)
+   szText      := GetWindowText(::handle)
 
    // Map "Static Styles" to "Text Styles"
-   nstyle :=::style
-   SetaStyle(@nstyle,@dwtext )
+   nstyle := ::style   ////Hwg_BitaND( nStyle, SS_OWNERDRAW )
+   SetAStyle(@nstyle,@dwtext )
 
    // Set transparent background
-   SetBkMode(dc,1)
-
+   SetBkMode(dc, 1)
+   IF ::lOwnerDraw
+       ::Auto_Size(szText, ::nStyleOwner)
+   ENDIF
    // Draw the text
-   DrawText(dc,szText, client_rect[1],client_rect[2],client_rect[3],client_rect[4], dwText)
+   DrawText(dc, szText, ;
+            client_rect[1], client_rect[2], client_rect[3], client_rect[4], ;
+				dwText)
 return nil
 
-METHOD Auto_Size(cValue) CLASS HStatic
-Local  aSize
+METHOD Auto_Size(cValue, nAlign) CLASS HStatic
+Local  aSize, nLeft
 
-   IF ::autosize
+   IF ::autosize .OR. ::lOwnerDraw
      aSize :=  TxtRect(cValue, self)
+     IF nAlign = SS_RIGHT
+        nLeft := ::nLeft + (::nWidth - aSize[1] - 2)
+     ELSEIF nAlign = SS_CENTER
+        nLeft := ::nLeft + ((::nWidth - aSize[1] - 2) / 2)
+     ELSEIF nAlign = SS_LEFT
+        nLeft := ::nLeft
+     ENDIF
      ::nWidth := aSize[1] + 2
      ::nHeight := aSize[2]
      ::move(::nLeft, ::nTop)
+     ::nLeft := nLeft
    ENDIF
 RETURN Nil
+
 
 //- HButton
 

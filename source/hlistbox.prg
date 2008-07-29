@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.14 2008-07-25 00:29:50 mlacecilia Exp $
+ * $Id: hlistbox.prg,v 1.15 2008-07-29 16:12:42 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -13,19 +13,6 @@
 #include "guilib.ch"
 #include "common.ch"
 
-#define LB_ERR              (-1)
-#define LBN_SELCHANGE       1
-#define LBN_DBLCLK          2
-#define LBN_SETFOCUS        3
-#define LBN_KILLFOCUS       4
-#define LBN_EDITCHANGE      5
-#define LBN_EDITUPDATE      6
-#define LBN_DROPDOWN        7
-#define LBN_CLOSEUP         8
-#define LBN_SELENDOK        9
-#define LBN_SELENDCANCEL    10
-
-
 CLASS HListBox INHERIT HControl
 
    CLASS VAR winclass   INIT "LISTBOX"
@@ -33,7 +20,6 @@ CLASS HListBox INHERIT HControl
    DATA  bSetGet
    DATA  value         INIT 1
    DATA  bChangeSel
-   DATA  lnoValid       INIT .F.
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   aItems,oFont,bInit,bSize,bPaint,bChange,cTooltip )
@@ -66,9 +52,6 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
-      IF bChange != Nil
-         ::lnoValid := .T.
-      ENDIF
       ::oParent:AddEvent( LBN_SELCHANGE,self,{|o,id|__Valid(o:FindControl(id))},,"onChange" )
    ELSEIF bChange != Nil
       ::oParent:AddEvent( LBN_SELCHANGE,self,bChange,,"onChange" )
@@ -79,7 +62,7 @@ Return Self
 METHOD Activate CLASS HListBox
    IF !empty( ::oParent:handle ) 
       ::handle := CreateListbox( ::oParent:handle, ::id, ;
-                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
 Return Nil
@@ -123,36 +106,30 @@ Local i
 Return Nil
 
 METHOD Refresh() CLASS HListBox
-        Local vari
-        IF ::bSetGet != Nil
-                vari := Eval( ::bSetGet )
-        ENDIF
+Local vari
 
-        ::value := Iif( vari==Nil .OR. Valtype(vari)!="N",1,vari )
-        ::SetItem(::value )
+   IF ::bSetGet != Nil
+           vari := Eval( ::bSetGet )
+   ENDIF
+
+   ::value := Iif( vari==Nil .OR. Valtype(vari)!="N",1,vari )
+   ::SetItem(::value )
 Return Nil
 
 METHOD SetItem(nPos) CLASS HListBox
-        ::value := nPos
-        SendMessage( ::handle, LB_SETCURSEL, nPos - 1, 0)
-
-        IF ::bSetGet != Nil
-                Eval( ::bSetGet, ::value )
-        ENDIF
-
-        IF ::bChangeSel != Nil
-                Eval( ::bChangeSel, ::value, Self )
-        ENDIF
+   ::value := nPos
+   SendMessage( ::handle, LB_SETCURSEL, nPos - 1, 0)
+   IF ::bSetGet != Nil
+      Eval( ::bSetGet, ::value )
+   ENDIF
+   IF ::bChangeSel != Nil
+      Eval( ::bChangeSel, ::value, Self )
+   ENDIF
 Return Nil
 
 METHOD AddItems(p)
-// Local i
    aadd(::aItems,p)
    ListboxAddString( ::handle, p )
-//   SendMessage( ::handle, LB_RESETCONTENT, 0, 0)
-//   FOR i := 1 TO Len( ::aItems )
-//      ListboxAddString( ::handle, ::aItems[i] )
-//   NEXT
    ListboxSetString( ::handle, ::value )
 return self
 
@@ -166,15 +143,12 @@ Return .T.
 Static Function __Valid( oCtrl )
 Local  res := .t., aMsgs
 
-   IF oCtrl:lnoValid
-      RETURN .T.
-   ENDIF
    IF oCtrl:bSetGet != Nil
       oCtrl:value := SendMessage( oCtrl:handle,LB_GETCURSEL,0,0 ) + 1
    ENDIF
    aMsgs := SuspendMsgsHandling(oCtrl)
    IF oCtrl:bChangeSel != Nil
-	   res := Eval( oCtrl:bLostFocus, oCtrl:value,  oCtrl )
+	   res := Eval( oCtrl:bChangeSel, oCtrl:value,  oCtrl )
    ENDIF
    RestoreMsgsHandling(oCtrl, aMsgs)
 Return res

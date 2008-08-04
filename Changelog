@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.878 2008-07-29 16:12:40 mlacecilia Exp $
+ * $Id: Changelog,v 1.879 2008-08-04 11:42:31 alexstrickland Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,18 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-08-04 13:35 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
+  * makefile.vc
+    * basically rewritten so that all of the dependencies are inferred
+      from the target list. This makes it easier to just copy changes
+      from makefile.bc where all the action is :). The file dropped
+      from 16K to 6K so I must have done something right.
+  * make_vc.bat
+    * removed /I parameter of nmake - I think the make should stop if
+      there is an error.
+  * makefile.bc
+    * Added a $Id tag.
 
 2008-07-29 18:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * include\windows.ch
@@ -36,7 +48,7 @@
 
 2008-07-25 19:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcontrol.prg
-    * now the button controls send BN_KILLFOCUS and BN_SETFOCUS 
+    * now the button controls send BN_KILLFOCUS and BN_SETFOCUS
       notification messages to parent window (included tabs)
   * source\hedit.prg
     * corrected some mismatches in GetSkip() and related functions
@@ -61,7 +73,7 @@
   * contrib\menus\guilib.ch
     + added ENTER flag to CHECKBOX commands. This flag allows to
       change of status of the check via the enter key press.
-    + added the commands for the new classes hShape and hContainer      
+    + added the commands for the new classes hShape and hContainer
       forgotten in the previous commit of 17th July
   * include\windows.ch
   * source\drawwidg.prg
@@ -86,16 +98,16 @@
     + class hStatic: added the property AutoSize allowing, when
       set to .t., the automatic sizing of the control in base of
       the text to display and of the current font
-    * class hButton: added the WS_TABSTOP style as default and 
+    * class hButton: added the WS_TABSTOP style as default and
       corrected messages handling when control has a tab as parent
   * source\hdatepic.prg
   * source\hedit.prg
   * source\hlistbox.prg
   * source\hupdown.prg
     * changed __valid and __when to avoid multiple calls when
-      focus changes during execution of their code    
+      focus changes during execution of their code
   * source\hdialog.prg
-    + added code for correct browse/combo validation   
+    + added code for correct browse/combo validation
   * source\hradio.prg
     * allowed navigation with up/down cursor keys
   * source\hriched.prg
@@ -103,18 +115,18 @@
       inhibited custo management of events
   * source\htab.prg
     + added page class
-    + added method disable allowed on a single page of tab 
-    + added the propert caption for changing the text of the 
+    + added method disable allowed on a single page of tab
+    + added the propert caption for changing the text of the
       label of a page
   * utils\designer\blddesig.bat
     + added hbw32 lib for Harbour correct linking
-    
+
 2008-07-18 02:05 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hdialog.prg
     * fixed behaviour of enter key in CLIPPER NOEXIT dialogs
   * source\hrect.prg
-    * added missed parameter in create methods  
-   
+    * added missed parameter in create methods
+
 2008-07-17 21:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * contrib\menus\guilib.ch
   * utils\designer\inspect.prg
@@ -136,31 +148,31 @@
     * Issue 0025 of bug tracker solved (by Luis Fernando Basso)
       added the management of when and valid clauses in the cases in
       which the when clause or both isn't present or empty
-    * given the focus to edit control when mouse button is pressed      
+    * given the focus to edit control when mouse button is pressed
   * source\hrect.prg
     + a contribution of Luis Fernando Basso
       added the hShape, hContainer clazsses and the base class
       hDrawShape with the below syntax (better documentation and
       samples will be published on wiki site):
-      hShape draws a rectangular or curve shape with custom colors, 
+      hShape draws a rectangular or curve shape with custom colors,
       brushes, borders, etc.
       @ <x>, <y> SHAPE [<oShape>] [OF <oWnd>] ;
         [ ID <nId> ]               ;
         [ SIZE <width>, <height> ] ;
 		[ BORDERWIDTH <nBorder>]   ; width of the border
         [ CURVATURE <nCurvature>]  ; 0-90 value of angle curvature
-        [ COLOR <tcolor> ]         ;  
+        [ COLOR <tcolor> ]         ;
         [ BACKCOLOR <bcolor> ]     ;
-        [ BORDERSTYLE <nbStyle>]   ; 0-raised 1-sunken 2-frame 3-flat  
+        [ BORDERSTYLE <nbStyle>]   ; 0-raised 1-sunken 2-frame 3-flat
         [ FILLSTYLE <nfStyle>]     ; see windows.ch for fill brushes
-        [ ON SIZE <bSize> ]      
+        [ ON SIZE <bSize> ]
       hContainer is a very much featured similar rect class
       @ <x>, <y> CONTAINER [<oCnt>] [OF <oWnd>] ;
         [ ID <nId> ]               ;
         [ SIZE <width>, <height> ] ;
-        [ STYLE <nStyle>]          ; 0-raised 1-sunken 2-frame 3-flat 
+        [ STYLE <nStyle>]          ; 0-raised 1-sunken 2-frame 3-flat
         [ <lnoBorder: NOBORDER>]   ;
-        [ ON SIZE <bSize> ]  
+        [ ON SIZE <bSize> ]
   * source\window.c
     + added the IsWindowVisible() wrapper with syntax:
       <lResult> := IsWindowVisible( handle )
@@ -181,10 +193,10 @@
       believe don't would need a duplicated when evaluation
     * assured that the focus always is assigned during navigation
       between controls
-    
+
 2008-07-14 13:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\guimain.prg
-    * changed FindSelf() function to search the control handle also 
+    * changed FindSelf() function to search the control handle also
       in ancestor window
   * source\hcontrol.prg (by suggestion of Luis Fernando Basso)
     * routed hButton click event also to parent other than hStatus

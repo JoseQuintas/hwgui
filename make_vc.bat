@@ -4,7 +4,7 @@ if "%1" == "CLEAN" goto CLEAN
 
 :BUILD
 
-   nmake /I /Fmakefile.vc %1 %2 %3 > make_vc.log
+   nmake /Fmakefile.vc %1 %2 %3 > make_vc.log
    if errorlevel 1 goto BUILD_ERR
 
 :BUILD_OK

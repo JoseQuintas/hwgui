@@ -1,3 +1,4 @@
+# $Id: makefile.bc,v 1.40 2008-08-04 11:40:50 alexstrickland Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 

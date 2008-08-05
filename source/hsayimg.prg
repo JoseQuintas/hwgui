@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.17 2008-07-29 16:12:42 mlacecilia Exp $
+ * $Id: hsayimg.prg,v 1.18 2008-08-05 09:15:23 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -48,7 +48,7 @@ Return Self
 
 METHOD Activate CLASS HSayImage
 
-   IF !empty( ::oParent:handle ) 
+   IF !empty( ::oParent:handle )
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
@@ -98,7 +98,7 @@ METHOD Redefine( oWndParent,nId,xImage,lRes,bInit,bSize,ctooltip ) CLASS HSayBmp
 
 
    Super:Redefine( oWndParent,nId,bInit,bSize,ctooltip )
-   ::bPaint := {|o,lpdis|o:Paint(lpdis)}   
+   ::bPaint := {|o,lpdis|o:Paint(lpdis)}
    IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := Iif( lRes .OR. Valtype(xImage)=="N",     ;
                        HBitmap():AddResource( xImage ), ;
@@ -108,7 +108,7 @@ Return Self
 
 METHOD Paint( lpdis ) CLASS HSayBmp
 Local drawInfo := GetDrawItemInfo( lpdis )
-   
+
    IF ::oImage != Nil
       IF ::nZoom == Nil
          DrawBitmap( drawInfo[3], ::oImage:handle,, drawInfo[4]+::nOffsetH, ;
@@ -152,7 +152,7 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
    Super:New( oWndParent,nId,SS_ICON,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctooltip )
 
    IF lRes == Nil ; lRes := .F. ; ENDIF
-   IF ::oImage != nil
+   IF ::oImage == nil
       ::oImage := Iif( lRes .OR. Valtype(Image)=="N",    ;
                        HIcon():AddResource( Image ),  ;
                        Iif( Valtype(Image) == "C",    ;
@@ -167,7 +167,7 @@ METHOD Redefine( oWndParent,nId,xImage,lRes,bInit,bSize,ctooltip ) CLASS HSayIco
    Super:Redefine( oWndParent,nId,bInit,bSize,ctooltip )
 
    IF lRes == Nil ; lRes := .F. ; ENDIF
-   IF ::oImage != nil
+   IF ::oImage == nil
       ::oImage := Iif( lRes .OR. Valtype(xImage)=="N",   ;
                        HIcon():AddResource( xImage ), ;
                        Iif( Valtype(xImage) == "C",   ;

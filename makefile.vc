@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.25 2008-08-04 11:41:00 alexstrickland Exp $
+# $Id: makefile.vc,v 1.26 2008-08-05 09:15:15 alexstrickland Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -18,8 +18,7 @@ HWGQHTM_OBJ_DIR    = $(OBJ_DIR)
 ACTIVEX_OBJ_DIR    = $(OBJ_DIR)
 
 .SUFFIXES :
-
-.SUFFIXES : .lib .obj .c .prg
+.SUFFIXES : .lib .obj .prg .c
 
 all: \
    $(LIB_DIR)\hwgui.lib \

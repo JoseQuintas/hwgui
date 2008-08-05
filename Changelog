@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.879 2008-08-04 11:42:31 alexstrickland Exp $
+ * $Id: Changelog,v 1.880 2008-08-05 09:15:00 alexstrickland Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-08-05 11:05 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
+  * makefile.vc
+    * Change .SUFFIXES so that .prg has higher precedence than .c.
+      Note that I cannot build ActiveX source so I left it out.
+  * source\hsayimg.prg
+    * Inverted logic of recently added test for nil, was only
+      creating ::oImage if not nil.
 
 2008-08-04 13:35 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
   * makefile.vc
@@ -210,13 +218,13 @@
     * corrected shift-tab behaviour in navigation within form controls
   * source\hcombo.prg
     * corrected shift-tab behaviour in navigation within form controls
-    * displayed text for edit combo also when the edited text isn't 
+    * displayed text for edit combo also when the edited text isn't
       within list items
   * source\hedit.prg
     * corrected shift-tab behaviour in navigation within form controls
     * patch for navigation in tab pages (needs some other patch for
       complete solution in going out of tab, however, because now the
-      navigation loops in the tab and not goes to the dialog/window)     
+      navigation loops in the tab and not goes to the dialog/window)
   * source\hupdown.prg
     * corrected shift-tab behaviour in navigation within form controls
 
@@ -247,7 +255,7 @@
       ::SetMargin() now returning always the old settings
   * source\hedit.prg
     * splitted code for dialog/window and tab browsing
-    * updated GetSkip() 
+    * updated GetSkip()
   * source\hcheck.prg
     * updated __when() in accord with GetSkip() changes
   * source\hupdown.prg

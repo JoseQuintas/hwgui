@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.107 2008-08-06 11:49:00 alexstrickland Exp $
+ *$Id: guilib.ch,v 1.108 2008-08-06 14:25:15 alexstrickland Exp $
  */
 #define HWG_VERSION           "2.16"
 #define   WND_MAIN      1
@@ -33,6 +33,11 @@
 #ifdef __XHARBOUR__
 #define HB_SYMBOL_UNUSED( x )    ( (x) := (x) )
 #endif
+
+// Allow the definition of diferent classes without defining a new command
+
+#xtranslate __IIF(.T., [<true>], [<false>]) => <true>
+#xtranslate __IIF(.F., [<true>], [<false>]) => <false>
 
 // Commands for windows, dialogs handling
 
@@ -727,8 +732,9 @@
             [ FIRST <bFirst> ]         ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
             [ LAST <bLast> ]           ; // By Marcelo Sturm (marcelo.sturm@gmail.com)
             [ FOR <bFor> ]             ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+            [ <class: CLASS> <classname> ] ;
           => ;
-    [<oBrw> :=] HBrowse():New( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,0)),;
+    [<oBrw> :=] __IIF(<.class.>, <classname>, HBrowse)():New( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,0)),;
         <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>, ;
         <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.>, <.lAppend.>,;
         <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg>, <.lMulti.>, <.lDescend.>,;

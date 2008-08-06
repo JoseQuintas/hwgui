@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.17 2008-08-06 11:49:01 alexstrickland Exp $
+ * $Id: drawwidg.prg,v 1.18 2008-08-06 14:25:15 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -305,7 +305,7 @@ CLASS HBitmap INHERIT HObject
    DATA nWidth, nHeight
    DATA nCounter   INIT 1
 
-   METHOD AddResource( name, nFlags )
+   METHOD AddResource( name, nFlags, lOEM )
    METHOD AddStandard( nId )
    METHOD AddFile( name,hDC )
    METHOD AddWindow( oWnd,lFull )
@@ -314,11 +314,14 @@ CLASS HBitmap INHERIT HObject
 
 ENDCLASS
 
-METHOD AddResource( name, nFlags ) CLASS HBitmap
+METHOD AddResource( name, nFlags, lOEM ) CLASS HBitmap
 Local lPreDefined := .F., i, aBmpSize
 
-	if nFlags == nil
+   if nFlags == nil
      nFlags := LR_DEFAULTCOLOR
+   endif
+   if lOEM == nil
+     lOEM := .f.
    endif
 	IF Valtype( name ) == "N"
       name := Ltrim( Str( name ) )
@@ -339,7 +342,11 @@ Local lPreDefined := .F., i, aBmpSize
       ENDIF
    NEXT
    #endif
-   ::handle := LoadImage( nil, Iif( lPreDefined, Val(name),name ), IMAGE_BITMAP, nil, nil, nFlags )
+   if lOEM
+      ::handle := LoadImage( 0, Val(name), IMAGE_BITMAP, nil, nil, Hwg_bitor(nFlags, LR_SHARED) )
+   else
+      ::handle := LoadImage( nil, Iif( lPreDefined, Val(name),name ), IMAGE_BITMAP, nil, nil, nFlags )
+   endif
    ::name   := name
    aBmpSize  := GetBitmapSize( ::handle )
    ::nWidth  := aBmpSize[1]

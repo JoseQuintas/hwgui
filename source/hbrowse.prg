@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.136 2008-07-29 16:12:41 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.137 2008-08-06 14:25:15 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -75,6 +75,7 @@ CLASS HColumn INHERIT HObject
                                  //   oBrowse:aColumns[1]:bColorBlock := {|| IF (nNumber < 0, ;
                                  //      {textColor, backColor, textColorSel, backColorSel} , ;
                                  //      {textColor, backColor, textColorSel, backColorSel} ) }
+   DATA headColor                // Header text color
    METHOD New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin,cPict,bValid,bWhen,aItem,bColorBlock, bHeadClick )
 
 ENDCLASS
@@ -152,7 +153,7 @@ CLASS HBrowse INHERIT HControl
    DATA lShiftPress INIT .F.                    // .T. while Shift key is pressed
    DATA aSelected                              // An array of selected records numbers
    DATA nWheelPress INIT 0							   // wheel or central button mouse pressed flag
-	
+
    DATA lDescend INIT .F.              // Descend Order?
    DATA lFilter INIT .F.               // Filtered? (atribuition is automatic in method "New()").
    DATA bFirst INIT {|| DBGOTOP()}     // Block to place pointer in first record of condition filter. (Ex.: DbGoTop(), DbSeek(), etc.).
@@ -205,6 +206,7 @@ CLASS HBrowse INHERIT HControl
    METHOD ShowSizes()
    METHOD End()
    METHOD SetMargin( nTop, nRight, nBottom, nLeft )
+   METHOD FldStr( oBrw,numf )
 
 ENDCLASS
 
@@ -265,7 +267,7 @@ RETURN Self
 
 //----------------------------------------------------//
 METHOD Activate CLASS HBrowse
-   IF !empty( ::oParent:handle ) 
+   IF !empty( ::oParent:handle )
       ::handle := CreateBrowse( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
@@ -366,21 +368,21 @@ Local nRecStart, nRecStop
             ENDIF
          ENDIF
          IF wParam == VK_TAB
-          IF ::lCtrlPress                                                              
-             nPos := AScan( ::oParent:acontrols, { | o | o:handle == ::HANDLE } )      
-             IF GetKeyState(VK_SHIFT) < 0                                              
-                nPos := IIF(nPos <= 1 ,len(::oParent:acontrols),nPos-1)                
-             ELSE                                                                      
-                nPos := IIF(nPos = 0 .OR. nPos=len(::oParent:acontrols),1,nPos+1)      
-             ENDIF                                                                     
-             ::oParent:acontrols[nPos]:setFocus()                                      
-          ELSE                                                                         
-             IF GetKeyState(VK_SHIFT) < 0                                              
-                ::DoHScroll( SB_LINELEFT )                                             
-             ELSE                                                                      
-                ::DoHScroll( SB_LINERIGHT )                                            
-             ENDIF                                                                     
-          endif                                                                        
+          IF ::lCtrlPress
+             nPos := AScan( ::oParent:acontrols, { | o | o:handle == ::HANDLE } )
+             IF GetKeyState(VK_SHIFT) < 0
+                nPos := IIF(nPos <= 1 ,len(::oParent:acontrols),nPos-1)
+             ELSE
+                nPos := IIF(nPos = 0 .OR. nPos=len(::oParent:acontrols),1,nPos+1)
+             ENDIF
+             ::oParent:acontrols[nPos]:setFocus()
+          ELSE
+             IF GetKeyState(VK_SHIFT) < 0
+                ::DoHScroll( SB_LINELEFT )
+             ELSE
+                ::DoHScroll( SB_LINERIGHT )
+             ENDIF
+          endif
          elseIF wParam == 40        // Down
             IF ::lShiftPress .AND. ::aSelected != Nil
                  Eval(::bskip, Self, 1)
@@ -506,18 +508,18 @@ Local nRecStart, nRecStop
       ELSEIF msg == WM_MOUSEMOVE
          IF ::nWheelPress > 0
             ::MouseWheel( LoWord( wParam ),::nWheelPress - lParam)
-         ELSE   
+         ELSE
             ::MouseMove( wParam, lParam )
 			ENDIF
-			
-      ELSEIF msg == WM_MBUTTONUP                   
+
+      ELSEIF msg == WM_MBUTTONUP
          ::nWheelPress := IIF(::nWheelPress>0,0,lParam)
          IF ::nWheelPress > 0
            Hwg_SetCursor( LOADCURSOR(32652))
          ELSE
            Hwg_SetCursor( LOADCURSOR(IDC_ARROW))
 			ENDIF
-			  
+
       ELSEIF msg == WM_MOUSEWHEEL
          ::MouseWheel( LoWord( wParam ),;
                           If( HiWord( wParam ) > 32768,;
@@ -869,7 +871,7 @@ Local pps, hDC
       tmp := Eval( ::bRecno,Self )
 
 // if riga_cursore_video > 1
-//   we skip ::rowPos-1 number of records back, 
+//   we skip ::rowPos-1 number of records back,
 //   actually positioning video cursor on first line
       IF ::rowPos > 1
          Eval( ::bSkip, Self,-(::rowPos-1) )
@@ -879,7 +881,7 @@ Local pps, hDC
 // first part starts from video row 1 and goes to end of data (EOF)
 //   or end of video lines
 
-// second part starts from where part 1 stopped - 
+// second part starts from where part 1 stopped -
 
       cursor_row := 1
       DO WHILE .T.
@@ -922,7 +924,7 @@ Local pps, hDC
       if nRows < ::rowCount
            FillRect( hDC, ::x1, ::y1 + (::height + 1) * nRows + 1, ::x2, ::y2, ::brush:handle )
       endif
-      
+
       Eval( ::bGoTo, Self,tmp )
    ENDIF
    IF ::lAppMode
@@ -952,7 +954,7 @@ Local pps, hDC
       endif
       if ::nHeadRows > 0
           ::HeaderOut( hDC )
-      ENDIF    
+      ENDIF
       IF ::nFootRows > 0
          ::FooterOut( hDC )
       ENDIF
@@ -989,6 +991,7 @@ Local x, oldc, fif, xSize
 Local nRows := Min( ::nRecords+Iif(::lAppMode,1,0),::rowCount )
 Local oPen, oldBkColor := SetBkColor( hDC,GetSysColor(COLOR_3DFACE) )
 Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
+Local toldc
 
    IF ::lDispSep
       oPen := HPen():Add( PS_SOLID,1,::sepColor )
@@ -1006,6 +1009,9 @@ Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
 
    DO WHILE x < ::x2 - 2
       oColumn := ::aColumns[fif]
+      IF oColumn:headColor <> Nil
+         toldc := SetTextColor( hDC,oColumn:headColor )
+      ENDIF
       xSize := oColumn:width
       IF ::lAdjRight .and. fif == Len( ::aColumns )
          xSize := Max( ::x2 - x, xSize )
@@ -1052,6 +1058,9 @@ Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
 
       x += xSize
 
+      IF oColumn:headColor <> Nil
+         SetTextColor( hDC,toldc )
+      ENDIF
       fif := Iif( fif = ::freeze, ::nLeftCol, fif + 1 )
       IF fif > Len( ::aColumns )
          exit
@@ -1078,7 +1087,7 @@ RETURN Nil
 //----------------------------------------------------//
 METHOD SeparatorOut( hDC ) CLASS HBrowse
 Local i, x, fif, xSize
-Local nRows 
+Local nRows
 
 Local oColumn
 
@@ -1283,7 +1292,7 @@ Local aCores
                      ENDIF
                   NEXT
                ELSE
-                  sviv := FLDSTR( Self, ::nPaintCol)
+                  sviv := ::FLDSTR( Self, ::nPaintCol)
                   // Ahora lineas Justificadas !!
                   IF ::aColumns[::nPaintCol]:tColor != Nil .AND. (::nPaintCol != ::colPos .OR. !lSelected)
                      oldT1Color := SetTextColor( hDC, ::aColumns[::nPaintCol]:tColor )
@@ -1610,10 +1619,10 @@ RETURN Nil
 
 //----------------------------------------------------//
 /**
- * 
+ *
  * If cursor is in the last visible line, skip one page
  * If cursor in not in the last line, go to the last
- * 
+ *
 */
 METHOD PAGEDOWN() CLASS HBrowse
 Local nRows := ::rowCurrCount
@@ -1806,7 +1815,7 @@ RETURN Nil
 METHOD MouseMove( wParam, lParam ) CLASS HBrowse
    Local xPos := LoWord( lParam ), yPos := HiWord( lParam )
    Local x := ::x1, i, res := .F.
-   Local nLastColumn   
+   Local nLastColumn
 
    nLastColumn := iif( ::lAdjRight, len( ::aColumns )-1, len( ::aColumns ) )
 
@@ -2078,7 +2087,7 @@ METHOD Refresh( lFull ) CLASS HBrowse
 RETURN Nil
 
 //----------------------------------------------------//
-STATIC FUNCTION FldStr( oBrw,numf )
+METHOD FldStr( oBrw,numf ) CLASS HBrowse
 Local cRes, vartmp, type, pict
 
    IF numf <= Len( oBrw:aColumns )

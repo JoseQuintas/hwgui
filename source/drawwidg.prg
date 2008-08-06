@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.16 2008-07-25 00:29:49 mlacecilia Exp $
+ * $Id: drawwidg.prg,v 1.17 2008-08-06 11:49:01 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -136,7 +136,7 @@ Local i
    nColor := Iif( nColor == Nil,0,nColor )
 
    #ifdef __XHARBOUR__
-   For EACH i in ::aPens 
+   For EACH i in ::aPens
       IF i:style == nStyle .AND. ;
          i:width == nWidth .AND. ;
          i:color == nColor
@@ -173,7 +173,7 @@ Local i
    nColor := Iif( nColor == Nil,0,nColor )
 
    #ifdef __XHARBOUR__
-   For EACH i in ::aPens 
+   For EACH i in ::aPens
       IF i:style == nStyle .AND. ;
          i:width == nWidth .AND. ;
          i:color == nColor
@@ -200,7 +200,7 @@ Local i, nlen := Len( ::aPens )
    ::nCounter --
    IF ::nCounter == 0
    #ifdef __XHARBOUR__
-      For EACH i  in ::aPens 
+      For EACH i  in ::aPens
          IF i:handle == ::handle
             DeleteObject( ::handle )
             Adel( ::aPens, hb_EnumIndex() )
@@ -243,7 +243,7 @@ Local i
       nHatch := 99
    ENDIF
    #ifdef __XHARBOUR__
-   For EACH i IN ::aBrushes 
+   For EACH i IN ::aBrushes
       IF i:color == nColor .AND. i:nHatch == nHatch
          i:nCounter ++
          Return i
@@ -273,7 +273,7 @@ Local i, nlen := Len( ::aBrushes )
    ::nCounter --
    IF ::nCounter == 0
    #ifdef __XHARBOUR__
-      For EACH i IN ::aBrushes 
+      For EACH i IN ::aBrushes
          IF i:handle == ::handle
             DeleteObject( ::handle )
             Adel( ::aBrushes, hb_enumindex())
@@ -319,13 +319,13 @@ Local lPreDefined := .F., i, aBmpSize
 
 	if nFlags == nil
      nFlags := LR_DEFAULTCOLOR
-   endif  
+   endif
 	IF Valtype( name ) == "N"
       name := Ltrim( Str( name ) )
       lPreDefined := .T.
    ENDIF
    #ifdef __XHARBOUR__
-   For EACH i  IN  ::aBitmaps 
+   For EACH i  IN  ::aBitmaps
       IF i:name == name
          i:nCounter ++
          Return i
@@ -352,7 +352,7 @@ METHOD AddStandard( nId ) CLASS HBitmap
 Local i, aBmpSize, name := "s" + Ltrim( Str( nId ) )
 
    #ifdef __XHARBOUR__
-   For EACH i  IN  ::aBitmaps 
+   For EACH i  IN  ::aBitmaps
       IF i:name == name
          i:nCounter ++
          Return i
@@ -379,7 +379,7 @@ METHOD AddFile( name, hDC ) CLASS HBitmap
 Local i, aBmpSize
 
    #ifdef __XHARBOUR__
-   For EACH i IN ::aBitmaps 
+   For EACH i IN ::aBitmaps
       IF i:name == name
          i:nCounter ++
          Return i
@@ -459,31 +459,34 @@ CLASS HIcon INHERIT HObject
    DATA nWidth, nHeight
    DATA nCounter   INIT 1
 
-   METHOD AddResource( name, nWidth, nHeight, nFlags )
+   METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM )
    METHOD AddFile( name,hDC )
    METHOD Draw( hDC, x, y )   INLINE DrawIcon( hDC, ::handle, x, y )
    METHOD Release()
 
 ENDCLASS
 
-METHOD AddResource( name, nWidth, nHeight, nFlags ) CLASS HIcon
+METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
 Local lPreDefined := .F., i, aIconSize
 
-	if nWidth == nil
-	  nWidth := 0
-	endif
-	if nHeight == nil
-	  nHeight := 0
-	endif
-	if nFlags == nil
-     nFlags := 0
-   endif  
-	IF Valtype( name ) == "N"
+   if nWidth == nil
+      nWidth := 0
+   endif
+   if nHeight == nil
+      nHeight := 0
+   endif
+   if nFlags == nil
+      nFlags := 0
+   endif
+   if lOEM == nil
+      lOEM := .f.
+   endif
+   IF Valtype( name ) == "N"
       name := Ltrim( Str( name ) )
       lPreDefined := .T.
    ENDIF
    #ifdef __XHARBOUR__
-   For EACH i IN ::aIcons 
+   For EACH i IN ::aIcons
       IF i:name == name
          i:nCounter ++
          Return i
@@ -498,7 +501,11 @@ Local lPreDefined := .F., i, aIconSize
    NEXT
    #endif
    // ::classname:= "HICON"
-   ::handle :=   LoadImage( nil, Iif( lPreDefined, Val(name),name ), IMAGE_ICON, nWidth, nHeight, nFlags )
+   if lOEM // LR_SHARED is required for OEM images
+      ::handle := LoadImage( 0, Val(name), IMAGE_ICON, nWidth, nHeight, Hwg_bitor(nFlags, LR_SHARED) )
+   else
+      ::handle := LoadImage( nil, Iif( lPreDefined, Val(name),name ), IMAGE_ICON, nWidth, nHeight, nFlags )
+   endif
    ::name   := name
    aIconSize := GetIconSize( ::handle )
    ::nWidth  := aIconSize[1]
@@ -512,7 +519,7 @@ METHOD AddFile( name ) CLASS HIcon
 Local i, aIconSize
 
 #ifdef __XHARBOUR__
-   For EACH i IN  ::aIcons 
+   For EACH i IN  ::aIcons
       IF i:name == name
          i:nCounter ++
          Return i

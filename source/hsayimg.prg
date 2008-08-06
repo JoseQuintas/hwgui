@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.18 2008-08-05 09:15:23 alexstrickland Exp $
+ * $Id: hsayimg.prg,v 1.19 2008-08-06 11:49:02 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -140,21 +140,22 @@ Return Nil
 CLASS HSayIcon INHERIT HSayImage
 
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
-                  bSize,ctooltip )
+                  bSize,ctooltip,lOEM )
    METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctooltip )
    METHOD Init()
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
-                  bSize,ctooltip ) CLASS HSayIcon
+                  bSize,ctooltip,lOEM ) CLASS HSayIcon
 
    Super:New( oWndParent,nId,SS_ICON,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctooltip )
 
    IF lRes == Nil ; lRes := .F. ; ENDIF
+   IF lOEM == Nil ; lOEM := .F. ; ENDIF
    IF ::oImage == nil
-      ::oImage := Iif( lRes .OR. Valtype(Image)=="N",    ;
-                       HIcon():AddResource( Image ),  ;
+      ::oImage := Iif( lRes .OR. Valtype(Image)=="N",  ;
+                       HIcon():AddResource( Image,,,,lOEM ),  ;
                        Iif( Valtype(Image) == "C",    ;
                        HIcon():AddFile( Image ), Image ) )
    ENDIF

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.106 2008-07-25 00:29:49 mlacecilia Exp $
+ *$Id: guilib.ch,v 1.107 2008-08-06 11:49:00 alexstrickland Exp $
  */
 #define HWG_VERSION           "2.16"
 #define   WND_MAIN      1
@@ -283,9 +283,10 @@
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ TOOLTIP <ctoolt> ]       ;
+            [<oem: OEM>]     ;
           => ;
     [<oIco> := ] HSayIcon():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-        <height>,<icon>,<.res.>,<bInit>,<bSize>,<ctoolt> )
+        <height>,<icon>,<.res.>,<bInit>,<bSize>,<ctoolt>,<.oem.> )
 
 #xcommand REDEFINE ICON [ <oIco> SHOW ] <icon> ;
             [<res: FROM RESOURCE>]     ;

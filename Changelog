@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.880 2008-08-05 09:15:00 alexstrickland Exp $
+ * $Id: Changelog,v 1.881 2008-08-06 11:48:59 alexstrickland Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-08-06 13:40 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
+  * include\guilib.ch
+    * Added OEM clause to  <x>,<y> ICON command
+  * source\drawwidg.prg
+    * Added lOEM parameter to AddResource method, and default it to false.
+      If it is true, call LoadImage with hInst of 0 (NULL) and the flag param
+      or'ed with LR_SHARED
+  * source\hsayimg.prg
+    * Added lOEM parameter to New method, and default it to false.
+      Call HIcon:AddResource with new parameter.
 
 2008-08-05 11:05 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
   * makefile.vc

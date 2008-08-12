@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.882 2008-08-06 14:25:14 alexstrickland Exp $
+ * $Id: Changelog,v 1.883 2008-08-12 08:55:06 richardroesnadi Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-08-12 15:05 UTC+0200 Richard Roesnadi <roesnadi8@yahoo.co.id>
+  * source\saymoney.prg
+    + Added new function for "say in money" I add for English and 
+	  Indonesia.
+	    ex: sayDollar(nDollar) -> Say in dollar
+	        sayRupiah(nValue)  -> Say in Rupiah 
+	You may add your country say Money at here
+  * utils\designer\samples\saymoney.xml
+  
 
 2008-08-06 16:20 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
   * source\drawwidg.prg

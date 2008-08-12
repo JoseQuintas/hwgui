@@ -1,4 +1,4 @@
-# $Id: makefile.gcc,v 1.23 2008-06-21 07:33:49 mlacecilia Exp $
+# $Id: makefile.gcc,v 1.24 2008-08-12 08:54:21 richardroesnadi Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -83,6 +83,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/tmci.o \
    $(OBJ_DIR)/hhyper.o \
    $(OBJ_DIR)/hdc.o \
+   $(OBJ_DIR)/saymoney.o \
    $(OBJ_DIR)/repexec.o
 	ar rc $@ $^
 

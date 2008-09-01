@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.82 2008-09-01 19:00:19 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.83 2008-09-01 19:41:17 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -251,7 +251,7 @@ CLASS HStatic INHERIT HControl
   // METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
   //                                                 value )
    METHOD SetValue( value ) INLINE ::Auto_Size(value),;
-	                                SetDlgItemText( ::oParent:handle, ::id, value )
+                                   SetDlgItemText( ::oParent:handle, ::id, value )
    METHOD Auto_Size(cValue, nAlign)  HIDDEN
 
  METHOD Init()
@@ -393,8 +393,8 @@ CLASS HButton INHERIT HControl
    METHOD Init()
    METHOD Notify(lParam )
    METHOD onClick()
-   
-ENDCLASS   
+
+ENDCLASS
 
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -455,10 +455,10 @@ RETURN  NIL
 
 METHOD onClick()  CLASS HButton
   IF ::bClick != Nil
-	    ::oParent:lSuspendMsgsHandling := .T.
+       ::oParent:lSuspendMsgsHandling := .T.
       Eval( ::bClick, ::oParent, ::id )
-  	  ::oParent:lSuspendMsgsHandling := .F.
-   ENDIF   
+       ::oParent:lSuspendMsgsHandling := .F.
+   ENDIF
 RETURN Nil
 
 
@@ -474,16 +474,16 @@ METHOD Notify(lParam ) CLASS HButton
         endif
         IF getkeystate(VK_LEFT) + getkeystate(VK_UP) < 0 .OR. ;
           (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 )
-           nSkip := -1 
+           nSkip := -1
         ELSEIF nDown < 0
-          nSkip := 1 
-	      ENDIF 
-	      IF nSkip != 0
-	        SETFOCUS(::oParent:Handle)
-	        GetSkip(::oparent, ::handle, ,nSkip )
-	        RETURN 0
-	      ENDIF
-			ENDIF                                  
+          nSkip := 1
+         ENDIF
+         IF nSkip != 0
+           SETFOCUS(::oParent:Handle)
+           GetSkip(::oparent, ::handle, ,nSkip )
+           RETURN 0
+         ENDIF
+         ENDIF
    ENDIF
 RETURN -1
 
@@ -779,8 +779,8 @@ local pos
          endif
       endif
       return 0
-   elseif msg ==WM_SYSKEYUP .and. ( pos := At( "&", ::title ) ) > 0 .and. wParam == Asc( Upper( ::title[ ++ pos ] ) )
-         if Valtype(::bClick) =="B"
+   elseif msg ==WM_SYSKEYUP .and. ( pos := At( "&", ::title ) ) > 0 .and. wParam == Asc( Upper( SubStr(::title, ++ pos, 1) ) )
+      if Valtype(::bClick) == "B" .or. ::id < 3
             SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
          endif
       return 0

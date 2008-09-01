@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.884 2008-09-01 19:00:14 mlacecilia Exp $
+ * $Id: Changelog,v 1.885 2008-09-01 19:41:17 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-09-01 21:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hcontrol.prg
+    * forced the triggering of the click for IDCANCEL and IDOK buttonex
+    * changed code for Harbour compatibility
+    
 2008-09-01 21:00 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   This commit contains all the changes made by Luis Fernando Basso 
   pending from August month

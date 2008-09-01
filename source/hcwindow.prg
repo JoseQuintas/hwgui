@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.23 2008-06-30 23:26:18 mlacecilia Exp $
+ *$Id: hcwindow.prg,v 1.24 2008-09-01 19:00:19 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -17,7 +17,7 @@
 #define EVENTS_ACTIONS  2
 
 STATIC aCustomEvents := { ;
-  { WM_NOTIFY, WM_PAINT, WM_CTLCOLORSTATIC, WM_CTLCOLOREDIT, WM_CTLCOLORBTN, ;
+  { WM_NOTIFY, WM_PAINT, WM_CTLCOLORSTATIC, WM_CTLCOLOREDIT, WM_CTLCOLORBTN,WM_CTLCOLORLISTBOX, ;
     WM_COMMAND, WM_DRAWITEM, WM_SIZE, WM_DESTROY }, ;
   { ;
     {|o,w,l| onNotify( o, w, l ) }                                 ,;
@@ -25,7 +25,8 @@ STATIC aCustomEvents := { ;
     {|o,w,l| onCtlColor( o, w, l ) }                               ,;
     {|o,w,l| onCtlColor( o, w, l ) }                               ,;
     {|o,w,l| onCtlColor( o, w, l ) }                               ,;
-    {|o,w,l| HB_SYMBOL_UNUSED(l),onCommand( o, w ) }               ,;
+    {|o,w,l| onCtlColor( o, w, l ) }                               ,;
+    {|o,w,l| onCommand( o, w, l ) }               ,;
     {|o,w,l| onDrawItem( o, w, l ) }                               ,;
     {|o,w,l| onSize( o, w, l ) }                                   ,;
     {|o|     onDestroy( o ) }                                       ;
@@ -51,6 +52,7 @@ CLASS HCustomWindow INHERIT HObject
    DATA lHide         INIT .F.
    DATA oFont
    DATA aEvents       INIT {}
+   DATA lSuspendMsgsHandling  INIT .F.
    DATA aNotify       INIT {}
    DATA aControls     INIT {}
    DATA bInit
@@ -76,6 +78,7 @@ CLASS HCustomWindow INHERIT HObject
    METHOD End()
    METHOD RefreshCTRL( oControle )
    METHOD SetFocusCTRL( oControle )
+   METHOD RefreshAll()
 
 ENDCLASS
 
@@ -83,9 +86,11 @@ METHOD AddEvent( nEvent, oCtrl, bAction, lNotify, cMethName ) CLASS HCustomWindo
 
    Aadd( IIF( lNotify == NIL .OR. !lNotify, ::aEvents, ::aNotify ), ;
          { nEvent, iif(ValType(oCtrl)=="N", oCtrl, oCtrl:id), bAction } )
-	if cMethName != nil
-	    __objAddInline(oCtrl, cMethName, bAction )
-	endif
+   IF bAction != Nil .AND. ValType(oCtrl) == "O"  //.AND. ValType(oCtrl) != "N"
+      IF cMethName != Nil //.AND. !__objHasMethod( oCtrl, cMethName )
+         __objAddInline(oCtrl, cMethName, bAction )
+      endif
+   endif
 return nil
 
 METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
@@ -96,11 +101,11 @@ Local oCtrl
 
   DO While i > 0
     IF Len(::aControls[i]:aControls) > 0 .and. ;
-		(oCtrl := ::aControls[i]:FindControl(nId, nHandle)) != nil
+      (oCtrl := ::aControls[i]:FindControl(nId, nHandle)) != nil
       RETURN oCtrl
     ENDIF
-	 IF Eval(bSearch, ::aControls[i])
-  	   Return ::aControls[i]
+    IF Eval(bSearch, ::aControls[i])
+        Return ::aControls[i]
     ENDIF
     i --
   ENDDO
@@ -220,6 +225,29 @@ LOCAL nPos
 
 RETURN NIL
 
+METHOD RefreshAll(oCtrl) CLASS HCustomWindow
+Local nlen , i, hCtrl := GetFocus()
+   oCtrl := IIF(oCtrl = Nil, self, Octrl)
+   nlen := LEN(oCtrl:aControls)
+  IF IsWindowVisible(::Handle)
+    FOR i = 1 to nLen
+     IF ! oCtrl:aControls[ i ]:lHide .AND.;
+        oCtrl:aControls[ i ]:handle != hCtrl
+          //IsWindowEnabled( ::aControls[ i ]:handle ) .AND. ::aControls[ i ]:handle != hCtrl
+        IF __ObjHasMethod(oCtrl:aControls[ i ],"REFRESH")
+           oCtrl:aControls[ i ]:refresh()
+        ELSE
+           oCtrl:aControls[ i ]:SHOW()
+            ENDIF
+         IF LEN(oCtrl:aControls[ i ]:aControls) > 0
+             ::Refresh(oCtrl:aControls[ i ])
+          ENDIF
+     ENDIF
+    NEXT
+  ENDIF
+RETURN .T.
+*---------------------------------------------------------
+
 STATIC FUNCTION onNotify( oWnd, wParam, lParam )
 LOCAL iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res
 Local n
@@ -241,7 +269,7 @@ ENDIF
          nCode := GetNotifyCode( lParam )
          IF nCode == EN_PROTECTED
             RETURN 1
-         ELSEIF oWnd:aNotify != NIL .AND. ;
+         ELSEIF oWnd:aNotify != NIL .AND. !oWnd:lSuspendMsgsHandling .AND. ;
             ( iItem := Ascan( oWnd:aNotify, {|a| a[ 1 ] == nCode .AND. ;
                                                  a[ 2 ] == wParam } ) ) > 0
             IF ( res := Eval( oWnd:aNotify[ iItem, 3 ], oWnd, wParam ) ) != NIL
@@ -293,10 +321,11 @@ LOCAL oCtrl
 
 RETURN -1
 
-STATIC FUNCTION onCommand( oWnd, wParam )
+STATIC FUNCTION onCommand( oWnd, wParam, lParam )
 LOCAL iItem, iParHigh := HiWord( wParam ), iParLow := LoWord( wParam )
 
-   IF oWnd:aEvents != NIL .AND. ;
+HB_SYMBOL_UNUSED(lParam)
+   IF oWnd:aEvents != NIL .AND. !oWnd:lSuspendMsgsHandling .AND.;
       ( iItem := Ascan( oWnd:aEvents, {|a| a[ 1 ] == iParHigh .AND. ;
                                            a[ 2 ] == iParLow } ) ) > 0
 

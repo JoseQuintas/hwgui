@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.18 2008-08-06 14:25:15 alexstrickland Exp $
+ * $Id: drawwidg.prg,v 1.19 2008-09-01 19:00:17 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -400,6 +400,11 @@ Local i, aBmpSize
       ENDIF
    NEXT
    #endif
+   name := IIF(!FILE( name ).AND.FILE(CutPath( name )),CutPath( name ),name)
+   IF !FILE( name )
+     name := SelectFile("Image Files( *.jpg;*.gif;*.bmp;*.ico )", "*.jpg;*.gif;*.bmp;*.ico",,"Locate "+name)
+   ENDIF
+
    IF Lower( Right( name,4 ) ) == ".bmp"
       ::handle := OpenBitmap( name, hDC )
    ELSE
@@ -541,6 +546,11 @@ Local i, aIconSize
    NEXT
 #endif
    // ::classname:= "HICON"
+   name := IIF(!FILE( name ).AND.FILE(CutPath( name )),CutPath( name ),name)
+   IF !FILE( name )
+     name := SelectFile("Image Files( *.jpg;*.gif;*.bmp;*.ico )", "*.jpg;*.gif;*.bmp;*.ico",,"Locate "+name)
+   ENDIF
+
    ::handle := LoadImage( 0, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE+LR_LOADFROMFILE )
    ::name := name
    aIconSize := GetIconSize( ::handle )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.883 2008-08-12 08:55:06 richardroesnadi Exp $
+ * $Id: Changelog,v 1.884 2008-09-01 19:00:14 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,91 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-01 21:00 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  This commit contains all the changes made by Luis Fernando Basso 
+  pending from August month
+  * include\guilib.ch
+    * added the ON GETFOCUS/WHEN and ON LOSTFOCUS/VALID clause 
+      and the COLOR and BACKCOLOR clause for the
+      @ .... [GET] LISTBOX commands
+    * added the ON GETFOCUS/WHEN and ON LOSTFOCUS/VALID and 
+      ON_INTERACTIVECHANGE clause for the
+      @ .... [GET] COMBOBOX commands
+    * added the ON INIT clause for the @ ... GET and 
+      @ ... GET COMBOBOX commands
+  * include\windows.ch
+    * moved from hcombo.prg the related event defines
+    * corrected constants for listbox events
+  * source\drawwidg.prg
+    + added common dialog for file selection in hBitMap and
+      hIcon method AddFile when the image file isn't found
+  * source\hcheck.prg
+    * the SetValue() method now stores correctly the supplied value
+    + added the KillFocus method
+    * fixed the Enter keypress management
+    * fixed control navigation with cursor movement
+    * changed the valid function
+  * source\hcombo.prg
+    * moved to windows.ch the related event defines
+    * fixed control navigation with cursor movement
+    * some enhancement in coding readability
+    * added the AddItem and the DeleteItem methods
+    * added the ON GETFOCUS/WHEN and ON LOSTFOCUS/VALID and 
+      ON_INTERACTIVECHANGE events management
+  * source\hcontrol.prg
+    * forced the refresh when the caption of the control is changed
+    * avoided a duplicated DATA definition in BUTTONEX class
+    + added the onClick method for buttons
+  * source\hcwindow.prg
+    * added WM_CTLCOLORLISTBOX in custom events management
+    * added lParam in onCommand for further use
+    * added RefreshAll method for refresh all the controls contained
+      in the control window
+    * added lSuspendMsgsHandling property allowing centralized 
+      control of event handling
+  * source\hdatepic.prg
+    * now pass the correct value to when function
+    * fixed control navigation with cursor movement 
+  * source\hdialog.prg
+    * fixed the close method for no modal dialogs
+    * fixed control navigation in DlgCommand()
+  * source\hedit.prg
+    * removed RestoreMsgsHandling() and SuspendMsgsHandling()
+      functions not far needed
+  * source\hipedit.prg
+    * fixed control navigation with cursor movement
+    * fixed the ON GETFOCUS and ON LOSTFOCUS management     
+   * source\hlistbox.prg
+    * added the ON GETFOCUS/WHEN and ON LOSTFOCUS/VALID management
+    * added the DeleteItem method
+   * source\hownbtn.prg    
+    + added the onClick method
+   * source\hradio.prg
+    + added the notify method
+    * changed the default style avoiding BS_AUTORADIOBUTTON setting
+    * fixed the validation function
+   * source\hrect.prg
+    + added the SetColor(tcolor,bcolor) and Curvature(nCurvature)   
+      methods
+   * source\htab.prg
+    * avoided selection via click of a disabled page   
+    * fixed event handling and passing to the parent form
+   * source\hupdown.prg
+    * fixed control navigation with cursor movement
+    * fixed the ON GETFOCUS and ON LOSTFOCUS management     
+   * source\hwindow.prg
+    * minor typo
+   * source\misc.c
+    + added the GetNextDlgGroupItem API wrapper
+   * source\procmisc\procscri.prg
+    * changed the CompileScr() function to treat the local variables
+      as private and parameters one for designer compatibility    
+   * utils\designer\designer.prg
+    * little change to allow Harbour compile
+   * utils\designer\inspect.prg    
+    * little changes to allow Harbour compile
+    * translation to english of some portuguese captions
 
 2008-08-12 15:05 UTC+0200 Richard Roesnadi <roesnadi8@yahoo.co.id>
   * source\saymoney.prg

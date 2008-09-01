@@ -1,7 +1,7 @@
 /*
 /*
 /*
- * $Id: designer.prg,v 1.32 2008-05-19 13:49:21 lculik Exp $
+ * $Id: designer.prg,v 1.33 2008-09-01 19:00:20 mlacecilia Exp $
  *
  * Designer
  * Main file
@@ -36,6 +36,11 @@ REQUEST HTIMER, DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK
 REQUEST BARCODE
 
 REQUEST GETPRINTERS
+
+#ifndef __XHARBOUR__
+   ANNOUNCE GTSYS
+   REQUEST HB_GT_NUL_DEFAULT
+#endif
 
 Function Designer( p0, p1, p2 )
 Local oPanel, oTab, oFont, oStatus1, cResForm, i

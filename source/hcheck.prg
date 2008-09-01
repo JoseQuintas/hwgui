@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.22 2008-07-25 00:29:50 mlacecilia Exp $
+ * $Id: hcheck.prg,v 1.23 2008-09-01 19:00:18 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -18,7 +18,7 @@ CLASS HCheckButton INHERIT HControl
    DATA bSetGet
    DATA value
    DATA lEnter
-   DATA lnoValid       INIT .F.
+   DATA lnoValid    INIT .F.
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
                   bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor,bGFocus, lEnter )
@@ -28,9 +28,9 @@ CLASS HCheckButton INHERIT HControl
    METHOD Refresh()
    METHOD Disable()
    METHOD Enable()
-   METHOD SetValue( lValue )  INLINE SendMessage(::handle,BM_SETCHECK,Iif(lValue,1,0),0)
+   METHOD SetValue( lValue )  INLINE SendMessage(::handle,BM_SETCHECK,Iif(lValue,1,0),0), ::value := lValue
    METHOD GetValue()          INLINE ( SendMessage(::handle,BM_GETCHECK,0,0)==1 )
-
+   METHOD KillFocus()
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
@@ -46,19 +46,17 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaptio
 
    ::Activate()
 
-   ::lEnter     := Iif( lEnter==Nil .OR. Valtype(vari)!="L",.F.,lEnter )
+   ::lEnter     := Iif( lEnter==Nil .OR. Valtype(lEnter)!="L",.F.,lEnter )
    ::bLostFocus := bClick
-   ::lenter := .t.
    ::bGetFocus  := bGFocus
-   ::oParent:AddEvent( BN_CLICKED,self,{|o,id|__Valid(o:FindControl(id),)},,"onClick" )
-   IF ::lEnter
-     ::oParent:AddEvent( BN_KILLFOCUS,self,{|o,id|__KILLFOCUS(o:FindControl(id))})
-   ENDIF
 
    IF bGFocus != Nil
-      ::lnoValid := .T.
       ::oParent:AddEvent( BN_SETFOCUS,self,{|o,id|__When(o:FindControl(id))},,"onGotFocus" )
+      ::lnoValid := .T.
    ENDIF
+
+   ::oParent:AddEvent( BN_CLICKED,self,{|o,id|__Valid(o:FindControl(id),)},,"onClick" )
+   ::oParent:AddEvent( BN_KILLFOCUS,self,{|| ::KILLFOCUS()})
 
 Return Self
 
@@ -123,10 +121,58 @@ METHOD Enable() CLASS HCheckButton
 
 Return Nil
 
+METHOD killFocus() CLASS HCheckButton
+Local ndown := getkeystate(VK_RIGHT)+getkeystate(VK_DOWN) +GetKeyState( VK_TAB )
+Local nSkip := 0
 
+   IF ::oParent:classname = "HTAB" //.AND. !getkeystate(VK_RETURN) < 0
+        ///oCtrl:oparent:HANDLE)
+     IF getkeystate(VK_LEFT) + getkeystate(VK_UP) < 0 .OR. ;
+        (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 )
+         nSkip := -1
+      ELSEIF nDown < 0
+          nSkip := 1
+       ENDIF
+       IF nSkip != 0
+         SETFOCUS(::oParent:handle)
+         GetSkip( ::oparent, ::handle, , nSkip )
+       ENDIF
+       ENDIF
+     IF getkeystate(VK_RETURN) < 0 .AND. ::lEnter
+          ::SetValue( !::GetValue() )
+        __VALID(self)
+     ENDIF
+ RETURN Nil
+
+
+
+STATIC FUNCTION __When( oCtrl )
+   LOCAL res := .t., oParent, nSkip := 1
+
+   IF !CheckFocus(oCtrl, .f.)
+      RETURN .t.
+   ENDIF
+   nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
+   IF oCtrl:bGetFocus != Nil
+      octrl:lnoValid := .T.
+         octrl:oparent:lSuspendMsgsHandling := .t.
+      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet, , oCtrl ), oCtrl )
+      octrl:oparent:lSuspendMsgsHandling := .f.
+      octrl:lnoValid := ! res
+      IF ! res
+         oParent := ParentGetDialog(oCtrl)
+         IF oCtrl == ATail(oParent:GetList)
+            nSkip := -1
+         ELSEIF oCtrl == oParent:getList[1]
+            nSkip := 1
+         ENDIF
+         GetSkip( oCtrl:oParent, oCtrl:handle, , nSkip )
+      ENDIF
+   ENDIF
+RETURN res
 
 Static Function __Valid( oCtrl )
-Local l := SendMessage( oCtrl:handle,BM_GETCHECK,0,0 ), aMsgs
+Local l := SendMessage( oCtrl:handle,BM_GETCHECK,0,0 )
 
    IF !CheckFocus(oCtrl, .t.)  .OR. oCtrl:lnoValid
       RETURN .T.
@@ -142,43 +188,8 @@ Local l := SendMessage( oCtrl:handle,BM_GETCHECK,0,0 ), aMsgs
       Eval( oCtrl:bSetGet,oCtrl:value, oCtrl )
    ENDIF
    IF oCtrl:bLostFocus != Nil
-      aMsgs := SuspendMsgsHandling(oCtrl)
-	   Eval( oCtrl:bLostFocus, oCtrl:value,  oCtrl )
-      RestoreMsgsHandling(oCtrl, aMsgs)
+      octrl:oparent:lSuspendMsgsHandling := .t.
+       Eval( oCtrl:bLostFocus, oCtrl:value,  oCtrl )
+       octrl:oparent:lSuspendMsgsHandling := .f.
    ENDIF
 Return .T.
-
-Static Function __KILLFOCUS( oCtrl )
-
-    IF GetKeyState(VK_RETURN) < 0 .AND. oCtrl:lEnter
-		 oCtrl:SetValue( ! oCtrl:GetValue() )
-       __VALID(octrl)
-    ENDIF
- RETURN Nil
-
-STATIC FUNCTION __When( oCtrl )
-   LOCAL res := .t., oParent, nSkip := 1, aMsgs
-   
-	IF !CheckFocus(oCtrl, .f.)
-	   RETURN .t.
-	ENDIF
-   nSkip := iif( GetKeyState( VK_UP ) < 0 .or. ;
-	             (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ),;
-					  -1, 1 )
-   IF oCtrl:bGetFocus != Nil
-      octrl:lnoValid := .T.
-		aMsgs := SuspendMsgsHandling(oCtrl)
-      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet, , oCtrl ), oCtrl )
-      RestoreMsgsHandling(oCtrl, aMsgs)
-      octrl:lnoValid := ! res
-      IF ! res
-         oParent := ParentGetDialog(oCtrl)
-         IF oCtrl == ATail(oParent:GetList)
-            nSkip := -1
-         ELSEIF oCtrl == oParent:getList[1]
-            nSkip := 1
-         ENDIF
-         GetSkip( oCtrl:oParent, oCtrl:handle, , nSkip )
-      ENDIF
-   ENDIF
-RETURN res

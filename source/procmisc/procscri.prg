@@ -1,5 +1,5 @@
 /*
- * $Id: procscri.prg,v 1.14 2007-11-30 11:35:10 sandrorrfreire Exp $
+ * $Id: procscri.prg,v 1.15 2008-09-01 19:00:20 mlacecilia Exp $
  *
  * Common procedures
  * Scripts
@@ -204,10 +204,12 @@ Local cLine, lDebug := ( Len( rezArray ) == 3 )
          poz1 := AT( " ", stroka )
          scom := UPPER( SUBSTR( stroka, 1, IIF( poz1 <> 0, poz1 - 1, 999 ) ) )
          DO CASE
-         CASE scom = "PRIVATE" .OR. scom = "PARAMETERS"
+         CASE scom = "PRIVATE" .OR. scom = "PARAMETERS" .OR. scom = "LOCAL"
             IF LEN( rezArray[2] ) == 0 .OR. ( i := VALTYPE( ATAIL( rezArray[2] ) ) ) == "C" ;
                     .OR. i == "A"
-               IF Left( scom,2 ) == "PR"
+               IF Left( scom,2 ) == "LO"
+                  AADD( rezArray[2], " "+ALLTRIM( SUBSTR( stroka, 7 ) ) )     
+               ELSEIF Left( scom,2 ) == "PR"
                   AADD( rezArray[2], " "+ALLTRIM( SUBSTR( stroka, 9 ) ) )
                ELSE
                   AADD( rezArray[2], "/"+ALLTRIM( SUBSTR( stroka, 12 ) ) )

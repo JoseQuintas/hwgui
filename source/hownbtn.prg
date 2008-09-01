@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.33 2008-07-05 16:53:00 mlacecilia Exp $
+ * $Id: hownbtn.prg,v 1.34 2008-09-01 19:00:20 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -51,6 +51,7 @@ CLASS HOwnButton INHERIT HControl
    METHOD End()
    METHOD Enable()
    METHOD Disable()
+   METHOD onClick()
 
 ENDCLASS
 
@@ -99,7 +100,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,   ;
    ::heightb := Iif( heightb==Nil, 0, heightb )
    ::lTransp := Iif( ltr!=Nil, lTr, .F. )
    ::trColor := trColor
-
+   ::oParent:AddEvent( 0, self, {|| ::onClick()},,)
    hwg_RegOwnBtn()
    ::Activate()
 
@@ -359,6 +360,14 @@ METHOD Release()  CLASS HOwnButton
    InvalidateRect( ::handle, 0 )
    PostMessage( ::handle, WM_PAINT, 0, 0 )
 Return Nil
+
+
+METHOD onclick  CLASS HOwnButton
+  IF ::bClick != Nil
+      Eval( ::bClick, ::oParent, ::id )
+   ENDIF   
+RETURN Nil
+
 
 METHOD End()  CLASS HOwnButton
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.17 2008-07-25 00:29:50 mlacecilia Exp $
+ * $Id: hdatepic.prg,v 1.18 2008-09-01 19:00:19 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -138,23 +138,25 @@ Static Function __Change( oCtrl, nMess )
          Eval( oCtrl:bSetGet,oCtrl:value, oCtrl )
       ENDIF
       IF oCtrl:bChange != Nil
+         octrl:oparent:lSuspendMsgsHandling := .T.
          Eval( oCtrl:bChange,oCtrl:value,oCtrl )
+         octrl:oparent:lSuspendMsgsHandling := .F.
       ENDIF
    ENDIF
 Return .T.
 
 STATIC FUNCTION __When( oCtrl )
-   LOCAL res := .t., oParent, nSkip, aMsgs
-
+   LOCAL res := .t., oParent, nSkip
+   
 	IF !CheckFocus(oCtrl, .f.)
 	   RETURN .t.
 	ENDIF
    nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
    IF oCtrl:bGetFocus != Nil
+      octrl:oparent:lSuspendMsgsHandling := .T.
       octrl:lnoValid := .T.
-		aMsgs := SuspendMsgsHandling(oCtrl)
-      res :=  Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
-      RestoreMsgsHandling(oCtrl, aMsgs)
+      res :=  Eval( oCtrl:bGetFocus, oCtrl:value, oCtrl )
+      octrl:oparent:lSuspendMsgsHandling := .F.
       octrl:lnoValid := ! res
       IF ! res
          oParent := ParentGetDialog(oCtrl)
@@ -170,7 +172,7 @@ STATIC FUNCTION __When( oCtrl )
 RETURN res
 
 Static Function __Valid( oCtrl )
-Local  res := .t., aMsgs
+Local  res := .t.
 
    IF !CheckFocus(oCtrl, .t.)  .OR. oCtrl:lnoValid
       RETURN .T.
@@ -180,8 +182,11 @@ Local  res := .t., aMsgs
       Eval( oCtrl:bSetGet,oCtrl:value, oCtrl )
    ENDIF
    IF oCtrl:bLostFocus != Nil
-      aMsgs := SuspendMsgsHandling(oCtrl)
+     octrl:oparent:lSuspendMsgsHandling := .T.
 	   res := Eval( oCtrl:bLostFocus, oCtrl:value,  oCtrl )
-      RestoreMsgsHandling(oCtrl, aMsgs)
+     octrl:oparent:lSuspendMsgsHandling := .F.
+     IF ! res
+        SetFocus( oCtrl:handle )
+     ENDIF
    ENDIF
 Return res

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.108 2008-08-06 14:25:15 alexstrickland Exp $
+ *$Id: guilib.ch,v 1.109 2008-09-01 19:00:17 mlacecilia Exp $
  */
 #define HWG_VERSION           "2.16"
 #define   WND_MAIN      1
@@ -34,7 +34,7 @@
 #define HB_SYMBOL_UNUSED( x )    ( (x) := (x) )
 #endif
 
-// Allow the definition of diferent classes without defining a new command
+// Allow the definition of different classes without defining a new command
 
 #xtranslate __IIF(.T., [<true>], [<false>]) => <true>
 #xtranslate __IIF(.F., [<true>], [<false>]) => <false>
@@ -642,10 +642,13 @@
             [ TOOLTIP <ctoolt> ]       ;
             [ <edit: EDIT> ]           ;
             [ <text: TEXT> ]           ;
+            [ ON GETFOCUS <bGfocus> ]  ;
+            [ ON LOSTFOCUS <bLfocus> ] ;
+            [ ON INTERACTIVECHANGE <bIChange> ]    ;
           => ;
     [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
                   <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,;
-                  <.edit.>,<.text.>,,<color>,<bcolor> )
+                  <.edit.>,<.text.>,<bGfocus>,<color>,<bcolor>, <bLfocus>,<bIChange>)
 
 #xcommand REDEFINE COMBOBOX [ <oCombo> ITEMS ] <aItems> ;
             [ OF <oWnd> ]              ;
@@ -657,9 +660,12 @@
             [ ON CHANGE <bChange> ]    ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
+            [ ON GETFOCUS <bGfocus> ]  ;
+            [ ON LOSTFOCUS <bLfocus> ] ;
+            [ ON INTERACTIVECHANGE <bIChange> ]    ;
           => ;
     [<oCombo> := ] HComboBox():Redefine( <oWnd>,<nId>,<nInit>,,<aItems>,<oFont>,<bInit>, ;
-             <bSize>,<bDraw>,<bChange>,<ctoolt> )
+             <bSize>,<bDraw>,<bChange>,<ctoolt>,<bGfocus>, <bLfocus>, <bIChange>)
 
 
 #xcommand @ <x>,<y> UPDOWN [ <oUpd> INIT ] <nInit> ;
@@ -1004,13 +1010,14 @@
             [ STYLE <nStyle> ]         ;
             [<lnoborder: NOBORDER>]    ;
             [ FONT <oFont> ]           ;
+            [ ON INIT <bInit> ]        ;
             [ TOOLTIP <ctoolt> ]       ;
             [ ON KEYDOWN <bKeyDown>   ];
             [ ON CHANGE <bChange> ]    ;
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<vari>,               ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;
-                   <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,,,  ;
+                   <nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,,,  ;
                    <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,;
                    <.lnoborder.>,<nMaxLength>,<.lPassword.>,<bKeyDown>, <bChange>)
 
@@ -1025,6 +1032,7 @@
             [ VALID <bLfocus> ]        ;
             [ MAXLENGTH <nMaxLength> ] ;
             [ FONT <oFont> ]           ;
+            [ ON INIT <bInit> ]        ;
             [ TOOLTIP <ctoolt> ]       ;
             [<lMultiLine: MULTILINE>]  ;
             [ ON KEYDOWN <bKeyDown>]   ;
@@ -1076,20 +1084,22 @@
             [ SIZE <width>, <height> ] ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
+            [ ON INIT <bInit> ]        ;
             [ ON CHANGE <bChange> ]    ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
             [ <edit: EDIT> ]           ;
             [ <text: TEXT> ]           ;
-            [ WHEN <bWhen> ]           ;
-            [ VALID <bValid> ]         ;
+            [ WHEN  <bGfocus> ]        ;
+            [ VALID <bLfocus> ]        ;
+            [ ON INTERACTIVECHANGE <bIChange> ]    ;
           => ;
     [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<vari>,    ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
-                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
-                    <.edit.>,<.text.>,<bWhen>,<color>,<bcolor>,<bValid> )
+                    <aItems>,<oFont>,<bInit>,,,<bChange>,<ctoolt>, ;
+                    <.edit.>,<.text.>,<bGfocus>,<color>,<bcolor>,<bLfocus>,<bIChange> )
 
 #xcommand REDEFINE GET COMBOBOX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;
@@ -1098,11 +1108,13 @@
             [ ON CHANGE <bChange> ]    ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
-            [ WHEN <bWhen> ]           ;
+            [ WHEN  <bGfocus> ]        ;
+            [ VALID <bLfocus> ]        ;
+            [ ON INTERACTIVECHANGE <bIChange> ]    ;
           => ;
     [<oCombo> := ] HComboBox():Redefine( <oWnd>,<nId>,<vari>, ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},        ;
-                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>, <bWhen> )
+                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>,<bGfocus>, <bLfocus>,<bIChange>)
 
 #xcommand REDEFINE GET COMBOBOXEX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;
@@ -1314,39 +1326,41 @@ Added by Marcos Antonio Gambeta
         <.notoday.>,<.notodaycircle.>,<.weeknumbers.>)
 
 
-/*By Vitor Maclung */
-// Commands for Listbox handling
-
-
 #xcommand @ <x>,<y> LISTBOX [ <oListbox> ITEMS ] <aItems> ;
-            [ OF <oWnd> ]              ;
-            [ ID <nId> ]               ;
-            [ INIT <nInit> ]           ;
-            [ SIZE <width>, <height> ] ;
-            [ ON INIT <bInit> ]        ;
-            [ ON SIZE <bSize> ]        ;
-            [ ON PAINT <bDraw> ]       ;
-            [ ON CHANGE <bChange> ]    ;
-            [ STYLE <nStyle> ]         ;
-            [ FONT <oFont> ]           ;
-            [ TOOLTIP <ctoolt> ]       ;
+            [ OF <oWnd> ]                 ;
+            [ ID <nId> ]                  ;
+            [ INIT <nInit> ]              ;
+            [ SIZE <width>, <height> ]    ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ ON INIT <bInit> ]           ;
+            [ ON SIZE <bSize> ]           ;
+            [ ON PAINT <bDraw> ]          ;
+            [ ON CHANGE <bChange> ]       ;
+            [ STYLE <nStyle> ]            ;
+            [ FONT <oFont> ]              ;
+            [ TOOLTIP <ctoolt> ]          ;
+            [ ON GETFOCUS <bGfocus> ]     ;
+            [ ON LOSTFOCUS <bLfocus> ]    ;
           => ;
     [<oListbox> := ] HListBox():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
-                  <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt> )
+              <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,<color>,<bcolor>, <bGfocus>,<bLfocus>  )
 
 #xcommand REDEFINE LISTBOX [ <oListbox> ITEMS ] <aItems> ;
-            [ OF <oWnd> ]              ;
-            ID <nId>                   ;
-            [ INIT <nInit>    ]        ;
-            [ ON INIT <bInit> ]        ;
-            [ ON SIZE <bSize> ]        ;
-            [ ON PAINT <bDraw> ]       ;
-            [ ON CHANGE <bChange> ]    ;
-            [ FONT <oFont> ]           ;
-            [ TOOLTIP <ctoolt> ]       ;
-          => ;
+            [ OF <oWnd> ]                 ;
+            ID <nId>                      ;
+            [ INIT <nInit>    ]           ;
+            [ ON INIT <bInit> ]           ;
+            [ ON SIZE <bSize> ]           ;
+            [ ON PAINT <bDraw> ]          ;
+            [ ON CHANGE <bChange> ]       ;
+            [ FONT <oFont> ]              ;
+            [ TOOLTIP <ctoolt> ]          ;
+            [ ON GETFOCUS <bGfocus> ]     ;
+            [ ON LOSTFOCUS <bLfocus> ]    ;
+             => ;
     [<oListbox> := ] HListBox():Redefine( <oWnd>,<nId>,<nInit>,,<aItems>,<oFont>,<bInit>, ;
-             <bSize>,<bDraw>,<bChange>,<ctoolt> )
+             <bSize>,<bDraw>,<bChange>,<ctoolt>,<bGfocus>,<bLfocus> )
 
 /* Add Sandro R. R. Freire */
 
@@ -1443,7 +1457,7 @@ Added by Marcos Antonio Gambeta
             [ SIZE <width>, <height> ] ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
-            [<lTransp: TRANSPARENT>]   ;
+            [ <lTransp: TRANSPARENT>]  ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
@@ -1465,7 +1479,7 @@ Added by Marcos Antonio Gambeta
             LINK <cLink>               ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
-            [<lTransp: TRANSPARENT>]   ;
+            [ <lTransp: TRANSPARENT>]  ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
@@ -1479,28 +1493,28 @@ Added by Marcos Antonio Gambeta
         <oFont>, <bInit>, <bSize>, <bDraw>, <ctoolt>, <color>, <bcolor>,;
         <.lTransp.>, <cLink>, <vcolor>, <lcolor>, <hcolor> )
         
-#xcommand TOOLBUTTON  <O> ;
-          ID <nId> ;
-          [ BITMAP <nBitIp> ];
-          [ STYLE <bstyle> ];
-          [ STATE <bstate>];
-          [ TEXT <ctext> ] ;
-          [ TOOLTIP <c> ];
-          [ MENU <d>];
-           ON CLICK <bclick>;
+#xcommand TOOLBUTTON  <O>       ;
+          ID <nId>              ;
+          [ BITMAP <nBitIp> ]   ;
+          [ STYLE <bstyle> ]    ;
+          [ STATE <bstate>]     ;
+          [ TEXT <ctext> ]      ;
+          [ TOOLTIP <c> ]       ;
+          [ MENU <d>]           ;
+           ON CLICK <bclick>    ;
           =>;
           <O>:AddButton(<nBitIp>,<nId>,<bstate>,<bstyle>,<ctext>,<bclick>,<c>,<d>)
 
 #xcommand @ <x>,<y> TOOLBAR [ <oTool> ] ;
-            [ OF <oWnd> ]              ;
-            [ ID <nId> ]               ;
-            [ SIZE <width>, <height> ] ;
-            [ STYLE <nStyle> ]         ;
-            [ ITEMS <aItems> ] ;
+            [ OF <oWnd> ]               ;
+            [ ID <nId> ]                ;
+            [ SIZE <width>, <height> ]  ;
+            [ STYLE <nStyle> ]          ;
+            [ ITEMS <aItems> ]          ;
           => ;
     [<oTool> := ]        Htoolbar():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,,,<aItems>  )
 
-#xcommand REDEFINE TOOLBAR  <oSay>  ;
+#xcommand REDEFINE TOOLBAR  <oSay>     ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
             [ ON INIT <bInit> ]        ;
@@ -1647,6 +1661,8 @@ Added by Marcos Antonio Gambeta
              [ ID <nId> ]               ;
              [ INIT <nInit> ]           ;
              [ SIZE <width>, <height> ] ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
              [ ON INIT <bInit> ]        ;
              [ ON SIZE <bSize> ]        ;
              [ ON PAINT <bDraw> ]       ;
@@ -1654,11 +1670,14 @@ Added by Marcos Antonio Gambeta
              [ STYLE <nStyle> ]         ;
              [ FONT <oFont> ]           ;
              [ TOOLTIP <ctoolt> ]       ;
-           => ;
+             [ WHEN <bGFocus> ]         ;
+             [ VALID <bLFocus> ]        ;
+        => ;
      [<oListbox> := ] HListBox():New( <oWnd>,<nId>,<nInit>,;
                     {|v|Iif(v==Nil,<nInit>,<nInit>:=v)},;
-                    <nStyle>,<x>,<y>,<width>, ;
-                    <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt> )
+                    <nStyle>,<x>,<y>,<width>,<height>, ;
+                    <aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,<color>,<bcolor>,<bGFocus>,<bLFocus> )
+
 
 
 #xcommand @ <x>,<y> GET COMBOBOXEX [ <oCombo> VAR ] <vari> ;

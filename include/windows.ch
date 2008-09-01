@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.61 2008-07-29 16:12:40 mlacecilia Exp $
+ *$Id: windows.ch,v 1.62 2008-09-01 19:00:17 mlacecilia Exp $
  */
 
 #define WM_CREATE                       1
@@ -1345,13 +1345,26 @@ Check button
 /*
 ListBox
 */
-#define LBN_SELCHANGE       1
-#define LBN_DBLCLK          2
-#define LBN_SETFOCUS        3
-#define LBN_KILLFOCUS       4
-#define LBN_EDITCHANGE      5
-#define LBN_EDITUPDATE      6
-#define LBN_DROPDOWN        7
-#define LBN_CLOSEUP         8
-#define LBN_SELENDOK        9
-#define LBN_SELENDCANCEL    10
+#define LBN_SELCHANGE        1
+#define LBN_DBLCLK           2
+#define LBN_SELCANCEL        3
+#define LBN_SETFOCUS         4
+#define LBN_KILLFOCUS        5
+#define LBN_CLICKCHECKMARK   6
+#define LBN_CLICKED          7
+#define LBN_ENTER            8
+#define LBN_ERRSPACE       255
+
+/*
+ComboBox
+*/
+#define CBN_SELCHANGE       1
+#define CBN_DBLCLK          2
+#define CBN_SETFOCUS        3
+#define CBN_KILLFOCUS       4
+#define CBN_EDITCHANGE      5
+#define CBN_EDITUPDATE      6
+#define CBN_DROPDOWN        7
+#define CBN_CLOSEUP         8
+#define CBN_SELENDOK        9
+#define CBN_SELENDCANCEL   10

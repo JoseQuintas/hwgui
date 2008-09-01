@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.81 2008-07-29 16:12:42 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.82 2008-09-01 19:00:19 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -49,9 +49,9 @@ CLASS HControl INHERIT HCustomWindow
    DATA   tooltip
    DATA   lInit           INIT .F.
    DATA   xName           HIDDEN
-   ACCESS Name         INLINE ::xName
-   ASSIGN Name(cName)  INLINE ::xName := cName, ;
-	                           __objAddData(::oParent, cName),;
+   ACCESS Name            INLINE ::xName
+   ASSIGN Name(cName)     INLINE ::xName := cName, ;
+                              __objAddData(::oParent, cName),;
                               ::oParent:&(cName) := self
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -66,7 +66,7 @@ CLASS HControl INHERIT HCustomWindow
                                               ::handle, 1 ), ;
                                  SetFocus( ::handle ) )
    METHOD GetText()     INLINE GetWindowText(::handle)
-   METHOD SetText( c )  INLINE SetWindowText( ::Handle, c )
+   METHOD SetText( c )  INLINE SetWindowText( ::Handle, c ), ::Refresh()
    METHOD Refresh()     VIRTUAL
    METHOD End()
 
@@ -98,11 +98,11 @@ METHOD NewId() CLASS HControl
 
 Local oParent := ::oParent, i := 0, nId
 
-	DO WHILE oParent != Nil
+   DO WHILE oParent != Nil
       nId := CONTROL_FIRST_ID + 1000 * i + Len( ::oParent:aControls )
       oParent := oParent:oParent
       i ++
-	ENDDO
+   ENDDO
    IF Ascan( ::oParent:aControls, {|o| o:id == nId } ) != 0
       nId --
       DO WHILE nId >= CONTROL_FIRST_ID .AND. ;
@@ -200,7 +200,7 @@ RETURN Self
 METHOD Activate CLASS HStatus
 LOCAL aCoors
 
-   IF !empty( ::oParent:handle ) 
+   IF !empty( ::oParent:handle )
       ::handle := CreateStatusWindow( ::oParent:handle, ::id )
       ::Init()
       IF __ObjHasMsg( ::oParent, "AOFFSET" )
@@ -251,8 +251,8 @@ CLASS HStatic INHERIT HControl
   // METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
   //                                                 value )
    METHOD SetValue( value ) INLINE ::Auto_Size(value),;
-                                 SetDlgItemText( ::oParent:handle, ::id, value )
-   METHOD Auto_Size()       HIDDEN
+	                                SetDlgItemText( ::oParent:handle, ::id, value )
+   METHOD Auto_Size(cValue, nAlign)  HIDDEN
 
  METHOD Init()
    METHOD PAINT(o)
@@ -353,7 +353,7 @@ LOCAL dc := drawInfo[ 3 ]
    // Draw the text
    DrawText(dc, szText, ;
             client_rect[1], client_rect[2], client_rect[3], client_rect[4], ;
-				dwText)
+            dwText)
 return nil
 
 METHOD Auto_Size(cValue, nAlign) CLASS HStatic
@@ -361,11 +361,11 @@ Local  aSize, nLeft
 
    IF ::autosize .OR. ::lOwnerDraw
      aSize :=  TxtRect(cValue, self)
-     IF nAlign = SS_RIGHT
+     IF nAlign == SS_RIGHT
         nLeft := ::nLeft + (::nWidth - aSize[1] - 2)
-     ELSEIF nAlign = SS_CENTER
-        nLeft := ::nLeft + ((::nWidth - aSize[1] - 2) / 2)
-     ELSEIF nAlign = SS_LEFT
+     ELSEIF nAlign == SS_CENTER
+        nLeft := ::nLeft + Int((::nWidth - aSize[1] - 2) / 2)
+     ELSEIF nAlign == SS_LEFT
         nLeft := ::nLeft
      ENDIF
      ::nWidth := aSize[1] + 2
@@ -392,8 +392,10 @@ CLASS HButton INHERIT HControl
                     tcolor, bColor )
    METHOD Init()
    METHOD Notify(lParam )
+   METHOD onClick()
+   
+ENDCLASS   
 
-ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
             cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
@@ -412,16 +414,16 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    IF ::oParent:oParent != Nil .and. ::oParent:ClassName == "HTAB"
        ::oParent:AddEvent( BN_KILLFOCUS, self, {|| ::Notify(WM_KEYDOWN)})
        IF bClick != NIL
-          ::oParent:oParent:AddEvent( 0, self, bClick,,"onClick" )
+          ::oParent:oParent:AddEvent( 0, self,{|| ::onClick()})
        ENDIF
    ENDIF
    IF bClick != NIL
-      ::oParent:AddEvent( 0, self, bClick, , "onClick" )
+      ::oParent:AddEvent( 0, self,{|| ::onClick()})
    ENDIF
 RETURN Self
 
 METHOD Activate CLASS HButton
-   IF !empty( ::oParent:handle ) 
+   IF !empty( ::oParent:handle )
       ::handle := CreateButton( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
                                 ::title )
@@ -438,7 +440,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::title   := cCaption
 
    IF bClick != NIL
-      ::oParent:AddEvent( 0, self, bClick,,"onClick" )
+      ::oParent:AddEvent( 0, self, bClick )
    ENDIF
 RETURN Self
 
@@ -451,20 +453,37 @@ METHOD Init CLASS HButton
    endif
 RETURN  NIL
 
+METHOD onClick()  CLASS HButton
+  IF ::bClick != Nil
+	    ::oParent:lSuspendMsgsHandling := .T.
+      Eval( ::bClick, ::oParent, ::id )
+  	  ::oParent:lSuspendMsgsHandling := .F.
+   ENDIF   
+RETURN Nil
+
+
 METHOD Notify(lParam ) CLASS HButton
+ Local ndown := getkeystate(VK_RIGHT)+getkeystate(VK_DOWN)+GetKeyState( VK_TAB )
+ Local nSkip := 0
  //
    IF lParam = WM_KEYDOWN
-      InvalidateRect(::handle,0)
-      SENDMESSAGE(::handle,BM_SETSTYLE ,BS_PUSHBUTTON ,1)
-      IF getkeystate(VK_LEFT) + getkeystate(VK_UP) < 0 .OR. ;
-        (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 )
-         GetSkip( ::oparent, ::handle, , -1 )
-         return 0
-      ENDIF
-      IF getkeystate(VK_RIGHT) + getkeystate(VK_DOWN) + GetKeyState( VK_TAB ) < 0
-         GetSkip(::oparent, ::handle, ,1 )
-         return 0
-     ENDIF
+      IF ::oParent:Classname = "HTAB"
+        IF getfocus() != ::handle
+           InvalidateRect(::handle,0)
+           SENDMESSAGE(::handle,BM_SETSTYLE ,BS_PUSHBUTTON ,1)
+        endif
+        IF getkeystate(VK_LEFT) + getkeystate(VK_UP) < 0 .OR. ;
+          (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 )
+           nSkip := -1 
+        ELSEIF nDown < 0
+          nSkip := 1 
+	      ENDIF 
+	      IF nSkip != 0
+	        SETFOCUS(::oParent:Handle)
+	        GetSkip(::oparent, ::handle, ,nSkip )
+	        RETURN 0
+	      ENDIF
+			ENDIF                                  
    ENDIF
 RETURN -1
 
@@ -483,14 +502,13 @@ CLASS HButtonEX INHERIT HButton
    DATA state
    DATA m_bIsDefault INIT .F.
    DATA m_nTypeStyle  init 0
-   DATA m_bLButtonDown
    DATA m_bSent,m_bLButtonDown,m_bIsToggle
    DATA m_rectButton           // button rect in parent window coordinates
    DATA m_dcParent init hdc():new()
    DATA m_bmpParent
    DATA m_pOldParentBitmap
    DATA m_csbitmaps init {,,,,}
-	DATA m_bToggled INIT .f.
+   DATA m_bToggled INIT .f.
 
 
 
@@ -578,11 +596,11 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
 
 
 ::super:Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
-                 cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle,hIcon  ) 
+                 cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle,hIcon  )
    ::title   := cCaption
 
    ::Caption := cCaption
-   
+
 
 RETURN Self
 
@@ -611,14 +629,14 @@ METHOD INIT CLASS HButtonEx
       HWG_INITBUTTONPROC( ::handle )
       if HB_IsNumeric( ::handle ) .and. ::handle > 0
         nbs:=HWG_GETWINDOWSTYLE(::handle)
-   
+
        ::m_nTypeStyle :=  GetTheStyle(nBS , BS_TYPEMASK)
 
    // Check if this is a checkbox
 
    // Set initial default state flag
    if (::m_nTypeStyle == BS_DEFPUSHBUTTON)
-   
+
       // Set default state for a default button
       ::m_bIsDefault := .t.
 
@@ -663,14 +681,14 @@ local pos
       RETURN 0
    ELSEIF msg == WM_MOUSELEAVE
       ::CancelHover()
-      RETURN 0                 
-     
+      RETURN 0
+
    elseif msg == WM_KEYDOWN
-        
+
 #ifdef __XHARBOUR__
       if hb_inline( lParam) { LPARAM l = (LPARAM) hb_parnl( 1 ); hb_retl( l & 0x40000000);}
 #else
-		if hb_BitTest( lParam , 30 )  // the key was down before ?
+      if hb_BitTest( lParam , 30 )  // the key was down before ?
 #endif
          return 0
       endif
@@ -678,22 +696,22 @@ local pos
          SendMessage(::handle, WM_LBUTTONDOWN, 0, MAKELPARAM(1, 1))
          return 0
       endif
-      IF	wParam = VK_LEFT  .OR. wParam = VK_UP
+      IF wParam == VK_LEFT .OR. wParam == VK_UP
          GetSkip( ::oParent, ::handle, , -1 )
-			return 0
-		endif
-		IF wParam = VK_RIGHT .OR. wParam = VK_DOWN
+         return 0
+      endif
+      IF wParam == VK_RIGHT .OR. wParam == VK_DOWN
          GetSkip( ::oParent, ::handle, , 1 )
-			return 0
-		endif
+         return 0
+      endif
    elseif msg == WM_KEYUP
 
       if ((wParam == VK_SPACE) .or. (wParam == VK_RETURN))
          SendMessage(::handle, WM_LBUTTONUP, 0, MAKELPARAM(1, 1))
          return 0
       endif
-      
-   elseif msg == WM_LBUTTONUP 
+
+   elseif msg == WM_LBUTTONUP
      ::m_bLButtonDown := .f.
      if (::m_bSent)
         SendMessage(::handle,BM_SETSTATE, 0,0)
@@ -703,10 +721,10 @@ local pos
        pt[1]:= loword( lParam )
        pt[2]:= hiword( lParam )
        acoor :=ClientToScreen(::handle,pt[1],pt[2])
- 
+
        rectButton :=GetWindowRect(::handle )
-        
-       if (!PtInRect(rectButton,acoor))                      
+
+       if (!PtInRect(rectButton,acoor))
            ::m_bToggled = !::m_bToggled
            InvalidateRect(::handle,0)
            SendMessage(::handle,BM_SETSTATE, 0,0)
@@ -714,21 +732,21 @@ local pos
        endif
      endif
      return -1
-     
+
    elseif msg == WM_LBUTTONDOWN
       ::m_bLButtonDown := .t.
-      if (::m_bIsToggle)   
+      if (::m_bIsToggle)
          ::m_bToggled := !::m_bToggled
          InvalidateRect(::handle,0)
       endif
       return -1
 
     elseif msg ==WM_LBUTTONDBLCLK
-                
+
          if (::m_bIsToggle)
-                        
+
             // for toggle buttons, treat doubleclick as singleclick
-            SendMessage(::handle,BM_SETSTATE, ::m_bToggled,0)                     
+            SendMessage(::handle,BM_SETSTATE, ::m_bToggled,0)
 
          else
 
@@ -737,7 +755,7 @@ local pos
 
          endif
          return 0
-                
+
    elseif msg == WM_GETDLGCODE
       return ButtonGetDlgCode(lParam)
 
@@ -746,13 +764,13 @@ local pos
    elseif msg ==WM_CHAR //.or. msg == WM_KEYUP
       if wParam == VK_RETURN .or. wParam == VK_SPACE
          if (::m_bIsToggle)
-                               
+
             ::m_bToggled := !::m_bToggled
             InvalidateRect(::handle,0)
          else
-                               
+
             SendMessage(::handle,BM_SETSTATE, 1,0)
-            ::m_bSent := .t. 
+            ::m_bSent := .t.
          endif
 
 
@@ -932,17 +950,17 @@ LOCAL uAlign,uStyleTmp
 //   uAlign += DT_WORDBREAK + DT_CENTER + DT_CALCRECT +  DT_VCENTER + DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
      uAlign += DT_VCENTER
      uStyleTmp := HWG_GETWINDOWSTYLE(::handle)
-     
+
 #ifdef __XHARBOUR
      if hb_inline(uStyleTmp) { ULONG ulStyle = (ULONG)hb_parnl( 1 ) ; hb_retl( ulStyle & BS_MULTILINE ); }
 #else
-	  if hb_BitAnd( uStyleTmp, BS_MULTILINE ) != 0
+     if hb_BitAnd( uStyleTmp, BS_MULTILINE ) != 0
 #endif
-        uAlign += DT_WORDBREAK 
+        uAlign += DT_WORDBREAK
      else
         uAlign += DT_SINGLELINE
      endif
-     
+
 
 
    captionRect := { DrawInfo[ 4 ], DrawInfo[ 5 ], DrawInfo[ 6 ], DrawInfo[ 7 ] }
@@ -1122,7 +1140,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
 RETURN Self
 
 METHOD Activate CLASS HGroup
-   IF !empty( ::oParent:handle ) 
+   IF !empty( ::oParent:handle )
       ::handle := CreateButton( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
                                 ::title )
@@ -1169,7 +1187,7 @@ METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize ) CLASS HLine
 RETURN Self
 
 METHOD Activate CLASS HLine
-   IF !empty( ::oParent:handle ) 
+   IF !empty( ::oParent:handle )
       ::handle := CreateStatic( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth,::nHeight )
       ::Init()

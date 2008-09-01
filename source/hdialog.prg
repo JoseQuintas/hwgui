@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.54 2008-07-25 14:32:20 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.55 2008-09-01 19:00:19 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -79,7 +79,9 @@ CLASS HDialog INHERIT HCustomWindow
    METHOD Restore()  INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_RESTORE, 0)
    METHOD Maximize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0)
    METHOD Minimize() INLINE SendMessage(::handle,  WM_SYSCOMMAND, SC_MINIMIZE, 0)
-   METHOD Close()    INLINE EndDialog(::handle)
+   METHOD Close()    INLINE Iif(::lModal, EndDialog( ::handle ), DestroyWindow( ::handle ) )
+   //METHOD Release()  INLINE Iif( ::lModal, Hwg_EndDialog( ::handle ), DestroyWindow( ::handle ) )
+
 ENDCLASS
 
 METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
@@ -177,7 +179,6 @@ Local nPos
 
    IF ( i := Ascan( aMessModalDlg, {|a|a[1]==msg} ) ) != 0
       if ::lRouteCommand .and. (msg ==WM_COMMAND .or. msg == WM_NOTIFY)
-
          nPos := ascan(::aControls,{|x| x:className() == "HTAB"})
          if nPos > 0
             oTab := ::aControls[ nPos ]
@@ -186,7 +187,10 @@ Local nPos
             endif
          endif
       endif
+      //AVE SOMENTE NO DIALOG
+      IF !::lSuspendMsgsHandling
       Return Eval( aMessModalDlg[i,2], Self, wParam, lParam )
+      ENDIF
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
          onTrackScroll( Self,msg,wParam,lParam )
@@ -232,6 +236,8 @@ HB_SYMBOL_UNUSED(lParam)
 
    // oDlg:handle := hDlg
    // writelog( str(oDlg:handle)+" "+oDlg:title )
+   *  .if uMsg == WM_INITDIALOG
+   *-EnableThemeDialogTexture(odlg:handle,6)  //,ETDT_ENABLETAB)
    IF Valtype( oDlg:menu ) == "A"
       hwg__SetMenu( oDlg:handle, oDlg:menu[5] )
    ENDIF
@@ -307,33 +313,45 @@ HB_SYMBOL_UNUSED(lParam)
          oCtrl := oDlg:FindControl(,hctrl)
          if oCtrl == nil
             hCtrl := GetAncestor(hCtrl, GA_PARENT)
-            oCtrl := oDlg:FindControl( ,hctrl)
-            GetSkip( oCtrl:oParent, hCtrl, , 1 )
-         ENDIF
-         IF oCtrl != Nil .AND. oCtrl:handle == hCtrl
-            IF __ObjHasMsg(oCtrl,"BVALID") .AND. oCtrl:bValid != Nil
-                Eval( oCtrl:bValid, oCtrl )
+            if ( oCtrl := oDlg:FindControl( ,hctrl) ) != Nil
+               GetSkip( oCtrl:oParent, hCtrl, , 1 )
             ENDIF
-			ENDIF
-         IF oCtrl != Nil .AND. oCtrl:id == IDOK
-            oDlg:lResult := .T.
-            EndDialog( oDlg:handle )
          ENDIF
+         //
+         IF oCtrl != Nil .AND. GetNextDlgTabItem( GetActiveWindow() , hctrl, 1) == hCtrl
+            IF __ObjHasMsg(oCtrl,"BVALID") .AND. oCtrl:bValid != Nil
+               Eval( oCtrl:bValid, oCtrl )
+            ENDIF
+         ENDIF
+         IF oCtrl != Nil .AND. oCtrl:id = IDOK //iParLow
+            oDlg:lResult := .T.
+              EndDialog( oDlg:handle )   // VER AQUI
+         ENDIF
+             //
+             /*
+         IF !oDlg:lExitOnEnter .AND. lParam > 0 .AND. lParam != hCtrl
+            IF oCtrl:oParent:oParent != Nil
+                GetSkip( oCtrl:oParent, hCtrl, , 1)
+            eNDIF
+             RETURN 0
+         ENDIF
+         */
          if oDlg:lClipper
-  			   IF oCtrl != Nil .AND. !GetSkip( oCtrl:oParent, hCtrl, , 1)
-         	   IF oDlg:lExitOnEnter
-            	   oDlg:lResult := .T.
-               	EndDialog( oDlg:handle )
-           		ENDIF
-    		   ENDIF
-         	return 1
+              IF oCtrl != Nil .AND. !GetSkip( oCtrl:oParent, hCtrl, , 1)
+               IF oDlg:lExitOnEnter
+                  oDlg:lResult := .T.
+                  EndDialog( oDlg:handle )
+                 ENDIF
+             ENDIF
+            //setfocus(odlg:handle)
+            return 1
          endif
       ELSEIF iParLow == IDCANCEL
          oDlg:nLastKey := 27
       ENDIF
    ENDIF
 
-   IF oDlg:aEvents != Nil .AND. ;
+   IF oDlg:aEvents != Nil .AND. !oDlg:lSuspendMsgsHandling .AND.;
       ( i := Ascan( oDlg:aEvents, {|a|a[1]==iParHigh.and.a[2]==iParLow} ) ) > 0
       Eval( oDlg:aEvents[ i,3 ],oDlg,iParLow )
    ELSEIF iParHigh == 0 .AND. ( ;
@@ -368,7 +386,7 @@ Local oBtn := SetNiceBtnSelected()
    IF oBtn != Nil .AND. !oBtn:lPress
       oBtn:state := OBTN_NORMAL
       InvalidateRect( oBtn:handle, 0 )
-      PostMessage( oBtn:handle, WM_PAINT, 0, 0 )
+     * PostMessage( oBtn:handle, WM_PAINT, 0, 0 )
       SetNiceBtnSelected( Nil )
    ENDIF
 
@@ -441,14 +459,14 @@ Local nCode := GetNotifyCode( lParam ), res := .T.
 
 HB_SYMBOL_UNUSED(wParam)
 
-   IF nCode == PSN_SETACTIVE
+   IF nCode == PSN_SETACTIVE //.AND. !oDlg:aEvdisable
       IF oDlg:bGetFocus != Nil
          res := Eval( oDlg:bGetFocus, oDlg )
       ENDIF
       // 'res' should be 0(Ok) or -1
       Hwg_SetDlgResult( oDlg:handle,Iif(res,0,-1) )
       Return 1
-   ELSEIF nCode == PSN_KILLACTIVE
+   ELSEIF nCode == PSN_KILLACTIVE //.AND. !oDlg:aEvdisable
       IF oDlg:bLostFocus != Nil
          res := Eval( oDlg:bLostFocus, oDlg )
       ENDIF

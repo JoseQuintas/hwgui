@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.15 2008-07-17 19:45:11 mlacecilia Exp $
+ * $Id: inspect.prg,v 1.16 2008-09-01 19:00:20 mlacecilia Exp $
  *
  * Designer
  * Object Inspector
@@ -12,8 +12,6 @@
 #include "windows.ch"
 #include "HBClass.ch"
 #include "guilib.ch"
-
-#define CBN_KILLFOCUS       4
 
 #xcommand @ <x>,<y> PBROWSE [ <oBrw> ] ;
             [ <lArr: ARRAY> ]          ;
@@ -336,7 +334,7 @@ Memvar oDesigner
     
    @ 0,0 COMBOBOX oCombo ITEMS {} SIZE 220,150 ;
           STYLE WS_VSCROLL                     ;
-          ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,150)} ;
+          ON SIZE {|o,x|MoveWindow(o:handle,0,0,x,150)} ;
           ON CHANGE {||ComboOnChg()}
 
    @ 0,28 TAB oTab ITEMS {} SIZE 220,250 ;
@@ -619,7 +617,7 @@ STATIC FUNCTION onclick_deleteitem(oBrw)
   	obrw:refresh()
   ENDIF
 RETURN nil		
-  
+
 Function ObjInspector(oObject )
 *****************************************************************************
    Local opForm, oBrw, oBrw2
@@ -632,9 +630,11 @@ Function ObjInspector(oObject )
    ENDIF
    //lData := .t.
    aClassMsgMtdo := __objGetMethodList(oObject)
-   //*aClassMsgProp := __objGetValueList( oObject) //, aExcept, nScope )
-   //*-aClassMsgProp :=__objGetValueFullList( oObject) //, aExcept, nScope, nNoScope )
-   aClassMsgProp :=__ObjGetValueDiff( oObject)
+#ifndef __XHARBOUR
+   aClassMsgProp := __objGetProperties( oObject, .t. )
+#else   
+   aClassMsgProp := __ObjGetValueDiff( oObject)
+#endif   
    For i = 1 to len(aClassMsgProp)
      ctype := VALTYPE(aClassMsgProp[i,2])
      do case
@@ -650,7 +650,7 @@ Function ObjInspector(oObject )
    
    INIT DIALOG opForm ;
       noexit ;
-      title "Métodos e Propriedades" ;
+      title "Methods and Properties" ;
       font HFont():Add( "Arial", 0, -11 ) ;
       at 0, 0 ;
       size 600, 400 ;
@@ -659,15 +659,15 @@ Function ObjInspector(oObject )
     nTop = 4
    nLeft += 15
    @ nLeft, nTop button oBtn1 ;
-      caption "&Fechar" ;
+      caption "&Exit" ;
       size 80, 25 ;
       on click { || EndDialog() }
 
-  @ nLeft + 150, ntop+2 SAY "Objeto: " + 'oObject'  SIZE 200,24
+  @ nLeft + 150, ntop+2 SAY "Object: " + 'oObject'  SIZE 200,24
    nLin = nTop + 30
 
   @ 6,nlin-5 TAB oPage1 ITEMS {} SIZE 580,360  
-  BEGIN PAGE ' Propriedades ' OF oPage1
+  BEGIN PAGE ' Properties ' OF oPage1
    @ 010, nLin browse oBrw array ;                
       size 570, 300 ;
       style WS_VSCROLL + WS_HSCROLL
@@ -675,13 +675,13 @@ Function ObjInspector(oObject )
    CreateArList( oBrw, aClassMsgProp )
 	
    oBrw:aColumns[ 1 ]:length = 30
-   oBrw:aColumns[ 1 ]:heading = " Propriedades"
+   oBrw:aColumns[ 1 ]:heading = " Property "
    oBrw:aColumns[ 2 ]:length = 10
-   oBrw:aColumns[ 2 ]:heading = " Valor "
+   oBrw:aColumns[ 2 ]:heading = " Value "
    
    END PAGE OF oPage1
    
-   BEGIN PAGE ' Metodos ' OF oPage1
+   BEGIN PAGE ' Methods ' OF oPage1
       @ 010, nLin browse oBrw2 array ;
       size 570, 300 ;
       style WS_VSCROLL + WS_HSCROLL
@@ -689,7 +689,7 @@ Function ObjInspector(oObject )
    CreateArList( oBrw2, aClassMsgMtdo )
 	
    oBrw2:aColumns[ 1 ]:length = 10
-   oBrw2:aColumns[ 1 ]:heading = "Métodos"
+   oBrw2:aColumns[ 1 ]:heading = "Methods"
 
 	 END PAGE OF oPage1
 	 

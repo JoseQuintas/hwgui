@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.15 2008-07-25 00:29:50 mlacecilia Exp $
+ * $Id: hupdown.prg,v 1.16 2008-09-01 19:00:20 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -17,6 +17,7 @@ CLASS HUpDown INHERIT HControl
    CLASS VAR winclass   INIT "EDIT"
    DATA bSetGet
    DATA value
+   DATA bValid
    DATA hUpDown, idUpDown, styleUpDown
    DATA nLower INIT 0
    DATA nUpper INIT 999
@@ -61,22 +62,26 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    IF bSetGet != Nil
       ::bGetFocus := bGFocus
       ::bLostFocus := bLFocus
+      ::bValid := bLFocus
+      ::lnoValid := bGfocus != Nil
       ::oParent:AddEvent( EN_SETFOCUS,self,{|o,id|__When(o:FindControl(id))},,"onGotFocus" )
       ::oParent:AddEvent( EN_KILLFOCUS,self,{|o,id|__Valid(o:FindControl(id))},,"onLostFocus" )
    ELSE
       IF bGfocus != Nil
          ::lnoValid := .T.
-         ::oParent:AddEvent( EN_SETFOCUS,self,bGfocus,,"onGotFocus"  )
+         ::oParent:AddEvent( EN_SETFOCUS,self,{|o,id|__When(o:FindControl(id))},,"onGotFocus" )
+         //::oParent:AddEvent( EN_SETFOCUS,self,bGfocus,,"onGotFocus"  )
       ENDIF
       IF bLfocus != Nil
-         ::oParent:AddEvent( EN_KILLFOCUS,self,bLfocus,,"onLostFocus"  )
+        // ::oParent:AddEvent( EN_KILLFOCUS,self,bLfocus,,"onLostFocus"  )
+         ::oParent:AddEvent( EN_KILLFOCUS,self,{|o,id|__Valid(o:FindControl(id))},,"onLostFocus" )
       ENDIF
    ENDIF
 
 Return Self
 
 METHOD Activate CLASS HUpDown
-   IF !empty( ::oParent:handle ) 
+   IF !empty( ::oParent:handle )
       ::handle := CreateEdit( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::Init()
@@ -106,18 +111,17 @@ METHOD Refresh()  CLASS HUpDown
 Return Nil
 
 STATIC FUNCTION __When( oCtrl )
-   LOCAL res := .t., oParent, nSkip, aMsgs
+ LOCAL res := .t., oParent, nSkip
 
-	IF !CheckFocus(oCtrl, .f.)
-	   RETURN .t.
-	ENDIF
-   oCtrl:Refresh()
-   nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
-   IF oCtrl:bGetFocus != Nil
+   IF !CheckFocus(oCtrl, .f.)
+      RETURN .t.
+   ENDIF
+  IF oCtrl:bGetFocus != Nil
+      oCtrl:Refresh()
       octrl:lnoValid := .T.
-		aMsgs := SuspendMsgsHandling(oCtrl)
+      octrl:oparent:lSuspendMsgsHandling := .t.
       res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet, , oCtrl ), oCtrl )
-      RestoreMsgsHandling(oCtrl, aMsgs)
+      octrl:oparent:lSuspendMsgsHandling := .f.
       octrl:lnoValid := ! res
       IF ! res
          oParent := ParentGetDialog(oCtrl)
@@ -132,21 +136,36 @@ STATIC FUNCTION __When( oCtrl )
 RETURN res
 
 Static Function __Valid( oCtrl )
-LOCAL res := .t., aMsgs
+LOCAL res := .t., hctrl , nSkip, oDlg
+Local ltab :=  GETKEYSTATE(VK_TAB) < 0
 
    IF !CheckFocus(oCtrl, .t.)  .OR. oCtrl:lnoValid
       RETURN .T.
    ENDIF
-	oCtrl:title := GetEditText( oCtrl:oParent:handle, oCtrl:id )
+   nSkip := iif(GetKeyState(VK_SHIFT) < 0 , -1, 1 )
+    oCtrl:title := GetEditText( oCtrl:oParent:handle, oCtrl:id )
    oCtrl:value := Val( Ltrim( oCtrl:title ) )
    IF oCtrl:bSetGet != Nil
       Eval( oCtrl:bSetGet,oCtrl:value )
    ENDIF
+   octrl:oparent:lSuspendMsgsHandling := .t.
+   hctrl := getfocus()
+   oDlg := ParentGetDialog( oCtrl )
    IF oCtrl:bLostFocus != Nil
-      aMsgs := SuspendMsgsHandling(oCtrl)
-	   res := oCtrl:value <= oCtrl:nUpper .and. ;
-	          oCtrl:value >= oCtrl:nLower .and. ;
-		       Eval( oCtrl:bLostFocus, oCtrl:value,  oCtrl )
-      RestoreMsgsHandling(oCtrl, aMsgs)
+      res := Eval( oCtrl:bLostFocus, oCtrl:value,  oCtrl )
+       res := IIF(res,oCtrl:value <= oCtrl:nUpper .and. ;
+            oCtrl:value >= oCtrl:nLower ,res)
+       IF ! res
+          SetFocus( oCtrl:handle )
+          IF oDlg != Nil
+              oDlg:nLastKey := 0
+          ENDIF
+       ENDIF
+    ENDIF
+    IF ltab .AND. hCtrl=getfocus() .AND. res
+      IF oCtrl:oParent:CLASSNAME = "HTAB"
+            getskip(octrl:oparent,octrl:handle,,nSkip)
+        ENDIF
    ENDIF
+   octrl:oparent:lSuspendMsgsHandling := .F.
 Return res

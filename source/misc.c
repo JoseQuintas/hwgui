@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.42 2008-06-30 21:59:45 mlacecilia Exp $
+ * $Id: misc.c,v 1.43 2008-09-01 19:00:20 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -123,7 +123,7 @@ HB_FUNC( GETSTOCKOBJECT )
 
 HB_FUNC( LOWORD )
 {
-   
+
    hb_retni( (int) ( (ISPOINTER(1) ? PtrToUlong(hb_parptr(1 )) :hb_parnl( 1 )) & 0xFFFF ) );
 }
 
@@ -195,7 +195,7 @@ HB_FUNC( CLIENTTOSCREEN )
 HB_FUNC( SCREENTOCLIENT )
 {
    POINT pt;
-   RECT R; 
+   RECT R;
    PHB_ITEM aPoint = hb_itemArrayNew( 2 );
    PHB_ITEM temp;
 
@@ -451,16 +451,6 @@ HB_FUNC( WINHELP )
 
 HB_FUNC( GETNEXTDLGTABITEM )
 {
-   /*
-   nextHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .t. )
-
-   HWND GetNextDlgTabItem(HWND hDlg, HWND hCtl, BOOL bPrevious )
-
-   hDlg - Handle to the dialog box to be searched.
-   hCtl - Handle to the control to be used as the starting point for the search. If this parameter is NULL, the function uses the last (or first) control in the dialog box as the starting point for the search.
-   bPrevious - Specifies how the function is to search the dialog box. If this parameter is TRUE, the function searches for the previous control in the dialog box. If this parameter is FALSE, the function searches for the next control in the dialog box.
-   */
-
    HB_RETHANDLE(  GetNextDlgTabItem( (HWND) HB_PARHANDLE( 1 ), (HWND) HB_PARHANDLE( 2 ), hb_parl( 3 ) ) ) ;
 }
 
@@ -745,3 +735,9 @@ HB_FUNC( GETKEYBOARDCOUNT )
 
    hb_retni((WORD)lParam);
 }
+
+HB_FUNC(GETNEXTDLGGROUPITEM)
+{
+ HB_RETHANDLE( GetNextDlgGroupItem( (HWND) HB_PARHANDLE( 1 ), (HWND) HB_PARHANDLE( 2 ), hb_parl( 3 ) ) ) ;
+}
+

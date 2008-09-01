@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.89 2008-07-29 16:12:42 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.90 2008-09-01 19:00:19 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -64,7 +64,11 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), ;
                         WS_TABSTOP + IIf( lNoBorder == Nil.OR. ! lNoBorder, WS_BORDER, 0 ) + ;
                         IIf( lPassword == Nil .or. ! lPassword, 0, ES_PASSWORD )  )
-
+                        
+*   IF owndParent:oParent != Nil
+      bPaint := {|o,p| o:paint(p)}
+*   ENDIF
+                        
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, IIf( bcolor == Nil, GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor ) )
 
@@ -201,7 +205,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 					        iif( IsCtrlShift(.f., .t.), -1, 1) )
                RETURN 0
             ELSEIF wParam == VK_RETURN  // Enter
-               GetSkip( oParent, ::handle, .T., 1 )
+               *GetSkip( oParent, ::handle, .T., 1 )
                RETURN 0
             ENDIF
 
@@ -224,8 +228,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 					                                  IsCtrlShift(.f., .t.) )
                SetFocus( nexthandle )
                RETURN 0
-            END
-         END
+            ENDIF
+         ENDIF
       ENDIF
       IF lColorinFocus
          IF msg == WM_SETFOCUS
@@ -375,10 +379,11 @@ METHOD SetText( c ) CLASS HEdit
          Eval( ::bSetGet, c, Self )
       ENDIF
    ENDIF
+   ::REFRESH()
 
    RETURN NIL
 
-STATIC FUNCTION IsCtrlShift( lCtrl, lShift )
+FUNCTION IsCtrlShift( lCtrl, lShift )
    LOCAL cKeyb := GetKeyboardState()
 
    IF lCtrl == Nil ; lCtrl := .T. ; ENDIF
@@ -723,21 +728,18 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
    RETURN 0
 
 STATIC FUNCTION __When( oCtrl )
-   LOCAL res := .t., oParent, nSkip, aMsgs
+  LOCAL res := .t., oParent, nSkip
 
 	IF !CheckFocus(oCtrl, .f.)
-	   RETURN .t.
+	   RETURN .F.
 	ENDIF
-   oCtrl:Refresh()
-   oCtrl:lFirst := .T.
-   nSkip := iif( GetKeyState( VK_UP ) < 0 .or. ;
-	             (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ),;
-					  -1, 1 )
+  *-oCtrl:Refresh()
+  oCtrl:lFirst := .T.
    IF oCtrl:bGetFocus != Nil
-		aMsgs := SuspendMsgsHandling(oCtrl)
-		octrl:lnoValid := .T.
-		res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
-      RestoreMsgsHandling(oCtrl, aMsgs)
+		  octrl:oparent:lSuspendMsgsHandling := .T.
+		  octrl:lnoValid := .T.
+		  res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
+		  octrl:oparent:lSuspendMsgsHandling := .F.
       octrl:lnoValid := ! res
       IF ! res
          oParent := ParentGetDialog(oCtrl)
@@ -752,7 +754,7 @@ STATIC FUNCTION __When( oCtrl )
 RETURN res
 
 STATIC FUNCTION __valid( oCtrl )
-   LOCAL res, vari, oDlg, aMsgs
+  LOCAL res, vari, oDlg
 
 	IF !CheckFocus(oCtrl, .t.) .or. oCtrl:lNoValid
 	   RETURN .t.
@@ -777,9 +779,9 @@ STATIC FUNCTION __valid( oCtrl )
             oDlg:nLastKey := 27
          ENDIF
          IF oCtrl:bLostFocus != Nil
-            aMsgs := SuspendMsgsHandling(oCtrl)
-			   res := Eval( oCtrl:bLostFocus, vari, oCtrl )
-            RestoreMsgsHandling(oCtrl, aMsgs)
+            octrl:oparent:lSuspendMsgsHandling := .T.
+ 			      res := Eval( oCtrl:bLostFocus, vari, oCtrl )
+            octrl:oparent:lSuspendMsgsHandling := .F.
             if ! res
                SetFocus( oCtrl:handle )
                IF oDlg != Nil
@@ -792,6 +794,14 @@ STATIC FUNCTION __valid( oCtrl )
             oDlg:nLastKey := 0
          ENDIF
       ENDIF
+   ELSEIF oCtrl:bLostFocus != Nil
+      octrl:oparent:lSuspendMsgsHandling := .T.
+		  res := Eval( oCtrl:bLostFocus, vari, oCtrl )
+		  octrl:oparent:lSuspendMsgsHandling := .F.
+      IF ! res
+         SetFocus( oCtrl:handle )
+         RETURN .F.
+      ENDIF   
    ENDIF
 
    RETURN .T.
@@ -973,22 +983,20 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
 RETURN .T.
 
 STATIC FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
-   Local nextHandle := 0, i, nFirst , nLast
-
+   Local nextHandle := 0, i, nFirst , nLast , k := 0
    if len(oParent:aPages) > 0
+      SETFOCUS(oParent:handle)
       oParent:GetActivePage(@nFirst, @nLast)
       i :=  AScan( oParent:acontrols, { | o | o:handle == hCtrl } )
-      i += IIF( i == 0, nLast, nSkip)
-      DO WHILE i >= nFirst .and. i <= nLast
-        IF ! oParent:acontrols[ i ]:lHide .AND. IsWindowEnabled( oParent:acontrols[ i ]:Handle ) // ;
+      i += IIF( i = 0, nFirst, nSkip) //nLast, nSkip)
+      IF i >= nFirst .and. i <= nLast
            nexthandle := GetNextDlgTabItem ( oParent:handle , hctrl, ( nSkip < 0 ) )
-           exit
-        ELSE
-           setFocus(oParent:aControls[ i + nSkip ]:handle)
-        ENDIF
-        i += nSkip
-      ENDDO
-      IF i > nLast .OR. i < nFirst  // ultimo objecto do tab
+          IF  i != AScan( oParent:acontrols, { | o | o:handle == NEXTHANDLE } ) .AND. oParent:acontrols[ i ]:CLASSNAME = "HRADIO" 
+             nexthandle := GetNextDlgGroupItem( oParent:handle , hctrl,( nSkip < 0 ) )
+          ENDIF  
+          k := AScan( oParent:acontrols, { | o | o:handle == NEXTHANDLE } )
+      ENDIF
+      IF (nSkip < 0 .AND. ( k > i .OR. k = 0)) .OR. (nSkip > 0 .AND. i > k)
         nexthandle := GetNextDlgTabItem ( GetActiveWindow(), hctrl, (nSkip < 0) )
       ENDIF
    ENDIF
@@ -999,18 +1007,10 @@ STATIC FUNCTION NextFocus(oParent,hCtrl,nSkip)
 Local nextHandle :=0,  i
 
    i := AScan( oparent:acontrols, { | o | o:handle == hCtrl } )
-   i += nSkip
-   DO While i > 0 .AND. i <= Len(oParent:aControls)
-      IF ! oParent:aControls[ i ]:lHide .AND. IsWindowEnabled( oParent:aControls[ i ]:handle ) // ;
-         nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
-         EXIT
-      ELSE
-         setFocus(oParent:aControls[ i + nSkip ]:handle)
-      ENDIF
-      i += nSkip
-   ENDDO
-   IF nextHandle == 0
       nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
+   IF i > 0 .AND. oParent:acontrols[ i ]:CLASSNAME = "HRADIO" 
+       nexthandle := GetNextDlgGroupItem( oParent:handle , hctrl,( nSkip < 0 ) )
+       i := AScan( oparent:acontrols, { | o | o:handle == NEXTHANDLE } ) 
    ENDIF
 RETURN nextHandle
 
@@ -1039,53 +1039,16 @@ FUNCTION SetColorinFocus( lDef )
 Luis Fernando Basso contribution
 */
 
-FUNCTION SuspendMsgsHandling(oCtrl)
-LOCAL aEvent:={}, i, nMsgNum
-
-  IF oCtrl:Handle != getFocus()
-    RETURN {}
-  ENDIF
-  nMsgNum := Len(oCtrl:oparent:aNotify)
-  FOR i = 1 to nMsgNum
-     IF oCtrl:oParent:aNotify[i,2] == oCtrl:id
-        AAdd(aEvent, {.T.,i,oCtrl:oParent:aNotify[i]})
-        oCtrl:oParent:aNotify[i] := {oCtrl:oParent:aNotify[i,1],oCtrl:oParent:aNotify[i,2],{|| .t.}}
-     ENDIF
-  NEXT
-  nMsgNum := Len(oCtrl:oparent:aEvents)
-  FOR i = 1 to nMsgNum
-     IF oCtrl:oParent:aEvents[i,2] == oCtrl:id
-        AAdd(aEvent, {.F.,i,oCtrl:oParent:aEvents[i]})
-        oCtrl:oParent:aEvents[i] := {oCtrl:oParent:aEvents[i,1],oCtrl:oParent:aEvents[i,2],{|| .t.}}
-     ENDIF
-  NEXT
-RETURN aEvent
-
-FUNCTION RestoreMsgsHandling(oCtrl,aEvent)
-Local i, nMsgNum := Len(aEvent)
-
-  IF oCtrl:Handle != getFocus()
-    RETURN Nil
-  ENDIF
-  FOR i = 1 to nMsgNum
-    IF aEvent[i,3,2] == oCtrl:id //.AND. aEvent[i,2,3] != Nil
-       IF aEvent[i,1]
-          oCtrl:oParent:aNotify[aEvent[i,2]] := aEvent[i,3]
-       ELSE
-          oCtrl:oParent:aEvents[aEvent[i,2]] := aEvent[i,3]
-       ENDIF
-    ENDIF
-  NEXT
-RETURN Nil
-
 FUNCTION CheckFocus(oCtrl, nInside)
 
   IF !IsWindowVisible(ParentGetDialog(oCtrl):handle) .OR. GetActiveWindow() == 0
-     IF nInside
+    IF !nInside
         ParentGetDialog(oCtrl):Show()
         SetFocus(ParentGetDialog(oCtrl):handle)
         SetFocus(GetFocus())
-		  RETURN .f.
 	  ENDIF
+    RETURN .F.
+  ELSEIF nInside .AND. oCtrl:Handle = getfocus()
+	  // RETURN .F.  
   ENDIF
 RETURN .t.

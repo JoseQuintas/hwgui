@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.24 2008-09-01 19:00:19 mlacecilia Exp $
+ *$Id: hcwindow.prg,v 1.25 2008-09-04 15:25:10 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -76,9 +76,9 @@ CLASS HCustomWindow INHERIT HObject
    METHOD Move( x1, y1, width, height )
    METHOD onEvent( msg, wParam, lParam )
    METHOD End()
-   METHOD RefreshCTRL( oControle )
-   METHOD SetFocusCTRL( oControle )
-   METHOD RefreshAll()
+   METHOD RefreshCtrl( oCtrl )
+   METHOD SetFocusCtrl( oCtre )
+   METHOD Refresh()
 
 ENDCLASS
 
@@ -194,7 +194,7 @@ RETURN NIL
 
 //----------------------------------------------------------------------------//
 
-METHOD RefreshCTRL( oControle, nSeek ) CLASS HCustomWindow
+METHOD RefreshCtrl( oCtrl, nSeek ) CLASS HCustomWindow
 LOCAL nPos, n
 
    DEFAULT nSeek := 1
@@ -205,7 +205,7 @@ LOCAL nPos, n
       n := 3
    ENDIF
 
-   nPos := Ascan( ::aControls, {|x| x[ n ] == oControle } )
+   nPos := Ascan( ::aControls, {|x| x[ n ] == oCtrl } )
 
    IF nPos >0
      ::aControls[ nPos, 2 ]:Refresh()
@@ -214,10 +214,10 @@ LOCAL nPos, n
 RETURN NIL
 
 //----------------------------------------------------------------------------//
-METHOD SetFocusCTRL( oControle ) CLASS HCustomWindow
+METHOD SetFocusCtrl( oCtrl ) CLASS HCustomWindow
 LOCAL nPos
 
-   nPos := Ascan( ::aControls, {|x| x[ 1 ] == oControle } )
+   nPos := Ascan( ::aControls, {|x| x[ 1 ] == oCtrl } )
 
    IF nPos >0
      ::aControls[ nPos, 2 ]:SetFocus()
@@ -225,20 +225,19 @@ LOCAL nPos
 
 RETURN NIL
 
-METHOD RefreshAll(oCtrl) CLASS HCustomWindow
+METHOD Refresh(oCtrl) CLASS HCustomWindow
 Local nlen , i, hCtrl := GetFocus()
-   oCtrl := IIF(oCtrl = Nil, self, Octrl)
-   nlen := LEN(oCtrl:aControls)
-  IF IsWindowVisible(::Handle)
+  oCtrl := IIF(oCtrl = Nil, self, Octrl)
+  nlen := LEN(oCtrl:aControls)
+  IF IsWindowVisible(::handle)
     FOR i = 1 to nLen
      IF ! oCtrl:aControls[ i ]:lHide .AND.;
         oCtrl:aControls[ i ]:handle != hCtrl
-          //IsWindowEnabled( ::aControls[ i ]:handle ) .AND. ::aControls[ i ]:handle != hCtrl
         IF __ObjHasMethod(oCtrl:aControls[ i ],"REFRESH")
            oCtrl:aControls[ i ]:refresh()
         ELSE
-           oCtrl:aControls[ i ]:SHOW()
-            ENDIF
+           oCtrl:aControls[ i ]:show()
+        ENDIF
          IF LEN(oCtrl:aControls[ i ]:aControls) > 0
              ::Refresh(oCtrl:aControls[ i ])
           ENDIF

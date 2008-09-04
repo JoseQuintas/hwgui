@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.885 2008-09-01 19:41:17 mlacecilia Exp $
+ * $Id: Changelog,v 1.886 2008-09-04 15:25:08 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-04 21:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hcwindow.prg
+    * renamed the previously added method RefreshAll to Refresh
 
 2008-09-01 21:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcontrol.prg

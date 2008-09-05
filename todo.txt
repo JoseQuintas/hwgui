@@ -1,0 +1,9 @@
+- MDICHILD,  the controls ENTER, TAB,... not functions how in DIALOG
+- MAIN MDI, background bitmap not function perfectly, only flick a bitmap and change for the default background color
+- DIALOG NOMODAL, always stay in a TOP, if you onpen a CHILD it go to DIALOG'S back, can't bring to FRONT
+- GET with AUTO_VSCROOL not function equal "@S"
+- change TITLE of DIALOG or WINDOW on the fly
+- possibilidade de um STYLE para que o objeto nao seje o proximo foco
+- STYLE DT_VCENTER in SAY not function perfectly the back change to dark gray
+- CHILD possibility change de backgrond color
+- PANEL possibility change de backgrond color

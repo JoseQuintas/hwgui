@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.887 2008-09-05 10:39:47 mlacecilia Exp $
+ * $Id: Changelog,v 1.888 2008-09-05 13:41:43 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-09-05 15:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  thanks to Luis Fernando Basso who solved and Giuseppe Mastrangelo
+  who signaled the bug.
+  * source\hdialog.prg
+    * fixed missed repainting of dialog when his background use a 
+      brush color
+    
 2008-09-05 12:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcontrol.prg
     * moved the WM_SYSKEYUP trapping in hButtonEx to activate the 

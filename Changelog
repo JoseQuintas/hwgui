@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.886 2008-09-04 15:25:08 mlacecilia Exp $
+ * $Id: Changelog,v 1.887 2008-09-05 10:39:47 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-05 12:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hcontrol.prg
+    * moved the WM_SYSKEYUP trapping in hButtonEx to activate the 
+      accelerator key
+  * source\hdialog.prg
+    * added the nInitFocus property (internal use only)
+    * fixed the focused control at activation/gain focus time
+    * fix for command handling in tab pages    
+   * source\htab.prg
+    * added return key handling in navigation   
 
 2008-09-04 21:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcwindow.prg

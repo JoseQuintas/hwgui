@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.29 2008-07-08 17:40:47 mlacecilia Exp $
+ * $Id: hprinter.prg,v 1.30 2008-09-06 17:47:00 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -288,9 +288,13 @@ Local i, nLen
 Return Nil
 
 METHOD Preview( cTitle,aBitmaps,aTooltips, aBootUser ) CLASS HPrinter
-Local oDlg, oToolBar, oSayPage, oBtn, oCanvas, oTimer
+Local oDlg, oToolBar, oSayPage, oBtn, oCanvas, oTimer, i, nLastPage:=Len(::aMeta), aPage:={}
 Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
 Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] != Nil .AND. aBitmaps[10] )
+
+   FOR i:=1 to nLastPage
+	  aadd(aPage,str(i,4)+":"+str(nLastPage,4))
+   NEXT
 
    IF cTitle == Nil; cTitle := "Print preview - "+::cPrinterName; ENDIF
    ::nZoom := 0
@@ -308,7 +312,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
    oDlg:bScroll:={|oWnd,msg,wParam,lParam|HB_SYMBOL_UNUSED(oWnd), ResizePreviewDlg(oCanvas,Self,,msg,wParam,lParam)}
    oDlg:brush := HBrush():Add( 11316396 )
 
-   @ 0,0 PANEL oToolBar SIZE 44,oDlg:nHeight
+   @ 0,0 PANEL oToolBar SIZE 88,oDlg:nHeight
 
 
 // Canvas should fill ALL the available space
@@ -342,11 +346,13 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 0,62 SAY oSayPage CAPTION "1:"+Ltrim(Str(Len(::aMeta))) OF oToolBar ;
-        SIZE oToolBar:nWidth,22 STYLE WS_BORDER+SS_CENTER FONT oFont BACKCOLOR 12507070
+   @ 3,62 COMBOBOX oSayPage ITEMS aPage of oToolBar ;
+  	       SIZE oToolBar:nWidth-6,24 color "fff000" backcolor 12507070 ;
+  	       ON CHANGE {|| ChangePage(oDlg,oSayPage,Self,,oSayPage:GetValue()) } STYLE WS_VSCROLL
+
 
    @ 3,86 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,0)} ;
-        SIZE oToolBar:nWidth-6,24 TEXT "|<<" FONT oFont FLAT                ;
+        SIZE oToolBar:nWidth-6,24 TEXT "|<<" FONT oFont                 ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[3],"First page")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 3 .AND. aBitmaps[4] != Nil
       oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[4] ), HBitmap():AddFile( aBitmaps[4] ) )
@@ -355,7 +361,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
    ENDIF
 
    @ 3,110 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,1)} ;
-        SIZE oToolBar:nWidth-6,24 TEXT ">>" FONT oFont FLAT                 ;
+        SIZE oToolBar:nWidth-6,24 TEXT ">>" FONT oFont                  ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[4],"Next page")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 4 .AND. aBitmaps[5] != Nil
       oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[5] ), HBitmap():AddFile( aBitmaps[5] ) )
@@ -364,7 +370,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
    ENDIF
 
    @ 3,134 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,-1)} ;
-        SIZE oToolBar:nWidth-6,24 TEXT "<<" FONT oFont FLAT   ;
+        SIZE oToolBar:nWidth-6,24 TEXT "<<" FONT oFont    ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[5],"Previous page")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 5 .AND. aBitmaps[6] != Nil
       oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[6] ), HBitmap():AddFile( aBitmaps[6] ) )
@@ -373,7 +379,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
    ENDIF
 
    @ 3,158 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,2)} ;
-        SIZE oToolBar:nWidth-6,24 TEXT ">>|" FONT oFont FLAT  ;
+        SIZE oToolBar:nWidth-6,24 TEXT ">>|" FONT oFont   ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[6],"Last page")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 6 .AND. aBitmaps[7] != Nil
       oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[7] ), HBitmap():AddFile( aBitmaps[7] ) )
@@ -384,7 +390,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
    @ 1,189 LINE LENGTH oToolBar:nWidth-1
 
    @ 3,192 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ResizePreviewDlg(oCanvas,Self,-1)} ;
-        SIZE oToolBar:nWidth-6,24 TEXT "(-)" FONT oFont FLAT  ;
+        SIZE oToolBar:nWidth-6,24 TEXT "(-)" FONT oFont   ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[7],"Zoom out")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 7 .AND. aBitmaps[8] != Nil
       oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[8] ), HBitmap():AddFile( aBitmaps[8] ) )
@@ -393,7 +399,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
    ENDIF
 
    @ 3,216 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ResizePreviewDlg(oCanvas,Self,1)} ;
-        SIZE oToolBar:nWidth-6,24 TEXT "(+)" FONT oFont FLAT  ;
+        SIZE oToolBar:nWidth-6,24 TEXT "(+)" FONT oFont   ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[8],"Zoom in")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 8 .AND. aBitmaps[9] != Nil
       oBtn:oBitmap := Iif( aBitmaps[1], HBitmap():AddResource( aBitmaps[9] ), HBitmap():AddFile( aBitmaps[9] ) )
@@ -410,7 +416,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
       @ 3,316 OWNERBUTTON oBtn OF oToolBar  ;
            SIZE oToolBar:nWidth-6,24        ;
            TEXT Iif( Len(aBootUser)==4,aBootUser[4],"User Button" ) ;
-           FONT oFont FLAT                  ;
+           FONT oFont                   ;
            TOOLTIP Iif(aBootUser[3]!=Nil,aBootUser[3],"User Button")
 
       oBtn:bClick := aBootUser[1]
@@ -442,20 +448,24 @@ Static Function TimerFunc(o )
    RedrawWindow( o:handle, RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW + RDW_INVALIDATE )  // Force a complete redraw
 Return Nil
 
-Static Function ChangePage( oDlg,oSayPage,oPrinter,n )
+Static Function ChangePage( oDlg,oSayPage,oPrinter,n,nPage )
 
    oPrinter:NeedsRedraw := .T.
-   IF n == 0
-      oPrinter:nCurrPage := 1
-   ELSEIF n == 2
-      oPrinter:nCurrPage := Len(oPrinter:aMeta)
-   ELSEIF n == 1 .AND. oPrinter:nCurrPage < Len(oPrinter:aMeta)
-      oPrinter:nCurrPage ++
-   ELSEIF n == -1 .AND. oPrinter:nCurrPage > 1
-      oPrinter:nCurrPage --
+   IF npage=nil
+      IF n == 0
+         oPrinter:nCurrPage := 1
+      ELSEIF n == 2
+         oPrinter:nCurrPage := Len(oPrinter:aMeta)
+      ELSEIF n == 1 .AND. oPrinter:nCurrPage < Len(oPrinter:aMeta)
+         oPrinter:nCurrPage ++
+      ELSEIF n == -1 .AND. oPrinter:nCurrPage > 1
+         oPrinter:nCurrPage --
+      ENDIF
+   	oSayPage:setitem(oprinter:ncurrpage)
+   ELSE
+	   oPrinter:ncurrpage:=nPage
    ENDIF
-   oSayPage:SetValue( Ltrim(Str(oPrinter:nCurrPage))+":"+Ltrim(Str(Len(oPrinter:aMeta))) )
-   RedrawWindow( oDlg:handle, RDW_ERASE + RDW_INVALIDATE )
+
 Return Nil
 
 

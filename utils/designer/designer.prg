@@ -1,7 +1,7 @@
 /*
 /*
 /*
- * $Id: designer.prg,v 1.33 2008-09-01 19:00:20 mlacecilia Exp $
+ * $Id: designer.prg,v 1.34 2008-09-08 16:53:29 mlacecilia Exp $
  *
  * Designer
  * Main file
@@ -44,13 +44,13 @@ REQUEST GETPRINTERS
 
 Function Designer( p0, p1, p2 )
 Local oPanel, oTab, oFont, oStatus1, cResForm, i
-Local oMainWin
+// Local oMainWin
 Memvar oDesigner, cCurDir, oDlgx
 Memvar crossCursor, vertCursor, horzCursor, handCursor
 
 Public oDesigner, cCurDir, oMenuTool
 Public crossCursor, vertCursor, horzCursor, handCursor
-// :LFB 
+// :LFB
 REQUEST DBFCDX,DBFFPT
 RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
 // :END LFB
@@ -97,7 +97,7 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
       horzCursor  := LoadCursor( IDC_SIZEWE )
       vertCursor  := LoadCursor( IDC_SIZENS )
       // :LFB
-      handCursor   := LoadCursor( IDC_HAND )  //65581 
+      handCursor   := LoadCursor( IDC_HAND )  //65581
       // :END LFB
    ENDIF
 
@@ -108,12 +108,12 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
       ON EXIT {||EndIde()}
 #else
 
- //  INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE 280,200 TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;                                
-   
+ //  INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE 280,200 TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
+
    INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE Getdesktopwidth(),GetdesktopHeight()-21 ;
-	    TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
+       TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
       FONT oFont                                                  ;
-      ON EXIT {||EndIde()}                                         
+      ON EXIT {||EndIde()}
 
 #endif
 
@@ -151,7 +151,7 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
       ENDMENU
       MENU TITLE "&View"
          MENUITEM "&Object Inspector" ID 1010 ACTION Iif( oDesigner:oDlgInsp==Nil,InspOpen(),oDesigner:oDlgInsp:Close() )
-	 SEPARATOR
+    SEPARATOR
          MENUITEM "&Show Grid 5px" ID 1050 ACTION ShowGrid5px()
          MENUITEM "&Show Grid 10px" ID 1052 ACTION ShowGrid10px()
          MENUITEM "S&nap to Grid" ID 1051 ACTION CheckMenuItem(oDesigner:oMainWnd:handle,1051,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1051))
@@ -176,7 +176,7 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
    else
        CheckMenuItem(oDesigner:oMainWnd:handle,1052,.T.)
    endif
- 
+
 
    @ 0,0 PANEL oPanel SIZE 280,200 ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,y-21),statusbarmsg('')}
 
@@ -207,62 +207,62 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
           SIZE 24,24 FLAT                ;
           BITMAP "smNext" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
           TOOLTIP "Preview Form"
-          
-      // : LFB pos    
-      @ 164,6 LINE LENGTH 18 VERTICAL          
+
+      // : LFB pos
+      @ 164,6 LINE LENGTH 18 VERTICAL
       @ 166,3 OWNERBUTTON OF oPanel       ;
           ON CLICK {|| Iif( oDesigner:oDlgInsp==Nil,InspOpen(),InspShow())} ;
           SIZE 24,24 FLAT                ;
           BITMAP "smProprie" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
           TOOLTIP "Propriedades"
-      @ 192,6 LINE LENGTH 18 VERTICAL                        
+      @ 192,6 LINE LENGTH 18 VERTICAL
       @ 194,3 OWNERBUTTON OF oPanel       ;
           ON CLICK {|| Asels_ajustar(1)} ;
           SIZE 24,24 FLAT                ;
           BITMAP "smAlignLeft" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
-          TOOLTIP "Align left sides"  
+          TOOLTIP "Align left sides"
       @ 218,3 OWNERBUTTON OF oPanel       ;
           ON CLICK {|| Asels_ajustar(2)} ;
           SIZE 24,24 FLAT                ;
           BITMAP "smAlignRight" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
-          TOOLTIP "Align Right sides"  
+          TOOLTIP "Align Right sides"
       @ 242,3 OWNERBUTTON OF oPanel       ;
           ON CLICK {|| Asels_ajustar(3)} ;
           SIZE 24,24 FLAT                ;
           BITMAP "smAlignTop" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
-          TOOLTIP "Align Top Edges"  
-      @ 268,6 LINE LENGTH 18 VERTICAL                        
+          TOOLTIP "Align Top Edges"
+      @ 268,6 LINE LENGTH 18 VERTICAL
       @ 270,3 OWNERBUTTON OF oPanel       ;
           ON CLICK {|| Asels_ajustar(5)} ;
           SIZE 24,24 FLAT                ;
           BITMAP "smSameWidth" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
-          TOOLTIP "Same Width"  
+          TOOLTIP "Same Width"
       @ 294,3 OWNERBUTTON OF oPanel       ;
           ON CLICK {|| Asels_ajustar(6)} ;
           SIZE 24,24 FLAT                ;
           BITMAP "smSameHeight" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
-          TOOLTIP "Same Height"  
-      @ 320,6 LINE LENGTH 18 VERTICAL             
+          TOOLTIP "Same Height"
+      @ 320,6 LINE LENGTH 18 VERTICAL
       @ 322,3 OWNERBUTTON OF oPanel       ;
           ON CLICK {|| Asels_ajustar(7)} ;
           SIZE 24,24 FLAT                ;
           BITMAP "smCenterHorz" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
-          TOOLTIP "Center Horizontally"  
+          TOOLTIP "Center Horizontally"
       @ 344,3 OWNERBUTTON OF oPanel       ;
           ON CLICK {|| Asels_ajustar(8)} ;
           SIZE 24,24 FLAT                ;
           BITMAP "smCentervert" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
-          TOOLTIP "center Vertically"  
-          
-      // : END LFB         
+          TOOLTIP "center Vertically"
+
+      // : END LFB
 
    ENDIF
 
     ADD STATUS oStatus1 TO oDesigner:oMainWnd ;
        PARTS oDesigner:oMainWnd:nWidth-280,80,80, 40,40,40 ;
        FONT HFont():Add( "MS Sans Serif",0,-12,400,,,)
-        
-			//
+
+         //
    @ 3,30 TAB oTab ITEMS {} OF oPanel SIZE 380,310 FONT oFont ;
       ON SIZE {|o,x,y|ArrangeBtn(o,x,y)}
 
@@ -277,12 +277,12 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
       MENUITEM "Adjust to bottom" ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.F.,.F.,.T. )
       // : LFB
       SEPARATOR
-      MENUITEM "Align left sides"  ACTION Asels_ajustar(1)      
-      MENUITEM "Align Right sides"  ACTION Asels_ajustar(2)      
-      MENUITEM "Align Top Edges"  ACTION Asels_ajustar(3)      
-      //MENUITEM "Align Bottom Edges"  ACTION Asels_ajustar(4)      
-      MENUITEM "Same Width"  ACTION Asels_ajustar(5)      
-      MENUITEM "Same Height"  ACTION Asels_ajustar(6)      
+      MENUITEM "Align left sides"  ACTION Asels_ajustar(1)
+      MENUITEM "Align Right sides"  ACTION Asels_ajustar(2)
+      MENUITEM "Align Top Edges"  ACTION Asels_ajustar(3)
+      //MENUITEM "Align Bottom Edges"  ACTION Asels_ajustar(4)
+      MENUITEM "Same Width"  ACTION Asels_ajustar(5)
+      MENUITEM "Same Height"  ACTION Asels_ajustar(6)
       // :END LFB
       SEPARATOR
       IF oDesigner:lReport
@@ -292,10 +292,10 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
       MENUITEM "Delete" ACTION DeleteCtrl()
       SEPARATOR
       MENUITEM "Properties" ACTION Iif( oDesigner:oDlgInsp==Nil,InspOpen(),InspShow())
-      MENUITEM "Objetos" ACTION socontroles() 
+      MENUITEM "Objetos" ACTION socontroles()
       SEPARATOR
-      MENUITEM "Classe Objeto" ACTION objinspector(GetCtrlSelected(HFormGen():oDlgSelected)) 
-			  //Iif( oDesigner:oDlgInsp==Nil,InspOpen(), HWG_BRINGWINDOWTOTOP(oDesigner:oDlgInsp:handle) )
+      MENUITEM "Classe Objeto" ACTION objinspector(GetCtrlSelected(HFormGen():oDlgSelected))
+           //Iif( oDesigner:oDlgInsp==Nil,InspOpen(), HWG_BRINGWINDOWTOTOP(oDesigner:oDlgInsp:handle) )
 
    ENDMENU
 
@@ -311,20 +311,20 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
       MENUITEM "Adjust to bottom" ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.F.,.F.,.T. )
       // : LFB
       SEPARATOR
-      MENUITEM "Align left sides"  ACTION Asels_ajustar(1)      
-      MENUITEM "Align Right sides"  ACTION Asels_ajustar(2)      
-      MENUITEM "Align Top Edges"  ACTION Asels_ajustar(3)      
-      //MENUITEM "Align Bottom Edges"  ACTION Asels_ajustar(4)      
-      MENUITEM "Same Width"  ACTION Asels_ajustar(5)      
-      MENUITEM "Same Height"  ACTION Asels_ajustar(6)      
+      MENUITEM "Align left sides"  ACTION Asels_ajustar(1)
+      MENUITEM "Align Right sides"  ACTION Asels_ajustar(2)
+      MENUITEM "Align Top Edges"  ACTION Asels_ajustar(3)
+      //MENUITEM "Align Bottom Edges"  ACTION Asels_ajustar(4)
+      MENUITEM "Same Width"  ACTION Asels_ajustar(5)
+      MENUITEM "Same Height"  ACTION Asels_ajustar(6)
       // : END LFB
-			SEPARATOR
+         SEPARATOR
       MENUITEM "Delete" ACTION DeleteCtrl()
       SEPARATOR
       MENUITEM "Properties" ACTION Iif( oDesigner:oDlgInsp==Nil,InspOpen(),InspShow())
-      MENUITEM "Objetos" ACTION socontroles() 
+      MENUITEM "Objetos" ACTION socontroles()
       SEPARATOR
-      MENUITEM "Classe Objeto" ACTION objinspector(GetCtrlSelected(HFormGen():oDlgSelected)) 
+      MENUITEM "Classe Objeto" ACTION objinspector(GetCtrlSelected(HFormGen():oDlgSelected))
 
    ENDMENU
 
@@ -333,9 +333,9 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
       MENUITEM "Preview" ACTION DoPreview()
       SEPARATOR
       MENUITEM "Properties" ACTION Iif( oDesigner:oDlgInsp==Nil,InspOpen(),InspShow())
-      MENUITEM "Objetos" ACTION socontroles() 
+      MENUITEM "Objetos" ACTION socontroles()
       SEPARATOR
-      MENUITEM "Classe Objeto" ACTION objinspector(GetCtrlSelected(HFormGen():oDlgSelected)) 
+      MENUITEM "Classe Objeto" ACTION objinspector(GetCtrlSelected(HFormGen():oDlgSelected))
    ENDMENU
 
    HWG_InitCommonControlsEx()
@@ -360,14 +360,14 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
 Return cResForm
 
 static Function ShowGrid10px()
-local nForm, nForms
+// local nForm, nForms
 memvar oDesigner
 if ( oDesigner:oDlgInsp == NIL )
     CheckMenuItem(oDesigner:oMainWnd:handle,1052,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1052))
     CheckMenuItem(oDesigner:oMainWnd:handle,1050,.F.)
     if (IsCheckedMenuItem(oDesigner:oMainWnd:handle,1052))
         oDesigner:nPixelGrid := 18
-	oDesigner:lShowGrid  := .T.
+   oDesigner:lShowGrid  := .T.
     else
         oDesigner:nPixelGrid := 0
         oDesigner:lShowGrid  := .F.
@@ -378,14 +378,14 @@ endif
 Return ( NIL )
 
 static Function ShowGrid5px()
-local nForm, nForms
+//local nForm, nForms
 memvar oDesigner
 if ( oDesigner:oDlgInsp == NIL )
     CheckMenuItem(oDesigner:oMainWnd:handle,1050,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1050))
     CheckMenuItem(oDesigner:oMainWnd:handle,1052,.F.)
     if (IsCheckedMenuItem(oDesigner:oMainWnd:handle,1050))
         oDesigner:nPixelGrid := 12
-				oDesigner:lShowGrid  := .T.
+            oDesigner:lShowGrid  := .T.
     else
         oDesigner:nPixelGrid := 0
         oDesigner:lShowGrid  := .F.
@@ -488,7 +488,7 @@ memvar oDesigner, cCurDir
                     oDesigner:lShowGrid := .F.
                 else
                     oDesigner:lShowGrid := .T.
-		endif
+      endif
              ENDIF
       ELSEIF oNode:title == "dirpath"
              l_ds_mypath := oNode:GetAttribute("default")
@@ -514,7 +514,7 @@ Return .T.
 
 Static Function BuildSet( oTab )
 Local i, j, j1, aSet, oWidget, oProperty, b1, b2, b3, cDlg, arr, b4
-Local x1, cText,cBmp, oButton 
+Local x1, cText,cBmp, oButton
 Memvar oDesigner
 
    IF !Empty( oDesigner:oWidgetsSet:aItems )
@@ -562,10 +562,10 @@ Memvar oDesigner
                   cDlg := oProperty:GetAttribute("array")
                   IF cDlg != Nil
                      arr := {}
-                  	 DO WHILE ( j1 := At( ",",cDlg ) ) > 0
-                    		 Aadd( arr,Left( cDlg,j1-1 ) )
-                       	cDlg := LTrim( SubStr( cDlg,j1+1 ) )
-                   		ENDDO
+                      DO WHILE ( j1 := At( ",",cDlg ) ) > 0
+                           Aadd( arr,Left( cDlg,j1-1 ) )
+                          cDlg := LTrim( SubStr( cDlg,j1+1 ) )
+                         ENDDO
                       Aadd( arr, cDlg )
                   ELSE
                      arr := Nil
@@ -615,7 +615,7 @@ Local i, x1, y1, oBtn
    NEXT
 Return Nil
 
-Static Function ClickBtn( oTab,nId, cItem,cText,nWidth,nHeight )
+Static Function ClickBtn( oTab,nId ) //, cItem,cText,nWidth,nHeight )
 Local oBtn := oTab:FindControl( nId )
 Memvar oDesigner
 
@@ -646,7 +646,7 @@ Memvar oDesigner
       ELSE
          oDlg:DelControl( oCtrl )
       ENDIF
-	  InspSetCombo( ) 
+     InspSetCombo( )
       SetCtrlSelected( oDlg )
       oDlg:oParent:lChanged := .T.
    ENDIF
@@ -782,20 +782,20 @@ Return lOm
 // : LFB
 Function StatusBarMsg(cfile,cpos,ctam)
 memvar oDesigner
-  
+
   //cfile := IIF(cfile = Nil,'',cfile)
   cpos := IIF(cpos = Nil,'',cpos)
   ctam := IIF(ctam = Nil,'',ctam)
-	IF cFile != Nil
-  	WriteStatus( oDesigner:oMainWnd,1,"File: "+cfile ,.T.)   
-  ENDIF	
-  WriteStatus( oDesigner:oMainWnd,2,cpos ,.T.)   
-  WriteStatus(oDesigner:oMainWnd,3,ctam ,.T.)   
+   IF cFile != Nil
+     WriteStatus( oDesigner:oMainWnd,1,"File: "+cfile ,.T.)
+  ENDIF
+  WriteStatus( oDesigner:oMainWnd,2,cpos ,.T.)
+  WriteStatus(oDesigner:oMainWnd,3,ctam ,.T.)
 
-  *WriteStatus( OdLG,4,"INS" ,.T.)  
-  WriteStatus(oDesigner:oMainWnd,5,IIF(IsNUmLockActive(),"NUM" ,"   "),.T.)   
-  WriteStatus(oDesigner:oMainWnd,6,IIF(IsCapsLockActive(),"CAPS","    ") ,.T.)   
-  
+  *WriteStatus( OdLG,4,"INS" ,.T.)
+  WriteStatus(oDesigner:oMainWnd,5,IIF(IsNUmLockActive(),"NUM" ,"   "),.T.)
+  WriteStatus(oDesigner:oMainWnd,6,IIF(IsCapsLockActive(),"CAPS","    ") ,.T.)
+
 RETURN Nil
 
 
@@ -807,15 +807,15 @@ Local oFont
      Showwindow(oDlgx:handle)
      SetFocus( oDlgx:handle )
      RETURN NIL
-   ENDIF  
-   
+   ENDIF
+
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
-   
+
    INIT DIALOG oDlgx AT 0,0 SIZE 400,99 TITLE "Toolbars - Classes ";
       FONT oFont                                                  ;
       STYLE WS_VISIBLE + WS_SYSMENU + DS_SYSMODAL + WS_SIZEBOX + MB_USERICON    ;
       ON EXIT {||  oDlgx := Nil, .t.}
-      
+
       //ON OTHER MESSAGES {|o,m,wp,lp|MessagesOthers(o,m,wp,lp)}
 
    @ 0,0 PANEL oPanelx SIZE 395,98 ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x+4,y+20)}
@@ -824,9 +824,9 @@ Local oFont
 
    CONTEXT MENU oMenuTool
       MENUITEM "AlwaysOnTop" ACTION ActiveTopMost( 0, .t. )
-			//{||oDesigner:oDlgInsp:Close(),inspOpen(.T.)}
+         //{||oDesigner:oDlgInsp:Close(),inspOpen(.T.)}
       MENUITEM "Normal" ACTION ActiveTopMost( 0, .f. )
-			//{||oDesigner:oDlgInsp:Close(),inspOpen(.F.)}
+         //{||oDesigner:oDlgInsp:Close(),inspOpen(.F.)}
       MENUITEM "Hide" ACTION oDlgX:CLOSE()
     ENDMENU
 
@@ -834,24 +834,24 @@ Local oFont
 
    HWG_InitCommonControlsEx()
 
-	 ACTIVATE DIALOG ODLGx NOMODAL
-	 
+    ACTIVATE DIALOG ODLGx NOMODAL
+
 RETURN nil
 
 
-Function InspShow()		 
+Function InspShow()
 MEMVAR oDesigner
 
-  Iif( oDesigner:oDlgInsp==Nil,InspOpen(),oDesigner:oDlgInsp:show() )		 
-	HWG_BRINGWINDOWTOTOP(oDesigner:oDlgInsp:handle)
-RETURN NIL 
+  Iif( oDesigner:oDlgInsp==Nil,InspOpen(),oDesigner:oDlgInsp:show() )
+   HWG_BRINGWINDOWTOTOP(oDesigner:oDlgInsp:handle)
+RETURN NIL
 
 FUNCTION HWLASTKEY
  LOCAL ckeyb := GETKEYBOARDSTATE() ,i
  FOR i= 1 to 255
    IF Asc(Substr(ckeyb,i,1)) >= 128
-   		RETURN i - 1
-   ENDIF	
+         RETURN i - 1
+   ENDIF
  NEXT
  RETURN 0
 

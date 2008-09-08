@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.84 2008-09-05 10:39:51 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.85 2008-09-08 16:53:29 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -283,6 +283,11 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
               bInit, bSize, bPaint, cTooltip, tcolor, bColor )
+
+   IF ltransp .AND. bColor = Nil .AND. ::oParent:brush != Nil
+      ::bcolor := ::oparent:bcolor
+   ENDIF
+
 
    IF ::oParent:oParent != Nil
       bPaint := { | o, p | o:paint( p ) }
@@ -768,7 +773,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
 
  ELSEIF msg == WM_SYSCOLORCHANGE
     ::SetDefaultColors()
- ELSEIF msg == WM_CHAR //.or. msg == WM_KEYUP
+ ELSEIF msg == WM_CHAR
     IF wParam == VK_RETURN .or. wParam == VK_SPACE
        IF ( ::m_bIsToggle )
 
@@ -780,9 +785,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
           ::m_bSent := .t.
        ENDIF
 
-
-       IF wParam == VK_RETURN .or. wParam == VK_SPACE
-          SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
+       SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
+       ELSEIF wParam == VK_ESCAPE
+          SendMessage( ::oParent:handle, WM_COMMAND, makewparam( 2, BN_CLICKED ), ::handle )
        ENDIF
     ENDIF
     RETURN 0

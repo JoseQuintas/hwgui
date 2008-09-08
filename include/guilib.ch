@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.109 2008-09-01 19:00:17 mlacecilia Exp $
+ *$Id: guilib.ch,v 1.110 2008-09-08 16:53:29 mlacecilia Exp $
  */
 #define HWG_VERSION           "2.16"
 #define   WND_MAIN      1
@@ -130,6 +130,7 @@
              [ AT <x>, <y> ]                ;
              [ SIZE <width>, <height> ]     ;
              [ ICON <ico> ]                 ;
+             [ COLOR <clr> ]                ;
              [ BACKGROUND BITMAP <oBmp> ]   ;
              [ STYLE <nStyle> ]             ;
              [ FONT <oFont> ]               ;
@@ -147,7 +148,7 @@
           => ;
    <oDlg> := HDialog():New( Iif(<.res.>,WND_DLG_RESOURCE,WND_DLG_NORESOURCE), ;
                    <nStyle>,<x>,<y>,<width>,<height>,<cTitle>,<oFont>,<bInit>,<bExit>,;
-                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.>,<nHelpId>,<Resid>,<.lExitOnEsc.> )
+                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.>,<nHelpId>,<Resid>,<.lExitOnEsc.>, <clr> )
 
 #xcommand ACTIVATE WINDOW <oWnd> ;
                [<lNoShow: NOSHOW>] ;
@@ -1492,7 +1493,7 @@ Added by Marcos Antonio Gambeta
     [<oSay> := ] HStaticLink():Redefine( <oWnd>, <nId>, <cCaption>, ;
         <oFont>, <bInit>, <bSize>, <bDraw>, <ctoolt>, <color>, <bcolor>,;
         <.lTransp.>, <cLink>, <vcolor>, <lcolor>, <hcolor> )
-        
+
 #xcommand TOOLBUTTON  <O>       ;
           ID <nId>              ;
           [ BITMAP <nBitIp> ]   ;
@@ -1718,7 +1719,7 @@ Added by Marcos Antonio Gambeta
         =>  ;
     <oShape> := HShape():New(<oWnd>, <nId>, <x>, <y>, <width>, <height>, ;
                 <nBorder>, <nCurvature>, <nbStyle>,<nfStyle>, <tcolor>, <bcolor>, <bSize>)
-            
+
 #xcommand @ <x>, <y>  CONTAINER [<oCnt>] [OF <oWnd>] ;
         [ ID <nId> ]               ;
         [ SIZE <width>, <height> ] ;

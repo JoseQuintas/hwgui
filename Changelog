@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.890 2008-09-06 17:46:16 giuseppem Exp $
+ * $Id: Changelog,v 1.891 2008-09-08 16:53:29 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,27 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+    
+2008-09-05 12:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * include\guilib.ch
+    + added the COLOR specification in INIT DIALOG command
+  * source\hcontrol.prg
+    * fixed transparent background repaint for static controls
+    * fixed the IDCANCEL and IDOK buttons triggering 
+  * source\hcwindow.prg
+    * fixed onCtlColor, now returning the parent brush handle if no
+      brush is defined for the control
+  * source\hdialog.prg
+    * fixed close method
+    + added the bColor handling
+    * fixed the setting of ther focus at init time
+  * utils\designer\designer.prg
+    * purged some unused variable
+  * utils\designer\editor.prg
+  * utils\designer\hctrl.prg
+  * utils\designer\hformgen.prg
+  * utils\designer\inspect.prg
+    * purged some unused variable and fixed some compiler warning
 
 2008-09-06 19:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hprinter.prg
@@ -20,7 +41,7 @@
   who signaled the bug.
   * source\hdialog.prg
     * fixed missed repainting of dialog when his background use a 
-      brush color
+      brush color    
     
 2008-09-05 12:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcontrol.prg
@@ -30,9 +51,12 @@
     * added the nInitFocus property (internal use only)
     * fixed the focused control at activation/gain focus time
     * fix for command handling in tab pages    
-   * source\htab.prg
+  * source\htab.prg
     * added return key handling in navigation   
-
+  * source\hradio.prg
+    * fixed to correctly set the selected value 
+    
+    
 2008-09-04 21:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcwindow.prg
     * renamed the previously added method RefreshAll to Refresh

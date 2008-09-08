@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.25 2008-07-10 16:38:20 mlacecilia Exp $
+ * $Id: editor.prg,v 1.26 2008-09-08 16:53:30 mlacecilia Exp $
  *
  * Designer
  * Simple code editor
@@ -87,7 +87,9 @@ Return Nil
 
 Function SaveEdOptions( oOptDesc )
 Local oIni := HXMLDoc():Read( m->cCurDir+cIniName )
-Local i, j, oNode, nStart, oThemeDesc, aAttr
+Local i, oNode, nStart, oThemeDesc, aAttr
+
+HB_SYMBOL_UNUSED( oOptDesc )
 
    oNode := oIni:aItems[1]
    nStart := 1
@@ -155,7 +157,7 @@ Local i, j, oNode, nStart, oThemeDesc, aAttr
 Return Nil
 
 Function EditMethod( cMethName, cMethod )
- Local i, lRes := .F.
+ Local i, lRes := .F., dummy
  Local oFont := HDTheme():oFont
  Local cParamString
  Memvar oDesigner
@@ -167,7 +169,7 @@ Function EditMethod( cMethName, cMethod )
       AT 100,240  SIZE 600,300  FONT oDesigner:oMainWnd:oFont    ;
       STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_MAXIMIZEBOX+WS_SIZEBOX ;
       ON INIT {||MoveWindow(oDlg:handle,100,240,600,310)}        ;
-      ON EXIT {||Iif(lRes:=(oEdit:lChanged.AND.MsgYesNo("Code was changed! Save it?", "Designer")),cMethod:=oEdit:GetText(),.F.),.T.}
+      ON EXIT {|| dummy := Iif(lRes:=(oEdit:lChanged.AND.MsgYesNo("Code was changed! Save it?", "Designer")),cMethod:=oEdit:GetText(),.F.),.T.}
 
    MENU OF oDlg
       MENU TITLE "&Options"
@@ -314,7 +316,7 @@ Local  nEditPos1, nEditPos2
 Return Nil
 
 Static Function CreateHilight( cText,oTheme )
-Local arr := {}, stroka, nPos, nLinePos := 1
+Local arr := {}, nPos, nLinePos := 1
 
    DO WHILE .T.
       #ifdef __XHARBOUR__
@@ -393,7 +395,7 @@ Private nScheme, nType := 2, oTheme := HDTheme():New(), cScheme := ""
    @ 140,10 BROWSE oBrw ARRAY SIZE 130,80
    oBrw:bPosChanged := {||nScheme:=oBrw:nCurrent,UpdSample()}
    oBrw:aArray := aSchemes
-   oBrw:AddColumn( HColumn():New( ,{|v,o|o:aArray[o:nCurrent,1]},"C",15,0,.T. ) )
+   oBrw:AddColumn( HColumn():New( ,{|v,o|HB_SYMBOL_UNUSED( v ),o:aArray[o:nCurrent,1]},"C",15,0,.T. ) )
    oBrw:lDispHead := .F.
    nScheme := oBrw:nCurrent := oBrw:rowPos := HDTheme():nSelected
 
@@ -504,6 +506,8 @@ Return Nil
 static function InsertField(nModus)
 
   LOCAL cDBF:=MsgGet("DBF Name","input table name")
+
+HB_SYMBOL_UNUSED( nModus )
 
   IF FILE(cDBF)
 

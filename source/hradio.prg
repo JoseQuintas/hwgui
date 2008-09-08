@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.12 2008-09-01 19:00:20 mlacecilia Exp $
+ * $Id: hradio.prg,v 1.13 2008-09-08 16:53:29 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -208,14 +208,28 @@ METHOD Notify(lParam ) CLASS HRadioButton
 RETURN Nil
 
 Static Function __Valid( oCtrl )
-lOCAL nEnter := GetKeyState( VK_RETURN ), hctrl :=getfocus()
+lOCAL nEnter := GetKeyState( VK_RETURN ), hctrl
 
-  IF getkeystate(VK_LEFT)+getkeystate(VK_RIGHT)+GetKeyState( VK_UP ) + GetKeyState( VK_DOWN ) +GetKeyState( VK_TAB ) < 0
+ 	 IF getkeystate(VK_LEFT)+getkeystate(VK_RIGHT)+GetKeyState( VK_UP ) + GetKeyState( VK_DOWN ) +GetKeyState( VK_TAB ) < 0 ;
+ 	    .OR. oCtrl:oGroup = Nil
      RETURN .T.
+	 ELSE
+  	 IF nEnter < 0
+       oCtrl:oGroup:value := Ascan( oCtrl:oGroup:aButtons,{|o|o:id==oCtrl:id} )
+	     oCtrl:oGroup:setvalue(oCtrl:oGroup:value)	   
+	   ELSE
+	     oCtrl:oParent:lSuspendMsgsHandling := .T.
+  	   oCtrl:oGroup:value := Ascan( oCtrl:oGroup:aButtons,{|o|o:id==oCtrl:id} )
+	     oCtrl:oGroup:setvalue(oCtrl:oGroup:value)	      
+     ENDIF
+   ENDIF
+   IF oCtrl:oGroup:bSetGet != Nil
+      Eval( oCtrl:oGroup:bSetGet,oCtrl:oGroup:value )
   ENDIF
   IF nEnter < 0
      setfocus(octrl:handle)
   ENDIF
+   hctrl :=getfocus()
   IF oCtrl:bLostFocus != Nil //.and. nEnter >= 0
      Eval( oCtrl:bLostFocus, oCtrl:oGroup:value, oCtrl )
   ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.16 2008-09-01 19:00:20 mlacecilia Exp $
+ * $Id: inspect.prg,v 1.17 2008-09-08 16:53:30 mlacecilia Exp $
  *
  * Designer
  * Object Inspector
@@ -65,12 +65,15 @@ METHOD Edit( wParam,lParam ) CLASS PBrowse
 Memvar oDesigner
 Local varbuf, x1, y1, nWidth, j, cName, aCtrlProp
 Local aDataDef := oDesigner:aDataDef
-Local lRes := .F., oModDlg, oColumn, aCoors, nChoic, bInit, oGet, oBtn,aItems
+Local lRes := .F., oColumn, nChoic, oGet, oBtn,aItems
 // : LFB
-Local aItemsaux, k, cAlias, i,cEDIT 
+Local aItemsaux, k, cAlias, i
 // : END LFB
 Memvar Value, oCtrl
 Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
+
+   HB_SYMBOL_UNUSED( wParam )
+   HB_SYMBOL_UNUSED( lParam )
 
    IF ::SetColumn() == 1 .AND. ::bEnter == Nil
       Return Nil
@@ -115,29 +118,29 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
                lRes := .T.
             ENDIF
          ELSEIF aDataDef[ j,5 ] == "file"
-            // :LFB 
+            // :LFB
             x1  := ::x1 + ::aColumns[1]:width - 2
-			      y1 := ::y1 + ( ::height+1 ) * ( ::rowPos - 1 )
+               y1 := ::y1 + ( ::height+1 ) * ( ::rowPos - 1 )
             nWidth := Min( ::aColumns[2]:width, ::x2 - x1 - 1 )
-            ReadExit( .T. ) 
-            
+            ReadExit( .T. )
+
            obrw1:bPosChanged:={|| VldBrwGet(oGet,oBtn)}
            @ x1+14,y1-2 GET oGet VAR varbuf OF oBrw1  ;
             SIZE nWidth, ::height+6        ;
             STYLE ES_AUTOHSCROLL           ;
             FONT ::oFont                   ;
-            WHEN {||PostMessage( oBtn:handle,WM_CLOSE,0,0 ),OgET:REFRESH()	,.T.} 
-            
+            WHEN {||PostMessage( oBtn:handle,WM_CLOSE,0,0 ),OgET:REFRESH()   ,.T.}
+
            @ x1,y1-2 BUTTON oBtn CAPTION '...' OF oBrw1;
             SIZE 13,::height+6  ;
             ON CLICK {|| (varbuf := IIF (aDataDef[ j,1 ] == "filename",;
-						  SelectFile( "Animation Files( *.avi )", "*.avi"),IIF (aDataDef[ j,1 ] == "filedbf", ;
-						  SelectFile( {"xBase Files( *.dbf)"," All Files( *.*)"},{ "*.dbf","*.*"}),;
-  						SelectFile("Imagens Files( *.jpg;*.gif;*.bmp;*.ico )",;
-							 "*.jpg;*.gif;*.bmp;*.ico")))), ;
-						 IIF(!empty(varbuf),oGet:refresh(),nil)} //,;
-   					*	VldBrwGet(oGet)} //,   PostMessage( oBtn:handle,WM_CLOSE,0,0 )}
-						// : END LFB
+                    SelectFile( "Animation Files( *.avi )", "*.avi"),IIF (aDataDef[ j,1 ] == "filedbf", ;
+                    SelectFile( {"xBase Files( *.dbf)"," All Files( *.*)"},{ "*.dbf","*.*"}),;
+                    SelectFile("Imagens Files( *.jpg;*.gif;*.bmp;*.ico )",;
+                      "*.jpg;*.gif;*.bmp;*.ico")))), ;
+                   IIF(!empty(varbuf),oGet:refresh(),nil)} //,;
+                  *   VldBrwGet(oGet)} //,   PostMessage( oBtn:handle,WM_CLOSE,0,0 )}
+                  // : END LFB
             //varbuf := SelectFile( "All files ( *.* )","*.*" )
             //
             SetFocus( obtn:handle )
@@ -186,22 +189,22 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
                   aItemsaux  := ARRAY(&(alias(i))->(FCOUNT()) )
                   &(alias(i))->(Afields(aItemsAux))
                   FOR k = 1 TO LEN(aItemsaux)
-                  	AADD(aitems,ALIAS(i) + "->" + aItemsAux[k])
-                 	  //AADD(aitems, aItemsAux[k])
-                  NEXT	 
+                     AADD(aitems,ALIAS(i) + "->" + aItemsAux[k])
+                      //AADD(aitems, aItemsAux[k])
+                  NEXT
                ENDIF
-            NEXT  
+            NEXT
          //
          ELSEIF ( j != 0 .AND. aDataDef[ j,6 ] != Nil .AND.aDataDef[ j,6 ][1] = "@atags" )// funcao
-         		i := 1
-			  		aItems := {" "}
-			  		IF select(alias()) > 0
-					  	DO WHILE !EMPTY(ORDNAME(i))
-								AADD(aItems,ORDNAME(i++))
-							ENDDO	
-						ENDIF
-				 ELSE   
-         	 aItems := Iif( j != 0 .AND. aDataDef[ j,6 ] != Nil, aDataDef[ j,6 ], { "True","False" } )
+               i := 1
+                 aItems := {" "}
+                 IF select(alias()) > 0
+                    DO WHILE !EMPTY(ORDNAME(i))
+                        AADD(aItems,ORDNAME(i++))
+                     ENDDO
+                  ENDIF
+             ELSE
+             aItems := Iif( j != 0 .AND. aDataDef[ j,6 ] != Nil, aDataDef[ j,6 ], { "True","False" } )
          ENDIF
          varbuf := AllTrim(varbuf)
          nChoic := Ascan( aItems,varbuf )
@@ -212,8 +215,8 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
             OF oBrw1                       ;
             SIZE nWidth, ::height*8        ;
             FONT ::oFont                   ;
-            STYLE WS_VSCROLL 
-            
+            STYLE WS_VSCROLL
+
          oBrw1:AddEvent( CBN_KILLFOCUS,oGet:id,{||VldBrwGet(oGet)} )
       ELSE
          @ x1,y1-2 GET oGet VAR varbuf OF oBrw1  ;
@@ -305,10 +308,10 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
    // :LFB POS
    IF VALTYPE(obtn) = "O"
      PostMessage( oBtn:handle,WM_CLOSE,0,0 )
-   ENDIF  
+   ENDIF
    obrw1:bPosChanged:= nil
    // : END LFB
-   
+
    // oBrw1:DelControl( oGet )
    // oBrw1:Refresh()
 Return .T.
@@ -317,21 +320,21 @@ Function InspOpen(lShow)
 Local nStilo := 0
 Memvar oDesigner
 //Private oMenuDlg := 0
-      
-   *FONT oDesigner:oMainWnd:oFonti                   
+
+   *FONT oDesigner:oMainWnd:oFonti
    *STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SIZEBOX+WS_SYSMENU;
    lShow := IIF(VALTYPE(lShow) != "U",lShow, .T.)
-   nStilo := WS_CAPTION+WS_SIZEBOX+MB_USERICON + WS_VISIBLE 
-	//  IIF(lShow,WS_VISIBLE,0) //DS_SYSMODAL
+   nStilo := WS_CAPTION+WS_SIZEBOX+MB_USERICON + WS_VISIBLE
+   //  IIF(lShow,WS_VISIBLE,0) //DS_SYSMODAL
    INIT DIALOG oDesigner:oDlgInsp TITLE "Object Inspector" ;
       AT 0,280  SIZE 220,300       ;
       FONT HFont():Add( "MS Sans Serif",0,-12,400,,,)  ;
       STYLE nStilo;
-      ON INIT {||IIF(!lshow,oDesigner:oDlgInsp:hide(),.t.),MoveWindow(oDesigner:oDlgInsp:handle,0,134,280,410)}   ;
+      ON INIT {||IIF(!lshow,oDesigner:oDlgInsp:hide(),),MoveWindow(oDesigner:oDlgInsp:handle,0,134,280,410)}   ;
       ON GETFOCUS {|o| o:show(),.t.};
       ON EXIT {||oDesigner:oDlgInsp:=Nil,CheckMenuItem(oDesigner:oMainWnd:handle,1010,.F.),.T.} ;
       ON OTHER MESSAGES {|o,m,wp,lp|MessagesOthers(o,m,wp,lp)}
-    
+
    @ 0,0 COMBOBOX oCombo ITEMS {} SIZE 220,150 ;
           STYLE WS_VSCROLL                     ;
           ON SIZE {|o,x|MoveWindow(o:handle,0,0,x,150)} ;
@@ -343,7 +346,7 @@ Memvar oDesigner
    BEGIN PAGE "Properties" OF oTab
       @ 2,30 PBROWSE oBrw1 ARRAY SIZE 214,218 STYLE WS_VSCROLL ;
          ON SIZE {|o,x,y|MoveWindow(o:handle,2,30,x-6,y-32)}
-         setdlgkey(oDesigner:oDlgInsp,0,VK_DELETE,{|o| ResetToDefault(oBrw1)} )
+         setdlgkey(oDesigner:oDlgInsp,0,VK_DELETE,{|| ResetToDefault(oBrw1)} )
 
       oBrw1:tColor := GetSysColor( COLOR_BTNTEXT )
       oBrw1:tColorSel := 8404992
@@ -353,7 +356,7 @@ Memvar oDesigner
       oBrw1:lSep3d := .T.
       oBrw1:sepColor  := GetSysColor( COLOR_BTNSHADOW )
       oBrw1:aArray := aProp
-      oBrw1:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:aArray[o:nCurrent,1]),"","  "+o:aArray[o:nCurrent,1])},"C",12,0,.T. ) )
+      oBrw1:AddColumn( HColumn():New( ,{|v,o| HB_SYMBOL_UNUSED( v ),Iif(Empty(o:aArray[o:nCurrent,1]),"","  "+o:aArray[o:nCurrent,1])},"C",12,0,.T. ) )
       oBrw1:AddColumn( HColumn():New( ,ColumnArBlock(),"U",100,0,.T. ) )
    END PAGE OF oTab
 
@@ -368,24 +371,24 @@ Memvar oDesigner
       oBrw2:lSep3d := .T.
       oBrw2:sepColor  := GetSysColor( COLOR_BTNSHADOW )
       oBrw2:aArray := aMethods
-      oBrw2:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:aArray[o:nCurrent,1]),"","  "+o:aArray[o:nCurrent,1])},"C",12,0,.T. ) )
-      oBrw2:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:aArray[o:nCurrent,2]),"",":"+o:aArray[o:nCurrent,1])},"C",100,0,.T. ) )
+      oBrw2:AddColumn( HColumn():New( ,{|v,o|HB_SYMBOL_UNUSED( v ),Iif(Empty(o:aArray[o:nCurrent,1]),"","  "+o:aArray[o:nCurrent,1])},"C",12,0,.T. ) )
+      oBrw2:AddColumn( HColumn():New( ,{|v,o|HB_SYMBOL_UNUSED( v ),Iif(Empty(o:aArray[o:nCurrent,2]),"",":"+o:aArray[o:nCurrent,1])},"C",100,0,.T. ) )
    END PAGE OF oTab
 
- 	 // : LFB POS
+     // : LFB POS
    @ 190,25 BUTTON "Close" SIZE 50, 23     ;
-       ON SIZE {|o,x,y|o:Move(x-52,,,)};       
+       ON SIZE {|o,x|o:Move(x-52,,,)};
        ON CLICK {|| oDesigner:oDlgInsp:close()}
    // : LFB
 
    CONTEXT MENU oMenuisnp
       MENUITEM "AlwaysOnTop" ACTION ActiveTopMost( oDesigner:oDlgInsp:Handle, .t. )
-			//{||oDesigner:oDlgInsp:Close(),inspOpen(.F.)}
+         //{||oDesigner:oDlgInsp:Close(),inspOpen(.F.)}
       MENUITEM "Normal" ACTION ActiveTopMost( oDesigner:oDlgInsp:Handle, .f. )
-			//{||oDesigner:oDlgInsp:Close(),inspOpen(0)}
+         //{||oDesigner:oDlgInsp:Close(),inspOpen(0)}
       MENUITEM "Hide" ACTION oDesigner:oDlgInsp:close()
     ENDMENU
-	 
+
    ACTIVATE DIALOG oDesigner:oDlgInsp NOMODAL
    CheckMenuItem(oDesigner:oMainWnd:handle,1010,.T.)
 
@@ -428,11 +431,11 @@ Memvar oDesigner
       aControls := Iif( oDesigner:lReport, oDlg:aControls[1]:aControls[1]:aControls, ;
           oDlg:aControls )
       FOR i := 1 TO Len( aControls )
-        if ( oDesigner:lReport ) 
-            Aadd( oCombo:aItems, aControls[i]:cClass + "." + Iif(aControls[i]:title!=Nil,Left(aControls[i]:title,15),Ltrim(str(aControls[i]:id)) ) ) 
-        else 
-            Aadd( oCombo:aItems, aControls[i]:cClass + "." + aControls[i]:GetProp("Name",2) ) 
-        endif 
+        if ( oDesigner:lReport )
+            Aadd( oCombo:aItems, aControls[i]:cClass + "." + Iif(aControls[i]:title!=Nil,Left(aControls[i]:title,15),Ltrim(str(aControls[i]:id)) ) )
+        else
+            Aadd( oCombo:aItems, aControls[i]:cClass + "." + aControls[i]:GetProp("Name",2) )
+        endif
         IF oCtrl != Nil .AND. oCtrl:handle == aControls[i]:handle
             n := i
         ENDIF
@@ -453,11 +456,11 @@ Memvar oDesigner
          HFormGen():oDlgSelected:aControls )
       i := Len( aControls )
       IF i >= Len( oCombo:aItems )
-	if ( oDesigner:lReport ) 
-	   Aadd( oCombo:aItems, aControls[i]:cClass + "." + Iif(aControls[i]:title!=Nil,Left(aControls[i]:title,15),Ltrim(str(aControls[i]:id)) ) ) 
-	else 
-	   Aadd( oCombo:aItems, aControls[i]:cClass + "." + aControls[i]:GetProp("Name",2) ) 
-	endif 
+   if ( oDesigner:lReport )
+      Aadd( oCombo:aItems, aControls[i]:cClass + "." + Iif(aControls[i]:title!=Nil,Left(aControls[i]:title,15),Ltrim(str(aControls[i]:id)) ) )
+   else
+      Aadd( oCombo:aItems, aControls[i]:cClass + "." + aControls[i]:GetProp("Name",2) )
+   endif
 
       ELSEIF i + 1 < Len( oCombo:aItems )
          Return InspSetCombo()
@@ -493,8 +496,8 @@ Static Function InspSetBrowse()
 Local i, o, nRow:=1
 
    IF oBrw1 != Nil
-	 		nRow:=oBrw1:rowPos
-	 ENDIF
+          nRow:=oBrw1:rowPos
+    ENDIF
    aProp := {}
    aMethods := {}
 
@@ -523,7 +526,7 @@ Local i, o, nRow:=1
 Return Nil
 
 Function InspUpdBrowse()
-Local i, j, cPropertyName, lChg := .F.
+Local i, lChg := .F.
 Memvar value, oCtrl, oDesigner
 Private value, oCtrl
 
@@ -579,7 +582,7 @@ Memvar oDesigner
 
    @ 0,0 BROWSE oBrw ARRAY SIZE 400,255  ;
        ON SIZE {|o,x,y|o:Move(,,x,y-45)}
-	 oBrw:acolumns:={}
+    oBrw:acolumns:={}
    oBrw:bcolor := 15132390
    oBrw:bcolorSel := VColor( "008000" )
    oBrw:lAppable := .T.
@@ -587,13 +590,13 @@ Memvar oDesigner
    oBrw:AddColumn( HColumn():New( ,{|v,o|Iif(v!=Nil,o:aArray[o:nCurrent]:=v,o:aArray[o:nCurrent])},"C",100,0,.T. ) )
   // 30 - 35
    @ 21,265 BUTTON "Delete Item"  SIZE 110, 26 ;
-       ON SIZE {|o,x,y|o:Move(,y-30,,)};       
+       ON SIZE {|o,x,y|HB_SYMBOL_UNUSED( x ),o:Move(,y-30,,)};
        ON CLICK {|| onclick_deleteItem(oBrw)}
    @ 151,265 BUTTON "Ok" SIZE 110, 26     ;
-       ON SIZE {|o,x,y|o:Move(,y-30,,)}  ;
+       ON SIZE {|o,x,y|HB_SYMBOL_UNUSED( x ),o:Move(,y-30,,)}  ;
        ON CLICK {||oDlg:lResult:=.T.,EndDialog()}
    @ 276,265 BUTTON "Cancel" ID IDCANCEL SIZE 110, 26 ;
-       ON SIZE {|o,x,y|o:Move(,y-30,,)}
+       ON SIZE {|o,x,y|HB_SYMBOL_UNUSED( x ),o:Move(,y-30,,)}
 
    ACTIVATE DIALOG oDlg
 
@@ -612,29 +615,29 @@ STATIC FUNCTION onclick_deleteitem(oBrw)
     RETURN nil
   ENDIF
   IF len(obrw:aArray) > 0 .AND. msgyesno("Confirm item deleted : [ "+oBrw:aArray[oBrw:nCurrent]+" ] ?","Items")
-  	oBrw:aArray := ADEL(obrw:aArray,oBrw:nCurrent)
-  	obrw:aArray := ASIZE(obrw:aArray,len(obrw:aArray)-1)
-  	obrw:refresh()
+     oBrw:aArray := ADEL(obrw:aArray,oBrw:nCurrent)
+     obrw:aArray := ASIZE(obrw:aArray,len(obrw:aArray)-1)
+     obrw:refresh()
   ENDIF
-RETURN nil		
+RETURN nil
 
 Function ObjInspector(oObject )
 *****************************************************************************
    Local opForm, oBrw, oBrw2
    Local nLeft:=0, nTop, nLin, oPage1,i
    Local oBtn1, cType
-	 Local aClassMsgMtdo, aClassMsgProp
-    
+    Local aClassMsgMtdo, aClassMsgProp
+
    IF oObject = Nil
-      oObject := HFormGen():oDlgSelected 
+      oObject := HFormGen():oDlgSelected
    ENDIF
    //lData := .t.
    aClassMsgMtdo := __objGetMethodList(oObject)
 #ifndef __XHARBOUR
    aClassMsgProp := __objGetProperties( oObject, .t. )
-#else   
+#else
    aClassMsgProp := __ObjGetValueDiff( oObject)
-#endif   
+#endif
    For i = 1 to len(aClassMsgProp)
      ctype := VALTYPE(aClassMsgProp[i,2])
      do case
@@ -645,9 +648,9 @@ Function ObjInspector(oObject )
        aClassMsgProp[i,2] := iif(aClassMsgProp[i,2],"True","False")
        otherwise
        aClassMsgProp[i,2] := ctype
-     endcase  
+     endcase
    Next
-   
+
    INIT DIALOG opForm ;
       noexit ;
       title "Methods and Properties" ;
@@ -666,41 +669,42 @@ Function ObjInspector(oObject )
   @ nLeft + 150, ntop+2 SAY "Object: " + 'oObject'  SIZE 200,24
    nLin = nTop + 30
 
-  @ 6,nlin-5 TAB oPage1 ITEMS {} SIZE 580,360  
+  @ 6,nlin-5 TAB oPage1 ITEMS {} SIZE 580,360
   BEGIN PAGE ' Properties ' OF oPage1
-   @ 010, nLin browse oBrw array ;                
+   @ 010, nLin browse oBrw array ;
       size 570, 300 ;
       style WS_VSCROLL + WS_HSCROLL
-  
+
    CreateArList( oBrw, aClassMsgProp )
-	
+
    oBrw:aColumns[ 1 ]:length = 30
    oBrw:aColumns[ 1 ]:heading = " Property "
    oBrw:aColumns[ 2 ]:length = 10
    oBrw:aColumns[ 2 ]:heading = " Value "
-   
+
    END PAGE OF oPage1
-   
+
    BEGIN PAGE ' Methods ' OF oPage1
       @ 010, nLin browse oBrw2 array ;
       size 570, 300 ;
       style WS_VSCROLL + WS_HSCROLL
-  
+
    CreateArList( oBrw2, aClassMsgMtdo )
-	
+
    oBrw2:aColumns[ 1 ]:length = 10
    oBrw2:aColumns[ 1 ]:heading = "Methods"
 
-	 END PAGE OF oPage1
-	 
+    END PAGE OF oPage1
+
    opForm:Activate()
 
    RETURN NIL
 
-	 
+
 STATIC Function MessagesOthers( oDlg, msg, wParam, lParam )
-Local oCtrl, aCoors, nShift
 Memvar oDesigner
+
+HB_SYMBOL_UNUSED( lParam )
 
    // writelog( str(msg)+str(wParam)+str(lParam) )
    IF msg == WM_MOUSEMOVE
@@ -714,10 +718,10 @@ Memvar oDesigner
       Return 1
    ELSEIF msg == WM_RBUTTONUP
       *RButtonUp( oDlg, LoWord( lParam ), HiWord( lParam ) )
-     	oMenuisnp:Show( oDlg,oDlg:nTop+5,oDlg:nLeft+15,.T. )
+        oMenuisnp:Show( oDlg,oDlg:nTop+5,oDlg:nLeft+15,.T. )
       Return 1
-   ELSEIF msg == WM_LBUTTONDBLCLK   
-      oDlg:hide()	 		      
+   ELSEIF msg == WM_LBUTTONDBLCLK
+      oDlg:hide()
       *MSGINFO('Futura a‡Æo dos Eventos')
       Return 1
    ELSEIF msg == WM_MOVE
@@ -736,14 +740,14 @@ Local lSucess   // ,nHandle
 
   IF lActive
        lSucess := SetTopMost(nHandle)    // Set TopMost
-  ELSE   
+  ELSE
        lSucess := RemoveTopMost(nHandle) // Remove TopMost
   ENDIF
-    
+
 RETURN lSucess
 
 STATIC Function resettodefault(oBrw1)
-Local vari, j, cName 
+Local j, cName
 Memvar oDesigner, value, oCtrl
 Private value,oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
 
@@ -752,14 +756,14 @@ Private value,oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlS
      j := Ascan( oDesigner:aDataDef, {|a|a[1]==cName} )
      IF j = 0 .OR. aProp[ oBrw1:nCurrent,2 ] = Nil
        return Nil
-     ENDIF 
-     IF ltrim(oBrw1:aArray[oBrw1:nCurrent,1]) = "Font"   
-        value := aProp[ oBrw1:nCurrent,2 ] 
+     ENDIF
+     IF ltrim(oBrw1:aArray[oBrw1:nCurrent,1]) = "Font"
+        value := aProp[ oBrw1:nCurrent,2 ]
         value:name := ""
      ELSE
-        value := aProp[ oBrw1:nCurrent,2 ] 
+        value := aProp[ oBrw1:nCurrent,2 ]
         //aProp[ oBrw1:nCurrent,2 ] := Nil //value
-     ENDIF   
+     ENDIF
      IF j != 0 .AND. oDesigner:aDataDef[ j,3 ] != Nil
         EvalCode( oDesigner:aDataDef[ j,3 ] )
         IF oDesigner:aDataDef[ j,4 ] != Nil
@@ -770,8 +774,8 @@ Private value,oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlS
      HFormGen():oDlgSelected:oParent:lChanged := .T.
      oBrw1:lUpdated := .T.
      oBrw1:Refresh()
- 
+
  return nil
- 
+
   // :END LFB
 

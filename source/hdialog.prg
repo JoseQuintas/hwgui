@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.57 2008-09-05 13:41:43 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.58 2008-09-08 16:53:29 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -80,13 +80,13 @@ CLASS VAR aModalDialogs  SHARED INIT { }
    METHOD Restore()  INLINE SendMessage( ::handle,  WM_SYSCOMMAND, SC_RESTORE, 0 )
    METHOD Maximize() INLINE SendMessage( ::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0 )
    METHOD Minimize() INLINE SendMessage( ::handle,  WM_SYSCOMMAND, SC_MINIMIZE, 0 )
-   METHOD Close()    INLINE IIf( ::lModal, EndDialog( ::handle ), DestroyWindow( ::handle ) )
+   METHOD Close()    INLINE EndDialog( ::handle )
    //METHOD Release()  INLINE Iif( ::lModal, Hwg_EndDialog( ::handle ), DestroyWindow( ::handle ) )
 
 ENDCLASS
 
 METHOD NEW( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
-            bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc ) CLASS HDialog
+            bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bColor ) CLASS HDialog
 
    ::oDefaultParent := Self
    ::xResourceID := xResourceID
@@ -114,6 +114,11 @@ METHOD NEW( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
    IF nHelpId != nil
       ::HelpId := nHelpId
    END
+
+   IF bColor != NIL
+     ::brush := HBrush():Add(bcolor)
+     ::bColor := bcolor
+   ENDIF
 
    RETURN Self
 
@@ -254,12 +259,14 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    ENDIF
 
    IF oDlg:bInit != Nil
-      IF ValType( nReturn := Eval( oDlg:bInit, oDlg ) ) != "N"
+      oDlg:lSuspendMsgsHandling := .t.
+      IF Valtype(nReturn := Eval( oDlg:bInit, oDlg )) != "N"
          nReturn := 1
       ENDIF
       oDlg:nInitFocus := getfocus()
-      SetFocus( oDlg:nInitFocus )
+      oDlg:lSuspendMsgsHandling := .F.
    ENDIF
+
    IF ValType( oDlg:bOnActivate ) == "B"
       Eval( oDlg:bOnActivate )
    ENDIF
@@ -364,6 +371,19 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       ENDIF
    ENDIF
 
+   IF  __ObjHasMsg(oDlg, "NINITFOCUS") .AND. oDlg:nInitFocus > 0 .AND. !isWindowVisible(oDlg:handle)
+     IF (oCtrl := oDlg:FindControl(,oDlg:nInitFocus)) == nil
+        oCtrl := oDlg:FindControl(,GetAncestor(oDlg:nInitFocus, GA_PARENT))
+        IF oCtrl != Nil
+           GetSkip( oCtrl:oParent, hCtrl, , 1 ),.T.)
+        ENDIF
+     ENDIF
+     IF oCtrl != Nil .AND. oCtrl:handle == oDlg:nInitFocus .and. oDlg:nInitFocus != 0
+        SETFOCUS(oCtrl:handle)
+     ENDIF
+     RETURN 1
+   ENDIF
+
    IF oDlg:aEvents != Nil .AND. ! oDlg:lSuspendMsgsHandling .AND. ;
       ( i := AScan( oDlg:aEvents, { | a | a[ 1 ] == iParHigh.and.a[ 2 ] == iParLow } ) ) > 0
       Eval( oDlg:aEvents[ i, 3 ], oDlg, iParLow )
@@ -391,9 +411,8 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       Eval( aMenu[ 1, i, 1 ] )
    ENDIF
 
-   IF oDlg:nInitFocus > 0
-     SetFocus(oDlg:nInitFocus)
-     oDlg:nInitFocus := 0
+   IF  __ObjHasMsg(oDlg,"NINITFOCUS") .AND. oDlg:nInitFocus > 0
+      oDlg:nInitFocus := 0
    ENDIF
 
    RETURN 1

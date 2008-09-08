@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.24 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hctrl.prg,v 1.25 2008-09-08 16:53:30 mlacecilia Exp $
  *
  * Designer
  * HControlGen class
@@ -41,7 +41,7 @@ CLASS HControlGen INHERIT HControl
    DATA cCreate
    DATA Adjust        INIT 0
    DATA lEmbed        INIT .F.
-   
+
 
    METHOD New( oWndParent, xClass, aProp )
    METHOD Activate()
@@ -154,9 +154,9 @@ Private value, oCtrl := Self
       ::bSize   := {|o,x,y|ctrlOnSize(o,x,y)}
       ::SetColor( ::tcolor,::bcolor )
       // :LFB pos
-		  statusbarmsg(,'x: '+ltrim(str(::nLeft))+'  y: '+ltrim(str(::nTop)),;
-      	 'w: '+ltrim(str(::nWidth))+'  h: '+ltrim(str(::nHeight)))
-   		// :END LFB
+        statusbarmsg(,'x: '+ltrim(str(::nLeft))+'  y: '+ltrim(str(::nTop)),;
+          'w: '+ltrim(str(::nWidth))+'  h: '+ltrim(str(::nHeight)))
+         // :END LFB
    ENDIF
 
    ::oParent:AddControl( Self )
@@ -227,7 +227,7 @@ local iIndex := 0
    IF Valtype( xName ) == "C"
       xName := Lower( xName )
       //xName := Ascan( ::aProp,{|a|Lower(a[1])==xName} )
-	  iIndex := ::GetPropIndex( xName )
+     iIndex := ::GetPropIndex( xName )
     ENDIF
     IF Valtype( xName ) == "N"
       iIndex := xName
@@ -265,7 +265,7 @@ memvar oDesigner
       oCtrl:SetProp( "Left","0" )
       //oCtrl:SetCoor( "Top",oCtrl:nTop )
       oCtrl:SetCoor( "Width",oCtrl:nWidth )
-	 ENDIF
+    ENDIF
    IF oCtrl:Adjust == 2
       oCtrl:Move( 0,y-oCtrl:nHeight,x )
       oCtrl:SetProp( "Left","0" )
@@ -277,30 +277,30 @@ memvar oDesigner
       ENDIF
    ENDIF
    IF oCtrl:Adjust == 6
-      	oCtrl:Move(oCtrl:nLeft ,2 )
-      	oCtrl:SetProp( "Top","2" )
+         oCtrl:Move(oCtrl:nLeft ,2 )
+         oCtrl:SetProp( "Top","2" )
       //oCtrl:SetCoor( "Top",oCtrl:nTop )
       //oCtrl:SetCoor( "Width",oCtrl:nWidth )
    ENDIF
-   
+
    IF oCtrl:Adjust == 5
       *-IF oCtrl:oParent:nTop != Nil
         FOR i=1 to len(acontrols)
           oCtrls := aControls[i]
-				  *-msginfo(STR(oCtrl:oParent:nTop)+'-'+STR(oCtrl:nTop)) //+'-'+STR(oCtrl:oparent:oParent:nTop))
-				  IF oCtrls:cClass="browse" .AND. (oCtrl:nTop > oCtrls:nTop .AND. oCtrl:nTop < oCtrls:nTop+oCtrls:nHeight)
-				     oCtrl:Move(oCtrl:nLeft ,oCtrls:nTop+2 )
-      	     *oCtrl:SetProp( "Top","oCtrls:nTop+2" )
-      	     EXIT
-					ENDIF
-				NEXT
-			*-ELSE	
-      *-	oCtrl:Move( ,2 )
-      *-	oCtrl:SetProp( "Top","2" )
+              *-msginfo(STR(oCtrl:oParent:nTop)+'-'+STR(oCtrl:nTop)) //+'-'+STR(oCtrl:oparent:oParent:nTop))
+              IF oCtrls:cClass="browse" .AND. (oCtrl:nTop > oCtrls:nTop .AND. oCtrl:nTop < oCtrls:nTop+oCtrls:nHeight)
+                 oCtrl:Move(oCtrl:nLeft ,oCtrls:nTop+2 )
+              *oCtrl:SetProp( "Top","oCtrls:nTop+2" )
+              EXIT
+               ENDIF
+            NEXT
+         *-ELSE
+      *-   oCtrl:Move( ,2 )
+      *-   oCtrl:SetProp( "Top","2" )
       //oCtrl:SetCoor( "Top",oCtrl:nTop )
       //oCtrl:SetCoor( "Width",oCtrl:nWidth )
       *-ENDIF
-	 ENDIF
+    ENDIF
 
 Return Nil
 
@@ -499,8 +499,8 @@ Function SetBDown( oCtrl,xPos,yPos,nBorder )
       SetCtrlSelected( oCtrl:oParent,oCtrl )
    ELSE
      // nando pos  para maniplear marcar todos objetos com mouse
-	   aBDown[ BDOWN_OCTRL ] := oCtrl 
-	   //
+      aBDown[ BDOWN_OCTRL ] := oCtrl
+      //
    ENDIF
 Return Nil
 
@@ -508,6 +508,10 @@ Function GetBDown
 Return aBDown
 
 Function SetvBDown( oCtrl,xPos,yPos,nBorder )
+
+   HB_SYMBOL_UNUSED( oCtrl )
+   HB_SYMBOL_UNUSED( nBorder )
+
    vBDown[ BDOWN_OCTRL ] := nil
    vBDown[ BDOWN_XPOS ]  := xPos
    vBDown[ BDOWN_YPOS ]  := yPos
@@ -530,37 +534,39 @@ Memvar oDesigner
       nSh := IIF(nShift != Nil,nShift,GetKeyState(VK_SHIFT))       // nando po
       IF oFrm:oCtrlSelected != Nil
         // aqui desmarca o anterior nando colocou
-				IF nsh >= 0	 // nando pos
-           // NANDO POS O FOR 
-    			 FOR i = 1 to IIF(len(asels) > 0,LEN(asels),1)
-    	        oFrm:oCtrlSelected := asels[i]  // NANDO POS
+            IF nsh >= 0    // nando pos
+           // NANDO POS O FOR
+              FOR i = 1 to IIF(len(asels) > 0,LEN(asels),1)
+               oFrm:oCtrlSelected := asels[i]  // NANDO POS
            InvalidateRect( oFrm:oCtrlSelected:oParent:handle, 1, ;
                   oFrm:oCtrlSelected:nLeft-4, oFrm:oCtrlSelected:nTop-4, ;
                   oFrm:oCtrlSelected:nLeft+oFrm:oCtrlSelected:nWidth+3,  ;
                   oFrm:oCtrlSelected:nTop+oFrm:oCtrlSelected:nHeight+3 )
            NEXT
         ELSEIF oCtrl == Nil
-				  // CASO ELE CLICOU NO FORM   
+              // CASO ELE CLICOU NO FORM
           RETURN Nil
         ELSE
-		      // CASO ELE QUER DESMARCAR UM
+            // CASO ELE QUER DESMARCAR UM
           i := Ascan( aSels, {|a| a:GetProp( "Name") == oCtrl:GetProp( "Name")} )
-				  IF i > 0 
-	           InvalidateRect( oCtrl:oParent:handle, 1, ;
+              IF i > 0
+              InvalidateRect( oCtrl:oParent:handle, 1, ;
                   oCtrl:nLeft-4, oCtrl:nTop-4, ;
                   oCtrl:nLeft+oCtrl:nWidth+3,  ;
                   oCtrl:nTop+oCtrl:nHeight+3 )
-   					ADEL(aSels,i)
-  					ASIZE(Asels,LEN(aSels)-1)  
+                  ADEL(aSels,i)
+                 ASIZE(Asels,LEN(aSels)-1)
             RETURN nil
           ENDIF
           //
         ENDIF
       ENDIF
       // nando pos
-		  aSels := iIF( nsh >= 0, {} ,asels)   
-      IIF(oCtrl != Nil,AADD(aSels,oCtrl),.T.)
-      // 
+        aSels := iIF( nsh >= 0, {} ,asels)
+        IF oCtrl != Nil
+           AADD(aSels,oCtrl)
+        ENDIF
+      //
 
       oFrm:oCtrlSelected := oCtrl
       IF oCtrl != Nil
@@ -569,9 +575,9 @@ Memvar oDesigner
                   oCtrl:nLeft+oCtrl:nWidth+3,  ;
                   oCtrl:nTop+oCtrl:nHeight+3 )
          // nando pos
-				 IF nShift != Nil
-				   RETURN Nil
-				 ENDIF         
+             IF nShift != Nil
+               RETURN Nil
+             ENDIF
          IF oDesigner:oDlgInsp != Nil
             IF n != Nil
                i := n
@@ -714,9 +720,11 @@ Local aTabs := oTab:GetProp( "Tabs" )
 Return Nil
 
 Function Page_Next( oTab )
+   HB_SYMBOL_UNUSED( oTab )
 Return Nil
 
 Function Page_Prev( oTab )
+   HB_SYMBOL_UNUSED( oTab )
 Return Nil
 
 Function Page_Upd( oTab, arr )
@@ -920,7 +928,7 @@ Memvar nMaxID
 Return Nil
 
 Function GetMenu()
-Local oDlg, oTree, i, aMenu
+Local oDlg, i, aMenu
 Memvar nMaxID, oDesigner
 Private nMaxId := 0
 
@@ -935,15 +943,15 @@ Private nMaxId := 0
          EXIT
       ENDIF
    NEXT
- RETURN aMenu  
- 
+ RETURN aMenu
+
  //....................................................................
  // : LFB
  //
  FUNCTION aselCtrls
  RETURN aSels
- 
-      
+
+
  FUNCTION asels_ajustar(najuste)
  // align left  sides
  // align right  sides
@@ -956,11 +964,11 @@ Private nMaxId := 0
  Local oCtrl,nminLeft , nmaxright, nminTop, nmaxbottom, nmaxwidth, nmaxheight,i
  Local nCenterTop, nCenterLeft
  Local asels := aselCtrls()
- 
+
  IF LEN(aSels) <= 1 .AND. nAjuste <7
    RETURN Nil
  ENDIF
- oCtrl := asels[1]           
+ oCtrl := asels[1]
  nminLeft   := octrl:nLeft
  nmaxright  := octrl:nLeft + octrl:nWidth
  nminTop    := octrl:nTop
@@ -972,69 +980,69 @@ Private nMaxId := 0
  nCenterLeft := INT(octrl:oparent:nWidth / 2)
  IF LEN(aSels) = 1
    IF nAjuste = 8
- 		 // center horizontally
-    	SetBDown( ,0,0,0 )
-      CtrlMove(oCtrl,0,(nCenterTop-INT(oCtrl:nHeight/2))-oCtrl:nTop,.F.,.F.)	
- 	 ELSEIF nAjuste = 7
- 		 // center vertically
-   	SetBDown( ,0,0,0 )
+        // center horizontally
+       SetBDown( ,0,0,0 )
+      CtrlMove(oCtrl,0,(nCenterTop-INT(oCtrl:nHeight/2))-oCtrl:nTop,.F.,.F.)
+     ELSEIF nAjuste = 7
+        // center vertically
+      SetBDown( ,0,0,0 )
     CtrlMove(oCtrl,(nCenterLeft-INT(oCtrl:nWidth/2))-oCtrl:nLeft,0,.F.,.F.)
    ENDIF
    RETURN Nil
  ENDIF
- 
+
  FOR i = 2 to len(asels)
-    oCtrl := asels[i]           
+    oCtrl := asels[i]
     IF oCtrl != Nil
-    	nminLeft   := IIF(octrl:nLeft < nminLeft,octrl:nLeft,nminLeft)
-    	nmaxright  := IIF(octrl:nLeft + octrl:nWidth > nmaxRight,octrl:nLeft + octrl:nWidth,nmaxright)
-    	nminTop    := IIF(octrl:nTop < nMinTop,octrl:nTop,nMinTop)
+       nminLeft   := IIF(octrl:nLeft < nminLeft,octrl:nLeft,nminLeft)
+       nmaxright  := IIF(octrl:nLeft + octrl:nWidth > nmaxRight,octrl:nLeft + octrl:nWidth,nmaxright)
+       nminTop    := IIF(octrl:nTop < nMinTop,octrl:nTop,nMinTop)
       nmaxbottom := IIF(octrl:nTop + octrl:nHeight > nmaxBottom,octrl:nTop + oCtrl:nHeight,nmaxBottom)
-    	nmaxwidth  := IIF(octrl:nWidth > nmaxWidth,octrl:nWidth,nmaxWidth)
-    	nmaxheight := IIF(octrl:nHeight > nmaxHeight,octrl:nHeight,nmaxHeight)
+       nmaxwidth  := IIF(octrl:nWidth > nmaxWidth,octrl:nWidth,nmaxWidth)
+       nmaxheight := IIF(octrl:nHeight > nmaxHeight,octrl:nHeight,nmaxHeight)
     ENDIF
  NEXT
  FOR i = 1 to len(asels)
    oCtrl := asels[i]
-	 IF nAjuste = 1
+    IF nAjuste = 1
       // alinhas a esquerda
-    	SetBDown( ,0,0,0 )
+       SetBDown( ,0,0,0 )
       CtrlMove(oCtrl,nMinLeft-oCtrl:nLeft,0,.F.,.F.)
- 	 ELSEIF nAjuste = 2
- 	 	 // alinhar a direita
+     ELSEIF nAjuste = 2
+         // alinhar a direita
     SetBDown( ,0,0,0 )
     CtrlMove(oCtrl,nMaxRight-oCtrl:nWidth-oCtrl:nLeft,0,.F.,.F.)
- 	 ELSEIF nAjuste = 3
- 	 		// alinhar ao TOP
-    	SetBDown( ,0,0,0 )
-      CtrlMove(oCtrl,0,nMinTop-oCtrl:nTop,.F.,.F.)	
- 	 ELSEIF nAjuste = 4 
- 	 		*-oCtrl:nBottom := nmaxBottom
- 	 ELSEIF nAjuste = 5
-   		// same Width
-    	SetBDown( , oCtrl:nLeft,oCtrl:nTop,3 )
+     ELSEIF nAjuste = 3
+           // alinhar ao TOP
+       SetBDown( ,0,0,0 )
+      CtrlMove(oCtrl,0,nMinTop-oCtrl:nTop,.F.,.F.)
+     ELSEIF nAjuste = 4
+           *-oCtrl:nBottom := nmaxBottom
+     ELSEIF nAjuste = 5
+         // same Width
+       SetBDown( , oCtrl:nLeft,oCtrl:nTop,3 )
       CtrlResize( OCTRL,oCtrl:nLeft+(nMaxWidth-oCtrl:nWidth),oCtrl:nTop)
- 	 ELSEIF nAjuste = 6
- 	 		// same Height
- 	 		SetBDown( , oCtrl:nLeft,oCtrl:nTop,4 )
- 	 		CtrlResize( OCTRL,oCtrl:nLeft,oCtrl:nTop+(nMaxHeight-oCtrl:nHeight))
- 	 ELSEIF nAjuste = 8
- 		 // center horizontally
-   	SetBDown( ,0,0,0 )
-    CtrlMove(oCtrl,0,(nCenterTop-INT((nMaxBottom-nMinTop)/2))-nMinTop,.F.,.F.)	
- 	 ELSEIF nAjuste = 7
- 		 // center vertically
-   	SetBDown( ,0,0,0 )
+     ELSEIF nAjuste = 6
+           // same Height
+           SetBDown( , oCtrl:nLeft,oCtrl:nTop,4 )
+           CtrlResize( OCTRL,oCtrl:nLeft,oCtrl:nTop+(nMaxHeight-oCtrl:nHeight))
+     ELSEIF nAjuste = 8
+        // center horizontally
+      SetBDown( ,0,0,0 )
+    CtrlMove(oCtrl,0,(nCenterTop-INT((nMaxBottom-nMinTop)/2))-nMinTop,.F.,.F.)
+     ELSEIF nAjuste = 7
+        // center vertically
+      SetBDown( ,0,0,0 )
     CtrlMove(oCtrl,(nCenterLeft-INT((nMaxRight-nMinLeft)/2))-nMinLeft,0,.F.,.F.)
 
- 	 ENDIF
+     ENDIF
  NEXT
- 
+
  RETURN Nil
- 
+
 Function RegionSelect(odlg,xi,yi,xPos,yPos)
-  Local pps, hDC, aCoors ,nDir,xf,yf
-  
+  Local pps, hDC, xf,yf
+
    pps := DefinePaintStru()
    hDC := GetDC( GetActiveWindow() )
    IF oPenSel == Nil
@@ -1045,18 +1053,18 @@ Function RegionSelect(odlg,xi,yi,xPos,yPos)
     xf := xi
     xi := xpos
     xpos := xf
-  ENDIF   
+  ENDIF
   IF ypos < yi
     yf := yi
     yi := ypos
     ypos := yf
-  ENDIF 
+  ENDIF
   InvalidateRect( odlg:handle, 1, xPos+1, yPos+1,  xPos+2,yPos+2 )
   Rectangle( hDC, xi, yi, xPos+1,yPos+1 )
   InvalidateRect( odlg:handle, 1,  xi+1, yi+1,  xPos,yPos )
-               
+
  RETURN Nil
- 
+
 
 FUNCTION selsobjetos(odlg,xi,yi,xpos,ypos)
 Local Octrl, i, xf,yf
@@ -1065,43 +1073,43 @@ Local Octrl, i, xf,yf
    xf:=xi
    xi := xpos
    xpos := xf
- ENDIF   
+ ENDIF
  IF ypos < yi
    yf:=yi
    yi := ypos
    ypos := yf
- ENDIF 
- //msginfo(str(xi)+','+str(yi)+','+str(xpos)+','+str(ypos))  
+ ENDIF
+ //msginfo(str(xi)+','+str(yi)+','+str(xpos)+','+str(ypos))
  FOR i = 1 to Len( oDlg:aControls )
     oCtrl := oDlg:aControls[i]
     IF ((yi <= oCtrl:nTop +  oCtrl:nHeight .AND. yPos >= oCtrl:nTop) .OR. ;
-		   (yPos <= oCtrl:nTop + oCtrl:nHeight .AND. yi >= oCtrl:nTop)) .AND. ;
+         (yPos <= oCtrl:nTop + oCtrl:nHeight .AND. yi >= oCtrl:nTop)) .AND. ;
        ((xi <= oCtrl:nLeft + oCtrl:nWidth .AND. xPos >= oCtrl:nLeft) .OR.;
-			 (xPos <= oCtrl:nLeft + oCtrl:nWidth .AND. xi >= oCtrl:nLeft))
- 		  SetCtrlSelected( oCtrl:oParent,oCtrl,,-128)
-    ENDIF  
- NEXT 
+          (xPos <= oCtrl:nLeft + oCtrl:nWidth .AND. xi >= oCtrl:nLeft))
+         SetCtrlSelected( oCtrl:oParent,oCtrl,,-128)
+    ENDIF
+ NEXT
 Return Nil
 
 FUNCTION AUTOSIZE(oCtrl)
 LOCAL aSize :={}
 
    IF oCtrl:oFont != NIL
- 	    asize :=  GETTEXTWIDTH(oCtrl:title+" ",oCtrl:oFont,GetDC(oCtrl:handle)) //nHdc) 
- 	 ELSE
- 	    asize :=  GETTEXTWIDTH(oCtrl:title+" ",oCtrl:oparent:oFont,GetDC(oCtrl:handle)) //nHdc) 
-	 ENDIF   
-	 IF octrl:nLeft = Nil
-	   return nil
-	 ENDIF	 
- 	 SetBDown( , oCtrl:nWidth,oCtrl:nHeight,3 )
-	 CtrlResize( OCTRL,asize[1],oCtrl:nTop)
- 	 SetBDown( , oCtrl:nLeft,oCtrl:nHeight,4 )
- 	 CtrlResize( OCTRL,oCtrl:nLeft,asize[2])	 	 
+        asize :=  GETTEXTWIDTH(oCtrl:title+" ",oCtrl:oFont,GetDC(oCtrl:handle)) //nHdc)
+     ELSE
+        asize :=  GETTEXTWIDTH(oCtrl:title+" ",oCtrl:oparent:oFont,GetDC(oCtrl:handle)) //nHdc)
+    ENDIF
+    IF octrl:nLeft = Nil
+      return nil
+    ENDIF
+     SetBDown( , oCtrl:nWidth,oCtrl:nHeight,3 )
+    CtrlResize( OCTRL,asize[1],oCtrl:nTop)
+     SetBDown( , oCtrl:nLeft,oCtrl:nHeight,4 )
+     CtrlResize( OCTRL,oCtrl:nLeft,asize[2])
 
-	RETURN Nil
-	
-FUNCTION GetTextWidth( cString, oFont ,hdc) 
+   RETURN Nil
+
+FUNCTION GetTextWidth( cString, oFont ,hdc)
 Local arr, hFont
 
    IF oFont != Nil
@@ -1112,6 +1120,6 @@ Local arr, hFont
       SelectObject( hDC,hFont )
    ENDIF
 
-Return arr 
+Return arr
 
 // :END LFB

@@ -6,8 +6,11 @@
   <editor>editor.iml</editor>
   <rep_widgetset>resource/repwidg.xml</rep_widgetset>
   <rep_format name="Plain text format" ext="rpt" file="resource/r_text.prg" rdscr="read"/>
-  <dirpath default=""/>
+  <dirpath default="c:\docume~1\maurizio\desktop\designer7\designer\"/>
   <recent>
+    <file>c:\docume~1\maurizio\desktop\designer7\designer\tela03.xml</file>
+    <file>c:\cvs\xhsys\resource\test.xml</file>
+    <file>c:\cvs\xhsys\resource\formenginesample.xml</file>
   </recent>
   <grid default="5"/>
 </designer>

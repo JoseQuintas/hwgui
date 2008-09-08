@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.58 2008-09-08 16:53:29 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.59 2008-09-08 17:05:38 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -375,7 +375,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
      IF (oCtrl := oDlg:FindControl(,oDlg:nInitFocus)) == nil
         oCtrl := oDlg:FindControl(,GetAncestor(oDlg:nInitFocus, GA_PARENT))
         IF oCtrl != Nil
-           GetSkip( oCtrl:oParent, hCtrl, , 1 ),.T.)
+           GetSkip( oCtrl:oParent, hCtrl, , 1 )
         ENDIF
      ENDIF
      IF oCtrl != Nil .AND. oCtrl:handle == oDlg:nInitFocus .and. oDlg:nInitFocus != 0

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.85 2008-09-08 16:53:29 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.86 2008-09-08 17:05:38 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -784,11 +784,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
           SendMessage( ::handle, BM_SETSTATE, 1, 0 )
           ::m_bSent := .t.
        ENDIF
-
        SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
-       ELSEIF wParam == VK_ESCAPE
-          SendMessage( ::oParent:handle, WM_COMMAND, makewparam( 2, BN_CLICKED ), ::handle )
-       ENDIF
+    ELSEIF wParam == VK_ESCAPE
+          SendMessage( ::oParent:handle, WM_COMMAND, makewparam( IDCANCEL, BN_CLICKED ), ::handle )
     ENDIF
     RETURN 0
  ENDIF

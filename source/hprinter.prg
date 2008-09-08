@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.30 2008-09-06 17:47:00 giuseppem Exp $
+ * $Id: hprinter.prg,v 1.31 2008-09-08 17:05:39 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -293,7 +293,7 @@ Local oFont := HFont():Add( "Times New Roman",0,-13,700 )
 Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] != Nil .AND. aBitmaps[10] )
 
    FOR i:=1 to nLastPage
-	  aadd(aPage,str(i,4)+":"+str(nLastPage,4))
+     aadd(aPage,str(i,4)+":"+str(nLastPage,4))
    NEXT
 
    IF cTitle == Nil; cTitle := "Print preview - "+::cPrinterName; ENDIF
@@ -324,7 +324,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
    oCanvas:bScroll:={|oWnd,msg,wParam,lParam|HB_SYMBOL_UNUSED(oWnd), ResizePreviewDlg(oCanvas,Self,,msg,wParam,lParam)}
    // DON'T CHANGE NOR REMOVE THE FOLLOWING LINE !
    // I need it to have the correct side-effect to avoid flickering !!!
-   oCanvas:brush := 0 
+   oCanvas:brush := 0
 
    @ 3,2 OWNERBUTTON oBtn OF oToolBar ON CLICK {||EndDialog()} ;
         SIZE oToolBar:nWidth-6,24 TEXT "Exit" FONT oFont        ;
@@ -347,8 +347,8 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
    ENDIF
 
    @ 3,62 COMBOBOX oSayPage ITEMS aPage of oToolBar ;
-  	       SIZE oToolBar:nWidth-6,24 color "fff000" backcolor 12507070 ;
-  	       ON CHANGE {|| ChangePage(oDlg,oSayPage,Self,,oSayPage:GetValue()) } STYLE WS_VSCROLL
+            SIZE oToolBar:nWidth-6,24 color "fff000" backcolor 12507070 ;
+            ON CHANGE {|| ChangePage(oDlg,oSayPage,Self,,oSayPage:GetValue()) } STYLE WS_VSCROLL
 
 
    @ 3,86 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,0)} ;
@@ -450,6 +450,8 @@ Return Nil
 
 Static Function ChangePage( oDlg,oSayPage,oPrinter,n,nPage )
 
+HB_SYMBOL_UNUSED( oDlg )
+
    oPrinter:NeedsRedraw := .T.
    IF npage=nil
       IF n == 0
@@ -461,9 +463,9 @@ Static Function ChangePage( oDlg,oSayPage,oPrinter,n,nPage )
       ELSEIF n == -1 .AND. oPrinter:nCurrPage > 1
          oPrinter:nCurrPage --
       ENDIF
-   	oSayPage:setitem(oprinter:ncurrpage)
+      oSayPage:setitem(oprinter:ncurrpage)
    ELSE
-	   oPrinter:ncurrpage:=nPage
+      oPrinter:ncurrpage:=nPage
    ENDIF
 
 Return Nil
@@ -659,7 +661,7 @@ static BrushBackground := NIL
    // tracelog( "PPS"+str(aArray[1])+str(aArray[2])+str(aArray[3])+str(aArray[4]) )
 
    if ( aArray[1] == 0 .AND. aArray[2] == 0)  // IF WHOLE AREA
-      if ( ::NeedsRedraw .OR. lRefreshVideo ) 
+      if ( ::NeedsRedraw .OR. lRefreshVideo )
          if Valtype( ::memDC ) =="U"
             ::memDC := Hdc():New()
             ::memDC:CreateCompatibleDC( hDC )
@@ -684,7 +686,7 @@ static BrushBackground := NIL
             FillRect( ::memDC:m_hDC, ::x1, ::y1, ::x2, ::y2, BrushWhite )
             // Draw the actual printer data
             PlayEnhMetafile( ::memDC:m_hDC, ::aMeta[::nCurrPage], ::x1, ::y1, ::x2, ::y2 )
-            // Draw 
+            // Draw
             // Rectangle( ::memDC:m_hDC, ::x1, ::y1, ::x2, ::y2 )
 
             FillRect( ::memDC:m_hDC, ::x2, ::y1+2, ::x2+1, ::y2+2, BrushBlack )
@@ -711,7 +713,7 @@ static BrushBackground := NIL
 
 
 #if 0
-   // Draws a line from upper left to bottom right of the PAPER 
+   // Draws a line from upper left to bottom right of the PAPER
    // used to check for PAPER dimension...
    DrawLine( hDC, ::x1, ::y1, ::x2, ::y2 )
 #endif

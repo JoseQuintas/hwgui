@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.892 2008-09-08 17:05:38 mlacecilia Exp $
+ * $Id: Changelog,v 1.893 2008-09-09 18:40:53 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-09 20:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hprinter.prg
+    * changed to hidden methods some static functions to fix Harbour
+      correctly signaling scope violation in properties access
+      (strangely xHarbour allows this access, so i think this is a bug
+      in class implementation)
+    * fixed preview to correctly show and resize the report
+    * purged some unused variable and fixed some compiler warning
 
 2008-09-08 19:10 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * changelog
@@ -16,7 +25,6 @@
     * fixed some typo introduced in previous commit
   * source\hprinter.prg
     * purged some unused variable and fixed some compiler warning
- 
     
 2008-09-08 18:50 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * include\guilib.ch

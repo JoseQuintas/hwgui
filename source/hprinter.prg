@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.31 2008-09-08 17:05:39 mlacecilia Exp $
+ * $Id: hprinter.prg,v 1.32 2008-09-09 18:40:53 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -32,7 +32,7 @@ CLASS HPrinter INHERIT HObject
 
    DATA memDC       HIDDEN    // dc offscreen
    DATA memBitmap   HIDDEN    // bitmap offscreen
-   DATA NeedsRedraw INIT .T. HIDDEN // if offscreen needs redrawing...
+   DATA NeedsRedraw INIT .T.  HIDDEN // if offscreen needs redrawing...
 
    METHOD New( cPrinter,lmm )
    METHOD SetMode( nOrientation )
@@ -55,7 +55,8 @@ CLASS HPrinter INHERIT HObject
    METHOD Say( cString,x1,y1,x2,y2,nOpt,oFont,nTextColor,nBkColor )
    METHOD Bitmap( x1,y1,x2,y2,nOpt,hBitmap )
    METHOD GetTextWidth( cString, oFont )
-
+   METHOD ResizePreviewDlg( oCanvas, nZoom, msg, wParam, lParam ) HIDDEN
+   METHOD ChangePage( oSayPage,n,nPage ) HIDDEN
 ENDCLASS
 
 METHOD New( cPrinter,lmm ) CLASS HPrinter
@@ -303,25 +304,25 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
    ::NeedsRedraw := .T.
 
    INIT DIALOG oDlg TITLE cTitle                  ;
-     AT 40,10 SIZE 600,440                        ;
+     AT 40,10 SIZE GetDesktopWidth(),GetDesktopHeight()                        ;
      STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+WS_MAXIMIZEBOX;
-     ON INIT {|o|o:Maximize(),ResizePreviewDlg(oCanvas,Self,1), SetTimer(oCanvas, @oTimer)} ;
+     ON INIT {|o|o:Maximize(),::ResizePreviewDlg(oCanvas,1), SetTimer(oCanvas, @oTimer)} ;
      ON EXIT {|| oCanvas:brush := NIL, .T. }
 
 
-   oDlg:bScroll:={|oWnd,msg,wParam,lParam|HB_SYMBOL_UNUSED(oWnd), ResizePreviewDlg(oCanvas,Self,,msg,wParam,lParam)}
+   oDlg:bScroll:={|oWnd,msg,wParam,lParam|HB_SYMBOL_UNUSED(oWnd),::ResizePreviewDlg(oCanvas,,msg,wParam,lParam)}
    oDlg:brush := HBrush():Add( 11316396 )
 
-   @ 0,0 PANEL oToolBar SIZE 88,oDlg:nHeight
+   @ 0,0 PANEL oToolBar SIZE 88, oDlg:nHeight
 
 
 // Canvas should fill ALL the available space
    @ oToolBar:nWidth,0 PANEL oCanvas ;
      SIZE oDlg:nWidth-oToolBar:nWidth,oDlg:nHeight ;
-     ON SIZE {|o,x,y|o:Move(,,x-oToolBar:nWidth,y),ResizePreviewDlg(o,Self)} ;
-     ON PAINT {||::PlayMeta(oCanvas)} STYLE WS_VSCROLL+WS_HSCROLL
+     ON SIZE {|o,x,y|o:Move(,,x-oToolBar:nWidth,y),::ResizePreviewDlg(o)} ;
+     ON PAINT {|| ::PlayMeta(oCanvas)} STYLE WS_VSCROLL+WS_HSCROLL
 
-   oCanvas:bScroll:={|oWnd,msg,wParam,lParam|HB_SYMBOL_UNUSED(oWnd), ResizePreviewDlg(oCanvas,Self,,msg,wParam,lParam)}
+   oCanvas:bScroll:={|oWnd,msg,wParam,lParam|HB_SYMBOL_UNUSED(oWnd), ::ResizePreviewDlg(oCanvas,,msg,wParam,lParam)}
    // DON'T CHANGE NOR REMOVE THE FOLLOWING LINE !
    // I need it to have the correct side-effect to avoid flickering !!!
    oCanvas:brush := 0
@@ -348,10 +349,10 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
 
    @ 3,62 COMBOBOX oSayPage ITEMS aPage of oToolBar ;
             SIZE oToolBar:nWidth-6,24 color "fff000" backcolor 12507070 ;
-            ON CHANGE {|| ChangePage(oDlg,oSayPage,Self,,oSayPage:GetValue()) } STYLE WS_VSCROLL
+            ON CHANGE {|| ::ChangePage(oSayPage,,oSayPage:GetValue()) } STYLE WS_VSCROLL
 
 
-   @ 3,86 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,0)} ;
+   @ 3,86 OWNERBUTTON oBtn OF oToolBar ON CLICK {||::ChangePage(oSayPage,0)} ;
         SIZE oToolBar:nWidth-6,24 TEXT "|<<" FONT oFont                 ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[3],"First page")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 3 .AND. aBitmaps[4] != Nil
@@ -360,7 +361,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 3,110 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,1)} ;
+   @ 3,110 OWNERBUTTON oBtn OF oToolBar ON CLICK {||::ChangePage(oSayPage,1)} ;
         SIZE oToolBar:nWidth-6,24 TEXT ">>" FONT oFont                  ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[4],"Next page")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 4 .AND. aBitmaps[5] != Nil
@@ -369,7 +370,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 3,134 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,-1)} ;
+   @ 3,134 OWNERBUTTON oBtn OF oToolBar ON CLICK {||::ChangePage(oSayPage,-1)} ;
         SIZE oToolBar:nWidth-6,24 TEXT "<<" FONT oFont    ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[5],"Previous page")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 5 .AND. aBitmaps[6] != Nil
@@ -378,7 +379,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 3,158 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ChangePage(oDlg,oSayPage,Self,2)} ;
+   @ 3,158 OWNERBUTTON oBtn OF oToolBar ON CLICK {||::ChangePage(oSayPage,2)} ;
         SIZE oToolBar:nWidth-6,24 TEXT ">>|" FONT oFont   ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[6],"Last page")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 6 .AND. aBitmaps[7] != Nil
@@ -389,7 +390,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
 
    @ 1,189 LINE LENGTH oToolBar:nWidth-1
 
-   @ 3,192 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ResizePreviewDlg(oCanvas,Self,-1)} ;
+   @ 3,192 OWNERBUTTON oBtn OF oToolBar ON CLICK {||::ResizePreviewDlg(oCanvas,-1)} ;
         SIZE oToolBar:nWidth-6,24 TEXT "(-)" FONT oFont   ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[7],"Zoom out")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 7 .AND. aBitmaps[8] != Nil
@@ -398,7 +399,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 3,216 OWNERBUTTON oBtn OF oToolBar ON CLICK {||ResizePreviewDlg(oCanvas,Self,1)} ;
+   @ 3,216 OWNERBUTTON oBtn OF oToolBar ON CLICK {||::ResizePreviewDlg(oCanvas,1)} ;
         SIZE oToolBar:nWidth-6,24 TEXT "(+)" FONT oFont   ;
         TOOLTIP Iif(aTooltips!=Nil,aTooltips[8],"Zoom in")
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 8 .AND. aBitmaps[9] != Nil
@@ -448,24 +449,22 @@ Static Function TimerFunc(o )
    RedrawWindow( o:handle, RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW + RDW_INVALIDATE )  // Force a complete redraw
 Return Nil
 
-Static Function ChangePage( oDlg,oSayPage,oPrinter,n,nPage )
+METHOD ChangePage( oSayPage,n,nPage ) CLASS hPrinter
 
-HB_SYMBOL_UNUSED( oDlg )
-
-   oPrinter:NeedsRedraw := .T.
-   IF npage=nil
+   ::NeedsRedraw := .T.
+   IF nPage == nil
       IF n == 0
-         oPrinter:nCurrPage := 1
+         ::nCurrPage := 1
       ELSEIF n == 2
-         oPrinter:nCurrPage := Len(oPrinter:aMeta)
-      ELSEIF n == 1 .AND. oPrinter:nCurrPage < Len(oPrinter:aMeta)
-         oPrinter:nCurrPage ++
-      ELSEIF n == -1 .AND. oPrinter:nCurrPage > 1
-         oPrinter:nCurrPage --
+         ::nCurrPage := Len(::aMeta)
+      ELSEIF n == 1 .AND. ::nCurrPage < Len(::aMeta)
+         ::nCurrPage ++
+      ELSEIF n == -1 .AND. ::nCurrPage > 1
+         ::nCurrPage --
       ENDIF
-      oSayPage:setitem(oprinter:ncurrpage)
+      oSayPage:SetItem(::nCurrPage)
    ELSE
-      oPrinter:ncurrpage:=nPage
+      ::nCurrPage := nPage
    ENDIF
 
 Return Nil
@@ -475,7 +474,7 @@ Return Nil
 /***
  nZoom: zoom factor: -1 or 1, NIL if scroll message
 */
-Static Function ResizePreviewDlg( oCanvas, oPrinter, nZoom, msg, wParam, lParam )
+METHOD ResizePreviewDlg( oCanvas, nZoom, msg, wParam, lParam ) CLASS hPrinter
 Local nWidth, nHeight, k1, k2, x, y
 Local i, nPos, wmsg, nPosVert, nPosHorz
 
@@ -514,7 +513,7 @@ HB_SYMBOL_UNUSED(lParam)
          ENDIF
       ENDIF
          setscrollpos(oCanvas:handle,SB_VERT,nPosVert)
-      oPrinter:NeedsRedraw := .T.
+      ::NeedsRedraw := .T.
    ENDIF
 
    IF msg=WM_HSCROLL
@@ -544,7 +543,7 @@ HB_SYMBOL_UNUSED(lParam)
          ENDIF
       ENDIF
          setscrollpos(oCanvas:handle,SB_HORZ,nPosHorz)
-      oPrinter:NeedsRedraw := .T.
+      ::NeedsRedraw := .T.
    ENDIF
 
    IF msg == WM_MOUSEWHEEL
@@ -559,28 +558,28 @@ HB_SYMBOL_UNUSED(lParam)
          ENDIF
       ENDIF
       SetScrollPos( oCanvas:handle, SB_VERT, nPosVert )
-      oPrinter:NeedsRedraw := .T.
+      ::NeedsRedraw := .T.
    ENDIF
 
    IF nZoom != Nil
       // If already at maximum zoom returns
-      IF nZoom < 0 .AND. oPrinter:nZoom == 0
+      IF nZoom < 0 .AND. ::nZoom == 0
          Return Nil
       ENDIF
-      oPrinter:nZoom += nZoom
-      oPrinter:NeedsRedraw := .T.
+      ::nZoom += nZoom
+      ::NeedsRedraw := .T.
    ENDIF
-   k1 := oPrinter:nWidth / oPrinter:nHeight
-   k2 := oPrinter:nHeight / oPrinter:nWidth
+   k1 := ::nWidth / ::nHeight
+   k2 := ::nHeight / ::nWidth
 
-   IF oPrinter:nWidth > oPrinter:nHeight
+   IF ::nWidth > ::nHeight
       nWidth := x - 20
       nHeight := Round( nWidth * k2, 0 )
       IF nHeight > y - 20
          nHeight := y - 20
          nWidth := Round( nHeight * k1, 0 )
       ENDIF
-      oPrinter:NeedsRedraw := .T.
+      ::NeedsRedraw := .T.
    ELSE
       nHeight := y - 10
       nWidth := Round( nHeight * k1, 0 )
@@ -588,25 +587,25 @@ HB_SYMBOL_UNUSED(lParam)
          nWidth := x - 20
          nHeight := Round( nWidth * k2, 0 )
       ENDIF
-      oPrinter:NeedsRedraw := .T.
+      ::NeedsRedraw := .T.
    ENDIF
 
-   IF oPrinter:nZoom > 0
-      FOR i := 1 TO oPrinter:nZoom
+   IF ::nZoom > 0
+      FOR i := 1 TO ::nZoom
          nWidth := Round( nWidth*1.5,0 )
          nHeight := Round( nHeight*1.5,0 )
       NEXT
-      oPrinter:NeedsRedraw := .T.
-   ELSEIF oPrinter:nZoom == 0
+      ::NeedsRedraw := .T.
+   ELSEIF ::nZoom == 0
       nWidth := Round( nWidth*0.93, 0 )
       nHeight := Round( nHeight*0.93, 0 )
    ENDIF
 
-   oPrinter:xOffset := oPrinter:yOffset := 0
+   ::xOffset := ::yOffset := 0
    IF nHeight > y
       npos:=nPosVert
       IF nPos > 0
-         oPrinter:yOffset := Round( ((nPos-1)/18) * ( nHeight - y + 10 ),0 )
+         ::yOffset := Round( ((nPos-1)/18) * ( nHeight - y + 10 ),0 )
       ENDIF
    ELSE
       setscrollpos(oCanvas:handle,SB_VERT,0)
@@ -616,20 +615,19 @@ HB_SYMBOL_UNUSED(lParam)
       nPos := nPosHorz
       IF nPos > 0
          nPos := ( nPos - 1 ) / 18
-         oPrinter:xOffset := Round( nPos * ( nWidth - x + 10 ),0 )
+         ::xOffset := Round( nPos * ( nWidth - x + 10 ),0 )
       ENDIF
    ELSE
      setscrollpos(oCanvas:handle,SB_HORZ,0)
    ENDIF
 
-   oPrinter:x1 := Iif( nWidth<x, Round( (x-nWidth)/2,0 ), 10 ) - oPrinter:xOffset
-   oPrinter:x2 := oPrinter:x1 + nWidth - 1
-   oPrinter:y1 := Iif( nHeight<y, Round( (y-nHeight)/2,0 ), 10 ) - oPrinter:yOffset
-   oPrinter:y2 := oPrinter:y1 + nHeight - 1
+   ::x1 := Iif( nWidth < x, Round( (x-nWidth)/2,0 ), 10 ) - ::xOffset
+   ::x2 := ::x1 + nWidth - 1
+   ::y1 := Iif( nHeight< y, Round( (y-nHeight)/2,0 ), 10 ) - ::yOffset
+   ::y2 := ::y1 + nHeight - 1
 
    IF nZoom != Nil .OR. msg != Nil
        RedrawWindow( oCanvas:handle, RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW + RDW_INVALIDATE )  // Force a complete redraw
-
    ENDIF
 
 Return Nil
@@ -649,10 +647,11 @@ static BrushBackground := NIL
 
    rect:=GetClientRect(oWnd:handle)
 
-// offscreen canvas must be THE WHOLE CANVAS !
+	WriteLog(stR(rect[1])+ stR(rect[2])+ stR(rect[3])+ stR(rect[4]) )
+	// offscreen canvas must be THE WHOLE CANVAS !
 
    IF ::xOffset == Nil
-      ResizePreviewDlg( oWnd, Self )
+      ::ResizePreviewDlg( oWnd )
    ENDIF
 
    pps := DefinePaintStru()

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.86 2008-09-08 17:05:38 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.87 2008-09-10 08:05:18 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -284,7 +284,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
               bInit, bSize, bPaint, cTooltip, tcolor, bColor )
 
-   IF ltransp .AND. bColor = Nil .AND. ::oParent:brush != Nil
+   IF (lTransp != NIL .AND. lTransp) .AND. ::oParent:brush != Nil
       ::bcolor := ::oparent:bcolor
    ENDIF
 

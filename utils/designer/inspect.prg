@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.17 2008-09-08 16:53:30 mlacecilia Exp $
+ * $Id: inspect.prg,v 1.18 2008-09-10 08:05:18 mlacecilia Exp $
  *
  * Designer
  * Object Inspector
@@ -633,7 +633,7 @@ Function ObjInspector(oObject )
    ENDIF
    //lData := .t.
    aClassMsgMtdo := __objGetMethodList(oObject)
-#ifndef __XHARBOUR
+#ifndef __XHARBOUR__
    aClassMsgProp := __objGetProperties( oObject, .t. )
 #else
    aClassMsgProp := __ObjGetValueDiff( oObject)

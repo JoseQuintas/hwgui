@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.45 2008-09-08 16:53:30 mlacecilia Exp $
+ * $Id: hformgen.prg,v 1.46 2008-09-10 18:22:34 mlacecilia Exp $
  *
  * Designer
  * HFormGen class
@@ -13,6 +13,7 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 #include "hxml.ch"
+#include "common.ch"
 
 #include "designer.ch"
 

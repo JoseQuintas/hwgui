@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.18 2008-09-10 08:05:18 mlacecilia Exp $
+ * $Id: inspect.prg,v 1.19 2008-09-10 18:22:34 mlacecilia Exp $
  *
  * Designer
  * Object Inspector
@@ -12,6 +12,7 @@
 #include "windows.ch"
 #include "HBClass.ch"
 #include "guilib.ch"
+#include "common.ch"
 
 #xcommand @ <x>,<y> PBROWSE [ <oBrw> ] ;
             [ <lArr: ARRAY> ]          ;

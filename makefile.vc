@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.27 2008-08-12 08:54:21 richardroesnadi Exp $
+# $Id: makefile.vc,v 1.28 2008-09-10 18:22:31 mlacecilia Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -113,7 +113,6 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hdc.obj \
    $(HWGUI_OBJ_DIR)\pager.obj \
    $(HWGUI_OBJ_DIR)\hhyper.obj \
-   $(HWGUI_OBJ_DIR)\saymoney.obj \
    $(HWGUI_OBJ_DIR)\richtext.obj
 
 $(LIB_DIR)\hwgui.lib : $(HWGUI_LIB_OBJS)
@@ -135,6 +134,7 @@ PROCMISC_LIB_OBJS = \
    $(PROCMISC_OBJ_DIR)\blowfish.obj \
    $(PROCMISC_OBJ_DIR)\procini.obj \
    $(PROCMISC_OBJ_DIR)\procs7.obj \
+   $(PROCMISC_OBJ_DIR)\saymoney.obj \
    $(PROCMISC_OBJ_DIR)\procscri.obj
 
 $(LIB_DIR)\procmisc.lib : $(PROCMISC_LIB_OBJS)

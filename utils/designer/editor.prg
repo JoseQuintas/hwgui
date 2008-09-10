@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.26 2008-09-08 16:53:30 mlacecilia Exp $
+ * $Id: editor.prg,v 1.27 2008-09-10 18:22:34 mlacecilia Exp $
  *
  * Designer
  * Simple code editor
@@ -12,6 +12,7 @@
 #include "windows.ch"
 #include "guilib.ch"
 #include "hxml.ch"
+#include "common.ch"
 
 #define ES_SAVESEL 0x00008000
 

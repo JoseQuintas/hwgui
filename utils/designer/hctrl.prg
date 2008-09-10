@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.25 2008-09-08 16:53:30 mlacecilia Exp $
+ * $Id: hctrl.prg,v 1.26 2008-09-10 18:22:34 mlacecilia Exp $
  *
  * Designer
  * HControlGen class
@@ -12,6 +12,7 @@
 #include "HBClass.ch"
 #include "guilib.ch"
 #include "hxml.ch"
+#include "common.ch"
 
 #include "designer.ch"
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.894 2008-09-10 08:05:15 mlacecilia Exp $
+ * $Id: Changelog,v 1.895 2008-09-10 18:22:31 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,25 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-10 20:20 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  ! source\saymoney.prg
+    ! moved to procmisc folder and lib as not a gui function
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * makefile.vc
+  * makefile.wc
+    * changed to correctly include saymoney into procmisc.lib
+  * utils\designer\EXTMODUL.CH
+    * moved the external requests of saymoney.prg related functions into
+      define of specific Roesnadi lib (richlib) as rest of developers
+      not ever needs this funcs
+  * utils\designer\editor.prg
+  * utils\designer\hctrl.prg
+  * utils\designer\hformgen.prg
+  * utils\designer\inspect.prg
+    * fixed the missed reference to HB_SYMBOL_UNUSED macro
 
 2008-09-10 10:10 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcontrol.prg

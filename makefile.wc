@@ -1,4 +1,4 @@
-# $Id: makefile.wc,v 1.17 2008-08-12 08:54:21 richardroesnadi Exp $
+# $Id: makefile.wc,v 1.18 2008-09-10 18:22:31 mlacecilia Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -47,6 +47,7 @@ PROCMISC_LIB_OBJS = \
    $(OBJ_DIR)\blowfish.obj \
    $(OBJ_DIR)\procini.obj \
    $(OBJ_DIR)\procs7.obj \
+   $(OBJ_DIR)\saymoney.obj \
    $(OBJ_DIR)\procscri.obj
 
 HWGUI_LIB_OBJS = \
@@ -118,7 +119,6 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hnice.obj \
    $(OBJ_DIR)\grid.obj \
    $(OBJ_DIR)\hdc.obj \
-   $(OBJ_DIR)\saymoney.obj \
    $(OBJ_DIR)\hhyper.obj
 
 

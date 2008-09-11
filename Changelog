@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.895 2008-09-10 18:22:31 mlacecilia Exp $
+ * $Id: Changelog,v 1.896 2008-09-11 12:08:22 alexstrickland Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,29 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-11 14:00 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
+  * makefile.vc
+    * Warnings now cause errors - /es2.
+  * source\hedit.prg
+    * Changed STATIC PROCEDURES __Valid() and __When() to methods.
+      This necessitated converting almost all STATIC PROCEDURES to
+      methods - imo a good thing. I made the new methods PROTECTED.
+      Spelling of Lenght changed to Length throughout.
+  * source\hwindow.prg
+    + Added data fields lBmpCenter and nBmpClr. These allow the bitmap
+      to be centered (as opposed to tiled) and to have the colour match
+      the bitmap.
+  * source\draw.c
+    + Added CenterBitmap( hDC, hWnd, hBitmap, style, brush ) to support
+      change above.
+  * source\hbrowse.prg
+    + Added oHeadFont variable to HBrowse class. If it is set it
+      is used in preference to the Browse font for the header.
+  * source\menu_c.c
+    * Added code in HWG__ADDMENUITEM() to set the ID of submenus, the MS API
+      seems to assume that you wouldn't really want to, but if you are used
+      to getting help via IDs for popups in 16bit, then this will help you.
 
 2008-09-10 20:20 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   ! source\saymoney.prg
@@ -31,7 +54,7 @@
   * source\hcontrol.prg
     * fix of Basso about the bcolor setting with TRANSPARENT in hStatic
   * utils\designer\inspect.prg
-    * fixed a typo in define 
+    * fixed a typo in define
 
 2008-09-09 20:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hprinter.prg
@@ -50,13 +73,13 @@
     * fixed some typo introduced in previous commit
   * source\hprinter.prg
     * purged some unused variable and fixed some compiler warning
-    
+
 2008-09-08 18:50 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * include\guilib.ch
     + added the COLOR specification in INIT DIALOG command
   * source\hcontrol.prg
     * fixed transparent background repaint for static controls
-    * fixed the IDCANCEL and IDOK buttons triggering 
+    * fixed the IDCANCEL and IDOK buttons triggering
   * source\hcwindow.prg
     * fixed onCtlColor, now returning the parent brush handle if no
       brush is defined for the control
@@ -77,29 +100,28 @@
     ! In previw added combo for select a page directly, in ownerbutton deleted flat style.
 
 2008-09-05 16:46 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
-   * Added file todo.txt   
+   * Added file todo.txt
 
 2008-09-05 15:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   thanks to Luis Fernando Basso who solved and Giuseppe Mastrangelo
   who signaled the bug.
   * source\hdialog.prg
-    * fixed missed repainting of dialog when his background use a 
-      brush color    
-    
+    * fixed missed repainting of dialog when his background use a
+      brush color
+
 2008-09-05 12:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcontrol.prg
-    * moved the WM_SYSKEYUP trapping in hButtonEx to activate the 
+    * moved the WM_SYSKEYUP trapping in hButtonEx to activate the
       accelerator key
   * source\hdialog.prg
     * added the nInitFocus property (internal use only)
     * fixed the focused control at activation/gain focus time
-    * fix for command handling in tab pages    
+    * fix for command handling in tab pages
   * source\htab.prg
-    * added return key handling in navigation   
+    * added return key handling in navigation
   * source\hradio.prg
-    * fixed to correctly set the selected value 
-    
-    
+    * fixed to correctly set the selected value
+
 2008-09-04 21:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hcwindow.prg
     * renamed the previously added method RefreshAll to Refresh
@@ -108,18 +130,18 @@
   * source\hcontrol.prg
     * forced the triggering of the click for IDCANCEL and IDOK buttonex
     * changed code for Harbour compatibility
-    
+
 2008-09-01 21:00 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
-  This commit contains all the changes made by Luis Fernando Basso 
+  This commit contains all the changes made by Luis Fernando Basso
   pending from August month
   * include\guilib.ch
-    * added the ON GETFOCUS/WHEN and ON LOSTFOCUS/VALID clause 
+    * added the ON GETFOCUS/WHEN and ON LOSTFOCUS/VALID clause
       and the COLOR and BACKCOLOR clause for the
       @ .... [GET] LISTBOX commands
-    * added the ON GETFOCUS/WHEN and ON LOSTFOCUS/VALID and 
+    * added the ON GETFOCUS/WHEN and ON LOSTFOCUS/VALID and
       ON_INTERACTIVECHANGE clause for the
       @ .... [GET] COMBOBOX commands
-    * added the ON INIT clause for the @ ... GET and 
+    * added the ON INIT clause for the @ ... GET and
       @ ... GET COMBOBOX commands
   * include\windows.ch
     * moved from hcombo.prg the related event defines
@@ -138,7 +160,7 @@
     * fixed control navigation with cursor movement
     * some enhancement in coding readability
     * added the AddItem and the DeleteItem methods
-    * added the ON GETFOCUS/WHEN and ON LOSTFOCUS/VALID and 
+    * added the ON GETFOCUS/WHEN and ON LOSTFOCUS/VALID and
       ON_INTERACTIVECHANGE events management
   * source\hcontrol.prg
     * forced the refresh when the caption of the control is changed
@@ -149,11 +171,11 @@
     * added lParam in onCommand for further use
     * added RefreshAll method for refresh all the controls contained
       in the control window
-    * added lSuspendMsgsHandling property allowing centralized 
+    * added lSuspendMsgsHandling property allowing centralized
       control of event handling
   * source\hdatepic.prg
     * now pass the correct value to when function
-    * fixed control navigation with cursor movement 
+    * fixed control navigation with cursor movement
   * source\hdialog.prg
     * fixed the close method for no modal dialogs
     * fixed control navigation in DlgCommand()
@@ -162,47 +184,47 @@
       functions not far needed
   * source\hipedit.prg
     * fixed control navigation with cursor movement
-    * fixed the ON GETFOCUS and ON LOSTFOCUS management     
+    * fixed the ON GETFOCUS and ON LOSTFOCUS management
    * source\hlistbox.prg
     * added the ON GETFOCUS/WHEN and ON LOSTFOCUS/VALID management
     * added the DeleteItem method
-   * source\hownbtn.prg    
+   * source\hownbtn.prg
     + added the onClick method
    * source\hradio.prg
     + added the notify method
     * changed the default style avoiding BS_AUTORADIOBUTTON setting
     * fixed the validation function
    * source\hrect.prg
-    + added the SetColor(tcolor,bcolor) and Curvature(nCurvature)   
+    + added the SetColor(tcolor,bcolor) and Curvature(nCurvature)
       methods
    * source\htab.prg
-    * avoided selection via click of a disabled page   
+    * avoided selection via click of a disabled page
     * fixed event handling and passing to the parent form
    * source\hupdown.prg
     * fixed control navigation with cursor movement
-    * fixed the ON GETFOCUS and ON LOSTFOCUS management     
+    * fixed the ON GETFOCUS and ON LOSTFOCUS management
    * source\hwindow.prg
     * minor typo
    * source\misc.c
     + added the GetNextDlgGroupItem API wrapper
    * source\procmisc\procscri.prg
     * changed the CompileScr() function to treat the local variables
-      as private and parameters one for designer compatibility    
+      as private and parameters one for designer compatibility
    * utils\designer\designer.prg
     * little change to allow Harbour compile
-   * utils\designer\inspect.prg    
+   * utils\designer\inspect.prg
     * little changes to allow Harbour compile
     * translation to english of some portuguese captions
 
 2008-08-12 15:05 UTC+0200 Richard Roesnadi <roesnadi8@yahoo.co.id>
   * source\saymoney.prg
-    + Added new function for "say in money" I add for English and 
+    + Added new function for "say in money" I add for English and
 	  Indonesia.
 	    ex: sayDollar(nDollar) -> Say in dollar
-	        sayRupiah(nValue)  -> Say in Rupiah 
+	        sayRupiah(nValue)  -> Say in Rupiah
 	You may add your country say Money at here
   * utils\designer\samples\saymoney.xml
-  
+
 
 2008-08-06 16:20 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
   * source\drawwidg.prg

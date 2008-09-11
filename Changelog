@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.896 2008-09-11 12:08:22 alexstrickland Exp $
+ * $Id: Changelog,v 1.897 2008-09-11 12:33:17 alexstrickland Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-11 14:30 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
+  * source\hbrowse.prg
+    + Declare oldfont variable for use with oHeadFont.
 
 2008-09-11 14:00 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
   * makefile.vc

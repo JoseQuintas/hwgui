@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.138 2008-09-11 12:06:10 alexstrickland Exp $
+ * $Id: hbrowse.prg,v 1.139 2008-09-11 12:33:22 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -993,6 +993,7 @@ Local nRows := Min( ::nRecords+Iif(::lAppMode,1,0),::rowCount )
 Local oPen, oldBkColor := SetBkColor( hDC,GetSysColor(COLOR_3DFACE) )
 Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
 Local toldc
+Local oldfont
 
    IF ::lDispSep
       oPen := HPen():Add( PS_SOLID,1,::sepColor )

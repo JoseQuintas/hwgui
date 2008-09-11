@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.137 2008-08-06 14:25:15 alexstrickland Exp $
+ * $Id: hbrowse.prg,v 1.138 2008-09-11 12:06:10 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -153,6 +153,7 @@ CLASS HBrowse INHERIT HControl
    DATA lShiftPress INIT .F.                    // .T. while Shift key is pressed
    DATA aSelected                              // An array of selected records numbers
    DATA nWheelPress INIT 0							   // wheel or central button mouse pressed flag
+   DATA oHeadFont
 
    DATA lDescend INIT .F.              // Descend Order?
    DATA lFilter INIT .F.               // Filtered? (atribuition is automatic in method "New()").
@@ -1002,6 +1003,9 @@ Local toldc
    ENDIF
 
    x := ::x1
+   IF ::oHeadFont <> Nil
+      oldfont := SelectObject( hDC,::oHeadFont:handle )
+   ENDIF
    IF ::headColor <> Nil
       oldc := SetTextColor( hDC,::headColor )
    ENDIF
@@ -1071,6 +1075,9 @@ Local toldc
    SetBkColor( hDC,oldBkColor )
    IF ::headColor <> Nil
       SetTextColor( hDC,oldc )
+   ENDIF
+   IF ::oHeadFont <> Nil
+      SelectObject( hDC,oldfont )
    ENDIF
    IF ::lDispSep
       oPen:Release()

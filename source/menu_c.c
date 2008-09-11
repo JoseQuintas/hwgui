@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.36 2008-05-27 12:11:00 lculik Exp $
+ * $Id: menu_c.c,v 1.37 2008-09-11 12:06:12 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -52,6 +52,9 @@ HB_FUNC( HWG__ADDMENUITEM )
 {
    UINT uFlags = MF_BYPOSITION;
    LPCTSTR lpNewItem = NULL;
+   int nPos;
+   MENUITEMINFO mii;
+
 
    if( !ISNIL(6) && ( hb_parni(6) & FLAG_DISABLED ) )
    {
@@ -83,21 +86,32 @@ HB_FUNC( HWG__ADDMENUITEM )
       HMENU hSubMenu = CreateMenu();
 
       uFlags |= MF_POPUP;
-      InsertMenu( ( HMENU ) HB_PARHANDLE(1), hb_parni(3),
+      InsertMenu( ( HMENU ) hb_parnl(1), hb_parni(3),
        uFlags,        // menu item flags
        (UINT)hSubMenu,   // menu item identifier or handle of drop-down menu or submenu
        lpNewItem   // menu item content
       );
-      HB_RETHANDLE(  hSubMenu );
+      hb_retnl( (LONG) hSubMenu );
+
+         // Code to set the ID of submenus, the API seems to assume that you wouldn't really want to,
+         // but if you are used to getting help via IDs for popups in 16bit, then this will help you.
+      nPos = GetMenuItemCount( ( HMENU ) hb_parnl(1) );
+      mii.cbSize = sizeof(MENUITEMINFO);
+      mii.fMask = MIIM_ID;
+      if ( GetMenuItemInfo( ( HMENU ) hb_parnl(1), nPos - 1, TRUE, & mii ) )
+      {
+         mii.wID = hb_parni( 5 );
+         SetMenuItemInfo( ( HMENU ) hb_parnl(1), nPos - 1, TRUE, & mii );
+      }
    }
    else
    {
-      InsertMenu( ( HMENU ) HB_PARHANDLE(1), hb_parni(3),
+      InsertMenu( ( HMENU ) hb_parnl(1), hb_parni(3),
        uFlags,   // menu item flags
        hb_parni( 5 ),   // menu item identifier or handle of drop-down menu or submenu
        lpNewItem   // menu item content
       );
-      HB_RETHANDLE(NULL);
+      hb_retnl(0);
    }
 }
 

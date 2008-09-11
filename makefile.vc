@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.28 2008-09-10 18:22:31 mlacecilia Exp $
+# $Id: makefile.vc,v 1.29 2008-09-11 12:06:08 alexstrickland Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -9,7 +9,7 @@ INC_DIR = include
 OBJ_DIR = obj
 LIB_DIR = lib
 SRC_DIR = source
-CFLAGS = /TP /W3 /nologo
+CFLAGS = /W3 /nologo
 
 HWGUI_OBJ_DIR      = $(OBJ_DIR)
 PROCMISC_OBJ_DIR   = $(OBJ_DIR)
@@ -37,7 +37,7 @@ all: \
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 
 {$(SRC_DIR)\}.prg{$(OBJ_DIR)\}.obj:
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$*.c
+  $(HRB_DIR)\bin\harbour.exe $** -n -w /es2 -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$*.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $*.c
 
 HWGUI_LIB_OBJS = \

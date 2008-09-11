@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.49 2008-07-05 16:53:00 mlacecilia Exp $
+ * $Id: draw.c,v 1.50 2008-09-11 12:06:09 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -394,6 +394,31 @@ HB_FUNC( SPREADBITMAP )
 
    DeleteDC( hDCmem );
 }
+
+
+/*  CenterBitmap( hDC, hWnd, hBitmap, style, brush )
+*/
+
+HB_FUNC( CENTERBITMAP )
+{
+   HDC hDC = (HDC) hb_parnl( 1 );
+   HDC hDCmem = CreateCompatibleDC( hDC );
+   DWORD dwraster = (ISNIL(4))? SRCCOPY:hb_parnl(4);
+   HBITMAP hBitmap = (HBITMAP) hb_parnl( 3 );
+   BITMAP  bitmap;
+   RECT rc;
+   HBRUSH hBrush = (ISNIL(5))? (HBRUSH)(COLOR_WINDOW+1):(HBRUSH) hb_parnl( 5 );
+
+   SelectObject( hDCmem, hBitmap );
+   GetObject( hBitmap, sizeof( BITMAP ), ( LPVOID ) &bitmap );
+   GetClientRect( (HWND) hb_parnl( 2 ), &rc );
+
+   FillRect( hDC, &rc, hBrush );
+   BitBlt( hDC, (rc.right - bitmap.bmWidth) / 2, (rc.bottom - bitmap.bmHeight) / 2, bitmap.bmWidth, bitmap.bmHeight, hDCmem, 0, 0, dwraster );
+
+   DeleteDC( hDCmem );
+}
+
 
 HB_FUNC( GETBITMAPSIZE )
 {

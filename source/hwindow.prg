@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.55 2008-09-01 19:00:20 mlacecilia Exp $
+ *$Id: hwindow.prg,v 1.56 2008-09-11 12:06:11 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -58,6 +58,8 @@ CLASS HWindow INHERIT HCustomWindow
 
    DATA menu, oPopup, hAccel
    DATA oIcon, oBmp
+   DATA lBmpCenter INIT .F.
+   DATA nBmpClr
    DATA lUpdated INIT .F.     // TRUE, if any GET is changed
    DATA lClipper INIT .F.
    DATA GetList  INIT {}      // The array of GET items in the dialog
@@ -388,7 +390,7 @@ Local oItem, iCont, nCont
    //  Vamos mandar destruir as filhas
    // Destroi as CHILD's desta MAIN
    #ifdef __XHARBOUR__
-   
+
 HB_SYMBOL_UNUSED(iCont)
 HB_SYMBOL_UNUSED(nCont)
 
@@ -398,7 +400,7 @@ HB_SYMBOL_UNUSED(nCont)
       ENDIF
    NEXT
    #else
-   
+
 HB_SYMBOL_UNUSED(oItem)
 
    nCont := Len( HWindow():aWindows )
@@ -478,7 +480,11 @@ Return -1
 Static Function onEraseBk( oWnd,wParam )
 
    IF oWnd:oBmp != Nil
-       SpreadBitmap( wParam,oWnd:handle,oWnd:oBmp:handle )
+       IF oWnd:lBmpCenter
+          CenterBitmap( wParam,oWnd:handle,oWnd:oBmp:handle, , oWnd:nBmpClr )
+       ELSE
+          SpreadBitmap( wParam,oWnd:handle,oWnd:oBmp:handle )
+       ENDIF
        Return 1
    ENDIF
 Return -1

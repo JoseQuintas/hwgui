@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.43 2008-09-01 19:00:20 mlacecilia Exp $
+ * $Id: misc.c,v 1.44 2008-09-15 17:32:19 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -33,7 +33,12 @@ extern void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
 
 void writelog( char* s )
 {
+
+#ifdef __XHARBOUR__
    FHANDLE handle;
+#else
+   HB_FHANDLE handle;
+#endif
 
    if( hb_fsFile( (unsigned char *) "ac.log" ) )
       handle = hb_fsOpen( (unsigned char *) "ac.log", FO_WRITE );

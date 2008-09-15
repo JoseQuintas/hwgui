@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.59 2008-09-08 17:05:38 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.60 2008-09-15 17:32:18 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -194,7 +194,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
          ENDIF
       ENDIF
       //AVE SOMENTE NO DIALOG
-      IF ! ::lSuspendMsgsHandling .OR. msg == WM_ERASEBKGND
+      IF ! ::lSuspendMsgsHandling .OR. msg == WM_ERASEBKGND .OR. msg == WM_SIZE
          RETURN Eval( aMessModalDlg[ i, 2 ], Self, wParam, lParam )
       ENDIF
    ELSE

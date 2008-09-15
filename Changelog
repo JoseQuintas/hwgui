@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.897 2008-09-11 12:33:17 alexstrickland Exp $
+ * $Id: Changelog,v 1.898 2008-09-15 17:32:17 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-10 20:20 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hdialog.prg
+    * fixed the missed WM_SIZE message handling
+  * source\misc.c
+    * changed FHANDLE to HB_FHANDLE due to Harbour latest changes
+  * utils\designer\blddesig.bat
+    * added hbwin.lib to link script as Harbour now uses this name
+      in place of hbw32.lib
 
 2008-09-11 14:30 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
   * source\hbrowse.prg

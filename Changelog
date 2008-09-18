@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.899 2008-09-18 21:25:16 fperillo Exp $
+ * $Id: Changelog,v 1.900 2008-09-18 22:39:34 fperillo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,22 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-19 00:22 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
+  * source\hbrowse.prg
+    * Added method SetRowHeight to force (and retrieve) row height in pixels
+	  (also at runtime)
+    * Now footer is docked at the bottom of the browse client-area
+	* Since you can set a font for the header, you have to use this font
+	  for header height calculation,column dragging, clicking etc
+	* If you change header font at run-time you have to call ::Refresh
+	  example: 
+        oBrw1:oHeadFont := HFont():Add( 'Times New Roman',0,-12,400,,,)
+        oBrw1:Refresh()
+    * dragging/resizing a column with ON CLICK now works
+	* screen correctly updated in wheel scroll
+  * samples\arbrow2.prg
+    * updated to show the new features
 
 2008-09-18 23:22 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
   * source\hedit.prg

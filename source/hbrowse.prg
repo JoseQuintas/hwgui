@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.139 2008-09-11 12:33:22 alexstrickland Exp $
+ * $Id: hbrowse.prg,v 1.140 2008-09-18 22:39:36 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -138,6 +138,7 @@ CLASS HBrowse INHERIT HControl
    DATA alias                                  // Alias name of browsed database
    DATA x1,y1,x2,y2,width,height
    DATA minHeight INIT 0
+   DATA forceHeight INIT 0                     // force Row height in pixel, set by SetRowHeight 
    DATA lEditable INIT .T.
    DATA lAppable  INIT .F.
    DATA lAppMode  INIT .F.
@@ -147,6 +148,8 @@ CLASS HBrowse INHERIT HControl
    DATA lESC      INIT .F.
    DATA lAdjRight INIT .T.                     // Adjust last column to right
    DATA nHeadRows INIT 1                       // Rows in header
+   DATA nHeadHeight INIT 0                     // Pixel height in header for footer (if present) or std font
+   DATA nFootHeight INIT 0                     // Pixel height in footer for standard font
    DATA nFootRows INIT 0                       // Rows in footer
    DATA lResizing INIT .F.                     // .T. while a column resizing is undergoing
    DATA lCtrlPress INIT .F.                    // .T. while Ctrl key is pressed
@@ -165,6 +168,7 @@ CLASS HBrowse INHERIT HControl
    DATA nFirstRecordFilter INIT 0      // Save the first record of filter.
    DATA nPaintRow, nPaintCol                   // Row/Col being painted
    DATA aMargin INIT { 0, 0, 0, 0 } HIDDEN    // Margin TOP-RIGHT-BOTTOM-LEFT
+   DATA lRepaintBackground INIT .F. HIDDEN    // Set to true performs a canvas fill before painting rows
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
@@ -207,6 +211,7 @@ CLASS HBrowse INHERIT HControl
    METHOD ShowSizes()
    METHOD End()
    METHOD SetMargin( nTop, nRight, nBottom, nLeft )
+   METHOD SetRowHeight( nPixels )
    METHOD FldStr( oBrw,numf )
 
 ENDCLASS
@@ -296,6 +301,29 @@ endif
 ::aMargin := { nTop, nRight, nBottom, nLeft }
 
 return aOldMargin
+
+/***
+*
+*/
+METHOD SetRowHeight( nPixels ) CLASS HBrowse
+local nOldPixels
+
+nOldPixels := ::forceHeight
+
+if valtype( nPixels ) == "N"
+   if nPixels > 0
+      ::forceHeight := nPixels
+      if nPixels != nOldPixels
+         ::lRepaintBackground := .T.
+         ::Rebuild()
+         ::Refresh()
+      endif
+   else
+      ::forceHeight := 0
+   endif
+endif
+
+return( nOldPixels )
 
 
 //----------------------------------------------------//
@@ -748,11 +776,15 @@ Local i, j, oColumn, xSize, nColLen, nHdrLen, nCount
          ELSE
             xSize := 0
          ENDIF
-         FOR j := 1 TO len( oColumn:aBitmaps )
-            xSize := max( xSize, oColumn:aBitmaps[j,2]:nWidth+2 )
-            ::minHeight := max( ::minHeight,oColumn:aBitmaps[j,2]:nHeight )
-            ::minHeight := ::aMargin[1] + ::minHeight + ::aMargin[3]
-         NEXT
+         IF ::forceHeight > 0
+            ::minHeight := ::forceHeight
+         ELSE
+            FOR j := 1 TO len( oColumn:aBitmaps )
+               xSize := max( xSize, oColumn:aBitmaps[j,2]:nWidth+2 )
+               ::minHeight := max( ::minHeight,oColumn:aBitmaps[j,2]:nHeight )
+               ::minHeight := ::aMargin[1] + ::minHeight + ::aMargin[3]
+            NEXT
+         ENDIF
       ELSE
          // xSize := round( (max( len( FldStr( Self,i ) ), len( oColumn:heading ) ) + 2 ) * 8, 0 )
          nColLen := oColumn:length
@@ -790,6 +822,7 @@ RETURN Nil
 METHOD Paint(lLostFocus)  CLASS HBrowse
 Local aCoors, aMetr, cursor_row, tmp, nRows
 Local pps, hDC
+Local oldfont, aMetrHead
 
    IF !::active .OR. Empty( ::aColumns )
       RETURN Nil
@@ -823,11 +856,24 @@ Local pps, hDC
    aCoors := GetClientRect( ::handle )
    aMetr := GetTextMetric( hDC )
    ::width := Round( ( aMetr[ 3 ] + aMetr[ 2 ] ) / 2 - 1,0 )
-   ::height := ::aMargin[1] + Max( aMetr[ 1 ], ::minHeight ) + 1 + ::aMargin[3]
+// If forceHeight is set, we should use that value
+   if ( ::forceHeight > 0 )
+      ::height := ::forceHeight + 1
+   else
+      ::height := ::aMargin[1] + Max( aMetr[ 1 ], ::minHeight ) + 1 + ::aMargin[3]
+   endif
+   aMetrHead := aClone( aMetr )
+   if ::oHeadFont != Nil
+      oldfont := SelectObject( hDC,::oHeadFont:handle )
+      aMetrHead := GetTextMetric( hDC )
+      SelectObject( hDC, oldfont )
+   endif
+   ::nHeadHeight := ::aMargin[1] + aMetrHead[ 1 ] + 1 + ::aMargin[3]
+   ::nFootHeight := ::aMargin[1] + aMetr[ 1 ] + 1 + ::aMargin[3]
    ::x1 := aCoors[ 1 ]
-   ::y1 := aCoors[ 2 ] + Iif( ::lDispHead, ::height*::nHeadRows, 0 )
+   ::y1 := aCoors[ 2 ] + Iif( ::lDispHead, ::nHeadHeight*::nHeadRows, 0 )
    ::x2 := aCoors[ 3 ]
-   ::y2 := aCoors[ 4 ]
+   ::y2 := aCoors[ 4 ] // - Iif( ::nFootRows > 0, ::nFootHeight*::nFootRows, 0 )
 
    ::nRecords := eval( ::bRcou,Self )
    IF ::nCurrent > ::nRecords .AND. ::nRecords > 0
@@ -839,10 +885,16 @@ Local pps, hDC
    ::nColumns := FLDCOUNT( Self, ::x1 + 2, ::x2 - 2, ::nLeftCol )
 
 // Calculate number of rows the canvas can host
-   ::rowCount := Int( (::y2-::y1) / (::height+1) ) - ::nFootRows
+   ::rowCount := Int( (::y2-::y1 - (::nFootRows*::nFootHeight)) / (::height+1) ) 
 
 // nRows: if number of data rows are less than video rows available....
    nRows := Min( ::nRecords,::rowCount )
+
+
+   IF ::lRepaintBackground
+      FillRect( hDC, ::x1, ::y1, ::x2, ::y2-(::nFootHeight*::nFootRows), ::brush:handle )
+      ::lRepaintBackground := .F.
+   ENDIF
 
    IF ::internal[1] == 0
       IF ::rowPos != ::internal[2] .AND. !::lAppMode
@@ -954,7 +1006,7 @@ Local pps, hDC
          ::SeparatorOut( hDC )
       endif
       if ::nHeadRows > 0
-          ::HeaderOut( hDC )
+         ::HeaderOut( hDC )
       ENDIF
       IF ::nFootRows > 0
          ::FooterOut( hDC )
@@ -989,11 +1041,15 @@ RETURN Nil
 // TODO: __StrToken can create problems.... can't have separator as first char
 METHOD HeaderOut( hDC ) CLASS HBrowse
 Local x, oldc, fif, xSize
-Local nRows := Min( ::nRecords+Iif(::lAppMode,1,0),::rowCount )
-Local oPen, oldBkColor := SetBkColor( hDC,GetSysColor(COLOR_3DFACE) )
+Local nRows 
+Local oPen, oldBkColor 
 Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
 Local toldc
 Local oldfont
+
+   nRows := Min( ::nRecords+Iif(::lAppMode,1,0),::rowCount )
+
+   oldBkColor := SetBkColor( hDC,GetSysColor(COLOR_3DFACE) )
 
    IF ::lDispSep
       oPen := HPen():Add( PS_SOLID,1,::sepColor )
@@ -1023,10 +1079,10 @@ Local oldfont
       ENDIF
       IF ::lDispHead .AND. !::lAppMode
          IF oColumn:cGrid == nil
-            DrawButton( hDC, x-1,::y1-::height*::nHeadRows,x+xSize-1,::y1+1,1 )
+            DrawButton( hDC, x-1,::y1-::nHeadHeight*::nHeadRows,x+xSize-1,::y1+1,1 )
          ELSE
             // Draws a grid to the NWSE coordinate...
-            DrawButton( hDC, x-1,::y1-::height*::nHeadRows,x+xSize-1,::y1+1,0 )
+            DrawButton( hDC, x-1,::y1-::nHeadHeight*::nHeadRows,x+xSize-1,::y1+1,0 )
             IF oPenHdr == nil
                oPenHdr := HPen():Add( BS_SOLID,1,0 )
             ENDIF
@@ -1035,16 +1091,16 @@ Local oldfont
             FOR nLine := 1 TO ::nHeadRows
                cNWSE := __StrToken(@cStr, nLine, ';')
                IF At('S', cNWSE) != 0
-                  DrawLine(hDC, x-1, ::y1-(::height)*(::nHeadRows-nLine), x+xSize-1, ::y1-(::height)*(::nHeadRows-nLine))
+                  DrawLine(hDC, x-1, ::y1-(::nHeadHeight)*(::nHeadRows-nLine), x+xSize-1, ::y1-(::nHeadHeight)*(::nHeadRows-nLine))
                ENDIF
                IF At('N', cNWSE) != 0
-                  DrawLine(hDC, x-1, ::y1-(::height)*(::nHeadRows-nLine+1), x+xSize-1, ::y1-(::height)*(::nHeadRows-nLine+1))
+                  DrawLine(hDC, x-1, ::y1-(::nHeadHeight)*(::nHeadRows-nLine+1), x+xSize-1, ::y1-(::nHeadHeight)*(::nHeadRows-nLine+1))
                ENDIF
                IF At('E', cNWSE) != 0
-                  DrawLine(hDC, x+xSize-2, ::y1-(::height)*(::nHeadRows-nLine+1)+1, x+xSize-2, ::y1-(::height)*(::nHeadRows-nLine))
+                  DrawLine(hDC, x+xSize-2, ::y1-(::nHeadHeight)*(::nHeadRows-nLine+1)+1, x+xSize-2, ::y1-(::nHeadHeight)*(::nHeadRows-nLine))
                ENDIF
                IF At('W', cNWSE) != 0
-                  DrawLine(hDC, x-1, ::y1-(::height)*(::nHeadRows-nLine+1)+1, x-1, ::y1-(::height)*(::nHeadRows-nLine))
+                  DrawLine(hDC, x-1, ::y1-(::nHeadHeight)*(::nHeadRows-nLine+1)+1, x-1, ::y1-(::nHeadHeight)*(::nHeadRows-nLine))
                ENDIF
             NEXT
             SelectObject( hDC, oPen:handle )
@@ -1054,10 +1110,10 @@ Local oldfont
          FOR nLine := 1 TO ::nHeadRows
             DrawText( hDC, __StrToken(@cStr, nLine, ';'), ;
               x + ::aMargin[4], ;
-              ::y1-(::height)*(::nHeadRows-nLine+1)+1 + ::aMargin[1], ;
+              ::y1-(::nHeadHeight)*(::nHeadRows-nLine+1)+1 + ::aMargin[1], ;
               x+xSize- (1+::aMargin[2]) , ;
-              ::y1-(::height)*(::nHeadRows-nLine), ;
-               oColumn:nJusHead  + if(oColumn:lSpandHead, DT_NOCLIP, 0) )
+              ::y1-(::nHeadHeight)*(::nHeadRows-nLine), ;
+              oColumn:nJusHead  + if(oColumn:lSpandHead, DT_NOCLIP, 0) )
          NEXT
       ENDIF
 
@@ -1139,7 +1195,7 @@ static oPenHdr := NIL
       ENDIF
       x += xSize
       IF ! ::lAdjRight .and. fif == Len( ::aColumns )
-         DrawLine( hDC, x-1, ::y1-(::height*::nHeadRows), x-1, ::y1+(::height+1)*nRows )
+         DrawLine( hDC, x-1, ::y1-(::height*::nHeadRows), x-1, ::y1+(::height+1) *nRows )
       ENDIF
       fif := Iif( fif = ::freeze, ::nLeftCol, fif + 1 )
       IF fif > Len( ::aColumns )
@@ -1161,6 +1217,7 @@ RETURN Nil
 METHOD FooterOut( hDC ) CLASS HBrowse
 Local x, fif, xSize, oPen, nLine, cStr
 Local oColumn, aColorFoot, oldBkColor, oldTColor, oBrush
+Local nPixelFooterHeight, nY
 
    IF ::lDispSep
       oPen := HPen():Add( BS_SOLID,1,::sepColor )
@@ -1187,16 +1244,20 @@ Local oColumn, aColorFoot, oldBkColor, oldTColor, oBrush
          oBrush := ::brush
       ENDIF
 
-      FillRect( hDC,x, ::y1+::rowCount*(::height+1)+1, ;
-                  x+xSize, ::y1+(::rowCount+::nFootRows)*(::height+1), oBrush:handle )
+      nPixelFooterHeight := (::nFootRows)*(::nFootHeight+1)
+
+      FillRect( hDC,x, ::y2-nPixelFooterHeight,  ;
+                  x+xSize, ::y2, oBrush:handle )
+
+      nY := ::y2 - nPixelFooterHeight
 
       FOR nLine := 1 TO ::nFootRows
 
          DrawText( hDC, __StrToken(@cStr, nLine, ';'),;
                     x + ::aMargin[4], ;
-                    ::y1+(::rowCount+nLine-1)*(::height+1)+1 + ::aMargin[1], ;
+                    nY+(nLine-1)*(::nFootHeight+1)+1 + ::aMargin[1], ;
                     x+xSize-( 1+ ::aMargin[2]), ;
-                    ::y1+(::rowCount+nLine)*(::height+1),;
+                    nY+(nLine)*(::nFootHeight+1),;
                    oColumn:nJusFoot + if(oColumn:lSpandFoot, DT_NOCLIP, 0) )
       NEXT
 
@@ -1205,11 +1266,11 @@ Local oColumn, aColorFoot, oldBkColor, oldTColor, oBrush
          SetTextColor( hDC, oldTColor)
          oBrush:release()
       ENDIF
-/*
+// Draw footer separator
       IF ::lDispSep .AND. x >= ::x1
-         DrawLine(hDC,x+xSize-1,::y1+::rowCount*(::height+1)+1 , x+xSize-1, ::y1+(::rowCount+::nFootRows)*(::height+1))
+         DrawLine( hDC, x+xSize-1, nY, x+xSize-1, ::y2)
       ENDIF
-*/
+
       x += xSize
       fif := Iif( fif = ::freeze, ::nLeftCol, fif + 1 )
       IF fif > Len( ::aColumns )
@@ -1218,8 +1279,8 @@ Local oColumn, aColorFoot, oldBkColor, oldTColor, oBrush
    ENDDO
 
    IF ::lDispSep
-      DrawLine( hDC, ::x1, ::y1+(::rowCount)*(::height+1)+1, iif(::lAdjRight, ::x2, x), ::y1+(::rowCount)*(::height+1)+1 )
-      DrawLine( hDC, ::x1, ::y1+(::rowCount+::nFootRows)*(::height+1), iif(::lAdjRight, ::x2, x), ::y1+(::rowCount+::nFootRows)*(::height+1) )
+      DrawLine( hDC, ::x1, nY, iif(::lAdjRight, ::x2, x), nY )
+      DrawLine( hDC, ::x1, nY+1, iif(::lAdjRight, ::x2, x), nY+1 )
       oPen:Release()
    ENDIF
 
@@ -1323,8 +1384,15 @@ Local aCores
                     x+xSize-( 2 + ::aMargin[2] ) , ;
                     ::y1+(::height+1)*::nPaintRow-( 1+::aMargin[3]) , ;
                     ::aColumns[::nPaintCol]:nJusLin )
-
-
+// Clipping rectangle
+#if 0
+                rectangle( hDC, ;
+                    x + ::aMargin[4], ;
+                    ::y1+(::height+1)*(::nPaintRow-1)+1 + ::aMargin[1] , ;
+                    x+xSize-( 2 + ::aMargin[2] ) , ;
+                    ::y1+(::height+1)*::nPaintRow-(1+::aMargin[3]) ;
+                )
+#endif
 
                   IF ::aColumns[::nPaintCol]:tColor != Nil .AND. (::nPaintCol != ::colPos .OR. !lSelected)
                      SetTextColor( hDC, oldT1Color )
@@ -1546,7 +1614,8 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
    ::rowPos ++
    IF ::rowPos > ::rowCount
       ::rowPos := ::rowCount
-      InvalidateRect( ::handle, 0 )
+      //FP InvalidateRect( ::handle, 0 )
+      ::Refresh()
    ELSE
       ::internal[1] := 0
       InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*::internal[2]-::height, ::x2, ::y1+(::height+1)*(::rowPos+1) )
@@ -1579,7 +1648,7 @@ METHOD LINEUP() CLASS HBrowse
       Eval( ::bGoTop,Self )
    ELSE
       ::rowPos --
-      IF ::rowPos = 0
+      IF ::rowPos = 0  // needs scroll
          ::rowPos := 1
          InvalidateRect( ::handle, 0 )
       ELSE
@@ -1690,10 +1759,23 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD ButtonDown( lParam ) CLASS HBrowse
-Local hBrw := ::handle
-Local nLine := Int( HIWORD(lParam)/(::height+1) + Iif(::lDispHead,1-::nHeadRows,1) )
-Local step := nLine - ::rowPos, res := .F., nrec
-Local xm := LOWORD(lParam), x1, fif
+Local hBrw
+Local nLine
+Local step, res, nrec
+Local xm, x1, fif
+
+   hBrw := ::handle
+
+// Calculate the line you clicked on, keeping track of header
+   if( ::lDispHead )
+       nLine := Int( (HIWORD(lParam)-(::nHeadHeight*::nHeadRows))/(::height+1) + 1 )
+   else
+       nLine := Int( HIWORD(lParam)/(::height+1) + 1)
+   endif
+
+   step := nLine - ::rowPos
+   res := .F.
+   xm := LOWORD(lParam)
 
    x1  := ::x1
    fif := Iif( ::freeze > 0, 1, ::nLeftCol )
@@ -1739,18 +1821,16 @@ Local xm := LOWORD(lParam), x1, fif
 
       ENDIF
 
-   ELSEIF ::lDispHead .and.;
-          nLine >= -::nHeadRows .and.;
-          fif <= Len( ::aColumns ) .AND.;
-          ::aColumns[fif]:bHeadClick != nil
-
-      Eval(::aColumns[fif]:bHeadClick, Self, fif)
-
    ELSEIF nLine == 0
       IF oCursor == ColSizeCursor
          ::lResizing := .T.
          Hwg_SetCursor( oCursor )
          xDrag := LoWord( lParam )
+   ELSEIF ::lDispHead .and.;
+          nLine >= -::nHeadRows .and.;
+          fif <= Len( ::aColumns ) .AND.;
+          ::aColumns[fif]:bHeadClick != nil
+      Eval(::aColumns[fif]:bHeadClick, Self, fif)
       ENDIF
    ENDIF
 
@@ -1762,7 +1842,7 @@ Local hBrw := ::handle
 Local xPos := LOWORD(lParam), x, x1, i
 
    IF ::lResizing
-
+      x1 := 0
       x := ::x1
       i := Iif( ::freeze > 0, 1, ::nLeftCol )    // ::nLeftCol
       DO WHILE x < xDrag
@@ -1831,7 +1911,7 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
    IF !::active .OR. Empty( ::aColumns ) .OR. ::x1 == Nil
       RETURN Nil
    ENDIF
-   IF ::lDispSep .AND. ::lDispHead .AND. yPos <= ::height*::nHeadRows+1
+   IF ::lDispSep .AND. ::lDispHead .AND. yPos <= ::nHeadHeight*::nHeadRows+1  // ::height*::nHeadRows+1
       IF wParam == MK_LBUTTON .AND. ::lResizing
          Hwg_SetCursor( oCursor )
          res := .T.

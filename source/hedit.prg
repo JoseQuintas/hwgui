@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.91 2008-09-11 12:06:10 alexstrickland Exp $
+ *$Id: hedit.prg,v 1.92 2008-09-18 21:25:16 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -141,6 +141,7 @@ METHOD Activate CLASS HEdit
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    LOCAL oParent := ::oParent, nPos, nctrl
    LOCAL nextHandle
+   LOCAL cClipboardText := ""
 
    IF ::bOther != Nil
       IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
@@ -166,6 +167,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             IF ! IsCtrlShift( , .F. )
                RETURN ::GetApplyKey( Chr( wParam ) )
             ENDIF
+         ELSEIF msg == WM_PASTE
+            cClipboardText := GetClipboardText()
+            FOR nPos := 1 to len( cClipboardText )
+                ::GetApplyKey( substr( cClipboardText, nPos, 1 ) )
+            NEXT
+            RETURN 0
 
          ELSEIF msg == WM_KEYDOWN
             IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'

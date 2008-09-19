@@ -1,0 +1,49 @@
+# makefile for Pelles C 32 bits
+# Building of App Using Pomake
+# Comment the following for HARBOUR
+__XHARBOUR__ = 1
+HRB_DIR = C:\xHARBOUR
+POCCMAIN = C:\POCC
+INCLUDE_DIR = include;C:\xHARBOUR\include
+OBJ_DIR = obj
+LIB_DIR = C:\HwGUI\lib
+SRC_DIR = source
+
+HARBOUR_EXE = HARBOUR 
+CC_EXE = $(POCCMAIN)\BIN\POCC.EXE 
+LIB_EXE = $(POCCMAIN)\BIN\POLINK.EXE 
+HARBOURFLAGS = -i$(INCLUDE_DIR) -n1 -q0 -w -es2 -gc0
+CFLAGS = /Ze /I"INCLUDE" /I"$(HRB_DIR)\INCLUDE" /I"$(POCCMAIN)\INCLUDE" /I"$(POCCMAIN)\INCLUDE\WIN" /I"$(POCCMAIN)\INCLUDE\MSVC" /D"HB_STATIC_STARTUP" /c
+CFLAGS = $(CFLAGS) /Op /Go
+!ifdef __XHARBOUR__ 
+CFLAGS = $(CFLAGS) /D"XHBCVS" 
+!endif 
+!ifndef ECHO
+ECHO = echo.
+!endif
+!ifndef DEL
+DEL = del
+!endif
+
+HWGUI_LIB = $(LIB_DIR)\hwgui.lib
+PROCMISC_LIB = $(LIB_DIR)\procmisc.lib
+XML_LIB = $(LIB_DIR)\hbxml.lib
+QHTM_LIB = $(LIB_DIR)\hwg_qhtm.lib
+
+all: \
+   $(HWGUI_LIB) \
+   $(PROCMISC_LIB) \
+   $(XML_LIB) \
+   $(QHTM_LIB)
+
+FILE_OBJS = \
+.obj \ 
+: $(FILE_OBJS)
+   $(LIB_EXE) /out:$@ $** 
+
+.c : 
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+.obj : .c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $** 
+

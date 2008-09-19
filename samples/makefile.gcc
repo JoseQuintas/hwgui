@@ -1,0 +1,5 @@
+SOURCE=grid_5
+
+all: 
+	/dvl/hrb-w32/bin/harbour.exe $(SOURCE).prg -n -go -I/dvl/hrb-w32/include
+	gcc -Wall -mno-cygwin -o$(SOURCE).exe $(SOURCE).o -L/dvl/hrb-w32/lib -Wl,--start-group -lhwgui -lprocmisc -lhbxml -ldebug -lvm -lrtl -llang -lrdd -lrtl -lvm -llang -lmacro -lpp -ldbfntx -ldbfcdx -ldbfdbt -ldbffpt -lcommon -lhbodbc -lgtnul -lgtwvt -lgtwin -luser32 -lwinspool -lole32 -loleaut32 -luuid -lgdi32 -lcomctl32 -lcomdlg32 -lodbc32 -Wl,--end-group -lstdc++

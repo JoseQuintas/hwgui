@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.60 2008-09-15 17:32:18 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.61 2008-09-19 05:52:10 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -124,6 +124,9 @@ METHOD NEW( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
 
 METHOD Activate( lNoModal, bOnActivate ) CLASS HDialog
    LOCAL oWnd, hParent
+   
+   setfocus(::handle)
+
    ::bOnActivate := bOnActivate
    CreateGetList( Self )
    hParent := IIf( ::oParent != Nil .AND. ;

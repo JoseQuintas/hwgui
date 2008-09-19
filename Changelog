@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.900 2008-09-18 22:39:34 fperillo Exp $
+ * $Id: Changelog,v 1.901 2008-09-19 05:51:40 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-19 07:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hdialog.prg
+    ! In the first control of a dialog the event onGotFocus was not always executed. 
+      When the dialog was activeted.
 
 2008-09-19 00:22 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
   * source\hbrowse.prg

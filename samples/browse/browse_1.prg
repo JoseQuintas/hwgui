@@ -1,5 +1,5 @@
 /*
- * $Id: browse_1.prg,v 1.1 2008-09-19 19:08:55 sandrorrfreire Exp $
+ * $Id: browse_1.prg,v 1.2 2008-09-19 23:27:59 mlacecilia Exp $
  */
  
 #include "windows.ch"
@@ -36,7 +36,7 @@ Function BrowseTest()
         INIT DIALOG oForm CLIPPER NOEXIT TITLE "Browse Database";
              FONT oFont ;
              AT 0, 0 SIZE 700, 425 ;
-             STYLE DS_CENTER + WS_VISIBLE + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU
+             STYLE DS_CENTER + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU
                             
                 @  5, 5 BROWSE oBrowse DATABASE OF oForm SIZE 690,375 STYLE WS_VSCROLL + WS_HSCROLL ;
                         AUTOEDIT ;

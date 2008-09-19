@@ -1,5 +1,5 @@
 /*
- * $Id: grid_5.prg,v 1.1 2008-09-19 19:15:56 sandrorrfreire Exp $
+ * $Id: grid_5.prg,v 1.2 2008-09-19 23:27:59 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -87,7 +87,7 @@ Function Test()
     INIT DIALOG oForm CLIPPER NOEXIT TITLE "Grid Edit";
         FONT oFont ;
         AT 0, 0 SIZE 700, 425 ;
-        STYLE DS_CENTER + WS_VISIBLE + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU 
+        STYLE DS_CENTER + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU
 
         @ 10,10 GRID oGrid OF oForm SIZE 680,375;
                 ITEMCOUNT LastRec() ;
@@ -180,7 +180,7 @@ Function GridEdit(cAlias, aFields, lAppend, bChange)
         AT 0, 0 ;
         SIZE Min( GetDesktopWidth() - 50, (nSay + nGet) * nGetSize + nGetSize ), ;
              Min( GetDesktopHeight() - 28, nheight ) ;
-        STYLE DS_CENTER + WS_VISIBLE + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU 
+        STYLE DS_CENTER + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU
 
         For i := 1 to len(aFields)
             @   10, nRow SAY aFields[i, GET_LABEL] SIZE len(aFields[i, GET_LABEL]) * nGetSize, 25

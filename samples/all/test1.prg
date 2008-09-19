@@ -27,7 +27,7 @@ Local e1 := "Dialog from prg", c1 := .F., c2 := .T., r1 := 2, cm := 1
 Local upd := 12, d1 := Date()+1
 
    INIT DIALOG oModDlg TITLE "Test"  ;
-   AT 0,0  SIZE 450,350 STYLE DS_CENTER + WS_VISIBLE + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU ;
+   AT 0,0  SIZE 450,350 STYLE DS_CENTER + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU ;
    FONT oFont
 
    @ 20,10 SAY "Input something:" SIZE 260, 22

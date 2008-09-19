@@ -1,5 +1,5 @@
 /*
- * $Id: grid_6.prg,v 1.1 2008-09-19 19:15:56 sandrorrfreire Exp $
+ * $Id: grid_6.prg,v 1.2 2008-09-19 23:27:59 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -55,7 +55,7 @@ enddo
         INIT DIALOG oForm CLIPPER NOEXIT TITLE "Grid Demo";
              FONT oFont ;
              AT 0, 0 SIZE 700, 425 ;
-             STYLE DS_CENTER + WS_VISIBLE + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU 
+             STYLE DS_CENTER + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU
 //             on init {||SetGrid(oForm,oGrid,aItems)}
                 
              @ 10,10 GRIDEX oGrid OF oForm ID 800 SIZE 680,375 ;

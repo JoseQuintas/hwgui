@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.903 2008-09-19 21:41:00 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.904 2008-09-19 23:27:56 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,24 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-20 01:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * gtk\samples\progbars.prg
+  * samples\all\test1.prg
+  * samples\browse\browse_1.prg
+  * samples\browse\browse_2.prg
+  * samples\combobox\tstcombo.prg
+  * samples\grid\grid_1.prg
+  * samples\grid\grid_2.prg
+  * samples\grid\grid_3.prg
+  * samples\grid\grid_4.prg
+  * samples\grid\grid_5.prg
+  * samples\grid\grid_6.prg
+  * samples\progressbar\progbars.prg
+    * fixed a wrong double setting of WS_VISIBLE in styles causing a WS_MINIMIZED
+      is passed in place. To avoid this problem a hwg_or() would be used instead
+      of the plus operator.
+
 2008-09-19 08:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hdialog.prg
     ! Reverted last modify.

@@ -1,5 +1,5 @@
 /*
- * $Id: progbars.prg,v 1.1 2008-09-19 20:09:30 sandrorrfreire Exp $
+ * $Id: progbars.prg,v 1.2 2008-09-19 23:28:00 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library
  * Sample of using HProgressBar class
@@ -35,7 +35,7 @@ Local cMsgErr := "Bar doesn't exist"
         INIT DIALOG oForm CLIPPER NOEXIT TITLE "Progress Bar Demo";
              FONT oFont ;
              AT 0, 0 SIZE 700, 425 ;
-             STYLE DS_CENTER + WS_VISIBLE + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU ;
+             STYLE DS_CENTER + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU ;
              ON EXIT {||Iif(oBar==Nil,.T.,(oBar:Close(),.T.))}
 
              @ 380, 395 BUTTON 'Step Bar'   SIZE 75,25 ON CLICK {|| Iif(oBar==Nil,MsgStop(cMsgErr),oBar:Step()) }

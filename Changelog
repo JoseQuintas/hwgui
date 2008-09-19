@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.902 2008-09-19 06:43:57 giuseppem Exp $
+ * $Id: Changelog,v 1.903 2008-09-19 21:41:00 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -49,6 +49,9 @@
   * source\hbrowse.prg
     + Declare oldfont variable for use with oHeadFont.
 
+2008-09-19 15:55 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
+   * Replace the formatation folder samples
+   
 2008-09-11 14:00 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
   * makefile.vc
     * Warnings now cause errors - /es2.

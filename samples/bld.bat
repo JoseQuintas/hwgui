@@ -2,7 +2,7 @@
 @echo off
 
 set HRB_DIR=%HB_PATH%
-set HWGUI_INSTALL=..
+rem set HWGUI_INSTALL=..
 
 SET HB_MT=
 

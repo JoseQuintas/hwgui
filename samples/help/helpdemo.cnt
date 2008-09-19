@@ -1,0 +1,9 @@
+:BASE helpdemo.hlp
+:TITLE title of this help project
+1 Introduction
+2 Welcome topic=Welcometopic1
+2 Second topic=Secondtopic2
+1 Chapter 2
+2 Overview=Overview4
+2 Sub chapter 2.1
+3 New topic=Newtopic6

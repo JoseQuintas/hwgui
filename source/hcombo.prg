@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.44 2008-09-01 19:00:18 mlacecilia Exp $
+ * $Id: hcombo.prg,v 1.45 2008-09-20 23:48:06 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -105,7 +105,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
      ENDIF
      ::oParent:AddEvent( CBN_KILLFOCUS, self, {|o,id|__Valid(o:FindControl(id))},,"onLostFocus" )
    ENDIF
-   IF bChange != Nil
+   IF bChange != Nil .OR. bSetGet != Nil
       ::oParent:AddEvent( CBN_SELCHANGE,self,{|o,id|__onChange(o:FindControl(id))},,"onChange" )
    ENDIF
 
@@ -293,13 +293,8 @@ RETURN Nil
 Static Function __onChange( oCtrl )
 Local npos
 
-     IF oCtrl:bChangeSel != Nil
-        nPos := SendMessage( oCtrl:handle,CB_GETCURSEL,0,0 ) + 1
-        octrl:oparent:lSuspendMsgsHandling := .T.
-        *Eval( oCtrl:bChangeSel, nPos, oCtrl )
-        octrl:setitem(npos)
-        octrl:oparent:lSuspendMsgsHandling := .F.
-     ENDIF
+   nPos := SendMessage( oCtrl:handle,CB_GETCURSEL,0,0 ) + 1
+   octrl:setitem(npos)
 
 RETURN Nil
 
@@ -424,9 +419,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    ::aCheck := acheck
    IF VALTYPE( nStyle ) == "N"
-      nstyle += CBS_DROPDOWNLIST + CBS_OWNERDRAWVARIABLE + CBS_HASSTRINGS
+      nstyle := hwg_multibitor( nStyle, CBS_DROPDOWNLIST, CBS_OWNERDRAWVARIABLE, CBS_HASSTRINGS )
    ELSE
-      nstyle := CBS_DROPDOWNLIST + CBS_OWNERDRAWVARIABLE + CBS_HASSTRINGS
+      nstyle := hwg_multibitor( CBS_DROPDOWNLIST, CBS_OWNERDRAWVARIABLE, CBS_HASSTRINGS )
    ENDIF
 
    bPaint := { | o, p | o:paint( p ) }
@@ -756,4 +751,19 @@ Local n
       aadd( aCheck ,::GetCheck(n))
    next
 return aCheck
+
+function hwg_multibitor( ... )
+Local aArgumentList := HB_AParams()
+Local nItem
+Local result := 0
+
+   FOR EACH nItem IN aArgumentList
+       IF ValType( nItem ) != "N"
+          msginfo( "hwg_multibitor parameter not numeric set to zero", "Possible error" )
+          nItem := 0
+      ENDIF
+      result := hwg_bitor( result, nItem )
+   NEXT
+
+   RETURN result
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.910 2008-09-20 23:27:45 fperillo Exp $
+ * $Id: Changelog,v 1.911 2008-09-20 23:48:06 fperillo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-21 01:33 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
+  Changes made by Luis Fernando Basso and me
+  * source/hcombo.prg
+    * onChange now called also when GET COMBOBOX (Fernando)
+	* added function hwg_multibitor to put in numeric or a list
+	  of numbers
+	  STYLE values should be ORed and not added !
 
 2008-09-21 01:19 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
   Changes made by Luis Fernando Basso 

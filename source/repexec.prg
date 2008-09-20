@@ -1,5 +1,5 @@
 /*
- * $Id: repexec.prg,v 1.9 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: repexec.prg,v 1.10 2008-09-20 17:47:51 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * RepExec - Loading and executing of reports, built with RepBuild
@@ -275,8 +275,8 @@ Private lFirst := .T., lFinish := .T., lLastCycle := .F.
 
 #ifdef __DEBUG__
    oPrinter:End()
-   Writelog( "Startdoc" )
-   Writelog( "Startpage" )
+   // Writelog( "Startdoc" )
+   // Writelog( "Startpage" )
 #else
    oPrinter:StartDoc( lPreview )
    oPrinter:StartPage()
@@ -309,8 +309,8 @@ Private lFirst := .T., lFinish := .T., lLastCycle := .F.
                   aItem[ITEM_STATE] := 1
                   IF !ScriptExecute( aItem )
 #ifdef __DEBUG__
-                     Writelog( "Endpage" )
-                     Writelog( "Enddoc" )
+                     // Writelog( "Endpage" )
+                     // Writelog( "Enddoc" )
 #else
                      oPrinter:EndPage()
                      oPrinter:EndDoc()
@@ -332,8 +332,8 @@ Private lFirst := .T., lFinish := .T., lLastCycle := .F.
                NEXT
                IF !ScriptExecute( aItem )
 #ifdef __DEBUG__
-                     Writelog( "Endpage" )
-                     Writelog( "Enddoc" )
+                     // Writelog( "Endpage" )
+                     // Writelog( "Enddoc" )
 #else
                   oPrinter:EndPage()
                   oPrinter:EndDoc()
@@ -348,8 +348,8 @@ Private lFirst := .T., lFinish := .T., lLastCycle := .F.
                      // Writelog("New Page")
                      IF iPF == 0
 #ifdef __DEBUG__
-                        Writelog( "Endpage" )
-                        Writelog( "Startpage" )
+                        // Writelog( "Endpage" )
+                        // Writelog( "Startpage" )
 #else
                         oPrinter:EndPage()
                         oPrinter:StartPage()
@@ -378,8 +378,8 @@ Private lFirst := .T., lFinish := .T., lLastCycle := .F.
                NEXT
                IF !lLastCycle
 #ifdef __DEBUG__
-                  Writelog( "Endpage" )
-                  Writelog( "Startpage" )
+                  // Writelog( "Endpage" )
+                  // Writelog( "Startpage" )
 #else
                   oPrinter:EndPage()
                   oPrinter:StartPage()
@@ -401,8 +401,8 @@ Private lFirst := .T., lFinish := .T., lLastCycle := .F.
             IF aItem[ITEM_TYPE] == TYPE_TEXT
                IF !ScriptExecute( aItem )
 #ifdef __DEBUG__
-                  Writelog( "Endpage" )
-                  Writelog( "Enddoc" )
+                  // Writelog( "Endpage" )
+                  // Writelog( "Enddoc" )
 #else
                   oPrinter:EndPage()
                   oPrinter:EndDoc()
@@ -428,8 +428,8 @@ Private lFirst := .T., lFinish := .T., lLastCycle := .F.
    ENDDO
 
 #ifdef __DEBUG__
-   Writelog( "Endpage" )
-   Writelog( "Enddoc" )
+   // Writelog( "Endpage" )
+   // Writelog( "Enddoc" )
 #else
    oPrinter:EndPage()
    oPrinter:EndDoc()
@@ -464,7 +464,7 @@ HB_SYMBOL_UNUSED(aPaintRep)
    // writelog( "PrintItem-2: "+str(x1)+str(y1)+str(x2)+str(y2))
 
 #ifdef __DEBUG__
-   Writelog( Str(aItem[ITEM_TYPE])+": "+Str(x1)+" "+Str(y1)+" "+Str(x2)+" "+Str(y2)+" "+Iif(aItem[ITEM_TYPE] == TYPE_TEXT,aItem[ITEM_CAPTION]+Iif(aItem[ITEM_VAR]>0,"("+&( aItem[ITEM_CAPTION] )+")",""),"") )
+   // Writelog( Str(aItem[ITEM_TYPE])+": "+Str(x1)+" "+Str(y1)+" "+Str(x2)+" "+Str(y2)+" "+Iif(aItem[ITEM_TYPE] == TYPE_TEXT,aItem[ITEM_CAPTION]+Iif(aItem[ITEM_VAR]>0,"("+&( aItem[ITEM_CAPTION] )+")",""),"") )
 #else
    // Writelog( Str(aItem[ITEM_TYPE])+": "+Str(x1)+" "+Str(y1)+" "+Str(x2)+" "+Str(y2)+" "+Iif(aItem[ITEM_TYPE] == TYPE_TEXT,aItem[ITEM_CAPTION]+Iif(aItem[ITEM_VAR]>0,"("+&( aItem[ITEM_CAPTION] )+")",""),"") )
    IF aItem[ITEM_TYPE] == TYPE_TEXT

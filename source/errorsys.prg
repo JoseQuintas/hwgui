@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.8 2008-03-17 23:42:34 fperillo Exp $
+ * $Id: errorsys.prg,v 1.9 2008-09-20 17:47:51 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement
@@ -124,7 +124,7 @@ FUNCTION ErrorMessage( oError )
 
    RETURN cMessage
 
-function WriteLog( cText,fname )
+function hwg_WriteLog( cText,fname )
 Local nHand
 
   fname := LogInitialPath + Iif( fname == Nil,"a.log",fname )

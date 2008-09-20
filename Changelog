@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.908 2008-09-20 13:51:57 giuseppem Exp $
+ * $Id: Changelog,v 1.909 2008-09-20 17:47:44 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,21 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-20 19:50 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  + samples\image
+  - image
+    * moved the image folder below the samples folder as the files was no more
+      reachable from samples sources
+  * source\errorsys.prg
+    * changed WriteLog() to Hwg_WriteLog() as have some difference from
+      [x]Harbour counterpart function
+  * source\hprinter.prg
+    * remmed out a WriteLog() active call
+  * source\repexec.prg
+    * remmed out a lot of WriteLog() active calls
+  * utils\hwreport\example.prg
+    * fixed the link to image file due to the folder change
 
 2008-09-20 15:50 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hdialog.prg

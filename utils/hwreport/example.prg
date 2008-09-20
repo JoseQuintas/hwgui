@@ -64,7 +64,7 @@ LOCAL aPaintRep
    aPaintRep[11] := ;
      "nStroka := 1"+cEnd
    Aadd( aPaintRep[6], { 1,"Sample report - first 100 records of test.dbf",132,41,513,27,2,0,HFont():Add( "Arial",0,-18,700,204,0,0,0 ),0,0,Nil,0 } )
-   Aadd( aPaintRep[6], { 5,"..\..\Image\logo.bmp",94,44,68,61,0,0,0,0,0,Nil,0 } )
+   Aadd( aPaintRep[6], { 5,"..\..\samples\Image\logo.bmp",94,44,68,61,0,0,0,0,0,Nil,0 } )
    Aadd( aPaintRep[6], { 1,"2001",320,81,89,20,2,0,HFont():Add( "Arial",0,-18,700,204,0,0,0 ),0,0,Nil,0 } )
    Aadd( aPaintRep[6], { 2,,182,106,408,6,0,HPen():Add(0,1,0),0,0,0,Nil,0 } )
    Aadd( aPaintRep[6], { 6,"PH",-16,172,16,10,0,0,0,0,0,Nil,0 } )

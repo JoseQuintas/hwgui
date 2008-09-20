@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.32 2008-09-09 18:40:53 mlacecilia Exp $
+ * $Id: hprinter.prg,v 1.33 2008-09-20 17:47:51 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -647,7 +647,7 @@ static BrushBackground := NIL
 
    rect:=GetClientRect(oWnd:handle)
 
-	WriteLog(stR(rect[1])+ stR(rect[2])+ stR(rect[3])+ stR(rect[4]) )
+	// WriteLog(stR(rect[1])+ stR(rect[2])+ stR(rect[3])+ stR(rect[4]) )
 	// offscreen canvas must be THE WHOLE CANVAS !
 
    IF ::xOffset == Nil

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.63 2008-09-20 09:44:09 giuseppem Exp $
+ * $Id: hdialog.prg,v 1.64 2008-09-20 13:09:09 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -371,7 +371,9 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       ENDIF
    ENDIF
    
-/*  For La Cecila problem with when and valid test with sampes\browse_1.prg
+/*  Revert Maurizio patch as it block VALID/WHEN on cell edit in browse....
+    Please run samples\browse\browse_1.prg and try to edit the first column....
+
    IF  __ObjHasMsg(oDlg, "NINITFOCUS") .AND. oDlg:nInitFocus > 0 .AND. !isWindowVisible(oDlg:handle)
      IF (oCtrl := oDlg:FindControl(,oDlg:nInitFocus)) == nil
         oCtrl := oDlg:FindControl(,GetAncestor(oDlg:nInitFocus, GA_PARENT))
@@ -385,6 +387,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
      RETURN 1
    ENDIF
 */
+
    IF oDlg:aEvents != Nil .AND. ! oDlg:lSuspendMsgsHandling .AND. ;
       ( i := AScan( oDlg:aEvents, { | a | a[ 1 ] == iParHigh.and.a[ 2 ] == iParLow } ) ) > 0
       Eval( oDlg:aEvents[ i, 3 ], oDlg, iParLow )
@@ -574,6 +577,7 @@ FUNCTION GetModalHandle
 
 FUNCTION EndDialog( handle )
    LOCAL oDlg
+   LOCAL res
    IF handle == Nil
       IF ( oDlg := ATail( HDialog():aModalDialogs ) ) == Nil
          RETURN Nil
@@ -586,7 +590,10 @@ FUNCTION EndDialog( handle )
       ENDIF
    ENDIF
    IF oDlg:bDestroy != Nil
-      IF Eval( oDlg:bDestroy, oDlg )
+      oDlg:lSuspendMsgsHandling := .T.
+      res := Eval( oDlg:bDestroy, oDlg )
+      oDlg:lSuspendMsgsHandling := .F.
+      IF res
          RETURN IIf( oDlg:lModal, Hwg_EndDialog( oDlg:handle ), DestroyWindow( oDlg:handle ) )
       ELSE
          RETURN Nil

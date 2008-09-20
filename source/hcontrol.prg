@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.87 2008-09-10 08:05:18 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.88 2008-09-20 13:09:09 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -49,8 +49,10 @@ CLASS HControl INHERIT HCustomWindow
    DATA   tooltip
    DATA   lInit           INIT .F.
    DATA   xName           HIDDEN
+   DATA   lnoValid        INIT .F.
+   DATA   nGetSkip        INIT 0
    ACCESS Name            INLINE ::xName
-   ASSIGN Name( cName )     INLINE ::xName := cName, ;
+   ASSIGN Name( cName )   INLINE ::xName := cName, ;
                                               __objAddData( ::oParent, cName ), ;
                                               ::oParent: & ( cName ) := Self
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.904 2008-09-19 23:27:56 mlacecilia Exp $
+ * $Id: Changelog,v 1.905 2008-09-20 00:13:05 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-09-20 02:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  - samples\bldhrb.bat
+  * samples\bld.bat
+    * striped out the batch for sample building using Harbour and changed bld.bat
+      to compile using Harbour or xHarbour depending on environment settings
+ 
 2008-09-20 01:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * gtk\samples\progbars.prg
   * samples\all\test1.prg

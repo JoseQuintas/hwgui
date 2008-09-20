@@ -32,10 +32,13 @@ echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hbxml.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hwg_qhtm.lib + >> b32.bc
 if exist %HWGUI_INSTALL%\lib\hbactivex.lib echo %HWGUI_INSTALL%\lib\hbactivex.lib + >> b32.bc
+if exist %HRB_DIR%\lib\hbvm.lib goto hrb
+
 echo %HRB_DIR%\lib\rtl%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\vm%HB_MT%.lib + >> b32.bc
-if exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtgui.lib + >> b32.bc
-if not exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
+rem if exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtgui.lib + >> b32.bc
+rem if not exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
+echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
 echo %HRB_DIR%\lib\lang.lib + >> b32.bc
 echo %HRB_DIR%\lib\codepage.lib + >> b32.bc
 echo %HRB_DIR%\lib\macro%HB_MT%.lib + >> b32.bc
@@ -51,7 +54,32 @@ echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
 if exist %HRB_DIR%\lib\pcrepos.lib echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
 if exist %HRB_DIR%\lib\hbole.lib echo %HRB_DIR%\lib\hbole.lib + >> b32.bc
 rem echo %HRB_DIR%\lib\libct.lib + >> b32.bc
+goto common
 
+:hrb
+echo %HRB_DIR%\lib\hbrtl%HB_MT%.lib + >> b32.bc
+echo %HRB_DIR%\lib\hbvm%HB_MT%.lib + >> b32.bc
+echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
+if exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtgui.lib + >> b32.bc
+if not exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
+echo %HRB_DIR%\lib\hblang.lib + >> b32.bc
+echo %HRB_DIR%\lib\hbcpage.lib + >> b32.bc
+echo %HRB_DIR%\lib\hbmacro%HB_MT%.lib + >> b32.bc
+echo %HRB_DIR%\lib\hbrdd%HB_MT%.lib + >> b32.bc
+echo %HRB_DIR%\lib\rddntx%HB_MT%.lib + >> b32.bc
+echo %HRB_DIR%\lib\rddcdx%HB_MT%.lib + >> b32.bc
+echo %HRB_DIR%\lib\rddfpt%HB_MT%.lib + >> b32.bc
+echo %HRB_DIR%\lib\hbcommon.lib + >> b32.bc
+echo %HRB_DIR%\lib\hbdebug.lib + >> b32.bc
+echo %HRB_DIR%\lib\hbpp.lib + >> b32.bc
+echo %HRB_DIR%\lib\hbhsx.lib + >> b32.bc
+echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
+if exist %HRB_DIR%\lib\hbpcre.lib echo %HRB_DIR%\lib\hbpcre.lib + >> b32.bc
+if exist %HRB_DIR%\lib\hbole.lib echo %HRB_DIR%\lib\hbole.lib + >> b32.bc
+if exist %HRB_DIR%\lib\hbw32.lib echo %HRB_DIR%\lib\hbw32.lib + >> b32.bc
+rem echo %HRB_DIR%\lib\hbct.lib + >> b32.bc
+
+:common
 echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc
 if exist obj\%1.res echo obj\%1.res + >> b32.bc

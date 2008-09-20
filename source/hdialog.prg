@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.64 2008-09-20 13:09:09 fperillo Exp $
+ * $Id: hdialog.prg,v 1.65 2008-09-20 23:27:45 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -66,7 +66,9 @@ CLASS VAR aModalDialogs  SHARED INIT { }
    DATA xResourceID
    DATA oEmbedded
    DATA bOnActivate
-   DATA nInitFocus INIT 0
+   DATA nInitFocus INIT 0  // Keeps the ID of the object to receive focus when dialog is created
+                           // you can change the object that receives focus adding
+                           // ON INIT {||object:SetFocus() }  to the dialog definition
 
    METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
                bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc )
@@ -235,7 +237,7 @@ METHOD GetActive() CLASS HDialog
 // ------------------------------------
 
 STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
-   LOCAL nReturn := 1
+   LOCAL nReturn := 1, nFocu
 
    HB_SYMBOL_UNUSED( wParam )
    HB_SYMBOL_UNUSED( lParam )
@@ -260,10 +262,14 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
 
    IF oDlg:bInit != Nil
       oDlg:lSuspendMsgsHandling := .t.
+      nFocu := getfocus()
       IF Valtype(nReturn := Eval( oDlg:bInit, oDlg )) != "N"
          nReturn := 1
       ENDIF
-      oDlg:nInitFocus := getfocus()
+      IF nFocu != getfocus()
+         oDlg:nInitFocus := getfocus()
+      ENDIF
+      // oDlg:nInitFocus := getfocus()
       oDlg:lSuspendMsgsHandling := .F.
    ENDIF
 
@@ -371,9 +377,6 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       ENDIF
    ENDIF
    
-/*  Revert Maurizio patch as it block VALID/WHEN on cell edit in browse....
-    Please run samples\browse\browse_1.prg and try to edit the first column....
-
    IF  __ObjHasMsg(oDlg, "NINITFOCUS") .AND. oDlg:nInitFocus > 0 .AND. !isWindowVisible(oDlg:handle)
      IF (oCtrl := oDlg:FindControl(,oDlg:nInitFocus)) == nil
         oCtrl := oDlg:FindControl(,GetAncestor(oDlg:nInitFocus, GA_PARENT))
@@ -386,7 +389,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
      ENDIF
      RETURN 1
    ENDIF
-*/
+
 
    IF oDlg:aEvents != Nil .AND. ! oDlg:lSuspendMsgsHandling .AND. ;
       ( i := AScan( oDlg:aEvents, { | a | a[ 1 ] == iParHigh.and.a[ 2 ] == iParLow } ) ) > 0
@@ -414,14 +417,9 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       .AND. aMenu[ 1, i, 1 ] != Nil
       Eval( aMenu[ 1, i, 1 ] )
    ENDIF
-/*
+
    IF  __ObjHasMsg(oDlg,"NINITFOCUS") .AND. oDlg:nInitFocus > 0
       oDlg:nInitFocus := 0
-   ENDIF
-*/
-   IF oDlg:nInitFocus > 0
-     SetFocus(oDlg:nInitFocus)
-     oDlg:nInitFocus := 0
    ENDIF
 
    RETURN 1
@@ -593,9 +591,8 @@ FUNCTION EndDialog( handle )
       oDlg:lSuspendMsgsHandling := .T.
       res := Eval( oDlg:bDestroy, oDlg )
       oDlg:lSuspendMsgsHandling := .F.
-      IF res
-         RETURN IIf( oDlg:lModal, Hwg_EndDialog( oDlg:handle ), DestroyWindow( oDlg:handle ) )
-      ELSE
+      IF ! res
+         oDlg:nLastKey := 0
          RETURN Nil
       ENDIF
    ENDIF

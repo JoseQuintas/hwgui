@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.94 2008-09-20 13:52:29 giuseppem Exp $
+ *$Id: hedit.prg,v 1.95 2008-09-20 23:27:45 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -112,20 +112,20 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       IF bGfocus != Nil
          ::lnoValid := .T.
       ENDIF
-      ::oParent:AddEvent( EN_SETFOCUS, self, { | o, id | ::When( o:FindControl( id ) ) },,"onGotFocus"  )
-      ::oParent:AddEvent( EN_KILLFOCUS, self, { | o, id | ::Valid( o:FindControl( id ) ) },,"onLostFocus" )
+      ::oParent:AddEvent( EN_SETFOCUS, self, { | | ::When( ) },,"onGotFocus"  )
+      ::oParent:AddEvent( EN_KILLFOCUS, self, { | | ::Valid( ) },,"onLostFocus" )
       ::bValid := { | o | ::Valid( o ) }
    ELSE
       IF bGfocus != Nil
-         ::oParent:AddEvent( EN_SETFOCUS, self, { | o, id | ::When( o:FindControl( id ) ) },,"onGotFocus"  )
+         ::oParent:AddEvent( EN_SETFOCUS, self, { | | ::When( ) },,"onGotFocus"  )
       ENDIF
       IF bLfocus != Nil
-        ::oParent:AddEvent( EN_KILLFOCUS, self, { | o, id | ::Valid( o:FindControl( id ) ) },,"onLostFocus" )
+         ::oParent:AddEvent( EN_KILLFOCUS, self, { | | ::Valid( ) },,"onLostFocus" )
       ENDIF
    ENDIF
    IF bChange != Nil
       ::bChange := bChange
-      ::oParent:AddEvent( EN_CHANGE, self,{|o, id | ::Change(o:FindControl(id))},,"onChange"  )
+      ::oParent:AddEvent( EN_CHANGE, self,{| | ::Change( )},,"onChange"  )
    ENDIF
    ::bColorOld:=::bColor
 
@@ -1087,18 +1087,25 @@ FUNCTION SetColorinFocus( lDef )
 Luis Fernando Basso contribution
 */
 
+/** CheckFocus
+* check focus of controls before calling events
+*/
 FUNCTION CheckFocus(oCtrl, nInside)
 
-  IF !IsWindowVisible(ParentGetDialog(oCtrl):handle) .OR. GetActiveWindow() == 0
-    IF !nInside
-        ParentGetDialog(oCtrl):Show()
-        SetFocus(ParentGetDialog(oCtrl):handle)
-        SetFocus(GetFocus())
+   IF !IsWindowVisible(ParentGetDialog(oCtrl):handle) .OR. GetActiveWindow() == 0
+      IF !nInside .and. ParentGetDialog(oCtrl):nInitFocus = 0
+         ParentGetDialog(oCtrl):Show()
+         SetFocus(ParentGetDialog(oCtrl):handle)
+         SetFocus(GetFocus())
 	  ENDIF
-     RETURN .F.
-  ELSEIF nInside .AND. oCtrl:Handle = getfocus()
-	  // RETURN .F.
-  ENDIF
+      RETURN .F.
+   ENDIF
+   IF nInside 
+      IF GETFOCUS() = oCtrl:oParent:Handle .AND. ParentGetDialog(oCtrl):handle = oCtrl:oParent:Handle ;
+            .AND.GETFOCUS() != GetActiveWindow()
+         RETURN .F.
+      ENDIF   
+   ENDIF
   
 RETURN .T.
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.62 2008-09-19 06:44:28 giuseppem Exp $
+ * $Id: hdialog.prg,v 1.63 2008-09-20 09:44:09 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -370,7 +370,8 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
          oDlg:nLastKey := 27
       ENDIF
    ENDIF
-
+   
+/*  For La Cecila problem with when and valid test with sampes\browse_1.prg
    IF  __ObjHasMsg(oDlg, "NINITFOCUS") .AND. oDlg:nInitFocus > 0 .AND. !isWindowVisible(oDlg:handle)
      IF (oCtrl := oDlg:FindControl(,oDlg:nInitFocus)) == nil
         oCtrl := oDlg:FindControl(,GetAncestor(oDlg:nInitFocus, GA_PARENT))
@@ -383,7 +384,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
      ENDIF
      RETURN 1
    ENDIF
-
+*/
    IF oDlg:aEvents != Nil .AND. ! oDlg:lSuspendMsgsHandling .AND. ;
       ( i := AScan( oDlg:aEvents, { | a | a[ 1 ] == iParHigh.and.a[ 2 ] == iParLow } ) ) > 0
       Eval( oDlg:aEvents[ i, 3 ], oDlg, iParLow )
@@ -410,9 +411,14 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       .AND. aMenu[ 1, i, 1 ] != Nil
       Eval( aMenu[ 1, i, 1 ] )
    ENDIF
-
+/*
    IF  __ObjHasMsg(oDlg,"NINITFOCUS") .AND. oDlg:nInitFocus > 0
       oDlg:nInitFocus := 0
+   ENDIF
+*/
+   IF oDlg:nInitFocus > 0
+     SetFocus(oDlg:nInitFocus)
+     oDlg:nInitFocus := 0
    ENDIF
 
    RETURN 1

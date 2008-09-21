@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.911 2008-09-20 23:48:06 fperillo Exp $
+ * $Id: Changelog,v 1.912 2008-09-21 21:35:53 fperillo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-21 23:33 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
+  Changes made by Luis Fernando Basso
+  * source/hdialog.prg
+    * new changes for dialogs' object focus
+    * please read http://msdn.microsoft.com/en-us/library/ms646312.aspx
+      and the comment in it
 
 2008-09-21 01:33 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
   Changes made by Luis Fernando Basso and me

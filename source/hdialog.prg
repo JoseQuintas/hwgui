@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.65 2008-09-20 23:27:45 fperillo Exp $
+ * $Id: hdialog.prg,v 1.66 2008-09-21 21:35:53 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -262,14 +262,9 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
 
    IF oDlg:bInit != Nil
       oDlg:lSuspendMsgsHandling := .t.
-      nFocu := getfocus()
       IF Valtype(nReturn := Eval( oDlg:bInit, oDlg )) != "N"
          nReturn := 1
       ENDIF
-      IF nFocu != getfocus()
-         oDlg:nInitFocus := getfocus()
-      ENDIF
-      // oDlg:nInitFocus := getfocus()
       oDlg:lSuspendMsgsHandling := .F.
    ENDIF
 
@@ -282,6 +277,8 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       Eval( oDlg:bGetFocus, oDlg )
       oDlg:lSuspendMsgsHandling := .f.
    ENDIF
+
+   SetFocus(oDlg:handle)
 
    RETURN nReturn
 
@@ -378,6 +375,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
    ENDIF
    
    IF  __ObjHasMsg(oDlg, "NINITFOCUS") .AND. oDlg:nInitFocus > 0 .AND. !isWindowVisible(oDlg:handle)
+/*
      IF (oCtrl := oDlg:FindControl(,oDlg:nInitFocus)) == nil
         oCtrl := oDlg:FindControl(,GetAncestor(oDlg:nInitFocus, GA_PARENT))
         IF oCtrl != Nil
@@ -387,14 +385,16 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
      IF oCtrl != Nil .AND. oCtrl:handle == oDlg:nInitFocus .and. oDlg:nInitFocus != 0
         SETFOCUS(oCtrl:handle)
      ENDIF
-     RETURN 1
+*/
+      SetFocus( oDlg:nInitFocus )
+      RETURN 1
    ENDIF
 
 
    IF oDlg:aEvents != Nil .AND. ! oDlg:lSuspendMsgsHandling .AND. ;
       ( i := AScan( oDlg:aEvents, { | a | a[ 1 ] == iParHigh.and.a[ 2 ] == iParLow } ) ) > 0
       Eval( oDlg:aEvents[ i, 3 ], oDlg, iParLow )
-   ELSEIF iParHigh == 0 .AND. ( ;
+   ELSEIF iParHigh == 0 .AND. !oDlg:lSuspendMsgsHandling .AND. ( ;
                                 ( iParLow == IDOK .AND. oDlg:FindControl( IDOK ) != nil ) .OR. ;
                                 iParLow == IDCANCEL )
       IF iParLow == IDOK

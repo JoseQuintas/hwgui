@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.66 2008-09-21 21:35:53 fperillo Exp $
+ * $Id: hdialog.prg,v 1.67 2008-09-22 22:31:09 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -321,8 +321,9 @@ STATIC FUNCTION onEraseBk( oDlg, hDC )
 
 FUNCTION DlgCommand( oDlg, wParam, lParam )
    LOCAL iParHigh := HIWORD( wParam ), iParLow := LOWORD( wParam )
-   LOCAL aMenu, i, hCtrl, oCtrl
-   // WriteLog( Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   LOCAL aMenu, i, hCtrl, oCtrl, nEsc := .F.
+
+   // Hwg_WriteLog( "Enter DlgCommand: "+Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
 
    HB_SYMBOL_UNUSED( lParam )
 
@@ -370,6 +371,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
             RETURN 1
          ENDIF
       ELSEIF iParLow == IDCANCEL
+         nEsc := ( getkeystate( VK_ESCAPE ) < 0 )
          oDlg:nLastKey := 27
       ENDIF
    ENDIF
@@ -401,7 +403,8 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
          oDlg:lResult := .T.
       ENDIF
       //Replaced by Sandro
-      IF oDlg:lExitOnEsc
+//      hwg_writelog( "oDlg:lExitOnEsc "+iif(oDlg:lExitOnEsc, "TRUE", "FALSE" ) + "nEsc "+iif(nEsc, "TRUE", "FALSE" ) )
+      IF oDlg:lExitOnEsc .OR. ! nEsc
          EndDialog( oDlg:handle )
       ENDIF
    ELSEIF __ObjHasMsg( oDlg, "MENU" ) .AND. ValType( oDlg:menu ) == "A" .AND. ;

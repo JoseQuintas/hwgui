@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.29 2008-09-05 10:39:51 mlacecilia Exp $
+ *$Id: htab.prg,v 1.30 2008-09-22 22:31:10 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -464,7 +464,10 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
       ::oparent:lSuspendMsgsHandling := .f.
    ENDIF
    IF ! ( ( msg == WM_COMMAND .OR. msg == WM_NOTIFY ) .AND. ::oParent:lSuspendMsgsHandling )
-      //AEV aqui controla do dialog para o tab
+      IF  __ObjHasMsg(::oParent,"NINITFOCUS") .AND. ::oParent:nInitFocus > 0 .AND. isWindowVisible(::oParent:handle)
+         SETFOCUS(::oParent:nInitFocus)
+         ::oParent:nInitFocus := 0
+      ENDIF  
       RETURN ( Super:onevent( msg, wParam, lParam ) )
    ENDIF
 

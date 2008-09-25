@@ -1,5 +1,5 @@
 /*
- * $Id: hsplash.prg,v 1.2 2007-11-26 10:50:17 andijahja Exp $
+ * $Id: hsplash.prg,v 1.3 2008-09-25 05:39:05 giuseppem Exp $
  *
  * HwGUI Harbour Win32 Gui Copyright (c) Alexander Kresin
  *
@@ -15,7 +15,10 @@
 
 CLASS HSplash 
 
+   DATA oTimer
+
    METHOD Create(cFile,oTime,oResource) CONSTRUCTOR
+   METHOD CountSeconds(oTime,oDlg)
 
 ENDCLASS
  
@@ -36,16 +39,16 @@ METHOD Create(cFile, oTime, oResource ) CLASS HSplash
  
    INIT DIALOG oDlg TITLE "" ;
      AT 0,0 SIZE aWidth, aHeigth  STYLE WS_POPUP+DS_CENTER+WS_VISIBLE+WS_DLGFRAME;
-     BACKGROUND BITMAP bitmap ON INIT {||CountSeconds(oTime,oDlg)}
+     BACKGROUND BITMAP bitmap ON INIT {|| ::CountSeconds(oTime,oDlg)}
 
     oDlg:Activate()
-
+    ::oTimer:End()
+    
 RETURN Self
 
-Static Function CountSeconds(oTime,oDlg) 
-local oTimer
+METHOD CountSeconds(oTime,oDlg)
 
-SET TIMER oTimer OF oDlg VALUE oTime  ACTION {||EndDialog(GetModalHandle())}
+SET TIMER ::oTimer OF oDlg VALUE oTime  ACTION {|o|EndDialog(GetModalHandle())}
 
 Return Nil
 

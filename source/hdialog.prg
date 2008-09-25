@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.68 2008-09-25 19:57:50 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.69 2008-09-25 21:24:54 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -234,7 +234,7 @@ METHOD GetActive() CLASS HDialog
 // ------------------------------------
 
 STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
-   LOCAL nReturn := 1, nFocu
+   LOCAL nReturn := 1
 
    HB_SYMBOL_UNUSED( wParam )
    HB_SYMBOL_UNUSED( lParam )
@@ -378,7 +378,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       RETURN 1
    ENDIF
 
-   IF oDlg:aEvents != Nil .AND. ! oDlg:lSuspendMsgsHandling AND. oDlg:nInitFocus == 0 .AND. ;
+   IF oDlg:aEvents != Nil .AND. ! oDlg:lSuspendMsgsHandling .AND. oDlg:nInitFocus == 0 .AND. ;
       ( i := AScan( oDlg:aEvents, { | a | a[ 1 ] == iParHigh.and.a[ 2 ] == iParLow } ) ) > 0
       Eval( oDlg:aEvents[ i, 3 ], oDlg, iParLow )
    ELSEIF iParHigh == 0 .AND. !oDlg:lSuspendMsgsHandling .AND. ( ;

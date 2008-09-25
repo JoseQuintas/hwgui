@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.67 2008-09-22 22:31:09 fperillo Exp $
+ * $Id: hdialog.prg,v 1.68 2008-09-25 19:57:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -66,9 +66,6 @@ CLASS VAR aModalDialogs  SHARED INIT { }
    DATA xResourceID
    DATA oEmbedded
    DATA bOnActivate
-   DATA nInitFocus INIT 0  // Keeps the ID of the object to receive focus when dialog is created
-                           // you can change the object that receives focus adding
-                           // ON INIT {||object:SetFocus() }  to the dialog definition
 
    METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
                bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc )
@@ -377,23 +374,11 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
    ENDIF
    
    IF  __ObjHasMsg(oDlg, "NINITFOCUS") .AND. oDlg:nInitFocus > 0 .AND. !isWindowVisible(oDlg:handle)
-/*
-     IF (oCtrl := oDlg:FindControl(,oDlg:nInitFocus)) == nil
-        oCtrl := oDlg:FindControl(,GetAncestor(oDlg:nInitFocus, GA_PARENT))
-        IF oCtrl != Nil
-           GetSkip( oCtrl:oParent, hCtrl, , 1 )
-        ENDIF
-     ENDIF
-     IF oCtrl != Nil .AND. oCtrl:handle == oDlg:nInitFocus .and. oDlg:nInitFocus != 0
-        SETFOCUS(oCtrl:handle)
-     ENDIF
-*/
-      SetFocus( oDlg:nInitFocus )
+      PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, oDlg:nInitFocus , 1 )
       RETURN 1
    ENDIF
 
-
-   IF oDlg:aEvents != Nil .AND. ! oDlg:lSuspendMsgsHandling .AND. ;
+   IF oDlg:aEvents != Nil .AND. ! oDlg:lSuspendMsgsHandling AND. oDlg:nInitFocus == 0 .AND. ;
       ( i := AScan( oDlg:aEvents, { | a | a[ 1 ] == iParHigh.and.a[ 2 ] == iParLow } ) ) > 0
       Eval( oDlg:aEvents[ i, 3 ], oDlg, iParLow )
    ELSEIF iParHigh == 0 .AND. !oDlg:lSuspendMsgsHandling .AND. ( ;

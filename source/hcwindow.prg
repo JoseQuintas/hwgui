@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.26 2008-09-08 16:53:29 mlacecilia Exp $
+ *$Id: hcwindow.prg,v 1.27 2008-09-25 19:57:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -66,6 +66,10 @@ CLASS VAR oDefaultParent SHARED
    DATA cargo
    DATA HelpId        INIT 0
    DATA nHolder       INIT 0
+   DATA nInitFocus    INIT 0  // Keeps the ID of the object to receive focus when dialog is created
+                              // you can change the object that receives focus adding
+                              // ON INIT {||object:SetFocus() }  to the dialog definition
+
 
    METHOD AddControl( oCtrl ) INLINE AAdd( ::aControls, oCtrl )
    METHOD DelControl( oCtrl )
@@ -77,7 +81,7 @@ CLASS VAR oDefaultParent SHARED
    METHOD onEvent( msg, wParam, lParam )
    METHOD END()
    METHOD RefreshCtrl( oCtrl )
-   METHOD SetFocusCtrl( oCtre )
+   METHOD SetFocusCtrl( oCtrl )
    METHOD Refresh()
 
 ENDCLASS

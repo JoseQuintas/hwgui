@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.915 2008-09-25 05:38:33 giuseppem Exp $
+ * $Id: Changelog,v 1.916 2008-09-25 19:57:50 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,10 +7,22 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-25 22:00 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  changes made by Luis Fernando Basso
+  * source\hcwindow.prg
+    * moved nInitFocus property to hCustomWindow to avoid designer error
+    * fixed minor typo
+  * source\hdialog.prg
+    * moved nInitFocus property to hCustomWindow to avoid designer error
+    * fixed DlgCommand() to correctly set the focus also in browse edit
+  * source\hedit.prg
+    * fixed CheckFocus() to correctly set the focus also in browse edit
+ 
 2008-09-25 07:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
-  * source/hspalsh.prg
+  * source/hsplash.prg
     ! Destroyed timer after viewing splash, that have a conflict
-	with timer of hprinter previw, thanks to francesco.
+	with timer of hprinter preview, thanks to francesco.
 	But ther is yet a problem in htimer on how is calculated the default ID.
 
 2008-09-23 00:23 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>

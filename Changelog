@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.916 2008-09-25 19:57:50 mlacecilia Exp $
+ * $Id: Changelog,v 1.917 2008-09-25 21:04:14 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-25 18:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
+  * include/guilib.ch
+    ! minor fix to addrowex to ogrid command
+  * source/hgridex.prg
+    ! minor change to addrow
+
 
 2008-09-25 22:00 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   changes made by Luis Fernando Basso
@@ -18,7 +25,7 @@
     * fixed DlgCommand() to correctly set the focus also in browse edit
   * source\hedit.prg
     * fixed CheckFocus() to correctly set the focus also in browse edit
- 
+  
 2008-09-25 07:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hsplash.prg
     ! Destroyed timer after viewing splash, that have a conflict

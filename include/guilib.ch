@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.110 2008-09-08 16:53:29 mlacecilia Exp $
+ *$Id: guilib.ch,v 1.111 2008-09-25 21:04:46 lculik Exp $
  */
 #define HWG_VERSION           "2.16"
 #define   WND_MAIN      1
@@ -1585,7 +1585,7 @@ Added by Marcos Antonio Gambeta
 
 
 #xcommand ADDROWEX TO GRID <oGrid>        ;
-            [ HEADER <cHeader> ]        ;
+             HEADER <cHeader>         ;
             [ BITMAP <n> ]              ;
             [ COLOR <color> ]           ;
             [ BACKCOLOR <bkcolor> ]     ;
@@ -1593,7 +1593,7 @@ Added by Marcos Antonio Gambeta
             [ BITMAP <nn> ]             ;
             [ COLOR <colorn> ]          ;
             [ BACKCOLOR <bkcolorn> ]    ;
-             => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> \}) [;<oGrid>:AddRow(\{<cHeadern>,<nn>,<colorn>,<bkcolorn> \})]
+             => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> [,<cHeadern>,<nn>,<colorn>,<bkcolorn> ] \})
 
 
 #xcommand REDEFINE TAB  <oSay>  ;

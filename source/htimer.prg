@@ -1,5 +1,5 @@
 /*
- * $Id: htimer.prg,v 1.5 2008-07-05 16:53:00 mlacecilia Exp $
+ * $Id: htimer.prg,v 1.6 2008-09-26 15:17:26 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTimer class
@@ -33,7 +33,7 @@ CLASS HTimer INHERIT HObject
    ACCESS Interval     INLINE ::xInterval
    ASSIGN Interval(x)  INLINE ::xInterval := x, ;
                               IIF( ::xInterval == 0, ;
-										     KillTimer( ::oParent:handle, ::id ), ;
+										     ::End(), ;
 											  SetTimer( ::oParent:handle, ::id, ::xInterval ))
 
    METHOD New( oParent,id,value,bAction )
@@ -44,8 +44,18 @@ ENDCLASS
 METHOD New( oParent,nId,value,bAction ) CLASS HTimer
 
    ::oParent := Iif( oParent==Nil, HWindow():GetMain(), oParent )
-   ::id      := Iif( nId==Nil, TIMER_FIRST_ID + Len( ::oParent:aControls ), ;
-                         nId )
+   if nId != nil
+      if  Ascan( ::aTimers,{|o|o:id == nId} ) != 0
+			MsgStop("Error: attempt to createtimer with duplicated id")
+		   QUIT
+      endif
+   else
+	   nId := TIMER_FIRST_ID
+      do While Ascan( ::aTimers,{|o|o:id == nId} ) !=  0
+         nId++
+      enddo
+   endif
+   ::id      := nId
    ::value   := value
    ::bAction := bAction
 	if ::value > 0
@@ -58,22 +68,22 @@ Return Self
 METHOD End() CLASS HTimer
 Local i
 
-   KillTimer( ::oParent:handle,::id )
-   i := Ascan( ::aTimers,{|o|o:id==::id} )
+   KillTimer( ::oParent:handle, ::id )
+   i := Ascan( ::aTimers,{|o| o:id == ::id} )
    IF i != 0
-      Adel( ::aTimers,i )
-      Asize( ::aTimers,Len( ::aTimers )-1 )
+      Adel( ::aTimers, i )
+      Asize( ::aTimers, Len( ::aTimers ) - 1 )
    ENDIF
 
 Return Nil
 
 Function TimerProc( hWnd, idTimer, time )
-Local i := Ascan( HTimer():aTimers,{|o|o:id==idTimer} )
+Local i := Ascan( HTimer():aTimers,{|o| o:id == idTimer} )
 
 HB_SYMBOL_UNUSED(hWnd)
 
    IF i != 0
-      Eval( HTimer():aTimers[i]:bAction,time )
+      Eval( HTimer():aTimers[i]:bAction, time )
    ENDIF
 
 Return Nil
@@ -83,7 +93,7 @@ Local oTimer, i
 
    For i := 1 TO Len( HTimer():aTimers )
       oTimer := HTimer():aTimers[i]
-      KillTimer( oTimer:oParent:handle,oTimer:id )
+      KillTimer( oTimer:oParent:handle, oTimer:id )
    NEXT
 
 Return

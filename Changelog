@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.918 2008-09-25 21:24:54 mlacecilia Exp $
+ * $Id: Changelog,v 1.919 2008-09-26 15:17:26 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-26 17:00 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hsplash.prg
+    * purged unused parameter
+  * source\htimer.prg
+    * passing zero value to :interval now correctly destroys the object
+    * changed the automatic id calculation
+    * added test granting no duplicated id to be taken if passed as
+      parameter
 
 2008-09-25 23:25 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hdialog.prg

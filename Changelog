@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.919 2008-09-26 15:17:26 mlacecilia Exp $
+ * $Id: Changelog,v 1.920 2008-09-27 22:21:16 fperillo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-28 00:18 UTC+0100 Francesco Perillo <fperillo at gmail dot com>
+  * source\hprinter.prg
+    * Removed flickering of preview during resize.... with
+	  WS_CLIPCHILDREN style added to the dialog
 
 2008-09-26 17:00 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hsplash.prg

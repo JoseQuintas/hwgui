@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.33 2008-09-20 17:47:51 mlacecilia Exp $
+ * $Id: hprinter.prg,v 1.34 2008-09-27 22:21:16 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -305,7 +305,7 @@ Local lTransp := ( aBitmaps != Nil .AND. Len(aBitmaps) > 9 .AND. aBitmaps[10] !=
 
    INIT DIALOG oDlg TITLE cTitle                  ;
      AT 40,10 SIZE GetDesktopWidth(),GetDesktopHeight()                        ;
-     STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+WS_MAXIMIZEBOX;
+     STYLE hwg_multibitor( WS_POPUP, WS_VISIBLE, WS_CAPTION, WS_SYSMENU, WS_SIZEBOX, WS_MAXIMIZEBOX, WS_CLIPCHILDREN ) ;
      ON INIT {|o|o:Maximize(),::ResizePreviewDlg(oCanvas,1), SetTimer(oCanvas, @oTimer)} ;
      ON EXIT {|| oCanvas:brush := NIL, .T. }
 

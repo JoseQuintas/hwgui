@@ -1,4 +1,4 @@
-# $Id: makefile.pc,v 1.19 2008-09-10 18:22:31 mlacecilia Exp $
+# $Id: makefile.pc,v 1.20 2008-10-02 14:21:00 sandrorrfreire Exp $
 # makefile for Pelles C 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -60,6 +60,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\control.obj \
    $(OBJ_DIR)\dialog.obj  \
    $(OBJ_DIR)\draw.obj \
+   $(OBJ_DIR)\winreg.obj \
    $(OBJ_DIR)\drawtext.obj \
    $(OBJ_DIR)\freeimg.obj \
    $(OBJ_DIR)\media_c.obj \
@@ -464,6 +465,9 @@ $(OBJ_DIR)\dialog.obj : $(SRC_DIR)\dialog.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\draw.obj : $(SRC_DIR)\draw.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+   
+$(OBJ_DIR)\winreg.obj : $(SRC_DIR)\winreg.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\drawtext.obj : $(SRC_DIR)\drawtext.c

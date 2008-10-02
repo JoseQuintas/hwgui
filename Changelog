@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.920 2008-09-27 22:21:16 fperillo Exp $
+ * $Id: Changelog,v 1.921 2008-10-02 14:21:00 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-02 11:18 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
+  * makefile.bc
+  * makefile.pc
+  * makefile.vc
+    Upate makefiles
+  * source\winreg.c
+    Added functions Registry functions for [x]Harbour
+    Borred contrib xHarbour What32    
 
 2008-09-28 00:18 UTC+0100 Francesco Perillo <fperillo at gmail dot com>
   * source\hprinter.prg

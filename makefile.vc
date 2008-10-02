@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.29 2008-09-11 12:06:08 alexstrickland Exp $
+# $Id: makefile.vc,v 1.30 2008-10-02 14:21:00 sandrorrfreire Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -48,6 +48,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\cxshade.obj \
    $(HWGUI_OBJ_DIR)\dialog.obj  \
    $(HWGUI_OBJ_DIR)\draw.obj \
+   $(HWGUI_OBJ_DIR)\winreg.obj \
    $(HWGUI_OBJ_DIR)\drawtext.obj \
    $(HWGUI_OBJ_DIR)\freeimg.obj \
    $(HWGUI_OBJ_DIR)\grid.obj \

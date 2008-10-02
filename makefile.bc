@@ -1,4 +1,4 @@
-# $Id: makefile.bc,v 1.42 2008-09-10 18:22:31 mlacecilia Exp $
+# $Id: makefile.bc,v 1.43 2008-10-02 14:21:00 sandrorrfreire Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -110,6 +110,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\cxshade.obj \
    $(HWGUI_OBJ_DIR)\dialog.obj  \
    $(HWGUI_OBJ_DIR)\draw.obj \
+   $(HWGUI_OBJ_DIR)\winreg.obj \
    $(HWGUI_OBJ_DIR)\drawtext.obj \
    $(HWGUI_OBJ_DIR)\freeimg.obj \
    $(HWGUI_OBJ_DIR)\grid.obj \

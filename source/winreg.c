@@ -217,7 +217,8 @@ HB_FUNC( REGCREATEKEYEX )
   SECURITY_ATTRIBUTES *sa = NULL;
 
   if (ISCHAR(7))
-       sa = (SECURITY_ATTRIBUTES *) hb_param(7, HB_IT_STRING)->item.asString.value;
+         sa = (SECURITY_ATTRIBUTES *) hb_parc( 7 );
+//       sa = (SECURITY_ATTRIBUTES *) hb_param(7, HB_IT_STRING)->item.asString.value;
 
   nErr = RegCreateKeyEx( (HKEY)    hb_parnl( 1 ) ,
                          (LPCSTR)  hb_parcx( 2 )  ,

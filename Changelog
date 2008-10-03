@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.922 2008-10-03 20:02:45 lculik Exp $
+ * $Id: Changelog,v 1.923 2008-10-03 20:05:57 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -10,7 +10,7 @@
 
 2008-10-03 17:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source\winreg.c
-    ! updated to compile with xharbour
+    ! updated to compile with harbour
 
 2008-10-02 11:18 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * makefile.bc

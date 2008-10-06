@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.28 2008-05-27 12:10:48 lculik Exp $
+ * $Id: grid.c,v 1.29 2008-10-06 12:03:23 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -449,7 +449,7 @@ LRESULT ProcessCustomDraw( LPARAM lParam,PHB_ITEM pArray )
 HB_FUNC( PROCESSCUSTU )
 {
    /* HWND hWnd = ( HWND ) HB_PARHANDLE( 1 ) ; */
-   LPARAM lParam = ( LPARAM ) hb_parnl( 2 ) ;
+   LPARAM lParam = ( LPARAM ) HB_PARHANDLE( 2 ) ;
    PHB_ITEM pColor = hb_param( 3, HB_IT_ARRAY );
 
    hb_retnl( ( LONG ) ProcessCustomDraw( lParam, pColor ));

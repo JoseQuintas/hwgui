@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.37 2008-09-11 12:06:12 alexstrickland Exp $
+ * $Id: menu_c.c,v 1.38 2008-10-06 12:03:23 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -86,27 +86,27 @@ HB_FUNC( HWG__ADDMENUITEM )
       HMENU hSubMenu = CreateMenu();
 
       uFlags |= MF_POPUP;
-      InsertMenu( ( HMENU ) hb_parnl(1), hb_parni(3),
+      InsertMenu( ( HMENU ) HB_PARHANDLE(1), hb_parni(3),
        uFlags,        // menu item flags
        (UINT)hSubMenu,   // menu item identifier or handle of drop-down menu or submenu
        lpNewItem   // menu item content
       );
-      hb_retnl( (LONG) hSubMenu );
+      HB_RETHANDLE(  hSubMenu );
 
          // Code to set the ID of submenus, the API seems to assume that you wouldn't really want to,
          // but if you are used to getting help via IDs for popups in 16bit, then this will help you.
-      nPos = GetMenuItemCount( ( HMENU ) hb_parnl(1) );
+      nPos = GetMenuItemCount( ( HMENU ) HB_PARHANDLE(1) );
       mii.cbSize = sizeof(MENUITEMINFO);
       mii.fMask = MIIM_ID;
-      if ( GetMenuItemInfo( ( HMENU ) hb_parnl(1), nPos - 1, TRUE, & mii ) )
+      if ( GetMenuItemInfo( ( HMENU ) HB_PARHANDLE(1), nPos - 1, TRUE, & mii ) )
       {
          mii.wID = hb_parni( 5 );
-         SetMenuItemInfo( ( HMENU ) hb_parnl(1), nPos - 1, TRUE, & mii );
+         SetMenuItemInfo( ( HMENU ) HB_PARHANDLE(1), nPos - 1, TRUE, & mii );
       }
    }
    else
    {
-      InsertMenu( ( HMENU ) hb_parnl(1), hb_parni(3),
+      InsertMenu( ( HMENU ) HB_PARHANDLE(1), hb_parni(3),
        uFlags,   // menu item flags
        hb_parni( 5 ),   // menu item identifier or handle of drop-down menu or submenu
        lpNewItem   // menu item content
@@ -182,7 +182,7 @@ HB_FUNC( CHECKMENUITEM )
    if( ISOBJECT( 1 ) )
    {
       PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
-      hMenu = (HMENU) hb_itemGetNL( GetObjectVar( pObject, "HANDLE" ) );
+      hMenu = (HMENU) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
    }
    else
    {
@@ -209,7 +209,7 @@ HB_FUNC( ISCHECKEDMENUITEM )
    if( ISOBJECT( 1 ) )
    {
       PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
-      hMenu = (HMENU) hb_itemGetNL( GetObjectVar( pObject, "HANDLE" ) );
+      hMenu = (HMENU) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
    }
    else
    {
@@ -239,7 +239,7 @@ HB_FUNC( ENABLEMENUITEM )
    if( ISOBJECT( 1 ) )
    {
       PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
-      hMenu = (HMENU) hb_itemGetNL( GetObjectVar( pObject, "HANDLE" ) );
+      hMenu = (HMENU) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
    }
    else
    {
@@ -271,7 +271,7 @@ HB_FUNC( ISENABLEDMENUITEM )
    if( ISOBJECT( 1 ) )
    {
       PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
-      hMenu = (HMENU) hb_itemGetNL( GetObjectVar( pObject, "HANDLE" ) );
+      hMenu = (HMENU) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
    }
    else
    {
@@ -376,7 +376,7 @@ HB_FUNC( SETMENUCAPTION )
    if( ISOBJECT( 1 ) )
    {
       PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
-      hMenu = (HMENU) hb_itemGetNL( GetObjectVar( pObject, "HANDLE" ) );
+      hMenu = (HMENU) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
    }
    else
    {

@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.13 2008-09-08 16:53:29 mlacecilia Exp $
+ * $Id: hradio.prg,v 1.14 2008-10-06 12:03:23 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -185,7 +185,7 @@ METHOD Notify(lParam ) CLASS HRadioButton
       RETURN 0
    ENDIF
 
-   IF lParam = WM_KEYDOWN
+   IF PTRTOULONG( lParam )  = WM_KEYDOWN
       IF  GetKeyState( VK_RETURN ) < 0 //.AND. ::oGroup:value < Len(::oGroup:aButtons)
            ::oParent:lSuspendMsgsHandling := .T.
          __VALID(self)

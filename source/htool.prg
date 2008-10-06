@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.19 2008-07-08 17:09:26 mlacecilia Exp $
+ * $Id: htool.prg,v 1.20 2008-10-06 12:03:23 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -198,8 +198,9 @@ METHOD Notify( lParam ) CLASS hToolBar
        TOOLBAR_GETINFOTIP( lParam, ::aItem[ nPos, 8 ] )
 
     ELSEIF nCode == TBN_DROPDOWN
-       if valtype(::aItem[1,9]) ="A"
        nid := TOOLBAR_SUBMENUEXGETID( lParam )
+       if nid > 0 //valtype(::aItem[1,9]) ="A"
+//       nid := TOOLBAR_SUBMENUEXGETID( lParam )
        nPos := AScan( ::aItem,  { | x | x[ 2 ] == nId })
        TOOLBAR_SUBMENUEx( lParam, ::aItem[ nPos, 10 ], ::oParent:handle )
        else

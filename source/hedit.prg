@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.96 2008-09-25 19:57:50 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.97 2008-10-06 12:03:23 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -1014,7 +1014,7 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
    nextHandle := iif(oParent:className == "HTAB", NextFocusTab(oParent, hCtrl, nSkip), ;
 	                                               NextFocus(oParent, hCtrl, nSkip))
 	 oCtrl:nGetSkip := nSkip
-	 IF nextHandle != 0  
+         IF !empty(nextHandle)
 	   IF oParent:classname = "HDIALOG" 
 	       PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
 	   ELSE
@@ -1092,7 +1092,7 @@ Luis Fernando Basso contribution
 */
 FUNCTION CheckFocus(oCtrl, nInside)
 
-   IF !IsWindowVisible(ParentGetDialog(oCtrl):handle) .OR. GetActiveWindow() == 0
+   IF !IsWindowVisible(ParentGetDialog(oCtrl):handle) .OR. empty( GetActiveWindow() )
       IF !nInside .and. ParentGetDialog(oCtrl):nInitFocus = 0
          ParentGetDialog(oCtrl):Show()
          SetFocus(ParentGetDialog(oCtrl):handle)

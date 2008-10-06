@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.44 2008-09-15 17:32:19 mlacecilia Exp $
+ * $Id: misc.c,v 1.45 2008-10-06 12:03:23 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -746,3 +746,7 @@ HB_FUNC(GETNEXTDLGGROUPITEM)
  HB_RETHANDLE( GetNextDlgGroupItem( (HWND) HB_PARHANDLE( 1 ), (HWND) HB_PARHANDLE( 2 ), hb_parl( 3 ) ) ) ;
 }
 
+HB_FUNC(PTRTOULONG)
+{
+   hb_retnl( (LONG) ( (ISPOINTER(1) ? PtrToUlong(hb_parptr(1 ) ) :hb_parnl( 1 ))));
+}

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.923 2008-10-03 20:05:57 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.924 2008-10-06 12:03:23 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,30 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-06 09:30 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
+  * source/misc.c
+    ! added PtrtoUlong function
+      Changed some (HWND) hb_parnl to (HWND) HB_PARHANDLE
+  * source/control.c
+    source/drawitem.c
+       Changed some  hb_parnl/hb_retnl to  HB_PARHANDLE/HB_RETHANDLE
+      
+  * source/hedit.prg
+    ! changes for allow correct usage when  HWG_USE_POINTER_ITEM is used on hwgui compilation
+  * source/hcwindow.prg
+    source/hcontrol.prg
+    source/hradio.prg
+    ! change on notify method then hwgui is compiled with HWG_USE_POINTER_ITEM
+  * source/htab.prg
+    ! minor fix on notify method
+  *source/dialog.c
+    ! fixes GETNOTIFYCODEFROM return value when  HWG_USE_POINTER_ITEM is defined
+  *source/grid.c
+    ! fixes PROCESSCUSTU return value when  HWG_USE_POINTER_ITEM is defined
+   * source\menu_c.c
+    ! fixes HWG__ADDMENUITEM return value when  HWG_USE_POINTER_ITEM is defined
+
 
 2008-10-03 17:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source\winreg.c

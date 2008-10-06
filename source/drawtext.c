@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.16 2008-05-27 12:10:47 lculik Exp $
+ * $Id: drawtext.c,v 1.17 2008-10-06 12:03:23 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -208,7 +208,7 @@ HB_FUNC( GETWINDOWRECT )
 
 HB_FUNC( GETCLIENTAREA )
 {
-   PAINTSTRUCT *pps = (PAINTSTRUCT*) hb_parnl( 1 );
+   PAINTSTRUCT *pps = (PAINTSTRUCT*) HB_PARHANDLE( 1 );
    PHB_ITEM aMetr = _itemArrayNew( 4 );
    PHB_ITEM temp;
 
@@ -272,7 +272,7 @@ HB_FUNC( GETBKCOLOR )
 HB_FUNC( GETTEXTSIZE )
 {
 
-   HDC hdc = GetDC( (HWND)hb_parnl(1) );
+   HDC hdc = GetDC( (HWND)HB_PARHANDLE(1) );
    LPCTSTR lpString = hb_parc(2);
    SIZE size;
    PHB_ITEM aMetr = _itemArrayNew( 2 );

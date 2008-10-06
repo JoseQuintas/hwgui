@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.67 2008-07-17 19:45:10 mlacecilia Exp $
+ * $Id: window.c,v 1.68 2008-10-06 12:03:23 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -478,7 +478,7 @@ HB_FUNC( SENDMESSAGE )
                        (UINT) hb_parni( 2 ),	 // message to send
                        (WPARAM) hb_parnl( 3 ),	 // first message parameter
                        (ISCHAR(4))? (LPARAM) hb_parc( 4 ) :
-                          (LPARAM) hb_parnl( 4 ) // second message parameter
+                        ISPOINTER(4) ? (LPARAM)HB_PARHANDLE(4) : (LPARAM)hb_parnl( 4 ) // second message parameter
                      ) );
 }
 
@@ -804,7 +804,7 @@ HB_FUNC( REMOVETOPMOST )
 
 HB_FUNC( CHILDWINDOWFROMPOINT )
 {
-   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
    HWND child;
    POINT pt;
 
@@ -817,7 +817,7 @@ HB_FUNC( CHILDWINDOWFROMPOINT )
 
 HB_FUNC( WINDOWFROMPOINT )
 {
-   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
    HWND child;
    POINT pt;
 

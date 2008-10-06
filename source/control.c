@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.66 2008-07-25 00:29:49 mlacecilia Exp $
+ * $Id: control.c,v 1.67 2008-10-06 12:03:23 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1735,7 +1735,7 @@ hb_retnl( (LONG)  h );
 HB_FUNC(TABITEMPOS)
 {
    RECT pRect;
-   TabCtrl_GetItemRect((HWND) hb_parnl(1), hb_parni(2), &pRect );
+   TabCtrl_GetItemRect((HWND) HB_PARHANDLE(1), hb_parni(2), &pRect );
    hb_itemRelease(hb_itemReturn(Rect2Array(&pRect)));
 }
 
@@ -1748,6 +1748,6 @@ HB_FUNC(TABITEMPOS)
    tie.cchTextMax = 254;
    tie.pszText = d;
    strcpy( ( char * ) tie.pszText, d );
-   TabCtrl_GetItem( (HWND) hb_parnl(1), hb_parni(2)-1, (LPTCITEM)&tie );
+   TabCtrl_GetItem( (HWND) HB_PARHANDLE(1), hb_parni(2)-1, (LPTCITEM)&tie );
    hb_retc(( char * ) tie.pszText);
  }

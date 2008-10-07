@@ -1,7 +1,7 @@
 /*
- *$Id: guilib.ch,v 1.111 2008-09-25 21:04:46 lculik Exp $
+ *$Id: guilib.ch,v 1.112 2008-10-07 14:06:52 sandrorrfreire Exp $
  */
-#define HWG_VERSION           "2.16"
+#define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
 #define   WND_MDI       2
 #define WND_MDICHILD            3

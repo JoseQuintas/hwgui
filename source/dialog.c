@@ -1,5 +1,5 @@
 /*
- * $Id: dialog.c,v 1.27 2008-10-06 12:03:23 lculik Exp $
+ * $Id: dialog.c,v 1.28 2008-10-07 12:37:49 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -306,8 +306,8 @@ LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth, int 
    for( ul=1;ul<=ulControls;ul++ )
    {
       pControl = hb_arrayGetItemPtr( pControls,ul );
-      temp = hb_itemPutNI( NULL, -1 );
-//      temp = HB_PUTHANDLE( NULL, -1 );
+//      temp = hb_itemPutNI( NULL, -1 );
+      temp = HB_PUTHANDLE( NULL, -1 );
       SetObjectVar( pControl, "_HANDLE", temp );
       hb_itemRelease( temp );
       

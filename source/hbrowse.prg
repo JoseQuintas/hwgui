@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.140 2008-09-18 22:39:36 fperillo Exp $
+ * $Id: hbrowse.prg,v 1.141 2008-10-07 12:37:49 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -684,7 +684,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::aArray     := Nil
       ::aMargin := { 0, 0, 0, 0 }
 
-      IF ColSizeCursor == 0
+      IF Empty(ColSizeCursor)
          ColSizeCursor := LoadCursor( IDC_SIZEWE )
          arrowCursor := LoadCursor( IDC_ARROW )
       ENDIF

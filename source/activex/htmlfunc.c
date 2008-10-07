@@ -1,5 +1,5 @@
 /*
- * $Id: htmlfunc.c,v 1.1 2006-09-27 12:42:02 alkresin Exp $
+ * $Id: htmlfunc.c,v 1.2 2008-10-07 12:37:49 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * ActiveX container
@@ -42,31 +42,31 @@ HB_FUNC( HWGAX_OLEUNINITIALIZE )
 
 HB_FUNC( HWGAX_EMBEDBROWSEROBJECT )
 {
-   hb_retl( !EmbedBrowserObject( (HWND) hb_parnl(1) ) );
+   hb_retl( !EmbedBrowserObject( (HWND) HB_PARHANDLE(1) ) );
 }
 
 HB_FUNC( HWGAX_UNEMBEDBROWSEROBJECT )
 {
-   UnEmbedBrowserObject( (HWND) hb_parnl(1) );
+   UnEmbedBrowserObject( (HWND) HB_PARHANDLE(1) );
 }
 
 HB_FUNC( HWGAX_DISPLAYHTMLPAGE )
 {
-   DisplayHTMLPage( (HWND) hb_parnl(1), hb_parc(2) );
+   DisplayHTMLPage( (HWND) HB_PARHANDLE(1), hb_parc(2) );
 }
 
 HB_FUNC( HWGAX_DISPLAYHTMLSTR )
 {
-   DisplayHTMLStr( (HWND) hb_parnl(1), hb_parc(2) );
+   DisplayHTMLStr( (HWND) HB_PARHANDLE(1), hb_parc(2) );
 }
 
 HB_FUNC( HWGAX_RESIZEBROWSER )
 {
-   ResizeBrowser( (HWND) hb_parnl(1), (DWORD) hb_parnl(2), (DWORD) hb_parnl(3) );
+   ResizeBrowser( (HWND) HB_PARHANDLE(1), (DWORD) hb_parnl(2), (DWORD) hb_parnl(3) );
 }
 
 HB_FUNC( HWGAX_DOPAGEACTION )
 {
-   DoPageAction( (HWND) hb_parnl(1), (DWORD) hb_parnl(2) );
+   DoPageAction( (HWND) HB_PARHANDLE(1), (DWORD) hb_parnl(2) );
 }
 

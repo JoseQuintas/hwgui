@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.1 2008-03-31 23:07:57 fperillo Exp $
+ * $Id: c_activex.c,v 1.2 2008-10-07 12:37:49 lculik Exp $
  */
 /*
  * ooHG source code:
@@ -89,7 +89,7 @@ HB_FUNC( CREATEACTIVEX )
                0,
                NULL );
 
-   hb_retnl( (long) hWndCtrl );
+   HB_RETHANDLE( hWndCtrl );
 
 }
 
@@ -99,10 +99,10 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
    IUnknown *pUnk;
    IDispatch *pDisp;
    _Ax_Init();
-   AtlAxGetControl( (HWND) hb_parnl( 1 ), &pUnk );
+   AtlAxGetControl( (HWND) HB_PARHANDLE( 1 ), &pUnk );
    pUnk->lpVtbl->QueryInterface( pUnk, &IID_IDispatch, ( void ** ) &pDisp );
    pUnk->lpVtbl->Release( pUnk );
-   hb_retnl( (long) pDisp );
+   HB_RETHANDLE( pDisp );
 }
 
 /*
@@ -633,7 +633,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
 //------------------------------------------------------------------------------
 HB_FUNC( SHUTDOWNCONNECTIONPOINT )
 {
-   MyRealIEventHandler *this = ( MyRealIEventHandler * ) hb_parnl( 1 );
+   MyRealIEventHandler *this = ( MyRealIEventHandler * ) HB_PARHANDLE( 1 );
    if( this->pIConnectionPoint )
    {
       this->pIConnectionPoint->lpVtbl->Unadvise( this->pIConnectionPoint, this->dwEventCookie );
@@ -647,6 +647,6 @@ HB_FUNC( SHUTDOWNCONNECTIONPOINT )
 HB_FUNC( RELEASEDISPATCH )
 {
    IDispatch * pObj;
-   pObj = ( IDispatch * ) hb_parnl( 1 );
+   pObj = ( IDispatch * ) HB_PARHANDLE( 1 );
    pObj->lpVtbl->Release( pObj );
 }

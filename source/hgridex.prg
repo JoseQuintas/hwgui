@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.19 2008-09-25 21:05:02 lculik Exp $
+ * $Id: hgridex.prg,v 1.20 2008-10-08 18:06:39 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -134,7 +134,7 @@ METHOD Init() CLASS HGridEx
    Local aBmpSize
    Local n
    Local n1
-   Local aTemp,aTemp1
+   Local aTemp,aTemp1,nmax:=0
 
    if !::lInit
       Super:Init()
@@ -147,12 +147,18 @@ METHOD Init() CLASS HGridEx
       IF Len(aButton ) >0
 
           aBmpSize := GetBitmapSize( aButton[1] )
+          nmax :=aBmpSize[ 3 ]
+          For n:=2 to len(aButton)
+             aBmpSize := GetBitmapSize( aButton[n] )
+             nMax:=max(nmax,aBmpSize[ 3 ])
+          next
 
-          IF aBmpSize[ 3 ] == 4
+
+          IF nMax == 4
              ::hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR4 + ILC_MASK )
-          ELSEIF aBmpSize[ 3 ] == 8
+          ELSEIF nMax == 8
              ::hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR8 + ILC_MASK )
-          ELSEIF aBmpSize[ 3 ] == 24
+          ELSEIF nMax == 24
              ::hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLORDDB + ILC_MASK )
           ENDIF
 
@@ -219,7 +225,7 @@ METHOD AddRow( a ,bupdate ) Class HGRIDEX
    Local aTmp2 := {}
 
 
-default bupdate to .T.
+default bupdate to .f.
    For n := 1 to nLen step 4
       aadd( aTmp1, a[ n ] )
       aadd( aTmp,  if( valtype(a[ n + 1 ] ) == "N", a[ n + 1 ], -1 ) )
@@ -243,9 +249,11 @@ return nil
 
 METHOD Notify( lParam )  Class HGRIDEX
     Local Res,iSelect
-
+   Tracelog(GetNotifyCode( lParam ))
     IF GetNotifyCode( lParam ) == NM_CUSTOMDRAW .and. GETNOTIFYCODEFROM(lParam) == ::Handle
         Res := PROCESSCUSTU( ::handle, lParam, ::aColors )
+        Hwg_SetDlgResult( ::oParent:Handle, res )
+        tracelog(res)
         return res
     ENDIF
 

@@ -1,5 +1,5 @@
 /*
- * $Id: grid_6.prg,v 1.2 2008-09-19 23:27:59 mlacecilia Exp $
+ * $Id: grid_6.prg,v 1.3 2008-10-08 18:06:39 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -74,7 +74,7 @@ enddo
              ADD COLUMN TO GRID oGrid HEADER aHead[4] WIDTH 150  bitmap 4
 
              for n:=1 to len(aItems)
-                ADDROWEX TO GRID  oGrid header aItems[n,1] bitmap 0 color rgb(255,12,123) backcolor rgb(192,0,255) header aItems[n,2]  header aItems[n,3] bitmap 3  header aItems[n,1] bitmap 1 color rgb(123,122,123)  backcolor rgb(192,0,255)
+                ADDROWEX TO GRID  oGrid header aItems[n,1] bitmap 0 color rgb(255,12,123) backcolor rgb(192,0,255) ,header aItems[n,2]  ,header aItems[n,3] bitmap 3  ,header aItems[n,1] bitmap 1 color rgb(123,122,123)  backcolor rgb(192,0,255)
              next
 
              @ 0, 395 button "LVS_REPORT" size 95,25 on click  {|| LISTVIEW_SETVIEW(oGrid:handle,LVS_REPORT)}

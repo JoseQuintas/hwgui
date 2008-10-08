@@ -8,7 +8,7 @@ produced by Borland Resource Workshop
 
 *****************************************************************************/
 
-#include "testget.rh"
+#include "..\get\testget.rh"
 
 2 BITMAP "..\image\open.bmp"
 

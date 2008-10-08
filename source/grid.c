@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.29 2008-10-06 12:03:23 lculik Exp $
+ * $Id: grid.c,v 1.30 2008-10-08 18:06:39 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -151,7 +151,7 @@ HB_FUNC( LISTVIEW_GETFIRSTITEM ) // Current Line
 
 HB_FUNC( LISTVIEW_GETDISPINFO )
 {
-   LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
+   LV_DISPINFO* pDispInfo = (LV_DISPINFO*)HB_PARHANDLE(1);
 
    int iItem = pDispInfo->item.iItem;
    int iSubItem = pDispInfo->item.iSubItem;
@@ -164,7 +164,7 @@ HB_FUNC( LISTVIEW_GETDISPINFO )
 HB_FUNC( LISTVIEW_SETDISPINFO )
 {
    PHB_ITEM pValue = hb_itemNew( NULL );
-   LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
+   LV_DISPINFO* pDispInfo = (LV_DISPINFO*)HB_PARHANDLE(1);
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ));
    pDispInfo->item.pszText = hb_itemGetCPtr( pValue );
    hb_itemRelease( pValue );
@@ -175,7 +175,7 @@ HB_FUNC( LISTVIEW_SETDISPINFO )
 
 HB_FUNC( LISTVIEW_GETGRIDKEY )
 {
-   #define pnm ((LV_KEYDOWN *) hb_parnl(1) )
+   #define pnm ((LV_KEYDOWN *) HB_PARHANDLE(1) )
 
    hb_retnl( (LPARAM) (pnm->wVKey) ) ;
 

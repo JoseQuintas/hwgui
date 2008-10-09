@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.113 2008-10-08 18:06:39 lculik Exp $
+ *$Id: guilib.ch,v 1.114 2008-10-09 20:43:26 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -29,6 +29,19 @@
 
 #define   BRW_ARRAY               1
 #define   BRW_DATABASE            2
+
+
+#define ANCHOR_TOPLEFT     0		//	Anchors control to the top and left borders of the container and does not change the distance between the top and left borders. (Default)
+#define ANCHOR_TOPABS 	   1    	//	Anchors control to top border of container and does not change the distance between the top border. 
+#define ANCHOR_LEFTABS 	   2    	//	Anchors control to left border of container and does not change the distance between the left border.
+#define ANCHOR_BOTTOMABS   4    	//	Anchors control to bottom border of container and does not change the distance between the bottom border.
+#define ANCHOR_RIGHTABS	   8   		//	Anchors control to right border of container and does not change the distance between the right border.
+#define ANCHOR_TOPREL 	   16   	//	Anchors control to top border of container and maintains relative distance between the top border.
+#define ANCHOR_LEFTREL 	   32   	//	Anchors control to left border of container and maintains relative distance between the left border.
+#define ANCHOR_BOTTOMREL   64   	//	Anchors control to bottom border of container and maintains relative distance between the bottom border.
+#define ANCHOR_RIGHTREL    128  	//	Anchors control to right border of container and maintains relative distance between the right border.
+#define ANCHOR_HORFIX      256  	//	Anchors center of control relative to left and right borders but remains fixed in size.
+#define ANCHOR_VERTFIX     512  	//	Anchors center of control relative to top and bottom borders but remains fixed in size.
 
 #ifdef __XHARBOUR__
 #define HB_SYMBOL_UNUSED( x )    ( (x) := (x) )
@@ -643,13 +656,24 @@
             [ TOOLTIP <ctoolt> ]       ;
             [ <edit: EDIT> ]           ;
             [ <text: TEXT> ]           ;
+<<<<<<< guilib.ch
+            [ ON GETFOCUS <bGfocus> ]  ;
+            [ ON LOSTFOCUS <bLfocus> ] ;
+            [ ON INTERACTIVECHANGE <bIChange> ]    ;
+            => ;
+=======
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
             [ ON INTERACTIVECHANGE <bIChange> ]    ;
           => ;
+>>>>>>> 1.109
     [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
                   <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,;
+<<<<<<< guilib.ch
+                  <.edit.>,<.text.>,,<color>,<bcolor>,<bGfocus>, <bLfocus>,<bIChange>)
+=======
                   <.edit.>,<.text.>,<bGfocus>,<color>,<bcolor>, <bLfocus>,<bIChange>)
+>>>>>>> 1.109
 
 #xcommand REDEFINE COMBOBOX [ <oCombo> ITEMS ] <aItems> ;
             [ OF <oWnd> ]              ;
@@ -695,22 +719,24 @@
             [ OF <oWnd> ]              ;
             [ ID <nId> ]               ;
             [ SIZE <width>, <height> ] ;
+            [ BACKCOLOR <bcolor> ]     ;                
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ STYLE <nStyle> ]         ;
           => ;
-    [<oPanel> :=] HPanel():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<bInit>,<bSize>,<bDraw> )
+  [<oPanel> :=] HPanel():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<bInit>,<bSize>,<bDraw>,<bcolor> )          
 
 #xcommand REDEFINE PANEL [ <oPanel> ]  ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
+            [ BACKCOLOR <bcolor> ]     ;                
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ HEIGHT <nHeight> ]       ;
           => ;
-    [<oPanel> :=] HPanel():Redefine( <oWnd>,<nId>,<nHeight>,<bInit>,<bSize>,<bDraw> )
+    [<oPanel> :=] HPanel():Redefine( <oWnd>,<nId>,<nHeight>,<bInit>,<bSize>,<bDraw>, <bcolor> )
 
 #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;
             [ <lArr: ARRAY> ]          ;
@@ -1099,8 +1125,13 @@
     [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<vari>,    ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
+<<<<<<< guilib.ch
+                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
+                    <.edit.>,<.text.>,<bGfocus>,<color>,<bcolor>,<bLfocus>,<bIChange> )
+=======
                     <aItems>,<oFont>,<bInit>,,,<bChange>,<ctoolt>, ;
                     <.edit.>,<.text.>,<bGfocus>,<color>,<bcolor>,<bLfocus>,<bIChange> )
+>>>>>>> 1.109
 
 #xcommand REDEFINE GET COMBOBOX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;
@@ -1328,6 +1359,22 @@ Added by Marcos Antonio Gambeta
 
 
 #xcommand @ <x>,<y> LISTBOX [ <oListbox> ITEMS ] <aItems> ;
+<<<<<<< guilib.ch
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
+            [ INIT <nInit> ]           ;
+            [ SIZE <width>, <height> ] ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CHANGE <bChange> ]    ;
+            [ STYLE <nStyle> ]         ;
+            [ FONT <oFont> ]           ;
+            [ TOOLTIP <ctoolt> ]       ;
+            [ ON GETFOCUS <bGfocus> ]      ;
+            [ ON LOSTFOCUS <bLfocus> ]     ;
+         
+=======
             [ OF <oWnd> ]                 ;
             [ ID <nId> ]                  ;
             [ INIT <nInit> ]              ;
@@ -1343,11 +1390,30 @@ Added by Marcos Antonio Gambeta
             [ TOOLTIP <ctoolt> ]          ;
             [ ON GETFOCUS <bGfocus> ]     ;
             [ ON LOSTFOCUS <bLfocus> ]    ;
+>>>>>>> 1.109
           => ;
     [<oListbox> := ] HListBox():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
+<<<<<<< guilib.ch
+              <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,<bGfocus>,<bLfocus>  )
+=======
               <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,<color>,<bcolor>, <bGfocus>,<bLfocus>  )
+>>>>>>> 1.109
 
 #xcommand REDEFINE LISTBOX [ <oListbox> ITEMS ] <aItems> ;
+<<<<<<< guilib.ch
+            [ OF <oWnd> ]              ;
+            ID <nId>                   ;
+            [ INIT <nInit>    ]        ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CHANGE <bChange> ]    ;
+            [ FONT <oFont> ]           ;
+            [ TOOLTIP <ctoolt> ]       ;
+            [ ON GETFOCUS <bGfocus> ]      ;
+            [ ON LOSTFOCUS <bLfocus> ]     ;
+             => ;
+=======
             [ OF <oWnd> ]                 ;
             ID <nId>                      ;
             [ INIT <nInit>    ]           ;
@@ -1360,6 +1426,7 @@ Added by Marcos Antonio Gambeta
             [ ON GETFOCUS <bGfocus> ]     ;
             [ ON LOSTFOCUS <bLfocus> ]    ;
              => ;
+>>>>>>> 1.109
     [<oListbox> := ] HListBox():Redefine( <oWnd>,<nId>,<nInit>,,<aItems>,<oFont>,<bInit>, ;
              <bSize>,<bDraw>,<bChange>,<ctoolt>,<bGfocus>,<bLfocus> )
 
@@ -1671,14 +1738,25 @@ Added by Marcos Antonio Gambeta
              [ STYLE <nStyle> ]         ;
              [ FONT <oFont> ]           ;
              [ TOOLTIP <ctoolt> ]       ;
+<<<<<<< guilib.ch
+             [ WHEN <bGFocus> ]           ;
+             [ VALID <bLFocus> ]         ;
+        => ;
+=======
              [ WHEN <bGFocus> ]         ;
              [ VALID <bLFocus> ]        ;
         => ;
+>>>>>>> 1.109
      [<oListbox> := ] HListBox():New( <oWnd>,<nId>,<nInit>,;
                     {|v|Iif(v==Nil,<nInit>,<nInit>:=v)},;
+<<<<<<< guilib.ch
+                    <nStyle>,<x>,<y>,<width>, ;
+                    <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,<bGFocus>,<bLFocus> )
+=======
                     <nStyle>,<x>,<y>,<width>,<height>, ;
                     <aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,<color>,<bcolor>,<bGFocus>,<bLFocus> )
 
+>>>>>>> 1.109
 
 
 #xcommand @ <x>,<y> GET COMBOBOXEX [ <oCombo> VAR ] <vari> ;

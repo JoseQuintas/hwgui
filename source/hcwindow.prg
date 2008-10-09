@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.28 2008-10-06 12:03:23 lculik Exp $
+ *$Id: hcwindow.prg,v 1.29 2008-10-09 20:21:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -46,6 +46,10 @@ CLASS VAR oDefaultParent SHARED
    DATA title
    DATA Type
    DATA nTop, nLeft, nWidth, nHeight
+   DATA minWidth   INIT -1
+   DATA maxWidth   INIT -1
+   DATA minHeight  INIT -1
+   DATA maxHeight  INIT -1
    DATA tcolor, bcolor, brush
    DATA style
    DATA extStyle      INIT 0
@@ -68,7 +72,7 @@ CLASS VAR oDefaultParent SHARED
    DATA nHolder       INIT 0
    DATA nInitFocus    INIT 0  // Keeps the ID of the object to receive focus when dialog is created
                               // you can change the object that receives focus adding
-                              // ON INIT {||object:SetFocus() }  to the dialog definition
+                              // ON INIT {|| nInitFocus:=object:[handle] }  to the dialog definition
 
 
    METHOD AddControl( oCtrl ) INLINE AAdd( ::aControls, oCtrl )
@@ -83,7 +87,8 @@ CLASS VAR oDefaultParent SHARED
    METHOD RefreshCtrl( oCtrl )
    METHOD SetFocusCtrl( oCtrl )
    METHOD Refresh()
-
+   METHOD Anchor(oCtrl, x,y, w, h) 
+   
 ENDCLASS
 
 METHOD AddEvent( nEvent, oCtrl, bAction, lNotify, cMethName ) CLASS HCustomWindow
@@ -174,6 +179,18 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HCustomWindow
 
    // Writelog( "== "+::Classname()+Str(msg)+IIF(wParam!=NIL,Str(wParam),"NIL")+IIF(lParam!=NIL,Str(lParam),"NIL") )
 
+   IF msg = WM_GETMINMAXINFO 
+      IF ::minWidth  > -1 .OR. ::maxWidth  > -1 .OR.;
+			   ::minHeight > -1 .OR. ::maxHeight > -1 
+         MINMAXWINDOW(::handle, lParam,;
+         IIF(::minWidth  > -1,::minWidth,nil),;
+				 IIF(::minHeight > -1,::minHeight,nil),;
+         IIF(::maxWidth  > -1,::maxWidth,nil),;
+				 IIF(::maxHeight > -1,::maxHeight,nil))
+         RETURN 0
+      ENDIF   
+	 ENDIF
+
    IF ( i := AScan( aCustomEvents[ EVENTS_MESSAGES ], msg ) ) != 0
       RETURN Eval( aCustomEvents[ EVENTS_ACTIONS, i ], Self, wParam, lParam )
 
@@ -249,6 +266,22 @@ METHOD Refresh( oCtrl ) CLASS HCustomWindow
       NEXT
    ENDIF
    RETURN .T.
+   
+METHOD Anchor(oCtrl,x,y,w,h) CLASS HCustomWindow
+Local nlen , i, x1, y1
+	nlen := LEN(oCtrl:aControls)
+  FOR i = 1 to nLen
+     IF __ObjHasMsg(oCtrl:aControls[ i ],"ANCHOR") .AND. oCtrl:aControls[ i ]:anchor > 0
+         x1 := oCtrl:aControls[ i ]:nWidth
+         y1 := oCtrl:aControls[ i ]:nHeight 
+         oCtrl:aControls[ i ]:onAnchor(x,y, w, h )
+   	     IF LEN(oCtrl:aControls[ i ]:aControls) > 0
+    	       ::Anchor(oCtrl:aControls[ i ],x1,y1,oCtrl:nWidth, oCtrl:nHeight )
+	  	   ENDIF   
+      ENDIF
+   NEXT
+RETURN .T.
+  
 *---------------------------------------------------------
 
 STATIC FUNCTION onNotify( oWnd, wParam, lParam )
@@ -344,9 +377,18 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
 
 STATIC FUNCTION onSize( oWnd, wParam, lParam )
    LOCAL aControls := oWnd:aControls, nControls := Len( aControls )
-   LOCAL oItem, iCont
+   LOCAL oItem, iCont, nw1, nh1, aCoors
 
    HB_SYMBOL_UNUSED( wParam )
+   
+   nw1 := oWnd:nWidth 
+   nh1 := oWnd:nHeight
+   aCoors := GetWindowRect( oWnd:handle )
+   *oWnd:nWidth := LoWord( lParam )  //aControls[3]-aControls[1] 
+   *oWnd:nHeight := HiWord( lParam ) //aControls[4]-aControls[2] 
+   oWnd:nWidth := aCoors[3] - aCoors[1] 
+   oWnd:nHeight := aCoors[4] - aCoors[2] 
+   oWnd:Anchor(oWnd,nw1,nh1, oWnd:nWidth, oWnd:nHeight )
 
    #ifdef __XHARBOUR__
 

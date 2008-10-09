@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.68 2008-10-06 12:03:23 lculik Exp $
+ * $Id: window.c,v 1.69 2008-10-09 20:21:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -1069,4 +1069,25 @@ HB_FUNC( GETTOOLBARID )
 HB_FUNC( ISWINDOW )
 {
    hb_retl( IsWindow( ( HWND ) HB_PARHANDLE( 1 ) ) );
+}
+
+HB_FUNC( MINMAXWINDOW )
+{
+   MINMAXINFO FAR* lpMMI = (MINMAXINFO *) HB_PARHANDLE( 2 ) ;
+   DWORD m_fxMin;
+   DWORD m_fyMin;
+   DWORD m_fxMax;
+   DWORD m_fyMax;
+
+   m_fxMin = (ISNIL(3)) ? lpMMI->ptMinTrackSize.x : hb_parni( 3 );
+   m_fyMin = (ISNIL(4)) ? lpMMI->ptMinTrackSize.y : hb_parni( 4 );
+   m_fxMax = (ISNIL(5)) ? lpMMI->ptMaxTrackSize.x : hb_parni( 5 );
+   m_fyMax = (ISNIL(6)) ? lpMMI->ptMaxTrackSize.y : hb_parni( 6 );
+   lpMMI->ptMinTrackSize.x = m_fxMin;
+   lpMMI->ptMinTrackSize.y = m_fyMin;
+   lpMMI->ptMaxTrackSize.x = m_fxMax;
+   lpMMI->ptMaxTrackSize.y = m_fyMax;
+
+//   SendMessage((HWND) HB_PARHANDLE( 1 ),           // handle of window
+//               WM_GETMINMAXINFO, 0, (LPARAM) lpMMI)  ;
 }

@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.97 2008-10-06 12:03:23 lculik Exp $
+ *$Id: hedit.prg,v 1.98 2008-10-09 20:21:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -57,7 +57,7 @@ CLASS VAR winclass   INIT "EDIT"
    METHOD DeleteChar( lBack ) PROTECTED
    METHOD Input( cChar, nPos ) PROTECTED
    METHOD GetApplyKey( cKey ) PROTECTED
-   METHOD Valid() PROTECTED
+   METHOD Valid() //PROTECTED BECAUSE IS CALL IN HDIALOG
    METHOD When() PROTECTED
    METHOD Change() PROTECTED
    METHOD IsBadDate( cBuffer ) PROTECTED
@@ -96,12 +96,16 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::style := Hwg_BitOr( ::style, ES_WANTRETURN )
       ::lMultiLine := .T.
    ENDIF
-   IF ::cType == "N" .and. Hwg_BitAnd( nStyle, ES_LEFT + ES_CENTER ) == 0
-      ::style := Hwg_BitOr( ::style, ES_RIGHT + ES_NUMBER )
-   ENDIF
    IF ! Empty( cPicture ) .or. cPicture == Nil .And. nMaxLength != Nil .or. ! Empty( nMaxLength )
       ::nMaxLength := nMaxLength
    ENDIF
+   IF ::cType == "N" .and. Hwg_BitAnd( nStyle, ES_LEFT + ES_CENTER ) == 0
+      ::style := Hwg_BitOr( ::style, ES_RIGHT + ES_NUMBER )
+      cPicture := IIF( cPicture == Nil.and.::nMaxLength != Nil,replicate("9",::nMaxLength),cPicture)
+   ENDIF
+   //IF ! Empty( cPicture ) .or. cPicture == Nil .And. nMaxLength != Nil .or. ! Empty( nMaxLength )
+   //   ::nMaxLength := nMaxLength
+   //ENDIF
 
    ::ParsePict( cPicture, vari )
    ::Activate()
@@ -111,8 +115,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::bLostFocus := bLfocus
       IF bGfocus != Nil
          ::lnoValid := .T.
+         ::oParent:AddEvent( EN_SETFOCUS, self, { | | ::When( ) },,"onGotFocus"  )
       ENDIF
-      ::oParent:AddEvent( EN_SETFOCUS, self, { | | ::When( ) },,"onGotFocus"  )
       ::oParent:AddEvent( EN_KILLFOCUS, self, { | | ::Valid( ) },,"onLostFocus" )
       ::bValid := { | o | ::Valid( o ) }
    ELSE
@@ -753,7 +757,7 @@ METHOD When() CLASS HEdit
 	   RETURN .F.
 	ENDIF
   ::lFirst := .T.
-   IF ::bGetFocus != Nil
+  IF ::bGetFocus != Nil
       ::oparent:lSuspendMsgsHandling := .T.
       ::lnoValid := .T.
       res := Eval( ::bGetFocus, ::title, Self )
@@ -775,7 +779,7 @@ RETURN res
 METHOD Valid( ) CLASS HEdit
   LOCAL res, vari, oDlg
 
-	IF ::lNoValid .OR. !CheckFocus(Self, .t.) 
+	IF ::bLostFocus != Nil .AND. (::lNoValid .OR. !CheckFocus(Self, .T.))
 	   RETURN .t.
 	ENDIF
    IF ::bSetGet != Nil
@@ -801,10 +805,10 @@ METHOD Valid( ) CLASS HEdit
             ::oparent:lSuspendMsgsHandling := .T.
             res := Eval( ::bLostFocus, vari, Self )
             if VALTYPE(res) = "L" .AND. ! res
-               SetFocus( ::handle )
                IF oDlg != Nil
                   oDlg:nLastKey := 0
                ENDIF
+               ::SetFocus()
                ::oparent:lSuspendMsgsHandling := .F.
                RETURN .F.
             endif
@@ -817,19 +821,23 @@ METHOD Valid( ) CLASS HEdit
       ::oparent:lSuspendMsgsHandling := .T.
       res := Eval( ::bLostFocus, vari, Self )
       IF ! res
-         SetFocus( ::handle )
+         ::SetFocus()
          ::oparent:lSuspendMsgsHandling := .F.
          RETURN .F.
       ENDIF
    ENDIF
-   ::oparent:lSuspendMsgsHandling := .F.
-   IF GETFOCUS() = 0 //::nValidSetfocus = ::handle
+   IF GETFOCUS() = 0 .OR. GETFOCUS() = ::handle
       GetSkip( ::oParent, ::handle,,::nGetSkip)
    ENDIF 
+   ::oparent:lSuspendMsgsHandling := .F.
    RETURN .T.
    
 METHOD Change( ) CLASS HEdit
 LOCAL  nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
+
+ 	 IF !CheckFocus(self, .T.)
+	    RETURN .t.
+ 	 ENDIF
 
    ::oparent:lSuspendMsgsHandling := .T.
    Eval( ::bChange, ::title, Self )
@@ -1013,8 +1021,10 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
    oCtrl := IIF( i > 0, oparent:acontrols[i], oParent)
    nextHandle := iif(oParent:className == "HTAB", NextFocusTab(oParent, hCtrl, nSkip), ;
 	                                               NextFocus(oParent, hCtrl, nSkip))
-	 oCtrl:nGetSkip := nSkip
-         IF !empty(nextHandle)
+	 IF i > 0
+	   oCtrl:nGetSkip := nSkip
+	 ENDIF  
+   IF !empty(nextHandle)
 	   IF oParent:classname = "HDIALOG" 
 	       PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
 	   ELSE
@@ -1031,7 +1041,8 @@ RETURN .T.
 STATIC FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
    Local nextHandle := 0, i, nFirst , nLast , k := 0
    if len(oParent:aPages) > 0
-      SETFOCUS(oParent:handle)
+      //SETFOCUS(oParent:handle)
+      oParent:SETFOCUS()
       oParent:GetActivePage(@nFirst, @nLast)
       i :=  AScan( oParent:acontrols, { | o | o:handle == hCtrl } )
       i += IIF( i = 0, nFirst, nSkip) //nLast, nSkip)
@@ -1091,19 +1102,20 @@ Luis Fernando Basso contribution
 * check focus of controls before calling events
 */
 FUNCTION CheckFocus(oCtrl, nInside)
+Local oParent := ParentGetDialog(oCtrl)
 
-   IF !IsWindowVisible(ParentGetDialog(oCtrl):handle) .OR. empty( GetActiveWindow() )
-      IF !nInside .and. ParentGetDialog(oCtrl):nInitFocus = 0
-         ParentGetDialog(oCtrl):Show()
-         SetFocus(ParentGetDialog(oCtrl):handle)
-         SetFocus(GetFocus())
+  IF (oParent  != Nil .AND. !IsWindowVisible(oParent:handle)) .OR. GetActiveWindow() == 0 
+    IF !nInside .and. oParent:nInitFocus = 0
+       oParent:Show()
+       SetFocus(oParent:handle)
+       SetFocus(GetFocus()) 
 	  ENDIF
-      RETURN .F.
-   ENDIF
-   IF nInside 
-      IF GetFocus() == oCtrl:oParent:Handle .AND. ParentGetDialog(oCtrl):handle == oCtrl:oParent:Handle
-         RETURN .F.
-      ENDIF   
-   ENDIF
-  
+    RETURN .F.
+  ENDIF
+  IF oParent  != Nil .AND. nInside 
+     IF GETFOCUS() = oCtrl:oParent:Handle .AND. oParent:handle = oCtrl:oParent:Handle 
+       RETURN .F.
+     ENDIF   
+  ENDIF
 RETURN .T.
+

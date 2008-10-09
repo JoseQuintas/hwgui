@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.17 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hpanel.prg,v 1.18 2008-10-09 20:21:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -18,24 +18,29 @@ CLASS HPanel INHERIT HControl
    DATA oEmbedded
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  bInit,bSize,bPaint,lDocked )
+                  bInit,bSize,bPaint, bcolor )  //lDocked )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
    METHOD Redefine( oWndParent,nId,nHeight,bInit,bSize,bPaint,lDocked )
    METHOD Paint()
-
+   METHOD BackColor(bcolor) INLINE ::SetColor(,bcolor,.T.)
+  
 ENDCLASS
 
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  bInit,bSize,bPaint ) CLASS HPanel
+                  bInit,bSize,bPaint, bcolor ) CLASS HPanel
 Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
 
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
                   nHeight,oParent:oFont,bInit, ;
                   bSize,bPaint )
 
+	 IF bColor != NIL
+     ::brush := HBrush():Add(bcolor)
+     ::bColor := bcolor	 
+   ENDIF
    ::bPaint  := bPaint
    IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI
       IF ::nWidth > ::nHeight .OR. ::nWidth == 0
@@ -115,7 +120,7 @@ METHOD Init CLASS HPanel
 Return Nil
 
 
-METHOD Redefine( oWndParent,nId,nHeight,bInit,bSize,bPaint ) CLASS HPanel
+METHOD Redefine( oWndParent,nId,nHeight,bInit,bSize,bPaint, bcolor ) CLASS HPanel
 Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
 
    Super:New( oWndParent,nId,0,0,0,0, ;

@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.16 2008-09-01 19:00:20 mlacecilia Exp $
+ * $Id: hlistbox.prg,v 1.17 2008-10-09 20:21:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -70,7 +70,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
       ENDIF
         ::oParent:AddEvent( LBN_KILLFOCUS, self, { | o, id | __Valid( o:FindControl( id ) ) },.F.,"onLostFocus" )
    ENDIF
-   IF bChange != Nil
+   IF bChange != Nil .OR. bSetGet != Nil
       ::oParent:AddEvent( LBN_SELCHANGE, self, {|o,id|__onChange(o:FindControl(id))},,"onChange" )
    ENDIF
 
@@ -176,16 +176,11 @@ Return .T.
 Static Function __onChange( oCtrl )
 Local nPos
 
-     IF oCtrl:bChangeSel != Nil
-        nPos := SendMessage( oCtrl:handle,LB_GETCURSEL,0,0 ) + 1
-        octrl:oparent:lSuspendMsgsHandling := .T.
-        *Eval( oCtrl:bChangeSel, nPos, oCtrl )
-        Eval( oCtrl:bChangeSel, oCtrl:value, oCtrl )
-        octrl:setitem(npos)
-        octrl:oparent:lSuspendMsgsHandling := .F.
-     ENDIF
+     nPos := SendMessage( oCtrl:handle,LB_GETCURSEL,0,0 ) + 1
+     octrl:SetItem(npos)
 
 RETURN Nil
+
 
 Static Function __When( oCtrl )
 Local res := .t., nSkip
@@ -247,6 +242,6 @@ Local ltab :=  GETKEYSTATE(VK_TAB) < 0
       IF oCtrl:oParent:CLASSNAME = "HTAB"
          oCtrl:oParent:SETFOCUS()
       ENDIF
-      getskip(octrl:oparent,octrl:handle,,nSkip)
+      GetSkip(octrl:oparent,octrl:handle,,nSkip)
    endif
  RETURN .T.

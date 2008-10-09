@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.88 2008-09-20 13:09:09 fperillo Exp $
+ * $Id: hcontrol.prg,v 1.89 2008-10-09 20:21:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -48,9 +48,10 @@ CLASS HControl INHERIT HCustomWindow
    DATA   id
    DATA   tooltip
    DATA   lInit           INIT .F.
-   DATA   xName           HIDDEN
    DATA   lnoValid        INIT .F.
    DATA   nGetSkip        INIT 0
+   DATA   anchor          INIT 0   
+   DATA   xName           HIDDEN
    ACCESS Name            INLINE ::xName
    ASSIGN Name( cName )   INLINE ::xName := cName, ;
                                               __objAddData( ::oParent, cName ), ;
@@ -64,12 +65,14 @@ CLASS HControl INHERIT HCustomWindow
    METHOD Disable()     INLINE EnableWindow( ::handle, .F. )
    METHOD Enable()      INLINE EnableWindow( ::handle, .T. )
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
-   METHOD SetFocus()    INLINE ( SendMessage( ::oParent:handle, WM_NEXTDLGCTL, ;
-                                              ::handle, 1 ), ;
-                                 SetFocus( ::handle ) )
+   //METHOD SetFocus()    INLINE ( SendMessage( ::oParent:handle, WM_NEXTDLGCTL, ;
+   //                                           ::handle, 1 ), ;
+   //                              SetFocus( ::handle ) )
+   METHOD SetFocus()    INLINE SendMessage( GetActiveWindow(), WM_NEXTDLGCTL,::handle, 1 )                                  
    METHOD GetText()     INLINE GetWindowText( ::handle )
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c ), ::Refresh()
    METHOD Refresh()     VIRTUAL
+   METHOD onAnchor(x,y,w,h)  
    METHOD END()
 
 ENDCLASS
@@ -127,7 +130,9 @@ METHOD INIT CLASS HControl
       ENDIF
 
       IF ISBLOCK( ::bInit )
+         ::oparent:lSuspendMsgsHandling := .T.
          Eval( ::bInit, Self )
+         ::oparent:lSuspendMsgsHandling := .F.
       ENDIF
       ::lInit := .T.
    ENDIF
@@ -166,6 +171,105 @@ METHOD END() CLASS HControl
 
    ENDIF
    RETURN NIL
+
+METHOD onAnchor(x,y,w,h) CLASS HControl
+LOCAL nAnchor,nXincRelative, nYincRelative, nXincAbsolute,nYincAbsolute 
+LOCAL x1,y1,w1,h1, xt, yt, x9,y9,w9,h9
+
+  nAnchor := ::anchor 
+  x9 := ::nLeft 
+  y9 := ::nTop  
+  w9 := ::nWidth
+  h9 := ::nHeight
+
+  x1 := ::nLeft 
+  y1 := ::nTop 
+  w1 := ::nWidth 
+  h1 := ::nHeight
+  *- calculo relativo
+  nXincRelative :=  w / x
+  nYincRelative :=  h / y
+ 	*- calculo ABSOLUTE
+  nXincAbsolute := (w - x) 
+  nYincAbsolute := (h - y)
+
+  IF nanchor >= ANCHOR_VERTFIX
+    *- vertical fixed center
+    nAnchor := nAnchor - ANCHOR_VERTFIX
+    y1 := y9 + INT((h - y) * ((y9 + h9 / 2) / y))
+  ENDIF
+  IF nAnchor >= ANCHOR_HORFIX
+    *- horizontal fixed center
+    nAnchor := nAnchor - ANCHOR_HORFIX
+    x1 := x9 + INT((w - x) * ((x9 + w9 / 2) / x)) 
+  ENDIF
+  IF nAnchor >= ANCHOR_RIGHTREL
+    && relative - RIGHT RELATIVE
+    nAnchor := nAnchor - ANCHOR_RIGHTREL
+    x1 := w - INT((x - x9 - w9) * nxIncRelative) - w9
+  ENDIF
+  IF nAnchor >= ANCHOR_BOTTOMREL
+    && relative - BOTTOM RELATIVE
+    nAnchor := nAnchor - ANCHOR_BOTTOMREL
+    Y1 := h - INT((y - y9 - h9) * nyIncRelative) - h9
+  ENDIF
+  IF nAnchor >= ANCHOR_LEFTREL
+    && relative - LEFT RELATIVE
+    nAnchor := nAnchor - ANCHOR_LEFTREL
+    IF x1 != x9
+      w1 := x1 - (INT(x9 * nxIncRelative)) + w9
+    ENDIF  
+    x1 := INT(x9 * nxIncRelative)
+  ENDIF
+  IF nAnchor >= ANCHOR_TOPREL
+    && relative  - TOP RELATIVE
+    nAnchor := nAnchor - ANCHOR_TOPREL
+    IF y1 != y9
+      h1 := y1 - (INT(y9 * nyIncRelative)) + h9
+    ENDIF  
+    y1 := INT(y9 * nyIncRelative)
+  ENDIF
+  IF nAnchor >= ANCHOR_RIGHTABS
+    && Absolute - RIGHT ABSOLUTE
+    nAnchor := nAnchor - ANCHOR_RIGHTABS
+    IF x1 != x9
+      w1 := x1 - (x9 +  INT(nxIncAbsolute)) + w9
+    ENDIF  
+    x1 := x9 +  INT(nxIncAbsolute)
+  ENDIF
+  IF nAnchor >= ANCHOR_BOTTOMABS
+     && Absolute - BOTTOM ABSOLUTE
+     nAnchor := nAnchor - ANCHOR_BOTTOMABS
+     IF y1 != y9
+       h1 := y1 - (y9 +  INT(nyIncAbsolute)) + h9
+     ENDIF 
+ 	  y1 := y9 +  INT(nyIncAbsolute) 
+  ENDIF
+  IF nAnchor >= ANCHOR_LEFTABS
+    && Absolute - LEFT ABSOLUTE
+     nAnchor := nAnchor - ANCHOR_LEFTABS
+     IF x1 != x9
+       w1 := x1 - x9 + w9
+     ENDIF  
+     x1 := x9 
+  ENDIF
+  IF nAnchor >= ANCHOR_TOPABS
+    && Absolute - TOP ABSOLUTE
+    //nAnchor := nAnchor - 1
+    IF y1 != y9
+      h1 := y1 - y9 + h9
+    ENDIF  
+    y1 := y9 
+  ENDIF
+  RedrawWindow(::handle,RDW_ERASE + RDW_INVALIDATE )
+  MoveWindow( ::handle,x1,y1,w1,h1)
+
+  ::nLeft := x1
+  ::nTop := y1
+  ::nWidth := w1
+  ::nHeight := h1
+ 
+RETURN Nil
 
 
 //- HStatus
@@ -253,7 +357,7 @@ CLASS VAR winclass   INIT "STATIC"
    // METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
    //                                                 value )
    METHOD SetValue( value ) INLINE ::Auto_Size( value ), ;
-   SetDlgItemText( ::oParent:handle, ::id, value )
+                           SetDlgItemText( ::oParent:handle, ::id, value )
    METHOD Auto_Size( cValue, nAlign )  HIDDEN
 
    METHOD Init()
@@ -289,7 +393,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    IF (lTransp != NIL .AND. lTransp) .AND. ::oParent:brush != Nil
       ::bcolor := ::oparent:bcolor
    ENDIF
-
 
    IF ::oParent:oParent != Nil
       bPaint := { | o, p | o:paint( p ) }
@@ -354,6 +457,12 @@ METHOD Paint( lpDis ) CLASS HStatic
 
    // Set transparent background
    SetBkMode( dc, 1 )
+   // ADD 10/09/2008
+   IF ::oparent:brush != Nil
+      SETBKCOLOR(dc,::oparent:bcolor)
+      SetBkMode(dc,0)
+   ENDIF   
+
    IF ::lOwnerDraw
       ::Auto_Size( szText, ::nStyleOwner )
    ENDIF
@@ -447,7 +556,8 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::title   := cCaption
 
    IF bClick != NIL
-      ::oParent:AddEvent( 0, Self, bClick )
+      //::oParent:AddEvent( 0, Self, bClick )
+      ::oParent:AddEvent( 0, Self, { || ::onClick() } )
    ENDIF
    RETURN Self
 
@@ -486,7 +596,8 @@ METHOD Notify( lParam ) CLASS HButton
             nSkip := 1
          ENDIF
          IF nSkip != 0
-            SETFOCUS( ::oParent:Handle )
+            //SETFOCUS( ::oParent:Handle )
+            ::oParent:Setfocus()
             GetSkip( ::oparent, ::handle, , nSkip )
             RETURN 0
          ENDIF
@@ -541,8 +652,8 @@ CLASS HButtonEX INHERIT HButton
    METHOD SetColorEx( nIndex, nColor, bPaint )
 
    METHOD SetText( c ) INLINE ::title := c, ::caption := c, ;
-                                                         SendMessage( ::handle, WM_PAINT, 0, 0 ), ;
-                                                         SetWindowText( ::handle, ::title )
+                           SendMessage( ::handle, WM_PAINT, 0, 0 ), ;
+                           SetWindowText( ::handle, ::title )
 
 
 //   METHOD SaveParentBackground()

@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.56 2008-09-11 12:06:11 alexstrickland Exp $
+ *$Id: hwindow.prg,v 1.57 2008-10-09 20:21:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -209,16 +209,21 @@ METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
       ENDIF
 
    ENDIF
+   /*
    IF ::bInit != Nil
       Eval( ::bInit, Self )
    ENDIF
-
+	 */
 Return Self
 
 METHOD Activate( lShow, lMaximized, lMinimized,bActivate) CLASS HMainWindow
 Local oWndClient, handle
 
    CreateGetList( Self )
+   
+   IF ::bInit != Nil
+      Eval( ::bInit, Self )
+   ENDIF
 
    IF ::type == WND_MDI
 
@@ -597,6 +602,7 @@ HB_SYMBOL_UNUSED(oDlg)
       ENDIF
    ENDIF
 Return 0
+
 //add by sauli
 static function onCloseQuery(o)
    if valType(o:bCloseQuery)='B'

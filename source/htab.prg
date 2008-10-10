@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.30 2008-09-22 22:31:10 fperillo Exp $
+ *$Id: htab.prg,v 1.31 2008-10-10 04:17:54 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -346,14 +346,14 @@ METHOD ShowPage( nPage ) CLASS HTab
    */
    ELSE
       ::aPages[ nPage, 1 ]:show()
-      /*
+      
       for i :=1  to len(::aPages[nPage,1]:aControls)
          IF (__ObjHasMsg( ::aPages[nPage,1]:aControls[i],"BSETGET" ) .AND. ::aPages[nPage,1]:aControls[i]:bSetGet != Nil) .OR. Hwg_BitAnd( ::aPages[nPage,1]:aControls[i]:style, WS_TABSTOP ) != 0
             SetFocus( ::aPages[nPage,1]:aControls[i]:handle )
             Exit
          ENDIF
       next
-      */
+      
    ENDIF
 
    RETURN Nil
@@ -447,14 +447,15 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    //WRITELOG('TAB'+STR(MSG)+STR(WPARAM)+STR(LPARAM)+CHR(13))
 
    ::disable()
-
-   IF msg == WM_KEYDOWN .OR.( msg = WM_GETDLGCODE .AND. wParam == VK_RETURN )
-      IF ( wParam == VK_DOWN .or. wParam == VK_RETURN ) .AND. ::nActive > 0  //
+   IF ! ::lResourceTab
+    IF (msg == WM_KEYDOWN .OR.(msg = WM_GETDLGCODE .AND. wparam == VK_RETURN)) .AND. GetFocus()= ::handle
+      IF ( wParam == VK_DOWN .or. wParam == VK_RETURN ) .AND. ::nActive > 0  
          GetSkip( Self, ::handle,, 1 )
       ENDIF
       IF wParam == VK_UP .AND. ::nActive > 0  //
          KEYB_EVENT( VK_TAB, VK_SHIFT, .T. )
       ENDIF
+    ENDIF
    ENDIF
    IF ::bOther != Nil
       ::oparent:lSuspendMsgsHandling := .t.

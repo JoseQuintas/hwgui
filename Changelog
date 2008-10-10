@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.928 2008-10-09 21:31:35 fperillo Exp $
+ * $Id: Changelog,v 1.929 2008-10-10 20:59:48 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,9 +8,89 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2008-10-09 23:28 UTC-0300 Nando
-  * Various files to implement ANCHOR
-  * Some fixes
+2008-10-10 23:10 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * changelog
+    * updated notes to previous commit adding more detailed info
+  * include\guilib.ch
+    + added WIDTH parameter to panel redefine command
+  * samples\animation\tstAnimation.prg
+    * purged unneeded cod
+    * changed the panel size to current version behaviour
+  * source\hcontrol.prg
+  * source\hdialog.prg
+    * purged some unused variables
+  * source\hpanel.prg
+    * now passing 0 or nil as width and/or height of the panel causes
+      the resize according to the parent size
+
+2008-10-09 23:28 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include/guilib.ch
+    + added the defines for the new anchor property (see below)
+  * source/hcontrol.prg
+    + added the anchor property storing a bitmapped value allowing to fine
+      tune the behaviour of the control when his containeris resized.
+      The value describing the wanted alignment can be setted 
+      ORing  this bit values:
+      ANCHOR_TOPLEFT       0	//	Anchors control to the top and left borders of the container and does not change the distance between the top and left borders. (Default)
+      ANCHOR_TOPABS 	   1    //	Anchors control to top border of container and does not change the distance between the top border. 
+      ANCHOR_LEFTABS 	   2    //	Anchors control to left border of container and does not change the distance between the left border.
+      ANCHOR_BOTTOMABS     4    //	Anchors control to bottom border of container and does not change the distance between the bottom border.
+      ANCHOR_RIGHTABS	   8   	//	Anchors control to right border of container and does not change the distance between the right border.
+      ANCHOR_TOPREL 	  16   	//	Anchors control to top border of container and maintains relative distance between the top border.
+      ANCHOR_LEFTREL 	  32   	//	Anchors control to left border of container and maintains relative distance between the left border.
+      ANCHOR_BOTTOMREL    64   	//	Anchors control to bottom border of container and maintains relative distance between the bottom border.
+      ANCHOR_RIGHTREL    128  	//	Anchors control to right border of container and maintains relative distance between the right border.
+      ANCHOR_HORFIX      256  	//	Anchors center of control relative to left and right borders but remains fixed in size.
+      ANCHOR_VERTFIX     512  	//	Anchors center of control relative to top and bottom borders but remains fixed in size.
+    + added onAnchor() method
+    * fixed the SetFocus() method avoiding an unneeded call to SetFocus() function
+    * added messages suspension handling when init block evaluation is pending
+    * fixed transparent color when container uses a brush
+    * fixed click event for controls from resource    
+  * source/hcwindow.prg
+    + added the properties nMin/nMaxHeight and nMin/nMaxWidth granting
+      that the resize of the window don't goes outside the wanted limits 
+    * corrected note for nInitFocus variable
+    * added to onEvent() method the handle of min/max dimensions
+    + added the anchor() method allowing an accurate positioning of 
+      control when resize of container take place depending on anchor
+      value
+    * added to onSize() method the anchor handling
+  * source/hdialog.prg
+    * fixed typo in parameters of new() method class declaration
+    * changed default style for dialog ( now defaults to DS_ABSALIGN
+      and no more is setted the WS_SIZEBOX)
+    + added in onEvent() method the handle of min/max dimensions
+    * fixed events routing to tab pages
+    + added in onSize() method the anchor handling
+    * fixed in the onPspNotify() function the missed messages 
+      handling suspension for dialog loosing or gaining focus
+  * source/hedit.prg
+    * valid() method scope unset from protected as is referenced in 
+      not inherited classes
+    * fixed picture for numeric input to respect the maxLenght
+    * fixed event EN_SETFOCUS triggering also if no bGfocus block
+      is provided
+    * fixed valid() method avoiding evauation in some cases
+    * fixed valid() method not resetting the message suspend flag
+    * fixed change() method triggering also when edit lacks of focus
+    * CheckFocus() function code optimization    
+  * source/hlistbox.prg
+    * fixed storing of selected item also using @ ..... GET LISTBOX
+    * simplified the code for onChange event
+  * source/hpanel.prg
+    * added the bColor property allowing to set the backgound color of
+      the panel
+  * source/hwindow.prg
+    * moved ON INIT block evaluation from new() to activate() method in
+      hMainWindow class, because init of windows occurs before init of 
+      owned controls. Dialogs behaviour is inverse and not needed changes.      
+  * source/window.c
+    * added the MinMaxWindow() function to handle the new min/max dimensions
+      of hCustomWindow objects
+  * source/htab.prg
+    * fixed control gaining focus when tab selected is from resource file
+    * fixed navigation between controls 
 
 2008-10-08 09:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/grid.c

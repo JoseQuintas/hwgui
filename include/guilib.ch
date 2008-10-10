@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.115 2008-10-09 21:31:35 fperillo Exp $
+ *$Id: guilib.ch,v 1.116 2008-10-10 20:59:48 mlacecilia Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -35,7 +35,7 @@
 #define ANCHOR_TOPABS 	   1    	//	Anchors control to top border of container and does not change the distance between the top border. 
 #define ANCHOR_LEFTABS 	   2    	//	Anchors control to left border of container and does not change the distance between the left border.
 #define ANCHOR_BOTTOMABS   4    	//	Anchors control to bottom border of container and does not change the distance between the bottom border.
-#define ANCHOR_RIGHTABS	   8   		//	Anchors control to right border of container and does not change the distance between the right border.
+#define ANCHOR_RIGHTABS	   8   	//	Anchors control to right border of container and does not change the distance between the right border.
 #define ANCHOR_TOPREL 	   16   	//	Anchors control to top border of container and maintains relative distance between the top border.
 #define ANCHOR_LEFTREL 	   32   	//	Anchors control to left border of container and maintains relative distance between the left border.
 #define ANCHOR_BOTTOMREL   64   	//	Anchors control to bottom border of container and maintains relative distance between the bottom border.
@@ -724,8 +724,9 @@
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ HEIGHT <nHeight> ]       ;
+            [ WIDTH <nWidth> ]         ;
           => ;
-    [<oPanel> :=] HPanel():Redefine( <oWnd>,<nId>,<nHeight>,<bInit>,<bSize>,<bDraw>, <bcolor> )
+    [<oPanel> :=] HPanel():Redefine( <oWnd>,<nId>,<nWidth>,<nHeight>,<bInit>,<bSize>,<bDraw>, <bcolor> )
 
 #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;
             [ <lArr: ARRAY> ]          ;

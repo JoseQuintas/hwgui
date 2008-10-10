@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.70 2008-10-09 20:21:50 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.71 2008-10-10 20:59:49 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -178,7 +178,7 @@ METHOD Activate( lNoModal, bOnActivate ) CLASS HDialog
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
-Local i, oTab, nPos, nW, nH, acoors
+Local i, oTab, nPos
 
    IF msg = WM_GETMINMAXINFO
       IF ::minWidth  > -1 .OR. ::maxWidth  > -1 .OR.;

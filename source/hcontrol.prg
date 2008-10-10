@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.89 2008-10-09 20:21:50 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.90 2008-10-10 20:59:49 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -174,7 +174,7 @@ METHOD END() CLASS HControl
 
 METHOD onAnchor(x,y,w,h) CLASS HControl
 LOCAL nAnchor,nXincRelative, nYincRelative, nXincAbsolute,nYincAbsolute 
-LOCAL x1,y1,w1,h1, xt, yt, x9,y9,w9,h9
+LOCAL x1,y1,w1,h1,x9,y9,w9,h9
 
   nAnchor := ::anchor 
   x9 := ::nLeft 

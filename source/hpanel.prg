@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.18 2008-10-09 20:21:50 lfbasso Exp $
+ * $Id: hpanel.prg,v 1.19 2008-10-10 20:59:49 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -16,6 +16,7 @@ CLASS HPanel INHERIT HControl
 
    DATA winclass   INIT "PANEL"
    DATA oEmbedded
+   DATA lResizeX, lResizeY   HIDDEN
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bInit,bSize,bPaint, bcolor )  //lDocked )
@@ -34,7 +35,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
 Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
 
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
-                  nHeight,oParent:oFont,bInit, ;
+                  Iif( nHeight==Nil,0,nHeight ),oParent:oFont,bInit, ;
                   bSize,bPaint )
 
 	 IF bColor != NIL
@@ -42,6 +43,8 @@ Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
      ::bColor := bcolor	 
    ENDIF
    ::bPaint  := bPaint
+   ::lResizeX := ::nWidth == 0
+   ::lResizeY := ::nHeight == 0
    IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI
       IF ::nWidth > ::nHeight .OR. ::nWidth == 0
          ::oParent:aOffset[2] := ::nHeight
@@ -104,11 +107,15 @@ METHOD Init CLASS HPanel
 
    IF !::lInit
       IF ::bSize == Nil
-         IF ::nHeight!=0 .AND. ( ::nWidth>::nHeight .OR. ::nWidth==0 )
+/*         IF ::nHeight!=0 .AND. ( ::nWidth>::nHeight .OR. ::nWidth==0 )
             ::bSize := {|o,x,y|o:Move( ,Iif(::nTop>0,y-::nHeight,0),x,::nHeight )}
          ELSEIF ::nWidth!=0 .AND. ( ::nHeight>::nWidth .OR. ::nHeight==0 )
             ::bSize := {|o,x,y|o:Move( Iif(::nLeft>0,x-::nLeft,0),,::nWidth,y )}
-         ENDIF
+         ENDIF     */
+         ::bSize := {|o,x,y|o:Move( Iif(::nLeft > 0, x - ::nLeft,   0), ;
+    		                           Iif(::nTop  > 0, y - ::nHeight, 0), ;
+								            Iif( ::nWidth == 0 .or. ::lResizeX, x, ::nWidth) , ;
+												Iif( ::nHeight == 0.or. ::lResizeY, y, ::nHeight) )}
       ENDIF
 
       Super:Init()
@@ -120,14 +127,21 @@ METHOD Init CLASS HPanel
 Return Nil
 
 
-METHOD Redefine( oWndParent,nId,nHeight,bInit,bSize,bPaint, bcolor ) CLASS HPanel
+METHOD Redefine( oWndParent,nId,nWidth,nHeight,bInit,bSize,bPaint, bcolor ) CLASS HPanel
 Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
 
-   Super:New( oWndParent,nId,0,0,0,0, ;
+   Super:New( oWndParent,nId,0,0,0,Iif( nWidth==Nil,0,nWidth ), ;
                   IIF( nHeight!=Nil,nHeight,0 ),oParent:oFont,bInit, ;
                   bSize,bPaint )
+                  
+   IF bColor != NIL
+     ::brush := HBrush():Add(bcolor)
+     ::bColor := bcolor
+   ENDIF
 
    ::bPaint  := bPaint
+   ::lResizeX := ::nWidth == 0
+   ::lResizeY := ::nHeight == 0
    hwg_RegPanel()
 
 Return Self

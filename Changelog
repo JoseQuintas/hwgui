@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.929 2008-10-10 20:59:48 mlacecilia Exp $
+ * $Id: Changelog,v 1.930 2008-10-12 14:33:20 fperillo Exp $
  */
 
 /* Use this format for the entry headers:
@@ -14,7 +14,7 @@
   * include\guilib.ch
     + added WIDTH parameter to panel redefine command
   * samples\animation\tstAnimation.prg
-    * purged unneeded cod
+    * purged unneeded code
     * changed the panel size to current version behaviour
   * source\hcontrol.prg
   * source\hdialog.prg

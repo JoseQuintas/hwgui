@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.31 2008-10-10 04:17:54 lfbasso Exp $
+ *$Id: htab.prg,v 1.32 2008-10-12 14:45:44 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "hbclass.ch"
+#include "hbclass.ch" 
 #include "guilib.ch"
 #include "common.ch"
 #define TCM_SETCURSEL           4876     // (TCM_FIRST + 12)
@@ -367,6 +367,9 @@ METHOD GetActivePage( nFirst, nEnd ) CLASS HTab
          nFirst := 1
          nEnd   := Len( ::aControls )
       ENDIF
+   ELSE
+      nFirst := 1
+      nEnd   := LEN(::aPages[ ::nActive, 1]:aControls)
    ENDIF
 
    RETURN ::nActive
@@ -447,15 +450,13 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    //WRITELOG('TAB'+STR(MSG)+STR(WPARAM)+STR(LPARAM)+CHR(13))
 
    ::disable()
-   IF ! ::lResourceTab
-    IF (msg == WM_KEYDOWN .OR.(msg = WM_GETDLGCODE .AND. wparam == VK_RETURN)) .AND. GetFocus()= ::handle
+   IF (msg == WM_KEYDOWN .OR.(msg = WM_GETDLGCODE .AND. wparam == VK_RETURN)) .AND. GetFocus()= ::handle
       IF ( wParam == VK_DOWN .or. wParam == VK_RETURN ) .AND. ::nActive > 0  
          GetSkip( Self, ::handle,, 1 )
       ENDIF
       IF wParam == VK_UP .AND. ::nActive > 0  //
          KEYB_EVENT( VK_TAB, VK_SHIFT, .T. )
       ENDIF
-    ENDIF
    ENDIF
    IF ::bOther != Nil
       ::oparent:lSuspendMsgsHandling := .t.

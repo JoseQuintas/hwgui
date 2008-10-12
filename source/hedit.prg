@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.98 2008-10-09 20:21:50 lfbasso Exp $
+ *$Id: hedit.prg,v 1.99 2008-10-12 14:45:44 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -11,7 +11,7 @@
 
 STATIC lColorinFocus := .F.
 
-#include "windows.ch"
+#include "windows.ch" 
 #include "hbclass.ch"
 #include "hblang.ch"
 #include "guilib.ch"
@@ -1039,20 +1039,26 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
 RETURN .T.
 
 STATIC FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
-   Local nextHandle := 0, i, nFirst , nLast , k := 0
-   if len(oParent:aPages) > 0
+   Local nextHandle := 0, i, nPage, nFirst , nLast , k := 0
+   
+   IF LEN(oParent:aPages) > 0
       //SETFOCUS(oParent:handle)
       oParent:SETFOCUS()
-      oParent:GetActivePage(@nFirst, @nLast)
-      i :=  AScan( oParent:acontrols, { | o | o:handle == hCtrl } )
-      i += IIF( i = 0, nFirst, nSkip) //nLast, nSkip)
-      IF i >= nFirst .and. i <= nLast
+      nPage := oParent:GetActivePage(@nFirst, @nLast)
+      IF !oParent:lResourceTab  && TAB without RC
+      	i :=  AScan( oParent:acontrols, { | o | o:handle == hCtrl } )
+      	i += IIF( i = 0, nFirst, nSkip) //nLast, nSkip)
+      	IF i >= nFirst .and. i <= nLast
            nexthandle := GetNextDlgTabItem ( oParent:handle , hctrl, ( nSkip < 0 ) )
           IF  i != AScan( oParent:acontrols, { | o | o:handle == NEXTHANDLE } ) .AND. oParent:acontrols[ i ]:CLASSNAME = "HRADIO"
              nexthandle := GetNextDlgGroupItem( oParent:handle , hctrl,( nSkip < 0 ) )
           ENDIF
           k := AScan( oParent:acontrols, { | o | o:handle == NEXTHANDLE } )
-      ENDIF
+      	ENDIF
+      ELSE
+      	SETFOCUS(oParent:aPages[nPage,1]:aControls[1]:Handle)
+        RETURN 0
+			ENDIF	
       IF (nSkip < 0 .AND. ( k > i .OR. k = 0)) .OR. (nSkip > 0 .AND. i > k)
         nexthandle := GetNextDlgTabItem ( GetActiveWindow(), hctrl, (nSkip < 0) )
       ENDIF
@@ -1060,15 +1066,20 @@ STATIC FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
 RETURN nextHandle
 
 STATIC FUNCTION NextFocus(oParent,hCtrl,nSkip)
-
 Local nextHandle :=0,  i
+
+   IF oParent:Type == WND_DLG_RESOURCE
+      nexthandle := GetNextDlgGroupItem( oParent:handle , hctrl,( nSkip < 0 ) )
+      RETURN nextHandle
+   ENDIF
 
    i := AScan( oparent:acontrols, { | o | o:handle == hCtrl } )
    nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
    IF i > 0 .AND. oParent:acontrols[ i ]:CLASSNAME = "HRADIO"
        nexthandle := GetNextDlgGroupItem( oParent:handle , hctrl,( nSkip < 0 ) )
-       i := AScan( oparent:acontrols, { | o | o:handle == NEXTHANDLE } )
    ENDIF
+   i := AScan( oparent:acontrols, { | o | o:handle == NEXTHANDLE } )
+   
 RETURN nextHandle
 
 METHOD SetGetUpdated() CLASS HEdit

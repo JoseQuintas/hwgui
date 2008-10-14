@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.51 2008-10-07 12:37:49 lculik Exp $
+ * $Id: draw.c,v 1.52 2008-10-14 20:43:28 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -82,6 +82,20 @@ HB_FUNC( INVALIDATERECT )
     ( hb_pcount() > 2 )? &rc:NULL,  // address of rectangle coordinates
     hb_parni( 2 ) // erase-background flag
    );
+}
+
+HB_FUNC( MOVETO )
+{
+   HDC hDC = (HDC) HB_PARHANDLE( 1 );
+   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
+   MoveToEx( hDC, x1, y1, NULL );
+}
+
+HB_FUNC( LINETO )
+{
+   HDC hDC = (HDC) HB_PARHANDLE( 1 );
+   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
+   LineTo( hDC, x1, y1 );
 }
 
 HB_FUNC( RECTANGLE )

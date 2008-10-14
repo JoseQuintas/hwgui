@@ -1,5 +1,5 @@
 /*
- * $Id: hdc.prg,v 1.8 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hdc.prg,v 1.9 2008-10-14 20:43:28 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPAINTDC and HDC Classes    
@@ -48,6 +48,8 @@ CLASS HDC
    METHOD NEW( )
    METHOD SetAttribDC( hDC )
    METHOD ATTACH( hDc )
+   METHOD MOVETO( x1, y1 )
+   METHOD LINETO( x1, y1 )
    METHOD fillsolidrect( lpRect, clr )
    METHOD fillrect( lpRect, clr )
    METHOD SelectClipRgn( pRgn )
@@ -80,6 +82,14 @@ METHOD NEW( ) CLASS HDC
    ::m_hAttribDC := NIL
 
 RETURN SELF
+
+METHOD MOVETO( x1, y1 ) CLASS HDC
+  MoveTo( ::m_hDC, x1, y1 )
+RETURN Self
+
+METHOD LINETO( x1, y1 ) CLASS HDC
+  LineTo( ::m_hDC, x1, y1 )
+RETURN Self
 
 METHOD Attach( hDC ) CLASS HDC
 

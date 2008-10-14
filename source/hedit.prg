@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.99 2008-10-12 14:45:44 lfbasso Exp $
+ *$Id: hedit.prg,v 1.100 2008-10-14 15:19:24 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -826,7 +826,7 @@ METHOD Valid( ) CLASS HEdit
          RETURN .F.
       ENDIF
    ENDIF
-   IF GETFOCUS() = 0 .OR. GETFOCUS() = ::handle
+   IF empty(GETFOCUS())  .OR. GETFOCUS() = ::handle
       GetSkip( ::oParent, ::handle,,::nGetSkip)
    ENDIF 
    ::oparent:lSuspendMsgsHandling := .F.
@@ -1115,8 +1115,8 @@ Luis Fernando Basso contribution
 FUNCTION CheckFocus(oCtrl, nInside)
 Local oParent := ParentGetDialog(oCtrl)
 
-  IF (oParent  != Nil .AND. !IsWindowVisible(oParent:handle)) .OR. GetActiveWindow() == 0 
-    IF !nInside .and. oParent:nInitFocus = 0
+  IF (oParent  != Nil .AND. !IsWindowVisible(oParent:handle)) .OR. empty(GetActiveWindow()) // == 0 
+    IF !nInside .and. empty(oParent:nInitFocus) // = 0
        oParent:Show()
        SetFocus(oParent:handle)
        SetFocus(GetFocus()) 

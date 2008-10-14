@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.32 2008-10-12 14:45:44 lfbasso Exp $
+ *$Id: htab.prg,v 1.33 2008-10-14 15:19:24 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -247,10 +247,10 @@ STATIC FUNCTION InitPage( oTab, oPage, cCaption, n )
 METHOD EndPage() CLASS HTab
    IF ! ::lResourceTab
       ::aPages[ ::nActive, 2 ] := Len( ::aControls ) - ::aPages[ ::nActive, 1 ]
-      IF ::handle != Nil .AND. ::handle > 0
+      IF ::handle != Nil .AND. !Empty( ::handle )
          AddTab( ::handle, ::nActive, ::aTabs[ ::nActive ] )
       ENDIF
-      IF ::nActive > 1 .AND. ::handle != Nil .AND. ::handle > 0
+      IF ::nActive > 1 .AND. ::handle != Nil .AND. !Empty( ::handle )
          ::HidePage( ::nActive )
       ENDIF
       ::nActive := 1
@@ -262,11 +262,11 @@ METHOD EndPage() CLASS HTab
 
 
    ELSE
-      IF ::handle != Nil .AND. ::handle > 0
+      IF ::handle != Nil .AND. !Empty( ::handle )
 
          AddTabDialog( ::handle, ::nActive, ::aTabs[ ::nActive ], ::aPages[ ::nactive, 1 ]:handle )
       ENDIF
-      IF ::nActive > 1 .AND. ::handle != Nil .AND. ::handle > 0
+      IF ::nActive > 1 .AND. ::handle != Nil .AND. !Empty( ::handle )
          ::HidePage( ::nActive )
       ENDIF
       ::nActive := 1

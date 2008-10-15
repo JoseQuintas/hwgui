@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.20 2008-10-15 07:25:57 lfbasso Exp $
+ * $Id: hsayimg.prg,v 1.21 2008-10-15 13:04:39 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -13,8 +13,6 @@
 #include "guilib.ch"
 
 #define STM_SETIMAGE        370    // 0x0172
-#define STN_CLICKED    0      
-#define STN_DBLCLK     1
 
 //- HSayImage
 
@@ -29,27 +27,27 @@ CLASS HSayImage INHERIT HControl
    METHOD Redefine( oWndParent,nId,bInit,bSize,ctooltip,bClick, bDblClick )
    METHOD Activate()
    METHOD End()  INLINE ( Super:End(),iif(::oImage<>Nil,::oImage:Release(),::oImage:=Nil),::oImage := Nil )
-   METHOD onClick()  
-   METHOD onDblClick() 
+   METHOD onClick()
+   METHOD onDblClick()
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,bInit, ;
                   bSize,ctooltip,bClick, bDblClick) CLASS HSayImage
-                  
+
    nStyle := Hwg_BitOr( nStyle, SS_NOTIFY )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,               ;
                Iif( nWidth!=Nil,nWidth,0 ),Iif( nHeight!=Nil,nHeight,0 ),, ;
                bInit,bSize,,ctooltip )
 
    ::title   := ""
-   
+
    ::bClick := bClick
    ::oParent:AddEvent( STN_CLICKED, self,{|| ::onClick()})
 
    ::bDblClick := bDblClick
    ::oParent:AddEvent( STN_DBLCLK, self,{|| ::onDblClick()})
- 
+
 Return Self
 
 METHOD Redefine( oWndParent,nId,bInit,bSize,ctooltip ) CLASS HSayImage

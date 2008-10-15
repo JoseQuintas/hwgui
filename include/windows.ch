@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.63 2008-10-15 07:25:57 lfbasso Exp $
+ *$Id: windows.ch,v 1.64 2008-10-15 13:04:38 alexstrickland Exp $
  */
 
 #define WM_CREATE                       1
@@ -114,8 +114,9 @@
 /*
  * Static Control Notification Codes
  */
-#define STN_CLICKED    0      
+#define STN_CLICKED    0
 #define STN_DBLCLK     1
+#define STN_ENABLE     3
 
 /*
  * User Button Notification Codes

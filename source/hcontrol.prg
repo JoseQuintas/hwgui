@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.91 2008-10-15 07:25:57 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.92 2008-10-15 13:04:39 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -41,9 +41,6 @@
 #define BTNST_MAX_COLORS      6
 #define WM_SYSCOLORCHANGE               0x0015
 #define BS_TYPEMASK SS_TYPEMASK
-#define STN_CLICKED    0      
-#define STN_DBLCLK     1
-#define STN_ENABLE     3
 
 //- HControl
 
@@ -54,7 +51,7 @@ CLASS HControl INHERIT HCustomWindow
    DATA   lInit           INIT .F.
    DATA   lnoValid        INIT .F.
    DATA   nGetSkip        INIT 0
-   DATA   anchor          INIT 0   
+   DATA   anchor          INIT 0
    DATA   xName           HIDDEN
    ACCESS Name            INLINE ::xName
    ASSIGN Name( cName )   INLINE ::xName := cName, ;
@@ -72,11 +69,11 @@ CLASS HControl INHERIT HCustomWindow
    //METHOD SetFocus()    INLINE ( SendMessage( ::oParent:handle, WM_NEXTDLGCTL, ;
    //                                           ::handle, 1 ), ;
    //                              SetFocus( ::handle ) )
-   METHOD SetFocus()    INLINE SendMessage( GetActiveWindow(), WM_NEXTDLGCTL,::handle, 1 )                                  
+   METHOD SetFocus()    INLINE SendMessage( GetActiveWindow(), WM_NEXTDLGCTL,::handle, 1 )
    METHOD GetText()     INLINE GetWindowText( ::handle )
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c ), ::Refresh()
    METHOD Refresh()     VIRTUAL
-   METHOD onAnchor( x, y, w, h )  
+   METHOD onAnchor( x, y, w, h )
    METHOD END()
 
 ENDCLASS
@@ -177,24 +174,24 @@ METHOD END() CLASS HControl
    RETURN NIL
 
 METHOD onAnchor(x,y,w,h) CLASS HControl
-LOCAL nAnchor,nXincRelative, nYincRelative, nXincAbsolute,nYincAbsolute 
+LOCAL nAnchor,nXincRelative, nYincRelative, nXincAbsolute,nYincAbsolute
 LOCAL x1,y1,w1,h1,x9,y9,w9,h9
 
-  nAnchor := ::anchor 
-  x9 := ::nLeft 
-  y9 := ::nTop  
+  nAnchor := ::anchor
+  x9 := ::nLeft
+  y9 := ::nTop
   w9 := ::nWidth
   h9 := ::nHeight
 
-  x1 := ::nLeft 
-  y1 := ::nTop 
-  w1 := ::nWidth 
+  x1 := ::nLeft
+  y1 := ::nTop
+  w1 := ::nWidth
   h1 := ::nHeight
   *- calculo relativo
   nXincRelative :=  w / x
   nYincRelative :=  h / y
  	*- calculo ABSOLUTE
-  nXincAbsolute := (w - x) 
+  nXincAbsolute := (w - x)
   nYincAbsolute := (h - y)
 
   IF nanchor >= ANCHOR_VERTFIX

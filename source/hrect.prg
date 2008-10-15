@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.7 2008-10-15 07:25:57 lfbasso Exp $
+ * $Id: hrect.prg,v 1.8 2008-10-15 13:04:39 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -10,8 +10,6 @@
 
 #include "windows.ch"
 #include "hbclass.ch"
-#define STN_CLICKED    0      
-#define STN_DBLCLK     1
 
 //-----------------------------------------------------------------
 CLASS HRect INHERIT HControl
@@ -157,7 +155,7 @@ METHOD New(oWndParent,nId,nLeft,nTop,nWidth,nHeight, nStyle,bSize, lnoBorder, bI
 
    nStyle := IIF(nStyle = NIL, 3, nStyle)  // FLAT
    lnoBorder := IIF(lnoBorder = NIL, .F., lnoBorder)  // FLAT
-   
+
    Self := HDrawShape():New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, bSize,,,nStyle, lnoBorder,,,,,bInit) //,bClick, bDblClick)
 
 Return Self
@@ -174,16 +172,16 @@ CLASS HDrawShape INHERIT HControl
    DATA nBorder, lnoBorder
    DATA ntColor, nbColor
    DATA bClick, bDblClick
-   
+
    METHOD New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor, nStyle, ;
                 lnoBorder, nBorder, nCurvature, nbStyle, nfStyle, bInit, bClick, bDblClick)
-                
+
    METHOD Activate()
    METHOD Paint()
    METHOD SetColor(tcolor,bcolor)
    METHOD Curvature(nCurvature)
-  // METHOD onClick()  
-  // METHOD onDblClick() 
+  // METHOD onClick()
+  // METHOD onDblClick()
 
 ENDCLASS
 

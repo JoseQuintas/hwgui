@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.141 2008-10-07 12:37:49 lculik Exp $
+ * $Id: hbrowse.prg,v 1.142 2008-10-15 07:25:57 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -172,7 +172,7 @@ CLASS HBrowse INHERIT HControl
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder,;
-                  lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect, bFirst, bWhile, bFor  )
+                  lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect, bFirst, bWhile, bFor, tcolor, bcolor )
    METHOD InitBrw( nType )
    METHOD Rebuild()
    METHOD Activate()
@@ -220,7 +220,7 @@ ENDCLASS
 METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,;
                   lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect,;
-                  lDescend, bWhile, bFirst, bLast, bFor  ) CLASS HBrowse
+                  lDescend, bWhile, bFirst, bLast, bFor, tcolor, bcolor ) CLASS HBrowse
 
    nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP+ ;
                     Iif(lNoBorder=Nil.OR.!lNoBorder,WS_BORDER,0)+            ;
@@ -264,6 +264,8 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
    ELSE
      ::lFilter := .F.
    ENDIF
+   ::tcolor := tcolor
+	 ::bcolor := bcolor 
 
    hwg_RegBrowse()
    ::InitBrw()
@@ -398,13 +400,15 @@ Local nRecStart, nRecStop
          ENDIF
          IF wParam == VK_TAB
           IF ::lCtrlPress
-             nPos := AScan( ::oParent:acontrols, { | o | o:handle == ::HANDLE } )
+             //nPos := AScan( ::oParent:acontrols, { | o | o:handle == ::HANDLE } )
              IF GetKeyState(VK_SHIFT) < 0
-                nPos := IIF(nPos <= 1 ,len(::oParent:acontrols),nPos-1)
+                //nPos := IIF(nPos <= 1 ,len(::oParent:acontrols),nPos-1)
+                getskip(::oParent,::handle,,-1)
              ELSE
-                nPos := IIF(nPos = 0 .OR. nPos=len(::oParent:acontrols),1,nPos+1)
+                //nPos := IIF(nPos = 0 .OR. nPos=len(::oParent:acontrols),1,nPos+1)
+                getskip(::oParent,::handle,,1)
              ENDIF
-             ::oParent:acontrols[nPos]:setFocus()
+             //::oParent:acontrols[nPos]:setFocus()
           ELSE
              IF GetKeyState(VK_SHIFT) < 0
                 ::DoHScroll( SB_LINELEFT )
@@ -862,6 +866,7 @@ Local oldfont, aMetrHead
    else
       ::height := ::aMargin[1] + Max( aMetr[ 1 ], ::minHeight ) + 1 + ::aMargin[3]
    endif
+
    aMetrHead := aClone( aMetr )
    if ::oHeadFont != Nil
       oldfont := SelectObject( hDC,::oHeadFont:handle )
@@ -974,9 +979,10 @@ Local oldfont, aMetrHead
          cursor_row ++
       ENDDO
       // fill the remaining canvas area with background color if needed
-      if nRows < ::rowCount
-           FillRect( hDC, ::x1, ::y1 + (::height + 1) * nRows + 1, ::x2, ::y2, ::brush:handle )
-      endif
+
+      if nRows < ::rowCount .or. (nRows * (::height - 1) +::nHeadHeight + ::nFootHeight) < ::nHeight
+          FillRect( hDC, ::x1, ::y1 + (::height + 1) * nRows + 1, ::x2, ::y2, ::brush:handle )
+       endif
 
       Eval( ::bGoTo, Self,tmp )
    ENDIF
@@ -1034,7 +1040,8 @@ Local oldfont, aMetrHead
 
 
    ::lAppMode := .F.
-
+   
+   
 RETURN Nil
 
 //----------------------------------------------------//
@@ -1377,13 +1384,14 @@ Local aCores
                      SelectObject( hDC, ::ofont:handle )
                      lColumnFont := .F.
                   ENDIF
-
+									
                   DrawText( hDC, sviv,  ;
                     x + ::aMargin[4], ;
                     ::y1+(::height+1)*(::nPaintRow-1)+1 + ::aMargin[1] , ;
                     x+xSize-( 2 + ::aMargin[2] ) , ;
                     ::y1+(::height+1)*::nPaintRow-( 1+::aMargin[3]) , ;
                     ::aColumns[::nPaintCol]:nJusLin )
+                    
 // Clipping rectangle
 #if 0
                 rectangle( hDC, ;
@@ -1591,7 +1599,8 @@ Local oldLeft := ::nLeftCol, nLeftCol, colpos, oldPos := ::colpos
       // IF ::nLeftCol == oldLeft
       //   ::RefreshLine()
       //ELSE
-         RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW )  // Force a complete redraw
+      //   RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW )  // Force a complete redraw
+        RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE) // + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW )  // Force a complete redraw
       //ENDIF
    ENDIF
    SetFocus( ::handle )

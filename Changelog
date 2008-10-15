@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.933 2008-10-14 20:43:27 fperillo Exp $
+ * $Id: Changelog,v 1.934 2008-10-15 07:25:57 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,46 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-15 03:44 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+
+  * include\guilib.ch
+    + added ON OTHER MESSAGES clause for the SAY
+	+ added ON CLICK and ON DBLCLICK clause for the SAY, BITMAP, ICON
+	+ added ON GETFOCUS clause for the BUTTON, BUTTONEX, RADIOBUTTON
+	+ added COLOR and BACKCOLOR clause for the BROWSE
+	+ added TRANSPARENTE clause for the RADIOBUTON,CHECKBOX
+	+ added INIT clause for the CONTAINER, SHAPE
+  * include\windows.ch
+    + added the defines for the notifications object STATIC
+  * source\control.c
+    + implemented StaticSubclassProc to control the events in HSTATIC CLASS
+  * source\hbrowse.prg
+    * added tcolor and bcolor in the parameters of the METHOD NEW
+    * minor fix in fill backgroud color in event PAINT
+  * source\hcheck.prg
+    * fix event WHEN return .F.
+	+ added clause TRANSPARENT and fix TEXTCOLOR
+  * source\hcontrol.prg
+    * minor fixed in METHOD onAnchor
+    * CLASS HSTATIC
+      + added DATA bClick, bDblClick
+	  + added METHOD onClick, onDblClick, OnEvent
+	  * simplified the code for TRANSPARENT mode, METHOD PAINT now work in DIALOG parent
+	* CLASS HButton  
+	  + added EVENT onGetFocus that works in the same way of WHEN with RETURN .F. or .T.
+	  * fixed onClick for to REDEFINE
+	* CLASS HGroup
+	  + added clause TRANSPARENT and fix BACKCOLOR
+  * source\hradio.prg
+      + added EVENT onGetFocus that works in the same way of WHEN with RETURN .F. or .T.
+	  + added clause TRANSPARENT and fix TEXTCOLOR  
+  * source\hrect.prg
+      + added clause bInit in the parameters of the METHOD NEW
+  * source\hsayimg.prg
+      + added STYLE SS_NOTIFY for the EVENTS
+      + added DATA bClick, bDblClick
+	  + added METHOD onClick, onDblClick
 
 2008-10-14 22:40 UTC+0100 Francesco Perillo < fperillo at gmail dot com>
   * source/draw.c

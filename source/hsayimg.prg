@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.19 2008-08-06 11:49:02 alexstrickland Exp $
+ * $Id: hsayimg.prg,v 1.20 2008-10-15 07:25:57 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -13,6 +13,8 @@
 #include "guilib.ch"
 
 #define STM_SETIMAGE        370    // 0x0172
+#define STN_CLICKED    0      
+#define STN_DBLCLK     1
 
 //- HSayImage
 
@@ -20,24 +22,34 @@ CLASS HSayImage INHERIT HControl
 
    CLASS VAR winclass   INIT "STATIC"
    DATA  oImage
+   DATA bClick, bDblClick
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,bInit, ;
-                  bSize,ctooltip )
-   METHOD Redefine( oWndParent,nId,bInit,bSize,ctooltip )
+                  bSize,ctooltip,bClick, bDblClick )
+   METHOD Redefine( oWndParent,nId,bInit,bSize,ctooltip,bClick, bDblClick )
    METHOD Activate()
    METHOD End()  INLINE ( Super:End(),iif(::oImage<>Nil,::oImage:Release(),::oImage:=Nil),::oImage := Nil )
+   METHOD onClick()  
+   METHOD onDblClick() 
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,bInit, ;
-                  bSize,ctooltip ) CLASS HSayImage
-
+                  bSize,ctooltip,bClick, bDblClick) CLASS HSayImage
+                  
+   nStyle := Hwg_BitOr( nStyle, SS_NOTIFY )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,               ;
                Iif( nWidth!=Nil,nWidth,0 ),Iif( nHeight!=Nil,nHeight,0 ),, ;
                bInit,bSize,,ctooltip )
 
    ::title   := ""
+   
+   ::bClick := bClick
+   ::oParent:AddEvent( STN_CLICKED, self,{|| ::onClick()})
 
+   ::bDblClick := bDblClick
+   ::oParent:AddEvent( STN_DBLCLK, self,{|| ::onDblClick()})
+ 
 Return Self
 
 METHOD Redefine( oWndParent,nId,bInit,bSize,ctooltip ) CLASS HSayImage
@@ -55,6 +67,23 @@ METHOD Activate CLASS HSayImage
    ENDIF
 Return Nil
 
+METHOD onClick()  CLASS HSayImage
+   IF ::bClick != NIL
+	    ::oParent:lSuspendMsgsHandling := .T.
+      Eval( ::bClick, self, ::id )
+  	  ::oParent:lSuspendMsgsHandling := .F.
+	 ENDIF
+RETURN Nil
+
+METHOD onDblClick()  CLASS HSayImage
+   IF ::bDblClick != NIL
+	    ::oParent:lSuspendMsgsHandling := .T.
+      Eval( ::bDblClick, self, ::id )
+  	  ::oParent:lSuspendMsgsHandling := .F.
+	 ENDIF
+RETURN Nil
+
+
 
 //- HSayBmp
 
@@ -65,7 +94,7 @@ CLASS HSayBmp INHERIT HSayImage
    DATA nZoom
 
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
-                  bSize,ctooltip )
+                  bSize,ctooltip,bClick, bDblClick)
    METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctooltip )
    METHOD Paint( lpdis )
    METHOD ReplaceBitmap( Image, lRes )
@@ -73,7 +102,7 @@ CLASS HSayBmp INHERIT HSayImage
 ENDCLASS
 
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
-                  bSize,ctooltip ) CLASS HSayBmp
+                  bSize,ctooltip,bClick, bDblClick ) CLASS HSayBmp
 
    Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctooltip )
 
@@ -140,14 +169,14 @@ Return Nil
 CLASS HSayIcon INHERIT HSayImage
 
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
-                  bSize,ctooltip,lOEM )
+                  bSize,ctooltip,lOEM, bClick, bDblClick)
    METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctooltip )
    METHOD Init()
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
-                  bSize,ctooltip,lOEM ) CLASS HSayIcon
+                  bSize,ctooltip,lOEM,bClick, bDblClick ) CLASS HSayIcon
 
    Super:New( oWndParent,nId,SS_ICON,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctooltip )
 

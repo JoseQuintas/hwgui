@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.67 2008-10-06 12:03:23 lculik Exp $
+ * $Id: control.c,v 1.68 2008-10-15 07:25:57 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -31,6 +31,7 @@
 // LRESULT CALLBACK OwnBtnProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK WinCtrlProc (HWND, UINT, WPARAM, LPARAM);
 LRESULT APIENTRY SplitterProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+LRESULT APIENTRY StaticSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY EditSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY ButtonSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY ComboSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
@@ -43,7 +44,7 @@ extern PHB_ITEM Rect2Array( RECT *rc  );
 static HWND hWndTT = 0;
 static BOOL lInitCmnCtrl = 0;
 static BOOL lToolTipBalloon = FALSE; // added by MAG
-static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc,wpOrigComboProc; //wpOrigButtonProc
+static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc,wpOrigComboProc,wpOrigStaticProc; //wpOrigButtonProc
 static LONG_PTR wpOrigButtonProc;
 extern BOOL _AddBar( HWND pParent, HWND pBar, REBARBANDINFO* pRBBI );
 extern BOOL AddBar( HWND pParent, HWND pBar, LPCTSTR pszText, HBITMAP pbmp, DWORD dwStyle );
@@ -1124,6 +1125,40 @@ LRESULT CALLBACK WinCtrlProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
    else
       return( DefWindowProc( hWnd, message, wParam, lParam ) );
 }
+
+HB_FUNC( HWG_INITSTATICPROC )
+{
+   wpOrigStaticProc = (WNDPROC) SetWindowLong( (HWND) HB_PARHANDLE(1),
+                                 GWL_WNDPROC, (LONG) StaticSubclassProc );
+}
+
+LRESULT APIENTRY StaticSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+   long int res;
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+
+   if( !pSym_onEvent )
+      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
+
+   if( pSym_onEvent && pObject )
+   {
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
+      hb_vmPush( pObject );
+      hb_vmPushLong( (LONG ) message );
+      hb_vmPushLong( (LONG ) wParam );
+//      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( lParam );
+      hb_vmSend( 3 );
+      res = hb_parnl( -1 );
+      if( res == -1 )
+         return( CallWindowProc( wpOrigStaticProc, hWnd, message, wParam, lParam ) );
+      else
+         return res;
+   }
+   else
+      return( CallWindowProc( wpOrigStaticProc, hWnd, message, wParam, lParam ) );
+}
+
 
 HB_FUNC( HWG_INITEDITPROC )
 {

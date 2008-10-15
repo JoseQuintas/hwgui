@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.62 2008-09-01 19:00:17 mlacecilia Exp $
+ *$Id: windows.ch,v 1.63 2008-10-15 07:25:57 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -67,7 +67,7 @@
 #define WM_LBUTTONDBLCLK                515    // 0x0203
 #define WM_RBUTTONDOWN                  516    // 0x0204
 #define WM_RBUTTONUP                    517    // 0x0205
-#define WM_MBUTTONUP	                   520    // 0x0208
+#define WM_MBUTTONUP	                520    // 0x0208
 #define WM_PARENTNOTIFY                 528    // 0x0210
 #define WM_MDICREATE                    544     // 0x0220
 #define WM_MDIDESTROY                   545     // 0x0221
@@ -110,6 +110,12 @@
 #define DS_SYSMODAL         2        // 0x02L
 #define DS_CENTER           2048     // 0x0800L
 #define DS_MODALFRAME       0x80
+
+/*
+ * Static Control Notification Codes
+ */
+#define STN_CLICKED    0      
+#define STN_DBLCLK     1
 
 /*
  * User Button Notification Codes

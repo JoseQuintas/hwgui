@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.6 2008-09-01 19:00:20 mlacecilia Exp $
+ * $Id: hrect.prg,v 1.7 2008-10-15 07:25:57 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -10,6 +10,8 @@
 
 #include "windows.ch"
 #include "hbclass.ch"
+#define STN_CLICKED    0      
+#define STN_DBLCLK     1
 
 //-----------------------------------------------------------------
 CLASS HRect INHERIT HControl
@@ -125,20 +127,20 @@ Return Nil
 CLASS HShape INHERIT HControl
 
   METHOD New(oWndParent,nId,nLeft,nTop,nWidth,nHeight, nBorder, nCurvature,;
-              nbStyle, nfStyle, tcolor, bcolor, bSize)
+              nbStyle, nfStyle, tcolor, bcolor, bSize, bInit)  //, bClick, bDblClick)
 
 ENDCLASS
 
 METHOD New(oWndParent,nId,nLeft,nTop,nWidth,nHeight, nBorder, nCurvature,;
-              nbStyle, nfStyle, tcolor, bcolor, bSize) Class HShape
+              nbStyle, nfStyle, tcolor, bcolor, bSize, bInit) Class HShape
 
-    nBorder := IIF(nBorder = Nil, 1, nBorder)
+   nBorder := IIF(nBorder = Nil, 1, nBorder)
    nbStyle := IIF(nbStyle = Nil, PS_SOLID, nbStyle )
    nfStyle := IIF(nfStyle = Nil, BS_TRANSPARENT , nfStyle )
    nCurvature := nCurvature
 
    Self := HDrawShape():New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,bSize,tColor,bColor,,,;
-                                nBorder, nCurvature, nbStyle, nfStyle)
+                                nBorder, nCurvature, nbStyle, nfStyle,bInit)
 
 Return Self
 
@@ -146,16 +148,17 @@ Return Self
 
 CLASS HContainer INHERIT HControl
 
-   METHOD New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, nStyle, bSize, lnoBorder )
+   METHOD New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, nStyle, bSize, lnoBorder, bInit)  //, bClick, bDblClick)
 
 ENDCLASS
 
-METHOD New(oWndParent,nId,nLeft,nTop,nWidth,nHeight, nStyle,bSize, lnoBorder) Class HContainer
+
+METHOD New(oWndParent,nId,nLeft,nTop,nWidth,nHeight, nStyle,bSize, lnoBorder, bInit ) Class HContainer
 
    nStyle := IIF(nStyle = NIL, 3, nStyle)  // FLAT
    lnoBorder := IIF(lnoBorder = NIL, .F., lnoBorder)  // FLAT
-
-   Self := HDrawShape():New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, bSize,,,nStyle, lnoBorder,,,,)
+   
+   Self := HDrawShape():New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, bSize,,,nStyle, lnoBorder,,,,,bInit) //,bClick, bDblClick)
 
 Return Self
 
@@ -170,21 +173,25 @@ CLASS HDrawShape INHERIT HControl
    DATA nCurvature
    DATA nBorder, lnoBorder
    DATA ntColor, nbColor
-
+   DATA bClick, bDblClick
+   
    METHOD New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor, nStyle, ;
-                lnoBorder, nBorder, nCurvature, nbStyle, nfStyle)
+                lnoBorder, nBorder, nCurvature, nbStyle, nfStyle, bInit, bClick, bDblClick)
+                
    METHOD Activate()
    METHOD Paint()
    METHOD SetColor(tcolor,bcolor)
    METHOD Curvature(nCurvature)
+  // METHOD onClick()  
+  // METHOD onDblClick() 
 
 ENDCLASS
 
 
 METHOD New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor, ncStyle, ;
-                lnoBorder, nBorder, nCurvature, nbStyle, nfStyle) CLASS HDrawShape
+                lnoBorder, nBorder, nCurvature, nbStyle, nfStyle, bInit) CLASS HDrawShape
 
-   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,,,,,bSize,{|o,lp|o:Paint(lp)} )
+   Super:New( oWndParent,nId,SS_OWNERDRAW+SS_NOTIFY+WS_DISABLED,nLeft,nTop,,,,bInit,bSize,{|o,lp|o:Paint(lp)})
 
    ::title := ""
    ::ncStyle :=  ncStyle  //0 -raised ,1-sunken 2-flat
@@ -208,8 +215,7 @@ METHOD New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor,
    ELSE  // CONTAINER
        ::oPen := HPen():Add( PS_SOLID, 1, GetSysColor( COLOR_3DHILIGHT ) )
    ENDIF
-
-
+   
 Return Self
 
 //---------------------------------------------------------------------------

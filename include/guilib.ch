@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.117 2008-10-15 07:25:57 lfbasso Exp $
+ *$Id: guilib.ch,v 1.118 2008-10-15 13:32:35 alexstrickland Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -32,7 +32,7 @@
 
 
 #define ANCHOR_TOPLEFT     0		//	Anchors control to the top and left borders of the container and does not change the distance between the top and left borders. (Default)
-#define ANCHOR_TOPABS 	   1    	//	Anchors control to top border of container and does not change the distance between the top border. 
+#define ANCHOR_TOPABS 	   1    	//	Anchors control to top border of container and does not change the distance between the top border.
 #define ANCHOR_LEFTABS 	   2    	//	Anchors control to left border of container and does not change the distance between the left border.
 #define ANCHOR_BOTTOMABS   4    	//	Anchors control to bottom border of container and does not change the distance between the bottom border.
 #define ANCHOR_RIGHTABS	   8   		//	Anchors control to right border of container and does not change the distance between the right border.
@@ -248,7 +248,7 @@
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ ON CLICK <bClick> ]      ;
-            [ ON DBLCLICK <bDblClick> ];            
+            [ ON DBLCLICK <bDblClick> ];
             [ ON OTHER MESSAGE <bOther>] ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
@@ -269,7 +269,7 @@
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ ON CLICK <bClick> ]      ;
-            [ ON DBLCLICK <bDblClick> ];            
+            [ ON DBLCLICK <bDblClick> ];
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
           => ;
@@ -285,7 +285,7 @@
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON CLICK <bClick> ]      ;
-            [ ON DBLCLICK <bDblClick> ];            
+            [ ON DBLCLICK <bDblClick> ];
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oBmp> := ] HSayBmp():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
@@ -310,7 +310,7 @@
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON CLICK <bClick> ]      ;
-            [ ON DBLCLICK <bDblClick> ];            
+            [ ON DBLCLICK <bDblClick> ];
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oIco> := ] HSayIcon():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
@@ -729,18 +729,18 @@
             [ OF <oWnd> ]              ;
             [ ID <nId> ]               ;
             [ SIZE <width>, <height> ] ;
-            [ BACKCOLOR <bcolor> ]     ;                
+            [ BACKCOLOR <bcolor> ]     ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ STYLE <nStyle> ]         ;
           => ;
-  [<oPanel> :=] HPanel():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<bInit>,<bSize>,<bDraw>,<bcolor> )          
+  [<oPanel> :=] HPanel():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<bInit>,<bSize>,<bDraw>,<bcolor> )
 
 #xcommand REDEFINE PANEL [ <oPanel> ]  ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
-            [ BACKCOLOR <bcolor> ]     ;                
+            [ BACKCOLOR <bcolor> ]     ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
@@ -778,8 +778,9 @@
             [ FIRST <bFirst> ]         ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
             [ LAST <bLast> ]           ; // By Marcelo Sturm (marcelo.sturm@gmail.com)
             [ FOR <bFor> ]             ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+            [ <class: CLASS> <classname> ] ;
           => ;
-    [<oBrw> :=] HBrowse():New( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,0)),;
+    [<oBrw> :=] __IIF(<.class.>, <classname>, HBrowse)():New( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,0)),;
         <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>, ;
         <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.>, <.lAppend.>,;
         <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg>, <.lMulti.>, <.lDescend.>,;
@@ -1760,7 +1761,7 @@ Added by Marcos Antonio Gambeta
         =>  ;
     <oShape> := HShape():New(<oWnd>, <nId>, <x>, <y>, <width>, <height>, ;
                 <nBorder>, <nCurvature>, <nbStyle>,<nfStyle>, <tcolor>, <bcolor>, <bSize>,<bInit>)
-            
+
 #xcommand @ <x>, <y>  CONTAINER [<oCnt>] [OF <oWnd>] ;
         [ ID <nId> ]               ;
         [ SIZE <width>, <height> ] ;

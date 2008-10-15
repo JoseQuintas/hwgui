@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.937 2008-10-15 13:29:25 lculik Exp $
+ * $Id: Changelog,v 1.938 2008-10-15 13:32:35 alexstrickland Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-15 15:30 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
+  * include\guilib.ch
+    * restored CLASS clause in BROWSE command to allow class name which
+      inherits from HBrowse() to be used. Please contact me if there is
+      a problem with it. I believe this could be nice to extend to all commands
+      as they cannot be used if you inherit from one of the built in classes.
 
 2008-10-15 10:20 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/hcontrol.prg

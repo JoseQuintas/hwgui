@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.33 2008-10-14 15:19:24 lculik Exp $
+ *$Id: htab.prg,v 1.34 2008-10-15 12:51:00 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "hbclass.ch" 
+#include "hbclass.ch"
 #include "guilib.ch"
 #include "common.ch"
 #define TCM_SETCURSEL           4876     // (TCM_FIRST + 12)
@@ -346,14 +346,14 @@ METHOD ShowPage( nPage ) CLASS HTab
    */
    ELSE
       ::aPages[ nPage, 1 ]:show()
-      
+
       for i :=1  to len(::aPages[nPage,1]:aControls)
          IF (__ObjHasMsg( ::aPages[nPage,1]:aControls[i],"BSETGET" ) .AND. ::aPages[nPage,1]:aControls[i]:bSetGet != Nil) .OR. Hwg_BitAnd( ::aPages[nPage,1]:aControls[i]:style, WS_TABSTOP ) != 0
             SetFocus( ::aPages[nPage,1]:aControls[i]:handle )
             Exit
          ENDIF
       next
-      
+
    ENDIF
 
    RETURN Nil
@@ -410,7 +410,7 @@ METHOD Notify( lParam ) CLASS HTab
          Eval( ::bChange, Self, GetCurrentTab( ::handle ) )
       ENDIF
    CASE nCode == TCN_CLICK
-      IF ::pages[ ::nActive ]:enabled
+      IF !Empty(::pages) .AND. ::pages[ ::nActive ]:enabled
          SetFocus( ::handle )
          IF ::bAction != Nil
             Eval( ::bAction, Self, GetCurrentTab( ::handle ) )
@@ -451,7 +451,7 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
 
    ::disable()
    IF (msg == WM_KEYDOWN .OR.(msg = WM_GETDLGCODE .AND. wparam == VK_RETURN)) .AND. GetFocus()= ::handle
-      IF ( wParam == VK_DOWN .or. wParam == VK_RETURN ) .AND. ::nActive > 0  
+      IF ( wParam == VK_DOWN .or. wParam == VK_RETURN ) .AND. ::nActive > 0
          GetSkip( Self, ::handle,, 1 )
       ENDIF
       IF wParam == VK_UP .AND. ::nActive > 0  //
@@ -469,7 +469,7 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
       IF  __ObjHasMsg(::oParent,"NINITFOCUS") .AND. ::oParent:nInitFocus > 0 .AND. isWindowVisible(::oParent:handle)
          SETFOCUS(::oParent:nInitFocus)
          ::oParent:nInitFocus := 0
-      ENDIF  
+      ENDIF
       RETURN ( Super:onevent( msg, wParam, lParam ) )
    ENDIF
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.934 2008-10-15 07:25:57 lfbasso Exp $
+ * $Id: Changelog,v 1.935 2008-10-15 12:51:00 alexstrickland Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-15 14:30 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
+  * source/htab.prg
+    * In Notify() method for case nCode == TCN_CLICK ensure that ::Pages
+      is not empty before accessing the array.
+  * samples/tab/TAB3.prg
+    * Changed OnDlgInit to OnDlgInit() in code block.
 
 2008-10-15 03:44 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
 
@@ -33,14 +40,14 @@
       + added DATA bClick, bDblClick
 	  + added METHOD onClick, onDblClick, OnEvent
 	  * simplified the code for TRANSPARENT mode, METHOD PAINT now work in DIALOG parent
-	* CLASS HButton  
+	* CLASS HButton
 	  + added EVENT onGetFocus that works in the same way of WHEN with RETURN .F. or .T.
 	  * fixed onClick for to REDEFINE
 	* CLASS HGroup
 	  + added clause TRANSPARENT and fix BACKCOLOR
   * source\hradio.prg
       + added EVENT onGetFocus that works in the same way of WHEN with RETURN .F. or .T.
-	  + added clause TRANSPARENT and fix TEXTCOLOR  
+	  + added clause TRANSPARENT and fix TEXTCOLOR
   * source\hrect.prg
       + added clause bInit in the parameters of the METHOD NEW
   * source\hsayimg.prg
@@ -64,11 +71,11 @@
       should be TEST for
       if var >0 change to !empty(var)
       if var == 0 change to empty(var)
-    
+
 
 2008-10-12 11:44 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\htab.prg
-	* fixed return PARAMETERS in METHOD GetActivePage to lResourceTab 
+	* fixed return PARAMETERS in METHOD GetActivePage to lResourceTab
   * source\hedit.prg
     * fixed navegation in NextFocus AND NextFocusTab to WND_DLG_RESOURCE
 
@@ -93,10 +100,10 @@
   * source/hcontrol.prg
     + added the anchor property storing a bitmapped value allowing to fine
       tune the behaviour of the control when his containeris resized.
-      The value describing the wanted alignment can be setted 
+      The value describing the wanted alignment can be setted
       ORing  this bit values:
       ANCHOR_TOPLEFT       0	//	Anchors control to the top and left borders of the container and does not change the distance between the top and left borders. (Default)
-      ANCHOR_TOPABS 	   1    //	Anchors control to top border of container and does not change the distance between the top border. 
+      ANCHOR_TOPABS 	   1    //	Anchors control to top border of container and does not change the distance between the top border.
       ANCHOR_LEFTABS 	   2    //	Anchors control to left border of container and does not change the distance between the left border.
       ANCHOR_BOTTOMABS     4    //	Anchors control to bottom border of container and does not change the distance between the bottom border.
       ANCHOR_RIGHTABS	   8   	//	Anchors control to right border of container and does not change the distance between the right border.
@@ -110,13 +117,13 @@
     * fixed the SetFocus() method avoiding an unneeded call to SetFocus() function
     * added messages suspension handling when init block evaluation is pending
     * fixed transparent color when container uses a brush
-    * fixed click event for controls from resource    
+    * fixed click event for controls from resource
   * source/hcwindow.prg
     + added the properties nMin/nMaxHeight and nMin/nMaxWidth granting
-      that the resize of the window don't goes outside the wanted limits 
+      that the resize of the window don't goes outside the wanted limits
     * corrected note for nInitFocus variable
     * added to onEvent() method the handle of min/max dimensions
-    + added the anchor() method allowing an accurate positioning of 
+    + added the anchor() method allowing an accurate positioning of
       control when resize of container take place depending on anchor
       value
     * added to onSize() method the anchor handling
@@ -127,10 +134,10 @@
     + added in onEvent() method the handle of min/max dimensions
     * fixed events routing to tab pages
     + added in onSize() method the anchor handling
-    * fixed in the onPspNotify() function the missed messages 
+    * fixed in the onPspNotify() function the missed messages
       handling suspension for dialog loosing or gaining focus
   * source/hedit.prg
-    * valid() method scope unset from protected as is referenced in 
+    * valid() method scope unset from protected as is referenced in
       not inherited classes
     * fixed picture for numeric input to respect the maxLenght
     * fixed event EN_SETFOCUS triggering also if no bGfocus block
@@ -138,7 +145,7 @@
     * fixed valid() method avoiding evauation in some cases
     * fixed valid() method not resetting the message suspend flag
     * fixed change() method triggering also when edit lacks of focus
-    * CheckFocus() function code optimization    
+    * CheckFocus() function code optimization
   * source/hlistbox.prg
     * fixed storing of selected item also using @ ..... GET LISTBOX
     * simplified the code for onChange event
@@ -147,14 +154,14 @@
       the panel
   * source/hwindow.prg
     * moved ON INIT block evaluation from new() to activate() method in
-      hMainWindow class, because init of windows occurs before init of 
-      owned controls. Dialogs behaviour is inverse and not needed changes.      
+      hMainWindow class, because init of windows occurs before init of
+      owned controls. Dialogs behaviour is inverse and not needed changes.
   * source/window.c
     * added the MinMaxWindow() function to handle the new min/max dimensions
       of hCustomWindow objects
   * source/htab.prg
     * fixed control gaining focus when tab selected is from resource file
-    * fixed navigation between controls 
+    * fixed navigation between controls
 
 2008-10-08 09:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/grid.c
@@ -167,10 +174,10 @@
     ! minor change
   * samples/grid/grid_6.rc
     ! minor change
- 
+
 2008-10-07 11:03 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * include/guilib.ch
-    New version 2.17 
+    New version 2.17
 
 2008-10-07 09:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/hbrowse.prg
@@ -182,7 +189,7 @@
   * source/dialog.c
   * source/draw.c
      ! changes for allow correct usage when  HWG_USE_POINTER_ITEM is used on hwgui compilation
- 
+
 2008-10-06 09:30 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/misc.c
     ! added PtrtoUlong function
@@ -190,7 +197,7 @@
   * source/control.c
     source/drawitem.c
        Changed some  hb_parnl/hb_retnl to  HB_PARHANDLE/HB_RETHANDLE
-      
+
   * source/hedit.prg
     ! changes for allow correct usage when  HWG_USE_POINTER_ITEM is used on hwgui compilation
   * source/hcwindow.prg
@@ -218,7 +225,7 @@
     Upate makefiles
   * source\winreg.c
     Added functions Registry functions for [x]Harbour
-    Borred contrib xHarbour What32    
+    Borred contrib xHarbour What32
 
 2008-09-28 00:18 UTC+0100 Francesco Perillo <fperillo at gmail dot com>
   * source\hprinter.prg
@@ -256,7 +263,7 @@
     * fixed DlgCommand() to correctly set the focus also in browse edit
   * source\hedit.prg
     * fixed CheckFocus() to correctly set the focus also in browse edit
-  
+
 2008-09-25 07:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hsplash.prg
     ! Destroyed timer after viewing splash, that have a conflict
@@ -289,7 +296,7 @@
 	  STYLE values should be ORed and not added !
 
 2008-09-21 01:19 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
-  Changes made by Luis Fernando Basso 
+  Changes made by Luis Fernando Basso
   * source/hedit.prg
   * source/hdialog.prg
     * re-applied patches removed by Giuseppe and added code to make them
@@ -316,18 +323,18 @@
       not work test with browse_1.prg. REVERTED.
 
 2008-09-20 14:52 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
-  Changes made by Luis Fernando Basso 
+  Changes made by Luis Fernando Basso
   * source/hedit.prg
   * source/hdialog.prg
   * source/hcontrol.prg
      * changes in the GET system to correct wrong behaviour in some cases
 	   (VALID was called at dialog init time, WHEN during dialog closing time)
   * samples/get/testget4.prg
-     * sample used to test the above changes - and future ones 
+     * sample used to test the above changes - and future ones
 
 2008-09-20 11:40 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * image/pim.ico
-    ! was lost 
+    ! was lost
   * source/hdialog.prg
     ! Reverted some modify of La Cecilia of 08/09/08 in samples/browse_1.prg
       in edit browse when and valid aren't executed.
@@ -337,7 +344,7 @@
   * samples\bld.bat
     * striped out the batch for sample building using Harbour and changed bld.bat
       to compile using Harbour or xHarbour depending on environment settings
- 
+
 2008-09-20 01:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * gtk\samples\progbars.prg
   * samples\all\test1.prg
@@ -361,7 +368,7 @@
 
 2008-09-19 07:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hdialog.prg
-    ! In the first control of a dialog the event onGotFocus was not always executed. 
+    ! In the first control of a dialog the event onGotFocus was not always executed.
       When the dialog was activeted.
 
 2008-09-19 00:22 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
@@ -372,7 +379,7 @@
 	* Since you can set a font for the header, you have to use this font
 	  for header height calculation,column dragging, clicking etc
 	* If you change header font at run-time you have to call ::Refresh
-	  example: 
+	  example:
         oBrw1:oHeadFont := HFont():Add( 'Times New Roman',0,-12,400,,,)
         oBrw1:Refresh()
     * dragging/resizing a column with ON CLICK now works
@@ -399,7 +406,7 @@
 
 2008-09-19 15:55 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
    * Replace the formatation folder samples
-   
+
 2008-09-11 14:00 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
   * makefile.vc
     * Warnings now cause errors - /es2.

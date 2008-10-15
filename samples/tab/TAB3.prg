@@ -9,7 +9,7 @@ cUser:="1"
 
    INIT DIALOG oDlg TITLE "Form1" ;
         AT 422,66 SIZE 500,400 ;
-        ON INIT {|| onDlgInit }
+        ON INIT {|| onDlgInit() }
 
 
   RADIOGROUP
@@ -19,24 +19,24 @@ cUser:="1"
         ON CLICK {|| oRadiobutton2_onClick(  ) }
   END RADIOGROUP SELECTED 1
 
-   @ 315,43 SAY oL      CAPTION "Label" SIZE 147,22  
+   @ 315,43 SAY oL      CAPTION "Label" SIZE 147,22
    @ 27,113 TAB oPage  ITEMS {} SIZE 455,238   ;
         ON INIT {|oCtrl| oCtrl:bChange:={|o,nPage|   Protek(o,nPage) } }
-  BEGIN PAGE 'Tab1' OF oPage 
-   @ 40,62 SAY oLabel1 CAPTION "Here Page 1" OF oPage  SIZE 225,22  
-  END PAGE OF oPage 
+  BEGIN PAGE 'Tab1' OF oPage
+   @ 40,62 SAY oLabel1 CAPTION "Here Page 1" OF oPage  SIZE 225,22
+  END PAGE OF oPage
 
-  BEGIN PAGE 'Tab2' OF oPage 
-   @ 75,105 SAY oLabel2 CAPTION "Here Page 2 " OF oPage  SIZE 225,22  
-  END PAGE OF oPage 
+  BEGIN PAGE 'Tab2' OF oPage
+   @ 75,105 SAY oLabel2 CAPTION "Here Page 2 " OF oPage  SIZE 225,22
+  END PAGE OF oPage
 
-  BEGIN PAGE 'Tab3' OF oPage 
-   @ 59,69 SAY oLabel3 CAPTION "Here Page 3 " OF oPage  SIZE 225,22  
-  END PAGE OF oPage 
+  BEGIN PAGE 'Tab3' OF oPage
+   @ 59,69 SAY oLabel3 CAPTION "Here Page 3 " OF oPage  SIZE 225,22
+  END PAGE OF oPage
 
-  BEGIN PAGE 'Info' OF oPage 
-   @ 88,64 SAY oLabel4 CAPTION "Demo Proteksi, User 1 only 1, 3, User 2 only 2, 3  " OF oPage  SIZE 186,73  
-  END PAGE OF oPage 
+  BEGIN PAGE 'Info' OF oPage
+   @ 88,64 SAY oLabel4 CAPTION "Demo Proteksi, User 1 only 1, 3, User 2 only 2, 3  " OF oPage  SIZE 186,73
+  END PAGE OF oPage
 
    ACTIVATE DIALOG oDlg
 RETURN
@@ -48,11 +48,11 @@ STATIC function protek
 
  if cUser=="1" .and. n==2
     lOpen:=.f.
- endif 
+ endif
 
 
  if cUser=="2" .and. n==1
-    lOpen:=.f.    
+    lOpen:=.f.
  endif
 
 

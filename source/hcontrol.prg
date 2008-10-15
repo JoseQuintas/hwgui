@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.92 2008-10-15 13:04:39 alexstrickland Exp $
+ * $Id: hcontrol.prg,v 1.93 2008-10-15 13:29:25 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -661,7 +661,7 @@ METHOD Notify( lParam ) CLASS HButton
    LOCAL ndown := getkeystate( VK_RIGHT ) + getkeystate( VK_DOWN ) + GetKeyState( VK_TAB )
    LOCAL nSkip := 0
    //
-   IF lParam = WM_KEYDOWN
+   IF PtrtoUlong(lParam) = WM_KEYDOWN
       IF ::oParent:Classname = "HTAB"
          IF getfocus() != ::handle
             InvalidateRect( ::handle, 0 )

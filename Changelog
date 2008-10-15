@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.936 2008-10-15 13:04:38 alexstrickland Exp $
+ * $Id: Changelog,v 1.937 2008-10-15 13:29:25 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,7 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-10-15 10:20 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
+  * source/hcontrol.prg
+    source/hcwindow.prg
+     ! changes for allow correct usage when  HWG_USE_POINTER_ITEM is used on
+       hwgui compilation
+
 2008-10-15 15:00 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
+
   * source\hcontrol.prg
     - Removed definitions of STN_CLICKED, STN_DBLCLK and STN_ENABLE.
   * source\hsayimg.prg

@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.29 2008-10-09 20:21:50 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.30 2008-10-15 13:29:25 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -300,7 +300,7 @@ STATIC FUNCTION onNotify( oWnd, wParam, lParam )
    IF oCtrl != NIL
 
       IF __ObjHasMsg( oCtrl, "NOTIFY" )
-         RETURN oCtrl:Notify( PTRTOULONG( lParam ))
+         RETURN oCtrl:Notify( lParam )
       ELSE
          nCode := GetNotifyCode( lParam )
          IF nCode == EN_PROTECTED

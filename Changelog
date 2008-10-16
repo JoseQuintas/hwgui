@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.938 2008-10-15 13:32:35 alexstrickland Exp $
+ * $Id: Changelog,v 1.939 2008-10-16 02:33:17 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-15 23:27 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hsayimg.prg
+    * added two parameters that lacked to ADD in SUPER: bClick, bDblClick 
+	  METHOD NEW CLASS HSayBmp,HSayImage
 
 2008-10-15 15:30 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
   * include\guilib.ch

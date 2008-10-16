@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.21 2008-10-15 13:04:39 alexstrickland Exp $
+ * $Id: hsayimg.prg,v 1.22 2008-10-16 02:33:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -102,7 +102,7 @@ ENDCLASS
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
                   bSize,ctooltip,bClick, bDblClick ) CLASS HSayBmp
 
-   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctooltip )
+   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctooltip,bClick, bDblClick )
 
    ::bPaint := {|o,lpdis|o:Paint(lpdis)}
 
@@ -176,7 +176,7 @@ ENDCLASS
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
                   bSize,ctooltip,lOEM,bClick, bDblClick ) CLASS HSayIcon
 
-   Super:New( oWndParent,nId,SS_ICON,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctooltip )
+   Super:New( oWndParent,nId,SS_ICON,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctooltip,bClick, bDblClick)
 
    IF lRes == Nil ; lRes := .F. ; ENDIF
    IF lOEM == Nil ; lOEM := .F. ; ENDIF

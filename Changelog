@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.940 2008-10-16 03:00:31 lfbasso Exp $
+ * $Id: Changelog,v 1.941 2008-10-16 09:36:52 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,37 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-16 11:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * Makefile.scr
+  * makedll.bc
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * makefile.vc
+  * makefile.wc
+    * removed registry.c from library
+    + added winreg.c to library where lacking
+  * include\guilib.ch
+    * restored lOEM parameter in @ .... SAY ICON command destroyed by a 
+      not merged previous commit (please, pay attention to update from
+      cvs repository and be sure to sync changes before commit)
+  * samples\animation\tstAnimation.prg
+    * fixed parent of controls (must be the panel, not the main window)
+  * source\hanimat.prg
+    * fixed brush and backcolor properties to inherit parent ones
+  * source\hcheck.prg
+    * purged unused variable
+  * source\hcontrol.prg
+    * fixed lack of bGFocus parameter in redefine method of hButtonEx
+  * source\winreg.c
+    * added a cast
+      NOTE: about this module i think better would be to include in
+            procmisc lib, as isn't strictly GUI related)
+  - source\registry.c
+    - removed form library as some functions is clashing with those
+      in recently added winreg.c module and this contains similar
+      or same functions
 
 2008-10-15 23:57 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
@@ -31,7 +62,6 @@
        hwgui compilation
 
 2008-10-15 15:00 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
-
   * source\hcontrol.prg
     - Removed definitions of STN_CLICKED, STN_DBLCLK and STN_ENABLE.
   * source\hsayimg.prg
@@ -48,7 +78,6 @@
     * Changed OnDlgInit to OnDlgInit() in code block.
 
 2008-10-15 03:44 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-
   * include\guilib.ch
     + added ON OTHER MESSAGES clause for the SAY
 	+ added ON CLICK and ON DBLCLICK clause for the SAY, BITMAP, ICON
@@ -103,7 +132,6 @@
       should be TEST for
       if var >0 change to !empty(var)
       if var == 0 change to empty(var)
-
 
 2008-10-12 11:44 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\htab.prg

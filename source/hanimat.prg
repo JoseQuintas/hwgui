@@ -1,5 +1,5 @@
 /*
- * $Id: hanimat.prg,v 1.8 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hanimat.prg,v 1.9 2008-10-16 09:36:53 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HAnimation class
@@ -42,7 +42,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight )
    ::xResID    := xResID
    ::cFileName := cFilename
-
+	::brush     := ::oParent:brush
+	::bColor    := ::oParent:bColor
    HWG_InitCommonControlsEx()
    ::Activate()
 

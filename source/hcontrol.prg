@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.93 2008-10-15 13:29:25 lculik Exp $
+ * $Id: hcontrol.prg,v 1.94 2008-10-16 09:36:53 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -810,7 +810,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
 
 
    ::Super:Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
-                     cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle, hIcon  )
+                     cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle, hIcon, bGFocus  )
    ::title   := cCaption
 
    ::Caption := cCaption

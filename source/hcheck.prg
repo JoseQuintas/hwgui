@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.24 2008-10-15 07:25:57 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.25 2008-10-16 09:36:53 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -156,7 +156,7 @@ Local nSkip := 0
 
 
 STATIC FUNCTION __When( oCtrl )
-   LOCAL res := .t., oParent, nSkip := 1, aMsgs
+   LOCAL res := .t., oParent, nSkip := 1
    
 	IF !CheckFocus(oCtrl, .f.)
 	   RETURN .t.

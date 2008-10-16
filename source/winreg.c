@@ -258,7 +258,7 @@ HB_FUNC( REGDELETEKEY )
 
 HB_FUNC( REGDELETEVALUE )
 {
-   if ( RegDeleteValue( ( HKEY ) hb_parnl( 1 ), hb_parcx( 2 ) ) == ERROR_SUCCESS )
+   if ( RegDeleteValue( ( HKEY ) hb_parnl( 1 ), ( LPTSTR ) hb_parcx( 2 ) ) == ERROR_SUCCESS )
      {
         hb_retnl( 0 );
      }

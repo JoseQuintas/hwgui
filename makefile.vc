@@ -1,4 +1,4 @@
-# $Id: makefile.vc,v 1.30 2008-10-02 14:21:00 sandrorrfreire Exp $
+# $Id: makefile.vc,v 1.31 2008-10-16 09:36:52 mlacecilia Exp $
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -57,7 +57,6 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\message.obj \
    $(HWGUI_OBJ_DIR)\errorsys.obj \
    $(HWGUI_OBJ_DIR)\misc.obj \
-   $(HWGUI_OBJ_DIR)\registry.obj \
    $(HWGUI_OBJ_DIR)\nice.obj \
    $(HWGUI_OBJ_DIR)\resource.obj \
    $(HWGUI_OBJ_DIR)\richedit.obj \

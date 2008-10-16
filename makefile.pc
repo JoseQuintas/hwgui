@@ -1,4 +1,4 @@
-# $Id: makefile.pc,v 1.20 2008-10-02 14:21:00 sandrorrfreire Exp $
+# $Id: makefile.pc,v 1.21 2008-10-16 09:36:52 mlacecilia Exp $
 # makefile for Pelles C 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -69,7 +69,6 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\nice.obj \
    $(OBJ_DIR)\pager.obj \
-   $(OBJ_DIR)\registry.obj \
    $(OBJ_DIR)\richedit.obj \
    $(OBJ_DIR)\shellapi.obj  \
    $(OBJ_DIR)\theme.obj \
@@ -486,9 +485,6 @@ $(OBJ_DIR)\message.obj : $(SRC_DIR)\message.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\misc.obj : $(SRC_DIR)\misc.c
-   $(CC_EXE) $(CFLAGS) /Fo$@ $**
-
-$(OBJ_DIR)\registry.obj : $(SRC_DIR)\registry.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\resource.obj : $(SRC_DIR)\resource.c

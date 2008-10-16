@@ -1,4 +1,4 @@
-# $Id: makefile.wc,v 1.18 2008-09-10 18:22:31 mlacecilia Exp $
+# $Id: makefile.wc,v 1.19 2008-10-16 09:36:52 mlacecilia Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -65,7 +65,6 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\message.obj \
    $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\nice.obj \
-   $(OBJ_DIR)\registry.obj \
    $(OBJ_DIR)\richedit.obj \
    $(OBJ_DIR)\shellapi.obj  \
    $(OBJ_DIR)\theme.obj \
@@ -467,9 +466,6 @@ $(OBJ_DIR)\misc.obj : $(SRC_DIR)\misc.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\nice.obj : $(SRC_DIR)\nice.c
-   $(CC_EXE) $(CFLAGS) -fo$@ $**
-
-$(OBJ_DIR)\registry.obj : $(SRC_DIR)\registry.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\resource.obj : $(SRC_DIR)\resource.c

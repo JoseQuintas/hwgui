@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.939 2008-10-16 02:33:17 lfbasso Exp $
+ * $Id: Changelog,v 1.940 2008-10-16 03:00:31 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-10-15 23:57 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    * fix clause  [ ON OTHER MESSAGES <bOther>] in command  @ <x>,<y>  [ <oSay> CAPTION ] <caption> ;
+	 
 2008-10-15 23:27 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hsayimg.prg
     * added two parameters that lacked to ADD in SUPER: bClick, bDblClick 

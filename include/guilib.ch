@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.118 2008-10-15 13:32:35 alexstrickland Exp $
+ *$Id: guilib.ch,v 1.119 2008-10-16 03:00:31 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -249,7 +249,7 @@
             [ ON PAINT <bDraw> ]       ;
             [ ON CLICK <bClick> ]      ;
             [ ON DBLCLICK <bDblClick> ];
-            [ ON OTHER MESSAGE <bOther>] ;
+            [ ON OTHER MESSAGES <bOther>] ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;

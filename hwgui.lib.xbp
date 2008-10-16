@@ -12,7 +12,7 @@ LPRG_DEBUG = .T.
 LUSEDLL = .F.
 MAPFILE = 
 MYC_FLAGS =  
-MYDEFINES = 
+MYDEFINES = HWG_USE_POINTER_ITEM
 MYLINK_FLAGS = 
 MYPRG_FLAGS = 
 MYRC_FLAGS = 
@@ -25,10 +25,10 @@ SLY_OUTPUTFOLDER =
 STARTIN = 
 TARGETFOLDER = 
 
-[source\*.*]
+[\hwgui\source\*.*]
 
-[source\procmisc\*.*]
+[\hwgui\source\procmisc\*.*]
 
-[source\xml\*.*]
+[\hwgui\source\xml\*.*]
 
-[source\qhtm\*.*]
+[\hwgui\source\qhtm\*.*]

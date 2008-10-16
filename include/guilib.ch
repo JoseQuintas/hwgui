@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.120 2008-10-16 09:36:53 mlacecilia Exp $
+ *$Id: guilib.ch,v 1.121 2008-10-16 16:16:16 lculik Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -1637,6 +1637,16 @@ Added by Marcos Antonio Gambeta
             [ BACKCOLOR <bkcolorn> ]]    ;
              => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> [,<cHeadern>,<nn>,<colorn>,<bkcolorn> ] \})
 
+#xcommand ADDROWEX TO GRID <oGrid>        ;
+            [ HEADER <cHeader>         ;
+            [ BITMAP <n> ]              ;
+            [ COLOR <color> ]           ;
+            [ BACKCOLOR <bkcolor> ]][,     ;
+             HEADER <cHeadern>        ;
+            [ BITMAP <nn> ]             ;
+            [ COLOR <colorn> ]          ;
+            [ BACKCOLOR <bkcolorn> ]]    ;
+             => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> [,<cHeadern>,<nn>,<colorn>,<bkcolorn> ] \})
 
 #xcommand REDEFINE TAB  <oSay>  ;
             [ OF <oWnd> ]              ;
@@ -1647,6 +1657,17 @@ Added by Marcos Antonio Gambeta
             [ ON CHANGE <bChange> ]    ;
           => ;
     [<oSay> := ] Htab():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<bChange> )
+
+#xcommand ADDROWEX  <oGrid>        ;
+             HEADER <cHeader>         ;
+            [ BITMAP <n> ]              ;
+            [ COLOR <color> ]           ;
+            [ BACKCOLOR <bkcolor> ]     ;
+            [ HEADER <cHeadern> ]       ;
+            [ BITMAP <nn> ]             ;
+            [ COLOR <colorn> ]          ;
+            [ BACKCOLOR <bkcolorn> ]    ;
+             => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> [, <cHeadern>,<nn>,<colorn>,<bkcolorn>] \})
 
 
 #xcommand REDEFINE STATUS  <oSay>  ;

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.69 2008-10-09 20:21:50 lfbasso Exp $
+ * $Id: window.c,v 1.70 2008-10-16 16:16:16 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -484,12 +484,14 @@ HB_FUNC( SENDMESSAGE )
 
 HB_FUNC( POSTMESSAGE )
 {
-    hb_retnl( (LONG) PostMessage(
+
+    hb_retnl( (LONG)  PostMessage(
                        (HWND) HB_PARHANDLE( 1 ),	// handle of destination window
                        (UINT) hb_parni( 2 ),	// message to send
-                       (WPARAM) hb_parnl( 3 ),	// first message parameter
+                       ISPOINTER(3) ? (WPARAM)HB_PARHANDLE(3) : (WPARAM)hb_parnl( 3 ) ,  // first message parameter
                        (LPARAM) hb_parnl( 4 ) 	// second message parameter
                      ) );
+
 }
 
 HB_FUNC( SETFOCUS )
@@ -1073,7 +1075,7 @@ HB_FUNC( ISWINDOW )
 
 HB_FUNC( MINMAXWINDOW )
 {
-   MINMAXINFO FAR* lpMMI = (MINMAXINFO *) HB_PARHANDLE( 2 ) ;
+   MINMAXINFO * lpMMI = (MINMAXINFO *) HB_PARHANDLE( 2 ) ;
    DWORD m_fxMin;
    DWORD m_fyMin;
    DWORD m_fxMax;

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.943 2008-10-20 08:55:36 omm Exp $
+ * $Id: Changelog,v 1.944 2008-10-20 11:05:40 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-10-20 09:05 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
+  * source/control.c 
+    Added function XHB_BITTEST, user in xHarbour
+  * source/hcontrol.prg
+    Replace hb_inline with XHB_BITTEST
+    Necessary to work for old versions xHarbour  
+     
 2008-10-20 12:00 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
   * hwgui/source/hgridex.prg
     ! TraceLog() call removed

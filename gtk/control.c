@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.33 2008-04-28 01:20:20 lculik Exp $
+ * $Id: control.c,v 1.34 2008-10-20 15:11:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -835,7 +835,7 @@ static void tabchange_clicked(GtkNotebook *item,
   gpointer dwNewLong = g_object_get_data( (GObject*) item, "obj" );    
   PHB_ITEM pObject = (PHB_ITEM) dwNewLong ;
   PHB_ITEM Disk=hb_itemPutNL( NULL, pagenum+1);
-  TraceLog(  "bb.txt","%lu\r\n",pagenum);  
+//  TraceLog(  "bb.txt","%lu\r\n",pagenum);
   hb_vmEvalBlockV( (PHB_ITEM) pData, 2,pObject,Disk  );
   hb_itemRelease( Disk );
 
@@ -957,7 +957,7 @@ HB_FUNC(SETFGCOLOR)
      label = gtk_bin_get_child(GTK_BIN(hCtrl));               
   else     
      label = g_object_get_data( (GObject*) hCtrl, "label" );
-  TraceLog("cor.txt","cor = %lu\n" , hColor);
+//  TraceLog("cor.txt","cor = %lu\n" , hColor);
   hwg_parse_color( hColor, &fColor );
   gtk_widget_modify_fg(label,GTK_STATE_NORMAL,&fColor);
 //  gtk_widget_modify_fg(hCtrl,GTK_STATE_NORMAL,&fColor);  
@@ -969,7 +969,7 @@ HB_FUNC(SETBGCOLOR)
   GdkColor fColor;
   GtkWidget *label ;
   ULONG hColor = hb_parnl( 2 ) ;
-  TraceLog("cor.txt","cor = %lu control = %lu\n" , hColor,hCtrl);
+//  TraceLog("cor.txt","cor = %lu control = %lu\n" , hColor,hCtrl);
   hwg_parse_color( hColor, &fColor );
 //  label = g_object_get_data( (GObject*) hCtrl, "label" );  
   if (GTK_IS_BUTTON(hCtrl) )

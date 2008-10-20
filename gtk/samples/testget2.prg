@@ -1,5 +1,5 @@
 /*
- *$Id: testget2.prg,v 1.1 2005-01-12 11:56:35 alkresin Exp $
+ *$Id: testget2.prg,v 1.2 2008-10-20 15:11:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code: 
  * testget2.prg - GET system and Timer in dialog box sample
@@ -84,7 +84,7 @@ Private oSayT
 
    oTimer:End()
 
-   writelog( "End" )
+   // writelog( "End" )
    IF oModDlg:lResult
       MsgInfo( e1 + chr(10) + chr(13) +       ;
                e6 + chr(10) + chr(13) +       ;
@@ -101,7 +101,7 @@ Return Nil
 Static Function SetTimer( oDlg,oTimer )
 
    SET TIMER oTimer OF oDlg VALUE 1000 ACTION {||TimerFunc()}
-   writelog( valtype( oTimer ) )
+//   writelog( valtype( oTimer ) )
 Return Nil
 
 Static Function TimerFunc()

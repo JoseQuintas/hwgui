@@ -1,5 +1,5 @@
 /*
- * $Id: cxshade.c,v 1.5 2008-05-27 12:10:46 lculik Exp $
+ * $Id: cxshade.c,v 1.6 2008-10-20 15:11:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level functions for special drawing effects
@@ -438,11 +438,7 @@ void cxshade_SetShade( PCXSHADE pshade, UINT shadeID, BYTE palette, BYTE granula
    long a, x, y, d, xs, idxmax, idxmin;
    long aa,bb;
    int grainx2;
-   /*
-   char ss[100];
-   sprintf( ss, "\r\nCOLOR_BTNHIGHLIGHT: %lu COLOR_BTNFACE: %lu COLOR_BTNSHADOW: %lu",hicr,midcr,locr );
-   writelog(ss);
-   */
+
    if( prect )
       SetRect( &(pshade->m_rect), prect->left, prect->top, prect->right, prect->bottom );
    sYSize = pshade->m_rect.bottom-pshade->m_rect.top;

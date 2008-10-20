@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.27 2008-09-10 18:22:34 mlacecilia Exp $
+ * $Id: editor.prg,v 1.28 2008-10-20 15:11:50 mlacecilia Exp $
  *
  * Designer
  * Simple code editor
@@ -261,12 +261,6 @@ Local arrHi, oTheme := HDTheme():aThemes[HDTheme():nSelected]
    oEdit:SetText( cText )
    cText := re_GetTextRange( oEdit:handle,1,nTextLength )
    IF !Empty( arrHi := CreateHiLight( cText ) )
-      /*
-      writelog( "re_SetCharFormat "+Str(Len(arrhi)) )
-      for i := 1 to len( arrhi )
-         writelog( str(arrhi[i,1])+" "+str(arrhi[i,2])+": "+str(arrhi[i,3])+iif(arrhi[i,6]!=Nil.AND.arrhi[i,6]," T","") )
-      next
-      */
       re_SetCharFormat( oEdit:handle,arrHi )
    ENDIF
    SendMessage( oEdit:handle, EM_SETEVENTMASK, 0, ENM_CHANGE + ENM_SELCHANGE )
@@ -297,12 +291,6 @@ Local  nEditPos1, nEditPos2
          Aadd( arr, { nLinePos,nLinePos+Len(cBuffer), ;
             oTheme:normal[1],,,oTheme:normal[3],oTheme:normal[4], } )
          HiLightString( cBuffer, arr, nLinePos )
-         /*
-         writelog( "re_SetCharFormat "+Str(Len(arr)) )
-         for i := 1 to len( arr )
-            writelog( str(arr[i,1])+" "+str(arr[i,2])+": "+str(arr[i,3])+iif(arr[i,6]!=Nil.AND.arr[i,6]," T","") )
-         next
-         */
          IF !Empty( arr )
             re_SetCharFormat( oEdit:handle,arr )
          ENDIF

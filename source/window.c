@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.70 2008-10-16 16:16:16 lculik Exp $
+ * $Id: window.c,v 1.71 2008-10-20 15:11:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -36,7 +36,7 @@
 
 #define  FIRST_MDICHILD_ID     501
 
-void writelog( char* s );
+// void writelog( char* s );
 void SetWindowObject( HWND hWnd, PHB_ITEM pObject );
 
 PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
@@ -50,7 +50,7 @@ LRESULT CALLBACK MDIChildWndProc (HWND, UINT, WPARAM, LPARAM) ;
 extern HWND * aDialogs;
 HWND hMytoolMenu = NULL;
 static HHOOK			OrigDockHookProc;
-static HHOOK                    OrigButtonDockHookProc;
+static HHOOK         OrigButtonDockHookProc;
 extern int iDialogs;
 
 HWND aWindows[2] = { 0,0 };

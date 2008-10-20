@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.45 2008-10-06 12:03:23 lculik Exp $
+ * $Id: misc.c,v 1.46 2008-10-20 15:11:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -750,3 +750,7 @@ HB_FUNC(PTRTOULONG)
 {
    hb_retnl( (LONG) ( (ISPOINTER(1) ? PtrToUlong(hb_parptr(1 ) ) :hb_parnl( 1 ))));
 }
+
+HB_FUNC( OUTPUTDEBUGSTRING )
+{
+    OutputDebugString( (LPCSTR) hb_parcx( 1 ) ) ; }

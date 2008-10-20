@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.27 2008-04-28 01:20:20 lculik Exp $
+ * $Id: window.c,v 1.28 2008-10-20 15:11:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -478,7 +478,7 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
          p1 = (event->type==GDK_KEY_PRESS)? WM_KEYDOWN : WM_KEYUP;
          p2 = ((GdkEventKey*)event)->keyval;
 	 uchar= gdk_keyval_to_unicode(((GdkEventKey*)event)->keyval);
-	      	 TraceLog("cc.txt"," p2= %lu unicode = U+%04x \n",p2,uchar);	 
+ 	 // TraceLog("cc.txt"," p2= %lu unicode = U+%04x \n",p2,uchar);
 	 //if (p2 == GDK_dead_acute)
 //	    p2 == GDK_acute;
 	 if ( p2 == GDK_asciitilde  ||  p2 == GDK_asciicircum  ||  p2 == GDK_grave ||  p2 == GDK_acute ||  p2 == GDK_diaeresis || p2 == GDK_dead_acute ||	 p2 ==GDK_dead_tilde || p2==GDK_dead_circumflex || p2==GDK_dead_grave || p2 == GDK_dead_diaeresis)	

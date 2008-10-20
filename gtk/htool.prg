@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.1 2008-03-29 14:50:20 lculik Exp $
+ * $Id: htool.prg,v 1.2 2008-10-20 15:11:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -60,10 +60,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit
 
 Return Self
 
-
-
 METHOD Activate CLASS hToolBar
-  Tracelog(  ::oParent:handle  )
    IF !empty(::oParent:handle )
 
       ::handle := CREATETOOLBAR(::oParent:handle )
@@ -107,13 +104,11 @@ Local aItem
               AAdd( aButton, ::aItem[ n , 1 ])
            ENDIF
 	elseif  valtype( ::aItem[ n, 1 ] ) == "C"
-	   Tracelog(::aItem[ n, 1 ] )
 	   if ".ico" in lower(::aItem[ n, 1 ])
 	      oImage:=hIcon():AddFile( ::aItem[ n, 1 ] )
 	   else      
    	      oImage:=hBitmap():AddFile( ::aItem[ n, 1 ] )
 	   endif      
-	   tracelog(valtoprg(oimage))
 	   if valtype(oImage) =="O"
  	      aadd(aButton,Oimage:handle)
 	      ::aItem[ n, 1 ] := Oimage:handle
@@ -173,7 +168,6 @@ Local aItem
       endif
 
    ENDIF
-Tracelog(valtoprg(::aItem))
 RETURN Nil
 /*
 METHOD Notify( lParam ) CLASS hToolBar
@@ -216,12 +210,10 @@ METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu) CLASS hToolBar
    DEFAULT c to ""
    DEFAULT ctext to ""
    AAdd( ::aItem ,{ nBitIp, nId, bState, bStyle, 0, cText, bClick, c, aMenu, hMenu ,0} )
-   tracelog(valtoprg(::aItem ))
 RETURN Self
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HToolbar
 Local nPos
-Tracelog(  msg, wParam, lParam  )
    IF msg == WM_LBUTTONUP
       nPos := ascan(::aItem,{|x| x[2] == wParam})
       if nPos>0

@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.100 2008-10-14 15:19:24 lculik Exp $
+ *$Id: hedit.prg,v 1.101 2008-10-20 15:11:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -74,7 +74,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
             tcolor, bcolor, cPicture, lNoBorder, nMaxLength, lPassword, bKeyDown, bChange ) CLASS HEdit
 
    nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), ;
-                        WS_TABSTOP + IIf( lNoBorder == Nil.OR. ! lNoBorder, WS_BORDER, 0 ) + ;
+                        WS_TABSTOP + IIf( lNoBorder == Nil .OR. ! lNoBorder, WS_BORDER, 0 ) + ;
                         IIf( lPassword == Nil .or. ! lPassword, 0, ES_PASSWORD )  )
 
 *   IF owndParent:oParent != Nil
@@ -131,7 +131,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::bChange := bChange
       ::oParent:AddEvent( EN_CHANGE, self,{| | ::Change( )},,"onChange"  )
    ENDIF
-   ::bColorOld:=::bColor
+   ::bColorOld := ::bColor
 
    RETURN Self
 
@@ -343,9 +343,9 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
    IF bSetGet != Nil
       ::bGetFocus := bGfocus
       ::bLostFocus := bLfocus
-      ::oParent:AddEvent( EN_SETFOCUS, self, { | o, id | ::When( o:FindControl( id ) ) },,"onGotFocus" )
-      ::oParent:AddEvent( EN_KILLFOCUS, self, { | o, id | ::Valid( o:FindControl( id ) ) },,"onLostFocus" )
-      ::bValid := { | o | ::Valid( o ) }
+      ::oParent:AddEvent( EN_SETFOCUS, self, { | | ::When( ) },,"onGotFocus" )
+      ::oParent:AddEvent( EN_KILLFOCUS, self, { | | ::Valid( ) },,"onLostFocus" )
+      ::bValid := { | | ::Valid() }
    ELSE
       IF bGfocus != Nil
          ::oParent:AddEvent( EN_SETFOCUS, self, bGfocus,,"onGotFocus"  )
@@ -761,7 +761,7 @@ METHOD When() CLASS HEdit
       ::oparent:lSuspendMsgsHandling := .T.
       ::lnoValid := .T.
       res := Eval( ::bGetFocus, ::title, Self )
-      res := IIF(VALTYPE(res) = "L", res, .T.)
+      res := IIF(VALTYPE(res) == "L", res, .T.)
       ::lnoValid := ! res
       IF ! res
          oParent := ParentGetDialog(self)
@@ -1025,13 +1025,13 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
 	   oCtrl:nGetSkip := nSkip
 	 ENDIF  
    IF !empty(nextHandle)
-	   IF oParent:classname = "HDIALOG" 
-	       PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
+	   IF oParent:classname == "HDIALOG"
+	       PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle, 1 )
 	   ELSE
-       IF oparent:handle = getfocus()
-          PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle , 1 )
+       IF oParent:handle == getfocus()
+          PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle, 1 )
        ELSE
-			    PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
+			 PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle, 1 )
        ENDIF
      ENDIF 
    ENDIF
@@ -1047,7 +1047,7 @@ STATIC FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
       nPage := oParent:GetActivePage(@nFirst, @nLast)
       IF !oParent:lResourceTab  && TAB without RC
       	i :=  AScan( oParent:acontrols, { | o | o:handle == hCtrl } )
-      	i += IIF( i = 0, nFirst, nSkip) //nLast, nSkip)
+      	i += IIF( i == 0, nFirst, nSkip) //nLast, nSkip)
       	IF i >= nFirst .and. i <= nLast
            nexthandle := GetNextDlgTabItem ( oParent:handle , hctrl, ( nSkip < 0 ) )
           IF  i != AScan( oParent:acontrols, { | o | o:handle == NEXTHANDLE } ) .AND. oParent:acontrols[ i ]:CLASSNAME = "HRADIO"
@@ -1059,7 +1059,7 @@ STATIC FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
       	SETFOCUS(oParent:aPages[nPage,1]:aControls[1]:Handle)
         RETURN 0
 			ENDIF	
-      IF (nSkip < 0 .AND. ( k > i .OR. k = 0)) .OR. (nSkip > 0 .AND. i > k)
+      IF (nSkip < 0 .AND. ( k > i .OR. k == 0)) .OR. (nSkip > 0 .AND. i > k)
         nexthandle := GetNextDlgTabItem ( GetActiveWindow(), hctrl, (nSkip < 0) )
       ENDIF
    ENDIF
@@ -1074,12 +1074,13 @@ Local nextHandle :=0,  i
    ENDIF
 
    i := AScan( oparent:acontrols, { | o | o:handle == hCtrl } )
-   nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
    IF i > 0 .AND. oParent:acontrols[ i ]:CLASSNAME = "HRADIO"
        nexthandle := GetNextDlgGroupItem( oParent:handle , hctrl,( nSkip < 0 ) )
+	ELSE
+       nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )
    ENDIF
-   i := AScan( oparent:acontrols, { | o | o:handle == NEXTHANDLE } )
-   
+//    i := AScan( oparent:acontrols, { | o | o:handle == nexthandle } )
+
 RETURN nextHandle
 
 METHOD SetGetUpdated() CLASS HEdit

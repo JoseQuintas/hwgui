@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.8 2008-03-29 14:50:20 lculik Exp $
+ * $Id: drawwidg.prg,v 1.9 2008-10-20 15:11:50 mlacecilia Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -488,9 +488,9 @@ Local i, aBmpSize
 //   ::handle := OpenImage( name )
 //   ::name := name
 //   Aadd( ::aIcons,Self )
-   Tracelog("name = ",name)
+//  Tracelog("name = ",name)
    ::handle := OpenImage( name )
-   tracelog("handle = ",::handle)
+//   tracelog("handle = ",::handle)
    IF !Empty( ::handle )
       ::name := name
       aBmpSize  := GetBitmapSize( ::handle )

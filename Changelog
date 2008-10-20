@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.945 2008-10-20 11:26:32 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.946 2008-10-20 15:11:50 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,29 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-20 17:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * gtk\control.c
+  * gtk\drawwidg.prg
+  * gtk\htool.prg
+  * gtk\samples\testget2.prg
+  * gtk\window.c
+  * source\cxshade.c
+  * source\window.c
+  * utils\designer\editor.prg
+    * commented/removed some tracelog/writelog calls
+  * source\hedit.prg
+    * avoided some unused parameters in code blocks
+    * optimized NextFocus() avoiding double evaluation for controls other than
+      radiobuttons
+  * source\misc.c
+    + added the OutputDebugString( cString ) function.
+      As suggested by Alex Strickland on hwgui developers newsletter, this 
+      function is very useful if used in conjunction with ..."DebugView.exe from 
+      www.sysinternals.com (now part of Microsoft). This way you have a log that
+      is onscreen immediately and never gets in the way of you application
+      (focus etc). Plus, if you leave it enabled in your application there is no
+      harm done, unless your users are running a debug console."
 
 2008-10-20 09:25 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * source/hpanel.prg
@@ -53,10 +76,10 @@
   * source\winreg.c
     * added a cast
       NOTE: about this module i think better would be to include in
-            procmisc lib, as isn't strictly GUI related)
+            procmisc lib, as isn't strictly GUI related
   - source\registry.c
-    - removed form library as some functions is clashing with those
-      in recently added winreg.c module and this contains similar
+    - removed from library as some functions is clashing with those
+      recently added winreg.c module and this contains similar
       or same functions
 
 2008-10-15 23:57 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>

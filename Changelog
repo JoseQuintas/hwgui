@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.942 2008-10-16 16:16:16 lculik Exp $
+ * $Id: Changelog,v 1.943 2008-10-20 08:55:36 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-20 12:00 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
+  * hwgui/source/hgridex.prg
+    ! TraceLog() call removed
+
 2008-10-16 12:20 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/window.c
     ! fix to postmessage when  HWG_USE_POINTER_ITEM is used on
@@ -23,7 +28,7 @@
     * removed registry.c from library
     + added winreg.c to library where lacking
   * include\guilib.ch
-    * restored lOEM parameter in @ .... SAY ICON command destroyed by a 
+    * restored lOEM parameter in @ .... SAY ICON command destroyed by a
       not merged previous commit (please, pay attention to update from
       cvs repository and be sure to sync changes before commit)
   * samples\animation\tstAnimation.prg
@@ -46,11 +51,11 @@
 2008-10-15 23:57 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     * fix clause  [ ON OTHER MESSAGES <bOther>] in command  @ <x>,<y>  [ <oSay> CAPTION ] <caption> ;
-	 
+
 2008-10-15 23:27 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hsayimg.prg
-    * added two parameters that lacked to ADD in SUPER: bClick, bDblClick 
-	  METHOD NEW CLASS HSayBmp,HSayImage
+    * added two parameters that lacked to ADD in SUPER: bClick, bDblClick
+          METHOD NEW CLASS HSayBmp,HSayImage
 
 2008-10-15 15:30 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
   * include\guilib.ch
@@ -84,11 +89,11 @@
 2008-10-15 03:44 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     + added ON OTHER MESSAGES clause for the SAY
-	+ added ON CLICK and ON DBLCLICK clause for the SAY, BITMAP, ICON
-	+ added ON GETFOCUS clause for the BUTTON, BUTTONEX, RADIOBUTTON
-	+ added COLOR and BACKCOLOR clause for the BROWSE
-	+ added TRANSPARENTE clause for the RADIOBUTON,CHECKBOX
-	+ added INIT clause for the CONTAINER, SHAPE
+        + added ON CLICK and ON DBLCLICK clause for the SAY, BITMAP, ICON
+        + added ON GETFOCUS clause for the BUTTON, BUTTONEX, RADIOBUTTON
+        + added COLOR and BACKCOLOR clause for the BROWSE
+        + added TRANSPARENTE clause for the RADIOBUTON,CHECKBOX
+        + added INIT clause for the CONTAINER, SHAPE
   * include\windows.ch
     + added the defines for the notifications object STATIC
   * source\control.c
@@ -98,27 +103,27 @@
     * minor fix in fill backgroud color in event PAINT
   * source\hcheck.prg
     * fix event WHEN return .F.
-	+ added clause TRANSPARENT and fix TEXTCOLOR
+        + added clause TRANSPARENT and fix TEXTCOLOR
   * source\hcontrol.prg
     * minor fixed in METHOD onAnchor
     * CLASS HSTATIC
       + added DATA bClick, bDblClick
-	  + added METHOD onClick, onDblClick, OnEvent
-	  * simplified the code for TRANSPARENT mode, METHOD PAINT now work in DIALOG parent
-	* CLASS HButton
-	  + added EVENT onGetFocus that works in the same way of WHEN with RETURN .F. or .T.
-	  * fixed onClick for to REDEFINE
-	* CLASS HGroup
-	  + added clause TRANSPARENT and fix BACKCOLOR
+          + added METHOD onClick, onDblClick, OnEvent
+          * simplified the code for TRANSPARENT mode, METHOD PAINT now work in DIALOG parent
+        * CLASS HButton
+          + added EVENT onGetFocus that works in the same way of WHEN with RETURN .F. or .T.
+          * fixed onClick for to REDEFINE
+        * CLASS HGroup
+          + added clause TRANSPARENT and fix BACKCOLOR
   * source\hradio.prg
       + added EVENT onGetFocus that works in the same way of WHEN with RETURN .F. or .T.
-	  + added clause TRANSPARENT and fix TEXTCOLOR
+          + added clause TRANSPARENT and fix TEXTCOLOR
   * source\hrect.prg
       + added clause bInit in the parameters of the METHOD NEW
   * source\hsayimg.prg
       + added STYLE SS_NOTIFY for the EVENTS
       + added DATA bClick, bDblClick
-	  + added METHOD onClick, onDblClick
+          + added METHOD onClick, onDblClick
 
 2008-10-14 22:40 UTC+0100 Francesco Perillo < fperillo at gmail dot com>
   * source/draw.c
@@ -139,7 +144,7 @@
 
 2008-10-12 11:44 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\htab.prg
-	* fixed return PARAMETERS in METHOD GetActivePage to lResourceTab
+        * fixed return PARAMETERS in METHOD GetActivePage to lResourceTab
   * source\hedit.prg
     * fixed navegation in NextFocus AND NextFocusTab to WND_DLG_RESOURCE
 
@@ -166,17 +171,17 @@
       tune the behaviour of the control when his containeris resized.
       The value describing the wanted alignment can be setted
       ORing  this bit values:
-      ANCHOR_TOPLEFT       0	//	Anchors control to the top and left borders of the container and does not change the distance between the top and left borders. (Default)
-      ANCHOR_TOPABS 	   1    //	Anchors control to top border of container and does not change the distance between the top border.
-      ANCHOR_LEFTABS 	   2    //	Anchors control to left border of container and does not change the distance between the left border.
-      ANCHOR_BOTTOMABS     4    //	Anchors control to bottom border of container and does not change the distance between the bottom border.
-      ANCHOR_RIGHTABS	   8   	//	Anchors control to right border of container and does not change the distance between the right border.
-      ANCHOR_TOPREL 	  16   	//	Anchors control to top border of container and maintains relative distance between the top border.
-      ANCHOR_LEFTREL 	  32   	//	Anchors control to left border of container and maintains relative distance between the left border.
-      ANCHOR_BOTTOMREL    64   	//	Anchors control to bottom border of container and maintains relative distance between the bottom border.
-      ANCHOR_RIGHTREL    128  	//	Anchors control to right border of container and maintains relative distance between the right border.
-      ANCHOR_HORFIX      256  	//	Anchors center of control relative to left and right borders but remains fixed in size.
-      ANCHOR_VERTFIX     512  	//	Anchors center of control relative to top and bottom borders but remains fixed in size.
+      ANCHOR_TOPLEFT       0    //      Anchors control to the top and left borders of the container and does not change the distance between the top and left borders. (Default)
+      ANCHOR_TOPABS        1    //      Anchors control to top border of container and does not change the distance between the top border.
+      ANCHOR_LEFTABS       2    //      Anchors control to left border of container and does not change the distance between the left border.
+      ANCHOR_BOTTOMABS     4    //      Anchors control to bottom border of container and does not change the distance between the bottom border.
+      ANCHOR_RIGHTABS      8    //      Anchors control to right border of container and does not change the distance between the right border.
+      ANCHOR_TOPREL       16    //      Anchors control to top border of container and maintains relative distance between the top border.
+      ANCHOR_LEFTREL      32    //      Anchors control to left border of container and maintains relative distance between the left border.
+      ANCHOR_BOTTOMREL    64    //      Anchors control to bottom border of container and maintains relative distance between the bottom border.
+      ANCHOR_RIGHTREL    128    //      Anchors control to right border of container and maintains relative distance between the right border.
+      ANCHOR_HORFIX      256    //      Anchors center of control relative to left and right borders but remains fixed in size.
+      ANCHOR_VERTFIX     512    //      Anchors center of control relative to top and bottom borders but remains fixed in size.
     + added onAnchor() method
     * fixed the SetFocus() method avoiding an unneeded call to SetFocus() function
     * added messages suspension handling when init block evaluation is pending
@@ -294,7 +299,7 @@
 2008-09-28 00:18 UTC+0100 Francesco Perillo <fperillo at gmail dot com>
   * source\hprinter.prg
     * Removed flickering of preview during resize.... with
-	  WS_CLIPCHILDREN style added to the dialog
+          WS_CLIPCHILDREN style added to the dialog
 
 2008-09-26 17:00 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hsplash.prg
@@ -331,8 +336,8 @@
 2008-09-25 07:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hsplash.prg
     ! Destroyed timer after viewing splash, that have a conflict
-	with timer of hprinter preview, thanks to francesco.
-	But ther is yet a problem in htimer on how is calculated the default ID.
+        with timer of hprinter preview, thanks to francesco.
+        But ther is yet a problem in htimer on how is calculated the default ID.
 
 2008-09-23 00:23 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
   Changes made by Luis Fernando Basso
@@ -355,16 +360,16 @@
   Changes made by Luis Fernando Basso and me
   * source/hcombo.prg
     * onChange now called also when GET COMBOBOX (Fernando)
-	* added function hwg_multibitor to put in numeric or a list
-	  of numbers
-	  STYLE values should be ORed and not added !
+        * added function hwg_multibitor to put in numeric or a list
+          of numbers
+          STYLE values should be ORed and not added !
 
 2008-09-21 01:19 UTC+0100 Francesco Perillo  <fperillo at gmail dot com>
   Changes made by Luis Fernando Basso
   * source/hedit.prg
   * source/hdialog.prg
     * re-applied patches removed by Giuseppe and added code to make them
-	  really work
+          really work
 
 2008-09-20 19:50 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   + samples\image
@@ -392,7 +397,7 @@
   * source/hdialog.prg
   * source/hcontrol.prg
      * changes in the GET system to correct wrong behaviour in some cases
-	   (VALID was called at dialog init time, WHEN during dialog closing time)
+           (VALID was called at dialog init time, WHEN during dialog closing time)
   * samples/get/testget4.prg
      * sample used to test the above changes - and future ones
 
@@ -438,16 +443,16 @@
 2008-09-19 00:22 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
   * source\hbrowse.prg
     * Added method SetRowHeight to force (and retrieve) row height in pixels
-	  (also at runtime)
+          (also at runtime)
     * Now footer is docked at the bottom of the browse client-area
-	* Since you can set a font for the header, you have to use this font
-	  for header height calculation,column dragging, clicking etc
-	* If you change header font at run-time you have to call ::Refresh
-	  example:
+        * Since you can set a font for the header, you have to use this font
+          for header height calculation,column dragging, clicking etc
+        * If you change header font at run-time you have to call ::Refresh
+          example:
         oBrw1:oHeadFont := HFont():Add( 'Times New Roman',0,-12,400,,,)
         oBrw1:Refresh()
     * dragging/resizing a column with ON CLICK now works
-	* screen correctly updated in wheel scroll
+        * screen correctly updated in wheel scroll
   * samples\arbrow2.prg
     * updated to show the new features
 
@@ -682,10 +687,10 @@
 2008-08-12 15:05 UTC+0200 Richard Roesnadi <roesnadi8@yahoo.co.id>
   * source\saymoney.prg
     + Added new function for "say in money" I add for English and
-	  Indonesia.
-	    ex: sayDollar(nDollar) -> Say in dollar
-	        sayRupiah(nValue)  -> Say in Rupiah
-	You may add your country say Money at here
+          Indonesia.
+            ex: sayDollar(nDollar) -> Say in dollar
+                sayRupiah(nValue)  -> Say in Rupiah
+        You may add your country say Money at here
   * utils\designer\samples\saymoney.xml
 
 
@@ -869,7 +874,7 @@
       @ <x>, <y> SHAPE [<oShape>] [OF <oWnd>] ;
         [ ID <nId> ]               ;
         [ SIZE <width>, <height> ] ;
-		[ BORDERWIDTH <nBorder>]   ; width of the border
+                [ BORDERWIDTH <nBorder>]   ; width of the border
         [ CURVATURE <nCurvature>]  ; 0-90 value of angle curvature
         [ COLOR <tcolor> ]         ;
         [ BACKCOLOR <bcolor> ]     ;

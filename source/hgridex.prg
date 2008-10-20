@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.20 2008-10-08 18:06:39 lculik Exp $
+ * $Id: hgridex.prg,v 1.21 2008-10-20 08:55:36 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -121,7 +121,7 @@ HB_SYMBOL_UNUSED(nItemCount)
 Return Self
 
 METHOD Activate CLASS HGridEx
-   IF !empty( ::oParent:handle ) 
+   IF !empty( ::oParent:handle )
       ::handle := ListView_Create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll )
 
       ::Init()
@@ -249,11 +249,9 @@ return nil
 
 METHOD Notify( lParam )  Class HGRIDEX
     Local Res,iSelect
-   Tracelog(GetNotifyCode( lParam ))
     IF GetNotifyCode( lParam ) == NM_CUSTOMDRAW .and. GETNOTIFYCODEFROM(lParam) == ::Handle
         Res := PROCESSCUSTU( ::handle, lParam, ::aColors )
         Hwg_SetDlgResult( ::oParent:Handle, res )
-        tracelog(res)
         return res
     ENDIF
 

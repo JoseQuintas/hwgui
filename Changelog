@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.944 2008-10-20 11:05:40 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.945 2008-10-20 11:26:32 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-10-20 09:25 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
+  * source/hpanel.prg
+    Fix Replace test variable !=0 with !Empty() for use pointer
+    
 2008-10-20 09:05 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * source/control.c 
     Added function XHB_BITTEST, user in xHarbour

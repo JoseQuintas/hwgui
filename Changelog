@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.946 2008-10-20 15:11:50 mlacecilia Exp $
+ * $Id: Changelog,v 1.947 2008-10-22 12:03:33 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-10-22 09:58 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hedit.prg
+    * changed in VALID
+	- IF GETFOCUS () = 0 .OR. GETFOCUS () =:: handle;GetSkip (:: oParent,:: handle,,:: nGetSkip); ENDIF
+    + IIF(GETFOCUS() = 0,GetSkip( ::oParent, ::handle,,::nGetSkip),.T.) 
+      It was added in the following situation: Inside the VALID is DISABLED the next object, then it is lost focu
+ 		  
 2008-10-20 17:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * gtk\control.c
   * gtk\drawwidg.prg

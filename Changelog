@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.949 2008-10-23 06:27:08 mlacecilia Exp $
+ * $Id: Changelog,v 1.950 2008-10-23 11:19:00 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-23 09:20 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
+  * source/draw.c
+    source/pager.c
+    source/draw.c
+    source/media_c.c
+     ! changes for allow correct usage when  HWG_USE_POINTER_ITEM is used on
+       hwgui compilation
+
 
 2008-10-23 08:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hedit.prg

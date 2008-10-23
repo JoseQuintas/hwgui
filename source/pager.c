@@ -1,5 +1,5 @@
 /*
- * $Id: pager.c,v 1.7 2008-06-16 18:52:23 mlacecilia Exp $
+ * $Id: pager.c,v 1.8 2008-10-23 11:19:00 lculik Exp $
 */
 
 #define _WIN32_WINNT 0x0400
@@ -156,7 +156,7 @@ HB_FUNC( PAGERGETBUTTONSTATE )
 
 HB_FUNC( PAGERONPAGERCALCSIZE)
 {
-   LPNMPGCALCSIZE pNMPGCalcSize = (LPNMPGCALCSIZE ) hb_parnl( 1 );
+   LPNMPGCALCSIZE pNMPGCalcSize = (LPNMPGCALCSIZE ) HB_PARHANDLE( 1 );
    HWND hwndToolbar = (HWND) HB_PARHANDLE( 2 ) ;
    SIZE size;
 
@@ -179,7 +179,7 @@ HB_FUNC( PAGERONPAGERCALCSIZE)
 
 HB_FUNC( PAGERONPAGERSCROLL )
 {
-   LPNMPGSCROLL pNMPGScroll = (LPNMPGSCROLL) hb_parnl( 1 ) ;
+   LPNMPGSCROLL pNMPGScroll = (LPNMPGSCROLL) HB_PARHANDLE( 1 ) ;
 
    switch(pNMPGScroll->iDir)
    {

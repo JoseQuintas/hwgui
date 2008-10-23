@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.52 2008-10-14 20:43:28 fperillo Exp $
+ * $Id: draw.c,v 1.53 2008-10-23 11:19:00 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -418,7 +418,7 @@ HB_FUNC( CENTERBITMAP )
    HDC hDC = (HDC) HB_PARHANDLE( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
    DWORD dwraster = (ISNIL(4))? SRCCOPY:hb_parnl(4);
-   HBITMAP hBitmap = (HBITMAP) hb_parnl( 3 );
+   HBITMAP hBitmap = (HBITMAP) HB_PARHANDLE( 3 );
    BITMAP  bitmap;
    RECT rc;
    HBRUSH hBrush = (ISNIL(5))? (HBRUSH)(COLOR_WINDOW+1):(HBRUSH) HB_PARHANDLE( 5 );

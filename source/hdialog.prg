@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.71 2008-10-10 20:59:49 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.72 2008-10-23 12:42:00 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -354,11 +354,12 @@ HB_SYMBOL_UNUSED(lParam)
          IF oCtrl != Nil .AND. GetNextDlgTabItem( GetActiveWindow() , hctrl, 1) == hCtrl
             *IF __ObjHasMsg(oCtrl,"BVALID") .AND. oCtrl:bValid != NIl
             IF  __ObjHasMsg(oCtrl,"BLOSTFOCUS") .AND. oCtrl:blostfocus != NIl
-                *oDlg:lSuspendMsgsHandling := .T.
-               * EVAL(OCTRL:BLOSTFOCUS,OCTRL)
-                *oDlg:lSuspendMsgsHandling := .F.
-                oCtrl:setfocus()
-                Eval( oCtrl:bValid, oCtrl )
+               oCtrl:setfocus()
+               IF __ObjHasMsg(oCtrl, "BVALID" )
+                  Eval( oCtrl:bValid, oCtrl )
+               ELSE
+                  EVAL( oCtrl:bLostFocus, oCtrl )
+							 ENDIF  
             ENDIF
 			   ENDIF
          IF oCtrl != Nil .AND. oCtrl:id == IDOK //iParLow

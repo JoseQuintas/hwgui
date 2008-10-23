@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.950 2008-10-23 11:19:00 lculik Exp $
+ * $Id: Changelog,v 1.951 2008-10-23 12:41:59 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-10-23 10:38 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hedit.prg
+    + add ::bValid := { | o | ::Valid( o ) } to  bSetGet = Nil
+  * source\hcontrol.prg
+    + add IF bClick != NIL before ADDEVENT because  interferes in IDOK and IDCANCEL
+  * source\hdialog.prg
+    + add IF __ObjHasMsg(oCtrl, "BVALID" ) in dlgCommand because BVALID don't exist in all controls
+  
 2008-10-23 09:20 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/draw.c
     source/pager.c

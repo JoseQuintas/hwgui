@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.104 2008-10-23 06:27:08 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.105 2008-10-23 12:42:00 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -125,6 +125,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ENDIF
       IF bLfocus != Nil
          ::oParent:AddEvent( EN_KILLFOCUS, self, { | | ::Valid( ) },,"onLostFocus" )
+         ::bValid := { | o | ::Valid( o ) }
       ENDIF
    ENDIF
    IF bChange != Nil

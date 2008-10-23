@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.948 2008-10-22 13:11:45 lculik Exp $
+ * $Id: Changelog,v 1.949 2008-10-23 06:27:08 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-10-23 08:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\hedit.prg
+    * changed iif construct causing " Warning W0027 Meaningless use of expression 
+      'Logical' " to canonical if ... endif code.
+      Please, avoid this IIF( exp, code, .t.) code when a return value isn't needed
+      
 2008-10-22 11:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * Fixed hedit.prg again for ponter usage
     BASSO plese make sure that your sources is update before commit. this is the 3rd time i change this
@@ -16,7 +22,6 @@
       should be TEST for
       if var >0 change to !empty(var)
       if var == 0 change to empty(var)
-
 
 2008-10-22 09:58 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg

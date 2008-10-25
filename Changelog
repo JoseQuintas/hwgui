@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.951 2008-10-23 12:41:59 lfbasso Exp $
+ * $Id: Changelog,v 1.952 2008-10-25 23:25:47 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-10-25 21:25 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
+  + utils/designer/designer.exe.xbp
+    New file to compile designer using xbuild
+    
 2008-10-23 10:38 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg
     + add ::bValid := { | o | ::Valid( o ) } to  bSetGet = Nil

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.142 2008-10-15 07:25:57 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.143 2008-10-26 23:51:17 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1609,6 +1609,7 @@ RETURN Nil
 
 //----------------------------------------------------//
 METHOD LINEDOWN( lMouse ) CLASS HBrowse
+Local nUpper, nLower
 
    Eval( ::bSkip, Self,1 )
    IF Eval( ::bEof,Self )
@@ -1627,7 +1628,12 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
       ::Refresh()
    ELSE
       ::internal[1] := 0
-      InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*::internal[2]-::height, ::x2, ::y1+(::height+1)*(::rowPos+1) )
+ 
+      nUpper := ::y1  +  (::height+1) * ( ::rowPos-2 ) 
+      nLower := ::y1+(::height+1)*(::rowPos) 
+     
+      InvalidateRect( ::handle, 0, ::x1, nUpper, ::x2, nLower )
+
    ENDIF
    IF ::lAppMode
       IF ::rowPos > 1
@@ -1659,7 +1665,8 @@ METHOD LINEUP() CLASS HBrowse
       ::rowPos --
       IF ::rowPos = 0  // needs scroll
          ::rowPos := 1
-         InvalidateRect( ::handle, 0 )
+         // InvalidateRect( ::handle, 0 )
+         ::Refresh()
       ELSE
          ::internal[1] := 0
          InvalidateRect( ::handle, 0, ::x1, ::y1+(::height+1)*::internal[2]-::height, ::x2, ::y1+(::height+1)*::internal[2] )
@@ -1826,6 +1833,8 @@ Local xm, x1, fif
       ENDIF
 
       IF res
+
+         ::internal[1] := 15   // Force FOOTER
          RedrawWindow( ::handle, RDW_INVALIDATE )
 
       ENDIF
@@ -2175,11 +2184,13 @@ METHOD Refresh( lFull ) CLASS HBrowse
         ( ::alias )->( FltGoTop( Self ) ) // sk
       ENDIF
       ::internal[1] := 15
-      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+      // RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+      RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ELSE
       InvalidateRect( ::handle, 0 )
       ::internal[1] := SetBit( ::internal[1], 1, 0 )
-      PostMessage( ::handle, WM_PAINT, 0, 0 )
+      // PostMessage( ::handle, WM_PAINT, 0, 0 )
+      RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ENDIF
 RETURN Nil
 

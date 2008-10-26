@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.105 2008-10-23 12:42:00 lfbasso Exp $
+ *$Id: hedit.prg,v 1.106 2008-10-26 02:58:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -37,7 +37,8 @@ CLASS VAR winclass   INIT "EDIT"
    DATA nColorinFocus  INIT vcolor( 'CCFFFF' )
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-               oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, lNoBorder, nMaxLength )
+               oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture,;
+						   lNoBorder, nMaxLength, lPassword, bKeyDown, bChange, bOther)
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Redefine( oWnd, nId, vari, bSetGet, oFont, bInit, bSize, bDraw, bGfocus, ;
@@ -70,8 +71,9 @@ CLASS VAR winclass   INIT "EDIT"
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-            oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
-            tcolor, bcolor, cPicture, lNoBorder, nMaxLength, lPassword, bKeyDown, bChange ) CLASS HEdit
+            oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip,tcolor, bcolor, ;
+            cPicture, lNoBorder, nMaxLength, lPassword, bKeyDown, bChange, bOther ) CLASS HEdit
+
 
    nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), ;
                         WS_TABSTOP + IIf( lNoBorder == Nil .OR. ! lNoBorder, WS_BORDER, 0 ) + ;
@@ -92,6 +94,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ENDIF
    ::bSetGet := bSetGet
    ::bKeyDown := bKeyDown
+   ::bOther := bOther
    IF Hwg_BitAnd( nStyle, ES_MULTILINE ) != 0
       ::style := Hwg_BitOr( ::style, ES_WANTRETURN )
       ::lMultiLine := .T.
@@ -758,6 +761,8 @@ METHOD When() CLASS HEdit
 	   RETURN .F.
 	ENDIF
   ::lFirst := .T.
+  nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 ;
+	             .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
   IF ::bGetFocus != Nil
       ::oparent:lSuspendMsgsHandling := .T.
       ::lnoValid := .T.
@@ -766,11 +771,13 @@ METHOD When() CLASS HEdit
       ::lnoValid := ! res
       IF ! res
          oParent := ParentGetDialog(self)
+         /*
          IF Self == ATail(oParent:GetList)
             nSkip := -1
          ELSEIF Self == oParent:getList[1]
             nSkip := 1
          ENDIF
+         */
          GetSkip( ::oParent, ::handle, , nSkip )
       ENDIF
       ::oparent:lSuspendMsgsHandling := .F.
@@ -1029,13 +1036,13 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
 	   oCtrl:nGetSkip := nSkip
 	 ENDIF  
    IF !empty(nextHandle)
-	   IF oParent:classname == "HDIALOG"
+	   IF oParent:classname != "HTAB"
 	       PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle, 1 )
 	   ELSE
        IF oParent:handle == getfocus()
           PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle, 1 )
        ELSE
-			 PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle, 1 )
+			    PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle, 1 )
        ENDIF
      ENDIF 
    ENDIF
@@ -1065,6 +1072,7 @@ STATIC FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
 			ENDIF	
       IF (nSkip < 0 .AND. ( k > i .OR. k == 0)) .OR. (nSkip > 0 .AND. i > k)
         nexthandle := GetNextDlgTabItem ( GetActiveWindow(), hctrl, (nSkip < 0) )
+        PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nexthandle , 1 )
       ENDIF
    ENDIF
 RETURN nextHandle

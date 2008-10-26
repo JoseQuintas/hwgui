@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.22 2008-10-16 02:33:17 lfbasso Exp $
+ * $Id: hsayimg.prg,v 1.23 2008-10-26 02:58:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -96,7 +96,8 @@ CLASS HSayBmp INHERIT HSayImage
    METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctooltip )
    METHOD Paint( lpdis )
    METHOD ReplaceBitmap( Image, lRes )
-
+   METHOD REFRESH() INLINE ::HIDE(),SENDMESSAGE(::handle,WM_PAINT,0,0),::SHOW()
+   
 ENDCLASS
 
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
@@ -106,7 +107,7 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
 
    ::bPaint := {|o,lpdis|o:Paint(lpdis)}
 
-   IF Image != Nil
+   IF Image != Nil .AND. !EMPTY(Image)
       IF lRes == Nil ; lRes := .F. ; ENDIF
       ::oImage := Iif( lRes .OR. Valtype(Image)=="N",     ;
                           HBitmap():AddResource( Image ), ;
@@ -170,6 +171,7 @@ CLASS HSayIcon INHERIT HSayImage
                   bSize,ctooltip,lOEM, bClick, bDblClick)
    METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctooltip )
    METHOD Init()
+   METHOD REFRESH() INLINE SendMessage( ::handle,STM_SETIMAGE,IMAGE_ICON,::oImage:handle )
 
 ENDCLASS
 
@@ -210,3 +212,4 @@ METHOD Init() CLASS HSayIcon
       SendMessage( ::handle,STM_SETIMAGE,IMAGE_ICON,::oImage:handle )
    ENDIF
 Return Nil
+

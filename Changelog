@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.952 2008-10-25 23:25:47 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.953 2008-10-26 02:58:48 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,21 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-26 00:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+	* include\guilib.ch
+	  + add clause [ ON OTHER MESSAGES <bOther>] in RICHEDIT , EDITBOX, @ GET ...
+	* source\hcontrol.prg
+	  * fix METHOD Auto_Size( cValue ), remove parameter nAlign
+	* source\hedit.prg
+	  * add bOther in NEW()
+	  * fix navegation in METHOD WHEN
+	* source\hrect.prg
+	  * remove SS_NOTIFY in CLASS HDrawShape
+	* source\hriched.prg
+	  * add bOther in NEW()
+	* source\hsayimg.prg
+	  + add METHOD REFRESH() in HSayBmp, HSayIcon
 
 2008-10-25 21:25 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   + utils/designer/designer.exe.xbp

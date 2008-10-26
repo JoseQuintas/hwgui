@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.121 2008-10-16 16:16:16 lculik Exp $
+ *$Id: guilib.ch,v 1.122 2008-10-26 02:58:48 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -373,6 +373,7 @@
             [ ON LOSTFOCUS <bLfocus> ] ;
             [ ON KEYDOWN <bKeyDown>]   ;
             [ ON CHANGE <bChange>]     ;
+            [ ON OTHER MESSAGES <bOther> ] ;            
             [ STYLE <nStyle> ]         ;
             [<lnoborder: NOBORDER>]    ;
             [<lPassword: PASSWORD>]    ;
@@ -380,8 +381,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<caption>,,<nStyle>,<x>,<y>,<width>, ;
-                    <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
-                    <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.>,,<.lPassword.>,<bKeyDown>, <bChange> )
+              <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
+              <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.>,,<.lPassword.>,<bKeyDown>, <bChange>,<bOther> )
 
 
 #xcommand REDEFINE EDITBOX [ <oEdit> ] ;
@@ -412,13 +413,14 @@
             [ ON PAINT <bDraw> ]       ;
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
+            [ ON OTHER MESSAGES <bOther> ] ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oEdit> := ] HRichEdit():New( <oWnd>,<nId>,<vari>,<nStyle>,<x>,<y>,<width>, ;
                     <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
-                    <bLfocus>,<ctoolt>,<color>,<bcolor> )
+                    <bLfocus>,<ctoolt>,<color>,<bcolor>,<bOther> )
 
 #xcommand @ <x>,<y> BUTTON [ <oBut> CAPTION ] <caption> ;
             [ OF <oWnd> ]              ;
@@ -1055,12 +1057,13 @@
             [ TOOLTIP <ctoolt> ]       ;
             [ ON KEYDOWN <bKeyDown>   ];
             [ ON CHANGE <bChange> ]    ;
+            [ ON OTHER MESSAGES <bOther> ] ;
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<vari>,               ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;
                    <nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,,,  ;
                    <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,;
-                   <.lnoborder.>,<nMaxLength>,<.lPassword.>,<bKeyDown>, <bChange>)
+                   <.lnoborder.>,<nMaxLength>,<.lPassword.>,<bKeyDown>,<bChange>,<bOther>)
 
 /* Added MULTILINE: AJ: 11-03-2007*/
 #xcommand REDEFINE GET [ <oEdit> VAR ] <vari>  ;

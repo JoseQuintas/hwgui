@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.8 2008-10-15 13:04:39 alexstrickland Exp $
+ * $Id: hrect.prg,v 1.9 2008-10-26 02:58:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -189,7 +189,7 @@ ENDCLASS
 METHOD New( oWndParent,nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor, ncStyle, ;
                 lnoBorder, nBorder, nCurvature, nbStyle, nfStyle, bInit) CLASS HDrawShape
 
-   Super:New( oWndParent,nId,SS_OWNERDRAW+SS_NOTIFY+WS_DISABLED,nLeft,nTop,,,,bInit,bSize,{|o,lp|o:Paint(lp)})
+   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,,,,bInit,bSize,{|o,lp|o:Paint(lp)})
 
    ::title := ""
    ::ncStyle :=  ncStyle  //0 -raised ,1-sunken 2-flat

@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.11 2008-07-25 00:29:50 mlacecilia Exp $
+ * $Id: hriched.prg,v 1.12 2008-10-26 02:58:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -18,7 +18,7 @@ CLASS HRichEdit INHERIT HControl
    DATA lChanged    INIT .F.
 
    METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight, ;
-         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor )
+         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor, bOther )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -27,14 +27,14 @@ ENDCLASS
 
 METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip, ;
-                  tcolor,bcolor ) CLASS HRichEdit
+                  tcolor,bcolor,bOther ) CLASS HRichEdit
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP+WS_BORDER )
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,Iif( bcolor==Nil,GetSysColor( COLOR_BTNHIGHLIGHT ),bcolor ) )
 
    ::title   := vari
-
+	 ::bOther  := bOther
    hwg_InitRichEdit()
 
    ::Activate()

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.97 2008-10-26 02:58:48 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.98 2008-10-26 19:18:12 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -460,6 +460,7 @@ METHOD Init CLASS HStatic
    IF ! ::lInit
       Super:init()
       IF ::Title != NIL
+         ::nHolder := 1
          SetWindowObject( ::handle, Self )
          Hwg_InitStaticProc( ::handle )
          ::Auto_Size( ::Title)  //, ::nStyleHS) //::nStyleOwner )

@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.46 2008-10-20 15:11:50 mlacecilia Exp $
+ * $Id: misc.c,v 1.47 2008-10-27 22:06:25 fperillo Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -754,3 +754,8 @@ HB_FUNC(PTRTOULONG)
 HB_FUNC( OUTPUTDEBUGSTRING )
 {
     OutputDebugString( (LPCSTR) hb_parcx( 1 ) ) ; }
+
+HB_FUNC( GETSYSTEMMETRICS )
+{
+   hb_retni ( GetSystemMetrics(hb_parni(1)) ) ;
+}

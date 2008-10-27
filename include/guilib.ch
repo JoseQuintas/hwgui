@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.122 2008-10-26 02:58:48 lfbasso Exp $
+ *$Id: guilib.ch,v 1.123 2008-10-27 22:06:25 fperillo Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -197,8 +197,9 @@
 
 #xcommand ACTIVATE DIALOG <oDlg>                        ;
             [ <lNoModal: NOMODAL> ]                     ;
+            [ ON ACTIVATE <bInit> ]                     ;
           => ;
-      <oDlg>:Activate( <.lNoModal.> )
+      <oDlg>:Activate( <.lNoModal.>, <bInit> )
 
 #xcommand MENU FROM RESOURCE OF <oWnd> ON <id1> ACTION <b1>      ;
                                  [ ON <idn> ACTION <bn> ]    ;

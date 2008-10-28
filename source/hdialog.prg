@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.72 2008-10-23 12:42:00 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.73 2008-10-28 12:57:39 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -483,19 +483,27 @@ HB_SYMBOL_UNUSED(wParam)
 Return 0
 
 Static Function onActivate( oDlg,wParam,lParam )
-Local iParLow := LoWord( wParam )
+Local iParLow := LoWord( wParam ), iParHigh := HiWord( wParam )
 
 HB_SYMBOL_UNUSED(lParam)
 
-   if iParLow > 0 .AND. oDlg:bGetFocus != Nil .AND. IsWindowVisible(odlg:handle)
-     oDlg:lSuspendMsgsHandling := .t.
-     Eval( oDlg:bGetFocus, oDlg )
-     oDlg:lSuspendMsgsHandling := .f.
-   elseif iParLow == 0 .AND. oDlg:bLostFocus != Nil
+	 IF ( iParLow = WA_ACTIVE .OR. iParLow = WA_CLICKACTIVE )  .AND. lParam = 0 .AND. IsWindowVisible(odlg:handle)
+	    IF oDlg:bGetFocus != Nil //.AND. IsWindowVisible(::handle)
+        oDlg:lSuspendMsgsHandling := .t.
+        IF iParHigh > 0  // MINIMIZED
+			     //odlg:restore()
+  			ENDIF
+        Eval( oDlg:bGetFocus, oDlg, lParam )
+        oDlg:lSuspendMsgsHandling := .f.
+			ENDIF
+   ELSEIF iParLow =WA_INACTIVE .AND. lparam = 0 .AND. oDlg:bLostFocus != Nil
       oDlg:lSuspendMsgsHandling := .t.
-      Eval( oDlg:bLostFocus, oDlg )
+      Eval( oDlg:bLostFocus, oDlg, lParam  )
       oDlg:lSuspendMsgsHandling := .f.
-   endif
+      IF !odlg:lModal
+         RETURN 1
+      ENDIF  
+   ENDIF
 Return 0
 
 Static Function onHelp( oDlg,wParam,lParam )

@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.64 2008-10-15 13:04:38 alexstrickland Exp $
+ *$Id: windows.ch,v 1.65 2008-10-28 12:57:39 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -352,6 +352,13 @@
 #define RDW_ERASENOW            512    // 0x0200
 #define RDW_FRAME              1024    // 0x0400
 #define RDW_NOFRAME            2048    // 0x0800
+
+/*
+ * Window States
+ */
+#DEFINE WA_INACTIVE               0
+#DEFINE WA_ACTIVE                 1
+#DEFINE WA_CLICKACTIVE            2
 
 /*
  * Static Control Constants

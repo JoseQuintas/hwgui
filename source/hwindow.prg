@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.57 2008-10-09 20:21:50 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.58 2008-10-28 12:57:39 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -111,6 +111,11 @@ HB_SYMBOL_UNUSED(cHelp)
    ::bOther     := bOther
    ::bCloseQuery := bCloseQuery
 
+   IF clr != NIL
+      ::brush := HBrush():Add(clr)
+      ::bColor := clr	 
+   ENDIF
+
    IF cAppName != Nil
       ::szAppName := cAppName
    ENDIF
@@ -154,7 +159,7 @@ CLASS HMainWindow INHERIT HWindow
 
    CLASS VAR aMessages INIT { ;
       { WM_COMMAND,WM_ERASEBKGND,WM_MOVE,WM_SIZE,WM_SYSCOMMAND, ;
-        WM_NOTIFYICON,WM_ENTERIDLE,WM_CLOSE,WM_DESTROY,WM_ENDSESSION }, ;
+        WM_NOTIFYICON,WM_ENTERIDLE,WM_CLOSE,WM_DESTROY,WM_ENDSESSION, WM_ACTIVATE }, ;
       { ;
          {|o,w,l|onCommand(o,w,l)},        ;
          {|o,w|onEraseBk(o,w)},            ;
@@ -166,6 +171,7 @@ CLASS HMainWindow INHERIT HWindow
          {|o|onCloseQuery(o)}, ;
          {|o|onDestroy(o)},                ;
          {|o,w|onEndSession(o,w)}          ;
+         {|o,w,l|onActivate(o,w,l)}        ;
       } ;
    }
    DATA   nMenuPos
@@ -250,6 +256,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMainWindow
 Local i
 
    // writelog( str(msg) + str(wParam) + str(lParam) )
+   //IF ( i := Ascan( ::aMessages[1],msg ) ) != 0 .AND. (!::lSuspendMsgsHandling .OR. msg = WM_ERASEBKGND .OR. msg = WM_SIZE)
    IF ( i := Ascan( ::aMessages[1],msg ) ) != 0
       Return Eval( ::aMessages[2,i], Self, wParam, lParam )
    ELSE
@@ -491,6 +498,21 @@ Static Function onEraseBk( oWnd,wParam )
           SpreadBitmap( wParam,oWnd:handle,oWnd:oBmp:handle )
        ENDIF
        Return 1
+	 ELSE	    
+       aCoors := GetClientRect( oWnd:handle )
+       IF oWnd:brush != Nil
+          IF Valtype( oWnd:brush ) != "N"
+            IF oWnd:type == WND_MDI //.AND. Len(HWindow():aWindows) > 1
+               FillRect( wParam, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1, oWnd:brush:handle )                
+            ELSE
+               FillRect( wParam, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1, oWnd:brush:handle )
+            ENDIF 
+          ENDIF
+       ELSE
+          FillRect( wParam, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1,COLOR_3DFACE+1 )
+       ENDIF
+       Return 1
+    ENDIF
    ENDIF
 Return -1
 
@@ -615,3 +637,26 @@ static function onCloseQuery(o)
 
 return -1
 // end sauli
+
+Static Function onActivate( oWin, wParam, lParam )
+Local iParLow := LoWord( wParam ), iParHigh := HiWord( wParam )
+
+HB_SYMBOL_UNUSED(lParam)
+
+	 IF (iParLow = WA_ACTIVE .OR. iParLow = WA_CLICKACTIVE)  .AND. lParam = 0 
+	    IF oWin:bGetFocus != Nil //.AND. IsWindowVisible(::handle)
+         oWin:lSuspendMsgsHandling := .t.
+         IF iParHigh > 0  // MINIMIZED
+ 			     *oWin:restore()
+     	   ENDIF
+         Eval( oWin:bGetFocus, oWin, lParam )
+         oWin:lSuspendMsgsHandling := .f.
+			ENDIF
+   ELSEIF iParLow =WA_INACTIVE .AND. lparam = 0 // oDlg:bGetFocus != Nil .AND. IsWindowVisible(odlg:handle)
+      IF  oWin:bLostFocus != Nil //.AND. IsWindowVisible(::handle)
+         oWin:lSuspendMsgsHandling := .t.
+         Eval( oWin:bLostFocus, oWin, lParam )
+         oWin:lSuspendMsgsHandling := .f.
+      ENDIF  
+   ENDIF   
+Return 1

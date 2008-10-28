@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.98 2008-10-26 19:18:12 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.99 2008-10-28 12:57:39 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -359,8 +359,8 @@ CLASS VAR winclass   INIT "STATIC"
    METHOD Activate()
    // METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
    //                                                 value )
-   METHOD SetValue( value ) INLINE ::Auto_Size(value),::title := value,;
-                       ::hide(), SetDlgItemText( ::oParent:handle, ::id, value ), ::show()
+   METHOD SetValue( value ) INLINE  ::Auto_Size(value),  ::title := value,;
+                                    SetDlgItemText( ::oParent:handle, ::id, value )
    METHOD Auto_Size( cValue )  HIDDEN
 
    METHOD Init()
@@ -381,7 +381,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    //   IF nStyle == NIL
    //      nStyle := SS_NOTIFY
    //   ELSE
-         nStyle := Hwg_BitOr( nStyle, SS_NOTIFY )
+    nStyle := Hwg_BitOr( nStyle, SS_NOTIFY )
   //    ENDIF
   // ENDIF
    //
@@ -461,9 +461,11 @@ METHOD Init CLASS HStatic
       Super:init()
       IF ::Title != NIL
          ::nHolder := 1
-         SetWindowObject( ::handle, Self )
-         Hwg_InitStaticProc( ::handle )
-         ::Auto_Size( ::Title)  //, ::nStyleHS) //::nStyleOwner )
+         IF ::classname == "HSTATIC"
+            SetWindowObject( ::handle, Self )
+            Hwg_InitStaticProc( ::handle )
+            ::Auto_Size( ::Title)  //, ::nStyleHS) //::nStyleOwner )
+         ENDIF   
          SetWindowText( ::handle, ::title )
       ENDIF
    ENDIF
@@ -510,12 +512,14 @@ METHOD Paint( lpDis ) CLASS HStatic
    nstyle := ::nStyleHS  // ::style   
    SetAStyle( @nstyle, @dwtext )
 
-   // Set transparent background
-   SetBkMode( dc, 1 )
-   // ADD 10/09/2008
    IF ::oparent:brush != Nil
       SETBKCOLOR(dc,::oparent:bcolor)
       SetBkMode(dc,0)
+      FillRect( dc,client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ::oParent:brush:handle )
+   ELSE
+     // Set transparent background
+     // backgroud not transparent because put upon in changed text
+     SetBkMode( dc, 0 )
    ENDIF   
 
    //IF ::lOwnerDraw
@@ -657,7 +661,7 @@ METHOD Init CLASS HButton
 METHOD onClick()  CLASS HButton
    IF ::bClick != Nil
       ::oParent:lSuspendMsgsHandling := .T.
-      Eval( ::bClick, ::oParent, ::id )
+      Eval( ::bClick, Self, ::id )
       ::oParent:lSuspendMsgsHandling := .F.
    ENDIF
    RETURN Nil

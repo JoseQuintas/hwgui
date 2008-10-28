@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.956 2008-10-27 22:06:25 fperillo Exp $
+ * $Id: Changelog,v 1.957 2008-10-28 12:57:39 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-28 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include\windows.ch
+     + added news contants WA_INACTIVE, WA_ACTIVE, WA_CLICKACTIVE
+   * source\hcontrol.prg
+     * fixed setvalue in paint()
+	 * method INIT changed because other classes based in STATIC interfere  
+   * source\hdialog.prg
+     * minor fix in onActivate
+   * source\hwindow.prg
+     + added WM_ACTIVATE in aMessages in CLASS HMainWindow because bGetFocus and bLostFocus not work
+	 + added Function onActivate
+	 + added in Function onEraseBk possibility of color in the background
 
 2008-10-27 23:04 UTC+0100 Francesco Perillo < fperillo at gmail dot com >
   * source\misc.prg

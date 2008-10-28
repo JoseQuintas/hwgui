@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.59 2008-10-28 14:57:15 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.60 2008-10-28 17:28:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -112,8 +112,8 @@ HB_SYMBOL_UNUSED(cHelp)
    ::bCloseQuery := bCloseQuery
 
    IF clr != NIL
-      ::brush := HBrush():Add(clr)
-      ::bColor := clr	 
+     ::brush := HBrush():Add(clr)
+     ::bColor := clr	 
    ENDIF
 
    IF cAppName != Nil
@@ -206,7 +206,8 @@ METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
                     nStyle,::nLeft,::nTop,::nWidth,::nHeight )
 
    ELSEIF lType == WND_MAIN
-
+   
+      clr := nil  // because error and WINDOW IS INVISIBLE
       ::handle := Hwg_InitMainWindow( Self, ::szAppName,cTitle,cMenu, ;
               Iif(oIcon!=Nil,oIcon:handle,Nil),Iif(oBmp!=Nil,-1,clr),::Style,::nLeft, ;
               ::nTop,::nWidth,::nHeight )
@@ -491,6 +492,7 @@ Local aControls := GetWindowRect( oWnd:handle )
 Return -1
 
 Static Function onEraseBk( oWnd,wParam )
+Local aCoors
 
    IF oWnd:oBmp != Nil
        IF oWnd:lBmpCenter
@@ -499,22 +501,20 @@ Static Function onEraseBk( oWnd,wParam )
           SpreadBitmap( wParam,oWnd:handle,oWnd:oBmp:handle )
        ENDIF
        Return 1
-	 ELSE	    
+	 ELSEIF oWnd:type != WND_MDI 
        aCoors := GetClientRect( oWnd:handle )
        IF oWnd:brush != Nil
           IF Valtype( oWnd:brush ) != "N"
-            IF oWnd:type == WND_MDI //.AND. Len(HWindow():aWindows) > 1
-               FillRect( wParam, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1, oWnd:brush:handle )                
-            ELSE
-               FillRect( wParam, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1, oWnd:brush:handle )
-            ENDIF 
+            FillRect( wParam, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1, oWnd:brush:handle )
+            Return 1
           ENDIF
-       ELSE
+       ELSEIF oWnd:type != WND_MAIN	    
           FillRect( wParam, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1,COLOR_3DFACE+1 )
+          Return 1
        ENDIF
-       Return 1
    ENDIF
 Return -1
+
 
 Static Function onSysCommand( oWnd,wParam )
 Local i

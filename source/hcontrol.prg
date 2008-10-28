@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.100 2008-10-28 14:57:15 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.101 2008-10-28 17:17:07 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -359,9 +359,9 @@ CLASS VAR winclass   INIT "STATIC"
    METHOD Activate()
    // METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
    //                                                 value )
-   METHOD SetValue( value ) INLINE  ::Auto_Size(value),  ::title := value,;
+   METHOD SetValue( value ) INLINE  ::title := value, ::Auto_Size(),  ;
                                     SetDlgItemText( ::oParent:handle, ::id, value )
-   METHOD Auto_Size( cValue )  HIDDEN
+   METHOD Auto_Size( )  HIDDEN
 
    METHOD Init()
    METHOD PAINT( o )
@@ -459,12 +459,12 @@ METHOD Activate CLASS HStatic
 METHOD Init CLASS HStatic
    IF ! ::lInit
       Super:init()
-      IF ::Title != NIL
+      IF ::title != NIL
          ::nHolder := 1
          IF ::classname == "HSTATIC"
             SetWindowObject( ::handle, Self )
             Hwg_InitStaticProc( ::handle )
-            ::Auto_Size( ::Title)  //, ::nStyleHS) //::nStyleOwner )
+            ::Auto_Size( )  //, ::nStyleHS) //::nStyleOwner )
          ENDIF   
          SetWindowText( ::handle, ::title )
       ENDIF
@@ -549,13 +549,12 @@ METHOD onDblClick()  CLASS HStatic
    ENDIF   
 RETURN Nil
 
-//METHOD Auto_Size( cValue, nAlign ) CLASS HStatic
-METHOD Auto_Size( cValue ) CLASS HStatic
+METHOD Auto_Size( ) CLASS HStatic
    LOCAL  ASize, nLeft, nAlign 
 
    IF ::autosize  //.OR. ::lOwnerDraw
       nAlign := ::nStyleHS - SS_NOTIFY
-      ASize :=  TxtRect( cValue, Self )
+      ASize :=  TxtRect( ::title, Self )
       // ajust VCENTER
       // ::nTop := ::nTop + Int( ( ::nHeight - ASize[ 2 ] + 2 ) / 2 )
       IF nAlign == SS_RIGHT

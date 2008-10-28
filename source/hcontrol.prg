@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.99 2008-10-28 12:57:39 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.100 2008-10-28 14:57:15 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -515,11 +515,13 @@ METHOD Paint( lpDis ) CLASS HStatic
    IF ::oparent:brush != Nil
       SETBKCOLOR(dc,::oparent:bcolor)
       SetBkMode(dc,0)
-      FillRect( dc,client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ::oParent:brush:handle )
+      FillRect( DC,client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ::oParent:brush:handle )
    ELSE
-     // Set transparent background
-     // backgroud not transparent because put upon in changed text
-     SetBkMode( dc, 0 )
+	    // Set transparent background
+	    SetBkMode( dc, 1 )
+      IF ::oParent:classname != "HTAB"
+         FillRect( DC,client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ],COLOR_3DFACE+1 )
+      ENDIF  
    ENDIF   
 
    //IF ::lOwnerDraw

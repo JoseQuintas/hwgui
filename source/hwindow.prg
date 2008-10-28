@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.58 2008-10-28 12:57:39 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.59 2008-10-28 14:57:15 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -159,7 +159,7 @@ CLASS HMainWindow INHERIT HWindow
 
    CLASS VAR aMessages INIT { ;
       { WM_COMMAND,WM_ERASEBKGND,WM_MOVE,WM_SIZE,WM_SYSCOMMAND, ;
-        WM_NOTIFYICON,WM_ENTERIDLE,WM_CLOSE,WM_DESTROY,WM_ENDSESSION, WM_ACTIVATE }, ;
+        WM_NOTIFYICON,WM_ENTERIDLE,WM_CLOSE,WM_DESTROY,WM_ENDSESSION, WM_ACTIVATE  }, ;
       { ;
          {|o,w,l|onCommand(o,w,l)},        ;
          {|o,w|onEraseBk(o,w)},            ;
@@ -170,10 +170,11 @@ CLASS HMainWindow INHERIT HWindow
          {|o,w,l|onEnterIdle(o,w,l)},      ;
          {|o|onCloseQuery(o)}, ;
          {|o|onDestroy(o)},                ;
-         {|o,w|onEndSession(o,w)}          ;
-         {|o,w,l|onActivate(o,w,l)}        ;
+         {|o,w|onEndSession(o,w)},          ;
+         {|o,w,l|onActivate(o,w,l)}         ;
       } ;
    }
+
    DATA   nMenuPos
    DATA oNotifyIcon, bNotify, oNotifyMenu
    DATA lTray INIT .F.
@@ -512,7 +513,6 @@ Static Function onEraseBk( oWnd,wParam )
           FillRect( wParam, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1,COLOR_3DFACE+1 )
        ENDIF
        Return 1
-    ENDIF
    ENDIF
 Return -1
 

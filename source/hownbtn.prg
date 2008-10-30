@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.34 2008-09-01 19:00:20 mlacecilia Exp $
+ * $Id: hownbtn.prg,v 1.35 2008-10-30 19:39:01 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -377,7 +377,7 @@ METHOD End()  CLASS HOwnButton
       ::oBitmap:Release()
       ::oBitmap := Nil
    ENDIF
-
+   PostMessage( ::handle, WM_CLOSE, 0, 0 )
 Return Nil
 
 METHOD Enable() CLASS HOwnButton
@@ -399,4 +399,3 @@ METHOD Disable() CLASS HOwnButton
    EnableWindow( ::handle, .F. )
 
 Return Nil
-

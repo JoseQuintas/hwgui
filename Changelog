@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.959 2008-10-28 17:28:17 lfbasso Exp $
+ * $Id: Changelog,v 1.960 2008-10-30 18:15:30 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-30 19:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+   * source\htimer.prg
+     * changed the behaviour to accomplish the suspension of timer
+       (setting oTimer:interval := 0 stops the timer without destroying it,
+        setting oTimer:interval := somevalue restarts the timer)
+       note that the destruction ( via oTimer:end() ) now is mandatory
+     * striped out the unused property xInterval
 
 2008-10-28 15:25 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source\hwindow.prg

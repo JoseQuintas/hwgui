@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.962 2008-11-01 14:59:49 lfbasso Exp $
+ * $Id: Changelog,v 1.963 2008-11-01 21:09:19 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-11-01 19:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include\guilib.ch
+     * fix clause in ACTIVATE DIALOG
+   * source\hdialog.prg
+     * add nInitShow to start STATE WINDOW in activate
+     * fixed SHOW in ACTIVATE
+	 
 2008-11-01 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include\guilib.ch
    	 + add clause  [ SHOW <nShow>] in ACTIVATE DIALOG <oDlg>

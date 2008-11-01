@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.74 2008-11-01 14:59:49 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.75 2008-11-01 21:09:19 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -66,7 +66,7 @@ CLASS HDialog INHERIT HCustomWindow
    DATA xResourceID
    DATA oEmbedded
    DATA bOnActivate
-
+   DATA nInitShow INIT 0
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
                   bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc ,bcolor)
@@ -131,7 +131,8 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
                    .AND. ! Empty( ::oParent:handle ) , ::oParent:handle, ;
                    IIf( ( oWnd := HWindow():GetMain() ) != Nil,    ;
                         oWnd:handle, GetActiveWindow() ) )
-
+                        
+   ::nInitShow := IIF( valtype( nShow ) = "N", nShow, 0 ) 
    IF ::Type == WND_DLG_RESOURCE
       IF lNoModal == Nil .OR. ! lNoModal
          ::lModal := .T.
@@ -175,13 +176,6 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
          */
       ENDIF
    ENDIF
-   IF valtype(nShow) = "N"
-      IF nShow = 1 .OR. nShow = WS_MINIMIZE		
-        ::minimize()
-      ELSEIF nShow = 2 .OR. nShow = WS_MAXIMIZE
-			  ::maximize()
-   	  ENDIF		  
-   ENDIF	  
 
    RETURN Nil
 
@@ -306,7 +300,13 @@ HB_SYMBOL_UNUSED(lParam)
      Eval( oDlg:bGetFocus, oDlg )
      oDlg:lSuspendMsgsHandling := .f.
 	 ENDIF
- 
+	 
+	 IF oDlg:nInitShow = 1 .OR. oDlg:nInitShow = WS_MINIMIZE		
+	    odlg:minimize()
+   ELSEIF oDlg:nInitShow = 2 .OR. oDlg:nInitShow = WS_MAXIMIZE
+      odlg:maximize()
+   ENDIF
+
 Return nReturn
 
 Static Function onEnterIdle( oDlg, wParam, lParam )

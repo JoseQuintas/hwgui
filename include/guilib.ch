@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.124 2008-11-01 14:59:49 lfbasso Exp $
+ *$Id: guilib.ch,v 1.125 2008-11-01 21:09:19 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -200,7 +200,7 @@
             [ SHOW <nShow>] ;
             [ ON ACTIVATE <bInit> ]                     ;
           => ;
-        <oDlg>:Activate(<.lNoModal.>, <nShow>,<bInit> )
+        <oDlg>:Activate(<.lNoModal.>, <bInit>, <nShow> )
 
 #xcommand MENU FROM RESOURCE OF <oWnd> ON <id1> ACTION <b1>      ;
                                  [ ON <idn> ACTION <bn> ]    ;

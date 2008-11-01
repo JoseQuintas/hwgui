@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.107 2008-10-26 19:18:12 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.108 2008-11-01 14:59:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -820,13 +820,13 @@ METHOD Valid( ) CLASS HEdit
                ::oparent:lSuspendMsgsHandling := .F.
                RETURN .F.
             endif
+            IF Empty(GetFocus())
+    		       GetSkip( ::oParent, ::handle,,::nGetSkip)
+		        ENDIF
          ENDIF
          IF oDlg != Nil
             oDlg:nLastKey := 0
          ENDIF
-       IF empty(GetFocus())
-		   GetSkip( ::oParent, ::handle,,::nGetSkip)
-		 ENDIF
       ENDIF
    ELSEIF ::bLostFocus != Nil
       ::oparent:lSuspendMsgsHandling := .T.
@@ -838,7 +838,7 @@ METHOD Valid( ) CLASS HEdit
       ENDIF
       IF Empty(GetFocus())
 	      GetSkip( ::oParent, ::handle,,::nGetSkip)
-		ENDIF
+		  ENDIF
    ENDIF
    ::oparent:lSuspendMsgsHandling := .F.
    RETURN .T.

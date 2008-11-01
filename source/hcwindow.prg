@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.30 2008-10-15 13:29:25 lculik Exp $
+ *$Id: hcwindow.prg,v 1.31 2008-11-01 14:59:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -35,6 +35,9 @@ STATIC aCustomEvents := { ;
 
 CLASS HObject
    // DATA classname
+   DATA aObjects     INIT { }
+   METHOD AddObject( oCtrl ) INLINE AAdd( ::aObjects, oCtrl )
+
 ENDCLASS
 
 CLASS HCustomWindow INHERIT HObject
@@ -318,15 +321,20 @@ STATIC FUNCTION onNotify( oWnd, wParam, lParam )
    RETURN - 1
 
 STATIC FUNCTION onDestroy( oWnd )
-   LOCAL aControls := oWnd:aControls
-   LOCAL i, nLen   := Len( aControls )
+LOCAL aControls := oWnd:aControls
+LOCAL i, nLen   := Len( aControls )
 
    FOR i := 1 TO nLen
-      aControls[ i ]:END()
+       aControls[ i ]:End()
    NEXT
-   oWnd:END()
+   nLen := Len( oWnd:aObjects )   
+   FOR i := 1 TO nLen
+       oWnd:aObjects[ i ]:End()
+   NEXT
+   oWnd:End()
 
-   RETURN 1
+ RETURN 1
+
 
 STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
    LOCAL oCtrl
@@ -342,7 +350,7 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
          SetBkColor( wParam, oCtrl:bcolor )
          IF oCtrl:brush != Nil
             RETURN oCtrl:brush:handle
-         ELSE   //IF oCtrl:oParent:brush != Nil
+         ELSEIF oCtrl:oParent:brush != Nil
             RETURN oCtrl:oParent:brush:handle
          ENDIF
       ENDIF

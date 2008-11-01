@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.961 2008-10-30 19:39:01 mlacecilia Exp $
+ * $Id: Changelog,v 1.962 2008-11-01 14:59:49 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,46 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-11-01 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include\guilib.ch
+   	 + add clause  [ SHOW <nShow>] in ACTIVATE DIALOG <oDlg>
+	   nShow = 0 Normal(Default), 1 or WS_MINIMIZE -Minimized, 2 or WS_MAXIMIZE -Maximized
+     + add clauses [ ON INIT, ON SIZE,ON PAINT ] in @ <x>,<y> PROGRESSBAR
+   * include\windows.ch
+     + add Constant WS_MAXIMIZE
+   * source\guimain.prg
+     + add Function InitObjects( oWnd )
+	   initialize objects based on class HObject to start the DIALOG
+   * source\hcontrol.prg
+     * CLASS HSTATUS
+       + add METHOD SetTextPanel(nPart, cText, lRedraw )
+       + add METHOD GetTextPanel(nPart)
+	   * fixed in INIT hwg_InitStatus to show in to start DIALOG
+     * CLASS HStatic
+	   * add parameter cvalue again in Auto_Size because METHOD SETVALUE
+	   * fix in PAINT() if changed text of the STATIC
+   * source\hcwindow.prg
+     * CLASS HObject
+	   + DATA aObjects     
+       + METHOD AddObject
+         is necessary to start in DIALOG objectos not based in CLASS HCONTROL 
+	   * in FUNCTION onDestroy add code to Destroyed objects too
+   * source\hdialog.prg
+     * add parameter nShow in Activate 
+	    nShow = 0 Normal(Default), 1 or WS_MINIMIZE -Minimized, 2 or WS_MAXIMIZE -Maximized
+     * add InitObjects() in InitModalDlg
+	 * now ON INIT event if on FALSE Return is canceling the creation of DIALOG
+   * source\hedit.prg
+     * minor fix in METHOD VALID
+   * source\htimer.prg
+     + add METHOD INIT to start in DIALOG
+	   now HTIMER work in to start DIALOG, no longer necessarily being its creation in the event
+	   of the dialog init
+   * source\hwindow.prg
+     * fixed event bACTIVATE in WINDOW MAIN
+	 * now ON INIT event if on FALSE Return is canceling the creation of WINDOW
+	 
 
 2008-10-30 20:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    * source\hownbtn.prg

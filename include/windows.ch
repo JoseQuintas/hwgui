@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.65 2008-10-28 12:57:39 lfbasso Exp $
+ *$Id: windows.ch,v 1.66 2008-11-01 14:59:49 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -318,6 +318,7 @@
 #define WS_DISABLED         134217728  // 0x08000000L
 #define WS_CLIPSIBLINGS     67108864   // 0x04000000L
 #define WS_CLIPCHILDREN     33554432
+#define WS_MAXIMIZE         16777216   // 0x01000000L
 #define WS_CAPTION          12582912   // 0x00C00000L
 #define WS_BORDER           8388608    // 0x00800000L
 #define WS_DLGFRAME         4194304    // 0x00400000L

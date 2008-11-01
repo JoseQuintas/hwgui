@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.27 2008-10-07 12:37:49 lculik Exp $
+ * $Id: guimain.prg,v 1.28 2008-11-01 14:59:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -11,6 +11,18 @@
 #include "windows.ch"
 #include "guilib.ch"
 #include "common.ch"
+
+Function InitObjects( oWnd )
+Local i, pArray := oWnd:aObjects //, lInit
+
+   IF pArray != Nil
+      FOR i := 1 TO Len( pArray )
+         IF __ObjHasMsg( pArray[i],"INIT")
+            pArray[i]:Init()
+         ENDIF
+      NEXT
+   ENDIF
+Return .T.
 
 Function InitControls( oWnd,lNoActivate )
 Local i, pArray := oWnd:aControls, lInit
@@ -406,7 +418,7 @@ FUNCTION TxtRect( cTxt, oWin )
    LOCAL oFont := oWin:oFont
 
    hDC       := GetDC( oWin:handle )
-	IF oFont == Nil
+	IF oFont == Nil .AND. oWin:oParent != Nil
 		oFont := oWin:oParent:oFont
 	ENDIF
 	IF oFont != Nil

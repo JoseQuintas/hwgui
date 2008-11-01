@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.60 2008-10-28 17:28:17 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.61 2008-11-01 14:59:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -230,7 +230,11 @@ Local oWndClient, handle
    CreateGetList( Self )
    
    IF ::bInit != Nil
-      Eval( ::bInit, Self )
+      lres := Eval( ::bInit, Self )
+      IF VALTYPE( lres ) = "L" .AND. !lres
+         SENDMESSAGE( ::handle, WM_DESTROY, 0,0 )
+         RETURN Nil
+      ENDIF
    ENDIF
 
    IF ::type == WND_MDI
@@ -247,6 +251,10 @@ Local oWndClient, handle
       Hwg_ActivateMdiWindow( ( lShow==Nil .OR. lShow ),::hAccel, lMaximized, lMinimized )
 
    ELSEIF ::type == WND_MAIN
+   
+      IF ( bActivate  != NIL)
+         eVal(bActivate)
+      ENDIF
 
       Hwg_ActivateMainWindow( ( lShow==Nil .OR. lShow ),::hAccel, lMaximized, lMinimized )
 

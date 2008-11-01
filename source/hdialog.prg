@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.73 2008-10-28 12:57:39 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.74 2008-11-01 14:59:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -121,7 +121,8 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
 
 RETURN Self
 
-METHOD Activate( lNoModal, bOnActivate ) CLASS HDialog
+
+METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
    LOCAL oWnd, hParent
    ::bOnActivate := bOnActivate
    CreateGetList( Self )
@@ -174,6 +175,13 @@ METHOD Activate( lNoModal, bOnActivate ) CLASS HDialog
          */
       ENDIF
    ENDIF
+   IF valtype(nShow) = "N"
+      IF nShow = 1 .OR. nShow = WS_MINIMIZE		
+        ::minimize()
+      ELSEIF nShow = 2 .OR. nShow = WS_MAXIMIZE
+			  ::maximize()
+   	  ENDIF		  
+   ENDIF	  
 
    RETURN Nil
 
@@ -260,7 +268,8 @@ HB_SYMBOL_UNUSED(lParam)
    ENDIF
 
    InitControls( oDlg,.T. )
-
+   InitObjects( oDlg )
+    
    IF oDlg:oIcon != Nil
       SendMessage( oDlg:handle,WM_SETICON,1,oDlg:oIcon:handle )
    ENDIF
@@ -272,24 +281,32 @@ HB_SYMBOL_UNUSED(lParam)
    ENDIF
 
    IF oDlg:bInit != Nil
-      oDlg:lSuspendMsgsHandling := .t.
-	      IF Valtype(nReturn := Eval( oDlg:bInit, oDlg )) != "N"
+      oDlg:lSuspendMsgsHandling := .t.  
+      IF Valtype(nReturn := Eval( oDlg:bInit, oDlg )) != "N"
+         oDlg:lSuspendMsgsHandling := .F.  
+         IF VALTYPE(nReturn) = "L" .AND. !nReturn
+            ODLG:CLOSE()
+            RETURN Nil
+         ENDIF
          nReturn := 1
       ENDIF
       oDlg:lSuspendMsgsHandling := .F.
    ENDIF
+
    IF Valtype(oDlg:bOnActivate) == "B"
+      //oDlg:lSuspendMsgsHandling := .T.  
       eval(oDlg:bOnActivate)
+      //oDlg:lSuspendMsgsHandling := .F.  
    ENDIF
 
+	 SetFocus(oDlg:handle)
+	 	 
    IF oDlg:bGetFocus != Nil
      oDlg:lSuspendMsgsHandling := .t.
      Eval( oDlg:bGetFocus, oDlg )
      oDlg:lSuspendMsgsHandling := .f.
 	 ENDIF
-
-	 SetFocus(oDlg:handle)
-
+ 
 Return nReturn
 
 Static Function onEnterIdle( oDlg, wParam, lParam )

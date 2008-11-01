@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.101 2008-10-28 17:17:07 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.102 2008-11-01 14:59:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -286,6 +286,8 @@ CLASS VAR winclass   INIT "msctls_statusbar32"
    METHOD Init()
    METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                     bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, aParts )
+   METHOD SetTextPanel( nPart, cText, lRedraw )
+   METHOD GetTextPanel( nPart )
 
 ENDCLASS
 
@@ -319,10 +321,10 @@ METHOD Activate CLASS HStatus
 
 METHOD Init CLASS HStatus
    IF ! ::lInit
-      Super:Init()
       IF ! Empty( ::aParts )
          hwg_InitStatus( ::oParent:handle, ::handle, Len( ::aParts ), ::aParts )
       ENDIF
+      Super:Init()
    ENDIF
    RETURN  NIL
 
@@ -338,6 +340,24 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
    ::aParts := aParts
    RETURN Self
+
+METHOD GetTextPanel( nPart ) CLASS HStatus
+Local ntxtLen, cText := ""
+
+   ntxtLen := SendMessage( ::handle, SB_GETTEXTLENGTH, nPart-1, 0 )
+   cText := replicate( chr( 0 ), ntxtLen )
+   SendMessage( ::handle, SB_GETTEXT, nPart-1, @cText )
+ Return cText
+
+METHOD SetTextPanel( nPart, cText, lRedraw ) CLASS HStatus
+    //WriteStatusWindow( ::handle,nPart-1,cText )
+    SendMessage( ::handle, SB_SETTEXT, nPart - 1, cText )
+    IF lRedraw != Nil .AND. lRedraw
+        RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+    ENDIF
+
+RETURN Nil
+
 
 //- HStatic
 
@@ -359,9 +379,9 @@ CLASS VAR winclass   INIT "STATIC"
    METHOD Activate()
    // METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
    //                                                 value )
-   METHOD SetValue( value ) INLINE  ::title := value, ::Auto_Size(),  ;
-                                    SetDlgItemText( ::oParent:handle, ::id, value )
-   METHOD Auto_Size( )  HIDDEN
+   METHOD SetValue( value ) INLINE  ::Auto_Size( value ),;
+                     SetDlgItemText( ::oParent:handle, ::id, value ), ::title := value
+   METHOD Auto_Size( cValue )  HIDDEN
 
    METHOD Init()
    METHOD PAINT( o )
@@ -436,7 +456,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    ::style := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
    // Enabling style for tooltips
    //IF ValType( cTooltip ) == "C"
-      ::Style := SS_NOTIFY
+   ::Style := SS_NOTIFY
    //ENDIF
    ::bOther := bOther  
    ::bClick := bClick
@@ -464,7 +484,7 @@ METHOD Init CLASS HStatic
          IF ::classname == "HSTATIC"
             SetWindowObject( ::handle, Self )
             Hwg_InitStaticProc( ::handle )
-            ::Auto_Size( )  //, ::nStyleHS) //::nStyleOwner )
+            ::Auto_Size( ::Title )  
          ENDIF   
          SetWindowText( ::handle, ::title )
       ENDIF
@@ -512,16 +532,13 @@ METHOD Paint( lpDis ) CLASS HStatic
    nstyle := ::nStyleHS  // ::style   
    SetAStyle( @nstyle, @dwtext )
 
-   IF ::oparent:brush != Nil
+   IF ::oparent:brush != Nil 
       SETBKCOLOR(dc,::oparent:bcolor)
       SetBkMode(dc,0)
       FillRect( DC,client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ::oParent:brush:handle )
    ELSE
 	    // Set transparent background
-	    SetBkMode( dc, 1 )
-      IF ::oParent:classname != "HTAB"
-         FillRect( DC,client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ],COLOR_3DFACE+1 )
-      ENDIF  
+ 	    SetBkMode( dc, 1 )
    ENDIF   
 
    //IF ::lOwnerDraw
@@ -531,7 +548,11 @@ METHOD Paint( lpDis ) CLASS HStatic
    DrawText( dc, szText, ;
              client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ;
              dwtext )
-   RETURN nil
+   IF ::Title != szText
+  		 ::move()
+   ENDIF   
+               
+ RETURN nil
 
 METHOD onClick()  CLASS HStatic
   IF ::bClick != Nil
@@ -549,12 +570,12 @@ METHOD onDblClick()  CLASS HStatic
    ENDIF   
 RETURN Nil
 
-METHOD Auto_Size( ) CLASS HStatic
+METHOD Auto_Size( cValue ) CLASS HStatic
    LOCAL  ASize, nLeft, nAlign 
 
    IF ::autosize  //.OR. ::lOwnerDraw
       nAlign := ::nStyleHS - SS_NOTIFY
-      ASize :=  TxtRect( ::title, Self )
+      ASize :=  TxtRect( cValue, Self )
       // ajust VCENTER
       // ::nTop := ::nTop + Int( ( ::nHeight - ASize[ 2 ] + 2 ) / 2 )
       IF nAlign == SS_RIGHT
@@ -1338,7 +1359,6 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
 
     BitBlt( hdc, 0, 0, rect[ 3 ] - rect[ 1 ], rect[ 4 ] - rect[ 4 ], ::m_dcBk:m_hDC, 0, 0, SRCCOPY )
     RETURN Self
-
 
 
 

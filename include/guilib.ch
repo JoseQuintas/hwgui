@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.123 2008-10-27 22:06:25 fperillo Exp $
+ *$Id: guilib.ch,v 1.124 2008-11-01 14:59:49 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -197,9 +197,10 @@
 
 #xcommand ACTIVATE DIALOG <oDlg>                        ;
             [ <lNoModal: NOMODAL> ]                     ;
+            [ SHOW <nShow>] ;
             [ ON ACTIVATE <bInit> ]                     ;
           => ;
-      <oDlg>:Activate( <.lNoModal.>, <bInit> )
+        <oDlg>:Activate(<.lNoModal.>, <nShow>,<bInit> )
 
 #xcommand MENU FROM RESOURCE OF <oWnd> ON <id1> ACTION <b1>      ;
                                  [ ON <idn> ACTION <bn> ]    ;
@@ -215,15 +216,19 @@
 // Commands for control handling
 
 // Contribution ATZCT" <atzct@obukhov.kiev.ua
-#xcommand @ <x>,<y> PROGRESSBAR <oPBar>       ;
+#xcommand @ <x>,<y> PROGRESSBAR <oPBar>        ;
             [ OF <oWnd> ]                       ;
             [ ID <nId> ]                        ;
             [ SIZE <nWidth>,<nHeight> ]         ;
+            [ ON INIT <bInit> ]                 ;
+            [ ON PAINT <bDraw> ]                ;
+            [ ON SIZE <bSize> ]                 ;
             [ BARWIDTH <maxpos> ]               ;
             [ QUANTITY <nRange> ]               ;
+            [ TOOLTIP <ctooltip> ]              ;
             =>                                  ;
             <oPBar> :=  HProgressBar():New( <oWnd>,<nId>,<x>,<y>,<nWidth>, ;
-                       <nHeight>,<maxpos>,<nRange> )
+                       <nHeight>,<maxpos>,<nRange>, <bInit>,<bSize>,<bDraw>,<ctooltip> )
 
 #xcommand ADD STATUS [<oStat>] [ TO <oWnd> ] ;
             [ ID <nId> ]           ;

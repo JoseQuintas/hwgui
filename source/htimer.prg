@@ -1,5 +1,5 @@
 /*
- * $Id: htimer.prg,v 1.7 2008-10-30 18:15:30 mlacecilia Exp $
+ * $Id: htimer.prg,v 1.8 2008-11-01 14:59:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTimer class
@@ -18,6 +18,8 @@
 CLASS HTimer INHERIT HObject
 
    CLASS VAR aTimers   INIT {}
+   
+   DATA lInit   INIT .F.
    DATA id
    DATA value
    DATA oParent
@@ -34,6 +36,7 @@ CLASS HTimer INHERIT HObject
 										SetTimer( ::oParent:handle, ::id, ::value )
 
    METHOD New( oParent,id,value,bAction )
+   METHOD Init() 
    METHOD End()
 
 ENDCLASS
@@ -51,13 +54,24 @@ METHOD New( oParent,nId,value,bAction ) CLASS HTimer
    ::id      := nId
    ::value   := value
    ::bAction := bAction
-	if ::value > 0
+   /*
+	 if ::value > 0
       SetTimer( oParent:handle, ::id, ::value )
    endif
+   */
+   ::Init()
    Aadd( ::aTimers,Self )
+   ::oParent:AddObject( Self )
 
 Return Self
 
+METHOD Init CLASS HTimer
+   IF ! ::lInit
+      IF ::value > 0
+        SetTimer( ::oParent:handle, ::id, ::value )
+      ENDIF
+   ENDIF
+ RETURN  NIL
 
 METHOD End() CLASS HTimer
 Local i

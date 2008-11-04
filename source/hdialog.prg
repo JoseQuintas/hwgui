@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.75 2008-11-01 21:09:19 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.76 2008-11-04 02:35:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -398,9 +398,9 @@ HB_SYMBOL_UNUSED(lParam)
             	   oDlg:lResult := .T.
                	 EndDialog( oDlg:handle )
            		ENDIF
+              Return 1	
             ENDIF
             //setfocus(odlg:handle)
-            return 1
     		  ENDIF
       ELSEIF iParLow == IDCANCEL
          nEsc := ( getkeystate( VK_ESCAPE ) < 0 )

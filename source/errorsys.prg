@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.9 2008-09-20 17:47:51 mlacecilia Exp $
+ * $Id: errorsys.prg,v 1.10 2008-11-07 14:52:47 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement
@@ -76,10 +76,11 @@ STATIC FUNCTION DefError( oError )
 
 
    MemoWrit( LogInitialPath + "Error.log", cMessage )
+ 
    ErrorPreview( cMessage )
-   EndWindow()
-   QUIT
-
+   EndWindow() 
+   PostQuitMessage(0)
+   
 RETURN .F.
 
 

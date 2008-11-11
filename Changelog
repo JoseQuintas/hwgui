@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.965 2008-11-07 14:52:47 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.966 2008-11-11 04:49:13 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,35 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-11-11 02:31 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + add ON REFRESH in WINDOW and DIALOG
+    + add in @ <x>,<y> BITMAP
+            [ STRETCH <nStretch>] 0-Stretch, 1-Isometric, 2-Clip
+            [<lTransp: TRANSPARENT>]   
+  * source\draw.c
+    ! Function DRAWTRANSPARENTBITMAP added parameters width,height to 	
+      to resize the picture according to the value of nStretch
+  * source\hbrowse.prg
+    * minor fix in METHOD REFRESH()
+  * source\hcwindow.prg
+    + add bRefresh to before of the REFRESH the DIALOG or WINDOW, can update others objetct
+  * source\hdialog.prg
+    + add bRefresh 
+    + msg = WM_CLOSE in ONEVENT because if there is a button with IDCANCEL, the X window does not work
+  * source\hownbtn.prg
+    * minor fix in onclick
+  * source\hradio.prg
+    fix in SETVALUE OF HRadioGroup IF ::bSetGet != Nil
+  * source\hsayimg.prg
+    + add lTransp and nStretch parameters in NEW
+    + add TRANSPARENT to object BITMAP
+    + add property STRETCH	assuming 3 values, 0 - default, 1 - isometric, 2 - Clip
+  * source\htimer.prg
+    * minor fix in TimerPro IF bAction = Nil
+  * source\hwindow.prg
+    + add bRefresh to before of the REFRESH the DIALOG or WINDOW, can update others objetct
+    
 2008-11-07 12:50 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * source/errorsys.prg
     Fix BUG to quit APP, Thanks to Itamar Martins

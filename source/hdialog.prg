@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.76 2008-11-04 02:35:22 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.77 2008-11-11 04:49:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -69,8 +69,8 @@ CLASS HDialog INHERIT HCustomWindow
    DATA nInitShow INIT 0
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
-                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc ,bcolor)
-   METHOD Activate( lNoModal,bOnActivate )
+                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc,bcolor,bRefresh)
+   METHOD Activate( lNoModal, bOnActivate, nShow )
    METHOD onEvent( msg, wParam, lParam )
    METHOD Add()      INLINE Aadd( Iif( ::lModal,::aModalDialogs,::aDialogs ), Self )
    METHOD Del()
@@ -86,7 +86,7 @@ CLASS HDialog INHERIT HCustomWindow
 ENDCLASS
 
 METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
-                  bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId, xResourceID, lExitOnEsc ,bcolor) CLASS HDialog
+            bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID,lExitOnEsc,bcolor,bRefresh) CLASS HDialog
 
    ::oDefaultParent := Self
    ::xResourceID := xResourceID
@@ -107,6 +107,7 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
    ::bGetFocus  := bGFocus
    ::bLostFocus := bLFocus
    ::bOther     := bOther
+   ::bRefresh   := bRefresh
    ::lClipper   := Iif( lClipper==Nil,.F.,lClipper )
    ::lExitOnEnter:=Iif( lExitOnEnter==Nil,.T.,!lExitOnEnter )
    ::lExitOnEsc  :=Iif( lExitOnEsc==Nil,.T.,!lExitOnEsc )
@@ -209,6 +210,9 @@ Local i, oTab, nPos
          //writelog( str(msg) + str(wParam) + str(lParam)+CHR(13) )
          Return Eval( aMessModalDlg[i,2], Self, wParam, lParam )
       ENDIF
+   ELSEIF msg = WM_CLOSE
+	    ::close()  
+	    return 1
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
          onTrackScroll( Self,msg,wParam,lParam )
@@ -289,7 +293,7 @@ HB_SYMBOL_UNUSED(lParam)
 
    IF Valtype(oDlg:bOnActivate) == "B"
       //oDlg:lSuspendMsgsHandling := .T.  
-      eval(oDlg:bOnActivate)
+      eval(oDlg:bOnActivate, oDlg)
       //oDlg:lSuspendMsgsHandling := .F.  
    ENDIF
 

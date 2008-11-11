@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.62 2008-11-01 15:54:56 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.63 2008-11-11 04:49:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -86,7 +86,7 @@ ENDCLASS
 
 METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,;
-                  cAppName,oBmp,cHelp,nHelpId, bCloseQuery ) CLASS HWindow
+                  cAppName,oBmp,cHelp,nHelpId, bCloseQuery,bRefresh) CLASS HWindow
 
 HB_SYMBOL_UNUSED(clr)
 HB_SYMBOL_UNUSED(cMenu)
@@ -110,7 +110,8 @@ HB_SYMBOL_UNUSED(cHelp)
    ::bLostFocus := bLFocus
    ::bOther     := bOther
    ::bCloseQuery := bCloseQuery
-
+   ::bRefresh   := bRefresh
+   
    IF clr != NIL
      ::brush := HBrush():Add(clr)
      ::bColor := clr	 
@@ -181,7 +182,7 @@ CLASS HMainWindow INHERIT HWindow
 
    METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
                      oFont,bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, ;
-                     cAppName,oBmp,cHelp,nHelpId, bCloseQuery )
+                     cAppName,oBmp,cHelp,nHelpId, bCloseQuery,bRefresh )
    METHOD Activate( lShow, lMaximized, lMinimized, bActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu, cTooltip )
@@ -191,11 +192,11 @@ ENDCLASS
 
 METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
                      oFont,bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, ;
-                     cAppName,oBmp,cHelp,nHelpId, bCloseQuery ) CLASS HMainWindow
+                     cAppName,oBmp,cHelp,nHelpId, bCloseQuery, bRefresh ) CLASS HMainWindow
 
    Super:New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,  ;
-                  cAppName,oBmp,cHelp,nHelpId, bCloseQuery )
+                  cAppName,oBmp,cHelp,nHelpId, bCloseQuery,bRefresh )
    ::type := lType
 
    IF lType == WND_MDI
@@ -352,7 +353,7 @@ CLASS HChildWindow INHERIT HWindow
 
    METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                      bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,;
-                     cAppName,oBmp,cHelp,nHelpId )
+                     cAppName,oBmp,cHelp,nHelpId,bRefresh )
    METHOD Activate( lShow )
    METHOD onEvent( msg, wParam, lParam )
 
@@ -360,11 +361,11 @@ ENDCLASS
 
 METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,;
-                  cAppName,oBmp,cHelp,nHelpId ) CLASS HChildWindow
+                  cAppName,oBmp,cHelp,nHelpId,bRefresh ) CLASS HChildWindow
 
    Super:New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,  ;
-                  cAppName,oBmp,cHelp,nHelpId )
+                  cAppName,oBmp,cHelp,nHelpId,,bRefresh )
    ::oParent := HWindow():GetMain()
    IF ISOBJECT( ::oParent )
        ::handle := Hwg_InitChildWindow( Self, ::szAppName,cTitle,cMenu, ;

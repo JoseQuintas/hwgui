@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.15 2008-10-15 07:25:57 lfbasso Exp $
+ * $Id: hradio.prg,v 1.16 2008-11-11 04:49:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -72,7 +72,11 @@ Local nLen
             ::aButtons[nLen]:id, ;
             ::aButtons[nValue]:id )
       ::value := nValue
+      IF ::bSetGet != Nil
+         Eval( ::bSetGet,::value )
+      ENDIF   
    ENDIF
+   
 Return Nil
 
 

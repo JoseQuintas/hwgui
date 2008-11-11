@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.143 2008-10-26 23:51:17 fperillo Exp $
+ * $Id: hbrowse.prg,v 1.144 2008-11-11 04:49:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -2185,11 +2185,17 @@ METHOD Refresh( lFull ) CLASS HBrowse
       ENDIF
       ::internal[1] := 15
       // RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
-      RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+      IF ::nCurrent < ::rowCount .AND. ::rowPos < ::nCurrent 
+         ::rowPos := ::nCurrent 
+      ENDIF
+       RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ELSE
       InvalidateRect( ::handle, 0 )
       ::internal[1] := SetBit( ::internal[1], 1, 0 )
-      // PostMessage( ::handle, WM_PAINT, 0, 0 )
+      IF ::nCurrent < ::rowCount .AND. ::rowPos < ::nCurrent 
+         ::rowPos := ::nCurrent 
+      ENDIF
+        // PostMessage( ::handle, WM_PAINT, 0, 0 )
       RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ENDIF
 RETURN Nil

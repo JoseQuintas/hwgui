@@ -1,5 +1,5 @@
 /*
- * $Id: htimer.prg,v 1.8 2008-11-01 14:59:49 lfbasso Exp $
+ * $Id: htimer.prg,v 1.9 2008-11-11 04:49:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTimer class
@@ -90,7 +90,7 @@ Local i := Ascan( HTimer():aTimers,{|o| o:id == idTimer} )
 
 HB_SYMBOL_UNUSED(hWnd)
 
-   IF i != 0 .and. HTimer():aTimers[i]:value > 0
+   IF i != 0 .and. HTimer():aTimers[i]:value > 0 .AND. HTimer():aTimers[i]:bAction != Nil
       Eval( HTimer():aTimers[i]:bAction, time )
    ENDIF
 

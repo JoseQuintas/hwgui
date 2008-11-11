@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.125 2008-11-01 21:09:19 lfbasso Exp $
+ *$Id: guilib.ch,v 1.126 2008-11-11 04:49:14 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -74,6 +74,7 @@
              [ ON GETFOCUS <bGfocus> ]      ;
              [ ON LOSTFOCUS <bLfocus> ]     ;
              [ ON OTHER MESSAGES <bOther> ] ;
+             [ ON REFRESH <bRefresh> ]      ;
              [ ON CLOSEQUERY <bCloseQuery> ];
              [ ON EXIT <bExit> ]            ;
              [ HELP <cHelp> ]               ;
@@ -82,7 +83,7 @@
    <oWnd> := HMainWindow():New( Iif(<.lMdi.>,WND_MDI,WND_MAIN), ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>,;
-                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>, <bCloseQuery> )
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>, <bCloseQuery>,<bRefresh>)
 
 #xcommand INIT WINDOW <oWnd> MDICHILD       ;
              [ APPNAME <appname> ]          ;
@@ -101,6 +102,7 @@
              [ ON GETFOCUS <bGfocus> ]      ;
              [ ON LOSTFOCUS <bLfocus> ]     ;
              [ ON OTHER MESSAGES <bOther> ] ;
+             [ ON REFRESH <bRefresh> ]      ;
              [ ON EXIT <bExit> ]            ;
              [ HELP <cHelp> ]               ;
              [ HELPID <nHelpId> ]           ;
@@ -108,7 +110,7 @@
    <oWnd> := HMdiChildWindow():New( ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
-                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId> )
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,<bRefresh> )
 
 #xcommand INIT WINDOW <oWnd> CHILD          ;
              APPNAME <appname>              ;
@@ -127,6 +129,7 @@
              [ ON GETFOCUS <bGfocus> ]      ;
              [ ON LOSTFOCUS <bLfocus> ]     ;
              [ ON OTHER MESSAGES <bOther> ] ;
+             [ ON REFRESH <bRefresh> ]      ;
              [ ON EXIT <bExit> ]            ;
              [ HELP <cHelp> ]               ;
              [ HELPID <nHelpId> ]           ;
@@ -134,7 +137,7 @@
    <oWnd> := HChildWindow():New( ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
-                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId> )
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,<bRefresh> )
 
 
 #xcommand INIT DIALOG <oDlg>                ;
@@ -156,12 +159,13 @@
              [ ON GETFOCUS <bGfocus> ]      ;
              [ ON LOSTFOCUS <bLfocus> ]     ;
              [ ON OTHER MESSAGES <bOther> ] ;
+             [ ON REFRESH <bRefresh> ]      ;
              [ ON EXIT <bExit> ]            ;
              [ HELPID <nHelpId> ]           ;
           => ;
    <oDlg> := HDialog():New( Iif(<.res.>,WND_DLG_RESOURCE,WND_DLG_NORESOURCE), ;
                    <nStyle>,<x>,<y>,<width>,<height>,<cTitle>,<oFont>,<bInit>,<bExit>,;
-                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.>,<nHelpId>,<Resid>,<.lExitOnEsc.>, <clr> )
+                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.>,<nHelpId>,<Resid>,<.lExitOnEsc.>,<clr>,<bRefresh>)
 
 #xcommand ACTIVATE WINDOW <oWnd> ;
                [<lNoShow: NOSHOW>] ;
@@ -288,6 +292,8 @@
             [ OF <oWnd> ]              ;
             [ ID <nId> ]               ;
             [ SIZE <width>, <height> ] ;
+            [ STRETCH <nStretch>]      ;
+            [<lTransp: TRANSPARENT>]   ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON CLICK <bClick> ]      ;
@@ -295,18 +301,19 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oBmp> := ] HSayBmp():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-        <height>,<bitmap>,<.res.>,<bInit>,<bSize>,<ctoolt>,<bClick>,<bDblClick> )
+        <height>,<bitmap>,<.res.>,<bInit>,<bSize>,<ctoolt>,<bClick>,<bDblClick>, <.lTransp.>,<nStretch> )
 
 #xcommand REDEFINE BITMAP [ <oBmp> SHOW ] <bitmap> ;
             [<res: FROM RESOURCE>]     ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
+            [<lTransp: TRANSPARENT>]   ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oBmp> := ] HSayBmp():Redefine( <oWnd>,<nId>,<bitmap>,<.res.>, ;
-        <bInit>,<bSize>,<ctoolt> )
+        <bInit>,<bSize>,<ctoolt>,<.lTransp.>)
 
 #xcommand @ <x>,<y> ICON [ <oIco> SHOW ] <icon> ;
             [<res: FROM RESOURCE>]     ;

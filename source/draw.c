@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.53 2008-10-23 11:19:00 lculik Exp $
+ * $Id: draw.c,v 1.54 2008-11-11 04:49:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -351,6 +351,8 @@ HB_FUNC( DRAWTRANSPARENTBITMAP )
    HDC dcImage, dcTrans;
    int x = hb_parni( 3 );
    int y = hb_parni( 4 );
+   int nWidthDest = ( hb_pcount()>=5 && !ISNIL(6) )? hb_parni(6):0;
+   int nHeightDest = ( hb_pcount()>=6 && !ISNIL(7) )? hb_parni(7):0;
 
    // Create two memory dcs for the image and the mask
    dcImage = CreateCompatibleDC( hDC );
@@ -364,11 +366,24 @@ HB_FUNC( DRAWTRANSPARENTBITMAP )
    pOldBitmapTrans = (HBITMAP) SelectObject( dcTrans, bitmapTrans );
    // Build mask based on transparent colour
    SetBkColor( dcImage, trColor );
-   BitBlt( dcTrans, 0, 0, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0, SRCCOPY );
-   // Do the work - True Mask method - cool if not actual display
-   BitBlt( hDC, x, y, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0, SRCINVERT );
-   BitBlt( hDC, x, y, bitmap.bmWidth, bitmap.bmHeight, dcTrans, 0, 0, SRCAND );
-   BitBlt( hDC, x, y, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0, SRCINVERT );
+   if( nWidthDest && ( nWidthDest != bitmap.bmWidth || nHeightDest != bitmap.bmHeight ))
+     {
+      BitBlt( dcTrans, 0, 0, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0, SRCCOPY );             
+      StretchBlt( hDC, 0,0, nWidthDest, nHeightDest, dcImage,
+                  0, 0, bitmap.bmWidth, bitmap.bmHeight, SRCINVERT );
+      StretchBlt( hDC, 0,0, nWidthDest, nHeightDest, dcTrans,
+                  0, 0, bitmap.bmWidth, bitmap.bmHeight, SRCAND  );
+      StretchBlt( hDC, 0,0, nWidthDest, nHeightDest, dcImage,
+                  0, 0, bitmap.bmWidth, bitmap.bmHeight, SRCINVERT );                             
+     }
+   else
+     {
+      BitBlt( dcTrans, 0, 0, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0, SRCCOPY );
+      // Do the work - True Mask method - cool if not actual display
+      BitBlt( hDC, x, y, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0, SRCINVERT );
+      BitBlt( hDC, x, y, bitmap.bmWidth, bitmap.bmHeight, dcTrans, 0, 0, SRCAND );
+      BitBlt( hDC, x, y, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0, SRCINVERT );
+   }   
    // Restore settings
    SelectObject( dcImage, pOldBitmapImage);
    SelectObject( dcTrans, pOldBitmapTrans );
@@ -1053,3 +1068,11 @@ HB_FUNC(MODIFYSTYLE)
    DWORD dwNewStyle = (dwStyle  & ~a)|b;
    SetWindowLong(hWnd,GWL_STYLE ,dwNewStyle);
 }
+
+/*
+HB_FUNC(PTRRECT2ARRAY)
+{
+   RECT *rect =   (RECT *) HB_PARHANDLE( 1 ) ;
+   hb_itemRelease(hb_itemReturn(Rect2Array(&rect)));
+} 
+*/  

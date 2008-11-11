@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.31 2008-11-01 14:59:49 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.32 2008-11-11 04:49:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -70,6 +70,7 @@ CLASS VAR oDefaultParent SHARED
    DATA bLostFocus
    DATA bScroll
    DATA bOther
+   DATA bRefresh 
    DATA cargo
    DATA HelpId        INIT 0
    DATA nHolder       INIT 0
@@ -254,6 +255,9 @@ METHOD Refresh( oCtrl ) CLASS HCustomWindow
    oCtrl := IIf( oCtrl = Nil, Self, oCtrl )
    nlen := Len( oCtrl:aControls )
    IF IsWindowVisible( ::handle )
+      IF ::bRefresh != Nil //.AND. ;
+         Eval( ::bRefresh, Self) //, LoWord( lParam ), HiWord( lParam ) )
+      ENDIF
       FOR i = 1 TO nlen
          IF ! oCtrl:aControls[ i ]:lHide .AND. ;
             oCtrl:aControls[ i ]:handle != hCtrl

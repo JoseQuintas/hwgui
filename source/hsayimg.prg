@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.23 2008-10-26 02:58:49 lfbasso Exp $
+ * $Id: hsayimg.prg,v 1.24 2008-11-11 04:49:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -90,10 +90,12 @@ CLASS HSayBmp INHERIT HSayImage
    DATA nOffsetV  INIT 0
    DATA nOffsetH  INIT 0
    DATA nZoom
+   DATA lTransp
+   DATA nStretch
 
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
-                  bSize,ctooltip,bClick, bDblClick)
-   METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctooltip )
+               bSize,ctooltip,bClick, bDblClick,lTransp, nStretch)
+   METHOD Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctooltip,lTransp)
    METHOD Paint( lpdis )
    METHOD ReplaceBitmap( Image, lRes )
    METHOD REFRESH() INLINE ::HIDE(),SENDMESSAGE(::handle,WM_PAINT,0,0),::SHOW()
@@ -101,11 +103,13 @@ CLASS HSayBmp INHERIT HSayImage
 ENDCLASS
 
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
-                  bSize,ctooltip,bClick, bDblClick ) CLASS HSayBmp
+            bSize,ctooltip,bClick, bDblClick,lTransp,nStretch) CLASS HSayBmp
 
    Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctooltip,bClick, bDblClick )
 
    ::bPaint := {|o,lpdis|o:Paint(lpdis)}
+   ::lTransp := IIF( lTransp = Nil, .F., lTransp)
+   ::nStretch := IIF( nStretch = Nil, 0, nStretch)
 
    IF Image != Nil .AND. !EMPTY(Image)
       IF lRes == Nil ; lRes := .F. ; ENDIF
@@ -116,17 +120,19 @@ METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
       IF nWidth == Nil .OR. nHeight == Nil
          ::nWidth  := ::oImage:nWidth
          ::nHeight := ::oImage:nHeight
+         ::nStretch = 2
       ENDIF
    ENDIF
    ::Activate()
 
 Return Self
 
-METHOD Redefine( oWndParent,nId,xImage,lRes,bInit,bSize,ctooltip ) CLASS HSayBmp
+METHOD Redefine( oWndParent,nId,xImage,lRes,bInit,bSize,ctooltip,lTransp) CLASS HSayBmp
 
 
    Super:Redefine( oWndParent,nId,bInit,bSize,ctooltip )
    ::bPaint := {|o,lpdis|o:Paint(lpdis)}
+   ::lTransp := IIF( lTransp = Nil, .F., lTransp)
    IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := Iif( lRes .OR. Valtype(xImage)=="N",     ;
                        HBitmap():AddResource( xImage ), ;
@@ -139,8 +145,29 @@ Local drawInfo := GetDrawItemInfo( lpdis )
 
    IF ::oImage != Nil
       IF ::nZoom == Nil
-         DrawBitmap( drawInfo[3], ::oImage:handle,, drawInfo[4]+::nOffsetH, ;
-               drawInfo[5]+::nOffsetV, drawInfo[6]-drawInfo[4]+1, drawInfo[7]-drawInfo[5]+1 )
+        IF ::lTransp
+           IF ::nStretch = 1  // isometric
+              DrawTransparentBitmap( drawInfo[3], ::oImage:handle, drawInfo[4]+::nOffsetH, ;
+              drawInfo[5]+::nOffsetV,,) // ::nWidth+1, ::nHeight+1 )
+           ELSEIF ::nStretch = 2  // CLIP 
+              DrawTransparentBitmap( drawInfo[3], ::oImage:handle, drawInfo[4]+::nOffsetH, ;
+              drawInfo[5]+::nOffsetV,,::nWidth+1, ::nHeight+1 )
+           ELSE // stretch (DEFAULT)
+              DrawTransparentBitmap( drawInfo[3], ::oImage:handle, drawInfo[4]+::nOffsetH, ;
+                drawInfo[5]+::nOffsetV,,drawInfo[6]-drawInfo[4]+1, drawInfo[7]-drawInfo[5]+1  ) 
+           ENDIF      
+				ELSE
+           IF ::nStretch = 1  // isometric
+              DrawBitmap( drawInfo[3], ::oImage:handle,, drawInfo[4]+::nOffsetH, ;
+                drawInfo[5]+::nOffsetV) //, ::nWidth+1, ::nHeight+1 )
+           ELSEIF ::nStretch = 2  // CLIP 
+              DrawBitmap( drawInfo[3], ::oImage:handle,, drawInfo[4]+::nOffsetH, ;
+                drawInfo[5]+::nOffsetV,::nWidth+1, ::nHeight+1 )
+           ELSE // stretch (DEFAULT)
+              DrawBitmap( drawInfo[3], ::oImage:handle,, drawInfo[4]+::nOffsetH, ;
+                drawInfo[5]+::nOffsetV, drawInfo[6]-drawInfo[4]+1, drawInfo[7]-drawInfo[5]+1 )
+           ENDIF      
+        ENDIF       
       ELSE
          DrawBitmap( drawInfo[3], ::oImage:handle,, drawInfo[4]+::nOffsetH, ;
                drawInfo[5]+::nOffsetV, ::oImage:nWidth*::nZoom, ::oImage:nHeight*::nZoom )

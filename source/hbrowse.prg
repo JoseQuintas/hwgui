@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.144 2008-11-11 04:49:14 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.145 2008-11-11 11:50:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -112,7 +112,7 @@ CLASS HBrowse INHERIT HControl
    DATA aColumns                               // HColumn's array
    DATA aColAlias  INIT {}
    DATA aRelation  INIT .F.
-   DATA rowCount                               // Number of visible data rows
+   DATA rowCount   INIT 0                      // Number of visible data rows
    DATA rowPos     INIT 1                      // Current row position
    DATA rowCurrCount INIT 0                    // Current number of rows
    DATA colPos     INIT 1                      // Current column position

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.77 2008-11-11 04:49:14 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.78 2008-11-13 11:47:07 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -133,7 +133,7 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
                    IIf( ( oWnd := HWindow():GetMain() ) != Nil,    ;
                         oWnd:handle, GetActiveWindow() ) )
                         
-   ::nInitShow := IIF( valtype( nShow ) = "N", nShow, 0 ) 
+   ::nInitShow := IIF( valtype( nShow ) = "N", nShow, SW_SHOWNORMAL ) 
    IF ::Type == WND_DLG_RESOURCE
       IF lNoModal == Nil .OR. ! lNoModal
          ::lModal := .T.
@@ -290,6 +290,14 @@ HB_SYMBOL_UNUSED(lParam)
       ENDIF
       oDlg:lSuspendMsgsHandling := .F.
    ENDIF
+   // CALL DIALOG NOT VISIBLE
+   IF oDlg:nInitShow = SW_HIDE             
+      oDlg:Hide()
+      oDlg:lHide := .T. 
+      oDlg:lResult := oDlg
+      oDlg:nInitShow := SW_SHOWNORMAL
+      RETURN oDlg
+   ENDIF
 
    IF Valtype(oDlg:bOnActivate) == "B"
       //oDlg:lSuspendMsgsHandling := .T.  
@@ -305,12 +313,12 @@ HB_SYMBOL_UNUSED(lParam)
      oDlg:lSuspendMsgsHandling := .f.
 	 ENDIF
 	 
-	 IF oDlg:nInitShow = 1 .OR. oDlg:nInitShow = WS_MINIMIZE		
+   IF oDlg:nInitShow = SW_SHOWMINIMIZED  //2
 	    odlg:minimize()
-   ELSEIF oDlg:nInitShow = 2 .OR. oDlg:nInitShow = WS_MAXIMIZE
+   ELSEIF oDlg:nInitShow = SW_SHOWMAXIMIZED  //3
       odlg:maximize()
    ENDIF
-
+   
 Return nReturn
 
 Static Function onEnterIdle( oDlg, wParam, lParam )

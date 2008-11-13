@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.78 2008-11-13 11:47:07 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.79 2008-11-13 13:50:51 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -265,7 +265,7 @@ HB_SYMBOL_UNUSED(lParam)
       hwg__SetMenu( oDlg:handle, oDlg:menu[5] )
    ENDIF
 
-   InitControls( oDlg,.T. )
+   InitControls( oDlg, .T. )
    InitObjects( oDlg )
     
    IF oDlg:oIcon != Nil
@@ -290,6 +290,15 @@ HB_SYMBOL_UNUSED(lParam)
       ENDIF
       oDlg:lSuspendMsgsHandling := .F.
    ENDIF
+   
+   SetFocus( oDlg:handle )
+   
+   IF Valtype(oDlg:bOnActivate) == "B"
+      //oDlg:lSuspendMsgsHandling := .T.  
+      eval(oDlg:bOnActivate, oDlg)
+      //oDlg:lSuspendMsgsHandling := .F.  
+   ENDIF
+
    // CALL DIALOG NOT VISIBLE
    IF oDlg:nInitShow = SW_HIDE             
       oDlg:Hide()
@@ -298,14 +307,6 @@ HB_SYMBOL_UNUSED(lParam)
       oDlg:nInitShow := SW_SHOWNORMAL
       RETURN oDlg
    ENDIF
-
-   IF Valtype(oDlg:bOnActivate) == "B"
-      //oDlg:lSuspendMsgsHandling := .T.  
-      eval(oDlg:bOnActivate, oDlg)
-      //oDlg:lSuspendMsgsHandling := .F.  
-   ENDIF
-
-	 SetFocus(oDlg:handle)
 	 	 
    IF oDlg:bGetFocus != Nil
      oDlg:lSuspendMsgsHandling := .t.
@@ -316,7 +317,9 @@ HB_SYMBOL_UNUSED(lParam)
    IF oDlg:nInitShow = SW_SHOWMINIMIZED  //2
 	    odlg:minimize()
    ELSEIF oDlg:nInitShow = SW_SHOWMAXIMIZED  //3
-      odlg:maximize()
+      oDlg:maximize()
+   ELSEIF !oDlg:lModal
+	    oDlg:show()   
    ENDIF
    
 Return nReturn

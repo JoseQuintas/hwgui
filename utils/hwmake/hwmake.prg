@@ -1,5 +1,5 @@
 /*
- *$Id: hwmake.prg,v 1.2 2008-11-13 14:00:34 sandrorrfreire Exp $
+ *$Id: hwmake.prg,v 1.3 2008-11-13 19:30:38 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library 
  * 
@@ -32,7 +32,7 @@ If !File(cDirec+"hwmake.ini")
   Hwg_WriteIni( 'Config', 'Dir_HwGUI', "C:\HwGUI", cDirec+"hwmake.ini" )
   Hwg_WriteIni( 'Config', 'Dir_HARBOUR', "C:\xHARBOUR", cDirec+"hwmake.ini" )
   Hwg_WriteIni( 'Config', 'Dir_BCC55', "C:\BCC55", cDirec+"hwmake.ini" )
-  Hwg_WriteIni( 'Config', 'Dir_OBJ', "./OBJ", cDirec+"hwmake.ini" )
+  Hwg_WriteIni( 'Config', 'Dir_OBJ', "OBJ", cDirec+"hwmake.ini" )
 EndIf
  
 Private lSaved:=.F.
@@ -209,6 +209,21 @@ oBrowse4:Refresh()
 Return Nil
 
 *-------------------------------------------------------------------------------------
+Function cPathNoFile( cArq )
+*-------------------------------------------------------------------------------------
+Local i
+Local cDest := ""
+Local cLetra
+Local cNome := cFileNoPath( cArq )
+
+cDest := Alltrim( StrTran( cArq, cNome, "" ) )
+
+If Substr( cDest, -1, 1 ) == "\"
+   cDest := Substr( cDest, 1, Len( cDest ) -1 )
+EndIf
+   
+Return cDest
+*-------------------------------------------------------------------------------------
 Function cFileNoExt( cArq )
 *-------------------------------------------------------------------------------------
 Local n
@@ -313,28 +328,38 @@ Local lCompile
 Local cList := ""
 Local cMake
 Local CRLF := Chr(13) + Chr(10)
-Local cListObj := "c0w32.obj" + CRLF
+Local cListObj := ""
 Local cListRes := ""
 Local cMainPrg := Alltrim( Lower( cFileNoPath( cFileNoExt( oMainPrg:GetText() ) ) ) )
+Local cPathFile
+Local cRun 
+Local cNameExe
+
+cPathFile := cPathNoFile( oMainPrg:GetText() )
+If !Empty( cPathFile )
+   DirChange( cPathFile )
+EndIF   
+
 If File(cDirec+"hwmake.Ini")
-   cHwGUI  := Hwg_GetIni( 'Config', 'DIR_HwGUI'   , , cDirec+"hwmake.Ini" )
-   cHarbour:= Hwg_GetIni( 'Config', 'DIR_HARBOUR' , , cDirec+"hwmake.Ini")
-   cBCC55  := Hwg_GetIni( 'Config', 'DIR_BCC55'   , , cDirec+"hwmake.Ini" )
-   cObj    := Hwg_GetIni( 'Config', 'DIR_OBJ'     , , cDirec+"hwmake.Ini" )
+   cHwGUI  := lower( alltrim( Hwg_GetIni( 'Config', 'DIR_HwGUI'   , , cDirec+"hwmake.Ini" ) ) )
+   cHarbour:= lower( alltrim( Hwg_GetIni( 'Config', 'DIR_HARBOUR' , , cDirec+"hwmake.Ini")  ) )
+   cBCC55  := lower( alltrim( Hwg_GetIni( 'Config', 'DIR_BCC55'   , , cDirec+"hwmake.Ini" ) ) )
+   cObj    := lower( alltrim( Hwg_GetIni( 'Config', 'DIR_OBJ'     , , cDirec+"hwmake.Ini" ) ) )
 Else 
-   cHwGUI  :="C:\HWGUI"
-   cHarbour:="C:\Harbour"
-   cBCC55  :="C:\BCC55"   
-   cObj    :=".\OBJ"
+   cHwGUI  :="c:\hwgui"
+   cHarbour:="c:\xharbour"
+   cBCC55  :="c:\bcc55"   
+   cObj    :="obj"
 EndIf
 
+cObj := Lower( Alltrim( cObj ) )
 Makedir( cObj )
 
-cExeHarbour := cHarbour+"\bin\harbour.exe"
-If !File( cExeHarbour )
-   MsgInfo( "Not exiSt HARBOUR.EXE!!!" )
-   Return Nil
-EndIf
+cExeHarbour := Lower( cHarbour+"\bin\harbour.exe" )
+//If !File( cExeHarbour )
+//   MsgInfo( "Not exist " + cExeHarbour +"!!" )
+//   Return Nil
+//EndIf
 
 //PrgFiles
 i := Ascan( oBrowse1:aArray, {|x| At( cMainPrg, x ) > 0 } )
@@ -343,7 +368,7 @@ If i == 0
 EndIf   
 
 For Each i in oBrowse1:aArray 
-   cObjName := cObj+"\"+cFileNoPath( cFileNoExt( i ) ) + ".obj"
+   cObjName := cObj+"\"+cFileNoPath( cFileNoExt( i ) ) + ".c"
    cPrgName := i
    lCompile := .F.
    If lAll
@@ -361,36 +386,39 @@ For Each i in oBrowse1:aArray
    EndIF       
 
    If lCompile 
-      if !ShellExecute(  cExeHarbour,, cPrgName + " -o" + cObj + " " + Alltrim( oPrgFlag:GetText() ) + " -n -i"+cHarbour+"\include;"+cHwGUI+"\include;"+oIncFolder:GetText() )        
+      fErase( cObjName )
+      If ExecuteCommand(  cExeHarbour + " " + cPrgName + " -o" + cObjName + " " + Alltrim( oPrgFlag:GetText() ) + " -n -i"+cHarbour+"\include;"+cHwGUI+"\include"+If( !Empty(Alltrim( oIncFolder:GetText() ) ), ";"+Alltrim( oIncFolder:GetText() ), "")+">a.log") == 0
          MsgInfo( "Error to execute HARBOUR.EXE!!!" )         
          Return Nil
-      EndIf
+      EndIf  
       If !File( cObjName )
          MsgInfo("No Created " + cObjName + "!" )
          Return nil
       EndIF
    EndIf
-   If At( cMainPrg,cObjName ) == 0
-      cList    += cFilenoExt( cObjName ) + ".c "     
-      cListObj += cObjName + CRLF
+   cList    += cObjName + " " 
+   If At( cMainPrg,cObjName ) == 0      
+      cListObj += StrTran( cObjName, ".c", ".obj" ) + " " + CRLF
    EndIf   
+   cRun := cBCC55 + "\bin\bcc32.exe -v -y -c " +Alltrim( oCFlag:GetText() ) + " -O2 -tW -M -I"+cHarbour+"\include;"+cHwGUI+"\include;"+cBCC55+"\include " + "-o"+StrTran( cObjName, ".c", ".obj" ) + " " + cObjName
+   If ExecuteCommand( cRun )  == 0
+      MsgInfo("No Created Object files!" )
+      Return nil
+   EndIF
+          
 Next
 
-cListObj := cObj + "\" + cMainPrg + ".obj" + CRLF + cListObj
+cListObj := "c0w32.obj +" + CRLF + cObj + "\" + cMainPrg + ".obj, +" + CRLF + cListObj
 
 FOR EACH i in oBrowse2:aArray     
    cList += i + " "
    cListObj += cObj+"\"+cFileNoPath( cFilenoExt( i ) ) + ".obj"
 Next
 
-If !ShellExecute( cBCC55 + "bcc32.exe" ,, "-v -y -c " +Alltrim( oCFlag:GetText() ) + " -O2 -tW -M -I"+cHarbour+"\include;"+cHwGUI+"\include;"+cBCC55+"\include "+ cList ) 
-   MsgInfo("No Created Object files!" )
-   Return nil
-EndIF
-         
+
 //ResourceFiles
 For Each i in oBrowse4:aArray    
-   If !ShellExecute( cBCC55 + "\brc32 ",,"-r "+i+" -fo"+cObj+"\"+cFileNoPath( cFileNoExt( i ) ) )
+   If ExecuteCommand( cBCC55 + "\bin\brc32 -r "+i+" -fo"+cObj+"\"+cFileNoPath( cFileNoExt( i ) ) ) == 0
       MsgInfo("Error in Resource File " + i + "!" )
       Return Nil
    EndIf   
@@ -398,32 +426,37 @@ For Each i in oBrowse4:aArray
 Next
 
 cMake := cListObj
-cMake += oExeName:GetText() + CRLF
-cMake += cFileNoExt( oExeName:GetText() + ".map" ) + CRLF
-cMake += RetLibrary( cHwGUI, cHarbour, oBrowse3:aArray )
-cMake += cListRes
-For EACH i in oBrowse4:aArray
-   cMake += i + CRLF
-Next
+cNameExe := Alltrim( lower( oExeName:GetText() ) )
+If At( ".exe", cNameExe ) == 0
+   cNameExe += ".exe"
+EndIF
+   
+cMake += cNameExe + ", + " + CRLF
+cMake += cFileNoExt( oExeName:GetText() ) + ".map, + " + CRLF
+cMake += RetLibrary( cHwGUI, cHarbour, cBcc55, oBrowse3:aArray )
+ 
+cMake += If( !Empty( cListRes ), "," + cListRes, "" )  
 
 If File( cMainPrg + ".bc ")
    fErase( cMainPrg + ".bc " )
 EndIF   
 
-If !ShellExecute( cBCC55 + "\ilink32 ",," -Gn -aa -Tpe @"+cMainPrg + ".bc" )
+Memowrit( cMainPrg + ".bc ", cMake )
+
+If ExecuteCommand( cBCC55 + "\ilink32 -v -Gn -aa -Tpe @"+cMainPrg + ".bc" ) == 0
       MsgInfo("No link file " + cMainPrg +"!" ) 
       Return Nil
 EndIf
 
 If File( cMainPrg + ".bc ")
-   fErase( cMainPrg + ".bc " )
+   //fErase( cMainPrg + ".bc " )
 EndIF   
    
 Return Nil
  
 
-Function RetLibrary( cHwGUI, cHarbour, aLibs )
-Local i, cLib, CRLF := Chr(13) + Chr(10)
+Function RetLibrary( cHwGUI, cHarbour, cBcc55, aLibs )
+Local i, cLib, CRLF := " +" + Chr(179)
 Local lMt := .F.
 cLib := cHwGUI + "\lib\hwgui.lib " + CRLF
 cLib += cHwGUI + "\lib\procmisc.lib " + CRLF
@@ -468,7 +501,19 @@ cLib += If( File(  cHarbour + "\lib\hbwin.lib" ),  cHarbour + "\lib\hbwin.lib "+
 cLib += cBcc55 + "\lib\cw32.lib " + CRLF
 cLib += cBcc55 + "\lib\import32.lib" + CRLF
 FOR EACH i in aLibs
-   cLib += i + CRLF
+   cLib += lower(i) + CRLF
 Next
+
+cLib := Substr( Alltrim( cLib ), 1, Len( Alltrim( cLib ) ) - 2 )
+cLib := StrTran( cLib, Chr(179), Chr(13) + Chr(10 ) )
 Return cLib
  
+Function ExecuteCommand( cRun )
+Local nRet := 1
+//msginfo( crun )
+Try
+__Run( cRun )
+Catch e
+nRet := 0
+End
+Return nRet

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.968 2008-11-13 13:59:46 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.969 2008-11-13 19:30:38 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-11-13 17:35 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
+  + utils/hwmake.prg
+    Fix, compile and generate obj
+    Exist GPF to fix em delete file, and compile resource
 
 2008-11-13 11:55 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   + utils/hwmake.prg

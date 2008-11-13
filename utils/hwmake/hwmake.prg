@@ -1,11 +1,11 @@
 /*
- *$Id: hwmake.prg,v 1.1 2008-11-13 13:59:46 sandrorrfreire Exp $
+ *$Id: hwmake.prg,v 1.2 2008-11-13 14:00:34 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library 
  * 
  * HwMake
  * Copyright 2004 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
- * www - http://www.lumainformatica.com.br
+ * www - http://www.hwgui.net
 */
 
 #include "windows.ch"

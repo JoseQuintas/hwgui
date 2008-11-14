@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.102 2008-11-01 14:59:49 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.103 2008-11-14 21:17:12 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -755,13 +755,13 @@ CLASS HButtonEX INHERIT HButton
    DATA m_pOldParentBitmap
    DATA m_csbitmaps init {,,,, }
    DATA m_bToggled INIT .f.
-
+   DATA PictureMargin INIT 0
 
 
    DATA m_bDrawTransparent INIT .f.
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, tcolor, ;
-               bColor, lTransp, hBitmap, hIcon, bGFocus )
+               bColor, lTransp, hBitmap, hIcon, bGFocus, nPictureMargin  )
    DATA iStyle
    DATA m_bmpBk, m_pbmpOldBk
    DATA  bMouseOverButton INIT .f.
@@ -774,7 +774,7 @@ CLASS HButtonEX INHERIT HButton
    METHOD CancelHover()
    METHOD End()
    METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
-                    tcolor, bColor, hBitmap, iStyle, hIcon ,bGFocus )
+                    tcolor, bColor, hBitmap, iStyle, hIcon ,bGFocus, nPictureMargin )
    METHOD PaintBk( p )
    METHOD SetDefaultColor( lRepaint )
    METHOD SetColorEx( nIndex, nColor, bPaint )
@@ -791,10 +791,11 @@ END CLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
             cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
-            tcolor, bColor, hBitmap, iStyle, hicon, Transp, bGFocus ) CLASS HButtonEx
+            tcolor, bColor, hBitmap, iStyle, hicon, Transp, bGFocus, nPictureMargin ) CLASS HButtonEx
 
    DEFAULT iStyle TO ST_ALIGN_HORIZ
    DEFAULT Transp TO .T.
+   DEFAULT nPictureMargin TO 0
    ::m_bLButtonDown := .f.
    ::m_bSent := .f.
    ::m_bLButtonDown := .f.
@@ -806,7 +807,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::hBitmap                            := hBitmap
    ::hicon                              := hicon
    ::m_bDrawTransparent                 := Transp
-
+   ::PictureMargin                      := nPictureMargin
 
    bPaint   := { | o, p | o:paint( p ) }
 
@@ -839,7 +840,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::m_crColors[ BTNST_COLOR_FG_OUT ]   := GetSysColor( COLOR_BTNTEXT )
    ::m_crColors[ BTNST_COLOR_BK_FOCUS ] := GetSysColor( COLOR_BTNFACE )
    ::m_crColors[ BTNST_COLOR_FG_FOCUS ] := GetSysColor( COLOR_BTNTEXT )
-
+   ::PictureMargin                      := nPictureMargin
 
    ::Super:Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
                      cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle, hIcon, bGFocus  )
@@ -1100,6 +1101,8 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
    LOCAL centerRectWidth
    LOCAL centerRectHeight
    LOCAL uAlign, uStyleTmp
+   LOCAL aTxtSize := IIF(!EMPTY(::caption), TxtRect( ::caption, Self ),{})   
+   LOCAL aBmpSize := IIF(!EMPTY(::hbitmap), GetBitmapSize( ::hbitmap ),{})
 
 
    IF ( ::m_bFirstTime )
@@ -1207,9 +1210,20 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
        uAlign += DT_SINGLELINE
     ENDIF
 
-
-
     captionRect := { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] }
+    //
+    IF ::iStyle != ST_ALIGN_VERT .AND. !EMPTY(::caption) .AND. !EMPTY( ::hbitmap ) //.AND.!EMPTY( ::hicon )
+		  IF ::PictureMargin = 0
+		     IF ::iStyle = ST_ALIGN_HORIZ 
+	          itemRect[1] := ((( ::nWidth - aTxtSize[1] - aBmpSize[1] ) / 2 )) / 2
+	       ELSE
+	         // itemRect[1] := ((( ::nWidth - aTxtSize[1]  ) / 2 )) / 1 + aTxtSize[1] + 1 
+	         // itemRect[2] := (::nHeight - aBmpSize[1] ) /  2
+				 ENDIF   
+	    ELSE   
+	       itemRect[1] := IIF(::iStyle = ST_ALIGN_HORIZ, ::PictureMargin, ::nWidth - aBmpSize[1] - ::PictureMargin)
+	    ENDIF
+	  ENDIF  
 
     bHasTitle := ValType( ::caption ) == "C" .and. ! Empty( ::Caption )
 

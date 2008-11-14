@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.126 2008-11-11 04:49:14 lfbasso Exp $
+ *$Id: guilib.ch,v 1.127 2008-11-14 21:17:12 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -469,11 +469,12 @@
             [ TOOLTIP <ctoolt> ]       ;
             [ BITMAP <hbit> ]          ;
             [ BSTYLE <nBStyle> ]       ;
+            [ PICTUREMARGIN <nMargin> ];
             [ ICON <hIco> ]          ;
             [<lTransp: TRANSPARENT>]   ;
           => ;
     [<oBut> := ] HButtonEx():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<hbit>,<nBStyle>,<hIco>, <.lTransp.>,<bGfocus>)
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<hbit>,<nBStyle>,<hIco>, <.lTransp.>,<bGfocus>,<nMargin>)
 
 
 #xcommand REDEFINE BUTTON [ <oBut> ]   ;
@@ -508,9 +509,10 @@
             [ TOOLTIP <ctoolt> ]       ;
             [ BITMAP <hbit> ]          ;
             [ BSTYLE <nBStyle> ]       ;
+            [ PICTUREMARGIN <nMargin> ];
           => ;
     [<oBut> := ] HButtonEx():Redefine( <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>, ;
-                <bClick>,<ctoolt>,<color>,<bcolor>,<cCaption>,<hbit>,<nBStyle>,<bGfocus>  )
+                <bClick>,<ctoolt>,<color>,<bcolor>,<cCaption>,<hbit>,<nBStyle>,<bGfocus>,<nMargin>  )
 
 #xcommand @ <x>,<y> GROUPBOX [ <oGroup> CAPTION ] <caption> ;
             [ OF <oWnd> ]              ;

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.972 2008-11-14 20:45:49 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.973 2008-11-14 21:17:12 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-11-14 19:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + add in #xcommand @ <x>,<y> BUTTONEX [ <oBut> CAPTION ] <caption> ;
+        [ PICTUREMARGIN <nMargin> ];
+  * source\hcontrol.prg
+    + add PictureMargin to set margin LEFT of the BITMAP
+      DEFAULT now is center BITMAP AND TEXT - PictureMargin = 0
 
 2008-11-14 18:45 UTC-0300 Sandro R. R. Freire <sandrorrfreir
   * utils/hwmake/hwmake.prg                                        

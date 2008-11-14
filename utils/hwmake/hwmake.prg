@@ -1,5 +1,5 @@
 /*
- *$Id: hwmake.prg,v 1.5 2008-11-14 18:42:15 sandrorrfreire Exp $
+ *$Id: hwmake.prg,v 1.6 2008-11-14 20:45:49 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library 
  * 
@@ -368,6 +368,7 @@ Local cMainPrg := Alltrim( Lower( cFileNoPath( cFileNoExt( oMainPrg:GetText() ) 
 Local cPathFile
 Local cRun 
 Local cNameExe
+Local nRep
 
 cPathFile := cPathNoFile( oMainPrg:GetText() )
 If !Empty( cPathFile )
@@ -425,10 +426,19 @@ For Each i in oBrowse1:aArray
          MsgInfo( "Error to execute HARBOUR.EXE!!!", "HwMake" )         
          Return Nil
       EndIf  
-      If !File( cObjName )
-         MsgInfo("No Created " + cObjName + "!", "HwMake" )
-         Return nil
-      EndIF
+      nRep := 0
+      Do While .T.
+         If !File( cPathFile + "\" + cObjName )
+            ++nRep
+            inkey(0.5)            
+            IF nRep > 150
+               MsgInfo("No Created " + cPathFile + "\" + cObjName + "!", "HwMake" )
+               Return nil
+            EndIF   
+         else
+            exit   
+         EndIF
+      enddo
    EndIf
    cList    += cObjName + " " 
    If At( cMainPrg,cObjName ) == 0      
@@ -547,14 +557,14 @@ Return cLib
  
 Function ExecuteCommand( cRun, cParam )
 Local nRet := 1
-//msginfo( cRun )
-//msginfo( cParam )
+  
 Try
-   __Run( cRun + " " + cParam ) //, "open", cParam )
+   WinExec(   cRun + " " + cParam)
 Catch e
    nRet := 0
 End
-Return nRet
+inkey(0.5) 
+Return nRet 
 
 Function BrwdelIten( oBrowse )
 Adel(oBrowse:aArray, oBrowse:nCurrent)

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.971 2008-11-14 18:42:14 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.972 2008-11-14 20:45:49 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-11-14 18:45 UTC-0300 Sandro R. R. Freire <sandrorrfreir
+  * utils/hwmake/hwmake.prg                                        
+    replace command __Run with WinExec
+    
 2008-11-14 16:41 UTC-0300 Sandro R. R. Freire <sandrorrfreir
   * utils/hwmake/hwmake.prg                                        
     New implementation, new visual 

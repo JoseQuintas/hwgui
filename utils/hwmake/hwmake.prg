@@ -1,5 +1,5 @@
 /*
- *$Id: hwmake.prg,v 1.4 2008-11-14 14:49:45 sandrorrfreire Exp $
+ *$Id: hwmake.prg,v 1.5 2008-11-14 18:42:15 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library 
  * 
@@ -10,12 +10,14 @@
 
 #include "windows.ch"
 #include "guilib.ch"
+
 #DEFINE  ID_EXENAME     10001
 #DEFINE  ID_LIBFOLDER   10002
 #DEFINE  ID_INCFOLDER   10003
 #DEFINE  ID_PRGFLAG     10004
 #DEFINE  ID_CFLAG       10005
 #DEFINE  ID_PRGMAIN     10006
+
 FUNCTION Main
 Local oFont
 Local aBrowse1, aBrowse2, aBrowse3, aBrowse4
@@ -27,11 +29,7 @@ Local vGt4:=Space(80)
 Local vGt5:=Space(80)
 Local vGt6:=Space(80)
 Local aFiles1:={""}, aFiles2:={""}, aFiles3:={""}, aFiles4:={""}
-Local oImgNew  := hbitmap():addResource("NEW")
-Local oImgExit := hbitmap():addResource("EXIT")
-Local oImgBuild:= hbitmap():addResource("BUILD")
-Local oImgSave := hbitmap():addResource("SAVE")
-Local oImgOpen := hbitmap():addResource("OPEN")
+
 Local oBtBuild
 Local oBtExit 
 Local oBtOpen 
@@ -45,17 +43,41 @@ If !File(cDirec+"hwmake.ini")
   Hwg_WriteIni( 'Config', 'Dir_BCC55', "C:\BCC55", cDirec+"hwmake.ini" )
   Hwg_WriteIni( 'Config', 'Dir_OBJ', "OBJ", cDirec+"hwmake.ini" )
 EndIf
- 
+
+Private oImgNew  := hbitmap():addResource("NEW")
+Private oImgExit := hbitmap():addResource("EXIT")
+Private oImgBuild:= hbitmap():addResource("BUILD")
+Private oImgSave := hbitmap():addResource("SAVE")
+Private oImgOpen := hbitmap():addResource("OPEN")
+Private oStatus 
 Private lSaved:=.F.
 Private oBrowse1, oBrowse2, oBrowse3
 Private oDlg
-PRIVATE oExeName, oLabel1, oLibFolder, oLabel2, oIncFolder, oLabel3, oPrgFlag, oLabel4, oCFlag, oLabel5, oMainPrg, oLabel6, oTab
+Private oExeName, oLabel1, oLibFolder, oLabel2, oIncFolder, oLabel3, oPrgFlag, oLabel4, oCFlag, oLabel5, oMainPrg, oLabel6, oTab
+Private oIcon := HIcon():AddResource("PIM")
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -12
    
    INIT DIALOG oDlg CLIPPER NOEXIT TITLE "HwGUI Build Projects for BCC55" ;
-        AT 213,195 SIZE 513,265  font oFont
+        AT 213,195 SIZE 513,295  font oFont ICON oIcon
 
+   ADD STATUS oStatus TO oDlg ;
+       PARTS oDlg:nWidth-160,150
+       
+   MENU OF oDlg
+      MENU TITLE "&File"
+         MENUITEM "&Build" ACTION BuildApp()
+         MENUITEM "&Open"  ACTION ReadBuildFile()
+         MENUITEM "&Save"  ACTION  SaveBuildFile() 
+         SEPARATOR
+         MENUITEM "&Exit"  ACTION EndDialog() 
+      ENDMENU
+      MENU TITLE "&Help"        
+         MENUITEM "&About" ACTION OpenAbout()
+         MENUITEM "&Version HwGUI" ACTION MsgInfo(HwG_Version())
+      ENDMENU
+   ENDMENU            
+   
    @ 14,16 TAB oTAB ITEMS {} SIZE 391,242
 
    BEGIN PAGE "Config" Of oTAB
@@ -172,7 +194,7 @@ Local cLibFiles, oBr1:={}, oBr2:={}, oBr3:={}, oBr4:={}, oSel1, oSel2, oSel3, i,
 Local aPal:=""
 Local cFolderFile:=SelectFile("HwGUI File Build (*.bld)", "*.bld" ) 
 if empty(cFolderFile); Return Nil; Endif
-   
+oStatus:SetTextPanel(1,cFolderFile)      
 oExeName:SetText( Hwg_GetIni( 'Config', 'ExeName' , , cFolderFile ))
 oLibFolder:SetText(Hwg_GetIni( 'Config', 'LibFolder' , , cFolderFile ))
 oIncFolder:SetText(Hwg_GetIni( 'Config', 'IncludeFolder' , , cFolderFile ))
@@ -272,7 +294,7 @@ if file(cFolderFile)
    If(MsgYesNo("File "+cFolderFile+" EXIT ..Replace?"))
      Erase( cFolderFile )
    Else
-     MsgInfo("No file SAVED.")
+     MsgInfo("No file SAVED.", "HwMake")
      Return Nil
    EndIf
 EndIf     
@@ -321,7 +343,7 @@ if Len(oBrowse4:aArray)>=1
    Next     
 endif   
 
-Msginfo("File "+cFolderFile+" saved","HwGUI Build")
+Msginfo("File "+cFolderFile+" saved","HwGUI Build", "HwMake")
 Return Nil
 
 Function BuildApp() 
@@ -399,12 +421,12 @@ For Each i in oBrowse1:aArray
 
    If lCompile 
       fErase( cObjName )
-      If ExecuteCommand(  cExeHarbour + " " + cPrgName + " -o" + cObjName + " " + Alltrim( oPrgFlag:GetText() ) + " -n -i"+cHarbour+"\include;"+cHwGUI+"\include"+If( !Empty(Alltrim( oIncFolder:GetText() ) ), ";"+Alltrim( oIncFolder:GetText() ), "")+">a.log") == 0
-         MsgInfo( "Error to execute HARBOUR.EXE!!!" )         
+      If ExecuteCommand(  cExeHarbour, cPrgName + " -o" + cObjName + " " + Alltrim( oPrgFlag:GetText() ) + " -n -i"+cHarbour+"\include;"+cHwGUI+"\include"+If( !Empty(Alltrim( oIncFolder:GetText() ) ), ";"+Alltrim( oIncFolder:GetText() ), "")+"") == 0
+         MsgInfo( "Error to execute HARBOUR.EXE!!!", "HwMake" )         
          Return Nil
       EndIf  
       If !File( cObjName )
-         MsgInfo("No Created " + cObjName + "!" )
+         MsgInfo("No Created " + cObjName + "!", "HwMake" )
          Return nil
       EndIF
    EndIf
@@ -412,9 +434,9 @@ For Each i in oBrowse1:aArray
    If At( cMainPrg,cObjName ) == 0      
       cListObj += StrTran( cObjName, ".c", ".obj" ) + " " + CRLF
    EndIf   
-   cRun := cBCC55 + "\bin\bcc32.exe -v -y -c " +Alltrim( oCFlag:GetText() ) + " -O2 -tW -M -I"+cHarbour+"\include;"+cHwGUI+"\include;"+cBCC55+"\include " + "-o"+StrTran( cObjName, ".c", ".obj" ) + " " + cObjName
-   If ExecuteCommand( cRun )  == 0
-      MsgInfo("No Created Object files!" )
+   cRun := " -v -y -c " +Alltrim( oCFlag:GetText() ) + " -O2 -tW -M -I"+cHarbour+"\include;"+cHwGUI+"\include;"+cBCC55+"\include " + "-o"+StrTran( cObjName, ".c", ".obj" ) + " " + cObjName
+   If ExecuteCommand( cBCC55 + "\bin\bcc32.exe", cRun )  == 0
+      MsgInfo("No Created Object files!", "HwMake" )
       Return nil
    EndIF
           
@@ -430,8 +452,8 @@ Next
                         
 //ResourceFiles
 For Each i in oBrowse4:aArray     
-   If ExecuteCommand( cBCC55 + "\bin\brc32 -r "+cFileNoExt(i)+" -fo"+cObj+"\"+cFileNoPath( cFileNoExt( i ) ) ) == 0
-      MsgInfo("Error in Resource File " + i + "!" )
+   If ExecuteCommand( cBCC55 + "\bin\brc32", "-r "+cFileNoExt(i)+" -fo"+cObj+"\"+cFileNoPath( cFileNoExt( i ) ) ) == 0
+      MsgInfo("Error in Resource File " + i + "!", "HwMake" )
       Return Nil
    EndIf   
    cListRes += cObj+"\"+cFileNoPath( cFileNoExt( i ) ) + ".res +" + CRLF
@@ -458,8 +480,8 @@ EndIF
 
 Memowrit( cMainPrg + ".bc ", cMake )
 
-If ExecuteCommand( cBCC55 + "\bin\ilink32 -v -Gn -aa -Tpe @"+cMainPrg + ".bc" ) == 0
-      MsgInfo("No link file " + cMainPrg +"!" ) 
+If ExecuteCommand( cBCC55 + "\bin\ilink32", "-v -Gn -aa -Tpe @"+cMainPrg + ".bc" ) == 0
+      MsgInfo("No link file " + cMainPrg +"!", "HwMake" ) 
       Return Nil
 EndIf
 
@@ -486,19 +508,19 @@ cLib += If( File(  cHarbour + "\lib\lang.lib" )  ,  cHarbour + "\lib\lang.lib "+
 cLib += If( File(  cHarbour + "\lib\hblang.lib" )  ,  cHarbour + "\lib\hblang.lib "+ CRLF, "" )
 cLib += If( File(  cHarbour + "\lib\codepage.lib" )  ,  cHarbour + "\lib\codepage.lib "+ CRLF, "" )
 cLib += If( File(  cHarbour + "\lib\hbcpage.lib" )  ,  cHarbour + "\lib\hbcpage.lib "+ CRLF, "" )
-cLib += If( File(  cHarbour + "\lib\macro"+If(lMt, cMt, "" )+".lib" )  ,  cHarbour + "\lib\macro"+If(lMt, cMt, "" )+" "+ CRLF, "" )
+cLib += If( File(  cHarbour + "\lib\macro"+If(lMt, cMt, "" )+".lib" )  ,  cHarbour + "\lib\macro"+If(lMt, cMt, "" )+".lib "+ CRLF, "" )
 cLib += If( File(  cHarbour + "\lib\hbmacro.lib" )  ,  cHarbour + "\lib\hbmacro.lib "+ CRLF, "" )
-cLib += If( File(  cHarbour + "\lib\rdd"+If(lMt, cMt, "" )+".lib" )  ,  cHarbour + "\lib\rdd"+If(lMt, cMt, "" )+" " + CRLF, "" )
+cLib += If( File(  cHarbour + "\lib\rdd"+If(lMt, cMt, "" )+".lib" )  ,  cHarbour + "\lib\rdd"+If(lMt, cMt, "" )+".lib " + CRLF, "" )
 cLib += If( File(  cHarbour + "\lib\hbrdd.lib") ,  cHarbour + "\lib\hbrdd.lib "+ CRLF, "" )
-cLib += If( File(  cHarbour + "\lib\dbfntx"+If(lMt, cMt, "" )+".lib" )  ,  cHarbour + "\lib\dbfntx"+If(lMt, cMt, "" )+" "+ CRLF, "" )
+cLib += If( File(  cHarbour + "\lib\dbfntx"+If(lMt, cMt, "" )+".lib" )  ,  cHarbour + "\lib\dbfntx"+If(lMt, cMt, "" )+".lib "+ CRLF, "" )
 cLib += If( File(  cHarbour + "\lib\rddntx.lib" ) ,  cHarbour + "\lib\rddntx.lib "+ CRLF, "" )
-cLib += If( File(  cHarbour + "\lib\dbfcdx"+If(lMt, cMt, "" )+".lib" )  ,  cHarbour + "\lib\dbfcdx"+If(lMt, cMt, "" )+" "+ CRLF, "" )
+cLib += If( File(  cHarbour + "\lib\dbfcdx"+If(lMt, cMt, "" )+".lib" )  ,  cHarbour + "\lib\dbfcdx"+If(lMt, cMt, "" )+".lib "+ CRLF, "" )
 cLib += If( File(  cHarbour + "\lib\rddcdx.lib") ,  cHarbour + "\lib\rddcdx.lib "+ CRLF, "" )
-cLib += If( File(  cHarbour + "\lib\dbffpt"+If(lMt, cMt, "" )+".lib" )  ,  cHarbour + "\lib\dbffpt"+If(lMt, cMt, "" )+" "+ CRLF, "" )
+cLib += If( File(  cHarbour + "\lib\dbffpt"+If(lMt, cMt, "" )+".lib" )  ,  cHarbour + "\lib\dbffpt"+If(lMt, cMt, "" )+".lib "+ CRLF, "" )
 cLib += If( File(  cHarbour + "\lib\rddfpt.lib") ,  cHarbour + "\lib\rddfpt.lib "+ CRLF, "" )
-cLib += If( File(  cHarbour + "\lib\sixcdx"+If(lMt, cMt, "" )+".lib" )  ,  cHarbour + "\lib\sixcdx"+If(lMt, cMt, "" )+" "+ CRLF, "" )
+cLib += If( File(  cHarbour + "\lib\sixcdx"+If(lMt, cMt, "" )+".lib" )  ,  cHarbour + "\lib\sixcdx"+If(lMt, cMt, "" )+".lib "+ CRLF, "" )
 cLib += If( File(  cHarbour + "\lib\hbsix.lib") ,  cHarbour + "\lib\hbsix.lib "+ CRLF, "" )
-cLib += If( File(  cHarbour + "\lib\common.lib") ,  cHarbour + "\lib\common "+ CRLF, "" )
+cLib += If( File(  cHarbour + "\lib\common.lib") ,  cHarbour + "\lib\common.lib "+ CRLF, "" )
 cLib += If( File(  cHarbour + "\lib\hbcommon.lib") ,  cHarbour + "\lib\hbcommon.lib "+ CRLF, "" )
 cLib += If( File(  cHarbour + "\lib\debug.lib") ,  cHarbour + "\lib\debug.lib "+ CRLF, "" )
 cLib += If( File(  cHarbour + "\lib\hbdebug.lib") ,  cHarbour + "\lib\hbdebug.lib "+ CRLF, "" )
@@ -517,19 +539,20 @@ cLib += cBcc55 + "\lib\cw32.lib " + CRLF
 cLib += cBcc55 + "\lib\import32.lib" + CRLF
 FOR EACH i in aLibs
    cLib += lower(i) + CRLF
-Next
+Next 
 
 cLib := Substr( Alltrim( cLib ), 1, Len( Alltrim( cLib ) ) - 2 )
 cLib := StrTran( cLib, Chr(179), Chr(13) + Chr(10 ) )
 Return cLib
  
-Function ExecuteCommand( cRun )
+Function ExecuteCommand( cRun, cParam )
 Local nRet := 1
-//msginfo( crun )
+//msginfo( cRun )
+//msginfo( cParam )
 Try
-__Run( cRun )
+   __Run( cRun + " " + cParam ) //, "open", cParam )
 Catch e
-nRet := 0
+   nRet := 0
 End
 Return nRet
 
@@ -537,3 +560,43 @@ Function BrwdelIten( oBrowse )
 Adel(oBrowse:aArray, oBrowse:nCurrent)
 ASize( oBrowse:aArray, Len( oBrowse:aArray ) - 1 )
 Return oBrowse:Refresh()
+
+
+function OpenAbout
+Local oModDlg, oFontBtn, oFontDlg
+Local oBmp  
+Local oSay
+
+   PREPARE FONT oFontDlg NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+   PREPARE FONT oFontBtn NAME "MS Sans Serif" WIDTH 0 HEIGHT -13 ITALIC UNDERLINE
+
+   INIT DIALOG oModDlg TITLE "About"     ;
+   AT 190,10  SIZE 360,200               ;
+   ICON oIcon                            ;   
+   FONT oFontDlg
+ 
+        
+   @ 20,40 SAY "Hwgui Internacional Page"        ;
+   LINK "http://www.hwgui.net" ;
+       SIZE 230, 22 STYLE SS_CENTER  ;
+        COLOR Vcolor("0000FF") ;
+        VISITCOLOR RGB(241,249,91)
+
+
+   @ 20,60 SAY "Hwgui Kresin Page"        ;
+   LINK "http://kresin.belgorod.su/hwgui.html" ;
+       SIZE 230, 22 STYLE SS_CENTER  ;
+        COLOR Vcolor("0000FF") ;
+        VISITCOLOR RGB(241,249,91)
+
+   @ 20,80 SAY "Hwgui international Forum"        ;
+   LINK "http://br.groups.yahoo.com/group/hwguibr" ;
+       SIZE 230, 22 STYLE SS_CENTER  ;
+        COLOR Vcolor("0000FF") ;
+        VISITCOLOR RGB(241,249,91)
+                             
+   @ 40, 120 BUTTONex oBtExit  CAPTION "Close"  BITMAP oImgExit:Handle  on Click {||EndDialog()}    SIZE 180,35  
+  
+   ACTIVATE DIALOG oModDlg
+   
+Return Nil

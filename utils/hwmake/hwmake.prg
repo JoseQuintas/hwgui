@@ -1,5 +1,5 @@
 /*
- *$Id: hwmake.prg,v 1.3 2008-11-13 19:30:38 sandrorrfreire Exp $
+ *$Id: hwmake.prg,v 1.4 2008-11-14 14:49:45 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library 
  * 
@@ -27,7 +27,18 @@ Local vGt4:=Space(80)
 Local vGt5:=Space(80)
 Local vGt6:=Space(80)
 Local aFiles1:={""}, aFiles2:={""}, aFiles3:={""}, aFiles4:={""}
+Local oImgNew  := hbitmap():addResource("NEW")
+Local oImgExit := hbitmap():addResource("EXIT")
+Local oImgBuild:= hbitmap():addResource("BUILD")
+Local oImgSave := hbitmap():addResource("SAVE")
+Local oImgOpen := hbitmap():addResource("OPEN")
+Local oBtBuild
+Local oBtExit 
+Local oBtOpen 
+Local oBtSave 
+
 Private cDirec:=DiskName()+":\"+CurDir()+"\"
+
 If !File(cDirec+"hwmake.ini")
   Hwg_WriteIni( 'Config', 'Dir_HwGUI', "C:\HwGUI", cDirec+"hwmake.ini" )
   Hwg_WriteIni( 'Config', 'Dir_HARBOUR', "C:\xHARBOUR", cDirec+"hwmake.ini" )
@@ -38,7 +49,7 @@ EndIf
 Private lSaved:=.F.
 Private oBrowse1, oBrowse2, oBrowse3
 Private oDlg
-PRIVATE oButton1, oExeName, oLabel1, oLibFolder, oButton4, oLabel2, oIncFolder, oLabel3, oButton3, oPrgFlag, oLabel4, oCFlag, oLabel5, oButton2, oMainPrg, oLabel6, oTab
+PRIVATE oExeName, oLabel1, oLibFolder, oLabel2, oIncFolder, oLabel3, oPrgFlag, oLabel4, oCFlag, oLabel5, oMainPrg, oLabel6, oTab
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -12
    
@@ -48,22 +59,22 @@ PRIVATE oButton1, oExeName, oLabel1, oLibFolder, oButton4, oLabel2, oIncFolder, 
    @ 14,16 TAB oTAB ITEMS {} SIZE 391,242
 
    BEGIN PAGE "Config" Of oTAB
-      @  20,44 SAY oLabel1 CAPTION "Exe Name" SIZE 80,22  
+      @  20,44 SAY oLabel1 CAPTION "Exe Name" TRANSPARENT SIZE 80,22  
       @ 136,44 GET oExeName VAR vGt1 ID ID_EXENAME  SIZE 206,24  
 
-      @  20,74 SAY oLabel2 CAPTION "Lib Folder" SIZE 80,22  
+      @  20,74 SAY oLabel2 CAPTION "Lib Folder" TRANSPARENT SIZE 80,22  
       @ 136,74 GET oLibFolder  VAR vGt2 ID ID_LIBFOLDER SIZE 234,24  
 
-      @  20,104 SAY oLabel3 CAPTION "Include Folder" SIZE 105,22  
+      @  20,104 SAY oLabel3 CAPTION "Include Folder" TRANSPARENT SIZE 105,22  
       @ 136,104 GET oIncFolder VAR vGt3 ID ID_INCFOLDER   SIZE 234,24  
 
-      @  20,134 SAY oLabel4 CAPTION "PRG Flags" SIZE 80,22  
-      @ 136,134 GET oPrgFlag VAR vGt4 ID ID_PRGFLAG  SIZE 230,24  
+      @  20,134 SAY oLabel4 CAPTION "PRG Flags" TRANSPARENT SIZE 80,22  
+      @ 136,134 GET oPrgFlag VAR vGt4 ID ID_PRGFLAG  SIZE 234,24  
 
-      @  20,164 SAY oLabel5 CAPTION "C Flags" SIZE 80,22  
-      @ 136,164 GET oCFlag VAR vGt5  ID ID_CFLAG SIZE 230,24  
+      @  20,164 SAY oLabel5 CAPTION "C Flags" TRANSPARENT SIZE 80,22  
+      @ 136,164 GET oCFlag VAR vGt5  ID ID_CFLAG SIZE 234,24  
  
-      @  20,194 SAY oLabel6 CAPTION "Main PRG" SIZE 80,22  
+      @  20,194 SAY oLabel6 CAPTION "Main PRG" TRANSPARENT SIZE 80,22  
       @ 136,194 GET oMainPrg VAR vGt6 ID ID_PRGMAIN  SIZE 206,24  
       @ 347,194 OWNERBUTTON    SIZE 24,24   ;
           ON CLICK {||searchFileName("xBase Files *.prg ", oMainPrg, "*.prg")};//       FLAT;
@@ -80,7 +91,7 @@ PRIVATE oButton1, oExeName, oLabel1, oLibFolder, oButton4, oLabel2, oIncFolder, 
       oBrowse1:bcolorSel := VColor( "800080" )
       oBrowse1:ofont := HFont():Add( 'Arial',0,-12 )
       @ 10, 205 BUTTON "Add"     SIZE 60,25  on click {||SearchFile(oBrowse1, "*.prg")}  
-      @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||Adel(oBrowse1:aArray, oBrowse1:nCurrent),oBrowse1:Refresh()}
+      @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||BrwdelIten(oBrowse1)}
 
    END PAGE of oTAB
    BEGIN PAGE "C (Files)" of oTAB
@@ -92,7 +103,7 @@ PRIVATE oButton1, oExeName, oLabel1, oLibFolder, oButton4, oLabel2, oIncFolder, 
       oBrowse2:bcolorSel := VColor( "800080" )
       oBrowse2:ofont := HFont():Add( 'Arial',0,-12 )
       @ 10, 205 BUTTON "Add"     SIZE 60,25  on click {||SearchFile(oBrowse2, "*.c")}  
-      @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||Adel(oBrowse1:aArray, oBrowse2:nCurrent),oBrowse2:Refresh()}
+      @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||BrwdelIten(oBrowse2)}
    END PAGE of oTAB
    BEGIN PAGE "Lib (Files)" of oTAB
       @ 21,29 BROWSE oBrowse3 ARRAY of oTAB ON CLICK {||SearchFile(oBrowse3, "*.lib")};
@@ -103,7 +114,7 @@ PRIVATE oButton1, oExeName, oLabel1, oLibFolder, oButton4, oLabel2, oIncFolder, 
       oBrowse3:bcolorSel := VColor( "800080" )
       oBrowse3:ofont := HFont():Add( 'Arial',0,-12 )
       @ 10, 205 BUTTON "Add"     SIZE 60,25  on click {||SearchFile(oBrowse3, "*.lib")}  
-      @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||Adel(oBrowse3:aArray, oBrowse3:nCurrent),oBrowse3:Refresh()}
+      @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||BrwdelIten(oBrowse3)}
    END PAGE of oTAB
    BEGIN PAGE "Resource (Files)" of oTAB
       @ 21,29 BROWSE oBrowse4 ARRAY of oTAB ON CLICK {||SearchFile(oBrowse3, "*.rc")};
@@ -114,15 +125,16 @@ PRIVATE oButton1, oExeName, oLabel1, oLibFolder, oButton4, oLabel2, oIncFolder, 
       oBrowse4:bcolorSel := VColor( "800080" )
       oBrowse4:ofont := HFont():Add( 'Arial',0,-12 )
       @ 10, 205 BUTTON "Add"     SIZE 60,25  on click {||SearchFile(oBrowse4, "*.rc")}  
-      @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||Adel(oBrowse4:aArray, oBrowse4:nCurrent),oBrowse4:Refresh()}
+      @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||BrwdelIten(oBrowse4)}
    END PAGE of oTAB
    
-   @ 419, 20 BUTTON oButton1 CAPTION "Build" on Click {||BuildApp()} SIZE 78,52  
-   @ 419, 80 BUTTON oButton2 CAPTION "Exit" on Click {||EndDialog()}  SIZE 78,52  
-   @ 419,140 BUTTON oButton3 CAPTION "Open" on Click {||ReadBuildFile()}  SIZE 78,52  
-   @ 419,200 BUTTON oButton4 CAPTION "Save" on Click {||SaveBuildFile()}   SIZE 78,52  
-
+   @ 419, 20 BUTTONex oBtBuild CAPTION "Build" BITMAP oImgBuild:Handle on Click {||BuildApp()}      SIZE 88,52  
+   @ 419, 80 BUTTONex oBtExit  CAPTION "Exit"  BITMAP oImgExit:Handle  on Click {||EndDialog()}     SIZE 88,52  
+   @ 419,140 BUTTONex oBtOpen  CAPTION "Open"  BITMAP oImgOpen:Handle  on Click {||ReadBuildFile()} SIZE 88,52  
+   @ 419,200 BUTTONex oBtSave  CAPTION "Save"  BITMAP oImgSave:Handle  on Click {||SaveBuildFile()} SIZE 88,52  
+ 
    ACTIVATE DIALOG oDlg
+
 RETURN
 
 Static Function SearchFile(oBrow, oFile)
@@ -415,16 +427,18 @@ FOR EACH i in oBrowse2:aArray
    cListObj += cObj+"\"+cFileNoPath( cFilenoExt( i ) ) + ".obj"
 Next
 
-
+                        
 //ResourceFiles
-For Each i in oBrowse4:aArray    
-   If ExecuteCommand( cBCC55 + "\bin\brc32 -r "+i+" -fo"+cObj+"\"+cFileNoPath( cFileNoExt( i ) ) ) == 0
+For Each i in oBrowse4:aArray     
+   If ExecuteCommand( cBCC55 + "\bin\brc32 -r "+cFileNoExt(i)+" -fo"+cObj+"\"+cFileNoPath( cFileNoExt( i ) ) ) == 0
       MsgInfo("Error in Resource File " + i + "!" )
       Return Nil
    EndIf   
-   cListRes += cObj+"\"+cFileNoPath( cFileNoExt( i ) ) + ".res" + CRLF
+   cListRes += cObj+"\"+cFileNoPath( cFileNoExt( i ) ) + ".res +" + CRLF
 Next
-
+If Len( cListRes ) > 0
+   cListRes := Substr( cListRes, 1, Len( cListRes ) - 3 )
+EndIF   
 cMake := cListObj
 cNameExe := Alltrim( lower( oExeName:GetText() ) )
 If At( ".exe", cNameExe ) == 0
@@ -434,8 +448,9 @@ EndIF
 cMake += cNameExe + ", + " + CRLF
 cMake += cFileNoExt( oExeName:GetText() ) + ".map, + " + CRLF
 cMake += RetLibrary( cHwGUI, cHarbour, cBcc55, oBrowse3:aArray )
- 
-cMake += If( !Empty( cListRes ), "," + cListRes, "" )  
+//Add def File
+//
+cMake += If( !Empty( cListRes ), ",," + cListRes, "" )  
 
 If File( cMainPrg + ".bc ")
    fErase( cMainPrg + ".bc " )
@@ -443,13 +458,13 @@ EndIF
 
 Memowrit( cMainPrg + ".bc ", cMake )
 
-If ExecuteCommand( cBCC55 + "\ilink32 -v -Gn -aa -Tpe @"+cMainPrg + ".bc" ) == 0
+If ExecuteCommand( cBCC55 + "\bin\ilink32 -v -Gn -aa -Tpe @"+cMainPrg + ".bc" ) == 0
       MsgInfo("No link file " + cMainPrg +"!" ) 
       Return Nil
 EndIf
 
 If File( cMainPrg + ".bc ")
-   //fErase( cMainPrg + ".bc " )
+   fErase( cMainPrg + ".bc " )
 EndIF   
    
 Return Nil
@@ -517,3 +532,8 @@ Catch e
 nRet := 0
 End
 Return nRet
+
+Function BrwdelIten( oBrowse )
+Adel(oBrowse:aArray, oBrowse:nCurrent)
+ASize( oBrowse:aArray, Len( oBrowse:aArray ) - 1 )
+Return oBrowse:Refresh()

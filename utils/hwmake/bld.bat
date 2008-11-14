@@ -20,8 +20,8 @@ bcc32 -v -y -c %C_DEFINES% -O2 -tW -M -I%HRB_DIR%\include;%HWGUI_INSTALL%\includ
 
 if exist %1.rc brc32 -r %1 -foobj\%1
 
-rem echo 1 24 "..\image\WindowsXP.Manifest" > obj\hwgui_xp.rc
-rem brc32 -r obj\hwgui_xp -foobj\hwgui_xp
+echo 1 24 "..\..\samples\image\WindowsXP.Manifest" > obj\hwgui_xp.rc
+brc32 -r obj\hwgui_xp -foobj\hwgui_xp
 
 echo c0w32.obj + > b32.bc
 echo %1.obj, + >> b32.bc
@@ -83,7 +83,7 @@ rem echo %HRB_DIR%\lib\hbct.lib + >> b32.bc
 echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc
 if exist obj\%1.res echo obj\%1.res + >> b32.bc
-rem echo obj\hwgui_xp.res >> b32.bc
+echo obj\hwgui_xp.res >> b32.bc
 ilink32 -v -Gn -Tpe -aa @b32.bc
 
 rem del *.tds

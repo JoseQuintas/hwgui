@@ -1,0 +1,5 @@
+BUILD  BITMAP ..\..\samples\image\BUILD.BMP 
+EXIT   BITMAP ..\..\samples\image\DOOR.BMP
+NEW    BITMAP ..\..\samples\image\NEW.BMP
+SAVE   BITMAP ..\..\samples\image\SAVE.BMP
+OPEN   BITMAP ..\..\samples\image\op_fl.bmp

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.969 2008-11-13 19:30:38 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.970 2008-11-14 14:49:45 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,15 +8,25 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-11-14 12:46 UTC-0300 Sandro R. R. Freire <sandrorrfreir
+  * utils/hwmake/hwmake.prg                                        
+    Fix, now compile app (please tests in your app)                         
+  * utils/hwmake/bld.bat
+    Fix bld.bat
+  + utils/hwmake/hwmake.rc
+    New Resource file
+  + samples/images/save.bmp 
+  + samples/images/build.bmp
+                                                              
 2008-11-13 17:35 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
-  + utils/hwmake.prg
+  * utils/hwmake/hwmake.prg
     Fix, compile and generate obj
     Exist GPF to fix em delete file, and compile resource
 
 2008-11-13 11:55 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
-  + utils/hwmake.prg
-  + utils/hwmake.ini
-  + utils/bld.bat
+  + utils/hwmake/hwmake.prg
+  + utils/hwmake/hwmake.ini
+  + utils/hwmake/bld.bat
     Create the App for compile in Bcc55 ( in future to create others C compilers )
     Note... not Stable, in tests
        

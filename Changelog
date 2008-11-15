@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.974 2008-11-15 16:39:52 lfbasso Exp $
+ * $Id: Changelog,v 1.975 2008-11-15 22:57:55 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-11-15 21:01 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + Add #xcommand SET COLORFOCUS TO [<tColor>],[<bColor>];
+  * source\hedit.prg
+    + add two parameters in SetColorinFocus( lDef, tcolor,bcolor )
+      
 2008-11-15 14:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg
     + add DATA lFocus

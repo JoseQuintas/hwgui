@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.127 2008-11-14 21:17:12 lfbasso Exp $
+ *$Id: guilib.ch,v 1.128 2008-11-15 22:57:56 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -1288,6 +1288,10 @@
           => ;
     SetDlgKey( <oDlg>, <nctrl>, <nkey>, <{func}> )
 
+
+          => ;
+    SetDlgKey( <oDlg>, <nctrl>, <nkey>, <{func}> )
+
 /*             */
 #xcommand @ <x>,<y> GRAPH [ <oGraph> DATA ] <aData> ;
             [ OF <oWnd> ]              ;
@@ -1308,6 +1312,11 @@
             LoadResource( <cName1> )
 
 #xcommand SET RESOURCES TO => LOADRESOURCE( NIL )
+
+#xcommand SET COLORFOCUS TO [<tColor>],[<bColor>];
+=> ;
+ SetColorinFocus( .T.,<tColor>, <bColor> )
+#xcommand SET COLORFOCUS TO => SetColorinFocus( .F. )
 
 // Addded by jamaj
 #xcommand DEFAULT <uVar1> := <uVal1> ;

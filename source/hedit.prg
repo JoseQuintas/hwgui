@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.109 2008-11-15 16:39:52 lfbasso Exp $
+ *$Id: hedit.prg,v 1.110 2008-11-15 22:57:56 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -10,6 +10,8 @@
 */
 
 STATIC lColorinFocus := .F.
+STATIC  tcolorselect := 0   
+STATIC  bcolorselect := 13434879 //vcolor( 'CCFFFF' )  
 
 #include "windows.ch" 
 #include "hbclass.ch"
@@ -34,7 +36,7 @@ CLASS VAR winclass   INIT "EDIT"
    DATA lFirst         INIT .T.
    DATA lChanged       INIT .F.
    DATA nMaxLength     INIT Nil
-   DATA nColorinFocus  INIT GETSYSCOLOR( COLOR_ACTIVEBORDER )  //vcolor( 'CCFFFF' )
+   //DATA nColorinFocus  INIT vcolor( 'CCFFFF' )
    DATA lFocu          INIT .F.
        
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -179,12 +181,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             //
             IF ::lFocu .AND. ::cType = "N"
                IF  SET( _SET_INSERT ) 
-                  ::lFirst := .t.
+                  ::lFirst := .T.
                ENDIF
-               ::lFocu := .F.
             ENDIF
-            IF ::lFirst 
-               ::SetColor( ::tcolor, ::bColorOld, .t. )
+            IF ::lFocu
+               ::SetColor( ::tcolorOld, ::bColorOld, .t. )
+               ::lFocu := .F.
             ENDIF   
 						//
             IF ! IsCtrlShift( , .F. )
@@ -286,15 +288,17 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
          ENDIF
       ENDIF
-      IF msg == WM_SETFOCUS .AND. ::cType = "N"
+      IF msg == WM_SETFOCUS //.AND. ::cType = "N"
          ::lFocu := .T.
       ENDIF   
       IF lColorinFocus
          IF msg == WM_SETFOCUS
 //            ::bColorOld := ::bcolor
-            ::SetColor( ::tcolor , ::nColorinFocus, .T. )
+            ::SetColor( tColorSelect, bColorSelect, .T.)
+            //::SetColor( ::tcolor , ::nColorinFocus, .T. )
          ELSEIF msg == WM_KILLFOCUS
-            ::SetColor( ::tcolor, ::bColorOld, .t. )
+            ::SetColor( ::tcolorOld, ::bColorOld, .t. )
+            //::SetColor( ::tcolor, ::bColorOld, .t. )
          ENDIF
       ENDIF
    ELSE
@@ -1139,12 +1143,15 @@ FUNCTION ParentGetDialog( o )
    ENDDO
    RETURN o
 
-FUNCTION SetColorinFocus( lDef )
+FUNCTION SetColorinFocus( lDef, tcolor,bcolor )
    IF ValType( lDef ) <> "L"
       RETURN .F.
    ENDIF
    lColorinFocus := lDef
-   RETURN .T.
+   tcolorselect  := IIF( tcolor != Nil, tColor, tcolorselect )  
+   bcolorselect  := IIF( bcolor != Nil, bColor, bcolorselect )
+ 
+ RETURN .T.
 
 /*
 Luis Fernando Basso contribution

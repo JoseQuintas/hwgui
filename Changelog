@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.973 2008-11-14 21:17:12 lfbasso Exp $
+ * $Id: Changelog,v 1.974 2008-11-15 16:39:52 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-11-15 14:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hedit.prg
+    + add DATA lFocus
+    * changed nColorinFocus  INIT GETSYSCOLOR( COLOR_ACTIVEBORDER ) 
+    * colorinfocus only in FOCUS changed in keypress to tcolor
+    * fix the entry of data into numeric fields
+    
 2008-11-14 19:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     + add in #xcommand @ <x>,<y> BUTTONEX [ <oBut> CAPTION ] <caption> ;

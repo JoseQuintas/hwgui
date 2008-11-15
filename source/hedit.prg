@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.108 2008-11-01 14:59:49 lfbasso Exp $
+ *$Id: hedit.prg,v 1.109 2008-11-15 16:39:52 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -34,8 +34,9 @@ CLASS VAR winclass   INIT "EDIT"
    DATA lFirst         INIT .T.
    DATA lChanged       INIT .F.
    DATA nMaxLength     INIT Nil
-   DATA nColorinFocus  INIT vcolor( 'CCFFFF' )
-
+   DATA nColorinFocus  INIT GETSYSCOLOR( COLOR_ACTIVEBORDER )  //vcolor( 'CCFFFF' )
+   DATA lFocu          INIT .F.
+       
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture,;
 						   lNoBorder, nMaxLength, lPassword, bKeyDown, bChange, bOther)
@@ -136,6 +137,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::oParent:AddEvent( EN_CHANGE, self,{| | ::Change( )},,"onChange"  )
    ENDIF
    ::bColorOld := ::bColor
+   SET( _SET_INSERT, .T. )
 
    RETURN Self
 
@@ -165,6 +167,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
             IF wParam == VK_BACK
                ::lFirst := .F.
+               ::lFocu := .F.
                ::SetGetUpdated()
                ::DeleteChar( .T. )
                RETURN 0
@@ -173,6 +176,17 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ELSEIF wParam == VK_TAB
                RETURN 0
             ENDIF
+            //
+            IF ::lFocu .AND. ::cType = "N"
+               IF  SET( _SET_INSERT ) 
+                  ::lFirst := .t.
+               ENDIF
+               ::lFocu := .F.
+            ENDIF
+            IF ::lFirst 
+               ::SetColor( ::tcolor, ::bColorOld, .t. )
+            ENDIF   
+						//
             IF ! IsCtrlShift( , .F. )
                RETURN ::GetApplyKey( Chr( wParam ) )
             ENDIF
@@ -192,8 +206,18 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                ENDIF
                ::oparent:lSuspendMsgsHandling := .F.
             ENDIF
-
-            IF wParam == 40     // KeyDown
+ 						IF wParam = 86  // V
+						  IF  IsCtrlShift()
+ 					       ::lFirst := .F.
+                 IF ::cType == "C"
+                    nPos := Loword( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
+                    SendMessage( ::handle, EM_REPLACESEL, 1, GETCLIPBOARDTEXT() )
+                    SendMessage(  ::handle, EM_SETSEL, 0,nPos + Len( GETCLIPBOARDTEXT() ) )  
+ 							      ::title := GetEditText( ::oParent:handle, ::id )
+                    RETURN -1
+                 ENDIF
+						  ENDIF
+            ELSEIF wParam == 40     // KeyDown
                IF ! IsCtrlShift()
                   GetSkip( oParent, ::handle, , 1 )
                   RETURN 0
@@ -262,6 +286,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
          ENDIF
       ENDIF
+      IF msg == WM_SETFOCUS .AND. ::cType = "N"
+         ::lFocu := .T.
+      ENDIF   
       IF lColorinFocus
          IF msg == WM_SETFOCUS
 //            ::bColorOld := ::bcolor
@@ -678,6 +705,7 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
                vari := Left( vari, i - 1 ) + SubStr( vari, i + 1 )
             ENDIF
          NEXT
+         vari := StrTran( vari, " ", IIF("E" $ ::cPicFunc, ",", "." ) )
          vari := Val( vari )
       ENDIF
       IF ! Empty( ::cPicFunc ) .OR. ! Empty( ::cPicMask )

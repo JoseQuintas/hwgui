@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.103 2008-11-14 21:17:12 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.104 2008-11-15 17:00:02 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -819,8 +819,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
 
 METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
-                 cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle, hIcon, bGFocus ) CLASS HButtonEx
+                 cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle, hIcon, bGFocus, nPictureMargin ) CLASS HButtonEx
    DEFAULT iStyle TO ST_ALIGN_HORIZ
+   DEFAULT nPictureMargin TO 0
    bPaint   := { | o, p | o:paint( p ) }
    ::m_bLButtonDown := .f.
    ::m_bIsToggle := .f.

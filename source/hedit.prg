@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.110 2008-11-15 22:57:56 lfbasso Exp $
+ *$Id: hedit.prg,v 1.111 2008-11-16 03:19:36 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -25,7 +25,7 @@ STATIC  bcolorselect := 13434879 //vcolor( 'CCFFFF' )
 CLASS HEdit INHERIT HControl
 
 CLASS VAR winclass   INIT "EDIT"
-   DATA bColorOld
+   DATA tColorOld, bColorOld
    DATA lMultiLine   INIT .F.
    DATA cType        INIT "C"
    DATA bSetGet
@@ -139,6 +139,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::oParent:AddEvent( EN_CHANGE, self,{| | ::Change( )},,"onChange"  )
    ENDIF
    ::bColorOld := ::bColor
+   ::tColorOld := IIF( tcolor = Nil, 0, ::tColor)
+
    SET( _SET_INSERT, .T. )
 
    RETURN Self
@@ -186,6 +188,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
             IF ::lFocu
                ::SetColor( ::tcolorOld, ::bColorOld, .t. )
+               ::move()
                ::lFocu := .F.
             ENDIF   
 						//
@@ -298,6 +301,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             //::SetColor( ::tcolor , ::nColorinFocus, .T. )
          ELSEIF msg == WM_KILLFOCUS
             ::SetColor( ::tcolorOld, ::bColorOld, .t. )
+            ::move()
             //::SetColor( ::tcolor, ::bColorOld, .t. )
          ENDIF
       ENDIF
@@ -1144,14 +1148,18 @@ FUNCTION ParentGetDialog( o )
    RETURN o
 
 FUNCTION SetColorinFocus( lDef, tcolor,bcolor )
+  
    IF ValType( lDef ) <> "L"
+      lDef := (ValType( lDef ) = "C" .AND. Upper( lDef ) = "ON" )  
+	 ENDIF
+   lColorinFocus := lDef
+ 	 IF !lDef
       RETURN .F.
    ENDIF
-   lColorinFocus := lDef
    tcolorselect  := IIF( tcolor != Nil, tColor, tcolorselect )  
    bcolorselect  := IIF( bcolor != Nil, bColor, bcolorselect )
  
- RETURN .T.
+  RETURN .T.
 
 /*
 Luis Fernando Basso contribution

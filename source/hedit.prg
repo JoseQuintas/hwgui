@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.113 2008-11-17 12:44:14 lfbasso Exp $
+ *$Id: hedit.prg,v 1.114 2008-11-17 13:17:42 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -176,7 +176,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                ::SetGetUpdated()
                ::DeleteChar( .T. )
                RETURN 0
-            ELSEIF wParam == VK_RETURN .AND. oParent:oParent:Type < WND_DLG_RESOURCE   
+            ELSEIF wParam == VK_RETURN .AND. ParentGetDialog( Self ):Type < WND_DLG_RESOURCE                  
                GetSkip( oParent, ::handle, , 1 )
                RETURN 0
             ELSEIF wParam == VK_RETURN .OR. wParam == VK_ESCAPE

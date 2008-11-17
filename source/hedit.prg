@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.112 2008-11-17 04:04:23 lfbasso Exp $
+ *$Id: hedit.prg,v 1.113 2008-11-17 12:44:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -10,6 +10,7 @@
 */
 
 STATIC lColorinFocus := .F.
+STATIC lFixedColor := .T.
 STATIC  tcolorselect := 0   
 STATIC  bcolorselect := 13434879 //vcolor( 'CCFFFF' )  
 
@@ -184,14 +185,14 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                RETURN 0
             ENDIF
             //
-            IF ::lFocu .AND. ::cType = "N"
-               IF  SET( _SET_INSERT ) 
+            IF ::lFocu
+               IF ::cType = "N" .AND. SET( _SET_INSERT ) 
                   ::lFirst := .T.
                ENDIF
-            ENDIF
-            IF ::lFocu
-               ::SetColor( ::tcolorOld, ::bColorOld, .t. )
-               ::move()
+               IF !lFixedColor
+                  ::SetColor( ::tcolorOld, ::bColorOld, .t. )
+                  ::move()
+               ENDIF  
                ::lFocu := .F.
             ENDIF   
 						//
@@ -1159,7 +1160,7 @@ FUNCTION ParentGetDialog( o )
    ENDDO
    RETURN o
 
-FUNCTION SetColorinFocus( lDef, tcolor,bcolor )
+FUNCTION SetColorinFocus( lDef, tcolor,bcolor, lFixed )
   
    IF ValType( lDef ) <> "L"
       lDef := (ValType( lDef ) = "C" .AND. Upper( lDef ) = "ON" )  
@@ -1168,8 +1169,9 @@ FUNCTION SetColorinFocus( lDef, tcolor,bcolor )
  	 IF !lDef
       RETURN .F.
    ENDIF
-   tcolorselect  := IIF( tcolor != Nil, tColor, tcolorselect )  
-   bcolorselect  := IIF( bcolor != Nil, bColor, bcolorselect )
+   lFixedColor   := IIF( lFixed != Nil, !lFixed, lFixedColor )  
+   tColorSelect  := IIF( tColor != Nil, tColor, tColorSelect )  
+   bColorSelect  := IIF( bColor != Nil, bColor, bColorSelect )
  
   RETURN .T.
 

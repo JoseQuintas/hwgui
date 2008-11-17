@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.129 2008-11-16 03:19:36 lfbasso Exp $
+ *$Id: guilib.ch,v 1.130 2008-11-17 12:44:14 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -1311,9 +1311,9 @@
 #xcommand SET RESOURCES TO => LOADRESOURCE( NIL )
 
 
-#xcommand SET COLORFOCUS <x:ON,OFF,&> [COLOR [<tColor>],[<bColor>]];
+#xcommand SET COLORFOCUS <x:ON,OFF,&> [COLOR [<tColor>],[<bColor>]] [< lFixed : NOFIXED >];
 => ;
- SetColorinFocus( <(x)> , <tColor>, <bColor> )
+ SetColorinFocus( <(x)> , <tColor>, <bColor>, <.lFixed.> )
 
 // Addded by jamaj
 #xcommand DEFAULT <uVar1> := <uVal1> ;

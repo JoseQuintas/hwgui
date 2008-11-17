@@ -1,5 +1,5 @@
 /*
- * $Id: shellapi.c,v 1.12 2008-11-14 18:42:15 sandrorrfreire Exp $
+ * $Id: shellapi.c,v 1.13 2008-11-17 11:48:07 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Shell API wrappers
@@ -122,8 +122,3 @@ HB_FUNC( SHELLEXECUTE )
               ISNIL(5) ? 1 : hb_parni(5) ) ) ;
 }
 
-HB_FUNC( SHELLEXECUTEEX )
-{
-   SHELLEXECUTEINFO *ExecInfo = (SHELLEXECUTEINFO *) hb_param(1, HB_IT_STRING)->item.asString.value;
-   hb_retl( ShellExecuteEx( ExecInfo ) ) ;
-}

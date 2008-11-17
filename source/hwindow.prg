@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.63 2008-11-11 04:49:14 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.64 2008-11-17 04:04:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -320,6 +320,7 @@ HB_SYMBOL_UNUSED(lMinimized)
    CreateGetList( Self )
    // Hwg_CreateMdiChildWindow( Self )
 
+   ::Type := WND_MDICHILD            
    ::handle := Hwg_CreateMdiChildWindow( Self )
    IF bActivate != NIL
       EVAL( bActivate )
@@ -328,6 +329,13 @@ HB_SYMBOL_UNUSED(lMinimized)
    InitControls( Self )
    IF ::bInit != Nil
       Eval( ::bInit,Self )
+   ENDIF
+   
+   IF ( VALTYPE( ::nInitFocus ) = "O" .OR. ::nInitFocus > 0 )
+      ::nInitFocus := IIF(VALTYPE( ::nInitFocus ) = "O", ::nInitFocus:Handle, ::nInitFocus )   
+      SETFOCUS( ::nInitFocus )
+   ELSEIF GETFOCUS() = ::handle .AND. LEN( ::acontrols ) > 0
+      SETFOCUS( ::acontrols[1]:handle )
    ENDIF
 
 Return Nil
@@ -367,6 +375,7 @@ METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,  ;
                   cAppName,oBmp,cHelp,nHelpId,,bRefresh )
    ::oParent := HWindow():GetMain()
+   ::Type := WND_CHILD 
    IF ISOBJECT( ::oParent )
        ::handle := Hwg_InitChildWindow( Self, ::szAppName,cTitle,cMenu, ;
           Iif(oIcon!=Nil,oIcon:handle,Nil),Iif(oBmp!=Nil,-1,clr),nStyle,::nLeft, ;
@@ -375,18 +384,37 @@ METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
        MsgStop("Create Main window first !","HChildWindow():New()" )
        Return Nil
    ENDIF
+   /*
+   IF ::bInit != Nil
+      Eval( ::bInit, Self )
+   ENDIF
+	 */
+Return Self
+
+METHOD Activate( lShow, lMaximized, lMinimized, bActivate ) CLASS HChildWindow
+
+   CreateGetList( Self )
+   //   InitControls( SELF,.T. )
+   InitObjects( SELF,.T. )
+
    IF ::bInit != Nil
       Eval( ::bInit, Self )
    ENDIF
 
-Return Self
+   Hwg_ActivateChildWindow((lShow==Nil .OR. lShow), ::handle, lMaximized, lMinimized ) 
 
-METHOD Activate( lShow ) CLASS HChildWindow
-
-   CreateGetList( Self )
-   Hwg_ActivateChildWindow((lShow==Nil .OR. lShow),::handle )
-
+   IF ( bActivate  != NIL )
+      eVal( bActivate, Self)
+   ENDIF
+  
+   IF ( VALTYPE( ::nInitFocus ) = "O" .OR. ::nInitFocus > 0 )
+      ::nInitFocus := IIF(VALTYPE( ::nInitFocus ) = "O", ::nInitFocus:Handle, ::nInitFocus )   
+      SETFOCUS( ::nInitFocus )
+   ELSEIF GETFOCUS() = ::handle .AND. LEN( ::acontrols ) > 0
+      SETFOCUS( ::acontrols[1]:handle )
+   ENDIF
 Return Nil
+
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HChildWindow
 Local i

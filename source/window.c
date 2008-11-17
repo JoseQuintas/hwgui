@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.71 2008-10-20 15:11:50 mlacecilia Exp $
+ * $Id: window.c,v 1.72 2008-11-17 04:04:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -303,7 +303,8 @@ HB_FUNC( HWG_INITCHILDWINDOW )
 
 HB_FUNC( HWG_ACTIVATECHILDWINDOW )
 {
-   ShowWindow( (HWND) HB_PARHANDLE(2), hb_parl(1) ? SW_SHOWNORMAL : SW_HIDE );
+  // ShowWindow( (HWND) HB_PARHANDLE(2), hb_parl(1) ? SW_SHOWNORMAL : SW_HIDE );
+   ShowWindow( (HWND) HB_PARHANDLE(2), ( ISLOG(3) && hb_parl(3) )? SW_SHOWMAXIMIZED : ( ( ISLOG(4) && hb_parl(4) )? SW_SHOWMINIMIZED : SW_SHOWNORMAL ) );
 }
 
 /*  Creates frame MDI and client window

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.976 2008-11-16 03:19:36 lfbasso Exp $
+ * $Id: Changelog,v 1.977 2008-11-17 04:04:23 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-11-16 01:19 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hedit.prg
+    * ONEVENT changed VK_RETURN to adjust the FOCUS control in MDI AND CHILD
+    * changed GETSKIP to adjust FOCUS control in MDIchild AND CHILD
+  * source\hwindow.prg
+    + METHOD Activate add bInit and bActivate events
+    + add init focus in CHILD WINDOW
+    + add init focus in CHILDMDI
+  * source\window.c
+    * fix in parameters of HWG_ACTIVATECHILDWINDOW 
 
 2008-11-16 01:19 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch

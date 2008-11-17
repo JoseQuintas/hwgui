@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.111 2008-11-16 03:19:36 lfbasso Exp $
+ *$Id: hedit.prg,v 1.112 2008-11-17 04:04:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -175,6 +175,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                ::SetGetUpdated()
                ::DeleteChar( .T. )
                RETURN 0
+            ELSEIF wParam == VK_RETURN .AND. oParent:oParent:Type < WND_DLG_RESOURCE   
+               GetSkip( oParent, ::handle, , 1 )
+               RETURN 0
             ELSEIF wParam == VK_RETURN .OR. wParam == VK_ESCAPE
                RETURN - 1
             ELSEIF wParam == VK_TAB
@@ -288,12 +291,15 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 					                                  IsCtrlShift(.f., .t.) )
                SetFocus( nexthandle )
                RETURN 0
+		        ELSEIF wParam == VK_RETURN .AND. oParent:oParent:Type < WND_DLG_RESOURCE   
+               GetSkip( oParent, ::handle, , 1 )
+               RETURN 0   
             ENDIF
          ENDIF
       ENDIF
       IF msg == WM_SETFOCUS //.AND. ::cType = "N"
          ::lFocu := .T.
-      ENDIF   
+	    ENDIF   
       IF lColorinFocus
          IF msg == WM_SETFOCUS
 //            ::bColorOld := ::bcolor
@@ -1071,15 +1077,21 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
 	 IF i > 0
 	   oCtrl:nGetSkip := nSkip
 	 ENDIF  
-   IF !empty(nextHandle)
+   IF !empty( nextHandle )
 	   IF oParent:classname != "HTAB"
-	       PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle, 1 )
+        IF oParent:Type < WND_DLG_RESOURCE                                                 
+           SetFocus( nexthandle )    
+        ELSE
+ 	         PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle, 1 )
+				ENDIF    
 	   ELSE
-       IF oParent:handle == getfocus()
-          PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle, 1 )
-       ELSE
-			    PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle, 1 )
-       ENDIF
+ 	      IF oParent:oParent:Type < WND_DLG_RESOURCE 
+	        SetFocus( nexthandle )
+	      ELSEIF oparent:handle = getfocus()
+           PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle, 1 )
+        ELSE
+			     PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle, 1 )
+        ENDIF
      ENDIF 
    ENDIF
 
@@ -1105,7 +1117,7 @@ STATIC FUNCTION NextFocusTab(oParent, hCtrl, nSkip)
       ELSE
       	SETFOCUS(oParent:aPages[nPage,1]:aControls[1]:Handle)
         RETURN 0
-			ENDIF	
+			ENDIF	                  
       IF (nSkip < 0 .AND. ( k > i .OR. k == 0)) .OR. (nSkip > 0 .AND. i > k)
         nexthandle := GetNextDlgTabItem ( GetActiveWindow(), hctrl, (nSkip < 0) )
         PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nexthandle , 1 )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.979 2008-11-17 12:44:14 lfbasso Exp $
+ * $Id: Changelog,v 1.980 2008-11-18 01:43:27 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-11-17 23:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcontrol.prg
+    * minor fix em draw focus buttonex with bitmap 
+  * source\hedit.prg
+    * minor fix in colorfocus, because color border of editbox in changed color
+  
 2008-11-17 10:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     * add new clause in #xcommand SET COLORFOCUS <x:ON,OFF,&> [COLOR [<tColor>],[<bColor>]] [< lFixed : NOFIXED >];;

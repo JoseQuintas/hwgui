@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.114 2008-11-17 13:17:42 lfbasso Exp $
+ *$Id: hedit.prg,v 1.115 2008-11-18 01:43:27 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -191,7 +191,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                ENDIF
                IF !lFixedColor
                   ::SetColor( ::tcolorOld, ::bColorOld, .t. )
-                  ::move()
+                  SendMessage( ::handle, WM_MOUSEMOVE, 0, MAKELPARAM( 1, 1 ) )
                ENDIF  
                ::lFocu := .F.
             ENDIF   
@@ -304,12 +304,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       IF lColorinFocus
          IF msg == WM_SETFOCUS
 //            ::bColorOld := ::bcolor
-            ::SetColor( tColorSelect, bColorSelect, .T.)
+            ::SetColor( tColorSelect, bColorSelect )
             //::SetColor( ::tcolor , ::nColorinFocus, .T. )
          ELSEIF msg == WM_KILLFOCUS
-            ::SetColor( ::tcolorOld, ::bColorOld, .t. )
-            ::move()
             //::SetColor( ::tcolor, ::bColorOld, .t. )
+            ::SetColor( ::tcolorOld, ::bColorOld, .t. )
+            SendMessage( ::handle, WM_MOUSEMOVE, 0, MAKELPARAM( 1, 1 ) )
          ENDIF
       ENDIF
    ELSE

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.104 2008-11-15 17:00:02 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.105 2008-11-18 01:43:27 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1104,7 +1104,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
    LOCAL uAlign, uStyleTmp
    LOCAL aTxtSize := IIF(!EMPTY(::caption), TxtRect( ::caption, Self ),{})   
    LOCAL aBmpSize := IIF(!EMPTY(::hbitmap), GetBitmapSize( ::hbitmap ),{})
-
+    LOCAL itemRectOld
 
    IF ( ::m_bFirstTime )
 
@@ -1213,6 +1213,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
 
     captionRect := { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] }
     //
+    itemRectOld := aclone(itemRect)
     IF ::iStyle != ST_ALIGN_VERT .AND. !EMPTY(::caption) .AND. !EMPTY( ::hbitmap ) //.AND.!EMPTY( ::hicon )
 		  IF ::PictureMargin = 0
 		     IF ::iStyle = ST_ALIGN_HORIZ 
@@ -1229,7 +1230,8 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
     bHasTitle := ValType( ::caption ) == "C" .and. ! Empty( ::Caption )
 
     DrawTheIcon( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, bIsDisabled, ::hIcon, ::hbitmap, ::iStyle )
-
+    itemRect := aclone(itemRectOld)
+    
     IF ( bHasTitle )
 
        // If button is pressed then "press" title also

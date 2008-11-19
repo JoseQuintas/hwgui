@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.69 2008-10-20 11:05:40 sandrorrfreire Exp $
+ * $Id: control.c,v 1.70 2008-11-19 12:51:33 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -686,7 +686,7 @@ HB_FUNC( TREEADDNODE )
       }
    }
 
-#if !defined(__BORLANDC__)
+#if !defined(__BORLANDC__) ||  (__BORLANDC__ >= 1424) 
    is.item   = tvi;
 #else
    is.DUMMYUNIONNAME.item = tvi;

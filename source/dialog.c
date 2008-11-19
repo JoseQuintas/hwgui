@@ -1,5 +1,5 @@
 /*
- * $Id: dialog.c,v 1.28 2008-10-07 12:37:49 lculik Exp $
+ * $Id: dialog.c,v 1.29 2008-11-19 12:51:33 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -386,7 +386,7 @@ HB_FUNC( _CREATEPROPERTYSHEETPAGE )
    psp.lParam = (LPARAM) hb_itemNew(pObj);
    psp.pfnCallback = (LPFNPSPCALLBACKA) PSPProcRelease;
    psp.pcRefParent = 0;
-#if !defined(__BORLANDC__)
+#if !defined(__BORLANDC__) ||  (__BORLANDC__ >= 1424) 
    psp.hIcon = 0;
 #else
    psp.DUMMYUNIONNAME2.hIcon = 0;
@@ -401,7 +401,7 @@ HB_FUNC( _CREATEPROPERTYSHEETPAGE )
          cTitle = ( HB_IS_STRING( temp ) ? hb_itemGetCPtr( temp ) : MAKEINTRESOURCE( hb_itemGetNL( temp ) ) );
       else
          cTitle = NULL;
-#if !defined(__BORLANDC__)
+#if !defined(__BORLANDC__) ||  (__BORLANDC__ >= 1424) 
       psp.pszTemplate = cTitle;
 #else
       psp.DUMMYUNIONNAME.pszTemplate = cTitle;
@@ -412,7 +412,7 @@ HB_FUNC( _CREATEPROPERTYSHEETPAGE )
       pdlgtemplate = (LPDLGTEMPLATE) hb_parnl(2);
 
       psp.dwFlags = PSP_DLGINDIRECT|PSP_USECALLBACK;
-#if !defined(__BORLANDC__)
+#if !defined(__BORLANDC__) ||  (__BORLANDC__ >= 1424) 
       psp.pResource = pdlgtemplate;
 #else
       psp.DUMMYUNIONNAME.pResource = pdlgtemplate;
@@ -448,14 +448,14 @@ HB_FUNC( _PROPERTYSHEET )
    psh.dwFlags = dwFlags;
    psh.hwndParent = (HWND) HB_PARHANDLE(1);
    psh.hInstance = (HINSTANCE) NULL;
-#if !defined(__BORLANDC__)
+#if !defined(__BORLANDC__) ||  (__BORLANDC__ >= 1424) 
    psh.pszIcon = NULL;
 #else
    psh.DUMMYUNIONNAME.pszIcon = NULL;
 #endif
    psh.pszCaption = (LPSTR) hb_parc(4);
    psh.nPages = nPages;
-#if !defined(__BORLANDC__)
+#if !defined(__BORLANDC__)||  (__BORLANDC__ >= 1424) 
    psh.nStartPage = 0;
    psh.phpage = psp;
 #else

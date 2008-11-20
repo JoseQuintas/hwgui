@@ -1,5 +1,5 @@
 /*
- * $Id: htmlfunc.c,v 1.2 2008-10-07 12:37:49 lculik Exp $
+ * $Id: htmlfunc.c,v 1.3 2008-11-20 16:58:48 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * ActiveX container
@@ -18,7 +18,7 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-
+#include "guilib.h"
 static short int bOleInitialized = 0;
 
 HB_FUNC( HWGAX_OLEINITIALIZE )

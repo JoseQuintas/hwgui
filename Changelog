@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.983 2008-11-20 15:03:18 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.984 2008-11-20 16:58:48 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-11-20 15:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
+  * source/hwindow.prg
+    ! minor fix when hwgui is compiled with pointer
+    source/activex/*.c
+     !added missing include to files
 
 2008-11-20 12:10 UTC-0300 Sandro R. R. Freire <sandrorrfreir
   * utils/hwmake/hwmake.prg

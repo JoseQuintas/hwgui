@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.2 2008-10-07 12:37:49 lculik Exp $
+ * $Id: c_activex.c,v 1.3 2008-11-20 16:58:48 lculik Exp $
  */
 /*
  * ooHG source code:
@@ -40,7 +40,7 @@
 #include <hbstack.h>
 #include <ocidl.h>
 #include <hbapiitm.h>
-
+#include "guilib.h"
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
 #endif

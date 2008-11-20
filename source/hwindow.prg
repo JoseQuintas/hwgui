@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.65 2008-11-20 16:58:48 lculik Exp $
+ *$Id: hwindow.prg,v 1.66 2008-11-20 17:01:09 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -680,7 +680,7 @@ Local iParLow := LoWord( wParam ), iParHigh := HiWord( wParam )
 
 HB_SYMBOL_UNUSED(lParam)
 
-         IF (iParLow = WA_ACTIVE .OR. iParLow = WA_CLICKACTIVE)  .AND. PtrtoUlong((lParam )= 0 
+         IF (iParLow = WA_ACTIVE .OR. iParLow = WA_CLICKACTIVE)  .AND. PtrtoUlong(lParam )= 0 
 	    IF oWin:bGetFocus != Nil //.AND. IsWindowVisible(::handle)
          oWin:lSuspendMsgsHandling := .t.
          IF iParHigh > 0  // MINIMIZED
@@ -689,7 +689,7 @@ HB_SYMBOL_UNUSED(lParam)
          Eval( oWin:bGetFocus, oWin, lParam )
          oWin:lSuspendMsgsHandling := .f.
 			ENDIF
-   ELSEIF iParLow =WA_INACTIVE .AND. PtrtoUlong((lparam) = 0 // oDlg:bGetFocus != Nil .AND. IsWindowVisible(odlg:handle)
+   ELSEIF iParLow =WA_INACTIVE .AND. PtrtoUlong(lparam) = 0 // oDlg:bGetFocus != Nil .AND. IsWindowVisible(odlg:handle)
       IF  oWin:bLostFocus != Nil //.AND. IsWindowVisible(::handle)
          oWin:lSuspendMsgsHandling := .t.
          Eval( oWin:bLostFocus, oWin, lParam )

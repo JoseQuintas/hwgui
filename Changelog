@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.982 2008-11-20 14:09:47 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.983 2008-11-20 15:03:18 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -9,6 +9,7 @@
 */
 
 2008-11-20 12:10 UTC-0300 Sandro R. R. Freire <sandrorrfreir
+  * utils/hwmake/hwmake.prg
   * utils/hwmake/bld.bat
     Fix to compile in Harbour
     Thanks Itamar

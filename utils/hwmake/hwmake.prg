@@ -1,5 +1,5 @@
 /*
- *$Id: hwmake.prg,v 1.6 2008-11-14 20:45:49 sandrorrfreire Exp $
+ *$Id: hwmake.prg,v 1.7 2008-11-20 15:03:18 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library 
  * 
@@ -17,6 +17,20 @@
 #DEFINE  ID_PRGFLAG     10004
 #DEFINE  ID_CFLAG       10005
 #DEFINE  ID_PRGMAIN     10006
+
+#ifndef __XHARBOUR__
+
+   ANNOUNCE HB_GTSYS
+   REQUEST HB_GT_GUI_DEFAULT
+
+   #xcommand TRY              => s_bError := errorBlock( {|oErr| break( oErr ) } ) ;;
+                                 BEGIN SEQUENCE
+   #xcommand CATCH [<!oErr!>] => errorBlock( s_bError ) ;;
+                                 RECOVER [USING <oErr>] <-oErr-> ;;
+                                 errorBlock( s_bError )
+   #command FINALLY           => ALWAYS
+   
+#endif
 
 FUNCTION Main
 Local oFont
@@ -369,6 +383,7 @@ Local cPathFile
 Local cRun 
 Local cNameExe
 Local nRep
+Local cLogErro
 
 cPathFile := cPathNoFile( oMainPrg:GetText() )
 If !Empty( cPathFile )
@@ -421,8 +436,9 @@ For Each i in oBrowse1:aArray
    EndIF       
 
    If lCompile 
+      cLogErro := StrTran( cObjName, ".c", ".log" )
       fErase( cObjName )
-      If ExecuteCommand(  cExeHarbour, cPrgName + " -o" + cObjName + " " + Alltrim( oPrgFlag:GetText() ) + " -n -i"+cHarbour+"\include;"+cHwGUI+"\include"+If( !Empty(Alltrim( oIncFolder:GetText() ) ), ";"+Alltrim( oIncFolder:GetText() ), "")+"") == 0
+      If ExecuteCommand(  cExeHarbour, cPrgName + " -o" + cObjName + " " + Alltrim( oPrgFlag:GetText() ) + " -n -i"+cHarbour+"\include;"+cHwGUI+"\include"+If( !Empty(Alltrim( oIncFolder:GetText() ) ), ";"+Alltrim( oIncFolder:GetText() ), "")+">" + cLogErro) == 0
          MsgInfo( "Error to execute HARBOUR.EXE!!!", "HwMake" )         
          Return Nil
       EndIf  

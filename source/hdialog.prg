@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.80 2008-11-20 17:10:20 lculik Exp $
+ * $Id: hdialog.prg,v 1.81 2008-11-22 18:32:36 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -67,6 +67,7 @@ CLASS HDialog INHERIT HCustomWindow
    DATA oEmbedded
    DATA bOnActivate
    DATA nInitShow INIT 0
+   DATA nScrollBars INIT -1  //PROTECTED
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
                   bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc,bcolor,bRefresh)
@@ -119,7 +120,13 @@ METHOD NEW( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
      ::brush := HBrush():Add(bcolor)
      ::bColor := bcolor
    ENDIF
-
+   IF Hwg_Bitand( nStyle,WS_HSCROLL ) > 0
+      ::nScrollBars ++
+   ENDIF
+	 IF  Hwg_Bitand( nStyle,WS_VSCROLL ) > 0
+	   ::nScrollBars += 2
+	 ENDIF  
+	 
 RETURN Self
 
 
@@ -215,6 +222,9 @@ Local i, oTab, nPos
 	    return 1
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
+         IF ::nScrollBars != -1 
+            super:ScrollHV( Self,msg,wParam,lParam )
+         ENDIF   
          onTrackScroll( Self,msg,wParam,lParam )
       ENDIF
       Return Super:onEvent( msg, wParam, lParam )
@@ -498,6 +508,25 @@ HB_SYMBOL_UNUSED(wParam)
    *aControls := GetWindowRect( oDlg:handle )
    oDlg:nWidth := LoWord( lParam )  //aControls[3]-aControls[1]
    oDlg:nHeight := HiWord( lParam ) //aControls[4]-aControls[2]
+   // SCROLL BARS code here. 
+   IF oDlg:nScrollBars = 1 .OR. oDlg:nScrollBars = 2
+  	 oDlg:nCurHeight := oDlg:nHeight - oDlg:nTop //y;
+  	 nScrollMax := 0
+   	 IF oDlg:nHeight < oDlg:rect[4] //.Height())
+	      nScrollMax := oDlg:rect[4] - oDlg:nHeight //m_rect.Height() - cy;
+	   ENDIF
+	   // SetScrollInfo( hWnd, nType, nRedraw, nPos, nPage )
+	   SetScrollInfo( oDlg:Handle, SB_VERT, 1, 0, nScrollMax / 10 )
+	 ENDIF
+	 IF oDlg:nScrollBars = 0 .OR. oDlg:nScrollBars = 2   
+   	 oDlg:nCurWidth  := oDlg:nWidth - oDlg:nLeft //y;
+     nScrollMax := 0
+     IF oDlg:nWidth < oDlg:rect[3] //.Height())
+	      nScrollMax := oDlg:rect[3] - oDlg:nWidth //m_rect.Height() - cy;
+	   ENDIF
+     SetScrollInfo( oDlg:Handle, SB_HORZ, 1, 0, nScrollMax / 10 )
+   ENDIF    
+   //
    IF oDlg:bSize != Nil .AND. ;
        ( oDlg:oParent == Nil .OR. !__ObjHasMsg( oDlg:oParent,"ACONTROLS" ) )
       Eval( oDlg:bSize, oDlg, LoWord( lParam ), HiWord( lParam ) )

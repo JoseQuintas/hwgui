@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.984 2008-11-20 16:58:48 lculik Exp $
+ * $Id: Changelog,v 1.985 2008-11-22 18:32:36 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-11-22 16:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/hcwindow.prg
+    + add DATA nCurWidth, nCurHeight, nScrollPos, rect  to scrollbars
+    + add METHOD ScrollHV( msg,wParam,lParam ) 
+  * source/hdialog.prg
+    + add DATA nScrollBars  
+    ! changed onevent and onsize to support the scroll bars
+    
 2008-11-20 15:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/hwindow.prg
     ! minor fix when hwgui is compiled with pointer

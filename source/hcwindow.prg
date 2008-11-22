@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.32 2008-11-11 04:49:14 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.33 2008-11-22 18:32:36 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -77,7 +77,10 @@ CLASS VAR oDefaultParent SHARED
    DATA nInitFocus    INIT 0  // Keeps the ID of the object to receive focus when dialog is created
                               // you can change the object that receives focus adding
                               // ON INIT {|| nInitFocus:=object:[handle] }  to the dialog definition
-
+   DATA nCurWidth    INIT 0 //PROTECTED
+   DATA nCurHeight   INIT 0 //PROTECTED
+   DATA nScrollPos   INIT 0 //PROTECTED
+   DATA rect //PROTECTED
 
    METHOD AddControl( oCtrl ) INLINE AAdd( ::aControls, oCtrl )
    METHOD DelControl( oCtrl )
@@ -92,6 +95,7 @@ CLASS VAR oDefaultParent SHARED
    METHOD SetFocusCtrl( oCtrl )
    METHOD Refresh()
    METHOD Anchor(oCtrl, x,y, w, h) 
+   METHOD ScrollHV( msg,wParam,lParam ) 
    
 ENDCLASS
 
@@ -288,6 +292,56 @@ Local nlen , i, x1, y1
       ENDIF
    NEXT
 RETURN .T.
+
+METHOD  ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
+Local nDelta, nMaxPos,  wmsg , nPos
+
+HB_SYMBOL_UNUSED(lParam)
+
+	 nDelta := 0
+   wmsg := loword(wParam)
+
+   IF msg = WM_VSCROLL .OR. msg = WM_HSCROLL
+ 	    nMaxPos := IIF( msg = WM_VSCROLL, oForm:rect[4] - oForm:nCurHeight, oForm:rect[3] - oForm:nCurWidth )
+  	  IF wmsg =  SB_LINEDOWN
+		     IF ( oForm:nScrollPos >= nMaxPos)
+			      return 0
+			   endif  
+		     nDelta := min( nMaxPos/100, nMaxPos - oForm:nScrollPos )
+	    ELSEIF wmsg = SB_LINEUP
+		    if ( oForm:nScrollPos <= 0 )
+			     return 0
+			  endif  
+		    nDelta := -min( nMaxPos/100, oForm:nScrollPos )
+      ELSEIF wmsg = SB_PAGEDOWN
+		    if ( oForm:nScrollPos >= nMaxPos )
+			     return 0
+			  endif  
+		    nDelta := min( nMaxPos/10,nMaxPos - oForm:nScrollPos )
+	    ELSEIF wmsg = SB_THUMBPOSITION
+	      nPos := hiword( wParam )
+		    nDelta := nPos - oForm:nScrollPos
+	    ELSEIF wmsg = SB_PAGEUP
+	  	  if ( oForm:nScrollPos <= 0 )
+		    	return 0
+		    endif 	
+		    nDelta := -min( nMaxPos/10, oForm:nScrollPos )
+  	  ELSE
+  		  return 0
+		  ENDIF
+ 	    oForm:nScrollPos += nDelta
+	    IF msg = WM_VSCROLL
+  	     setscrollpos( oForm:handle, SB_VERT, oForm:nScrollPos )
+	       ScrollWindow( oForm:handle, 0, -nDelta )
+	    ELSE
+   	     setscrollpos( oForm:handle, SB_HORZ, oForm:nScrollPos )
+	       ScrollWindow( oForm:handle, -nDelta, 0 )
+		  ENDIF  
+		  Return -1
+			 
+  ENDIF
+  RETURN Nil
+
   
 *---------------------------------------------------------
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.81 2008-11-22 18:32:36 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.82 2008-11-24 01:42:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -490,6 +490,7 @@ Return 0
 Static Function onSize( oDlg,wParam,lParam )
 Local aControls, iCont , nW1, nH1
 LOCAL nW := LoWord( lParam ), nH := HiWord( lParam )
+Local  nScrollMax
 
 HB_SYMBOL_UNUSED(wParam)
 

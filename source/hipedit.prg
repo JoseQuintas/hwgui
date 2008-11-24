@@ -1,5 +1,5 @@
 /*
- * $Id: hipedit.prg,v 1.12 2008-09-01 19:00:19 mlacecilia Exp $
+ * $Id: hipedit.prg,v 1.13 2008-11-24 10:02:12 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -18,37 +18,37 @@
 
 CLASS HIPedit INHERIT HControl
 
-   CLASS VAR winclass   INIT "SysIPAddress32"
+CLASS VAR winclass   INIT "SysIPAddress32"
    DATA bSetGet
    DATA bChange
    DATA bKillFocus
    DATA bGetFocus
    DATA lnoValid   INIT .F.
 
-   METHOD New( oWndParent,nId,aValue,bSetGet, nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bGetFocus,bKillFocus )
+   METHOD New( oWndParent, nId, aValue, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
+               oFont, bGetFocus, bKillFocus )
    METHOD Activate()
    METHOD Init()
    METHOD SetValue( aValue )
    METHOD GetValue(  )
    METHOD Clear(  )
-   METHOD End()
+   METHOD END()
 
    HIDDEN:
-     DATA  aValue           // Valor atual
+   DATA  aValue           // Valor atual
 
 ENDCLASS
 
-METHOD New( oWndParent,nId,aValue,bSetGet, nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bGetFocus,bKillFocus ) CLASS HIPedit
+METHOD New( oWndParent, nId, aValue, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
+            oFont, bGetFocus, bKillFocus ) CLASS HIPedit
 
-   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_TABSTOP )
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont )
+   nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP )
+   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont )
 
    ::title   := ""
 
    ::bSetGet := bSetGet
-   DEFAULT aValue := {0,0,0,0}
+   DEFAULT aValue := { 0, 0, 0, 0 }
    ::aValue  := aValue
    ::bGetFocus  := bGetFocus
    ::bKillFocus := bKillFocus
@@ -57,7 +57,7 @@ METHOD New( oWndParent,nId,aValue,bSetGet, nStyle,nLeft,nTop,nWidth,nHeight, ;
    ::Activate()
 
 
-   *IF bSetGet != Nil                                           
+   *IF bSetGet != Nil
       /*
       ::bGetFocus := bGFocus
       ::bLostFocus := bLFocus
@@ -65,96 +65,96 @@ METHOD New( oWndParent,nId,aValue,bSetGet, nStyle,nLeft,nTop,nWidth,nHeight, ;
       ::oParent:AddEvent( EN_KILLFOCUS,self,{|o,id|__Valid(o:FindControl(id))},.t.,"onLostFocus" )
       ::oParent:AddEvent( IPN_FIELDCHANGED,self,{|o,id|__Valid(o:FindControl(id))} ,.t.,"onChange")
       */
-	*ELSE
-      IF bGetfocus != Nil
-         ::lnoValid := .T.
+   *ELSE
+   IF bGetFocus != Nil
+      ::lnoValid := .T.
         * ::oParent:AddEvent( EN_SETFOCUS,self,::bGetfocus,.t.,"onGotFocus" )
-      ENDIF
-      IF bKillfocus != Nil
+   ENDIF
+   IF bKillFocus != Nil
         * ::oParent:AddEvent( EN_KILLFOCUS,self,::bKillfocus,.t.,"onLostFocus" )
-         ::oParent:AddEvent( IPN_FIELDCHANGED,self,::bKillFocus, .t.,"onChange" )
-      ENDIF
+      ::oParent:AddEvent( IPN_FIELDCHANGED, Self, ::bKillFocus, .t., "onChange" )
+   ENDIF
   * ENDIF
 
    // Notificacoes de Ganho e perda de foco
    *::oParent:AddEvent( IPN_FIELDCHANGED,self,::bKillFocus, .t.,"onChange" )
-   ::oParent:AddEvent( EN_SETFOCUS , self, {|o,id|__GetFocus(o:FindControl(id))},,"onGotFocus" )
-   ::oParent:AddEvent( EN_KILLFOCUS, self, {|o,id|__KillFocus(o:FindControl(id))},,"onLostFocus" )
+   ::oParent:AddEvent( EN_SETFOCUS , Self, { | o, id | __GetFocus( o:FindControl( id ) ) },, "onGotFocus" )
+   ::oParent:AddEvent( EN_KILLFOCUS, Self, { | o, id | __KillFocus( o:FindControl( id ) ) },, "onLostFocus" )
 
 
-Return Self
+   RETURN Self
 
 METHOD Activate CLASS HIPedit
-   IF !empty( ::oParent:handle ) 
-      ::handle := InitIPAddress ( ::oParent:handle, ::id, ::style ,;
-                  ::nLeft, ::nTop, ::nWidth, ::nHeight )
+   IF ! Empty( ::oParent:handle )
+      ::handle := InitIPAddress ( ::oParent:handle, ::id, ::style , ;
+                                  ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
-Return Nil
+   RETURN Nil
 
 METHOD Init() CLASS HIPedit
 
-   IF !::lInit
+   IF ! ::lInit
       Super:Init()
-      ::SetValue(::aValue)
+      ::SetValue( ::aValue )
       ::lInit := .t.
    ENDIF
 
-Return Nil
+   RETURN Nil
 
 METHOD SetValue( aValue ) CLASS HIPedit
-   SETIPADDRESS(::handle , aValue[1], aValue[2], aValue[3], aValue[4])
+   SETIPADDRESS( ::handle , aValue[ 1 ], aValue[ 2 ], aValue[ 3 ], aValue[ 4 ] )
    ::aValue := aValue
-Return Nil
+   RETURN Nil
 
 
 METHOD GetValue( ) CLASS HIPedit
-   ::aValue := GETIPADDRESS(::handle)
-Return (::aValue)
+   ::aValue := GETIPADDRESS( ::handle )
+   RETURN ( ::aValue )
 
 METHOD Clear( ) CLASS HIPedit
-   CLEARIPADDRESS(::handle)
-   ::aValue := { 0,0,0,0 }
-Return (::aValue)
+   CLEARIPADDRESS( ::handle )
+   ::aValue := { 0, 0, 0, 0 }
+   RETURN ( ::aValue )
 
 
-METHOD End() CLASS HIPedit
+METHOD END() CLASS HIPedit
 
    // Nothing to do here, yet!
-   Super:End()
+   Super:END()
 
-Return Nil
+   RETURN Nil
 
 
-Static Function __GetFocus( oCtrl )
-   Local xRet
+STATIC FUNCTION __GetFocus( oCtrl )
+   LOCAL xRet
 
-  IF !CheckFocus(oCtrl, .f.)
-	   RETURN .t.
-	ENDIF
-
-   IF Valtype(oCtrl:bGetFocus) == "B"
-      octrl:oparent:lSuspendMsgsHandling := .T.
-			octrl:lnoValid := .T.
-      xRet := Eval( oCtrl:bGetFocus,oCtrl )
-      octrl:oparent:lSuspendMsgsHandling := .F.
- 			octrl:lnoValid := xRet
+   IF ! CheckFocus( oCtrl, .f. )
+      RETURN .t.
    ENDIF
 
-Return xRet
-
-
-Static Function __KillFocus( oCtrl )
-   Local xRet
-
-   IF !CheckFocus(oCtrl, .t.) .or. oCtrl:lNoValid
-	   RETURN .t.
-	ENDIF
-
-   IF Valtype(oCtrl:bKillFocus) == "B"
-      octrl:oparent:lSuspendMsgsHandling := .T.
-      xRet := Eval( oCtrl:bKillFocus,oCtrl )
-     octrl:oparent:lSuspendMsgsHandling := .F.
+   IF ValType( oCtrl:bGetFocus ) == "B"
+      oCtrl:oparent:lSuspendMsgsHandling := .T.
+      oCtrl:lnoValid := .T.
+      xRet := Eval( oCtrl:bGetFocus, oCtrl )
+      oCtrl:oparent:lSuspendMsgsHandling := .F.
+      oCtrl:lnoValid := xRet
    ENDIF
 
-Return xRet
+   RETURN xRet
+
+
+STATIC FUNCTION __KillFocus( oCtrl )
+   LOCAL xRet
+
+   IF ! CheckFocus( oCtrl, .t. ) .or. oCtrl:lNoValid
+      RETURN .t.
+   ENDIF
+
+   IF ValType( oCtrl:bKillFocus ) == "B"
+      oCtrl:oparent:lSuspendMsgsHandling := .T.
+      xRet := Eval( oCtrl:bKillFocus, oCtrl )
+      oCtrl:oparent:lSuspendMsgsHandling := .F.
+   ENDIF
+
+   RETURN xRet

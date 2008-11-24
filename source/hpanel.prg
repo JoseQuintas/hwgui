@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.20 2008-10-20 11:26:32 sandrorrfreire Exp $
+ * $Id: hpanel.prg,v 1.21 2008-11-24 10:02:13 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -18,41 +18,41 @@ CLASS HPanel INHERIT HControl
    DATA oEmbedded
    DATA lResizeX, lResizeY   HIDDEN
 
-   METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  bInit,bSize,bPaint, bcolor )  //lDocked )
-   METHOD Activate()
-   METHOD onEvent( msg, wParam, lParam )
-   METHOD Init()
-   METHOD Redefine( oWndParent,nId,nHeight,bInit,bSize,bPaint,lDocked )
-   METHOD Paint()
-   METHOD BackColor(bcolor) INLINE ::SetColor(,bcolor,.T.)
-  
+   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+               bInit, bSize, bPaint, bcolor )  //lDocked )
+METHOD Activate()
+METHOD onEvent( msg, wParam, lParam )
+METHOD Init()
+METHOD Redefine( oWndParent, nId, nHeight, bInit, bSize, bPaint, lDocked )
+METHOD Paint()
+METHOD BackColor( bcolor ) INLINE ::SetColor(, bcolor, .T. )
+
 ENDCLASS
 
 
-METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  bInit,bSize,bPaint, bcolor ) CLASS HPanel
-Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
+METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+            bInit, bSize, bPaint, bcolor ) CLASS HPanel
+   LOCAL oParent := IIf( oWndParent == Nil, ::oDefaultParent, oWndParent )
 
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
-                  Iif( nHeight==Nil,0,nHeight ),oParent:oFont,bInit, ;
-                  bSize,bPaint )
+   Super:New( oWndParent, nId, nStyle, nLeft, nTop, IIf( nWidth == Nil, 0, nWidth ), ;
+              IIf( nHeight == Nil, 0, nHeight ), oParent:oFont, bInit, ;
+              bSize, bPaint )
 
-	 IF bColor != NIL
-     ::brush := HBrush():Add(bcolor)
-     ::bColor := bcolor	 
+   IF bcolor != NIL
+      ::brush := HBrush():Add( bcolor )
+      ::bcolor := bcolor
    ENDIF
    ::bPaint  := bPaint
    ::lResizeX := ::nWidth == 0
    ::lResizeY := ::nHeight == 0
-   IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI
+   IF __ObjHasMsg( ::oParent, "AOFFSET" ) .AND. ::oParent:Type == WND_MDI
       IF ::nWidth > ::nHeight .OR. ::nWidth == 0
-         ::oParent:aOffset[2] := ::nHeight
+         ::oParent:aOffset[ 2 ] := ::nHeight
       ELSEIF ::nHeight > ::nWidth .OR. ::nHeight == 0
          IF ::nLeft == 0
-            ::oParent:aOffset[1] := ::nWidth
+            ::oParent:aOffset[ 1 ] := ::nWidth
          ELSE
-            ::oParent:aOffset[3] := ::nWidth
+            ::oParent:aOffset[ 3 ] := ::nWidth
          ENDIF
       ENDIF
    ENDIF
@@ -60,17 +60,17 @@ Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
    hwg_RegPanel()
    ::Activate()
 
-Return Self
+   RETURN Self
 
 METHOD Activate CLASS HPanel
-Local handle := ::oParent:handle
+   LOCAL handle := ::oParent:handle
 
-   IF !Empty( handle )
+   IF ! Empty( handle )
       ::handle := CreatePanel( handle, ::id, ;
-                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+                               ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
-Return Nil
+   RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HPanel
 
@@ -78,65 +78,65 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HPanel
       ::Paint()
    ELSEIF msg == WM_ERASEBKGND
       IF ::brush != Nil
-         IF Valtype( ::brush ) != "N"
-            FillRect( wParam, 0,0,::nWidth,::nHeight,::brush:handle )
+         IF ValType( ::brush ) != "N"
+            FillRect( wParam, 0, 0, ::nWidth, ::nHeight, ::brush:handle )
          ENDIF
-         Return 1
+         RETURN 1
       ENDIF
    ELSEIF msg == WM_SIZE
       IF ::oEmbedded != Nil
-         ::oEmbedded:Resize( LoWord( lParam ), HiWord( lParam ) )
+         ::oEmbedded:Resize( LOWORD( lParam ), HIWORD( lParam ) )
       ENDIF
-      ::Super:onEvent( WM_SIZE,wParam,lParam )
+      ::Super:onEvent( WM_SIZE, wParam, lParam )
    ELSEIF msg == WM_DESTROY
       IF ::oEmbedded != Nil
-         ::oEmbedded:End()
+         ::oEmbedded:END()
       ENDIF
       ::Super:onEvent( WM_DESTROY )
-      Return 0
+      RETURN 0
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
-         onTrackScroll( Self,msg,wParam,lParam )
+         onTrackScroll( Self, msg, wParam, lParam )
       ENDIF
-      Return Super:onEvent( msg, wParam, lParam )
+      RETURN Super:onEvent( msg, wParam, lParam )
    ENDIF
 
-Return -1
+   RETURN - 1
 
 METHOD Init CLASS HPanel
 
-   IF !::lInit
+   IF ! ::lInit
       IF ::bSize == Nil
 /*         IF ::nHeight!=0 .AND. ( ::nWidth>::nHeight .OR. ::nWidth==0 )
             ::bSize := {|o,x,y|o:Move( ,Iif(::nTop>0,y-::nHeight,0),x,::nHeight )}
          ELSEIF ::nWidth!=0 .AND. ( ::nHeight>::nWidth .OR. ::nHeight==0 )
             ::bSize := {|o,x,y|o:Move( Iif(::nLeft>0,x-::nLeft,0),,::nWidth,y )}
-         ENDIF     */
-         ::bSize := {|o,x,y|o:Move( Iif(::nLeft > 0, x - ::nLeft,   0), ;
-    		                           Iif(::nTop  > 0, y - ::nHeight, 0), ;
-								            Iif( ::nWidth == 0 .or. ::lResizeX, x, ::nWidth) , ;
-												Iif( ::nHeight == 0.or. ::lResizeY, y, ::nHeight) )}
-      ENDIF
-
-      Super:Init()
-      ::nHolder := 1
-      SetWindowObject( ::handle,Self )
-      Hwg_InitWinCtrl( ::handle )
+      ENDIF     */
+      ::bSize := { | o, x, y | o:Move( IIf( ::nLeft > 0, x - ::nLeft,   0 ), ;
+                                       IIf( ::nTop  > 0, y - ::nHeight, 0 ), ;
+                                       IIf( ::nWidth == 0 .or. ::lResizeX, x, ::nWidth ) , ;
+                                       IIf( ::nHeight == 0.or. ::lResizeY, y, ::nHeight ) ) }
    ENDIF
 
-Return Nil
+   Super:Init()
+   ::nHolder := 1
+   SetWindowObject( ::handle, Self )
+   Hwg_InitWinCtrl( ::handle )
+ENDIF
+
+RETURN Nil
 
 
-METHOD Redefine( oWndParent,nId,nWidth,nHeight,bInit,bSize,bPaint, bcolor ) CLASS HPanel
-Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
+METHOD Redefine( oWndParent, nId, nWidth, nHeight, bInit, bSize, bPaint, bcolor ) CLASS HPanel
+   LOCAL oParent := IIf( oWndParent == Nil, ::oDefaultParent, oWndParent )
 
-   Super:New( oWndParent,nId,0,0,0,Iif( nWidth==Nil,0,nWidth ), ;
-                  IIF( nHeight!=Nil,nHeight,0 ),oParent:oFont,bInit, ;
-                  bSize,bPaint )
-                  
-   IF bColor != NIL
-     ::brush := HBrush():Add(bcolor)
-     ::bColor := bcolor
+   Super:New( oWndParent, nId, 0, 0, 0, IIf( nWidth == Nil, 0, nWidth ), ;
+              IIf( nHeight != Nil, nHeight, 0 ), oParent:oFont, bInit, ;
+              bSize, bPaint )
+
+   IF bcolor != NIL
+      ::brush := HBrush():Add( bcolor )
+      ::bcolor := bcolor
    ENDIF
 
    ::bPaint  := bPaint
@@ -144,29 +144,29 @@ Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
    ::lResizeY := ::nHeight == 0
    hwg_RegPanel()
 
-Return Self
+   RETURN Self
 
 METHOD Paint() CLASS HPanel
-Local pps, hDC, aCoors, oPenLight, oPenGray
+   LOCAL pps, hDC, aCoors, oPenLight, oPenGray
 
    IF ::bPaint != Nil
-      Eval( ::bPaint,Self )
+      Eval( ::bPaint, Self )
    ELSE
       pps := DefinePaintStru()
       hDC := BeginPaint( ::handle, pps )
       aCoors := GetClientRect( ::handle )
 
-      oPenLight := HPen():Add( BS_SOLID,1,GetSysColor(COLOR_3DHILIGHT) )
+      oPenLight := HPen():Add( BS_SOLID, 1, GetSysColor( COLOR_3DHILIGHT ) )
       SelectObject( hDC, oPenLight:handle )
-      DrawLine( hDC, 5,1,aCoors[3]-5,1 )
-      oPenGray := HPen():Add( BS_SOLID,1,GetSysColor(COLOR_3DSHADOW) )
+      DrawLine( hDC, 5, 1, aCoors[ 3 ] - 5, 1 )
+      oPenGray := HPen():Add( BS_SOLID, 1, GetSysColor( COLOR_3DSHADOW ) )
       SelectObject( hDC, oPenGray:handle )
-      DrawLine( hDC, 5,0,aCoors[3]-5,0 )
+      DrawLine( hDC, 5, 0, aCoors[ 3 ] - 5, 0 )
 
       oPenGray:Release()
       oPenLight:Release()
       EndPaint( ::handle, pps )
    ENDIF
 
-Return Nil
+   RETURN Nil
 

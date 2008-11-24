@@ -1,5 +1,5 @@
 /*
- * $Id: hsplit.prg,v 1.11 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hsplit.prg,v 1.12 2008-11-24 10:02:14 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSplitter class
@@ -15,7 +15,7 @@
 
 CLASS HSplitter INHERIT HControl
 
-   CLASS VAR winclass INIT "STATIC"
+CLASS VAR winclass INIT "STATIC"
 
    DATA aLeft
    DATA aRight
@@ -25,8 +25,8 @@ CLASS HSplitter INHERIT HControl
    DATA lMoved INIT .F.
    DATA bEndDrag
 
-   METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight, ;
-                  bSize,bPaint,color,bcolor,aLeft,aRight )
+   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
+               bSize, bPaint, color, bcolor, aLeft, aRight )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -36,36 +36,36 @@ CLASS HSplitter INHERIT HControl
 
 ENDCLASS
 
-METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight, ;
-                  bSize,bDraw,color,bcolor,aLeft,aRight ) CLASS HSplitter
+METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
+            bSize, bDraw, color, bcolor, aLeft, aRight ) CLASS HSplitter
 
-   Super:New( oWndParent,nId,WS_CHILD+WS_VISIBLE+SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,,, ;
-                  bSize,bDraw,,color,bcolor )
+   Super:New( oWndParent, nId, WS_CHILD + WS_VISIBLE + SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight,,, ;
+              bSize, bDraw,, color, bcolor )
 
    ::title   := ""
-   ::aLeft   := Iif( aLeft==Nil, {}, aLeft )
-   ::aRight  := Iif( aRight==Nil, {}, aRight )
+   ::aLeft   := IIf( aLeft == Nil, { }, aLeft )
+   ::aRight  := IIf( aRight == Nil, { }, aRight )
    ::lVertical := ( ::nHeight > ::nWidth )
 
    ::Activate()
 
-Return Self
+   RETURN Self
 
 METHOD Activate() CLASS HSplitter
-   IF !empty( ::oParent:handle ) 
+   IF ! Empty( ::oParent:handle )
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
-                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+                                ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
-Return Nil
+   RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
 
-HB_SYMBOL_UNUSED(wParam)
+   HB_SYMBOL_UNUSED( wParam )
 
    IF msg == WM_MOUSEMOVE
       IF ::hCursor == Nil
-         ::hCursor := LoadCursor( Iif( ::lVertical,IDC_SIZEWE,IDC_SIZENS ) )
+         ::hCursor := LoadCursor( IIf( ::lVertical, IDC_SIZEWE, IDC_SIZENS ) )
       ENDIF
       Hwg_SetCursor( ::hCursor )
       IF ::lCaptured
@@ -82,53 +82,53 @@ HB_SYMBOL_UNUSED(wParam)
       ::DragAll()
       ::lCaptured := .F.
       IF ::bEndDrag != Nil
-         Eval( ::bEndDrag,Self )
+         Eval( ::bEndDrag, Self )
       ENDIF
    ELSEIF msg == WM_DESTROY
-      ::End()
+      ::END()
    ENDIF
 
-Return -1
+   RETURN - 1
 
 METHOD Init CLASS HSplitter
 
-   IF !::lInit
+   IF ! ::lInit
       Super:Init()
       ::nHolder := 1
-      SetWindowObject( ::handle,Self )
+      SetWindowObject( ::handle, Self )
       Hwg_InitWinCtrl( ::handle )
    ENDIF
 
-Return Nil
+   RETURN Nil
 
 METHOD Paint( lpdis ) CLASS HSplitter
 /*
 Local drawInfo := GetDrawItemInfo( lpdis )
 Local hDC := drawInfo[3], x1 := drawInfo[4], y1 := drawInfo[5], x2 := drawInfo[6], y2 := drawInfo[7]
 */
-Local pps, hDC, aCoors, x1, y1, x2, y2
+   LOCAL pps, hDC, aCoors, x1, y1, x2, y2
 
-HB_SYMBOL_UNUSED(lpdis)
+   HB_SYMBOL_UNUSED( lpdis )
 
    pps := DefinePaintStru()
    hDC := BeginPaint( ::handle, pps )
    aCoors := GetClientRect( ::handle )
-   x1 := aCoors[1] + Iif( ::lVertical,1,5 )
-   y1 := aCoors[2] + Iif( ::lVertical,5,1 )
-   x2 := aCoors[3] - Iif( ::lVertical,0,5 )
-   y2 := aCoors[4] - Iif( ::lVertical,5,0 )
+   x1 := aCoors[ 1 ] + IIf( ::lVertical, 1, 5 )
+   y1 := aCoors[ 2 ] + IIf( ::lVertical, 5, 1 )
+   x2 := aCoors[ 3 ] - IIf( ::lVertical, 0, 5 )
+   y2 := aCoors[ 4 ] - IIf( ::lVertical, 5, 0 )
 
    IF ::bPaint != Nil
-      Eval( ::bPaint,Self )
+      Eval( ::bPaint, Self )
    ELSE
-      DrawEdge( hDC,x1,y1,x2,y2,EDGE_ETCHED,Iif( ::lVertical,BF_LEFT,BF_TOP ) )
+      DrawEdge( hDC, x1, y1, x2, y2, EDGE_ETCHED, IIf( ::lVertical, BF_LEFT, BF_TOP ) )
    ENDIF
    EndPaint( ::handle, pps )
 
-Return Nil
+   RETURN Nil
 
 METHOD Drag( lParam ) CLASS HSplitter
-Local xPos := Loword( lParam ), yPos := Hiword( lParam )
+   LOCAL xPos := LOWORD( lParam ), yPos := HIWORD( lParam )
 
    IF ::lVertical
       IF xPos > 32000
@@ -141,29 +141,29 @@ Local xPos := Loword( lParam ), yPos := Hiword( lParam )
       ENDIF
       ::nTop += yPos
    ENDIF
-   MoveWindow( ::handle,::nLeft,::nTop,::nWidth,::nHeight )
+   MoveWindow( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
    ::lMoved := .T.
 
-Return Nil
+   RETURN Nil
 
 METHOD DragAll() CLASS HSplitter
-Local i, oCtrl, nDiff
+   LOCAL i, oCtrl, nDiff
 
    FOR i := 1 TO Len( ::aRight )
-      oCtrl := ::aRight[i]
+      oCtrl := ::aRight[ i ]
       IF ::lVertical
-         nDiff := ::nLeft+::nWidth - oCtrl:nLeft
+         nDiff := ::nLeft + ::nWidth - oCtrl:nLeft
          oCtrl:nLeft += nDiff
          oCtrl:nWidth -= nDiff
       ELSE
-         nDiff := ::nTop+::nHeight - oCtrl:nTop
+         nDiff := ::nTop + ::nHeight - oCtrl:nTop
          oCtrl:nTop += nDiff
          oCtrl:nHeight -= nDiff
       ENDIF
-      oCtrl:Move( oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight )
+      oCtrl:Move( oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth, oCtrl:nHeight )
    NEXT
    FOR i := 1 TO Len( ::aLeft )
-      oCtrl := ::aLeft[i]
+      oCtrl := ::aLeft[ i ]
       IF ::lVertical
          nDiff := ::nLeft - ( oCtrl:nLeft + oCtrl:nWidth )
          oCtrl:nWidth += nDiff
@@ -171,9 +171,9 @@ Local i, oCtrl, nDiff
          nDiff := ::nTop - ( oCtrl:nTop + oCtrl:nHeight )
          oCtrl:nHeight += nDiff
       ENDIF
-      oCtrl:Move( oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight )
+      oCtrl:Move( oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth, oCtrl:nHeight )
    NEXT
    ::lMoved := .F.
 
-Return Nil
+   RETURN Nil
 

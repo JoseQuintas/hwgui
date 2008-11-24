@@ -1,5 +1,5 @@
 /*
- * $Id: hanimat.prg,v 1.9 2008-10-16 09:36:53 mlacecilia Exp $
+ * $Id: hanimat.prg,v 1.10 2008-11-24 10:02:12 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HAnimation class
@@ -14,7 +14,7 @@
 
 CLASS HAnimation INHERIT HControl
 
-   CLASS VAR winclass   INIT "SysAnimate32"
+CLASS VAR winclass   INIT "SysAnimate32"
 
    DATA cFileName
    DATA xResID
@@ -35,66 +35,66 @@ ENDCLASS
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
             cFilename, lAutoPlay, lCenter, lTransparent, xResID ) CLASS HAnimation
 
-   nStyle     := Hwg_BitOr( Iif( nStyle==Nil, 0, nStyle ), WS_CHILD+WS_VISIBLE )
-   nStyle     := nStyle + Iif( lAutoplay==Nil.OR.lAutoPlay, ACS_AUTOPLAY, 0 )
-   nStyle     := nStyle + Iif( lCenter==Nil.OR.!lCenter, 0, ACS_CENTER )
-   nStyle     := nStyle + Iif( lTransparent==Nil.OR.!lTransparent, 0, ACS_TRANSPARENT )
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight )
+   nStyle     := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE )
+   nStyle     := nStyle + IIf( lAutoPlay == Nil.OR.lAutoPlay, ACS_AUTOPLAY, 0 )
+   nStyle     := nStyle + IIf( lCenter == Nil.OR. ! lCenter, 0, ACS_CENTER )
+   nStyle     := nStyle + IIf( lTransparent == Nil.OR. ! lTransparent, 0, ACS_TRANSPARENT )
+   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight )
    ::xResID    := xResID
-   ::cFileName := cFilename
-	::brush     := ::oParent:brush
-	::bColor    := ::oParent:bColor
+   ::cFilename := cFilename
+   ::brush     := ::oParent:brush
+   ::bColor    := ::oParent:bColor
    HWG_InitCommonControlsEx()
    ::Activate()
 
-Return Self
+   RETURN Self
 
 METHOD Activate CLASS HAnimation
-   IF !empty( ::oParent:handle ) 
+   IF ! Empty( ::oParent:handle )
       ::handle := Animate_Create( ::oParent:handle, ::id, ::style, ;
-                  ::nLeft, ::nTop, ::nWidth, ::nHeight )
+                                  ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
-   EndIf
-Return Nil
+   ENDIF
+   RETURN Nil
 
 METHOD Init() CLASS HAnimation
-   If !::lInit
+   IF ! ::lInit
       Super:Init()
       IF ::xResID != Nil
-         Animate_OpenEx( ::handle, GetResources(), ::xResID)
+         Animate_OpenEx( ::handle, GetResources(), ::xResID )
       ELSEIF ::cFileName <> Nil
          Animate_Open( ::handle, ::cFileName )
-      EndIf
-   EndIf
-Return Nil
+      ENDIF
+   ENDIF
+   RETURN Nil
 
 METHOD Open( cFileName ) CLASS HAnimation
-   If cFileName <> Nil
+   IF cFileName <> Nil
       ::cFileName := cFileName
       Animate_Open( ::handle, ::cFileName )
-   EndIf
-Return Nil
+   ENDIF
+   RETURN Nil
 
 METHOD Play( nFrom, nTo, nRep ) CLASS HAnimation
-   nFrom := Iif( nFrom == Nil,  0, nFrom )
-   nTo   := Iif( nTo   == Nil, -1, nTo   )
-   nRep  := Iif( nRep  == Nil, -1, nRep  )
+   nFrom := IIf( nFrom == Nil,  0, nFrom )
+   nTo   := IIf( nTo   == Nil, - 1, nTo   )
+   nRep  := IIf( nRep  == Nil, - 1, nRep  )
    Animate_Play( ::handle, nFrom, nTo, nRep )
-Return self
+   RETURN Self
 
 METHOD Seek( nFrame ) CLASS HAnimation
-   nFrame := Iif( nFrame == Nil, 0, nFrame )
+   nFrame := IIf( nFrame == Nil, 0, nFrame )
    Animate_Seek( ::handle, nFrame )
-Return self
+   RETURN Self
 
 METHOD Stop() CLASS HAnimation
    Animate_Stop( ::handle )
-Return self
+   RETURN Self
 
 METHOD Close() CLASS HAnimation
    Animate_Close( ::handle )
-Return Nil
+   RETURN Nil
 
 METHOD Destroy() CLASS HAnimation
    Animate_Destroy( ::handle )
-Return Nil
+   RETURN Nil

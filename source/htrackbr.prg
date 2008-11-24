@@ -1,5 +1,5 @@
 /*
- * $Id: htrackbr.prg,v 1.14 2008-05-27 12:10:58 lculik Exp $
+ * $Id: htrackbr.prg,v 1.15 2008-11-24 10:02:14 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTrackBar class
@@ -22,7 +22,7 @@
 
 CLASS HTrackBar INHERIT HControl
 
-   CLASS VAR winclass   INIT "msctls_trackbar32"
+CLASS VAR winclass   INIT "msctls_trackbar32"
 
    DATA value
    DATA bChange
@@ -31,8 +31,8 @@ CLASS HTrackBar INHERIT HControl
    DATA nHigh
    DATA hCursor
 
-   METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight,;
-               bInit, bSize, bPaint, cTooltip, bChange, bDrag, nLow, nHigh,;
+   METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
+               bInit, bSize, bPaint, cTooltip, bChange, bDrag, nLow, nHigh, ;
                lVertical, TickStyle, TickMarks )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
@@ -43,8 +43,8 @@ CLASS HTrackBar INHERIT HControl
 
 ENDCLASS
 
-METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight,;
-            bInit, bSize, bPaint, cTooltip, bChange, bDrag, nLow, nHigh,;
+METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
+            bInit, bSize, bPaint, cTooltip, bChange, bDrag, nLow, nHigh, ;
             lVertical, TickStyle, TickMarks ) CLASS HTrackBar
 
    IF TickStyle == NIL ; TickStyle := TBS_AUTOTICKS ; ENDIF
@@ -52,36 +52,36 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight,;
    IF bPaint != NIL
       TickStyle := Hwg_BitOr( TickStyle, TBS_AUTOTICKS )
    ENDIF
-   nstyle   := Hwg_BitOr( IIF( nStyle==NIL, 0, nStyle ), ;
+   nStyle   := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), ;
                           WS_CHILD + WS_VISIBLE + WS_TABSTOP )
-   nstyle   += IIF( lVertical != NIL .AND. lVertical, TBS_VERT, 0 )
-   nstyle   += TickStyle + TickMarks
+   nStyle   += IIf( lVertical != NIL .AND. lVertical, TBS_VERT, 0 )
+   nStyle   += TickStyle + TickMarks
 
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,,;
+   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,, ;
               bInit, bSize, bPaint, cTooltip )
 
-   ::value      := IIF( Valtype(vari)=="N", vari, 0 )
+   ::value      := IIf( ValType( vari ) == "N", vari, 0 )
    ::bChange    := bChange
    ::bThumbDrag := bDrag
-   ::nLow       := IIF( nLow==NIL, 0, nLow )
-   ::nHigh      := IIF( nHigh==NIL, 100, nHigh )
+   ::nLow       := IIf( nLow == NIL, 0, nLow )
+   ::nHigh      := IIf( nHigh == NIL, 100, nHigh )
 
    HWG_InitCommonControlsEx()
    ::Activate()
 
-RETURN Self
+   RETURN Self
 
 METHOD Activate CLASS HTrackBar
-   IF !empty( ::oParent:handle ) 
+   IF ! Empty( ::oParent:handle )
       ::handle := InitTrackBar ( ::oParent:handle, ::id, ::style, ;
                                  ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
                                  ::nLow, ::nHigh )
       ::Init()
    ENDIF
-RETURN NIL
+   RETURN NIL
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HTrackBar
-LOCAL aCoors
+   LOCAL aCoors
 
    IF msg == WM_PAINT
       IF ::bPaint != NIL
@@ -103,17 +103,17 @@ LOCAL aCoors
       ENDIF
 
    ELSEIF msg == WM_DESTROY
-      ::End()
+      ::END()
 
    ELSEIF ::bOther != NIL
       RETURN Eval( ::bOther, Self, msg, wParam, lParam )
 
    ENDIF
 
-RETURN -1
+   RETURN - 1
 
 METHOD Init() CLASS HTrackBar
-   IF !::lInit
+   IF ! ::lInit
       Super:Init()
       TrackBarSetRange( ::handle, ::nLow, ::nHigh )
       SendMessage( ::handle, TBM_SETPOS, 1, ::value )
@@ -124,18 +124,18 @@ METHOD Init() CLASS HTrackBar
          Hwg_InitTrackProc( ::handle )
       ENDIF
    ENDIF
-RETURN NIL
+   RETURN NIL
 
 METHOD SetValue( nValue ) CLASS HTrackBar
-   IF Valtype( nValue ) == "N"
+   IF ValType( nValue ) == "N"
       SendMessage( ::handle, TBM_SETPOS, 1, nValue )
       ::value := nValue
    ENDIF
-RETURN NIL
+   RETURN NIL
 
 METHOD GetValue() CLASS HTrackBar
    ::value := SendMessage( ::handle, TBM_GETPOS, 0, 0 )
-RETURN ( ::value )
+   RETURN ( ::value )
 
 #pragma BEGINDUMP
 

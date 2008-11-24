@@ -1,5 +1,5 @@
 /*
- * $Id: video.prg,v 1.5 2006-04-06 16:18:02 alkresin Exp $
+ * $Id: video.prg,v 1.6 2008-11-24 10:02:17 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * TVideo component
@@ -22,8 +22,8 @@ CLASS TVideo FROM hControl
    DATA   oMci
    DATA   cAviFile
 
-   METHOD New( nRow, nCol, nWidth, nHeight, cFileName, oWnd,;
-               bWhen, bValid, lNoBorder ,nid) CONSTRUCTOR
+   METHOD New( nRow, nCol, nWidth, nHeight, cFileName, oWnd, ;
+               bWhen, bValid, lNoBorder , nid ) CONSTRUCTOR
 
    METHOD ReDefine( nId, cFileName, oDlg, bWhen, bValid ) CONSTRUCTOR
 
@@ -35,31 +35,31 @@ ENDCLASS
 
 //----------------------------------------------------------------------------//
 
-METHOD New( nRow, nCol, nWidth, nHeight, cFileName, oWnd, lNoBorder,nid ) CLASS TVideo
+METHOD New( nRow, nCol, nWidth, nHeight, cFileName, oWnd, lNoBorder, nid ) CLASS TVideo
 
-   DEFAULT nWidth to 200, nHeight to 200, cFileName to "",;
-           lNoBorder to .f.
+   DEFAULT nWidth TO 200, nHeight TO 200, cFileName TO "", ;
+   lNoBorder TO .f.
 
    ::nTop      := nRow *  VID_CHARPIX_H  // 8
    ::nLeft     := nCol * VID_CHARPIX_W   // 14
    ::nHeight   := ::nTop  + nHeight - 1
-   ::nwidth    := ::nLeft + nWidth + 1
-   ::Style     := hwg_bitOR( WS_CHILD+ WS_VISIBLE+ WS_TABSTOP, If( ! lNoBorder, WS_BORDER, 0 ) )
+   ::nWidth    := ::nLeft + nWidth + 1
+   ::Style     := hwg_bitOR( WS_CHILD + WS_VISIBLE + WS_TABSTOP, IF( ! lNoBorder, WS_BORDER, 0 ) )
 
-   ::oParent   := Iif( oWnd==Nil, ::oDefaultParent, oWnd )
-   ::id        := Iif( nId==Nil,::NewId(), nId )
+   ::oParent   := IIf( oWnd == Nil, ::oDefaultParent, oWnd )
+   ::id        := IIf( nid == Nil, ::NewId(), nid )
    ::cAviFile  := cFileName
    ::oMci      := TMci():New( "avivideo", cFileName )
    ::Initiate()
 
-   if !Empty( ::oparent:handle)
-        ::oMci:lOpen()
-        ::oMci:SetWindow( Self )
-   else
+   IF ! Empty( ::oparent:handle )
+      ::oMci:lOpen()
+      ::oMci:SetWindow( Self )
+   ELSE
       ::oparent:AddControl( Self )
-   endif
+   ENDIF
 
-return Self
+   RETURN Self
 
 //----------------------------------------------------------------------------//
 
@@ -74,7 +74,7 @@ METHOD ReDefine( nId, cFileName, oDlg, bWhen, bValid ) CLASS TVideo
 
    oDlg:AddControl( Self )
 
-return Self
+   RETURN Self
 
 //----------------------------------------------------------------------------//
 
@@ -84,6 +84,6 @@ METHOD Initiate( ) CLASS TVideo
    ::oMci:lOpen()
    ::oMci:SetWindow( Self )
 
-return nil
+   RETURN nil
 
 //----------------------------------------------------------------------------//

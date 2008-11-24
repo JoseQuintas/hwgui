@@ -1,5 +1,5 @@
 /*
- * $Id: tmci.prg,v 1.3 2004-09-29 05:24:52 alkresin Exp $
+ * $Id: tmci.prg,v 1.4 2008-11-24 10:02:16 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement
@@ -26,17 +26,17 @@ CLASS TMci
 
    METHOD New( cDevice, cFileName )  CONSTRUCTOR
 
-   METHOD lOpen() 
+   METHOD lOpen()
 
-   METHOD Play( nFrom, nTo, hWnd ) inline;
-    ::nError := nMciPlay( ::nId, nFrom, nTo, hWnd ) 
+   METHOD Play( nFrom, nTo, hWnd ) INLINE ;
+   ::nError := nMciPlay( ::nId, nFrom, nTo, hWnd )
 
-   METHOD cGetError() 
+   METHOD cGetError()
 
 
-   METHOD SetWindow( oWnd ) inline ;
-                       ::oWnd := oWnd,;
-                       ::nError := nMciWindow( ::nId, oWnd:handle ) 
+   METHOD SetWindow( oWnd ) INLINE ;
+   ::oWnd := oWnd, ;
+   ::nError := nMciWindow( ::nId, oWnd:handle )
 
    METHOD SendStr( cMciStr )
 
@@ -46,7 +46,7 @@ ENDCLASS
 
 METHOD New( cDevice, cFileName ) CLASS TMci
 
-   DEFAULT cDevice to ""
+   DEFAULT cDevice TO ""
 
    ::nError    = 0
    ::nId       = 0
@@ -54,27 +54,27 @@ METHOD New( cDevice, cFileName ) CLASS TMci
    ::cFileName = cFileName
    ::cBuffer   = Space( BUF_SIZE )
 
-return Self
+   RETURN Self
 
 //----------------------------------------------------------------------------//
 
 METHOD SendStr( cMciStr ) CLASS TMci
 
-   local cBuffer := ::cBuffer
+   LOCAL cBuffer := ::cBuffer
 
    MciSendString( cMciStr, @cBuffer, ::oWnd:hWnd )
    ::cBuffer = cBuffer
 
-return nil
+   RETURN nil
 
 //----------------------------------------------------------------------------//
 METHOD lOpen() CLASS TMci
-   Local nId
+   LOCAL nId
    ::nError := nMciOpen( ::cType, ::cFileName, @nId )
    ::nId := nId
-return ::nError == 0
+   RETURN ::nError == 0
 
-METHOD cGetError() Class Tmci
-   Local cError
+METHOD cGetError() CLASS Tmci
+   LOCAL cError
    mciGetErrorString( ::nError, @cError )
-return    cError
+   RETURN    cError

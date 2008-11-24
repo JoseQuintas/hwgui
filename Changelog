@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.985 2008-11-22 18:32:36 lfbasso Exp $
+ * $Id: Changelog,v 1.986 2008-11-24 10:02:12 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-11-24 11:00 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\*.prg
+    general reformatting and clean of unused variables/parameters,
+    useful to release a stable new version.
+    Some more precise work is needed, however.
+    Thanks to the very effective prg formatter of xMate by Andy Wos
+    please! retain the new style of formatting when commit. TIA
 
 2008-11-22 16:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hcwindow.prg

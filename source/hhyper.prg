@@ -1,5 +1,5 @@
 /*
- * $Id: hhyper.prg,v 1.10 2008-07-29 16:12:42 mlacecilia Exp $
+ * $Id: hhyper.prg,v 1.11 2008-11-24 10:02:12 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HStaticLink class
@@ -41,12 +41,12 @@ CLASS HStaticLink FROM HSTATIC
    DATA m_sLinkColor
    DATA m_sVisitedColor
 
-   CLASS VAR winclass INIT "STATIC"
+CLASS VAR winclass INIT "STATIC"
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-              bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
-   METHOD Redefine( oWndParent,nId,oFont,bInit, ;
-              bSize,bPaint,ctooltip,tcolor,bcolor,lTransp, cLink, vColor, lColor, hColor )
+               bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
+   METHOD Redefine( oWndParent, nId, oFont, bInit, ;
+                    bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
    METHOD INIT()
    METHOD onEvent( msg, wParam, lParam )
    METHOD GoToLinkUrl( csLink )
@@ -66,37 +66,37 @@ CLASS HStaticLink FROM HSTATIC
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-               bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor ) CLASS HStaticLink
-Local oPrevFont
+            bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor ) CLASS HStaticLink
+   LOCAL oPrevFont
 
-   super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
+   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )
 
-   DEFAULT vcolor TO RGB( 5, 34, 143 )
-   DEFAULT lcolor TO RGB( 0, 0, 255 )
-   DEFAULT hcolor TO RGB( 255, 0, 0 )
+   DEFAULT vColor TO RGB( 5, 34, 143 )
+   DEFAULT lColor TO RGB( 0, 0, 255 )
+   DEFAULT hColor TO RGB( 255, 0, 0 )
    ::m_csUrl := cLink
    ::m_sHoverColor   := hColor
    ::m_sLinkColor    := lColor
    ::m_sVisitedColor := vColor
 
    ::state := LBL_INIT
-   ::title := Iif(cCaption == Nil, "", cCaption)
+   ::title := IIf( cCaption == Nil, "", cCaption )
 
    // Test The Font the underline must be 1
    IF ::oFont == NIL
       IF ::oParent:oFont != NIL
-         ::OFont := HFONT():Add( ::oParent:oFont:name, ::oParent:oFont:width, ::oParent:oFont:height,;
-         ::oParent:oFont:weight, ::oParent:oFont:charset, ::oParent:oFont:italic, 1, ::oParent:oFont:StrikeOut )
-		ELSE
-         ::OFont := HFONT():Add( "Arial", 0, -12, , , , 1, )
+         ::oFont := HFONT():Add( ::oParent:oFont:name, ::oParent:oFont:width, ::oParent:oFont:height, ;
+                                 ::oParent:oFont:weight, ::oParent:oFont:charset, ::oParent:oFont:italic, 1, ::oParent:oFont:StrikeOut )
+      ELSE
+         ::oFont := HFONT():Add( "Arial", 0, - 12, , , , 1, )
       ENDIF
    ELSE
       IF ::oFont:Underline  == 0
          oPrevFont := ::oFont
          ::oFont:Release()
-         ::OFont := HFONT():Add( oPrevFont:name, oPrevFont:width, oPrevFont:height,;
-         oPrevFont:weight, oPrevFont:charset, oPrevFont:italic, 1, oPrevFont:StrikeOut )
+         ::oFont := HFONT():Add( oPrevFont:name, oPrevFont:width, oPrevFont:height, ;
+                                 oPrevFont:weight, oPrevFont:charset, oPrevFont:italic, 1, oPrevFont:StrikeOut )
       ENDIF
    ENDIF
 
@@ -106,17 +106,17 @@ Local oPrevFont
 
    ::Activate()
 
-RETURN Self
+   RETURN Self
 
-METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp, cLink, vColor, lColor, hColor )  CLASS HStaticLink
-Local oPrevFont
-   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor )
+METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
+                 bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )  CLASS HStaticLink
+   LOCAL oPrevFont
+   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+              bSize, bPaint, ctooltip, tcolor, bcolor )
 
-   DEFAULT vcolor TO RGB( 5, 34, 143 )
-   DEFAULT lcolor TO RGB( 0, 0, 255 )
-   DEFAULT hcolor TO RGB( 255, 0, 0 )
+   DEFAULT vColor TO RGB( 5, 34, 143 )
+   DEFAULT lColor TO RGB( 0, 0, 255 )
+   DEFAULT hColor TO RGB( 255, 0, 0 )
    ::state := LBL_INIT
    ::m_csUrl := cLink
    ::m_sHoverColor   := hColor
@@ -124,16 +124,16 @@ Local oPrevFont
    ::m_sVisitedColor := vColor
 
    IF ::oFont == NIL
-       IF ::oParent:oFont != NIL
-         ::OFont := HFONT():Add( ::oParent:oFont:name, ::oParent:oFont:width, ::oParent:oFont:height,;
-         ::oParent:oFont:weight, ::oParent:oFont:charset, ::oParent:oFont:italic, 1, ::oParent:oFont:StrikeOut )
+      IF ::oParent:oFont != NIL
+         ::oFont := HFONT():Add( ::oParent:oFont:name, ::oParent:oFont:width, ::oParent:oFont:height, ;
+                                 ::oParent:oFont:weight, ::oParent:oFont:charset, ::oParent:oFont:italic, 1, ::oParent:oFont:StrikeOut )
       ENDIF
    ELSE
       IF ::oFont:Underline  == 0
          oPrevFont := ::oFont
          ::oFont:Release()
-         ::OFont := HFONT():Add( oPrevFont:name, oPrevFont:width, oPrevFont:height,;
-         oPrevFont:weight, oPrevFont:charset, oPrevFont:italic, 1, oPrevFont:StrikeOut )
+         ::oFont := HFONT():Add( oPrevFont:name, oPrevFont:width, oPrevFont:height, ;
+                                 oPrevFont:weight, oPrevFont:charset, oPrevFont:italic, 1, oPrevFont:StrikeOut )
       ENDIF
    ENDIF
 
@@ -144,11 +144,11 @@ Local oPrevFont
       ::extStyle += WS_EX_TRANSPARENT
    ENDIF
 
-Return Self
+   RETURN Self
 
 METHOD INIT CLASS HStaticLink
 
-   IF !::lInit
+   IF ! ::lInit
       Super:init()
       IF ::Title != NIL
          SETWINDOWTEXT( ::handle, ::title )
@@ -158,7 +158,7 @@ METHOD INIT CLASS HStaticLink
       Hwg_InitWinCtrl( ::handle )
    ENDIF
 
-RETURN NIL
+   RETURN NIL
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
 
@@ -175,18 +175,18 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
       ::OnClicked()
    ENDIF
 
-RETURN - 1
+   RETURN - 1
 
 METHOD GoToLinkUrl( csLink ) CLASS HStaticLink
 
-LOCAL hInstance := SHELLEXECUTE( csLink, "open", NIL, NIL, 2 )
+   LOCAL hInstance := SHELLEXECUTE( csLink, "open", NIL, NIL, 2 )
    //ShellExecute(NULL              , _T("open")                             , csLink.operator LPCTSTR(), NULL                                 , NULL                                   , 2);
 
    IF hInstance < 33
       RETURN .f.
    ENDIF
 
-RETURN .t.
+   RETURN .t.
 
 METHOD GetLinkText() CLASS HStaticLink
 
@@ -194,31 +194,31 @@ METHOD GetLinkText() CLASS HStaticLink
       RETURN ""
    ENDIF
 
-RETURN ::Title
+   RETURN ::Title
 
 METHOD SetLinkUrl( csUrl ) CLASS HStaticLink
 
    ::m_csUrl := csUrl
 
-RETURN NIL
+   RETURN NIL
 
 METHOD GetLinkUrl() CLASS HStaticLink
 
-RETURN ::m_csUrl
+   RETURN ::m_csUrl
 
 METHOD SetVisitedColor( sVisitedColor ) CLASS HStaticLink
 
    ::m_sVisitedColor := sVisitedColor
-RETURN NIL
+   RETURN NIL
 
 METHOD SetHoverColor( cHoverColor ) CLASS HStaticLink
 
    ::m_sHoverColor := cHoverColor
 
-RETURN NIL
+   RETURN NIL
 
 METHOD OnClicked() CLASS HStaticLink
-LOCAL nCtrlID
+   LOCAL nCtrlID
 
    IF ( ::m_bFireChild )
       nCtrlID := ::id
@@ -235,55 +235,55 @@ LOCAL nCtrlID
    SetFocus( ::handle )
    PostMessage( ::handle, WM_PAINT, 0, 0 )
 
-RETURN NIL
+   RETURN NIL
 
 METHOD OnSetCursor( pWnd, nHitTest, message ) CLASS HStaticLink
 
-HB_SYMBOL_UNUSED(pWnd)
-HB_SYMBOL_UNUSED(nHitTest)
-HB_SYMBOL_UNUSED(message)
+   HB_SYMBOL_UNUSED( pWnd )
+   HB_SYMBOL_UNUSED( nHitTest )
+   HB_SYMBOL_UNUSED( message )
 
    hwg_SetCursor( ::m_hHyperCursor )
 
-RETURN .t.
+   RETURN .t.
 
 METHOD SetLinkText( csLinkText ) CLASS HStaticLink
 
    ::Title := csLinkText
    ::SetText( csLinkText )
 
-RETURN NIL
+   RETURN NIL
 
 METHOD SetLinkColor( sLinkColor ) CLASS HStaticLink
 
    ::m_sLinkColor := sLinkColor
 
-RETURN NIL
+   RETURN NIL
 
 METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
 
-LOCAL xPos
-LOCAL yPos
-LOCAL res  := .f.
+   LOCAL xPos
+   LOCAL yPos
+   LOCAL res  := .f.
 
-HB_SYMBOL_UNUSED(nFlags)
+   HB_SYMBOL_UNUSED( nFlags )
 
    IF ::state != LBL_INIT
-      xPos := LoWord( lParam )
-      yPos := HiWord( lParam )
+      xPos := LOWORD( lParam )
+      yPos := HIWORD( lParam )
       IF xPos > ::nWidth .OR. yPos > ::nHeight
          ReleaseCapture()
          res := .T.
       ENDIF
 
-      IF (res .AND. !::m_bVisited) .or. (res .AND. ::m_bVisited)
+      IF ( res .AND. ! ::m_bVisited ) .or. ( res .AND. ::m_bVisited )
 
          ::state := LBL_NORMAL
          InvalidateRect( ::handle, 0 )
          PostMessage( ::handle, WM_PAINT, 0, 0 )
       ENDIF
-      IF (::state == LBL_NORMAL .AND. !res) .or. ;
-              (::state == LBL_NORMAL .AND. !res .and. ::m_bVisited )
+      IF ( ::state == LBL_NORMAL .AND. ! res ) .or. ;
+         ( ::state == LBL_NORMAL .AND. ! res .and. ::m_bVisited )
          ::state := LBL_MOUSEOVER
          InvalidateRect( ::handle, 0 )
          PostMessage( ::handle, WM_PAINT, 0, 0 )
@@ -291,17 +291,17 @@ HB_SYMBOL_UNUSED(nFlags)
       ENDIF
 
    ENDIF
-RETURN NIL
+   RETURN NIL
 
 METHOD PAint() CLASS HStaticLink
 
-LOCAL strtext    := ::Title
-LOCAL nOldBkMode
-LOCAL dwFlags
-LOCAL clrOldText
-LOCAL rcClient
-LOCAL POLDFONT
-LOCAL DWSTYLE
+   LOCAL strtext    := ::Title
+   LOCAL nOldBkMode
+   LOCAL dwFlags
+   LOCAL clrOldText
+   LOCAL rcClient
+   LOCAL POLDFONT
+   LOCAL DWSTYLE
 
    ::dc := HPAINTDC():new( ::handle )
    IF ::state == LBL_INIT
@@ -309,12 +309,12 @@ LOCAL DWSTYLE
    ENDIF
 
    rcClient   := GetClientRect( ::handle )
-   nOldBkMode :=::dc:SetBkMode( TRANSPARENT )
+   nOldBkMode := ::dc:SetBkMode( TRANSPARENT )
    dwFlags    := 0
-   dwstyle    := ::style
+   DWSTYLE    := ::style
 
-#ifdef __XHARBOUR__
-   SWITCH( dwstyle & SS_TYPEMASK )
+   #ifdef __XHARBOUR__
+      SWITCH( DWSTYLE & SS_TYPEMASK )
    CASE SS_RIGHT
       dwFlags := DT_RIGHT | DT_WORDBREAK
       EXIT
@@ -329,21 +329,21 @@ LOCAL DWSTYLE
       EXIT
    END
 #endif
-   dwFlags  += ( DT_VCENTER + DT_END_ELLIPSIS )
+dwFlags  += ( DT_VCENTER + DT_END_ELLIPSIS )
 
-   pOldFont :=::dc:SelectObject( ::oFont:handle )
-   IF ::state == LBL_NORMAL
-      IF ::m_bVisited
-          clrOldText :=::dc:SetTextColor( ::m_sVisitedColor )
-      ELSE
-          clrOldText :=::dc:SetTextColor( ::m_sLinkColor )
-      ENDIF
-   ELSEIF ::state == LBL_MOUSEOVER
-      clrOldText :=::dc:SetTextColor( ::m_sHoverColor )
+POLDFONT := ::dc:SelectObject( ::oFont:handle )
+IF ::state == LBL_NORMAL
+   IF ::m_bVisited
+      clrOldText := ::dc:SetTextColor( ::m_sVisitedColor )
+   ELSE
+      clrOldText := ::dc:SetTextColor( ::m_sLinkColor )
    ENDIF
+ELSEIF ::state == LBL_MOUSEOVER
+   clrOldText := ::dc:SetTextColor( ::m_sHoverColor )
+ENDIF
 
-   ::dc:DrawText( strText, rcClient, dwFlags )
-   ::dc:end()
+::dc:DrawText( strtext, rcClient, dwFlags )
+::dc:END()
 
 RETURN NIL
 

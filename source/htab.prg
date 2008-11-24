@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.34 2008-10-15 12:51:00 alexstrickland Exp $
+ *$Id: htab.prg,v 1.35 2008-11-24 10:02:14 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -247,10 +247,10 @@ STATIC FUNCTION InitPage( oTab, oPage, cCaption, n )
 METHOD EndPage() CLASS HTab
    IF ! ::lResourceTab
       ::aPages[ ::nActive, 2 ] := Len( ::aControls ) - ::aPages[ ::nActive, 1 ]
-      IF ::handle != Nil .AND. !Empty( ::handle )
+      IF ::handle != Nil .AND. ! Empty( ::handle )
          AddTab( ::handle, ::nActive, ::aTabs[ ::nActive ] )
       ENDIF
-      IF ::nActive > 1 .AND. ::handle != Nil .AND. !Empty( ::handle )
+      IF ::nActive > 1 .AND. ::handle != Nil .AND. ! Empty( ::handle )
          ::HidePage( ::nActive )
       ENDIF
       ::nActive := 1
@@ -262,11 +262,11 @@ METHOD EndPage() CLASS HTab
 
 
    ELSE
-      IF ::handle != Nil .AND. !Empty( ::handle )
+      IF ::handle != Nil .AND. ! Empty( ::handle )
 
          AddTabDialog( ::handle, ::nActive, ::aTabs[ ::nActive ], ::aPages[ ::nactive, 1 ]:handle )
       ENDIF
-      IF ::nActive > 1 .AND. ::handle != Nil .AND. !Empty( ::handle )
+      IF ::nActive > 1 .AND. ::handle != Nil .AND. ! Empty( ::handle )
          ::HidePage( ::nActive )
       ENDIF
       ::nActive := 1
@@ -347,12 +347,12 @@ METHOD ShowPage( nPage ) CLASS HTab
    ELSE
       ::aPages[ nPage, 1 ]:show()
 
-      for i :=1  to len(::aPages[nPage,1]:aControls)
-         IF (__ObjHasMsg( ::aPages[nPage,1]:aControls[i],"BSETGET" ) .AND. ::aPages[nPage,1]:aControls[i]:bSetGet != Nil) .OR. Hwg_BitAnd( ::aPages[nPage,1]:aControls[i]:style, WS_TABSTOP ) != 0
-            SetFocus( ::aPages[nPage,1]:aControls[i]:handle )
-            Exit
+      FOR i := 1  TO Len( ::aPages[ nPage, 1 ]:aControls )
+         IF ( __ObjHasMsg( ::aPages[ nPage, 1 ]:aControls[ i ], "BSETGET" ) .AND. ::aPages[ nPage, 1 ]:aControls[ i ]:bSetGet != Nil ) .OR. Hwg_BitAnd( ::aPages[ nPage, 1 ]:aControls[ i ]:style, WS_TABSTOP ) != 0
+            SetFocus( ::aPages[ nPage, 1 ]:aControls[ i ]:handle )
+            EXIT
          ENDIF
-      next
+      NEXT
 
    ENDIF
 
@@ -369,7 +369,7 @@ METHOD GetActivePage( nFirst, nEnd ) CLASS HTab
       ENDIF
    ELSE
       nFirst := 1
-      nEnd   := LEN(::aPages[ ::nActive, 1]:aControls)
+      nEnd   := Len( ::aPages[ ::nActive, 1 ]:aControls )
    ENDIF
 
    RETURN ::nActive
@@ -410,7 +410,7 @@ METHOD Notify( lParam ) CLASS HTab
          Eval( ::bChange, Self, GetCurrentTab( ::handle ) )
       ENDIF
    CASE nCode == TCN_CLICK
-      IF !Empty(::pages) .AND. ::pages[ ::nActive ]:enabled
+      IF ! Empty( ::pages ) .AND. ::pages[ ::nActive ]:enabled
          SetFocus( ::handle )
          IF ::bAction != Nil
             Eval( ::bAction, Self, GetCurrentTab( ::handle ) )
@@ -450,7 +450,7 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    //WRITELOG('TAB'+STR(MSG)+STR(WPARAM)+STR(LPARAM)+CHR(13))
 
    ::disable()
-   IF (msg == WM_KEYDOWN .OR.(msg = WM_GETDLGCODE .AND. wparam == VK_RETURN)) .AND. GetFocus()= ::handle
+   IF ( msg == WM_KEYDOWN .OR.( msg = WM_GETDLGCODE .AND. wParam == VK_RETURN ) ) .AND. GetFocus() = ::handle
       IF ( wParam == VK_DOWN .or. wParam == VK_RETURN ) .AND. ::nActive > 0
          GetSkip( Self, ::handle,, 1 )
       ENDIF
@@ -466,8 +466,8 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
       ::oparent:lSuspendMsgsHandling := .f.
    ENDIF
    IF ! ( ( msg == WM_COMMAND .OR. msg == WM_NOTIFY ) .AND. ::oParent:lSuspendMsgsHandling )
-      IF  __ObjHasMsg(::oParent,"NINITFOCUS") .AND. ::oParent:nInitFocus > 0 .AND. isWindowVisible(::oParent:handle)
-         SETFOCUS(::oParent:nInitFocus)
+      IF  __ObjHasMsg( ::oParent, "NINITFOCUS" ) .AND. ::oParent:nInitFocus > 0 .AND. isWindowVisible( ::oParent:handle )
+         SETFOCUS( ::oParent:nInitFocus )
          ::oParent:nInitFocus := 0
       ENDIF
       RETURN ( Super:onevent( msg, wParam, lParam ) )

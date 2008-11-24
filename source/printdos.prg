@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.22 2007-11-26 04:48:43 andijahja Exp $
+ * $Id: printdos.prg,v 1.23 2008-11-24 10:02:16 mlacecilia Exp $
  *
  * CLASS PrintDos
  *
@@ -33,448 +33,445 @@
 
 CLASS PrintDos
 
-     DATA cCompr, cNormal,oText, cDouble, cBold, cUnBold AS CHARACTER
-     DATA oPorta, oPicture      AS CHARACTER
-     DATA orow, oCol            AS NUMERIC
-     DATA cEject, nProw, nPcol, fText, gText
-     DATA oTopMar               AS NUMERIC
-     DATA oLeftMar              AS NUMERIC
-     DATA oAns2Oem              AS LOGIC
-     DATA LastError
-     DATA oPrintStyle INIT 1 //1 = Matricial   2 = InkJet    3 = LaserJet
-     DATA colorPreview
-     DATA nStartPage init 1
-     DATA nEndPage init 0
-     DATA nCopy init 1
+   DATA cCompr, cNormal, oText, cDouble, cBold, cUnBold AS CHARACTER
+   DATA oPorta, oPicture      AS CHARACTER
+   DATA orow, oCol            AS NUMERIC
+   DATA cEject, nProw, nPcol, fText, gText
+   DATA oTopMar               AS NUMERIC
+   DATA oLeftMar              AS NUMERIC
+   DATA oAns2Oem              AS LOGIC
+   DATA LastError
+   DATA oPrintStyle INIT 1 //1 = Matricial   2 = InkJet    3 = LaserJet
+   DATA colorPreview
+   DATA nStartPage init 1
+   DATA nEndPage init 0
+   DATA nCopy init 1
 
-     METHOD New(oPorta) CONSTRUCTOR
+   METHOD New( oPorta ) CONSTRUCTOR
 
-     METHOD Say(oProw, oCol, oTexto, oPicture)
+   METHOD Say( oProw, oCol, oTexto, oPicture )
 
-     METHOD SetCols(nRow, nCol)
+   METHOD SetCols( nRow, nCol )
 
-     METHOD gWrite(oText)
+   METHOD gWrite( oText )
 
-     METHOD NewLine()
+   METHOD NewLine()
 
-     METHOD Eject()
+   METHOD Eject()
 
-     METHOD Compress()
+   METHOD Compress()
 
-     METHOD Double()
+   METHOD Double()
 
-     METHOD DesCompress()
+   METHOD DesCompress()
 
-     METHOD Bold()       //Added by  por Fernando Athayde
+   METHOD Bold()       //Added by  por Fernando Athayde
 
-     METHOD UnBold()     //Added by  por Fernando Athayde
+   METHOD UnBold()     //Added by  por Fernando Athayde
 
-     METHOD Comando()
+   METHOD Comando()
 
-     METHOD SetPrc(x,y)
+   METHOD SetPrc( x, y )
 
-     METHOD PrinterFile(oFile)
+   METHOD PrinterFile( oFile )
 
-     METHOD TxttoGraphic(oFile,osize,oPreview)
+   METHOD TxttoGraphic( oFile, osize, oPreview )
 
-     METHOD Preview(fname, cTitle)
+   METHOD Preview( fname, cTitle )
 
-     METHOD End()
+   METHOD END()
 
 ENDCLASS
 
-METHOD New(oPorta) CLASS PrintDos
-     Local oDouble  :={oMATRIXDOUBLE,   oINKJETDOUBLE,   oLASER10CPI }
-     Local oNormal  :={oMATRIXNORMAL,   oINKJETNORMAL,   oLASER12CPI }
-     Local oCompress:={oMATRIXCOMPRESS, oINKJETCOMPRESS, oLASER18CPI }
-     Local oBold    :={oMATRIXBOLD,     oINKJETBOLD,     oLASERBOLD  }       //Added by  por Fernando Athayde
-     Local oUnBold  :={oMATRIXUNBOLD,   oINKJETUNBOLD,   oLASERUNBOLD }       //Added by  por Fernando Athayde
-     Local oPtrSetup, oPtrName
+METHOD New( oPorta ) CLASS PrintDos
+   LOCAL oDouble  := { oMATRIXDOUBLE,   oINKJETDOUBLE,   oLASER10CPI }
+   LOCAL oNormal  := { oMATRIXNORMAL,   oINKJETNORMAL,   oLASER12CPI }
+   LOCAL oCompress := { oMATRIXCOMPRESS, oINKJETCOMPRESS, oLASER18CPI }
+   LOCAL oBold    := { oMATRIXBOLD,     oINKJETBOLD,     oLASERBOLD  }       //Added by  por Fernando Athayde
+   LOCAL oUnBold  := { oMATRIXUNBOLD,   oINKJETUNBOLD,   oLASERUNBOLD }       //Added by  por Fernando Athayde
+   LOCAL oPtrSetup, oPtrName
 
-     ::cCompr   := oCompress[::oPrintStyle]
-     ::cNormal  := oNormal[::oPrintStyle]
-     ::cDouble  := oDouble[::oPrintStyle]
-     ::cBold    := oBold[::oPrintStyle]       //Added by  por Fernando Athayde
-     ::cUnBold  := oUnBold[::oPrintStyle]       //Added by  por Fernando Athayde
-     ::cEject   := oFORMFEED
-     ::nProw    := 0
-     ::nPcol    := 0
-     ::oTopMar  := 0
-     ::oAns2Oem :=.t.
-     ::oLeftMar := 0
-     ::oText    := ""
+   ::cCompr   := oCompress[ ::oPrintStyle ]
+   ::cNormal  := oNormal[ ::oPrintStyle ]
+   ::cDouble  := oDouble[ ::oPrintStyle ]
+   ::cBold    := oBold[ ::oPrintStyle ]       //Added by  por Fernando Athayde
+   ::cUnBold  := oUnBold[ ::oPrintStyle ]       //Added by  por Fernando Athayde
+   ::cEject   := oFORMFEED
+   ::nProw    := 0
+   ::nPcol    := 0
+   ::oTopMar  := 0
+   ::oAns2Oem := .t.
+   ::oLeftMar := 0
+   ::oText    := ""
 
-     if Empty(oPorta) //
-        ::oPorta       := "LPT1"
-     Else
-        If oPorta=="DEFAULT"
-          oPtrName:=PrintPortName()
-          if oPtrName==Nil
-             MsgInfo("Error, file to:ERROR.TXT")
-             ::oPorta :="Error.txt"
-          else
-             ::oPorta := oPtrName
-          EndIf
-        ElseIf oPorta=="SELECT"
+   IF Empty( oPorta ) //
+      ::oPorta       := "LPT1"
+   ELSE
+      IF oPorta == "DEFAULT"
+         oPtrName := PrintPortName()
+         IF oPtrName == Nil
+            MsgInfo( "Error, file to:ERROR.TXT" )
+            ::oPorta := "Error.txt"
+         ELSE
+            ::oPorta := oPtrName
+         ENDIF
+      ELSEIF oPorta == "SELECT"
 
-#ifdef __XHARBOUR__
-        oPtrSetup:=PrintSetupDos(@::nStartPage,@::nEndPage,@::nCopy)
-#else
-        oPtrSetup:=PrintSetupDos()
-#endif
-          If oPtrSetup==Nil
-             MsgInfo("Error, file to:ERROR.TXT")
-             ::oPorta :="Error.txt"
-          Else
-             oPtrName:=PrintPortName()
-             if oPtrName==Nil
-                MsgInfo("Error, file to:ERROR.TXT")
-                ::oPorta :="Error.txt"
-             else
-                oPtrName:= Alltrim(oPtrName)
-                if Substr( oPtrName, 1, 3 ) == "LPT"
-                   oPtrName:=Left( oPtrName, Len( oPtrName) -1 )
-                EndIF
-                ::oPorta := oPtrName
-             EndIf
-          EndIf
-        Else
-          ::oPorta     := oPorta
-        EndIf
-     EndIf
+         #ifdef __XHARBOUR__
+            oPtrSetup := PrintSetupDos( @::nStartPage, @::nEndPage, @::nCopy )
+         #else
+            oPtrSetup := PrintSetupDos()
+         #endif
+         IF oPtrSetup == Nil
+            MsgInfo( "Error, file to:ERROR.TXT" )
+            ::oPorta := "Error.txt"
+         ELSE
+            oPtrName := PrintPortName()
+            IF oPtrName == Nil
+               MsgInfo( "Error, file to:ERROR.TXT" )
+               ::oPorta := "Error.txt"
+            ELSE
+               oPtrName := AllTrim( oPtrName )
+               IF SubStr( oPtrName, 1, 3 ) == "LPT"
+                  oPtrName := Left( oPtrName, Len( oPtrName ) - 1 )
+               ENDIF
+               ::oPorta := oPtrName
+            ENDIF
+         ENDIF
+      ELSE
+         ::oPorta     := oPorta
+      ENDIF
+   ENDIF
 
-     If oPorta=="GRAPHIC" .or. oPorta=="PREVIEW"
-          ::gText := ""
-     Else
-          // tracelog([          ::gText:=fCreate(::oPorta)])
-          ::gText:=fCreate(::oPorta)
-          //tracelog([depois           ::gText:=fCreate(::oPorta)],::gtext)
-          if ::gText<0
-             ::LastError:=fError()
-          Else
-             ::LastError:=0
-          EndIf
-     EndIf
-
-
-RETURN SELF
+   IF oPorta == "GRAPHIC" .or. oPorta == "PREVIEW"
+      ::gText := ""
+   ELSE
+      // tracelog([          ::gText:=fCreate(::oPorta)])
+      ::gText := FCreate( ::oPorta )
+      //tracelog([depois           ::gText:=fCreate(::oPorta)],::gtext)
+      IF ::gText < 0
+         ::LastError := FError()
+      ELSE
+         ::LastError := 0
+      ENDIF
+   ENDIF
 
 
-METHOD Comando(oComm1,oComm2, oComm3, oComm4, oComm5, oComm6, oComm7,;
-               oComm8,oComm9, oComm10)  CLASS PrintDos
-
-   local nCont := 1
-   local oStr := oComm1
-
-   oStr:=Chr( Val (oComm1) )
-
-   IF oComm2  != NIL ;  oStr +=Chr(Val(oComm2 ));   ENDIF
-   IF oComm3  != NIL ;  oStr +=Chr(Val(oComm3 ));   ENDIF
-   IF oComm4  != NIL ;  oStr +=Chr(Val(oComm4 ));   ENDIF
-   IF oComm5  != NIL ;  oStr +=Chr(Val(oComm5 ));   ENDIF
-   IF oComm6  != NIL ;  oStr +=Chr(Val(oComm6 ));   ENDIF
-   IF oComm7  != NIL ;  oStr +=Chr(Val(oComm7 ));   ENDIF
-   IF oComm8  != NIL ;  oStr +=Chr(Val(oComm8 ));   ENDIF
-   IF oComm9  != NIL ;  oStr +=Chr(Val(oComm9 ));   ENDIF
-   IF oComm10 != NIL ;  oStr +=Chr(Val(oComm10));   ENDIF
+   RETURN Self
 
 
-   If ::oAns2Oem
-     ::oText += HB_ANSITOOEM(oStr)
-   Else
-     ::oText += oStr
-   EndIf
+METHOD Comando( oComm1, oComm2, oComm3, oComm4, oComm5, oComm6, oComm7, ;
+                oComm8, oComm9, oComm10 )  CLASS PrintDos
 
-Return Nil
+   LOCAL oStr := oComm1
+
+   oStr := Chr( Val ( oComm1 ) )
+
+   IF oComm2  != NIL ;  oStr += Chr( Val( oComm2 ) ) ;   ENDIF
+   IF oComm3  != NIL ;  oStr += Chr( Val( oComm3 ) ) ;   ENDIF
+   IF oComm4  != NIL ;  oStr += Chr( Val( oComm4 ) ) ;   ENDIF
+   IF oComm5  != NIL ;  oStr += Chr( Val( oComm5 ) ) ;   ENDIF
+   IF oComm6  != NIL ;  oStr += Chr( Val( oComm6 ) ) ;   ENDIF
+   IF oComm7  != NIL ;  oStr += Chr( Val( oComm7 ) ) ;   ENDIF
+   IF oComm8  != NIL ;  oStr += Chr( Val( oComm8 ) ) ;   ENDIF
+   IF oComm9  != NIL ;  oStr += Chr( Val( oComm9 ) ) ;   ENDIF
+   IF oComm10 != NIL ;  oStr += Chr( Val( oComm10 ) ) ;   ENDIF
 
 
-METHOD gWrite(oText)  CLASS PrintDos
+   IF ::oAns2Oem
+      ::oText += HB_ANSITOOEM( oStr )
+   ELSE
+      ::oText += oStr
+   ENDIF
 
-    //tracelog(otext)
-    If ::oAns2Oem
-       ::oText += HB_ANSITOOEM(oText)
-       ::nPcol += len(HB_ANSITOOEM(oText))
-    Else
-       ::oText += oText
-       ::nPcol += len(oText)
-    EndIf
-    //tracelog(otext)
+   RETURN Nil
 
-Return Nil
+
+METHOD gWrite( oText )  CLASS PrintDos
+
+   //tracelog(otext)
+   IF ::oAns2Oem
+      ::oText += HB_ANSITOOEM( oText )
+      ::nPcol += Len( HB_ANSITOOEM( oText ) )
+   ELSE
+      ::oText += oText
+      ::nPcol += Len( oText )
+   ENDIF
+   //tracelog(otext)
+
+   RETURN Nil
 
 METHOD Eject()   CLASS PrintDos
 //tracelog( ::gText, ::oText )
 
-     fWrite( ::gText, ::oText )
+   FWrite( ::gText, ::oText )
 
-     If ::oAns2Oem
-        fWrite( ::gText, HB_ANSITOOEM(Chr(13)+Chr(10)+Chr(Val(::cEject))))
-        fWrite(::gText, HB_ANSITOOEM(Chr(13)+Chr(10)))
-     Else
-        fWrite( ::gText,Chr(13)+Chr(10)+Chr(Val(::cEject)))
-        fWrite(::gText, Chr(13)+Chr(10))
-     EndIf
+   IF ::oAns2Oem
+      FWrite( ::gText, HB_ANSITOOEM( Chr( 13 ) + Chr( 10 ) + Chr( Val( ::cEject ) ) ) )
+      FWrite( ::gText, HB_ANSITOOEM( Chr( 13 ) + Chr( 10 ) ) )
+   ELSE
+      FWrite( ::gText, Chr( 13 ) + Chr( 10 ) + Chr( Val( ::cEject ) ) )
+      FWrite( ::gText, Chr( 13 ) + Chr( 10 ) )
+   ENDIF
 
-     ::oText :=""
-     ::nProw := 0
-     ::nPcol := 0
-    //tracelog( ::gText, ::oText )
-Return Nil
+   ::oText := ""
+   ::nProw := 0
+   ::nPcol := 0
+   //tracelog( ::gText, ::oText )
+   RETURN Nil
 
 METHOD Compress() CLASS PrintDos
 
-     ::Comando(::cCompr)
+   ::Comando( ::cCompr )
 
-Return Nil
+   RETURN Nil
 
 METHOD Double() CLASS PrintDos
 
-     ::Comando(::cDouble)
+   ::Comando( ::cDouble )
 
-Return Nil
+   RETURN Nil
 
 METHOD DesCompress() CLASS PrintDos
 
-     ::Comando(::cNormal)
+   ::Comando( ::cNormal )
 
-Return Nil
+   RETURN Nil
 
 //*** Contribution Fernando Athayde ***
 
 METHOD Bold() CLASS PrintDos
 
-     ::Comando(::cBold)
+   ::Comando( ::cBold )
 
-Return Nil
+   RETURN Nil
 
 METHOD UnBold() CLASS PrintDos
 
-     ::Comando(::cUnBold)
+   ::Comando( ::cUnBold )
 
-Return Nil
+   RETURN Nil
 
 
 METHOD NewLine() CLASS PrintDos
 
-    If ::oAns2Oem
-      ::oText += HB_ANSITOOEM(Chr(13)+Chr(10))
-    Else
-      ::oText += Chr(13)+Chr(10)
-    EndIf
-    ::nPcol:=0
-Return Nil
+   IF ::oAns2Oem
+      ::oText += HB_ANSITOOEM( Chr( 13 ) + Chr( 10 ) )
+   ELSE
+      ::oText += Chr( 13 ) + Chr( 10 )
+   ENDIF
+   ::nPcol := 0
+   RETURN Nil
 
-METHOD Say(oProw, oPcol, oTexto, oPicture) CLASS PrintDos
-    // tracelog(oProw, oPcol, oTexto, oPicture)
-    If Valtype(oTexto)=="N"
+METHOD Say( oProw, oPcol, oTexto, oPicture ) CLASS PrintDos
+   // tracelog(oProw, oPcol, oTexto, oPicture)
+   IF ValType( oTexto ) == "N"
 
-       If !Empty(oPicture) .or. oPicture#Nil
-          oTexto:=Transform(oTexto, oPicture)
-       Else
-          oTexto:=Str(oTexto)
-       Endif
+      IF ! Empty( oPicture ) .or. oPicture # Nil
+         oTexto := Transform( oTexto, oPicture )
+      ELSE
+         oTexto := Str( oTexto )
+      ENDIF
 
-    Elseif Valtype(oTexto)=="D"
-       oTexto:=DTOC(oTexto)
-    Else
-       If !Empty(oPicture) .or. oPicture#Nil
-          oTexto:=Transform(oTexto, oPicture)
-       Endif
-    EndIf
-    //tracelog([antes     ::SetCols(oProw, oPcol)])
-    ::SetCols(oProw, oPcol)
-    //tracelog([depois de ::SetCols(oProw, oPcol) e  antes         ::gWrite(oTexto))])
-    ::gWrite(oTexto)
+   ELSEIF ValType( oTexto ) == "D"
+      oTexto := DToC( oTexto )
+   ELSE
+      IF ! Empty( oPicture ) .or. oPicture # Nil
+         oTexto := Transform( oTexto, oPicture )
+      ENDIF
+   ENDIF
+   //tracelog([antes     ::SetCols(oProw, oPcol)])
+   ::SetCols( oProw, oPcol )
+   //tracelog([depois de ::SetCols(oProw, oPcol) e  antes         ::gWrite(oTexto))])
+   ::gWrite( oTexto )
 
-Return Nil
+   RETURN Nil
 
-METHOD SetCols(nProw, nPcol) CLASS PrintDos
+METHOD SetCols( nProw, nPcol ) CLASS PrintDos
 
-     IF ::nProw > nProw
-        ::Eject()
-     ENDIF
+   IF ::nProw > nProw
+      ::Eject()
+   ENDIF
 
-     IF ::nProw < nProw
-        Do While ::nProw<nProw
-           ::NewLine()
-           ++::nProw
-        EndDo
-     ENDIF
+   IF ::nProw < nProw
+      DO WHILE ::nProw < nProw
+         ::NewLine()
+         ++ ::nProw
+      ENDDO
+   ENDIF
 
-     IF nProw == ::nProw  .AND. nPcol < ::nPcol
-          ::Eject()
-     ENDIF
+   IF nProw == ::nProw  .AND. nPcol < ::nPcol
+      ::Eject()
+   ENDIF
 
-     IF nPcol > ::nPcol
-          ::gWrite(Space(nPcol-::nPcol))
-     ENDIF
+   IF nPcol > ::nPcol
+      ::gWrite( Space( nPcol - ::nPcol ) )
+   ENDIF
 
-Return Nil
+   RETURN Nil
 
-METHOD SetPrc(x,y) CLASS PrintDos
-::nProw:=x
-::nPCol:=y
-Return Nil
+METHOD SetPrc( x, y ) CLASS PrintDos
+   ::nProw := x
+   ::nPCol := y
+   RETURN Nil
 
-METHOD End() CLASS PrintDos
+METHOD END() CLASS PrintDos
 
-   fWrite( ::gText, ::oText )
-   fClose( ::gText )
+   FWrite( ::gText, ::oText )
+   FClose( ::gText )
 
-Return Nil
+   RETURN Nil
 
-METHOD PrinterFile(fname) CLASS PrintDos
-LOCAL strbuf := Space(PF_BUFFERS)
-Local han, nRead
+METHOD PrinterFile( fname ) CLASS PrintDos
+   LOCAL strbuf := Space( PF_BUFFERS )
+   LOCAL han, nRead
 
-   IF !File( fname )
-      MsgStop("Error open file "+fname,"Error")
-      Return .F.
-   EndIf
+   IF ! File( fname )
+      MsgStop( "Error open file " + fname, "Error" )
+      RETURN .F.
+   ENDIF
 
-   han := FOPEN( fname, FO_READWRITE + FO_EXCLUSIVE )
+   han := FOpen( fname, FO_READWRITE + FO_EXCLUSIVE )
 
    IF han <> - 1
 
-         DO while .t.
+      DO WHILE .t.
 
-            nRead := fRead(han, @strBuf, PF_BUFFERS)
+         nRead := FRead( han, @strbuf, PF_BUFFERS )
 
-            if nRead=0 ; Exit ; Endif
+         IF nRead = 0 ; EXIT ; ENDIF
 
-            IF fWrite(::gText, Left(strbuf, nRead)) < nRead
-               ::ErrosAnt := fError()
-               fClose(han)
-               RETURN .F.
-            ENDIF
+         IF FWrite( ::gText, Left( strbuf, nRead ) ) < nRead
+            ::ErrosAnt := FError()
+            FClose( han )
+            RETURN .F.
+         ENDIF
 
-         EndDo
+      ENDDO
 
    ELSE
 
-         MsgStop( "Can't Open port" )
-         Fclose( han )
+      MsgStop( "Can't Open port" )
+      FClose( han )
 
    ENDIF
 
-RETURN .T.
+   RETURN .T.
 
-Function wProw(oPrinter)
-Return oPrinter:nProw
+FUNCTION wProw( oPrinter )
+   RETURN oPrinter:nProw
 
-Function wPCol(oPrinter)
-Return oPrinter:nPcol
+FUNCTION wPCol( oPrinter )
+   RETURN oPrinter:nPcol
 
-Function wSetPrc(x,y,oPrinter)
-oPrinter:SetPrc(x,y)
-Return Nil
+FUNCTION wSetPrc( x, y, oPrinter )
+   oPrinter:SetPrc( x, y )
+   RETURN Nil
 
-METHOD TxttoGraphic(fName,osize,oPreview) CLASS PrintDos
+METHOD TxttoGraphic( fName, osize, oPreview ) CLASS PrintDos
 
-LOCAL strbuf := Space(2052), poz := 2052, stroka
-Local han := FOPEN( fname, FO_READ + FO_SHARED )
-Local res := .T.
-Local oCol:=0, oPage:=1  //Added by  Por Fernando Athayde
-Local oPrinter
-Local oFont
+   LOCAL strbuf := Space( 2052 ), poz := 2052, stroka
+   LOCAL han := FOpen( fName, FO_READ + FO_SHARED )
+   LOCAL oCol := 0, oPage := 1  //Added by  Por Fernando Athayde
+   LOCAL oPrinter
+   LOCAL oFont
 
-INIT PRINTER oPrinter // HPrinter():New()
+   INIT PRINTER oPrinter // HPrinter():New()
 // added by Giuseppe Mastrangelo
-if oPrinter == nil
-   return .f.
-endif
+   IF oPrinter == nil
+      RETURN .f.
+   ENDIF
 // end of added code
-oFont := oPrinter:AddFont( "Courier New", oSize )
+   oFont := oPrinter:AddFont( "Courier New", osize )
 
-oPrinter:StartDoc( oPreview  )
-oPrinter:StartPage()
+   oPrinter:StartDoc( oPreview  )
+   oPrinter:StartPage()
 
-SelectObject( oPrinter:hDC,oFont:handle )
+   SelectObject( oPrinter:hDC, oFont:handle )
 
-IF han <> - 1
-   DO WHILE .T.
-      stroka := RDSTR( han,@strbuf,@poz,2052 )
-      IF LEN( stroka ) = 0
-         EXIT
-      ENDIF
-      if oSize <0
-      oPrinter:Say( stroka, 0, ocol,2400, ocol+(-oSize+2),,oFont )  //Added by  Por Fernando Athayde
-      oCol:=oCol+(-oSize+2)   //Added by  Por Fernando Athayde
-      else
-         oPrinter:Say( stroka, 0, ocol,2400, ocol+(oSize+2),,oFont )  //Added by  Por Fernando Athayde
-         oCol:=oCol+(oSize+2)   //Added by  Por Fernando Athayde
-      endif
+   IF han <> - 1
+      DO WHILE .T.
+         stroka := RDSTR( han, @strbuf, @poz, 2052 )
+         IF Len( stroka ) = 0
+            EXIT
+         ENDIF
+         IF osize < 0
+            oPrinter:Say( stroka, 0, oCol, 2400, oCol + ( - osize + 2 ),, oFont )  //Added by  Por Fernando Athayde
+            oCol := oCol + ( - osize + 2 )   //Added by  Por Fernando Athayde
+         ELSE
+            oPrinter:Say( stroka, 0, oCol, 2400, oCol + ( osize + 2 ),, oFont )  //Added by  Por Fernando Athayde
+            oCol := oCol + ( osize + 2 )   //Added by  Por Fernando Athayde
+         ENDIF
 
-      IF Left( stroka,1 ) == Chr(12)
-         oPrinter:EndPage()
-         oPrinter:StartPage()
-         ++oPage
-         oCol:=0  //Added by  Por Fernando Athayde
-      ENDIF
+         IF Left( stroka, 1 ) == Chr( 12 )
+            oPrinter:EndPage()
+            oPrinter:StartPage()
+            ++ oPage
+            oCol := 0  //Added by  Por Fernando Athayde
+         ENDIF
 
-   ENDDO
-   Fclose( han )
-ELSE
-   MsgStop( "Can't open "+fname )
-   Return .F.
-ENDIF
-oPrinter:EndPage()
-oPrinter:EndDoc()
-oPrinter:Preview()
-oPrinter:End()
-oFont:Release()
+      ENDDO
+      FClose( han )
+   ELSE
+      MsgStop( "Can't open " + fName )
+      RETURN .F.
+   ENDIF
+   oPrinter:EndPage()
+   oPrinter:EndDoc()
+   oPrinter:Preview()
+   oPrinter:END()
+   oFont:Release()
 
-Return .T.
+   RETURN .T.
 
-METHOD Preview(fName,cTitle) CLASS PrintDos
-Local oedit1
-LOCAL strbuf := Space(2052), poz := 2052, stroka
-Local han := FOPEN( fname, FO_READ + FO_SHARED )
-Local res := .T.
-Local oCol:=10, oPage:=1, nPage:=1
-Local oFont := HFont():Add( "Courier New",0,-13 )
-Local oText := {""}
-Local oDlg, oColor1, oColor2
-Local oEdit
-Local oPrt:= iif(Empty(::oPorta) .or. ::oPorta == "PREVIEW", "LPT1", ::oPorta)
+METHOD Preview( fName, cTitle ) CLASS PrintDos
+   LOCAL oedit1
+   LOCAL strbuf := Space( 2052 ), poz := 2052, stroka
+   LOCAL han := FOpen( fName, FO_READ + FO_SHARED )
+   LOCAL oCol := 10, oPage := 1, nPage := 1
+   LOCAL oFont := HFont():Add( "Courier New", 0, - 13 )
+   LOCAL oText := { "" }
+   LOCAL oDlg, oColor1, oColor2
+   LOCAL oEdit
+   LOCAL oPrt := IIf( Empty( ::oPorta ) .or. ::oPorta == "PREVIEW", "LPT1", ::oPorta )
 
-IF han <> - 1
-   DO WHILE .T.
-      stroka := RDSTR( han,@strbuf,@poz,2052 )
-      IF LEN( stroka ) = 0
-         EXIT
-      ENDIF
-      If ::oAns2Oem
-          oText[oPage]+=HB_ANSITOOEM(stroka) + Chr(13) + Chr(10)
-      Else
-          oText[oPage]+=stroka + Chr(13) + Chr(10)
-      EndIf
-      IF Left( stroka,1 ) == Chr(12)
-         AADD(oText,"")
-         ++oPage
-      ENDIF
-      oCol:=oCol+30
-   ENDDO
-   Fclose( han )
-ELSE
-   MsgStop( "Can't open "+fname )
-   Return .F.
-ENDIF
+   IF han <> - 1
+      DO WHILE .T.
+         stroka := RDSTR( han, @strbuf, @poz, 2052 )
+         IF Len( stroka ) = 0
+            EXIT
+         ENDIF
+         IF ::oAns2Oem
+            oText[ oPage ] += HB_ANSITOOEM( stroka ) + Chr( 13 ) + Chr( 10 )
+         ELSE
+            oText[ oPage ] += stroka + Chr( 13 ) + Chr( 10 )
+         ENDIF
+         IF Left( stroka, 1 ) == Chr( 12 )
+            AAdd( oText, "" )
+            ++ oPage
+         ENDIF
+         oCol := oCol + 30
+      ENDDO
+      FClose( han )
+   ELSE
+      MsgStop( "Can't open " + fName )
+      RETURN .F.
+   ENDIF
 
-oEdit:=SUBS(oText[nPage],2)  //Added by  Por Fernando Exclui 1 byte do oText nao sei de onde ele aparece
+   oEdit := SUBS( oText[ nPage ], 2 )  //Added by  Por Fernando Exclui 1 byte do oText nao sei de onde ele aparece
 
-if !Empty(::colorpreview)
-   oColor1:=::colorpreview[1]
-   oColor2:=::colorpreview[2]
-Else
-   oColor1:=16777088
-   oColor2:=0
-EndIf
+   IF ! Empty( ::colorpreview )
+      oColor1 := ::colorpreview[ 1 ]
+      oColor2 := ::colorpreview[ 2 ]
+   ELSE
+      oColor1 := 16777088
+      oColor2 := 0
+   ENDIF
 
-Iif(cTitle==Nil,cTitle:="Print Preview",cTitle:=cTitle)
+   IIf( cTitle == Nil, cTitle := "Print Preview", cTitle := cTitle )
 
-INIT DIALOG oDlg TITLE cTitle ;
-     AT 0,0 SIZE GETDESKTOPWIDTH(),GETDESKTOPHEIGHT() on init {||Sendmessage(oEdit1:handle,WM_VSCROLL  ,SB_TOP,0)}
+   INIT DIALOG oDlg TITLE cTitle ;
+        At 0, 0 SIZE GETDESKTOPWIDTH(), GETDESKTOPHEIGHT() on init { || Sendmessage( oedit1:handle, WM_VSCROLL  , SB_TOP, 0 ) }
 
 
 
@@ -482,8 +479,8 @@ INIT DIALOG oDlg TITLE cTitle ;
 *        COLOR oColor1 BACKCOLOR oColor2  //Blue to Black  && Original
 //   @ 88,19 EDITBOX oEdit ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
 //        COLOR oColor1 BACKCOLOR oColor2 FONT oFont //Blue to Black  //Added by  por Fernando Athayde
-   @ 88,19 EDITBOX oedit1 CAPTION oEdit ID 1001 SIZE GETDESKTOPWIDTH()-100,GETDESKTOPHEIGHT()-100 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
-        COLOR oColor1 BACKCOLOR oColor2 FONT oFont //Blue to Black  //Added by  por Fernando Athayde
+   @ 88, 19 EDITBOX oedit1 CAPTION oEdit ID 1001 SIZE GETDESKTOPWIDTH() - 100, GETDESKTOPHEIGHT() - 100 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
+      COLOR oColor1 BACKCOLOR oColor2 FONT oFont //Blue to Black  //Added by  por Fernando Athayde
 
 
 *   @ 88,19 EDITBOX oEdit ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
@@ -491,74 +488,71 @@ INIT DIALOG oDlg TITLE cTitle ;
 //   @ 88,19 EDITBOX oEdit ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
 //        COLOR oColor1 BACKCOLOR oColor2 FONT oFont //Blue to Black  //Added by  por Fernando Athayde
 //       COLOR 16711680 BACKCOLOR 16777215  //Black to Write
-   @ 6, 30 BUTTON "<<"    ON CLICK {||nPage:=PrintDosAnt(nPage,oText)} SIZE 69,32  STYLE if(nPage=1,WS_DISABLED,0)
-   @ 6, 80 BUTTON ">>"    ON CLICK {||nPage:=PrintDosNext(oPage,nPage,oText)} SIZE 69,32 STYLE if(nPage=1,WS_DISABLED,0)
-   @ 6,130 BUTTON "Imprimir" ON CLICK {||PrintDosPrint(oText,oPrt)} SIZE 69,32
+   @ 6, 30 BUTTON "<<"    ON CLICK { || nPage := PrintDosAnt( nPage, oText ) } SIZE 69, 32  STYLE IF( nPage = 1, WS_DISABLED, 0 )
+   @ 6, 80 BUTTON ">>"    ON CLICK { || nPage := PrintDosNext( oPage, nPage, oText ) } SIZE 69, 32 STYLE IF( nPage = 1, WS_DISABLED, 0 )
+   @ 6, 130 BUTTON "Imprimir" ON CLICK { || PrintDosPrint( oText, oPrt ) } SIZE 69, 32
 //   @ 6,180 BUTTON "Grafico" on Click {||EndDialog(),oDos2:TxttoGraphic(fName,2,.t.),oDos2:end()} SIZE 69,32
-   @ 6,230 BUTTON "Fechar" ON CLICK {||EndDialog()} SIZE 69,32
+   @ 6, 230 BUTTON "Fechar" ON CLICK { || EndDialog() } SIZE 69, 32
 
    oDlg:Activate()
 
-Return .T.
+   RETURN .T.
 
-Static Function PrintDosPrint(oText, oPrt)
-Local i
-Local nText:=fCreate(oPrt)
-FOR i:=1 to Len(oText)
-    fWrite( nText, oText[i])
-NEXT
-fClose(nText)
-Return Nil
+STATIC FUNCTION PrintDosPrint( oText, oPrt )
+   LOCAL i
+   LOCAL nText := FCreate( oPrt )
+   FOR i := 1 TO Len( oText )
+      FWrite( nText, oText[ i ] )
+   NEXT
+   FClose( nText )
+   RETURN Nil
 
 
-Static Function PrintDosAnt(nPage, oText)
-Local oDlg:=GetModalhandle()
-nPage:=--nPage
-If nPage<1; nPage :=1 ; Endif
-IF nPage=1  //Added by  Por Fernando Exclui 1 byte do oText nao sei de onde ele aparece
-   SetDlgItemText( oDlg, 1001, SUBS(oText[nPage],2) )  //Added by  Por Fernando Exclui 1 byte do oText nao sei de onde ele aparece
-ELSE
-   SetDlgItemText( oDlg, 1001, oText[nPage] )
-ENDIF
-Return nPage
-
-Static Function PrintDosNext(oPage,nPage, oText)
-Local oDlg:=GetModalhandle()
-nPage:=++nPage
-If nPage>oPage; nPage := oPage ; Endif
-SetDlgItemText( oDlg, 1001, oText[nPage] )
-Return nPage
-
-function regenfile(o,new)
-local leol := .f.
-Local leof := .t.
-local Aeol:={chr(13)+chr(10),chr(13)}
-Local aText := AFillText( o )
-Local stroka
-Local o1 :=printdos():new(new)
-local nLine :=0
-Local nChr12 :=0
-Local i
-
-FOR i := 1 To Len( aText )
-
-   stroka := aText[i]
-   nchr12 := at( chr(12), stroka )
-
-   if nChr12 >0
-     stroka:=substr(stroka,1,nchr12-1)
-   endif
-      o1:say(nline,0,stroka)
-   nLine++
-
-   IF nchr12 >0
-      o1:eject()
-      nLine:=0
+STATIC FUNCTION PrintDosAnt( nPage, oText )
+   LOCAL oDlg := GetModalhandle()
+   nPage := -- nPage
+   IF nPage < 1 ; nPage := 1 ; ENDIF
+   IF nPage = 1  //Added by  Por Fernando Exclui 1 byte do oText nao sei de onde ele aparece
+      SetDlgItemText( oDlg, 1001, SUBS( oText[ nPage ], 2 ) )  //Added by  Por Fernando Exclui 1 byte do oText nao sei de onde ele aparece
+   ELSE
+      SetDlgItemText( oDlg, 1001, oText[ nPage ] )
    ENDIF
+   RETURN nPage
 
-NEXT
+STATIC FUNCTION PrintDosNext( oPage, nPage, oText )
+   LOCAL oDlg := GetModalhandle()
+   nPage := ++ nPage
+   IF nPage > oPage ; nPage := oPage ; ENDIF
+   SetDlgItemText( oDlg, 1001, oText[ nPage ] )
+   RETURN nPage
 
-Return Nil
+FUNCTION regenfile( o, new )
+   LOCAL aText := AFillText( o )
+   LOCAL stroka
+   LOCAL o1 := printdos():new( new )
+   LOCAL nLine := 0
+   LOCAL nChr12 := 0
+   LOCAL i
+
+   FOR i := 1 TO Len( aText )
+
+      stroka := aText[ i ]
+      nChr12 := At( Chr( 12 ), stroka )
+
+      IF nChr12 > 0
+         stroka := SubStr( stroka, 1, nChr12 - 1 )
+      ENDIF
+      o1:say( nLine, 0, stroka )
+      nLine ++
+
+      IF nChr12 > 0
+         o1:eject()
+         nLine := 0
+      ENDIF
+
+   NEXT
+
+   RETURN Nil
 
 #PRAGMA BEGINDUMP
 /*

@@ -1,5 +1,5 @@
 /*
- * $Id: hrebar.prg,v 1.6 2008-06-20 23:43:00 mlacecilia Exp $
+ * $Id: hrebar.prg,v 1.7 2008-11-24 10:02:14 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -19,79 +19,77 @@
 CLASS hrebar INHERIT HControl
 
    DATA winclass INIT "ReBarWindow32"
-   Data TEXT, id, nTop, nLeft, nwidth, nheight
+   DATA TEXT, id, nTop, nLeft, nwidth, nheight
    CLASSDATA oSelected INIT Nil
-   Data ExStyle
-   Data bClick
+   DATA ExStyle
+   DATA bClick
    DATA lVert
    DATA hTool
-   DATA m_nWidth,m_nHeight
+   DATA m_nWidth, m_nHeight
 
-   METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor,lVert)
-   METHOD Redefine( oWndParent,nId,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor,lVert)
+   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
+               bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
+   METHOD Redefine( oWndParent, nId, oFont, bInit, ;
+                    bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
 
    METHOD Activate()
    METHOD INIT()
    METHOD ADDBARColor( pBar, clrFore, clrBack, pszText, dwStyle ) INLINE ADDBARCOLORS( ::handle, pBar, clrFore, clrBack, pszText, dwStyle )
-   METHOD ADDBARBITMAP( pBar, pszText, pbmp, dwStyle ) INLINE ADDBARBITMAP(::handle, pBar, pszText, pbmp, dwStyle )
+   METHOD ADDBARBITMAP( pBar, pszText, pbmp, dwStyle ) INLINE ADDBARBITMAP( ::handle, pBar, pszText, pbmp, dwStyle )
 
 ENDCLASS
 
 
-METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor,lvert) CLASS hrebar
+METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
+            bSize, bPaint, ctooltip, tcolor, bcolor, lvert ) CLASS hrebar
 
-HB_SYMBOL_UNUSED(cCaption)
+   HB_SYMBOL_UNUSED( cCaption )
 
-   Default  lVert  to .f.
-   nstyle   := Hwg_BitOr( IIF( nStyle == NIL, 0, nStyle ), ;
-                           WS_VISIBLE + WS_CHILD )
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor )
+   DEFAULT  lvert  TO .f.
+   nStyle   := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), ;
+                          WS_VISIBLE + WS_CHILD )
+   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+              bSize, bPaint, ctooltip, tcolor, bcolor )
    HWG_InitCommonControlsEx()
 
 
    ::Activate()
 
-Return Self
+   RETURN Self
 
 
 
-METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor,lVert)  CLASS hrebar
+METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
+                 bSize, bPaint, ctooltip, tcolor, bcolor, lVert )  CLASS hrebar
 
-HB_SYMBOL_UNUSED(cCaption)
+   HB_SYMBOL_UNUSED( cCaption )
 
-   Default  lVert to .f.
-   Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor )
+   DEFAULT  lVert TO .f.
+   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+              bSize, bPaint, ctooltip, tcolor, bcolor )
    HWG_InitCommonControlsEx()
 
    ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
 
-Return Self
+   RETURN Self
 
 
 METHOD Activate CLASS hrebar
 
-   IF !empty( ::oParent:handle ) 
+   IF ! Empty( ::oParent:handle )
 
       ::handle := CREATEREBAR( ::oParent:handle, ::id, ;
-                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight)
+                               ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
 
       ::Init()
    ENDIF
-RETURN Nil
+   RETURN Nil
 
 METHOD INIT CLASS hrebar
 
-Local aButton :={}
-
-   IF !::lInit
+   IF ! ::lInit
       Super:Init()
 //      REBARSETIMAGELIST(::handle,nil)
-   endif
-RETURN Nil
+   ENDIF
+   RETURN Nil
 

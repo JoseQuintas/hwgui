@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.16 2008-06-28 15:17:53 mlacecilia Exp $
+ * $Id: hmonthc.prg,v 1.17 2008-11-24 10:02:12 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -24,7 +24,7 @@
 
 CLASS HMonthCalendar INHERIT HControl
 
-   CLASS VAR winclass   INIT "SysMonthCal32"
+CLASS VAR winclass   INIT "SysMonthCal32"
 
    DATA value
    DATA bChange
@@ -45,63 +45,63 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
             oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, ;
             lWeekNumbers ) CLASS HMonthCalendar
 
-   nStyle := Hwg_BitOr( Iif( nStyle==Nil, 0, nStyle ), WS_TABSTOP )
-   nStyle   += Iif( lNoToday==Nil.OR.!lNoToday, 0, MCS_NOTODAY )
-   nStyle   += Iif( lNoTodayCircle==Nil.OR.!lNoTodayCircle, 0, MCS_NOTODAYCIRCLE )
-   nStyle   += Iif( lWeekNumbers==Nil.OR.!lWeekNumbers, 0, MCS_WEEKNUMBERS )
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  ,,ctooltip )
+   nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP )
+   nStyle   += IIf( lNoToday == Nil.OR. ! lNoToday, 0, MCS_NOTODAY )
+   nStyle   += IIf( lNoTodayCircle == Nil.OR. ! lNoTodayCircle, 0, MCS_NOTODAYCIRCLE )
+   nStyle   += IIf( lWeekNumbers == Nil.OR. ! lWeekNumbers, 0, MCS_WEEKNUMBERS )
+   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+              ,, cTooltip )
 
-   ::value   := Iif( Valtype(vari)=="D" .And. !Empty(vari), vari, Date() )
+   ::value   := IIf( ValType( vari ) == "D" .And. ! Empty( vari ), vari, Date() )
 
    ::bChange := bChange
 
    HWG_InitCommonControlsEx()
 
 
-   If bChange != Nil 
-      ::oParent:AddEvent( MCN_SELECT, self, bChange, .T.,"onChange" )
-      ::oParent:AddEvent( MCN_SELCHANGE, self, bChange, .T.,"onChange" )
-   EndIf 
+   IF bChange != Nil
+      ::oParent:AddEvent( MCN_SELECT, Self, bChange, .T., "onChange" )
+      ::oParent:AddEvent( MCN_SELCHANGE, Self, bChange, .T., "onChange" )
+   ENDIF
 
    ::Activate()
-Return Self
+   RETURN Self
 
 //--------------------------------------------------------------------------//
 
 METHOD Activate CLASS HMonthCalendar
 
-   IF !empty( ::oParent:handle ) 
+   IF ! Empty( ::oParent:handle )
       ::handle := InitMonthCalendar ( ::oParent:handle, ::id, ::style, ;
-                  ::nLeft, ::nTop, ::nWidth, ::nHeight )
+                                      ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
-   EndIf
+   ENDIF
 
-Return Nil
+   RETURN Nil
 
 //--------------------------------------------------------------------------//
 
 METHOD Init() CLASS HMonthCalendar
 
-   If !::lInit
+   IF ! ::lInit
       Super:Init()
-      If !Empty( ::value )
+      IF ! Empty( ::value )
          SetMonthCalendarDate( ::handle , ::value )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-Return Nil
+   RETURN Nil
 
 //--------------------------------------------------------------------------//
 
 METHOD SetValue( dValue ) CLASS HMonthCalendar
 
-   If Valtype(dValue)=="D" .And. !Empty(dValue)
+   IF ValType( dValue ) == "D" .And. ! Empty( dValue )
       SetMonthCalendarDate( ::handle, dValue )
       ::value := dValue
-   EndIf
+   ENDIF
 
-Return Nil
+   RETURN Nil
 
 //--------------------------------------------------------------------------//
 
@@ -109,7 +109,7 @@ METHOD GetValue() CLASS HMonthCalendar
 
    ::value := GetMonthCalendarDate( ::handle )
 
-Return (::value)
+   RETURN ( ::value )
 
 //--------------------------------------------------------------------------//
 

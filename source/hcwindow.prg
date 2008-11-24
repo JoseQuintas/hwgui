@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.33 2008-11-22 18:32:36 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.34 2008-11-24 10:02:12 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -49,10 +49,10 @@ CLASS VAR oDefaultParent SHARED
    DATA title
    DATA Type
    DATA nTop, nLeft, nWidth, nHeight
-   DATA minWidth   INIT -1
-   DATA maxWidth   INIT -1
-   DATA minHeight  INIT -1
-   DATA maxHeight  INIT -1
+   DATA minWidth   INIT - 1
+   DATA maxWidth   INIT - 1
+   DATA minHeight  INIT - 1
+   DATA maxHeight  INIT - 1
    DATA tcolor, bcolor, brush
    DATA style
    DATA extStyle      INIT 0
@@ -70,13 +70,13 @@ CLASS VAR oDefaultParent SHARED
    DATA bLostFocus
    DATA bScroll
    DATA bOther
-   DATA bRefresh 
+   DATA bRefresh
    DATA cargo
    DATA HelpId        INIT 0
    DATA nHolder       INIT 0
    DATA nInitFocus    INIT 0  // Keeps the ID of the object to receive focus when dialog is created
-                              // you can change the object that receives focus adding
-                              // ON INIT {|| nInitFocus:=object:[handle] }  to the dialog definition
+   // you can change the object that receives focus adding
+   // ON INIT {|| nInitFocus:=object:[handle] }  to the dialog definition
    DATA nCurWidth    INIT 0 //PROTECTED
    DATA nCurHeight   INIT 0 //PROTECTED
    DATA nScrollPos   INIT 0 //PROTECTED
@@ -94,9 +94,9 @@ CLASS VAR oDefaultParent SHARED
    METHOD RefreshCtrl( oCtrl )
    METHOD SetFocusCtrl( oCtrl )
    METHOD Refresh()
-   METHOD Anchor(oCtrl, x,y, w, h) 
-   METHOD ScrollHV( msg,wParam,lParam ) 
-   
+   METHOD Anchor( oCtrl, x, y, w, h )
+   METHOD ScrollHV( msg, wParam, lParam )
+
 ENDCLASS
 
 METHOD AddEvent( nEvent, oCtrl, bAction, lNotify, cMethName ) CLASS HCustomWindow
@@ -187,17 +187,17 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HCustomWindow
 
    // Writelog( "== "+::Classname()+Str(msg)+IIF(wParam!=NIL,Str(wParam),"NIL")+IIF(lParam!=NIL,Str(lParam),"NIL") )
 
-   IF msg = WM_GETMINMAXINFO 
-      IF ::minWidth  > -1 .OR. ::maxWidth  > -1 .OR.;
-			   ::minHeight > -1 .OR. ::maxHeight > -1 
-         MINMAXWINDOW(::handle, lParam,;
-         IIF(::minWidth  > -1,::minWidth,nil),;
-				 IIF(::minHeight > -1,::minHeight,nil),;
-         IIF(::maxWidth  > -1,::maxWidth,nil),;
-				 IIF(::maxHeight > -1,::maxHeight,nil))
+   IF msg = WM_GETMINMAXINFO
+      IF ::minWidth  > - 1 .OR. ::maxWidth  > - 1 .OR. ;
+         ::minHeight > - 1 .OR. ::maxHeight > - 1
+         MINMAXWINDOW( ::handle, lParam, ;
+                       IIf( ::minWidth  > - 1, ::minWidth, nil ), ;
+                       IIf( ::minHeight > - 1, ::minHeight, nil ), ;
+                       IIf( ::maxWidth  > - 1, ::maxWidth, nil ), ;
+                       IIf( ::maxHeight > - 1, ::maxHeight, nil ) )
          RETURN 0
-      ENDIF   
-	 ENDIF
+      ENDIF
+   ENDIF
 
    IF ( i := AScan( aCustomEvents[ EVENTS_MESSAGES ], msg ) ) != 0
       RETURN Eval( aCustomEvents[ EVENTS_ACTIONS, i ], Self, wParam, lParam )
@@ -260,7 +260,7 @@ METHOD Refresh( oCtrl ) CLASS HCustomWindow
    nlen := Len( oCtrl:aControls )
    IF IsWindowVisible( ::handle )
       IF ::bRefresh != Nil //.AND. ;
-         Eval( ::bRefresh, Self) //, LoWord( lParam ), HiWord( lParam ) )
+         Eval( ::bRefresh, Self ) //, LoWord( lParam ), HiWord( lParam ) )
       ENDIF
       FOR i = 1 TO nlen
          IF ! oCtrl:aControls[ i ]:lHide .AND. ;
@@ -277,72 +277,72 @@ METHOD Refresh( oCtrl ) CLASS HCustomWindow
       NEXT
    ENDIF
    RETURN .T.
-   
-METHOD Anchor(oCtrl,x,y,w,h) CLASS HCustomWindow
-Local nlen , i, x1, y1
-	nlen := LEN(oCtrl:aControls)
-  FOR i = 1 to nLen
-     IF __ObjHasMsg(oCtrl:aControls[ i ],"ANCHOR") .AND. oCtrl:aControls[ i ]:anchor > 0
+
+METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
+   LOCAL nlen , i, x1, y1
+   nlen := Len( oCtrl:aControls )
+   FOR i = 1 TO nlen
+      IF __ObjHasMsg( oCtrl:aControls[ i ], "ANCHOR" ) .AND. oCtrl:aControls[ i ]:anchor > 0
          x1 := oCtrl:aControls[ i ]:nWidth
-         y1 := oCtrl:aControls[ i ]:nHeight 
-         oCtrl:aControls[ i ]:onAnchor(x,y, w, h )
-   	     IF LEN(oCtrl:aControls[ i ]:aControls) > 0
-    	       ::Anchor(oCtrl:aControls[ i ],x1,y1,oCtrl:nWidth, oCtrl:nHeight )
-	  	   ENDIF   
+         y1 := oCtrl:aControls[ i ]:nHeight
+         oCtrl:aControls[ i ]:onAnchor( x, y, w, h )
+         IF Len( oCtrl:aControls[ i ]:aControls ) > 0
+            ::Anchor( oCtrl:aControls[ i ], x1, y1, oCtrl:nWidth, oCtrl:nHeight )
+         ENDIF
       ENDIF
    NEXT
-RETURN .T.
+   RETURN .T.
 
-METHOD  ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
-Local nDelta, nMaxPos,  wmsg , nPos
+METHOD  ScrollHV( oForm, msg, wParam, lParam ) CLASS HCustomWindow
+   LOCAL nDelta, nMaxPos,  wmsg , nPos
 
-HB_SYMBOL_UNUSED(lParam)
+   HB_SYMBOL_UNUSED( lParam )
 
-	 nDelta := 0
-   wmsg := loword(wParam)
+   nDelta := 0
+   wmsg := LOWORD( wParam )
 
    IF msg = WM_VSCROLL .OR. msg = WM_HSCROLL
- 	    nMaxPos := IIF( msg = WM_VSCROLL, oForm:rect[4] - oForm:nCurHeight, oForm:rect[3] - oForm:nCurWidth )
-  	  IF wmsg =  SB_LINEDOWN
-		     IF ( oForm:nScrollPos >= nMaxPos)
-			      return 0
-			   endif  
-		     nDelta := min( nMaxPos/100, nMaxPos - oForm:nScrollPos )
-	    ELSEIF wmsg = SB_LINEUP
-		    if ( oForm:nScrollPos <= 0 )
-			     return 0
-			  endif  
-		    nDelta := -min( nMaxPos/100, oForm:nScrollPos )
+      nMaxPos := IIf( msg = WM_VSCROLL, oForm:rect[ 4 ] - oForm:nCurHeight, oForm:rect[ 3 ] - oForm:nCurWidth )
+      IF wmsg =  SB_LINEDOWN
+         IF ( oForm:nScrollPos >= nMaxPos )
+            RETURN 0
+         ENDIF
+         nDelta := Min( nMaxPos / 100, nMaxPos - oForm:nScrollPos )
+      ELSEIF wmsg = SB_LINEUP
+         IF ( oForm:nScrollPos <= 0 )
+            RETURN 0
+         ENDIF
+         nDelta := - Min( nMaxPos / 100, oForm:nScrollPos )
       ELSEIF wmsg = SB_PAGEDOWN
-		    if ( oForm:nScrollPos >= nMaxPos )
-			     return 0
-			  endif  
-		    nDelta := min( nMaxPos/10,nMaxPos - oForm:nScrollPos )
-	    ELSEIF wmsg = SB_THUMBPOSITION
-	      nPos := hiword( wParam )
-		    nDelta := nPos - oForm:nScrollPos
-	    ELSEIF wmsg = SB_PAGEUP
-	  	  if ( oForm:nScrollPos <= 0 )
-		    	return 0
-		    endif 	
-		    nDelta := -min( nMaxPos/10, oForm:nScrollPos )
-  	  ELSE
-  		  return 0
-		  ENDIF
- 	    oForm:nScrollPos += nDelta
-	    IF msg = WM_VSCROLL
-  	     setscrollpos( oForm:handle, SB_VERT, oForm:nScrollPos )
-	       ScrollWindow( oForm:handle, 0, -nDelta )
-	    ELSE
-   	     setscrollpos( oForm:handle, SB_HORZ, oForm:nScrollPos )
-	       ScrollWindow( oForm:handle, -nDelta, 0 )
-		  ENDIF  
-		  Return -1
-			 
-  ENDIF
-  RETURN Nil
+         IF ( oForm:nScrollPos >= nMaxPos )
+            RETURN 0
+         ENDIF
+         nDelta := Min( nMaxPos / 10, nMaxPos - oForm:nScrollPos )
+      ELSEIF wmsg = SB_THUMBPOSITION
+         nPos := HIWORD( wParam )
+         nDelta := nPos - oForm:nScrollPos
+      ELSEIF wmsg = SB_PAGEUP
+         IF ( oForm:nScrollPos <= 0 )
+            RETURN 0
+         ENDIF
+         nDelta := - Min( nMaxPos / 10, oForm:nScrollPos )
+      ELSE
+         RETURN 0
+      ENDIF
+      oForm:nScrollPos += nDelta
+      IF msg = WM_VSCROLL
+         setscrollpos( oForm:handle, SB_VERT, oForm:nScrollPos )
+         ScrollWindow( oForm:handle, 0, - nDelta )
+      ELSE
+         setscrollpos( oForm:handle, SB_HORZ, oForm:nScrollPos )
+         ScrollWindow( oForm:handle, - nDelta, 0 )
+      ENDIF
+      RETURN - 1
 
-  
+   ENDIF
+   RETURN Nil
+
+
 *---------------------------------------------------------
 
 STATIC FUNCTION onNotify( oWnd, wParam, lParam )
@@ -379,19 +379,19 @@ STATIC FUNCTION onNotify( oWnd, wParam, lParam )
    RETURN - 1
 
 STATIC FUNCTION onDestroy( oWnd )
-LOCAL aControls := oWnd:aControls
-LOCAL i, nLen   := Len( aControls )
+   LOCAL aControls := oWnd:aControls
+   LOCAL i, nLen   := Len( aControls )
 
    FOR i := 1 TO nLen
-       aControls[ i ]:End()
+      aControls[ i ]:END()
    NEXT
-   nLen := Len( oWnd:aObjects )   
+   nLen := Len( oWnd:aObjects )
    FOR i := 1 TO nLen
-       oWnd:aObjects[ i ]:End()
+      oWnd:aObjects[ i ]:END()
    NEXT
-   oWnd:End()
+   oWnd:END()
 
- RETURN 1
+   RETURN 1
 
 
 STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
@@ -446,15 +446,15 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
    LOCAL oItem, iCont, nw1, nh1, aCoors
 
    HB_SYMBOL_UNUSED( wParam )
-   
-   nw1 := oWnd:nWidth 
+
+   nw1 := oWnd:nWidth
    nh1 := oWnd:nHeight
    aCoors := GetWindowRect( oWnd:handle )
-   *oWnd:nWidth := LoWord( lParam )  //aControls[3]-aControls[1] 
-   *oWnd:nHeight := HiWord( lParam ) //aControls[4]-aControls[2] 
-   oWnd:nWidth := aCoors[3] - aCoors[1] 
-   oWnd:nHeight := aCoors[4] - aCoors[2] 
-   oWnd:Anchor(oWnd,nw1,nh1, oWnd:nWidth, oWnd:nHeight )
+   *oWnd:nWidth := LoWord( lParam )  //aControls[3]-aControls[1]
+   *oWnd:nHeight := HiWord( lParam ) //aControls[4]-aControls[2]
+   oWnd:nWidth := aCoors[ 3 ] - aCoors[ 1 ]
+   oWnd:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
+   oWnd:Anchor( oWnd, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
 
    #ifdef __XHARBOUR__
 

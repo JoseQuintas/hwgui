@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.130 2008-11-17 12:44:14 lfbasso Exp $
+ *$Id: guilib.ch,v 1.131 2008-11-26 21:09:43 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -229,10 +229,12 @@
             [ ON SIZE <bSize> ]                 ;
             [ BARWIDTH <maxpos> ]               ;
             [ QUANTITY <nRange> ]               ;
+            [ <lVert: VERTICAL>]                ;
+            [ ANIMATION <nAnimat> ]             ;
             [ TOOLTIP <ctooltip> ]              ;
             =>                                  ;
             <oPBar> :=  HProgressBar():New( <oWnd>,<nId>,<x>,<y>,<nWidth>, ;
-                       <nHeight>,<maxpos>,<nRange>, <bInit>,<bSize>,<bDraw>,<ctooltip> )
+                       <nHeight>,<maxpos>,<nRange>, <bInit>,<bSize>,<bDraw>,<ctooltip>,<nAnimat>,<.lVert.> )
 
 #xcommand ADD STATUS [<oStat>] [ TO <oWnd> ] ;
             [ ID <nId> ]           ;
@@ -395,7 +397,8 @@
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<caption>,,<nStyle>,<x>,<y>,<width>, ;
               <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
-              <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.>,,<.lPassword.>,<bKeyDown>, <bChange>,<bOther> )
+              <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.>,,<.lPassword.>,<bKeyDown>, <bChange>,<bOther> );;
+    [ <oEdit>:name := <(oEdit)> ]               
 
 
 #xcommand REDEFINE EDITBOX [ <oEdit> ] ;
@@ -1078,7 +1081,8 @@
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;
                    <nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,,,  ;
                    <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,;
-                   <.lnoborder.>,<nMaxLength>,<.lPassword.>,<bKeyDown>,<bChange>,<bOther>)
+                   <.lnoborder.>,<nMaxLength>,<.lPassword.>,<bKeyDown>,<bChange>,<bOther>);;
+    [ <oEdit>:name := <(oEdit)> ]                    
 
 /* Added MULTILINE: AJ: 11-03-2007*/
 #xcommand REDEFINE GET [ <oEdit> VAR ] <vari>  ;

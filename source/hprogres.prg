@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.9 2008-11-24 10:02:14 mlacecilia Exp $
+ * $Id: hprogres.prg,v 1.10 2008-11-26 21:09:43 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class
@@ -12,30 +12,40 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 
+
 CLASS HProgressBar INHERIT HControl
 
 CLASS VAR winclass   INIT "msctls_progress32"
    DATA  maxPos
+   DATA  nRange
    DATA  lNewBox
    DATA  nCount INIT 0
    DATA  nLimit
+	 DATA  nAnimation
 
-   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit, bSize, bPaint, ctooltip )
+   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit, bSize, bPaint, ctooltip, nAnimation, lVertical )
    METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, bInit, bSize, bPaint, ctooltip )
+   METHOD Init()
    METHOD Activate()
    METHOD Increment() INLINE UpdateProgressBar( ::handle )
    METHOD STEP()
    METHOD SET( cTitle, nPos )
    METHOD Close()
+   METHOD End() INLINE ::Close()
 
 ENDCLASS
 
-METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit, bSize, bPaint, ctooltip ) CLASS HProgressBar
+METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit, bSize, bPaint, ctooltip, nAnimation, lVertical ) CLASS HProgressBar
 
-   Super:New( oWndParent, nId,, nLeft, nTop, nWidth, nHeight,, bInit, bSize, bPaint, ctooltip )
+   ::Style := IIF( lvertical != Nil .AND. lVertical, PBS_VERTICAL, 0 )
+	 ::Style += IIF( nAnimation != Nil .AND. nAnimation > 0, PBS_MARQUEE, 0 )
+	 ::nAnimation := nAnimation
+
+   Super:New( oWndParent, nId, ::Style, nLeft, nTop, nWidth, nHeight,, bInit, bSize, bPaint, ctooltip )
 
    ::maxPos  := IIf( maxPos == Nil, 20, maxPos )
    ::lNewBox := .F.
+   ::nRange := Iif( nRange != Nil .AND. nRange != 0, nRange, 2 )
    ::nLimit := IIf( nRange != Nil, Int( nRange / ::maxPos ), 1 )
 
    ::Activate()
@@ -50,8 +60,8 @@ METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit ) CLA
    nHeight := IIf( nHeight == Nil, 55, nHeight )
    nLeft   := IIf( nLeft == Nil, 0, nLeft )
    nTop    := IIf( nTop == Nil, 0, nTop )
-   nWidth  := IIf( nWidth == Nil, 220, nWidth )
-   nHeight := IIf( nHeight == Nil, 55, nHeight )
+   //nWidth  := IIf( nWidth == Nil, 220, nWidth )
+  // nHeight := IIf( nHeight == Nil, 55, nHeight )
    ::nLeft := 20
    ::nTop  := 25
    ::nWidth  := nWidth - 40
@@ -83,6 +93,19 @@ METHOD Activate CLASS HProgressBar
       ::Init()
    ENDIF
    RETURN Nil
+
+METHOD Init  CLASS HProgressBar
+
+   IF ! ::lInit
+      Super:Init()
+      SendMessage( ::handle, PBM_SETRANGE, 0, MAKELPARAM( 0, ::maxPos ) )
+	    SendMessage( ::handle, PBM_SETSTEP, ::nRange, 0 )   
+	    IF ::nAnimation != Nil .AND. ::nAnimation > 0
+	       SendMessage( ::handle, PBM_SETMARQUEE, 1, ::nAnimation )
+	    ENDIF   
+   ENDIF
+
+  RETURN Nil
 
 METHOD STEP()
 

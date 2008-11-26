@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.66 2008-11-01 14:59:49 lfbasso Exp $
+ *$Id: windows.ch,v 1.67 2008-11-26 21:09:43 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -19,6 +19,7 @@
 
 #define WM_ERASEBKGND                   20   // 0x0014
 #define WM_ENDSESSION                   22   // 0x0016
+#define WM_ACTIVATEAPP                  28 
 #define WM_GETMINMAXINFO                36   // 0x0024
 #define WM_NEXTDLGCTL                   40   // 0x0028
 #define WM_DRAWITEM                     43   // 0x002B
@@ -1193,6 +1194,17 @@
 #define PBS_PRESSED   3
 #define PBS_DISABLED  4
 #define PBS_DEFAULTED 5
+#DEFINE PBS_SMOOTH       1 
+#DEFINE PBS_VERTICAL     4 
+#DEFINE PBS_MARQUEE      8 
+
+#DEFINE PBM_SETRANGE     WM_USER+1
+#DEFINE PBM_SETPOS       WM_USER+2
+#define PBM_DELTAPOS     WM_USER+3
+#DEFINE PBM_SETSTEP      WM_USER+4
+#DEFINE PBM_SETRANGE32   WM_USER+6
+#DEFINE PBM_SETMARQUEE   WM_USER+10
+
 #define TMT_CONTENTMARGINS 3602
 
 

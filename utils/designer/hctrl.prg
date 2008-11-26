@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.26 2008-09-10 18:22:34 mlacecilia Exp $
+ * $Id: hctrl.prg,v 1.27 2008-11-26 13:55:00 lculik Exp $
  *
  * Designer
  * HControlGen class
@@ -172,7 +172,7 @@ METHOD Activate() CLASS HControlGen
 
  Memvar oCtrl
 
-   IF ::oParent != Nil .AND. ::oParent:handle != 0
+   IF ::oParent != Nil .AND. !empty(::oParent:handle) // != 0
       IF ::cCreate != Nil
          Private oCtrl := Self
          ::handle := &( ::cCreate )

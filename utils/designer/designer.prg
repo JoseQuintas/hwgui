@@ -1,7 +1,7 @@
 /*
 /*
 /*
- * $Id: designer.prg,v 1.34 2008-09-08 16:53:29 mlacecilia Exp $
+ * $Id: designer.prg,v 1.35 2008-11-26 13:55:00 lculik Exp $
  *
  * Designer
  * Main file
@@ -803,7 +803,7 @@ FUNCTION SoControles
 LOCAL opanelx, oTabx
 Local oFont
 
-   IF hwg_findwindow(0,"Toolbars - Classes ") > 0
+   IF !empty(hwg_findwindow(0,"Toolbars - Classes ") )// > 0
      Showwindow(oDlgx:handle)
      SetFocus( oDlgx:handle )
      RETURN NIL

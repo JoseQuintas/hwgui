@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.70 2008-11-19 12:51:33 lculik Exp $
+ * $Id: control.c,v 1.71 2008-11-26 13:55:00 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1069,7 +1069,8 @@ void CALLBACK TimerProc( HWND hWnd, UINT message, UINT idTimer, DWORD dwTime )
    {
       hb_vmPushSymbol( hb_dynsymSymbol( pSymTest ) );
       hb_vmPushNil();                   /* places NIL at self */
-      hb_vmPushLong( (LONG ) hWnd );    /* pushes parameters on to the hvm stack */
+//      hb_vmPushLong( (LONG ) hWnd );    /* pushes parameters on to the hvm stack */
+      HB_PUSHITEM( hWnd );
       hb_vmPushLong( (LONG ) idTimer );
       hb_vmPushLong( (LONG ) dwTime );
       hb_vmDo( 3 );  /* where iArgCount is the number of pushed parameters */

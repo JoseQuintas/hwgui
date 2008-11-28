@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.989 2008-11-28 18:00:47 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.990 2008-11-28 23:24:34 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,7 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2008-11-28 16:00 UTC-0300 Sandro R. R. Freire <sandrorrfreire>
+2008-11-28 21:00 UTC-0300 Sandro R. R. Freire <sandrorrfreire <at> yahoo.com.br>
+  * utils\hwmake\hwmake.prg
+    Minor Fix
+    
+2008-11-28 16:00 UTC-0300 Sandro R. R. Freire <sandrorrfreire <at> yahoo.com.br>
   * source\guimain.prg
     New Function WAITRUN
   * utils\hwmake\hwmake.prg

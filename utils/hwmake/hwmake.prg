@@ -1,5 +1,5 @@
 /*
- *$Id: hwmake.prg,v 1.8 2008-11-28 18:00:47 sandrorrfreire Exp $
+ *$Id: hwmake.prg,v 1.9 2008-11-28 23:24:34 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library 
  * 
@@ -442,7 +442,7 @@ For Each i in oBrowse1:aArray
       fErase( cLogErro )
       fErase( cObjName )
       fErase( cFileNoExt( cObjName ) + ".obj" )
-      If ExecuteCommand(  cExeHarbour, cPrgName + " -o" + cObjName + " " + Alltrim( oPrgFlag:GetText() ) + " -n -i"+cHarbour+"\include;"+cHwGUI+"\include"+If( !Empty(Alltrim( oIncFolder:GetText() ) ), ";"+Alltrim( oIncFolder:GetText() ), "")+">" + cLogErro) <> 0
+      If ExecuteCommand(  cExeHarbour, cPrgName + " -o" + cObjName + " " + Alltrim( oPrgFlag:GetText() ) + " -n -i"+cHarbour+"\include;"+cHwGUI+"\include"+If( !Empty(Alltrim( oIncFolder:GetText() ) ), ";"+Alltrim( oIncFolder:GetText() ), "")) <> 0
          MsgInfo( "Error to execute HARBOUR.EXE!!!", "HwMake" )         
          Return Nil
       EndIf        
@@ -577,6 +577,7 @@ cLib := StrTran( cLib, Chr(179), Chr(13) + Chr(10 ) )
 Return cLib
  
 Function ExecuteCommand( cProc, cSend ) 
+ 
 Return WaitRun( cProc + " " + cSend ) 
 
 Function BrwdelIten( oBrowse )

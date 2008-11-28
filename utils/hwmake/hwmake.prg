@@ -1,5 +1,5 @@
 /*
- *$Id: hwmake.prg,v 1.9 2008-11-28 23:24:34 sandrorrfreire Exp $
+ *$Id: hwmake.prg,v 1.10 2008-11-28 23:55:14 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library 
  * 
@@ -442,24 +442,23 @@ For Each i in oBrowse1:aArray
       fErase( cLogErro )
       fErase( cObjName )
       fErase( cFileNoExt( cObjName ) + ".obj" )
-      If ExecuteCommand(  cExeHarbour, cPrgName + " -o" + cObjName + " " + Alltrim( oPrgFlag:GetText() ) + " -n -i"+cHarbour+"\include;"+cHwGUI+"\include"+If( !Empty(Alltrim( oIncFolder:GetText() ) ), ";"+Alltrim( oIncFolder:GetText() ), "")) <> 0
-         MsgInfo( "Error to execute HARBOUR.EXE!!!", "HwMake" )         
-         Return Nil
-      EndIf        
- 
+      If ExecuteCommand(  cExeHarbour, cPrgName + " -o" + cObjName + " " + Alltrim( oPrgFlag:GetText() ) + " -n -i"+cHarbour+"\include;"+cHwGUI+"\include"+If( !Empty(Alltrim( oIncFolder:GetText() ) ), ";"+Alltrim( oIncFolder:GetText() ), ""),  cFileNoExt( cObjName ) + ".log" ) <> 0
   
-      cErrText := Memoread( cLogErro ) 
+         cErrText := Memoread( cLogErro ) 
        
-      lEnd     := 'C2006' $ cErrText .OR. 'No code generated' $ cErrText .or. "Error E" $ cErrText .or. "Error F" $ cErrText
-      If lEnd
-         ErrorPreview( Memoread( cLogErro ) )           
-         Return Nil
-      Else 
-         If File( cLogErro )
-          //  fErase( cLogErro )
+         lEnd     := 'C2006' $ cErrText .OR. 'No code generated' $ cErrText .or. "Error E" $ cErrText .or. "Error F" $ cErrText
+         If lEnd
+            ErrorPreview( Memoread( cLogErro ) )           
+            Return Nil
+         Else 
+            If File( cLogErro )
+             //  fErase( cLogErro )
+            EndIf   
          EndIf   
+         Return Nil
+      
       EndIf   
-     
+         
    EndIf
    cList    += cObjName + " " 
    If At( cMainPrg,cObjName ) == 0      
@@ -576,9 +575,24 @@ cLib := Substr( Alltrim( cLib ), 1, Len( Alltrim( cLib ) ) - 2 )
 cLib := StrTran( cLib, Chr(179), Chr(13) + Chr(10 ) )
 Return cLib
  
-Function ExecuteCommand( cProc, cSend ) 
- 
-Return WaitRun( cProc + " " + cSend ) 
+Function ExecuteCommand( cProc, cSend, cLog ) 
+Local cFile := "execcom.bat"
+Local nRet
+If cLog == Nil
+   cLog := ""
+Else
+   cLog := " > " + cFileNoPath( cLog ) 
+EndIf      
+If File( cFile )
+   fErase( cFile )
+EndIf 
+Memowrit( cFile, cProc + " " + cSend + cLog ) 
+nRet := WaitRun( cFile ) 
+If File( cFile )
+   fErase( cFile )
+EndIf
+
+Return nRet
 
 Function BrwdelIten( oBrowse )
 Adel(oBrowse:aArray, oBrowse:nCurrent)

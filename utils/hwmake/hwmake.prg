@@ -1,5 +1,5 @@
 /*
- *$Id: hwmake.prg,v 1.7 2008-11-20 15:03:18 sandrorrfreire Exp $
+ *$Id: hwmake.prg,v 1.8 2008-11-28 18:00:47 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library 
  * 
@@ -384,6 +384,8 @@ Local cRun
 Local cNameExe
 Local nRep
 Local cLogErro
+Local cErrText
+Local lEnd
 
 cPathFile := cPathNoFile( oMainPrg:GetText() )
 If !Empty( cPathFile )
@@ -436,32 +438,35 @@ For Each i in oBrowse1:aArray
    EndIF       
 
    If lCompile 
-      cLogErro := StrTran( cObjName, ".c", ".log" )
+      cLogErro := cFileNoPath( cFileNoExt( cObjName ) ) + ".log" 
+      fErase( cLogErro )
       fErase( cObjName )
-      If ExecuteCommand(  cExeHarbour, cPrgName + " -o" + cObjName + " " + Alltrim( oPrgFlag:GetText() ) + " -n -i"+cHarbour+"\include;"+cHwGUI+"\include"+If( !Empty(Alltrim( oIncFolder:GetText() ) ), ";"+Alltrim( oIncFolder:GetText() ), "")+">" + cLogErro) == 0
+      fErase( cFileNoExt( cObjName ) + ".obj" )
+      If ExecuteCommand(  cExeHarbour, cPrgName + " -o" + cObjName + " " + Alltrim( oPrgFlag:GetText() ) + " -n -i"+cHarbour+"\include;"+cHwGUI+"\include"+If( !Empty(Alltrim( oIncFolder:GetText() ) ), ";"+Alltrim( oIncFolder:GetText() ), "")+">" + cLogErro) <> 0
          MsgInfo( "Error to execute HARBOUR.EXE!!!", "HwMake" )         
          Return Nil
-      EndIf  
-      nRep := 0
-      Do While .T.
-         If !File( cPathFile + "\" + cObjName )
-            ++nRep
-            inkey(0.5)            
-            IF nRep > 150
-               MsgInfo("No Created " + cPathFile + "\" + cObjName + "!", "HwMake" )
-               Return nil
-            EndIF   
-         else
-            exit   
-         EndIF
-      enddo
+      EndIf        
+ 
+  
+      cErrText := Memoread( cLogErro ) 
+       
+      lEnd     := 'C2006' $ cErrText .OR. 'No code generated' $ cErrText .or. "Error E" $ cErrText .or. "Error F" $ cErrText
+      If lEnd
+         ErrorPreview( Memoread( cLogErro ) )           
+         Return Nil
+      Else 
+         If File( cLogErro )
+          //  fErase( cLogErro )
+         EndIf   
+      EndIf   
+     
    EndIf
    cList    += cObjName + " " 
    If At( cMainPrg,cObjName ) == 0      
       cListObj += StrTran( cObjName, ".c", ".obj" ) + " " + CRLF
    EndIf   
    cRun := " -v -y -c " +Alltrim( oCFlag:GetText() ) + " -O2 -tW -M -I"+cHarbour+"\include;"+cHwGUI+"\include;"+cBCC55+"\include " + "-o"+StrTran( cObjName, ".c", ".obj" ) + " " + cObjName
-   If ExecuteCommand( cBCC55 + "\bin\bcc32.exe", cRun )  == 0
+   If ExecuteCommand( cBCC55 + "\bin\bcc32.exe", cRun ) <> 0
       MsgInfo("No Created Object files!", "HwMake" )
       Return nil
    EndIF
@@ -478,7 +483,7 @@ Next
                         
 //ResourceFiles
 For Each i in oBrowse4:aArray     
-   If ExecuteCommand( cBCC55 + "\bin\brc32", "-r "+cFileNoExt(i)+" -fo"+cObj+"\"+cFileNoPath( cFileNoExt( i ) ) ) == 0
+   If ExecuteCommand( cBCC55 + "\bin\brc32", "-r "+cFileNoExt(i)+" -fo"+cObj+"\"+cFileNoPath( cFileNoExt( i ) ) ) <> 0
       MsgInfo("Error in Resource File " + i + "!", "HwMake" )
       Return Nil
    EndIf   
@@ -506,7 +511,7 @@ EndIF
 
 Memowrit( cMainPrg + ".bc ", cMake )
 
-If ExecuteCommand( cBCC55 + "\bin\ilink32", "-v -Gn -aa -Tpe @"+cMainPrg + ".bc" ) == 0
+If ExecuteCommand( cBCC55 + "\bin\ilink32", "-v -Gn -aa -Tpe @"+cMainPrg + ".bc" ) <> 0
       MsgInfo("No link file " + cMainPrg +"!", "HwMake" ) 
       Return Nil
 EndIf
@@ -571,16 +576,8 @@ cLib := Substr( Alltrim( cLib ), 1, Len( Alltrim( cLib ) ) - 2 )
 cLib := StrTran( cLib, Chr(179), Chr(13) + Chr(10 ) )
 Return cLib
  
-Function ExecuteCommand( cRun, cParam )
-Local nRet := 1
-  
-Try
-   WinExec(   cRun + " " + cParam)
-Catch e
-   nRet := 0
-End
-inkey(0.5) 
-Return nRet 
+Function ExecuteCommand( cProc, cSend ) 
+Return WaitRun( cProc + " " + cSend ) 
 
 Function BrwdelIten( oBrowse )
 Adel(oBrowse:aArray, oBrowse:nCurrent)
@@ -626,3 +623,19 @@ Local oSay
    ACTIVATE DIALOG oModDlg
    
 Return Nil
+
+
+Static Function ErrorPreview( cMess )
+Local oDlg, oEdit
+
+   INIT DIALOG oDlg TITLE "Build Error" ;
+        AT 92,61 SIZE 500,500
+
+   @ 10,10 EDITBOX oEdit CAPTION cMess SIZE 480,440 STYLE WS_VSCROLL+WS_HSCROLL+ES_MULTILINE+ES_READONLY ;
+        COLOR 16777088 BACKCOLOR 0 ;
+        ON GETFOCUS {||SendMessage(oEdit:handle,EM_SETSEL,0,0)}
+
+   @ 200,460 BUTTON "Close" ON CLICK {||EndDialog()} SIZE 100,32 
+
+   oDlg:Activate()
+Return Nil 

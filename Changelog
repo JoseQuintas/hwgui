@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.990 2008-11-28 23:24:34 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.991 2008-11-29 02:47:29 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-11-29 00:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + add in #xcommand attrib to name property in all objects basead in HCONTROL
+    [ <oObject>:name := <(oObject)> ]   
+  * source\hedit.prg
+    ! minor fix in GetApplyKey
+  * source\htab.prg
+    ! minor fix in TCN_CLICK
 
 2008-11-28 21:00 UTC-0300 Sandro R. R. Freire <sandrorrfreire <at> yahoo.com.br>
   * utils\hwmake\hwmake.prg

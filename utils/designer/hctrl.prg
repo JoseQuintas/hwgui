@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.27 2008-11-26 13:55:00 lculik Exp $
+ * $Id: hctrl.prg,v 1.28 2008-11-30 18:47:58 lculik Exp $
  *
  * Designer
  * HControlGen class
@@ -42,6 +42,7 @@ CLASS HControlGen INHERIT HControl
    DATA cCreate
    DATA Adjust        INIT 0
    DATA lEmbed        INIT .F.
+   DATA LocalOnClickParam init ""
 
 
    METHOD New( oWndParent, xClass, aProp )

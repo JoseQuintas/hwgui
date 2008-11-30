@@ -65,6 +65,11 @@ ENDFUNC
 
 FUNCTION Tool2Prg
    PARAMETERS oCtrl
+   Local nLocalParamPos :=0
+   Local lsubParameter := .f.
+   PRIVATE cLocalParam:=""
+   PRIVATE cFormParameters:=""
+   
 
    Private cName := "", cTool := "", cId :="", temp ,i,j,k, cTip
 	 Private   oCtrl1, aMethods
@@ -91,31 +96,61 @@ FUNCTION Tool2Prg
         cTool += IIF((temp := oCtrl1:GetProp("State")) != Nil .AND. !empty(temp),temp ,"4")+", "
         cTool += IIF((temp := oCtrl1:GetProp("Style")) != Nil .AND. !empty(temp),temp ,"0")+", "
         cTool += IIF((temp := oCtrl1:GetProp("Caption")) != Nil .AND. !empty(temp),'"'+temp+'"','" "')+" "
-        cTip  := Iif((temp:=oCtrl1:GetProp("ToolTip")) != Nil .AND. !empty(temp),"'"+temp+"'","")
+        cTip  := Iif((temp:= oCtrl1:GetProp("ToolTip")) != Nil .AND. !empty(temp),"'"+temp+"'","")
         // Methods ( events ) for the control
         k := 1
         aMethods := {}
         DO WHILE k <= Len( oCtrl1:aMethods )
           IF oCtrl1:aMethods[ k, 2 ] != Nil .AND. ! Empty( oCtrl1:aMethods[ k, 2 ] )
+            
             IF Lower( Left( oCtrl1:aMethods[ k, 2 ],10 ) ) == "parameters"
                // Note, do we look for a CR or a LF??
                j := At( _Chr(13), oCtrl1:aMethods[ k, 2 ] )
-               temp := Substr( oCtrl1:aMethods[ k, 2 ], 12, j - 12 )
+               temp := Substr( oCtrl1:aMethods[ k, 2 ], 12, j - 12 )               
+         
+            ELSEIF Lower( Left( oCtrl1:aMethods[ k, 2 ],1 ) ) == "("
+               // Note, do we look for a CR or a LF??
+               j := At( ")", oCtrl1:aMethods[ k, 2 ] )
+               cLocalParam := Substr( oCtrl1:aMethods[ k, 2 ], 1, j  )
+
+               temp:=""
+               lsubParameter := .t.
+
             ELSE
                temp := ""
             ENDIF
+            if !empty( oCtrl1:GetProp("LocalOnClickParam") )
+                cFormParameters := oCtrl1:GetProp("LocalOnClickParam")
+            endif
+               
             //cMethod := " " + Upper(Substr(oCtrl:aMethods[i,1],1))
             IF Valtype( cName := Callfunc( "FUNC_NAME", { oCtrl1, k } ) ) == "C"
-               temp :=  " {|" + temp + "| " +  cName + "( " + temp + " ) }" 
+               if !empty(cLocalParam)
+              // Substr( oCtrl1:aMethods[ k, 2 ], 1, j  )
+                  if lsubParameter
+                     temp :=  " {|" + temp + "| " +  cName +"("+ cFormParameters + ")  }"
+                  else
+                     temp :=  " {|" + temp + "| " +  cName + cLocalParam + "  }"
+                  endif
+                  if lsubParameter
+                     lsubParameter := .f.
+                  endif
+               else
+                  temp :=  " {|" + temp + "| " +  cName + "( " + temp + " ) }"
+               endif
             ELSE
-              temp := " {|" + temp + "| " + Iif( Len( cName ) == 1, cName[ 1 ], cName[ 2 ] ) + " }" 
-	          ENDIF
-	          AADD(aMethods,{lower(oCtrl1:aMethods[k,1]),temp})
+               temp := " {|" + temp + "| " + Iif( Len( cName ) == 1, cName[ 1 ], cName[ 2 ] ) + " }" 
+            ENDIF
+            AADD(aMethods,{lower(oCtrl1:aMethods[k,1]),temp})
           ENDIF
           k ++
         ENDDO
         //IF  k > 1
-			  cTool += ","+CallFunc( "Bloco2Prg", { aMethods, "onClick" })
+//        if !empty(cFormParameters)
+//                          cTool += ",{||"+ cFormParameters +"}")
+//        else
+                                  cTool += ","+CallFunc( "Bloco2Prg", { aMethods, "onClick" })
+//        endif
         //ELSE
    			//  cTool += ",{|| .T. }"
         //ENDIF
@@ -328,9 +363,8 @@ PARAMETERS aMetodos,cmetodo
    // Methods ( events ) for the control
   Private z ,temp
   
-	z := ASCAN(aMetodos, {|aVal| aVal[1] == lower(cmetodo)})    
-	temp := IIF( z > 0, aMetodos[z,2] ,"" )
-  //Fwrite( han, "," + temp)
+	z := ASCAN(aMetodos, {|aVal| aVal[1] == lower(cmetodo)})
+	temp := IIF( z > 0, aMetodos[z,2] ,"" )        
 	Return TEMP
 	
 ENDFUNC
@@ -492,6 +526,11 @@ ENDFUNC
 FUNCTION Ctrl2Prg
 
    PARAMETERS oCtrl
+   Local nLocalParamPos :=0
+   Local lsubParameter := .f.
+
+   PRIVATE cLocalParam:=""
+   PRIVATE cFormParameters:=""
 
    PRIVATE stroka := "   @ ", classname, cStyle, i, j, cName, temp, varname, cMethod
    PRIVATE nLeft, nTop, nWidth, nHeight, lGroup 
@@ -513,6 +552,9 @@ FUNCTION Ctrl2Prg
          ENDIF
          temp := temp:oContainer
       ENDDO
+      if !empty( oCtrl:GetProp("LocalOnClickParam") )
+         cFormParameters := oCtrl:GetProp("LocalOnClickParam")
+      endif
 			
       stroka += Ltrim( Str(nLeft) ) + "," + Ltrim( Str(nTop) ) + " "
 			
@@ -846,6 +888,12 @@ FUNCTION Ctrl2Prg
                j := At( _Chr(13), oCtrl:aMethods[ i, 2 ] )
 
                temp := Substr( oCtrl:aMethods[ i, 2 ], 12, j - 12 )
+            ELSEIF Lower( Left( oCtrl:aMethods[ i, 2 ],1 ) ) == "("
+               // Note, do we look for a CR or a LF??
+               j := At( ")", oCtrl:aMethods[ i, 2 ] )
+               cLocalParam := Substr( oCtrl:aMethods[ i, 2 ], 1, j  )
+               temp:=""
+               lsubParameter := .t.              
             ELSE
                temp := ""
             ENDIF
@@ -855,8 +903,10 @@ FUNCTION Ctrl2Prg
 
                cMethod := Iif( Lower(oCtrl:aMethods[ i, 1 ] ) == "ongetfocus", "WHEN ", "VALID " )
 
-            ELSE
+            ELSE 
+               
                cMethod := "ON " + Upper(Substr(oCtrl:aMethods[i,1],3))
+
 
             ENDIF
 
@@ -869,8 +919,15 @@ FUNCTION Ctrl2Prg
            		  stroka := "ON INIT {|| " + cName + " := HTimer():New( " + cFormName + ",," + IIF(temp != Nil,temp,'0') + "," + stroka + " )}"
                 Fwrite( han, " ; //OBJECT TIMER " + _Chr(10) + space(8) + stroka)
            		ELSE
+
+                   if lsubParameter
+                     //temp :=  " {|" + temp + "| " +  cName +"("+ cFormParameters + ")  }"
+              	      Fwrite( han, " ;" + _Chr(10) + Space(8) + cMethod + "{ ||" +cName +"("+ cFormParameters + ")  }"  )                     
+                   ELSE
+                  		
                Fwrite( han, " ; " + _Chr(10) + Space(8) + cMethod + " {|" + temp + "| " + ;
                             cName + "( " + temp + " ) }" )
+               endif             
               ENDIF              
             ELSE
               //
@@ -883,9 +940,16 @@ FUNCTION Ctrl2Prg
 	              stroka := "ON INIT {|| " + cName + " := HTimer():New( " + cFormName + ",," + temp + "," + stroka + " )}"
                 Fwrite( han, " ; //OBJECT TIMER " + _Chr(10) + space(8) + stroka)
        	  		ELSE
-              	Fwrite( han, " ;" + _Chr(10) + Space(8) + cMethod + " {|" + temp + "| " +;
+
+                   if lsubParameter
+                     //temp :=  " {|" + temp + "| " +  cName +"("+ cFormParameters + ")  }"
+              	      Fwrite( han, " ;" + _Chr(10) + Space(8) + cMethod + "{ ||" +cName +"("+ cFormParameters + ")  }"  )                     
+                   ELSE
+              	      Fwrite( han, " ;" + _Chr(10) + Space(8) + cMethod + " {|" + temp + "| " +;
                             Iif( Len( cName ) == 1, cName[ 1 ], cName[ 2 ] ) + " }" )
-							ENDIF                            
+                   endif         
+                            
+				ENDIF                            
            ENDIF
 
          ENDIF
@@ -981,7 +1045,7 @@ Private aName :=  { {"SAY"}, {"BUTTON"}, {"BUTTONEX"}, {"SHADEBUTTON"}, {"CHECKB
 Private nMaxId := 0
 Private cFormName := ""
 Private cStyle := "", cFunction
-
+PRIVATE cTempParameter,aParameters
   cFunction := STRTRAN(oForm:filename,".prg","")
   //  
 
@@ -992,26 +1056,54 @@ Private cStyle := "", cFunction
   //Fwrite( han,'#include "windows.ch"'+ _Chr(10)  )
   //Fwrite( han,'#include "guilib.ch"' + _Chr(10)+ _Chr(10) )
   Fwrite( han,'#include "hwgui.ch"' + _Chr(10)+ _Chr(10) )
+  Fwrite( han,'#include "ttable.ch"' + _Chr(10)+ _Chr(10) )
+  Fwrite( han,'#include "common.ch"' + _Chr(10)+ _Chr(10) )
+
   
   //Fwrite( han, "FUNCTION " + "_" + Iif( cName != Nil, cName, "Main" ) + _Chr(10)  )
   Fwrite( han, "FUNCTION " + "_" + Iif( cName != Nil, cFunction, cFunction ) + _Chr(10)  )
 
   // Declare 'Private' variables
   IF cName != Nil
-    Fwrite( han, "PRIVATE " + cName + _Chr(10) )
+//    Fwrite( han, "PRIVATE " + cName + _Chr(10) )
+     Fwrite( han, "Local " + cName + _Chr(10) )
   ENDIF
 
   i := 1
   stroka := ""
   DO WHILE i <= aLen
     IF ( temp := aControls[i]:GetProp( "Name" ) ) != Nil .AND. ! Empty( temp )
-       stroka += Iif( Empty(stroka), "PRIVATE ", ", " ) + temp
+//       stroka += Iif( Empty(stroka), "PRIVATE ", ", " ) + temp
+       stroka += Iif( Empty(stroka), "LOCAL ", ", " ) + temp
+
     ENDIF
+    
     i ++
   ENDDO
 
   IF ! Empty( stroka )
-     Fwrite( han, stroka )
+
+//     Fwrite( han, stroka )
+      aParameters := hb_atokens(stroka,", ")
+    
+      stroka := ""
+      i:= 1
+      while i <= len(  aParameters )
+
+      if len(stroka) < 76
+         stroka += aParameters[i]+", "
+      else
+         Fwrite( han, _Chr(10) + substr(stroka,1,len(stroka)-2 ) )
+         stroka := "LOCAL "
+      endif
+      i++
+      enddo
+   
+  //  stroka := "LOCAL " + stroka
+    Stroka += _Chr(10) //+ "PUBLIC oDlg"
+
+    Fwrite( han, _Chr(10) + substr(stroka,1,rat(',',stroka)-1) )
+
   ENDIF
 
   stroka := ""
@@ -1024,10 +1116,32 @@ Private cStyle := "", cFunction
   ENDDO
 
   IF ! Empty( stroka )
-    stroka := " PRIVATE " + stroka
-    Stroka += _Chr(10) //+ "PUBLIC oDlg"
+//    stroka := " PRIVATE " + stroka
+      aParameters := hb_atokens(stroka,", ")
+    
+      stroka := "LOCAL "
+      i:= 1
+      while i <= len(  aParameters )
+//      para testar se variavel tem : no nome
 
-    Fwrite( han, _Chr(10) + stroka )
+      if len(stroka) < 76
+         if at(":",aParameters[i] ) ==0
+         stroka += aParameters[i]+", "
+         endif
+      else
+         if UPPER( alltrim(stroka )) =="LOCAL" .and. len(UPPER(alltrim(stroka)))>5
+            Fwrite( han, _Chr(10) + substr(stroka,1,rat(',',stroka)-1) )
+         endif
+         stroka := "LOCAL "
+      endif
+      i++
+      enddo
+   
+  //  stroka := " LOCAL " + stroka
+    Stroka += _Chr(10) //+ "PUBLIC oDlg"
+    if UPPER( alltrim(stroka )) =="LOCAL" .and. len(UPPER(alltrim(stroka)))>5
+       Fwrite( han, _Chr(10) + stroka )
+    endif
   ENDIF
   
   // DEFINIR AS VARIVEIS DE VARIABLES
@@ -1036,7 +1150,8 @@ Private cStyle := "", cFunction
       stroka :=  _chr(10)
       DO WHILE j <= len(temp)
         // nando adicionu o PRIVATE PARA EVITAR ERROS NO CODIGO
-      	stroka += "PRIVATE "+temp[j] + _chr(10)
+//        stroka += "PRIVATE "+temp[j] + _chr(10)
+        stroka += "LOCAL "+temp[j] + _chr(10)
       	j ++
       ENDDO	
       Fwrite( han, _Chr(10) + stroka )

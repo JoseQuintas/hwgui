@@ -127,8 +127,9 @@
          <property name="Font" type="O" />
          <property name="3DLook" type="L" value="True" />
          <property name="WordWrap" type="L" value="False" />
-	   <property name="ToolTip" type="C" value=""/>
-	   <property name="Enabled" type="L" value="True" />
+         <property name="ToolTip" type="C" value=""/>
+         <property name="Enabled" type="L" value="True" />
+         <property name="LocalOnClickParam" type="C" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onClick" />
@@ -663,7 +664,8 @@
          <property name="BmpLeft" type="N" value="0" />
          <property name="BmpTop" type="N" value="0" />
          <property name="lCheck" type="L" value="False"/>
-    	   <property name="ToolTip" type="C" value=""/>
+         <property name="ToolTip" type="C" value=""/>
+         <property name="LocalOnClickParam" type="C" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -702,12 +704,13 @@
          <property name="BmpLeft" type="N" value="0" />
          <property name="BmpTop" type="N" value="0" />
          <property name="Flat" type="L" value="False"/>
-		 <property name="Effect" type="C" value="SHS_METAL" />
-		 <property name="Palette" type="C" value="PAL_DEFAULT" />
-		 <property name="Granularity" type="N" value="0" />
-		 <property name="Highlight" type="N" value="0" />
-        <property name="Enabled" type="L" value="True" />
+         <property name="Effect" type="C" value="SHS_METAL" />
+         <property name="Palette" type="C" value="PAL_DEFAULT" />
+         <property name="Granularity" type="N" value="0" />
+         <property name="Highlight" type="N" value="0" />
+         <property name="Enabled" type="L" value="True" />
 	 <property name="ToolTip" type="C" value=""/>
+         <property name="LocalOnClickParam" type="C" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -751,8 +754,9 @@
          <property name="Bitmap" type="C" value="" />
          <property name="PicturePosition" type="C" value="0-Left"/>
          <property name="Icon" type="C" value="" />
-	   <property name="ToolTip" type="C" value=""/>
-	   <property name="Enabled" type="L" value="True" />
+         <property name="ToolTip" type="C" value=""/>
+         <property name="Enabled" type="L" value="True" />
+         <property name="LocalOnClickParam" type="C" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onClick" />
@@ -796,6 +800,7 @@
          <property name="Border" type="L" value="True" />
          <property name="MultiSelect" type="L" value="False" />
          <property name="Descend" type="L" value="False" />
+         <property name="LocalOnClickParam" type="C" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -919,13 +924,14 @@
          <property name="Name" type="C" />
          <property name="Id" type="C" value=""/>
          <property name="Caption" type="C" value="tB" />
+         <property name="LocalOnClickParam" type="C" />
          <property name="Width" type="N" value="32"  />
          <property name="Height" type="N" value="32" />
          <property name="Bitmap" type="C" value="1"/>
          <property name="Style" type="N" value="0" />
          <property name="State" type="N" value="4" />
-	   <property name="ToolTip" type="C" value=""/>
-	   <property name="Enabled" type="L" value="True" />
+         <property name="ToolTip" type="C" value=""/>
+         <property name="Enabled" type="L" value="True" />
          <property name="Left" type="N" value="1" hidden="" />
          <property name="Top" type="N" value="1" hidden=""/>
          <property name="Adjust" type="C" value="Edge" hidden=""/>
@@ -1035,6 +1041,9 @@
       </property>
       <property name="varName">
          <code_def><![CDATA[ CreateName( "varName",oCtrl ) ]]></code_def>
+      </property>
+      <property name="LocalOnClickParam">
+         <code2><![CDATA[ oCtrl:LocalOnClickParam := Value ]]></code2>
       </property>
       <property name="cInitValue">
          <code2><![CDATA[ oCtrl:title := value ]]></code2>

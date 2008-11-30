@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.992 2008-11-30 16:55:53 lfbasso Exp $
+ * $Id: Changelog,v 1.993 2008-11-30 18:47:58 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-11-30 17:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
+  * utils/designer/designer.prg
+    utils/designer/hctrl.prg
+    ! Ajust to create local parameters when saving to .prg
+  * utils/designer/resource/*
+    ! Ajust to create local parameters when saving to .prg
+      Create an new property to store local parameters to be passed by all
+      controls that has onclick
+      parameters clause in .prg mode is transformed to () so the variaveis
+      is declared as local on function declaration
 
 2008-11-30 14:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcontrol.prg

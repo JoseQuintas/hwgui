@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.106 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.107 2008-11-30 16:55:53 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -744,7 +744,7 @@ CLASS HButtonEX INHERIT HButton
    DATA Themed INIT .F.
    DATA m_crColors INIT Array( 6 )
    DATA hTheme
-   DATA Caption
+   // DATA Caption
    DATA state
    DATA m_bIsDefault INIT .F.
    DATA m_nTypeStyle  init 0

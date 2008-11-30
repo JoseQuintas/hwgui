@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.991 2008-11-29 02:47:29 lfbasso Exp $
+ * $Id: Changelog,v 1.992 2008-11-30 16:55:53 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,24 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-11-30 14:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcontrol.prg
+    - remove DATA Caption in CLASS BUTTONEX
+  * source\hcwindow.prg
+    + add DATA Caption  ACCESS / ASSIGN 
+    + METHOD SetTextClass ( x ) HIDDEN 
+      purpose is to standardize the way to assign a value to the object
+      oButton1:caption := "Save"
+      oButtonex1:caption := "Close Me"
+      oLabel1:caption := "Label Caption"
+      oEdit1:caption := 1.23
+      oDlg:caption := "New Title Bar"
+  * source\hdialog.prg
+    * minor fix in InitModalDlg
+  * source\hedit.prg
+    ! minor fix in GetApplyKey
+   Thanks Francesco Perillo for the ideia of the [ <oObject>:name := <(oObject)> ]   
 
 2008-11-29 00:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch

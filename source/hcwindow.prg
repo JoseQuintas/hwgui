@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.34 2008-11-24 10:02:12 mlacecilia Exp $
+ *$Id: hcwindow.prg,v 1.35 2008-11-30 16:55:53 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -47,6 +47,8 @@ CLASS VAR oDefaultParent SHARED
    DATA handle        INIT 0
    DATA oParent
    DATA title
+   ACCESS Caption  INLINE ::title   
+	 ASSIGN Caption(x) INLINE ::SetTextClass( x ) 
    DATA Type
    DATA nTop, nLeft, nWidth, nHeight
    DATA minWidth   INIT - 1
@@ -96,6 +98,7 @@ CLASS VAR oDefaultParent SHARED
    METHOD Refresh()
    METHOD Anchor( oCtrl, x, y, w, h )
    METHOD ScrollHV( msg, wParam, lParam )
+   METHOD SetTextClass ( x ) HIDDEN 
 
 ENDCLASS
 
@@ -277,6 +280,19 @@ METHOD Refresh( oCtrl ) CLASS HCustomWindow
       NEXT
    ENDIF
    RETURN .T.
+
+METHOD SetTextClass( x ) CLASS HCustomWindow
+
+	 IF __ObjHasMsg( Self, "SETVALUE" )   
+	    ::SetValue( x )
+   ELSEIF __ObjHasMsg( Self, "SETTEXT" ) .AND. ::classname != "HBUTTONEX"
+	    ::SetText( x )
+	 ELSE
+	    ::title := x
+	    SENDMESSAGE( ::handle, WM_SETTEXT, 0, ::Title )
+	 ENDIF    
+RETURN NIL	 
+
 
 METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
    LOCAL nlen , i, x1, y1

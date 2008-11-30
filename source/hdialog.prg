@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.83 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.84 2008-11-30 16:55:53 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -302,13 +302,7 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    ENDIF
 
    SetFocus( oDlg:handle )
-
-   IF ValType( oDlg:bOnActivate ) == "B"
-      //oDlg:lSuspendMsgsHandling := .T.
-      Eval( oDlg:bOnActivate, oDlg )
-      //oDlg:lSuspendMsgsHandling := .F.
-   ENDIF
-
+   
    // CALL DIALOG NOT VISIBLE
    IF oDlg:nInitShow = SW_HIDE
       oDlg:Hide()
@@ -331,6 +325,13 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    ELSEIF ! oDlg:lModal
       oDlg:show()
    ENDIF
+   
+   IF ValType( oDlg:bOnActivate ) == "B"
+      //oDlg:lSuspendMsgsHandling := .T.
+      Eval( oDlg:bOnActivate, oDlg )
+      //oDlg:lSuspendMsgsHandling := .F.
+   ENDIF
+
 
    RETURN nReturn
 

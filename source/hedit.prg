@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.117 2008-11-29 02:47:29 lfbasso Exp $
+ *$Id: hedit.prg,v 1.118 2008-11-30 16:55:53 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -761,7 +761,9 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
                           SubStr( ::title, nPos )
             ENDIF
 
-            IF ! Empty( ::cPicMask ) .AND. Len( ::cPicMask ) < Len( ::title )
+            //IF ! Empty( ::cPicMask ) .AND. Len( ::cPicMask ) < Len( ::title )
+            IF ( ! Empty( ::cPicFunc ) .OR. ! Empty( ::cPicMask ) ) .AND. ;
+			         ( ! cKey $ ",." .OR. RIGHT( TRIM( ::title ), 1 ) = '.' )
                ::title := Left( ::title, nPos - 1 ) + cKey + SubStr( ::title, nPos + 1 )
             ENDIF
          ELSE

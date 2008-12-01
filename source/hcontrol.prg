@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.107 2008-11-30 16:55:53 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.108 2008-12-01 17:55:55 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -54,13 +54,15 @@ CLASS HControl INHERIT HCustomWindow
    DATA   anchor          INIT 0
    DATA   xName           HIDDEN
    ACCESS Name            INLINE ::xName
-   ASSIGN Name( cName )   INLINE ::xName := cName, ;
-                                            __objAddData( ::oParent, cName ), ;
-                                            ::oParent: & ( cName ) := Self
+   ASSIGN Name( cName )   INLINE ::AddName( cName ) 
+   //ASSIGN Name( cName )   INLINE ::xName := cName, ;
+   //                                         __objAddData( ::oParent, cName ), ;
+   //                                         ::oParent: & ( cName ) := Self
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
    METHOD Init()
+   METHOD AddName( cName ) HIDDEN
    METHOD SetColor( tcolor, bColor, lRepaint )
    METHOD NewId()
    METHOD Disable()     INLINE EnableWindow( ::handle, .F. )
@@ -117,6 +119,17 @@ METHOD NewId() CLASS HControl
       ENDDO
    ENDIF
    RETURN nId
+   
+METHOD AddName( cName ) CLASS HControl
+
+   IF !EMPTY( cName ) .AND. VALTYPE( cName) == "C"
+      ::xName := cName
+			__objAddData( ::oParent, cName )
+	    ::oParent: & ( cName ) := Self
+   ENDIF	    
+   
+RETURN Nil
+   
 
 METHOD INIT CLASS HControl
 

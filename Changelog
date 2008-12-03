@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.994 2008-12-01 17:55:55 lfbasso Exp $
+ * $Id: Changelog,v 1.995 2008-12-03 01:50:17 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-12-02 23:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcombo.prg
+    + add METHOD SETVALUE to attrib value ocombo:caption := 1 or ocombo:caption := "text"
+  * source\hsayimg.prg
+    + METHOD Init() CLASS HSayBmp
+    ! minor fix in CLASS  HSayBmp
+   
 2008-12-01 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcontrol.prg
     + Add METHOD Addname for consistency of names before the award

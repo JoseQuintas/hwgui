@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.25 2008-11-24 10:02:14 mlacecilia Exp $
+ * $Id: hsayimg.prg,v 1.26 2008-12-03 01:50:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -96,6 +96,7 @@ CLASS HSayBmp INHERIT HSayImage
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
                bSize, ctooltip, bClick, bDblClick, lTransp, nStretch )
    METHOD Redefine( oWndParent, nId, Image, lRes, bInit, bSize, ctooltip, lTransp )
+   METHOD Init()   
    METHOD Paint( lpdis )
    METHOD ReplaceBitmap( Image, lRes )
    METHOD REFRESH() INLINE ::HIDE(), SENDMESSAGE( ::handle, WM_PAINT, 0, 0 ), ::SHOW()
@@ -140,10 +141,20 @@ METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip, lTransp 
                          HBitmap():AddFile( xImage ), xImage ) )
    RETURN Self
 
+METHOD Init() CLASS HSayBmp
+
+   IF !::lInit
+      Super:Init()
+      IF ::oImage != Nil .AND. !empty( ::oImage:Handle )
+         SendMessage( ::handle,STM_SETIMAGE, IMAGE_BITMAP, ::oImage:handle )
+      ENDIF   
+   ENDIF
+Return Nil
+
 METHOD Paint( lpdis ) CLASS HSayBmp
    LOCAL drawInfo := GetDrawItemInfo( lpdis )
 
-   IF ::oImage != Nil
+   IF ::oImage != Nil .AND. !empty( ::oImage:Handle )
       IF ::nZoom == Nil
          IF ::lTransp
             IF ::nStretch = 1  // isometric

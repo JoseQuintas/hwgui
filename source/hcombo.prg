@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.46 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hcombo.prg,v 1.47 2008-12-03 01:50:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -54,6 +54,7 @@ CLASS VAR winclass   INIT "COMBOBOX"
    METHOD Init( aCombo, nCurrent )
    METHOD Refresh()
    METHOD Setitem( nPos )
+   METHOD SetValue( xItem )
    METHOD GetValue()
    METHOD AddItem( cItem )
    METHOD DeleteItem( nPos )
@@ -202,6 +203,7 @@ METHOD Init() CLASS HComboBox
 
 METHOD Refresh() CLASS HComboBox
    LOCAL vari, i
+   
    IF ::bSetGet != Nil
       vari := Eval( ::bSetGet,, Self )
       IF ::lText
@@ -229,11 +231,20 @@ METHOD Refresh() CLASS HComboBox
       ::SetItem( ::value )
    ENDIF
 
-   RETURN Nil
+  RETURN Nil
 
 METHOD SetItem( nPos ) CLASS HComboBox
+
+	 IF VALTYPE( nPos ) = "C" .AND. ::lText
+	    nPos := AScan( ::aItems, nPos )
+      ComboSetString( ::handle, nPos  )
+   ENDIF
    IF ::lText
-      ::value := ::aItems[ nPos ]
+      IF nPos > 0
+         ::value := ::aItems[ nPos ]
+      ELSE
+         ::value := ""
+      ENDIF
    ELSE
       ::value := nPos
    ENDIF
@@ -243,14 +254,25 @@ METHOD SetItem( nPos ) CLASS HComboBox
    IF ::bSetGet != Nil
       Eval( ::bSetGet, ::value, Self )
    ENDIF
-
+	 /*
    IF ::bChangeSel != Nil
       ::oparent:lSuspendMsgsHandling := .t.
       Eval( ::bChangeSel, nPos, Self )
       ::oparent:lSuspendMsgsHandling := .f.
    ENDIF
+   */
    RETURN Nil
+   
+METHOD SetValue( xItem ) CLASS HComboBox
+   LOCAL nPos
 
+	 IF ::lText .AND. VALTYPE( xItem ) = "C" 
+	    nPos := AScan( ::aItems, xItem )
+      ComboSetString( ::handle, nPos  )
+   ENDIF
+   ::setItem( nPos ) 
+   RETURN Nil
+   
 METHOD GetValue() CLASS HComboBox
    LOCAL nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
 
@@ -291,11 +313,14 @@ STATIC FUNCTION __InteractiveChange( oCtrl )
 
 
 STATIC FUNCTION __onChange( oCtrl )
-   LOCAL npos
-
-   npos := SendMessage( oCtrl:handle, CB_GETCURSEL, 0, 0 ) + 1
-   oCtrl:setitem( npos )
-
+   LOCAL nPos := SendMessage( oCtrl:handle, CB_GETCURSEL, 0, 0 ) + 1
+   
+   oCtrl:SetItem( nPos )
+   IF oCtrl:bChangeSel != Nil
+      oCtrl:oparent:lSuspendMsgsHandling := .t.
+      Eval( oCtrl:bChangeSel, nPos, Self )
+      oCtrl:oparent:lSuspendMsgsHandling := .f.
+   ENDIF
    RETURN Nil
 
 

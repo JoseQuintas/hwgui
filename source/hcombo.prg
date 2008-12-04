@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.47 2008-12-03 01:50:17 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.48 2008-12-04 18:13:37 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -318,7 +318,7 @@ STATIC FUNCTION __onChange( oCtrl )
    oCtrl:SetItem( nPos )
    IF oCtrl:bChangeSel != Nil
       oCtrl:oparent:lSuspendMsgsHandling := .t.
-      Eval( oCtrl:bChangeSel, nPos, Self )
+      Eval( oCtrl:bChangeSel, nPos, oCtrl )
       oCtrl:oparent:lSuspendMsgsHandling := .f.
    ENDIF
    RETURN Nil

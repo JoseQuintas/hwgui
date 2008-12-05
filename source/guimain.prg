@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.30 2008-11-28 18:00:47 sandrorrfreire Exp $
+ * $Id: guimain.prg,v 1.31 2008-12-05 15:50:22 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -158,6 +158,7 @@ FUNCTION MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cResIni )
    RETURN cRes
    
 FUNCTION WAITRUN( cRun )
+#ifdef __XHARBOUR__
 Local hIn, hOut, nRet, hProc
    // "Launching process", cProc
    hProc := HB_OpenProcess( cRun , @hIn, @hOut, @hOut )
@@ -171,7 +172,11 @@ Local hIn, hOut, nRet, hProc
    FClose( hOut )   
 
    Return nRet
-      
+#else
+   __Run( cRun )
+   Return 0
+#endif       
+
 FUNCTION WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )
    LOCAL oDlg, oBrw, nChoice := 0, lArray := .T., nField, lNewFont := .F.
    LOCAL i, aLen, nLen := 0, addX := 20, addY := 20, minWidth := 0, x1

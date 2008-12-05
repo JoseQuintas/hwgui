@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.109 2008-12-05 13:54:48 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.110 2008-12-05 15:44:09 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -121,7 +121,6 @@ METHOD NewId() CLASS HControl
    RETURN nId
    
 METHOD AddName( cName ) CLASS HControl
-     MSGINFO(VALTYPE(CNAME))
    IF !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. cName != "::" 
       //::xName := cName
 			__objAddData( ::oParent, cName )

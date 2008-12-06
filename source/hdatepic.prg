@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.19 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hdatepic.prg,v 1.20 2008-12-06 14:43:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -31,6 +31,8 @@ CLASS VAR winclass   INIT "SYSDATETIMEPICK32"
    METHOD Activate()
    METHOD Init()
    METHOD Refresh()
+   METHOD GetValue()
+   METHOD SetValue( dValue )
    METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, ;
                     bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor )
 
@@ -46,6 +48,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
               ,, ctooltip, tcolor, bcolor )
 
    ::value   := IIf( vari == Nil .OR. ValType( vari ) != "D", CToD( Space( 8 ) ), vari )
+   ::title   := ::value
    ::bSetGet := bSetGet
    ::bChange := bChange
 
@@ -71,37 +74,6 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    RETURN Self
 
-METHOD Activate CLASS HDatePicker
-   IF ! Empty( ::oParent:handle )
-      ::handle := CreateDatePicker( ::oParent:handle, ::id, ;
-                                    ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
-      ::Init()
-   ENDIF
-   RETURN Nil
-
-METHOD Init() CLASS HDatePicker
-   IF ! ::lInit
-      Super:Init()
-      IF Empty( ::value )
-         SetDatePickerNull( ::handle )
-      ELSE
-         SetDatePicker( ::handle, ::value )
-      ENDIF
-   ENDIF
-   RETURN Nil
-
-METHOD Refresh() CLASS HDatePicker
-   IF ::bSetGet != Nil
-      ::value := Eval( ::bSetGet,, nil )
-   ENDIF
-
-   IF Empty( ::value )
-      SetDatePickerNull( ::handle )
-   ELSE
-      SetDatePicker( ::handle, ::value )
-   ENDIF
-   RETURN Nil
-
 METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bSize, bInit, ;
                  bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor ) CLASS  HDatePicker
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
@@ -126,6 +98,54 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bSize, bInit, ;
 
 
    RETURN Self
+
+METHOD Activate CLASS HDatePicker
+   IF ! Empty( ::oParent:handle )
+      ::handle := CreateDatePicker( ::oParent:handle, ::id, ;
+                                    ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
+      ::Init()
+   ENDIF
+   RETURN Nil
+
+METHOD Init() CLASS HDatePicker
+   IF ! ::lInit
+      Super:Init()
+      IF Empty( ::value )
+         SetDatePickerNull( ::handle )
+      ELSE
+         SetDatePicker( ::handle, ::value )
+      ENDIF
+   ENDIF
+   RETURN Nil
+        
+METHOD GetValue CLASS HDatePicker   
+   RETURN GetDatePicker( ::handle )
+         
+METHOD SetValue( dValue ) CLASS HDatePicker
+
+   IF Empty( dValue )
+      SetDatePickerNull( ::handle )
+   ELSE
+      SetDatePicker( ::handle, dValue )
+   ENDIF
+   ::value := GetDatePicker( ::handle )
+   ::title := ::Value
+   IF ::bSetGet != Nil
+      Eval( ::bSetGet, ::value, Self )
+   ENDIF
+   
+   RETURN Nil
+
+METHOD Refresh() CLASS HDatePicker
+   IF ::bSetGet != Nil
+      ::value := Eval( ::bSetGet,, nil )
+   ENDIF
+   IF Empty( ::value )
+      SetDatePickerNull( ::handle )
+   ELSE
+      SetDatePicker( ::handle, ::value )
+   ENDIF
+   RETURN Nil
 
 
 STATIC FUNCTION __Change( oCtrl, nMess )

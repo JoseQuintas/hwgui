@@ -1,5 +1,5 @@
 /*
- * $Id: progbars.prg,v 1.2 2008-09-19 23:28:00 mlacecilia Exp $
+ * $Id: progbars.prg,v 1.3 2008-12-07 15:00:10 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library
  * Sample of using HProgressBar class
@@ -37,11 +37,13 @@ Local cMsgErr := "Bar doesn't exist"
              AT 0, 0 SIZE 700, 425 ;
              STYLE DS_CENTER + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU ;
              ON EXIT {||Iif(oBar==Nil,.T.,(oBar:Close(),.T.))}
-
-             @ 380, 395 BUTTON 'Step Bar'   SIZE 75,25 ON CLICK {|| Iif(oBar==Nil,MsgStop(cMsgErr),oBar:Step()) }
-             @ 460, 395 BUTTON 'Create Bar' SIZE 75,25 ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",,,,, 10, 100 ) }
-             @ 540, 395 BUTTON 'Close Bar'  SIZE 75,25 ON CLICK {|| Iif(oBar==Nil,MsgStop(cMsgErr),(oBar:Close(),oBar:=Nil)) }
-             @ 620, 395 BUTTON 'Close'      SIZE 75,25 ON CLICK {|| oForm:Close() }
+             
+             @ 115, 390 BUTTON 'Step Bar'     SIZE 95,26 ON CLICK {|| Iif(oBar==Nil,MsgStop(cMsgErr),(oBar:Step())) }						 
+             @ 210, 390 BUTTON 'Show Text'    SIZE 95,26 ON CLICK {|| Iif(oBar==Nil,MsgStop(cMsgErr),(oBar:setLabel("New Text here"))) }
+             @ 305, 390 BUTTON 'Create Bar'   SIZE 95,26 ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",,,,, 10, 100 ) }
+             @ 400, 390 BUTTON 'Create Bar %' SIZE 95,26 ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",,,,, 10, 100,,.T. ) }
+             @ 495, 390 BUTTON 'Close Bar'    SIZE 95,26 ON CLICK {|| Iif(oBar==Nil,MsgStop(cMsgErr),(oBar:Close(),oBar:=Nil)) }
+             @ 590, 390 BUTTON 'Close'        SIZE 95,26 ON CLICK {|| oForm:Close() }
 
         ACTIVATE DIALOG oForm
 

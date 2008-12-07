@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.13 2008-12-07 13:33:52 lfbasso Exp $
+ * $Id: hprogres.prg,v 1.14 2008-12-07 15:00:10 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class
@@ -22,6 +22,9 @@ CLASS VAR winclass   INIT "msctls_progress32"
    DATA  nCount INIT 0
    DATA  nLimit
 	 DATA  nAnimation
+	 DATA  LabelBox
+	 DATA  nPercent INIT 0
+	 DATA  lPercent INIT .F.
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit, bSize, bPaint, ctooltip, nAnimation, lVertical )
    METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, bInit, bSize, bPaint, ctooltip )
@@ -30,6 +33,7 @@ CLASS VAR winclass   INIT "msctls_progress32"
    METHOD Increment() INLINE UpdateProgressBar( ::handle )
    METHOD STEP()
    METHOD SET( cTitle, nPos )
+   METHOD SetLabel( cCaption )
    METHOD Close()
    METHOD End() INLINE DestroyWindow( ::handle )
 
@@ -52,7 +56,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit
 
    RETURN Self
 
-METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit ) CLASS HProgressBar
+METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, lPercent ) CLASS HProgressBar
 
    // ::classname:= "HPROGRESSBAR"
    ::style   := WS_CHILD + WS_VISIBLE
@@ -69,10 +73,14 @@ METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit ) CLA
    ::lNewBox := .T.
    ::nRange := Iif( nRange != Nil .AND. nRange != 0, nRange, 100 )
    ::nLimit := IIf( nRange != Nil, Int( nRange / ::maxPos ), 1 )
-
+	 ::lPercent := lPercent
+	 
    INIT DIALOG ::oParent TITLE cTitle       ;
         At nLeft, nTop SIZE nWidth, nHeight   ;
         STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + IIf( nTop == 0, DS_CENTER, 0 ) + DS_SYSMODAL + MB_USERICON
+
+   @ ::nLeft, nTop + 5 SAY ::LabelBox CAPTION IIF( EMPTY( lPercent ), "", "%" )  SIZE ::nWidth, 19 ;
+       STYLE SS_CENTER   
 
    IF bExit != Nil
       ::oParent:bDestroy := bExit
@@ -114,6 +122,10 @@ METHOD STEP()
    IF ::nCount == ::nLimit
       ::nCount := 0
       UpdateProgressBar( ::handle )
+      IF ! EMPTY( ::lPercent )
+         ::nPercent += ::nLimit
+         ::setLabel( LTRIM( STR( ::nPercent, 3 ) ) + " %" )
+      ENDIF
    ENDIF
 
    RETURN Nil
@@ -127,6 +139,14 @@ METHOD SET( cTitle, nPos ) CLASS HProgressBar
       SetProgressBar( ::handle, nPos )
    ENDIF
 
+   RETURN Nil
+   
+METHOD SetLabel( cCaption ) CLASS HProgressBar
+
+   IF cCaption != Nil .AND. ::lNewBox
+      ::LabelBox:caption := cCaption 
+   ENDIF
+   
    RETURN Nil
 
 METHOD Close()

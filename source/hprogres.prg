@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.12 2008-12-07 01:39:50 lfbasso Exp $
+ * $Id: hprogres.prg,v 1.13 2008-12-07 13:33:52 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class
@@ -72,7 +72,7 @@ METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit ) CLA
 
    INIT DIALOG ::oParent TITLE cTitle       ;
         At nLeft, nTop SIZE nWidth, nHeight   ;
-        STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + IIf( nTop == 0, DS_CENTER, 0 ) + DS_SYSMODAL
+        STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + IIf( nTop == 0, DS_CENTER, 0 ) + DS_SYSMODAL + MB_USERICON
 
    IF bExit != Nil
       ::oParent:bDestroy := bExit

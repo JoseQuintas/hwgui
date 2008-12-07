@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.11 2008-12-06 13:37:18 lfbasso Exp $
+ * $Id: hprogres.prg,v 1.12 2008-12-07 01:39:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class
@@ -31,7 +31,7 @@ CLASS VAR winclass   INIT "msctls_progress32"
    METHOD STEP()
    METHOD SET( cTitle, nPos )
    METHOD Close()
-   METHOD End() INLINE ::Close()
+   METHOD End() INLINE DestroyWindow( ::handle )
 
 ENDCLASS
 
@@ -45,8 +45,8 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit
 
    ::maxPos  := IIf( maxPos == Nil, 20, maxPos )
    ::lNewBox := .F.
-   ::nRange := Iif( nRange != Nil .AND. nRange != 0, nRange, 2 )
-   ::nLimit := IIf( nRange != Nil, Int( nRange / ::maxPos ), 1 )
+   ::nRange := Iif( nRange != Nil .AND. nRange != 0, nRange, 100 )
+   ::nLimit := IIf( nRange != Nil, Int( ::nRange / ::maxPos ), 1 )
 
    ::Activate()
 
@@ -67,7 +67,7 @@ METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit ) CLA
    ::nWidth  := nWidth - 40
    ::maxPos  := IIf( maxPos == Nil, 20, maxPos )
    ::lNewBox := .T.
-   ::nRange := Iif( nRange != Nil .AND. nRange != 0, nRange, 2 )
+   ::nRange := Iif( nRange != Nil .AND. nRange != 0, nRange, 100 )
    ::nLimit := IIf( nRange != Nil, Int( nRange / ::maxPos ), 1 )
 
    INIT DIALOG ::oParent TITLE cTitle       ;
@@ -99,8 +99,8 @@ METHOD Init  CLASS HProgressBar
 
    IF ! ::lInit
       Super:Init()
-      SendMessage( ::handle, PBM_SETRANGE, 0, MAKELPARAM( 0, ::maxPos ) )
-	    SendMessage( ::handle, PBM_SETSTEP, ::nRange, 0 )   
+      SendMessage( ::handle, PBM_SETRANGE, 0, MAKELPARAM( 0, ::nRange ) )
+	    SendMessage( ::handle, PBM_SETSTEP, ::maxPos, 0 )   
 	    IF ::nAnimation != Nil .AND. ::nAnimation > 0
 	       SendMessage( ::handle, PBM_SETMARQUEE, 1, ::nAnimation )
 	    ENDIF   

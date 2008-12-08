@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.14 2008-12-07 15:00:10 lfbasso Exp $
+ * $Id: hprogres.prg,v 1.15 2008-12-08 12:46:42 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class
@@ -144,7 +144,7 @@ METHOD SET( cTitle, nPos ) CLASS HProgressBar
 METHOD SetLabel( cCaption ) CLASS HProgressBar
 
    IF cCaption != Nil .AND. ::lNewBox
-      ::LabelBox:caption := cCaption 
+      ::LabelBox:SetValue( cCaption )
    ENDIF
    
    RETURN Nil

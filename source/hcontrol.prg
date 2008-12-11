@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.111 2008-12-05 19:32:11 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.112 2008-12-11 11:01:53 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -379,8 +379,7 @@ CLASS HStatic INHERIT HControl
 CLASS VAR winclass   INIT "STATIC"
 
    DATA AutoSize    INIT .F.
-   //DATA lownerDraw  INIT .F.
-   //DATA nStyleOwner INIT 0
+   DATA lTransparent  INIT .F. HIDDEN
    DATA nStyleHS
    DATA bClick, bDblClick
 
@@ -393,7 +392,7 @@ CLASS VAR winclass   INIT "STATIC"
    // METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
    //                                                 value )
    METHOD SetValue( value ) INLINE  ::Auto_Size( value ), ;
-   SetDlgItemText( ::oParent:handle, ::id, value ), ::title := value
+          SetDlgItemText( ::oParent:handle, ::id, value ), ::title := value
    METHOD Auto_Size( cValue )  HIDDEN
 
    METHOD Init()
@@ -408,7 +407,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
             cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
             bColor, lTransp, bClick, bDblClick, bOther ) CLASS HStatic
 
-   //::lOwnerDraw := Hwg_BitAnd( nStyle, SS_OWNERDRAW ) + 1 >= SS_OWNERDRAW
    // Enabling style for tooltips
    //IF ValType( cTooltip ) == "C"
    //   IF nStyle == NIL
@@ -421,14 +419,12 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    ::nStyleHS := IIf( nStyle == Nil, 0, nStyle )
    IF ( lTransp != NIL .AND. lTransp ) //.OR. ::lOwnerDraw
+      ::lTransparent := .T.
       ::extStyle += WS_EX_TRANSPARENT
       bPaint := { | o, p | o:paint( p ) }
-      /*
-      IF ::lOwnerDraw
-         ::nStyleOwner := nStyle - SS_OWNERDRAW - Hwg_Bitand( nStyle, SS_NOTIFY )
-         nStyle := SS_OWNERDRAW + Hwg_Bitand( nStyle, SS_NOTIFY )
-      ENDIF
-      */
+      nStyle := SS_OWNERDRAW + Hwg_Bitand( nStyle, SS_NOTIFY )
+   ELSEIF nStyle - SS_NOTIFY > 32
+      bPaint := { | o, p | o:paint( p ) }
       nStyle := SS_OWNERDRAW + Hwg_Bitand( nStyle, SS_NOTIFY )
    ENDIF
 
@@ -543,7 +539,11 @@ METHOD Paint( lpDis ) CLASS HStatic
 
    // Map "Static Styles" to "Text Styles"
    nstyle := ::nStyleHS  // ::style
-   SetAStyle( @nstyle, @dwtext )
+	 IF nStyle - SS_NOTIFY < 32
+      SetAStyle( @nstyle, @dwtext )
+	 ELSE
+	    dwtext := nStyle - 256
+	 ENDIF
 
    IF ::oparent:brush != Nil
       SETBKCOLOR( dc, ::oparent:bcolor )
@@ -551,7 +551,10 @@ METHOD Paint( lpDis ) CLASS HStatic
       FillRect( dc, client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ::oParent:brush:handle )
    ELSE
       // Set transparent background
-      SetBkMode( dc, 1 )
+ 	    SetBkMode( dc, IIF( ::lTransparent, 1, 0 ))
+ 	    IF !EMPTY( ::brush )
+         FillRect( dc,client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ::brush:handle )
+      ENDIF   
    ENDIF
 
    //IF ::lOwnerDraw

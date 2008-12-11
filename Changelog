@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1000 2008-12-07 15:00:10 lfbasso Exp $
+ * $Id: Changelog,v 1.1001 2008-12-11 11:01:53 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-12-11 09:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcontrol.prg
+    * PAINT METHOD changed to allow the text to draw vertical alignments
+      style for VERTICAL - DT_SINGLELINE+DT_VCENTER|DT_BOTTOM
 
 2008-12-07 12:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * samples\progressbar\progbars.prg

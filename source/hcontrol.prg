@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.112 2008-12-11 11:01:53 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.113 2008-12-11 12:08:25 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -552,7 +552,7 @@ METHOD Paint( lpDis ) CLASS HStatic
    ELSE
       // Set transparent background
  	    SetBkMode( dc, IIF( ::lTransparent, 1, 0 ))
- 	    IF !EMPTY( ::brush )
+ 	    IF !EMPTY( ::brush ) .AND. ! ::lTransparent
          FillRect( dc,client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ::brush:handle )
       ENDIF   
    ENDIF

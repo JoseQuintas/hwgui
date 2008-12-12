@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.84 2008-11-30 16:55:53 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.85 2008-12-12 11:40:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -550,7 +550,7 @@ STATIC FUNCTION onActivate( oDlg, wParam, lParam )
 
    HB_SYMBOL_UNUSED( lParam )
 
-   IF ( iParLow = WA_ACTIVE .OR. iParLow = WA_CLICKACTIVE )  .AND. PtrtoUlong( lParam ) = 0 .AND. IsWindowVisible( oDlg:handle )
+   IF ( iParLow = WA_ACTIVE .OR. iParLow = WA_CLICKACTIVE ) .AND. IsWindowVisible( oDlg:handle ) //.AND. PtrtoUlong( lParam ) = 0
       IF oDlg:bGetFocus != Nil //.AND. IsWindowVisible(::handle)
          oDlg:lSuspendMsgsHandling := .t.
          IF iParHigh > 0  // MINIMIZED
@@ -559,7 +559,7 @@ STATIC FUNCTION onActivate( oDlg, wParam, lParam )
          Eval( oDlg:bGetFocus, oDlg, lParam )
          oDlg:lSuspendMsgsHandling := .f.
       ENDIF
-   ELSEIF iParLow = WA_INACTIVE .AND. PtrtoUlong( lParam ) = 0 .AND. oDlg:bLostFocus != Nil
+   ELSEIF iParLow = WA_INACTIVE  .AND. oDlg:bLostFocus != Nil //.AND. PtrtoUlong( lParam ) = 0
       oDlg:lSuspendMsgsHandling := .t.
       Eval( oDlg:bLostFocus, oDlg, lParam  )
       oDlg:lSuspendMsgsHandling := .f.

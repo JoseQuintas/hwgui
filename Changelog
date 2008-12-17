@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1002 2008-12-12 17:37:16 lfbasso Exp $
+ * $Id: Changelog,v 1.1003 2008-12-17 05:42:19 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-12-17 03:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcontrol.prg
+    * CLASS HSTATIC Method New  added Local nBorder to keep styles when WS_BORDER or WS_DLGFRAME STYLE 
+  * source\htimer.prg
+    * fix in DATA Name
+    
 2008-12-12 15:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hdialog.prg
     * fix Function onActivate to triggering event onlostfocus

@@ -1,5 +1,5 @@
 /*
- * $Id: htimer.prg,v 1.10 2008-11-24 10:02:14 mlacecilia Exp $
+ * $Id: htimer.prg,v 1.11 2008-12-17 05:42:19 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTimer class
@@ -25,12 +25,13 @@ CLASS VAR aTimers   INIT { }
    DATA oParent
    DATA bAction
 
-   DATA   xName          HIDDEN
-   ACCESS Name           INLINE ::xName
-   ASSIGN Name( cName )  INLINE ::xName := cName, ;
-                                           __objAddData( ::oParent, cName ), ;
-                                           ::oParent: & ( cName ) := Self
-
+   //DATA   xName          HIDDEN
+   //ACCESS Name           INLINE ::xName
+   //ASSIGN Name( cName )  INLINE ::xName := cName, ;
+   //                                        __objAddData( ::oParent, cName ), ;
+   //                                        ::oParent: & ( cName ) := Self
+   ASSIGN Name( cName )   INLINE IIF( !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. cName != "::" .AND. ! "[" $ cName, ;
+	          		                (__objAddData( ::oParent, cName ), ::oParent: & ( cName ) := Self), .T. )
    ACCESS Interval       INLINE ::value
    ASSIGN Interval( x )  INLINE ::value := x,     ;
                                            SetTimer( ::oParent:handle, ::id, ::value )

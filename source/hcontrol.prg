@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.113 2008-12-11 12:08:25 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.114 2008-12-17 05:42:19 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -407,11 +407,14 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
             cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
             bColor, lTransp, bClick, bDblClick, bOther ) CLASS HStatic
 
+   Local nBorder
    // Enabling style for tooltips
    //IF ValType( cTooltip ) == "C"
    //   IF nStyle == NIL
    //      nStyle := SS_NOTIFY
    //   ELSE
+   nBorder := IIF( Hwg_BitAND( nStyle, WS_BORDER ) != 0, WS_BORDER, 0 )
+   nBorder += IIF( Hwg_BitAND( nStyle, WS_DLGFRAME ) != 0, WS_DLGFRAME, 0 )
    nStyle := Hwg_BitOr( nStyle, SS_NOTIFY )
    //    ENDIF
    // ENDIF
@@ -428,7 +431,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       nStyle := SS_OWNERDRAW + Hwg_Bitand( nStyle, SS_NOTIFY )
    ENDIF
 
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
+   Super:New( oWndParent, nId, nStyle + nBorder, nLeft, nTop, nWidth, nHeight, oFont, ;
               bInit, bSize, bPaint, cTooltip, tcolor, bColor )
 
    IF ( lTransp != NIL .AND. lTransp ) .AND. ::oParent:brush != Nil

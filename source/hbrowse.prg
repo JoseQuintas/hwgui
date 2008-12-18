@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.146 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hbrowse.prg,v 1.147 2008-12-18 03:18:54 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1890,7 +1890,10 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
          ENDIF
       ENDIF
    ENDIF
-   SetFocus( ::handle )
+   IF  GetActiveWindow() = ParentGetDialog( Self ):Handle 
+       ::SetFocus()
+   ENDIF    
+
    RETURN Nil
 
 METHOD Select() CLASS HBrowse

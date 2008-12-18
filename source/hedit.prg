@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.118 2008-11-30 16:55:53 lfbasso Exp $
+ *$Id: hedit.prg,v 1.119 2008-12-18 03:18:54 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -901,7 +901,7 @@ METHOD Change( ) CLASS HEdit
    Eval( ::bChange, ::title, Self )
    ::oparent:lSuspendMsgsHandling := .F.
 
-   SendMessage( ::handle,  EM_SETSEL, 0, nPos )
+   //SendMessage( ::handle,  EM_SETSEL, 0, nPos )
 
    RETURN Nil
 

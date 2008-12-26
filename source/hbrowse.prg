@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.147 2008-12-18 03:18:54 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.148 2008-12-26 15:55:56 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -172,7 +172,7 @@ CLASS HBrowse INHERIT HControl
 
    METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
                bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, lNoBorder, ;
-               lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, bFirst, bWhile, bFor, tcolor, bcolor )
+               lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, bFirst, bWhile, bFor, bOther, tcolor, bcolor )
    METHOD InitBrw( nType )
    METHOD Rebuild()
    METHOD Activate()
@@ -220,7 +220,7 @@ ENDCLASS
 METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
             bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, ;
             lNoBorder, lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, ;
-            lDescend, bWhile, bFirst, bLast, bFor, tcolor, bcolor ) CLASS HBrowse
+            lDescend, bWhile, bFirst, bLast, bFor, bOther, tcolor, bcolor ) CLASS HBrowse
 
    nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE + WS_TABSTOP + ;
                           IIf( lNoBorder = Nil.OR. ! lNoBorder, WS_BORDER, 0 ) +            ;
@@ -236,6 +236,7 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
    ::bEnter  := bEnter
    ::bGetFocus   := bGfocus
    ::bLostFocus  := bLfocus
+   ::bOther :=  bOther 
 
    ::lAppable    := IIf( lAppend == Nil, .F., lAppend )
    ::lAutoedit   := IIf( lAutoedit == Nil, .F., lAutoedit )

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.132 2008-11-29 02:47:29 lfbasso Exp $
+ *$Id: guilib.ch,v 1.133 2008-12-26 15:55:56 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -73,7 +73,7 @@
              [ ON PAINT <bPaint> ]          ;
              [ ON GETFOCUS <bGfocus> ]      ;
              [ ON LOSTFOCUS <bLfocus> ]     ;
-             [ ON OTHER MESSAGES <bOther> ] ;
+             [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ; 
              [ ON REFRESH <bRefresh> ]      ;
              [ ON CLOSEQUERY <bCloseQuery> ];
              [ ON EXIT <bExit> ]            ;
@@ -101,7 +101,7 @@
              [ ON PAINT <bPaint> ]          ;
              [ ON GETFOCUS <bGfocus> ]      ;
              [ ON LOSTFOCUS <bLfocus> ]     ;
-             [ ON OTHER MESSAGES <bOther> ] ;
+             [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ; 
              [ ON REFRESH <bRefresh> ]      ;
              [ ON EXIT <bExit> ]            ;
              [ HELP <cHelp> ]               ;
@@ -128,7 +128,7 @@
              [ ON PAINT <bPaint> ]          ;
              [ ON GETFOCUS <bGfocus> ]      ;
              [ ON LOSTFOCUS <bLfocus> ]     ;
-             [ ON OTHER MESSAGES <bOther> ] ;
+             [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;              
              [ ON REFRESH <bRefresh> ]      ;
              [ ON EXIT <bExit> ]            ;
              [ HELP <cHelp> ]               ;
@@ -158,7 +158,7 @@
              [ ON PAINT <bPaint> ]          ;
              [ ON GETFOCUS <bGfocus> ]      ;
              [ ON LOSTFOCUS <bLfocus> ]     ;
-             [ ON OTHER MESSAGES <bOther> ] ;
+             [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;              
              [ ON REFRESH <bRefresh> ]      ;
              [ ON EXIT <bExit> ]            ;
              [ HELPID <nHelpId> ]           ;
@@ -262,7 +262,7 @@
             [ ON PAINT <bDraw> ]       ;
             [ ON CLICK <bClick> ]      ;
             [ ON DBLCLICK <bDblClick> ];
-            [ ON OTHER MESSAGES <bOther>] ;
+            [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;             
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
@@ -391,7 +391,7 @@
             [ ON LOSTFOCUS <bLfocus> ] ;
             [ ON KEYDOWN <bKeyDown>]   ;
             [ ON CHANGE <bChange>]     ;
-            [ ON OTHER MESSAGES <bOther> ] ;            
+            [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;             
             [ STYLE <nStyle> ]         ;
             [<lnoborder: NOBORDER>]    ;
             [<lPassword: PASSWORD>]    ;
@@ -432,7 +432,7 @@
             [ ON PAINT <bDraw> ]       ;
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
-            [ ON OTHER MESSAGES <bOther> ] ;
+            [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;             
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
@@ -807,6 +807,7 @@
             [ ON UPDATE <bUpdate> ]    ;
             [ ON KEYDOWN <bKeyDown> ]  ;
             [ ON POSCHANGE <bPosChg> ] ;
+            [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;             
             [ <lMulti: MULTISELECT> ]  ;
             [ <lDescend: DESCEND> ]    ; // By Marcelo Sturm (marcelo.sturm@gmail.com)
             [ WHILE <bWhile> ]         ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
@@ -819,7 +820,7 @@
         <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>, ;
         <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.>, <.lAppend.>,;
         <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg>, <.lMulti.>, <.lDescend.>,;
-        <bWhile>, <bFirst>, <bLast>, <bFor>, <color>,<bcolor> );;
+        <bWhile>, <bFirst>, <bLast>, <bFor>, <bOther>, <color>,<bcolor>  );;
     [ <oBrw>:name := <(oBrw)> ]          
 
 #xcommand REDEFINE BROWSE [ <oBrw> ]   ;
@@ -834,11 +835,11 @@
             [ ON CLICK <bEnter> ]      ;
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
-            [ ON OTHER MESSAGE <bOther>] ;
             [ FONT <oFont> ]           ;
           => ;
     [<oBrw> :=] HBrowse():Redefine( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,Iif(<.lFlt.>,BRW_FILTER,0))),;
-        <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<bOther> )
+        <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>,<bEnter>,<bGfocus>,<bLfocus> )
+        
 
 #xcommand ADD COLUMN <block> TO <oBrw> ;
             [ HEADER <cHeader> ]       ;
@@ -1094,7 +1095,7 @@
             [ TOOLTIP <ctoolt> ]       ;
             [ ON KEYDOWN <bKeyDown>   ];
             [ ON CHANGE <bChange> ]    ;
-            [ ON OTHER MESSAGES <bOther> ] ;
+            [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;             
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<vari>,               ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;

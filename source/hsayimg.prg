@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.26 2008-12-03 01:50:17 lfbasso Exp $
+ * $Id: hsayimg.prg,v 1.27 2008-12-26 15:55:56 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -99,7 +99,8 @@ CLASS HSayBmp INHERIT HSayImage
    METHOD Init()   
    METHOD Paint( lpdis )
    METHOD ReplaceBitmap( Image, lRes )
-   METHOD REFRESH() INLINE ::HIDE(), SENDMESSAGE( ::handle, WM_PAINT, 0, 0 ), ::SHOW()
+   //METHOD REFRESH() INLINE ::HIDE(), SENDMESSAGE( ::handle, WM_PAINT, 0, 0 ), ::SHOW()
+   METHOD Refresh() INLINE RedrawWindow(::handle, RDW_ERASE + RDW_INVALIDATE ),SENDMESSAGE(::handle,WM_PAINT,0,0)
 
 ENDCLASS
 

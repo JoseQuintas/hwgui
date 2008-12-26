@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1004 2008-12-18 03:18:54 lfbasso Exp $
+ * $Id: Changelog,v 1.1005 2008-12-26 15:55:56 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-12-26 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    ! possibility of two ways for the clause ON OTHER, to facilitate implementation of the code generation and 
+      in the DESIGNER
+      [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]]    
+  * source\hbrowse.prg
+    * add parameter bOther in METHOD NEW
+  * source\hsayimg.prg
+    * minor fix in METHOD REFRESH CLASS HSayBmp
+    
 2008-12-18 01:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
     * fix in SETFOCUS METHOD ButtonUp 

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.114 2008-12-17 05:42:19 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.115 2008-12-29 15:05:35 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -415,7 +415,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    //   ELSE
    nBorder := IIF( Hwg_BitAND( nStyle, WS_BORDER ) != 0, WS_BORDER, 0 )
    nBorder += IIF( Hwg_BitAND( nStyle, WS_DLGFRAME ) != 0, WS_DLGFRAME, 0 )
-   nStyle := Hwg_BitOr( nStyle, SS_NOTIFY )
+   nStyle := Hwg_BitOr( nStyle, SS_NOTIFY ) - nBorder
    //    ENDIF
    // ENDIF
    //

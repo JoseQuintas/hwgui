@@ -1,5 +1,5 @@
 /*
- * $Id: hanimat.prg,v 1.10 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hanimat.prg,v 1.11 2008-12-29 15:05:35 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HAnimation class
@@ -29,6 +29,7 @@ CLASS VAR winclass   INIT "SysAnimate32"
    METHOD Stop()
    METHOD Close()
    METHOD Destroy()
+   METHOD End() INLINE ::Destroy()
 
 ENDCLASS
 

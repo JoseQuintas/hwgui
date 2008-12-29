@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.148 2008-12-26 15:55:56 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.149 2008-12-29 15:05:35 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -170,9 +170,10 @@ CLASS HBrowse INHERIT HControl
    DATA aMargin INIT { 0, 0, 0, 0 } HIDDEN    // Margin TOP-RIGHT-BOTTOM-LEFT
    DATA lRepaintBackground INIT .F. HIDDEN    // Set to true performs a canvas fill before painting rows
 
-   METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
-               bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, lNoBorder, ;
-               lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, bFirst, bWhile, bFor, bOther, tcolor, bcolor )
+   METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
+                bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,;
+                lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect,;
+                lDescend, bWhile, bFirst, bLast, bFor, bOther,tcolor, bcolor )            
    METHOD InitBrw( nType )
    METHOD Rebuild()
    METHOD Activate()

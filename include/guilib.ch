@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.133 2008-12-26 15:55:56 lfbasso Exp $
+ *$Id: guilib.ch,v 1.134 2008-12-29 15:05:35 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -807,20 +807,21 @@
             [ ON UPDATE <bUpdate> ]    ;
             [ ON KEYDOWN <bKeyDown> ]  ;
             [ ON POSCHANGE <bPosChg> ] ;
-            [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;             
             [ <lMulti: MULTISELECT> ]  ;
             [ <lDescend: DESCEND> ]    ; // By Marcelo Sturm (marcelo.sturm@gmail.com)
             [ WHILE <bWhile> ]         ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
             [ FIRST <bFirst> ]         ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
             [ LAST <bLast> ]           ; // By Marcelo Sturm (marcelo.sturm@gmail.com)
             [ FOR <bFor> ]             ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+            [ ON OTHER MESSAGES <bOther> ] ;
+						[ ON OTHERMESSAGES <bOther>  ] ;             
             [ <class: CLASS> <classname> ] ;
           => ;
     [<oBrw> :=] __IIF(<.class.>, <classname>, HBrowse)():New( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,0)),;
         <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>, ;
         <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.>, <.lAppend.>,;
         <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg>, <.lMulti.>, <.lDescend.>,;
-        <bWhile>, <bFirst>, <bLast>, <bFor>, <bOther>, <color>,<bcolor>  );;
+        <bWhile>, <bFirst>, <bLast>, <bFor>, <bOther>, <color>, <bcolor> );;
     [ <oBrw>:name := <(oBrw)> ]          
 
 #xcommand REDEFINE BROWSE [ <oBrw> ]   ;

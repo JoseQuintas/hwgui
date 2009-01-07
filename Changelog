@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1006 2008-12-29 15:05:35 lfbasso Exp $
+ * $Id: Changelog,v 1.1007 2009-01-07 15:30:25 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-01-07 13:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hdialog.prg
+    ! InitModalDlg  initialization 2 properties rect,nScrollPos 
+  * source\hsayimg.prg
+    * minor fix in METHOD REFRESH CLASS HSayBmp
+    
 2008-12-29 12:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     ! fix in clauses BROWSE

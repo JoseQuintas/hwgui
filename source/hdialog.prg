@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.85 2008-12-12 11:40:45 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.86 2009-01-07 15:30:25 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -270,6 +270,9 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    // writelog( str(oDlg:handle)+" "+oDlg:title )
    *  .if uMsg == WM_INITDIALOG
    *-EnableThemeDialogTexture(odlg:handle,6)  //,ETDT_ENABLETAB)
+
+   oDlg:rect := GetWindowRect( odlg:handle )
+   oDlg:nScrollPos := 0
 
    IF ValType( oDlg:menu ) == "A"
       hwg__SetMenu( oDlg:handle, oDlg:menu[ 5 ] )

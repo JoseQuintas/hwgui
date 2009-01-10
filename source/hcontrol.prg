@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.115 2008-12-29 15:05:35 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.116 2009-01-10 14:30:24 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1405,6 +1405,7 @@ CLASS VAR winclass   INIT "BUTTON"
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                cCaption, oFont, bInit, bSize, bPaint, tcolor, bColor, lTransp )
    METHOD Activate()
+   METHOD Init()  
 
 ENDCLASS
 
@@ -1442,6 +1443,16 @@ METHOD Activate CLASS HGroup
       ::Init()
    ENDIF
    RETURN NIL
+   
+METHOD Init CLASS HGroup
+
+   IF  ! ::lInit
+      SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
+      Super:Init()
+   ENDIF   
+   RETURN NIL
+
+   
 
 // HLine
 

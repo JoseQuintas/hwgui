@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.67 2008-11-26 21:09:43 lfbasso Exp $
+ *$Id: windows.ch,v 1.68 2009-01-10 14:30:24 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -1117,6 +1117,10 @@
 #define LVNI_TOLEFT             0x0400
 #define LVNI_TORIGHT            0x0800
 
+#define HWND_TOP                  0
+#define HWND_BOTTOM               1
+#define HWND_TOPMOST             -1
+#define HWND_NOTOPMOST           -2
 
 #define SWP_NOSIZE          0x0001
 #define SWP_NOMOVE          0x0002

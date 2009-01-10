@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1007 2009-01-07 15:30:25 lfbasso Exp $
+ * $Id: Changelog,v 1.1008 2009-01-10 14:30:24 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-01-10 13:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\windows.ch
+    + add news constant HWND_
+  * source\hcontrol.prg
+    + add METHOD INIT in CLASS HGROUP
+      changed Z order of the object GROUP so that the object TAB appears inside the GROUP in
+      PRG compiled and create mode in DESIGNER
 
 2009-01-07 13:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hdialog.prg

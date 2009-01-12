@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.134 2008-12-29 15:05:35 lfbasso Exp $
+ *$Id: guilib.ch,v 1.135 2009-01-12 00:41:50 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -1440,9 +1440,13 @@ Added by Marcos Antonio Gambeta
             [ TOOLTIP <ctoolt> ]          ;
             [ ON GETFOCUS <bGfocus> ]     ;
             [ ON LOSTFOCUS <bLfocus> ]    ;
+            [ ON KEYDOWN <bKeyDown> ]  ;
+            [ ON DBLCLICK <bDblClick> ];
+            [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;             
           => ;
     [<oListbox> := ] HListBox():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
-              <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,<color>,<bcolor>, <bGfocus>,<bLfocus>  );;
+              <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,;
+							<color>,<bcolor>, <bGfocus>,<bLfocus>,<bKeyDown>,<bDblClick>,<bOther> ) ;;
     [ <oListbox>:name := <(oListbox)> ]              
 
 #xcommand REDEFINE LISTBOX [ <oListbox> ITEMS ] <aItems> ;
@@ -1457,9 +1461,11 @@ Added by Marcos Antonio Gambeta
             [ TOOLTIP <ctoolt> ]          ;
             [ ON GETFOCUS <bGfocus> ]     ;
             [ ON LOSTFOCUS <bLfocus> ]    ;
+            [ ON KEYDOWN <bKeyDown> ]     ;
+            [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;             
              => ;
     [<oListbox> := ] HListBox():Redefine( <oWnd>,<nId>,<nInit>,,<aItems>,<oFont>,<bInit>, ;
-             <bSize>,<bDraw>,<bChange>,<ctoolt>,<bGfocus>,<bLfocus> )
+             <bSize>,<bDraw>,<bChange>,<ctoolt>,<bGfocus>,<bLfocus>, <bKeyDown>,<bOther> )
 
 /* Add Sandro R. R. Freire */
 
@@ -1783,7 +1789,6 @@ Added by Marcos Antonio Gambeta
           [STYLE <nstyle>] [TEXT <t>] ;
           => <opage>:ADDBARBITMAP(<hWnd>,<t>,<b>,<nstyle>)
 
-
 #xcommand @ <x>,<y> GET LISTBOX [ <oListbox> ITEMS ] <aItems> ;
              [ OF <oWnd> ]              ;
              [ ID <nId> ]               ;
@@ -1800,13 +1805,15 @@ Added by Marcos Antonio Gambeta
              [ TOOLTIP <ctoolt> ]       ;
              [ WHEN <bGFocus> ]         ;
              [ VALID <bLFocus> ]        ;
+             [ ON KEYDOWN <bKeyDown> ]  ;
+             [ ON DBLCLICK <bDblClick> ];
+             [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;             
         => ;
      [<oListbox> := ] HListBox():New( <oWnd>,<nId>,<nInit>,;
                     {|v|Iif(v==Nil,<nInit>,<nInit>:=v)},;
-                    <nStyle>,<x>,<y>,<width>,<height>, ;
-                    <aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,<color>,<bcolor>,<bGFocus>,<bLFocus> );;
+                    <nStyle>,<x>,<y>,<width>,<height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>, ;
+                    <bChange>,<ctoolt>,<color>,<bcolor>,<bGFocus>,<bLFocus>,<bKeyDown>,<bDblClick>,<bOther> );;
      [ <oListbox>:name := <(oListbox)> ]
-
 
 #xcommand @ <x>,<y> GET COMBOBOXEX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;

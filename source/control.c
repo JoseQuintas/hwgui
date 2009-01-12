@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.71 2008-11-26 13:55:00 lculik Exp $
+ * $Id: control.c,v 1.72 2009-01-12 00:41:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -35,6 +35,7 @@ LRESULT APIENTRY StaticSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
 LRESULT APIENTRY EditSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY ButtonSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY ComboSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+LRESULT APIENTRY ListSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY TrackSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY TabSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 void CALLBACK TimerProc (HWND, UINT, UINT, DWORD) ;
@@ -44,7 +45,7 @@ extern PHB_ITEM Rect2Array( RECT *rc  );
 static HWND hWndTT = 0;
 static BOOL lInitCmnCtrl = 0;
 static BOOL lToolTipBalloon = FALSE; // added by MAG
-static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc,wpOrigComboProc,wpOrigStaticProc; //wpOrigButtonProc
+static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc,wpOrigComboProc,wpOrigStaticProc,wpOrigListProc; //wpOrigButtonProc
 static LONG_PTR wpOrigButtonProc;
 extern BOOL _AddBar( HWND pParent, HWND pBar, REBARBANDINFO* pRBBI );
 extern BOOL AddBar( HWND pParent, HWND pBar, LPCTSTR pszText, HBITMAP pbmp, DWORD dwStyle );
@@ -1261,6 +1262,40 @@ HB_FUNC( HWG_INITCOMBOPROC )
 {
    wpOrigComboProc = (WNDPROC) SetWindowLong( (HWND) HB_PARHANDLE(1),
                                  GWL_WNDPROC, (LONG) ComboSubclassProc );
+}
+
+
+LRESULT APIENTRY ListSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+   long int res;
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+
+   if( !pSym_onEvent )
+      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
+
+   if( pSym_onEvent && pObject )
+   {
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
+      hb_vmPush( pObject );
+      hb_vmPushLong( (LONG ) message );
+      hb_vmPushLong( (LONG ) wParam );
+//      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( lParam );
+      hb_vmSend( 3 );
+      res = hb_parnl( -1 );
+      if( res == -1 )
+         return( CallWindowProc( wpOrigListProc, hWnd, message, wParam, lParam ) );
+      else
+         return res;
+   }
+   else
+      return( CallWindowProc( wpOrigListProc, hWnd, message, wParam, lParam ) );
+}
+
+HB_FUNC( HWG_INITLISTPROC )
+{
+   wpOrigListProc = (WNDPROC) SetWindowLong( (HWND) HB_PARHANDLE(1),
+                                 GWL_WNDPROC, (LONG) ListSubclassProc );
 }
 
 

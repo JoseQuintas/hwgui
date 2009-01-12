@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1008 2009-01-10 14:30:24 lfbasso Exp $
+ * $Id: Changelog,v 1.1009 2009-01-12 00:41:50 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,18 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-01-11 22:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + add new clauses in LISTBOX
+      ON KEYDOWN, ON DBLCLICK, ON OTHERMESSAGES
+  * include\windows.ch
+    + add new constants CBS_
+  * source\control.c
+    + implemented ListSubclassProc to control the events in HLISTBOX CLASS
+  * source\hlistbox.prg
+    + add new parameters in METHOD NEW, bkeydown, bdblclick, bOther
+    + add METHOD ONEVENT, onDblClick
 
 2009-01-10 13:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\windows.ch

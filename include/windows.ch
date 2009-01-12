@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.68 2009-01-10 14:30:24 lfbasso Exp $
+ *$Id: windows.ch,v 1.69 2009-01-12 00:41:50 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -487,6 +487,9 @@
 #define CBS_HASSTRINGS        0x0200
 #define CBS_NOINTEGRALHEIGHT  0x0400
 #define CBS_DISABLENOSCROLL   0x0800
+#define CBS_UPPERCASE         8192 //$2000
+#define CBS_LOWERCASE         16384 //$4000
+
 
 
 /*

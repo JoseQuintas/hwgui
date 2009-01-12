@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.21 2008-11-24 10:02:14 mlacecilia Exp $
+ * $Id: htool.prg,v 1.22 2009-01-12 19:20:24 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -37,9 +37,11 @@ CLASS HToolBar INHERIT HControl
 
    METHOD Activate()
    METHOD INIT()
+   METHOD CreateTool()
    METHOD AddButton( a, s, d, f, g, h )
    METHOD Notify( lParam )
    METHOD REFRESH
+   
 ENDCLASS
 
 
@@ -90,6 +92,15 @@ METHOD Activate CLASS hToolBar
    RETURN Nil
 
 METHOD INIT CLASS hToolBar
+
+   IF ! ::lInit
+      Super:Init()
+      ::CreateTool()
+   ENDIF
+
+   RETURN Nil
+
+METHOD CREATETOOL CLASS hToolBar
    LOCAL n, n1
    LOCAL aTemp
    LOCAL hIm
@@ -97,8 +108,7 @@ METHOD INIT CLASS hToolBar
    LOCAL aBmpSize
    LOCAL nPos
    LOCAL nmax
-   IF ! ::lInit
-      Super:Init()
+   
       FOR n := 1 TO Len( ::aItem )
 
          IF ValType( ::aItem[ n, 7 ] ) == "B"
@@ -173,9 +183,8 @@ METHOD INIT CLASS hToolBar
          SendMessage( ::handle, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS )
       ENDIF
 
-   ENDIF
-
    RETURN Nil
+
 
 METHOD Notify( lParam ) CLASS hToolBar
 

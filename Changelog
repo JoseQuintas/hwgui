@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1009 2009-01-12 00:41:50 lfbasso Exp $
+ * $Id: Changelog,v 1.1010 2009-01-12 19:20:23 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-01-11 22:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\htool.prg
+    * add METHOD CREATETOOL code for the creation of the toolbar buttons,
+       need to work properly in WINDOW and DIALOG in DESIGNER removed the method INIT
+  
 2009-01-11 22:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     + add new clauses in LISTBOX

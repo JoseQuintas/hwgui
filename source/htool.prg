@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.23 2009-01-13 15:59:22 lfbasso Exp $
+ * $Id: htool.prg,v 1.24 2009-01-13 16:48:12 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -34,7 +34,7 @@ CLASS HToolBar INHERIT HControl
    DATA BtnWidth  
    DATA aItem init { }
 
-   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
+   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, BtnWidth, oFont, bInit, ;
                bSize, bPaint, ctooltip, tcolor, bcolor, lTransp,lVertical, aItem )
    METHOD Redefine( oWndParent, nId, oFont, bInit, ;
                     bSize, bPaint, ctooltip, tcolor, bcolor, lTransp , aItem )
@@ -52,7 +52,7 @@ CLASS HToolBar INHERIT HControl
 ENDCLASS
 
 
-METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
+METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, BtnWidth, oFont, bInit, ;
             bSize, bPaint, ctooltip, tcolor, bcolor, lTransp,lVertical, aitem ) CLASS hToolBar
 
    HB_SYMBOL_UNUSED( cCaption )

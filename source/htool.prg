@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.26 2009-01-13 18:02:55 lfbasso Exp $
+ * $Id: htool.prg,v 1.27 2009-01-13 21:58:10 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -177,7 +177,8 @@ METHOD CREATETOOL CLASS hToolBar
             aBmpSize := GetBitmapSize( aButton[ n ] )
             nmax := Max( nmax, aBmpSize[ 3 ] )
          NEXT
-
+         aBmpSize := GetBitmapSize( aButton[ 1 ] )
+         
          IF nmax == 4
             hIm := CreateImageList( { } , aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR4 + ILC_MASK )
          ELSEIF nmax == 8

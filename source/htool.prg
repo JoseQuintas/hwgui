@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.22 2009-01-12 19:20:24 lfbasso Exp $
+ * $Id: htool.prg,v 1.23 2009-01-13 15:59:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -28,10 +28,14 @@ CLASS HToolBar INHERIT HControl
    DATA lPress INIT .F.
    DATA lFlat
    DATA nOrder
+   DATA lTransp    INIT .F. 
+   DATA lVertical  INIT .F. 
+   DATA lCreate    INIT .F. HIDDEN 
+   DATA BtnWidth  
    DATA aItem init { }
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-               bSize, bPaint, ctooltip, tcolor, bcolor, lTransp , aItem )
+               bSize, bPaint, ctooltip, tcolor, bcolor, lTransp,lVertical, aItem )
    METHOD Redefine( oWndParent, nId, oFont, bInit, ;
                     bSize, bPaint, ctooltip, tcolor, bcolor, lTransp , aItem )
 
@@ -40,13 +44,16 @@ CLASS HToolBar INHERIT HControl
    METHOD CreateTool()
    METHOD AddButton( a, s, d, f, g, h )
    METHOD Notify( lParam )
+   METHOD EnableButton( idButton, lEnable ) INLINE SENDMESSAGE( ::handle, TB_ENABLEBUTTON, INT( idButton ), MAKELONG( IIF( lEnable, 1, 0 ), 0) )
+   METHOD ShowButton( idButton ) INLINE SENDMESSAGE( ::handle, TB_HIDEBUTTON, INT( idButton ), MAKELONG( 0, 0 ) )
+   METHOD HideButton( idButton ) INLINE SENDMESSAGE( ::handle, TB_HIDEBUTTON, INT( idButton ), MAKELONG( 1, 0 ) )         
    METHOD REFRESH
    
 ENDCLASS
 
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-            bSize, bPaint, ctooltip, tcolor, bcolor, lTransp , aitem ) CLASS hToolBar
+            bSize, bPaint, ctooltip, tcolor, bcolor, lTransp,lVertical, aitem ) CLASS hToolBar
 
    HB_SYMBOL_UNUSED( cCaption )
    HB_SYMBOL_UNUSED( lTransp )
@@ -55,12 +62,15 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor )
    HWG_InitCommonControlsEx()
+   ::lTransp := IIF( lTransp != NIL, lTransp, .F. )
+   ::BtnWidth := IIF( BtnWidth != Nil, BtnWidth, 32 )
+   ::lVertical := IIF( lVertical != NIL, lVertical, ::lVertical )
+
    ::aitem := aitem
 
    ::Activate()
 
    RETURN Self
-
 
 
 METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
@@ -83,7 +93,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 METHOD Activate CLASS hToolBar
 
    IF ! Empty( ::oParent:handle )
-
+      ::lCreate := .T.
       ::handle := CREATETOOLBAR( ::oParent:handle, ::id, ;
                                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::extStyle )
 
@@ -108,6 +118,19 @@ METHOD CREATETOOL CLASS hToolBar
    LOCAL aBmpSize
    LOCAL nPos
    LOCAL nmax
+   LOCAL nStyle
+   
+     IF Empty( ::handle ) 
+        RETURN Nil
+		 ENDIF   
+		 IF !::lCreate 
+			   DESTROYWINDOW( ::Handle )    
+			   ::activate()
+	   ENDIF
+     IF ::lVertical
+        ::Style := SendMessage( ::handle, TB_GETSTYLE, 0, 0 ) + CCS_VERT
+        SendMessage( ::handle, TB_SETSTYLE, 0, nStyle )
+     ENDIF
    
       FOR n := 1 TO Len( ::aItem )
 
@@ -130,7 +153,11 @@ METHOD CREATETOOL CLASS hToolBar
          ENDIF
 
          IF ValType( ::aItem[ n, 1 ] )  == "C"
-            AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION + LR_LOADFROMFILE ) )
+           IF At(".", ::aitem[ n, 1 ] ) != 0
+              AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION+ LR_LOADFROMFILE ) )
+           ELSE
+              AAdd( aButton, HBitmap():AddResource( ::aitem[ n, 1 ] ):handle )
+           ENDIF
             ::aItem[ n , 1 ] := n
 
          ELSE
@@ -182,6 +209,19 @@ METHOD CREATETOOL CLASS hToolBar
 
          SendMessage( ::handle, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS )
       ENDIF
+      
+      IF ::BtnWidth != Nil
+        IF  ! ::lVertical
+           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth, ::nHeight - 2 ) )
+        ELSE
+           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - 2, ::BtnWidth ) )
+				ENDIF   
+      ENDIF   
+      IF ::lTransp
+         nStyle := SendMessage( ::handle, TB_GETSTYLE, 0, 0 ) + TBSTYLE_TRANSPARENT
+         SendMessage( ::handle, TB_SETSTYLE, 0, nStyle )
+      ENDIF
+      
 
    RETURN Nil
 

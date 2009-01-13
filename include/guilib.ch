@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.135 2009-01-12 00:41:50 lfbasso Exp $
+ *$Id: guilib.ch,v 1.136 2009-01-13 15:59:22 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -1618,10 +1618,14 @@ Added by Marcos Antonio Gambeta
             [ OF <oWnd> ]               ;
             [ ID <nId> ]                ;
             [ SIZE <width>, <height> ]  ;
+            [ BUTTONWIDTH <btnwidth>    ]  ;
+            [ ON INIT <bInit> ]         ;
+            [<lTransp: TRANSPARENT>]    ;
+            [<lVertical: VERTICAL>]     ;
             [ STYLE <nStyle> ]          ;
             [ ITEMS <aItems> ]          ;
           => ;
-    [<oTool> := ]        Htoolbar():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,,,<aItems>  );;
+    [<oTool> := ]  Htoolbar():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,<btnwidth>,,<bInit>,,,,,,<.lTransp.>,<.lVertical.>,<aItems>  );;
     [ <oTool>:name := <(oTool)> ] 					    
 
 #xcommand REDEFINE TOOLBAR  <oSay>     ;

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1010 2009-01-12 19:20:23 lfbasso Exp $
+ * $Id: Changelog,v 1.1011 2009-01-13 15:59:22 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,20 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-01-12 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + add new clauses in command TOOLBAR 
+       [ BUTTONWIDTH <btnwidth>    ]  ; [ ON INIT <bInit> ];
+         [<lTransp: TRANSPARENT>]    ; [<lVertical: VERTICAL>]     ;
+  * include\windows.ch
+    + add news constants
+  * source\control.c
+    - remove TBSTYLE_TRANSPARENT in CREATETOOLBAR
+  * source\htool.prg
+    + add news parameters in NEW() buttonwidth,ltransp,lvertical
+    + add METHOD EnableButton,  METHOD ShowButton,   METHOD HideButton
+    + add DATA lCreate, lVertical, lTransp, btnwidth
 
 2009-01-11 22:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\htool.prg

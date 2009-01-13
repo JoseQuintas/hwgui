@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.69 2009-01-12 00:41:50 lfbasso Exp $
+ *$Id: windows.ch,v 1.70 2009-01-13 15:59:22 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -1004,7 +1004,12 @@
 #define BTNS_GROUP      TBSTYLE_GROUP       // 0x0004
 #define BTNS_CHECKGROUP TBSTYLE_CHECKGROUP  // (TBSTYLE_GROUP | TBSTYLE_CHECK)
 
-#define TB_ENABLEBUTTON (WM_USER+1)
+#define TB_ENABLEBUTTON         (WM_USER + 1)
+#define TB_HIDEBUTTON           (WM_USER + 4)
+#define TB_SETBUTTONSIZE        (WM_USER + 31)
+#define TB_SETSTATE             (WM_USER + 17)
+#define TB_SETSTYLE             (WM_USER + 56)
+#define TB_GETSTYLE             (WM_USER + 57)
 
 #define TTN_FIRST -520
 #define TTN_LAST  -549

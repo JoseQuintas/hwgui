@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.136 2009-01-13 15:59:22 lfbasso Exp $
+ *$Id: guilib.ch,v 1.137 2009-01-13 18:02:55 lfbasso Exp $
  */
 #define HWG_VERSION           "2.17"
 #define   WND_MAIN      1
@@ -1555,8 +1555,8 @@ Added by Marcos Antonio Gambeta
 
 //Contribution   Ricardo de Moura Marques
 #xcommand @ <X>, <Y>, <X2>, <Y2> RECT <oRect> [<lPress: PRESS>] [OF <oWnd>] [RECT_STYLE <nST>];
-          => <oRect> := HRect():New(<oWnd>,<X>,<Y>,<X2>,<Y2>, <.lPress.>, <nST> );;
-    [ <oRect>:name := <(oRect)> ]                
+          => <oRect> := HRect():New(<oWnd>,<X>,<Y>,<X2>,<Y2>, <.lPress.>, <nST> ) 
+  //  [ <oRect>:name := <(oRect)> ]                
     
 //New Control
 #xcommand @ <x>,<y> SAY [ <oSay> CAPTION ] <caption> ;

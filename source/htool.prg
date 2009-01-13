@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.25 2009-01-13 17:06:09 lfbasso Exp $
+ * $Id: htool.prg,v 1.26 2009-01-13 18:02:55 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -63,8 +63,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, BtnWidth, oFo
               bSize, bPaint, ctooltip, tcolor, bcolor )
    HWG_InitCommonControlsEx()
    ::lTransp := IIF( lTransp != NIL, lTransp, .F. )
-   ::BtnWidth := IIF( BtnWidth != Nil, BtnWidth, 32 )
-   ::lVertical := IIF( lVertical != NIL, lVertical, ::lVertical )
+   ::BtnWidth :=  BtnWidth //!= Nil, BtnWidth, 32 )
+   ::lVertical := IIF( lVertical != NIL .AND. TYPE( "lVertical" ) = "L", lVertical, ::lVertical )
 
    ::aitem := aitem
 
@@ -170,7 +170,6 @@ METHOD CREATETOOL CLASS hToolBar
 
       IF Len( aButton ) > 0
 
-
          aBmpSize := GetBitmapSize( aButton[ 1 ] )
          nmax := aBmpSize[ 3 ]
 
@@ -179,11 +178,12 @@ METHOD CREATETOOL CLASS hToolBar
             nmax := Max( nmax, aBmpSize[ 3 ] )
          NEXT
 
-
          IF nmax == 4
             hIm := CreateImageList( { } , aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR4 + ILC_MASK )
          ELSEIF nmax == 8
             hIm := CreateImageList( { } , aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR8 + ILC_MASK )
+         ELSEIF nMax == 16 //
+             hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLORDDB + ILC_MASK )
          ELSEIF nmax == 24
             hIm := CreateImageList( { } , aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLORDDB + ILC_MASK )
          ENDIF
@@ -212,9 +212,9 @@ METHOD CREATETOOL CLASS hToolBar
       
       IF ::BtnWidth != Nil
         IF  ! ::lVertical
-           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth, ::nHeight - 2 ) )
+           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth, ::nHeight - 3 ) )
         ELSE
-           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - 2, ::BtnWidth ) )
+           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - 3, ::BtnWidth ) )
 				ENDIF   
       ENDIF   
       IF ::lTransp

@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.119 2008-12-18 03:18:54 lfbasso Exp $
+ *$Id: hedit.prg,v 1.120 2009-01-16 13:58:40 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -696,7 +696,7 @@ METHOD Input( cChar, nPos ) CLASS HEdit
 
 METHOD GetApplyKey( cKey ) CLASS HEdit
    LOCAL nPos, nGetLen, nLen, vari, i, x, newPos
-   LOCAL nDecimals
+   LOCAL nDecimals, lSignal := .F. 
 
    /* AJ: 11-03-2007 */
    IF Hwg_BitAnd( GetWindowLong( ::handle, GWL_STYLE ), ES_READONLY ) != 0
@@ -717,6 +717,7 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
          vari := Val( vari ) 
       ELSE
          vari := Trim( ::title )
+         lSignal := IIF( LEFT( vari, 1) = "-", .T., .F. )
          FOR i := 2 TO Len( vari )
             IF ! IsDigit( SubStr( vari, i, 1 ) )
                vari := Left( vari, i - 1 ) + SubStr( vari, i + 1 )
@@ -724,9 +725,14 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
          NEXT
          vari := StrTran( vari, " ", IIF( "E" $ ::cPicFunc, ",", "." ) )
          vari := Val( vari )
+         lSignal := IIF( lSignal .AND. vari != 0, .F., lSignal )
       ENDIF
       IF ! Empty( ::cPicFunc ) .OR. ! Empty( ::cPicMask )
          ::title := Transform( vari, ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
+         IF lSignal
+           ::title := "-" + substr( ::title, 2 )
+         ENDIF  
+
       ENDIF
       SetDlgItemText( ::oParent:handle, ::id, ::title )
       ::KeyRight( nPos - 1 )

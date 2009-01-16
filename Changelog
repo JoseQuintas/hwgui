@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1013 2009-01-13 21:58:10 lfbasso Exp $
+ * $Id: Changelog,v 1.1014 2009-01-16 13:58:40 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-01-16 11:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hedit.prg
+    ! fix in number field when the signal is negative and the value is less than 1
 
 2009-01-12 19:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\hcontrol.prg

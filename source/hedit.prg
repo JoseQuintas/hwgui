@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.120 2009-01-16 13:58:40 lfbasso Exp $
+ *$Id: hedit.prg,v 1.121 2009-01-21 15:44:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -778,6 +778,7 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
          IF ! Empty( SendMessage( ::handle, EM_GETPASSWORDCHAR, 0, 0 ) )
             ::title := Left( ::title, nPos - 1 ) + cKey + Trim( SubStr( ::title, nPos + 1 ) )
          ELSEIF ! Empty( ::nMaxLength )
+            nLen := LEN( TRIM( ::GetText() ) )
             ::title := PadR( ::title, ::nMaxLength )
          ENDIF
          SetDlgItemText( ::oParent:handle, ::id, ::title )
@@ -798,7 +799,10 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
                   ::GetApplyKey( "," )
                ENDIF
             ENDIF
-
+         ELSEIF !Empty(::nMaxLength)
+				    IF SET( _SET_CONFIRM ) .AND. nLen = ::nMaxLength-1 
+               GetSkip( ::oParent, ::handle, , 1 )
+            ENDIF
          ENDIF
 
       ENDIF

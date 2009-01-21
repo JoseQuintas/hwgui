@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1015 2009-01-21 04:57:13 marcosgambeta Exp $
+ * $Id: Changelog,v 1.1016 2009-01-21 15:44:05 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-01-21 13:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hedit.prg
+    ! add autoskip in EDITBOX if SET CONFIRM = ON for MAXLENGTH > 0 AND fieldtype != N
+    
 2009-01-21 02:50 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
   * include\freeimage.h
   * include\gtk.ch

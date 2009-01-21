@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1014 2009-01-16 13:58:40 lfbasso Exp $
+ * $Id: Changelog,v 1.1015 2009-01-21 04:57:13 marcosgambeta Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,21 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-01-21 02:50 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
+  * include\freeimage.h
+  * include\gtk.ch
+  * include\guilib.ch
+  * include\guilib.h
+  * include\hwg_qhtm.ch
+  * include\hwgui.ch
+  * include\hxml.ch
+  * include\missing.h
+  * include\repmain.h
+  * include\richtext.ch
+  * include\uxtheme.h
+  * include\windows.ch
+    TAB replaced by SPACE. Formatting.
 
 2009-01-16 11:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg

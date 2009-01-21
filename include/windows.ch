@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.70 2009-01-13 15:59:22 lfbasso Exp $
+ *$Id: windows.ch,v 1.71 2009-01-21 04:57:14 marcosgambeta Exp $
  */
 
 #define WM_CREATE                       1
@@ -19,7 +19,7 @@
 
 #define WM_ERASEBKGND                   20   // 0x0014
 #define WM_ENDSESSION                   22   // 0x0016
-#define WM_ACTIVATEAPP                  28 
+#define WM_ACTIVATEAPP                  28
 #define WM_GETMINMAXINFO                36   // 0x0024
 #define WM_NEXTDLGCTL                   40   // 0x0028
 #define WM_DRAWITEM                     43   // 0x002B
@@ -194,43 +194,43 @@
 #define PS_ALTERNATE        8
 #define PS_STYLE_MASK       15
 
-#define COLOR_SCROLLBAR         0
-#define COLOR_BACKGROUND        1
-#define COLOR_ACTIVECAPTION     2
-#define COLOR_INACTIVECAPTION   3
-#define COLOR_MENU              4
-#define COLOR_WINDOW            5
-#define COLOR_WINDOWFRAME       6
-#define COLOR_MENUTEXT          7
-#define COLOR_WINDOWTEXT        8
-#define COLOR_CAPTIONTEXT       9
-#define COLOR_ACTIVEBORDER      10
-#define COLOR_INACTIVEBORDER    11
-#define COLOR_APPWORKSPACE      12
-#define COLOR_HIGHLIGHT         13
-#define COLOR_HIGHLIGHTTEXT     14
-#define COLOR_BTNFACE           15
-#define COLOR_BTNSHADOW         16
-#define COLOR_GRAYTEXT          17
-#define COLOR_BTNTEXT           18
-#define COLOR_INACTIVECAPTIONTEXT 19
-#define COLOR_BTNHIGHLIGHT      20
+#define COLOR_SCROLLBAR                 0
+#define COLOR_BACKGROUND                1
+#define COLOR_ACTIVECAPTION             2
+#define COLOR_INACTIVECAPTION           3
+#define COLOR_MENU                      4
+#define COLOR_WINDOW                    5
+#define COLOR_WINDOWFRAME               6
+#define COLOR_MENUTEXT                  7
+#define COLOR_WINDOWTEXT                8
+#define COLOR_CAPTIONTEXT               9
+#define COLOR_ACTIVEBORDER              10
+#define COLOR_INACTIVEBORDER            11
+#define COLOR_APPWORKSPACE              12
+#define COLOR_HIGHLIGHT                 13
+#define COLOR_HIGHLIGHTTEXT             14
+#define COLOR_BTNFACE                   15
+#define COLOR_BTNSHADOW                 16
+#define COLOR_GRAYTEXT                  17
+#define COLOR_BTNTEXT                   18
+#define COLOR_INACTIVECAPTIONTEXT       19
+#define COLOR_BTNHIGHLIGHT              20
 
-#define COLOR_3DDKSHADOW        21
-#define COLOR_3DLIGHT           22
-#define COLOR_INFOTEXT          23
-#define COLOR_INFOBK            24
+#define COLOR_3DDKSHADOW                21
+#define COLOR_3DLIGHT                   22
+#define COLOR_INFOTEXT                  23
+#define COLOR_INFOBK                    24
 
-#define COLOR_HOTLIGHT          26
-#define COLOR_GRADIENTACTIVECAPTION 27
-#define COLOR_GRADIENTINACTIVECAPTION 28
+#define COLOR_HOTLIGHT                  26
+#define COLOR_GRADIENTACTIVECAPTION     27
+#define COLOR_GRADIENTINACTIVECAPTION   28
 
-#define COLOR_DESKTOP           COLOR_BACKGROUND
-#define COLOR_3DFACE            COLOR_BTNFACE
-#define COLOR_3DSHADOW          COLOR_BTNSHADOW
-#define COLOR_3DHIGHLIGHT       COLOR_BTNHIGHLIGHT
-#define COLOR_3DHILIGHT         COLOR_BTNHIGHLIGHT
-#define COLOR_BTNHILIGHT        COLOR_BTNHIGHLIGHT
+#define COLOR_DESKTOP                   COLOR_BACKGROUND
+#define COLOR_3DFACE                    COLOR_BTNFACE
+#define COLOR_3DSHADOW                  COLOR_BTNSHADOW
+#define COLOR_3DHIGHLIGHT               COLOR_BTNHIGHLIGHT
+#define COLOR_3DHILIGHT                 COLOR_BTNHIGHLIGHT
+#define COLOR_BTNHILIGHT                COLOR_BTNHIGHLIGHT
 
 /*
  * DrawText() Format Flags
@@ -629,7 +629,7 @@
 
 #define ENM_CHANGE             1        // 0x00000001
 #define ENM_SELCHANGE          524288   // 0x00080000
-#define ENM_PROTECTED           0x00200000
+#define ENM_PROTECTED          0x00200000
 
 #define IMAGE_BITMAP        0
 #define IMAGE_ICON          1
@@ -1020,7 +1020,7 @@
 #define TTN_GETDISPINFO         TTN_GETDISPINFOA
 #define TB_SETTOOLTIPS          (WM_USER + 36)
 #define TBSTYLE_DROPDOWN        0x0008
-#define BTNS_DROPDOWN   TBSTYLE_DROPDOWN
+#define BTNS_DROPDOWN           TBSTYLE_DROPDOWN
 #define TBSTYLE_EX_DRAWDDARROWS 0x00000001
 #define TB_SETEXTENDEDSTYLE     (WM_USER + 84)  // For TBSTYLE_EX_*
 #define TB_GETEXTENDEDSTYLE     (WM_USER + 85)  // For TBSTYLE_EX_*
@@ -1071,12 +1071,12 @@
 #define PGN_FIRST               -900       // Pager Control
 #define PGN_LAST                -950
 
-#define PGN_CALCSIZE        (PGN_FIRST-2)
+#define PGN_CALCSIZE            (PGN_FIRST-2)
 #define PGS_VERT                0x00000000
 #define PGS_HORZ                0x00000001
 #define PGS_AUTOSCROLL          0x00000002
 #define PGS_DRAGNDROP           0x00000004
-#define PGN_SCROLL          (PGN_FIRST-1)
+#define PGN_SCROLL              (PGN_FIRST-1)
 
 #define PGF_SCROLLUP        1
 #define PGF_SCROLLDOWN      2
@@ -1170,20 +1170,20 @@
 #define RBBS_HIDETITLE      0x00000400  // keep band title hidden
 
 
-#define ODS_SELECTED    0x0001
-#define ODS_GRAYED      0x0002
-#define ODS_DISABLED    0x0004
-#define ODS_CHECKED     0x0008
-#define ODS_FOCUS       0x0010
+#define ODS_SELECTED        0x0001
+#define ODS_GRAYED          0x0002
+#define ODS_DISABLED        0x0004
+#define ODS_CHECKED         0x0008
+#define ODS_FOCUS           0x0010
 #define ODS_NOFOCUSRECT     0x0200
-#define BM_CLICK           0x00F5
-#define BM_GETIMAGE        0x00F6
-#define BM_SETIMAGE        0x00F7
-#define BM_GETCHECK        0x00F0
-#define BM_SETCHECK        0x00F1
-#define BM_GETSTATE        0x00F2
-#define BM_SETSTATE        0x00F3
-#define BM_SETSTYLE        0x00F4
+#define BM_CLICK            0x00F5
+#define BM_GETIMAGE         0x00F6
+#define BM_SETIMAGE         0x00F7
+#define BM_GETCHECK         0x00F0
+#define BM_SETCHECK         0x00F1
+#define BM_GETSTATE         0x00F2
+#define BM_SETSTATE         0x00F3
+#define BM_SETSTYLE         0x00F4
 
 #define BS_TEXT             0x00000000
 #define BS_ICON             0x00000040
@@ -1206,9 +1206,9 @@
 #define PBS_PRESSED   3
 #define PBS_DISABLED  4
 #define PBS_DEFAULTED 5
-#DEFINE PBS_SMOOTH       1 
-#DEFINE PBS_VERTICAL     4 
-#DEFINE PBS_MARQUEE      8 
+#DEFINE PBS_SMOOTH       1
+#DEFINE PBS_VERTICAL     4
+#DEFINE PBS_MARQUEE      8
 
 #DEFINE PBM_SETRANGE     WM_USER+1
 #DEFINE PBM_SETPOS       WM_USER+2
@@ -1228,43 +1228,43 @@
 #define DFC_POPUPMENU           5
 
 
-#define DFCS_CAPTIONCLOSE       0x0000
-#define DFCS_CAPTIONMIN         0x0001
-#define DFCS_CAPTIONMAX         0x0002
-#define DFCS_CAPTIONRESTORE     0x0003
-#define DFCS_CAPTIONHELP        0x0004
+#define DFCS_CAPTIONCLOSE        0x0000
+#define DFCS_CAPTIONMIN          0x0001
+#define DFCS_CAPTIONMAX          0x0002
+#define DFCS_CAPTIONRESTORE      0x0003
+#define DFCS_CAPTIONHELP         0x0004
 
-#define DFCS_MENUARROW          0x0000
-#define DFCS_MENUCHECK          0x0001
-#define DFCS_MENUBULLET         0x0002
-#define DFCS_MENUARROWRIGHT     0x0004
-#define DFCS_SCROLLUP           0x0000
-#define DFCS_SCROLLDOWN         0x0001
-#define DFCS_SCROLLLEFT         0x0002
-#define DFCS_SCROLLRIGHT        0x0003
-#define DFCS_SCROLLCOMBOBOX     0x0005
-#define DFCS_SCROLLSIZEGRIP     0x0008
+#define DFCS_MENUARROW           0x0000
+#define DFCS_MENUCHECK           0x0001
+#define DFCS_MENUBULLET          0x0002
+#define DFCS_MENUARROWRIGHT      0x0004
+#define DFCS_SCROLLUP            0x0000
+#define DFCS_SCROLLDOWN          0x0001
+#define DFCS_SCROLLLEFT          0x0002
+#define DFCS_SCROLLRIGHT         0x0003
+#define DFCS_SCROLLCOMBOBOX      0x0005
+#define DFCS_SCROLLSIZEGRIP      0x0008
 #define DFCS_SCROLLSIZEGRIPRIGHT 0x0010
 
-#define DFCS_BUTTONCHECK        0x0000
-#define DFCS_BUTTONRADIOIMAGE   0x0001
-#define DFCS_BUTTONRADIOMASK    0x0002
-#define DFCS_BUTTONRADIO        0x0004
-#define DFCS_BUTTON3STATE       0x0008
-#define DFCS_BUTTONPUSH         0x0010
+#define DFCS_BUTTONCHECK         0x0000
+#define DFCS_BUTTONRADIOIMAGE    0x0001
+#define DFCS_BUTTONRADIOMASK     0x0002
+#define DFCS_BUTTONRADIO         0x0004
+#define DFCS_BUTTON3STATE        0x0008
+#define DFCS_BUTTONPUSH          0x0010
 
-#define DFCS_INACTIVE           0x0100
-#define DFCS_PUSHED             0x0200
-#define DFCS_CHECKED            0x0400
-
-
-#define DFCS_TRANSPARENT        0x0800
-#define DFCS_HOT                0x1000
+#define DFCS_INACTIVE            0x0100
+#define DFCS_PUSHED              0x0200
+#define DFCS_CHECKED             0x0400
 
 
-#define DFCS_ADJUSTRECT         0x2000
-#define DFCS_FLAT               0x4000
-#define DFCS_MONO               0x8000
+#define DFCS_TRANSPARENT         0x0800
+#define DFCS_HOT                 0x1000
+
+
+#define DFCS_ADJUSTRECT          0x2000
+#define DFCS_FLAT                0x4000
+#define DFCS_MONO                0x8000
 
 // Defines for the new buttons
 #define ST_ALIGN_HORIZ       0           // Icon/bitmap on the left, text on the right
@@ -1274,9 +1274,9 @@
 
 #define WM_THEMECHANGED     0x031
 
-#define TPM_LEFTALIGN   0x0000
-#define TPM_CENTERALIGN 0x0004
-#define TPM_RIGHTALIGN  0x0008
+#define TPM_LEFTALIGN       0x0000
+#define TPM_CENTERALIGN     0x0004
+#define TPM_RIGHTALIGN      0x0008
 #define DS_CONTROL          0x0400
 
 #define BUTTON_UNCHECKED       0x00
@@ -1313,25 +1313,25 @@
 #define LVN_FIRST               -100       // listview
 
 #define LVN_COLUMNCLICK         (LVN_FIRST-8)
-#define HOLLOW_BRUSH        NULL_BRUSH
+#define HOLLOW_BRUSH            NULL_BRUSH
 #define TTM_SETMAXTIPWIDTH      (WM_USER + 24)
 
-#define _SRCCOPY             0x00CC0020 /* dest = source                   */
-#define _SRCPAINT            0x00EE0086 /* dest = source OR dest           */
-#define CB_SETDROPPEDWIDTH          0x0160
+#define _SRCCOPY                0x00CC0020 /* dest = source                   */
+#define _SRCPAINT               0x00EE0086 /* dest = source OR dest           */
+#define CB_SETDROPPEDWIDTH      0x0160
 
- 
-#define DLGC_WANTARROWS     0x0001      /* Control wants arrow keys         */
-#define DLGC_WANTTAB        0x0002      /* Control wants tab keys           */
-#define DLGC_WANTALLKEYS    0x0004      /* Control wants all keys           */
-#define DLGC_WANTMESSAGE    0x0004      /* Pass message to control          */
-#define DLGC_HASSETSEL      0x0008      /* Understands EM_SETSEL message    */
-#define DLGC_DEFPUSHBUTTON  0x0010      /* Default pushbutton               */
-#define DLGC_UNDEFPUSHBUTTON 0x0020     /* Non-default pushbutton           */
-#define DLGC_RADIOBUTTON    0x0040      /* Radio button                     */
-#define DLGC_WANTCHARS      0x0080      /* Want WM_CHAR messages            */
-#define DLGC_STATIC         0x0100      /* Static item: don't include       */
-#define DLGC_BUTTON         0x2000      /* Button item: can be checked      */
+
+#define DLGC_WANTARROWS      0x0001      /* Control wants arrow keys         */
+#define DLGC_WANTTAB         0x0002      /* Control wants tab keys           */
+#define DLGC_WANTALLKEYS     0x0004      /* Control wants all keys           */
+#define DLGC_WANTMESSAGE     0x0004      /* Pass message to control          */
+#define DLGC_HASSETSEL       0x0008      /* Understands EM_SETSEL message    */
+#define DLGC_DEFPUSHBUTTON   0x0010      /* Default pushbutton               */
+#define DLGC_UNDEFPUSHBUTTON 0x0020      /* Non-default pushbutton           */
+#define DLGC_RADIOBUTTON     0x0040      /* Radio button                     */
+#define DLGC_WANTCHARS       0x0080      /* Want WM_CHAR messages            */
+#define DLGC_STATIC          0x0100      /* Static item: don't include       */
+#define DLGC_BUTTON          0x2000      /* Button item: can be checked      */
 
 /*
 Animation class defines

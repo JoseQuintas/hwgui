@@ -1,5 +1,5 @@
 /*
- * $Id: hxml.ch,v 1.1 2004-03-18 11:28:48 alkresin Exp $
+ * $Id: hxml.ch,v 1.2 2009-01-21 04:57:14 marcosgambeta Exp $
  *
  * Header file for HXMLDoc and HXMLNode classes
  */
@@ -17,4 +17,3 @@
 #define HBXML_TYPE_COMMENT        2
 #define HBXML_TYPE_CDATA          3
 #define HBXML_TYPE_PI             4
-

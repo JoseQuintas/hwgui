@@ -1,5 +1,5 @@
 /*
- * $Id: freeimage.h,v 1.3 2007-11-25 22:04:46 andijahja Exp $
+ * $Id: freeimage.h,v 1.4 2009-01-21 04:57:14 marcosgambeta Exp $
 */
 // ==========================================================
 // FreeImage 3
@@ -50,10 +50,10 @@
 #else
 #define WIN32_LEAN_AND_MEAN
 #define DLL_CALLCONV __stdcall
-// The following ifdef block is the standard way of creating macros which make exporting 
+// The following ifdef block is the standard way of creating macros which make exporting
 // from a DLL simpler. All files within this DLL are compiled with the FREEIMAGE_EXPORTS
 // symbol defined on the command line. this symbol should not be defined on any project
-// that uses this DLL. This way any other project whose source files include this file see 
+// that uses this DLL. This way any other project whose source files include this file see
 // DLL_API functions as being imported from a DLL, wheras this DLL sees symbols
 // defined with this macro as being exported.
 #ifdef FREEIMAGE_EXPORTS
@@ -66,13 +66,13 @@
 // For C compatility --------------------------------------------------------
 
 #ifdef __cplusplus
-#define FI_DEFAULT(x)	= x
+#define FI_DEFAULT(x)   = x
 #define FI_ENUM(x)      enum x
-#define FI_STRUCT(x)	struct x
+#define FI_STRUCT(x)    struct x
 #else
 #define FI_DEFAULT(x)
 #define FI_ENUM(x)      typedef int x; enum x
-#define FI_STRUCT(x)	typedef struct x x; struct x
+#define FI_STRUCT(x)    typedef struct x x; struct x
 #endif
 
 // Bitmap types -------------------------------------------------------------
@@ -109,19 +109,19 @@ typedef unsigned long DWORD;
 typedef long LONG;
 
 typedef struct tagRGBQUAD {
-  BYTE rgbBlue; 
-  BYTE rgbGreen; 
-  BYTE rgbRed; 
-  BYTE rgbReserved; 
-} RGBQUAD; 
+  BYTE rgbBlue;
+  BYTE rgbGreen;
+  BYTE rgbRed;
+  BYTE rgbReserved;
+} RGBQUAD;
 
 typedef struct tagBITMAPINFOHEADER{
   DWORD biSize;
-  LONG  biWidth; 
-  LONG  biHeight; 
-  WORD  biPlanes; 
+  LONG  biWidth;
+  LONG  biHeight;
+  WORD  biPlanes;
   WORD  biBitCount;
-  DWORD biCompression; 
+  DWORD biCompression;
   DWORD biSizeImage;
   LONG  biXPelsPerMeter;
   LONG  biYPelsPerMeter;
@@ -139,13 +139,13 @@ typedef struct tagBITMAPINFO {
 
 // ICC profile support ------------------------------------------------------
 
-#define FIICC_DEFAULT			0x00
-#define FIICC_COLOR_IS_CMYK		0x01
+#define FIICC_DEFAULT         0x00
+#define FIICC_COLOR_IS_CMYK      0x01
 
-FI_STRUCT (FIICCPROFILE) { 
-	WORD    flags;	// info flag
-	DWORD	size;	// profile's size measured in bytes
-	void   *data;	// points to a block of contiguous memory containing the profile
+FI_STRUCT (FIICCPROFILE) {
+   WORD    flags;   // info flag
+   DWORD   size;   // profile's size measured in bytes
+   void   *data;   // points to a block of contiguous memory containing the profile
 };
 
 // Important enums ----------------------------------------------------------
@@ -153,87 +153,87 @@ FI_STRUCT (FIICCPROFILE) {
 /** I/O image format identifiers.
 */
 FI_ENUM(FREE_IMAGE_FORMAT) {
-	FIF_UNKNOWN = -1,
-	FIF_BMP = 0,
-	FIF_ICO,
-	FIF_JPEG,
-	FIF_JNG,
-	FIF_KOALA,
-	FIF_LBM,
-	FIF_MNG,
-	FIF_PBM,
-	FIF_PBMRAW,
-	FIF_PCD,
-	FIF_PCX,
-	FIF_PGM,
-	FIF_PGMRAW,
-	FIF_PNG,
-	FIF_PPM,
-	FIF_PPMRAW,
-	FIF_RAS,
-	FIF_TARGA,
-	FIF_TIFF,
-	FIF_WBMP,
-	FIF_PSD,
-	FIF_CUT,
-	FIF_IFF = FIF_LBM,
-	FIF_XBM,
-	FIF_XPM
+   FIF_UNKNOWN = -1,
+   FIF_BMP = 0,
+   FIF_ICO,
+   FIF_JPEG,
+   FIF_JNG,
+   FIF_KOALA,
+   FIF_LBM,
+   FIF_MNG,
+   FIF_PBM,
+   FIF_PBMRAW,
+   FIF_PCD,
+   FIF_PCX,
+   FIF_PGM,
+   FIF_PGMRAW,
+   FIF_PNG,
+   FIF_PPM,
+   FIF_PPMRAW,
+   FIF_RAS,
+   FIF_TARGA,
+   FIF_TIFF,
+   FIF_WBMP,
+   FIF_PSD,
+   FIF_CUT,
+   FIF_IFF = FIF_LBM,
+   FIF_XBM,
+   FIF_XPM
 };
 
 /** Image color type used in FreeImage.
 */
 FI_ENUM(FREE_IMAGE_COLOR_TYPE) {
-	FIC_MINISWHITE = 0,		// min value is white
-    FIC_MINISBLACK = 1,		// min value is black
-    FIC_RGB        = 2,		// RGB color model
-    FIC_PALETTE    = 3,		// color map indexed
-	FIC_RGBALPHA   = 4,		// RGB color model with alpha channel
-	FIC_CMYK       = 5		// CMYK color model
+   FIC_MINISWHITE = 0,      // min value is white
+   FIC_MINISBLACK = 1,      // min value is black
+   FIC_RGB        = 2,      // RGB color model
+   FIC_PALETTE    = 3,      // color map indexed
+   FIC_RGBALPHA   = 4,      // RGB color model with alpha channel
+   FIC_CMYK       = 5       // CMYK color model
 };
 
 /** Color quantization algorithms.
 Constants used in FreeImage_ColorQuantize.
 */
 FI_ENUM(FREE_IMAGE_QUANTIZE) {
-    FIQ_WUQUANT = 0,		// Xiaolin Wu color quantization algorithm
-    FIQ_NNQUANT = 1			// NeuQuant neural-net quantization algorithm by Anthony Dekker
+   FIQ_WUQUANT = 0,      // Xiaolin Wu color quantization algorithm
+   FIQ_NNQUANT = 1       // NeuQuant neural-net quantization algorithm by Anthony Dekker
 };
 
 /** Dithering algorithms.
 Constants used FreeImage_Dither.
 */
 FI_ENUM(FREE_IMAGE_DITHER) {
-    FID_FS			= 0,	// Floyd & Steinberg error diffusion
-	FID_BAYER4x4	= 1,	// Bayer ordered dispersed dot dithering (order 2 dithering matrix)
-	FID_BAYER8x8	= 2,	// Bayer ordered dispersed dot dithering (order 3 dithering matrix)
-	FID_CLUSTER6x6	= 3,	// Ordered clustered dot dithering (order 3 - 6x6 matrix)
-	FID_CLUSTER8x8	= 4,	// Ordered clustered dot dithering (order 4 - 8x8 matrix)
-	FID_CLUSTER16x16= 5		// Ordered clustered dot dithering (order 8 - 16x16 matrix)
+   FID_FS           = 0,   // Floyd & Steinberg error diffusion
+   FID_BAYER4x4     = 1,   // Bayer ordered dispersed dot dithering (order 2 dithering matrix)
+   FID_BAYER8x8     = 2,   // Bayer ordered dispersed dot dithering (order 3 dithering matrix)
+   FID_CLUSTER6x6   = 3,   // Ordered clustered dot dithering (order 3 - 6x6 matrix)
+   FID_CLUSTER8x8   = 4,   // Ordered clustered dot dithering (order 4 - 8x8 matrix)
+   FID_CLUSTER16x16 = 5    // Ordered clustered dot dithering (order 8 - 16x16 matrix)
 };
 
-/** Upsampling / downsampling filters. 
+/** Upsampling / downsampling filters.
 Constants used in FreeImage_Rescale.
 */
 FI_ENUM(FREE_IMAGE_FILTER) {
-	FILTER_BOX		  = 0,	// Box, pulse, Fourier window, 1st order (constant) b-spline
-	FILTER_BICUBIC	  = 1,	// Mitchell & Netravali's two-param cubic filter
-	FILTER_BILINEAR   = 2,	// Bilinear filter
-	FILTER_BSPLINE	  = 3,	// 4th order (cubic) b-spline
-	FILTER_CATMULLROM = 4,	// Catmull-Rom spline, Overhauser spline
-	FILTER_LANCZOS3	  = 5	// Lanczos3 filter
+   FILTER_BOX        = 0,   // Box, pulse, Fourier window, 1st order (constant) b-spline
+   FILTER_BICUBIC    = 1,   // Mitchell & Netravali's two-param cubic filter
+   FILTER_BILINEAR   = 2,   // Bilinear filter
+   FILTER_BSPLINE    = 3,   // 4th order (cubic) b-spline
+   FILTER_CATMULLROM = 4,   // Catmull-Rom spline, Overhauser spline
+   FILTER_LANCZOS3   = 5    // Lanczos3 filter
 };
 
 /** Color channels.
 Constants used in color manipulation routines.
 */
 FI_ENUM(FREE_IMAGE_COLOR_CHANNEL) {
-	FICC_RGB	= 0,	// Use red, green and blue channels
-	FICC_RED	= 1,	// Use red channel
-	FICC_GREEN	= 2,	// Use green channel
-	FICC_BLUE	= 3,	// Use blue channel
-	FICC_ALPHA	= 4,	// Use alpha channel
-	FICC_BLACK	= 5		// Use black channel
+   FICC_RGB   = 0,   // Use red, green and blue channels
+   FICC_RED   = 1,   // Use red channel
+   FICC_GREEN = 2,   // Use green channel
+   FICC_BLUE  = 3,   // Use blue channel
+   FICC_ALPHA = 4,   // Use alpha channel
+   FICC_BLACK = 5    // Use black channel
 };
 
 // File IO routines ---------------------------------------------------------
@@ -254,10 +254,10 @@ typedef long (DLL_CALLCONV *FI_TellProc) (fi_handle handle);
 #endif // WIN32
 
 FI_STRUCT(FreeImageIO) {
-	FI_ReadProc  read_proc;     // pointer to the function used to read data
-    FI_WriteProc write_proc;    // pointer to the function used to write data
-    FI_SeekProc  seek_proc;     // pointer to the function used to seek
-    FI_TellProc  tell_proc;     // pointer to the function used to aquire the current position
+   FI_ReadProc  read_proc;     // pointer to the function used to read data
+   FI_WriteProc write_proc;    // pointer to the function used to write data
+   FI_SeekProc  seek_proc;     // pointer to the function used to seek
+   FI_TellProc  tell_proc;     // pointer to the function used to aquire the current position
 };
 
 #ifdef WIN32
@@ -293,20 +293,20 @@ typedef BOOL (DLL_CALLCONV *FI_SupportsExportBPPProc)(int bpp);
 typedef BOOL (DLL_CALLCONV *FI_SupportsICCProfilesProc)();
 
 FI_STRUCT (Plugin) {
-	FI_FormatProc format_proc;
-	FI_DescriptionProc description_proc;
-	FI_ExtensionListProc extension_proc;
-	FI_RegExprProc regexpr_proc;
-	FI_OpenProc open_proc;
-	FI_CloseProc close_proc;
-	FI_PageCountProc pagecount_proc;
-	FI_PageCapabilityProc pagecapability_proc;
-	FI_LoadProc load_proc;
-	FI_SaveProc save_proc;
-	FI_ValidateProc validate_proc;
-	FI_MimeProc mime_proc;
-	FI_SupportsExportBPPProc supports_export_bpp_proc;
-	FI_SupportsICCProfilesProc supports_icc_profiles_proc;
+   FI_FormatProc format_proc;
+   FI_DescriptionProc description_proc;
+   FI_ExtensionListProc extension_proc;
+   FI_RegExprProc regexpr_proc;
+   FI_OpenProc open_proc;
+   FI_CloseProc close_proc;
+   FI_PageCountProc pagecount_proc;
+   FI_PageCapabilityProc pagecapability_proc;
+   FI_LoadProc load_proc;
+   FI_SaveProc save_proc;
+   FI_ValidateProc validate_proc;
+   FI_MimeProc mime_proc;
+   FI_SupportsExportBPPProc supports_export_bpp_proc;
+   FI_SupportsICCProfilesProc supports_icc_profiles_proc;
 };
 
 #endif // PLUGINS
@@ -331,12 +331,12 @@ FI_STRUCT (Plugin) {
 #define LBM_DEFAULT         0
 #define MNG_DEFAULT         0
 #define PCD_DEFAULT         0
-#define PCD_BASE            1		// load the bitmap sized 768 x 512
-#define PCD_BASEDIV4        2		// load the bitmap sized 384 x 256
-#define PCD_BASEDIV16       3		// load the bitmap sized 192 x 128
+#define PCD_BASE            1       // load the bitmap sized 768 x 512
+#define PCD_BASEDIV4        2       // load the bitmap sized 384 x 256
+#define PCD_BASEDIV16       3       // load the bitmap sized 192 x 128
 #define PCX_DEFAULT         0
 #define PNG_DEFAULT         0
-#define PNG_IGNOREGAMMA		1		// avoid gamma correction
+#define PNG_IGNOREGAMMA     1       // avoid gamma correction
 #define PNM_DEFAULT         0
 #define PNM_SAVE_RAW        0       // If set the writer saves in RAW format (i.e. P4, P5 or P6)
 #define PNM_SAVE_ASCII      1       // If set the writer saves in ASCII format (i.e. P1, P2 or P3)
@@ -345,14 +345,14 @@ FI_STRUCT (Plugin) {
 #define TARGA_DEFAULT       0
 #define TARGA_LOAD_RGB888   1       // If set the loader converts RGB555 and ARGB8888 -> RGB888.
 #define TIFF_DEFAULT        0
-#define TIFF_CMYK			0x0001	// reads/stores tags for separated CMYK (use | to combine with compression flags)
+#define TIFF_CMYK           0x0001  // reads/stores tags for separated CMYK (use | to combine with compression flags)
 #define TIFF_PACKBITS       0x0100  // save using PACKBITS compression
 #define TIFF_DEFLATE        0x0200  // save using DEFLATE compression
 #define TIFF_ADOBE_DEFLATE  0x0400  // save using ADOBE DEFLATE compression
 #define TIFF_NONE           0x0800  // save without any compression
 #define WBMP_DEFAULT        0
-#define XBM_DEFAULT			0
-#define XPM_DEFAULT			0
+#define XBM_DEFAULT         0
+#define XPM_DEFAULT         0
 
 
 #ifdef __cplusplus

@@ -1,13 +1,13 @@
 /*
- *$Id: guilib.h,v 1.14 2008-05-27 12:10:38 lculik Exp $
+ *$Id: guilib.h,v 1.15 2009-01-21 04:57:14 marcosgambeta Exp $
  */
 
 #define	WND_DLG_RESOURCE       10
 #define	WND_DLG_NORESOURCE     11
-#define ST_ALIGN_HORIZ       0           // Icon/bitmap on the left, text on the right
-#define ST_ALIGN_VERT        1           // Icon/bitmap on the top, text on the bottom
-#define ST_ALIGN_HORIZ_RIGHT 2           // Icon/bitmap on the right, text on the left
-#define ST_ALIGN_OVERLAP     3           // Icon/bitmap on the same space as text
+#define ST_ALIGN_HORIZ         0           // Icon/bitmap on the left, text on the right
+#define ST_ALIGN_VERT          1           // Icon/bitmap on the top, text on the bottom
+#define ST_ALIGN_HORIZ_RIGHT   2           // Icon/bitmap on the right, text on the left
+#define ST_ALIGN_OVERLAP       3           // Icon/bitmap on the same space as text
 
 #ifdef __MSC6__
    #define GetWindowLongPtr    GetWindowLong

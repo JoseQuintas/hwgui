@@ -1,5 +1,5 @@
 /*
- *$Id: repmain.h,v 1.2 2004-03-15 18:51:17 alkresin Exp $
+ *$Id: repmain.h,v 1.3 2009-01-21 04:57:14 marcosgambeta Exp $
  */
 
 #define FORM_WIDTH       1
@@ -50,7 +50,7 @@
 #define ALIGN_RIGHT      1
 #define ALIGN_CENTER     2
 
-#define  LEFT_INDENT   40
-#define  TOP_INDENT    30
-#define  XINDENT       65
-#define  YINDENT       60
+#define LEFT_INDENT     40
+#define TOP_INDENT      30
+#define XINDENT         65
+#define YINDENT         60

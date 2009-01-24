@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.121 2009-01-21 15:44:05 lfbasso Exp $
+ *$Id: hedit.prg,v 1.122 2009-01-24 11:33:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -780,6 +780,8 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
          ELSEIF ! Empty( ::nMaxLength )
             nLen := LEN( TRIM( ::GetText() ) )
             ::title := PadR( ::title, ::nMaxLength )
+         ELSEIF ! Empty( ::cPicMask ) .AND. !"@" $ ::cPicMask
+            ::title := PadR( ::title, LEN( ::cPicMask ) )
          ENDIF
          SetDlgItemText( ::oParent:handle, ::id, ::title )
          ::KeyRight( nPos )
@@ -799,12 +801,13 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
                   ::GetApplyKey( "," )
                ENDIF
             ENDIF
-         ELSEIF !Empty(::nMaxLength)
-				    IF SET( _SET_CONFIRM ) .AND. nLen = ::nMaxLength-1 
-               GetSkip( ::oParent, ::handle, , 1 )
-            ENDIF
+         ELSEIF SET( _SET_CONFIRM )
+             IF ( ::cType != "D" .AND. !"@"$::cPicFunc .and. EMPTY(::cPicMask) .AND. nLen >= ::nMaxLength-1 ) .OR.;
+  				     (!Empty(::nMaxLength) .AND. nPos = ::nMaxLength) .OR. ;              
+                  nPos = Len( ::cPicMask )  
+                 GetSkip( ::oParent, ::handle, , 1 )          
+             ENDIF        
          ENDIF
-
       ENDIF
    ENDIF
    ::lFirst := .F.

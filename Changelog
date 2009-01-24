@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1016 2009-01-21 15:44:05 lfbasso Exp $
+ * $Id: Changelog,v 1.1017 2009-01-24 11:33:11 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-01-24 09:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hedit.prg
+    ! fix GetApplyKey for SET CONFIRM 
 
 2009-01-21 13:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg

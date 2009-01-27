@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.122 2009-01-24 11:33:14 lfbasso Exp $
+ *$Id: hedit.prg,v 1.123 2009-01-27 03:26:44 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -106,15 +106,22 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF ! Empty( cPicture ) .or. cPicture == Nil .And. nMaxLength != Nil .or. ! Empty( nMaxLength )
       ::nMaxLength := nMaxLength
    ENDIF
-   IF ::cType == "N" .and. Hwg_BitAnd( nStyle, ES_LEFT + ES_CENTER ) == 0
+   IF ::cType == "N" .AND. Hwg_BitAnd( nStyle, ES_LEFT + ES_CENTER ) == 0
       ::style := Hwg_BitOr( ::style, ES_RIGHT + ES_NUMBER )
       cPicture := IIf( cPicture == Nil.and.::nMaxLength != Nil, Replicate( "9", ::nMaxLength ), cPicture )
+   ENDIF
+   IF ::cType == "D" .AND. bSetGet != Nil
+      ::nMaxLength := LEN( DTOC( vari ) ) //IIF( SET( _SET_CENTURY ), 10, 8 )
    ENDIF
    //IF ! Empty( cPicture ) .or. cPicture == Nil .And. nMaxLength != Nil .or. ! Empty( nMaxLength )
    //   ::nMaxLength := nMaxLength
    //ENDIF
-
    ::ParsePict( cPicture, vari )
+   IF ::cType == "C" .AND. ::nMaxLength == Nil .AND. !"R"$::cPicFunc .AND.;
+     	             vari != Nil .AND. LEN( Vari) > 0
+      ::nMaxLength := LEN( vari ) 
+   ENDIF
+
    ::Activate()
 
    IF bSetGet != Nil
@@ -802,9 +809,8 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
                ENDIF
             ENDIF
          ELSEIF SET( _SET_CONFIRM )
-             IF ( ::cType != "D" .AND. !"@"$::cPicFunc .and. EMPTY(::cPicMask) .AND. nLen >= ::nMaxLength-1 ) .OR.;
-  				     (!Empty(::nMaxLength) .AND. nPos = ::nMaxLength) .OR. ;              
-                  nPos = Len( ::cPicMask )  
+             IF ( ::cType != "D" .AND. !"@"$::cPicFunc .and. EMPTY(::cPicMask) .AND. !Empty(::nMaxLength) .AND. nLen >= ::nMaxLength-1 ) .OR.;
+  				      ( !Empty(::nMaxLength) .AND. nPos = ::nMaxLength) .OR. nPos = Len( ::cPicMask )  
                  GetSkip( ::oParent, ::handle, , 1 )          
              ENDIF        
          ENDIF

@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.123 2009-01-27 03:26:44 lfbasso Exp $
+ *$Id: hedit.prg,v 1.124 2009-01-29 01:04:10 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -103,7 +103,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::style := Hwg_BitOr( ::style, ES_WANTRETURN )
       ::lMultiLine := .T.
    ENDIF
-   IF ! Empty( cPicture ) .or. cPicture == Nil .And. nMaxLength != Nil .or. ! Empty( nMaxLength )
+   IF ( ! Empty( cPicture ) .or. cPicture == Nil) .And. ( nMaxLength != Nil .AND. ! Empty( nMaxLength ) )
       ::nMaxLength := nMaxLength
    ENDIF
    IF ::cType == "N" .AND. Hwg_BitAnd( nStyle, ES_LEFT + ES_CENTER ) == 0
@@ -223,12 +223,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                ::oParent:lSuspendMsgsHandling := .F.
             ENDIF
             IF wParam = 86  // V
-               IF  IsCtrlShift()
+               IF  IsCtrlShift(, .F. )
                   ::lFirst := .F.
                   IF ::cType == "C"
                      nPos := LOWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
                      SendMessage( ::handle, EM_REPLACESEL, 1, GETCLIPBOARDTEXT() )
-                     SendMessage(  ::handle, EM_SETSEL, 0, nPos + Len( GETCLIPBOARDTEXT() ) )
+                     SendMessage( ::handle, EM_SETSEL, 0, nPos + Len( GETCLIPBOARDTEXT() ) )
                      ::title := GetEditText( ::oParent:handle, ::id )
                      RETURN - 1
                   ENDIF
@@ -320,7 +320,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          ENDIF
       ENDIF
    ELSE
-
+ 	    IF msg = WM_SETFOCUS
+         nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
+         SendMessage( ::handle, EM_SETSEL, nPos, nPos )
+	    ENDIF
       IF msg == WM_MOUSEWHEEL
          nPos := HIWORD( wParam )
          nPos := IIf( nPos > 32768, nPos - 65535, nPos )
@@ -784,6 +787,9 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
          ENDIF
          IF ! Empty( SendMessage( ::handle, EM_GETPASSWORDCHAR, 0, 0 ) )
             ::title := Left( ::title, nPos - 1 ) + cKey + Trim( SubStr( ::title, nPos + 1 ) )
+            IF  !empty( ::nMaxLength ) .AND. LEN( TRIM( ::GetText() ) ) = ::nMaxLength
+            		::title := PadR( ::title, ::nMaxLength )   
+            ENDIF 			
          ELSEIF ! Empty( ::nMaxLength )
             nLen := LEN( TRIM( ::GetText() ) )
             ::title := PadR( ::title, ::nMaxLength )
@@ -808,7 +814,7 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
                   ::GetApplyKey( "," )
                ENDIF
             ENDIF
-         ELSEIF SET( _SET_CONFIRM )
+         ELSEIF ! SET( _SET_CONFIRM )
              IF ( ::cType != "D" .AND. !"@"$::cPicFunc .and. EMPTY(::cPicMask) .AND. !Empty(::nMaxLength) .AND. nLen >= ::nMaxLength-1 ) .OR.;
   				      ( !Empty(::nMaxLength) .AND. nPos = ::nMaxLength) .OR. nPos = Len( ::cPicMask )  
                  GetSkip( ::oParent, ::handle, , 1 )          

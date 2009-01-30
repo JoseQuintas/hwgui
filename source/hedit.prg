@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.125 2009-01-30 01:49:06 lfbasso Exp $
+ *$Id: hedit.prg,v 1.126 2009-01-30 15:04:27 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -334,6 +334,14 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             GetSkip( oParent, ::handle, , ;
                      IIf( IsCtrlShift( .f., .t. ), - 1, 1 ) )
             RETURN 0
+         ENDIF
+         IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
+             ::oparent:lSuspendMsgsHandling := .T.              
+             IF !Eval( ::bKeyDown, Self, wParam )
+                ::oparent:lSuspendMsgsHandling := .F.
+                RETURN 0
+             ENDIF
+             ::oparent:lSuspendMsgsHandling := .F.
          ENDIF
       ENDIF
    ENDIF

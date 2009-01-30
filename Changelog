@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1019 2009-01-29 01:04:03 lfbasso Exp $
+ * $Id: Changelog,v 1.1020 2009-01-30 15:04:26 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-01-28 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hedit.prg
+    * add event bkeydown for ES_MULTINLINE
+    
 2009-01-28 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg
     ! fix in SET CONFIRM 

@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.124 2009-01-29 01:04:10 lfbasso Exp $
+ *$Id: hedit.prg,v 1.125 2009-01-30 01:49:06 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -117,10 +117,6 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    //   ::nMaxLength := nMaxLength
    //ENDIF
    ::ParsePict( cPicture, vari )
-   IF ::cType == "C" .AND. ::nMaxLength == Nil .AND. !"R"$::cPicFunc .AND.;
-     	             vari != Nil .AND. LEN( Vari) > 0
-      ::nMaxLength := LEN( vari ) 
-   ENDIF
 
    ::Activate()
 

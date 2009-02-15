@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.35 2008-11-30 16:55:53 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.36 2009-02-15 04:53:18 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -225,6 +225,14 @@ METHOD END()  CLASS HCustomWindow
    RETURN NIL
 
 //----------------------------------------------------------------------------//
+
+METHOD GetParentForm( oCtrl )  CLASS HCustomWindow
+LOCAL oForm := oCtrl 
+   DO WHILE ( oForm:oParent ) != Nil .AND. ! __ObjHasMsg( oForm, "GETLIST" )
+	    oForm := oForm:oParent
+   ENDDO
+   RETURN oForm
+
 
 METHOD RefreshCtrl( oCtrl, nSeek ) CLASS HCustomWindow
    LOCAL nPos, n
@@ -525,3 +533,18 @@ FUNCTION onTrackScroll( oWnd, msg, wParam, lParam )
 
 PROCEDURE HB_GT_DEFAULT_NUL()
    RETURN
+
+FUNCTION ProcKeyList( oCtrl, wParam )
+LOCAL oParent, nCtrl,nPos
+    
+    IF wParam != VK_SHIFT  .AND. wParam != VK_CONTROL .AND. wParam != VK_MENU
+       oParent := ParentGetDialog( oCtrl )
+       IF oParent != Nil .AND. ! Empty( oParent:KeyList )
+          nctrl := IIf( IsCtrlShift(.t., .f.), FCONTROL, iif(IsCtrlShift(.f., .t.), FSHIFT, 0 ) )
+          IF ( nPos := AScan( oParent:KeyList, { | a | a[ 1 ] == nctrl.AND.a[ 2 ] == wParam } ) ) > 0
+             Eval( oParent:KeyList[ nPos, 3 ], oCtrl )
+             RETURN .T.
+          ENDIF
+       ENDIF
+		ENDIF
+    RETURN .F.

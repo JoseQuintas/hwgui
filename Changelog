@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1020 2009-01-30 15:04:26 lfbasso Exp $
+ * $Id: Changelog,v 1.1021 2009-02-15 04:53:17 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,42 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-02-15 1:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + add clause ON MENU in INIT WINDOW MDI for execute code block in MENU MDI
+    + add clause CHILD in INIT WINDOW MDICHILD TO maximize in CLIENT AREA 
+    + add clause CENTER in ACTIVATE WINDOW ...
+    + add clause BACKCOLOR, LOSTFOCUS, GETFOCUS TO owner button
+  * include\windows.ch
+    + news contants
+  * source\control.c
+    + implemented UpDownSubclassProc to control the events in HUPDOWN CLASS
+    + implemented DatePickerSubclassProcSubclassProc to control the events in HDatePicker CLASS
+    + add FUNCTION TOOLBAR_LOADIMAGE
+    + add FUNCTION TOOLBAR_LOADSTANDARTIMAGE
+    + add FUNCTION ImageList_GetImageCount
+  * source\hcwindow.prg
+    + add METHOD GetParentForm( oCtrl ) return PARENT FORM to CONTROL
+    + add FUNCTION ProcKeyList( oCtrl, wParam ) keys to process defined in SET KEY ..
+  * source\hwindow.prg
+    + add DATA lChild, nFocus, oClient  in CLASS HWindow and parameter METHOD NEW,
+      property oClient 	reference for windows client
+    + add DATA  bMdiMenu in CLASS HMainWindow and parameter METHOD NEW
+    + add parameters lCenter in METHOD Activate to HMAINWindow,HMDIChildWindow,HChildWindow
+    + add DATA aRectSave in CLASS HMDIChildWindow
+    * implemented CENTER in METHOD ACTIVATE HMDIChildWindow 
+    * implemented initial FOCUS and control FOCUS in MDICHILD
+    * implemented FUNCTION onMdiActivate in VAR MESSAGES to WM_MDIACTIVATE
+    * support MENU CONTEXT in MDICHILD
+    * implemented control in EXIT MDICHILD in click button CLOSE
+    ! minor FIX
+  * source\menu_c.c
+    + add FUNCTION GetMenuCaption( hWnd | oWnd, nMenuId ) RETURN CAPTION MENU
+  * source\window.c
+    - remove WS_MAXIMIZE in HWG_CREATEMDICHILDWINDOW,  DEFAULT INIT NORMAL SHOW
+    + implemented USER STYLE
+    + in ACTIVATE implemented windows state, minimized,maximized,normal, visible
+    
 2009-01-28 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg
     * add event bkeydown for ES_MULTINLINE

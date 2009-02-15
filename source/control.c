@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.73 2009-01-13 15:59:22 lfbasso Exp $
+ * $Id: control.c,v 1.74 2009-02-15 04:53:18 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -27,6 +27,8 @@
 #include "hbtrace.h"
 
 #define TTS_BALLOON             0x40 // added by MAG
+#define CCM_SETVERSION (CCM_FIRST + 0x7)
+#define CCM_GETVERSION (CCM_FIRST + 0x8)
 
 // LRESULT CALLBACK OwnBtnProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK WinCtrlProc (HWND, UINT, WPARAM, LPARAM);
@@ -36,6 +38,8 @@ LRESULT APIENTRY EditSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 LRESULT APIENTRY ButtonSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY ComboSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY ListSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+LRESULT APIENTRY UpDownSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+LRESULT APIENTRY DatePickerSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY TrackSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 LRESULT APIENTRY TabSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 void CALLBACK TimerProc (HWND, UINT, UINT, DWORD) ;
@@ -45,7 +49,8 @@ extern PHB_ITEM Rect2Array( RECT *rc  );
 static HWND hWndTT = 0;
 static BOOL lInitCmnCtrl = 0;
 static BOOL lToolTipBalloon = FALSE; // added by MAG
-static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc,wpOrigComboProc,wpOrigStaticProc,wpOrigListProc; //wpOrigButtonProc
+static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc,wpOrigComboProc,wpOrigStaticProc,wpOrigListProc,
+               wpOrigUpDownProc, wpOrigDatePickerProc; //wpOrigButtonProc
 static LONG_PTR wpOrigButtonProc;
 extern BOOL _AddBar( HWND pParent, HWND pBar, REBARBANDINFO* pRBBI );
 extern BOOL AddBar( HWND pParent, HWND pBar, LPCTSTR pszText, HBITMAP pbmp, DWORD dwStyle );
@@ -1299,6 +1304,72 @@ HB_FUNC( HWG_INITLISTPROC )
 }
 
 
+HB_FUNC( HWG_INITUPDOWNPROC )
+{
+   wpOrigUpDownProc = (WNDPROC) SetWindowLong( (HWND) HB_PARHANDLE(1),
+                                 GWL_WNDPROC, (LONG) UpDownSubclassProc );
+}
+
+LRESULT APIENTRY UpDownSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+   long int res;
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+
+   if( !pSym_onEvent )
+      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
+
+   if( pSym_onEvent && pObject )
+   {
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
+      hb_vmPush( pObject );
+      hb_vmPushLong( (LONG ) message );
+      hb_vmPushLong( (LONG ) wParam );
+//      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( lParam );
+      hb_vmSend( 3 );
+      res = hb_parnl( -1 );
+      if( res == -1 )
+         return( CallWindowProc( wpOrigUpDownProc, hWnd, message, wParam, lParam ) );
+      else
+         return res;
+   }
+   else
+      return( CallWindowProc( wpOrigUpDownProc, hWnd, message, wParam, lParam ) );
+}
+
+HB_FUNC( HWG_INITDATEPICKERPROC )
+{
+   wpOrigDatePickerProc = (WNDPROC) SetWindowLong( (HWND) HB_PARHANDLE(1),
+                                 GWL_WNDPROC, (LONG) DatePickerSubclassProc );
+}
+
+LRESULT APIENTRY DatePickerSubclassProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+   long int res;
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+
+   if( !pSym_onEvent )
+      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
+
+   if( pSym_onEvent && pObject )
+   {
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
+      hb_vmPush( pObject );
+      hb_vmPushLong( (LONG ) message );
+      hb_vmPushLong( (LONG ) wParam );
+//      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( lParam );
+      hb_vmSend( 3 );
+      res = hb_parnl( -1 );
+      if( res == -1 )
+         return( CallWindowProc( wpOrigDatePickerProc, hWnd, message, wParam, lParam ) );
+      else
+         return res;
+   }
+   else
+      return( CallWindowProc( wpOrigDatePickerProc, hWnd, message, wParam, lParam ) );
+}
+
 HB_FUNC( HWG_INITTRACKPROC )
 {
    wpOrigTrackProc = (WNDPROC) SetWindowLong( (HWND) HB_PARHANDLE(1),
@@ -1402,7 +1473,7 @@ HB_FUNC( CREATETOOLBAR )
                  ulExStyle,                    /* extended style */
                  TOOLBARCLASSNAME,                     /* predefined class  */
                  NULL,                         /* title   -   TBSTYLE_TRANSPARENT | */
-                 TBSTYLE_ALTDRAG | TBSTYLE_FLAT | TBSTYLE_TOOLTIPS | TBSTYLE_WRAPABLE | CCS_TOP |CCS_NORESIZE | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, /* style  */
+                 TBSTYLE_ALTDRAG | TBSTYLE_FLAT | TBSTYLE_TOOLTIPS | TBSTYLE_WRAPABLE | CCS_TOP | CCS_NORESIZE | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, /* style  */
                  hb_parni(4), hb_parni(5),      /* x, y       */
                  hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
                  (HWND) HB_PARHANDLE(1),            /* parent window    */
@@ -1428,6 +1499,8 @@ HB_FUNC(TOOLBARADDBUTTONS)
    ULONG ulID;
    DWORD style = GetWindowLong( hWndCtrl, GWL_STYLE );
 
+   //SendMessage(hWndCtrl, CCM_SETVERSION, (WPARAM) 4, 0);   
+   
    SetWindowLong(hWndCtrl,GWL_STYLE,style|TBSTYLE_TOOLTIPS |TBSTYLE_FLAT);
 
    SendMessage( hWndCtrl, TB_BUTTONSTRUCTSIZE, sizeof(TBBUTTON), 0L);
@@ -1437,7 +1510,7 @@ HB_FUNC(TOOLBARADDBUTTONS)
 
       pTemp = hb_arrayGetItemPtr( pArray , ulCount + 1 );
       ulID=hb_arrayGetNI( pTemp, 1 );
-      tb[ ulCount ].iBitmap   = ulID > 0 ? ( int ) ulCount : -1;
+      tb[ ulCount ].iBitmap   = ulID - 1 ; //ulID > 0 ? ( int ) ulCount : -1 ;
       tb[ ulCount ].idCommand = hb_arrayGetNI( pTemp, 2 );
       tb[ ulCount ].fsState   = hb_arrayGetNI( pTemp, 3 );
       tb[ ulCount ].fsStyle   = hb_arrayGetNI( pTemp, 4 );
@@ -1450,6 +1523,40 @@ HB_FUNC(TOOLBARADDBUTTONS)
    SendMessage( hWndCtrl, TB_AUTOSIZE, 0, 0 );
 
    hb_xfree( tb );
+}
+
+
+HB_FUNC(TOOLBAR_LOADIMAGE)
+{                            
+   TBADDBITMAP tbab;
+   HWND hWndCtrl = ( HWND ) HB_PARHANDLE( 1 ) ;
+   int iIDB = hb_parni( 2 );
+    
+   tbab.hInst = NULL;
+   tbab.nID = iIDB ;
+   
+   SendMessage(hWndCtrl , TB_ADDBITMAP, 0, (LPARAM)&tbab);
+}																								 
+
+HB_FUNC(TOOLBAR_LOADSTANDARTIMAGE)
+{
+   TBADDBITMAP tbab;
+   HWND hWndCtrl = ( HWND ) HB_PARHANDLE( 1 ) ;
+   int iIDB = hb_parni( 2 );
+   HIMAGELIST himl ;
+   	  
+   tbab.hInst = HINST_COMMCTRL;
+   tbab.nID = iIDB ; //IDB_HIST_SMALL_COLOR / IDB_VIEW_SMALL_COLOR / IDB_VIEW_SMALL_COLOR;
+   
+   SendMessage( hWndCtrl , TB_ADDBITMAP, 0, (LPARAM)&tbab);
+   himl = ( HIMAGELIST ) SendMessage( hWndCtrl, TB_GETIMAGELIST, 0, 0 ) ;
+   hb_retni( (int) ImageList_GetImageCount( himl ) )  ;	    
+}
+ 
+HB_FUNC(ImageList_GetImageCount) 
+{
+   HIMAGELIST hWndCtrl = ( HIMAGELIST ) HB_PARHANDLE( 1 ) ;
+   hb_retni( ImageList_GetImageCount( hWndCtrl ) ) ;
 }
 
 HB_FUNC( TOOLBAR_SETDISPINFO )

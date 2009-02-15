@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.71 2009-01-21 04:57:14 marcosgambeta Exp $
+ *$Id: windows.ch,v 1.72 2009-02-15 04:53:18 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -45,6 +45,7 @@
 #define WM_CHAR                         258    // 0x0102
 #define WM_SYSKEYDOWN                   260    // 0x0104
 #define WM_SYSKEYUP                     261    // 0x0105
+*#define WM_SYSCHAR                      = &H106
 
 #define WM_INITDIALOG                   272
 #define WM_COMMAND                      273
@@ -52,6 +53,12 @@
 #define WM_TIMER                        275
 #define WM_HSCROLL                      276
 #define WM_VSCROLL                      277
+* nando
+#define WM_INITMENU                     278    //= $0116
+#define WM_INITMENUPOPUP                279    //= $0117
+#define WM_MENUSELECT                   287    //= $011F
+#define WM_MENUCHAR                     288    //= $0120
+* fim nando
 #define WM_ENTERIDLE                    289
 
 #define WM_CTLCOLORMSGBOX               306     // 0x0132
@@ -608,6 +615,9 @@
 #define EM_LIMITTEXT            197     // 0x00C5
 #define EM_CANUNDO              198     // 0x00C6
 #define EM_UNDO                 199     // 0x00C7
+#define EM_CANREDO   EM_CANUNDO      // 0x00C6
+#define EM_REDO      EM_UNDO         // 0x00C7
+
 #define EM_FMTLINES             200     // 0x00C8
 #define EM_LINEFROMCHAR         201     // 0x00C9
 #define EM_SETTABSTOPS          203     // 0x00CB

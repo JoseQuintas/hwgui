@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.72 2008-11-17 04:04:23 lfbasso Exp $
+ * $Id: window.c,v 1.73 2009-02-15 04:53:18 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -265,10 +265,14 @@ HB_FUNC( HWG_INITCHILDWINDOW )
       wndclass.hInstance     = (HINSTANCE)hInstance ;
       wndclass.hIcon         = (hb_pcount()>4 && !ISNIL(5))? (HICON)HB_PARHANDLE(5) : LoadIcon ((HINSTANCE)hInstance,"" );
       wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
+      wndclass.hbrBackground = ( ( (hb_pcount()>5 && !ISNIL(6))? 
+			          ( (hb_parnl(6)==-1)? (HBRUSH)NULL:(HBRUSH)HB_PARHANDLE(6)) : (HBRUSH)(COLOR_WINDOW+1) ) );
+			/*          
       wndclass.hbrBackground = ( ( (hb_pcount()>5 && !ISNIL(6))?
                 ( (hb_parnl(6)==-1)? (HBRUSH)(COLOR_WINDOW+1) :
                                      CreateSolidBrush( hb_parnl(6) ) )
                 : (HBRUSH)(COLOR_WINDOW+1) ) );
+      */          
       wndclass.lpszMenuName  = cMenu ;
       wndclass.lpszClassName = szAppName ;
 
@@ -285,7 +289,7 @@ HB_FUNC( HWG_INITCHILDWINDOW )
       }
    }
 
-   ExStyle = 0;
+   ExStyle = WS_EX_MDICHILD;  //0;
 
    hWnd = CreateWindowEx( ExStyle, szAppName, cTitle,
              WS_OVERLAPPEDWINDOW  | nStyle , x,y,
@@ -338,7 +342,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
    wndclass.hInstance     = (HINSTANCE)hInstance ;
    wndclass.hIcon         = (hb_pcount()>4 && !ISNIL(5))? (HICON)HB_PARHANDLE(5) : LoadIcon ((HINSTANCE)hInstance,"" );
    wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-   wndclass.hbrBackground = (HBRUSH)( COLOR_WINDOW+1 );
+   wndclass.hbrBackground = (HBRUSH)( COLOR_WINDOW + 1 );
    wndclass.lpszMenuName  = cMenu ;
    wndclass.lpszClassName = szAppName ;
 
@@ -351,7 +355,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
    // Register client window
    wc.lpfnWndProc   = (WNDPROC) MDIChildWndProc;
    wc.hIcon         = (hb_pcount()>4 && !ISNIL(5))? (HICON)HB_PARHANDLE(5) : LoadIcon ((HINSTANCE)hInstance,"" );
-   wc.hbrBackground = (HBRUSH)( ( (hb_pcount()>5 && !ISNIL(6)) ?HB_PARHANDLE(6):(COLOR_WINDOW+1) ) );
+   wc.hbrBackground = (HBRUSH)( ( (hb_pcount()>5 && !ISNIL(6)) ?HB_PARHANDLE(6):(COLOR_WINDOW + 1) ) );
    wc.lpszMenuName  = (LPCTSTR) NULL;
    wc.cbWndExtra    = 0;
    wc.lpszClassName = szChild;
@@ -402,7 +406,7 @@ HB_FUNC( HWG_INITCLIENTWINDOW )
    ccs.hWindowMenu = GetSubMenu( GetMenu(aWindows[0]), nPos );
    ccs.idFirstChild = FIRST_MDICHILD_ID;
 
-   hWnd = CreateWindow ( "MDICLIENT", (LPCTSTR) NULL,
+   hWnd = CreateWindow( "MDICLIENT", (LPCTSTR) NULL,
                           WS_CHILD | WS_CLIPCHILDREN | MDIS_ALLCHILDSTYLES,
                           x,y,width,height,
                           aWindows[0], NULL, GetModuleHandle( NULL ), (LPSTR) &ccs );
@@ -447,8 +451,13 @@ HB_FUNC( HWG_CREATEMDICHILDWINDOW )
    int width = (int) hb_itemGetNL( GetObjectVar( pObj,"NWIDTH") );
    int height = (int) hb_itemGetNL( GetObjectVar( pObj,"NHEIGHT") );
 
+   //if( !style )
+   //   style = WS_VISIBLE | WS_OVERLAPPEDWINDOW | WS_MAXIMIZE;
+
    if( !style )
-      style = WS_VISIBLE | WS_OVERLAPPEDWINDOW | WS_MAXIMIZE;
+      style = WS_CHILD |  WS_OVERLAPPEDWINDOW | (int) hb_parnl(2); //WS_VISIBLE | WS_MAXIMIZE;
+	 else
+      style = style | (int) hb_parnl(2);
 
    if( !aWindows[0] )
    {

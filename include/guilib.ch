@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.138 2009-01-21 04:57:14 marcosgambeta Exp $
+ *$Id: guilib.ch,v 1.139 2009-02-15 04:53:17 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -68,6 +68,7 @@
              [ FONT <oFont> ]               ;
              [ MENU <cMenu> ]               ;
              [ MENUPOS <nPos> ]             ;
+             [ ON MENU <bMdiMenu> ]         ;
              [ ON INIT <bInit> ]            ;
              [ ON SIZE <bSize> ]            ;
              [ ON PAINT <bPaint> ]          ;
@@ -83,7 +84,7 @@
           <oWnd> := HMainWindow():New( Iif(<.lMdi.>,WND_MDI,WND_MAIN), ;
              <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
              <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>,;
-             <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>, <bCloseQuery>,<bRefresh>)
+             <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>, <bCloseQuery>,<bRefresh>,<bMdiMenu>)
 
 #xcommand INIT WINDOW <oWnd> MDICHILD       ;
              [ APPNAME <appname> ]          ;
@@ -106,12 +107,14 @@
              [ ON EXIT <bExit> ]            ;
              [ HELP <cHelp> ]               ;
              [ HELPID <nHelpId> ]           ;
+             [ <lChild: CHILD>]             ;             
           => ;
           <oWnd> := HMdiChildWindow():New( ;
-             <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
-             <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
-             <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,<bRefresh> )
-
+                   <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
+                   <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,,;
+									 <bRefresh>,<.lChild.> )
+            
 #xcommand INIT WINDOW <oWnd> CHILD          ;
              APPNAME <appname>              ;
              [ TITLE <cTitle> ]             ;
@@ -168,12 +171,13 @@
              <ico>,<.lExitOnEnter.>,<nHelpId>,<Resid>,<.lExitOnEsc.>,<clr>,<bRefresh>)
 
 #xcommand ACTIVATE WINDOW <oWnd> ;
-             [<lNoShow: NOSHOW>] ;
-             [<lMaximized: MAXIMIZED>] ;
-             [<lMinimized: MINIMIZED>] ;
-             [ ON ACTIVATE <bInit> ]            ;
+               [<lNoShow: NOSHOW>] ;
+               [<lMaximized: MAXIMIZED>] ;
+               [<lMinimized: MINIMIZED>] ;
+               [<lCenter: CENTER>] ;
+               [ ON ACTIVATE <bInit> ]            ;
            => ;
-           <oWnd>:Activate( !<.lNoShow.>, <.lMaximized.>, <.lMinimized.>,<bInit> )
+      <oWnd>:Activate( !<.lNoShow.>, <.lMaximized.>, <.lMinimized.>,  <.lCenter.>, <bInit> )
 
 #xcommand CENTER WINDOW <oWnd> => <oWnd>:Center()
 
@@ -318,7 +322,8 @@
              [<oem: OEM>]     ;
           => ;
           [<oIco> := ] HSayIcon():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-             <height>,<icon>,<.res.>,<bInit>,<bSize>,<ctoolt>,<.oem.>,<bClick>,<bDblClick> )
+             <height>,<icon>,<.res.>,<bInit>,<bSize>,<ctoolt>,<.oem.>,<bClick>,<bDblClick> );;
+          [ <oIco>:name := <(oIco)> ] 					                     
 
 #xcommand REDEFINE ICON [ <oIco> SHOW ] <icon> ;
              [<res: FROM RESOURCE>]     ;
@@ -341,7 +346,8 @@
              [ TYPE <ctype>     ]       ;
           => ;
           [<oImage> := ] HSayFImage():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-             <height>,<image>,<bInit>,<bSize>,<ctoolt>,<ctype> )
+             <height>,<image>,<bInit>,<bSize>,<ctoolt>,<ctype> );;
+          [ <oImage>:name := <(oImage)> ] 					                     
 
 #xcommand REDEFINE IMAGE [ <oImage> SHOW ] <image> ;
              [ OF <oWnd> ]              ;
@@ -895,10 +901,13 @@
              [ OF <oWnd> ]             ;
              [ ID <nId> ]              ;
              [ SIZE <width>, <height> ] ;
+             [ BACKCOLOR <bcolor> ]     ;
              [ ON INIT <bInit> ]     ;
              [ ON SIZE <bSize> ]     ;
              [ ON DRAW <bDraw> ]     ;
              [ ON CLICK <bClick> ]   ;
+             [ ON GETFOCUS <bGfocus> ]   ;
+             [ ON LOSTFOCUS <bLfocus> ]  ;
              [ STYLE <nStyle> ]      ;
              [ <flat: FLAT> ]        ;
              [ <enable: DISABLED> ]        ;
@@ -915,7 +924,7 @@
           [<oOwnBtn> :=] HOWNBUTTON():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
              <height>,<bInit>,<bSize>,<bDraw>,<bClick>,<.flat.>,<cText>,<color>, ;
              <font>,<xt>,<yt>,<widtht>,<heightt>,<bmp>,<.res.>,<xb>,<yb>,<widthb>, ;
-             <heightb>,<.ltr.>,<trcolor>,<ctoolt>,!<.enable.>,<.lCheck.> );;
+             <heightb>,<.ltr.>,<trcolor>,<ctoolt>,!<.enable.>,<.lCheck.>,<bcolor>, <bGfocus>, <bLfocus> );; 
           [ <oOwnBtn>:name := <(oOwnBtn)> ]
 
 #xcommand REDEFINE OWNERBUTTON [ <oOwnBtn> ]  ;

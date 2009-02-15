@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.38 2008-10-06 12:03:23 lculik Exp $
+ * $Id: menu_c.c,v 1.39 2009-02-15 04:53:18 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -364,6 +364,49 @@ HB_FUNC( DESTROYACCELERATORTABLE )
 HB_FUNC( DRAWMENUBAR )
 {
    hb_retl( (BOOL) DrawMenuBar( (HWND) HB_PARHANDLE(1) )   );
+}
+
+/*
+ *  GetMenuCaption( hWnd | oWnd, nMenuId )
+ */
+
+HB_FUNC( GETMENUCAPTION )
+{
+   HMENU hMenu;
+   char d[255] ;
+
+   if( ISOBJECT( 1 ) )
+   {
+      PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
+      hMenu = (HMENU) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
+   }
+   else
+   {
+      HWND handle = ( hb_pcount()>0 && !ISNIL(1) )? ((HWND) HB_PARHANDLE(1)):aWindows[0];
+      hMenu = GetMenu( handle );
+   }
+
+   if( !hMenu )
+   {
+      MessageBox( GetActiveWindow(), "", "No Menu!", MB_OK | MB_ICONINFORMATION );
+      hb_retl( 0 );
+   }
+   else
+   {
+      MENUITEMINFO mii;
+      mii.cbSize = sizeof( MENUITEMINFO );
+      mii.fMask = MIIM_TYPE;
+      mii.fType = MFT_STRING;
+      mii.dwTypeData = NULL ;
+      GetMenuItemInfo( hMenu, hb_parni( 2 ), 0, (LPMENUITEMINFO) &mii ) ;
+      mii.cch = mii.cch + 1 ;
+      mii.dwTypeData = d ;
+      strcpy( ( char * ) mii.dwTypeData, d );
+      if( GetMenuItemInfo( hMenu, hb_parni( 2 ), 0, (LPMENUITEMINFO) &mii ) )
+          hb_retc(( char * ) mii.dwTypeData );
+      else
+         hb_retc( "Error" );
+   }
 }
 
 /*

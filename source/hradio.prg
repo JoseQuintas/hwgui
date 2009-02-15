@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.17 2008-11-24 10:02:14 mlacecilia Exp $
+ * $Id: hradio.prg,v 1.18 2009-02-15 20:12:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -89,9 +89,12 @@ CLASS VAR winclass   INIT "BUTTON"
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
                bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lTransp )
    METHOD Activate()
+   METHOD Init()
    METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, lInit, ctooltip, tcolor, bcolor )
-   METHOD GetValue()          INLINE ( SendMessage( ::handle, BM_GETCHECK, 0, 0 ) == 1 )
-   METHOD Notify( lParam )
+   METHOD GetValue() INLINE ( SendMessage( ::handle, BM_GETCHECK, 0, 0 ) == 1 )
+  // METHOD Notify( lParam )
+   METHOD onevent( msg, wParam, lParam )
+   
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
@@ -142,7 +145,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
       ::lnoValid := .T.
    ENDIF
 
-   ::oParent:AddEvent( BN_KILLFOCUS, Self, { || ::Notify( WM_KEYDOWN ) } )
+   //::oParent:AddEvent( BN_KILLFOCUS, Self, { || ::Notify( WM_KEYDOWN ) } )
 
    IF ::oGroup != Nil
       AAdd( ::oGroup:aButtons, Self )
@@ -161,6 +164,15 @@ METHOD Activate CLASS HRadioButton
       ::Init()
    ENDIF
    RETURN Nil
+
+METHOD Init() CLASS HRadioButton
+   IF !::lInit
+      ::nHolder := 1
+      SetWindowObject( ::handle, Self )
+      HWG_INITBUTTONPROC( ::handle )
+      Super:Init()
+   ENDIF
+Return Nil
 
 METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lTransp ) CLASS HRadioButton
    ::oParent := IIf( oWndParent == Nil, ::oDefaultParent, oWndParent )
@@ -211,6 +223,48 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip,
    ENDIF
    RETURN Self
 
+METHOD onevent( msg, wParam, lParam ) CLASS HRadioButton
+	 LOCAL oParent := ::oParent
+	 LOCAL dc, itemRect
+	  
+   IF msg = WM_SETFOCUS 
+      IF  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
+         dc := GETdc( ::handle )
+         itemRect  := GetClientRect( ::handle ) 
+         InflateRect( @itemRect, + 1, + 1 )
+         DrawFocusRect( dc, itemRect )
+       ENDIF
+   ELSEIF msg = WM_KILLFOCUS //.AND. ::oParent:oParent != Nil
+      IF  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
+         dc := GETdc( ::handle )
+         itemRect  := GetClientRect( ::handle ) 
+         InflateRect( @itemRect, + 1, + 1 )
+         DrawFocusRect( dc, itemRect )
+      ENDIF
+   ENDIF 
+   IF msg = WM_KEYDOWN
+      IF  ProcKeyList( Self, wParam )
+      ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP 
+         GetSkip( ::oparent, ::handle, , -1 )
+      ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN
+         GetSkip( ::oparent, ::handle, , 1 )
+      ELSEIF wParam = VK_TAB //.AND. nType < WND_DLG_RESOURCE   
+         GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+      ENDIF
+      IF  ( wParam == VK_RETURN ) 
+         __VALID(self)
+      ENDIF  
+      
+   ELSEIF msg == WM_KEYUP
+      
+	 ELSEIF  msg = WM_GETDLGCODE
+      IF wParam != 0
+         RETURN ButtonGetDlgCode( lParam )
+      ENDIF   
+   ENDIF
+   
+   RETURN -1
+/*
 METHOD Notify( lParam ) CLASS HRadioButton
    LOCAL ndown := getkeystate( VK_RIGHT ) + getkeystate( VK_DOWN ) + GetKeyState( VK_TAB )
    LOCAL nSkip := 0
@@ -241,6 +295,7 @@ METHOD Notify( lParam ) CLASS HRadioButton
    ENDIF
 
    RETURN Nil
+*/
 
 STATIC FUNCTION __When( oCtrl )
    LOCAL res := .t., oParent, nSkip := 1

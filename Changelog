@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1021 2009-02-15 04:53:17 lfbasso Exp $
+ * $Id: Changelog,v 1.1022 2009-02-15 20:12:30 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,62 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-02-15 17:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + COMBOBOX  new clauses [ DISPLAYCOUNT <nDisplay>], [ ITEMHEIGHT <nhItem>    ],[ WIDTHCOLUMN <ncWidth>  ] ;
+      DISPLAYCOUNT Specifies the maximum number of items displayed in the list portion of the ComboBox 
+      ITEMHEIGHT height of ITEM in COMBOBOX
+      WIDTHCOLUMN Specifies the width of a column 
+    + OWNERBUTTON new clause BACKCOLOR
+    + TOOLBAR new clauses [ BUTTONWIDTH <btnwidth> ], [ INDENT <nIndent>] ,[ BITMAPSIZE <nSize>     ] 
+            [ LOADSTANDARDIMAGE <nIDB>] ;
+      BUTTONWIDTH Specifies width of BUTTON
+      INDENT Specifies LEFT MARGIN first BUTTON
+      BITMAPSIZE width BITMAP 16,24,32
+      LOADSTANDARDIMAGE Load images of Library Windows
+  * source\hcheck.prg
+    + implemented METHOD OnEvent to control the events in CLASS
+    + implemented focus navigation in WINDOW so similar to DIALOG
+  * source\hcombo.prg
+    + implemented METHOD OnEvent to control the events in CLASS
+    + implemented focus navigation in WINDOW so similar to DIALOG
+    + add new parameters nDisplay, nhItem, ncWidth in METHOD NEW 
+    + add METHOD REQUERY to updates the list with the new values.
+    ! minor fix in COMBOBOXEX
+  * source\hcontrol.prg
+    * CLASS HBUTTON
+      + implemented METHOD OnEvent to control the events in 
+      + implemented focus navigation in WINDOW so similar to DIALOG
+    ! fix in STATIC TRANSPARENT
+  * source\hdatepic.prg
+    + implemented METHOD OnEvent to control the events in CLASS
+    + implemented focus navigation in WINDOW so similar to DIALOG
+  * source\hedit.prg
+    + implemented focus navigation in WINDOW so similar to DIALOG
+    * changed NextFocus and NextFocusTab to suport navegation in WINDOW
+  * source\hlistbox.prg
+    + implemented focus navigation in WINDOW so similar to DIALOG
+ * source\hownbtn.prg
+    + add BACKCOLOR 
+  * source\hradio.prg
+    + implemented METHOD OnEvent to control the events in CLASS
+    + implemented focus navigation in WINDOW so similar to DIALOG
+  * source\hriched.prg
+    + implemented focus navigation in WINDOW so similar to DIALOG
+  * source\htab.prg
+    * suport in ONEVENT to forms WINDOWS
+  * source\htool.prg
+    + add NEW CLASS HToolButton REFERENCE to the buttons on the Toolbar  
+      oToolBar:oToolButon:property/method
+    +  add new parameters nSize,nIndent, nIDB in METHOD NEW
+    * fix in load images,images can be used from resource  
+  * source\htrackbr.prg
+    + implemented focus navigation in WINDOW so similar to DIALOG
+  * source\hupdown.prg
+    + implemented METHOD OnEvent to control the events in CLASS
+    + implemented focus navigation in WINDOW so similar to DIALOG
+
 
 2009-02-15 1:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch

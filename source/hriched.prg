@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.13 2008-11-24 10:02:14 mlacecilia Exp $
+ * $Id: hriched.prg,v 1.14 2009-02-15 20:12:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -16,12 +16,16 @@ CLASS HRichEdit INHERIT HControl
 
 CLASS VAR winclass   INIT "RichEdit20A"
    DATA lChanged    INIT .F.
-
+   DATA lSetFocus   INIT .T.
+   
    METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, bOther )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
+   METHOD GotFocus( oCtrl )
+   METHOD LostFocus( oCtrl )
+
 
 ENDCLASS
 
@@ -40,10 +44,14 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::Activate()
 
    IF bGfocus != Nil
-      ::oParent:AddEvent( EN_SETFOCUS, Self, bGfocus,, "onGotFocus" )
+      //::oParent:AddEvent( EN_SETFOCUS, Self, bGfocus,, "onGotFocus" )
+      ::bGetFocus := bGfocus
+      ::oParent:AddEvent( EN_SETFOCUS, Self, { | o | ::GotFocus( o ) }, , "onGotFocus" )
    ENDIF
    IF bLfocus != Nil
-      ::oParent:AddEvent( EN_KILLFOCUS, Self, bLfocus,, "onLostFocus" )
+      //::oParent:AddEvent( EN_KILLFOCUS, Self, bLfocus,, "onLostFocus" )
+      ::bLostFocus := bLfocus
+      ::oParent:AddEvent( EN_KILLFOCUS, Self, { | o | ::LostFocus( o ) }, , "onLostFocus" )
    ENDIF
 
    RETURN Self
@@ -55,12 +63,27 @@ METHOD Activate CLASS HRichEdit
       ::Init()
    ENDIF
    RETURN Nil
+   
+METHOD Init()  CLASS HRichEdit
+   IF ! ::lInit
+      Super:Init()
+      ::nHolder := 1
+      SetWindowObject( ::handle, Self )
+      Hwg_InitRichProc( ::handle )
+   ENDIF
+   RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
    LOCAL nDelta, nret
 
    // writelog( str(msg) + str(wParam) + str(lParam) )
-   IF msg == WM_CHAR
+   IF msg = WM_SETFOCUS .and. ::lSetFocus .AND. ISWINDOWVISIBLE( ::handle )
+      ::lSetFocus := .F.
+      // npos := SendMessage( ::handle, EM_GETSEL, 0, 0 )
+      SendMessage( ::handle,EM_SETSEL,0,0) //Loword(npos),loword(npos))
+   ENDIF
+   
+   IF msg == WM_CHAR .AND. !IsCtrlShift( .T. )
       ::lChanged := .T.
    ELSEIF msg == WM_KEYDOWN .AND. wParam = 46  //Del
       ::lChanged := .T.
@@ -70,16 +93,17 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
          RETURN nret
       ENDIF
    ENDIF
+   IF msg == WM_KEYUP
+      IF wParam = VK_TAB .AND. IsCtrlShift(.T.) //GETKEYSTATE(VK_CONTROL) < 0
+         GetSkip( ::oParent, ::handle, , ;
+				          iif( IsCtrlShift(.f., .t.), -1, 1) )
+         RETURN 0
+      ENDIF
+   ENDIF
    IF msg == WM_KEYDOWN
       IF wParam == 27 // ESC
          IF GetParent( ::oParent:handle ) != Nil
             SendMessage( GetParent( ::oParent:handle ), WM_CLOSE, 0, 0 )
-         ENDIF
-      ELSEIF wParam = VK_TAB .AND. GETKEYSTATE( VK_CONTROL ) < 0
-         IF GETKEYSTATE( VK_SHIFT ) < 0  //IsCtrlShift()
-            GetSkip( ::oParent, getfocus(), , - 1 )
-         ELSE
-            GetSkip( ::oParent, GETFOCUS(), , 1 )
          ENDIF
       ENDIF
    ELSEIF msg == WM_MOUSEWHEEL
@@ -95,14 +119,30 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
 
    RETURN - 1
 
-METHOD Init()  CLASS HRichEdit
-   IF ! ::lInit
-      Super:Init()
-      ::nHolder := 1
-      SetWindowObject( ::handle, Self )
-      Hwg_InitRichProc( ::handle )
+METHOD GotFocus( Octrl ) CLASS HRichEdit
+ 
+	 IF !CheckFocus( Self, .f. )
+	    RETURN .t.
    ENDIF
-   RETURN Nil
+	 
+   ::oparent:lSuspendMsgsHandling := .t.
+   Eval( ::bGetFocus, ::title, Self )
+   ::oparent:lSuspendMsgsHandling := .f.
+ RETURN .T.
+
+
+METHOD LostFocus( oCtrl ) CLASS HRichEdit
+
+	 IF ::bLostFocus != Nil .AND. !CheckFocus( Self, .T. )
+	    RETURN .T.
+ 	 ENDIF
+	 
+   ::oparent:lSuspendMsgsHandling := .t.
+   Eval( ::bLostFocus, ::title, Self )
+   ::oparent:lSuspendMsgsHandling := .f.
+
+  RETURN .T.
+
 
 /*
 Function DefRichProc( hEdit, msg, wParam, lParam )

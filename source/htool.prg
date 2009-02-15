@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.27 2009-01-13 21:58:10 lfbasso Exp $
+ * $Id: htool.prg,v 1.28 2009-02-15 20:12:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -7,7 +7,6 @@
  * Copyright 2004 Luiz Rafael Culik Guimaraes <culikr@brtrubo.com>
  * www - http://sites.uol.com.br/culikr/
 */
-
 #include "windows.ch"
 #include "inkey.ch"
 #include "hbclass.ch"
@@ -15,6 +14,52 @@
 #include "common.ch"
 
 #define TRANSPARENT 1
+#DEFINE IDTOOLBAR 700
+#define TB_SETBITMAPSIZE        (WM_USER + 32)
+#define TB_SETINDENT            (WM_USER + 47)
+#define TB_SETBUTTONWIDTH       (WM_USER + 59)
+
+CLASS HToolButton INHERIT HObject
+
+   DATA Name
+   DATA id
+   DATA nBitIp INIT -1
+   DATA bState INIT TBSTATE_ENABLED
+   DATA bStyle INIT  0x0000
+   DATA tooltip 
+   DATA aMenu INIT {}
+   DATA Caption 
+   DATA lEnabled  INIT .T. HIDDEN
+   ACCESS Enabled  INLINE ::lEnabled  
+   ASSIGN Enabled( l ) INLINE ::lEnabled := l,IIF( l, ::enable(),::disable())
+   DATA oParent
+   //DATA oFont   // not implemented
+   
+   METHOD New(oParent,cName,nBitIp,nId,bState,bStyle,cText,bClick,ctip, aMenu )
+   METHOD Enable() INLINE ::oParent:EnableButton( ::id, .T. )
+   METHOD Disable() INLINE ::oParent:EnableButton( ::id, .F. )
+   METHOD Show() INLINE SENDMESSAGE( ::oParent:handle, TB_HIDEBUTTON, INT( ::id ), MAKELONG( 0, 0 ) )
+   METHOD Hide() INLINE SENDMESSAGE( ::oParent:handle, TB_HIDEBUTTON, INT( ::id ), MAKELONG( 1, 0 ) )         
+																										  
+ENDCLASS
+
+METHOD New(oParent,cName,nBitIp,nId,bState,bStyle,cText,bClick,ctip,aMenu) CLASS  HToolButton
+
+   ::Name := cName
+   ::iD := nId
+   ::Caption := cText
+   ::nBitIp := nBitIp
+   ::bState := bState
+   ::bStyle := bStyle
+   ::tooltip := ctip
+   ::aMenu := amenu
+	 ::oParent := oParent
+	  __objAddData(::oParent, cName)
+	 ::oParent:&(cName) := Self
+   
+RETURN Self
+
+   
 
 CLASS HToolBar INHERIT HControl
 
@@ -27,15 +72,21 @@ CLASS HToolBar INHERIT HControl
 
    DATA lPress INIT .F.
    DATA lFlat
-   DATA nOrder
-   DATA lTransp    INIT .F. 
-   DATA lVertical  INIT .F. 
+   DATA lTransp    INIT .F. //
+   DATA lVertical  INIT .F. //
    DATA lCreate    INIT .F. HIDDEN 
-   DATA BtnWidth  
-   DATA aItem init { }
+   DATA nOrder
+   DATA BtnWidth  //
+   DATA nIDB       
+   DATA aButtons    INIT {}
+   DATA aSeparators INIT {}
+   Data aItem       INIT {}
+   DATA Line
+   DATA nIndent
+   DATA nSize
 
-   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, BtnWidth, oFont, bInit, ;
-               bSize, bPaint, ctooltip, tcolor, bcolor, lTransp,lVertical, aItem )
+   METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,btnWidth,oFont,bInit, ;
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp, lVertical ,aItem, nSize,nIndent, nIDB )
    METHOD Redefine( oWndParent, nId, oFont, bInit, ;
                     bSize, bPaint, ctooltip, tcolor, bcolor, lTransp , aItem )
 
@@ -51,9 +102,8 @@ CLASS HToolBar INHERIT HControl
    
 ENDCLASS
 
-
-METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, BtnWidth, oFont, bInit, ;
-            bSize, bPaint, ctooltip, tcolor, bcolor, lTransp,lVertical, aitem ) CLASS hToolBar
+METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,btnWidth,oFont,bInit, ;
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp, lVertical ,aItem, nSize,nIndent, nIDB ) CLASS hToolBar
 
    //HB_SYMBOL_UNUSED( cCaption )
    HB_SYMBOL_UNUSED( lTransp )
@@ -65,11 +115,19 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, BtnWidth, oFo
    ::lTransp := IIF( lTransp != NIL, lTransp, .F. )
    ::BtnWidth :=  BtnWidth //!= Nil, BtnWidth, 32 )
    ::lVertical := IIF( lVertical != NIL .AND. TYPE( "lVertical" ) = "L", lVertical, ::lVertical )
+   ::nIDB := nIDB
+   ::aItem := aItem
+   ::nIndent := IIF( nIndent != NIL , nIndent, 1 )
+   ::nSize := IIF( nSize != NIL .AND. nSize > 15 , nSize, Nil )
 
-   ::aitem := aitem
+   IF ! ::lVertical
+       ::Line := HLine():New(oWndParent,,,nLeft,nTop + nHeight + 1,nWidth)
+   ELSE
+       ::Line := HLine():New(oWndParent,,::lVertical,nLeft + nWidth + 1 ,nTop,nHeight)      
+   ENDIF   
 
    ::Activate()
-
+   
    RETURN Self
 
 
@@ -104,6 +162,9 @@ METHOD Activate CLASS hToolBar
 METHOD INIT CLASS hToolBar
 
    IF ! ::lInit
+      IF ::Line != Nil
+         ::Line:Anchor := ::Anchor 
+      ENDIF   
       Super:Init()
       ::CreateTool()
    ENDIF
@@ -111,15 +172,16 @@ METHOD INIT CLASS hToolBar
    RETURN Nil
 
 METHOD CREATETOOL CLASS hToolBar
-   LOCAL n, n1
-   LOCAL aTemp
-   LOCAL hIm
-   LOCAL aButton := { }
-   LOCAL aBmpSize
-   LOCAL nPos
-   LOCAL nmax
-   LOCAL nStyle
-   
+Local n,n1
+Local aTemp
+Local hIm
+Local aButton :={}
+Local aBmpSize
+Local nPos
+Local nmax
+Local nStyle
+Local hImage, img, nlistimg, ndrop := 0
+
      IF Empty( ::handle ) 
         RETURN Nil
 		 ENDIF   
@@ -128,10 +190,15 @@ METHOD CREATETOOL CLASS hToolBar
 			   ::activate()
 	   ENDIF
      IF ::lVertical
-        ::Style := SendMessage( ::handle, TB_GETSTYLE, 0, 0 ) + CCS_VERT
+        nStyle := SendMessage( ::handle, TB_GETSTYLE, 0, 0 ) + CCS_VERT
         SendMessage( ::handle, TB_SETSTYLE, 0, nStyle )
      ENDIF
-   
+     img := 0
+     nlistimg := 0
+     IF ::nIDB != Nil .AND. ::nIDB >= 0
+        nlistimg := TOOLBAR_LOADSTANDARTIMAGE( ::handle, ::nIDB )  
+     ENDIF   
+
       FOR n := 1 TO Len( ::aItem )
 
          IF ValType( ::aItem[ n, 7 ] ) == "B"
@@ -152,22 +219,38 @@ METHOD CREATETOOL CLASS hToolBar
 
          ENDIF
 
+       	 IF ::aItem[ n, 4 ] = BTNS_SEP
+				    LOOP
+				 ENDIF
+				 
+				 nDrop := IIF( nDrop = 8, nDrop, IIF( Hwg_Bitand(::aItem[ n, 4 ], BTNS_DROPDOWN ) != 0 .AND.::aItem[ n, 4 ] < 128, 8, 1 ) )
+				 IF ::nSize != Nil
+				    SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( ::nSize, ::nSize ) )
+				 ENDIF   
+
          IF ValType( ::aItem[ n, 1 ] )  == "C"
-           IF At(".", ::aitem[ n, 1 ] ) != 0
-              AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION+ LR_LOADFROMFILE ) )
-           ELSE
-              AAdd( aButton, HBitmap():AddResource( ::aitem[ n, 1 ] ):handle )
-           ENDIF
-            ::aItem[ n , 1 ] := n
+            IF At(".", ::aitem[ n, 1 ] ) != 0
+               //AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION+ LR_LOADFROMFILE ) )
+               hImage := HBITMAP():AddFile( ::aitem[ n, 1 ] ):handle 
+            ELSE
+              // AAdd( aButton, HBitmap():AddResource( ::aitem[ n, 1 ] ):handle )
+               hImage := HBitmap():AddResource( ::aitem[ n, 1 ] ):handle 
+            ENDIF
+            IF ( img := Ascan( aButton, hImage )) = 0
+               AAdd( aButton, hImage ) 
+               img := Len( aButton )
+            ENDIF
+            ::aItem[n ,1 ] := img + nlistimg //n
+            TOOLBAR_LOADIMAGE( ::Handle, aButton[ img ])          
 
          ELSE
             IF ::aItem[ n, 1 ] > 0
-               AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
+              // AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
             ENDIF
          ENDIF
 
       NEXT
-
+			/*
       IF Len( aButton ) > 0
 
          aBmpSize := GetBitmapSize( aButton[ 1 ] )
@@ -205,19 +288,22 @@ METHOD CREATETOOL CLASS hToolBar
          SendMessage( ::Handle, TB_SETIMAGELIST, 0, hIm )
 
       ENDIF
+      */
+      
+      SENDMESSAGE( ::Handle, TB_SETINDENT, ::nIndent,  0)
       IF Len( ::aItem ) > 0
          TOOLBARADDBUTTONS( ::handle, ::aItem, Len( ::aItem ) )
-
-         SendMessage( ::handle, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS )
+        SendMessage( ::handle, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS )
       ENDIF
-      
+
       IF ::BtnWidth != Nil
-        IF  ! ::lVertical
-           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth, ::nHeight - 3 ) )
-        ELSE
-           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - 3, ::BtnWidth ) )
-				ENDIF   
-      ENDIF   
+         IF  ! ::lVertical   //                -2 s n∆o tiver menu - 9 se tiver menu tipo 8
+           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth, ::nHeight - nDrop - 1 ) )
+         ELSE
+           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - nDrop - 1, ::BtnWidth )  )
+			 	 ENDIF   
+      ENDIF         
+      
       IF ::lTransp
          nStyle := SendMessage( ::handle, TB_GETSTYLE, 0, 0 ) + TBSTYLE_TRANSPARENT
          SendMessage( ::handle, TB_SETSTYLE, 0, nStyle )
@@ -267,17 +353,33 @@ METHOD REFRESH() CLASS htoolbar
    ::init()
    RETURN nil
 
-METHOD AddButton( nBitIp, nId, bState, bStyle, cText, bClick, c, aMenu ) CLASS hToolBar
-   LOCAL hMenu := Nil
+METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu, cName) CLASS hToolBar
+   Local hMenu := Nil, oButton
 
-   DEFAULT nBitIp TO - 1
-   DEFAULT bState TO TBSTATE_ENABLED
-   DEFAULT bStyle TO 0x0000
-   DEFAULT c TO ""
-   DEFAULT cText TO ""
-   AAdd( ::aItem , { nBitIp, nId, bState, bStyle, 0, cText, bClick, c, aMenu, hMenu } )
-
-   RETURN Self
+   DEFAULT nBitIp to -1
+   DEFAULT bstate to TBSTATE_ENABLED
+   DEFAULT bstyle to 0x0000
+   DEFAULT c to ""
+   DEFAULT ctext to ""
+   IF nId = Nil .OR. EMPTY( nId )
+      //IDTOOLBAR
+      nId := ::id + IDTOOLBAR + LEN( ::aButtons ) + LEN( ::aSeparators ) + 1
+   ENDIF   
+   
+   IF bStyle != BTNS_SEP  //1
+      DEFAULT cName to "oToolButton" + LTRIM( STR( LEN( ::aButtons ) + 1 ) )
+      AAdd( ::aButtons,{ cName, nid } )
+   ELSE
+      bstate :=  IIF( !( ::lVertical .AND. LEN( ::aButtons) = 0 ), bState, 8 )//TBSTATE_HIDE
+      DEFAULT nBitIp to 0
+      DEFAULT cName to "oSeparator"+LTRIM( STR( LEN( ::aSeparators ) + 1 ) )
+      AAdd( ::aSeparators,{ cName, nid } )
+   ENDIF
+   AAdd( ::aItem ,{ nBitIp, nId, bState, bStyle, 0, cText, bClick, c, aMenu, hMenu } )
+   
+   oButton := HToolButton():New(Self,cName,nBitIp,nId,bState,bStyle,cText,bClick, c ,aMenu) 	 
+   
+   RETURN oButton
 
 
 CLASS HToolBarEX INHERIT HToolBar

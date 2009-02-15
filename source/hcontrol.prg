@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.117 2009-01-13 21:58:10 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.118 2009-02-15 20:12:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -68,10 +68,9 @@ CLASS HControl INHERIT HCustomWindow
    METHOD Disable()     INLINE EnableWindow( ::handle, .F. )
    METHOD Enable()      INLINE EnableWindow( ::handle, .T. )
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
-   //METHOD SetFocus()    INLINE ( SendMessage( ::oParent:handle, WM_NEXTDLGCTL, ;
-   //                                           ::handle, 1 ), ;
-   //                              SetFocus( ::handle ) )
-   METHOD SetFocus()    INLINE SendMessage( GetActiveWindow(), WM_NEXTDLGCTL, ::handle, 1 )
+   //METHOD SetFocus()    INLINE SendMessage( GetActiveWindow(), WM_NEXTDLGCTL, ::handle, 1 )
+   METHOD SetFocus()    INLINE IIF( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE, SetFocus( ::handle ),;
+	              	     SendMessage( GetActiveWindow(), WM_NEXTDLGCTL,::handle, 1 ) )
    METHOD GetText()     INLINE GetWindowText( ::handle )
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c ), ::Refresh()
    METHOD Refresh()     VIRTUAL
@@ -392,6 +391,7 @@ CLASS VAR winclass   INIT "STATIC"
    // METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
    //                                                 value )
    METHOD SetValue( value ) INLINE  ::Auto_Size( value ), ;
+          RedrawWindow(::handle,RDW_ERASE + RDW_INVALIDATE ),;
           SetDlgItemText( ::oParent:handle, ::id, value ), ::title := value
    METHOD Auto_Size( cValue )  HIDDEN
 
@@ -516,6 +516,8 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS  HStatic
          getskip( ::oparent, ::handle,, 1 )
       ELSEIF   wParam = VK_UP
          getskip( ::oparent, ::handle,, - 1 )
+      ELSEIF wParam = VK_TAB 
+         GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
       ENDIF
       RETURN 0
    ELSEIF msg == WM_SYSKEYUP
@@ -559,16 +561,17 @@ METHOD Paint( lpDis ) CLASS HStatic
          FillRect( dc,client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ::brush:handle )
       ENDIF   
    ENDIF
-
-   //IF ::lOwnerDraw
-   //   ::Auto_Size( szText, ::nStyleOwner )
-   //ENDIF
    // Draw the text
    DrawText( dc, szText, ;
              client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ;
              dwtext )
    IF ::Title != szText
-      ::move()
+       IF ::lTransparent
+     		  ::hide()
+    		  ::show()
+       ELSE
+  		    ::move()
+   	   ENDIF 
    ENDIF
 
    RETURN nil
@@ -627,9 +630,10 @@ CLASS VAR winclass   INIT "BUTTON"
    METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
                     tcolor, bColor, bGFocus )
    METHOD Init()
-   METHOD Notify( lParam )
+   //METHOD Notify( lParam )
    METHOD onClick()
    METHOD onGetFocus()
+   METHOD onevent( msg, wParam, lParam )
 
 ENDCLASS
 
@@ -654,7 +658,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ENDIF
 
    IF ::oParent:oParent != Nil .and. ::oParent:ClassName == "HTAB"
-      ::oParent:AddEvent( BN_KILLFOCUS, Self, { || ::Notify( WM_KEYDOWN ) } )
+      //::oParent:AddEvent( BN_KILLFOCUS, Self, { || ::Notify( WM_KEYDOWN ) } )
       IF bClick != NIL
          ::oParent:oParent:AddEvent( 0, Self, { || ::onClick() } )
       ENDIF
@@ -692,12 +696,70 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
 
 METHOD Init CLASS HButton
    IF ! ::lInit
+      ::nHolder := 1
+      SetWindowObject( ::handle, Self )
+      HWG_INITBUTTONPROC( ::handle )
       ::Super:init()
       IF ::Title != NIL
          SETWINDOWTEXT( ::handle, ::title )
       ENDIF
    ENDIF
    RETURN  NIL
+
+
+METHOD onevent( msg, wParam, lParam ) CLASS HButton
+	 LOCAL oParent := ::oParent
+	 LOCAL itemRect, dc
+
+   IF (msg = WM_SETFOCUS) .AND. ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE) //.OR.;
+      // ! ::GetParentForm( Self ):lModal )
+
+       SENDMESSAGE( ::handle, BM_SETSTYLE , BS_PUSHBUTTON , 1 )
+       
+       dc := getDC( ::Handle )
+       itemRect  := GetClientRect( ::handle ) //GetWindowRect( ::HANDLE )
+       InflateRect( @itemRect, + 1, + 1 )
+       DrawFocusRect( dc, itemRect )
+       
+   ELSEIF msg = WM_KILLFOCUS 
+	     IF ::oParent:oParent != Nil
+	        InvalidateRect( ::handle, 0 )
+          SENDMESSAGE( ::handle, BM_SETSTYLE , BS_PUSHBUTTON , 1 )
+       ENDIF
+       IF ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE) //.OR.;         
+          dc := getDC( ::HANDLE )
+          itemRect  := GetClientRect( ::handle ) //GetWindowRect( ::HANDLE )
+          InflateRect( @itemRect, + 1, + 1 )
+          DrawFocusRect( dc, itemRect )
+       ENDIF
+   ELSEIF msg = WM_KEYDOWN
+      IF  ( wParam == VK_RETURN ) 
+         SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
+         RETURN 0 
+      ENDIF  
+      IF ! ProcKeyList( Self, wParam )
+         IF  wParam = VK_TAB 
+            GetSkip( ::oparent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1)  )
+         ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP .OR.wParam = VK_TAB
+            GetSkip( ::oparent, ::handle, , -1 )
+         ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN
+            GetSkip( ::oparent, ::handle, , 1 )
+         ENDIF   
+      ENDIF
+      
+   ELSEIF msg == WM_KEYUP
+      IF ( ( wParam == VK_RETURN ) ) // ( wParam == VK_SPACE ) .or.  )
+         SendMessage( ::handle, WM_LBUTTONUP, 0, MAKELPARAM( 1, 1 ) )
+         RETURN 0
+      ENDIF
+	 ELSEIF  msg = WM_GETDLGCODE
+      IF wParam != 0
+         RETURN ButtonGetDlgCode( lParam )
+      ENDIF   
+   ENDIF
+   
+   RETURN -1
+
 
 METHOD onClick()  CLASS HButton
    IF ::bClick != Nil
@@ -707,7 +769,7 @@ METHOD onClick()  CLASS HButton
    ENDIF
    RETURN Nil
 
-
+/*
 METHOD Notify( lParam ) CLASS HButton
    LOCAL ndown := getkeystate( VK_RIGHT ) + getkeystate( VK_DOWN ) + GetKeyState( VK_TAB )
    LOCAL nSkip := 0
@@ -732,6 +794,7 @@ METHOD Notify( lParam ) CLASS HButton
       ENDIF
    ENDIF
    RETURN - 1
+*/
 
 METHOD onGetFocus()  CLASS HButton
    LOCAL res := .t., oParent, nSkip := 1
@@ -892,8 +955,9 @@ METHOD INIT CLASS HButtonEx
    LOCAL nbs
    IF ! ::lInit
       ::nHolder := 1
-      SetWindowObject( ::handle, Self )
-      HWG_INITBUTTONPROC( ::handle )
+      //SetWindowObject( ::handle, Self )
+      //HWG_INITBUTTONPROC( ::handle )
+      // call in HBUTTON CLASS
       IF HB_IsNumeric( ::handle ) .and. ::handle > 0
          nbs := HWG_GETWINDOWSTYLE( ::handle )
 
@@ -960,7 +1024,12 @@ ELSEIF msg == WM_KEYDOWN
          RETURN 0
       ENDIF
       IF ( ( wParam == VK_SPACE ) .or. ( wParam == VK_RETURN ) )
-         SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
+         IF ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE )
+            PostMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
+            PostMessage( ::handle, WM_LBUTTONUP, 0, MAKELPARAM( 1, 1 ) )
+				 ELSE
+            SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
+         ENDIF   
          RETURN 0
       ENDIF
       IF wParam == VK_LEFT .OR. wParam == VK_UP

@@ -1,5 +1,5 @@
 /*
- * $Id: htrackbr.prg,v 1.15 2008-11-24 10:02:14 mlacecilia Exp $
+ * $Id: htrackbr.prg,v 1.16 2009-02-15 20:12:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTrackBar class
@@ -104,6 +104,18 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTrackBar
 
    ELSEIF msg == WM_DESTROY
       ::END()
+
+   ELSEIF msg == WM_CHAR
+      IF wParam = VK_TAB 
+         GetSkip( ::oParent, ::handle, , ;
+				          iif( IsCtrlShift(.f., .t.), -1, 1) )
+          RETURN 0
+      ENDIF  
+        
+	 ELSEIF msg = WM_KEYDOWN
+	    IF  ProcKeyList( Self, wParam ) 
+	       RETURN 0
+      ENDIF
 
    ELSEIF ::bOther != NIL
       RETURN Eval( ::bOther, Self, msg, wParam, lParam )

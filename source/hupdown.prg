@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.17 2008-11-24 10:02:14 mlacecilia Exp $
+ * $Id: hupdown.prg,v 1.18 2009-02-15 20:12:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -23,12 +23,12 @@ CLASS VAR winclass   INIT "EDIT"
    DATA nUpper INIT 999
    DATA nUpDownWidth INIT 12
    DATA lChanged    INIT .F.
-   DATA lnoValid       INIT .F.
-
+   
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, nUpDWidth, nLower, nUpper )
    METHOD Activate()
    METHOD Init()
+   METHOD OnEvent(msg,wParam,lParam)
    METHOD Refresh()
    METHOD Hide() INLINE ( ::lHide := .T., HideWindow( ::handle ), HideWindow( ::hUpDown ) )
    METHOD Show() INLINE ( ::lHide := .F., ShowWindow( ::handle ), ShowWindow( ::hUpDown ) )
@@ -91,10 +91,33 @@ METHOD Activate CLASS HUpDown
 METHOD Init()  CLASS HUpDown
    IF ! ::lInit
       Super:Init()
+      ::nHolder := 1
+      SetWindowObject( ::handle, Self )     
+      HWG_INITUpDownPROC( ::handle )
       ::hUpDown := CreateUpDownControl( ::oParent:handle, ::idUpDown, ;
                                         ::styleUpDown, 0, 0, ::nUpDownWidth, 0, ::handle, ::nUpper, ::nLower, Val( ::title ) )
    ENDIF
    RETURN Nil
+
+METHOD OnEvent( msg, wParam, lParam ) CLASS HUpDown
+
+   IF msg == WM_CHAR
+      IF wParam = VK_TAB 
+          GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+          RETURN 0
+      ELSEIF wParam == VK_RETURN 
+          GetSkip( ::oParent, ::handle, , 1 )
+          RETURN 0
+		  ENDIF
+		  
+	 ELSEIF msg = WM_KEYDOWN
+	 
+		  ProcKeyList( Self, wParam )  
+		  
+   ELSEIF msg == WM_VSCROLL		  
+	 ENDIF
+  
+RETURN -1
 
 METHOD Refresh()  CLASS HUpDown
 
@@ -168,4 +191,8 @@ STATIC FUNCTION __Valid( oCtrl )
       ENDIF
    ENDIF
    oCtrl:oparent:lSuspendMsgsHandling := .F.
+   IF GetFocus() = 0 
+      GetSkip( octrl:oParent, octrl:handle,, octrl:nGetSkip )
+   ENDIF 
+
    RETURN res

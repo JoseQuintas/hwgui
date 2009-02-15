@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.26 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hcheck.prg,v 1.27 2009-02-15 20:12:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -24,17 +24,20 @@ CLASS VAR winclass   INIT "BUTTON"
    METHOD Activate()
    METHOD Redefine( oWnd, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lEnter )
    METHOD Init()
+   METHOD onevent( msg, wParam, lParam )
    METHOD Refresh()
    METHOD Disable()
    METHOD Enable()
    METHOD SetValue( lValue )  INLINE SendMessage( ::handle, BM_SETCHECK, IIf( lValue, 1, 0 ), 0 ), ::value := lValue
    METHOD GetValue()          INLINE ( SendMessage( ::handle, BM_GETCHECK, 0, 0 ) == 1 )
    METHOD KillFocus()
+   
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
             bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lEnter, lTransp ) CLASS HCheckButton
 
+	 LOCAL hTheme
    nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), BS_NOTIFY + BS_PUSHBUTTON + BS_AUTOCHECKBOX + WS_TABSTOP )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor )
@@ -42,10 +45,18 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::title   := cCaption
    ::value   := IIf( vari == Nil .OR. ValType( vari ) != "L", .F., vari )
    ::bSetGet := bSetGet
-
-   IF ( lTransp != NIL .AND. lTransp )
-      bcolor := ::oParent:bcolor
+   
+   IF (lTransp != NIL .AND. lTransp) 
+      bcolor := ::oParent:bcolor             
+      IF bcolor = Nil .AND. ::oParent:oParent != Nil .AND. ISTHEMEACTIVE()
+         hTheme := hb_OpenThemeData( ::oParent:handle, "TAB" )
+         IF !EMPTY( hTheme )
+            bColor := HWG_GETTHEMESYSCOLOR( hTheme, COLOR_WINDOW  )
+            HB_CLOSETHEMEDATA( hTheme ) 
+         ENDIF 
+      ENDIF
    ENDIF
+
    ::bcolor  := bcolor
    ::tcolor  := tcolor
    IF bcolor != Nil
@@ -99,12 +110,59 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, bC
 
 METHOD Init() CLASS HCheckButton
    IF ! ::lInit
+      SetWindowObject( ::handle, Self )
+      HWG_INITBUTTONPROC( ::handle )
       Super:Init()
       IF ::value
          SendMessage( ::handle, BM_SETCHECK, 1, 0 )
       ENDIF
    ENDIF
    RETURN Nil
+
+METHOD onevent( msg, wParam, lParam ) CLASS HCheckButton
+	 LOCAL oParent := ::oParent
+	 LOCAL itemRect, dc
+	 
+   IF (msg = WM_SETFOCUS .OR. msg = WM_ACTIVATE)  
+      IF  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
+         dc := getDC( ::Handle )
+         itemRect  := GetClientRect( ::handle ) 
+         InflateRect( @itemRect, + 1, + 1 )
+         DrawFocusRect( dc, itemRect )
+      ENDIF
+   ELSEIF msg = WM_KILLFOCUS //.AND. ::oParent:oParent != Nil
+       IF  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
+          dc := getDC( ::Handle )
+          itemRect  := GetClientRect( ::handle ) //GetWindowRect( ::HANDLE )
+          InflateRect( @itemRect, + 1, + 1 )
+          DrawFocusRect( dc, itemRect )
+       ENDIF
+   ELSEIF msg = WM_KEYDOWN
+      IF ProcKeyList( Self, wParam )
+      ELSEIF  wParam = VK_TAB 
+         GetSkip( ::oparent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1)  )
+      ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP 
+         GetSkip( ::oparent, ::handle, , -1 )
+      ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN 
+         GetSkip( ::oparent, ::handle, , 1 )
+      ELSEIF  ( wParam == VK_RETURN ) //  .OR. wParam == VK_SPACE ) 
+         IF  ::lEnter
+            ::SetValue( !::GetValue() )
+           __VALID(self)
+            RETURN 0 //-1
+         ELSE
+				     GetSkip( ::oparent, ::handle, , 1 )   
+         ENDIF
+      ENDIF  
+   ELSEIF msg == WM_KEYUP
+	 ELSEIF  msg = WM_GETDLGCODE
+      IF wParam != 0
+         RETURN ButtonGetDlgCode( lParam )
+      ENDIF   
+   ENDIF
+   
+   RETURN -1
+
 
 METHOD Refresh() CLASS HCheckButton
    LOCAL VAR
@@ -136,8 +194,7 @@ METHOD killFocus() CLASS HCheckButton
    LOCAL ndown := getkeystate( VK_RIGHT ) + getkeystate( VK_DOWN ) + GetKeyState( VK_TAB )
    LOCAL nSkip := 0
 
-   IF ::oParent:classname = "HTAB" //.AND. !getkeystate(VK_RETURN) < 0
-      ///oCtrl:oparent:HANDLE)
+   IF ::oParent:classname = "HTAB" 
       IF getkeystate( VK_LEFT ) + getkeystate( VK_UP ) < 0 .OR. ;
          ( GetKeyState( VK_TAB ) < 0 .and. GetKeyState( VK_SHIFT ) < 0 )
          nSkip := - 1

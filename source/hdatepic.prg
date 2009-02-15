@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.20 2008-12-06 14:43:05 lfbasso Exp $
+ * $Id: hdatepic.prg,v 1.21 2009-02-15 20:12:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -30,6 +30,7 @@ CLASS VAR winclass   INIT "SYSDATETIMEPICK32"
                oFont, bInit, bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor )
    METHOD Activate()
    METHOD Init()
+   METHOD OnEvent( msg, wParam, lParam )
    METHOD Refresh()
    METHOD GetValue()
    METHOD SetValue( dValue )
@@ -109,6 +110,9 @@ METHOD Activate CLASS HDatePicker
 
 METHOD Init() CLASS HDatePicker
    IF ! ::lInit
+      ::nHolder := 1
+      SetWindowObject( ::handle, Self )
+      HWG_INITDATEPICKERPROC( ::handle )
       Super:Init()
       IF Empty( ::value )
          SetDatePickerNull( ::handle )
@@ -117,6 +121,24 @@ METHOD Init() CLASS HDatePicker
       ENDIF
    ENDIF
    RETURN Nil
+
+METHOD OnEvent( msg, wParam, lParam ) CLASS HDatePicker   
+
+   IF msg == WM_CHAR
+      IF wParam = VK_TAB //.AND. nType < WND_DLG_RESOURCE   
+        GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+        RETURN 0
+      ELSEIF wParam == VK_RETURN //.AND. nType < WND_DLG_RESOURCE   
+         GetSkip( ::oParent, ::handle, , 1 )
+         RETURN 0
+		  ENDIF
+	 ELSEIF msg = WM_KEYDOWN
+		  IF  ProcKeyList( Self, wParam )  
+		     RETURN 0
+		  ENDIF   
+	 ENDIF
+  
+RETURN -1
         
 METHOD GetValue CLASS HDatePicker   
    RETURN GetDatePicker( ::handle )

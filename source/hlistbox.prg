@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.19 2009-01-12 00:41:50 lfbasso Exp $
+ * $Id: hlistbox.prg,v 1.20 2009-02-15 20:12:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -22,8 +22,7 @@ CLASS VAR winclass   INIT "LISTBOX"
    DATA  bChangeSel
    DATA  bkeydown, bDblclick
    DATA  bValid
-   DATA  lnoValid       INIT .F.
-
+   
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
               aItems,oFont,bInit,bSize,bPaint,bChange,cTooltip,tColor,bcolor,bGFocus,bLFocus, bKeydown, bDblclick,bOther )
    METHOD Activate()
@@ -121,9 +120,10 @@ METHOD Init() CLASS HListBox
    LOCAL i
 
    IF ! ::lInit
-      Super:Init()
+      ::nHolder := 1
       SetWindowObject( ::handle, Self )
       HWG_INITLISTPROC( ::handle )
+      Super:Init()
       IF ::aItems != Nil
          IF ::value == Nil
             ::value := 1
@@ -145,7 +145,14 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HListBox
          RETURN 0
       ENDIF
    ENDIF
-   IF msg == WM_KEYDOWN //.OR. ( msg = WM_GETDLGCODE .AND. wParam = VK_RETURN )
+   IF msg == WM_KEYDOWN 
+      IF ProcKeyList( Self, wParam )  
+         RETURN - 1
+      ENDIF   
+      IF wParam = VK_TAB //.AND. nType < WND_DLG_RESOURCE   
+         GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+        //RETURN 0
+      ENDIF
 			IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
          ::oparent:lSuspendMsgsHandling := .T.              
          nEval := Eval( ::bKeyDown, Self, wParam )

@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.36 2008-11-29 02:47:29 lfbasso Exp $
+ *$Id: htab.prg,v 1.37 2009-02-15 20:12:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -449,15 +449,26 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    //WRITELOG('TAB'+STR(MSG)+STR(WPARAM)+STR(LPARAM)+CHR(13))
 
-   ::disable()
-   IF ( msg == WM_KEYDOWN .OR.( msg = WM_GETDLGCODE .AND. wParam == VK_RETURN ) ) .AND. GetFocus() = ::handle
-      IF ( wParam == VK_DOWN .or. wParam == VK_RETURN ) .AND. ::nActive > 0
-         GetSkip( Self, ::handle,, 1 )
-      ENDIF
-      IF wParam == VK_UP .AND. ::nActive > 0  //
-         KEYB_EVENT( VK_TAB, VK_SHIFT, .T. )
-      ENDIF
+    ::disable()
+   IF (msg == WM_KEYDOWN .OR.(msg = WM_GETDLGCODE .AND. wparam == VK_RETURN)) .AND. GetFocus()= ::handle
+       IF ProcKeyList( Self, wParam )
+          RETURN - 1
+       ENDIF
+       IF (wparam == VK_DOWN .or.wparam == VK_RETURN).AND. ::nActive > 0  //
+   	      GetSkip( self, ::handle,, 1 )
+       ENDIF
+       IF wparam == VK_UP .AND. ::nActive > 0  // 
+          KEYB_EVENT( VK_TAB, VK_SHIFT, .T. )
+       ENDIF
    ENDIF
+   IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL //.AND. ::FINDCONTROL(,GETFOCUS()):classname = "HUPDO"
+       IF ::GetParentForm( self ):Type < WND_DLG_RESOURCE 
+          RETURN ( ::oParent:onEvent( msg, wparam, lparam ) )
+       ELSE   
+          RETURN ( super:onevent(msg, wparam, lparam ) )
+       ENDIF
+	 ENDIF
+   
    IF ::bOther != Nil
       ::oparent:lSuspendMsgsHandling := .t.
       IF Eval( ::bOther, Self, msg, wParam, lParam ) != - 1
@@ -465,14 +476,16 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
       ENDIF
       ::oparent:lSuspendMsgsHandling := .f.
    ENDIF
-   IF ! ( ( msg == WM_COMMAND .OR. msg == WM_NOTIFY ) .AND. ::oParent:lSuspendMsgsHandling )
-      IF  __ObjHasMsg( ::oParent, "NINITFOCUS" ) .AND. ::oParent:nInitFocus > 0 .AND. isWindowVisible( ::oParent:handle )
+   IF ! ( ( msg = WM_COMMAND .OR. msg = WM_NOTIFY) .AND. ::oParent:lSuspendMsgsHandling )
+      IF  __ObjHasMsg(::oParent,"NINITFOCUS") .AND. ::oParent:nInitFocus > 0 .AND. isWindowVisible( ::oParent:handle )
          SETFOCUS( ::oParent:nInitFocus )
-         ::oParent:nInitFocus := 0
-      ENDIF
-      RETURN ( Super:onevent( msg, wParam, lParam ) )
+         ::oParent:nInitFocus := 0 
+      ENDIF  
+      IF  msg = WM_COMMAND .AND. ::GetParentForm( self ):Type < WND_DLG_RESOURCE .AND. wParam > 0 .AND. lParam > 0
+          ::oParent:onEvent( msg, wparam, lparam )
+      ENDIF    
+      RETURN ( super:onevent( msg, wparam, lparam ) )
    ENDIF
-
    RETURN - 1
 
 

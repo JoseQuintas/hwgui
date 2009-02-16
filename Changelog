@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1024 2009-02-16 10:52:32 lfbasso Exp $
+ * $Id: Changelog,v 1.1025 2009-02-16 18:22:25 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-02-16 15:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    ! fix in COMBOBOX  clauses [ WIDTHCOLUMN <ncWidth>  ] ==>> COLUMNWIDTH <ncWidth>;
+      
 2009-02-16 07:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\theme.c
     + add new function ISTHEMEACTIVE 

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.140 2009-02-15 20:12:30 lfbasso Exp $
+ *$Id: guilib.ch,v 1.141 2009-02-16 18:22:25 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -682,7 +682,7 @@
              [ SIZE <width>, <height> ] ;
              [ DISPLAYCOUNT <nDisplay>] ;
              [ ITEMHEIGHT <nhItem>    ] ; 
-             [ WIDTHCOLUMN <ncWidth>  ] ;
+             [ COLUMNWIDTH <ncWidth>  ] ;
              [ COLOR <color> ]          ;
              [ BACKCOLOR <bcolor> ]     ;
              [ ON INIT <bInit> ]        ;
@@ -1147,7 +1147,7 @@
             [ SIZE <width>, <height> ] ;
             [ DISPLAYCOUNT <nDisplay>] ;
             [ ITEMHEIGHT <nhItem>    ] ; 
-            [ WIDTHCOLUMN <ncWidth>  ] ;
+            [ COLUMNWIDTH <ncWidth>  ] ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
             [ ON INIT <bInit> ]        ;

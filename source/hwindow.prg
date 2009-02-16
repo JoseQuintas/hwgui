@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.68 2009-02-15 04:53:18 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.69 2009-02-16 13:15:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -338,7 +338,7 @@ CLASS VAR aMessages INIT { ;
 
 ENDCLASS
 
-METHOD Activate( lShow, lMaximized, lMinimized, bActivate ) CLASS HMDIChildWindow
+METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate ) CLASS HMDIChildWindow
 
    HB_SYMBOL_UNUSED( lShow )
    HB_SYMBOL_UNUSED( lMaximized )
@@ -737,7 +737,7 @@ STATIC FUNCTION onMdiCreate( oWnd, lParam )
    RETURN - 1
 
 STATIC FUNCTION onMdiCommand( oWnd, wParam )
-   LOCAL iParHigh, iParLow, iItem
+   LOCAL iParHigh, iParLow, iItem, aMenu, oCtrl
 
    IF wParam == SC_CLOSE
       SendMessage( HWindow():aWindows[ 2 ]:handle, WM_MDIDESTROY, oWnd:handle, 0 )
@@ -836,7 +836,7 @@ STATIC FUNCTION onActivate( oWin, wParam, lParam )
 
    HB_SYMBOL_UNUSED( lParam )
 
-   IF ( iParLow = WA_ACTIVE .OR. iParLow = WA_CLICKACTIVE ) .AND. IsWindowVisible( oDlg:handle )  // .AND. PtrtoUlong( lParam ) = 0  
+   IF ( iParLow = WA_ACTIVE .OR. iParLow = WA_CLICKACTIVE ) .AND. IsWindowVisible( oWin:handle )  // .AND. PtrtoUlong( lParam ) = 0  
       IF oWin:bGetFocus != Nil //.AND. IsWindowVisible(::handle)
          oWin:lSuspendMsgsHandling := .T.
          IF iParHigh > 0  // MINIMIZED

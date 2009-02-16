@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.50 2009-02-16 03:48:20 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.51 2009-02-16 11:52:24 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -84,7 +84,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
    ELSE
 	    nDisplay := 6
 	 ENDIF   
-   nHeight := nHeight + ( IIF( EMPTY( nhItem ), 16, nhItem ) *  nDisplay ) + 3
+   nHeight := nHeight + ( IIF( EMPTY( nhItem ), 16.50, ( nhItem += 0.50 ) ) *  nDisplay ) 
    
    nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), IIf( lEdit, CBS_DROPDOWN, CBS_DROPDOWNLIST ) + WS_TABSTOP )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, bSize, bPaint, ctooltip, tcolor, bcolor )
@@ -227,17 +227,17 @@ METHOD Init() CLASS HComboBox
       IF !EMPTY( ::nhItem )
          sendmessage( ::handle, CB_SETITEMHEIGHT ,0, ::nhItem ) 
       ELSE
-  			 ::nhItem := sendmessage( ::handle, CB_GETITEMHEIGHT , 0, 0 ) 
+  			 ::nhItem := sendmessage( ::handle, CB_GETITEMHEIGHT , 0, 0 ) + 0.50
       ENDIF
 			//  WIDTH  Items
 			IF !EMPTY( ::ncWidth ) 
 			   sendmessage( ::handle, CB_SETDROPPEDWIDTH, ::ncWidth, 0)
 			ENDIF   
-		  ::nHeight := INT( ::nHeightBox / 0.75 + ( ::nhItem * ::nDisplay ) ) + 3
+		  ::nHeight := INT( ::nHeightBox / 0.75 + ( ::nhItem * ::nDisplay ) ) 
    ENDIF
    MoveWindow( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )      
    // HEIGHT COMBOBOX
-   SendMessage( ::handle, CB_SETITEMHEIGHT , -1, ::nHeightBox)  
+   SendMessage( ::handle, CB_SETITEMHEIGHT , -1, ::nHeightBox )  
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HComboBox

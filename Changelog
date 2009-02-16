@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1025 2009-02-16 18:22:25 lfbasso Exp $
+ * $Id: Changelog,v 1.1026 2009-02-16 21:09:34 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-02-16 18:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hedit.prg
+    ! fix for MAXLENGHT PASSWORD
+  * source\hcwindow.prg
+    + add property nScrollBars, lack in last update
+    
 2009-02-16 15:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     ! fix in COMBOBOX  clauses [ WIDTHCOLUMN <ncWidth>  ] ==>> COLUMNWIDTH <ncWidth>;
@@ -122,6 +128,7 @@
     ! fix in MAXLENGHT PASSWORD
     ! fix in ES_MULTINLINE when it receives the focus
 
+    
 2009-01-27 01:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg
     ! fix for SET CONFIRM 

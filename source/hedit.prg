@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.127 2009-02-15 20:12:30 lfbasso Exp $
+ *$Id: hedit.prg,v 1.128 2009-02-16 21:09:34 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -817,6 +817,7 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
             IF  !empty( ::nMaxLength ) .AND. LEN( TRIM( ::GetText() ) ) = ::nMaxLength
             		::title := PadR( ::title, ::nMaxLength )   
             ENDIF 			
+            nLen := LEN( TRIM( ::GetText() ) )
          ELSEIF ! Empty( ::nMaxLength )
             nLen := LEN( TRIM( ::GetText() ) )
             ::title := PadR( ::title, ::nMaxLength )

@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.37 2009-02-16 12:52:59 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.38 2009-02-16 21:09:34 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -83,6 +83,7 @@ CLASS VAR oDefaultParent SHARED
    DATA nCurHeight   INIT 0 //PROTECTED
    DATA nScrollPos   INIT 0 //PROTECTED
    DATA rect //PROTECTED
+   DATA nScrollBars INIT -1   
 
    METHOD AddControl( oCtrl ) INLINE AAdd( ::aControls, oCtrl )
    METHOD DelControl( oCtrl )

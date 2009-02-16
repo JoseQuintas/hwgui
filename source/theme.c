@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.16 2008-06-16 18:52:23 mlacecilia Exp $
+ * $Id: theme.c,v 1.17 2009-02-16 10:52:33 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -1795,5 +1795,19 @@ HB_FUNC( HB_DRAWTHEMEPARENTBACKGROUND )
 
    hb_retnl( hb_DrawThemeParentBackground(hTheme, hdc,
                         &pRect ) );
+}
+
+HB_FUNC( ISTHEMEACTIVE )
+{
+   hb_retl( hb_IsThemeActive() );
+}
+
+
+HB_FUNC( HWG_GETTHEMESYSCOLOR)
+{
+   HWND hTheme = (HWND) HB_PARHANDLE(1 ) ;
+   int iColor = (int) hb_parnl( 2 ) ;
+  
+   HB_RETHANDLE ( hb_GetThemeSysColor( hTheme, iColor ) );
 }
 

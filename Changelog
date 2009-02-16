@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1023 2009-02-16 03:48:19 lfbasso Exp $
+ * $Id: Changelog,v 1.1024 2009-02-16 10:52:32 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-02-16 07:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\theme.c
+    + add new function ISTHEMEACTIVE 
+    + add new function HWG_GETTHEMESYSCOLOR
+    
 2009-02-16 00:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcombo.prg
     ! fix in new parameters nDisplay, nhItem, ncWidth in METHOD NEW 

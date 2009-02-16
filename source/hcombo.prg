@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.49 2009-02-15 20:12:30 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.50 2009-02-16 03:48:20 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -77,11 +77,15 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
    IF lText == Nil ; lText := .f. ; ENDIF
    //if bValid != NIL; ::bValid := bValid; endif
    
-   ::nHeightBox := nHeight
+   ::nHeightBox := INT( nHeight * 0.75 ) //	Meets A 22'S EDITBOX
    IF !EMPTY( nDisplay ) .AND. nDisplay  > 0
-	    nHeight := nHeight * ( nDisplay + 1 )
-      nStyle := Hwg_BitOr( nStyle, CBS_NOINTEGRALHEIGHT )
+      nStyle := Hwg_BitOr( nStyle, CBS_NOINTEGRALHEIGHT ) //+ WS_VSCROLL )
+      // CBS_NOINTEGRALHEIGHT. ESTE CRIA A ROLAGEM VERTICAL BARRA
+   ELSE
+	    nDisplay := 6
 	 ENDIF   
+   nHeight := nHeight + ( IIF( EMPTY( nhItem ), 16, nhItem ) *  nDisplay ) + 3
+   
    nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), IIf( lEdit, CBS_DROPDOWN, CBS_DROPDOWNLIST ) + WS_TABSTOP )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, bSize, bPaint, ctooltip, tcolor, bcolor )
 
@@ -219,18 +223,21 @@ METHOD Init() CLASS HComboBox
          NewLongComboWidth = ( LongComboWidth - 2 ) * avgwidth
          SendMessage( ::handle, CB_SETDROPPEDWIDTH, NewLongComboWidth + 50, 0 )
       ENDIF
-      // HEIGHT COMBOBOX
-      ::nHeightBox := ::nHeightBox * sendmessage( ::handle, CB_GETITEMHEIGHT , -1, 0 ) * 0.85  
-      sendmessage( ::handle, CB_SETITEMHEIGHT , -1, ::nHeightBox ) 
-      // HEIGHT ITEMS
+      // HEIGHT Items
       IF !EMPTY( ::nhItem )
          sendmessage( ::handle, CB_SETITEMHEIGHT ,0, ::nhItem ) 
+      ELSE
+  			 ::nhItem := sendmessage( ::handle, CB_GETITEMHEIGHT , 0, 0 ) 
       ENDIF
 			//  WIDTH  Items
 			IF !EMPTY( ::ncWidth ) 
 			   sendmessage( ::handle, CB_SETDROPPEDWIDTH, ::ncWidth, 0)
 			ENDIF   
+		  ::nHeight := INT( ::nHeightBox / 0.75 + ( ::nhItem * ::nDisplay ) ) + 3
    ENDIF
+   MoveWindow( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )      
+   // HEIGHT COMBOBOX
+   SendMessage( ::handle, CB_SETITEMHEIGHT , -1, ::nHeightBox)  
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HComboBox
@@ -505,7 +512,8 @@ CLASS VAR winclass INIT "COMBOBOX"
    METHOD OnGetTextLength( w, l )
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-               aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, bcolor, bValid, acheck )
+              aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus,;
+							 tcolor, bcolor, bValid, acheck, nDisplay, nhItem, ncWidth ) 
    METHOD Redefine( oWnd, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bDraw, bChange, ctooltip, bGFocus )
    METHOD INIT( aCombo, nCurrent )
    METHOD Refresh()
@@ -523,8 +531,8 @@ CLASS VAR winclass INIT "COMBOBOX"
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, aItems, oFont, ;
-            bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, bcolor, bValid, acheck ) CLASS hCheckComboBox
-
+              bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, bcolor,;
+						  bValid, acheck, nDisplay, nhItem, ncWidth ) CLASS hCheckComboBox
 
    ::acheck := IIF( acheck == Nil, {}, acheck )
    IF ValType( nStyle ) == "N"
@@ -536,7 +544,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    bPaint := { | o, p | o:paint( p ) }
 
    ::Super:New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, aItems, oFont, ;
-                bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, bcolor, bValid )
+                bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, bcolor, bValid ,, nDisplay, nhItem, ncWidth )
 
    RETURN Self
 

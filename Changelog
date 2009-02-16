@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1022 2009-02-15 20:12:30 lfbasso Exp $
+ * $Id: Changelog,v 1.1023 2009-02-16 03:48:19 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-02-16 00:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcombo.prg
+    ! fix in new parameters nDisplay, nhItem, ncWidth in METHOD NEW 
 
 2009-02-15 17:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
@@ -62,7 +66,6 @@
   * source\hupdown.prg
     + implemented METHOD OnEvent to control the events in CLASS
     + implemented focus navigation in WINDOW so similar to DIALOG
-
 
 2009-02-15 1:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch

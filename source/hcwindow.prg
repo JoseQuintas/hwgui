@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.36 2009-02-15 04:53:18 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.37 2009-02-16 12:52:59 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -99,6 +99,7 @@ CLASS VAR oDefaultParent SHARED
    METHOD Anchor( oCtrl, x, y, w, h )
    METHOD ScrollHV( msg, wParam, lParam )
    METHOD SetTextClass ( x ) HIDDEN 
+   METHOD GetParentForm( oCtrl )
 
 ENDCLASS
 

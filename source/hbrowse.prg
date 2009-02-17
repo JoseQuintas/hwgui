@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.149 2008-12-29 15:05:35 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.150 2009-02-17 16:37:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1784,26 +1784,26 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
 
    hBrw := ::handle
 
-// Calculate the line you clicked on, keeping track of header
+   // Calculate the line you clicked on, keeping track of header
    IF( ::lDispHead )
-   nLine := Int( ( HIWORD( lParam ) - ( ::nHeadHeight * ::nHeadRows ) ) / ( ::height + 1 ) + 1 )
-ELSE
-   nLine := Int( HIWORD( lParam ) / ( ::height + 1 ) + 1 )
-ENDIF
+      nLine := Int( ( HIWORD( lParam ) - ( ::nHeadHeight * ::nHeadRows ) ) / ( ::height + 1 ) + 1 )
+   ELSE
+      nLine := Int( HIWORD( lParam ) / ( ::height + 1 ) + 1 )
+   ENDIF
 
-STEP := nLine - ::rowPos
-res := .F.
-xm := LOWORD( lParam )
+   STEP := nLine - ::rowPos
+   res := .F.
+   xm := LOWORD( lParam )
 
-x1  := ::x1
-fif := IIf( ::freeze > 0, 1, ::nLeftCol )
-DO WHILE fif <= Len( ::aColumns )
-   IF( ! ( fif < ( ::nLeftCol + ::nColumns ) .AND. x1 + ::aColumns[ fif ]:width < xm ) )
-   EXIT
-ENDIF
-x1 += ::aColumns[ fif ]:width
-fif := IIf( fif == ::freeze, ::nLeftCol, fif + 1 )
-ENDDO
+   x1  := ::x1
+   fif := IIf( ::freeze > 0, 1, ::nLeftCol )
+   DO WHILE fif <= Len( ::aColumns )
+      IF( ! ( fif < ( ::nLeftCol + ::nColumns ) .AND. x1 + ::aColumns[ fif ]:width < xm ) )
+         EXIT
+      ENDIF
+      x1 += ::aColumns[ fif ]:width
+      fif := IIf( fif == ::freeze, ::nLeftCol, fif + 1 )
+   ENDDO
 
 IF nLine > 0 .AND. nLine <= ::rowCurrCount
    IF STEP != 0

@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.51 2009-02-16 11:52:24 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.52 2009-02-17 16:37:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -189,6 +189,7 @@ METHOD Init() CLASS HComboBox
    LOCAL NewLongComboWidth , avgwidth
 
    IF ! ::lInit
+      ::nHolder := 1
       SetWindowObject( ::handle, Self )
       HWG_INITCOMBOPROC( ::handle )
       Super:Init()
@@ -242,7 +243,7 @@ METHOD Init() CLASS HComboBox
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HComboBox
 
-   IF msg == WM_CHAR .AND. ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE.OR.;
+   IF msg == WM_CHAR .AND. ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE .OR. ;
        ! ::GetParentForm( Self ):lModal )
       IF wParam = VK_TAB
         GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
@@ -266,10 +267,10 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HComboBox
 	      ENDIF
 	      GetSkip( ::oParent, ::handle, , -1 )
 	    ENDIF
-	    
-	    RETURN 1
+	    RETURN -1 //1
 	 ENDIF
-RETURN -1
+	 
+   RETURN -1
 
 METHOD Requery() CLASS HComboBox
    Local i

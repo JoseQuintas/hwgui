@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.69 2009-02-16 13:15:48 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.70 2009-02-17 16:37:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -361,13 +361,14 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate ) CLASS HMDIC
    ENDIF
    ::handle := Hwg_CreateMdiChildWindow( Self, IIF( lMinimized, WS_MINIMIZE, ;
 	    IIF( lMaximized, WS_MAXIMIZE, 0 ) ) + IIF( !lShow, - WS_VISIBLE, WS_VISIBLE  ) )
-	    
+	 
+	 /*  in ONMDICREATE   
    InitControls( Self )
    InitObjects( Self,.T. )
-   
    IF ::bInit != Nil
       Eval( ::bInit,Self )
    ENDIF
+   */
    IF !EMPTY( lCenter ) .AND. lCenter
       ::nLeft := ( ::oClient:nWidth - ::nWidth ) / 2 - 0
       ::nTop  := ( ::oClient:nHeight - ::nHeight ) / 2  - 0
@@ -460,16 +461,22 @@ METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
    RETURN Self
 
 METHOD Activate( lShow, lMaximized, lMinimized,lCenter, bActivate ) CLASS HChildWindow
-
+	 LOCAL nReturn
+	 
    DEFAULT lShow := .T.
 	 ::Type := WND_CHILD 
 
    CreateGetList( Self )
    //   InitControls( SELF,.T. )
    InitObjects( Self, .T. )
-
+   
    IF ::bInit != Nil
-      Eval( ::bInit, Self )
+      IF Valtype( nReturn := Eval( ::bInit, Self ) ) != "N"
+         IF VALTYPE( nReturn ) == "L" .AND. ! nReturn
+            ::Close()
+            RETURN Nil
+         ENDIF
+      ENDIF
    ENDIF
 
    Hwg_ActivateChildWindow( ( lShow == Nil .OR. lShow ), ::handle, lMaximized, lMinimized )
@@ -602,7 +609,7 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
       .AND. aMenu[ 1, iCont, 1 ] != Nil
       Eval( aMenu[ 1, iCont, 1 ] )
    ELSEIF  wParam != SC_CLOSE .AND. wParam != SC_MINIMIZE .AND. wParam != SC_MAXIMIZE .AND.;
-           wParam != SC_RESTORE .AND.  oWnd:bMdiMenu != Nil // wParam = iParlow .AND.
+           wParam != SC_RESTORE .AND. oWnd:Type = WND_MDICHILD .AND. oWnd:bMdiMenu != Nil
       // menu MDICHILD
       Eval( oWnd:bMdiMenu, oWnd, wParam )
       
@@ -725,15 +732,20 @@ STATIC FUNCTION onNotifyIcon( oWnd, wParam, lParam )
    RETURN - 1
 
 STATIC FUNCTION onMdiCreate( oWnd, lParam )
-
+	 LOCAL nReturn
    HB_SYMBOL_UNUSED( lParam )
 
    InitControls( oWnd )
    InitObjects( oWnd, .T. )
    IF oWnd:bInit != Nil
-      Eval( oWnd:bInit, oWnd )
+      IF Valtype( nReturn := Eval( oWnd:bInit, oWnd ) ) != "N"
+         IF VALTYPE( nReturn ) == "L" .AND. ! nReturn
+            oWnd:Close()
+            RETURN Nil
+         ENDIF
+      ENDIF
    ENDIF
-
+   
    RETURN - 1
 
 STATIC FUNCTION onMdiCommand( oWnd, wParam )

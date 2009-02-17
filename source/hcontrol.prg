@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.118 2009-02-15 20:12:30 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.119 2009-02-17 16:37:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -954,7 +954,7 @@ METHOD END() CLASS HButtonEX
 METHOD INIT CLASS HButtonEx
    LOCAL nbs
    IF ! ::lInit
-      ::nHolder := 1
+      //::nHolder := 1
       //SetWindowObject( ::handle, Self )
       //HWG_INITBUTTONPROC( ::handle )
       // call in HBUTTON CLASS

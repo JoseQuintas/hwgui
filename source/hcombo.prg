@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.52 2009-02-17 16:37:05 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.53 2009-02-17 17:30:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -487,7 +487,7 @@ STATIC FUNCTION __Valid( oCtrl )
             getskip( oCtrl:oparent, oCtrl:handle,, nSkip )
          ENDIF
       ENDIF
-	    octrl:oparent:lSuspendMsgsHandling := .T.
+	    octrl:oparent:lSuspendMsgsHandling := .F.
        IF GETFOCUS() = 0 //::nValidSetfocus = ::handle
           GetSkip( OCTRL:oParent, octrl:handle,,octrl:nGetSkip)
        ENDIF 

@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.70 2009-02-17 16:37:05 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.71 2009-02-19 12:05:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -219,8 +219,11 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
       ::nMenuPos := nPos
       ::bMdiMenu := bMdiMenu
       ::Style := nStyle
+      ::tColor := clr
+      ::oBmp := oBmp
+       clr:= nil  // because error
       ::handle := Hwg_InitMdiWindow( Self, ::szAppName, cTitle, cMenu,  ;
-                                     IIf( oIcon != Nil, oIcon:handle, Nil ), clr, ;
+                                     IIf( oIcon != Nil, oIcon:handle, Nil ), , ;  //clr, ;
                                      nStyle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
 
    ELSEIF lType == WND_MAIN
@@ -317,11 +320,12 @@ METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu, cTooltip ) CLASS HMainWindow
 CLASS HMDIChildWindow INHERIT HWindow
 
 CLASS VAR aMessages INIT { ;
-                           { WM_CREATE, WM_COMMAND, WM_MOVE, WM_SIZE, WM_NCACTIVATE, ;
+                           { WM_CREATE, WM_COMMAND,WM_ERASEBKGND,WM_MOVE, WM_SIZE, WM_NCACTIVATE, ;
                              WM_SYSCOMMAND, WM_ENTERIDLE, WM_MDIACTIVATE, WM_DESTROY }, ;
                            { ;
                              { | o, w, l | HB_SYMBOL_UNUSED( w ), onMdiCreate( o, l ) },        ;
                              { | o, w | onMdiCommand( o, w ) },         ;
+                             { | o, w | onEraseBk( o, w ) },            ;
                              { | o | onMove( o ) },                   ;
                              { | o, w, l | onSize( o, w, l ) },           ;
                              { | o, w | onMdiNcActivate( o, w ) },      ;
@@ -332,9 +336,11 @@ CLASS VAR aMessages INIT { ;
                            } ;
                          }
    DATA aRectSave
+   DATA oWndParent
    
    METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate )
    METHOD onEvent( msg, wParam, lParam )
+   METHOD SetParent( oParent ) INLINE ::oWndParent := oParent 
 
 ENDCLASS
 
@@ -470,6 +476,7 @@ METHOD Activate( lShow, lMaximized, lMinimized,lCenter, bActivate ) CLASS HChild
    //   InitControls( SELF,.T. )
    InitObjects( Self, .T. )
    
+   ::hide()
    IF ::bInit != Nil
       IF Valtype( nReturn := Eval( ::bInit, Self ) ) != "N"
          IF VALTYPE( nReturn ) == "L" .AND. ! nReturn
@@ -480,6 +487,13 @@ METHOD Activate( lShow, lMaximized, lMinimized,lCenter, bActivate ) CLASS HChild
    ENDIF
 
    Hwg_ActivateChildWindow( ( lShow == Nil .OR. lShow ), ::handle, lMaximized, lMinimized )
+
+   IF !EMPTY( lCenter ) .AND. lCenter 
+	    IF  ! EMPTY( ::oParent )
+        ::nLeft := (::oParent:nWidth - ::nWidth ) / 2 
+        ::nTop  := (::oParent:nHeight - ::nHeight) / 2  
+      ENDIF
+   ENDIF
 
    IF ( bActivate  != NIL )
       Eval( bActivate, Self )
@@ -609,7 +623,7 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
       .AND. aMenu[ 1, iCont, 1 ] != Nil
       Eval( aMenu[ 1, iCont, 1 ] )
    ELSEIF  wParam != SC_CLOSE .AND. wParam != SC_MINIMIZE .AND. wParam != SC_MAXIMIZE .AND.;
-           wParam != SC_RESTORE .AND. oWnd:Type = WND_MDICHILD .AND. oWnd:bMdiMenu != Nil
+           wParam != SC_RESTORE .AND. oWnd:Type = WND_MDI .AND. oWnd:bMdiMenu != Nil    
       // menu MDICHILD
       Eval( oWnd:bMdiMenu, oWnd, wParam )
       
@@ -735,6 +749,9 @@ STATIC FUNCTION onMdiCreate( oWnd, lParam )
 	 LOCAL nReturn
    HB_SYMBOL_UNUSED( lParam )
 
+   IF ! EMPTY ( oWnd:oWndParent )
+       oWnd:oParent := oWnd:oWndParent 
+   ENDIF
    InitControls( oWnd )
    InitObjects( oWnd, .T. )
    IF oWnd:bInit != Nil

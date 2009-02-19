@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.53 2009-02-17 17:30:49 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.54 2009-02-19 12:05:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -84,7 +84,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
    ELSE
 	    nDisplay := 6
 	 ENDIF   
-   nHeight := nHeight + ( IIF( EMPTY( nhItem ), 16.50, ( nhItem += 0.50 ) ) *  nDisplay ) 
+   nHeight := nHeight + ( IIF( EMPTY( nhItem ), 16.250, ( nhItem += 0.250 ) ) *  nDisplay ) 
    
    nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), IIf( lEdit, CBS_DROPDOWN, CBS_DROPDOWNLIST ) + WS_TABSTOP )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, bSize, bPaint, ctooltip, tcolor, bcolor )
@@ -228,7 +228,7 @@ METHOD Init() CLASS HComboBox
       IF !EMPTY( ::nhItem )
          sendmessage( ::handle, CB_SETITEMHEIGHT ,0, ::nhItem ) 
       ELSE
-  			 ::nhItem := sendmessage( ::handle, CB_GETITEMHEIGHT , 0, 0 ) + 0.50
+  			 ::nhItem := sendmessage( ::handle, CB_GETITEMHEIGHT , 0, 0 ) + 0.250
       ENDIF
 			//  WIDTH  Items
 			IF !EMPTY( ::ncWidth ) 

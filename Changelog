@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1030 2009-02-20 12:10:33 omm Exp $
+ * $Id: Changelog,v 1.1031 2009-02-21 08:59:20 marcosgambeta Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-02-21 05:56 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
+  - samples\combobox\tstcombo.prg
+  + samples\combobox\combobox.prg
+    Updated. Formatting.
 
 2009-02-20 14:00 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
   + ChangeLog

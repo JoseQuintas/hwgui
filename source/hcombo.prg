@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.54 2009-02-19 12:05:45 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.55 2009-02-21 18:53:43 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -57,7 +57,7 @@ CLASS VAR winclass   INIT "COMBOBOX"
                   aItems,oFont,bInit,bSize,bPaint,bChange,ctooltip,lEdit,lText,bGFocus,tcolor,;
 									bcolor,bLFocus, bIChange, nDisplay, nhItem, ncWidth )
    METHOD Activate()
-   METHOD Redefine( oWnd, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bDraw, bChange, ctooltip, bGFocus, bLFocus, bIChange )
+   METHOD Redefine( oWnd, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bDraw, bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay )
    METHOD Init( aCombo, nCurrent )
    METHOD onEvent( msg, wParam, lParam )
    METHOD Requery()
@@ -80,7 +80,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
    ::nHeightBox := INT( nHeight * 0.75 ) //	Meets A 22'S EDITBOX
    IF !EMPTY( nDisplay ) .AND. nDisplay  > 0
       nStyle := Hwg_BitOr( nStyle, CBS_NOINTEGRALHEIGHT ) //+ WS_VSCROLL )
-      // CBS_NOINTEGRALHEIGHT. ESTE CRIA A ROLAGEM VERTICAL BARRA
+      // CBS_NOINTEGRALHEIGHT. CRIATE VERTICAL SCROOL BAR
    ELSE
 	    nDisplay := 6
 	 ENDIF   
@@ -150,9 +150,20 @@ METHOD Activate CLASS HComboBox
    RETURN Nil
 
 METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
-                 bChange, ctooltip, bGFocus  ) CLASS HComboBox
+               bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay ) CLASS HComboBox
 
+   ::nHeightBox := INT( nHeight * 0.75 ) //	Meets A 22'S EDITBOX
+   IF !EMPTY( nDisplay ) .AND. nDisplay  > 0
+      nStyle := Hwg_BitOr( nStyle, CBS_NOINTEGRALHEIGHT ) //+ WS_VSCROLL )
+      // CBS_NOINTEGRALHEIGHT. CRIATE VERTICAL SCROOL BAR
+   ELSE
+	    nDisplay := 6
+	 ENDIF   
+   nHeight := ( nHeight + 16.250 ) *  nDisplay  
+   
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, bSize, bPaint, ctooltip )
+      
+   ::nDisplay := nDisplay
 
    IF ::lText
       ::value := IIf( vari == Nil .OR. ValType( vari ) != "C", "", vari )
@@ -180,7 +191,8 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
       ::oParent:AddEvent( CBN_SETFOCUS, Self, { | o, id | __When( o:FindControl( id ) ) },, "onGotFocus" )
    ENDIF
 
-   ::Refresh() // By Luiz Henrique dos Santos
+   //::Refresh() // By Luiz Henrique dos Santos
+   ::Requery() 
    RETURN Self
 
 METHOD Init() CLASS HComboBox
@@ -517,6 +529,7 @@ CLASS VAR winclass INIT "COMBOBOX"
 							 tcolor, bcolor, bValid, acheck, nDisplay, nhItem, ncWidth ) 
    METHOD Redefine( oWnd, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bDraw, bChange, ctooltip, bGFocus )
    METHOD INIT( aCombo, nCurrent )
+   METHOD Requery()
    METHOD Refresh()
    METHOD Paint( lpDis )
    METHOD SetCheck( nIndex, bFlag )
@@ -581,7 +594,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
       RETURN ::OnGetText( wParam, lParam )
 
    ELSEIF msg == WM_GETTEXTLENGTH
-      RETURN ::OnGetTextLength()
+
+      RETURN ::OnGetTextLength( wParam, lParam )
 
    ELSEIF msg == WM_CHAR
       IF ( wParam == VK_SPACE )
@@ -645,10 +659,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
 METHOD INIT() CLASS hCheckComboBox
 
    LOCAL i
-   ::nHolder := 1
+   //::nHolder := 1
    //SetWindowObject( ::handle, Self )  // because hcombobox is handling
    //HWG_INITCOMBOPROC( ::handle )
-
    IF ! ::lInit
       Super:Init()
       IF Len( ::acheck ) > 0
@@ -659,15 +672,28 @@ METHOD INIT() CLASS hCheckComboBox
    ENDIF
    RETURN Nil
 
+METHOD Requery() CLASS hCheckComboBox
+local i
+
+   ::super:Requery()
+   IF LEN( ::acheck ) > 0
+      FOR i := 1 TO LEN( ::acheck )
+         ::Setcheck( ::acheck[ i ], .t. )
+      NEXT
+   ENDIF
+
+   RETURN Nil
+
 METHOD Refresh() CLASS hCheckComboBox
    LOCAL i
    ::Super:refresh()
+   /*
    IF Len( ::acheck ) > 0
       FOR i := 1 TO Len( ::acheck )
          ::Setcheck( ::acheck[ i ], .t. )
       NEXT
    ENDIF
-
+	 */
    RETURN Nil
 
 METHOD SetCheck( nIndex, bFlag ) CLASS hCheckComboBox
@@ -731,7 +757,7 @@ METHOD RecalcText() CLASS hCheckComboBox
 
       FOR i := 1 TO ncount
 
-         IF ( COMBOBOXGETITEMDATA( ::handle, i ) )
+         IF ( COMBOBOXGETITEMDATA( ::handle, i ) ) = 1
 
             COMBOBOXGETLBTEXT( ::handle, i, @stritem )
 
@@ -864,7 +890,7 @@ METHOD OnGetText( wParam, lParam ) CLASS hCheckComboBox
    // Copy the 'fake' window text
    copydata( lParam, ::m_strText, wParam )
 
-   RETURN Len( ::m_strText )
+   RETURN IIF( EMPTY( ::m_strText ), 0, LEN( ::m_strText ) ) 
 
 METHOD OnGetTextLength( WPARAM, LPARAM ) CLASS hCheckComboBox
 
@@ -872,7 +898,8 @@ METHOD OnGetTextLength( WPARAM, LPARAM ) CLASS hCheckComboBox
    HB_SYMBOL_UNUSED( LPARAM )
 
    ::RecalcText()
-   RETURN Len( ::m_strText )
+   
+   RETURN IIF( EMPTY( ::m_strText ), 0, LEN( ::m_strText ) ) 
 
 METHOD GetAllCheck() CLASS hCheckComboBox
    LOCAL aCheck := { }

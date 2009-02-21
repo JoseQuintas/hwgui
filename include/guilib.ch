@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.141 2009-02-16 18:22:25 lfbasso Exp $
+ *$Id: guilib.ch,v 1.142 2009-02-21 18:53:43 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -88,6 +88,7 @@
 
 #xcommand INIT WINDOW <oWnd> MDICHILD       ;
              [ APPNAME <appname> ]          ;
+             [ OF <oParent>      ]          ;
              [ TITLE <cTitle> ]             ;
              [ AT <x>, <y> ]                ;
              [ SIZE <width>, <height> ]     ;
@@ -113,8 +114,9 @@
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
                    <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,,;
-									 <bRefresh>,<.lChild.> )
-            
+									 <bRefresh>,<.lChild.> ) ;;
+        [ <oWnd>:SetParent( <oParent> ) ]            
+      
 #xcommand INIT WINDOW <oWnd> CHILD          ;
              APPNAME <appname>              ;
              [ TITLE <cTitle> ]             ;
@@ -705,21 +707,22 @@
           [ <oCombo>:name := <(oCombo)> ]
 
 #xcommand REDEFINE COMBOBOX [ <oCombo> ITEMS ] <aItems> ;
-             [ OF <oWnd> ]              ;
-             ID <nId>                   ;
-             [ INIT <nInit>    ]        ;
-             [ ON INIT <bInit> ]        ;
-             [ ON SIZE <bSize> ]        ;
-             [ ON PAINT <bDraw> ]       ;
-             [ ON CHANGE <bChange> ]    ;
-             [ FONT <oFont> ]           ;
-             [ TOOLTIP <ctoolt> ]       ;
-             [ ON GETFOCUS <bGfocus> ]  ;
-             [ ON LOSTFOCUS <bLfocus> ] ;
-             [ ON INTERACTIVECHANGE <bIChange> ]    ;
+            [ OF <oWnd> ]              ;
+            ID <nId>                   ;
+            [ INIT <nInit>    ]        ;
+            [ DISPLAYCOUNT <nDisplay>] ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CHANGE <bChange> ]    ;
+            [ FONT <oFont> ]           ;
+            [ TOOLTIP <ctoolt> ]       ;
+            [ ON GETFOCUS <bGfocus> ]  ;
+            [ ON LOSTFOCUS <bLfocus> ] ;
+            [ ON INTERACTIVECHANGE <bIChange> ]    ;
           => ;
-          [<oCombo> := ] HComboBox():Redefine( <oWnd>,<nId>,<nInit>,,<aItems>,<oFont>,<bInit>, ;
-             <bSize>,<bDraw>,<bChange>,<ctoolt>,<bGfocus>, <bLfocus>, <bIChange>)
+    [<oCombo> := ] HComboBox():Redefine( <oWnd>,<nId>,<nInit>,,<aItems>,<oFont>,<bInit>, ;
+             <bSize>,<bDraw>,<bChange>,<ctoolt>,<bGfocus>, <bLfocus>, <bIChange>,<nDisplay>)
 
 #xcommand @ <x>,<y> UPDOWN [ <oUpd> INIT ] <nInit> ;
              RANGE <nLower>,<nUpper>    ;
@@ -1171,19 +1174,20 @@
 
 
 #xcommand REDEFINE GET COMBOBOX [ <oCombo> VAR ] <vari> ;
-             ITEMS  <aItems>            ;
-             [ OF <oWnd> ]              ;
-             ID <nId>                   ;
-             [ ON CHANGE <bChange> ]    ;
-             [ FONT <oFont> ]           ;
-             [ TOOLTIP <ctoolt> ]       ;
-             [ WHEN  <bGfocus> ]        ;
-             [ VALID <bLfocus> ]        ;
-             [ ON INTERACTIVECHANGE <bIChange> ]    ;
+            ITEMS  <aItems>            ;
+            [ OF <oWnd> ]              ;
+            ID <nId>                   ;
+            [ DISPLAYCOUNT <nDisplay>] ;
+            [ ON CHANGE <bChange> ]    ;
+            [ FONT <oFont> ]           ;
+            [ TOOLTIP <ctoolt> ]       ;
+            [ WHEN  <bGfocus> ]        ;
+            [ VALID <bLfocus> ]        ;
+            [ ON INTERACTIVECHANGE <bIChange> ]    ;
           => ;
-          [<oCombo> := ] HComboBox():Redefine( <oWnd>,<nId>,<vari>, ;
-             {|v|Iif(v==Nil,<vari>,<vari>:=v)},        ;
-             <aItems>,<oFont>,,,,<bChange>,<ctoolt>,<bGfocus>, <bLfocus>,<bIChange>)
+    [<oCombo> := ] HComboBox():Redefine( <oWnd>,<nId>,<vari>, ;
+                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},        ;
+                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>,<bGfocus>, <bLfocus>,<bIChange>,<nDisplay>)
 
 #xcommand REDEFINE GET COMBOBOXEX [ <oCombo> VAR ] <vari> ;
              ITEMS  <aItems>            ;

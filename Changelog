@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1031 2009-02-21 08:59:20 marcosgambeta Exp $
+ * $Id: Changelog,v 1.1032 2009-02-21 18:53:43 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,26 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-02-21 15:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include:guilib.ch
+    * fix in REDEFINE COMBOBOX
+    + add new clause in MDICHILD - OF PARENT set the parent for use in DESIGNER IN the preview mode
+  * source:hbrowse.prg
+    ! fix in CTRL+TAB and SHIFT+CTRL+TAB 
+    ! minor fix
+  * source:hcombo.prg
+    ! fix em REDEFINE
+    ! fixed several problems in comboboxex 
+  * source:hcontrol.prg
+    ! fix in key TAB in BUTTON
+  * source:hedit.prg    
+    ! fix in NextFocusTab for MDICHILD form parent
+  * source:htab.prg
+    !fix in lost focus in MDICHILD
+  * source\hwindow.prg
+    + add METHOD SetParent
+    ! minor fix in onEraseBk
+    
 2009-02-21 05:56 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
   - samples\combobox\tstcombo.prg
   + samples\combobox\combobox.prg

@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.37 2009-02-15 20:12:30 lfbasso Exp $
+ *$Id: htab.prg,v 1.38 2009-02-21 18:53:43 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -481,8 +481,10 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
          SETFOCUS( ::oParent:nInitFocus )
          ::oParent:nInitFocus := 0 
       ENDIF  
-      IF  msg = WM_COMMAND .AND. ::GetParentForm( self ):Type < WND_DLG_RESOURCE .AND. wParam > 0 .AND. lParam > 0
+      IF  (msg = WM_COMMAND .OR. msg == WM_KILLFOCUS) .AND. ::GetParentForm( self ):Type < WND_DLG_RESOURCE .AND. wParam > 0 .AND. lParam > 0
           ::oParent:onEvent( msg, wparam, lparam )
+      ELSEIF msg == WM_KILLFOCUS .AND. ::GetParentForm( self ):Type < WND_DLG_RESOURCE 
+         SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, 0 ), ::handle )
       ENDIF    
       RETURN ( super:onevent( msg, wparam, lparam ) )
    ENDIF

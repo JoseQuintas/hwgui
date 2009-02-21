@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.150 2009-02-17 16:37:05 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.151 2009-02-21 18:53:43 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -285,6 +285,20 @@ METHOD Activate CLASS HBrowse
    RETURN Nil
 
 //----------------------------------------------------//
+METHOD Init CLASS HBrowse
+
+   IF ! ::lInit
+      Super:Init()
+      ::nHolder := 1
+      SetWindowObject( ::handle, Self )
+      VScrollPos( Self, 0, .f. )
+
+   ENDIF
+
+   RETURN Nil
+
+
+//----------------------------------------------------//
 METHOD SetMargin( nTop, nRight, nBottom, nLeft )  CLASS HBrowse
 
    LOCAL aOldMargin := AClone( ::aMargin )
@@ -357,6 +371,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          IF ::bLostFocus != Nil
             Eval( ::bLostFocus, Self )
          ENDIF
+         IF ::GetParentForm( self ):Type < WND_DLG_RESOURCE 
+             SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, 0 ), ::handle )
+         ENDIF
 
       ELSEIF msg == WM_HSCROLL
          ::DoHScroll( wParam )
@@ -369,7 +386,11 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
       ELSEIF msg == WM_COMMAND
          // Super:onEvent( WM_COMMAND )
-         DlgCommand( Self, wParam, lParam )
+         IF ::GetParentForm( self ):Type < WND_DLG_RESOURCE 
+            ::GetParentForm( self ):onEvent( msg, wparam, lparam )
+         ELSE
+            DlgCommand( Self, wParam, lParam )
+         ENDIF   
 
       ELSEIF msg == WM_KEYUP
          IF wParam == 17
@@ -378,6 +399,15 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          IF wParam == 16
             ::lShiftPress := .F.
          ENDIF
+         IF wParam == VK_TAB
+           IF IsCtrlShift(.T.,.F.)
+              getskip(::oParent,::handle,, ;
+              iif( IsCtrlShift(.f., .t.), -1, 1) )
+              RETURN 0
+            ELSE
+               ::DoHScroll( iif( IsCtrlShift( .F., .T. ), SB_LINELEFT, SB_LINERIGHT ) )  
+            ENDIF  
+	       ENDIF
          IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
             oParent := ::oParent
             DO WHILE oParent != Nil .AND. ! __ObjHasMsg( oParent, "GETLIST" )
@@ -401,6 +431,11 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             ENDIF
          ENDIF
          IF wParam == VK_TAB
+            IF IsCtrlShift(.F.)
+              ::DoHScroll( iif( IsCtrlShift( .F., .T. ), SB_LINELEFT, SB_LINERIGHT ) )
+            ENDIF  
+				 /*
+         IF wParam == VK_TAB
             IF ::lCtrlPress
                //nPos := AScan( ::oParent:acontrols, { | o | o:handle == ::HANDLE } )
                IF GetKeyState( VK_SHIFT ) < 0
@@ -418,6 +453,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
                   ::DoHScroll( SB_LINERIGHT )
                ENDIF
             ENDIF
+            */
          ELSEIF wParam == 40        // Down
             IF ::lShiftPress .AND. ::aSelected != Nil
                Eval( ::bskip, Self, 1 )
@@ -567,19 +603,6 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 ENDIF
 
 RETURN - 1
-
-//----------------------------------------------------//
-METHOD Init CLASS HBrowse
-
-   IF ! ::lInit
-      Super:Init()
-      ::nHolder := 1
-      SetWindowObject( ::handle, Self )
-      VScrollPos( Self, 0, .f. )
-
-   ENDIF
-
-   RETURN Nil
 
 
 //----------------------------------------------------//

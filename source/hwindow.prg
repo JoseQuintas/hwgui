@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.71 2009-02-19 12:05:45 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.72 2009-02-21 18:53:43 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -648,7 +648,7 @@ STATIC FUNCTION onMove( oWnd )
 STATIC FUNCTION onEraseBk( oWnd, wParam )
    LOCAL aCoors
 
-   IF oWnd:oBmp != Nil
+   IF oWnd:oBmp != Nil .AND. oWnd:type != WND_MDI
       IF oWnd:lBmpCenter
          CenterBitmap( wParam, oWnd:handle, oWnd:oBmp:handle, , oWnd:nBmpClr )
       ELSE

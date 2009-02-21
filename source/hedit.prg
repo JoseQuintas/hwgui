@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.128 2009-02-16 21:09:34 lfbasso Exp $
+ *$Id: hedit.prg,v 1.129 2009-02-21 18:53:43 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -1193,7 +1193,16 @@ STATIC FUNCTION NextFocusTab( oParent, hCtrl, nSkip )
          ELSE
              nexthandle := GetNextDlgTabItem ( GetActiveWindow(), hctrl, (nSkip < 0) )
          ENDIF
-         PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nexthandle , 1 )
+         IF AScan( oParent:oparent:acontrols, { | o | o:handle == hCtrl } ) = 0
+             nexthandle :=  oParent:handle              
+             i := AScan( oParent:oparent:acontrols, { | o | o:handle == oParent:handle } ) + nSkip
+             IF i > 0 .AND. i <= LEN( oParent:oParent:acontrols )         
+                nexthandle := oParent:oParent:acontrols[ ASCAN( oParent:oParent:acontrols,;
+							     {|o| Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_TABSTOP ) != 0 }, i)]:handle 
+						ENDIF     
+         ELSE 
+            PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nexthandle , 1 )              
+         ENDIF
       ENDIF
    ENDIF
    RETURN nextHandle

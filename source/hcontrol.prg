@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.119 2009-02-17 16:37:05 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.120 2009-02-21 18:53:43 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -656,13 +656,14 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       ::bGetFocus  := bGFocus
       ::oParent:AddEvent( BN_SETFOCUS, Self, { || ::onGetFocus() } )
    ENDIF
-
+	 /*
    IF ::oParent:oParent != Nil .and. ::oParent:ClassName == "HTAB"
       //::oParent:AddEvent( BN_KILLFOCUS, Self, { || ::Notify( WM_KEYDOWN ) } )
       IF bClick != NIL
          ::oParent:oParent:AddEvent( 0, Self, { || ::onClick() } )
       ENDIF
    ENDIF
+   */
    IF bClick != NIL
       ::oParent:AddEvent( 0, Self, { || ::onClick() } )
    ENDIF
@@ -733,7 +734,7 @@ METHOD onevent( msg, wParam, lParam ) CLASS HButton
           DrawFocusRect( dc, itemRect )
        ENDIF
    ELSEIF msg = WM_KEYDOWN
-      IF  ( wParam == VK_RETURN ) 
+      IF  ( wParam == VK_RETURN   .OR. wParam == VK_SPACE ) 
          SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
          RETURN 0 
       ENDIF  
@@ -745,10 +746,11 @@ METHOD onevent( msg, wParam, lParam ) CLASS HButton
          ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN
             GetSkip( ::oparent, ::handle, , 1 )
          ENDIF   
+         RETURN 0
       ENDIF
       
    ELSEIF msg == WM_KEYUP
-      IF ( ( wParam == VK_RETURN ) ) // ( wParam == VK_SPACE ) .or.  )
+      IF ( ( wParam == VK_RETURN )  .OR. ( wParam == VK_SPACE ) )
          SendMessage( ::handle, WM_LBUTTONUP, 0, MAKELPARAM( 1, 1 ) )
          RETURN 0
       ENDIF
@@ -1035,11 +1037,14 @@ ELSEIF msg == WM_KEYDOWN
       IF wParam == VK_LEFT .OR. wParam == VK_UP
          GetSkip( ::oParent, ::handle, , - 1 )
          RETURN 0
-      ENDIF
-      IF wParam == VK_RIGHT .OR. wParam == VK_DOWN
+      ELSEIF wParam == VK_RIGHT .OR. wParam == VK_DOWN
          GetSkip( ::oParent, ::handle, , 1 )
          RETURN 0
-      ENDIF
+      ELSEIF  wParam = VK_TAB 
+         GetSkip( ::oparent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1)  )
+	   	ENDIF
+      ProcKeyList( Self, wParam )
+      
    ELSEIF msg == WM_SYSKEYUP
       IF ( pos := At( "&", ::title ) ) > 0 .and. wParam == Asc( Upper( SubStr( ::title, ++ pos, 1 ) ) )
          IF ValType( ::bClick ) == "B" .or. ::id < 3

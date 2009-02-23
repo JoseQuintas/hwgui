@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.58 2009-02-23 12:15:09 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.59 2009-02-23 12:52:12 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -42,7 +42,7 @@ CLASS VAR winclass   INIT "COMBOBOX"
    DATA  bChangeSel
    DATA  bChangeInt
    DATA  bValid
-
+																				      
    DATA  lText    INIT .F.
    DATA  lEdit    INIT .F.
    DATA  SelLeght INIT 0
@@ -52,6 +52,7 @@ CLASS VAR winclass   INIT "COMBOBOX"
 	 DATA  nhItem
 	 DATA  ncWidth
 	 DATA  nHeightBox
+   DATA  lResource INIT .F.
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   aItems,oFont,bInit,bSize,bPaint,bChange,ctooltip,lEdit,lText,bGFocus,tcolor,;
@@ -152,7 +153,7 @@ METHOD Activate CLASS HComboBox
 METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
                bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay ) CLASS HComboBox
 
-   ::nHeightBox := INT( 22 * 0.75 ) //	Meets A 22'S EDITBOX
+   //::nHeightBox := INT( 22 * 0.75 ) //	Meets A 22'S EDITBOX
    IF !EMPTY( nDisplay ) .AND. nDisplay  > 0
       ::Style := Hwg_BitOr( ::Style, CBS_NOINTEGRALHEIGHT ) //+ WS_VSCROLL )
       // CBS_NOINTEGRALHEIGHT. CRIATE VERTICAL SCROOL BAR
@@ -160,7 +161,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
 	    nDisplay := 6
 	 ENDIF   
    //::nHeight := ( ::nHeight + 16.250 ) *  nDisplay  
-   
+   ::lResource := .T.
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, bSize, bPaint, ctooltip )
       
    ::nDisplay := nDisplay
@@ -236,21 +237,25 @@ METHOD Init() CLASS HComboBox
          NewLongComboWidth = ( LongComboWidth - 2 ) * avgwidth
          SendMessage( ::handle, CB_SETDROPPEDWIDTH, NewLongComboWidth + 50, 0 )
       ENDIF
-      // HEIGHT Items
-      IF !EMPTY( ::nhItem )
-         sendmessage( ::handle, CB_SETITEMHEIGHT ,0, ::nhItem ) 
-      ELSE
-  			 ::nhItem := sendmessage( ::handle, CB_GETITEMHEIGHT , 0, 0 ) + 0.250
-      ENDIF
-			//  WIDTH  Items
-			IF !EMPTY( ::ncWidth ) 
-			   sendmessage( ::handle, CB_SETDROPPEDWIDTH, ::ncWidth, 0)
-			ENDIF   
-		  ::nHeight := INT( ::nHeightBox / 0.75 + ( ::nhItem * ::nDisplay ) ) 
+      IF ! ::lResource
+         // HEIGHT Items
+         IF !EMPTY( ::nhItem )
+            sendmessage( ::handle, CB_SETITEMHEIGHT ,0, ::nhItem ) 
+         ELSE
+  			    ::nhItem := sendmessage( ::handle, CB_GETITEMHEIGHT , 0, 0 ) + 0.250
+         ENDIF
+			   //  WIDTH  Items
+			   IF !EMPTY( ::ncWidth ) 
+			      sendmessage( ::handle, CB_SETDROPPEDWIDTH, ::ncWidth, 0)
+			   ENDIF   
+		     ::nHeight := INT( ::nHeightBox / 0.75 + ( ::nhItem * ::nDisplay ) ) 
+		  ENDIF
    ENDIF
-   MoveWindow( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )      
-   // HEIGHT COMBOBOX
-   SendMessage( ::handle, CB_SETITEMHEIGHT , -1, ::nHeightBox )  
+   IF ! ::lResource
+      MoveWindow( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )      
+      // HEIGHT COMBOBOX
+      SendMessage( ::handle, CB_SETITEMHEIGHT , -1, ::nHeightBox )  
+   ENDIF
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HComboBox

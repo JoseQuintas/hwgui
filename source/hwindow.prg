@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.72 2009-02-21 18:53:43 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.73 2009-02-23 04:18:32 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -368,8 +368,10 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate ) CLASS HMDIC
    ::handle := Hwg_CreateMdiChildWindow( Self, IIF( lMinimized, WS_MINIMIZE, ;
 	    IIF( lMaximized, WS_MAXIMIZE, 0 ) ) + IIF( !lShow, - WS_VISIBLE, WS_VISIBLE  ) )
 	 
-	 /*  in ONMDICREATE   
+	 // is necessary for set zorder control 
    InitControls( Self )
+   /*  in ONMDICREATE   
+   /*
    InitObjects( Self,.T. )
    IF ::bInit != Nil
       Eval( ::bInit,Self )

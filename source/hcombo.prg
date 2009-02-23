@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.55 2009-02-21 18:53:43 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.56 2009-02-23 04:18:32 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -152,14 +152,14 @@ METHOD Activate CLASS HComboBox
 METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
                bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay ) CLASS HComboBox
 
-   ::nHeightBox := INT( nHeight * 0.75 ) //	Meets A 22'S EDITBOX
+   ::nHeightBox := INT( ::nHeight * 0.75 ) //	Meets A 22'S EDITBOX
    IF !EMPTY( nDisplay ) .AND. nDisplay  > 0
-      nStyle := Hwg_BitOr( nStyle, CBS_NOINTEGRALHEIGHT ) //+ WS_VSCROLL )
+      ::Style := Hwg_BitOr( ::Style, CBS_NOINTEGRALHEIGHT ) //+ WS_VSCROLL )
       // CBS_NOINTEGRALHEIGHT. CRIATE VERTICAL SCROOL BAR
    ELSE
 	    nDisplay := 6
 	 ENDIF   
-   nHeight := ( nHeight + 16.250 ) *  nDisplay  
+   nHeight := ( ::nHeight + 16.250 ) *  nDisplay  
    
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, bSize, bPaint, ctooltip )
       

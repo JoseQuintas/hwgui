@@ -1,5 +1,5 @@
 /*
- * $Id: htimer.prg,v 1.11 2008-12-17 05:42:19 lfbasso Exp $
+ * $Id: htimer.prg,v 1.12 2009-02-23 04:18:32 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTimer class
@@ -45,7 +45,7 @@ ENDCLASS
 
 METHOD New( oParent, nId, value, bAction ) CLASS HTimer
 
-   ::oParent := IIf( oParent == Nil, HWindow():GetMain(), oParent )
+   ::oParent := Iif( oParent==Nil, HWindow():GetMain():oDefaultParent, oParent )
    IF nId == nil
       nId := TIMER_FIRST_ID
       DO WHILE AScan( ::aTimers, { | o | o:id == nId } ) !=  0
@@ -92,7 +92,7 @@ FUNCTION TimerProc( hWnd, idTimer, Time )
    HB_SYMBOL_UNUSED( hWnd )
 
    IF i != 0 .and. HTimer():aTimers[ i ]:value > 0 .AND. HTimer():aTimers[ i ]:bAction != Nil
-      Eval( HTimer():aTimers[ i ]:bAction, Time )
+      Eval( HTimer():aTimers[ i ]:bAction, HTimer():aTimers[i], time )
    ENDIF
 
    RETURN Nil

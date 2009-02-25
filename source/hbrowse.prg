@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.151 2009-02-21 18:53:43 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.152 2009-02-25 19:33:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -347,12 +347,17 @@ METHOD SetRowHeight( nPixels ) CLASS HBrowse
 //----------------------------------------------------//
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
    LOCAL oParent, cKeyb, nCtrl, nPos, lBEof
-   LOCAL nRecStart, nRecStop
+   LOCAL nRecStart, nRecStop, nRet
 
    IF ::active .AND. ! Empty( ::aColumns )
-
+   
       IF ::bOther != Nil
-         Eval( ::bOther, Self, msg, wParam, lParam )
+         IF Valtype( nRet := Eval( ::bOther,Self,msg,wParam,lParam ) ) != "N"
+            nRet := IIF( VALTYPE( nRet ) = "L" .AND. ! nRet, 0, -1 )
+         ENDIF   
+         IF nRet >= 0
+				    RETURN -1   
+         ENDIF   
       ENDIF
 
       IF msg == WM_PAINT

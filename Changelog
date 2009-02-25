@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1034 2009-02-23 13:26:59 lfbasso Exp $
+ * $Id: Changelog,v 1.1035 2009-02-25 19:33:16 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-02-25 16:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! bOther in ONEVENT return DEFAULT or user Return
+  * source:hcombo.prg
+    ! fix in nhItem to COMBOBOXEX
 
 2009-02-23 10:20 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source:hcombo.prg

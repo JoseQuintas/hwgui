@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.60 2009-02-23 13:26:59 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.61 2009-02-25 19:33:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -573,7 +573,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
 
    ::Super:Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
                      bChange, ctooltip, bGFocus )
-
+   ::lResource := .T.
    ::acheck := acheck
 
    RETURN Self

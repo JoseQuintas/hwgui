@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.18 2009-02-15 20:12:30 lfbasso Exp $
+ * $Id: hradio.prg,v 1.19 2009-02-27 12:25:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -227,6 +227,11 @@ METHOD onevent( msg, wParam, lParam ) CLASS HRadioButton
 	 LOCAL oParent := ::oParent
 	 LOCAL dc, itemRect
 	  
+   IF ::bOther != Nil                                         
+      IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
+         RETURN 0
+      ENDIF
+   ENDIF
    IF msg = WM_SETFOCUS 
       IF  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
          dc := GETdc( ::handle )

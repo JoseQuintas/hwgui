@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.27 2009-02-15 20:12:30 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.28 2009-02-27 12:25:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -123,6 +123,11 @@ METHOD onevent( msg, wParam, lParam ) CLASS HCheckButton
 	 LOCAL oParent := ::oParent
 	 LOCAL itemRect, dc
 	 
+   IF ::bOther != Nil                                         
+      IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
+         RETURN 0
+      ENDIF
+   ENDIF
    IF (msg = WM_SETFOCUS .OR. msg = WM_ACTIVATE)  
       IF  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
          dc := getDC( ::Handle )

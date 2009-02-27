@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.18 2009-02-15 20:12:30 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.19 2009-02-27 12:25:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -101,6 +101,11 @@ METHOD Init()  CLASS HUpDown
 
 METHOD OnEvent( msg, wParam, lParam ) CLASS HUpDown
 
+   IF ::bOther != Nil                                         
+      IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
+         RETURN 0
+      ENDIF
+   ENDIF
    IF msg == WM_CHAR
       IF wParam = VK_TAB 
           GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )

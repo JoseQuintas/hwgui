@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.20 2009-02-15 20:12:30 lfbasso Exp $
+ * $Id: hlistbox.prg,v 1.21 2009-02-27 12:25:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -29,6 +29,7 @@ CLASS VAR winclass   INIT "LISTBOX"
    METHOD Redefine( oWnd, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bDraw, bChange, cTooltip, bKeydown, bOther )
    METHOD Init( aListbox, nCurrent )
    METHOD Refresh()
+   METHOD Requery() 
    METHOD Setitem( nPos )
    METHOD AddItems( p )
    METHOD DeleteItem( nPos )
@@ -166,6 +167,18 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HListBox
       RETURN DLGC_WANTALLKEYS  //DLGC_WANTARROWS + DLGC_WANTTAB + DLGC_WANTCHARS           
    ENDIF
    RETURN -1
+
+METHOD Requery() CLASS HListBox
+   Local i
+   
+   SendMessage( ::handle, LB_RESETCONTENT, 0, 0)
+   FOR i := 1 TO Len( ::aItems )
+      ListboxAddString( ::handle, ::aItems[i] )
+   NEXT
+   ListboxSetString( ::handle, ::value )
+   ::refresh()
+   Return Nil
+
 
 METHOD Refresh() CLASS HListBox
    LOCAL vari

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.120 2009-02-21 18:53:43 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.121 2009-02-27 12:25:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -52,12 +52,9 @@ CLASS HControl INHERIT HCustomWindow
    DATA   lnoValid        INIT .F.
    DATA   nGetSkip        INIT 0
    DATA   anchor          INIT 0
-   //DATA   xName           HIDDEN
-   //ACCESS Name            INLINE ::xName
+   DATA   xName           HIDDEN
+   ACCESS Name            INLINE ::xName
    ASSIGN Name( cName )   INLINE ::AddName( cName ) 
-   //ASSIGN Name( cName )   INLINE ::xName := cName, ;
-   //                                         __objAddData( ::oParent, cName ), ;
-   //                                         ::oParent: & ( cName ) := Self
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
@@ -122,7 +119,7 @@ METHOD NewId() CLASS HControl
 METHOD AddName( cName ) CLASS HControl
 
    IF !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. ! ":" $ cName .AND. ! "[" $ cName
-      //::xName := cName
+      ::xName := cName
 			__objAddData( ::oParent, cName )
 	    ::oParent: & ( cName ) := Self
    ENDIF	    
@@ -1521,9 +1518,9 @@ METHOD Activate CLASS HGroup
 METHOD Init CLASS HGroup
 
    IF  ! ::lInit
-      SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
       Super:Init()
    ENDIF   
+   SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
    RETURN NIL
 
    

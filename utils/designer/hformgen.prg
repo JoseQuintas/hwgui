@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.46 2008-09-10 18:22:34 mlacecilia Exp $
+ * $Id: hformgen.prg,v 1.47 2009-02-27 12:25:17 lfbasso Exp $
  *
  * Designer
  * HFormGen class
@@ -475,7 +475,7 @@ Local i
    INIT DIALOG oDlg TITLE Iif( lOpen,"Open form","Save form" ) ;
        AT 50, 100 SIZE 310,250 FONT oDesigner:oMainWnd:oFont
 
-   @ 10,20 GET COMBOBOX nType ITEMS aCombo SIZE 140, 150 ;
+   @ 10,20 GET COMBOBOX nType ITEMS aCombo SIZE 140, 24 ;
        ON CHANGE {||Iif(lOpen,.F.,(fname:=CutExten(fname)+Iif(!Empty(fname),"."+aFormats[af[nType],2],""),oEdit1:Refresh()))}
 
    @ 10,70 GET oEdit1 VAR fname  ;

@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.61 2009-02-25 19:33:17 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.62 2009-02-27 12:25:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -261,6 +261,11 @@ METHOD Init() CLASS HComboBox
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HComboBox
 
+   IF ::bOther != Nil                                         
+      IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
+         RETURN 0
+      ENDIF
+   ENDIF
    IF msg == WM_CHAR .AND. ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE .OR. ;
        ! ::GetParentForm( Self ):lModal )
       IF wParam = VK_TAB

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.152 2009-02-25 19:33:17 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.153 2009-02-27 12:25:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -2096,8 +2096,8 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
             @ 0, 0 GET COMBOBOX oCombo VAR nChoic ;
                ITEMS oColumn:aList            ;
-               SIZE nWidth, ::height * 5      ;
-               FONT oComboFont
+               SIZE nWidth, ::height + 2      ;
+               FONT oComboFont         
 
             IF oColumn:bValid != NIL
                oCombo:bValid := oColumn:bValid

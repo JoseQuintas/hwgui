@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1035 2009-02-25 19:33:16 lfbasso Exp $
+ * $Id: Changelog,v 1.1036 2009-02-27 12:25:17 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,32 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-02-2 09:20 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! fix in height COMBOBOX
+  * source\hcheck.prg
+    + add suport event bother in ONEVENT
+  * source\hcombo.prg
+    + add suport event bother in ONEVENT
+  * source\hcontrol.prg
+    + add property name in hcontrol
+    !fix in zorder in hgroup
+  * source\hdatepic.prg
+    + add suport event bother in ONEVENT
+  * source\hlistbox.prg
+    + add METHOD Requery to updated LISTBOX
+    + add suport event bother in ONEVENT
+  * source\hradio.prg
+    + add suport event bother in ONEVENT
+  * source\hriched.prg
+    ! minor fix
+  * source\hupdown.prg
+    + add suport event bother in ONEVENT
+  * utils\designer\hformgen.prg
+    ! fix in height COMBOBOX
+  * utils\designer\inspect.prg
+    ! fix in height COMBOBOX
+    
 2009-02-25 16:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
     ! bOther in ONEVENT return DEFAULT or user Return

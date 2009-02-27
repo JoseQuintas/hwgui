@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.19 2008-09-10 18:22:34 mlacecilia Exp $
+ * $Id: inspect.prg,v 1.20 2009-02-27 12:25:17 lfbasso Exp $
  *
  * Designer
  * Object Inspector
@@ -214,7 +214,7 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
             ITEMS aItems                   ;
             INIT nChoic                    ;
             OF oBrw1                       ;
-            SIZE nWidth, ::height*8        ;
+            SIZE nWidth, ::height + 6        ;
             FONT ::oFont                   ;
             STYLE WS_VSCROLL
 
@@ -336,9 +336,9 @@ Memvar oDesigner
       ON EXIT {||oDesigner:oDlgInsp:=Nil,CheckMenuItem(oDesigner:oMainWnd:handle,1010,.F.),.T.} ;
       ON OTHER MESSAGES {|o,m,wp,lp|MessagesOthers(o,m,wp,lp)}
 
-   @ 0,0 COMBOBOX oCombo ITEMS {} SIZE 220,150 ;
+   @ 0,0 COMBOBOX oCombo ITEMS {} SIZE 220,22 ;
           STYLE WS_VSCROLL                     ;
-          ON SIZE {|o,x|MoveWindow(o:handle,0,0,x,150)} ;
+          ON SIZE {|o,x|MoveWindow(o:handle,0,0,x,250)} ;
           ON CHANGE {||ComboOnChg()}
 
    @ 0,28 TAB oTab ITEMS {} SIZE 220,250 ;

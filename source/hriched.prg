@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.14 2009-02-15 20:12:30 lfbasso Exp $
+ * $Id: hriched.prg,v 1.15 2009-02-27 12:25:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -83,8 +83,10 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
       SendMessage( ::handle,EM_SETSEL,0,0) //Loword(npos),loword(npos))
    ENDIF
    
-   IF msg == WM_CHAR .AND. !IsCtrlShift( .T. )
-      ::lChanged := .T.
+   IF msg == WM_CHAR
+	    IF !IsCtrlShift( .T., .F.)
+         ::lChanged := .T.
+      ENDIF   
    ELSEIF msg == WM_KEYDOWN .AND. wParam = 46  //Del
       ::lChanged := .T.
    ELSEIF ::bOther != Nil

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1037 2009-02-27 21:22:51 lfbasso Exp $
+ * $Id: Changelog,v 1.1038 2009-02-28 10:56:51 marcosgambeta Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-02-28 07:50 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
+  * gtk\htool.prg
+  * gtk\misc.c
+    Fixed to compile with Harbour. Please, don't add code that compile only
+    with xHarbour. Harbour users want to use the library too. This is a old
+    problem and someone don't learned the lesson.
 
 2009-02-2 18:20 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source:hedit.prg    
@@ -59,21 +66,21 @@
     * fix in REDEFINE COMBOBOX
     + add new clause in MDICHILD - OF PARENT set the parent for use in DESIGNER IN the preview mode
   * source:hbrowse.prg
-    ! fix in CTRL+TAB and SHIFT+CTRL+TAB 
+    ! fix in CTRL+TAB and SHIFT+CTRL+TAB
     ! minor fix
   * source:hcombo.prg
     ! fix em REDEFINE
-    ! fixed several problems in comboboxex 
+    ! fixed several problems in comboboxex
   * source:hcontrol.prg
     ! fix in key TAB in BUTTON
-  * source:hedit.prg    
+  * source:hedit.prg
     ! fix in NextFocusTab for MDICHILD form parent
   * source:htab.prg
     !fix in lost focus in MDICHILD
   * source\hwindow.prg
     + add METHOD SetParent
     ! minor fix in onEraseBk
-    
+
 2009-02-21 05:56 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
   - samples\combobox\tstcombo.prg
   + samples\combobox\combobox.prg

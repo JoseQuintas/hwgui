@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.8 2006-08-03 11:55:53 alkresin Exp $
+ * $Id: misc.c,v 1.9 2009-02-28 10:56:52 marcosgambeta Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Miscellaneous functions
@@ -19,7 +19,11 @@
 
 void writelog( char* s )
 {
+#ifdef __XHARBOUR__
    FHANDLE handle;
+#else
+   HB_FHANDLE handle;
+#endif
 
    if( hb_fsFile( (unsigned char *) "ac.log" ) )
       handle = hb_fsOpen( (unsigned char *) "ac.log", FO_WRITE );

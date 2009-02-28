@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.2 2008-10-20 15:11:50 mlacecilia Exp $
+ * $Id: htool.prg,v 1.3 2009-02-28 10:56:52 marcosgambeta Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -42,8 +42,8 @@ CLASS HToolBar INHERIT HControl
    METHOD DisableAllButtons()
    METHOD EnableButtons(n)
    METHOD DisableButtons(n)
-   
-   
+
+
 
 ENDCLASS
 
@@ -99,25 +99,23 @@ Local aItem
 //            NEXT
 //
 //         ENDIF
-        if valtype( ::aItem[ n, 1 ] ) == "N"
-           IF !empty( ::aItem[ n, 1 ] )
-              AAdd( aButton, ::aItem[ n , 1 ])
-           ENDIF
-	elseif  valtype( ::aItem[ n, 1 ] ) == "C"
-	   if ".ico" in lower(::aItem[ n, 1 ])
-	      oImage:=hIcon():AddFile( ::aItem[ n, 1 ] )
-	   else      
-   	      oImage:=hBitmap():AddFile( ::aItem[ n, 1 ] )
-	   endif      
-	   if valtype(oImage) =="O"
- 	      aadd(aButton,Oimage:handle)
-	      ::aItem[ n, 1 ] := Oimage:handle
-	   endif
-	   
-	
-	ENDIF   
+         if valtype( ::aItem[ n, 1 ] ) == "N"
+            IF !empty( ::aItem[ n, 1 ] )
+               AAdd( aButton, ::aItem[ n , 1 ])
+            ENDIF
+         elseif  valtype( ::aItem[ n, 1 ] ) == "C"
+            if ".ico" $ lower(::aItem[ n, 1 ]) //if ".ico" in lower(::aItem[ n, 1 ])
+               oImage:=hIcon():AddFile( ::aItem[ n, 1 ] )
+            else
+               oImage:=hBitmap():AddFile( ::aItem[ n, 1 ] )
+            endif
+            if valtype(oImage) =="O"
+               aadd(aButton,Oimage:handle)
+               ::aItem[ n, 1 ] := Oimage:handle
+            endif
+         ENDIF
 
-      NEXT
+      NEXT n
 
 /*      IF Len(aButton ) >0
 
@@ -163,8 +161,8 @@ Local aItem
             elseif aitem[4] == TBSTYLE_SEP
                aItem[11] := CreateToolBarButton(::handle,,,.t.)
                aItem[2] := hb_enumindex()
-	    endif   
-            next
+            endif
+         next
       endif
 
    ENDIF
@@ -225,30 +223,30 @@ Local nPos
 Return  NIL
 
 METHOD REFRESH() class htoolbar
-if ::lInit
-::lInit := .f.
-endif
-::init()
+   if ::lInit
+      ::lInit := .f.
+   endif
+   ::init()
 return nil
 
 METHOD EnableAllButtons() class htoolbar
    Local xItem
    For Each xItem in ::aItem
       EnableWindow( xItem[ 11 ], .T. )
-   Next        
+   Next
 RETURN Self
 
 METHOD DisableAllButtons() class htoolbar
    Local xItem
    For Each xItem in ::aItem
       EnableWindow( xItem[ 11 ], .F. )
-   Next           
+   Next
 RETURN Self
-   
+
 METHOD EnableButtons(n) class htoolbar
    EnableWindow( ::aItem[n, 11 ], .T. )
 RETURN Self
 
 METHOD DisableButtons(n) class htoolbar
-   EnableWindow( ::aItem[n, 11 ], .T. )   
+   EnableWindow( ::aItem[n, 11 ], .T. )
 RETURN Self

@@ -2,11 +2,11 @@
 
 PROCEDURE Main ()
 
-   LOCAL oDlg, oPanel
+   LOCAL oWnd, oPanel
    LOCAL oBut1, oBut2, oBut3
    LOCAL oCtrl
 
-   INIT WINDOW oDlg MAIN ;
+   INIT WINDOW oWnd MAIN ;
         TITLE "Test animation" ;
         AT 0, 0 ;
         SIZE 300, 430
@@ -39,6 +39,6 @@ PROCEDURE Main ()
 
    @ 43, 360 SAY "User driven play from AVI file" of oPanel SIZE 250, 20 TRANSPARENT
 
-   oDlg:activate()
+   ACTIVATE WINDOW oWnd
 
 Return

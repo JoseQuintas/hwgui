@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1040 2009-03-02 07:36:44 marcosgambeta Exp $
+ * $Id: Changelog,v 1.1041 2009-03-02 07:40:00 marcosgambeta Exp $
  */
 
 /* Use this format for the entry headers:
@@ -9,15 +9,15 @@
 */
 
 2009-03-02 04:35 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
-  * samples\animation.prg
+  * samples\animation\animation.prg
     Small changes: oDlg -> oWnd
                    oDlg:activate() -> ACTIVATE WINDOW oWnd
 
 2009-03-02 04:04 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
-  - samples\tstAnimation.prg
-  - samples\tstAnimation.rc
-  + samples\animation.prg
-  + samples\animation.rc
+  - samples\animation\tstAnimation.prg
+  - samples\animation\tstAnimation.rc
+  + samples\animation\animation.prg
+  + samples\animation\animation.rc
     Sample updated. Fixed warning when animation.rc is compiled with GNU windres
     (MinGW tool).
 

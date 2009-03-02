@@ -1,4 +1,4 @@
-# $Id: makefile.gcc,v 1.26 2008-10-16 09:36:52 mlacecilia Exp $
+# $Id: makefile.gcc,v 1.27 2009-03-02 09:30:36 marcosgambeta Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -20,36 +20,28 @@ all: \
    $(LIB_DIR)/libhwg_qhtm.a
 
 $(LIB_DIR)/libhwgui.a : \
-   $(OBJ_DIR)/commond.o \
    $(OBJ_DIR)/animat.o \
+   $(OBJ_DIR)/barcode.o \
+   $(OBJ_DIR)/c_ipaddr.o \
+   $(OBJ_DIR)/commond.o \
    $(OBJ_DIR)/control.o \
    $(OBJ_DIR)/cxshade.o \
    $(OBJ_DIR)/dialog.o \
    $(OBJ_DIR)/draw.o \
    $(OBJ_DIR)/drawtext.o \
-   $(OBJ_DIR)/freeimg.o \
-   $(OBJ_DIR)/grid.o \
-   $(OBJ_DIR)/media_c.o \
-   $(OBJ_DIR)/menu_c.o \
-   $(OBJ_DIR)/message.o \
-   $(OBJ_DIR)/misc.o \
-   $(OBJ_DIR)/nice.o \
-   $(OBJ_DIR)/resource.o \
-   $(OBJ_DIR)/richedit.o \
-   $(OBJ_DIR)/shellapi.o \
-   $(OBJ_DIR)/theme.o \
-   $(OBJ_DIR)/window.o \
-   $(OBJ_DIR)/wprint.o \
    $(OBJ_DIR)/drawwidg.o \
    $(OBJ_DIR)/errorsys.o \
+   $(OBJ_DIR)/freeimg.o \
+   $(OBJ_DIR)/grid.o \
    $(OBJ_DIR)/guimain.o \
-   $(OBJ_DIR)/barcode.o \
+   $(OBJ_DIR)/hanimat.o \
    $(OBJ_DIR)/hbrowse.o \
    $(OBJ_DIR)/hcheck.o \
    $(OBJ_DIR)/hcombo.o \
    $(OBJ_DIR)/hcontrol.o \
    $(OBJ_DIR)/hcwindow.o \
    $(OBJ_DIR)/hdatepic.o \
+   $(OBJ_DIR)/hdc.o \
    $(OBJ_DIR)/hdialog.o \
    $(OBJ_DIR)/hedit.o \
    $(OBJ_DIR)/hfreeimg.o \
@@ -57,32 +49,54 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hgraph.o \
    $(OBJ_DIR)/hgrid.o \
    $(OBJ_DIR)/hgridex.o \
-   $(OBJ_DIR)/htrackbr.o \
-   $(OBJ_DIR)/hanimat.o \
+   $(OBJ_DIR)/hhyper.o \
+   $(OBJ_DIR)/hipedit.o \
+   $(OBJ_DIR)/hlistbox.o \
+   $(OBJ_DIR)/hmonthc.o \
    $(OBJ_DIR)/hnice.o \
+   $(OBJ_DIR)/nice.o \
    $(OBJ_DIR)/hownbtn.o \
+   $(OBJ_DIR)/hpager.o \
    $(OBJ_DIR)/hpanel.o \
    $(OBJ_DIR)/hprinter.o \
    $(OBJ_DIR)/hprogres.o \
    $(OBJ_DIR)/hradio.o \
+   $(OBJ_DIR)/hrebar.o \
+   $(OBJ_DIR)/hrect.o \
    $(OBJ_DIR)/hriched.o \
    $(OBJ_DIR)/hsayimg.o \
    $(OBJ_DIR)/hshbtn.o \
+   $(OBJ_DIR)/hsplash.o \
    $(OBJ_DIR)/hsplit.o \
    $(OBJ_DIR)/htab.o \
    $(OBJ_DIR)/htimer.o \
    $(OBJ_DIR)/htool.o \
+   $(OBJ_DIR)/htrackbr.o \
    $(OBJ_DIR)/htree.o \
-   $(OBJ_DIR)/hrect.o \
    $(OBJ_DIR)/hupdown.o \
    $(OBJ_DIR)/hwindow.o \
    $(OBJ_DIR)/hwinprn.o \
+   $(OBJ_DIR)/listbox.o \
+   $(OBJ_DIR)/media_c.o \
    $(OBJ_DIR)/menu.o \
-   $(OBJ_DIR)/video.o \
+   $(OBJ_DIR)/menu_c.o \
+   $(OBJ_DIR)/message.o \
+   $(OBJ_DIR)/misc.o \
+   $(OBJ_DIR)/nice.o \
+   $(OBJ_DIR)/pager.o \
+   $(OBJ_DIR)/printdos.o \
+   $(OBJ_DIR)/prnalone.o \
+   $(OBJ_DIR)/repexec.o \
+   $(OBJ_DIR)/resource.o \
+   $(OBJ_DIR)/richedit.o \
+   $(OBJ_DIR)/richtext.o \
+   $(OBJ_DIR)/shellapi.o \
+   $(OBJ_DIR)/theme.o \
    $(OBJ_DIR)/tmci.o \
-   $(OBJ_DIR)/hhyper.o \
-   $(OBJ_DIR)/hdc.o \
-   $(OBJ_DIR)/repexec.o
+   $(OBJ_DIR)/video.o \
+   $(OBJ_DIR)/window.o \
+   $(OBJ_DIR)/winreg.o \
+   $(OBJ_DIR)/wprint.o
 	ar rc $@ $^
 
 $(LIB_DIR)/libprocmisc.a : \
@@ -98,7 +112,6 @@ $(LIB_DIR)/libhbxml.a : \
    $(OBJ_DIR)/xmlparse.o \
    $(OBJ_DIR)/hxmldoc.o
 	ar rc $@ $^
-
 
 $(LIB_DIR)/libhwg_qhtm.a : \
    $(OBJ_DIR)/hqhtm.o \

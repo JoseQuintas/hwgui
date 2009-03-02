@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1038 2009-02-28 10:56:51 marcosgambeta Exp $
+ * $Id: Changelog,v 1.1039 2009-03-02 07:04:51 marcosgambeta Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-03-02 04:04 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
+  - samples\tstAnimation.prg
+  - samples\tstAnimation.rc
+  + samples\animation.prg
+  + samples\animation.rc
+    Sample updated. Fixed warning when animation.rc is compiled with GNU windres
+    (MinGW tool).
 
 2009-02-28 07:50 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
   * gtk\htool.prg

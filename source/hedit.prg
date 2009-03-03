@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.130 2009-02-27 21:22:51 lfbasso Exp $
+ *$Id: hedit.prg,v 1.131 2009-03-03 04:12:28 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -63,7 +63,7 @@ CLASS VAR winclass   INIT "EDIT"
    METHOD Input( cChar, nPos ) PROTECTED
    METHOD GetApplyKey( cKey ) PROTECTED
    METHOD Valid() //PROTECTED BECAUSE IS CALL IN HDIALOG
-   METHOD When() PROTECTED
+   METHOD When() //PROTECTED
    METHOD Change() PROTECTED
    METHOD IsBadDate( cBuffer ) PROTECTED
    METHOD Untransform( cBuffer ) PROTECTED
@@ -700,7 +700,7 @@ METHOD Input( cChar, nPos ) CLASS HEdit
 
    ENDIF
 
-   IF ! Empty( ::cPicFunc )
+   IF ! Empty( ::cPicFunc )  .AND. !::cType == "N"
       cChar := Transform( cChar, ::cPicFunc )
    ENDIF
 

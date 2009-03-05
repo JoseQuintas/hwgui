@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.62 2009-02-27 12:25:17 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.63 2009-03-05 03:08:36 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -451,7 +451,11 @@ STATIC FUNCTION __When( oCtrl )
    IF oCtrl:bGetFocus != Nil
       oCtrl:oParent:lSuspendMsgsHandling := .t.
       oCtrl:lnoValid := .T.
-      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet, , oCtrl ), oCtrl )
+      IF oCtrl:bSetGet != Nil
+          res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet, , oCtrl ), oCtrl )
+      ELSE
+          res := Eval( oCtrl:bGetFocus, oCtrl:value, oCtrl )
+			ENDIF    
       oCtrl:oParent:lSuspendMsgsHandling := .f.
       oCtrl:lnoValid := ! res
       IF ! res

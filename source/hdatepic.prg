@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.22 2009-02-27 12:25:17 lfbasso Exp $
+ * $Id: hdatepic.prg,v 1.23 2009-03-06 02:56:41 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -130,10 +130,10 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HDatePicker
       ENDIF
    ENDIF
    IF msg == WM_CHAR
-      IF wParam = VK_TAB //.AND. nType < WND_DLG_RESOURCE   
+      IF wParam = VK_TAB 
         GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
         RETURN 0
-      ELSEIF wParam == VK_RETURN //.AND. nType < WND_DLG_RESOURCE   
+      ELSEIF wParam == VK_RETURN 
          GetSkip( ::oParent, ::handle, , 1 )
          RETURN 0
 		  ENDIF
@@ -141,6 +141,10 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HDatePicker
 		  IF  ProcKeyList( Self, wParam )  
 		     RETURN 0
 		  ENDIF   
+   ELSEIF  msg = WM_GETDLGCODE
+      IF wParam = VK_TAB //.AND.  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
+         GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+      ENDIF   
 	 ENDIF
   
 RETURN -1

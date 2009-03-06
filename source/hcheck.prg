@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.28 2009-02-27 12:25:17 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.29 2009-03-06 02:56:41 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -146,17 +146,21 @@ METHOD onevent( msg, wParam, lParam ) CLASS HCheckButton
       IF ProcKeyList( Self, wParam )
       ELSEIF  wParam = VK_TAB 
          GetSkip( ::oparent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1)  )
+         RETURN 0
       ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP 
          GetSkip( ::oparent, ::handle, , -1 )
+         RETURN 0
       ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN 
          GetSkip( ::oparent, ::handle, , 1 )
+         RETURN 0
       ELSEIF  ( wParam == VK_RETURN ) //  .OR. wParam == VK_SPACE ) 
          IF  ::lEnter
             ::SetValue( !::GetValue() )
            __VALID(self)
             RETURN 0 //-1
          ELSE
-				     GetSkip( ::oparent, ::handle, , 1 )   
+				    GetSkip( ::oparent, ::handle, , 1 )   
+				    RETURN 0
          ENDIF
       ENDIF  
    ELSEIF msg == WM_KEYUP

@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.19 2009-02-27 12:25:17 lfbasso Exp $
+ * $Id: hradio.prg,v 1.20 2009-03-06 02:56:41 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -251,10 +251,13 @@ METHOD onevent( msg, wParam, lParam ) CLASS HRadioButton
       IF  ProcKeyList( Self, wParam )
       ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP 
          GetSkip( ::oparent, ::handle, , -1 )
+         RETURN 0
       ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN
          GetSkip( ::oparent, ::handle, , 1 )
+         RETURN 0
       ELSEIF wParam = VK_TAB //.AND. nType < WND_DLG_RESOURCE   
          GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+         RETURN 0
       ENDIF
       IF  ( wParam == VK_RETURN ) 
          __VALID(self)
@@ -263,7 +266,9 @@ METHOD onevent( msg, wParam, lParam ) CLASS HRadioButton
    ELSEIF msg == WM_KEYUP
       
 	 ELSEIF  msg = WM_GETDLGCODE
-      IF wParam != 0
+      IF wParam = VK_TAB //.AND.  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
+         GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+      ELSEIF wParam != 0 
          RETURN ButtonGetDlgCode( lParam )
       ENDIF   
    ENDIF

@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.38 2009-02-21 18:53:43 lfbasso Exp $
+ *$Id: htab.prg,v 1.39 2009-03-06 02:56:41 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -455,7 +455,9 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
           RETURN - 1
        ENDIF
        IF (wparam == VK_DOWN .or.wparam == VK_RETURN).AND. ::nActive > 0  //
-   	      GetSkip( self, ::handle,, 1 )
+   	     GetSkip(self,::handle,,1)
+       ELSEIF wParam = VK_TAB
+         GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
        ENDIF
        IF wparam == VK_UP .AND. ::nActive > 0  // 
           KEYB_EVENT( VK_TAB, VK_SHIFT, .T. )

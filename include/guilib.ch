@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.142 2009-02-21 18:53:43 lfbasso Exp $
+ *$Id: guilib.ch,v 1.143 2009-03-09 12:11:00 marcosgambeta Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -44,7 +44,9 @@
 #define ANCHOR_VERTFIX         512 // Anchors center of control relative to top and bottom borders but remains fixed in size.
 
 #ifdef __XHARBOUR__
-#define HB_SYMBOL_UNUSED( x )    ( (x) := (x) )
+  #ifndef HB_SYMBOL_UNUSED
+     #define HB_SYMBOL_UNUSED( x )    ( (x) := (x) )
+  #endif
 #endif
 
 // Allow the definition of different classes without defining a new command

@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.20 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: drawwidg.prg,v 1.21 2009-03-09 17:59:29 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -527,8 +527,16 @@ METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
 
    RETURN Self
 
-METHOD AddFile( name ) CLASS HIcon
+METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
    LOCAL i, aIconSize
+
+
+   IF nWidth == nil
+      nWidth := 0
+   ENDIF
+   IF nHeight == nil
+      nHeight := 0
+   ENDIF
 
    #ifdef __XHARBOUR__
       FOR EACH i IN  ::aIcons
@@ -551,7 +559,8 @@ METHOD AddFile( name ) CLASS HIcon
       name := SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", "*.jpg;*.gif;*.bmp;*.ico",, "Locate " + name )
    ENDIF
 
-   ::handle := LoadImage( 0, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE + LR_LOADFROMFILE )
+   //::handle := LoadImage( 0, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE + LR_LOADFROMFILE )
+   ::handle := LoadImage( 0, name, IMAGE_ICON, nWidth, nHeight, LR_DEFAULTSIZE + LR_LOADFROMFILE + LR_SHARED )   
    ::name := name
    aIconSize := GetIconSize( ::handle )
    ::nWidth  := aIconSize[ 1 ]

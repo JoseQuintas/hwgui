@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.72 2009-02-15 04:53:18 lfbasso Exp $
+ *$Id: windows.ch,v 1.73 2009-03-09 17:59:29 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -410,6 +410,7 @@
 #define SB_SETMINHEIGHT         (WM_USER+8)
 #define SB_SIMPLE               (WM_USER+9)
 #define SB_GETRECT              (WM_USER+10)
+#define SB_SETICON              (WM_USER+15)
 
 /*
  * Button Control Styles

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.121 2009-02-27 12:25:17 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.122 2009-03-09 17:59:29 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -297,7 +297,8 @@ CLASS VAR winclass   INIT "msctls_statusbar32"
                     bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, aParts )
    METHOD SetTextPanel( nPart, cText, lRedraw )
    METHOD GetTextPanel( nPart )
-
+   METHOD SetIconPanel(nPart, cIcon, nWidth, nHeight )
+   
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint ) CLASS HStatus
@@ -367,6 +368,22 @@ METHOD SetTextPanel( nPart, cText, lRedraw ) CLASS HStatus
 
    RETURN Nil
 
+
+METHOD SetIconPanel(nPart, cIcon, nWidth, nHeight ) CLASS HStatus
+   Local oIcon
+   
+   DEFAULT nWidth := 0
+   DEFAULT nHeight := 0
+   DEFAULT cIcon := ""
+   
+   IF At( ".", cIcon ) = 0
+      oIcon := HIcon():addResource( cIcon, nWidth, nHeight )
+   ELSE
+      oIcon := HIcon():addFile( cIcon, nWidth, nHeight )
+	 ENDIF   
+   SendMessage( ::handle, SB_SETICON, nPart - 1, oIcon:handle )
+   
+   RETURN Nil
 
 //- HStatic
 

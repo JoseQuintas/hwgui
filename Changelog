@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1047 2009-03-09 12:11:00 marcosgambeta Exp $
+ * $Id: Changelog,v 1.1048 2009-03-09 17:59:29 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-03-09 14:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\windows.ch
+    + add new constant SB_SETICON
+  * source\drawwidg.prg
+    + add new parameters in hicon class method addfile - nwidth, nheight
+  * source\hcontrol.prg
+    + add new method in CLASS HSTATUS -    METHOD SetIconPanel(nPart, cicon, nWidth, nHeight )
 
 2009-03-09 09:08 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
   * include\guilib.ch

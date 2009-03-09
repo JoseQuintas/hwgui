@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.86 2009-01-07 15:30:25 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.87 2009-03-09 21:11:21 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -450,14 +450,16 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       Eval( oDlg:aEvents[ i, 3 ], oDlg, iParLow )
 
    ELSEIF iParHigh == 0 .AND. ! oDlg:lSuspendMsgsHandling .AND. ( ;
-                                                                  ( iParLow == IDOK .AND. oDlg:FindControl( IDOK ) != nil ) .OR. ;
-                                                                  iParLow == IDCANCEL )
+        ( iParLow == IDOK .AND. oDlg:FindControl( IDOK ) != nil ) .OR. ;
+          iParLow == IDCANCEL )
       IF iParLow == IDOK
          oDlg:lResult := .T.
       ENDIF
       //Replaced by Sandro
       IF oDlg:lExitOnEsc .OR. ! nEsc
          EndDialog( oDlg:handle )
+      ELSEIF ! oDlg:lExitOnEsc
+			   oDlg:nLastKey := 0
       ENDIF
    ELSEIF __ObjHasMsg( oDlg, "MENU" ) .AND. ValType( oDlg:menu ) == "A" .AND. ;
       ( aMenu := Hwg_FindMenuItem( oDlg:menu, iParLow, @i ) ) != Nil

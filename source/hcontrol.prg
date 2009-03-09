@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.122 2009-03-09 17:59:29 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.123 2009-03-09 21:11:21 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -372,8 +372,8 @@ METHOD SetTextPanel( nPart, cText, lRedraw ) CLASS HStatus
 METHOD SetIconPanel(nPart, cIcon, nWidth, nHeight ) CLASS HStatus
    Local oIcon
    
-   DEFAULT nWidth := 0
-   DEFAULT nHeight := 0
+   DEFAULT nWidth := 16
+   DEFAULT nHeight := 16
    DEFAULT cIcon := ""
    
    IF At( ".", cIcon ) = 0

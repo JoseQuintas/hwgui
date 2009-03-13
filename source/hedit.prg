@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.131 2009-03-03 04:12:28 lfbasso Exp $
+ *$Id: hedit.prg,v 1.132 2009-03-13 02:38:24 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -1213,27 +1213,28 @@ STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
    Local lGroup := Hwg_BitAND( HWG_GETWINDOWSTYLE(  hctrl ), WS_GROUP ) != 0
    Local lHradio := .F.
    Local lnoTabStop := .T.
+   Local nWindow := IIF( oParent:Type < WND_DLG_RESOURCE, oParent:handle, GetActiveWindow() )
 
    i := AScan( oparent:acontrols, { | o | o:handle == hCtrl } )
-	 lHradio :=  i > 0 .AND. oParent:acontrols[ i ]:ClassName = "HRADIO" 
-		// TABs resource
+	 lHradio :=  i > 0 .AND. oParent:acontrols[ i ]:CLASSNAME = "HRADIO" 
+		// TABs DO resource
    IF oParent:Type = WND_DLG_RESOURCE 
-      nexthandle := GetNextDlgGroupItem( oParent:handle , hctrl,( nSkip < 0 ) )
+      nextHandle := GetNextDlgGroupItem( oParent:handle , hctrl,( nSkip < 0 ) )
    ELSE 
-      IF lHradio
-         nexthandle := GetNextDlgGroupItem( oParent:handle , hctrl,( nSkip < 0 ) )
-         lnoTabStop :=  Hwg_BitaND( HWG_GETWINDOWSTYLE( nexthandle ), WS_TABSTOP ) = 0 .AND. ( !lHradio ) // .OR. (lHradio.and.!lGroup))
+      IF  lHradio .OR.  lGroup 
+         nexthandle := GetNextDlgGroupItem( nWindow , hctrl,( nSkip < 0 ) )
+         i := AScan( oparent:acontrols, { | o | o:handle == nexthandle } )
+         lnoTabStop := !( i > 0 .AND. oParent:acontrols[ i ]:CLASSNAME = "HRADIO")  //Hwg_BitAND( HWG_GETWINDOWSTYLE( nexthandle ), WS_TABSTOP ) = 0 
       ENDIF  
       IF ( lGroup .AND. nSkip < 0 ) .OR. lnoTabStop 
-         //DO WHILE lnoTabStop 
-         IF   oParent:Type < WND_DLG_RESOURCE
-            nextHandle := GetNextDlgTabItem ( oParent:handle , hctrl, ( nSkip < 0 ) )
-         ELSE
-	          nextHandle := GetNextDlgTabItem ( GetActiveWindow() , hctrl, ( nSkip < 0 ) )			    
-	       ENDIF   
-	       hctrl := nexthandle
-	       lnoTabStop :=  Hwg_BitaND( HWG_GETWINDOWSTYLE( nexthandle ), WS_TABSTOP ) = 0 
-	       //ENDDO         
+         nextHandle := GetNextDlgTabItem ( nWindow , hctrl, ( nSkip < 0 ) )
+         lnoTabStop :=  Hwg_BitaND( HWG_GETWINDOWSTYLE( nexthandle ), WS_TABSTOP ) = 0 
+      ELSE   
+         lnoTabStop := .F.
+	    ENDIF
+			i := AScan( oparent:acontrols, { | o | o:handle == nextHandle } )
+      IF lnoTabStop .OR. (i > 0 .AND. i <= LEN( oParent:acontrols ).AND. oparent:acontrols[i]:classname = "HGROUP") .OR. i = 0
+          nextHandle := GetNextDlgTabItem ( nWindow , nextHandle, ( nSkip < 0 ) )
       ENDIF
    ENDIF
    RETURN nextHandle

@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.20 2009-03-06 02:56:41 lfbasso Exp $
+ * $Id: hradio.prg,v 1.21 2009-03-13 02:38:24 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -213,7 +213,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip,
       ::oParent:AddEvent( BN_SETFOCUS, Self, { | o, id | __When( o:FindControl( id ) ) },, "onGotFocus" )
       ::lnoValid := .T.
    ENDIF
-   ::oParent:AddEvent( BN_KILLFOCUS, Self, { || ::Notify( WM_KEYDOWN ) } )
+   //::oParent:AddEvent( BN_KILLFOCUS, Self, { || ::Notify( WM_KEYDOWN ) } )
    IF ::oGroup != Nil
       AAdd( ::oGroup:aButtons, Self )
       // IF ::oGroup:bSetGet != Nil
@@ -339,6 +339,7 @@ STATIC FUNCTION __Valid( oCtrl )
       IF nEnter < 0
          oCtrl:oGroup:value := AScan( oCtrl:oGroup:aButtons, { | o | o:id == oCtrl:id } )
          oCtrl:oGroup:setvalue( oCtrl:oGroup:value )
+         oCtrl:setfocus()
       ELSE
          oCtrl:oParent:lSuspendMsgsHandling := .T.
          oCtrl:oGroup:value := AScan( oCtrl:oGroup:aButtons, { | o | o:id == oCtrl:id } )
@@ -348,12 +349,12 @@ STATIC FUNCTION __Valid( oCtrl )
    IF oCtrl:oGroup:bSetGet != Nil
       Eval( oCtrl:oGroup:bSetGet, oCtrl:oGroup:value )
    ENDIF
-   IF nEnter < 0
-      oCtrl:setfocus() //octrl:handle)
-   ENDIF
+   //IF nEnter < 0
+   //   oCtrl:setfocus() //octrl:handle)
+   //ENDIF
    hctrl := getfocus()
    IF oCtrl:bLostFocus != Nil //.and. nEnter >= 0
-      Eval( oCtrl:bLostFocus, oCtrl:oGroup:value, oCtrl )
+      Eval( oCtrl:bLostFocus, oCtrl, oCtrl:oGroup:value  )
    ENDIF
    IF nEnter < 0 .and. getfocus() = hctrl
       KEYB_EVENT( VK_DOWN )

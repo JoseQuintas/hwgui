@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.38 2009-02-16 21:09:34 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.39 2009-03-16 19:36:58 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -313,7 +313,8 @@ METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
          y1 := oCtrl:aControls[ i ]:nHeight
          oCtrl:aControls[ i ]:onAnchor( x, y, w, h )
          IF Len( oCtrl:aControls[ i ]:aControls ) > 0
-            ::Anchor( oCtrl:aControls[ i ], x1, y1, oCtrl:nWidth, oCtrl:nHeight )
+            //::Anchor( oCtrl:aControls[ i ], x1, y1, oCtrl:nWidth, oCtrl:nHeight )
+            ::Anchor( oCtrl:aControls[ i ], x, y, oCtrl:nWidth, oCtrl:nHeight )
          ENDIF
       ENDIF
    NEXT

@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.21 2009-03-13 02:38:24 lfbasso Exp $
+ * $Id: hradio.prg,v 1.22 2009-03-16 19:36:59 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -28,6 +28,12 @@ ENDCLASS
 METHOD New( vari, bSetGet ) CLASS HRadioGroup
    ::oGroupCurrent := Self
    ::aButtons := { }
+
+   IF EMPTY( HWindow():GetMain():oDefaultParent )
+      ::oParent := HWindow():GetMain()
+   ELSE   
+      ::oParent := HWindow():GetMain():oDefaultParent
+   ENDIF
 
    IF vari != Nil
       IF ValType( vari ) == "N"
@@ -94,13 +100,16 @@ CLASS VAR winclass   INIT "BUTTON"
    METHOD GetValue() INLINE ( SendMessage( ::handle, BM_GETCHECK, 0, 0 ) == 1 )
   // METHOD Notify( lParam )
    METHOD onevent( msg, wParam, lParam )
-   
+   METHOD onGotFocus()
+   METHOD onClick()
+
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
             bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lTransp ) CLASS HRadioButton
 
    ::oParent := IIf( oWndParent == Nil, ::oDefaultParent, oWndParent )
+   
    ::id      := IIf( nId == Nil, ::NewId(), nId )
    ::title   := cCaption
    ::oGroup  := HRadioGroup():oGroupCurrent
@@ -232,21 +241,6 @@ METHOD onevent( msg, wParam, lParam ) CLASS HRadioButton
          RETURN 0
       ENDIF
    ENDIF
-   IF msg = WM_SETFOCUS 
-      IF  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
-         dc := GETdc( ::handle )
-         itemRect  := GetClientRect( ::handle ) 
-         InflateRect( @itemRect, + 1, + 1 )
-         DrawFocusRect( dc, itemRect )
-       ENDIF
-   ELSEIF msg = WM_KILLFOCUS //.AND. ::oParent:oParent != Nil
-      IF  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
-         dc := GETdc( ::handle )
-         itemRect  := GetClientRect( ::handle ) 
-         InflateRect( @itemRect, + 1, + 1 )
-         DrawFocusRect( dc, itemRect )
-      ENDIF
-   ENDIF 
    IF msg = WM_KEYDOWN
       IF  ProcKeyList( Self, wParam )
       ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP 
@@ -306,6 +300,13 @@ METHOD Notify( lParam ) CLASS HRadioButton
 
    RETURN Nil
 */
+
+METHOD onGotFocus CLASS HRadioButton
+   RETURN __When( Self )
+
+METHOD onClick CLASS HRadioButton
+   RETURN __Valid( Self )
+
 
 STATIC FUNCTION __When( oCtrl )
    LOCAL res := .t., oParent, nSkip := 1

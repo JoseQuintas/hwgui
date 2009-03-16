@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1050 2009-03-13 02:38:21 lfbasso Exp $
+ * $Id: Changelog,v 1.1051 2009-03-16 19:35:51 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,26 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-03-16 16:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + add new clause in @ <x>,<y> TAB [ <oTab> ...
+       [ ON RIGHTCLICK <bRClick> ];
+  * include\windows.ch
+    + add NEWS CONSTANTS to HTAB
+  * source\hcheck.prg
+    ! minor fix in ONEVENT
+  * source\hcwindow.prg
+    ! fix in METHOD Anchor
+  * source\hradio.prg
+    + add METHOD onGotFocus() and METHOD onClick()
+    ! minor fix in ONEVENT
+  * source\htab.prg
+    + add DATA bRClick
+    + add new parameters in METHOD NEW - bRClick
+    * add NEW Properties HIDDEN lClick, lActivate, nPrevPage
+    ! fixed EVENTS ONCLICK,ONGETFOCUS,ONLOSTFOCUS in METHOD NOTIFY and add 
+      new EVENT ONRIGHTCLICK
+  
 2009-03-10 22:08 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg
    ! fix in NextFocus for radiobutton

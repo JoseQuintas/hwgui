@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.29 2009-03-06 02:56:41 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.30 2009-03-16 19:36:57 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -117,7 +117,7 @@ METHOD Init() CLASS HCheckButton
          SendMessage( ::handle, BM_SETCHECK, 1, 0 )
       ENDIF
    ENDIF
-   RETURN Nil
+   RETURN Nil 
 
 METHOD onevent( msg, wParam, lParam ) CLASS HCheckButton
 	 LOCAL oParent := ::oParent

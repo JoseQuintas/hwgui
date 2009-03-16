@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.39 2009-03-06 02:56:41 lfbasso Exp $
+ *$Id: htab.prg,v 1.40 2009-03-16 19:36:59 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -105,12 +105,12 @@ CLASS VAR winclass   INIT "SysTabControl32"
    DATA  bChange, bChange2
    DATA  hIml, aImages, Image1, Image2
    DATA  oTemp
-   DATA  bAction
+   DATA  bAction, bRClick
    DATA  lResourceTab INIT .F.
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, aTabs, bChange, aImages, lResour, nBC, ;
-               bClick, bGetFocus, bLostFocus )
+               bClick, bGetFocus, bLostFocus, bRClick ) 
 
    //METHOD Paint( lpdis )
    METHOD Activate()
@@ -131,12 +131,15 @@ CLASS VAR winclass   INIT "SysTabControl32"
                     bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )
 
    HIDDEN:
-   DATA  nActive  INIT 0         // Active Page
+     DATA  nActive  INIT 0         // Active Page
+     DATA  nPrevPage INIT 0
+     DATA  lClick INIT .F.
+     DATA  lAtivate INIT .F.
 
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
-            oFont, bInit, bSize, bPaint, aTabs, bChange, aImages, lResour, nBC, bClick, bGetFocus, bLostFocus  ) CLASS HTab
+            oFont, bInit, bSize, bPaint, aTabs, bChange, aImages, lResour, nBC, bClick, bGetFocus, bLostFocus, bRClick ) CLASS HTab
    LOCAL i, aBmpSize
 
    nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE + WS_TABSTOP )
@@ -153,7 +156,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::bGetFocus := IIf( bGetFocus == Nil, Nil, bGetFocus )
    ::bLostFocus := IIf( bLostFocus == Nil, Nil, bLostFocus )
    ::bAction   := IIf( bClick == Nil, Nil, bClick )
-
+   ::bRClick   :=IIf( bRClick==Nil, Nil, bRClick)
+ 
    IF aImages != Nil
       ::aImages := { }
       FOR i := 1 TO Len( aImages )
@@ -299,15 +303,15 @@ METHOD ChangePage( nPage ) CLASS HTab
    IF ! Empty( ::aPages )
 
       ::HidePage( ::nActive )
-
+      ::ShowPage( nPage )
       ::nActive := nPage
-
-      ::ShowPage( ::nActive )
 
    ENDIF
 
    IF ::bChange2 != Nil
+      ::oparent:lSuspendMsgsHandling := .T.
       Eval( ::bChange2, Self, nPage )
+      ::oparent:lSuspendMsgsHandling := .F.
    ENDIF
    //
 
@@ -402,13 +406,39 @@ METHOD DeletePage( nPage ) CLASS HTab
 
 METHOD Notify( lParam ) CLASS HTab
    LOCAL nCode := GetNotifyCode( lParam )
+   LOCAL nPage := SendMessage( ::handle, TCM_GETCURSEL, 0, 0 ) + 1
 
    DO CASE
-   CASE nCode == - 552 //TCN_SELCHANGING    //= (TCN_FIRST - 2) -552
+
+   CASE nCode == TCN_KEYDOWN   // -500
+
+   CASE nCode == TCN_FOCUSCHANGE  //-554
+         
    CASE nCode == TCN_SELCHANGE
-      IF ::bChange != Nil
-         Eval( ::bChange, Self, GetCurrentTab( ::handle ) )
-      ENDIF
+         // ACTIVATE NEW PAGE
+   	    IF ! ::pages[nPage]:enabled 
+   	       ::SetTab( ::nPrevPage )
+	  		   RETURN -1
+		   	ENDIF
+			  IF GETFOCUS() != ::handle
+  			   ::SETFOCUS()
+	  		ENDIF
+        Eval( ::bChange, Self, GetCurrentTab( ::handle ) )
+        IF ::bGetFocus != NIL
+            ::oparent:lSuspendMsgsHandling := .t.
+            Eval( ::bGetFocus, Self, GetCurrentTab( ::handle ) )
+            ::oparent:lSuspendMsgsHandling := .F.
+        ENDIF
+          
+   CASE nCode == TCN_SELCHANGING  
+        // DEACTIVATE PAGE //ocorre antes de trocar o focu
+        ::nPrevPage := ::nactive //npage
+        IF ::bLostFocus != NIL
+           ::oparent:lSuspendMsgsHandling := .t.
+           Eval( ::bLostFocus, Self, ::nPrevPage)
+           ::oparent:lSuspendMsgsHandling := .F.
+        ENDIF
+	 /*
    CASE nCode == TCN_CLICK
       IF ! Empty( ::pages ) .AND. ::nActive > 0 .AND. ::pages[ ::nActive ]:enabled
          SetFocus( ::handle )
@@ -416,6 +446,16 @@ METHOD Notify( lParam ) CLASS HTab
             Eval( ::bAction, Self, GetCurrentTab( ::handle ) )
          ENDIF
       ENDIF
+   */
+   CASE nCode == TCN_RCLICK 
+      IF ! Empty( ::pages ) .AND. ::nActive > 0 .AND. ::pages[ ::nActive ]:enabled
+          IF ::bAction != Nil
+              ::oparent:lSuspendMsgsHandling := .t.
+              Eval( ::bRClick, Self, GetCurrentTab( ::handle ) )
+              ::oparent:lSuspendMsgsHandling := .f.
+          ENDIF
+      ENDIF
+	    
    CASE nCode == TCN_SETFOCUS
       IF ::bGetFocus != NIL
          Eval( ::bGetFocus, Self, GetCurrentTab( ::handle ) )
@@ -424,10 +464,18 @@ METHOD Notify( lParam ) CLASS HTab
       IF ::bLostFocus != NIL
          Eval( ::bLostFocus, Self, GetCurrentTab( ::handle ) )
       ENDIF
-   CASE nCode == - 500 //TCN_KEYDOWN   // -500
-
+   
    ENDCASE
-
+   IF nCode == TCN_CLICK .OR. ( ::lClick .AND. nCode == TCN_SELCHANGE )
+       IF ! Empty( ::pages ) .AND. ::nActive > 0 .AND. ::pages[ ::nActive ]:enabled
+           ::oparent:lSuspendMsgsHandling := .t.
+           IF ::bAction != Nil
+               Eval( ::bAction, Self, GetCurrentTab( ::handle ) )
+            ENDIF
+            ::oparent:lSuspendMsgsHandling := .F.
+       ENDIF
+       ::lClick := .f.
+   ENDIF
    RETURN - 1
 
 METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
@@ -449,7 +497,10 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    //WRITELOG('TAB'+STR(MSG)+STR(WPARAM)+STR(LPARAM)+CHR(13))
 
-    ::disable()
+   ::disable()
+   IF msg = WM_LBUTTONDOWN
+      ::lClick := .T.
+   ENDIF
    IF (msg == WM_KEYDOWN .OR.(msg = WM_GETDLGCODE .AND. wparam == VK_RETURN)) .AND. GetFocus()= ::handle
        IF ProcKeyList( Self, wParam )
           RETURN - 1
@@ -470,7 +521,12 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
           RETURN ( super:onevent(msg, wparam, lparam ) )
        ENDIF
 	 ENDIF
-   
+   IF msg = WM_NOTIFY .AND. isWindowVisible(::oParent:handle) .AND. !::lAtivate
+        ::lAtivate := .t.
+        IF ::bGetFocus != NIL 
+           Eval( ::bGetFocus, Self, GetCurrentTab( ::handle ) )
+        ENDIF
+   ENDIF  
    IF ::bOther != Nil
       ::oparent:lSuspendMsgsHandling := .t.
       IF Eval( ::bOther, Self, msg, wParam, lParam ) != - 1

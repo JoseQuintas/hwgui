@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.73 2009-03-09 17:59:29 lfbasso Exp $
+ *$Id: windows.ch,v 1.74 2009-03-16 19:36:57 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -475,11 +475,28 @@
 #define PSN_WIZFINISH           -208   // (PSN_FIRST-8)
 #define PSN_QUERYCANCEL         -209   // (PSN_FIRST-9)
 
-#define TCN_SELCHANGE           -551   // (TCN_FIRST - 1)
+#define TCN_FIRST               -550       // tab control
 #define TCN_CLICK               -2
+#define TCN_RCLICK              -5
 #define TCN_SETFOCUS            -550
 #define TCN_GETFOCUS            -552
 #define TCN_KILLFOCUS           -552
+#define TCN_KEYDOWN             -550   //(TCN_FIRST - 0)
+#define TCN_SELCHANGE           -551   //(TCN_FIRST - 1)
+#define TCN_SELCHANGING         -552   //(TCN_FIRST - 2)
+#define TCN_GETOBJECT           -553   //(TCN_FIRST - 3)
+#define TCN_FOCUSCHANGE         -554   //(TCN_FIRST - 4)
+
+
+#define TCM_FIRST               4864     // Tab control messages
+#define TCM_SETIMAGELIST        4867     // (TCM_FIRST + 3)
+#define TCM_GETITEMCOUNT        4868     // (TCM_FIRST + 4)
+#define TCM_GETCURSEL           4875		 // TCM_FIRST + 11)
+#define TCM_SETCURSEL           4876     // (TCM_FIRST + 12)
+#define TCM_GETCURFOCUS         4911     // (TCM_FIRST + 47)
+#define TCM_SETCURFOCUS         4912     // (TCM_FIRST + 48)
+#define TCM_DESELECTALL         4914        //(TCM_FIRST + 50)
+
 
 /*
  * Combo Box styles

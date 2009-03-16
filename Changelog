@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1051 2009-03-16 19:35:51 lfbasso Exp $
+ * $Id: Changelog,v 1.1052 2009-03-16 20:25:48 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-03-16 17:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+* include\guilib.ch
+  + COMBOBOXEX  new clauses [ DISPLAYCOUNT <nDisplay>], [ ITEMHEIGHT <nhItem>    ],[ WIDTHCOLUMN <ncWidth>  ] ;
+    
 2009-03-16 16:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     + add new clause in @ <x>,<y> TAB [ <oTab> ...

@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.22 2009-03-16 19:36:59 lfbasso Exp $
+ * $Id: hradio.prg,v 1.23 2009-03-16 20:25:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -28,12 +28,6 @@ ENDCLASS
 METHOD New( vari, bSetGet ) CLASS HRadioGroup
    ::oGroupCurrent := Self
    ::aButtons := { }
-
-   IF EMPTY( HWindow():GetMain():oDefaultParent )
-      ::oParent := HWindow():GetMain()
-   ELSE   
-      ::oParent := HWindow():GetMain():oDefaultParent
-   ENDIF
 
    IF vari != Nil
       IF ValType( vari ) == "N"

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.144 2009-03-16 19:36:55 lfbasso Exp $
+ *$Id: guilib.ch,v 1.145 2009-03-16 20:25:48 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -1802,12 +1802,15 @@ Added by Marcos Antonio Gambeta
              <nStyle>,<x>,<y>,<width>,<height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>, ;
              <bChange>,<ctoolt>,<color>,<bcolor>,<bGFocus>,<bLFocus>,<bKeyDown>,<bDblClick>,<bOther> );;
           [ <oListbox>:name := <(oListbox)> ]
-
+          
 #xcommand @ <x>,<y> GET COMBOBOXEX [ <oCombo> VAR ] <vari> ;
              ITEMS  <aItems>            ;
              [ OF <oWnd> ]              ;
              [ ID <nId> ]               ;
              [ SIZE <width>, <height> ] ;
+             [ DISPLAYCOUNT <nDisplay>] ;
+             [ ITEMHEIGHT <nhItem>    ] ; 
+             [ COLUMNWIDTH <ncWidth>  ] ;
              [ COLOR <color> ]          ;
              [ BACKCOLOR <bcolor> ]     ;
              [ ON CHANGE <bChange> ]    ;
@@ -1824,7 +1827,8 @@ Added by Marcos Antonio Gambeta
              {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
              <nStyle>,<x>,<y>,<width>,<height>,      ;
              <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
-             <.edit.>,<.text.>,<bWhen>,<color>,<bcolor>,<bValid>,<acheck> );;
+             <.edit.>,<.text.>,<bWhen>,<color>,<bcolor>, ;
+						 <bValid>,<acheck>,<nDisplay>,<nhItem>,<ncWidth>);;
           [ <oCombo>:name := <(oCombo)> ]
 
 //Contribution Luis Fernando Basso

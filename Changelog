@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1052 2009-03-16 20:25:48 lfbasso Exp $
+ * $Id: Changelog,v 1.1053 2009-03-17 15:29:34 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-03-17 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\windows.ch
+    + news constants
+   * source\hcontrol.prg
+    ! fix in status bar for icon type numeric resource 
+  * source\hedit.prg
+    ! fix in type multiline for ESCAPE and bGetSet
+  * source\hprogres.prg
+    ! fix in nlimit for STEP
+  * source\hwindow.prg
+    ! ACTIVATE HMAINWINDOW forcing the state of maximization and minimization to update the size of the form
+    ! add parameter Self in eval( bactivate , Self )
+    
 2009-03-16 17:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
 * include\guilib.ch
   + COMBOBOXEX  new clauses [ DISPLAYCOUNT <nDisplay>], [ ITEMHEIGHT <nhItem>    ],[ WIDTHCOLUMN <ncWidth>  ] ;

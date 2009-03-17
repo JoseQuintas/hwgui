@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.74 2009-03-16 19:36:57 lfbasso Exp $
+ *$Id: windows.ch,v 1.75 2009-03-17 15:29:48 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -486,7 +486,6 @@
 #define TCN_SELCHANGING         -552   //(TCN_FIRST - 2)
 #define TCN_GETOBJECT           -553   //(TCN_FIRST - 3)
 #define TCN_FOCUSCHANGE         -554   //(TCN_FIRST - 4)
-
 
 #define TCM_FIRST               4864     // Tab control messages
 #define TCM_SETIMAGELIST        4867     // (TCM_FIRST + 3)

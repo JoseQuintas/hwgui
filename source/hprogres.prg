@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.15 2008-12-08 12:46:42 lfbasso Exp $
+ * $Id: hprogres.prg,v 1.16 2009-03-17 15:29:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class
@@ -108,7 +108,8 @@ METHOD Init  CLASS HProgressBar
    IF ! ::lInit
       Super:Init()
       SendMessage( ::handle, PBM_SETRANGE, 0, MAKELPARAM( 0, ::nRange ) )
-	    SendMessage( ::handle, PBM_SETSTEP, ::maxPos, 0 )   
+	    //SendMessage( ::handle, PBM_SETSTEP, ::maxPos, 0 )   
+	    SendMessage( ::handle, PBM_SETSTEP, ::nLimit , 0 )   
 	    IF ::nAnimation != Nil .AND. ::nAnimation > 0
 	       SendMessage( ::handle, PBM_SETMARQUEE, 1, ::nAnimation )
 	    ENDIF   

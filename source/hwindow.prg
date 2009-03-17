@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.73 2009-02-23 04:18:32 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.74 2009-03-17 15:29:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -267,9 +267,15 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate ) CLASS HMain
       //handle := Hwg_InitClientWindow( oWndClient, ::nMenuPos, ::nLeft, ::nTop + 60, ::nWidth, ::nHeight )                                   
       handle := Hwg_InitClientWindow( oWndClient, ::nMenuPos, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       oWndClient:handle = handle
+      
+ 			IF lMaximized
+			   ::maximize()
+			ELSEIF lMinimized
+			   ::minimize()   
+			ENDIF   
 
       IF ( bActivate  != NIL )
-         Eval( bActivate )
+         Eval( bActivate, Self )
       ENDIF
       
       ::oClient := HWindow():aWindows[2]
@@ -277,8 +283,14 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate ) CLASS HMain
 
    ELSEIF ::Type == WND_MAIN
 
+ 			IF lMaximized
+			   ::maximize()
+			ELSEIF lMinimized
+			   ::minimize()   
+			ENDIF   
+
       IF ( bActivate  != NIL )
-         Eval( bActivate )
+         Eval( bActivate, Self )
       ENDIF
 
       Hwg_ActivateMainWindow( ( lShow == Nil .OR. lShow ), ::hAccel, lMaximized, lMinimized )
@@ -385,7 +397,7 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate ) CLASS HMDIC
    ::show()
    
    IF bActivate != NIL
-      Eval( bActivate )
+      Eval( bActivate, Self )
    ENDIF
 
    IF ( ValType( ::nInitFocus ) = "O" .OR. ::nInitFocus > 0 )
@@ -707,7 +719,8 @@ STATIC FUNCTION onSysCommand( oWnd, wParam )
 	     ENDIF
 	     oWnd:aRectSave := aclone(ars)
 	     RETURN 0
-	     
+   ELSEIF wParam == SC_MAXIMIZE	     
+   
    ELSEIF wParam == SC_RESTORE           
    
    ENDIF
@@ -867,7 +880,7 @@ STATIC FUNCTION onActivate( oWin, wParam, lParam )
 
    HB_SYMBOL_UNUSED( lParam )
 
-   IF ( iParLow = WA_ACTIVE .OR. iParLow = WA_CLICKACTIVE ) .AND. IsWindowVisible( oWin:handle )  // .AND. PtrtoUlong( lParam ) = 0  
+   IF ( iParLow = WA_ACTIVE .OR. iParLow = WA_CLICKACTIVE ) .AND. IsWindowVisible( oWin:handle )  .AND. PtrtoUlong( lParam ) = 0  
       IF oWin:bGetFocus != Nil //.AND. IsWindowVisible(::handle)
          oWin:lSuspendMsgsHandling := .T.
          IF iParHigh > 0  // MINIMIZED

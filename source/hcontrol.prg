@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.123 2009-03-09 21:11:21 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.124 2009-03-17 15:29:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -369,21 +369,24 @@ METHOD SetTextPanel( nPart, cText, lRedraw ) CLASS HStatus
    RETURN Nil
 
 
-METHOD SetIconPanel(nPart, cIcon, nWidth, nHeight ) CLASS HStatus
+METHOD SetIconPanel( nPart, cIcon, nWidth, nHeight ) CLASS HStatus
    Local oIcon
    
    DEFAULT nWidth := 16
    DEFAULT nHeight := 16
    DEFAULT cIcon := ""
    
-   IF At( ".", cIcon ) = 0
+   IF HB_IsNumeric( cIcon ) .OR. At( ".", cIcon ) = 0 
       oIcon := HIcon():addResource( cIcon, nWidth, nHeight )
    ELSE
       oIcon := HIcon():addFile( cIcon, nWidth, nHeight )
 	 ENDIF   
-   SendMessage( ::handle, SB_SETICON, nPart - 1, oIcon:handle )
+	 IF ! EMPTY( oIcon )
+      SendMessage( ::handle, SB_SETICON, nPart - 1, oIcon:handle )
+   ENDIF   
    
    RETURN Nil
+
 
 //- HStatic
 

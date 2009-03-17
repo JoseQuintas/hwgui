@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.132 2009-03-13 02:38:24 lfbasso Exp $
+ *$Id: hedit.prg,v 1.133 2009-03-17 15:29:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -138,7 +138,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
          ::bValid := { | | ::Valid( ) }
       ENDIF
    ENDIF
-   IF bChange != Nil
+   IF bChange != Nil .OR. ::lMultiLine
       ::bChange := bChange
       ::oParent:AddEvent( EN_CHANGE, Self, { | | ::Change( ) },, "onChange"  )
    ENDIF
@@ -222,12 +222,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
          ELSEIF msg == WM_KEYDOWN
             IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
-               ::oParent:lSuspendMsgsHandling := .T.
                IF ! Eval( ::bKeyDown, Self, wParam )
-                  ::oParent:lSuspendMsgsHandling := .F.
                   RETURN 0
                ENDIF
-               ::oParent:lSuspendMsgsHandling := .F.
             ENDIF
             IF wParam = 86  // V
                IF  IsCtrlShift(, .F. )
@@ -343,10 +340,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 				          iif( IsCtrlShift(.f., .t.), -1, 1) )
             RETURN 0
          ENDIF
+         IF wParam == VK_ESCAPE
+            RETURN 0
+         ENDIF
       ENDIF
       IF msg == WM_KEYDOWN
          IF wParam == VK_ESCAPE
-            RETURN 0
+            RETURN -1
          ENDIF
         // IF wParam == VK_TAB     // Tab
         //    GetSkip( oParent, ::handle, , ;
@@ -354,12 +354,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
         //    RETURN 0
         // ENDIF
          IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
-             ::oparent:lSuspendMsgsHandling := .T.              
              IF !Eval( ::bKeyDown, Self, wParam )
-                ::oparent:lSuspendMsgsHandling := .F.
                 RETURN 0
              ENDIF
-             ::oparent:lSuspendMsgsHandling := .F.
          ENDIF
       ENDIF
    ENDIF
@@ -370,13 +367,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       IF ! ProcKeyList( Self, wParam )      
       
          IF ::bKeyUp != Nil
-            ::oParent:lSuspendMsgsHandling := .T.
             IF ! Eval( ::bKeyUp, Self, wParam )
-               ::oParent:lSuspendMsgsHandling := .F.
                RETURN - 1
             ENDIF
          ENDIF
-         ::oParent:lSuspendMsgsHandling := .F.
       ENDIF   
       /*
       IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
@@ -904,6 +898,9 @@ METHOD Valid( ) CLASS HEdit
             vari := Val( LTrim( vari ) )
             ::title := Transform( vari, ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
             SetDlgItemText( ::oParent:handle, ::id, ::title )
+         ELSEIF ::lMultiLine
+			     vari := ::GetText() 
+			     ::title := vari
          ENDIF
          Eval( ::bSetGet, vari, Self )
          IF oDlg != Nil
@@ -928,17 +925,22 @@ METHOD Valid( ) CLASS HEdit
             oDlg:nLastKey := 0
          ENDIF
       ENDIF
-   ELSEIF ::bLostFocus != Nil
-      ::oparent:lSuspendMsgsHandling := .T.
-      res := Eval( ::bLostFocus, vari, Self )
-      IF ! res
-         ::SetFocus()
-         ::oparent:lSuspendMsgsHandling := .F.
-         RETURN .F.
-      ENDIF
-      IF Empty( GetFocus() )
-         GetSkip( ::oParent, ::handle,, ::nGetSkip )
-      ENDIF
+   ELSE
+     IF ::lMultiLine
+			   ::title := ::GetText() 
+     ENDIF
+   	 IF ::bLostFocus != Nil
+        ::oparent:lSuspendMsgsHandling := .T.
+        res := Eval( ::bLostFocus, vari, Self )
+        IF ! res
+           ::SetFocus()
+           ::oparent:lSuspendMsgsHandling := .F.
+           RETURN .F.
+        ENDIF
+        IF Empty( GetFocus() )
+           GetSkip( ::oParent, ::handle,, ::nGetSkip )
+        ENDIF
+     ENDIF   
    ENDIF
    ::oparent:lSuspendMsgsHandling := .F.
    RETURN .T.
@@ -950,10 +952,17 @@ METHOD Change( ) CLASS HEdit
       RETURN .t.
    ENDIF
 
-   ::oparent:lSuspendMsgsHandling := .T.
-   Eval( ::bChange, ::title, Self )
-   ::oparent:lSuspendMsgsHandling := .F.
-
+   IF ::lMultiLine 
+     ::title := ::GetText()
+  	 IF ::bSetGet != Nil
+      //   Eval( ::bSetGet,, Self )
+     ENDIF 
+   ENDIF
+   IF ::bChange != Nil 
+      ::oparent:lSuspendMsgsHandling := .T.
+      Eval( ::bChange, ::title, Self )
+      ::oparent:lSuspendMsgsHandling := .F.
+	 ENDIF
    //SendMessage( ::handle,  EM_SETSEL, 0, nPos )
 
    RETURN Nil

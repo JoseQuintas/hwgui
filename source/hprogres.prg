@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.16 2009-03-17 15:29:48 lfbasso Exp $
+ * $Id: hprogres.prg,v 1.17 2009-03-18 21:39:33 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class
@@ -72,7 +72,7 @@ METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, lPer
    ::maxPos  := IIf( maxPos == Nil, 20, maxPos )
    ::lNewBox := .T.
    ::nRange := Iif( nRange != Nil .AND. nRange != 0, nRange, 100 )
-   ::nLimit := IIf( nRange != Nil, Int( nRange / ::maxPos ), 1 )
+   ::nLimit := IIf( nRange != Nil, Int( ::nRange / ::maxPos ), 1 )
 	 ::lPercent := lPercent
 	 
    INIT DIALOG ::oParent TITLE cTitle       ;
@@ -107,9 +107,9 @@ METHOD Init  CLASS HProgressBar
 
    IF ! ::lInit
       Super:Init()
-      SendMessage( ::handle, PBM_SETRANGE, 0, MAKELPARAM( 0, ::nRange ) )
+      //SendMessage( ::handle, PBM_SETRANGE, 0, MAKELPARAM( 0, ::nRange ) )
 	    //SendMessage( ::handle, PBM_SETSTEP, ::maxPos, 0 )   
-	    SendMessage( ::handle, PBM_SETSTEP, ::nLimit , 0 )   
+	    //SendMessage( ::handle, PBM_SETSTEP, ::nLimit , 0 )   
 	    IF ::nAnimation != Nil .AND. ::nAnimation > 0
 	       SendMessage( ::handle, PBM_SETMARQUEE, 1, ::nAnimation )
 	    ENDIF   
@@ -124,7 +124,7 @@ METHOD STEP()
       ::nCount := 0
       UpdateProgressBar( ::handle )
       IF ! EMPTY( ::lPercent )
-         ::nPercent += ::nLimit
+         ::nPercent += ::maxPos  //::nLimit
          ::setLabel( LTRIM( STR( ::nPercent, 3 ) ) + " %" )
       ENDIF
    ENDIF

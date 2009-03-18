@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.17 2009-03-18 21:39:33 lfbasso Exp $
+ * $Id: hprogres.prg,v 1.18 2009-03-18 21:56:33 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class
@@ -117,12 +117,13 @@ METHOD Init  CLASS HProgressBar
 
   RETURN Nil
 
-METHOD STEP()
+METHOD STEP( cTitle )
 
    ::nCount ++
    IF ::nCount == ::nLimit
       ::nCount := 0
       UpdateProgressBar( ::handle )
+      ::SET( cTitle ) 
       IF ! EMPTY( ::lPercent )
          ::nPercent += ::maxPos  //::nLimit
          ::setLabel( LTRIM( STR( ::nPercent, 3 ) ) + " %" )

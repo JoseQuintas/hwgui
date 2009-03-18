@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1053 2009-03-17 15:29:34 lfbasso Exp $
+ * $Id: Changelog,v 1.1054 2009-03-18 21:56:33 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-03-18 18:53 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hprogres.prg
+    ! fix in nRange,nMaxPos for STEP 
+    * add new parameter in METHOD STEP to update Title of NEWBOX
+  
+  
 2009-03-17 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\windows.ch
     + news constants

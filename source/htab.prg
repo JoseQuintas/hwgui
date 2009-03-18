@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.40 2009-03-16 19:36:59 lfbasso Exp $
+ *$Id: htab.prg,v 1.41 2009-03-18 20:36:24 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -12,12 +12,14 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 #include "common.ch"
+/*
 #define TCM_SETCURSEL           4876     // (TCM_FIRST + 12)
 #define TCM_SETCURFOCUS         4912     // (TCM_FIRST + 48)
 #define TCM_GETCURFOCUS         4911     // (TCM_FIRST + 47)
 #define TCM_GETITEMCOUNT        4868     // (TCM_FIRST + 4)
 
 #define TCM_SETIMAGELIST        4867
+*/
 //- HTab
 
 //----------------------------------------------------//

@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.30 2009-03-16 19:36:57 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.31 2009-03-19 02:11:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -26,10 +26,12 @@ CLASS VAR winclass   INIT "BUTTON"
    METHOD Init()
    METHOD onevent( msg, wParam, lParam )
    METHOD Refresh()
-   METHOD Disable()
-   METHOD Enable()
+ //  METHOD Disable()
+ //  METHOD Enable()
    METHOD SetValue( lValue )  INLINE SendMessage( ::handle, BM_SETCHECK, IIf( lValue, 1, 0 ), 0 ), ::value := lValue
    METHOD GetValue()          INLINE ( SendMessage( ::handle, BM_GETCHECK, 0, 0 ) == 1 )
+   METHOD onGotFocus()
+   METHOD onClick()
    METHOD KillFocus()
    
 ENDCLASS
@@ -185,6 +187,7 @@ METHOD Refresh() CLASS HCheckButton
 
    RETURN Nil
 
+/*
 METHOD Disable() CLASS HCheckButton
 
    Super:Disable()
@@ -198,6 +201,13 @@ METHOD Enable() CLASS HCheckButton
    SendMessage( ::handle, BM_SETCHECK, IIf( ::value, 1, 0 ), 0 )
 
    RETURN Nil
+*/
+
+METHOD onGotFocus CLASS HCheckButton
+   RETURN __When( Self )
+
+METHOD onClick CLASS HCheckButton
+   RETURN __Valid( Self )
 
 METHOD killFocus() CLASS HCheckButton
    LOCAL ndown := getkeystate( VK_RIGHT ) + getkeystate( VK_DOWN ) + GetKeyState( VK_TAB )

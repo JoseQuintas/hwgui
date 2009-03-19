@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1054 2009-03-18 21:56:33 lfbasso Exp $
+ * $Id: Changelog,v 1.1055 2009-03-19 02:11:14 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-03-18 23:13 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcheck.prg
+    - remove METHOD Enable()
+    - remove METHOD Disable()
+    + add METHOD onGotFocus()
+    + add METHOD onClick()
+
+  * source\hdatepic.prg
+    ! fix to adjust FOCUS control with TAB
 
 2009-03-18 18:53 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hprogres.prg

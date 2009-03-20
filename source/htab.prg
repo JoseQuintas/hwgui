@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.41 2009-03-18 20:36:24 lfbasso Exp $
+ *$Id: htab.prg,v 1.42 2009-03-20 08:02:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -426,10 +426,12 @@ METHOD Notify( lParam ) CLASS HTab
   			   ::SETFOCUS()
 	  		ENDIF
         Eval( ::bChange, Self, GetCurrentTab( ::handle ) )
-        IF ::bGetFocus != NIL
+        IF ::bGetFocus != NIL .AND. nPage != ::nPrevPage
             ::oparent:lSuspendMsgsHandling := .t.
             Eval( ::bGetFocus, Self, GetCurrentTab( ::handle ) )
             ::oparent:lSuspendMsgsHandling := .F.
+        ELSEIF  nPage = ::nPrevPage    
+            RETURN 0
         ENDIF
           
    CASE nCode == TCN_SELCHANGING  

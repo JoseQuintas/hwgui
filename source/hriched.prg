@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.16 2009-03-09 21:11:22 lfbasso Exp $
+ * $Id: hriched.prg,v 1.17 2009-03-20 08:02:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -17,9 +17,12 @@ CLASS HRichEdit INHERIT HControl
 CLASS VAR winclass   INIT "RichEdit20A"
    DATA lChanged    INIT .F.
    DATA lSetFocus   INIT .T.
+	 DATA lAllowTabs  INIT .F.
+	 DATA lctrltab    HIDDEN
+
    
    METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
-               oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, bOther )
+               oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, bOther, lAllowTabs )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -31,7 +34,7 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
             oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
-            tcolor, bcolor, bOther ) CLASS HRichEdit
+            tcolor, bcolor, bOther, lAllowTabs ) CLASS HRichEdit
 
    nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE + WS_TABSTOP + WS_BORDER )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
@@ -39,6 +42,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    ::title   := vari
    ::bOther  := bOther
+   ::lAllowTabs := IIF( EMPTY( lAllowTabs ), ::lAllowTabs, lAllowTabs )
    hwg_InitRichEdit()
 
    ::Activate()
@@ -74,16 +78,24 @@ METHOD Init()  CLASS HRichEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
-   LOCAL nDelta, nret
+   LOCAL nDelta, nret, nPos
 
    // writelog( str(msg) + str(wParam) + str(lParam) )
-   IF msg = WM_SETFOCUS .and. ::lSetFocus .AND. ISWINDOWVISIBLE( ::handle )
+   IF msg = WM_SETFOCUS .and. ::lSetFocus .AND. ISWINDOWVISIBLE(::handle)
       ::lSetFocus := .F.
-      // npos := SendMessage( ::handle, EM_GETSEL, 0, 0 )
       SendMessage( ::handle,EM_SETSEL,0,0) //Loword(npos),loword(npos))
+   ELSEIF msg = WM_SETFOCUS .AND. ::lAllowTabs .AND. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
+    	 ::lctrltab := ::GetParentForm( Self ):lDisableCtrlTab 
+    	 ::GetParentForm( Self ):lDisableCtrlTab := ::lAllowTabs 
+   ELSEIF msg = WM_KILLFOCUS .AND. ::lAllowTabs .AND. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
+    	 ::GetParentForm( Self ):lDisableCtrlTab := ::lctrltab
    ENDIF
-   
    IF msg == WM_CHAR
+      IF wParam = VK_TAB .AND. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
+         IF  ( IsCtrlShift(.T.,.f.) .OR. ! ::lAllowTabs )
+            RETURN 0
+         ENDIF 
+      ENDIF
 	    IF !IsCtrlShift( .T., .F.)
          ::lChanged := .T.
       ENDIF   
@@ -96,16 +108,25 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
       ENDIF
    ENDIF
    IF msg == WM_KEYUP
-      IF wParam = VK_TAB .AND. IsCtrlShift(.T.) //GETKEYSTATE(VK_CONTROL) < 0
+     IF wParam = VK_TAB .AND. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
+         IF   IsCtrlShift(.T.,.f.) 
+            GetSkip( ::oParent, ::handle, , ;
+				          iif( IsCtrlShift(.f., .t.), -1, 1) )
+            RETURN 0
+         ENDIF 
+      ENDIF
+   ELSEIF msg == WM_KEYDOWN
+      IF wParam = VK_TAB .AND. ( IsCtrlShift(.T.,.f.) .OR. ! ::lAllowTabs )
          GetSkip( ::oParent, ::handle, , ;
 				          iif( IsCtrlShift(.f., .t.), -1, 1) )
          RETURN 0
+      ELSEIF wParam = VK_TAB .AND. ::GetParentForm( Self ):Type >= WND_DLG_RESOURCE
+         RE_INSERTTEXT( ::handle, CHR( VK_TAB ) ) 
+	       RETURN 0
       ENDIF
-   ENDIF
-   IF msg == WM_KEYDOWN
-      IF wParam == 27 // ESC
-         IF GetParent( ::oParent:handle ) != Nil
-            //SendMessage( GetParent( ::oParent:handle ), WM_CLOSE, 0, 0 )
+      IF wParam == VK_ESCAPE
+         IF GetParent(::oParent:handle) != Nil
+            //SendMessage( GetParent(::oParent:handle),WM_CLOSE,0,0 )
          ENDIF
       ENDIF
    ELSEIF msg == WM_MOUSEWHEEL

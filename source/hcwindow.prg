@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.39 2009-03-16 19:36:58 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.40 2009-03-20 08:02:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -537,17 +537,20 @@ FUNCTION onTrackScroll( oWnd, msg, wParam, lParam )
 PROCEDURE HB_GT_DEFAULT_NUL()
    RETURN
 
-FUNCTION ProcKeyList( oCtrl, wParam )
+FUNCTION ProcKeyList( oCtrl, wParam, oMain ) 
 LOCAL oParent, nCtrl,nPos
     
     IF wParam != VK_SHIFT  .AND. wParam != VK_CONTROL .AND. wParam != VK_MENU
-       oParent := ParentGetDialog( oCtrl )
+       oParent := IIF( oMain != Nil, oMain, ParentGetDialog( oCtrl ) )
        IF oParent != Nil .AND. ! Empty( oParent:KeyList )
           nctrl := IIf( IsCtrlShift(.t., .f.), FCONTROL, iif(IsCtrlShift(.f., .t.), FSHIFT, 0 ) )
           IF ( nPos := AScan( oParent:KeyList, { | a | a[ 1 ] == nctrl.AND.a[ 2 ] == wParam } ) ) > 0
              Eval( oParent:KeyList[ nPos, 3 ], oCtrl )
              RETURN .T.
           ENDIF
+       ENDIF
+       IF oParent != Nil .AND. oMain = Nil .AND. HWindow():GetMain() != Nil
+           ProcKeyList( oCtrl, wParam, HWindow():GetMain():aWindows[ 1 ] )
        ENDIF
 		ENDIF
     RETURN .F.

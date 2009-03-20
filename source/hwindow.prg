@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.74 2009-03-17 15:29:48 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.75 2009-03-20 08:02:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -72,6 +72,7 @@ CLASS VAR szAppName  SHARED INIT "HwGUI_App"
    Data nFocus  INIT 0
 	 DATA oClient
    DATA lChild INIT .F.
+   DATA lDisableCtrlTab INIT .F.
 
    DATA aOffset
    DATA oEmbedded
@@ -406,12 +407,13 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate ) CLASS HMDIC
       ::nFocus := ::nInitFocus
    ELSEIF GETFOCUS() = ::handle .AND. Len( ::acontrols ) > 0
       SETFOCUS( ::acontrols[ ASCAN( ::acontrols, { | o | Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_TABSTOP ) != 0 } ) ]:handle )
+      ::nFocus := GetFocus()
    ENDIF
 
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
-   LOCAL i
+   LOCAL i, oCtrl
 
 	 IF msg = WM_NCLBUTTONDBLCLK .AND. ::lChild
 	    Return 0
@@ -436,6 +438,11 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
              ::ScrollHV( Self,msg,wParam,lParam )
          ENDIF   
          onTrackScroll( Self, msg, wParam, lParam )
+      ELSEIF msg = WM_NOTIFY .AND.!::lSuspendMsgsHandling
+         IF ( oCtrl := ::FindControl( , GetFocus()) ) != Nil .AND. oCtrl:ClassName != "HTAB"
+            ::nFocus := oCtrl:handle
+            SendMessage( oCtrl:handle, msg, wParam, lParam )
+         ENDIF
       ENDIF
       RETURN Super:onEvent( msg, wParam, lParam )
    ENDIF
@@ -723,8 +730,11 @@ STATIC FUNCTION onSysCommand( oWnd, wParam )
    
    ELSEIF wParam == SC_RESTORE           
    
+   ELSEIF wParam == 61504  // ctrl+tab   IN Mdi child
+      IF ! Empty( oWnd:lDisableCtrlTab ) .AND. oWnd:lDisableCtrlTab
+          RETURN 0
+      ENDIF
    ENDIF
-
    RETURN - 1
 
 STATIC FUNCTION onEndSession( oWnd, wParam )
@@ -788,6 +798,9 @@ STATIC FUNCTION onMdiCommand( oWnd, wParam )
    ENDIF
    iParHigh := HIWORD( wParam )
    iParLow := LOWORD( wParam )
+   IF ISWINDOWVISIBLE( oWnd:Handle ) 
+      oCtrl := oWnd:FindControl( iParLow )
+   ENDIF   
    IF oWnd:aEvents != Nil .AND. !oWnd:lSuspendMsgsHandling  .AND. ;
       ( iItem := AScan( oWnd:aEvents, { | a | a[ 1 ] == iParHigh.and.a[ 2 ] == iParLow } ) ) > 0
       Eval( oWnd:aEvents[ iItem, 3 ], oWnd, iParLow )
@@ -797,14 +810,10 @@ STATIC FUNCTION onMdiCommand( oWnd, wParam )
           Eval( aMenu[ 1, iItem, 1 ] )
    ELSEIF iParHigh = 1  // acelerator
         
-   ELSEIF ISWINDOWVISIBLE( oWnd:Handle )
-     IF ( oCtrl := oWnd:FindControl( iparlow ) ) != Nil 
-        IF Hwg_BitaND( HWG_GETWINDOWSTYLE( oCtrl:handle ), WS_TABSTOP ) != 0
-  	       oWnd:nFocus := oCtrl:handle
-	      ENDIF   
-	   ENDIF  
    ENDIF
-
+   IF  oCtrl != Nil .AND. Hwg_BitaND( HWG_GETWINDOWSTYLE( oCtrl:handle ), WS_TABSTOP ) != 0
+      oWnd:nFocus := oCtrl:handle
+   ENDIF  
    RETURN 0
 
 STATIC FUNCTION onMdiNcActivate( oWnd, wParam )

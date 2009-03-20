@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.145 2009-03-16 20:25:48 lfbasso Exp $
+ *$Id: guilib.ch,v 1.146 2009-03-20 08:02:23 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -421,6 +421,7 @@
              [ SIZE <width>, <height> ] ;
              [ COLOR <color> ]          ;
              [ BACKCOLOR <bcolor> ]     ;
+             [<lallowtabs: ALLOWTABS>]  ; 
              [ ON INIT <bInit> ]        ;
              [ ON SIZE <bSize> ]        ;
              [ ON PAINT <bDraw> ]       ;
@@ -433,7 +434,7 @@
           => ;
           [<oEdit> := ] HRichEdit():New( <oWnd>,<nId>,<vari>,<nStyle>,<x>,<y>,<width>, ;
              <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
-             <bLfocus>,<ctoolt>,<color>,<bcolor>,<bOther> );;
+             <bLfocus>,<ctoolt>,<color>,<bcolor>,<bOther>, <.lallowtabs.>  );;
           [ <oEdit>:name := <(oEdit)> ]
 
 #xcommand @ <x>,<y> BUTTON [ <oBut> CAPTION ] <caption> ;
@@ -631,7 +632,14 @@
 #xcommand RADIOGROUP => HRadioGroup():New()
 
 #xcommand GET RADIOGROUP [ <ogr> VAR ] <vari>  ;
-          => [<ogr> := ] HRadioGroup():New( <vari>, {|v|Iif(v==Nil,<vari>,<vari>:=v)} )
+             [ ON INIT <bInit> ]        ;
+             [ ON CLICK <bClick> ]      ;
+             [ ON GETFOCUS <bWhen> ]           ;
+          => [<ogr> := ] HRadioGroup():New( <vari>, {|v|Iif(v==Nil,<vari>,<vari>:=v)}, ;
+					     <bInit>,<bClick>,<bWhen> )
+
+//#xcommand GET RADIOGROUP [ <ogr> VAR ] <vari>  ;
+//          => [<ogr> := ] HRadioGroup():New( <vari>, {|v|Iif(v==Nil,<vari>,<vari>:=v)} )
 
 #xcommand END RADIOGROUP [ SELECTED <nSel> ] ;
           => ;
@@ -639,8 +647,9 @@
 
 #xcommand END RADIOGROUP <oGr> [ SELECTED <nSel> ]  ;
           => ;
-          <oGr>:EndGroup( <nSel> )
-
+          <oGr>:EndGroup( <nSel> );;
+          [ <oGr>:name := <(oGr)> ]
+                    
 #xcommand @ <x>,<y> RADIOBUTTON [ <oRadio> CAPTION ] <caption> ;
              [ OF <oWnd> ]              ;
              [ ID <nId> ]               ;

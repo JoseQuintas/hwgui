@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.124 2009-03-17 15:29:48 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.125 2009-03-20 08:02:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -728,27 +728,13 @@ METHOD Init CLASS HButton
 METHOD onevent( msg, wParam, lParam ) CLASS HButton
 	 LOCAL oParent := ::oParent
 	 LOCAL itemRect, dc
-
-   IF (msg = WM_SETFOCUS) .AND. ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE) //.OR.;
-      // ! ::GetParentForm( Self ):lModal )
-
+	 
+   IF msg = WM_SETFOCUS .AND. ::oParent:oParent = Nil
        SENDMESSAGE( ::handle, BM_SETSTYLE , BS_PUSHBUTTON , 1 )
-       
-       dc := getDC( ::Handle )
-       itemRect  := GetClientRect( ::handle ) //GetWindowRect( ::HANDLE )
-       InflateRect( @itemRect, + 1, + 1 )
-       DrawFocusRect( dc, itemRect )
-       
    ELSEIF msg = WM_KILLFOCUS 
 	     IF ::oParent:oParent != Nil
-	        InvalidateRect( ::handle, 0 )
+  	      InvalidateRect( ::handle, 0 )
           SENDMESSAGE( ::handle, BM_SETSTYLE , BS_PUSHBUTTON , 1 )
-       ENDIF
-       IF ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE) //.OR.;         
-          dc := getDC( ::HANDLE )
-          itemRect  := GetClientRect( ::handle ) //GetWindowRect( ::HANDLE )
-          InflateRect( @itemRect, + 1, + 1 )
-          DrawFocusRect( dc, itemRect )
        ENDIF
    ELSEIF msg = WM_KEYDOWN
       IF  ( wParam == VK_RETURN   .OR. wParam == VK_SPACE ) 
@@ -758,25 +744,28 @@ METHOD onevent( msg, wParam, lParam ) CLASS HButton
       IF ! ProcKeyList( Self, wParam )
          IF  wParam = VK_TAB 
             GetSkip( ::oparent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1)  )
-         ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP .OR.wParam = VK_TAB
+            RETURN 0            
+         ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP 
             GetSkip( ::oparent, ::handle, , -1 )
+            RETURN 0
          ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN
             GetSkip( ::oparent, ::handle, , 1 )
+            RETURN 0
          ENDIF   
-         RETURN 0
       ENDIF
-      
    ELSEIF msg == WM_KEYUP
       IF ( ( wParam == VK_RETURN )  .OR. ( wParam == VK_SPACE ) )
          SendMessage( ::handle, WM_LBUTTONUP, 0, MAKELPARAM( 1, 1 ) )
          RETURN 0
       ENDIF
-	 ELSEIF  msg = WM_GETDLGCODE
-      IF wParam != 0
-         RETURN ButtonGetDlgCode( lParam )
+	 ELSEIF  msg = WM_GETDLGCODE .AND. lParam != 0
+      IF wParam = VK_RETURN .OR. wParam = VK_TAB
+      ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND.wParam != VK_ESCAPE    
+      ELSEIF GETDLGMESSAGE( lParam ) = WM_CHAR .OR.wParam = VK_ESCAPE 
+         RETURN -1
       ENDIF   
+      RETURN DLGC_WANTMESSAGE 
    ENDIF
-   
    RETURN -1
 
 
@@ -1539,8 +1528,9 @@ METHOD Init CLASS HGroup
 
    IF  ! ::lInit
       Super:Init()
+      SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0 , SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER)
    ENDIF   
-   SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
+   //SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
    RETURN NIL
 
    

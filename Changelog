@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1055 2009-03-19 02:11:14 lfbasso Exp $
+ * $Id: Changelog,v 1.1056 2009-03-20 08:02:22 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,40 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-03-20 04:13 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + new CLAUSES IN #xcommand GET RADIOGROUP [ <ogr> VAR ] <vari>  ;
+             [ ON INIT <bInit> ]        ;
+             [ ON CLICK <bClick> ]      ;
+             [ ON GETFOCUS <bWhen> ]           ;
+    + new CLAUSE IN #xcommand @ <x>,<y> RICHEDIT [ <oEdit> TEXT ] <vari> ;
+             ...
+             [<lallowtabs: ALLOWTABS>]  ; 
+  * source\control.c
+    + add new function HB_FUNC(GETDLGMESSAGE)
+  * source\hcontrol.prg
+    ! fixed events in ONEVENT to CLASSBUTTON
+  * source\hcwindow.prg
+    ! ProcKeyList now process keylist in WINDOW MAIN too
+  * source\hedit.prg
+    ! multiline in entire no text appears selected. 
+  * source\hradio.prg
+    * RADIOGROUP is now an object that can be referenced in its methods and properties
+    + add news properties oParent, Name, Enabled
+    + add news METHODs, ENABLE(),DISABLE(),ISENABLED
+    + new parameters in METHOD NEW (bInit,bclick,bGfocus)
+      is possible disable all radiobutton in RADIOGROUP only call oRadioGroup1:disable() or
+      oRadioGroup1:enabled := .F.
+      Events Click and GetFocus only happens if the radiobuttons not have this same event set
+  * source\hriched.prg
+    + add new clause in METHOD NEW ( lAllowTabs)
+      whose purpose is to allow the use of  the TABS in editing the text 
+      then if ALLOWTAB CTRL+TAB is used to let the control, else TAB
+  * source\htab.prg
+    ! minor fix in method notify
+  * source\hwindow.prg
+    + add new DATA lDisableCtrlTab to control the exchange of windows when they are MDICHILD
+    
 2009-03-18 23:13 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcheck.prg
     - remove METHOD Enable()

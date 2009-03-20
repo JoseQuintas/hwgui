@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.133 2009-03-17 15:29:48 lfbasso Exp $
+ *$Id: hedit.prg,v 1.134 2009-03-20 08:02:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -326,7 +326,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    ELSE
  	    IF msg = WM_SETFOCUS
          //nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
-         SendMessage( ::handle, EM_SETSEL, nPos, nPos )
+         PostMessage( ::handle, EM_SETSEL, 0, 0 )
 	    ENDIF
       IF msg == WM_MOUSEWHEEL
          nPos := HIWORD( wParam )

@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.23 2009-03-16 20:25:48 lfbasso Exp $
+ * $Id: hradio.prg,v 1.24 2009-03-20 08:02:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -17,18 +17,39 @@ CLASS VAR oGroupCurrent
    DATA aButtons
    DATA value  INIT 1
    DATA bSetGet
+   
+   DATA xEnabled     INIT .T. HIDDEN
+   ACCESS Enabled    INLINE ::xEnabled
+   ASSIGN Enabled(xL)  INLINE ::xEnabled := xL, IIF(::xEnabled,::enable(),::disable())
+   ASSIGN Name( cName )   INLINE IIF( !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. cName != ":" .AND. ! "[" $ cName,;
+			(__objAddData( ::oParent, cName ), ::oParent: & ( cName ) := Self),.T.)
+   DATA oParent
+   DATA lInit   INIT .F.
+   DATA bInit
+   DATA bClick
+   DATA bGfocus
 
-   METHOD New( vari, bSetGet )
+   METHOD New( vari, bSetGet, bInit, bClick, bGFocus )
    METHOD EndGroup( nSelected )
    METHOD SetValue( nValue )
    METHOD GetValue()  INLINE ::value
    METHOD Refresh()   INLINE IIf( ::bSetGet != Nil, ::SetValue( Eval( ::bSetGet ) ), .T. )
+   METHOD IsEnabled() INLINE ::xEnabled  
+   METHOD Enable()
+   METHOD Disable()
+   METHOD Init()
+   
 ENDCLASS
 
-METHOD New( vari, bSetGet ) CLASS HRadioGroup
+METHOD New( vari, bSetGet, bInit, bClick, bGFocus ) CLASS HRadioGroup
    ::oGroupCurrent := Self
    ::aButtons := { }
 
+   ::oParent := HWindow():GetMain():oDefaultParent
+   ::bInit := bInit
+   ::bClick := bClick
+   ::bGfocus := bGfocus 
+   
    IF vari != Nil
       IF ValType( vari ) == "N"
          ::value := vari
@@ -59,9 +80,24 @@ METHOD EndGroup( nSelected )  CLASS HRadioGroup
                                                                                 LTrim( Str( ::oGroupCurrent:aButtons[ nSelected ]:id ) ) + ")}" )
          ENDIF
       ENDIF
+      IF EMPTY( ::oParent )
+         ::oParent := ::oGroupCurrent:aButtons[ nLen ]:oParent //GetParentForm()
+      ENDIF   
+      ::Init()
    ENDIF
    ::oGroupCurrent := Nil
    RETURN Nil
+
+METHOD Init CLASS HRadioGroup
+
+   IF ! ::lInit
+     IF ::bInit != Nil
+        ::oparent:lSuspendMsgsHandling := .t.
+        Eval( ::bInit, Self )
+        ::oparent:lSuspendMsgsHandling := .f.
+     ENDIF
+   ENDIF
+   RETURN  NIL
 
 METHOD SetValue( nValue )  CLASS HRadioGroup
    LOCAL nLen
@@ -79,6 +115,25 @@ METHOD SetValue( nValue )  CLASS HRadioGroup
 
    RETURN Nil
 
+METHOD Enable() CLASS HRadioGroup
+   LOCAL i, nLen := Len( ::aButtons )
+   
+   FOR i = 1 TO nLen
+       ::aButtons[ i ]:Enable()
+	 NEXT
+	 ::xEnabled := .T.
+	 
+   RETURN Nil
+ 
+METHOD Disable() CLASS HRadioGroup
+   LOCAL i, nLen := Len( ::aButtons )
+   
+   FOR i = 1 TO nLen
+       ::aButtons[ i ]:Disable()
+	 NEXT
+   ::xEnabled := .F.
+   
+   RETURN Nil
 
 CLASS HRadioButton INHERIT HControl
 
@@ -108,8 +163,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ::title   := cCaption
    ::oGroup  := HRadioGroup():oGroupCurrent
    ::style   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), BS_RADIOBUTTON + ; // BS_AUTORADIOBUTTON+;
-                           WS_CHILD + WS_VISIBLE + BS_NOTIFY + ;
-                           IIf( ::oGroup != Nil .AND. Empty( ::oGroup:aButtons ), WS_GROUP , 0 ) )
+                       WS_CHILD + WS_VISIBLE + BS_NOTIFY + ;
+                       IIf( ::oGroup != Nil .AND. Empty( ::oGroup:aButtons ), WS_GROUP , 0 ) )
    ::oFont   := oFont
    ::nLeft   := nLeft
    ::nTop    := nTop
@@ -139,6 +194,11 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ENDIF
 
    ::oParent:AddControl( Self )
+   
+   IF ::oGroup != Nil
+      bClick := IIF( bClick != Nil, bClick, ::oGroup:bClick )
+      bGFocus := IIF( bGFocus != Nil, bGFocus, ::oGroup:bGFocus )
+   ENDIF
    IF bClick != Nil .AND. ( ::oGroup == Nil .OR. ::oGroup:bSetGet == Nil )
       ::bLostFocus := bClick
    ENDIF
@@ -228,8 +288,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip,
 
 METHOD onevent( msg, wParam, lParam ) CLASS HRadioButton
 	 LOCAL oParent := ::oParent
-	 LOCAL dc, itemRect
-	  
+	 
    IF ::bOther != Nil                                         
       IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
          RETURN 0
@@ -250,15 +309,17 @@ METHOD onevent( msg, wParam, lParam ) CLASS HRadioButton
       IF  ( wParam == VK_RETURN ) 
          __VALID(self)
       ENDIF  
-      
-   ELSEIF msg == WM_KEYUP
-      
-	 ELSEIF  msg = WM_GETDLGCODE
+   ELSEIF msg == WM_NOTIFY 
+         
+	 ELSEIF  msg = WM_GETDLGCODE .AND.  wParam != 0 
+	    RETURN DLGC_WANTMESSAGE 
+	    /*
       IF wParam = VK_TAB //.AND.  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
          GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
       ELSEIF wParam != 0 
          RETURN ButtonGetDlgCode( lParam )
       ENDIF   
+      */
    ENDIF
    
    RETURN -1

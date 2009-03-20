@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.75 2009-03-20 08:02:23 lfbasso Exp $
+ * $Id: control.c,v 1.76 2009-03-20 12:08:21 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1913,6 +1913,7 @@ HB_FUNC(GETDLGMESSAGE)
       }  
    }
    hb_retnl( 0);    
+}
 
 HB_FUNC(HANDLETOPTR)
 {

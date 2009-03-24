@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.22 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hgridex.prg,v 1.23 2009-03-24 02:21:13 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -248,10 +248,11 @@ METHOD AddRow( a , bupdate ) CLASS HGRIDEX
    RETURN nil
 
 METHOD Notify( lParam )  CLASS HGRIDEX
-   LOCAL Res, iSelect
+   LOCAL Res, iSelect, oParent := ::GetParentForm()
+   
    IF GetNotifyCode( lParam ) == NM_CUSTOMDRAW .and. GETNOTIFYCODEFROM( lParam ) == ::Handle
       Res := PROCESSCUSTU( ::handle, lParam, ::aColors )
-      Hwg_SetDlgResult( ::oParent:Handle, Res )
+      Hwg_SetDlgResult( oParent:Handle, Res )
       RETURN Res
    ENDIF
 
@@ -278,7 +279,7 @@ IF GetNotifyCode( lParam ) == LVN_COLUMNCLICK //.and. GETNOTIFYCODEFROM(lParam) 
 ENDIF
 Res := ListViewNotify( Self, lParam )
 IF ValType( Res ) == "N"
-   Hwg_SetDlgResult( ::oParent:Handle, Res )
+   Hwg_SetDlgResult( oParent:Handle, Res )
    RETURN 1
 ENDIF
 RETURN Res

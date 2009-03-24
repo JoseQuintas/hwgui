@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.75 2009-03-20 08:02:23 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.76 2009-03-24 02:21:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -357,7 +357,7 @@ CLASS VAR aMessages INIT { ;
 
 ENDCLASS
 
-METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate ) CLASS HMDIChildWindow
+METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMDIChildWindow
 
    HB_SYMBOL_UNUSED( lShow )
    HB_SYMBOL_UNUSED( lMaximized )
@@ -367,14 +367,15 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate ) CLASS HMDIC
    DEFAULT lShow := .T.
    lMinimized := !EMPTY( lMinimized ) .AND. lMinimized
    lMaximized := !EMPTY( lMaximized ) .AND. lMaximized
-
+   lCentered  := ( ! EMPTY( lCentered ) .AND. lCentered ) .OR. Hwg_BitAND( ::Style, DS_CENTER ) != 0
+   
    CreateGetList( Self )
    // Hwg_CreateMdiChildWindow( Self )
 
    ::Type := WND_MDICHILD
    ::oClient := HWindow():aWindows[2]
    ::rect := GetWindowRect( ::handle )   
-   IF !EMPTY( lCenter ) .AND. lCenter
+   IF lCentered 
       ::nLeft := ( ::oClient:nWidth - ::nWidth ) / 2 
       ::nTop  := ( ::oClient:nHeight - ::nHeight ) / 2  
    ENDIF
@@ -390,7 +391,7 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate ) CLASS HMDIC
       Eval( ::bInit,Self )
    ENDIF
    */
-   IF !EMPTY( lCenter ) .AND. lCenter
+   IF lCentered 
       ::nLeft := ( ::oClient:nWidth - ::nWidth ) / 2 - 0
       ::nTop  := ( ::oClient:nHeight - ::nHeight ) / 2  - 0
    ENDIF

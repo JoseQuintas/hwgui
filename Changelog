@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1056 2009-03-20 08:02:22 lfbasso Exp $
+ * $Id: Changelog,v 1.1057 2009-03-24 02:20:54 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-03-23 23:13 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * hgridex.prg
+    ! fixed GPF in METHOD NOTIFY
+      + oParent := ::GetParentForm()
+      - Hwg_SetDlgResult( ::oParent:Handle, Res )
+      + Hwg_SetDlgResult( oParent:Handle, Res )
+  * hwindow.prg
+    + add suport clause DS_CENTER in MDICHILD
 
 2009-03-20 04:13 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch

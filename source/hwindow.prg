@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.76 2009-03-24 02:21:14 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.77 2009-03-24 02:28:19 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -199,7 +199,7 @@ CLASS VAR aMessages INIT { ;
    METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,   ;
                oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
                cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bRefresh, bMdiMenu )
-   METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate )
+   METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu, cTooltip )
    METHOD GetMdiActive()  INLINE ::FindWindow( SendMessage( ::GetMain():handle, WM_MDIGETACTIVE, 0, 0 ) )
@@ -247,7 +247,7 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
     */
    RETURN Self
 
-METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate ) CLASS HMainWindow
+METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMainWindow
    LOCAL oWndClient, handle, lres
 
    DEFAULT lShow := .T.
@@ -351,7 +351,7 @@ CLASS VAR aMessages INIT { ;
    DATA aRectSave
    DATA oWndParent
    
-   METHOD Activate( lShow, lMaximized, lMinimized, lCenter, bActivate )
+   METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD SetParent( oParent ) INLINE ::oWndParent := oParent 
 
@@ -362,7 +362,7 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMD
    HB_SYMBOL_UNUSED( lShow )
    HB_SYMBOL_UNUSED( lMaximized )
    HB_SYMBOL_UNUSED( lMinimized )
-   HB_SYMBOL_UNUSED( lCenter )
+   HB_SYMBOL_UNUSED( lCentered )
 
    DEFAULT lShow := .T.
    lMinimized := !EMPTY( lMinimized ) .AND. lMinimized
@@ -458,7 +458,7 @@ CLASS HChildWindow INHERIT HWindow
    METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
                bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
                cAppName, oBmp, cHelp, nHelpId, bRefresh )
-   METHOD Activate( lShow, lMaximized, lMinimized,lCenter, bActivate )
+   METHOD Activate( lShow, lMaximized, lMinimized,lCentered, bActivate )
    METHOD onEvent( msg, wParam, lParam )
 
 ENDCLASS
@@ -488,7 +488,7 @@ METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
     */
    RETURN Self
 
-METHOD Activate( lShow, lMaximized, lMinimized,lCenter, bActivate ) CLASS HChildWindow
+METHOD Activate( lShow, lMaximized, lMinimized,lCentered, bActivate ) CLASS HChildWindow
 	 LOCAL nReturn
 	 
    DEFAULT lShow := .T.
@@ -510,7 +510,7 @@ METHOD Activate( lShow, lMaximized, lMinimized,lCenter, bActivate ) CLASS HChild
 
    Hwg_ActivateChildWindow( ( lShow == Nil .OR. lShow ), ::handle, lMaximized, lMinimized )
 
-   IF !EMPTY( lCenter ) .AND. lCenter 
+   IF !EMPTY( lCentered ) .AND. lCentered 
 	    IF  ! EMPTY( ::oParent )
         ::nLeft := (::oParent:nWidth - ::nWidth ) / 2 
         ::nTop  := (::oParent:nHeight - ::nHeight) / 2  

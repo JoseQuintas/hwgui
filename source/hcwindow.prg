@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.40 2009-03-20 08:02:23 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.41 2009-03-24 12:37:11 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -229,7 +229,7 @@ METHOD END()  CLASS HCustomWindow
 //----------------------------------------------------------------------------//
 
 METHOD GetParentForm( oCtrl )  CLASS HCustomWindow
-LOCAL oForm := oCtrl 
+LOCAL oForm := IIF( EMPTY( oCtrl ), Self, oCtrl )
    DO WHILE ( oForm:oParent ) != Nil .AND. ! __ObjHasMsg( oForm, "GETLIST" )
 	    oForm := oForm:oParent
    ENDDO

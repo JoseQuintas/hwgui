@@ -1,5 +1,5 @@
  /*
- * $Id: grid.c,v 1.30 2008-10-08 18:06:39 lculik Exp $
+ * $Id: grid.c,v 1.31 2009-03-25 13:15:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -60,7 +60,7 @@ HB_FUNC( LISTVIEW_CREATE )
 {
    HWND hwnd = (HWND) HB_PARHANDLE(1);
    HWND handle;
-   int style = hb_parni(7) ;
+   int style = LVS_SHOWSELALWAYS | hb_parni(7) ;
 
    if ( hb_parl(8) )
    {
@@ -72,7 +72,7 @@ HB_FUNC( LISTVIEW_CREATE )
       style = style | LVS_NOSCROLL ;
    }
 
-   handle = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW,"",
+   handle = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW,NULL,
                            style ,
                            hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
                            hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
@@ -301,7 +301,7 @@ HB_FUNC( LISTVIEW_SETVIEW)
       SetWindowLong(hWndListView,
                     GWL_STYLE,
                     (dwStyle & ~LVS_TYPEMASK) | dwView);
-      RedrawWindow( (HWND) HB_PARHANDLE( 1 ), NULL , NULL , RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW ) ;
+    //  RedrawWindow( (HWND) HB_PARHANDLE( 1 ), NULL , NULL , RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW ) ;
    }
 }
 

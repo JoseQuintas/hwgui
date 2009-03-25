@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1057 2009-03-24 02:20:54 lfbasso Exp $
+ * $Id: Changelog,v 1.1058 2009-03-25 13:15:46 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,14 +7,23 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
-
+2009-03-25 10:13 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\grid.c
+    + added LVS_SHOWSELALWAYS in style in LISTVIEW_CREATE
+    - RedrawWindow ... in HB_FUNC( LISTVIEW_SETVIEW)
+  * source\hgridex.prg
+    + add METHOD SETVIEW( style )  INLINE LISTVIEW_SETVIEW( ::handle, style )
+    ! fixed Return in NOTIFY case parent = HTAB
+  * source\hradio.prg
+    ! fixed oParent in RADIOGROUP
+    
 2009-03-23 23:13 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-  * hgridex.prg
+  * source\hgridex.prg
     ! fixed GPF in METHOD NOTIFY
       + oParent := ::GetParentForm()
       - Hwg_SetDlgResult( ::oParent:Handle, Res )
       + Hwg_SetDlgResult( oParent:Handle, Res )
-  * hwindow.prg
+  * source\hwindow.prg
     + add suport clause DS_CENTER in MDICHILD
 
 2009-03-20 04:13 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>

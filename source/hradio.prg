@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.24 2009-03-20 08:02:23 lfbasso Exp $
+ * $Id: hradio.prg,v 1.25 2009-03-25 13:15:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -45,7 +45,7 @@ METHOD New( vari, bSetGet, bInit, bClick, bGFocus ) CLASS HRadioGroup
    ::oGroupCurrent := Self
    ::aButtons := { }
 
-   ::oParent := HWindow():GetMain():oDefaultParent
+   ::oParent := IIF( HWindow():GetMain() != Nil, HWindow():GetMain():oDefaultParent, Nil )
    ::bInit := bInit
    ::bClick := bClick
    ::bGfocus := bGfocus 

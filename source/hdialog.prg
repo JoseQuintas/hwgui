@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.87 2009-03-09 21:11:21 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.88 2009-03-27 16:26:44 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -261,7 +261,7 @@ METHOD GetActive() CLASS HDialog
 // ------------------------------------
 
 STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
-   LOCAL nReturn := 1
+   LOCAL nReturn := 1,  nFocu := 0
 
    HB_SYMBOL_UNUSED( wParam )
    HB_SYMBOL_UNUSED( lParam )
@@ -278,9 +278,6 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       hwg__SetMenu( oDlg:handle, oDlg:menu[ 5 ] )
    ENDIF
 
-   InitControls( oDlg, .T. )
-   InitObjects( oDlg )
-
    IF oDlg:oIcon != Nil
       SendMessage( oDlg:handle, WM_SETICON, 1, oDlg:oIcon:handle )
    ENDIF
@@ -290,6 +287,12 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    IF oDlg:oFont != Nil
       SendMessage( oDlg:handle, WM_SETFONT, oDlg:oFont:handle, 0 )
    ENDIF
+
+   InitControls( oDlg, .T. )
+   InitObjects( oDlg )
+   
+   nFocu := ASCAN( oDlg:aControls,{| o | Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_TABSTOP ) != 0 .AND. Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_DISABLED ) = 0 }) 
+	 nFocu := IIF( nFocu > 0, oDlg:aControls[ nFocu ]:Handle, nFocu )
 
    IF oDlg:bInit != Nil
       oDlg:lSuspendMsgsHandling := .t.
@@ -301,10 +304,13 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
          ENDIF
          nReturn := 1
       ENDIF
-      oDlg:lSuspendMsgsHandling := .F.
    ENDIF
-
-   SetFocus( oDlg:handle )
+   oDlg:nInitFocus := IIF( VALTYPE( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )   
+	 IF nFocu = oDlg:nInitFocus 
+	    oDlg:nInitFocus := 0
+	 ENDIF
+   //SetFocus( oDlg:handle )
+   oDlg:lSuspendMsgsHandling := .F.   
    
    // CALL DIALOG NOT VISIBLE
    IF oDlg:nInitShow = SW_HIDE
@@ -438,13 +444,15 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
 
    ENDIF
 
-   IF ( ValType( oDlg:nInitFocus ) = "O" .OR. oDlg:nInitFocus > 0 ) .AND. ! isWindowVisible( oDlg:handle )
-      oDlg:nInitFocus := IIf( ValType( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )
-      //SETFOCUS(oDlg:nInitFocus)
+   //IF ( ValType( oDlg:nInitFocus ) = "O" .OR. oDlg:nInitFocus > 0 ) .AND. ! isWindowVisible( oDlg:handle )
+   //   oDlg:nInitFocus := IIf( ValType( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )
+   IF oDlg:nInitFocus > 0 .AND. !isWindowVisible( oDlg:handle )         
       PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, oDlg:nInitFocus , 1 )
       RETURN 1
    ENDIF
-
+   IF ( __ObjHasMsg(oDlg,"NINITFOCUS") .AND. oDlg:nInitFocus > 0 ) 
+      oDlg:nInitFocus := 0
+   ENDIF
    IF oDlg:aEvents != Nil .AND. ! oDlg:lSuspendMsgsHandling .AND. oDlg:nInitFocus == 0 .AND. ;
       ( i := AScan( oDlg:aEvents, { | a | a[ 1 ] == iParHigh.and.a[ 2 ] == iParLow } ) ) > 0
       Eval( oDlg:aEvents[ i, 3 ], oDlg, iParLow )
@@ -474,11 +482,11 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       .AND. aMenu[ 1, i, 1 ] != Nil
       Eval( aMenu[ 1, i, 1 ] )
    ENDIF
-
+	 /*
    IF  __ObjHasMsg( oDlg, "NINITFOCUS" ) .AND. oDlg:nInitFocus > 0
       oDlg:nInitFocus := 0
    ENDIF
-
+	 */
    RETURN 1
 
 FUNCTION DlgMouseMove()

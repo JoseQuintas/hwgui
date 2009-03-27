@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.75 2009-03-17 15:29:48 lfbasso Exp $
+ *$Id: windows.ch,v 1.76 2009-03-27 16:26:44 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -53,13 +53,15 @@
 #define WM_TIMER                        275
 #define WM_HSCROLL                      276
 #define WM_VSCROLL                      277
-* nando
+
 #define WM_INITMENU                     278    //= $0116
 #define WM_INITMENUPOPUP                279    //= $0117
 #define WM_MENUSELECT                   287    //= $011F
 #define WM_MENUCHAR                     288    //= $0120
-* fim nando
+
 #define WM_ENTERIDLE                    289
+#define WM_CHANGEUISTATE                295   //0x127 
+#define WM_UPDATEUISTATE                296   //0x128
 
 #define WM_CTLCOLORMSGBOX               306     // 0x0132
 #define WM_CTLCOLOREDIT                 307     // 0x0133
@@ -102,6 +104,14 @@
 #define SC_MAXIMIZE                   61488   // 0xF030
 #define SC_CLOSE                      61536   // 0xF060
 #define SC_RESTORE                    61728   // 0xF120
+
+/*
+* CONSTANTS TO   WM_CHANGEUISTATE
+*/
+#define UIS_CLEAR          2
+#define UIS_INITIALIZE     3
+#define UISF_HIDEACCEL     2
+#define UISF_HIDEFOCUS     3
 
 /*
  * Dialog Box Command IDs

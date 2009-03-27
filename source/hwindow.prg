@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.77 2009-03-24 02:28:19 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.78 2009-03-27 16:26:44 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -788,6 +788,9 @@ STATIC FUNCTION onMdiCreate( oWnd, lParam )
          ENDIF
       ENDIF
    ENDIF
+   //draw rect focus
+   SENDMESSAGE( oWnd:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )
+   SENDMESSAGE( oWnd:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL ), 0 )
    
    RETURN - 1
 

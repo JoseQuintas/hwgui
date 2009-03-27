@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.134 2009-03-20 08:02:23 lfbasso Exp $
+ *$Id: hedit.prg,v 1.135 2009-03-27 16:26:44 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -64,7 +64,7 @@ CLASS VAR winclass   INIT "EDIT"
    METHOD GetApplyKey( cKey ) PROTECTED
    METHOD Valid() //PROTECTED BECAUSE IS CALL IN HDIALOG
    METHOD When() //PROTECTED
-   METHOD Change() PROTECTED
+   METHOD onChange() //PROTECTED
    METHOD IsBadDate( cBuffer ) PROTECTED
    METHOD Untransform( cBuffer ) PROTECTED
    METHOD FirstEditable() PROTECTED
@@ -98,6 +98,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ENDIF
    ::bSetGet := bSetGet
    ::bKeyDown := bKeyDown
+   ::bChange := bChange
    ::bOther := bOther
    IF Hwg_BitAnd( nStyle, ES_MULTILINE ) != 0
       ::style := Hwg_BitOr( ::style, ES_WANTRETURN )
@@ -120,7 +121,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    ::Activate()
 
-   IF bSetGet != Nil
+   IF ::bSetGet != Nil
       ::bGetFocus := bGfocus
       ::bLostFocus := bLfocus
       IF bGfocus != Nil
@@ -138,10 +139,6 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
          ::bValid := { | | ::Valid( ) }
       ENDIF
    ENDIF
-   IF bChange != Nil .OR. ::lMultiLine
-      ::bChange := bChange
-      ::oParent:AddEvent( EN_CHANGE, Self, { | | ::Change( ) },, "onChange"  )
-   ENDIF
    ::bColorOld := ::bcolor
    ::tColorOld := IIf( tcolor = Nil, 0, ::tcolor )
    
@@ -156,6 +153,20 @@ METHOD Activate CLASS HEdit
       ::handle := CreateEdit( ::oParent:handle, ::id, ;
                               ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::Init()
+   ENDIF
+   RETURN Nil
+
+METHOD Init()  CLASS HEdit
+
+   IF ! ::lInit
+      Super:Init()
+      ::nHolder := 1
+      SetWindowObject( ::handle, Self )
+      Hwg_InitEditProc( ::handle )
+      ::Refresh()
+      IF ::bChange != Nil .OR. ::lMultiLine
+         ::oParent:AddEvent( EN_CHANGE, Self, { | | ::onChange( ) },, "onChange"  )
+      ENDIF
    ENDIF
    RETURN Nil
 
@@ -438,17 +449,6 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
 
    RETURN Self
 
-METHOD Init()  CLASS HEdit
-
-   IF ! ::lInit
-      Super:Init()
-      ::nHolder := 1
-      SetWindowObject( ::handle, Self )
-      Hwg_InitEditProc( ::handle )
-      ::Refresh()
-   ENDIF
-
-   RETURN Nil
 
 METHOD Refresh()  CLASS HEdit
    LOCAL vari
@@ -945,13 +945,14 @@ METHOD Valid( ) CLASS HEdit
    ::oparent:lSuspendMsgsHandling := .F.
    RETURN .T.
 
-METHOD Change( ) CLASS HEdit
+METHOD onChange( ) CLASS HEdit
    LOCAL  nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
 
+	 /*
    IF ! CheckFocus( Self, .T. )
       RETURN .t.
    ENDIF
-
+	 */
    IF ::lMultiLine 
      ::title := ::GetText()
   	 IF ::bSetGet != Nil
@@ -960,7 +961,7 @@ METHOD Change( ) CLASS HEdit
    ENDIF
    IF ::bChange != Nil 
       ::oparent:lSuspendMsgsHandling := .T.
-      Eval( ::bChange, ::title, Self )
+      Eval( ::bChange, ::title, Self, nPos )
       ::oparent:lSuspendMsgsHandling := .F.
 	 ENDIF
    //SendMessage( ::handle,  EM_SETSEL, 0, nPos )

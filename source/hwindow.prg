@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.78 2009-03-27 16:26:44 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.79 2009-03-28 14:35:04 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -407,8 +407,12 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMD
       SETFOCUS( ::nInitFocus )
       ::nFocus := ::nInitFocus
    ELSEIF GETFOCUS() = ::handle .AND. Len( ::acontrols ) > 0
-      SETFOCUS( ::acontrols[ ASCAN( ::acontrols, { | o | Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_TABSTOP ) != 0 } ) ]:handle )
-      ::nFocus := GetFocus()
+      ::nFocus := ASCAN( ::aControls,{|o| Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_TABSTOP ) != 0 .AND. ;
+			        Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_DISABLED ) = 0 } )
+			IF ::nFocus > 0        
+         SETFOCUS( ::acontrols[ ::nFocus ]:handle )
+         ::nFocus := GetFocus() //get::acontrols[1]:handle
+      ENDIF   
    ENDIF
 
    RETURN Nil
@@ -440,7 +444,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
          ENDIF   
          onTrackScroll( Self, msg, wParam, lParam )
       ELSEIF msg = WM_NOTIFY .AND.!::lSuspendMsgsHandling
-         IF ( oCtrl := ::FindControl( , GetFocus()) ) != Nil .AND. oCtrl:ClassName != "HTAB"
+         IF ( oCtrl := ::FindControl( , GetFocus() ) ) != Nil .AND. oCtrl:ClassName != "HTAB"
             ::nFocus := oCtrl:handle
             SendMessage( oCtrl:handle, msg, wParam, lParam )
          ENDIF
@@ -526,7 +530,12 @@ METHOD Activate( lShow, lMaximized, lMinimized,lCentered, bActivate ) CLASS HChi
       SETFOCUS( ::nInitFocus )
       ::nFocus := ::nInitFocus
    ELSEIF GETFOCUS() = ::handle .AND. Len( ::acontrols ) > 0
-      SETFOCUS( ::acontrols[ ASCAN( ::acontrols,{|o| Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_TABSTOP ) != 0 })]:handle )
+      ::nFocus := ASCAN( ::aControls,{|o| Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_TABSTOP ) != 0 .AND. ;
+			        Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_DISABLED ) = 0 } )
+  		IF ::nFocus > 0        
+         SETFOCUS( ::acontrols[ ::nFocus ]:handle )
+         ::nFocus := GetFocus() //get::acontrols[1]:handle
+      ENDIF   
    ENDIF
    RETURN Nil
 
@@ -717,15 +726,15 @@ STATIC FUNCTION onSysCommand( oWnd, wParam )
          RETURN 0
       ENDIF
    ELSEIF wParam == SC_MAXIMIZE  .AND. oWnd:type == WND_MDICHILD .AND. oWnd:lChild
-	     ars := aclone(oWnd:aRectSave)
+	     ars := aClone( oWnd:aRectSave )
 	     IF oWnd:nwidth = oWnd:oclient:nWidth 
 	        // restore
-	        MoveWindow(oWnd:handle,oWnd:aRectSave[ 1 ],oWnd:aRectSave[ 2 ],oWnd:aRectSave[ 3 ],oWnd:aRectSave[ 4 ])
+	        MoveWindow( oWnd:handle, oWnd:aRectSave[ 1 ], oWnd:aRectSave[ 2 ],oWnd:aRectSave[ 3 ], oWnd:aRectSave[ 4 ] )
 	     ELSE
   	      // maximized
-  	      MoveWindow(oWnd:handle,oWnd:oclient:nLeft,oWnd:oclient:nTop, oWnd:oclient:nWidth, oWnd:oclient:nHeight)
+  	      MoveWindow( oWnd:handle, oWnd:oclient:nLeft, oWnd:oclient:nTop, oWnd:oclient:nWidth, oWnd:oclient:nHeight )
 	     ENDIF
-	     oWnd:aRectSave := aclone(ars)
+	     oWnd:aRectSave := aClone( ars )
 	     RETURN 0
    ELSEIF wParam == SC_MAXIMIZE	     
    

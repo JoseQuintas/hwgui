@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1059 2009-03-27 16:26:43 lfbasso Exp $
+ * $Id: Changelog,v 1.1060 2009-03-28 14:35:04 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-03-28 11:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! fix in METHOD BUTTONUP
+      changed in IF GetActiveWindow( ) = ParentGetDialog( Self ):Handle => ::GetParentForm( ):handle
+  * source\hedit.prg
+   ! now only be considered if the style of multiline field contains ES_MULTILINE + ES_WANTRETURN 
+      thus it contains only ES_MULTILINE is a normal edit
+  * source\hwindow.prg
+  ! fixed problem in INITFOCUS if first control is DISABLED
 
 2009-03-27 13:13 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\windows.ch

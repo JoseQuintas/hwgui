@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.135 2009-03-27 16:26:44 lfbasso Exp $
+ *$Id: hedit.prg,v 1.136 2009-03-28 14:35:04 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -101,8 +101,10 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::bChange := bChange
    ::bOther := bOther
    IF Hwg_BitAnd( nStyle, ES_MULTILINE ) != 0
-      ::style := Hwg_BitOr( ::style, ES_WANTRETURN )
-      ::lMultiLine := .T.
+      //::style := Hwg_BitOr( ::style, ES_WANTRETURN )
+      IF Hwg_BitAnd( nStyle, ES_WANTRETURN ) != 0
+         ::lMultiLine := .T.
+      ENDIF   
    ENDIF
    IF ( ! Empty( cPicture ) .or. cPicture == Nil) .And. ( nMaxLength != Nil .AND. ! Empty( nMaxLength ) )
       ::nMaxLength := nMaxLength

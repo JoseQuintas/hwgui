@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.136 2009-03-28 14:35:04 lfbasso Exp $
+ *$Id: hedit.prg,v 1.137 2009-04-02 20:52:32 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -316,7 +316,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                                                  IsCtrlShift( .f., .t. ) )
                SetFocus( nextHandle )
                RETURN 0
-            ELSEIF wParam == VK_RETURN .AND. oParent:oParent:Type < WND_DLG_RESOURCE
+            ELSEIF wParam == VK_RETURN .AND. ::GetParentForm():Type < WND_DLG_RESOURCE
                GetSkip( oParent, ::handle, , 1 )
                RETURN 0
             ENDIF

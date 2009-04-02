@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.25 2009-03-25 13:15:49 lfbasso Exp $
+ * $Id: hradio.prg,v 1.26 2009-04-02 20:52:33 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -17,12 +17,14 @@ CLASS VAR oGroupCurrent
    DATA aButtons
    DATA value  INIT 1
    DATA bSetGet
-   
+
+   DATA   xName          HIDDEN
+   ACCESS Name           INLINE ::xName
+   ASSIGN Name( cName )  INLINE IIF( !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. ! ":" $ cName .AND. ! "[" $ cName,;
+			( ::xName := cName, __objAddData( ::oParent, cName ), ::oParent: & ( cName ) := Self), Nil)
    DATA xEnabled     INIT .T. HIDDEN
    ACCESS Enabled    INLINE ::xEnabled
    ASSIGN Enabled(xL)  INLINE ::xEnabled := xL, IIF(::xEnabled,::enable(),::disable())
-   ASSIGN Name( cName )   INLINE IIF( !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. cName != ":" .AND. ! "[" $ cName,;
-			(__objAddData( ::oParent, cName ), ::oParent: & ( cName ) := Self),.T.)
    DATA oParent
    DATA lInit   INIT .F.
    DATA bInit

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1061 2009-04-02 20:53:14 lfbasso Exp $
+ * $Id: Changelog,v 1.1062 2009-04-03 13:52:35 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-04-03 11:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! fix setfocus in METHOD BUTTONUP
+
+      
 2009-04-02 17:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg
     ! fix in onevent msg keydown getparent

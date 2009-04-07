@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.20 2009-02-27 12:25:17 lfbasso Exp $
+ * $Id: inspect.prg,v 1.21 2009-04-07 09:09:26 alkresin Exp $
  *
  * Designer
  * Object Inspector
@@ -442,8 +442,12 @@ Memvar oDesigner
         ENDIF
       NEXT
    ENDIF
+   oCombo:Requery()
+   oCombo:SetItem(n + 1)
+   /*
    oCombo:value := n + 1
    oCombo:Refresh()
+   */
    InspSetBrowse()
 Return Nil
 
@@ -467,8 +471,12 @@ Memvar oDesigner
          Return InspSetCombo()
       ENDIF
    ENDIF
+   oCombo:Requery()
+   oCombo:SetItem(n + 1)
+   /*
    oCombo:value := n + 1
    oCombo:Refresh()
+   */
    InspSetBrowse()
 Return Nil
 

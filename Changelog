@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1062 2009-04-03 13:52:35 lfbasso Exp $
+ * $Id: Changelog,v 1.1063 2009-04-07 09:09:24 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,10 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-04-07 13:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils\designer\designer.prg
+    * Initial window size has been changed ( I don't like maximized windows ).
+  * utils\designer\inspect.prg
+    ! Designer's behavior has been fixed - the problem was caused by the changes in
+      combobox implementation.
+
 2009-04-03 11:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
     ! fix setfocus in METHOD BUTTONUP
-
       
 2009-04-02 17:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg

@@ -1,7 +1,7 @@
 /*
 /*
 /*
- * $Id: designer.prg,v 1.35 2008-11-26 13:55:00 lculik Exp $
+ * $Id: designer.prg,v 1.36 2009-04-07 09:09:26 alkresin Exp $
  *
  * Designer
  * Main file
@@ -35,7 +35,7 @@ REQUEST INITTRACKBAR
 REQUEST HTIMER, DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK
 REQUEST BARCODE
 
-REQUEST GETPRINTERS
+REQUEST HWG_GETPRINTERS
 
 #ifndef __XHARBOUR__
    ANNOUNCE GTSYS
@@ -102,7 +102,7 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
    ENDIF
 
 #ifdef INTEGRATED
-   INIT DIALOG oDesigner:oMainWnd AT 0,0 SIZE 280,200 TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
+   INIT DIALOG oDesigner:oMainWnd AT 0,0 SIZE 400,200 TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
       FONT oFont                          ;
       ON INIT {|o|StartDes(o,p0,p1)}   ;
       ON EXIT {||EndIde()}
@@ -110,10 +110,10 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
 
  //  INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE 280,200 TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
 
-   INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE Getdesktopwidth(),GetdesktopHeight()-21 ;
+   INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE 400,200 ;
        TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
-      FONT oFont                                                  ;
-      ON EXIT {||EndIde()}
+       FONT oFont                                                ;
+       ON EXIT {||EndIde()}
 
 #endif
 
@@ -177,9 +177,7 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
        CheckMenuItem(oDesigner:oMainWnd:handle,1052,.T.)
    endif
 
-
    @ 0,0 PANEL oPanel SIZE 280,200 ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,y-21),statusbarmsg('')}
-
 
    IF !oDesigner:lSingleForm
       @ 2,3 OWNERBUTTON OF oPanel       ;
@@ -350,10 +348,8 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
    ACTIVATE DIALOG oDesigner:oMainWnd NOMODAL
 #endif
 #else
-   *OMAINWIN:SHOW(.T.)
    StartDes( oDesigner:oMainWnd,p0,p1 )
-   MoveWindow( oDesigner:oMainWnd:handle,0,0,Getdesktopwidth(),150)
-  ACTIVATE WINDOW oDesigner:oMainWnd  MAXIMIZED
+   ACTIVATE WINDOW oDesigner:oMainWnd
 #endif
 
 
@@ -423,7 +419,7 @@ ENDCLASS
 
 Static Function StartDes( oDlg,p1,cForm )
 
-   MoveWindow( oDlg:handle,0,0,280,210 )
+   MoveWindow( oDlg:handle,0,0,oDlg:nWidth+10,oDlg:nHeight )
 
    IF p1 != Nil .AND. Left( p1,1 ) $ "-/"
       IF ( p1 := Substr( p1,2,1 ) ) == "n"

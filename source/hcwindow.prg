@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.41 2009-03-24 12:37:11 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.42 2009-04-08 14:01:25 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -48,7 +48,7 @@ CLASS VAR oDefaultParent SHARED
    DATA oParent
    DATA title
    ACCESS Caption  INLINE ::title   
-	 ASSIGN Caption(x) INLINE ::SetTextClass( x ) 
+	 ASSIGN Caption( x ) INLINE ::SetTextClass( x ) 
    DATA Type
    DATA nTop, nLeft, nWidth, nHeight
    DATA minWidth   INIT - 1
@@ -101,7 +101,9 @@ CLASS VAR oDefaultParent SHARED
    METHOD ScrollHV( msg, wParam, lParam )
    METHOD SetTextClass ( x ) HIDDEN 
    METHOD GetParentForm( oCtrl )
-
+   METHOD ActiveControl()  INLINE ::FindControl( , GetFocus() )
+   METHOD Release()        INLINE ::DelControl( Self )
+   
 ENDCLASS
 
 METHOD AddEvent( nEvent, oCtrl, bAction, lNotify, cMethName ) CLASS HCustomWindow
@@ -539,7 +541,10 @@ PROCEDURE HB_GT_DEFAULT_NUL()
 
 FUNCTION ProcKeyList( oCtrl, wParam, oMain ) 
 LOCAL oParent, nCtrl,nPos
-    
+
+    IF ( wParam = VK_RETURN .OR. wParam = VK_ESCAPE ) .AND.  ProcOkCancel( oCtrl, wParam )    
+       RETURN .F.
+    ENDIF
     IF wParam != VK_SHIFT  .AND. wParam != VK_CONTROL .AND. wParam != VK_MENU
        oParent := IIF( oMain != Nil, oMain, ParentGetDialog( oCtrl ) )
        IF oParent != Nil .AND. ! Empty( oParent:KeyList )
@@ -554,3 +559,33 @@ LOCAL oParent, nCtrl,nPos
        ENDIF
 		ENDIF
     RETURN .F.
+
+FUNCTION ProcOkCancel( oCtrl, nKey )
+   Local oWin := oCtrl:GetParentForm()
+   Local iParHigh := IIF( nKey = VK_RETURN, IDOK, IDCANCEL )  
+
+   
+   IF oWin:Type >= WND_DLG_RESOURCE .OR. ( nKey != VK_RETURN .AND. nKey != VK_ESCAPE )
+      Return .F.
+	 ENDIF
+   IF iParHigh == IDOK
+	    IF ( oCtrl := oWin:FindControl( IDOK ) ) != Nil 
+	       oCtrl:SetFocus()
+	       SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
+   	     IF oWin:lExitOnEnter
+   	        oWin:close()  
+	       ENDIF   
+	    ENDIF   
+      RETURN .T.
+   ELSEIF iParHigh == IDCANCEL
+	    IF ( oCtrl := oWin:FindControl( IDCANCEL ) ) != Nil
+	       oCtrl:SetFocus()
+         SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
+      ELSEIF oWin:lExitOnEsc 
+          oWin:close()  
+      ELSEIF ! oWin:lExitOnEsc
+			   oWin:nLastKey := 0
+			ENDIF   
+      RETURN .T.
+	 ENDIF
+   RETURN .F.

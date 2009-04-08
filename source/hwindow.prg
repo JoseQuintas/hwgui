@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.79 2009-03-28 14:35:04 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.80 2009-04-08 14:01:25 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -68,6 +68,8 @@ CLASS VAR szAppName  SHARED INIT "HwGUI_App"
    DATA GetList  INIT { }      // The array of GET items in the dialog
    DATA KeyList  INIT { }      // The array of keys ( as Clipper's SET KEY )
    DATA nLastKey INIT 0
+   DATA lExitOnEnter INIT .F.
+   DATA lExitOnEsc INIT .F.
    DATA bCloseQuery
    Data nFocus  INIT 0
 	 DATA oClient
@@ -672,7 +674,6 @@ STATIC FUNCTION onMove( oWnd )
 			     oWnd:nTop - (HWindow():aWindows[ 1 ]:aOffset[ 2 ] + HWindow():aWindows[ 1 ]:aOffset[ 4 ] + 21 ),; // 21 - menu
 					 oWnd:nWidth,oWnd:nHeight} 
    ENDIF   
-
 
    RETURN - 1
 

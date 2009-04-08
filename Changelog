@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1065 2009-04-08 10:32:07 alkresin Exp $
+ * $Id: Changelog,v 1.1066 2009-04-08 14:01:23 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,22 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-04-08 10:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\drawwidg.prg
+    + CLASS HBitmap add parameters width ,height in AddResource, AddFile and parameter
+      lTransparent in AddFile
+  * source\hcwindow.prg
+    + add METHOD ActiveControl
+    + add METHOD Release
+    + added FUNCTION ProcOkCancel to process events in IDOK and IDCANCEL window MDICHILD 
+      to have the same behavior of Dialogs
+  * source\hedit.prg
+    ! fixed key press ESCAPE 
+  * source\htool.prg
+    ! add flags LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS in toolbuton imagens resource
+  * source\hwindow.prg
+    + add DATA lExitOnEnter INIT .F., DATA lExitOnEsc INIT .F. for equal work to Dialogs
 
 2009-04-08 14:31 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils\designer\inspect.prg

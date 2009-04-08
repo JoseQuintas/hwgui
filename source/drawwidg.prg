@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.21 2009-03-09 17:59:29 lfbasso Exp $
+ * $Id: drawwidg.prg,v 1.22 2009-04-08 14:01:25 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -305,16 +305,16 @@ CLASS VAR aBitmaps   INIT { }
    DATA nWidth, nHeight
    DATA nCounter   INIT 1
 
-   METHOD AddResource( name, nFlags, lOEM )
+   METHOD AddResource( name, nFlags, lOEM, nwidth, nheight )
    METHOD AddStandard( nId )
-   METHOD AddFile( name, hDC )
+   METHOD AddFile( name, hDC, lTranparent, nwidth, nheight )
    METHOD AddWindow( oWnd, lFull )
    METHOD Draw( hDC, x1, y1, width, height )  INLINE DrawBitmap( hDC, ::handle, SRCCOPY, x1, y1, width, height )
    METHOD Release()
 
 ENDCLASS
 
-METHOD AddResource( name, nFlags, lOEM ) CLASS HBitmap
+METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
    LOCAL lPreDefined := .F., i, aBmpSize
 
    IF nFlags == nil
@@ -345,7 +345,8 @@ METHOD AddResource( name, nFlags, lOEM ) CLASS HBitmap
    IF lOEM
       ::handle := LoadImage( 0, Val( name ), IMAGE_BITMAP, nil, nil, Hwg_bitor( nFlags, LR_SHARED ) )
    ELSE
-      ::handle := LoadImage( nil, IIf( lPreDefined, Val( name ), name ), IMAGE_BITMAP, nil, nil, nFlags )
+      //::handle := LoadImage( nil, IIf( lPreDefined, Val( name ), name ), IMAGE_BITMAP, nil, nil, nFlags )
+      ::handle := LoadImage( nil, IIf( lPreDefined, Val( name ), name ), IMAGE_BITMAP, nWidth, nHeight, nFlags )
    ENDIF
    ::name   := name
    aBmpSize  := GetBitmapSize( ::handle )
@@ -382,7 +383,7 @@ METHOD AddStandard( nId ) CLASS HBitmap
 
    RETURN Self
 
-METHOD AddFile( name, hDC ) CLASS HBitmap
+METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
    LOCAL i, aBmpSize
 
    #ifdef __XHARBOUR__
@@ -404,12 +405,20 @@ METHOD AddFile( name, hDC ) CLASS HBitmap
    IF ! File( name )
       name := SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", "*.jpg;*.gif;*.bmp;*.ico",, "Locate " + name )
    ENDIF
-
-   IF Lower( Right( name, 4 ) ) == ".bmp"
-      ::handle := OpenBitmap( name, hDC )
+   
+	 IF Lower( Right( name, 4 ) ) != ".bmp" .OR. ( nWidth == nil .AND. nHeight == nil .AND. lTranparent == Nil )
+      IF Lower( Right( name, 4 ) ) == ".bmp"
+         ::handle := OpenBitmap( name, hDC )
+      ELSE
+         ::handle := OpenImage( name )
+      ENDIF
    ELSE
-      ::handle := OpenImage( name )
-   ENDIF
+      IF lTranparent != Nil .AND. lTranparent 
+         ::handle := LoadImage( nil, name, IMAGE_BITMAP, nWidth, nHeight, LR_LOADFROMFILE + LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS) 
+      ELSE
+         ::handle := LoadImage( nil, name, IMAGE_BITMAP, nWidth, nHeight, LR_LOADFROMFILE ) 
+			ENDIF   
+	 ENDIF   
    IF Empty( ::handle )
       RETURN Nil
    ENDIF

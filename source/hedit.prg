@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.137 2009-04-02 20:52:32 lfbasso Exp $
+ *$Id: hedit.prg,v 1.138 2009-04-08 14:01:25 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -208,7 +208,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                ENDIF   
                RETURN 0
             ELSEIF wParam == VK_ESCAPE
-               sendmessage( ::handle, WM_KILLFOCUS, 0,  0)
+               //sendmessage( ::handle, WM_KILLFOCUS, 0,  0)
                RETURN 0 //-1
             ENDIF
             //
@@ -399,7 +399,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ENDIF
       */
    ELSEIF msg == WM_GETDLGCODE
-      IF ! ::lMultiLine
+      IF ! ::lMultiLine .OR. wParam = VK_ESCAPE
          RETURN DLGC_WANTARROWS + DLGC_WANTTAB + DLGC_WANTCHARS
       ENDIF
    ELSEIF msg == WM_DESTROY

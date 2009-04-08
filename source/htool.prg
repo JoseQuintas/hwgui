@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.28 2009-02-15 20:12:30 lfbasso Exp $
+ * $Id: htool.prg,v 1.29 2009-04-08 14:01:25 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -118,7 +118,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,btnWidth,oFont,bInit
    ::nIDB := nIDB
    ::aItem := aItem
    ::nIndent := IIF( nIndent != NIL , nIndent, 1 )
-   ::nSize := IIF( nSize != NIL .AND. nSize > 15 , nSize, Nil )
+   ::nSize := IIF( nSize != NIL .AND. nSize > 11 , nSize, Nil ) 
 
    IF ! ::lVertical
        ::Line := HLine():New(oWndParent,,,nLeft,nTop + nHeight + 1,nWidth)
@@ -225,16 +225,16 @@ Local hImage, img, nlistimg, ndrop := 0
 				 
 				 nDrop := IIF( nDrop = 8, nDrop, IIF( Hwg_Bitand(::aItem[ n, 4 ], BTNS_DROPDOWN ) != 0 .AND.::aItem[ n, 4 ] < 128, 8, 1 ) )
 				 IF ::nSize != Nil
-				    SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( ::nSize, ::nSize ) )
+				    //SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( ::nSize, ::nSize ) )
 				 ENDIF   
 
          IF ValType( ::aItem[ n, 1 ] )  == "C"
             IF At(".", ::aitem[ n, 1 ] ) != 0
                //AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION+ LR_LOADFROMFILE ) )
-               hImage := HBITMAP():AddFile( ::aitem[ n, 1 ] ):handle 
+               hImage := HBITMAP():AddFile( ::aitem[ n, 1 ], , .T., ::nSize, ::nSize ):handle 
             ELSE
               // AAdd( aButton, HBitmap():AddResource( ::aitem[ n, 1 ] ):handle )
-               hImage := HBitmap():AddResource( ::aitem[ n, 1 ] ):handle 
+               hImage := HBitmap():AddResource( ::aitem[ n, 1 ], LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS, ,::nSize,::nSize ):handle 
             ENDIF
             IF ( img := Ascan( aButton, hImage )) = 0
                AAdd( aButton, hImage ) 

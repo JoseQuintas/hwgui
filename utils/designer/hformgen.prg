@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.47 2009-02-27 12:25:17 lfbasso Exp $
+ * $Id: hformgen.prg,v 1.48 2009-04-08 09:43:58 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -1192,7 +1192,7 @@ Memvar oDesigner, crossCursor, horzCursor, VertCursor, handCursor
 
        aBDown := GetBDown()
        // : LFB
-      IF aBDown[BDOWN_OCTRL]:CLASSNAME()="HDIALOG"
+      IF aBDown[BDOWN_OCTRL]:CLASSNAME()="HDIALOG" .OR. aBDown[BDOWN_OCTRL]:CLASSNAME()="HPANEL"
         Hwg_SetCursor( handCursor )
         RegionSelect(odlg,aBDown[ BDOWN_XPOS ],aBDown[ BDOWN_YPOS ],xpos,ypos)
         RETURN Nil
@@ -1229,8 +1229,8 @@ Memvar oDesigner, crossCursor, horzCursor, VertCursor, handCursor
 
     // : LFB
       IF oCtrl = Nil.and.oDesigner:addItem = Nil
-      Hwg_SetCursor( handCursor )
-      SetBDown(oDlg ,xPos,yPos)  //,resizeDirection )
+         Hwg_SetCursor( handCursor )
+         SetBDown(oDlg ,xPos,yPos)  //,resizeDirection )
       // fazer o desenho da marca‡Æo
       ENDIF
       // : END LFB
@@ -1293,7 +1293,7 @@ Memvar oDesigner
       aBDown := GetBDown()
       oCtrl := aBDown[BDOWN_OCTRL]
       // :LFB - selecionar objetos com o mouse
-      IF oCtrl:CLASSNAME()="HDIALOG"
+      IF oCtrl:CLASSNAME() = "HDIALOG" .OR. oCtrl:CLASSNAME() = "HPANEL"
         selsobjetos(odlg,aBDown[ BDOWN_XPOS ],aBDown[ BDOWN_YPOS ],xpos,ypos)
         InvalidateRect( odlg:handle, 1, ;
               0, 0,  oDlg:nWidth,oDlg:nHeight )

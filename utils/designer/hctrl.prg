@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.28 2008-11-30 18:47:58 lculik Exp $
+ * $Id: hctrl.prg,v 1.29 2009-04-08 09:43:58 alkresin Exp $
  *
  * Designer
  * HControlGen class
@@ -493,16 +493,17 @@ Memvar oDesigner
 Return Nil
 
 Function SetBDown( oCtrl,xPos,yPos,nBorder )
+
    aBDown[ BDOWN_OCTRL ] := oCtrl
    aBDown[ BDOWN_XPOS ] := xPos
    aBDown[ BDOWN_YPOS ] := yPos
    aBDown[ BDOWN_NBORDER ] := nBorder
-   IF oCtrl != Nil .AND. oCtrl:ClassName() != "HDIALOG" // NANDO POS DO AND EM DIANTE
+   IF oCtrl != Nil .AND. oCtrl:ClassName() != "HDIALOG" ;
+       .AND. oCtrl:ClassName() != "HPANEL"// NANDO POS DO AND EM DIANTE
       SetCtrlSelected( oCtrl:oParent,oCtrl )
    ELSE
-     // nando pos  para maniplear marcar todos objetos com mouse
+      // nando pos  para maniplear marcar todos objetos com mouse
       aBDown[ BDOWN_OCTRL ] := oCtrl
-      //
    ENDIF
 Return Nil
 

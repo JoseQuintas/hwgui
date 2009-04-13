@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.48 2009-04-08 09:43:58 alkresin Exp $
+ * $Id: hformgen.prg,v 1.49 2009-04-13 11:04:58 alkresin Exp $
  *
  * Designer
  * HFormGen class
@@ -220,6 +220,7 @@ Private oForm := Self, aCtrlTable
       FrmSort( Self,Iif( oDesigner:lReport,::oDlg:aControls[1]:aControls[1]:aControls,::oDlg:aControls ) )
       IF ::type == 1
          aControls := WriteForm( Self )
+         /*
          // : LFB
              //  salvar PRG diretamente sem necessidade de ficar mudando
          ::type := 3
@@ -233,6 +234,7 @@ Private oForm := Self, aCtrlTable
          ::type := 1
          ::filename := STRTRAN(::filename,'prg','xml')
         // :END LFB
+        */
       ELSE
          IF Valtype( aFormats[ ::type,5 ] ) == "C"
             aFormats[ ::type,5 ] := OpenScript( cCurDir + aFormats[ ::type,3 ], aFormats[ ::type,5 ] )

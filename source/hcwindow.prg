@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.42 2009-04-08 14:01:25 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.43 2009-04-13 12:20:25 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -218,12 +218,17 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HCustomWindow
    RETURN - 1
 
 METHOD END()  CLASS HCustomWindow
+LOCAL aControls, i, nLen
 
    IF ::nHolder != 0
 
       ::nHolder := 0
       hwg_DecreaseHolders( ::handle ) // Self )
-
+      aControls := ::aControls
+      nLen := Len( aControls )
+      FOR i := 1 TO nLen
+          aControls[ i ]:End()
+      NEXT
    ENDIF
 
    RETURN NIL

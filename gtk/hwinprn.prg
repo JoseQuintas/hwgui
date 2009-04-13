@@ -1,5 +1,5 @@
 /*
- * $Id: hwinprn.prg,v 1.1 2005-08-29 09:35:02 alkresin Exp $
+ * $Id: hwinprn.prg,v 1.2 2009-04-13 12:20:25 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWinPrn class
@@ -293,17 +293,19 @@ Static aCodes := {   ;
    { Chr(27)+'-0',,,,,,.f. }, ;     /* cancel underline */
    { Chr(27)+'4',,,,,.t., },  ;     /* italic */
    { Chr(27)+'5',,,,,.f., },  ;     /* cancel italic */
-   { Chr(27)+'G' },,,,,.t.,,  ;     /* bold */
+   { Chr(27)+'G',,,,,.t.,},   ;     /* bold */
    { Chr(27)+'H',,,,.f.,, }   ;     /* cancel bold */
  }
 Local i, sLen := Len( aCodes ), c := Left( cLine,1 )
 
-   FOR i := 1 TO sLen
-      IF Left(aCodes[i,1],1) == c .AND. At( aCodes[i,1],Left(cLine,3 ) ) == 1
-         ::InitValues( aCodes[i,2], aCodes[i,3], aCodes[i,4], aCodes[i,5], aCodes[i,6], aCodes[i,7]  )
-         Return Len( aCodes[i,1] )
-      ENDIF
-   NEXT
+   IF !Empty(c) .AND. Asc(cLine) < 32
+      FOR i := 1 TO sLen
+         IF Left(aCodes[i,1],1) == c .AND. At( aCodes[i,1],Left(cLine,3 ) ) == 1
+            ::InitValues( aCodes[i,2], aCodes[i,3], aCodes[i,4], aCodes[i,5], aCodes[i,6], aCodes[i,7]  )
+            Return Len( aCodes[i,1] )
+         ENDIF
+      NEXT
+   ENDIF
 
 Return 1
 

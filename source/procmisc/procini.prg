@@ -1,5 +1,5 @@
 /*
- * $Id: procini.prg,v 1.3 2007-11-26 10:50:18 andijahja Exp $
+ * $Id: procini.prg,v 1.4 2009-04-13 12:20:25 alkresin Exp $
  *
  * Common procedures
  * Ini files reading
@@ -7,17 +7,6 @@
  * Author: Alexander S.Kresin <alex@belacy.belgorod.su>
  *         www - http://www.geocities.com/alkresin/
 */
-*+膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊
-*+
-*+    Source Module => PROCINI.PRG
-*+
-*+    Functions: Function RDINI()
-*+               Function RDZNACH()
-*+               Function RDARR()
-*+
-*+    Reformatted by Click! 2.00 on May-31-2000 at  7:29 pm
-*+
-*+膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊膊
 
 /*
  Function Rdini scans file line by line, creates variables ( if they doesn't
@@ -64,12 +53,6 @@
 #include "fileio.ch"
 #define STR_BUFLEN  1024
 
-*+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
-*+
-*+    Function RDINI()
-*+
-*+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
-*+
 FUNCTION RDINI( fname, prm1, prm2, prm3, prm4 )
 
 LOCAL han, stroka, strfull, kolstr, rez, poz1, vname, i, prblo, lTruncAr
@@ -95,6 +78,9 @@ LOCAL iniDbf := ( Upper( FilExten( fname ) ) == "DBF" )
          ENDIF
          IF Right( stroka,2 ) == '&&'
             strfull += Left( stroka,Len(stroka)-2 )
+            LOOP
+         ELSEIF Right( stroka,1 ) == '&'
+            strfull += Left( stroka,Len(stroka)-1 )
             LOOP
          ELSE
             IF !Empty( strfull )
@@ -169,15 +155,6 @@ LOCAL iniDbf := ( Upper( FilExten( fname ) ) == "DBF" )
    ENDIF
 RETURN kolstr
 
-*+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
-*+
-*+    Function RDZNACH()
-*+
-*+    Called from ( procini.prg  )   1 - function rdini()
-*+                                   1 - function rdarr()
-*+
-*+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
-*+
 STATIC FUNCTION RDZNACH( ps )
 
 LOCAL poz, znc
@@ -192,15 +169,6 @@ LOCAL poz, znc
    ENDIF
 RETURN znc
 
-*+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
-*+
-*+    Function RDARR()
-*+
-*+    Called from ( procini.prg  )   1 - function rdini()
-*+                                   1 - function rdarr()
-*+
-*+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
-*+
 STATIC FUNCTION RDARR( vname, stroka )
 
 LOCAL poz1, i := 0, lenm, len1, strv, newname

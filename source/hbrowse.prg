@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.155 2009-04-03 13:52:35 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.156 2009-04-13 12:20:25 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -859,6 +859,9 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    LOCAL oldfont, aMetrHead
 
    IF ! ::active .OR. Empty( ::aColumns )
+      pps := DefinePaintStru()
+      hDC := BeginPaint( ::handle, pps )
+      EndPaint( ::handle, pps )
       RETURN Nil
    ENDIF
 
@@ -1393,7 +1396,6 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
                            bw := ob:nWidth
                            DrawTransparentBitmap( hDC, ob:handle, x + ( Int( ::aColumns[ ::nPaintCol ]:width - ob:nWidth ) / 2 ), y1 + ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1 )
                         ENDIF
-                        // DrawBitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(::nPaintRow-1)+1, bw, bh )
                         EXIT
                      ENDIF
                   NEXT

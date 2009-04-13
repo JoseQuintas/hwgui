@@ -1,5 +1,5 @@
 /*
- *$Id: hprinter.prg,v 1.2 2005-09-16 11:13:29 alkresin Exp $
+ *$Id: hprinter.prg,v 1.3 2009-04-13 12:20:25 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HPrinter class
@@ -16,7 +16,7 @@ CLASS HPrinter INHERIT HObject
 
    DATA hDC  INIT 0
    DATA cPrinterName   INIT "DEFAULT"
-   DATA lPreview
+   DATA lPreview    INIT .F.
    DATA nWidth, nHeight, nPWidth, nPHeight
    DATA nHRes, nVRes                     // Resolution ( pixels/mm )
    DATA nPage
@@ -118,11 +118,10 @@ Return Nil
 
 METHOD Box( x1,y1,x2,y2,oPen ) CLASS HPrinter
 
-/*
    IF oPen != Nil
-      SelectObject( ::hDC,oPen:handle )
+      hwg_gp_SetLineWidth( ::hDC,oPen:width )
    ENDIF
-*/
+
    IF y2 > ::nHeight
       Return Nil
    ENDIF
@@ -140,11 +139,10 @@ Return Nil
 
 METHOD Line( x1,y1,x2,y2,oPen ) CLASS HPrinter
 
-/*
    IF oPen != Nil
-      SelectObject( ::hDC,oPen:handle )
+      hwg_gp_SetLineWidth( ::hDC,oPen:width )
    ENDIF
-*/
+
    IF y2 > ::nHeight
       Return Nil
    ENDIF
@@ -201,7 +199,7 @@ METHOD Bitmap( x1,y1,x2,y2,nOpt,hBitmap ) CLASS HPrinter
       y2 *= ::nVRes
    ENDIF 
 
-   DrawBitmap( ::hDC,hBitmap,Iif(nOpt==Nil,SRCAND,nOpt),x1,y1,x2-x1+1,y2-y1+1 )
+   // DrawBitmap( ::hDC,hBitmap,Iif(nOpt==Nil,SRCAND,nOpt),x1,y1,x2-x1+1,y2-y1+1 )
 
 Return Nil
 
@@ -289,6 +287,49 @@ Local i, nlen := Len( ::aFonts )
          IF ::aFonts[i]:handle == ::handle
             Adel( ::aFonts,i )
             Asize( ::aFonts,nlen-1 )
+            Exit
+         ENDIF
+      NEXT
+   ENDIF
+Return Nil
+
+CLASS HGP_Pen INHERIT HObject
+
+   CLASS VAR aPens   INIT {}
+   DATA width
+   DATA nCounter   INIT 1
+
+   METHOD Add( nWidth )
+   METHOD Release()
+
+ENDCLASS
+
+METHOD Add( nWidth ) CLASS HGP_Pen
+Local i
+
+   nWidth := Iif( nWidth == Nil,1,nWidth )
+
+   FOR i := 1 TO Len( ::aPens )
+      IF ::aPens[i]:width == nWidth
+         ::aPens[i]:nCounter ++
+         Return ::aPens[i]
+      ENDIF
+   NEXT
+
+   ::width  := nWidth
+   Aadd( ::aPens, Self )
+
+Return Self
+
+METHOD Release() CLASS HGP_Pen
+Local i, nlen := Len( ::aPens )
+
+   ::nCounter --
+   IF ::nCounter == 0
+      FOR i := 1 TO nlen
+         IF ::aPens[i]:width == ::width
+            Adel( ::aPens,i )
+            Asize( ::aPens,nlen-1 )
             Exit
          ENDIF
       NEXT

@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.31 2008-12-05 15:50:22 sandrorrfreire Exp $
+ * $Id: guimain.prg,v 1.32 2009-04-13 12:20:25 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -254,6 +254,7 @@ FUNCTION WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel,
    oBrw:oFont  := oFont
    oBrw:bSize  := { | o, x, y | MoveWindow( o:handle, addX / 2, 10, x - addX, y - addY ) }
    oBrw:bEnter := { | o | nChoice := o:nCurrent, EndDialog( o:oParent:handle ) }
+   oBrw:bKeyDown := {|o,key|Iif(key==27,(EndDialog(oDlg:handle),.F.),.T.)}
 
    oBrw:lDispHead := .F.
    IF clrT != Nil

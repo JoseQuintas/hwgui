@@ -10,6 +10,7 @@ PRG_SOURCES=\
 	procini.prg \
 	procs7.prg \
 	procscri.prg \
+	scrdebug.prg \
 
 LIBNAME=procmisc
 

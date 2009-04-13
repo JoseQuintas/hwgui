@@ -103,6 +103,7 @@ $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\procini.obj \
    $(OBJ_DIR)\procs7.obj \
    $(OBJ_DIR)\procscri.obj \
+   $(OBJ_DIR)\scrdebug.obj \
    $(OBJ_DIR)\hwg_qhtm.obj \
    $(OBJ_DIR)\hqhtm.obj \
    $(OBJ_DIR)\hxmldoc.obj \

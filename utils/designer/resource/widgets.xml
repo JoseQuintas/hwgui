@@ -13,6 +13,7 @@
       <property name="FormType" type="C" value="dlgModal" />
       <property name="lClipper" type="L" value="False"/>
       <property name="lExitOnEnter" type="L" value="False"/>
+      <property name="lDebug" type="L" value="False"/>
       <property name="Variables" type="A" />
       <property name="FromStyle" type="C" value="Popup" />
       <property name="Icon" type="C" value=""/>

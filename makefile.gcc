@@ -1,4 +1,4 @@
-# $Id: makefile.gcc,v 1.27 2009-03-02 09:30:36 marcosgambeta Exp $
+# $Id: makefile.gcc,v 1.28 2009-04-13 08:56:37 alkresin Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -105,7 +105,8 @@ $(LIB_DIR)/libprocmisc.a : \
    $(OBJ_DIR)/procini.o \
    $(OBJ_DIR)/procs7.o \
    $(OBJ_DIR)/saymoney.o \
-   $(OBJ_DIR)/procscri.o
+   $(OBJ_DIR)/procscri.o \
+   $(OBJ_DIR)/scrdebug.o
 	ar rc $@ $^
 
 $(LIB_DIR)/libhbxml.a : \

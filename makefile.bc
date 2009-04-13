@@ -1,4 +1,4 @@
-# $Id: makefile.bc,v 1.44 2008-10-16 09:36:52 mlacecilia Exp $
+# $Id: makefile.bc,v 1.45 2009-04-13 08:56:37 alkresin Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -187,7 +187,8 @@ PROCMISC_LIB_OBJS = \
    $(PROCMISC_OBJ_DIR)\procini.obj \
    $(PROCMISC_OBJ_DIR)\procs7.obj \
    $(PROCMISC_OBJ_DIR)\saymoney.obj \
-   $(PROCMISC_OBJ_DIR)\procscri.obj
+   $(PROCMISC_OBJ_DIR)\procscri.obj \
+   $(PROCMISC_OBJ_DIR)\scrdebug.obj
 
 #
 # HWG_QHTM.LIB rules

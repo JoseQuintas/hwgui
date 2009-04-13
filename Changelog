@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1066 2009-04-08 14:01:23 lfbasso Exp $
+ * $Id: Changelog,v 1.1067 2009-04-13 08:56:37 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,27 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-04-13 12:58 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hfrmtmpl.prg
+  * source/procmisc/procscri.prg
+  + source/procmisc/scrdebug.prg
+  * utils/designer/resource/widget.xml
+  * utils/designer/resource/repwidg.xml
+    * Visual debugger for scripts, which are read by rdScript() and executed by DoScript()
+      has been implemented. To call it, you need insert #DEBUGGER as a first line in your
+      script, or set the property "lDebug" = "true" in a form or report properties in the
+      Designer - in this case all scripts inthis form/report will be debugged
+  * makedll.bc
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * Makefile.scr
+  * makefile.vc
+  * makefile.wc
+  * source/procmisc/Makefile
+    * makefiles has been updated due to adding the scrdebug.prg
+
 
 2009-04-08 10:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\drawwidg.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.66 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hfrmtmpl.prg,v 1.67 2009-04-13 08:56:37 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -153,6 +153,7 @@ CLASS VAR maxId    INIT 0
    DATA cId
    DATA nContainer    INIT 0
    DATA nCtrlId       INIT CONTROL_FIRST_ID
+   DATA lDebug        INIT .F.
    DATA cargo
 
    METHOD Read( fname, cId )
@@ -168,7 +169,7 @@ ENDCLASS
 METHOD Read( fname, cId ) CLASS HFormTmpl
    LOCAL oDoc
    LOCAL i, j, nCtrl := 0, aItems, o, aProp := { }, aMethods := { }
-   LOCAL cPre
+   LOCAL cPre, cName
 
    IF cId != Nil .AND. ( o := HFormTmpl():Find( cId ) ) != Nil
       RETURN o
@@ -203,11 +204,15 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
             IF o:title == "property"
                IF ! Empty( o:aItems )
                   AAdd( aProp, { Lower( o:GetAttribute( "name" ) ), o:aItems[ 1 ] } )
+                  IF Atail(aProp)[1] == "ldebug" .AND. hfrm_GetProperty( Atail(aProp)[2] )
+                     ::lDebug := .T.
+                     SetDebugInfo( .T. )
+                  ENDIF
                ENDIF
             ENDIF
          NEXT
       ELSEIF aItems[ i ]:title == "method"
-         AAdd( aMethods, { Lower( aItems[ i ]:GetAttribute( "name" ) ), CompileMethod( aItems[ i ]:aItems[ 1 ]:aItems[ 1 ], Self ) } )
+         Aadd( aMethods, { cName := Lower(aItems[i]:GetAttribute("name")),CompileMethod(aItems[i]:aItems[1]:aItems[1],Self,,cName) } )
          IF aMethods[ ( j := Len( aMethods ) ), 1 ] == "common"
             ::aFuncs := ::aMethods[ j, 2, 2 ]
             FOR j := 1 TO Len( ::aFuncs[ 2 ] )
@@ -228,7 +233,7 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
       ENDIF
    NEXT
    __pp_free()
-
+   SetDebugInfo( .F. )
    RETURN Self
 
 METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
@@ -243,6 +248,8 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
    MEMVAR oDlg
    PRIVATE oDlg
 
+   SetDebugInfo( ::lDebug )
+   SetDebugger( ::lDebug )
    nstyle := DS_ABSALIGN + WS_VISIBLE + WS_SYSMENU + WS_SIZEBOX
 
    FOR i := 1 TO Len( ::aProp )
@@ -409,6 +416,9 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
       CreateCtrl( ::oDlg, ::aControls[ i ], Self )
    NEXT
 
+   IF ::lDebug .AND. ( i := HWindow():GetMain() ) != Nil
+      SetFocus( i:handle )
+   ENDIF
    ::oDlg:Activate( lModal )
 
    IF bFormExit != Nil
@@ -492,7 +502,7 @@ FUNCTION ParseMethod( cMethod )
 
    RETURN arr
 
-STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl )
+STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl, cName )
    LOCAL arr, arrExe, nContainer := 0, cCode1, cCode, bOldError, bRes
 
    IF cMethod = Nil .OR. Empty( cMethod )
@@ -502,7 +512,12 @@ STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl )
       // writelog( oCtrl:cClass+" "+oCtrl:oParent:cClass+" "+ oCtrl:oParent:oParent:Classname() )
       nContainer := oForm:nContainer
    ENDIF
-   arr := ParseMethod( cMethod )
+
+   IF oForm:lDebug
+      arr := {}
+   ELSE
+      arr := ParseMethod( cMethod )
+   ENDIF
    IF Len( arr ) == 1
       cCode := IIf( Lower( Left( arr[ 1 ], 6 ) ) == "return", LTrim( SubStr( arr[ 1 ], 8 ) ), arr[ 1 ] )
       bOldError := ErrorBlock( { | e | CompileErr( e, cCode ) } )
@@ -511,7 +526,7 @@ STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl )
       END SEQUENCE
       ErrorBlock( bOldError )
       RETURN bRes
-   ELSEIF Lower( Left( arr[ 1 ], 11 ) ) == "parameters "
+   ELSEIF !Empty(arr) .AND. Lower( Left( arr[ 1 ], 11 ) ) == "parameters "
       IF Len( arr ) == 2
          cCode := IIf( Lower( Left( arr[ 2 ], 6 ) ) == "return", LTrim( SubStr( arr[ 2 ], 8 ) ), arr[ 2 ] )
          cCode := "{|" + LTrim( SubStr( arr[ 1 ], 12 ) ) + "|" + __Preprocess( cCode ) + "}"
@@ -542,7 +557,7 @@ STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl )
                   "aControls[" + LTrim( Str( Len( oForm:aControls ) ) ) + "]", ;
                   "F(" + LTrim( Str( oCtrl:nId ) ) + ")" )
    arrExe := Array( 2 )
-   arrExe[ 2 ] := RdScript( , cMethod,, .T. )
+   arrExe[ 2 ] := RdScript( , cMethod,, .T., cName )
    cCode :=  "{||DoScript(HFormTmpl():F(" + LTrim( Str( oForm:id ) ) + IIf( nContainer != 0, "," + LTrim( Str( nContainer ) ), "" ) + "):" + ;
                            IIf( oCtrl == Nil, "aMethods[" + LTrim( Str( Len( oForm:aMethods ) + 1 ) ) + ",2,2])", ;
                            cCode1 + ":aMethods[" +   ;
@@ -586,7 +601,7 @@ STATIC FUNCTION ReadCtrl( oCtrlDesc, oContainer, oForm )
             ENDIF
          NEXT
       ELSEIF aItems[ i ]:title == "method"
-         AAdd( aMethods, { Lower( aItems[ i ]:GetAttribute( "name" ) ), CompileMethod( aItems[ i ]:aItems[ 1 ]:aItems[ 1 ], oForm, oCtrl ) } )
+         Aadd( aMethods, { cName := Lower(aItems[i]:GetAttribute("name")),CompileMethod(aItems[i]:aItems[1]:aItems[1],oForm,oCtrl,cName) } )
       ELSEIF aItems[ i ]:title == "part"
          ReadCtrl( aItems[ i ], oCtrl, oForm )
       ENDIF
@@ -1197,6 +1212,7 @@ CLASS VAR maxId    INIT 0
    DATA aMethods
    DATA aVars         INIT { }
    DATA aFuncs
+   DATA lDebug        INIT .F.
    DATA id
    DATA cId
 
@@ -1217,7 +1233,7 @@ ENDCLASS
 METHOD Read( fname, cId ) CLASS HRepTmpl
    LOCAL oDoc
    LOCAL i, j, aItems, o, aProp := { }, aMethods := { }
-   LOCAL cPre
+   LOCAL cPre, cName
 
    IF cId != Nil .AND. ( o := HFormTmpl():Find( cId ) ) != Nil
       RETURN o
@@ -1253,11 +1269,15 @@ METHOD Read( fname, cId ) CLASS HRepTmpl
             IF o:title == "property"
                IF ! Empty( o:aItems )
                   AAdd( aProp, { Lower( o:GetAttribute( "name" ) ), hfrm_GetProperty( o:aItems[ 1 ] ) } )
+                  IF Atail(aProp)[1] == "ldebug" .AND. hfrm_GetProperty( Atail(aProp)[2] )
+                     ::lDebug := .T.
+                     SetDebugInfo( .T. )
+                  ENDIF
                ENDIF
             ENDIF
          NEXT
       ELSEIF aItems[ i ]:title == "method"
-         AAdd( aMethods, { Lower( aItems[ i ]:GetAttribute( "name" ) ), RdScript(, aItems[ i ]:aItems[ 1 ]:aItems[ 1 ],, .T. ) } )
+         Aadd( aMethods, { cName := Lower(aItems[i]:GetAttribute("name")),RdScript(,aItems[i]:aItems[1]:aItems[1],,.T.,cName) } )
          IF aMethods[ ( j := Len( aMethods ) ), 1 ] == "common"
             ::aFuncs := ::aMethods[ j, 2 ]
             FOR j := 1 TO Len( ::aFuncs[ 2 ] )
@@ -1276,7 +1296,7 @@ METHOD Read( fname, cId ) CLASS HRepTmpl
       ENDIF
    NEXT
    __pp_free()
-
+   SetDebugInfo( .F. )
    RETURN Self
 
 METHOD Print( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
@@ -1289,6 +1309,9 @@ METHOD Print( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
    IF oPrinter == Nil
       RETURN Nil
    ENDIF
+   SetDebugInfo( ::lDebug )
+   SetDebugger( ::lDebug )
+
    FOR i := 1 TO Len( ::aProp )
       IF ::aProp[ i, 1 ] == "paper size"
          IF Lower( ::aProp[ i, 2 ] ) == "a4"
@@ -1586,7 +1609,7 @@ METHOD Close() CLASS HRepTmpl
 
 STATIC FUNCTION ReadRepItem( oCtrlDesc, oContainer )
    LOCAL oCtrl := HRepItem():New( oContainer )
-   LOCAL i, j, o, aProp := { }, aMethods := { }, aItems := oCtrlDesc:aItems, xProperty
+   LOCAL i, j, o, aProp := { }, aMethods := { }, aItems := oCtrlDesc:aItems, xProperty, cName
 
    oCtrl:cClass   := oCtrlDesc:GetAttribute( "class" )
    oCtrl:aProp    := aProp
@@ -1601,7 +1624,7 @@ STATIC FUNCTION ReadRepItem( oCtrlDesc, oContainer )
             ENDIF
          NEXT
       ELSEIF aItems[ i ]:title == "method"
-         AAdd( aMethods, { Lower( aItems[ i ]:GetAttribute( "name" ) ), RdScript(, aItems[ i ]:aItems[ 1 ]:aItems[ 1 ],, .T. ) } )
+         Aadd( aMethods, { cName := Lower(aItems[i]:GetAttribute("name")),RdScript(,aItems[i]:aItems[1]:aItems[1],,.T.,cName) } )
       ELSEIF aItems[ i ]:title == "part"
          ReadRepItem( aItems[ i ], IIf( oCtrl:cClass == "area", oCtrl, oContainer ) )
       ENDIF

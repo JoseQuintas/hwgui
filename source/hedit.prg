@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.138 2009-04-08 14:01:25 lfbasso Exp $
+ *$Id: hedit.prg,v 1.139 2009-04-15 11:47:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -1225,7 +1225,8 @@ STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
    Local lGroup := Hwg_BitAND( HWG_GETWINDOWSTYLE(  hctrl ), WS_GROUP ) != 0
    Local lHradio := .F.
    Local lnoTabStop := .T.
-   Local nWindow := IIF( oParent:Type < WND_DLG_RESOURCE, oParent:handle, GetActiveWindow() )
+   Local nWindow := IIF( oParent:Type != Nil .AND. oParent:Type < WND_DLG_RESOURCE, ;
+	                 oParent:handle, GetActiveWindow() )
 
    i := AScan( oparent:acontrols, { | o | o:handle == hCtrl } )
 	 lHradio :=  i > 0 .AND. oParent:acontrols[ i ]:CLASSNAME = "HRADIO" 

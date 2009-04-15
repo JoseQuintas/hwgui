@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.29 2009-04-08 09:43:58 alkresin Exp $
+ * $Id: hctrl.prg,v 1.30 2009-04-15 08:03:28 omm Exp $
  *
  * Designer
  * HControlGen class
@@ -15,9 +15,6 @@
 #include "common.ch"
 
 #include "designer.ch"
-
-#define TCM_SETCURSEL           4876
-#define TCM_GETITEMCOUNT        4868
 
 Static aBDown := { Nil,0,0,.F. }
 Static vBDown := { Nil,0,0,.F. }

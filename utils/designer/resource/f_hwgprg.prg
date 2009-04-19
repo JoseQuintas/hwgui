@@ -112,7 +112,6 @@ FUNCTION Tool2Prg
                // Note, do we look for a CR or a LF??
                j := At( ")", oCtrl1:aMethods[ k, 2 ] )
                cLocalParam := Substr( oCtrl1:aMethods[ k, 2 ], 1, j  )
-
                temp:=""
                lsubParameter := .t.
 
@@ -1421,7 +1420,7 @@ PRIVATE cTempParameter,aParameters
 				
         IF Valtype( cName := Callfunc( "FUNC_NAME", { oCtrl, i } ) ) == "C"
 
-          Fwrite( han, "STATIC FUNCTION " + cName + _Chr(10) )
+          Fwrite( han, "STATIC FUNCTION " + cName )// + _Chr(10) )
           Fwrite( han, oCtrl:aMethods[ i, 2 ] )
 
           j1 := Rat( _Chr(10),oCtrl:aMethods[i,2] )

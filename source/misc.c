@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.48 2009-04-19 20:20:23 lculik Exp $
+ * $Id: misc.c,v 1.49 2009-04-20 23:43:01 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -256,9 +256,9 @@ HB_FUNC( HWG_GETCURSORPOS )
 
 HB_FUNC( GETCURRENTDIR )
 {
-   BYTE pbyBuffer[ HB_PATH_MAX];
+   BYTE pbyBuffer[ _POSIX_PATH_MAX];
 
-   GetCurrentDirectory( HB_PATH_MAX -1 , ( char * ) pbyBuffer );
+   GetCurrentDirectory( _POSIX_PATH_MAX -1 , ( char * ) pbyBuffer );
    hb_retc( ( char *) pbyBuffer );
 }
 

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.h,v 1.15 2009-01-21 04:57:14 marcosgambeta Exp $
+ *$Id: guilib.h,v 1.16 2009-04-20 23:43:00 lculik Exp $
  */
 
 #define	WND_DLG_RESOURCE       10
@@ -40,4 +40,8 @@
 
 #ifdef HARBOUR_2005
    #define hb_dynsymSymbol( h )     h->pSymbol
+#endif
+
+#ifndef _POSIX_PATH_MAX
+#define _POSIX_PATH_MAX 264
 #endif

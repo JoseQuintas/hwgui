@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1073 2009-04-24 07:42:09 alkresin Exp $
+ * $Id: Changelog,v 1.1074 2009-04-24 08:49:24 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-04-24 12:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hcombo.prg
+    * formatted
+    * A condition IF ::bSetGet != Nil inserted to HComboBox():onEvent() method,
+      because Getskip() is intended for GET items only.
 
 2009-04-24 11:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * make_vc.bat

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.76 2009-03-20 12:08:21 lfbasso Exp $
+ * $Id: control.c,v 1.77 2009-04-26 12:03:21 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -25,6 +25,16 @@
 #include "hbvm.h"
 #include "hbdate.h"
 #include "hbtrace.h"
+#if defined(__BORLANDC__)
+WINUSERAPI
+HWND
+WINAPI
+GetAncestor(
+    __in HWND hwnd,
+    __in UINT gaFlags);
+
+
+#endif
 
 #define TTS_BALLOON             0x40 // added by MAG
 #define CCM_SETVERSION (CCM_FIRST + 0x7)

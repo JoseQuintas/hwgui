@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.49 2009-04-20 23:43:01 lculik Exp $
+ * $Id: misc.c,v 1.50 2009-04-27 10:05:05 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -596,39 +596,39 @@ HB_FUNC ( ISSCROLLLOCKACTIVE )
 
 /* Added By Sandro Freire sandrorrfreire_nospam_yahoo.com.br*/
 
-HB_FUNC ( CREATEDIRECTORY )
+HB_FUNC ( HWG_CREATEDIRECTORY )
 {
    CreateDirectory( (LPCTSTR) hb_parc(1), NULL );
 }
 
-HB_FUNC( REMOVEDIRECTORY )
+HB_FUNC( HWG_REMOVEDIRECTORY )
 {
    hb_retl( RemoveDirectory( (LPCSTR) hb_parc( 1 ) ) );
 }
 
-HB_FUNC ( SETCURRENTDIRECTORY )
+HB_FUNC ( HWG_SETCURRENTDIRECTORY )
 {
    SetCurrentDirectory( (LPCTSTR) hb_parc(1) );
 }
 
-HB_FUNC( DELETEFILE )
+HB_FUNC( HWG_DELETEFILE )
 {
    hb_retl( DeleteFile( (LPCSTR) hb_parc( 1 ) ) ) ;
 }
 
-HB_FUNC( GETFILEATTRIBUTES )
+HB_FUNC( HWG_GETFILEATTRIBUTES )
 {
    hb_retnl( (LONG) GetFileAttributes( (LPCSTR) hb_parc( 1 ) ) ) ;
 }
 
-HB_FUNC( SETFILEATTRIBUTES )
+HB_FUNC( HWG_SETFILEATTRIBUTES )
 {
    hb_retl( SetFileAttributes( (LPCSTR) hb_parc( 1 ), (DWORD) hb_parnl( 2 ) ) ) ;
 }
 
 /* Add by Richard Roesnadi (based on What32) */
 // GETCOMPUTERNAME( [@nLengthChar] ) -> cComputerName
-HB_FUNC( GETCOMPUTERNAME )
+HB_FUNC( HWG_GETCOMPUTERNAME )
 {
    char *cText;
    DWORD nSize = 31+1;
@@ -641,7 +641,7 @@ HB_FUNC( GETCOMPUTERNAME )
 
 
 // GETUSERNAME( [@nLengthChar] ) -> cUserName
-HB_FUNC( GETUSERNAME )
+HB_FUNC( HWG_GETUSERNAME )
 {
    char *szUser ;
    DWORD nSize  ;

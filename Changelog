@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1076 2009-04-27 00:22:17 lculik Exp $
+ * $Id: Changelog,v 1.1077 2009-04-27 10:05:04 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,20 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-04-27 14:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/misc.c
+    * Following functions has been renamed to avoid problems with other libraries:
+        createdirectory()     ->  hwg_createdirectory()
+        removedirectory()     ->  hwg_removedirectory()
+        setcurrentdirectory() ->  hwg_setcurrentdirectory()
+        deletefile()          ->  hwg_deletefile()
+        getfileattributes()   ->  hwg_getfileattributes()
+        setfileattributes()   ->  hwg_setfileattributes()
+        getcomputername()     ->  hwg_getcomputername()
+        getusername()         ->  hwg_getusername()
+  * doc/funclist.txt
+    * above functions name has been changed.  
 
 2009-04-26 21:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/hwindow.prg

@@ -162,9 +162,9 @@ MISC.C
   Getkeyboardstate 
   Getwindowsdir 
   Getsystemdir 
-  CreateDirectory
-  RemoveDirectory
-  SetCurrentDirectory
+  hwg_CreateDirectory
+  hwg_RemoveDirectory
+  hwg_SetCurrentDirectory
   Gettempdir 
   Shellabout 
   Getdesktopwidth
@@ -176,9 +176,9 @@ MISC.C
   IsCapsLockActive 
   IsNumLockActive  
   IsScrollLockActive 
-  DeleteFile
-  GetFileAttributes
-  SetFileAttributes
+  hwg_DeleteFile
+  hwg_GetFileAttributes
+  hwg_SetFileAttributes
 
 WBROWSE.C:
   Setscrollinfo

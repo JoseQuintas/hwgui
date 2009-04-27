@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.80 2009-04-08 14:01:25 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.81 2009-04-27 00:22:17 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -251,7 +251,9 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
 
 METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMainWindow
    LOCAL oWndClient, handle, lres
-
+   DEFAULT lMaximized := .F.
+   DEFAULT lMinimized := .F.
+   lCentered  := ( ! EMPTY( lCentered ) .AND. lCentered ) .OR. Hwg_BitAND( ::Style, DS_CENTER ) != 0
    DEFAULT lShow := .T.
    CreateGetList( Self )
 

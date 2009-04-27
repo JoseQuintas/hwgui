@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.22 2009-04-08 14:01:25 lfbasso Exp $
+ * $Id: drawwidg.prg,v 1.23 2009-04-27 00:22:17 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -242,8 +242,12 @@ METHOD Add( nColor, nHatch ) CLASS HBrush
    IF nHatch == Nil
       nHatch := 99
    ENDIF
+   IF Valtype( nColor ) == "P"
+      nColor := PTRTOULONG( nColor )
+   ENDIF
    #ifdef __XHARBOUR__
       FOR EACH i IN ::aBrushes
+
          IF i:color == nColor .AND. i:nHatch == nHatch
             i:nCounter ++
             RETURN i

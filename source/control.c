@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.78 2009-04-26 20:05:01 lculik Exp $
+ * $Id: control.c,v 1.79 2009-04-27 00:22:17 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -25,7 +25,7 @@
 #include "hbvm.h"
 #include "hbdate.h"
 #include "hbtrace.h"
-#if defined(__BORLANDC__) || defined(_MSC_VER)
+#if defined(__BORLANDC__) || (defined(_MSC_VER) && !defined(__XCC__))
 WINUSERAPI
 HWND
 WINAPI

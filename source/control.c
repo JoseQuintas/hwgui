@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.79 2009-04-27 00:22:17 lculik Exp $
+ * $Id: control.c,v 1.80 2009-04-28 09:05:21 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -30,8 +30,8 @@ WINUSERAPI
 HWND
 WINAPI
 GetAncestor(
-    __in HWND hwnd,
-    __in UINT gaFlags);
+    HWND hwnd,
+    UINT gaFlags);
 
 
 #endif

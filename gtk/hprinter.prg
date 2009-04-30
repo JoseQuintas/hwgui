@@ -1,5 +1,5 @@
 /*
- *$Id: hprinter.prg,v 1.3 2009-04-13 12:20:25 alkresin Exp $
+ *$Id: hprinter.prg,v 1.4 2009-04-30 16:03:44 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HPrinter class
@@ -16,8 +16,9 @@ CLASS HPrinter INHERIT HObject
 
    DATA hDC  INIT 0
    DATA cPrinterName   INIT "DEFAULT"
-   DATA lPreview    INIT .F.
+   DATA lPreview       INIT .F.
    DATA nWidth, nHeight, nPWidth, nPHeight
+   DATA nOrient        INIT 1
    DATA nHRes, nVRes                     // Resolution ( pixels/mm )
    DATA nPage
    DATA oFont
@@ -75,17 +76,20 @@ Local aPrnCoors
 Return Self
 
 METHOD SetMode( nOrientation ) CLASS HPrinter
-Local aPrnCoors
+Local x
 
-   SetPrinterMode( ::hDC, nOrientation )
-   aPrnCoors := hwg_gp_GetDeviceArea( ::hDC )
-   ::nWidth  := Iif( ::lmm, aPrnCoors[3], aPrnCoors[1] )
-   ::nHeight := Iif( ::lmm, aPrnCoors[4], aPrnCoors[2] )
-   ::nPWidth  := Iif( ::lmm, aPrnCoors[8], aPrnCoors[1] )
-   ::nPHeight := Iif( ::lmm, aPrnCoors[9], aPrnCoors[2] )
-   ::nHRes   := aPrnCoors[1] / aPrnCoors[3]
-   ::nVRes   := aPrnCoors[2] / aPrnCoors[4]
-   // writelog( ":"+str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6])+str(aPrnCoors[8])+str(aPrnCoors[9]) )
+   IF ( nOrientation == 1 .OR. nOrientation == 2 ) .AND. nOrientation != ::nOrient
+      SetPrinterMode( ::hDC, nOrientation )
+      x := ::nHRes
+      ::nHRes := ::nVRes
+      ::nVRes := x
+      x := ::nWidth
+      ::nWidth := ::nHeight
+      ::nHeight := x
+      x := ::nPWidth
+      ::nPWidth := ::nPHeight
+      ::nPHeight := x
+   ENDIF
 
 Return .T.
 
@@ -242,14 +246,15 @@ CLASS HGP_Font INHERIT HObject
    DATA nCounter   INIT 1
 
    METHOD Add( fontName, nWidth, nHeight ,fnWeight, fdwItalic, fdwUnderline )
-   METHOD Release()
+   METHOD Release(lAll)
 
 ENDCLASS
 
 METHOD Add( fontName, nHeight ,fnWeight, fdwItalic, fdwUnderline ) CLASS HGP_Font
 Local i, nlen := Len( ::aFonts )
 
-   nHeight  := Iif( nHeight==Nil,-13,nHeight )
+   nHeight  := Iif( nHeight==Nil,13,Abs(nHeight) )
+   nHeight -= 1
    fnWeight := Iif( fnWeight==Nil,0,fnWeight )
    fdwItalic := Iif( fdwItalic==Nil,0,fdwItalic )
    fdwUnderline := Iif( fdwUnderline==Nil,0,fdwUnderline )
@@ -266,25 +271,45 @@ Local i, nlen := Len( ::aFonts )
       ENDIF
    NEXT
 
-   ::handle := hwg_gp_AddFont( fontName, nHeight )
-
    ::name      := fontName
    ::height    := nHeight
    ::weight    := fnWeight
    ::Italic    := fdwItalic
    ::Underline := fdwUnderline
 
+   fontName := StrTran( fontName," Regular"," " )
+   fontName := StrTran( fontName," Bold"," " )
+   fontName := Rtrim( StrTran( fontName," Italic"," " ) )
+   IF fnWeight > 400
+      fontName += " Bold"
+   ENDIF
+   IF fdwItalic > 0
+      fontName += " Italic"
+   ENDIF
+   IF fnWeight <= 400 .AND. fdwItalic == 0
+      fontName += " Regular"
+   ENDIF
+   ::handle := hwg_gp_AddFont( fontName, nHeight )
+
    Aadd( ::aFonts,Self )
 
 Return Self
 
-METHOD Release() CLASS HGP_Font
+METHOD Release(lAll) CLASS HGP_Font
 Local i, nlen := Len( ::aFonts )
 
+   IF lAll != Nil .AND. lAll
+      For i := 1 TO nlen
+         /* hwg_gp_release( ::aFonts[i]:handle ) */
+      NEXT
+      ::aFonts := {}
+      Return Nil
+   ENDIF
    ::nCounter --
    IF ::nCounter == 0
       For i := 1 TO nlen
          IF ::aFonts[i]:handle == ::handle
+            hwg_gp_release( ::handle )
             Adel( ::aFonts,i )
             Asize( ::aFonts,nlen-1 )
             Exit

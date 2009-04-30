@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.28 2008-10-20 15:11:50 mlacecilia Exp $
+ * $Id: window.c,v 1.29 2009-04-30 16:03:44 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -59,8 +59,10 @@ static HW_SIGNAL aSignals[NUMBER_OF_SIGNALS] = { { "destroy",2 } };
 
 HB_FUNC( HWG_GTK_INIT )
 {
-   gtk_set_locale();
+   /* gtk_set_locale();  temporary - for sbtuch and etc. */
    gtk_init( 0,0 );
+   setlocale( LC_NUMERIC, "C" );
+   setlocale( LC_CTYPE, "" );
 }
 
 HB_FUNC( HWG_GTK_EXIT )

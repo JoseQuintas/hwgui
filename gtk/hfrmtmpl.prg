@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.7 2008-01-28 13:19:24 lculik Exp $
+ * $Id: hfrmtmpl.prg,v 1.8 2009-04-30 16:03:44 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -25,7 +25,7 @@ Static aCtrls := { ;
   "HButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctooltip,TextColor,BackColor)",  ;
   "HCheckButton():New(oPrnt,nId,lInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctooltip,TextColor,BackColor,bwhen)", ;
   "HRadioButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctooltip,TextColor,BackColor)", ;
-  "HEdit():New(oPrnt,nId,cInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctooltip,TextColor,BackColor,cPicture,lNoBorder)", ;
+  "HEdit():New(oPrnt,nId,cInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctooltip,TextColor,BackColor,cPicture,lNoBorder,nMaxLength,lPassword)", ;
   "HGroup():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor)", ;
   "RadioNew(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor,nInitValue,bSetGet)", ;
   "HSayBmp():New(oPrnt,nId,nLeft,nTop,nWidth,nHeight,Bitmap,lResource,onInit,onSize,ctooltip)", ;
@@ -65,26 +65,23 @@ REQUEST HEDIT
 REQUEST HGROUP
 REQUEST HSAYBMP
 REQUEST HSAYICON
-REQUEST HSTATUS
-REQUEST HBUTTONEX
-REQUEST HProgressBar
-/* LINUX
+#ifndef __LINUX__
 REQUEST HRICHEDIT
 REQUEST HDATEPICKER
-*/
+#endif
 REQUEST HUPDOWN
 REQUEST HCOMBOBOX
 REQUEST HLINE
 REQUEST HPANEL
 REQUEST HOWNBUTTON
 REQUEST HBROWSE
-/* LINUX
+#ifndef __LINUX__
 REQUEST HMONTHCALENDAR
 REQUEST HTRACKBAR
 REQUEST HANIMATION
-*/
+REQUEST HTREE
+#endif
 REQUEST HTAB
-
 
 REQUEST DBUSEAREA
 REQUEST RECNO
@@ -194,11 +191,11 @@ Local cPre
                cPre := "#xtranslate "+ ::aFuncs[2,j,1] + ;
                      "( <params,...> ) => callfunc('"  + ;
                      Upper(::aFuncs[2,j,1]) +"',\{ <params> \}, oDlg:oParent:aFuncs )"
-               __ppAddRule( cPre )
+               __Preprocess( cPre )
                cPre := "#xtranslate "+ ::aFuncs[2,j,1] + ;
                      "() => callfunc('"  + ;
                      Upper(::aFuncs[2,j,1]) +"',, oDlg:oParent:aFuncs )"
-               __ppAddRule( cPre )
+               __Preprocess( cPre )
             NEXT
          ENDIF
       ELSEIF aItems[i]:title == "part"
@@ -247,11 +244,11 @@ Private oDlg
       ELSEIF ::aProp[ i,1 ] == "modal"
          lModal := xProperty
       ELSEIF ::aProp[ i,1 ] == "formtype"
-
-         lMdi := AT( "mdimain", Lower( xProperty ) ) > 0
-         lMdiChild := AT( "mdichild", Lower( xProperty ) ) > 0
-         nMode := if(left(xProperty,3) =="dlg",2,1)
-
+         IF nMode == Nil
+            lMdi := AT( "mdimain", Lower( xProperty ) ) > 0
+            lMdiChild := AT( "mdichild", Lower( xProperty ) ) > 0
+            nMode := if(left(xProperty,3) =="dlg",2,1)
+         ENDIF
       ELSEIF ::aProp[ i,1 ] == "variables"
          FOR j := 1 TO Len( xProperty )
             __mvPrivate( xProperty[j] )
@@ -327,28 +324,29 @@ Private oDlg
 
    ELSEIF nMode == 1
 
-/* LINUX
-      if lMdi
+#ifndef __LINUX__
+      IF lMdi
          INIT WINDOW ::oDlg MDI TITLE cTitle    ;
          AT nLeft, nTop SIZE nWidth, nHeight ;
          STYLE IF( nStyle >0 ,nStyle, NIL );
          FONT oFont;
-         BACKGROUND BITMAP oBmp      
-      elseif lMdiChild
+         BACKGROUND BITMAP oBmp
+      ELSEIF lMdiChild
          INIT WINDOW ::oDlg  MDICHILD TITLE cTitle    ;
          AT nLeft, nTop SIZE nWidth, nHeight ;
          STYLE IF( nStyle >0 ,nStyle, NIL );
          FONT oFont ;
          BACKGROUND BITMAP oBmp
-      else
-*/
+      ELSE
+#endif
       INIT WINDOW ::oDlg MAIN TITLE cTitle    ;
           AT nLeft, nTop SIZE nWidth, nHeight ;
           FONT oFont;
           BACKGROUND BITMAP oBmp;
           STYLE IF( nStyle >0 ,nStyle, NIL )
-
-/*      ENDIF      */
+#ifndef __LINUX__
+      ENDIF
+#endif
    ENDIF
 
    oDlg := ::oDlg
@@ -499,7 +497,7 @@ Local arr, arrExe, nContainer := 0, cCode1, cCode, bOldError, bRes
                "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]", ;
                "F("+Ltrim(Str(oCtrl:nId))+")" )
          arrExe := Array(2)
-         arrExe[2] := RdScript( ,cMethod,1 )
+         arrExe[2] := RdScript( ,cMethod,1,.T. )
          cCode :=  "{|" + Ltrim( Substr( arr[1],12 ) ) + ;
             "|DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+Iif(nContainer!=0,","+Ltrim(Str(nContainer)),"")+"):" + ;
             Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2],{", ;
@@ -515,7 +513,7 @@ Local arr, arrExe, nContainer := 0, cCode1, cCode, bOldError, bRes
          "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]", ;
          "F("+Ltrim(Str(oCtrl:nId))+")" )
    arrExe := Array(2)
-   arrExe[2] := RdScript( ,cMethod )
+   arrExe[2] := RdScript( ,cMethod,,.T. )
    cCode :=  "{||DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+Iif(nContainer!=0,","+Ltrim(Str(nContainer)),"")+"):" + ;
       Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2])", ;
              cCode1+":aMethods["+   ;
@@ -673,6 +671,8 @@ MEMVAR aImages, lEditLabels, aParts
       ELSE
         IF cPName == "tooltip"
             cPName := "c" + cPName
+        ELSEIF cPName == "name"
+           __mvPrivate( cPName )
         ENDIF
          /* Assigning the value of the property to the variable with
             the same name as the property */
@@ -704,13 +704,13 @@ MEMVAR aImages, lEditLabels, aParts
    NEXT
 
    IF oCtrlTmpl:cClass == "combobox"
-      /* LINUX
+#ifndef __LINUX__
       IF ( i := Ascan( oCtrlTmpl:aProp,{|a|Lower(a[1])=="nmaxlines"} ) ) > 0
          nHeight := nHeight * nMaxLines
       ELSE
          nHeight := nHeight * 4
       ENDIF
-      */
+#endif
    ELSEIF oCtrlTmpl:cClass == "line"
       nLength := Iif( lVertical==Nil.OR.!lVertical, nWidth, nHeight )
    ELSEIF oCtrlTmpl:cClass == "browse"
@@ -878,6 +878,7 @@ CLASS HRepItem
    DATA aControls INIT {}
    DATA aProp, aMethods
    DATA oPen, obj
+   DATA lPen INIT .F.
    DATA y2
    DATA lMark INIT .F.
 
@@ -888,6 +889,7 @@ CLASS HRepTmpl
 
    CLASS VAR aReports INIT {}
    CLASS VAR maxId    INIT 0
+   CLASS VAR aFontTable
    DATA aControls     INIT {}
    DATA aProp
    DATA aMethods
@@ -896,7 +898,8 @@ CLASS HRepTmpl
    DATA id
    DATA cId
 
-   DATA nKoefX, nKoefY, nTOffset, nAOffSet, ny
+   DATA nKoefX, nKoefY, nKoefPix
+   DATA nTOffset, nAOffSet, ny
    DATA lNextPage, lFinish
    DATA oPrinter
 
@@ -914,7 +917,7 @@ Local oDoc
 Local i, j, aItems, o, aProp := {}, aMethods := {}
 Local cPre
 
-   IF cId != Nil .AND. ( o := HFormTmpl():Find( cId ) ) != Nil
+   IF cId != Nil .AND. ( o := HRepTmpl():Find( cId ) ) != Nil
       Return o
    ENDIF
 
@@ -952,18 +955,18 @@ Local cPre
             ENDIF
          NEXT
       ELSEIF aItems[i]:title == "method"
-         Aadd( aMethods, { Lower(aItems[i]:GetAttribute("name")),RdScript(,aItems[i]:aItems[1]:aItems[1]) } )
+         Aadd( aMethods, { Lower(aItems[i]:GetAttribute("name")),RdScript(,aItems[i]:aItems[1]:aItems[1],,.T.) } )
          IF aMethods[ (j := Len(aMethods)),1 ] == "common"
             ::aFuncs := ::aMethods[ j,2 ]
             FOR j := 1 TO Len( ::aFuncs[2] )
                cPre := "#xtranslate "+ ::aFuncs[2,j,1] + ;
                      "( <params,...> ) => callfunc('"  + ;
                      Upper(::aFuncs[2,j,1]) +"',\{ <params> \}, oReport:aFuncs )"
-               __ppAddRule( cPre )
+               __Preprocess( cPre )
                cPre := "#xtranslate "+ ::aFuncs[2,j,1] + ;
                      "() => callfunc('"  + ;
                      Upper(::aFuncs[2,j,1]) +"',, oReport:aFuncs )"
-               __ppAddRule( cPre )
+               __Preprocess( cPre )
             NEXT
          ENDIF
       ELSEIF aItems[i]:title == "part"
@@ -976,7 +979,7 @@ Return Self
 
 METHOD Print( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
 Local oPrinter := Iif( printer != Nil, Iif( Valtype(printer)=="O",printer,HPrinter():New(printer,.T.) ), HPrinter():New(,.T.) )
-Local i, j, aMethod, xProperty, oFont, cTemp, nPWidth, nPHeight, nOrientation := 1
+Local i, j, aMethod, xProperty, oFont, xTemp, nPWidth, nPHeight, nOrientation := 1
 Memvar oReport
 Private oReport := Self
 
@@ -994,9 +997,9 @@ Private oReport := Self
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "orientation"
          IF Lower(::aProp[i,2]) != "portrait"
-            cTemp    := nPWidth
+            xTemp    := nPWidth
             nPWidth  := nPHeight
-            nPHeight := cTemp
+            nPHeight := xTemp
             nOrientation := 2
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "font"
@@ -1007,10 +1010,15 @@ Private oReport := Self
          NEXT
       ENDIF
    NEXT
+#ifdef __LINUX__
+   xTemp := hwg_gp_GetDeviceArea( oPrinter:hDC )
+#else
+   xTemp := GetDeviceArea( oPrinter:hDCPrn )
+#endif
+   ::nKoefPix := ( ( xTemp[1]/xTemp[3] + xTemp[2]/xTemp[4] ) / 2 ) / 3.8
    oPrinter:SetMode( nOrientation )
    ::nKoefX := oPrinter:nWidth / nPWidth
    ::nKoefY := oPrinter:nHeight / nPHeight
-   // writelog( str(::nKoefX) + str(::nKoefY) )
    IF ( aMethod := aGetSecond( ::aMethods,"onrepinit" ) ) != Nil
       DoScript( aMethod,{ p1,p2,p3 } )
    ENDIF
@@ -1018,7 +1026,7 @@ Private oReport := Self
       oFont := hrep_FontFromxml( oPrinter,xProperty,aGetSecond(::aProp,"fonth")*::nKoefY )
    ENDIF
 
-   oPrinter:StartDoc( lPreview )
+   oPrinter:StartDoc( lPreview ) // ,"/tmp/a1.ps" )
    ::lNextPage := .F.
 
    ::lFinish := .T.
@@ -1042,6 +1050,9 @@ Private oReport := Self
 
    oPrinter:EndDoc()
    ::ReleaseObj( ::aControls )
+   IF oFont != Nil
+      oFont:Release()
+   ENDIF
    IF ( aMethod := aGetSecond( ::aMethods,"onrepexit" ) ) != Nil
       DoScript( aMethod )
    ENDIF
@@ -1053,8 +1064,8 @@ Private oReport := Self
 Return Nil
 
 METHOD PrintItem( oItem ) CLASS HRepTmpl
-Local aMethod, lRes := .T., i
-Local x, y, x2, y2, cText, nJustify, xProperty
+Local aMethod, lRes := .T., i, nPenType, nPenWidth
+Local x, y, x2, y2, cText, nJustify, xProperty, nLines, dy, nFirst, ny
 Memvar lLastCycle, lSkipItem
 
    IF oItem:cClass == "area"
@@ -1155,6 +1166,24 @@ Memvar lLastCycle, lSkipItem
          ENDIF
       ENDIF
 
+      IF oItem:lPen .AND. oItem:oPen == Nil
+         IF ( xProperty := aGetSecond( oItem:aProp,"pentype" ) ) != Nil
+            nPenType := Ascan( aPenType,xProperty ) - 1
+         ELSE
+            nPenType := 0
+         ENDIF
+         IF ( xProperty := aGetSecond( oItem:aProp,"penwidth" ) ) != Nil
+            nPenWidth := Round( xProperty * ::nKoefPix, 0 )
+         ELSE
+            nPenWidth := Round( ::nKoefPix, 0 )
+         ENDIF
+#ifdef __LINUX__
+         oItem:oPen := HGP_Pen():Add( nPenWidth )
+#else
+         oItem:oPen := HPen():Add( nPenType,nPenWidth )
+#endif
+         // writelog( str(nPenWidth) + " " + str(::nKoefY) )
+      ENDIF
       IF oItem:cClass == "label"
          IF ( aMethod := aGetSecond( oItem:aMethods,"expression" ) ) != Nil
             cText := DoScript( aMethod )
@@ -1178,9 +1207,28 @@ Memvar lLastCycle, lSkipItem
                   oItem:obj := hrep_FontFromxml( ::oPrinter,xProperty,aGetSecond(oItem:aProp,"fonth")*::nKoefY )
                ENDIF
             ENDIF
-            SetTransparentMode( ::oPrinter:hDC,.T. )
-            ::oPrinter:Say( cText,x,y,x2,y2,nJustify,oItem:obj )
-            SetTransparentMode( ::oPrinter:hDC,.F. )
+            // SetTransparentMode( ::oPrinter:hDC,.T. )
+            IF ( xProperty := aGetSecond( oItem:aProp,"multiline" ) ) != Nil ;
+                   .AND. xProperty
+               nLines := i := 1
+               DO WHILE ( i := hb_At( ";",cText,i ) ) > 0
+                  i ++
+                  nLines ++
+               ENDDO
+               dy := ( y2 - y ) / nLines
+               nFirst := i := 1
+               ny := y
+               DO WHILE ( i := hb_At( ";",cText,i ) ) > 0
+                  ::oPrinter:Say( Substr(cText,nFirst,i-nFirst),x,ny,x2,ny+dy,nJustify,oItem:obj )
+                  i ++
+                  nFirst := i
+                  ny += dy
+               ENDDO
+               ::oPrinter:Say( Substr(cText,nFirst,Len(cText)-nFirst+1),x,ny,x2,ny+dy,nJustify,oItem:obj )
+            ELSE
+               ::oPrinter:Say( cText,x,y,x2,y2,nJustify,oItem:obj )
+            ENDIF
+            // SetTransparentMode( ::oPrinter:hDC,.F. )
             // Writelog( str(x)+" "+str(y)+" "+str(x2)+" "+str(y2)+" "+str(::nAOffSet)+" "+str(::nTOffSet)+" Say: "+cText)
          ENDIF
       ELSEIF oItem:cClass == "box"
@@ -1191,10 +1239,12 @@ Memvar lLastCycle, lSkipItem
       ELSEIF oItem:cClass == "hline"
          ::oPrinter:Line( x,y,x2,y,oItem:oPen )
       ELSEIF oItem:cClass == "bitmap"
+/*
          IF oItem:obj == Nil
             oItem:obj := OpenBitmap( aGetSecond( oItem:aProp,"bitmap" ), ::oPrinter:hDC )
          ENDIF
          ::oPrinter:Bitmap( x,y,x2,y2,, oItem:obj )
+*/
       ENDIF
       ::ny := Max( ::ny,y2 + ::nAOffSet )
    ENDIF
@@ -1211,13 +1261,21 @@ Local i
    FOR i := 1 TO Len( aControls )
       IF !Empty( aControls[i]:aControls )
          ::ReleaseObj( aControls[i]:aControls )
-      ELSEIF aControls[i]:obj != Nil
-         IF aControls[i]:cClass == "bitmap"
-            DeleteObject( aControls[i]:obj )
-            aControls[i]:obj := Nil
-         ELSEIF aControls[i]:cClass == "label"
-            aControls[i]:obj:Release()
-            aControls[i]:obj := Nil
+      ELSE
+         IF aControls[i]:obj != Nil
+            IF aControls[i]:cClass == "bitmap"
+/*
+               DeleteObject( aControls[i]:obj )
+*/
+               aControls[i]:obj := Nil
+            ELSEIF aControls[i]:cClass == "label"
+               aControls[i]:obj:Release()
+               aControls[i]:obj := Nil
+            ENDIF
+         ENDIF
+         IF aControls[i]:oPen != Nil
+            aControls[i]:oPen:Release()
+            aControls[i]:oPen := Nil
          ENDIF
       ENDIF
    NEXT
@@ -1255,23 +1313,14 @@ Local nPenWidth, nPenType
             ENDIF
          NEXT
       ELSEIF aItems[i]:title == "method"
-         Aadd( aMethods, { Lower(aItems[i]:GetAttribute("name")),RdScript(,aItems[i]:aItems[1]:aItems[1]) } )
+         Aadd( aMethods, { Lower(aItems[i]:GetAttribute("name")),RdScript(,aItems[i]:aItems[1]:aItems[1],,.T.) } )
       ELSEIF aItems[i]:title == "part"
          ReadRepItem( aItems[i],Iif(oCtrl:cClass=="area",oCtrl,oContainer) )
       ENDIF
    NEXT
-   IF oCtrl:cClass != "area"
-      IF ( xProperty := aGetSecond( oCtrl:aProp,"pentype" ) ) != Nil
-         nPenType := Ascan( aPenType,xProperty ) - 1
-      ELSE
-         nPenType := 0
-      ENDIF
-      IF ( xProperty := aGetSecond( oCtrl:aProp,"penwidth" ) ) != Nil
-         nPenWidth := xProperty
-      ELSE
-         nPenWidth := 1
-      ENDIF
-      oCtrl:oPen := HPen():Add( nPenType,nPenWidth )
+   IF oCtrl:cClass $ "box.vline.hline" .OR. ( oCtrl:cClass == "label" .AND. ;
+      ( xProperty := aGetSecond( oCtrl:aProp,"border" ) ) != Nil .AND. xProperty )
+      oCtrl:lPen := .T.
    ENDIF
 
 Return Nil
@@ -1286,7 +1335,13 @@ Local weight := oXmlNode:GetAttribute( "weight" )
 Local charset := oXmlNode:GetAttribute( "charset" )
 Local ita   := oXmlNode:GetAttribute( "italic" )
 Local under := oXmlNode:GetAttribute( "underline" )
+Local name  := oXmlNode:GetAttribute( "name" ), i
 
+  IF Valtype( HRepTmpl():aFontTable ) == "A"
+     IF ( i := Ascan(HRepTmpl():aFontTable,{|a|Lower(a[1])==Lower(name)}) ) != 0
+        name := HRepTmpl():aFontTable[ i,2 ]
+     ENDIF
+  ENDIF
   weight := Iif( weight != Nil, Val( weight ), 400 )
   IF charset != Nil
      charset := Val( charset )
@@ -1294,6 +1349,5 @@ Local under := oXmlNode:GetAttribute( "underline" )
   ita    := Iif( ita != Nil, Val( ita ), 0 )
   under  := Iif( under != Nil, Val( under ), 0 )
 
-Return oPrinter:AddFont( oXmlNode:GetAttribute( "name" ),  ;
-                    height, (weight>400), (ita>0), (under>0), charset )
+Return oPrinter:AddFont( name, height, (weight>400), (ita>0), (under>0), charset )
 

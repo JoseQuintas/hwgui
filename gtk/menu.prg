@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.12 2009-04-13 12:20:25 alkresin Exp $
+ * $Id: menu.prg,v 1.13 2009-04-30 16:03:44 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Prg level menu functions
@@ -82,7 +82,7 @@ Local hSubMenu
    ENDIF
 
    hSubMenu := aMenu[5]
-   hSubMenu := hwg__AddMenuItem( hSubMenu, cItem, nPos-1, .T., nMenuId,,lSubMenu )
+   hSubMenu := hwg__AddMenuItem( hSubMenu, cItem, nPos-1, getActiveWindow(), nMenuId,,lSubMenu )
 
    IF nPos > Len( aMenu[1] )
       IF lSubmenu
@@ -154,7 +154,7 @@ Local hMenu, nPos, aMenu, i, oBmp
       ELSE 
          IF aMenu[ 1,nPos,1 ] == Nil .OR. aMenu[ 1,nPos,2 ] != Nil
             IF Len(aMenu[1,npos]) == 4
-               Aadd( aMenu[1,npos],Nil )
+               Aadd(aMenu[1,npos],Nil)
             ENDIF
             aMenu[1,npos,5] := hwg__AddMenuItem( hMenu, aMenu[1,npos,2], ;
                           nPos, hWnd, aMenu[1,nPos,3], aMenu[1,npos,4],.F. )

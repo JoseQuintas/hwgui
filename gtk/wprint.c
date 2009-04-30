@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.6 2009-04-13 12:20:25 alkresin Exp $
+ * $Id: wprint.c,v 1.7 2009-04-30 16:03:44 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level print functions
@@ -20,6 +20,7 @@
 
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-job.h>
+#include <libgnomeprint/private/gnome-font-private.h>
 
 #define DT_CENTER                   1
 #define DT_RIGHT                    2
@@ -33,25 +34,27 @@ typedef struct HWGUI_PRINT_STRU
 
 } HWGUI_PRINT, * PHWGUI_PRINT;
 
-// #ifdef G_CONSOLE_MODE
+#ifdef G_CONSOLE_MODE
 static BOOL bGtkInit = 0;
-// #endif
+#endif
 
 HB_FUNC( HWG_OPENPRINTER )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_xgrab( sizeof(HWGUI_PRINT) );
 
-// #ifdef G_CONSOLE_MODE
+#ifdef G_CONSOLE_MODE
    if( !bGtkInit )
    {
       gtk_set_locale();
       g_type_init();
       bGtkInit = 1;
    }
-// #endif
+#endif
+   memset( print,0,sizeof(HWGUI_PRINT) );
    print->config = gnome_print_config_default();
    gnome_print_config_set( print->config, (const guchar*)"Printer", (const guchar*)"GENERIC" );
    gnome_print_config_set( print->config, (const guchar*)"Settings.Transport.Backend.Printer", (const guchar*)hb_parc(1) );
+   gnome_print_config_set( print->config, GNOME_PRINT_KEY_PAGE_ORIENTATION, "R0" );
 
    print->job = gnome_print_job_new( print->config );
    print->gpc = gnome_print_job_get_context( print->job );
@@ -62,16 +65,18 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_xgrab( sizeof(HWGUI_PRINT) );
    
-// #ifdef G_CONSOLE_MODE
+#ifdef G_CONSOLE_MODE
    if( !bGtkInit )
    {
       gtk_set_locale();
       g_type_init();
       bGtkInit = 1;
    }
-// #endif
+#endif
+   memset( print,0,sizeof(HWGUI_PRINT) );
    print->config = gnome_print_config_default();
    gnome_print_config_set( print->config, (const guchar*)"Printer", (const guchar*)"GENERIC" );
+   gnome_print_config_set( print->config, GNOME_PRINT_KEY_PAGE_ORIENTATION, "R0" );
 
    print->job = gnome_print_job_new( print->config );
    print->gpc = gnome_print_job_get_context( print->job );
@@ -139,10 +144,7 @@ HB_FUNC( SETPRINTERMODE )
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
    
    gnome_print_config_set( print->config, 
-      (const guchar*)GNOME_PRINT_KEY_PAPER_ORIENTATION, (hb_parni(2)==1)? (const guchar*)"R0":(const guchar*)"R90" );
-      
-   // hb_retnl( (LONG) CreateDC( NULL, pPrinterName, NULL, pdm ) );
-   // hb_stornl( (LONG)hPrinter,2 );
+      GNOME_PRINT_KEY_PAGE_ORIENTATION, (hb_parni(2)==1)? (const guchar*)"R0":(const guchar*)"R270" );
 }
 
 HB_FUNC( CLOSEPRINTER )
@@ -158,8 +160,10 @@ HB_FUNC( HWG_UNREFPRINTER )
    g_object_unref( G_OBJECT (print->config) );
    g_object_unref( G_OBJECT (print->gpc) );
    g_object_unref( G_OBJECT (print->job) );
+/*
    if( print->font )
       g_object_unref( G_OBJECT (print->font) );
+*/
    hb_xfree( print );
 }
 
@@ -266,10 +270,12 @@ HB_FUNC( HWG_GP_DRAWLINE )
             (gdouble)hb_parni(3), (gdouble)hb_parni(4), (gdouble)hb_parni(5) );
 }
 
+
 HB_FUNC( HWG_GP_DRAWTEXT )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
    char * cText = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
+   // guchar *cText = g_convert( hb_parc(2),-1,"UTF-8","KOI8-R",NULL,NULL,NULL );
    int iOption = (ISNIL(7))? 0 : hb_parni(7);
    int x1 = hb_parni(3);
 
@@ -288,6 +294,49 @@ HB_FUNC( HWG_GP_DRAWTEXT )
    g_free( cText );
 
 }
+
+
+/*
+HB_FUNC( HWG_GP_DRAWTEXT )
+{
+   PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
+   int i = 0, nLen = hb_parclen(2);
+   guchar *p, *cText;
+   int iOption = (ISNIL(7))? 0 : hb_parni(7);
+   gdouble x1 = (gdouble)hb_parni(3);
+   gdouble x2 = (gdouble)hb_parni(5);
+   gdouble delta, dWidth = 0;
+   gint unival, glyph;
+
+   cText = g_convert( hb_parc(2),-1,"UTF-8","KOI8-R",NULL,NULL,NULL );
+   if( print->font )
+   {
+      for( p = cText; p && i < nLen; p = g_utf8_next_char(p), i++ )
+      {
+         unival = g_utf8_get_char (p);
+         glyph = gnome_font_lookup_default( print->font, unival );
+         dWidth += gnome_font_face_get_glyph_width( print->font->face, glyph ) * 
+            0.001 * print->font->size;
+         if( dWidth > (x2-x1) )
+            break;
+      }
+      nLen = p - cText;
+   }
+   if( dWidth && dWidth < (x2-x1) && ( iOption == DT_RIGHT || iOption == DT_CENTER ) )
+   {
+      if( iOption == DT_RIGHT )
+         x1 = x2 - dWidth;
+      else
+         x1 = x1 + ( (x2-x1-dWidth)/2 );
+   }
+
+   delta = gnome_font_get_size(print->font) / 2;
+   gnome_print_moveto( print->gpc, x1, (gdouble)hb_parni(4)+delta );
+   gnome_print_show_sized( print->gpc, (guchar*)cText, nLen );
+   g_free( cText );
+
+}
+*/
 
 HB_FUNC( HWG_GP_ADDFONT )
 {
@@ -350,11 +399,23 @@ HB_FUNC( HWG_GP_GETTEXTSIZE )
    if( font )
    {
       cText = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
+      // cText = g_convert( hb_parc(2),-1,"UTF-8","KOI8-R",NULL,NULL,NULL );
       hb_retnl( (LONG) gnome_font_get_width_utf8( font, cText ) );
       g_free( cText );
    }
    else
       hb_retni( 0 );
+}
+
+HB_FUNC( HWG_GP_TRANSLATE )
+{
+   PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
+   hb_retni( gnome_print_translate( print->gpc, hb_parnl( 2 ), hb_parnl( 3 ) ) );
+}
+    
+HB_FUNC( HWG_GP_RELEASE )
+{
+   g_object_unref (G_OBJECT (hb_parnl(1)));
 }
 
 HB_FUNC( HWG_GP_SETLINEWIDTH )
@@ -365,4 +426,3 @@ HB_FUNC( HWG_GP_SETLINEWIDTH )
 }
 
 #endif
-

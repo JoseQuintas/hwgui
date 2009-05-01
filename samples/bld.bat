@@ -36,9 +36,9 @@ if exist %HRB_DIR%\lib\hbvm.lib goto hrb
 
 echo %HRB_DIR%\lib\rtl%HB_MT%.lib + >> b32.bc
 echo %HRB_DIR%\lib\vm%HB_MT%.lib + >> b32.bc
-rem if exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtgui.lib + >> b32.bc
+if exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtgui.lib + >> b32.bc
 rem if not exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
-echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
+echo %HRB_DIR%\lib\gtgui.lib + >> b32.bc
 echo %HRB_DIR%\lib\lang.lib + >> b32.bc
 echo %HRB_DIR%\lib\codepage.lib + >> b32.bc
 echo %HRB_DIR%\lib\macro%HB_MT%.lib + >> b32.bc

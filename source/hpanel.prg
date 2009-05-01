@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.21 2008-11-24 10:02:13 mlacecilia Exp $
+ * $Id: hpanel.prg,v 1.22 2009-05-01 21:03:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -20,12 +20,15 @@ CLASS HPanel INHERIT HControl
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                bInit, bSize, bPaint, bcolor )  //lDocked )
-METHOD Activate()
-METHOD onEvent( msg, wParam, lParam )
-METHOD Init()
-METHOD Redefine( oWndParent, nId, nHeight, bInit, bSize, bPaint, lDocked )
-METHOD Paint()
-METHOD BackColor( bcolor ) INLINE ::SetColor(, bcolor, .T. )
+   METHOD Activate()
+   METHOD onEvent( msg, wParam, lParam )
+   METHOD Init()
+   METHOD Redefine( oWndParent, nId, nHeight, bInit, bSize, bPaint, lDocked )
+   METHOD Paint()
+   METHOD BackColor( bcolor ) INLINE ::SetColor(, bcolor, .T. )
+   METHOD Hide()
+   METHOD Show()
+   METHOD Release()
 
 ENDCLASS
 
@@ -170,3 +173,73 @@ METHOD Paint() CLASS HPanel
 
    RETURN Nil
 
+METHOD Release CLASS HPanel
+
+   IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI
+      IF ::nWidth > ::nHeight .OR. ::nWidth == 0
+         ::oParent:aOffset[2] -= ::nHeight
+      ELSEIF ::nHeight > ::nWidth .OR. ::nHeight == 0
+         IF ::nLeft == 0
+            ::oParent:aOffset[1] -= ::nWidth
+         ELSE
+            ::oParent:aOffset[3] -= ::nWidth
+         ENDIF
+      ENDIF
+      InvalidateRect(::oParent:handle,0, ::nLeft, ::nTop, ::nWidth, ::nHeight)
+   ENDIF
+	 SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, 0 )
+	 super:Release( )
+	 RETURN Nil
+
+METHOD Hide CLASS HPanel
+   LOCAL i
+   
+   IF ::lHide
+      Return Nil
+   ENDIF
+   IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI
+      IF ::nWidth > ::nHeight .OR. ::nWidth == 0
+         ::oParent:aOffset[2] -= ::nHeight
+      ELSEIF ::nHeight > ::nWidth .OR. ::nHeight == 0
+         IF ::nLeft == 0
+            ::oParent:aOffset[1] -= ::nWidth
+         ELSE
+            ::oParent:aOffset[3] -= ::nWidth
+         ENDIF
+      ENDIF
+      InvalidateRect(::oParent:handle,0, ::nLeft, ::nTop, ::nWidth, ::nHeight)
+   ENDIF
+   ::nSize := ::nWidth
+	 FOR i = 1 to LEN( ::acontrols )
+	   ::acontrols[ i ]:hide()
+	 NEXT
+	 super:hide()
+	 SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, 0 )
+	 RETURN Nil
+
+METHOD Show CLASS HPanel
+   Local i
+
+   IF ! ::lHide
+      Return Nil
+   ENDIF
+   IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI   //ISWINDOwVISIBLE( ::handle )
+      IF ::nWidth > ::nHeight .OR. ::nWidth == 0
+         ::oParent:aOffset[2] += ::nHeight
+      ELSEIF ::nHeight > ::nWidth .OR. ::nHeight == 0
+         IF ::nLeft == 0
+            ::oParent:aOffset[1] += ::nWidth
+         ELSE
+            ::oParent:aOffset[3] += ::nWidth
+         ENDIF
+      ENDIF
+	    InvalidateRect(::oParent:handle,1, ::nLeft, ::nTop, ::nWidth, ::nHeight)	
+   ENDIF
+   ::nWidth := ::nsize 
+   SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, 0 )	 
+   super:show()	 
+	 FOR i = 1 to LEN( ::acontrols )
+	   ::acontrols[ i ]:Show()
+	 NEXT
+   MoveWindow( ::Handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+	 RETURN Nil

@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.29 2009-04-08 14:01:25 lfbasso Exp $
+ * $Id: htool.prg,v 1.30 2009-05-01 21:03:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -28,6 +28,7 @@ CLASS HToolButton INHERIT HObject
    DATA bStyle INIT  0x0000
    DATA tooltip 
    DATA aMenu INIT {}
+   DATA hMenu
    DATA Caption 
    DATA lEnabled  INIT .T. HIDDEN
    ACCESS Enabled  INLINE ::lEnabled  
@@ -98,7 +99,7 @@ CLASS HToolBar INHERIT HControl
    METHOD EnableButton( idButton, lEnable ) INLINE SENDMESSAGE( ::handle, TB_ENABLEBUTTON, INT( idButton ), MAKELONG( IIF( lEnable, 1, 0 ), 0) )
    METHOD ShowButton( idButton ) INLINE SENDMESSAGE( ::handle, TB_HIDEBUTTON, INT( idButton ), MAKELONG( 0, 0 ) )
    METHOD HideButton( idButton ) INLINE SENDMESSAGE( ::handle, TB_HIDEBUTTON, INT( idButton ), MAKELONG( 1, 0 ) )         
-   METHOD REFRESH
+   METHOD REFRESH()
    
 ENDCLASS
 
@@ -210,6 +211,7 @@ Local hImage, img, nlistimg, ndrop := 0
          IF ValType( ::aItem[ n, 9 ] ) == "A"
 
             ::aItem[ n, 10 ] := hwg__CreatePopupMenu()
+            ::aItem[ n, 11 ]:hMenu := ::aItem[ n, 10 ]
             aTemp := ::aItem[ n, 9 ]
 
             FOR n1 := 1 TO Len( aTemp )
@@ -347,10 +349,12 @@ METHOD Notify( lParam ) CLASS hToolBar
    RETURN 0
 
 METHOD REFRESH() CLASS htoolbar
+   /*
    IF ::lInit
       ::lInit := .f.
    ENDIF
    ::init()
+   */
    RETURN nil
 
 METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu, cName) CLASS hToolBar
@@ -375,9 +379,9 @@ METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu, cName) CLASS hTo
       DEFAULT cName to "oSeparator"+LTRIM( STR( LEN( ::aSeparators ) + 1 ) )
       AAdd( ::aSeparators,{ cName, nid } )
    ENDIF
-   AAdd( ::aItem ,{ nBitIp, nId, bState, bStyle, 0, cText, bClick, c, aMenu, hMenu } )
    
    oButton := HToolButton():New(Self,cName,nBitIp,nId,bState,bStyle,cText,bClick, c ,aMenu) 	 
+   AAdd( ::aItem ,{ nBitIp, nId, bState, bStyle, 0, cText, bClick, c, aMenu, hMenu, oButton } )
    
    RETURN oButton
 

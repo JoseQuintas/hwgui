@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.146 2009-03-20 08:02:23 lfbasso Exp $
+ *$Id: guilib.ch,v 1.147 2009-05-01 21:03:03 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -364,13 +364,19 @@
              <bInit>,<bSize>,<ctoolt> )
 
 #xcommand @ <x>,<y> LINE [ <oLine> ]   ;
-             [ LENGTH <length> ]        ;
-             [ OF <oWnd> ]              ;
-             [ ID <nId> ]               ;
-             [<lVert: VERTICAL>]        ;
-             [ ON SIZE <bSize> ]        ;
+             [ LENGTH <length> ]       ;
+             [ HEIGHT <nHeight> ]      ;
+             [ OF <oWnd> ]             ;
+             [ ID <nId> ]              ;
+             [ COLOR <color> ]         ;
+             [ LINESLANT <cSlant> ]    ;
+             [ BORDERWIDTH <nBorder> ] ;
+             [<lVert: VERTICAL>]       ;
+             [ ON INIT <bInit> ]       ;
+             [ ON SIZE <bSize> ]       ;
           => ;
-          [<oLine> := ] HLine():New( <oWnd>,<nId>,<.lVert.>,<x>,<y>,<length>,<bSize> );;
+          [<oLine> := ] HLine():New( <oWnd>,<nId>,<.lVert.>,<x>,<y>,<length>,<bSize>, <bInit>,;
+					              <color>, <nHeight>, <cSlant>,<nBorder>  );;
           [ <oLine>:name := <(oLine)> ]
 
 #xcommand @ <x>,<y> EDITBOX [ <oEdit> CAPTION ] <caption> ;

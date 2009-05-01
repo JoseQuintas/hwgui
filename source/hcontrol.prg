@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.125 2009-03-20 08:02:23 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.126 2009-05-01 21:03:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1118,13 +1118,11 @@ ELSEIF msg == WM_KEYDOWN
    ELSEIF msg == WM_CHAR
       IF wParam == VK_RETURN .or. wParam == VK_SPACE
          IF ( ::m_bIsToggle )
-
             ::m_bToggled := ! ::m_bToggled
             InvalidateRect( ::handle, 0 )
          ELSE
-
             SendMessage( ::handle, BM_SETSTATE, 1, 0 )
-            ::m_bSent := .t.
+            //::m_bSent := .t.
          ENDIF
          SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
       ELSEIF wParam == VK_ESCAPE
@@ -1542,32 +1540,43 @@ CLASS HLine INHERIT HControl
 CLASS VAR winclass   INIT "STATIC"
 
    DATA lVert
+   DATA LineSlant
+   DATA nBorder
    DATA oPenLight, oPenGray
 
-   METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize )
+   METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, bInit, tcolor, nHeight, cSlant, nBorder ) 
    METHOD Activate()
    METHOD Paint()
 
 ENDCLASS
 
 
-METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize ) CLASS HLine
+METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, bInit, tcolor, nHeight, cSlant, nBorder ) CLASS HLine
 
-   Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop,,,,, ;
+
+   Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop,,,,bInit, ;
               bSize, { | o, lp | o:Paint( lp ) } )
 
    ::title := ""
    ::lVert := IIf( lVert == NIL, .F., lVert )
-   IF ::lVert
-      ::nWidth  := 10
-      ::nHeight := IIf( nLength == NIL, 20, nLength )
-   ELSE
-      ::nWidth  := IIf( nLength == NIL, 20, nLength )
-      ::nHeight := 10
-   ENDIF
+   ::LineSlant := IIF( EMPTY( cSlant ) .OR. ! cSlant $ "/\", "", cSlant )
+   ::nBorder := IIF( EMPTY( nBorder ), 1, nBorder )
 
-   ::oPenLight := HPen():Add( BS_SOLID, 1, GetSysColor( COLOR_3DHILIGHT ) )
-   ::oPenGray  := HPen():Add( BS_SOLID, 1, GetSysColor( COLOR_3DSHADOW  ) )
+   IF EMPTY( ::LineSlant ) 
+      IF ::lVert
+         ::nWidth  := 10
+         ::nHeight := IIf( nLength == NIL, 20, nLength )
+      ELSE
+         ::nWidth  := IIf( nLength == NIL, 20, nLength )
+         ::nHeight := 10
+      ENDIF
+      ::oPenLight := HPen():Add( BS_SOLID, 1, GetSysColor( COLOR_3DHILIGHT ) )
+      ::oPenGray  := HPen():Add( BS_SOLID, 1, GetSysColor( COLOR_3DSHADOW  ) )
+   ELSE
+      ::nWidth  := nLength + 1
+      ::nHeight := nHeight + 1
+      ::oPenLight := HPen():Add( BS_SOLID, ::nBorder, tColor )
+   ENDIF
 
    ::Activate()
 
@@ -1587,21 +1596,28 @@ METHOD Paint( lpdis ) CLASS HLine
    LOCAL x1  := drawInfo[ 4 ], y1 := drawInfo[ 5 ]
    LOCAL x2  := drawInfo[ 6 ], y2 := drawInfo[ 7 ]
 
-   SelectObject( hDC, ::oPenLight:handle )
-   IF ::lVert
-      // DrawEdge( hDC,x1,y1,x1+2,y2,EDGE_SUNKEN,BF_RIGHT )
-      DrawLine( hDC, x1 + 1, y1, x1 + 1, y2 )
-   ELSE
-      // DrawEdge( hDC,x1,y1,x2,y1+2,EDGE_SUNKEN,BF_RIGHT )
-      DrawLine( hDC, x1 , y1 + 1, x2, y1 + 1 )
-   ENDIF
+   IF EMPTY( ::LineSlant )
+      IF ::lVert
+         // DrawEdge( hDC,x1,y1,x1+2,y2,EDGE_SUNKEN,BF_RIGHT )
+         DrawLine( hDC, x1 + 1, y1, x1 + 1, y2 )
+      ELSE
+         // DrawEdge( hDC,x1,y1,x2,y1+2,EDGE_SUNKEN,BF_RIGHT )
+         DrawLine( hDC, x1 , y1 + 1, x2, y1 + 1 )
+      ENDIF
 
-   SelectObject( hDC, ::oPenGray:handle )
-   IF ::lVert
-      DrawLine( hDC, x1, y1, x1, y2 )
+      SelectObject( hDC, ::oPenGray:handle )
+      IF ::lVert
+         DrawLine( hDC, x1, y1, x1, y2 )
+      ELSE
+         DrawLine( hDC, x1, y1, x2, y1 )
+      ENDIF
    ELSE
-      DrawLine( hDC, x1, y1, x2, y1 )
-   ENDIF
+      IF ::LineSlant == "/"
+         DrawLine( hDC, x1  , y1 + y2 , x1 + x2 , y1  )
+      ELSEIF ::LineSlant == "\"
+         DrawLine( hDC, x1 , y1, x1 + x2 , y1 + y2 )
+      ENDIF
+	 ENDIF
 
    RETURN NIL
 

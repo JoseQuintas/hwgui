@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.39 2009-02-15 04:53:18 lfbasso Exp $
+ * $Id: menu_c.c,v 1.40 2009-05-01 21:03:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -190,6 +190,9 @@ HB_FUNC( CHECKMENUITEM )
       hMenu = GetMenu( handle );
    }
    if( !hMenu )
+      hMenu = (HMENU) HB_PARHANDLE(1) ;
+
+   if( !hMenu )
       MessageBox( GetActiveWindow(), "", "No Menu!", MB_OK | MB_ICONINFORMATION );
    else
    {
@@ -216,6 +219,8 @@ HB_FUNC( ISCHECKEDMENUITEM )
       HWND handle = ( hb_pcount()>0 && !ISNIL(1) )? ((HWND) HB_PARHANDLE(1)):aWindows[0];
       hMenu = GetMenu( handle );
    }
+   if( !hMenu )
+      hMenu = (HMENU) HB_PARHANDLE(1) ;
 
    if( !hMenu )
       hb_retl( 0 );
@@ -246,6 +251,8 @@ HB_FUNC( ENABLEMENUITEM )
       HWND handle = ( hb_pcount()>0 && !ISNIL(1) )? ((HWND) HB_PARHANDLE(1)):aWindows[0];
       hMenu = GetMenu( handle );
    }
+   if( !hMenu )
+      hMenu = (HMENU) HB_PARHANDLE(1) ;
 
    if( !hMenu )
    {
@@ -278,6 +285,8 @@ HB_FUNC( ISENABLEDMENUITEM )
       HWND handle = ( hb_pcount()>0 && !ISNIL(1) )? ((HWND) HB_PARHANDLE(1)):aWindows[0];
       hMenu = GetMenu( handle );
    }
+   if( !hMenu )
+      hMenu = (HMENU) HB_PARHANDLE(1) ;
 
    if( !hMenu )
       hb_retl( 0 );
@@ -385,6 +394,8 @@ HB_FUNC( GETMENUCAPTION )
       HWND handle = ( hb_pcount()>0 && !ISNIL(1) )? ((HWND) HB_PARHANDLE(1)):aWindows[0];
       hMenu = GetMenu( handle );
    }
+   if( !hMenu )
+      hMenu = (HMENU) HB_PARHANDLE(1) ;
 
    if( !hMenu )
    {
@@ -426,6 +437,8 @@ HB_FUNC( SETMENUCAPTION )
       HWND handle = ( hb_pcount()>0 && !ISNIL(1) )? ((HWND) HB_PARHANDLE(1)):aWindows[0];
       hMenu = GetMenu( handle );
    }
+   if( !hMenu )
+      hMenu = (HMENU) HB_PARHANDLE(1) ;
 
    if( !hMenu )
    {

@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.32 2009-05-02 19:09:25 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.33 2009-05-02 22:15:39 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -28,7 +28,7 @@ CLASS VAR winclass   INIT "BUTTON"
    METHOD Refresh()
  //  METHOD Disable()
  //  METHOD Enable()
-   METHOD SetValue( lValue )  INLINE SendMessage( ::handle, BM_SETCHECK, IIf( lValue, 1, 0 ), 0 ), ::value := lValue
+   METHOD SetValue( lValue )  INLINE SendMessage( ::handle, BM_SETCHECK, Iif( lValue, 1, 0 ), 0 ), ::value := lValue, ::Refresh()
    METHOD GetValue()          INLINE ( SendMessage( ::handle, BM_GETCHECK, 0, 0 ) == 1 )
    METHOD onGotFocus()
    METHOD onClick()
@@ -179,13 +179,13 @@ METHOD onevent( msg, wParam, lParam ) CLASS HCheckButton
 
 
 METHOD Refresh() CLASS HCheckButton
-   LOCAL VAR
+   LOCAL var
 
    IF ::bSetGet != Nil
-      var := Eval( ::bSetGet,, nil )
-      ::value := Iif( var == Nil .OR. Valtype( var ) != "L", ::value, var )
+       var := SendMessage(::handle,BM_GETCHECK,0,0) == 1 
+       Eval( ::bSetGet, var, Self ) 
+       ::value := Iif( var == Nil .OR. Valtype( var ) != "L", .F., var )        
    ENDIF
-
    SendMessage( ::handle, BM_SETCHECK, IIf( ::value, 1, 0 ), 0 )
 
    RETURN Nil

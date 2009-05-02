@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.31 2009-03-19 02:11:14 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.32 2009-05-02 19:09:25 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -166,10 +166,13 @@ METHOD onevent( msg, wParam, lParam ) CLASS HCheckButton
          ENDIF
       ENDIF  
    ELSEIF msg == WM_KEYUP
-	 ELSEIF  msg = WM_GETDLGCODE
-      IF wParam != 0
-         RETURN ButtonGetDlgCode( lParam )
+	 ELSEIF  msg = WM_GETDLGCODE .AND. lParam != 0
+      IF wParam = VK_RETURN .OR. wParam = VK_TAB
+      ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND.wParam != VK_ESCAPE    
+      ELSEIF GETDLGMESSAGE( lParam ) = WM_CHAR .OR.wParam = VK_ESCAPE 
+         RETURN -1
       ENDIF   
+      RETURN DLGC_WANTMESSAGE //+ DLGC_WANTCHARS
    ENDIF
    
    RETURN -1
@@ -179,8 +182,8 @@ METHOD Refresh() CLASS HCheckButton
    LOCAL VAR
 
    IF ::bSetGet != Nil
-      VAR := Eval( ::bSetGet,, nil )
-      ::value := IIf( VAR == Nil, .F., VAR )
+      var := Eval( ::bSetGet,, nil )
+      ::value := Iif( var == Nil .OR. Valtype( var ) != "L", ::value, var )
    ENDIF
 
    SendMessage( ::handle, BM_SETCHECK, IIf( ::value, 1, 0 ), 0 )

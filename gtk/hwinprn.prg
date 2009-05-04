@@ -1,5 +1,5 @@
 /*
- * $Id: hwinprn.prg,v 1.2 2009-04-13 12:20:25 alkresin Exp $
+ * $Id: hwinprn.prg,v 1.3 2009-05-04 07:29:09 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWinPrn class
@@ -175,7 +175,7 @@ METHOD NextPage() CLASS HWinPrn
       ::oPrinter:SetFont( ::oFont )
    ENDIF
 
-   ::y := ::nTop * ::oPrinter:nVRes - ::nLineHeight - ::nLined
+   ::y := ::nTop * ::oPrinter:nVRes - ::nLineHeight + ::nLined
    ::lFirstLine := .T.
 
 Return Nil
@@ -187,7 +187,7 @@ Local i, i0, j, slen, c
       ::StartDoc()
    ENDIF
 
-   IF ::y + 2 * ( ::nLineHeight + ::nLined ) > ::oPrinter:nHeight
+   IF ::y + 3 * ( ::nLineHeight + ::nLined ) > ::oPrinter:nHeight
       ::NextPage()
    ENDIF
    ::x := ::nLeft * ::oPrinter:nHRes
@@ -293,7 +293,7 @@ Static aCodes := {   ;
    { Chr(27)+'-0',,,,,,.f. }, ;     /* cancel underline */
    { Chr(27)+'4',,,,,.t., },  ;     /* italic */
    { Chr(27)+'5',,,,,.f., },  ;     /* cancel italic */
-   { Chr(27)+'G',,,,,.t.,},   ;     /* bold */
+   { Chr(27)+'G',,,,.t.,,},   ;     /* bold */
    { Chr(27)+'H',,,,.f.,, }   ;     /* cancel bold */
  }
 Local i, sLen := Len( aCodes ), c := Left( cLine,1 )
@@ -331,4 +331,3 @@ METHOD End() CLASS HWinPrn
    ::oFont:Release()
    ::oPrinter:End()
 Return Nil
-

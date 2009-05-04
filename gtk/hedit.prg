@@ -1,5 +1,5 @@
 /*
- *$Id: hedit.prg,v 1.13 2009-04-30 16:03:44 alkresin Exp $
+ *$Id: hedit.prg,v 1.14 2009-05-04 07:26:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HEdit class 
@@ -12,9 +12,11 @@
 #include "hblang.ch"
 #include "hwgui.ch"
 
+#ifndef DLGC_WANTARROWS
 #define DLGC_WANTARROWS     1      /* Control wants arrow keys         */
 #define DLGC_WANTTAB        2      /* Control wants tab keys           */
 #define DLGC_WANTCHARS    128      /* Want WM_CHAR messages            */
+#endif
 
 #define GDK_BackSpace       0xFF08
 #define GDK_Tab             0xFF09

@@ -1,5 +1,5 @@
 /*
- * $Id: message.c,v 1.3 2006-02-15 16:56:58 lf_sfnet Exp $
+ * $Id: message.c,v 1.4 2009-05-04 07:26:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Message box functions
@@ -14,6 +14,7 @@
 #include "hbvm.h"
 #include "item.api"
 #include "gtk/gtk.h"
+#include "hwgtk.h"
 
 extern GtkWidget * GetActiveWindow( void );
 
@@ -23,7 +24,7 @@ static int MessageBox( char * cMsg, char * cTitle, int message_type, int button_
    int result;
    char * cptr;
     
-   cptr = g_locale_to_utf8( cMsg, -1, NULL, NULL, NULL);
+   cptr = hwg_convert_to_utf8( cMsg );
    dialog = gtk_message_dialog_new( GTK_WINDOW( GetActiveWindow() ),
                                      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                                      message_type,
@@ -32,7 +33,7 @@ static int MessageBox( char * cMsg, char * cTitle, int message_type, int button_
    g_free( cptr );
    if( *cTitle )
    {
-      cptr = g_locale_to_utf8( cTitle, -1, NULL, NULL, NULL);
+      cptr = hwg_convert_to_utf8( cTitle );
       gtk_window_set_title( GTK_WINDOW(dialog), cptr );
       g_free( cptr );
    }

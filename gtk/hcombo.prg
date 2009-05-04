@@ -1,5 +1,5 @@
 /*
- *$Id: hcombo.prg,v 1.5 2006-12-20 11:39:07 alkresin Exp $
+ *$Id: hcombo.prg,v 1.6 2009-05-04 07:26:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HComboBox class 
@@ -13,6 +13,7 @@
 #include "guilib.ch"
 
 #define CB_ERR              (-1)
+#ifndef CBN_SELCHANGE
 #define CBN_SELCHANGE       1
 #define CBN_DBLCLK          2
 #define CBN_SETFOCUS        3
@@ -23,7 +24,7 @@
 #define CBN_CLOSEUP         8
 #define CBN_SELENDOK        9
 #define CBN_SELENDCANCEL    10
-
+#endif
 
 CLASS HComboBox INHERIT HControl
 

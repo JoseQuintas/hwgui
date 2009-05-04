@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.11 2008-01-28 12:27:20 lculik Exp $
+ * $Id: drawtext.c,v 1.12 2009-05-04 07:26:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level text functions
@@ -35,7 +35,7 @@ HB_FUNC( DELETEDC )
 HB_FUNC( TEXTOUT )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
-   char * cText = g_locale_to_utf8( hb_parc(4),-1,NULL,NULL,NULL );
+   char * cText = hwg_convert_to_utf8( hb_parc(4) );
    GdkColor fcolor, bcolor;
 
    if( hDC->fcolor != -1 )
@@ -58,7 +58,7 @@ HB_FUNC( TEXTOUT )
 HB_FUNC( DRAWTEXT )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
-   char * cText = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
+   char * cText = hwg_convert_to_utf8( hb_parc(2) );
    GdkColor fcolor, bcolor;
 
    if( hDC->fcolor != -1 )
@@ -244,7 +244,7 @@ HB_FUNC( WRITESTATUSWINDOW )
     char *cTitle = hb_parcx(3);
     GtkWidget *w = (GtkWidget *) hb_parptr(1);
     int iStatus = hb_parni(2)-1;
-    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
+    cTitle = hwg_convert_to_utf8( cTitle );
     hb_retni(gtk_statusbar_push(GTK_STATUSBAR(w), iStatus, cTitle));
 
 }

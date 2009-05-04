@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1082 2009-05-02 22:15:39 lfbasso Exp $
+ * $Id: Changelog,v 1.1083 2009-05-04 07:26:48 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,33 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-05-05 11:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/hwgtk.h
+  * gtk/control.c
+  * gtk/drawtext.c
+  * gtk/message.c
+  * gtk/misc.c
+  * gtk/window.c
+  * gtk/wprint.c
+  * gtk/drawwidg.prg
+  * gtk/errorsys.prg
+  * gtk/hbrowse.prg
+  * gtk/hcombo.prg
+  * gtk/hcontrol.prg
+  * gtk/hedit.prg
+  * gtk/htab.prg
+  * gtk/hupdown.prg
+  * gtk/hwinprn.prg
+  * gtk/Makefile.linux
+    ! Some fixes, which makes gtk hwgui usable again.
+    * Important addition: hwg_SetAppLocale( cLocale ) function sets the locale of an aplication.
+      If this function is called, hwgui translates all strings to utf8 not from the system locale,
+      but from the <cLocale>, which is designated in hwg_SetAppLocale() call. This is very
+      convenient for those, who has different codepages for DOS, Windows and Linux - it is
+      enough now to add a single line ( enclosed in conditional compilation directives,
+      of course ) with this function call. The value of cLocale for any codepage may be found
+      in glib or gtk documentation. Russians are: "WINDOWS-1251", "KOI8-R".
 
 2009-05-02 19:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcheck.prg

@@ -1,5 +1,5 @@
 /*
- *$Id: hupdown.prg,v 1.5 2005-10-21 08:50:15 alkresin Exp $
+ *$Id: hupdown.prg,v 1.6 2009-05-04 07:26:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HUpDown class 
@@ -12,8 +12,10 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 
+#ifndef UDS_SETBUDDYINT
 #define UDS_SETBUDDYINT     2
 #define UDS_ALIGNRIGHT      4
+#endif
 
 CLASS HUpDown INHERIT HControl
 

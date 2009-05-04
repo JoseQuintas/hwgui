@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.6 2008-04-28 01:20:20 lculik Exp $
+ *$Id: htab.prg,v 1.7 2009-05-04 07:26:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HTab class
@@ -11,13 +11,13 @@
 #include "hwgui.ch"
 #include "hbclass.ch"
 
+#ifndef TCM_SETCURSEL
 #define TCM_SETCURSEL           4876     // (TCM_FIRST + 12)
 #define TCM_SETCURFOCUS         4912     // (TCM_FIRST + 48)
 #define TCM_GETCURFOCUS         4911     // (TCM_FIRST + 47)
 #define TCM_GETITEMCOUNT        4868     // (TCM_FIRST + 4)
-
 #define TCM_SETIMAGELIST        4867
-//- HTab
+#endif
 
 CLASS HTab INHERIT HControl
 

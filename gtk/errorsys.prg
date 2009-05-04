@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.3 2005-09-14 09:32:10 lf_sfnet Exp $
+ * $Id: errorsys.prg,v 1.4 2009-05-04 07:26:51 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement
@@ -18,7 +18,7 @@ Static LogInitialPath := ""
 PROCEDURE ErrorSys
 
    ErrorBlock( { | oError | DefError( oError ) } )
-   LogInitialPath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
+   LogInitialPath := "/" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "/" )
 
    RETURN
 
@@ -69,7 +69,7 @@ STATIC FUNCTION DefError( oError )
       #endif
    ENDDO
 
-   MemoWrit( LogInitialPath + "Error.log", cMessage )
+   MemoWrit( LogInitialPath+"Error.log", cMessage )
    ErrorPreview( cMessage )
    hwg_gtk_exit()
    QUIT

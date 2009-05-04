@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.18 2006-09-14 07:24:24 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.19 2009-05-04 07:26:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -24,14 +24,12 @@ REQUEST RECNO
 REQUEST EOF
 REQUEST BOF
 
-/*
- * Scroll Bar Constants
- */
+#ifndef SB_HORZ
 #define SB_HORZ             0
 #define SB_VERT             1
 #define SB_CTL              2
 #define SB_BOTH             3
-
+#endif
 #define HDM_GETITEMCOUNT    4608
 
 #define GDK_BackSpace       0xFF08
@@ -77,13 +75,17 @@ CLASS HColumn INHERIT HObject
    DATA lSpandFoot INIT .F.
    DATA Picture
    DATA bHeadClick
+   DATA bColorBlock              //   bColorBlock must return an array containing four colors values
+                                 //   oBrowse:aColumns[1]:bColorBlock := {|| IF (nNumber < 0, ;
+                                 //      {textColor, backColor, textColorSel, backColorSel} , ;
+                                 //      {textColor, backColor, textColorSel, backColorSel} ) }
 
-   METHOD New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin,cPict,bValid,bWhen,aItem,oBmp )
+   METHOD New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin,cPict,bValid,bWhen,aItem,bColorBlock,bHeadClick )
 
 ENDCLASS
 
 //----------------------------------------------------//
-METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, oBmp ) CLASS HColumn
+METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick ) CLASS HColumn
 
    ::heading   := iif( cHeading == nil,"",cHeading )
    ::block     := block
@@ -97,7 +99,8 @@ METHOD New( cHeading,block,type,length, dec, lEditable, nJusHead, nJusLin, cPict
    ::bValid    := bValid
    ::bWhen     := bWhen
    ::aList     := aItem
-   ::aBitmaps  := oBmp
+   ::bColorBlock := bColorBlock
+   ::bHeadClick  := bHeadClick
 
 RETURN Self
 
@@ -835,6 +838,7 @@ Local j, ob, bw, bh, y1, hBReal
 Local oldBkColor, oldTColor, oldBk1Color, oldT1Color
 Local oLineBrush := Iif( lSelected, ::brushSel,::brush )
 Local lColumnFont := .F.
+Local aCores
 
    ::xpos := x := ::x1
    IF lClear == Nil ; lClear := .F. ; ENDIF
@@ -849,6 +853,17 @@ Local lColumnFont := .F.
       fif     := IIF( ::freeze > 0, 1, ::nLeftCol )
 
       WHILE x < ::x2 - 2
+         IF ::aColumns[fif]:bColorBlock != Nil
+            aCores := eval(::aColumns[fif]:bColorBlock)
+            IF lSelected
+              ::aColumns[fif]:tColor := aCores[3]
+              ::aColumns[fif]:bColor := aCores[4]
+            ELSE
+              ::aColumns[fif]:tColor := aCores[1]
+              ::aColumns[fif]:bColor := aCores[2]
+            ENDIF
+            ::aColumns[fif]:brush := HBrush():Add(::aColumns[fif]:bColor   )
+         ENDIF
          xSize := ::aColumns[fif]:width
          IF ::lAdjRight .and. fif == LEN( ::aColumns )
             xSize := Max( ::x2 - x, xSize )

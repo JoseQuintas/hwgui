@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.29 2009-04-30 16:03:44 alkresin Exp $
+ * $Id: window.c,v 1.30 2009-05-04 07:26:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -13,6 +13,7 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "item.api"
+#include <locale.h>
 #include "gtk/gtk.h"
 #include "gdk/gdkkeysyms.h"
 #ifdef __XHARBOUR__
@@ -33,7 +34,7 @@
 #define WM_RBUTTONUP                    517    // 0x0205
 
 
-extern void writelog( char*s );
+extern void hwg_writelog( char*s );
 
 void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
 PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
@@ -47,7 +48,8 @@ PHB_DYNS pSym_onEvent = NULL;
 
 #define HB_IT_DEFAULT   ( ( HB_TYPE ) 0x40000 )
 LONG Prevp2  = -1;
-LONG prevp2=-1;   
+LONG prevp2=-1;
+
 typedef struct
 {
    char * cName;
@@ -56,6 +58,8 @@ typedef struct
 
 #define NUMBER_OF_SIGNALS   1
 static HW_SIGNAL aSignals[NUMBER_OF_SIGNALS] = { { "destroy",2 } };
+
+static guchar szAppLocale[] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 
 HB_FUNC( HWG_GTK_INIT )
 {
@@ -98,7 +102,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
       gtk_window_set_icon( GTK_WINDOW( hWnd ), szFile->handle  );
    }      
    
-   cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
+   cTitle = hwg_convert_to_utf8( cTitle );
    gtk_window_set_title( GTK_WINDOW(hWnd), cTitle );
    g_free( cTitle );
    gtk_window_set_policy( GTK_WINDOW(hWnd), TRUE, TRUE, FALSE );
@@ -153,7 +157,7 @@ HB_FUNC( HWG_CREATEDLG )
       gtk_window_set_icon(GTK_WINDOW(hWnd), szFile->handle  );
    }      
 
-   cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
+   cTitle = hwg_convert_to_utf8( cTitle );
    gtk_window_set_title( GTK_WINDOW(hWnd), cTitle );
    g_free( cTitle );
    gtk_window_set_policy( GTK_WINDOW(hWnd), TRUE, TRUE, FALSE );
@@ -253,8 +257,6 @@ void cb_signal( GtkWidget *widget,gchar* data )
    gpointer gObject;
    LONG p1, p2, p3;
 
-   // writelog( "cb_signal-0" );
-   // writelog( (char*)data );
    sscanf( (char*)data,"%ld %ld %ld",&p1,&p2,&p3 );
    if( !p1 )
    {
@@ -473,21 +475,13 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
 
       if( event->type == GDK_KEY_PRESS || event->type == GDK_KEY_RELEASE )
       {
-      /*
-         p1 = (event->type==GDK_KEY_PRESS)? WM_KEYDOWN : WM_KEYUP;
-         p2 = ((GdkEventKey*)event)->keyval;
-	 */
          p1 = (event->type==GDK_KEY_PRESS)? WM_KEYDOWN : WM_KEYUP;
          p2 = ((GdkEventKey*)event)->keyval;
 	 uchar= gdk_keyval_to_unicode(((GdkEventKey*)event)->keyval);
- 	 // TraceLog("cc.txt"," p2= %lu unicode = U+%04x \n",p2,uchar);
-	 //if (p2 == GDK_dead_acute)
-//	    p2 == GDK_acute;
 	 if ( p2 == GDK_asciitilde  ||  p2 == GDK_asciicircum  ||  p2 == GDK_grave ||  p2 == GDK_acute ||  p2 == GDK_diaeresis || p2 == GDK_dead_acute ||	 p2 ==GDK_dead_tilde || p2==GDK_dead_circumflex || p2==GDK_dead_grave || p2 == GDK_dead_diaeresis)	
 	 {
 	    prevp2 = p2 ;
 	    p2=-1;
-//	    return 0; 
 	 }    
 	 else 
 	 {
@@ -500,12 +494,10 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
 	 }   
 	    
 	 tmpbuf=g_new0(gchar,7);
-	 g_unichar_to_utf8(uchar,tmpbuf);
-	 res=g_locale_from_utf8(tmpbuf,-1,NULL,NULL,NULL);
+	 g_unichar_to_utf8( uchar,tmpbuf );
+	 res = hwg_convert_to_utf8( tmpbuf );
          g_free(tmpbuf);	 
-//	 TraceLog("aa.txt" , " keyval = %lu p2 = %lu unicode = U+%04X char %s \n",ukeyval,p2,uchar,res);
-//	 TraceLog("cc.txt","{ %lu,\"%s\"}\n",p2,res);	 
-	   p3 = ( ( ((GdkEventKey*)event)->state & GDK_SHIFT_MASK )? 1 : 0 ) |
+         p3 = ( ( ((GdkEventKey*)event)->state & GDK_SHIFT_MASK )? 1 : 0 ) |
 	      ( ( ((GdkEventKey*)event)->state & GDK_CONTROL_MASK )? 2 : 0 ) |
 	      ( ( ((GdkEventKey*)event)->state & GDK_MOD1_MASK )? 4 : 0 );
       }
@@ -602,11 +594,9 @@ void all_signal_connect( gpointer hWnd )
    int i;
    char buf[20]={0};
 
-   // writelog( "all_signal-connect-0" );
    for( i=0; i<NUMBER_OF_SIGNALS; i++ )
    {
       sprintf( buf,"%d 0 0",aSignals[i].msg );
-      // writelog(buf);
       g_signal_connect( hWnd, aSignals[i].cName,
         G_CALLBACK (cb_signal), g_strdup(buf) );
    }
@@ -662,7 +652,7 @@ HB_FUNC( GETWINDOWOBJECT )
 
 HB_FUNC( SETWINDOWTEXT )
 {
-   char * cTitle = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
+   char * cTitle = hwg_convert_to_utf8( hb_parc(2) );
    gtk_window_set_title( GTK_WINDOW( HB_PARHANDLE(1) ), cTitle );
    g_free( cTitle );
 }
@@ -732,36 +722,6 @@ void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )
    hb_objSendMsg( pObject, varname, 1, pValue );
 }
 
-/*               
-PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
-{
-   PHB_DYNS pMsg = hb_dynsymGet( varname );
-
-   if( pMsg )
-   {
-      hb_vmPushSymbol( pMsg->pSymbol );
-      hb_vmPush( pObject );
-
-      hb_vmDo( 0 );
-   }
-   return hb_param( -1, HB_IT_ANY );
-}
-
-void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )
-{
-   PHB_DYNS pMsg = hb_dynsymGet( varname );
-
-   if( pMsg )
-   {
-      hb_vmPushSymbol( pMsg->pSymbol );
-      hb_vmPush( pObject );
-      hb_vmPush( pValue );
-
-      hb_vmDo( 1 );
-   }
-}
-*/
-
 HB_FUNC( HWG_RELEASEOBJECT )
 {
    GObject * hWnd = (GObject*) HB_PARHANDLE(1);
@@ -799,7 +759,30 @@ HB_FUNC( HWG_SET_MODAL )
    gtk_window_set_modal( (GtkWindow *) HB_PARHANDLE(1), 1 );
    gtk_window_set_transient_for( (GtkWindow *) HB_PARHANDLE(1), (GtkWindow *) HB_PARHANDLE(2) );
 }
-HB_FUNC(WINDOWSETRESIZE)
+
+HB_FUNC( WINDOWSETRESIZE )
 {
   gtk_window_set_resizable( (GtkWindow*) HB_PARHANDLE(1) ,hb_parl(2));
+}
+
+gchar * hwg_convert_to_utf8( char * szText )
+{
+   if( *szAppLocale )
+      return g_convert( szText, -1, "UTF-8", szAppLocale, NULL, NULL, NULL );
+   else
+      return g_locale_to_utf8( szText,-1,NULL,NULL,NULL );
+}
+
+gchar * hwg_convert_from_utf8( char * szText )
+{
+   if( *szAppLocale )
+      return g_convert( szText, -1, szAppLocale, "UTF-8", NULL, NULL, NULL );
+   else
+      return g_locale_from_utf8( szText,-1,NULL,NULL,NULL );
+}
+
+HB_FUNC( HWG_SETAPPLOCALE )
+{
+   memcpy( szAppLocale, hb_parc(1), hb_parclen(1) );
+   szAppLocale[hb_parclen(1)] = '\0';
 }

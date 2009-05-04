@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.34 2008-10-20 15:11:50 mlacecilia Exp $
+ * $Id: control.c,v 1.35 2009-05-04 07:26:50 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -74,7 +74,7 @@ HB_FUNC( CREATESTATIC )
    else
    {
       hCtrl = gtk_event_box_new();
-      cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
+      cTitle = hwg_convert_to_utf8( cTitle );
       hLabel = gtk_label_new( cTitle );
       g_free( cTitle );
       gtk_container_add( GTK_CONTAINER(hCtrl), hLabel );
@@ -97,7 +97,7 @@ HB_FUNC( CREATESTATIC )
 
 HB_FUNC( HWG_STATIC_SETTEXT )
 {
-   char * cTitle = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
+   char * cTitle = hwg_convert_to_utf8( hb_parc(2) );
    GtkLabel * hLabel = (GtkLabel*) g_object_get_data( (GObject*) HB_PARHANDLE(1),"label" );
    gtk_label_set_text( hLabel, cTitle );
    g_free( cTitle );
@@ -115,7 +115,7 @@ HB_FUNC( CREATEBUTTON )
    GtkFixed * box;
    PHWGUI_PIXBUF szFile = ISPOINTER(9) ? (PHWGUI_PIXBUF) HB_PARHANDLE(9): NULL;
 
-   cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
+   cTitle = hwg_convert_to_utf8( cTitle );
    if( ( ulStyle & 0xf ) == BS_AUTORADIOBUTTON )
    {
       GSList * group = (GSList*)HB_PARHANDLE(2);
@@ -129,12 +129,14 @@ HB_FUNC( CREATEBUTTON )
       hCtrl = gtk_frame_new( cTitle );
    else
       hCtrl = gtk_button_new_with_mnemonic( cTitle );
+      
+#if GTK_CHECK_VERSION(2,4,1)
    if (szFile )
    {   
       img = gtk_image_new_from_pixbuf(szFile->handle);
       gtk_button_set_image(GTK_BUTTON(hCtrl),img);
    }
-
+#endif
    g_free( cTitle );
    box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
@@ -185,7 +187,7 @@ HB_FUNC( CREATEEDIT )
 
    if( *cTitle )
    {
-      cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
+      cTitle = hwg_convert_to_utf8( cTitle );
       if( ulStyle & ES_MULTILINE )
       {
          GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (hCtrl));
@@ -204,7 +206,7 @@ HB_FUNC( CREATEEDIT )
 HB_FUNC( HWG_EDIT_SETTEXT )
 {
    GtkWidget * hCtrl = (GtkWidget *)HB_PARHANDLE(1);
-   char * cTitle = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
+   char * cTitle = hwg_convert_to_utf8( hb_parc(2) );
 
    if( g_object_get_data( (GObject *)hCtrl, "multi" ) )
    {
@@ -235,7 +237,7 @@ HB_FUNC( HWG_EDIT_GETTEXT )
 
    if( *cptr )
    {
-      cptr = g_locale_from_utf8( cptr,-1,NULL,NULL,NULL );
+      cptr = hwg_convert_from_utf8( cptr );
       hb_retc( cptr );
       g_free( cptr );
    }
@@ -279,7 +281,7 @@ HB_FUNC( HWG_COMBOSETARRAY )
 
       for( ul = 1; ul <= ulLen; ++ul )
       {
-         cItem = g_locale_to_utf8( hb_arrayGetCPtr( pArray, ul ), -1, NULL, NULL, NULL );
+         cItem = hwg_convert_to_utf8( hb_arrayGetCPtr( pArray, ul ) );
          glist = g_list_append( glist, cItem );
          // g_free( cItem );
       }
@@ -494,7 +496,7 @@ HB_FUNC( ADDTAB )
    GtkNotebook * nb = (GtkNotebook*) HB_PARHANDLE(1);
    GtkWidget * box = gtk_fixed_new();
    GtkWidget * hLabel;
-   char * cLabel = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
+   char * cLabel = hwg_convert_to_utf8( hb_parc(2) );
 
    hLabel = gtk_label_new( cLabel );
    g_free( cLabel );
@@ -745,7 +747,7 @@ HB_FUNC( STATUSBARSETTEXT )
     char *cTitle = hb_parcx(3);
     GtkWidget *w = (GtkWidget *) hb_parptr(1);
     int iStatus = hb_parni(2)-1;
-    cTitle = g_locale_to_utf8( cTitle,-1,NULL,NULL,NULL );
+    cTitle = hwg_convert_to_utf8( cTitle );
     hb_retni(gtk_statusbar_push(GTK_STATUSBAR(w), iStatus, cTitle));
 
 }
@@ -758,6 +760,13 @@ HB_FUNC( STATUSBARREMOVETEXT )
    GtkWidget *w = (GtkWidget *) HB_PARHANDLE(1);
    int iStatus = hb_parni(2-1);
    gtk_statusbar_pop(GTK_STATUSBAR(w), iStatus);
+}
+
+static void toolbar_clicked( GtkWidget *item,
+	    gpointer     user_data)
+{
+  PHB_ITEM pData = (PHB_ITEM) user_data;
+  hb_vmEvalBlock( ( PHB_ITEM ) pData );	    
 }
 
 HB_FUNC(CREATETOOLBAR)
@@ -774,9 +783,11 @@ HB_FUNC(CREATETOOLBAR)
    GtkWidget * vbox = ( (GtkWidget*)box )->parent;
    gtk_box_pack_start( GTK_BOX (vbox), hCtrl, FALSE, FALSE, 0);  
    HB_RETHANDLE( hCtrl );
-}   
+}
+
 HB_FUNC(CREATETOOLBARBUTTON)
 {
+#if GTK_CHECK_VERSION(2,4,1)
   GtkWidget *toolbutton1,*img;   
   GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
   PHWGUI_PIXBUF szFile = ISPOINTER(2) ? (PHWGUI_PIXBUF) HB_PARHANDLE(2): NULL;  
@@ -784,7 +795,7 @@ HB_FUNC(CREATETOOLBARBUTTON)
   BOOL lSep = hb_parl( 4 ) ;
   if ( szLabel )
   {
-     szLabel = g_locale_to_utf8( szLabel, -1, NULL, NULL, NULL );
+     szLabel = hwg_convert_to_utf8( szLabel );
   }
   if (lSep) 
   {
@@ -811,13 +822,10 @@ HB_FUNC(CREATETOOLBARBUTTON)
   gtk_container_add ( GTK_CONTAINER( hCtrl ), toolbutton1 );   
       
   HB_RETHANDLE( toolbutton1 );
-}   
-static void toolbar_clicked (GtkToolItem *item,
-	    gpointer     user_data)
-{
-  PHB_ITEM pData = (PHB_ITEM) user_data;
-  hb_vmEvalBlock( ( PHB_ITEM ) pData );	    
+#endif
 }
+   
+
 HB_FUNC(TOOLBAR_SETACTION)
 {
   GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
@@ -840,6 +848,7 @@ static void tabchange_clicked(GtkNotebook *item,
   hb_itemRelease( Disk );
 
 }
+
 //static void tabchange_clicked1(GtkNotebook *item,
 //	    gint pagenum,
 //	    gpointer     user_data)

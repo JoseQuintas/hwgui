@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.7 2009-04-30 16:03:44 alkresin Exp $
+ * $Id: wprint.c,v 1.8 2009-05-04 07:26:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level print functions
@@ -14,7 +14,9 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 
+#include <locale.h>
 #include "gtk/gtk.h"
+#include "hwgtk.h"
 
 #if !defined(__MINGW32__)
 
@@ -45,7 +47,7 @@ HB_FUNC( HWG_OPENPRINTER )
 #ifdef G_CONSOLE_MODE
    if( !bGtkInit )
    {
-      gtk_set_locale();
+      // gtk_set_locale();
       g_type_init();
       bGtkInit = 1;
    }
@@ -68,7 +70,7 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
 #ifdef G_CONSOLE_MODE
    if( !bGtkInit )
    {
-      gtk_set_locale();
+      // gtk_set_locale();
       g_type_init();
       bGtkInit = 1;
    }
@@ -160,10 +162,6 @@ HB_FUNC( HWG_UNREFPRINTER )
    g_object_unref( G_OBJECT (print->config) );
    g_object_unref( G_OBJECT (print->gpc) );
    g_object_unref( G_OBJECT (print->job) );
-/*
-   if( print->font )
-      g_object_unref( G_OBJECT (print->font) );
-*/
    hb_xfree( print );
 }
 
@@ -270,11 +268,11 @@ HB_FUNC( HWG_GP_DRAWLINE )
             (gdouble)hb_parni(3), (gdouble)hb_parni(4), (gdouble)hb_parni(5) );
 }
 
-
+/*
 HB_FUNC( HWG_GP_DRAWTEXT )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
-   char * cText = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
+   char * cText = hwg_convert_to_utf8( hb_parc(2) );
    // guchar *cText = g_convert( hb_parc(2),-1,"UTF-8","KOI8-R",NULL,NULL,NULL );
    int iOption = (ISNIL(7))? 0 : hb_parni(7);
    int x1 = hb_parni(3);
@@ -294,9 +292,8 @@ HB_FUNC( HWG_GP_DRAWTEXT )
    g_free( cText );
 
 }
+*/
 
-
-/*
 HB_FUNC( HWG_GP_DRAWTEXT )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
@@ -308,7 +305,7 @@ HB_FUNC( HWG_GP_DRAWTEXT )
    gdouble delta, dWidth = 0;
    gint unival, glyph;
 
-   cText = g_convert( hb_parc(2),-1,"UTF-8","KOI8-R",NULL,NULL,NULL );
+   cText = hwg_convert_to_utf8( hb_parc(2) );
    if( print->font )
    {
       for( p = cText; p && i < nLen; p = g_utf8_next_char(p), i++ )
@@ -336,7 +333,6 @@ HB_FUNC( HWG_GP_DRAWTEXT )
    g_free( cText );
 
 }
-*/
 
 HB_FUNC( HWG_GP_ADDFONT )
 {
@@ -398,8 +394,7 @@ HB_FUNC( HWG_GP_GETTEXTSIZE )
 
    if( font )
    {
-      cText = g_locale_to_utf8( hb_parc(2),-1,NULL,NULL,NULL );
-      // cText = g_convert( hb_parc(2),-1,"UTF-8","KOI8-R",NULL,NULL,NULL );
+      cText = hwg_convert_to_utf8( hb_parc(2) );
       hb_retnl( (LONG) gnome_font_get_width_utf8( font, cText ) );
       g_free( cText );
    }

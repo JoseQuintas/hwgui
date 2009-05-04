@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.9 2009-02-28 10:56:52 marcosgambeta Exp $
+ * $Id: misc.c,v 1.10 2009-05-04 07:26:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Miscellaneous functions
@@ -17,7 +17,7 @@
 #include "item.api"
 #include "gtk/gtk.h"
 
-void writelog( char* s )
+void hwg_writelog( char* s )
 {
 #ifdef __XHARBOUR__
    FHANDLE handle;

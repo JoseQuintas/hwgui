@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.14 2008-04-28 01:20:20 lculik Exp $
+ *$Id: hcontrol.prg,v 1.15 2009-05-04 07:26:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -29,6 +29,7 @@ CLASS HControl INHERIT HCustomWindow
    DATA id
    DATA tooltip
    DATA lInit    INIT .F.
+   DATA name
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor )

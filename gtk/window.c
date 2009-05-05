@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.30 2009-05-04 07:26:51 alkresin Exp $
+ * $Id: window.c,v 1.31 2009-05-05 10:30:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -757,7 +757,8 @@ HB_FUNC( HWG_DESTROYWINDOW )
 HB_FUNC( HWG_SET_MODAL )
 {
    gtk_window_set_modal( (GtkWindow *) HB_PARHANDLE(1), 1 );
-   gtk_window_set_transient_for( (GtkWindow *) HB_PARHANDLE(1), (GtkWindow *) HB_PARHANDLE(2) );
+   if( !ISNIL(2) )
+      gtk_window_set_transient_for( (GtkWindow *) HB_PARHANDLE(1), (GtkWindow *) HB_PARHANDLE(2) );
 }
 
 HB_FUNC( WINDOWSETRESIZE )

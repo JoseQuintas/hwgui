@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.12 2006-08-18 07:55:09 alkresin Exp $
+ *$Id: hdialog.prg,v 1.13 2009-05-05 10:30:51 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
@@ -124,7 +124,7 @@ Local hParent,oWnd
              __ObjHasMsg( ::oParent,"HANDLE") .AND. ::oParent:handle != NIL ;
              .AND. !Empty(::oParent:handle ), ::oParent:handle, ;
              Iif( ( oWnd:=HWindow():GetMain() ) != Nil,    ;
-             oWnd:handle,GetActiveWindow() ) )
+             oWnd:handle,Nil ) )
       hwg_Set_Modal( ::handle, hParent )
    ENDIF
    hwg_ShowAll( ::handle )

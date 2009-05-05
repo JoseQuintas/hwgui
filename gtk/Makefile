@@ -31,6 +31,7 @@ PRG_SOURCES=\
 	hradio.prg \
 	htab.prg \
 	hsayimg.prg \
+	hsplit.prg \
 	htimer.prg \
 	hupdown.prg \
 	hwindow.prg \

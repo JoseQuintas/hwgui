@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.15 2009-05-04 07:26:51 alkresin Exp $
+ *$Id: hcontrol.prg,v 1.16 2009-05-05 09:31:48 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -134,7 +134,7 @@ METHOD SetColor( tcolor,bcolor,lRepaint ) CLASS HControl
 
 Return Nil
 
-METHOD Move( x1,y1,width,height )  CLASS HControl
+METHOD Move( x1,y1,width,height,lMoveParent )  CLASS HControl
 Local lMove := .F., lSize := .F.
 
    IF x1 != Nil .AND. x1 != ::nLeft
@@ -155,7 +155,7 @@ Local lMove := .F., lSize := .F.
    ENDIF
    IF lMove .OR. lSize
       hwg_MoveWidget( ::handle, Iif(lMove,::nLeft,Nil), Iif(lMove,::nTop,Nil), ;
-          Iif(lSize,::nWidth,Nil), Iif(lSize,::nHeight,Nil) )
+          Iif(lSize,::nWidth,Nil), Iif(lSize,::nHeight,Nil), lMoveParent )
    ENDIF
 Return Nil
 

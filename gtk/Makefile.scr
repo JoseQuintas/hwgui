@@ -1,4 +1,4 @@
-# $Id: Makefile.scr,v 1.4 2008-01-20 21:54:54 lculik Exp $
+# $Id: Makefile.scr,v 1.5 2009-05-05 09:31:48 alkresin Exp $
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 # by default build Harbour platform native binaries
@@ -70,6 +70,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hprinter.o \
    $(OBJ_DIR)/hradio.o \
    $(OBJ_DIR)/hsayimg.o \
+   $(OBJ_DIR)/hsplit.o \
    $(OBJ_DIR)/htab.o \
    $(OBJ_DIR)/htimer.o \
    $(OBJ_DIR)/hupdown.o \

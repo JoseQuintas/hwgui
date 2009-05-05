@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.35 2009-05-04 07:26:50 alkresin Exp $
+ * $Id: control.c,v 1.36 2009-05-05 09:31:48 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -992,3 +992,40 @@ HB_FUNC(SETBGCOLOR)
 //  gtk_widget_modify_bg(hCtrl,GTK_STATE_ACTIVE,&fColor);
 //  gtk_widget_modify_bg(hCtrl,GTK_STATE_PRELIGHT,&fColor);    
 }  
+
+/*
+   CreateSplitter( hParentWindow, nControlID, nStyle, x, y, nWidth, nHeight )
+*/
+HB_FUNC( CREATESPLITTER )
+{
+   ULONG ulStyle = hb_parnl(3);
+   GtkWidget * hCtrl;
+   GtkFixed *box, *fbox;
+
+   fbox = (GtkFixed*)gtk_fixed_new();
+
+   hCtrl = gtk_drawing_area_new();
+   box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
+
+   if ( box )
+   {
+      gtk_fixed_put( box, (GtkWidget*)fbox, hb_parni(4), hb_parni(5) );
+      gtk_widget_set_size_request( (GtkWidget*)fbox,hb_parni(6),hb_parni(7) );
+   }
+   gtk_fixed_put( fbox, hCtrl, 0, 0 );
+   gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
+   g_object_set_data( (GObject*) hCtrl, "fbox", (gpointer) fbox );
+
+   set_event( (gpointer)hCtrl, "expose_event", WM_PAINT, 0, 0 );
+   GTK_WIDGET_SET_FLAGS( hCtrl,GTK_CAN_FOCUS );
+
+   gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK | 
+        GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK );
+   set_event( (gpointer)hCtrl, "button_press_event", 0, 0, 0 );
+   set_event( (gpointer)hCtrl, "button_release_event", 0, 0, 0 );
+   set_event( (gpointer)hCtrl, "motion_notify_event", 0, 0, 0 );
+
+   all_signal_connect( (gpointer) hCtrl );
+   HB_RETHANDLE( hCtrl );
+
+}

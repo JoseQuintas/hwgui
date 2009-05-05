@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.6 2006-12-19 11:10:50 alkresin Exp $
+ * $Id: hpanel.prg,v 1.7 2009-05-05 09:31:48 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HPanel class 
@@ -92,27 +92,7 @@ Local hDC, aCoors, oPenLight, oPenGray
 Return Nil
 
 METHOD Move( x1,y1,width,height )  CLASS HPanel
-Local lMove := .F., lSize := .F.
 
-   IF x1 != Nil .AND. x1 != ::nLeft
-      ::nLeft := x1
-      lMove := .T.
-   ENDIF   
-   IF y1 != Nil .AND. y1 != ::nTop
-      ::nTop := y1
-      lMove := .T.
-   ENDIF
-   IF width != Nil .AND. width != ::nWidth
-      ::nWidth := width
-      lSize := .T.
-   ENDIF   
-   IF height != Nil .AND. height != ::nHeight
-      ::nHeight := height
-      lSize := .T.
-   ENDIF
-   IF lMove .OR. lSize
-      hwg_MoveWidget( ::handle, Iif(lMove,::nLeft,Nil), Iif(lMove,::nTop,Nil), ;
-          Iif(lSize,::nWidth,Nil), Iif(lSize,::nHeight,Nil), .T. )
-   ENDIF
+   Super:Move( x1,y1,width,height,.T. )
 Return Nil
 

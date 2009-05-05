@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.36 2009-05-05 09:31:48 alkresin Exp $
+ * $Id: control.c,v 1.37 2009-05-05 10:48:28 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -908,7 +908,8 @@ HB_FUNC ( SETMONTHCALENDARDATE ) // adaptation of function SetDatePicker of file
 
    }
 }
-HB_FUNC(GETMONTHCALENDARDATE)
+
+HB_FUNC( GETMONTHCALENDARDATE )
 {
    GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);    
    char szDate[9];
@@ -918,10 +919,8 @@ HB_FUNC(GETMONTHCALENDARDATE)
    long lYear, lMonth, lDay;
    #endif
    gtk_calendar_get_date( GTK_CALENDAR(hCtrl),(guint*)&lYear, (guint*)&lMonth, (guint*)&lDay );
-
    
-   lMonth = lMonth + 1;
-    
+   lMonth = lMonth + 1;  
       
    hb_dateStrPut( szDate, lYear, lMonth, lDay  );
    szDate[8] = 0;
@@ -929,7 +928,7 @@ HB_FUNC(GETMONTHCALENDARDATE)
 }   
 
 
-HB_FUNC(CREATEIMAGE)
+HB_FUNC( CREATEIMAGE )
 {
    GtkWidget * hCtrl;
    GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
@@ -944,32 +943,35 @@ HB_FUNC(CREATEIMAGE)
    HB_RETHANDLE( hCtrl );
 }
 
-HB_FUNC(MONTHCALENDAR_SETACTION)
+HB_FUNC( MONTHCALENDAR_SETACTION )
 {
-  GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
-  PHB_ITEM pItem = hb_itemParam( 2 ) ;
-  g_signal_connect (hCtrl, "day-selected",
-			    G_CALLBACK (toolbar_clicked), (void*) pItem);
+   GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
+   PHB_ITEM pItem = hb_itemParam( 2 ) ;
+
+   g_signal_connect (hCtrl, "day-selected", G_CALLBACK (toolbar_clicked), (void*) pItem);
 }			    
 
 void hwg_parse_color( ULONG ncolor, GdkColor * pColor );
-HB_FUNC(SETFGCOLOR)
-{
-  GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
-  GdkColor fColor;
-  GtkWidget *label ;
-  ULONG hColor = hb_parnl( 2 ) ;
 
-  if (GTK_IS_BUTTON(hCtrl) )
-     label = gtk_bin_get_child(GTK_BIN(hCtrl));
-  else if (GTK_IS_EVENT_BOX(hCtrl) )
-     label = gtk_bin_get_child(GTK_BIN(hCtrl));               
-  else     
-     label = g_object_get_data( (GObject*) hCtrl, "label" );
-//  TraceLog("cor.txt","cor = %lu\n" , hColor);
-  hwg_parse_color( hColor, &fColor );
-  gtk_widget_modify_fg(label,GTK_STATE_NORMAL,&fColor);
-//  gtk_widget_modify_fg(hCtrl,GTK_STATE_NORMAL,&fColor);  
+HB_FUNC( SETFGCOLOR )
+{
+   GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
+   GdkColor fColor;
+   GtkWidget *label ;
+   ULONG hColor = hb_parnl( 2 ) ;
+
+   if (GTK_IS_BUTTON(hCtrl) )
+      label = gtk_bin_get_child(GTK_BIN(hCtrl));
+   else if (GTK_IS_EVENT_BOX(hCtrl) )
+      label = gtk_bin_get_child(GTK_BIN(hCtrl));               
+   else     
+      label = g_object_get_data( (GObject*) hCtrl, "label" );
+
+   if( label )
+   {     
+      hwg_parse_color( hColor, &fColor );
+      gtk_widget_modify_fg(label,GTK_STATE_NORMAL,&fColor);
+   }
 }  
 
 HB_FUNC(SETBGCOLOR)

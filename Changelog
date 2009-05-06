@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1087 2009-05-06 10:12:53 alkresin Exp $
+ * $Id: Changelog,v 1.1088 2009-05-06 11:47:16 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-05-06 15:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/hdialog.prg
+    ! ON EXIT works now.
+  * source/procmisc/scrdebug.prg
+    * Few changes for GTK version
 
 2009-05-06 14:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/drawtext.c

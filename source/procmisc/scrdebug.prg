@@ -1,5 +1,5 @@
 /*
- * $Id: scrdebug.prg,v 1.1 2009-04-13 08:56:37 alkresin Exp $
+ * $Id: scrdebug.prg,v 1.2 2009-05-06 11:47:20 alkresin Exp $
  *
  * Common procedures
  * Scripts Debugger
@@ -42,9 +42,10 @@ Local nFirst, i
 
       oDlgFont := HFont():Add( "Georgia",0,-15,,204 )
       oScrFont := HFont():Add( "Courier New",0,-15,,204 )
+#ifndef __LINUX__
       oBmpCurr := HBitmap():AddStandard(OBM_RGARROWD)
       oBmpPoint:= HBitmap():AddStandard(OBM_CHECK)
-
+#endif
       INIT DIALOG oDlgDebug TITLE ("Script Debugger - "+aScript[1]) AT 210,10 SIZE 500,300 ;
            FONT oDlgFont STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX ;
            ON EXIT {|o|dlgDebugClose()}
@@ -67,18 +68,21 @@ Local nFirst, i
       oBrwData:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,1]},"C",30,0 ) )
       oBrwData:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,3]},"C",1,0 ) )
       oBrwData:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,4]},"C",60,0 ) )
-
       @ 0,4 BROWSE oBrwScript ARRAY SIZE 500,236    ;
           FONT oScrFont STYLE WS_BORDER+WS_VSCROLL+WS_HSCROLL ;
           ON SIZE {|o,x,y|o:Move(,,x,y-oSplit:nTop-oSplit:nHeight-64)}
 
       @ 0,0 SPLITTER oSplit SIZE 600,3 DIVIDE {oBrwData} FROM {oBrwScript} ;
           ON SIZE {|o,x,y|o:Move(,,x)}
-
+          
       oBrwScript:aArray := aScript[3]
+#ifdef __LINUX__
+      oBrwScript:rowCount := 5
+      oBrwScript:AddColumn( HColumn():New( "",{|v,o|Iif(o:nCurrent==i_scr,'>',Iif(aBreakPoints!=Nil.AND.Ascan(aBreakPoints[2],oBrwScript:nCurrent)!=0,'*',' '))},"C",1,0 ) )      
+#else
       oBrwScript:AddColumn( HColumn():New( "",{|v,o|Iif(o:nCurrent==i_scr,1,Iif(aBreakPoints!=Nil.AND.Ascan(aBreakPoints[2],oBrwScript:nCurrent)!=0,2,0))},"N",1,0 ) )
       oBrwScript:aColumns[1]:aBitmaps := { { {|n|n==1},oBmpCurr },{ {|n|n==2},oBmpPoint } }
-
+#endif
       oBrwScript:AddColumn( HColumn():New( "",{|v,o|Left(o:aArray[o:nCurrent],4)},"C",4,0 ) )
       oBrwScript:AddColumn( HColumn():New( "",{|v,o|Substr(o:aArray[o:nCurrent],6)},"C",80,0 ) )
 
@@ -160,8 +164,10 @@ Static Function dlgDebugClose()
    aWatches := {}
    oScrFont:Release()
    oDlgFont:Release()
+#ifndef __LINUX__
    oBmpCurr:Release()
    oBmpPoint:Release()
+#endif
 
 Return .T.
 
@@ -191,7 +197,11 @@ Return .T.
 Static Function AddWatch()
 Local xRes, bCodeblock, bOldError, lRes := .T.
 
+#ifdef __LINUX__
+   IF !Empty( xRes := oEditExpr:GetText() )
+#else
    IF !Empty( xRes := GetEditText( oEditExpr:oParent:handle, oEditExpr:id ) )
+#endif
       bOldError := ERRORBLOCK( { | e | MacroError(e) } )
       BEGIN SEQUENCE
          bCodeblock := &( "{||" + xRes + "}" )
@@ -252,7 +262,11 @@ Return .T.
 Static Function Calculate()
 Local xRes, bOldError, lRes := .T., cType
 
+#ifdef __LINUX__
+   IF !Empty( xRes := oEditExpr:GetText() )
+#else
    IF !Empty( xRes := GetEditText( oEditExpr:oParent:handle, oEditExpr:id ) )
+#endif
       bOldError := ERRORBLOCK( { | e | MacroError(e) } )
       BEGIN SEQUENCE
          xRes := &xRes

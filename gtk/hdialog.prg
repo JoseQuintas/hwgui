@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.13 2009-05-05 10:30:51 alkresin Exp $
+ *$Id: hdialog.prg,v 1.14 2009-05-06 11:47:20 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
@@ -26,6 +26,10 @@ Static aMessModalDlg := { ;
 
 Static Function onDestroy( oDlg )
 
+   IF oDlg:bDestroy != Nil
+      Eval( oDlg:bDestroy, oDlg )
+      oDlg:bDestroy := Nil
+   ENDIF
    oDlg:Super:onEvent( WM_DESTROY )
    HDialog():DelItem( oDlg,.T. )
    IF oDlg:lModal
@@ -342,27 +346,23 @@ Return Iif( i>0, HDialog():aModalDialogs[i]:handle, 0 )
 
 Function EndDialog( handle )
 Local oDlg
-   // writelog("EndDialog-0 "+Valtype(handle)+" "+str(pCount()))
+   // writelog( "EndDialog-0" )
    IF handle == Nil
       IF ( oDlg := Atail( HDialog():aModalDialogs ) ) == Nil
          // writelog("EndDialog-1")
          Return Nil
       ENDIF
    ELSE
-      /*
-      IF ( ( oDlg := Atail( HDialog():aModalDialogs ) ) == Nil .OR. ;
-            oDlg:handle != handle ) .AND. ;
-         ( oDlg := HDialog():FindDialog(handle) ) == Nil
-         // writelog("EndDialog-2")
-         Return Nil
-      ENDIF
-      */
       oDlg := GetWindowObject( handle )
    ENDIF
-   IF oDlg:bDestroy != Nil .AND. !Eval( oDlg:bDestroy, oDlg )
-      // writelog("EndDialog-3")
-      Return Nil
+
+   // writelog( "EndDialog-1" )
+   IF oDlg:bDestroy != Nil
+      // writelog( "EndDialog-2" )
+      Eval( oDlg:bDestroy, oDlg )
+      oDlg:bDestroy := Nil
    ENDIF
+
    // writelog("EndDialog-10")
 Return  hwg_DestroyWindow( oDlg:handle )
 

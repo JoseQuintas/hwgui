@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.12 2009-05-04 07:26:51 alkresin Exp $
+ * $Id: drawtext.c,v 1.13 2009-05-06 10:13:04 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level text functions
@@ -22,6 +22,7 @@
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif
+
 void hwg_parse_color( ULONG ncolor, GdkColor * pColor );
 
 HB_FUNC( DELETEDC )
@@ -60,6 +61,8 @@ HB_FUNC( DRAWTEXT )
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    char * cText = hwg_convert_to_utf8( hb_parc(2) );
    GdkColor fcolor, bcolor;
+   PangoRectangle rc;
+   int iWidth = hb_parni(5)-hb_parni(3);
 
    if( hDC->fcolor != -1 )
    {
@@ -72,12 +75,17 @@ HB_FUNC( DRAWTEXT )
    
    pango_layout_set_text( hDC->layout, cText, -1 );
    
-   pango_layout_set_width( hDC->layout, (hb_parni(5)-hb_parni(3))*PANGO_SCALE );
-   pango_layout_set_wrap( hDC->layout, PANGO_WRAP_CHAR );
-   if( !ISNIL(7) && ( hb_parni(7) & ( DT_CENTER | DT_RIGHT ) ) )
+   pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
+   pango_layout_set_width( hDC->layout, -1 );
+   
+   if( !ISNIL(7) && ( hb_parni(7) & ( DT_CENTER | DT_RIGHT ) ) &&
+         ( rc.width < ( iWidth-10 ) ) )
+   {
+      pango_layout_set_width( hDC->layout, iWidth*PANGO_SCALE );
+      // pango_layout_set_wrap( hDC->layout, PANGO_WRAP_CHAR );
       pango_layout_set_alignment( hDC->layout, 
           (hb_parni(7) & DT_CENTER)? PANGO_ALIGN_CENTER : PANGO_ALIGN_RIGHT );
-   
+   }
    gdk_draw_layout_with_colors( hDC->window, hDC->gc, 
                  hb_parni(3), hb_parni(4), hDC->layout,
 		 (hDC->fcolor != -1)? &fcolor : NULL,
@@ -131,16 +139,18 @@ HB_FUNC( GETTEXTMETRIC )
 HB_FUNC( GETTEXTSIZE )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   char * cText = hwg_convert_to_utf8( hb_parc( 2 ) );
    PangoRectangle rc;
-   PHB_ITEM aMetr = hb_itemArrayNew( 2 );   
+   PHB_ITEM aMetr = hb_itemArrayNew( 2 );
 
    if( ISCHAR(2) )
-      pango_layout_set_text( hDC->layout, hb_parc(2), -1 );
+      pango_layout_set_text( hDC->layout, cText, -1 );
    pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
 
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 1 ), rc.width );
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 2 ), rc.height );
    hb_itemRelease( hb_itemReturn( aMetr ) );
+   g_free( cText );
 }
 
 HB_FUNC( GETCLIENTAREA )
@@ -234,20 +244,17 @@ HB_FUNC( EXTTEXTOUT )
 */   
 }
 
-//HB_FUNC( WRITESTATUSWINDOW )
-//{
-//   // SendMessage( (HWND) hb_parnl( 1 ), SB_SETTEXT, hb_parni( 2 ), (LPARAM) hb_parc( 3 ) );
-//}
 HB_FUNC( WRITESTATUSWINDOW )
 {
    // SendMessage( (HWND) hb_parnl( 1 ), SB_SETTEXT, hb_parni( 2 ), (LPARAM) hb_parc( 3 ) );
-    char *cTitle = hb_parcx(3);
-    GtkWidget *w = (GtkWidget *) hb_parptr(1);
-    int iStatus = hb_parni(2)-1;
-    cTitle = hwg_convert_to_utf8( cTitle );
-    hb_retni(gtk_statusbar_push(GTK_STATUSBAR(w), iStatus, cTitle));
+   char *cText = hwg_convert_to_utf8( hb_parcx(3) );
+   GtkWidget *w = (GtkWidget *) hb_parptr(1);
+   int iStatus = hb_parni(2)-1;
 
+   hb_retni( gtk_statusbar_push( GTK_STATUSBAR(w), iStatus, cText ) );
+   g_free( cText );
 }
+
 HB_FUNC( WINDOWFROMDC )
 {
    // hb_retnl( (LONG) WindowFromDC( (HDC) hb_parnl( 1 ) ) );
@@ -294,61 +301,3 @@ HB_FUNC( HWG_SETCTRLFONT )
    gtk_widget_set_style( hCtrl, style );
 
 }
-
-/*
-#ifndef __XHARBOUR__
-
-HB_FUNC( OEMTOANSI )
-{
-   char *buffer = hb_parc(1);
-   OemToChar( buffer, buffer );
-   hb_retc( buffer );
-}
-
-HB_FUNC( ANSITOOEM )
-{
-   char *buffer = hb_parc(1);
-   CharToOem( buffer, buffer );
-   hb_retc( buffer );
-}
-#else
-HB_FUNC( OEMTOANSI )
-{
-   PHB_ITEM pString = hb_param( 1, HB_IT_STRING );
-
-   if( pString )
-   {
-      DWORD ulLen = pString->item.asString.length;
-      char * pszDst = ( char * ) hb_xgrab( ulLen + 1 );
-
-      OemToCharBuff( ( LPCSTR ) pString->item.asString.value, ( LPSTR ) pszDst, ulLen );
-
-      hb_retclenAdopt( pszDst, ulLen );
-   }
-   else
-   {
-      hb_retc( "" );
-   }
-}
-
-HB_FUNC( ANSITOOEM )
-{
-
-   PHB_ITEM pString = hb_param( 1, HB_IT_STRING );
-   if( pString )
-
-   {
-      DWORD ulLen = pString->item.asString.length;
-      char * pszDst = ( char * ) hb_xgrab( ulLen + 1 );
-
-      CharToOemBuff( ( LPCSTR ) pString->item.asString.value, ( LPSTR ) pszDst, ulLen );
-
-      hb_retclenAdopt( pszDst, ulLen );
-   }
-   else
-   {
-      hb_retc( "" );
-   }
-}
-#endif
-*/

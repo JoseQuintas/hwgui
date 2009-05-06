@@ -1,5 +1,5 @@
 /*
- * $Id: scrdebug.prg,v 1.2 2009-05-06 11:47:20 alkresin Exp $
+ * $Id: scrdebug.prg,v 1.3 2009-05-06 12:40:42 alkresin Exp $
  *
  * Common procedures
  * Scripts Debugger
@@ -91,12 +91,16 @@ Local nFirst, i
       @ 0,240 PANEL oPanel OF oDlgDebug SIZE oDlgDebug:nWidth,64 ;
           ON SIZE {|o,x,y|o:Move(,y-64,x)}
 
+#ifdef __LINUX__
+      @ 10,10 OWNERBUTTON TEXT "Add" SIZE 100, 24 OF oPanel ON CLICK {||AddWatch()}
+      @ 10,36 OWNERBUTTON TEXT "Calculate" SIZE 100, 24 OF oPanel ON CLICK {||Calculate()}
+#else
       @ 10,10 BUTTON "Add" SIZE 100, 24 OF oPanel ON CLICK {||AddWatch()}
-      @ 110,10 EDITBOX oEditExpr CAPTION "" SIZE 380,24 OF oPanel ON SIZE {|o,x,y|o:Move(,,x-120)}
-
       @ 10,36 BUTTON "Calculate" SIZE 100, 24 OF oPanel ON CLICK {||Calculate()}
+#endif
+      @ 110,10 EDITBOX oEditExpr CAPTION "" SIZE 380,24 OF oPanel ON SIZE {|o,x,y|o:Move(,,x-120)}
       @ 110,36 EDITBOX oEditRes CAPTION "" SIZE 380,24 OF oPanel ON SIZE {|o,x,y|o:Move(,,x-120)}
-
+      
       ACTIVATE DIALOG oDlgDebug NOMODAL
 
       oDlgDebug:Move( ,,,400 )
@@ -222,6 +226,7 @@ Local xRes, bCodeblock, bOldError, lRes := .T.
          oBrwData:Move( ,,,56 )
          oDlgDebug:Move( ,,,oDlgDebug:nHeight+4 )
       ENDIF
+      oBrwData:nCurrent := 1
       oBrwData:Refresh()
    ELSE
       oEditRes:SetText( "Error..." )

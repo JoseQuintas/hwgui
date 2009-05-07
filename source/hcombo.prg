@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.64 2009-04-24 08:49:25 alkresin Exp $
+ * $Id: hcombo.prg,v 1.65 2009-05-07 22:00:42 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -489,6 +489,7 @@ LOCAL ltab := GETKEYSTATE( VK_TAB ) < 0
    IF !CheckFocus( oCtrl, .t. ) .OR. oCtrl:lNoValid
       RETURN .t.
    ENDIF
+  
    nSkip := Iif( GetKeyState( VK_SHIFT ) < 0, - 1, 1 )
 
    IF ( oDlg := ParentGetDialog( oCtrl ) ) == Nil .OR. oDlg:nLastKey != VK_ESCAPE
@@ -527,7 +528,7 @@ LOCAL ltab := GETKEYSTATE( VK_TAB ) < 0
          ENDIF
       ENDIF
       octrl:oparent:lSuspendMsgsHandling := .F.
-      IF GETFOCUS() = 0                 //::nValidSetfocus = ::handle
+      IF empty( GETFOCUS() ) // getfocus return pointer = 0                 //::nValidSetfocus = ::handle
          GetSkip( OCTRL:oParent, octrl:handle,, octrl:nGetSkip )
       ENDIF
    ENDIF
@@ -644,7 +645,7 @@ LOCAL nTopIndex
       ProcKeyList( Self, wParam )
 
    ELSEIF msg == WM_LBUTTONDOWN
-
+ 
       rcClient := GetClientRect( ::handle )
 
       pt := {, }

@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.19 2009-02-27 12:25:17 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.20 2009-05-07 22:00:42 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -196,7 +196,7 @@ STATIC FUNCTION __Valid( oCtrl )
       ENDIF
    ENDIF
    oCtrl:oparent:lSuspendMsgsHandling := .F.
-   IF GetFocus() = 0 
+   IF empty(GetFocus() ) //= 0 
       GetSkip( octrl:oParent, octrl:handle,, octrl:nGetSkip )
    ENDIF 
 

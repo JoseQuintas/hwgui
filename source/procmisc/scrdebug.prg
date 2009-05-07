@@ -1,5 +1,5 @@
 /*
- * $Id: scrdebug.prg,v 1.3 2009-05-06 12:40:42 alkresin Exp $
+ * $Id: scrdebug.prg,v 1.4 2009-05-07 06:56:27 alkresin Exp $
  *
  * Common procedures
  * Scripts Debugger
@@ -111,7 +111,7 @@ Local nFirst, i
          IF ( i := Ascan( aBreaks, {|a|a[1]==aBreakPoints[1]} ) ) == 0
             Aadd( aBreaks, aBreakPoints )
          ENDIF
-         IF ( i := Ascan( aBreaks, {|a|a[1]==aScript[4][1]} ) ) == 0
+         IF ( i := Ascan( aBreaks, {|a|a[1]==aScript[4]} ) ) == 0
             aBreakPoints := Nil
          ELSE
             aBreakPoints := aBreaks[i]
@@ -226,7 +226,6 @@ Local xRes, bCodeblock, bOldError, lRes := .T.
          oBrwData:Move( ,,,56 )
          oDlgDebug:Move( ,,,oDlgDebug:nHeight+4 )
       ENDIF
-      oBrwData:nCurrent := 1
       oBrwData:Refresh()
    ELSE
       oEditRes:SetText( "Error..." )

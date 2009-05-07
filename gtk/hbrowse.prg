@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.19 2009-05-04 07:26:51 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.20 2009-05-07 06:56:27 alkresin Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -578,7 +578,7 @@ Local oldBkColor, oldTColor
    ::y2 := aCoors[ 4 ]
 
    ::nRecords := eval( ::bRcou,Self )
-   IF ::nCurrent > ::nRecords
+   IF ::nCurrent > ::nRecords .AND. ::nRecords > 0
       ::nCurrent := ::nRecords
    ENDIF
 

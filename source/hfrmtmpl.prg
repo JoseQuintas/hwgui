@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.67 2009-04-13 08:56:37 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.68 2009-05-07 06:56:27 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -541,7 +541,7 @@ STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl, cName )
                         "aControls[" + LTrim( Str( Len( oForm:aControls ) ) ) + "]", ;
                         "F(" + LTrim( Str( oCtrl:nId ) ) + ")" )
          arrExe := Array( 2 )
-         arrExe[ 2 ] := RdScript( , cMethod, 1, .T. )
+         arrExe[ 2 ] := RdScript( , cMethod, 1, .T., cName )
          cCode :=  "{|" + LTrim( SubStr( arr[ 1 ], 12 ) ) + ;
                       "|DoScript(HFormTmpl():F(" + LTrim( Str( oForm:id ) ) + IIf( nContainer != 0, "," + LTrim( Str( nContainer ) ), "" ) + "):" + ;
                                   IIf( oCtrl == Nil, "aMethods[" + LTrim( Str( Len( oForm:aMethods ) + 1 ) ) + ",2,2],{", ;

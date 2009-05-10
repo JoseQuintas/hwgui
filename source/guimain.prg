@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.33 2009-05-01 21:03:03 lfbasso Exp $
+ * $Id: guimain.prg,v 1.34 2009-05-10 16:36:26 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -12,7 +12,7 @@
 #include "guilib.ch"
 #include "common.ch"
 #ifndef __XHARBOUR__
-  #include hbcompat.ch
+  #include "hbcompat.ch"
 #endif
  
 FUNCTION InitObjects( oWnd )

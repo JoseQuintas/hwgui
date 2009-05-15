@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.22 2009-05-01 21:03:03 lfbasso Exp $
+ * $Id: hpanel.prg,v 1.23 2009-05-15 05:59:49 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -16,6 +16,7 @@ CLASS HPanel INHERIT HControl
 
    DATA winclass   INIT "PANEL"
    DATA oEmbedded
+   DATA bScroll
    DATA lResizeX, lResizeY   HIDDEN
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -210,12 +211,12 @@ METHOD Hide CLASS HPanel
       InvalidateRect(::oParent:handle,0, ::nLeft, ::nTop, ::nWidth, ::nHeight)
    ENDIF
    ::nSize := ::nWidth
-	 FOR i = 1 to LEN( ::acontrols )
-	   ::acontrols[ i ]:hide()
-	 NEXT
-	 super:hide()
-	 SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, 0 )
-	 RETURN Nil
+   FOR i = 1 to LEN( ::acontrols )
+      ::acontrols[ i ]:hide()
+   NEXT
+   super:hide()
+   SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, 0 )
+   RETURN Nil
 
 METHOD Show CLASS HPanel
    Local i
@@ -233,13 +234,13 @@ METHOD Show CLASS HPanel
             ::oParent:aOffset[3] += ::nWidth
          ENDIF
       ENDIF
-	    InvalidateRect(::oParent:handle,1, ::nLeft, ::nTop, ::nWidth, ::nHeight)	
+      InvalidateRect(::oParent:handle,1, ::nLeft, ::nTop, ::nWidth, ::nHeight)	
    ENDIF
    ::nWidth := ::nsize 
    SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, 0 )	 
    super:show()	 
-	 FOR i = 1 to LEN( ::acontrols )
-	   ::acontrols[ i ]:Show()
-	 NEXT
+   FOR i = 1 to LEN( ::acontrols )
+      ::acontrols[ i ]:Show()
+   NEXT
    MoveWindow( ::Handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-	 RETURN Nil
+   RETURN Nil

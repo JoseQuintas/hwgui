@@ -1,5 +1,5 @@
 /*
- * $Id: hsplit.prg,v 1.12 2008-11-24 10:02:14 mlacecilia Exp $
+ * $Id: hsplit.prg,v 1.13 2009-05-15 05:59:49 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSplitter class
@@ -30,7 +30,7 @@ CLASS VAR winclass INIT "STATIC"
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
-   METHOD Paint( lpdis )
+   METHOD Paint()
    METHOD Drag( lParam )
    METHOD DragAll()
 
@@ -101,14 +101,9 @@ METHOD Init CLASS HSplitter
 
    RETURN Nil
 
-METHOD Paint( lpdis ) CLASS HSplitter
-/*
-Local drawInfo := GetDrawItemInfo( lpdis )
-Local hDC := drawInfo[3], x1 := drawInfo[4], y1 := drawInfo[5], x2 := drawInfo[6], y2 := drawInfo[7]
-*/
+METHOD Paint() CLASS HSplitter
    LOCAL pps, hDC, aCoors, x1, y1, x2, y2
 
-   HB_SYMBOL_UNUSED( lpdis )
 
    pps := DefinePaintStru()
    hDC := BeginPaint( ::handle, pps )

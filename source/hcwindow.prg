@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.43 2009-04-13 12:20:25 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.44 2009-05-15 05:59:48 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -34,7 +34,7 @@ STATIC aCustomEvents := { ;
      }
 
 CLASS HObject
-   // DATA classname
+
    DATA aObjects     INIT { }
    METHOD AddObject( oCtrl ) INLINE AAdd( ::aObjects, oCtrl )
 
@@ -48,7 +48,7 @@ CLASS VAR oDefaultParent SHARED
    DATA oParent
    DATA title
    ACCESS Caption  INLINE ::title   
-	 ASSIGN Caption( x ) INLINE ::SetTextClass( x ) 
+   ASSIGN Caption( x ) INLINE ::SetTextClass( x ) 
    DATA Type
    DATA nTop, nLeft, nWidth, nHeight
    DATA minWidth   INIT - 1
@@ -70,19 +70,18 @@ CLASS VAR oDefaultParent SHARED
    DATA bPaint
    DATA bGetFocus
    DATA bLostFocus
-   DATA bScroll
    DATA bOther
    DATA bRefresh
    DATA cargo
    DATA HelpId        INIT 0
    DATA nHolder       INIT 0
    DATA nInitFocus    INIT 0  // Keeps the ID of the object to receive focus when dialog is created
-   // you can change the object that receives focus adding
-   // ON INIT {|| nInitFocus:=object:[handle] }  to the dialog definition
-   DATA nCurWidth    INIT 0 //PROTECTED
-   DATA nCurHeight   INIT 0 //PROTECTED
-   DATA nScrollPos   INIT 0 //PROTECTED
-   DATA rect //PROTECTED
+                              // you can change the object that receives focus adding
+                              // ON INIT {|| nInitFocus:=object:[handle] }  to the dialog definition
+   DATA nCurWidth    INIT 0
+   DATA nCurHeight   INIT 0
+   DATA nScrollPos   INIT 0
+   DATA rect
    DATA nScrollBars INIT -1   
 
    METHOD AddControl( oCtrl ) INLINE AAdd( ::aControls, oCtrl )
@@ -173,14 +172,14 @@ METHOD DelControl( oCtrl ) CLASS HCustomWindow
 
 METHOD Move( x1, y1, width, height )  CLASS HCustomWindow
 
-   IF x1     != NIL
-      ::nLeft   := x1
+   IF x1 != NIL
+      ::nLeft := x1
    ENDIF
-   IF y1     != NIL
-      ::nTop    := y1
+   IF y1 != NIL
+      ::nTop  := y1
    ENDIF
-   IF width  != NIL
-      ::nWidth  := width
+   IF width != NIL
+      ::nWidth := width
    ENDIF
    IF height != NIL
       ::nHeight := height
@@ -238,7 +237,7 @@ LOCAL aControls, i, nLen
 METHOD GetParentForm( oCtrl )  CLASS HCustomWindow
 LOCAL oForm := IIF( EMPTY( oCtrl ), Self, oCtrl )
    DO WHILE ( oForm:oParent ) != Nil .AND. ! __ObjHasMsg( oForm, "GETLIST" )
-	    oForm := oForm:oParent
+      oForm := oForm:oParent
    ENDDO
    RETURN oForm
 
@@ -300,16 +299,15 @@ METHOD Refresh( oCtrl ) CLASS HCustomWindow
 
 METHOD SetTextClass( x ) CLASS HCustomWindow
 
-	 IF __ObjHasMsg( Self, "SETVALUE" )   
-	    ::SetValue( x )
+   IF __ObjHasMsg( Self, "SETVALUE" )   
+      ::SetValue( x )
    ELSEIF __ObjHasMsg( Self, "SETTEXT" ) .AND. ::classname != "HBUTTONEX"
-	    ::SetText( x )
-	 ELSE
-	    ::title := x
-	    SENDMESSAGE( ::handle, WM_SETTEXT, 0, ::Title )
-	 ENDIF    
+      ::SetText( x )
+   ELSE
+      ::title := x
+      SENDMESSAGE( ::handle, WM_SETTEXT, 0, ::Title )
+   ENDIF    
 RETURN NIL	 
-
 
 METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
    LOCAL nlen , i, x1, y1
@@ -484,8 +482,6 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
    nw1 := oWnd:nWidth
    nh1 := oWnd:nHeight
    aCoors := GetWindowRect( oWnd:handle )
-   *oWnd:nWidth := LoWord( lParam )  //aControls[3]-aControls[1]
-   *oWnd:nHeight := HiWord( lParam ) //aControls[4]-aControls[2]
    oWnd:nWidth := aCoors[ 3 ] - aCoors[ 1 ]
    oWnd:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
    oWnd:Anchor( oWnd, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
@@ -547,23 +543,23 @@ PROCEDURE HB_GT_DEFAULT_NUL()
 FUNCTION ProcKeyList( oCtrl, wParam, oMain ) 
 LOCAL oParent, nCtrl,nPos
 
-    IF ( wParam = VK_RETURN .OR. wParam = VK_ESCAPE ) .AND.  ProcOkCancel( oCtrl, wParam )    
-       RETURN .F.
-    ENDIF
-    IF wParam != VK_SHIFT  .AND. wParam != VK_CONTROL .AND. wParam != VK_MENU
-       oParent := IIF( oMain != Nil, oMain, ParentGetDialog( oCtrl ) )
-       IF oParent != Nil .AND. ! Empty( oParent:KeyList )
-          nctrl := IIf( IsCtrlShift(.t., .f.), FCONTROL, iif(IsCtrlShift(.f., .t.), FSHIFT, 0 ) )
-          IF ( nPos := AScan( oParent:KeyList, { | a | a[ 1 ] == nctrl.AND.a[ 2 ] == wParam } ) ) > 0
-             Eval( oParent:KeyList[ nPos, 3 ], oCtrl )
-             RETURN .T.
-          ENDIF
-       ENDIF
-       IF oParent != Nil .AND. oMain = Nil .AND. HWindow():GetMain() != Nil
-           ProcKeyList( oCtrl, wParam, HWindow():GetMain():aWindows[ 1 ] )
-       ENDIF
-		ENDIF
-    RETURN .F.
+   IF ( wParam = VK_RETURN .OR. wParam = VK_ESCAPE ) .AND.  ProcOkCancel( oCtrl, wParam )    
+      RETURN .F.
+   ENDIF
+   IF wParam != VK_SHIFT  .AND. wParam != VK_CONTROL .AND. wParam != VK_MENU
+      oParent := IIF( oMain != Nil, oMain, ParentGetDialog( oCtrl ) )
+      IF oParent != Nil .AND. ! Empty( oParent:KeyList )
+         nctrl := IIf( IsCtrlShift(.t., .f.), FCONTROL, iif(IsCtrlShift(.f., .t.), FSHIFT, 0 ) )
+         IF ( nPos := AScan( oParent:KeyList, { | a | a[ 1 ] == nctrl.AND.a[ 2 ] == wParam } ) ) > 0
+            Eval( oParent:KeyList[ nPos, 3 ], oCtrl )
+            RETURN .T.
+         ENDIF
+      ENDIF
+      IF oParent != Nil .AND. oMain = Nil .AND. HWindow():GetMain() != Nil
+          ProcKeyList( oCtrl, wParam, HWindow():GetMain():aWindows[ 1 ] )
+      ENDIF
+   ENDIF
+   RETURN .F.
 
 FUNCTION ProcOkCancel( oCtrl, nKey )
    Local oWin := oCtrl:GetParentForm()
@@ -583,14 +579,14 @@ FUNCTION ProcOkCancel( oCtrl, nKey )
 	    ENDIF   
       RETURN .T.
    ELSEIF iParHigh == IDCANCEL
-	    IF ( oCtrl := oWin:FindControl( IDCANCEL ) ) != Nil
-	       oCtrl:SetFocus()
+      IF ( oCtrl := oWin:FindControl( IDCANCEL ) ) != Nil
+         oCtrl:SetFocus()
          SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
       ELSEIF oWin:lExitOnEsc 
           oWin:close()  
       ELSEIF ! oWin:lExitOnEsc
-			   oWin:nLastKey := 0
-			ENDIF   
+         oWin:nLastKey := 0
+      ENDIF   
       RETURN .T.
-	 ENDIF
+   ENDIF
    RETURN .F.

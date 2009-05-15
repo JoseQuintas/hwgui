@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.88 2009-03-27 16:26:44 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.89 2009-05-15 05:59:48 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -67,7 +67,8 @@ CLASS VAR aModalDialogs  SHARED INIT { }
    DATA oEmbedded
    DATA bOnActivate
    DATA nInitShow INIT 0
-   DATA nScrollBars INIT - 1  //PROTECTED
+   DATA nScrollBars INIT - 1
+   DATA bScroll
 
    METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
                bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bcolor, bRefresh )
@@ -292,7 +293,7 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    InitObjects( oDlg )
    
    nFocu := ASCAN( oDlg:aControls,{| o | Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_TABSTOP ) != 0 .AND. Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_DISABLED ) = 0 }) 
-	 nFocu := IIF( nFocu > 0, oDlg:aControls[ nFocu ]:Handle, nFocu )
+   nFocu := IIF( nFocu > 0, oDlg:aControls[ nFocu ]:Handle, nFocu )
 
    IF oDlg:bInit != Nil
       oDlg:lSuspendMsgsHandling := .t.
@@ -306,9 +307,9 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       ENDIF
    ENDIF
    oDlg:nInitFocus := IIF( VALTYPE( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )   
-	 IF nFocu = oDlg:nInitFocus 
-	    oDlg:nInitFocus := 0
-	 ENDIF
+   IF nFocu = oDlg:nInitFocus 
+      oDlg:nInitFocus := 0
+   ENDIF
    //SetFocus( oDlg:handle )
    oDlg:lSuspendMsgsHandling := .F.   
    
@@ -467,7 +468,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       IF oDlg:lExitOnEsc .OR. ! nEsc
          EndDialog( oDlg:handle )
       ELSEIF ! oDlg:lExitOnEsc
-			   oDlg:nLastKey := 0
+         oDlg:nLastKey := 0
       ENDIF
    ELSEIF __ObjHasMsg( oDlg, "MENU" ) .AND. ValType( oDlg:menu ) == "A" .AND. ;
       ( aMenu := Hwg_FindMenuItem( oDlg:menu, iParLow, @i ) ) != Nil
@@ -482,11 +483,11 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       .AND. aMenu[ 1, i, 1 ] != Nil
       Eval( aMenu[ 1, i, 1 ] )
    ENDIF
-	 /*
+   /*
    IF  __ObjHasMsg( oDlg, "NINITFOCUS" ) .AND. oDlg:nInitFocus > 0
       oDlg:nInitFocus := 0
    ENDIF
-	 */
+   */
    RETURN 1
 
 FUNCTION DlgMouseMove()
@@ -737,5 +738,4 @@ FUNCTION SetDlgKey( oDlg, nctrl, nkey, block )
    EXIT PROCEDURE Hwg_ExitProcedure
    Hwg_ExitProc()
    RETURN
-
 

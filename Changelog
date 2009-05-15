@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1094 2009-05-10 16:36:26 lculik Exp $
+ * $Id: Changelog,v 1.1095 2009-05-15 05:59:47 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-05-15 10:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hcwindow.prg
+    * removed DATA bScroll - it is used in HDialog, HWindow and HPanel only and there isn't
+      any sense to keep it for all controls.
+    * Small formatting
+  * source/hdialog.prg
+  * source/hpanel.prg
+  * source/hwindow.prg
+    * Added DATA bScroll
+    * Small formatting
+  * source/hsplit.prg
+    * Some cleanup
 
 2009-05-10 13:40 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/guimain.prg

@@ -1,4 +1,4 @@
-# $Id: Makefile.linux,v 1.12 2009-05-05 09:31:48 alkresin Exp $
+# $Id: Makefile.linux,v 1.13 2009-05-26 16:24:19 lculik Exp $
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 ifeq ($(HB_ROOT),)
@@ -74,6 +74,8 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hupdown.o \
    $(OBJ_DIR)/hwindow.o \
    $(OBJ_DIR)/hwinprn.o \
+   $(OBJ_DIR)/hprogres.o \
+   $(OBJ_DIR)/hmonthc.o \
    $(OBJ_DIR)/menu.o
 
 $(LIB_DIR)/libprocmisc.a : \

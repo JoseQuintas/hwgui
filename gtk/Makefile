@@ -27,6 +27,8 @@ PRG_SOURCES=\
 	hgraph.prg \
 	hownbtn.prg \
 	hpanel.prg \
+   hprogres.prg \
+   hmonthc.prg \
 	hprinter.prg \
 	hradio.prg \
 	htab.prg \

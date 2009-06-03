@@ -1,0 +1,16 @@
+/*
+ * $Id: designer.hbp,v 1.1 2009-06-03 11:08:10 omm Exp $
+ */
+
+-i..\..\include
+-L..\..\lib
+-lhwgui.lib
+-lprocmisc.lib
+-lhbxml.prg
+-n -w
+-resflag=-r designer.rc
+designer.prg
+hctrl.prg
+hformgen.prg
+inspect.prg
+editor.prg

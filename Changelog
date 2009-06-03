@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1096 2009-05-15 11:38:57 alkresin Exp $
+ * $Id: Changelog,v 1.1097 2009-06-03 10:47:42 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-06-03 13:55 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
+  + \utils\designer\designer.hbp
+    + script for hbmk2 added
 
 2009-05-15 15:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/procmisc/procs7.prg
@@ -143,10 +147,10 @@
     ! fix in click BUTTONEX Class
     * CLASS HLINE
       + add  DATA LineSlant,DATA nBorder
-      + added new parameters in METHOD New  bInit, tcolor, nHeight, cSlant, nBorder  
+      + added new parameters in METHOD New  bInit, tcolor, nHeight, cSlant, nBorder
         parameter cSlant defines the orientation of the line may take values of / or \ ou Nil
   * source\hpanel.prg
-    + METHOD Hide(),  METHOD Show(), METHOD Release() 
+    + METHOD Hide(),  METHOD Show(), METHOD Release()
   * source\htool.prg
     + add DATA hMenu in CLASS HToolButton
     ! fix in METHOD REFRESH
@@ -176,17 +180,17 @@
         getcomputername()     ->  hwg_getcomputername()
         getusername()         ->  hwg_getusername()
   * doc/funclist.txt
-    * above functions name has been changed.  
+    * above functions name has been changed.
 
 2009-04-26 21:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/hwindow.prg
     ! fix for activate method on hmainwindow
   * source/drawidg.prg
     ! fix to add() method from hBrush() class, if nclr Variable is an Pointer
-    
+
 2009-04-26 09:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/control.c
-    ! fixed problem of GetAncestor in borland 
+    ! fixed problem of GetAncestor in borland
 
 2009-04-24 12:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hcombo.prg

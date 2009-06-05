@@ -1,5 +1,5 @@
 /*
- * $Id: resource.c,v 1.8 2007-11-23 11:10:54 andijahja Exp $
+ * $Id: resource.c,v 1.9 2009-06-05 14:24:53 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level resource functions
@@ -86,12 +86,10 @@ HB_INIT_SYMBOLS_END( hwg_resource_INIT )
 #if defined(HB_PRAGMA_STARTUP)
    #pragma startup hwg_resource_INIT
 #elif defined(HB_MSC_STARTUP)
-   #if _MSC_VER >= 1010
-      #pragma data_seg( ".CRT$XIY" )
-      #pragma comment( linker, "/Merge:.CRT=.data" )
-   #else
-      #pragma data_seg( "XIY" )
-   #endif
+#if defined( HB_OS_WIN_64 )
+#pragma section( HB_MSC_START_SEGMENT, long, read )
+#endif
+#pragma data_seg( HB_MSC_START_SEGMENT )
    static HB_$INITSYM hb_vm_auto_SymbolInit_INIT = hwg_resource_INIT;
    #pragma data_seg()
 #endif

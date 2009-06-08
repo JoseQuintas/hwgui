@@ -1,0 +1,22 @@
+#
+# $Id: hwguidyn.hbp,v 1.1 2009-06-08 11:32:26 alkresin Exp $
+#
+
+-inc
+
+-hbdyn
+-o{bcc}lib/hwguidyn-b32
+-o{!bcc}lib/hwguidyn
+-nohbc
+-lhbxml
+-lprocmisc
+-Llib
+
+-n1 -q0 -w -es2
+
+-cflag={bcc}-a8
+-cflag=-D__EXPORT__
+
+-iinclude
+
+@hwgui.hbm

@@ -1,5 +1,5 @@
 #
-# $Id: designer.hbp,v 1.2 2009-06-09 06:32:35 omm Exp $
+# $Id: designer.hbp,v 1.3 2009-06-09 06:38:36 omm Exp $
 #
 
 -i..\..\include
@@ -9,6 +9,7 @@
 -lhbxml.prg
 -n -w
 -resflag=-r designer.rc
+-gui
 designer.prg
 hctrl.prg
 hformgen.prg

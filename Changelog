@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1100 2009-06-09 06:32:35 omm Exp $
+ * $Id: Changelog,v 1.1101 2009-06-09 06:38:36 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-06-09 09:40 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
+  * \utils\designer\designer.hbp
+    * -gui option added
 
 2009-06-09 09:35 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
   * \utils\designer\designer.hbp

@@ -1,6 +1,6 @@
-/*
- * $Id: designer.hbp,v 1.1 2009-06-03 11:08:10 omm Exp $
- */
+#
+# $Id: designer.hbp,v 1.2 2009-06-09 06:32:35 omm Exp $
+#
 
 -i..\..\include
 -L..\..\lib

@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.68 2009-05-07 06:56:27 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.69 2009-06-12 17:59:46 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -473,10 +473,10 @@ STATIC FUNCTION ReadTree( oForm, aParent, oDesc )
 FUNCTION ParseMethod( cMethod )
    LOCAL arr := { }, nPos1, nPos2, cLine
 
-   IF ( nPos1 := At( Chr( 10 ), cMethod ) ) == 0
-      AAdd( arr, AllTrim( cMethod ) )
+   IF ( nPos1 := At( Chr(10),cMethod ) ) == 0
+      Aadd( arr, RTrim( cMethod ) )
    ELSE
-      AAdd( arr, AllTrim( Left( cMethod, nPos1 - 1 ) ) )
+      Aadd( arr, RTrim( Left( cMethod,nPos1-1 ) ) )
       DO WHILE .T.
          IF ( nPos2 := hb_At( Chr( 10 ), cMethod, nPos1 + 1 ) ) == 0
             cLine := AllTrim( SubStr( cMethod, nPos1 + 1 ) )
@@ -503,66 +503,75 @@ FUNCTION ParseMethod( cMethod )
    RETURN arr
 
 STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl, cName )
-   LOCAL arr, arrExe, nContainer := 0, cCode1, cCode, bOldError, bRes
+   LOCAL arr, arrExe, nContainer := 0, cCode1, cCode, bOldError, bRes, cParam, nPos
 
    IF cMethod = Nil .OR. Empty( cMethod )
-      RETURN Nil
+      Return Nil
    ENDIF
-   IF oCtrl != Nil .AND. Left( oCtrl:oParent:Classname(), 2 ) == "HC"
+   IF oCtrl != Nil .AND. Left( oCtrl:oParent:Classname(),2 ) == "HC"
       // writelog( oCtrl:cClass+" "+oCtrl:oParent:cClass+" "+ oCtrl:oParent:oParent:Classname() )
       nContainer := oForm:nContainer
    ENDIF
-
+   IF Asc( cMethod ) <= 32
+      cMethod := Ltrim( cMethod )
+   ENDIF
+   IF Lower( Left( cMethod ,11 ) ) == "parameters " .AND. ;
+         ( nPos := At( Chr(10),cMethod ) ) != 0
+      cParam := Alltrim( Substr( Left( cMethod,nPos-1 ), 12 ) )
+   ENDIF
    IF oForm:lDebug
       arr := {}
    ELSE
       arr := ParseMethod( cMethod )
    ENDIF
    IF Len( arr ) == 1
-      cCode := IIf( Lower( Left( arr[ 1 ], 6 ) ) == "return", LTrim( SubStr( arr[ 1 ], 8 ) ), arr[ 1 ] )
-      bOldError := ErrorBlock( { | e | CompileErr( e, cCode ) } )
+      cCode := Iif( Lower( Left(arr[1],6) ) == "return", Ltrim( Substr( arr[1],8 ) ), arr[1] )
+      bOldError := ERRORBLOCK( {|e|CompileErr(e,cCode)} )
       BEGIN SEQUENCE
          bRes := &( "{||" + __Preprocess( cCode ) + "}" )
       END SEQUENCE
-      ErrorBlock( bOldError )
-      RETURN bRes
-   ELSEIF !Empty(arr) .AND. Lower( Left( arr[ 1 ], 11 ) ) == "parameters "
+      ERRORBLOCK( bOldError )
+      Return bRes
+   ELSEIF !Empty(arr) .AND. !Empty( cParam )
       IF Len( arr ) == 2
-         cCode := IIf( Lower( Left( arr[ 2 ], 6 ) ) == "return", LTrim( SubStr( arr[ 2 ], 8 ) ), arr[ 2 ] )
-         cCode := "{|" + LTrim( SubStr( arr[ 1 ], 12 ) ) + "|" + __Preprocess( cCode ) + "}"
-         bOldError := ErrorBlock( { | e | CompileErr( e, cCode ) } )
+         cCode := Iif( Lower( Left(arr[2],6) ) == "return", Ltrim( Substr( arr[2],8 ) ), arr[2] )
+         cCode := "{|" + cParam + "|" + __Preprocess( cCode ) + "}"
+         bOldError := ERRORBLOCK( {|e|CompileErr(e,cCode)} )
          BEGIN SEQUENCE
             bRes := &cCode
          END SEQUENCE
-         ErrorBlock( bOldError )
-         RETURN bRes
+         ERRORBLOCK( bOldError )
+         Return bRes
       ELSE
-         cCode1 := IIf( nContainer == 0, ;
-                        "aControls[" + LTrim( Str( Len( oForm:aControls ) ) ) + "]", ;
-                        "F(" + LTrim( Str( oCtrl:nId ) ) + ")" )
-         arrExe := Array( 2 )
-         arrExe[ 2 ] := RdScript( , cMethod, 1, .T., cName )
-         cCode :=  "{|" + LTrim( SubStr( arr[ 1 ], 12 ) ) + ;
-                      "|DoScript(HFormTmpl():F(" + LTrim( Str( oForm:id ) ) + IIf( nContainer != 0, "," + LTrim( Str( nContainer ) ), "" ) + "):" + ;
-                                  IIf( oCtrl == Nil, "aMethods[" + LTrim( Str( Len( oForm:aMethods ) + 1 ) ) + ",2,2],{", ;
-                                                                                                                        cCode1 + ":aMethods[" + ;
-                                                                                                                                             LTrim( Str( Len( oCtrl:aMethods ) + 1 ) ) + ",2,2],{" ) + ;
-                                                                                                                        LTrim( SubStr( arr[ 1 ], 12 ) ) + "})" + "}"
-         arrExe[ 1 ] := &cCode
-         RETURN arrExe
+         cCode1 := Iif( nContainer==0, ;
+               "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]", ;
+               "F("+Ltrim(Str(oCtrl:nId))+")" )
+         arrExe := Array(2)
+         arrExe[2] := RdScript( ,cMethod,1,.T.,cName )
+         cCode :=  "{|" + cParam + ;
+            "|DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+Iif(nContainer!=0,","+Ltrim(Str(nContainer)),"")+"):" + ;
+            Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2],{", ;
+                   cCode1+":aMethods["+ ;
+                   Ltrim(Str(Len(oCtrl:aMethods)+1))+",2,2],{" ) + ;
+                   cParam + "})" + "}"
+         arrExe[1] := &cCode
+         Return arrExe
       ENDIF
    ENDIF
 
-   cCode1 := IIf( nContainer == 0, ;
-                  "aControls[" + LTrim( Str( Len( oForm:aControls ) ) ) + "]", ;
-                  "F(" + LTrim( Str( oCtrl:nId ) ) + ")" )
-   arrExe := Array( 2 )
-   arrExe[ 2 ] := RdScript( , cMethod,, .T., cName )
-   cCode :=  "{||DoScript(HFormTmpl():F(" + LTrim( Str( oForm:id ) ) + IIf( nContainer != 0, "," + LTrim( Str( nContainer ) ), "" ) + "):" + ;
-                           IIf( oCtrl == Nil, "aMethods[" + LTrim( Str( Len( oForm:aMethods ) + 1 ) ) + ",2,2])", ;
-                           cCode1 + ":aMethods[" +   ;
-                                                LTrim( Str( Len( oCtrl:aMethods ) + 1 ) ) + ",2,2])" ) + "}"
-   arrExe[ 1 ] := &cCode
+   cCode1 := Iif( nContainer==0, ;
+         "aControls["+Ltrim(Str(Len(oForm:aControls)))+"]", ;
+         "F("+Ltrim(Str(oCtrl:nId))+")" )
+   arrExe := Array(2)
+   arrExe[2] := RdScript( ,cMethod,,.T.,cName )
+   cCode := "{|" + Iif( Empty(cParam),"",cParam ) + ;
+      "|DoScript(HFormTmpl():F("+Ltrim(Str(oForm:id))+Iif(nContainer!=0,","+Ltrim(Str(nContainer)),"")+"):" + ;
+      Iif( oCtrl==Nil,"aMethods["+Ltrim(Str(Len(oForm:aMethods)+1))+",2,2]" + ;
+             Iif( Empty(cParam),"",",{"+cParam+"}" ) + ")", ;
+             cCode1+":aMethods["+   ;
+             Ltrim(Str(Len(oCtrl:aMethods)+1))+",2,2]" + ;
+             Iif( Empty(cParam),"",",{"+cParam+"}" ) + ")" ) + "}"
+   arrExe[1] := &cCode
 
    RETURN arrExe
 

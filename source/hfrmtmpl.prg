@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.69 2009-06-12 17:59:46 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.70 2009-06-17 16:38:44 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -517,7 +517,8 @@ STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl, cName )
    ENDIF
    IF Lower( Left( cMethod ,11 ) ) == "parameters " .AND. ;
          ( nPos := At( Chr(10),cMethod ) ) != 0
-      cParam := Alltrim( Substr( Left( cMethod,nPos-1 ), 12 ) )
+      DO WHILE Substr( cMethod, --nPos, 1 ) <= ' '; ENDDO
+      cParam := Alltrim( Substr( Left( cMethod,nPos ), 12 ) )
    ENDIF
    IF oForm:lDebug
       arr := {}

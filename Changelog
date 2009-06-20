@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1103 2009-06-17 16:38:42 alkresin Exp $
+ * $Id: Changelog,v 1.1104 2009-06-20 18:04:34 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-06-20 15:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcontrol.prg
+    * CLASS HButtonex
+    ! METHOD ONEVENT - buttoex the click event is not triggered if the mouse remains pressed
+      but not released on the subject and the object like button
+  
 2009-06-17 20:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hfrmtmpl.prg
     ! Yet another bug fixed in CompileMethod()

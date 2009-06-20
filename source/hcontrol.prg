@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.126 2009-05-01 21:03:03 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.127 2009-06-20 18:04:36 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1012,11 +1012,22 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
       RETURN BUTTONEXONSETSTYLE( wParam, lParam, ::handle, @::m_bIsDefault )
 
    ELSEIF msg == WM_MOUSEMOVE
+      IF wParam = MK_LBUTTON
+         pt[ 1 ] := LOWORD( lParam )
+         pt[ 2 ] := HIWORD( lParam )
+         acoor := ClientToScreen( ::handle, pt[ 1 ], pt[ 2 ] )
+         rectButton := GetWindowRect( ::handle )
+         IF ( ! PtInRect( rectButton, acoor ) )
+            SendMessage( ::handle, BM_SETSTATE, ::m_bToggled, 0 )
+            ::bMouseOverButton := .F.
+            RETURN 0
+         ENDIF  
+      ENDIF
       IF( ! ::bMouseOverButton )
-      ::bMouseOverButton := .T.
-      Invalidaterect( ::handle, .f. )
-      TRACKMOUSEVENT( ::handle )
-   ENDIF
+         ::bMouseOverButton := .T.
+         Invalidaterect( ::handle, .f. )
+         TRACKMOUSEVENT( ::handle )
+      ENDIF
    RETURN 0
 ELSEIF msg == WM_MOUSELEAVE
    ::CancelHover()
@@ -1084,6 +1095,11 @@ ELSEIF msg == WM_KEYDOWN
             SendMessage( ::handle, BM_SETSTATE, 0, 0 )
             ::m_bLButtonDown := .T.
          ENDIF
+      ENDIF
+      IF ( ! ::bMouseOverButton )
+         SETFOCUS( ::oParent:handle )
+         ::SETFOCUS()
+         RETURN 0
       ENDIF
       RETURN - 1
 

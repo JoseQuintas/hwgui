@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.127 2009-06-20 18:04:36 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.128 2009-06-22 15:29:46 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1070,9 +1070,10 @@ ELSEIF msg == WM_KEYDOWN
       ENDIF
       RETURN 0
    ELSEIF msg == WM_KEYUP
-
       IF ( ( wParam == VK_SPACE ) .or. ( wParam == VK_RETURN ) )
+         ::bMouseOverButton := .T.
          SendMessage( ::handle, WM_LBUTTONUP, 0, MAKELPARAM( 1, 1 ) )
+         ::bMouseOverButton := .F.
          RETURN 0
       ENDIF
 

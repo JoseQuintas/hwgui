@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.82 2009-05-15 05:59:49 alkresin Exp $
+ *$Id: hwindow.prg,v 1.83 2009-06-22 15:29:46 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -278,6 +278,8 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMa
          ::maximize()
       ELSEIF lMinimized
          ::minimize()   
+      ELSEIF lCentered
+         ::center()   
       ENDIF   
 
       IF ( bActivate  != NIL )
@@ -293,6 +295,8 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMa
          ::maximize()
       ELSEIF lMinimized
          ::minimize()   
+      ELSEIF lCentered
+         ::center()   
       ENDIF   
 
       IF ( bActivate  != NIL )

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.128 2009-06-22 15:29:46 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.129 2009-06-22 16:26:46 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1098,7 +1098,7 @@ ELSEIF msg == WM_KEYDOWN
          ENDIF
       ENDIF
       IF ( ! ::bMouseOverButton )
-         SETFOCUS( ::oParent:handle )
+         SETFOCUS( 0 )
          ::SETFOCUS()
          RETURN 0
       ENDIF

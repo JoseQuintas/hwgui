@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.24 2009-05-15 11:38:57 alkresin Exp $
+ * $Id: hpanel.prg,v 1.25 2009-06-25 21:08:26 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -18,6 +18,7 @@ CLASS HPanel INHERIT HControl
    DATA oEmbedded
    DATA bScroll
    DATA lResizeX, lResizeY HIDDEN
+   DATA nsize
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                bInit, bSize, bPaint, bcolor )

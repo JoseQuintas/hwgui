@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.30 2009-05-01 21:03:03 lfbasso Exp $
+ * $Id: htool.prg,v 1.31 2009-06-26 05:10:59 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -15,6 +15,7 @@
 
 #define TRANSPARENT 1
 #DEFINE IDTOOLBAR 700
+#DEFINE IDMAXBUTTONTOOLBAR 64
 #define TB_SETBITMAPSIZE        (WM_USER + 32)
 #define TB_SETINDENT            (WM_USER + 47)
 #define TB_SETBUTTONWIDTH       (WM_USER + 59)
@@ -367,7 +368,8 @@ METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu, cName) CLASS hTo
    DEFAULT ctext to ""
    IF nId = Nil .OR. EMPTY( nId )
       //IDTOOLBAR
-      nId := ::id + IDTOOLBAR + LEN( ::aButtons ) + LEN( ::aSeparators ) + 1
+      nId := VAL( RIGHT( STR( ::id, 6 ), 1 ) ) * IDMAXBUTTONTOOLBAR 
+      nId := nId + ::id + IDTOOLBAR + LEN( ::aButtons ) + LEN( ::aSeparators ) + 1
    ENDIF   
    
    IF bStyle != BTNS_SEP  //1

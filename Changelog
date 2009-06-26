@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1105 2009-06-22 15:29:45 lfbasso Exp $
+ * $Id: Changelog,v 1.1106 2009-06-26 05:10:59 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+#DEFINE IDMAXBUTTONTOOLBAR 64
+2009-06-26 02:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\htool.prg
+    ! fixed ID to toolbuttons
+      defined max 64 buttons in toolbar
+  
 2009-06-21 12:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcontrol.prg
     * CLASS HButtonex

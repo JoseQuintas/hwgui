@@ -1,5 +1,5 @@
 /*
- * $Id: media_c.c,v 1.12 2008-10-23 11:19:00 lculik Exp $
+ * $Id: media_c.c,v 1.13 2009-06-29 11:22:04 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level media functions
@@ -15,26 +15,27 @@
 #include <windows.h>
 #include <commctrl.h>
 
-#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
+#include "guilib.h"
 
 /*
  *  PlaySound( cName, lSync, lLoop )
  */
 HB_FUNC( PLAYSOUND )
 {
-   LPCSTR pszSound = ( hb_pcount()>0 && ISCHAR(1) )? hb_parc(1):NULL;
+   LPCSTR pszSound = ( hb_pcount(  ) > 0 &&
+         ISCHAR( 1 ) ) ? hb_parc( 1 ) : NULL;
    HMODULE hmod = NULL;
    DWORD fdwSound = SND_NODEFAULT | SND_FILENAME;
 
-   if( hb_pcount()>1 && ISLOG(2) && hb_parl(2) )
+   if( hb_pcount(  ) > 1 && ISLOG( 2 ) && hb_parl( 2 ) )
       fdwSound |= SND_SYNC;
    else
       fdwSound |= SND_ASYNC;
-   if( hb_pcount()>2 && ISLOG(3) && hb_parl(3) )
+   if( hb_pcount(  ) > 2 && ISLOG( 3 ) && hb_parl( 3 ) )
       fdwSound |= SND_LOOP;
    if( !pszSound )
       fdwSound |= SND_PURGE;
@@ -47,10 +48,12 @@ HB_FUNC( MCISENDSTRING )
 {
    BYTE cBuffer[128];
 
-   hb_retnl( (LONG) mciSendString( (LPSTR) hb_parc(1), (LPSTR) cBuffer, 127,
-               ( ISNIL(3) )? GetActiveWindow() : (HWND) HB_PARHANDLE(3) ) );
-   if( !ISNIL(2) )
-      hb_storc( (char*) cBuffer,2 );
+   hb_retnl( ( LONG ) mciSendString( ( LPSTR ) hb_parc( 1 ),
+               ( LPSTR ) cBuffer, 127,
+               ( ISNIL( 3 ) ) ? GetActiveWindow(  ) : ( HWND )
+               HB_PARHANDLE( 3 ) ) );
+   if( !ISNIL( 2 ) )
+      hb_storc( ( char * ) cBuffer, 2 );
 }
 
 
@@ -59,22 +62,21 @@ HB_FUNC( MCISENDSTRING )
 
 HB_FUNC( MCISENDCOMMAND )       // ()
 {
-   hb_retnl( mciSendCommand( hb_parni( 1 ),      // Device ID
-                           hb_parni( 2 ),      // Command Message
-                           hb_parnl( 3 ),      // Flags
-                           ( DWORD ) hb_parc( 4 ) ) );   // Parameter Block
+   hb_retnl( mciSendCommand( hb_parni( 1 ),     // Device ID
+               hb_parni( 2 ),   // Command Message
+               hb_parnl( 3 ),   // Flags
+               ( DWORD ) hb_parc( 4 ) ) );      // Parameter Block
 }
 
 //----------------------------------------------------------------------------//
 
 
-HB_FUNC( MCIGETERRORSTRING )  // ()
+HB_FUNC( MCIGETERRORSTRING )    // ()
 {
-   BYTE bBuffer[ 200 ];
+   BYTE bBuffer[200];
 
-   hb_retl( mciGetErrorString( hb_parnl( 1 ),       // Error Code
-                             ( LPSTR ) bBuffer,
-                             200 ) );
+   hb_retl( mciGetErrorString( hb_parnl( 1 ),   // Error Code
+               ( LPSTR ) bBuffer, 200 ) );
    hb_storc( ( char * ) bBuffer, 2 );
 }
 
@@ -94,7 +96,7 @@ HB_FUNC( NMCIOPEN )
    }
 
    hb_retnl( mciSendCommand( 0, MCI_OPEN, dwFlags,
-                           ( DWORD ) ( LPMCI_OPEN_PARMS ) &mciOpenParms ) );
+               ( DWORD ) ( LPMCI_OPEN_PARMS ) & mciOpenParms ) );
 
 
    hb_storni( mciOpenParms.wDeviceID, 3 );
@@ -125,9 +127,9 @@ HB_FUNC( NMCIPLAY )
       dwFlags |= MCI_NOTIFY;
    }
 
-   hb_retnl( mciSendCommand( hb_parni( 1 ),         // Device ID
-                           MCI_PLAY, dwFlags,
-                           ( DWORD ) ( LPMCI_PLAY_PARMS ) &mciPlayParms ) );
+   hb_retnl( mciSendCommand( hb_parni( 1 ),     // Device ID
+               MCI_PLAY, dwFlags,
+               ( DWORD ) ( LPMCI_PLAY_PARMS ) & mciPlayParms ) );
 }
 
 //----------------------------------------------------------------------------//
@@ -139,8 +141,7 @@ HB_FUNC( NMCIWINDOW )
 
    mciWindowParms.hWnd = hWnd;
 
-   hb_retnl( mciSendCommand( hb_parni( 1 ), MCI_WINDOW, MCI_ANIM_WINDOW_HWND | MCI_ANIM_WINDOW_DISABLE_STRETCH,
-                   ( LONG ) ( LPMCI_ANIM_WINDOW_PARMS ) &mciWindowParms ) );
+   hb_retnl( mciSendCommand( hb_parni( 1 ), MCI_WINDOW,
+               MCI_ANIM_WINDOW_HWND | MCI_ANIM_WINDOW_DISABLE_STRETCH,
+               ( LONG ) ( LPMCI_ANIM_WINDOW_PARMS ) & mciWindowParms ) );
 }
-
-

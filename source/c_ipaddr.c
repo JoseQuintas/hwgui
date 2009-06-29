@@ -1,5 +1,5 @@
 /*
- * $Id: c_ipaddr.c,v 1.12 2008-05-27 12:10:41 lculik Exp $
+ * $Id: c_ipaddr.c,v 1.13 2009-06-29 11:22:03 alkresin Exp $
 */
 
 /*----------------------------------------------------------------------------
@@ -53,8 +53,6 @@
 #include <windows.h>
 #include "winreg.h"
 #include "tchar.h"
-
-#include "guilib.h"
 #include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
@@ -63,6 +61,7 @@
 #if defined(__DMC__)
 #include "missing.h"
 #endif
+#include "guilib.h"
 
 HB_FUNC_EXTERN( HWG_INITCOMMONCONTROLSEX );
 
@@ -72,24 +71,26 @@ HB_FUNC( INITIPADDRESS )
 
    HB_FUNC_EXEC( HWG_INITCOMMONCONTROLSEX );
 
-   hIpAddress = CreateWindowEx(WS_EX_CLIENTEDGE,WC_IPADDRESS,"",
-      hb_parni(3),
-      hb_parni(4), hb_parni(5), hb_parni(6), hb_parni(7),
-      (HWND) HB_PARHANDLE(1), (HMENU)hb_parni(2), GetModuleHandle(NULL), NULL ) ;
+   hIpAddress = CreateWindowEx( WS_EX_CLIENTEDGE, WC_IPADDRESS, "",
+         hb_parni( 3 ),
+         hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),
+         ( HWND ) HB_PARHANDLE( 1 ), ( HMENU ) hb_parni( 2 ),
+         GetModuleHandle( NULL ), NULL );
 
-   HB_RETHANDLE(  hIpAddress );
+   HB_RETHANDLE( hIpAddress );
 }
 
 HB_FUNC( SETIPADDRESS )
 {
    BYTE v1, v2, v3, v4;
 
-   v1 = (BYTE) hb_parni(2);
-   v2 = (BYTE) hb_parni(3);
-   v3 = (BYTE) hb_parni(4);
-   v4 = (BYTE) hb_parni(5);
+   v1 = ( BYTE ) hb_parni( 2 );
+   v2 = ( BYTE ) hb_parni( 3 );
+   v3 = ( BYTE ) hb_parni( 4 );
+   v4 = ( BYTE ) hb_parni( 5 );
 
-   SendMessage( (HWND) HB_PARHANDLE(1), IPM_SETADDRESS, 0, MAKEIPADDRESS(v1,v2,v3,v4));
+   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), IPM_SETADDRESS, 0,
+         MAKEIPADDRESS( v1, v2, v3, v4 ) );
 }
 
 HB_FUNC( GETIPADDRESS )
@@ -97,21 +98,22 @@ HB_FUNC( GETIPADDRESS )
    DWORD pdwAddr;
    BYTE v1, v2, v3, v4;
 
-   SendMessage( (HWND) HB_PARHANDLE(1), IPM_GETADDRESS, 0, (LPARAM)(LPDWORD)&pdwAddr);
+   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), IPM_GETADDRESS, 0,
+         ( LPARAM ) ( LPDWORD ) & pdwAddr );
 
-   v1 = (BYTE) FIRST_IPADDRESS( pdwAddr );
-   v2 = (BYTE) SECOND_IPADDRESS( pdwAddr );
-   v3 = (BYTE) THIRD_IPADDRESS( pdwAddr );
-   v4 = (BYTE) FOURTH_IPADDRESS( pdwAddr );
+   v1 = ( BYTE ) FIRST_IPADDRESS( pdwAddr );
+   v2 = ( BYTE ) SECOND_IPADDRESS( pdwAddr );
+   v3 = ( BYTE ) THIRD_IPADDRESS( pdwAddr );
+   v4 = ( BYTE ) FOURTH_IPADDRESS( pdwAddr );
 
    hb_reta( 4 );
-   hb_storni( (INT) v1, -1, 1 );
-   hb_storni( (INT) v2, -1, 2 );
-   hb_storni( (INT) v3, -1, 3 );
-   hb_storni( (INT) v4, -1, 4 );
+   hb_storvni( ( INT ) v1, -1, 1 );
+   hb_storvni( ( INT ) v2, -1, 2 );
+   hb_storvni( ( INT ) v3, -1, 3 );
+   hb_storvni( ( INT ) v4, -1, 4 );
 }
 
 HB_FUNC( CLEARIPADDRESS )
 {
-   SendMessage( (HWND) HB_PARHANDLE(1), IPM_CLEARADDRESS, 0, 0);
+   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), IPM_CLEARADDRESS, 0, 0 );
 }

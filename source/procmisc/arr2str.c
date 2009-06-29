@@ -1,5 +1,5 @@
 /*
- * $Id: arr2str.c,v 1.9 2006-02-15 16:57:26 lf_sfnet Exp $
+ * $Id: arr2str.c,v 1.10 2009-06-29 11:22:05 alkresin Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Array / String conversion functions
@@ -8,74 +8,76 @@
  * www - http://kresin.belgorod.su
 */
 
-#include "guilib.h"
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
+#include "guilib.h"
 
-static char * ReadArray( char * ptr, PHB_ITEM pItem )
+static char *ReadArray( char *ptr, PHB_ITEM pItem )
 {
    ULONG ulArLen, ulLen, ul;
 
-   ptr ++;
+   ptr++;
    ulArLen = HB_GET_LE_UINT16( ptr );
-   ptr ++; ptr ++;
+   ptr++;
+   ptr++;
 
    hb_arrayNew( pItem, ulArLen );
    for( ul = 1; ul <= ulArLen; ++ul )
    {
-      if( *ptr == '\6' )            // Array
+      if( *ptr == '\6' )        // Array
       {
          ptr = ReadArray( ptr, hb_arrayGetItemPtr( pItem, ul ) );
       }
-      else if( *ptr == '\1' )       // Char
+      else if( *ptr == '\1' )   // Char
       {
-         ptr ++;
+         ptr++;
          ulLen = HB_GET_LE_UINT16( ptr );
-         ptr ++; ptr ++;
+         ptr++;
+         ptr++;
          hb_itemPutCL( hb_arrayGetItemPtr( pItem, ul ), ptr, ulLen );
          ptr += ulLen;
       }
-      else if( *ptr == '\2' )       // Int
+      else if( *ptr == '\2' )   // Int
       {
-         ptr ++;
+         ptr++;
          hb_itemPutNL( hb_arrayGetItemPtr( pItem, ul ),
-                       HB_GET_LE_UINT32( ptr ) );
+               HB_GET_LE_UINT32( ptr ) );
          ptr += 4;
       }
-      else if( *ptr == '\3' )       // Numeric
+      else if( *ptr == '\3' )   // Numeric
       {
          int iWidth, iDec;
-         ptr ++;
-         iWidth = (int) *ptr++;
-         iDec = (int) *ptr++;
+         ptr++;
+         iWidth = ( int ) *ptr++;
+         iDec = ( int ) *ptr++;
          hb_itemPutNDLen( hb_arrayGetItemPtr( pItem, ul ),
-                          HB_GET_LE_DOUBLE( ptr ), iWidth, iDec );
+               HB_GET_LE_DOUBLE( ptr ), iWidth, iDec );
          ptr += 8;
       }
-      else if( *ptr == '\4' )       // Date
+      else if( *ptr == '\4' )   // Date
       {
-         ptr ++;
+         ptr++;
          hb_itemPutDL( hb_arrayGetItemPtr( pItem, ul ),
-                       HB_GET_LE_UINT32( ptr ) );
+               HB_GET_LE_UINT32( ptr ) );
          ptr += 4;
       }
-      else if( *ptr == '\5' )       // Logical
+      else if( *ptr == '\5' )   // Logical
       {
-         ptr ++;
+         ptr++;
          hb_itemPutL( hb_arrayGetItemPtr( pItem, ul ), *ptr++ != 0 );
       }
-      else if( *ptr == '\7' )       // Long Char
+      else if( *ptr == '\7' )   // Long Char
       {
-         ptr ++;
+         ptr++;
          ulLen = HB_GET_LE_UINT32( ptr );
          ptr += 4;
          hb_itemPutCL( hb_arrayGetItemPtr( pItem, ul ), ptr, ulLen );
          ptr += ulLen;
       }
-      else                            // Nil
+      else                      // Nil
       {
-         ptr ++;
+         ptr++;
       }
    }
    return ptr;
@@ -92,7 +94,7 @@ static ULONG ArrayMemoSize( PHB_ITEM pArray )
 
    for( ul = 1; ul <= ulArrLen; ++ul )
    {
-      switch( hb_arrayGetType( pArray, ul ) )
+      switch ( hb_arrayGetType( pArray, ul ) )
       {
          case HB_IT_STRING:
             ulLen = hb_arrayGetCLen( pArray, ul );
@@ -133,7 +135,7 @@ static ULONG ArrayMemoSize( PHB_ITEM pArray )
    return ulMemoSize;
 }
 
-static char * WriteArray( char * ptr, PHB_ITEM pArray )
+static char *WriteArray( char *ptr, PHB_ITEM pArray )
 {
    ULONG ulArrLen = hb_arrayLen( pArray ), ulVal, ul;
    int iDec, iWidth;
@@ -144,11 +146,12 @@ static char * WriteArray( char * ptr, PHB_ITEM pArray )
 
    *ptr++ = '\6';
    HB_PUT_LE_UINT16( ptr, ulArrLen );
-   ptr++; ptr++;
+   ptr++;
+   ptr++;
 
    for( ul = 1; ul <= ulArrLen; ++ul )
    {
-      switch( hb_arrayGetType( pArray, ul ) )
+      switch ( hb_arrayGetType( pArray, ul ) )
       {
          case HB_IT_STRING:
             ulVal = hb_arrayGetCLen( pArray, ul );
@@ -199,9 +202,10 @@ static char * WriteArray( char * ptr, PHB_ITEM pArray )
          case HB_IT_DOUBLE:
             *ptr++ = '\3';
             dVal = hb_arrayGetND( pArray, ul );
-            hb_itemGetNLen( hb_arrayGetItemPtr( pArray, ul ), &iWidth, &iDec );
-            *ptr++ = (char) iWidth;
-            *ptr++ = (char) iDec;
+            hb_itemGetNLen( hb_arrayGetItemPtr( pArray, ul ), &iWidth,
+                  &iDec );
+            *ptr++ = ( char ) iWidth;
+            *ptr++ = ( char ) iDec;
             HB_PUT_LE_DOUBLE( ptr, dVal );
             ptr += 8;
             break;
@@ -216,9 +220,9 @@ static char * WriteArray( char * ptr, PHB_ITEM pArray )
 
 HB_FUNC( ARRAY2STRING )
 {
-   PHB_ITEM pArray    = hb_param( 1, HB_IT_ARRAY );
-   ULONG ulMemoSize   = ArrayMemoSize( pArray );
-   char * szResult    = ( char * ) hb_xgrab( ulMemoSize + 1 );
+   PHB_ITEM pArray = hb_param( 1, HB_IT_ARRAY );
+   ULONG ulMemoSize = ArrayMemoSize( pArray );
+   char *szResult = ( char * ) hb_xgrab( ulMemoSize + 1 );
 
    WriteArray( szResult, pArray );
    hb_retclen_buffer( szResult, ulMemoSize );
@@ -226,10 +230,10 @@ HB_FUNC( ARRAY2STRING )
 
 HB_FUNC( STRING2ARRAY )
 {
-   char * szResult = hb_parc( 1 );
+   char *szResult = hb_parc( 1 );
    PHB_ITEM pItem = hb_itemNew( NULL );
 
-   if( hb_parclen(1) > 2 && *szResult == '\6' )
+   if( hb_parclen( 1 ) > 2 && *szResult == '\6' )
       ReadArray( szResult, pItem );
 
    hb_itemRelease( hb_itemReturn( pItem ) );

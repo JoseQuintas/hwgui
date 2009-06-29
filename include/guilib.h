@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.h,v 1.16 2009-04-20 23:43:00 lculik Exp $
+ *$Id: guilib.h,v 1.17 2009-06-29 11:22:03 alkresin Exp $
  */
 
 #define	WND_DLG_RESOURCE       10
@@ -44,4 +44,8 @@
 
 #ifndef _POSIX_PATH_MAX
 #define _POSIX_PATH_MAX 264
+#endif
+
+#if defined( __XHARBOUR__ ) || ( __HARBOUR__ - 0 < 0x020000 )
+   #define hb_storvni hb_storni
 #endif

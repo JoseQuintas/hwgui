@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1106 2009-06-26 05:10:59 lfbasso Exp $
+ * $Id: Changelog,v 1.1107 2009-06-29 11:22:01 alkresin Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,43 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-06-29 15:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/animat.c
+  * source/c_ipaddr.c
+  * source/commond.c
+  * source/control.c
+  * source/cxshade.c
+  * source/dialog.c
+  * source/draw.c
+  * source/drawtext.c
+  * source/freeimg.c
+  * source/grid.c
+  * source/listbox.c
+  * source/media_c.c
+  * source/menu_c.c
+  * source/message.c
+  * source/misc.c
+  * source/nice.c
+  * source/pager.c
+  * source/prnalone.c
+  * source/resource.c
+  * source/richedit.c
+  * source/shellapi.c
+  * source/theme.c
+  * source/window.c
+  * source/winreg.c
+  * source/wprint.c
+  * source/activex/c_activex.c
+  * source/activex/htmlcore.c
+  * source/activex/htmlfunc.c
+  * source/procmisc/arr2str.c
+  * source/procmisc/blowfish.c
+  * source/qhtm/hwg_qhtm.c
+  * source/xml/xmlparse.c
+  * include/guilib.h
+    * Some changes to make it compatible with the latest Harbour code.
+    * Formatting.
 
 #DEFINE IDMAXBUTTONTOOLBAR 64
 2009-06-26 02:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>

@@ -11,8 +11,8 @@
 #include <windows.h>
 #include <commctrl.h>
 
-#include "guilib.h"
 #include "hbapi.h"
+#include "guilib.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"

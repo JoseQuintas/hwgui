@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.18 2009-06-29 11:22:05 alkresin Exp $
+ * $Id: wprint.c,v 1.19 2009-07-02 17:32:12 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -16,13 +16,18 @@
 #include <commctrl.h>
 
 #include "hbapi.h"
+#include "guilib.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif
-#include "guilib.h"
+
+#ifdef __GNUC__
+BOOL WINAPI GetDefaultPrinterA(LPSTR,LPDWORD);
+BOOL WINAPI GetDefaultPrinterW(LPWSTR,LPDWORD);
+#endif
 
 HB_FUNC( HWG_OPENPRINTER )
 {
@@ -79,7 +84,6 @@ HB_FUNC( HWG_GETDEFAULTPRINTER )
    char PrinterDefault[128];
    DWORD BuffSize = 256;
    OSVERSIONINFO osvi;
-   BOOL bIsWindowsXPorLater;
 
    ZeroMemory( &osvi, sizeof( OSVERSIONINFO ) );
    osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1107 2009-06-29 11:22:01 alkresin Exp $
+ * $Id: Changelog,v 1.1108 2009-07-02 17:35:06 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,62 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-07-02 19:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\prnalone.c
+    * Some changes to make it compatible with the latest Harbour code.
+  * source\wprint.c
+    * patch to avoid an error in MinGW build due to the different way
+      the GetDefaultPrinter is declared (_WIN32_WINNT is required to be
+      >= 0x0500 and is declared as 0x0400). not an elegant way, but
+      effective.
+    * purged unused variable
+  * utils\designer\designer.rc
+    * substitued the hardcoded bitmaps and icons with file
+      references for windres.exe compatibility in MinGW build
+  + utils\designer\resource\bmp\BMP_ANIM.BMP
+  + utils\designer\resource\bmp\BMP_AREA.BMP
+  + utils\designer\resource\bmp\BMP_ARROW.BMP
+  + utils\designer\resource\bmp\BMP_BMP.BMP
+  + utils\designer\resource\bmp\BMP_BOX.BMP
+  + utils\designer\resource\bmp\BMP_BROWSE.BMP
+  + utils\designer\resource\bmp\BMP_BUTTON.BMP
+  + utils\designer\resource\bmp\BMP_CALEN.BMP
+  + utils\designer\resource\bmp\BMP_CHECK.BMP
+  + utils\designer\resource\bmp\BMP_COLUMN.BMP
+  + utils\designer\resource\bmp\BMP_COMBO.BMP
+  + utils\designer\resource\bmp\BMP_DATE.BMP
+  + utils\designer\resource\bmp\BMP_EDIT.BMP
+  + utils\designer\resource\bmp\BMP_GRID.BMP
+  + utils\designer\resource\bmp\BMP_GRID2.BMP
+  + utils\designer\resource\bmp\BMP_GROUP.BMP
+  + utils\designer\resource\bmp\BMP_HLINE.BMP
+  + utils\designer\resource\bmp\BMP_HLINK.BMP
+  + utils\designer\resource\bmp\BMP_ICON.BMP
+  + utils\designer\resource\bmp\BMP_LISTBOX.BMP
+  + utils\designer\resource\bmp\BMP_MENU.BMP
+  + utils\designer\resource\bmp\BMP_NEW.BMP
+  + utils\designer\resource\bmp\BMP_OPEN.BMP
+  + utils\designer\resource\bmp\BMP_PAGE.BMP
+  + utils\designer\resource\bmp\BMP_PANEL.BMP
+  + utils\designer\resource\bmp\BMP_PROGBAR.BMP
+  + utils\designer\resource\bmp\BMP_RADIO.BMP
+  + utils\designer\resource\bmp\BMP_RGROUP.BMP
+  + utils\designer\resource\bmp\BMP_RHLINE.BMP
+  + utils\designer\resource\bmp\BMP_RICH.BMP
+  + utils\designer\resource\bmp\BMP_RVLINE.BMP
+  + utils\designer\resource\bmp\BMP_SAVE.BMP
+  + utils\designer\resource\bmp\BMP_STATIC.BMP
+  + utils\designer\resource\bmp\BMP_STATUS.BMP
+  + utils\designer\resource\bmp\BMP_TIMER.BMP
+  + utils\designer\resource\bmp\BMP_TOOL.BMP
+  + utils\designer\resource\bmp\BMP_TRACK.BMP
+  + utils\designer\resource\bmp\BMP_TREE.BMP
+  + utils\designer\resource\bmp\BMP_UPDOWN.BMP
+  + utils\designer\resource\bmp\BMP_VLINE.BMP
+  + utils\designer\resource\bmp\HWG.ICO
+    + added the bmp and ico files previously hardcoded in the
+      designer resource file
 
 2009-06-29 15:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/animat.c

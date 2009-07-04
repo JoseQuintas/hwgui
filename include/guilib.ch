@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.147 2009-05-01 21:03:03 lfbasso Exp $
+ *$Id: guilib.ch,v 1.148 2009-07-04 13:58:53 lculik Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -1386,13 +1386,21 @@
 #xcommand INIT PRINTER <oPrinter>   ;
              [ NAME <cPrinter> ]     ;
              [ <lPixel: PIXEL> ]     ;
+             [ FORMTYPE  <nFormType> ];
+             [ BIN <nBin> ];
+             [ <lLandScape: LANDSCAPE>];
+             [ COPIES <nCopies> ];
           =>  ;
-          <oPrinter> := HPrinter():New( <cPrinter>,!<.lPixel.> )
+          <oPrinter> := HPrinter():New( <cPrinter>,!<.lPixel.>, <nFormType>, <nBin>, <.lLandScape.>, <nCopies> )
 
 #xcommand INIT DEFAULT PRINTER <oPrinter>   ;
              [ <lPixel: PIXEL> ]             ;
+             [ FORMTYPE  <nFormType> ];
+             [ BIN <nBin> ];
+             [ <lLandScape: LANDSCAPE>];
+             [ COPIES <nCopies> ];
           =>  ;
-          <oPrinter> := HPrinter():New( "",!<.lPixel.> )
+          <oPrinter> := HPrinter():New( "",!<.lPixel.>, <nFormType>, <nBin>, <.lLandScape.>, <nCopies>  )
 
 /*
 Command for MonthCalendar Class

@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.35 2008-11-24 10:02:13 mlacecilia Exp $
+ * $Id: hprinter.prg,v 1.36 2009-07-04 13:58:53 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -33,6 +33,15 @@ CLASS HPrinter INHERIT HObject
    DATA memDC       HIDDEN    // dc offscreen
    DATA memBitmap   HIDDEN    // bitmap offscreen
    DATA NeedsRedraw INIT .T.  HIDDEN // if offscreen needs redrawing...
+   DATA FormType       INIT 0
+   DATA BinNumber      INIT 0
+   DATA Landscape      INIT .F.
+   DATA Copies         INIT 1
+   DATA fDuplexType    INIT 0      HIDDEN   
+   DATA fPrintQuality  INIT 0      HIDDEN
+   DATA PaperLength    INIT 0                        // Value is * 1/10 of mm   1000 = 10cm
+   DATA PaperWidth     INIT 0                        //   "    "    "     "       "     "
+
 
    METHOD New( cPrinter, lmm )
    METHOD SetMode( nOrientation )
@@ -59,8 +68,23 @@ CLASS HPrinter INHERIT HObject
    METHOD ChangePage( oSayPage, n, nPage ) HIDDEN
 ENDCLASS
 
-METHOD New( cPrinter, lmm ) CLASS HPrinter
+METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies ) CLASS HPrinter
    LOCAL aPrnCoors, cPrinterName
+
+   IF Valtype(nFormType) ="N"
+      ::FormType       := nFormType
+   ENDIF
+   IF valtype(nBin) == "N"
+      ::BinNumber      := nBin
+   ENDIF
+   IF Valtype(lLandScape) =="L"
+      ::Landscape      := lLandScape
+   ENDIF
+   IF valtype(nCopies) == "N"
+      IF nCopies>0
+         ::Copies := nCopies
+      ENDIF
+   ENDIF
 
    IF lmm != Nil
       ::lmm := lmm
@@ -79,6 +103,10 @@ METHOD New( cPrinter, lmm ) CLASS HPrinter
    IF ::hDCPrn == 0
       RETURN Nil
    ELSE
+      if !Hwg_SetDocumentProperties(::hDCPrn, ::cPrinterName, @::FormType, @::Landscape, @::Copies, @::BinNumber, @::fDuplexType, @::fPrintQuality, @::PaperLength, @::PaperWidth )
+         Return NIL
+      endif
+
       aPrnCoors := GetDeviceArea( ::hDCPrn )
       ::nWidth  := IIf( ::lmm, aPrnCoors[ 3 ], aPrnCoors[ 1 ] )
       ::nHeight := IIf( ::lmm, aPrnCoors[ 4 ], aPrnCoors[ 2 ] )

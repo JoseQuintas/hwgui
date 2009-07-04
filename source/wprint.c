@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.19 2009-07-02 17:32:12 mlacecilia Exp $
+ * $Id: wprint.c,v 1.20 2009-07-04 13:58:53 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -461,3 +461,171 @@ HB_FUNC( PRINTENHMETAFILE )
    EndPage( hDC );
    // EndDoc( hDC );
 }
+
+HB_FUNC( HWG_SETDOCUMENTPROPERTIES )
+{
+  BOOL bW9X, Result = FALSE ;
+  HDC hDC = (HDC) hb_parnl(1) ;
+  OSVERSIONINFO osvi;
+  osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
+  GetVersionEx ( &osvi );
+  bW9X = ( osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS ) ;
+  if (hDC)
+  {
+    HANDLE hPrinter ;
+    LPTSTR pszPrinterName = hb_parc(2) ;
+
+    if (OpenPrinter(pszPrinterName, &hPrinter, NULL))
+    {
+
+      PDEVMODE pDevMode = NULL ;
+      LONG lSize= DocumentProperties(0,hPrinter,pszPrinterName, pDevMode,pDevMode,0);
+
+      if (lSize > 0 )
+      {
+        pDevMode= (PDEVMODE) hb_xgrab(lSize) ;
+
+        if (pDevMode && DocumentProperties(0,hPrinter,pszPrinterName, pDevMode,pDevMode,DM_OUT_BUFFER) == IDOK )  // Get the current settings
+        {
+          BOOL  bAskUser = ISBYREF(3) || ISBYREF(4) || ISBYREF(5) ||
+                           ISBYREF(6) || ISBYREF(7) || ISBYREF(8) || ISBYREF(9) || ISBYREF(10) ; //x 20070421
+          DWORD dInit = 0; //x 20070421
+          DWORD fMode ;
+          BOOL bCustomFormSize  = ( ISNUM( 9 ) && hb_parnl( 9 ) > 0 ) && ( ISNUM( 10 ) && hb_parnl( 10 ) > 0 ) ;  // Must set both Length & Width
+
+          if ( bCustomFormSize )
+          {
+              pDevMode->dmPaperLength = ( short ) hb_parnl( 9 ) ;
+              dInit|= DM_PAPERLENGTH ;
+
+              pDevMode->dmPaperWidth = ( short ) hb_parnl( 10 ) ;
+              dInit|= DM_PAPERWIDTH ;
+
+              pDevMode->dmPaperSize     = DMPAPER_USER ;
+              dInit |= DM_PAPERSIZE;
+          }
+          else
+          {
+            if ( ISCHAR( 3 ) )    // this doesn't work for Win9X
+            {
+              if ( !bW9X )
+              {
+                BYTE *cForm = (BYTE  *) hb_parc( 3 ) ;
+                size_t iLen = ( size_t ) hb_parclen( 3 ) ;
+                if ( cForm && iLen && iLen < CCHFORMNAME  )
+                {
+                  memcpy( pDevMode->dmFormName, cForm, iLen + 1 ) ;  // Copy the trailing '\0'
+                  dInit |= DM_FORMNAME ;
+                }
+              }
+            }
+            else if ( ISNUM(3) && hb_parnl(3) ) // 22/02/2007 don't change if 0
+            {
+              pDevMode->dmPaperSize     = ( short ) hb_parnl(3) ;
+              dInit |= DM_PAPERSIZE;
+            }
+          }
+
+          if (ISLOG(4))
+          {
+            pDevMode->dmOrientation   = ( short ) (hb_parl(4) ? 2 : 1) ;
+            dInit |= DM_ORIENTATION;
+          }
+
+          if (ISNUM(5) && hb_parnl(5) > 0)
+          {
+            pDevMode->dmCopies        = ( short ) hb_parnl(5) ;
+            dInit |= DM_COPIES;
+          }
+
+          if ( ISNUM(6) && hb_parnl(6) ) // 22/02/2007 don't change if 0
+          {
+            pDevMode->dmDefaultSource = ( short ) hb_parnl(6) ;
+            dInit |= DM_DEFAULTSOURCE;
+          }
+
+          if (ISNUM(7)  && hb_parnl(7) ) // 22/02/2007 don't change if 0
+          {
+            pDevMode->dmDuplex = ( short ) hb_parnl(7) ;
+            dInit |= DM_DUPLEX;
+          }
+
+          if (ISNUM(8) && hb_parnl(8) ) // 22/02/2007 don't change if 0
+          {
+            pDevMode->dmPrintQuality = ( short ) hb_parnl(8) ;
+            dInit |= DM_PRINTQUALITY;
+          }
+
+          fMode = DM_IN_BUFFER|DM_OUT_BUFFER ;
+
+          if ( bAskUser )
+          {
+            fMode |= DM_IN_PROMPT ;
+          }
+
+          pDevMode->dmFields = dInit;
+
+          /* NOTES:
+             For unknown reasons, Windows98/ME returns IDCANCEL if user clicks OK without changing anything in DocumentProperties.
+             Therefore, we ignore the return value in Win9x, and assume user clicks OK.
+             IOW, DocumentProperties is not cancelable in Win9X.
+           */
+          if ( DocumentProperties(0,hPrinter,pszPrinterName, pDevMode,pDevMode, fMode) == IDOK || bW9X )
+          {
+            if (ISBYREF(3) && !bCustomFormSize )
+            {
+              if ( ISCHAR( 3 ) )
+              {
+                if ( !bW9X )
+                {
+                  hb_storc( (char *) pDevMode->dmFormName,3);
+                }
+              }
+              else
+              {
+                hb_stornl( (LONG) pDevMode->dmPaperSize,3);
+              }
+            }
+            if (ISBYREF(4))
+            {
+               hb_storl(pDevMode->dmOrientation==2,4);
+            }
+            if (ISBYREF(5))
+            {
+               hb_stornl( (LONG) pDevMode->dmCopies,5);
+            }
+            if (ISBYREF(6))
+            {
+               hb_stornl( (LONG) pDevMode->dmDefaultSource,6);
+            }
+            if (ISBYREF(7))
+            {
+               hb_stornl( (LONG) pDevMode->dmDuplex,7);
+            }
+            if (ISBYREF(8))
+            {
+               hb_stornl( (LONG) pDevMode->dmPrintQuality,8);
+            }
+            if (ISBYREF(9))
+            {
+               hb_stornl( (LONG) pDevMode->dmPaperLength, 9 ) ;
+            }
+            if (ISBYREF(10))
+            {
+               hb_stornl( (LONG) pDevMode->dmPaperWidth, 10 ) ;
+            }
+
+            Result= (BOOL) ResetDC(hDC, pDevMode) ;
+          }
+
+          hb_xfree(pDevMode) ;
+        }
+      }
+
+      ClosePrinter(hPrinter) ;
+
+    }
+  }
+  hb_retl( Result ) ;
+}
+

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.89 2009-05-15 05:59:48 alkresin Exp $
+ * $Id: hdialog.prg,v 1.90 2009-07-09 02:45:51 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -117,10 +117,13 @@ METHOD NEW( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
    IF nHelpId != nil
       ::HelpId := nHelpId
    END
+   ::SetColor( , bColor )
+   /*
    IF bcolor != NIL
       ::brush := HBrush():Add( bcolor )
       ::bcolor := bcolor
    ENDIF
+   */
    IF Hwg_Bitand( nStyle, WS_HSCROLL ) > 0
       ::nScrollBars ++
    ENDIF

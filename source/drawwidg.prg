@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.23 2009-04-27 00:22:17 lculik Exp $
+ * $Id: drawwidg.prg,v 1.24 2009-07-09 02:45:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -309,9 +309,9 @@ CLASS VAR aBitmaps   INIT { }
    DATA nWidth, nHeight
    DATA nCounter   INIT 1
 
-   METHOD AddResource( name, nFlags, lOEM, nwidth, nheight )
+   METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight )
    METHOD AddStandard( nId )
-   METHOD AddFile( name, hDC, lTranparent, nwidth, nheight )
+   METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight )
    METHOD AddWindow( oWnd, lFull )
    METHOD Draw( hDC, x1, y1, width, height )  INLINE DrawBitmap( hDC, ::handle, SRCCOPY, x1, y1, width, height )
    METHOD Release()

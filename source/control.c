@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.81 2009-06-29 11:22:03 alkresin Exp $
+ * $Id: control.c,v 1.82 2009-07-09 02:45:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -393,6 +393,11 @@ HB_FUNC( HWG_INITSTATUS )
    // Free the array, and return.
    LocalUnlock( hloc );
    LocalFree( hloc );
+}
+
+HB_FUNC( GETNOTIFYSBPARTS )
+{
+   hb_retnl( ( LONG ) ((( NMMOUSE * ) HB_PARHANDLE( 1 ))->dwItemSpec ) );
 }
 
 HB_FUNC( ADDTOOLTIP )           // changed by MAG

@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.65 2009-05-07 22:00:42 lculik Exp $
+ * $Id: hcombo.prg,v 1.66 2009-07-09 02:45:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -68,6 +68,12 @@ CLASS HComboBox INHERIT HControl
    METHOD GetValue()
    METHOD AddItem( cItem )
    METHOD DeleteItem( nPos )
+   METHOD Valid( )
+   METHOD When( ) 
+   METHOD InteractiveChange( )
+   METHOD onChange( )
+
+
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, aItems, oFont, ;
@@ -81,14 +87,14 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       lText := .f.
    ENDIF
    //if bValid != NIL; ::bValid := bValid; endif
-
-   ::nHeightBox := Int( nHeight * 0.75 )                    //	Meets A 22'S EDITBOX
    IF !Empty( nDisplay ) .AND. nDisplay > 0
       nStyle := Hwg_BitOr( nStyle, CBS_NOINTEGRALHEIGHT )   //+ WS_VSCROLL )
       // CBS_NOINTEGRALHEIGHT. CRIATE VERTICAL SCROOL BAR
    ELSE
       nDisplay := 6
    ENDIF
+ 	 nHeight := IIF( EMPTY( nHeight ), 24,  nHeight )
+   ::nHeightBox := Int( nHeight * 0.75 )                    //	Meets A 22'S EDITBOX
    nHeight := nHeight + ( Iif( Empty( nhItem ), 16.250, ( nhItem += 0.250 ) ) * nDisplay )
 
    nStyle := Hwg_BitOr( Iif( nStyle == Nil, 0, nStyle ), Iif( lEdit, CBS_DROPDOWN, CBS_DROPDOWNLIST ) + WS_TABSTOP )
@@ -112,7 +118,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ENDIF
 
    ::bSetGet := bSetGet
-   ::aItems  := aItems
+   ::aItems  := IIF( aItems = Nil, {}, aItems )
+
    ::Activate()
 
    ::bChangeSel := bChange
@@ -122,25 +129,29 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF bSetGet != Nil
       IF bGFocus != Nil
          ::lnoValid := .T.
-         ::oParent:AddEvent( CBN_SETFOCUS, Self, { | o, id | __When( o:FindControl( id ) ) },, "onGotFocus" )
+         ::oParent:AddEvent( CBN_SETFOCUS, self, { | o, id | ::When( o:FindControl( id ) ) },, "onGotFocus" )         
       ENDIF
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com) 03/06/2006
-      ::oParent:AddEvent( CBN_KILLFOCUS, Self, { | o, id | __Valid( o:FindControl( id ) ) }, .F., "onLostFocus" )
+      ::oParent:AddEvent( CBN_KILLFOCUS, Self, { | o, id | ::Valid( o:FindControl( id ) ) }, .F., "onLostFocus" )
+      //::oParent:AddEvent( CBN_KILLFOCUS, Self, { | o, id | __Valid( o:FindControl( id ) ) }, .F., "onLostFocus" )
       //---------------------------------------------------------------------------
    ELSE
       IF bGFocus != Nil
          ::lnoValid := .T.
-         ::oParent:AddEvent( CBN_SETFOCUS, Self, { | o, id | __When( o:FindControl( id ) ) },, "onGotGocus" )
-      ENDIF
-      ::oParent:AddEvent( CBN_KILLFOCUS, Self, { | o, id | __Valid( o:FindControl( id ) ) },, "onLostFocus" )
+         ::oParent:AddEvent( CBN_SETFOCUS, self, { | o, id | ::When( o:FindControl( id ) ) },, "onGotFocus" )
+         //::oParent:AddEvent( CBN_SETFOCUS, Self, { | o, id | __When( o:FindControl( id ) ) },, "onGotGocus" )
+      ENDIF                                                       
+      ::oParent:AddEvent( CBN_KILLFOCUS, Self, { | o, id | ::Valid( o:FindControl( id ) ) }, .F., "onLostFocus" )
+      //::oParent:AddEvent( CBN_KILLFOCUS, Self, { | o, id | __Valid( o:FindControl( id ) ) },, "onLostFocus" )
    ENDIF
    IF bChange != Nil .OR. bSetGet != Nil
-      ::oParent:AddEvent( CBN_SELCHANGE, Self, { | o, id | __onChange( o:FindControl( id ) ) },, "onChange" )
+      ::oParent:AddEvent( CBN_SELCHANGE, Self, { | o, id | ::onChange( o:FindControl( id ) ) },, "onChange" )
    ENDIF
 
    IF bIChange != Nil .AND. ::lEdit
       ::bchangeInt := bIChange
-      ::oParent:AddEvent( CBN_EDITUPDATE, Self, { | o, id | __InteractiveChange( o:FindControl( id ) ) },, "interactiveChange" )
+     // ::oParent:AddEvent( CBN_EDITUPDATE, Self, { | o, id | __InteractiveChange( o:FindControl( id ) ) },, "interactiveChange" )
+      ::oParent:AddEvent( CBN_EDITUPDATE, Self, { | o, id | ::InteractiveChange( o:FindControl( id ) ) },, "interactiveChange" )
    ENDIF
 
 RETURN Self
@@ -181,23 +192,28 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    IF bSetGet != Nil
       ::bChangeSel := bChange
       ::bGetFocus  := bGFocus
-      ::oParent:AddEvent( CBN_SETFOCUS, Self, { | o, id | __When( o:FindControl( id ) ) },, "onGotFocus" )
+      ::oParent:AddEvent( CBN_SETFOCUS, self, { | o, id | ::When( o:FindControl( id ) ) },, "onGotFocus" )
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
-      IF ::bSetGet <> nil
-         ::oParent:AddEvent( CBN_SELCHANGE, Self, { | o, id | __Valid( o:FindControl( id ) ) },, "onChange" )
+      IF ::bSetGet <> nil                                            
+         ::oParent:AddEvent( CBN_SELCHANGE, Self, { | o, id | ::Valid( o:FindControl( id ) ) },, "onChange" )
+      // ::oParent:AddEvent( CBN_SELCHANGE, Self, { | o, id | __Valid( o:FindControl( id ) ) },, "onChange" )
       ELSEIF ::bChangeSel != NIL
-         ::oParent:AddEvent( CBN_SELCHANGE, Self, { | o, id | __Valid( o:FindControl( id ) ) },, "onChange" )
+         ::oParent:AddEvent( CBN_SELCHANGE, Self, { | o, id | ::Valid( o:FindControl( id ) ) },, "onChange" )
+       //  ::oParent:AddEvent( CBN_SELCHANGE, Self, { | o, id | __Valid( o:FindControl( id ) ) },, "onChange" )
       ENDIF
-   ELSEIF bChange != Nil
-      ::oParent:AddEvent( CBN_SELCHANGE, Self, bChange,, "onChange" )
+   ELSEIF bChange != Nil .AND. ::lEdit
+      ::bChangeSel := bChange
+      ::oParent:AddEvent( CBN_SELCHANGE, Self, { | o, id | ::onChange( o:FindControl( id ) ) },, "onChange" )
+    //::oParent:AddEvent( CBN_SELCHANGE, Self, bChange,, "onChange" )
    ENDIF
 
    IF bGFocus != Nil .AND. bSetGet == Nil
-      ::oParent:AddEvent( CBN_SETFOCUS, Self, { | o, id | __When( o:FindControl( id ) ) },, "onGotFocus" )
+      ::oParent:AddEvent( CBN_SETFOCUS, self, { | o, id | ::When( o:FindControl( id ) ) },, "onGotFocus" )
    ENDIF
 
    //::Refresh() // By Luiz Henrique dos Santos
    ::Requery()
+   
 RETURN Self
 
 METHOD INIT() CLASS HComboBox
@@ -271,8 +287,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
          RETURN 0
       ENDIF
    ENDIF
-   IF ::bSetGet != Nil
-      IF msg == WM_CHAR .AND. ( ::GetParentForm( Self ) :Type < WND_DLG_RESOURCE .OR. ;
+   IF ::bSetGet != Nil .OR. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE 
+      IF msg == WM_CHAR .AND. ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE .OR. ;
                  ! ::GetParentForm( Self ) :lModal )
          IF wParam = VK_TAB
             GetSkip( ::oParent, ::handle,, Iif( IsCtrlShift( .f., .t. ), - 1, 1 ) )
@@ -420,100 +436,100 @@ LOCAL nCount
    ComboAddString( ::handle, cItem )    //::aItems[i] )
 RETURN nCount
 
-STATIC FUNCTION __InteractiveChange( oCtrl )
+METHOD InteractiveChange( ) CLASS HComboBox
 
-LOCAL npos := SendMessage( oCtrl:handle, CB_GETEDITSEL, 0, 0 )
+LOCAL npos := SendMessage( ::handle, CB_GETEDITSEL, 0, 0 )
 
-   octrl:SelStart                     := nPos
-   oCtrl:oparent:lSuspendMsgsHandling := .t.
-   Eval( oCtrl:bChangeInt, oCtrl:value, oCtrl )
-   oCtrl:oparent:lSuspendMsgsHandling := .f.
+   ::SelStart                     := nPos
+   ::oparent:lSuspendMsgsHandling := .t.
+   Eval( ::bChangeInt, ::value, Self )
+   ::oparent:lSuspendMsgsHandling := .f.
 
-   SendMessage( oCtrl:handle, CB_SETEDITSEL, 0, octrl:SelStart )
+   SendMessage( ::handle, CB_SETEDITSEL, 0, ::SelStart )
 RETURN Nil
 
-STATIC FUNCTION __onChange( oCtrl )
+METHOD onChange( ) CLASS HComboBox
 
-LOCAL nPos := SendMessage( oCtrl:handle, CB_GETCURSEL, 0, 0 ) + 1
+LOCAL nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
 
-   oCtrl:SetItem( nPos )
-   IF oCtrl:bChangeSel != Nil
-      oCtrl:oparent:lSuspendMsgsHandling := .t.
-      Eval( oCtrl:bChangeSel, nPos, oCtrl )
-      oCtrl:oparent:lSuspendMsgsHandling := .f.
+   ::SetItem( nPos )
+   IF ::bChangeSel != Nil
+      ::oparent:lSuspendMsgsHandling := .t.
+      Eval( ::bChangeSel, nPos, Self )
+      ::oparent:lSuspendMsgsHandling := .f.
    ENDIF
 RETURN Nil
 
-STATIC FUNCTION __When( oCtrl )
+METHOD When( ) CLASS HComboBox
 
 LOCAL res := .t., oParent, nSkip
 
-   IF !CheckFocus( oCtrl, .f. )
+   IF !CheckFocus( Self, .f. )
       RETURN .t.
    ENDIF
 
-   IF !oCtrl:lText
-      //oCtrl:Refresh()
+   IF !::lText
+      //::Refresh()
    ELSE
-      //  SetWindowText(oCtrl:handle, oCtrl:value)
-      //  SendMessage( oCtrl:handle, CB_SELECTSTRING, 0, oCtrl:value)
+      //  SetWindowText(::handle, ::value)
+      //  SendMessage( ::handle, CB_SELECTSTRING, 0, ::value)
    ENDIF
    nSkip := Iif( GetKeyState( VK_UP ) < 0 .OR. ( GetKeyState( VK_TAB ) < 0 .AND. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
-   IF oCtrl:bGetFocus != Nil
-      oCtrl:oParent:lSuspendMsgsHandling := .t.
-      oCtrl:lnoValid                     := .T.
-      IF oCtrl:bSetGet != Nil
-         res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
+   IF ::bGetFocus != Nil
+      ::oParent:lSuspendMsgsHandling := .t.
+      ::lnoValid                     := .T.
+      IF ::bSetGet != Nil
+         res := Eval( ::bGetFocus, Eval( ::bSetGet,, Self ), Self )
       ELSE
-         res := Eval( oCtrl:bGetFocus, oCtrl:value, oCtrl )
+         res := Eval( ::bGetFocus, ::value, Self )
       ENDIF
-      oCtrl:oParent:lSuspendMsgsHandling := .f.
-      oCtrl:lnoValid                     := !res
+      ::oParent:lSuspendMsgsHandling := .f.
+      ::lnoValid                     := !res
       IF !res
-         oParent := ParentGetDialog( oCtrl )
-         IF oCtrl == ATail( oParent:GetList )
+         oParent := ParentGetDialog( Self )
+         IF Self == ATail( oParent:GetList )
             nSkip := - 1
-         ELSEIF oCtrl == oParent:getList[ 1 ]
+         ELSEIF Self == oParent:getList[ 1 ]
             nSkip := 1
          ENDIF
-         GetSkip( oCtrl:oParent, oCtrl:handle,, nSkip )
+         GetSkip( ::oParent, ::handle,, nSkip )
       ENDIF
    ENDIF
 RETURN res
 
-STATIC FUNCTION __Valid( oCtrl )
+METHOD Valid( ) CLASS HComboBox
 
 LOCAL oDlg, nPos, nSkip, res, hCtrl := getfocus()
 LOCAL ltab := GETKEYSTATE( VK_TAB ) < 0
 
-   IF !CheckFocus( oCtrl, .t. ) .OR. oCtrl:lNoValid
+   IF  ::lNoValid .OR. !CheckFocus( Self, .t. )
       RETURN .t.
    ENDIF
   
    nSkip := Iif( GetKeyState( VK_SHIFT ) < 0, - 1, 1 )
 
-   IF ( oDlg := ParentGetDialog( oCtrl ) ) == Nil .OR. oDlg:nLastKey != VK_ESCAPE
+   IF ( oDlg := ParentGetDialog( Self ) ) == Nil .OR. oDlg:nLastKey != VK_ESCAPE
       // end by sauli
       // IF lESC // "if" by Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
-      nPos := SendMessage( oCtrl:handle, CB_GETCURSEL, 0, 0 ) + 1
-      IF oCtrl:lText
-         oCtrl:value := Iif( nPos > 0, oCtrl:aItems[ nPos ], GetWindowText( oCtrl:handle ) )
+      nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
+      IF ::lText
+         ::value := Iif( nPos > 0, ::aItems[ nPos ], GetWindowText( ::handle ) )
       ELSE
-         oCtrl:value := nPos
+         ::value := nPos
       ENDIF
-      IF oCtrl:bSetGet != Nil
-         Eval( oCtrl:bSetGet, oCtrl:value, oCtrl )
+      IF ::bSetGet != Nil
+         Eval( ::bSetGet, ::value, Self )
       ENDIF
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com.br) 03/06/2006
-      IF oCtrl:bLostFocus != Nil
-         oCtrl:oparent:lSuspendMsgsHandling := .T.
-         res                                := Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl )
+      IF ::bLostFocus != Nil
+         ::oparent:lSuspendMsgsHandling := .T.
+         res                                := Eval( ::bLostFocus, ::value, Self )
          IF !res
-            SetFocus( oCtrl:handle )
+            SetFocus( ::handle )
             IF oDlg != Nil
                oDlg:nLastKey := 0
             ENDIF
-            octrl:oparent:lSuspendMsgsHandling := .F.
+            ::oparent:lSuspendMsgsHandling := .F.
             RETURN .F.
          ENDIF
 
@@ -522,14 +538,14 @@ LOCAL ltab := GETKEYSTATE( VK_TAB ) < 0
          oDlg:nLastKey := 0
       ENDIF
       IF ltab .AND. GETFOCUS() = hCtrl
-         IF oCtrl:oParent:CLASSNAME = "HTAB"
-            oCtrl:oParent:SETFOCUS()
-            getskip( oCtrl:oparent, oCtrl:handle,, nSkip )
+         IF ::oParent:CLASSNAME = "HTAB"
+            ::oParent:SETFOCUS()
+            getskip( ::oparent, ::handle,, nSkip )
          ENDIF
       ENDIF
-      octrl:oparent:lSuspendMsgsHandling := .F.
+      ::oparent:lSuspendMsgsHandling := .F.
       IF empty( GETFOCUS() ) // getfocus return pointer = 0                 //::nValidSetfocus = ::handle
-         GetSkip( OCTRL:oParent, octrl:handle,, octrl:nGetSkip )
+         GetSkip( ::oParent, ::handle,, ::nGetSkip )
       ENDIF
    ENDIF
 RETURN .T.

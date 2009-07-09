@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.148 2009-07-04 13:58:53 lculik Exp $
+ *$Id: guilib.ch,v 1.149 2009-07-09 02:45:50 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -237,12 +237,14 @@
              [ ON INIT <bInit> ]    ;
              [ ON SIZE <bSize> ]    ;
              [ ON PAINT <bDraw> ]   ;
+             [ ON DBLCLICK <bDblClick> ];
+             [ ON RIGHTCLICK <bRClick> ];
              [ STYLE <nStyle> ]     ;
              [ FONT <oFont> ]       ;
              [ PARTS <aparts,...> ] ;
           => ;
           [ <oStat> := ] HStatus():New( <oWnd>,<nId>,<nStyle>,<oFont>,\{<aparts>\},<bInit>,;
-             <bSize>,<bDraw> );;
+             <bSize>,<bDraw>, <bRClick>, <bDblClick> );;
           [ <oStat>:name := <(oStat)> ]
 
 #xcommand @ <x>,<y> SAY [ <oSay> CAPTION ] <caption> ;
@@ -477,14 +479,17 @@
              [ FONT <oFont> ]           ;
              [ TOOLTIP <ctoolt> ]       ;
              [ BITMAP <hbit> ]          ;
-             [ BSTYLE <nBStyle> ]       ;
+             [ BSTYLE <nBStyle> ]       ;                     
              [ PICTUREMARGIN <nMargin> ];
              [ ICON <hIco> ]          ;
-             [<lTransp: TRANSPARENT>]   ;
+             [ <lTransp: TRANSPARENT> ] ;
+             [ <lnoTheme: NOTHEMES> ]   ;
+             [ <class: CLASS> <classname> ] ;
           => ;
-          [<oBut> := ] HButtonEx():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<hbit>,<nBStyle>,<hIco>, <.lTransp.>,<bGfocus>,<nMargin>);;
+          [<oBut> := ] __IIF(<.class.>, <classname>,HButtonEx)():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<hbit>,<nBStyle>,<hIco>, <.lTransp.>,<bGfocus>,<nMargin>,<.lnoTheme.>);;
           [ <oBut>:name := <(oBut)> ]
+
 
 #xcommand REDEFINE BUTTON [ <oBut> ]   ;
              [ OF <oWnd> ]              ;

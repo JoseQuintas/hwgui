@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1109 2009-07-04 13:58:53 lculik Exp $
+ * $Id: Changelog,v 1.1110 2009-07-09 02:45:49 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,89 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-07-08 22:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + add new clauses
+    * @ <x>,<y> BUTTONEX [ <oBut> CAPTION ] <caption> ;
+       [ <lnoTheme: NOTHEMES> ]   ;
+       [ <class: CLASS> <classname> ] ;
+    * ADD STATUS [<oStat>] [ TO <oWnd> ] ;
+       [ ON DBLCLICK <bDblClick> ];
+       [ ON RIGHTCLICK <bRClick> ];
+  * source\control.c
+    + add new function GETNOTIFYSBPARTS return part STATUS BAR to notify RIGHCLICK and DLBCLICK
+  * source\draw.c
+    * FUNCTION REDRAWWINDOW add more 4 parameters left,top,width,height
+  * source\drawwidg.prg
+    ! minor fix
+  * source\hcheck.prg
+    * changed STATICS FUNCTION __VALID and __WHEN for METHOD WHEN and VALID
+  * source\hcombo.prg
+    * changed STATICS FUNCTION __VALID and __WHEN for METHOD WHEN and VALID
+    ! add condition IF ::bSetGet != Nil .OR. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE 
+      to work in MDICHILD
+  * source\hcontrol.prg
+    * CLASS HCONTROL 
+      + add METHOD SetFont( oFont ) changed FONT of OBJECT
+      + add METHOD Enabled( lEnabled ) SETGET to standardize and 	
+        facilitate the use  octrl:lenabled := .t.|.f.
+      ! minor fix in METHOD SetText()
+      - moved METHOD SetColor() to Hcwindow
+    * CLASS HStatus
+      + DATA bDblClick, bRClick
+      + parameters bDblClick, bRClick in NEW()
+      + add METHOD Notify to triged events DBLCLICK and RIGHTCLICK
+    * CLASS HStatic      
+      - DATA Transparent
+      + DATA nBackMode 
+      + METHOD SetText( value ) to standarlize
+      ! minor fix in METHOD SetValue( value )
+      * METHOD BackStyle( nMode ) SETGET  to changed style TRANSPARENT|OPAQUE in run-time
+        octrl:backstyle := 0|1 TRANSPARENT|OPAQUE
+      ! minor fix and cleaning in METHOD Paint
+    * CLASS HButtonEX      
+      + DATA lnoThemes INIT .F. HIDDEN
+      + DATA m_crBrush INIT Array( 6 )
+      + new parameter in METHOD NEW() lnoThemed to assign the button will be created
+        with or without theme
+      + METHOD SetColor( tcolor, bcolor )
+      + 2 news parameters in METHOD SetDefaultColor( tColor, bColor, lRepaint )
+        * if the button has not Theme could be attributed COLORS to the text and 
+           for the background of the same
+      + add parameter in METHOD SetBitmap( hbit )
+      + add parameter in METHOD SetIcon( hicon )
+      ! minor fix in METHOD SetText( c )
+      * METHOD Paint  added ability to be color when the button does not load the theme,
+        set a better positioning of the text and the picture on the button,
+        the buttons added transparency and minor fix
+  * source\hcwindow.prg
+    + add new constant #define RT_MANIFEST  24
+    + add CLASSDATA WindowsManifest That stores the VALUE if WindowsXp.Manifest is loaded
+    + METHOD SetColor( tcolor, bColor, lRepaint ) moved form CLASS HCONTROL
+      Whose purpose is to give color to WINDOWs and DIALOGs 
+    ! minor fix in SETTEXTCLASS
+    + add FUNCTION ADDPROPERTY( oObjectName, cPropertyName, eNewValue )   
+    + add FUNCTION REMOVEPROPERTY( oObjectName, cPropertyName )    
+  * source\hdialog.prg
+    ! assign setcolor in NEW() and clean code for color
+  source\hedit.prg
+    + add DATA lreadOnly
+    + add METHOD ReadOnly( lreadOnly ) to changed flag READONLY in run-time
+  * source\hradio.prg
+    * changed STATICS FUNCTION __VALID and __WHEN for METHOD WHEN and VALID
+  * source\hriched.prg
+    * add METHOD WHEN and VALID to standardize 
+  * source\htimer.prg
+    * assign to value in NEW to ::value 
+    + add METHOD onAction()
+  * source\hwindow.prg
+    ! assign setcolor in NEW() and clean code for color
+  * source\resource.c
+    + add Function FINDRESOURCE to Return WindowsXp.Manifest is loaded
+  * source\theme.c
+    + add Function  PREPAREIMAGERECT to return rect BITMAP
+       to show transparent the picture in buttonex
 
 2009-07-04 11:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source\wprint.c

@@ -1,5 +1,5 @@
 /*
- * $Id: resource.c,v 1.10 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: resource.c,v 1.11 2009-07-09 02:45:51 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level resource functions
@@ -104,3 +104,23 @@ HB_INIT_SYMBOLS_END( hwg_resource_INIT )
      static HB_$INITSYM hb_vm_auto_SymbolInit_INIT = hwg_resource_INIT;
 #pragma data_seg()
 #endif
+
+HB_FUNC( FINDRESOURCE )
+{
+   HRSRC hHRSRC ;
+   int lpName = hb_parni( 2 )   ; //"WindowsXP.Manifest";
+   int lpType = hb_parni( 3 )  ; // RT_MANIFEST = 24
+
+   hModule = GetModuleHandle( ISCHAR( 1 ) ? hb_parc( 1 ) : NULL );
+   
+   if IS_INTRESOURCE( lpName )
+   {
+     hHRSRC = FindResource( ( HMODULE ) hModule,
+      ( LPCTSTR ) lpName ,
+      ( LPCTSTR ) lpType ) ;
+                   
+      HB_RETHANDLE( hHRSRC );
+   }
+   else   
+      HB_RETHANDLE( 0 );
+}

@@ -1,5 +1,5 @@
 /*
- * $Id: htimer.prg,v 1.13 2009-04-02 20:52:33 lfbasso Exp $
+ * $Id: htimer.prg,v 1.14 2009-07-09 02:45:51 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTimer class
@@ -35,6 +35,7 @@ CLASS VAR aTimers   INIT { }
 
    METHOD New( oParent, id, value, bAction )
    METHOD Init()
+   METHOD onAction()
    METHOD END()
 
 ENDCLASS
@@ -50,7 +51,7 @@ METHOD New( oParent, nId, value, bAction ) CLASS HTimer
       ENDDO
    ENDIF
    ::id      := nId
-   ::value   := value
+   ::value   := IIF( VALTYPE( value ) = "N", value, 0 )
    ::bAction := bAction
    /*
     if ::value > 0
@@ -82,13 +83,20 @@ METHOD END() CLASS HTimer
 
    RETURN Nil
 
+METHOD onAction()
+
+   TimerProc( , ::id, ::interval )
+   
+RETURN Nil
+
 
 FUNCTION TimerProc( hWnd, idTimer, Time )
    LOCAL i := AScan( HTimer():aTimers, { | o | o:id == idTimer } )
 
    HB_SYMBOL_UNUSED( hWnd )
 
-   IF i != 0 .and. HTimer():aTimers[ i ]:value > 0 .AND. HTimer():aTimers[ i ]:bAction != Nil
+   IF i != 0 .AND. HTimer():aTimers[ i ]:value > 0 .AND. HTimer():aTimers[ i ]:bAction != Nil .AND.;
+      ValType( HTimer():aTimers[ i ]:bAction ) == "B"
       Eval( HTimer():aTimers[ i ]:bAction, HTimer():aTimers[i], time )
    ENDIF
 

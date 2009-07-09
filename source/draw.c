@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.55 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: draw.c,v 1.56 2009-07-09 02:45:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -181,7 +181,7 @@ HB_FUNC( ROUNDRECT )
                hb_parni( 7 )    // height of ellipse used to draw rounded corners
           ) );
 }
-
+/*
 HB_FUNC( REDRAWWINDOW )
 {
    RedrawWindow( ( HWND ) HB_PARHANDLE( 1 ),    // handle of window
@@ -189,6 +189,29 @@ HB_FUNC( REDRAWWINDOW )
          NULL,                  // handle of update region
          ( UINT ) hb_parni( 2 ) // array of redraw flags
           );
+}
+*/
+HB_FUNC( REDRAWWINDOW )
+{
+   RECT rc;
+
+   if ( hb_pcount() > 2 )
+   {
+      int x = ( hb_pcount() >= 3 && !ISNIL(3) )? hb_parni(3):0;
+      int y = ( hb_pcount() >= 4 && !ISNIL(4) )? hb_parni(4):0;
+      int w = ( hb_pcount() >= 5 && !ISNIL(5) )? hb_parni(5):0;
+      int h = ( hb_pcount() >= 6 && !ISNIL(6) )? hb_parni(6):0;
+      rc.left  = x - 1;
+      rc.top   = y - 1;
+      rc.right = x + w + 1;
+      rc.bottom = y + h + 1 ;
+   }   
+   RedrawWindow(
+    ( HWND ) HB_PARHANDLE( 1 ),  // handle of window
+    ( hb_pcount() > 2 )? &rc:NULL,  // address of structure with update rectangle
+    NULL,                   // handle of update region
+    ( UINT )hb_parni( 2 )     // array of redraw flags
+   );
 }
 
 HB_FUNC( DRAWBUTTON )

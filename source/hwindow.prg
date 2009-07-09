@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.83 2009-06-22 15:29:46 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.84 2009-07-09 02:45:51 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -122,12 +122,14 @@ METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
    ::bCloseQuery := bCloseQuery
    ::bRefresh   := bRefresh
    ::lChild := IIF( lChild != Nil, lChild , ::lChild )
-
+   /*
    IF clr != NIL
       ::brush := HBrush():Add( clr )
       ::bColor := clr
    ENDIF
-
+   */
+   ::SetColor( , clr )
+   
    IF cAppName != Nil
       ::szAppName := cAppName
    ENDIF
@@ -673,7 +675,7 @@ STATIC FUNCTION onMove( oWnd )
    oWnd:nLeft := aControls[ 1 ]
    oWnd:nTop  := aControls[ 2 ]
    IF oWnd:type == WND_MDICHILD 
-      oWnd:aRectSave := { oWnd:nLeft - (HWindow():aWindows[ 1 ]:aOffset[ 1 ]+HWindow():aWindows[ 1 ]:aOffset[ 3 ] ),;
+      oWnd:aRectSave := { oWnd:nLeft - (HWindow():aWindows[ 1 ]:aOffset[ 1 ] + HWindow():aWindows[ 1 ]:aOffset[ 3 ] ),;
           oWnd:nTop - (HWindow():aWindows[ 1 ]:aOffset[ 2 ] + HWindow():aWindows[ 1 ]:aOffset[ 4 ] + 21 ),; // 21 - menu
           oWnd:nWidth,oWnd:nHeight} 
    ENDIF   
@@ -731,12 +733,12 @@ STATIC FUNCTION onSysCommand( oWnd, wParam )
       ENDIF
    ELSEIF wParam == SC_MAXIMIZE  .AND. oWnd:type == WND_MDICHILD .AND. oWnd:lChild
       ars := aClone( oWnd:aRectSave )
-      IF oWnd:nwidth = oWnd:oclient:nWidth 
+      IF oWnd:nWidth = oWnd:oClient:nWidth 
           // restore
          MoveWindow( oWnd:handle, oWnd:aRectSave[ 1 ], oWnd:aRectSave[ 2 ],oWnd:aRectSave[ 3 ], oWnd:aRectSave[ 4 ] )
       ELSE
           // maximized
-         MoveWindow( oWnd:handle, oWnd:oclient:nLeft, oWnd:oclient:nTop, oWnd:oclient:nWidth, oWnd:oclient:nHeight )
+         MoveWindow( oWnd:handle, oWnd:oClient:nLeft, oWnd:oClient:nTop, oWnd:oClient:nWidth, oWnd:oClient:nHeight )
       ENDIF
       oWnd:aRectSave := aClone( ars )
       RETURN 0

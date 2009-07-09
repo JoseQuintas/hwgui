@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.17 2009-03-20 08:02:23 lfbasso Exp $
+ * $Id: hriched.prg,v 1.18 2009-07-09 02:45:51 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -26,8 +26,10 @@ CLASS VAR winclass   INIT "RichEdit20A"
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
-   METHOD GotFocus( oCtrl )
-   METHOD LostFocus( oCtrl )
+   METHOD onGotFocus()
+   METHOD onLostFocus()
+   METHOD When()
+   METHOD Valid()
 
 
 ENDCLASS
@@ -50,12 +52,12 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
    IF bGfocus != Nil
       //::oParent:AddEvent( EN_SETFOCUS, Self, bGfocus,, "onGotFocus" )
       ::bGetFocus := bGfocus
-      ::oParent:AddEvent( EN_SETFOCUS, Self, { | o | ::GotFocus( o ) }, , "onGotFocus" )
+      ::oParent:AddEvent( EN_SETFOCUS, Self, { | o | ::When( o ) }, , "onGotFocus" )
    ENDIF
    IF bLfocus != Nil
       //::oParent:AddEvent( EN_KILLFOCUS, Self, bLfocus,, "onLostFocus" )
       ::bLostFocus := bLfocus
-      ::oParent:AddEvent( EN_KILLFOCUS, Self, { | o | ::LostFocus( o ) }, , "onLostFocus" )
+      ::oParent:AddEvent( EN_KILLFOCUS, Self, { | o | ::Valid( o ) }, , "onLostFocus" )
    ENDIF
 
    RETURN Self
@@ -142,7 +144,14 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
 
    RETURN - 1
 
-METHOD GotFocus( Octrl ) CLASS HRichEdit
+METHOD onGotFocus( ) CLASS HRichEdit
+  RETURN ::When()
+
+METHOD onLostFocus( ) CLASS HRichEdit
+  RETURN ::Valid()
+   
+
+METHOD When( ) CLASS HRichEdit
  
 	 IF !CheckFocus( Self, .f. )
 	    RETURN .t.
@@ -154,7 +163,7 @@ METHOD GotFocus( Octrl ) CLASS HRichEdit
  RETURN .T.
 
 
-METHOD LostFocus( oCtrl ) CLASS HRichEdit
+METHOD Valid( ) CLASS HRichEdit
 
 	 IF ::bLostFocus != Nil .AND. !CheckFocus( Self, .T. )
 	    RETURN .T.

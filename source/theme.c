@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.18 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: theme.c,v 1.19 2009-07-09 02:45:51 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -82,6 +82,7 @@
 
 #include <hbapi.h>
 #include "guilib.h"
+#include "hbapiitm.h"
 
 BOOL Themed = FALSE;
 HMODULE m_hThemeDll;
@@ -1855,6 +1856,56 @@ HB_FUNC( DRAWTHEICON )
 
 }
 
+/*
+//PrepareImageRect( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, ::hIcon, ::hbitmap, ::iStyle )
+*/
+
+HB_FUNC( PREPAREIMAGERECT )
+{
+
+   HWND hButtonWnd = (HWND) HB_PARHANDLE( 1 ) ;
+   HDC dc = (HDC) HB_PARHANDLE( 2 ) ;
+   BOOL bHasTitle = hb_parl( 3 );
+   RECT rpItem;
+   RECT rpTitle;
+   //
+   RECT  rImage;
+   DWORD cx =0 ;
+   DWORD cy =0 ;
+   //
+   BOOL bIsPressed = hb_parl( 6 );
+   HICON   hIco = (ISNUM( 7 ) ||
+         ISPOINTER( 7 ) ) ? ( HICON ) HB_PARHANDLE( 7 ) : NULL;
+   HBITMAP hBitmap = (ISNUM( 8 ) ||
+         ISPOINTER( 8 ) ) ? ( HBITMAP ) HB_PARHANDLE( 8 ) : NULL;
+   int iStyle = hb_parni( 9 );
+
+   if( ISARRAY( 4 ) )
+      Array2Rect( hb_param( 4, HB_IT_ARRAY ), &rpItem );
+   if( ISARRAY( 5 ) )
+      Array2Rect( hb_param( 5, HB_IT_ARRAY ), &rpTitle );
+
+   if ( hIco )
+      Calc_iconWidthHeight( hButtonWnd, &cx, &cy, dc, hIco );
+   if (hBitmap)
+   {   
+      Calc_bitmapWidthHeight( hButtonWnd, &cx, &cy, dc, hBitmap );
+    }
+    PrepareImageRect( hButtonWnd, bHasTitle,&rpItem, &rpTitle, bIsPressed, cx, cy, &rImage, iStyle );
+   
+    hb_storvni( rpItem.left   , 4 , 1);
+    hb_storvni( rpItem.top    , 4 , 2);
+    hb_storvni( rpItem.right  , 4 , 3);
+    hb_storvni( rpItem.bottom , 4 , 4);
+    hb_storvni( rpTitle.left   , 5 , 1);
+    hb_storvni( rpTitle.top    , 5 , 2);
+    hb_storvni( rpTitle.right  , 5 , 3);           
+    hb_storvni( rpTitle.bottom , 5 , 4);
+    
+    hb_itemRelease( hb_itemReturn( Rect2Array( &rImage ) ) ); 
+
+}
+
 HB_FUNC( HB_DRAWTHEMETEXT )
 {
    HTHEME hTheme = ( HTHEME ) hb_parptr( 1 );
@@ -1974,3 +2025,4 @@ HB_FUNC( HWG_GETTHEMESYSCOLOR )
 
    HB_RETHANDLE( hb_GetThemeSysColor( hTheme, iColor ) );
 }
+

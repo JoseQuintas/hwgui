@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.139 2009-04-15 11:47:03 lfbasso Exp $
+ *$Id: hedit.prg,v 1.140 2009-07-09 02:45:51 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -39,7 +39,8 @@ CLASS VAR winclass   INIT "EDIT"
    DATA nMaxLength     INIT Nil
    //DATA nColorinFocus  INIT vcolor( 'CCFFFF' )
    DATA lFocu          INIT .F.
-
+   DATA lReadOnly      INIT .F.
+   
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, ;
                lNoBorder, nMaxLength, lPassword, bKeyDown, bChange, bOther )
@@ -71,7 +72,8 @@ CLASS VAR winclass   INIT "EDIT"
    METHOD FirstNotEditable( nPos ) PROTECTED
    METHOD LastEditable() PROTECTED
    METHOD SetGetUpdated() PROTECTED
-
+   METHOD ReadOnly( lreadOnly ) SETGET 
+   
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -849,6 +851,15 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
    ::lFirst := .F.
 
    RETURN 0
+
+METHOD ReadOnly( lreadOnly )
+
+   IF lreadOnly != Nil
+      IF ! EMPTY( SENDMESSAGE( ::handle,  EM_SETREADONLY, IIF( lReadOnly, 1, 0 ), 0 ) )
+          ::lReadOnly := lReadOnly
+      ENDIF    
+   ENDIF   
+   RETURN ::lReadOnly
 
 METHOD When() CLASS HEdit
    LOCAL res := .t., oParent, nSkip

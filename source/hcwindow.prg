@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.44 2009-05-15 05:59:48 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.45 2009-07-09 02:45:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -15,6 +15,7 @@
 
 #define EVENTS_MESSAGES 1
 #define EVENTS_ACTIONS  2
+#define RT_MANIFEST  24
 
 STATIC aCustomEvents := { ;
        { WM_NOTIFY, WM_PAINT, WM_CTLCOLORSTATIC, WM_CTLCOLOREDIT, WM_CTLCOLORBTN, WM_CTLCOLORLISTBOX, ;
@@ -44,6 +45,8 @@ CLASS HCustomWindow INHERIT HObject
 
 CLASS VAR oDefaultParent SHARED
 
+   CLASSDATA WindowsManifest INIT !EMPTY( FindResource( , 1 , RT_MANIFEST ) ) PROTECTED
+   
    DATA handle        INIT 0
    DATA oParent
    DATA title
@@ -93,6 +96,7 @@ CLASS VAR oDefaultParent SHARED
    METHOD Move( x1, y1, width, height )
    METHOD onEvent( msg, wParam, lParam )
    METHOD END()
+   METHOD SetColor( tcolor, bColor, lRepaint )
    METHOD RefreshCtrl( oCtrl )
    METHOD SetFocusCtrl( oCtrl )
    METHOD Refresh()
@@ -299,15 +303,37 @@ METHOD Refresh( oCtrl ) CLASS HCustomWindow
 
 METHOD SetTextClass( x ) CLASS HCustomWindow
 
-   IF __ObjHasMsg( Self, "SETVALUE" )   
-      ::SetValue( x )
-   ELSEIF __ObjHasMsg( Self, "SETTEXT" ) .AND. ::classname != "HBUTTONEX"
-      ::SetText( x )
-   ELSE
-      ::title := x
-      SENDMESSAGE( ::handle, WM_SETTEXT, 0, ::Title )
-   ENDIF    
-RETURN NIL	 
+   IF __ObjHasMsg( Self, "SETTEXT" ) //.AND. ::classname != "HBUTTONEX"
+	    ::SetText( x )
+	 ELSEIF __ObjHasMsg( Self, "SETVALUE" )   
+	    ::SetValue( x )
+	 ELSE
+	    ::title := x
+	    SENDMESSAGE( ::handle, WM_SETTEXT, 0, ::Title )
+	 ENDIF    
+   RETURN NIL	 
+
+METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HCustomWindow
+
+   IF tcolor != NIL
+      ::tcolor := tcolor
+      IF bColor == NIL .AND. ::bColor == NIL
+         bColor := GetSysColor( COLOR_3DFACE )
+      ENDIF
+   ENDIF
+
+   IF bColor != NIL
+      ::bColor := bColor
+      IF ::brush != NIL
+         ::brush:Release()
+      ENDIF
+      ::brush := HBrush():Add( bColor )
+   ENDIF
+
+   IF lRepaint != NIL .AND. lRepaint
+      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+   ENDIF
+   RETURN Nil
 
 METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
    LOCAL nlen , i, x1, y1
@@ -590,3 +616,32 @@ FUNCTION ProcOkCancel( oCtrl, nKey )
       RETURN .T.
    ENDIF
    RETURN .F.
+
+FUNCTION ADDPROPERTY( oObjectName, cPropertyName, eNewValue )    
+
+   IF VALTYPE( oObjectName ) = "O" .AND. ! EMPTY( cPropertyName )
+      IF ! __objHasData( oObjectName, cPropertyName )
+         IF EMPTY( __objAddData( oObjectName, cPropertyName ) )
+	           RETURN .F. 
+         ENDIF    
+      ENDIF   
+      IF !EMPTY( eNewValue )
+         IF VALTYPE( eNewValue ) = "B"
+            oObjectName: & ( cPropertyName ) := EVAL( eNewValue )
+         ELSE
+            oObjectName: & ( cPropertyName ) := eNewValue
+         ENDIF
+      ENDIF    
+      RETURN .T.
+   ENDIF	    
+   RETURN .F.
+   
+FUNCTION REMOVEPROPERTY( oObjectName, cPropertyName )
+
+   IF VALTYPE( oObjectName ) = "O" .AND. ! EMPTY( cPropertyName ) .AND.;
+       __objHasData( oObjectName, cPropertyName )
+       RETURN EMPTY( __objDelData( oObjectName, cPropertyName ) )
+   ENDIF
+   RETURN .F.
+
+

@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.35 2009-07-09 02:45:50 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.36 2009-07-09 12:58:57 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -63,7 +63,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    ::Activate()
    
-   ::setcolor( bColor, tColor)
+   ::setcolor( tColor, bColor)
    
    ::lEnter     := IIf( lEnter == Nil .OR. ValType( lEnter ) != "L", .F., lEnter )
    ::bLostFocus := bClick

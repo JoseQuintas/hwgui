@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.42 2009-03-20 08:02:23 lfbasso Exp $
+ *$Id: htab.prg,v 1.43 2009-07-29 15:41:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -203,6 +203,9 @@ METHOD Init() CLASS HTab
             ::HidePage( i )
             ::Pages[ i ]:aItemPos := TabItemPos( ::Handle, i - 1 )
          NEXT
+      ELSE
+         Asize( ::aPages, SendMessage( ::handle, TCM_GETITEMCOUNT, 0, 0 ) )
+         AEval( ::aPages, { | a, i | ::AddPage( HPage():New( "" ,i,.t.,), "" )})
       ENDIF
       Hwg_InitTabProc( ::handle )
    ENDIF
@@ -409,6 +412,10 @@ METHOD DeletePage( nPage ) CLASS HTab
 METHOD Notify( lParam ) CLASS HTab
    LOCAL nCode := GetNotifyCode( lParam )
    LOCAL nPage := SendMessage( ::handle, TCM_GETCURSEL, 0, 0 ) + 1
+
+   IF nPage = 0
+      Return 0
+   ENDIF
 
    DO CASE
 

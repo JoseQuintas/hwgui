@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.130 2009-07-09 02:45:50 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.131 2009-07-29 15:41:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -216,8 +216,12 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    w1 := ::nWidth
    h1 := ::nHeight
   *- calculo relativo
-   nXincRelative :=  w / x
-   nYincRelative :=  h / y
+   IF x > 0 
+      nXincRelative :=  w / x
+   ENDIF
+   IF y > 0    
+      nYincRelative :=  h / y
+   ENDIF   
     *- calculo ABSOLUTE
    nXincAbsolute := ( w - x )
    nYincAbsolute := ( h - y )
@@ -518,7 +522,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::Activate()
 
    ::bClick := bClick
-   ::oParent:AddEvent( STN_CLICKED, Self, { || ::onClick() } )
+   IF ::id > 2 .OR. bClick != NIL
+      ::oParent:AddEvent( STN_CLICKED, Self, { || ::onClick() } )
+   ENDIF   
    ::bDblClick := bDblClick
    ::oParent:AddEvent( STN_DBLCLK, Self, { || ::onDblClick() } )
 
@@ -543,7 +549,9 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    //ENDIF
    ::bOther := bOther
    ::bClick := bClick
-   ::oParent:AddEvent( STN_CLICKED, Self, { || ::onClick() } )
+   IF ::id > 2 .OR. bClick != NIL
+      ::oParent:AddEvent( STN_CLICKED, Self, { || ::onClick() } )
+   ENDIF   
    ::bDblClick := bDblClick
    ::oParent:AddEvent( STN_DBLCLK, Self, { || ::onDblClick() } )
 
@@ -746,9 +754,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       ENDIF
    ENDIF
    */
-   //IF bClick != NIL
+   IF ::id > 2 .OR. bClick != NIL
       ::oParent:AddEvent( 0, Self, { || ::onClick() } )
-   //ENDIF
+   ENDIF
    RETURN Self
 
 METHOD Activate CLASS HButton
@@ -1080,9 +1088,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
          IF ValType( ::hTheme ) == "P"
             HB_CLOSETHEMEDATA( ::htheme )
             ::hTheme       := nil
-            ::m_bFirstTime := .T.
+            //::m_bFirstTime := .T.
          ENDIF
+         ::Themed := .F.
       ENDIF
+      ::m_bFirstTime := .T.
+      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
       RETURN 0
    ELSEIF msg == WM_ERASEBKGND
       RETURN 0
@@ -1122,8 +1133,7 @@ ELSEIF msg == WM_KEYDOWN
       ENDIF
       IF ( ( wParam == VK_SPACE ) .or. ( wParam == VK_RETURN ) )
          IF ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE )
-            PostMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
-            PostMessage( ::handle, WM_LBUTTONUP, 0, MAKELPARAM( 1, 1 ) )
+            SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
 				 ELSE
             SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
          ENDIF   

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.90 2009-07-09 02:45:51 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.91 2009-07-29 15:41:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -83,7 +83,7 @@ CLASS VAR aModalDialogs  SHARED INIT { }
    METHOD Maximize() INLINE SendMessage( ::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0 )
    METHOD Minimize() INLINE SendMessage( ::handle,  WM_SYSCOMMAND, SC_MINIMIZE, 0 )
    METHOD Close()    INLINE EndDialog( ::handle )
-   //METHOD Release()  INLINE Iif( ::lModal, Hwg_EndDialog( ::handle ), DestroyWindow( ::handle ) )
+   METHOD Release()  INLINE ::Close( ), Self := Nil
 
 ENDCLASS
 
@@ -413,6 +413,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
                oCtrl:setfocus()
                IF __ObjHasMsg( oCtrl, "BVALID" )
                   Eval( oCtrl:bValid, oCtrl )
+                  oCtrl:Refresh()
                ELSE
                   Eval( oCtrl:bLostFocus, oCtrl )
                ENDIF

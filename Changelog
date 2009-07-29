@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1110 2009-07-09 02:45:49 lfbasso Exp $
+ * $Id: Changelog,v 1.1111 2009-07-29 15:41:42 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,49 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-07-29 11:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    @ <x>,<y> TOOLBAR [ <oTool> ] added CLAUSE   [ FONT <oFont> ]           ;   
+    STYLE now can be TBSTYLE_FLAT text down picture or TBSTYLE_LIST text right picture
+  * source\control.c
+    * CREATETOOLBAR
+    remove TBSTYLE_FLAT , add ulStyle
+  * source\drawwidg.prg
+    * in CLASS HBITMAP method ADDFILE and ADDRESOURCE
+      add condition IF i:name == name .AND. ( nWidth == nil .OR. nHeight == nil )
+      because load same BMP with diferents size
+  * source\hcontrol.prg
+    CLASS HBUTTONEX
+    ! fixed message WM_THEMECHANGED and triged ONCLICK with KEYDOWN VK_RETURN and VK_SPACE
+  * source\hcwindow.prg
+    * CLASS HOBJECT 
+      + METHOD DelObject( oCtrl )
+      + METHOD Release()
+    ! changed CLASSDATA to CLASS VAR SHARED in WindowsManifest because in HARBOUR CLASSDATA not work
+    * FUNCTION ONSIZE add new condition to anchor
+    * source\hdialog.prg
+      + METHOD Release()
+    * source\hpanel.prg
+      ! minor fix in METHOD Show() and + METHOD Hide()
+    * source\htab.prg
+      ! fixed error when tabs are built in the designer and does not contain objects 
+    * source\htool.prg
+      * CLASS HToolButton 
+        + METHOD Enabled( l ) SETGET
+        + METHOD Checked( l ) SETGET
+        + METHOD Pressed( l ) SETGET
+        + METHOD onClick()
+      * METHOD CREATETOOL CLASS hToolBar add FONT
+    * source\hwindow.prg
+      * CLASS HWindow 
+        + add CLASS VAR Screen SHARED whose purpose is to create conditions for adding
+         colors, pictures and objects in the MAIN MDI window
+        + METHOD Release()
+      * CLASS HMainWindow
+        * METHOD Activate create window SCREEN that is the background in MDI
+    * include\windows.ch  
+       * fixed CONSTANT  #define WM_THEMECHANGED     0x031A 
 
 2009-07-08 22:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch

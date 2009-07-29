@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.76 2009-03-27 16:26:44 lfbasso Exp $
+ *$Id: windows.ch,v 1.77 2009-07-29 15:41:48 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -1309,7 +1309,7 @@
 #define ST_ALIGN_HORIZ_RIGHT 2           // Icon/bitmap on the right, text on the left
 #define ST_ALIGN_OVERLAP     3           // Icon/bitmap on the same space as text
 
-#define WM_THEMECHANGED     0x031
+#define WM_THEMECHANGED     0x031A 
 
 #define TPM_LEFTALIGN       0x0000
 #define TPM_CENTERALIGN     0x0004

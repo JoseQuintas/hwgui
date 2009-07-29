@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.31 2009-06-26 05:10:59 lfbasso Exp $
+ * $Id: htool.prg,v 1.32 2009-07-29 15:41:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -19,6 +19,7 @@
 #define TB_SETBITMAPSIZE        (WM_USER + 32)
 #define TB_SETINDENT            (WM_USER + 47)
 #define TB_SETBUTTONWIDTH       (WM_USER + 59)
+#define TBSTYLE_EX_MIXEDBUTTONS     0x00000008
 
 CLASS HToolButton INHERIT HObject
 
@@ -32,8 +33,9 @@ CLASS HToolButton INHERIT HObject
    DATA hMenu
    DATA Caption 
    DATA lEnabled  INIT .T. HIDDEN
-   ACCESS Enabled  INLINE ::lEnabled  
-   ASSIGN Enabled( l ) INLINE ::lEnabled := l,IIF( l, ::enable(),::disable())
+   DATA lChecked  INIT .F. HIDDEN
+   DATA lPressed  INIT .F. HIDDEN
+   DATA bClick
    DATA oParent
    //DATA oFont   // not implemented
    
@@ -42,6 +44,10 @@ CLASS HToolButton INHERIT HObject
    METHOD Disable() INLINE ::oParent:EnableButton( ::id, .F. )
    METHOD Show() INLINE SENDMESSAGE( ::oParent:handle, TB_HIDEBUTTON, INT( ::id ), MAKELONG( 0, 0 ) )
    METHOD Hide() INLINE SENDMESSAGE( ::oParent:handle, TB_HIDEBUTTON, INT( ::id ), MAKELONG( 1, 0 ) )         
+   METHOD Enabled( l ) SETGET
+   METHOD Checked( l ) SETGET
+   METHOD Pressed( l ) SETGET
+   METHOD onClick()
 																										  
 ENDCLASS
 
@@ -54,13 +60,56 @@ METHOD New(oParent,cName,nBitIp,nId,bState,bStyle,cText,bClick,ctip,aMenu) CLASS
    ::bState := bState
    ::bStyle := bStyle
    ::tooltip := ctip
+   ::bClick  := bClick
    ::aMenu := amenu
 	 ::oParent := oParent
 	  __objAddData(::oParent, cName)
 	 ::oParent:&(cName) := Self
+	 
+	 ::oParent:oParent:AddEvent( BN_CLICKED, Self, {|| ::ONCLICK()} )
    
 RETURN Self
 
+METHOD onClick()  CLASS HToolButton
+  IF ::bClick != Nil
+	    ::oParent:lSuspendMsgsHandling := .T.
+      Eval( ::bClick, self, ::id )
+  	  ::oParent:lSuspendMsgsHandling := .F.
+   ENDIF   
+RETURN Nil
+
+ METHOD Enabled( lEnabled ) CLASS HToolButton
+  IF lEnabled != Nil
+     IF lEnabled
+        ::enable()
+     ELSE   
+        ::disable()
+     ENDIF   
+     ::lEnabled := lEnabled
+  ENDIF
+  RETURN ::lEnabled
+
+METHOD Pressed( lPressed ) CLASS HToolButton
+LOCAL nState   
+
+   IF lPressed != Nil
+      nState := SENDMESSAGE( ::oParent:handle, TB_GETSTATE, INT( ::id ), 0 )
+      SENDMESSAGE( ::oParent:handle, TB_SETSTATE, INT( ::id ),;
+        MAKELONG( IIF( lPressed, HWG_BITOR( nState, TBSTATE_PRESSED ), nState - HWG_BITAND( nState, TBSTATE_PRESSED ) ), 0 ) )            
+      ::lPressed := lPressed
+   ENDIF
+   RETURN ::lPressed
+
+METHOD Checked( lcheck ) CLASS HToolButton
+LOCAL nState   
+
+   IF lCheck != Nil
+      nState := SENDMESSAGE( ::oParent:handle, TB_GETSTATE, INT( ::id ), 0 )
+      SENDMESSAGE( ::oParent:handle, TB_SETSTATE, INT( ::id ),;
+        MAKELONG( IIF( lCheck, HWG_BITOR( nState, TBSTATE_CHECKED ), nState - HWG_BITAND( nState, TBSTATE_CHECKED ) ), 0 ) )            
+      ::lChecked := lCheck  
+   ENDIF
+   RETURN ::lChecked
    
 
 CLASS HToolBar INHERIT HControl
@@ -111,9 +160,13 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,btnWidth,oFont,bInit
    HB_SYMBOL_UNUSED( lTransp )
 
    DEFAULT  aitem TO { }
+   
+   nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), TBSTYLE_FLAT )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor )
+              
    HWG_InitCommonControlsEx()
+   
    ::lTransp := IIF( lTransp != NIL, lTransp, .F. )
    ::BtnWidth :=  BtnWidth //!= Nil, BtnWidth, 32 )
    ::lVertical := IIF( lVertical != NIL .AND. TYPE( "lVertical" ) = "L", lVertical, ::lVertical )
@@ -127,6 +180,19 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,btnWidth,oFont,bInit
    ELSE
        ::Line := HLine():New(oWndParent,,::lVertical,nLeft + nWidth + 1 ,nTop,nHeight)      
    ENDIF   
+
+   IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI.AND.;
+        ::oParent:aOffset[ 2 ] + ::oParent:aOffset[ 3 ] = 0
+      IF ::nWidth > ::nHeight .OR. ::nWidth == 0
+         ::oParent:aOffset[ 2 ] := ::nHeight
+      ELSEIF ::nHeight > ::nWidth .OR. ::nHeight == 0
+         IF ::nLeft == 0
+            ::oParent:aOffset[ 1 ] := ::nWidth
+         ELSE
+            ::oParent:aOffset[ 3 ] := ::nWidth
+         ENDIF
+      ENDIF
+   ENDIF
 
    ::Activate()
    
@@ -190,6 +256,9 @@ Local hImage, img, nlistimg, ndrop := 0
 		 IF !::lCreate 
 			   DESTROYWINDOW( ::Handle )    
 			   ::activate()
+ 			   IF !EMPTY( ::oFont )
+			      ::SetFont( ::oFont )
+			   ENDIF
 	   ENDIF
      IF ::lVertical
         nStyle := SendMessage( ::handle, TB_GETSTYLE, 0, 0 ) + CCS_VERT
@@ -205,7 +274,7 @@ Local hImage, img, nlistimg, ndrop := 0
 
          IF ValType( ::aItem[ n, 7 ] ) == "B"
 
-            ::oParent:AddEvent( BN_CLICKED, ::aItem[ n, 2 ], ::aItem[ n , 7 ] )
+            //::oParent:AddEvent( BN_CLICKED, ::aItem[ n, 2 ], ::aItem[ n , 7 ] )
 
          ENDIF
 
@@ -216,6 +285,7 @@ Local hImage, img, nlistimg, ndrop := 0
             aTemp := ::aItem[ n, 9 ]
 
             FOR n1 := 1 TO Len( aTemp )
+               aTemp[ n1, 1 ] := IIF( aTemp[ n1, 1 ] = "-", NIL, aTemp[ n1, 1 ] )
                hwg__AddMenuItem( ::aItem[ n, 10 ], aTemp[ n1, 1 ], - 1, .F., aTemp[ n1, 2 ], , .F. )
                ::oParent:AddEvent( BN_CLICKED, aTemp[ n1, 2 ], aTemp[ n1, 3 ] )
             NEXT

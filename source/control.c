@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.82 2009-07-09 02:45:50 lfbasso Exp $
+ * $Id: control.c,v 1.83 2009-07-29 15:41:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1520,7 +1520,7 @@ HB_FUNC( CREATETOOLBAR )
    HWND hWndCtrl = CreateWindowEx( ulExStyle,   /* extended style */
          TOOLBARCLASSNAME,      /* predefined class  */
          NULL,                  /* title   -   TBSTYLE_TRANSPARENT | */
-         TBSTYLE_ALTDRAG | TBSTYLE_FLAT | TBSTYLE_TOOLTIPS | TBSTYLE_WRAPABLE | CCS_TOP | CCS_NORESIZE | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, /* style  */
+         TBSTYLE_ALTDRAG | TBSTYLE_TOOLTIPS |  TBSTYLE_WRAPABLE | CCS_TOP | CCS_NORESIZE |  WS_CHILD | WS_OVERLAPPED | WS_VISIBLE | ulStyle, /* style  */
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */

@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.25 2009-06-25 21:08:26 lfbasso Exp $
+ * $Id: hpanel.prg,v 1.26 2009-07-29 15:41:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -205,9 +205,11 @@ LOCAL i
       InvalidateRect( ::oParent:handle, 0, ::nLeft, ::nTop, ::nWidth, ::nHeight )
    ENDIF
    ::nSize := ::nWidth
+   /*
    FOR i := 1 TO Len( ::acontrols )
       ::acontrols[ i ]:hide()
    NEXT
+   */
    super:hide()
    SendMessage( ::oParent:Handle, WM_SIZE, 0, 0 )
 RETURN Nil
@@ -233,8 +235,10 @@ LOCAL i
    ::nWidth := ::nsize
    SendMessage( ::oParent:Handle, WM_SIZE, 0, 0 )
    super:Show()
+   /*
    FOR i := 1 TO Len( ::acontrols )
       ::acontrols[ i ]:Show()
    NEXT
+   */
    MoveWindow( ::Handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
 RETURN Nil

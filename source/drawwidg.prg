@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.24 2009-07-09 02:45:50 lfbasso Exp $
+ * $Id: drawwidg.prg,v 1.25 2009-07-29 15:41:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -333,14 +333,14 @@ METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
    ENDIF
    #ifdef __XHARBOUR__
       FOR EACH i  IN  ::aBitmaps
-         IF i:name == name
+         IF i:name == name .AND. ( nWidth == nil .OR. nHeight == nil )
             i:nCounter ++
             RETURN i
          ENDIF
       NEXT
    #else
       FOR i := 1 TO Len( ::aBitmaps )
-         IF ::aBitmaps[ i ]:name == name
+         IF ::aBitmaps[ i ]:name == name .AND. ( nWidth == nil .OR. nHeight == nil )
             ::aBitmaps[ i ]:nCounter ++
             RETURN ::aBitmaps[ i ]
          ENDIF
@@ -392,14 +392,14 @@ METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
 
    #ifdef __XHARBOUR__
       FOR EACH i IN ::aBitmaps
-         IF i:name == name
+         IF i:name == name .AND. ( nWidth == nil .OR. nHeight == nil )
             i:nCounter ++
             RETURN i
          ENDIF
       NEXT
    #else
       FOR i := 1 TO Len( ::aBitmaps )
-         IF ::aBitmaps[ i ]:name == name
+         IF ::aBitmaps[ i ]:name == name .AND. ( nWidth == nil .OR. nHeight == nil )
             ::aBitmaps[ i ]:nCounter ++
             RETURN ::aBitmaps[ i ]
          ENDIF

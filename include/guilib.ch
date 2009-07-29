@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.149 2009-07-09 02:45:50 lfbasso Exp $
+ *$Id: guilib.ch,v 1.150 2009-07-29 15:41:48 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -1626,7 +1626,8 @@ Added by Marcos Antonio Gambeta
             [ SIZE <width>, <height> ]  ;
             [ BUTTONWIDTH <btnwidth> ]  ;
             [ INDENT <nIndent>       ]  ;
-						[ BITMAPSIZE <nSize>     ]  ;   
+						[ BITMAPSIZE <nSize>     ]  ;
+            [ FONT <oFont> ]           ;   
             [ ON INIT <bInit> ]         ;
             [<lTransp: TRANSPARENT>]    ;
             [<lVertical: VERTICAL>]     ;
@@ -1634,8 +1635,8 @@ Added by Marcos Antonio Gambeta
             [ LOADSTANDARDIMAGE <nIDB>] ;
             [ ITEMS <aItems> ]          ;
           => ;
-    [<oTool> := ]  Htoolbar():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,<btnwidth>,<bInit>,;
-            		     ,,,,,,<.lTransp.>,<.lVertical.>,<aItems>,<nSize>,<nIndent>,<nIDB>) ;;
+    [<oTool> := ]  Htoolbar():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,<btnwidth>,<oFont>,;
+              <bInit>,,,,,,<.lTransp.>,<.lVertical.>,<aItems>,<nSize>,<nIndent>,<nIDB>) ;;
     [ <oTool>:name := <(oTool)> ] 
 
 #xcommand REDEFINE TOOLBAR  <oSay>     ;

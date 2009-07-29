@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.84 2009-07-09 02:45:51 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.85 2009-07-29 15:41:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -39,6 +39,12 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       aCoors := GetClientRect(HWindow():aWindows[ 2 ]:handle)
       HWindow():aWindows[ 2 ]:nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
       HWindow():aWindows[ 2 ]:nHeight := aCoors[ 4 ] - aCoors[ 2 ]             
+      // ADDED
+      IF !Empty( oWnd:Screen )
+          oWnd:Screen:nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
+          oWnd:Screen:nHeight := aCoors[ 4 ] - aCoors[ 2 ]             
+      ENDIF    
+      //
       RETURN 0
    ENDIF
 
@@ -58,6 +64,8 @@ CLASS HWindow INHERIT HCustomWindow
 
 CLASS VAR aWindows   SHARED INIT { }
 CLASS VAR szAppName  SHARED INIT "HwGUI_App"
+
+   CLASS VAR Screen SHARED
 
    DATA menu, oPopup, hAccel
    DATA oIcon, oBmp
@@ -92,6 +100,8 @@ CLASS VAR szAppName  SHARED INIT "HwGUI_App"
    METHOD Maximize() INLINE SendMessage( ::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0 )
    METHOD Minimize() INLINE SendMessage( ::handle,  WM_SYSCOMMAND, SC_MINIMIZE, 0 )
    METHOD Close()   INLINE SendMessage( ::handle, WM_SYSCOMMAND, SC_CLOSE, 0 )
+   METHOD Release()  INLINE ::Close( ), super:Release(), Self := Nil
+   
 ENDCLASS
 
 METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
@@ -254,19 +264,12 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
 
 METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMainWindow
    LOCAL oWndClient, handle, lres
+   
    DEFAULT lMaximized := .F.
    DEFAULT lMinimized := .F.
    lCentered  := ( ! EMPTY( lCentered ) .AND. lCentered ) .OR. Hwg_BitAND( ::Style, DS_CENTER ) != 0
    DEFAULT lShow := .T.
    CreateGetList( Self )
-
-   IF ::bInit != Nil
-      lres := Eval( ::bInit, Self )
-      IF ValType( lres ) = "L" .AND. ! lres
-         SENDMESSAGE( ::handle, WM_DESTROY, 0, 0 )
-         RETURN Nil
-      ENDIF
-   ENDIF
 
    IF ::Type == WND_MDI
 
@@ -275,7 +278,22 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMa
       //handle := Hwg_InitClientWindow( oWndClient, ::nMenuPos, ::nLeft, ::nTop + 60, ::nWidth, ::nHeight )                                   
       handle := Hwg_InitClientWindow( oWndClient, ::nMenuPos, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       oWndClient:handle = handle
-      
+      // ADDED
+      ::Screen := HMdiChildWindow():New(, ::tcolor, WS_CHILD + WS_MAXIMIZE + WS_DISABLED,;
+       			0,0, ::nWidth * 2, ::nheight * 2,,,,,,,,,,,,::oBmp,,,,,)
+      ::Screen:Activate( .T., .T. )
+      EnableWindow( ::Screen:Handle, .T. )       			      
+      SetWindowPos( ::Screen:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE )
+      ::Screen:Restore()
+      // END      
+
+      IF ::bInit != Nil
+         lres := Eval( ::bInit, Self )
+         IF ValType( lres ) = "L" .AND. ! lres
+            SENDMESSAGE( ::handle, WM_DESTROY, 0, 0 )
+            RETURN Nil
+         ENDIF
+      ENDIF
       IF lMaximized
          ::maximize()
       ELSEIF lMinimized
@@ -292,7 +310,14 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMa
       Hwg_ActivateMdiWindow( ( lShow == Nil .OR. lShow ), ::hAccel, lMaximized, lMinimized )
 
    ELSEIF ::Type == WND_MAIN
-
+   
+      IF ::bInit != Nil
+         lres := Eval( ::bInit, Self )
+         IF ValType( lres ) = "L" .AND. ! lres
+            SENDMESSAGE( ::handle, WM_DESTROY, 0, 0 )
+            RETURN Nil
+         ENDIF
+      ENDIF
       IF lMaximized
          ::maximize()
       ELSEIF lMinimized
@@ -664,7 +689,14 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
            wParam != SC_RESTORE .AND. oWnd:Type = WND_MDI .AND. oWnd:bMdiMenu != Nil    
       // menu MDICHILD
       Eval( oWnd:bMdiMenu, oWnd, wParam )
-      
+      // ADDED
+      IF ! Empty( oWnd:Screen ) 
+			   IF wParam = 501  // first menu
+            SetWindowPos( ownd:Screen:HANDLE, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE ) // +SWP_SHOW)
+         ENDIF
+			   RETURN -1
+			ENDIF       
+      // end added
    ENDIF
 
    RETURN 0
@@ -855,10 +887,19 @@ STATIC FUNCTION onMdiNcActivate( oWnd, wParam )
    RETURN - 1
 
 Static Function onMdiActivate( oWnd,wParam, lParam ) 
-   
+   /*
    IF EMPTY( lParam ) // MDI CLIENTE
       RETURN 0
    ENDIF
+   */
+   // added
+   IF  oWnd:Screen != nil .AND. ( Empty( lParam ) .OR. ;
+      lParam = oWnd:Screen:Handle ) .AND. wParam != oWnd:Handle
+      SetWindowPos( oWnd:Screen:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE )
+      RETURN 0                                   
+   ENDIF
+   // 
+
    // MDI CHILD  - WPARAM HANDLE
    IF oWnd:Handle = wParam //.AND. MODAL
       IF wParam == 0 .AND. oWnd:bLostFocus != Nil

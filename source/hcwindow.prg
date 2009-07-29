@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.45 2009-07-09 02:45:50 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.46 2009-07-29 15:41:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -38,14 +38,27 @@ CLASS HObject
 
    DATA aObjects     INIT { }
    METHOD AddObject( oCtrl ) INLINE AAdd( ::aObjects, oCtrl )
+   METHOD DelObject( oCtrl )
+   METHOD Release(   INLINE ::DelObject( Self )
 
 ENDCLASS
+
+METHOD DelObject( oCtrl ) CLASS HObject
+LOCAL h := oCtrl:handle, id := oCtrl:id
+LOCAL i := Ascan( ::aObjects, {|o| o:handle == h } )
+
+   SendMessage( h, WM_CLOSE, 0, 0 )
+   IF i != 0
+      Adel( ::aObjects, i )
+      Asize( ::aObjects, Len( ::aObjects ) - 1 )
+   ENDIF
+   RETURN NIL
+
 
 CLASS HCustomWindow INHERIT HObject
 
 CLASS VAR oDefaultParent SHARED
-
-   CLASSDATA WindowsManifest INIT !EMPTY( FindResource( , 1 , RT_MANIFEST ) ) PROTECTED
+CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) PROTECTED SHARED
    
    DATA handle        INIT 0
    DATA oParent
@@ -510,6 +523,9 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
    aCoors := GetWindowRect( oWnd:handle )
    oWnd:nWidth := aCoors[ 3 ] - aCoors[ 1 ]
    oWnd:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
+   IF !EMPTY( oWnd:type) .AND. oWnd:Type = WND_MDI  .AND. !EMPTY( oWnd:Screen )
+     oWnd:Anchor( oWnd:Screen, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
+   ENDIF
    oWnd:Anchor( oWnd, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
 
    #ifdef __XHARBOUR__

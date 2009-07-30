@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1111 2009-07-29 15:41:42 lfbasso Exp $
+ * $Id: Changelog,v 1.1112 2009-07-30 12:51:50 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-07-30 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\windows.ch
+    + CONSTANTS TB_GETSTATE, TB_SETBITMAPSIZE, TB_SETINDENT , TB_SETBUTTONWIDTH   
+  * source\htool.prg
+    - moved constans to windows.ch
 
 2009-07-29 11:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch

@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.77 2009-07-29 15:41:48 lfbasso Exp $
+ *$Id: windows.ch,v 1.78 2009-07-30 12:51:50 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -1034,6 +1034,7 @@
 #define TBSTYLE_CHECK           0x0002
 #define TBSTYLE_GROUP           0x0004
 #define TBSTYLE_CHECKGROUP      0x0006
+#define TBSTYLE_EX_MIXEDBUTTONS 0x00000008
 
 #define BTNS_BUTTON     TBSTYLE_BUTTON      // 0x0000
 #define BTNS_SEP        TBSTYLE_SEP         // 0x0001
@@ -1047,6 +1048,10 @@
 #define TB_SETSTATE             (WM_USER + 17)
 #define TB_SETSTYLE             (WM_USER + 56)
 #define TB_GETSTYLE             (WM_USER + 57)
+#define TB_GETSTATE             (WM_USER + 18)
+#define TB_SETBITMAPSIZE        (WM_USER + 32)
+#define TB_SETINDENT            (WM_USER + 47)
+#define TB_SETBUTTONWIDTH       (WM_USER + 59)
 
 #define TTN_FIRST -520
 #define TTN_LAST  -549

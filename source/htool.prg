@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.32 2009-07-29 15:41:49 lfbasso Exp $
+ * $Id: htool.prg,v 1.33 2009-07-30 12:51:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -16,10 +16,6 @@
 #define TRANSPARENT 1
 #DEFINE IDTOOLBAR 700
 #DEFINE IDMAXBUTTONTOOLBAR 64
-#define TB_SETBITMAPSIZE        (WM_USER + 32)
-#define TB_SETINDENT            (WM_USER + 47)
-#define TB_SETBUTTONWIDTH       (WM_USER + 59)
-#define TBSTYLE_EX_MIXEDBUTTONS     0x00000008
 
 CLASS HToolButton INHERIT HObject
 

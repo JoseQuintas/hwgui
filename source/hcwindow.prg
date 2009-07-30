@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.46 2009-07-29 15:41:49 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.47 2009-07-30 12:36:35 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -39,7 +39,7 @@ CLASS HObject
    DATA aObjects     INIT { }
    METHOD AddObject( oCtrl ) INLINE AAdd( ::aObjects, oCtrl )
    METHOD DelObject( oCtrl )
-   METHOD Release(   INLINE ::DelObject( Self )
+   METHOD Release( )   INLINE ::DelObject( Self )
 
 ENDCLASS
 

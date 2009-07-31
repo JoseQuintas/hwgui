@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.131 2009-07-29 15:41:49 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.132 2009-07-31 00:31:56 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -831,7 +831,7 @@ METHOD onevent( msg, wParam, lParam ) CLASS HButton
          SendMessage( ::handle, WM_LBUTTONUP, 0, MAKELPARAM( 1, 1 ) )
          RETURN 0
       ENDIF
-	 ELSEIF  msg = WM_GETDLGCODE .AND. lParam != 0
+	 ELSEIF  msg = WM_GETDLGCODE .AND. ! EMPTY( lParam )
       IF wParam = VK_RETURN .OR. wParam = VK_TAB
       ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND.wParam != VK_ESCAPE    
       ELSEIF GETDLGMESSAGE( lParam ) = WM_CHAR .OR.wParam = VK_ESCAPE 

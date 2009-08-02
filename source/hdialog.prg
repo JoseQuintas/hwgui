@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.93 2009-08-02 20:14:50 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.94 2009-08-02 20:30:43 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -309,7 +309,8 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
          nReturn := 1
       ENDIF
    ENDIF
-   oDlg:nInitFocus := INT( IIF( VALTYPE( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )   
+   oDlg:nInitFocus := IIF( VALTYPE( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )   
+   oDlg:nInitFocus := IIF( VALTYPE( oDlg:nInitFocus ) != "N", 0, oDlg:nInitFocus )   
    IF  nFocu ==  oDlg:nInitFocus 
       oDlg:nInitFocus := 0
    ENDIF

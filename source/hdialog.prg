@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.92 2009-08-02 17:45:04 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.93 2009-08-02 20:14:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -265,7 +265,7 @@ METHOD GetActive() CLASS HDialog
 // ------------------------------------
 
 STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
-   LOCAL nReturn := 1,  nFocu := 0
+   LOCAL nReturn := 1, iFocu, nFocu := 0
 
    HB_SYMBOL_UNUSED( wParam )
    HB_SYMBOL_UNUSED( lParam )
@@ -295,8 +295,8 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    InitControls( oDlg, .T. )
    InitObjects( oDlg )
    
-   nFocu := ASCAN( oDlg:aControls,{| o | Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_TABSTOP ) != 0 .AND. Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_DISABLED ) = 0 }) 
-   nFocu := IIF( nFocu > 0, oDlg:aControls[ nFocu ]:Handle, nFocu )
+   iFocu := ASCAN( oDlg:aControls,{| o | Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_TABSTOP ) != 0 .AND. Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_DISABLED ) = 0 }) 
+   nFocu := IIF( iFocu > 0, oDlg:aControls[ iFocu ]:Handle, 0 )
 
    IF oDlg:bInit != Nil
       oDlg:lSuspendMsgsHandling := .t.
@@ -310,7 +310,7 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       ENDIF
    ENDIF
    oDlg:nInitFocus := INT( IIF( VALTYPE( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )   
-   IF INT( nFocu ) = INT( oDlg:nInitFocus )
+   IF  nFocu ==  oDlg:nInitFocus 
       oDlg:nInitFocus := 0
    ENDIF
    //SetFocus( oDlg:handle )

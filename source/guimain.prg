@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.34 2009-05-10 16:36:26 lculik Exp $
+ * $Id: guimain.prg,v 1.35 2009-08-02 19:08:54 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -53,6 +53,11 @@ FUNCTION InitControls( oWnd, lNoActivate )
             InitControls( pArray[ i ] )
          ENDIF
          pArray[ i ]:Init()
+          // nando required to classes that inherit the class of patterns hwgui
+         IF ! pArray[i]:lInit       
+            pArray[i]:Super:Init()
+         ENDIF
+
       NEXT
    ENDIF
 

@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.47 2009-07-30 12:36:35 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.48 2009-08-02 19:08:54 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -39,7 +39,7 @@ CLASS HObject
    DATA aObjects     INIT { }
    METHOD AddObject( oCtrl ) INLINE AAdd( ::aObjects, oCtrl )
    METHOD DelObject( oCtrl )
-   METHOD Release( )   INLINE ::DelObject( Self )
+   METHOD Release()  INLINE ::DelObject( Self )
 
 ENDCLASS
 
@@ -506,8 +506,10 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
       ( iItem := AScan( oWnd:aEvents, { | a | a[ 1 ] == iParHigh .AND. ;
                                         a[ 2 ] == iParLow } ) ) > 0
 
+      IF oWnd:GetParentForm():Type < WND_DLG_RESOURCE
+         oWnd:GetParentForm():nFocus := GetFocus()                                      
+      ENDIF  
       Eval( oWnd:aEvents[ iItem, 3 ], oWnd, iParLow )
-
    ENDIF
 
    RETURN 1

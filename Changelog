@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1112 2009-07-30 12:51:50 lfbasso Exp $
+ * $Id: Changelog,v 1.1113 2009-08-02 19:08:53 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,23 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-07-30 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\guimain.prg
+    * add in INITCONTROLS pArray[i]:Super:Init()
+      required to classes that inherit the class of patterns hwgui
+  * source\hbrowse.prg
+    ! fixed problem reported when adding new lines to browse type ARRAY
+    ! fixed keydown TAB event
+    * method PAINT changed so as to calculate the lines to be painted
+  * source\hcwindow.prg
+    * FUNCTION  onCommand add save focus object to MDICHILD
+  * source\hradio.prg
+    ! minor fix
+  * source\htab.prg
+    ! fixed events in MDICHILD
+  * source\hwindow.prg
+    ! menupos in MDI if set to -1 then not show
 
 2009-07-30 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\windows.ch

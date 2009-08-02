@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.27 2009-07-09 02:45:51 lfbasso Exp $
+ * $Id: hradio.prg,v 1.28 2009-08-02 19:08:54 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -318,7 +318,7 @@ METHOD onevent( msg, wParam, lParam ) CLASS HRadioButton
       ENDIF  
    ELSEIF msg == WM_NOTIFY 
          
-	 ELSEIF  msg = WM_GETDLGCODE .AND.  wParam != 0 
+	 ELSEIF  msg = WM_GETDLGCODE .AND.  ! EMPTY( wParam )
 	    RETURN DLGC_WANTMESSAGE 
 	    /*
       IF wParam = VK_TAB //.AND.  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE

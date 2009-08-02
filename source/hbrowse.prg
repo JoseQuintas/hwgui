@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.156 2009-04-13 12:20:25 alkresin Exp $
+ * $Id: hbrowse.prg,v 1.157 2009-08-02 19:08:54 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -116,9 +116,9 @@ CLASS HBrowse INHERIT HControl
    DATA rowPos     INIT 1                      // Current row position
    DATA rowCurrCount INIT 0                    // Current number of rows
    DATA colPos     INIT 1                      // Current column position
-   DATA nColumns                               // Number of visible data columns
+   DATA nColumns   INIT 0                      // Number of visible data columns
    DATA nLeftCol                               // Leftmost column
-   DATA freeze                                 // Number of columns to freeze
+   DATA freeze     INIT 0                      // Number of columns to freeze
    DATA nRecords     INIT 0                    // Number of records in browse
    DATA nCurrent     INIT 1                    // Current record
    DATA aArray                                 // An array browsed if this is BROWSE ARRAY
@@ -404,6 +404,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          IF wParam == 16
             ::lShiftPress := .F.
          ENDIF
+         /*
          IF wParam == VK_TAB
            IF IsCtrlShift(.T.,.F.)
               getskip(::oParent,::handle,, ;
@@ -413,6 +414,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
                ::DoHScroll( iif( IsCtrlShift( .F., .T. ), SB_LINELEFT, SB_LINERIGHT ) )  
             ENDIF  
 	       ENDIF
+	       */
          IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
             oParent := ::oParent
             DO WHILE oParent != Nil .AND. ! __ObjHasMsg( oParent, "GETLIST" )
@@ -436,29 +438,13 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             ENDIF
          ENDIF
          IF wParam == VK_TAB
-            IF IsCtrlShift(.F.)
-              ::DoHScroll( iif( IsCtrlShift( .F., .T. ), SB_LINELEFT, SB_LINERIGHT ) )
-            ENDIF  
-				 /*
-         IF wParam == VK_TAB
-            IF ::lCtrlPress
-               //nPos := AScan( ::oParent:acontrols, { | o | o:handle == ::HANDLE } )
-               IF GetKeyState( VK_SHIFT ) < 0
-                  //nPos := IIF(nPos <= 1 ,len(::oParent:acontrols),nPos-1)
-                  getskip( ::oParent, ::handle,, - 1 )
-               ELSE
-                  //nPos := IIF(nPos = 0 .OR. nPos=len(::oParent:acontrols),1,nPos+1)
-                  getskip( ::oParent, ::handle,, 1 )
-               ENDIF
-               //::oParent:acontrols[nPos]:setFocus()
+            IF ::lCtrlPress    
+               getskip(::oParent,::handle,, ;
+               iif( IsCtrlShift(.f., .t.), -1, 1) )
+               RETURN 0
             ELSE
-               IF GetKeyState( VK_SHIFT ) < 0
-                  ::DoHScroll( SB_LINELEFT )
-               ELSE
-                  ::DoHScroll( SB_LINERIGHT )
-               ENDIF
-            ENDIF
-            */
+               ::DoHScroll( iif( IsCtrlShift( .F., .T. ), SB_LINELEFT, SB_LINERIGHT ) )  
+            ENDIF  
          ELSEIF wParam == 40        // Down
             IF ::lShiftPress .AND. ::aSelected != Nil
                Eval( ::bskip, Self, 1 )
@@ -949,7 +935,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    ELSE
       IF Eval( ::bEof, Self ) .OR. Eval( ::bBof, Self )
          Eval( ::bGoTop, Self )
-         ::rowPos := 1
+         ::rowPos := 1  /
       ENDIF
 
 // Se riga_cursore_video > numero_record
@@ -965,7 +951,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
 //   we skip ::rowPos-1 number of records back,
 //   actually positioning video cursor on first line
       IF ::rowPos > 1
-         Eval( ::bSkip, Self, - ( ::rowPos - 1 ) )
+        // Eval( ::bSkip, Self, - ( ::rowPos - 1 ) )
       ENDIF
 
 // Browse printing is split in two parts
@@ -973,6 +959,16 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
 //   or end of video lines
 
 // second part starts from where part 1 stopped -
+      // new 01/09/2009 - nando 
+      IF ::rowCurrCount >= ::RowPos .AND. ::nCurrent < ::nRecords
+         ::rowCurrCount -= ( ::rowCurrCount - ::RowPos + 1 ) 
+      ELSEIF ::rowCurrCount > ::rowCount - 1
+         ::rowCurrCount := ::rowCount - 1
+      ENDIF   
+      IF ::rowCurrCount > 0 
+          Eval( ::bSkip, Self, - ::rowCurrCount )
+      ENDIF    
+      //
 
       cursor_row := 1
       DO WHILE .T.
@@ -995,7 +991,8 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
          cursor_row ++
          Eval( ::bSkip, Self, 1 )
       ENDDO
-      ::rowCurrCount := cursor_row - 1
+      //::rowCurrCount := cursor_row - 1
+      ::rowCurrCount := IIF( cursor_row - 1 < ::rowCurrCount, ::rowCurrCount, cursor_row - 1 )
 
       // set current_video_line depending on the situation
       IF ::rowPos >= cursor_row
@@ -1854,7 +1851,6 @@ IF nLine > 0 .AND. nLine <= ::rowCurrCount
    IF ::lEditable
 
       IF ::colpos != fif - ::nLeftCol + 1 + ::freeze
-
          // Colpos should not go beyond last column or I get bound errors on ::Edit()
          ::colpos := Min( ::nColumns + 1, fif - ::nLeftCol + 1 + ::freeze )
          VScrollPos( Self, 0, .f. )
@@ -2251,6 +2247,7 @@ METHOD FldStr( oBrw, numf ) CLASS HBrowse
                cRes := ( oBrw:Alias ) ->( Transform( Eval( oBrw:aColumns[ numf ]:block,, oBrw, numf ), pict ) )
             ENDIF
          ELSE
+            oBrw:nCurrent := IIF( oBrw:nCurrent = 0, 1, oBrw:nCurrent )
             cRes := Transform( Eval( oBrw:aColumns[ numf ]:block,, oBrw, numf ), pict )
          ENDIF
       ELSE
@@ -2261,6 +2258,7 @@ METHOD FldStr( oBrw, numf ) CLASS HBrowse
                vartmp := ( oBrw:Alias ) ->( Eval( oBrw:aColumns[ numf ]:block,, oBrw, numf ) )
             ENDIF
          ELSE
+            oBrw:nCurrent := IIF( oBrw:nCurrent = 0, 1, oBrw:nCurrent )
             vartmp := Eval( oBrw:aColumns[ numf ]:block,, oBrw, numf )
          ENDIF
 

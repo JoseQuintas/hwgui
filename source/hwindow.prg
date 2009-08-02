@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.85 2009-07-29 15:41:49 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.86 2009-08-02 19:08:55 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -232,7 +232,8 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
 
    IF lType == WND_MDI
 
-      ::nMenuPos := nPos
+      //::nMenuPos := nPos
+      ::nMenuPos := IIF( nPos = Nil, -1, nPos )     //don't show menu
       ::bMdiMenu := bMdiMenu
       ::Style := nStyle
       ::tColor := clr
@@ -869,7 +870,7 @@ STATIC FUNCTION onMdiCommand( oWnd, wParam )
 
 STATIC FUNCTION onMdiNcActivate( oWnd, wParam )
 
-   IF wParam == 0  .AND. ISWINDOWVISIBLE( oWnd:Handle ) //.T. //LMODAL 
+   IF EMPTY( wParam )  .AND. ISWINDOWVISIBLE( oWnd:Handle ) //.T. //LMODAL 
       RETURN -1
    ENDIF
    IF wParam == 1 .AND. oWnd:nFocus > 0
@@ -893,7 +894,7 @@ Static Function onMdiActivate( oWnd,wParam, lParam )
    ENDIF
    */
    // added
-   IF  oWnd:Screen != nil .AND. ( Empty( lParam ) .OR. ;
+   IF  oWnd:Screen != Nil .AND. ( Empty( lParam ) .OR. ;
       lParam = oWnd:Screen:Handle ) .AND. wParam != oWnd:Handle
       SetWindowPos( oWnd:Screen:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE )
       RETURN 0                                   

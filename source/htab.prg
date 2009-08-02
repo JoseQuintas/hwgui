@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.43 2009-07-29 15:41:49 lfbasso Exp $
+ *$Id: htab.prg,v 1.44 2009-08-02 19:08:55 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -103,7 +103,7 @@ CLASS HTab INHERIT HControl
 CLASS VAR winclass   INIT "SysTabControl32"
    DATA  aTabs
    DATA  aPages  INIT { }
-   DATA  Pages  INIT { }   //nando
+   DATA  Pages  INIT { }   
    DATA  bChange, bChange2
    DATA  hIml, aImages, Image1, Image2
    DATA  oTemp
@@ -511,6 +511,7 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    ::disable()
    IF msg = WM_LBUTTONDOWN
       ::lClick := .T.
+      ::SetFocus( 0 )
    ENDIF
    IF (msg == WM_KEYDOWN .OR.(msg = WM_GETDLGCODE .AND. wparam == VK_RETURN)) .AND. GetFocus()= ::handle
        IF ProcKeyList( Self, wParam )
@@ -518,8 +519,10 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
        ENDIF
        IF (wparam == VK_DOWN .or.wparam == VK_RETURN).AND. ::nActive > 0  //
    	     GetSkip(self,::handle,,1)
+   	     RETURN 0
        ELSEIF wParam = VK_TAB
          GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+   	     RETURN 0         
        ENDIF
        IF wparam == VK_UP .AND. ::nActive > 0  // 
           KEYB_EVENT( VK_TAB, VK_SHIFT, .T. )
@@ -551,7 +554,7 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
          ::oParent:nInitFocus := 0 
       ENDIF  
       IF  (msg = WM_COMMAND .OR. msg == WM_KILLFOCUS) .AND. ::GetParentForm( self ):Type < WND_DLG_RESOURCE .AND. wParam > 0 .AND. lParam > 0
-          ::oParent:onEvent( msg, wparam, lparam )
+         // ::oParent:onEvent( msg, wparam, lparam )
       ELSEIF msg == WM_KILLFOCUS .AND. ::GetParentForm( self ):Type < WND_DLG_RESOURCE 
          SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, 0 ), ::handle )
       ENDIF    

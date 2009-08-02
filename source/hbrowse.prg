@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.157 2009-08-02 19:08:54 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.158 2009-08-02 21:00:52 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -935,7 +935,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    ELSE
       IF Eval( ::bEof, Self ) .OR. Eval( ::bBof, Self )
          Eval( ::bGoTop, Self )
-         ::rowPos := 1  /
+         ::rowPos := 1  
       ENDIF
 
 // Se riga_cursore_video > numero_record
@@ -1471,7 +1471,7 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
 METHOD SetColumn( nCol ) CLASS HBrowse
    LOCAL nColPos, lPaint := .f.
 
-   IF ::lEditable
+   IF ::lEditable .OR. ::lAutoEdit 
       IF nCol != nil .AND. nCol >= 1 .AND. nCol <= Len( ::aColumns )
          IF nCol <= ::freeze
             ::colpos := nCol
@@ -1505,7 +1505,7 @@ METHOD SetColumn( nCol ) CLASS HBrowse
 STATIC FUNCTION LINERIGHT( oBrw )
    LOCAL i
 
-   IF oBrw:lEditable
+   IF oBrw:lEditable .OR. oBrw:lAutoEdit 
       IF oBrw:colpos < oBrw:nColumns
          oBrw:colpos ++
          RETURN Nil
@@ -1525,7 +1525,7 @@ STATIC FUNCTION LINERIGHT( oBrw )
 // Move the visible browse one step to the left
 STATIC FUNCTION LINELEFT( oBrw )
 
-   IF oBrw:lEditable
+   IF oBrw:lEditable .OR. oBrw:lAutoEdit 
       oBrw:colpos --
    ENDIF
    IF oBrw:nLeftCol > oBrw:freeze + 1 .AND. ( ! oBrw:lEditable .OR. oBrw:colpos < oBrw:freeze + 1 )
@@ -1848,7 +1848,7 @@ IF nLine > 0 .AND. nLine <= ::rowCurrCount
          Go nrec
       ENDIF
    ENDIF
-   IF ::lEditable
+   IF ::lEditable .OR. ::lAutoEdit
 
       IF ::colpos != fif - ::nLeftCol + 1 + ::freeze
          // Colpos should not go beyond last column or I get bound errors on ::Edit()
@@ -1879,7 +1879,7 @@ ELSEIF nLine == 0
       Eval( ::aColumns[ fif ]:bHeadClick, Self, fif )
    ENDIF
 ENDIF
-
+                                                 
 RETURN Nil
 
 //----------------------------------------------------//

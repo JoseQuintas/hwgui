@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1113 2009-08-02 19:08:53 lfbasso Exp $
+ * $Id: Changelog,v 1.1114 2009-08-02 21:00:52 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,7 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2009-07-30 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+2009-08-01 17:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! changed how the column takes the focus. Now the column takes the focus IF lAutoedit =. T.
+  
+2009-08-01 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\guimain.prg
     * add in INITCONTROLS pArray[i]:Super:Init()
       required to classes that inherit the class of patterns hwgui

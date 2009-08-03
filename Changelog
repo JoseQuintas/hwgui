@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1114 2009-08-02 21:00:52 lfbasso Exp $
+ * $Id: Changelog,v 1.1115 2009-08-03 13:15:26 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2009-08-02 10:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! used the function ptrtoulong (pointer) for comparisons between variables of type
+     NUMBER and of type HANDLE due to error in XHARBOUR.com
+    * IN method PAINT IF ::nHeadHeight != 0 OR  ::nFootHeight != 0 not be calculated 
+    + add style DT_VCENTER + DT_SINGLELINE in DrawText HEAD
+    + add style DT_VCENTER + DT_SINGLELINE in DrawText FOOTER
+  * source\hdialog.prg
+    ! used the function ptrtoulong (pointer) for comparisons between variables of type
+     NUMBER and of type HANDLE due to error in XHARBOUR.com
 
 2009-08-01 17:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.158 2009-08-02 21:00:52 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.159 2009-08-03 13:15:26 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -892,8 +892,13 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
       aMetrHead := GetTextMetric( hDC )
       SelectObject( hDC, oldfont )
    ENDIF
-   ::nHeadHeight := ::aMargin[ 1 ] + aMetrHead[ 1 ] + 1 + ::aMargin[ 3 ]
-   ::nFootHeight := ::aMargin[ 1 ] + aMetr[ 1 ] + 1 + ::aMargin[ 3 ]
+   // USER DEFINE Height  IF != 0
+   IF EMPTY( ::nHeadHeight )
+      ::nHeadHeight := ::aMargin[ 1 ] + aMetrHead[ 1 ] + 1 + ::aMargin[ 3 ]
+   ENDIF
+   IF EMPTY( ::nFootHeight )   
+      ::nFootHeight := ::aMargin[ 1 ] + aMetr[ 1 ] + 1 + ::aMargin[ 3 ]
+   ENDIF    
    ::x1 := aCoors[ 1 ]
    ::y1 := aCoors[ 2 ] + IIf( ::lDispHead, ::nHeadHeight * ::nHeadRows, 0 )
    ::x2 := aCoors[ 3 ]
@@ -1150,8 +1155,8 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
                       ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine + 1 ) + 1 + ::aMargin[ 1 ], ;
                       x + xSize - ( 1 + ::aMargin[ 2 ] ) , ;
                       ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine ), ;
-                      oColumn:nJusHead  + IF( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
-         NEXT
+                      oColumn:nJusHead + DT_VCENTER + DT_SINGLELINE + IIF( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
+         NEXT      // Nando DT_VCENTER+DT_SINGLELINE  
       ENDIF
 
       x += xSize
@@ -1295,8 +1300,8 @@ METHOD FooterOut( hDC ) CLASS HBrowse
                    nY + ( nLine - 1 ) * ( ::nFootHeight + 1 ) + 1 + ::aMargin[ 1 ], ;
                    x + xSize - ( 1 + ::aMargin[ 2 ] ), ;
                    nY + ( nLine ) * ( ::nFootHeight + 1 ), ;
-                   oColumn:nJusFoot + IF( oColumn:lSpandFoot, DT_NOCLIP, 0 ) )
-      NEXT
+                   oColumn:nJusFoot + DT_VCENTER + DT_SINGLELINE + IIF( oColumn:lSpandFoot, DT_NOCLIP, 0 ) )                   
+       NEXT   // nando DT_VCENTER + DT_SINGLELINE
 
       IF aColorFoot != Nil
          SetBkColor(   hDC, oldBkColor )
@@ -1868,7 +1873,7 @@ IF nLine > 0 .AND. nLine <= ::rowCurrCount
    ENDIF
 
 ELSEIF nLine == 0
-   IF oCursor == ColSizeCursor
+   IF PtrtouLong( oCursor ) ==  PtrtouLong( ColSizeCursor )
       ::lResizing := .T.
       Hwg_SetCursor( oCursor )
       xDrag := LOWORD( lParam )
@@ -1970,7 +1975,7 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
             // TraceLog( "Colonna "+str(i)+"    x="+str(x))
             x += ::aColumns[ i ]:width
             IF Abs( x - xPos ) < 8
-               IF oCursor != ColSizeCursor
+               IF PtrtouLong( oCursor ) != PtrtouLong( ColSizeCursor )
                   oCursor := ColSizeCursor
                ENDIF
                Hwg_SetCursor( oCursor )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1116 2009-08-04 15:18:08 lfbasso Exp $
+ * $Id: Changelog,v 1.1117 2009-08-04 17:57:31 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-08-02 15:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcontrol.prg
+    * CLASS HBUTTONEXE
+    ! add in ONEVENT message WM_SYSKEYUP triggered if wParam 
+        if this have an event set by another control with accelerator
 
 2009-08-02 10:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcontrol.prg

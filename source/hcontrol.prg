@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.135 2009-08-04 15:18:14 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.136 2009-08-04 17:57:32 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1081,7 +1081,7 @@ METHOD INIT CLASS HButtonEx
 METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
 
    LOCAL pt := {, }, rectButton, acoor
-   LOCAL pos
+   LOCAL pos, nID
 
    IF msg == WM_THEMECHANGED
       IF ::Themed
@@ -1155,6 +1155,11 @@ ELSEIF msg == WM_KEYDOWN
      IF ( pos := At( "&", ::title ) ) > 0 .and. wParam == Asc( Upper( SubStr( ::title, ++ pos, 1 ) ) )
         IF ValType( ::bClick ) == "B" .OR. ::id < 3
            SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
+        ENDIF
+     ELSEIF ( nID := Ascan( ::oparent:acontrols, { | o | ( pos := At( "&", o:title )) > 0 .and. wParam == Asc( Upper( SubStr( o:title, ++ pos, 1 ) )) } )) > 0
+        IF __ObjHasMsg( ::oParent:aControls[ nID ],"BCLICK") .AND.;
+           ValType( ::oParent:aControls[ nID ]:bClick ) == "B" .OR. ::oParent:aControls[ nID]:id < 3
+           SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::oParent:aControls[ nID ]:id, BN_CLICKED ), ::oParent:aControls[ nID ]:handle )
         ENDIF
      ENDIF
      RETURN 0

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.132 2009-07-31 00:31:56 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.133 2009-08-04 13:06:55 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1121,6 +1121,15 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
 ELSEIF msg == WM_MOUSELEAVE
    ::CancelHover()
    RETURN 0
+   
+ELSEIF msg == WM_SYSKEYUP
+     msginfo(str(wparam)+str(lparam))
+     // IF ( pos := At( "&", ::title ) ) > 0 .and. wParam == Asc( Upper( SubStr( ::title, ++ pos, 1 ) ) )
+         IF ValType( ::bClick ) == "B" .OR. ::id < 3
+            SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
+         ENDIF
+      //ENDIF
+      RETURN 0
 
 ELSEIF msg == WM_KEYDOWN
 
@@ -1150,13 +1159,6 @@ ELSEIF msg == WM_KEYDOWN
 	   	ENDIF
       ProcKeyList( Self, wParam )
       
-   ELSEIF msg == WM_SYSKEYUP
-      IF ( pos := At( "&", ::title ) ) > 0 .and. wParam == Asc( Upper( SubStr( ::title, ++ pos, 1 ) ) )
-         IF ValType( ::bClick ) == "B" .or. ::id < 3
-            SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
-         ENDIF
-      ENDIF
-      RETURN 0
    ELSEIF msg == WM_KEYUP
       IF ( ( wParam == VK_SPACE ) .or. ( wParam == VK_RETURN ) )
          ::bMouseOverButton := .T.

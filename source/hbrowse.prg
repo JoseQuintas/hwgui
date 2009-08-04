@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.159 2009-08-03 13:15:26 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.160 2009-08-04 13:06:53 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -969,6 +969,8 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
          ::rowCurrCount -= ( ::rowCurrCount - ::RowPos + 1 ) 
       ELSEIF ::rowCurrCount > ::rowCount - 1
          ::rowCurrCount := ::rowCount - 1
+      ELSEIF ::nRecords < ::rowCount   
+         ::rowCurrCount := ::nRecords
       ENDIF   
       IF ::rowCurrCount > 0 
           Eval( ::bSkip, Self, - ::rowCurrCount )
@@ -1985,7 +1987,7 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
             i := IIf( i == ::freeze, ::nLeftCol, i + 1 )
          ENDDO
       ENDIF
-      IF ! res .AND. oCursor != 0
+      IF ! res .AND. ! EMPTY( oCursor )
          Hwg_SetCursor( arrowCursor )
          oCursor := 0
          ::lResizing := .F.

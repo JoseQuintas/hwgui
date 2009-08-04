@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.133 2009-08-04 13:06:55 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.134 2009-08-04 13:49:00 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1122,15 +1122,6 @@ ELSEIF msg == WM_MOUSELEAVE
    ::CancelHover()
    RETURN 0
    
-ELSEIF msg == WM_SYSKEYUP
-     msginfo(str(wparam)+str(lparam))
-     // IF ( pos := At( "&", ::title ) ) > 0 .and. wParam == Asc( Upper( SubStr( ::title, ++ pos, 1 ) ) )
-         IF ValType( ::bClick ) == "B" .OR. ::id < 3
-            SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
-         ENDIF
-      //ENDIF
-      RETURN 0
-
 ELSEIF msg == WM_KEYDOWN
 
    #ifdef __XHARBOUR__
@@ -1219,6 +1210,14 @@ ELSEIF msg == WM_KEYDOWN
 
    ELSEIF msg == WM_GETDLGCODE
       RETURN ButtonGetDlgCode( lParam )
+
+   ELSEIF msg == WM_SYSKEYUP
+  // IF ( pos := At( "&", ::title ) ) > 0 .and. wParam == Asc( Upper( SubStr( ::title, ++ pos, 1 ) ) )
+      IF ValType( ::bClick ) == "B" .OR. ::id < 3
+          SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
+      ENDIF
+      //ENDIF
+      RETURN 0
 
    ELSEIF msg == WM_SYSCOLORCHANGE
       ::SetDefaultColors()

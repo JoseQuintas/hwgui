@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.134 2009-08-04 13:49:00 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.135 2009-08-04 15:18:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1149,6 +1149,15 @@ ELSEIF msg == WM_KEYDOWN
          GetSkip( ::oparent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1)  )
 	   	ENDIF
       ProcKeyList( Self, wParam )
+
+   ELSEIF msg == WM_SYSKEYUP .OR. ( msg == WM_KEYUP .AND.;
+                     ASCAN( { VK_SPACE, VK_RETURN, VK_ESCAPE }, wParam ) = 0 )
+     IF ( pos := At( "&", ::title ) ) > 0 .and. wParam == Asc( Upper( SubStr( ::title, ++ pos, 1 ) ) )
+        IF ValType( ::bClick ) == "B" .OR. ::id < 3
+           SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
+        ENDIF
+     ENDIF
+     RETURN 0
       
    ELSEIF msg == WM_KEYUP
       IF ( ( wParam == VK_SPACE ) .or. ( wParam == VK_RETURN ) )
@@ -1210,14 +1219,6 @@ ELSEIF msg == WM_KEYDOWN
 
    ELSEIF msg == WM_GETDLGCODE
       RETURN ButtonGetDlgCode( lParam )
-
-   ELSEIF msg == WM_SYSKEYUP
-  // IF ( pos := At( "&", ::title ) ) > 0 .and. wParam == Asc( Upper( SubStr( ::title, ++ pos, 1 ) ) )
-      IF ValType( ::bClick ) == "B" .OR. ::id < 3
-          SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
-      ENDIF
-      //ENDIF
-      RETURN 0
 
    ELSEIF msg == WM_SYSCOLORCHANGE
       ::SetDefaultColors()

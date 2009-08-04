@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1115 2009-08-03 13:15:26 lfbasso Exp $
+ * $Id: Changelog,v 1.1116 2009-08-04 15:18:08 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-08-02 10:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcontrol.prg
+    * CLASS HBUTTONEXE
+    ! fixed in ONEVENT message WM_SYSKEYUP. The problem was WM_KEYUP captured event WM_SYSKEYUP.
+
 2009-08-02 10:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
     ! used the function ptrtoulong (pointer) for comparisons between variables of type

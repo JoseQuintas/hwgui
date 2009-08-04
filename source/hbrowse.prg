@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.160 2009-08-04 13:06:53 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.161 2009-08-04 15:47:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1851,8 +1851,8 @@ IF nLine > 0 .AND. nLine <= ::rowCurrCount
             VScrollPos( Self, 0, .f. )
          ENDIF
          res := .T.
-      ELSE
-         Go nrec
+      ELSEIF nRec > 0
+         Eval( ::bGoto, Self, nRec )
       ENDIF
    ENDIF
    IF ::lEditable .OR. ::lAutoEdit

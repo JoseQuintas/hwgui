@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.5 2006-08-07 11:14:29 alkresin Exp $
+ *$Id: hcwindow.prg,v 1.6 2009-08-10 01:39:59 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -57,6 +57,12 @@ CLASS HCustomWindow INHERIT HObject
    DATA bOther
    DATA cargo
    DATA HelpId   INIT 0
+   DATA nCurWidth    INIT 0
+   DATA nCurHeight   INIT 0
+   DATA nScrollPos   INIT 0
+   DATA rect
+   DATA nScrollBars INIT -1   
+   
    
    METHOD AddControl( oCtrl ) INLINE Aadd( ::aControls,oCtrl )
    METHOD DelControl( oCtrl )
@@ -68,6 +74,7 @@ CLASS HCustomWindow INHERIT HObject
    METHOD Move( x1,y1,width,height )
    METHOD onEvent( msg, wParam, lParam )
    METHOD End()
+   METHOD Anchor( oCtrl, x, y, w, h )
 
 ENDCLASS
 
@@ -140,6 +147,23 @@ Local i
    ENDIF
 
 Return 0
+
+METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
+   LOCAL nlen , i, x1, y1
+   nlen := Len( oCtrl:aControls )
+   FOR i = 1 TO nlen
+      IF __ObjHasMsg( oCtrl:aControls[ i ], "ANCHOR" ) .AND. oCtrl:aControls[ i ]:anchor > 0
+         x1 := oCtrl:aControls[ i ]:nWidth
+         y1 := oCtrl:aControls[ i ]:nHeight
+         oCtrl:aControls[ i ]:onAnchor( x, y, w, h )
+         IF Len( oCtrl:aControls[ i ]:aControls ) > 0
+            //::Anchor( oCtrl:aControls[ i ], x1, y1, oCtrl:nWidth, oCtrl:nHeight )
+            ::Anchor( oCtrl:aControls[ i ], x, y, oCtrl:nWidth, oCtrl:nHeight )
+         ENDIF
+      ENDIF
+   NEXT
+   RETURN .T.
+
 
 METHOD End()  CLASS HCustomWindow
 Local aControls := ::aControls

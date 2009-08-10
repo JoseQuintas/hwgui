@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.14 2009-05-06 11:47:20 alkresin Exp $
+ *$Id: hdialog.prg,v 1.15 2009-08-10 01:39:59 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
@@ -64,6 +64,8 @@ CLASS HDialog INHERIT HCustomWindow
    DATA xResourceID
    DATA lModal
    DATA lActivated INIT .F.
+   DATA nScrollBars INIT - 1
+   
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
                   bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc )
@@ -307,7 +309,20 @@ Local aMenu, i, hCtrl
 Return 1
 
 Static Function onSize( oDlg,wParam,lParam )
-Local aControls, iCont
+   LOCAL aControls, iCont , nW1, nH1
+   LOCAL nW := LOWORD( lParam ), nH := HIWORD( lParam )
+   LOCAL nScrollMax
+   IF ( oDlg:nHeight = oDlg:minHeight .AND. nH < oDlg:minHeight ) .OR. ;
+      ( oDlg:nHeight = oDlg:maxHeight .AND. nH > oDlg:maxHeight ) .OR. ;
+      ( oDlg:nWidth = oDlg:minWidth .AND. nW < oDlg:minWidth ) .OR. ;
+      ( oDlg:nWidth = oDlg:maxWidth .AND. nW > oDlg:maxWidth )
+      RETURN 0
+   ENDIF
+   nW1 := oDlg:nWidth
+   nH1 := oDlg:nHeight
+   *aControls := GetWindowRect( oDlg:handle )
+   oDlg:nWidth := LOWORD( lParam )  //aControls[3]-aControls[1]
+   //
 
    IF oDlg:bSize != Nil .AND. ;
        ( oDlg:oParent == Nil .OR. !__ObjHasMsg( oDlg:oParent,"ACONTROLS" ) )
@@ -315,6 +330,7 @@ Local aControls, iCont
    ENDIF
    aControls := oDlg:aControls
    IF aControls != Nil
+      oDlg:Anchor( oDlg, nW1, nH1, oDlg:nWidth, oDlg:nHeight )
       FOR iCont := 1 TO Len( aControls )
          IF aControls[iCont]:bSize != Nil
             Eval( aControls[iCont]:bSize, ;

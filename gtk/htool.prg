@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.3 2009-02-28 10:56:52 marcosgambeta Exp $
+ * $Id: htool.prg,v 1.4 2009-08-10 01:39:59 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -29,6 +29,7 @@ CLASS HToolBar INHERIT HControl
    DATA lFlat
    DATA nOrder
    Data aItem init {}
+   DATA Line
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor,lTransp ,aItem)

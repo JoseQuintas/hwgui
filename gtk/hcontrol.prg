@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.16 2009-05-05 09:31:48 alkresin Exp $
+ *$Id: hcontrol.prg,v 1.17 2009-08-10 01:39:59 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -30,10 +30,16 @@ CLASS HControl INHERIT HCustomWindow
    DATA tooltip
    DATA lInit    INIT .F.
    DATA name
+   DATA Anchor          INIT 0
+   DATA   xName           HIDDEN
+   ACCESS Name            INLINE ::xName
+   ASSIGN Name( cName )   INLINE ::AddName( cName ) 
+
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor )
    METHOD Init()
+   METHOD AddName( cName ) HIDDEN
    METHOD SetColor( tcolor,bcolor,lRepaint )
    METHOD NewId()
 
@@ -46,6 +52,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD GetText()     INLINE GetWindowText(::handle)
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c )
    */
+   METHOD onAnchor( x, y, w, h )
    METHOD End()
 
 ENDCLASS
@@ -81,6 +88,16 @@ Local nId := CONTROL_FIRST_ID + Len( ::oParent:aControls )
       ENDDO
    ENDIF
 Return nId
+
+METHOD AddName( cName ) CLASS HControl
+
+   IF !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. ! ":" $ cName .AND. ! "[" $ cName
+      ::xName := cName
+			__objAddData( ::oParent, cName )
+	    ::oParent: & ( cName ) := Self
+   ENDIF	    
+   
+RETURN Nil
 
 METHOD INIT CLASS HControl
 Local o
@@ -167,6 +184,106 @@ METHOD End() CLASS HControl
       ::tooltip := Nil
    ENDIF
 Return Nil
+
+METHOD onAnchor( x, y, w, h ) CLASS HControl
+   LOCAL nAnchor, nXincRelative, nYincRelative, nXincAbsolute, nYincAbsolute
+   LOCAL x1, y1, w1, h1, x9, y9, w9, h9
+
+   nAnchor := ::anchor
+   x9 := ::nLeft
+   y9 := ::nTop
+   w9 := ::nWidth
+   h9 := ::nHeight
+
+   x1 := ::nLeft
+   y1 := ::nTop
+   w1 := ::nWidth
+   h1 := ::nHeight
+  *- calculo relativo
+   nXincRelative :=  w / x
+   nYincRelative :=  h / y
+    *- calculo ABSOLUTE
+   nXincAbsolute := ( w - x )
+   nYincAbsolute := ( h - y )
+
+   IF nAnchor >= ANCHOR_VERTFIX
+    *- vertical fixed center
+      nAnchor := nAnchor - ANCHOR_VERTFIX
+      y1 := y9 + Int( ( h - y ) * ( ( y9 + h9 / 2 ) / y ) )
+   ENDIF
+   IF nAnchor >= ANCHOR_HORFIX
+    *- horizontal fixed center
+      nAnchor := nAnchor - ANCHOR_HORFIX
+      x1 := x9 + Int( ( w - x ) * ( ( x9 + w9 / 2 ) / x ) )
+   ENDIF
+   IF nAnchor >= ANCHOR_RIGHTREL
+      && relative - RIGHT RELATIVE
+      nAnchor := nAnchor - ANCHOR_RIGHTREL
+      x1 := w - Int( ( x - x9 - w9 ) * nXincRelative ) - w9
+   ENDIF
+   IF nAnchor >= ANCHOR_BOTTOMREL
+      && relative - BOTTOM RELATIVE
+      nAnchor := nAnchor - ANCHOR_BOTTOMREL
+      y1 := h - Int( ( y - y9 - h9 ) * nYincRelative ) - h9
+   ENDIF
+   IF nAnchor >= ANCHOR_LEFTREL
+      && relative - LEFT RELATIVE
+      nAnchor := nAnchor - ANCHOR_LEFTREL
+      IF x1 != x9
+         w1 := x1 - ( Int( x9 * nXincRelative ) ) + w9
+      ENDIF
+      x1 := Int( x9 * nXincRelative )
+   ENDIF
+   IF nAnchor >= ANCHOR_TOPREL
+      && relative  - TOP RELATIVE
+      nAnchor := nAnchor - ANCHOR_TOPREL
+      IF y1 != y9
+         h1 := y1 - ( Int( y9 * nYincRelative ) ) + h9
+      ENDIF
+      y1 := Int( y9 * nYincRelative )
+   ENDIF
+   IF nAnchor >= ANCHOR_RIGHTABS
+      && Absolute - RIGHT ABSOLUTE
+      nAnchor := nAnchor - ANCHOR_RIGHTABS
+      IF x1 != x9
+         w1 := x1 - ( x9 +  Int( nXincAbsolute ) ) + w9
+      ENDIF
+      x1 := x9 +  Int( nXincAbsolute )
+   ENDIF
+   IF nAnchor >= ANCHOR_BOTTOMABS
+      && Absolute - BOTTOM ABSOLUTE
+      nAnchor := nAnchor - ANCHOR_BOTTOMABS
+      IF y1 != y9
+         h1 := y1 - ( y9 +  Int( nYincAbsolute ) ) + h9
+      ENDIF
+      y1 := y9 +  Int( nYincAbsolute )
+   ENDIF
+   IF nAnchor >= ANCHOR_LEFTABS
+      && Absolute - LEFT ABSOLUTE
+      nAnchor := nAnchor - ANCHOR_LEFTABS
+      IF x1 != x9
+         w1 := x1 - x9 + w9
+      ENDIF
+      x1 := x9
+   ENDIF
+   IF nAnchor >= ANCHOR_TOPABS
+      && Absolute - TOP ABSOLUTE
+      //nAnchor := nAnchor - 1
+      IF y1 != y9
+         h1 := y1 - y9 + h9
+      ENDIF
+      y1 := y9
+   ENDIF
+   InvalidateRect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+   MoveWindow( ::handle, x1, y1, w1, h1 )
+   ::nLeft := x1
+   ::nTop := y1
+   ::nWidth := w1
+   ::nHeight := h1
+   RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+
+   RETURN Nil
+
 
 
 //- HStatus

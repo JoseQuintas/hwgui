@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.88 2009-08-12 12:03:49 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.89 2009-08-12 13:53:09 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -820,7 +820,7 @@ STATIC FUNCTION onSysCommand( oWnd, wParam, lParam )
       ENDIF
    ELSEIF wParam = SC_KEYMENU 
 	   // accelerator MDICHILD
-      IF Len( HWindow():aWindows) > 2 .AND. !EMPTY( oChild := oWnd:GetMdiActive() )
+      IF Len( HWindow():aWindows) > 2 .AND. ( ( oChild:=oWnd ):Type = WND_MDICHILD .OR. !EMPTY( oChild := oWnd:GetMdiActive() ) )
 	       IF ( nID := Ascan( oChild:aControls, { | o | IIF( VALTYPE( o:title ) = "C",;
             ( pos := At( "&", o:title )) > 0 .AND. Upper( Chr( lParam ) ) == Asc( Upper( SubStr( o:title, ++ pos, 1 ) )), ) } )) > 0
             SendMessage( oChild:aControls[ nID ]:handle, WM_SYSKEYUP, lParam, 0 )

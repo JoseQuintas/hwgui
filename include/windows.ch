@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.78 2009-07-30 12:51:50 lfbasso Exp $
+ *$Id: windows.ch,v 1.79 2009-08-12 06:35:19 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -100,10 +100,21 @@
 
 #define WM_USER                        1024    // 0x0400
 
+#define SC_SIZE                       61440   // &HF000
 #define SC_MINIMIZE                   61472   // 0xF020
 #define SC_MAXIMIZE                   61488   // 0xF030
+#define SC_MAXIMIZE2                  61490   // 0xF032, Sent when form maximizes because of doubcle click on caption
 #define SC_CLOSE                      61536   // 0xF060
 #define SC_RESTORE                    61728   // 0xF120
+#define SC_RESTORE2                   61730   // 0xF122 Sent when form maximizes because of doubcle click on caption
+#define SC_KEYMENU                    61696	  // HF100
+#define SC_NEXTWINDOW                 61504   // &HF040
+#define SC_PREVWINDOW                 61520   // &HF050
+#define SC_HOTKEY                     61776   // &HF150
+#define SC_MOUSEMENU                  61584   //  HF090
+#define SC_SEPARATOR                  61455  // 0xF00F
+#define SC_MENU                       61589   // &HF095
+
 
 /*
 * CONSTANTS TO   WM_CHANGEUISTATE

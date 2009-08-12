@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.137 2009-08-04 18:19:41 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.138 2009-08-12 06:35:19 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -52,6 +52,7 @@ CLASS HControl INHERIT HCustomWindow
    DATA   lnoValid        INIT .F.
    DATA   nGetSkip        INIT 0
    DATA   Anchor          INIT 0
+   DATA   xControlSource   
    DATA   xName           HIDDEN
    ACCESS Name            INLINE ::xName
    ASSIGN Name( cName )   INLINE ::AddName( cName ) 
@@ -76,6 +77,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c ), ::title := c, ::Refresh()
    METHOD Refresh()     VIRTUAL
    METHOD onAnchor( x, y, w, h )
+   METHOD ControlSource( cControlSource ) SETGET 
    METHOD END()
 
 ENDCLASS
@@ -189,6 +191,16 @@ METHOD Enabled( lEnabled ) CLASS HControl
      ENDIF   
   ENDIF
   RETURN ::isEnabled()
+
+METHOD ControlSource( cControlSource ) CLASS HControl
+  Local temp
+  
+  IF cControlSource != Nil .AND. !EMPTY( cControlSource ) .AND. __objHasData( Self, "BSETGETFIELD")
+     ::xControlSource := cControlSource
+     temp := SUBSTR( cControlSource, AT( "->", cControlSource ) + 2 )
+     ::bSetGetField := IIF( "->" $ cControlSource, FieldWBlock( temp, SELECT( SUBSTR( cControlSource, 1, AT( "->", cControlSource ) - 1 ))),FieldBlock( cControlSource ) )
+  ENDIF
+  RETURN ::xControlSource
    
 METHOD END() CLASS HControl
 
@@ -1152,7 +1164,7 @@ ELSEIF msg == WM_KEYDOWN
 
    ELSEIF msg == WM_SYSKEYUP .OR. ( msg == WM_KEYUP .AND.;
                      ASCAN( { VK_SPACE, VK_RETURN, VK_ESCAPE }, wParam ) = 0 )
-     IF ( pos := At( "&", ::title ) ) > 0 .and. wParam == Asc( Upper( SubStr( ::title, ++ pos, 1 ) ) )
+     IF ! EMPTY( ::title) .AND. ( pos := At( "&", ::title ) ) > 0 .AND. wParam == Asc( Upper( SubStr( ::title, ++ pos, 1 ) ) )     
         IF ValType( ::bClick ) == "B" .OR. ::id < 3
            SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )
         ENDIF
@@ -1639,6 +1651,10 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
       InflateRect( @focusRect, - 3, - 3 )
       DrawFocusRect( dc, focusRect )
    ENDIF
+   DeleteObject( br )
+   DeleteObject( brBackground )
+   DeleteObject( brBtnShadow )
+
 
    RETURN nil
 

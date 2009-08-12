@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.150 2009-07-29 15:41:48 lfbasso Exp $
+ *$Id: guilib.ch,v 1.151 2009-08-12 06:35:18 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -111,12 +111,13 @@
              [ HELP <cHelp> ]               ;
              [ HELPID <nHelpId> ]           ;
              [ <lChild: CHILD>]             ;             
+             [<lClipper: CLIPPER>]          ;
           => ;
           <oWnd> := HMdiChildWindow():New( ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
                    <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,,;
-									 <bRefresh>,<.lChild.> ) ;;
+									 <bRefresh>,<.lChild.>,<.lClipper.> ) ;;
         [ <oWnd>:SetParent( <oParent> ) ]            
       
 #xcommand INIT WINDOW <oWnd> CHILD          ;
@@ -179,9 +180,10 @@
                [<lMaximized: MAXIMIZED>] ;
                [<lMinimized: MINIMIZED>] ;
                [<lCenter: CENTER>] ;
+               [<lModal: MODAL>] ;
                [ ON ACTIVATE <bInit> ]            ;
            => ;
-      <oWnd>:Activate( !<.lNoShow.>, <.lMaximized.>, <.lMinimized.>,  <.lCenter.>, <bInit> )
+      <oWnd>:Activate( !<.lNoShow.>, <.lMaximized.>, <.lMinimized.>,  <.lCenter.>, <bInit>, <.lModal.> )
 
 #xcommand CENTER WINDOW <oWnd> => <oWnd>:Center()
 

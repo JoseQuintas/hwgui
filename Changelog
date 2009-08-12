@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1118 2009-08-10 01:39:59 lculik Exp $
+ * $Id: Changelog,v 1.1119 2009-08-12 06:35:06 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,29 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-08-11 03:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + add CLAUSE CLIPPER in INIT WINDOW behavior equal to DIALOG
+    + add CLAUSE MODAL in ACTIVATE WINDOW to emulate the same form mdichild DIALOG 
+  * include\windows.ch
+    + added news constants
+  * source\hcontrol.prg
+    + add DATA xcontrolsource
+    + add METHOD ControlSource purpose specifies the source of data to which an object is bound
+  * source\hwindow.prg
+    + add DATA lModal IN HWindow CLASS
+    + parameter lclipper in METHOD NEW
+    + add parameter lParam in message ONSYSCOMMAND in CLASS HMainWindow and HMDICHILD
+    + onEvent CLASS HMainWindow add msg WM_PARENTNOTIFY to control MDICHILD MODAL
+    + DATA lMaximized  class HMDICHILDWindow
+    * FUNCTION ONSYSCOMMAND
+      * event SC_KEYMENU implemented accelerators to MDICHILD and 
+        event SC_MENU control to MDICHILD MODAL
+    * Function ONMDIACTIVATE
+      * implemented control over mdichild modal
+    * Function onEraseBk implemented backgroud bitmap center to MDI MAIN  
+      set propertie lbmpcenter := .T.
+      
 2009-08-09 22:40 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * gtk/hcontrol.prg
     gtk/hdialog.prg

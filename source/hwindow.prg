@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.87 2009-08-12 06:35:20 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.88 2009-08-12 12:03:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -769,7 +769,8 @@ LOCAL aCoors,  oWndArea
          RETURN 1
       ENDIF
    ENDIF   
-
+   RETURN - 1
+   
 
 STATIC FUNCTION onSysCommand( oWnd, wParam, lParam )
    Local i, ars, oChild, nid, nHandle, pos

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1119 2009-08-12 06:35:06 lfbasso Exp $
+ * $Id: Changelog,v 1.1120 2009-08-13 05:05:49 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-08-13 02:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcwindow.prg
+    * initialize propertie Type // DATA Type INIT 0
+  * source\hwindow.prg
+    ! minor fix
+  * source\hownbtn.prg    
+    ! fix mode check in lostfocus event
+    
 2009-08-11 03:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     + add CLAUSE CLIPPER in INIT WINDOW behavior equal to DIALOG

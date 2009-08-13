@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.48 2009-08-02 19:08:54 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.49 2009-08-13 05:05:51 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -65,7 +65,7 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) PROTEC
    DATA title
    ACCESS Caption  INLINE ::title   
    ASSIGN Caption( x ) INLINE ::SetTextClass( x ) 
-   DATA Type
+   DATA Type       INIT 0
    DATA nTop, nLeft, nWidth, nHeight
    DATA minWidth   INIT - 1
    DATA maxWidth   INIT - 1

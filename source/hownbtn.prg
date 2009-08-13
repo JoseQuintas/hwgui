@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.38 2009-02-15 20:12:30 lfbasso Exp $
+ * $Id: hownbtn.prg,v 1.39 2009-08-13 05:05:51 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -157,7 +157,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
          Eval( ::bLostfocus, Self, msg, wParam, lParam )
       ENDIF
       */
-      ::release()
+      IF ! ::lCheck
+         ::release()
+      ENDIF
       ::onLostFocus()
    ELSE
       IF ! Empty( ::bOther )

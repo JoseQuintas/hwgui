@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.89 2009-08-12 13:53:09 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.90 2009-08-13 05:05:51 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -557,7 +557,7 @@ METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
     */
    RETURN Self
 
-METHOD Activate( lShow, lMaximized, lMinimized,lCentered, bActivate ) CLASS HChildWindow
+METHOD Activate( lShow, lMaximized, lMinimized,lCentered, bActivate, lModal ) CLASS HChildWindow
    LOCAL nReturn
 
    DEFAULT lShow := .T.
@@ -972,7 +972,7 @@ Local  lScreen := oWnd:Screen != nil, i
       IF oWnd:lModal
          i := 1
          DO WHILE i < Len( oWnd:GetMain():aWindows )
-            IF oWnd:GetMain():aWindows[ i ]:Type >= WND_MDICHILD .AND.;
+            IF ! EMPTY(oWnd:GetMain():aWindows[ i ]:Type) .AND. oWnd:GetMain():aWindows[ i ]:Type >= WND_MDICHILD .AND.;
                     oWnd:GetMain():aWindows[ i ]:Handle != lParam
                EnableWindow( oWnd:GetMain():aWindows[ i ]:Handle, .F. )
             ENDIF   

@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.18 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: drawtext.c,v 1.19 2009-08-17 20:52:16 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -23,6 +23,9 @@
 #include "guilib.h"
 
 extern BOOL Array2Rect( PHB_ITEM aRect, RECT * rc );
+HB_FUNC_EXTERN( HB_OEMTOANSI );
+HB_FUNC_EXTERN( HB_ANSITOOEM );
+
 
 HB_FUNC( DEFINEPAINTSTRU )
 {
@@ -364,64 +367,15 @@ HB_FUNC( SETCTRLFONT )
          ( WPARAM ) HB_PARHANDLE( 3 ), 0L );
 }
 
-#ifndef __XHARBOUR__
-
 HB_FUNC( OEMTOANSI )
 {
-   char *buffer = hb_parc( 1 );
-   OemToChar( buffer, buffer );
-   hb_retc( buffer );
+   HB_FUNC_EXEC( HB_OEMTOANSI );
 }
 
 HB_FUNC( ANSITOOEM )
 {
-   char *buffer = hb_parc( 1 );
-   CharToOem( buffer, buffer );
-   hb_retc( buffer );
+   HB_FUNC_EXEC( HB_ANSITOOEM );
 }
-#else
-HB_FUNC( OEMTOANSI )
-{
-   PHB_ITEM pString = hb_param( 1, HB_IT_STRING );
-
-   if( pString )
-   {
-      DWORD ulLen = pString->item.asString.length;
-      char *pszDst = ( char * ) hb_xgrab( ulLen + 1 );
-
-      OemToCharBuff( ( LPCSTR ) pString->item.asString.value,
-            ( LPSTR ) pszDst, ulLen );
-
-      hb_retclenAdopt( pszDst, ulLen );
-   }
-   else
-   {
-      hb_retc( "" );
-   }
-}
-
-HB_FUNC( ANSITOOEM )
-{
-
-   PHB_ITEM pString = hb_param( 1, HB_IT_STRING );
-   if( pString )
-
-   {
-      DWORD ulLen = pString->item.asString.length;
-      char *pszDst = ( char * ) hb_xgrab( ulLen + 1 );
-
-      CharToOemBuff( ( LPCSTR ) pString->item.asString.value,
-            ( LPSTR ) pszDst, ulLen );
-
-      hb_retclenAdopt( pszDst, ulLen );
-   }
-   else
-   {
-      hb_retc( "" );
-   }
-}
-#endif
-
 
 HB_FUNC( CREATERECTRGN )
 {

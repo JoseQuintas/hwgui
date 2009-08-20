@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.20 2009-07-04 13:58:53 lculik Exp $
+ * $Id: wprint.c,v 1.21 2009-08-20 09:16:37 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -473,19 +473,19 @@ HB_FUNC( HWG_SETDOCUMENTPROPERTIES )
   if (hDC)
   {
     HANDLE hPrinter ;
-    LPTSTR pszPrinterName = hb_parc(2) ;
+    LPCSTR pszPrinterName = hb_parc(2) ;
 
-    if (OpenPrinter(pszPrinterName, &hPrinter, NULL))
+    if (OpenPrinter((LPSTR)pszPrinterName, &hPrinter, NULL))
     {
 
       PDEVMODE pDevMode = NULL ;
-      LONG lSize= DocumentProperties(0,hPrinter,pszPrinterName, pDevMode,pDevMode,0);
+      LONG lSize= DocumentProperties(0,hPrinter,(LPSTR)pszPrinterName, pDevMode,pDevMode,0);
 
       if (lSize > 0 )
       {
         pDevMode= (PDEVMODE) hb_xgrab(lSize) ;
 
-        if (pDevMode && DocumentProperties(0,hPrinter,pszPrinterName, pDevMode,pDevMode,DM_OUT_BUFFER) == IDOK )  // Get the current settings
+        if (pDevMode && DocumentProperties(0,hPrinter,(LPSTR)pszPrinterName, pDevMode,pDevMode,DM_OUT_BUFFER) == IDOK )  // Get the current settings
         {
           BOOL  bAskUser = ISBYREF(3) || ISBYREF(4) || ISBYREF(5) ||
                            ISBYREF(6) || ISBYREF(7) || ISBYREF(8) || ISBYREF(9) || ISBYREF(10) ; //x 20070421
@@ -570,7 +570,7 @@ HB_FUNC( HWG_SETDOCUMENTPROPERTIES )
              Therefore, we ignore the return value in Win9x, and assume user clicks OK.
              IOW, DocumentProperties is not cancelable in Win9X.
            */
-          if ( DocumentProperties(0,hPrinter,pszPrinterName, pDevMode,pDevMode, fMode) == IDOK || bW9X )
+          if ( DocumentProperties(0,hPrinter,(LPSTR)pszPrinterName, pDevMode,pDevMode, fMode) == IDOK || bW9X )
           {
             if (ISBYREF(3) && !bCustomFormSize )
             {

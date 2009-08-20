@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.28 2009-06-29 11:22:03 alkresin Exp $
+ * $Id: commond.c,v 1.29 2009-08-20 09:16:36 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -39,7 +39,7 @@ HB_FUNC( SELECTFONT )
    {
       memset( &lf, 0, sizeof( LOGFONT ) );
       temp1 = GetObjectVar( pObj, "NAME" );
-      strcpy( lf.lfFaceName, hb_itemGetCPtr( temp1 ) );
+      HB_TCHAR_CPTO( lf.lfFaceName, hb_itemGetCPtr( temp1 ), sizeof( lf.lfFaceName ) - 1 );
       temp1 = GetObjectVar( pObj, "WIDTH" );
       lf.lfWidth = hb_itemGetNI( temp1 );
       temp1 = GetObjectVar( pObj, "HEIGHT" );
@@ -65,10 +65,10 @@ HB_FUNC( SELECTFONT )
    cf.rgbColors = RGB( 0, 0, 0 );
    cf.lCustData = 0L;
    cf.lpfnHook = ( LPCFHOOKPROC ) NULL;
-   cf.lpTemplateName = ( LPSTR ) NULL;
+   cf.lpTemplateName = ( LPTSTR ) NULL;
 
    cf.hInstance = ( HINSTANCE ) NULL;
-   cf.lpszStyle = ( LPSTR ) NULL;
+   cf.lpszStyle = ( LPTSTR ) NULL;
    cf.nFontType = SCREEN_FONTTYPE;
    cf.nSizeMin = 0;
    cf.nSizeMax = 0;
@@ -133,13 +133,13 @@ HB_FUNC( SELECTFILE )
    OPENFILENAME ofn;
    char buffer[512];
    char *strFilter;
-   char *initDir = ( hb_pcount(  ) > 2 && ISCHAR( 3 ) ) ? hb_parc( 3 ) : NULL;
-   char *cTitle = ( hb_pcount(  ) > 3 && ISCHAR( 4 ) ) ? hb_parc( 4 ) : NULL;
+   const char *initDir = ( hb_pcount(  ) > 2 && ISCHAR( 3 ) ) ? hb_parc( 3 ) : NULL;
+   const char *cTitle = ( hb_pcount(  ) > 3 && ISCHAR( 4 ) ) ? hb_parc( 4 ) : NULL;
 
    if( ISCHAR( 1 ) && ISCHAR( 2 ) )
    {
-      char *str1 = hb_parc( 1 );
-      char *str2 = hb_parc( 2 );
+      const char *str1 = hb_parc( 1 );
+      const char *str2 = hb_parc( 2 );
       strFilter = ( char * ) hb_xgrab( strlen( str1 ) + strlen( str2 ) + 4 );
       memset( strFilter, 0, strlen( str1 ) + strlen( str2 ) + 4 );
       strcpy( strFilter, str1 );
@@ -203,10 +203,10 @@ HB_FUNC( SAVEFILE )
 {
    OPENFILENAME ofn;
    char buffer[512];
-   char *strFilter, *str1 = hb_parc( 2 ), *str2 = hb_parc( 3 );
-   char *initDir = ( hb_pcount(  ) > 3 && ISCHAR( 4 ) ) ? hb_parc( 4 ) : NULL;
-   char *cTitle = ( hb_pcount(  ) > 4 && ISCHAR( 5 ) ) ? hb_parc( 5 ) : NULL;
-
+   const char *str1 = hb_parcx( 2 ), *str2 = hb_parcx( 3 );
+   const char *initDir = ( hb_pcount(  ) > 3 && ISCHAR( 4 ) ) ? hb_parc( 4 ) : NULL;
+   const char *cTitle = ( hb_pcount(  ) > 4 && ISCHAR( 5 ) ) ? hb_parc( 5 ) : NULL;
+   char *strFilter;
 
    strFilter = ( char * ) hb_xgrab( strlen( str1 ) + strlen( str2 ) + 4 );
    if( strFilter == NULL )
@@ -306,7 +306,7 @@ HB_FUNC( HWG_CHOOSECOLOR )
 }
 
 
-unsigned long Get_SerialNumber( char *RootPathName )
+unsigned long Get_SerialNumber( const char *RootPathName )
 {
    unsigned long SerialNumber;
 
@@ -339,10 +339,10 @@ HB_FUNC( GETPRIVATEPROFILESTRING )
 {
    TCHAR bBuffer[1024];
    DWORD dwLen;
-   char *lpSection = hb_parc( 1 );
-   char *lpEntry = ISCHAR( 2 ) ? hb_parc( 2 ) : NULL;
-   char *lpDefault = hb_parc( 3 );
-   char *lpFileName = hb_parc( 4 );
+   const char *lpSection = hb_parc( 1 );
+   const char *lpEntry = ISCHAR( 2 ) ? hb_parc( 2 ) : NULL;
+   const char *lpDefault = hb_parc( 3 );
+   const char *lpFileName = hb_parc( 4 );
    dwLen =
          GetPrivateProfileString( lpSection, lpEntry, lpDefault, bBuffer,
          sizeof( bBuffer ), lpFileName );
@@ -354,10 +354,10 @@ HB_FUNC( GETPRIVATEPROFILESTRING )
 
 HB_FUNC( WRITEPRIVATEPROFILESTRING )
 {
-   char *lpSection = hb_parc( 1 );
-   char *lpEntry = ISCHAR( 2 ) ? hb_parc( 2 ) : NULL;
-   char *lpData = ISCHAR( 3 ) ? hb_parc( 3 ) : NULL;
-   char *lpFileName = hb_parc( 4 );
+   const char *lpSection = hb_parc( 1 );
+   const char *lpEntry = ISCHAR( 2 ) ? hb_parc( 2 ) : NULL;
+   const char *lpData = ISCHAR( 3 ) ? hb_parc( 3 ) : NULL;
+   const char *lpFileName = hb_parc( 4 );
 
    if( WritePrivateProfileString( lpSection, lpEntry, lpData, lpFileName ) )
       hb_retl( TRUE );

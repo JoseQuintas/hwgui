@@ -1,5 +1,5 @@
 /*
- * $Id: hwg_qhtm.c,v 1.7 2009-06-29 11:22:05 alkresin Exp $
+ * $Id: hwg_qhtm.c,v 1.8 2009-08-20 09:16:38 druzus Exp $
 
  * QHTM wrappers for Harbour/HwGUI
  *
@@ -42,13 +42,13 @@ typedef void ( WINAPI * QHTM_PRINTDESTROYCONTEXT ) ( QHTMCONTEXT );
 
 static HINSTANCE hQhtmDll = NULL;
 
-BOOL qhtmInit( char *cLibname )
+BOOL qhtmInit( const char *cLibname )
 {
    if( !hQhtmDll )
    {
       if( !cLibname )
          cLibname = "qhtm.dll";
-      hQhtmDll = LoadLibrary( ( LPCTSTR ) cLibname );
+      hQhtmDll = LoadLibrary( ( LPCSTR ) cLibname );
       if( hQhtmDll )
       {
          QHTM_INITIALIZE pFunc =
@@ -60,7 +60,7 @@ BOOL qhtmInit( char *cLibname )
       else
       {
          MessageBox( GetActiveWindow(  ), "Library not loaded", cLibname,
-               MB_OK | MB_ICONSTOP );
+                     MB_OK | MB_ICONSTOP );
          return 0;
       }
    }
@@ -69,7 +69,7 @@ BOOL qhtmInit( char *cLibname )
 
 HB_FUNC( QHTM_INIT )
 {
-   char *cLibname = ( hb_pcount(  ) < 1 ) ? NULL : hb_parc( 1 );
+   const char *cLibname = ( hb_pcount(  ) < 1 ) ? NULL : hb_parc( 1 );
    hb_retl( qhtmInit( cLibname ) );
 }
 
@@ -170,7 +170,7 @@ HB_FUNC( QHTM_MESSAGE )
 {
    if( qhtmInit( NULL ) )
    {
-      char *cTitle = ( hb_pcount(  ) < 2 ) ? ( char * ) "" : hb_parc( 2 );
+      const char *cTitle = ( hb_pcount(  ) < 2 ) ? "" : hb_parc( 2 );
       UINT uType = ( hb_pcount(  ) < 3 ) ? MB_OK : ( UINT ) hb_parni( 3 );
       QHTM_MESSAGEBOX pFunc =
             ( QHTM_MESSAGEBOX ) GetProcAddress( hQhtmDll, "QHTM_MessageBox" );

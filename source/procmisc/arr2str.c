@@ -1,5 +1,5 @@
 /*
- * $Id: arr2str.c,v 1.10 2009-06-29 11:22:05 alkresin Exp $
+ * $Id: arr2str.c,v 1.11 2009-08-20 09:16:37 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Array / String conversion functions
@@ -13,7 +13,7 @@
 #include "hbvm.h"
 #include "guilib.h"
 
-static char *ReadArray( char *ptr, PHB_ITEM pItem )
+static const char *ReadArray( const char *ptr, PHB_ITEM pItem )
 {
    ULONG ulArLen, ulLen, ul;
 
@@ -81,7 +81,6 @@ static char *ReadArray( char *ptr, PHB_ITEM pItem )
       }
    }
    return ptr;
-
 }
 
 static ULONG ArrayMemoSize( PHB_ITEM pArray )
@@ -230,7 +229,7 @@ HB_FUNC( ARRAY2STRING )
 
 HB_FUNC( STRING2ARRAY )
 {
-   char *szResult = hb_parc( 1 );
+   const char *szResult = hb_parc( 1 );
    PHB_ITEM pItem = hb_itemNew( NULL );
 
    if( hb_parclen( 1 ) > 2 && *szResult == '\6' )

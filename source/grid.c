@@ -1,5 +1,5 @@
  /*
-  * $Id: grid.c,v 1.32 2009-06-29 11:22:04 alkresin Exp $
+  * $Id: grid.c,v 1.33 2009-08-20 09:16:37 druzus Exp $
   *
   * HWGUI - Harbour Win32 GUI library source code:
   * HGrid class
@@ -174,6 +174,7 @@ HB_FUNC( LISTVIEW_SETDISPINFO )
    PHB_ITEM pValue = hb_itemNew( NULL );
    LV_DISPINFO *pDispInfo = ( LV_DISPINFO * ) HB_PARHANDLE( 1 );
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
+   /* BUGGY code - have to be fixed */
    pDispInfo->item.pszText = hb_itemGetCPtr( pValue );
    hb_itemRelease( pValue );
    if( pDispInfo->item.iSubItem == 0 )
@@ -358,7 +359,7 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
    LONG lLin = hb_parnl( 2 ) - 1;
    LONG lCol = hb_parnl( 3 ) - 1;
    int iSubItemYesNo = lCol == 0 ? 0 : 1;
-   char *sText = hb_parc( 4 );
+   const char *sText = hb_parc( 4 );
    int iBitMap = hb_parni( 5 );
    LVITEM lvi;
    int iResult = 0;
@@ -376,7 +377,7 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
    lvi.iImage = iBitMap >= 0 ? lCol : -1;
    lvi.state = 0;
    lvi.stateMask = 0;
-   lvi.pszText = sText;
+   lvi.pszText = ( LPSTR ) sText;
    lvi.iItem = lLin;
    lvi.iSubItem = lCol;
 

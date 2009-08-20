@@ -1,5 +1,5 @@
 /*
- * $Id: dialog.c,v 1.30 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: dialog.c,v 1.31 2009-08-20 09:16:36 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -176,7 +176,7 @@ HB_FUNC( ISDLGBUTTONCHECKED )
 
 HB_FUNC( COMBOADDSTRING )
 {
-   char *cString = hb_parc( 2 );
+   const char *cString = hb_parc( 2 );
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), CB_ADDSTRING, 0,
          ( LPARAM ) cString );
 }
@@ -293,7 +293,7 @@ LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth,
    temp = GetObjectVar( pObj, "TITLE" );
    if( hb_itemType( temp ) == HB_IT_STRING )
    {
-      nchar = nCopyAnsiToWideChar( p, TEXT( hb_itemGetCPtr( temp ) ) );
+      nchar = nCopyAnsiToWideChar( p, hb_itemGetCPtr( temp ) );
       p += nchar;
    }
    else
@@ -342,15 +342,13 @@ LPDLGTEMPLATE CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1, int dwidth,
       *p++ = 0;                 // HOWORD (Control ID)
 
       // class name
-      nchar =
-            nCopyAnsiToWideChar( p,
-            TEXT( hb_itemGetCPtr( GetObjectVar( pControl, "WINCLASS" ) ) ) );
+      nchar = nCopyAnsiToWideChar( p, hb_itemGetCPtr( GetObjectVar( pControl, "WINCLASS" ) ) );
       p += nchar;
 
       // Caption
       temp = GetObjectVar( pControl, "TITLE" );
       if( hb_itemType( temp ) == HB_IT_STRING )
-         nchar = nCopyAnsiToWideChar( p, TEXT( hb_itemGetCPtr( temp ) ) );
+         nchar = nCopyAnsiToWideChar( p, hb_itemGetCPtr( temp ) );
       else
          nchar = nCopyAnsiToWideChar( p, TEXT( "" ) );
       p += nchar;
@@ -384,7 +382,7 @@ HB_FUNC( _CREATEPROPERTYSHEETPAGE )
 {
    PROPSHEETPAGE psp;
    PHB_ITEM pObj = hb_param( 1, HB_IT_OBJECT ), temp;
-   char *cTitle;
+   const char *cTitle;
    LPDLGTEMPLATE pdlgtemplate;
    HPROPSHEETPAGE h;
 

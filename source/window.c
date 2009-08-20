@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.74 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: window.c,v 1.75 2009-08-20 09:16:37 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -50,7 +50,6 @@ LRESULT CALLBACK MDIChildWndProc( HWND, UINT, WPARAM, LPARAM );
 extern HWND *aDialogs;
 HWND hMytoolMenu = NULL;
 static HHOOK OrigDockHookProc;
-static HHOOK OrigButtonDockHookProc;
 extern int iDialogs;
 
 HWND aWindows[2] = { 0, 0 };
@@ -90,10 +89,10 @@ HB_FUNC( HWG_INITMAINWINDOW )
    HANDLE hInstance = GetModuleHandle( NULL );
    DWORD ExStyle = 0;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
-   char *szAppName = hb_parc( 2 );
-   char *cTitle = hb_parc( 3 );
+   const char *szAppName = hb_parc( 2 );
+   const char *cTitle = hb_parc( 3 );
    LONG nStyle = hb_parnl( 7 );
-   char *cMenu = hb_parc( 4 );
+   const char *cMenu = hb_parc( 4 );
    int x = hb_parnl( 8 );
    int y = hb_parnl( 9 );
    int width = hb_parnl( 10 );
@@ -251,10 +250,10 @@ HB_FUNC( HWG_INITCHILDWINDOW )
    WNDCLASS wndclass;
    HMODULE /*HANDLE*/ hInstance = GetModuleHandle( NULL );
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
-   char *szAppName = hb_parc( 2 );
-   char *cTitle = hb_parc( 3 );
+   const char *szAppName = hb_parc( 2 );
+   const char *cTitle = hb_parc( 3 );
    LONG nStyle = ( ISNIL( 7 ) ? 0 : hb_parnl( 7 ) );
-   char *cMenu = hb_parc( 4 );
+   const char *cMenu = hb_parc( 4 );
    int x = hb_parnl( 8 );
    int y = hb_parnl( 9 );
    int width = hb_parnl( 10 );
@@ -334,9 +333,9 @@ HB_FUNC( HWG_INITMDIWINDOW )
    WNDCLASS wndclass, wc;
    HANDLE hInstance = GetModuleHandle( NULL );
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
-   char *szAppName = hb_parc( 2 );
-   char *cTitle = hb_parc( 3 );
-   char *cMenu = hb_parc( 4 );
+   const char *szAppName = hb_parc( 2 );
+   const char *cTitle = hb_parc( 3 );
+   const char *cMenu = hb_parc( 4 );
    int x = hb_parnl( 8 );
    int y = hb_parnl( 9 );
    int width = hb_parnl( 10 );
@@ -370,12 +369,10 @@ HB_FUNC( HWG_INITMDIWINDOW )
 
    // Register client window
    wc.lpfnWndProc = ( WNDPROC ) MDIChildWndProc;
-   wc.hIcon = ( hb_pcount(  ) > 4 &&
-         !ISNIL( 5 ) ) ? ( HICON ) HB_PARHANDLE( 5 ) : LoadIcon( ( HINSTANCE )
-         hInstance, "" );
-   wc.hbrBackground = ( HBRUSH ) ( ( ( hb_pcount(  ) > 5 &&
-                     !ISNIL( 6 ) ) ? HB_PARHANDLE( 6 ) : ( COLOR_WINDOW +
-                     1 ) ) );
+   wc.hIcon = ( hb_pcount(  ) > 4 && !ISNIL( 5 ) ) ?
+       ( HICON ) HB_PARHANDLE( 5 ) : LoadIcon( ( HINSTANCE ) hInstance, "" );
+   wc.hbrBackground = ( hb_pcount(  ) > 5 && !ISNIL( 6 ) ) ?
+       ( HBRUSH ) HB_PARHANDLE( 6 ) : ( HBRUSH ) ( COLOR_WINDOW + 1 );
    wc.lpszMenuName = ( LPCTSTR ) NULL;
    wc.cbWndExtra = 0;
    wc.lpszClassName = szChild;
@@ -466,7 +463,7 @@ HB_FUNC( HWG_CREATEMDICHILDWINDOW )
 {
    HWND hWnd;
    PHB_ITEM pObj = hb_param( 1, HB_IT_OBJECT );
-   char *cTitle = hb_itemGetCPtr( GetObjectVar( pObj, "TITLE" ) );
+   const char *cTitle = hb_itemGetCPtr( GetObjectVar( pObj, "TITLE" ) );
    DWORD style = ( DWORD ) hb_itemGetNL( GetObjectVar( pObj, "STYLE" ) );
    int y = ( int ) hb_itemGetNL( GetObjectVar( pObj, "NTOP" ) );
    int x = ( int ) hb_itemGetNL( GetObjectVar( pObj, "NLEFT" ) );

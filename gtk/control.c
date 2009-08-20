@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.37 2009-05-05 10:48:28 alkresin Exp $
+ * $Id: control.c,v 1.38 2009-08-20 09:16:35 druzus Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -65,7 +65,7 @@ GtkFixed * getFixedBox( GObject * handle )
 HB_FUNC( CREATESTATIC )
 {
    ULONG ulStyle = hb_parnl(3);
-   char * cTitle = ( hb_pcount() > 8 )? hb_parc(9) : "";
+   const char * cTitle = ( hb_pcount() > 8 )? hb_parc(9) : "";
    GtkWidget * hCtrl, * hLabel;
    GtkFixed * box;
 
@@ -73,10 +73,10 @@ HB_FUNC( CREATESTATIC )
       hCtrl = gtk_drawing_area_new();
    else
    {
+      gchar * gcTitle = hwg_convert_to_utf8( cTitle );
       hCtrl = gtk_event_box_new();
-      cTitle = hwg_convert_to_utf8( cTitle );
-      hLabel = gtk_label_new( cTitle );
-      g_free( cTitle );
+      hLabel = gtk_label_new( gcTitle );
+      g_free( gcTitle );
       gtk_container_add( GTK_CONTAINER(hCtrl), hLabel );
       g_object_set_data( (GObject*) hCtrl, "label", (gpointer) hLabel );
       if( !( ulStyle & SS_CENTER ) )
@@ -97,54 +97,53 @@ HB_FUNC( CREATESTATIC )
 
 HB_FUNC( HWG_STATIC_SETTEXT )
 {
-   char * cTitle = hwg_convert_to_utf8( hb_parc(2) );
+   gchar * gcTitle = hwg_convert_to_utf8( hb_parcx(2) );
    GtkLabel * hLabel = (GtkLabel*) g_object_get_data( (GObject*) HB_PARHANDLE(1),"label" );
-   gtk_label_set_text( hLabel, cTitle );
-   g_free( cTitle );
+   gtk_label_set_text( hLabel, gcTitle );
+   g_free( gcTitle );
 }
 
 /*
    CreateButton( hParentWindow, nButtonID, nStyle, x, y, nWidth, nHeight,
-               cCaption )
+                 cCaption )
 */
 HB_FUNC( CREATEBUTTON )
 {
    GtkWidget * hCtrl,* img;
    ULONG ulStyle = hb_parnl( 3 );
-   char * cTitle = ( hb_pcount() > 7 )? hb_parc(8) : "";
+   const char * cTitle = ( hb_pcount() > 7 )? hb_parc(8) : "";
    GtkFixed * box;
    PHWGUI_PIXBUF szFile = ISPOINTER(9) ? (PHWGUI_PIXBUF) HB_PARHANDLE(9): NULL;
+   gchar * gcTitle = hwg_convert_to_utf8( cTitle );
 
-   cTitle = hwg_convert_to_utf8( cTitle );
    if( ( ulStyle & 0xf ) == BS_AUTORADIOBUTTON )
    {
       GSList * group = (GSList*)HB_PARHANDLE(2);
-      hCtrl = gtk_radio_button_new_with_label( group,cTitle );
+      hCtrl = gtk_radio_button_new_with_label( group, gcTitle );
       group = gtk_radio_button_get_group( (GtkRadioButton*)hCtrl );
       HB_STOREHANDLE( group,2 );
    }
    else if( ( ulStyle & 0xf ) == BS_AUTO3STATE )
-      hCtrl = gtk_check_button_new_with_label( cTitle );
+      hCtrl = gtk_check_button_new_with_label( gcTitle );
    else if( ( ulStyle & 0xf ) == BS_GROUPBOX )
-      hCtrl = gtk_frame_new( cTitle );
+      hCtrl = gtk_frame_new( gcTitle );
    else
-      hCtrl = gtk_button_new_with_mnemonic( cTitle );
-      
+      hCtrl = gtk_button_new_with_mnemonic( gcTitle );
+
 #if GTK_CHECK_VERSION(2,4,1)
    if (szFile )
-   {   
+   {
       img = gtk_image_new_from_pixbuf(szFile->handle);
       gtk_button_set_image(GTK_BUTTON(hCtrl),img);
    }
 #endif
-   g_free( cTitle );
+   g_free( gcTitle );
    box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
       gtk_fixed_put( box, hCtrl, hb_parni(4), hb_parni(5) );
    gtk_widget_set_size_request( hCtrl,hb_parni(6),hb_parni(7) );
 
    HB_RETHANDLE( hCtrl );
-
 }
 
 HB_FUNC( HWG_CHECKBUTTON )
@@ -164,7 +163,7 @@ HB_FUNC( HWG_ISBUTTONCHECKED )
 HB_FUNC( CREATEEDIT )
 {
    GtkWidget * hCtrl;
-   char * cTitle = ( hb_pcount() > 7 )? hb_parc(8) : "";
+   const char * cTitle = ( hb_pcount() > 7 )? hb_parc(8) : "";
    unsigned long ulStyle = (ISNIL(3))? 0 : hb_parnl(3);
 
    if( ulStyle & ES_MULTILINE )
@@ -178,7 +177,7 @@ HB_FUNC( CREATEEDIT )
       hCtrl = gtk_entry_new();
    if( ulStyle & ES_PASSWORD )
       gtk_entry_set_visibility((GtkEntry*)hCtrl,FALSE);
-      
+
 
    GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
@@ -187,15 +186,15 @@ HB_FUNC( CREATEEDIT )
 
    if( *cTitle )
    {
-      cTitle = hwg_convert_to_utf8( cTitle );
+      gchar * gcTitle = hwg_convert_to_utf8( cTitle );
       if( ulStyle & ES_MULTILINE )
       {
          GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (hCtrl));
-         gtk_text_buffer_set_text( buffer, cTitle, -1 );
+         gtk_text_buffer_set_text( buffer, gcTitle, -1 );
       }
       else
-         gtk_entry_set_text( (GtkEntry*)hCtrl, cTitle );
-      g_free( cTitle );
+         gtk_entry_set_text( (GtkEntry*)hCtrl, gcTitle );
+      g_free( gcTitle );
    }
 
    all_signal_connect( (gpointer) hCtrl );
@@ -206,16 +205,16 @@ HB_FUNC( CREATEEDIT )
 HB_FUNC( HWG_EDIT_SETTEXT )
 {
    GtkWidget * hCtrl = (GtkWidget *)HB_PARHANDLE(1);
-   char * cTitle = hwg_convert_to_utf8( hb_parc(2) );
+   gchar * gcTitle = hwg_convert_to_utf8( hb_parcx(2) );
 
    if( g_object_get_data( (GObject *)hCtrl, "multi" ) )
    {
       GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (hCtrl));
-      gtk_text_buffer_set_text( buffer, cTitle, -1 );
+      gtk_text_buffer_set_text( buffer, gcTitle, -1 );
    }
    else
-      gtk_entry_set_text( (GtkEntry*)hCtrl, cTitle );
-   g_free( cTitle );
+      gtk_entry_set_text( (GtkEntry*)hCtrl, gcTitle );
+   g_free( gcTitle );
 }
 
 HB_FUNC( HWG_EDIT_GETTEXT )
@@ -351,13 +350,13 @@ HB_FUNC( CREATEBROWSE )
    int nWidth = hb_itemGetNI( GetObjectVar( pObject, "NWIDTH" ) );
    int nHeight = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
    unsigned long int ulStyle = hb_itemGetNL( GetObjectVar( pObject, "STYLE" ) );
-   
+
    temp = GetObjectVar( pObject, "OPARENT" );
    handle = (GObject*) HB_GETHANDLE( GetObjectVar( temp, "HANDLE" ) );
 
    hbox = gtk_hbox_new( FALSE, 0 );
    vbox = gtk_vbox_new( FALSE, 0 );
-   
+
    area    = gtk_drawing_area_new();
 
    gtk_box_pack_start( GTK_BOX( hbox ), vbox, TRUE, TRUE, 0 );
@@ -405,10 +404,10 @@ HB_FUNC( CREATEBROWSE )
    set_event( (gpointer)area, "expose_event", WM_PAINT, 0, 0 );
 
    GTK_WIDGET_SET_FLAGS( area,GTK_CAN_FOCUS );
-   
-   gtk_widget_add_events( area, GDK_BUTTON_PRESS_MASK | 
-        GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK |
-	GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK );
+
+   gtk_widget_add_events( area, GDK_BUTTON_PRESS_MASK |
+         GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK |
+         GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK );
    set_event( (gpointer)area, "button_press_event", 0, 0, 0 );
    set_event( (gpointer)area, "button_release_event", 0, 0, 0 );
    set_event( (gpointer)area, "motion_notify_event", 0, 0, 0 );
@@ -448,7 +447,7 @@ HB_FUNC( HWG_SETADJOPTIONS )
    GtkAdjustment *adj = (GtkAdjustment *) HB_PARHANDLE(1);
    gdouble value;
    int lChanged = 0;
-   
+
    if( !ISNIL(2) && ( value = (gdouble)hb_parnl(2) ) != adj->value )
    {
       adj->value = value;
@@ -581,7 +580,7 @@ HB_FUNC( CREATEOWNBTN )
    GtkFixed * box;
 
    hCtrl = gtk_drawing_area_new();
-   
+
    box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if ( box )
    {
@@ -596,7 +595,7 @@ HB_FUNC( CREATEOWNBTN )
    set_event( (gpointer)hCtrl, "enter_notify_event", 0, 0, 0 );
    set_event( (gpointer)hCtrl, "leave_notify_event", 0, 0, 0 );
    all_signal_connect( (gpointer) hCtrl );
-   
+
    HB_RETHANDLE( hCtrl );
 
 }
@@ -679,7 +678,7 @@ HB_FUNC( HWG_MOVEWIDGET )
       ch_widget = widget;
       widget = widget->parent;
    }
-          
+ 
    if( !ISNIL(2) && !ISNIL(3) )
    {
       gtk_fixed_move( (GtkFixed*) (widget->parent), widget, hb_parni(2), hb_parni(3) );
@@ -698,7 +697,6 @@ HB_FUNC( HWG_MOVEWIDGET )
             gtk_widget_set_size_request( ch_widget, w1, h1 );
       }
    }
-
 }
 
 HB_FUNC(CREATEPROGRESSBAR)
@@ -720,7 +718,7 @@ HB_FUNC( UPDATEPROGRESSBAR )
 }
 
 HB_FUNC( SETPROGRESSBAR )
-{ 
+{
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);   
    gdouble b= (gdouble) hb_parnd( 2) ;
 
@@ -743,13 +741,12 @@ HB_FUNC( CREATESTATUSWINDOW )
 }
 
 HB_FUNC( STATUSBARSETTEXT )
-{   
-    char *cTitle = hb_parcx(3);
-    GtkWidget *w = (GtkWidget *) hb_parptr(1);
-    int iStatus = hb_parni(2)-1;
-    cTitle = hwg_convert_to_utf8( cTitle );
-    hb_retni(gtk_statusbar_push(GTK_STATUSBAR(w), iStatus, cTitle));
-
+{
+   gchar *gcTitle = hwg_convert_to_utf8( hb_parcx(3) );
+   GtkWidget *w = (GtkWidget *) hb_parptr(1);
+   int iStatus = hb_parni(2)-1;
+   hb_retni(gtk_statusbar_push(GTK_STATUSBAR(w), iStatus, gcTitle));
+   g_free( gcTitle );
 }
 
 /* ------------------------------------------------------------------------ */
@@ -763,10 +760,11 @@ HB_FUNC( STATUSBARREMOVETEXT )
 }
 
 static void toolbar_clicked( GtkWidget *item,
-	    gpointer     user_data)
+                             gpointer user_data)
 {
   PHB_ITEM pData = (PHB_ITEM) user_data;
-  hb_vmEvalBlock( ( PHB_ITEM ) pData );	    
+  hb_vmEvalBlock( ( PHB_ITEM ) pData );
+  HB_SYMBOL_UNUSED( item );
 }
 
 HB_FUNC(CREATETOOLBAR)
@@ -791,11 +789,13 @@ HB_FUNC(CREATETOOLBARBUTTON)
   GtkWidget *toolbutton1,*img;   
   GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
   PHWGUI_PIXBUF szFile = ISPOINTER(2) ? (PHWGUI_PIXBUF) HB_PARHANDLE(2): NULL;  
-  char * szLabel = ISCHAR( 3 ) ? hb_parc( 3 ) : NULL ;
-  BOOL lSep = hb_parl( 4 ) ;
+  const char * szLabel = ISCHAR( 3 ) ? hb_parc( 3 ) : NULL ;
+  BOOL lSep = hb_parl( 4 );
+  gchar * gcLabel = NULL;
+
   if ( szLabel )
   {
-     szLabel = hwg_convert_to_utf8( szLabel );
+     gcLabel = hwg_convert_to_utf8( szLabel );
   }
   if (lSep) 
   {
@@ -804,60 +804,59 @@ HB_FUNC(CREATETOOLBARBUTTON)
   else
   {
      if (szFile )
-     {   
-        img = gtk_image_new_from_pixbuf( szFile->handle );  
-	gtk_widget_show( img );
-        toolbutton1 = ( GtkWidget * ) gtk_tool_button_new( img, szLabel );      
+     {
+        img = gtk_image_new_from_pixbuf( szFile->handle );
+        gtk_widget_show( img );
+        toolbutton1 = ( GtkWidget * ) gtk_tool_button_new( img, gcLabel );
      }
      else
      { 
-        toolbutton1 = ( GtkWidget * ) gtk_tool_button_new( NULL, szLabel );      
-     }	 
-     if ( szLabel )
+        toolbutton1 = ( GtkWidget * ) gtk_tool_button_new( NULL, gcLabel );
+     }
+     if ( gcLabel )
      {
-        g_free( szLabel ) ;	 
+        g_free( gcLabel );
      }
   }
   gtk_widget_show ( toolbutton1 );   
-  gtk_container_add ( GTK_CONTAINER( hCtrl ), toolbutton1 );   
-      
+  gtk_container_add ( GTK_CONTAINER( hCtrl ), toolbutton1 );
+
   HB_RETHANDLE( toolbutton1 );
 #endif
 }
-   
+
 
 HB_FUNC(TOOLBAR_SETACTION)
 {
   GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
   PHB_ITEM pItem = hb_itemParam( 2 ) ;
   g_signal_connect (hCtrl, "clicked",
-			    G_CALLBACK (toolbar_clicked), (void*) pItem);
-}			    
+                    G_CALLBACK (toolbar_clicked), (void*) pItem);
+}
 
 static void tabchange_clicked(GtkNotebook *item,
-            GtkNotebookPage * Page,
-	    guint pagenum,
-	    gpointer     user_data)
+                              GtkNotebookPage * Page,
+                              guint pagenum,
+                              gpointer user_data)
 {
   PHB_ITEM pData = (PHB_ITEM) user_data;
-  gpointer dwNewLong = g_object_get_data( (GObject*) item, "obj" );    
+  gpointer dwNewLong = g_object_get_data( (GObject*) item, "obj" );
   PHB_ITEM pObject = (PHB_ITEM) dwNewLong ;
   PHB_ITEM Disk=hb_itemPutNL( NULL, pagenum+1);
-//  TraceLog(  "bb.txt","%lu\r\n",pagenum);
+
+  HB_SYMBOL_UNUSED( Page );
   hb_vmEvalBlockV( (PHB_ITEM) pData, 2,pObject,Disk  );
   hb_itemRelease( Disk );
-
 }
 
 //static void tabchange_clicked1(GtkNotebook *item,
-//	    gint pagenum,
-//	    gpointer     user_data)
+//                               gint pagenum,
+//                               gpointer user_data)
 //{
-//  PHB_ITEM pData = (PHB_ITEM) user_data;  
-//  gpointer dwNewLong = g_object_get_data( (GObject*) item, "obj" );    
+//  PHB_ITEM pData = (PHB_ITEM) user_data;
+//  gpointer dwNewLong = g_object_get_data( (GObject*) item, "obj" );
 //  PHB_ITEM pObject = (PHB_ITEM) dwNewLong ;
 //  PHB_ITEM Disk=hb_itemPutNL( NULL, pagenum);
-//  TraceLog(  "aa.txt","%lu\r\n",pagenum);
 //  hb_vmEvalBlockV( ( PHB_ITEM ) pData ,2,pObject,Disk);	    
 //  hb_vmEvalBlockV( ChangeDiskBlock, 1, Disk  );
 //  hb_itemRelease( Disk );
@@ -871,7 +870,6 @@ HB_FUNC(TAB_SETACTION  )
   PHB_ITEM pItem = hb_itemParam( 2 ) ;
   g_signal_connect (hCtrl, "switch-page",
 			    G_CALLBACK (tabchange_clicked), (void*) pItem);		    
-//TraceLog("ola.txt","ola %p 			    ", hCtrl);
 }
 
 HB_FUNC(INITMONTHCALENDAR)

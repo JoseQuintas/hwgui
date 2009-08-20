@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.13 2006-12-22 07:30:24 alkresin Exp $
+ * $Id: commond.c,v 1.14 2009-08-20 09:16:35 druzus Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
@@ -85,7 +85,7 @@ HB_FUNC( SELECTFONT )
 {
    GtkWidget *fontseldlg;
    GtkFontSelection *fontsel;
-   char *cTitle = ( hb_pcount()>2 && ISCHAR(3) )? hb_parc(3):"Select Font";
+   const char *cTitle = ( hb_pcount()>2 && ISCHAR(3) )? hb_parc(3):"Select Font";
 
    fontseldlg = gtk_font_selection_dialog_new( cTitle );
    fontsel = GTK_FONT_SELECTION( GTK_FONT_SELECTION_DIALOG (fontseldlg)->fontsel );
@@ -93,7 +93,7 @@ HB_FUNC( SELECTFONT )
    if( hb_pcount() > 0 && !ISNIL(1) )
    {
    }
-   
+
    g_signal_connect( G_OBJECT (fontseldlg), "destroy",
                       G_CALLBACK (gtk_main_quit), NULL);
 
@@ -101,14 +101,14 @@ HB_FUNC( SELECTFONT )
                      "clicked",
                      G_CALLBACK (store_font),
                      (gpointer) fontseldlg );
-   
+
    g_signal_connect_swapped( GTK_OBJECT (GTK_FONT_SELECTION_DIALOG (fontseldlg)->cancel_button),
                              "clicked",
                              G_CALLBACK (cancel_font),
                              (gpointer) fontseldlg );
-                             
+
    gtk_widget_show( fontseldlg );
-   gtk_main();   
+   gtk_main();
 
 }
 
@@ -127,11 +127,11 @@ void cancel_filedlg( gpointer file_selector )
 HB_FUNC( SELECTFILE )
 {
    GtkWidget * file_selector;
-   char * cMask = ( hb_pcount()>1 && ISCHAR(2) )? hb_parc(2):NULL;
-   char *cTitle = ( hb_pcount()>3 && ISCHAR(4) )? hb_parc(4):"Select a file";
-   
+   const char * cMask = ( hb_pcount()>1 && ISCHAR(2) )? hb_parc(2):NULL;
+   const char *cTitle = ( hb_pcount()>3 && ISCHAR(4) )? hb_parc(4):"Select a file";
+
    file_selector = gtk_file_selection_new( cTitle );
-   
+
    g_signal_connect (G_OBJECT (file_selector), "destroy",
                       G_CALLBACK (gtk_main_quit), NULL);
 
@@ -139,15 +139,15 @@ HB_FUNC( SELECTFILE )
                      "clicked",
                      G_CALLBACK (store_filename),
                      (gpointer) file_selector);
-   
+
    g_signal_connect_swapped( GTK_OBJECT (GTK_FILE_SELECTION (file_selector)->cancel_button),
                              "clicked",
                              G_CALLBACK (cancel_filedlg),
                              (gpointer) file_selector); 
-                             
+
    if( cMask )
       gtk_file_selection_complete( (GtkFileSelection*)file_selector, cMask );
-   
+
    gtk_widget_show( file_selector );
    gtk_main();
 }
@@ -162,7 +162,7 @@ void store_color( gpointer colorseldlg )
    gtk_color_selection_get_current_color (colorsel, &color);
    // sprintf( ss,"%ld %ld %ld %ld \n\r",color.pixel,color.red,color.green,color.blue );
    // g_print(ss);
-   
+
    hb_retnl( (ULONG) ( (color.red>>8) + (color.green&0xff00) + ((color.blue&0xff00)<<8) ) );
    gtk_widget_destroy( (GtkWidget*) colorseldlg );
 }
@@ -172,8 +172,8 @@ HB_FUNC( HWG_CHOOSECOLOR )
    GtkWidget *colorseldlg;
    GtkColorSelection *colorsel;
    GtkWidget * hParent = GetActiveWindow();
-   char *cTitle = ( hb_pcount()>2 && ISCHAR(3) )? hb_parc(3):"Select color";
-   
+   const char *cTitle = ( hb_pcount()>2 && ISCHAR(3) )? hb_parc(3):"Select color";
+
    colorseldlg = gtk_color_selection_dialog_new( cTitle );
    colorsel = GTK_COLOR_SELECTION( GTK_COLOR_SELECTION_DIALOG (colorseldlg)->colorsel );
 
@@ -200,7 +200,7 @@ HB_FUNC( HWG_CHOOSECOLOR )
       gtk_color_selection_set_current_color( colorsel, &color );
    }
    gtk_color_selection_set_has_palette (colorsel, TRUE);
-   
+
    g_signal_connect( G_OBJECT (colorseldlg), "destroy",
                       G_CALLBACK (gtk_main_quit), NULL);
 
@@ -208,7 +208,7 @@ HB_FUNC( HWG_CHOOSECOLOR )
                      "clicked",
                      G_CALLBACK (store_color),
                      (gpointer) colorseldlg );
-   
+
    g_signal_connect_swapped( GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (colorseldlg)->cancel_button),
                              "clicked",
                              G_CALLBACK (gtk_widget_destroy),
@@ -216,8 +216,7 @@ HB_FUNC( HWG_CHOOSECOLOR )
 
    gtk_window_set_modal( (GtkWindow *) colorseldlg, 1 );
    gtk_window_set_transient_for( (GtkWindow *) colorseldlg, (GtkWindow *) hParent );
-                             
+
    gtk_widget_show( colorseldlg );
-   gtk_main();  
-   
+   gtk_main();
 }

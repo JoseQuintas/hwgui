@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.27 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: richedit.c,v 1.28 2009-08-20 09:16:37 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -339,7 +339,7 @@ HB_FUNC( RE_GETLINE )
 HB_FUNC( RE_INSERTTEXT )
 {
    HWND hCtrl = ( HWND ) HB_PARHANDLE( 1 );
-   char *ptr = hb_parc( 2 );
+   const char *ptr = hb_parc( 2 );
 
    SendMessage( hCtrl, EM_REPLACESEL, 0, ( LPARAM ) ptr );
 }

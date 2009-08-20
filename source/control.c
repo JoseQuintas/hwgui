@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.83 2009-07-29 15:41:48 lfbasso Exp $
+ * $Id: control.c,v 1.84 2009-08-20 09:16:36 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -33,9 +33,15 @@ WINUSERAPI HWND WINAPI GetAncestor( HWND hwnd, UINT gaFlags );
 
 #endif
 
-#define TTS_BALLOON             0x40    // added by MAG
-#define CCM_SETVERSION (CCM_FIRST + 0x7)
-#define CCM_GETVERSION (CCM_FIRST + 0x8)
+#ifndef TTS_BALLOON
+   #define TTS_BALLOON             0x40    // added by MAG
+#endif
+#ifndef CCM_SETVERSION
+   #define CCM_SETVERSION (CCM_FIRST + 0x7)
+#endif
+#ifndef CCM_GETVERSION
+   #define CCM_GETVERSION (CCM_FIRST + 0x8)
+#endif
 
 // LRESULT CALLBACK OwnBtnProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK WinCtrlProc( HWND, UINT, WPARAM, LPARAM );
@@ -1616,6 +1622,7 @@ HB_FUNC( TOOLBAR_SETDISPINFO )
    PHB_ITEM pValue = hb_itemNew( NULL );
    LPTOOLTIPTEXT pDispInfo = ( LPTOOLTIPTEXT ) HB_PARHANDLE( 1 );
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
+   /* BUGGY code - have to be fixed */
    pDispInfo->lpszText = hb_itemGetCPtr( pValue );
    hb_itemRelease( pValue );
 }
@@ -1629,29 +1636,25 @@ HB_FUNC( TOOLBAR_GETDISPINFOID )
 
 HB_FUNC( TOOLBAR_GETINFOTIP )
 {
-
    PHB_ITEM pValue = hb_itemNew( NULL );
    LPNMTBGETINFOTIP pDispInfo = ( LPNMTBGETINFOTIP ) HB_PARHANDLE( 1 );
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
+   /* BUGGY code - have to be fixed */
    pDispInfo->pszText = hb_itemGetCPtr( pValue );
    hb_itemRelease( pValue );
-
 }
 
 HB_FUNC( TOOLBAR_GETINFOTIPID )
 {
-
    LPNMTBGETINFOTIP pDispInfo = ( LPNMTBGETINFOTIP ) HB_PARHANDLE( 1 );
    DWORD idButton = pDispInfo->iItem;
    hb_retnl( idButton );
-
 }
 
 HB_FUNC( TOOLBAR_SUBMENU )
 {
    LPNMTOOLBAR lpnmTB = ( LPNMTOOLBAR ) HB_PARHANDLE( 1 );
-//    RECT      *rc = NULL;
-   RECT rc = { 0 };
+   RECT rc = { 0, 0, 0, 0 };
    TPMPARAMS tpm;
    HMENU hPopupMenu;
    HMENU hMenuLoaded;
@@ -1661,7 +1664,7 @@ HB_FUNC( TOOLBAR_SUBMENU )
    SendMessage( lpnmTB->hdr.hwndFrom, TB_GETRECT,
          ( WPARAM ) lpnmTB->iItem, ( LPARAM ) & rc );
 
-   MapWindowPoints( lpnmTB->hdr.hwndFrom, HWND_DESKTOP, ( LPPOINT ) & rc, 2 );
+   MapWindowPoints( lpnmTB->hdr.hwndFrom, HWND_DESKTOP, ( LPPOINT ) ( void * ) &rc, 2 );
 
    tpm.cbSize = sizeof( TPMPARAMS );
    // tpm.rcExclude = rc;
@@ -1687,8 +1690,7 @@ HB_FUNC( TOOLBAR_SUBMENU )
 HB_FUNC( TOOLBAR_SUBMENUEX )
 {
    LPNMTOOLBAR lpnmTB = ( LPNMTOOLBAR ) HB_PARHANDLE( 1 );
-   RECT rc = { 0 };
-//   RECT      *rc = NULL;
+   RECT rc = { 0, 0, 0, 0 };
    TPMPARAMS tpm;
    HMENU hPopupMenu = ( HMENU ) HB_PARHANDLE( 2 );
    HWND g_hwndMain = ( HWND ) HB_PARHANDLE( 3 );
@@ -1696,7 +1698,7 @@ HB_FUNC( TOOLBAR_SUBMENUEX )
    SendMessage( lpnmTB->hdr.hwndFrom, TB_GETRECT,
          ( WPARAM ) lpnmTB->iItem, ( LPARAM ) & rc );
 
-   MapWindowPoints( lpnmTB->hdr.hwndFrom, HWND_DESKTOP, ( LPPOINT ) & rc, 2 );
+   MapWindowPoints( lpnmTB->hdr.hwndFrom, HWND_DESKTOP, ( LPPOINT ) ( void * ) &rc, 2 );
 
    tpm.cbSize = sizeof( TPMPARAMS );
    //tpm.rcExclude = rc;

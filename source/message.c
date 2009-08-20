@@ -1,5 +1,5 @@
 /*
- *$Id: message.c,v 1.12 2009-06-29 11:22:04 alkresin Exp $
+ *$Id: message.c,v 1.13 2009-08-20 09:16:37 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level messages functions
@@ -18,7 +18,7 @@
 
 HB_FUNC( MSGINFO )
 {
-   char *cTitle = ( hb_pcount(  ) == 1 ) ? ( char * ) "" : hb_parc( 2 );
+   const char *cTitle = ( hb_pcount(  ) == 1 ) ? "" : hb_parc( 2 );
 
    MessageBox( GetActiveWindow(  ), hb_parc( 1 ), cTitle,
          MB_OK | MB_ICONINFORMATION );
@@ -26,9 +26,9 @@ HB_FUNC( MSGINFO )
 
 HB_FUNC( MSGSTOP )
 {
-   char *cTitle;
+   const char *cTitle;
 
-   cTitle = ( hb_pcount(  ) == 1 ) ? ( char * ) "" : hb_parc( 2 );
+   cTitle = ( hb_pcount(  ) == 1 ) ? "" : hb_parc( 2 );
 
    MessageBox( GetActiveWindow(  ), hb_parc( 1 ), cTitle,
          MB_OK | MB_ICONSTOP );
@@ -36,9 +36,9 @@ HB_FUNC( MSGSTOP )
 
 HB_FUNC( MSGOKCANCEL )
 {
-   char *cTitle;
+   const char *cTitle;
 
-   cTitle = ( hb_pcount(  ) == 1 ) ? ( char * ) "" : hb_parc( 2 );
+   cTitle = ( hb_pcount(  ) == 1 ) ? "" : hb_parc( 2 );
 
    hb_retni( MessageBox( GetActiveWindow(  ), hb_parc( 1 ), cTitle,
                MB_OKCANCEL | MB_ICONQUESTION ) );
@@ -46,10 +46,10 @@ HB_FUNC( MSGOKCANCEL )
 
 HB_FUNC( MSGYESNO )
 {
-   char *cTitle;
+   const char *cTitle;
    HWND h = GetActiveWindow(  );
 
-   cTitle = ( hb_pcount(  ) == 1 ) ? ( char * ) "" : hb_parc( 2 );
+   cTitle = ( hb_pcount(  ) == 1 ) ? "" : hb_parc( 2 );
 
    hb_retl( MessageBox( h, hb_parc( 1 ), cTitle,
                MB_YESNO | MB_ICONQUESTION ) == IDYES );
@@ -57,10 +57,10 @@ HB_FUNC( MSGYESNO )
 
 HB_FUNC( MSGNOYES )
 {
-   char *cTitle;
+   const char *cTitle;
    HWND h = GetActiveWindow(  );
 
-   cTitle = ( hb_pcount(  ) == 1 ) ? ( char * ) "" : hb_parc( 2 );
+   cTitle = ( hb_pcount(  ) == 1 ) ? "" : hb_parc( 2 );
 
    hb_retl( MessageBox( h, hb_parc( 1 ), cTitle,
                MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 ) == IDYES );
@@ -68,10 +68,10 @@ HB_FUNC( MSGNOYES )
 
 HB_FUNC( MSGYESNOCANCEL )
 {
-   char *cTitle;
+   const char *cTitle;
    HWND h = GetActiveWindow(  );
 
-   cTitle = ( hb_pcount(  ) == 1 ) ? ( char * ) "" : hb_parc( 2 );
+   cTitle = ( hb_pcount(  ) == 1 ) ? "" : hb_parc( 2 );
 
    hb_retni( MessageBox( h, hb_parc( 1 ), cTitle,
                MB_YESNOCANCEL | MB_ICONQUESTION ) );
@@ -79,7 +79,7 @@ HB_FUNC( MSGYESNOCANCEL )
 
 HB_FUNC( MSGEXCLAMATION )
 {
-   char *cTitle = ( hb_pcount(  ) == 1 ) ? ( char * ) "" : hb_parc( 2 );
+   const char *cTitle = ( hb_pcount(  ) == 1 ) ? "" : hb_parc( 2 );
    HWND h = GetActiveWindow(  );
 
    MessageBox( h, hb_parc( 1 ), cTitle,
@@ -88,10 +88,10 @@ HB_FUNC( MSGEXCLAMATION )
 
 HB_FUNC( MSGRETRYCANCEL )
 {
-   char *cTitle;
+   const char *cTitle;
    HWND h = GetActiveWindow(  );
 
-   cTitle = ( hb_pcount(  ) == 1 ) ? ( char * ) "" : hb_parc( 2 );
+   cTitle = ( hb_pcount(  ) == 1 ) ? "" : hb_parc( 2 );
 
    hb_retni( MessageBox( h, hb_parc( 1 ), cTitle,
                MB_RETRYCANCEL | MB_ICONQUESTION | MB_ICONQUESTION ) );

@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.19 2009-08-17 20:52:16 lculik Exp $
+ * $Id: drawtext.c,v 1.20 2009-08-20 09:16:37 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -54,7 +54,7 @@ HB_FUNC( DELETEDC )
 
 HB_FUNC( TEXTOUT )
 {
-   char *cText = hb_parc( 4 );
+   const char *cText = hb_parc( 4 );
    TextOut( ( HDC ) HB_PARHANDLE( 1 ),  // handle of device context
          hb_parni( 2 ),         // x-coordinate of starting position
          hb_parni( 3 ),         // y-coordinate of starting position
@@ -65,7 +65,7 @@ HB_FUNC( TEXTOUT )
 
 HB_FUNC( DRAWTEXT )
 {
-   char *cText = hb_parc( 2 );
+   const char *cText = hb_parc( 2 );
    RECT rc;
    UINT uFormat = ( hb_pcount(  ) == 4 ? hb_parni( 4 ) : hb_parni( 7 ) );
    int uiPos = ( hb_pcount(  ) == 4 ? 3 : hb_parni( 8 ) );
@@ -130,7 +130,7 @@ HB_FUNC( GETTEXTMETRIC )
 
 HB_FUNC( GETTEXTSIZE )
 {
-   char *pstr = hb_parc( 2 );
+   const char *pstr = hb_parc( 2 );
    SIZE sz;
    PHB_ITEM aMetr = _itemArrayNew( 2 );
    PHB_ITEM temp;
@@ -299,7 +299,7 @@ HB_FUNC( EXTTEXTOUT )
 {
 
    RECT rc;
-   char *cText = ISCHAR( 8 ) ? hb_parc( 8 ) : NULL;
+   const char *cText = ISCHAR( 8 ) ? hb_parc( 8 ) : NULL;
 
    rc.left = hb_parni( 4 );
    rc.top = hb_parni( 5 );

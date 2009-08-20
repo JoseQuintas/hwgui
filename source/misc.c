@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.51 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: misc.c,v 1.52 2009-08-20 09:16:37 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -71,7 +71,7 @@ HB_FUNC( COPYSTRINGTOCLIPBOARD )
 {
    HGLOBAL hglbCopy;
    char *lptstrCopy;
-   char *cStr = hb_parc( 1 );
+   const char *cStr = hb_parc( 1 );
    int nLen = strlen( cStr );
 
    if( !OpenClipboard( GetActiveWindow(  ) ) )
@@ -128,15 +128,14 @@ HB_FUNC( GETSTOCKOBJECT )
 
 HB_FUNC( LOWORD )
 {
-
    hb_retni( ( int ) ( ( ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
-                     hb_parnl( 1 ) ) & 0xFFFF ) );
+                              ( ULONG ) hb_parnl( 1 ) ) & 0xFFFF ) );
 }
 
 HB_FUNC( HIWORD )
 {
    hb_retni( ( int ) ( ( ( ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
-                           hb_parnl( 1 ) ) >> 16 ) & 0xFFFF ) );
+                              ( ULONG ) hb_parnl( 1 ) ) >> 16 ) & 0xFFFF ) );
 }
 
 HB_FUNC( HWG_BITOR )
@@ -216,11 +215,10 @@ HB_FUNC( SCREENTOCLIENT )
    else
    {
       Array2Rect( hb_param( 2, HB_IT_ARRAY ), &R );
-      ScreenToClient( ( HWND ) HB_PARHANDLE( 1 ), ( LPPOINT ) & R );
-      ScreenToClient( ( HWND ) HB_PARHANDLE( 1 ), ( ( LPPOINT ) & R ) + 1 );
+      ScreenToClient( ( HWND ) HB_PARHANDLE( 1 ), ( LPPOINT ) ( void * ) &R );
+      ScreenToClient( ( HWND ) HB_PARHANDLE( 1 ), ( ( LPPOINT ) ( void * ) &R ) + 1 );
       hb_itemRelease( hb_itemReturn( Rect2Array( &R ) ) );
       return;
-
    }
 
    temp = hb_itemPutNL( NULL, pt.x );
@@ -293,14 +291,14 @@ HB_FUNC( GETKEYNAMETEXT )
 
 HB_FUNC( ACTIVATEKEYBOARDLAYOUT )
 {
-   char *cLayout = hb_parc( 1 );
+   const char *cLayout = hb_parc( 1 );
    HKL curr = GetKeyboardLayout( 0 );
-   char sBuff[KL_NAMELENGTH];
+   TCHAR sBuff[KL_NAMELENGTH];
    UINT num = GetKeyboardLayoutList( 0, NULL ), i = 0;
 
    do
    {
-      GetKeyboardLayoutName( ( LPTSTR ) sBuff );
+      GetKeyboardLayoutName( sBuff );
       if( !strcmp( sBuff, cLayout ) )
          break;
       ActivateKeyboardLayout( 0, 0 );
@@ -747,13 +745,13 @@ HB_FUNC( GETKEYBOARDCOUNT )
 HB_FUNC( GETNEXTDLGGROUPITEM )
 {
    HB_RETHANDLE( GetNextDlgGroupItem( ( HWND ) HB_PARHANDLE( 1 ),
-               ( HWND ) HB_PARHANDLE( 2 ), hb_parl( 3 ) ) );
+                 ( HWND ) HB_PARHANDLE( 2 ), hb_parl( 3 ) ) );
 }
 
 HB_FUNC( PTRTOULONG )
 {
-   hb_retnl( ( LONG ) ( ( ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
-                     hb_parnl( 1 ) ) ) );
+   hb_retnl( ISPOINTER( 1 ) ? ( LONG ) PtrToUlong( hb_parptr( 1 ) ) :
+                              hb_parnl( 1 ) );
 }
 
 HB_FUNC( OUTPUTDEBUGSTRING )

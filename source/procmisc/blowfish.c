@@ -1,5 +1,5 @@
 /*
- * $Id: blowfish.c,v 1.9 2009-06-29 11:22:05 alkresin Exp $
+ * $Id: blowfish.c,v 1.10 2009-08-20 09:16:38 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Encryption/Decryption functions, using BlowFish algorithm,
@@ -435,8 +435,8 @@ HB_FUNC( BF_ENCRYPT )
 {
 
    BLOWFISH_CTX ctx;
-   char *keyDefault = "r2d7";
-   char *ptri = hb_parc( 1 );
+   const char *keyDefault = "r2d7";
+   const char *ptri = hb_parc( 1 );
    unsigned char *ptro;
    unsigned char *key;
    int iKeylen, iDiff;
@@ -491,8 +491,8 @@ HB_FUNC( BF_DECRYPT )
 {
 
    BLOWFISH_CTX ctx;
-   char *keyDefault = "r2d7";
-   char *ptri = hb_parc( 1 );
+   const char *keyDefault = "r2d7";
+   const char *ptri = hb_parc( 1 );
    unsigned char *ptro;
    unsigned char *key;
    int iKeylen, iDiff;

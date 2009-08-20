@@ -1,5 +1,5 @@
 /*
- * $Id: message.c,v 1.4 2009-05-04 07:26:51 alkresin Exp $
+ * $Id: message.c,v 1.5 2009-08-20 09:16:36 druzus Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Message box functions
@@ -18,28 +18,28 @@
 
 extern GtkWidget * GetActiveWindow( void );
 
-static int MessageBox( char * cMsg, char * cTitle, int message_type, int button_type )
+static int MessageBox( const char * cMsg, const char * cTitle, int message_type, int button_type )
 {
    GtkWidget * dialog;
    int result;
-   char * cptr;
-    
-   cptr = hwg_convert_to_utf8( cMsg );
+   gchar * gcptr;
+
+   gcptr = hwg_convert_to_utf8( cMsg );
    dialog = gtk_message_dialog_new( GTK_WINDOW( GetActiveWindow() ),
                                      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                                      message_type,
                                      button_type,
-                                     cptr );
-   g_free( cptr );
+                                     gcptr );
+   g_free( gcptr );
    if( *cTitle )
    {
-      cptr = hwg_convert_to_utf8( cTitle );
-      gtk_window_set_title( GTK_WINDOW(dialog), cptr );
-      g_free( cptr );
+      gcptr = hwg_convert_to_utf8( cTitle );
+      gtk_window_set_title( GTK_WINDOW(dialog), gcptr );
+      g_free( gcptr );
    }
    gtk_window_set_position( GTK_WINDOW(dialog), GTK_WIN_POS_CENTER );
    gtk_window_set_policy( GTK_WINDOW(dialog), TRUE, TRUE, TRUE );
-    
+
    result = gtk_dialog_run( GTK_DIALOG(dialog) );
    gtk_widget_destroy( dialog );
    return result;
@@ -47,31 +47,31 @@ static int MessageBox( char * cMsg, char * cTitle, int message_type, int button_
 
 HB_FUNC( MSGINFO )
 {
-   char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   const char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
    MessageBox( hb_parc(1), cTitle, GTK_MESSAGE_INFO, GTK_BUTTONS_OK );
-}    
+}
 
 HB_FUNC( MSGSTOP )
 {
-   char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   const char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
    MessageBox( hb_parc(1), cTitle, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE );        
-}    
+}
 
 HB_FUNC( MSGOKCANCEL )
 {
-   char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   const char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
    hb_retl( MessageBox( hb_parc(1), cTitle, GTK_MESSAGE_QUESTION, GTK_BUTTONS_OK_CANCEL ) == GTK_RESPONSE_OK );
-}    
+}
 
 HB_FUNC( MSGYESNO )
 {
-   char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   const char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
    hb_retl( MessageBox( hb_parc(1), cTitle, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO ) == GTK_RESPONSE_YES );
-}    
+}
 
 HB_FUNC( MSGEXCLAMATION )
 {
-   char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   const char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
    MessageBox( hb_parc(1), cTitle, GTK_MESSAGE_WARNING, GTK_BUTTONS_CLOSE );
-}    
+}
 

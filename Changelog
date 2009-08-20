@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1121 2009-08-17 20:52:16 lculik Exp $
+ * $Id: Changelog,v 1.1122 2009-08-20 09:16:32 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,68 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-08-20 11:16 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/gtk/hwgtk.h
+  * hwgui/gtk/commond.c
+  * hwgui/gtk/control.c
+  * hwgui/gtk/menu_c.c
+  * hwgui/gtk/message.c
+  * hwgui/gtk/misc.c
+  * hwgui/gtk/window.c
+  * hwgui/gtk/wprint.c
+    ! cleaned '[g][u]char *' <-> 'const [g][u]char *' casting
+    ! fixed few GPF traps when wrong values are passed from .prg code
+    ! fixed memory leak caused by not freed hwg_convert_to_utf8() string
+    * removed unused variables
+    * pacified warnings
+
+  * hwgui/include/guilib.h
+    ! moved some xHarbour header files macros before #include "hb*.h"
+
+  * hwgui/source/commond.c
+  * hwgui/source/control.c
+  * hwgui/source/dialog.c
+  * hwgui/source/draw.c
+  * hwgui/source/drawtext.c
+  * hwgui/source/freeimg.c
+  * hwgui/source/grid.c
+  * hwgui/source/hcombo.prg
+  * hwgui/source/listbox.c
+  * hwgui/source/message.c
+  * hwgui/source/misc.c
+  * hwgui/source/printdos.prg
+  * hwgui/source/resource.c
+  * hwgui/source/richedit.c
+  * hwgui/source/shellapi.c
+  * hwgui/source/window.c
+  * hwgui/source/wprint.c
+  * hwgui/source/procmisc/arr2str.c
+  * hwgui/source/procmisc/blowfish.c
+  * hwgui/source/qhtm/hwg_qhtm.c
+    ! cleaned 'char *' <-> 'const char *' casting
+    ! fixed few wrong CHAR <-> TCHAR / LP[C]TSTR <-> LP[C]STR casting.
+      Please remember that string pointer casting does not change the
+      string body. If you force casting of 'char *' strings to LP[C]TCHAR
+      then you create very serious problem for other developer. Such casting
+      does not fix anything but it only pacifies warnings which are important
+      to locate wrong code which have to be fixed for Unicode and/or WinCE
+      support.
+    ! fixed wrongly used TEXT() macro. This macro can be used
+      _ONLY_ for literal strings (quoted by "") not for functions
+      or variables. It does not make any runtime converions.
+      It only informs compiler that in UNICODE builds static strings
+      inside this macro have to be generated as string of wchar_t
+      characters not 'char' ones. Code like TEXT( hb_itemGetCPtr( temp ) )
+      or TEXT( hb_parc( 4 ) ) is technical nonsense and can be compiled
+      only with dummy TEXT() macro (it does nothing) used for non
+      UNICODE builds.
+    ! fixed few GPF traps when wrong values are passed from .prg code
+    ! fixed code which directly modifies item string buffers
+    ! added protection against redefining existing macros
+    ! marked few very serious bugs (potential GPF traps) by
+      /* BUGGY code - ... */ comment. They have to be fixed by authors !!!.
+    * pacified GCC warnings
 
 2009-08-07 18:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/drawtext.c

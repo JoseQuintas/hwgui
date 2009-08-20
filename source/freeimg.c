@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.24 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: freeimg.c,v 1.25 2009-08-20 09:16:37 druzus Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -25,9 +25,9 @@ typedef FIBITMAP *( WINAPI *
       FREEIMAGE_LOADFROMHANDLE ) ( FREE_IMAGE_FORMAT fif, FreeImageIO * io,
       fi_handle handle, int flags );
 typedef FIBITMAP *( WINAPI * FREEIMAGE_LOAD ) ( FREE_IMAGE_FORMAT fif,
-      char *filename, int flags );
+      const char *filename, int flags );
 typedef BOOL( WINAPI * FREEIMAGE_SAVE ) ( FREE_IMAGE_FORMAT fif,
-      FIBITMAP * dib, char *filename, int flags );
+      FIBITMAP * dib, const char *filename, int flags );
 typedef FIBITMAP *( WINAPI * FREEIMAGE_ALLOCATE ) ( int width, int height,
       int bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask );
 typedef FIBITMAP *( WINAPI * FREEIMAGE_CONVERTFROMRAWBITS ) ( BYTE * bits,
@@ -41,13 +41,13 @@ typedef FIBITMAP *( WINAPI *
       FREEIMAGE_LOADFROMHANDLE ) ( FREE_IMAGE_FORMAT fif, FreeImageIO * io,
       fi_handle handle, int flags FI_DEFAULT( 0 ) );
 typedef FIBITMAP *( WINAPI * FREEIMAGE_LOAD ) ( FREE_IMAGE_FORMAT fif,
-      char *filename, int flags FI_DEFAULT( 0 ) );
+      const char *filename, int flags FI_DEFAULT( 0 ) );
 typedef FIBITMAP *( WINAPI * FREEIMAGE_ALLOCATE ) ( int width, int height,
       int bpp, unsigned red_mask FI_DEFAULT( 0 ),
       unsigned green_mask FI_DEFAULT( 0 ),
       unsigned blue_mask FI_DEFAULT( 0 ) );
 typedef BOOL( WINAPI * FREEIMAGE_SAVE ) ( FREE_IMAGE_FORMAT fif,
-      FIBITMAP * dib, char *filename, int flags FI_DEFAULT( 0 ) );
+      FIBITMAP * dib, const char *filename, int flags FI_DEFAULT( 0 ) );
 typedef FIBITMAP *( WINAPI * FREEIMAGE_CONVERTFROMRAWBITS ) ( BYTE * bits,
       int width, int height, int pitch, unsigned bpp, unsigned red_mask,
       unsigned green_mask, unsigned blue_mask,
@@ -60,7 +60,7 @@ typedef void ( WINAPI * FREEIMAGE_CONVERTTORAWBITS ) ( BYTE * bits,
 
 typedef void ( WINAPI * FREEIMAGE_UNLOAD ) ( FIBITMAP * dib );
 typedef FREE_IMAGE_FORMAT( WINAPI *
-      FREEIMAGE_GETFIFFROMFILENAME ) ( char *filename );
+      FREEIMAGE_GETFIFFROMFILENAME ) ( const char *filename );
 typedef ULONG( WINAPI * FREEIMAGE_GETWIDTH ) ( FIBITMAP * dib );
 typedef ULONG( WINAPI * FREEIMAGE_GETHEIGHT ) ( FIBITMAP * dib );
 typedef BYTE *( WINAPI * FREEIMAGE_GETBITS ) ( FIBITMAP * dib );
@@ -263,7 +263,7 @@ HB_FUNC( FI_LOAD )
 
    if( pGetfiffromfile && pLoad )
    {
-      char *name = hb_parc( 1 );
+      const char *name = hb_parc( 1 );
       hb_retnl( ( ULONG ) pLoad( pGetfiffromfile( name ), name,
                   ( hb_pcount(  ) > 1 ) ? hb_parni( 2 ) : 0 ) );
    }
@@ -282,7 +282,7 @@ HB_FUNC( FI_LOADTYPE )
 
    if( pLoad )
    {
-      char *name = hb_parc( 2 );
+      const char *name = hb_parc( 2 );
       hb_retnl( ( ULONG ) pLoad( ( enum FREE_IMAGE_FORMAT ) hb_parni( 1 ),
                   name, ( hb_pcount(  ) > 2 ) ? hb_parni( 3 ) : 0 ) );
    }
@@ -301,7 +301,7 @@ HB_FUNC( FI_SAVE )
 
    if( pGetfiffromfile && pSave )
    {
-      char *name = hb_parc( 2 );
+      const char *name = hb_parc( 2 );
       hb_retl( ( BOOL ) pSave( pGetfiffromfile( name ),
                   ( FIBITMAP * ) hb_parnl( 1 ), name,
                   ( hb_pcount(  ) > 2 ) ? hb_parni( 3 ) : 0 ) );
@@ -321,7 +321,7 @@ HB_FUNC( FI_SAVETYPE )
 
    if( pSave )
    {
-      char *name = hb_parc( 3 );
+      const char *name = hb_parc( 3 );
       hb_retl( ( BOOL ) pSave( ( enum FREE_IMAGE_FORMAT ) hb_parni( 1 ),
                   ( FIBITMAP * ) hb_parnl( 2 ), name,
                   ( hb_pcount(  ) > 3 ) ? hb_parni( 4 ) : 0 ) );
@@ -897,8 +897,8 @@ HB_FUNC( FI_LOADFROMMEM )
 
    if( pLoadFromHandle )
    {
-      char *image = hb_parc( 1 );
-      char *cType;
+      const char *image = hb_parc( 1 );
+      const char *cType;
       FREE_IMAGE_FORMAT fif;
       FreeImageIO io;
 
@@ -910,14 +910,13 @@ HB_FUNC( FI_LOADFROMMEM )
       if( !ISNIL( 2 ) )
       {
          cType = hb_parc( 2 );
-         hb_strLower( cType, hb_parclen( 2 ) );
-         if( !strcmp( cType, "jpg" ) )
+         if( !hb_stricmp( cType, "jpg" ) )
             fif = FIF_JPEG;
-         else if( !strcmp( cType, "bmp" ) )
+         else if( !hb_stricmp( cType, "bmp" ) )
             fif = FIF_BMP;
-         else if( !strcmp( cType, "png" ) )
+         else if( !hb_stricmp( cType, "png" ) )
             fif = FIF_PNG;
-         else if( !strcmp( cType, "tiff" ) )
+         else if( !hb_stricmp( cType, "tiff" ) )
             fif = FIF_TIFF;
          else
             fif = FIF_UNKNOWN;

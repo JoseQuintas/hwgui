@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.12 2009-05-04 07:26:51 alkresin Exp $
+ * $Id: menu_c.c,v 1.13 2009-08-20 09:16:36 druzus Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level menu functions
@@ -46,11 +46,11 @@ HB_FUNC( HWG__ADDMENUITEM )
 {
    GtkWidget * hMenu;
    BOOL lString = FALSE, lCheck = FALSE;
-   char * lpNewItem = NULL;
+   const char * lpNewItem = NULL;
 
    if( ISCHAR( 2 ) )
    {
-      char * ptr;
+      const char * ptr;
       lpNewItem	 = hb_parc(2);
       ptr = lpNewItem;
       while( *ptr )
@@ -68,15 +68,15 @@ HB_FUNC( HWG__ADDMENUITEM )
 
    if( lCheck )
    {
-      char * cptr = hwg_convert_to_utf8( lpNewItem );
-      hMenu = gtk_check_menu_item_new_with_mnemonic( cptr );
-      g_free( cptr );
+      gchar * gcptr = hwg_convert_to_utf8( lpNewItem );
+      hMenu = gtk_check_menu_item_new_with_mnemonic( gcptr );
+      g_free( gcptr );
    }
    else if( lString )
    {
-      char * cptr = hwg_convert_to_utf8( lpNewItem );
-      hMenu = (GtkWidget *) gtk_menu_item_new_with_mnemonic( cptr );
-      g_free( cptr );
+      gchar * gcptr = hwg_convert_to_utf8( lpNewItem );
+      hMenu = (GtkWidget *) gtk_menu_item_new_with_mnemonic( gcptr );
+      g_free( gcptr );
    }
    else
       hMenu = (GtkWidget *) gtk_separator_menu_item_new();

@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.23 2008-11-24 10:02:16 mlacecilia Exp $
+ * $Id: printdos.prg,v 1.24 2009-08-20 09:16:37 druzus Exp $
  *
  * CLASS PrintDos
  *
@@ -609,7 +609,7 @@ static BOOL file_read ( FILE *stream, char *string )
 HB_FUNC( AFILLTEXT )
 {
    FILE *inFile ;
-   char *pSrc = hb_parc(1) ;
+   const char *pSrc = hb_parc(1) ;
    PHB_ITEM pArray = hb_itemNew(NULL);
    PHB_ITEM pTemp = hb_itemNew(NULL);
    char *string ;

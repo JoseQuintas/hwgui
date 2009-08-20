@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.31 2009-05-05 10:30:51 alkresin Exp $
+ * $Id: window.c,v 1.32 2009-08-20 09:16:36 druzus Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
@@ -59,7 +59,7 @@ typedef struct
 #define NUMBER_OF_SIGNALS   1
 static HW_SIGNAL aSignals[NUMBER_OF_SIGNALS] = { { "destroy",2 } };
 
-static guchar szAppLocale[] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+static gchar szAppLocale[] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 
 HB_FUNC( HWG_GTK_INIT )
 {
@@ -84,7 +84,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    GtkFixed * box;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
    // char *szAppName = hb_parc(2);
-   char *cTitle = hb_parc( 3 );
+   gchar *gcTitle = hwg_convert_to_utf8( hb_parcx( 3 ) );
    // LONG nStyle =  hb_parnl(7);
    // char *cMenu = hb_parc( 4 );
    int x = hb_parnl(8);
@@ -92,7 +92,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    int width = hb_parnl(10);
    int height = hb_parnl(11);
    PHWGUI_PIXBUF szFile = ISPOINTER(5) ? (PHWGUI_PIXBUF) HB_PARHANDLE(5): NULL;  
-   
+
 
    PHB_ITEM temp;
 
@@ -100,11 +100,10 @@ HB_FUNC( HWG_INITMAINWINDOW )
    if (szFile)
    {
       gtk_window_set_icon( GTK_WINDOW( hWnd ), szFile->handle  );
-   }      
-   
-   cTitle = hwg_convert_to_utf8( cTitle );
-   gtk_window_set_title( GTK_WINDOW(hWnd), cTitle );
-   g_free( cTitle );
+   }
+
+   gtk_window_set_title( GTK_WINDOW(hWnd), gcTitle );
+   g_free( gcTitle );
    gtk_window_set_policy( GTK_WINDOW(hWnd), TRUE, TRUE, FALSE );
    gtk_window_set_default_size( GTK_WINDOW(hWnd), width, height );
    gtk_window_move( GTK_WINDOW(hWnd), x, y );
@@ -137,7 +136,7 @@ HB_FUNC( HWG_CREATEDLG )
    GtkWidget * vbox;
    GtkFixed  * box;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
-   char *cTitle = hb_itemGetCPtr( GetObjectVar( pObject, "TITLE" ) );
+   gchar *gcTitle = hwg_convert_to_utf8 ( hb_itemGetCPtr( GetObjectVar( pObject, "TITLE" ) ) );
    int x = hb_itemGetNI( GetObjectVar( pObject, "NLEFT" ) );
    int y = hb_itemGetNI( GetObjectVar( pObject, "NTOP" ) );
    int width = hb_itemGetNI( GetObjectVar( pObject, "NWIDTH" ) );
@@ -149,17 +148,16 @@ HB_FUNC( HWG_CREATEDLG )
    if (!HB_IS_NIL(pIcon))
    {
       szFile = (PHWGUI_PIXBUF) hb_itemGetPtr( GetObjectVar(pIcon,"HANDLE") );
-   }      
+   }
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
    if (szFile)
    {
 
       gtk_window_set_icon(GTK_WINDOW(hWnd), szFile->handle  );
-   }      
+   }
 
-   cTitle = hwg_convert_to_utf8( cTitle );
-   gtk_window_set_title( GTK_WINDOW(hWnd), cTitle );
-   g_free( cTitle );
+   gtk_window_set_title( GTK_WINDOW(hWnd), gcTitle );
+   g_free( gcTitle );
    gtk_window_set_policy( GTK_WINDOW(hWnd), TRUE, TRUE, FALSE );
    gtk_window_set_default_size( GTK_WINDOW(hWnd), width, height );
    gtk_window_move( GTK_WINDOW(hWnd), x, y );
@@ -460,7 +458,6 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
    gpointer gObject = g_object_get_data( (GObject*) widget, "obj" );
    LONG lRes;
    gunichar uchar;   
-   guint ukeyval;
    gchar* tmpbuf;
    gchar *res = NULL;
 
@@ -477,29 +474,29 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       {
          p1 = (event->type==GDK_KEY_PRESS)? WM_KEYDOWN : WM_KEYUP;
          p2 = ((GdkEventKey*)event)->keyval;
-	 uchar= gdk_keyval_to_unicode(((GdkEventKey*)event)->keyval);
-	 if ( p2 == GDK_asciitilde  ||  p2 == GDK_asciicircum  ||  p2 == GDK_grave ||  p2 == GDK_acute ||  p2 == GDK_diaeresis || p2 == GDK_dead_acute ||	 p2 ==GDK_dead_tilde || p2==GDK_dead_circumflex || p2==GDK_dead_grave || p2 == GDK_dead_diaeresis)	
-	 {
-	    prevp2 = p2 ;
-	    p2=-1;
-	 }    
-	 else 
-	 {
-	 if ( prevp2 != -1 )
-	 {
-	    p2 = ToKey(prevp2,(LONG)p2);
-	    uchar= gdk_keyval_to_unicode(p2);
-	    prevp2=-1;
-	 }
-	 }   
-	    
-	 tmpbuf=g_new0(gchar,7);
-	 g_unichar_to_utf8( uchar,tmpbuf );
-	 res = hwg_convert_to_utf8( tmpbuf );
+         uchar= gdk_keyval_to_unicode(((GdkEventKey*)event)->keyval);
+         if ( p2 == GDK_asciitilde  ||  p2 == GDK_asciicircum  ||  p2 == GDK_grave ||  p2 == GDK_acute ||  p2 == GDK_diaeresis || p2 == GDK_dead_acute ||	 p2 ==GDK_dead_tilde || p2==GDK_dead_circumflex || p2==GDK_dead_grave || p2 == GDK_dead_diaeresis)	
+         {
+            prevp2 = p2 ;
+            p2=-1;
+         }
+         else
+         {
+            if ( prevp2 != -1 )
+            {
+               p2 = ToKey(prevp2,(LONG)p2);
+               uchar= gdk_keyval_to_unicode(p2);
+               prevp2=-1;
+            }
+         }
+
+         tmpbuf=g_new0(gchar,7);
+         g_unichar_to_utf8( uchar,tmpbuf );
+         res = hwg_convert_to_utf8( tmpbuf );
          g_free(tmpbuf);	 
          p3 = ( ( ((GdkEventKey*)event)->state & GDK_SHIFT_MASK )? 1 : 0 ) |
-	      ( ( ((GdkEventKey*)event)->state & GDK_CONTROL_MASK )? 2 : 0 ) |
-	      ( ( ((GdkEventKey*)event)->state & GDK_MOD1_MASK )? 4 : 0 );
+              ( ( ((GdkEventKey*)event)->state & GDK_CONTROL_MASK )? 2 : 0 ) |
+              ( ( ((GdkEventKey*)event)->state & GDK_MOD1_MASK )? 4 : 0 );
       }
       else if( event->type == GDK_SCROLL )
       {
@@ -509,18 +506,18 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       }
       else if( event->type == GDK_BUTTON_PRESS || 
                event->type == GDK_2BUTTON_PRESS ||
-	       event->type == GDK_BUTTON_RELEASE )
+               event->type == GDK_BUTTON_RELEASE )
       {
          p1 = (event->type==GDK_BUTTON_PRESS)? WM_LBUTTONDOWN : 
-	      ( (event->type==GDK_BUTTON_RELEASE)? WM_LBUTTONUP : WM_LBUTTONDBLCLK );
-	   p2 = 0;
-	   p3 = ( ((ULONG)(((GdkEventButton*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventButton*)event)->y)) << 16 ) & 0xFFFF0000 );
+              ( (event->type==GDK_BUTTON_RELEASE)? WM_LBUTTONUP : WM_LBUTTONDBLCLK );
+         p2 = 0;
+         p3 = ( ((ULONG)(((GdkEventButton*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventButton*)event)->y)) << 16 ) & 0xFFFF0000 );
       }
       else if( event->type == GDK_MOTION_NOTIFY )
       {
          p1 = WM_MOUSEMOVE;
-	   p2 = ( ((GdkEventMotion*)event)->state & GDK_BUTTON1_MASK )? 1:0;
-	   p3 = ( ((ULONG)(((GdkEventMotion*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
+         p2 = ( ((GdkEventMotion*)event)->state & GDK_BUTTON1_MASK )? 1:0;
+         p3 = ( ((ULONG)(((GdkEventMotion*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
       }
       else if( event->type == GDK_CONFIGURE )
       {
@@ -652,19 +649,16 @@ HB_FUNC( GETWINDOWOBJECT )
 
 HB_FUNC( SETWINDOWTEXT )
 {
-   char * cTitle = hwg_convert_to_utf8( hb_parc(2) );
-   gtk_window_set_title( GTK_WINDOW( HB_PARHANDLE(1) ), cTitle );
-   g_free( cTitle );
+   gchar * gcTitle = hwg_convert_to_utf8( hb_parcx(2) );
+   gtk_window_set_title( GTK_WINDOW( HB_PARHANDLE(1) ), gcTitle );
+   g_free( gcTitle );
 }
 
 HB_FUNC( GETWINDOWTEXT )
 {
    char * cTitle = (char*) gtk_window_get_title( GTK_WINDOW( HB_PARHANDLE(1) ) );
 
-   if( cTitle )
-      hb_retc( cTitle );
-   else
-      hb_retc( "" );
+   hb_retc( cTitle );
 }
 
 HB_FUNC( ENABLEWINDOW )
@@ -766,7 +760,7 @@ HB_FUNC( WINDOWSETRESIZE )
   gtk_window_set_resizable( (GtkWindow*) HB_PARHANDLE(1) ,hb_parl(2));
 }
 
-gchar * hwg_convert_to_utf8( char * szText )
+gchar * hwg_convert_to_utf8( const char * szText )
 {
    if( *szAppLocale )
       return g_convert( szText, -1, "UTF-8", szAppLocale, NULL, NULL, NULL );
@@ -774,7 +768,7 @@ gchar * hwg_convert_to_utf8( char * szText )
       return g_locale_to_utf8( szText,-1,NULL,NULL,NULL );
 }
 
-gchar * hwg_convert_from_utf8( char * szText )
+gchar * hwg_convert_from_utf8( const char * szText )
 {
    if( *szAppLocale )
       return g_convert( szText, -1, szAppLocale, "UTF-8", NULL, NULL, NULL );

@@ -1,6 +1,13 @@
 /*
- *$Id: guilib.h,v 1.17 2009-06-29 11:22:03 alkresin Exp $
+ *$Id: guilib.h,v 1.18 2009-08-20 09:16:36 druzus Exp $
  */
+
+#ifdef __EXPORT__
+   #define HB_NO_DEFAULT_API_MACROS
+   #define HB_NO_DEFAULT_STACK_MACROS
+#endif
+
+#include "hbdefs.h"
 
 #define	WND_DLG_RESOURCE       10
 #define	WND_DLG_NORESOURCE     11
@@ -13,11 +20,6 @@
    #define GetWindowLongPtr    GetWindowLong
    #define SetWindowLongPtr    SetWindowLong
    #define DWORD_PTR           DWORD
-#endif
-
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
 #endif
 
 #ifdef HWG_USE_POINTER_ITEM

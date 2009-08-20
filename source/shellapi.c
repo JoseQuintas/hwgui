@@ -1,5 +1,5 @@
 /*
- * $Id: shellapi.c,v 1.14 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: shellapi.c,v 1.15 2009-08-20 09:16:37 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Shell API wrappers
@@ -74,7 +74,7 @@ HB_FUNC( SHELLNOTIFYICON )
    tnid.uCallbackMessage = WM_NOTIFYICON;
    tnid.hIcon = ( HICON ) HB_PARHANDLE( 3 );
    if( ISCHAR( 4 ) )
-      lstrcpy( tnid.szTip, TEXT( hb_parc( 4 ) ) );
+      lstrcpy( tnid.szTip, hb_parc( 4 ) );
 
    if( ( BOOL ) hb_parl( 1 ) )
       Shell_NotifyIcon( NIM_ADD, &tnid );
@@ -103,7 +103,7 @@ HB_FUNC( SHELLMODIFYICON )
    if( ISCHAR( 3 ) )
    {
       tnid.uFlags |= NIF_TIP;
-      lstrcpy( tnid.szTip, TEXT( hb_parc( 3 ) ) );
+      lstrcpy( tnid.szTip, hb_parc( 3 ) );
    }
 
    Shell_NotifyIcon( NIM_MODIFY, &tnid );

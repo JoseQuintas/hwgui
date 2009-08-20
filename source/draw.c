@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.56 2009-07-09 02:45:50 lfbasso Exp $
+ * $Id: draw.c,v 1.57 2009-08-20 09:16:36 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -811,7 +811,7 @@ HB_FUNC( DRAWGRAYBITMAP )
 
 HB_FUNC( OPENIMAGE )
 {
-   char *cFileName = hb_parc( 1 );
+   const char *cFileName = hb_parc( 1 );
    BOOL lString = ( ISNIL( 2 ) ) ? 0 : hb_parl( 2 );
    int iFileSize;
    FILE *fp;
@@ -868,7 +868,7 @@ HB_FUNC( OPENIMAGE )
    OleLoadPicture( pStream, 0, 0, IID_IPicture, ( void ** ) &pPic );
    pStream->Release(  );
 #else
-   OleLoadPicture( pStream, 0, 0, &IID_IPicture, ( void ** ) &pPic );
+   OleLoadPicture( pStream, 0, 0, &IID_IPicture, ( void ** ) ( void * ) &pPic );
    pStream->lpVtbl->Release( pStream );
 #endif
 
@@ -883,7 +883,7 @@ HB_FUNC( OPENIMAGE )
 #if defined(__cplusplus)
    pPic->get_Handle( ( OLE_HANDLE * ) & hBitmap );
 #else
-   pPic->lpVtbl->get_Handle( pPic, ( OLE_HANDLE * ) & hBitmap );
+   pPic->lpVtbl->get_Handle( pPic, ( OLE_HANDLE * ) ( void * ) &hBitmap );
 #endif
 
    HB_RETHANDLE( CopyImage( hBitmap, IMAGE_BITMAP, 0, 0, LR_COPYRETURNORG ) );

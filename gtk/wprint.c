@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.8 2009-05-04 07:26:51 alkresin Exp $
+ * $Id: wprint.c,v 1.9 2009-08-20 09:16:36 druzus Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level print functions
@@ -56,7 +56,7 @@ HB_FUNC( HWG_OPENPRINTER )
    print->config = gnome_print_config_default();
    gnome_print_config_set( print->config, (const guchar*)"Printer", (const guchar*)"GENERIC" );
    gnome_print_config_set( print->config, (const guchar*)"Settings.Transport.Backend.Printer", (const guchar*)hb_parc(1) );
-   gnome_print_config_set( print->config, GNOME_PRINT_KEY_PAGE_ORIENTATION, "R0" );
+   gnome_print_config_set( print->config, (const guchar*)GNOME_PRINT_KEY_PAGE_ORIENTATION, (const guchar*)"R0" );
 
    print->job = gnome_print_job_new( print->config );
    print->gpc = gnome_print_job_get_context( print->job );
@@ -78,7 +78,7 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
    memset( print,0,sizeof(HWGUI_PRINT) );
    print->config = gnome_print_config_default();
    gnome_print_config_set( print->config, (const guchar*)"Printer", (const guchar*)"GENERIC" );
-   gnome_print_config_set( print->config, GNOME_PRINT_KEY_PAGE_ORIENTATION, "R0" );
+   gnome_print_config_set( print->config, (const guchar*)GNOME_PRINT_KEY_PAGE_ORIENTATION, (const guchar*)"R0" );
 
    print->job = gnome_print_job_new( print->config );
    print->gpc = gnome_print_job_get_context( print->job );
@@ -87,17 +87,17 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
 
 HB_FUNC( HWG_GETPRINTERS )
 {
-   FHANDLE hInput = hb_fsOpen( (unsigned char *) "/etc/printcap", FO_READ );
+   HB_FHANDLE hInput = hb_fsOpen( "/etc/printcap", FO_READ );
    PHB_ITEM aMetr = NULL, temp;
 
    if( hInput != -1 )
    {
       ULONG ulLen = hb_fsSeek( hInput, 0, FS_END );
-      char *cBuffer, *ptr, *ptr1;
+      unsigned char *cBuffer, *ptr, *ptr1;
 
       hb_fsSeek( hInput, 0, FS_SET );
       cBuffer = (unsigned char*) hb_xgrab( ulLen + 1 );
-      ulLen = hb_fsReadLarge( hInput, (BYTE *) cBuffer, ulLen );
+      ulLen = hb_fsReadLarge( hInput, cBuffer, ulLen );
       cBuffer[ulLen] = '\0';
 
       ptr = cBuffer;
@@ -110,13 +110,13 @@ HB_FUNC( HWG_GETPRINTERS )
             {
                while( *ptr && *ptr != 0x0a ) ptr ++;
                if( *ptr ) ptr++;
-	       continue;
+                  continue;
             }
             if( !aMetr )
                aMetr = hb_itemArrayNew( 0 );
             ptr1 = ptr;
             while( *ptr && *ptr != 0x0a && *ptr != '|' ) ptr++;
-            temp = hb_itemPutCL( NULL,ptr1,ptr-ptr1 );
+            temp = hb_itemPutCL( NULL,(char*)ptr1,ptr-ptr1 );
             hb_arrayAdd( aMetr, temp );
             hb_itemRelease( temp );
             while( *ptr && *ptr != 0x0a ) ptr++;
@@ -144,9 +144,10 @@ HB_FUNC( HWG_GETPRINTERS )
 HB_FUNC( SETPRINTERMODE )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
-   
-   gnome_print_config_set( print->config, 
-      GNOME_PRINT_KEY_PAGE_ORIENTATION, (hb_parni(2)==1)? (const guchar*)"R0":(const guchar*)"R270" );
+
+   gnome_print_config_set( print->config,
+            (const guchar*)GNOME_PRINT_KEY_PAGE_ORIENTATION,
+            (hb_parni(2)==1)? (const guchar*)"R0":(const guchar*)"R270" );
 }
 
 HB_FUNC( CLOSEPRINTER )
@@ -298,7 +299,7 @@ HB_FUNC( HWG_GP_DRAWTEXT )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
    int i = 0, nLen = hb_parclen(2);
-   guchar *p, *cText;
+   gchar *p, *cText;
    int iOption = (ISNIL(7))? 0 : hb_parni(7);
    gdouble x1 = (gdouble)hb_parni(3);
    gdouble x2 = (gdouble)hb_parni(5);

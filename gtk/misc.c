@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.10 2009-05-04 07:26:51 alkresin Exp $
+ * $Id: misc.c,v 1.11 2009-08-20 09:16:36 druzus Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Miscellaneous functions
@@ -25,10 +25,10 @@ void hwg_writelog( char* s )
    HB_FHANDLE handle;
 #endif
 
-   if( hb_fsFile( (unsigned char *) "ac.log" ) )
-      handle = hb_fsOpen( (unsigned char *) "ac.log", FO_WRITE );
+   if( hb_fsFile( "ac.log" ) )
+      handle = hb_fsOpen( "ac.log", FO_WRITE );
    else
-      handle = hb_fsCreate( (unsigned char *) "ac.log", 0 );
+      handle = hb_fsCreate( "ac.log", 0 );
 
    hb_fsSeek( handle,0, SEEK_END );
    hb_fsWrite( handle, (unsigned char *) s, strlen(s) );

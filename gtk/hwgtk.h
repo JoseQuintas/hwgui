@@ -1,5 +1,5 @@
 /*
- * $Id: hwgtk.h,v 1.4 2009-05-04 07:26:51 alkresin Exp $
+ * $Id: hwgtk.h,v 1.5 2009-08-20 09:16:36 druzus Exp $
  */
 
 
@@ -54,5 +54,5 @@ typedef struct HWGUI_PIXBUF_STRU
    GdkPixbuf * handle;
 } HWGUI_PIXBUF, * PHWGUI_PIXBUF;
 
-extern gchar * hwg_convert_to_utf8( char * szText );
-extern gchar * hwg_convert_from_utf8( char * szText );
+extern gchar * hwg_convert_to_utf8( const char * szText );
+extern gchar * hwg_convert_from_utf8( const char * szText );

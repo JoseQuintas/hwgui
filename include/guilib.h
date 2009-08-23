@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.h,v 1.18 2009-08-20 09:16:36 druzus Exp $
+ *$Id: guilib.h,v 1.19 2009-08-23 10:21:26 druzus Exp $
  */
 
 #ifdef __EXPORT__
@@ -38,6 +38,18 @@
    #define HB_GETHANDLE( i )        ( ( LONG ) hb_itemGetNL( i ) )
    #define HB_GETPTRHANDLE( i ,n )  hb_arrayGetNL( i , n )
    #define HB_PUSHITEM( i )         hb_vmPushLong( ( LONG )i ) 
+#endif
+
+#if !defined( HB_TCHAR_CPTO )
+   #define HB_TCHAR_CPTO(d,s,l)        hb_strncpy(d,s,l)
+   #define HB_TCHAR_SETTO(d,s,l)       memcpy(d,s,l)
+   #define HB_TCHAR_GETFROM(d,s,l)     memcpy(d,s,l)
+   #define HB_TCHAR_CONVTO(s)          (s)
+   #define HB_TCHAR_CONVFROM(s)        (s)
+   #define HB_TCHAR_CONVNTO(s,l)       (s)
+   #define HB_TCHAR_CONVNFROM(s,l)     (s)
+   #define HB_TCHAR_CONVNREV(d,s,l)    do { ; } while( 0 )
+   #define HB_TCHAR_FREE(s)            HB_SYMBOL_UNUSED(s)
 #endif
 
 #ifdef HARBOUR_2005

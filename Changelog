@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1123 2009-08-23 10:21:23 druzus Exp $
+ * $Id: Changelog,v 1.1124 2009-08-25 12:26:48 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-08-25 09:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source:hcontrol.prg
+    ! METHOD addName remove reference in names with "->"
 
 2009-08-23 12:21 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/include/guilib.h

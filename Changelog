@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1124 2009-08-25 12:26:48 lfbasso Exp $
+ * $Id: Changelog,v 1.1125 2009-08-25 12:37:14 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-08-25 09:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source:hcwindow.prg
+    ! minor fix in method ANCHOR when objects are inserted into another container object
 
 2009-08-25 09:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source:hcontrol.prg

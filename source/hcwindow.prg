@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.49 2009-08-13 05:05:51 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.50 2009-08-25 12:37:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -352,13 +352,14 @@ METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
    LOCAL nlen , i, x1, y1
    nlen := Len( oCtrl:aControls )
    FOR i = 1 TO nlen
-      IF __ObjHasMsg( oCtrl:aControls[ i ], "ANCHOR" ) .AND. oCtrl:aControls[ i ]:anchor > 0
+      IF __ObjHasMsg( oCtrl:aControls[ i ], "ANCHOR" ) .AND. oCtrl:aControls[ i ]:anchor > 0 .AND.;
+           IsWindowVisible( ::GetParentForm():handle )
          x1 := oCtrl:aControls[ i ]:nWidth
          y1 := oCtrl:aControls[ i ]:nHeight
          oCtrl:aControls[ i ]:onAnchor( x, y, w, h )
          IF Len( oCtrl:aControls[ i ]:aControls ) > 0
-            //::Anchor( oCtrl:aControls[ i ], x1, y1, oCtrl:nWidth, oCtrl:nHeight )
-            ::Anchor( oCtrl:aControls[ i ], x, y, oCtrl:nWidth, oCtrl:nHeight )
+            ::Anchor( oCtrl:aControls[ i ], x1, y1, oCtrl:aControls[ i ]:nWidth, oCtrl:aControls[ i ]:nHeight )
+            //::Anchor( oCtrl:aControls[ i ], x, y, oCtrl:nWidth, oCtrl:nHeight )
          ENDIF
       ENDIF
    NEXT

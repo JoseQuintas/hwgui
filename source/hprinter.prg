@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.36 2009-07-04 13:58:53 lculik Exp $
+ * $Id: hprinter.prg,v 1.37 2009-09-02 16:34:25 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -43,7 +43,8 @@ CLASS HPrinter INHERIT HObject
    DATA PaperWidth     INIT 0                        //   "    "    "     "       "     "
 
 
-   METHOD New( cPrinter, lmm )
+   METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn )
+                                                                                            
    METHOD SetMode( nOrientation )
    METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline )
    METHOD SetFont( oFont )  INLINE SelectObject( ::hDC, oFont:handle )
@@ -68,7 +69,8 @@ CLASS HPrinter INHERIT HObject
    METHOD ChangePage( oSayPage, n, nPage ) HIDDEN
 ENDCLASS
 
-METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies ) CLASS HPrinter
+METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn ) CLASS HPrinter
+                                                                                                       
    LOCAL aPrnCoors, cPrinterName
 
    IF Valtype(nFormType) ="N"
@@ -85,27 +87,42 @@ METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies ) CLASS HPrinter
          ::Copies := nCopies
       ENDIF
    ENDIF
+   IF valtype(lProprierties ) <> "L"
+      lProprierties := .T.
+   ENDIF
 
    IF lmm != Nil
       ::lmm := lmm
    ENDIF
-   IF cPrinter == Nil
-      ::hDCPrn := PrintSetup( @cPrinterName )
-      ::cPrinterName := cPrinterName
-   ELSEIF Empty( cPrinter )
-      cPrinterName := HWG_GETDEFAULTPRINTER()
-      ::hDCPrn := Hwg_OpenPrinter( cPrinterName )
-      ::cPrinterName := cPrinterName
-   ELSE
-      ::hDCPrn := Hwg_OpenPrinter( cPrinter )
-      ::cPrinterName := cPrinter
+   IF hDCPrn = Nil
+      hDCPrn = 0
    ENDIF
+   IF hDCPrn <> 0
+      ::hDCPrn = hDCPrn
+      ::cPrinterName := cPrinter
+   ELSE
+   
+      IF cPrinter == Nil
+         ::hDCPrn := PrintSetup( @cPrinterName )
+         ::cPrinterName := cPrinterName
+     ELSEIF Empty( cPrinter )
+         cPrinterName := HWG_GETDEFAULTPRINTER()
+         ::hDCPrn := Hwg_OpenPrinter( cPrinterName )
+         ::cPrinterName := cPrinterName
+      ELSE
+         ::hDCPrn := Hwg_OpenPrinter( cPrinter )
+         ::cPrinterName := cPrinter
+      ENDIF
+   ENDIF
+   
    IF ::hDCPrn == 0
       RETURN Nil
    ELSE
-      if !Hwg_SetDocumentProperties(::hDCPrn, ::cPrinterName, @::FormType, @::Landscape, @::Copies, @::BinNumber, @::fDuplexType, @::fPrintQuality, @::PaperLength, @::PaperWidth )
-         Return NIL
-      endif
+      if lProprierties
+         if !Hwg_SetDocumentProperties(::hDCPrn, ::cPrinterName, @::FormType, @::Landscape, @::Copies, @::BinNumber, @::fDuplexType, @::fPrintQuality, @::PaperLength, @::PaperWidth )
+           Return NIL
+         endif 
+      endif   
 
       aPrnCoors := GetDeviceArea( ::hDCPrn )
       ::nWidth  := IIf( ::lmm, aPrnCoors[ 3 ], aPrnCoors[ 1 ] )

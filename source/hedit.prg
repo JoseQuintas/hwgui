@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.140 2009-07-09 02:45:51 lfbasso Exp $
+ *$Id: hedit.prg,v 1.141 2009-09-05 18:23:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -19,6 +19,10 @@ STATIC  bcolorselect := 13434879 //vcolor( 'CCFFFF' )
 #include "hblang.ch"
 #include "guilib.ch"
 
+#define VK_C  67
+#define VK_V  86
+#define VK_X  87
+
 #ifndef GWL_STYLE
    #define GWL_STYLE           - 16
 #endif
@@ -32,7 +36,7 @@ CLASS VAR winclass   INIT "EDIT"
    DATA bSetGet
    DATA bValid
    DATA bkeydown, bkeyup, bchange
-   DATA cPicFunc, cPicMask
+   DATA cPicture, cPicFunc, cPicMask
    DATA lPicComplex    INIT .F.
    DATA lFirst         INIT .T.
    DATA lChanged       INIT .F.
@@ -40,6 +44,8 @@ CLASS VAR winclass   INIT "EDIT"
    //DATA nColorinFocus  INIT vcolor( 'CCFFFF' )
    DATA lFocu          INIT .F.
    DATA lReadOnly      INIT .F.
+   DATA oUpDown
+   DATA lCopy  INIT .F.  HIDDEN
    
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, ;
@@ -188,7 +194,29 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    IF ! ::lMultiLine
 
       IF ::bSetGet != Nil
-         IF msg == WM_CHAR
+    
+         IF msg = WM_COPY .OR. msg = WM_CUT
+            ::lcopy := .T.
+            RETURN - 1
+         ELSEIF ::lCopy .AND. ( msg = WM_MOUSELEAVE .OR. ( msg = WM_KEYUP .AND. ( wParam = VK_C .OR. wParam = VK_X ) ) )
+            ::lcopy := .F.
+            COPYSTRINGTOCLIPBOARD( ::UnTransform( GETCLIPBOARDTEXT() ) )
+            RETURN -1
+         ELSEIF msg = WM_PASTE 
+ 	          ::lFirst := .F.			
+				    cClipboardText :=  GETCLIPBOARDTEXT() 	
+            IF ! EMPTY( cClipboardText )
+        	      nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
+               SendMessage(  ::handle, EM_SETSEL, nPos-1 , nPos -1  )   							      
+               FOR nPos = 1 to Len( cClipboardText )
+			            ::GetApplyKey( SUBSTR( cClipboardText , nPos, 1 ) )
+               NEXT  
+               nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
+               ::title := ::UnTransform( GetEditText( ::oParent:handle, ::id ) ) 
+               SendMessage(  ::handle, EM_SETSEL, nPos - 1 , nPos - 1 )   							      
+		        ENDIF
+            RETURN 0
+         ELSEIF msg == WM_CHAR
 
             IF wParam == VK_BACK
                ::lFirst := .F.
@@ -228,12 +256,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             IF ! IsCtrlShift( , .F. )
                RETURN ::GetApplyKey( Chr( wParam ) )
             ENDIF
-         ELSEIF msg == WM_PASTE
-            cClipboardText := GetClipboardText()
-            FOR nPos := 1 TO Len( cClipboardText )
-               ::GetApplyKey( SubStr( cClipboardText, nPos, 1 ) )
-            NEXT
-            RETURN 0
 
          ELSEIF msg == WM_KEYDOWN
             IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
@@ -241,18 +263,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                   RETURN 0
                ENDIF
             ENDIF
-            IF wParam = 86  // V
-               IF  IsCtrlShift(, .F. )
-                  ::lFirst := .F.
-                  IF ::cType == "C"
-                     nPos := LOWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
-                     SendMessage( ::handle, EM_REPLACESEL, 1, GETCLIPBOARDTEXT() )
-                     SendMessage( ::handle, EM_SETSEL, 0, nPos + Len( GETCLIPBOARDTEXT() ) )
-                     ::title := GetEditText( ::oParent:handle, ::id )
-                     RETURN - 1
-                  ENDIF
-               ENDIF
-            ELSEIF wParam == 40     // KeyDown
+            IF wParam == 40     // KeyDown
                IF ! IsCtrlShift()
                   GetSkip( oParent, ::handle, , 1 )
                   RETURN 0
@@ -1125,7 +1136,8 @@ METHOD IsBadDate( cBuffer ) CLASS HEdit
       ENDIF
    NEXT
    RETURN .F.
-
+   
+/*
 FUNCTION CreateGetList( oDlg )
    LOCAL i, j, aLen1 := Len( oDlg:aControls ), aLen2
 
@@ -1142,6 +1154,27 @@ FUNCTION CreateGetList( oDlg )
       ENDIF
    NEXT
    RETURN Nil
+*/
+
+FUNCTION CreateGetList( oDlg, oCnt )
+   LOCAL i, j, oCtrl, aLen1 
+   
+   IF oCnt = Nil
+     aLen1 := Len( oDlg:aControls )
+     oCtrl := oDlg
+   ELSE
+     aLen1 := Len( oCnt:aControls )
+     oCtrl := oCnt
+   ENDIF
+   FOR i := 1 TO aLen1
+      IF LEN( oCtrl:aControls[ i ]:aControls ) > 0
+         CreateGetList( oDlg, oCtrl:aControls[ i ] )
+      ENDIF
+      IF __ObjHasMsg( oCtrl:aControls[ i ], "BSETGET" ) .AND. oCtrl:aControls[ i ]:bSetGet != Nil
+         AAdd( oDlg:GetList, oCtrl:aControls[ i ] )
+      ENDIF    
+   NEXT
+   RETURN oCtrl
 
 FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
    LOCAL i, nextHandle, oCtrl

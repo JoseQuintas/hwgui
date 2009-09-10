@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.21 2009-08-20 09:16:37 druzus Exp $
+ * $Id: wprint.c,v 1.22 2009-09-10 16:11:36 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -280,7 +280,7 @@ HB_FUNC( GETDEVICEAREA )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    PHB_ITEM temp;
-   PHB_ITEM aMetr = hb_itemArrayNew( 9 );
+   PHB_ITEM aMetr = hb_itemArrayNew(11 );
 
    temp = hb_itemPutNL( NULL, GetDeviceCaps( hDC, HORZRES ) );
    hb_itemArrayPut( aMetr, 1, temp );
@@ -316,6 +316,14 @@ HB_FUNC( GETDEVICEAREA )
 
    temp = hb_itemPutNL( NULL, GetDeviceCaps( hDC, PHYSICALHEIGHT ) );
    hb_itemArrayPut( aMetr, 9, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, GetDeviceCaps( hDC, PHYSICALOFFSETY ) );
+   hb_itemArrayPut( aMetr,10, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, GetDeviceCaps( hDC, PHYSICALOFFSETX ) );
+   hb_itemArrayPut( aMetr, 11, temp );
    hb_itemRelease( temp );
 
    hb_itemReturn( aMetr );
@@ -465,7 +473,7 @@ HB_FUNC( PRINTENHMETAFILE )
 HB_FUNC( HWG_SETDOCUMENTPROPERTIES )
 {
   BOOL bW9X, Result = FALSE ;
-  HDC hDC = (HDC) hb_parnl(1) ;
+  HDC hDC = (HDC) HB_PARHANDLE(1) ;
   OSVERSIONINFO osvi;
   osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
   GetVersionEx ( &osvi );

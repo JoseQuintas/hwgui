@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.37 2009-09-02 16:34:25 lculik Exp $
+ * $Id: hprinter.prg,v 1.38 2009-09-10 16:11:36 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -41,6 +41,14 @@ CLASS HPrinter INHERIT HObject
    DATA fPrintQuality  INIT 0      HIDDEN
    DATA PaperLength    INIT 0                        // Value is * 1/10 of mm   1000 = 10cm
    DATA PaperWidth     INIT 0                        //   "    "    "     "       "     "
+   DATA PixelsPerInchY   
+   DATA PixelsPerInchX
+   DATA TopMargin        
+   DAta BottomMargin     
+   DATA LeftMargin       
+   DATA RightMargin      
+
+
 
 
    METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn )
@@ -115,7 +123,7 @@ METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, 
       ENDIF
    ENDIF
    
-   IF ::hDCPrn == 0
+   IF empty( ::hDCPrn )
       RETURN Nil
    ELSE
       if lProprierties
@@ -131,6 +139,13 @@ METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, 
       ::nPHeight := IIf( ::lmm, aPrnCoors[ 9 ], aPrnCoors[ 2 ] )
       ::nHRes   := aPrnCoors[ 1 ] / aPrnCoors[ 3 ]
       ::nVRes   := aPrnCoors[ 2 ] / aPrnCoors[ 4 ]
+      ::PixelsPerInchY   := aPrnCoors[ 6 ]
+      ::PixelsPerInchX   := aPrnCoors[ 5 ]
+
+      ::TopMargin        := aPrnCoors[ 10 ] 
+      ::BottomMargin     := (::nPHeight - ::TopMargin)+1
+      ::LeftMargin       := aPrnCoors[ 11] 
+      ::RightMargin      := (::nPWidth - ::LeftMargin)+1
       // writelog( ::cPrinterName + str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6])+str(aPrnCoors[8])+str(aPrnCoors[9]) )
    ENDIF
 
@@ -173,11 +188,11 @@ METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline, nCharset ) CLASS
 
 METHOD END() CLASS HPrinter
 
-   IF ::hDCPrn != 0
+   IF !empty( ::hDCPrn )
       DeleteDC( ::hDCPrn )
-      ::hDCPrn := 0
+      ::hDCPrn := nil
    ENDIF
-   IF ::hPrinter != 0
+   IF !empty( ::hPrinter )
       ClosePrinter( ::hPrinter )
    ENDIF
    ::ReleaseMeta()

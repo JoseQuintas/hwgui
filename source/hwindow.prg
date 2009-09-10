@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.90 2009-08-13 05:05:51 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.91 2009-09-10 16:11:36 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -181,7 +181,7 @@ METHOD DelItem( oWnd ) CLASS HWindow
    RETURN Nil
 
 METHOD FindWindow( hWnd ) CLASS HWindow
-   LOCAL i := AScan( ::aWindows, { | o | o:handle == hWnd } )
+   LOCAL i := AScan( ::aWindows, { | o | PtrtoUlong(o:handle) == PtrtoUlong(hWnd) } )
    RETURN IIf( i == 0, Nil, ::aWindows[ i ] )
 
 METHOD GetMain() CLASS HWindow

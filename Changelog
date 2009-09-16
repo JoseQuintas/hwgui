@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1128 2009-09-10 16:11:36 lculik Exp $
+ * $Id: Changelog,v 1.1129 2009-09-16 03:24:56 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-09-16 05:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/hcheck.prg
+    ! fixed setvalue and refresh
+    
+
 2009-09-10 13:30 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/wprint.c
     ! small fix to hwg_setdocumentproperty

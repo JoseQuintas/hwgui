@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.36 2009-07-09 12:58:57 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.37 2009-09-16 03:24:56 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -28,7 +28,7 @@ CLASS VAR winclass   INIT "BUTTON"
    METHOD Refresh()
  //  METHOD Disable()
  //  METHOD Enable()
-   METHOD SetValue( lValue )  INLINE SendMessage( ::handle, BM_SETCHECK, Iif( lValue, 1, 0 ), 0 ), ::value := lValue, ::Refresh()
+   METHOD SetValue( lValue ) 
    METHOD GetValue()          INLINE ( SendMessage( ::handle, BM_GETCHECK, 0, 0 ) == 1 )
    METHOD onGotFocus()
    METHOD onClick()
@@ -160,17 +160,28 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCheckButton
    
    RETURN -1
 
+METHOD SetValue( lValue ) CLASS HCheckButton
+   
+   SendMessage( ::handle, BM_SETCHECK, IIF( EMPTY( lValue) , 0, 1 ), 0 )
+   ::value := IIF( lValue = Nil .OR. Valtype( lValue ) != "L", .F., lValue )
+   IF ::bSetGet != Nil  
+       Eval( ::bSetGet, lValue, Self )
+   ENDIF   
+   ::Refresh()
+   
+   RETURN Nil
 
 METHOD Refresh() CLASS HCheckButton
    LOCAL var
 
    IF ::bSetGet != Nil
-       var := SendMessage(::handle,BM_GETCHECK,0,0) == 1 
-       Eval( ::bSetGet, var, Self ) 
-       ::value := Iif( var == Nil .OR. Valtype( var ) != "L", .F., var )        
+      var :=  Eval( ::bSetGet,, Self ) 
+      IF var = Nil .OR. Valtype( var ) != "L"
+        var := SendMessage( ::handle, BM_GETCHECK, 0, 0 ) == 1 
+      ENDIF   
+      ::value := Iif( var==Nil .OR. Valtype(var) != "L", .F., var )
    ENDIF
    SendMessage( ::handle, BM_SETCHECK, IIf( ::value, 1, 0 ), 0 )
-
    RETURN Nil
 
 /*

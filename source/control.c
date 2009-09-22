@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.84 2009-08-20 09:16:36 druzus Exp $
+ * $Id: control.c,v 1.85 2009-09-22 14:57:52 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -481,6 +481,15 @@ HB_FUNC( SETUPDOWN )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), UDM_SETPOS, 0, hb_parnl( 2 ) );
 }
+
+HB_FUNC( GETNOTIFYDELTAPOS )
+{
+   int iItem = hb_parnl( 2 ) ;
+   if ( iItem < 2 )
+      hb_retni( (LONG) (((NMUPDOWN *) HB_PARHANDLE( 1 ) )->iPos ) );
+   else   
+      hb_retni( (LONG) (((NMUPDOWN *) HB_PARHANDLE( 1 ) )->iDelta ) );
+}              
 
 HB_FUNC( CREATEDATEPICKER )
 {

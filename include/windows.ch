@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.79 2009-08-12 06:35:19 lfbasso Exp $
+ *$Id: windows.ch,v 1.80 2009-09-22 14:57:52 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -45,7 +45,7 @@
 #define WM_CHAR                         258    // 0x0102
 #define WM_SYSKEYDOWN                   260    // 0x0104
 #define WM_SYSKEYUP                     261    // 0x0105
-*#define WM_SYSCHAR                      = &H106
+#define WM_SYSCHAR                      262    //= &H106
 
 #define WM_INITDIALOG                   272
 #define WM_COMMAND                      273
@@ -115,6 +115,9 @@
 #define SC_SEPARATOR                  61455  // 0xF00F
 #define SC_MENU                       61589   // &HF095
 
+
+#define GWL_ID                        - 12
+#define GWL_STYLE                     - 16
 
 /*
 * CONSTANTS TO   WM_CHANGEUISTATE
@@ -962,7 +965,6 @@
 #define WM_SIZING                       0x0214
 #define WM_CAPTURECHANGED               0x0215
 #define WM_MOVING                       0x0216
-#define GWL_ID (-12)
 
 #define WM_MOUSEWHEEL  0x020A
 
@@ -1101,6 +1103,11 @@
 #define TB_GETRECT              (WM_USER + 51) // wParam is the Cmd instead of index
 #define TB_SETHOTIMAGELIST      (WM_USER + 52)
 #define TB_GETHOTIMAGELIST      (WM_USER + 53)
+
+// GETSYSTEMMETRICS constants
+//--------------------------
+#define SM_CYCAPTION     4
+#define SM_CYMENU        15
 
 //--------------
 // Font Weights

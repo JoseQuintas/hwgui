@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.151 2009-08-12 06:35:18 lfbasso Exp $
+ *$Id: guilib.ch,v 1.152 2009-09-22 14:57:52 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -112,12 +112,13 @@
              [ HELPID <nHelpId> ]           ;
              [ <lChild: CHILD>]             ;             
              [<lClipper: CLIPPER>]          ;
+             [ <lnoClosable: NOCLOSABLE> ]  ;
           => ;
           <oWnd> := HMdiChildWindow():New( ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
                    <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,,;
-									 <bRefresh>,<.lChild.>,<.lClipper.> ) ;;
+									 <bRefresh>,<.lChild.>,<.lClipper.>,<.lnoClosable.> ) ;;
         [ <oWnd>:SetParent( <oParent> ) ]            
       
 #xcommand INIT WINDOW <oWnd> CHILD          ;
@@ -160,6 +161,7 @@
              [<lClipper: CLIPPER>]          ;
              [<lExitOnEnter: NOEXIT>]       ; //Modified By Sandro
              [<lExitOnEsc: NOEXITESC>]      ; //Modified By Sandro
+             [ <lnoClosable: NOCLOSABLE> ]  ;
              [ ON INIT <bInit> ]            ;
              [ ON SIZE <bSize> ]            ;
              [ ON PAINT <bPaint> ]          ;
@@ -173,7 +175,7 @@
           <oDlg> := HDialog():New( Iif(<.res.>,WND_DLG_RESOURCE,WND_DLG_NORESOURCE), ;
              <nStyle>,<x>,<y>,<width>,<height>,<cTitle>,<oFont>,<bInit>,<bExit>,;
              <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,;
-             <ico>,<.lExitOnEnter.>,<nHelpId>,<Resid>,<.lExitOnEsc.>,<clr>,<bRefresh>)
+             <ico>,<.lExitOnEnter.>,<nHelpId>,<Resid>,<.lExitOnEsc.>,<clr>,<bRefresh>,<.lnoClosable.>)
 
 #xcommand ACTIVATE WINDOW <oWnd> ;
                [<lNoShow: NOSHOW>] ;
@@ -651,8 +653,26 @@
           => [<ogr> := ] HRadioGroup():New( <vari>, {|v|Iif(v==Nil,<vari>,<vari>:=v)}, ;
 					     <bInit>,<bClick>,<bWhen> )
 
-//#xcommand GET RADIOGROUP [ <ogr> VAR ] <vari>  ;
-//          => [<ogr> := ] HRadioGroup():New( <vari>, {|v|Iif(v==Nil,<vari>,<vari>:=v)} )
+          //nando
+#xcommand @ <x>,<y> GET RADIOGROUP [ <ogr> VAR ] <vari>  ;
+             [ CAPTION  <caption> ];
+             [ OF <oWnd> ]              ;
+             [ ID <nId> ]               ;
+             [ SIZE <width>, <height> ] ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [<lTransp: TRANSPARENT>]   ;
+             [ FONT <oFont> ]           ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+             [ STYLE <nStyle> ]         ;
+             [ ON CLICK <bClick> ]      ;
+             [ ON GETFOCUS <bWhen> ]           ;
+          => [<ogr> := ] HRadioGroup():NewRG( <oWnd>,<nId>,<nStyle>,<vari>,;
+                  {|v|Iif(v==Nil,<vari>,<vari>:=v)},<x>,<y>,<width>,<height>,<caption>,<oFont>,;
+                  <bInit>,<bSize>,<color>,<bcolor>,<bClick>,<bWhen>,<.lTransp.>);;
+          [ <ogr>:name := <(ogr)> ]
+
 
 #xcommand END RADIOGROUP [ SELECTED <nSel> ] ;
           => ;
@@ -1233,7 +1253,9 @@
              [ OF <oWnd> ]              ;
              [ ID <nId> ]               ;
              [ SIZE <width>, <height> ] ;
+             [ INCREMENT <nIncr> ]      ;        
              [ WIDTH <nUpDWidth> ]      ;
+             [ MAXLENGTH <nMaxLength> ] ;
              [ COLOR <color> ]          ;
              [ BACKCOLOR <bcolor> ]     ;
              [ PICTURE <cPicture> ]     ;
@@ -1241,14 +1263,20 @@
              [ VALID <bLfocus> ]        ;
              [ STYLE <nStyle> ]         ;
              [ FONT <oFont> ]           ;
+             [<lnoborder: NOBORDER>]    ;
              [ TOOLTIP <ctoolt> ]       ;
+             [ ON INIT <bInit> ]        ;
+             [ ON KEYDOWN <bKeyDown>   ];
+             [ ON CHANGE <bChange> ]    ;
+             [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;
           => ;
-          [<oUpd> := ] HUpDown():New( <oWnd>,<nId>,<vari>,               ;
-             {|v|Iif(v==Nil,<vari>,<vari>:=v)},              ;
-             <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,,,  ;
+          [<oUpd> := ] HUpDown():New( <oWnd>,<nId>,<vari>,{|v|Iif(v==Nil,<vari>,<vari>:=v)}, ;
+             <nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,,,;
              <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>, ;
-             <nUpDWidth>,<nLower>,<nUpper> );;
+             <nUpDWidth>,<nLower>,<nUpper>,<nIncr>,<cPicture>,<.lnoborder.>,;
+             <nMaxLength>,<bKeyDown>,<bChange>,<bOther>,,);;            
           [ <oUpd>:name := <(oUpd)> ]
+
 
 #xcommand @ <x>,<y> GET DATEPICKER [ <oPick> VAR ] <vari> ;
              [ OF <oWnd> ]              ;
@@ -1808,10 +1836,10 @@ Added by Marcos Antonio Gambeta
           => ;
           <opage>:ADDBARBITMAP(<hWnd>,<t>,<b>,<nstyle>)
 
-#xcommand @ <x>,<y> GET LISTBOX [ <oListbox> ITEMS ] <aItems> ;
+#xcommand @ <x>,<y> GET LISTBOX [ <oListbox> VAR ]  <vari> ;
+             ITEMS  <aItems>            ;
              [ OF <oWnd> ]              ;
              [ ID <nId> ]               ;
-             [ INIT <nInit> ]           ;
              [ SIZE <width>, <height> ] ;
              [ COLOR <color> ]          ;
              [ BACKCOLOR <bcolor> ]     ;
@@ -1828,11 +1856,12 @@ Added by Marcos Antonio Gambeta
              [ ON DBLCLICK <bDblClick> ];
              [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;
           => ;
-          [<oListbox> := ] HListBox():New( <oWnd>,<nId>,<nInit>,;
-             {|v|Iif(v==Nil,<nInit>,<nInit>:=v)},;
+          [<oListbox> := ] HListBox():New( <oWnd>,<nId>,<vari>,;
+             {|v|Iif(v==Nil,<vari>,<vari>:=v)},;
              <nStyle>,<x>,<y>,<width>,<height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>, ;
-             <bChange>,<ctoolt>,<color>,<bcolor>,<bGFocus>,<bLFocus>,<bKeyDown>,<bDblClick>,<bOther> );;
+             <bChange>,<ctoolt>,<color>,<bcolor>,<bGFocus>,<bLFocus>,<bKeyDown>,<bDblClick>,<bOther>);;
           [ <oListbox>:name := <(oListbox)> ]
+
           
 #xcommand @ <x>,<y> GET COMBOBOXEX [ <oCombo> VAR ] <vari> ;
              ITEMS  <aItems>            ;
@@ -1883,11 +1912,22 @@ Added by Marcos Antonio Gambeta
 #xcommand @ <x>, <y>  CONTAINER [<oCnt>] [OF <oWnd>] ;
              [ ID <nId> ]               ;
              [ SIZE <width>, <height> ] ;
-             [ STYLE <nStyle>]          ;
+             [ BACKSTYLE <nbackStyle>]    ;
+             [ COLOR <tcolor> ]         ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [ STYLE <ncStyle>]          ;
              [ <lnoBorder: NOBORDER> ]   ;
+             [ ON LOAD <bLoad> ]        ;
              [ ON INIT <bInit> ]        ;
-             [ ON SIZE <bSize> ]        ;
+             [ ON SIZE <bSize> ]        ;           
+             [ <lTabStop: TABSTOP> ]   ;
+             [ ON REFRESH <bRefresh> ]      ;
+             [ ON OTHER MESSAGES <bOther> ] ;
+             [ ON OTHERMESSAGES <bOther>  ] ;
+             [ <class: CLASS> <classname> ] ;
           =>  ;
-          <oCnt> := HContainer():New(<oWnd>, <nId>, <x>, <y>, <width>, <height>, ;
-             <nStyle>, <bSize>, <.lnoBorder.>,<bInit>);;
-          [ <oCnt>:name := <(oCnt)> ]
+          [<oCnt> := ] __IIF(<.class.>, <classname>,HContainer)():New(<oWnd>, <nId>,IIF(<.lTabStop.>,WS_TABSTOP,),;
+               <x>, <y>, <width>, <height>, <ncStyle>, <bSize>, <.lnoBorder.>,<bInit>,<nbackStyle>,<tcolor>,<bcolor>,;
+               <bLoad>,<bRefresh>,<bOther>);;
+          [ <oCnt>:name := <(oCnt)> ] 
+

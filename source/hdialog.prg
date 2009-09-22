@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.95 2009-08-03 13:15:26 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.96 2009-09-22 14:57:52 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -18,6 +18,7 @@
 STATIC aSheet := Nil
 STATIC aMessModalDlg := { ;
        { WM_COMMAND, { | o, w, l | DlgCommand( o, w, l ) } },         ;
+       { WM_SYSCOMMAND, { | o, w, l | onSysCommand( o, w, l ) } },    ;
        { WM_SIZE, { | o, w, l | onSize( o, w, l ) } },                ;
        { WM_INITDIALOG, { | o, w, l | InitModalDlg( o, w, l ) } },    ;
        { WM_ERASEBKGND, { | o, w | onEraseBk( o, w ) } },             ;
@@ -48,6 +49,9 @@ CLASS VAR aModalDialogs  SHARED INIT { }
 
    DATA menu
    DATA oPopup                // Context menu for a dialog
+   DATA lBmpCenter INIT .F.
+   DATA nBmpClr
+   
    DATA lModal   INIT .T.
    DATA lResult  INIT .F.     // Becomes TRUE if the OK button is pressed
    DATA lUpdated INIT .F.     // TRUE, if any GET is changed
@@ -71,7 +75,8 @@ CLASS VAR aModalDialogs  SHARED INIT { }
    DATA bScroll
 
    METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
-               bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bcolor, bRefresh )
+               bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId,;
+               xResourceID, lExitOnEsc, bcolor, bRefresh, lNoClosable )
    METHOD Activate( lNoModal, bOnActivate, nShow )
    METHOD onEvent( msg, wParam, lParam )
    METHOD Add()      INLINE AAdd( IIf( ::lModal, ::aModalDialogs, ::aDialogs ), Self )
@@ -88,7 +93,8 @@ CLASS VAR aModalDialogs  SHARED INIT { }
 ENDCLASS
 
 METHOD NEW( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
-            bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bcolor, bRefresh ) CLASS HDialog
+            bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId,;
+            xResourceID, lExitOnEsc, bcolor, bRefresh, lNoClosable ) CLASS HDialog
 
    ::oDefaultParent := Self
    ::xResourceID := xResourceID
@@ -113,6 +119,7 @@ METHOD NEW( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
    ::lClipper   := IIf( lClipper == Nil, .F., lClipper )
    ::lExitOnEnter := IIf( lExitOnEnter == Nil, .T., ! lExitOnEnter )
    ::lExitOnEsc  := IIf( lExitOnEsc == Nil, .T., ! lExitOnEsc )
+   ::lClosable   := Iif( lnoClosable==Nil, .T., !lnoClosable )
 
    IF nHelpId != nil
       ::HelpId := nHelpId
@@ -291,6 +298,9 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    IF oDlg:oFont != Nil
       SendMessage( oDlg:handle, WM_SETFONT, oDlg:oFont:handle, 0 )
    ENDIF
+   IF ! oDlg:lClosable
+      oDlg:Closable( .F. )
+   ENDIF
 
    InitControls( oDlg, .T. )
    InitObjects( oDlg )
@@ -365,24 +375,26 @@ STATIC FUNCTION onEnterIdle( oDlg, wParam, lParam )
 STATIC FUNCTION onEraseBk( oDlg, hDC )
    LOCAL aCoors
 
-   IF __ObjHasMsg( oDlg, "OBMP" )
-      IF oDlg:oBmp != Nil
-         SpreadBitmap( hDC, oDlg:handle, oDlg:oBmp:handle )
-         RETURN 1
-      ELSE
-         aCoors := GetClientRect( oDlg:handle )
-         IF oDlg:brush != Nil
-            IF ValType( oDlg:brush ) != "N"
-               FillRect( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ] + 1, aCoors[ 4 ] + 1, oDlg:brush:handle )
-            ENDIF
-         ELSE
-            FillRect( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ] + 1, aCoors[ 4 ] + 1, COLOR_3DFACE + 1 )
-         ENDIF
-         RETURN 1
-      ENDIF
-   ENDIF
+    IF __ObjHasMsg( oDlg,"OBMP") .AND. oDlg:oBmp != Nil
+       IF oDlg:lBmpCenter
+         CenterBitmap( hDC, oDlg:handle, oDlg:oBmp:handle, , oDlg:nBmpClr  )               
+       ELSE
+          SpreadBitmap( hDC, oDlg:handle, oDlg:oBmp:handle )
+       ENDIF
+       Return 1
+    ELSE
+       aCoors := GetClientRect( oDlg:handle )
+       IF oDlg:brush != Nil
+          IF ValType( oDlg:brush ) != "N"
+             FillRect( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ] + 1, aCoors[ 4 ] + 1, oDlg:brush:handle )
+          ENDIF
+       ELSE
+          FillRect( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ] + 1, aCoors[ 4 ] + 1, COLOR_3DFACE + 1 )
+       ENDIF
+       RETURN 1
+    ENDIF
 
-   RETURN 0
+    RETURN 0
 
    #define  FLAG_CHECK      2
 
@@ -422,6 +434,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
          IF oCtrl != Nil .AND. oCtrl:id == IDOK //iParLow
             oDlg:lResult := .T.
             EndDialog( oDlg:handle )   // VER AQUI
+            RETURN 1
          ENDIF
          //
              /*
@@ -517,12 +530,14 @@ STATIC FUNCTION onSize( oDlg, wParam, lParam )
       oDlg:oEmbedded:Resize( LOWORD( lParam ), HIWORD( lParam ) )
    ENDIF
    // VERIFY MIN SIZES AND MAX SIZES
+   /*
    IF ( oDlg:nHeight = oDlg:minHeight .AND. nH < oDlg:minHeight ) .OR. ;
       ( oDlg:nHeight = oDlg:maxHeight .AND. nH > oDlg:maxHeight ) .OR. ;
       ( oDlg:nWidth = oDlg:minWidth .AND. nW < oDlg:minWidth ) .OR. ;
       ( oDlg:nWidth = oDlg:maxWidth .AND. nW > oDlg:maxWidth )
       RETURN 0
    ENDIF
+   */
    nW1 := oDlg:nWidth
    nH1 := oDlg:nHeight
    *aControls := GetWindowRect( oDlg:handle )
@@ -738,6 +753,29 @@ FUNCTION SetDlgKey( oDlg, nctrl, nkey, block )
    ENDIF
 
    RETURN bOldSet
+
+STATIC FUNCTION onSysCommand( oDlg, wParam, lParam )
+   Local oCtrl
+   
+   IF wParam == SC_CLOSE
+      IF ! oDlg:Closable
+         RETURN 1
+      ENDIF  
+  ELSEIF wParam == SC_MINIMIZE
+   ELSEIF wParam == SC_MAXIMIZE .OR. wparam == SC_MAXIMIZE2  
+   ELSEIF wParam == SC_RESTORE .OR. wParam == SC_RESTORE2                     
+   ELSEIF wParam = SC_NEXTWINDOW .OR. wParam = SC_PREVWINDOW
+   ELSEIF wParam = SC_KEYMENU 
+  	   // accelerator IN TAB/CONTAINER
+       IF ( oCtrl := FindAccelerator( oDlg, lParam ) ) != Nil
+          oCtrl:SetFocus()
+          SendMessage( oCtrl:handle, WM_SYSKEYUP, lParam, 0 )
+          RETURN 2
+      ENDIF
+   ELSEIF wParam = SC_HOTKEY      
+   ELSEIF wParam = SC_MENU 
+   ENDIF
+   RETURN -1
 
    EXIT PROCEDURE Hwg_ExitProcedure
    Hwg_ExitProc()

@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.41 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: menu_c.c,v 1.42 2009-09-22 14:57:52 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -545,4 +545,26 @@ HB_FUNC( MODIFYMENU )
    hb_retl( ModifyMenu( ( HMENU ) HB_PARHANDLE( 1 ), ( UINT ) hb_parni( 2 ),
                ( UINT ) hb_parni( 3 ), ( UINT ) hb_parni( 4 ),
                ( LPCSTR ) hb_parc( 5 ) ) );
+}
+
+
+HB_FUNC( ENABLEMENUSYSTEMITEM )
+{
+   HMENU hMenu; 
+   UINT  uEnable = ( hb_pcount() < 3 || !ISLOG( 3 ) || hb_parl( 3 ) )? MF_ENABLED:MF_GRAYED;
+   UINT  uFlag = ( hb_pcount() < 4 || !ISLOG( 4 ) || hb_parl( 4 ) )? MF_BYCOMMAND:MF_BYPOSITION;
+
+   hMenu = ( HMENU ) GetSystemMenu( ( HWND ) HB_PARHANDLE( 1 ), 0 ) ;
+   if( !hMenu )
+   {
+      HB_RETHANDLE( NULL );
+   }
+   else
+   {
+      HB_RETHANDLE(  EnableMenuItem(
+         hMenu,                   // handle to menu
+         hb_parni( 2 ),         // menu item to check or uncheck
+         uFlag | uEnable // menu item flags
+      ) );
+   }
 }

@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.50 2009-08-25 12:37:14 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.51 2009-09-22 14:57:52 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -99,6 +99,7 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) PROTEC
    DATA nScrollPos   INIT 0
    DATA rect
    DATA nScrollBars INIT -1   
+   DATA lClosable     INIT .T. //disable Menu and Button Close in WINDOW
 
    METHOD AddControl( oCtrl ) INLINE AAdd( ::aControls, oCtrl )
    METHOD DelControl( oCtrl )
@@ -118,6 +119,7 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) PROTEC
    METHOD SetTextClass ( x ) HIDDEN 
    METHOD GetParentForm( oCtrl )
    METHOD ActiveControl()  INLINE ::FindControl( , GetFocus() )
+   METHOD Closable( lClosable ) SETGET
    METHOD Release()        INLINE ::DelControl( Self )
    
 ENDCLASS
@@ -135,7 +137,7 @@ METHOD AddEvent( nEvent, oCtrl, bAction, lNotify, cMethName ) CLASS HCustomWindo
 
 METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
 
-   LOCAL bSearch := IIf( nId != NIL, { | o | o:id == nId } , { | o | o:handle == nHandle } )
+   LOCAL bSearch := IIf( nId != NIL, { | o | o:id == nId } , { | o | PtrtoUlong( o:handle ) == PtrtoUlong( nHandle ) } )
    LOCAL i := Len( ::aControls )
    LOCAL oCtrl
 
@@ -290,29 +292,36 @@ METHOD SetFocusCtrl( oCtrl ) CLASS HCustomWindow
 
    RETURN NIL
 
+
 METHOD Refresh( oCtrl ) CLASS HCustomWindow
-   LOCAL nlen , i, hCtrl := GetFocus()
-   oCtrl := IIf( oCtrl = Nil, Self, oCtrl )
-   nlen := Len( oCtrl:aControls )
-   IF IsWindowVisible( ::handle )
-      IF ::bRefresh != Nil //.AND. ;
-         Eval( ::bRefresh, Self ) //, LoWord( lParam ), HiWord( lParam ) )
-      ENDIF
-      FOR i = 1 TO nlen
-         IF ! oCtrl:aControls[ i ]:lHide .AND. ;
-            oCtrl:aControls[ i ]:handle != hCtrl
-            IF __ObjHasMethod( oCtrl:aControls[ i ], "REFRESH" )
-               oCtrl:aControls[ i ]:refresh()
-            ELSE
-               oCtrl:aControls[ i ]:show()
-            ENDIF
-            IF Len( oCtrl:aControls[ i ]:aControls ) > 0
-               ::Refresh( oCtrl:aControls[ i ] )
-            ENDIF
-         ENDIF
+  Local nlen , i, hCtrl := GetFocus()
+	oCtrl := IIF( oCtrl = Nil, self, Octrl )
+	nlen := LEN( oCtrl:aControls )
+	
+  IF IsWindowVisible( ::Handle )
+     IF ::bRefresh != Nil .AND. ::handle != hCtrl
+        Eval( ::bRefresh, Self ) 
+     ENDIF
+     FOR i = 1 to nLen
+        IF ! oCtrl:aControls[ i ]:lHide 
+	         IF __ObjHasMethod(oCtrl:aControls[ i ],"REFRESH" )
+              oCtrl:aControls[ i ]:Refresh( )
+              IF oCtrl:aControls[ i ]:bRefresh != Nil  
+                 EVAL( oCtrl:aControls[ i ]:bRefresh, oCtrl:aControls[ i ] )
+              ENDIF   
+           ELSE
+              oCtrl:aControls[ i ]:SHOW()
+				   ENDIF  
+  	       IF LEN( oCtrl:aControls[ i ]:aControls ) > 0
+		          ::Refresh( oCtrl:aControls[ i ] )
+		       ENDIF   
+        ENDIF
       NEXT
-   ENDIF
-   RETURN .T.
+   ELSEIF  ::bRefresh != Nil
+      Eval( ::bRefresh, Self )
+   ENDIF  
+   RETURN Nil
+   
 
 METHOD SetTextClass( x ) CLASS HCustomWindow
 
@@ -324,6 +333,8 @@ METHOD SetTextClass( x ) CLASS HCustomWindow
 	    ::title := x
 	    SENDMESSAGE( ::handle, WM_SETTEXT, 0, ::Title )
 	 ENDIF    
+	 ::Refresh()
+	 
    RETURN NIL	 
 
 METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HCustomWindow
@@ -413,6 +424,22 @@ METHOD  ScrollHV( oForm, msg, wParam, lParam ) CLASS HCustomWindow
 
    ENDIF
    RETURN Nil
+   
+METHOD Closable( lClosable ) CLASS HCustomWindow
+   Local hMenu
+   
+   IF lClosable != Nil
+      IF ! lClosable
+         hMenu := EnableMenuSystemItem( ::Handle, SC_CLOSE, .F. )
+      ELSE 
+         hMenu := EnableMenuSystemItem( ::Handle, SC_CLOSE, .T. )
+      ENDIF
+      IF ! EMPTY( hMenu )
+         ::lClosable := lClosable
+      ENDIF   
+   ENDIF
+   RETURN ::lClosable
+  
 
 
 *---------------------------------------------------------
@@ -664,3 +691,31 @@ FUNCTION REMOVEPROPERTY( oObjectName, cPropertyName )
    RETURN .F.
 
 
+FUNCTION FindAccelerator( oCtrl, lParam )
+  Local nlen , i ,pos 
+  nlen := LEN( oCtrl:aControls )
+  FOR i = 1 to nLen
+     IF LEN(oCtrl:aControls[ i ]:aControls ) > 0
+         RETURN FindAccelerator( oCtrl:aControls[ i ], lParam)
+	   ENDIF   
+     IF __ObjHasMsg( oCtrl:aControls[ i ],"TITLE") .AND. VALTYPE( oCtrl:aControls[ i ]:title) = "C"
+         IF ( pos := At( "&", oCtrl:aControls[ i ]:title ) ) > 0 .AND.  Upper( Chr( lParam)) ==  Upper( SubStr( oCtrl:aControls[ i ]:title, ++ pos, 1 ) )  
+            RETURN oCtrl:aControls[ i ]
+         ENDIF    
+     ENDIF    
+   NEXT
+   RETURN Nil
+
+FUNCTION GetBackColorParent( oCtrl )
+   Local bColor := GetSysColor( COLOR_BTNFACE ), hTheme
+
+   IF  oCtrl:oParent:oParent != Nil .AND. ISTHEMEACTIVE() // .AND.  __objHasData( oCtrl:oParent, "WINCLASS" )
+       hTheme := hb_OpenThemeData( oCtrl:oParent:handle, "TAB" )
+       IF !EMPTY( hTheme )
+          bColor := HWG_GETTHEMESYSCOLOR( hTheme, COLOR_WINDOW  )
+          HB_CLOSETHEMEDATA( hTheme ) 
+       ELSE   
+          bColor := oCtrl:oParent:bColor   
+       ENDIF 
+    ENDIF
+    Return bColor

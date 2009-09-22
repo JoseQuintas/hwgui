@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1129 2009-09-16 03:24:56 lfbasso Exp $
+ * $Id: Changelog,v 1.1130 2009-09-22 14:57:27 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,109 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-09-22 11:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + add new clause in DIALOG and MDICHILD [ <lnoClosable: NOCLOSABLE> ]  ;    
+      disable MENU ALT+F4 IN DIALOG / CTRL+F4 IN MDICHILD and BUTTON close in WINDOW
+    + add NEW COMMAND for RADIOGROUP
+      #xcommand @ <x>,<y> GET RADIOGROUP [ <ogr> VAR ] <vari>  ;
+             [ CAPTION  <caption> ];
+             [ OF <oWnd> ]              ;
+             [ ID <nId> ]               ;
+             [ SIZE <width>, <height> ] ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [<lTransp: TRANSPARENT>]   ;
+             [ FONT <oFont> ]           ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+             [ STYLE <nStyle> ]         ;
+             [ ON CLICK <bClick> ]      ;
+             [ ON GETFOCUS <bWhen> ]           ;
+          => [<ogr> := ] HRadioGroup():NewRG( <oWnd>,<nId>,<nStyle>,<vari>,;
+                  {|v|Iif(v==Nil,<vari>,<vari>:=v)},<x>,<y>,<width>,<height>,<caption>,<oFont>,;
+                  <bInit>,<bSize>,<color>,<bcolor>,<bClick>,<bWhen>,<.lTransp.>);;
+          [ <ogr>:name := <(ogr)> ]
+    + command GET UPDOWN changed same behavior GET numeric
+        #xcommand @ <x>,<y> GET UPDOWN [ <oUpd> VAR ]  <vari>  ;
+             RANGE <nLower>,<nUpper>    ;
+             [ OF <oWnd> ]              ;
+             [ ID <nId> ]               ;
+             [ SIZE <width>, <height> ] ;
+             [ INCREMENT <nIncr> ]      ;        
+             [ WIDTH <nUpDWidth> ]      ;
+             [ MAXLENGTH <nMaxLength> ] ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [ PICTURE <cPicture> ]     ;
+             [ WHEN  <bGfocus> ]        ;
+             [ VALID <bLfocus> ]        ;
+             [ STYLE <nStyle> ]         ;
+             [ FONT <oFont> ]           ;
+             [<lnoborder: NOBORDER>]    ;
+             [ TOOLTIP <ctoolt> ]       ;
+             [ ON INIT <bInit> ]        ;
+             [ ON KEYDOWN <bKeyDown>   ];
+             [ ON CHANGE <bChange> ]    ;
+             [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;
+          => ;
+          [<oUpd> := ] HUpDown():New( <oWnd>,<nId>,<vari>,{|v|Iif(v==Nil,<vari>,<vari>:=v)}, ;
+             <nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,,,;
+             <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>, ;
+             <nUpDWidth>,<nLower>,<nUpper>,<nIncr>,<cPicture>,<.lnoborder.>,;
+             <nMaxLength>,<bKeyDown>,<bChange>,<bOther>,,);;            
+          [ <oUpd>:name := <(oUpd)> ]
+     ! COMMAND CONTAINER changed
+       + new clauses
+       #xcommand @ <x>, <y>  CONTAINER [<oCnt>] [OF <oWnd>] ;
+             [ ID <nId> ]               ;
+             [ SIZE <width>, <height> ] ;
+             [ BACKSTYLE <nbackStyle>]    ;
+             [ COLOR <tcolor> ]         ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [ STYLE <ncStyle>]          ;
+             [ <lnoBorder: NOBORDER> ]   ;
+             [ ON LOAD <bLoad> ]        ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;           
+             [ <lTabStop: TABSTOP> ]   ;
+             [ ON REFRESH <bRefresh> ]      ;
+             [ ON OTHER MESSAGES <bOther> ] ;
+             [ ON OTHERMESSAGES <bOther>  ] ;
+             [ <class: CLASS> <classname> ] ;
+          =>  ;
+          [<oCnt> := ] __IIF(<.class.>, <classname>,HContainer)():New(<oWnd>, <nId>,IIF(<.lTabStop.>,WS_TABSTOP,),;
+               <x>, <y>, <width>, <height>, <ncStyle>, <bSize>, <.lnoBorder.>,<bInit>,<nbackStyle>,<tcolor>,<bcolor>,;
+               <bLoad>,<bRefresh>,<bOther>);;
+          [ <oCnt>:name := <(oCnt)> ] 
+  * include\windows.ch
+    + add news CONSTANTS
+  * source\control.c
+    + add FUNCTION HB_FUNC( GETNOTIFYDELTAPOS ) necessary in HUPDOWN control
+  * source\hcwindow.prg
+    + DATA lClosable 
+    + METHOD Closable( lClosable ) SETGET
+      disable ou enable MENU CLOSE in DIALOG and MDICHILD in RUN-TIME
+      oform:closable := .T.|.F. 
+    + FUNCTION FindAccelerator( oCtrl, lParam )
+      set o accelerator key for control in MDICHILD and DIALOG
+    + FUNCTION GetBackColorParent( oCtrl )
+      return backcolor of the parent container
+  * source\hdialog.prg
+    + add new message in aMessModalDlg - WM_SYSCOMMAND
+      is necessary to handling ACCELERATOR KEY in CONTAINERS
+    + DATA lBmpCenter INIT .F.  center bitmap background
+    + DATA nBmpClr
+    + STATIC FUNCTION onSysCommand( oDlg, wParam, lParam )
+      process message WM_SYSCOMMAND
+  * source\hwindow.prg
+    ! fixed position MEDICHILD in event ONMOVE
+    ! fixed clause CHILD in MDICHILD - maximized only in CLIENT area
+    ! fixed MODAL mode in MDICHILD
+    + add handling ACCELERATOR KEY in MDICHILD
+  * source\menu_c.c
+    + add HB_FUNC( ENABLEMENUSYSTEMITEM )
 
 2009-09-16 05:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hcheck.prg

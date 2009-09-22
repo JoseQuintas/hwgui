@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1132 2009-09-22 16:01:02 lfbasso Exp $
+ * $Id: Changelog,v 1.1133 2009-09-22 16:39:48 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,50 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-09-22 13:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\drawwidg.prg
+    ! minor fix
+  * source\hbrowse.prg
+    * CLASS HCOLUMN
+      + DATA oParent
+      + DATA lHide 
+      + add DT_VCENTER + DT_SINGLELINE in nJusHead, nJusLin
+      + METHOD Visible( lVisible ) SETGET
+      + METHOD Hide() 
+      + METHOD Show() 
+        new feature in columns. is possible to hide and show columns in run time
+        obrowse:acolumns[1]:visible := .T.|.F. or
+        obrowse:acolumns[1]:show()
+        obrowse:acolumns[1]:hide()
+     * CLASS HBROWSE
+       + DATA LinkMaster      Specifies the parent table linked to the child table displayed in a Grid control. 
+       + DATA ChildOrder      Specifies the index tag for the record source of the Grid control or Relation object.
+       + DATA RelationalExpr  Specifies the expression based on fields in the parent table that relates to an index in the child table joining the two tables
+       ! changed METHOD InitBrw( nType, lInit ) AND new parameter
+         add call InitBrw() in METHOD INIT
+       + METHOD Filter( lFilter ) SETGET
+         reset at run-time the existing filter or a filter to cancel
+       * METHOD  WM_MOUSEWHEEL IN ONEVENT  moved to first because is necessary to refresh others controls
+       ! fixed METHOD PAINT
+       ! fixed problem in navegation with KEYDOWN ARROW
+       + handling Hide columns
+       + in resize of columns is SHOW line moving
+  * source\hcombo.prg
+    + DATA aItemsBound  
+    + DATA valueBound 
+    + DATA columnBound
+    + DATA xrowsource 
+    + METHOD Populate() HIDDEN
+    + METHOD GetValueBound( ) 
+    + METHOD RowSource( xSource ) SETGET
+	  combobox now accepts array item with two dimension, if possible return the value of the second item of array
+      valueBound return valor second value of ARRAY 
+      ITEMS {{"female","f"},{"male","m"}}
+      it is possible to populate the combobox with a field in a DBF table
+      ITEMS {"table->field"} or {{"table->field","field2"}}
+  * samples\combobox\combobox.prg
+    + new sample valuebound
 
 2009-09-22 12:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hradio.prg
@@ -32,7 +76,6 @@
       + METHOD Create( )
         used for the creation of the objects inserted in container
       + add COLOR and BACKCOLOR in container  
-      
   * source\hupdown.prg
     ! hupdown class has been completely rewritten to have the same behavior of the edit control
         buddy control is HEDIT CONTROL

@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.25 2009-07-29 15:41:49 lfbasso Exp $
+ * $Id: drawwidg.prg,v 1.26 2009-09-22 16:39:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -388,8 +388,9 @@ METHOD AddStandard( nId ) CLASS HBitmap
    RETURN Self
 
 METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
-   LOCAL i, aBmpSize
+   LOCAL i, aBmpSize, cname
 
+   cname := CutPath( name ) 
    #ifdef __XHARBOUR__
       FOR EACH i IN ::aBitmaps
          IF i:name == name .AND. ( nWidth == nil .OR. nHeight == nil )
@@ -405,9 +406,9 @@ METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
          ENDIF
       NEXT
    #endif
-   name := IIf( ! File( name ) .AND.FILE( CutPath( name ) ), CutPath( name ), name )
+   name := IIf( ! File( name ) .AND. FILE( CutPath( name ) ), CutPath( name ), name )   
    IF ! File( name )
-      name := SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", "*.jpg;*.gif;*.bmp;*.ico",, "Locate " + name )
+      name := SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ),FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
    ENDIF
    
 	 IF Lower( Right( name, 4 ) ) != ".bmp" .OR. ( nWidth == nil .AND. nHeight == nil .AND. lTranparent == Nil )
@@ -426,7 +427,7 @@ METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
    IF Empty( ::handle )
       RETURN Nil
    ENDIF
-   ::name := name
+   ::name := cname
    aBmpSize  := GetBitmapSize( ::handle )
    ::nWidth  := aBmpSize[ 1 ]
    ::nHeight := aBmpSize[ 2 ]
@@ -541,7 +542,7 @@ METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
    RETURN Self
 
 METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
-   LOCAL i, aIconSize
+   LOCAL i, aIconSize, cname
 
 
    IF nWidth == nil
@@ -550,7 +551,7 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
    IF nHeight == nil
       nHeight := 0
    ENDIF
-
+   cname := CutPath( name ) 
    #ifdef __XHARBOUR__
       FOR EACH i IN  ::aIcons
          IF i:name == name
@@ -569,12 +570,12 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
    // ::classname:= "HICON"
    name := IIf( ! File( name ) .AND.FILE( CutPath( name ) ), CutPath( name ), name )
    IF ! File( name )
-      name := SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", "*.jpg;*.gif;*.bmp;*.ico",, "Locate " + name )
+      name := SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ),FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
    ENDIF
 
    //::handle := LoadImage( 0, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE + LR_LOADFROMFILE )
    ::handle := LoadImage( 0, name, IMAGE_ICON, nWidth, nHeight, LR_DEFAULTSIZE + LR_LOADFROMFILE + LR_SHARED )   
-   ::name := name
+   ::name := cname
    aIconSize := GetIconSize( ::handle )
    ::nWidth  := aIconSize[ 1 ]
    ::nHeight := aIconSize[ 2 ]

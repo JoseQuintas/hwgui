@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.67 2009-08-20 09:16:37 druzus Exp $
+ * $Id: hcombo.prg,v 1.68 2009-09-22 16:39:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -36,8 +36,12 @@ CLASS HComboBox INHERIT HControl
 
    CLASS VAR winclass INIT "COMBOBOX"
    DATA aItems
+   DATA aItemsBound  
    DATA bSetGet
    DATA value INIT 1
+   DATA valueBound INIT 1
+   DATA columnBound INIT 1 HIDDEN
+   DATA xrowsource INIT {,} HIDDEN
 
    DATA bChangeSel
    DATA bChangeInt
@@ -72,6 +76,9 @@ CLASS HComboBox INHERIT HControl
    METHOD When( ) 
    METHOD InteractiveChange( )
    METHOD onChange( )
+   METHOD Populate() HIDDEN
+   METHOD GetValueBound( ) 
+   METHOD RowSource( xSource ) SETGET
 
 
 ENDCLASS
@@ -80,15 +87,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
                bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, bcolor, bLFocus, ;
                bIChange, nDisplay, nhItem, ncWidth ) CLASS HComboBox
 
-   IF lEdit == Nil 
-      lEdit := .f.
-   ENDIF
-   IF lText == Nil 
-      lText := .f.
-   ENDIF
-   //if bValid != NIL; ::bValid := bValid; endif
    IF !Empty( nDisplay ) .AND. nDisplay > 0
-      nStyle := Hwg_BitOr( nStyle, CBS_NOINTEGRALHEIGHT )   //+ WS_VSCROLL )
+      nStyle := Hwg_BitOr( nStyle, CBS_NOINTEGRALHEIGHT ) + WS_VSCROLL 
       // CBS_NOINTEGRALHEIGHT. CRIATE VERTICAL SCROOL BAR
    ELSE
       nDisplay := 6
@@ -97,8 +97,16 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::nHeightBox := Int( nHeight * 0.75 )                    //	Meets A 22'S EDITBOX
    nHeight := nHeight + ( Iif( Empty( nhItem ), 16.250, ( nhItem += 0.250 ) ) * nDisplay )
 
+   IF lEdit == Nil 
+      lEdit := .f.
+   ENDIF
+
    nStyle := Hwg_BitOr( Iif( nStyle == Nil, 0, nStyle ), Iif( lEdit, CBS_DROPDOWN, CBS_DROPDOWNLIST ) + WS_TABSTOP )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, bSize, bPaint, ctooltip, tcolor, bcolor )
+
+   IF lText == Nil 
+      lText := .f.
+   ENDIF
 
    ::nDisplay := nDisplay
    ::nhItem   := nhItem
@@ -117,8 +125,11 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::value := Iif( vari == Nil .OR. Valtype( vari ) != "N", 1, vari )
    ENDIF
 
-   ::bSetGet := bSetGet
-   ::aItems  := IIF( aItems = Nil, {}, aItems )
+   
+   ::aItems        := IIF( aItems = Nil, {}, aClone( aItems ) )
+   ::aItemsBound   := {}
+   ::bSetGet       := bSetGet
+   ::RowSource( ::aItems )
 
    ::Activate()
 
@@ -186,8 +197,9 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    ELSE
       ::value := Iif( vari == Nil .OR. Valtype( vari ) != "N", 1, vari )
    ENDIF
+   ::aItems  := IIF( aItems = Nil, {}, aClone( aItems ) )
    ::bSetGet := bSetGet
-   ::aItems  := aItems
+   ::RowSource( ::aItems )
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
@@ -218,9 +230,9 @@ RETURN Self
 
 METHOD INIT() CLASS HComboBox
 
-LOCAL i, numofchars
-LOCAL LongComboWidth    := 0
-LOCAL NewLongComboWidth, avgwidth, nHeightBox
+   LOCAL i, numofchars
+   LOCAL LongComboWidth    := 0
+   LOCAL NewLongComboWidth, avgWidth, nHeightBox
 
    IF !::lInit
       ::nHolder := 1
@@ -228,6 +240,7 @@ LOCAL NewLongComboWidth, avgwidth, nHeightBox
       HWG_INITCOMBOPROC( ::handle )
       Super:Init()
       IF ::aItems != Nil .AND. !Empty( ::aItems )
+         /*
          IF ::value == Nil
             IF ::lText
                ::value := ::aItems[ 1 ]
@@ -243,6 +256,9 @@ LOCAL NewLongComboWidth, avgwidth, nHeightBox
                LongComboWidth := numofchars
             ENDIF
          NEXT
+         */
+         LongComboWidth := ::Populate()
+         //
          IF ::lText
             IF ::lEdit
                SetDlgItemText( getmodalhandle(), ::id, ::value )
@@ -263,7 +279,7 @@ LOCAL NewLongComboWidth, avgwidth, nHeightBox
          IF !Empty( ::nhItem )
             sendmessage( ::handle, CB_SETITEMHEIGHT, 0, ::nhItem )
          ELSE
-            ::nhItem := sendmessage( ::handle, CB_GETITEMHEIGHT, 0, 0 ) + 0.250
+            ::nhItem := sendmessage( ::handle, CB_GETITEMHEIGHT, 0, 0 ) + 0.100  //0.250
          ENDIF
          nHeightBox := sendmessage( ::handle, CB_GETITEMHEIGHT, - 1, 0 ) + 0.750
          //  WIDTH  Items
@@ -316,7 +332,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
       ENDIF
    ENDIF
 
-RETURN - 1
+   RETURN - 1
 
 METHOD Requery() CLASS HComboBox
 
@@ -337,13 +353,22 @@ LOCAL vari, i
 
    IF ::bSetGet != Nil
       vari := Eval( ::bSetGet,, Self )
+      IF ::columnBound = 2 
+          vari := ::GetValueBound( vari )
+      ENDIF    
       IF ::lText
          ::value := Iif( vari == Nil .OR. Valtype( vari ) != "C", "", vari )
-         SendMessage( ::handle, CB_SETEDITSEL, 0, Len( ::value ) )
+         //SendMessage( ::handle, CB_SETEDITSEL, 0, Len( ::value ) )
       ELSE
          ::value := Iif( vari == Nil .OR. Valtype( vari ) != "N", 1, vari )
       ENDIF
+      IF ::columnBound = 1
+         Eval( ::bSetGet, ::value, Self )
+      ELSE
+         Eval( ::bSetGet, ::valuebound, Self )
+      ENDIF   
    ENDIF
+   
    /*
    SendMessage( ::handle, CB_RESETCONTENT, 0, 0 )
 
@@ -361,6 +386,7 @@ LOCAL vari, i
       ComboSetString( ::handle, ::value )
       ::SetItem( ::value )
    ENDIF
+   ::valueBound := ::GetValueBound( )
 
 RETURN Nil
 
@@ -374,19 +400,26 @@ METHOD SetItem( nPos ) CLASS HComboBox
    */
    IF ::lText
       IF nPos > 0
-         ::value := ::aItems[ nPos ]
+         ::value := ::aItems[nPos]
+         ::ValueBound := ::GetValueBound()
       ELSE
          ::value := ""
+         ::valueBound := ""
       ENDIF
    ELSE
       ::value := nPos
    ENDIF
-
+   
    SendMessage( ::handle, CB_SETCURSEL, nPos - 1, 0 )
 
    IF ::bSetGet != Nil
-      Eval( ::bSetGet, ::value, Self )
+      IF ::columnBound = 1
+         Eval( ::bSetGet, ::value, Self )
+      ELSE
+         Eval( ::bSetGet, ::valuebound, Self )
+      ENDIF   
    ENDIF
+
    /*
    IF ::bChangeSel != Nil
       ::oparent:lSuspendMsgsHandling := .t.
@@ -411,26 +444,61 @@ METHOD GetValue() CLASS HComboBox
 
 LOCAL nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
 
-   ::value := Iif( ::lText, ::aItems[ nPos ], nPos )
-   IF ::bSetGet != Nil
-      Eval( ::bSetGet, ::value, Self )
+   //::value := Iif( ::lText, ::aItems[ nPos ], nPos )
+   IF ::lText 
+	    nPos := AScan( ::aItems, ::Value )
+      ::value := Iif( nPos > 0, ::aItems[ nPos ], ::value )
+   ELSE
+      ::value := nPos 
    ENDIF
+   ::ValueBound := ::GetValueBound()
+   IF ::bSetGet != Nil
+      IF ::columnBound = 1
+         Eval( ::bSetGet, ::value, Self )
+      ELSE
+         Eval( ::bSetGet, ::ValueBound, Self )
+      ENDIF   
+   ENDIF
+  RETURN ::value
 
-RETURN ::value
+METHOD GetValueBound( xItem ) CLASS HComboBox
+Local nPos := SendMessage( ::handle,CB_GETCURSEL,0,0 ) + 1
+
+   IF xItem = Nil
+	    IF ::lText 
+   	     nPos := IIF( ::Value = Nil,0, AScan( ::aItems, ::Value ) )
+      ENDIF
+   ELSE
+      nPos := AScan( ::aItemsBound, xItem )
+      ::setItem( nPos )
+      RETURN IIF( nPos > 0, ::aItems[ nPos ], xItem )
+   ENDIF   
+   ::ValueBound := IIF( ::lText, "", 0 )
+   IF nPos > 0 .AND. nPos <=  LEN( ::aItemsBound ) // LEN( ::aItems ) = LEN( ::aItemsBound )
+      ::ValueBound := ::aItemsBound[ nPos ]
+   ENDIF 
+   RETURN ::ValueBound
 
 METHOD DeleteItem( nIndex ) CLASS HComboBox
 
    IF SendMessage( ::handle, CB_DELETESTRING, nIndex - 1, 0 ) > 0               //<= LEN(ocombo:aitems)
       Adel( ::Aitems, nIndex )
       Asize( ::Aitems, Len( ::aitems ) - 1 )
+      IF LEN( ::AitemsBound ) > 0 
+         ADEL( ::AitemsBound, nIndex )
+         ASIZE( ::AitemsBound, Len( ::aitemsBound ) - 1 )
+      ENDIF
       RETURN .T.
    ENDIF
 RETURN .F.
 
-METHOD AddItem( cItem ) CLASS HComboBox
+METHOD AddItem( cItem, cItemBound ) CLASS HComboBox
 
 LOCAL nCount
 
+   IF LEN( ::Aitems ) = LEN( ::AitemsBound )
+      AADD( ::AitemsBound, cItemBound )
+   ENDIF   
    Aadd( ::Aitems, cItem )
    nCount := SendMessage( ::handle, CB_GETCOUNT, 0, 0 ) + 1
    ComboAddString( ::handle, cItem )    //::aItems[i] )
@@ -513,13 +581,19 @@ LOCAL ltab := GETKEYSTATE( VK_TAB ) < 0
       // IF lESC // "if" by Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
       nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
       IF ::lText
+   	     nPos := AScan( ::aItems, ::Value )
          ::value := Iif( nPos > 0, ::aItems[ nPos ], GetWindowText( ::handle ) )
       ELSE
          ::value := nPos
       ENDIF
+      ::ValueBound := ::GetValueBound()
       IF ::bSetGet != Nil
-         Eval( ::bSetGet, ::value, Self )
-      ENDIF
+         IF ::ColumnBound = 1
+            Eval( ::bSetGet, ::value, Self )
+         ELSE
+            Eval( ::bSetGet, ::valueBound, Self )
+         ENDIF   
+      ENDIF  
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com.br) 03/06/2006
       IF ::bLostFocus != Nil
          ::oparent:lSuspendMsgsHandling := .T.
@@ -549,6 +623,91 @@ LOCAL ltab := GETKEYSTATE( VK_TAB ) < 0
       ENDIF
    ENDIF
 RETURN .T.
+
+METHOD RowSource( xSource )
+   
+   IF xSource != Nil
+      IF VALTYPE( xSource ) = "A"
+         IF LEN( xSource ) > 0
+           ::xrowsource := { xSource[ 1 ] ,IIF( LEN( xSource ) > 1, xSource[ 2 ], Nil ) }
+        ENDIF   
+      ELSE
+         ::xrowsource := { xSource, Nil }
+      ENDIF
+   ENDIF
+   RETURN ::xRowSource   
+    
+METHOD Populate
+   Local cAlias, nRecno, value, cValueBound
+   Local i, numofchars, LongComboWidth := 0, aItems
+   
+   IF EMPTY( ::aItems ) 
+      RETURN Nil
+   ENDIF
+   IF ::xrowsource[ 1 ] != Nil .AND. "->" $ ::xrowsource[ 1 ] //::aItems[ 1 ]
+      cAlias := LEFT( ::xrowsource[ 1 ], AT("->", ::xrowsource[ 1 ]) - 1 )
+      value := STRTRAN( ::xrowsource[ 1 ] , calias + "->" )
+      cAlias := IIF( TYPE( ::xrowsource[ 1 ] ) = "U",  Nil, cAlias ) 
+      cValueBound := IIF( LEN( ::aItems ) > 1 .AND. cAlias != Nil, ::xrowsource[ 2 ], Nil )
+   ELSE
+      cValueBound := IIF( VALTYPE( ::aItems[ 1 ] ) = "A" .AND. LEN(  ::aItems[ 1 ] ) > 1, ::aItems[ 1, 2 ], NIL )     
+   ENDIF
+   ::columnBound := IIF( EMPTY( cValueBound ), 1 ,2 )
+   IF ::value == Nil
+      IF ::lText
+         ::value := IIF( cAlias = Nil, ::aItems[ 1 ], ( cAlias )-> &value  )
+       ELSE
+         ::value := 1
+       ENDIF
+   ELSEIF ::lText .AND. !::lEdit .AND. EMPTY ( ::value )
+      ::value := IIF( cAlias = Nil, ::aItems[ 1 ], &( value ) )
+      ::value := IIF( cAlias = Nil, ::aItems[ 1 ], ( cAlias )-> &value  )
+   ENDIF
+   SendMessage( ::handle, CB_RESETCONTENT, 0, 0)
+
+   IF cAlias != Nil .AND. SELECT( cAlias ) > 0
+      ::aItems := {}
+      nRecno := ( cAlias ) ->( Recno() )
+      ( cAlias ) ->( DBGOTOP() )   
+       i := 1
+       DO WHILE !( cAlias ) ->( EOF() )
+         AADD( ::Aitems,( cAlias ) -> &value )
+         IF !EMPTY( cvaluebound )
+            AADD( ::AitemsBound,( cAlias ) -> &cvalueBound )
+         ENDIF   
+         ComboAddString( ::handle, ::aItems[ i ] )
+         numofchars := SendMessage( ::handle, CB_GETLBTEXTLEN, i - 1, 0 )
+         IF  numofchars > LongComboWidth
+             LongComboWidth := numofchars
+         ENDIF
+         ( cAlias ) ->( DBSKIP() )
+         i ++
+       ENDDO
+       IF nRecno > 0
+          ( cAlias ) ->( DBGOTO( nRecno ) )
+       ENDIF
+    ELSE   
+       FOR i := 1 TO Len( ::aItems )
+          IF ::columnBound > 1 
+             IF VALTYPE( ::aItems[ i ] ) = "A" .AND. LEN(  ::aItems[ i ] ) > 1
+                AADD( ::AitemsBound, ::aItems[i, 2 ] )
+             ELSE
+                AADD( ::AitemsBound, Nil )
+             ENDIF   
+             ::aItems[ i ] := ::aItems[ i, 1 ] 
+             ComboAddString( ::handle, ::aItems[ i ] )
+          ELSE
+             ComboAddString( ::handle, ::aItems[ i ] )   
+          ENDIF   
+          numofchars := SendMessage(::handle,CB_GETLBTEXTLEN, i - 1, 0 )
+          if  numofchars > LongComboWidth
+              LongComboWidth := numofchars
+          endif
+       NEXT
+    ENDIF
+    ::ValueBound := ::GetValueBound()
+   RETURN LongComboWidth
+
 
 //***************************************************
 

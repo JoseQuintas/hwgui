@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.139 2009-08-25 12:26:48 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.140 2009-09-22 15:24:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -138,9 +138,12 @@ RETURN Nil
 METHOD INIT CLASS HControl
 
    IF ! ::lInit
-      IF ::tooltip != Nil
-         AddToolTip( ::oParent:handle, ::handle, ::tooltip )
-      ENDIF
+      //IF ::tooltip != Nil
+      //   AddToolTip( ::oParent:handle, ::handle, ::tooltip )
+      //ENDIF
+      IF Len( ::aControls) = 0 .AND. ::classname != "HTAB"
+         AddToolTip( ::GetParentForm():handle, ::handle, ::tooltip )          
+      ENDIF 
       IF ::oFont != NIL
          SetCtrlFont( ::oParent:handle, ::id, ::oFont:handle )
       ELSEIF ::oParent:oFont != NIL
@@ -462,7 +465,7 @@ CLASS VAR winclass   INIT "STATIC"
 
    DATA AutoSize    INIT .F.
    //DATA lTransparent  INIT .F. HIDDEN
-   DATA   nBackMode   INIT 1 HIDDEN
+   DATA nBackMode   INIT 1 HIDDEN
    DATA nStyleHS
    DATA bClick, bDblClick
 
@@ -534,7 +537,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::Activate()
 
    ::bClick := bClick
-   IF ::id > 2 .OR. bClick != NIL
+   IF ::id > 2 
       ::oParent:AddEvent( STN_CLICKED, Self, { || ::onClick() } )
    ENDIF   
    ::bDblClick := bDblClick
@@ -561,7 +564,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    //ENDIF
    ::bOther := bOther
    ::bClick := bClick
-   IF ::id > 2 .OR. bClick != NIL
+   IF ::id > 2 
       ::oParent:AddEvent( STN_CLICKED, Self, { || ::onClick() } )
    ENDIF   
    ::bDblClick := bDblClick
@@ -649,8 +652,8 @@ METHOD Paint( lpDis ) CLASS HStatic
    LOCAL client_rect, szText
    LOCAL dwtext, nstyle, brBackground 
    LOCAL dc := drawInfo[ 3 ]
-
-   client_rect := GetClientRect( ::handle )
+   client_rect    := CopyRect( { drawInfo[ 4 ] , drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] } )
+   //client_rect := GetClientRect( ::handle )
    szText      := GetWindowText( ::handle )
 
    // Map "Static Styles" to "Text Styles"
@@ -669,9 +672,10 @@ METHOD Paint( lpDis ) CLASS HStatic
    ENDIF   
    
    // Draw the text
-   DrawText( dc, szText, ;
-             client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ;
-             dwtext )
+   DrawText( dc, szText, client_rect, dwtext )
+   //DrawText( dc, szText, ;
+   //          client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ;
+   //          dwtext )
    IF ::Title != szText
  		  RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight ) 
    ENDIF
@@ -766,9 +770,12 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       ENDIF
    ENDIF
    */
-   IF ::id > 2 .OR. bClick != NIL
+   IF ::id > 2 .OR. ::bClick != NIL                                 
+      IF ::id < 3
+         ::GetParentForm():AddEvent( 0, Self, { || ::onClick() } )
+      ENDIF   
       ::oParent:AddEvent( 0, Self, { || ::onClick() } )
-   ENDIF
+   ENDIF   
    RETURN Self
 
 METHOD Activate CLASS HButton
@@ -984,8 +991,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    ::Caption := cCaption
    ::iStyle                             := iStyle
-   ::hBitmap                            := hBitmap
-   ::hicon                              := hicon
+   ::hBitmap                            := IIF( EMPTY( hBitmap ), Nil, hBitmap )
+   ::hicon                              := IIF( EMPTY( hicon ), Nil, hIcon )
    ::m_bDrawTransparent                 := Transp
    ::PictureMargin                      := nPictureMargin
    ::lnoThemes                          := lnoThemes
@@ -1750,9 +1757,8 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, bInit, tcolor, nHeight, cSlant, nBorder ) CLASS HLine
 
-
    Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop,,,,bInit, ;
-              bSize, { | o, lp | o:Paint( lp ) } )
+              bSize, { | o, lp | o:Paint( lp ) } , , tcolor )
 
    ::title := ""
    ::lVert := IIf( lVert == NIL, .F., lVert )
@@ -1770,8 +1776,8 @@ METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, bInit, tcolor, 
       ::oPenLight := HPen():Add( BS_SOLID, 1, GetSysColor( COLOR_3DHILIGHT ) )
       ::oPenGray  := HPen():Add( BS_SOLID, 1, GetSysColor( COLOR_3DSHADOW  ) )
    ELSE
-      ::nWidth  := nLength + 1
-      ::nHeight := nHeight + 1
+      ::nWidth  := nLength 
+      ::nHeight := nHeight 
       ::oPenLight := HPen():Add( BS_SOLID, ::nBorder, tColor )
    ENDIF
 
@@ -1793,6 +1799,8 @@ METHOD Paint( lpdis ) CLASS HLine
    LOCAL x1  := drawInfo[ 4 ], y1 := drawInfo[ 5 ]
    LOCAL x2  := drawInfo[ 6 ], y2 := drawInfo[ 7 ]
 
+   SelectObject( hDC, ::oPenLight:handle )
+   
    IF EMPTY( ::LineSlant )
       IF ::lVert
          // DrawEdge( hDC,x1,y1,x1+2,y2,EDGE_SUNKEN,BF_RIGHT )
@@ -1801,7 +1809,6 @@ METHOD Paint( lpdis ) CLASS HLine
          // DrawEdge( hDC,x1,y1,x2,y1+2,EDGE_SUNKEN,BF_RIGHT )
          DrawLine( hDC, x1 , y1 + 1, x2, y1 + 1 )
       ENDIF
-
       SelectObject( hDC, ::oPenGray:handle )
       IF ::lVert
          DrawLine( hDC, x1, y1, x1, y2 )
@@ -1809,10 +1816,10 @@ METHOD Paint( lpdis ) CLASS HLine
          DrawLine( hDC, x1, y1, x2, y1 )
       ENDIF
    ELSE
-      IF  x2 = ::nBorder
-          DrawLine( hDC, x1, y1, x1, y2 )
-      ELSEIF y2 = ::nBorder
-          DrawLine( hDC, x1, y1, x2, y1 )
+      IF ( x2 - x1 ) <= ::nBorder //.OR. ::nWidth <= ::nBorder 
+         DrawLine( hDC, x1, y1, x1, y2 )
+      ELSEIF ( y2 - y1 ) <= ::nBorder //.OR. ::nHeight <= ::nBorder 
+         DrawLine( hDC, x1, y1, x2, y1 )
       ELSEIF ::LineSlant == "/"
           DrawLine( hDC, x1  , y1 + y2 , x1 + x2 , y1  )
       ELSEIF ::LineSlant == "\"

@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.21 2009-02-27 12:25:17 lfbasso Exp $
+ * $Id: hlistbox.prg,v 1.22 2009-09-22 15:24:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -19,7 +19,8 @@ CLASS VAR winclass   INIT "LISTBOX"
    DATA  aItems
    DATA  bSetGet
    DATA  value         INIT 1
-   DATA  bChangeSel
+   DATA  nItemHeight
+   DATA  bChangeSel                        
    DATA  bkeydown, bDblclick
    DATA  bValid
    
@@ -33,6 +34,9 @@ CLASS VAR winclass   INIT "LISTBOX"
    METHOD Setitem( nPos )
    METHOD AddItems( p )
    METHOD DeleteItem( nPos )
+   METHOD Valid( oCtrl )
+   METHOD When( oCtrl ) 
+   METHOD onChange( oCtrl )
    METHOD onDblClick() 
    METHOD Clear()
    METHOD onEvent( msg, wParam, lParam ) 
@@ -46,7 +50,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, cTooltip, tColor, bcolor )
 
-   ::value   := IIf( vari == Nil .OR. ValType( vari ) != "N", 1, vari )
+   ::value   := IIf( vari == Nil .OR. ValType( vari ) != "N", 0, vari )
    ::bSetGet := bSetGet
 
    IF aItems == Nil
@@ -67,21 +71,21 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF bSetGet != Nil
       IF bGFocus != Nil
          ::lnoValid := .T.
-         ::oParent:AddEvent( LBN_SETFOCUS, Self, { | o, id | __When( o:FindControl( id ) ) },, "onGotFocus" )
+         ::oParent:AddEvent( LBN_SETFOCUS, Self, { | o, id | ::When( o:FindControl( id ) ) },, "onGotFocus" )
       ENDIF
-      ::oParent:AddEvent( LBN_KILLFOCUS, Self, { | o, id | __Valid( o:FindControl( id ) ) }, .F., "onLostFocus" )
-      ::bValid := { | o | __Valid( o ) }
+      ::oParent:AddEvent( LBN_KILLFOCUS, Self, { | o, id | ::Valid( o:FindControl( id ) ) }, .F., "onLostFocus" )
+      ::bValid := { | o | ::Valid( o ) }
    ELSE
       IF bGFocus != Nil
-         ::oParent:AddEvent( LBN_SETFOCUS, Self, { | o, id | __When( o:FindControl( id ) ) },, "onGotFocus" )
+         ::oParent:AddEvent( LBN_SETFOCUS, Self, { | o, id | ::When( o:FindControl( id ) ) },, "onGotFocus" )
       ENDIF
-      ::oParent:AddEvent( LBN_KILLFOCUS, Self, { | o, id | __Valid( o:FindControl( id ) ) }, .F., "onLostFocus" )
+      ::oParent:AddEvent( LBN_KILLFOCUS, Self, { | o, id | ::Valid( o:FindControl( id ) ) }, .F., "onLostFocus" )
    ENDIF
    IF bChange != Nil .OR. bSetGet != Nil
-      ::oParent:AddEvent( LBN_SELCHANGE, Self, { | o, id | __onChange( o:FindControl( id ) ) },, "onChange" )
+      ::oParent:AddEvent( LBN_SELCHANGE, Self, { | o, id | ::onChange( o:FindControl( id ) ) },, "onChange" )
    ENDIF
    IF bDblclick != Nil 
-      ::oParent:AddEvent( LBN_DBLCLK, self,{|| ::onDblClick()})
+      ::oParent:AddEvent( LBN_DBLCLK, self, {|| ::onDblClick() } )
    ENDIF
 
    RETURN Self
@@ -113,7 +117,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
-      ::oParent:AddEvent( LBN_SELCHANGE, Self, { | o, id | __Valid( o:FindControl( id ) ) }, "onChange" )
+      ::oParent:AddEvent( LBN_SELCHANGE, Self, { | o, id | ::Valid( o:FindControl( id ) ) }, "onChange" )
    ENDIF
    RETURN Self
 
@@ -128,6 +132,9 @@ METHOD Init() CLASS HListBox
       IF ::aItems != Nil
          IF ::value == Nil
             ::value := 1
+         ENDIF
+         IF !EMPTY( ::nItemHeight )
+            SendMessage( ::handle, LB_SETITEMHEIGHT , 0, ::nItemHeight )                  
          ENDIF
          SendMessage( ::handle, LB_RESETCONTENT, 0, 0 )
          FOR i := 1 TO Len( ::aItems )
@@ -186,7 +193,7 @@ METHOD Refresh() CLASS HListBox
       vari := Eval( ::bSetGet )
    ENDIF
 
-   ::value := IIf( vari == Nil .OR. ValType( vari ) != "N", 1, vari )
+   ::value := IIf( vari == Nil .OR. ValType( vari ) != "N", 0, vari )
    ::SetItem( ::value )
    RETURN Nil
 
@@ -211,7 +218,7 @@ METHOD onDblClick()  CLASS HListBox
    ENDIF   
    RETURN Nil
 
-METHOD AddItems( p )
+METHOD AddItems( p ) CLASS HListBox
 // Local i
    AAdd( ::aItems, p )
    ListboxAddString( ::handle, p )
@@ -222,7 +229,7 @@ METHOD AddItems( p )
    ListboxSetString( ::handle, ::value )
    RETURN Self
 
-METHOD DeleteItem( nPos )
+METHOD DeleteItem( nPos ) CLASS HListBox
 
    IF SendMessage( ::handle, LB_DELETESTRING , nPos - 1, 0 ) > 0 //<= LEN(ocombo:aitems)
       ADel( ::Aitems, nPos )
@@ -231,69 +238,69 @@ METHOD DeleteItem( nPos )
    ENDIF
    RETURN .F.
 
-METHOD Clear()
+METHOD Clear() CLASS HListBox
    ::aItems := { }
-   ::value := 1
+   ::value := 0
    SendMessage( ::handle, LB_RESETCONTENT, 0, 0 )
    ListboxSetString( ::handle, ::value )
    RETURN .T.
 
 
-STATIC FUNCTION __onChange( oCtrl )
+METHOD onChange( oCtrl ) CLASS HListBox
    LOCAL nPos
 
-   nPos := SendMessage( oCtrl:handle, LB_GETCURSEL, 0, 0 ) + 1
-   oCtrl:SetItem( nPos )
+   nPos := SendMessage( ::handle, LB_GETCURSEL, 0, 0 ) + 1
+   ::SetItem( nPos )
 
    RETURN Nil
 
 
-STATIC FUNCTION __When( oCtrl )
+METHOD When( oCtrl ) CLASS HListBox
    LOCAL res := .t., nSkip
 
-   IF ! CheckFocus( oCtrl, .f. )
+   IF ! CheckFocus( Self, .f. )
       RETURN .t.
    ENDIF
-   oCtrl:SetFocus()
-   nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 .and. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
-   IF oCtrl:bSetGet != Nil
-      Eval( oCtrl:bSetGet, oCtrl:value, oCtrl )
+   ::SetFocus()
+   nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 .AND. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
+   IF ::bSetGet != Nil
+      Eval( ::bSetGet, ::value, Self )
    ENDIF
-   IF oCtrl:bGetFocus != Nil
-      oCtrl:lnoValid := .T.
-      oCtrl:oparent:lSuspendMsgsHandling := .t.
-      res := Eval( oCtrl:bGetFocus, oCtrl:Value, oCtrl )
-      oCtrl:oparent:lSuspendMsgsHandling := .f.
-      oCtrl:lnoValid := ! res
+   IF ::bGetFocus != Nil
+      ::lnoValid := .T.
+      ::oparent:lSuspendMsgsHandling := .t.
+      res := Eval( ::bGetFocus, ::Value, Self )
+      ::oparent:lSuspendMsgsHandling := .f.
+      ::lnoValid := ! res
       IF ! res
-         GetSkip( oCtrl:oParent, oCtrl:handle, , nSkip )
+         GetSkip( ::oParent, ::handle, , nSkip )
       ENDIF
    ENDIF
    RETURN res
 
 
-STATIC FUNCTION __Valid( oCtrl )
+METHOD Valid( oCtrl ) CLASS HListBox
    LOCAL res := .t., oDlg, nSkip
    LOCAL ltab :=  GETKEYSTATE( VK_TAB ) < 0
 
-   IF ! CheckFocus( oCtrl, .t. ) .or. oCtrl:lNoValid
+   IF ! CheckFocus( Self, .t. ) .or. ::lNoValid
       RETURN .t.
    ENDIF
    nSkip := IIf( GetKeyState( VK_SHIFT ) < 0 , - 1, 1 )
-   IF ( oDlg := ParentGetDialog( oCtrl ) ) == Nil .OR. oDlg:nLastKey != 27
-      oCtrl:value := SendMessage( oCtrl:handle, LB_GETCURSEL, 0, 0 ) + 1
-      IF oCtrl:bSetGet != Nil
-         Eval( oCtrl:bSetGet, oCtrl:value, oCtrl )
+   IF ( oDlg := ParentGetDialog( Self ) ) == Nil .OR. oDlg:nLastKey != 27
+      ::value := SendMessage( ::handle, LB_GETCURSEL, 0, 0 ) + 1
+      IF ::bSetGet != Nil
+         Eval( ::bSetGet, ::value, Self )
       ENDIF
       IF oDlg != Nil
          oDlg:nLastKey := 27
       ENDIF
-      IF oCtrl:bLostFocus != Nil
-         oCtrl:oparent:lSuspendMsgsHandling := .t.
-         res := Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl )
-         oCtrl:oparent:lSuspendMsgsHandling := .f.
+      IF ::bLostFocus != Nil
+         ::oparent:lSuspendMsgsHandling := .t.
+         res := Eval( ::bLostFocus, ::value, Self )
+         ::oparent:lSuspendMsgsHandling := .f.
          IF ! res
-            oCtrl:SetFocus() //( oCtrl:handle )
+            ::SetFocus() //( ::handle )
             IF oDlg != Nil
                oDlg:nLastKey := 0
             ENDIF
@@ -304,10 +311,10 @@ STATIC FUNCTION __Valid( oCtrl )
          oDlg:nLastKey := 0
       ENDIF
    ENDIF
-   IF lTab .AND. GETFOCUS() = oCtrl:handle
-      IF oCtrl:oParent:CLASSNAME = "HTAB"
-         oCtrl:oParent:SETFOCUS()
+   IF lTab .AND. GETFOCUS() = ::handle
+      IF ::oParent:CLASSNAME = "HTAB"
+         ::oParent:SETFOCUS()
       ENDIF
-      GetSkip( oCtrl:oparent, oCtrl:handle,, nSkip )
+      GetSkip( ::oparent, ::handle,, nSkip )
    ENDIF
    RETURN .T.

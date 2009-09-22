@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1130 2009-09-22 14:57:27 lfbasso Exp $
+ * $Id: Changelog,v 1.1131 2009-09-22 15:24:22 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,29 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-09-22 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcheck.prg
+    ! minor fix
+  * source\hcontrol.prg
+    * METHOD INIT in HControl CLASS
+      ! fixed tooltip  - no more problem in GET in TAB
+    * CLASS HLine 
+      ! minor fix    
+  * source\hedit.prg
+    + DATA lWantReturn - if have ES_WANTRETURN in MULTILINE
+    + DATA oUpDown - store UPDOWN control
+    * METHOD ONEVENT 
+      ! handling RETURN in MULTILINE without WANTRETURN     
+      + add handling in ARROWS for the UPDOWN control
+    * METHOD VALID
+      + handling LOSTFOCUS TO UPDOWN control     
+    * changed GETSKIP to handling containers and otimization
+    + add FUNCTION NextFocusContainer( oParent, hCtrl, nSkip )
+  * source\hlistbox.prg
+    ! minor fix
+  * source\htab.prg
+    ! minor fix
 
 2009-09-22 11:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch

@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.37 2009-09-16 03:24:56 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.38 2009-09-22 15:24:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -18,6 +18,7 @@ CLASS VAR winclass   INIT "BUTTON"
    DATA bSetGet
    DATA value
    DATA lEnter
+   DATA backstyle  INIT 1
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
                bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lEnter, lTransp )
@@ -49,16 +50,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::title   := cCaption
    ::value   := IIf( vari == Nil .OR. ValType( vari ) != "L", .F., vari )
    ::bSetGet := bSetGet
-   
-   IF (lTransp != NIL .AND. lTransp) 
-      bcolor := ::oParent:bcolor             
-      IF bcolor = Nil .AND. ::oParent:oParent != Nil .AND. ISTHEMEACTIVE()
-         hTheme := hb_OpenThemeData( ::oParent:handle, "TAB" )
-         IF !EMPTY( hTheme )
-            bColor := HWG_GETTHEMESYSCOLOR( hTheme, COLOR_WINDOW  )
-            HB_CLOSETHEMEDATA( hTheme ) 
-         ENDIF 
-      ENDIF
+   ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, 0, 1 ) 
+   IF ::backStyle = 0  // TRANSPARENT
+      bColor := GetBackColorParent( Self ) 
    ENDIF
 
    ::Activate()
@@ -121,7 +115,14 @@ METHOD Init() CLASS HCheckButton
 METHOD onEvent( msg, wParam, lParam ) CLASS HCheckButton
 	 LOCAL oParent := ::oParent
 	 LOCAL itemRect, dc
-	 
+
+   IF msg == WM_THEMECHANGED
+      IF ::backStyle = 0
+         ::bColor := GetBackColorParent( Self ) 
+         ::SETCOLOR(, ::bColor, .T. )
+      ENDIF   
+      RETURN 0
+   ENDIF
    IF ::bOther != Nil                                         
       IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
          RETURN 0

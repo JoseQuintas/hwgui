@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.44 2009-08-02 19:08:55 lfbasso Exp $
+ *$Id: htab.prg,v 1.45 2009-09-22 15:24:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -42,6 +42,7 @@ CLASS HPage INHERIT HObject
    METHOD Disable()  INLINE ::oParent:Disable()
    METHOD GetTabText() INLINE GetTabName( ::oParent:Handle, ::PageOrder - 1 )
    METHOD SetTabText( cText )
+   METHOD Refresh() INLINE ::oParent:ShowPage( ::PageOrder )
 
 ENDCLASS
 
@@ -129,6 +130,7 @@ CLASS VAR winclass   INIT "SysTabControl32"
    METHOD Notify( lParam )
    METHOD OnEvent( msg, wParam, lParam )
    METHOD Disable()
+   METHOD Refresh() INLINE ::ShowPage( ::GetActivePage() )
    METHOD Redefine( oWndParent, nId, oFont, bInit, ;
                     bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )
 
@@ -207,6 +209,7 @@ METHOD Init() CLASS HTab
          Asize( ::aPages, SendMessage( ::handle, TCM_GETITEMCOUNT, 0, 0 ) )
          AEval( ::aPages, { | a, i | ::AddPage( HPage():New( "" ,i,.t.,), "" )})
       ENDIF
+      AddToolTip( ::handle, ::handle, "" )              
       Hwg_InitTabProc( ::handle )
    ENDIF
 
@@ -315,7 +318,7 @@ METHOD ChangePage( nPage ) CLASS HTab
 
    IF ::bChange2 != Nil
       ::oparent:lSuspendMsgsHandling := .T.
-      Eval( ::bChange2, Self, nPage )
+      Eval( ::bChange2, nPage, Self )
       ::oparent:lSuspendMsgsHandling := .F.
    ENDIF
    //
@@ -435,7 +438,7 @@ METHOD Notify( lParam ) CLASS HTab
         Eval( ::bChange, Self, GetCurrentTab( ::handle ) )
         IF ::bGetFocus != NIL .AND. nPage != ::nPrevPage
             ::oparent:lSuspendMsgsHandling := .t.
-            Eval( ::bGetFocus, Self, GetCurrentTab( ::handle ) )
+            Eval( ::bGetFocus, GetCurrentTab( ::handle ), Self )
             ::oparent:lSuspendMsgsHandling := .F.
         ELSEIF  nPage = ::nPrevPage    
             RETURN 0
@@ -446,7 +449,7 @@ METHOD Notify( lParam ) CLASS HTab
         ::nPrevPage := ::nactive //npage
         IF ::bLostFocus != NIL
            ::oparent:lSuspendMsgsHandling := .t.
-           Eval( ::bLostFocus, Self, ::nPrevPage)
+           Eval( ::bLostFocus, ::nPrevPage, Self)
            ::oparent:lSuspendMsgsHandling := .F.
         ENDIF
 	 /*
@@ -469,11 +472,11 @@ METHOD Notify( lParam ) CLASS HTab
 	    
    CASE nCode == TCN_SETFOCUS
       IF ::bGetFocus != NIL
-         Eval( ::bGetFocus, Self, GetCurrentTab( ::handle ) )
+         Eval( ::bGetFocus, GetCurrentTab( ::handle ), Self )
       ENDIF
    CASE nCode == TCN_KILLFOCUS
       IF ::bLostFocus != NIL
-         Eval( ::bLostFocus, Self, GetCurrentTab( ::handle ) )
+         Eval( ::bLostFocus, GetCurrentTab( ::handle ), Self )
       ENDIF
    
    ENDCASE
@@ -481,9 +484,13 @@ METHOD Notify( lParam ) CLASS HTab
        IF ! Empty( ::pages ) .AND. ::nActive > 0 .AND. ::pages[ ::nActive ]:enabled
            ::oparent:lSuspendMsgsHandling := .t.
            IF ::bAction != Nil
-               Eval( ::bAction, Self, GetCurrentTab( ::handle ) )
-            ENDIF
-            ::oparent:lSuspendMsgsHandling := .F.
+              IF nCode == TCN_CLICK
+                  Eval( ::bAction, Self, GetCurrentTab( ::handle ) )
+              ELSE    
+                  Eval( ::bAction, GetCurrentTab( ::handle ), Self )
+              ENDIF    
+           ENDIF
+           ::oparent:lSuspendMsgsHandling := .F.
        ENDIF
        ::lClick := .f.
    ENDIF

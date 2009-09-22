@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1131 2009-09-22 15:24:22 lfbasso Exp $
+ * $Id: Changelog,v 1.1132 2009-09-22 16:01:02 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,49 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-09-22 12:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hradio.prg
+    * moved CLASS HRADIOGROUP of the HObject to HControl
+    + DATA oHGroup - store reference HGROUP object
+    + METHOD Newrg - new method to create the radiogroup, with the creation of the object hGroup 
+    * setvalue accepts value 0  now
+    ! fixed METHOD REFRESH in RADIOGROUP
+    ! fixed in ONEVENT VK_ESCAPE event in RADIOBUTTON
+  * source\hrect.prg
+    * CLASS HDrawShape
+      + DATA BackStyle
+      ! FIXED in PAINT backstyle TRANSPARENT and OPAQUE, and BACKCOLOR
+    * CLASS HContainer
+      container class has been completely rewritten to work as a container object ,
+      then it is possible to create objects inserted into the container the same way as the class HTAB
+      whose purpose is the creation of custom objects to be reused in different forms
+      + DATA bLoad
+      + DATA bClick, bDblClick
+      + DATA lCreate  
+      + DATA xVisible 
+      + DATA backStyle
+      + METHOD Create( )
+        used for the creation of the objects inserted in container
+      + add COLOR and BACKCOLOR in container  
+      
+  * source\hupdown.prg
+    ! hupdown class has been completely rewritten to have the same behavior of the edit control
+        buddy control is HEDIT CONTROL
+        is now possible to define PICTURE for the field, in addition to defining decimal increment,
+        and use all available events in HEdit CLASS
+    + DATA value
+    + DATA bkeydown, bkeyup, bchange
+    + DATA bClickDown, bClickUp
+    + DATA nMaxLength 
+    + DATA lNoBorder
+    + DATA cPicture  
+    + DATA oEditUpDown
+    + DATA lCreate
+    + METHOD CreateUpDown()
+    * NEW CLASS 
+      + CLASS HEditUpDown INHERIT HEdit      
+      
 
 2009-09-22 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcheck.prg

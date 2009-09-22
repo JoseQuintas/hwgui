@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.68 2009-09-22 16:39:50 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.69 2009-09-22 23:42:28 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -660,7 +660,6 @@ METHOD Populate
          ::value := 1
        ENDIF
    ELSEIF ::lText .AND. !::lEdit .AND. EMPTY ( ::value )
-      ::value := IIF( cAlias = Nil, ::aItems[ 1 ], &( value ) )
       ::value := IIF( cAlias = Nil, ::aItems[ 1 ], ( cAlias )-> &value  )
    ENDIF
    SendMessage( ::handle, CB_RESETCONTENT, 0, 0)

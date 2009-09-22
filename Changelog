@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1133 2009-09-22 16:39:48 lfbasso Exp $
+ * $Id: Changelog,v 1.1134 2009-09-22 23:42:22 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -48,7 +48,7 @@
       valueBound return valor second value of ARRAY 
       ITEMS {{"female","f"},{"male","m"}}
       it is possible to populate the combobox with a field in a DBF table
-      ITEMS {"table->field"} or {{"table->field","field2"}}
+      ITEMS {"table->field"} or {"table->field","field2"}
   * samples\combobox\combobox.prg
     + new sample valuebound
 

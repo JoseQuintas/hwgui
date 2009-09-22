@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.162 2009-09-22 16:39:50 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.163 2009-09-22 23:42:27 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -740,13 +740,14 @@ METHOD InitBrw( nType, lInit )  CLASS HBrowse
 
    DEFAULT lInit to .F.
    IF ! lInit
+      ::x1 := ::y1 := ::x2 := ::y2  := 0
+      ::height := ::width := 0
       IF nType != Nil
          ::Type := nType
       ELSE
          ::aColumns := { }
          ::rowPos    := ::nCurrent  := ::colpos := ::nLeftCol := 1
-         ::x1 := ::y1 := ::x2 := ::y2  := 0
-         ::freeze  := ::height := ::width := 0
+         ::freeze  := 0
          ::internal  := { 15, 1 }
          ::aArray     := Nil
          ::aMargin := { 0, 0, 0, 0 }

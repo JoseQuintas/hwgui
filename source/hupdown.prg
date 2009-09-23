@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.21 2009-09-22 16:01:07 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.22 2009-09-23 17:35:44 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -137,6 +137,7 @@ METHOD CREATEUPDOWN CLASS Hupdown
 	    ::Activate()
 			SETWINDOWPOS( ::oEditUpDown:handle, ::Handle,  0,0,0,0, SWP_NOSIZE +  SWP_NOMOVE )
 			DESTROYWINDOW( ::Handle )
+      ::SetFont( ::oFont )
 			::handle := ::oEditUpDown:handle 
    ELSEIF ::getParentForm():Type < WND_DLG_RESOURCE .AND. !EMPTY( ::oParent:oParent )
       // MDICHILD WITH TAB

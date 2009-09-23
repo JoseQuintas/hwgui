@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.140 2009-09-22 15:24:22 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.141 2009-09-23 17:35:44 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -67,9 +67,8 @@ CLASS HControl INHERIT HCustomWindow
    METHOD Enable()      INLINE EnableWindow( ::handle, .T. )
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
    METHOD Enabled( lEnabled ) SETGET 
-   METHOD SetFont( oFont ) INLINE IIF( VALTYPE( oFont ) = "O", ( SendMessage( ::handle, WM_SETFONT, ;
-                          oFont:handle, 0 ), ::oFont := oFont ), )
-
+   METHOD SetFont( oFont ) 
+   
    //METHOD SetFocus()    INLINE SendMessage( GetActiveWindow(), WM_NEXTDLGCTL, ::handle, 1 )
    METHOD SetFocus()    INLINE IIF( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE, SetFocus( ::handle ),;
 	              	     SendMessage( GetActiveWindow(), WM_NEXTDLGCTL,::handle, 1 ) )
@@ -183,6 +182,18 @@ METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HControl
 
    RETURN NIL
    */
+   
+METHOD SetFont( oFont ) CLASS HControl
+    
+   IF oFont != NIL 
+      IF  VALTYPE( oFont ) = "O"
+         SendMessage( ::handle, WM_SETFONT, oFont:handle, 0 )
+         ::oFont := oFont 
+      ENDIF    
+   ELSEIF ::oParent:oFont != NIL
+      SetCtrlFont( ::oParent:handle, ::id, ::oParent:oFont:handle )
+   ENDIF
+   RETURN ::oFont
    
 METHOD Enabled( lEnabled ) CLASS HControl
 

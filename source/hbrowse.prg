@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.163 2009-09-22 23:42:27 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.164 2009-09-24 21:07:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -71,6 +71,7 @@ CLASS HColumn INHERIT HObject
    DATA lSpandFoot INIT .F.
    DATA Picture
    DATA bHeadClick
+   DATA bHeadRClick
    DATA bColorFoot               //   bColorFoot must return an array containing two colors values
    //   oBrowse:aColumns[1]:bColorFoot := {|| IF (nNumber < 0, ;
    //      {textColor, backColor} , ;
@@ -81,10 +82,11 @@ CLASS HColumn INHERIT HObject
    //      {textColor, backColor, textColorSel, backColorSel} , ;
    //      {textColor, backColor, textColorSel, backColorSel} ) }
    DATA headColor                // Header text color
-   
+
+   DATA lHeadClick   INIT .F.    
    DATA lHide INIT .F. // HIDDEN
    
-   METHOD New( cHeading, block, Type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick )
+   METHOD New( cHeading, block, Type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick, bHeadRClick )
 
    METHOD Visible( lVisible ) SETGET
    METHOD Hide() 
@@ -204,6 +206,7 @@ CLASS HBrowse INHERIT HControl
    DATA aMargin INIT { 0, 0, 0, 0 } HIDDEN    // Margin TOP-RIGHT-BOTTOM-LEFT
    DATA lRepaintBackground INIT .F. HIDDEN    // Set to true performs a canvas fill before painting rows
    
+   DATA lHeadClick  INIT  .F.    // .T. while a HEADER column is CLICKED
    // one to many relationships
    DATA LinkMaster             // Specifies the parent table linked to the child table displayed in a Grid control. 
    DATA ChildOrder             // Specifies the index tag for the record source of the Grid control or Relation object.
@@ -615,6 +618,11 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             ::MouseWheel( LOWORD( wParam ), ::nWheelPress - lParam )
          ELSE
             ::MouseMove( wParam, lParam )
+            IF ::lHeadClick 
+               AEVAL( ::aColumns,{ | c | c:lHeadClick := .F. } )
+               InvalidateRect( ::handle, 0 )            
+               ::lHeadClick := .F. 
+            ENDIF   
          ENDIF
 
       ELSEIF msg == WM_MBUTTONUP
@@ -750,7 +758,7 @@ METHOD InitBrw( nType, lInit )  CLASS HBrowse
          ::freeze  := 0
          ::internal  := { 15, 1 }
          ::aArray     := Nil
-         ::aMargin := { 0, 0, 0, 0 }
+         ::aMargin := { 1, 0, 0, 1 }
          IF Empty( ColSizeCursor )
             ColSizeCursor := LoadCursor( IDC_SIZEWE )
             arrowCursor := LoadCursor( IDC_ARROW )
@@ -961,9 +969,12 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    LOCAL pps, hDC
    LOCAL oldfont, aMetrHead
 
-   IF ! ::active .OR. Empty( ::aColumns ) 
+   IF ! ::active .OR. Empty( ::aColumns ) .OR. ::lHeadClick 
       pps := DefinePaintStru()
       hDC := BeginPaint( ::handle, pps )
+      IF ::lHeadClick 
+          ::HeaderOut( hDC )
+      ENDIF    
       EndPaint( ::handle, pps )
       RETURN Nil
    ENDIF
@@ -1011,7 +1022,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    ENDIF
    // USER DEFINE Height  IF != 0
    IF EMPTY( ::nHeadHeight )
-      ::nHeadHeight := ::aMargin[ 1 ] + aMetrHead[ 1 ] + 1 + ::aMargin[ 3 ]
+      ::nHeadHeight := ::aMargin[ 1 ] + aMetrHead[ 1 ] + 1 + ::aMargin[ 3 ] + 3
    ENDIF
    IF EMPTY( ::nFootHeight )   
       ::nFootHeight := ::aMargin[ 1 ] + aMetr[ 1 ] + 1 + ::aMargin[ 3 ]
@@ -1155,7 +1166,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
 
    // Highlights the selected ROW
    // we can have a modality with CELL selection only or ROW selection
-   IF !::lResizing 
+   IF !::lResizing .AND. ! ::lHeadClick    
       ::LineOut( ::rowPos, 0, hDC, .T. )
    ENDIF
    // Highligths the selected cell
@@ -1163,7 +1174,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    //     to move the "cursor cell" if lEditable is FALSE
    //     Actually: if lEditable is FALSE we can only have LINE selection
 //   if ::lEditable
-   IF lLostFocus == NIL .AND. !::lResizing 
+   IF lLostFocus == NIL .AND. !::lResizing .AND. !::lHeadClick 
       ::LineOut( ::rowPos, ::colpos, hDC, .T. )
    ENDIF
 //   endif
@@ -1219,6 +1230,15 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
    nRows := Min( ::nRecords + IIf( ::lAppMode, 1, 0 ), ::rowCount )
 
    oldBkColor := SetBkColor( hDC, GetSysColor( COLOR_3DFACE ) )
+   
+   oPen := HPen():Add( PS_SOLID, 1, rgb( 64, 64, 64 )  )
+   SelectObject( hDC, oPen:handle )
+
+   Rectangle( hDC,;
+               ::x1 - 1 ,;
+               ::y1 - ( ::nHeadHeight * ::nHeadRows ) , ;
+               ::x2 , ;
+               ::y1   )
 
    IF ::lDispSep
       oPen := HPen():Add( PS_SOLID, 1, ::sepColor )
@@ -1256,15 +1276,15 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
       IF !oColumn:lHide 
        IF ::lDispHead .AND. ! ::lAppMode
          IF oColumn:cGrid == nil
-            DrawButton( hDC, x - 1, ::y1 - ::nHeadHeight * ::nHeadRows, x + xSize - 1, ::y1 + 1, 1 )
+          *-  DrawButton( hDC, x - 1, ::y1 - ::nHeadHeight * ::nHeadRows, x + xSize - 1, ::y1 + 1, 1 )
             IF xsize != xsizeMax
                DrawButton( hDC, x + xsize - 1, ::y1 - ::nHeadHeight * ::nHeadRows, x + xsizeMax - 1, ::y1 + 1, 0 )
             ENDIF
          ELSE
             // Draws a grid to the NWSE coordinate...
-            DrawButton( hDC, x - 1, ::y1 - ::nHeadHeight * ::nHeadRows, x + xSize - 1, ::y1 + 1, 0 )
+          *-  DrawButton( hDC, x - 1, ::y1 - ::nHeadHeight * ::nHeadRows, x + xSize - 1, ::y1 + 1, 0 )
             IF xSize != xSizeMax
-              DrawButton( hDC, x + xsize - 1, ::y1 - ::nHeadHeight * ::nHeadRows, x + xsizeMax - 1, ::y1 + 1, 0 )
+          *-    DrawButton( hDC, x + xsize - 1, ::y1 - ::nHeadHeight * ::nHeadRows, x + xsizeMax - 1, ::y1 + 1, 0 )
             ENDIF
             IF oPenHdr == nil
                oPenHdr := HPen():Add( BS_SOLID, 1, 0 )
@@ -1289,6 +1309,22 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
             SelectObject( hDC, oPen:handle )
          ENDIF
          // Prints the column heading - justified
+         IF ! oColumn:lHeadClick 
+            DrawButton( hDC,;
+               x  - 1 ,;
+               ::y1 - ( ::nHeadHeight * ::nHeadRows ) + 1 , ;
+               x + xSize -  1  , ;
+               ::y1  , ;
+               5 )
+         ELSE
+            DrawButton( hDC,;
+               x  - 1 ,;
+               ::y1 - ( ::nHeadHeight * ::nHeadRows ) + 1 , ;
+               x + xSize -  1  , ;
+               ::y1  , ;
+               6 )
+         ENDIF       
+         
          cStr := oColumn:heading + ';'
          FOR nLine := 1 TO ::nHeadRows
             DrawText( hDC, __StrToken( @cStr, nLine, ';' ), ;
@@ -2098,11 +2134,17 @@ ELSEIF nLine == 0
       ::lResizing := .T.
       Hwg_SetCursor( oCursor )
       xDrag := LOWORD( lParam )
-   ELSEIF ::lDispHead .and. ;
-      nLine >= - ::nHeadRows .and. ;
-      fif <= Len( ::aColumns ) .AND. ;
-      ::aColumns[ fif ]:bHeadClick != nil
-      Eval( ::aColumns[ fif ]:bHeadClick, Self, fif )
+   ELSEIF ::lDispHead .AND. ;
+      nLine >= - ::nHeadRows .AND. ;
+      fif <= Len( ::aColumns ) //.AND. ;
+      //::aColumns[ fif ]:bHeadClick != nil
+      
+      ::aColumns[ fif ]:lHeadClick := .T.
+      ::lHeadClick := .T.
+      InvalidateRect( hBrw, 0 )    
+      IF ::aColumns[ fif ]:bHeadClick != nil
+         Eval( ::aColumns[ fif ]:bHeadClick, Self, fif )
+      ENDIF    
    ENDIF
 ENDIF
                                                  
@@ -2146,6 +2188,11 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
          ENDIF
       ENDIF
    ENDIF
+   IF  ::lHeadClick 
+      AEVAL( ::aColumns,{ | c | c:lHeadClick := .F. } )
+      InvalidateRect( hBrw, 0 )
+      ::lHeadClick := .F.
+   ENDIF   
    IF  GetActiveWindow() = ::GetParentForm():Handle .OR. ;
        ::GetParentForm( ):Type < WND_DLG_RESOURCE 
        ::SetFocus()

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.164 2009-09-24 21:07:17 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.165 2009-09-24 22:54:37 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -207,6 +207,7 @@ CLASS HBrowse INHERIT HControl
    DATA lRepaintBackground INIT .F. HIDDEN    // Set to true performs a canvas fill before painting rows
    
    DATA lHeadClick  INIT  .F.    // .T. while a HEADER column is CLICKED
+   DATA nyHeight    INIT  0
    // one to many relationships
    DATA LinkMaster             // Specifies the parent table linked to the child table displayed in a Grid control. 
    DATA ChildOrder             // Specifies the index tag for the record source of the Grid control or Relation object.
@@ -620,7 +621,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             ::MouseMove( wParam, lParam )
             IF ::lHeadClick 
                AEVAL( ::aColumns,{ | c | c:lHeadClick := .F. } )
-               InvalidateRect( ::handle, 0 )            
+               InvalidateRect( ::handle, 0, ::x1, ::y1 - ::nHeadHeight * ::nHeadRows, ::x2, ::y1 )
                ::lHeadClick := .F. 
             ENDIF   
          ENDIF
@@ -750,6 +751,7 @@ METHOD InitBrw( nType, lInit )  CLASS HBrowse
    IF ! lInit
       ::x1 := ::y1 := ::x2 := ::y2  := 0
       ::height := ::width := 0
+      ::nyHeight := IIF( ::GetParentForm( self ):Type < WND_DLG_RESOURCE ,1 ,0 )      
       IF nType != Nil
          ::Type := nType
       ELSE
@@ -1236,7 +1238,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
 
    Rectangle( hDC,;
                ::x1 - 1 ,;
-               ::y1 - ( ::nHeadHeight * ::nHeadRows ) , ;
+               ::y1 - ( ::nHeadHeight * ::nHeadRows ) - ::nyHeight , ;
                ::x2 , ;
                ::y1   )
 
@@ -1312,14 +1314,14 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
          IF ! oColumn:lHeadClick 
             DrawButton( hDC,;
                x  - 1 ,;
-               ::y1 - ( ::nHeadHeight * ::nHeadRows ) + 1 , ;
+               ::y1 - ( ::nHeadHeight * ::nHeadRows ) + 1 - ::nyHeight , ;
                x + xSize -  1  , ;
                ::y1  , ;
                5 )
          ELSE
             DrawButton( hDC,;
                x  - 1 ,;
-               ::y1 - ( ::nHeadHeight * ::nHeadRows ) + 1 , ;
+               ::y1 - ( ::nHeadHeight * ::nHeadRows ) + 1 - ::nyHeight , ;
                x + xSize -  1  , ;
                ::y1  , ;
                6 )
@@ -2141,7 +2143,7 @@ ELSEIF nLine == 0
       
       ::aColumns[ fif ]:lHeadClick := .T.
       ::lHeadClick := .T.
-      InvalidateRect( hBrw, 0 )    
+      InvalidateRect( ::handle, 0, ::x1, ::y1 - ::nHeadHeight * ::nHeadRows, ::x2, ::y1 )
       IF ::aColumns[ fif ]:bHeadClick != nil
          Eval( ::aColumns[ fif ]:bHeadClick, Self, fif )
       ENDIF    
@@ -2174,7 +2176,7 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
          Hwg_SetCursor( arrowCursor )
          oCursor := 0
          ::lResizing := .F.
-         InvalidateRect( hBrw, 0 )
+         InvalidateRect( ::handle, 0 )
       ENDIF
 
    ELSEIF ::aSelected != Nil
@@ -2190,7 +2192,7 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
    ENDIF
    IF  ::lHeadClick 
       AEVAL( ::aColumns,{ | c | c:lHeadClick := .F. } )
-      InvalidateRect( hBrw, 0 )
+      InvalidateRect( ::handle, 0, ::x1, ::y1 - ::nHeadHeight * ::nHeadRows, ::x2, ::y1 )            
       ::lHeadClick := .F.
    ENDIF   
    IF  GetActiveWindow() = ::GetParentForm():Handle .OR. ;

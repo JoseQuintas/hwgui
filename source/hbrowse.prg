@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.165 2009-09-24 22:54:37 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.166 2009-09-24 23:05:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -2140,13 +2140,12 @@ ELSEIF nLine == 0
       nLine >= - ::nHeadRows .AND. ;
       fif <= Len( ::aColumns ) //.AND. ;
       //::aColumns[ fif ]:bHeadClick != nil
-      
       ::aColumns[ fif ]:lHeadClick := .T.
-      ::lHeadClick := .T.
       InvalidateRect( ::handle, 0, ::x1, ::y1 - ::nHeadHeight * ::nHeadRows, ::x2, ::y1 )
       IF ::aColumns[ fif ]:bHeadClick != nil
          Eval( ::aColumns[ fif ]:bHeadClick, Self, fif )
       ENDIF    
+      ::lHeadClick := .T.
    ENDIF
 ENDIF
                                                  

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.166 2009-09-24 23:05:48 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.167 2009-09-25 03:47:07 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -45,6 +45,7 @@ REQUEST Bof
 
 STATIC ColSizeCursor := 0
 STATIC arrowCursor := 0
+STATIC downCursor := 0
 STATIC oCursor     := 0
 STATIC xDrag, xDragMove
 
@@ -760,10 +761,11 @@ METHOD InitBrw( nType, lInit )  CLASS HBrowse
          ::freeze  := 0
          ::internal  := { 15, 1 }
          ::aArray     := Nil
-         ::aMargin := { 1, 0, 0, 1 }
+         ::aMargin := { 1, 2, 1, 1 }
          IF Empty( ColSizeCursor )
             ColSizeCursor := LoadCursor( IDC_SIZEWE )
             arrowCursor := LoadCursor( IDC_ARROW )
+            downCursor := LoadCursor( IDC_HAND )
          ENDIF
       ENDIF
    ENDIF
@@ -1313,16 +1315,16 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
          // Prints the column heading - justified
          IF ! oColumn:lHeadClick 
             DrawButton( hDC,;
-               x  - 1 ,;
+               x   ,;
                ::y1 - ( ::nHeadHeight * ::nHeadRows ) + 1 - ::nyHeight , ;
-               x + xSize -  1  , ;
+               x + xSize   , ;
                ::y1  , ;
                5 )
          ELSE
             DrawButton( hDC,;
-               x  - 1 ,;
+               x   ,;
                ::y1 - ( ::nHeadHeight * ::nHeadRows ) + 1 - ::nyHeight , ;
-               x + xSize -  1  , ;
+               x + xSize  , ;
                ::y1  , ;
                6 )
          ENDIF       
@@ -1330,7 +1332,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
          cStr := oColumn:heading + ';'
          FOR nLine := 1 TO ::nHeadRows
             DrawText( hDC, __StrToken( @cStr, nLine, ';' ), ;
-                      x + ::aMargin[ 4 ], ;
+                      x + ::aMargin[ 4 ] + 1, ;
                       ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine + 1 ) + 1 + ::aMargin[ 1 ], ;
                       x + xSize - ( 1 + ::aMargin[ 2 ] ) , ;
                       ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine ), ;
@@ -2193,6 +2195,7 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
       AEVAL( ::aColumns,{ | c | c:lHeadClick := .F. } )
       InvalidateRect( ::handle, 0, ::x1, ::y1 - ::nHeadHeight * ::nHeadRows, ::x2, ::y1 )            
       ::lHeadClick := .F.
+     Hwg_SetCursor( downCursor )
    ENDIF   
    IF  GetActiveWindow() = ::GetParentForm():Handle .OR. ;
        ::GetParentForm( ):Type < WND_DLG_RESOURCE 
@@ -2255,6 +2258,10 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
                   Hwg_SetCursor( oCursor )
                   res := .T.
                   EXIT
+               ELSE
+                  oCursor := DownCursor
+                  Hwg_SetCursor( oCursor )
+                  res := .T.
                ENDIF
             ENDIF   
             i := IIf( i == ::freeze, ::nLeftCol, i + 1 )

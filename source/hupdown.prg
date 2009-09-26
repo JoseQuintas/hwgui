@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.22 2009-09-23 17:35:44 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.23 2009-09-26 22:18:12 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -129,23 +129,22 @@ METHOD Init()  CLASS HUpDown
   
 METHOD CREATEUPDOWN CLASS Hupdown
 
-   IF Empty( ::handle )
-      RETURN Nil
-	 ENDIF            
+   ///IF Empty( ::handle )
+   //   RETURN Nil
+	 //ENDIF            
    ::nHolder := 0                
 	 IF !::lCreate 
 	    ::Activate()
 			SETWINDOWPOS( ::oEditUpDown:handle, ::Handle,  0,0,0,0, SWP_NOSIZE +  SWP_NOMOVE )
 			DESTROYWINDOW( ::Handle )
       ::SetFont( ::oFont )
-			::handle := ::oEditUpDown:handle 
-   ELSEIF ::getParentForm():Type < WND_DLG_RESOURCE .AND. !EMPTY( ::oParent:oParent )
+   ELSEIF ::getParentForm():Type < WND_DLG_RESOURCE .AND. ::oParent:classname = "HTAB" //!EMPTY( ::oParent:oParent )
       // MDICHILD WITH TAB
-      ::handle := ::oEditUpDown:handle 
       ::nHolder := 1
-      SetWindowObject( ::handle, ::oEditUpDown )
-      Hwg_InitEditProc( ::handle )
+      SetWindowObject( ::oEditUpDown:handle, ::oEditUpDown )
+      Hwg_InitEditProc( ::oEditUpDown:handle )
 	 ENDIF
+   ::handle := ::oEditUpDown:handle 
    ::hUpDown := CreateUpDownControl( ::oParent:handle, ::idUpDown, ;
                                      ::styleUpDown, 0, 0, ::nUpDownWidth, 0, ::handle, ::nLower, ::nUpper,Val(::title) )
    ::oEditUpDown:oUpDown := Self    

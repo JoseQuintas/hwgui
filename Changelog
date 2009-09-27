@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1136 2009-09-24 21:07:14 lfbasso Exp $
+ * $Id: Changelog,v 1.1137 2009-09-27 17:18:36 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-09-24 14:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source\drawtext.c
+     ! FUNCTION DRAWTEXT return height of the TEXT, is necessary to BUTTOIN MULTILINE
+   * source\hbrowse.prg
+     ! minor fix in SEPARATOROUT
+   * source\hupdown.prg
+     ! minor fix in create WINDOW MAIN
+  
 
 2009-09-24 14:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg

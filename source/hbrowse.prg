@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.167 2009-09-25 03:47:07 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.168 2009-09-27 17:18:41 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -761,7 +761,7 @@ METHOD InitBrw( nType, lInit )  CLASS HBrowse
          ::freeze  := 0
          ::internal  := { 15, 1 }
          ::aArray     := Nil
-         ::aMargin := { 1, 2, 1, 1 }
+         ::aMargin := { 1, 1, 0, 1 }
          IF Empty( ColSizeCursor )
             ColSizeCursor := LoadCursor( IDC_SIZEWE )
             arrowCursor := LoadCursor( IDC_ARROW )
@@ -1239,7 +1239,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
    SelectObject( hDC, oPen:handle )
 
    Rectangle( hDC,;
-               ::x1 - 1 ,;
+               ::x1  ,;
                ::y1 - ( ::nHeadHeight * ::nHeadRows ) - ::nyHeight , ;
                ::x2 , ;
                ::y1   )
@@ -1319,7 +1319,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
                ::y1 - ( ::nHeadHeight * ::nHeadRows ) + 1 - ::nyHeight , ;
                x + xSize   , ;
                ::y1  , ;
-               5 )
+               1 )
          ELSE
             DrawButton( hDC,;
                x   ,;
@@ -1333,7 +1333,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
          FOR nLine := 1 TO ::nHeadRows
             DrawText( hDC, __StrToken( @cStr, nLine, ';' ), ;
                       x + ::aMargin[ 4 ] + 1, ;
-                      ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine + 1 ) + 1 + ::aMargin[ 1 ], ;
+                      ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine + 1 ) +  ::aMargin[ 1 ], ;
                       x + xSize - ( 1 + ::aMargin[ 2 ] ) , ;
                       ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine ), ;
                       oColumn:nJusHead + IIF( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
@@ -1416,7 +1416,7 @@ METHOD SeparatorOut( hDC ) CLASS HBrowse
 
    x := ::x1
    fif := IIf( ::freeze > 0, 1, ::nLeftCol )
-
+   FillRect( hDC, ::x1, ::y1 + ( ::height + 1 ) * nRowsfill + 1, ::x2, ::y2, ::brush:handle )   
    DO WHILE x < ::x2 - 2
       oColumn := ::aColumns[ fif ]
       xSize := oColumn:width
@@ -1450,6 +1450,7 @@ METHOD SeparatorOut( hDC ) CLASS HBrowse
       ENDIF
       x += xSize
       IF ! ::lAdjRight .and. fif == Len( ::aColumns )
+         // LAST separator vertical
          DrawLine( hDC, x - 1, ::y1 - ( ::height * ::nHeadRows ), x - 1, ::y1 + ( ::height + 1 ) * nRows )
       ENDIF
       fif := IIf( fif = ::freeze, ::nLeftCol, fif + 1 )
@@ -1457,12 +1458,12 @@ METHOD SeparatorOut( hDC ) CLASS HBrowse
          EXIT
       ENDIF
    ENDDO
-
-   IF ::lDispSep
+   //  SEPARATOR HORIZONT
+   //IF ::lDispSep
       FOR i := 1 TO nRows
          DrawLine( hDC, ::x1, ::y1 + ( ::height + 1 ) * i, IIf( ::lAdjRight, ::x2, x ), ::y1 + ( ::height + 1 ) * i )
       NEXT
-   ENDIF
+   //ENDIF
    IF ::lDispSep
       DeleteObject( oPen )
       IF oPenLight != nil

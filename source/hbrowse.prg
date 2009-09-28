@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.170 2009-09-28 12:39:54 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.171 2009-09-28 12:44:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1316,14 +1316,14 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
          IF ! oColumn:lHeadClick 
             DrawButton( hDC,;
                x   ,;
-               ::y1 - ( ::nHeadHeight * ::nHeadRows ) + 1 - ::nyHeight , ;
+               ::y1 - ( ::nHeadHeight * ::nHeadRows ) - ::nyHeight , ;
                x + xSize   , ;
                ::y1  , ;
                1 )
          ELSE
             DrawButton( hDC,;
                x   ,;
-               ::y1 - ( ::nHeadHeight * ::nHeadRows ) + 1 - ::nyHeight , ;
+               ::y1 - ( ::nHeadHeight * ::nHeadRows ) - ::nyHeight , ;
                x + xSize  , ;
                ::y1  , ;
                6 )

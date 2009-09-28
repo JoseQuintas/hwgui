@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.169 2009-09-27 22:50:19 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.170 2009-09-28 12:39:54 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1416,7 +1416,7 @@ METHOD SeparatorOut( hDC ) CLASS HBrowse
 
    x := ::x1
    fif := IIf( ::freeze > 0, 1, ::nLeftCol )
-   FillRect( hDC, ::x1, ::y1 + ( ::height + 1 ) * nRowsfill + 1, ::x2, ::y2, ::brush:handle )   
+   FillRect( hDC, ::x1, ::y1 + ( ::height + 1 ) * nRows, ::x2, ::y2, ::brush:handle )   
    DO WHILE x < ::x2 - 2
       oColumn := ::aColumns[ fif ]
       xSize := oColumn:width

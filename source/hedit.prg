@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.142 2009-09-22 15:24:22 lfbasso Exp $
+ *$Id: hedit.prg,v 1.143 2009-09-30 16:32:34 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -1328,7 +1328,8 @@ STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
          lnoTabStop := .F.
 	    ENDIF
 			i := AScan( oParent:aControls, { | o | o:Handle == nextHandle } )
-      IF lnoTabStop .OR. ( i > 0 .AND. i <= LEN( oParent:aControls ).AND. oparent:acontrols[ i ]:classname = "HGROUP") .OR. i = 0
+      IF ( lnoTabStop .AND. i > 0 ) .OR. ( i > 0 .AND. i <= LEN( oParent:aControls ).AND. oparent:acontrols[ i ]:classname = "HGROUP") .OR.;
+         ( i = 0 .AND. nextHandle > 0 )
           RETURN NextFocus( oParent, nextHandle, nSkip )          
       ENDIF
       /*    

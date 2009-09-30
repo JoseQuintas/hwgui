@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.69 2009-09-22 23:42:28 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.70 2009-09-30 16:32:34 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -279,7 +279,7 @@ METHOD INIT() CLASS HComboBox
          IF !Empty( ::nhItem )
             sendmessage( ::handle, CB_SETITEMHEIGHT, 0, ::nhItem )
          ELSE
-            ::nhItem := sendmessage( ::handle, CB_GETITEMHEIGHT, 0, 0 ) + 0.100  //0.250
+            ::nhItem := sendmessage( ::handle, CB_GETITEMHEIGHT, 0, 0 ) + 0.150  //0.250
          ENDIF
          nHeightBox := sendmessage( ::handle, CB_GETITEMHEIGHT, - 1, 0 ) + 0.750
          //  WIDTH  Items

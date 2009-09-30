@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1138 2009-09-27 22:50:19 lfbasso Exp $
+ * $Id: Changelog,v 1.1139 2009-09-30 16:32:32 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-09-30 14:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source\hcombo.prg
+     ! minor fix
+   * source\hedit.prg
+     ! fix in NextFocus
+   * source\hradio.prg
+     ! minor fix
+   * source\htab.prg
+     ! minor fix
+      
 2009-09-24 14:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source\drawtext.c
      ! FUNCTION DRAWTEXT return height of the TEXT, is necessary to BUTTON MULTILINE
@@ -116,7 +126,6 @@
     * NEW CLASS 
       + CLASS HEditUpDown INHERIT HEdit      
       
-
 2009-09-22 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcheck.prg
     ! minor fix

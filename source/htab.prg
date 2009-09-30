@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.46 2009-09-30 10:57:12 lfbasso Exp $
+ *$Id: htab.prg,v 1.47 2009-09-30 10:59:51 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -463,7 +463,7 @@ METHOD Notify( lParam ) CLASS HTab
    */
    CASE nCode == TCN_RCLICK 
       IF ! Empty( ::pages ) .AND. ::nActive > 0 .AND. ::pages[ ::nActive ]:enabled
-          IF ::bAction != Nil
+          IF ::bRClick != Nil
               ::oparent:lSuspendMsgsHandling := .t.
               Eval( ::bRClick, Self, GetCurrentTab( ::handle ) )
               ::oparent:lSuspendMsgsHandling := .f.

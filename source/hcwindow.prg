@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.51 2009-09-22 14:57:52 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.52 2009-10-10 17:40:29 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -362,6 +362,7 @@ METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HCustomWindow
 METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
    LOCAL nlen , i, x1, y1
    nlen := Len( oCtrl:aControls )
+   ::lSuspendMsgsHandling  := .T.
    FOR i = 1 TO nlen
       IF __ObjHasMsg( oCtrl:aControls[ i ], "ANCHOR" ) .AND. oCtrl:aControls[ i ]:anchor > 0 .AND.;
            IsWindowVisible( ::GetParentForm():handle )
@@ -374,6 +375,7 @@ METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
          ENDIF
       ENDIF
    NEXT
+   ::lSuspendMsgsHandling  := .F.
    RETURN .T.
 
 METHOD  ScrollHV( oForm, msg, wParam, lParam ) CLASS HCustomWindow

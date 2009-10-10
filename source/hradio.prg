@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.30 2009-09-30 16:32:34 lfbasso Exp $
+ * $Id: hradio.prg,v 1.31 2009-10-10 17:40:29 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -82,7 +82,7 @@ METHOD NewRg( oWndParent, nId, nStyle, vari, bSetGet, nLeft, nTop, nWidth, nHeig
    ::aButtons := {}                             
    Super:New( ::oParent, ,, ,,,,, bInit) 
    ::oHGroup := HGroup():New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
-                              oFont, bInit, bSize,, tcolor, bColor, lTransp) 
+                              oFont, bInit, bSize,, tcolor, bColor, lTransp ) 
                               
    ::bInit := bInit
    ::bClick := bClick
@@ -210,6 +210,7 @@ CLASS HRadioButton INHERIT HControl
 CLASS VAR winclass   INIT "BUTTON"
    DATA  oGroup
    DATA lWhen  INIT .F.
+   DATA backStyle
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
                bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lTransp )
@@ -238,6 +239,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ::style   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), BS_RADIOBUTTON + ; // BS_AUTORADIOBUTTON+;
                        WS_CHILD + WS_VISIBLE + BS_NOTIFY + ;
                        IIf( ::oGroup != Nil .AND. Empty( ::oGroup:aButtons ), WS_GROUP , 0 ) )
+                       
+   Super:New( oWndParent, nId, ::Style, nLeft, nTop, nWidth, nHeight, ;
+              oFont, bInit, bSize, bPaint,ctooltip, tcolor, bColor )
+   /*                    
    ::oFont   := oFont
    ::nLeft   := nLeft
    ::nTop    := nTop
@@ -247,16 +252,16 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ::bSize   := bSize
    ::bPaint  := bPaint
    ::tooltip := ctooltip
-   
-   IF ( lTransp != NIL .AND. lTransp )
-      bcolor := ::oParent:bcolor
+   */
+   ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, 0, 1 ) 
+   IF ::backStyle = 0
+      bColor := GetBackColorParent( Self ) 
    ENDIF
    
    ::Activate()
-   
    ::SetColor( tcolor, bColor )
 
-   ::oParent:AddControl( Self )
+   //::oParent:AddControl( Self )
    
    IF ::oGroup != Nil
       bClick := IIF( bClick != Nil, bClick, ::oGroup:bClick )
@@ -358,6 +363,13 @@ METHOD onevent( msg, wParam, lParam ) CLASS HRadioButton
       IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
          RETURN 0
       ENDIF
+   ENDIF
+   IF msg == WM_THEMECHANGED
+      IF ::backStyle = 0
+         ::bColor := GetBackColorParent( Self ) 
+         ::SETCOLOR(, ::bColor, .T. )
+      ENDIF   
+      RETURN 0
    ENDIF
    IF msg = WM_KEYDOWN
       IF  ProcKeyList( Self, wParam )

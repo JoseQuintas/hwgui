@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.85 2009-09-22 14:57:52 lfbasso Exp $
+ * $Id: control.c,v 1.86 2009-10-10 17:40:29 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -454,6 +454,25 @@ HB_FUNC( DELTOOLTIP )
       SendMessage( hWndTT, TTM_DELTOOL, 0, ( LPARAM ) ( LPTOOLINFO ) & ti );
    }
 }
+
+HB_FUNC( SETTOOLTIPTITLE )    
+{
+   TOOLINFO ti;
+   HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
+   
+   if( hWndTT )
+   {
+      ti.cbSize = sizeof( TOOLINFO );
+      ti.uFlags = TTF_IDISHWND;
+      ti.hwnd = hWnd;
+      ti.uId = ( UINT ) hb_parnl( 2 );
+      ti.hinst = GetModuleHandle( NULL );
+      ti.lpszText = ( LPSTR ) hb_parc( 3 );
+
+     hb_retl( SendMessage( hWndTT, TTM_SETTOOLINFO, 0,
+               ( LPARAM ) ( LPTOOLINFO ) & ti ) );
+   }
+ }  
 
 /*
 HB_FUNC( SHOWTOOLTIP )

@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.23 2009-09-26 22:18:12 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.24 2009-10-10 17:40:29 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -65,6 +65,10 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       vari := 0
       Eval( bSetGet,vari )
    ENDIF
+   IF bSetGet = Nil
+      bSetGet := {| v | IIF( v == Nil, ::value, ::value := v ) }        
+   ENDIF
+
    ::Value := Vari
    ::title := Str( vari )                                 
    ::bSetGet := bSetGet

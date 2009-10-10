@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.143 2009-09-30 16:32:34 lfbasso Exp $
+ *$Id: hedit.prg,v 1.144 2009-10-10 17:40:29 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -521,11 +521,12 @@ FUNCTION IsCtrlShift( lCtrl, lShift )
 METHOD ParsePict( cPicture, vari ) CLASS HEdit
    LOCAL nAt, i, masklen, cChar
 
+   ::cPicture := cPicture
+   ::cPicFunc := ::cPicMask := ""
    IF ::bSetGet == Nil
       RETURN Nil
    ENDIF
-   ::cPicture := cPicture
-   ::cPicFunc := ::cPicMask := ""
+
    IF cPicture != Nil
       IF Left( cPicture, 1 ) == "@"
          nAt := At( " ", cPicture )

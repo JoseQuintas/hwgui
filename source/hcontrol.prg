@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.141 2009-09-23 17:35:44 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.142 2009-10-10 17:40:29 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -76,6 +76,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c ), ::title := c, ::Refresh()
    METHOD Refresh()     VIRTUAL
    METHOD onAnchor( x, y, w, h )
+   METHOD SetToolTip( ctooltip ) 
    METHOD ControlSource( cControlSource ) SETGET 
    METHOD END()
 
@@ -194,6 +195,14 @@ METHOD SetFont( oFont ) CLASS HControl
       SetCtrlFont( ::oParent:handle, ::id, ::oParent:oFont:handle )
    ENDIF
    RETURN ::oFont
+
+METHOD SetToolTip ( cToolTip )   
+
+   IF cToolTip != Nil .AND. cToolTip != ::ToolTip
+      SETTOOLTIPTITLE( ::GetparentForm():handle, ::handle, ctooltip )
+      ::Tooltip := cToolTip
+   ENDIF    
+   RETURN ::tooltip
    
 METHOD Enabled( lEnabled ) CLASS HControl
 
@@ -1704,6 +1713,8 @@ CLASS HGroup INHERIT HControl
 
 CLASS VAR winclass   INIT "BUTTON"
 
+   DATA backStyle
+
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                cCaption, oFont, bInit, bSize, bPaint, tcolor, bColor, lTransp )
    METHOD Activate()
@@ -1719,10 +1730,11 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
               oFont, bInit, bSize, bPaint,, tcolor, bColor )
 
    ::title   := cCaption
-   
-   IF ( lTransp != NIL .AND. lTransp )
-      bColor := ::oParent:bColor
+   ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, 0, 1 ) 
+   IF ::backStyle = 0
+      bColor := GetBackColorParent( Self ) 
    ENDIF
+
    ::Activate()
    ::setcolor( tcolor, bcolor )
 
@@ -1778,11 +1790,11 @@ METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, bInit, tcolor, 
 
    IF EMPTY( ::LineSlant ) 
       IF ::lVert
-         ::nWidth  := 10
+         ::nWidth  := ::nBorder + 1 //10
          ::nHeight := IIf( nLength == NIL, 20, nLength )
       ELSE
          ::nWidth  := IIf( nLength == NIL, 20, nLength )
-         ::nHeight := 10
+         ::nHeight := ::nBorder + 1 //10
       ENDIF
       ::oPenLight := HPen():Add( BS_SOLID, 1, GetSysColor( COLOR_3DHILIGHT ) )
       ::oPenGray  := HPen():Add( BS_SOLID, 1, GetSysColor( COLOR_3DSHADOW  ) )

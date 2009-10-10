@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1139 2009-09-30 16:32:32 lfbasso Exp $
+ * $Id: Changelog,v 1.1140 2009-10-10 17:40:28 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,25 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-10-10 14:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\control.c
+    + add new function SETTOOLTIPTITLE , to set title in tooltip in run-time    
+  * source\hbrowse.prg
+    + add new feature in field logic. Now the column show checkbox
+  * source\hcontrol.prg
+    + add new METHOD SETTOOLTIP IN CLASS HCONTROL set um new tooltip in run-time
+    CLASS HGROUP
+    + add DATA BACKSTYLE 
+  * source\hcwindow.prg
+    ! minor fixes
+  * source\hedit.prg
+    ! minor fix in parsepict
+  * source\hradio.prg
+    CLASS HRADIOBUTTON 
+    + add DATA BACKSTYLE 
+  * source\hupdown.prg
+    ! if setget is nil, is attrib setget 
+    
 2009-09-30 14:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source\hcombo.prg
      ! minor fix

@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.144 2009-10-10 17:40:29 lfbasso Exp $
+ *$Id: hedit.prg,v 1.145 2009-10-11 03:44:10 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -911,7 +911,7 @@ METHOD When() CLASS HEdit
    RETURN res
 
 METHOD Valid( ) CLASS HEdit
-   LOCAL res, vari, oDlg
+   LOCAL res := .T., vari, oDlg
 
    IF ::bLostFocus != Nil .AND. ( ::lNoValid .OR. ! CheckFocus( Self, .T. ) )
       RETURN .t.

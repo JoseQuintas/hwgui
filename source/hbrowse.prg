@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.172 2009-10-10 17:40:29 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.173 2009-10-12 13:51:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -105,7 +105,7 @@ METHOD New( cHeading, block, Type, length, dec, lEditable, nJusHead, nJusLin, cP
    ::dec       := dec
    ::lEditable := IIf( lEditable != Nil, lEditable, .F. )
    ::nJusHead  := IIf( nJusHead == nil,  DT_LEFT, nJusHead ) + DT_VCENTER + DT_SINGLELINE // Por default
-   ::nJusLin   := IIf( nJusLin  == nil,  DT_LEFT, nJusLin  ) + DT_VCENTER + DT_SINGLELINE // Justif.Izquierda
+   ::nJusLin   := nJusLin //IIf( nJusLin  == nil,  DT_LEFT, nJusLin  ) + DT_VCENTER + DT_SINGLELINE // Justif.Izquierda
    ::nJusFoot  := ::nJusLin
    ::picture   := cPict
    ::bValid    := bValid
@@ -731,6 +731,8 @@ STATIC FUNCTION InitColumn( oBrw, oColumn, n )
 //      oColumn:length := Max( oColumn:length, Len( oColumn:heading ) )
       oColumn:length := LenVal( xres, ctype, oColumn:picture )
    ENDIF
+   oColumn:nJusLin := IIf( oColumn:nJusLin == nil, IIF( oColumn:Type == "N", DT_RIGHT , DT_LEFT ), oColumn:nJusLin ) + DT_VCENTER + DT_SINGLELINE
+   oBrw:aMargin[ 2 ] := IIF( oColumn:nJusLin = DT_RIGHT - DT_VCENTER - DT_SINGLELINE .AND. oBrw:aMargin[ 2 ] = 1 ,2 , oBrw:aMargin[ 2 ] )
    oColumn:oParent := oBrw
    RETURN Nil
 
@@ -968,9 +970,11 @@ METHOD Rebuild() CLASS HBrowse
             ::nFootRows := Max( ::nFootRows, nCount )
          ENDIF
          IF ::oFont != Nil
-            xSize := Round( ( nColLen + 2 ) * ( ( - ::oFont:height ) * 0.6 ), 0 )  // Added by Fernando Athayde
+            //xSize := Round( ( nColLen + 2 ) * ( ( - ::oFont:height ) * 0.6 ), 0 )  // Added by Fernando Athayde
+            xSize := Round( ( nColLen  ) * ( ( - ::oFont:height ) * 0.6 ), 0 )  // Added by Fernando Athayde            
          ELSE
-            xSize := Round( ( nColLen + 2 ) * 6, 0 )
+            //xSize := Round( ( nColLen + 2 ) * 6, 0 )
+            xSize := Round( ( nColLen  ) * 6, 0 )
          ENDIF
       ENDIF
       xSize := ::aMargin[ 4 ] + xSize + ::aMargin[ 2 ]
@@ -1614,18 +1618,22 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
             // nando
             aCores := Eval( ::aColumns[ ::nPaintCol ]:bColorBlock, ::FLDSTR( Self, ::nPaintCol ), ::nPaintCol, Self )
             IF lSelected
-               ::aColumns[ ::nPaintCol ]:tColor := aCores[ 3 ]
-               ::aColumns[ ::nPaintCol ]:bColor := aCores[ 4 ]
+               ::aColumns[ ::nPaintCol ]:tColor := IIF( aCores[ 3 ] != Nil, aCores[ 3 ], ::tcolorSel )
+               ::aColumns[ ::nPaintCol ]:bColor := IIF( aCores[ 4 ] != Nil, aCores[ 4 ], ::bcolorSel )
             ELSE
-               ::aColumns[ ::nPaintCol ]:tColor := aCores[ 1 ]
-               ::aColumns[ ::nPaintCol ]:bColor := aCores[ 2 ]
+               ::aColumns[ ::nPaintCol ]:tColor := IIF( aCores[ 1 ] != Nil, aCores[ 1 ], ::tcolor )
+               ::aColumns[ ::nPaintCol ]:bColor := IIF( aCores[ 2 ] != Nil, aCores[ 2 ], ::bcolor )
             ENDIF
-            ::aColumns[ ::nPaintCol ]:brush := HBrush():Add( ::aColumns[ ::nPaintCol ]:bColor   )
+            ::aColumns[ ::nPaintCol ]:brush := HBrush():Add( ::aColumns[ ::nPaintCol ]:bColor )
+         ELSE   
+            ::aColumns[ ::nPaintCol ]:brush := Nil   
+            ::aColumns[ ::nPaintCol ]:tColor := Nil   
+            ::aColumns[ ::nPaintCol ]:bColor := Nil   
          ENDIF
          xSize := ::aColumns[ ::nPaintCol ]:width
          xSizeMax := xSize
          IF ( ::nPaintCol == Len( ::aColumns ) ) .OR. lFixed
-            xSizeMax := Max( ::x2 - x, xSize )
+            xSizeMax := Max( ::x2 - x, xSize ) + 1
             xSize := IiF(::lAdjRight, xSizeMax, xSize)
          ENDIF
          IF !::aColumns[ ::nPaintCol ]:lHide 
@@ -1708,7 +1716,7 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                   ENDIF
 
                   DrawText( hDC, sviv,  ;
-                            x + ::aMargin[ 4 ], ;
+                            x + ::aMargin[ 4 ] + 1, ;
                             ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1 + ::aMargin[ 1 ] , ;
                             x + xSize - ( 2 + ::aMargin[ 2 ] ) , ;
                             ::y1 + ( ::height + 1 ) * ::nPaintRow - ( 1 + ::aMargin[ 3 ] ) , ;
@@ -2116,7 +2124,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
    LOCAL nLine
    LOCAL STEP, res, nrec
    LOCAL xm, x1, fif
-   Local aColumns := {}, nCols := 1, xSize := 0, nHide := 0
+   LOCAL aColumns := {}, nCols := 1, xSize := 0, nHide := 0
 
    hBrw := ::handle
 
@@ -2188,6 +2196,14 @@ IF nLine > 0 .AND. nLine <= ::rowCurrCount
    ENDIF
    ::fipos := Min( ::colpos + ::nLeftCol - 1 - ::freeze, Len( ::aColumns ) )
    IF  ::aColumns[ ::fipos ]:Type = "L" .AND. ( ::lEditable .OR. ::aColumns[ ::fipos ]:lEditable )
+      IF  ::aColumns[ ::fipos ]:bWhen != Nil
+         ::oparent:lSuspendMsgsHandling := .t.
+         ::varbuf := Eval( ::aColumns[ ::fipos ]:bWhen, ::aColumns[ ::fipos ], ::varbuf )
+         ::oparent:lSuspendMsgsHandling := .f.
+         IF ! ( ValType( ::varbuf ) == "L" .AND. ::varbuf )
+            RETURN Nil
+         ENDIF
+      ENDIF  
       IF ::Type == BRW_DATABASE
          ::varbuf := ( ::Alias ) ->( Eval( ::aColumns[ ::fipos ]:block,, Self, ::fipos ) )
          IF ( ::Alias ) ->( RLock() )
@@ -2202,6 +2218,11 @@ IF nLine > 0 .AND. nLine <= ::rowCurrCount
       ENDIF
       ::lUpdated := .T.
       ::RefreshLine()
+      IF  ::aColumns[ ::fipos ]:bValid != Nil
+         ::oparent:lSuspendMsgsHandling := .t.
+         Eval( ::aColumns[ ::fipos ]:bValid, ::aColumns[ ::fipos ], ::varbuf )
+        ::oparent:lSuspendMsgsHandling := .f.
+      ENDIF  
    ENDIF
 
 ELSEIF nLine == 0
@@ -2386,7 +2407,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
          ::varbuf := Eval( oColumn:block,, Self, fipos )
       ENDIF
       Type := IIf( oColumn:Type == "U".AND.::varbuf != Nil, ValType( ::varbuf ), oColumn:Type )
-      IF ::lEditable .AND. Type != "O"
+      IF ::lEditable .AND. Type != "O" .AND. Type != "L" // columns logic is handling in BUTTONDOWN()
          IF oColumn:lEditable
             IF ::lAppMode
                IF Type == "D"

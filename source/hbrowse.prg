@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.173 2009-10-12 13:51:47 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.174 2009-10-13 15:17:20 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -732,7 +732,6 @@ STATIC FUNCTION InitColumn( oBrw, oColumn, n )
       oColumn:length := LenVal( xres, ctype, oColumn:picture )
    ENDIF
    oColumn:nJusLin := IIf( oColumn:nJusLin == nil, IIF( oColumn:Type == "N", DT_RIGHT , DT_LEFT ), oColumn:nJusLin ) + DT_VCENTER + DT_SINGLELINE
-   oBrw:aMargin[ 2 ] := IIF( oColumn:nJusLin = DT_RIGHT - DT_VCENTER - DT_SINGLELINE .AND. oBrw:aMargin[ 2 ] = 1 ,2 , oBrw:aMargin[ 2 ] )
    oColumn:oParent := oBrw
    RETURN Nil
 

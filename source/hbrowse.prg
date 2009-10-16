@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.174 2009-10-13 15:17:20 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.175 2009-10-16 14:00:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -988,7 +988,7 @@ METHOD Rebuild() CLASS HBrowse
 
 //----------------------------------------------------//
 METHOD Paint( lLostFocus )  CLASS HBrowse
-   LOCAL aCoors, aMetr, cursor_row, tmp, nRows
+   LOCAL aCoors, aMetr, cursor_row, tmp, nRows, nRowsFill
    LOCAL pps, hDC
    LOCAL oldfont, aMetrHead
 
@@ -1165,6 +1165,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
       ENDIF
 
       // print the rest of the browse
+      nRowsFill := cursor_row - 1 
       DO WHILE cursor_row <= ::rowCount  //nRows
          IF ::aSelected != Nil .AND. AScan( ::aSelected, { | x | x = Eval( ::bRecno, Self ) } ) > 0
             ::LineOut( cursor_row, 0, hDC, .t., .T. )
@@ -1204,9 +1205,9 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
 
    // if bit-1 refresh header and footer
    IF Checkbit( ::internal[ 1 ], 1 ) .OR. ::lAppMode
-      IF ::lDispSep
-         ::SeparatorOut( hDC )
-      ENDIF
+      //IF ::lDispSep
+         ::SeparatorOut( hDC )  //, nRowsFill  )
+      //ENDIF
       IF ::nHeadRows > 0
          ::HeaderOut( hDC )
       ENDIF
@@ -1412,11 +1413,12 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
    RETURN Nil
 
 //----------------------------------------------------//
-METHOD SeparatorOut( hDC ) CLASS HBrowse
+METHOD SeparatorOut( hDC, nRowsFill ) CLASS HBrowse
    LOCAL i, x, fif, xSize, lFixed := .F., xSizeMax 
-   LOCAL nRows
-
+   LOCAL nRows, bColor
    LOCAL oColumn, oPenVert, oPenHz, oPen, oPenLight
+   
+   DEFAULT nRowsFill TO Min( ::nRecords + IIf( ::lAppMode, 1, 0 ), ::rowCount )
 
    //STATIC oPen := NIL
    //STATIC oPenLight := NIL
@@ -1446,13 +1448,17 @@ METHOD SeparatorOut( hDC ) CLASS HBrowse
    x := ::x1
    fif := IIf( ::freeze > 0, 1, ::nLeftCol )
    FillRect( hDC, ::x1, ::y1 + ( ::height + 1 ) * nRows, ::x2, ::y2, ::brush:handle )   
+   // SEPARATOR HORIZONT
+   FOR i := 1 TO nRowsFill
+      DrawLine( hDC, ::x1, ::y1 + ( ::height + 1 ) * i, IIf( ::lAdjRight, ::x2, ::x2 ), ::y1 + ( ::height + 1 ) * i )
+   NEXT
    DO WHILE x < ::x2 - 2
       oColumn := ::aColumns[ fif ]
       xSize := oColumn:width
       xSizeMax := xSize
       //IF (::lAdjRight .and. fif == Len( ::aColumns ) ).or. lFixed
       IF ( fif == Len( ::aColumns ) ) .OR. lFixed
-         xSizeMax := Max( ::x2 - x, xSize )
+         xSizeMax := Max( ::x2 - x, xSize ) - 1
          xSize := IIF( ::lAdjRight, xSizeMax, xSize )
       ENDIF
       IF ! oColumn:lHide 
@@ -1467,6 +1473,17 @@ METHOD SeparatorOut( hDC ) CLASS HBrowse
            ENDIF
         ELSE
            // NANDO SEPARATOR VERTICAL
+           IF ! ::lDispSep .AND. oColumn:bColorBlock != Nil 
+              bColor := ( Eval( oColumn:bColorBlock, ::FLDSTR( Self, fif ), fif, Self ) )[ 2 ]
+              IF bColor != Nil
+                 // horizontal
+                 SelectObject( hDC, HPen():Add( PS_SOLID, 1, bColor ):handle )
+                 FOR i := 1 TO nRowsFill
+                    DrawLine( hDC, x, ::y1 + ( ::height + 1 ) * i, x + xsize, ::y1 + ( ::height + 1 ) * i )
+                 NEXT
+              ENDIF
+           ENDIF
+           SelectObject( hDC, oPen:handle )
            DrawLine( hDC, x - 1, ::y1 + 1, x - 1, ::y1 + ( ::height + 1 ) * nRows )
         ENDIF
       ELSE
@@ -1478,21 +1495,32 @@ METHOD SeparatorOut( hDC ) CLASS HBrowse
          ENDIF
       ENDIF
       x += xSize
+      /*
       IF ! ::lAdjRight .and. fif == Len( ::aColumns )
          // LAST separator vertical
          DrawLine( hDC, x - 1, ::y1 - ( ::height * ::nHeadRows ), x - 1, ::y1 + ( ::height + 1 ) * nRows )
       ENDIF
+      */
       fif := IIf( fif = ::freeze, ::nLeftCol, fif + 1 )
       IF fif > Len( ::aColumns )
          EXIT
       ENDIF
    ENDDO
    //  SEPARATOR HORIZONT
+    SelectObject( hDC, oPen:handle )
+    IF ! ::lAdjRight
+       DrawLine( hDC, x - 1, ::y1 - ( ::height * ::nHeadRows ), x - 1, ::y1 + ( ::height + 1 ) * ( nRows ) )         
+       DrawLine( hDC, ::x2 - 1, ::y1 - ( ::height * ::nHeadRows ), ::x2 - 1, ::y1 + ( ::height + 1 ) * ( nRows ) )         
+    ELSE
+       DrawLine( hDC, x, ::y1 - ( ::height * ::nHeadRows ), x , ::y1 + ( ::height + 1 ) * ( nRows ) )             
+    ENDIF
+    /*
    //IF ::lDispSep
       FOR i := 1 TO nRows
          DrawLine( hDC, ::x1, ::y1 + ( ::height + 1 ) * i, IIf( ::lAdjRight, ::x2, x ), ::y1 + ( ::height + 1 ) * i )
       NEXT
    //ENDIF
+   */
    IF ::lDispSep
       DeleteObject( oPen )
       IF oPenLight != nil
@@ -1626,8 +1654,6 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
             ::aColumns[ ::nPaintCol ]:brush := HBrush():Add( ::aColumns[ ::nPaintCol ]:bColor )
          ELSE   
             ::aColumns[ ::nPaintCol ]:brush := Nil   
-            ::aColumns[ ::nPaintCol ]:tColor := Nil   
-            ::aColumns[ ::nPaintCol ]:bColor := Nil   
          ENDIF
          xSize := ::aColumns[ ::nPaintCol ]:width
          xSizeMax := xSize

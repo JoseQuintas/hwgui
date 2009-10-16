@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1141 2009-10-12 13:51:41 lfbasso Exp $
+ * $Id: Changelog,v 1.1142 2009-10-16 14:34:45 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-10-12 10:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! fixed separator vertical in last column
+    
 2009-10-12 10:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
     ! fixed width of the columns based on the font size

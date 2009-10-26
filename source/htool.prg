@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.33 2009-07-30 12:51:50 lfbasso Exp $
+ * $Id: htool.prg,v 1.34 2009-10-26 00:02:53 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -294,7 +294,7 @@ Local hImage, img, nlistimg, ndrop := 0
 				 
 				 nDrop := IIF( nDrop = 8, nDrop, IIF( Hwg_Bitand(::aItem[ n, 4 ], BTNS_DROPDOWN ) != 0 .AND.::aItem[ n, 4 ] < 128, 8, 1 ) )
 				 IF ::nSize != Nil
-				    //SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( ::nSize, ::nSize ) )
+				    SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( ::nSize, ::nSize ) )
 				 ENDIF   
 
          IF ValType( ::aItem[ n, 1 ] )  == "C"

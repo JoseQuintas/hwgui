@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.70 2009-09-30 16:32:34 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.71 2009-10-26 00:02:53 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -197,7 +197,8 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    ELSE
       ::value := Iif( vari == Nil .OR. Valtype( vari ) != "N", 1, vari )
    ENDIF
-   ::aItems  := IIF( aItems = Nil, {}, aClone( aItems ) )
+   ::aItems        := IIF( aItems = Nil, {}, aClone( aItems ) )
+   ::aItemsBound   := {}
    ::bSetGet := bSetGet
    ::RowSource( ::aItems )
 
@@ -436,6 +437,8 @@ LOCAL nPos
    IF ::lText .AND. Valtype( xItem ) = "C"
       nPos := AScan( ::aItems, xItem )
       ComboSetString( ::handle, nPos )
+   ELSE   
+      nPos := xItem
    ENDIF
    ::setItem( nPos )
 RETURN Nil

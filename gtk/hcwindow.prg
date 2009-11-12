@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.6 2009-08-10 01:39:59 lculik Exp $
+ *$Id: hcwindow.prg,v 1.7 2009-11-12 10:09:45 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -61,7 +61,12 @@ CLASS HCustomWindow INHERIT HObject
    DATA nCurHeight   INIT 0
    DATA nScrollPos   INIT 0
    DATA rect
-   DATA nScrollBars INIT -1   
+   DATA nScrollBars INIT -1
+   DATA minWidth   INIT - 1
+   DATA maxWidth   INIT - 1
+   DATA minHeight  INIT - 1
+   DATA maxHeight  INIT - 1
+
    
    
    METHOD AddControl( oCtrl ) INLINE Aadd( ::aControls,oCtrl )

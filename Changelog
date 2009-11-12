@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1143 2009-10-26 00:02:53 lfbasso Exp $
+ * $Id: Changelog,v 1.1144 2009-11-12 10:09:43 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,9 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-11-12 08:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
+  * gtk/hcwindow.prg
+    ! added missing datas
 
 2009-10-25 22:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcombo.prg

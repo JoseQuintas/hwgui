@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.15 2009-08-10 01:39:59 lculik Exp $
+ *$Id: hdialog.prg,v 1.16 2009-11-14 07:23:36 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
@@ -312,12 +312,14 @@ Static Function onSize( oDlg,wParam,lParam )
    LOCAL aControls, iCont , nW1, nH1
    LOCAL nW := LOWORD( lParam ), nH := HIWORD( lParam )
    LOCAL nScrollMax
+   /*
    IF ( oDlg:nHeight = oDlg:minHeight .AND. nH < oDlg:minHeight ) .OR. ;
       ( oDlg:nHeight = oDlg:maxHeight .AND. nH > oDlg:maxHeight ) .OR. ;
       ( oDlg:nWidth = oDlg:minWidth .AND. nW < oDlg:minWidth ) .OR. ;
       ( oDlg:nWidth = oDlg:maxWidth .AND. nW > oDlg:maxWidth )
       RETURN 0
-   ENDIF
+   ENDIF*/
+
    nW1 := oDlg:nWidth
    nH1 := oDlg:nHeight
    *aControls := GetWindowRect( oDlg:handle )

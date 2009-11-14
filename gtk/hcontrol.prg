@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.17 2009-08-10 01:39:59 lculik Exp $
+ *$Id: hcontrol.prg,v 1.18 2009-11-14 07:23:36 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -210,7 +210,7 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
     *- vertical fixed center
       nAnchor := nAnchor - ANCHOR_VERTFIX
       y1 := y9 + Int( ( h - y ) * ( ( y9 + h9 / 2 ) / y ) )
-   ENDIF
+   ENDIF                             
    IF nAnchor >= ANCHOR_HORFIX
     *- horizontal fixed center
       nAnchor := nAnchor - ANCHOR_HORFIX
@@ -275,7 +275,7 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
       y1 := y9
    ENDIF
    InvalidateRect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-   MoveWindow( ::handle, x1, y1, w1, h1 )
+   ::Move( ::handle, x1, y1, w1, h1 )
    ::nLeft := x1
    ::nTop := y1
    ::nWidth := w1

@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.53 2009-11-15 18:55:04 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.54 2009-11-15 22:46:38 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -58,7 +58,7 @@ LOCAL i := Ascan( ::aObjects, {|o| o:handle == h } )
 CLASS HCustomWindow INHERIT HObject
 
 CLASS VAR oDefaultParent SHARED
-CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) PROTECTED SHARED
+CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    
    DATA handle        INIT 0
    DATA oParent

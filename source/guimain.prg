@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.36 2009-11-15 18:55:04 lfbasso Exp $
+ * $Id: guimain.prg,v 1.37 2009-11-15 21:14:01 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -444,8 +444,7 @@ FUNCTION TxtRect( cTxt, oWin, oFont )
    LOCAL hDC
    LOCAL ASize
    LOCAL hFont
-   LOCAL oFont := oWin:oFont
-   
+  
    oFont := IIF( oFont != Nil, oFont, oWin:oFont )
 
    hDC       := GetDC( oWin:handle )

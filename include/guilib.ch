@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.152 2009-09-22 14:57:52 lfbasso Exp $
+ *$Id: guilib.ch,v 1.153 2009-11-15 18:55:04 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -439,6 +439,7 @@
              [ ON PAINT <bDraw> ]       ;
              [ ON GETFOCUS <bGfocus> ]  ;
              [ ON LOSTFOCUS <bLfocus> ] ;
+             [ ON CHANGE <bChange>]     ;
              [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;
              [ STYLE <nStyle> ]         ;
              [ FONT <oFont> ]           ;
@@ -446,7 +447,7 @@
           => ;
           [<oEdit> := ] HRichEdit():New( <oWnd>,<nId>,<vari>,<nStyle>,<x>,<y>,<width>, ;
              <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
-             <bLfocus>,<ctoolt>,<color>,<bcolor>,<bOther>, <.lallowtabs.>  );;
+             <bLfocus>,<ctoolt>,<color>,<bcolor>,<bOther>, <.lallowtabs.>,<bChange> );;
           [ <oEdit>:name := <(oEdit)> ]
 
 #xcommand @ <x>,<y> BUTTON [ <oBut> CAPTION ] <caption> ;
@@ -597,7 +598,12 @@
              <bClick>, <bGetFocus>, <bLostFocus>, <bRClick> ) ;;
           [ <oTab>:name := <(oTab)> ]
 
-#xcommand BEGIN PAGE <cname> OF <oTab> => <oTab>:StartPage( <cname> )
+#xcommand BEGIN PAGE <cname> OF <oTab> ;
+            [ <enable: DISABLED> ]     ;
+            [ COLOR <tcolor>]          ;
+            [ BACKCOLOR <bcolor>]      ; 
+          =>;
+          <oTab>:StartPage( <cname>, ,! <.enable.> ,<tcolor>,<bcolor> )
 
 #xcommand END PAGE OF <oTab> => <oTab>:EndPage()
 
@@ -775,6 +781,7 @@
              [ ID <nId> ]               ;
              [ SIZE <width>, <height> ] ;
              [ WIDTH <nUpDWidth> ]      ;
+             [ INCREMENT <nIncr> ]      ;        
              [ COLOR <color> ]          ;
              [ BACKCOLOR <bcolor> ]     ;
              [ ON INIT <bInit> ]        ;
@@ -788,7 +795,7 @@
           => ;
           [<oUpd> := ] HUpDown():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
              <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>,         ;
-             <bLfocus>,<ctoolt>,<color>,<bcolor>,<nUpDWidth>,<nLower>,<nUpper> );;
+             <bLfocus>,<ctoolt>,<color>,<bcolor>,<nUpDWidth>,<nLower>,<nUpper>,<nIncr> );;
           [ <oUpd>:name := <(oUpd)> ]
 
 #xcommand @ <x>,<y> PANEL [ <oPanel> ] ;
@@ -882,6 +889,8 @@
              [ JUSTIFY HEAD <nJusHead> ];
              [ JUSTIFY LINE <nJusLine> ];
              [ PICTURE <cPict> ]        ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
              [ VALID <bValid> ]         ;
              [ WHEN <bWhen> ]           ;
              [ ITEMS <aItem> ]          ;
@@ -889,7 +898,7 @@
              [ BHEADCLICK <bHeadClick> ]  ;
           => ;
           <oBrw>:AddColumn( HColumn():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
-             <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <{bClrBlck}>, <{bHeadClick}> ) )
+             <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <{bClrBlck}>, <{bHeadClick}>, <color>, <bcolor> ) )
 
 #xcommand INSERT COLUMN <block> TO <oBrw> ;
              [ HEADER <cHeader> ]       ;

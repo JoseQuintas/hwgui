@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1145 2009-11-14 07:23:35 lculik Exp $
+ * $Id: Changelog,v 1.1146 2009-11-15 18:55:02 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,91 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2009-11-15 16:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + NEW clauses in #xcommand BEGIN PAGE <cname> OF <oTab> ;
+            [ <enable: DISABLED> ]     ;
+            [ COLOR <tcolor>]          ;
+            [ BACKCOLOR <bcolor>]      ; 
+    + #xcommand @ <x>,<y> RICHEDIT [ <oEdit> TEXT ] <vari> ;            
+                  [ ON CHANGE <bChange>]     ;
+  * include\windows.ch
+    + news constants
+  * source\control.c
+    + add HB_FUNC( GETNOTIFYKEYDOWN ) return NOTIFY KEYDOWN to TAB NOTIFY
+  * source\guimain.prg  
+    * FUNCTION TxtRect add new parameter TxtRect( cTxt, oWin, oFont )
+  * source\hcheck.prg       
+    ! minor fix in mode transparent
+  * source\hcontrol.prg   
+    CLASS HControl  
+    + DATA   BackStyle  INIT 1 define modo TRANSPARENT - 0 | OPAQUE - 1
+    + DATA   lNoThemes  INIT .F. // define use THEMES in control
+    CLASS HStatic     
+    - METHOD BACKSTYLE
+    CLASS HButton
+    * METHOD INIT handling EVENT only in BUTTONEX or IF parent = TAB or not DIALOG
+  * source\hcwindow.prg
+    * changed FUNCTION onCtlColor suport backstyle TRANSPARENT
+    * Changed FUNCTION FindAccelerator include TAB control
+    * changed FUNCTION GetBackColorParent
+  * source\hcombo.prg       
+    ! fixed METHOD REQUERY
+  * source\hdialog.prg           
+    ! minor fix 
+  * source\hedit.prg               
+    ! minor fix in FUNCTION GETSKIP
+  * source\hhyper.prg           
+    * remove extStyle += WS_EX_TRANSPARENT
+    * fixed METHOD OnClicked()
+    * fixed METHOD OnMouseMove
+    ! minor fix in mode transparent    
+  * source\hPanel.prg       
+    ! fixed EVENT WM_ERASEBKGND IN mode TRANSPARENT
+    ! fix on METHOD SHOW()
+    ! fix on METHOD HIDE()
+  * source\hrect.prg      
+    CLASS HContainer    
+    ! fix in METHOD PAINT
+  * source\hriched.prg  
+    + METHOD NEW() new parameters - bChange
+    + DATA lReadOnly , Col, Line, LinesTotal, SelStart, SelText, SelLength
+    + DATA bChange
+    + METHOD UpdatePos( ) 
+    + METHOD onChange( )
+    + METHOD ReadOnly( lreadOnly ) SETGET 
+  * source\htab.prg
+    * CLASS HPage   
+      + DATA brush
+      + METHOD Refresh() INLINE ::oParent:ShowPage( ::PageOrder )
+      + METHOD SetColor( tcolor, bcolor )
+    * CLASS HTab
+      + DATA oPaint  - object STATIC to PAINT PAGE
+      + DATA nPaintHeight INIT 0  
+      + DATA TabHeightSize  - height of the TAB 
+        HIDDEN:
+        + DATA  nActivate 
+        + DATA  aControlsHide INIT {}
+      + METHOD ShowDisablePage()
+      + METHOD DisablePage( nPage ) INLINE ::Pages[ nPage ]:disable()
+      + METHOD EnablePage( nPage ) INLINE ::Pages[ nPage ]:enable()
+      + METHOD SetPaintSizePos( nFlag  )
+      * fix in METHOD NOTIFY
+      * fix IN METHOD ONEVENT
+      * changed Function SetTabFocus( )
+      + FUNCTION FindTabAccelerator( oPage, nKey )
+        * handling key accelerator to PAGES ex: &Page 1
+      + new class to PAINT Pages 
+        CLASS HPaintTab INHERIT HControl
+        paint the PAGE and Show Text COLOR_GRAYTEXT to DISABLE pages
+  * source\hupdown.prg       
+    CLASS HeditUpDown
+    ! fixed METHOD NOTIFY value is sincronized with ARROW UPDOWN control
+  * source\hwindow.prg           
+    ! several minors fixes 
+  * source\window.c
+    + add HB_FUNC( GETWINDOWPLACEMENT ) return state WINDOWS ( maximized,minimized,normal )
 
 2009-11-14 05:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * gtk/hcwindow.prg

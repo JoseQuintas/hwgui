@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.47 2009-09-30 10:59:51 lfbasso Exp $
+ *$Id: htab.prg,v 1.48 2009-11-15 18:55:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -28,21 +28,22 @@ CLASS HPage INHERIT HObject
    DATA xCaption     HIDDEN
    ACCESS Caption    INLINE ::xCaption
    ASSIGN Caption( xC )  INLINE ::xCaption := xC, ::SetTabText( ::xCaption )
-   DATA xEnabled     INIT .T. HIDDEN
-   ACCESS Enabled    INLINE ::xEnabled
-   ASSIGN Enabled( xL )  INLINE ::xEnabled := xL, IIf( ::xEnabled, ::enable(), ::disable() )
+   DATA lEnabled  INIT .T. // HIDDEN   
    DATA PageOrder INIT 1
    DATA oParent
-   DATA tcolor, bcolor   // not implemented
+   DATA tcolor, bcolor  
+   DATA brush
    DATA oFont   // not implemented
    DATA aItemPos       INIT { }
 
    METHOD New( cCaption, nPage, lEnabled, tcolor, bcolor )
-   METHOD Enable()
-   METHOD Disable()  INLINE ::oParent:Disable()
+   METHOD Enable() INLINE ::Enabled( .T. )
+   METHOD Disable() INLINE ::Enabled( .F. ) 
    METHOD GetTabText() INLINE GetTabName( ::oParent:Handle, ::PageOrder - 1 )
    METHOD SetTabText( cText )
    METHOD Refresh() INLINE ::oParent:ShowPage( ::PageOrder )
+   METHOD Enabled( lEnabled ) SETGET
+   METHOD SetColor( tcolor, bcolor )
 
 ENDCLASS
 
@@ -50,10 +51,9 @@ ENDCLASS
 METHOD New( cCaption, nPage, lEnabled, tcolor, bcolor ) CLASS HPage
 
    cCaption := IIf( cCaption == nil, "New Page", cCaption )
-   lEnabled := IIf( lEnabled != Nil, lEnabled, .T. )
-   ::tcolor  := tcolor
-   ::bcolor  := bcolor
+   ::lEnabled := IIF( lEnabled != Nil, lEnabled, .T. )
    ::Pageorder := nPage
+   ::SetColor( tColor, bColor )
 
    RETURN Self
 
@@ -70,32 +70,50 @@ METHOD SetTabText( cText ) CLASS HPage
    NEXT
    RETURN Nil
 
-METHOD Enable() CLASS HPage
-   LOCAL hDC, client_rect, dwtext, nstyle
+METHOD SetColor( tcolor, bColor ) CLASS HPage
 
-   hDC := GetWindowDC( ::oParent:handle )
-   SetTextColor( hDC, GetSysColor( COLOR_WINDOWTEXT ) )
-   SetBkMode( hDC, 1 )
-   IF ::oParent:oFont != Nil
-      SelectObject( hDC, ::oParent:oFont:handle )
+   IF tcolor != NIL
+      ::tcolor := tcolor
    ENDIF
-   client_rect := ::aItemPos
-   IF  Hwg_BitAnd( ::oParent:Style, TCS_FIXEDWIDTH  ) != 0
-      nstyle :=  SS_CENTER + SS_RIGHTJUST  //COLOR_GRAYTEXT
-      SetaStyle( @nstyle, @dwtext )
-      IF ::oParent:nActive = ::PageOrder
-         DrawText( hDC, ::caption, client_rect[ 1 ], client_rect[ 2 ] + 1, client_rect[ 3 ], client_rect[ 4 ], dwtext )
-      ELSE
-         DrawText( hDC, ::caption, client_rect[ 1 ], client_rect[ 2 ] + 3, client_rect[ 3 ], client_rect[ 4 ], dwtext )
+   IF bColor != NIL
+      ::bColor := bColor
+      IF ::brush != NIL
+         ::brush:Release()
       ENDIF
-   ELSE
-      IF ::oParent:nActive = ::PageOrder
-         TextOut( hDC, client_rect[ 1 ] + 6, client_rect[ 2 ] + 1, ::caption )
-      ELSE
-         TextOut( hDC, client_rect[ 1 ] + 6, client_rect[ 2 ] + 3, ::caption )
-      ENDIF
+      ::brush := HBrush():Add( bColor )
+   ENDIF   
+   IF ::oParent = Nil .OR. ( bColor = Nil .AND. tcolor = NIL )
+      RETURN Nil   
    ENDIF
-   RETURN Nil
+   ::oParent:SetPaintSizePos( IIF( bColor = Nil, 1, - 1 ) )
+
+   RETURN NIL
+
+METHOD Enabled( lEnabled ) CLASS HPage
+
+  IF lEnabled != Nil
+     ::lEnabled := lEnabled 
+     IF lEnabled .AND. ::PageOrder != ::oParent:nActive
+        ::oParent:Enable()
+        IF ::oParent:nActive = 0
+           ::oParent:nActive := ::PageOrder
+           ::oParent:setTab( ::PageOrder )
+           ::oParent:showPage( ::PageOrder )
+        ENDIF   
+     ENDIF
+     ::oParent:ShowDisablePage()
+     IF ::PageOrder = ::oParent:nActive .AND. !::lenabled 
+         ::oParent:hidePage( ::PageOrder )
+         ::oParent:nActive := SetTabFocus( ::oParent, ::oParent:nActive, .T. )
+         IF ::oParent:nActive > 0
+            ::oParent:showPage( ::oParent:nActive )
+         ENDIF   
+     ENDIF
+     IF Ascan( ::oParent:Pages, {| p | p:lEnabled } ) = 0
+        ::oParent:Disable()
+     ENDIF
+  ENDIF
+  RETURN ::lEnabled
 
  *------------------------------------------------------------------------------
 
@@ -111,16 +129,19 @@ CLASS VAR winclass   INIT "SysTabControl32"
    DATA  bAction, bRClick
    DATA  lResourceTab INIT .F.
 
+   DATA oPaint 
+   DATA nPaintHeight INIT 0
+   DATA TabHeightSize 
+    
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, aTabs, bChange, aImages, lResour, nBC, ;
                bClick, bGetFocus, bLostFocus, bRClick ) 
 
-   //METHOD Paint( lpdis )
    METHOD Activate()
    METHOD Init()
    METHOD AddPage( oPage )
    METHOD SetTab( n )
-   METHOD StartPage( cname, oDlg )
+   METHOD StartPage( cname, oDlg, lEnable, tcolor, bcolor )
    METHOD EndPage()
    METHOD ChangePage( nPage )
    METHOD DeletePage( nPage )
@@ -129,17 +150,21 @@ CLASS VAR winclass   INIT "SysTabControl32"
    METHOD GetActivePage( nFirst, nEnd )
    METHOD Notify( lParam )
    METHOD OnEvent( msg, wParam, lParam )
-   METHOD Disable()
-   METHOD Refresh() INLINE ::ShowPage( ::GetActivePage() )
+   METHOD Refresh() 
    METHOD Redefine( oWndParent, nId, oFont, bInit, ;
                     bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )
-
+   METHOD ShowDisablePage()
+   METHOD DisablePage( nPage ) INLINE ::Pages[ nPage ]:disable()
+   METHOD EnablePage( nPage ) INLINE ::Pages[ nPage ]:enable()
+   METHOD SetPaintSizePos( nFlag  )
+   
    HIDDEN:
      DATA  nActive  INIT 0         // Active Page
      DATA  nPrevPage INIT 0
      DATA  lClick INIT .F.
-     DATA  lAtivate INIT .F.
-
+     DATA  nActivate 
+     DATA  aControlsHide INIT {}
+  
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -175,7 +200,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
          ::Image2 := 1
       ENDIF
    ENDIF
+
+   ::brush := GetBackColorParent( Self, .T. ) 
    ::Activate()
+   ::oPaint := HPaintTab():New( Self, , 0, 0, 0, 0, ::oFont )
 
    RETURN Self
 
@@ -188,39 +216,90 @@ METHOD Activate CLASS HTab
    RETURN Nil
 
 METHOD Init() CLASS HTab
-   LOCAL i
+   LOCAL i, x := 0
 
    IF ! ::lInit
-      Super:Init()
-      InitTabControl( ::handle, ::aTabs, IF( ::himl != Nil, ::himl, 0 ) )
-      ::nHolder := 1
-      SetWindowObject( ::handle, Self )
-
+      InitTabControl( ::handle, ::aTabs, IIF( ::himl != Nil, ::himl, 0 ) )
+      SendMessage( ::HANDLE, TCM_SETMINTABWIDTH ,0 ,0 )
+      IF  Hwg_BitAnd( ::Style, TCS_FIXEDWIDTH  ) != 0
+         ::TabHeightSize := 25 - ( ::oFont:Height + 12 ) 
+         x := ::nWidth / Len( ::aPages ) - 2
+      ELSEIF ::TabHeightSize != Nil 
+      ELSEIF ::oFont != Nil
+         ::TabHeightSize := 25 - ( ::oFont:Height + 12 ) 
+      ELSE
+         ::TabHeightSize := 23
+      ENDIF
+      SendMessage( ::Handle, TCM_SETITEMSIZE, 0, MAKELPARAM( x, ::TabHeightSize ) )
       IF ::himl != Nil
          SendMessage( ::handle, TCM_SETIMAGELIST, 0, ::himl )
       ENDIF
       IF Len( ::aPages ) > 0
-         ::Pages[ 1 ]:aItemPos := TabItemPos( ::Handle, 0 )
-         FOR i := 2 TO Len( ::aPages )
+         //::Pages[ 1 ]:aItemPos := TabItemPos( ::Handle, 0 )
+         IF ASCAN( ::Pages, { | p | p:brush != Nil } ) > 0 
+            ::SetPaintSizePos( - 1 )
+         ELSEIF ASCAN( ::Pages, { | p | p:tcolor != Nil } ) > 0  
+            ::SetPaintSizePos( 1 )
+         ELSE
+            ::oPaint:nHeight := ::TabHeightSize 
+         ENDIF   
+         ::nActive := 0
+         FOR i := Len( ::aPages ) TO 1 STEP - 1
             ::HidePage( i )
-            ::Pages[ i ]:aItemPos := TabItemPos( ::Handle, i - 1 )
+            ::nActive := IIF( ! ::Pages[ i ]:Enabled, i, ::nActive )
          NEXT
+         SendMessage( ::handle, TCM_SETCURFOCUS, ::nActive, 0 )
+         ::nActive ++
+         ::ShowPage( ::nActive )
       ELSE
          Asize( ::aPages, SendMessage( ::handle, TCM_GETITEMCOUNT, 0, 0 ) )
          AEval( ::aPages, { | a, i | ::AddPage( HPage():New( "" ,i,.t.,), "" )})
       ENDIF
       AddToolTip( ::handle, ::handle, "" )              
+      ::nHolder := 1
+      SetWindowObject( ::handle, Self )
       Hwg_InitTabProc( ::handle )
+      Super:Init()
    ENDIF
 
    RETURN Nil
 
-METHOD SetTab( n ) CLASS HTab
-   SendMessage( ::handle, TCM_SETCURFOCUS, n - 1, 0 )
-   // writelog( str(::handle )+" "+Str(SendMessage(::handle,TCM_GETCURFOCUS,0,0 ))+" "+Str(SendMessage(::handle,TCM_GETITEMCOUNT,0,0 )) )
+METHOD SetPaintSizePos( nFlag ) CLASS HTab
+   Local aItemPos := TabItemPos( ::Handle, 0 )
+
+   IF nFlag = - 1
+      ::oPaint:nLeft :=   1
+      ::oPaint:nWidth := ::nWidth - 3 
+      IF Hwg_BitAnd( ::Style,TCS_BOTTOM  ) != 0
+         ::oPaint:nTop :=   1
+         ::oPaint:nHeight := aItemPos[ 2 ] - 3
+      ELSE
+         ::oPaint:nTop := aItemPos[ 4 ] 
+         ::oPaint:nHeight := ::nHeight - aItemPos[ 4 ] - 3
+      ENDIF
+      ::nPaintHeight  := ::oPaint:nHeight 
+   ELSEIF nFlag = 1   
+      ::oPaint:nHeight := 1
+      ::nPaintHeight  := ::oPaint:nHeight 
+   ELSEIF nFlag > 0 
+      ::npaintheight  := nFlag
+      ::oPaint:nHeight := ::npaintHeight
+   ENDIF  
+   SetWindowPos( ::oPaint:Handle, nil, ::oPaint:nLeft, ::oPaint:nTop, ::oPaint:nWidth, ::oPaint:nHeight, ;
+                       SWP_NOACTIVATE + SWP_NOREPOSITION + SWP_NOZORDER + SWP_FRAMECHANGED )
+   
    RETURN Nil
 
-METHOD StartPage( cname, oDlg ) CLASS HTab
+METHOD SetTab( n ) CLASS HTab
+   IF n > 0 .AND. n <= LEN( ::aPages )
+      IF  ::Pages[ n ]:Enabled 
+         SendMessage( ::handle, TCM_SETCURFOCUS, n - 1, 0 ) 
+         ::changePage( n )
+      ENDIF
+   ENDIF
+   RETURN Nil
+
+METHOD StartPage( cname, oDlg, lEnabled, tColor, bColor ) CLASS HTab
 
    ::oTemp := ::oDefaultParent
    ::oDefaultParent := Self
@@ -234,8 +313,9 @@ METHOD StartPage( cname, oDlg ) CLASS HTab
    ELSE
       AAdd( ::aPages, { Len( ::aControls ), 0 } )
    ENDIF
-   ::AddPage( HPage():New( cname , Len( ::aPages ), .t., ), cname )
+   ::AddPage( HPage():New( cname ,Len( ::aPages ), lEnabled,  tColor, bcolor ), cName )
    ::nActive := Len( ::aPages )
+   ::Pages[ ::nActive ]:aItemPos := TabItemPos( ::Handle, ::nActive - 1 )
 
    RETURN Nil
 
@@ -292,28 +372,19 @@ METHOD EndPage() CLASS HTab
    RETURN Nil
 
 METHOD ChangePage( nPage ) CLASS HTab
-
-   IF ! ::pages[ nPage ]:enabled
-      SetTabFocus( Self, nPage )
+   LOCAL client_rect
+   
+   IF ! ::pages[ nPage ]:enabled .OR. nPage = ::nActive
+      //SetTabFocus( Self, nPage, .F. )
       RETURN Nil
    ENDIF
-   IF nPage = ::nActive
-      RETURN Nil
-   ENDIF
-   IF ! ::pages[ ::nActive ]:enabled
-      // REDRAW DISABLE  if disable is active
-      ::SetTab( ::nActive )
-      ::HidePage( ::nActive )
-      ::nActive := nPage
-      ::SetTab( nPage )
-   ENDIF
-
-   IF ! Empty( ::aPages )
-
+   IF ! Empty( ::aPages ) .AND. ::pages[ ::nActive ]:enabled 
+      client_rect := TabItemPos( ::Handle, ::nActive - 1 )
+       RedrawWindow( ::oPaint:Handle, RDW_INVALIDATE  + RDW_INTERNALPAINT  )
       ::HidePage( ::nActive )
       ::ShowPage( nPage )
       ::nActive := nPage
-
+      InvalidateRect( ::handle, 1, client_rect[ 1 ], client_rect[ 2 ] , client_rect[ 3 ] + 3, client_rect[ 4 ] + 2 )			
    ENDIF
 
    IF ::bChange2 != Nil
@@ -326,11 +397,17 @@ METHOD ChangePage( nPage ) CLASS HTab
    RETURN Nil
 
 METHOD HidePage( nPage ) CLASS HTab
-   LOCAL i, nFirst, nEnd
+   LOCAL i, nFirst, nEnd, k
    IF ! ::lResourceTab
       nFirst := ::aPages[ nPage, 1 ] + 1
       nEnd   := ::aPages[ nPage, 1 ] + ::aPages[ nPage, 2 ]
       FOR i := nFirst TO nEnd
+         IF ( k:= ASCAN( ::aControlsHide, ::aControls[ i ]:id  ) ) = 0 .AND. ::aControls[ i ]:lHide 
+            AADD( ::aControlsHide,  ::aControls[ i ]:id ) 
+         ELSEIF k > 0 .AND. ! ::aControls[i]:lHide 
+            ADEL( ::aControlsHide, k )
+            ASIZE( ::aControlsHide, Len( ::aControlsHide ) - 1 )
+         ENDIF
          ::aControls[ i ]:Hide()
       NEXT
    ELSE
@@ -340,13 +417,19 @@ METHOD HidePage( nPage ) CLASS HTab
    RETURN Nil
 
 METHOD ShowPage( nPage ) CLASS HTab
-   LOCAL i, nFirst, nEnd
+   LOCAL i, nFirst, nEnd, lTab := .F.
 
    IF ! ::lResourceTab
       nFirst := ::aPages[ nPage, 1 ] + 1
       nEnd   := ::aPages[ nPage, 1 ] + ::aPages[ nPage, 2 ]
+      lTab := ASCAN( ::aControls, { | o | o:ClassName = "HTAB" }, nFirst, nEnd - nFirst + 1 ) > 0
+      IF ::oPaint:nHeight > 0 
+         ::SetPaintSizePos( IIF( lTab, ::Pages[ nPage ]:aItemPos[ 2 ] - 1  , - 1 ) )
+      ENDIF   
       FOR i := nFirst TO nEnd
-         ::aControls[ i ]:Show()
+         IF  ASCAN( ::aControlsHide, ::aControls[ i ]:id ) = 0 .OR. ::aControls[i]:lHide = .F.
+            ::aControls[ i ]:Show()
+         ENDIF   
       NEXT
    /*
    FOR i := nFirst TO nEnd
@@ -368,6 +451,22 @@ METHOD ShowPage( nPage ) CLASS HTab
 
    ENDIF
 
+   RETURN Nil
+
+METHOD Refresh( ) CLASS HTab
+   LOCAL i, nFirst, nEnd
+
+   IF ::nActive != 0
+      IF ! ::lResourceTab
+         nFirst := ::aPages[ ::nActive, 1 ] + 1
+         nEnd   := ::aPages[ ::nActive, 1 ] + ::aPages[ ::nActive, 2 ]
+         FOR i := nFirst TO nEnd
+            ::aControls[ i ]:Refresh()
+         NEXT
+      ELSE
+         ::aPages[ ::nActive, 1 ]:Refresh()
+      ENDIF
+   ENDIF
    RETURN Nil
 
 METHOD GetActivePage( nFirst, nEnd ) CLASS HTab
@@ -414,44 +513,61 @@ METHOD DeletePage( nPage ) CLASS HTab
 
 METHOD Notify( lParam ) CLASS HTab
    LOCAL nCode := GetNotifyCode( lParam )
+   LOCAL nkeyDown := GetNotifyKeydown( lParam )
    LOCAL nPage := SendMessage( ::handle, TCM_GETCURSEL, 0, 0 ) + 1
 
-   IF nPage = 0
+   IF  Hwg_BitAnd( ::Style, TCS_BUTTONS ) != 0
+      nPage := SendMessage( ::handle, TCM_GETCURFOCUS, 0, 0 ) + 1   
+   ENDIF
+   IF nPage = 0 .OR. ::handle != GetFocus()
+      SendMessage( ::handle, TCM_SETCURSEL, SendMessage( ::handle, TCM_GETCURFOCUS, 0, 0 ), 0 ) 
+      ::nPrevPage := nPage
       Return 0
    ENDIF
 
    DO CASE
 
-   CASE nCode == TCN_KEYDOWN   // -500
+   CASE nCode == TCN_CLICK    
+      ::lClick := .T.
 
+   CASE nCode == TCN_KEYDOWN   // -500
+      IF ( nPage := SetTabFocus( Self, nPage, nKeyDown ) ) != nPage
+         ::nactive := nPage
+      ENDIF   
    CASE nCode == TCN_FOCUSCHANGE  //-554
          
    CASE nCode == TCN_SELCHANGE
          // ACTIVATE NEW PAGE
    	    IF ! ::pages[nPage]:enabled 
-   	       ::SetTab( ::nPrevPage )
-	  		   RETURN -1
+           //::SetTab( ::nActive  ) 
+				   ::lClick := .F. 
+				   ::nPrevPage := nPage
+	  		   RETURN 0
 		   	ENDIF
-			  IF GETFOCUS() != ::handle
-  			   ::SETFOCUS()
-	  		ENDIF
+		    IF  nPage = ::nPrevPage    
+            RETURN 0
+        ENDIF
+			  //IF GETFOCUS() != ::handle
+  			//   ::SETFOCUS()
+	  		//ENDIF
         Eval( ::bChange, Self, GetCurrentTab( ::handle ) )
-        IF ::bGetFocus != NIL .AND. nPage != ::nPrevPage
+        IF ::bGetFocus != NIL .AND. nPage != ::nPrevPage .AND. ::nActivate > 0
             ::oparent:lSuspendMsgsHandling := .t.
             Eval( ::bGetFocus, GetCurrentTab( ::handle ), Self )
             ::oparent:lSuspendMsgsHandling := .F.
-        ELSEIF  nPage = ::nPrevPage    
-            RETURN 0
+            ::nActivate := 0
         ENDIF
           
-   CASE nCode == TCN_SELCHANGING  
+   CASE nCode == TCN_SELCHANGING .AND. ::nPrevPage > 0 
         // DEACTIVATE PAGE //ocorre antes de trocar o focu
-        ::nPrevPage := ::nactive //npage
+        ::nPrevPage := ::nActive //npage
         IF ::bLostFocus != NIL
            ::oparent:lSuspendMsgsHandling := .t.
            Eval( ::bLostFocus, ::nPrevPage, Self)
            ::oparent:lSuspendMsgsHandling := .F.
         ENDIF
+   CASE nCode == TCN_SELCHANGING   //-552
+      ::nPrevPage := nPage       
 	 /*
    CASE nCode == TCN_CLICK
       IF ! Empty( ::pages ) .AND. ::nActive > 0 .AND. ::pages[ ::nActive ]:enabled
@@ -480,14 +596,13 @@ METHOD Notify( lParam ) CLASS HTab
       ENDIF
    
    ENDCASE
-   IF nCode == TCN_CLICK .OR. ( ::lClick .AND. nCode == TCN_SELCHANGE )
-       IF ! Empty( ::pages ) .AND. ::nActive > 0 .AND. ::pages[ ::nActive ]:enabled
-           ::oparent:lSuspendMsgsHandling := .t.
-           IF ::bAction != Nil
-              Eval( ::bAction, Self, GetCurrentTab( ::handle ) )
-           ENDIF
-           ::oparent:lSuspendMsgsHandling := .F.
+   IF ( nCode == TCN_CLICK .AND. ::nPrevPage > 0 .AND. ::pages[ ::nPrevPage ]:enabled ) .OR.;
+        ( ::lClick .AND. nCode == TCN_SELCHANGE )
+           ::oparent:lSuspendMsgsHandling := .T.
+       IF ::bAction != Nil
+          Eval( ::bAction, Self, GetCurrentTab( ::handle ) )
        ENDIF
+       ::oparent:lSuspendMsgsHandling := .F.
        ::lClick := .f.
    ENDIF
    RETURN - 1
@@ -511,11 +626,25 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    //WRITELOG('TAB'+STR(MSG)+STR(WPARAM)+STR(LPARAM)+CHR(13))
 
-   ::disable()
    IF msg = WM_LBUTTONDOWN
+      IF ::ShowDisablePage( lParam ) = 0
+          RETURN 0
+      ENDIF
       ::lClick := .T.
       ::SetFocus( 0 )
+   ELSEIF  msg = WM_MOUSEMOVE .OR. ( ::nPaintHeight = 0 .AND. msg = WM_NCHITTEST  )
+      RETURN ::ShowDisablePage( lParam )
+   ELSEIF msg = WM_PAINT 
+      RETURN - 1
+   ELSEIF msg = WM_ERASEBKGND
+      ::ShowDisablePage()
+   ELSEIF ( msg = WM_SIZE .AND. Hwg_BitAnd( ::Style, TCS_BOTTOM  ) != 0)       //::SetPaintSizePos( .T. )
+      SendMessage( ::oPaint:handle,	WM_PRINT, GETDC( ::handle ), PRF_CLIENT + PRF_CHILDREN + PRF_OWNED ) //PRF_CHECKVISIBLE )
+      RETURN 0
+   ELSEIF  msg = WM_SETFONT .AND. ::oFont != Nil //msg = WM_ERASEBKGND //WM_PAINT
+      SendMessage( ::handle,	WM_PRINT, GETDC( ::handle ) , PRF_CLIENT + PRF_CHILDREN + PRF_OWNED )
    ENDIF
+
    IF (msg == WM_KEYDOWN .OR.(msg = WM_GETDLGCODE .AND. wparam == VK_RETURN)) .AND. GetFocus()= ::handle
        IF ProcKeyList( Self, wParam )
           RETURN - 1
@@ -528,7 +657,8 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    	     RETURN 0         
        ENDIF
        IF wparam == VK_UP .AND. ::nActive > 0  // 
-          KEYB_EVENT( VK_TAB, VK_SHIFT, .T. )
+          GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+          RETURN 0                   
        ENDIF
    ENDIF
    IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL //.AND. ::FINDCONTROL(,GETFOCUS()):classname = "HUPDO"
@@ -538,12 +668,16 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
           RETURN ( super:onevent(msg, wparam, lparam ) )
        ENDIF
 	 ENDIF
-   IF msg = WM_NOTIFY .AND. isWindowVisible(::oParent:handle) .AND. !::lAtivate
-        ::lAtivate := .t.
-        IF ::bGetFocus != NIL 
-           Eval( ::bGetFocus, Self, GetCurrentTab( ::handle ) )
-        ENDIF
+   IF isWindowVisible( ::oParent:handle) .AND. ::nActivate = Nil .AND. msg = WM_NOTIFY 
+      IF ::bGetFocus != NIL 
+          ::oParent:lSuspendMsgsHandling := .T.
+          Eval( ::bGetFocus, Self, GetCurrentTab( ::handle ) )
+          ::oParent:lSuspendMsgsHandling := .F.
+      ENDIF
+   ELSEIF ( isWindowVisible( ::handle) .AND. ::nActivate = Nil ) .OR. msg == WM_KILLFOCUS  
+      ::nActivate := getfocus()
    ENDIF  
+
    IF ::bOther != Nil
       ::oparent:lSuspendMsgsHandling := .t.
       IF Eval( ::bOther, Self, msg, wParam, lParam ) != - 1
@@ -560,58 +694,177 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
          // ::oParent:onEvent( msg, wparam, lparam )
       ELSEIF msg == WM_KILLFOCUS .AND. ::GetParentForm( self ):Type < WND_DLG_RESOURCE 
          SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, 0 ), ::handle )
+         ::nPrevPage := 0
       ENDIF    
       RETURN ( super:onevent( msg, wparam, lparam ) )
    ENDIF
    RETURN - 1
 
 
-METHOD Disable() CLASS HTab
-   LOCAL hDC, client_rect, dwtext, nstyle, i
+METHOD ShowDisablePage( nPageEnable ) CLASS HTab
+   LOCAL hDC, client_rect, i, pt := {, }
 
-   FOR i = 1 TO Len( ::Pages )
-      IF ::pages[ i ]:enabled = .F.
-         hDC := GetWindowDC( ::handle )
-         selectObject( hDC, ::oFont )
-         SetTextColor( hDC, GetSysColor( COLOR_GRAYTEXT ) )
-         SetBkMode( hDC, 1 )
-         IF ::oFont != Nil
-            SelectObject( hDC, ::oFont:handle )
+   DEFAULT nPageEnable := 0 
+   IF ! isWindowVisible(::handle) .OR. Ascan( ::Pages, {| p | ! p:lEnabled } ) = 0
+      RETURN - 1 
+   ENDIF
+   IF  nPageEnable != Nil .AND.  nPageEnable > 128
+      pt[ 1 ] = LOWORD( nPageEnable )
+      pt[ 2 ] = HIWORD( nPageEnable )
+   ENDIF
+   FOR i = 1 to Len( ::Pages )
+      IF ! ::pages[ i ]:enabled .OR. i = nPageEnable 
+         client_rect := ::Pages[ i ]:aItemPos 
+         IF ( PtInRect( client_rect, pt ) )
+            RETURN 0
          ENDIF
-         client_rect := ::pages[ i ]:aItemPos //TABITEMPOS(OTAB:Handle,i-1)
-         IF  Hwg_BitAnd( ::Style, TCS_FIXEDWIDTH  ) != 0
-            nstyle :=  SS_CENTER + SS_RIGHTJUST  //COLOR_GRAYTEXT
-            SetaStyle( @nstyle, @dwtext )
-            IF ::nActive = i
-               DrawText( hDC, ::pages[ i ]:caption, client_rect[ 1 ], client_rect[ 2 ] + 1, client_rect[ 3 ], client_rect[ 4 ], dwtext )
-            ELSE
-               DrawText( hDC, ::pages[ i ]:caption, client_rect[ 1 ], client_rect[ 2 ] + 3, client_rect[ 3 ], client_rect[ 4 ], dwtext )
-            ENDIF
-         ELSE
-            IF ::nActive = i
-               TextOut( hDC, client_rect[ 1 ] + 6, client_rect[ 2 ] + 1, ::pages[ i ]:caption )
-            ELSE
-               TextOut( hDC, client_rect[ 1 ] + 6, client_rect[ 2 ] + 3, ::pages[ i ]:caption )
-            ENDIF
+         ::oPaint:ShowTextTabs(  ::pages[ i ] , client_rect )         
+      ENDIF  
+   NEXT                            
+   RETURN -1
+
+STATIC Function SetTabFocus( oCtrl, nPage, nKeyDown )
+   LOCAL i:=0, nSkip, nStart, nEnd, nPageAcel 
+   
+   IF nKeyDown = VK_LEFT .OR. nKeyDown = VK_RIGHT  // 37,39
+  	 nEnd := IIF( nKeyDown = VK_LEFT, 1, Len( oCtrl:aPages ) )
+  	 nSkip := IIF( nKeyDown = VK_LEFT, -1, 1 )
+   	 nStart :=  nPage + nSkip 
+  	 FOR i = nStart TO nEnd STEP nSkip
+	     IF oCtrl:pages[ i ]:enabled 
+	        IF ( nSkip > 0 .AND. i > nStart ) .OR. ( nSkip < 0 .AND. i < nStart )
+	           SendMessage( oCtrl:handle, TCM_SETCURFOCUS, i - nSkip - 1, 0 ) // BOTOES
+	        ENDIF
+	        RETURN i
+	     ELSEIF i = nEnd   
+  	      SendMessage( oCtrl:handle, TCM_SETCURFOCUS, i - ( nSkip * 2 ) - 1 , 0 ) // BOTOES
+	        RETURN i - nSkip
+	     ENDIF
+	   NEXT
+	 ELSE
+      nPageAcel := FindTabAccelerator( oCtrl, nKeyDown ) 
+      IF nPageAcel = 0
+         MsgBeep()
+      ENDIF
+   ENDIF   
+   RETURN nPage
+
+FUNCTION FindTabAccelerator( oPage, nKey )
+  Local  i ,pos ,cKey
+  cKey := Upper( Chr( nKey ) )
+  FOR i = 1 to Len( oPage:aPages )
+     IF ( pos := At( "&", oPage:Pages[ i ]:caption ) ) > 0 .AND.  cKey  ==  Upper( SubStr( oPage:Pages[ i ]:caption , ++ pos, 1 ) )  
+        IF oPage:pages[ i ]:Enabled 
+            SendMessage( oPage:handle, TCM_SETCURFOCUS, i - 1, 0 ) 
+        ENDIF
+        RETURN  i 
+     ENDIF    
+  NEXT
+  RETURN 0
+
+/* ------------------------------------------------------------------
+ new class to PAINT Pages 
+------------------------------------------------------------------ */
+CLASS HPaintTab INHERIT HControl
+
+   CLASS VAR winclass   INIT "STATIC"
+   
+   DATA hDC
+   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, tColor, bColor )
+   METHOD Activate()
+   METHOD Paint( lDisp )
+   METHOD showTextTabs( oPage, aItemPos ) 
+
+ENDCLASS
+
+METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, tcolor, bColor ) CLASS HPaintTab 
+
+   ::bPaint   := { | o, p | o:paint( p ) }
+   Super:New( oWndParent, nId, SS_OWNERDRAW + WS_DISABLED , nLeft, nTop, nWidth, nHeight, , ;
+              ,, ::bPaint,, tcolor, bColor )
+   ::anchor := 15
+   ::Activate()
+   
+   RETURN Self
+
+METHOD Activate CLASS HPaintTab
+   IF !Empty( ::oParent:handle )
+      ::handle := CreateStatic( ::oParent:handle, ::id, ;
+                  ::style, ::nLeft, ::nTop, ::nWidth,::nHeight ) 
+     // ::Init()
+   ENDIF
+   RETURN Nil
+
+METHOD Paint( lpdis ) CLASS HPaintTab
+   LOCAL drawInfo := GetDrawItemInfo( lpdis )
+   LOCAL hDC := drawInfo[ 3 ], oBrush
+   LOCAL  x1 := drawInfo[ 4 ], y1 := drawInfo[ 5 ]
+   LOCAL  x2 := drawInfo[ 6 ], y2 := drawInfo[ 7 ]
+   LOCAL  dwtext, i, client_rect 
+   LOCAL nPage := SendMessage( ::oParent:handle, TCM_GETCURFOCUS, 0, 0 ) + 1   
+   LOCAL oPage := IIF( nPage > 0, ::oParent:Pages[ nPage ], ::oParent:Pages[ 1 ] )
+
+   IF oPage:brush != Nil
+      IF ::oParent:nPaintHeight < ::oParent:TabHeightSize 
+        ::nHeight := ::oParent:nPaintHeight
+        ::move( , , , ::nHeight )
+      ELSE
+        SetBkMode( hDC, 0 )
+        FillRect( hDC, x1 + 1, y1 + 2, x2 - 1, y2 - 1, oPage:brush:Handle ) //obrush )        
+      ENDIF  
+   ENDIF
+   ::hDC := GetDC( ::oParent:handle )
+   FOR i = 1 to Len( ::oParent:Pages )
+      oPage := ::oParent:Pages[ i ]
+      client_rect :=  TabItemPos( ::oParent:Handle,i - 1 )
+      oPage:aItemPos := client_rect
+      IF oPage:brush != Nil .AND. client_rect[ 4 ] - client_rect[ 2 ] > 5
+         SetBkMode( ::hDC, 1 )
+         IF nPage = oPage:PageOrder         
+            FillRect( ::hDC, client_rect[ 1 ], client_rect[ 2 ] + 1, client_rect[ 3 ] ,client_rect[ 4 ] + 2 , oPage:brush:handle )
+            IF GetFocus() = oPage:oParent:handle
+               InflateRect( @client_rect, - 2, - 2 )
+               DrawFocusRect( ::hDC, client_rect ) 
+            endif
+         ELSE   
+            FillRect( ::hDC, client_rect[ 1 ] + IIF( i = nPage + 1, 2, 1 ),;
+                             client_rect[ 2 ] + 1,;
+                             client_rect[ 3 ] - IIF( i = nPage - 1 , 3, 2 ) - IIF( i = Len( ::oParent:Pages ), 2, 0 ), ;
+                             client_rect[ 4 ] - 1, oPage:brush:Handle )
          ENDIF
       ENDIF
+      IF  oPage:brush != Nil .OR. oPage:tColor != Nil .OR. ! oPage:lenabled       
+         ::showTextTabs( oPage , client_rect )
+      ENDIF
    NEXT
-   RETURN NIL
+   RETURN 0
 
-STATIC FUNCTION SetTabFocus( oCtrl, nPage )
-   LOCAL lkLeft := GetKeyState( VK_LEFT ) < 0
-   LOCAL i := 0, nSkip, nStart, nEnd
-
-   IF lkLeft .OR. GetKeyState( VK_RIGHT ) < 0
-      nStart :=  nPage //IIF(lkLeft, nPage, 1)
-      nEnd := IIf( lkLeft, 1, Len( oCtrl:aPages ) )
-      nSkip := IIf( lkLeft, - 1, 1 )
-      FOR i = nStart TO nEnd STEP nSkip
-         IF oCtrl:pages[ i ]:enabled
-            oCtrl:SetTab( i )
-            RETURN Nil
-         ENDIF
-      NEXT
-   ENDIF
-   oCtrl:SetTab( oCtrl:nActive )
-   RETURN Nil
+METHOD showTextTabs( oPage, aItemPos ) CLASS HPaintTab
+    LOCAL nStyle, dwText 
+    
+    //nStyle := SS_CENTER + IIF(  Hwg_BitAnd( oPage:oParent:Style, TCS_FIXEDWIDTH  ) != 0 ,;
+    //                            SS_RIGHTJUST, DT_VCENTER + DT_SINGLELINE )
+    nStyle := SS_CENTER + DT_VCENTER + DT_SINGLELINE )
+                                
+    SetBkMode( ::hDC, 1 )                                   
+    IF oPage:lEnabled
+       SetTextColor( ::hDC, IIF( EMPTY( oPage:tColor ), GetSysColor( COLOR_WINDOWTEXT ), oPage:tColor ) )
+    ELSE
+    	 SetTextColor( ::hDC, GetSysColor( COLOR_GRAYTEXT ) )
+    ENDIF   
+    IF  Hwg_BitAnd( oPage:oParent:Style, TCS_BOTTOM  ) = 0
+       IF oPage:oParent:nActive = oPage:PageOrder                       // 4
+          FillRect( ::hDC,  aItemPos[ 1 ] + 3, aItemPos[ 2 ] + 3, aItemPos[ 3 ] - 4, aItemPos[ 4 ] - 5, IIF( oPage:brush != Nil, oPage:brush:Handle, oPage:oParent:brush:Handle ) )
+          DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] , aItemPos[ 2 ] - 1, aItemPos[ 3 ] , aItemPos[ 4 ] - 1 , nstyle )
+       ELSE
+          DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] , aItemPos[ 2 ] + 1, aItemPos[ 3 ] , aItemPos[ 4 ] + 1 , nstyle )
+       ENDIF
+    ELSE
+       FillRect( ::hDC,  aItemPos[ 1 ] + 3, aItemPos[ 2 ] + 3, aItemPos[ 3 ] - 4, aItemPos[ 4 ] - 5, IIF( oPage:brush != Nil, oPage:brush:Handle,  oPage:oParent:brush:Handle ) )
+       IF oPage:oParent:nActive = oPage:PageOrder                       // 4
+          DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] , aItemPos[ 2 ] + 2, aItemPos[ 3 ] , aItemPos[ 4 ] + 2 , nstyle )
+       ELSE
+          DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] , aItemPos[ 2 ] , aItemPos[ 3 ] , aItemPos[ 4 ]  , nstyle )
+       ENDIF
+    ENDIF
+    RETURN Nil

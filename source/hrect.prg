@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.11 2009-09-22 16:01:06 lfbasso Exp $
+ * $Id: hrect.prg,v 1.12 2009-11-15 18:55:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -169,7 +169,6 @@ CLASS HDrawShape INHERIT HControl
 CLASS VAR winclass   INIT "STATIC"
    DATA oPen, oBrush
    DATA ncStyle, nbStyle, nfStyle
-   DATA BackStyle  INIT 1
    DATA nCurvature
    DATA nBorder, lnoBorder
    DATA brushFill 
@@ -182,7 +181,7 @@ CLASS VAR winclass   INIT "STATIC"
    METHOD Paint( lDsip )
    METHOD SetColor( tcolor, bcolor )
    METHOD Curvature( nCurvature )
-   METHOD Refresh() INLINE SENDMESSAGE( ::handle, WM_PAINT, 0, 0 ), RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+   //METHOD Refresh() INLINE SENDMESSAGE( ::handle, WM_PAINT, 0, 0 ), RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
 
 ENDCLASS
 
@@ -196,13 +195,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor
 
    ::title := ""
    ::backStyle := IIF( nbackStyle = Nil, 1, nbackStyle ) // OPAQUE DEFAULT
-   IF ::backStyle = 0  // TRANSPARENT
-      bColor := GetBackColorParent( Self ) 
-   ELSE    
-      bColor := IIF( bColor = Nil, GetSysColor( COLOR_BTNFACE ), bColor )
-   ENDIF   
     
-   ::bColor := bColor
    ::lnoBorder := lnoBorder
    ::nBorder := nBorder
    ::nbStyle := nbStyle
@@ -330,8 +323,6 @@ CLASS HContainer INHERIT HControl
    DATA lCreate   INIT .F.
    DATA xVisible  INIT .T. HIDDEN
    
-   DATA backStyle INIT 1
-   
    METHOD New( oWndParent, nId, nstyle, nLeft, nTop, nWidth, nHeight, ncStyle, bSize,;
                lnoBorder, bInit, nBackStyle, tcolor, bcolor, bLoad, bRefresh, bOther)  //, bClick, bDblClick)
                 
@@ -362,11 +353,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ncStyle, bSiz
    ::bRefresh := bRefresh 
    ::bOther := bOther
    
-   IF ::backStyle = 0  // TRANSPARENT
-      bColor := GetBackColorParent( Self ) 
-   ELSE    
-      bColor := IIF( bColor = Nil, GetSysColor( COLOR_BTNFACE ), bColor)
-   ENDIF   
    ::SetColor( ::tColor, ::bColor )
    ::Activate()
    IF ::bLoad != Nil
@@ -424,7 +410,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HContainer
       ENDIF
    ENDIF
    IF msg == WM_PAINT
-     //    RETURN 1
+      RETURN - 1
+   ELSEIF msg == WM_ERASEBKGND
+      RETURN 0
    ELSEIF msg == WM_SETFOCUS
      GetSkip( ::oparent, ::handle, , ::nGetSkip )
    ELSEIF msg == WM_KEYUP
@@ -457,18 +445,18 @@ METHOD Visible( lVisibled ) CLASS HContainer
 METHOD Paint( lpdis ) CLASS HContainer
    Local pps, hDC, drawInfo
    Local aCoors, x1, y1, x2, y2
+
+    drawInfo := GetDrawItemInfo( lpdis )
+    hDC := drawInfo[3] 
+    x1 := drawInfo[4]
+    y1 := drawInfo[5]
+    x2 := drawInfo[6]
+    y2 := drawInfo[7]
    
-    pps := DefinePaintStru()
-    hDC := BeginPaint( ::handle, pps )
-    aCoors := GetClientRect( ::handle )
-    x1 := aCoors[ 1 ]
-    y1 := aCoors[ 2 ] 
-    x2 := aCoors[ 3 ]
-    y2 := aCoors[ 4 ]
-  
    SelectObject( hDC, ::oPen:handle )
     
    IF ::ncStyle != Nil
+      SetBkMode( hDC, ::backStyle )
       IF ! ::lnoBorder 
          IF ::ncStyle == 0      // RAISED
            DrawEdge( hDC, x1, y1, x2, y2,BDR_RAISED,BF_LEFT+BF_TOP+BF_RIGHT+BF_BOTTOM)  // raised  forte      8
@@ -485,15 +473,17 @@ METHOD Paint( lpdis ) CLASS HContainer
       ELSE
          DrawEdge( hDC, x1, y1, x2, y2,0,0)
       ENDIF
-      SetBkMode( hDC, ::backStyle )
-      IF ::backStyle != 0 .AND. !EMPTY( ::brush )
-         SelectObject( hDC, ::Brush:Handle )
-         FillRect( hDC, x1 + 2, y1 + 2, x2 - 2, y2 - 2 , ::Brush:Handle )
+      IF ::backStyle != 0
+         IF ::Brush != Nil
+            FillRect( hDC, x1 + 2, y1 + 2, x2 - 2, y2 - 2 , ::brush:handle )
+         ELSE   
+            FillRect( hDC, x1 + 2, y1 + 2, x2 - 2, y2 - 2 , GetStockObject( 5 ) )
+         ENDIF   
       ENDIF   
       SetBkMode( hDC, 0 )
    ENDIF
-   EndPaint( ::handle, pps )
-   Return - 1
+
+   Return 1
 
 // END NEW CLASSE
 

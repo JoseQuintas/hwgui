@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.24 2009-10-10 17:40:29 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.25 2009-11-15 18:55:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -162,7 +162,7 @@ METHOD CREATEUPDOWN CLASS Hupdown
 
 METHOD SetValue( nValue )  CLASS HUpDown
 
-   IF  nValue <= ::nLower .OR. nValue >= ::nUpper 
+   IF  nValue < ::nLower .OR. nValue > ::nUpper 
        nValue := ::Value
    ENDIF
    ::Value := nValue
@@ -234,9 +234,23 @@ METHOD Notify( lParam ) CLASS HeditUpDown
    
    iDelta := IIF( iDelta < 0,  1, - 1) //* IIF( ::oParent:oParent = Nil , - 1 ,  1 )
 
-	 IF ::oUpDown = Nil .OR. Hwg_BitAnd( GetWindowLong( ::handle, GWL_STYLE ), ES_READONLY ) != 0
+ 	 IF ::oUpDown = Nil .OR. Hwg_BitAnd( GetWindowLong( ::handle, GWL_STYLE ), ES_READONLY ) != 0 .OR.;
+       ( ::oUpDown:bGetFocus != Nil .AND. ! Eval( ::oUpDown:bGetFocus, ::oUpDown:Value, ::oUpDown ) )
 	     Return 0
    ENDIF
+
+   vari := Val( LTrim( ::UnTransform( ::title ) ) )
+   
+   IF ( vari <= ::oUpDown:nLower .AND. iDelta < 0 ) .OR. ;
+       ( vari >= ::oUpDown:nUpper .AND. iDelta > 0 ) .OR. ::oUpDown:Increment = 0
+       RETURN 0
+   ENDIF
+   vari :=  vari + ( ::oUpDown:Increment * idelta )
+   ::Title := Transform( vari , ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
+   SetDlgItemText( ::oParent:handle, ::id, ::title )
+   ::oUpDown:Title := ::Title
+   ::oUpDown:SetValue( vari )	
+   ::SetFocus()
    IF nCode = UDN_DELTAPOS .AND. ( ::oUpDown:bClickUp != Nil .OR. ::oUpDown:bClickDown != Nil )
       ::oparent:lSuspendMsgsHandling := .T.         
       IF iDelta < 0 .AND. ::oUpDown:bClickDown  != Nil
@@ -245,21 +259,7 @@ METHOD Notify( lParam ) CLASS HeditUpDown
           res := Eval( ::oUpDown:bClickUp, ::oUpDown, ::oUpDown:value, iDelta, ipos )
       ENDIF   
       ::oparent:lSuspendMsgsHandling := .F.
-      IF VALTYPE( res ) = "L" .AND. !res
-         RETURN 0
-      ENDIF
    ENDIF
-   vari := Val( LTrim( ::UnTransform( ::title ) ) )
-   
-   IF ( vari <= ::oUpDown:nLower .AND. iDelta < 0 ) .OR. ;
-       ( vari >= ::oUpDown:nUpper .AND. iDelta > 0 ) .OR. ::oUpDown:Increment = 0
-       RETURN 0
-   ENDIF
-   ::Title := Transform( vari + ( ::oUpDown:Increment * idelta ), ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
-   SetDlgItemText( ::oParent:handle, ::id, ::title )
-   ::oUpDown:Title := ::Title
-   ::oUpDown:SetValue( vari )	
-   ::SetFocus()
    IF nCode = UDN_FIRST
        //MSGINFO(STR(NCODE)+STR(IPOS)+STR(IDELTA))
    ENDIF

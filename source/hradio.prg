@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.31 2009-10-10 17:40:29 lfbasso Exp $
+ * $Id: hradio.prg,v 1.32 2009-11-15 18:55:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -210,7 +210,6 @@ CLASS HRadioButton INHERIT HControl
 CLASS VAR winclass   INIT "BUTTON"
    DATA  oGroup
    DATA lWhen  INIT .F.
-   DATA backStyle
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
                bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lTransp )
@@ -254,9 +253,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ::tooltip := ctooltip
    */
    ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, 0, 1 ) 
-   IF ::backStyle = 0
-      bColor := GetBackColorParent( Self ) 
-   ENDIF
    
    ::Activate()
    ::SetColor( tcolor, bColor )
@@ -363,13 +359,6 @@ METHOD onevent( msg, wParam, lParam ) CLASS HRadioButton
       IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
          RETURN 0
       ENDIF
-   ENDIF
-   IF msg == WM_THEMECHANGED
-      IF ::backStyle = 0
-         ::bColor := GetBackColorParent( Self ) 
-         ::SETCOLOR(, ::bColor, .T. )
-      ENDIF   
-      RETURN 0
    ENDIF
    IF msg = WM_KEYDOWN
       IF  ProcKeyList( Self, wParam )

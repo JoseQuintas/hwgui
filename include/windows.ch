@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.80 2009-09-22 14:57:52 lfbasso Exp $
+ *$Id: windows.ch,v 1.81 2009-11-15 18:55:04 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -98,6 +98,8 @@
 #define WM_PASTE                        770     // 0x0302
 #define WM_CLEAR                        771     // 0x0303
 
+#DEFINE WM_PRINT                        791
+
 #define WM_USER                        1024    // 0x0400
 
 #define SC_SIZE                       61440   // &HF000
@@ -126,6 +128,13 @@
 #define UIS_INITIALIZE     3
 #define UISF_HIDEACCEL     2
 #define UISF_HIDEFOCUS     3
+
+/* CONSTANTS TO   WM_PRINT */
+#DEFINE PRF_CLIENT               4
+#DEFINE PRF_ERASEBKGND           8
+#DEFINE PRF_CHILDREN            16
+#DEFINE PRF_OWNED               32
+
 
 /*
  * Dialog Box Command IDs
@@ -516,8 +525,11 @@
 #define TCM_GETITEMCOUNT        4868     // (TCM_FIRST + 4)
 #define TCM_GETCURSEL           4875		 // TCM_FIRST + 11)
 #define TCM_SETCURSEL           4876     // (TCM_FIRST + 12)
+#define TCM_SETITEMSIZE         ( TCM_FIRST + 41 )
+#define TCM_SETPADDING          ( TCM_FIRST + 43 )
 #define TCM_GETCURFOCUS         4911     // (TCM_FIRST + 47)
 #define TCM_SETCURFOCUS         4912     // (TCM_FIRST + 48)
+#define TCM_SETMINTABWIDTH      ( TCM_FIRST + 49 )
 #define TCM_DESELECTALL         4914        //(TCM_FIRST + 50)
 
 

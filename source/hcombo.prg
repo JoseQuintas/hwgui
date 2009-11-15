@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.71 2009-10-26 00:02:53 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.72 2009-11-15 18:55:04 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -340,10 +340,12 @@ METHOD Requery() CLASS HComboBox
 LOCAL i
 
    SendMessage( ::handle, CB_RESETCONTENT, 0, 0 )
-
+   ::Populate()
+   /*
    FOR i := 1 TO Len( ::aItems )
       ComboAddString( ::handle, ::aItems[ i ] )
    NEXT
+   */
    ::Refresh()
 
 RETURN Nil
@@ -655,7 +657,7 @@ METHOD Populate
    ELSE
       cValueBound := IIF( VALTYPE( ::aItems[ 1 ] ) = "A" .AND. LEN(  ::aItems[ 1 ] ) > 1, ::aItems[ 1, 2 ], NIL )     
    ENDIF
-   ::columnBound := IIF( EMPTY( cValueBound ), 1 ,2 )
+   ::columnBound := IIF( cValueBound = Nil, 1 ,2 )
    IF ::value == Nil
       IF ::lText
          ::value := IIF( cAlias = Nil, ::aItems[ 1 ], ( cAlias )-> &value  )

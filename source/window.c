@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.75 2009-08-20 09:16:37 druzus Exp $
+ * $Id: window.c,v 1.76 2009-11-15 18:55:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -1130,4 +1130,17 @@ HB_FUNC( MINMAXWINDOW )
 
 //   SendMessage((HWND) HB_PARHANDLE( 1 ),           // handle of window
 //               WM_GETMINMAXINFO, 0, (LPARAM) lpMMI)  ;
+}
+
+HB_FUNC( GETWINDOWPLACEMENT )
+{
+   HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
+   WINDOWPLACEMENT wp ;
+   
+   wp.length = sizeof( WINDOWPLACEMENT );
+
+   if ( GetWindowPlacement( hWnd, &wp ) ) 
+      hb_retnl( wp.showCmd );
+   else
+      hb_retnl( -1 )  ;
 }

@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.52 2009-10-10 17:40:29 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.53 2009-11-15 18:55:04 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -86,6 +86,7 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) PROTEC
    DATA bPaint
    DATA bGetFocus
    DATA bLostFocus
+   DATA bScroll
    DATA bOther
    DATA bRefresh
    DATA cargo
@@ -299,9 +300,6 @@ METHOD Refresh( oCtrl ) CLASS HCustomWindow
 	nlen := LEN( oCtrl:aControls )
 	
   IF IsWindowVisible( ::Handle )
-     IF ::bRefresh != Nil .AND. ::handle != hCtrl
-        Eval( ::bRefresh, Self ) 
-     ENDIF
      FOR i = 1 to nLen
         IF ! oCtrl:aControls[ i ]:lHide 
 	         IF __ObjHasMethod(oCtrl:aControls[ i ],"REFRESH" )
@@ -317,6 +315,9 @@ METHOD Refresh( oCtrl ) CLASS HCustomWindow
 		       ENDIF   
         ENDIF
       NEXT
+      IF ::bRefresh != Nil .AND. ::handle != hCtrl
+         Eval( ::bRefresh, Self ) 
+      ENDIF
    ELSEIF  ::bRefresh != Nil
       Eval( ::bRefresh, Self )
    ENDIF  
@@ -504,14 +505,23 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
       IF oCtrl:tcolor != NIL
          SetTextColor( wParam, oCtrl:tcolor )
       ENDIF
-
-      IF oCtrl:bcolor != NIL
+      IF oCtrl:bcolor != NIL  .AND. oCtrl:BackStyle = 1 // OPAQUE
          SetBkColor( wParam, oCtrl:bcolor )
          IF oCtrl:brush != Nil
             RETURN oCtrl:brush:handle
          ELSEIF oCtrl:oParent:brush != Nil
             RETURN oCtrl:oParent:brush:handle
          ENDIF
+      ELSEIF oCtrl:BackStyle = 0 // TRANSPARENT
+        SETTRANSPARENTMODE( wParam, .T. )
+        IF ( oCtrl:classname $ "HCHECKBUTTON" .AND. (  ! oCtrl:lnoThemes .AND. ( ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest ) ) ) .OR.;
+           ( oCtrl:classname $ "HGROUP*HRADIOGROUP*HRADIOBUTTON" .AND. oCtrl:lnoThemes ) 
+				   RETURN GetBackColorParent( octrl, , .T. ):handle
+				ENDIF 
+				IF oCtrl:winclass $ "BUTTON*STATIC*EDIT" 
+				   RETURN GetStockObject( NULL_BRUSH )
+				ENDIF   
+				RETURN GetBackColorParent( octrl, , .T. ):handle
       ENDIF
    ENDIF
 
@@ -695,29 +705,52 @@ FUNCTION REMOVEPROPERTY( oObjectName, cPropertyName )
 
 FUNCTION FindAccelerator( oCtrl, lParam )
   Local nlen , i ,pos 
+  
   nlen := LEN( oCtrl:aControls )
   FOR i = 1 to nLen
+	   IF oCtrl:aControls[ i ]:classname = "HTAB"
+	      IF ( pos := FindTabAccelerator( oCtrl:aControls[ i ], lParam ) ) > 0 .AND. ;
+        	          oCtrl:aControls[ i ]:Pages[ pos ]:Enabled
+	          oCtrl:aControls[ i ]:SetTab( pos )
+	          RETURN oCtrl:aControls[ i ]
+	      ENDIF    
+	   ENDIF   
      IF LEN(oCtrl:aControls[ i ]:aControls ) > 0
          RETURN FindAccelerator( oCtrl:aControls[ i ], lParam)
 	   ENDIF   
-     IF __ObjHasMsg( oCtrl:aControls[ i ],"TITLE") .AND. VALTYPE( oCtrl:aControls[ i ]:title) = "C"
-         IF ( pos := At( "&", oCtrl:aControls[ i ]:title ) ) > 0 .AND.  Upper( Chr( lParam)) ==  Upper( SubStr( oCtrl:aControls[ i ]:title, ++ pos, 1 ) )  
-            RETURN oCtrl:aControls[ i ]
-         ENDIF    
+     IF __ObjHasMsg( oCtrl:aControls[ i ],"TITLE") .AND. VALTYPE( oCtrl:aControls[ i ]:title) = "C" .AND. ;
+         ! oCtrl:aControls[ i ]:lHide .AND. IsWindowEnabled( oCtrl:aControls[ i ]:handle )
+        IF ( pos := At( "&", oCtrl:aControls[ i ]:title ) ) > 0 .AND.  Upper( Chr( lParam)) ==  Upper( SubStr( oCtrl:aControls[ i ]:title, ++ pos, 1 ) )  
+           RETURN oCtrl:aControls[ i ]
+        ENDIF    
      ENDIF    
    NEXT
    RETURN Nil
 
-FUNCTION GetBackColorParent( oCtrl )
+FUNCTION GetBackColorParent( oCtrl, lSelf, lTransparent )
    Local bColor := GetSysColor( COLOR_BTNFACE ), hTheme
-
-   IF  oCtrl:oParent:oParent != Nil .AND. ISTHEMEACTIVE() // .AND.  __objHasData( oCtrl:oParent, "WINCLASS" )
-       hTheme := hb_OpenThemeData( oCtrl:oParent:handle, "TAB" )
-       IF !EMPTY( hTheme )
-          bColor := HWG_GETTHEMESYSCOLOR( hTheme, COLOR_WINDOW  )
-          HB_CLOSETHEMEDATA( hTheme ) 
-       ELSE   
-          bColor := oCtrl:oParent:bColor   
-       ENDIF 
+   local brush := nil
+   
+   DEFAULT lTransparent := .F.
+   IF lSelf == Nil .OR. ! lSelf
+      oCtrl := oCtrl:oParent
+   ENDIF
+   IF  oCtrl != Nil .AND. oCtrl:cLASSNAME = "HTAB" .AND. Len( oCtrl:aPages ) > 0
+       IF oCtrl:Pages[ oCtrl:GETACTIVEPAGE() ]:bColor != Nil
+          brush := oCtrl:Pages[ oCtrl:GetActivePage() ]:brush
+       ELSEIF ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest  
+          hTheme := hb_OpenThemeData( oCtrl:handle, "TAB" ) //oCtrl:oParent:WinClass ) 
+          IF !EMPTY( hTheme )
+             bColor := HWG_GETTHEMESYSCOLOR( hTheme, COLOR_WINDOW  )
+             HB_CLOSETHEMEDATA( hTheme ) 
+             brush := HBrush():Add( bColor )
+          ELSE   
+             brush := oCtrl:brush
+          ENDIF 
+       ENDIF   
+    ELSEIF oCtrl:bColor != Nil  
+       brush := oCtrl:brush
+    ELSEIF oCtrl:brush = Nil .AND. lTransparent
+        brush := HBrush():Add( bColor )   
     ENDIF
-    Return bColor
+    Return brush 

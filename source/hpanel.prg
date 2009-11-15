@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.26 2009-07-29 15:41:49 lfbasso Exp $
+ * $Id: hpanel.prg,v 1.27 2009-11-15 18:55:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -81,11 +81,19 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
    IF msg == WM_PAINT
       ::Paint()
    ELSEIF msg == WM_ERASEBKGND
-      IF ::brush != Nil
-         IF Valtype( ::brush ) != "N"
-            FillRect( wParam, 0, 0, ::nWidth, ::nHeight, ::brush:handle )
+      IF ::backstyle = 1
+         IF ::brush != Nil
+            IF Valtype( ::brush ) != "N"
+               FillRect( wParam, 0, 0, ::nWidth, ::nHeight, ::brush:handle )
+            ENDIF
+            RETURN 1
+         ELSE
+            FillRect( wParam, 0,0, ::nWidth, ::nHeight, COLOR_3DFACE + 1 )  
+            RETURN 1
          ENDIF
-         RETURN 1
+      ELSE
+         SETTRANSPARENTMODE( wParam, .T. )
+         RETURN GetStockObject( 5 )
       ENDIF
    ELSEIF msg == WM_SIZE
       IF ::oEmbedded != Nil
@@ -205,13 +213,11 @@ LOCAL i
       InvalidateRect( ::oParent:handle, 0, ::nLeft, ::nTop, ::nWidth, ::nHeight )
    ENDIF
    ::nSize := ::nWidth
-   /*
-   FOR i := 1 TO Len( ::acontrols )
-      ::acontrols[ i ]:hide()
-   NEXT
-   */
    super:hide()
-   SendMessage( ::oParent:Handle, WM_SIZE, 0, 0 )
+   IF ::oParent:type == WND_MDI
+	    SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, 0 )
+	 ENDIF   
+  
 RETURN Nil
 
 METHOD Show CLASS HPanel
@@ -233,12 +239,9 @@ LOCAL i
       InvalidateRect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nWidth, ::nHeight )
    ENDIF
    ::nWidth := ::nsize
-   SendMessage( ::oParent:Handle, WM_SIZE, 0, 0 )
+   IF ::oParent:type == WND_MDI
+      SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, 0 )	 
+   ENDIF   
    super:Show()
-   /*
-   FOR i := 1 TO Len( ::acontrols )
-      ::acontrols[ i ]:Show()
-   NEXT
-   */
    MoveWindow( ::Handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
 RETURN Nil

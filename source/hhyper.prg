@@ -1,5 +1,5 @@
 /*
- * $Id: hhyper.prg,v 1.11 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hhyper.prg,v 1.12 2009-11-15 18:55:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HStaticLink class
@@ -101,7 +101,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ENDIF
 
    IF lTransp != NIL .AND. lTransp
-      ::extStyle += WS_EX_TRANSPARENT
+      //::extStyle += WS_EX_TRANSPARENT
+      ::backstyle := 0
    ENDIF
 
    ::Activate()
@@ -141,7 +142,8 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
 
    IF lTransp != NIL .AND. lTransp
-      ::extStyle += WS_EX_TRANSPARENT
+      //::extStyle += WS_EX_TRANSPARENT
+      ::backstyle := 0
    ENDIF
 
    RETURN Self
@@ -149,13 +151,13 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 METHOD INIT CLASS HStaticLink
 
    IF ! ::lInit
+      ::nHolder := 1
+      SetWindowObject( ::handle, Self )
+      Hwg_InitWinCtrl( ::handle )
       Super:init()
       IF ::Title != NIL
          SETWINDOWTEXT( ::handle, ::title )
       ENDIF
-      ::nHolder := 1
-      SetWindowObject( ::handle, Self )
-      Hwg_InitWinCtrl( ::handle )
    ENDIF
 
    RETURN NIL
@@ -231,9 +233,10 @@ METHOD OnClicked() CLASS HStaticLink
    ::m_bVisited := .T.
 
    ::state := LBL_NORMAL
-   InvalidateRect( ::handle, 0 )
+   //InvalidateRect( ::handle, 0 )
+   RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight ) 
    SetFocus( ::handle )
-   PostMessage( ::handle, WM_PAINT, 0, 0 )
+   //PostMessage( ::handle, WM_PAINT, 0, 0 )
 
    RETURN NIL
 
@@ -271,23 +274,25 @@ METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
    IF ::state != LBL_INIT
       xPos := LOWORD( lParam )
       yPos := HIWORD( lParam )
-      IF xPos > ::nWidth .OR. yPos > ::nHeight
-         ReleaseCapture()
+      //IF xPos > ::nWidth .OR. yPos > ::nHeight
+      IF xpos <= 4 .OR. xPos  >= ::nWidth - 4 .OR. yPos  >= ::nHeight - 4 .OR. ypos <= 4
+         //ReleaseCapture()
          res := .T.
       ENDIF
 
       IF ( res .AND. ! ::m_bVisited ) .or. ( res .AND. ::m_bVisited )
-
          ::state := LBL_NORMAL
-         InvalidateRect( ::handle, 0 )
-         PostMessage( ::handle, WM_PAINT, 0, 0 )
+         //InvalidateRect( ::handle, 0 )
+         //PostMessage( ::handle, WM_PAINT, 0, 0 )
+         RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )                    
       ENDIF
       IF ( ::state == LBL_NORMAL .AND. ! res ) .or. ;
          ( ::state == LBL_NORMAL .AND. ! res .and. ::m_bVisited )
          ::state := LBL_MOUSEOVER
-         InvalidateRect( ::handle, 0 )
-         PostMessage( ::handle, WM_PAINT, 0, 0 )
-         SetCapture( ::handle )
+    		 RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )          
+         //InvalidateRect( ::handle, 0 )
+         //PostMessage( ::handle, WM_PAINT, 0, 0 )
+         //SetCapture( ::handle )
       ENDIF
 
    ENDIF

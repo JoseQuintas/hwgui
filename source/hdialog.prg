@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.96 2009-09-22 14:57:52 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.97 2009-11-15 18:55:04 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -211,8 +211,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
                        IIf( ::maxHeight > - 1, ::maxHeight, nil ) )
          RETURN 0
       ENDIF
+   ELSEIF msg = WM_MENUCHAR
+      RETURN onSysCommand( Self, SC_KEYMENU, LoWord( wParam ) )
    ENDIF
-
    IF ( i := AScan( aMessModalDlg, { | a | a[ 1 ] == msg } ) ) != 0
       IF ::lRouteCommand .and. ( msg == WM_COMMAND .or. msg == WM_NOTIFY )
          nPos := AScan( ::aControls, { | x | x:className() == "HTAB" } )

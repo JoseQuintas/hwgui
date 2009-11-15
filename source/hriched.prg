@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.18 2009-07-09 02:45:51 lfbasso Exp $
+ * $Id: hriched.prg,v 1.19 2009-11-15 18:55:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -19,10 +19,18 @@ CLASS VAR winclass   INIT "RichEdit20A"
    DATA lSetFocus   INIT .T.
 	 DATA lAllowTabs  INIT .F.
 	 DATA lctrltab    HIDDEN
+   DATA lReadOnly      INIT .F.
+ 	 DATA Col        INIT 0
+   DATA Line       INIT 0
+   DATA LinesTotal INIT 0
+	 DATA SelStart   INIT 0
+   DATA SelText    INIT 0
+   DATA SelLength  INIT 0
+	 DATA bChange
 
-   
    METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
-               oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, bOther, lAllowTabs )
+               oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip,;
+               tcolor, bcolor, bOther, lAllowTabs, bChange )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -30,13 +38,15 @@ CLASS VAR winclass   INIT "RichEdit20A"
    METHOD onLostFocus()
    METHOD When()
    METHOD Valid()
-
-
+   METHOD UpdatePos( ) 
+   METHOD onChange( )
+   METHOD ReadOnly( lreadOnly ) SETGET 
+   
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
             oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
-            tcolor, bcolor, bOther, lAllowTabs ) CLASS HRichEdit
+            tcolor, bcolor, bOther, lAllowTabs, bChange ) CLASS HRichEdit
 
    nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE + WS_TABSTOP + WS_BORDER )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
@@ -44,6 +54,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    ::title   := vari
    ::bOther  := bOther
+   ::bChange := bChange
    ::lAllowTabs := IIF( EMPTY( lAllowTabs ), ::lAllowTabs, lAllowTabs )
    hwg_InitRichEdit()
 
@@ -72,10 +83,14 @@ METHOD Activate CLASS HRichEdit
    
 METHOD Init()  CLASS HRichEdit
    IF ! ::lInit
-      Super:Init()
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       Hwg_InitRichProc( ::handle )
+      Super:Init()
+      IF ::bChange != Nil
+         SendMessage( ::handle, EM_SETEVENTMASK, 0, ENM_SELCHANGE + ENM_CHANGE )
+         ::oParent:AddEvent( EN_CHANGE, ::id, {| | ::onChange( )} )
+      ENDIF   
    ENDIF
    RETURN Nil
 
@@ -83,9 +98,16 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
    LOCAL nDelta, nret, nPos
 
    // writelog( str(msg) + str(wParam) + str(lParam) )
+   IF msg = WM_NOTIFY .OR. msg = WM_KEYUP .OR. msg == WM_LBUTTONDOWN .OR. msg == WM_LBUTTONUP 
+      ::updatePos()
+   ENDIF
+   IF msg = EM_GETSEL .OR. msg = EM_LINEFROMCHAR .OR. msg = EM_LINEINDEX .OR. msg = EM_GETLINECOUNT
+      Return - 1
+   ENDIF
+   
    IF msg = WM_SETFOCUS .and. ::lSetFocus .AND. ISWINDOWVISIBLE(::handle)
       ::lSetFocus := .F.
-      SendMessage( ::handle,EM_SETSEL,0,0) //Loword(npos),loword(npos))
+      SendMessage( ::handle, EM_SETSEL, 0, 0 ) //Loword(npos),loword(npos))
    ELSEIF msg = WM_SETFOCUS .AND. ::lAllowTabs .AND. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
     	 ::lctrltab := ::GetParentForm( Self ):lDisableCtrlTab 
     	 ::GetParentForm( Self ):lDisableCtrlTab := ::lAllowTabs 
@@ -143,6 +165,37 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
    ENDIF
 
    RETURN - 1
+
+METHOD ReadOnly( lreadOnly )
+
+   IF lreadOnly != Nil
+      IF ! EMPTY( SENDMESSAGE( ::handle,  EM_SETREADONLY, IIF( lReadOnly, 1, 0 ), 0 ) )
+          ::lReadOnly := lReadOnly
+      ENDIF    
+   ENDIF   
+   RETURN ::lReadOnly
+
+METHOD UpdatePos( ) CLASS HRichEdit
+ 	 LOCAL npos := SendMessage( ::handle, EM_GETSEL, 0, 0 )
+   LOCAL pos1 := Loword( npos ) + 1,	pos2 := Hiword( npos ) + 1
+
+	 ::Line := SendMessage( ::Handle, EM_LINEFROMCHAR, pos1 - 1, 0 ) + 1
+	 ::LinesTotal := SendMessage( ::handle, EM_GETLINECOUNT, 0, 0 )
+	 ::SelText := RE_GETTEXTRANGE( ::handle, pos1, pos2 ) 
+	 ::SelStart := pos1
+	 ::SelLength := pos2 - pos1
+   ::Col := pos1 - SendMessage( ::Handle, EM_LINEINDEX, - 1, 0 ) 
+
+   RETURN nPos
+   
+METHOD onChange( ) CLASS HRichEdit
+
+   IF ::bChange != Nil 
+      ::oparent:lSuspendMsgsHandling := .t.
+      Eval( ::bChange, ::gettext(), Self  )
+      ::oparent:lSuspendMsgsHandling := .f.
+   ENDIF
+   RETURN Nil
 
 METHOD onGotFocus( ) CLASS HRichEdit
   RETURN ::When()

@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.145 2009-10-11 03:44:10 lfbasso Exp $
+ *$Id: hedit.prg,v 1.146 2009-11-15 18:55:04 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -381,7 +381,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          IF wParam == VK_TAB     // Tab
         //    GetSkip( oParent, ::handle, , ;
         //             IIf( IsCtrlShift( .f., .t. ), - 1, 1 ) )
-                    MSGINFO('S')
             RETURN 0
          ENDIF
          IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
@@ -997,8 +996,8 @@ METHOD onChange( ) CLASS HEdit
       RETURN .t.
    ENDIF
 	 */
+	 ::title := ::GetText()
    IF ::lMultiLine 
-     ::title := ::GetText()
   	 IF ::bSetGet != Nil
       //   Eval( ::bSetGet,, Self )
      ENDIF 
@@ -1256,7 +1255,7 @@ STATIC FUNCTION NextFocusTab( oParent, hCtrl, nSkip )
                nextHandle := GetNextDlgGroupItem( oParent:handle , hCtrl, ( nSkip < 0 ) )
             ENDIF
             k := AScan( oParent:acontrols, { | o | o:Handle == nextHandle } )
-            IF LEN( oParent:aControls[ k ]:aControls ) > 0 .AND. hCtrl != nextHandle
+            IF LEN( oParent:aControls[ k ]:aControls ) > 0 .AND. hCtrl != nextHandle .AND. oParent:aControls[ k ]:classname != "HTAB"
                nextHandle := NextFocusContainer( oParent:aControls[ k ], oParent:aControls[ k ]:Handle, nSkip ) 
                RETURN IIF( nextHandle > 0, nextHandle, NextFocusTab( oParent, oParent:aControls[ k ]:Handle, nSkip ) )
             ENDIF
@@ -1266,7 +1265,7 @@ STATIC FUNCTION NextFocusTab( oParent, hCtrl, nSkip )
          RETURN 0
       ENDIF
       IF ( nSkip < 0 .AND. ( k > i .OR. k == 0 ) ) .OR. ( nSkip > 0 .AND. i > k )
-         IF oParent:oParent:className = "HTAB"
+         IF oParent:oParent:classname = "HTAB" .AND. oParent:oParent:classname != oParent:classname
 						NextFocusTab( oParent:oParent, nextHandle, nSkip )            
          ENDIF
          IF TYPE( "oParent:oParent:Type" ) = "N" .AND. oParent:oParent:Type < WND_DLG_RESOURCE

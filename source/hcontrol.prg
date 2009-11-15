@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.142 2009-10-10 17:40:29 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.143 2009-11-15 18:55:04 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -52,6 +52,8 @@ CLASS HControl INHERIT HCustomWindow
    DATA   lnoValid        INIT .F.
    DATA   nGetSkip        INIT 0
    DATA   Anchor          INIT 0
+   DATA   BackStyle       INIT 1
+   DATA   lNoThemes       INIT .F.
    DATA   xControlSource   
    DATA   xName           HIDDEN
    ACCESS Name            INLINE ::xName
@@ -503,7 +505,6 @@ CLASS VAR winclass   INIT "STATIC"
    METHOD Auto_Size( cValue )  HIDDEN
    METHOD Init()
    METHOD PAINT( o )
-   METHOD BackStyle( nMode ) SETGET 
    METHOD onClick()
    METHOD onDblClick()
    METHOD OnEvent( msg, wParam, lParam )
@@ -646,26 +647,6 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS  HStatic
 
    RETURN - 1
    
-METHOD BackStyle( nMode ) CLASS HStatic
-   
-   IF nMode != Nil
-      IF ::nBackMode != 0  .AND. ::nBackMode != nMode
-         MODIFYSTYLE( ::handle,SS_OWNERDRAW ,0)         
-         IF  nMode = 0 // transparent
-            ::bPaint := { | o, p | o:paint( p ) }
-            IF HWG_GETWINDOWSTYLE( ::handle ) = 0 
-               ::Style +=  SS_OWNERDRAW //+ ::nStyleHS        
-            ELSE
-               MODIFYSTYLE( ::handle, SS_OWNERDRAW, SS_OWNERDRAW )
-               ::Style := HWG_GETWINDOWSTYLE( ::handle )      
-            ENDIF 
-         ENDIF
-      ENDIF
-      ::nBackMode := nMode
-      RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight ) 
-   ENDIF
-   RETURN ::nBackMode
-																									  
 
 METHOD Paint( lpDis ) CLASS HStatic
    LOCAL drawInfo := GetDrawItemInfo( lpDis )
@@ -826,13 +807,18 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
 
 METHOD Init CLASS HButton
    IF ! ::lInit
-      ::nHolder := 1
-      SetWindowObject( ::handle, Self )
-      HWG_INITBUTTONPROC( ::handle )
+      IF ::classname = "HBUTTONEX" .OR. ::oParent:classname = "HTAB" ;
+               .OR. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
+         ::nHolder := 1
+         SetWindowObject( ::handle, Self )
+         HWG_INITBUTTONPROC( ::handle )
+      ENDIF   
       ::Super:init()
+      /*
       IF ::Title != NIL
          SETWINDOWTEXT( ::handle, ::title )
       ENDIF
+      */
    ENDIF
    RETURN  NIL
 
@@ -1713,8 +1699,6 @@ CLASS HGroup INHERIT HControl
 
 CLASS VAR winclass   INIT "BUTTON"
 
-   DATA backStyle
-
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                cCaption, oFont, bInit, bSize, bPaint, tcolor, bColor, lTransp )
    METHOD Activate()
@@ -1731,9 +1715,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
 
    ::title   := cCaption
    ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, 0, 1 ) 
-   IF ::backStyle = 0
-      bColor := GetBackColorParent( Self ) 
-   ENDIF
 
    ::Activate()
    ::setcolor( tcolor, bcolor )

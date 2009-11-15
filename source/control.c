@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.86 2009-10-10 17:40:29 lfbasso Exp $
+ * $Id: control.c,v 1.87 2009-11-15 18:55:04 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -685,6 +685,11 @@ HB_FUNC( TAB_HITTEST )
    hb_storni( ht.flags, 4 );
    hb_retni( res );
 }
+
+HB_FUNC( GETNOTIFYKEYDOWN )
+{
+   hb_retni( ( WORD ) ( ( ( NMTCKEYDOWN * ) HB_PARHANDLE( 1 ) )->wVKey ) );
+}              
 
 HB_FUNC( CREATETREE )
 {

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1146 2009-11-15 18:55:02 lfbasso Exp $
+ * $Id: Changelog,v 1.1147 2009-11-15 20:24:08 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,41 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-11-15 18:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + new Clause in #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;
+      [ ON RIGHTCLICK <bRClick> ];
+    + new Clauses in #xcommand ADD COLUMN <block> TO <oBrw> ;
+                 [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+  * source\hbrowse.prg  
+    * CLASS HColumn
+      + add two parameters in METHOD NEW( tcolor, bolor)
+      + DATA Column
+    * CLASS HBrowse    
+      + new parameters in METHOD New( brClick )
+      + DATA bRclick
+      + DATA nyHeight    INIT  0
+      + DATA fipos      HIDDEN
+      + DATA lDeleteMark INIT .F. HIDDEN
+      + DATA lShowMark   INIT .T. HIDDEN
+      + DATA nDeleteMark INIT 0 HIDDEN
+      + DATA nShowMark   INIT 12 HIDDEN
+      + DATA oBmpMark    INIT  HBitmap():AddStandard( OBM_MNARROW ) HIDDEN
+      + METHOD ButtonRDown()
+      + METHOD ShowMark( lShowMark ) SETGET
+      + METHOD DeleteMark( lDeleteMark ) SETGET
+       Browse been implemented in the RightClick event, and added two more
+       columns to the left.
+       SHOWMARK column shows the position of the current line in BROWSE shaped like an arrow
+       this column defaults to being visible
+       obrowse:showmark := .T. SHOW COLUMN (Default )
+       obrowse:showmark := .F. HIDE COLUMN
+       DELETEMARK column shows the deleted rows in the table if SET DELETED is ON
+       this column defaults to being hide
+       obrowse:DeleteMark := .T. SHOW COLUMN 
+       obrowse:DeleteMark := .F. HIDE COLUMN (Default )
+      ! minor fix im METHOD PAINT, REFRESH, BUTTONDOWN 
 
 2009-11-15 16:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch

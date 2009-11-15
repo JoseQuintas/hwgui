@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.153 2009-11-15 18:55:04 lfbasso Exp $
+ *$Id: guilib.ch,v 1.154 2009-11-15 20:24:08 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -835,6 +835,7 @@
              [ ON SIZE <bSize> ]        ;
              [ ON PAINT <bDraw> ]       ;
              [ ON CLICK <bEnter> ]      ;
+             [ ON RIGHTCLICK <bRClick> ];
              [ ON GETFOCUS <bGfocus> ]  ;
              [ ON LOSTFOCUS <bLfocus> ] ;
              [ STYLE <nStyle> ]         ;
@@ -860,7 +861,7 @@
              <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>, ;
              <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.>, <.lAppend.>,;
              <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg>, <.lMulti.>, <.lDescend.>,;
-             <bWhile>, <bFirst>, <bLast>, <bFor>, <bOther>, <color>, <bcolor> );;
+             <bWhile>, <bFirst>, <bLast>, <bFor>, <bOther>, <color>, <bcolor>, <bRClick>  );;
           [ <oBrw>:name := <(oBrw)> ]
 
 #xcommand REDEFINE BROWSE [ <oBrw> ]   ;

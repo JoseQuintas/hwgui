@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1148 2009-11-15 22:46:37 lculik Exp $
+ * $Id: Changelog,v 1.1149 2009-11-16 15:47:43 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-11-15 18:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hedit.prg               
+    ! fixed ctype parameter to value in METHOD WHEN in Eval( bGfocus)
+    
 2009-11-15 20:40 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/hcwindow.prg
     ! fixed windowsmanifest

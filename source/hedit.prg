@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.146 2009-11-15 18:55:04 lfbasso Exp $
+ *$Id: hedit.prg,v 1.147 2009-11-16 15:47:44 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -880,7 +880,7 @@ METHOD ReadOnly( lreadOnly )
    RETURN ::lReadOnly
 
 METHOD When() CLASS HEdit
-   LOCAL res := .t., oParent, nSkip
+   LOCAL res := .t., oParent, nSkip, vari
 
    IF ! CheckFocus( Self, .f. )
       RETURN .F.
@@ -891,7 +891,14 @@ METHOD When() CLASS HEdit
    IF ::bGetFocus != Nil
       ::oParent:lSuspendMsgsHandling := .T.
       ::lnoValid := .T.
-      res := Eval( ::bGetFocus, ::title, Self )
+      IF ::cType == "D"
+         vari := CToD( vari )
+      ELSEIF ::cType == "N"
+         vari := Val( LTrim( ::title ) )
+      ELSE
+        vari := ::title
+      ENDIF
+		  res := Eval( ::bGetFocus, vari, Self )
       res := IIf( ValType( res ) == "L", res, .T. )
       ::lnoValid := ! res
       IF ! res

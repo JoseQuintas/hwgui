@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.39 2009-08-13 05:05:51 lfbasso Exp $
+ * $Id: hownbtn.prg,v 1.40 2009-11-17 19:14:19 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -52,7 +52,7 @@ CLASS VAR cPath SHARED
    METHOD Enable()
    METHOD Disable()
    METHOD onClick()
-   METHOD onGetFocus() 
+   METHOD onGetFocus()
    METHOD onLostFocus()
 
 ENDCLASS
@@ -65,6 +65,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, cTooltip )
+
+   HB_SYMBOL_UNUSED( bGFocus )
+   HB_SYMBOL_UNUSED( bLFocus )
 
    IF oFont == Nil
       ::oFont := ::oParent:oFont
@@ -250,7 +253,7 @@ METHOD Paint() CLASS HOwnButton
             DrawButton( hDC, 0, 0, aCoors[ 3 ], aCoors[ 4 ], 0 )
          ELSE
             DrawButton( hDC, 0, 0, aCoors[ 3 ], aCoors[ 4 ], 1 )
-         ENDIF  
+         ENDIF
       ELSEIF ::state == OBTN_MOUSOVER
         DrawButton( hDC, 0, 0, aCoors[ 3 ], aCoors[ 4 ], 1 )
       ELSEIF ::state == OBTN_PRESSED
@@ -275,7 +278,7 @@ METHOD DrawItems( hDC ) CLASS HOwnButton
    aCoors := GetClientRect( ::handle )
    IF ! EMPTY( ::brush )
       FillRect( hDC, aCoors[ 1 ] + 2, aCoors[ 2 ] + 2, aCoors[ 3 ] - 2, aCoors[ 4 ] - 2, ::Brush:handle )
-   ENDIF   
+   ENDIF
 
    IF ::oBitmap != Nil
       IF ::widthb == 0
@@ -392,13 +395,13 @@ METHOD Release()  CLASS HOwnButton
 
 METHOD onGetFocus()  CLASS HOwnButton
   LOCAL res := .t., oParent, nSkip := 1
-   
-	IF !CheckFocus(Self, .f.)
-	   RETURN .t.
-	ENDIF
+
+   IF !CheckFocus(Self, .f.)
+      RETURN .t.
+   ENDIF
   nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
   IF ::bGetFocus != Nil
- 		  ::oparent:lSuspendMsgsHandling := .T.
+         ::oparent:lSuspendMsgsHandling := .T.
       res := Eval( ::bGetFocus, ::title, Self )
       IF ! res
          oParent := ParentGetDialog(Self)
@@ -410,22 +413,22 @@ METHOD onGetFocus()  CLASS HOwnButton
 
 METHOD onLostFocus()  CLASS HOwnButton
 
-	 IF ::bLostFocus != Nil .AND. !CheckFocus(Self, .t.)
-	    RETURN .T.
+    IF ::bLostFocus != Nil .AND. !CheckFocus(Self, .t.)
+       RETURN .T.
    ENDIF
-	 IF ::bLostFocus != Nil
- 		  ::oparent:lSuspendMsgsHandling := .t.
+    IF ::bLostFocus != Nil
+         ::oparent:lSuspendMsgsHandling := .t.
       Eval( ::bLostFocus, ::title, Self )
       ::oparent:lSuspendMsgsHandling := .f.
    ENDIF
-	 RETURN Nil
+    RETURN Nil
 
 METHOD onClick()  CLASS HOwnButton
    IF ::bClick != Nil
       ::oParent:lSuspendMsgsHandling := .T.
       Eval( ::bClick, Self, ::id )
       ::oParent:lSuspendMsgsHandling := .F.
-   ENDIF   
+   ENDIF
    RETURN Nil
 
 

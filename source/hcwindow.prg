@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.54 2009-11-15 22:46:38 lculik Exp $
+ *$Id: hcwindow.prg,v 1.55 2009-11-17 19:14:18 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -63,8 +63,8 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    DATA handle        INIT 0
    DATA oParent
    DATA title
-   ACCESS Caption  INLINE ::title   
-   ASSIGN Caption( x ) INLINE ::SetTextClass( x ) 
+   ACCESS Caption  INLINE ::title
+   ASSIGN Caption( x ) INLINE ::SetTextClass( x )
    DATA Type       INIT 0
    DATA nTop, nLeft, nWidth, nHeight
    DATA minWidth   INIT - 1
@@ -99,7 +99,7 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    DATA nCurHeight   INIT 0
    DATA nScrollPos   INIT 0
    DATA rect
-   DATA nScrollBars INIT -1   
+   DATA nScrollBars INIT -1
    DATA lClosable     INIT .T. //disable Menu and Button Close in WINDOW
 
    METHOD AddControl( oCtrl ) INLINE AAdd( ::aControls, oCtrl )
@@ -117,7 +117,7 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    METHOD Refresh()
    METHOD Anchor( oCtrl, x, y, w, h )
    METHOD ScrollHV( msg, wParam, lParam )
-   METHOD SetTextClass ( x ) HIDDEN 
+   METHOD SetTextClass ( x ) HIDDEN
    METHOD GetParentForm( oCtrl )
    METHOD ActiveControl()  INLINE ::FindControl( , GetFocus() )
    METHOD Closable( lClosable ) SETGET
@@ -296,23 +296,23 @@ METHOD SetFocusCtrl( oCtrl ) CLASS HCustomWindow
 
 METHOD Refresh( oCtrl ) CLASS HCustomWindow
   Local nlen , i, hCtrl := GetFocus()
-	oCtrl := IIF( oCtrl = Nil, self, Octrl )
-	nlen := LEN( oCtrl:aControls )
-	
+   oCtrl := IIF( oCtrl = Nil, self, Octrl )
+   nlen := LEN( oCtrl:aControls )
+
   IF IsWindowVisible( ::Handle )
      FOR i = 1 to nLen
-        IF ! oCtrl:aControls[ i ]:lHide 
-	         IF __ObjHasMethod(oCtrl:aControls[ i ],"REFRESH" )
+        IF ! oCtrl:aControls[ i ]:lHide
+            IF __ObjHasMethod(oCtrl:aControls[ i ],"REFRESH" )
               oCtrl:aControls[ i ]:Refresh( )
-              IF oCtrl:aControls[ i ]:bRefresh != Nil  
+              IF oCtrl:aControls[ i ]:bRefresh != Nil
                  EVAL( oCtrl:aControls[ i ]:bRefresh, oCtrl:aControls[ i ] )
-              ENDIF   
+              ENDIF
            ELSE
               oCtrl:aControls[ i ]:SHOW()
-				   ENDIF  
-  	       IF LEN( oCtrl:aControls[ i ]:aControls ) > 0
-		          ::Refresh( oCtrl:aControls[ i ] )
-		       ENDIF   
+               ENDIF
+            IF LEN( oCtrl:aControls[ i ]:aControls ) > 0
+                ::Refresh( oCtrl:aControls[ i ] )
+             ENDIF
         ENDIF
       NEXT
       IF ::bRefresh != Nil .AND. ::handle != hCtrl
@@ -320,23 +320,23 @@ METHOD Refresh( oCtrl ) CLASS HCustomWindow
       ENDIF
    ELSEIF  ::bRefresh != Nil
       Eval( ::bRefresh, Self )
-   ENDIF  
+   ENDIF
    RETURN Nil
-   
+
 
 METHOD SetTextClass( x ) CLASS HCustomWindow
 
    IF __ObjHasMsg( Self, "SETTEXT" ) //.AND. ::classname != "HBUTTONEX"
-	    ::SetText( x )
-	 ELSEIF __ObjHasMsg( Self, "SETVALUE" )   
-	    ::SetValue( x )
-	 ELSE
-	    ::title := x
-	    SENDMESSAGE( ::handle, WM_SETTEXT, 0, ::Title )
-	 ENDIF    
-	 ::Refresh()
-	 
-   RETURN NIL	 
+       ::SetText( x )
+    ELSEIF __ObjHasMsg( Self, "SETVALUE" )
+       ::SetValue( x )
+    ELSE
+       ::title := x
+       SENDMESSAGE( ::handle, WM_SETTEXT, 0, ::Title )
+    ENDIF
+    ::Refresh()
+
+   RETURN NIL
 
 METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HCustomWindow
 
@@ -427,22 +427,22 @@ METHOD  ScrollHV( oForm, msg, wParam, lParam ) CLASS HCustomWindow
 
    ENDIF
    RETURN Nil
-   
+
 METHOD Closable( lClosable ) CLASS HCustomWindow
    Local hMenu
-   
+
    IF lClosable != Nil
       IF ! lClosable
          hMenu := EnableMenuSystemItem( ::Handle, SC_CLOSE, .F. )
-      ELSE 
+      ELSE
          hMenu := EnableMenuSystemItem( ::Handle, SC_CLOSE, .T. )
       ENDIF
       IF ! EMPTY( hMenu )
          ::lClosable := lClosable
-      ENDIF   
+      ENDIF
    ENDIF
    RETURN ::lClosable
-  
+
 
 
 *---------------------------------------------------------
@@ -547,8 +547,8 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
                                         a[ 2 ] == iParLow } ) ) > 0
 
       IF oWnd:GetParentForm():Type < WND_DLG_RESOURCE
-         oWnd:GetParentForm():nFocus := GetFocus()                                      
-      ENDIF  
+         oWnd:GetParentForm():nFocus := GetFocus()
+      ENDIF
       Eval( oWnd:aEvents[ iItem, 3 ], oWnd, iParLow )
    ENDIF
 
@@ -624,10 +624,10 @@ FUNCTION onTrackScroll( oWnd, msg, wParam, lParam )
 PROCEDURE HB_GT_DEFAULT_NUL()
    RETURN
 
-FUNCTION ProcKeyList( oCtrl, wParam, oMain ) 
+FUNCTION ProcKeyList( oCtrl, wParam, oMain )
 LOCAL oParent, nCtrl,nPos
 
-   IF ( wParam = VK_RETURN .OR. wParam = VK_ESCAPE ) .AND.  ProcOkCancel( oCtrl, wParam )    
+   IF ( wParam = VK_RETURN .OR. wParam = VK_ESCAPE ) .AND.  ProcOkCancel( oCtrl, wParam )
       RETURN .F.
    ENDIF
    IF wParam != VK_SHIFT  .AND. wParam != VK_CONTROL .AND. wParam != VK_MENU
@@ -647,53 +647,53 @@ LOCAL oParent, nCtrl,nPos
 
 FUNCTION ProcOkCancel( oCtrl, nKey )
    Local oWin := oCtrl:GetParentForm()
-   Local iParHigh := IIF( nKey = VK_RETURN, IDOK, IDCANCEL )  
+   Local iParHigh := IIF( nKey = VK_RETURN, IDOK, IDCANCEL )
 
-   
+
    IF oWin:Type >= WND_DLG_RESOURCE .OR. ( nKey != VK_RETURN .AND. nKey != VK_ESCAPE )
       Return .F.
-	 ENDIF
+    ENDIF
    IF iParHigh == IDOK
-	    IF ( oCtrl := oWin:FindControl( IDOK ) ) != Nil 
-	       oCtrl:SetFocus()
-	       SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
-   	     IF oWin:lExitOnEnter
-   	        oWin:close()  
-	       ENDIF   
-	    ENDIF   
+       IF ( oCtrl := oWin:FindControl( IDOK ) ) != Nil
+          oCtrl:SetFocus()
+          SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
+           IF oWin:lExitOnEnter
+              oWin:close()
+          ENDIF
+       ENDIF
       RETURN .T.
    ELSEIF iParHigh == IDCANCEL
       IF ( oCtrl := oWin:FindControl( IDCANCEL ) ) != Nil
          oCtrl:SetFocus()
          SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
-      ELSEIF oWin:lExitOnEsc 
-          oWin:close()  
+      ELSEIF oWin:lExitOnEsc
+          oWin:close()
       ELSEIF ! oWin:lExitOnEsc
          oWin:nLastKey := 0
-      ENDIF   
+      ENDIF
       RETURN .T.
    ENDIF
    RETURN .F.
 
-FUNCTION ADDPROPERTY( oObjectName, cPropertyName, eNewValue )    
+FUNCTION ADDPROPERTY( oObjectName, cPropertyName, eNewValue )
 
    IF VALTYPE( oObjectName ) = "O" .AND. ! EMPTY( cPropertyName )
       IF ! __objHasData( oObjectName, cPropertyName )
          IF EMPTY( __objAddData( oObjectName, cPropertyName ) )
-	           RETURN .F. 
-         ENDIF    
-      ENDIF   
+              RETURN .F.
+         ENDIF
+      ENDIF
       IF !EMPTY( eNewValue )
          IF VALTYPE( eNewValue ) = "B"
             oObjectName: & ( cPropertyName ) := EVAL( eNewValue )
          ELSE
             oObjectName: & ( cPropertyName ) := eNewValue
          ENDIF
-      ENDIF    
+      ENDIF
       RETURN .T.
-   ENDIF	    
+   ENDIF
    RETURN .F.
-   
+
 FUNCTION REMOVEPROPERTY( oObjectName, cPropertyName )
 
    IF VALTYPE( oObjectName ) = "O" .AND. ! EMPTY( cPropertyName ) .AND.;

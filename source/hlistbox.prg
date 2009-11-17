@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.22 2009-09-22 15:24:22 lfbasso Exp $
+ * $Id: hlistbox.prg,v 1.23 2009-11-17 19:14:19 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -20,27 +20,27 @@ CLASS VAR winclass   INIT "LISTBOX"
    DATA  bSetGet
    DATA  value         INIT 1
    DATA  nItemHeight
-   DATA  bChangeSel                        
+   DATA  bChangeSel
    DATA  bkeydown, bDblclick
    DATA  bValid
-   
+
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
               aItems,oFont,bInit,bSize,bPaint,bChange,cTooltip,tColor,bcolor,bGFocus,bLFocus, bKeydown, bDblclick,bOther )
    METHOD Activate()
    METHOD Redefine( oWnd, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bDraw, bChange, cTooltip, bKeydown, bOther )
    METHOD Init( aListbox, nCurrent )
    METHOD Refresh()
-   METHOD Requery() 
+   METHOD Requery()
    METHOD Setitem( nPos )
    METHOD AddItems( p )
    METHOD DeleteItem( nPos )
    METHOD Valid( oCtrl )
-   METHOD When( oCtrl ) 
+   METHOD When( oCtrl )
    METHOD onChange( oCtrl )
-   METHOD onDblClick() 
+   METHOD onDblClick()
    METHOD Clear()
-   METHOD onEvent( msg, wParam, lParam ) 
-   
+   METHOD onEvent( msg, wParam, lParam )
+
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, aItems, oFont, ;
@@ -65,8 +65,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::bGetFocus := bGFocus
    ::bLostFocus := bLFocus
     ::bKeydown := bKeydown
-    ::bDblclick := bDblclick 
-		::bOther := bOther 
+    ::bDblclick := bDblclick
+      ::bOther := bOther
 
    IF bSetGet != Nil
       IF bGFocus != Nil
@@ -84,7 +84,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF bChange != Nil .OR. bSetGet != Nil
       ::oParent:AddEvent( LBN_SELCHANGE, Self, { | o, id | ::onChange( o:FindControl( id ) ) },, "onChange" )
    ENDIF
-   IF bDblclick != Nil 
+   IF bDblclick != Nil
       ::oParent:AddEvent( LBN_DBLCLK, self, {|| ::onDblClick() } )
    ENDIF
 
@@ -107,7 +107,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    ::value   := IIf( vari == Nil .OR. ValType( vari ) != "N", 1, vari )
    ::bSetGet := bSetGet
    ::bKeydown := bKeydown
-	 ::bOther := bOther 
+    ::bOther := bOther
 
    IF aItems == Nil
       ::aItems := { }
@@ -134,7 +134,7 @@ METHOD Init() CLASS HListBox
             ::value := 1
          ENDIF
          IF !EMPTY( ::nItemHeight )
-            SendMessage( ::handle, LB_SETITEMHEIGHT , 0, ::nItemHeight )                  
+            SendMessage( ::handle, LB_SETITEMHEIGHT , 0, ::nItemHeight )
          ENDIF
          SendMessage( ::handle, LB_RESETCONTENT, 0, 0 )
          FOR i := 1 TO Len( ::aItems )
@@ -146,23 +146,23 @@ METHOD Init() CLASS HListBox
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HListBox
- Local nEval, pos
+ Local nEval
 
    IF ::bOther != Nil
       IF (nEval := Eval( ::bOther,Self,msg,wParam,lParam )) != -1 .AND. nEval != Nil
          RETURN 0
       ENDIF
    ENDIF
-   IF msg == WM_KEYDOWN 
-      IF ProcKeyList( Self, wParam )  
+   IF msg == WM_KEYDOWN
+      IF ProcKeyList( Self, wParam )
          RETURN - 1
-      ENDIF   
-      IF wParam = VK_TAB //.AND. nType < WND_DLG_RESOURCE   
+      ENDIF
+      IF wParam = VK_TAB //.AND. nType < WND_DLG_RESOURCE
          GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
         //RETURN 0
       ENDIF
-			IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
-         ::oparent:lSuspendMsgsHandling := .T.              
+         IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
+         ::oparent:lSuspendMsgsHandling := .T.
          nEval := Eval( ::bKeyDown, Self, wParam )
          IF (VALTYPE( nEval ) == "L" .AND. ! nEval ) .OR. ( nEval != -1 .AND. nEval != Nil )
             ::oparent:lSuspendMsgsHandling := .F.
@@ -171,13 +171,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HListBox
          ::oparent:lSuspendMsgsHandling := .F.
       ENDIF
    ELSEIF  msg = WM_GETDLGCODE .AND. ( wParam = VK_RETURN .OR.wParam = VK_ESCAPE ) .AND. ::bKeyDown != Nil
-      RETURN DLGC_WANTALLKEYS  //DLGC_WANTARROWS + DLGC_WANTTAB + DLGC_WANTCHARS           
+      RETURN DLGC_WANTALLKEYS  //DLGC_WANTARROWS + DLGC_WANTTAB + DLGC_WANTCHARS
    ENDIF
    RETURN -1
 
 METHOD Requery() CLASS HListBox
    Local i
-   
+
    SendMessage( ::handle, LB_RESETCONTENT, 0, 0)
    FOR i := 1 TO Len( ::aItems )
       ListboxAddString( ::handle, ::aItems[i] )
@@ -212,10 +212,10 @@ METHOD SetItem( nPos ) CLASS HListBox
 
 METHOD onDblClick()  CLASS HListBox
   IF ::bDblClick != Nil
-	    ::oParent:lSuspendMsgsHandling := .T.
+       ::oParent:lSuspendMsgsHandling := .T.
       Eval( ::bDblClick, self, ::value )
-  	  ::oParent:lSuspendMsgsHandling := .F.
-   ENDIF   
+       ::oParent:lSuspendMsgsHandling := .F.
+   ENDIF
    RETURN Nil
 
 METHOD AddItems( p ) CLASS HListBox
@@ -249,6 +249,8 @@ METHOD Clear() CLASS HListBox
 METHOD onChange( oCtrl ) CLASS HListBox
    LOCAL nPos
 
+   HB_SYMBOL_UNUSED( oCtrl )
+
    nPos := SendMessage( ::handle, LB_GETCURSEL, 0, 0 ) + 1
    ::SetItem( nPos )
 
@@ -257,6 +259,8 @@ METHOD onChange( oCtrl ) CLASS HListBox
 
 METHOD When( oCtrl ) CLASS HListBox
    LOCAL res := .t., nSkip
+
+   HB_SYMBOL_UNUSED( oCtrl )
 
    IF ! CheckFocus( Self, .f. )
       RETURN .t.
@@ -282,6 +286,8 @@ METHOD When( oCtrl ) CLASS HListBox
 METHOD Valid( oCtrl ) CLASS HListBox
    LOCAL res := .t., oDlg, nSkip
    LOCAL ltab :=  GETKEYSTATE( VK_TAB ) < 0
+
+   HB_SYMBOL_UNUSED( oCtrl )
 
    IF ! CheckFocus( Self, .t. ) .or. ::lNoValid
       RETURN .t.

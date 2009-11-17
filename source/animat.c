@@ -51,8 +51,11 @@ HB_FUNC( ANIMATE_DESTROY )
 
 HB_FUNC( ANIMATE_OPENEX )
 {
+   ISNIL( 2 ) ?
    Animate_OpenEx( ( HWND ) HB_PARHANDLE( 1 ),
-         ISNIL( 2 ) ? GetModuleHandle( NULL ) : ( HINSTANCE ) hb_parnl( 2 ),
-         ISNUM( 3 ) ? ( LPCTSTR ) MAKEINTRESOURCE( hb_parnl( 3 ) )
-         : ( LPCTSTR ) hb_parc( 3 ) );
+                   NULL ,
+                   ISNUM( 3 ) ? ( LPCTSTR ) MAKEINTRESOURCE( hb_parnl( 3 ) ) : ( LPCTSTR ) hb_parc( 3 ) ) :
+   Animate_OpenEx( ( HWND ) HB_PARHANDLE( 1 ),
+                   ( HINSTANCE ) hb_parnl( 2 ),
+                   ISNUM( 3 ) ? ( LPCTSTR ) MAKEINTRESOURCE( hb_parnl( 3 ) ) : ( LPCTSTR ) hb_parc( 3 ) ) ;
 }

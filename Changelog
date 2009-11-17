@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1150 2009-11-17 15:22:53 lfbasso Exp $
+ * $Id: Changelog,v 1.1151 2009-11-17 19:14:11 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,7 +8,33 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2009-11-18 13:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+2009-11-17 20:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source\animat.c
+    Fixed to work also in MinGW compile
+  * source\control.c
+  * source\grid.c
+  * source\guimain.prg
+  * source\hbrowse.prg
+  * source\hcheck.prg
+  * source\hcombo.prg
+  * source\hcontrol.prg
+  * source\hcwindow.prg
+  * source\hedit.prg
+  * source\hlistbox.prg
+  * source\hownbtn.prg
+  * source\hpanel.prg
+  * source\hrect.prg
+  * source\hriched.prg
+  * source\htab.prg
+  * source\htool.prg
+  * source\hupdown.prg
+  * source\hwindow.prg
+  * source\menu_c.c
+  * source\richedit.c
+    Pacified a lot of warnings in MinGW build.
+    Removed unused variables.
+
+2009-11-17 13:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
   * source\hedit.prg
     Event bKeyDown changed places, moving to WM_CHAR message and add new parameter in EVAL

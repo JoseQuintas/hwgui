@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.37 2009-11-15 21:14:01 lfbasso Exp $
+ * $Id: guimain.prg,v 1.38 2009-11-17 19:14:17 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -14,7 +14,7 @@
 #ifndef __XHARBOUR__
   #include "hbcompat.ch"
 #endif
- 
+
 FUNCTION InitObjects( oWnd )
    LOCAL i, pArray := oWnd:aObjects //, lInit
 
@@ -54,7 +54,7 @@ FUNCTION InitControls( oWnd, lNoActivate )
          ENDIF
          pArray[ i ]:Init()
           // nando required to classes that inherit the class of patterns hwgui
-         IF ! pArray[i]:lInit       
+         IF ! pArray[i]:lInit
             pArray[i]:Super:Init()
          ENDIF
 
@@ -164,26 +164,26 @@ FUNCTION MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cResIni )
    ENDIF
 
    RETURN cRes
-   
+
 FUNCTION WAITRUN( cRun )
 //#ifdef __XHARBOUR__
 Local hIn, hOut, nRet, hProc
    // "Launching process", cProc
    hProc := HB_OpenProcess( cRun , @hIn, @hOut, @hOut )
- 
-   // "Reading output"  
+
+   // "Reading output"
    // "Waiting for process termination"
    nRet := HB_ProcessValue( hProc )
 
    FClose( hProc )
    FClose( hIn )
-   FClose( hOut )   
+   FClose( hOut )
 
    Return nRet
 //#else
 //  __Run( cRun )
 //   Return 0
-//#endif       
+//#endif
 
 FUNCTION WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )
    LOCAL oDlg, oBrw, nChoice := 0, lArray := .T., nField, lNewFont := .F.

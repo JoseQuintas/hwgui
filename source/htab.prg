@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.51 2009-11-17 18:24:42 lfbasso Exp $
+ *$Id: htab.prg,v 1.52 2009-11-17 19:14:20 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -122,7 +122,7 @@ CLASS HTab INHERIT HControl
 CLASS VAR winclass   INIT "SysTabControl32"
    DATA  aTabs
    DATA  aPages  INIT { }
-   DATA  Pages  INIT { }   
+   DATA  Pages  INIT { }
    DATA  bChange, bChange2
    DATA  hIml, aImages, Image1, Image2
    DATA  oTemp
@@ -135,7 +135,7 @@ CLASS VAR winclass   INIT "SysTabControl32"
     
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, aTabs, bChange, aImages, lResour, nBC, ;
-               bClick, bGetFocus, bLostFocus, bRClick ) 
+               bClick, bGetFocus, bLostFocus, bRClick )
 
    METHOD Activate()
    METHOD Init()
@@ -186,7 +186,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::bLostFocus := IIf( bLostFocus == Nil, Nil, bLostFocus )
    ::bAction   := IIf( bClick == Nil, Nil, bClick )
    ::bRClick   :=IIf( bRClick==Nil, Nil, bRClick)
- 
+
    IF aImages != Nil
       ::aImages := { }
       FOR i := 1 TO Len( aImages )
@@ -253,7 +253,7 @@ METHOD Init() CLASS HTab
          ::ShowPage( ::nActive )
       ELSE
          Asize( ::aPages, SendMessage( ::handle, TCM_GETITEMCOUNT, 0, 0 ) )
-         AEval( ::aPages, { | a, i | ::AddPage( HPage():New( "" ,i,.t.,), "" )})
+         AEval( ::aPages, { | a , i | HB_SYMBOL_UNUSED(a), ::AddPage( HPage():New( "" ,i,.t.,), "" )})
       ENDIF
       AddToolTip( ::handle, ::handle, "" )              
       ::nHolder := 1
@@ -535,7 +535,7 @@ METHOD Notify( lParam ) CLASS HTab
          ::nactive := nPage
       ENDIF   
    CASE nCode == TCN_FOCUSCHANGE  //-554
-         
+
    CASE nCode == TCN_SELCHANGE
          // ACTIVATE NEW PAGE
    	    IF ! ::pages[nPage]:enabled 
@@ -577,7 +577,7 @@ METHOD Notify( lParam ) CLASS HTab
          ENDIF
       ENDIF
    */
-   CASE nCode == TCN_RCLICK 
+   CASE nCode == TCN_RCLICK
       IF ! Empty( ::pages ) .AND. ::nActive > 0 .AND. ::pages[ ::nActive ]:enabled
           IF ::bRClick != Nil
               ::oparent:lSuspendMsgsHandling := .t.
@@ -585,7 +585,7 @@ METHOD Notify( lParam ) CLASS HTab
               ::oparent:lSuspendMsgsHandling := .f.
           ENDIF
       ENDIF
-	    
+
    CASE nCode == TCN_SETFOCUS
       IF ::bGetFocus != NIL
          Eval( ::bGetFocus, GetCurrentTab( ::handle ), Self )
@@ -594,7 +594,7 @@ METHOD Notify( lParam ) CLASS HTab
       IF ::bLostFocus != NIL
          Eval( ::bLostFocus, GetCurrentTab( ::handle ), Self )
       ENDIF
-   
+
    ENDCASE
    IF ( nCode == TCN_CLICK .AND. ::nPrevPage > 0 .AND. ::pages[ ::nPrevPage ]:enabled ) .OR.;
         ( ::lClick .AND. nCode == TCN_SELCHANGE )
@@ -650,11 +650,11 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
           RETURN - 1
        ENDIF
        IF (wparam == VK_DOWN .or.wparam == VK_RETURN).AND. ::nActive > 0  //
-   	     GetSkip(self,::handle,,1)
-   	     RETURN 0
+           GetSkip(self,::handle,,1)
+           RETURN 0
        ELSEIF wParam = VK_TAB
          GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
-   	     RETURN 0         
+           RETURN 0
        ENDIF
        IF wparam == VK_UP .AND. ::nActive > 0  // 
           GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
@@ -662,9 +662,9 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
        ENDIF
    ENDIF
    IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL //.AND. ::FINDCONTROL(,GETFOCUS()):classname = "HUPDO"
-       IF ::GetParentForm( self ):Type < WND_DLG_RESOURCE 
+       IF ::GetParentForm( self ):Type < WND_DLG_RESOURCE
           RETURN ( ::oParent:onEvent( msg, wparam, lparam ) )
-       ELSE   
+       ELSE
           RETURN ( super:onevent(msg, wparam, lparam ) )
        ENDIF
 	 ENDIF
@@ -688,11 +688,11 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    IF ! ( ( msg = WM_COMMAND .OR. msg = WM_NOTIFY) .AND. ::oParent:lSuspendMsgsHandling )
       IF  __ObjHasMsg(::oParent,"NINITFOCUS") .AND. ::oParent:nInitFocus > 0 .AND. isWindowVisible( ::oParent:handle )
          SETFOCUS( ::oParent:nInitFocus )
-         ::oParent:nInitFocus := 0 
-      ENDIF  
+         ::oParent:nInitFocus := 0
+      ENDIF
       IF  (msg = WM_COMMAND .OR. msg == WM_KILLFOCUS) .AND. ::GetParentForm( self ):Type < WND_DLG_RESOURCE .AND. wParam > 0 .AND. lParam > 0
          // ::oParent:onEvent( msg, wparam, lparam )
-      ELSEIF msg == WM_KILLFOCUS .AND. ::GetParentForm( self ):Type < WND_DLG_RESOURCE 
+      ELSEIF msg == WM_KILLFOCUS .AND. ::GetParentForm( self ):Type < WND_DLG_RESOURCE
          SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, 0 ), ::handle )
          ::nPrevPage := 0
       ENDIF    

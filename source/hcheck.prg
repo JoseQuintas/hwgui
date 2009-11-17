@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.39 2009-11-15 18:55:04 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.40 2009-11-17 19:14:17 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -28,20 +28,19 @@ CLASS VAR winclass   INIT "BUTTON"
    METHOD Refresh()
  //  METHOD Disable()
  //  METHOD Enable()
-   METHOD SetValue( lValue ) 
+   METHOD SetValue( lValue )
    METHOD GetValue()          INLINE ( SendMessage( ::handle, BM_GETCHECK, 0, 0 ) == 1 )
    METHOD onGotFocus()
    METHOD onClick()
    METHOD KillFocus()
    METHOD Valid()
    METHOD When()
-   
+
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
             bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lEnter, lTransp ) CLASS HCheckButton
 
-	 LOCAL hTheme
    nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), BS_NOTIFY + BS_PUSHBUTTON + BS_AUTOCHECKBOX + WS_TABSTOP )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor )
@@ -52,20 +51,20 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, 0, 1 ) 
 
    ::Activate()
-   
+
    ::setcolor( tColor, bColor)
-   
+
    ::lEnter     := IIf( lEnter == Nil .OR. ValType( lEnter ) != "L", .F., lEnter )
    ::bLostFocus := bClick
    ::bGetFocus  := bGFocus
 
    IF bGFocus != Nil
       //::oParent:AddEvent( BN_SETFOCUS, Self, { | o, id | __When( o:FindControl( id ) ) },, "onGotFocus" )
-      ::oParent:AddEvent( BN_SETFOCUS, self, { | o, id | ::When( o:FindControl( id ) ) },, "onGotFocus" )      
+      ::oParent:AddEvent( BN_SETFOCUS, self, { | o, id | ::When( o:FindControl( id ) ) },, "onGotFocus" )
       ::lnoValid := .T.
    ENDIF
    //::oParent:AddEvent( BN_CLICKED, Self, { | o, id | __Valid( o:FindControl( id ), ) },, "onClick" )
-   ::oParent:AddEvent( BN_CLICKED, self, { | o, id | ::Valid( o:FindControl( id ) ) },, "onClick" )   
+   ::oParent:AddEvent( BN_CLICKED, self, { | o, id | ::Valid( o:FindControl( id ) ) },, "onClick" )
    ::oParent:AddEvent( BN_KILLFOCUS, Self, { || ::KILLFOCUS() } )
 
    RETURN Self
@@ -106,11 +105,10 @@ METHOD Init() CLASS HCheckButton
          SendMessage( ::handle, BM_SETCHECK, 1, 0 )
       ENDIF
    ENDIF
-   RETURN Nil 
+   RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HCheckButton
-	 LOCAL oParent := ::oParent
-	 LOCAL itemRect, dc
+    LOCAL oParent := ::oParent
 
    IF ::bOther != Nil                                         
       IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
@@ -119,56 +117,56 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCheckButton
    ENDIF
    IF msg = WM_KEYDOWN
       IF ProcKeyList( Self, wParam )
-      ELSEIF  wParam = VK_TAB 
+      ELSEIF  wParam = VK_TAB
          GetSkip( ::oparent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1)  )
          RETURN 0
-      ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP 
+      ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP
          GetSkip( ::oparent, ::handle, , -1 )
          RETURN 0
-      ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN 
+      ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN
          GetSkip( ::oparent, ::handle, , 1 )
          RETURN 0
-      ELSEIF  ( wParam == VK_RETURN ) //  .OR. wParam == VK_SPACE ) 
+      ELSEIF  ( wParam == VK_RETURN ) //  .OR. wParam == VK_SPACE )
          IF  ::lEnter
             ::SetValue( !::GetValue() )
             ::VALID()
             RETURN 0 //-1
          ELSE
-				    GetSkip( ::oparent, ::handle, , 1 )   
-				    RETURN 0
+                GetSkip( ::oparent, ::handle, , 1 )
+                RETURN 0
          ENDIF
-      ENDIF  
+      ENDIF
    ELSEIF msg == WM_KEYUP
     ELSEIF  msg = WM_GETDLGCODE .AND. GETDLGMESSAGE( lParam ) != 0
       IF wParam = VK_RETURN .OR. wParam = VK_TAB
-      ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND.wParam != VK_ESCAPE    
-      ELSEIF GETDLGMESSAGE( lParam ) = WM_CHAR .OR.wParam = VK_ESCAPE 
+      ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND.wParam != VK_ESCAPE
+      ELSEIF GETDLGMESSAGE( lParam ) = WM_CHAR .OR.wParam = VK_ESCAPE
          RETURN -1
-      ENDIF   
+      ENDIF
       RETURN DLGC_WANTMESSAGE //+ DLGC_WANTCHARS
    ENDIF
-   
+
    RETURN -1
 
 METHOD SetValue( lValue ) CLASS HCheckButton
-   
+
    SendMessage( ::handle, BM_SETCHECK, IIF( EMPTY( lValue) , 0, 1 ), 0 )
    ::value := IIF( lValue = Nil .OR. Valtype( lValue ) != "L", .F., lValue )
-   IF ::bSetGet != Nil  
+   IF ::bSetGet != Nil
        Eval( ::bSetGet, lValue, Self )
-   ENDIF   
+   ENDIF
    ::Refresh()
-   
+
    RETURN Nil
 
 METHOD Refresh() CLASS HCheckButton
    LOCAL var
 
    IF ::bSetGet != Nil
-      var :=  Eval( ::bSetGet,, Self ) 
+      var :=  Eval( ::bSetGet,, Self )
       IF var = Nil .OR. Valtype( var ) != "L"
-        var := SendMessage( ::handle, BM_GETCHECK, 0, 0 ) == 1 
-      ENDIF   
+        var := SendMessage( ::handle, BM_GETCHECK, 0, 0 ) == 1
+      ENDIF
       ::value := Iif( var==Nil .OR. Valtype(var) != "L", .F., var )
    ENDIF
    SendMessage( ::handle, BM_SETCHECK, IIf( ::value, 1, 0 ), 0 )
@@ -200,7 +198,7 @@ METHOD killFocus() CLASS HCheckButton
    LOCAL ndown := getkeystate( VK_RIGHT ) + getkeystate( VK_DOWN ) + GetKeyState( VK_TAB )
    LOCAL nSkip := 0
 
-   IF ::oParent:classname = "HTAB" 
+   IF ::oParent:classname = "HTAB"
       IF getkeystate( VK_LEFT ) + getkeystate( VK_UP ) < 0 .OR. ;
          ( GetKeyState( VK_TAB ) < 0 .and. GetKeyState( VK_SHIFT ) < 0 )
          nSkip := - 1

@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.19 2009-11-15 18:55:05 lfbasso Exp $
+ * $Id: hriched.prg,v 1.20 2009-11-17 19:14:20 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -80,7 +80,7 @@ METHOD Activate CLASS HRichEdit
       ::Init()
    ENDIF
    RETURN Nil
-   
+
 METHOD Init()  CLASS HRichEdit
    IF ! ::lInit
       ::nHolder := 1
@@ -95,7 +95,7 @@ METHOD Init()  CLASS HRichEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
-   LOCAL nDelta, nret, nPos
+   LOCAL nDelta, nret
 
    // writelog( str(msg) + str(wParam) + str(lParam) )
    IF msg = WM_NOTIFY .OR. msg = WM_KEYUP .OR. msg == WM_LBUTTONDOWN .OR. msg == WM_LBUTTONUP 
@@ -109,20 +109,20 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
       ::lSetFocus := .F.
       SendMessage( ::handle, EM_SETSEL, 0, 0 ) //Loword(npos),loword(npos))
    ELSEIF msg = WM_SETFOCUS .AND. ::lAllowTabs .AND. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
-    	 ::lctrltab := ::GetParentForm( Self ):lDisableCtrlTab 
-    	 ::GetParentForm( Self ):lDisableCtrlTab := ::lAllowTabs 
+        ::lctrltab := ::GetParentForm( Self ):lDisableCtrlTab
+        ::GetParentForm( Self ):lDisableCtrlTab := ::lAllowTabs
    ELSEIF msg = WM_KILLFOCUS .AND. ::lAllowTabs .AND. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
-    	 ::GetParentForm( Self ):lDisableCtrlTab := ::lctrltab
+        ::GetParentForm( Self ):lDisableCtrlTab := ::lctrltab
    ENDIF
    IF msg == WM_CHAR
       IF wParam = VK_TAB .AND. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
          IF  ( IsCtrlShift(.T.,.f.) .OR. ! ::lAllowTabs )
             RETURN 0
-         ENDIF 
+         ENDIF
       ENDIF
-	    IF !IsCtrlShift( .T., .F.)
+       IF !IsCtrlShift( .T., .F.)
          ::lChanged := .T.
-      ENDIF   
+      ENDIF
    ELSEIF msg == WM_KEYDOWN .AND. wParam = 46  //Del
       ::lChanged := .T.
    ELSEIF ::bOther != Nil
@@ -133,20 +133,20 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
    ENDIF
    IF msg == WM_KEYUP
      IF wParam = VK_TAB .AND. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
-         IF   IsCtrlShift(.T.,.f.) 
+         IF   IsCtrlShift(.T.,.f.)
             GetSkip( ::oParent, ::handle, , ;
-				          iif( IsCtrlShift(.f., .t.), -1, 1) )
+                      iif( IsCtrlShift(.f., .t.), -1, 1) )
             RETURN 0
-         ENDIF 
+         ENDIF
       ENDIF
    ELSEIF msg == WM_KEYDOWN
       IF wParam = VK_TAB .AND. ( IsCtrlShift(.T.,.f.) .OR. ! ::lAllowTabs )
          GetSkip( ::oParent, ::handle, , ;
-				          iif( IsCtrlShift(.f., .t.), -1, 1) )
+                      iif( IsCtrlShift(.f., .t.), -1, 1) )
          RETURN 0
       ELSEIF wParam = VK_TAB .AND. ::GetParentForm( Self ):Type >= WND_DLG_RESOURCE
-         RE_INSERTTEXT( ::handle, CHR( VK_TAB ) ) 
-	       RETURN 0
+         RE_INSERTTEXT( ::handle, CHR( VK_TAB ) )
+          RETURN 0
       ENDIF
       IF wParam == VK_ESCAPE
          IF GetParent(::oParent:handle) != Nil
@@ -202,14 +202,14 @@ METHOD onGotFocus( ) CLASS HRichEdit
 
 METHOD onLostFocus( ) CLASS HRichEdit
   RETURN ::Valid()
-   
+
 
 METHOD When( ) CLASS HRichEdit
- 
-	 IF !CheckFocus( Self, .f. )
-	    RETURN .t.
+
+    IF !CheckFocus( Self, .f. )
+       RETURN .t.
    ENDIF
-	 
+
    ::oparent:lSuspendMsgsHandling := .t.
    Eval( ::bGetFocus, ::title, Self )
    ::oparent:lSuspendMsgsHandling := .f.
@@ -218,10 +218,10 @@ METHOD When( ) CLASS HRichEdit
 
 METHOD Valid( ) CLASS HRichEdit
 
-	 IF ::bLostFocus != Nil .AND. !CheckFocus( Self, .T. )
-	    RETURN .T.
- 	 ENDIF
-	 
+    IF ::bLostFocus != Nil .AND. !CheckFocus( Self, .T. )
+       RETURN .T.
+     ENDIF
+
    ::oparent:lSuspendMsgsHandling := .t.
    Eval( ::bLostFocus, ::title, Self )
    ::oparent:lSuspendMsgsHandling := .f.

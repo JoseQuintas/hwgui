@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.87 2009-11-15 18:55:04 lfbasso Exp $
+ * $Id: control.c,v 1.88 2009-11-17 19:14:17 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -600,7 +600,7 @@ HB_FUNC( INITTABCONTROL )
 
    for( ul = 1; ul <= ulTabs; ul++ )
    {
-      tie.pszText = hb_arrayGetCPtr( pArr, ul );
+      tie.pszText = ( LPSTR ) hb_arrayGetCPtr( pArr, ul );
 
       if( TabCtrl_InsertItem( hTab, ul - 1, &tie ) == -1 )
       {
@@ -619,7 +619,7 @@ HB_FUNC( ADDTAB )
 
    tie.mask = TCIF_TEXT | TCIF_IMAGE;
    tie.iImage = -1;
-   tie.pszText = hb_parc( 3 );
+   tie.pszText = ( LPSTR ) hb_parc( 3 );
    TabCtrl_InsertItem( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ), &tie );
 }
 
@@ -631,7 +631,7 @@ HB_FUNC( ADDTABDIALOG )
    tie.mask = TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM;
    tie.lParam = ( LPARAM ) pWnd;
    tie.iImage = -1;
-   tie.pszText = hb_parc( 3 );
+   tie.pszText = ( LPSTR ) hb_parc( 3 );
    TabCtrl_InsertItem( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ), &tie );
 }
 
@@ -657,7 +657,7 @@ HB_FUNC( SETTABNAME )
    TC_ITEM tie;
 
    tie.mask = TCIF_TEXT;
-   tie.pszText = hb_parc( 3 );
+   tie.pszText = ( LPSTR ) hb_parc( 3 );
 
    TabCtrl_SetItem( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ), &tie );
 
@@ -688,7 +688,7 @@ HB_FUNC( TAB_HITTEST )
 
 HB_FUNC( GETNOTIFYKEYDOWN )
 {
-   hb_retni( ( WORD ) ( ( ( NMTCKEYDOWN * ) HB_PARHANDLE( 1 ) )->wVKey ) );
+   hb_retni( ( WORD ) ( ( ( TC_KEYDOWN * ) HB_PARHANDLE( 1 ) )->wVKey ) );
 }              
 
 HB_FUNC( CREATETREE )
@@ -718,7 +718,7 @@ HB_FUNC( TREEADDNODE )
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
 
    tvi.mask = TVIF_TEXT | TVIF_PARAM;
-   tvi.pszText = hb_parc( 6 );
+   tvi.pszText = ( LPSTR ) hb_parc( 6 );
    tvi.lParam = ( LPARAM ) ( hb_itemNew( pObject ) );
    if( hb_pcount(  ) > 6 && !ISNIL( 7 ) )
    {
@@ -832,7 +832,7 @@ HB_FUNC( TREESETITEM )
    if( iType == TREE_SETITEM_TEXT )
    {
       TreeItem.mask |= TVIF_TEXT;
-      TreeItem.pszText = hb_parc( 4 );
+      TreeItem.pszText = ( LPSTR ) hb_parc( 4 );
    }
 
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), TVM_SETITEM, 0,
@@ -1656,7 +1656,7 @@ HB_FUNC( TOOLBAR_SETDISPINFO )
    LPTOOLTIPTEXT pDispInfo = ( LPTOOLTIPTEXT ) HB_PARHANDLE( 1 );
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
    /* BUGGY code - have to be fixed */
-   pDispInfo->lpszText = hb_itemGetCPtr( pValue );
+   pDispInfo->lpszText = ( LPSTR ) hb_itemGetCPtr( pValue );
    hb_itemRelease( pValue );
 }
 
@@ -1673,7 +1673,7 @@ HB_FUNC( TOOLBAR_GETINFOTIP )
    LPNMTBGETINFOTIP pDispInfo = ( LPNMTBGETINFOTIP ) HB_PARHANDLE( 1 );
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
    /* BUGGY code - have to be fixed */
-   pDispInfo->pszText = hb_itemGetCPtr( pValue );
+   pDispInfo->pszText = ( LPSTR ) hb_itemGetCPtr( pValue );
    hb_itemRelease( pValue );
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.27 2009-11-15 18:55:05 lfbasso Exp $
+ * $Id: hpanel.prg,v 1.28 2009-11-17 19:14:20 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -195,7 +195,6 @@ METHOD Release CLASS HPanel
 RETURN Nil
 
 METHOD Hide CLASS HPanel
-LOCAL i
 
    IF ::lHide
       RETURN Nil
@@ -221,7 +220,6 @@ LOCAL i
 RETURN Nil
 
 METHOD Show CLASS HPanel
-LOCAL i
 
    IF !::lHide
       RETURN Nil

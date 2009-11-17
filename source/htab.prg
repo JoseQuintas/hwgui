@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.49 2009-11-15 21:23:22 lfbasso Exp $
+ *$Id: htab.prg,v 1.50 2009-11-17 18:15:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -846,7 +846,10 @@ METHOD showTextTabs( oPage, aItemPos ) CLASS HPaintTab
     //                            SS_RIGHTJUST, DT_VCENTER + DT_SINGLELINE )
     nStyle := SS_CENTER + DT_VCENTER + DT_SINGLELINE 
                                 
-    SetBkMode( ::hDC, 1 )                                   
+    SetBkMode( ::hDC, 1 )             
+    IF oPage:oParent:oFont != Nil
+       SelectObject( ::hDC, oPage:oParent:oFont:handle )  
+    ENDIF                        
     IF oPage:lEnabled
        SetTextColor( ::hDC, IIF( EMPTY( oPage:tColor ), GetSysColor( COLOR_WINDOWTEXT ), oPage:tColor ) )
     ELSE

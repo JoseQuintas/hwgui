@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1149 2009-11-16 15:47:43 lfbasso Exp $
+ * $Id: Changelog,v 1.1150 2009-11-17 15:22:53 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-11-18 13:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+  * source\hedit.prg
+    Event bKeyDown changed places, moving to WM_CHAR message and add new parameter in EVAL
+    Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl  )
+    in nShiftAltCtrl is passed 0 - SHIFT press, 1 - CTRL press - 4 ALT press or combinations 
+    because KEYDOWN not translate CODE CHAR keypress, then "D" or "d" has the same value in message Keydown
+    KEYDOWN now process EXTEND CODE, type as ARROWN,INS,DEL,PAGEIP,DONW and an enhanced 101- or 102-key keyboard.
+  * source\hcontrol.prg
+    ! minor fix in events ONCLICK
+    
 2009-11-15 18:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg               
     ! fixed ctype parameter to value in METHOD WHEN in Eval( bGfocus)

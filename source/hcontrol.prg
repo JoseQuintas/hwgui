@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.143 2009-11-15 18:55:04 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.144 2009-11-17 15:22:55 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -685,7 +685,7 @@ METHOD Paint( lpDis ) CLASS HStatic
 
 METHOD onClick()  CLASS HStatic
    IF ::bClick != Nil
-      ::oParent:lSuspendMsgsHandling := .T.
+      //::oParent:lSuspendMsgsHandling := .T.
       Eval( ::bClick, Self, ::id )
       ::oParent:lSuspendMsgsHandling := .F.
    ENDIF
@@ -869,7 +869,7 @@ METHOD onevent( msg, wParam, lParam ) CLASS HButton
 
 METHOD onClick()  CLASS HButton
    IF ::bClick != Nil
-      ::oParent:lSuspendMsgsHandling := .T.
+      //::oParent:lSuspendMsgsHandling := .T.
       Eval( ::bClick, Self, ::id )
       ::oParent:lSuspendMsgsHandling := .F.
    ENDIF

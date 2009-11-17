@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.147 2009-11-16 15:47:44 lfbasso Exp $
+ *$Id: hedit.prg,v 1.148 2009-11-17 15:22:55 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -179,7 +179,7 @@ METHOD Init()  CLASS HEdit
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    LOCAL oParent := ::oParent, nPos, nctrl
-   LOCAL nextHandle
+   LOCAL nextHandle, nShiftAltCtrl
    LOCAL cClipboardText := ""
 
    IF ::bOther != Nil
@@ -214,6 +214,15 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 		        ENDIF
             RETURN 0
          ELSEIF msg == WM_CHAR
+         
+            IF ! CheckBit( lParam, 32 ) .AND.::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
+               nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 ) 
+               nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , 0 )
+               nShiftAltCtrl += IIF( Checkbit( lParam, 28 ), 4, 0 )
+               IF ! Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl  )
+                  RETURN 0
+               ENDIF
+            ENDIF
             IF wParam == VK_BACK
                ::lFirst := .F.
                ::lFocu := .F.
@@ -254,8 +263,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
 
          ELSEIF msg == WM_KEYDOWN
-            IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
-               IF ! Eval( ::bKeyDown, Self, wParam )
+            IF CheckBit( lParam, 23 ) .AND. ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
+               nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 ) 
+               nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , 0 )
+               nShiftAltCtrl += IIF( Checkbit( lParam, 28 ), 4, 0 )
+               IF !Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl  )
                   RETURN 0
                ENDIF
             ENDIF
@@ -337,6 +349,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ENDIF
       IF msg == WM_SETFOCUS //.AND. ::cType = "N"
          ::lFocu := .T.
+         IF ::oUpDown != Nil  // necessary because fail event in opdown if used command SETFOCUS() directly
+        	  ::when()
+         ENDIF	  
       ENDIF
       IF lColorinFocus
          IF msg == WM_SETFOCUS
@@ -889,7 +904,6 @@ METHOD When() CLASS HEdit
    nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 ;
                                                  .and. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
    IF ::bGetFocus != Nil
-      ::oParent:lSuspendMsgsHandling := .T.
       ::lnoValid := .T.
       IF ::cType == "D"
          vari := CToD( vari )
@@ -898,6 +912,7 @@ METHOD When() CLASS HEdit
       ELSE
         vari := ::title
       ENDIF
+      ::oParent:lSuspendMsgsHandling := .T.
 		  res := Eval( ::bGetFocus, vari, Self )
       res := IIf( ValType( res ) == "L", res, .T. )
       ::lnoValid := ! res

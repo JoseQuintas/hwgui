@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.176 2009-11-15 20:24:08 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.177 2009-11-17 15:22:55 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -409,7 +409,7 @@ METHOD SetRowHeight( nPixels ) CLASS HBrowse
 //----------------------------------------------------//
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
    LOCAL oParent, cKeyb, nCtrl, nPos, lBEof
-   LOCAL nRecStart, nRecStop, nRet
+   LOCAL nRecStart, nRecStop, nRet, nShiftAltCtrl
 
    IF ::active .AND. ! Empty( ::aColumns )
       // moved to first
@@ -459,6 +459,16 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
       ELSEIF msg == WM_VSCROLL
          ::DoVScroll( wParam )
+         
+      ELSEIF msg == WM_CHAR
+         IF ! CheckBit( lParam, 32 ) .AND.::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
+             nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 ) 
+             nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , 0 )
+             nShiftAltCtrl += IIF( Checkbit( lParam, 28 ), 4, 0 )
+             IF EMPTY( Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl ) )
+                 RETURN 0
+              ENDIF
+         ENDIF
 
       ELSEIF msg == WM_GETDLGCODE
          RETURN DLGC_WANTALLKEYS
@@ -506,10 +516,13 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          RETURN 1
 
       ELSEIF msg == WM_KEYDOWN
-         IF ::bKeyDown != Nil
-            IF ! Eval( ::bKeyDown, Self, wParam )
-               RETURN 1
-            ENDIF
+         IF CheckBit( lParam, 23 ) .AND. ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
+             nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 ) 
+             nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , 0 )
+             nShiftAltCtrl += IIF( Checkbit( lParam, 28 ), 4, 0 )
+             IF EMPTY( Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl ) )
+                RETURN 0
+             ENDIF
          ENDIF
          IF wParam == VK_TAB
             IF ::lCtrlPress    

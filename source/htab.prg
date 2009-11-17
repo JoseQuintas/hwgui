@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.50 2009-11-17 18:15:47 lfbasso Exp $
+ *$Id: htab.prg,v 1.51 2009-11-17 18:24:42 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -856,7 +856,7 @@ METHOD showTextTabs( oPage, aItemPos ) CLASS HPaintTab
     	 SetTextColor( ::hDC, GetSysColor( COLOR_GRAYTEXT ) )
     ENDIF   
     IF  Hwg_BitAnd( oPage:oParent:Style, TCS_BOTTOM  ) = 0
-       IF oPage:oParent:nActive = oPage:PageOrder                       // 4
+       IF oPage:oParent:GetActivePage() = oPage:PageOrder                       // 4
           FillRect( ::hDC,  aItemPos[ 1 ] + 3, aItemPos[ 2 ] + 3, aItemPos[ 3 ] - 4, aItemPos[ 4 ] - 5, IIF( oPage:brush != Nil, oPage:brush:Handle, oPage:oParent:brush:Handle ) )
           DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] , aItemPos[ 2 ] - 1, aItemPos[ 3 ] , aItemPos[ 4 ] - 1 , nstyle )
        ELSE
@@ -864,7 +864,7 @@ METHOD showTextTabs( oPage, aItemPos ) CLASS HPaintTab
        ENDIF
     ELSE
        FillRect( ::hDC,  aItemPos[ 1 ] + 3, aItemPos[ 2 ] + 3, aItemPos[ 3 ] - 4, aItemPos[ 4 ] - 5, IIF( oPage:brush != Nil, oPage:brush:Handle,  oPage:oParent:brush:Handle ) )
-       IF oPage:oParent:nActive = oPage:PageOrder                       // 4
+       IF oPage:oParent:GetActivePage() = oPage:PageOrder                       // 4
           DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] , aItemPos[ 2 ] + 2, aItemPos[ 3 ] , aItemPos[ 4 ] + 2 , nstyle )
        ELSE
           DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] , aItemPos[ 2 ] , aItemPos[ 3 ] , aItemPos[ 4 ]  , nstyle )

@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.42 2009-09-22 14:57:52 lfbasso Exp $
+ * $Id: menu_c.c,v 1.43 2009-11-17 05:41:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -302,7 +302,7 @@ HB_FUNC( ISENABLEDMENUITEM )
    else
    {
       uCheck = GetMenuState( hMenu,     // handle to menu
-            hb_parni( 3 ),      // menu item to check or uncheck
+            hb_parni( 2 ),      // menu item to check or uncheck
             uFlag               // menu item flags
              );
       hb_retl( !( uCheck & MF_GRAYED ) );

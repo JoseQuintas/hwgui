@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.13 2009-11-17 19:14:20 mlacecilia Exp $
+ * $Id: hrect.prg,v 1.14 2009-11-18 02:24:34 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -448,15 +448,15 @@ METHOD Visible( lVisibled ) CLASS HContainer
 
 //---------------------------------------------------------------------------
 METHOD Paint( lpdis ) CLASS HContainer
-   Local pps, hDC
+   Local pps, drawInfo, hDC
    Local aCoors, x1, y1, x2, y2
 
     drawInfo := GetDrawItemInfo( lpdis )
-    hDC := drawInfo[3]
-    x1 := drawInfo[4]
-    y1 := drawInfo[5]
-    x2 := drawInfo[6]
-    y2 := drawInfo[7]
+    hDC := drawInfo[ 3 ]
+    x1  := drawInfo[ 4 ]
+    y1  := drawInfo[ 5 ]
+    x2  := drawInfo[ 6 ]
+    y2  := drawInfo[ 7 ]
 
    SelectObject( hDC, ::oPen:handle )
 

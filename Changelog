@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1151 2009-11-17 19:14:11 mlacecilia Exp $
+ * $Id: Changelog,v 1.1152 2009-11-18 15:15:40 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,25 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-11-18 13:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    * CLASS HColumn 
+      + DATA nSortMark INIT 0
+      + METHOD SortMark( nSortMark ) SETGET
+    * CLASS HBrowse
+      + DATA ShowSortMark    INIT .F.
+      + DATA nIndexOrd INIT -1 HIDDEN
+      + DATA nRecCount INIT 0 HIDDEN 
+      + METHOD BrwScrollVPos()
+         new method that calculates the position of the vertical scroll bar.
+         The shape of the left anterior browse extremely slow in the shipping and scroll
+         when in a network environment and using indexes
+      ! FUNCTION VScrollPos changed
+      new feature in header columns. it is possible to display an arrow indicating the sort column
+      this requires :
+      obrowse:ShowSortMark := .T.
+      obrowse:acolumns[n]:showmark := 0-HIDDEN (DEFAULT) | 1-ASCENDING | 2-DESCENDING 
 
 2009-11-17 20:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\animat.c

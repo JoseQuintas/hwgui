@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.149 2009-11-17 19:14:19 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.150 2009-11-19 08:32:07 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -263,7 +263,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
 
          ELSEIF msg == WM_KEYDOWN
-            IF CheckBit( lParam, 23 ) .AND. ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
+            IF ( CheckBit( lParam, 23 ) .OR. wParam > 111 ) .AND. ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
                nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 )
                nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , 0 )
                nShiftAltCtrl += IIF( Checkbit( lParam, 28 ), 4, 0 )

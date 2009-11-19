@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.179 2009-11-18 15:15:41 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.180 2009-11-19 08:32:07 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -231,7 +231,7 @@ CLASS HBrowse INHERIT HControl
    DATA nDeleteMark INIT 0 HIDDEN
    DATA nShowMark   INIT 12 HIDDEN
    DATA oBmpMark    INIT  HBitmap():AddStandard( OBM_MNARROW ) HIDDEN
-   DATA ShowSortMark  INIT .F.
+   DATA ShowSortMark  INIT .T.
    // one to many relationships
    DATA LinkMaster             // Specifies the parent table linked to the child table displayed in a Grid control. 
    DATA ChildOrder             // Specifies the index tag for the record source of the Grid control or Relation object.
@@ -534,7 +534,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          RETURN 1
 
       ELSEIF msg == WM_KEYDOWN
-         IF CheckBit( lParam, 23 ) .AND. ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
+         IF ( CheckBit( lParam, 23 ) .OR. wParam > 111 ) .AND. ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
              nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 ) 
              nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , 0 )
              nShiftAltCtrl += IIF( Checkbit( lParam, 28 ), 4, 0 )
@@ -1347,7 +1347,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
    LOCAL oPen, oldBkColor
    LOCAL oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
    LOCAL toldc, oldfont
-   LOCAL nSort, oBmpSort
+   LOCAL oBmpSort, nMe, nMd, captionRect := {,,,}, aTxtSize
 
    nRows := Min( ::nRecords + IIf( ::lAppMode, 1, 0 ), ::rowCount )
 
@@ -1449,20 +1449,27 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
                ::y1  , ;
                6 )
          ENDIF       
-         nSort := IIF( ::ShowSortMark .AND. oColumn:SortMark > 0, IIF( oColumn:SortMark = 1, 13, 17 ), 0 ) 
+         nMe := IIF( ::ShowSortMark .AND. oColumn:SortMark > 0, IIF( oColumn:nJusHead - DT_VCENTER - DT_SINGLELINE  ==  DT_LEFT, 17, 0 ), 0 )
+         nMd := IIF( ::ShowSortMark .AND. oColumn:SortMark > 0, IIF( oColumn:nJusHead - DT_VCENTER - DT_SINGLELINE  !=  DT_LEFT, 17, 0 ), 0 )
          cStr := oColumn:heading + ';'
          FOR nLine := 1 TO ::nHeadRows
             DrawText( hDC, __StrToken( @cStr, nLine, ';' ), ;
-                      x + ::aMargin[ 4 ] + 1 + nSort, ;
+                      x + ::aMargin[ 4 ] + 1 + nMe, ;
                       ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine + 1 ) +  ::aMargin[ 1 ] + 1, ;
-                      x + xSize - ( 1 + ::aMargin[ 2 ] - nSort / 16 ) , ;
+                      x + xSize - ( 1 + ::aMargin[ 2 ] + nMd ) , ;
                       ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine ) - 1, ;
-                      oColumn:nJusHead + IIF( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
+                      oColumn:nJusHead + IIF( oColumn:lSpandHead, DT_NOCLIP, 0 ) + DT_END_ELLIPSIS, @captionRect )
          NEXT      // Nando DT_VCENTER+DT_SINGLELINE  
          IF ::ShowSortMark .AND. oColumn:SortMark > 0
-           oBmpSort  :=  IIF( oColumn:SortMark = 1, HBitmap():AddStandard( OBM_COMBO ), HBitmap():AddStandard( OBM_UPARROW ) )
-           DrawTransparentBitmap( hDC, oBmpSort:Handle, x + 2 ,(::y1 - ( ::nHeadHeight * ::nHeadRows ) - ::nyHeight ) + ;
-                              ( ::y1 - (::y1 - ( ::nHeadHeight * ::nHeadRows ) - ::nyHeight)) / 2 - 8,,)
+            oBmpSort  :=  IIF( oColumn:SortMark = 1, HBitmap():AddStandard( OBM_UPARROWD ),  HBitmap():AddStandard( OBM_DNARROWD ) )
+            IF oColumn:nJusHead - DT_VCENTER - DT_SINGLELINE  ==  DT_RIGHT .OR. xSize < aTxtSize[ 1 ] + nMd  
+               DrawTransparentBitmap( hDC, oBmpSort:Handle, captionRect[ 1 ] + ( captionRect[ 3 ] - captionRect[ 1 ]  ) ,captionRect[ 2 ] + 2, , )           
+            ELSEIF  oColumn:nJusHead - DT_VCENTER - DT_SINGLELINE  ==  DT_CENTER 
+               DrawTransparentBitmap( hDC, oBmpSort:Handle, captionRect[ 1 ] + ( captionRect[ 3 ] - captionRect[ 1 ] + aTxtSize[ 1 ] ) / 2 + ;
+                          Min( captionRect[ 3 ] - captionRect[ 1 ] - aTxtSize[ 1 ], 16 ) , captionRect[ 2 ]  , , ) 
+            ELSE
+               DrawTransparentBitmap( hDC, oBmpSort:Handle, captionRect[ 1 ] - nMe - 1, captionRect[ 2 ] + 2 , , )
+            ENDIF               
          ENDIF
        ENDIF
       ELSE
@@ -2126,7 +2133,7 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
       nUpper := ::y1  +  ( ::height + 1 ) * ( ::rowPos - 2 )
       nLower := ::y1 + ( ::height + 1 ) * ( ::rowPos )
 
-      InvalidateRect( ::handle, 0, ::x1, nUpper, ::x2, nLower )
+      InvalidateRect( ::handle, 0, ::x1 - ::nShowMark - ::nDeleteMark, nUpper, ::x2, nLower )
 
    ENDIF
    IF ::lAppMode
@@ -2163,10 +2170,9 @@ METHOD LINEUP() CLASS HBrowse
          ::Refresh( , .T. )
       ELSE
          ::internal[ 1 ] := 0
-         InvalidateRect( ::handle, 0, ::x1, ::y1 + ( ::height + 1 ) * ::internal[ 2 ] - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::internal[ 2 ] )
-         InvalidateRect( ::handle, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::rowPos )
+         InvalidateRect( ::handle, 0, ::x1 - ::nShowMark - ::nDeleteMark, ::y1 + ( ::height + 1 ) * ::internal[ 2 ] - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::internal[ 2 ] )
+         InvalidateRect( ::handle, 0, ::x1 - ::nShowMark - ::nDeleteMark, ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::x2 , ::y1 + ( ::height + 1 ) * ::rowPos )
       ENDIF
-
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, - 1, .F. )
       ELSEIF ::nRecords > 1
@@ -2404,7 +2410,7 @@ ELSEIF nLine == 0
       ::aColumns[ fif ]:lHeadClick := .T.
       InvalidateRect( ::handle, 0, ::x1, ::y1 - ::nHeadHeight * ::nHeadRows, ::x2, ::y1 )
       IF ::aColumns[ fif ]:bHeadClick != nil
-         Eval( ::aColumns[ fif ]:bHeadClick, Self, fif )
+         Eval( ::aColumns[ fif ]:bHeadClick, ::aColumns[ fif ], fif, Self )
       ENDIF    
       ::lHeadClick := .T.
    ENDIF

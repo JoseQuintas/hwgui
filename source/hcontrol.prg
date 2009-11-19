@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.145 2009-11-17 19:14:18 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.146 2009-11-19 08:32:07 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1514,7 +1514,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
 
       IF ValType( ::hicon ) == "N" .OR. ValType( ::hbitmap ) == "N"
           IF ! lmultiline  .AND. ::iStyle != ST_ALIGN_OVERLAP
-             DrawText( dc, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], uAlign + DT_CALCRECT, @captionRect )
+             // DrawText( dc, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], uAlign + DT_CALCRECT, @captionRect )
           ELSE
              // figura no topo texto em baixo
              captionRect[ 2 ] := aBmpSize[ 2 ] + ( ::nHeight - nHeight - aBmpSize[ 2 ] ) / 2 + itemRect[ 2 ]

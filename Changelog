@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1152 2009-11-18 15:15:40 lfbasso Exp $
+ * $Id: Changelog,v 1.1153 2009-11-19 08:32:06 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-11-19 06:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\drawtext.c
+    ! fix in FUNC DRAWTEXT in return parameter by REF
+  * source\hbrowse.prg
+    ! fixed SHOWMARK and SORTMARK respecting the alignment HEADER
+    ! fix in KEYDOWN EVENT  
+  * source\hcontrol.prg
+    ! minor fix 
+  * source\hedit.prg
+    ! fix in KEYDOWN EVENT
+    
 2009-11-18 13:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
     * CLASS HColumn 
@@ -24,8 +35,8 @@
       ! FUNCTION VScrollPos changed
       new feature in header columns. it is possible to display an arrow indicating the sort column
       this requires :
-      obrowse:ShowSortMark := .T.
-      obrowse:acolumns[n]:showmark := 0-HIDDEN (DEFAULT) | 1-ASCENDING | 2-DESCENDING 
+      obrowse:ShowSortMark := .T. (DEFAULT )
+      obrowse:acolumns[n]:SortMark := 0-HIDDEN (DEFAULT) | 1-ASCENDING | 2-DESCENDING 
 
 2009-11-17 20:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\animat.c

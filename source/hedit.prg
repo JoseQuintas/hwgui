@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.151 2009-11-19 13:43:08 lfbasso Exp $
+ *$Id: hedit.prg,v 1.152 2009-11-19 15:57:42 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -906,7 +906,7 @@ METHOD When() CLASS HEdit
    IF ::bGetFocus != Nil
       ::lnoValid := .T.
       IF ::cType == "D"
-         vari := CToD( vari )
+         vari := CToD( ::title )
       ELSEIF ::cType == "N"
          vari := Val( LTrim( ::title ) )
       ELSE

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1153 2009-11-19 08:32:06 lfbasso Exp $
+ * $Id: Changelog,v 1.1154 2009-11-19 15:56:45 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-11-19 17:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hedit.prg
+    ! Fix Method When for field of type Date.
+
 
 2009-11-19 06:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\drawtext.c

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.182 2009-11-20 16:00:52 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.183 2009-11-20 19:16:24 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -108,7 +108,7 @@ METHOD New( cHeading, block, Type, length, dec, lEditable, nJusHead, nJusLin, cP
    ::lEditable := IIf( lEditable != Nil, lEditable, .F. )
    ::nJusHead  := IIf( nJusHead == nil,  DT_LEFT, nJusHead ) + DT_VCENTER + DT_SINGLELINE // Por default
    ::nJusLin   := nJusLin //IIf( nJusLin  == nil,  DT_LEFT, nJusLin  ) + DT_VCENTER + DT_SINGLELINE // Justif.Izquierda
-   ::nJusFoot  := ::nJusLin
+   ::nJusFoot  := IIf( nJusLin  == nil, DT_LEFT, nJusLin  ) 
    ::picture   := cPict
    ::bValid    := bValid
    ::bWhen     := bWhen

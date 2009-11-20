@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.53 2009-11-20 16:00:52 lfbasso Exp $
+ *$Id: htab.prg,v 1.54 2009-11-20 19:07:55 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -214,6 +214,26 @@ METHOD Activate CLASS HTab
       ::Init()
    ENDIF
    RETURN Nil
+
+METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
+                 bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, aItem )  CLASS hTab
+
+   HB_SYMBOL_UNUSED( cCaption )
+   HB_SYMBOL_UNUSED( lTransp )
+   HB_SYMBOL_UNUSED( aItem )
+
+   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+              bSize, bPaint, ctooltip, tcolor, bcolor )
+   HWG_InitCommonControlsEx()
+   ::lResourceTab := .T.
+   ::aTabs  := { }
+   ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
+   
+   ::brush := GetBackColorParent( Self, .T. ) 
+   ::oPaint := HPaintTab():New( Self, , 0, 0, 0, 0, ::oFont )
+
+   RETURN Self
+
 
 METHOD Init() CLASS HTab
    LOCAL i, x := 0
@@ -606,21 +626,6 @@ METHOD Notify( lParam ) CLASS HTab
        ::lClick := .f.
    ENDIF
    RETURN - 1
-
-METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
-                 bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, aItem )  CLASS hTab
-
-   HB_SYMBOL_UNUSED( cCaption )
-   HB_SYMBOL_UNUSED( lTransp )
-   HB_SYMBOL_UNUSED( aItem )
-
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
-              bSize, bPaint, ctooltip, tcolor, bcolor )
-   HWG_InitCommonControlsEx()
-   ::lResourceTab := .T.
-   ::aTabs  := { }
-   ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
-   RETURN Self
 
 
 METHOD OnEvent( msg, wParam, lParam ) CLASS HTab

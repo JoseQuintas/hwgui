@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.94 2009-11-17 19:14:20 mlacecilia Exp $
+ *$Id: hwindow.prg,v 1.95 2009-11-20 12:43:02 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -290,9 +290,9 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMa
       handle := Hwg_InitClientWindow( oWndClient, ::nMenuPos, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       oWndClient:handle = handle
       ::oClient := HWindow():aWindows[2]
-      // ADDED
+      // ADDED screen to backgroup to MDI MAIN
       ::Screen := HMdiChildWindow():New(, ::tcolor, WS_CHILD + WS_MAXIMIZE + WS_DISABLED,;
-                0,0, ::nWidth * 2, ::nheight * 2,,,,,,,,,,,,::oBmp,,,,,)
+                0,0, ::nWidth * 2, ::nheight * 2, -1,,,,,,,,,,,::oBmp,,,,,)
       ::Screen:lBmpCenter := ::lBmpCenter
       ::Screen:Activate( .T., .T. )
       EnableWindow( ::Screen:Handle, .T. )
@@ -455,8 +455,13 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
       ::nTop  := ( ::oClient:nHeight - ::nHeight ) / 2  
    ENDIF
    ::aRectSave := { ::nLeft, ::nTop, ::nwidth, ::nHeight } 			
-   ::handle := Hwg_CreateMdiChildWindow( Self, IIF( lMinimized, WS_MINIMIZE, ;
-         IIF( lMaximized, WS_MAXIMIZE, 0 ) ) + IIF( !lShow, - WS_VISIBLE, WS_VISIBLE  ) )
+   IF ! lMaximized .OR. ( VALTYPE( ::TITLE ) = "N" .AND. ::title = - 1 )
+     ::handle := Hwg_CreateMdiChildWindow( Self, IIF( lMinimized,WS_MINIMIZE, ;
+	     IIF( lMaximized, WS_MAXIMIZE, 0 ) ) + IIF( !lShow, - WS_VISIBLE, WS_VISIBLE  ) )
+	 ELSE 
+      // BECAUSE ANCHOR NOT WORK  
+	    ::handle := Hwg_CreateMdiChildWindow( Self, IIF( !lShow, - WS_VISIBLE, WS_VISIBLE  ) )
+	 ENDIF   
 
    // is necessary for set zorder control
    InitControls( Self )
@@ -471,8 +476,17 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
       ::nLeft := ( ::oClient:nWidth - ::nWidth ) / 2 - 0
       ::nTop  := ( ::oClient:nHeight - ::nHeight ) / 2  - 0
    ENDIF
-   ::show()
+   IF VALTYPE( ::TITLE ) = "N" .AND. ::title = - 1   // screen
+      RETURN .T.
+   ENDIF
+   
    onMove( Self )
+   IF  lMaximized // necessary to ANCHOR work in INITIALIZATION 
+      ::Show()   
+      ::Maximize()
+   ELSE
+      ::Show()   
+   ENDIF
 
    IF bActivate != NIL
       Eval( bActivate, Self )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1154 2009-11-19 15:56:45 giuseppem Exp $
+ * $Id: Changelog,v 1.1155 2009-11-20 12:43:01 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-11-20 10:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hwindow.prg
+    CLASS HMDIChildWindow
+    ! fixed in METHOD ACTIVATE activate WINDOW MAXIMIZED 
+      because anchor not work in activate maximized
 
 2009-11-19 17:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hedit.prg

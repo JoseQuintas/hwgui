@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.152 2009-11-19 15:57:42 giuseppem Exp $
+ *$Id: hedit.prg,v 1.153 2009-11-20 17:17:20 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -1458,7 +1458,8 @@ FUNCTION CheckFocus( oCtrl, nInside )
       RETURN .F.
    ENDIF
    IF oParent  != Nil .AND. nInside
-      IF GETFOCUS() = oCtrl:oParent:Handle .AND. oParent:handle = oCtrl:oParent:Handle
+      IF PtrtouLong( GETFOCUS() ) = PtrtouLong( oCtrl:oParent:Handle ) .AND.;
+        PtrtouLong( oParent:handle ) = PtrtouLong( oCtrl:oParent:Handle )
          RETURN .F.
       ENDIF
    ENDIF

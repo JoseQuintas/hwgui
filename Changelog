@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1156 2009-11-20 16:00:50 lfbasso Exp $
+ * $Id: Changelog,v 1.1157 2009-11-20 17:17:13 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-11-20 15:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hedit.prg
+    ! fix XHARBOUR COMMERCIAL
+    FUNCTION CheckFocus
+      IF PtrtouLong( GETFOCUS() ) = PtrtouLong( oCtrl:oParent:Handle ) .AND.;
+        PtrtouLong( oParent:handle ) = PtrtouLong( oCtrl:oParent:Handle )
 
 2009-11-19 06:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg

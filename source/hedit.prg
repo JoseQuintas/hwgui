@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.153 2009-11-20 17:17:20 lfbasso Exp $
+ *$Id: hedit.prg,v 1.154 2009-11-20 19:59:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -43,6 +43,10 @@ CLASS VAR winclass   INIT "EDIT"
    DATA lReadOnly      INIT .F.
    DATA oUpDown
    DATA lCopy  INIT .F.  HIDDEN
+	 DATA SelStart  INIT 0
+   DATA SelText INIT 0
+   DATA SelLength INIT 0
+
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, ;
@@ -881,6 +885,7 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
          ENDIF
       ENDIF
    ENDIF
+   ::SelStart := nPos + 1
    ::lFirst := .F.
 
    RETURN 0
@@ -1012,7 +1017,6 @@ METHOD Valid( ) CLASS HEdit
 
 METHOD onChange( ) CLASS HEdit
    LOCAL  nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
-
     /*
    IF ! CheckFocus( Self, .T. )
       RETURN .t.

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.181 2009-11-19 13:43:07 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.182 2009-11-20 16:00:52 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -480,12 +480,15 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          
       ELSEIF msg == WM_CHAR
          IF ! CheckBit( lParam, 32 ) .AND.::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
-             nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 ) 
-             nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , 0 )
-             nShiftAltCtrl += IIF( Checkbit( lParam, 28 ), 4, 0 )
-             IF EMPTY( Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl ) )
-                 RETURN 0
-              ENDIF
+            nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 ) 
+            nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , 0 )
+            nShiftAltCtrl += IIF( Checkbit( lParam, 28 ), 4, 0 )
+            IF EMPTY( Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl ) )
+                RETURN 0
+             ENDIF
+            IF ::lAutoEdit 
+               ::Edit( wParam, lParam )
+            ENDIF
          ENDIF
 
       ELSEIF msg == WM_GETDLGCODE
@@ -656,8 +659,8 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             ::lCtrlPress := .T.
          ELSEIF wParam == 16
             ::lShiftPress := .T.
-         ELSEIF ::lAutoEdit .AND. ( wParam >= 48 .and. wParam <= 90 .or. wParam >= 96 .and. wParam <= 111 )
-            ::Edit( wParam, lParam )
+         //ELSEIF ::lAutoEdit .AND. ( wParam >= 48 .and. wParam <= 90 .or. wParam >= 96 .and. wParam <= 111 )
+         //   ::Edit( wParam, lParam )
          ENDIF
          RETURN 1
 

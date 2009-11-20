@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.40 2009-11-17 19:14:17 mlacecilia Exp $
+ * $Id: hcheck.prg,v 1.41 2009-11-20 18:24:28 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -256,7 +256,7 @@ METHOD Valid() CLASS HCheckButton
       Eval( ::bLostFocus, Self, ::value )
       ::oparent:lSuspendMsgsHandling := .f.
    ENDIF
-   IF GETFOCUS() = 0
+   IF EMPTY( GETFOCUS() )
       GetSkip( ::oParent, ::handle,, ::nGetSkip )
    ENDIF
 

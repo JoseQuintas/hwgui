@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.154 2009-11-20 19:59:22 lfbasso Exp $
+ *$Id: hedit.prg,v 1.155 2009-11-20 23:11:39 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -43,9 +43,9 @@ CLASS VAR winclass   INIT "EDIT"
    DATA lReadOnly      INIT .F.
    DATA oUpDown
    DATA lCopy  INIT .F.  HIDDEN
-	 DATA SelStart  INIT 0
-   DATA SelText INIT 0
-   DATA SelLength INIT 0
+   DATA nSelStart  INIT 0  HIDDEN
+   DATA cSelText   INIT "" HIDDEN
+   DATA nSelLength INIT 0 HIDDEN
 
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -80,6 +80,9 @@ CLASS VAR winclass   INIT "EDIT"
    METHOD LastEditable() PROTECTED
    METHOD SetGetUpdated() PROTECTED
    METHOD ReadOnly( lreadOnly ) SETGET
+   METHOD SelLength( nLength ) SETGET 
+   METHOD SelStart( nStart ) SETGET 
+   METHOD SelText( cText ) SETGET 
 
 ENDCLASS
 
@@ -204,10 +207,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             COPYSTRINGTOCLIPBOARD( ::UnTransform( GETCLIPBOARDTEXT() ) )
             RETURN -1
          ELSEIF msg = WM_PASTE
-              ::lFirst := .F.
-                cClipboardText :=  GETCLIPBOARDTEXT()
+            ::lFirst := .F.
+            cClipboardText :=  GETCLIPBOARDTEXT()
             IF ! EMPTY( cClipboardText )
-                 nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
+               nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
                SendMessage(  ::handle, EM_SETSEL, nPos-1 , nPos -1  )
                FOR nPos = 1 to Len( cClipboardText )
                      ::GetApplyKey( SUBSTR( cClipboardText , nPos, 1 ) )
@@ -885,7 +888,7 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
          ENDIF
       ENDIF
    ENDIF
-   ::SelStart := nPos + 1
+   ::SelStart := nPos 
    ::lFirst := .F.
 
    RETURN 0
@@ -898,6 +901,44 @@ METHOD ReadOnly( lreadOnly )
       ENDIF
    ENDIF
    RETURN ::lReadOnly
+   
+METHOD SelStart( Start ) CLASS HEdit
+   LOCAL nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
+   
+   IF Start != Nil
+      SendMessage( ::handle, EM_SETSEL, start , start ) 
+      ::nSelStart := start
+   ELSE
+      ::nSelStart := nPos    
+   ENDIF
+   RETURN ::nSelStart
+   
+METHOD SelLength( Length ) CLASS HEdit
+   LOCAL nSel :=  SendMessage( ::handle, EM_GETSEL, 0, 0 ) 
+   
+   IF Length != Nil
+      SendMessage( ::handle, EM_SETSEL, ::nSelStart, ::nSelStart + Length  ) 
+      ::nSelLength := Length
+   ELSE
+      ::nSelLength := HIWORD( nSel ) - LOWORD( nSel )
+   ENDIF
+   RETURN ::nSelLength
+
+METHOD SelText( cText ) CLASS HEdit
+
+   IF cText != Nil
+      SendMessage( ::handle, EM_SETSEL, ::nSelStart, ::nSelStart + ::nSelLength  )               
+      SendMessage( ::handle, WM_CUT, 0, 0 )      
+      COPYSTRINGTOCLIPBOARD( cText )
+      SendMessage( ::handle, EM_SETSEL, ::nSelStart, ::nSelStart )               
+      SendMessage( ::handle, WM_PASTE, 0, 0 )
+      ::nSelLength := 0
+      ::cSelText := cText
+   ELSE
+      ::cSelText := SUBSTR( ::title, ::nSelStart + 1, ::nSelLength )
+   ENDIF
+   RETURN ::cSelText
+   
 
 METHOD When() CLASS HEdit
    LOCAL res := .t., oParent, nSkip, vari

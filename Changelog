@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1158 2009-11-20 19:59:14 lfbasso Exp $
+ * $Id: Changelog,v 1.1159 2009-11-20 23:11:28 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -10,10 +10,21 @@
 
 2009-11-20 18:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg
-   + DATA SelText INIT 0
-   + DATA SelLength INIT 0
-   + DATA SelStart  INIT 0
-     Return colunm cursor in editbox
+    + DATA nSelStart  INIT 0  HIDDEN
+    + DATA cSelText   INIT "" HIDDEN
+    + DATA nSelLength INIT 0 HIDDEN
+    + METHOD SelStart( nStart ) SETGET 
+      Returns the starting point of a text selection made by the user in a text-entry area of a control,
+      OR indicates the position of the insertion point if no text is selected.
+      Also, specifies the starting point of a text selection in a text-entry area of a control.
+    + METHOD SelLength( nLength ) SETGET 
+      Returns the number of characters the user selects in a text-entry area of a control,
+      OR specifies the number of characters to select. 
+    + METHOD SelText( cText ) SETGET 
+      Returns the text that the user selected in a text-entry area of a control, or returns an
+      empty string ("") if no characters are selected.
+      OR Specifies the string containing the selected text.
+
 
 2009-11-20 15:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg

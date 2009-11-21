@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.155 2009-11-20 23:11:39 lfbasso Exp $
+ *$Id: hedit.prg,v 1.156 2009-11-21 14:59:18 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -888,7 +888,6 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
          ENDIF
       ENDIF
    ENDIF
-   ::SelStart := nPos 
    ::lFirst := .F.
 
    RETURN 0
@@ -903,24 +902,24 @@ METHOD ReadOnly( lreadOnly )
    RETURN ::lReadOnly
    
 METHOD SelStart( Start ) CLASS HEdit
-   LOCAL nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
+   LOCAL nPos 
    
    IF Start != Nil
       SendMessage( ::handle, EM_SETSEL, start , start ) 
       ::nSelStart := start
-   ELSE
+      ::nSelLength := 0
+   ELSEIF ::nSelLength = 0
+      nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) 
       ::nSelStart := nPos    
    ENDIF
    RETURN ::nSelStart
    
 METHOD SelLength( Length ) CLASS HEdit
-   LOCAL nSel :=  SendMessage( ::handle, EM_GETSEL, 0, 0 ) 
+   LOCAL nSel 
    
    IF Length != Nil
       SendMessage( ::handle, EM_SETSEL, ::nSelStart, ::nSelStart + Length  ) 
       ::nSelLength := Length
-   ELSE
-      ::nSelLength := HIWORD( nSel ) - LOWORD( nSel )
    ENDIF
    RETURN ::nSelLength
 

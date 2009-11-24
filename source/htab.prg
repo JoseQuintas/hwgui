@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.54 2009-11-20 19:07:55 lfbasso Exp $
+ *$Id: htab.prg,v 1.55 2009-11-24 21:33:38 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -93,7 +93,7 @@ METHOD Enabled( lEnabled ) CLASS HPage
 
   IF lEnabled != Nil
      ::lEnabled := lEnabled 
-     IF lEnabled .AND. ::PageOrder != ::oParent:nActive
+     IF lEnabled .AND. ( ::PageOrder != ::oParent:nActive .OR. ! IsWindowEnabled( ::oParent:Handle ) )     
         ::oParent:Enable()
         IF ::oParent:nActive = 0
            ::oParent:nActive := ::PageOrder
@@ -101,16 +101,17 @@ METHOD Enabled( lEnabled ) CLASS HPage
            ::oParent:showPage( ::PageOrder )
         ENDIF   
      ENDIF
-     ::oParent:ShowDisablePage()
+     ::oParent:ShowDisablePage( ::PageOrder )
      IF ::PageOrder = ::oParent:nActive .AND. !::lenabled 
          ::oParent:hidePage( ::PageOrder )
          ::oParent:nActive := SetTabFocus( ::oParent, ::oParent:nActive, .T. )
-         IF ::oParent:nActive > 0
+         IF ::oParent:nActive > 0 .AND. ::oParent:Pages[ ::oParent:nActive ]:lEnabled         
             ::oParent:showPage( ::oParent:nActive )
          ENDIF   
      ENDIF
      IF Ascan( ::oParent:Pages, {| p | p:lEnabled } ) = 0
         ::oParent:Disable()
+        ::oParent:nActive := 0
      ENDIF
   ENDIF
   RETURN ::lEnabled

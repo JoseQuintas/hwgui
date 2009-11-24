@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.55 2009-11-17 19:14:18 mlacecilia Exp $
+ *$Id: hcwindow.prg,v 1.56 2009-11-24 21:33:38 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -735,8 +735,8 @@ FUNCTION GetBackColorParent( oCtrl, lSelf, lTransparent )
    IF lSelf == Nil .OR. ! lSelf
       oCtrl := oCtrl:oParent
    ENDIF
-   IF  oCtrl != Nil .AND. oCtrl:cLASSNAME = "HTAB" .AND. Len( oCtrl:aPages ) > 0
-       IF oCtrl:Pages[ oCtrl:GETACTIVEPAGE() ]:bColor != Nil
+   IF  oCtrl != Nil .AND. oCtrl:cLASSNAME = "HTAB" 
+       IF Len( oCtrl:aPages ) > 0 .AND. oCtrl:Pages[ oCtrl:GETACTIVEPAGE() ]:bColor != Nil
           brush := oCtrl:Pages[ oCtrl:GetActivePage() ]:brush
        ELSEIF ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest  
           hTheme := hb_OpenThemeData( oCtrl:handle, "TAB" ) //oCtrl:oParent:WinClass ) 

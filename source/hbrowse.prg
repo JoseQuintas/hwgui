@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.184 2009-11-21 14:59:18 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.185 2009-11-24 21:33:38 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1468,8 +1468,9 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
             IF oColumn:nJusHead - DT_VCENTER - DT_SINGLELINE  ==  DT_RIGHT .OR. xSize < aTxtSize[ 1 ] + nMd  
                DrawTransparentBitmap( hDC, oBmpSort:Handle, captionRect[ 1 ] + ( captionRect[ 3 ] - captionRect[ 1 ]  ) ,captionRect[ 2 ] + 2, , )           
             ELSEIF  oColumn:nJusHead - DT_VCENTER - DT_SINGLELINE  ==  DT_CENTER 
-               DrawTransparentBitmap( hDC, oBmpSort:Handle, captionRect[ 1 ] + ( captionRect[ 3 ] - captionRect[ 1 ] + aTxtSize[ 1 ] ) / 2 + ;
-                          Min( captionRect[ 3 ] - captionRect[ 1 ] - aTxtSize[ 1 ], 16 ) , captionRect[ 2 ]  , , ) 
+              CaptionRect[ 1 ] := captionRect[ 1 ] + ( captionRect[ 3 ] - captionRect[ 1 ] + aTxtSize[ 1 ] ) / 2  +  ;
+                   MIN( ( x + xSize - ( 1 + ::aMargin[ 2 ] ) ) - ( captionRect[ 1 ] + ( captionRect[ 3 ] - captionRect[ 1 ] + aTxtSize[ 1 ] ) / 2   ) - 16, 8 ) 
+              DrawBitmap( hDC, oBmpSort:Handle,, captionRect[ 1 ] - 1 , captionRect[ 2 ]  , , ) 
             ELSE
                DrawTransparentBitmap( hDC, oBmpSort:Handle, captionRect[ 1 ] - nMe - 1, captionRect[ 2 ] + 2 , , )
             ENDIF               
@@ -1567,7 +1568,7 @@ METHOD SeparatorOut( hDC, nRowsFill ) CLASS HBrowse
    FillRect( hDC, ::x1 - ::nShowMark - ::nDeleteMark - 1 , ::y1 + ( ::height + 1 ) * nRowsfill + 1, ::x2 - 0, ::y2, ::brush:handle )      
    // SEPARATOR HORIZONT
    FOR i := 1 TO nRowsFill
-      DrawLine( hDC, ::x1 - ::nDeleteMark + 1, ::y1 + ( ::height + 1 ) * i, IIf( ::lAdjRight, ::x2, ::x2 ), ::y1 + ( ::height + 1 ) * i )
+      DrawLine( hDC, ::x1 - ::nDeleteMark + 0, ::y1 + ( ::height + 1 ) * i, IIf( ::lAdjRight, ::x2, ::x2 ), ::y1 + ( ::height + 1 ) * i )
    NEXT
    DO WHILE x < ::x2 - 2
       oColumn := ::aColumns[ fif ]
@@ -1600,8 +1601,10 @@ METHOD SeparatorOut( hDC, nRowsFill ) CLASS HBrowse
                  NEXT
               ENDIF
            ENDIF
-           SelectObject( hDC, oPen:handle )
-           DrawLine( hDC, x - 1, ::y1 + 1, x - 1, ::y1 + ( ::height + 1 ) * nRows )
+           IF x > ::x1 - IIF( ::lDeleteMark , 1, 0 )
+              SelectObject( hDC, oPen:handle )
+              DrawLine( hDC, x - 1, ::y1 + 1, x - 1, ::y1 + ( ::height + 1 ) * nRows )
+           ENDIF
         ENDIF
       ELSE
          xSize := 0 

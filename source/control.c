@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.88 2009-11-17 19:14:17 mlacecilia Exp $
+ * $Id: control.c,v 1.89 2009-11-24 21:57:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1559,7 +1559,7 @@ HB_FUNC( CREATETOOLBAR )
    HWND hWndCtrl = CreateWindowEx( ulExStyle,   /* extended style */
          TOOLBARCLASSNAME,      /* predefined class  */
          NULL,                  /* title   -   TBSTYLE_TRANSPARENT | */
-         TBSTYLE_ALTDRAG | TBSTYLE_TOOLTIPS |  TBSTYLE_WRAPABLE | CCS_TOP | CCS_NORESIZE |  WS_CHILD | WS_OVERLAPPED | WS_VISIBLE | ulStyle, /* style  */
+         WS_CHILD | WS_OVERLAPPED | WS_VISIBLE | TBSTYLE_ALTDRAG | TBSTYLE_TOOLTIPS |  TBSTYLE_WRAPABLE | CCS_TOP | CCS_NORESIZE | ulStyle, /* style  */
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
@@ -1589,7 +1589,7 @@ HB_FUNC( TOOLBARADDBUTTONS )
    //SendMessage(hWndCtrl, CCM_SETVERSION, (WPARAM) 4, 0);   
 
    SetWindowLong( hWndCtrl, GWL_STYLE,
-         style | TBSTYLE_TOOLTIPS | TBSTYLE_FLAT );
+         style | TBSTYLE_TOOLTIPS );  //| TBSTYLE_FLAT );
 
    SendMessage( hWndCtrl, TB_BUTTONSTRUCTSIZE, sizeof( TBBUTTON ), 0L );
 

@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.35 2009-11-17 19:14:20 mlacecilia Exp $
+ * $Id: htool.prg,v 1.36 2009-11-24 21:57:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -157,7 +157,8 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,btnWidth,oFont,bInit
 
    DEFAULT  aitem TO { }
 
-   nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), TBSTYLE_FLAT )
+   //nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), TBSTYLE_FLAT )
+   nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), 0 )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor )
 
@@ -172,7 +173,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,btnWidth,oFont,bInit
    ::nSize := IIF( nSize != NIL .AND. nSize > 11 , nSize, Nil )
 
    IF ! ::lVertical
-       ::Line := HLine():New(oWndParent,,,nLeft,nTop + nHeight + 1,nWidth)
+       ::Line := HLine():New( oWndParent,,, nLeft, nTop + nHeight + IIF( ( ! ISTHEMEACTIVE() .OR. ! ::WindowsManifest ) .AND. Hwg_BitAnd( nStyle,  TBSTYLE_FLAT ) > 0, 2, 0 ) , nWidth )       
    ELSE
        ::Line := HLine():New(oWndParent,,::lVertical,nLeft + nWidth + 1 ,nTop,nHeight)
    ENDIF

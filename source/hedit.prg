@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.156 2009-11-21 14:59:18 lfbasso Exp $
+ *$Id: hedit.prg,v 1.157 2009-11-25 17:47:20 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -224,8 +224,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
             IF ! CheckBit( lParam, 32 ) .AND.::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
                nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 )
-               nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , 0 )
-               nShiftAltCtrl += IIF( Checkbit( lParam, 28 ), 4, 0 )
+               nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 ,  nShiftAltCtrl )
+               //nShiftAltCtrl += IIF( Checkbit( lParam, 28 ), 4, 0 )
                IF ! Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl  )
                   RETURN 0
                ENDIF
@@ -272,8 +272,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          ELSEIF msg == WM_KEYDOWN
             IF ( CheckBit( lParam, 25 ) .OR. wParam > 111 ) .AND. ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
                nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 )
-               nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , 0 )
-               nShiftAltCtrl += IIF( Checkbit( lParam, 28 ), 4, 0 )
+               nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 ,  nShiftAltCtrl )
+               nShiftAltCtrl += IIF( wParam > 111, 4, nShiftAltCtrl )             
                IF !Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl  )
                   RETURN 0
                ENDIF

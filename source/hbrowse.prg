@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.186 2009-11-25 17:47:18 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.187 2009-11-25 20:43:20 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1173,7 +1173,8 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
          Eval( ::bSkip, Self, ::rowPos - ::internal[ 2 ] )
       ENDIF
    ELSE
-      IF Eval( ::bEof, Self ) .OR. Eval( ::bBof, Self )
+      //IF Eval( ::bEof, Self ) .OR. Eval( ::bBof, Self )
+      IF Eval( ::bEof, Self ) .OR. Eval( ::bBof, Self ) .OR. ::rowPos > ::nRecords 
          Eval( ::bGoTop, Self )
          ::rowPos := 1  
       ENDIF
@@ -1609,7 +1610,7 @@ METHOD SeparatorOut( hDC, nRowsFill ) CLASS HBrowse
            ENDIF
            IF x > ::x1 - IIF( ::lDeleteMark , 1, 0 )
               SelectObject( hDC, oPen:handle )
-              DrawLine( hDC, x - 1, ::y1 + 1, x - 1, ::y1 + ( ::height + 1 ) * nRows )
+              DrawLine( hDC, x - 1, ::y1 + 1, x - 1, ::y1 + ( ::height + 1 ) * nRowsFill )
            ENDIF
         ENDIF
       ELSE
@@ -1811,8 +1812,7 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                    ::aColumns[ ::nPaintCol ]:brush := HBrush():Add( ::aColumns[ ::nPaintCol ]:bColor )
                 ENDIF
                 hBReal := IIf( ::aColumns[ ::nPaintCol ]:brush != Nil .AND. ( ::nPaintCol != ::colPos .OR. ! lSelected ), ;
-                           ::aColumns[ ::nPaintCol ]:brush:handle,   ;
-                           oLineBrush:handle )
+                           ::aColumns[ ::nPaintCol ]:brush:handle, oLineBrush:handle )
               ENDIF 
              // Fill background color of a cell
              FillRect( hDC, x, ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1, ;
@@ -1871,7 +1871,6 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                   IF ::aColumns[ ::nPaintCol ]:tColor != Nil .AND. ( ::nPaintCol != ::colPos .OR. ! lSelected )
                      oldT1Color := SetTextColor( hDC, ::aColumns[ ::nPaintCol ]:tColor )
                   ENDIF
-
                   IF ::aColumns[ ::nPaintCol ]:bColor != Nil .AND. ( ::nPaintCol != ::colPos .OR. ! lSelected )
                      oldBk1Color := SetBkColor( hDC, ::aColumns[ ::nPaintCol ]:bColor )
                   ENDIF

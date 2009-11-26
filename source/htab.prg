@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.55 2009-11-24 21:33:38 lfbasso Exp $
+ *$Id: htab.prg,v 1.56 2009-11-26 16:29:04 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -90,28 +90,26 @@ METHOD SetColor( tcolor, bColor ) CLASS HPage
    RETURN NIL
 
 METHOD Enabled( lEnabled ) CLASS HPage
-
+  LOCAL nActive
+  
   IF lEnabled != Nil
      ::lEnabled := lEnabled 
      IF lEnabled .AND. ( ::PageOrder != ::oParent:nActive .OR. ! IsWindowEnabled( ::oParent:Handle ) )     
-        ::oParent:Enable()
-        IF ::oParent:nActive = 0
-           ::oParent:nActive := ::PageOrder
+        IF ! IsWindowEnabled( ::oParent:Handle ) 
+           ::oParent:Enable()
            ::oParent:setTab( ::PageOrder )
-           ::oParent:showPage( ::PageOrder )
         ENDIF   
      ENDIF
      ::oParent:ShowDisablePage( ::PageOrder )
      IF ::PageOrder = ::oParent:nActive .AND. !::lenabled 
-         ::oParent:hidePage( ::PageOrder )
-         ::oParent:nActive := SetTabFocus( ::oParent, ::oParent:nActive, .T. )
-         IF ::oParent:nActive > 0 .AND. ::oParent:Pages[ ::oParent:nActive ]:lEnabled         
-            ::oParent:showPage( ::oParent:nActive )
+         nActive := SetTabFocus( ::oParent, ::oParent:nActive, .T. )
+         IF nActive > 0 .AND. ::oParent:Pages[ nActive ]:lEnabled
+            ::oParent:setTab( nActive )
          ENDIF   
      ENDIF
      IF Ascan( ::oParent:Pages, {| p | p:lEnabled } ) = 0
         ::oParent:Disable()
-        ::oParent:nActive := 0
+        SendMessage( ::oParent:handle, TCM_SETCURSEL, - 1, 0 ) 
      ENDIF
   ENDIF
   RETURN ::lEnabled
@@ -399,10 +397,12 @@ METHOD ChangePage( nPage ) CLASS HTab
       //SetTabFocus( Self, nPage, .F. )
       RETURN Nil
    ENDIF
-   IF ! Empty( ::aPages ) .AND. ::pages[ ::nActive ]:enabled 
+   IF ! Empty( ::aPages ) .AND. ::pages[ nPage ]:enabled 
       client_rect := TabItemPos( ::Handle, ::nActive - 1 )
-       RedrawWindow( ::oPaint:Handle, RDW_INVALIDATE  + RDW_INTERNALPAINT  )
-      ::HidePage( ::nActive )
+      RedrawWindow( ::oPaint:Handle, RDW_INVALIDATE  + RDW_INTERNALPAINT  )
+      IF ::nActive > 0
+         ::HidePage( ::nActive )
+      ENDIF   
       ::ShowPage( nPage )
       ::nActive := nPage
       InvalidateRect( ::handle, 1, client_rect[ 1 ], client_rect[ 2 ] , client_rect[ 3 ] + 3, client_rect[ 4 ] + 2 )			
@@ -491,19 +491,20 @@ METHOD Refresh( ) CLASS HTab
    RETURN Nil
 
 METHOD GetActivePage( nFirst, nEnd ) CLASS HTab
-   IF ! ::lResourceTab
-      IF ! Empty( ::aPages )
-         nFirst := ::aPages[ ::nActive, 1 ] + 1
-         nEnd   := ::aPages[ ::nActive, 1 ] + ::aPages[ ::nActive, 2 ]
+   IF  ::nActive > 0
+      IF ! ::lResourceTab
+         IF ! Empty( ::aPages )
+            nFirst := ::aPages[ ::nActive, 1 ] + 1
+            nEnd   := ::aPages[ ::nActive, 1 ] + ::aPages[ ::nActive, 2 ]
+         ELSE
+            nFirst := 1
+            nEnd   := Len( ::aControls )
+         ENDIF
       ELSE
          nFirst := 1
-         nEnd   := Len( ::aControls )
+         nEnd   := Len( ::aPages[ ::nActive, 1 ]:aControls )
       ENDIF
-   ELSE
-      nFirst := 1
-      nEnd   := Len( ::aPages[ ::nActive, 1 ]:aControls )
    ENDIF
-
    RETURN ::nActive
 
 METHOD DeletePage( nPage ) CLASS HTab

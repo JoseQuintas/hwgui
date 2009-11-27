@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.188 2009-11-27 02:10:06 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.189 2009-11-27 18:33:41 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1811,7 +1811,8 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                 IF ::aColumns[ ::nPaintCol ]:bColor != Nil .AND. ::aColumns[ ::nPaintCol ]:brush == Nil
                    ::aColumns[ ::nPaintCol ]:brush := HBrush():Add( ::aColumns[ ::nPaintCol ]:bColor )
                 ENDIF
-                hBReal := IIf( ::aColumns[ ::nPaintCol ]:brush != Nil .AND. ( ::nPaintCol != ::colPos .OR. ! lSelected ), ;
+                //hBReal := IIf( ::aColumns[ ::nPaintCol ]:brush != Nil .AND. ( ::nPaintCol != ::colPos .OR. ! lSelected ), ;
+                hBReal := IIf( ::aColumns[ ::nPaintCol ]:brush != Nil,; 
                            ::aColumns[ ::nPaintCol ]:brush:handle, oLineBrush:handle )
               ENDIF 
              // Fill background color of a cell
@@ -1868,10 +1869,10 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                      sviv := ""
                   ENDIF
                   // Ahora lineas Justificadas !!
-                  IF ::aColumns[ ::nPaintCol ]:tColor != Nil .AND. ( ::nPaintCol != ::colPos .OR. ! lSelected )
+                  IF ::aColumns[ ::nPaintCol ]:tColor != Nil //.AND. ( ::nPaintCol != ::colPos .OR. ! lSelected )
                      oldT1Color := SetTextColor( hDC, ::aColumns[ ::nPaintCol ]:tColor )
                   ENDIF
-                  IF ::aColumns[ ::nPaintCol ]:bColor != Nil .AND. ( ::nPaintCol != ::colPos .OR. ! lSelected )
+                  IF ::aColumns[ ::nPaintCol ]:bColor != Nil //.AND. ( ::nPaintCol != ::colPos .OR. ! lSelected )
                      oldBk1Color := SetBkColor( hDC, ::aColumns[ ::nPaintCol ]:bColor )
                   ENDIF
                   IF ::aColumns[ ::nPaintCol ]:oFont != Nil
@@ -1899,11 +1900,11 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                               )
                   #endif
 
-                  IF ::aColumns[ ::nPaintCol ]:tColor != Nil .AND. ( ::nPaintCol != ::colPos .OR. ! lSelected )
+                  IF ::aColumns[ ::nPaintCol ]:tColor != Nil //.AND. ( ::nPaintCol != ::colPos .OR. ! lSelected )
                      SetTextColor( hDC, oldT1Color )
                   ENDIF
 
-                  IF ::aColumns[ ::nPaintCol ]:bColor != Nil .AND. ( ::nPaintCol != ::colPos .OR. ! lSelected )
+                  IF ::aColumns[ ::nPaintCol ]:bColor != Nil //.AND. ( ::nPaintCol != ::colPos .OR. ! lSelected )
                      SetBkColor( hDC, oldBk1Color )
                   ENDIF
                 ENDIF

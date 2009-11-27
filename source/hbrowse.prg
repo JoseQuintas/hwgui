@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.187 2009-11-25 20:43:20 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.188 2009-11-27 02:10:06 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -2138,15 +2138,16 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
       ::rowPos := ::rowCount
       //FP InvalidateRect( ::handle, 0 )
       ::Refresh()
-   ELSE
-      ::internal[ 1 ] := 0
-
-      nUpper := ::y1  +  ( ::height + 1 ) * ( ::rowPos - 2 )
-      nLower := ::y1 + ( ::height + 1 ) * ( ::rowPos )
-
-      InvalidateRect( ::handle, 0, ::x1 - ::nShowMark - ::nDeleteMark, nUpper, ::x2, nLower )
-
+   //ELSE
    ENDIF
+   ::internal[ 1 ] := 0
+
+   nUpper := ::y1  +  ( ::height + 1 ) * ( ::rowPos - 2 )
+   nLower := ::y1 + ( ::height + 1 ) * ( ::rowPos )
+
+   InvalidateRect( ::handle, 0, ::x1 - ::nShowMark - ::nDeleteMark, nUpper, ::x2, nLower )
+
+   //ENDIF
    IF ::lAppMode
       IF ::rowPos > 1
          ::rowPos --
@@ -2179,11 +2180,12 @@ METHOD LINEUP() CLASS HBrowse
          ::rowPos := 1
          // InvalidateRect( ::handle, 0 )
          ::Refresh( , .T. )
-      ELSE
-         ::internal[ 1 ] := 0
-         InvalidateRect( ::handle, 0, ::x1 - ::nShowMark - ::nDeleteMark, ::y1 + ( ::height + 1 ) * ::internal[ 2 ] - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::internal[ 2 ] )
-         InvalidateRect( ::handle, 0, ::x1 - ::nShowMark - ::nDeleteMark, ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::x2 , ::y1 + ( ::height + 1 ) * ::rowPos )
+      //ELSE
       ENDIF
+      ::internal[ 1 ] := 0
+      InvalidateRect( ::handle, 0, ::x1 - ::nShowMark - ::nDeleteMark, ::y1 + ( ::height + 1 ) * ::internal[ 2 ] - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::internal[ 2 ] )
+      InvalidateRect( ::handle, 0, ::x1 - ::nShowMark - ::nDeleteMark, ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::x2 , ::y1 + ( ::height + 1 ) * ::rowPos )
+      //ENDIF
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, - 1, .F. )
       ELSEIF ::nRecords > 1

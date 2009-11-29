@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.56 2009-11-26 16:29:04 lfbasso Exp $
+ *$Id: htab.prg,v 1.57 2009-11-29 13:46:13 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -124,6 +124,7 @@ CLASS VAR winclass   INIT "SysTabControl32"
    DATA  Pages  INIT { }
    DATA  bChange, bChange2
    DATA  hIml, aImages, Image1, Image2
+   DATA  aBmpSize INIT { 0, 0 }
    DATA  oTemp
    DATA  bAction, bRClick
    DATA  lResourceTab INIT .F.
@@ -189,11 +190,12 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    IF aImages != Nil
       ::aImages := { }
       FOR i := 1 TO Len( aImages )
-         AAdd( ::aImages, Upper( aImages[ i ] ) )
+         //AAdd( ::aImages, Upper( aImages[ i ] ) )
          aImages[ i ] := IIf( lResour, LoadBitmap( aImages[ i ] ), OpenBitmap( aImages[ i ] ) )
+         AAdd( ::aImages, aImages[ i ] )         
       NEXT
-      aBmpSize := GetBitmapSize( aImages[ 1 ] )
-      ::himl := CreateImageList( aImages, aBmpSize[ 1 ], aBmpSize[ 2 ], 12, nBC )
+      ::aBmpSize := GetBitmapSize( aImages[ 1 ] )
+      ::himl := CreateImageList( aImages, ::aBmpSize[ 1 ], ::aBmpSize[ 2 ], 12, nBC )
       ::Image1 := 0
       IF Len( aImages ) > 1
          ::Image2 := 1
@@ -847,11 +849,13 @@ METHOD Paint( lpdis ) CLASS HPaintTab
    RETURN 0
 
 METHOD showTextTabs( oPage, aItemPos ) CLASS HPaintTab
-    LOCAL nStyle, dwText 
+
+    LOCAL nStyle, dwText, BmpSize := 0, size := 0, aTxtSize
     
     //nStyle := SS_CENTER + IIF(  Hwg_BitAnd( oPage:oParent:Style, TCS_FIXEDWIDTH  ) != 0 ,;
     //                            SS_RIGHTJUST, DT_VCENTER + DT_SINGLELINE )
-    nStyle := SS_CENTER + DT_VCENTER + DT_SINGLELINE 
+    AEVAL( oPage:oParent:Pages, {| p | size += p:aItemPos[ 3 ] - p:aItemPos[ 1 ] } ) 
+    nStyle := SS_CENTER + DT_VCENTER + DT_SINGLELINE + DT_END_ELLIPSIS 
                                 
     SetBkMode( ::hDC, 1 )             
     IF oPage:oParent:oFont != Nil
@@ -862,12 +866,21 @@ METHOD showTextTabs( oPage, aItemPos ) CLASS HPaintTab
     ELSE
     	 SetTextColor( ::hDC, GetSysColor( COLOR_GRAYTEXT ) )
     ENDIF   
+    aTxtSize := TxtRect( oPage:caption, oPage:oParent )
+    IF oPage:oParent:himl != Nil
+        BmpSize := ( ( aItemPos[ 3 ] - aItemPos[ 1 ] ) - ( oPage:oParent:aBmpSize[ 1 ] + aTxtSize[1] ) ) / 2
+        BmpSize += oPage:oParent:aBmpSize[ 1 ]
+        BmpSize := MAX( BmpSize, oPage:oParent:aBmpSize[ 1 ] ) 
+    ENDIF
+    aItemPos[ 3 ] := IIF( size > oPage:oParent:nWidth .AND. aItemPos[ 1 ] + BmpSize + aTxtSize[ 1 ] > oPage:oParent:nWidth - 44, oPage:oParent:nWidth - 44, aItemPos[ 3 ] )
     IF  Hwg_BitAnd( oPage:oParent:Style, TCS_BOTTOM  ) = 0
+       FillRect( ::hDC,  aItemPos[ 1 ] + BmpSize + 2, aItemPos[ 2 ] + 3, aItemPos[ 3 ] - 4, aItemPos[ 4 ] - 5,;
+           IIF( oPage:brush != Nil, oPage:brush:Handle, oPage:oParent:brush:Handle  ) )
        IF oPage:oParent:GetActivePage() = oPage:PageOrder                       // 4
-          FillRect( ::hDC,  aItemPos[ 1 ] + 3, aItemPos[ 2 ] + 3, aItemPos[ 3 ] - 4, aItemPos[ 4 ] - 5, IIF( oPage:brush != Nil, oPage:brush:Handle, oPage:oParent:brush:Handle ) )
-          DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] , aItemPos[ 2 ] - 1, aItemPos[ 3 ] , aItemPos[ 4 ] - 1 , nstyle )
+          //FillRect( ::hDC,  aItemPos[ 1 ] + 3, aItemPos[ 2 ] + 3, aItemPos[ 3 ] - 4, aItemPos[ 4 ] - 5, IIF( oPage:brush != Nil, oPage:brush:Handle, oPage:oParent:brush:Handle ) )
+          DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] + BmpSize - 1 , aItemPos[ 2 ] - 1, aItemPos[ 3 ]  , aItemPos[ 4 ] - 1 , nstyle )          
        ELSE
-          DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] , aItemPos[ 2 ] + 1, aItemPos[ 3 ] , aItemPos[ 4 ] + 1 , nstyle )
+          DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] + BmpSize - 0, aItemPos[ 2 ] + 1, aItemPos[ 3 ] + 1 , aItemPos[ 4 ] + 1 , nstyle )
        ENDIF
     ELSE
        FillRect( ::hDC,  aItemPos[ 1 ] + 3, aItemPos[ 2 ] + 3, aItemPos[ 3 ] - 4, aItemPos[ 4 ] - 5, IIF( oPage:brush != Nil, oPage:brush:Handle,  oPage:oParent:brush:Handle ) )

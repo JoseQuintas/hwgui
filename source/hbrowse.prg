@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.190 2009-11-28 10:18:32 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.191 2009-11-29 13:46:13 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1282,7 +1282,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
 
    // Highlights the selected ROW
    // we can have a modality with CELL selection only or ROW selection
-   IF ! ::lResizing .AND. ! ::lHeadClick    
+   IF ! ::lResizing .AND. ! ::lHeadClick .AND. ! ::lEditable
       ::LineOut( ::rowPos, 0, hDC, .T. )
    ENDIF
    // Highligths the selected cell
@@ -1307,6 +1307,9 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
          ::FooterOut( hDC )
       ENDIF
    ENDIF
+   IF ::lAppMode  .AND. ::nRecords != 0 .AND. ::rowPos = ::rowCount
+       ::LineOut( ::rowPos, 0 , hDC, .T., .T. )
+   ENDIF        
 
    // End paint block
    EndPaint( ::handle, pps )
@@ -1326,7 +1329,6 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    IF ::lAppMode
       ::Edit()
    ENDIF
-
 
    ::lAppMode := .F.
 
@@ -2677,7 +2679,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
          ENDDO
          nWidth := Min( ::aColumns[ fif ]:width, ::x2 - x1 - 1 )
          rowPos := ::rowPos - 1
-         IF ::lAppMode .AND. ::nRecords != 0
+         IF ::lAppMode .AND. ::nRecords != 0 .AND. ::rowPos != ::rowCount
             rowPos ++
          ENDIF
          y1 := ::y1 + ( ::height + 1 ) * rowPos

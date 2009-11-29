@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1164 2009-11-28 10:18:32 lfbasso Exp $
+ * $Id: Changelog,v 1.1165 2009-11-29 13:46:12 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-11-29 11:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! fix in ::edit if lAppMode and rowpos = rowcount
+      if in EDITMODE onlY current Col is show Selected
+  * source\htab.prg
+    + DATA  aBmpSize INIT { 0, 0 }
+    ! fix in METHOD showTextTabs case have bitmaps 
 
 2009-11-28 08:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg

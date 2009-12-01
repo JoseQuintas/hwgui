@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.191 2009-11-29 13:46:13 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.192 2009-12-01 12:25:52 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -2726,14 +2726,17 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                ITEMS oColumn:aList            ;
                SIZE nWidth, ::height + 2      ;
                FONT oComboFont  ;       
-               VALID {| oColumn, oGet | ::ValidColumn( oColumn, oGet )};
-               WHEN {| oColumn, oGet | ::WhenColumn( oColumn, oGet )};
+               VALID oColumn:bValid           ;
+               WHEN oColumn:bWhen
+
+               //VALID {| oColumn, oGet | ::ValidColumn( oColumn, oGet )};
+               //WHEN {| oColumn, oGet | ::WhenColumn( oColumn, oGet )};
 
             IF oColumn:bValid != NIL
                oCombo:bValid := oColumn:bValid
             ENDIF
 
-            // oModDlg:AddEvent( 0, IDOK, { || oModDlg:lResult := .T. , oModDlg:close() } )
+             oModDlg:AddEvent( 0, IDOK, { || oModDlg:lResult := .T. , oModDlg:close() } )
 
          ELSE
             IF Type <> "M"

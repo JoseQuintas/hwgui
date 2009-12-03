@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1166 2009-12-03 13:21:07 marcosgambeta Exp $
+ * $Id: Changelog,v 1.1167 2009-12-03 15:11:03 marcosgambeta Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-12-03 13:10 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
+  * samples\animation\animation.hbp
+    Added resource file.
 
 2009-12-03 11:18 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
   + samples\all\a.hbp

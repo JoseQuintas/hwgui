@@ -1,4 +1,5 @@
 animation.prg
+animation.rc
 -i..\..\include
 -lhwgui
 -lprocmisc

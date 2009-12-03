@@ -1,0 +1,12 @@
+grid_5.prg
+fclass1.prg
+ffile1.prg
+ft_funcs.prg
+pesqtext.prg
+-i..\..\include
+-lhwgui
+-lprocmisc
+-lhbxml
+-lhwg_qhtm
+-L..\..\lib
+-gtgui

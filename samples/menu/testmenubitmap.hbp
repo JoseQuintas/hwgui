@@ -1,0 +1,8 @@
+testmenubitmap.prg
+-i..\..\include
+-lhwgui
+-lprocmisc
+-lhbxml
+-lhwg_qhtm
+-L..\..\lib
+-gtgui

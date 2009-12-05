@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.193 2009-12-05 16:27:43 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.194 2009-12-05 17:23:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -455,7 +455,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
       ELSEIF msg == WM_ERASEBKGND
          RETURN 0
          
-      ELSEIF msg = WM_SETFONT .AND. ::oHeadFont = Nil
+      ELSEIF msg = WM_SETFONT .AND. ::oHeadFont = Nil .AND. isWindowVisible( ::Handle )
          ::nHeadHeight := 0
          ::nFootHeight := 0
 
@@ -1473,6 +1473,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
          NEXT      // Nando DT_VCENTER+DT_SINGLELINE  
          IF ::ShowSortMark .AND. oColumn:SortMark > 0
             oBmpSort  :=  IIF( oColumn:SortMark = 1, HBitmap():AddStandard( OBM_UPARROWD ),  HBitmap():AddStandard( OBM_DNARROWD ) )
+            captionRect[ 2 ] := ( ::nHeadHeight + 16 ) / 2 - 16             
             IF oColumn:nJusHead - DT_VCENTER - DT_SINGLELINE  ==  DT_RIGHT .OR. xSize < aTxtSize[ 1 ] + nMd  
                DrawTransparentBitmap( hDC, oBmpSort:Handle, captionRect[ 1 ] + ( captionRect[ 3 ] - captionRect[ 1 ]  ) ,captionRect[ 2 ] + 2, , )           
             ELSEIF  oColumn:nJusHead - DT_VCENTER - DT_SINGLELINE  ==  DT_CENTER 

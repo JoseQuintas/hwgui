@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.195 2009-12-05 17:29:02 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.196 2009-12-05 17:45:24 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1481,7 +1481,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
                    MIN( ( x + xSize - ( 1 + ::aMargin[ 2 ] ) ) - ( captionRect[ 1 ] + ( captionRect[ 3 ] - captionRect[ 1 ] + aTxtSize[ 1 ] ) / 2   ) - 16, 8 ) 
                DrawBitmap( hDC, oBmpSort:Handle,, captionRect[ 1 ] - 1 , captionRect[ 2 ]  , , ) 
             ELSE
-               DrawTransparentBitmap( hDC, oBmpSort:Handle, captionRect[ 1 ] - nMe - 1, captionRect[ 2 ] + 2 , , )
+               DrawTransparentBitmap( hDC, oBmpSort:Handle, captionRect[ 1 ] - nMe - 1, captionRect[ 2 ] , , )
             ENDIF               
          ENDIF
        ENDIF

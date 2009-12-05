@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.146 2009-11-19 08:32:07 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.147 2009-12-05 16:27:43 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -190,11 +190,11 @@ METHOD SetFont( oFont ) CLASS HControl
 
    IF oFont != NIL
       IF  VALTYPE( oFont ) = "O"
-         SendMessage( ::handle, WM_SETFONT, oFont:handle, 0 )
          ::oFont := oFont
+         SetWindowFont( ::Handle, ::oFont:Handle, .T. )
       ENDIF
-   ELSEIF ::oParent:oFont != NIL
-      SetCtrlFont( ::oParent:handle, ::id, ::oParent:oFont:handle )
+   ELSEIF ::oParent:oFont != NIL      
+      SetWindowFont( ::handle, ::oParent:oFont:handle, .T. )
    ENDIF
    RETURN ::oFont
 

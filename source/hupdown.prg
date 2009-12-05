@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.26 2009-11-17 19:14:20 mlacecilia Exp $
+ * $Id: hupdown.prg,v 1.27 2009-12-05 16:27:44 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -139,12 +139,12 @@ METHOD CREATEUPDOWN CLASS Hupdown
    //   RETURN Nil
     //ENDIF
    ::nHolder := 0
-    IF !::lCreate
+   IF !::lCreate
        ::Activate()
-         SETWINDOWPOS( ::oEditUpDown:handle, ::Handle,  0,0,0,0, SWP_NOSIZE +  SWP_NOMOVE )
-         DESTROYWINDOW( ::Handle )
-      ::SetFont( ::oFont )
-   ELSEIF ::getParentForm():Type < WND_DLG_RESOURCE .AND. ::oParent:classname = "HTAB" //!EMPTY( ::oParent:oParent )
+       ::oEditUpDown:SetFont( ::oFont )
+       SETWINDOWPOS( ::oEditUpDown:handle, ::Handle,  0,0,0,0, SWP_NOSIZE +  SWP_NOMOVE )
+       DESTROYWINDOW( ::Handle )
+   ELSEIF ::getParentForm():Type < WND_DLG_RESOURCE .AND. ::oParent:ClassName = "HTAB" //!EMPTY( ::oParent:oParent )
       // MDICHILD WITH TAB
       ::nHolder := 1
       SetWindowObject( ::oEditUpDown:handle, ::oEditUpDown )
@@ -168,6 +168,7 @@ METHOD SetValue( nValue )  CLASS HUpDown
        nValue := ::Value
    ENDIF
    ::Value := nValue
+   ::title := Str( ::value )
    SetUpDown( ::hUpDown, ::value )
    IF ::bSetGet != Nil
       Eval( ::bSetGet, ::value, Self )
@@ -180,7 +181,7 @@ METHOD Refresh()  CLASS HUpDown
    IF ::bSetGet != Nil .AND. ::value != Nil
       ::value := Eval( ::bSetGet )
       IF Str(::value) != ::title
-         ::title := Str( ::value )
+         //::title := Str( ::value )
          //SetUpDown( ::hUpDown, ::value )
          ::SetValue( ::Value )
       ENDIF
@@ -202,6 +203,9 @@ METHOD Valid() CLASS HUpDown
    ENDIF
    res :=  ::value <= ::nUpper .and. ::value >= ::nLower
    IF ! res
+      ::Value := IIF( ::Value > ::nUpper, Min( ::Value, ::nUpper ), Max( ::Value, ::nLower ) )
+      ::SetValue( ::Value )
+      ::oEditUpDown:Refresh()
       SendMessage( ::oEditUpDown:Handle, EM_SETSEL , 0, -1 )
       ::SetFocus()
         RETURN res
@@ -236,7 +240,7 @@ METHOD Notify( lParam ) CLASS HeditUpDown
 
    iDelta := IIF( iDelta < 0,  1, - 1) //* IIF( ::oParent:oParent = Nil , - 1 ,  1 )
 
- 	 IF ::oUpDown = Nil .OR. Hwg_BitAnd( GetWindowLong( ::handle, GWL_STYLE ), ES_READONLY ) != 0 .OR.;
+ 	 IF ::oUpDown = Nil .OR. Hwg_BitAnd( GetWindowLong( ::handle, GWL_STYLE ), ES_READONLY ) != 0 .OR. ;
        ( ::oUpDown:bGetFocus != Nil .AND. ! Eval( ::oUpDown:bGetFocus, ::oUpDown:Value, ::oUpDown ) )
 	     Return 0
    ENDIF
@@ -263,7 +267,7 @@ METHOD Notify( lParam ) CLASS HeditUpDown
       ::oparent:lSuspendMsgsHandling := .F.
    ENDIF
    IF nCode = UDN_FIRST
-       //MSGINFO(STR(NCODE)+STR(IPOS)+STR(IDELTA))
+
    ENDIF
    RETURN 0
 
@@ -273,10 +277,8 @@ METHOD Notify( lParam ) CLASS HeditUpDown
    vari := ::oUpDown:Value
    IF  ::bSetGet != Nil  .AND. ::title != Nil
       ::Title := Transform( vari , ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
-      SetDlgItemText( ::oParent:handle, ::id, ::title )
-   ELSE
-      SetDlgItemText( ::oParent:handle, ::id, ::title )
    ENDIF
+   SetDlgItemText( ::oParent:handle, ::id, ::title )
 
    RETURN Nil
 

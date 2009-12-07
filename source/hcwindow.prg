@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.56 2009-11-24 21:33:38 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.57 2009-12-07 10:28:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -747,6 +747,8 @@ FUNCTION GetBackColorParent( oCtrl, lSelf, lTransparent )
           ELSE   
              brush := oCtrl:brush
           ENDIF 
+       ELSE   
+          brush := HBrush():Add( bColor )
        ENDIF   
     ELSEIF oCtrl:bColor != Nil  
        brush := oCtrl:brush

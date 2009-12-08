@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.38 2009-08-20 09:16:35 druzus Exp $
+ * $Id: control.c,v 1.39 2009-12-08 11:59:31 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -68,6 +68,7 @@ HB_FUNC( CREATESTATIC )
    const char * cTitle = ( hb_pcount() > 8 )? hb_parc(9) : "";
    GtkWidget * hCtrl, * hLabel;
    GtkFixed * box;
+   ULONG ulExtStyle = hb_parnl( 8 ) ;
 
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
       hCtrl = gtk_drawing_area_new();
@@ -79,6 +80,13 @@ HB_FUNC( CREATESTATIC )
       g_free( gcTitle );
       gtk_container_add( GTK_CONTAINER(hCtrl), hLabel );
       g_object_set_data( (GObject*) hCtrl, "label", (gpointer) hLabel );
+      if( ulExtStyle && WS_EX_TRANSPARENT )
+      {
+         gtk_event_box_set_visible_window( GTK_EVENT_BOX( hCtrl ) , 0 );
+      }
+      
+
+
       if( !( ulStyle & SS_CENTER ) )
          gtk_misc_set_alignment( GTK_MISC(hLabel), ( ulStyle & SS_RIGHT )? 1 : 0, 0 );
    }

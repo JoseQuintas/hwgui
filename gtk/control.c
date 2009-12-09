@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.39 2009-12-08 11:59:31 lculik Exp $
+ * $Id: control.c,v 1.40 2009-12-09 15:24:44 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions
@@ -41,6 +41,7 @@
 #define WM_PAINT            15
 #define WM_HSCROLL         276
 #define WM_VSCROLL         277
+#define WS_EX_TRANSPARENT      32      // 0x00000020L
 
 extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
 extern void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );

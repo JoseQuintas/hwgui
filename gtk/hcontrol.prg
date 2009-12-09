@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.18 2009-11-14 07:23:36 lculik Exp $
+ *$Id: hcontrol.prg,v 1.19 2009-12-09 15:24:45 lculik Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 
@@ -340,6 +340,7 @@ CLASS HStatic INHERIT HControl
                   bSize,bPaint,ctoolt,tcolor,bcolor,lTransp )
    METHOD Activate()
    METHOD SetValue(value) INLINE hwg_static_SetText( ::handle,value )
+   METHOD SetText(value) INLINE hwg_static_SetText( ::handle,value )
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;

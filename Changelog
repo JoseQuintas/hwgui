@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1171 2009-12-09 15:24:42 lculik Exp $
+ * $Id: Changelog,v 1.1172 2009-12-09 22:16:49 marcosgambeta Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-12-09 20:15 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
+  * samples\browse\arbrow1.prg
+  * samples\browse\arbrow2.prg
+  * samples\browse\colrbloc.prg
+    Static Function Main changed to Function Main.
+
 2009-12-09 13:20 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * gtk/control.c
     ! Added missing define
@@ -26,14 +33,14 @@
     + STATIC oPen64
     ! fix in FooterOut()
     ! minor fix in SeparatorOut(), LineOut()
-    ! changed in buttondown RedrawWindow to Invalidate making it faster and avoiding the flickering 
+    ! changed in buttondown RedrawWindow to Invalidate making it faster and avoiding the flickering
   * source\hcontrol.prg
     ! fix in METHOD SETFONT
   * source\hupdown.prg
     ! fix in font in method createupdow
     * METHOD VALID()
       if value is outside the valid in Method VALID is assigned the MAX or MIN RANGE
-      
+
 2009-12-03 13:10 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
   * samples\animation\animation.hbp
     Added resource file.

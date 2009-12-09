@@ -9,7 +9,7 @@
 #define x_RED             255
 
 ***********************
-STATIC FUNCTION Main()
+FUNCTION Main()
 ***********************
 LOCAL oWinMain
 local i, a, b

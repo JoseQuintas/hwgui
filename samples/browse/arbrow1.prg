@@ -9,7 +9,7 @@
 #include "guilib.ch"
 
 ***********************
-STATIC FUNCTION Main()
+FUNCTION Main()
 ***********************
 LOCAL oWinMain
 

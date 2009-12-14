@@ -1,5 +1,5 @@
 /*
- * $Id: cxshade.c,v 1.7 2009-06-29 11:22:03 alkresin Exp $
+ * $Id: cxshade.c,v 1.8 2009-12-14 23:58:33 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level functions for special drawing effects
@@ -601,9 +601,9 @@ void cxshade_SetShade( PCXSHADE pshade, UINT shadeID, BYTE palette,
                xs = sXSize / 2 - d + ( y * y * d ) / a;
                if( x > xs )
                   posDst[j] =
-                        idxmin + ( BYTE ) ( ( ( sXSize - j ) * 128 ) / d );
+                        (BYTE) idxmin + ( BYTE ) ( ( ( sXSize - j ) * 128 ) / d );
                if( ( x + xs ) < 0 )
-                  posDst[j] = idxmax - ( BYTE ) ( ( j * 128 ) / d );
+                  posDst[j] = (BYTE) idxmax - ( BYTE ) ( ( j * 128 ) / d );
                posDst[j] += rand(  ) / grainx2 - granularity;
             }
             posDst += bytes;

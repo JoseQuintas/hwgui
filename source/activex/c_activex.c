@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.4 2009-06-29 11:22:05 alkresin Exp $
+ * $Id: c_activex.c,v 1.5 2009-12-14 23:58:33 andijahja Exp $
  */
 /*
  * ooHG source code:
@@ -446,7 +446,7 @@ static ULONG STDMETHODCALLTYPE Invoke( IEventHandler * this, DISPID dispid,
          // En caso de que los parametros sean pasados por referencia
          for( i = iArg; i > 0; i-- )
          {
-            if( ( &( params->rgvarg[iArg - i] ) )->n1.n2.vt & VT_BYREF ==
+            if( ( ( &( params->rgvarg[iArg - i] ) )->n1.n2.vt & VT_BYREF ) ==
                   VT_BYREF )
             {
 

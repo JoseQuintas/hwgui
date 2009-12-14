@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.25 2009-08-20 09:16:37 druzus Exp $
+ * $Id: freeimg.c,v 1.26 2009-12-14 23:58:33 andijahja Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -490,7 +490,7 @@ HB_FUNC( FI_FI2DIB )
          ( FREEIMAGE_GETBITS ) GetFunction( ( FARPROC ) pGetbits,
          "_FreeImage_GetBits@4" );
 
-   hdib = CreateDIB( pGetwidth( dib ), pGetheight( dib ), pGetBPP( dib ) );
+   hdib = CreateDIB( (WORD) pGetwidth( dib ), (WORD) pGetheight( dib ), (WORD) pGetBPP( dib ) );
 
    if( hdib )
    {

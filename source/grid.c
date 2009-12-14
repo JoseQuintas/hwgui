@@ -1,5 +1,5 @@
  /*
-  * $Id: grid.c,v 1.34 2009-11-17 19:14:17 mlacecilia Exp $
+  * $Id: grid.c,v 1.35 2009-12-14 23:58:33 andijahja Exp $
   *
   * HWGUI - Harbour Win32 GUI library source code:
   * HGrid class
@@ -290,7 +290,8 @@ HB_FUNC( LISTVIEW_SETIMAGELIST )
    HWND hList = ( HWND ) HB_PARHANDLE( 1 );
    HIMAGELIST p = ( HIMAGELIST ) HB_PARHANDLE( 2 );
 
-#ifdef __BORLANDC__
+// #ifdef __BORLANDC__
+#if 1
    SendMessage( hList, LVM_SETIMAGELIST, ( WPARAM ) p,
          ( LPARAM ) LVSIL_NORMAL );
    SendMessage( hList, LVM_SETIMAGELIST, ( WPARAM ) p,

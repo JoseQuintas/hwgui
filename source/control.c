@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.89 2009-11-24 21:57:14 lfbasso Exp $
+ * $Id: control.c,v 1.90 2009-12-14 23:58:33 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -717,6 +717,9 @@ HB_FUNC( TREEADDNODE )
    int nPos = hb_parni( 5 );
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
 
+   tvi.iImage = 0;
+   tvi.iSelectedImage = 0;
+
    tvi.mask = TVIF_TEXT | TVIF_PARAM;
    tvi.pszText = ( LPSTR ) hb_parc( 6 );
    tvi.lParam = ( LPARAM ) ( hb_itemNew( pObject ) );
@@ -749,9 +752,11 @@ HB_FUNC( TREEADDNODE )
                ( LPARAM ) ( &is ) ) );
 
    if( tvi.mask & TVIF_IMAGE )
-      DeleteObject( ( HGDIOBJ ) tvi.iImage );
+      if ( tvi.iImage )
+         DeleteObject( ( HGDIOBJ ) tvi.iImage );
    if( tvi.mask & TVIF_SELECTEDIMAGE )
-      DeleteObject( ( HGDIOBJ ) tvi.iSelectedImage );
+      if ( tvi.iSelectedImage )
+         DeleteObject( ( HGDIOBJ ) tvi.iSelectedImage );
 }
 
 /*

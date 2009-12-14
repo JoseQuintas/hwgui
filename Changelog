@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1172 2009-12-09 22:16:49 marcosgambeta Exp $
+ * $Id: Changelog,v 1.1173 2009-12-14 23:58:33 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,24 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-12-15 07:00 UTC+0700 Andi Jahja <xharbour/AT/telkom/net/id>
+  * source/themes.c
+    ! define BS_TYPEMASK only if not defined
+  * source/window.c
+    + add #include "hbapi.h"
+  * source/activex/c_activex.c
+  * source/freeimg.c
+  * source/cxshade.c
+    ! pacify MSVC warning
+  * source/control.c
+    ! initialize variables before used
+  * source/drawtext.c
+    ! commented unused variable
+  * source/misc.c
+    ! some castings on file handlers
+  * source/grid.c
+    ! use direct call rather than macro for all compilers
 
 2009-12-09 20:15 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at gmail dot com>
   * samples\browse\arbrow1.prg

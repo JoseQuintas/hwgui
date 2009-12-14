@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.22 2009-11-19 08:32:07 lfbasso Exp $
+ * $Id: drawtext.c,v 1.23 2009-12-14 23:58:33 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -68,7 +68,7 @@ HB_FUNC( DRAWTEXT )
    const char *cText = hb_parc( 2 );
    RECT rc;
    UINT uFormat = ( hb_pcount(  ) == 4 ? hb_parni( 4 ) : hb_parni( 7 ) );
-   int uiPos = ( hb_pcount(  ) == 4 ? 3 : hb_parni( 8 ) );
+   // int uiPos = ( hb_pcount(  ) == 4 ? 3 : hb_parni( 8 ) );
    int heigh ;
    if( hb_pcount(  ) > 4 )
    {

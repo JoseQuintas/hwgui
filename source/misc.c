@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.52 2009-08-20 09:16:37 druzus Exp $
+ * $Id: misc.c,v 1.53 2009-12-14 23:58:33 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -40,14 +40,14 @@ void writelog( char *s )
    HB_FHANDLE handle;
 #endif
 
-   if( hb_fsFile( ( unsigned char * ) "ac.log" ) )
-      handle = hb_fsOpen( ( unsigned char * ) "ac.log", FO_WRITE );
+   if( hb_fsFile( "ac.log" ) )
+      handle = hb_fsOpen( "ac.log", FO_WRITE );
    else
-      handle = hb_fsCreate( ( unsigned char * ) "ac.log", 0 );
+      handle = hb_fsCreate( "ac.log", 0 );
 
    hb_fsSeek( handle, 0, SEEK_END );
-   hb_fsWrite( handle, ( unsigned char * ) s, strlen( s ) );
-   hb_fsWrite( handle, ( unsigned char * ) "\n\r", 2 );
+   hb_fsWrite( handle, ( const char * ) s, strlen( s ) );
+   hb_fsWrite( handle, "\n\r", 2 );
 
    hb_fsClose( handle );
 }

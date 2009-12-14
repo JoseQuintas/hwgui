@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.76 2009-11-15 18:55:05 lfbasso Exp $
+ * $Id: window.c,v 1.77 2009-12-14 23:58:33 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -18,6 +18,7 @@
 #if defined(__DMC__)
 #include "missing.h"
 #endif
+#include "hbapi.h"
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"

@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.5 2009-12-14 23:58:33 andijahja Exp $
+ * $Id: c_activex.c,v 1.6 2009-12-15 07:19:16 andijahja Exp $
  */
 /*
  * ooHG source code:
@@ -441,7 +441,7 @@ static ULONG STDMETHODCALLTYPE Invoke( IEventHandler * this, DISPID dispid,
          }
 
          // execute
-         hb_vmDo( iArg );
+         hb_vmDo( (USHORT) iArg );
 
          // En caso de que los parametros sean pasados por referencia
          for( i = iArg; i > 0; i-- )

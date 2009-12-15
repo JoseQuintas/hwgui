@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.53 2009-12-14 23:58:33 andijahja Exp $
+ * $Id: misc.c,v 1.54 2009-12-15 07:19:16 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -25,6 +25,7 @@
 #include "hbfast.h"
 #endif
 #include "guilib.h"
+#include "missing.h"
 
 extern BOOL Array2Rect( PHB_ITEM aRect, RECT * rc );
 extern PHB_ITEM Rect2Array( RECT * rc );
@@ -46,7 +47,7 @@ void writelog( char *s )
       handle = hb_fsCreate( "ac.log", 0 );
 
    hb_fsSeek( handle, 0, SEEK_END );
-   hb_fsWrite( handle, ( const char * ) s, strlen( s ) );
+   hb_fsWrite( handle, ( const char * ) s, (USHORT) strlen( s ) );
    hb_fsWrite( handle, "\n\r", 2 );
 
    hb_fsClose( handle );
@@ -484,8 +485,8 @@ HB_FUNC( KEYB_EVENT )
    if( bAlt )
       keybd_event( VK_MENU, 0, 0, 0 );
 
-   keybd_event( hb_parni( 1 ), 0, dwFlags, 0 );
-   keybd_event( hb_parni( 1 ), 0, dwFlags | KEYEVENTF_KEYUP, 0 );
+   keybd_event( (BYTE) hb_parni( 1 ), 0, dwFlags, 0 );
+   keybd_event( (BYTE) hb_parni( 1 ), 0, dwFlags | KEYEVENTF_KEYUP, 0 );
 
    if( bShift )
       keybd_event( VK_SHIFT, 0, KEYEVENTF_KEYUP, 0 );

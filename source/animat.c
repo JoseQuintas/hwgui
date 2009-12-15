@@ -51,6 +51,9 @@ HB_FUNC( ANIMATE_DESTROY )
 
 HB_FUNC( ANIMATE_OPENEX )
 {
+#if defined(__DMC__)
+   #define Animate_OpenEx(hwnd, hInst, szName) (BOOL)SNDMSG(hwnd, ACM_OPEN, (WPARAM)hInst, (LPARAM)(LPTSTR)(szName))
+#endif
    ISNIL( 2 ) ?
    Animate_OpenEx( ( HWND ) HB_PARHANDLE( 1 ),
                    NULL ,

@@ -1,5 +1,5 @@
 /*
- * $Id: cxshade.c,v 1.8 2009-12-14 23:58:33 andijahja Exp $
+ * $Id: cxshade.c,v 1.9 2009-12-15 07:19:16 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level functions for special drawing effects
@@ -516,7 +516,7 @@ void cxshade_SetShade( PCXSHADE pshade, UINT shadeID, BYTE palette,
    for( i = 0; i < j; i++ )
    {
       // iDst[i]=64+127*(i%2);  //soft
-      iDst[i] = 255 * ( i % 2 );        //hard
+      iDst[i] = (BYTE) (255 * ( i % 2 ));        //hard
    }
 
    iDst = cxdib_GetBits( &( pshade->m_dv ) );   //build the vert. dotted focus bitmap
@@ -524,7 +524,7 @@ void cxshade_SetShade( PCXSHADE pshade, UINT shadeID, BYTE palette,
    for( i = 0; i < j; i++ )
    {
       // *iDst=64+127*(i%2);            //soft
-      *iDst = 255 * ( i % 2 );  //hard
+      *iDst = (BYTE) ( 255 * ( i % 2 ));  //hard
       iDst += 4;
    }
 
@@ -772,5 +772,5 @@ HB_FUNC( SHADE_SET )
 HB_FUNC( SHADE_DRAW )
 {
    cxshade_Draw( ( PCXSHADE ) HB_PARHANDLE( 1 ), ( HDC ) HB_PARHANDLE( 2 ),
-         hb_parni( 3 ) );
+         (short) hb_parni( 3 ) );
 }

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.h,v 1.19 2009-08-23 10:21:26 druzus Exp $
+ *$Id: guilib.h,v 1.20 2009-12-15 07:19:16 andijahja Exp $
  */
 
 #ifdef __EXPORT__
@@ -16,10 +16,16 @@
 #define ST_ALIGN_HORIZ_RIGHT   2           // Icon/bitmap on the right, text on the left
 #define ST_ALIGN_OVERLAP       3           // Icon/bitmap on the same space as text
 
-#ifdef __MSC6__
-   #define GetWindowLongPtr    GetWindowLong
-   #define SetWindowLongPtr    SetWindowLong
-   #define DWORD_PTR           DWORD
+#if ((defined(_MSC_VER)&&(_MSC_VER<1300)&&!defined(__POCC__)) || defined(__WATCOMC__)|| defined(__DMC__))
+   #define IS_INTRESOURCE(_r) ((((ULONG_PTR)(_r)) >> 16) == 0)
+   #if (defined(_MSC_VER)&&(_MSC_VER<1300)||defined(__DMC__))
+      #define GetWindowLongPtr    GetWindowLong
+      #define SetWindowLongPtr    SetWindowLong
+      #define DWORD_PTR           DWORD
+      #define LONG_PTR            LONG
+      #define ULONG_PTR           ULONG
+      #define GWLP_WNDPROC        GWL_WNDPROC
+   #endif
 #endif
 
 #ifdef HWG_USE_POINTER_ITEM

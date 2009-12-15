@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.19 2009-07-09 02:45:51 lfbasso Exp $
+ * $Id: theme.c,v 1.20 2009-12-15 07:19:16 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -21,7 +21,9 @@
 #endif
 
 //#include <tmschema.h>
+#ifndef BS_TYPEMASK
 #define BS_TYPEMASK SS_TYPEMASK
+#endif
 #ifndef BP_PUSHBUTTON
 #define BP_PUSHBUTTON 1
 #define PBS_NORMAL    1
@@ -104,7 +106,6 @@ typedef HRESULT( __stdcall * PFNCLOSETHEMEDATA ) ( HTHEME hTheme );
 typedef HRESULT( __stdcall * PFNDRAWTHEMEBACKGROUND ) ( HTHEME hTheme,
       HDC hdc, int iPartId, int iStateId, const RECT * pRect,
       const RECT * pClipRect );
-
 
 typedef HRESULT( __stdcall * PFNDRAWTHEMETEXT ) ( HTHEME hTheme, HDC hdc,
       int iPartId, int iStateId, LPCWSTR pszText, int iCharCount,
@@ -227,7 +228,6 @@ typedef HRESULT( __stdcall *
 typedef HRESULT( __stdcall * PFNDRAWTHEMEPARENTBACKGROUND ) ( HWND hwnd,
       HDC hdc, RECT * prc );
 typedef HRESULT( __stdcall * PFNENABLETHEMING ) ( BOOL fEnable );
-
 
 static HRESULT EnableThemingFail( BOOL fenable )        // fenable
 {
@@ -363,7 +363,9 @@ static HRESULT HitTestThemeBackgroundFail( HTHEME hTheme, HDC hdc,
    HB_SYMBOL_UNUSED( dwOptions );
    HB_SYMBOL_UNUSED( pRect );
    HB_SYMBOL_UNUSED( hrgn );
+#if !defined(__POCC__)
    HB_SYMBOL_UNUSED( ptTest );
+#endif
    HB_SYMBOL_UNUSED( pwHitTestCode );
    return E_FAIL;
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.90 2009-12-14 23:58:33 andijahja Exp $
+ * $Id: control.c,v 1.91 2009-12-15 07:19:16 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -27,7 +27,7 @@
 #include "hbtrace.h"
 #include "guilib.h"
 
-#if defined(__BORLANDC__) || (defined(_MSC_VER) && !defined(__XCC__))
+#if defined(__BORLANDC__) || (defined(_MSC_VER) && !defined(__XCC__) || defined(__WATCOMC__) || defined(__DMC__) )
 WINUSERAPI HWND WINAPI GetAncestor( HWND hwnd, UINT gaFlags );
 
 
@@ -41,6 +41,9 @@ WINUSERAPI HWND WINAPI GetAncestor( HWND hwnd, UINT gaFlags );
 #endif
 #ifndef CCM_GETVERSION
    #define CCM_GETVERSION (CCM_FIRST + 0x8)
+#endif
+#ifndef TB_GETIMAGELIST
+   #define TB_GETIMAGELIST         (WM_USER + 49)
 #endif
 
 // LRESULT CALLBACK OwnBtnProc (HWND, UINT, WPARAM, LPARAM) ;

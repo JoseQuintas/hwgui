@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.57 2009-08-20 09:16:36 druzus Exp $
+ * $Id: draw.c,v 1.58 2009-12-15 14:02:14 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -12,6 +12,10 @@
 
 #define _WIN32_WINNT 0x0500
 #define OEMRESOURCE
+#ifdef __DMC__
+#define __DRAW_C__
+#endif
+
 #include <windows.h>
 
 #include "hbapi.h"

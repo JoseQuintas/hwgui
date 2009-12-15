@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.196 2009-12-05 17:45:24 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.197 2009-12-15 13:40:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1263,7 +1263,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
 
       // print the rest of the browse
       
-      DO WHILE cursor_row <= ::rowCount .AND. ::nRecords > nRows //nRows
+      DO WHILE cursor_row <= ::rowCount .AND. ( ::nRecords > nRows .AND. !Eval( ::bEof, Self ) )
          //IF ::aSelected != Nil .AND. AScan( ::aSelected, { | x | x = Eval( ::bRecno, Self ) } ) > 0
          //   ::LineOut( cursor_row, 0, hDC, .t., .T. )
          //ELSE
@@ -1598,9 +1598,9 @@ METHOD SeparatorOut( hDC, nRowsFill ) CLASS HBrowse
                //DrawLine( hDC, x - 0, ::y1 + 1, x - 0, ::y1 + ( ::height + 1 ) * nRows )
            ENDIF
         ELSE
-           // NANDO SEPARATOR VERTICAL
-           IF ! ::lDispSep .AND. oColumn:bColorBlock != Nil 
-              bColor := ( Eval( oColumn:bColorBlock, ::FLDSTR( Self, fif ), fif, Self ) )[ 2 ]
+           // SEPARATOR VERTICAL
+           IF ! ::lDispSep .AND. ( oColumn:bColorBlock != Nil .OR. oColumn:bColor != Nil )
+              bColor := IIF( oColumn:bColorBlock != Nil ,( Eval( oColumn:bColorBlock, ::FLDSTR( Self, fif ), fif, Self ) )[ 2 ], oColumn:bColor )              
               IF bColor != Nil
                  // horizontal
                  SelectObject( hDC, HPen():Add( PS_SOLID, 1, bColor ):handle )

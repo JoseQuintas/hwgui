@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.91 2009-12-15 07:19:16 andijahja Exp $
+ * $Id: control.c,v 1.92 2009-12-15 13:40:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1597,7 +1597,7 @@ HB_FUNC( TOOLBARADDBUTTONS )
    //SendMessage(hWndCtrl, CCM_SETVERSION, (WPARAM) 4, 0);   
 
    SetWindowLong( hWndCtrl, GWL_STYLE,
-         style | TBSTYLE_TOOLTIPS );  //| TBSTYLE_FLAT );
+         style | TBSTYLE_TOOLTIPS | TBSTYLE_FLAT );
 
    SendMessage( hWndCtrl, TB_BUTTONSTRUCTSIZE, sizeof( TBBUTTON ), 0L );
 
@@ -1606,7 +1606,10 @@ HB_FUNC( TOOLBARADDBUTTONS )
 
       pTemp = hb_arrayGetItemPtr( pArray, ulCount + 1 );
       ulID = hb_arrayGetNI( pTemp, 1 );
-      tb[ulCount].iBitmap = ulID - 1;   //ulID > 0 ? ( int ) ulCount : -1 ;
+      if ( hb_arrayGetNI( pTemp, 4 ) == TBSTYLE_SEP )
+         tb[ulCount].iBitmap = 8 ;
+      else
+         tb[ulCount].iBitmap = ulID - 1;   //ulID > 0 ? ( int ) ulCount : -1 ;
       tb[ulCount].idCommand = hb_arrayGetNI( pTemp, 2 );
       tb[ulCount].fsState = hb_arrayGetNI( pTemp, 3 );
       tb[ulCount].fsStyle = hb_arrayGetNI( pTemp, 4 );

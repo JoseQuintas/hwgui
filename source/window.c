@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.78 2009-12-15 08:58:05 druzus Exp $
+ * $Id: window.c,v 1.79 2009-12-15 20:27:04 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -60,7 +60,7 @@ PHB_DYNS pSym_onEven_Tool = NULL;
 // static PHB_DYNS pSym_MDIWnd = NULL;
 static LPCTSTR s_szChild = TEXT( "MDICHILD" );
 
-/* Consume all queued events, useful to update all the controls... I split in 2 parts because I feel 
+/* Consume all queued events, useful to update all the controls... I split in 2 parts because I feel
  * that DoEvents should be called internally by some other functions...
  */
 HB_FUNC( HWG_DOEVENTS )
@@ -278,7 +278,7 @@ HB_FUNC( HWG_INITCHILDWINDOW )
                               -1 ) ? ( HBRUSH ) NULL : ( HBRUSH )
                         HB_PARHANDLE( 6 ) ) : ( HBRUSH ) ( COLOR_WINDOW +
                         1 ) ) );
-      /*          
+      /*
          wndclass.hbrBackground = ( ( (hb_pcount()>5 && !ISNIL(6))?
          ( (hb_parnl(6)==-1)? (HBRUSH)(COLOR_WINDOW+1) :
          CreateSolidBrush( hb_parnl(6) ) )
@@ -485,8 +485,9 @@ HB_FUNC( HWG_CREATEMDICHILDWINDOW )
       return;
    }
 
-   hWnd = CreateMDIWindow( s_szChild,     // pointer to registered child class name
-               cTitle,                    // pointer to window name
+   hWnd = CreateMDIWindow(
+               (LPSTR) s_szChild,         // pointer to registered child class name
+               (LPSTR) cTitle,            // pointer to window name
                style,                     // window style
                x,                         // horizontal position of window
                y,                         // vertical position of window

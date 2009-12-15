@@ -1,5 +1,5 @@
 /*
- * $Id: resource.c,v 1.13 2009-12-15 00:29:32 andijahja Exp $
+ * $Id: resource.c,v 1.14 2009-12-15 08:58:05 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level resource functions
@@ -27,7 +27,7 @@
 #include "hbinit.h"
 #include "guilib.h"
 
-HMODULE hModule;
+HMODULE s_hModule;
 
 #if 0
 void hb_resourcemodules( void );
@@ -35,14 +35,14 @@ void hb_resourcemodules( void );
 
 HB_FUNC( GETRESOURCES )
 {
-   hb_retnl( ( LONG ) hModule );
+   hb_retnl( ( LONG ) s_hModule );
 }
 
 HB_FUNC( LOADSTRING )
 {
    char Buffer[2048];
    int BuffRet =
-         LoadString( ( HINSTANCE ) hModule, ( UINT ) hb_parnl( 2 ), Buffer,
+         LoadString( ( HINSTANCE ) s_hModule, ( UINT ) hb_parnl( 2 ), Buffer,
          2048 );
 
    hb_retclen( Buffer, BuffRet );
@@ -50,7 +50,7 @@ HB_FUNC( LOADSTRING )
 
 HB_FUNC( LOADRESOURCE )
 {
-   hModule = GetModuleHandle( ISCHAR( 1 ) ? hb_parc( 1 ) : NULL );
+   s_hModule = GetModuleHandle( ISCHAR( 1 ) ? hb_parc( 1 ) : NULL );
 }
 
 #if 0
@@ -60,13 +60,13 @@ HB_FUNC( LOADRESOURCE )
 
 void hb_resourcemodules( void )
 {
-   hModule = GetModuleHandle( NULL );
+   s_hModule = GetModuleHandle( NULL );
 }
 #endif
 
 HB_FUNC_INIT( HWG_INITRESOURCE )
 {
-   hModule = GetModuleHandle( NULL );
+   s_hModule = GetModuleHandle( NULL );
 }
 
 #ifdef __XHARBOUR__
@@ -75,24 +75,13 @@ HB_FUNC_INIT( HWG_INITRESOURCE )
 #  undef HB_PRG_PCODE_VER
 #  define HB_PRG_PCODE_VER HB_PCODE_VER
 #endif
+#define __HB_MUDULE__   &ModuleFakeDyn
+#else
+#define __HB_MUDULE__   NULL
 #endif
 
 HB_INIT_SYMBOLS_BEGIN( hwg_resource_INIT )
-#ifdef __XHARBOUR__
-{
-   "HWG_INITRESOURCE$",
-   {
-   HB_FS_INIT | HB_FS_LOCAL},
-   {
-HB_INIT_FUNCNAME( HWG_INITRESOURCE )}, &ModuleFakeDyn}
-#else
-{
-   "HWG_INITRESOURCE$",
-   {
-   HB_FS_INIT | HB_FS_LOCAL},
-   {
-HB_INIT_FUNCNAME( HWG_INITRESOURCE )}, NULL}
-#endif
+{ "HWG_INITRESOURCE$", {HB_FS_INIT | HB_FS_LOCAL}, {HB_INIT_FUNCNAME( HWG_INITRESOURCE )}, __HB_MUDULE__ }
 HB_INIT_SYMBOLS_END( hwg_resource_INIT )
 #if defined( HB_PRAGMA_STARTUP )
 #  pragma startup hwg_resource_INIT
@@ -103,20 +92,20 @@ HB_INIT_SYMBOLS_END( hwg_resource_INIT )
 
 HB_FUNC( FINDRESOURCE )
 {
-   HRSRC hHRSRC ;
-   int lpName = hb_parni( 2 )   ; //"WindowsXP.Manifest";
-   int lpType = hb_parni( 3 )  ; // RT_MANIFEST = 24
+   HRSRC hHRSRC;
+   int lpName = hb_parni( 2 ) ; //"WindowsXP.Manifest";
+   int lpType = hb_parni( 3 ) ; // RT_MANIFEST = 24
 
-   hModule = GetModuleHandle( ISCHAR( 1 ) ? hb_parc( 1 ) : NULL );
+   s_hModule = GetModuleHandle( ISCHAR( 1 ) ? hb_parc( 1 ) : NULL );
 
-   if IS_INTRESOURCE( lpName )
+   if( IS_INTRESOURCE( lpName ) )
    {
-     hHRSRC = FindResource( ( HMODULE ) hModule,
+     hHRSRC = FindResource( ( HMODULE ) s_hModule,
       ( LPCTSTR ) lpName ,
       ( LPCTSTR ) lpType ) ;
 
       HB_RETHANDLE( hHRSRC );
    }
-   else   
+   else
       HB_RETHANDLE( 0 );
 }

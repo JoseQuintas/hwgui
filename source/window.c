@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.77 2009-12-14 23:58:33 andijahja Exp $
+ * $Id: window.c,v 1.78 2009-12-15 08:58:05 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -58,7 +58,7 @@ HACCEL hAccel = NULL;
 PHB_DYNS pSym_onEvent = NULL;
 PHB_DYNS pSym_onEven_Tool = NULL;
 // static PHB_DYNS pSym_MDIWnd = NULL;
-static TCHAR szChild[] = TEXT( "MDICHILD" );
+static LPCTSTR s_szChild = TEXT( "MDICHILD" );
 
 /* Consume all queued events, useful to update all the controls... I split in 2 parts because I feel 
  * that DoEvents should be called internally by some other functions...
@@ -376,7 +376,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
        ( HBRUSH ) HB_PARHANDLE( 6 ) : ( HBRUSH ) ( COLOR_WINDOW + 1 );
    wc.lpszMenuName = ( LPCTSTR ) NULL;
    wc.cbWndExtra = 0;
-   wc.lpszClassName = szChild;
+   wc.lpszClassName = s_szChild;
    wc.cbClsExtra = 0;
    wc.hInstance = ( HINSTANCE ) hInstance;
    wc.hCursor = LoadCursor( NULL, IDC_ARROW );
@@ -485,16 +485,16 @@ HB_FUNC( HWG_CREATEMDICHILDWINDOW )
       return;
    }
 
-   hWnd = CreateMDIWindow( ( LPSTR ) szChild,   // pointer to registered child class name
-         ( LPSTR ) cTitle,      // pointer to window name
-         style,                 // window style
-         x,                     // horizontal position of window
-         y,                     // vertical position of window
-         width,                 // width of window
-         height,                // height of window
-         ( HWND ) aWindows[1],  // handle to parent window (MDI client)
-         GetModuleHandle( NULL ),       // handle to application instance
-         ( LPARAM ) & pObj      // application-defined value
+   hWnd = CreateMDIWindow( s_szChild,     // pointer to registered child class name
+               cTitle,                    // pointer to window name
+               style,                     // window style
+               x,                         // horizontal position of window
+               y,                         // vertical position of window
+               width,                     // width of window
+               height,                    // height of window
+               ( HWND ) aWindows[1],      // handle to parent window (MDI client)
+               GetModuleHandle( NULL ),   // handle to application instance
+               ( LPARAM ) & pObj          // application-defined value
           );
 
    HB_RETHANDLE( hWnd );

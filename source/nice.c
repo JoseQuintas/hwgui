@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.16 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: nice.c,v 1.17 2009-12-15 08:58:05 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -52,7 +52,7 @@ typedef int ( _stdcall * GRADIENTFILL ) ( HDC, PTRIVERTEX, int, PVOID, int,
       int );
 LRESULT CALLBACK NiceButtProc( HWND, UINT, WPARAM, LPARAM );
 
-static GRADIENTFILL pGradientfill = NULL;
+static GRADIENTFILL s_pGradientfill = NULL;
 
 void Draw_Gradient( HDC hdc, int x, int y, int w, int h, int r, int g, int b )
 {
@@ -78,7 +78,7 @@ void Draw_Gradient( HDC hdc, int x, int y, int w, int h, int r, int g, int b )
    Rect.UpperLeft = 0;
    Rect.LowerRight = 1;
    // ******************************************************
-   pGradientfill( hdc, Vert, 2, &Rect, 1, GRADIENT_FILL_RECT_V );
+   s_pGradientfill( hdc, Vert, 2, &Rect, 1, GRADIENT_FILL_RECT_V );
    // ******************************************************
    Vert[0].x = 0;
    Vert[0].y = h / 2;
@@ -97,7 +97,7 @@ void Draw_Gradient( HDC hdc, int x, int y, int w, int h, int r, int g, int b )
    Rect.UpperLeft = 0;
    Rect.LowerRight = 1;
    // ******************************************************
-   pGradientfill( hdc, Vert, 2, &Rect, 1, GRADIENT_FILL_RECT_V );
+   s_pGradientfill( hdc, Vert, 2, &Rect, 1, GRADIENT_FILL_RECT_V );
 }
 
 
@@ -143,22 +143,22 @@ HB_FUNC( SETWINDOWRGN )
 HB_FUNC( HWG_REGNICE )
 {
    // **********[ DLL Declarations ]**********
-   static TCHAR szAppName[] = TEXT( "NICEBUTT" );
-   static BOOL bRegistered = 0;
-   static WNDCLASS wc;
+   static LPCTSTR s_szAppName = TEXT( "NICEBUTT" );
+   static BOOL s_bRegistered = 0;
 
-   pGradientfill =
+   s_pGradientfill =
          ( GRADIENTFILL ) GetProcAddress( LoadLibrary( "MSIMG32.DLL" ),
          "GradientFill" );
 //    if (Gradientfill == NULL)
 //        return FALSE;
-   if( !bRegistered )
+   if( !s_bRegistered )
    {
+      WNDCLASS wc;
 
       wc.style = CS_HREDRAW | CS_VREDRAW | CS_GLOBALCLASS;
       wc.hInstance = GetModuleHandle( 0 );
       wc.hbrBackground = ( HBRUSH ) ( COLOR_BTNFACE + 1 );
-      wc.lpszClassName = szAppName;
+      wc.lpszClassName = s_szAppName;
       wc.lpfnWndProc = NiceButtProc;
       wc.cbClsExtra = 0;
       wc.cbWndExtra = 0;
@@ -167,7 +167,7 @@ HB_FUNC( HWG_REGNICE )
       wc.lpszMenuName = 0;
 
       RegisterClass( &wc );
-      bRegistered = 1;
+      s_bRegistered = 1;
    }
 }
 

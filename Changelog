@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1175 2009-12-15 07:19:16 andijahja Exp $
+ * $Id: Changelog,v 1.1176 2009-12-15 08:58:05 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,26 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-12-15 09:57 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/nice.c
+    * added s_ prefix to names of static variables
+    % replaced static WNDCLASS wc with local variable
+    * cleaned s_szAppName declaration
+
+  * hwgui/source/window.c
+    * added s_ prefix to names of static variables
+    * cleaned s_szChild declaration
+
+  * hwgui/source/resource.c
+    * added s_ prefix to names of static variables
+    * simplified symbol table declaration
+      Question: why this code uses initialization by PRG level INIT function
+      instead of HB_CALL_ON_STARTUP_BEGIN()/HB_CALL_ON_STARTUP_END()?
+
+  * hwgui/source/wprint.c
+    * defined _WIN32_WINNT=0x0500 to enable GetDefaultPrinter() declaration
+    ! fixed explicit GetDefaultPrinter() declaration in Digital Mars builds
 
 2009-12-15 14:15 UTC+0700 Andi Jahja <xharbour/AT/telkom/NET/ID>
   * include/guilib.h

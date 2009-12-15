@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.23 2009-12-15 07:19:16 andijahja Exp $
+ * $Id: wprint.c,v 1.24 2009-12-15 08:58:05 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -10,7 +10,7 @@
 
 #define HB_OS_WIN_32_USED
 
-#define _WIN32_WINNT 0x0400
+#define _WIN32_WINNT 0x0500
 #define OEMRESOURCE
 #include <windows.h>
 #include <commctrl.h>
@@ -24,10 +24,14 @@
 #include "hbfast.h"
 #endif
 
-#if ( defined( __GNUC__ ) || defined( __DMC__ ) )
-BOOL WINAPI GetDefaultPrinter (LPSTR,LPDWORD);
-BOOL WINAPI GetDefaultPrinterA(LPSTR,LPDWORD);
-BOOL WINAPI GetDefaultPrinterW(LPWSTR,LPDWORD);
+#if !defined( GetDefaultPrinter ) && defined( __DMC__ )
+   BOOL WINAPI GetDefaultPrinterA(LPSTR,LPDWORD);
+   BOOL WINAPI GetDefaultPrinterW(LPWSTR,LPDWORD);
+#  ifdef UNICODE
+#     define GetDefaultPrinter GetDefaultPrinterW
+#  else
+#     define GetDefaultPrinter GetDefaultPrinterA
+#  endif
 #endif
 
 HB_FUNC( HWG_OPENPRINTER )

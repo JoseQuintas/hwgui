@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.54 2009-12-15 07:19:16 andijahja Exp $
+ * $Id: misc.c,v 1.55 2009-12-17 14:22:41 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -265,7 +265,7 @@ HB_FUNC( GETCURRENTDIR )
 
 HB_FUNC( WINEXEC )
 {
-   hb_retni( WinExec( ( LPCSTR ) hb_parc( 1 ), ( UINT ) hb_parni( 2 ) ) );
+   hb_retni( WinExec( hb_parc( 1 ), ( UINT ) hb_parni( 2 ) ) );
 }
 
 HB_FUNC( GETKEYBOARDSTATE )
@@ -406,9 +406,8 @@ Contributed by Rodrigo Moreno rodrigo_moreno@yahoo.com base upon code minigui
 HB_FUNC( SHELLABOUT )
 {
    /* ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) HB_PARHANDLE(3) ); */
-   hb_retni( ShellAbout( ( HWND ) HB_PARHANDLE( 1 ), ( LPCSTR ) hb_parcx( 1 ),
-               ( LPCSTR ) hb_parcx( 2 ),
-               ( ISNIL( 3 ) ? NULL : ( HICON ) HB_PARHANDLE( 3 ) ) ) );
+   hb_retni( ShellAbout( ( HWND ) HB_PARHANDLE( 1 ), hb_parcx( 1 ), hb_parcx( 2 ),
+                         ( ISNIL( 3 ) ? NULL : ( HICON ) HB_PARHANDLE( 3 ) ) ) );
 }
 
 
@@ -454,8 +453,7 @@ HB_FUNC( WINHELP )
          context = 0;
    }
 
-   hb_retni( WinHelp( ( HWND ) hb_parnl( 1 ), ( LPCTSTR ) hb_parc( 2 ), style,
-               context ) );
+   hb_retni( WinHelp( ( HWND ) hb_parnl( 1 ), hb_parc( 2 ), style, context ) );
 }
 
 HB_FUNC( GETNEXTDLGTABITEM )
@@ -599,33 +597,32 @@ HB_FUNC( ISSCROLLLOCKACTIVE )
 
 HB_FUNC( HWG_CREATEDIRECTORY )
 {
-   CreateDirectory( ( LPCTSTR ) hb_parc( 1 ), NULL );
+   CreateDirectory( hb_parc( 1 ), NULL );
 }
 
 HB_FUNC( HWG_REMOVEDIRECTORY )
 {
-   hb_retl( RemoveDirectory( ( LPCSTR ) hb_parc( 1 ) ) );
+   hb_retl( RemoveDirectory( hb_parc( 1 ) ) );
 }
 
 HB_FUNC( HWG_SETCURRENTDIRECTORY )
 {
-   SetCurrentDirectory( ( LPCTSTR ) hb_parc( 1 ) );
+   SetCurrentDirectory( hb_parc( 1 ) );
 }
 
 HB_FUNC( HWG_DELETEFILE )
 {
-   hb_retl( DeleteFile( ( LPCSTR ) hb_parc( 1 ) ) );
+   hb_retl( DeleteFile( hb_parc( 1 ) ) );
 }
 
 HB_FUNC( HWG_GETFILEATTRIBUTES )
 {
-   hb_retnl( ( LONG ) GetFileAttributes( ( LPCSTR ) hb_parc( 1 ) ) );
+   hb_retnl( ( LONG ) GetFileAttributes( hb_parc( 1 ) ) );
 }
 
 HB_FUNC( HWG_SETFILEATTRIBUTES )
 {
-   hb_retl( SetFileAttributes( ( LPCSTR ) hb_parc( 1 ),
-               ( DWORD ) hb_parnl( 2 ) ) );
+   hb_retl( SetFileAttributes( hb_parc( 1 ), ( DWORD ) hb_parnl( 2 ) ) );
 }
 
 /* Add by Richard Roesnadi (based on What32) */
@@ -757,7 +754,7 @@ HB_FUNC( PTRTOULONG )
 
 HB_FUNC( OUTPUTDEBUGSTRING )
 {
-   OutputDebugString( ( LPCSTR ) hb_parcx( 1 ) );
+   OutputDebugString( hb_parcx( 1 ) );
 }
 
 HB_FUNC( GETSYSTEMMETRICS )

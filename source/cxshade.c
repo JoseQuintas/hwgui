@@ -1,5 +1,5 @@
 /*
- * $Id: cxshade.c,v 1.9 2009-12-15 07:19:16 andijahja Exp $
+ * $Id: cxshade.c,v 1.10 2009-12-17 14:22:40 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level functions for special drawing effects
@@ -228,12 +228,12 @@ long cxdib_Draw( PCXDIB pdib, HDC pDC, long xoffset, long yoffset )
    if( ( pdib->hDib ) && ( pDC ) )
    {
       //palette must be correctly filled
-      LPSTR lpDIB = ( char * ) pdib->hDib;      //set image to hdc...
+      BITMAPINFO * lpDIB = ( BITMAPINFO * ) pdib->hDib;      //set image to hdc...
       SetStretchBltMode( pDC, COLORONCOLOR );
       SetDIBitsToDevice( pDC, xoffset, yoffset,
             pdib->m_bi.biWidth, pdib->m_bi.biHeight, 0, 0, 0,
             pdib->m_bi.biHeight, cxdib_GetBits( pdib ),
-            ( BITMAPINFO * ) lpDIB, DIB_RGB_COLORS );
+            lpDIB, DIB_RGB_COLORS );
       return 1;
    }
    return 0;
@@ -245,11 +245,11 @@ long cxdib_Stretch( PCXDIB pdib, HDC pDC, long xoffset, long yoffset,
    if( ( pdib->hDib ) && ( pDC ) )
    {
       //palette must be correctly filled
-      LPSTR lpDIB = ( char * ) pdib->hDib;      //set image to hdc...
+      BITMAPINFO * lpDIB = ( BITMAPINFO * ) pdib->hDib;      //set image to hdc...
       SetStretchBltMode( pDC, COLORONCOLOR );
       StretchDIBits( pDC, xoffset, yoffset,
             xsize, ysize, 0, 0, pdib->m_bi.biWidth, pdib->m_bi.biHeight,
-            cxdib_GetBits( pdib ), ( BITMAPINFO * ) lpDIB, DIB_RGB_COLORS,
+            cxdib_GetBits( pdib ), lpDIB, DIB_RGB_COLORS,
             SRCCOPY );
       return 1;
    }

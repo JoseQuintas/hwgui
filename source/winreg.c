@@ -118,7 +118,7 @@ HB_FUNC( REGQUERYVALUEEX )
 
    DWORD lpcbData = 0;
    lError =
-         RegQueryValueExA( ( HKEY ) hb_parnl( 1 ), ( LPTSTR ) hb_parcx( 2 ),
+         RegQueryValueExA( ( HKEY ) hb_parnl( 1 ), hb_parcx( 2 ),
          NULL, &lpType, NULL, &lpcbData );
 
    if( lError == ERROR_SUCCESS )
@@ -127,7 +127,7 @@ HB_FUNC( REGQUERYVALUEEX )
       lpData = ( BYTE * ) malloc( ( int ) lpcbData + 1 );
       lError =
             RegQueryValueExA( ( HKEY ) hb_parnl( 1 ),
-            ( LPTSTR ) hb_parcx( 2 ), NULL, &lpType, ( BYTE * ) lpData,
+            hb_parcx( 2 ), NULL, &lpType, ( BYTE * ) lpData,
             &lpcbData );
 
       if( lError > 0 )
@@ -225,10 +225,9 @@ HB_FUNC( REGCREATEKEYEX )
 
    if( ISCHAR( 7 ) )
       sa = ( SECURITY_ATTRIBUTES * ) hb_parc( 7 );
-//       sa = (SECURITY_ATTRIBUTES *) hb_param(7, HB_IT_STRING)->item.asString.value;
 
    nErr = RegCreateKeyEx( ( HKEY ) hb_parnl( 1 ),
-         ( LPCSTR ) hb_parcx( 2 ),
+         hb_parcx( 2 ),
          ( DWORD ) 0,
          ( LPSTR ) hb_parcx( 4 ),
          ( DWORD ) hb_parnl( 5 ),
@@ -248,7 +247,7 @@ HB_FUNC( REGDELETEKEY )
 {
 
    if( RegDeleteKeyA( ( HKEY ) hb_parnl( 1 ),
-               ( LPCTSTR ) hb_parcx( 2 ) ) == ERROR_SUCCESS )
+                      hb_parcx( 2 ) ) == ERROR_SUCCESS )
    {
       hb_retnl( 0 );
    }
@@ -264,7 +263,7 @@ HB_FUNC( REGDELETEKEY )
 HB_FUNC( REGDELETEVALUE )
 {
    if( RegDeleteValue( ( HKEY ) hb_parnl( 1 ),
-               ( LPTSTR ) hb_parcx( 2 ) ) == ERROR_SUCCESS )
+                       hb_parcx( 2 ) ) == ERROR_SUCCESS )
    {
       hb_retnl( 0 );
    }

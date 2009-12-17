@@ -1,5 +1,5 @@
 /*
- * $Id: resource.c,v 1.16 2009-12-17 12:29:21 andijahja Exp $
+ * $Id: resource.c,v 1.17 2009-12-17 14:22:41 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level resource functions
@@ -93,17 +93,16 @@ HB_INIT_SYMBOLS_END( hwg_resource_INIT )
 HB_FUNC( FINDRESOURCE )
 {
    HRSRC hHRSRC;
-   int lpName = hb_parni( 2 ) ; //"WindowsXP.Manifest";
-   int lpType = hb_parni( 3 ) ; // RT_MANIFEST = 24
+   int iName = hb_parni( 2 ); // "WindowsXP.Manifest";
+   int iType = hb_parni( 3 ); // RT_MANIFEST = 24
 
    hModule = GetModuleHandle( ISCHAR( 1 ) ? hb_parc( 1 ) : NULL );
 
-   if( IS_INTRESOURCE( lpName ) )
+   if( IS_INTRESOURCE( iName ) )
    {
-     hHRSRC = FindResource( ( HMODULE ) hModule,
-      ( LPCTSTR ) lpName ,
-      ( LPCTSTR ) lpType ) ;
-
+      hHRSRC = FindResource( ( HMODULE ) hModule,
+                             MAKEINTRESOURCE( iName ),
+                             MAKEINTRESOURCE( iType ) );
       HB_RETHANDLE( hHRSRC );
    }
    else

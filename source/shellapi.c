@@ -1,5 +1,5 @@
 /*
- * $Id: shellapi.c,v 1.15 2009-08-20 09:16:37 druzus Exp $
+ * $Id: shellapi.c,v 1.16 2009-12-17 14:22:41 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Shell API wrappers
@@ -115,9 +115,9 @@ HB_FUNC( SHELLMODIFYICON )
 HB_FUNC( SHELLEXECUTE )
 {
    hb_retnl( ( LONG ) ShellExecute( GetActiveWindow(  ),
-               ISNIL( 2 ) ? NULL : ( LPCSTR ) hb_parc( 2 ),
-               ( LPCSTR ) hb_parc( 1 ),
-               ISNIL( 3 ) ? NULL : ( LPCSTR ) hb_parc( 3 ),
-               ISNIL( 4 ) ? "C:\\" : ( LPCSTR ) hb_parc( 4 ),
+               ISNIL( 2 ) ? NULL : hb_parc( 2 ),
+               hb_parc( 1 ),
+               ISNIL( 3 ) ? NULL : hb_parc( 3 ),
+               ISNIL( 4 ) ? "C:\\" : hb_parc( 4 ),
                ISNIL( 5 ) ? 1 : hb_parni( 5 ) ) );
 }

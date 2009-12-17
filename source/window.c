@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.79 2009-12-15 20:27:04 andijahja Exp $
+ * $Id: window.c,v 1.80 2009-12-17 14:22:41 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -374,7 +374,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
        ( HICON ) HB_PARHANDLE( 5 ) : LoadIcon( ( HINSTANCE ) hInstance, "" );
    wc.hbrBackground = ( hb_pcount(  ) > 5 && !ISNIL( 6 ) ) ?
        ( HBRUSH ) HB_PARHANDLE( 6 ) : ( HBRUSH ) ( COLOR_WINDOW + 1 );
-   wc.lpszMenuName = ( LPCTSTR ) NULL;
+   wc.lpszMenuName = NULL;
    wc.cbWndExtra = 0;
    wc.lpszClassName = s_szChild;
    wc.cbClsExtra = 0;
@@ -424,10 +424,10 @@ HB_FUNC( HWG_INITCLIENTWINDOW )
    ccs.hWindowMenu = GetSubMenu( GetMenu( aWindows[0] ), nPos );
    ccs.idFirstChild = FIRST_MDICHILD_ID;
 
-   hWnd = CreateWindow( "MDICLIENT", ( LPCTSTR ) NULL,
+   hWnd = CreateWindow( "MDICLIENT", NULL,
          WS_CHILD | WS_CLIPCHILDREN | MDIS_ALLCHILDSTYLES,
          x, y, width, height,
-         aWindows[0], NULL, GetModuleHandle( NULL ), ( LPSTR ) & ccs );
+         aWindows[0], NULL, GetModuleHandle( NULL ), ( LPVOID ) &ccs );
 
    aWindows[1] = hWnd;
    HB_RETHANDLE( hWnd );
@@ -550,7 +550,7 @@ HB_FUNC( GETWINDOWOBJECT )
 
 HB_FUNC( SETWINDOWTEXT )
 {
-   SetWindowText( ( HWND ) HB_PARHANDLE( 1 ), ( LPCTSTR ) hb_parc( 2 ) );
+   SetWindowText( ( HWND ) HB_PARHANDLE( 1 ), hb_parc( 2 ) );
 }
 
 HB_FUNC( GETWINDOWTEXT )

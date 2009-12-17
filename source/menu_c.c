@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.44 2009-11-17 19:14:20 mlacecilia Exp $
+ * $Id: menu_c.c,v 1.45 2009-12-17 14:22:41 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -65,7 +65,7 @@ HB_FUNC( HWG__ADDMENUITEM )
    {
       BOOL lString = 0;
       LPCTSTR ptr;
-      lpNewItem = ( LPCTSTR ) hb_parc( 2 );
+      lpNewItem = hb_parc( 2 );
       ptr = lpNewItem;
       while( *ptr )
       {
@@ -535,7 +535,7 @@ HB_FUNC( HWG__INSERTBITMAPMENU )
 HB_FUNC( CHANGEMENU )
 {
    hb_retl( ChangeMenu( ( HMENU ) HB_PARHANDLE( 1 ), ( UINT ) hb_parni( 2 ),
-               ( LPCSTR ) hb_parc( 3 ), ( UINT ) hb_parni( 4 ),
+               hb_parc( 3 ), ( UINT ) hb_parni( 4 ),
                ( UINT ) hb_parni( 5 ) ) );
 }
 
@@ -544,7 +544,7 @@ HB_FUNC( MODIFYMENU )
 
    hb_retl( ModifyMenu( ( HMENU ) HB_PARHANDLE( 1 ), ( UINT ) hb_parni( 2 ),
                ( UINT ) hb_parni( 3 ), ( UINT ) hb_parni( 4 ),
-               ( LPCSTR ) hb_parc( 5 ) ) );
+               hb_parc( 5 ) ) );
 }
 
 

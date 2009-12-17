@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.23 2009-12-14 23:58:33 andijahja Exp $
+ * $Id: drawtext.c,v 1.24 2009-12-17 14:22:41 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -55,17 +55,20 @@ HB_FUNC( DELETEDC )
 HB_FUNC( TEXTOUT )
 {
    const char *cText = hb_parc( 4 );
+   ULONG ulLen = hb_parclen( 4 );
+
    TextOut( ( HDC ) HB_PARHANDLE( 1 ),  // handle of device context
-         hb_parni( 2 ),         // x-coordinate of starting position
-         hb_parni( 3 ),         // y-coordinate of starting position
-         ( LPCTSTR ) cText,     // address of string
-         strlen( cText )        // number of characters in string
+            hb_parni( 2 ),         // x-coordinate of starting position
+            hb_parni( 3 ),         // y-coordinate of starting position
+            cText,                 // address of string
+            ulLen                  // number of characters in string
           );
 }
 
 HB_FUNC( DRAWTEXT )
 {
    const char *cText = hb_parc( 2 );
+   ULONG ulLen = hb_parclen( 2 );
    RECT rc;
    UINT uFormat = ( hb_pcount(  ) == 4 ? hb_parni( 4 ) : hb_parni( 7 ) );
    // int uiPos = ( hb_pcount(  ) == 4 ? 3 : hb_parni( 8 ) );
@@ -86,9 +89,9 @@ HB_FUNC( DRAWTEXT )
 
 
    heigh = DrawText( ( HDC ) HB_PARHANDLE( 1 ), // handle of device context
-         ( LPCTSTR ) cText,     // address of string
-         strlen( cText ),       // number of characters in string
-         &rc, uFormat );
+                     cText,     // address of string
+                     ulLen,     // number of characters in string
+                     &rc, uFormat );
    //if( ISBYREF( uiPos ) )
    if( ISARRAY( 8 ) )
    {
@@ -273,7 +276,7 @@ HB_FUNC( GETTEXTSIZE )
 {
 
    HDC hdc = GetDC( (HWND)HB_PARHANDLE(1) );
-   LPCTSTR lpString = hb_parc(2);
+   LPCSTR * lpString = hb_parc(2);
    SIZE size;
    PHB_ITEM aMetr = _itemArrayNew( 2 );
    PHB_ITEM temp;
@@ -302,7 +305,8 @@ HB_FUNC( EXTTEXTOUT )
 {
 
    RECT rc;
-   const char *cText = ISCHAR( 8 ) ? hb_parc( 8 ) : NULL;
+   const char *cText = hb_parc( 8 );
+   ULONG ulLen = hb_parclen( 8 );
 
    rc.left = hb_parni( 4 );
    rc.top = hb_parni( 5 );
@@ -314,8 +318,8 @@ HB_FUNC( EXTTEXTOUT )
          hb_parni( 3 ),         // y-coordinate of reference point
          ETO_OPAQUE,            // text-output options
          &rc,                   // optional clipping and/or opaquing rectangle
-         ISCHAR( 8 ) ? ( LPCTSTR ) cText : NULL,        // points to string
-         ISCHAR( 8 ) ? strlen( cText ) : 0,     // number of characters in string
+         cText,                 // points to string
+         ulLen,                 // number of characters in string
          NULL                   // pointer to array of intercharacter spacing values
           );
 }
@@ -356,7 +360,7 @@ HB_FUNC( CREATEFONT )
          0,                     // clipping precision
          0,                     // output quality
          0,                     // pitch and family
-         ( LPCTSTR ) hb_parc( 1 )       // pointer to typeface name string
+         hb_parc( 1 )           // pointer to typeface name string
           );
    HB_RETHANDLE( hFont );
 }

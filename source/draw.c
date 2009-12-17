@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.59 2009-12-17 11:01:34 lfbasso Exp $
+ * $Id: draw.c,v 1.60 2009-12-17 14:22:40 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -281,16 +281,15 @@ HB_FUNC( DRAWEDGE )
 HB_FUNC( LOADICON )
 {
    if( ISNUM( 1 ) )
-      HB_RETHANDLE( LoadIcon( NULL, ( LPCTSTR ) hb_parnl( 1 ) ) );
+      HB_RETHANDLE( LoadIcon( NULL, MAKEINTRESOURCE( hb_parnl( 1 ) ) ) );
    else
-      HB_RETHANDLE( LoadIcon( GetModuleHandle( NULL ),
-                  ( LPCTSTR ) hb_parc( 1 ) ) );
+      HB_RETHANDLE( LoadIcon( GetModuleHandle( NULL ), hb_parc( 1 ) ) );
 }
 
 HB_FUNC( LOADIMAGE )
 {
    HB_RETHANDLE( LoadImage( ISNIL( 1 ) ? GetModuleHandle( NULL ) : ( HINSTANCE ) hb_parnl( 1 ), // handle of the instance that contains the image
-               ( LPCTSTR ) ISNUM( 2 ) ? MAKEINTRESOURCE( hb_parnl( 2 ) ) : hb_parc( 2 ),        // name or identifier of image
+               ISNUM( 2 ) ? MAKEINTRESOURCE( hb_parnl( 2 ) ) : hb_parc( 2 ),                    // name or identifier of image
                ( UINT ) hb_parni( 3 ),  // type of image
                hb_parni( 4 ),   // desired width
                hb_parni( 5 ),   // desired height
@@ -303,15 +302,13 @@ HB_FUNC( LOADBITMAP )
    if( ISNUM( 1 ) )
    {
       if( !ISNIL( 2 ) && hb_parl( 2 ) )
-//               hb_retnl( (LONG) LoadBitmap( GetModuleHandle( NULL ),  MAKEINTRESOURCE(hb_parnl( 1 ) )) );
-         HB_RETHANDLE( LoadBitmap( NULL, ( LPCTSTR ) hb_parnl( 1 ) ) );
+         HB_RETHANDLE( LoadBitmap( NULL, MAKEINTRESOURCE( hb_parnl( 1 ) ) ) );
       else
          HB_RETHANDLE( LoadBitmap( GetModuleHandle( NULL ),
-                     ( LPCTSTR ) hb_parnl( 1 ) ) );
+                                   MAKEINTRESOURCE( hb_parnl( 1 ) ) ) );
    }
    else
-      HB_RETHANDLE( LoadBitmap( GetModuleHandle( NULL ),
-                  ( LPCTSTR ) hb_parc( 1 ) ) );
+      HB_RETHANDLE( LoadBitmap( GetModuleHandle( NULL ), hb_parc( 1 ) ) );
 }
 
 /*

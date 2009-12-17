@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.29 2009-11-17 19:14:20 mlacecilia Exp $
+ * $Id: richedit.c,v 1.30 2009-12-17 14:22:41 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -358,7 +358,7 @@ HB_FUNC( RE_FINDTEXT )
 
    ft.chrg.cpMin = ( ISNIL( 3 ) ) ? 0 : hb_parnl( 3 );
    ft.chrg.cpMax = -1;
-   ft.lpstrText = (LPSTR) hb_parc( 2 );
+   ft.lpstrText = ( LPSTR ) hb_parc( 2 );
 
    lPos = ( LONG ) SendMessage( hCtrl, EM_FINDTEXTEX, ( WPARAM ) lFlag,
          ( LPARAM ) & ft );

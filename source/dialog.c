@@ -1,5 +1,5 @@
 /*
- * $Id: dialog.c,v 1.33 2009-12-17 12:25:17 andijahja Exp $
+ * $Id: dialog.c,v 1.34 2009-12-17 14:22:40 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -102,48 +102,45 @@ HB_FUNC( SETDLGITEMTEXT )
 {
    SetDlgItemText( ( HWND ) HB_PARHANDLE( 1 ),  // handle of dialog box
          hb_parni( 2 ),         // identifier of control
-         ( LPCTSTR ) hb_parc( 3 )       // text to set
+         hb_parc( 3 )           // text to set
           );
 }
 
 HB_FUNC( SETDLGITEMINT )
 {
    SetDlgItemInt( ( HWND ) HB_PARHANDLE( 1 ),   // handle of dialog box
-         hb_parni( 2 ),         // identifier of control
-         ( UINT ) hb_parni( 3 ),        // text to set
+         hb_parni( 2 ),             // identifier of control
+         ( UINT ) hb_parni( 3 ),    // text to set
          ( hb_pcount(  ) < 4 || ISNIL( 4 ) || !hb_parl( 4 ) ) ? 0 : 1 );
 }
 
 HB_FUNC( GETDLGITEMTEXT )
 {
-   USHORT iLen = hb_parni( 3 );
-   char *cText = ( char * ) hb_xgrab( iLen + 1 );
+   USHORT uiLen = hb_parni( 3 );
+   LPTSTR lpText = ( LPTSTR ) hb_xgrab( ( uiLen + 1 ) * sizeof( TCHAR ) );
 
    GetDlgItemText( ( HWND ) HB_PARHANDLE( 1 ),  // handle of dialog box
-         hb_parni( 2 ),         // identifier of control
-         ( LPTSTR ) cText,      // address of buffer for text
-         iLen                   // maximum size of string
-          );
-   hb_retc( cText );
-   hb_xfree( cText );
+            hb_parni( 2 ),       // identifier of control
+            lpText,              // address of buffer for text
+            uiLen                // maximum size of string
+         );
+   hb_retc_buffer( lpText );
 }
 
 HB_FUNC( GETEDITTEXT )
 {
    HWND hDlg = ( HWND ) HB_PARHANDLE( 1 );
    int id = hb_parni( 2 );
-   USHORT iLen =
-         ( USHORT ) SendMessage( GetDlgItem( hDlg, id ), WM_GETTEXTLENGTH, 0,
-         0 );
-   char *cText = ( char * ) hb_xgrab( iLen + 2 );
+   USHORT uiLen =
+      ( USHORT ) SendMessage( GetDlgItem( hDlg, id ), WM_GETTEXTLENGTH, 0, 0 );
+   LPTSTR lpText = ( LPTSTR ) hb_xgrab( ( uiLen + 2 ) * sizeof( TCHAR ) );
 
    GetDlgItemText( hDlg,        // handle of dialog box
          id,                    // identifier of control
-         ( LPTSTR ) cText,      // address of buffer for text
-         iLen + 1               // maximum size of string
+         lpText,                // address of buffer for text
+         uiLen + 1              // maximum size of string
           );
-   hb_retc( cText );
-   hb_xfree( cText );
+   hb_retc_buffer( lpText );
 }
 
 HB_FUNC( CHECKDLGBUTTON )
@@ -210,7 +207,7 @@ int nCopyAnsiToWideChar( LPWORD lpWCStr, LPCSTR lpAnsiIn )
    int nDstLen = MultiByteToWideChar( CodePage, 0, lpAnsiIn, -1, NULL, 0 );
    int i;
 
-   pszDst = ( LPWSTR ) hb_xgrab( nDstLen * 2 );
+   pszDst = ( LPWSTR ) hb_xgrab( nDstLen * sizeof( TCHAR ) );
 
    MultiByteToWideChar( CodePage, 0, lpAnsiIn, -1, pszDst, nDstLen );
 

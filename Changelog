@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1182 2009-12-17 12:25:17 andijahja Exp $
+ * $Id: Changelog,v 1.1183 2009-12-17 14:22:39 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,57 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-12-17 15:22 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/commond.c
+  * hwgui/source/control.c
+  * hwgui/source/cxshade.c
+  * hwgui/source/dialog.c
+  * hwgui/source/draw.c
+  * hwgui/source/drawtext.c
+  * hwgui/source/media_c.c
+  * hwgui/source/menu_c.c
+  * hwgui/source/misc.c
+  * hwgui/source/prnalone.c
+  * hwgui/source/resource.c
+  * hwgui/source/richedit.c
+  * hwgui/source/shellapi.c
+  * hwgui/source/theme.c
+  * hwgui/source/window.c
+  * hwgui/source/winreg.c
+  * hwgui/source/wprint.c
+    ! removed unnecessary explicit castings to LP[T|W]STR which does
+      not make any conversions but only hides wrong code which has to
+      be updated for UNICODE builds in the future. Now when UNICODE
+      macro is set C compiler should generate warnings or errors for
+      places with wrong string types. Before this modification many
+      of such warnings were pacified and wrong code was silently
+      compiled
+    ! fixed in few places buffers to use array of TCHARs instead of
+      array of bytes casted to LPTSTR
+    ! use TEXT() macro for some literal strings instead of buggy casting
+      to LP[C]TSTR
+    ! use MAKEINTRESOURCE() macro instead of explicit casting numbers 
+      to LPCTSTR
+    * cleaned some related code
+
+      Above modification is the 1-st step which should help in adding
+      UNICODE and WinCE support
+
+  * hwgui/source/commond.c
+    ! fixed GlobalUnlock() used before accessing the memory.
+      BTW can someone clean casting in this code?
+
+  * hwgui/source/freeimg.c
+    ! fixed the #if condition (it should be 'defined( __cplusplus )'
+      instead of 'defined(__WATCOMC__) || defined(_MSC_VER)'
+
+  * hwgui/source/theme.c
+    ! fixed GetProc() function to always respect default function pointer
+    * use FARPROC instead of 'void *' as intermediate casting
+    % declare GetProc() function as static
+
+   Please make tests with different C/C++ compilers.
 
 2009-12-17 19:10 UTC+0700 Andi Jahja <xharbour/AT/telkom/net/id>
   * source/dialog.c

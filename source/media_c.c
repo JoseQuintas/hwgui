@@ -1,5 +1,5 @@
 /*
- * $Id: media_c.c,v 1.13 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: media_c.c,v 1.14 2009-12-17 14:22:41 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level media functions
@@ -46,14 +46,14 @@ HB_FUNC( PLAYSOUND )
 
 HB_FUNC( MCISENDSTRING )
 {
-   BYTE cBuffer[128];
+   TCHAR cBuffer[128];
 
-   hb_retnl( ( LONG ) mciSendString( ( LPSTR ) hb_parc( 1 ),
-               ( LPSTR ) cBuffer, 127,
-               ( ISNIL( 3 ) ) ? GetActiveWindow(  ) : ( HWND )
-               HB_PARHANDLE( 3 ) ) );
+   hb_retnl( ( LONG ) mciSendString( hb_parc( 1 ),
+             cBuffer, 127,
+             ( ISNIL( 3 ) ) ? GetActiveWindow(  ) : ( HWND )
+             HB_PARHANDLE( 3 ) ) );
    if( !ISNIL( 2 ) )
-      hb_storc( ( char * ) cBuffer, 2 );
+      hb_storc( cBuffer, 2 );
 }
 
 
@@ -73,11 +73,11 @@ HB_FUNC( MCISENDCOMMAND )       // ()
 
 HB_FUNC( MCIGETERRORSTRING )    // ()
 {
-   BYTE bBuffer[200];
+   TCHAR cBuffer[200];
 
    hb_retl( mciGetErrorString( hb_parnl( 1 ),   // Error Code
-               ( LPSTR ) bBuffer, 200 ) );
-   hb_storc( ( char * ) bBuffer, 2 );
+                               cBuffer, 200 ) );
+   hb_storc( cBuffer, 2 );
 }
 
 //----------------------------------------------------------------------------//

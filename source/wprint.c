@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.24 2009-12-15 08:58:05 druzus Exp $
+ * $Id: wprint.c,v 1.25 2009-12-17 14:22:41 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -202,25 +202,24 @@ HB_FUNC( HWG_GETPRINTERS )
 
 HB_FUNC( SETPRINTERMODE )
 {
-   LPTSTR pPrinterName = ( LPTSTR ) hb_parc( 1 );
+   LPCTSTR lpPrinterName = hb_parc( 1 );
    HANDLE hPrinter =
          ( ISNIL( 2 ) ) ? ( HANDLE ) NULL : ( HANDLE ) HB_PARHANDLE( 2 );
    long int nSize;
    PDEVMODE pdm;
 
    if( !hPrinter )
-      if( !OpenPrinter( pPrinterName, &hPrinter, NULL ) )
+      if( !OpenPrinter( ( LPTSTR ) lpPrinterName, &hPrinter, NULL ) )
       {
          return;
       }
 
    /* Determine the size of DEVMODE structure */
-   nSize = DocumentProperties( NULL, hPrinter, pPrinterName, NULL, NULL, 0 );
+   nSize = DocumentProperties( NULL, hPrinter, ( LPTSTR ) lpPrinterName, NULL, NULL, 0 );
    pdm = ( PDEVMODE ) GlobalAlloc( GPTR, nSize );
 
    /* Get the printer mode */
-   DocumentProperties( NULL, hPrinter, pPrinterName, pdm, NULL,
-         DM_OUT_BUFFER );
+   DocumentProperties( NULL, hPrinter, ( LPTSTR ) lpPrinterName, pdm, NULL, DM_OUT_BUFFER );
 
    /* Changing of values */
    if( !ISNIL( 3 ) )
@@ -230,11 +229,11 @@ HB_FUNC( SETPRINTERMODE )
    }
 
    // Call DocumentProperties() to change the values
-   DocumentProperties( NULL, hPrinter, pPrinterName,
-         pdm, pdm, DM_OUT_BUFFER | DM_IN_BUFFER );
+   DocumentProperties( NULL, hPrinter, ( LPTSTR ) lpPrinterName,
+                       pdm, pdm, DM_OUT_BUFFER | DM_IN_BUFFER );
 
    // создадим контекст устройства принтера
-   HB_RETHANDLE( CreateDC( NULL, pPrinterName, NULL, pdm ) );
+   HB_RETHANDLE( CreateDC( NULL, lpPrinterName, NULL, pdm ) );
    HB_STOREHANDLE( hPrinter, 2 );
    GlobalFree( pdm );
 }
@@ -250,8 +249,8 @@ HB_FUNC( HWG_STARTDOC )
    DOCINFO di;
    di.cbSize = sizeof( DOCINFO );
    di.lpszDocName = hb_parc( 2 );
-   di.lpszOutput = ( LPTSTR ) NULL;
-   di.lpszDatatype = ( LPTSTR ) NULL;
+   di.lpszOutput = NULL;
+   di.lpszDatatype = NULL;
    di.fwType = 0;
 
    hb_retnl( ( LONG ) StartDoc( ( HDC ) HB_PARHANDLE( 1 ), &di ) );
@@ -459,8 +458,8 @@ HB_FUNC( PRINTENHMETAFILE )
    /*
       di.cbSize = sizeof(DOCINFO); 
       di.lpszDocName = hb_parc( 3 );
-      di.lpszOutput = (LPTSTR) NULL; 
-      di.lpszDatatype = (LPTSTR) NULL; 
+      di.lpszOutput = NULL; 
+      di.lpszDatatype = NULL; 
       di.fwType = 0; 
     */
 
@@ -486,19 +485,19 @@ HB_FUNC( HWG_SETDOCUMENTPROPERTIES )
   if (hDC)
   {
     HANDLE hPrinter ;
-    LPCSTR pszPrinterName = hb_parc(2) ;
+    LPCTSTR lpPrinterName = hb_parc(2) ;
 
-    if (OpenPrinter((LPSTR)pszPrinterName, &hPrinter, NULL))
+    if (OpenPrinter( ( LPTSTR ) lpPrinterName, &hPrinter, NULL))
     {
 
       PDEVMODE pDevMode = NULL ;
-      LONG lSize= DocumentProperties(0,hPrinter,(LPSTR)pszPrinterName, pDevMode,pDevMode,0);
+      LONG lSize= DocumentProperties(0,hPrinter,( LPTSTR ) lpPrinterName, pDevMode,pDevMode,0);
 
       if (lSize > 0 )
       {
         pDevMode= (PDEVMODE) hb_xgrab(lSize) ;
 
-        if (pDevMode && DocumentProperties(0,hPrinter,(LPSTR)pszPrinterName, pDevMode,pDevMode,DM_OUT_BUFFER) == IDOK )  // Get the current settings
+        if (pDevMode && DocumentProperties(0,hPrinter,( LPTSTR ) lpPrinterName, pDevMode,pDevMode,DM_OUT_BUFFER) == IDOK )  // Get the current settings
         {
           BOOL  bAskUser = ISBYREF(3) || ISBYREF(4) || ISBYREF(5) ||
                            ISBYREF(6) || ISBYREF(7) || ISBYREF(8) || ISBYREF(9) || ISBYREF(10) ; //x 20070421
@@ -583,7 +582,7 @@ HB_FUNC( HWG_SETDOCUMENTPROPERTIES )
              Therefore, we ignore the return value in Win9x, and assume user clicks OK.
              IOW, DocumentProperties is not cancelable in Win9X.
            */
-          if ( DocumentProperties(0,hPrinter,(LPSTR)pszPrinterName, pDevMode,pDevMode, fMode) == IDOK || bW9X )
+          if ( DocumentProperties(0,hPrinter,( LPTSTR ) lpPrinterName, pDevMode,pDevMode, fMode) == IDOK || bW9X )
           {
             if (ISBYREF(3) && !bCustomFormSize )
             {

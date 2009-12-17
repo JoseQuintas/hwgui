@@ -86,8 +86,8 @@ HB_FUNC( STARTDOC )
    DOCINFO di;
    di.cbSize = sizeof( DOCINFO );
    di.lpszDocName = hb_parc( 2 );
-   di.lpszOutput = ( LPTSTR ) NULL;
-   di.lpszDatatype = ( LPTSTR ) NULL;
+   di.lpszOutput = NULL;
+   di.lpszDatatype = NULL;
    di.fwType = 0;
 
    hb_retnl( ( LONG ) StartDoc( ( HDC ) HB_PARHANDLE( 1 ), &di ) );
@@ -161,16 +161,20 @@ HB_FUNC( GETDEVICEAREA )
 
 HB_FUNC( DRAWTEXT )
 {
-   char *cText = hb_parc( 2 );
-   RECT rc;
+   const char *cText = hb_parc( 2 );
 
-   rc.left = hb_parni( 3 );
-   rc.top = hb_parni( 4 );
-   rc.right = hb_parni( 5 );
-   rc.bottom = hb_parni( 6 );
+   if( cText )
+   {
+      RECT rc;
 
-   DrawText( ( HDC ) HB_PARHANDLE( 1 ), // handle of device context 
-         ( LPCTSTR ) cText,     // address of string 
-         strlen( cText ),       // number of characters in string 
-         &rc, hb_parni( 7 ) );
+      rc.left = hb_parni( 3 );
+      rc.top = hb_parni( 4 );
+      rc.right = hb_parni( 5 );
+      rc.bottom = hb_parni( 6 );
+
+      DrawText( ( HDC ) HB_PARHANDLE( 1 ), // handle of device context 
+                cText,              // address of string 
+                hb_parclen( 2 ),    // number of characters in string 
+                &rc, hb_parni( 7 ) );
+   }
 }

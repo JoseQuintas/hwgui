@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.26 2009-12-14 23:58:33 andijahja Exp $
+ * $Id: freeimg.c,v 1.27 2009-12-17 14:22:41 druzus Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -20,7 +20,7 @@
 
 typedef char *( WINAPI * FREEIMAGE_GETVERSION ) ( void );
 
-#if defined(__WATCOMC__) || defined(_MSC_VER)
+#if defined( __cplusplus )
 typedef FIBITMAP *( WINAPI *
       FREEIMAGE_LOADFROMHANDLE ) ( FREE_IMAGE_FORMAT fif, FreeImageIO * io,
       fi_handle handle, int flags );
@@ -156,11 +156,11 @@ BOOL FreeImgInit( void )
 {
    if( !hFreeImageDll )
    {
-      hFreeImageDll = LoadLibrary( ( LPCTSTR ) "FreeImage.dll" );
+      hFreeImageDll = LoadLibrary( TEXT( "FreeImage.dll" ) );
       if( !hFreeImageDll )
       {
-         MessageBox( GetActiveWindow(  ), "Library not loaded",
-               "FreeImage.dll", MB_OK | MB_ICONSTOP );
+         MessageBox( GetActiveWindow(), TEXT( "Library not loaded" ),
+                     TEXT( "FreeImage.dll" ), MB_OK | MB_ICONSTOP );
          return 0;
       }
    }
@@ -677,7 +677,7 @@ HB_FUNC( FI_BMP2FI )
       {
          HDC hDC = GetDC( NULL );
 
-         GetObject( hbmp, sizeof( BITMAP ), ( LPSTR ) & bm );
+         GetObject( hbmp, sizeof( BITMAP ), ( LPVOID ) &bm );
          dib = pAllocate( bm.bmWidth, bm.bmHeight, bm.bmBitsPixel, 0, 0, 0 );
          GetDIBits( hDC, hbmp, 0, pGetheight( dib ),
                pGetbits( dib ), pGetinfo( dib ), DIB_RGB_COLORS );

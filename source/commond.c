@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.29 2009-08-20 09:16:36 druzus Exp $
+ * $Id: commond.c,v 1.30 2009-12-17 14:22:40 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -65,10 +65,10 @@ HB_FUNC( SELECTFONT )
    cf.rgbColors = RGB( 0, 0, 0 );
    cf.lCustData = 0L;
    cf.lpfnHook = ( LPCFHOOKPROC ) NULL;
-   cf.lpTemplateName = ( LPTSTR ) NULL;
+   cf.lpTemplateName = NULL;
 
    cf.hInstance = ( HINSTANCE ) NULL;
-   cf.lpszStyle = ( LPTSTR ) NULL;
+   cf.lpszStyle = NULL;
    cf.nFontType = SCREEN_FONTTYPE;
    cf.nSizeMin = 0;
    cf.nSizeMax = 0;
@@ -257,8 +257,8 @@ HB_FUNC( PRINTSETUP )
    // pd.lCustData = 0L; 
    // pd.lpfnPrintHook = (LPPRINTHOOKPROC) NULL;
    // pd.lpfnSetupHook = (LPSETUPHOOKPROC) NULL; 
-   // pd.lpPrintTemplateName = (LPSTR) NULL; 
-   // pd.lpSetupTemplateName = (LPSTR)  NULL; 
+   // pd.lpPrintTemplateName = NULL; 
+   // pd.lpSetupTemplateName = NULL; 
    // pd.hPrintTemplate = (HANDLE) NULL; 
    // pd.hSetupTemplate = (HANDLE) NULL; 
 
@@ -406,8 +406,8 @@ HB_FUNC( PRINTPORTNAME )
       bPName = TRUE;
       lpDevNames = ( LPDEVNAMES ) GlobalLock( pd.hDevNames );
       bRet = ( ULONG ) ( ( LPSTR ) lpDevNames + lpDevNames->wOutputOffset );
-      GlobalUnlock( pd.hDevNames );
       hb_retc( ( LPSTR ) bRet );
+      GlobalUnlock( pd.hDevNames );
    }
 }
 

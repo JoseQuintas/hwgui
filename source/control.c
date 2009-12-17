@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.92 2009-12-15 13:40:49 lfbasso Exp $
+ * $Id: control.c,v 1.93 2009-12-17 14:22:40 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -137,7 +137,7 @@ HB_FUNC( CREATEPROGRESSBAR )
       nheight = cyVScroll;
    }
 
-   hPBar = CreateWindowEx( 0, PROGRESS_CLASS, ( LPSTR ) NULL, WS_CHILD | WS_VISIBLE,    /* style  */
+   hPBar = CreateWindowEx( 0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE,    /* style  */
          x1,                    /* x */
          y1,                    /* y */
          nwidth, nheight,       /* nWidth, nHeight */
@@ -342,7 +342,7 @@ HB_FUNC( CREATESTATUSWINDOW )
    // Create the status window.
    hwndStatus = CreateWindowEx( 0,      // style
          STATUSCLASSNAME,       // name of status window class
-         ( LPCTSTR ) NULL,      // no text when first created
+         NULL,                  // no text when first created
          SBARS_SIZEGRIP |       // includes a sizing grip
          WS_CHILD | WS_VISIBLE | WS_OVERLAPPED | WS_CLIPSIBLINGS,       // creates a child window
          0, 0, 0, 0,            // ignores size and position
@@ -421,7 +421,7 @@ HB_FUNC( ADDTOOLTIP )           // changed by MAG
    }
 
    if( !hWndTT )
-      hWndTT = CreateWindow( TOOLTIPS_CLASS, ( LPSTR ) NULL, iStyle,
+      hWndTT = CreateWindow( TOOLTIPS_CLASS, NULL, iStyle,
             CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
             NULL, ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
    if( !hWndTT )

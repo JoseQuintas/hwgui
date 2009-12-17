@@ -1,5 +1,5 @@
 /*
- * $Id: dialog.c,v 1.34 2009-12-17 14:22:40 druzus Exp $
+ * $Id: dialog.c,v 1.35 2009-12-17 22:52:36 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -207,7 +207,7 @@ int nCopyAnsiToWideChar( LPWORD lpWCStr, LPCSTR lpAnsiIn )
    int nDstLen = MultiByteToWideChar( CodePage, 0, lpAnsiIn, -1, NULL, 0 );
    int i;
 
-   pszDst = ( LPWSTR ) hb_xgrab( nDstLen * sizeof( TCHAR ) );
+   pszDst = ( LPWSTR ) hb_xgrab( nDstLen * sizeof( WCHAR ) );
 
    MultiByteToWideChar( CodePage, 0, lpAnsiIn, -1, pszDst, nDstLen );
 

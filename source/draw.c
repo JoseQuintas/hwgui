@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.58 2009-12-15 14:02:14 andijahja Exp $
+ * $Id: draw.c,v 1.59 2009-12-17 11:01:34 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -364,6 +364,7 @@ HB_FUNC( DRAWBITMAP )
    if( nWidthDest && ( nWidthDest != bitmap.bmWidth ||
                nHeightDest != bitmap.bmHeight ) )
    {
+      SetStretchBltMode(  hDC, COLORONCOLOR );    
       StretchBlt( hDC, hb_parni( 4 ), hb_parni( 5 ), nWidthDest, nHeightDest,
             hDCmem, 0, 0, bitmap.bmWidth, bitmap.bmHeight, dwraster );
    }
@@ -414,6 +415,7 @@ HB_FUNC( DRAWTRANSPARENTBITMAP )
    {
       BitBlt( dcTrans, 0, 0, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0,
             SRCCOPY );
+      SetStretchBltMode(  hDC, COLORONCOLOR );    
       StretchBlt( hDC, 0, 0, nWidthDest, nHeightDest, dcImage, 0, 0,
             bitmap.bmWidth, bitmap.bmHeight, SRCINVERT );
       StretchBlt( hDC, 0, 0, nWidthDest, nHeightDest, dcTrans, 0, 0,

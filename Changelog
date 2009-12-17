@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1179 2009-12-15 20:26:43 andijahja Exp $
+ * $Id: Changelog,v 1.1180 2009-12-17 11:01:15 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-12-17 09:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\draw.c
+    HB_FUNC( DRAWTBITMAP ),HB_FUNC( DRAWTRANSPARENTBITMAP )
+    + SetStretchBltMode(  hDC, COLORONCOLOR );    
+      best quality in Stretch bitmap
+      
 2009-12-16 03:30 UTC+0700 Andi Jahja <xharbour/AT/telkom/NET/ID>
    * source/window.c
      ! type cast

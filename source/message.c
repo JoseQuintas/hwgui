@@ -1,5 +1,5 @@
 /*
- *$Id: message.c,v 1.13 2009-08-20 09:16:37 druzus Exp $
+ *$Id: message.c,v 1.14 2009-12-17 16:28:55 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level messages functions
@@ -110,8 +110,8 @@ HB_FUNC( MSGTEMP )
 {
    char cres[60];
 
-   sprintf( cres, "WS_OVERLAPPEDWINDOW: %d NM_FIRST: %d ",
-         WS_OVERLAPPEDWINDOW, NM_FIRST );
-   hb_retni( MessageBox( GetActiveWindow(  ), cres, "DialogBaseUnits",
-               MB_OKCANCEL | MB_ICONQUESTION ) );
+   sprintf( cres, "WS_OVERLAPPEDWINDOW: %lx NM_FIRST: %d ",
+            ( LONG ) WS_OVERLAPPEDWINDOW, NM_FIRST );
+   hb_retni( MessageBox( GetActiveWindow(), cres, "DialogBaseUnits",
+                         MB_OKCANCEL | MB_ICONQUESTION ) );
 }

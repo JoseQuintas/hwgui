@@ -1,5 +1,5 @@
 /*
- * $Id: resource.c,v 1.14 2009-12-15 08:58:05 druzus Exp $
+ * $Id: resource.c,v 1.15 2009-12-17 12:26:39 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level resource functions
@@ -27,7 +27,7 @@
 #include "hbinit.h"
 #include "guilib.h"
 
-HMODULE s_hModule;
+HMODULE hModule;
 
 #if 0
 void hb_resourcemodules( void );

@@ -1,5 +1,5 @@
 /*
- * $Id: resource.c,v 1.15 2009-12-17 12:26:39 andijahja Exp $
+ * $Id: resource.c,v 1.16 2009-12-17 12:29:21 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level resource functions
@@ -35,14 +35,14 @@ void hb_resourcemodules( void );
 
 HB_FUNC( GETRESOURCES )
 {
-   hb_retnl( ( LONG ) s_hModule );
+   hb_retnl( ( LONG ) hModule );
 }
 
 HB_FUNC( LOADSTRING )
 {
    char Buffer[2048];
    int BuffRet =
-         LoadString( ( HINSTANCE ) s_hModule, ( UINT ) hb_parnl( 2 ), Buffer,
+         LoadString( ( HINSTANCE ) hModule, ( UINT ) hb_parnl( 2 ), Buffer,
          2048 );
 
    hb_retclen( Buffer, BuffRet );
@@ -50,7 +50,7 @@ HB_FUNC( LOADSTRING )
 
 HB_FUNC( LOADRESOURCE )
 {
-   s_hModule = GetModuleHandle( ISCHAR( 1 ) ? hb_parc( 1 ) : NULL );
+   hModule = GetModuleHandle( ISCHAR( 1 ) ? hb_parc( 1 ) : NULL );
 }
 
 #if 0
@@ -60,13 +60,13 @@ HB_FUNC( LOADRESOURCE )
 
 void hb_resourcemodules( void )
 {
-   s_hModule = GetModuleHandle( NULL );
+   hModule = GetModuleHandle( NULL );
 }
 #endif
 
 HB_FUNC_INIT( HWG_INITRESOURCE )
 {
-   s_hModule = GetModuleHandle( NULL );
+   hModule = GetModuleHandle( NULL );
 }
 
 #ifdef __XHARBOUR__
@@ -96,11 +96,11 @@ HB_FUNC( FINDRESOURCE )
    int lpName = hb_parni( 2 ) ; //"WindowsXP.Manifest";
    int lpType = hb_parni( 3 ) ; // RT_MANIFEST = 24
 
-   s_hModule = GetModuleHandle( ISCHAR( 1 ) ? hb_parc( 1 ) : NULL );
+   hModule = GetModuleHandle( ISCHAR( 1 ) ? hb_parc( 1 ) : NULL );
 
    if( IS_INTRESOURCE( lpName ) )
    {
-     hHRSRC = FindResource( ( HMODULE ) s_hModule,
+     hHRSRC = FindResource( ( HMODULE ) hModule,
       ( LPCTSTR ) lpName ,
       ( LPCTSTR ) lpType ) ;
 

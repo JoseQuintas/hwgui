@@ -1,5 +1,5 @@
 /*
- * $Id: cxshade.c,v 1.10 2009-12-17 14:22:40 druzus Exp $
+ * $Id: cxshade.c,v 1.11 2009-12-18 02:07:05 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level functions for special drawing effects
@@ -114,7 +114,7 @@ void Draw3dRect( HDC hDC, RECT * lprect, COLORREF clrTopLeft,
 void cxdib_Release( PCXDIB pdib )
 {
    if( pdib->hDib )
-      free( pdib->hDib );
+      hb_xfree( pdib->hDib );
 }
 
 WORD cxdib_GetPaletteSize( PCXDIB pdib )
@@ -162,7 +162,7 @@ HDIB cxdib_Create( PCXDIB pdib, DWORD dwWidth, DWORD dwHeight,
    DWORD dwLen;                 // size of memory block
 
    if( pdib->hDib )
-      free( pdib->hDib );
+      hb_xfree( pdib->hDib );
    pdib->hDib = NULL;
 
    // Make sure bits per pixel is valid
@@ -210,7 +210,7 @@ HDIB cxdib_Create( PCXDIB pdib, DWORD dwWidth, DWORD dwHeight,
    // table, and the bits
    dwLen = cxdib_GetSize( pdib );
 
-   pdib->hDib = malloc( dwLen );        // alloc memory block to store our bitmap
+   pdib->hDib = hb_xgrab( dwLen );        // alloc memory block to store our bitmap
    // hDib = new (HDIB[dwLen]); //fixes allocation problem under Win2k
    if( !pdib->hDib )
       return NULL;
@@ -320,7 +320,7 @@ void cxdib_SetPixelIndex( PCXDIB pdib, long x, long y, BYTE i )
 
 PCXSHADE cxshade_New( RECT * prect, BOOL lFlat )
 {
-   PCXSHADE pshade = ( PCXSHADE ) malloc( sizeof( CXSHADE ) );
+   PCXSHADE pshade = ( PCXSHADE ) hb_xgrab( sizeof( CXSHADE ) );
 
    memset( pshade, 0, sizeof( CXSHADE ) );
    SetRect( &( pshade->m_rect ), prect->left, prect->top, prect->right,
@@ -340,7 +340,7 @@ void cxshade_Release( PCXSHADE pshade )
    cxdib_Release( &( pshade->m_dOver ) );
    cxdib_Release( &( pshade->m_dh ) );
    cxdib_Release( &( pshade->m_dv ) );
-   free( pshade );
+   hb_xfree( pshade );
 }
 
 void cxshade_Draw( PCXSHADE pshade, HDC pRealDC, short state )

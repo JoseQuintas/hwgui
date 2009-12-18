@@ -57,26 +57,26 @@ HB_FUNC( OPENDEFAULTPRINTER )
       EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, NULL,
             0, &dwNeeded, &dwReturned );
 
-      pinfo5 = malloc( dwNeeded );
+      pinfo5 = hb_xgrab( dwNeeded );
 
       EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, ( PBYTE ) pinfo5,
             dwNeeded, &dwNeeded, &dwReturned );
       hDC = CreateDC( NULL, pinfo5->pPrinterName, NULL, NULL );
 
-      free( pinfo5 );
+      hb_xfree( pinfo5 );
    }
    else                         // Windows NT
    {
       EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, NULL,
             0, &dwNeeded, &dwReturned );
 
-      pinfo4 = malloc( dwNeeded );
+      pinfo4 = hb_xgrab( dwNeeded );
 
       EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, ( PBYTE ) pinfo4,
             dwNeeded, &dwNeeded, &dwReturned );
       hDC = CreateDC( NULL, pinfo4->pPrinterName, NULL, NULL );
 
-      free( pinfo4 );
+      hb_xfree( pinfo4 );
    }
    HB_RETHANDLE( hDC );
 }

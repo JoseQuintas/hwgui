@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.94 2009-12-18 00:07:23 andijahja Exp $
+ * $Id: control.c,v 1.95 2009-12-18 01:32:11 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -2052,7 +2052,7 @@ HB_FUNC( GETTABNAME )
    tie.mask = TCIF_TEXT;
    tie.cchTextMax = 254;
    tie.pszText = d;
-   strcpy( ( char * ) tie.pszText, d );
+   hb_strncpy( ( char * ) tie.pszText, d, sizeof(tie.pszText) - 1 );
    TabCtrl_GetItem( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ) - 1,
          ( LPTCITEM ) & tie );
    hb_retc( ( char * ) tie.pszText );

@@ -1,5 +1,5 @@
 /*
- * $Id: blowfish.c,v 1.10 2009-08-20 09:16:38 druzus Exp $
+ * $Id: blowfish.c,v 1.11 2009-12-18 01:32:11 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Encryption/Decryption functions, using BlowFish algorithm,
@@ -445,20 +445,20 @@ HB_FUNC( BF_ENCRYPT )
    if( ISNIL( 2 ) )
    {
       key = ( unsigned char * ) hb_xgrab( 5 );
-      strcpy( ( char * ) key, keyDefault );
+      hb_strncpy( ( char * ) key, keyDefault, sizeof( key ) - 1 );
       iKeylen = 4;
    }
    else if( ( iKeylen = hb_parclen( 2 ) ) < 4 )
    {
       key = ( unsigned char * ) hb_xgrab( 5 );
-      strcpy( ( char * ) key, hb_parc( 2 ) );
-      strncat( ( char * ) key, keyDefault, 4 - iKeylen );
+      hb_strncpy( ( char * ) key, hb_parc( 2 ), sizeof( key ) - 1 );
+      hb_strncat( ( char * ) key, keyDefault, 4 - iKeylen );
       iKeylen = 4;
    }
    else
    {
       key = ( unsigned char * ) hb_xgrab( iKeylen + 1 );
-      strcpy( ( char * ) key, hb_parc( 2 ) );
+      hb_strncpy( ( char * ) key, hb_parc( 2 ), sizeof( key ) - 1);
    }
 
    Blowfish_Init( &ctx, key, iKeylen );
@@ -501,20 +501,20 @@ HB_FUNC( BF_DECRYPT )
    if( ISNIL( 2 ) )
    {
       key = ( unsigned char * ) hb_xgrab( 5 );
-      strcpy( ( char * ) key, keyDefault );
+      hb_strncpy( ( char * ) key, keyDefault, sizeof( key ) - 1);
       iKeylen = 4;
    }
    else if( ( iKeylen = hb_parclen( 2 ) ) < 4 )
    {
       key = ( unsigned char * ) hb_xgrab( 5 );
-      strcpy( ( char * ) key, hb_parc( 2 ) );
-      strncat( ( char * ) key, keyDefault, 4 - iKeylen );
+      hb_strncpy( ( char * ) key, hb_parc( 2 ), sizeof( key ) - 1);
+      hb_strncat( ( char * ) key, keyDefault, 4 - iKeylen );
       iKeylen = 4;
    }
    else
    {
       key = ( unsigned char * ) hb_xgrab( iKeylen + 1 );
-      strcpy( ( char * ) key, hb_parc( 2 ) );
+      hb_strncpy( ( char * ) key, hb_parc( 2 ), sizeof( key ) - 1);
    }
 
    Blowfish_Init( &ctx, key, iKeylen );

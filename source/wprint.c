@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.25 2009-12-17 14:22:41 druzus Exp $
+ * $Id: wprint.c,v 1.26 2009-12-18 01:32:11 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -51,7 +51,7 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
       EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, NULL,
             0, &dwNeeded, &dwReturned );
 
-      pinfo5 = ( PRINTER_INFO_5 * ) malloc( dwNeeded );
+      pinfo5 = ( PRINTER_INFO_5 * ) hb_xgrab( dwNeeded );
 
       EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, ( PBYTE ) pinfo5,
             dwNeeded, &dwNeeded, &dwReturned );
@@ -60,14 +60,14 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
       if( hb_pcount(  ) > 0 )
          hb_storc( pinfo5->pPrinterName, 1 );
 
-      free( pinfo5 );
+      hb_xfree( pinfo5 );
    }
    else                         // Windows NT
    {
       EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, NULL,
             0, &dwNeeded, &dwReturned );
 
-      pinfo4 = ( PRINTER_INFO_4 * ) malloc( dwNeeded );
+      pinfo4 = ( PRINTER_INFO_4 * ) hb_xgrab( dwNeeded );
 
       EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, ( PBYTE ) pinfo4,
             dwNeeded, &dwNeeded, &dwReturned );
@@ -75,7 +75,7 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
       if( hb_pcount(  ) > 0 )
          hb_storc( pinfo4->pPrinterName, 1 );
 
-      free( pinfo4 );
+      hb_xfree( pinfo4 );
    }
    HB_RETHANDLE( hDC );
 }
@@ -100,12 +100,12 @@ HB_FUNC( HWG_GETDEFAULTPRINTER )
       EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, NULL,
             0, &dwNeeded, &dwReturned );
 
-      pinfo5 = ( PRINTER_INFO_5 * ) malloc( dwNeeded );
+      pinfo5 = ( PRINTER_INFO_5 * ) hb_xgrab( dwNeeded );
       EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, ( LPBYTE ) pinfo5,
             dwNeeded, &dwNeeded, &dwReturned );
-      strcpy( PrinterDefault, pinfo5->pPrinterName );
+      hb_strncpy( PrinterDefault, pinfo5->pPrinterName, sizeof( PrinterDefault ) - 1 );
 
-      free( pinfo5 );
+      hb_xfree( pinfo5 );
    }
    else if( osvi.dwPlatformId == VER_PLATFORM_WIN32_NT )
    {
@@ -118,15 +118,15 @@ HB_FUNC( HWG_GETDEFAULTPRINTER )
          EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, NULL,
                0, &dwNeeded, &dwReturned );
 
-         pinfo4 = ( PRINTER_INFO_4 * ) malloc( dwNeeded );
+         pinfo4 = ( PRINTER_INFO_4 * ) hb_xgrab( dwNeeded );
 
          EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, ( PBYTE ) pinfo4,
                dwNeeded, &dwNeeded, &dwReturned );
 
          hb_retc( ( char * ) pinfo4->pPrinterName );
-         strcpy( PrinterDefault, pinfo4->pPrinterName );
+         hb_strncpy( PrinterDefault, pinfo4->pPrinterName, sizeof(PrinterDefault) - 1 );
 
-         free( pinfo4 );
+         hb_xfree( pinfo4 );
       }
    }
 
@@ -150,7 +150,7 @@ HB_FUNC( HWG_GETPRINTERS )
             0, &dwNeeded, &dwReturned );
       if( dwNeeded )
       {
-         pBuffer = ( PBYTE ) malloc( dwNeeded );
+         pBuffer = ( PBYTE ) hb_xgrab( dwNeeded );
          pinfo5 = ( PRINTER_INFO_5 * ) pBuffer;
          EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 5, pBuffer,
                dwNeeded, &dwNeeded, &dwReturned );
@@ -162,7 +162,7 @@ HB_FUNC( HWG_GETPRINTERS )
             0, &dwNeeded, &dwReturned );
       if( dwNeeded )
       {
-         pBuffer = ( PBYTE ) malloc( dwNeeded );
+         pBuffer = ( PBYTE ) hb_xgrab( dwNeeded );
          pinfo4 = ( PRINTER_INFO_4 * ) pBuffer;
          EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, pBuffer,
                dwNeeded, &dwNeeded, &dwReturned );
@@ -196,7 +196,7 @@ HB_FUNC( HWG_GETPRINTERS )
       hb_ret(  );
 
    if( pBuffer )
-      free( pBuffer );
+      hb_xfree( pBuffer );
 
 }
 

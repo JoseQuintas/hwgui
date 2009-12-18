@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.45 2009-12-17 14:22:41 druzus Exp $
+ * $Id: menu_c.c,v 1.46 2009-12-18 01:32:11 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -422,7 +422,7 @@ HB_FUNC( GETMENUCAPTION )
       GetMenuItemInfo( hMenu, hb_parni( 2 ), 0, ( LPMENUITEMINFO ) & mii );
       mii.cch = mii.cch + 1;
       mii.dwTypeData = d;
-      strcpy( ( char * ) mii.dwTypeData, d );
+      hb_strncpy( ( char * ) mii.dwTypeData, d, sizeof(mii.dwTypeData) - 1 );
       if( GetMenuItemInfo( hMenu, hb_parni( 2 ), 0,
                   ( LPMENUITEMINFO ) & mii ) )
          hb_retc( ( char * ) mii.dwTypeData );

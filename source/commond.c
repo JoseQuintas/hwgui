@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.30 2009-12-17 14:22:40 druzus Exp $
+ * $Id: commond.c,v 1.31 2009-12-18 01:32:11 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -142,8 +142,8 @@ HB_FUNC( SELECTFILE )
       const char *str2 = hb_parc( 2 );
       strFilter = ( char * ) hb_xgrab( strlen( str1 ) + strlen( str2 ) + 4 );
       memset( strFilter, 0, strlen( str1 ) + strlen( str2 ) + 4 );
-      strcpy( strFilter, str1 );
-      strcpy( strFilter + strlen( str1 ) + 1, str2 );
+      hb_strncpy( strFilter, str1, sizeof(strFilter) - 1 );
+      hb_strncpy( strFilter + strlen( str1 ) + 1, str2, sizeof(strFilter) + strlen( str1 ) );
    }
    else if( ISARRAY( 1 ) && ISARRAY( 2 ) )
    {
@@ -168,10 +168,10 @@ HB_FUNC( SELECTFILE )
       for( i = 1; i <= iArrLen; i++ )
       {
          pTemp = hb_arrayGetItemPtr( pArr1, i );
-         strcpy( ptr, hb_itemGetCPtr( pTemp ) );
+         hb_strncpy( ptr, hb_itemGetCPtr( pTemp ), sizeof( ptr ) - 1 );
          ptr += hb_itemGetCLen( pTemp ) + 1;
          pTemp = hb_arrayGetItemPtr( pArr2, i );
-         strcpy( ptr, hb_itemGetCPtr( pTemp ) );
+         hb_strncpy( ptr, hb_itemGetCPtr( pTemp ), sizeof( ptr ) - 1 );
          ptr += hb_itemGetCLen( pTemp ) + 1;
       }
    }
@@ -215,10 +215,10 @@ HB_FUNC( SAVEFILE )
       return;
    }
    memset( strFilter, 0, strlen( str1 ) + strlen( str2 ) + 4 );
-   strcpy( strFilter, str1 );
-   strcpy( strFilter + strlen( str1 ) + 1, str2 );
+   hb_strncpy( strFilter, str1, sizeof( strFilter ) - 1 );
+   hb_strncpy( strFilter + strlen( str1 ) + 1, str2, sizeof( strFilter ) + strlen( str1 )  );
 
-   strcpy( buffer, hb_parc( 1 ) );
+   hb_strncpy( buffer, hb_parc( 1 ), sizeof( buffer ) - 1 );
 
    memset( ( void * ) &ofn, 0, sizeof( OPENFILENAME ) );
    ofn.lStructSize = sizeof( ofn );
@@ -460,7 +460,7 @@ HB_FUNC( PRINTSETUPEX )
    if( PrintDlg( &pd ) )
    {
       pDevMode = ( LPDEVMODE ) GlobalLock( pd.hDevMode );
-      strcpy( PrinterName, ( char * ) pDevMode->dmDeviceName );
+      hb_strncpy( PrinterName, ( char * ) pDevMode->dmDeviceName, sizeof(PrinterName) - 1 );
       GlobalUnlock( pd.hDevMode );
       hb_retc( PrinterName );
    }
@@ -471,7 +471,7 @@ HB_FUNC( _GETOPENFILENAME )
    OPENFILENAME ofn;
    char *szFileName = ( char * ) hb_xgrab( hb_parcsiz( 2 ) );
 
-   strcpy( szFileName, hb_parc( 2 ) );
+   hb_strncpy( szFileName, hb_parc( 2 ), sizeof(szFileName) - 1 );
 
    ZeroMemory( &ofn, sizeof( ofn ) );
    ofn.hInstance = GetModuleHandle( NULL );

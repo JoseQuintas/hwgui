@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.30 2009-12-17 14:22:41 druzus Exp $
+ * $Id: richedit.c,v 1.31 2009-12-18 01:32:11 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -106,7 +106,7 @@ HB_FUNC( RE_SETCHARFORMAT )
          if( ulLen1 > 3 &&
                hb_itemType( hb_arrayGetItemPtr( pArr1, 4 ) ) != HB_IT_NIL )
          {
-            strcpy( cf.szFaceName, hb_arrayGetCPtr( pArr1, 4 ) );
+            hb_strncpy( cf.szFaceName, hb_arrayGetCPtr( pArr1, 4 ), sizeof(cf.szFaceName) - 1 );
             cf.dwMask |= CFM_FACE;
          }
          if( ulLen1 > 4 &&
@@ -177,7 +177,7 @@ HB_FUNC( RE_SETCHARFORMAT )
       }
       if( !ISNIL( 5 ) )
       {
-         strcpy( cf.szFaceName, hb_parc( 5 ) );
+         hb_strncpy( cf.szFaceName, hb_parc( 5 ), sizeof(cf.szFaceName) - 1 );
          cf.dwMask |= CFM_FACE;
       }
       if( !ISNIL( 6 ) )
@@ -246,7 +246,7 @@ HB_FUNC( RE_SETDEFAULT )
    }
    if( ISCHAR( 3 ) )
    {
-      strcpy( cf.szFaceName, hb_parc( 3 ) );
+      hb_strncpy( cf.szFaceName, hb_parc( 3 ), sizeof(cf.szFaceName) - 1 );
       cf.dwMask |= CFM_FACE;
    }
 

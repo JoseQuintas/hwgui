@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.26 2009-06-29 11:22:05 alkresin Exp $
+ * $Id: xmlparse.c,v 1.27 2009-12-18 04:36:38 andijahja Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -19,6 +19,10 @@
 #include "hbapicls.h"
 #endif
 #include "guilib.h"
+
+#if (defined(_MSC_VER)&&(_MSC_VER>=1400))
+   #define sscanf sscanf_s
+#endif
 
 #define HB_SKIPTABSPACES( sptr ) while( *sptr == ' ' || *sptr == '\t' || \
          *sptr == '\r' || *sptr == '\n' ) ( sptr )++

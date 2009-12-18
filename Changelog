@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1185 2009-12-17 22:52:35 druzus Exp $
+ * $Id: Changelog,v 1.1186 2009-12-18 00:07:18 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-12-18 07:10 UTC+0700 Andi Jahja <xharbour/AT/telkom/net/id>
+   * source/control.c
+     ! add extern "C" attrib to function proto-type GetAncestor
+
+   * include/guilib.h
+     - remove definition of HB_NO_DEFAULT_API_MACROS and HB_NO_DEFAULT_STACK_MACROS
 
 2009-12-17 23:52 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/dialog.c

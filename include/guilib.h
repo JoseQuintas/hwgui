@@ -1,11 +1,6 @@
 /*
- *$Id: guilib.h,v 1.20 2009-12-15 07:19:16 andijahja Exp $
+ *$Id: guilib.h,v 1.21 2009-12-18 00:07:22 andijahja Exp $
  */
-
-#ifdef __EXPORT__
-   #define HB_NO_DEFAULT_API_MACROS
-   #define HB_NO_DEFAULT_STACK_MACROS
-#endif
 
 #include "hbdefs.h"
 

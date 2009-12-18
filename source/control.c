@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.93 2009-12-17 14:22:40 druzus Exp $
+ * $Id: control.c,v 1.94 2009-12-18 00:07:23 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -28,9 +28,9 @@
 #include "guilib.h"
 
 #if defined(__BORLANDC__) || (defined(_MSC_VER) && !defined(__XCC__) || defined(__WATCOMC__) || defined(__DMC__) )
+HB_EXTERN_BEGIN
 WINUSERAPI HWND WINAPI GetAncestor( HWND hwnd, UINT gaFlags );
-
-
+HB_EXTERN_END
 #endif
 
 #ifndef TTS_BALLOON

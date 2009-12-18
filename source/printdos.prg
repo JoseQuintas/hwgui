@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.24 2009-08-20 09:16:37 druzus Exp $
+ * $Id: printdos.prg,v 1.25 2009-12-18 02:26:49 andijahja Exp $
  *
  * CLASS PrintDos
  *
@@ -625,7 +625,7 @@ HB_FUNC( AFILLTEXT )
       hb_reta( 0 );
       return;
    }
-   inFile = fopen( pSrc, "r" );
+   inFile = hb_fopen( pSrc, "r" );
 
    if ( !inFile )
    {

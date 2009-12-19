@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1190 2009-12-18 04:36:38 andijahja Exp $
+ * $Id: Changelog,v 1.1191 2009-12-19 12:47:35 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,18 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-12-19 10:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! METHOD BUTTONRDOWN event RIGHTCLICK pass tree parameters SELF, LINE, COL 
+  * source\hdialog.prg
+    * FUNCTION ONDESTROY
+    ! fix because Application was destroyed if dialog was inherited from DIALOG CLASS
+  * source\hedit.prg
+    ! METHOD ONEVENT fixed message KEYDOWN HOME,END 
+    ! fixed position first caracter in PICTURE COMPLEX
+  * source\htool.prg
+    ! fix in Load image from resource numeric
 
 2009-12-18 11:30 UTC+0700 Andi Jahja <xharbour/AT/telkom/net/id>
    * source/draw.c

@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.36 2009-11-24 21:57:14 lfbasso Exp $
+ * $Id: htool.prg,v 1.37 2009-12-19 12:47:35 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -294,8 +294,8 @@ Local hImage, img, nlistimg, ndrop := 0
 				    SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( ::nSize, ::nSize ) )
 				 ENDIF   
 
-         IF ValType( ::aItem[ n, 1 ] )  == "C"
-            IF At(".", ::aitem[ n, 1 ] ) != 0
+         IF ValType( ::aItem[ n, 1 ] )  == "C" .OR. ::aItem[ n, 1 ] > 1
+            IF ValType( ::aItem[ n, 1 ] )  == "C" .AND. At(".", ::aitem[ n, 1 ] ) != 0
                //AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION+ LR_LOADFROMFILE ) )
                hImage := HBITMAP():AddFile( ::aitem[ n, 1 ], , .T., ::nSize, ::nSize ):handle
             ELSE
@@ -443,6 +443,7 @@ METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu, cName) CLASS hTo
       DEFAULT nBitIp to 0
       DEFAULT cName to "oSeparator"+LTRIM( STR( LEN( ::aSeparators ) + 1 ) )
       AAdd( ::aSeparators,{ cName, nid } )
+      //bStyle := TBSTYLE_SEP //TBSTYLE_FLAT
    ENDIF
 
    oButton := HToolButton():New(Self,cName,nBitIp,nId,bState,bStyle,cText,bClick, c ,aMenu)

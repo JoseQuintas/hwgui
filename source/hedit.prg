@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.157 2009-11-25 17:47:20 lfbasso Exp $
+ *$Id: hedit.prg,v 1.158 2009-12-19 12:47:35 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -306,11 +306,15 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                IF ! IsCtrlShift()
                   ::lFirst := .F.
                   IF ::cType == "C"
-                     nPos := Len( Trim( ::title ) )
+                     //nPos := Len( Trim( ::title ) )
+                     nPos := LEN( Trim( GetEditText( ::oParent:handle, ::id ) ) )
                      SendMessage( ::handle, EM_SETSEL, nPos, nPos )
                      RETURN 0
                   ENDIF
                ENDIF
+            ELSEIF wParam == 36     // HOME
+               SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )                           
+               RETURN 0
             ELSEIF wParam == 45     // Insert
                IF ! IsCtrlShift()
                   SET( _SET_INSERT, ! SET( _SET_INSERT ) )
@@ -356,8 +360,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ENDIF
       IF msg == WM_SETFOCUS //.AND. ::cType = "N"
          ::lFocu := .T.
-         IF ::oUpDown != Nil  // necessary because fail event in opdown if used command SETFOCUS() directly
-             ::when()
+         IF ::selstart = 0 .AND. ::lPicComplex
+            SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
          ENDIF
       ENDIF
       IF lColorinFocus

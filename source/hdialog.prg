@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.97 2009-11-15 18:55:04 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.98 2009-12-19 12:47:35 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -35,7 +35,8 @@ STATIC FUNCTION onDestroy( oDlg )
       oDlg:oEmbedded:END()
    ENDIF
 
-   oDlg:Super:onEvent( WM_DESTROY )
+   // oDlg:Super:onEvent( WM_DESTROY )
+   // IN CLASS INHERIT DIALOG DESTROY APLICATION
    oDlg:Del()
 
    RETURN 0

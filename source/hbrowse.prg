@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.197 2009-12-15 13:40:49 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.198 2009-12-19 12:47:35 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -2554,13 +2554,13 @@ METHOD ButtonRDown( lParam ) CLASS HBrowse
    IF nLine > 0 .AND. nLine <= ::rowCurrCount
       //::fipos := Min( ::colpos + ::nLeftCol - 1 - ::freeze, Len( ::aColumns ) )
       IF ::bRClick != nil
-         Eval( ::bRClick, Self, fif )
+         Eval( ::bRClick, Self, nLine, fif )
       ENDIF    
    ELSEIF nLine == 0
       IF ::lDispHead .and. ;
-         nLine >= - ::nHeadRows .AND. fif <= Len( ::aColumns ) 
+         nLine >=  - ::nHeadRows .AND. fif <= Len( ::aColumns ) 
          IF ::aColumns[ fif ]:bHeadRClick != nil
-            Eval( ::aColumns[ fif ]:bHeadRClick, Self, fif )
+            Eval( ::aColumns[ fif ]:bHeadRClick, Self, nLine, fif  )
          ENDIF    
       ENDIF
    ENDIF

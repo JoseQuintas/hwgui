@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.61 2009-12-18 04:36:38 andijahja Exp $
+ * $Id: draw.c,v 1.62 2009-12-20 00:03:16 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -837,7 +837,7 @@ HB_FUNC( OPENIMAGE )
    }
    else
    {
-      fp = hb_fopen( cFileName, "rb" );
+      fp = fopen( cFileName, "rb" );
       if( !fp )
       {
          HB_RETHANDLE( 0 );

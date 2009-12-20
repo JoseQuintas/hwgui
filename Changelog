@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1191 2009-12-19 12:47:35 lfbasso Exp $
+ * $Id: Changelog,v 1.1192 2009-12-20 00:03:12 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-12-20 07:00 UTC+0700 Andi Jahja <xharbour/AT/telkom/net/id>
+  * source/draw.c
+  * source/printdos.prg
+    ! hb_fopen -> fopen, reverted since there are many users still using
+      old version of (x)Harbour which does not yet this function.
 
 2009-12-19 10:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg

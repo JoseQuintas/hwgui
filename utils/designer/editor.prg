@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.28 2008-10-20 15:11:50 mlacecilia Exp $
+ * $Id: editor.prg,v 1.29 2009-12-29 22:29:17 andijahja Exp $
  *
  * Designer
  * Simple code editor
@@ -538,7 +538,7 @@ int At_Any( char* cFind, char* cStr, int* nPos)
 HB_FUNC( NEXTWORD )
 {
    char *cSep = " \t,.()[]+-/%";
-   char * cStr  = hb_parc( 1 );
+   char * cStr  = (char*) hb_parc( 1 );
    char * ptr, * ptr1;
    int nPos = hb_parni( 2 ) - 1;
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1193 2009-12-29 12:09:11 lfbasso Exp $
+ * $Id: Changelog,v 1.1194 2009-12-29 22:29:15 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-12-30 05:15 UTC+0700 Andi Jahja <xharbour/AT/telkom/net/id>
+  * utils/designer/editor.prg
+      ! casting
+
+  * utils/designer/designer.prg
+      ! rename function designer -> function _appmain, some compilers want
+      	_appmain as name of the main module
 
 2009-12-29 10:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\draw.c

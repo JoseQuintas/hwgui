@@ -1,7 +1,7 @@
 /*
 /*
 /*
- * $Id: designer.prg,v 1.36 2009-04-07 09:09:26 alkresin Exp $
+ * $Id: designer.prg,v 1.37 2009-12-29 22:29:17 andijahja Exp $
  *
  * Designer
  * Main file
@@ -42,7 +42,7 @@ REQUEST HWG_GETPRINTERS
    REQUEST HB_GT_NUL_DEFAULT
 #endif
 
-Function Designer( p0, p1, p2 )
+Function _AppMain( p0, p1, p2 )
 Local oPanel, oTab, oFont, oStatus1, cResForm, i
 // Local oMainWin
 Memvar oDesigner, cCurDir, oDlgx

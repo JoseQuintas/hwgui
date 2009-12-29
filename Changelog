@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1192 2009-12-20 00:03:12 andijahja Exp $
+ * $Id: Changelog,v 1.1193 2009-12-29 12:09:11 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-12-29 10:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\draw.c
+    ! minor fix in FUNCTION DRAWGRAYBITMAP 
+  * source\hcontrol.prg
+    ! fix in METHOD SETVALUE
+  * source\hdialog.prg
+    ! minor fix in METHOD ACTIVATE in DIALOG NOMODAL
+  * source\hownbtn.prg
+    ! fixed textcolor in DISABLE MODE
+    
 2009-12-20 07:00 UTC+0700 Andi Jahja <xharbour/AT/telkom/net/id>
   * source/draw.c
   * source/printdos.prg

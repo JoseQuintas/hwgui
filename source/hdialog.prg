@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.98 2009-12-19 12:47:35 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.99 2009-12-29 12:09:12 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -189,6 +189,7 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
          ::lResult := .F.
          ::Add()
          Hwg_CreateDlgIndirect( hParent, Self, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
+         UPDATEWINDOW( ::handle ) 
          /*
          IF ::oIcon != Nil
             SendMessage( ::handle,WM_SETICON,1,::oIcon:handle )

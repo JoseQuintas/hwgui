@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.62 2009-12-20 00:03:16 andijahja Exp $
+ * $Id: draw.c,v 1.63 2009-12-29 12:09:12 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -775,7 +775,8 @@ HB_FUNC( DRAWGRAYBITMAP )
    int y = hb_parni( 4 );
 
    SetBkColor( hDC, GetSysColor( COLOR_BTNHIGHLIGHT ) );
-   SetTextColor( hDC, GetSysColor( COLOR_BTNFACE ) );
+   //SetTextColor( hDC, GetSysColor( COLOR_BTNFACE ) );
+   SetTextColor( hDC, GetSysColor( COLOR_BTNSHADOW ) );
    // Create two memory dcs for the image and the mask
    dcImage = CreateCompatibleDC( hDC );
    dcTrans = CreateCompatibleDC( hDC );

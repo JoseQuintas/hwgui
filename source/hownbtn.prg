@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.40 2009-11-17 19:14:19 mlacecilia Exp $
+ * $Id: hownbtn.prg,v 1.41 2009-12-29 12:09:12 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -311,7 +311,8 @@ METHOD DrawItems( hDC ) CLASS HOwnButton
       IF ::lEnabled
          SetTextColor( hDC, ::tcolor )
       ELSE
-         SetTextColor( hDC, RGB( 255, 255, 255 ) )
+         //SetTextColor( hDC, RGB( 255, 255, 255 ) )
+         SetTextColor( hDC, GETSYSCOLOR( COLOR_INACTIVECAPTION ) )
       ENDIF
       x1 := IIf( ::xt != 0, ::xt, 4 )
       y1 := IIf( ::yt != 0, ::yt, 4 )

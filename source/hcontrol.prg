@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.147 2009-12-05 16:27:43 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.148 2009-12-29 12:09:12 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -500,8 +500,7 @@ CLASS VAR winclass   INIT "STATIC"
    // METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
    //
    METHOD SetText( value ) INLINE ::SetValue( value )
-   METHOD SetValue( value ) INLINE  ::Auto_Size( value ), ;
-          SetDlgItemText( ::oParent:handle, ::id, value ), ::title := value
+   METHOD SetValue( value ) 
    METHOD Auto_Size( cValue )  HIDDEN
    METHOD Init()
    METHOD PAINT( o )
@@ -540,7 +539,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       bPaint := { | o, p | o:paint( p ) }
       nStyle := SS_OWNERDRAW + Hwg_Bitand( nStyle, SS_NOTIFY )
    ENDIF
-
+   
+   ::BackStyle := ::nBackMode
+   
    Super:New( oWndParent, nId, nStyle + nBorder, nLeft, nTop, nWidth, nHeight, oFont, ;
               bInit, bSize, bPaint, cTooltip, tcolor, bColor )
 
@@ -572,8 +573,9 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    IF ( lTransp != NIL .AND. lTransp )  //.OR. ::lOwnerDraw
       ::extStyle += WS_EX_TRANSPARENT
       bPaint := { | o, p | o:paint( p ) }
+      ::nBackMode := 0
    ENDIF
-
+   ::BackStyle := ::nBackMode
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint, cTooltip, tcolor, bColor )
 
@@ -648,6 +650,15 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS  HStatic
    RETURN - 1
    
 
+METHOD SetValue( Value )  CLASS HStatic
+    ::Auto_Size( value ) 
+    IF ::backstyle = 0
+       RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_ERASENOW, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+    ENDIF   
+    SetDlgItemText( ::oParent:handle, ::id, value )
+    ::title := value 
+    RETURN Nil
+
 METHOD Paint( lpDis ) CLASS HStatic
    LOCAL drawInfo := GetDrawItemInfo( lpDis )
    LOCAL client_rect, szText
@@ -659,17 +670,17 @@ METHOD Paint( lpDis ) CLASS HStatic
 
    // Map "Static Styles" to "Text Styles"
    nstyle := ::nStyleHS  // ::style
-    IF nStyle - SS_NOTIFY < 32
+   IF nStyle - SS_NOTIFY < 32
       SetAStyle( @nstyle, @dwtext )
-    ELSE
+   ELSE
        dwtext := nStyle - 256
-    ENDIF
+   ENDIF
 
    // Set transparent background
    SetBkMode( dc, ::nBackMode )
-     IF  ::nBackMode = 1
-         brBackground := IIF( !EMPTY( ::brush ),::brush, HBRUSH():Add( GetSysColor( COLOR_BTNFACE ) ) )
-       FillRect( dc, client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], brBackground:handle )
+   IF  ::nBackMode = 1
+      brBackground := IIF( !EMPTY( ::brush ),::brush, HBRUSH():Add( GetSysColor( COLOR_BTNFACE ) ) )
+      FillRect( dc, client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], brBackground:handle )
    ENDIF
 
    // Draw the text
@@ -678,7 +689,7 @@ METHOD Paint( lpDis ) CLASS HStatic
    //          client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ;
    //          dwtext )
    IF ::Title != szText
-         RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      //   RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )
    ENDIF
 
    RETURN nil

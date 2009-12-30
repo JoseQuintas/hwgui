@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.31 2009-12-18 01:32:11 andijahja Exp $
+ * $Id: commond.c,v 1.32 2009-12-30 16:03:11 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -142,8 +142,8 @@ HB_FUNC( SELECTFILE )
       const char *str2 = hb_parc( 2 );
       strFilter = ( char * ) hb_xgrab( strlen( str1 ) + strlen( str2 ) + 4 );
       memset( strFilter, 0, strlen( str1 ) + strlen( str2 ) + 4 );
-      hb_strncpy( strFilter, str1, sizeof(strFilter) - 1 );
-      hb_strncpy( strFilter + strlen( str1 ) + 1, str2, sizeof(strFilter) + strlen( str1 ) );
+      hb_xstrcpy( strFilter, str1, 0 );
+      hb_xstrcpy( strFilter + strlen( str1 ) + 1, str2, 0 );
    }
    else if( ISARRAY( 1 ) && ISARRAY( 2 ) )
    {
@@ -168,10 +168,10 @@ HB_FUNC( SELECTFILE )
       for( i = 1; i <= iArrLen; i++ )
       {
          pTemp = hb_arrayGetItemPtr( pArr1, i );
-         hb_strncpy( ptr, hb_itemGetCPtr( pTemp ), sizeof( ptr ) - 1 );
+         hb_xstrcpy( ptr, hb_itemGetCPtr( pTemp ), 0 );
          ptr += hb_itemGetCLen( pTemp ) + 1;
          pTemp = hb_arrayGetItemPtr( pArr2, i );
-         hb_strncpy( ptr, hb_itemGetCPtr( pTemp ), sizeof( ptr ) - 1 );
+         hb_xstrcpy( ptr, hb_itemGetCPtr( pTemp ), 0 );
          ptr += hb_itemGetCLen( pTemp ) + 1;
       }
    }
@@ -215,10 +215,10 @@ HB_FUNC( SAVEFILE )
       return;
    }
    memset( strFilter, 0, strlen( str1 ) + strlen( str2 ) + 4 );
-   hb_strncpy( strFilter, str1, sizeof( strFilter ) - 1 );
-   hb_strncpy( strFilter + strlen( str1 ) + 1, str2, sizeof( strFilter ) + strlen( str1 )  );
+   hb_xstrcpy( strFilter, str1, 0 );
+   hb_xstrcpy( strFilter + strlen( str1 ) + 1, str2, 0 );
 
-   hb_strncpy( buffer, hb_parc( 1 ), sizeof( buffer ) - 1 );
+   hb_xstrcpy( buffer, hb_parc( 1 ), 0 );
 
    memset( ( void * ) &ofn, 0, sizeof( OPENFILENAME ) );
    ofn.lStructSize = sizeof( ofn );

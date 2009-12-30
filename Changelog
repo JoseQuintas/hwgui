@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1194 2009-12-29 22:29:15 andijahja Exp $
+ * $Id: Changelog,v 1.1195 2009-12-30 16:03:07 andijahja Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-12-30 23:00 UTC+0700 Andi Jahja <xharbour/AT/telkom/net/id>
+  * source/commond.c
+      ! fixed bugs I introduced in my previous commit on SAVEFILE() and SELECTFILE()
 
 2009-12-30 05:15 UTC+0700 Andi Jahja <xharbour/AT/telkom/net/id>
   * utils/designer/editor.prg

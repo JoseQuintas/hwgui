@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.158 2009-12-19 12:47:35 lfbasso Exp $
+ *$Id: hedit.prg,v 1.159 2010-01-07 14:00:15 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -1291,17 +1291,17 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
       oCtrl := IIF( i > 0, oparent:acontrols[i], oParent)
        IF oForm:classname == oParent:classname //!= "HTAB"
          IF oParent:Type < WND_DLG_RESOURCE
-                SetFocus( nextHandle )
+             SetFocus( nextHandle )
          ELSE
              PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
          ENDIF
       ELSE
-          IF oForm:Type < WND_DLG_RESOURCE  //oParent:oParent:Type < WND_DLG_RESOURCE
+         IF oForm:Type < WND_DLG_RESOURCE .AND. oParent:handle = getFocus() //oParent:oParent:Type < WND_DLG_RESOURCE
              SetFocus( nextHandle )
          ELSEIF oParent:handle = getFocus()
             PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle , 1 )
          ELSE
-                PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
+            PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
          ENDIF
       ENDIF
    ENDIF

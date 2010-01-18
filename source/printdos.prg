@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.26 2009-12-20 00:03:16 andijahja Exp $
+ * $Id: printdos.prg,v 1.27 2010-01-18 17:28:54 druzus Exp $
  *
  * CLASS PrintDos
  *
@@ -638,13 +638,12 @@ HB_FUNC( AFILLTEXT )
 
    while ( file_read ( inFile, string ) )
    {
-     hb_arrayAddForward( pArray, hb_itemPutC( pTemp, string ));
+      hb_arrayAddForward( pArray, hb_itemPutC( pTemp, string ));
    }
 
-   hb_itemForwardValue( hb_stackReturnItem(), pArray );
-   hb_xfree( string );
-   hb_itemRelease( pArray );
+   hb_itemRelease( hb_itemReturn( pArray ) );
    hb_itemRelease( pTemp );
+   hb_xfree( string );
    fclose( inFile );
 }
 

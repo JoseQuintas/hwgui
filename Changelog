@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1196 2010-01-07 14:00:11 lfbasso Exp $
+ * $Id: Changelog,v 1.1197 2010-01-18 17:00:15 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-01-18 17:59 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/grid.c
+    ! fixed double freed memory block in LISTVIEWGETITEM() when
+      ListView_GetItem() failed
+    * hb_retc_buffer() for new Harbour versions
 
 2010-01-07 12:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/message.c

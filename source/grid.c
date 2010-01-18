@@ -1,5 +1,5 @@
  /*
-  * $Id: grid.c,v 1.35 2009-12-14 23:58:33 andijahja Exp $
+  * $Id: grid.c,v 1.36 2010-01-18 17:01:10 druzus Exp $
   *
   * HWGUI - Harbour Win32 GUI library source code:
   * HGrid class
@@ -495,8 +495,8 @@ HB_FUNC( LISTVIEWGETITEM )
       hb_xfree( Buffer );
       hb_retc( "" );
    }
-
-   hb_retcAdopt( Buffer );
+   else
+      hb_retc_buffer( Buffer );
 }
 
 int CALLBACK CompareFunc( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )

@@ -5,7 +5,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
-#include "guilib.h"
+#include "hwingui.h"
 
 HB_FUNC( ANIMATE_CREATE )
 {

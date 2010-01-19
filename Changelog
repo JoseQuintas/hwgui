@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1199 2010-01-19 15:45:40 druzus Exp $
+ * $Id: Changelog,v 1.1200 2010-01-19 23:38:27 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,35 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-01-20 00:38 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/include/guilib.h
+  + hwgui/include/hwingui.h
+    ! divided header file into two parts. hwingui.h contains MS-Windows
+      related files which are not used by GTK hwgui builds.
+      It fixes non ms-windows hwgui builds.
+
+  * hwgui/source/animat.c
+  * hwgui/source/commond.c
+  * hwgui/source/control.c
+  * hwgui/source/dialog.c
+  * hwgui/source/drawtext.c
+  * hwgui/source/menu_c.c
+  * hwgui/source/misc.c
+  * hwgui/source/richedit.c
+  * hwgui/source/theme.c
+  * hwgui/source/window.c
+    * use hwingui.h instead of guilib.h
+
+  * hwgui/include/guilib.h
+  * hwgui/source/misc.c
+    * use HB_PATH_MAX instead of _POSIX_PATH_MAX
+
+  * hwgui/source/hcombo.prg
+    * include windows.h as system header file
+
+  * hwgui/source/hcontrol.prg
+    % removed dummy #pragma {begin,env}dump
 
 2010-01-19 16:45 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/include/guilib.h

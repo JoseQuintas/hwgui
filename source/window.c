@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.81 2010-01-19 15:45:43 druzus Exp $
+ * $Id: window.c,v 1.82 2010-01-19 23:40:08 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -31,7 +31,7 @@
 #include <math.h>
 #include <float.h>
 #include <limits.h>
-#include "guilib.h"
+#include "hwingui.h"
 
 #define  FIRST_MDICHILD_ID     501
 

@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.33 2010-01-19 15:45:42 druzus Exp $
+ * $Id: commond.c,v 1.34 2010-01-19 23:39:42 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -17,7 +17,7 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "guilib.h"
+#include "hwingui.h"
 
 HB_FUNC( SELECTFONT )
 {

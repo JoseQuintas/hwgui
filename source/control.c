@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.96 2010-01-19 15:45:42 druzus Exp $
+ * $Id: control.c,v 1.97 2010-01-19 23:39:44 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -25,7 +25,10 @@
 #include "hbvm.h"
 #include "hbdate.h"
 #include "hbtrace.h"
-#include "guilib.h"
+#include "hwingui.h"
+#ifdef __XHARBOUR__
+   #include "hbfast.h"
+#endif
 
 #if defined(__BORLANDC__) || (defined(_MSC_VER) && !defined(__XCC__) || defined(__WATCOMC__) || defined(__DMC__) )
 HB_EXTERN_BEGIN

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.148 2009-12-29 12:09:12 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.149 2010-01-19 23:39:59 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -20,10 +20,6 @@
 #translate :dwHeight      => :m_csbitmaps\[ 3 \]
 #translate :hMask         => :m_csbitmaps\[ 4 \]
 #translate :crTransparent => :m_csbitmaps\[ 5 \]
-#pragma begindump
-#include "windows.h"
-#include "hbapi.h"
-#pragma enddump
 
 #include "windows.ch"
 #include "hbclass.ch"

@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.32 2010-01-19 15:45:43 druzus Exp $
+ * $Id: richedit.c,v 1.33 2010-01-19 23:40:05 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -28,7 +28,7 @@
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbdate.h"
-#include "guilib.h"
+#include "hwingui.h"
 
 LRESULT APIENTRY RichSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
       LPARAM lParam );

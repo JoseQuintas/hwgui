@@ -1,5 +1,5 @@
 /*
- * $Id: dialog.c,v 1.36 2010-01-19 15:45:42 druzus Exp $
+ * $Id: dialog.c,v 1.37 2010-01-19 23:39:56 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -26,7 +26,7 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "item.api"
-#include "guilib.h"
+#include "hwingui.h"
 
 #define  WM_PSPNOTIFY         WM_USER+1010
 

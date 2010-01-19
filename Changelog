@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1198 2010-01-18 17:28:54 druzus Exp $
+ * $Id: Changelog,v 1.1199 2010-01-19 15:45:40 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,43 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-01-19 16:45 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/include/guilib.h
+  * hwgui/source/window.c
+    + added functions and macros which emulates for xHarbour and older
+      Harbour version new Harbour string API with automatic UNICODE
+      conversions
+
+  * hwgui/include/guilib.h
+  * hwgui/source/control.c
+  * hwgui/source/dialog.c
+  * hwgui/source/drawtext.c
+  * hwgui/source/menu_c.c
+  * hwgui/source/misc.c
+  * hwgui/source/richedit.c
+  * hwgui/source/theme.c
+  * hwgui/source/window.c
+    * moved declaration of some public functions and variables
+      to header file
+
+  * hwgui/source/control.c
+  * hwgui/source/window.c
+    * declared some local functions as static
+
+  * hwgui/source/procmisc/blowfish.c
+    ! cleaned conflict by #define N ... before #include
+
+  * hwgui/source/xml/xmlparse.c
+    * use hbapifs.h instead of filesys.api
+
+  * hwgui/source/animat.c
+  * hwgui/source/commond.c
+    * updated for compilation in UNICODE mode
+
+   Please test - if all is correct then I'll begin to update other files.
+   The final goal is updating HWGUI to compile cleanly with UNICODE macro
+   and then adding support for WinCE builds.
 
 2010-01-18 18:28 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/printdos.prg

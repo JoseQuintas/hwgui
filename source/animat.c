@@ -54,11 +54,15 @@ HB_FUNC( ANIMATE_OPENEX )
 #if defined(__DMC__)
    #define Animate_OpenEx(hwnd, hInst, szName) (BOOL)SNDMSG(hwnd, ACM_OPEN, (WPARAM)hInst, (LPARAM)(LPTSTR)(szName))
 #endif
-   ISNIL( 2 ) ?
-   Animate_OpenEx( ( HWND ) HB_PARHANDLE( 1 ),
-                   NULL ,
-                   ISNUM( 3 ) ? ( LPCTSTR ) MAKEINTRESOURCE( hb_parnl( 3 ) ) : ( LPCTSTR ) hb_parc( 3 ) ) :
+   void * hResource;
+   LPCTSTR lpResource = HB_PARSTR( 2, &hResource, NULL );
+
+   if( !lpResource && ISNUM( 3 ) )
+      lpResource = ( LPCTSTR ) MAKEINTRESOURCE( hb_parni( 3 ) );
+
    Animate_OpenEx( ( HWND ) HB_PARHANDLE( 1 ),
                    ( HINSTANCE ) hb_parnl( 2 ),
-                   ISNUM( 3 ) ? ( LPCTSTR ) MAKEINTRESOURCE( hb_parnl( 3 ) ) : ( LPCTSTR ) hb_parc( 3 ) ) ;
+                   lpResource );
+
+   hb_strfree( hResource );
 }

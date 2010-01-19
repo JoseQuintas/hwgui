@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.21 2009-12-17 14:22:41 druzus Exp $
+ * $Id: theme.c,v 1.22 2010-01-19 15:45:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -89,10 +89,10 @@
 BOOL Themed = FALSE;
 HMODULE m_hThemeDll;
 BOOL ThemeLibLoaded = FALSE;
-extern PHB_ITEM Rect2Array( RECT * rc );
-extern BOOL Array2Rect( PHB_ITEM aRect, RECT * rc );
+
 void draw_bitmap( HDC hDC, const RECT * Rect, DWORD style, HWND m_hWnd );
 void draw_icon( HDC hDC, const RECT * Rect, DWORD style, HWND m_hWnd );
+
 static int image_top( int cy, const RECT * Rect, DWORD style );
 static int image_left( int cx, const RECT * Rect, DWORD style );
 

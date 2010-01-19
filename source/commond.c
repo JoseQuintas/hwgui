@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.32 2009-12-30 16:03:11 andijahja Exp $
+ * $Id: commond.c,v 1.33 2010-01-19 15:45:42 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -17,12 +17,7 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#ifdef __XHARBOUR__
-#include "hbfast.h"
-#endif
 #include "guilib.h"
-
-extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char *varname );
 
 HB_FUNC( SELECTFONT )
 {
@@ -39,7 +34,8 @@ HB_FUNC( SELECTFONT )
    {
       memset( &lf, 0, sizeof( LOGFONT ) );
       temp1 = GetObjectVar( pObj, "NAME" );
-      HB_TCHAR_CPTO( lf.lfFaceName, hb_itemGetCPtr( temp1 ), sizeof( lf.lfFaceName ) - 1 );
+      HB_ITEMCOPYSTR( temp1, lf.lfFaceName, HB_SIZEOFARRAY( lf.lfFaceName ) );
+      lf.lfFaceName[ HB_SIZEOFARRAY( lf.lfFaceName ) ] = '\0';
       temp1 = GetObjectVar( pObj, "WIDTH" );
       lf.lfWidth = hb_itemGetNI( temp1 );
       temp1 = GetObjectVar( pObj, "HEIGHT" );
@@ -78,7 +74,7 @@ HB_FUNC( SELECTFONT )
    if( !ChooseFont( &cf ) )
    {
       hb_itemRelease( aMetr );
-      hb_ret(  );
+      hb_ret();
       return;
    }
 
@@ -87,154 +83,183 @@ HB_FUNC( SELECTFONT )
    /* that font.                                  */
 
    hfont = CreateFontIndirect( cf.lpLogFont );
+
    temp = HB_PUTHANDLE( NULL, hfont );
    hb_itemArrayPut( aMetr, 1, temp );
-   hb_itemRelease( temp );
 
-   temp = hb_itemPutC( NULL, lf.lfFaceName );
+   HB_ITEMPUTSTR( temp, lf.lfFaceName );
    hb_itemArrayPut( aMetr, 2, temp );
-   hb_itemRelease( temp );
 
-   temp = hb_itemPutNL( NULL, lf.lfWidth );
+   hb_itemPutNL( temp, lf.lfWidth );
    hb_itemArrayPut( aMetr, 3, temp );
-   hb_itemRelease( temp );
 
-   temp = hb_itemPutNL( NULL, lf.lfHeight );
+   hb_itemPutNL( temp, lf.lfHeight );
    hb_itemArrayPut( aMetr, 4, temp );
-   hb_itemRelease( temp );
 
-   temp = hb_itemPutNL( NULL, lf.lfWeight );
+   hb_itemPutNL( temp, lf.lfWeight );
    hb_itemArrayPut( aMetr, 5, temp );
-   hb_itemRelease( temp );
 
-   temp = hb_itemPutNI( NULL, lf.lfCharSet );
+   hb_itemPutNI( temp, lf.lfCharSet );
    hb_itemArrayPut( aMetr, 6, temp );
-   hb_itemRelease( temp );
 
-   temp = hb_itemPutNI( NULL, lf.lfItalic );
+   hb_itemPutNI( temp, lf.lfItalic );
    hb_itemArrayPut( aMetr, 7, temp );
-   hb_itemRelease( temp );
 
-   temp = hb_itemPutNI( NULL, lf.lfUnderline );
+   hb_itemPutNI( temp, lf.lfUnderline );
    hb_itemArrayPut( aMetr, 8, temp );
-   hb_itemRelease( temp );
 
-   temp = hb_itemPutNI( NULL, lf.lfStrikeOut );
+   hb_itemPutNI( temp, lf.lfStrikeOut );
    hb_itemArrayPut( aMetr, 9, temp );
+
    hb_itemRelease( temp );
 
-   hb_itemReturn( aMetr );
-   hb_itemRelease( aMetr );
+   hb_itemRelease( hb_itemReturn( aMetr ) );
 
 }
 
 HB_FUNC( SELECTFILE )
 {
    OPENFILENAME ofn;
-   char buffer[512];
-   char *strFilter;
-   const char *initDir = ( hb_pcount(  ) > 2 && ISCHAR( 3 ) ) ? hb_parc( 3 ) : NULL;
-   const char *cTitle = ( hb_pcount(  ) > 3 && ISCHAR( 4 ) ) ? hb_parc( 4 ) : NULL;
+   TCHAR buffer[1024];
+   LPTSTR lpFilter;
+   void * hTitle, * hInitDir;
 
    if( ISCHAR( 1 ) && ISCHAR( 2 ) )
    {
-      const char *str1 = hb_parc( 1 );
-      const char *str2 = hb_parc( 2 );
-      strFilter = ( char * ) hb_xgrab( strlen( str1 ) + strlen( str2 ) + 4 );
-      memset( strFilter, 0, strlen( str1 ) + strlen( str2 ) + 4 );
-      hb_xstrcpy( strFilter, str1, 0 );
-      hb_xstrcpy( strFilter + strlen( str1 ) + 1, str2, 0 );
+      void * hStr1, * hStr2;
+      LPCTSTR lpStr1, lpStr2;
+      HB_SIZE nLen1, nLen2;
+
+      lpStr1 = HB_PARSTRDEF( 1, &hStr1, &nLen1 );
+      lpStr2 = HB_PARSTRDEF( 2, &hStr2, &nLen2 );
+
+      lpFilter = ( LPTSTR ) hb_xgrab( ( nLen1 + nLen2 + 4 ) * sizeof( TCHAR ) );
+      memset( lpFilter, 0, ( nLen1 + nLen2 + 4 ) * sizeof( TCHAR ) );
+      memcpy( lpFilter, lpStr1, nLen1 * sizeof( TCHAR ) );
+      memcpy( lpFilter + nLen1 + 1, lpStr2, nLen2 * sizeof( TCHAR ) );
+
+      hb_strfree( hStr1 );
+      hb_strfree( hStr2 );
    }
    else if( ISARRAY( 1 ) && ISARRAY( 2 ) )
    {
+      struct _hb_arrStr {
+         void *   hStr1;
+         LPCTSTR  lpStr1;
+         HB_SIZE  nLen1;
+         void *   hStr2;
+         LPCTSTR  lpStr2;
+         HB_SIZE  nLen2;
+      } * pArrStr;
       PHB_ITEM pArr1 = hb_param( 1, HB_IT_ARRAY );
       PHB_ITEM pArr2 = hb_param( 2, HB_IT_ARRAY );
-      PHB_ITEM pTemp;
-      int i, iArrLen = hb_arrayLen( pArr1 );
-      int iFltLen = 0;
-      char *ptr;
+      HB_SIZE n, nArrLen = hb_arrayLen( pArr1 ), nSize;
+      LPTSTR ptr;
 
-      for( i = 1; i <= iArrLen; i++ )
+      pArrStr = ( struct _hb_arrStr * )
+                hb_xgrab( nArrLen * sizeof( struct _hb_arrStr ) );
+      nSize = 2;
+      for( n = 0; n < nArrLen; n++ )
       {
-         pTemp = hb_arrayGetItemPtr( pArr1, i );
-         iFltLen += hb_itemGetCLen( pTemp ) + 1;
-         pTemp = hb_arrayGetItemPtr( pArr2, i );
-         iFltLen += hb_itemGetCLen( pTemp ) + 1;
+         pArrStr[ n ].lpStr1 = HB_ARRAYGETSTR( pArr1, n - 1,
+                                               &pArrStr[ n ].hStr1,
+                                               &pArrStr[ n ].nLen1 );
+         pArrStr[ n ].lpStr2 = HB_ARRAYGETSTR( pArr2, n - 1,
+                                               &pArrStr[ n ].hStr2,
+                                               &pArrStr[ n ].nLen2 );
+         nSize += pArrStr[ n ].nLen1 + pArrStr[ n ].nLen2;
       }
-      iFltLen += 2;
-      strFilter = ( char * ) hb_xgrab( iFltLen );
-      ptr = strFilter;
-      memset( strFilter, 0, iFltLen );
-      for( i = 1; i <= iArrLen; i++ )
+      lpFilter = ( LPTSTR ) hb_xgrab( nSize * sizeof( TCHAR ) );
+      memset( lpFilter, 0, nSize * sizeof( TCHAR ) );
+      ptr = lpFilter;
+      for( n = 0; n < nArrLen; n++ )
       {
-         pTemp = hb_arrayGetItemPtr( pArr1, i );
-         hb_xstrcpy( ptr, hb_itemGetCPtr( pTemp ), 0 );
-         ptr += hb_itemGetCLen( pTemp ) + 1;
-         pTemp = hb_arrayGetItemPtr( pArr2, i );
-         hb_xstrcpy( ptr, hb_itemGetCPtr( pTemp ), 0 );
-         ptr += hb_itemGetCLen( pTemp ) + 1;
+         memcpy( ptr, pArrStr[ n ].lpStr1, pArrStr[ n ].nLen1 );
+         ptr += pArrStr[ n ].nLen1 + 1;
+         memcpy( ptr, pArrStr[ n ].lpStr2, pArrStr[ n ].nLen2 );
+         ptr += pArrStr[ n ].nLen2 + 1;
+         hb_strfree( pArrStr[ n ].hStr1 );
+         hb_strfree( pArrStr[ n ].hStr2 );
       }
    }
    else
    {
-      hb_retc( "" );
+      hb_retc( NULL );
       return;
    }
 
    memset( ( void * ) &ofn, 0, sizeof( OPENFILENAME ) );
    ofn.lStructSize = sizeof( ofn );
    ofn.hwndOwner = GetActiveWindow(  );
-   ofn.lpstrFilter = strFilter;
+   ofn.lpstrFilter = lpFilter;
    ofn.lpstrFile = buffer;
    buffer[0] = 0;
-   ofn.nMaxFile = 512;
-   ofn.lpstrInitialDir = initDir;
-   ofn.lpstrTitle = cTitle;
+   ofn.nMaxFile = 1024;
+   ofn.lpstrInitialDir = HB_PARSTR( 3, &hInitDir, NULL );
+   ofn.lpstrTitle = HB_PARSTR( 4, &hTitle, NULL );
    ofn.Flags = OFN_FILEMUSTEXIST | OFN_EXPLORER;
 
    if( GetOpenFileName( &ofn ) )
-      hb_retc( ofn.lpstrFile );
+      HB_RETSTR( ofn.lpstrFile );
    else
-      hb_retc( "" );
-   hb_xfree( strFilter );
+      hb_retc( NULL );
+   hb_xfree( lpFilter );
+
+   hb_strfree( hInitDir );
+   hb_strfree( hTitle );
 }
 
 HB_FUNC( SAVEFILE )
 {
    OPENFILENAME ofn;
-   char buffer[512];
-   const char *str1 = hb_parcx( 2 ), *str2 = hb_parcx( 3 );
-   const char *initDir = ( hb_pcount(  ) > 3 && ISCHAR( 4 ) ) ? hb_parc( 4 ) : NULL;
-   const char *cTitle = ( hb_pcount(  ) > 4 && ISCHAR( 5 ) ) ? hb_parc( 5 ) : NULL;
-   char *strFilter;
+   TCHAR buffer[1024];
+   void * hFileName, * hStr1, * hStr2, * hTitle, * hInitDir;
+   LPCTSTR lpFileName, lpStr1, lpStr2;
+   HB_SIZE nSize, nLen1, nLen2;
+   LPTSTR lpFilter, lpFileBuff;
 
-   strFilter = ( char * ) hb_xgrab( strlen( str1 ) + strlen( str2 ) + 4 );
-   if( strFilter == NULL )
+   lpFileName = HB_PARSTR( 1, &hFileName, &nSize );
+   if( nSize < 1024 )
    {
-      hb_retc( "NULL" );
-      return;
+      memcpy( buffer, lpFileName, nSize * sizeof( TCHAR ) );
+      memset( &buffer[ nSize ], 0, ( 1024 - nSize ) * sizeof( TCHAR ) );
+      lpFileBuff = buffer;
+      nSize = 1024;
    }
-   memset( strFilter, 0, strlen( str1 ) + strlen( str2 ) + 4 );
-   hb_xstrcpy( strFilter, str1, 0 );
-   hb_xstrcpy( strFilter + strlen( str1 ) + 1, str2, 0 );
+   else
+      lpFileBuff = HB_STRUNSHARE( &hFileName, lpFileName, nSize );
 
-   hb_xstrcpy( buffer, hb_parc( 1 ), 0 );
+
+   lpStr1 = HB_PARSTRDEF( 2, &hStr1, &nLen1 );
+   lpStr2 = HB_PARSTRDEF( 3, &hStr2, &nLen2 );
+
+   lpFilter = ( LPTSTR ) hb_xgrab( ( nLen1 + nLen2 + 4 ) * sizeof( TCHAR ) );
+   memset( lpFilter, 0, ( nLen1 + nLen2 + 4 ) * sizeof( TCHAR ) );
+   memcpy( lpFilter, lpStr1, nLen1 * sizeof( TCHAR ) );
+   memcpy( lpFilter + nLen1 + 1, lpStr2, nLen2 * sizeof( TCHAR ) );
 
    memset( ( void * ) &ofn, 0, sizeof( OPENFILENAME ) );
    ofn.lStructSize = sizeof( ofn );
    ofn.hwndOwner = GetActiveWindow(  );
-   ofn.lpstrFilter = strFilter;
-   ofn.lpstrFile = buffer;
-   ofn.nMaxFile = 512;
-   ofn.lpstrInitialDir = initDir;
-   ofn.lpstrTitle = cTitle;
+   ofn.lpstrFilter = lpFilter;
+   ofn.lpstrFile = lpFileBuff;
+   ofn.nMaxFile = 1024;
+   ofn.lpstrInitialDir = HB_PARSTR( 4, &hInitDir, NULL );
+   ofn.lpstrTitle = HB_PARSTR( 5, &hTitle, NULL );
+
    ofn.Flags = OFN_FILEMUSTEXIST | OFN_EXPLORER;
 
    if( GetSaveFileName( &ofn ) )
-      hb_retc( ofn.lpstrFile );
+      HB_RETSTR( ofn.lpstrFile );
    else
-      hb_retc( "" );
-   hb_xfree( strFilter );
+      hb_retc( NULL );
+   hb_xfree( lpFilter );
+
+   hb_strfree( hFileName );
+   hb_strfree( hStr1 );
+   hb_strfree( hStr2 );
+   hb_strfree( hInitDir );
+   hb_strfree( hTitle );
 }
 
 HB_FUNC( PRINTSETUP )
@@ -269,7 +294,7 @@ HB_FUNC( PRINTSETUP )
          if( hb_pcount(  ) > 0 )
          {
             LPDEVNAMES lpdn = ( LPDEVNAMES ) GlobalLock( pd.hDevNames );
-            hb_storc( ( char * ) lpdn + lpdn->wDeviceOffset, 1 );
+            HB_STORSTR( ( LPCTSTR ) lpdn + lpdn->wDeviceOffset, 1 );
             GlobalUnlock( pd.hDevNames );
          }
          GlobalFree( pd.hDevNames );
@@ -306,18 +331,20 @@ HB_FUNC( HWG_CHOOSECOLOR )
 }
 
 
-unsigned long Get_SerialNumber( const char *RootPathName )
+static unsigned long Get_SerialNumber( LPCTSTR RootPathName )
 {
    unsigned long SerialNumber;
 
    GetVolumeInformation( RootPathName, NULL, 0, &SerialNumber,
-         NULL, NULL, NULL, 0 );
+                         NULL, NULL, NULL, 0 );
    return SerialNumber;
 }
 
 HB_FUNC( HDGETSERIAL )
 {
-   hb_retnl( Get_SerialNumber( hb_parc( 1 ) ) );
+   void * hStr;
+   hb_retnl( Get_SerialNumber( HB_PARSTR( 1, &hStr, NULL ) ) );
+   hb_strfree( hStr );
 }
 
 #define HB_OS_WIN_32_USED
@@ -337,54 +364,62 @@ HB_FUNC( HDGETSERIAL )
 
 HB_FUNC( GETPRIVATEPROFILESTRING )
 {
-   TCHAR bBuffer[1024];
+   TCHAR buffer[1024];
    DWORD dwLen;
-   const char *lpSection = hb_parc( 1 );
-   const char *lpEntry = ISCHAR( 2 ) ? hb_parc( 2 ) : NULL;
-   const char *lpDefault = hb_parc( 3 );
-   const char *lpFileName = hb_parc( 4 );
-   dwLen =
-         GetPrivateProfileString( lpSection, lpEntry, lpDefault, bBuffer,
-         sizeof( bBuffer ), lpFileName );
+   void * hSection, * hEntry, * hDefault, * hFileName;
+   LPCTSTR lpDefault = HB_PARSTR( 3, &hDefault, NULL );
+
+   dwLen = GetPrivateProfileString( HB_PARSTR( 1, &hSection, NULL ),
+                                    HB_PARSTR( 2, &hEntry, NULL ),
+                                    lpDefault, buffer, sizeof( buffer ),
+                                    HB_PARSTR( 4, &hFileName, NULL ) );
    if( dwLen )
-      hb_retclen( ( char * ) bBuffer, dwLen );
+      HB_RETSTRLEN( buffer, dwLen );
    else
-      hb_retc( lpDefault );
+      HB_RETSTR( lpDefault );
+
+   hb_strfree( hSection );
+   hb_strfree( hEntry );
+   hb_strfree( hDefault );
+   hb_strfree( hFileName );
 }
 
 HB_FUNC( WRITEPRIVATEPROFILESTRING )
 {
-   const char *lpSection = hb_parc( 1 );
-   const char *lpEntry = ISCHAR( 2 ) ? hb_parc( 2 ) : NULL;
-   const char *lpData = ISCHAR( 3 ) ? hb_parc( 3 ) : NULL;
-   const char *lpFileName = hb_parc( 4 );
+   void * hSection, * hEntry, * hData, * hFileName;
 
-   if( WritePrivateProfileString( lpSection, lpEntry, lpData, lpFileName ) )
-      hb_retl( TRUE );
-   else
-      hb_retl( FALSE );
+   hb_retl( WritePrivateProfileString( HB_PARSTR( 1, &hSection, NULL ),
+                                       HB_PARSTR( 2, &hEntry, NULL ),
+                                       HB_PARSTR( 3, &hData, NULL ),
+                                       HB_PARSTR( 4, &hFileName, NULL ) ) ?
+            TRUE : FALSE );
+
+   hb_strfree( hSection );
+   hb_strfree( hEntry );
+   hb_strfree( hData );
+   hb_strfree( hFileName );
 }
 
-static far PRINTDLG pd;
-static far BOOL bInit = FALSE;
-static far BOOL bPName = FALSE;
+static far PRINTDLG s_pd;
+static far BOOL s_fInit = FALSE;
+static far BOOL s_fPName = FALSE;
 
 static void StartPrn( void )
 {
-   if( !bInit )
+   if( !s_fInit )
    {
-      bInit = TRUE;
-      memset( ( char * ) &pd, 0, sizeof( PRINTDLG ) );
-      pd.lStructSize = sizeof( PRINTDLG );
-      pd.hwndOwner = GetActiveWindow(  );
-      pd.Flags = PD_RETURNDEFAULT;
-      pd.nMinPage = 1;
-      pd.nMaxPage = 65535;
+      s_fInit = TRUE;
+      memset( &s_pd, 0, sizeof( PRINTDLG ) );
+      s_pd.lStructSize = sizeof( PRINTDLG );
+      s_pd.hwndOwner = GetActiveWindow(  );
+      s_pd.Flags = PD_RETURNDEFAULT;
+      s_pd.nMinPage = 1;
+      s_pd.nMaxPage = 65535;
 
-      PrintDlg( &pd );
+      PrintDlg( &s_pd );
 
       /*
-         if (PrintDlg(&pd)==TRUE)
+         if (PrintDlg(&s_pd)==TRUE)
          {
          hb_retl(TRUE);
          }
@@ -398,46 +433,44 @@ static void StartPrn( void )
 
 HB_FUNC( PRINTPORTNAME )
 {
-   if( !bPName )
+   if( !s_fPName && s_pd.hDevNames )
    {
-      ULONG bRet;
       LPDEVNAMES lpDevNames;
 
-      bPName = TRUE;
-      lpDevNames = ( LPDEVNAMES ) GlobalLock( pd.hDevNames );
-      bRet = ( ULONG ) ( ( LPSTR ) lpDevNames + lpDevNames->wOutputOffset );
-      hb_retc( ( LPSTR ) bRet );
-      GlobalUnlock( pd.hDevNames );
+      s_fPName = TRUE;
+      lpDevNames = ( LPDEVNAMES ) GlobalLock( s_pd.hDevNames );
+      HB_RETSTR( ( LPCTSTR ) lpDevNames + lpDevNames->wOutputOffset );
+      GlobalUnlock( s_pd.hDevNames );
    }
 }
 
 HB_FUNC( PRINTSETUPDOS )
 {
 
-   StartPrn(  );
+   StartPrn();
 
-   memset( ( void * ) &pd, 0, sizeof( PRINTDLG ) );
+   memset( ( void * ) &s_pd, 0, sizeof( PRINTDLG ) );
 
-   pd.lStructSize = sizeof( PRINTDLG );
-   pd.Flags = PD_RETURNDC;
-   pd.hwndOwner = GetActiveWindow(  );
-   pd.nFromPage = 0xFFFF;
-   pd.nToPage = 0xFFFF;
-   pd.nMinPage = 1;
-   pd.nMaxPage = 0xFFFF;
-   pd.nCopies = 1;
+   s_pd.lStructSize = sizeof( PRINTDLG );
+   s_pd.Flags = PD_RETURNDC;
+   s_pd.hwndOwner = GetActiveWindow(  );
+   s_pd.nFromPage = 0xFFFF;
+   s_pd.nToPage = 0xFFFF;
+   s_pd.nMinPage = 1;
+   s_pd.nMaxPage = 0xFFFF;
+   s_pd.nCopies = 1;
 
-   if( PrintDlg( &pd ) )
+   if( PrintDlg( &s_pd ) )
    {
-      bPName = FALSE;
-      hb_stornl( pd.nFromPage, 1 );
-      hb_stornl( pd.nToPage, 2 );
-      hb_stornl( pd.nCopies, 3 );
-      HB_RETHANDLE( pd.hDC );
+      s_fPName = FALSE;
+      hb_stornl( s_pd.nFromPage, 1 );
+      hb_stornl( s_pd.nToPage, 2 );
+      hb_stornl( s_pd.nCopies, 3 );
+      HB_RETHANDLE( s_pd.hDC );
    }
    else
    {
-      bPName = TRUE;
+      s_fPName = TRUE;
       HB_RETHANDLE( 0 );
    }
 }
@@ -446,13 +479,12 @@ HB_FUNC( PRINTSETUPEX )
 {
    PRINTDLG pd;
    DEVMODE *pDevMode;
-   char PrinterName[512];
 
    memset( ( void * ) &pd, 0, sizeof( PRINTDLG ) );
 
    pd.lStructSize = sizeof( PRINTDLG );
    pd.Flags = PD_RETURNDC;
-   pd.hwndOwner = GetActiveWindow(  );
+   pd.hwndOwner = GetActiveWindow();
    pd.nFromPage = 1;
    pd.nToPage = 1;
    pd.nCopies = 1;
@@ -460,42 +492,56 @@ HB_FUNC( PRINTSETUPEX )
    if( PrintDlg( &pd ) )
    {
       pDevMode = ( LPDEVMODE ) GlobalLock( pd.hDevMode );
-      hb_strncpy( PrinterName, ( char * ) pDevMode->dmDeviceName, sizeof(PrinterName) - 1 );
+      HB_RETSTR( pDevMode->dmDeviceName );
       GlobalUnlock( pd.hDevMode );
-      hb_retc( PrinterName );
    }
 }
 
 HB_FUNC( _GETOPENFILENAME )
 {
    OPENFILENAME ofn;
-   char *szFileName = ( char * ) hb_xgrab( hb_parcsiz( 2 ) );
+   TCHAR buffer[ 1024 ];
+   void * hFileName, * hTitle, * hFilter, * hInitDir, * hDefExt;
+   HB_SIZE nSize;
+   LPCTSTR lpFileName = HB_PARSTR( 2, &hFileName, &nSize );
+   LPTSTR lpFileBuff;
 
-   hb_strncpy( szFileName, hb_parc( 2 ), sizeof(szFileName) - 1 );
+   if( nSize < 1024 )
+   {
+      memcpy( buffer, lpFileName, nSize * sizeof( TCHAR ) );
+      memset( &buffer[ nSize ], 0, ( 1024 - nSize ) * sizeof( TCHAR ) );
+      lpFileBuff = buffer;
+      nSize = 1024;
+   }
+   else
+      lpFileBuff = HB_STRUNSHARE( &hFileName, lpFileName, nSize );
 
    ZeroMemory( &ofn, sizeof( ofn ) );
    ofn.hInstance = GetModuleHandle( NULL );
    ofn.lStructSize = sizeof( ofn );
    ofn.hwndOwner =
          ( ISNIL( 1 ) ? GetActiveWindow(  ) : ( HWND ) HB_PARHANDLE( 1 ) );
-   ofn.lpstrTitle = hb_parc( 3 );
-   ofn.lpstrFilter = hb_parc( 4 );
+   ofn.lpstrTitle = HB_PARSTR( 3, &hTitle, NULL );
+   ofn.lpstrFilter = HB_PARSTR( 4, &hFilter, NULL );
    ofn.Flags = OFN_EXPLORER | OFN_ALLOWMULTISELECT;
-   ofn.lpstrInitialDir = hb_parc( 6 );
-   ofn.lpstrDefExt = hb_parc( 7 );
+   ofn.lpstrInitialDir = HB_PARSTR( 6, &hInitDir, NULL );
+   ofn.lpstrDefExt = HB_PARSTR( 7, &hDefExt, NULL );
    ofn.nFilterIndex = hb_parni( 8 );
-   ofn.lpstrFile = szFileName;
-   ofn.nMaxFile = hb_parcsiz( 2 );
+   ofn.lpstrFile = lpFileBuff;
+   ofn.nMaxFile = nSize;
 
    if( GetOpenFileName( &ofn ) )
    {
       hb_stornl( ofn.nFilterIndex, 8 );
-      hb_storclen( szFileName, hb_parcsiz( 2 ), 2 );
-      hb_xfree( szFileName );
-      hb_retc( ( char * ) ofn.lpstrFile );
+      HB_STORSTRLEN( lpFileBuff, nSize, 2 );
+      HB_RETSTR( ofn.lpstrFile );
    }
    else
-   {
-      hb_retc( "" );
-   }
+      hb_retc( NULL );
+
+   hb_strfree( hFileName );
+   hb_strfree( hTitle );
+   hb_strfree( hFilter );
+   hb_strfree( hInitDir );
+   hb_strfree( hDefExt );
 }

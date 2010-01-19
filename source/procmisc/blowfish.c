@@ -1,5 +1,5 @@
 /*
- * $Id: blowfish.c,v 1.11 2009-12-18 01:32:11 andijahja Exp $
+ * $Id: blowfish.c,v 1.12 2010-01-19 15:45:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Encryption/Decryption functions, using BlowFish algorithm,
@@ -425,6 +425,9 @@ void Blowfish_Init( BLOWFISH_CTX * ctx, unsigned char *key, int keyLen )
    }
 
 }
+
+#undef MAXKEYBYTES
+#undef N
 
 #include "hbapi.h"
 #include "hbvm.h"

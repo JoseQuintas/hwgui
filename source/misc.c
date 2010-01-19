@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.55 2009-12-17 14:22:41 druzus Exp $
+ * $Id: misc.c,v 1.56 2010-01-19 15:45:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -21,25 +21,12 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 
-#ifdef __XHARBOUR__
-#include "hbfast.h"
-#endif
 #include "guilib.h"
 #include "missing.h"
 
-extern BOOL Array2Rect( PHB_ITEM aRect, RECT * rc );
-extern PHB_ITEM Rect2Array( RECT * rc );
-extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char *varname );
-extern void SetObjectVar( PHB_ITEM pObject, char *varname, PHB_ITEM pValue );
-
 void writelog( char *s )
 {
-
-#ifdef __XHARBOUR__
-   FHANDLE handle;
-#else
    HB_FHANDLE handle;
-#endif
 
    if( hb_fsFile( "ac.log" ) )
       handle = hb_fsOpen( "ac.log", FO_WRITE );

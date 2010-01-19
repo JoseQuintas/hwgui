@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.24 2009-12-17 14:22:41 druzus Exp $
+ * $Id: drawtext.c,v 1.25 2010-01-19 15:45:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -22,7 +22,6 @@
 #include "item.api"
 #include "guilib.h"
 
-extern BOOL Array2Rect( PHB_ITEM aRect, RECT * rc );
 HB_FUNC_EXTERN( HB_OEMTOANSI );
 HB_FUNC_EXTERN( HB_ANSITOOEM );
 

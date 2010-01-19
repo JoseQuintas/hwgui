@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.46 2009-12-18 01:32:11 andijahja Exp $
+ * $Id: menu_c.c,v 1.47 2010-01-19 15:45:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -25,9 +25,6 @@
 #include "guilib.h"
 
 #define  FLAG_DISABLED   1
-
-extern HWND aWindows[];
-extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char *varname );
 
 /*
  *  CreateMenu() --> hMenu

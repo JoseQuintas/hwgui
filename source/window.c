@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.80 2009-12-17 14:22:41 druzus Exp $
+ * $Id: window.c,v 1.81 2010-01-19 15:45:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -24,9 +24,7 @@
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
-#if defined(__XHARBOUR__)
-#include "hbfast.h"
-#else
+#if !defined(__XHARBOUR__)
 #include "hbapicls.h"
 #endif
 
@@ -37,18 +35,10 @@
 
 #define  FIRST_MDICHILD_ID     501
 
-// void writelog( char* s );
-void SetWindowObject( HWND hWnd, PHB_ITEM pObject );
-
-PHB_ITEM GetObjectVar( PHB_ITEM pObject, char *varname );
-void SetObjectVar( PHB_ITEM pObject, char *varname, PHB_ITEM pValue );
-void DoEvents( void );
-
 LRESULT CALLBACK MainWndProc( HWND, UINT, WPARAM, LPARAM );
 LRESULT CALLBACK FrameWndProc( HWND, UINT, WPARAM, LPARAM );
 LRESULT CALLBACK MDIChildWndProc( HWND, UINT, WPARAM, LPARAM );
 
-extern HWND *aDialogs;
 HWND hMytoolMenu = NULL;
 static HHOOK OrigDockHookProc;
 extern int iDialogs;
@@ -58,17 +48,10 @@ HACCEL hAccel = NULL;
 PHB_DYNS pSym_onEvent = NULL;
 PHB_DYNS pSym_onEven_Tool = NULL;
 // static PHB_DYNS pSym_MDIWnd = NULL;
+
 static LPCTSTR s_szChild = TEXT( "MDICHILD" );
 
-/* Consume all queued events, useful to update all the controls... I split in 2 parts because I feel
- * that DoEvents should be called internally by some other functions...
- */
-HB_FUNC( HWG_DOEVENTS )
-{
-   DoEvents(  );
-}
-
-void DoEvents(  )
+static void s_doEvents( void )
 {
    MSG msg;
 
@@ -77,6 +60,14 @@ void DoEvents(  )
       TranslateMessage( &msg );
       DispatchMessage( &msg );
    };
+}
+
+/* Consume all queued events, useful to update all the controls... I split in 2 parts because I feel
+ * that s_doEvents should be called internally by some other functions...
+ */
+HB_FUNC( HWG_DOEVENTS )
+{
+   s_doEvents(  );
 }
 
 /*  Creates main application window
@@ -792,15 +783,92 @@ LRESULT CALLBACK MDIChildWndProc( HWND hWnd, UINT message, WPARAM wParam,
 
 }
 
-PHB_ITEM GetObjectVar( PHB_ITEM pObject, char *varname )
+PHB_ITEM GetObjectVar( PHB_ITEM pObject, const char *varname )
 {
    return hb_objSendMsg( pObject, varname, 0 );
 }
 
-void SetObjectVar( PHB_ITEM pObject, char *varname, PHB_ITEM pValue )
+void SetObjectVar( PHB_ITEM pObject, const char *varname, PHB_ITEM pValue )
 {
    hb_objSendMsg( pObject, varname, 1, pValue );
 }
+
+#ifdef HB_NO_STR_FUNC
+
+/* these are simple wrapper functions for xHarbour and older Harbour
+ * versions which do not support automatic UNICODE conversions
+ */
+
+static const char s_szConstStr[ 1 ] = { 0 };
+
+const char * hb_strnull( const char * str )
+{
+   return str ? str : "";
+}
+
+const char * hb_strget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pulLen )
+{
+   const char * pStr;
+
+   if( HB_IS_STRING( pItem ) )
+   {
+      *phStr = ( void * ) s_szConstStr;
+      pStr = hb_itemGetCPtr( pItem );
+      if( pulLen )
+         *pulLen = hb_itemGetCLen( pItem );
+   }
+   else
+   {
+      *phStr = NULL;
+      pStr = NULL;
+      if( pulLen )
+         *pulLen = 0;
+   }
+   return pStr;
+}
+
+HB_SIZE hb_strcopy( PHB_ITEM pItem, char * pStr, HB_SIZE ulLen )
+{
+   if( HB_IS_STRING( pItem ) )
+   {
+      HB_SIZE size = hb_itemGetCLen( pItem );
+
+      if( size > ulLen )
+         size = ulLen;
+      if( pStr && ulLen && size )
+         memcpy( pStr, hb_itemGetCPtr( pItem ), size );
+      if( size < ulLen )
+         pStr[ size ] = '\0';
+
+      return size;
+   }
+   return 0;
+}
+
+char * hb_strunshare( void ** phStr, const char * pStr, HB_SIZE ulLen )
+{
+   if( pStr == NULL || phStr == NULL || *phStr == NULL )
+      return NULL;
+
+   if( *phStr == ( void * ) s_szConstStr && ulLen > 0 )
+   {
+      char * pszDest = ( char * ) hb_xgrab( ( ulLen + 1 ) * sizeof( char ) );
+      memcpy( pszDest, pStr, ulLen * sizeof( char ) );
+      pszDest[ ulLen ] = 0;
+      * phStr = ( void * ) pszDest;
+
+      return pszDest;
+   }
+
+   return ( char * ) pStr;
+}
+
+void hb_strfree( void * hString )
+{
+   if( hString && hString != ( void * ) s_szConstStr )
+      hb_xfree( hString );
+}
+#endif
 
 HB_FUNC( EXITPROCESS )
 {

@@ -1,5 +1,5 @@
 /*
- * $Id: dialog.c,v 1.35 2009-12-17 22:52:36 druzus Exp $
+ * $Id: dialog.c,v 1.36 2010-01-19 15:45:42 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -34,12 +34,6 @@ LRESULT WINAPI ModalDlgProc( HWND, UINT, WPARAM, LPARAM );
 LRESULT CALLBACK DlgProc( HWND, UINT, WPARAM, LPARAM );
 LRESULT CALLBACK PSPProc( HWND, UINT, WPARAM, LPARAM );
 LRESULT CALLBACK PSPProcRelease( HWND, UINT, LPPROPSHEETPAGE );
-extern void SetWindowObject( HWND hWnd, PHB_ITEM pObject );
-extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char *varname );
-extern void SetObjectVar( PHB_ITEM pObject, char *varname, PHB_ITEM pValue );
-
-extern HMODULE hModule;
-extern PHB_DYNS pSym_onEvent;
 
 #define	WND_DLG_RESOURCE       10
 #define	WND_DLG_NORESOURCE     11

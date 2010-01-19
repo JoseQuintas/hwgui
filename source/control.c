@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.95 2009-12-18 01:32:11 andijahja Exp $
+ * $Id: control.c,v 1.96 2010-01-19 15:45:42 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -68,20 +68,14 @@ LRESULT APIENTRY TrackSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
       LPARAM lParam );
 LRESULT APIENTRY TabSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
       LPARAM lParam );
-void CALLBACK TimerProc( HWND, UINT, UINT, DWORD );
+static void CALLBACK s_timerProc( HWND, UINT, UINT, DWORD );
 
-extern PHB_DYNS pSym_onEvent;
-extern PHB_ITEM Rect2Array( RECT * rc );
 static HWND hWndTT = 0;
 static BOOL lInitCmnCtrl = 0;
 static BOOL lToolTipBalloon = FALSE;    // added by MAG
 static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc, wpOrigComboProc, wpOrigStaticProc, wpOrigListProc, wpOrigUpDownProc, wpOrigDatePickerProc;       //wpOrigButtonProc
 static LONG_PTR wpOrigButtonProc;
-extern BOOL _AddBar( HWND pParent, HWND pBar, REBARBANDINFO * pRBBI );
-extern BOOL AddBar( HWND pParent, HWND pBar, LPCTSTR pszText, HBITMAP pbmp,
-      DWORD dwStyle );
-extern BOOL AddBar1( HWND pParent, HWND pBar, COLORREF clrFore,
-      COLORREF clrBack, LPCTSTR pszText, DWORD dwStyle );
+
 HB_FUNC( HWG_INITCOMMONCONTROLSEX )
 {
    if( !lInitCmnCtrl )
@@ -999,8 +993,8 @@ HB_FUNC( IMAGELIST_ADDMASKED )
 HB_FUNC( SETTIMER )
 {
    SetTimer( ( HWND ) HB_PARHANDLE( 1 ), ( UINT ) hb_parni( 2 ),
-         ( UINT ) hb_parni( 3 ),
-         hb_pcount(  ) == 3 ? ( TIMERPROC ) TimerProc : ( TIMERPROC ) NULL );
+             ( UINT ) hb_parni( 3 ),
+             hb_pcount() == 3 ? s_timerProc : ( TIMERPROC ) NULL );
 }
 
 /*
@@ -1129,15 +1123,19 @@ HB_FUNC( HWG_REGBROWSE )
    }
 }
 
-void CALLBACK TimerProc( HWND hWnd, UINT message, UINT idTimer, DWORD dwTime )
+static void CALLBACK s_timerProc( HWND hWnd, UINT message, UINT idTimer, DWORD dwTime )
 {
-   PHB_DYNS pSymTest;
+   static PHB_DYNS s_pSymTest = NULL;
+
    HB_SYMBOL_UNUSED( message );
 
-   if( ( pSymTest = hb_dynsymFind( "TIMERPROC" ) ) != NULL )
+   if( s_pSymTest == NULL )
+      s_pSymTest = hb_dynsymGetCase( "TIMERPROC" );
+
+   if( hb_dynsymIsFunction( s_pSymTest ) )
    {
-      hb_vmPushSymbol( hb_dynsymSymbol( pSymTest ) );
-      hb_vmPushNil(  );         /* places NIL at self */
+      hb_vmPushDynSym( s_pSymTest );
+      hb_vmPushNil();   /* places NIL at self */
 //      hb_vmPushLong( (LONG ) hWnd );    /* pushes parameters on to the hvm stack */
       HB_PUSHITEM( hWnd );
       hb_vmPushLong( ( LONG ) idTimer );
@@ -1824,7 +1822,7 @@ HB_FUNC( REBARSETIMAGELIST )
 }
 
 
-BOOL _AddBar( HWND pParent, HWND pBar, REBARBANDINFO * pRBBI )
+static BOOL _AddBar( HWND pParent, HWND pBar, REBARBANDINFO * pRBBI )
 {
    SIZE size;
    RECT rect;
@@ -1848,7 +1846,7 @@ BOOL _AddBar( HWND pParent, HWND pBar, REBARBANDINFO * pRBBI )
    return bResult;
 }
 
-BOOL AddBar( HWND pParent, HWND pBar, LPCTSTR pszText, HBITMAP pbmp,
+static BOOL AddBar( HWND pParent, HWND pBar, LPCTSTR pszText, HBITMAP pbmp,
       DWORD dwStyle )
 {
    REBARBANDINFO rbBand;
@@ -1870,7 +1868,7 @@ BOOL AddBar( HWND pParent, HWND pBar, LPCTSTR pszText, HBITMAP pbmp,
    return _AddBar( pParent, pBar, &rbBand );
 }
 
-BOOL AddBar1( HWND pParent, HWND pBar, COLORREF clrFore, COLORREF clrBack,
+static BOOL AddBar1( HWND pParent, HWND pBar, COLORREF clrFore, COLORREF clrBack,
       LPCTSTR pszText, DWORD dwStyle )
 {
    REBARBANDINFO rbBand;

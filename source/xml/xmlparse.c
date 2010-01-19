@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.27 2009-12-18 04:36:38 andijahja Exp $
+ * $Id: xmlparse.c,v 1.28 2010-01-19 15:45:43 druzus Exp $
  *
  * Harbour XML Library
  * C level XML parse functions
@@ -12,7 +12,7 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "filesys.api"
+#include "hbapifs.h"
 #if defined(__XHARBOUR__)
 #include "hbfast.h"
 #else
@@ -480,7 +480,7 @@ BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
 }
 
 /*
- * hbxml_Getdoc( PHB_ITEM pDoc, char * cData || FHANDLE handle )
+ * hbxml_Getdoc( PHB_ITEM pDoc, char * cData || HB_FHANDLE handle )
  */
 
 HB_FUNC( HBXML_GETDOC )
@@ -497,7 +497,7 @@ HB_FUNC( HBXML_GETDOC )
    }
    else if( ISNUM( 2 ) )
    {
-      FHANDLE hInput = ( FHANDLE ) hb_parni( 2 );
+      HB_FHANDLE hInput = ( HB_FHANDLE ) hb_parnint( 2 );
       ULONG ulLen = hb_fsSeek( hInput, 0, FS_END ), ulRead;
 
       hb_fsSeek( hInput, 0, FS_SET );

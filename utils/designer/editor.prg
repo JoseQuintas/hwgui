@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.29 2009-12-29 22:29:17 andijahja Exp $
+ * $Id: editor.prg,v 1.30 2010-01-20 09:13:55 druzus Exp $
  *
  * Designer
  * Simple code editor
@@ -8,7 +8,7 @@
  * www - http://kresin.belgorod.su
 */
 
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "windows.ch"
 #include "guilib.ch"
 #include "hxml.ch"

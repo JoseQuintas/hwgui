@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.30 2009-04-15 08:03:28 omm Exp $
+ * $Id: hctrl.prg,v 1.31 2010-01-20 09:13:56 druzus Exp $
  *
  * Designer
  * HControlGen class
@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 #include "hxml.ch"
 #include "common.ch"

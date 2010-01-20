@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.22 2009-04-08 10:32:08 alkresin Exp $
+ * $Id: inspect.prg,v 1.23 2010-01-20 09:14:07 druzus Exp $
  *
  * Designer
  * Object Inspector
@@ -10,7 +10,7 @@
 
 #include "fileio.ch"
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 #include "common.ch"
 

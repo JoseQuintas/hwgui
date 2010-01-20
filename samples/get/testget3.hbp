@@ -1,4 +1,5 @@
 testget3.prg
+testget3.rc
 -i..\..\include
 -lhwgui
 -lprocmisc

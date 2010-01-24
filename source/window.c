@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.82 2010-01-19 23:40:08 druzus Exp $
+ * $Id: window.c,v 1.83 2010-01-24 15:31:16 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -793,7 +793,7 @@ void SetObjectVar( PHB_ITEM pObject, const char *varname, PHB_ITEM pValue )
    hb_objSendMsg( pObject, varname, 1, pValue );
 }
 
-#ifdef HB_NO_STR_FUNC
+#if !defined( HB_HAS_STR_FUNC )
 
 /* these are simple wrapper functions for xHarbour and older Harbour
  * versions which do not support automatic UNICODE conversions

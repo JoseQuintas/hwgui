@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1201 2010-01-20 09:12:35 druzus Exp $
+ * $Id: Changelog,v 1.1202 2010-01-24 15:31:15 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-01-24 16:31 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/include/hwingui.h
+    ! defined HB_ITEMCOPYSTR() macro if it's not defined in hbwinuni.h
+      (Harbour 2.0.0)
+    * define HB_HAS_STR_FUNC macro which indicates that compiler supports
+      hbapistr.h with automatic CP and UNICODE translations
+    - removed HB_NO_STR_FUNC macro
+
+  * hwgui/source/window.c
+    * use HB_HAS_STR_FUNC macro instead of HB_NO_STR_FUNC
 
 2010-01-20 10:12 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   - hwgui/samples/get/TESTGET.RH

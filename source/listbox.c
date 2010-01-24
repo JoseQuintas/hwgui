@@ -1,5 +1,5 @@
 /*
- * $Id: listbox.c,v 1.10 2009-08-20 09:16:37 druzus Exp $
+ * $Id: listbox.c,v 1.11 2010-01-24 22:13:02 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HList class
@@ -30,9 +30,11 @@
 
 HB_FUNC( LISTBOXADDSTRING )
 {
-   const char *cString = hb_parc( 2 );
+   void * hString;
+
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), LB_ADDSTRING, 0,
-                ( LPARAM ) cString );
+                ( LPARAM ) HB_PARSTR( 3, &hString, NULL ) );
+   hb_strfree( hString );
 }
 
 HB_FUNC( LISTBOXSETSTRING )
@@ -46,8 +48,8 @@ HB_FUNC( LISTBOXSETSTRING )
 */
 HB_FUNC( CREATELISTBOX )
 {
-   HWND hListbox = CreateWindow( "LISTBOX",     /* predefined class  */
-         "",                    /*   */
+   HWND hListbox = CreateWindow( TEXT( "LISTBOX" ),     /* predefined class  */
+         TEXT( "" ),                    /*   */
          WS_CHILD | WS_VISIBLE | hb_parnl( 3 ), /* style  */
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
@@ -61,7 +63,5 @@ HB_FUNC( CREATELISTBOX )
 
 HB_FUNC( LISTBOXDELETESTRING )
 {
-   //char *cString = hb_parc( 2 );
-   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), LB_DELETESTRING, 0,
-         ( LPARAM ) 0 );
+   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), LB_DELETESTRING, 0, ( LPARAM ) 0 );
 }

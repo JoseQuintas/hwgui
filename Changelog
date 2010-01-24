@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1202 2010-01-24 15:31:15 druzus Exp $
+ * $Id: Changelog,v 1.1203 2010-01-24 22:12:13 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,25 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-01-24 23:11 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/dialog.c
+    * updated to compile in UNICODE mode
+    ! fixed buffer overflow due to wrongly calculated size for dialog
+      template buffer in s_CreateDlgTemplate() function.
+    * declare local functions as static ones
+
+  * hwgui/source/c_ipaddr.c
+  * hwgui/source/listbox.c
+    * updated to compile in UNICODE mode
+
+  * hwgui/source/freeimg.c
+    * declare local functions as static ones
+
+  * hwgui/source/theme.c
+    % small optimizaiton and removed some unnecessary casting
+
+   Please test if real MS-Windows builds works correctly.
 
 2010-01-24 16:31 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/include/hwingui.h

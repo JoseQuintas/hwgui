@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.23 2010-01-19 23:40:05 druzus Exp $
+ * $Id: theme.c,v 1.24 2010-01-24 22:13:02 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -1479,11 +1479,11 @@ LRESULT OnButtonDraw( LPARAM  lParam)
         {
           // convert title to UNICODE obviously you don't need to do this if you are a UNICODE app.
           int nTextLen = strlen(sTitle);
-          int mlen = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (char *)sTitle, nTextLen + 1, NULL, 0);
+          int mlen = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, sTitle, nTextLen + 1, NULL, 0);
           WCHAR* output = new WCHAR[mlen];
           if(output)
           {
-            MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (char *)sTitle, nTextLen + 1, output, mlen);
+            MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, sTitle, nTextLen + 1, output, mlen);
                         hb_DrawThemeText( hTheme, dc, BP_PUSHBUTTON, PBS_NORMAL,
                     output, wcslen(output),
                     DT_CENTER | DT_VCENTER | DT_SINGLELINE,
@@ -1779,27 +1779,16 @@ HB_FUNC( HB_OPENTHEMEDATA )
 {
    HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );
    LPCSTR pText = hb_parc( 2 );
-   int nTextLen = strlen( pText );
    HTHEME p;
-   int mlen =
-         MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, ( char * ) pText,
-         nTextLen + 1, NULL, 0 );
-   WCHAR *output = ( WCHAR * ) hb_xgrab( mlen + 10 );
+   int mlen = MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, pText, -1, NULL, 0 );
+   WCHAR *output = ( WCHAR * ) hb_xgrab( mlen * sizeof( WCHAR ) );
 
-   if( output )
-   {
-      MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, ( char * ) pText,
-            nTextLen + 1, output, mlen );
-   }
-
+   MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, pText, -1, output, mlen );
    p = hb_OpenThemeData( hwnd, output );
-   hb_retptr( ( void * ) p );
-
-   if( output )
-      hb_xfree( output );
-
+   hb_xfree( output );
    if( p )
       Themed = TRUE;
+   hb_retptr( ( void * ) p );
 }
 
 HB_FUNC( ISTHEMEDLOAD )
@@ -1917,28 +1906,17 @@ HB_FUNC( HB_DRAWTHEMETEXT )
    LPCSTR pText = hb_parc( 5 );
    DWORD dwTextFlags = hb_parnl( 6 );
    DWORD dwTextFlags2 = hb_parnl( 7 );
-
    RECT pRect;
-   int mlen =
-         MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, ( char * ) pText, -1,
-         NULL, 0 );
+   int mlen = MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, pText, -1, NULL, 0 );
    WCHAR *output = ( WCHAR * ) hb_xgrab( mlen * sizeof( WCHAR ) );
 
    if( ISARRAY( 8 ) )
       Array2Rect( hb_param( 8, HB_IT_ARRAY ), &pRect );
-   if( output )
-   {
-      MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, ( char * ) pText, -1,
-            output, mlen );
-   }
-
+   MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, pText, -1, output, mlen );
    hb_DrawThemeText( hTheme, hdc, iPartId,
-         iStateId, output, wcslen( output ), dwTextFlags,
-         dwTextFlags2, &pRect );
-   if( output )
-   {
-      hb_xfree( output );
-   }
+                     iStateId, output, mlen - 1, dwTextFlags,
+                     dwTextFlags2, &pRect );
+   hb_xfree( output );
 }
 
 HB_FUNC( HB_CLOSETHEMEDATA )

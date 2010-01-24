@@ -1,5 +1,5 @@
 /*
- * $Id: c_ipaddr.c,v 1.13 2009-06-29 11:22:03 alkresin Exp $
+ * $Id: c_ipaddr.c,v 1.14 2010-01-24 22:12:59 druzus Exp $
 */
 
 /*----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ HB_FUNC( INITIPADDRESS )
 
    HB_FUNC_EXEC( HWG_INITCOMMONCONTROLSEX );
 
-   hIpAddress = CreateWindowEx( WS_EX_CLIENTEDGE, WC_IPADDRESS, "",
+   hIpAddress = CreateWindowEx( WS_EX_CLIENTEDGE, WC_IPADDRESS, TEXT( "" ),
          hb_parni( 3 ),
          hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),
          ( HWND ) HB_PARHANDLE( 1 ), ( HMENU ) hb_parni( 2 ),

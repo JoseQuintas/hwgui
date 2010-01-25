@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.155 2010-01-25 02:18:47 lfbasso Exp $
+ *$Id: guilib.ch,v 1.156 2010-01-25 11:09:23 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -1461,7 +1461,7 @@ Added by Marcos Antonio Gambeta
              [ INIT <dInit> ]                           ;
              [ ON INIT <bInit> ]                        ;
              [ ON CHANGE <bChange> ]                    ;
-             [ ON SELECT <bSelecte> ]                   ;
+             [ ON SELECT <bSelect> ]                   ;
              [ STYLE <nStyle> ]                         ;
              [ FONT <oFont> ]                           ;
              [ TOOLTIP <cTooltip> ]                     ;
@@ -1471,7 +1471,7 @@ Added by Marcos Antonio Gambeta
           => ;
           [<oMonthCalendar> :=] HMonthCalendar():New( <oWnd>,<nId>,<dInit>,<nStyle>,;
              <x>,<y>,<nWidth>,<nHeight>,<oFont>,<bInit>,<bChange>,<cTooltip>,;
-             <.notoday.>,<.notodaycircle.>,<.weeknumbers.>,<bSelecte> );;
+             <.notoday.>,<.notodaycircle.>,<.weeknumbers.>,<bSelect> );;
           [ <oMonthCalendar>:name := <(oMonthCalendar)> ]
 
 #xcommand @ <x>,<y> LISTBOX [ <oListbox> ITEMS ] <aItems> ;

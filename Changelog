@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1207 2010-01-25 02:18:47 lfbasso Exp $
+ * $Id: Changelog,v 1.1208 2010-01-25 11:08:05 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -9,15 +9,15 @@
 */
 
 2010-01-25 00:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-
-  #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;
-   ! [ ON GETFOCUS <bGfocus> ][WHEN <bGfocus> ]   ;
-   ! [ ON LOSTFOCUS <bLfocus> ][ VALID <bLfocus> ] ;
-   + [ ON CHANGEROWCOL <bChgrowcol> ] ;
-   #xcommand ADD COLUMN <block> TO <oBrw> ;
-   + [ ON CLICK <bClick> ]      ;
-   #xcommand @ <x>,<y> MONTHCALENDAR [ <oMonthCalendar> ] ;
-   + [ ON SELECT <bSelecte> ]                    ;
+  * include\guilib.ch
+    #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;
+     ! [ ON GETFOCUS <bGfocus> ][WHEN <bGfocus> ]   ;
+     ! [ ON LOSTFOCUS <bLfocus> ][ VALID <bLfocus> ] ;
+     + [ ON CHANGEROWCOL <bChgrowcol> ] ;
+    #xcommand ADD COLUMN <block> TO <oBrw> ;
+     + [ ON CLICK <bClick> ]      ;
+    #xcommand @ <x>,<y> MONTHCALENDAR [ <oMonthCalendar> ] ;
+    + [ ON SELECT <bSelect> ]                    ;
   * source\guimain.prg
     ! Function WCHOICE fix setfocus in ON INIT 
   * source\hbrowse.prg

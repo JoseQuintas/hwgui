@@ -12,7 +12,6 @@
 #include "hbstack.h"
 #include "hbapiitm.h"
 #include "winreg.h"
-#include "tchar.h"
 #include "guilib.h"
 
 #if defined(__DMC__)
@@ -95,19 +94,16 @@ HB_FUNC( REGOPENKEYEX )
    LONG lError;
    HKEY phwHandle;
 
-   lError =
-         RegOpenKeyExA( ( HKEY ) hwKey, lpValue, 0, KEY_ALL_ACCESS,
-         &phwHandle );
-
+   lError = RegOpenKeyEx( ( HKEY ) hwKey, lpValue, 0, KEY_ALL_ACCESS,
+                          &phwHandle );
    if( lError > 0 )
    {
-      hb_retnl( -1 );
+      hb_retni( -1 );
    }
-
    else
    {
       hb_stornl( PtrToLong( phwHandle ), 5 );
-      hb_retnl( 0 );
+      hb_retni( 0 );
    }
 }
 
@@ -115,34 +111,29 @@ HB_FUNC( REGQUERYVALUEEX )
 {
    LONG lError;
    DWORD lpType = hb_parnl( 4 );
-
    DWORD lpcbData = 0;
-   lError =
-         RegQueryValueExA( ( HKEY ) hb_parnl( 1 ), hb_parcx( 2 ),
-         NULL, &lpType, NULL, &lpcbData );
 
+   lError = RegQueryValueEx( ( HKEY ) hb_parnl( 1 ), hb_parcx( 2 ),
+                             NULL, &lpType, NULL, &lpcbData );
    if( lError == ERROR_SUCCESS )
    {
       BYTE *lpData;
       lpData = ( BYTE * ) hb_xgrab( ( int ) lpcbData + 1 );
-      lError =
-            RegQueryValueExA( ( HKEY ) hb_parnl( 1 ),
-            hb_parcx( 2 ), NULL, &lpType, ( BYTE * ) lpData,
-            &lpcbData );
-
+      lError = RegQueryValueEx( ( HKEY ) hb_parnl( 1 ),
+                                hb_parcx( 2 ), NULL, &lpType,
+                                ( BYTE * ) lpData, &lpcbData );
       if( lError > 0 )
       {
-         hb_retnl( -1 );
+         hb_retni( -1 );
       }
       else
       {
          hb_storc( ( char * ) lpData, 5 );
-         hb_retnl( 0 );
+         hb_retni( 0 );
       }
 
-      hb_xfree( ( BYTE * ) lpData );
+      hb_xfree( lpData );
    }
-
 }
 
 
@@ -157,7 +148,7 @@ HB_FUNC( REGENUMKEYEX )
    DWORD dwClass = 255;
 
    bErr = RegEnumKeyEx( ( HKEY ) hb_parnl( 1 ), hb_parnl( 2 ), Buffer,
-         &dwBuffSize, NULL, Class, &dwClass, &ft );
+                        &dwBuffSize, NULL, Class, &dwClass, &ft );
 
    if( bErr != ERROR_SUCCESS )
    {
@@ -178,10 +169,9 @@ HB_FUNC( REGENUMKEYEX )
 HB_FUNC( REGSETVALUEEX )
 {
 
-   hb_retnl( RegSetValueExA( ( HKEY ) hb_parnl( 1 ), hb_parcx( 2 ), 0,
-               hb_parnl( 4 ), ( BYTE * const ) hb_parcx( 5 ),
-               ( strlen( hb_parcx( 5 ) ) + 1 ) ) );
-
+   hb_retnl( RegSetValueEx( ( HKEY ) hb_parnl( 1 ), hb_parcx( 2 ), 0,
+                            hb_parnl( 4 ), ( BYTE * const ) hb_parcx( 5 ),
+                            strlen( hb_parcx( 5 ) + 1 ) ) );
 }
 
 HB_FUNC( REGCREATEKEY )
@@ -227,11 +217,12 @@ HB_FUNC( REGCREATEKEYEX )
       sa = ( SECURITY_ATTRIBUTES * ) hb_parc( 7 );
 
    nErr = RegCreateKeyEx( ( HKEY ) hb_parnl( 1 ),
-         hb_parcx( 2 ),
-         ( DWORD ) 0,
-         ( LPSTR ) hb_parcx( 4 ),
-         ( DWORD ) hb_parnl( 5 ),
-         ( DWORD ) hb_parnl( 6 ), sa, &hkResult, &dwDisposition );
+                          hb_parcx( 2 ),
+                          ( DWORD ) 0,
+                          ( LPSTR ) hb_parcx( 4 ),
+                          ( DWORD ) hb_parnl( 5 ),
+                          ( DWORD ) hb_parnl( 6 ),
+                          sa, &hkResult, &dwDisposition );
 
    if( nErr == ERROR_SUCCESS )
    {
@@ -239,22 +230,13 @@ HB_FUNC( REGCREATEKEYEX )
       hb_stornl( ( LONG ) dwDisposition, 9 );
    }
    hb_retnl( nErr );
-
 }
 
 
 HB_FUNC( REGDELETEKEY )
 {
-
-   if( RegDeleteKeyA( ( HKEY ) hb_parnl( 1 ),
-                      hb_parcx( 2 ) ) == ERROR_SUCCESS )
-   {
-      hb_retnl( 0 );
-   }
-   else
-   {
-      hb_retnl( -1 );
-   }
+   hb_retni( RegDeleteKey( ( HKEY ) hb_parnl( 1 ),
+                           hb_parcx( 2 ) ) == ERROR_SUCCESS ? 0 : -1 );
 }
 
 //  For strange reasons this function is not working properly
@@ -262,13 +244,6 @@ HB_FUNC( REGDELETEKEY )
 
 HB_FUNC( REGDELETEVALUE )
 {
-   if( RegDeleteValue( ( HKEY ) hb_parnl( 1 ),
-                       hb_parcx( 2 ) ) == ERROR_SUCCESS )
-   {
-      hb_retnl( 0 );
-   }
-   else
-   {
-      hb_retnl( -1 );
-   }
+   hb_retni( RegDeleteValue( ( HKEY ) hb_parnl( 1 ),
+                             hb_parcx( 2 ) ) == ERROR_SUCCESS ? 0 : -1 );
 }

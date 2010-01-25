@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.34 2010-01-19 23:39:42 druzus Exp $
+ * $Id: commond.c,v 1.35 2010-01-25 02:14:00 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -35,7 +35,7 @@ HB_FUNC( SELECTFONT )
       memset( &lf, 0, sizeof( LOGFONT ) );
       temp1 = GetObjectVar( pObj, "NAME" );
       HB_ITEMCOPYSTR( temp1, lf.lfFaceName, HB_SIZEOFARRAY( lf.lfFaceName ) );
-      lf.lfFaceName[ HB_SIZEOFARRAY( lf.lfFaceName ) ] = '\0';
+      lf.lfFaceName[ HB_SIZEOFARRAY( lf.lfFaceName ) - 1 ] = '\0';
       temp1 = GetObjectVar( pObj, "WIDTH" );
       lf.lfWidth = hb_itemGetNI( temp1 );
       temp1 = GetObjectVar( pObj, "HEIGHT" );

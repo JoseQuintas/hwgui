@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.17 2009-12-15 08:58:05 druzus Exp $
+ * $Id: nice.c,v 1.18 2010-01-25 02:14:00 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -19,7 +19,7 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include "guilib.h"
+#include "hwingui.h"
 
 #ifndef GRADIENT_FILL_RECT_H
 
@@ -147,7 +147,7 @@ HB_FUNC( HWG_REGNICE )
    static BOOL s_bRegistered = 0;
 
    s_pGradientfill =
-         ( GRADIENTFILL ) GetProcAddress( LoadLibrary( "MSIMG32.DLL" ),
+         ( GRADIENTFILL ) GetProcAddress( LoadLibrary( TEXT( "MSIMG32.DLL" ) ),
          "GradientFill" );
 //    if (Gradientfill == NULL)
 //        return FALSE;
@@ -175,18 +175,18 @@ HB_FUNC( HWG_REGNICE )
 HB_FUNC( CREATENICEBTN )
 {
    HWND hWndPanel;
-   ULONG ulStyle =
-         ( !ISNIL( 3 ) ? hb_parnl( 3 ) : WS_CLIPCHILDREN | WS_CLIPSIBLINGS );
+   ULONG ulStyle = ISNUM( 3 ) ? hb_parnl( 3 ) : WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
+   void * hTitle;
 
-
-   hWndPanel = CreateWindowEx( hb_parni( 8 ), "NICEBUTT",       /* predefined class  */
-         hb_parc( 9 ),          /* no window title   */
-         WS_CHILD | WS_VISIBLE | ulStyle,       /* style  */
+   hWndPanel = CreateWindowEx( hb_parni( 8 ), TEXT( "NICEBUTT" ), /* predefined class  */
+         HB_PARSTR( 9, &hTitle, NULL ),   /* no window title   */
+         WS_CHILD | WS_VISIBLE | ulStyle, /* style  */
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
          ( HMENU ) hb_parni( 2 ),       /* control ID  */
          GetModuleHandle( NULL ), NULL );
+   hb_strfree( hTitle );
 
    HB_RETHANDLE( hWndPanel );
 }

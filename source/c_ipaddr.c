@@ -1,5 +1,5 @@
 /*
- * $Id: c_ipaddr.c,v 1.14 2010-01-24 22:12:59 druzus Exp $
+ * $Id: c_ipaddr.c,v 1.15 2010-01-25 02:14:00 druzus Exp $
 */
 
 /*----------------------------------------------------------------------------
@@ -52,7 +52,6 @@
 
 #include <windows.h>
 #include "winreg.h"
-#include "tchar.h"
 #include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"

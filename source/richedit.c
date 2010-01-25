@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.33 2010-01-19 23:40:05 druzus Exp $
+ * $Id: richedit.c,v 1.34 2010-01-25 02:14:00 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -39,7 +39,7 @@ static WNDPROC wpOrigRichProc;
 HB_FUNC( HWG_INITRICHEDIT )
 {
    if( !hRichEd )
-      hRichEd = LoadLibrary( "riched20.dll" );
+      hRichEd = LoadLibrary( TEXT( "riched20.dll" ) );
 }
 
 HB_FUNC( CREATERICHEDIT )
@@ -47,10 +47,10 @@ HB_FUNC( CREATERICHEDIT )
    HWND hCtrl;
 
    if( !hRichEd )
-      hRichEd = LoadLibrary( "riched20.dll" );
+      hRichEd = LoadLibrary( TEXT( "riched20.dll" ) );
 
    hCtrl = CreateWindowEx( 0,   /* extended style    */
-         "RichEdit20A",         /* predefined class  */
+         TEXT( "RichEdit20A" ), /* predefined class  */
          NULL,                  /* title   */
          WS_CHILD | WS_VISIBLE | hb_parnl( 3 ), /* style  */
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y   */
@@ -104,7 +104,9 @@ HB_FUNC( RE_SETCHARFORMAT )
          if( ulLen1 > 3 &&
                hb_itemType( hb_arrayGetItemPtr( pArr1, 4 ) ) != HB_IT_NIL )
          {
-            hb_strncpy( cf.szFaceName, hb_arrayGetCPtr( pArr1, 4 ), sizeof(cf.szFaceName) - 1 );
+            HB_ITEMCOPYSTR( hb_arrayGetItemPtr( pArr1, 4 ),
+                            cf.szFaceName, HB_SIZEOFARRAY( cf.szFaceName ) );
+            cf.szFaceName[ HB_SIZEOFARRAY( cf.szFaceName ) - 1 ] = '\0';
             cf.dwMask |= CFM_FACE;
          }
          if( ulLen1 > 4 &&
@@ -175,7 +177,9 @@ HB_FUNC( RE_SETCHARFORMAT )
       }
       if( !ISNIL( 5 ) )
       {
-         hb_strncpy( cf.szFaceName, hb_parc( 5 ), sizeof(cf.szFaceName) - 1 );
+         HB_ITEMCOPYSTR( hb_param( 5, HB_IT_ANY ),
+                         cf.szFaceName, HB_SIZEOFARRAY( cf.szFaceName ) );
+         cf.szFaceName[ HB_SIZEOFARRAY( cf.szFaceName ) - 1 ] = '\0';
          cf.dwMask |= CFM_FACE;
       }
       if( !ISNIL( 6 ) )
@@ -244,7 +248,9 @@ HB_FUNC( RE_SETDEFAULT )
    }
    if( ISCHAR( 3 ) )
    {
-      hb_strncpy( cf.szFaceName, hb_parc( 3 ), sizeof(cf.szFaceName) - 1 );
+      HB_ITEMCOPYSTR( hb_param( 3, HB_IT_ANY ),
+                      cf.szFaceName, HB_SIZEOFARRAY( cf.szFaceName ) );
+      cf.szFaceName[ HB_SIZEOFARRAY( cf.szFaceName ) - 1 ] = '\0';
       cf.dwMask |= CFM_FACE;
    }
 
@@ -308,9 +314,10 @@ HB_FUNC( RE_GETTEXTRANGE )
    tr.chrg.cpMin = hb_parnl( 2 ) - 1;
    tr.chrg.cpMax = hb_parnl( 3 ) - 1;
 
-   tr.lpstrText = ( LPSTR ) hb_xgrab( tr.chrg.cpMax - tr.chrg.cpMin + 2 );
+   tr.lpstrText = ( LPTSTR ) hb_xgrab( ( tr.chrg.cpMax - tr.chrg.cpMin + 2 ) *
+                                       sizeof( TCHAR ) );
    ul = SendMessage( hCtrl, EM_GETTEXTRANGE, 0, ( LPARAM ) & tr );
-   hb_retclen( tr.lpstrText, ul );
+   HB_RETSTRLEN( tr.lpstrText, ul );
    hb_xfree( tr.lpstrText );
 
 }
@@ -324,22 +331,20 @@ HB_FUNC( RE_GETLINE )
    int nLine = hb_parni( 2 );
    ULONG uLineIndex = SendMessage( hCtrl, EM_LINEINDEX, ( WPARAM ) nLine, 0 );
    ULONG ul = SendMessage( hCtrl, EM_LINELENGTH, ( WPARAM ) uLineIndex, 0 );
-   char *cBuf = ( char * ) hb_xgrab( ul + 4 );
+   LPTSTR lpBuf = ( LPTSTR ) hb_xgrab( ( ul + 4 ) * sizeof( TCHAR ) );
 
-   *( ( ULONG * ) cBuf ) = ul;
-
-   ul = SendMessage( hCtrl, EM_GETLINE, nLine, ( LPARAM ) cBuf );
-   hb_retclen( cBuf, ul );
-   hb_xfree( cBuf );
-
+   *( ( ULONG * ) lpBuf ) = ul;
+   ul = SendMessage( hCtrl, EM_GETLINE, nLine, ( LPARAM ) lpBuf );
+   HB_RETSTRLEN( lpBuf, ul );
+   hb_xfree( lpBuf );
 }
 
 HB_FUNC( RE_INSERTTEXT )
 {
-   HWND hCtrl = ( HWND ) HB_PARHANDLE( 1 );
-   const char *ptr = hb_parc( 2 );
-
-   SendMessage( hCtrl, EM_REPLACESEL, 0, ( LPARAM ) ptr );
+   void * hString;
+   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), EM_REPLACESEL, 0,
+                ( LPARAM ) HB_PARSTR( 2, &hString, NULL ) );
+   hb_strfree( hString );
 }
 
 /*
@@ -353,13 +358,15 @@ HB_FUNC( RE_FINDTEXT )
    LONG lFlag = ( ( ISNIL( 4 ) || !hb_parl( 4 ) ) ? 0 : FR_MATCHCASE ) |
          ( ( ISNIL( 5 ) || !hb_parl( 5 ) ) ? 0 : FR_WHOLEWORD ) |
          ( ( ISNIL( 6 ) || !hb_parl( 6 ) ) ? FR_DOWN : 0 );
+   void * hString;
 
    ft.chrg.cpMin = ( ISNIL( 3 ) ) ? 0 : hb_parnl( 3 );
    ft.chrg.cpMax = -1;
-   ft.lpstrText = ( LPSTR ) hb_parc( 2 );
+   ft.lpstrText = ( LPTSTR ) HB_PARSTR( 2, &hString, NULL );
 
    lPos = ( LONG ) SendMessage( hCtrl, EM_FINDTEXTEX, ( WPARAM ) lFlag,
-         ( LPARAM ) & ft );
+                                ( LPARAM ) & ft );
+   hb_strfree( hString );
    hb_retnl( lPos );
 }
 

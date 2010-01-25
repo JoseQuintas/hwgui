@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.24 2010-01-24 22:13:02 druzus Exp $
+ * $Id: theme.c,v 1.25 2010-01-25 02:14:00 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -1339,7 +1339,7 @@ static int image_top( int cy, const RECT * Rect, DWORD style )
 
 HB_FUNC( INITTHEMELIB )
 {
-   m_hThemeDll = LoadLibrary( "UxTheme.dll" );
+   m_hThemeDll = LoadLibrary( TEXT( "UxTheme.dll" ) );
 
    if( m_hThemeDll )
       ThemeLibLoaded = TRUE;

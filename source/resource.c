@@ -1,5 +1,5 @@
 /*
- * $Id: resource.c,v 1.17 2009-12-17 14:22:41 druzus Exp $
+ * $Id: resource.c,v 1.18 2010-01-25 02:14:00 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level resource functions
@@ -25,7 +25,7 @@
 #include "hbstack.h"
 #include "item.api"
 #include "hbinit.h"
-#include "guilib.h"
+#include "hwingui.h"
 
 HMODULE hModule;
 
@@ -40,17 +40,17 @@ HB_FUNC( GETRESOURCES )
 
 HB_FUNC( LOADSTRING )
 {
-   char Buffer[2048];
-   int BuffRet =
-         LoadString( ( HINSTANCE ) hModule, ( UINT ) hb_parnl( 2 ), Buffer,
-         2048 );
-
-   hb_retclen( Buffer, BuffRet );
+   TCHAR buffer[ 2048 ];
+   int iBuffRet = LoadString( ( HINSTANCE ) hModule, ( UINT ) hb_parnl( 2 ),
+                              buffer, 2048 );
+   HB_RETSTRLEN( buffer, iBuffRet );
 }
 
 HB_FUNC( LOADRESOURCE )
 {
-   hModule = GetModuleHandle( ISCHAR( 1 ) ? hb_parc( 1 ) : NULL );
+   void * hString;
+   hModule = GetModuleHandle( HB_PARSTR( 1, &hString, NULL ) );
+   hb_strfree( hString );
 }
 
 #if 0
@@ -95,8 +95,10 @@ HB_FUNC( FINDRESOURCE )
    HRSRC hHRSRC;
    int iName = hb_parni( 2 ); // "WindowsXP.Manifest";
    int iType = hb_parni( 3 ); // RT_MANIFEST = 24
+   void * hString;
 
-   hModule = GetModuleHandle( ISCHAR( 1 ) ? hb_parc( 1 ) : NULL );
+   hModule = GetModuleHandle( HB_PARSTR( 1, &hString, NULL ) );
+   hb_strfree( hString );
 
    if( IS_INTRESOURCE( iName ) )
    {

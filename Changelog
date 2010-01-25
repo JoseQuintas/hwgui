@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1209 2010-01-25 15:17:27 druzus Exp $
+ * $Id: Changelog,v 1.1210 2010-01-25 15:52:24 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,20 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-01-25 16:52 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/include/hwingui.h
+  * hwgui/source/dialog.c
+    * use Harbour STR API only for versions newer then 2.0.0 to avoid
+      problems with some unsupported by 2.0.0 extensions.
+
+  * hwgui/source/window.c
+    * updated emulation functions for STR API to work like in current
+      Harbour code. Many thanks to Luis Fernando Basso for the information
+      about the problem.
+
+   Above modifications should fix GPFs in xHarbour and older Harbour
+   builds. Please test.
 
 2010-01-25 16:17 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/listbox.c

@@ -1,5 +1,5 @@
 /*
- * $Id: dialog.c,v 1.39 2010-01-25 00:16:42 druzus Exp $
+ * $Id: dialog.c,v 1.40 2010-01-25 15:52:24 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -221,7 +221,7 @@ static HB_SIZE s_nCopyAnsiToWideChar( LPWORD lpWCStr, PHB_ITEM pItem )
 static int s_nWideStringLen( PHB_ITEM pItem )
 {
    /* such functionality was added to Harbour after 2.0.0 */
-#if defined( HB_HAS_STR_FUNC ) && ( __HARBOUR__ - 0 >= 0x020100 )
+#if defined( HB_HAS_STR_FUNC )
    return hb_itemCopyStrU16( pItem, HB_CDP_ENDIAN_NATIVE, NULL, 0 ) + 1;
 #else
    return MultiByteToWideChar( GetACP(), 0, hb_itemGetCPtr( pItem ), -1,

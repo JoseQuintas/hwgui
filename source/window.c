@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.83 2010-01-24 15:31:16 druzus Exp $
+ * $Id: window.c,v 1.84 2010-01-25 15:52:25 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -810,7 +810,7 @@ const char * hb_strget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pulLen )
 {
    const char * pStr;
 
-   if( HB_IS_STRING( pItem ) )
+   if( pItem && HB_IS_STRING( pItem ) )
    {
       *phStr = ( void * ) s_szConstStr;
       pStr = hb_itemGetCPtr( pItem );
@@ -829,19 +829,26 @@ const char * hb_strget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pulLen )
 
 HB_SIZE hb_strcopy( PHB_ITEM pItem, char * pStr, HB_SIZE ulLen )
 {
-   if( HB_IS_STRING( pItem ) )
+   if( pItem && HB_IS_STRING( pItem ) )
    {
       HB_SIZE size = hb_itemGetCLen( pItem );
 
-      if( size > ulLen )
+      if( pStr )
+      {
+         if( size > ulLen )
+            size = ulLen;
+         if( size )
+            memcpy( pStr, hb_itemGetCPtr( pItem ), size );
+         if( size < ulLen )
+            pStr[ size ] = '\0';
+      }
+      else if( ulLen && size > ulLen )
          size = ulLen;
-      if( pStr && ulLen && size )
-         memcpy( pStr, hb_itemGetCPtr( pItem ), size );
-      if( size < ulLen )
-         pStr[ size ] = '\0';
-
       return size;
    }
+   else if( pStr && ulLen )
+      pStr[ 0 ] = '\0';
+
    return 0;
 }
 

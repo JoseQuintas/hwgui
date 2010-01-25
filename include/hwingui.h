@@ -1,5 +1,5 @@
 /*
- *$Id: hwingui.h,v 1.2 2010-01-24 15:31:16 druzus Exp $
+ *$Id: hwingui.h,v 1.3 2010-01-25 15:52:24 druzus Exp $
  */
 
 #include <windows.h>
@@ -17,16 +17,9 @@
    #endif
 #endif
 
-#if !defined( __XHARBOUR__ ) && ( __HARBOUR__ - 0 >= 0x020000 )
+#if !defined( __XHARBOUR__ ) && ( __HARBOUR__ - 0 > 0x020000 )
    #include "hbwinuni.h"
    #define HB_HAS_STR_FUNC
-   #ifndef HB_ITEMCOPYSTR
-      #if defined( UNICODE )
-         #define HB_ITEMCOPYSTR( itm, str, len ) hb_itemCopyStrU16( itm, HB_CDP_ENDIAN_NATIVE, str, len )
-      #else
-         #define HB_ITEMCOPYSTR( itm, str, len ) hb_itemCopyStr( itm, hb_setGetOSCP(), str, len )
-      #endif
-   #endif
 #else
    #undef HB_HAS_STR_FUNC
 

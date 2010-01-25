@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.h,v 1.23 2010-01-19 23:39:39 druzus Exp $
+ *$Id: guilib.h,v 1.24 2010-01-25 19:01:31 druzus Exp $
  */
 
 #include "hbdefs.h"
@@ -41,7 +41,7 @@
    #define HB_PATH_MAX 264
 #endif
 
-#if !defined( __XHARBOUR__ ) && ( __HARBOUR__ - 0 < 0x020000 )
+#if !defined( FHANDLE ) && ( __HARBOUR__ - 0 < 0x020000 )
    typedef FHANDLE HB_FHANDLE;
 #endif
 #if defined( __XHARBOUR__ ) || ( __HARBOUR__ - 0 < 0x020000 )

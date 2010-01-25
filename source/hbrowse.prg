@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.200 2010-01-25 12:29:49 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.201 2010-01-25 12:33:52 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -3001,7 +3001,7 @@ METHOD WhenColumn( value, oGet ) CLASS HBROWSE
 	 ENDIF
    RETURN res
 
-METHOD ValidColumn( value,oGet ) CLASS HBROWSE
+METHOD ValidColumn( value,oGet, oBtn ) CLASS HBROWSE
    Local res := .t., vari
    Local oColumn := ::aColumns[ ::fipos ]
 

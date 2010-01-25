@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.199 2010-01-25 02:18:47 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.200 2010-01-25 12:29:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -2673,8 +2673,8 @@ METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
 METHOD Edit( wParam, lParam ) CLASS HBrowse
    LOCAL fipos, lRes, x1, y1, fif, nWidth, lReadExit, rowPos
    LOCAL oModDlg, oColumn, aCoors, nChoic, bInit, oGet, Type
-   LOCAL oComboFont, oCombo
-   LOCAL oGet1, owb1, owb2
+   LOCAL oComboFont, oCombo, oBtn
+   LOCAL oGet1, owb1, owb2 , nHget 
 
    fipos := Min( ::colpos + ::nLeftCol - 1 - ::freeze, Len( ::aColumns ) )
    ::fiPos := fipos

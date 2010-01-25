@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.201 2010-01-25 12:33:52 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.202 2010-01-25 12:41:55 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -3008,7 +3008,7 @@ METHOD ValidColumn( value,oGet, oBtn ) CLASS HBROWSE
    IF ! CheckFocus( oGet, .T. ) //.OR. oGet:lNoValid 
       RETURN .t.
    ENDIF
-   IF oBtn != Nil .AND. GetFocus() = oGet:oParent:oBtn:handle
+   IF oBtn != Nil .AND. GetFocus() = oBtn:handle
       RETURN .T.
    ENDIF
    IF oColumn:bValid != Nil
@@ -3026,6 +3026,62 @@ METHOD ValidColumn( value,oGet, oBtn ) CLASS HBROWSE
 	 ENDIF
    RETURN res
    
+
+METHOD ChangeRowCol( nRowColChange ) CLASS HBrowse
+// 0 (default) No change. 
+// 1 Row change 
+// 2 Column change
+// 3 Row and column change
+   LOCAL res := .T.
+   IF ::bChangeRowCol != Nil .AND.  !::oParent:lSuspendMsgsHandling 
+      ::oParent:lSuspendMsgsHandling := .T.
+      res :=  Eval( ::bChangeRowCol, nRowColChange, Self, ::SetColumn() ) 
+       ::oParent:lSuspendMsgsHandling := .F.
+   ENDIF
+   RETURN ! EMPTY( res )
+   
+METHOD When() CLASS HBrowse
+  LOCAL nSkip, res := .T.
+  
+	IF !CheckFocus(self, .f.)
+	   RETURN .F.
+	ENDIF
+  nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
+
+  IF ::bGetFocus != Nil
+		  ::oParent:lSuspendMsgsHandling := .T.
+		  ::lnoValid := .T.
+		  //::setfocus()
+		  res := Eval( ::bGetFocus, ::COLPOS, Self )
+		  res := IIF(VALTYPE(res) = "L", res, .T.)
+      ::lnoValid := ! res
+      IF ! res
+         GetSkip( ::oParent, ::handle, , nSkip )
+      ENDIF
+ 		  ::oParent:lSuspendMsgsHandling := .F.
+   ENDIF
+   RETURN res
+
+METHOD Valid() CLASS HBrowse
+   LOCAL res := .T. 
+
+	 //IF ::bLostFocus != Nil .AND. ( ! CheckFocus( Self, .t. ) .OR.::lNoValid  )
+	 IF !CheckFocus(self, .T.) .OR. ::lNoValid  
+      RETURN .T.
+	 ENDIF
+   IF ::bLostFocus != Nil
+       ::oParent:lSuspendMsgsHandling := .T.
+       res := Eval( ::bLostFocus, ::COLPOS, Self )
+       res := IIF( VALTYPE(res) = "L", res, .T. )
+       IF VALTYPE(res) = "L" .AND. ! res
+          ::setfocus()
+          ::oParent:lSuspendMsgsHandling := .F.
+          RETURN .F.
+       ENDIF
+       ::oParent:lSuspendMsgsHandling := .F.
+   ENDIF
+   RETURN .T.      
+
 
 //----------------------------------------------------//
 METHOD RefreshLine() CLASS HBrowse

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.149 2010-01-19 23:39:59 druzus Exp $
+ * $Id: hcontrol.prg,v 1.150 2010-01-25 02:18:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -61,8 +61,11 @@ CLASS HControl INHERIT HCustomWindow
    METHOD AddName( cName ) HIDDEN
  //  METHOD SetColor( tcolor, bColor, lRepaint )
    METHOD NewId()
+   METHOD Show()        INLINE Super:Show(), IIF( ::oParent:lGetSkipLostFocus, ;
+                        PostMessage(  GetActiveWindow() , WM_NEXTDLGCTL, IIF( ::oParent:FindControl(, GetFocus() ) != NIL, 0, ::handle ), 1 ) , .T. )
    METHOD Disable()     INLINE EnableWindow( ::handle, .F. )
-   METHOD Enable()      INLINE EnableWindow( ::handle, .T. )
+   METHOD Enable()      INLINE EnableWindow( ::handle, .T. ) , IIF( ::oParent:lGetSkipLostFocus, ;
+                        PostMessage(  GetActiveWindow() , WM_NEXTDLGCTL, IIF( ::oParent:FindControl(, GetFocus() ) != NIL, 0, ::handle ), 1 ) , .T. )
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
    METHOD Enabled( lEnabled ) SETGET
    METHOD SetFont( oFont )

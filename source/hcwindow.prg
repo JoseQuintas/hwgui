@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.57 2009-12-07 10:28:03 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.58 2010-01-25 02:18:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -78,6 +78,7 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    DATA oFont
    DATA aEvents       INIT { }
    DATA lSuspendMsgsHandling  INIT .F.
+   DATA lGetSkipLostFocus     INIT .F.
    DATA aNotify       INIT { }
    DATA aControls     INIT { }
    DATA bInit

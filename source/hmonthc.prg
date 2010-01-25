@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.18 2009-03-27 16:26:44 lfbasso Exp $
+ * $Id: hmonthc.prg,v 1.19 2010-01-25 02:18:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -28,14 +28,18 @@ CLASS VAR winclass   INIT "SysMonthCal32"
 
    DATA value
    DATA bChange
+   DATA bSelect
 
    METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, ;
-               lWeekNumbers )
+               lWeekNumbers, bSelect )
    METHOD Activate()
    METHOD Init()
    METHOD SetValue( dValue )
    METHOD GetValue()
+   METHOD onChange( )
+   METHOD onSelect( )
+
 
 ENDCLASS
 
@@ -43,9 +47,9 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
             oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, ;
-            lWeekNumbers ) CLASS HMonthCalendar
+            lWeekNumbers, bSelect ) CLASS HMonthCalendar
 
-   nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP )
+   nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), 0 ) //WS_TABSTOP )
    nStyle   += IIf( lNoToday == Nil.OR. ! lNoToday, 0, MCS_NOTODAY )
    nStyle   += IIf( lNoTodayCircle == Nil.OR. ! lNoTodayCircle, 0, MCS_NOTODAYCIRCLE )
    nStyle   += IIf( lWeekNumbers == Nil.OR. ! lWeekNumbers, 0, MCS_WEEKNUMBERS )
@@ -55,14 +59,16 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::value   := IIf( ValType( vari ) == "D" .And. ! Empty( vari ), vari, Date() )
 
    ::bChange := bChange
-
+   ::bSelect := bSelect
+   
    HWG_InitCommonControlsEx()
 
-
+   /*
    IF bChange != Nil
       ::oParent:AddEvent( MCN_SELECT, Self, bChange, .T., "onChange" )
       ::oParent:AddEvent( MCN_SELCHANGE, Self, bChange, .T., "onChange" )
    ENDIF
+   */
 
    ::Activate()
    RETURN Self
@@ -88,6 +94,9 @@ METHOD Init() CLASS HMonthCalendar
       IF ! Empty( ::value )
          SetMonthCalendarDate( ::handle , ::value )
       ENDIF
+      ::oParent:AddEvent( MCN_SELECT, Self, { || ::onSelect() }, .T., "onSelect" )
+      ::oParent:AddEvent( MCN_SELCHANGE, Self, { || ::onChange() },.T. , "onChange" )
+
    ENDIF
 
    RETURN Nil
@@ -110,6 +119,28 @@ METHOD GetValue() CLASS HMonthCalendar
    ::value := GetMonthCalendarDate( ::handle )
 
    RETURN ( ::value )
+
+METHOD onChange( ) CLASS HMonthCalendar
+   IF ! CheckFocus( Self, .T. )
+      RETURN .t.
+   ENDIF
+   IF ::bChange != Nil .AND. ! ::oparent:lSuspendMsgsHandling
+      ::oparent:lSuspendMsgsHandling := .T.
+      Eval( ::bChange, ::value, Self )
+      ::oparent:lSuspendMsgsHandling := .F.
+    ENDIF
+
+   RETURN 0
+   
+METHOD onSelect( ) CLASS HMonthCalendar
+
+   IF ::bSelect != Nil .AND. ! ::oparent:lSuspendMsgsHandling
+      ::oparent:lSuspendMsgsHandling := .T.
+      Eval( ::bSelect, ::value, Self )
+      ::oparent:lSuspendMsgsHandling := .F.
+    ENDIF
+
+   RETURN Nil
 
 //--------------------------------------------------------------------------//
 

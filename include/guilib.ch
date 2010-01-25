@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.154 2009-11-15 20:24:08 lfbasso Exp $
+ *$Id: guilib.ch,v 1.155 2010-01-25 02:18:47 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -836,8 +836,8 @@
              [ ON PAINT <bDraw> ]       ;
              [ ON CLICK <bEnter> ]      ;
              [ ON RIGHTCLICK <bRClick> ];
-             [ ON GETFOCUS <bGfocus> ]  ;
-             [ ON LOSTFOCUS <bLfocus> ] ;
+             [ ON GETFOCUS <bGfocus> ][WHEN <bGfocus> ]   ;
+             [ ON LOSTFOCUS <bLfocus> ][ VALID <bLfocus> ] ;
              [ STYLE <nStyle> ]         ;
              [ <lNoVScr: NO VSCROLL> ]  ;
              [ <lNoBord: NOBORDER> ]    ;
@@ -847,6 +847,7 @@
              [ ON UPDATE <bUpdate> ]    ;
              [ ON KEYDOWN <bKeyDown> ]  ;
              [ ON POSCHANGE <bPosChg> ] ;
+             [ ON CHANGEROWCOL <bChgrowcol> ] ;
              [ <lMulti: MULTISELECT> ]  ;
              [ <lDescend: DESCEND> ]    ; // By Marcelo Sturm (marcelo.sturm@gmail.com)
              [ WHILE <bWhile> ]         ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
@@ -861,7 +862,7 @@
              <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>, ;
              <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.>, <.lAppend.>,;
              <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg>, <.lMulti.>, <.lDescend.>,;
-             <bWhile>, <bFirst>, <bLast>, <bFor>, <bOther>, <color>, <bcolor>, <bRClick>  );;
+             <bWhile>, <bFirst>, <bLast>, <bFor>, <bOther>, <color>, <bcolor>, <bRClick>,<bChgrowcol>  );;
           [ <oBrw>:name := <(oBrw)> ]
 
 #xcommand REDEFINE BROWSE [ <oBrw> ]   ;
@@ -894,12 +895,13 @@
              [ BACKCOLOR <bcolor> ]     ;
              [ VALID <bValid> ]         ;
              [ WHEN <bWhen> ]           ;
+             [ ON CLICK <bClick> ]      ;
              [ ITEMS <aItem> ]          ;
              [ COLORBLOCK <bClrBlck> ]  ;
              [ BHEADCLICK <bHeadClick> ]  ;
           => ;
           <oBrw>:AddColumn( HColumn():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
-             <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <{bClrBlck}>, <{bHeadClick}>, <color>, <bcolor> ) )
+             <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <{bClrBlck}>, <{bHeadClick}>, <color>, <bcolor>, <bClick> ) )
 
 #xcommand INSERT COLUMN <block> TO <oBrw> ;
              [ HEADER <cHeader> ]       ;
@@ -1459,6 +1461,7 @@ Added by Marcos Antonio Gambeta
              [ INIT <dInit> ]                           ;
              [ ON INIT <bInit> ]                        ;
              [ ON CHANGE <bChange> ]                    ;
+             [ ON SELECT <bSelecte> ]                   ;
              [ STYLE <nStyle> ]                         ;
              [ FONT <oFont> ]                           ;
              [ TOOLTIP <cTooltip> ]                     ;
@@ -1468,7 +1471,7 @@ Added by Marcos Antonio Gambeta
           => ;
           [<oMonthCalendar> :=] HMonthCalendar():New( <oWnd>,<nId>,<dInit>,<nStyle>,;
              <x>,<y>,<nWidth>,<nHeight>,<oFont>,<bInit>,<bChange>,<cTooltip>,;
-             <.notoday.>,<.notodaycircle.>,<.weeknumbers.>);;
+             <.notoday.>,<.notodaycircle.>,<.weeknumbers.>,<bSelecte> );;
           [ <oMonthCalendar>:name := <(oMonthCalendar)> ]
 
 #xcommand @ <x>,<y> LISTBOX [ <oListbox> ITEMS ] <aItems> ;

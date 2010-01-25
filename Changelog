@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1206 2010-01-25 02:14:00 druzus Exp $
+ * $Id: Changelog,v 1.1207 2010-01-25 02:18:47 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,79 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-01-25 00:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+
+  #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;
+   ! [ ON GETFOCUS <bGfocus> ][WHEN <bGfocus> ]   ;
+   ! [ ON LOSTFOCUS <bLfocus> ][ VALID <bLfocus> ] ;
+   + [ ON CHANGEROWCOL <bChgrowcol> ] ;
+   #xcommand ADD COLUMN <block> TO <oBrw> ;
+   + [ ON CLICK <bClick> ]      ;
+   #xcommand @ <x>,<y> MONTHCALENDAR [ <oMonthCalendar> ] ;
+   + [ ON SELECT <bSelecte> ]                    ;
+  * source\guimain.prg
+    ! Function WCHOICE fix setfocus in ON INIT 
+  * source\hbrowse.prg
+     * CLASS HColumn 
+       + DATA bclick
+        defines a block of code to the Help button to o GET of the Column.
+        If the field is a DATE dropdown button sets a calendar          
+        Only if bclick != Nil will show the command button
+     * CLASS HBrowse
+      + DATA nWidthColRight // width GET of the last column to right
+      + DATA bChangeRowCol
+        defines a block of code to event CHANGEROWCOL
+      + METHOD onClickColumn( bClick, oGet, oBtn ) 
+      + METHOD When() behavior equal of GETS - RETURN .F.  the control doesn't receive the focus. 
+      + METHOD Valid() behavior equal of GETS - If the Valid event returns false (.F.), the control does not lose focus.
+      + METHOD ChangeRowCol( nRowColChange )  values
+       // 0 (default) No change. 
+       // 1 Row change 
+       // 2 Column change
+       // 3 Row and column change
+        Occurs when the user changes the active row or column before the new cell gets the focus. 
+        Use RETURN .F. to prevent the active row and column in the grid from changing.
+        ChangeRowCol is triggered interactively using the mouse or keyboard 
+      + METHOD EditLogical( )  HIDDEN
+       Browse changed in the way we navigate and edit columns.
+       If the Edit mode by pressing ENTER jumps to next column unless the field is a combobox.
+       by pressing any key editable (HOME,END too), the column receives focus in edit mode
+       After editing is completed, the next column automatically receives the focu        
+  * source\hcombo.prg
+    + DATA bSelect
+    + METHOD onSelect()
+      notification message is sent when the user selects a list item, or selects an item and
+      then closes the list. It indicates that the user's selection is to be processed. 
+  * source\hdatepic.prg
+    - STATIC FUNCTION __onChange( nMess )
+    - STATIC FUNCTION __When( ) 
+    - STATIC FUNCTION __Valid( )
+    + METHOD onChange( nMess )
+    + METHOD When( ) 
+    + METHOD Valid( )
+  * source\hcontrol.prg      
+    + METHOD Show()
+    * METHOD Enable()
+      ! fix in focus case next object is HIDE ou DISABLE
+  * source\hcwindow.prg  
+    + DATA lGetSkipLostFocus     INIT .F.
+      checks whether the next object to receive the focus has been defined in FUNCTION GETSKIP
+  * source\hdialog.prg
+    ! fix in init focus in Function InitModalDlg
+  * source\hedit.prg
+    ! minor fix in WM_KEYDOWN
+    ! attrib value to lGetSkipLostFocus in GETSKIP and CheckFocus
+  * source\hmonthc.prg
+    +  DATA bSelect
+    + METHOD onChange( )
+      Sent by a month calendar control when the currently selected date or range of dates changes. 
+    + METHOD onSelect( )
+      Sent by a month calendar control when the user makes an explicit date selection
+      within a month calendar control.
+  * source\htab.prg
+    ! minor fix
+
 
 2010-01-25 03:13 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/commond.c

@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.159 2010-01-07 14:00:15 lfbasso Exp $
+ *$Id: hedit.prg,v 1.160 2010-01-25 02:18:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -270,7 +270,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
 
          ELSEIF msg == WM_KEYDOWN
-            IF ( CheckBit( lParam, 25 ) .OR. wParam > 111 ) .AND. ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
+            //IF ( CheckBit( lParam, 25 ) .OR. wParam > 111 ) .AND. ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
+            IF ( ( CheckBit( lParam, 25 ) .AND. wParam != 111 ) .OR.  ( wParam > 111 .AND. wParam < 124 ) ) .AND.;
+               ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
                nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 )
                nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 ,  nShiftAltCtrl )
                nShiftAltCtrl += IIF( wParam > 111, 4, nShiftAltCtrl )             
@@ -1285,6 +1287,7 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
 
    IF i > 0
       oCtrl:nGetSkip := nSkip
+ 	    oCtrl:oParent:lGetSkipLostFocus := .T.
    ENDIF
    IF ! Empty( nextHandle )
        i := AScan( oparent:acontrols, { | o | o:handle == nextHandle } )
@@ -1304,6 +1307,7 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
             PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
          ENDIF
       ENDIF
+      SetFocus( 0 )
    ENDIF
    IF hCtrl == nextHandle
        SendMessage( nexthandle, WM_KILLFOCUS, 0,  0)
@@ -1510,6 +1514,8 @@ FUNCTION CheckFocus( oCtrl, nInside )
         PtrtouLong( oParent:handle ) = PtrtouLong( oCtrl:oParent:Handle )
          RETURN .F.
       ENDIF
+  ELSE
+     oCtrl:oParent:lGetSkipLostFocus := .F.   
    ENDIF
    RETURN .T.
 

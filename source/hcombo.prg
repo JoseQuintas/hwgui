@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.74 2010-01-19 23:39:56 druzus Exp $
+ * $Id: hcombo.prg,v 1.75 2010-01-25 02:18:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -74,6 +74,7 @@ CLASS HComboBox INHERIT HControl
    METHOD DeleteItem( nPos )
    METHOD Valid( )
    METHOD When( )
+   METHOD onSelect()
    METHOD InteractiveChange( )
    METHOD onChange( )
    METHOD Populate() HIDDEN
@@ -164,7 +165,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
      // ::oParent:AddEvent( CBN_EDITUPDATE, Self, { | o, id | __InteractiveChange( o:FindControl( id ) ) },, "interactiveChange" )
       ::oParent:AddEvent( CBN_EDITUPDATE, Self, { | o, id | ::InteractiveChange( o:FindControl( id ) ) },, "interactiveChange" )
    ENDIF
-
+   ::oParent:AddEvent( CBN_SELENDOK, Self, { | o, id | ::onSelect( o:FindControl( id ) ) },,"onSelect" )
+   
 RETURN Self
 
 METHOD Activate CLASS HComboBox
@@ -226,7 +228,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    IF bGFocus != Nil .AND. bSetGet == Nil
       ::oParent:AddEvent( CBN_SETFOCUS, self, { | o, id | ::When( o:FindControl( id ) ) },, "onGotFocus" )
    ENDIF
-
+   ::oParent:AddEvent( CBN_SELENDOK, Self, { | o, id | ::onSelect( o:FindControl( id ) ) },,"onSelect" )
    //::Refresh() // By Luiz Henrique dos Santos
    ::Requery()
 
@@ -265,10 +267,11 @@ METHOD INIT() CLASS HComboBox
          IF ::lText
             IF ::lEdit
                SetDlgItemText( getmodalhandle(), ::id, ::value )
+               SendMessage( ::handle, CB_SELECTSTRING, -1, ::value)
             ELSE
                ComboSetString( ::handle, AScan( ::aItems, ::value ) )
             ENDIF
-            SendMessage( ::handle, CB_SELECTSTRING, 0, ::value )
+            //SendMessage( ::handle, CB_SELECTSTRING, 0, ::value )
             SetWindowText( ::handle, ::value )
          ELSE
             ComboSetString( ::handle, ::value )
@@ -297,6 +300,11 @@ METHOD INIT() CLASS HComboBox
       // HEIGHT COMBOBOX
       SendMessage( ::handle, CB_SETITEMHEIGHT, - 1, ::nHeightBox )
    ENDIF
+   ::Refresh()
+   IF ::lEdit
+      SendMessage( ::handle, CB_SETEDITSEL , -1, 0 )
+   ENDIF
+
 RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
@@ -514,12 +522,21 @@ METHOD InteractiveChange( ) CLASS HComboBox
 LOCAL npos := SendMessage( ::handle, CB_GETEDITSEL, 0, 0 )
 
    ::SelStart                     := nPos
-   ::oparent:lSuspendMsgsHandling := .t.
+   ::oparent:lSuspendMsgsHandling := .T.
    Eval( ::bChangeInt, ::value, Self )
-   ::oparent:lSuspendMsgsHandling := .f.
+   ::oparent:lSuspendMsgsHandling := .F.
 
    SendMessage( ::handle, CB_SETEDITSEL, 0, ::SelStart )
 RETURN Nil
+
+METHOD onSelect() CLASS HComboBox
+
+   IF ::bSelect != Nil
+      ::oparent:lSuspendMsgsHandling := .T.
+      Eval( ::bSelect, ::value, Self )
+      ::oparent:lSuspendMsgsHandling := .F.
+   ENDIF
+   RETURN .T.
 
 METHOD onChange( ) CLASS HComboBox
 
@@ -527,9 +544,9 @@ LOCAL nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
 
    ::SetItem( nPos )
    IF ::bChangeSel != Nil
-      ::oparent:lSuspendMsgsHandling := .t.
+      ::oparent:lSuspendMsgsHandling := .T.
       Eval( ::bChangeSel, nPos, Self )
-      ::oparent:lSuspendMsgsHandling := .f.
+      ::oparent:lSuspendMsgsHandling := .F.
    ENDIF
 RETURN Nil
 
@@ -549,14 +566,14 @@ LOCAL res := .t., oParent, nSkip
    ENDIF
    nSkip := Iif( GetKeyState( VK_UP ) < 0 .OR. ( GetKeyState( VK_TAB ) < 0 .AND. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
    IF ::bGetFocus != Nil
-      ::oParent:lSuspendMsgsHandling := .t.
+      ::oParent:lSuspendMsgsHandling := .T.
       ::lnoValid                     := .T.
       IF ::bSetGet != Nil
          res := Eval( ::bGetFocus, Eval( ::bSetGet,, Self ), Self )
       ELSE
          res := Eval( ::bGetFocus, ::value, Self )
       ENDIF
-      ::oParent:lSuspendMsgsHandling := .f.
+      ::oParent:lSuspendMsgsHandling := .F.
       ::lnoValid                     := !res
       IF !res
          oParent := ParentGetDialog( Self )

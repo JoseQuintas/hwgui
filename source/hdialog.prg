@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.99 2009-12-29 12:09:12 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.100 2010-01-25 02:18:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -357,8 +357,11 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       Eval( oDlg:bOnActivate, oDlg )
       //oDlg:lSuspendMsgsHandling := .F.
    ENDIF
-
-
+   IF  ! EMPTY( oDlg:nInitFocus )
+       SETFOCUS( oDlg:nInitFocus )
+       oDlg:nInitFocus := 0
+       RETURN 0
+   ENDIF
    RETURN nReturn
 
 STATIC FUNCTION onEnterIdle( oDlg, wParam, lParam )
@@ -424,7 +427,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
          ENDIF
          IF oCtrl != Nil .AND. GetNextDlgTabItem( GetActiveWindow() , hCtrl, 1 ) == hCtrl
             *IF __ObjHasMsg(oCtrl,"BVALID") .AND. oCtrl:bValid != NIl
-            IF  __ObjHasMsg( oCtrl, "BLOSTFOCUS" ) .AND. oCtrl:blostfocus != NIl
+            IF  __ObjHasMsg( oCtrl, "BLOSTFOCUS" ) .AND. oCtrl:blostfocus != NIl .AND. !oDlg:lClipper
                oCtrl:setfocus()
                IF __ObjHasMsg( oCtrl, "BVALID" )
                   Eval( oCtrl:bValid, oCtrl )
@@ -459,6 +462,9 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
             //setfocus(odlg:handle)
          ENDIF
       ELSEIF iParLow == IDCANCEL
+         IF ( oCtrl := oDlg:FindControl( IDCANCEL ) ) != Nil
+            PostMessage( oDlg:handle, WM_NEXTDLGCTL, oCtrl:Handle , 1 )
+         ENDIF
          nEsc := ( getkeystate( VK_ESCAPE ) < 0 )
          oDlg:nLastKey := 27
       ENDIF
@@ -472,7 +478,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       RETURN 1
    ENDIF
    IF ( __ObjHasMsg(oDlg,"NINITFOCUS") .AND. oDlg:nInitFocus > 0 ) 
-      oDlg:nInitFocus := 0
+     // oDlg:nInitFocus := 0
    ENDIF
    IF oDlg:aEvents != Nil .AND. ! oDlg:lSuspendMsgsHandling .AND. oDlg:nInitFocus == 0 .AND. ;
       ( i := AScan( oDlg:aEvents, { | a | a[ 1 ] == iParHigh.and.a[ 2 ] == iParLow } ) ) > 0

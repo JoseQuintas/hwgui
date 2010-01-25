@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.38 2009-11-17 19:14:17 mlacecilia Exp $
+ * $Id: guimain.prg,v 1.39 2010-01-25 02:18:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -244,8 +244,8 @@ FUNCTION WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel,
         SIZE width, height       ;
         STYLE nStyle            ;
         FONT oFont              ;
-        ON INIT { | o | ResetWindowPos( o:handle ), oBrw:setfocus() }
-
+        ON INIT { | o | ResetWindowPos( o:handle ), o:nInitFocus := oBrw }
+       //ON INIT {|o|ResetWindowPos(o:handle),oBrw:setfocus()}
    IF lArray
       @ 0, 0 Browse oBrw Array
       oBrw:aArray := arr

@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.57 2009-11-29 13:46:13 lfbasso Exp $
+ *$Id: htab.prg,v 1.58 2010-01-25 02:18:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -694,7 +694,7 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
       ENDIF
       ::oparent:lSuspendMsgsHandling := .f.
    ENDIF
-   IF ! ( ( msg = WM_COMMAND .OR. msg = WM_NOTIFY) .AND. ::oParent:lSuspendMsgsHandling )
+   IF ! ( ( msg = WM_COMMAND .OR. msg = WM_NOTIFY) .AND. ::oParent:lSuspendMsgsHandling .AND. ::lSuspendMsgsHandling )
       IF  __ObjHasMsg(::oParent,"NINITFOCUS") .AND. ::oParent:nInitFocus > 0 .AND. isWindowVisible( ::oParent:handle )
          SETFOCUS( ::oParent:nInitFocus )
          ::oParent:nInitFocus := 0

@@ -1,5 +1,5 @@
 /*
- * $Id: listbox.c,v 1.12 2010-01-25 01:00:07 druzus Exp $
+ * $Id: listbox.c,v 1.13 2010-01-25 15:17:28 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HList class
@@ -33,7 +33,7 @@ HB_FUNC( LISTBOXADDSTRING )
    void * hString;
 
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), LB_ADDSTRING, 0,
-                ( LPARAM ) HB_PARSTR( 3, &hString, NULL ) );
+                ( LPARAM ) HB_PARSTR( 2, &hString, NULL ) );
    hb_strfree( hString );
 }
 

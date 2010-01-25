@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.26 2010-01-19 23:39:56 druzus Exp $
+ * $Id: drawtext.c,v 1.27 2010-01-25 01:00:07 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -53,25 +53,29 @@ HB_FUNC( DELETEDC )
 
 HB_FUNC( TEXTOUT )
 {
-   const char *cText = hb_parc( 4 );
-   ULONG ulLen = hb_parclen( 4 );
+   void * hText;
+   HB_SIZE nLen;
+   LPCTSTR lpText = HB_PARSTR( 4, &hText, &nLen );
 
    TextOut( ( HDC ) HB_PARHANDLE( 1 ),  // handle of device context
             hb_parni( 2 ),         // x-coordinate of starting position
             hb_parni( 3 ),         // y-coordinate of starting position
-            cText,                 // address of string
-            ulLen                  // number of characters in string
+            lpText,                // address of string
+            nLen                   // number of characters in string
           );
+   hb_strfree( hText );
 }
 
 HB_FUNC( DRAWTEXT )
 {
-   const char *cText = hb_parc( 2 );
-   ULONG ulLen = hb_parclen( 2 );
+   void * hText;
+   HB_SIZE nLen;
+   LPCTSTR lpText = HB_PARSTR( 2, &hText, &nLen );
    RECT rc;
    UINT uFormat = ( hb_pcount(  ) == 4 ? hb_parni( 4 ) : hb_parni( 7 ) );
    // int uiPos = ( hb_pcount(  ) == 4 ? 3 : hb_parni( 8 ) );
    int heigh ;
+
    if( hb_pcount(  ) > 4 )
    {
 
@@ -88,9 +92,11 @@ HB_FUNC( DRAWTEXT )
 
 
    heigh = DrawText( ( HDC ) HB_PARHANDLE( 1 ), // handle of device context
-                     cText,     // address of string
-                     ulLen,     // number of characters in string
+                     lpText,    // address of string
+                     nLen,      // number of characters in string
                      &rc, uFormat );
+   hb_strfree( hText );
+
    //if( ISBYREF( uiPos ) )
    if( ISARRAY( 8 ) )
    {
@@ -135,13 +141,16 @@ HB_FUNC( GETTEXTMETRIC )
 
 HB_FUNC( GETTEXTSIZE )
 {
-   const char *pstr = hb_parc( 2 );
+
+   void * hText;
+   HB_SIZE nLen;
+   LPCTSTR lpText = HB_PARSTR( 2, &hText, &nLen );
    SIZE sz;
    PHB_ITEM aMetr = _itemArrayNew( 2 );
    PHB_ITEM temp;
 
-   GetTextExtentPoint32( ( HDC ) HB_PARHANDLE( 1 ), pstr, strlen( pstr ),
-         &sz );
+   GetTextExtentPoint32( ( HDC ) HB_PARHANDLE( 1 ), lpText, nLen, &sz );
+   hb_strfree( hText );
 
    temp = _itemPutNL( NULL, sz.cx );
    _itemArrayPut( aMetr, 1, temp );
@@ -275,16 +284,17 @@ HB_FUNC( GETTEXTSIZE )
 {
 
    HDC hdc = GetDC( (HWND)HB_PARHANDLE(1) );
-   LPCSTR * lpString = hb_parc(2);
    SIZE size;
    PHB_ITEM aMetr = _itemArrayNew( 2 );
    PHB_ITEM temp;
+   void * hString;
 
-   GetTextExtentPoint32( hdc, hb_parc(2),
+   GetTextExtentPoint32( hdc, HB_PARSTR( 2, &hString, NULL ),
       lpString,         // address of text string
       strlen(cbString), // number of characters in string
       &size            // address of structure for string size
    );
+   hb_strfree( hString );
 
    temp = _itemPutNI( NULL, size.cx );
    _itemArrayPut( aMetr, 1, temp );
@@ -304,8 +314,9 @@ HB_FUNC( EXTTEXTOUT )
 {
 
    RECT rc;
-   const char *cText = hb_parc( 8 );
-   ULONG ulLen = hb_parclen( 8 );
+   void * hText;
+   HB_SIZE nLen;
+   LPCTSTR lpText = HB_PARSTR( 8, &hText, &nLen );
 
    rc.left = hb_parni( 4 );
    rc.top = hb_parni( 5 );
@@ -317,16 +328,19 @@ HB_FUNC( EXTTEXTOUT )
          hb_parni( 3 ),         // y-coordinate of reference point
          ETO_OPAQUE,            // text-output options
          &rc,                   // optional clipping and/or opaquing rectangle
-         cText,                 // points to string
-         ulLen,                 // number of characters in string
+         lpText,                // points to string
+         nLen,                  // number of characters in string
          NULL                   // pointer to array of intercharacter spacing values
           );
+   hb_strfree( hText );
 }
 
 HB_FUNC( WRITESTATUSWINDOW )
 {
+   void * hString;
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), SB_SETTEXT, hb_parni( 2 ),
-         ( LPARAM ) hb_parc( 3 ) );
+                ( LPARAM ) HB_PARSTR( 3, &hString, NULL ) );
+   hb_strfree( hString );
 }
 
 HB_FUNC( WINDOWFROMDC )
@@ -345,6 +359,7 @@ HB_FUNC( CREATEFONT )
    DWORD fdwItalic = ( ISNIL( 6 ) ) ? 0 : hb_parni( 6 );
    DWORD fdwUnderline = ( ISNIL( 7 ) ) ? 0 : hb_parni( 7 );
    DWORD fdwStrikeOut = ( ISNIL( 8 ) ) ? 0 : hb_parni( 8 );
+   void * hString;
 
    hFont = CreateFont( hb_parni( 3 ),   // logical height of font
          hb_parni( 2 ),         // logical average character width
@@ -359,8 +374,9 @@ HB_FUNC( CREATEFONT )
          0,                     // clipping precision
          0,                     // output quality
          0,                     // pitch and family
-         hb_parc( 1 )           // pointer to typeface name string
+         HB_PARSTR( 1, &hString, NULL )   // pointer to typeface name string
           );
+   hb_strfree( hString );
    HB_RETHANDLE( hFont );
 }
 
@@ -430,7 +446,7 @@ HB_FUNC( CREATEFONTINDIRECT )
    lf.lfQuality = hb_parni( 4 );
    lf.lfHeight = hb_parni( 3 );
    lf.lfWeight = hb_parni( 2 );
-   lstrcpy( lf.lfFaceName, hb_parc( 1 ) );
+   HB_ITEMCOPYSTR( hb_param( 1, HB_IT_ANY ), lf.lfFaceName, HB_SIZEOFARRAY( lf.lfFaceName ) );
 
    f = CreateFontIndirect( &lf );
    HB_RETHANDLE( f );

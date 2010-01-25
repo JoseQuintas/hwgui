@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.63 2009-12-29 12:09:12 lfbasso Exp $
+ * $Id: draw.c,v 1.64 2010-01-25 01:00:07 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -24,7 +24,7 @@
 #include "hbstack.h"
 #include "item.api"
 #include "missing.h"
-#include "guilib.h"
+#include "hwingui.h"
 
 #ifdef __cplusplus
 #ifdef CINTERFACE
@@ -281,20 +281,27 @@ HB_FUNC( DRAWEDGE )
 HB_FUNC( LOADICON )
 {
    if( ISNUM( 1 ) )
-      HB_RETHANDLE( LoadIcon( NULL, MAKEINTRESOURCE( hb_parnl( 1 ) ) ) );
+      HB_RETHANDLE( LoadIcon( NULL, MAKEINTRESOURCE( hb_parni( 1 ) ) ) );
    else
-      HB_RETHANDLE( LoadIcon( GetModuleHandle( NULL ), hb_parc( 1 ) ) );
+   {
+      void * hString;
+      HB_RETHANDLE( LoadIcon( GetModuleHandle( NULL ), HB_PARSTR( 1, &hString, NULL ) ) );
+      hb_strfree( hString );
+   }
 }
 
 HB_FUNC( LOADIMAGE )
 {
+   void * hString = NULL;
+
    HB_RETHANDLE( LoadImage( ISNIL( 1 ) ? GetModuleHandle( NULL ) : ( HINSTANCE ) hb_parnl( 1 ), // handle of the instance that contains the image
-               ISNUM( 2 ) ? MAKEINTRESOURCE( hb_parnl( 2 ) ) : hb_parc( 2 ),                    // name or identifier of image
+               ISNUM( 2 ) ? MAKEINTRESOURCE( hb_parni( 2 ) ) : HB_PARSTR( 2, &hString, NULL ),  // name or identifier of image
                ( UINT ) hb_parni( 3 ),  // type of image
                hb_parni( 4 ),   // desired width
                hb_parni( 5 ),   // desired height
                ( UINT ) hb_parni( 6 )   // load flags
           ) );
+   hb_strfree( hString );
 }
 
 HB_FUNC( LOADBITMAP )
@@ -302,13 +309,17 @@ HB_FUNC( LOADBITMAP )
    if( ISNUM( 1 ) )
    {
       if( !ISNIL( 2 ) && hb_parl( 2 ) )
-         HB_RETHANDLE( LoadBitmap( NULL, MAKEINTRESOURCE( hb_parnl( 1 ) ) ) );
+         HB_RETHANDLE( LoadBitmap( NULL, MAKEINTRESOURCE( hb_parni( 1 ) ) ) );
       else
          HB_RETHANDLE( LoadBitmap( GetModuleHandle( NULL ),
-                                   MAKEINTRESOURCE( hb_parnl( 1 ) ) ) );
+                                   MAKEINTRESOURCE( hb_parni( 1 ) ) ) );
    }
    else
-      HB_RETHANDLE( LoadBitmap( GetModuleHandle( NULL ), hb_parc( 1 ) ) );
+   {
+      void * hString;
+      HB_RETHANDLE( LoadBitmap( GetModuleHandle( NULL ), HB_PARSTR( 1, &hString, NULL ) ) );
+      hb_strfree( hString );
+   }
 }
 
 /*
@@ -569,12 +580,15 @@ HB_FUNC( OPENBITMAP )
    LPVOID lpvBits;
    HGLOBAL hmem1, hmem2;
    HBITMAP hbm;
-   HDC hDC = ( hb_pcount(  ) > 1 &&
-         !ISNIL( 2 ) ) ? ( HDC ) HB_PARHANDLE( 2 ) : NULL;
-   HANDLE hfbm = CreateFile( hb_parc( 1 ), GENERIC_READ, FILE_SHARE_READ,
-         ( LPSECURITY_ATTRIBUTES ) NULL, OPEN_EXISTING,
-         FILE_ATTRIBUTE_READONLY, ( HANDLE ) NULL );
+   HDC hDC = ( hb_pcount(  ) > 1 && !ISNIL( 2 ) ) ?
+             ( HDC ) HB_PARHANDLE( 2 ) : NULL;
+   void * hString;
+   HANDLE hfbm;
 
+   hfbm = CreateFile( HB_PARSTR( 1, &hString, NULL ), GENERIC_READ, FILE_SHARE_READ,
+                      ( LPSECURITY_ATTRIBUTES ) NULL, OPEN_EXISTING,
+                      FILE_ATTRIBUTE_READONLY, ( HANDLE ) NULL );
+   hb_strfree( hString );
    if( ( ( long int ) hfbm ) <= 0 )
    {
       HB_RETHANDLE( NULL );

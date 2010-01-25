@@ -1,5 +1,5 @@
 /*
- * $Id: listbox.c,v 1.11 2010-01-24 22:13:02 druzus Exp $
+ * $Id: listbox.c,v 1.12 2010-01-25 01:00:07 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HList class
@@ -25,7 +25,7 @@
 #include "hbvm.h"
 #include "hbstack.h"
 #include "item.api"
-#include "guilib.h"
+#include "hwingui.h"
 
 
 HB_FUNC( LISTBOXADDSTRING )

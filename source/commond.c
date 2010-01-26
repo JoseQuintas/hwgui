@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.35 2010-01-25 02:14:00 druzus Exp $
+ * $Id: commond.c,v 1.36 2010-01-26 08:09:32 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -158,29 +158,33 @@ HB_FUNC( SELECTFILE )
 
       pArrStr = ( struct _hb_arrStr * )
                 hb_xgrab( nArrLen * sizeof( struct _hb_arrStr ) );
-      nSize = 2;
+      nSize = 4;
       for( n = 0; n < nArrLen; n++ )
       {
-         pArrStr[ n ].lpStr1 = HB_ARRAYGETSTR( pArr1, n - 1,
+         pArrStr[ n ].lpStr1 = HB_ARRAYGETSTR( pArr1, n + 1,
                                                &pArrStr[ n ].hStr1,
                                                &pArrStr[ n ].nLen1 );
-         pArrStr[ n ].lpStr2 = HB_ARRAYGETSTR( pArr2, n - 1,
+         pArrStr[ n ].lpStr2 = HB_ARRAYGETSTR( pArr2, n + 1,
                                                &pArrStr[ n ].hStr2,
                                                &pArrStr[ n ].nLen2 );
-         nSize += pArrStr[ n ].nLen1 + pArrStr[ n ].nLen2;
+         nSize += pArrStr[ n ].nLen1 + pArrStr[ n ].nLen2 + 2;
       }
       lpFilter = ( LPTSTR ) hb_xgrab( nSize * sizeof( TCHAR ) );
-      memset( lpFilter, 0, nSize * sizeof( TCHAR ) );
       ptr = lpFilter;
       for( n = 0; n < nArrLen; n++ )
       {
-         memcpy( ptr, pArrStr[ n ].lpStr1, pArrStr[ n ].nLen1 );
-         ptr += pArrStr[ n ].nLen1 + 1;
-         memcpy( ptr, pArrStr[ n ].lpStr2, pArrStr[ n ].nLen2 );
-         ptr += pArrStr[ n ].nLen2 + 1;
+         memcpy( ptr, pArrStr[ n ].lpStr1, pArrStr[ n ].nLen1 * sizeof( TCHAR ) );
+         ptr += pArrStr[ n ].nLen1;
+         *ptr++ = 0;
+         memcpy( ptr, pArrStr[ n ].lpStr2, pArrStr[ n ].nLen2 * sizeof( TCHAR ) );
+         ptr += pArrStr[ n ].nLen2;
+         *ptr++ = 0;
          hb_strfree( pArrStr[ n ].hStr1 );
          hb_strfree( pArrStr[ n ].hStr2 );
       }
+      *ptr++ = 0;
+      *ptr++ = 0;
+      hb_xfree( pArrStr );
    }
    else
    {
@@ -238,15 +242,17 @@ HB_FUNC( SAVEFILE )
    memcpy( lpFilter, lpStr1, nLen1 * sizeof( TCHAR ) );
    memcpy( lpFilter + nLen1 + 1, lpStr2, nLen2 * sizeof( TCHAR ) );
 
+   hb_strfree( hStr1 );
+   hb_strfree( hStr2 );
+
    memset( ( void * ) &ofn, 0, sizeof( OPENFILENAME ) );
    ofn.lStructSize = sizeof( ofn );
-   ofn.hwndOwner = GetActiveWindow(  );
+   ofn.hwndOwner = GetActiveWindow();
    ofn.lpstrFilter = lpFilter;
    ofn.lpstrFile = lpFileBuff;
-   ofn.nMaxFile = 1024;
+   ofn.nMaxFile = nSize;
    ofn.lpstrInitialDir = HB_PARSTR( 4, &hInitDir, NULL );
    ofn.lpstrTitle = HB_PARSTR( 5, &hTitle, NULL );
-
    ofn.Flags = OFN_FILEMUSTEXIST | OFN_EXPLORER;
 
    if( GetSaveFileName( &ofn ) )
@@ -256,8 +262,6 @@ HB_FUNC( SAVEFILE )
    hb_xfree( lpFilter );
 
    hb_strfree( hFileName );
-   hb_strfree( hStr1 );
-   hb_strfree( hStr2 );
    hb_strfree( hInitDir );
    hb_strfree( hTitle );
 }
@@ -371,7 +375,7 @@ HB_FUNC( GETPRIVATEPROFILESTRING )
 
    dwLen = GetPrivateProfileString( HB_PARSTR( 1, &hSection, NULL ),
                                     HB_PARSTR( 2, &hEntry, NULL ),
-                                    lpDefault, buffer, sizeof( buffer ),
+                                    lpDefault, buffer, HB_SIZEOFARRAY( buffer ),
                                     HB_PARSTR( 4, &hFileName, NULL ) );
    if( dwLen )
       HB_RETSTRLEN( buffer, dwLen );
@@ -411,7 +415,7 @@ static void StartPrn( void )
       s_fInit = TRUE;
       memset( &s_pd, 0, sizeof( PRINTDLG ) );
       s_pd.lStructSize = sizeof( PRINTDLG );
-      s_pd.hwndOwner = GetActiveWindow(  );
+      s_pd.hwndOwner = GetActiveWindow();
       s_pd.Flags = PD_RETURNDEFAULT;
       s_pd.nMinPage = 1;
       s_pd.nMaxPage = 65535;

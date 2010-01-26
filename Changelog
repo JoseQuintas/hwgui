@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1211 2010-01-25 18:59:48 druzus Exp $
+ * $Id: Changelog,v 1.1212 2010-01-26 08:08:27 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,25 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-01-26 09:08 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/include/guilib.h
+    * added few definitions for old Harbour and xHarbour versions
+
+  * hwgui/source/animat.c
+    ! fixed bad typo in parameter index
+
+  * hwgui/source/commond.c
+    ! fixed typos in array index - many thanks to Luis Fernando Basso
+      for the information
+    ! fixed size calculation and filter string termination in
+      SELECTFILE()
+    ! fixed buffer size in GETPRIVATEPROFILESTRING()
+
+  * hwgui/source/resource.c
+    % use HB_CALL_ON_STARTUP_BEGIN()/HB_CALL_ON_STARTUP_END()
+      instead of creating INIT PROCEDURE - it's faster and should work
+      with older Harbour and xHarbour versions
 
 2010-01-25 19:59 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/include/guilib.h

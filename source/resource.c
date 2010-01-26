@@ -1,5 +1,5 @@
 /*
- * $Id: resource.c,v 1.18 2010-01-25 02:14:00 druzus Exp $
+ * $Id: resource.c,v 1.19 2010-01-26 08:09:33 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level resource functions
@@ -29,10 +29,6 @@
 
 HMODULE hModule;
 
-#if 0
-void hb_resourcemodules( void );
-#endif
-
 HB_FUNC( GETRESOURCES )
 {
    hb_retnl( ( LONG ) hModule );
@@ -53,40 +49,28 @@ HB_FUNC( LOADRESOURCE )
    hb_strfree( hString );
 }
 
-#if 0
-#if (! defined(__GNUC__) && ! defined(__DMC__) )
-#pragma startup hb_resourcemodules
-#endif
-
-void hb_resourcemodules( void )
+void hb_resourcemodules( void * cargo )
 {
-   hModule = GetModuleHandle( NULL );
-}
-#endif
+   HB_SYMBOL_UNUSED( cargo );
 
-HB_FUNC_INIT( HWG_INITRESOURCE )
-{
    hModule = GetModuleHandle( NULL );
 }
 
-#ifdef __XHARBOUR__
-#define __PRG_SOURCE__ __FILE__
-#ifdef HB_PCODE_VER
-#  undef HB_PRG_PCODE_VER
-#  define HB_PRG_PCODE_VER HB_PCODE_VER
-#endif
-#define __HB_MUDULE__   &ModuleFakeDyn
-#else
-#define __HB_MUDULE__   NULL
-#endif
+HB_CALL_ON_STARTUP_BEGIN( _hwgui_module_init_ )
+   hb_vmAtInit( hb_resourcemodules, NULL );
+HB_CALL_ON_STARTUP_END( _hwgui_module_init_ )
 
-HB_INIT_SYMBOLS_BEGIN( hwg_resource_INIT )
-{ "HWG_INITRESOURCE$", {HB_FS_INIT | HB_FS_LOCAL}, {HB_INIT_FUNCNAME( HWG_INITRESOURCE )}, __HB_MUDULE__ }
-HB_INIT_SYMBOLS_END( hwg_resource_INIT )
 #if defined( HB_PRAGMA_STARTUP )
-#  pragma startup hwg_resource_INIT
+   #pragma startup _hwgui_module_init_
+#elif defined( HB_MSC_STARTUP )  // support for old [x]Harbour version
+   #if defined( HB_OS_WIN_64 )
+      #pragma section( HB_MSC_START_SEGMENT, long, read )
+   #endif
+   #pragma data_seg( HB_MSC_START_SEGMENT )
+   static HB_$INITSYM hb_vm_auto_hwgui_module_init_ = _hwgui_module_init_;
+   #pragma data_seg()
 #elif defined( HB_DATASEG_STARTUP )
-   #define HB_DATASEG_BODY    HB_DATASEG_FUNC( hwg_resource_INIT )
+   #define HB_DATASEG_BODY    HB_DATASEG_FUNC( _hwgui_module_init_ )
    #include "hbiniseg.h"
 #endif
 

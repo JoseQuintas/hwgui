@@ -55,7 +55,7 @@ HB_FUNC( ANIMATE_OPENEX )
    #define Animate_OpenEx(hwnd, hInst, szName) (BOOL)SNDMSG(hwnd, ACM_OPEN, (WPARAM)hInst, (LPARAM)(LPTSTR)(szName))
 #endif
    void * hResource;
-   LPCTSTR lpResource = HB_PARSTR( 2, &hResource, NULL );
+   LPCTSTR lpResource = HB_PARSTR( 3, &hResource, NULL );
 
    if( !lpResource && ISNUM( 3 ) )
       lpResource = ( LPCTSTR ) MAKEINTRESOURCE( hb_parni( 3 ) );

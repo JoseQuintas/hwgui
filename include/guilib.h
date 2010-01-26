@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.h,v 1.24 2010-01-25 19:01:31 druzus Exp $
+ *$Id: guilib.h,v 1.25 2010-01-26 08:09:32 druzus Exp $
  */
 
 #include "hbdefs.h"
@@ -33,8 +33,13 @@
    #define HB_SIZEOFARRAY( var )    ( sizeof( var ) / sizeof( *var ) )
 #endif
 
-#ifdef HARBOUR_2005
+#if defined( HARBOUR_2005 )
    #define hb_dynsymSymbol( h )     ( ( h )->pSymbol )
+#endif
+#if defined( HARBOUR_2005 ) || \
+    ( defined( __XHARBOUR__ ) && !defined( hb_itemPutCLPtr ) )
+   #define hb_dynsymIsFunction( h ) ( ( h )->pSymbol->value.pFunPtr != NULL )
+   #define hb_itemPutCLPtr( pItem, szText, ulLen ) hb_itemPutCPtr( pItem, szText, ulLen )
 #endif
 
 #ifndef HB_PATH_MAX

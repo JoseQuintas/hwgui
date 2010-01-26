@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.84 2010-01-25 15:52:25 druzus Exp $
+ * $Id: window.c,v 1.85 2010-01-26 12:12:53 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -801,12 +801,12 @@ void SetObjectVar( PHB_ITEM pObject, const char *varname, PHB_ITEM pValue )
 
 static const char s_szConstStr[ 1 ] = { 0 };
 
-const char * hb_strnull( const char * str )
+const char * hwg_strnull( const char * str )
 {
    return str ? str : "";
 }
 
-const char * hb_strget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pulLen )
+const char * hwg_strget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pulLen )
 {
    const char * pStr;
 
@@ -827,7 +827,7 @@ const char * hb_strget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pulLen )
    return pStr;
 }
 
-HB_SIZE hb_strcopy( PHB_ITEM pItem, char * pStr, HB_SIZE ulLen )
+HB_SIZE hwg_strcopy( PHB_ITEM pItem, char * pStr, HB_SIZE ulLen )
 {
    if( pItem && HB_IS_STRING( pItem ) )
    {
@@ -852,7 +852,7 @@ HB_SIZE hb_strcopy( PHB_ITEM pItem, char * pStr, HB_SIZE ulLen )
    return 0;
 }
 
-char * hb_strunshare( void ** phStr, const char * pStr, HB_SIZE ulLen )
+char * hwg_strunshare( void ** phStr, const char * pStr, HB_SIZE ulLen )
 {
    if( pStr == NULL || phStr == NULL || *phStr == NULL )
       return NULL;
@@ -870,7 +870,7 @@ char * hb_strunshare( void ** phStr, const char * pStr, HB_SIZE ulLen )
    return ( char * ) pStr;
 }
 
-void hb_strfree( void * hString )
+void hwg_strfree( void * hString )
 {
    if( hString && hString != ( void * ) s_szConstStr )
       hb_xfree( hString );

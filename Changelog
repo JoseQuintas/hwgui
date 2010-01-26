@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1213 2010-01-26 12:02:30 lfbasso Exp $
+ * $Id: Changelog,v 1.1214 2010-01-26 12:11:56 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-01-26 13:11 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/include/hwingui.h
+  * hwgui/source/window.c
+    ! renamed emulated hb_str*() functions to hwg_str*() to avoid
+      conflicts with Harbour 2.0
 
 2010-01-26 10:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * samples\combobox\combobox.prg

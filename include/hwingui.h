@@ -1,5 +1,5 @@
 /*
- *$Id: hwingui.h,v 1.3 2010-01-25 15:52:24 druzus Exp $
+ *$Id: hwingui.h,v 1.4 2010-01-26 12:12:53 druzus Exp $
  */
 
 #include <windows.h>
@@ -23,29 +23,30 @@
 #else
    #undef HB_HAS_STR_FUNC
 
-   #define HB_PARSTR( n, h, len )                hb_strget( hb_param( n, HB_IT_ANY ), h, len )
-   #define HB_PARSTRDEF( n, h, len )             hb_strnull( hb_strget( hb_param( n, HB_IT_ANY ), h, len ) )
+   #define HB_PARSTR( n, h, len )                hwg_strget( hb_param( n, HB_IT_ANY ), h, len )
+   #define HB_PARSTRDEF( n, h, len )             hwg_strnull( hwg_strget( hb_param( n, HB_IT_ANY ), h, len ) )
    #define HB_RETSTR( str )                      hb_retc( str )
    #define HB_RETSTRLEN( str, len )              hb_retclen( str, len )
    #define HB_STORSTR( str, n )                  hb_storc( str, n )
    #define HB_STORSTRLEN( str, len, n )          hb_storclen( str, len, n )
-   #define HB_ARRAYGETSTR( arr, n, h, len )      hb_strget( hb_arrayGetItemPtr( arr, n ), h, len )
+   #define HB_ARRAYGETSTR( arr, n, h, len )      hwg_strget( hb_arrayGetItemPtr( arr, n ), h, len )
    #define HB_ARRAYSETSTR( arr, n, str )         hb_arraySetC( arr, n, str )
    #define HB_ARRAYSETSTRLEN( arr, n, str, len ) hb_arraySetCL( arr, n, str, len )
-   #define HB_ITEMCOPYSTR( itm, str, len )       hb_strcopy( itm, str, len )
-   #define HB_ITEMGETSTR( itm, h, len )          hb_strget( itm, h, len )
+   #define HB_ITEMCOPYSTR( itm, str, len )       hwg_strcopy( itm, str, len )
+   #define HB_ITEMGETSTR( itm, h, len )          hwg_strget( itm, h, len )
    #define HB_ITEMPUTSTR( itm, str )             hb_itemPutC( itm, str )
    #define HB_ITEMPUTSTRLEN( itm, str, len )     hb_itemPutCL( itm, str, len )
-   #define HB_STRUNSHARE( h, str, len )          hb_strunshare( h, str, len )
+   #define HB_STRUNSHARE( h, str, len )          hwg_strunshare( h, str, len )
 
    HB_EXTERN_BEGIN
-   extern const char * hb_strnull( const char * str );
-   extern const char * hb_strget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pulLen );
-   extern HB_SIZE hb_strcopy( PHB_ITEM pItem, char * pStr, HB_SIZE ulLen );
-   extern char * hb_strunshare( void ** phStr, const char * pStr, HB_SIZE ulLen );
-   extern void hb_strfree( void * hString );
+   extern const char *  hwg_strnull( const char * str );
+   extern const char *  hwg_strget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pulLen );
+   extern HB_SIZE       hwg_strcopy( PHB_ITEM pItem, char * pStr, HB_SIZE ulLen );
+   extern char *        hwg_strunshare( void ** phStr, const char * pStr, HB_SIZE ulLen );
+   extern void          hwg_strfree( void * hString );
    HB_EXTERN_END
 
+   #define hb_strfree( h )    hwg_strfree( h )
 #endif
 
 HB_EXTERN_BEGIN

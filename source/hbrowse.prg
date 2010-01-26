@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.202 2010-01-25 12:41:55 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.203 2010-01-26 15:12:31 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -498,7 +498,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
       ELSEIF msg == WM_CHAR
          IF wParam == VK_RETURN .OR. wParam == VK_ESCAPE
-             RETURN 0
+             RETURN - 1 //0
          ENDIF
          IF ! CheckBit( lParam, 32 ) //.AND.::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
              nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1212 2010-01-26 08:08:27 druzus Exp $
+ * $Id: Changelog,v 1.1213 2010-01-26 12:02:30 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-01-26 10:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * samples\combobox\combobox.prg
+    + add in samples event ON INTERACTIVECHANGE in ocombo3, ocombo6
+  * source\hcombo.prg
+    + DATA bSelect
 
 2010-01-26 09:08 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/include/guilib.h

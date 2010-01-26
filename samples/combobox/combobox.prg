@@ -1,5 +1,5 @@
 /*
- * $Id: combobox.prg,v 1.2 2009-09-22 16:39:50 lfbasso Exp $
+ * $Id: combobox.prg,v 1.3 2010-01-26 12:03:00 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library
  *
@@ -45,11 +45,13 @@ Function Test ()
 
       @ 20, 20 GET COMBOBOX oCombo1 VAR nCombo ITEMS aItems SIZE 100, 23
       @ 20, 50 GET COMBOBOX oCombo2 VAR cCombo ITEMS aItems SIZE 100, 23 TEXT
-      @ 20, 80 GET COMBOBOX oCombo3 VAR xCombo ITEMS aItems SIZE 100, 23 EDIT TOOLTIP "Type any thing here"
+      @ 20, 80 GET COMBOBOX oCombo3 VAR xCombo ITEMS aItems SIZE 100, 23 EDIT TOOLTIP "Type any thing here";
+         ON INTERACTIVECHANGE {|value,This| oCombo3_onInteractiveChange( value,This ) }  
 
       @ 20,110 COMBOBOX oCombo4 ITEMS aItems SIZE 100, 23
       @ 20,140 COMBOBOX oCombo5 ITEMS aItems SIZE 100, 23 TEXT
-      @ 20,170 COMBOBOX oCombo6 ITEMS aItems SIZE 100, 23 EDIT
+      @ 20,170 COMBOBOX oCombo6 ITEMS aItems SIZE 100, 23 EDIT;
+         ON INTERACTIVECHANGE {|value,This| oCombo3_onInteractiveChange( value,This ) }  
 
       @ 20,200 GET cEdit SIZE 150, 23
 
@@ -81,7 +83,8 @@ Function BoundTest ()
 
       @ 20, 20 GET COMBOBOX oCombo1 VAR nCombo ITEMS aItems SIZE 100, 23
       @ 20, 50 GET COMBOBOX oCombo2 VAR cCombo ITEMS aItems SIZE 100, 23 TEXT
-      @ 20, 80 GET COMBOBOX oCombo3 VAR xCombo ITEMS aItems SIZE 100, 23 EDIT TOOLTIP "Type any thing here"
+      @ 20, 80 GET COMBOBOX oCombo3 VAR xCombo ITEMS aItems SIZE 100, 23 EDIT TOOLTIP "Type any thing here";
+          ON INTERACTIVECHANGE {|value,This| oCombo3_onInteractiveChange( value,This ) }  
 
       // @ 20,200 GET cEdit SIZE 150, 23
 //      @ 300, 395 BUTTON "Add"    SIZE 75, 25 ON CLICK {|| oCombo1:AddItem(cEdit), oCombo1:refresh() }
@@ -95,3 +98,13 @@ Function BoundTest ()
 
 Return Nil
 
+Static Function oCombo3_onInteractiveChange( value,This )  
+   LOCAL cTexto,n
+
+   cTexto := TRIM( This:GetText() )
+   n := Ascan( This:aitems, {| a | a = cTexto } )
+   IF !EMPTY( cTexto ) .AND. (GETKEYSTATE( VK_DELETE ) + GETKEYSTATE( VK_BACK )) >= 0 .AND. n > 0
+      This:SETVALUE( TRIM( This:aitems[ n ] ) )
+      KEYB_EVENT( VK_END,.T.,.T. )
+   ENDIF
+   RETURN Nil

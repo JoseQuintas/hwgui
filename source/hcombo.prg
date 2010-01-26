@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.75 2010-01-25 02:18:47 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.76 2010-01-26 12:03:00 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -46,6 +46,7 @@ CLASS HComboBox INHERIT HControl
    DATA bChangeSel
    DATA bChangeInt
    DATA bValid
+   DATA bSelect
 
    DATA lText INIT .F.
    DATA lEdit INIT .F.
@@ -80,8 +81,7 @@ CLASS HComboBox INHERIT HControl
    METHOD Populate() HIDDEN
    METHOD GetValueBound( )
    METHOD RowSource( xSource ) SETGET
-
-
+   
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, aItems, oFont, ;
@@ -94,7 +94,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ELSE
       nDisplay := 6
    ENDIF
-     nHeight := IIF( EMPTY( nHeight ), 24,  nHeight )
+   nHeight := IIF( EMPTY( nHeight ), 24,  nHeight )
    ::nHeightBox := Int( nHeight * 0.75 )                    //   Meets A 22'S EDITBOX
    nHeight := nHeight + ( Iif( Empty( nhItem ), 16.250, ( nhItem += 0.250 ) ) * nDisplay )
 

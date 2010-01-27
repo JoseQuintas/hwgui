@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.97 2010-01-19 23:39:44 druzus Exp $
+ * $Id: control.c,v 1.98 2010-01-27 09:18:35 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1961,8 +1961,8 @@ HB_FUNC( COMBOBOXGETLBTEXT )
    int nIndex = hb_parnl( 2 );
    char lpszText[255] = { 0 };
    hb_retni( SendMessage( hWnd, CB_GETLBTEXT, nIndex,
-               ( LPARAM ) & lpszText ) );
-   hb_storc( ( char * ) lpszText, 3 );
+                          ( LPARAM ) lpszText ) );
+   hb_storc( lpszText, 3 );
 }
 
 HB_FUNC( DEFWINDOWPROC )
@@ -2007,7 +2007,6 @@ HB_FUNC( BUTTONGETDLGCODE )
 
    }
    hb_retnl( DLGC_WANTALLKEYS );        // we want all keys except TAB key
-
 }
 
 

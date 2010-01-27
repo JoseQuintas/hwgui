@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.85 2010-01-26 12:12:53 druzus Exp $
+ * $Id: window.c,v 1.86 2010-01-27 09:18:35 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -35,19 +35,16 @@
 
 #define  FIRST_MDICHILD_ID     501
 
-LRESULT CALLBACK MainWndProc( HWND, UINT, WPARAM, LPARAM );
-LRESULT CALLBACK FrameWndProc( HWND, UINT, WPARAM, LPARAM );
-LRESULT CALLBACK MDIChildWndProc( HWND, UINT, WPARAM, LPARAM );
+static LRESULT CALLBACK s_MainWndProc( HWND, UINT, WPARAM, LPARAM );
+static LRESULT CALLBACK s_FrameWndProc( HWND, UINT, WPARAM, LPARAM );
+static LRESULT CALLBACK s_MDIChildWndProc( HWND, UINT, WPARAM, LPARAM );
 
-HWND hMytoolMenu = NULL;
-static HHOOK OrigDockHookProc;
-extern int iDialogs;
+static HWND s_hMytoolMenu = NULL;
+static HHOOK s_OrigDockHookProc;
 
 HWND aWindows[2] = { 0, 0 };
-HACCEL hAccel = NULL;
 PHB_DYNS pSym_onEvent = NULL;
 PHB_DYNS pSym_onEven_Tool = NULL;
-// static PHB_DYNS pSym_MDIWnd = NULL;
 
 static LPCTSTR s_szChild = TEXT( "MDICHILD" );
 
@@ -97,7 +94,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    }
 
    wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
-   wndclass.lpfnWndProc = MainWndProc;
+   wndclass.lpfnWndProc = s_MainWndProc;
    wndclass.cbClsExtra = 0;
    wndclass.cbWndExtra = 0;
    wndclass.hInstance = ( HINSTANCE ) hInstance;
@@ -177,7 +174,7 @@ void ProcessMessage( MSG msg, HACCEL hAcceler, BOOL lMdi )
 }
 
 void ProcessMdiMessage( HWND hJanBase, HWND hJanClient, MSG msg,
-      HACCEL hAcceler )
+                        HACCEL hAcceler )
 {
    if( !TranslateMDISysAccel( hJanClient, &msg ) &&
          !TranslateAccelerator( hJanBase, hAcceler, &msg ) )
@@ -256,7 +253,7 @@ HB_FUNC( HWG_INITCHILDWINDOW )
    if( !GetClassInfo( hInstance, szAppName, &wndclass ) )
    {
       wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
-      wndclass.lpfnWndProc = MainWndProc;
+      wndclass.lpfnWndProc = s_MainWndProc;
       wndclass.cbClsExtra = 0;
       wndclass.cbWndExtra = 0;
       wndclass.hInstance = ( HINSTANCE ) hInstance;
@@ -341,7 +338,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
 
    // Register frame window
    wndclass.style = 0;
-   wndclass.lpfnWndProc = FrameWndProc;
+   wndclass.lpfnWndProc = s_FrameWndProc;
    wndclass.cbClsExtra = 0;
    wndclass.cbWndExtra = 0;
    wndclass.hInstance = ( HINSTANCE ) hInstance;
@@ -360,7 +357,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
    }
 
    // Register client window
-   wc.lpfnWndProc = ( WNDPROC ) MDIChildWndProc;
+   wc.lpfnWndProc = ( WNDPROC ) s_MDIChildWndProc;
    wc.hIcon = ( hb_pcount(  ) > 4 && !ISNIL( 5 ) ) ?
        ( HICON ) HB_PARHANDLE( 5 ) : LoadIcon( ( HINSTANCE ) hInstance, "" );
    wc.hbrBackground = ( hb_pcount(  ) > 5 && !ISNIL( 6 ) ) ?
@@ -672,11 +669,11 @@ HB_FUNC( RESETWINDOWPOS )
 }
 
 /*
-   MainWndProc alteradas na HWGUI. Agora as funcoes em hWindow.prg
+   s_MainWndProc alteradas na HWGUI. Agora as funcoes em hWindow.prg
    retornam 0 para indicar que deve ser usado o processamento default.
 */
-LRESULT CALLBACK MainWndProc( HWND hWnd, UINT message, WPARAM wParam,
-      LPARAM lParam )
+static LRESULT CALLBACK s_MainWndProc( HWND hWnd, UINT message,
+                                       WPARAM wParam, LPARAM lParam )
 {
    long int res;
    PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
@@ -704,8 +701,8 @@ LRESULT CALLBACK MainWndProc( HWND hWnd, UINT message, WPARAM wParam,
       return ( DefWindowProc( hWnd, message, wParam, lParam ) );
 }
 
-LRESULT CALLBACK FrameWndProc( HWND hWnd, UINT message, WPARAM wParam,
-      LPARAM lParam )
+static LRESULT CALLBACK s_FrameWndProc( HWND hWnd, UINT message,
+                                        WPARAM wParam, LPARAM lParam )
 {
    long int res;
    PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
@@ -733,8 +730,8 @@ LRESULT CALLBACK FrameWndProc( HWND hWnd, UINT message, WPARAM wParam,
       return ( DefFrameProc( hWnd, aWindows[1], message, wParam, lParam ) );
 }
 
-LRESULT CALLBACK MDIChildWndProc( HWND hWnd, UINT message, WPARAM wParam,
-      LPARAM lParam )
+static LRESULT CALLBACK s_MDIChildWndProc( HWND hWnd, UINT message,
+                                           WPARAM wParam, LPARAM lParam )
 {
    long int res;
    PHB_ITEM pObject;
@@ -1084,40 +1081,40 @@ LRESULT CALLBACK KbdHook( int code, WPARAM wp, LPARAM lp )
    BOOL bPressed;
 
    if( code < 0 )
-      return CallNextHookEx( OrigDockHookProc, code, wp, lp );
+      return CallNextHookEx( s_OrigDockHookProc, code, wp, lp );
 
    switch ( code )
    {
       case HC_ACTION:
-         nBtnNo = SendMessage( hMytoolMenu, TB_BUTTONCOUNT, 0, 0 );
-         nId = SendMessage( hMytoolMenu, TB_GETHOTITEM, 0, 0 );
+         nBtnNo = SendMessage( s_hMytoolMenu, TB_BUTTONCOUNT, 0, 0 );
+         nId = SendMessage( s_hMytoolMenu, TB_GETHOTITEM, 0, 0 );
 
          bPressed = ( HIWORD( lp ) & KF_UP ) ? FALSE : TRUE;
 
          if( ( wp == VK_F10 || wp == VK_MENU ) && nId == -1 && bPressed )
          {
-            SendMessage( hMytoolMenu, TB_SETHOTITEM, 0, 0 );
+            SendMessage( s_hMytoolMenu, TB_SETHOTITEM, 0, 0 );
             return -100;
          }
 
          if( wp == VK_LEFT && nId != -1 && nId != 0 && bPressed )
          {
-            SendMessage( hMytoolMenu, TB_SETHOTITEM, ( WPARAM ) nId - 1, 0 );
+            SendMessage( s_hMytoolMenu, TB_SETHOTITEM, ( WPARAM ) nId - 1, 0 );
             break;
          }
 
          if( wp == VK_RIGHT && nId != -1 && nId < nBtnNo && bPressed )
          {
-            SendMessage( hMytoolMenu, TB_SETHOTITEM, ( WPARAM ) nId + 1, 0 );
+            SendMessage( s_hMytoolMenu, TB_SETHOTITEM, ( WPARAM ) nId + 1, 0 );
             break;
          }
 
-         if( SendMessage( hMytoolMenu, TB_MAPACCELERATOR, ( WPARAM ) wp,
+         if( SendMessage( s_hMytoolMenu, TB_MAPACCELERATOR, ( WPARAM ) wp,
                      ( LPARAM ) & uId ) != 0 && nId != -1 )
          {
             LRESULT Res = -200;
             PHB_ITEM pObject =
-                  ( PHB_ITEM ) GetWindowLongPtr( hMytoolMenu, GWL_USERDATA );
+                  ( PHB_ITEM ) GetWindowLongPtr( s_hMytoolMenu, GWL_USERDATA );
 
             if( !pSym_onEven_Tool )
                pSym_onEven_Tool = hb_dynsymFindName( "EXECUTETOOL" );
@@ -1132,8 +1129,8 @@ LRESULT CALLBACK KbdHook( int code, WPARAM wp, LPARAM lp )
                Res = hb_parnl( -1 );
                if( Res == 0 )
                {
-                  SendMessage( hMytoolMenu, WM_KEYUP, VK_MENU, 0 );
-                  SendMessage( hMytoolMenu, WM_KEYUP, wp, 0 );
+                  SendMessage( s_hMytoolMenu, WM_KEYUP, VK_MENU, 0 );
+                  SendMessage( s_hMytoolMenu, WM_KEYUP, wp, 0 );
                }
             }
             return Res;
@@ -1142,7 +1139,7 @@ LRESULT CALLBACK KbdHook( int code, WPARAM wp, LPARAM lp )
       default:
          break;
    }
-   return CallNextHookEx( OrigDockHookProc, code, wp, lp );
+   return CallNextHookEx( s_OrigDockHookProc, code, wp, lp );
 }
 
 
@@ -1150,22 +1147,22 @@ HB_FUNC( SETTOOLHANDLE )
 {
    HWND h = ( HWND ) HB_PARHANDLE( 1 );
 
-   hMytoolMenu = ( HWND ) h;
+   s_hMytoolMenu = ( HWND ) h;
 }
 
 HB_FUNC( SETHOOK )
 {
-   OrigDockHookProc =
+   s_OrigDockHookProc =
          SetWindowsHookEx( WH_KEYBOARD, KbdHook, GetModuleHandle( 0 ), 0 );
 }
 
 
 HB_FUNC( UNSETHOOK )
 {
-   if( OrigDockHookProc )
+   if( s_OrigDockHookProc )
    {
-      UnhookWindowsHookEx( OrigDockHookProc );
-      OrigDockHookProc = 0;
+      UnhookWindowsHookEx( s_OrigDockHookProc );
+      s_OrigDockHookProc = 0;
    }
 }
 

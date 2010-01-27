@@ -58,7 +58,7 @@ HB_FUNC( ANIMATE_OPENEX )
    LPCTSTR lpResource = HB_PARSTR( 3, &hResource, NULL );
 
    if( !lpResource && ISNUM( 3 ) )
-      lpResource = ( LPCTSTR ) MAKEINTRESOURCE( hb_parni( 3 ) );
+      lpResource = MAKEINTRESOURCE( hb_parni( 3 ) );
 
    Animate_OpenEx( ( HWND ) HB_PARHANDLE( 1 ),
                    ( HINSTANCE ) hb_parnl( 2 ),

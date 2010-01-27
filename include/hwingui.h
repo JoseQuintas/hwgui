@@ -1,5 +1,5 @@
 /*
- *$Id: hwingui.h,v 1.4 2010-01-26 12:12:53 druzus Exp $
+ *$Id: hwingui.h,v 1.5 2010-01-27 09:18:35 druzus Exp $
  */
 
 #include <windows.h>
@@ -62,6 +62,7 @@ extern BOOL Array2Rect( PHB_ITEM aRect, RECT * rc );
 
 extern HWND aWindows[];
 extern HWND *aDialogs;
+extern int iDialogs;
 extern HMODULE hModule;
 extern PHB_DYNS pSym_onEvent;
 

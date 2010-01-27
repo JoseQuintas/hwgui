@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.36 2010-01-26 08:09:32 druzus Exp $
+ * $Id: commond.c,v 1.37 2010-01-27 09:18:35 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -183,7 +183,7 @@ HB_FUNC( SELECTFILE )
          hb_strfree( pArrStr[ n ].hStr2 );
       }
       *ptr++ = 0;
-      *ptr++ = 0;
+      *ptr = 0;
       hb_xfree( pArrStr );
    }
    else
@@ -496,7 +496,7 @@ HB_FUNC( PRINTSETUPEX )
    if( PrintDlg( &pd ) )
    {
       pDevMode = ( LPDEVMODE ) GlobalLock( pd.hDevMode );
-      HB_RETSTR( pDevMode->dmDeviceName );
+      HB_RETSTR( ( LPCTSTR ) pDevMode->dmDeviceName );
       GlobalUnlock( pd.hDevMode );
    }
 }

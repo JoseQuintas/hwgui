@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.19 2010-01-25 02:18:47 lfbasso Exp $
+ * $Id: hmonthc.prg,v 1.20 2010-01-27 15:52:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -121,10 +121,9 @@ METHOD GetValue() CLASS HMonthCalendar
    RETURN ( ::value )
 
 METHOD onChange( ) CLASS HMonthCalendar
-   IF ! CheckFocus( Self, .T. )
-      RETURN .t.
-   ENDIF
+
    IF ::bChange != Nil .AND. ! ::oparent:lSuspendMsgsHandling
+      SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
       ::oparent:lSuspendMsgsHandling := .T.
       Eval( ::bChange, ::value, Self )
       ::oparent:lSuspendMsgsHandling := .F.

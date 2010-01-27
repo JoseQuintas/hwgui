@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.160 2010-01-25 02:18:47 lfbasso Exp $
+ *$Id: hedit.prg,v 1.161 2010-01-27 15:52:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -994,7 +994,9 @@ METHOD Valid( ) CLASS HEdit
          ::title := vari
          IF ::cType == "D"
             IF ::IsBadDate( vari )
-               SetFocus( ::handle )
+               MsgBeep()
+               SetFocus( 0 )
+               ::SetFocus( )
                RETURN .F.
             ENDIF
             vari := CToD( vari )

@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.25 2010-01-25 02:18:47 lfbasso Exp $
+ * $Id: hdatepic.prg,v 1.26 2010-01-27 15:52:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -184,10 +184,13 @@ METHOD Refresh() CLASS HDatePicker
 
 METHOD onChange( nMess ) CLASS HDatePicker
 
-   POSTMESSAGE( ::handle, WM_KEYDOWN, VK_LEFT, 0 )
    IF ( nMess == DTN_DATETIMECHANGE .AND. ;
         SendMessage( ::handle, DTM_GETMONTHCAL, 0, 0 ) == 0 ) .OR. ;
       nMess == DTN_CLOSEUP
+      IF nMess = DTN_CLOSEUP   
+         POSTMESSAGE( ::handle, WM_KEYDOWN, VK_RIGHT, 0 )
+         ::SetFocus()
+      ENDIF
       ::value := GetDatePicker( ::handle )
       IF ::bSetGet != Nil
          Eval( ::bSetGet, ::value, Self )
@@ -197,8 +200,6 @@ METHOD onChange( nMess ) CLASS HDatePicker
          Eval( ::bChange, ::value, Self )
          ::oparent:lSuspendMsgsHandling := .F.
       ENDIF
-   ELSEIF nMess = DTN_CLOSEUP   
-      ::setfocus()      
    ENDIF
    RETURN .T.
 

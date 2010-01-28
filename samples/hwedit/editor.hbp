@@ -1,8 +1,9 @@
-grid_5.prg
+editor.prg
 fclass1.prg
-ffile1.prg
 ft_funcs.prg
+ffile1.prg
 pesqtext.prg
+#editor.rc
 -i..\..\include
 -lhwgui
 -lprocmisc

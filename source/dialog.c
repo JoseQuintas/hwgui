@@ -1,5 +1,5 @@
 /*
- * $Id: dialog.c,v 1.42 2010-01-27 09:18:35 druzus Exp $
+ * $Id: dialog.c,v 1.43 2010-01-28 00:27:03 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -231,7 +231,8 @@ static LPDLGTEMPLATE s_CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1,
                                           int dwidth, int dheight,
                                           ULONG ulStyle )
 {
-   PWORD p, pdlgtemplate;
+   HGLOBAL hgbl;
+   PWORD p;
    PHB_ITEM pControls, pControl, temp;
    LONG baseUnit = GetDialogBaseUnits();
    int baseunitX = LOWORD( baseUnit ), baseunitY = HIWORD( baseUnit );
@@ -243,6 +244,9 @@ static LPDLGTEMPLATE s_CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1,
    dwidth = ( dwidth * 4 ) / baseunitX;
    y1 = ( y1 * 8 ) / baseunitY;
    dheight = ( dheight * 8 ) / baseunitY;
+
+   /* clear styles which needs different dialog template */
+   ulStyle &= ~( DS_SETFONT | DS_SHELLFONT );
 
    pControls = hb_itemNew( GetObjectVar( pObj, "ACONTROLS" ) );
    ulControls = hb_arrayLen( pControls );
@@ -257,9 +261,10 @@ static LPDLGTEMPLATE s_CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1,
       lTemplateSize += s_nWideStringLen( GetObjectVar( pControl, "TITLE" ) );
    }
 
-   pdlgtemplate = ( PWORD ) LocalAlloc( LPTR, lTemplateSize * sizeof( WORD ) );
-   memset( pdlgtemplate, 0, lTemplateSize * sizeof( WORD ) );
-   p = pdlgtemplate;
+   hgbl = GlobalAlloc( GMEM_ZEROINIT, lTemplateSize * sizeof( WORD ) );
+   if( !hgbl )
+      return NULL;
+   p = ( PWORD ) GlobalLock( hgbl );
 
    *p++ = 1;                    // DlgVer
    *p++ = 0xFFFF;               // Signature
@@ -334,8 +339,14 @@ static LPDLGTEMPLATE s_CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1,
 
    hb_itemRelease( pControls );
 
-   return ( LPDLGTEMPLATE ) pdlgtemplate;
+   GlobalUnlock( hgbl );
 
+   return ( LPDLGTEMPLATE ) hgbl;
+}
+
+static void s_ReleaseDlgTemplate( LPDLGTEMPLATE pdlgtemplate )
+{
+   GlobalFree( ( HGLOBAL ) pdlgtemplate );
 }
 
 HB_FUNC( CREATEDLGTEMPLATE )
@@ -347,7 +358,7 @@ HB_FUNC( CREATEDLGTEMPLATE )
 
 HB_FUNC( RELEASEDLGTEMPLATE )
 {
-   LocalFree( LocalHandle( ( LPDLGTEMPLATE ) hb_parnl( 1 ) ) );
+   s_ReleaseDlgTemplate( ( LPDLGTEMPLATE ) hb_parnl( 1 ) );
 }
 
 /*
@@ -409,8 +420,8 @@ HB_FUNC( _CREATEPROPERTYSHEETPAGE )
 
    h = CreatePropertySheetPage( &psp );
    HB_RETHANDLE( h );
-   // if( pdlgtemplate )
-   //   LocalFree (LocalHandle (pdlgtemplate));
+   //if( pdlgtemplate )
+   //   s_ReleaseDlgTemplate( pdlgtemplate );
    hb_strfree( hTitle );
 }
 
@@ -466,6 +477,7 @@ HB_FUNC( HWG_CREATEDLGINDIRECT )
 {
    LPDLGTEMPLATE pdlgtemplate;
    PHB_ITEM pObject = hb_param( 2, HB_IT_OBJECT );
+   BOOL fFree = FALSE;
 
    if( hb_pcount(  ) > 7 && !ISNIL( 8 ) )
       pdlgtemplate = ( LPDLGTEMPLATE ) hb_parnl( 8 );
@@ -475,14 +487,15 @@ HB_FUNC( HWG_CREATEDLGINDIRECT )
 
       pdlgtemplate = s_CreateDlgTemplate( pObject, hb_parni( 3 ), hb_parni( 4 ),
             hb_parni( 5 ), hb_parni( 6 ), ulStyle );
+      fFree = TRUE;
    }
 
    CreateDialogIndirectParam( hModule, pdlgtemplate,
          ( HWND ) HB_PARHANDLE( 1 ), ( DLGPROC ) s_DlgProc,
          ( LPARAM ) pObject );
 
-   if( hb_pcount(  ) < 8 || ISNIL( 8 ) )
-      LocalFree( LocalHandle( pdlgtemplate ) );
+   if( fFree )
+      s_ReleaseDlgTemplate( pdlgtemplate );
 }
 
 /* Hwg_DlgBoxIndirect( hParentWnd, pArray, x1, y1, nWidth, nHeight, nStyle )
@@ -500,7 +513,7 @@ HB_FUNC( HWG_DLGBOXINDIRECT )
    DialogBoxIndirectParam( hModule, pdlgtemplate,
          ( HWND ) HB_PARHANDLE( 1 ), ( DLGPROC ) s_ModalDlgProc,
          ( LPARAM ) pObject );
-   LocalFree( LocalHandle( pdlgtemplate ) );
+   s_ReleaseDlgTemplate( pdlgtemplate );
 }
 
 HB_FUNC( DIALOGBASEUNITS )

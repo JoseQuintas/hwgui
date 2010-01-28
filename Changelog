@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1216 2010-01-27 15:52:01 lfbasso Exp $
+ * $Id: Changelog,v 1.1217 2010-01-28 00:27:02 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,36 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-01-28 01:26 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  - hwgui/samples/hwedit/CHILD.ico
+  - hwgui/samples/hwedit/EDITOR.PRG
+  - hwgui/samples/hwedit/EDITOR.RC
+  - hwgui/samples/hwedit/Fclass1.prg
+  - hwgui/samples/hwedit/Ffile1.prg
+  - hwgui/samples/hwedit/Ft_funcs.prg
+  - hwgui/samples/hwedit/Hbdocdef.ch
+  - hwgui/samples/hwedit/Pesqtext.prg
+  - hwgui/samples/hwedit/Ssay.ch
+  + hwgui/samples/hwedit/child.ico
+  + hwgui/samples/hwedit/editor.prg
+  + hwgui/samples/hwedit/editor.rc
+  + hwgui/samples/hwedit/fclass1.prg
+  + hwgui/samples/hwedit/ffile1.prg
+  + hwgui/samples/hwedit/ft_funcs.prg
+  + hwgui/samples/hwedit/hbdocdef.ch
+  + hwgui/samples/hwedit/pesqtext.prg
+  + hwgui/samples/hwedit/ssay.ch
+    ! fixed file names to work on case sensitive FS
+
+  * hwgui/samples/hwedit/editor.hbp
+    ! fixed typo in file name
+
+  * hwgui/source/dialog.c
+    ! use GlobalAlloc() instead of LocalAlloc() to allocate dialog
+      template
+    ! added protection against passing DS_SETFONT and DS_SHELLFONT
+      as dialog template style
 
 2010-01-27 14:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hdatepic.prg

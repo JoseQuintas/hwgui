@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.64 2010-01-25 01:00:07 druzus Exp $
+ * $Id: draw.c,v 1.65 2010-01-28 03:06:01 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -25,6 +25,14 @@
 #include "item.api"
 #include "missing.h"
 #include "hwingui.h"
+
+#if defined( __BORLANDC__ ) && __BORLANDC__ == 0x0550
+#ifdef __cplusplus
+extern "C" { STDAPI OleLoadPicture(LPSTREAM,LONG,BOOL,REFIID,PVOID*); }
+#else
+STDAPI OleLoadPicture(LPSTREAM,LONG,BOOL,REFIID,PVOID*);
+#endif
+#endif /* __BORLANDC__ */
 
 #ifdef __cplusplus
 #ifdef CINTERFACE

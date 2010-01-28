@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1217 2010-01-28 00:27:02 druzus Exp $
+ * $Id: Changelog,v 1.1218 2010-01-28 03:05:59 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-01-28 04:05 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/dialog.c
+    % reduce the size of memory block allocated for dialog template
+      to the documented by MSDN minimum (keeping DWORD boundary).
+
+  * hwgui/source/draw.c
+    * added missing in BCC55 OleLoadPicture() declaration
 
 2010-01-28 01:26 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   - hwgui/samples/hwedit/CHILD.ico

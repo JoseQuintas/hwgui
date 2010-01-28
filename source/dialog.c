@@ -1,5 +1,5 @@
 /*
- * $Id: dialog.c,v 1.43 2010-01-28 00:27:03 druzus Exp $
+ * $Id: dialog.c,v 1.44 2010-01-28 03:06:01 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -236,7 +236,7 @@ static LPDLGTEMPLATE s_CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1,
    PHB_ITEM pControls, pControl, temp;
    LONG baseUnit = GetDialogBaseUnits();
    int baseunitX = LOWORD( baseUnit ), baseunitY = HIWORD( baseUnit );
-   long lTemplateSize = 18;
+   long lTemplateSize = 15;
    LONG lExtStyle;
    ULONG ul, ulControls;
 
@@ -252,18 +252,22 @@ static LPDLGTEMPLATE s_CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1,
    ulControls = hb_arrayLen( pControls );
 
    lTemplateSize += s_nWideStringLen( GetObjectVar( pObj, "TITLE" ) );
+   lTemplateSize += lTemplateSize & 1;
 
    for( ul = 1; ul <= ulControls; ul++ )
    {
-      lTemplateSize += 18;
       pControl = hb_arrayGetItemPtr( pControls, ul );
+      lTemplateSize += 13;
       lTemplateSize += s_nWideStringLen( GetObjectVar( pControl, "WINCLASS" ) );
       lTemplateSize += s_nWideStringLen( GetObjectVar( pControl, "TITLE" ) );
+      lTemplateSize += lTemplateSize & 1;
    }
+   lTemplateSize += 2;  /* 2 to keep DWORD boundary block size */
 
    hgbl = GlobalAlloc( GMEM_ZEROINIT, lTemplateSize * sizeof( WORD ) );
    if( !hgbl )
       return NULL;
+
    p = ( PWORD ) GlobalLock( hgbl );
 
    *p++ = 1;                    // DlgVer
@@ -283,36 +287,24 @@ static LPDLGTEMPLATE s_CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1,
    *p++ = 0;                    // Class
 
    // Copy the title of the dialog box.
-
    p += s_nCopyAnsiToWideChar( p, GetObjectVar( pObj, "TITLE" ) );
-
-   /* {
-      char res[20];
-      sprintf( res,"nControls: %d",nControls );
-      MessageBox( GetActiveWindow(), res, "", MB_OK | MB_ICONINFORMATION );
-      } */
 
    for( ul = 1; ul <= ulControls; ul++ )
    {
       pControl = hb_arrayGetItemPtr( pControls, ul );
+
       temp = HB_PUTHANDLE( NULL, -1 );
       SetObjectVar( pControl, "_HANDLE", temp );
       hb_itemRelease( temp );
 
       p = s_lpwAlign( p );
 
-      ulStyle = ( ULONG ) hb_itemGetNL( GetObjectVar( pControl, "STYLE" ) );
+      ulStyle   = ( ULONG ) hb_itemGetNL( GetObjectVar( pControl, "STYLE" ) );
       lExtStyle = hb_itemGetNL( GetObjectVar( pControl, "EXTSTYLE" ) );
-      x1 = ( hb_itemGetNI( GetObjectVar( pControl,
-                        "NLEFT" ) ) * 4 ) / baseunitX;
-      dwidth =
-            ( hb_itemGetNI( GetObjectVar( pControl,
-                        "NWIDTH" ) ) * 4 ) / baseunitX;
-      y1 = ( hb_itemGetNI( GetObjectVar( pControl,
-                        "NTOP" ) ) * 8 ) / baseunitY;
-      dheight =
-            ( hb_itemGetNI( GetObjectVar( pControl,
-                        "NHEIGHT" ) ) * 8 ) / baseunitY;
+      x1        = ( hb_itemGetNI( GetObjectVar( pControl, "NLEFT" ) ) * 4 ) / baseunitX;
+      dwidth    = ( hb_itemGetNI( GetObjectVar( pControl, "NWIDTH" ) ) * 4 ) / baseunitX;
+      y1        = ( hb_itemGetNI( GetObjectVar( pControl, "NTOP" ) ) * 8 ) / baseunitY;
+      dheight   = ( hb_itemGetNI( GetObjectVar( pControl, "NHEIGHT" ) ) * 8 ) / baseunitY;
 
       *p++ = 0;                 // LOWORD (lHelpID)
       *p++ = 0;                 // HIWORD (lHelpID)
@@ -335,6 +327,8 @@ static LPDLGTEMPLATE s_CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1,
 
       *p++ = 0;                 // Advance pointer over nExtraStuff WORD.
    }
+
+   p = s_lpwAlign( p );
    *p = 0;                      // Number of bytes of extra data.
 
    hb_itemRelease( pControls );

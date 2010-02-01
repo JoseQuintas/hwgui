@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.76 2010-01-26 12:03:00 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.77 2010-02-01 23:19:18 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -96,7 +96,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ENDIF
    nHeight := IIF( EMPTY( nHeight ), 24,  nHeight )
    ::nHeightBox := Int( nHeight * 0.75 )                    //   Meets A 22'S EDITBOX
-   nHeight := nHeight + ( Iif( Empty( nhItem ), 16.250, ( nhItem += 0.250 ) ) * nDisplay )
+   nHeight := nHeight + ( Iif( Empty( nhItem ), 16.250, ( nhItem += 0.10 ) ) * nDisplay )
 
    IF lEdit == Nil
       lEdit := .f.
@@ -283,16 +283,16 @@ METHOD INIT() CLASS HComboBox
       IF !::lResource
          // HEIGHT Items
          IF !Empty( ::nhItem )
-            sendmessage( ::handle, CB_SETITEMHEIGHT, 0, ::nhItem )
+            sendmessage( ::handle, CB_SETITEMHEIGHT, 0, ::nhItem + 0.10 )
          ELSE
-            ::nhItem := sendmessage( ::handle, CB_GETITEMHEIGHT, 0, 0 ) + 0.150  //0.250
+            ::nhItem := sendmessage( ::handle, CB_GETITEMHEIGHT, 0, 0 ) + 0.10
          ENDIF
-         nHeightBox := sendmessage( ::handle, CB_GETITEMHEIGHT, - 1, 0 ) + 0.750
+         nHeightBox := sendmessage( ::handle, CB_GETITEMHEIGHT, - 1, 0 ) //+ 0.750
          //  WIDTH  Items
          IF !Empty( ::ncWidth )
             sendmessage( ::handle, CB_SETDROPPEDWIDTH, ::ncWidth, 0 )
          ENDIF
-         ::nHeight := Int( nHeightBox / 0.75 + ( ::nhItem * ::nDisplay ) )
+         ::nHeight := Int( nHeightBox / 0.75 + ( ::nhItem * ::nDisplay ) ) + 2
       ENDIF
    ENDIF
    IF !::lResource

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1218 2010-01-28 03:05:59 druzus Exp $
+ * $Id: Changelog,v 1.1219 2010-02-01 23:18:40 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-02-01 14:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! fixed CTRL+TAB in MDICHILD if changed focus
+  * source\hcombo.prg
+    ! fix in height itens in combobox
+  * source\hedit.prg
+    ! minor fix in getskip
+  * source\hriched.prg
+    ! fix in KEY ESCAPE
+  * source\htab.prg
+    + DATA internalPaint INIT 0 HIDDEN  
+    + METHOD RedrawControls( )
+    ! fix in redraw objects in TAB with backcolor to WINDOWS VISTA
+    
 2010-01-28 04:05 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/dialog.c
     % reduce the size of memory block allocated for dialog template

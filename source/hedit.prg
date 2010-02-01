@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.161 2010-01-27 15:52:05 lfbasso Exp $
+ *$Id: hedit.prg,v 1.162 2010-02-01 23:19:20 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -1309,7 +1309,6 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
             PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
          ENDIF
       ENDIF
-      SetFocus( 0 )
    ENDIF
    IF hCtrl == nextHandle
        SendMessage( nexthandle, WM_KILLFOCUS, 0,  0)
@@ -1500,7 +1499,7 @@ Luis Fernando Basso contribution
 /** CheckFocus
 * check focus of controls before calling events
 */
-FUNCTION CheckFocus( oCtrl, nInside )
+FUNCTION CheckFocus( oCtrl, lInside )
    LOCAL oParent := ParentGetDialog( oCtrl )
 
    IF ( oParent  != Nil .AND. ! IsWindowVisible( oParent:handle ) ) .OR. Empty( GetActiveWindow() ) // == 0
@@ -1511,7 +1510,7 @@ FUNCTION CheckFocus( oCtrl, nInside )
       ENDIF
       RETURN .F.
    ENDIF
-   IF oParent  != Nil .AND. nInside
+   IF oParent  != Nil .AND. lInside
       IF PtrtouLong( GETFOCUS() ) = PtrtouLong( oCtrl:oParent:Handle ) .AND.;
         PtrtouLong( oParent:handle ) = PtrtouLong( oCtrl:oParent:Handle )
          RETURN .F.
@@ -1520,4 +1519,6 @@ FUNCTION CheckFocus( oCtrl, nInside )
      oCtrl:oParent:lGetSkipLostFocus := .F.   
    ENDIF
    RETURN .T.
+
+
 

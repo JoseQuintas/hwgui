@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.20 2009-11-17 19:14:20 mlacecilia Exp $
+ * $Id: hriched.prg,v 1.21 2010-02-01 23:19:21 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -152,6 +152,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
          IF GetParent(::oParent:handle) != Nil
             //SendMessage( GetParent(::oParent:handle),WM_CLOSE,0,0 )
          ENDIF
+         RETURN 0
       ENDIF
    ELSEIF msg == WM_MOUSEWHEEL
       nDelta := HIWORD( wParam )

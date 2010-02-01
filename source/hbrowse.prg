@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.204 2010-01-26 15:46:16 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.205 2010-02-01 23:19:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -380,8 +380,11 @@ METHOD Init CLASS HBrowse
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       Super:Init()
-      ::InitBrw( , .T. )   
       VScrollPos( Self, 0, .f. )
+      ::InitBrw( , .T. )   
+      IF ::GetParentForm( ):Type < WND_DLG_RESOURCE
+         ::GetParentForm():lDisableCtrlTab := .T.
+      ENDIF   
 
    ENDIF
 
@@ -532,17 +535,18 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          IF wParam == 16
             ::lShiftPress := .F.
          ENDIF
-         /*
-         IF wParam == VK_TAB
-           IF IsCtrlShift(.T.,.F.)
-              getskip(::oParent,::handle,, ;
-              iif( IsCtrlShift(.f., .t.), -1, 1) )
-              RETURN 0
+         IF wParam == VK_TAB .AND. ::GetParentForm( ):Type < WND_DLG_RESOURCE 
+            IF IsCtrlShift(.T.,.F.)
+               getskip(::oParent,::handle,, ;
+               iif( IsCtrlShift(.f., .t.), -1, 1) )
+               RETURN 0
+            ENDIF  
+            /*
             ELSE
                ::DoHScroll( iif( IsCtrlShift( .F., .T. ), SB_LINELEFT, SB_LINERIGHT ) )  
             ENDIF  
+            */
 	       ENDIF
-	       */
          IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
             oParent := ::oParent
             DO WHILE oParent != Nil .AND. ! __ObjHasMsg( oParent, "GETLIST" )

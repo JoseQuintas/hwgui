@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.58 2010-01-25 02:18:47 lfbasso Exp $
+ *$Id: htab.prg,v 1.59 2010-02-01 23:19:21 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -132,6 +132,7 @@ CLASS VAR winclass   INIT "SysTabControl32"
    DATA oPaint 
    DATA nPaintHeight INIT 0
    DATA TabHeightSize 
+   DATA internalPaint INIT 0 HIDDEN
     
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, aTabs, bChange, aImages, lResour, nBC, ;
@@ -157,6 +158,7 @@ CLASS VAR winclass   INIT "SysTabControl32"
    METHOD DisablePage( nPage ) INLINE ::Pages[ nPage ]:disable()
    METHOD EnablePage( nPage ) INLINE ::Pages[ nPage ]:enable()
    METHOD SetPaintSizePos( nFlag  )
+   METHOD RedrawControls( )
    
    HIDDEN:
      DATA  nActive  INIT 0         // Active Page
@@ -358,6 +360,7 @@ STATIC FUNCTION InitPage( oTab, oPage, cCaption, n )
    RETURN Nil
 
 METHOD EndPage() CLASS HTab
+   LOCAL i, cName, cPage := "Page" + ALLTRIM( STR( ::nActive ) )
    IF ! ::lResourceTab
       ::aPages[ ::nActive, 2 ] := Len( ::aControls ) - ::aPages[ ::nActive, 1 ]
       IF ::handle != Nil .AND. ! Empty( ::handle )
@@ -366,6 +369,15 @@ METHOD EndPage() CLASS HTab
       IF ::nActive > 1 .AND. ::handle != Nil .AND. ! Empty( ::handle )
          ::HidePage( ::nActive )
       ENDIF
+      // add news objects how property in tab
+      FOR i = ::aPages[ ::nActive,1 ] + 1 TO ::aPages[ ::nActive,1 ] + ::aPages[ ::nActive,2 ]
+         cName := ::aControls[ i ]:name
+         IF !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. ! ":" $ cName .AND.;
+                                 ! "->"$ cName .AND. ! "[" $ cName 
+   	         __objAddData( ::&cPage, cName )
+    	       ::&cPage:&(::aControls[ i ]:name) := ::aControls[ i ]
+    	   ENDIF
+      NEXT
       ::nActive := 1
 
       ::oDefaultParent := ::oTemp
@@ -488,6 +500,21 @@ METHOD Refresh( ) CLASS HTab
          NEXT
       ELSE
          ::aPages[ ::nActive, 1 ]:Refresh()
+      ENDIF
+   ENDIF
+   RETURN Nil
+
+METHOD RedrawControls( ) CLASS HTab
+   LOCAL i 
+
+   IF ::nActive != 0 .AND.  ::internalPaint < 3
+      IF ! ::lResourceTab
+         FOR i := ::aPages[ ::nActive, 1 ] + 1 TO ::aPages[ ::nActive, 1 ] + ::aPages[ ::nActive, 2 ]
+            IF isWindowVisible( ::aControls[ i ]:Handle )
+                RedrawWindow( ::aControls[ i ]:handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT )  // Force a complete redraw
+            ENDIF
+         NEXT
+         ::internalPaint += 1 //:= isWindowVisible( ::oParent:handle )
       ENDIF
    ENDIF
    RETURN Nil
@@ -633,6 +660,7 @@ METHOD Notify( lParam ) CLASS HTab
 
 
 METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
+   Local oCtrl 
    //WRITELOG('TAB'+STR(MSG)+STR(WPARAM)+STR(LPARAM)+CHR(13))
 
    IF msg = WM_LBUTTONDOWN
@@ -644,6 +672,11 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    ELSEIF  msg = WM_MOUSEMOVE .OR. ( ::nPaintHeight = 0 .AND. msg = WM_NCHITTEST  )
       RETURN ::ShowDisablePage( lParam )
    ELSEIF msg = WM_PAINT 
+      IF ::nPaintHeight > 0 .AND. ::nActive > 0  .AND. GetFocus() != ::handle
+         IF ( oCtrl := ::FindControl( , GetFocus() ) ) != Nil
+            RedrawWindow( oCtrl:handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT )  // Force a complete redraw
+         ENDIF
+      ENDIF        
       RETURN - 1
    ELSEIF msg = WM_ERASEBKGND
       ::ShowDisablePage()
@@ -813,13 +846,16 @@ METHOD Paint( lpdis ) CLASS HPaintTab
    LOCAL nPage := SendMessage( ::oParent:handle, TCM_GETCURFOCUS, 0, 0 ) + 1   
    LOCAL oPage := IIF( nPage > 0, ::oParent:Pages[ nPage ], ::oParent:Pages[ 1 ] )
 
+
    IF oPage:brush != Nil
       IF ::oParent:nPaintHeight < ::oParent:TabHeightSize 
         ::nHeight := ::oParent:nPaintHeight
         ::move( , , , ::nHeight )
-      ELSE
+      ELSEIF oPage:brush != Nil
         SetBkMode( hDC, 0 )
+        ::brush := oPage:brush
         FillRect( hDC, x1 + 1, y1 + 2, x2 - 1, y2 - 1, oPage:brush:Handle ) //obrush )        
+        ::oParent:RedrawControls( )        
       ENDIF  
    ENDIF
    ::hDC := GetDC( ::oParent:handle )

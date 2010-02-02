@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.14 2009-11-18 02:24:34 lfbasso Exp $
+ * $Id: hrect.prg,v 1.15 2010-02-02 01:44:00 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -283,8 +283,10 @@ METHOD Paint( lpdis ) CLASS HDrawShape
       */
    ELSE
       SetBkMode( hDC, ::backStyle )
-      IF ::backStyle != 0
-         SelectObject( hDC, ::Brush:Handle )
+      IF ::backStyle != 0 
+         IF ::Brush != Nil
+            SelectObject( hDC, ::Brush:Handle )
+         ENDIF
          RoundRect( hDC, x1 + 1, y1 + 1, x2, y2 , ::nCurvature, ::nCurvature)
       ELSE
         oBrush :=  HBrush():Add( GetBackColorParent( Self ) )

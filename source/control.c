@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.98 2010-01-27 09:18:35 druzus Exp $
+ * $Id: control.c,v 1.99 2010-02-02 12:18:49 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -167,7 +167,7 @@ HB_FUNC( SETPROGRESSBAR )
 HB_FUNC( CREATEPANEL )
 {
    HWND hWndPanel;
-   hWndPanel = CreateWindow( "PANEL",   /* predefined class  */
+   hWndPanel = CreateWindow( TEXT( "PANEL" ),   /* predefined class  */
          NULL,                  /* no window title   */
          WS_CHILD | WS_VISIBLE | SS_GRAYRECT | SS_OWNERDRAW | CCS_TOP | hb_parnl( 3 ),  /* style  */
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
@@ -186,7 +186,7 @@ HB_FUNC( CREATEPANEL )
 HB_FUNC( CREATEOWNBTN )
 {
    HWND hWndPanel;
-   hWndPanel = CreateWindow( "OWNBTN",  /* predefined class  */
+   hWndPanel = CreateWindow( TEXT( "OWNBTN" ),  /* predefined class  */
          NULL,                  /* no window title   */
          WS_CHILD | WS_VISIBLE | SS_GRAYRECT | SS_OWNERDRAW,    /* style  */
          hb_parni( 3 ), hb_parni( 4 ),  /* x, y       */
@@ -208,7 +208,7 @@ HB_FUNC( CREATESTATIC )
          ( ( !ISNIL( 8 ) ) ? hb_parnl( 8 ) : 0 ) | ( ( ulStyle & WS_BORDER ) ?
          WS_EX_CLIENTEDGE : 0 );
    HWND hWndCtrl = CreateWindowEx( ulExStyle,   /* extended style */
-         "STATIC",              /* predefined class  */
+         TEXT( "STATIC" ),      /* predefined class  */
          NULL,                  /* title   */
          WS_CHILD | WS_VISIBLE | ulStyle,       /* style  */
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
@@ -235,7 +235,7 @@ HB_FUNC( CREATESTATIC )
 */
 HB_FUNC( CREATEBUTTON )
 {
-   HWND hBtn = CreateWindow( "BUTTON",  /* predefined class  */
+   HWND hBtn = CreateWindow( TEXT( "BUTTON" ),  /* predefined class  */
          hb_parc( 8 ),          /* button text   */
          WS_CHILD | WS_VISIBLE | hb_parnl( 3 ), /* style  */
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
@@ -262,7 +262,7 @@ HB_FUNC( CREATEEDIT )
    if( ( ulStyle & WS_BORDER ) )        //&& ( ulStyle & WS_DLGFRAME ) )
       ulStyle &= ~WS_BORDER;
    hWndEdit = CreateWindowEx( ulStyleEx,
-         "EDIT",
+         TEXT( "EDIT" ),
          NULL,
          WS_CHILD | WS_VISIBLE | ulStyle,
          hb_parni( 4 ), hb_parni( 5 ),
@@ -283,8 +283,8 @@ HB_FUNC( CREATEEDIT )
 */
 HB_FUNC( CREATECOMBO )
 {
-   HWND hCombo = CreateWindow( "COMBOBOX",      /* predefined class  */
-         "",                    /*   */
+   HWND hCombo = CreateWindow( TEXT( "COMBOBOX" ),    /* predefined class  */
+         TEXT( "" ),                    /*   */
          WS_CHILD | WS_VISIBLE | hb_parnl( 3 ), /* style  */
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
@@ -307,8 +307,8 @@ HB_FUNC( CREATEBROWSE )
    HWND hWndBrw;
    DWORD dwStyle = hb_parnl( 3 );
    hWndBrw = CreateWindowEx( ( dwStyle & WS_BORDER ) ? WS_EX_CLIENTEDGE : 0,    /* extended style */
-         "BROWSE",              /* predefined class */
-         ( hb_pcount(  ) > 7 ) ? hb_parc( 8 ) : NULL,   /* title */
+         TEXT( "BROWSE" ),              /* predefined class */
+         hb_parc( 8 ) ,                 /* title */
          WS_CHILD | WS_VISIBLE | dwStyle,       /* style */
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y  */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
@@ -455,11 +455,11 @@ HB_FUNC( DELTOOLTIP )
    }
 }
 
-HB_FUNC( SETTOOLTIPTITLE )    
+HB_FUNC( SETTOOLTIPTITLE )
 {
    TOOLINFO ti;
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
-   
+
    if( hWndTT )
    {
       ti.cbSize = sizeof( TOOLINFO );
@@ -472,7 +472,7 @@ HB_FUNC( SETTOOLTIPTITLE )
      hb_retl( SendMessage( hWndTT, TTM_SETTOOLINFO, 0,
                ( LPARAM ) ( LPTOOLINFO ) & ti ) );
    }
- }  
+ }
 
 /*
 HB_FUNC( SHOWTOOLTIP )
@@ -506,9 +506,9 @@ HB_FUNC( GETNOTIFYDELTAPOS )
    int iItem = hb_parnl( 2 ) ;
    if ( iItem < 2 )
       hb_retni( (LONG) (((NMUPDOWN *) HB_PARHANDLE( 1 ) )->iPos ) );
-   else   
+   else
       hb_retni( (LONG) (((NMUPDOWN *) HB_PARHANDLE( 1 ) )->iDelta ) );
-}              
+}
 
 HB_FUNC( CREATEDATEPICKER )
 {
@@ -517,7 +517,8 @@ HB_FUNC( CREATEDATEPICKER )
          ( ( !ISNIL( 7 ) ) ? hb_parnl( 7 ) : 0 ) | WS_CHILD | WS_VISIBLE |
          WS_TABSTOP;
 
-   hCtrl = CreateWindowEx( WS_EX_CLIENTEDGE, "SYSDATETIMEPICK32", 0, nStyle, hb_parni( 3 ), hb_parni( 4 ),      /* x, y       */
+   hCtrl = CreateWindowEx( WS_EX_CLIENTEDGE, TEXT( "SYSDATETIMEPICK32" ),
+         0, nStyle, hb_parni( 3 ), hb_parni( 4 ),      /* x, y       */
          hb_parni( 5 ), hb_parni( 6 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
          ( HMENU ) hb_parni( 2 ),       /* control ID  */
@@ -660,7 +661,6 @@ HB_FUNC( SETTABNAME )
    tie.pszText = ( LPSTR ) hb_parc( 3 );
 
    TabCtrl_SetItem( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ), &tie );
-
 }
 
 HB_FUNC( TAB_HITTEST )
@@ -689,7 +689,7 @@ HB_FUNC( TAB_HITTEST )
 HB_FUNC( GETNOTIFYKEYDOWN )
 {
    hb_retni( ( WORD ) ( ( ( TC_KEYDOWN * ) HB_PARHANDLE( 1 ) )->wVKey ) );
-}              
+}
 
 HB_FUNC( CREATETREE )
 {
@@ -810,7 +810,7 @@ HB_FUNC( TREENODEHASCHILDREN )
 HB_FUNC( TREEGETNODETEXT )
 {
    TV_ITEM TreeItem;
-   char ItemText[256];
+   TCHAR ItemText[256];
 
    memset( &TreeItem, 0, sizeof( TV_ITEM ) );
    TreeItem.mask = TVIF_HANDLE | TVIF_TEXT;
@@ -989,9 +989,9 @@ HB_FUNC( IMAGELIST_ADDMASKED )
  */
 
 /* 22/09/2005 - <maurilio.longo@libero.it>
-					 If I pass a fourth parameter as 0 (zero) I don't set
-					 the TimerProc, this way I can receive WM_TIMER messages
-					 inside an ON OTHER MESSAGES code block
+      If I pass a fourth parameter as 0 (zero) I don't set
+      the TimerProc, this way I can receive WM_TIMER messages
+      inside an ON OTHER MESSAGES code block
 */
 HB_FUNC( SETTIMER )
 {
@@ -1024,7 +1024,7 @@ HB_FUNC( LOADCURSOR )
    if( ISCHAR( 1 ) )
       HB_RETHANDLE( LoadCursor( GetModuleHandle( NULL ), hb_parc( 1 ) ) );
    else
-      HB_RETHANDLE( LoadCursor( NULL, MAKEINTRESOURCE( hb_parnl( 1 ) ) ) );
+      HB_RETHANDLE( LoadCursor( NULL, MAKEINTRESOURCE( hb_parni( 1 ) ) ) );
 }
 
 HB_FUNC( HWG_SETCURSOR )
@@ -1034,7 +1034,7 @@ HB_FUNC( HWG_SETCURSOR )
 
 HB_FUNC( HWG_GETCURSOR )
 {
-   HB_RETHANDLE( GetCursor(  ) );
+   HB_RETHANDLE( GetCursor() );
 }
 
 HB_FUNC( GETTOOLTIPHANDLE )     // added by MAG
@@ -1069,7 +1069,7 @@ HB_FUNC( HWG_REGPANEL )
       wndclass.hCursor = LoadCursor( NULL, IDC_ARROW );
       wndclass.hbrBackground = ( HBRUSH ) ( COLOR_3DFACE + 1 );
       wndclass.lpszMenuName = NULL;
-      wndclass.lpszClassName = "PANEL";
+      wndclass.lpszClassName = TEXT( "PANEL" );
 
       RegisterClass( &wndclass );
       bRegistered = TRUE;
@@ -1093,7 +1093,7 @@ HB_FUNC( HWG_REGOWNBTN )
       wndclass.hCursor = LoadCursor( NULL, IDC_ARROW );
       wndclass.hbrBackground = ( HBRUSH ) ( COLOR_3DFACE + 1 );
       wndclass.lpszMenuName = NULL;
-      wndclass.lpszClassName = "OWNBTN";
+      wndclass.lpszClassName = TEXT( "OWNBTN" );
 
       RegisterClass( &wndclass );
       bRegistered = TRUE;
@@ -1119,7 +1119,7 @@ HB_FUNC( HWG_REGBROWSE )
       wndclass.hCursor = LoadCursor( NULL, IDC_ARROW );
       wndclass.hbrBackground = ( HBRUSH ) ( COLOR_WINDOW + 1 );
       wndclass.lpszMenuName = NULL;
-      wndclass.lpszClassName = "BROWSE";
+      wndclass.lpszClassName = TEXT( "BROWSE" );
 
       RegisterClass( &wndclass );
       bRegistered = TRUE;
@@ -1159,7 +1159,7 @@ BOOL RegisterWinCtrl( void )    // Added by jamaj - Used by WinCtrl
    wndclass.hCursor = LoadCursor( NULL, IDC_ARROW );
    wndclass.hbrBackground = ( HBRUSH ) ( COLOR_3DFACE + 1 );
    wndclass.lpszMenuName = NULL;
-   wndclass.lpszClassName = "WINCTRL";
+   wndclass.lpszClassName = TEXT( "WINCTRL" );
 
    return RegisterClass( &wndclass );
 }
@@ -1950,7 +1950,7 @@ HB_FUNC( GETLOCALEINFO )
 {
    TCHAR szBuffer[10] = { 0 };
    GetLocaleInfo( LOCALE_USER_DEFAULT, LOCALE_SLIST, szBuffer,
-         sizeof( szBuffer ) );
+                  HB_SIZEOFARRAY( szBuffer ) );
    hb_retc( szBuffer );
 }
 
@@ -1959,7 +1959,7 @@ HB_FUNC( COMBOBOXGETLBTEXT )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
    int nIndex = hb_parnl( 2 );
-   char lpszText[255] = { 0 };
+   TCHAR lpszText[255] = { 0 };
    hb_retni( SendMessage( hWnd, CB_GETLBTEXT, nIndex,
                           ( LPARAM ) lpszText ) );
    hb_storc( lpszText, 3 );
@@ -2047,20 +2047,18 @@ HB_FUNC( TABITEMPOS )
 HB_FUNC( GETTABNAME )
 {
    TC_ITEM tie;
-   char d[255];
+   TCHAR d[255] = { 0 };
 
    tie.mask = TCIF_TEXT;
-   tie.cchTextMax = 254;
+   tie.cchTextMax = HB_SIZEOFARRAY( d ) - 1;
    tie.pszText = d;
-   hb_strncpy( ( char * ) tie.pszText, d, sizeof(tie.pszText) - 1 );
    TabCtrl_GetItem( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ) - 1,
-         ( LPTCITEM ) & tie );
-   hb_retc( ( char * ) tie.pszText );
+                    ( LPTCITEM ) & tie );
+   hb_retc( tie.pszText );
 }
 
 
 #ifdef __XHARBOUR__
-
 
 HB_FUNC( XHB_BITTEST )
 {

@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.26 2009-12-18 01:32:11 andijahja Exp $
+ * $Id: wprint.c,v 1.27 2010-02-02 12:18:56 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -123,7 +123,7 @@ HB_FUNC( HWG_GETDEFAULTPRINTER )
          EnumPrinters( PRINTER_ENUM_LOCAL, NULL, 4, ( PBYTE ) pinfo4,
                dwNeeded, &dwNeeded, &dwReturned );
 
-         hb_retc( ( char * ) pinfo4->pPrinterName );
+         hb_retc( pinfo4->pPrinterName );
          hb_strncpy( PrinterDefault, pinfo4->pPrinterName, sizeof(PrinterDefault) - 1 );
 
          hb_xfree( pinfo4 );

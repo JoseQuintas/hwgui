@@ -1,5 +1,5 @@
 /*
- * $Id: media_c.c,v 1.14 2009-12-17 14:22:41 druzus Exp $
+ * $Id: media_c.c,v 1.15 2010-02-02 12:18:55 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level media functions
@@ -26,22 +26,21 @@
  */
 HB_FUNC( PLAYSOUND )
 {
-   LPCSTR pszSound = ( hb_pcount(  ) > 0 &&
-         ISCHAR( 1 ) ) ? hb_parc( 1 ) : NULL;
+   LPCSTR pszSound =  hb_parc( 1 );
    HMODULE hmod = NULL;
    DWORD fdwSound = SND_NODEFAULT | SND_FILENAME;
 
-   if( hb_pcount(  ) > 1 && ISLOG( 2 ) && hb_parl( 2 ) )
+   if( hb_parl( 2 ) )
       fdwSound |= SND_SYNC;
    else
       fdwSound |= SND_ASYNC;
-   if( hb_pcount(  ) > 2 && ISLOG( 3 ) && hb_parl( 3 ) )
+
+   if( hb_parl( 3 ) )
       fdwSound |= SND_LOOP;
    if( !pszSound )
       fdwSound |= SND_PURGE;
 
    hb_retl( PlaySound( pszSound, hmod, fdwSound ) );
-
 }
 
 HB_FUNC( MCISENDSTRING )
@@ -49,9 +48,9 @@ HB_FUNC( MCISENDSTRING )
    TCHAR cBuffer[128];
 
    hb_retnl( ( LONG ) mciSendString( hb_parc( 1 ),
-             cBuffer, 127,
-             ( ISNIL( 3 ) ) ? GetActiveWindow(  ) : ( HWND )
-             HB_PARHANDLE( 3 ) ) );
+                                     cBuffer, 127,
+                                     ( ISNIL( 3 ) ) ? GetActiveWindow() :
+                                     ( HWND ) HB_PARHANDLE( 3 ) ) );
    if( !ISNIL( 2 ) )
       hb_storc( cBuffer, 2 );
 }
@@ -76,7 +75,7 @@ HB_FUNC( MCIGETERRORSTRING )    // ()
    TCHAR cBuffer[200];
 
    hb_retl( mciGetErrorString( hb_parnl( 1 ),   // Error Code
-                               cBuffer, 200 ) );
+                               cBuffer, HB_SIZEOFARRAY( cBuffer ) ) );
    hb_storc( cBuffer, 2 );
 }
 

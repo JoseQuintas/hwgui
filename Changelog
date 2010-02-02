@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1220 2010-02-02 01:43:57 lfbasso Exp $
+ * $Id: Changelog,v 1.1221 2010-02-02 12:17:43 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,29 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-02-02 13:17 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/control.c
+  * hwgui/source/grid.c
+  * hwgui/source/media_c.c
+  * hwgui/source/wprint.c
+  * hwgui/source/menu_c.c
+    * use TEXT() macro for string constant values
+    * use 'TCHAR' instead of 'char'
+    ! fixed potential buffer overflows by using HB_SIZEOFARRAY() macro
+      instead of sizeof() in functions which needs buffer size in characters
+      not BYTEs
+    ! removed some dummy hb_strncpy() calls which did not change anything
+      but could cause GPFs. I have no idea why they were added to HWGUI
+      code - maybe authors can explain it.
+    ! fixed GETMENUCAPTION() which checked necessary size of buffer and
+      then ignored the results using static buffer size.
+    * removed some castings which could hide char<->TCHAR bugs
+    % optimized some code
+
+   TOFIX: many of HWGUI functions use static buffer size and do not check
+          real buffer size what can cause buffer overflows and then internal
+          memory corruptions / GPF traps.
 
 2010-02-01 14:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hrect.prg

@@ -1,5 +1,5 @@
  /*
-  * $Id: grid.c,v 1.36 2010-01-18 17:01:10 druzus Exp $
+  * $Id: grid.c,v 1.37 2010-02-02 12:18:51 druzus Exp $
   *
   * HWGUI - Harbour Win32 GUI library source code:
   * HGrid class
@@ -322,7 +322,7 @@ HB_FUNC( LISTVIEW_ADDCOLUMNEX )
 {
    HWND hwndListView = ( HWND ) HB_PARHANDLE( 1 );
    LONG lCol = hb_parnl( 2 ) - 1;
-   char *text = ( char * ) hb_parc( 3 );
+   const char * text = hb_parc( 3 );
    int iImage = hb_parni( 6 );
    LVCOLUMN lvcolumn;
    int iResult;
@@ -360,7 +360,7 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
    LONG lLin = hb_parnl( 2 ) - 1;
    LONG lCol = hb_parnl( 3 ) - 1;
    int iSubItemYesNo = lCol == 0 ? 0 : 1;
-   const char *sText = hb_parc( 4 );
+   const char * sText = hb_parc( 4 );
    int iBitMap = hb_parni( 5 );
    LVITEM lvi;
    int iResult = 0;
@@ -480,7 +480,7 @@ HB_FUNC( LISTVIEWGETITEM )
    int Index = hb_parni( 2 );
    int Index2 = hb_parni( 3 );
    LVITEM Item;
-   char *Buffer = ( char * ) hb_xgrab( 256 );
+   TCHAR Buffer[ 256 ] = { 0 };
 
    memset( &Item, '\0', sizeof( Item ) );
 
@@ -488,15 +488,12 @@ HB_FUNC( LISTVIEWGETITEM )
    Item.iItem = Index;
    Item.iSubItem = Index2;
    Item.pszText = Buffer;
-   Item.cchTextMax = 256;
+   Item.cchTextMax = HB_SIZEOFARRAY( Buffer );
 
-   if( !ListView_GetItem( hList, &Item ) )
-   {
-      hb_xfree( Buffer );
-      hb_retc( "" );
-   }
+   if( ListView_GetItem( hList, &Item ) )
+      hb_retc( Buffer );
    else
-      hb_retc_buffer( Buffer );
+      hb_retc( NULL );
 }
 
 int CALLBACK CompareFunc( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
@@ -506,17 +503,16 @@ int CALLBACK CompareFunc( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
    int nColumnNo = pSortInfo->nColumnNo;
    HWND pListControl = pSortInfo->pListControl;
    BOOL nAscendingSortOrder = pSortInfo->nAscendingSortOrder;
-   CHAR szA[256] = { 0 };
-   CHAR szB[256] = { 0 };
+   TCHAR szA[256] = { 0 };
+   TCHAR szB[256] = { 0 };
    int rc;
 
-   ListView_GetItemText( pListControl, ( INT ) lParam1, nColumnNo, szA, 256 );
-   ListView_GetItemText( pListControl, ( INT ) lParam2, nColumnNo, szB, 256 );
+   ListView_GetItemText( pListControl, ( INT ) lParam1, nColumnNo, szA, HB_SIZEOFARRAY( szA ) );
+   ListView_GetItemText( pListControl, ( INT ) lParam2, nColumnNo, szB, HB_SIZEOFARRAY( szB ) );
 
-   if( nAscendingSortOrder )
-      rc = strcmp( szA, szB );
-   else
-      rc = strcmp( szA, szB ) * -1;
+   rc = strcmp( szA, szB );
+   if( !nAscendingSortOrder )
+      rc = -rc;
 
    return rc;
 }

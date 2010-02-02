@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.48 2010-01-19 23:39:59 druzus Exp $
+ * $Id: menu_c.c,v 1.49 2010-02-02 12:18:55 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -168,7 +168,7 @@ HB_FUNC( HWG__SETMENU )
 
 HB_FUNC( GETMENUHANDLE )
 {
-   HWND handle = ( hb_pcount(  ) > 0 &&
+   HWND handle = ( hb_pcount() > 0 &&
          !ISNIL( 1 ) ) ? ( HWND ) HB_PARHANDLE( 1 ) : aWindows[0];
    HB_RETHANDLE( GetMenu( handle ) );
 }
@@ -176,7 +176,7 @@ HB_FUNC( GETMENUHANDLE )
 HB_FUNC( CHECKMENUITEM )
 {
    HMENU hMenu;
-   UINT uCheck = ( hb_pcount(  ) < 3 || !ISLOG( 3 ) ||
+   UINT uCheck = ( hb_pcount() < 3 || !ISLOG( 3 ) ||
          hb_parl( 3 ) ) ? MF_CHECKED : MF_UNCHECKED;
 
    if( ISOBJECT( 1 ) )
@@ -186,7 +186,7 @@ HB_FUNC( CHECKMENUITEM )
    }
    else
    {
-      HWND handle = ( hb_pcount(  ) > 0 &&
+      HWND handle = ( hb_pcount() > 0 &&
             !ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
       hMenu = GetMenu( handle );
    }
@@ -194,8 +194,8 @@ HB_FUNC( CHECKMENUITEM )
       hMenu = ( HMENU ) HB_PARHANDLE( 1 );
 
    if( !hMenu )
-      MessageBox( GetActiveWindow(  ), "", "No Menu!",
-            MB_OK | MB_ICONINFORMATION );
+      MessageBox( GetActiveWindow(), TEXT( "" ), TEXT( "No Menu!" ),
+                  MB_OK | MB_ICONINFORMATION );
    else
    {
       CheckMenuItem( hMenu,     // handle to menu
@@ -260,8 +260,8 @@ HB_FUNC( ENABLEMENUITEM )
 
    if( !hMenu )
    {
-      MessageBox( GetActiveWindow(  ), "", "No Menu!",
-            MB_OK | MB_ICONINFORMATION );
+      MessageBox( GetActiveWindow(), TEXT( "" ), TEXT( "No Menu!" ),
+                  MB_OK | MB_ICONINFORMATION );
       HB_RETHANDLE( NULL );
    }
    else
@@ -387,7 +387,6 @@ HB_FUNC( DRAWMENUBAR )
 HB_FUNC( GETMENUCAPTION )
 {
    HMENU hMenu;
-   char d[255];
 
    if( ISOBJECT( 1 ) )
    {
@@ -405,26 +404,29 @@ HB_FUNC( GETMENUCAPTION )
 
    if( !hMenu )
    {
-      MessageBox( GetActiveWindow(  ), "", "No Menu!",
-            MB_OK | MB_ICONINFORMATION );
+      MessageBox( GetActiveWindow(), TEXT( "" ), TEXT( "No Menu!" ),
+                  MB_OK | MB_ICONINFORMATION );
       hb_retl( 0 );
    }
    else
    {
       MENUITEMINFO mii;
+      LPTSTR lpBuffer;
+
+      memset( &mii.cbSize, 0, sizeof( MENUITEMINFO ) );
       mii.cbSize = sizeof( MENUITEMINFO );
       mii.fMask = MIIM_TYPE;
       mii.fType = MFT_STRING;
-      mii.dwTypeData = NULL;
-      GetMenuItemInfo( hMenu, hb_parni( 2 ), 0, ( LPMENUITEMINFO ) & mii );
-      mii.cch = mii.cch + 1;
-      mii.dwTypeData = d;
-      hb_strncpy( ( char * ) mii.dwTypeData, d, sizeof(mii.dwTypeData) - 1 );
-      if( GetMenuItemInfo( hMenu, hb_parni( 2 ), 0,
-                  ( LPMENUITEMINFO ) & mii ) )
-         hb_retc( ( char * ) mii.dwTypeData );
+      GetMenuItemInfo( hMenu, hb_parni( 2 ), 0, &mii );
+      mii.cch++;
+      lpBuffer = ( LPTSTR ) hb_xgrab( mii.cch * sizeof( TCHAR ) );
+      lpBuffer[ 0 ] = '\0';
+      mii.dwTypeData = lpBuffer;
+      if( GetMenuItemInfo( hMenu, hb_parni( 2 ), 0, &mii ) )
+         hb_retc( mii.dwTypeData );
       else
          hb_retc( "Error" );
+      hb_xfree( lpBuffer );
    }
 }
 
@@ -451,8 +453,8 @@ HB_FUNC( SETMENUCAPTION )
 
    if( !hMenu )
    {
-      MessageBox( GetActiveWindow(  ), "", "No Menu!",
-            MB_OK | MB_ICONINFORMATION );
+      MessageBox( GetActiveWindow(), TEXT( "" ), TEXT( "No Menu!" ),
+                  MB_OK | MB_ICONINFORMATION );
       hb_retl( 0 );
    }
    else

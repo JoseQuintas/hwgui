@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1221 2010-02-02 12:17:43 druzus Exp $
+ * $Id: Changelog,v 1.1222 2010-02-02 15:24:55 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,20 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-02-03 13:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcwindow.prg
+    + METHOD SetAll( cProperty, Value, aControls, cClass )
+     Assigns a property setting on all, or a certain class of, controls in a Container object.
+     cProperty Specifies the property to be set.
+     Value Specifies the new setting for the property. The data type of Value depends on the property being set.
+     aControls - property of the Control with objectos inside 
+     cClass baseclass hwgui 
+     samples : oBrowse1:SetAll( "bColorBlock", {|| IIF( razao = "LUIS ", {255,0,,},{,,,}) },"aColumns" )
+               oForm:SETall("setcolor(,255,.t.)",,,"hedit")
+               oForm:SETall("disable()",,,"hbuttonex")
+  * source\hupdown.prg
+    + METHOD SetColor( tColor, bColor, lRedraw )
 
 2010-02-02 13:17 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/control.c

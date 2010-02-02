@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.58 2010-01-25 02:18:47 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.59 2010-02-02 15:25:00 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -123,6 +123,7 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    METHOD ActiveControl()  INLINE ::FindControl( , GetFocus() )
    METHOD Closable( lClosable ) SETGET
    METHOD Release()        INLINE ::DelControl( Self )
+   METHOD SetAll( cProperty, Value, aControls, cClass )
    
 ENDCLASS
 
@@ -444,6 +445,29 @@ METHOD Closable( lClosable ) CLASS HCustomWindow
    ENDIF
    RETURN ::lClosable
 
+METHOD SetAll( cProperty, Value, aControls, cClass ) CLASS HCustomWindow
+// cProperty Specifies the property to be set.
+// Value Specifies the new setting for the property. The data type of Value depends on the property being set.
+ //aControls - property of the Control with objectos inside 
+ // cClass baseclass hwgui 
+   Local nLen , i, x1, y1 //, oCtrl
+   
+   aControls := IIF( EMPTY( aControls ), ::aControls, aControls )
+   nLen := IIF( VALTYPE( aControls ) = "C", Len( ::&aControls ), LEN( aControls ) )
+	 FOR i = 1 TO nLen
+	    IF VALTYPE( aControls ) = "C"
+	       ::&aControls[ i ]:&cProperty := Value
+	    ELSEIF cClass == Nil .OR. UPPER( cClass ) == aControls[ i ]:ClassName
+	       IF Value = Nil
+	          __mvPrivate( "oCtrl" )
+	          &( "oCtrl" ) := aControls[ i ]
+	          &( "oCtrl:" + cProperty )
+	       ELSE  
+	          aControls[ i ]:&cProperty := Value
+	       ENDIF
+      ENDIF   
+   NEXT
+   RETURN Nil 
 
 
 *---------------------------------------------------------

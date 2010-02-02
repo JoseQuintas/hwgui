@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.162 2010-02-01 23:19:20 lfbasso Exp $
+ *$Id: hedit.prg,v 1.163 2010-02-02 12:08:31 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -1503,7 +1503,7 @@ FUNCTION CheckFocus( oCtrl, lInside )
    LOCAL oParent := ParentGetDialog( oCtrl )
 
    IF ( oParent  != Nil .AND. ! IsWindowVisible( oParent:handle ) ) .OR. Empty( GetActiveWindow() ) // == 0
-      IF ! nInside .and. Empty( oParent:nInitFocus ) // = 0
+      IF ! lInside .and. Empty( oParent:nInitFocus ) // = 0
          oParent:Show()
          SetFocus( oParent:handle )
          SetFocus( GetFocus() )

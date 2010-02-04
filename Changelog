@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1223 2010-02-04 10:29:09 alexstrickland Exp $
+ * $Id: Changelog,v 1.1224 2010-02-04 11:33:56 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-02-04 12:33 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/dialog.c
+    ! fixed destination buffer size passed MultiByteToWideChar()
+      Many thanks to Francesco Perillo.
 
 2010-02-04 11:30 UTC+0200 Alex Strickland <sscc at mweb.co.za>
   * source\hbrowse.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: dialog.c,v 1.44 2010-01-28 03:06:01 druzus Exp $
+ * $Id: dialog.c,v 1.45 2010-02-04 11:33:58 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -206,14 +206,14 @@ static LPWORD s_lpwAlign( LPWORD lpIn )
    return ( LPWORD ) ul;
 }
 
-static HB_SIZE s_nCopyAnsiToWideChar( LPWORD lpWCStr, PHB_ITEM pItem )
+static HB_SIZE s_nCopyAnsiToWideChar( LPWORD lpWCStr, PHB_ITEM pItem, HB_SIZE size )
 {
 #if defined( HB_HAS_STR_FUNC )
    return hb_itemCopyStrU16( pItem, HB_CDP_ENDIAN_NATIVE,
-                             ( HB_WCHAR * ) lpWCStr, ( HB_SIZE ) -1 ) + 1;
+                             ( HB_WCHAR * ) lpWCStr, size ) + 1;
 #else
    return MultiByteToWideChar( GetACP(), 0, hb_itemGetCPtr( pItem ), -1,
-                               ( LPWSTR ) lpWCStr, -1 );
+                               ( LPWSTR ) lpWCStr, size );
 #endif
 }
 
@@ -232,7 +232,7 @@ static LPDLGTEMPLATE s_CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1,
                                           ULONG ulStyle )
 {
    HGLOBAL hgbl;
-   PWORD p;
+   PWORD p, pend;
    PHB_ITEM pControls, pControl, temp;
    LONG baseUnit = GetDialogBaseUnits();
    int baseunitX = LOWORD( baseUnit ), baseunitY = HIWORD( baseUnit );
@@ -269,6 +269,7 @@ static LPDLGTEMPLATE s_CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1,
       return NULL;
 
    p = ( PWORD ) GlobalLock( hgbl );
+   pend = p + lTemplateSize;
 
    *p++ = 1;                    // DlgVer
    *p++ = 0xFFFF;               // Signature
@@ -287,7 +288,7 @@ static LPDLGTEMPLATE s_CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1,
    *p++ = 0;                    // Class
 
    // Copy the title of the dialog box.
-   p += s_nCopyAnsiToWideChar( p, GetObjectVar( pObj, "TITLE" ) );
+   p += s_nCopyAnsiToWideChar( p, GetObjectVar( pObj, "TITLE" ), pend - p );
 
    for( ul = 1; ul <= ulControls; ul++ )
    {
@@ -320,10 +321,10 @@ static LPDLGTEMPLATE s_CreateDlgTemplate( PHB_ITEM pObj, int x1, int y1,
       *p++ = 0;                 // HOWORD (Control ID)
 
       // class name
-      p += s_nCopyAnsiToWideChar( p, GetObjectVar( pControl, "WINCLASS" ) );
+      p += s_nCopyAnsiToWideChar( p, GetObjectVar( pControl, "WINCLASS" ), pend - p );
 
       // Caption
-      p += s_nCopyAnsiToWideChar( p, GetObjectVar( pControl, "TITLE" ) );
+      p += s_nCopyAnsiToWideChar( p, GetObjectVar( pControl, "TITLE" ), pend - p );
 
       *p++ = 0;                 // Advance pointer over nExtraStuff WORD.
    }

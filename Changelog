@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1222 2010-02-02 15:24:55 lfbasso Exp $
+ * $Id: Changelog,v 1.1223 2010-02-04 10:29:09 alexstrickland Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-02-04 11:30 UTC+0200 Alex Strickland <sscc at mweb.co.za>
+  * source\hbrowse.prg
+    * Correct the calculation of the row height required for bitmaps.
+      aMargin HIDDEN -> aMargin PROTECTED
 
 2010-02-03 13:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcwindow.prg

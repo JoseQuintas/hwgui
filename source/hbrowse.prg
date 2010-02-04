@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.205 2010-02-01 23:19:17 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.206 2010-02-04 10:29:21 alexstrickland Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -223,7 +223,7 @@ CLASS HBrowse INHERIT HControl
    DATA nLastRecordFilter INIT 0       // Save the last record of filter.
    DATA nFirstRecordFilter INIT 0      // Save the first record of filter.
    DATA nPaintRow, nPaintCol                   // Row/Col being painted
-   DATA aMargin INIT { 0, 0, 0, 0 } HIDDEN    // Margin TOP-RIGHT-BOTTOM-LEFT
+   DATA aMargin INIT { 0, 0, 0, 0 } PROTECTED  // Margin TOP-RIGHT-BOTTOM-LEFT
    DATA lRepaintBackground INIT .F. HIDDEN    // Set to true performs a canvas fill before painting rows
    
    DATA lHeadClick  INIT  .F.    // .T. while a HEADER column is CLICKED
@@ -1072,8 +1072,7 @@ METHOD Rebuild() CLASS HBrowse
          ELSE
             FOR j := 1 TO Len( oColumn:aBitmaps )
                xSize := Max( xSize, oColumn:aBitmaps[ j, 2 ]:nWidth + 2 )
-               ::minHeight := Max( ::minHeight, oColumn:aBitmaps[ j, 2 ]:nHeight )
-               ::minHeight := ::aMargin[ 1 ] + ::minHeight + ::aMargin[ 3 ]
+               ::minHeight := Max( ::minHeight, ::aMargin[ 1 ] + oColumn:aBitmaps[ j, 2 ]:nHeight + ::aMargin[ 3 ] )
             NEXT
          ENDIF
       ELSE

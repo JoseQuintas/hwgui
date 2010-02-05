@@ -1,5 +1,5 @@
  /*
-  * $Id: grid.c,v 1.37 2010-02-02 12:18:51 druzus Exp $
+  * $Id: grid.c,v 1.38 2010-02-05 12:02:31 druzus Exp $
   *
   * HWGUI - Harbour Win32 GUI library source code:
   * HGrid class
@@ -34,7 +34,7 @@
 
 #include "hbapi.h"
 #include "hbapiitm.h"
-#include "guilib.h"
+#include "hwingui.h"
 
 #ifndef LVM_SORTITEMSEX
 #define LVM_SORTITEMSEX          (LVM_FIRST + 81)
@@ -90,9 +90,9 @@ HB_FUNC( LISTVIEW_INIT )
    }
 
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ),
-         LVM_SETEXTENDEDLISTVIEWSTYLE, 0,
-         LVS_EX_FULLROWSELECT |
-         LVS_EX_HEADERDRAGDROP | LVS_EX_FLATSB | style );
+                LVM_SETEXTENDEDLISTVIEWSTYLE, 0,
+                LVS_EX_FULLROWSELECT |
+                LVS_EX_HEADERDRAGDROP | LVS_EX_FLATSB | style );
 
    ListView_SetItemCount( ( HWND ) HB_PARHANDLE( 1 ), hb_parnl( 2 ) );
 }
@@ -106,55 +106,53 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
 {
    LV_COLUMN COL;
    int iImage = hb_parni( 6 );
-   PHB_ITEM pValue = hb_itemNew( NULL );
-   hb_itemCopy( pValue, hb_param( 4, HB_IT_STRING ) );
+   void * hText;
 
    COL.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM | LVCF_IMAGE;
    COL.cx = hb_parni( 3 );
-   COL.pszText = ( LPSTR ) hb_itemGetCPtr( pValue );
+   COL.pszText = ( LPTSTR ) HB_PARSTRDEF( 4, &hText, NULL );
    COL.iSubItem = hb_parni( 2 ) - 1;
    COL.fmt = hb_parni( 5 );
    COL.iImage = iImage > 0 ? hb_parni( 2 ) - 1 : -1;
-   hb_itemRelease( pValue );
 
-   ListView_InsertColumn( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ) - 1,
-         &COL );
+   ListView_InsertColumn( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ) - 1, &COL );
 
    RedrawWindow( ( HWND ) HB_PARHANDLE( 1 ), NULL, NULL,
-         RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW |
-         RDW_UPDATENOW );
+                 RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW |
+                 RDW_UPDATENOW );
+   hb_strfree( hText );
 }
 
 HB_FUNC( LISTVIEW_DELETECOLUMN )
 {
    ListView_DeleteColumn( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ) - 1 );
    RedrawWindow( ( HWND ) HB_PARHANDLE( 1 ), NULL, NULL,
-         RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW |
-         RDW_UPDATENOW );
+                 RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW |
+                 RDW_UPDATENOW );
 }
 
 HB_FUNC( LISTVIEW_SETBKCOLOR )
 {
    ListView_SetBkColor( ( HWND ) HB_PARHANDLE( 1 ),
-         ( COLORREF ) hb_parni( 2 ) );
+                        ( COLORREF ) hb_parni( 2 ) );
 }
 
 HB_FUNC( LISTVIEW_SETTEXTBKCOLOR )
 {
    ListView_SetTextBkColor( ( HWND ) HB_PARHANDLE( 1 ),
-         ( COLORREF ) hb_parni( 2 ) );
+                            ( COLORREF ) hb_parni( 2 ) );
 }
 
 HB_FUNC( LISTVIEW_SETTEXTCOLOR )
 {
    ListView_SetTextColor( ( HWND ) HB_PARHANDLE( 1 ),
-         ( COLORREF ) hb_parni( 2 ) );
+                          ( COLORREF ) hb_parni( 2 ) );
 }
 
 HB_FUNC( LISTVIEW_GETFIRSTITEM )        // Current Line
 {
    hb_retni( ListView_GetNextItem( ( HWND ) HB_PARHANDLE( 1 ), -1,
-               LVNI_ALL | LVNI_SELECTED ) + 1 );
+                                   LVNI_ALL | LVNI_SELECTED ) + 1 );
 }
 
 HB_FUNC( LISTVIEW_GETDISPINFO )
@@ -174,7 +172,7 @@ HB_FUNC( LISTVIEW_SETDISPINFO )
    PHB_ITEM pValue = hb_itemNew( NULL );
    LV_DISPINFO *pDispInfo = ( LV_DISPINFO * ) HB_PARHANDLE( 1 );
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
-   /* BUGGY code - have to be fixed */
+   /* TOFIX: wrong code - have to be redesigned */
    pDispInfo->item.pszText = ( LPSTR ) hb_itemGetCPtr( pValue );
    hb_itemRelease( pValue );
    if( pDispInfo->item.iSubItem == 0 )
@@ -322,7 +320,7 @@ HB_FUNC( LISTVIEW_ADDCOLUMNEX )
 {
    HWND hwndListView = ( HWND ) HB_PARHANDLE( 1 );
    LONG lCol = hb_parnl( 2 ) - 1;
-   const char * text = hb_parc( 3 );
+   void * hText;
    int iImage = hb_parni( 6 );
    LVCOLUMN lvcolumn;
    int iResult;
@@ -335,7 +333,7 @@ HB_FUNC( LISTVIEW_ADDCOLUMNEX )
    else
       lvcolumn.mask = LVCF_FMT | LVCF_TEXT | LVCF_SUBITEM | LVCF_WIDTH;
 
-   lvcolumn.pszText = text;
+   lvcolumn.pszText = ( LPTSTR ) HB_PARSTR( 3, &hText, NULL );
    lvcolumn.iSubItem = lCol;
    lvcolumn.cx = hb_parni( 4 );
    lvcolumn.fmt = hb_parni( 5 );
@@ -348,10 +346,11 @@ HB_FUNC( LISTVIEW_ADDCOLUMNEX )
       iResult = 1;
 
    RedrawWindow( hwndListView, NULL, NULL,
-         RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW |
-         RDW_UPDATENOW );
+                 RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW |
+                 RDW_UPDATENOW );
 
    hb_retnl( iResult );
+   hb_strfree( hText );
 }
 
 HB_FUNC( LISTVIEW_INSERTITEMEX )
@@ -360,7 +359,7 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
    LONG lLin = hb_parnl( 2 ) - 1;
    LONG lCol = hb_parnl( 3 ) - 1;
    int iSubItemYesNo = lCol == 0 ? 0 : 1;
-   const char * sText = hb_parc( 4 );
+   void * hText;
    int iBitMap = hb_parni( 5 );
    LVITEM lvi;
    int iResult = 0;
@@ -378,7 +377,7 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
    lvi.iImage = iBitMap >= 0 ? lCol : -1;
    lvi.state = 0;
    lvi.stateMask = 0;
-   lvi.pszText = ( LPSTR ) sText;
+   lvi.pszText = ( LPTSTR ) HB_PARSTR( 4, &hText, NULL );
    lvi.iItem = lLin;
    lvi.iSubItem = lCol;
 
@@ -386,7 +385,7 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
    {
       case 0:
          if( SendMessage( ( HWND ) hwndListView, ( UINT ) LVM_INSERTITEM,
-                     ( WPARAM ) 0, ( LPARAM ) & lvi ) == -1 )
+                          ( WPARAM ) 0, ( LPARAM ) & lvi ) == -1 )
             iResult = 0;
          else
             iResult = 1;
@@ -394,7 +393,7 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
 
       case 1:
          if( SendMessage( ( HWND ) hwndListView, ( UINT ) LVM_SETITEM,
-                     ( WPARAM ) 0, ( LPARAM ) & lvi ) == FALSE )
+                          ( WPARAM ) 0, ( LPARAM ) & lvi ) == FALSE )
             iResult = 0;
          else
             iResult = 1;
@@ -404,6 +403,7 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
 // RedrawWindow( hwndListView, NULL , NULL , RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW ) ;
    InvalidateRect( hwndListView, &rect, TRUE );
    hb_retni( iResult );
+   hb_strfree( hText );
 }
 
 HB_FUNC( LISTVIEWSELECTALL )
@@ -491,7 +491,7 @@ HB_FUNC( LISTVIEWGETITEM )
    Item.cchTextMax = HB_SIZEOFARRAY( Buffer );
 
    if( ListView_GetItem( hList, &Item ) )
-      hb_retc( Buffer );
+      HB_RETSTR( Buffer );
    else
       hb_retc( NULL );
 }
@@ -510,7 +510,7 @@ int CALLBACK CompareFunc( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
    ListView_GetItemText( pListControl, ( INT ) lParam1, nColumnNo, szA, HB_SIZEOFARRAY( szA ) );
    ListView_GetItemText( pListControl, ( INT ) lParam2, nColumnNo, szB, HB_SIZEOFARRAY( szB ) );
 
-   rc = strcmp( szA, szB );
+   rc = lstrcmp( szA, szB );
    if( !nAscendingSortOrder )
       rc = -rc;
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1224 2010-02-04 11:33:56 druzus Exp $
+ * $Id: Changelog,v 1.1225 2010-02-05 12:01:31 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,18 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-02-05 13:01 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/grid.c
+  * hwgui/source/media_c.c
+  * hwgui/source/menu_c.c
+  * hwgui/source/shellapi.c
+  * hwgui/source/dialog.c
+    * updated to compile in UNICODE mode
+      TOFIX: LISTVIEW_SETDISPINFO() and upper level code using it has to be
+             redesigned. It's wrong and I cannot convert it to UNICODE mode.
+
+    As usual please test it and thank you very much for your help.
 
 2010-02-04 12:33 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/dialog.c

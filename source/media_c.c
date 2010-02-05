@@ -1,5 +1,5 @@
 /*
- * $Id: media_c.c,v 1.15 2010-02-02 12:18:55 druzus Exp $
+ * $Id: media_c.c,v 1.16 2010-02-05 12:02:33 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level media functions
@@ -19,14 +19,15 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include "guilib.h"
+#include "hwingui.h"
 
 /*
  *  PlaySound( cName, lSync, lLoop )
  */
 HB_FUNC( PLAYSOUND )
 {
-   LPCSTR pszSound =  hb_parc( 1 );
+   void * hSound;
+   LPCTSTR lpSound = HB_PARSTR( 1, &hSound, NULL );
    HMODULE hmod = NULL;
    DWORD fdwSound = SND_NODEFAULT | SND_FILENAME;
 
@@ -37,22 +38,25 @@ HB_FUNC( PLAYSOUND )
 
    if( hb_parl( 3 ) )
       fdwSound |= SND_LOOP;
-   if( !pszSound )
+   if( !lpSound )
       fdwSound |= SND_PURGE;
 
-   hb_retl( PlaySound( pszSound, hmod, fdwSound ) );
+   hb_retl( PlaySound( lpSound, hmod, fdwSound ) != 0 );
+   hb_strfree( hSound );
 }
 
 HB_FUNC( MCISENDSTRING )
 {
-   TCHAR cBuffer[128];
+   TCHAR cBuffer[ 256 ] = { 0 };
+   void * hCommand;
 
-   hb_retnl( ( LONG ) mciSendString( hb_parc( 1 ),
-                                     cBuffer, 127,
+   hb_retnl( ( LONG ) mciSendString( HB_PARSTR( 1, &hCommand, NULL ),
+                                     cBuffer, HB_SIZEOFARRAY( cBuffer ),
                                      ( ISNIL( 3 ) ) ? GetActiveWindow() :
                                      ( HWND ) HB_PARHANDLE( 3 ) ) );
    if( !ISNIL( 2 ) )
-      hb_storc( cBuffer, 2 );
+      HB_STORSTR( cBuffer, 2 );
+   hb_strfree( hCommand );
 }
 
 
@@ -62,9 +66,9 @@ HB_FUNC( MCISENDSTRING )
 HB_FUNC( MCISENDCOMMAND )       // ()
 {
    hb_retnl( mciSendCommand( hb_parni( 1 ),     // Device ID
-               hb_parni( 2 ),   // Command Message
-               hb_parnl( 3 ),   // Flags
-               ( DWORD ) hb_parc( 4 ) ) );      // Parameter Block
+                             hb_parni( 2 ),     // Command Message
+                             hb_parnl( 3 ),     // Flags
+                             ( DWORD ) hb_parc( 4 ) ) );    // Parameter Block
 }
 
 //----------------------------------------------------------------------------//
@@ -72,11 +76,11 @@ HB_FUNC( MCISENDCOMMAND )       // ()
 
 HB_FUNC( MCIGETERRORSTRING )    // ()
 {
-   TCHAR cBuffer[200];
+   TCHAR cBuffer[ 256 ] = { 0 };
 
    hb_retl( mciGetErrorString( hb_parnl( 1 ),   // Error Code
                                cBuffer, HB_SIZEOFARRAY( cBuffer ) ) );
-   hb_storc( cBuffer, 2 );
+   HB_STORSTR( cBuffer, 2 );
 }
 
 //----------------------------------------------------------------------------//
@@ -85,20 +89,21 @@ HB_FUNC( NMCIOPEN )
 {
    MCI_OPEN_PARMS mciOpenParms;
    DWORD dwFlags = MCI_OPEN_ELEMENT;
+   void * hDevice, * hName;
 
-   mciOpenParms.lpstrDeviceType = hb_parc( 1 );
+   memset( &mciOpenParms, 0, sizeof( mciOpenParms ) );
 
-   if( ISCHAR( 2 ) )
-   {
-      mciOpenParms.lpstrElementName = hb_parc( 2 );
+   mciOpenParms.lpstrDeviceType = HB_PARSTR( 1, &hDevice, NULL );
+   mciOpenParms.lpstrElementName = HB_PARSTR( 2, &hName, NULL );
+   if( mciOpenParms.lpstrElementName )
       dwFlags |= MCI_OPEN_TYPE;
-   }
 
    hb_retnl( mciSendCommand( 0, MCI_OPEN, dwFlags,
-               ( DWORD ) ( LPMCI_OPEN_PARMS ) & mciOpenParms ) );
-
+                             ( DWORD ) ( LPMCI_OPEN_PARMS ) &mciOpenParms ) );
 
    hb_storni( mciOpenParms.wDeviceID, 3 );
+   hb_strfree( hDevice );
+   hb_strfree( hName );
 }
 
 //----------------------------------------------------------------------------//
@@ -108,27 +113,20 @@ HB_FUNC( NMCIPLAY )
    MCI_PLAY_PARMS mciPlayParms;
    DWORD dwFlags = 0;
 
-   if( hb_parnl( 2 ) )
-   {
-      mciPlayParms.dwFrom = hb_parnl( 2 );
+   memset( &mciPlayParms, 0, sizeof( mciPlayParms ) );
+
+   if( ( mciPlayParms.dwFrom = hb_parnl( 2 ) ) != 0 )
       dwFlags |= MCI_FROM;
-   }
 
-   if( hb_parnl( 3 ) )
-   {
-      mciPlayParms.dwTo = hb_parnl( 3 );
+   if( ( mciPlayParms.dwTo = hb_parnl( 3 ) ) != 0 )
       dwFlags |= MCI_TO;
-   }
 
-   if( hb_parni( 4 ) )
-   {
-      mciPlayParms.dwCallback = ( DWORD ) ( LPVOID ) hb_parni( 4 );
+   if( ( mciPlayParms.dwCallback = ( DWORD_PTR ) hb_parnint( 4 ) ) != 0 )
       dwFlags |= MCI_NOTIFY;
-   }
 
    hb_retnl( mciSendCommand( hb_parni( 1 ),     // Device ID
-               MCI_PLAY, dwFlags,
-               ( DWORD ) ( LPMCI_PLAY_PARMS ) & mciPlayParms ) );
+                             MCI_PLAY, dwFlags,
+                             ( DWORD ) ( LPMCI_PLAY_PARMS ) &mciPlayParms ) );
 }
 
 //----------------------------------------------------------------------------//

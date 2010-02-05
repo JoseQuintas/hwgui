@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.206 2010-02-04 10:29:21 alexstrickland Exp $
+ * $Id: hbrowse.prg,v 1.207 2010-02-05 21:12:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -505,7 +505,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
              nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , nShiftAltCtrl )
              //nShiftAltCtrl += IIF( wParam > 111, 4, nShiftAltCtrl )
              IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B' 
-                IF EMPTY( Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl ) )
+                IF EMPTY( Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl, msg ) )
                    RETURN 0
                 ENDIF
              ENDIF
@@ -569,7 +569,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
              nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 ) 
              nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , 0 )
              nShiftAltCtrl += IIF( wParam > 111, 4, nShiftAltCtrl )             
-             IF EMPTY( Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl ) )
+             IF EMPTY( Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl, msg ) )
                 RETURN 0
              ENDIF
          ENDIF
@@ -814,8 +814,13 @@ STATIC FUNCTION InitColumn( oBrw, oColumn, n )
          oColumn:length := Len( Transform( Eval( oColumn:block,, oBrw, n ), oColumn:picture ) )
       ELSE
          oColumn:length := 10
-         xres     := Eval( oColumn:block,, oBrw, n )
-         ctype    := ValType( xres )
+         IF !Empty( oBrw:aArray ) 
+            xres     := Eval( oColumn:block,, oBrw, n )
+            ctype    := ValType( xres )
+         ELSE
+            xRes     := SPACE(10)
+            ctype    := "C"
+         ENDIF   
       ENDIF
 //      oColumn:length := Max( oColumn:length, Len( oColumn:heading ) )
       oColumn:length := LenVal( xres, ctype, oColumn:picture )

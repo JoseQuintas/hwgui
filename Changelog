@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1226 2010-02-05 12:39:07 lfbasso Exp $
+ * $Id: Changelog,v 1.1227 2010-02-05 21:11:55 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-02-05 11:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! EVENT bKeydown add new parameters -> msg to differentiate the event
+     Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl, msg ) 
+    ! fix init column if the array is empty
+    
 2010-02-05 11:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hdatepic.prg
     ! minor fix

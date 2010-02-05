@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.15 2010-02-02 01:44:00 lfbasso Exp $
+ * $Id: hrect.prg,v 1.16 2010-02-05 12:39:07 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -483,9 +483,9 @@ METHOD Paint( lpdis ) CLASS HContainer
       IF ::backStyle != 0
          IF ::Brush != Nil
             FillRect( hDC, x1 + 2, y1 + 2, x2 - 2, y2 - 2 , ::brush:handle )
-         ELSE
-            FillRect( hDC, x1 + 2, y1 + 2, x2 - 2, y2 - 2 , GetStockObject( 5 ) )
-         ENDIF
+         ENDIF            
+      ELSE
+         FillRect( hDC, x1 + 2, y1 + 2, x2 - 2, y2 - 2 , GetStockObject( 5 ) )
       ENDIF
       SetBkMode( hDC, 0 )
    ENDIF

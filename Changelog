@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1225 2010-02-05 12:01:31 druzus Exp $
+ * $Id: Changelog,v 1.1226 2010-02-05 12:39:07 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-02-05 11:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hdatepic.prg
+    ! minor fix
+  * source\hedit.prg
+    ! fix key HOME
+    ! fix in GETSKIP where only exist one object in DIALOG
+  * source\hrect.prg
+    ! fix in CLASS SHAPE Method Paint mode Transparent
 
 2010-02-05 13:01 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/grid.c

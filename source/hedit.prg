@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.163 2010-02-02 12:08:31 lfbasso Exp $
+ *$Id: hedit.prg,v 1.164 2010-02-05 12:39:07 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -315,8 +315,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                   ENDIF
                ENDIF
             ELSEIF wParam == 36     // HOME
-               SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )                           
-               RETURN 0
+               IF ! IsCtrlShift()
+                  SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )                           
+                  RETURN 0
+               ENDIF   
             ELSEIF wParam == 45     // Insert
                IF ! IsCtrlShift()
                   SET( _SET_INSERT, ! SET( _SET_INSERT ) )
@@ -1403,8 +1405,8 @@ STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
          lnoTabStop := .F.
        ENDIF
          i := AScan( oParent:aControls, { | o | o:Handle == nextHandle } )
-      IF ( lnoTabStop .AND. i > 0 ) .OR. ( i > 0 .AND. i <= LEN( oParent:aControls ).AND. oparent:acontrols[ i ]:classname = "HGROUP") .OR.;
-         ( i = 0 .AND. nextHandle > 0 )
+      IF ( lnoTabStop .AND. i > 0 .AND. hCtrl != NextHandle ) .OR. ( i > 0 .AND. i <= LEN( oParent:aControls ).AND. ;
+           oparent:acontrols[ i ]:classname = "HGROUP") .OR. ( i = 0 .AND. nextHandle > 0 )
           RETURN NextFocus( oParent, nextHandle, nSkip )
       ENDIF
       /*

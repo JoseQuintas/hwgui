@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.57 2010-01-19 23:40:02 druzus Exp $
+ * $Id: misc.c,v 1.58 2010-02-06 02:06:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -52,7 +52,7 @@ HB_FUNC( SETCAPTURE )
 
 HB_FUNC( RELEASECAPTURE )
 {
-   hb_retl( ReleaseCapture(  ) );
+   hb_retl( ReleaseCapture() );
 }
 
 HB_FUNC( COPYSTRINGTOCLIPBOARD )
@@ -62,21 +62,22 @@ HB_FUNC( COPYSTRINGTOCLIPBOARD )
    const char *cStr = hb_parc( 1 );
    int nLen = strlen( cStr );
 
-   if( !OpenClipboard( GetActiveWindow(  ) ) )
+   if( !OpenClipboard( GetActiveWindow() ) )
       return;
 
-   EmptyClipboard(  );
+   EmptyClipboard();
 
    hglbCopy = GlobalAlloc( GMEM_DDESHARE, ( nLen + 1 ) * sizeof( TCHAR ) );
 
    if( hglbCopy == NULL )
    {
-      CloseClipboard(  );
+      CloseClipboard();
       return;
    }
 
    // Lock the handle and copy the text to the buffer.
 
+   // TOFIX: it's not UNICODE safe code
    lptstrCopy = ( char * ) GlobalLock( hglbCopy );
    memcpy( lptstrCopy, cStr, nLen * sizeof( TCHAR ) );
    lptstrCopy[nLen] = ( TCHAR ) 0;      // null character
@@ -85,7 +86,7 @@ HB_FUNC( COPYSTRINGTOCLIPBOARD )
    // Place the handle on the clipboard.
    SetClipboardData( CF_TEXT, hglbCopy );
 
-   CloseClipboard(  );
+   CloseClipboard();
 }
 
 HB_FUNC( GETCLIPBOARDTEXT )
@@ -100,11 +101,12 @@ HB_FUNC( GETCLIPBOARDTEXT )
       hb_retc( "" );
    else
    {
+      // TOFIX: it's not UNICODE safe code
       hData = GetClipboardData( CF_TEXT );
       buffer = ( char * ) GlobalLock( hData );
 
       GlobalUnlock( hData );
-      CloseClipboard(  );
+      CloseClipboard();
       hb_retc( buffer );
    }
 }
@@ -143,7 +145,7 @@ HB_FUNC( HWG_BITANDINVERSE )
 
 HB_FUNC( SETBIT )
 {
-   if( hb_pcount(  ) < 3 || hb_parni( 3 ) )
+   if( hb_pcount() < 3 || hb_parni( 3 ) )
       hb_retnl( hb_parnl( 1 ) | ( 1 << ( hb_parni( 2 ) - 1 ) ) );
    else
       hb_retnl( hb_parnl( 1 ) & ~( 1 << ( hb_parni( 2 ) - 1 ) ) );
@@ -193,7 +195,7 @@ HB_FUNC( SCREENTOCLIENT )
    PHB_ITEM aPoint = hb_itemArrayNew( 2 );
    PHB_ITEM temp;
 
-   if( hb_pcount(  ) > 2 )
+   if( hb_pcount() > 2 )
    {
       pt.x = hb_parnl( 2 );
       pt.y = hb_parnl( 3 );
@@ -244,10 +246,10 @@ HB_FUNC( HWG_GETCURSORPOS )
 
 HB_FUNC( GETCURRENTDIR )
 {
-   char pbyBuffer[ HB_PATH_MAX ];
+   TCHAR buffer[ HB_PATH_MAX ];
 
-   GetCurrentDirectory( HB_PATH_MAX - 1, pbyBuffer );
-   hb_retc( pbyBuffer );
+   GetCurrentDirectory( HB_PATH_MAX, buffer );
+   HB_RETSTR( buffer );
 }
 
 HB_FUNC( WINEXEC )
@@ -270,16 +272,17 @@ HB_FUNC( GETKEYSTATE )
 
 HB_FUNC( GETKEYNAMETEXT )
 {
-   char cText[MAX_PATH];
+   TCHAR cText[ MAX_PATH ];
    int iRet = GetKeyNameText( hb_parnl( 1 ), cText, MAX_PATH );
 
    if( iRet )
-      hb_retclen( cText, iRet );
+      HB_RETSTRLEN( cText, iRet );
 }
 
 HB_FUNC( ACTIVATEKEYBOARDLAYOUT )
 {
-   const char *cLayout = hb_parc( 1 );
+   void * hLayout;
+   LPCTSTR lpLayout = HB_PARSTR( 1, &hLayout, NULL );
    HKL curr = GetKeyboardLayout( 0 );
    TCHAR sBuff[KL_NAMELENGTH];
    UINT num = GetKeyboardLayoutList( 0, NULL ), i = 0;
@@ -287,7 +290,7 @@ HB_FUNC( ACTIVATEKEYBOARDLAYOUT )
    do
    {
       GetKeyboardLayoutName( sBuff );
-      if( !strcmp( sBuff, cLayout ) )
+      if( !lstrcmp( sBuff, lpLayout ) )
          break;
       ActivateKeyboardLayout( 0, 0 );
       i++;
@@ -296,6 +299,8 @@ HB_FUNC( ACTIVATEKEYBOARDLAYOUT )
    while( i < num );
    if( i >= num )
       ActivateKeyboardLayout( curr, 0 );
+
+   hb_strfree( hLayout );
 }
 
 /*
@@ -309,13 +314,13 @@ HB_FUNC( PTS2PIX )
    HDC hDC;
    BOOL lDC = 1;
 
-   if( hb_pcount(  ) > 1 && !ISNIL( 1 ) )
+   if( hb_pcount() > 1 && !ISNIL( 1 ) )
    {
       hDC = ( HDC ) HB_PARHANDLE( 2 );
       lDC = 0;
    }
    else
-      hDC = CreateDC( "DISPLAY", NULL, NULL, NULL );
+      hDC = CreateDC( TEXT( "DISPLAY" ), NULL, NULL, NULL );
 
    hb_retni( MulDiv( hb_parni( 1 ), GetDeviceCaps( hDC, LOGPIXELSY ), 72 ) );
    if( lDC )
@@ -326,25 +331,26 @@ HB_FUNC( PTS2PIX )
 
 HB_FUNC( GETWINDOWSDIR )
 {
-   char szBuffer[MAX_PATH + 1] = { 0 };
+   TCHAR szBuffer[ MAX_PATH + 1 ] = { 0 };
 
    GetWindowsDirectory( szBuffer, MAX_PATH );
-   hb_retc( szBuffer );
+   HB_RETSTR( szBuffer );
 }
 
 HB_FUNC( GETSYSTEMDIR )
 {
-   char szBuffer[MAX_PATH + 1] = { 0 };
+   TCHAR szBuffer[ MAX_PATH + 1 ] = { 0 };
 
    GetSystemDirectory( szBuffer, MAX_PATH );
-   hb_retc( szBuffer );
+   HB_RETSTR( szBuffer );
 }
 
 HB_FUNC( GETTEMPDIR )
 {
-   char szBuffer[MAX_PATH + 1] = { 0 };
+   TCHAR szBuffer[ MAX_PATH + 1 ] = { 0 };
+
    GetTempPath( MAX_PATH, szBuffer );
-   hb_retc( szBuffer );
+   HB_RETSTR( szBuffer );
 }
 
 #ifndef __XHARBOUR__
@@ -392,9 +398,14 @@ Contributed by Rodrigo Moreno rodrigo_moreno@yahoo.com base upon code minigui
 
 HB_FUNC( SHELLABOUT )
 {
-   /* ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) HB_PARHANDLE(3) ); */
-   hb_retni( ShellAbout( ( HWND ) HB_PARHANDLE( 1 ), hb_parcx( 1 ), hb_parcx( 2 ),
+   void * hStr1, * hStr2;
+
+   hb_retni( ShellAbout( 0,
+                         HB_PARSTRDEF( 1, &hStr1, NULL ),
+                         HB_PARSTRDEF( 2, &hStr2, NULL ),
                          ( ISNIL( 3 ) ? NULL : ( HICON ) HB_PARHANDLE( 3 ) ) ) );
+   hb_strfree( hStr1 );
+   hb_strfree( hStr2 );
 }
 
 
@@ -417,6 +428,7 @@ HB_FUNC( WINHELP )
 {
    DWORD context;
    UINT style;
+   void * hStr;
 
    switch ( hb_parni( 3 ) )
    {
@@ -440,7 +452,8 @@ HB_FUNC( WINHELP )
          context = 0;
    }
 
-   hb_retni( WinHelp( ( HWND ) hb_parnl( 1 ), hb_parc( 2 ), style, context ) );
+   hb_retni( WinHelp( ( HWND ) hb_parnl( 1 ), HB_PARSTR( 2, &hStr, NULL ), style, context ) );
+   hb_strfree( hStr );
 }
 
 HB_FUNC( GETNEXTDLGTABITEM )
@@ -486,21 +499,21 @@ HB_FUNC( KEYB_EVENT )
 HB_FUNC( SETSCROLLINFO )
 {
    SCROLLINFO si;
-   UINT fMask = ( hb_pcount(  ) < 4 ) ? SIF_DISABLENOSCROLL : 0;
+   UINT fMask = ( hb_pcount() < 4 ) ? SIF_DISABLENOSCROLL : 0;
 
-   if( hb_pcount(  ) > 3 && !ISNIL( 4 ) )
+   if( hb_pcount() > 3 && !ISNIL( 4 ) )
    {
       si.nPos = hb_parni( 4 );
       fMask |= SIF_POS;
    }
 
-   if( hb_pcount(  ) > 4 && !ISNIL( 5 ) )
+   if( hb_pcount() > 4 && !ISNIL( 5 ) )
    {
       si.nPage = hb_parni( 5 );
       fMask |= SIF_PAGE;
    }
 
-   if( hb_pcount(  ) > 5 && !ISNIL( 6 ) )
+   if( hb_pcount() > 5 && !ISNIL( 6 ) )
    {
       si.nMin = 1;
       si.nMax = hb_parni( 6 );
@@ -584,57 +597,66 @@ HB_FUNC( ISSCROLLLOCKACTIVE )
 
 HB_FUNC( HWG_CREATEDIRECTORY )
 {
-   CreateDirectory( hb_parc( 1 ), NULL );
+   void * hStr;
+   CreateDirectory( HB_PARSTR( 1, &hStr, NULL ), NULL );
+   hb_strfree( hStr );
 }
 
 HB_FUNC( HWG_REMOVEDIRECTORY )
 {
-   hb_retl( RemoveDirectory( hb_parc( 1 ) ) );
+   void * hStr;
+   hb_retl( RemoveDirectory( HB_PARSTR( 1, &hStr, NULL ) ) );
+   hb_strfree( hStr );
 }
 
 HB_FUNC( HWG_SETCURRENTDIRECTORY )
 {
-   SetCurrentDirectory( hb_parc( 1 ) );
+   void * hStr;
+   SetCurrentDirectory( HB_PARSTR( 1, &hStr, NULL ) );
+   hb_strfree( hStr );
 }
 
 HB_FUNC( HWG_DELETEFILE )
 {
-   hb_retl( DeleteFile( hb_parc( 1 ) ) );
+   void * hStr;
+   hb_retl( DeleteFile( HB_PARSTR( 1, &hStr, NULL ) ) );
+   hb_strfree( hStr );
 }
 
 HB_FUNC( HWG_GETFILEATTRIBUTES )
 {
-   hb_retnl( ( LONG ) GetFileAttributes( hb_parc( 1 ) ) );
+   void * hStr;
+   hb_retnl( ( LONG ) GetFileAttributes( HB_PARSTR( 1, &hStr, NULL ) ) );
+   hb_strfree( hStr );
 }
 
 HB_FUNC( HWG_SETFILEATTRIBUTES )
 {
-   hb_retl( SetFileAttributes( hb_parc( 1 ), ( DWORD ) hb_parnl( 2 ) ) );
+   void * hStr;
+   hb_retl( SetFileAttributes( HB_PARSTR( 1, &hStr, NULL ),
+                               ( DWORD ) hb_parnl( 2 ) ) );
+   hb_strfree( hStr );
 }
 
 /* Add by Richard Roesnadi (based on What32) */
 // GETCOMPUTERNAME( [@nLengthChar] ) -> cComputerName
 HB_FUNC( HWG_GETCOMPUTERNAME )
 {
-   char *cText;
-   DWORD nSize = 31 + 1;
-   cText = ( char * ) hb_xgrab( 32 );
-   GetComputerNameA( cText, &nSize );
-   hb_retc( cText );
+   TCHAR cText[ 64 ] = { 0 };
+   DWORD nSize = HB_SIZEOFARRAY( cText );
+   GetComputerName( cText, &nSize );
+   HB_RETSTR( cText );
    hb_stornl( nSize, 1 );
-   hb_xfree( ( void * ) cText );
 }
 
 
 // GETUSERNAME( [@nLengthChar] ) -> cUserName
 HB_FUNC( HWG_GETUSERNAME )
 {
-   char *szUser;
-   DWORD nSize;
-   szUser = ( char * ) hb_xgrab( 32 );
-   GetUserNameA( szUser, &nSize );
-   hb_retc( szUser );
-   hb_xfree( ( void * ) szUser );
+   TCHAR cText[ 64 ] = { 0 };
+   DWORD nSize = HB_SIZEOFARRAY( cText );
+   GetUserName( cText, &nSize );
+   HB_RETSTR( cText );
    hb_stornl( nSize, 1 );
 }
 
@@ -741,7 +763,9 @@ HB_FUNC( PTRTOULONG )
 
 HB_FUNC( OUTPUTDEBUGSTRING )
 {
-   OutputDebugString( hb_parcx( 1 ) );
+   void * hStr;
+   OutputDebugString( HB_PARSTRDEF( 1, &hStr, NULL ) );
+   hb_strfree( hStr );
 }
 
 HB_FUNC( GETSYSTEMMETRICS )

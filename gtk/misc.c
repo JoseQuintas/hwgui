@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.11 2009-08-20 09:16:36 druzus Exp $
+ * $Id: misc.c,v 1.12 2010-02-06 02:06:42 druzus Exp $
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Miscellaneous functions
@@ -104,7 +104,7 @@ HB_FUNC( HWG_COS )
 }
 
 #ifndef __XHARBOUR__
-HB_FUNC( HB_NUMTOHEX )
+HB_FUNC( NUMTOHEX )
 {
    ULONG ulNum;
    int iCipher;

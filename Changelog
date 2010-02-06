@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1227 2010-02-05 21:11:55 lfbasso Exp $
+ * $Id: Changelog,v 1.1228 2010-02-06 02:06:33 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,23 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-02-06 03:06 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/gtk/misc.c
+    ! fixed typo in function name
+
+  * hwgui/source/message.c
+    * simplified and updated to compile in UNICODE mode
+
+  * hwgui/source/control.c
+  * hwgui/source/misc.c
+    * updated to compile in UNICODE mode
+
+   TOFIX: TOOLBAR_SETDISPINFO() and TOOLBAR_GETINFOTIP() have exactly
+          the same problem as LISTVIEW_SETDISPINFO().
+          These functions and upper level code using them have to be
+          redesigned. Current code is wrong and I cannot convert it
+          to UNICODE mode.
 
 2010-02-05 11:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg

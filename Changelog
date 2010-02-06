@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1228 2010-02-06 02:06:33 druzus Exp $
+ * $Id: Changelog,v 1.1229 2010-02-06 02:29:29 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,20 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-02-06 00:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! fix event click in column if appears button
+    * STATIC FUNCTION FltSkip( oBrw, nLines, lDesc )
+      STATIC FUNCTION FltGoTop( oBrw )
+      STATIC FUNCTION FltGoBottom( oBrw )
+      STATIC FUNCTION FltBOF( oBrw )
+      STATIC FUNCTION FltEOF( oBrw )
+      STATIC FUNCTION FltRecCount( oBrw )
+      STATIC FUNCTION FltGoTo( oBrw, nRecord )
+      STATIC FUNCTION FltRecNo( oBrw )
+      STATIC FUNCTION FltRecNoRelative( oBrw )
+      ! add alias-> in functions database
 
 2010-02-06 03:06 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/gtk/misc.c

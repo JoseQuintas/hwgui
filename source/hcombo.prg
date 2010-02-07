@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.79 2010-02-07 15:42:23 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.80 2010-02-07 16:03:19 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -500,6 +500,16 @@ Local nPos := SendMessage( ::handle,CB_GETCURSEL,0,0 ) + 1
       ::ValueBound := ::aItemsBound[ nPos ]
    ENDIF
    RETURN ::ValueBound
+   
+METHOD DisplayValue( cValue ) CLASS HComboBox
+
+   IF cValue != Nil
+	    IF ::lEdit .AND. VALTYPE( cValue ) = "C" 
+	        SetDlgItemText( ::oParent:handle, ::id, cValue )
+      ENDIF
+   ENDIF   
+   RETURN GetEditText( ::oParent:handle, ::id )  
+ 
 
 METHOD DeleteItem( nIndex ) CLASS HComboBox
 

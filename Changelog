@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1229 2010-02-06 02:29:29 lfbasso Exp $
+ * $Id: Changelog,v 1.1230 2010-02-07 14:46:10 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,18 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+
+2010-02-07 12:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcombo.prg
+    + METHOD DisplayValue( cValue ) SETGET 
+      DisplayValue and Value property of the control usually have the same setting if both contain character strings.
+      An exception exists when both properties contain character strings, and a value is typed
+      in the combo box, but the value does not exist in the list.
+      In this case, the value is an empty string (""), and DisplayValue will be the value that is typed in.
+      ocombo:displayvalue := "text" fill the combobox in MODE EDIT
+    ! fix in GetValue() case ::lEdit
+    ! fix in Valid() case ::lEdit
 
 2010-02-06 00:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg

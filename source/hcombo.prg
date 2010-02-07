@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.77 2010-02-01 23:19:18 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.78 2010-02-07 14:46:10 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -81,6 +81,7 @@ CLASS HComboBox INHERIT HControl
    METHOD Populate() HIDDEN
    METHOD GetValueBound( )
    METHOD RowSource( xSource ) SETGET
+   METHOD DisplayValue( cValue ) SETGET 
    
 ENDCLASS
 
@@ -329,13 +330,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
       ELSEIF MSG = 343                  //.OR.MSG= 359 .or.GETKEYSTATE( VK_TAB ) < 0 //CB_GETDROPPEDSTATE
          IF GETKEYSTATE( VK_RETURN ) + GETKEYSTATE( VK_DOWN ) + GETKEYSTATE( VK_TAB ) < 0
             IF ::oParent:oParent = Nil
-               GetSkip( ::oParent, GetAncestor( ::handle, GA_PARENT ),, 1 )
+             //  GetSkip( ::oParent, GetAncestor( ::handle, GA_PARENT ),, 1 )
             ENDIF
             GetSkip( ::oParent, ::handle,, 1 )
          ENDIF
          IF GETKEYSTATE( VK_UP ) < 0
             IF ::oParent:oParent = Nil
-               GetSkip( ::oParent, GetAncestor( ::handle, GA_PARENT ),, 1 )
+             //  GetSkip( ::oParent, GetAncestor( ::handle, GA_PARENT ),, 1 )
             ENDIF
             GetSkip( ::oParent, ::handle,, - 1 )
          ENDIF
@@ -373,11 +374,13 @@ LOCAL vari
       ELSE
          ::value := Iif( vari == Nil .OR. Valtype( vari ) != "N", 1, vari )
       ENDIF
+      /*
       IF ::columnBound = 1
          Eval( ::bSetGet, ::value, Self )
       ELSE
          Eval( ::bSetGet, ::valuebound, Self )
       ENDIF
+      */
    ENDIF
 
    /*
@@ -458,13 +461,18 @@ METHOD GetValue() CLASS HComboBox
 LOCAL nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
 
    //::value := Iif( ::lText, ::aItems[ nPos ], nPos )
-   IF ::lText
-       nPos := AScan( ::aItems, ::Value )
-      ::value := Iif( nPos > 0, ::aItems[ nPos ], ::value )
+   IF ::lText 
+	    IF ( ::lEdit .OR. Valtype( ::Value ) != "C" ) .AND. nPos <= 1
+ 	       ::Value := GetEditText( ::oParent:handle, ::id ) 
+ 	    ELSEIF nPos > 0
+         ::value := ::aItems[ nPos ]
+      ENDIF  
+      nPos := IIF( LEN( ::value ) > 0, AScan( ::aItems, ::Value ), 0 )
+      ::value := Iif( nPos > 0, ::aItems[ nPos ], IIF( ::lEdit, "", ::value ) )
    ELSE
-      ::value := nPos
+      ::value := nPos 
    ENDIF
-   ::ValueBound := ::GetValueBound()
+   ::ValueBound := IIF( nPos > 0, ::GetValueBound(), IIF( ::lText, "", 0 ) )
    IF ::bSetGet != Nil
       IF ::columnBound = 1
          Eval( ::bSetGet, ::value, Self )
@@ -601,22 +609,8 @@ LOCAL ltab := GETKEYSTATE( VK_TAB ) < 0
    IF ( oDlg := ParentGetDialog( Self ) ) == Nil .OR. oDlg:nLastKey != VK_ESCAPE
       // end by sauli
       // IF lESC // "if" by Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
-      nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
-      IF ::lText
-           nPos := AScan( ::aItems, ::Value )
-         ::value := Iif( nPos > 0, ::aItems[ nPos ], GetWindowText( ::handle ) )
-      ELSE
-         ::value := nPos
-      ENDIF
-      ::ValueBound := ::GetValueBound()
-      IF ::bSetGet != Nil
-         IF ::ColumnBound = 1
-            Eval( ::bSetGet, ::value, Self )
-         ELSE
-            Eval( ::bSetGet, ::valueBound, Self )
-         ENDIF
-      ENDIF
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com.br) 03/06/2006
+      ::GetValue()
       IF ::bLostFocus != Nil
          ::oparent:lSuspendMsgsHandling := .T.
          res                                := Eval( ::bLostFocus, ::value, Self )

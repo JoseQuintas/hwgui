@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1230 2010-02-07 14:46:10 lfbasso Exp $
+ * $Id: Changelog,v 1.1231 2010-02-07 15:42:22 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,7 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-
+2010-02-07 13:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * hwgui/include/windows.ch
+    + #define CB_FINDSTRINGEXACT          344
+  * source\hcombo.prg
+    ! fix in GetValue() case ::lEdit
+ 
 2010-02-07 12:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcombo.prg
     + METHOD DisplayValue( cValue ) SETGET 

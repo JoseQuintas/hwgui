@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.78 2010-02-07 14:46:10 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.79 2010-02-07 15:42:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -464,10 +464,11 @@ LOCAL nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
    IF ::lText 
 	    IF ( ::lEdit .OR. Valtype( ::Value ) != "C" ) .AND. nPos <= 1
  	       ::Value := GetEditText( ::oParent:handle, ::id ) 
+ 	       nPos := SendMessage( ::handle, CB_FINDSTRINGEXACT, -1, ::value ) + 1
  	    ELSEIF nPos > 0
          ::value := ::aItems[ nPos ]
       ENDIF  
-      nPos := IIF( LEN( ::value ) > 0, AScan( ::aItems, ::Value ), 0 )
+      //nPos := IIF( LEN( ::value ) > 0, AScan( ::aItems, ::Value ), 0 )
       ::value := Iif( nPos > 0, ::aItems[ nPos ], IIF( ::lEdit, "", ::value ) )
    ELSE
       ::value := nPos 

@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.81 2009-11-15 18:55:04 lfbasso Exp $
+ *$Id: windows.ch,v 1.82 2010-02-07 15:42:23 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -208,6 +208,7 @@
 #define CB_SETCURSEL                334
 #define CB_SETITEMHEIGHT            0x0153
 #define CB_GETITEMHEIGHT            0x0154
+#define CB_FINDSTRINGEXACT          344
 
 /* Brush Styles */
 #define BS_SOLID            0

@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.18 2010-01-25 02:14:00 druzus Exp $
+ * $Id: nice.c,v 1.19 2010-02-08 09:59:02 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -146,9 +146,9 @@ HB_FUNC( HWG_REGNICE )
    static LPCTSTR s_szAppName = TEXT( "NICEBUTT" );
    static BOOL s_bRegistered = 0;
 
-   s_pGradientfill =
-         ( GRADIENTFILL ) GetProcAddress( LoadLibrary( TEXT( "MSIMG32.DLL" ) ),
-         "GradientFill" );
+   s_pGradientfill = ( GRADIENTFILL )
+                     GetProcAddress( LoadLibrary( TEXT( "MSIMG32.DLL" ) ),
+                                     HBTEXT( "GradientFill" ) );
 //    if (Gradientfill == NULL)
 //        return FALSE;
    if( !s_bRegistered )

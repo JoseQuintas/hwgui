@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.20 2010-01-27 15:52:05 lfbasso Exp $
+ * $Id: hmonthc.prg,v 1.21 2010-02-08 09:59:02 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -148,7 +148,7 @@ METHOD onSelect( ) CLASS HMonthCalendar
 #define _WIN32_IE      0x0500
 #define HB_OS_WIN_32_USED
 #define _WIN32_WINNT   0x0400
-#include "guilib.h"
+#include "hwingui.h"
 #include <windows.h>
 #include <commctrl.h>
 
@@ -167,7 +167,7 @@ HB_FUNC ( INITMONTHCALENDAR )
 
    hMC = CreateWindowEx( 0,
                          MONTHCAL_CLASS,
-                         "",
+                         TEXT( "" ),
                          (LONG) hb_parnl(3), /* 0,0,0,0, */
                          hb_parni(4), hb_parni(5),      /* x, y       */   
                          hb_parni(6), hb_parni(7),      /* nWidth, nHeight */

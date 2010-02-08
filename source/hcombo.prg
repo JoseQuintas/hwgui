@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.80 2010-02-07 16:03:19 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.81 2010-02-08 09:58:55 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -22,13 +22,16 @@
 #pragma begindump
 #include <windows.h>
 #include "hbapi.h"
+#include "hwingui.h"
 HB_FUNC( COPYDATA )
 {
    LPARAM lParam = ( LPARAM ) hb_parnl( 1 ) ;
-   const char * m_strText = hb_parc( 2 ) ;
+   void * hText;
+   LPCTSTR m_strText = HB_PARSTR( 2, &hText, NULL );
    WPARAM wParam = ( WPARAM ) hb_parnl( 3 ) ;
 
-   lstrcpyn( ( LPSTR ) lParam, m_strText, ( INT ) wParam ) ;
+   lstrcpyn( ( LPTSTR ) lParam, m_strText, ( INT ) wParam ) ;
+   hb_strfree( hText );
 }
 #pragma enddump
 

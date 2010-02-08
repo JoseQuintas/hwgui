@@ -1,5 +1,5 @@
 /*
- *$Id: hwingui.h,v 1.5 2010-01-27 09:18:35 druzus Exp $
+ *$Id: hwingui.h,v 1.6 2010-02-08 09:58:49 druzus Exp $
  */
 
 #include <windows.h>
@@ -47,6 +47,15 @@
    HB_EXTERN_END
 
    #define hb_strfree( h )    hwg_strfree( h )
+
+   #if !defined( HBTEXT )
+      #if defined( HB_OS_WIN_CE )
+         #define HBTEXT( x ) TEXT( x )
+      #else
+         #define HBTEXT( x ) x
+      #endif
+   #endif
+
 #endif
 
 HB_EXTERN_BEGIN

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1232 2010-02-08 09:57:01 druzus Exp $
+ * $Id: Changelog,v 1.1233 2010-02-10 23:31:08 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,37 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-02-10 21:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + CLAUSULA ON INIT in @ <x>,<y> GET DATEPICKER
+  * samples\get\testget3.prg
+    ! fixed sample
+  * source\hbrowse.prg
+    ! add reference to objetct Column in Browse
+      oBrowse:Column1 = oBrowse:aColumns[1]
+   ! minor fix
+  * source\hcombo.prg
+   ! minor fix in populate()
+  * source\hdatepic.prg
+    ! replace DATA value to DATA dValue
+    + METHOD Value ( cText ) SETGET 
+  * source\hdialog.prg
+    % remove static of the Function onHelp  
+    + add .chm file can be executed Contexto-Help Sensitive
+  * source\hedit.prg
+    + METHOD Value ( cText ) SETGET 
+    ! fixed DeleteChar if complex pictures
+  * source\hupdown.prg
+    ! replace DATA value to DATA nValue
+    + METHOD Value ( cText ) SETGET 
+  * source\hwindow.prg
+    + message WM_HELP
+    + add  Contexto-Help Sensitive in MDICHILD
+  * source\htab.prg
+    ! minor fix in redrawcontrols()
+  * source\window.c
+    + HB_FUNC( FLASHWINDOW )
 
 2010-02-08 10:56 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/include/hwingui.h

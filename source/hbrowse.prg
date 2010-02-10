@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.208 2010-02-06 02:29:29 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.209 2010-02-10 23:32:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -796,6 +796,7 @@ METHOD InsColumn( oColumn, nPos ) CLASS HBrowse
 
 STATIC FUNCTION InitColumn( oBrw, oColumn, n )
    LOCAL xres, ctype
+   LOCAL cname := "Column" + LTRIM( STR( Len( oBrw:aColumns ) ) )
 
    IF oColumn:Type == Nil
       oColumn:Type := ValType( Eval( oColumn:block,, oBrw, n ) )
@@ -810,7 +811,7 @@ STATIC FUNCTION InitColumn( oBrw, oColumn, n )
       ENDIF
    ENDIF
    IF oColumn:length == Nil
-      IF oColumn:picture != Nil
+      IF oColumn:picture != Nil .AND. ! Empty( oBrw:aArray ) 
          oColumn:length := Len( Transform( Eval( oColumn:block,, oBrw, n ), oColumn:picture ) )
       ELSE
          oColumn:length := 10
@@ -828,6 +829,8 @@ STATIC FUNCTION InitColumn( oBrw, oColumn, n )
    oColumn:nJusLin := IIf( oColumn:nJusLin == nil, IIF( oColumn:Type == "N", DT_RIGHT , DT_LEFT ), oColumn:nJusLin ) + DT_VCENTER + DT_SINGLELINE
    oColumn:oParent := oBrw
    oColumn:Column := n
+   __objAddData( oBrw, cName)
+   oBrw:&(cName) := oColumn
 
    RETURN Nil
 
@@ -3113,14 +3116,14 @@ METHOD Refresh( lFull, lLineUp ) CLASS HBrowse
       ENDIF
       ::internal[ 1 ] := 15
       // RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
-      IF ::nCurrent < ::rowCount .AND. ::rowPos < ::nCurrent .AND. EMPTY( lLineUp )
+      IF ::nCurrent < ::rowCount .AND. ::rowPos <= ::nCurrent .AND. EMPTY( lLineUp )
          ::rowPos := ::nCurrent
       ENDIF
       RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ELSE
       InvalidateRect( ::handle, 0 )
       ::internal[ 1 ] := SetBit( ::internal[ 1 ], 1, 0 )
-      IF ::nCurrent < ::rowCount .AND. ::rowPos < ::nCurrent .AND. EMPTY( lLineUp )
+      IF ::nCurrent < ::rowCount .AND. ::rowPos <= ::nCurrent .AND. EMPTY( lLineUp )
          ::rowPos := ::nCurrent
       ENDIF
       RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )

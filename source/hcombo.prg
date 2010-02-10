@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.81 2010-02-08 09:58:55 druzus Exp $
+ * $Id: hcombo.prg,v 1.82 2010-02-10 23:32:09 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -266,6 +266,7 @@ METHOD INIT() CLASS HComboBox
             ENDIF
          NEXT
          */
+         ::RowSource( ::aItems )
          LongComboWidth := ::Populate()
          //
          IF ::lText
@@ -296,7 +297,7 @@ METHOD INIT() CLASS HComboBox
          IF !Empty( ::ncWidth )
             sendmessage( ::handle, CB_SETDROPPEDWIDTH, ::ncWidth, 0 )
          ENDIF
-         ::nHeight := Int( nHeightBox / 0.75 + ( ::nhItem * ::nDisplay ) ) + 2
+         ::nHeight := Int( nHeightBox / 0.75 + ( ::nhItem * ::nDisplay ) ) + 3
       ENDIF
    ENDIF
    IF !::lResource
@@ -678,7 +679,7 @@ METHOD Populate
       cAlias := LEFT( ::xrowsource[ 1 ], AT("->", ::xrowsource[ 1 ]) - 1 )
       value := STRTRAN( ::xrowsource[ 1 ] , calias + "->" )
       cAlias := IIF( TYPE( ::xrowsource[ 1 ] ) = "U",  Nil, cAlias )
-      cValueBound := IIF( LEN( ::aItems ) > 1 .AND. cAlias != Nil, ::xrowsource[ 2 ], Nil )
+      cValueBound := IIF( ::xrowsource[ 2 ]  != Nil  .AND. cAlias != Nil, STRTRAN( ::xrowsource[ 2 ] , calias + "->" ), Nil )
    ELSE
       cValueBound := IIF( VALTYPE( ::aItems[ 1 ] ) = "A" .AND. LEN(  ::aItems[ 1 ] ) > 1, ::aItems[ 1, 2 ], NIL )
    ENDIF

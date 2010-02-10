@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.164 2010-02-05 12:39:07 lfbasso Exp $
+ *$Id: hedit.prg,v 1.165 2010-02-10 23:32:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -83,7 +83,8 @@ CLASS VAR winclass   INIT "EDIT"
    METHOD SelLength( nLength ) SETGET 
    METHOD SelStart( nStart ) SETGET 
    METHOD SelText( cText ) SETGET 
-
+   METHOD Value ( cText ) SETGET 
+   
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -364,6 +365,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ENDIF
       IF msg == WM_SETFOCUS //.AND. ::cType = "N"
          ::lFocu := .T.
+         IF ::lPicComplex .AND. ::cType <> "N"
+            ::Title := Transform( ::Title, ::cPicFunc + " " + ::cPicMask )
+         ENDIF
          IF ::selstart = 0 .AND. ::lPicComplex
             SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
          ENDIF
@@ -500,12 +504,21 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
    RETURN Self
 
 
+METHOD Value( Value )  CLASS HEdit
+
+   IF Value != Nil
+       ::SetText( Value )
+       ::Refresh()
+   ENDIF    
+   RETURN ::title
+
 METHOD Refresh()  CLASS HEdit
    LOCAL vari
 
    IF ::bSetGet != Nil
       vari := Eval( ::bSetGet,, Self )
       IF ! Empty( ::cPicFunc ) .OR. ! Empty( ::cPicMask )
+         vari := IIF( vari = Nil, "", Vari )
          vari := Transform( vari, ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
       ELSE
          vari := IIf( ::cType == "D", DToC( vari ), IIf( ::cType == "N", Str( vari ), IIf( ::cType == "C" .and. ValType( vari ) == "C", Trim( vari ), "" ) ) )
@@ -691,15 +704,43 @@ METHOD DeleteChar( lBack ) CLASS HEdit
    ELSE
       nPosEnd += 1
    ENDIF
+   /* NEW */
+   IF nPosEnd - nPosStart - 1 > 1 .AND.::lPicComplex .AND. ::cType <> "N" //.AND. NPOSEND < nGetLen
+      lBack := .T.
+   ELSE
+      IF lBack .AND. ! ::IsEditable( nPosStart + 1 ) .AND.  ::cType <> "N"
+         nPosStart -=  1
+      ENDIF
+      IF  ::lPicComplex .AND. ::cType <> "N" .AND. ::FirstNotEditable( nPosStart ) > 0 .AND. ;
+               ( !lBack  .OR. ( lBack .AND. nPosEnd - nPosStart - 1 < 2 )) 
+         nPosEdit := ::FirstNotEditable( nPosStart  )
+         nGetLen := Len( Trim( LEFT( ::title,  nPosEdit - 1 ) ) )
+         cBuf := ::Title
+         IF nGetLen >= nPosStart + 1
+            cBuf := Stuff( ::title, nPosStart + 1, 1, "" )
+            cBuf := Stuff( cBuf, nGetLen, 0, " " )
+         ENDIF
+      ELSE 
+         IF Empty(SendMessage(::handle, EM_GETPASSWORDCHAR, 0, 0))
+            cBuf := PadR( Left( ::title, nPosStart ) + SubStr( ::title, nPosEnd ), nGetLen, IIF( ::lPicComplex, , CHR(0) ) )
+         ELSE
+            cBuf := Left( ::title, nPosStart ) + SubStr( ::title, nPosEnd )
+         ENDIF
+      ENDIF
+   ENDIF
+   /*
    IF Empty( SendMessage( ::handle, EM_GETPASSWORDCHAR, 0, 0 ) )
       cBuf := PadR( Left( ::title, nPosStart ) + SubStr( ::title, nPosEnd ), nGetLen )
    ELSE
       cBuf := Left( ::title, nPosStart ) + SubStr( ::title, nPosEnd )
    ENDIF
    IF ::lPicComplex .AND. ::cType <> "N" .and. ;
-      ( nPosStart + nPosEnd > 0 )
+   */
+   IF lBack .AND. ::lPicComplex .AND. ::cType <> "N" .AND. ( nPosStart + nPosEnd > 0 )
       IF lBack .or. nPosStart <> ( nPosEnd - 2 )
-         cBuf := Left( ::title, nPosStart ) + Space( nPosEnd - nPosStart - 1 ) + SubStr( ::title, nPosEnd )
+         IF  nPosStart <> ( nPosEnd - 2 )
+            cBuf := Left( ::title, nPosStart ) + Space( nPosEnd - nPosStart - 1 ) + SubStr( ::title, nPosEnd )
+         ENDIF   
       ELSE
          nPosEdit := ::FirstNotEditable( nPosStart + 1 )
          IF nPosEdit > 0
@@ -709,8 +750,10 @@ METHOD DeleteChar( lBack ) CLASS HEdit
          ENDIF
       ENDIF
       cBuf := Transform( cBuf, ::cPicMask )
+   ELSEIF ::cType = "N" .AND. Len( AllTrim( cBuf ) ) = 0
+      ::lFirst := .T.
+      nPosStart := ::FirstEditable() - 1
    ENDIF
-
    ::title := cBuf
    SetDlgItemText( ::oParent:handle, ::id, ::title )
    SendMessage( ::handle, EM_SETSEL, nPosStart, nPosStart )

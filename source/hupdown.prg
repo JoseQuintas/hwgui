@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.28 2010-02-02 15:25:00 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.29 2010-02-10 23:32:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -21,7 +21,7 @@ CLASS HUpDown INHERIT HControl
    CLASS VAR winclass   INIT "EDIT"
 
    DATA bSetGet
-   DATA value
+   DATA nValue
    DATA bValid
    DATA hUpDown, idUpDown, styleUpDown
    DATA bkeydown, bkeyup, bchange
@@ -46,11 +46,15 @@ CLASS HUpDown INHERIT HControl
    METHOD Activate()
    METHOD Init()
    METHOD SetValue( nValue )
+   METHOD Value( Value ) SETGET
    METHOD Refresh()
    METHOD SetColor( tColor, bColor, lRedraw ) INLINE super:SetColor(tColor, bColor, lRedraw ), IIF( ::oEditUpDown != Nil, ;
                                              ::oEditUpDown:SetColor( tColor, bColor, lRedraw ),)
    METHOD Hide() INLINE (::lHide := .T., HideWindow( ::handle ), HideWindow( ::hUpDown ) )
    METHOD Show() INLINE (::lHide := .F., ShowWindow( ::handle ), ShowWindow( ::hUpDown ) )
+   METHOD Enable()  INLINE ( Super:Enable(), EnableWindow( ::hUpDown, .T. ) , ;
+                            InvalidateRect( ::oParent:Handle, 1,  ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight ) )
+   METHOD Disable() INLINE ( Super:Disable(), EnableWindow( ::hUpDown, .F. ) )
    METHOD Valid()
    METHOD CreateUpDown()
 
@@ -70,10 +74,10 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       Eval( bSetGet,vari )
    ENDIF
    IF bSetGet = Nil
-      bSetGet := {| v | IIF( v == Nil, ::value, ::value := v ) }
+      bSetGet := {| v | IIF( v == Nil, ::nValue, ::nValue := v ) }
    ENDIF
 
-   ::Value := Vari
+   ::nValue := Vari
    ::title := Str( vari )
    ::bSetGet := bSetGet
 
@@ -164,28 +168,37 @@ METHOD CREATEUPDOWN CLASS Hupdown
    ENDIF
    RETURN Nil
 
+METHOD Value( Value )  CLASS HUpDown
+
+   IF Value != Nil
+       ::SetValue( Value )
+       ::oEditUpDown:Title :=  ::Title
+       ::oEditUpDown:Refresh()
+   ENDIF    
+   RETURN ::nValue
+
 METHOD SetValue( nValue )  CLASS HUpDown
 
    IF  nValue < ::nLower .OR. nValue > ::nUpper 
-       nValue := ::Value
+       nValue := ::nValue
    ENDIF
-   ::Value := nValue
-   ::title := Str( ::value )
-   SetUpDown( ::hUpDown, ::value )
+   ::nValue := nValue
+   ::title := Str( ::nValue )
+   SetUpDown( ::hUpDown, ::nValue )
    IF ::bSetGet != Nil
-      Eval( ::bSetGet, ::value, Self )
+      Eval( ::bSetGet, ::nValue, Self )
    ENDIF
 
-   RETURN ::Value
+   RETURN ::nValue
 
 METHOD Refresh()  CLASS HUpDown
 
-   IF ::bSetGet != Nil .AND. ::value != Nil
-      ::value := Eval( ::bSetGet )
-      IF Str(::value) != ::title
-         //::title := Str( ::value )
-         //SetUpDown( ::hUpDown, ::value )
-         ::SetValue( ::Value )
+   IF ::bSetGet != Nil .AND. ::nValue != Nil
+      ::nValue := Eval( ::bSetGet )
+      IF Str(::nValue) != ::title
+         //::title := Str( ::nValue )
+         //SetUpDown( ::hUpDown, ::nValue )
+         ::SetValue( ::nValue )
       ENDIF
    ELSE
       SetUpDown( ::hUpDown, Val(::title) )
@@ -199,14 +212,14 @@ METHOD Valid() CLASS HUpDown
    LOCAL res := .t.
 
    ::title := GetEditText( ::oParent:handle, ::oEditUpDown:id )
-   ::value := Val( Ltrim( ::title ) )
+   ::nValue := Val( Ltrim( ::title ) )
    IF ::bSetGet != Nil
-      Eval( ::bSetGet, ::value )
+      Eval( ::bSetGet, ::nValue )
    ENDIF
-   res :=  ::value <= ::nUpper .and. ::value >= ::nLower
+   res :=  ::nValue <= ::nUpper .and. ::nValue >= ::nLower
    IF ! res
-      ::Value := IIF( ::Value > ::nUpper, Min( ::Value, ::nUpper ), Max( ::Value, ::nLower ) )
-      ::SetValue( ::Value )
+      ::nValue := IIF( ::nValue > ::nUpper, Min( ::nValue, ::nUpper ), Max( ::nValue, ::nLower ) )
+      ::SetValue( ::nValue )
       ::oEditUpDown:Refresh()
       SendMessage( ::oEditUpDown:Handle, EM_SETSEL , 0, -1 )
       ::SetFocus()
@@ -217,7 +230,7 @@ METHOD Valid() CLASS HUpDown
 *-----------------------------------------------------------------
 CLASS HEditUpDown INHERIT HEdit
 
-    DATA Value
+    //DATA Value
 
     METHOD INIT()
     METHOD Notify( lParam )
@@ -243,7 +256,7 @@ METHOD Notify( lParam ) CLASS HeditUpDown
    iDelta := IIF( iDelta < 0,  1, - 1) //* IIF( ::oParent:oParent = Nil , - 1 ,  1 )
 
  	 IF ::oUpDown = Nil .OR. Hwg_BitAnd( GetWindowLong( ::handle, GWL_STYLE ), ES_READONLY ) != 0 .OR. ;
-       ( ::oUpDown:bGetFocus != Nil .AND. ! Eval( ::oUpDown:bGetFocus, ::oUpDown:Value, ::oUpDown ) )
+       ( ::oUpDown:bGetFocus != Nil .AND. ! Eval( ::oUpDown:bGetFocus, ::oUpDown:nValue, ::oUpDown ) )
 	     Return 0
    ENDIF
 
@@ -262,9 +275,9 @@ METHOD Notify( lParam ) CLASS HeditUpDown
    IF nCode = UDN_DELTAPOS .AND. ( ::oUpDown:bClickUp != Nil .OR. ::oUpDown:bClickDown != Nil )
       ::oparent:lSuspendMsgsHandling := .T.         
       IF iDelta < 0 .AND. ::oUpDown:bClickDown  != Nil
-          res := Eval( ::oUpDown:bClickDown, ::oUpDown, ::oUpDown:value, iDelta, ipos )
+          res := Eval( ::oUpDown:bClickDown, ::oUpDown, ::oUpDown:nValue, iDelta, ipos )
       ELSEIF iDelta > 0 .AND. ::oUpDown:bClickUp  != Nil     
-          res := Eval( ::oUpDown:bClickUp, ::oUpDown, ::oUpDown:value, iDelta, ipos )
+          res := Eval( ::oUpDown:bClickUp, ::oUpDown, ::oUpDown:nValue, iDelta, ipos )
       ENDIF   
       ::oparent:lSuspendMsgsHandling := .F.
    ENDIF
@@ -276,7 +289,7 @@ METHOD Notify( lParam ) CLASS HeditUpDown
    METHOD Refresh()  CLASS HeditUpDown
    LOCAL vari
 
-   vari := ::oUpDown:Value
+   vari := ::oUpDown:nValue
    IF  ::bSetGet != Nil  .AND. ::title != Nil
       ::Title := Transform( vari , ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
    ENDIF

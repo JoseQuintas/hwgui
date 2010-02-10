@@ -37,7 +37,7 @@ MENUBARITEM  amenu CAPTION "teste1" ON 905 ACTION {||.t.}
 MENUBARITEM  amenu CAPTION "teste2" ON 906 ACTION {||.t.}
 
 
-   @ 0,0 toolbar oTool of oModDlg size 50,100 ID 700
+   @ 0,0 toolbar oTool of oModDlg size oModDlg:nWidth,40 ID 700
    TOOLBUTTON  otool ;
           ID 701 ;
            BITMAP 2;
@@ -85,10 +85,10 @@ MENUBARITEM  amenu CAPTION "teste2" ON 906 ACTION {||.t.}
         SIZE 90, 20 ON CLICK {||oGet:SetColor(Vcolor("FF0000"),,.T.)}
    END RADIOGROUP
 
-   @ 20,160 GET COMBOBOX cm ITEMS aCombo SIZE 100, 150
+   @ 20,160 GET COMBOBOX cm ITEMS aCombo SIZE 100, 24
 
-   @ 20,200 GET UPDOWN upd RANGE 0,80 SIZE 50,30
-   @ 160,200 GET DATEPICKER d1 SIZE 80, 20
+   @ 20,200 GET UPDOWN upd RANGE 0,80 SIZE 50,24
+   @ 160,200 GET DATEPICKER d1 SIZE 90, 24
 
    @ 20,240 BUTTON "Ok" ID IDOK  SIZE 100, 32
    @ 180,240 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32

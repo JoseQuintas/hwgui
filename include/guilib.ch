@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.156 2010-01-25 11:09:23 lfbasso Exp $
+ *$Id: guilib.ch,v 1.157 2010-02-10 23:31:47 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -302,9 +302,10 @@
              [ ON CLICK <bClick> ]      ;
              [ ON DBLCLICK <bDblClick> ];
              [ TOOLTIP <ctoolt> ]       ;
+             [ STYLE <nStyle> ]         ;             
           => ;
           [<oBmp> := ] HSayBmp():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-             <height>,<bitmap>,<.res.>,<bInit>,<bSize>,<ctoolt>,<bClick>,<bDblClick>, <.lTransp.>,<nStretch> );;
+             <height>,<bitmap>,<.res.>,<bInit>,<bSize>,<ctoolt>,<bClick>,<bDblClick>, <.lTransp.>,<nStretch>, <nStyle> );;
           [ <oBmp>:name := <(oBmp)> ]
 
 #xcommand REDEFINE BITMAP [ <oBmp> SHOW ] <bitmap> ;
@@ -1296,6 +1297,7 @@
              [ SIZE <width>, <height> ] ;
              [ COLOR <color> ]          ;
              [ BACKCOLOR <bcolor> ]     ;
+             [ ON INIT <bInit> ]        ;
              [ WHEN <bGfocus> ]         ;
              [ VALID <bLfocus> ]        ;
              [ ON CHANGE <bChange> ]    ;
@@ -1306,7 +1308,7 @@
           [<oPick> :=] HDatePicker():New( <oWnd>,<nId>,<vari>,    ;
              {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
              <nStyle>,<x>,<y>,<width>,<height>,      ;
-             <oFont>,,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>,<color>,<bcolor> );;
+             <oFont>,<bInit>,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>,<color>,<bcolor> );;
           [ <oPick>:name := <(oPick)> ]
 
 #xcommand SAY <value> TO <oDlg> ID <id> ;

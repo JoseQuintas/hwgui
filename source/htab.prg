@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.59 2010-02-01 23:19:21 lfbasso Exp $
+ *$Id: htab.prg,v 1.60 2010-02-10 23:32:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -504,10 +504,10 @@ METHOD Refresh( ) CLASS HTab
    ENDIF
    RETURN Nil
 
-METHOD RedrawControls( ) CLASS HTab
+METHOD RedrawControls( lForce ) CLASS HTab
    LOCAL i 
 
-   IF ::nActive != 0 .AND.  ::internalPaint < 3
+   IF ::nActive != 0 .AND.  ( ::internalPaint < 3 .OR. ! Empty( lForce ) )
       IF ! ::lResourceTab
          FOR i := ::aPages[ ::nActive, 1 ] + 1 TO ::aPages[ ::nActive, 1 ] + ::aPages[ ::nActive, 2 ]
             IF isWindowVisible( ::aControls[ i ]:Handle )

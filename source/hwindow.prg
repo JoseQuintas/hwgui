@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.95 2009-11-20 12:43:02 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.96 2010-02-10 23:32:18 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -200,19 +200,20 @@ CLASS HMainWindow INHERIT HWindow
 
 CLASS VAR aMessages INIT { ;
                            { WM_COMMAND, WM_ERASEBKGND, WM_MOVE, WM_SIZE, WM_SYSCOMMAND, ;
-                             WM_NOTIFYICON, WM_ENTERIDLE, WM_CLOSE, WM_DESTROY, WM_ENDSESSION, WM_ACTIVATE  }, ;
+                             WM_NOTIFYICON, WM_ENTERIDLE, WM_CLOSE, WM_DESTROY, WM_ENDSESSION, WM_ACTIVATE, WM_HELP }, ;
                            { ;
                              { | o, w, l | onCommand( o, w, l ) },        ;
                              { | o, w | onEraseBk( o, w ) },              ;
                              { | o | onMove( o ) },                       ;
                              { | o, w, l | onSize( o, w, l ) },           ;
-                             { | o, w, l | onSysCommand( o, w, l ) },           ;
+                             { | o, w, l | onSysCommand( o, w, l ) },     ;
                              { | o, w, l | onNotifyIcon( o, w, l ) },     ;
                              { | o, w, l | onEnterIdle( o, w, l ) },      ;
                              { | o | onCloseQuery( o ) },                 ;
                              { | o | onDestroy( o ) },                    ;
                              { | o, w | onEndSession( o, w ) },           ;
-                             { | o, w, l | onActivate( o, w, l ) }        ;
+                             { | o, w, l | onActivate( o, w, l ) },       ;
+                             { | o, w, l | onHelp( o, w, l ) }            ;
                            } ;
                          }
 
@@ -252,6 +253,10 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
       ::handle := Hwg_InitMdiWindow( Self, ::szAppName, cTitle, cMenu,  ;
                                      IIf( oIcon != Nil, oIcon:handle, Nil ), , ;  //clr, ;
                                      nStyle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+
+      IF cHelp != NIL
+         SetHelpFileName( cHelp )
+      ENDIF
 
    ELSEIF lType == WND_MAIN
 
@@ -353,6 +358,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMainWindow
    Local i, xPos, yPos, oMdi
 
    // writelog( str(msg) + str(wParam) + str(lParam) )
+
    IF msg = WM_MENUCHAR
       // PROCESS ACCELERATOR IN CONTROLS
       RETURN onSysCommand( Self, SC_KEYMENU, LoWord( wParam ) )
@@ -512,6 +518,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
 
    //IF msg = WM_NCLBUTTONDBLCLK .AND. ::lChild
    //   Return 0
+
    IF msg = WM_GETMINMAXINFO //= &H24
       IF ::minWidth  > -1 .OR. ::maxWidth  > -1 .OR. ::minHeight > -1 .OR. ::maxHeight > -1
          MINMAXWINDOW(::handle, lParam,;

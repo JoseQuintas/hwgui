@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.87 2010-02-08 09:59:02 druzus Exp $
+ * $Id: window.c,v 1.88 2010-02-10 23:32:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -1238,3 +1238,10 @@ HB_FUNC( GETWINDOWPLACEMENT )
    else
       hb_retnl( -1 )  ;
 }
+
+HB_FUNC( FLASHWINDOW )
+{
+   HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
+   int itrue = hb_parni( 2 );
+   FlashWindow(  hWnd, itrue ) ;
+} 

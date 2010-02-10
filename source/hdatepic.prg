@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.27 2010-02-05 12:39:07 lfbasso Exp $
+ * $Id: hdatepic.prg,v 1.28 2010-02-10 23:32:12 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -22,7 +22,7 @@ CLASS HDatePicker INHERIT HControl
 
 CLASS VAR winclass   INIT "SYSDATETIMEPICK32"
    DATA bSetGet
-   DATA value
+   DATA dValue
    DATA bChange
    DATA lnoValid       INIT .F.
 
@@ -39,6 +39,7 @@ CLASS VAR winclass   INIT "SYSDATETIMEPICK32"
    METHOD onChange( nMess )
    METHOD When( ) 
    METHOD Valid( )
+   METHOD Value ( cText ) SETGET 
 
 ENDCLASS
 
@@ -49,8 +50,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               ,, ctooltip, tcolor, bcolor )
 
-   ::value   := IIf( vari == Nil .OR. ValType( vari ) != "D", CToD( Space( 8 ) ), vari )
-   ::title   := ::value
+   ::dValue   := IIf( vari == Nil .OR. ValType( vari ) != "D", CToD( Space( 8 ) ), vari )
+   ::title   := ::dValue
    ::bSetGet := bSetGet
    ::bChange := bChange
 
@@ -81,7 +82,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bSize, bInit, ;
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize,, ctooltip, tcolor, bcolor )
    HWG_InitCommonControlsEx()
-   ::value   := IIf( vari == Nil .OR. ValType( vari ) != "D", CToD( Space( 8 ) ), vari )
+   ::dValue   := IIf( vari == Nil .OR. ValType( vari ) != "D", CToD( Space( 8 ) ), vari )
    ::bSetGet := bSetGet
    ::bChange := bChange
    
@@ -116,10 +117,10 @@ METHOD Init() CLASS HDatePicker
       SetWindowObject( ::handle, Self )
       HWG_INITDATEPICKERPROC( ::handle )
       Super:Init()
-      IF Empty( ::value )
+      IF Empty( ::dValue )
          SetDatePickerNull( ::handle )
       ELSE
-         SetDatePicker( ::handle, ::value )
+         SetDatePicker( ::handle, ::dValue )
       ENDIF
    ENDIF
    RETURN Nil
@@ -151,6 +152,13 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HDatePicker
 	 ENDIF
   
 RETURN -1
+ 
+METHOD Value( Value )  CLASS HDatePicker   
+
+   IF Value != Nil
+       ::SetValue( Value )
+   ENDIF    
+   RETURN ::dValue
         
 METHOD GetValue CLASS HDatePicker   
    RETURN GetDatePicker( ::handle )
@@ -162,22 +170,22 @@ METHOD SetValue( dValue ) CLASS HDatePicker
    ELSE
       SetDatePicker( ::handle, dValue )
    ENDIF
-   ::value := GetDatePicker( ::handle )
-   ::title := ::Value
+   ::dValue := GetDatePicker( ::handle )
+   ::title := ::dValue
    IF ::bSetGet != Nil
-      Eval( ::bSetGet, ::value, Self )
+      Eval( ::bSetGet, ::dValue, Self )
    ENDIF
    
    RETURN Nil
 
 METHOD Refresh() CLASS HDatePicker
    IF ::bSetGet != Nil
-      ::value := Eval( ::bSetGet,, nil )
+      ::dValue := Eval( ::bSetGet,, nil )
    ENDIF
-   IF Empty( ::value )
+   IF Empty( ::dValue )
       SetDatePickerNull( ::handle )
    ELSE
-      SetDatePicker( ::handle, ::value )
+      SetDatePicker( ::handle, ::dValue )
    ENDIF
    RETURN Nil
 
@@ -191,13 +199,13 @@ METHOD onChange( nMess ) CLASS HDatePicker
          POSTMESSAGE( ::handle, WM_KEYDOWN, VK_RIGHT, 0 )
          ::SetFocus()
       ENDIF
-      ::value := GetDatePicker( ::handle )
+      ::dValue := GetDatePicker( ::handle )
       IF ::bSetGet != Nil
-         Eval( ::bSetGet, ::value, Self )
+         Eval( ::bSetGet, ::dValue, Self )
       ENDIF
       IF ::bChange != Nil
          ::oparent:lSuspendMsgsHandling := .T.
-         Eval( ::bChange, ::value, Self )
+         Eval( ::bChange, ::dValue, Self )
          ::oparent:lSuspendMsgsHandling := .F.
       ENDIF
    ENDIF
@@ -213,7 +221,7 @@ METHOD When( ) CLASS HDatePicker
    IF ::bGetFocus != Nil
       ::oParent:lSuspendMsgsHandling := .T.
       ::lnoValid := .T.
-      res :=  Eval( ::bGetFocus, ::value, Self )
+      res :=  Eval( ::bGetFocus, ::dValue, Self )
       ::oParent:lSuspendMsgsHandling := .F.
       ::lnoValid := ! res
       IF ! res
@@ -229,13 +237,13 @@ METHOD Valid( ) CLASS HDatePicker
    IF ! CheckFocus( Self, .T. ) .OR. ::lnoValid
       RETURN .T.
    ENDIF
-   ::value := GetDatePicker( ::handle )
+   ::dValue := GetDatePicker( ::handle )
    IF ::bSetGet != Nil
-      Eval( ::bSetGet, ::value, Self )
+      Eval( ::bSetGet, ::dValue, Self )
    ENDIF
    IF ::bLostFocus != Nil
       ::oparent:lSuspendMsgsHandling := .T.
-      res := Eval( ::bLostFocus, ::value, Self )
+      res := Eval( ::bLostFocus, ::dValue, Self )
       ::oparent:lSuspendMsgsHandling := .F.
       IF ! res
          ::SetFocus( )

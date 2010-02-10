@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.100 2010-01-25 02:18:47 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.101 2010-02-10 23:32:12 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -611,12 +611,16 @@ STATIC FUNCTION onActivate( oDlg, wParam, lParam )
    ENDIF
    RETURN 0
 
-STATIC FUNCTION onHelp( oDlg, wParam, lParam )
-   LOCAL oCtrl, nHelpId, oParent
+FUNCTION onHelp( oDlg, wParam, lParam )
+   LOCAL oCtrl, nHelpId, oParent, cDir
 
    HB_SYMBOL_UNUSED( wParam )
 
    IF ! Empty( SetHelpFileName() )
+      IF "chm" $ Lower( CutPath( SetHelpFileName() ) )
+         cDir := IIF( EMPTY( FilePath( SetHelpFileName() ) ), Curdir(), FilePath( SetHelpFileName() ) ) 
+         nHelpId := ""
+      ENDIF       
       oCtrl := oDlg:FindControl( nil, GetHelpData( lParam ) )
       IF oCtrl != nil
          nHelpId := oCtrl:HelpId
@@ -624,12 +628,16 @@ STATIC FUNCTION onHelp( oDlg, wParam, lParam )
             oParent := oCtrl:oParent
             nHelpId := oParent:HelpId
          ENDIF
-
-         WinHelp( oDlg:handle, SetHelpFileName(), IIf( Empty( nHelpId ), 3, 1 ), nHelpId )
-
+         IF "chm" $ Lower( CutPath( SetHelpFileName() ) )
+            nHelpId := IIF( VALTYPE( nHelpId ) = "N", LTrim( Str( nHelpId ) ), nHelpId )
+            ShellExecute( "hh.exe", "open", CutPath( SetHelpFileName() ) + "::" + nHelpId+".html", cDir ) 
+         ELSE   
+            WinHelp( oDlg:handle, SetHelpFileName(), IIf( Empty( nHelpId ), 3, 1 ), nHelpId )
+         ENDIF  
+      ELSEIF cDir != Nil
+         ShellExecute( "hh.exe", "open", CutPath( SetHelpFileName() )  , cDir )         
       ENDIF
    ENDIF
-
    RETURN 0
 
 STATIC FUNCTION onPspNotify( oDlg, wParam, lParam )

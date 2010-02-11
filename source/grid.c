@@ -1,5 +1,5 @@
  /*
-  * $Id: grid.c,v 1.39 2010-02-08 09:58:52 druzus Exp $
+  * $Id: grid.c,v 1.40 2010-02-11 18:18:29 druzus Exp $
   *
   * HWGUI - Harbour Win32 GUI library source code:
   * HGrid class
@@ -175,15 +175,18 @@ HB_FUNC( LISTVIEW_GETDISPINFO )
 
 HB_FUNC( LISTVIEW_SETDISPINFO )
 {
-   PHB_ITEM pValue = hb_itemNew( NULL );
    LV_DISPINFO *pDispInfo = ( LV_DISPINFO * ) HB_PARHANDLE( 1 );
-   hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
-   /* TOFIX: wrong code - have to be redesigned */
-   pDispInfo->item.pszText = ( LPSTR ) hb_itemGetCPtr( pValue );
-   hb_itemRelease( pValue );
+
+   if( pDispInfo->item.mask & LVIF_TEXT )
+   {
+      HB_ITEMCOPYSTR( hb_param( 2, HB_IT_ANY ), pDispInfo->item.pszText,
+                      pDispInfo->item.cchTextMax );
+      pDispInfo->item.pszText[ pDispInfo->item.cchTextMax - 1 ] = 0;
+   }
+   // it seems these lines below are not strictly necessary for text cells
+   // since we don't get a LVIF_STATE message !
    if( pDispInfo->item.iSubItem == 0 )
       pDispInfo->item.state = 2;
-
 }
 
 HB_FUNC( LISTVIEW_GETGRIDKEY )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1234 2010-02-11 15:21:16 lfbasso Exp $
+ * $Id: Changelog,v 1.1235 2010-02-11 18:18:19 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,22 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-02-11 19:18 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/grid.c
+    ! fixed LISTVIEW_SETDISPINFO() to use internal LV_DISPINFO buffer
+      instead of using reference to unprotected against releasing
+      memory area used for string item.
+
+  * hwgui/source/control.c
+    ! fixed TOOLBAR_SETDISPINFOID() to use internal TOOLTIPTEXT buffer
+      instead of using reference to unprotected against releasing
+      memory area used for string item.
+    ! fixed TOOLBAR_GETINFOTIP() to use internal NMTBGETINFOTIP buffer
+      instead of using reference to unprotected against releasing
+      memory area used for string item.
+
+    All above fixes created by Francesco Perillo - many thanks.
 2010-02-11 13:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcheck.prg
     ! fix in METHOD WHEN if bsetget = Nil

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.100 2010-02-06 02:06:43 druzus Exp $
+ * $Id: control.c,v 1.101 2010-02-11 18:18:28 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1700,12 +1700,19 @@ HB_FUNC( ImageList_GetImageCount )
 
 HB_FUNC( TOOLBAR_SETDISPINFO )
 {
-   PHB_ITEM pValue = hb_itemNew( NULL );
    LPTOOLTIPTEXT pDispInfo = ( LPTOOLTIPTEXT ) HB_PARHANDLE( 1 );
-   hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
-   /* TOFIX: wrong code - have to be redesigned */
-   pDispInfo->lpszText = ( LPSTR ) hb_itemGetCPtr( pValue );
-   hb_itemRelease( pValue );
+
+   if( pDispInfo )
+   {
+      HB_ITEMCOPYSTR( hb_param( 2, HB_IT_ANY ), pDispInfo->szText,
+                      HB_SIZEOFARRAY( pDispInfo->szText ) );
+      pDispInfo->szText[ HB_SIZEOFARRAY( pDispInfo->szText ) - 1 ] = 0;
+#if 0
+      /* is it necessary? */
+      if( !pDispInfo->hInst )
+         pDispInfo->lpszText = pDispInfo->szText;
+#endif
+   }
 }
 
 HB_FUNC( TOOLBAR_GETDISPINFOID )
@@ -1717,12 +1724,13 @@ HB_FUNC( TOOLBAR_GETDISPINFOID )
 
 HB_FUNC( TOOLBAR_GETINFOTIP )
 {
-   PHB_ITEM pValue = hb_itemNew( NULL );
    LPNMTBGETINFOTIP pDispInfo = ( LPNMTBGETINFOTIP ) HB_PARHANDLE( 1 );
-   hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
-   /* TOFIX: wrong code - have to be redesigned */
-   pDispInfo->pszText = ( LPSTR ) hb_itemGetCPtr( pValue );
-   hb_itemRelease( pValue );
+   if( pDispInfo && pDispInfo->cchTextMax > 0 )
+   {
+      HB_ITEMCOPYSTR( hb_param( 2, HB_IT_ANY ), pDispInfo->pszText,
+                      pDispInfo->cchTextMax );
+      pDispInfo->pszText[ pDispInfo->cchTextMax - 1 ] = 0;
+   }
 }
 
 HB_FUNC( TOOLBAR_GETINFOTIPID )

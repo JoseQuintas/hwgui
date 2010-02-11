@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.101 2010-02-10 23:32:12 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.102 2010-02-11 18:54:35 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -638,7 +638,7 @@ FUNCTION onHelp( oDlg, wParam, lParam )
          ShellExecute( "hh.exe", "open", CutPath( SetHelpFileName() )  , cDir )         
       ENDIF
    ENDIF
-   RETURN 0
+   RETURN 1
 
 STATIC FUNCTION onPspNotify( oDlg, wParam, lParam )
    LOCAL nCode := GetNotifyCode( lParam ), res := .T.

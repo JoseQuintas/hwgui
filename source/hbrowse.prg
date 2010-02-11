@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.209 2010-02-10 23:32:03 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.210 2010-02-11 18:54:34 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1947,7 +1947,7 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                             ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1 + ::aMargin[ 1 ] , ;
                             x + xSize - ( 2 + ::aMargin[ 2 ] ) , ;
                             ::y1 + ( ::height + 1 ) * ::nPaintRow - ( 1 + ::aMargin[ 3 ] ) , ;
-                            ::aColumns[ ::nPaintCol ]:nJusLin )
+                            ::aColumns[ ::nPaintCol ]:nJusLin + DT_NOPREFIX + DT_NOCLIP )
 
 // Clipping rectangle
                   #if 0

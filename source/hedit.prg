@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.165 2010-02-10 23:32:14 lfbasso Exp $
+ *$Id: hedit.prg,v 1.166 2010-02-11 15:21:18 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -283,14 +283,14 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
             IF wParam == 40 .AND. ::oUpDown != Nil // KeyDown
                RETURN - 1
-            ELSEIF wParam == 40 .OR. ( wParam == 39 .AND. ::oUpDown != Nil )   // KeyDown
+            ELSEIF wParam == 40 .OR. ( wParam == 399 .AND. ::oUpDown != Nil )   // KeyDown
                IF ! IsCtrlShift()
                   GetSkip( oParent, ::handle, , 1 )
                   RETURN 0
                ENDIF
             ELSEIF wParam == 38 .AND. ::oUpDown != Nil   // KeyUp
                RETURN - 1
-            ELSEIF wParam == 38 .OR.( wParam == 37 .AND. ::oUpDown != Nil )   // KeyUp
+            ELSEIF wParam == 38 .OR.( wParam == 377 .AND. ::oUpDown != Nil )   // KeyUp
                IF ! IsCtrlShift()
                   GetSkip( oParent, ::handle, , -1 )
                   RETURN 0
@@ -614,7 +614,7 @@ METHOD ParsePict( cPicture, vari ) CLASS HEdit
    ENDIF
    RETURN Nil
 
-METHOD IsEditable( nPos ) CLASS HEdit
+METHOD IsEditable( nPos, lDel ) CLASS HEdit
    LOCAL cChar
 
    IF Empty( ::cPicMask )
@@ -628,8 +628,8 @@ METHOD IsEditable( nPos ) CLASS HEdit
 
    IF ::cType == "C"
       RETURN cChar $ "!ANX9#"
-   ELSEIF ::cType == "N"
-      RETURN cChar $ "9#$*"
+   ELSEIF ::cType == "N"       // nando add         
+      RETURN cChar $ "9#$*Z" + IIF( !EMPTY( lDel ), IIF( "E" $ ::cPicFunc, ",", "" ), "" )
    ELSEIF ::cType == "D"
       RETURN cChar == "9"
    ELSEIF ::cType == "L"
@@ -665,7 +665,9 @@ METHOD KeyRight( nPos ) CLASS HEdit
          SendMessage( ::handle, EM_SETSEL, newpos, newpos )
       ENDIF
    ENDIF
-
+   IF ::oUpDown != Nil .AND. nPos > newPos
+      GetSkip( ::oParent, ::handle, , 1 )
+   ENDIF
    RETURN 0
 
 METHOD KeyLeft( nPos ) CLASS HEdit
@@ -682,6 +684,9 @@ METHOD KeyLeft( nPos ) CLASS HEdit
             EXIT
          ENDIF
       ENDDO
+   ENDIF
+   IF ::oUpDown != Nil .AND. nPos <= 0
+      GetSkip( ::oParent, ::handle, , -1 )
    ENDIF
    RETURN 0
 
@@ -708,8 +713,9 @@ METHOD DeleteChar( lBack ) CLASS HEdit
    IF nPosEnd - nPosStart - 1 > 1 .AND.::lPicComplex .AND. ::cType <> "N" //.AND. NPOSEND < nGetLen
       lBack := .T.
    ELSE
-      IF lBack .AND. ! ::IsEditable( nPosStart + 1 ) .AND.  ::cType <> "N"
-         nPosStart -=  1
+      IF lBack .AND. ! ::IsEditable( nPosStart + 1, .T. ) //.AND.  ::cType <> "N"
+          nPosStart -= IIF( ::cType <> "N", 1, 0 )
+          cbuf := IIF( ::cType <> "N", cBuf, ::title )
       ENDIF
       IF  ::lPicComplex .AND. ::cType <> "N" .AND. ::FirstNotEditable( nPosStart ) > 0 .AND. ;
                ( !lBack  .OR. ( lBack .AND. nPosEnd - nPosStart - 1 < 2 )) 
@@ -753,6 +759,16 @@ METHOD DeleteChar( lBack ) CLASS HEdit
    ELSEIF ::cType = "N" .AND. Len( AllTrim( cBuf ) ) = 0
       ::lFirst := .T.
       nPosStart := ::FirstEditable() - 1
+   ELSEIF ::cType = "N" .AND. ::lPicComplex .AND. !lBack .AND. ;
+        RIGHT( TRIM( ::title ), 1 ) != '.'
+      IF "E" $ ::cPicFunc
+         cBuf := TRIM( Strtran( cBuf, ".", "" ) )
+         cBuf :=  Strtran( cBuf, ",", "." ) 
+      ELSE
+         cBuf := TRIM( Strtran( cBuf, ",", "" ) )
+      ENDIF  
+      cBuf := Val( LTrim( cBuf ) )
+      cBuf := Transform( cBuf, ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
    ENDIF
    ::title := cBuf
    SetDlgItemText( ::oParent:handle, ::id, ::title )
@@ -771,6 +787,7 @@ METHOD Input( cChar, nPos ) CLASS HEdit
          IF nPos != 1
             RETURN Nil
          ENDIF
+         ::lFirst := .F.
       ELSEIF ! ( cChar $ "0123456789" )
          RETURN Nil
       ENDIF
@@ -849,7 +866,14 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
                vari := Left( vari, i - 1 ) + SubStr( vari, i + 1 )
             ENDIF
          NEXT
-         vari := StrTran( vari, " ", IIF( "E" $ ::cPicFunc, ",", "." ) )
+         IF "E" $ ::cPicFunc .AND. "," $ ::title
+            vari := Strtran( ::title, ".", "" ) 
+            vari := Strtran( vari, ",", "." ) 
+            ::title := "."
+         ELSE
+            // nando -                               remove the .
+            vari := strtran( vari," ",IIF("E" $ ::cPicFunc,","," "))
+         ENDIF
          vari := Val( vari )
          lSignal := IIF( lSignal .AND. vari != 0, .F., lSignal )
       ENDIF
@@ -1174,7 +1198,7 @@ METHOD Untransform( cBuffer ) CLASS HEdit
                                         ::LastEditable() - ::FirstEditable() + 1 ), ;
                                 ",", " " ) + SubStr( cBuffer, ::LastEditable() + 1 )
          ENDIF
-
+         
          FOR nFor := ::FirstEditable() TO ::LastEditable()
             IF ! ::IsEditable( nFor ) .and. SubStr( cBuffer, nFor, 1 ) != "."
                cBuffer = Left( cBuffer, nFor - 1 ) + Chr( 1 ) + SubStr( cBuffer, nFor + 1 )

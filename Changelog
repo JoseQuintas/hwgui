@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1233 2010-02-10 23:31:08 lfbasso Exp $
+ * $Id: Changelog,v 1.1234 2010-02-11 15:21:16 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2010-02-11 13:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcheck.prg
+    ! fix in METHOD WHEN if bsetget = Nil
+  * source\hedit.prg
+    ! fixed DeleteChar if complex pictures and Type = "N"
 
 2010-02-10 21:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch

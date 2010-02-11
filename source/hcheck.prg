@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.41 2009-11-20 18:24:28 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.42 2010-02-11 15:21:18 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -225,7 +225,11 @@ METHOD When( ) CLASS HCheckButton
    IF ::bGetFocus != Nil
       ::lnoValid := .T.
       ::oParent:lSuspendMsgsHandling := .t.
-      res := Eval( ::bGetFocus, Eval( ::bSetGet, , Self ), Self )
+ 		  IF ::bSetGet != Nil  
+          res := Eval( ::bGetFocus, Eval( ::bSetGet, , Self ), Self )
+      ELSE
+          res := Eval( ::bGetFocus,::Value, Self )
+      ENDIF    
       ::lnoValid := ! res
       IF ! res
          oParent := ParentGetDialog( Self )

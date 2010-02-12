@@ -1,5 +1,5 @@
 /*
- * $Id: freeimg.c,v 1.29 2010-02-12 09:59:03 druzus Exp $
+ * $Id: freeimg.c,v 1.30 2010-02-12 17:57:14 druzus Exp $
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
@@ -16,7 +16,7 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "freeimage.h"
-#include "guilib.h"
+#include "hwingui.h"
 
 typedef char *( WINAPI * FREEIMAGE_GETVERSION ) ( void );
 

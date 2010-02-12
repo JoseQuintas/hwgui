@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1237 2010-02-12 09:26:33 omm Exp $
+ * $Id: Changelog,v 1.1238 2010-02-12 09:58:20 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,28 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-02-12 10:58 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/freeimg.c
+  * hwgui/source/theme.c
+    * updated to compile with WinCE header files
+
+  * hwgui/source/guimain.prg
+    fixes in SelectMultipleFiles() function:
+    ! fixed second parameter passed to GetOpenFileName() - this data is
+      also used to initialize "File Name" edit control. From MSDN:
+         The first character of this buffer must be NULL if initialization
+         is not necessary
+    ! fixed to work with native Harbour code which do not overload []
+      operator
+    % use path which is already returned by _GetOpenFileName() and
+      improved file buffer decoding
+
+  * hwgui/include/hwingui.h
+    * added hack to pacify warning in old [x]Harbour versions which
+      wrongly defined some functions using strings
+      Warning! This hacks disables compiler warnings/error messages
+               for wrong parameters.
 
 2010-02-12 11:30 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
   + ChangeLog

@@ -1,5 +1,5 @@
 /*
- *$Id: hwingui.h,v 1.6 2010-02-08 09:58:49 druzus Exp $
+ *$Id: hwingui.h,v 1.7 2010-02-12 09:59:02 druzus Exp $
  */
 
 #include <windows.h>
@@ -56,6 +56,12 @@
       #endif
    #endif
 
+/* hack to pacify warning in old [x]Harbour versions which wrongly
+ * defined some functions using strings
+ */
+#if defined( __XHARBOUR__ ) || ( __HARBOUR__ - 0  == 0 )
+   #undef HB_STORSTR
+   #define HB_STORSTR( str, n )                  hb_storc( ( char * ) str, n )
 #endif
 
 HB_EXTERN_BEGIN

@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.25 2010-01-25 02:14:00 druzus Exp $
+ * $Id: theme.c,v 1.26 2010-02-12 09:59:06 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -698,7 +698,11 @@ static HRESULT DrawThemeParentBackgroundFail( HWND hwnd, HDC hdc, RECT * prc )
    return E_FAIL;
 }
 
+#if defined( HB_OS_WIN_CE )
+static FARPROC GetProc( LPCTSTR lpProc, FARPROC pfnFail )
+#else
 static FARPROC GetProc( LPCSTR lpProc, FARPROC pfnFail )
+#endif
 {
    if( m_hThemeDll != NULL )
    {
@@ -713,7 +717,7 @@ static FARPROC GetProc( LPCSTR lpProc, FARPROC pfnFail )
 HTHEME hb_OpenThemeData( HWND hwnd, LPCWSTR pszClassList )
 {
    PFNOPENTHEMEDATA pfnOpenThemeData =
-         ( PFNOPENTHEMEDATA ) GetProc( "OpenThemeData",
+         ( PFNOPENTHEMEDATA ) GetProc( HBTEXT( "OpenThemeData" ),
          ( FARPROC ) OpenThemeDataFail );
    return ( *pfnOpenThemeData ) ( hwnd, pszClassList );
 }
@@ -721,7 +725,7 @@ HTHEME hb_OpenThemeData( HWND hwnd, LPCWSTR pszClassList )
 HRESULT hb_CloseThemeData( HTHEME hTheme )
 {
    PFNCLOSETHEMEDATA pfnCloseThemeData =
-         ( PFNCLOSETHEMEDATA ) GetProc( "CloseThemeData",
+         ( PFNCLOSETHEMEDATA ) GetProc( HBTEXT( "CloseThemeData" ),
          ( FARPROC ) CloseThemeDataFail );
    return ( *pfnCloseThemeData ) ( hTheme );
 }
@@ -730,7 +734,7 @@ HRESULT hb_DrawThemeBackground( HTHEME hTheme, HDC hdc,
       int iPartId, int iStateId, const RECT * pRect, const RECT * pClipRect )
 {
    PFNDRAWTHEMEBACKGROUND pfnDrawThemeBackground =
-         ( PFNDRAWTHEMEBACKGROUND ) GetProc( "DrawThemeBackground",
+         ( PFNDRAWTHEMEBACKGROUND ) GetProc( HBTEXT( "DrawThemeBackground" ),
          ( FARPROC ) DrawThemeBackgroundFail );
    return ( *pfnDrawThemeBackground ) ( hTheme, hdc, iPartId, iStateId, pRect,
          pClipRect );
@@ -741,7 +745,7 @@ HRESULT hb_DrawThemeText( HTHEME hTheme, HDC hdc, int iPartId,
       DWORD dwTextFlags2, const RECT * pRect )
 {
    PFNDRAWTHEMETEXT pfn =
-         ( PFNDRAWTHEMETEXT ) GetProc( "DrawThemeText",
+         ( PFNDRAWTHEMETEXT ) GetProc( HBTEXT( "DrawThemeText" ),
          ( FARPROC ) DrawThemeTextFail );
    return ( *pfn ) ( hTheme, hdc, iPartId, iStateId, pszText, iCharCount,
          dwTextFlags, dwTextFlags2, pRect );
@@ -753,7 +757,7 @@ HRESULT hb_GetThemeBackgroundContentRect( HTHEME hTheme, HDC hdc,
 {
    PFNGETTHEMEBACKGROUNDCONTENTRECT pfn =
          ( PFNGETTHEMEBACKGROUNDCONTENTRECT )
-         GetProc( "GetThemeBackgroundContentRect",
+         GetProc( HBTEXT( "GetThemeBackgroundContentRect" ),
          ( FARPROC ) GetThemeBackgroundContentRectFail );
    return ( *pfn ) ( hTheme, hdc, iPartId, iStateId, pBoundingRect,
          pContentRect );
@@ -764,7 +768,7 @@ HRESULT hb_GetThemeBackgroundExtent( HTHEME hTheme, HDC hdc,
       RECT * pExtentRect )
 {
    PFNGETTHEMEBACKGROUNDEXTENT pfn =
-         ( PFNGETTHEMEBACKGROUNDEXTENT ) GetProc( "GetThemeBackgroundExtent",
+         ( PFNGETTHEMEBACKGROUNDEXTENT ) GetProc( HBTEXT( "GetThemeBackgroundExtent" ),
          ( FARPROC ) GetThemeBackgroundExtentFail );
    return ( *pfn ) ( hTheme, hdc, iPartId, iStateId, pContentRect,
          pExtentRect );
@@ -774,7 +778,7 @@ HRESULT hb_GetThemePartSize( HTHEME hTheme, HDC hdc,
       int iPartId, int iStateId, RECT * pRect, int eSize, SIZE * psz )
 {
    PFNGETTHEMEPARTSIZE pfnGetThemePartSize =
-         ( PFNGETTHEMEPARTSIZE ) GetProc( "GetThemePartSize",
+         ( PFNGETTHEMEPARTSIZE ) GetProc( HBTEXT( "GetThemePartSize" ),
          ( FARPROC ) GetThemePartSizeFail );
    return ( *pfnGetThemePartSize ) ( hTheme, hdc, iPartId, iStateId, pRect,
          eSize, psz );
@@ -785,7 +789,7 @@ HRESULT hb_GetThemeTextExtent( HTHEME hTheme, HDC hdc,
       DWORD dwTextFlags, const RECT * pBoundingRect, RECT * pExtentRect )
 {
    PFNGETTHEMETEXTEXTENT pfn =
-         ( PFNGETTHEMETEXTEXTENT ) GetProc( "GetThemeTextExtent",
+         ( PFNGETTHEMETEXTEXTENT ) GetProc( HBTEXT( "GetThemeTextExtent" ),
          ( FARPROC ) GetThemeTextExtentFail );
    return ( *pfn ) ( hTheme, hdc, iPartId, iStateId, pszText, iCharCount,
          dwTextFlags, pBoundingRect, pExtentRect );
@@ -795,7 +799,7 @@ HRESULT hb_GetThemeTextMetrics( HTHEME hTheme, HDC hdc,
       int iPartId, int iStateId, TEXTMETRIC * ptm )
 {
    PFNGETTHEMETEXTMETRICS pfn =
-         ( PFNGETTHEMETEXTMETRICS ) GetProc( "GetThemeTextMetrics",
+         ( PFNGETTHEMETEXTMETRICS ) GetProc( HBTEXT( "GetThemeTextMetrics" ),
          ( FARPROC ) GetThemeTextMetricsFail );
    return ( *pfn ) ( hTheme, hdc, iPartId, iStateId, ptm );
 }
@@ -804,7 +808,7 @@ HRESULT hb_GetThemeBackgroundRegion( HTHEME hTheme, HDC hdc,
       int iPartId, int iStateId, const RECT * pRect, HRGN * pRegion )
 {
    PFNGETTHEMEBACKGROUNDREGION pfn =
-         ( PFNGETTHEMEBACKGROUNDREGION ) GetProc( "GetThemeBackgroundRegion",
+         ( PFNGETTHEMEBACKGROUNDREGION ) GetProc( HBTEXT( "GetThemeBackgroundRegion" ),
          ( FARPROC ) GetThemeBackgroundRegionFail );
    return ( *pfn ) ( hTheme, hdc, iPartId, iStateId, pRect, pRegion );
 }
@@ -814,7 +818,7 @@ HRESULT hb_HitTestThemeBackground( HTHEME hTheme, HDC hdc, int iPartId,
       POINT ptTest, WORD * pwHitTestCode )
 {
    PFNHITTESTTHEMEBACKGROUND pfn =
-         ( PFNHITTESTTHEMEBACKGROUND ) GetProc( "HitTestThemeBackground",
+         ( PFNHITTESTTHEMEBACKGROUND ) GetProc( HBTEXT( "HitTestThemeBackground" ),
          ( FARPROC ) HitTestThemeBackgroundFail );
    return ( *pfn ) ( hTheme, hdc, iPartId, iStateId, dwOptions, pRect, hrgn,
          ptTest, pwHitTestCode );
@@ -824,7 +828,7 @@ HRESULT hb_DrawThemeEdge( HTHEME hTheme, HDC hdc, int iPartId, int iStateId,
       const RECT * pDestRect, UINT uEdge, UINT uFlags, RECT * pContentRect )
 {
    PFNDRAWTHEMEEDGE pfn =
-         ( PFNDRAWTHEMEEDGE ) GetProc( "DrawThemeEdge",
+         ( PFNDRAWTHEMEEDGE ) GetProc( HBTEXT( "DrawThemeEdge" ),
          ( FARPROC ) DrawThemeEdgeFail );
    return ( *pfn ) ( hTheme, hdc, iPartId, iStateId, pDestRect, uEdge, uFlags,
          pContentRect );
@@ -834,7 +838,7 @@ HRESULT hb_DrawThemeIcon( HTHEME hTheme, HDC hdc, int iPartId,
       int iStateId, const RECT * pRect, HIMAGELIST himl, int iImageIndex )
 {
    PFNDRAWTHEMEICON pfn =
-         ( PFNDRAWTHEMEICON ) GetProc( "DrawThemeIcon",
+         ( PFNDRAWTHEMEICON ) GetProc( HBTEXT( "DrawThemeIcon" ),
          ( FARPROC ) DrawThemeIconFail );
    return ( *pfn ) ( hTheme, hdc, iPartId, iStateId, pRect, himl,
          iImageIndex );
@@ -843,7 +847,7 @@ HRESULT hb_DrawThemeIcon( HTHEME hTheme, HDC hdc, int iPartId,
 BOOL hb_IsThemePartDefined( HTHEME hTheme, int iPartId, int iStateId )
 {
    PFNISTHEMEPARTDEFINED pfn =
-         ( PFNISTHEMEPARTDEFINED ) GetProc( "IsThemePartDefined",
+         ( PFNISTHEMEPARTDEFINED ) GetProc( HBTEXT( "IsThemePartDefined" ),
          ( FARPROC ) IsThemePartDefinedFail );
    return ( *pfn ) ( hTheme, iPartId, iStateId );
 }
@@ -853,7 +857,7 @@ BOOL hb_IsThemeBackgroundPartiallyTransparent( HTHEME hTheme,
 {
    PFNISTHEMEBACKGROUNDPARTIALLYTRANSPARENT pfn =
          ( PFNISTHEMEBACKGROUNDPARTIALLYTRANSPARENT )
-         GetProc( "IsThemeBackgroundPartiallyTransparent",
+         GetProc( HBTEXT( "IsThemeBackgroundPartiallyTransparent" ),
          ( FARPROC ) IsThemeBackgroundPartiallyTransparentFail );
    return ( *pfn ) ( hTheme, iPartId, iStateId );
 }
@@ -862,7 +866,7 @@ HRESULT hb_GetThemeColor( HTHEME hTheme, int iPartId,
       int iStateId, int iPropId, COLORREF * pColor )
 {
    PFNGETTHEMECOLOR pfn =
-         ( PFNGETTHEMECOLOR ) GetProc( "GetThemeColor",
+         ( PFNGETTHEMECOLOR ) GetProc( HBTEXT( "GetThemeColor" ),
          ( FARPROC ) GetThemeColorFail );
    return ( *pfn ) ( hTheme, iPartId, iStateId, iPropId, pColor );
 }
@@ -871,7 +875,7 @@ HRESULT hb_GetThemeMetric( HTHEME hTheme, HDC hdc, int iPartId,
       int iStateId, int iPropId, int *piVal )
 {
    PFNGETTHEMEMETRIC pfn =
-         ( PFNGETTHEMEMETRIC ) GetProc( "GetThemeMetric",
+         ( PFNGETTHEMEMETRIC ) GetProc( HBTEXT( "GetThemeMetric" ),
          ( FARPROC ) GetThemeMetricFail );
    return ( *pfn ) ( hTheme, hdc, iPartId, iStateId, iPropId, piVal );
 }
@@ -880,7 +884,7 @@ HRESULT hb_GetThemeString( HTHEME hTheme, int iPartId,
       int iStateId, int iPropId, LPWSTR pszBuff, int cchMaxBuffChars )
 {
    PFNGETTHEMESTRING pfn =
-         ( PFNGETTHEMESTRING ) GetProc( "GetThemeString",
+         ( PFNGETTHEMESTRING ) GetProc( HBTEXT( "GetThemeString" ),
          ( FARPROC ) GetThemeStringFail );
    return ( *pfn ) ( hTheme, iPartId, iStateId, iPropId, pszBuff,
          cchMaxBuffChars );
@@ -890,7 +894,7 @@ HRESULT hb_GetThemeBool( HTHEME hTheme, int iPartId,
       int iStateId, int iPropId, BOOL * pfVal )
 {
    PFNGETTHEMEBOOL pfn =
-         ( PFNGETTHEMEBOOL ) GetProc( "GetThemeBool",
+         ( PFNGETTHEMEBOOL ) GetProc( HBTEXT( "GetThemeBool" ),
          ( FARPROC ) GetThemeBoolFail );
    return ( *pfn ) ( hTheme, iPartId, iStateId, iPropId, pfVal );
 }
@@ -899,7 +903,7 @@ HRESULT hb_GetThemeInt( HTHEME hTheme, int iPartId,
       int iStateId, int iPropId, int *piVal )
 {
    PFNGETTHEMEINT pfn =
-         ( PFNGETTHEMEINT ) GetProc( "GetThemeInt",
+         ( PFNGETTHEMEINT ) GetProc( HBTEXT( "GetThemeInt" ),
          ( FARPROC ) GetThemeIntFail );
    return ( *pfn ) ( hTheme, iPartId, iStateId, iPropId, piVal );
 }
@@ -908,7 +912,7 @@ HRESULT hb_GetThemeEnumValue( HTHEME hTheme, int iPartId,
       int iStateId, int iPropId, int *piVal )
 {
    PFNGETTHEMEENUMVALUE pfn =
-         ( PFNGETTHEMEENUMVALUE ) GetProc( "GetThemeEnumValue",
+         ( PFNGETTHEMEENUMVALUE ) GetProc( HBTEXT( "GetThemeEnumValue" ),
          ( FARPROC ) GetThemeEnumValueFail );
    return ( *pfn ) ( hTheme, iPartId, iStateId, iPropId, piVal );
 }
@@ -917,7 +921,7 @@ HRESULT hb_GetThemePosition( HTHEME hTheme, int iPartId,
       int iStateId, int iPropId, POINT * pPoint )
 {
    PFNGETTHEMEPOSITION pfn =
-         ( PFNGETTHEMEPOSITION ) GetProc( "GetThemePosition",
+         ( PFNGETTHEMEPOSITION ) GetProc( HBTEXT( "GetThemePosition" ),
          ( FARPROC ) GetThemePositionFail );
    return ( *pfn ) ( hTheme, iPartId, iStateId, iPropId, pPoint );
 }
@@ -926,7 +930,7 @@ HRESULT hb_GetThemeFont( HTHEME hTheme, HDC hdc, int iPartId,
       int iStateId, int iPropId, LOGFONT * pFont )
 {
    PFNGETTHEMEFONT pfn =
-         ( PFNGETTHEMEFONT ) GetProc( "GetThemeFont",
+         ( PFNGETTHEMEFONT ) GetProc( HBTEXT( "GetThemeFont" ),
          ( FARPROC ) GetThemeFontFail );
    return ( *pfn ) ( hTheme, hdc, iPartId, iStateId, iPropId, pFont );
 }
@@ -935,7 +939,7 @@ HRESULT hb_GetThemeRect( HTHEME hTheme, int iPartId,
       int iStateId, int iPropId, RECT * pRect )
 {
    PFNGETTHEMERECT pfn =
-         ( PFNGETTHEMERECT ) GetProc( "GetThemeRect",
+         ( PFNGETTHEMERECT ) GetProc( HBTEXT( "GetThemeRect" ),
          ( FARPROC ) GetThemeRectFail );
    return ( *pfn ) ( hTheme, iPartId, iStateId, iPropId, pRect );
 }
@@ -944,7 +948,7 @@ HRESULT hb_GetThemeMargins( HTHEME hTheme, HDC hdc, int iPartId,
       int iStateId, int iPropId, RECT * prc, MARGINS * pMargins )
 {
    PFNGETTHEMEMARGINS pfn =
-         ( PFNGETTHEMEMARGINS ) GetProc( "GetThemeMargins",
+         ( PFNGETTHEMEMARGINS ) GetProc( HBTEXT( "GetThemeMargins" ),
          ( FARPROC ) GetThemeMarginsFail );
    return ( *pfn ) ( hTheme, hdc, iPartId, iStateId, iPropId, prc, pMargins );
 }
@@ -953,7 +957,7 @@ HRESULT hb_GetThemeIntList( HTHEME hTheme, int iPartId,
       int iStateId, int iPropId, INTLIST * pIntList )
 {
    PFNGETTHEMEINTLIST pfn =
-         ( PFNGETTHEMEINTLIST ) GetProc( "GetThemeIntList",
+         ( PFNGETTHEMEINTLIST ) GetProc( HBTEXT( "GetThemeIntList" ),
          ( FARPROC ) GetThemeIntListFail );
    return ( *pfn ) ( hTheme, iPartId, iStateId, iPropId, pIntList );
 }
@@ -962,7 +966,7 @@ HRESULT hb_GetThemePropertyOrigin( HTHEME hTheme, int iPartId,
       int iStateId, int iPropId, int *pOrigin )
 {
    PFNGETTHEMEPROPERTYORIGIN pfn =
-         ( PFNGETTHEMEPROPERTYORIGIN ) GetProc( "GetThemePropertyOrigin",
+         ( PFNGETTHEMEPROPERTYORIGIN ) GetProc( HBTEXT( "GetThemePropertyOrigin" ),
          ( FARPROC ) GetThemePropertyOriginFail );
    return ( *pfn ) ( hTheme, iPartId, iStateId, iPropId, pOrigin );
 }
@@ -971,7 +975,7 @@ HRESULT hb_SetWindowTheme( HWND hwnd, LPCWSTR pszSubAppName,
       LPCWSTR pszSubIdList )
 {
    PFNSETWINDOWTHEME pfn =
-         ( PFNSETWINDOWTHEME ) GetProc( "SetWindowTheme",
+         ( PFNSETWINDOWTHEME ) GetProc( HBTEXT( "SetWindowTheme" ),
          ( FARPROC ) SetWindowThemeFail );
    return ( *pfn ) ( hwnd, pszSubAppName, pszSubIdList );
 }
@@ -981,7 +985,7 @@ HRESULT hb_GetThemeFilename( HTHEME hTheme, int iPartId,
       int cchMaxBuffChars )
 {
    PFNGETTHEMEFILENAME pfn =
-         ( PFNGETTHEMEFILENAME ) GetProc( "GetThemeFilename",
+         ( PFNGETTHEMEFILENAME ) GetProc( HBTEXT( "GetThemeFilename" ),
          ( FARPROC ) GetThemeFilenameFail );
    return ( *pfn ) ( hTheme, iPartId, iStateId, iPropId, pszThemeFileName,
          cchMaxBuffChars );
@@ -990,7 +994,7 @@ HRESULT hb_GetThemeFilename( HTHEME hTheme, int iPartId,
 COLORREF hb_GetThemeSysColor( HTHEME hTheme, int iColorId )
 {
    PFNGETTHEMESYSCOLOR pfn =
-         ( PFNGETTHEMESYSCOLOR ) GetProc( "GetThemeSysColor",
+         ( PFNGETTHEMESYSCOLOR ) GetProc( HBTEXT( "GetThemeSysColor" ),
          ( FARPROC ) GetThemeSysColorFail );
    return ( *pfn ) ( hTheme, iColorId );
 }
@@ -998,7 +1002,7 @@ COLORREF hb_GetThemeSysColor( HTHEME hTheme, int iColorId )
 HBRUSH hb_GetThemeSysColorBrush( HTHEME hTheme, int iColorId )
 {
    PFNGETTHEMESYSCOLORBRUSH pfn =
-         ( PFNGETTHEMESYSCOLORBRUSH ) GetProc( "GetThemeSysColorBrush",
+         ( PFNGETTHEMESYSCOLORBRUSH ) GetProc( HBTEXT( "GetThemeSysColorBrush" ),
          ( FARPROC ) GetThemeSysColorBrushFail );
    return ( *pfn ) ( hTheme, iColorId );
 }
@@ -1006,7 +1010,7 @@ HBRUSH hb_GetThemeSysColorBrush( HTHEME hTheme, int iColorId )
 BOOL hb_GetThemeSysBool( HTHEME hTheme, int iBoolId )
 {
    PFNGETTHEMESYSBOOL pfn =
-         ( PFNGETTHEMESYSBOOL ) GetProc( "GetThemeSysBool",
+         ( PFNGETTHEMESYSBOOL ) GetProc( HBTEXT( "GetThemeSysBool" ),
          ( FARPROC ) GetThemeSysBoolFail );
    return ( *pfn ) ( hTheme, iBoolId );
 }
@@ -1014,7 +1018,7 @@ BOOL hb_GetThemeSysBool( HTHEME hTheme, int iBoolId )
 int hb_GetThemeSysSize( HTHEME hTheme, int iSizeId )
 {
    PFNGETTHEMESYSSIZE pfn =
-         ( PFNGETTHEMESYSSIZE ) GetProc( "GetThemeSysSize",
+         ( PFNGETTHEMESYSSIZE ) GetProc( HBTEXT( "GetThemeSysSize" ),
          ( FARPROC ) GetThemeSysSizeFail );
    return ( *pfn ) ( hTheme, iSizeId );
 }
@@ -1022,7 +1026,7 @@ int hb_GetThemeSysSize( HTHEME hTheme, int iSizeId )
 HRESULT hb_GetThemeSysFont( HTHEME hTheme, int iFontId, LOGFONT * plf )
 {
    PFNGETTHEMESYSFONT pfn =
-         ( PFNGETTHEMESYSFONT ) GetProc( "GetThemeSysFont",
+         ( PFNGETTHEMESYSFONT ) GetProc( HBTEXT( "GetThemeSysFont" ),
          ( FARPROC ) GetThemeSysFontFail );
    return ( *pfn ) ( hTheme, iFontId, plf );
 }
@@ -1031,7 +1035,7 @@ HRESULT hb_GetThemeSysString( HTHEME hTheme, int iStringId,
       LPWSTR pszStringBuff, int cchMaxStringChars )
 {
    PFNGETTHEMESYSSTRING pfn =
-         ( PFNGETTHEMESYSSTRING ) GetProc( "GetThemeSysString",
+         ( PFNGETTHEMESYSSTRING ) GetProc( HBTEXT( "GetThemeSysString" ),
          ( FARPROC ) GetThemeSysStringFail );
    return ( *pfn ) ( hTheme, iStringId, pszStringBuff, cchMaxStringChars );
 }
@@ -1039,7 +1043,7 @@ HRESULT hb_GetThemeSysString( HTHEME hTheme, int iStringId,
 HRESULT hb_GetThemeSysInt( HTHEME hTheme, int iIntId, int *piValue )
 {
    PFNGETTHEMESYSINT pfn =
-         ( PFNGETTHEMESYSINT ) GetProc( "GetThemeSysInt",
+         ( PFNGETTHEMESYSINT ) GetProc( HBTEXT( "GetThemeSysInt" ),
          ( FARPROC ) GetThemeSysIntFail );
    return ( *pfn ) ( hTheme, iIntId, piValue );
 }
@@ -1047,7 +1051,7 @@ HRESULT hb_GetThemeSysInt( HTHEME hTheme, int iIntId, int *piValue )
 BOOL hb_IsThemeActive( void )
 {
    PFNISTHEMEACTIVE pfn =
-         ( PFNISTHEMEACTIVE ) GetProc( "IsThemeActive",
+         ( PFNISTHEMEACTIVE ) GetProc( HBTEXT( "IsThemeActive" ),
          ( FARPROC ) IsThemeActiveFail );
    return ( *pfn ) (  );
 }
@@ -1055,7 +1059,7 @@ BOOL hb_IsThemeActive( void )
 BOOL hb_IsAppThemed( void )
 {
    PFNISAPPTHEMED pfnIsAppThemed =
-         ( PFNISAPPTHEMED ) GetProc( "IsAppThemed",
+         ( PFNISAPPTHEMED ) GetProc( HBTEXT( "IsAppThemed" ),
          ( FARPROC ) IsAppThemedFail );
    return ( *pfnIsAppThemed ) (  );
 }
@@ -1063,7 +1067,7 @@ BOOL hb_IsAppThemed( void )
 HTHEME hb_GetWindowTheme( HWND hwnd )
 {
    PFNGETWINDOWTHEME pfn =
-         ( PFNGETWINDOWTHEME ) GetProc( "GetWindowTheme",
+         ( PFNGETWINDOWTHEME ) GetProc( HBTEXT( "GetWindowTheme" ),
          ( FARPROC ) GetWindowThemeFail );
    return ( *pfn ) ( hwnd );
 }
@@ -1071,7 +1075,7 @@ HTHEME hb_GetWindowTheme( HWND hwnd )
 HRESULT hb_EnableThemeDialogTexture( HWND hwnd, DWORD dwFlags )
 {
    PFNENABLETHEMEDIALOGTEXTURE pfn =
-         ( PFNENABLETHEMEDIALOGTEXTURE ) GetProc( "EnableThemeDialogTexture",
+         ( PFNENABLETHEMEDIALOGTEXTURE ) GetProc( HBTEXT( "EnableThemeDialogTexture" ),
          ( FARPROC ) EnableThemeDialogTextureFail );
    return ( *pfn ) ( hwnd, dwFlags );
 }
@@ -1080,7 +1084,7 @@ BOOL hb_IsThemeDialogTextureEnabled( HWND hwnd )
 {
    PFNISTHEMEDIALOGTEXTUREENABLED pfn =
          ( PFNISTHEMEDIALOGTEXTUREENABLED )
-         GetProc( "IsThemeDialogTextureEnabled",
+         GetProc( HBTEXT( "IsThemeDialogTextureEnabled" ),
          ( FARPROC ) IsThemeDialogTextureEnabledFail );
    return ( *pfn ) ( hwnd );
 }
@@ -1088,7 +1092,7 @@ BOOL hb_IsThemeDialogTextureEnabled( HWND hwnd )
 DWORD hb_GetThemeAppProperties( void )
 {
    PFNGETTHEMEAPPPROPERTIES pfn =
-         ( PFNGETTHEMEAPPPROPERTIES ) GetProc( "GetThemeAppProperties",
+         ( PFNGETTHEMEAPPPROPERTIES ) GetProc( HBTEXT( "GetThemeAppProperties" ),
          ( FARPROC ) GetThemeAppPropertiesFail );
    return ( *pfn ) (  );
 }
@@ -1096,7 +1100,7 @@ DWORD hb_GetThemeAppProperties( void )
 void hb_SetThemeAppProperties( DWORD dwFlags )
 {
    PFNSETTHEMEAPPPROPERTIES pfn =
-         ( PFNSETTHEMEAPPPROPERTIES ) GetProc( "SetThemeAppProperties",
+         ( PFNSETTHEMEAPPPROPERTIES ) GetProc( HBTEXT( "SetThemeAppProperties" ),
          ( FARPROC ) SetThemeAppPropertiesFail );
    ( *pfn ) ( dwFlags );
 }
@@ -1106,7 +1110,7 @@ HRESULT hb_GetCurrentThemeName( LPWSTR pszThemeFileName, int cchMaxNameChars,
       LPWSTR pszSizeBuff, int cchMaxSizeChars )
 {
    PFNGETCURRENTTHEMENAME pfn =
-         ( PFNGETCURRENTTHEMENAME ) GetProc( "GetCurrentThemeName",
+         ( PFNGETCURRENTTHEMENAME ) GetProc( HBTEXT( "GetCurrentThemeName" ),
          ( FARPROC ) GetCurrentThemeNameFail );
    return ( *pfn ) ( pszThemeFileName, cchMaxNameChars, pszColorBuff,
          cchMaxColorChars, pszSizeBuff, cchMaxSizeChars );
@@ -1117,7 +1121,7 @@ HRESULT hb_GetThemeDocumentationProperty( LPCWSTR pszThemeName,
 {
    PFNGETTHEMEDOCUMENTATIONPROPERTY pfn =
          ( PFNGETTHEMEDOCUMENTATIONPROPERTY )
-         GetProc( "GetThemeDocumentationProperty",
+         GetProc( HBTEXT( "GetThemeDocumentationProperty" ),
          ( FARPROC ) GetThemeDocumentationPropertyFail );
    return ( *pfn ) ( pszThemeName, pszPropertyName, pszValueBuff,
          cchMaxValChars );
@@ -1127,7 +1131,7 @@ HRESULT hb_DrawThemeParentBackground( HWND hwnd, HDC hdc, RECT * prc )
 {
    PFNDRAWTHEMEPARENTBACKGROUND pfn =
          ( PFNDRAWTHEMEPARENTBACKGROUND )
-         GetProc( "DrawThemeParentBackground",
+         GetProc( HBTEXT( "DrawThemeParentBackground" ),
          ( FARPROC ) DrawThemeParentBackgroundFail );
    return ( *pfn ) ( hwnd, hdc, prc );
 }
@@ -1135,7 +1139,7 @@ HRESULT hb_DrawThemeParentBackground( HWND hwnd, HDC hdc, RECT * prc )
 HRESULT hb_EnableTheming( BOOL fEnable )
 {
    PFNENABLETHEMING pfn =
-         ( PFNENABLETHEMING ) GetProc( "EnableTheming",
+         ( PFNENABLETHEMING ) GetProc( HBTEXT( "EnableTheming" ),
          ( FARPROC ) EnableThemingFail );
    return ( *pfn ) ( fEnable );
 }

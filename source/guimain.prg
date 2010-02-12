@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.39 2010-01-25 02:18:47 lfbasso Exp $
+ * $Id: guimain.prg,v 1.40 2010-02-12 09:59:05 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -384,51 +384,46 @@ cInitDir: Initial directory
 
 FUNCTION SelectMultipleFiles( cDescr, cTip, cIniDir, cTitle )
 
-   LOCAL aFiles, cRet, cFile, x, cFilter := "", cItem, nAt, cChar, i
+   LOCAL aFiles, cPath, cFile, cFilter, nAt
    LOCAL hWnd := 0
-   LOCAL nFlags := ""
-   LOCAL cPath := ""
+   LOCAL nFlags := NIL
    LOCAL nIndex := 1
 
-   cFilter += cDescr + Chr( 0 ) + cTip + Chr( 0 )
+   cFilter := cDescr + Chr( 0 ) + cTip + Chr( 0 )
+   /* initialize buffer with 0 bytes. Important is the 1-st character,
+    * from MSDN:  The first character of this buffer must be NULL
+    *             if initialization is not necessary
+    */
+   cFile := repl( chr( 0 ), 32000 )
+   aFiles := {}
 
-   cFile := Space( 32000 )
-
-
-   cRet := _GetOpenFileName( hWnd, @cFile, cTitle, cFilter, nFlags, cIniDir, Nil, @nIndex )
+   cPath := _GetOpenFileName( hWnd, @cFile, cTitle, cFilter, nFlags, cIniDir, Nil, @nIndex )
 
    nAt := At( Chr( 0 ) + Chr( 0 ), cFile )
-
-   cFile := Left( cFile, nAt )
-
-   aFiles := { }
-
-   IF nAt == 0 // no double chr(0) user must have pressed cancel
-      RETURN( aFiles )
+   IF nAt != 0
+      cFile := Left( cFile, nAt - 1 )
+      nAt := At( Chr( 0 ), cFile )
+      IF nAt != 0
+         /* skip path which is already in cPath variable */
+         cFile := SubStr( cFile, nAt + 1 )
+         /* decode files */
+         WHILE ! cFile == ""
+            nAt := At( Chr( 0 ), cFile )
+            IF nAt != 0
+               AAdd( aFiles, cPath + hb_osPathSeparator() + ;
+                             Left( cFile, nAt - 1 ) )
+               cFile := SubStr( cFile, nAt + 1 )
+            ELSE
+               AAdd( aFiles, cPath + hb_osPathSeparator() + cFile )
+               EXIT
+            ENDIF
+         ENDDO
+      ELSE
+         /* only single file selected */
+         AAdd( aFiles, cPath )
+      ENDIF
    ENDIF
-
-   x := At( Chr( 0 ), cFile ) // fist null
-   cPath := Left( cFile, x )
-
-   cFile := StrTran( cFile, cPath, "" )
-
-   IF ! Empty( cFile ) // user selected more than 1 file
-      cItem := ""
-
-      FOR i := 1 TO Len( cFile ) //EACH cChar IN cFile
-         cChar := cFile[ i ]
-         IF cChar == 0
-            AAdd( aFiles, StrTran( cPath, Chr( 0 ), "" ) + '\' + cItem )
-            cItem := ""
-            LOOP
-         ENDIF
-         cItem += cChar
-      NEXT
-   ELSE
-      aFiles := { StrTran( cPath, Chr( 0 ), "" ) }
-   ENDIF
-
-   RETURN( aFiles )
+   RETURN aFiles
 
 FUNCTION HWG_Version( oTip )
    LOCAL oVersion

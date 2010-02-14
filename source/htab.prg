@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.60 2010-02-10 23:32:17 lfbasso Exp $
+ *$Id: htab.prg,v 1.61 2010-02-14 03:11:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -272,8 +272,12 @@ METHOD Init() CLASS HTab
             ::nActive := IIF( ::nActive = 0 .AND. ::Pages[ i ]:Enabled, i, ::nActive )
          NEXT
          SendMessage( ::handle, TCM_SETCURFOCUS, ::nActive - 1, 0 )
-         RedrawWindow( ::oPaint:Handle, RDW_INVALIDATE  + RDW_INTERNALPAINT  )
-         ::ShowPage( IIF( ::nActive > 0, ::nActive, 1 ) )
+         IF ::nActive = 0
+            ::Disable()
+            ::ShowPage( 1 ) 
+         ELSE   
+            ::ShowPage( ::nActive )
+         ENDIF
       ELSE
          Asize( ::aPages, SendMessage( ::handle, TCM_GETITEMCOUNT, 0, 0 ) )
          AEval( ::aPages, { | a , i | HB_SYMBOL_UNUSED(a), ::AddPage( HPage():New( "" ,i,.t.,), "" )})

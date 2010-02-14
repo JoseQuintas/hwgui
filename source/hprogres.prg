@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.18 2009-03-18 21:56:33 lfbasso Exp $
+ * $Id: hprogres.prg,v 1.19 2010-02-14 03:11:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class
@@ -47,10 +47,10 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit
 
    Super:New( oWndParent, nId, ::Style, nLeft, nTop, nWidth, nHeight,, bInit, bSize, bPaint, ctooltip )
 
-   ::maxPos  := IIf( maxPos == Nil, 20, maxPos )
+   ::maxPos  := Iif( maxPos != Nil .AND. maxPos != 0, maxPos, 20 )
    ::lNewBox := .F.
    ::nRange := Iif( nRange != Nil .AND. nRange != 0, nRange, 100 )
-   ::nLimit := IIf( nRange != Nil, Int( ::nRange / ::maxPos ), 1 )
+   ::nLimit := Int( ::nRange/::maxPos )
 
    ::Activate()
 
@@ -128,9 +128,10 @@ METHOD STEP( cTitle )
          ::nPercent += ::maxPos  //::nLimit
          ::setLabel( LTRIM( STR( ::nPercent, 3 ) ) + " %" )
       ENDIF
+      RETURN .T.
    ENDIF
 
-   RETURN Nil
+   RETURN .F.
 
 METHOD SET( cTitle, nPos ) CLASS HProgressBar
 

@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.82 2010-02-10 23:32:09 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.83 2010-02-14 03:11:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -43,6 +43,7 @@ CLASS HComboBox INHERIT HControl
    DATA bSetGet
    DATA value INIT 1
    DATA valueBound INIT 1
+   DATA cDisplayValue HIDDEN
    DATA columnBound INIT 1 HIDDEN
    DATA xrowsource INIT {,} HIDDEN
 
@@ -473,6 +474,7 @@ LOCAL nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
          ::value := ::aItems[ nPos ]
       ENDIF  
       //nPos := IIF( LEN( ::value ) > 0, AScan( ::aItems, ::Value ), 0 )
+      ::cDisplayValue := ::Value
       ::value := Iif( nPos > 0, ::aItems[ nPos ], IIF( ::lEdit, "", ::value ) )
    ELSE
       ::value := nPos 
@@ -510,9 +512,10 @@ METHOD DisplayValue( cValue ) CLASS HComboBox
    IF cValue != Nil
 	    IF ::lEdit .AND. VALTYPE( cValue ) = "C" 
 	        SetDlgItemText( ::oParent:handle, ::id, cValue )
+	        ::cDisplayValue := cValue
       ENDIF
    ENDIF   
-   RETURN GetEditText( ::oParent:handle, ::id )  
+   RETURN IIF( IsWindow( ::oParent:handle ), GetEditText( ::oParent:handle, ::id ), ::cDisplayValue )
  
 
 METHOD DeleteItem( nIndex ) CLASS HComboBox

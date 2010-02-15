@@ -1,5 +1,5 @@
 /*
- * $Id: hwg_qhtm.c,v 1.9 2010-02-08 09:59:08 druzus Exp $
+ * $Id: hwg_qhtm.c,v 1.10 2010-02-15 13:18:42 druzus Exp $
 
  * QHTM wrappers for Harbour/HwGUI
  *
@@ -53,7 +53,7 @@ static BOOL s_qhtmInit( LPCTSTR lpLibname )
       {
          QHTM_INITIALIZE pFunc =
                ( QHTM_INITIALIZE ) GetProcAddress( s_hQhtmDll,
-               HBTEXT( "QHTM_Initialize" ) );
+               "QHTM_Initialize" );
          if( pFunc )
             return ( pFunc( GetModuleHandle( NULL ) ) ) ? 1 : 0;
       }
@@ -168,7 +168,7 @@ HB_FUNC( QHTM_MESSAGE )
    {
       QHTM_MESSAGEBOX pFunc =
             ( QHTM_MESSAGEBOX ) GetProcAddress( s_hQhtmDll,
-                                                HBTEXT( "QHTM_MessageBox" ) );
+                                                "QHTM_MessageBox" );
 
       if( pFunc )
       {
@@ -268,7 +268,7 @@ HB_FUNC( QHTM_ENABLECOOLTIPS )
    {
       QHTM_ENABLECOOLTIPS pFunc =
             ( QHTM_ENABLECOOLTIPS ) GetProcAddress( s_hQhtmDll,
-            HBTEXT( "QHTM_EnableCooltips" ) );
+            "QHTM_EnableCooltips" );
       if( pFunc )
          pFunc(  );
       else
@@ -284,7 +284,7 @@ HB_FUNC( QHTM_SETHTMLBUTTON )
    {
       QHTM_SETHTMLBUTTON pFunc =
             ( QHTM_SETHTMLBUTTON ) GetProcAddress( s_hQhtmDll,
-            HBTEXT( "QHTM_SetHTMLButton" ) );
+            "QHTM_SetHTMLButton" );
       if( pFunc )
          hb_retl( pFunc( ( HWND ) hb_parnl( 1 ) ) );
       else
@@ -300,7 +300,7 @@ HB_FUNC( QHTM_PRINTCREATECONTEXT )
    {
       QHTM_PRINTCREATECONTEXT pFunc =
             ( QHTM_PRINTCREATECONTEXT ) GetProcAddress( s_hQhtmDll,
-            HBTEXT( "QHTM_PrintCreateContext" ) );
+            "QHTM_PrintCreateContext" );
       hb_retnl( ( LONG ) pFunc( ( hb_pcount(  ) ==
                         0 ) ? 1 : ( UINT ) hb_parni( 1 ) ) );
    }
@@ -316,7 +316,7 @@ HB_FUNC( QHTM_PRINTSETTEXT )
 
       QHTM_PRINTSETTEXT pFunc =
             ( QHTM_PRINTSETTEXT ) GetProcAddress( s_hQhtmDll,
-            HBTEXT( "QHTM_PrintSetText" ) );
+            "QHTM_PrintSetText" );
       hb_retl( pFunc( ( QHTMCONTEXT ) hb_parnl( 1 ),
                       HB_PARSTR( 2, &hText, NULL ) ) );
       hb_strfree( hText );
@@ -333,7 +333,7 @@ HB_FUNC( QHTM_PRINTSETTEXTFILE )
 
       QHTM_PRINTSETTEXTFILE pFunc =
             ( QHTM_PRINTSETTEXTFILE ) GetProcAddress( s_hQhtmDll,
-            HBTEXT( "QHTM_PrintSetTextFile" ) );
+            "QHTM_PrintSetTextFile" );
       hb_retl( pFunc( ( QHTMCONTEXT ) hb_parnl( 1 ),
                       HB_PARSTR( 2, &hText, NULL ) ) );
       hb_strfree( hText );
@@ -350,7 +350,7 @@ HB_FUNC( QHTM_PRINTSETTEXTRESOURCE )
 
       QHTM_PRINTSETTEXTRESOURCE pFunc =
             ( QHTM_PRINTSETTEXTRESOURCE ) GetProcAddress( s_hQhtmDll,
-            HBTEXT( "QHTM_PrintSetTextResource" ) );
+            "QHTM_PrintSetTextResource" );
       hb_retl( pFunc( ( QHTMCONTEXT ) hb_parnl( 1 ), GetModuleHandle( NULL ),
                       HB_PARSTR( 2, &hText, NULL ) ) );
       hb_strfree( hText );
@@ -369,7 +369,7 @@ HB_FUNC( QHTM_PRINTLAYOUT )
       int nNumberOfPages;
       QHTM_PRINTLAYOUT pFunc =
             ( QHTM_PRINTLAYOUT ) GetProcAddress( s_hQhtmDll,
-            HBTEXT( "QHTM_PrintLayout" ) );
+            "QHTM_PrintLayout" );
 
       rcPage.left = rcPage.top = 0;
       rcPage.right = GetDeviceCaps( hDC, HORZRES );
@@ -391,7 +391,7 @@ HB_FUNC( QHTM_PRINTPAGE )
       RECT rcPage;
       QHTM_PRINTPAGE pFunc =
             ( QHTM_PRINTPAGE ) GetProcAddress( s_hQhtmDll,
-                                               HBTEXT(  "QHTM_PrintPage" ) );
+                                               "QHTM_PrintPage" );
 
       rcPage.left = rcPage.top = 0;
       rcPage.right = GetDeviceCaps( hDC, HORZRES );
@@ -409,7 +409,7 @@ HB_FUNC( QHTM_PRINTDESTROYCONTEXT )
    {
       QHTM_PRINTDESTROYCONTEXT pFunc =
             ( QHTM_PRINTDESTROYCONTEXT ) GetProcAddress( s_hQhtmDll,
-            HBTEXT( "QHTM_PrintDestroyContext" ) );
+            "QHTM_PrintDestroyContext" );
       pFunc( ( QHTMCONTEXT ) hb_parnl( 1 ) );
    }
 }

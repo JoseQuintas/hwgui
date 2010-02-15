@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.19 2010-02-08 09:59:02 druzus Exp $
+ * $Id: nice.c,v 1.20 2010-02-15 13:18:39 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -148,7 +148,7 @@ HB_FUNC( HWG_REGNICE )
 
    s_pGradientfill = ( GRADIENTFILL )
                      GetProcAddress( LoadLibrary( TEXT( "MSIMG32.DLL" ) ),
-                                     HBTEXT( "GradientFill" ) );
+                                     "GradientFill" );
 //    if (Gradientfill == NULL)
 //        return FALSE;
    if( !s_bRegistered )

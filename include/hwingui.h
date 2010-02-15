@@ -1,5 +1,5 @@
 /*
- *$Id: hwingui.h,v 1.8 2010-02-12 13:14:32 druzus Exp $
+ *$Id: hwingui.h,v 1.9 2010-02-15 13:18:38 druzus Exp $
  */
 
 #include <windows.h>
@@ -19,6 +19,7 @@
 
 #if !defined( __XHARBOUR__ ) && ( __HARBOUR__ - 0 > 0x020000 )
    #include "hbwinuni.h"
+   #include "hbwince.h"
    #define HB_HAS_STR_FUNC
 #else
    #undef HB_HAS_STR_FUNC
@@ -48,12 +49,9 @@
 
    #define hb_strfree( h )    hwg_strfree( h )
 
-   #if !defined( HBTEXT )
-      #if defined( HB_OS_WIN_CE )
-         #define HBTEXT( x ) TEXT( x )
-      #else
-         #define HBTEXT( x ) x
-      #endif
+   #if defined( HB_OS_WIN_CE )
+      #undef  GetProcAddress
+      #define GetProcAddress  GetProcAddressA
    #endif
 
    /* hack to pacify warning in old [x]Harbour versions which wrongly

@@ -1,8 +1,8 @@
 /*
- *$Id: guilib.h,v 1.25 2010-01-26 08:09:32 druzus Exp $
+ *$Id: guilib.h,v 1.26 2010-02-15 13:18:34 druzus Exp $
  */
 
-#include "hbdefs.h"
+#include "hbapi.h"
 
 #define WND_DLG_RESOURCE      10
 #define WND_DLG_NORESOURCE    11

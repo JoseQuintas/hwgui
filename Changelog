@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1241 2010-02-14 03:11:47 lfbasso Exp $
+ * $Id: Changelog,v 1.1242 2010-02-15 13:17:29 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-02-15 14:17 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/include/guilib.h
+    ! fixed to include hbapi.h before its functions are redefined
+      by macros
+
+  * hwgui/include/hwingui.h
+  * hwgui/source/freeimg.c
+  * hwgui/source/nice.c
+  * hwgui/source/theme.c
+  * hwgui/source/qhtm/hwg_qhtm.c
+    * updated to work without HBTEXT() macro removed recently from
+      Harbour core code
 
 2010-02-14 01:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcombo.prg

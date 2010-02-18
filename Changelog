@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1243 2010-02-18 01:25:14 lfbasso Exp $
+ * $Id: Changelog,v 1.1244 2010-02-18 09:31:04 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-02-18 10:30 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/window.c
+    * added hack to pacify C compiler warnings/errors when compiled with
+      old [x]Harbour header files using some wrong function declarations
 2010-02-17 23:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg
     ! fixed Method Value

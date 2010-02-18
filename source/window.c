@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.88 2010-02-10 23:32:22 lfbasso Exp $
+ * $Id: window.c,v 1.89 2010-02-18 09:31:10 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -802,12 +802,18 @@ static LRESULT CALLBACK s_MDIChildWndProc( HWND hWnd, UINT message,
 
 PHB_ITEM GetObjectVar( PHB_ITEM pObject, const char *varname )
 {
-   return hb_objSendMsg( pObject, varname, 0 );
+   /* ( char * ) casting is a hack for old [x]Harbour versions
+    * which used wrong hb_objSendMsg() declaration
+    */
+   return hb_objSendMsg( pObject, ( char * ) varname, 0 );
 }
 
 void SetObjectVar( PHB_ITEM pObject, const char *varname, PHB_ITEM pValue )
 {
-   hb_objSendMsg( pObject, varname, 1, pValue );
+   /* ( char * ) casting is a hack for old [x]Harbour versions
+    * which used wrong hb_objSendMsg() declaration
+    */
+   hb_objSendMsg( pObject, ( char * ) varname, 1, pValue );
 }
 
 #if !defined( HB_HAS_STR_FUNC )

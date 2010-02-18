@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.28 2010-02-08 09:59:05 druzus Exp $
+ * $Id: wprint.c,v 1.29 2010-02-18 09:43:23 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -602,7 +602,7 @@ HB_FUNC( HWG_SETDOCUMENTPROPERTIES )
               {
                 if ( !bW9X )
                 {
-                  HB_STORSTR( pDevMode->dmFormName, 3 );
+                  HB_STORSTR( ( LPCTSTR ) pDevMode->dmFormName, 3 );
                 }
               }
               else

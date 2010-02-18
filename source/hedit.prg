@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.166 2010-02-11 15:21:18 lfbasso Exp $
+ *$Id: hedit.prg,v 1.167 2010-02-18 01:25:17 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -505,12 +505,19 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
 
 
 METHOD Value( Value )  CLASS HEdit
-
+   LOCAL vari
+   
    IF Value != Nil
        ::SetText( Value )
        ::Refresh()
    ENDIF    
-   RETURN ::title
+   vari := ::title
+   IF ::cType == "D"
+      vari := CToD( vari )
+   ELSEIF ::cType == "N"
+      vari := Val( LTrim( vari ) )
+   ENDIF   
+	 RETURN vari
 
 METHOD Refresh()  CLASS HEdit
    LOCAL vari

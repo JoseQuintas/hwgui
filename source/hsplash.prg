@@ -1,5 +1,5 @@
 /*
- * $Id: hsplash.prg,v 1.5 2008-11-24 10:02:14 mlacecilia Exp $
+ * $Id: hsplash.prg,v 1.6 2010-02-18 01:25:18 lfbasso Exp $
  *
  * HwGUI Harbour Win32 Gui Copyright (c) Alexander Kresin
  *
@@ -16,32 +16,42 @@
 CLASS HSplash
 
    DATA oTimer
+   DATA oDlg
 
-   METHOD Create( cFile, oTime, oResource ) CONSTRUCTOR
+   METHOD Create( cFile, oTime, oResource, nWidth, nHeight, nStyle ) CONSTRUCTOR
    METHOD CountSeconds( oTime, oDlg )
+   METHOD Release() INLINE ::oDlg:Close()   
 
 ENDCLASS
 
-METHOD Create( cFile, oTime, oResource ) CLASS HSplash
+METHOD Create( cFile, oTime, oResource, nWidth, nHeight, nStyle ) CLASS HSplash
    LOCAL aWidth, aHeigth
-   LOCAL bitmap, oDlg
+   LOCAL bitmap
 
    IIf( Empty( oTime ) .or. oTime == Nil, oTime := 2000, oTime := oTime )
 
    IF oResource == Nil .or. ! oResource
-      bitmap  := HBitmap():AddFile( cFile )
+      bitmap  := HBitmap():AddFile( cFile,,, nWidth, nHeight )
    ELSE
-      bitmap  := HBitmap():AddResource( cFile )
+      bitmap  := HBitmap():AddResource( cFile,,, nWidth, nHeight )
    ENDIF
 
-   aWidth := bitmap:nWidth
-   aHeigth := bitmap:nHeight
+   aWidth := IIF( nWidth = Nil, bitmap:nWidth, nWidth )
+   aHeigth := IIF( nHeight = Nil, bitmap:nHeight, nHeight )
 
-   INIT DIALOG oDlg TITLE "" ;
+   IF nWidth = Nil .OR. nHeight = Nil
+      INIT DIALOG ::oDlg TITLE "" ;
         At 0, 0 SIZE aWidth, aHeigth  STYLE WS_POPUP + DS_CENTER + WS_VISIBLE + WS_DLGFRAME ;
-        BACKGROUND bitmap bitmap ON INIT { || ::CountSeconds( oTime, oDlg ) }
-
-   oDlg:Activate()
+        BACKGROUND bitmap bitmap ON INIT { || ::CountSeconds( oTime, ::oDlg ) }
+      //oDlg:lBmpCenter := .T.        
+   ELSE
+      INIT DIALOG ::oDlg TITLE "" ;
+        At 0, 0 SIZE aWidth, aHeigth  STYLE WS_POPUP + DS_CENTER + WS_VISIBLE + WS_DLGFRAME ;
+        ON INIT { || ::CountSeconds( oTime, ::oDlg ) }        
+      @ 0,0 BITMAP Bitmap SHOW cFile STRETCH 0 SIZE nWidth, nHeight STYLE nStyle 
+   ENDIF     
+   
+   ::oDlg:Activate( otime < 0 )
    ::oTimer:END()
 
    RETURN Self

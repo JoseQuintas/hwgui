@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1242 2010-02-15 13:17:29 druzus Exp $
+ * $Id: Changelog,v 1.1243 2010-02-18 01:25:14 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2010-02-17 23:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hedit.prg
+    ! fixed Method Value
+  * source\hsplash.prg
+    + DATA oDlg
+    + METHOD Release() 
+    ! nWidth and nHeight can be passed to scale the Splash
+      if oTime has a negative value then will splash NOMODAL
+      then 
+      nTime := -1
+      SPLASH oSplash TO "picture.jpg" TIME nTime WIDTH 644  HEIGHT 322
+      ....
+      oSplash:release()
 
 2010-02-15 14:17 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/include/guilib.h

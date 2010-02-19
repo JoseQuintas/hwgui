@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.102 2010-02-11 18:54:35 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.103 2010-02-19 03:28:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -626,7 +626,7 @@ FUNCTION onHelp( oDlg, wParam, lParam )
          nHelpId := oCtrl:HelpId
          IF Empty( nHelpId )
             oParent := oCtrl:oParent
-            nHelpId := oParent:HelpId
+            nHelpId := IIF( Empty( oParent:HelpId ), oDlg:HelpId, oParent:HelpId )
          ENDIF
          IF "chm" $ Lower( CutPath( SetHelpFileName() ) )
             nHelpId := IIF( VALTYPE( nHelpId ) = "N", LTrim( Str( nHelpId ) ), nHelpId )

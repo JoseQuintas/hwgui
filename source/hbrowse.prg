@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.210 2010-02-11 18:54:34 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.211 2010-02-19 03:28:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -2325,7 +2325,8 @@ METHOD BOTTOM( lPaint ) CLASS HBrowse
       ::nCurrent := ::nRecords
       ::rowPos := ::rowCount + 1
    ELSE
-      ::rowPos := LastRec()
+      //::rowPos := LastRec()
+      ::rowPos := ::rowCount + 1
       Eval( ::bGoBot, Self )
    ENDIF
 
@@ -3551,6 +3552,9 @@ STATIC FUNCTION FltRecNoRelative( oBrw )
    HB_SYMBOL_UNUSED( oBrw )
    IF oBrw:lFilter
       RETURN ASCAN( oBrw:aRecnoFilter, ( oBrw:Alias )->( RecNo() ) )
+   ENDIF
+   IF ! Empty( DBFILTER() ) .AND. ( oBrw:Alias )->( RecNo() ) > oBrw:nRecords
+      RETURN oBrw:nRecords 
    ENDIF
    RETURN ( oBrw:Alias )->( RecNo() )
 

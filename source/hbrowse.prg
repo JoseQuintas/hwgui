@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.211 2010-02-19 03:28:47 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.212 2010-02-20 18:45:57 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -630,13 +630,13 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          ELSEIF wParam == VK_LEFT //37    // Left
             ::DoHScroll( SB_LINELEFT )
          ELSEIF wParam == VK_HOME //36    // Home
-            IF ::lAutoEdit .OR. ::aColumns[ ::SetColumn() ]:lEditable
+            IF ! ::lCtrlPress .AND. ( ::lAutoEdit .OR. ::aColumns[ ::SetColumn() ]:lEditable )         
                ::Edit( wParam )
             ELSE
                ::DoHScroll( SB_LEFT )
             ENDIF
          ELSEIF wParam == VK_END //35    // End
-            IF ::lAutoEdit .OR. ::aColumns[ ::SetColumn() ]:lEditable
+            IF ! ::lCtrlPress .AND. ( ::lAutoEdit .OR. ::aColumns[ ::SetColumn() ]:lEditable )         
                ::Edit( wParam )
             ELSE
                ::DoHScroll( SB_RIGHT )
@@ -1947,7 +1947,7 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                             ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1 + ::aMargin[ 1 ] , ;
                             x + xSize - ( 2 + ::aMargin[ 2 ] ) , ;
                             ::y1 + ( ::height + 1 ) * ::nPaintRow - ( 1 + ::aMargin[ 3 ] ) , ;
-                            ::aColumns[ ::nPaintCol ]:nJusLin + DT_NOPREFIX + DT_NOCLIP )
+                            ::aColumns[ ::nPaintCol ]:nJusLin + DT_NOPREFIX )
 
 // Clipping rectangle
                   #if 0
@@ -3550,7 +3550,7 @@ STATIC FUNCTION FltRecNo( oBrw )
 
 STATIC FUNCTION FltRecNoRelative( oBrw )
    HB_SYMBOL_UNUSED( oBrw )
-   IF oBrw:lFilter
+   IF oBrw:lFilter .AND. EMPTY( oBrw:RelationalExpr )
       RETURN ASCAN( oBrw:aRecnoFilter, ( oBrw:Alias )->( RecNo() ) )
    ENDIF
    IF ! Empty( DBFILTER() ) .AND. ( oBrw:Alias )->( RecNo() ) > oBrw:nRecords

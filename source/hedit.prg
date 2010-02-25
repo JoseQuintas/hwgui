@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.167 2010-02-18 01:25:17 lfbasso Exp $
+ *$Id: hedit.prg,v 1.168 2010-02-25 16:36:09 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -296,11 +296,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                   RETURN 0
                ENDIF
             ELSEIF wParam == 39     // KeyRight
+               ::lFocu := .F.
                IF ! IsCtrlShift()
                   ::lFirst := .F.
                   RETURN ::KeyRight()
                ENDIF
             ELSEIF wParam == 37     // KeyLeft
+               ::lFocu := .F.
                IF ! IsCtrlShift()
                   ::lFirst := .F.
                   RETURN ::KeyLeft()
@@ -879,12 +881,14 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
             ::title := "."
          ELSE
             // nando -                               remove the .
-            vari := strtran( vari," ",IIF("E" $ ::cPicFunc,","," "))
+            vari := strtran( vari," ", IIF("E" $ ::cPicFunc, ",", " "))
          ENDIF
          vari := Val( vari )
          lSignal := IIF( lSignal .AND. vari != 0, .F., lSignal )
       ENDIF
-      IF ! Empty( ::cPicFunc ) .OR. ! Empty( ::cPicMask )
+      //IF ! Empty( ::cPicFunc ) .OR. ! Empty( ::cPicMask )
+      IF ( ! Empty( ::cPicFunc ) .OR. ! Empty( ::cPicMask ) ) .AND. ;
+      ( ! cKey $ ",." .OR. RIGHT( TRIM( ::title ), 1 ) = '.'   )
          ::title := Transform( vari, ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
          IF lSignal
            ::title := "-" + substr( ::title, 2 )

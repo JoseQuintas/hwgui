@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.150 2010-01-25 02:18:47 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.151 2010-02-25 16:36:09 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -680,6 +680,8 @@ METHOD Paint( lpDis ) CLASS HStatic
    IF  ::nBackMode = 1
       brBackground := IIF( !EMPTY( ::brush ),::brush, HBRUSH():Add( GetSysColor( COLOR_BTNFACE ) ) )
       FillRect( dc, client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], brBackground:handle )
+   ELSEIF ! ::isEnabled()   
+ 	    SetTextColor( dc, GetSysColor( COLOR_GRAYTEXT ) )         
    ENDIF
 
    // Draw the text

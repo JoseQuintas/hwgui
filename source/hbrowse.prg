@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.212 2010-02-20 18:45:57 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.213 2010-02-25 16:36:09 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -232,7 +232,7 @@ CLASS HBrowse INHERIT HControl
    DATA lDeleteMark INIT .F.   HIDDEN
    DATA lShowMark   INIT .T.   HIDDEN
    DATA nDeleteMark INIT 0     HIDDEN
-   DATA nShowMark   INIT 12    HIDDEN
+   DATA nShowMark   INIT 11    HIDDEN
    DATA oBmpMark    INIT  HBitmap():AddStandard( OBM_MNARROW ) HIDDEN
    DATA ShowSortMark  INIT .T.
    DATA nWidthColRight INIT 0  HIDDEN 
@@ -895,7 +895,8 @@ METHOD InitBrw( nType, lInit )  CLASS HBrowse
          ::Type := nType
       ELSE
          ::aColumns := { }
-         ::rowPos    := ::nCurrent  := ::colpos := ::nLeftCol := 1
+         ::rowPos  := ::nCurrent  := ::colpos := 1
+         ::nLeftCol := 1
          ::freeze  := 0
          ::internal  := { 15, 1 }
          ::aArray     := Nil
@@ -1262,7 +1263,16 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
 
 // second part starts from where part 1 stopped -
       // new 01/09/2009 - nando 
-      nRecFilter := FltRecNoRelative( Self )      
+      //nRecFilter := FltRecNoRelative( Self )    
+      nRecFilter := 0         
+      IF ::Type == BRW_DATABASE
+         nRecFilter := ( ::Alias )->( RecNo() )               
+         IF ::lFilter .AND. EMPTY( ::RelationalExpr )
+            nRecFilter := ASCAN( ::aRecnoFilter, ( ::Alias )->( RecNo() ) )
+         ELSEIF ! Empty( ( ::Alias )->( DBFILTER() ) ) .AND. ( ::Alias )->( RecNo() ) > ::nRecords
+            nRecFilter := ::nRecords 
+         ENDIF
+      ENDIF
       IF ::rowCurrCount = 0  // INIT
          Eval( ::bSkip, Self, 1 )
          IF ::bScrollPos != Nil
@@ -3135,10 +3145,10 @@ METHOD BrwScrollVPos() CLASS HBrowse
    LOCAL minPos, maxPos 
    Local nRecCount, nRecno
    
-   IF ( ! ::lFilter .AND. Empty( DBFILTER() ) ) .OR. ! EMPTY( ::RelationalExpr )     
+   IF ( ! ::lFilter .AND. Empty( ( ::Alias ) ->( DBFILTER() ) ) ) .OR. ! EMPTY( ::RelationalExpr )     
       nRecCount := Eval( ::bRcou, Self ) //IIF( ( ::Alias ) ->( IndexOrd() ) = 0, , OrdKeyCount() )
-      IF ::nRecCount != nRecCount .OR. IndexOrd() != ::nIndexOrd 
-          ::nIndexOrd := IndexOrd() 
+      IF ::nRecCount != nRecCount .OR. ::Alias != Alias() .OR. ( ::Alias ) ->( IndexOrd() ) != ::nIndexOrd      
+          ::nIndexOrd := ( ::Alias ) ->( IndexOrd() )
           nrecno := ( ::Alias ) ->( RecNo() )
           Eval( ::bGotop, Self )
           minPos := IIF( ( ::Alias ) ->( IndexOrd() ) = 0, ( ::Alias ) ->( RecNo() ), ( ::Alias ) ->( ordkeyno() ) )
@@ -3151,7 +3161,7 @@ METHOD BrwScrollVPos() CLASS HBrowse
           ( ::Alias ) ->( DBGoTo( nrecno ) )
       ENDIF
    ELSE
-      SetScrollRange( ::handle, SB_VERT, 1, Reccount() )
+      SetScrollRange( ::handle, SB_VERT, 1, ( ::Alias ) -> ( Reccount() ) )      
    ENDIF
    RETURN  IIF( ( ::Alias ) ->( IndexOrd() ) = 0, ( ::Alias ) ->( RecNo() ), ( ::Alias ) ->( ordkeyno() ) ) 
 

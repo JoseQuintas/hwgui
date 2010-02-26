@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.213 2010-02-25 16:36:09 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.214 2010-02-26 04:10:10 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1230,12 +1230,13 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
          Eval( ::bSkip, Self, ::rowPos - ::internal[ 2 ] )
       ENDIF
    ELSE
-      //IF Eval( ::bEof, Self ) .OR. Eval( ::bBof, Self )
-      IF Eval( ::bEof, Self ) .OR. Eval( ::bBof, Self ) .OR. ::rowPos > ::nRecords 
-         Eval( ::bGoTop, Self )
-         ::rowPos := 1  
+      IF ! ::lAppMode 
+         //IF Eval( ::bEof, Self ) .OR. Eval( ::bBof, Self )
+         IF Eval( ::bEof, Self ) .OR. Eval( ::bBof, Self ) .OR. ::rowPos > ::nRecords 
+            Eval( ::bGoTop, Self )
+            ::rowPos := 1  
+         ENDIF
       ENDIF
-
 // Se riga_cursore_video > numero_record
 //    metto il cursore sull'ultima riga
       IF ::rowPos > nRows .AND. nRows > 0
@@ -1300,7 +1301,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
          ENDIF
 
          // exit loop when at last row or eof()
-         IF cursor_row > nRows .OR. Eval( ::bEof, Self )
+         IF cursor_row > nRows .OR. ( Eval( ::bEof, Self ) .AND. ! ::lAppMode )
             EXIT
          ENDIF
 
@@ -2199,10 +2200,12 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
 
    Eval( ::bSkip, Self, 1 )
    IF Eval( ::bEof, Self )
-      Eval( ::bSkip, Self, - 1 )
+      //Eval( ::bSkip, Self, - 1 )
       IF ::lAppable .AND. ( lMouse == Nil.OR. ! lMouse )
          ::lAppMode := .T.
+         ::SetColumn( 1 )
       ELSE
+         Eval( ::bSkip, Self, - 1 )
          SetFocus( ::handle )
          RETURN Nil
       ENDIF
@@ -2930,7 +2933,14 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
          ELSEIF ::lAppMode
             ::lAppMode := .F.
             InvalidateRect( ::handle, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPos, ::x2, ::y1 + ( ::height + 1 ) * ( ::rowPos + 2 ) )
-            ::RefreshLine()
+            IF ::Type == BRW_DATABASE
+               Eval( ::bSkip, Self, - 1 )
+            ENDIF   
+            IF ::rowPos < ::rowCount
+               ::RefreshLine()
+            ELSE
+               ::Refresh()
+            ENDIF
          ENDIF
          SetFocus( ::handle )
          SET( _SET_EXIT, lReadExit )

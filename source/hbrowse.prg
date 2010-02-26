@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.214 2010-02-26 04:10:10 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.215 2010-02-26 16:17:08 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -2203,7 +2203,6 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
       //Eval( ::bSkip, Self, - 1 )
       IF ::lAppable .AND. ( lMouse == Nil.OR. ! lMouse )
          ::lAppMode := .T.
-         ::SetColumn( 1 )
       ELSE
          Eval( ::bSkip, Self, - 1 )
          SetFocus( ::handle )
@@ -2228,6 +2227,9 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
 
    //ENDIF
    IF ::lAppMode
+      IF ::RowCurrCount < ::RowCount
+         Eval( ::bSkip, Self, - 1 )
+      ENDIF
       IF ::rowPos > 1
          ::rowPos --
       ENDIF
@@ -2932,12 +2934,13 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
          ELSEIF ::lAppMode
             ::lAppMode := .F.
-            InvalidateRect( ::handle, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPos, ::x2, ::y1 + ( ::height + 1 ) * ( ::rowPos + 2 ) )
-            IF ::Type == BRW_DATABASE
+            //InvalidateRect( ::handle, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPos, ::x2, ::y1 + ( ::height + 1 ) * ( ::rowPos + 2 ) )
+            IF ::Type == BRW_DATABASE .AND. Eval( ::bEof, Self )
                Eval( ::bSkip, Self, - 1 )
             ENDIF   
             IF ::rowPos < ::rowCount
-               ::RefreshLine()
+               //::RefreshLine()
+               InvalidateRect( ::handle, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPos, ::x2, ::y1 + ( ::height + 1 ) * ( ::rowPos + 1 ) )               
             ELSE
                ::Refresh()
             ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1249 2010-02-26 04:10:07 lfbasso Exp $
+ * $Id: Changelog,v 1.1250 2010-03-02 14:53:30 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-03-02 12:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! minor fix in scroll in MODE append
+  * source\hcwindow.prg
+    ! minor fix in getparentcolor  
+  * source\hwindow.prg
+   ! fix in MDICREATE if window begging MAXIMIZED and objects to have property ANCHOR 
+  
 2010-02-26 13:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
     ! fixed scroll  in mode APPEND when rowpos = rowcount

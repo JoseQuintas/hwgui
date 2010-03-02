@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.215 2010-02-26 16:17:08 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.216 2010-03-02 14:53:33 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -2940,7 +2940,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
             ENDIF   
             IF ::rowPos < ::rowCount
                //::RefreshLine()
-               InvalidateRect( ::handle, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPos, ::x2, ::y1 + ( ::height + 1 ) * ( ::rowPos + 1 ) )               
+               InvalidateRect( ::handle, 0, ::x1 - ::nShowMark - ::nDeleteMark, ::y1 + ( ::height + 1 ) * ::rowPos, ::x2, ::y1 + ( ::height + 1 ) * ( ::rowPos + 1 ) )               
             ELSE
                ::Refresh()
             ENDIF

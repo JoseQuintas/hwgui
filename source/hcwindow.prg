@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.59 2010-02-02 15:25:00 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.60 2010-03-02 14:53:34 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -541,7 +541,7 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
         SETTRANSPARENTMODE( wParam, .T. )
         IF ( oCtrl:classname $ "HCHECKBUTTON" .AND. (  ! oCtrl:lnoThemes .AND. ( ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest ) ) ) .OR.;
            ( oCtrl:classname $ "HGROUP*HRADIOGROUP*HRADIOBUTTON" .AND. oCtrl:lnoThemes ) 
-				   RETURN GetBackColorParent( octrl, , .T. ):handle
+				   RETURN GetBackColorParent( oCtrl, , .T. ):handle
 				ENDIF 
 				IF oCtrl:winclass $ "BUTTON*STATIC*EDIT" 
 				   RETURN GetStockObject( NULL_BRUSH )
@@ -761,6 +761,7 @@ FUNCTION GetBackColorParent( oCtrl, lSelf, lTransparent )
       oCtrl := oCtrl:oParent
    ENDIF
    IF  oCtrl != Nil .AND. oCtrl:cLASSNAME = "HTAB" 
+       brush := HBrush():Add( bColor )
        IF Len( oCtrl:aPages ) > 0 .AND. oCtrl:Pages[ oCtrl:GETACTIVEPAGE() ]:bColor != Nil
           brush := oCtrl:Pages[ oCtrl:GetActivePage() ]:brush
        ELSEIF ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest  
@@ -769,8 +770,8 @@ FUNCTION GetBackColorParent( oCtrl, lSelf, lTransparent )
              bColor := HWG_GETTHEMESYSCOLOR( hTheme, COLOR_WINDOW  )
              HB_CLOSETHEMEDATA( hTheme ) 
              brush := HBrush():Add( bColor )
-          ELSE   
-             brush := oCtrl:brush
+          *ELSE   
+          *   brush := oCtrl:brush
           ENDIF 
        ELSE   
           brush := HBrush():Add( bColor )

@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.96 2010-02-10 23:32:18 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.97 2010-03-02 14:53:34 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -461,23 +461,9 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
       ::nTop  := ( ::oClient:nHeight - ::nHeight ) / 2  
    ENDIF
    ::aRectSave := { ::nLeft, ::nTop, ::nwidth, ::nHeight } 			
-   IF ! lMaximized .OR. ( VALTYPE( ::TITLE ) = "N" .AND. ::title = - 1 )
-     ::handle := Hwg_CreateMdiChildWindow( Self, IIF( lMinimized,WS_MINIMIZE, ;
+   ::handle := Hwg_CreateMdiChildWindow( Self, IIF( lMinimized,WS_MINIMIZE, ;
 	     IIF( lMaximized, WS_MAXIMIZE, 0 ) ) + IIF( !lShow, - WS_VISIBLE, WS_VISIBLE  ) )
-	 ELSE 
-      // BECAUSE ANCHOR NOT WORK  
-	    ::handle := Hwg_CreateMdiChildWindow( Self, IIF( !lShow, - WS_VISIBLE, WS_VISIBLE  ) )
-	 ENDIF   
 
-   // is necessary for set zorder control
-   InitControls( Self )
-   /*  in ONMDICREATE
-   /*
-   InitObjects( Self,.T. )
-   IF ::bInit != Nil
-      Eval( ::bInit,Self )
-   ENDIF
-   */
    IF lCentered
       ::nLeft := ( ::oClient:nWidth - ::nWidth ) / 2 - 0
       ::nTop  := ( ::oClient:nHeight - ::nHeight ) / 2  - 0
@@ -485,6 +471,17 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
    IF VALTYPE( ::TITLE ) = "N" .AND. ::title = - 1   // screen
       RETURN .T.
    ENDIF
+	     
+   // is necessary for set zorder control
+   //InitControls( Self )  ??? maybe
+   
+   /*  in ONMDICREATE
+   /*
+   InitObjects( Self,.T. )
+   IF ::bInit != Nil
+      Eval( ::bInit,Self )
+   ENDIF
+   */
    
    onMove( Self )
    IF  lMaximized // necessary to ANCHOR work in INITIALIZATION 
@@ -757,11 +754,11 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
       Eval( oWnd:bMdiMenu, oWnd, wParam )
       // ADDED
       IF ! Empty( oWnd:Screen )
-            IF wParam = 501  // first menu
+         IF wParam = FIRST_MDICHILD_ID  // first menu
             SetWindowPos( ownd:Screen:HANDLE, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE ) // +SWP_SHOW)
          ENDIF
-            RETURN -1
-         ENDIF
+         RETURN -1
+      ENDIF
       // end added
    ENDIF
 
@@ -941,7 +938,9 @@ STATIC FUNCTION onMdiCreate( oWnd, lParam )
    //draw rect focus
    SENDMESSAGE( oWnd:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )
    SENDMESSAGE( oWnd:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL ), 0 )
-
+   // necessary if window is not maximized style
+   // and BECAUSE ANCHOR NOT WORK  
+   oWnd:Restore()
    RETURN - 1
 
 STATIC FUNCTION onMdiCommand( oWnd, wParam )

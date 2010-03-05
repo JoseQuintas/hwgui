@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.21 2010-02-01 23:19:21 lfbasso Exp $
+ * $Id: hriched.prg,v 1.22 2010-03-05 02:04:16 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -148,7 +148,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
          RE_INSERTTEXT( ::handle, CHR( VK_TAB ) )
           RETURN 0
       ENDIF
-      IF wParam == VK_ESCAPE
+      IF wParam == VK_ESCAPE .AND. ::GetParentForm():Handle != ::oParent:handle      
          IF GetParent(::oParent:handle) != Nil
             //SendMessage( GetParent(::oParent:handle),WM_CLOSE,0,0 )
          ENDIF

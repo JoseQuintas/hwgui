@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.61 2010-02-14 03:11:47 lfbasso Exp $
+ *$Id: htab.prg,v 1.62 2010-03-06 14:52:41 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -411,7 +411,7 @@ METHOD EndPage() CLASS HTab
 METHOD ChangePage( nPage ) CLASS HTab
    LOCAL client_rect
    
-   IF ! ::pages[ nPage ]:enabled .OR. nPage = ::nActive
+   IF nPage = ::nActive  &&.OR. ! ::pages[ nPage ]:enabled
       //SetTabFocus( Self, nPage, .F. )
       RETURN Nil
    ENDIF
@@ -500,7 +500,10 @@ METHOD Refresh( ) CLASS HTab
          nFirst := ::aPages[ ::nActive, 1 ] + 1
          nEnd   := ::aPages[ ::nActive, 1 ] + ::aPages[ ::nActive, 2 ]
          FOR i := nFirst TO nEnd
-            ::aControls[ i ]:Refresh()
+            IF IsWindowVisible( ::aControls[ i ]:HANDLE )
+               RedrawWindow( ::aControls[ i ]:handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT )  // Force a complete redraw
+               ::aControls[ i ]:Refresh()
+            ENDIF 
          NEXT
       ELSE
          ::aPages[ ::nActive, 1 ]:Refresh()
@@ -581,7 +584,6 @@ METHOD Notify( lParam ) CLASS HTab
    ENDIF
 
    DO CASE
-
    CASE nCode == TCN_CLICK    
       ::lClick := .T.
 
@@ -606,8 +608,8 @@ METHOD Notify( lParam ) CLASS HTab
   			//   ::SETFOCUS()
 	  		//ENDIF
         Eval( ::bChange, Self, GetCurrentTab( ::handle ) )
-        IF ::bGetFocus != NIL .AND. nPage != ::nPrevPage .AND. ::nActivate > 0
-            ::oparent:lSuspendMsgsHandling := .t.
+        IF ::bGetFocus != NIL .AND. nPage != ::nPrevPage .AND. ::Pages[ nPage ]:Enabled .AND. ::nActivate > 0        
+            ::oparent:lSuspendMsgsHandling := .T.
             Eval( ::bGetFocus, GetCurrentTab( ::handle ), Self )
             ::oparent:lSuspendMsgsHandling := .F.
             ::nActivate := 0
@@ -617,12 +619,13 @@ METHOD Notify( lParam ) CLASS HTab
         // DEACTIVATE PAGE //ocorre antes de trocar o focu
         ::nPrevPage := ::nActive //npage
         IF ::bLostFocus != NIL
-           ::oparent:lSuspendMsgsHandling := .t.
+           ::oparent:lSuspendMsgsHandling := .T.
            Eval( ::bLostFocus, ::nPrevPage, Self)
            ::oparent:lSuspendMsgsHandling := .F.
         ENDIF
    CASE nCode == TCN_SELCHANGING   //-552
-      ::nPrevPage := nPage       
+      ::nPrevPage := nPage     
+      RETURN 0  
 	 /*
    CASE nCode == TCN_CLICK
       IF ! Empty( ::pages ) .AND. ::nActive > 0 .AND. ::pages[ ::nActive ]:enabled
@@ -635,14 +638,14 @@ METHOD Notify( lParam ) CLASS HTab
    CASE nCode == TCN_RCLICK
       IF ! Empty( ::pages ) .AND. ::nActive > 0 .AND. ::pages[ ::nActive ]:enabled
           IF ::bRClick != Nil
-              ::oparent:lSuspendMsgsHandling := .t.
+              ::oparent:lSuspendMsgsHandling := .T.
               Eval( ::bRClick, Self, GetCurrentTab( ::handle ) )
-              ::oparent:lSuspendMsgsHandling := .f.
+              ::oparent:lSuspendMsgsHandling := .F.
           ENDIF
       ENDIF
 
    CASE nCode == TCN_SETFOCUS
-      IF ::bGetFocus != NIL
+      IF ::bGetFocus != NIL .AND. ! ::Pages[ nPage ]:Enabled 
          Eval( ::bGetFocus, GetCurrentTab( ::handle ), Self )
       ENDIF
    CASE nCode == TCN_KILLFOCUS
@@ -653,7 +656,7 @@ METHOD Notify( lParam ) CLASS HTab
    ENDCASE
    IF ( nCode == TCN_CLICK .AND. ::nPrevPage > 0 .AND. ::pages[ ::nPrevPage ]:enabled ) .OR.;
         ( ::lClick .AND. nCode == TCN_SELCHANGE )
-           ::oparent:lSuspendMsgsHandling := .T.
+       ::oparent:lSuspendMsgsHandling := .T.
        IF ::bAction != Nil
           Eval( ::bAction, Self, GetCurrentTab( ::handle ) )
        ENDIF
@@ -708,6 +711,7 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
        ENDIF
    ENDIF
    IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL //.AND. ::FINDCONTROL(,GETFOCUS()):classname = "HUPDO"
+       InvalidateRect( ::handle, 1, 0, 0 , ::nwidth, 30 )
        IF ::GetParentForm( self ):Type < WND_DLG_RESOURCE
           RETURN ( ::oParent:onEvent( msg, wparam, lparam ) )
        ELSE

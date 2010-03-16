@@ -1,5 +1,5 @@
 /*
- * $Id: media_c.c,v 1.16 2010-02-05 12:02:33 druzus Exp $
+ * $Id: media_c.c,v 1.17 2010-03-16 16:27:03 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level media functions
@@ -121,8 +121,8 @@ HB_FUNC( NMCIPLAY )
    if( ( mciPlayParms.dwTo = hb_parnl( 3 ) ) != 0 )
       dwFlags |= MCI_TO;
 
-   if( ( mciPlayParms.dwCallback = ( DWORD_PTR ) hb_parnint( 4 ) ) != 0 )
-      dwFlags |= MCI_NOTIFY;
+//   if( ( mciPlayParms.dwCallback = ( DWORD_PTR ) hb_parnint( 4 ) ) != 0 )
+//      dwFlags |= MCI_NOTIFY;
 
    hb_retnl( mciSendCommand( hb_parni( 1 ),     // Device ID
                              MCI_PLAY, dwFlags,
@@ -142,3 +142,4 @@ HB_FUNC( NMCIWINDOW )
                MCI_ANIM_WINDOW_HWND | MCI_ANIM_WINDOW_DISABLE_STRETCH,
                ( LONG ) ( LPMCI_ANIM_WINDOW_PARMS ) & mciWindowParms ) );
 }
+

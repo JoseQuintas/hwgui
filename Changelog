@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1253 2010-03-16 16:21:52 lculik Exp $
+ * $Id: Changelog,v 1.1254 2010-03-16 16:27:03 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -10,6 +10,8 @@
 2010-03-16 13:10 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source\barcode.prg
     ! reorder the include files on .c section of the code to compile properly
+  ! media_c.c
+    ! minor fix
 
 2010-03-06 12:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\htab.prg

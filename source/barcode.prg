@@ -1,5 +1,5 @@
 /*
- * $Id: barcode.prg,v 1.3 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: barcode.prg,v 1.4 2010-03-16 16:21:55 lculik Exp $
  *
  * Create Barcode for HWGUI application
  *
@@ -916,9 +916,12 @@ METHOD InitMatrix25( lCheck ) CLASS BarCode
 #pragma BEGINDUMP
 
 #define HB_OS_WIN_32_USED
+#define HB_OS_WIN
+#define HB_OS_WIN_USED
 #define _WIN32_WINNT   0x0400
-#include "guilib.h"
+
 #include <windows.h>
+#include "guilib.h"
 #include "item.api"
 #include "hbapi.h"
 

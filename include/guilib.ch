@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.157 2010-02-10 23:31:47 lfbasso Exp $
+ *$Id: guilib.ch,v 1.158 2010-03-28 19:44:09 sandrorrfreire Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -1710,7 +1710,7 @@ Added by Marcos Antonio Gambeta
              [ MENU <d>];
              ON CLICK <bclick>;
           =>;
-          aadd(<O> ,\{<nBitIp>,<nId>,<bstate>,<bstyle>,,<ctext>,<bclick>,<c>,<d>,\})
+          aadd(<O> ,\{<nBitIp>,<nId>,<bstate>,<bstyle>,,<ctext>,<bclick>,<c>,<d>,,\})
 
 #xcommand @ <x>,<y> GRIDEX <oGrid>        ;
              [ OF <oWnd> ]               ;

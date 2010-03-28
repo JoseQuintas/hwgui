@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1254 2010-03-16 16:27:03 lculik Exp $
+ * $Id: Changelog,v 1.1255 2010-03-28 19:44:05 sandrorrfreire Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-03-28 16-35 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
+  * source\htool.prg
+  * include\guilib.ch
+    Bug in use resource, fix by Luis Fernando Basso and Sandro Freire, error in use toolbar
+ 
 2010-03-16 13:10 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source\barcode.prg
     ! reorder the include files on .c section of the code to compile properly

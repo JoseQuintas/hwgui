@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.38 2010-03-28 19:44:09 sandrorrfreire Exp $
+ * $Id: htool.prg,v 1.39 2010-03-29 14:05:54 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -246,6 +246,7 @@ METHOD CREATETOOL CLASS hToolBar
    Local aButton :={}
    Local nStyle
    Local oButton
+   Local aBmpSize, hIm, nPos
    Local hImage, img, nlistimg, ndrop := 0
 
    IF ! ::lResource
@@ -261,7 +262,7 @@ METHOD CREATETOOL CLASS hToolBar
 		  ENDIF
    ELSE
        FOR n = 1 TO Len( ::aitem )
-         oButton := ::AddButton(::aitem[ n, 1 ],::aitem[ n, 2 ],::aitem[ n, 3 ],::aitem[ n, 4 ],::aitem[ n, 6 ], ::aitem[ n, 7 ],::aitem[ n, 8 ],::aitem[ n, 9 ])
+         oButton := ::AddButton(::aitem[ n, 1 ],::aitem[ n, 2 ],::aitem[ n, 3 ],::aitem[ n, 4 ],::aitem[ n, 6 ], ::aitem[ n, 7 ], ::aitem[ n, 8 ], ::aitem[ n, 9 ] )
          ::aItem[n, 11] := oButton 
       NEXT
    ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.25 2010-04-05 13:45:48 lfbasso Exp $
+ * $Id: menu.prg,v 1.26 2010-04-05 15:45:26 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
@@ -241,11 +241,10 @@ FUNCTION Hwg_DefineMenuItem( cItem, nId, bItem, lDisabled, accFlag, accKey, lBit
    AAdd( aMenu, { bItem, cItem, nId, nFlag } )
    IF lBitmap != Nil .or. ! Empty( lBitmap )
       IF lResource == Nil ;lResource := .F. ; ENDIF
-         IF lResource .OR. AT("." ,lBitmap ) = 0
-            oBmp := HBitmap():AddResource( lBitmap, LR_LOADMAP3DCOLORS + LR_SHARED + LR_LOADTRANSPARENT , , GETSYSTEMMETRICS( SM_CXMENUCHECK ), GETSYSTEMMETRICS( SM_CYMENUCHECK ) )
-         ELSE
-            oBmp := HBitmap():AddFile( lBitmap, , .T. , GETSYSTEMMETRICS( SM_CXMENUCHECK ), GETSYSTEMMETRICS( SM_CYMENUCHECK ) )
-         ENDIF
+      IF lResource .OR. AT("." ,lBitmap ) = 0
+         oBmp := HBitmap():AddResource( lBitmap, LR_LOADMAP3DCOLORS + LR_SHARED + LR_LOADTRANSPARENT , , GETSYSTEMMETRICS( SM_CXMENUCHECK ), GETSYSTEMMETRICS( SM_CYMENUCHECK ) )
+      ELSE
+         oBmp := HBitmap():AddFile( lBitmap, , .T. , GETSYSTEMMETRICS( SM_CXMENUCHECK ), GETSYSTEMMETRICS( SM_CYMENUCHECK ) )
       ENDIF
       AAdd( _oBitmap, { .t., oBmp:Handle, cItem, nId } )
    ELSE

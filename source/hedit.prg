@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.168 2010-02-25 16:36:09 lfbasso Exp $
+ *$Id: hedit.prg,v 1.169 2010-04-05 14:30:42 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -109,6 +109,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF bSetGet == Nil
       ::title := vari
    ENDIF
+   ::lReadOnly := Hwg_BitAnd( nStyle, ES_READONLY ) != 0
    ::bSetGet := bSetGet
    ::bKeyDown := bKeyDown
    ::bChange := bChange

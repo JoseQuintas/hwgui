@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.34 2010-01-25 02:14:00 druzus Exp $
+ * $Id: richedit.c,v 1.35 2010-04-05 14:30:42 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -403,4 +403,41 @@ LRESULT APIENTRY RichSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
    else
       return ( CallWindowProc( wpOrigRichProc, hWnd, message, wParam,
                   lParam ) );
+}
+
+static DWORD CALLBACK RichStreamOutCallback( DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+{
+   HANDLE pFile = ( HANDLE ) dwCookie;
+   DWORD dwW;
+   if ( pFile == INVALID_HANDLE_VALUE )
+      return 0;
+      
+   WriteFile( pFile, pbBuff, cb, &dwW,NULL );   
+   return 0;
+}
+
+HB_FUNC( SAVERICHEDIT )
+{
+
+   HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
+   HANDLE hFile ;
+   EDITSTREAM es;
+   void * hFileName; 
+   LPCTSTR lpFileName;
+   HB_SIZE nSize ;
+   
+   lpFileName = HB_PARSTR( 2, &hFileName, &nSize );
+   hFile = CreateFile( lpFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL ) ;
+   if ( hFile == INVALID_HANDLE_VALUE )
+   {
+      hb_retni( 0 );
+      return;
+   }   
+   es.dwCookie = ( DWORD ) hFile;
+   es.pfnCallback = RichStreamOutCallback; 
+
+   SendMessage( hWnd, EM_STREAMOUT, ( WPARAM ) SF_RTF, ( LPARAM )&es) ;
+   CloseHandle( hFile );
+   HB_RETHANDLE( hFile );
+  
 }

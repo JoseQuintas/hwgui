@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.22 2010-03-05 02:04:16 lfbasso Exp $
+ * $Id: hriched.prg,v 1.23 2010-04-05 14:30:42 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -19,7 +19,7 @@ CLASS VAR winclass   INIT "RichEdit20A"
    DATA lSetFocus   INIT .T.
 	 DATA lAllowTabs  INIT .F.
 	 DATA lctrltab    HIDDEN
-   DATA lReadOnly      INIT .F.
+   DATA lReadOnly  INIT .F.
  	 DATA Col        INIT 0
    DATA Line       INIT 0
    DATA LinesTotal INIT 0
@@ -41,6 +41,8 @@ CLASS VAR winclass   INIT "RichEdit20A"
    METHOD UpdatePos( ) 
    METHOD onChange( )
    METHOD ReadOnly( lreadOnly ) SETGET 
+   METHOD SetColor( tColor, bColor, lRedraw )
+   METHOD SaveFile( cFile )
    
 ENDCLASS
 
@@ -56,6 +58,8 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::bOther  := bOther
    ::bChange := bChange
    ::lAllowTabs := IIF( EMPTY( lAllowTabs ), ::lAllowTabs, lAllowTabs )
+   ::lReadOnly := Hwg_BitAnd( nStyle, ES_READONLY ) != 0
+   
    hwg_InitRichEdit()
 
    ::Activate()
@@ -87,6 +91,7 @@ METHOD Init()  CLASS HRichEdit
       SetWindowObject( ::handle, Self )
       Hwg_InitRichProc( ::handle )
       Super:Init()
+      ::SetColor( ::tColor, ::bColor )
       IF ::bChange != Nil
          SendMessage( ::handle, EM_SETEVENTMASK, 0, ENM_SELCHANGE + ENM_CHANGE )
          ::oParent:AddEvent( EN_CHANGE, ::id, {| | ::onChange( )} )
@@ -167,6 +172,18 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
 
    RETURN - 1
 
+METHOD SetColor( tColor, bColor, lRedraw )  CLASS HRichEdit
+
+   IF tcolor != NIL
+      re_SetDefault( ::handle, tColor ) //, ID_FONT ,, ) // cor e fonte padrao
+   ENDIF
+   IF bColor != NIL
+      SendMessage( ::Handle, EM_SETBKGNDCOLOR, 0, bColor )  // cor de fundo
+   ENDIF
+   ::super:SetColor( tColor, bColor, lRedraw )
+   
+   RETURN NIL
+
 METHOD ReadOnly( lreadOnly )
 
    IF lreadOnly != Nil
@@ -228,6 +245,15 @@ METHOD Valid( ) CLASS HRichEdit
    ::oparent:lSuspendMsgsHandling := .f.
 
   RETURN .T.
+
+METHOD SaveFile( cFile )  CLASS HRichEdit 
+
+   IF !EMPTY( cFile )
+      IF ! EMPTY( SAVERICHEDIT( ::Handle, cFile ) )
+          RETURN .T.
+      ENDIF    
+   ENDIF   
+   RETURN .F.
 
 
 /*

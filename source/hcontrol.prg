@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.151 2010-02-25 16:36:09 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.152 2010-04-05 14:30:42 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -61,8 +61,9 @@ CLASS HControl INHERIT HCustomWindow
    METHOD AddName( cName ) HIDDEN
  //  METHOD SetColor( tcolor, bColor, lRepaint )
    METHOD NewId()
-   METHOD Show()        INLINE Super:Show(), IIF( ::oParent:lGetSkipLostFocus, ;
+   METHOD Show()        INLINE ::Super:Show(), IIF( ::oParent:lGetSkipLostFocus, ;
                         PostMessage(  GetActiveWindow() , WM_NEXTDLGCTL, IIF( ::oParent:FindControl(, GetFocus() ) != NIL, 0, ::handle ), 1 ) , .T. )
+   METHOD Hide()        INLINE ( ::oParent:lGetSkipLostFocus := .F., ::Super:Hide() )                        
    METHOD Disable()     INLINE EnableWindow( ::handle, .F. )
    METHOD Enable()      INLINE EnableWindow( ::handle, .T. ) , IIF( ::oParent:lGetSkipLostFocus, ;
                         PostMessage(  GetActiveWindow() , WM_NEXTDLGCTL, IIF( ::oParent:FindControl(, GetFocus() ) != NIL, 0, ::handle ), 1 ) , .T. )
@@ -351,7 +352,7 @@ CLASS VAR winclass   INIT "msctls_statusbar32"
    DATA bDblClick
    DATA bRClick
 
-   METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint, bRClick, bDblClick)
+   METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint, bRClick, bDblClick,  nHeight )
    METHOD Activate()
    METHOD Init()
    METHOD Notify( lParam )
@@ -363,7 +364,7 @@ CLASS VAR winclass   INIT "msctls_statusbar32"
 
 ENDCLASS
 
-METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint, bRClick, bDblClick ) CLASS HStatus
+METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint, bRClick, bDblClick, nHeight ) CLASS HStatus
 
    bSize  := IIf( bSize != NIL, bSize, { | o, x, y | o:Move( 0, y - 20, x, 20 ) } )
    nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), ;
@@ -372,9 +373,10 @@ METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint, bRClic
    Super:New( oWndParent, nId, nStyle, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint )
 
-   ::aParts  := aParts
+   ::nHeight   := nHeight 
+   ::aParts    := aParts
    ::bDblClick := bDblClick
-   ::bRClick := bRClick
+   ::bRClick   := bRClick
 
    ::Activate()
 
@@ -669,10 +671,10 @@ METHOD Paint( lpDis ) CLASS HStatic
 
    // Map "Static Styles" to "Text Styles"
    nstyle := ::nStyleHS  // ::style
-   IF nStyle - SS_NOTIFY < 32
+   IF nStyle - SS_NOTIFY < DT_SINGLELINE 
       SetAStyle( @nstyle, @dwtext )
    ELSE
-       dwtext := nStyle - 256
+       dwtext := nStyle - DT_NOCLIP
    ENDIF
 
    // Set transparent background
@@ -683,15 +685,8 @@ METHOD Paint( lpDis ) CLASS HStatic
    ELSEIF ! ::isEnabled()   
  	    SetTextColor( dc, GetSysColor( COLOR_GRAYTEXT ) )         
    ENDIF
-
    // Draw the text
    DrawText( dc, szText, client_rect, dwtext )
-   //DrawText( dc, szText, ;
-   //          client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], ;
-   //          dwtext )
-   IF ::Title != szText
-      //   RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )
-   ENDIF
 
    RETURN nil
 
@@ -1153,12 +1148,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
          Invalidaterect( ::handle, .f. )
          TRACKMOUSEVENT( ::handle )
       ENDIF
-   RETURN 0
-ELSEIF msg == WM_MOUSELEAVE
-   ::CancelHover()
-   RETURN 0
+      RETURN 0
+   ELSEIF msg == WM_MOUSELEAVE
+      ::CancelHover()
+      RETURN 0
 
-ELSEIF msg == WM_KEYDOWN
+   ELSEIF msg == WM_KEYDOWN
 
    #ifdef __XHARBOUR__
       IF xhb_BitTest( lParam )
@@ -1367,9 +1362,9 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
    LOCAL centerRectHeight
    LOCAL uAlign, uStyleTmp
    LOCAL aTxtSize := IIf( ! Empty( ::caption ), TxtRect( ::caption, Self ), { } )
-   LOCAL aBmpSize := IIf( ! Empty( ::hbitmap ), GetBitmapSize( ::hbitmap ), { } )
-     LOCAL itemRectOld, saveCaptionRect, bmpRect, itemRect1, captionRect1, fillRect
-    LOCAL lMultiLine, nHeight, nt1 := 1
+   LOCAL aBmpSize := IIf( ! Empty( ::hbitmap ), GetBitmapSize( ::hbitmap ), { 0, 0 } )
+   LOCAL itemRectOld, saveCaptionRect, bmpRect, itemRect1, captionRect1, fillRect
+   LOCAL lMultiLine, nHeight := 0
 
    IF ( ::m_bFirstTime )
 
@@ -1396,33 +1391,33 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
 //        ::PaintBk(DC)
    ENDIF
 
-
    // Prepare draw... paint button background
 
    IF ::Themed
-
-      state := IF( bIsPressed, PBS_PRESSED, PBS_NORMAL )
-
+   
+      IF bIsDisabled
+         state :=  PBS_DISABLED
+      ELSE   
+         state := IIF( bIsPressed, PBS_PRESSED, PBS_NORMAL )
+      ENDIF
       IF state == PBS_NORMAL
-
          IF bIsFocused
             state := PBS_DEFAULTED
          ENDIF
-         IF ::bMouseOverButton
+         IF ::bMouseOverButton .OR. ::id = IDOK
             state := PBS_HOT
          ENDIF
       ENDIF
       hb_DrawThemeBackground( ::hTheme, dc, BP_PUSHBUTTON, state, itemRect, Nil )
    ELSE
 
-      IF bIsFocused
+      IF bIsFocused .OR. ::id = IDOK 
 
          br := HBRUSH():Add( RGB( 1, 1, 1 ) )
          FrameRect( dc, itemRect, br:handle )
          InflateRect( @itemRect, - 1, - 1 )
 
       ENDIF
-
       crColor := GetSysColor( COLOR_BTNFACE )
       brBackground := HBRUSH():Add( crColor )
       FillRect( dc, itemRect, brBackground:handle )
@@ -1430,7 +1425,6 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
       IF ( bIsPressed )
          brBtnShadow := HBRUSH():Add( GetSysColor( COLOR_BTNSHADOW ) )
          FrameRect( dc, itemRect, brBtnShadow:handle )
-
       ELSE
 
          uState := HWG_BITOR( ;
@@ -1440,7 +1434,6 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
 
          DrawFrameControl( dc, itemRect, DFC_BUTTON, uState )
       ENDIF
-
    ENDIF
 
 //      if ::iStyle ==  ST_ALIGN_HORIZ
@@ -1465,46 +1458,61 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
    uAlign += DT_VCENTER
    uStyleTmp := HWG_GETWINDOWSTYLE( ::handle )
 
-   //#ifdef __XHARBOUR
-   // IF hb_inline( uStyleTmp ) { ULONG ulStyle = ( ULONG ) hb_parnl( 1 ) ; hb_retl( ulStyle & BS_MULTILINE ) ; }
-   // #else
-   IF hb_BitAnd( uStyleTmp, BS_MULTILINE ) != 0
-      //  #endif
-      uAlign += DT_WORDBREAK
-      lMultiline := .T.
+   itemRect[ 3 ] -= IIF( ::iStyle = ST_ALIGN_VERT, 0, aBmpSize[ 1 ] + 8 )
+    
+   IF hb_BitAnd( uStyleTmp, BS_MULTILINE ) != 0 .AND. !EMPTY(::caption) .AND. ;        
+       INT( aTxtSize[ 2 ] ) !=  INT( DrawText( dc, ::caption, itemRect,  DT_CALCRECT + uAlign + DT_WORDBREAK ) )
+       uAlign += DT_WORDBREAK 
+       lMultiline := .T.
    ELSE
-      uAlign += DT_SINGLELINE
-      lMultiline := .F.
+       uAlign += DT_SINGLELINE
+       lMultiline := .F.
    ENDIF
-
+   
+   itemRect[ 3 ] += IIF( ::iStyle = ST_ALIGN_VERT, 0, aBmpSize[ 1 ] + 8 )
    captionRect := { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] }
    //
+   IF ( ValType( ::hbitmap ) == "N" .OR. ValType( ::hicon ) == "N" ) .AND. lMultiline 
+      IF ::iStyle = ST_ALIGN_HORIZ 
+         captionRect := { drawInfo[ 4 ] + ::PictureMargin , drawInfo[ 5 ], drawInfo[ 6 ] , drawInfo[ 7 ] }
+      ELSEIF ::iStyle = ST_ALIGN_HORIZ_RIGHT   
+         captionRect := { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ] - ::PictureMargin, drawInfo[ 7 ] }       
+      ELSEIF ::iStyle = ST_ALIGN_VERT
+      ENDIF
+   ENDIF
+   
    itemRectOld := AClone( itemRect )
-   IF !EMPTY( ::caption ) .AND. !EMPTY( ::hbitmap ) //.AND.!EMPTY( ::hicon )
-      nHeight := IIF( lMultiLine, DrawText( dc, ::caption, itemRect,  DT_CALCRECT + DT_WORDBREAK ), aTxtSize[ 2 ] )
-        IF ::iStyle = ST_ALIGN_HORIZ
-          itemRect[ 1 ] := IIF( ::PictureMargin = 0, ((( ::nWidth - aTxtSize[ 1 ] - aBmpSize[ 1 ] ) / 2 )) / 2, ::PictureMargin )
+   
+   IF !EMPTY( ::caption ) .AND. !EMPTY( ::hbitmap )  //.AND.!EMPTY( ::hicon )
+      nHeight := IIF( lMultiLine, DrawText( dc, ::caption, itemRect,  DT_CALCRECT + uAlign + DT_WORDBREAK  ), aTxtSize[ 2 ] )
+      IF ::iStyle = ST_ALIGN_HORIZ
+	       itemRect[ 1 ] := IIF( ::PictureMargin = 0, ( ( ( ::nWidth - aTxtSize[ 1 ] - aBmpSize[ 1 ] / 2 ) / 2 ) ) / 2, ::PictureMargin )
          itemRect[ 1 ] := IIF( itemRect[ 1 ] < 0, 0, itemRect[ 1 ] )
-
-       ELSEIF ::iStyle = ST_ALIGN_VERT .OR. ::iStyle = ST_ALIGN_OVERLAP
+      ELSEIF ::iStyle = ST_ALIGN_HORIZ_RIGHT          
+      ELSEIF ::iStyle = ST_ALIGN_VERT .OR. ::iStyle = ST_ALIGN_OVERLAP
+         nHeight := IIF( lMultiLine,  DrawText( dc, ::caption, itemRect,  DT_CALCRECT + DT_WORDBREAK  ), aTxtSize[ 2 ] )             
          ::iStyle := ST_ALIGN_OVERLAP
-         itemRect[ 1 ] := ( ::nWidth - aBmpSize[ 1 ] ) /  2
-         itemRect[ 2 ] := IIF( ::PictureMargin = 0, ((( ::nHeight - nHeight - aBmpSize[ 2 ] ) / 2 )) / 2 + 2, ::PictureMargin )
-         nt1 :=  INT( itemRect[ 2 ] / 1.5 )
-       ELSEIF ::iStyle != ST_ALIGN_HORIZ_RIGHT
-       ELSEIF ::PictureMargin > 0
-          itemRect[ 1 ] :=  ::nWidth - aBmpSize[ 1 ] - ::PictureMargin
-       ENDIF
-    ELSEIF  !EMPTY( ::caption )
-        nHeight := IIF( lMultiLine, DrawText( dc, ::caption, itemRect,  DT_CALCRECT + DT_WORDBREAK ), aTxtSize[ 2 ] )
-    ENDIF
+         itemRect[ 1 ] := ( ::nWidth - aBmpSize[ 1 ] ) /  2 
+         itemRect[ 2 ] := IIF( ::PictureMargin = 0, ( ( ( ::nHeight - ( nHeight + aBmpSize[ 2 ] + 1 ) ) / 2 ) ), ::PictureMargin )            
+      ENDIF
+   ELSEIF  ! EMPTY( ::caption )
+      nHeight := IIF( lMultiLine, DrawText( dc, ::caption, itemRect,  DT_CALCRECT + DT_WORDBREAK ), aTxtSize[ 2 ] )
+   ENDIF
 
    bHasTitle := ValType( ::caption ) == "C" .and. ! Empty( ::Caption )
 
    //   DrawTheIcon( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, bIsDisabled, ::hIcon, ::hbitmap, ::iStyle )
-   IF ValType( ::hbitmap ) == "N" .AND. ::m_bDrawTransparent .AND. ! bIsDisabled
-       bmpRect := PrepareImageRect( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, ::hIcon, ::hbitmap, ::iStyle )
-       DrawTransparentBitmap( dc, ::hbitmap, bmpRect[ 1 ], bmpRect[ 2 ])
+   IF ValType( ::hbitmap ) == "N" .AND. ::m_bDrawTransparent .AND. ( ! bIsDisabled .OR. ::istyle = ST_ALIGN_HORIZ_RIGHT )   
+      bmpRect := PrepareImageRect( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, ::hIcon, ::hbitmap, ::iStyle ) 
+      IF ::istyle = ST_ALIGN_HORIZ_RIGHT             
+         bmpRect[ 1 ]     -= ::PictureMargin   
+         captionRect[ 3 ] -= ::PictureMargin 
+      ENDIF  
+      IF ! bIsDisabled 
+          DrawTransparentBitmap( dc, ::hbitmap, bmpRect[ 1 ], bmpRect[ 2 ] )
+      ELSE   
+          DrawGrayBitmap( dc, ::hbitmap, bmpRect[ 1 ], bmpRect[ 2 ] ) 
+      ENDIF
    ELSEIF ValType( ::hbitmap ) == "N" .OR. ValType( ::hicon ) == "N"
        DrawTheIcon( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, bIsDisabled, ::hIcon, ::hbitmap, ::iStyle )
    ENDIF
@@ -1521,16 +1529,19 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
 
       // Center text
       centerRect := captionRect
-
       centerRect := copyrect( captionRect )
 
       IF ValType( ::hicon ) == "N" .OR. ValType( ::hbitmap ) == "N"
           IF ! lmultiline  .AND. ::iStyle != ST_ALIGN_OVERLAP
              // DrawText( dc, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], uAlign + DT_CALCRECT, @captionRect )
-          ELSE
+          ELSEIF !EMPTY(::caption)          
              // figura no topo texto em baixo
-             captionRect[ 2 ] := aBmpSize[ 2 ] + ( ::nHeight - nHeight - aBmpSize[ 2 ] ) / 2 + itemRect[ 2 ]
-             captionRect[ 2 ] := IIF( captionRect[ 2 ] + nHeight > ::nHeight - 8, ::nHeight - nHeight - 8, captionRect[ 2 ] )
+             IF ::iStyle = ST_ALIGN_OVERLAP //ST_ALIGN_VERT
+                captionRect[ 2 ] :=  itemRect1[ 2 ] + aBmpSize[ 2 ] + 1  
+                uAlign -= ST_ALIGN_OVERLAP + 1
+             ELSE
+                captionRect[ 2 ] :=  ( ::nHeight - nHeight ) / 2 
+             ENDIF    
              savecaptionRect := aclone( captionRect )
              DrawText( dc, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], uAlign , @captionRect )
           ENDIF
@@ -1591,7 +1602,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
              captionRect[ 2 ] := (::nHeight  - nHeight ) / 2 + 2
          ENDIF
 
-         hb_DrawThemeText( ::hTheme, dc, BP_PUSHBUTTON, IF( bIsDisabled, PBS_DISABLED, PBS_NORMAL ), ;
+         hb_DrawThemeText( ::hTheme, dc, BP_PUSHBUTTON, IIF( bIsDisabled, PBS_DISABLED, PBS_NORMAL ), ;
                            ::caption, ;
                            uAlign, ;
                            0, captionRect )
@@ -1744,8 +1755,8 @@ METHOD Activate CLASS HGroup
 METHOD Init CLASS HGroup
 
    IF  ! ::lInit
-      Super:Init()
-      SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0 , SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER)
+      SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0 , SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER )
+      Super:Init()      
    ENDIF
    //SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
    RETURN NIL

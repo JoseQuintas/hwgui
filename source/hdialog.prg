@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.103 2010-02-19 03:28:47 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.104 2010-04-05 14:30:42 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -126,12 +126,6 @@ METHOD NEW( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
       ::HelpId := nHelpId
    END
    ::SetColor( , bColor )
-   /*
-   IF bcolor != NIL
-      ::brush := HBrush():Add( bcolor )
-      ::bcolor := bcolor
-   ENDIF
-   */
    IF Hwg_Bitand( nStyle, WS_HSCROLL ) > 0
       ::nScrollBars ++
    ENDIF
@@ -286,7 +280,14 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    *-EnableThemeDialogTexture(odlg:handle,6)  //,ETDT_ENABLETAB)
 
    oDlg:rect := GetWindowRect( odlg:handle )
-   oDlg:nScrollPos := 0
+   //oDlg:nScrollPos := 0
+
+   IF oDlg:nScrollBars > - 1    
+      AEval( oDlg:aControls, { | o | oDlg:ncurHeight := max( o:nTop + o:nHeight + GETSYSTEMMETRICS( SM_CYCAPTION ) + GETSYSTEMMETRICS( SM_CYCAPTION ) + 12 , oDlg:ncurHeight ) } )  
+      AEval( oDlg:aControls, { | o | oDlg:ncurWidth := max( o:nLeft + o:nWidth  + 24 , oDlg:ncurWidth ) } )  
+      oDlg:ResetScrollbars()
+      oDlg:SetupScrollbars()
+   ENDIF
 
    IF ValType( oDlg:menu ) == "A"
       hwg__SetMenu( oDlg:handle, oDlg:menu[ 5 ] )
@@ -307,16 +308,19 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
 
    InitControls( oDlg, .T. )
    InitObjects( oDlg )
+   POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS), 0)  
+   POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL), 0)
+
    
    iFocu := ASCAN( oDlg:aControls,{| o | Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_TABSTOP ) != 0 .AND. Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_DISABLED ) = 0 }) 
    nFocu := IIF( iFocu > 0, oDlg:aControls[ iFocu ]:Handle, 0 )
 
    IF oDlg:bInit != Nil
-      oDlg:lSuspendMsgsHandling := .t.
+      oDlg:lSuspendMsgsHandling := .T.
       IF ValType( nReturn := Eval( oDlg:bInit, oDlg ) ) != "N"
          oDlg:lSuspendMsgsHandling := .F.
          IF ValType( nReturn ) = "L" .AND. ! nReturn
-            oDlg:CLOSE()
+            oDlg:Close()
             RETURN Nil
          ENDIF
          nReturn := 1
@@ -383,7 +387,7 @@ STATIC FUNCTION onEraseBk( oDlg, hDC )
 
     IF __ObjHasMsg( oDlg,"OBMP") .AND. oDlg:oBmp != Nil
        IF oDlg:lBmpCenter
-         CenterBitmap( hDC, oDlg:handle, oDlg:oBmp:handle, , oDlg:nBmpClr  )               
+          CenterBitmap( hDC, oDlg:handle, oDlg:oBmp:handle, , oDlg:nBmpClr  )               
        ELSE
           SpreadBitmap( hDC, oDlg:handle, oDlg:oBmp:handle )
        ENDIF
@@ -488,7 +492,11 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
         ( iParLow == IDOK .AND. oDlg:FindControl( IDOK ) != nil ) .OR. ;
           iParLow == IDCANCEL )
       IF iParLow == IDOK
+         oCtrl := oDlg:FindControl( IDOK ) 
          oDlg:lResult := .T.
+         IF  __ObjHasMsg( oCtrl, "BCLICK" ) .AND. oCtrl:bClick != Nil
+   	        RETURN 1
+         ENDIF	 
       ENDIF
       //Replaced by Sandro
       IF oDlg:lExitOnEsc .OR. ! nEsc
@@ -553,24 +561,11 @@ STATIC FUNCTION onSize( oDlg, wParam, lParam )
    oDlg:nWidth := LOWORD( lParam )  //aControls[3]-aControls[1]
    oDlg:nHeight := HIWORD( lParam ) //aControls[4]-aControls[2]
    // SCROLL BARS code here.
-   IF oDlg:nScrollBars = 1 .OR. oDlg:nScrollBars = 2
-      oDlg:nCurHeight := oDlg:nHeight - oDlg:nTop //y;
-      nScrollMax := 0
-      IF oDlg:nHeight < oDlg:rect[ 4 ] //.Height())
-         nScrollMax := oDlg:rect[ 4 ] - oDlg:nHeight //m_rect.Height() - cy;
-      ENDIF
-      // SetScrollInfo( hWnd, nType, nRedraw, nPos, nPage )
-      SetScrollInfo( oDlg:Handle, SB_VERT, 1, 0, nScrollMax / 10 )
-   ENDIF
-   IF oDlg:nScrollBars = 0 .OR. oDlg:nScrollBars = 2
-      oDlg:nCurWidth  := oDlg:nWidth - oDlg:nLeft //y;
-      nScrollMax := 0
-      IF oDlg:nWidth < oDlg:rect[ 3 ] //.Height())
-         nScrollMax := oDlg:rect[ 3 ] - oDlg:nWidth //m_rect.Height() - cy;
-      ENDIF
-      SetScrollInfo( oDlg:Handle, SB_HORZ, 1, 0, nScrollMax / 10 )
-   ENDIF
-   //
+	 IF oDlg:nScrollBars > - 1 .AND. oDlg:lAutoScroll
+      oDlg:ResetScrollbars()
+      oDlg:SetupScrollbars()
+   ENDIF    
+   
    IF oDlg:bSize != Nil .AND. ;
       ( oDlg:oParent == Nil .OR. ! __ObjHasMsg( oDlg:oParent, "ACONTROLS" ) )
       Eval( oDlg:bSize, oDlg, LOWORD( lParam ), HIWORD( lParam ) )

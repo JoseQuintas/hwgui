@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1256 2010-04-05 13:45:48 lfbasso Exp $
+ * $Id: Changelog,v 1.1257 2010-04-05 14:30:42 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,7 +8,48 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2010-04-05 23:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+2010-04-05 11:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcontrol.prg
+    ! fixed position BITMAP and TEXT in BUTTONEX in modo MULTILINE and SINGLELINE
+    ! fixed IDOK color in BUTTONEX
+  * source\hcwindow.prg
+    +    #include "hbcompat.ch"
+    + DATA lAutoScroll INIT .T.
+    + DATA nScrollBars INIT -1   
+    + DATA nHorzInc
+    + DATA nVertInc
+    + DATA nVscrollMax
+    + DATA nHscrollMax
+    + METHOD ResetScrollbars()
+    + METHOD SetupScrollbars()
+    ! fixed METHOD ScrollHV
+    * support for scrollbars in WINDOWS and DIALOGS
+    ! fixed FUNCTION ProcOkCancel( oCtrl, nKey )
+  * source\hdialog.prg
+     * scrollbars control
+     ! fixed event IDOK and IDCANCEL
+  * source\hedit.prg
+    ! minor fix
+  * source\hpanel.prg
+    + add scroll bars control
+    + add TABSTOP events
+    + add METHOD Resize()  
+    ! fixed HIDE(),SHOW(),PAINT()
+  * source\hriched.prg
+    + DATA lReadOnly  INIT .F.
+    + METHOD ReadOnly( lreadOnly ) SETGET 
+    + METHOD SetColor( tColor, bColor, lRedraw )
+    + METHOD SaveFile( cFile )
+  * source\hwindow.prg
+    ! several fixes
+    ! fixed activate in MDICHILD
+    * scrollbars control
+  * source\richedit.c
+    + static DWORD CALLBACK RichStreamOutCallback
+    + HB_FUNC( SAVERICHEDIT )
+      save text in richtext format
+  
+2010-04-05 11:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     + #translate LastKey( )  =>  HWG_LASTKEY( )
     * #xcommand @ <x>,<y> OWNERBUTTON [ <oOwnBtn> ]  ;

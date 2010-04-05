@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.83 2010-02-14 03:11:47 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.84 2010-04-05 13:45:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -331,21 +331,35 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
             RETURN 0
          ENDIF
       ELSEIF msg = WM_KEYDOWN
-         ProcKeyList( Self, wParam )
-      ELSEIF MSG = 343                  //.OR.MSG= 359 .or.GETKEYSTATE( VK_TAB ) < 0 //CB_GETDROPPEDSTATE
-         IF GETKEYSTATE( VK_RETURN ) + GETKEYSTATE( VK_DOWN ) + GETKEYSTATE( VK_TAB ) < 0
+         ProcKeyList( Self, wParam ) 
+         IF wparam =  VK_RIGHT .OR. wParam == VK_RETURN //.AND. ! ::lEdit 	 	      
+             GetSkip( ::oParent, ::handle, , 1 )
+             RETURN 0
+         ELSEIF wparam =  VK_LEFT //.AND. ! ::lEdit 	 	      
+   	         GetSkip( ::oParent, ::handle, , -1 )   
+   	         RETURN 0
+         ENDIF   
+      ELSEIF msg = CB_GETDROPPEDSTATE  
+   	     IF GETKEYSTATE( VK_RETURN ) < 0
+            ::GetValue()
+	       ENDIF
+         IF GETKEYSTATE( VK_DOWN ) + GETKEYSTATE( VK_TAB ) < 0
             IF ::oParent:oParent = Nil
              //  GetSkip( ::oParent, GetAncestor( ::handle, GA_PARENT ),, 1 )
             ENDIF
             GetSkip( ::oParent, ::handle,, 1 )
+            RETURN 1
          ENDIF
          IF GETKEYSTATE( VK_UP ) < 0
             IF ::oParent:oParent = Nil
              //  GetSkip( ::oParent, GetAncestor( ::handle, GA_PARENT ),, 1 )
             ENDIF
             GetSkip( ::oParent, ::handle,, - 1 )
+            RETURN 1
          ENDIF
-         RETURN - 1
+    	   IF ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE.OR. ! ::GetParentForm( Self ):lModal )
+	          RETURN 1
+	       ENDIF
       ENDIF
    ENDIF
 
@@ -511,8 +525,8 @@ METHOD DisplayValue( cValue ) CLASS HComboBox
 
    IF cValue != Nil
 	    IF ::lEdit .AND. VALTYPE( cValue ) = "C" 
-	        SetDlgItemText( ::oParent:handle, ::id, cValue )
-	        ::cDisplayValue := cValue
+         SetDlgItemText( ::oParent:handle, ::id, cValue )
+         ::cDisplayValue := cValue
       ENDIF
    ENDIF   
    RETURN IIF( IsWindow( ::oParent:handle ), GetEditText( ::oParent:handle, ::id ), ::cDisplayValue )

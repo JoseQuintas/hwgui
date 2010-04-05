@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.62 2010-03-06 14:52:41 lfbasso Exp $
+ *$Id: htab.prg,v 1.63 2010-04-05 13:45:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -669,7 +669,6 @@ METHOD Notify( lParam ) CLASS HTab
 METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    Local oCtrl 
    //WRITELOG('TAB'+STR(MSG)+STR(WPARAM)+STR(LPARAM)+CHR(13))
-
    IF msg = WM_LBUTTONDOWN
       IF ::ShowDisablePage( lParam ) = 0
           RETURN 0
@@ -693,7 +692,6 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    ELSEIF  msg = WM_SETFONT .AND. ::oFont != Nil //msg = WM_ERASEBKGND //WM_PAINT
       SendMessage( ::handle,	WM_PRINT, GETDC( ::handle ) , PRF_CLIENT + PRF_CHILDREN + PRF_OWNED )
    ENDIF
-
    IF (msg == WM_KEYDOWN .OR.(msg = WM_GETDLGCODE .AND. wparam == VK_RETURN)) .AND. GetFocus()= ::handle
        IF ProcKeyList( Self, wParam )
           RETURN - 1
@@ -893,18 +891,23 @@ METHOD Paint( lpdis ) CLASS HPaintTab
    RETURN 0
 
 METHOD showTextTabs( oPage, aItemPos ) CLASS HPaintTab
-
-    LOCAL nStyle, dwText, BmpSize := 0, size := 0, aTxtSize
-    
+    LOCAL nStyle, dwText, BmpSize := 0, size := 0, aTxtSize, aItemRect
+    LOCAL hTheme
     //nStyle := SS_CENTER + IIF(  Hwg_BitAnd( oPage:oParent:Style, TCS_FIXEDWIDTH  ) != 0 ,;
     //                            SS_RIGHTJUST, DT_VCENTER + DT_SINGLELINE )
     AEVAL( oPage:oParent:Pages, {| p | size += p:aItemPos[ 3 ] - p:aItemPos[ 1 ] } ) 
     nStyle := SS_CENTER + DT_VCENTER + DT_SINGLELINE + DT_END_ELLIPSIS 
-                                
-    SetBkMode( ::hDC, 1 )             
+    
+    IF ( ISTHEMEDLOAD() )
+       hTheme := nil
+       IF ::WindowsManifest
+           hTheme := hb_OpenThemeData( ::oParent:handle, "TAB" )
+       ENDIF
+    ENDIF
+    SetBkMode( ::hDC, 1 ) 
     IF oPage:oParent:oFont != Nil
        SelectObject( ::hDC, oPage:oParent:oFont:handle )  
-    ENDIF                        
+    ENDIF          
     IF oPage:lEnabled
        SetTextColor( ::hDC, IIF( EMPTY( oPage:tColor ), GetSysColor( COLOR_WINDOWTEXT ), oPage:tColor ) )
     ELSE
@@ -917,14 +920,19 @@ METHOD showTextTabs( oPage, aItemPos ) CLASS HPaintTab
         BmpSize := MAX( BmpSize, oPage:oParent:aBmpSize[ 1 ] ) 
     ENDIF
     aItemPos[ 3 ] := IIF( size > oPage:oParent:nWidth .AND. aItemPos[ 1 ] + BmpSize + aTxtSize[ 1 ] > oPage:oParent:nWidth - 44, oPage:oParent:nWidth - 44, aItemPos[ 3 ] )
+    aItemRect := { aItemPos[ 1 ]   , aItemPos[ 2 ]  , aItemPos[ 3 ]  , aItemPos[ 4 ] - 1   }                                
     IF  Hwg_BitAnd( oPage:oParent:Style, TCS_BOTTOM  ) = 0
-       FillRect( ::hDC,  aItemPos[ 1 ] + BmpSize + 2, aItemPos[ 2 ] + 3, aItemPos[ 3 ] - 4, aItemPos[ 4 ] - 5,;
-           IIF( oPage:brush != Nil, oPage:brush:Handle, oPage:oParent:brush:Handle  ) )
+       IF hTheme != Nil .AND. oPage:brush = Nil
+          hb_DrawThemeBackground( hTheme, ::hDC, BP_PUSHBUTTON, 0, aItemRect, Nil )
+       ELSE
+          FillRect( ::hDC,  aItemPos[ 1 ] + BmpSize + 4, aItemPos[ 2 ] + 4, aItemPos[ 3 ] - 5, aItemPos[ 4 ] - 5, ;
+                   IIF( oPage:brush != Nil, oPage:brush:Handle, oPage:oParent:brush:Handle  ) )
+       ENDIF            
        IF oPage:oParent:GetActivePage() = oPage:PageOrder                       // 4
           //FillRect( ::hDC,  aItemPos[ 1 ] + 3, aItemPos[ 2 ] + 3, aItemPos[ 3 ] - 4, aItemPos[ 4 ] - 5, IIF( oPage:brush != Nil, oPage:brush:Handle, oPage:oParent:brush:Handle ) )
           DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] + BmpSize - 1 , aItemPos[ 2 ] - 1, aItemPos[ 3 ]  , aItemPos[ 4 ] - 1 , nstyle )          
        ELSE
-          DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] + BmpSize - 0, aItemPos[ 2 ] + 1, aItemPos[ 3 ] + 1 , aItemPos[ 4 ] + 1 , nstyle )
+          DrawText( ::hDC, oPage:caption, aItemPos[ 1 ] + BmpSize - 1, aItemPos[ 2 ] + 1, aItemPos[ 3 ] + 1 , aItemPos[ 4 ] + 1 , nstyle )
        ENDIF
     ELSE
        FillRect( ::hDC,  aItemPos[ 1 ] + 3, aItemPos[ 2 ] + 3, aItemPos[ 3 ] - 4, aItemPos[ 4 ] - 5, IIF( oPage:brush != Nil, oPage:brush:Handle,  oPage:oParent:brush:Handle ) )

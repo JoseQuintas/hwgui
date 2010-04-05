@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.82 2010-02-07 15:42:23 lfbasso Exp $
+ *$Id: windows.ch,v 1.83 2010-04-05 13:45:48 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -208,6 +208,7 @@
 #define CB_SETCURSEL                334
 #define CB_SETITEMHEIGHT            0x0153
 #define CB_GETITEMHEIGHT            0x0154
+#define CB_GETDROPPEDSTATE          343
 #define CB_FINDSTRINGEXACT          344
 
 /* Brush Styles */
@@ -1121,6 +1122,11 @@
 //--------------------------
 #define SM_CYCAPTION     4
 #define SM_CYMENU        15
+#define SM_CYSMCAPTION   51
+#define SM_CXMENUSIZE    54
+#define SM_CYMENUSIZE    55
+#define SM_CXMENUCHECK   71
+#define SM_CYMENUCHECK   72
 
 //--------------
 // Font Weights

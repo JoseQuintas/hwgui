@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.58 2010-02-06 02:06:43 druzus Exp $
+ * $Id: misc.c,v 1.59 2010-04-05 13:45:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -771,4 +771,21 @@ HB_FUNC( OUTPUTDEBUGSTRING )
 HB_FUNC( GETSYSTEMMETRICS )
 {
    hb_retni( GetSystemMetrics( hb_parni( 1 ) ) );
+}
+
+// nando
+HB_FUNC( HWG_LASTKEY )
+{
+   BYTE kbBuffer[ 256 ];
+   int i = 0;
+
+   GetKeyboardState( kbBuffer );
+
+   for( i = 0; i < 256; i ++ )  
+      if( kbBuffer[ i ] & 0x80 )
+      {
+         hb_retni( i ) ;
+         return ;
+      }   
+    hb_retni( 0 ) ;
 }

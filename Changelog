@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1255 2010-03-28 19:44:05 sandrorrfreire Exp $
+ * $Id: Changelog,v 1.1256 2010-04-05 13:45:48 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,61 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-04-05 23:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + #translate LastKey( )  =>  HWG_LASTKEY( )
+    * #xcommand @ <x>,<y> OWNERBUTTON [ <oOwnBtn> ]  ;
+      +  [ <lThemed: THEMED> ]     ;
+    + #xcommand ADDTOOLBUTTON  <oTool> ;
+             [ ID <nId> ];
+             [ BITMAP <nBitIp> ];
+             [ STYLE <bstyle> ];
+             [ STATE <bstate>];
+             [ TEXT <ctext> ] ;
+             [ TOOLTIP <c> ];
+             [ MENU <d>];
+             [ NAME < cButton > ];
+             ON CLICK <bclick>;
+          =>;
+          <oTool>:AddButton( <nBitIp>,<nId>,<bstate>,<bstyle>,<ctext>,<bclick>,<c>,<d>,<cButton>
+  * include\windows.ch
+    ! add news constants
+  * source\hbrowse.prg
+    + add THEME IN HEADERS
+    * HCOLUMN CLASS  
+      + DATA Resizable INIT .T.  
+        enable ou disable resize column
+    * HBROWSE CLASS    
+      + DATA m_bFirstTime  INIT .T.
+      + DATA hTheme
+      + DATA Themed        INIT .T.
+      + DATA xPosMouseOver INIT  0
+      + DATA isMouseOver   INIT .F.
+      + DATA allMouseOver  INIT .F.
+      + DATA AutoColumnFit INIT  0   // 0-Enable / 2  Disables capability for columns to fit data automatically.
+      + DATA nAutoFit      
+      + METHOD AutoFit()
+        allows you to resize the columns if the browse is resized, the same behavior anchor to objects
+        this requires:
+          lAdjRight = .F. and AutoColumnFit = 1
+    ! Several fixes
+  * source\hcombo.prg
+    ! ! fixed KEYDOWN in ONEVENT
+  * source\hfrmtmpl.prg
+    ! minor fix in combobox
+  * source\hownbtn.prg
+    + add THEME in buttons
+  * source\hradio.prg
+    ! fixed KEYDOWN in ONEVENT
+  * source\htab.prg
+    ! fixed disable color in Themed
+  * source\menu.prg
+    ! fixed size bitmaps in menu
+  * source\misc.c
+    + add function HB_FUNC( HWG_LASTKEY )
+      RETURN last key press same behavior Lastkey()    
+
 
 2008-03-28 16-35 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * source\htool.prg

@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.158 2010-03-28 19:44:09 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.159 2010-04-05 13:45:48 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -42,6 +42,9 @@
 #define ANCHOR_RIGHTREL        128 // Anchors control to right border of container and maintains relative distance between the right border.
 #define ANCHOR_HORFIX          256 // Anchors center of control relative to left and right borders but remains fixed in size.
 #define ANCHOR_VERTFIX         512 // Anchors center of control relative to top and bottom borders but remains fixed in size.
+
+#define HORZ_PTS 7 //8
+#define VERT_PTS 3.5 //4
 
 #ifdef __XHARBOUR__
   #ifndef HB_SYMBOL_UNUSED
@@ -238,6 +241,7 @@
 
 #xcommand ADD STATUS [<oStat>] [ TO <oWnd> ] ;
              [ ID <nId> ]           ;
+             [ HEIGHT <nHeight> ]   ;             
              [ ON INIT <bInit> ]    ;
              [ ON SIZE <bSize> ]    ;
              [ ON PAINT <bDraw> ]   ;
@@ -248,7 +252,7 @@
              [ PARTS <aparts,...> ] ;
           => ;
           [ <oStat> := ] HStatus():New( <oWnd>,<nId>,<nStyle>,<oFont>,\{<aparts>\},<bInit>,;
-             <bSize>,<bDraw>, <bRClick>, <bDblClick> );;
+             <bSize>,<bDraw>, <bRClick>, <bDblClick>, <nHeight> );;
           [ <oStat>:name := <(oStat)> ]
 
 #xcommand @ <x>,<y> SAY [ <oSay> CAPTION ] <caption> ;
@@ -985,11 +989,12 @@
              ] ;
              [ TOOLTIP <ctoolt> ]    ;
              [ <lCheck: CHECK> ]     ;
+             [ <lThemed: THEMED> ]     ;             
           => ;
           [<oOwnBtn> :=] HOWNBUTTON():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
              <height>,<bInit>,<bSize>,<bDraw>,<bClick>,<.flat.>,<cText>,<color>, ;
              <font>,<xt>,<yt>,<widtht>,<heightt>,<bmp>,<.res.>,<xb>,<yb>,<widthb>, ;
-             <heightb>,<.ltr.>,<trcolor>,<ctoolt>,!<.enable.>,<.lCheck.>,<bcolor>, <bGfocus>, <bLfocus> );; 
+             <heightb>,<.ltr.>,<trcolor>,<ctoolt>,!<.enable.>,<.lCheck.>,<bcolor>, <bGfocus>, <bLfocus>,<.lThemed.> );; 
           [ <oOwnBtn>:name := <(oOwnBtn)> ]
 
 #xcommand REDEFINE OWNERBUTTON [ <oOwnBtn> ]  ;
@@ -1365,6 +1370,8 @@
           => ;
           SetDlgKey( <oDlg>, <nctrl>, <nkey>, <{func}> )
 
+#translate LastKey( )  =>  HWG_LASTKEY( )
+
 /*             */
 #xcommand @ <x>,<y> GRAPH [ <oGraph> DATA ] <aData> ;
              [ OF <oWnd> ]              ;
@@ -1711,6 +1718,19 @@ Added by Marcos Antonio Gambeta
              ON CLICK <bclick>;
           =>;
           aadd(<O> ,\{<nBitIp>,<nId>,<bstate>,<bstyle>,,<ctext>,<bclick>,<c>,<d>,,\})
+
+#xcommand ADDTOOLBUTTON  <oTool> ;
+             [ ID <nId> ];
+             [ BITMAP <nBitIp> ];
+             [ STYLE <bstyle> ];
+             [ STATE <bstate>];
+             [ TEXT <ctext> ] ;
+             [ TOOLTIP <c> ];
+             [ MENU <d>];
+             [ NAME < cButton > ];
+             ON CLICK <bclick>;
+          =>;
+          <oTool>:AddButton( <nBitIp>,<nId>,<bstate>,<bstyle>,<ctext>,<bclick>,<c>,<d>,<cButton>
 
 #xcommand @ <x>,<y> GRIDEX <oGrid>        ;
              [ OF <oWnd> ]               ;

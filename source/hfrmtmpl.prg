@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.70 2009-06-17 16:38:44 alkresin Exp $
+ * $Id: hfrmtmpl.prg,v 1.71 2010-04-05 13:45:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -953,9 +953,9 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
       //
       IF oCtrlTmpl:cClass == "combobox"
          IF ( i := AScan( oCtrlTmpl:aProp, { | a | Lower( a[ 1 ] ) == "nmaxlines" } ) ) > 0
-            nHeight := nHeight * nMaxLines
+          *-  nHeight := nHeight * nMaxLines
          ELSE
-            nHeight := nHeight * 4
+          *-  nHeight := nHeight * 4
          ENDIF
       ELSEIF oCtrlTmpl:cClass == "line"
          nLength := IIf( lVertical == Nil.OR. ! lVertical, nWidth, nHeight )

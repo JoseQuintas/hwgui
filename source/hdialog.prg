@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.104 2010-04-05 14:30:42 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.105 2010-04-06 23:23:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -727,6 +727,8 @@ FUNCTION EndDialog( handle )
          RETURN Nil
       ENDIF
    ENDIF
+   // force control triggered killfocus
+   SETFOCUS( 0 )
    IF oDlg:bDestroy != Nil
       oDlg:lSuspendMsgsHandling := .T.
       res := Eval( oDlg:bDestroy, oDlg )

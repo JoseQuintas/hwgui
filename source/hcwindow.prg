@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.61 2010-04-05 14:30:42 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.62 2010-04-06 23:23:14 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -101,7 +101,8 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
                               // ON INIT {|| nInitFocus:=object:[handle] }  to the dialog definition
    DATA nCurWidth    INIT 0
    DATA nCurHeight   INIT 0
-   DATA nScrollPos   INIT 0
+   DATA nVScrollPos   INIT 0 
+   DATA nHScrollPos   INIT 0 
    DATA rect
    DATA nScrollBars INIT -1
    DATA lAutoScroll INIT .T.

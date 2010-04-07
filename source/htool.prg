@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.39 2010-03-29 14:05:54 lfbasso Exp $
+ * $Id: htool.prg,v 1.40 2010-04-07 02:01:09 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -68,9 +68,7 @@ RETURN Self
 
 METHOD onClick()  CLASS HToolButton
   IF ::bClick != Nil
-       ::oParent:lSuspendMsgsHandling := .T.
       Eval( ::bClick, self, ::id )
-       ::oParent:lSuspendMsgsHandling := .F.
    ENDIF
 RETURN Nil
 

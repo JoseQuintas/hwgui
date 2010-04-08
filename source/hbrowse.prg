@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.219 2010-04-08 02:56:16 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.220 2010-04-08 11:59:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -48,7 +48,8 @@ STATIC arrowCursor := 0
 STATIC downCursor := 0
 STATIC oCursor     := 0
 STATIC oPen64 
-STATIC xDrag, xDragMove := 0
+STATIC xDrag
+STATIC xDragMove := 0
 
 //----------------------------------------------------//
 CLASS HColumn INHERIT HObject
@@ -2593,7 +2594,7 @@ ELSEIF nLine == 0
       ::isMouseOver := .F.
       Hwg_SetCursor( oCursor )
       xDrag := LOWORD( lParam )
-      xDragMov := 0
+      xDragMove := 0
       InvalidateRect( ::handle, 0 )
    ELSEIF ::lDispHead .AND. ;
       nLine >= - ::nHeadRows .AND. ;

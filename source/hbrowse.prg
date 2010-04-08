@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.218 2010-04-05 13:45:48 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.219 2010-04-08 02:56:16 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -1304,7 +1304,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
          Eval( ::bSkip, Self, ::internal[ 2 ] - ::rowPos )
       ENDIF
       IF ::aSelected != Nil .AND. AScan( ::aSelected, { | x | x = Eval( ::bRecno, Self ) } ) > 0
-         ::LineOut( ::internal[ 2 ], 0, hDC, .T. )
+         ::LineOut( ::internal[ 2 ], 0, hDC, ! ::lResizing )
       ELSE
          ::LineOut( ::internal[ 2 ], 0, hDC, .F. )
       ENDIF
@@ -1390,7 +1390,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
 
          // decide how to print the video row
          IF ::aSelected != Nil .AND. AScan( ::aSelected, { | x | x = Eval( ::bRecno, Self ) } ) > 0
-            ::LineOut( cursor_row, 0, hDC, .T. )
+            ::LineOut( cursor_row, 0, hDC, ! ::lResizing )
          ELSE
             ::LineOut( cursor_row, 0, hDC, .F. )
          ENDIF
@@ -1434,16 +1434,16 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
 
    // Highlights the selected ROW
    // we can have a modality with CELL selection only or ROW selection
-   IF ! ::lResizing .AND. ! ::lHeadClick .AND. ! ::lEditable
-      ::LineOut( ::rowPos, 0, hDC, .T. )
+   IF ! ::lHeadClick .AND. ! ::lEditable // .AND. ! ::lResizing 
+      ::LineOut( ::rowPos, 0, hDC, ! ::lResizing )
    ENDIF
    // Highligths the selected cell
    // FP: Reenabled the lEditable check as it's not possible
    //     to move the "cursor cell" if lEditable is FALSE
    //     Actually: if lEditable is FALSE we can only have LINE selection
 //   if ::lEditable
-   IF lLostFocus == NIL .AND. !::lResizing .AND. !::lHeadClick .AND. ::lEditable 
-      ::LineOut( ::rowPos, ::colpos, hDC, .T. )
+   IF lLostFocus == NIL .AND. !::lHeadClick .AND. ::lEditable // .AND. !::lResizing
+      ::LineOut( ::rowPos, ::colpos, hDC, ! ::lResizing )
    ENDIF
 //   endif
 
@@ -1683,7 +1683,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
    IF ::oHeadFont <> Nil
       SelectObject( hDC, oldfont )
    ENDIF
-   IF ::lResizing 
+   IF ::lResizing .AND. xDragMove > 0
       SelectObject( hDC, oPen64:handle )
       Rectangle( hDC, xDragMove , 1, xDragMove , 1 + ( ::nheight + 1 )  )
    ENDIF
@@ -1938,7 +1938,7 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
       ENDIF
       IF ::lShowMark
          IF ::hTheme != Nil 
-             hb_DrawThemeBackground( ::hTheme, hDC, BP_PUSHBUTTON, 0, ;
+             hb_DrawThemeBackground( ::hTheme, hDC, BP_PUSHBUTTON, IIF( lSelected, PBS_HOT, PBS_VERTICAL ), ;
                       { ::x1 - ::nShowMark - ::nDeleteMark - 1,;
                         ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1  , ;
                         ::x1 - ::nDeleteMark   ,; 
@@ -2590,8 +2590,11 @@ IF nLine > 0 .AND. nLine <= ::rowCurrCount
 ELSEIF nLine == 0
    IF PtrtouLong( oCursor ) ==  PtrtouLong( ColSizeCursor )
       ::lResizing := .T.
+      ::isMouseOver := .F.
       Hwg_SetCursor( oCursor )
       xDrag := LOWORD( lParam )
+      xDragMov := 0
+      InvalidateRect( ::handle, 0 )
    ELSEIF ::lDispHead .AND. ;
       nLine >= - ::nHeadRows .AND. ;
       fif <= Len( ::aColumns ) //.AND. ;
@@ -2631,9 +2634,10 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
          ::aColumns[ i ]:width := xPos - x1
          Hwg_SetCursor( arrowCursor )
          oCursor := 0
-         ::lResizing := .F.
          ::isMouseOver := .F.
+         xDragMove := 0
          InvalidateRect( ::handle, 0 )
+         ::lResizing := .F.
       ENDIF
 
    ELSEIF ::aSelected != Nil

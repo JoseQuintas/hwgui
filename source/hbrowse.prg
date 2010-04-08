@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.220 2010-04-08 11:59:22 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.221 2010-04-08 15:12:24 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -255,6 +255,7 @@ CLASS HBrowse INHERIT HControl
    DATA allMouseOver  INIT .F.
    DATA AutoColumnFit INIT  0   // 0-Enable / 2  Disables capability for columns to fit data automatically.
    DATA nAutoFit      
+   DATA lNoVScroll   INIT .F.
    
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                 bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,;
@@ -332,6 +333,7 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, IIf( nWidth == Nil, 0, nWidth ), ;
               IIf( nHeight == Nil, 0, nHeight ), oFont, bInit, bSize, bPaint, ,tColor, bColor )
 
+   ::lNoVScroll := IIf( lNoVScroll = Nil.OR. ! lNoVScroll, .F., .T. )
    ::Type    := lType
    IF oFont == Nil
       ::oFont := ::oParent:oFont
@@ -3451,6 +3453,9 @@ FUNCTION CreateList( oBrw, lEditable )
 FUNCTION VScrollPos( oBrw, nType, lEof, nPos )
    LOCAL minPos, maxPos, oldRecno, newRecno, nrecno
 
+   IF oBrw:lNoVScroll
+      RETURN Nil
+   ENDIF
    GetScrollRange( oBrw:handle, SB_VERT, @minPos, @maxPos )
    IF nPos == Nil
       IF oBrw:Type <> BRW_DATABASE

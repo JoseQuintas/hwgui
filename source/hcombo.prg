@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.84 2010-04-05 13:45:48 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.85 2010-04-09 04:14:59 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -94,7 +94,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
                bIChange, nDisplay, nhItem, ncWidth ) CLASS HComboBox
 
    IF !Empty( nDisplay ) .AND. nDisplay > 0
-      nStyle := Hwg_BitOr( nStyle, CBS_NOINTEGRALHEIGHT ) + WS_VSCROLL
+      nStyle := Hwg_BitOr( nStyle, CBS_NOINTEGRALHEIGHT  + WS_VSCROLL )
       // CBS_NOINTEGRALHEIGHT. CRIATE VERTICAL SCROOL BAR
    ELSE
       nDisplay := 6

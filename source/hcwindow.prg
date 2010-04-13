@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.62 2010-04-06 23:23:14 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.63 2010-04-13 14:45:32 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -12,9 +12,6 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 #include "common.ch"
-#ifndef __XHARBOUR__
-   #include "hbcompat.ch"
-#endif
 
 #define EVENTS_MESSAGES 1
 #define EVENTS_ACTIONS  2
@@ -405,7 +402,29 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
    ENDIF
    IF ( msg = WM_VSCROLL ) .OR.msg == WM_MOUSEWHEEL
      // Handle vertical scrollbar messages
-     Switch (nSBCode)
+     #ifndef __XHARBOUR__
+      DO CASE 
+         Case nSBCode = SB_TOP
+             nInc := - oForm:nVscrollPos
+         Case nSBCode = SB_BOTTOM
+             nInc := oForm:nVscrollMax - oForm:nVscrollPos
+         Case nSBCode = SB_LINEUP
+             nInc := - Int( oForm:nVertInc * 0.05 + 0.49)
+         Case nSBCode = SB_LINEDOWN
+             nInc := Int( oForm:nVertInc * 0.05 + 0.49)
+         Case nSBCode = SB_PAGEUP
+             nInc := min( - 1, - oForm:nVertInc )
+         Case nSBCode  = SB_PAGEDOWN
+            nInc := max( 1, oForm:nVertInc)
+         Case nSBCode  = SB_THUMBTRACK
+            nPos := hiword( wParam ) 
+            nInc2 := IIF( nPos > oForm:nVscrollPos, 0.125, - 0.125 )
+            nInc := nPos - oForm:nVscrollPos
+         OTHERWISE
+            nInc := 0
+       ENDCASE       
+     #else
+      Switch (nSBCode)
          Case SB_TOP
              nInc := - oForm:nVscrollPos; EXIT
          Case SB_BOTTOM
@@ -425,6 +444,7 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
          Default
             nInc := 0
       END       
+      #endif
       nInc := max( - oForm:nVscrollPos, min( nInc, oForm:nVscrollMax - oForm:nVscrollPos))
       oForm:nVscrollPos += nInc
       nDelta := - VERT_PTS * ( nInc +  nInc2 )
@@ -433,6 +453,27 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
 
    ELSEIF ( msg = WM_HSCROLL ) //.OR. msg == WM_MOUSEWHEEL 
     // Handle vertical scrollbar messages
+      #ifndef __XHARBOUR__
+       DO CASE 
+         Case nSBCode = SB_TOP
+             nInc := - oForm:nHscrollPos
+         Case nSBCode = SB_BOTTOM
+             nInc := oForm:nHscrollMax - oForm:nHscrollPos
+         Case nSBCode = SB_LINEUP
+             nInc := -1
+         Case nSBCode = SB_LINEDOWN
+             nInc := 1
+         Case nSBCode = SB_PAGEUP
+             nInc := - HORZ_PTS
+         Case nSBCode = SB_PAGEDOWN
+            nInc := HORZ_PTS
+         Case nSBCode = SB_THUMBTRACK
+            nPos := hiword( wParam )
+            nInc := nPos - oForm:nHscrollPos
+         OTHERWISE
+            nInc := 0
+       ENDCASE       
+      #else 
       Switch (nSBCode)
          Case SB_TOP
              nInc := - oForm:nHscrollPos; EXIT
@@ -452,6 +493,7 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
          Default
             nInc := 0
       END       
+      #endif
       nInc := max( - oForm:nHscrollPos, min( nInc, oForm:nHscrollMax - oForm:nHscrollPos ) )
       oForm:nHscrollPos += nInc
       nDelta := - HORZ_PTS * nInc

@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.23 2009-11-17 19:14:19 mlacecilia Exp $
+ * $Id: hlistbox.prg,v 1.24 2010-04-13 14:45:32 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -231,9 +231,13 @@ METHOD AddItems( p ) CLASS HListBox
 
 METHOD DeleteItem( nPos ) CLASS HListBox
 
-   IF SendMessage( ::handle, LB_DELETESTRING , nPos - 1, 0 ) > 0 //<= LEN(ocombo:aitems)
+   IF SendMessage( ::handle, LB_DELETESTRING , nPos - 1, 0 ) >= 0 //<= LEN(ocombo:aitems)
       ADel( ::Aitems, nPos )
       ASize( ::Aitems, Len( ::aitems ) - 1 )
+      ::value := Min( Len( ::aitems ) , ::value )
+      IF ::bSetGet != Nil
+         Eval( ::bSetGet, ::value, Self )
+      ENDIF
       RETURN .T.
    ENDIF
    RETURN .F.

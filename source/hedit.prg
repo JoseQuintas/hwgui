@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.169 2010-04-05 14:30:42 lfbasso Exp $
+ *$Id: hedit.prg,v 1.170 2010-04-20 12:06:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -1100,6 +1100,7 @@ METHOD Valid( ) CLASS HEdit
                res := IIF( ValType( res ) == "L", res, .T. )
             ENDIF
             IF res .AND. ::oUpDown != Nil // updown control
+               ::oUpDown:nValue := vari
                res := ::oUpDown:Valid()
             ENDIF
             IF ValType( res ) = "L" .AND. ! res

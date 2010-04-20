@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.105 2010-04-06 23:23:14 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.106 2010-04-20 12:06:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -441,7 +441,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
                ENDIF
             ENDIF
          ENDIF
-         IF oCtrl != Nil .AND. oCtrl:id == IDOK //iParLow
+         IF oCtrl != Nil .AND. oCtrl:id == IDOK .AND.  __ObjHasMsg( oCtrl,"BCLICK" ) .AND. oCtrl:bClick = Nil
             oDlg:lResult := .T.
             EndDialog( oDlg:handle )   // VER AQUI
             RETURN 1

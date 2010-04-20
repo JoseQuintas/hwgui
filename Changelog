@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1261 2010-04-13 14:45:32 lfbasso Exp $
+ * $Id: Changelog,v 1.1262 2010-04-20 12:06:49 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-04-20 09:09 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcwindow.prg
+  * source\hdialog.prg
+  * source\hradio.prg
+    ! fixed IDOK
+  * source\hedit.prg
+  * source\hupdown.prg
+    ! fixed IDELTAPOS and VALID
+  
 2010-04-13 12:09 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcwindow.prg
     - #include "hbcompat.ch"

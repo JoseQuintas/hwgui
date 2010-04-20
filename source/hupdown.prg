@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.29 2010-02-10 23:32:17 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.30 2010-04-20 12:06:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -157,8 +157,9 @@ METHOD CREATEUPDOWN CLASS Hupdown
       Hwg_InitEditProc( ::oEditUpDown:handle )
     ENDIF
    ::handle := ::oEditUpDown:handle
-   ::hUpDown := CreateUpDownControl( ::oParent:handle, ::idUpDown, ;
-                                     ::styleUpDown, 0, 0, ::nUpDownWidth, 0, ::handle, ::nLower, ::nUpper,Val(::title) )
+   ::hUpDown := CreateUpDownControl( ::oParent:handle, ::idUpDown, ;                   
+                                     ::styleUpDown, 0, 0, ::nUpDownWidth, 0, ::handle, -2147483647, 2147483647, Val(::title) )
+                                    // ::styleUpDown, 0, 0, ::nUpDownWidth, 0, ::handle, ::nLower, ::nUpper,Val(::title) )
    ::oEditUpDown:oUpDown := Self
    ::oEditUpDown:lInit := .T.
    IF ::nHolder = 0
@@ -211,11 +212,13 @@ METHOD Refresh()  CLASS HUpDown
 METHOD Valid() CLASS HUpDown
    LOCAL res := .t.
 
+   /*
    ::title := GetEditText( ::oParent:handle, ::oEditUpDown:id )
    ::nValue := Val( Ltrim( ::title ) )
    IF ::bSetGet != Nil
       Eval( ::bSetGet, ::nValue )
    ENDIF
+   */
    res :=  ::nValue <= ::nUpper .and. ::nValue >= ::nLower
    IF ! res
       ::nValue := IIF( ::nValue > ::nUpper, Min( ::nValue, ::nUpper ), Max( ::nValue, ::nLower ) )

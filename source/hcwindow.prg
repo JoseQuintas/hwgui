@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.63 2010-04-13 14:45:32 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.64 2010-04-20 12:06:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -859,24 +859,26 @@ LOCAL oParent, nCtrl,nPos
    ENDIF
    RETURN .F.
 
-FUNCTION ProcOkCancel( oCtrl, nKey )
+FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
    Local oWin := oCtrl:GetParentForm()
    Local iParHigh := IIF( nKey = VK_RETURN, IDOK, IDCANCEL )
 
-   IF oWin:Type >= WND_DLG_RESOURCE .OR. ( nKey != VK_RETURN .AND. nKey != VK_ESCAPE )
+   lForce := ! Empty( lForce )
+   IF ( oWin:Type >= WND_DLG_RESOURCE .AND. ! lForce  ) .OR. ( nKey != VK_RETURN .AND. nKey != VK_ESCAPE )
       Return .F.
    ENDIF
    IF iParHigh == IDOK
       IF ( oCtrl := oWin:FindControl( IDOK ) ) != Nil .AND. oCtrl:IsEnabled()    
          oCtrl:SetFocus()
   	     oWin:lResult := .T.
-	       IF oCtrl:bClick != Nil
+  	     IF lForce
+	       ELSEIF oCtrl:bClick != Nil
 	          SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
 	       ELSE
             oWin:close()  
          ENDIF   
+         RETURN .T.
       ENDIF
-      RETURN .T.
    ELSEIF iParHigh == IDCANCEL
       IF ( oCtrl := oWin:FindControl( IDCANCEL ) ) != Nil .AND. oCtrl:IsEnabled() 
          oCtrl:SetFocus()

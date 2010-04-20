@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.33 2010-04-05 13:45:48 lfbasso Exp $
+ * $Id: hradio.prg,v 1.34 2010-04-20 12:06:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -372,18 +372,22 @@ METHOD onevent( msg, wParam, lParam ) CLASS HRadioButton
          GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
          RETURN 0
       ENDIF
+      IF  ( wParam == VK_RETURN ) 
+         ::VALID()
+         RETURN 0
+      ENDIF  
    ELSEIF msg == WM_KEYUP      
    ELSEIF msg == WM_NOTIFY 
    ENDIF
    IF  msg = WM_GETDLGCODE .AND.  ! EMPTY( wParam )
-	    IF  wParam = VK_RETURN //.OR. wParam = VK_TAB 
-	       ::Valid()
+	    IF  wParam = VK_RETURN .AND. ProcOkCancel( Self, wParam, ::GetParentForm():Type >= WND_DLG_RESOURCE )
+         RETURN 0
 	    ELSEIF GETDLGMESSAGE( lParam ) = WM_CHAR .OR. GETDLGMESSAGE( lParam ) = WM_SYSCHAR .OR. ;
            wParam = VK_ESCAPE
          RETURN -1
       ENDIF   
-      RETURN DLGC_WANTARROWS + DLGC_WANTTAB + DLGC_WANTCHARS  
-      //RETURN DLGC_WANTMESSAGE //DLGC_WANTARROWS + DLGC_WANTTAB
+      RETURN DLGC_WANTMESSAGE
+      //RETURN DLGC_WANTARROWS + DLGC_WANTTAB + DLGC_WANTCHARS  
    ENDIF
    
    RETURN -1

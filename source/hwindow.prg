@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.98 2010-04-05 14:30:42 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.99 2010-04-20 12:50:30 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -919,11 +919,11 @@ STATIC FUNCTION onNotifyIcon( oWnd, wParam, lParam )
    LOCAL ar
 
    IF wParam == ID_NOTIFYICON
-      IF lParam == WM_LBUTTONDOWN
+      IF PtrtoUlong(lParam) == WM_LBUTTONDOWN
          IF ISBLOCK( oWnd:bNotify )
             Eval( oWnd:bNotify )
          ENDIF
-      ELSEIF lParam == WM_RBUTTONDOWN
+      ELSEIF PtrtoUlong(lParam) == WM_RBUTTONDOWN
          IF oWnd:oNotifyMenu != Nil
             ar := hwg_GetCursorPos()
             oWnd:oNotifyMenu:Show( oWnd, ar[ 1 ], ar[ 2 ] )

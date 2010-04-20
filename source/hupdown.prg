@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.30 2010-04-20 12:06:49 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.31 2010-04-20 13:48:18 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -256,7 +256,7 @@ METHOD Notify( lParam ) CLASS HeditUpDown
    Local iDelta := GETNOTIFYDELTAPOS( lParam , 2 )
    Local vari, res
 
-   iDelta := IIF( iDelta < 0,  1, - 1) //* IIF( ::oParent:oParent = Nil , - 1 ,  1 )
+   //iDelta := IIF( iDelta < 0,  1, - 1) //* IIF( ::oParent:oParent = Nil , - 1 ,  1 )
 
  	 IF ::oUpDown = Nil .OR. Hwg_BitAnd( GetWindowLong( ::handle, GWL_STYLE ), ES_READONLY ) != 0 .OR. ;
        ( ::oUpDown:bGetFocus != Nil .AND. ! Eval( ::oUpDown:bGetFocus, ::oUpDown:nValue, ::oUpDown ) )

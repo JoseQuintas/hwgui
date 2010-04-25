@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.221 2010-04-08 15:12:24 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.222 2010-04-25 21:48:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -234,7 +234,7 @@ CLASS HBrowse INHERIT HControl
    DATA lDeleteMark INIT .F.   HIDDEN
    DATA lShowMark   INIT .T.   HIDDEN
    DATA nDeleteMark INIT 0     HIDDEN
-   DATA nShowMark   INIT 11    HIDDEN
+   DATA nShowMark   INIT 12    HIDDEN
    DATA oBmpMark    INIT  HBitmap():AddStandard( OBM_MNARROW ) HIDDEN
    DATA ShowSortMark  INIT .T.
    DATA nWidthColRight INIT 0  HIDDEN 
@@ -1214,11 +1214,11 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
       IF ( ISTHEMEDLOAD() )
          IF ValType( ::hTheme ) == "P"
             HB_CLOSETHEMEDATA( ::htheme )
-         ENDIF
-         ::hTheme := nil
+         ENDIF         
          IF ::WindowsManifest
             ::hTheme := hb_OpenThemeData( ::handle, "HEADER" )
          ENDIF
+         ::hTheme := IIF( EMPTY( ::hTheme  ), Nil, ::hTheme )
       ENDIF
    ENDIF
 

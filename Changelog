@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1263 2010-04-20 12:50:29 lculik Exp $
+ * $Id: Changelog,v 1.1264 2010-04-25 21:48:29 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-04-25 19:09 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    ! minor fix in theme
+    
 2010-04-20 09:49 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
 * source\hwindow.prg
   * fixed onNotifyIcon method when compiled with -DHWG_USE_POINTER_ITEM

@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.42 2010-04-05 13:45:48 lfbasso Exp $
+ * $Id: hownbtn.prg,v 1.43 2010-04-26 12:36:37 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -269,10 +269,10 @@ METHOD Paint() CLASS HOwnButton
          IF ValType( ::hTheme ) == "P"
             HB_CLOSETHEMEDATA( ::htheme )
          ENDIF
-         ::hTheme := nil
          IF ::WindowsManifest
             ::hTheme := hb_OpenThemeData( ::handle, "BUTTON" )
          ENDIF
+         ::hTheme := IIF( EMPTY( ::hTheme  ), Nil, ::hTheme )
       ENDIF
       IF  Empty( ::hTheme ) 
          ::Themed := .F.

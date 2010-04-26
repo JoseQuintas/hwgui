@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1265 2010-04-26 11:49:53 lfbasso Exp $
+ * $Id: Changelog,v 1.1266 2010-04-26 12:36:37 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,14 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2010-04-26 19:09 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+2010-04-26 09:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hownbtn.prg
+  * source\htab.prg
+    ! minor fix in theme
+
+2010-04-26 09:09 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     + add [ VAR <vari> ] in #xcommand INIT WINDOW <oWnd> MDICHILD [ VAR <vari> ]   ;
   * source\control.c
     ! fixed SETTOOLTIPBALLOON
   * source\hwindow.prg
     ! fix to [ VAR <vari> ] in MDICHILD
-    ! minor fix in theme
 
 2010-04-25 19:09 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg

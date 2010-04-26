@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.63 2010-04-05 13:45:48 lfbasso Exp $
+ *$Id: htab.prg,v 1.64 2010-04-26 12:36:37 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -193,7 +193,12 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       ::aImages := { }
       FOR i := 1 TO Len( aImages )
          //AAdd( ::aImages, Upper( aImages[ i ] ) )
-         aImages[ i ] := IIf( lResour, LoadBitmap( aImages[ i ] ), OpenBitmap( aImages[ i ] ) )
+         IF lResour
+            aImages[ i ] := HBitmap():AddResource( aImages[ i ], LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS + LR_SHARED, , ):handle 
+         ELSE   
+            //aImages[ i ] := IIf( lResour, LoadBitmap( aImages[ i ] ), OpenBitmap( aImages[ i ] ) )
+            aImages[ i ] := OpenBitmap( aImages[ i ] ) 
+         ENDIF
          AAdd( ::aImages, aImages[ i ] )         
       NEXT
       ::aBmpSize := GetBitmapSize( aImages[ 1 ] )
@@ -899,10 +904,10 @@ METHOD showTextTabs( oPage, aItemPos ) CLASS HPaintTab
     nStyle := SS_CENTER + DT_VCENTER + DT_SINGLELINE + DT_END_ELLIPSIS 
     
     IF ( ISTHEMEDLOAD() )
-       hTheme := nil
        IF ::WindowsManifest
            hTheme := hb_OpenThemeData( ::oParent:handle, "TAB" )
        ENDIF
+       hTheme := IIF( EMPTY( hTheme  ), Nil, hTheme )
     ENDIF
     SetBkMode( ::hDC, 1 ) 
     IF oPage:oParent:oFont != Nil

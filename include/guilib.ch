@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.159 2010-04-05 13:45:48 lfbasso Exp $
+ *$Id: guilib.ch,v 1.160 2010-04-26 11:49:53 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -91,7 +91,7 @@
              <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>,;
              <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>, <bCloseQuery>,<bRefresh>,<bMdiMenu>)
 
-#xcommand INIT WINDOW <oWnd> MDICHILD       ;
+#xcommand INIT WINDOW <oWnd> MDICHILD [ VAR <vari> ]   ;
              [ APPNAME <appname> ]          ;
              [ OF <oParent>      ]          ;
              [ TITLE <cTitle> ]             ;
@@ -121,7 +121,7 @@
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
                    <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,,;
-									 <bRefresh>,<.lChild.>,<.lClipper.>,<.lnoClosable.> ) ;;
+									 <bRefresh>,<.lChild.>,<.lClipper.>,<.lnoClosable.>,[{|v|Iif(v==Nil,<vari>,<vari>:=v)}] ) ;;
         [ <oWnd>:SetParent( <oParent> ) ]            
       
 #xcommand INIT WINDOW <oWnd> CHILD          ;

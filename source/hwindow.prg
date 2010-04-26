@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.99 2010-04-20 12:50:30 lculik Exp $
+ *$Id: hwindow.prg,v 1.100 2010-04-26 11:49:53 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -1030,6 +1030,9 @@ Static Function onMdiActivate( oWnd,wParam, lParam )
              PtrtoUlong( w:Handle ) != PtrtoUlong( wParam ), EnableWindow( w:Handle, .T. ), ) })
       ENDIF
    ELSEIF oWnd:Handle = lParam  //.AND. ownd:screen:handle != WPARAM
+      IF ISBLOCK( oWnd:bSetForm )
+         EVAL( oWnd:bSetForm, oWnd )
+      ENDIF   
       IF oWnd:lModal
          aWndMain := oWnd:GETMAIN():aWindows
          AEVAL( aWndMain,{| w | IIF( w:Type >= WND_MDICHILD .AND.;

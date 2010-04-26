@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.101 2010-02-11 18:18:28 druzus Exp $
+ * $Id: control.c,v 1.102 2010-04-26 11:49:53 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1081,6 +1081,7 @@ HB_FUNC( GETTOOLTIPHANDLE )     // added by MAG
 HB_FUNC( SETTOOLTIPBALLOON )    // added by MAG
 {
    lToolTipBalloon = hb_parl( 1 );
+   hWndTT = 0;
 }
 
 HB_FUNC( GETTOOLTIPBALLOON )    // added by MAG

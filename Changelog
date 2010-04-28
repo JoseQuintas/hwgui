@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1267 2010-04-28 04:48:45 lfbasso Exp $
+ * $Id: Changelog,v 1.1268 2010-04-28 14:49:59 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-04-28 01:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hbrowse.prg
+    + add clause  DISPLAYCOUNT in edit COMBOBOX
+    ! fix in picture in FldStr case Type = ARRAY
+    
 2010-04-28 01:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\control.c
     + WS_POPUP | TTS_ALWAYSTIP styles in ADDTOOLTIP

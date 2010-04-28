@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.223 2010-04-28 04:48:45 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.224 2010-04-28 14:50:00 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -330,7 +330,8 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
    nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE + WS_TABSTOP + ;
                           IIf( lNoBorder = Nil.OR. ! lNoBorder, WS_BORDER, 0 ) +            ;
                           IIf( ! lNoVScroll, WS_VSCROLL, 0 ) )
-
+   nStyle   -= IIF( Hwg_BitAND( nStyle, WS_VSCROLL ) > 0 .AND. lNoVScroll, WS_VSCROLL, 0 )                        
+   
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, IIf( nWidth == Nil, 0, nWidth ), ;
               IIf( nHeight == Nil, 0, nHeight ), oFont, bInit, bSize, bPaint, ,tColor, bColor )
 
@@ -2935,6 +2936,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                ITEMS oColumn:aList            ;
                SIZE nWidth, ::height + 2      ;
                FONT oComboFont  ;       
+               DISPLAYCOUNT  IIF( LEN( oColumn:aList ) > ::rowCount , ::rowCount - 1, LEN( oColumn:aList ) ) ;
                VALID oColumn:bValid           ;
                WHEN oColumn:bWhen
                oCombo:bSelect := { || KEYB_EVENT( VK_RETURN ) }
@@ -3324,7 +3326,8 @@ METHOD FldStr( oBrw, numf ) CLASS HBrowse
             ENDIF
          ELSE
             oBrw:nCurrent := IIF( oBrw:nCurrent = 0, 1, oBrw:nCurrent )
-            cRes := Transform( Eval( oBrw:aColumns[ numf ]:block,, oBrw, numf ), pict )
+            vartmp :=  Eval( oBrw:aColumns[ numf ]:block,, oBrw, numf )
+            cRes := IIF( vartmp != Nil, Transform( vartmp, pict ), Space( oBrw:aColumns[ numf ]:length ) )
          ENDIF
       ELSE
          IF oBrw:Type == BRW_DATABASE

@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.64 2010-04-26 12:36:37 lfbasso Exp $
+ *$Id: htab.prg,v 1.65 2010-04-28 04:48:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -193,12 +193,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       ::aImages := { }
       FOR i := 1 TO Len( aImages )
          //AAdd( ::aImages, Upper( aImages[ i ] ) )
-         IF lResour
-            aImages[ i ] := HBitmap():AddResource( aImages[ i ], LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS + LR_SHARED, , ):handle 
-         ELSE   
-            //aImages[ i ] := IIf( lResour, LoadBitmap( aImages[ i ] ), OpenBitmap( aImages[ i ] ) )
-            aImages[ i ] := OpenBitmap( aImages[ i ] ) 
-         ENDIF
+         aImages[ i ] := IIf( lResour, LoadBitmap( aImages[ i ] ), OpenBitmap( aImages[ i ] ) )
          AAdd( ::aImages, aImages[ i ] )         
       NEXT
       ::aBmpSize := GetBitmapSize( aImages[ 1 ] )

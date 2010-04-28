@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.19 2010-02-14 03:11:47 lfbasso Exp $
+ * $Id: hprogres.prg,v 1.20 2010-04-28 04:48:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class
@@ -34,6 +34,7 @@ CLASS VAR winclass   INIT "msctls_progress32"
    METHOD STEP()
    METHOD SET( cTitle, nPos )
    METHOD SetLabel( cCaption )
+   METHOD SetAnimation( nAnimation ) SETGET
    METHOD Close()
    METHOD End() INLINE DestroyWindow( ::handle )
 
@@ -97,8 +98,8 @@ METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, lPer
 METHOD Activate CLASS HProgressBar
 
    IF ! Empty( ::oParent:handle )
-      ::handle := CreateProgressBar( ::oParent:handle, ::maxPos, ;
-                                     ::nLeft, ::nTop, ::nWidth )
+      ::handle := CreateProgressBar( ::oParent:handle, ::maxPos, ::style, ;
+                                     ::nLeft, ::nTop, ::nWidth, IIF( ::nHeight = 0, Nil, ::nHeight ) )
       ::Init()
    ENDIF
    RETURN Nil
@@ -107,9 +108,6 @@ METHOD Init  CLASS HProgressBar
 
    IF ! ::lInit
       Super:Init()
-      //SendMessage( ::handle, PBM_SETRANGE, 0, MAKELPARAM( 0, ::nRange ) )
-	    //SendMessage( ::handle, PBM_SETSTEP, ::maxPos, 0 )   
-	    //SendMessage( ::handle, PBM_SETSTEP, ::nLimit , 0 )   
 	    IF ::nAnimation != Nil .AND. ::nAnimation > 0
 	       SendMessage( ::handle, PBM_SETMARQUEE, 1, ::nAnimation )
 	    ENDIF   
@@ -151,6 +149,23 @@ METHOD SetLabel( cCaption ) CLASS HProgressBar
    ENDIF
    
    RETURN Nil
+
+METHOD SetAnimation( nAnimation ) CLASS HProgressBar
+
+   IF nAnimation != Nil
+	    IF  nAnimation <= 0
+	       SendMessage( ::handle, PBM_SETMARQUEE, 0, Nil )
+	       MODIFYSTYLE( ::Handle, PBS_MARQUEE, 0 )
+	       SendMessage( ::handle, PBM_SETPOS, 0, 0)  
+	    ELSE
+	       IF Hwg_BitAND( ::Style, PBS_MARQUEE ) = 0
+	          MODIFYSTYLE( ::Handle, PBS_MARQUEE, PBS_MARQUEE )
+         ENDIF
+         SendMessage( ::handle, PBM_SETMARQUEE, 1, nAnimation)   
+	    ENDIF   
+	    ::nAnimation := nAnimation
+   ENDIF
+   RETURN IIF( ::nAnimation != Nil, ::nAnimation, 0 )
 
 METHOD Close()
 

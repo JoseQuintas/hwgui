@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.102 2010-04-26 11:49:53 lfbasso Exp $
+ * $Id: control.c,v 1.103 2010-04-28 04:48:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -115,15 +115,17 @@ HB_FUNC( CREATEPROGRESSBAR )
 {
    HWND hPBar, hParentWindow = ( HWND ) HB_PARHANDLE( 1 );
    RECT rcClient;
+   ULONG ulStyle ;
    int cyVScroll = GetSystemMetrics( SM_CYVSCROLL );
    int x1, y1, nwidth, nheight;
 
    if( hb_pcount(  ) > 2 )
    {
-      x1 = hb_parni( 3 );
-      y1 = hb_parni( 4 );
-      nwidth = hb_parni( 5 );
-      nheight = cyVScroll;
+      ulStyle = hb_parnl( 3 );
+      x1 = hb_parni( 4 );
+      y1 = hb_parni( 5 );
+      nwidth = hb_parni( 6 );
+      nheight = hb_pcount(  ) > 6 ? hb_parni( 7 ) : cyVScroll ;
    }
    else
    {
@@ -134,7 +136,7 @@ HB_FUNC( CREATEPROGRESSBAR )
       nheight = cyVScroll;
    }
 
-   hPBar = CreateWindowEx( 0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE,    /* style  */
+   hPBar = CreateWindowEx( 0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | ulStyle,    /* style  */
          x1,                    /* x */
          y1,                    /* y */
          nwidth, nheight,       /* nWidth, nHeight */
@@ -436,7 +438,7 @@ HB_FUNC( ADDTOOLTIP )           // changed by MAG
    }
 
    if( !hWndTT )
-      hWndTT = CreateWindow( TOOLTIPS_CLASS, NULL, iStyle,
+      hWndTT = CreateWindow( TOOLTIPS_CLASS, NULL, WS_POPUP | TTS_ALWAYSTIP | iStyle,
             CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
             NULL, ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
    if( !hWndTT )

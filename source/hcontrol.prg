@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.152 2010-04-05 14:30:42 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.153 2010-04-28 04:48:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -143,20 +143,19 @@ METHOD INIT CLASS HControl
       //IF ::tooltip != Nil
       //   AddToolTip( ::oParent:handle, ::handle, ::tooltip )
       //ENDIF
-      IF Len( ::aControls) = 0 .AND. ::classname != "HTAB"
-         AddToolTip( ::GetParentForm():handle, ::handle, ::tooltip )
-      ENDIF
       IF ::oFont != NIL
          SetCtrlFont( ::oParent:handle, ::id, ::oFont:handle )
       ELSEIF ::oParent:oFont != NIL
          SetCtrlFont( ::oParent:handle, ::id, ::oParent:oFont:handle )
       ENDIF
-
-      IF ISBLOCK( ::bInit )
-         ::oparent:lSuspendMsgsHandling := .T.
-         Eval( ::bInit, Self )
-         ::oparent:lSuspendMsgsHandling := .F.
+      ::oparent:lSuspendMsgsHandling := .T.
+      IF Len( ::aControls) = 0 .AND. ::classname != "HTAB"
+         AddToolTip( ::GetParentForm():handle, ::handle, ::tooltip )
       ENDIF
+      IF ISBLOCK( ::bInit )
+        Eval( ::bInit, Self )
+      ENDIF
+      ::oparent:lSuspendMsgsHandling := .F.
       ::lInit := .T.
    ENDIF
    RETURN NIL
@@ -609,13 +608,13 @@ METHOD Activate CLASS HStatic
 METHOD Init CLASS HStatic
    IF ! ::lInit
       Super:init()
-      IF ::title != NIL
+      IF ::classname == "HSTATIC"
          ::nHolder := 1
-         IF ::classname == "HSTATIC"
-            SetWindowObject( ::handle, Self )
-            Hwg_InitStaticProc( ::handle )
-            ::Auto_Size( ::Title )
-         ENDIF
+         SetWindowObject( ::handle, Self )
+         Hwg_InitStaticProc( ::handle )
+         ::Auto_Size( ::Title )
+      ENDIF
+      IF ::title != NIL
          SetWindowText( ::handle, ::title )
       ENDIF
    ENDIF

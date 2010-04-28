@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.222 2010-04-25 21:48:30 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.223 2010-04-28 04:48:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -326,14 +326,15 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
             lNoBorder, lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, ;
             lDescend, bWhile, bFirst, bLast, bFor, bOther, tcolor, bcolor, bRclick ) CLASS HBrowse
 
+   lNoVScroll := IIf( lNoVScroll = Nil , .F., lNoVScroll )
    nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE + WS_TABSTOP + ;
                           IIf( lNoBorder = Nil.OR. ! lNoBorder, WS_BORDER, 0 ) +            ;
-                          IIf( lNoVScroll = Nil.OR. ! lNoVScroll, WS_VSCROLL, 0 ) )
+                          IIf( ! lNoVScroll, WS_VSCROLL, 0 ) )
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, IIf( nWidth == Nil, 0, nWidth ), ;
               IIf( nHeight == Nil, 0, nHeight ), oFont, bInit, bSize, bPaint, ,tColor, bColor )
 
-   ::lNoVScroll := IIf( lNoVScroll = Nil.OR. ! lNoVScroll, .F., .T. )
+   ::lNoVScroll := lNoVScroll
    ::Type    := lType
    IF oFont == Nil
       ::oFont := ::oParent:oFont
@@ -1361,12 +1362,8 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
       ENDIF
       IF ::rowCurrCount = 0  .AND. ::nRecords > 0 // INIT
          Eval( ::bSkip, Self, 1 )
-         IF ::bScrollPos != Nil
-             Eval( ::bScrollPos, Self, 1, .F. )
-         ELSEIF ::nRecords > 1
-            VScrollPos( Self, 0, .f. )
-         ENDIF
          ::rowCurrCount := IIF( Eval( ::bEof, Self ), ::rowCount , IIF( ::nRecords < ::rowCount, ::nRecords,  1 ) )
+         nRecFilter := - 1         
       ELSEIF ::rowCurrCount >= ::RowPos  .AND. nRecFilter <= ::nRecords           
          ::rowCurrCount -= ( ::rowCurrCount - ::RowPos + 1) 
       ELSEIF ::nRecords < ::rowCount   
@@ -1491,7 +1488,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    ::lAppMode := .F.
 
    // fixed postion vertical scroll bar in refresh out browse
-   IF GetFocus() != ::handle
+   IF GetFocus() != ::handle .OR. nRecFilter = - 1
        Eval( ::bSkip, Self, 1 )
        Eval( ::bSkip, Self, - 1 )
        IF ::bScrollPos != Nil // array
@@ -1941,7 +1938,7 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
       ENDIF
       IF ::lShowMark
          IF ::hTheme != Nil 
-             hb_DrawThemeBackground( ::hTheme, hDC, BP_PUSHBUTTON, IIF( lSelected, PBS_HOT, PBS_VERTICAL ), ;
+             hb_DrawThemeBackground( ::hTheme, hDC, BP_PUSHBUTTON, IIF( lSelected, PBS_VERTICAL,  PBS_VERTICAL ), ;
                       { ::x1 - ::nShowMark - ::nDeleteMark - 1,;
                         ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1  , ;
                         ::x1 - ::nDeleteMark   ,; 
@@ -3462,7 +3459,7 @@ FUNCTION VScrollPos( oBrw, nType, lEof, nPos )
          IF nType > 0 .AND. lEof
             Eval( oBrw:bSkip, oBrw, - 1 )
          ENDIF
-         nPos := IIf( oBrw:nRecords > 1, Round( ( ( maxPos - minPos ) / ( oBrw:nRecords - 1 ) ) * ;
+         nPos := IIf( oBrw:nRecords > 1, Round( ( ( maxPos - minPos + 1 ) / ( oBrw:nRecords - 1 ) ) * ;
                                                 ( Eval( oBrw:bRecnoLog, oBrw ) - 1 ), 0 ), minPos )
          SetScrollPos( oBrw:handle, SB_VERT, nPos )
       ELSEIF ! Empty( oBrw:Alias )

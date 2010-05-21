@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.59 2010-04-05 13:45:48 lfbasso Exp $
+ * $Id: misc.c,v 1.60 2010-05-21 17:33:15 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -777,7 +777,7 @@ HB_FUNC( GETSYSTEMMETRICS )
 HB_FUNC( HWG_LASTKEY )
 {
    BYTE kbBuffer[ 256 ];
-   int i = 0;
+   int i ;
 
    GetKeyboardState( kbBuffer );
 

@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.35 2010-04-05 14:30:42 lfbasso Exp $
+ * $Id: richedit.c,v 1.36 2010-05-21 17:33:15 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -409,6 +409,8 @@ static DWORD CALLBACK RichStreamOutCallback( DWORD dwCookie, LPBYTE pbBuff, LONG
 {
    HANDLE pFile = ( HANDLE ) dwCookie;
    DWORD dwW;
+   HB_SYMBOL_UNUSED( pcb );
+   
    if ( pFile == INVALID_HANDLE_VALUE )
       return 0;
       

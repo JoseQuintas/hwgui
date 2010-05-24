@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.103 2010-04-28 04:48:45 lfbasso Exp $
+ * $Id: control.c,v 1.104 2010-05-24 16:45:36 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -130,6 +130,7 @@ HB_FUNC( CREATEPROGRESSBAR )
    else
    {
       GetClientRect( hParentWindow, &rcClient );
+      ulStyle = 0 ;
       x1 = rcClient.left;
       y1 = rcClient.bottom - cyVScroll;
       nwidth = rcClient.right;

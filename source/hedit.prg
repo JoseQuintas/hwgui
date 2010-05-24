@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.170 2010-04-20 12:06:49 lfbasso Exp $
+ *$Id: hedit.prg,v 1.171 2010-05-24 14:57:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -101,7 +101,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 *   ENDIF
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
-              bSize, bPaint, ctooltip, tcolor, IIf( bcolor == Nil, GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor ) )
+              bSize, bPaint, ctooltip, tcolor, bcolor  )
+//              bSize, bPaint, ctooltip, tcolor, IIf( bcolor == Nil, GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor ) )
 
    IF vari != Nil
       ::cType   := ValType( vari )
@@ -165,6 +166,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    RETURN Self
 
 METHOD Activate CLASS HEdit
+
    IF ! Empty( ::oParent:handle )
       ::handle := CreateEdit( ::oParent:handle, ::id, ;
                               ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
@@ -196,7 +198,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          RETURN 0
       ENDIF
    ENDIF
-
    IF ! ::lMultiLine
 
       IF ::bSetGet != Nil
@@ -209,13 +210,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             COPYSTRINGTOCLIPBOARD( ::UnTransform( GETCLIPBOARDTEXT() ) )
             RETURN -1
          ELSEIF msg = WM_PASTE
-            ::lFirst := .F.
+            ::lFirst := IIF( ::cType = "N" , .T., .F. )
             cClipboardText :=  GETCLIPBOARDTEXT()
             IF ! EMPTY( cClipboardText )
                nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
                SendMessage(  ::handle, EM_SETSEL, nPos-1 , nPos -1  )
                FOR nPos = 1 to Len( cClipboardText )
-                     ::GetApplyKey( SUBSTR( cClipboardText , nPos, 1 ) )
+                  ::GetApplyKey( SUBSTR( cClipboardText , nPos, 1 ) )
                NEXT
                nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
                ::title := ::UnTransform( GetEditText( ::oParent:handle, ::id ) )
@@ -309,6 +310,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                   RETURN ::KeyLeft()
                ENDIF
             ELSEIF wParam == 35     // End
+               ::lFocu := .F.
                IF ! IsCtrlShift()
                   ::lFirst := .F.
                   IF ::cType == "C"
@@ -319,6 +321,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                   ENDIF
                ENDIF
             ELSEIF wParam == 36     // HOME
+               ::lFocu := .F.
                IF ! IsCtrlShift()
                   SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )                           
                   RETURN 0
@@ -339,6 +342,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ELSEIF wParam == VK_RETURN  // Enter
                *GetSkip( oParent, ::handle, .T., 1 )
                RETURN 0
+            ENDIF
+            IF "K" $ ::cPicFunc .AND. ::lFocu 
+                ::value := ""
+                SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
             ENDIF
 
          ELSEIF msg == WM_LBUTTONDOWN
@@ -371,7 +378,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          IF ::lPicComplex .AND. ::cType <> "N"
             ::Title := Transform( ::Title, ::cPicFunc + " " + ::cPicMask )
          ENDIF
-         IF ::selstart = 0 .AND. ::lPicComplex
+         IF "K" $ ::cPicFunc
+            SendMessage( ::handle, EM_SETSEL, 0, - 1 )
+         ELSEIF ::selstart = 0 .AND. ::lPicComplex
             SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
          ENDIF
       ENDIF
@@ -717,15 +726,20 @@ METHOD DeleteChar( lBack ) CLASS HEdit
       nPosEnd += IIf( lBack, 1, 2 )
       nPosStart -= IIf( lBack, 1, 0 )
    ELSE
-      nPosEnd += 1
+      nPosEnd += 1                  
    ENDIF
    /* NEW */
    IF nPosEnd - nPosStart - 1 > 1 .AND.::lPicComplex .AND. ::cType <> "N" //.AND. NPOSEND < nGetLen
       lBack := .T.
+      
    ELSE
       IF lBack .AND. ! ::IsEditable( nPosStart + 1, .T. ) //.AND.  ::cType <> "N"
           nPosStart -= IIF( ::cType <> "N", 1, 0 )
           cbuf := IIF( ::cType <> "N", cBuf, ::title )
+          IF nPosStart < 0
+             SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
+             RETURN Nil 
+          ENDIF
       ENDIF
       IF  ::lPicComplex .AND. ::cType <> "N" .AND. ::FirstNotEditable( nPosStart ) > 0 .AND. ;
                ( !lBack  .OR. ( lBack .AND. nPosEnd - nPosStart - 1 < 2 )) 

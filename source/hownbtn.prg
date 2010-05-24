@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.43 2010-04-26 12:36:37 lfbasso Exp $
+ * $Id: hownbtn.prg,v 1.44 2010-05-24 14:57:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -13,6 +13,7 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 #include "common.ch"
+#define TRANSPARENT 1
 
 CLASS HOwnButton INHERIT HControl
 
@@ -70,7 +71,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
             cTooltip, lEnabled, lCheck, bColor,bGfocus, bLfocus, themed ) CLASS HOwnButton
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
-              bSize, bPaint, cTooltip )
+              bSize, bPaint, cTooltip, color, bcolor ) 
 
    HB_SYMBOL_UNUSED( bGFocus )
    HB_SYMBOL_UNUSED( bLFocus )
@@ -85,10 +86,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
 
    ::title   := cText
    ::tcolor  := IIf( color == Nil, GetSysColor( COLOR_BTNTEXT ), color )
-   ::bcolor  := bcolor
-   IF bColor != Nil
-      ::brush := HBrush():Add( bcolor )
-   ENDIF
+   
    ::xt      := IIf( xt == Nil, 0, xt )
    ::yt      := IIf( yt == Nil, 0, yt )
    ::widtht  := IIf( widtht == Nil, 0, widtht )
@@ -138,13 +136,7 @@ METHOD Activate CLASS HOwnButton
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
 
-   IF msg == WM_PAINT
-      IF ::bPaint != Nil
-         Eval( ::bPaint, Self )
-      ELSE
-         ::Paint()
-      ENDIF
-   ELSEIF msg == WM_THEMECHANGED
+   IF msg == WM_THEMECHANGED
       IF ::Themed
          IF ValType( ::hTheme ) == "P"
             HB_CLOSETHEMEDATA( ::htheme )
@@ -155,8 +147,15 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
       ::m_bFirstTime := .T.
       RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
       RETURN 0
+      
    ELSEIF msg == WM_ERASEBKGND
-      //RETURN 1
+      RETURN 0
+   ELSEIF msg == WM_PAINT
+      IF ::bPaint != Nil
+         Eval( ::bPaint, Self )
+      ELSE
+         ::Paint()
+      ENDIF
    ELSEIF msg == WM_MOUSEMOVE
       ::MouseMove( wParam, lParam )
    ELSEIF msg == WM_LBUTTONDOWN
@@ -182,6 +181,12 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
          ::release()
       ENDIF
       ::onLostFocus()
+   ELSEIF msg = WM_CHAR  .OR. msg = WM_KEYDOWN .OR. msg = WM_KEYUP   
+      IF wParam = 32
+				 ::Press()
+         ::onClick()
+         ::Release()
+      ENDIF
    ELSE
       IF ! Empty( ::bOther )
          Eval( ::bOther, Self, msg, wParam, lParam )
@@ -409,12 +414,14 @@ METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
       IF res .AND. ! ::lPress
          ::state := OBTN_NORMAL
          InvalidateRect( ::handle, 0 )
-         PostMessage( ::handle, WM_PAINT, 0, 0 )
+         RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+         //PostMessage( ::handle, WM_PAINT, 0, 0 )
       ENDIF
       IF ::state == OBTN_NORMAL .AND. ! res
          ::state := OBTN_MOUSOVER
          InvalidateRect( ::handle, 0 )
-         PostMessage( ::handle, WM_PAINT, 0, 0 )
+         //PostMessage( ::handle, WM_PAINT, 0, 0 )
+         RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
          SetCapture( ::handle )
       ENDIF
    ENDIF
@@ -452,7 +459,8 @@ METHOD MUp() CLASS HOwnButton
          Release()
       ENDIF
       InvalidateRect( ::handle, 0 )
-      SendMessage( ::handle, WM_PAINT, 0, 0 )
+      //SendMessage( ::handle, WM_PAINT, 0, 0 )
+      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
    ENDIF
 
    RETURN Nil
@@ -467,7 +475,8 @@ METHOD Release()  CLASS HOwnButton
    ::lPress := .F.
    ::state := OBTN_NORMAL
    InvalidateRect( ::handle, 0 )
-   PostMessage( ::handle, WM_PAINT, 0, 0 )
+   RedrawWindow( ::handle, RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW + RDW_INVALIDATE ) 
+   //PostMessage( ::handle, WM_PAINT, 0, 0 )
    RETURN Nil
 
 

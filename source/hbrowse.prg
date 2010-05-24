@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.224 2010-04-28 14:50:00 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.225 2010-05-24 14:57:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -162,7 +162,7 @@ METHOD Visible( lVisible ) CLASS HColumn
 CLASS HBrowse INHERIT HControl
 
    DATA winclass   INIT "BROWSE"
-   DATA active     INIT .T.
+   DATA active     INIT .T.                          
    DATA lChanged   INIT .F.
    DATA lDispHead  INIT .t.                    // Should I display headers ?
    DATA lDispSep   INIT .t.                    // Should I display separators ?
@@ -355,7 +355,7 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
       ::aSelected := { }
    ENDIF
    ::lDescend    := IIf( lDescend == Nil, .F., lDescend )
-
+  
    IF ISBLOCK( bFirst ) .OR. ISBLOCK( bFor ) .OR. ISBLOCK( bWhile )
       ::lFilter := .T.
       IF ISBLOCK( bFirst )
@@ -1172,19 +1172,22 @@ METHOD AutoFit( ) CLASS HBrowse
    IF ::AutoColumnFit = 2
       RETURN .F.
    ENDIF 
+   ::oParent:lSuspendMsgsHandling := .T.
    RedrawWindow( ::handle, RDW_VALIDATE + RDW_UPDATENOW )   
+   ::oParent:lSuspendMsgsHandling := .F.
    aCoors := GetWindowRect( ::handle )
    IF ::nAutoFit = Nil
       ::nAutoFit :=  IIF( Max( 0, ::x2 - ::xAdjRight - 2 ) = 0, 0,  ::x2  / ::xAdjRight )
       nXincRelative := IIF( ( aCoors[ 3 ] - aCoors[ 1 ] )  - ( ::nWidth  ) > 0, ::nAutoFit, 1/::nAutoFit )
    ELSE
-      nXincRelative :=    (aCoors[ 3 ] - aCoors[ 1 ] )  / ( ::nWidth  ) 
+      nXincRelative :=    (aCoors[ 3 ] - aCoors[ 1 ] )  / ( ::nWidth  ) - 0.01
    ENDIF
    IF ::nAutoFit = 0 .OR. nXincRelative < 1
-      IF nXincRelative < 1
-         ::nAutoFit := Nil
-      ENDIF
-      RETURN .F.
+      IF nXincRelative < 0.1 .OR. ::nAutoFit = 0
+         ::nAutoFit := IIF( nXincRelative < 1, Nil, ::nAutoFit )
+         RETURN .F.
+      ENDIF   
+      ::nAutoFit := IIF( nXincRelative < 1, Nil, ::nAutoFit )
    ENDIF
 	 nlen := LEN( ::aColumns )
    FOR i = 1 to nLen
@@ -1365,10 +1368,10 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
          Eval( ::bSkip, Self, 1 )
          ::rowCurrCount := IIF( Eval( ::bEof, Self ), ::rowCount , IIF( ::nRecords < ::rowCount, ::nRecords,  1 ) )
          nRecFilter := - 1         
-      ELSEIF ::rowCurrCount >= ::RowPos  .AND. nRecFilter <= ::nRecords           
-         ::rowCurrCount -= ( ::rowCurrCount - ::RowPos + 1) 
       ELSEIF ::nRecords < ::rowCount   
          ::rowCurrCount := ::nRecords
+      ELSEIF ::rowCurrCount >= ::RowPos  .AND. nRecFilter <= ::nRecords           
+         ::rowCurrCount -= ( ::rowCurrCount - ::RowPos + 1) 
       ELSEIF ::rowCurrCount > ::rowCount - 1
          ::rowCurrCount := ::rowCount - 1
       ENDIF   
@@ -1732,7 +1735,7 @@ METHOD SeparatorOut( hDC, nRowsFill ) CLASS HBrowse
 
    x := ::x1 //- IIF( ::lShowMark .AND. ! ::lDeleteMark , 1, 0 )
    fif := IIf( ::freeze > 0, 1, ::nLeftCol )
-   FillRect( hDC, ::x1 - ::nShowMark - ::nDeleteMark - 1 , ::y1 + ( ::height + 1 ) * nRowsfill + 1, ::x2 , ::y2, ::brush:handle )      
+   FillRect( hDC, ::x1 - ::nShowMark - ::nDeleteMark - 1 , ::y1 + ( ::height + 1 ) * nRowsfill + 1, ::x2 , ::y2 - ( ::nFootHeight * ::nFootRows ) , ::brush:handle )      
    // SEPARATOR HORIZONT
    FOR i := 1 TO nRowsFill
       DrawLine( hDC, ::x1 - ::nDeleteMark, ::y1 + ( ::height + 1 ) * i, IIf( ::lAdjRight, ::x2, ::x2 ), ::y1 + ( ::height + 1 ) * i )
@@ -2818,10 +2821,13 @@ METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
          ::PageDown()
       ENDIF
    ELSE
+      IF ::rowPos = 1 .OR. ::rowPos = ::rowCount
+         ::Refresh( .F. , nDelta > 0 )         
+      ENDIF
       IF nDelta > 0
          ::LineUp()
       ELSE
-         ::LineDown()
+         ::LineDown( .T. )
       ENDIF
    ENDIF
    RETURN nil

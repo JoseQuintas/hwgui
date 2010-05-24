@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.106 2010-04-20 12:06:49 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.107 2010-05-24 14:57:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -26,7 +26,8 @@ STATIC aMessModalDlg := { ;
        { WM_ENTERIDLE, { | o, w, l | onEnterIdle( o, w, l ) } },      ;
        { WM_ACTIVATE, { | o, w, l | onActivate( o, w, l ) } },        ;
        { WM_PSPNOTIFY, { | o, w, l | onPspNotify( o, w, l ) } },      ;
-       { WM_HELP, { | o, w, l | onHelp( o, w, l ) } }                 ;
+       { WM_HELP, { | o, w, l | onHelp( o, w, l ) } },                ;
+       { WM_CTLCOLORDLG, {| o, w, l | onDlgColor( o, w, l ) } }       ;       
      }
 
 STATIC FUNCTION onDestroy( oDlg )
@@ -230,7 +231,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
       RETURN 1
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
-         IF ::nScrollBars != - 1
+         IF ::nScrollBars != - 1  .AND. ::bScroll = Nil
             Super:ScrollHV( Self, msg, wParam, lParam )
          ENDIF
          onTrackScroll( Self, msg, wParam, lParam )
@@ -306,8 +307,10 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       oDlg:Closable( .F. )
    ENDIF
 
-   InitControls( oDlg, .T. )
    InitObjects( oDlg )
+   InitControls( oDlg, .T. )
+   UPDATEWINDOW( oDlg:handle ) 
+   
    POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS), 0)  
    POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL), 0)
 
@@ -382,6 +385,16 @@ STATIC FUNCTION onEnterIdle( oDlg, wParam, lParam )
    ENDIF
    RETURN 0
 
+STATIC FUNCTION onDlgColor( oDlg, wParam, lParam )
+
+   HB_SYMBOL_UNUSED(lParam)
+   
+   SetBkMode( wParam, 1 ) // Transparent mode
+   IF oDlg:bcolor != NIL  .AND. oDlg:brush != Nil
+       RETURN oDlg:brush:Handle
+   ENDIF  
+   RETURN 0 //hBrTemp:handle
+
 STATIC FUNCTION onEraseBk( oDlg, hDC )
    LOCAL aCoors
 
@@ -394,6 +407,7 @@ STATIC FUNCTION onEraseBk( oDlg, hDC )
        Return 1
     ELSE
        aCoors := GetClientRect( oDlg:handle )
+       /*
        IF oDlg:brush != Nil
           IF ValType( oDlg:brush ) != "N"
              FillRect( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ] + 1, aCoors[ 4 ] + 1, oDlg:brush:handle )
@@ -402,6 +416,8 @@ STATIC FUNCTION onEraseBk( oDlg, hDC )
           FillRect( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ] + 1, aCoors[ 4 ] + 1, COLOR_3DFACE + 1 )
        ENDIF
        RETURN 1
+       */
+       FillRect( hDC, aCoors[1], aCoors[2], aCoors[1] + 1, aCoors[2] + 1 )
     ENDIF
 
     RETURN 0
@@ -738,6 +754,7 @@ FUNCTION EndDialog( handle )
          RETURN Nil
       ENDIF
    ENDIF
+   SETFOCUS( handle )
    RETURN  IIf( oDlg:lModal, Hwg_EndDialog( oDlg:handle ), DestroyWindow( oDlg:handle ) )
 
 FUNCTION SetDlgKey( oDlg, nctrl, nkey, block )
@@ -788,7 +805,9 @@ STATIC FUNCTION onSysCommand( oDlg, wParam, lParam )
       ENDIF
    ELSEIF wParam = SC_HOTKEY      
    ELSEIF wParam = SC_MENU 
+   ELSEIF wParam = 61824  //button help
    ENDIF
+   
    RETURN -1
 
    EXIT PROCEDURE Hwg_ExitProcedure

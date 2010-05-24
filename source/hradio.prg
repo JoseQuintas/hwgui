@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.34 2010-04-20 12:06:49 lfbasso Exp $
+ * $Id: hradio.prg,v 1.35 2010-05-24 14:57:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -11,6 +11,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#DEFINE TRANSPARENT 1
 
 CLASS HRadioGroup INHERIT HControl //HObject
 
@@ -252,10 +253,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ::bPaint  := bPaint
    ::tooltip := ctooltip
    */
-   ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, 0, 1 ) 
+   ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, TRANSPARENT, OPAQUE ) 
    
    ::Activate()
-   ::SetColor( tcolor, bColor )
+   ::SetColor( tcolor, bColor, .t. )
 
    //::oParent:AddControl( Self )
    
@@ -319,18 +320,11 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip,
       bColor := GetSysColor( COLOR_3DFACE )
    ENDIF
    */
-   IF ( lTransp != NIL .AND. lTransp )
-      bcolor := ::oParent:bcolor
-   ENDIF
-   ::bcolor  := bcolor
-   ::tcolor  := tcolor
-   IF bcolor != Nil
-      ::brush := HBrush():Add( bcolor )
-   ENDIF
+   ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, TRANSPARENT, OPAQUE ) 
+   ::setcolor( tColor, bColor ,.t.)
    ::oParent:AddControl( Self )
-   IF tcolor != Nil
-      ::SetColor( tcolor )
-   ENDIF
+
+   ::oParent:AddControl( Self )
 
    IF bClick != Nil .AND. ( ::oGroup == Nil .OR. ::oGroup:bSetGet == Nil )
       *::oParent:AddEvent( 0,self,bClick,,"onClick" )

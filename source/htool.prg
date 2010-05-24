@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.40 2010-04-07 02:01:09 lfbasso Exp $
+ * $Id: htool.prg,v 1.41 2010-05-24 14:57:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -328,7 +328,7 @@ METHOD CREATETOOL CLASS hToolBar
          ELSE
             IF ::aItem[ n, 1 ] > 0
                // AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
-               hImage := HBitmap():AddResource( ::aitem[ n, 1 ], LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS,,::nSize,::nSize ):handle               
+               hImage := HBitmap():AddResource( ::aitem[ n, 1 ], LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS + LR_SHARED,,::nSize,::nSize ):handle               
             ENDIF
          ENDIF
 

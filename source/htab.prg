@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.65 2010-04-28 04:48:45 lfbasso Exp $
+ *$Id: htab.prg,v 1.66 2010-05-24 14:57:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -22,6 +22,7 @@
 */
 //- HTab
 
+#define TRANSPARENT 1
 //----------------------------------------------------//
 CLASS HPage INHERIT HObject
 
@@ -709,7 +710,7 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
        ENDIF
    ENDIF
    IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL //.AND. ::FINDCONTROL(,GETFOCUS()):classname = "HUPDO"
-       InvalidateRect( ::handle, 1, 0, 0 , ::nwidth, 30 )
+      // InvalidateRect( ::handle, 1, 0, 0 , ::nwidth, 30 )
        IF ::GetParentForm( self ):Type < WND_DLG_RESOURCE
           RETURN ( ::oParent:onEvent( msg, wparam, lparam ) )
        ELSE
@@ -858,10 +859,10 @@ METHOD Paint( lpdis ) CLASS HPaintTab
         ::nHeight := ::oParent:nPaintHeight
         ::move( , , , ::nHeight )
       ELSEIF oPage:brush != Nil
-        SetBkMode( hDC, 0 )
+        SetBkMode( hDC, TRANSPARENT ) //OPAQUE )
         ::brush := oPage:brush
         FillRect( hDC, x1 + 1, y1 + 2, x2 - 1, y2 - 1, oPage:brush:Handle ) //obrush )        
-        ::oParent:RedrawControls( )        
+        ::oParent:RedrawControls( )   
       ENDIF  
    ENDIF
    ::hDC := GetDC( ::oParent:handle )
@@ -870,7 +871,7 @@ METHOD Paint( lpdis ) CLASS HPaintTab
       client_rect :=  TabItemPos( ::oParent:Handle,i - 1 )
       oPage:aItemPos := client_rect
       IF oPage:brush != Nil .AND. client_rect[ 4 ] - client_rect[ 2 ] > 5
-         SetBkMode( ::hDC, 1 )
+         SetBkMode( hDC, TRANSPARENT )
          IF nPage = oPage:PageOrder         
             FillRect( ::hDC, client_rect[ 1 ], client_rect[ 2 ] + 1, client_rect[ 3 ] ,client_rect[ 4 ] + 2 , oPage:brush:handle )
             IF GetFocus() = oPage:oParent:handle
@@ -904,7 +905,7 @@ METHOD showTextTabs( oPage, aItemPos ) CLASS HPaintTab
        ENDIF
        hTheme := IIF( EMPTY( hTheme  ), Nil, hTheme )
     ENDIF
-    SetBkMode( ::hDC, 1 ) 
+    SetBkMode( ::hDC, TRANSPARENT ) 
     IF oPage:oParent:oFont != Nil
        SelectObject( ::hDC, oPage:oParent:oFont:handle )  
     ENDIF          

@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.16 2010-02-05 12:39:07 lfbasso Exp $
+ * $Id: hrect.prg,v 1.17 2010-05-24 14:57:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -13,8 +13,7 @@
 #include "guilib.ch"
 #include "common.ch"
 
-
-
+#DEFINE TRANSPARENT 1
 
 //-----------------------------------------------------------------
 CLASS HRect INHERIT HControl
@@ -183,7 +182,7 @@ CLASS VAR winclass   INIT "STATIC"
 
    METHOD Activate()
    METHOD Paint( lDsip )
-   METHOD SetColor( tcolor, bcolor )
+   METHOD SetColor( tcolor, bcolor, lRedraw )
    METHOD Curvature( nCurvature )
    //METHOD Refresh() INLINE SENDMESSAGE( ::handle, WM_PAINT, 0, 0 ), RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
 
@@ -200,7 +199,8 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor
               bInit, bSize, ::bPaint, , tcolor, bColor ) //= Nil
 
    ::title := ""
-   ::backStyle := IIF( nbackStyle = Nil, 1, nbackStyle ) // OPAQUE DEFAULT
+    // OPAQUE DEFAULT
+   ::backStyle := IIF( nbackStyle = Nil, OPAQUE, nbackStyle )
 
    ::lnoBorder := lnoBorder
    ::nBorder := nBorder
@@ -230,18 +230,21 @@ METHOD Activate CLASS HDrawShape
    RETURN Nil
 
 
-METHOD SetColor( tcolor, bColor ) CLASS HDrawShape
+METHOD SetColor( tcolor, bColor, lRedraw ) CLASS HDrawShape
 
    Super:SetColor( tColor, bColor )
-   IF ::nfStyle = HS_SOLID .OR. ( ::nfStyle != BS_TRANSPARENT .OR. ::backStyle = 1 )
-       IF !EMPTY( ::tColor ) .AND. ::nfStyle != HS_SOLID
+   IF ::nfStyle = HS_SOLID .OR. ( ::nfStyle != BS_TRANSPARENT .OR. ::backStyle = TRANSPARENT )
+  	  IF ( ! EMPTY( ::tColor ) .AND. ::nfStyle != HS_SOLID ) .OR. ::backStyle = OPAQUE
          ::brushFill := HBrush():Add( ::tColor, ::nfstyle )
       ELSE
-         ::brushFill := HBrush():Add( , ::nfstyle )
-      ENDIF
+         ::brushFill := HBrush():Add( , ::nfstyle )       
+      ENDIF  
+   ELSE
+      ::brushFill := HBrush():Add( ::tColor, ::nfstyle )   
    ENDIF
-   //SENDMESSAGE( ::handle, WM_PAINT, 0, 0 )
-   RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+   IF ! Empty( lRedraw )
+      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+   ENDIF
    RETURN Nil
 
 
@@ -249,8 +252,8 @@ METHOD Curvature( nCurvature ) CLASS HDrawShape
 
    IF nCurvature != NIL
       ::nCurvature := nCurvature
-      SENDMESSAGE( ::handle, WM_PAINT, 0, 0 )
-      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+      RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_ERASENOW, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      InvalidateRect( ::oParent:Handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight )
    ENDIF
    RETURN Nil
 
@@ -261,6 +264,7 @@ METHOD Paint( lpdis ) CLASS HDrawShape
    LOCAL  x1 := drawInfo[ 4 ], y1 := drawInfo[ 5 ]
    LOCAL  x2 := drawInfo[ 6 ], y2 := drawInfo[ 7 ]
 
+   SetBKMode( hdc, ::backStyle )
    SelectObject( hDC, ::oPen:handle )
    IF ::ncStyle != Nil
       /*
@@ -282,23 +286,16 @@ METHOD Paint( lpdis ) CLASS HDrawShape
       ENDIF
       */
    ELSE
-      SetBkMode( hDC, ::backStyle )
-      IF ::backStyle != 0 
+      IF ::backStyle = OPAQUE
          IF ::Brush != Nil
-            SelectObject( hDC, ::Brush:Handle )
+            SelectObject( hDC, ::Brush:handle )
          ENDIF
          RoundRect( hDC, x1 + 1, y1 + 1, x2, y2 , ::nCurvature, ::nCurvature)
-      ELSE
-        oBrush :=  HBrush():Add( GetBackColorParent( Self ) )
-        SelectObject( hDC, oBrush:Handle )
-        DeleteObject( oBrush )
-      ENDIF
-      IF ::nfStyle = HS_SOLID .OR. ( ::nfStyle != BS_TRANSPARENT  .OR. ::backStyle = 1 )
-         SelectObject( hDC, ::BrushFill:Handle )
-         RoundRect( hDC, x1 + 1, y1 + 1, x2 , y2, ::nCurvature, ::nCurvature )
-      ELSE
-         RoundRect( hDC, x1 + 1, y1 + 1, x2, y2 , ::nCurvature, ::nCurvature)
-      ENDIF
+      ENDIF   
+      IF ::nfStyle != BS_TRANSPARENT .OR. ::backStyle = OPAQUE
+        SelectObject( hDC, ::BrushFill:handle )
+      ENDIF        
+      RoundRect( hDC, x1 + 1, y1 + 1, x2, y2 , ::nCurvature, ::nCurvature)
    ENDIF
    RETURN 0
 
@@ -330,6 +327,7 @@ CLASS HContainer INHERIT HControl
 
    DATA lCreate   INIT .F.
    DATA xVisible  INIT .T. HIDDEN
+   DATA lTABSTOP INIT .F. HIDDEN
 
    METHOD New( oWndParent, nId, nstyle, nLeft, nTop, nWidth, nHeight, ncStyle, bSize,;
                lnoBorder, bInit, nBackStyle, tcolor, bcolor, bLoad, bRefresh, bOther)  //, bClick, bDblClick)
@@ -346,6 +344,7 @@ ENDCLASS
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ncStyle, bSize,;
             lnoBorder, bInit, nBackStyle, tcolor, bcolor, bLoad, bRefresh, bOther) CLASS HContainer  //, bClick, bDblClick)
 
+    ::lTABSTOP :=  nStyle = WS_TABSTOP
     ::bPaint   := { | o, p | o:paint( p ) }
     nStyle := SS_OWNERDRAW + IIF( nStyle = WS_TABSTOP, WS_TABSTOP , 0 ) + Hwg_Bitand( nStyle, SS_NOTIFY )
     Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, , ;
@@ -355,7 +354,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ncStyle, bSiz
    ::ncStyle := IIF( ncStyle = NIL .AND. nStyle < WS_TABSTOP, 3, ncStyle )
    ::lnoBorder := IIF( lnoBorder = NIL, .F., lnoBorder )
 
-   ::backStyle := IIF( nbackStyle = Nil, 1, nbackStyle ) // OPAQUE DEFAULT
+   ::backStyle := IIF( nbackStyle = Nil, OPAQUE, nbackStyle ) // OPAQUE DEFAULT
    ::bLoad := bLoad
    ::bRefresh := bRefresh
    ::bOther := bOther
@@ -420,18 +419,21 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HContainer
       RETURN - 1
    ELSEIF msg == WM_ERASEBKGND
       RETURN 0
-   ELSEIF msg == WM_SETFOCUS
-     GetSkip( ::oparent, ::handle, , ::nGetSkip )
-   ELSEIF msg == WM_KEYUP
-       IF wParam = VK_DOWN
-          GetSkip( ::oparent, ::handle, , 1 )
-       ELSEIF  wParam = VK_UP
-          GetSkip( ::oparent, ::handle, , -1 )
-       ELSEIF wParam = VK_TAB
-          GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
-       ENDIF
-       RETURN 0
-   ELSEIF msg = WM_SYSKEYUP
+   ENDIF   
+   IF ::lTABSTOP       
+      IF msg == WM_SETFOCUS
+         GetSkip( ::oparent, ::handle, , ::nGetSkip )
+      ELSEIF msg == WM_KEYUP
+         IF wParam = VK_DOWN
+            GetSkip( ::oparent, ::handle, , 1 )
+         ELSEIF  wParam = VK_UP
+            GetSkip( ::oparent, ::handle, , -1 )
+         ELSEIF wParam = VK_TAB
+            GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+         ENDIF
+         RETURN 0
+      ELSEIF msg = WM_SYSKEYUP
+      ENDIF
    ENDIF
    RETURN Super:onEvent( msg, wParam, lParam )
 
@@ -480,14 +482,14 @@ METHOD Paint( lpdis ) CLASS HContainer
       ELSE
          DrawEdge( hDC, x1, y1, x2, y2,0,0)
       ENDIF
-      IF ::backStyle != 0
+      IF ::backStyle != TRANSPARENT      
          IF ::Brush != Nil
             FillRect( hDC, x1 + 2, y1 + 2, x2 - 2, y2 - 2 , ::brush:handle )
          ENDIF            
       ELSE
          FillRect( hDC, x1 + 2, y1 + 2, x2 - 2, y2 - 2 , GetStockObject( 5 ) )
       ENDIF
-      SetBkMode( hDC, 0 )
+      //SetBkMode( hDC, 0 )
    ENDIF
 
    Return 1

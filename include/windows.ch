@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.83 2010-04-05 13:45:48 lfbasso Exp $
+ *$Id: windows.ch,v 1.84 2010-05-24 14:57:03 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -235,6 +235,9 @@
 #define PS_USERSTYLE        7
 #define PS_ALTERNATE        8
 #define PS_STYLE_MASK       15
+
+/* SETBKMODE */
+#define OPAQUE 2
 
 #define COLOR_SCROLLBAR                 0
 #define COLOR_BACKGROUND                1

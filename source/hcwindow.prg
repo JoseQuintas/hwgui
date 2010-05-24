@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.64 2010-04-20 12:06:49 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.65 2010-05-24 14:57:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -13,6 +13,7 @@
 #include "guilib.ch"
 #include "common.ch"
 
+#define TRANSPARENT 1
 #define EVENTS_MESSAGES 1
 #define EVENTS_ACTIONS  2
 #define RT_MANIFEST  24
@@ -374,7 +375,6 @@ METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HCustomWindow
 METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
    LOCAL nlen , i, x1, y1
    nlen := Len( oCtrl:aControls )
-   ::lSuspendMsgsHandling  := .T.
    FOR i = 1 TO nlen
       IF __ObjHasMsg( oCtrl:aControls[ i ], "ANCHOR" ) .AND. oCtrl:aControls[ i ]:anchor > 0 .AND.;
            IsWindowVisible( ::GetParentForm():handle )
@@ -387,7 +387,6 @@ METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
          ENDIF
       ENDIF
    NEXT
-   ::lSuspendMsgsHandling  := .F.
    RETURN .T.
 
 METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
@@ -708,21 +707,23 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
 //lParam := HANDLETOPTR( lParam)
    oCtrl := oWnd:FindControl( , lParam )
 
-   IF oCtrl != NIL
+   IF ! EMPTY( oCtrl )
       IF oCtrl:tcolor != NIL
          SetTextColor( wParam, oCtrl:tcolor )
       ENDIF
-      IF oCtrl:bcolor != NIL  .AND. oCtrl:BackStyle = 1 // OPAQUE
+      IF !  oCtrl:IsEnabled() .AND. oCtrl:Disablebrush != Nil
+         SetBkColor( wParam, oCtrl:DisablebColor ) 
+         RETURN oCtrl:disablebrush:handle
+      ELSEIF oCtrl:bcolor != NIL  .AND. oCtrl:BackStyle = OPAQUE
          SetBkColor( wParam, oCtrl:bcolor )
          IF oCtrl:brush != Nil
             RETURN oCtrl:brush:handle
          ELSEIF oCtrl:oParent:brush != Nil
             RETURN oCtrl:oParent:brush:handle
          ENDIF
-      ELSEIF oCtrl:BackStyle = 0 // TRANSPARENT
-         SETTRANSPARENTMODE( wParam, .T. )
+      ELSEIF oCtrl:BackStyle = TRANSPARENT
          IF ( oCtrl:classname $ "HCHECKBUTTON" .AND. (  ! oCtrl:lnoThemes .AND. ( ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest ) ) ) .OR.;
-            ( oCtrl:classname $ "HGROUP*HRADIOGROUP*HRADIOBUTTON" .AND. oCtrl:lnoThemes ) 
+            ( oCtrl:classname $ "HGROUP*HRADIOGROUP*HRADIOBUTTON" ) //.AND. oCtrl:lnoThemes ) 
 				    RETURN GetBackColorParent( oCtrl, , .T. ):handle
 				 ENDIF 
          IF __ObjHasMsg( oCtrl, "PAINT" ) .OR. oCtrl:winclass = "BUTTON"				 
@@ -736,7 +737,7 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
 
 STATIC FUNCTION onDrawItem( oWnd, wParam, lParam )
    LOCAL oCtrl
-   IF wParam != 0 .AND. ( oCtrl := oWnd:FindControl( wParam ) ) != NIL .AND. ;
+   IF ! EMPTY( wParam ) .AND. ( oCtrl := oWnd:FindControl( wParam ) ) != NIL .AND. ;
                           oCtrl:bPaint != NIL
       Eval( oCtrl:bPaint, oCtrl, lParam )
       RETURN 1
@@ -778,12 +779,12 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       oWnd:ResetScrollbars()
       oWnd:SetupScrollbars()
    ENDIF
-
+   oWnd:lSuspendMsgsHandling  := .T.
    IF !EMPTY( oWnd:type) .AND. oWnd:Type = WND_MDI  .AND. !EMPTY( oWnd:Screen )
      oWnd:Anchor( oWnd:Screen, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
    ENDIF
    oWnd:Anchor( oWnd, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
-
+   oWnd:lSuspendMsgsHandling  := .F.
    #ifdef __XHARBOUR__
 
       HB_SYMBOL_UNUSED( iCont )
@@ -872,9 +873,9 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
          oCtrl:SetFocus()
   	     oWin:lResult := .T.
   	     IF lForce
-	       ELSEIF oCtrl:bClick != Nil
+	       ELSEIF oCtrl:bClick != Nil .AND. ! lForce
 	          SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
-	       ELSE
+	       ELSEIF oWin:lExitOnEnter
             oWin:close()  
          ENDIF   
          RETURN .T.

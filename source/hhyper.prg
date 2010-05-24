@@ -1,5 +1,5 @@
 /*
- * $Id: hhyper.prg,v 1.12 2009-11-15 18:55:05 lfbasso Exp $
+ * $Id: hhyper.prg,v 1.13 2010-05-24 14:57:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HStaticLink class
@@ -102,7 +102,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
 
    IF lTransp != NIL .AND. lTransp
       //::extStyle += WS_EX_TRANSPARENT
-      ::backstyle := 0
+      ::backstyle := TRANSPARENT
    ENDIF
 
    ::Activate()
@@ -143,7 +143,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 
    IF lTransp != NIL .AND. lTransp
       //::extStyle += WS_EX_TRANSPARENT
-      ::backstyle := 0
+      ::backstyle := TRANSPARENT
    ENDIF
 
    RETURN Self
@@ -151,10 +151,10 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 METHOD INIT CLASS HStaticLink
 
    IF ! ::lInit
+      Super:init()
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       Hwg_InitWinCtrl( ::handle )
-      Super:init()
       IF ::Title != NIL
          SETWINDOWTEXT( ::handle, ::title )
       ENDIF
@@ -307,7 +307,10 @@ METHOD PAint() CLASS HStaticLink
    LOCAL rcClient
    LOCAL POLDFONT
    LOCAL DWSTYLE
-
+   
+   IF EMPTY( ::oParent:handle )
+      RETURN Nil
+   ENDIF
    ::dc := HPAINTDC():new( ::handle )
    IF ::state == LBL_INIT
       ::State := LBL_NORMAL

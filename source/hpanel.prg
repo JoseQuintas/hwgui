@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.29 2010-04-05 14:30:42 lfbasso Exp $
+ * $Id: hpanel.prg,v 1.30 2010-05-24 14:57:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -11,6 +11,8 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#define TRANSPARENT 1
+
 STATIC nrePaint := - 1
 
 CLASS HPanel INHERIT HControl
@@ -42,12 +44,8 @@ LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, Iif( nWidth == Nil, 0, nWidth ), ;
               Iif( nHeight == Nil, 0, nHeight ), oParent:oFont, bInit, ;
-              bSize, bPaint )
+              bSize, bPaint,,, bcolor )
 
-   IF bcolor != NIL
-      ::brush  := HBrush():Add( bcolor )
-      ::bcolor := bcolor
-   ENDIF
    ::lBorder  := IIF( Hwg_Bitand( nStyle,WS_BORDER ) + Hwg_Bitand( nStyle,WS_DLGFRAME ) > 0, .T., .F. )
    ::bPaint   := bPaint
    ::lResizeX := ( ::nWidth == 0 )
@@ -77,9 +75,24 @@ LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
 
 RETURN Self
 
+METHOD Redefine( oWndParent, nId, nWidth, nHeight, bInit, bSize, bPaint, bcolor ) CLASS HPanel
+LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
+
+   Super:New( oWndParent, nId, 0, 0, 0, Iif( nWidth == Nil, 0, nWidth ), ;
+              Iif( nHeight != Nil, nHeight, 0 ), oParent:oFont, bInit, ;
+              bSize, bPaint,,, bcolor )
+
+
+   ::bPaint   := bPaint
+   ::lResizeX := ( ::nWidth == 0 )
+   ::lResizeY := ( ::nHeight == 0 )
+   hwg_RegPanel()
+
+RETURN Self
+
 METHOD Activate CLASS HPanel
-LOCAL handle := ::oParent:handle
-LOCAL aCoors, nWidth, nHeight
+   LOCAL handle := ::oParent:handle
+   LOCAL aCoors, nWidth, nHeight
 
    IF !Empty( handle )
       ::handle := CreatePanel( handle, ::id, ;
@@ -100,7 +113,7 @@ LOCAL aCoors, nWidth, nHeight
       ENDIF
       ::Init()
    ENDIF
-RETURN Nil
+   RETURN Nil
 
 METHOD Init CLASS HPanel
 
@@ -126,14 +139,14 @@ METHOD Init CLASS HPanel
       ENDIF
    ENDIF
 
-RETURN Nil
+   RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
 
    IF msg == WM_PAINT
       ::Paint()
    ELSEIF msg == WM_ERASEBKGND
-      IF ::backstyle = 1
+      IF ::backstyle = OPAQUE 
          RETURN nrePaint 
          /*
          IF ::brush != Nil
@@ -193,24 +206,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
    RETURN - 1
 
 
-METHOD Redefine( oWndParent, nId, nWidth, nHeight, bInit, bSize, bPaint, bcolor ) CLASS HPanel
-LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
-
-   Super:New( oWndParent, nId, 0, 0, 0, Iif( nWidth == Nil, 0, nWidth ), ;
-              Iif( nHeight != Nil, nHeight, 0 ), oParent:oFont, bInit, ;
-              bSize, bPaint )
-
-   IF bcolor != NIL
-      ::brush  := HBrush():Add( bcolor )
-      ::bcolor := bcolor
-   ENDIF
-
-   ::bPaint   := bPaint
-   ::lResizeX := ( ::nWidth == 0 )
-   ::lResizeY := ( ::nHeight == 0 )
-   hwg_RegPanel()
-
-RETURN Self
 
 METHOD Paint() CLASS HPanel
 LOCAL pps, hDC, aCoors, oPenLight, oPenGray
@@ -224,8 +219,8 @@ LOCAL pps, hDC, aCoors, oPenLight, oPenGray
    hDC    := BeginPaint( ::handle, pps )
    aCoors := GetClientRect( ::handle )
    
-   SETTRANSPARENTMODE( hDC, ::backStyle = 0 )
-   IF ::backstyle = 1 .AND. nrePaint = -1
+   SetBkMode( hDC, ::backStyle )   
+   IF ::backstyle = OPAQUE .AND. nrePaint = -1
       aCoors := GetClientRect( ::handle )  
       IF ::brush != Nil
          IF Valtype( ::brush ) != "N"
@@ -264,7 +259,7 @@ METHOD Release CLASS HPanel
             ::oParent:aOffset[ 3 ] -= ::nWidth
          ENDIF
       ENDIF
-      InvalidateRect( ::oParent:handle, 0, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      InvalidateRect(::oParent:handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight)
    ENDIF
    SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, MAKELPARAM( ::nWidth, ::nHeight ) )   
    ::oParent:DelControl( Self )
@@ -315,6 +310,7 @@ METHOD Show CLASS HPanel
    ENDIF
    Super:Show()	 
    IF ::oParent:type == WND_MDI
+       nrePaint := -1
        SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, MAKELPARAM( ::nWidth, ::nHeight ) )
    ENDIF   
 	 RETURN Nil

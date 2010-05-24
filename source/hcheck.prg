@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.42 2010-02-11 15:21:18 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.43 2010-05-24 14:57:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -11,6 +11,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#DEFINE TRANSPARENT 1
 
 CLASS HCheckButton INHERIT HControl
 
@@ -48,11 +49,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::title   := cCaption
    ::value   := IIf( vari == Nil .OR. ValType( vari ) != "L", .F., vari )
    ::bSetGet := bSetGet
-   ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, 0, 1 ) 
+   ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, TRANSPARENT, OPAQUE ) 
 
    ::Activate()
-
-   ::setcolor( tColor, bColor)
 
    ::lEnter     := IIf( lEnter == Nil .OR. ValType( lEnter ) != "L", .F., lEnter )
    ::bLostFocus := bClick
@@ -98,9 +97,10 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, bC
 
 METHOD Init() CLASS HCheckButton
    IF ! ::lInit
+      Super:Init()
+      ::nHolder := 1
       SetWindowObject( ::handle, Self )
       HWG_INITBUTTONPROC( ::handle )
-      Super:Init()
       IF ::value
          SendMessage( ::handle, BM_SETCHECK, 1, 0 )
       ENDIF

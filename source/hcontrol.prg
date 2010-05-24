@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.153 2010-04-28 04:48:45 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.154 2010-05-24 14:57:03 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -48,8 +48,10 @@ CLASS HControl INHERIT HCustomWindow
    DATA   lnoValid        INIT .F.
    DATA   nGetSkip        INIT 0
    DATA   Anchor          INIT 0
-   DATA   BackStyle       INIT 1
+   DATA   BackStyle       INIT OPAQUE
    DATA   lNoThemes       INIT .F.
+   DATA   DisablebColor
+   DATA   DisableBrush
    DATA   xControlSource   
    DATA   xName           HIDDEN
    ACCESS Name            INLINE ::xName
@@ -80,6 +82,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD onAnchor( x, y, w, h )
    METHOD SetToolTip( ctooltip ) 
    METHOD ControlSource( cControlSource ) SETGET 
+   METHOD DisableBackColor( DisableBColor ) SETGET
    METHOD END()
 
 ENDCLASS
@@ -143,19 +146,23 @@ METHOD INIT CLASS HControl
       //IF ::tooltip != Nil
       //   AddToolTip( ::oParent:handle, ::handle, ::tooltip )
       //ENDIF
-      IF ::oFont != NIL
-         SetCtrlFont( ::oParent:handle, ::id, ::oFont:handle )
-      ELSEIF ::oParent:oFont != NIL
-         SetCtrlFont( ::oParent:handle, ::id, ::oParent:oFont:handle )
-      ENDIF
       ::oparent:lSuspendMsgsHandling := .T.
       IF Len( ::aControls) = 0 .AND. ::classname != "HTAB"
          AddToolTip( ::GetParentForm():handle, ::handle, ::tooltip )
       ENDIF
-      IF ISBLOCK( ::bInit )
-        Eval( ::bInit, Self )
-      ENDIF
       ::oparent:lSuspendMsgsHandling := .F.
+      IF ::oFont != NIL
+         SetCtrlFont( ::oParent:handle, ::id, ::oFont:handle )
+      ELSEIF ::GetParentForm() != Nil .AND. ::GetParentForm():oFont != Nil
+         SetCtrlFont( ::oParent:handle, ::id, ::GetParentForm():oFont:handle )
+      ELSEIF ::oParent:oFont != NIL
+         SetCtrlFont( ::oParent:handle, ::id, ::oParent:oFont:handle )
+      ENDIF
+      IF ISBLOCK( ::bInit )
+        ::oparent:lSuspendMsgsHandling := .T.
+        Eval( ::bInit, Self )
+        ::oparent:lSuspendMsgsHandling := .F.
+      ENDIF
       ::lInit := .T.
    ENDIF
    RETURN NIL
@@ -184,6 +191,18 @@ METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HControl
 
    RETURN NIL
    */
+
+METHOD DisableBackColor( DisableBColor )
+
+   IF DisableBColor != NIL
+      ::DisableBColor := DisableBColor
+      IF ::Disablebrush != NIL
+           ::Disablebrush:Release()
+      ENDIF
+      ::Disablebrush := HBrush():Add( ::DisableBColor )
+      InvalidateRect( ::Handle, 0 )
+   ENDIF
+   RETURN ::DisableBColor
 
 METHOD SetFont( oFont ) CLASS HControl
 
@@ -330,13 +349,13 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
       ENDIF
       y1 := y9
    ENDIF
-   InvalidateRect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nWidth, ::nHeight )
    MoveWindow( ::handle, x1, y1, w1, h1 )
    ::nLeft := x1
    ::nTop := y1
    ::nWidth := w1
    ::nHeight := h1
-   RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+   RedrawWindow( ::handle, RDW_INVALIDATE  + RDW_INTERNALPAINT  )
+   SetWindowPos( ::Handle, Nil, x1, y1, w1, h1, SWP_NOACTIVATE  + SWP_NOZORDER + SWP_NOOWNERZORDER + SWP_FRAMECHANGED)	 
 
    RETURN Nil
 
@@ -372,7 +391,7 @@ METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint, bRClic
    Super:New( oWndParent, nId, nStyle, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint )
 
-   ::nHeight   := nHeight 
+   //::nHeight   := nHeight 
    ::aParts    := aParts
    ::bDblClick := bDblClick
    ::bRClick   := bRClick
@@ -487,7 +506,6 @@ CLASS VAR winclass   INIT "STATIC"
 
    DATA AutoSize    INIT .F.
    //DATA lTransparent  INIT .F. HIDDEN
-   DATA nBackMode   INIT 1 HIDDEN
    DATA nStyleHS
    DATA bClick, bDblClick
 
@@ -528,30 +546,23 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    //
 
    ::nStyleHS := IIf( nStyle == Nil, 0, nStyle )
+   ::BackStyle := OPAQUE
    IF ( lTransp != NIL .AND. lTransp ) //.OR. ::lOwnerDraw
       //::lTransparent := .T.
-      ::nBackMode := 0
+      ::BackStyle := TRANSPARENT
       ::extStyle += WS_EX_TRANSPARENT
       bPaint := { | o, p | o:paint( p ) }
       nStyle := SS_OWNERDRAW + Hwg_Bitand( nStyle, SS_NOTIFY )
    ELSEIF nStyle - SS_NOTIFY > 32 .OR. ::nStyleHS - SS_NOTIFY = 2
-      ::nBackMode := 1
       bPaint := { | o, p | o:paint( p ) }
       nStyle := SS_OWNERDRAW + Hwg_Bitand( nStyle, SS_NOTIFY )
    ENDIF
    
-   ::BackStyle := ::nBackMode
-   
    Super:New( oWndParent, nId, nStyle + nBorder, nLeft, nTop, nWidth, nHeight, oFont, ;
               bInit, bSize, bPaint, cTooltip, tcolor, bColor )
 
-   /*
-   IF ( lTransp != NIL .AND. lTransp ) .AND. ::oParent:brush != Nil
-      ::bColor := ::oparent:bColor
-   ENDIF
-   */
    IF ::oParent:oParent != Nil
-      bPaint := { | o, p | o:paint( p ) }
+   //   bPaint := { | o, p | o:paint( p ) }
    ENDIF
    ::bOther := bOther
    ::title := cCaption
@@ -573,9 +584,9 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    IF ( lTransp != NIL .AND. lTransp )  //.OR. ::lOwnerDraw
       ::extStyle += WS_EX_TRANSPARENT
       bPaint := { | o, p | o:paint( p ) }
-      ::nBackMode := 0
+      ::BackStyle := TRANSPARENT
    ENDIF
-   ::BackStyle := ::nBackMode
+
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint, cTooltip, tcolor, bColor )
 
@@ -628,7 +639,9 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS  HStatic
          RETURN 0
       ENDIF
    ENDIF
-   IF msg = WM_KEYUP
+   IF msg == WM_ERASEBKGND
+      RETURN 0
+   ELSEIF msg = WM_KEYUP
       IF wParam = VK_DOWN
          getskip( ::oparent, ::handle,, 1 )
       ELSEIF   wParam = VK_UP
@@ -652,8 +665,9 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS  HStatic
 
 METHOD SetValue( Value )  CLASS HStatic
     ::Auto_Size( value ) 
-    IF ::backstyle = 0
+    IF ::backstyle = TRANSPARENT .AND. ::Title != value
        RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_ERASENOW, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+       InvalidateRect( ::oParent:Handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight )
     ENDIF   
     SetDlgItemText( ::oParent:handle, ::id, value )
     ::title := value 
@@ -677,8 +691,8 @@ METHOD Paint( lpDis ) CLASS HStatic
    ENDIF
 
    // Set transparent background
-   SetBkMode( dc, ::nBackMode )
-   IF  ::nBackMode = 1
+   SetBkMode( dc, ::backstyle )  
+   IF  ::BackStyle = OPAQUE     
       brBackground := IIF( !EMPTY( ::brush ),::brush, HBRUSH():Add( GetSysColor( COLOR_BTNFACE ) ) )
       FillRect( dc, client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], brBackground:handle )
    ELSEIF ! ::isEnabled()   
@@ -699,7 +713,7 @@ METHOD onClick()  CLASS HStatic
 
 METHOD onDblClick()  CLASS HStatic
    IF ::bDblClick != Nil
-      ::oParent:lSuspendMsgsHandling := .T.
+      //::oParent:lSuspendMsgsHandling := .T.
       Eval( ::bDblClick, Self, ::id )
       ::oParent:lSuspendMsgsHandling := .F.
    ENDIF
@@ -1735,8 +1749,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
               oFont, bInit, bSize, bPaint,, tcolor, bColor )
 
    ::title   := cCaption
-   ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, 0, 1 ) 
-
+   ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, TRANSPARENT, OPAQUE ) 
    ::Activate()
    ::setcolor( tcolor, bcolor )
 
@@ -1754,10 +1767,11 @@ METHOD Activate CLASS HGroup
 METHOD Init CLASS HGroup
 
    IF  ! ::lInit
-      SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0 , SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER )
-      Super:Init()      
+      //SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0 , SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER )
+      Super:Init()  
+      SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0,0 , SWP_NOSIZE + SWP_NOMOVE + SWP_NOACTIVATE  + SWP_NOZORDER + SWP_NOOWNERZORDER + SWP_FRAMECHANGED)	     
    ENDIF
-   //SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
+   
    RETURN NIL
 
 

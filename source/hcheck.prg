@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.43 2010-05-24 14:57:03 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.44 2010-05-26 15:51:02 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -97,10 +97,10 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, bC
 
 METHOD Init() CLASS HCheckButton
    IF ! ::lInit
-      Super:Init()
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       HWG_INITBUTTONPROC( ::handle )
+      Super:Init()
       IF ::value
          SendMessage( ::handle, BM_SETCHECK, 1, 0 )
       ENDIF

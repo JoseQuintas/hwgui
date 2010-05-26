@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.225 2010-05-24 14:57:03 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.226 2010-05-26 15:51:02 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -549,7 +549,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          ENDIF
          
       ELSEIF msg == WM_GETDLGCODE
-         IF wParam = VK_ESCAPE
+         IF wParam = VK_ESCAPE .AND. ! ::lAutoEdit
             RETURN - 1
          ENDIF
          RETURN DLGC_WANTALLKEYS
@@ -2587,7 +2587,7 @@ IF nLine > 0 .AND. nLine <= ::rowCurrCount
       InvalidateRect( ::handle, 0, ::x1 - ::nShowMark - ::nDeleteMark, ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::xAdjRight , ::y1 + ( ::height + 1 ) * ::rowPos )
    ENDIF
    ::fipos := Min( ::colpos + ::nLeftCol - 1 - ::freeze, Len( ::aColumns ) )
-   IF  ::aColumns[ ::fipos ]:Type = "L" .AND. ( ::lEditable .OR. ::aColumns[ ::fipos ]:lEditable )
+   IF  ::aColumns[ ::fipos ]:Type = "L" // .AND. ( ::lEditable .OR. ::aColumns[ ::fipos ]:lEditable )
       ::EditLogical( WM_LBUTTONDOWN )
    ENDIF
 
@@ -2821,13 +2821,13 @@ METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
          ::PageDown()
       ENDIF
    ELSE
-      IF ::rowPos = 1 .OR. ::rowPos = ::rowCount
-         ::Refresh( .F. , nDelta > 0 )         
-      ENDIF
       IF nDelta > 0
          ::LineUp()
       ELSE
          ::LineDown( .T. )
+      ENDIF
+      IF ( ::rowPos = 1 .OR. ::rowPos = ::rowCount ) .AND. ::rowCurrCount >= ::rowCount
+         ::Refresh( .F. , nDelta > 0 )         
       ENDIF
    ENDIF
    RETURN nil
@@ -2925,7 +2925,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
          IF oColumn:aList != Nil .AND. ( oColumn:bWhen = Nil .OR. Eval( oColumn:bWhen ) )
             oModDlg:brush := - 1
-            oModDlg:nHeight := ::height * 5
+            oModDlg:nHeight := ::height + 1 // * 5
 
             IF ValType( ::varbuf ) == 'N'
                nChoic := ::varbuf
@@ -2940,7 +2940,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
             @ 0, 0 GET COMBOBOX oCombo VAR nChoic ;
                ITEMS oColumn:aList            ;
-               SIZE nWidth, ::height + 2      ;
+               SIZE nWidth, ::height + 1      ;
                FONT oComboFont  ;       
                DISPLAYCOUNT  IIF( LEN( oColumn:aList ) > ::rowCount , ::rowCount - 1, LEN( oColumn:aList ) ) ;
                VALID oColumn:bValid           ;
@@ -3092,6 +3092,10 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    RETURN Nil
 
 METHOD EditLogical( wParam, lParam ) CLASS HBrowse   
+
+      IF  ! ( ::lEditable .OR. ::aColumns[ ::fipos ]:lEditable )
+          RETURN .F.
+      ENDIF
 
       IF  ::aColumns[ ::fipos ]:bWhen != Nil
          ::oparent:lSuspendMsgsHandling := .t.

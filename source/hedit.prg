@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.172 2010-05-27 12:14:22 lfbasso Exp $
+ *$Id: hedit.prg,v 1.173 2010-05-27 13:20:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -139,7 +139,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::ParsePict( cPicture, vari )
 
    ::Activate()
-
+   
+   ::DisableBackColor := bDisablecolor   
+      
    IF ::bSetGet != Nil
       ::bGetFocus := bGfocus
       ::bLostFocus := bLfocus

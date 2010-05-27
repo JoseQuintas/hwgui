@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.154 2010-05-24 14:57:03 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.155 2010-05-27 13:20:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -200,7 +200,9 @@ METHOD DisableBackColor( DisableBColor )
            ::Disablebrush:Release()
       ENDIF
       ::Disablebrush := HBrush():Add( ::DisableBColor )
-      InvalidateRect( ::Handle, 0 )
+      IF  ! ::IsEnabled() .AND. IsWindowVisible( ::Handle )
+         InvalidateRect( ::Handle, 0 )
+      ENDIF   
    ENDIF
    RETURN ::DisableBColor
 

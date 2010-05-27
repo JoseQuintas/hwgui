@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1272 2010-05-26 15:51:02 lfbasso Exp $
+ * $Id: Changelog,v 1.1273 2010-05-27 12:14:22 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,18 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-05-27 09:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    + #xcommand SET DISABLEBACKCOLOR <x:ON,OFF,&> [COLOR [<bColor>]] ;
+          => ;
+          SetDisableBackColor( <(x)> , <bColor> )
+    + new clausule in SET COLORFOCUS [< lPersistent : PERSISTENT >]
+  * source\hedit.prg
+    + STATIC lPersistColorSelect := .F.
+    + STATIC  bDisablecolor :=  Nil  
+    + FUNCTION SetDisableBackColor( lDef, bcolor )
+    + new parameter in SetColorinFocus( lDef, tcolor, bcolor, lFixed, lPersist )
 
 2010-05-26 12:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg

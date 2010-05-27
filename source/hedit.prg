@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.171 2010-05-24 14:57:03 lfbasso Exp $
+ *$Id: hedit.prg,v 1.172 2010-05-27 12:14:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -13,6 +13,8 @@ STATIC lColorinFocus := .F.
 STATIC lFixedColor   := .T.
 STATIC tColorSelect  := 0
 STATIC bColorSelect  := 13434879 //vcolor( 'CCFFFF' )
+STATIC lPersistColorSelect := .F.
+STATIC  bDisablecolor :=  Nil  // GetSysColor( COLOR_BTNHIGHLIGHT )
 
 #include "windows.ch"
 #include "hbclass.ch"
@@ -388,10 +390,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          IF msg == WM_SETFOCUS
 //            ::bColorOld := ::bcolor
             ::SetColor( tcolorselect, bcolorselect )
+            SendMessage( ::handle, EM_SETSEL, 0, 0 )
             //::SetColor( ::tcolor , ::nColorinFocus, .T. )
-         ELSEIF msg == WM_KILLFOCUS
+         ELSEIF msg == WM_KILLFOCUS .AND. ! lPersistColorSelect
             //::SetColor( ::tcolor, ::bColorOld, .t. )
-            ::SetColor( ::tcolorOld, ::bColorOld, .t. )
+            ::SetColor( ::tcolorOld, ::bColorOld, .T. )
+            ::brush := IIF( ::bColorOld = Nil, Nil, ::brush )
             SendMessage( ::handle, WM_MOUSEMOVE, 0, MAKELPARAM( 1, 1 ) )
          ENDIF
       ENDIF
@@ -1573,7 +1577,7 @@ FUNCTION ParentGetDialog( o )
    ENDDO
    RETURN o
 
-FUNCTION SetColorinFocus( lDef, tcolor, bcolor, lFixed )
+FUNCTION SetColorinFocus( lDef, tcolor, bcolor, lFixed, lPersist )
 
    IF ValType( lDef ) <> "L"
       lDef := ( ValType( lDef ) = "C" .AND. Upper( lDef ) = "ON" )
@@ -1585,8 +1589,23 @@ FUNCTION SetColorinFocus( lDef, tcolor, bcolor, lFixed )
    lFixedColor   := IIf( lFixed != Nil, ! lFixed, lFixedColor )
    tcolorselect  := IIf( tcolor != Nil, tcolor, tcolorselect )
    bcolorselect  := IIf( bcolor != Nil, bcolor, bcolorselect )
-
+   lPersistColorSelect := IIF( lPersist != Nil,  lPersist, lPersistColorSelect ) 
+   
    RETURN .T.
+
+FUNCTION SetDisableBackColor( lDef, bcolor )
+  
+   IF ValType( lDef ) <> "L"
+      lDef := ( ValType( lDef ) = "C" .AND. Upper( lDef ) = "ON" )  
+	 ENDIF
+   lColorinFocus := lDef
+ 	 IF !lDef
+ 	    bDisablecolor := Nil
+      RETURN .F.
+   ENDIF
+   bDisablecolor :=  IIF( Empty( bColor ), GetSysColor( COLOR_BTNHIGHLIGHT ), bColor )
+   RETURN .T.
+   
 
 /*
 Luis Fernando Basso contribution

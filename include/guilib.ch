@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.160 2010-04-26 11:49:53 lfbasso Exp $
+ *$Id: guilib.ch,v 1.161 2010-05-27 12:14:22 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -1392,9 +1392,13 @@
 
 #xcommand SET RESOURCES TO => LOADRESOURCE( NIL )
 
-#xcommand SET COLORFOCUS <x:ON,OFF,&> [COLOR [<tColor>],[<bColor>]] [< lFixed : NOFIXED >];
+#xcommand SET COLORFOCUS <x:ON,OFF,&> [COLOR [<tColor>],[<bColor>]] [< lFixed : NOFIXED >] [< lPersistent : PERSISTENT >];
           => ;
-          SetColorinFocus( <(x)> , <tColor>, <bColor>, <.lFixed.> )
+          SetColorinFocus( <(x)> , <tColor>, <bColor>, <.lFixed.>, <.lPersistent.> )
+
+#xcommand SET DISABLEBACKCOLOR <x:ON,OFF,&> [COLOR [<bColor>]] ;
+          => ;
+          SetDisableBackColor( <(x)> , <bColor> )
 
 // Addded by jamaj
 #xcommand DEFAULT <uVar1> := <uVal1> ;

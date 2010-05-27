@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.173 2010-05-27 13:20:49 lfbasso Exp $
+ *$Id: hedit.prg,v 1.174 2010-05-27 15:35:00 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -355,7 +355,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          ELSEIF msg == WM_LBUTTONDOWN
             IF GetFocus() != ::handle
                SetFocus( ::handle )
-               RETURN 0
+               //RETURN 0
             ENDIF
 
          ELSEIF msg == WM_LBUTTONUP
@@ -392,7 +392,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          IF msg == WM_SETFOCUS
 //            ::bColorOld := ::bcolor
             ::SetColor( tcolorselect, bcolorselect )
-            SendMessage( ::handle, EM_SETSEL, 0, 0 )
+            SendMessage( ::handle, EM_SETSEL, ::selstart, ::selstart )
             //::SetColor( ::tcolor , ::nColorinFocus, .T. )
          ELSEIF msg == WM_KILLFOCUS .AND. ! lPersistColorSelect
             //::SetColor( ::tcolor, ::bColorOld, .t. )

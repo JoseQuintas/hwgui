@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.226 2010-05-26 15:51:02 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.227 2010-05-29 12:59:02 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -598,6 +598,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          RETURN 1
 
       ELSEIF msg == WM_KEYDOWN .AND. ! ::oParent:lSuspendMsgsHandling 
+         ::isMouseOver := .F.
          IF ( ( CheckBit( lParam, 25 ) .AND. wParam != 111 ) .OR.  ( wParam > 111 .AND. wParam < 124 ) ) .AND.;
                ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
              nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 ) 
@@ -950,7 +951,7 @@ METHOD InitBrw( nType, lInit )  CLASS HBrowse
             arrowCursor := LoadCursor( IDC_ARROW )
             downCursor := LoadCursor( IDC_HAND )
          ENDIF
-         oPen64 :=  HPen():Add( PS_SOLID, 1, RGB( 64, 64, 64 ) )         
+         oPen64 :=  HPen():Add( PS_SOLID, 1, IIF( ::Themed, RGB( 128, 128, 128 ) , RGB( 64, 64, 64 ) ) ) 
       ENDIF
    ENDIF
    
@@ -1116,7 +1117,7 @@ METHOD Rebuild() CLASS HBrowse
                xSize := Round( ( Len( oColumn:heading ) + 2 ) * 6, 0 )
             ENDIF
             */
-            xSize := Round( ( Len( oColumn:heading ) + 0.75 ) * FontSize, 0 )
+            xSize := Round( ( Len( oColumn:heading ) + 0.8 ) * FontSize, 0 )
          ELSE
             xSize := 0
          ENDIF
@@ -1154,7 +1155,7 @@ METHOD Rebuild() CLASS HBrowse
             xSize := Round( ( nColLen  ) * 6, 0 )
          ENDIF
          */
-         xSize := Round( ( nColLen + 0.75 ) * ( (  FontSize ) ), 0 )  
+         xSize := Round( ( nColLen + 0.8 ) * ( (  FontSize ) ), 0 )  
       ENDIF
       xSize := ::aMargin[ 4 ] + xSize + ::aMargin[ 2 ]
       IF Empty( oColumn:width )
@@ -1203,7 +1204,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    LOCAL pps, hDC
    LOCAL oldfont, aMetrHead,  nRecFilter
 
-   IF ! ::active .OR. Empty( ::aColumns ) .OR. ::lHeadClick   .OR. ::isMouseOver 
+   IF ! ::active .OR. Empty( ::aColumns ) .OR. ::lHeadClick  .OR. ::isMouseOver //.AND. ::internal[ 1 ] = WM_MOUSEMOVE )
       pps := DefinePaintStru()
       hDC := BeginPaint( ::handle, pps )
       IF ::lHeadClick   .OR. ::isMouseOver 
@@ -1680,6 +1681,15 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
       ENDIF         
    ENDIF            
 
+   IF ::hTheme != Nil   
+      SelectObject( hDC, oPen64:handle )
+      Rectangle( hDC,;
+               ::x1 - ::nShowMark - ::nDeleteMark ,;
+               ::y1 ,;//- ( ::nHeadHeight * ::nHeadRows ) - ::nyHeight , ;
+               ::x2 , ;
+               ::y1   )
+   ENDIF
+   
    SetBkColor( hDC, oldBkColor )
    IF ::headColor <> Nil
       SetTextColor( hDC, oldc )

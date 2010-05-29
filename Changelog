@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1274 2010-05-27 15:35:00 lfbasso Exp $
+ * $Id: Changelog,v 1.1275 2010-05-29 08:55:15 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-05-29 10:55 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/misc.c
+    - striped out hb_NumToHex() causing duplicated definition in
+      Harbour build. Please, Harbour users link xhb.lib instead.
 
 2010-05-27 12:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source\hdialog.prg

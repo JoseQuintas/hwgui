@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.60 2010-05-21 17:33:15 mlacecilia Exp $
+ * $Id: misc.c,v 1.61 2010-05-29 08:55:15 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -352,40 +352,6 @@ HB_FUNC( GETTEMPDIR )
    GetTempPath( MAX_PATH, szBuffer );
    HB_RETSTR( szBuffer );
 }
-
-#ifndef __XHARBOUR__
-HB_FUNC( NUMTOHEX )
-{
-   int iCipher;
-   char ret[32];
-   char tmp[32];
-   int len = 0, len1 = 0;
-   ULONG ulNum = ( ULONG ) hb_parnl( 1 );
-
-   while( ulNum > 0 )
-   {
-      iCipher = ulNum % 16;
-      if( iCipher < 10 )
-      {
-         tmp[len++] = '0' + iCipher;
-      }
-      else
-      {
-         tmp[len++] = 'A' + ( iCipher - 10 );
-      }
-      ulNum >>= 4;
-   }
-
-   while( len > 0 )
-   {
-      ret[len1++] = tmp[--len];
-   }
-
-   ret[len1] = '\0';
-
-   hb_retc( ret );
-}
-#endif
 
 HB_FUNC( POSTQUITMESSAGE )
 {

@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.227 2010-05-29 12:59:02 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.228 2010-05-30 18:52:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -85,7 +85,8 @@ CLASS HColumn INHERIT HObject
    //      {textColor, backColor, textColorSel, backColorSel} , ;
    //      {textColor, backColor, textColorSel, backColorSel} ) }
    DATA headColor                // Header text color
-
+   DATA FootFont                // Footing font
+   
    DATA lHeadClick   INIT .F.    
    DATA lHide INIT .F. // HIDDEN
    DATA Column
@@ -108,7 +109,7 @@ METHOD New( cHeading, block, Type, length, dec, lEditable, nJusHead, nJusLin, cP
    ::Type      := Type
    ::length    := length
    ::dec       := dec
-   ::lEditable := IIf( lEditable != Nil, lEditable, .F. )
+   ::lEditable := lEditable  // IIf( lEditable != Nil, lEditable, .F. )
    ::nJusHead  := IIf( nJusHead == nil,  DT_LEFT, nJusHead ) + DT_VCENTER + DT_SINGLELINE // Por default
    ::nJusLin   := nJusLin //IIf( nJusLin  == nil,  DT_LEFT, nJusLin  ) + DT_VCENTER + DT_SINGLELINE // Justif.Izquierda
    ::nJusFoot  := IIf( nJusLin  == nil, DT_LEFT, nJusLin  ) 
@@ -872,6 +873,7 @@ STATIC FUNCTION InitColumn( oBrw, oColumn, n )
       oColumn:length := LenVal( xres, ctype, oColumn:picture )
    ENDIF
    oColumn:nJusLin := IIf( oColumn:nJusLin == nil, IIF( oColumn:Type == "N", DT_RIGHT , DT_LEFT ), oColumn:nJusLin ) + DT_VCENTER + DT_SINGLELINE
+   oColumn:lEditable := IIf( oColumn:lEditable != Nil, oColumn:lEditable, oBrw:lEditable )   
    oColumn:oParent := oBrw
    oColumn:Column := n
    __objAddData( oBrw, cName)
@@ -1834,7 +1836,9 @@ METHOD FooterOut( hDC ) CLASS HBrowse
    LOCAL x, fif, xSize, oPen, nLine, cStr
    LOCAL oColumn, aColorFoot, oldBkColor, oldTColor, oBrush
    LOCAL nPixelFooterHeight, nY, lFixed := .F.
+   LOCAL lColumnFont := .F. , nMl, aItemRect 
 
+   nMl := IIF( ::lShowMark, ::nShowMark, 0 )+ IIF( ::lDeleteMark,  ::nDeleteMark, 0 )  
    IF ! ::lDispSep 
       oPen := HPen():Add( PS_SOLID, 1, ::bColor )
       SelectObject( hDC, oPen:handle )
@@ -1861,13 +1865,45 @@ METHOD FooterOut( hDC ) CLASS HBrowse
            oldTColor  := SetTextColor( hDC, aColorFoot[ 1 ] )
            oBrush := HBrush():Add( aColorFoot[ 2 ] )
         ELSE
-           oBrush := ::brush
+           //oBrush := ::brush
+           oBrush := nil
+        ENDIF
+
+        IF oColumn:FootFont != Nil
+           SelectObject( hDC, oColumn:FootFont:Handle )
+           lColumnFont := .T.
+        ELSEIF lColumnFont
+           SelectObject( hDC, ::ofont:handle )
+           lColumnFont := .F.
         ENDIF
 
         nPixelFooterHeight := ( ::nFootRows ) * ( ::nFootHeight + 1 )
 
-        FillRect( hDC, x, ::y2 - nPixelFooterHeight,  ;
-                x + xSize, ::y2, oBrush:handle )
+        IF ::lDispSep 
+           IF ::hTheme != Nil 
+              aItemRect := {  x, ::y2 - nPixelFooterHeight , x + xsize, ::y2 + 1 }
+              hb_DrawThemeBackground( ::hTheme, hDC, PBS_DEFAULTED , 0 , aItemRect, Nil )
+              SetBkMode( hDC, 1 )              
+           ELSE
+              DrawButton( hDC, x, ::y2 - nPixelFooterHeight, x + xsize, ::y2 , 0 )           
+              DrawLine( hDC, x, ::y2, x + xSize, ::y2 )          
+           ENDIF
+        ELSE
+           IF ::hTheme != Nil 
+              aItemRect := {  x, ::y2 - nPixelFooterHeight , x + xsize + 1, ::y2 + 1 }
+              hb_DrawThemeBackground( ::hTheme, hDC, PBS_DEFAULTED , 0 , aItemRect, Nil )
+              SetBkMode( hDC, 1 )              
+           ELSE
+              DrawButton( hDC, x, ::y2 - nPixelFooterHeight, x + xsize + 1, ::y2 + 1 , 0 )                
+           ENDIF   
+        ENDIF
+        
+        IF oBrush != Nil
+           FillRect( hDC, x, ::y2 - nPixelFooterHeight + 1,  ;
+                x + xSize - 1, ::y2, oBrush:handle )
+        ELSE
+           oldBkColor := SetBkColor( hDC, GetSysColor( COLOR_3DFACE ) )       
+        ENDIF         
 
         nY := ::y2 - nPixelFooterHeight
 
@@ -1888,7 +1924,7 @@ METHOD FooterOut( hDC ) CLASS HBrowse
         ENDIF
 // Draw footer separator
         IF ::lDispSep .AND. x >= ::x1
-           DrawLine( hDC, x + xSize - 1, nY, x + xSize - 1, ::y2 )
+           DrawLine( hDC, x + xSize - 1, nY + 3, x + xSize - 1, ::y2 - 4 )
         ENDIF
       ELSE
          xSize := 0 
@@ -1906,18 +1942,27 @@ METHOD FooterOut( hDC ) CLASS HBrowse
    ENDDO
 
    IF ::lDispSep
-      DrawLine( hDC, ::x1, nY, IIf( ::lAdjRight, ::x2, x ), nY )
-      DrawLine( hDC, ::x1, nY + 1, IIf( ::lAdjRight, ::x2, x ), nY + 1 )
+      //DrawLine( hDC, ::x1, nY, IIf( ::lAdjRight, ::x2, x ), nY )
+      //DrawLine( hDC, ::x1, nY + 1, IIf( ::lAdjRight, ::x2, x ), nY + 1 )
+      IF HWG_BITAND( ::style, WS_HSCROLL ) != 0
+          DrawLine( hDC, ::x1 , ::y2 - 1, IIF( ::lAdjRight, ::x2, x ), ::y2 - 1 )
+      ENDIF
       oPen:Release()
    ENDIF
-   IF ::lShowMark  .OR. ::lDeleteMark            
+   IF nMl > 0 
       SelectObject( hDC, oPen64:handle )
-      xSize := ::nShowMark + ::nDeleteMark
-      Rectangle( hDC, ::x1 - xSize - 1, nY , ;
-               ::x1 - 1 , ::y2-1  )
-      DrawButton( hDC, ::x1 - xSize - 0 ,nY + 1 , ;
+      xSize := nMl 
+      IF ::hTheme != Nil 
+         aItemRect := {  ::x1 - xSize ,nY , ::x1 - 1,  ::y2 + 1 }
+         hb_DrawThemeBackground( ::hTheme, hDC, BP_PUSHBUTTON, 0 , aItemRect, Nil )
+      ELSE
+        DrawButton( hDC, ::x1 - xSize ,nY  , ;
                ::x1 - 1,  ::y2, 1 )
+      ENDIF         
    ENDIF            
+   IF lColumnFont
+       SelectObject( hDC, ::oFont:Handle )
+   ENDIF
 
    RETURN Nil
 
@@ -2597,7 +2642,7 @@ IF nLine > 0 .AND. nLine <= ::rowCurrCount
       InvalidateRect( ::handle, 0, ::x1 - ::nShowMark - ::nDeleteMark, ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::xAdjRight , ::y1 + ( ::height + 1 ) * ::rowPos )
    ENDIF
    ::fipos := Min( ::colpos + ::nLeftCol - 1 - ::freeze, Len( ::aColumns ) )
-   IF  ::aColumns[ ::fipos ]:Type = "L" // .AND. ( ::lEditable .OR. ::aColumns[ ::fipos ]:lEditable )
+   IF  ::aColumns[ ::fipos ]:Type = "L"
       ::EditLogical( WM_LBUTTONDOWN )
    ENDIF
 
@@ -2983,10 +3028,11 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                  //oModDlg:AddEvent( 0, IDOK, { || oModDlg:lResult := .T., oModDlg:close() } )
                IF oColumn:bClick != NIL
                   IF Type != "D" 
-                     @ nWidth - 15, 0  OWNERBUTTON oBtn  SIZE 16,::height - 1 ;
+                     @ nWidth - 15, 0  OWNERBUTTON oBtn  SIZE 16,::height - 0 ;
                         TEXT '...'  FONT HFont():Add( 'MS Sans Serif',0,-10,400,,,) ;
                         COORDINATES 0, 1, 0, 0      ;
                         ON CLICK {| oColumn, oBtn | ::onClickColumn( .t., oGet, oBtn ) }
+                        oBtn:themed :=  ::hTheme != Nil
                   ELSE
                      @ nWidth - 16, 0 DATEPICKER oBtn SIZE 16,::height-1  ;
                         ON CHANGE {| value, oBtn |  ::onClickColumn( value, oGet, oBtn ) }
@@ -3103,7 +3149,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
 METHOD EditLogical( wParam, lParam ) CLASS HBrowse   
 
-      IF  ! ( ::lEditable .OR. ::aColumns[ ::fipos ]:lEditable )
+      IF  ! ::aColumns[ ::fipos ]:lEditable 
           RETURN .F.
       ENDIF
 

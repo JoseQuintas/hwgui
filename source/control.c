@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.104 2010-05-24 16:45:36 mlacecilia Exp $
+ * $Id: control.c,v 1.105 2010-05-30 18:52:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -1704,7 +1704,8 @@ HB_FUNC( ImageList_GetImageCount )
 
 HB_FUNC( TOOLBAR_SETDISPINFO )
 {
-   LPTOOLTIPTEXT pDispInfo = ( LPTOOLTIPTEXT ) HB_PARHANDLE( 1 );
+   //LPTOOLTIPTEXT pDispInfo = ( LPTOOLTIPTEXT ) HB_PARHANDLE( 1 );
+   LPNMTTDISPINFO pDispInfo = ( LPNMTTDISPINFO ) HB_PARHANDLE( 1 );
 
    if( pDispInfo )
    {
@@ -1713,7 +1714,7 @@ HB_FUNC( TOOLBAR_SETDISPINFO )
       pDispInfo->szText[ HB_SIZEOFARRAY( pDispInfo->szText ) - 1 ] = 0;
 #if 0
       /* is it necessary? */
-      if( !pDispInfo->hInst )
+      if( !pDispInfo->hinst )
          pDispInfo->lpszText = pDispInfo->szText;
 #endif
    }
@@ -1721,7 +1722,8 @@ HB_FUNC( TOOLBAR_SETDISPINFO )
 
 HB_FUNC( TOOLBAR_GETDISPINFOID )
 {
-   LPTOOLTIPTEXT pDispInfo = ( LPTOOLTIPTEXT ) hb_parnl( 1 );
+   //LPTOOLTIPTEXT pDispInfo = ( LPTOOLTIPTEXT ) hb_parnl( 1 );
+   LPNMTTDISPINFO pDispInfo = ( LPNMTTDISPINFO ) HB_PARHANDLE( 1 );
    DWORD idButton = pDispInfo->hdr.idFrom;
    hb_retnl( idButton );
 }

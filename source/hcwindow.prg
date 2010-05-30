@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.65 2010-05-24 14:57:03 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.66 2010-05-30 18:52:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -711,6 +711,7 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
       IF oCtrl:tcolor != NIL
          SetTextColor( wParam, oCtrl:tcolor )
       ENDIF
+      SetBkMode( wParam, oCtrl:backstyle )
       IF !  oCtrl:IsEnabled() .AND. oCtrl:Disablebrush != Nil
          SetBkColor( wParam, oCtrl:DisablebColor ) 
          RETURN oCtrl:disablebrush:handle

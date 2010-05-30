@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.228 2010-05-30 18:52:22 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.229 2010-05-30 22:31:28 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -550,6 +550,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          ENDIF
          
       ELSEIF msg == WM_GETDLGCODE
+         ::isMouseOver := .F.
          IF wParam = VK_ESCAPE .AND. ! ::lAutoEdit
             RETURN - 1
          ENDIF
@@ -599,7 +600,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          RETURN 1
 
       ELSEIF msg == WM_KEYDOWN .AND. ! ::oParent:lSuspendMsgsHandling 
-         ::isMouseOver := .F.
+         //::isMouseOver := .F.
          IF ( ( CheckBit( lParam, 25 ) .AND. wParam != 111 ) .OR.  ( wParam > 111 .AND. wParam < 124 ) ) .AND.;
                ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
              nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 ) 
@@ -1164,6 +1165,9 @@ METHOD Rebuild() CLASS HBrowse
          oColumn:width := xSize
       ENDIF
    NEXT
+   IF HWG_BITAND( ::style, WS_HSCROLL ) != 0
+       SetScrollInfo( ::Handle, SB_HORZ, 1, 0,  1 , Len( ::aColumns ) ) 
+   ENDIF
 
    ::lChanged := .F.
 
@@ -1467,8 +1471,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
       IF ::nFootRows > 0
          ::FooterOut( hDC )
       ENDIF
-   ENDIF
-   
+   ENDIF 
    IF ::lAppMode  .AND. ::nRecords != 0 .AND. ::rowPos = ::rowCount
        ::LineOut( ::rowPos, 0 , hDC, .T., .T. )
    ENDIF        
@@ -1882,7 +1885,7 @@ METHOD FooterOut( hDC ) CLASS HBrowse
         IF ::lDispSep 
            IF ::hTheme != Nil 
               aItemRect := {  x, ::y2 - nPixelFooterHeight , x + xsize, ::y2 + 1 }
-              hb_DrawThemeBackground( ::hTheme, hDC, PBS_DEFAULTED , 0 , aItemRect, Nil )
+              hb_DrawThemeBackground( ::hTheme, hDC, PBS_NORMAL , 0 , aItemRect, Nil )
               SetBkMode( hDC, 1 )              
            ELSE
               DrawButton( hDC, x, ::y2 - nPixelFooterHeight, x + xsize, ::y2 , 0 )           
@@ -1891,7 +1894,7 @@ METHOD FooterOut( hDC ) CLASS HBrowse
         ELSE
            IF ::hTheme != Nil 
               aItemRect := {  x, ::y2 - nPixelFooterHeight , x + xsize + 1, ::y2 + 1 }
-              hb_DrawThemeBackground( ::hTheme, hDC, PBS_DEFAULTED , 0 , aItemRect, Nil )
+              hb_DrawThemeBackground( ::hTheme, hDC, PBS_NORMAL , 0 , aItemRect, Nil )
               SetBkMode( hDC, 1 )              
            ELSE
               DrawButton( hDC, x, ::y2 - nPixelFooterHeight, x + xsize + 1, ::y2 + 1 , 0 )                
@@ -2533,8 +2536,8 @@ METHOD TOP() CLASS HBrowse
    VScrollPos( Self, 0, .f. )
 
    //InvalidateRect( ::handle, 0 )
-   //::internal[ 1 ] := SetBit( ::internal[ 1 ], 1, 0 )
    ::Refresh( ::nFootRows > 0 )
+   ::internal[ 1 ] := SetBit( ::internal[ 1 ], 1, 0 )
    ::SetFocus()
 
    RETURN Nil
@@ -2911,7 +2914,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                    IIF( ::aColumns[ fif ]:Type == "N", 0, IIF( ::aColumns[ fif ]:Type == "L", .F., "" ) ) )
             NEXT
            ::lAppMode := .F.
-           ::Refresh()
+           ::Refresh( ::nFootRows > 0 )
          ENDIF
          ::varbuf := Eval( oColumn:block,, Self, fipos )
       ENDIF
@@ -3100,7 +3103,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                IF ! ( Getkeystate( VK_UP ) < 0 .OR. Getkeystate( VK_DOWN ) < 0 )
                   ::DoHScroll( SB_LINERIGHT )
                ENDIF
-               ::Refresh()
+               ::Refresh( ::nFootRows > 0 )
             ELSE
                IF ::Type == BRW_DATABASE
                   IF ( ::Alias ) ->( RLock() )
@@ -3318,7 +3321,7 @@ METHOD Valid() CLASS HBrowse
 METHOD RefreshLine() CLASS HBrowse
 
    ::internal[ 1 ] := 0
-   InvalidateRect( ::handle, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::rowPos )
+   InvalidateRect( ::handle, 0, ::x1 - ::nDeleteMark , ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::rowPos )
    RETURN Nil
 
 //----------------------------------------------------//
@@ -3340,15 +3343,16 @@ METHOD Refresh( lFull, lLineUp ) CLASS HBrowse
       IF ::nCurrent < ::rowCount .AND. ::rowPos <= ::nCurrent .AND. EMPTY( lLineUp )
          ::rowPos := ::nCurrent
       ENDIF
-      RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+      //RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ELSE
       InvalidateRect( ::handle, 0 )
       ::internal[ 1 ] := SetBit( ::internal[ 1 ], 1, 0 )
       IF ::nCurrent < ::rowCount .AND. ::rowPos <= ::nCurrent .AND. EMPTY( lLineUp )
          ::rowPos := ::nCurrent
       ENDIF
-      RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+      //RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ENDIF
+   RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    RETURN Nil
 
 METHOD BrwScrollVPos() CLASS HBrowse

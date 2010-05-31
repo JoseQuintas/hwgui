@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.174 2010-05-27 15:35:00 lfbasso Exp $
+ *$Id: hedit.prg,v 1.175 2010-05-31 22:50:13 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -99,9 +99,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
                         IIf( lPassword == Nil .or. ! lPassword, 0, ES_PASSWORD )  )
 
 *   IF owndParent:oParent != Nil
-   bPaint := { | o, p | o:paint( p ) }
+//   bPaint := { | o, p | o:paint( p ) }
 *   ENDIF
-
+  
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor  )
 //              bSize, bPaint, ctooltip, tcolor, IIf( bcolor == Nil, GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor ) )
@@ -160,9 +160,10 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
          ::bValid := { | | ::Valid( ) }
       ENDIF
    ENDIF
+ 
    ::bColorOld := ::bcolor
    ::tColorOld := IIf( tcolor = Nil, 0, ::tcolor )
-
+ 
    IF ::cType != "D"
        SET( _SET_INSERT, .T. )
     ENDIF
@@ -388,17 +389,16 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
          ENDIF
       ENDIF
-      IF lColorinFocus
+      IF lColorinFocus 
          IF msg == WM_SETFOCUS
 //            ::bColorOld := ::bcolor
-            ::SetColor( tcolorselect, bcolorselect )
+            ::SetColor( tcolorselect, bcolorselect,  .T. )
             SendMessage( ::handle, EM_SETSEL, ::selstart, ::selstart )
-            //::SetColor( ::tcolor , ::nColorinFocus, .T. )
          ELSEIF msg == WM_KILLFOCUS .AND. ! lPersistColorSelect
-            //::SetColor( ::tcolor, ::bColorOld, .t. )
-            ::SetColor( ::tcolorOld, ::bColorOld, .T. )
+            ::SetColor( ::tcolorOld, ::bColorOld )
+            ::bColor := ::bColorOld
             ::brush := IIF( ::bColorOld = Nil, Nil, ::brush )
-            SendMessage( ::handle, WM_MOUSEMOVE, 0, MAKELPARAM( 1, 1 ) )
+            //SendMessage( ::handle, WM_MOUSEMOVE, 0, MAKELPARAM( 1, 1 ) )
          ENDIF
       ENDIF
    ELSE

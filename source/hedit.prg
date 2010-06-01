@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.175 2010-05-31 22:50:13 lfbasso Exp $
+ *$Id: hedit.prg,v 1.176 2010-06-01 02:50:50 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -267,7 +267,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                   ::lFirst := .T.
                ENDIF
                IF ! lFixedColor
-                  ::SetColor( ::tcolorOld, ::bColorOld, .t. )
+                  ::SetColor( ::tcolorOld, ::bColorOld )
+                  ::bColor := ::bColorOld
+                  ::brush := IIF( ::bColorOld = Nil, Nil, ::brush )
                   SendMessage( ::handle, WM_MOUSEMOVE, 0, MAKELPARAM( 1, 1 ) )
                ENDIF
                ::lFocu := .F.
@@ -393,12 +395,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          IF msg == WM_SETFOCUS
 //            ::bColorOld := ::bcolor
             ::SetColor( tcolorselect, bcolorselect,  .T. )
-            SendMessage( ::handle, EM_SETSEL, ::selstart, ::selstart )
+            SendMessage( ::handle, EM_SETSEL, ::selstart , ::selstart  )
          ELSEIF msg == WM_KILLFOCUS .AND. ! lPersistColorSelect
             ::SetColor( ::tcolorOld, ::bColorOld )
             ::bColor := ::bColorOld
             ::brush := IIF( ::bColorOld = Nil, Nil, ::brush )
-            //SendMessage( ::handle, WM_MOUSEMOVE, 0, MAKELPARAM( 1, 1 ) )
+            SendMessage( ::handle, WM_MOUSEMOVE, 0, MAKELPARAM( 1, 1 ) )
          ENDIF
       ENDIF
    ELSE
@@ -1332,6 +1334,17 @@ METHOD IsBadDate( cBuffer ) CLASS HEdit
    NEXT
    RETURN .F.
 
+METHOD SetGetUpdated() CLASS HEdit
+
+   LOCAL oParent
+
+   ::lChanged := .T.
+   IF ( oParent := ParentGetDialog( Self ) ) != Nil
+      oParent:lUpdated := .T.
+   ENDIF
+
+   RETURN Nil
+
 /*
 FUNCTION CreateGetList( oDlg )
    LOCAL i, j, aLen1 := Len( oDlg:aControls ), aLen2
@@ -1563,16 +1576,6 @@ STATIC FUNCTION NextFocusContainer(oParent,hCtrl,nSkip)
    ENDIF
    RETURN nextHandle
 
-METHOD SetGetUpdated() CLASS HEdit
-
-   LOCAL oParent
-
-   ::lChanged := .T.
-   IF ( oParent := ParentGetDialog( Self ) ) != Nil
-      oParent:lUpdated := .T.
-   ENDIF
-
-   RETURN Nil
 
 FUNCTION ParentGetDialog( o )
    DO WHILE ( o := o:oParent ) != Nil .and. ! __ObjHasMsg( o, "GETLIST" )
@@ -1601,11 +1604,15 @@ FUNCTION SetDisableBackColor( lDef, bcolor )
       lDef := ( ValType( lDef ) = "C" .AND. Upper( lDef ) = "ON" )  
 	 ENDIF
    lColorinFocus := lDef
- 	 IF !lDef
+ 	 IF ! lDef
  	    bDisablecolor := Nil
       RETURN .F.
    ENDIF
-   bDisablecolor :=  IIF( Empty( bColor ), GetSysColor( COLOR_BTNHIGHLIGHT ), bColor )
+   IF  Empty( bColor )
+      bDisablecolor :=  IIF( Empty( bDisablecolor ), GetSysColor( COLOR_BTNHIGHLIGHT ), bDisablecolor )
+   ELSE
+      bDisablecolor :=  bColor 
+   ENDIF  
    RETURN .T.
    
 

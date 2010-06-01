@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.21 2010-04-30 02:44:10 lfbasso Exp $
+ * $Id: hprogres.prg,v 1.22 2010-06-01 15:15:27 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class
@@ -70,7 +70,6 @@ METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, lPer
    ::nLeft := 20
    ::nTop  := 25
    ::nWidth  := nWidth - 40
-   ::nHeight := 0
    ::maxPos  := IIf( maxPos == Nil, 20, maxPos )
    ::lNewBox := .T.
    ::nRange := Iif( nRange != Nil .AND. nRange != 0, nRange, 100 )
@@ -91,6 +90,7 @@ METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, lPer
    ACTIVATE DIALOG ::oParent NOMODAL
 
    ::id := ::NewId()
+   ::nHeight := 0
    ::Activate()
    ::oParent:AddControl( Self )
 

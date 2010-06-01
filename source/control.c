@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.105 2010-05-30 18:52:22 lfbasso Exp $
+ * $Id: control.c,v 1.106 2010-06-01 15:24:42 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -125,7 +125,7 @@ HB_FUNC( CREATEPROGRESSBAR )
       x1 = hb_parni( 4 );
       y1 = hb_parni( 5 );
       nwidth = hb_parni( 6 );
-      nheight = hb_pcount(  ) > 6 ? hb_parni( 7 ) : cyVScroll ;
+      nheight = hb_pcount(  ) > 6 && !ISNIL( 7 ) ? hb_parni( 7 ) : cyVScroll ;
    }
    else
    {

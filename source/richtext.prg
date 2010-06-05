@@ -1,5 +1,5 @@
 /*
- * $Id: richtext.prg,v 1.8 2008-11-24 10:02:16 mlacecilia Exp $
+ * $Id: richtext.prg,v 1.9 2010-06-05 23:26:34 mlacecilia Exp $
  */
 /*
 旼컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴커
@@ -2623,9 +2623,13 @@ FUNCTION cFileExt( cFile )
       CASE cType == 'O'
          RETURN "{ " + xExp:ClassName() + " Object }"
 
-      CASE cType == 'P'
+      CASE cType == 'P'      
+#if defined( __XHARBOUR__ )
          RETURN NumToHex( xExp )
-
+#else
+         RETURN hb_NumToHex( xExp )
+#endif
+ 
       CASE cType == 'H'
          RETURN "{ Hash of " +  LTrim( Str( Len( xExp ) ) ) + " Items }"
 

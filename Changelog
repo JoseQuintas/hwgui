@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1279 2010-05-31 22:50:13 lfbasso Exp $
+ * $Id: Changelog,v 1.1280 2010-06-05 23:26:34 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,18 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-06-06 01:25 UTC+0200 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * /hwguidyn.hbp
+    ! patch made by Viktor Szakàts to correct build .dll after latest 
+      Harbour changes
+  * source/richedit.prg
+    ! patch made by Viktor Szakàts to comply with the deletion of the
+      hb_NumToHex function from the hwGUI source
+  * source/hedit.prg
+    ! fixed onEvent method returning wrong value when a hot key 
+      (set by SetDlgKey) or a bKeyUp codeblock are successfully 
+      processed
 
 2010-05-31 19:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg

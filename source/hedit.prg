@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.176 2010-06-01 02:50:50 lfbasso Exp $
+ *$Id: hedit.prg,v 1.177 2010-06-05 23:26:34 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -449,12 +449,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    //IF msg == WM_KEYDOWN
    IF msg == WM_KEYUP .OR. msg == WM_SYSKEYUP     /* BETTER FOR DESIGNER */
 
-      IF ! ProcKeyList( Self, wParam )
-         IF ::bKeyUp != Nil
-            IF ! Eval( ::bKeyUp, Self, wParam )
-               RETURN - 1
-            ENDIF
-         ENDIF
+      IF ProcKeyList( Self, wParam )
+          RETURN 0
+      ELSEIF ::bKeyUp != Nil
+          IF Eval( ::bKeyUp, Self, wParam )
+               RETURN 0
+          ENDIF
       ENDIF
 
       /*
@@ -1067,7 +1067,7 @@ METHOD When() CLASS HEdit
         vari := ::title
       ENDIF
       ::oParent:lSuspendMsgsHandling := .T.
-        res := Eval( ::bGetFocus, vari, Self )
+      res := Eval( ::bGetFocus, vari, Self )
       res := IIf( ValType( res ) == "L", res, .T. )
       ::lnoValid := ! res
       IF ! res
@@ -1642,6 +1642,7 @@ FUNCTION CheckFocus( oCtrl, lInside )
   ELSE
      oCtrl:oParent:lGetSkipLostFocus := .F.   
    ENDIF
+
    RETURN .T.
 
 

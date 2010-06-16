@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.84 2010-05-24 14:57:03 lfbasso Exp $
+ *$Id: windows.ch,v 1.85 2010-06-16 12:46:22 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -146,6 +146,7 @@
 #define IDIGNORE            5
 #define IDYES               6
 #define IDNO                7
+#define IDHELP              9
 
 #define DS_ABSALIGN         1        // 0x01L
 #define DS_SYSMODAL         2        // 0x02L

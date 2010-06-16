@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.17 2010-05-24 14:57:03 lfbasso Exp $
+ * $Id: hrect.prg,v 1.18 2010-06-16 12:46:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -232,16 +232,8 @@ METHOD Activate CLASS HDrawShape
 
 METHOD SetColor( tcolor, bColor, lRedraw ) CLASS HDrawShape
 
+   ::brushFill := HBrush():Add( tColor, ::nfstyle ) 
    Super:SetColor( tColor, bColor )
-   IF ::nfStyle = HS_SOLID .OR. ( ::nfStyle != BS_TRANSPARENT .OR. ::backStyle = TRANSPARENT )
-  	  IF ( ! EMPTY( ::tColor ) .AND. ::nfStyle != HS_SOLID ) .OR. ::backStyle = OPAQUE
-         ::brushFill := HBrush():Add( ::tColor, ::nfstyle )
-      ELSE
-         ::brushFill := HBrush():Add( , ::nfstyle )       
-      ENDIF  
-   ELSE
-      ::brushFill := HBrush():Add( ::tColor, ::nfstyle )   
-   ENDIF
    IF ! Empty( lRedraw )
       RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
    ENDIF
@@ -260,11 +252,11 @@ METHOD Curvature( nCurvature ) CLASS HDrawShape
 //---------------------------------------------------------------------------
 METHOD Paint( lpdis ) CLASS HDrawShape
    LOCAL drawInfo := GetDrawItemInfo( lpdis )
-   LOCAL hDC := drawInfo[ 3 ], oBrush
+   LOCAL hDC := drawInfo[ 3 ], oBrush, oldbkMode
    LOCAL  x1 := drawInfo[ 4 ], y1 := drawInfo[ 5 ]
    LOCAL  x2 := drawInfo[ 6 ], y2 := drawInfo[ 7 ]
 
-   SetBKMode( hdc, ::backStyle )
+   oldbkMode := SetBKMode( hdc, ::backStyle )
    SelectObject( hDC, ::oPen:handle )
    IF ::ncStyle != Nil
       /*
@@ -290,14 +282,17 @@ METHOD Paint( lpdis ) CLASS HDrawShape
          IF ::Brush != Nil
             SelectObject( hDC, ::Brush:handle )
          ENDIF
-         RoundRect( hDC, x1 + 1, y1 + 1, x2, y2 , ::nCurvature, ::nCurvature)
+         //RoundRect( hDC, x1 + 1, y1 + 1, x2, y2 , ::nCurvature, ::nCurvature)
       ENDIF   
       IF ::nfStyle != BS_TRANSPARENT .OR. ::backStyle = OPAQUE
-        SelectObject( hDC, ::BrushFill:handle )
+         SelectObject( hDC, ::BrushFill:handle )
+      ELSE
+         SelectObject( hDC, GetStockObject( NULL_BRUSH ) ) 
       ENDIF        
       RoundRect( hDC, x1 + 1, y1 + 1, x2, y2 , ::nCurvature, ::nCurvature)
    ENDIF
-   RETURN 0
+   SetBKMode( hDC, oldbkMode )
+   RETURN Nil
 
 // END NEW CLASSE
 

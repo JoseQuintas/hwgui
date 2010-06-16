@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1280 2010-06-05 23:26:34 mlacecilia Exp $
+ * $Id: Changelog,v 1.1281 2010-06-16 12:46:22 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,28 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-06-16 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\windows.ch
+    + add constant IDHELP 9
+  * source\guimain.prg
+    ! add GET STYLE ES_AUTOHSCROLL IN MSGGET 
+  * source\hbrowse.prg
+    + DATA lDisableVScrollPos INIT .F.
+      set browse:lDisableVScrollPos := .T. DISABLE 
+      possibility disabled SCROLBAR VERTICAL position, because the network environment
+      in the calculation of the positioning makes navigation very slow depending on the size of the table
+    ! fixed repaint in scroll vertical and horizontal
+    ! comment SETFOCUS() IN lineup,linedown,pageup,pagdown methods
+    ! moved SETFOCUS in ButtonUP to ButtonDown because message WM_LBUTTONDBLCLK after sending WM_LBUTTONUP
+  * source\hdialog.prg
+    ! in InitModalDlg add UpdateWindow( oDlg:handle ) after oDlg:Show force repaint objects
+    * DlgCommand add IDHELP message added in the same behavior that messages IDOK IDCANCEL
+    ! fixed onHelp to support IDHELP
+  * source\hrect.prg
+    ! fixed METHOD SETCOLOR and METHOD PAINT
+  * source\htab.prg
+    ! minor fix
+    
 2010-06-06 01:25 UTC+0200 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * /hwguidyn.hbp
     ! patch made by Viktor Szakàts to correct build .dll after latest 

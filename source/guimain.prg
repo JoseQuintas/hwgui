@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.40 2010-02-12 09:59:05 druzus Exp $
+ * $Id: guimain.prg,v 1.41 2010-06-16 12:46:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -149,7 +149,7 @@ FUNCTION MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cResIni )
         FONT oFont CLIPPER STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + nDlgStyle
 
    @ 20, 10 SAY cText SIZE 260, 22
-   @ 20, 35 GET cRes  SIZE 260, 26 STYLE WS_TABSTOP + nStyle
+   @ 20, 35 GET cRes  SIZE 260, 26 STYLE WS_TABSTOP + ES_AUTOHSCROLL + nStyle
 
    @ 20, 95 BUTTON "Ok" ID IDOK SIZE 100, 32
    @ 180, 95 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32

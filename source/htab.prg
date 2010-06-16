@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.66 2010-05-24 14:57:03 lfbasso Exp $
+ *$Id: htab.prg,v 1.67 2010-06-16 12:46:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -205,9 +205,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       ENDIF
    ENDIF
 
-   ::brush := GetBackColorParent( Self, .T. ) 
+//   ::brush := GetBackColorParent( Self, .T. ) 
+    HWG_InitCommonControlsEx()
    ::Activate()
-   ::oPaint := HPaintTab():New( Self, , 0, 0, 0, 0, ::oFont )
+   ::oPaint := HPaintTab():New( Self, , 0, 0, 0, 0 ) //, ::oFont )
 
    RETURN Self
 
@@ -234,7 +235,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
    
    ::brush := GetBackColorParent( Self, .T. ) 
-   ::oPaint := HPaintTab():New( Self, , 0, 0, 0, 0, ::oFont )
+   ::oPaint := HPaintTab():New( Self, , 0, 0, 0, 0 ) //, ::oFont )
 
    RETURN Self
 
@@ -288,22 +289,28 @@ METHOD Init() CLASS HTab
       SetWindowObject( ::handle, Self )
       Hwg_InitTabProc( ::handle )
       Super:Init()
+      updatewindow( ::handle )
    ENDIF
 
    RETURN Nil
 
-METHOD SetPaintSizePos( nFlag ) CLASS HTab
+METHOD SetPaintSizePos( nFlag, nPage ) CLASS HTab
    Local aItemPos := TabItemPos( ::Handle, 0 )
-
+     nPage := IIF( nPage = Nil,  ::nActive, nPage )
    IF nFlag = - 1
       ::oPaint:nLeft :=   1
       ::oPaint:nWidth := ::nWidth - 3 
       IF Hwg_BitAnd( ::Style,TCS_BOTTOM  ) != 0
          ::oPaint:nTop :=   1
-         ::oPaint:nHeight := aItemPos[ 2 ] - 3
+         ::oPaint:nHeight := aItemPos[ 2 ] - 3         
       ELSE
          ::oPaint:nTop := aItemPos[ 4 ] 
+        * IF ::Pages[ nPage ]:brush != Nil
          ::oPaint:nHeight := ::nHeight - aItemPos[ 4 ] - 3
+        * else
+        * ::oPaint:nHeight := ::TabHeightSize - 5
+        * endif
+        *  MSGINFO(str( ::oPaint:nHeight))
       ENDIF
       ::nPaintHeight  := ::oPaint:nHeight 
    ELSEIF nFlag = 1   
@@ -313,9 +320,12 @@ METHOD SetPaintSizePos( nFlag ) CLASS HTab
       ::npaintheight  := nFlag
       ::oPaint:nHeight := ::npaintHeight
    ENDIF  
+ 
+   *IF ::Pages[ nPage ]:brush != Nil
+  
    SetWindowPos( ::oPaint:Handle, nil, ::oPaint:nLeft, ::oPaint:nTop, ::oPaint:nWidth, ::oPaint:nHeight, ;
                        SWP_NOACTIVATE + SWP_NOREPOSITION + SWP_NOZORDER + SWP_FRAMECHANGED )
-   
+   *ENDIF
    RETURN Nil
 
 METHOD SetTab( n ) CLASS HTab
@@ -463,8 +473,9 @@ METHOD ShowPage( nPage ) CLASS HTab
       nFirst := ::aPages[ nPage, 1 ] + 1
       nEnd   := ::aPages[ nPage, 1 ] + ::aPages[ nPage, 2 ]
       lTab := ASCAN( ::aControls, { | o | o:ClassName = "HTAB" }, nFirst, nEnd - nFirst + 1 ) > 0
-      IF ::oPaint:nHeight > 0 
-         ::SetPaintSizePos( IIF( lTab, ::Pages[ nPage ]:aItemPos[ 2 ] - 1  , - 1 ) )
+      IF ::oPaint:nHeight > 0  
+         //    msginfo(str(::oPaint:nHeight)+STR(::Pages[ nPage ]:aItemPos[ 2 ]))
+         ::SetPaintSizePos( IIF( lTab, ::Pages[ nPage ]:aItemPos[ 2 ] - 1  , - 1 ) , nPage )
       ENDIF   
       FOR i := nFirst TO nEnd
          IF  ASCAN( ::aControlsHide, ::aControls[ i ]:id ) = 0 .OR. ::aControls[i]:lHide = .F.
@@ -515,14 +526,14 @@ METHOD Refresh( ) CLASS HTab
 METHOD RedrawControls( lForce ) CLASS HTab
    LOCAL i 
 
-   IF ::nActive != 0 .AND.  ( ::internalPaint < 3 .OR. ! Empty( lForce ) )
+   IF ::nActive != 0 //.AND.  ( ::internalPaint < 3 .OR. ! Empty( lForce ) )
       IF ! ::lResourceTab
          FOR i := ::aPages[ ::nActive, 1 ] + 1 TO ::aPages[ ::nActive, 1 ] + ::aPages[ ::nActive, 2 ]
-            IF isWindowVisible( ::aControls[ i ]:Handle )
+            IF isWindowVisible( ::aControls[ i ]:Handle ) .AND. ::aControls[ i ]:bPaint = NIL
                 RedrawWindow( ::aControls[ i ]:handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT )  // Force a complete redraw
             ENDIF
          NEXT
-         ::internalPaint += 1 //:= isWindowVisible( ::oParent:handle )
+       //  ::internalPaint += 1 //:= isWindowVisible( ::oParent:handle )
       ENDIF
    ENDIF
    RETURN Nil
@@ -832,6 +843,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, tcolor, bColor ) CLAS
    Super:New( oWndParent, nId, SS_OWNERDRAW + WS_DISABLED , nLeft, nTop, nWidth, nHeight, , ;
               ,, ::bPaint,, tcolor, bColor )
    ::anchor := 15
+   ::brush := Nil
    ::Activate()
    
    RETURN Self
@@ -853,16 +865,21 @@ METHOD Paint( lpdis ) CLASS HPaintTab
    LOCAL nPage := SendMessage( ::oParent:handle, TCM_GETCURFOCUS, 0, 0 ) + 1   
    LOCAL oPage := IIF( nPage > 0, ::oParent:Pages[ nPage ], ::oParent:Pages[ 1 ] )
 
-
+   ::disablebrush := oPage:brush
    IF oPage:brush != Nil
       IF ::oParent:nPaintHeight < ::oParent:TabHeightSize 
         ::nHeight := ::oParent:nPaintHeight
         ::move( , , , ::nHeight )
+  
       ELSEIF oPage:brush != Nil
+
         SetBkMode( hDC, TRANSPARENT ) //OPAQUE )
-        ::brush := oPage:brush
-        FillRect( hDC, x1 + 1, y1 + 2, x2 - 1, y2 - 1, oPage:brush:Handle ) //obrush )        
+       // ::brush := oPage:brush
+       
+        FillRect( hDC, x1 + 1, y1 + 2, x2 - 1, y2 - 1, oPage:brush:Handle ) //obrush )
+        //SendMessage( ::Handle, WM_SETREDRAW ,1,0)        
         ::oParent:RedrawControls( )   
+        
       ENDIF  
    ENDIF
    ::hDC := GetDC( ::oParent:handle )

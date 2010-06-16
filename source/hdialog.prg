@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.108 2010-05-27 15:35:00 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.109 2010-06-16 12:46:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -357,6 +357,7 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       oDlg:maximize()
    ELSEIF ! oDlg:lModal
       oDlg:show()
+      UpdateWindow( oDlg:handle )	   // force repaint objcts
    ENDIF
    
    IF ValType( oDlg:bOnActivate ) == "B"
@@ -390,7 +391,7 @@ STATIC FUNCTION onDlgColor( oDlg, wParam, lParam )
    HB_SYMBOL_UNUSED(lParam)
    
    SetBkMode( wParam, 1 ) // Transparent mode
-   IF oDlg:bcolor != NIL  .AND. oDlg:brush != Nil
+   IF oDlg:bcolor != NIL  .AND. Valtype( oDlg:brush ) != "N"
        RETURN oDlg:brush:Handle
    ENDIF  
    RETURN 0 //hBrTemp:handle
@@ -487,8 +488,9 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
          ENDIF
          nEsc := ( getkeystate( VK_ESCAPE ) < 0 )
          oDlg:nLastKey := 27
+      ELSEIF iParLow == IDHELP  // HELP
+         SendMessage( oDlg:Handle, WM_HELP, 0, 0 )
       ENDIF
-
    ENDIF
 
    //IF ( ValType( oDlg:nInitFocus ) = "O" .OR. oDlg:nInitFocus > 0 ) .AND. ! isWindowVisible( oDlg:handle )
@@ -632,7 +634,9 @@ FUNCTION onHelp( oDlg, wParam, lParam )
          cDir := IIF( EMPTY( FilePath( SetHelpFileName() ) ), Curdir(), FilePath( SetHelpFileName() ) ) 
          nHelpId := ""
       ENDIF       
-      oCtrl := oDlg:FindControl( nil, GetHelpData( lParam ) )
+      IF ! Empty( lParam )
+         oCtrl := oDlg:FindControl( Nil, GetHelpData( lParam ) )
+      ENDIF   
       IF oCtrl != nil
          nHelpId := oCtrl:HelpId
          IF Empty( nHelpId )
@@ -647,6 +651,8 @@ FUNCTION onHelp( oDlg, wParam, lParam )
          ENDIF  
       ELSEIF cDir != Nil
          ShellExecute( "hh.exe", "open", CutPath( SetHelpFileName() )  , cDir )         
+      ELSE
+         WinHelp( oDlg:handle, SetHelpFileName(), iif( Empty( oDlg:HelpId ), 3, 1), oDlg:HelpId )       
       ENDIF
    ENDIF
    RETURN 1

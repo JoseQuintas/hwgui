@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.44 2010-05-24 14:57:03 lfbasso Exp $
+ * $Id: hownbtn.prg,v 1.45 2010-06-17 01:04:38 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -61,6 +61,9 @@ CLASS VAR cPath SHARED
    METHOD onGetFocus()
    METHOD onLostFocus()
    METHOD Refresh() 
+   METHOD SetText( cCaption ) INLINE ::title := cCaption, ;
+                RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )
+
 
 ENDCLASS
 
@@ -71,21 +74,28 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
             cTooltip, lEnabled, lCheck, bColor,bGfocus, bLfocus, themed ) CLASS HOwnButton
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
-              bSize, bPaint, cTooltip, color, bcolor ) 
+              bSize, bPaint, cTooltip )
 
-   HB_SYMBOL_UNUSED( bGFocus )
-   HB_SYMBOL_UNUSED( bLFocus )
+//   HB_SYMBOL_UNUSED( bGFocus )
+//   HB_SYMBOL_UNUSED( bLFocus )
 
    IF oFont == Nil
       ::oFont := ::oParent:oFont
    ENDIF
    ::lflat   := IIf( lflat == Nil, .F., lflat )
    ::bClick  := bClick
+   ::bGetFocus := bGFocus
+   ::bLostFocus := bLfocus
+
    ::state   := OBTN_INIT
    ::nOrder  := IIf( oWndParent == nil, 0, Len( oWndParent:aControls ) )
 
    ::title   := cText
    ::tcolor  := IIf( color == Nil, GetSysColor( COLOR_BTNTEXT ), color )
+   IF bColor != Nil
+      ::bcolor  := bcolor
+      ::brush := HBrush():Add( bcolor )
+   ENDIF
    
    ::xt      := IIf( xt == Nil, 0, xt )
    ::yt      := IIf( yt == Nil, 0, yt )
@@ -182,7 +192,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
       ENDIF
       ::onLostFocus()
    ELSEIF msg = WM_CHAR  .OR. msg = WM_KEYDOWN .OR. msg = WM_KEYUP   
-      IF wParam = 32
+      IF wParam = VK_SPACE
 				 ::Press()
          ::onClick()
          ::Release()

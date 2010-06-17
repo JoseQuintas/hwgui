@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.230 2010-06-16 12:46:22 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.231 2010-06-17 01:04:38 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -554,9 +554,6 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
         
       ELSEIF msg == WM_GETDLGCODE
          ::isMouseOver := .F.
-         IF wParam = VK_ESCAPE .AND. ! ::lAutoEdit
-            RETURN - 1
-         ENDIF
          RETURN DLGC_WANTALLKEYS
       
       ELSEIF msg == WM_COMMAND

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1282 2010-06-17 01:04:38 lfbasso Exp $
+ * $Id: Changelog,v 1.1283 2010-06-17 01:08:48 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -10,7 +10,10 @@
 
 2010-06-16 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
-  
+    ! minor fix in VK_ESCAPE in onEvent
+  * source\hownbtn.prg
+    ! fixed text color and backcolor in HShadeButton CLASS
+    
 2010-06-16 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\windows.ch
     + add constant IDHELP 9

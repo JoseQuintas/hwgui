@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.177 2010-06-05 23:26:34 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.178 2010-06-17 15:52:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -382,14 +382,15 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ENDIF
       IF msg == WM_SETFOCUS //.AND. ::cType = "N"
          ::lFocu := .T.
-         IF ::lPicComplex .AND. ::cType <> "N"
-            ::Title := Transform( ::Title, ::cPicFunc + " " + ::cPicMask )
-         ENDIF
          IF "K" $ ::cPicFunc
             SendMessage( ::handle, EM_SETSEL, 0, - 1 )
          ELSEIF ::selstart = 0 .AND. ::lPicComplex
             SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
          ENDIF
+         IF ::lPicComplex .AND. ::cType <> "N"
+           // ::Title := Transform( ::Title, ::cPicFunc + " " + ::cPicMask ) ??
+         ENDIF
+
       ENDIF
       IF lColorinFocus 
          IF msg == WM_SETFOCUS

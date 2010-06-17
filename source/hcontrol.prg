@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.155 2010-05-27 13:20:49 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.156 2010-06-17 15:52:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1269,7 +1269,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
       RETURN 0
 
    ELSEIF msg == WM_GETDLGCODE
-      RETURN ButtonGetDlgCode( lParam )
+      RETURN IIF( wParam = VK_ESCAPE, - 1, ButtonGetDlgCode( lParam ) )
 
    ELSEIF msg == WM_SYSCOLORCHANGE
       ::SetDefaultColors()

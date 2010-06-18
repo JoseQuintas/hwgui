@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.178 2010-06-17 15:52:05 lfbasso Exp $
+ *$Id: hedit.prg,v 1.179 2010-06-18 14:52:35 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -101,7 +101,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 *   IF owndParent:oParent != Nil
 //   bPaint := { | o, p | o:paint( p ) }
 *   ENDIF
-  
+   bColor := IIf( bcolor == Nil .AND. Hwg_BitAnd( nStyle, WS_DISABLED ) = 0 , GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor ) 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor  )
 //              bSize, bPaint, ctooltip, tcolor, IIf( bcolor == Nil, GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor ) )

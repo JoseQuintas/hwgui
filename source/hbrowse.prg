@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.231 2010-06-17 01:04:38 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.232 2010-06-18 14:52:35 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -2542,10 +2542,10 @@ METHOD BOTTOM( lPaint ) CLASS HBrowse
 
    IF ::Type == BRW_ARRAY
       ::nCurrent := ::nRecords
-      ::rowPos := IIF( ::rowCurrCount < ::rowCount, ::rowCurrCount , ::rowCount + 1 )
+      ::rowPos := IIF( ::rowCurrCount <= ::rowCount, ::rowCurrCount , ::rowCount + 1 )
    ELSE
       //::rowPos := LastRec()
-      ::rowPos := IIF( ::rowCurrCount < ::rowCount, ::rowCurrCount , ::rowCount + 1 )
+      ::rowPos := IIF( ::rowCurrCount <= ::rowCount, ::rowCurrCount , ::rowCount + 1 )
       Eval( ::bGoBot, Self )
    ENDIF
 

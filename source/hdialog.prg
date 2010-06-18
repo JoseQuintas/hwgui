@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.109 2010-06-16 12:46:22 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.110 2010-06-18 14:52:35 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -636,6 +636,8 @@ FUNCTION onHelp( oDlg, wParam, lParam )
       ENDIF       
       IF ! Empty( lParam )
          oCtrl := oDlg:FindControl( Nil, GetHelpData( lParam ) )
+      ELSE   
+         oCtrl := oDlg
       ENDIF   
       IF oCtrl != nil
          nHelpId := oCtrl:HelpId

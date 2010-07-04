@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.107 2010-07-04 02:10:26 lfbasso Exp $
+ * $Id: control.c,v 1.108 2010-07-04 13:47:00 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -861,6 +861,7 @@ HB_FUNC( TREEGETNODETEXT )
 }
 
 #define TREE_SETITEM_TEXT       1
+#define TREE_SETITEM_CHECK      2
 
 HB_FUNC( TREESETITEM )
 {
@@ -877,6 +878,16 @@ HB_FUNC( TREESETITEM )
       TreeItem.mask |= TVIF_TEXT;
       TreeItem.pszText = ( LPTSTR ) HB_PARSTR( 4, &hStr, NULL );
    }
+   if( iType == TREE_SETITEM_CHECK )
+   {
+      TreeItem.mask |= TVIF_STATE;
+      TreeItem.stateMask = TVIS_STATEIMAGEMASK;
+      TreeItem.state =  hb_parni( 4 ) ;
+      TreeItem.state = TreeItem.state << 12;
+   }
+   if( iType == NULL )
+      TreeView_Select( ( HWND ) HB_PARHANDLE( 1 ), TreeItem.hItem, TVGN_CARET | TVSI_NOSINGLEEXPAND );
+
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), TVM_SETITEM, 0,
                 ( LPARAM ) ( &TreeItem ) );
    hb_strfree( hStr );
@@ -887,6 +898,7 @@ HB_FUNC( TREESETITEM )
 #define TREE_GETNOTIFY_EDIT         3
 #define TREE_GETNOTIFY_EDITPARAM    4
 #define TREE_GETNOTIFY_ACTION       5
+#define TREE_GETNOTIFY_OLDPARAM     6
 
 HB_FUNC( TREE_GETNOTIFY )
 {
@@ -901,13 +913,17 @@ HB_FUNC( TREE_GETNOTIFY )
                   action ) );
 
    else if( iType == TREE_GETNOTIFY_PARAM ||
-         iType == TREE_GETNOTIFY_EDITPARAM )
+         iType == TREE_GETNOTIFY_EDITPARAM || iType == TREE_GETNOTIFY_OLDPARAM ) )
    {
       PHB_ITEM oNode;           // = hb_itemNew( NULL );
       if( iType == TREE_GETNOTIFY_EDITPARAM )
          oNode =
                ( PHB_ITEM ) ( ( ( TV_DISPINFO * ) HB_PARHANDLE( 1 ) )->item.
                lParam );
+      else if( iType == TREE_GETNOTIFY_OLDPARAM )
+            oNode =
+               ( PHB_ITEM ) ( ( ( NM_TREEVIEW * ) HB_PARHANDLE( 1 ) )->
+               itemOld.lParam );
       else
          oNode =
                ( PHB_ITEM ) ( ( ( NM_TREEVIEW * ) HB_PARHANDLE( 1 ) )->

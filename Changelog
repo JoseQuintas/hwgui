@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1286 2010-07-04 02:10:26 lfbasso Exp $
+ * $Id: Changelog,v 1.1287 2010-07-04 13:47:00 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,7 +8,52 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2010-07-03 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+2010-07-04 10:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+    #xcommand @ <x>,<y> TREE [ <oTree> ]   ;
+    + [ <lDragDrop: DRAGDROP>]   ;
+    + [ <lCheck: CHECKBOXES> ]   ;
+    + [ ON CHECK <bCheck> ]      ;
+    + [ ON DRAG <bDrag> ]        ;
+    + [ ON DROP <bDrop> ]        ;
+    + [ ON OTHERMESSAGES <bOther>] ;
+    #xcommand INSERT NODE [ <oNode> CAPTION ] <cTitle>  ;
+    + [ ON ACTION <bAction> ]                 ;
+    + [ <lCheck: CHECKED>]        ;
+  * source\control.c
+    + #define TREE_SETITEM_CHECK          2
+    + #define TREE_GETNOTIFY_OLDPARAM     6
+    ! added support for checkbox in Function TREESETITEM
+    ! added support for return itermold in function  TREE_GETNOTIFY 
+  * source\htree.prg
+    CLASS HTreeNode INHERIT HObject
+    + DATA title
+    + DATA image1, image2 
+    + DATA lchecked INIT .F.
+    + Method New add two parameters lchecked, bClick 
+    + METHOD Checked()  SETGET 
+    CLASS HTree INHERIT HControl
+    + DATA bCheck
+    + DATA bdrag, bdrop
+    + DATA lEditLabels INIT .F. HIDDEN
+    + DATA lCheckbox   INIT .F. HIDDEN
+    + DATA lDragDrop   INIT .F. HIDDEN
+    + DATA lDragging INIT .F. HIDDEN
+	+ DATA	hitemDrag, hitemDrop HIDDEN
+    + Method NEW add parameters lCheckbox,  bCheck, lDragDrop, bDrag, bDrop, bOther 
+    + METHOD FindChildPos( h, inodo ) 
+    + METHOD onEvent( msg, wParam, lParam )
+    + METHOD ItemHeight( nHeight ) SETGET  -  set heigth item  
+    ! add handling in Method Init
+    + STATIC PROCEDURE MarkCheckTree( oItem, state )
+    + STATIC PROCEDURE DragDropTree( oDrag, oItem, oDrop )
+   
+      trevieew now possible to change the position of the nodes and also change the level of node
+      dragging with the mouse if the node resets its new position. Two events are run,
+      bdrag, which is fired before it changed its position, and bdrop after drag
+      pressing CTRL and dragging the node is inserted into the new node, by changing the level
+    
+2010-07-03 23:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\control.c
     + static wpOrigTreeViewProc
     + TreeViewSubclassProc

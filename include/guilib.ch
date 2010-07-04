@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.161 2010-05-27 12:14:22 lfbasso Exp $
+ *$Id: guilib.ch,v 1.162 2010-07-04 13:47:00 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -562,15 +562,24 @@
              [ FONT <oFont> ]           ;
              [ COLOR <color> ]          ;
              [ BACKCOLOR <bcolor> ]     ;
+             [ <lEdit: EDITABLE>]       ;
+             [ <lDragDrop: DRAGDROP>]   ;
+             [ <lCheck: CHECKBOXES> ]   ;
+             [ ON CHECK <bCheck> ]      ;
              [ ON INIT <bInit> ]        ;
              [ ON SIZE <bSize> ]        ;
              [ ON CLICK <bClick> ]      ;
+             [ ON RIGHTCLICK <bRClick> ];
+             [ ON DBLCLICK <bDClick> ]  ;
+             [ ON DRAG <bDrag> ]        ;
+             [ ON DROP <bDrop> ]        ;
+             [ ON OTHERMESSAGES <bOther>] ;
              [ STYLE <nStyle> ]         ;
-             [<lEdit: EDITABLE>]        ;
              [ BITMAP <aBmp>  [<res: FROM RESOURCE>] [ BITCOUNT <nBC> ] ]  ;
           => ;
           [<oTree> := ] HTree():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<oFont>,<bInit>,<bSize>,<color>,<bcolor>,<aBmp>,<.res.>,<.lEdit.>,<bClick>,<nBC> );;
+                <height>,<oFont>,<bInit>,<bSize>,<color>,<bcolor>,<aBmp>,<.res.>,<.lEdit.>,<bClick>,<nBC>, ;
+                <bRClick>, <bDClick>, <.lCheck.>, <bCheck>, <.lDragDrop.>, <bDrag>, <bDrop>, <bOther> );;
           [ <oTree>:name := <(oTree)> ]
 
 #xcommand INSERT NODE [ <oNode> CAPTION ] <cTitle>  ;
@@ -579,8 +588,10 @@
              [ BEFORE <oNext> ]                    ;
              [ BITMAP <aBmp> ]                     ;
              [ ON CLICK <bClick> ]                 ;
+             [ ON ACTION <bAction> ]                 ;
+             [ <lCheck: CHECKED>]        ;
           => ;
-          [<oNode> := ] <oTree>:AddNode( <cTitle>,<oPrev>,<oNext>,<bClick>,<aBmp> )
+          [<oNode> := ] <oTree>:AddNode( <cTitle>,<oPrev>,<oNext>,<bClick>,<aBmp>, <.lCheck.>, <bAction> )
 
 #xcommand @ <x>,<y> TAB [ <oTab> ITEMS ] <aItems> ;
              [ OF <oWnd> ]              ;

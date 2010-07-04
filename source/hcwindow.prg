@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.66 2010-05-30 18:52:22 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.67 2010-07-04 21:46:28 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -707,7 +707,7 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
 //lParam := HANDLETOPTR( lParam)
    oCtrl := oWnd:FindControl( , lParam )
 
-   IF ! EMPTY( oCtrl )
+   IF  oCtrl != Nil
       IF oCtrl:tcolor != NIL
          SetTextColor( wParam, oCtrl:tcolor )
       ENDIF
@@ -724,7 +724,7 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
          ENDIF
       ELSEIF oCtrl:BackStyle = TRANSPARENT
          IF ( oCtrl:classname $ "HCHECKBUTTON" .AND. (  ! oCtrl:lnoThemes .AND. ( ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest ) ) ) .OR.;
-            ( oCtrl:classname $ "HGROUP*HRADIOGROUP*HRADIOBUTTON" ) //.AND. oCtrl:lnoThemes ) 
+            ( oCtrl:classname $ "HGROUP*HRADIOGROUP*HRADIOBUTTON" .AND. ! oCtrl:lnoThemes ) 
 				    RETURN GetBackColorParent( oCtrl, , .T. ):handle
 				 ENDIF 
          IF __ObjHasMsg( oCtrl, "PAINT" ) .OR. oCtrl:winclass = "BUTTON"				 
@@ -767,14 +767,15 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
    LOCAL aControls := oWnd:aControls, nControls := Len( aControls )
    LOCAL oItem, iCont, nw1, nh1, aCoors
 
-   HB_SYMBOL_UNUSED( wParam )
+   //HB_SYMBOL_UNUSED( wParam )
 
    nw1 := oWnd:nWidth
    nh1 := oWnd:nHeight
-   aCoors := GetWindowRect( oWnd:handle )
-   oWnd:nWidth := aCoors[ 3 ] - aCoors[ 1 ]
-   oWnd:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
-   
+   IF wParam != 1  //SIZE_MINIMIZED
+      aCoors := GetWindowRect( oWnd:handle )
+      oWnd:nWidth := aCoors[ 3 ] - aCoors[ 1 ]
+      oWnd:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
+   ENDIF
    IF oWnd:nScrollBars > - 1 .AND. oWnd:lAutoScroll
       onMove( oWnd )    
       oWnd:ResetScrollbars()

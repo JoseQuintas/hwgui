@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1287 2010-07-04 13:47:00 lfbasso Exp $
+ * $Id: Changelog,v 1.1288 2010-07-04 21:46:28 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-07-04 18:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcwindow.prg
+  * source\hdialog.prg
+    ! minor fix in onSize
+    
 2010-07-04 10:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     #xcommand @ <x>,<y> TREE [ <oTree> ]   ;

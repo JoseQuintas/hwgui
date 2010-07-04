@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.111 2010-07-04 02:10:26 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.112 2010-07-04 21:46:28 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -559,7 +559,7 @@ STATIC FUNCTION onSize( oDlg, wParam, lParam )
    LOCAL nW := LOWORD( lParam ), nH := HIWORD( lParam )
    LOCAL nScrollMax
 
-   HB_SYMBOL_UNUSED( wParam )
+   //HB_SYMBOL_UNUSED( wParam )
 
    IF oDlg:oEmbedded != Nil
       oDlg:oEmbedded:Resize( LOWORD( lParam ), HIWORD( lParam ) )
@@ -576,8 +576,10 @@ STATIC FUNCTION onSize( oDlg, wParam, lParam )
    nW1 := oDlg:nWidth
    nH1 := oDlg:nHeight
    *aControls := GetWindowRect( oDlg:handle )
-   oDlg:nWidth := LOWORD( lParam )  //aControls[3]-aControls[1]
-   oDlg:nHeight := HIWORD( lParam ) //aControls[4]-aControls[2]
+   IF wParam != 1  //SIZE_MINIMIZED
+      oDlg:nWidth := LOWORD( lParam )  //aControls[3]-aControls[1]
+      oDlg:nHeight := HIWORD( lParam ) //aControls[4]-aControls[2]
+   ENDIF   
    // SCROLL BARS code here.
 	 IF oDlg:nScrollBars > - 1 .AND. oDlg:lAutoScroll
       oDlg:ResetScrollbars()
@@ -589,7 +591,7 @@ STATIC FUNCTION onSize( oDlg, wParam, lParam )
       Eval( oDlg:bSize, oDlg, LOWORD( lParam ), HIWORD( lParam ) )
    ENDIF
    aControls := oDlg:aControls
-   IF aControls != Nil
+   IF aControls != Nil                     
       oDlg:Anchor( oDlg, nW1, nH1, oDlg:nWidth, oDlg:nHeight )
       FOR iCont := 1 TO Len( aControls )
          IF aControls[ iCont ]:bSize != Nil

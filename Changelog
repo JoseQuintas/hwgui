@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1285 2010-06-18 14:52:35 lfbasso Exp $
+ * $Id: Changelog,v 1.1286 2010-07-04 02:10:26 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-07-03 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\control.c
+    + static wpOrigTreeViewProc
+    + TreeViewSubclassProc
+    + HB_FUNC( HWG_INITTREEVIEW )
+      handling events in class TREEVIEW
+  * source\hdialog.prg
+    ! minor fix in ENDDIALOG() and InitFocus in InitModalDlg() 
+  * source\hupdown.prg 
+    ! fix in tooltip
+  * source\misc.c
+    + function HB_FUNC( HWG_SETCURSORPOS )
 
 2010-06-18 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg

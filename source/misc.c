@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.61 2010-05-29 08:55:15 mlacecilia Exp $
+ * $Id: misc.c,v 1.62 2010-07-04 02:10:27 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -243,6 +243,16 @@ HB_FUNC( HWG_GETCURSORPOS )
    hb_itemRelease( aPoint );
 
 }
+
+HB_FUNC( HWG_SETCURSORPOS )
+{
+   int x,y ;
+   
+   x = hb_parni( 1 ) ;
+   y = hb_parni( 2 ) ;
+
+   SetCursorPos( x, y );
+}   
 
 HB_FUNC( GETCURRENTDIR )
 {

@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.110 2010-06-18 14:52:35 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.111 2010-07-04 02:10:26 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -368,7 +368,7 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    IF  ! EMPTY( oDlg:nInitFocus )
        SETFOCUS( oDlg:nInitFocus )
        oDlg:nInitFocus := 0
-       RETURN 0
+      // RETURN 0
    ENDIF
    RETURN nReturn
 
@@ -636,8 +636,6 @@ FUNCTION onHelp( oDlg, wParam, lParam )
       ENDIF       
       IF ! Empty( lParam )
          oCtrl := oDlg:FindControl( Nil, GetHelpData( lParam ) )
-      ELSE   
-         oCtrl := oDlg
       ENDIF   
       IF oCtrl != nil
          nHelpId := oCtrl:HelpId
@@ -737,7 +735,7 @@ FUNCTION GetModalHandle
    RETURN IIf( i > 0, HDialog():aModalDialogs[ i ]:handle, 0 )
 
 FUNCTION EndDialog( handle )
-   LOCAL oDlg
+   LOCAL oDlg, hFocus := GetFocus() 
    LOCAL res
 
    IF handle == Nil
@@ -752,7 +750,10 @@ FUNCTION EndDialog( handle )
       ENDIF
    ENDIF
    // force control triggered killfocus
-   SETFOCUS( 0 )
+   IF !EMPTY( hFocus ) .AND. oDlg:FindControl(, hFocus ) != Nil
+      SendMessage( hFocus, WM_KILLFOCUS, 0, 0 )
+      SetFocus( hFocus )
+   ENDIF
    IF oDlg:bDestroy != Nil
       oDlg:lSuspendMsgsHandling := .T.
       res := Eval( oDlg:bDestroy, oDlg )
@@ -762,7 +763,6 @@ FUNCTION EndDialog( handle )
          RETURN Nil
       ENDIF
    ENDIF
-   SETFOCUS( handle )
    RETURN  IIf( oDlg:lModal, Hwg_EndDialog( oDlg:handle ), DestroyWindow( oDlg:handle ) )
 
 FUNCTION SetDlgKey( oDlg, nctrl, nkey, block )

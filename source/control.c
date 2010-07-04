@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.106 2010-06-01 15:24:42 lfbasso Exp $
+ * $Id: control.c,v 1.107 2010-07-04 02:10:26 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -71,12 +71,14 @@ LRESULT APIENTRY TrackSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
       LPARAM lParam );
 LRESULT APIENTRY TabSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
       LPARAM lParam );
+LRESULT APIENTRY TreeViewSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
+      LPARAM lParam );         
 static void CALLBACK s_timerProc( HWND, UINT, UINT, DWORD );
 
 static HWND hWndTT = 0;
 static BOOL lInitCmnCtrl = 0;
 static BOOL lToolTipBalloon = FALSE;    // added by MAG
-static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc, wpOrigComboProc, wpOrigStaticProc, wpOrigListProc, wpOrigUpDownProc, wpOrigDatePickerProc;       //wpOrigButtonProc
+static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc, wpOrigComboProc, wpOrigStaticProc, wpOrigListProc, wpOrigUpDownProc, wpOrigDatePickerProc,  wpOrigTreeViewProc;     //wpOrigButtonProc
 static LONG_PTR wpOrigButtonProc;
 
 HB_FUNC( HWG_INITCOMMONCONTROLSEX )
@@ -1202,6 +1204,42 @@ BOOL RegisterWinCtrl( void )    // Added by jamaj - Used by WinCtrl
    wndclass.lpszClassName = TEXT( "WINCTRL" );
 
    return RegisterClass( &wndclass );
+}
+
+HB_FUNC( HWG_INITTREEVIEW )
+{
+   wpOrigTreeViewProc = ( WNDPROC ) SetWindowLong( ( HWND ) HB_PARHANDLE( 1 ),
+         GWL_WNDPROC, ( LONG ) TreeViewSubclassProc );
+}
+
+LRESULT APIENTRY TreeViewSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
+      LPARAM lParam )
+{
+   long int res;
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+
+   if( !pSym_onEvent )
+      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
+
+   if( pSym_onEvent && pObject )
+   {
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
+      hb_vmPush( pObject );
+      hb_vmPushLong( ( LONG ) message );
+      hb_vmPushLong( ( LONG ) wParam );
+//      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( lParam );
+      hb_vmSend( 3 );
+      res = hb_parnl( -1 );
+      if( res == -1 )
+         return ( CallWindowProc( wpOrigTreeViewProc, hWnd, message, wParam,
+                     lParam ) );
+      else
+         return res;
+   }
+   else
+      return ( CallWindowProc( wpOrigTreeViewProc, hWnd, message, wParam,
+                  lParam ) );
 }
 
 HB_FUNC( HWG_INITWINCTRL )

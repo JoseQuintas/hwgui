@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.32 2010-05-24 14:57:03 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.33 2010-07-04 02:10:26 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -148,6 +148,7 @@ METHOD CREATEUPDOWN CLASS Hupdown
    ::nHolder := 0
    IF !::lCreate
        ::Activate()
+       AddToolTip( ::GetParentForm():handle, ::oEditUpDown:handle, ::tooltip )          
        ::oEditUpDown:SetFont( ::oFont )
        SETWINDOWPOS( ::oEditUpDown:handle, ::Handle,  0,0,0,0, SWP_NOSIZE +  SWP_NOMOVE )
        DESTROYWINDOW( ::Handle )

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.108 2010-07-04 13:47:00 lfbasso Exp $
+ * $Id: control.c,v 1.109 2010-07-04 16:12:55 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -886,7 +886,7 @@ HB_FUNC( TREESETITEM )
       TreeItem.state = TreeItem.state << 12;
    }
    if( iType == NULL )
-      TreeView_Select( ( HWND ) HB_PARHANDLE( 1 ), TreeItem.hItem, TVGN_CARET | TVSI_NOSINGLEEXPAND );
+      TreeView_Select( ( HWND ) HB_PARHANDLE( 1 ), TreeItem.hItem, TVGN_CARET );
 
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), TVM_SETITEM, 0,
                 ( LPARAM ) ( &TreeItem ) );

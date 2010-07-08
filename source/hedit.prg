@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.179 2010-06-18 14:52:35 lfbasso Exp $
+ *$Id: hedit.prg,v 1.180 2010-07-08 19:32:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -101,7 +101,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 *   IF owndParent:oParent != Nil
 //   bPaint := { | o, p | o:paint( p ) }
 *   ENDIF
-   bColor := IIf( bcolor == Nil .AND. Hwg_BitAnd( nStyle, WS_DISABLED ) = 0 , GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor ) 
+    bcolor := IIf( bcolor == Nil .AND. Hwg_BitAnd( nStyle, WS_DISABLED ) = 0, GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor  )
 //              bSize, bPaint, ctooltip, tcolor, IIf( bcolor == Nil, GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor ) )
@@ -382,15 +382,14 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ENDIF
       IF msg == WM_SETFOCUS //.AND. ::cType = "N"
          ::lFocu := .T.
+         IF ::lPicComplex .AND. ::cType <> "N"
+            ::Title := Transform( ::Title, ::cPicFunc + " " + ::cPicMask )
+         ENDIF
          IF "K" $ ::cPicFunc
             SendMessage( ::handle, EM_SETSEL, 0, - 1 )
          ELSEIF ::selstart = 0 .AND. ::lPicComplex
             SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
          ENDIF
-         IF ::lPicComplex .AND. ::cType <> "N"
-           // ::Title := Transform( ::Title, ::cPicFunc + " " + ::cPicMask ) ??
-         ENDIF
-
       ENDIF
       IF lColorinFocus 
          IF msg == WM_SETFOCUS
@@ -451,11 +450,14 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    IF msg == WM_KEYUP .OR. msg == WM_SYSKEYUP     /* BETTER FOR DESIGNER */
 
       IF ProcKeyList( Self, wParam )
-          RETURN 0
+         RETURN 0
       ELSEIF ::bKeyUp != Nil
-          IF Eval( ::bKeyUp, Self, wParam )
-               RETURN 0
-          ENDIF
+         IF Eval( ::bKeyUp, Self, wParam )
+             RETURN 0
+         ENDIF
+      ENDIF
+      IF msg != WM_SYSKEYUP
+         RETURN 0   
       ENDIF
 
       /*
@@ -618,6 +620,7 @@ METHOD ParsePict( cPicture, vari ) CLASS HEdit
 
    IF Empty( ::cPicMask )
       IF ::cType == "D"
+         ::cPicFunc   := "@D"
          ::cPicMask := StrTran( DToC( CToD( Space( 8 ) ) ), ' ', '9' )
       ELSEIF ::cType == "N"
          vari := Str( vari )
@@ -1071,6 +1074,7 @@ METHOD When() CLASS HEdit
       res := Eval( ::bGetFocus, vari, Self )
       res := IIf( ValType( res ) == "L", res, .T. )
       ::lnoValid := ! res
+      ::oParent:lSuspendMsgsHandling := .F.
       IF ! res
          oParent := ParentGetDialog( Self )
          /*
@@ -1082,7 +1086,6 @@ METHOD When() CLASS HEdit
          */
          GetSkip( ::oParent, ::handle, , nSkip )
       ENDIF
-      ::oParent:lSuspendMsgsHandling := .F.
    ENDIF
    RETURN res
 
@@ -1098,10 +1101,10 @@ METHOD Valid( ) CLASS HEdit
          ::title := vari
          IF ::cType == "D"
             IF ::IsBadDate( vari )
-               MsgBeep()
-               SetFocus( 0 )
+                MsgBeep()
+               //SetFocus( 0)
                ::SetFocus( )
-               RETURN .F.
+               RETURN .T.
             ENDIF
             vari := CToD( vari )
          ELSEIF ::cType == "N"
@@ -1390,7 +1393,7 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
    LOCAL oForm := IIF( ( oForm := oParent:GetParentForm() ) = Nil, oParent, oForm )
 
    DEFAULT nSkip := 1
-   IF oParent == Nil .OR. ( lClipper != Nil .AND. lClipper .AND. ! oParent:lClipper )
+   IF oParent == Nil .OR. ( lClipper != Nil .AND. lClipper .AND. ! oForm:lClipper )
       RETURN .F.
    ENDIF
    i := AScan( oParent:acontrols, { | o | o:handle == hCtrl } )
@@ -1408,10 +1411,10 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
  	    oCtrl:oParent:lGetSkipLostFocus := .T.
    ENDIF
    IF ! Empty( nextHandle )
-       i := AScan( oparent:acontrols, { | o | o:handle == nextHandle } )
-      oCtrl := IIF( i > 0, oparent:acontrols[i], oParent)
-       IF oForm:classname == oParent:classname //!= "HTAB"
-         IF oParent:Type < WND_DLG_RESOURCE
+      // i := AScan( oparent:acontrols, { | o | o:handle == nextHandle } )
+      //oCtrl := IIF( i > 0, oparent:acontrols[i], oParent)
+      IF oForm:classname == oParent:classname  .OR. oParent:className != "HTAB"
+         IF oParent:Type = Nil .OR. oParent:Type < WND_DLG_RESOURCE
              SetFocus( nextHandle )
          ELSE
              PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
@@ -1426,9 +1429,12 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
          ENDIF
       ENDIF
    ENDIF
-   IF hCtrl == nextHandle
-       SendMessage( nexthandle, WM_KILLFOCUS, 0,  0)
-    ENDIF
+   IF hctrl == nextHandle .AND. oCtrl != Nil
+     // necessario para executa um codigo do lostfcosu
+      IF  __ObjHasMsg(oCtrl,"BLOSTFOCUS") .AND. oCtrl:blostfocus != Nil
+   	     sendmessage( nexthandle, WM_KILLFOCUS, 0,  0)
+      ENDIF
+	 ENDIF   
    RETURN .T.
 
 STATIC FUNCTION NextFocusTab( oParent, hCtrl, nSkip )
@@ -1562,9 +1568,9 @@ STATIC FUNCTION NextFocusContainer(oParent,hCtrl,nSkip)
          lnoTabStop :=  Hwg_BitaND( HWG_GETWINDOWSTYLE( nextHandle ), WS_TABSTOP ) = 0
       ELSE
         lnoTabStop := .F.
-       ENDIF
-         i2 := AScan( oParent:aControls, { | o | o:Handle == nextHandle } )
-        IF ( ( i2 < i .AND. nSkip > 0 ) .OR. ( i2 > i .AND. nSkip < 0 )) .OR. hCtrl = nextHandle
+      ENDIF
+      i2 := AScan( oParent:aControls, { | o | o:Handle == nextHandle } )
+      IF ( ( i2 < i .AND. nSkip > 0 ) .OR. ( i2 > i .AND. nSkip < 0 )) .OR. hCtrl = nextHandle
           RETURN IIF( oParent:oParent:className == "HTAB", NextFocusTab(oParent:oParent, nWindow, nSkip ), ;
                        NextFocus( oParent:oparent, hCtrl, nSkip ) )
       ENDIF
@@ -1642,9 +1648,9 @@ FUNCTION CheckFocus( oCtrl, lInside )
       ENDIF
   ELSE
      oCtrl:oParent:lGetSkipLostFocus := .F.   
-   ENDIF
+  ENDIF
 
-   RETURN .T.
+  RETURN .T.
 
 
 

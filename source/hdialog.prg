@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.112 2010-07-04 21:46:28 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.113 2010-07-08 19:32:23 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -139,6 +139,7 @@ METHOD NEW( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
 
 METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
    LOCAL oWnd, hParent
+   
    ::bOnActivate := bOnActivate
    CreateGetList( Self )
    hParent := IIf( ::oParent != Nil .AND. ;
@@ -184,7 +185,6 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
          ::lResult := .F.
          ::Add()
          Hwg_CreateDlgIndirect( hParent, Self, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
-         UPDATEWINDOW( ::handle ) 
          /*
          IF ::oIcon != Nil
             SendMessage( ::handle,WM_SETICON,1,::oIcon:handle )
@@ -328,14 +328,13 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
          ENDIF
          nReturn := 1
       ENDIF
-      oDlg:lSuspendMsgsHandling := .F.
    ENDIF
+   oDlg:lSuspendMsgsHandling := .F.
    oDlg:nInitFocus := IIF( VALTYPE( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )   
    IF PtrtouLong( nFocu ) == PtrtouLong( oDlg:nInitFocus )   
       oDlg:nInitFocus := 0
    ENDIF
-   //SetFocus( oDlg:handle )
-   
+  
    // CALL DIALOG NOT VISIBLE
    IF oDlg:nInitShow = SW_HIDE
       oDlg:Hide()
@@ -351,15 +350,16 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       oDlg:lSuspendMsgsHandling := .f.
    ENDIF
 
+   IF ! oDlg:lModal
+      oDlg:show()
+      UpdateWindow( oDlg:handle )	   // force repaint objcts
+   ENDIF
+
    IF oDlg:nInitShow = SW_SHOWMINIMIZED  //2
       oDlg:minimize()
    ELSEIF oDlg:nInitShow = SW_SHOWMAXIMIZED  //3
       oDlg:maximize()
-   ELSEIF ! oDlg:lModal
-      oDlg:show()
-      UpdateWindow( oDlg:handle )	   // force repaint objcts
    ENDIF
-   
    IF ValType( oDlg:bOnActivate ) == "B"
       //oDlg:lSuspendMsgsHandling := .T.
       Eval( oDlg:bOnActivate, oDlg )

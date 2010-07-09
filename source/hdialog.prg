@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.113 2010-07-08 19:32:23 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.114 2010-07-09 12:14:15 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -365,10 +365,10 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       Eval( oDlg:bOnActivate, oDlg )
       //oDlg:lSuspendMsgsHandling := .F.
    ENDIF
-   IF  ! EMPTY( oDlg:nInitFocus )
-       SETFOCUS( oDlg:nInitFocus )
-       oDlg:nInitFocus := 0
-      // RETURN 0
+   IF  ! EMPTY( oDlg:nInitFocus ) .AND. ;
+      PtrtouLong( GetParent( oDlg:nInitFocus ) ) = PtrtouLong( oDlg:Handle )
+         SETFOCUS( oDlg:nInitFocus )
+         oDlg:nInitFocus := 0
    ENDIF
    RETURN nReturn
 
@@ -752,7 +752,8 @@ FUNCTION EndDialog( handle )
       ENDIF
    ENDIF
    // force control triggered killfocus
-   IF !EMPTY( hFocus ) .AND. oDlg:FindControl(, hFocus ) != Nil
+   IF !EMPTY( hFocus ) .AND. oDlg:FindControl(, hFocus ) != Nil .AND.; 
+      PtrtouLong( GetParent( hFocus ) ) = PtrtouLong( oDlg:Handle )
       SendMessage( hFocus, WM_KILLFOCUS, 0, 0 )
       SetFocus( hFocus )
    ENDIF

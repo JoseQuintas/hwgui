@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.232 2010-06-18 14:52:35 lfbasso Exp $
+ * $Id: hbrowse.prg,v 1.233 2010-07-30 20:53:59 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -313,7 +313,7 @@ CLASS HBrowse INHERIT HControl
    METHOD ButtonRDown()
    METHOD ShowMark( lShowMark ) SETGET
    METHOD DeleteMark( lDeleteMark ) SETGET
-   METHOD BrwScrollVPos()
+//   METHOD BrwScrollVPos()
    // new
    METHOD When()
    METHOD Valid()
@@ -1405,8 +1405,11 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
       ENDIF   
       IF ::rowCurrCount > 0 
           Eval( ::bSkip, Self, - ::rowCurrCount )
+          IF Eval( ::bBof, Self )
+               Eval( ::bGoTop, Self )
+          ENDIF
       ENDIF    
-      //
+
       cursor_row := 1
       ::oParent:lSuspendMsgsHandling := .T.
       ::internal[ 3 ] := Eval( ::bRecno, Self )
@@ -3398,6 +3401,7 @@ METHOD Refresh( lFull, lLineUp ) CLASS HBrowse
    RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW )  // Force a complete redraw      
    RETURN Nil
 
+/*
 METHOD BrwScrollVPos( ) CLASS HBrowse
    LOCAL minPos, maxPos 
    Local nRecCount, nRecno, nPosRecno
@@ -3428,7 +3432,7 @@ METHOD BrwScrollVPos( ) CLASS HBrowse
    ENDIF
    RETURN IIF( lDisableVScrollPos, ::nRecCount / 2, nPosRecno )
     //IIF( ( ::Alias ) ->( IndexOrd() ) = 0 .OR. ::lDisableVScrollPos, ( ::Alias ) ->( RecNo() ), ( ::Alias ) ->( ordkeyno() ) ) 
-
+*/
 //----------------------------------------------------//
 METHOD FldStr( oBrw, numf ) CLASS HBrowse
    LOCAL cRes, vartmp, Type, pict
@@ -3586,7 +3590,6 @@ FUNCTION VScrollPos( oBrw, nType, lEof, nPos )
                                                 ( Eval( oBrw:bRecnoLog, oBrw ) - 1 ), 0 ), minPos )
          SetScrollPos( oBrw:handle, SB_VERT, nPos )
       ELSEIF ! Empty( oBrw:Alias )
-         /*
          nrecno := ( oBrw:Alias ) ->( RecNo() )
          Eval( oBrw:bGotop, oBrw )
          minPos := IF( ( oBrw:Alias ) ->( IndexOrd() ) = 0, ( oBrw:Alias ) ->( RecNo() ), ( oBrw:Alias ) ->( ordkeyno() ) )
@@ -3597,9 +3600,8 @@ FUNCTION VScrollPos( oBrw, nType, lEof, nPos )
          ENDIF
          ( oBrw:Alias ) ->( DBGoTo( nrecno ) )
          SetScrollPos( oBrw:handle, SB_VERT, IF( ( oBrw:Alias ) ->( IndexOrd() ) = 0, ( oBrw:Alias ) ->( RecNo() ), ( oBrw:Alias ) ->( ordkeyno() ) ) )
-         */
-         
-         SetScrollPos( oBrw:handle, SB_VERT, oBrw:BrwScrollVPos( ) ) 
+
+//         SetScrollPos( oBrw:handle, SB_VERT, oBrw:BrwScrollVPos( ) )
       ENDIF
    ELSE
       oldRecno := Eval( oBrw:bRecnoLog, oBrw )

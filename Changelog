@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1291 2010-07-10 00:41:54 lfbasso Exp $
+ * $Id: Changelog,v 1.1292 2010-07-30 20:53:24 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2010-07-30 23:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hbrowse.prg
+    ! Fix duplicated record in browse with one record in set scope.
+    ! Fix vertical scrollbar, now work.
 
 2010-07-09 21:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg

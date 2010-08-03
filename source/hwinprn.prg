@@ -1,5 +1,5 @@
 /*
- * $Id: hwinprn.prg,v 1.3 2009-07-04 13:58:53 lculik Exp $
+ * $Id: hwinprn.prg,v 1.4 2010-08-03 12:53:36 omm Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWinPrn class
@@ -132,7 +132,7 @@ Local nMode := 0, oFont, nWidth, nPWidth
       IF ::lItalic; cFont += "Italic"; ENDIF
       IF !::lBold .AND. !::lItalic; cFont += "Regular"; ENDIF
       oFont := ::oPrinter:AddFont( cFont, ::nLineHeight )
-#else   
+#else
       oFont := ::oPrinter:AddFont( "Lucida Console", ::nLineHeight, ::lBold, ::lItalic, ::lUnder, 204 )
 #endif
 
@@ -293,7 +293,7 @@ Static aCodes := {   ;
    { Chr(27)+'-0',,,,,,.f. }, ;     /* cancel underline */
    { Chr(27)+'4',,,,,.t., },  ;     /* italic */
    { Chr(27)+'5',,,,,.f., },  ;     /* cancel italic */
-   { Chr(27)+'G' },,,,,.t.,,  ;     /* bold */
+   { Chr(27)+'G',,,,,.t., },  ;     /* bold */
    { Chr(27)+'H',,,,.f.,, }   ;     /* cancel bold */
  }
 Local i, sLen := Len( aCodes ), c := Left( cLine,1 )

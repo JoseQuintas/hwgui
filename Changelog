@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1292 2010-07-30 20:53:24 giuseppem Exp $
+ * $Id: Changelog,v 1.1293 2010-08-03 12:53:35 omm Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-08-03 15:55 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
+  * source/hwinprn.prg
+    ! small fix
+      change { Chr(27)+'G' },,,,,.t.,,  ;     /* bold */
+      to    { Chr(27)+'G',,,,,.t., },  ;     /* bold */
+
 2010-07-30 23:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! Fix duplicated record in browse with one record in set scope.
@@ -30,7 +37,7 @@
   * source\hcwindow.prg
   * source\hdialog.prg
     ! minor fix in onSize
-    
+
 2010-07-04 10:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     #xcommand @ <x>,<y> TREE [ <oTree> ]   ;
@@ -47,14 +54,14 @@
     + #define TREE_SETITEM_CHECK          2
     + #define TREE_GETNOTIFY_OLDPARAM     6
     ! added support for checkbox in Function TREESETITEM
-    ! added support for return itermold in function  TREE_GETNOTIFY 
+    ! added support for return itermold in function  TREE_GETNOTIFY
   * source\htree.prg
     CLASS HTreeNode INHERIT HObject
     + DATA title
-    + DATA image1, image2 
+    + DATA image1, image2
     + DATA lchecked INIT .F.
-    + Method New add two parameters lchecked, bClick 
-    + METHOD Checked()  SETGET 
+    + Method New add two parameters lchecked, bClick
+    + METHOD Checked()  SETGET
     CLASS HTree INHERIT HControl
     + DATA bCheck
     + DATA bdrag, bdrop
@@ -62,20 +69,20 @@
     + DATA lCheckbox   INIT .F. HIDDEN
     + DATA lDragDrop   INIT .F. HIDDEN
     + DATA lDragging INIT .F. HIDDEN
-	+ DATA	hitemDrag, hitemDrop HIDDEN
-    + Method NEW add parameters lCheckbox,  bCheck, lDragDrop, bDrag, bDrop, bOther 
-    + METHOD FindChildPos( h, inodo ) 
+    + DATA  hitemDrag, hitemDrop HIDDEN
+    + Method NEW add parameters lCheckbox,  bCheck, lDragDrop, bDrag, bDrop, bOther
+    + METHOD FindChildPos( h, inodo )
     + METHOD onEvent( msg, wParam, lParam )
-    + METHOD ItemHeight( nHeight ) SETGET  -  set heigth item  
+    + METHOD ItemHeight( nHeight ) SETGET  -  set heigth item
     ! add handling in Method Init
     + STATIC PROCEDURE MarkCheckTree( oItem, state )
     + STATIC PROCEDURE DragDropTree( oDrag, oItem, oDrop )
-   
+
       trevieew now possible to change the position of the nodes and also change the level of node
       dragging with the mouse if the node resets its new position. Two events are run,
       bdrag, which is fired before it changed its position, and bdrop after drag
       pressing CTRL and dragging the node is inserted into the new node, by changing the level
-    
+
 2010-07-03 23:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\control.c
     + static wpOrigTreeViewProc
@@ -83,8 +90,8 @@
     + HB_FUNC( HWG_INITTREEVIEW )
       handling events in class TREEVIEW
   * source\hdialog.prg
-    ! minor fix in ENDDIALOG() and InitFocus in InitModalDlg() 
-  * source\hupdown.prg 
+    ! minor fix in ENDDIALOG() and InitFocus in InitModalDlg()
+  * source\hupdown.prg
     ! fix in tooltip
   * source\misc.c
     + function HB_FUNC( HWG_SETCURSORPOS )
@@ -108,15 +115,15 @@
     ! minor fix in VK_ESCAPE in onEvent
   * source\hownbtn.prg
     ! fixed text color and backcolor in HShadeButton CLASS
-    
+
 2010-06-16 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\windows.ch
     + add constant IDHELP 9
   * source\guimain.prg
-    ! add GET STYLE ES_AUTOHSCROLL IN MSGGET 
+    ! add GET STYLE ES_AUTOHSCROLL IN MSGGET
   * source\hbrowse.prg
     + DATA lDisableVScrollPos INIT .F.
-      set browse:lDisableVScrollPos := .T. DISABLE 
+      set browse:lDisableVScrollPos := .T. DISABLE
       possibility disabled SCROLBAR VERTICAL position, because the network environment
       in the calculation of the positioning makes navigation very slow depending on the size of the table
     ! fixed repaint in scroll vertical and horizontal
@@ -130,17 +137,17 @@
     ! fixed METHOD SETCOLOR and METHOD PAINT
   * source\htab.prg
     ! minor fix
-    
+
 2010-06-06 01:25 UTC+0200 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * /hwguidyn.hbp
-    ! patch made by Viktor Szakàts to correct build .dll after latest 
+    ! patch made by Viktor Szakàts to correct build .dll after latest
       Harbour changes
   * source/richedit.prg
     ! patch made by Viktor Szakàts to comply with the deletion of the
       hb_NumToHex function from the hwGUI source
   * source/hedit.prg
-    ! fixed onEvent method returning wrong value when a hot key 
-      (set by SetDlgKey) or a bKeyUp codeblock are successfully 
+    ! fixed onEvent method returning wrong value when a hot key
+      (set by SetDlgKey) or a bKeyUp codeblock are successfully
       processed
 
 2010-05-31 19:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
@@ -149,7 +156,7 @@
 
 2010-05-30 19:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
-    ! minor fix in METHOD FooterOut 
+    ! minor fix in METHOD FooterOut
 
 2010-05-30 14:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\control.c
@@ -158,7 +165,7 @@
     class HCOLUMN
     + add FootFont
     ! METHOD FooterOut suport the Font in column
-      changed backcolor default to window theme      
+      changed backcolor default to window theme
   * source\hcwindow.prg
     ! minor fix in ONCTLCOLOR
 
@@ -176,7 +183,7 @@
      ! minor fix
    * source\hedit.prg
      ! fixed MOUSEDOWN in SETFOCUS
-   
+
 2010-05-27 09:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     + #xcommand SET DISABLEBACKCOLOR <x:ON,OFF,&> [COLOR [<bColor>]] ;
@@ -185,7 +192,7 @@
     + new clausule in SET COLORFOCUS [< lPersistent : PERSISTENT >]
   * source\hedit.prg
     + STATIC lPersistColorSelect := .F.
-    + STATIC  bDisablecolor :=  Nil  
+    + STATIC  bDisablecolor :=  Nil
     + FUNCTION SetDisableBackColor( lDef, bcolor )
     + new parameter in SetColorinFocus( lDef, tcolor, bcolor, lFixed, lPersist )
 
@@ -217,22 +224,22 @@
     + add #DEFINE TRANSPARENT 1
   * source\hcontrol.prg
     class HCONTROL
-      + DATA DisablebColor  
+      + DATA DisablebColor
       + DATA Disablebrush
       + METHOD DisableBackColor SETGET
     ! fixed HSTATIC TRANSPARENT
   * source\hcwindow.prg
-    ! fixed onCtlColor IN DisableBackColor 
+    ! fixed onCtlColor IN DisableBackColor
   * source\hdialog.prg
     + msg WM_CTLCOLORDLG
     + FUNCTION onDlgColor
       attrib backcolor in DIALOG
-    ! remove backcolor DIALOG of the onEraseBk  
+    ! remove backcolor DIALOG of the onEraseBk
   * source\hedit.prg
     ! fixed deletechar in complex picture
   * source\hupdown.prg
     + METHOD DisableBackColor SETGET
-    
+
   ! several small adjusts in lib
 
 2010-05-21 19:35 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
@@ -244,7 +251,7 @@
   * source\hbrowse.prg
     + add clause  DISPLAYCOUNT in edit COMBOBOX
     ! fix in picture in FldStr case Type = ARRAY
-    
+
 2010-04-28 01:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\control.c
     + WS_POPUP | TTS_ALWAYSTIP styles in ADDTOOLTIP
@@ -281,11 +288,11 @@
 2010-04-25 19:09 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
     ! minor fix in theme
-    
+
 2010-04-20 09:49 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
 * source\hwindow.prg
   * fixed onNotifyIcon method when compiled with -DHWG_USE_POINTER_ITEM
-   
+
 2010-04-20 09:09 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcwindow.prg
   * source\hdialog.prg
@@ -294,13 +301,13 @@
   * source\hedit.prg
   * source\hupdown.prg
     ! fixed IDELTAPOS and VALID
-  
+
 2010-04-13 12:09 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcwindow.prg
     - #include "hbcompat.ch"
-  * source\hclistbox.prg    
+  * source\hclistbox.prg
     ! fixed DeleteItem
-    
+
 2010-04-09 01:09 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcombo.prg
     ! fixed STYLE WS_VSCROLL
@@ -321,7 +328,7 @@
   * source\hcwindow.prg
     +    #include "hbcompat.ch"
     + DATA lAutoScroll INIT .T.
-    + DATA nScrollBars INIT -1   
+    + DATA nScrollBars INIT -1
     + DATA nHorzInc
     + DATA nVertInc
     + DATA nVscrollMax
@@ -339,11 +346,11 @@
   * source\hpanel.prg
     + add scroll bars control
     + add TABSTOP events
-    + add METHOD Resize()  
+    + add METHOD Resize()
     ! fixed HIDE(),SHOW(),PAINT()
   * source\hriched.prg
     + DATA lReadOnly  INIT .F.
-    + METHOD ReadOnly( lreadOnly ) SETGET 
+    + METHOD ReadOnly( lreadOnly ) SETGET
     + METHOD SetColor( tColor, bColor, lRedraw )
     + METHOD SaveFile( cFile )
   * source\hwindow.prg
@@ -354,7 +361,7 @@
     + static DWORD CALLBACK RichStreamOutCallback
     + HB_FUNC( SAVERICHEDIT )
       save text in richtext format
-  
+
 2010-04-05 11:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
     + #translate LastKey( )  =>  HWG_LASTKEY( )
@@ -376,10 +383,10 @@
     ! add news constants
   * source\hbrowse.prg
     + add THEME IN HEADERS
-    * HCOLUMN CLASS  
-      + DATA Resizable INIT .T.  
+    * HCOLUMN CLASS
+      + DATA Resizable INIT .T.
         enable ou disable resize column
-    * HBROWSE CLASS    
+    * HBROWSE CLASS
       + DATA m_bFirstTime  INIT .T.
       + DATA hTheme
       + DATA Themed        INIT .T.
@@ -387,7 +394,7 @@
       + DATA isMouseOver   INIT .F.
       + DATA allMouseOver  INIT .F.
       + DATA AutoColumnFit INIT  0   // 0-Enable / 2  Disables capability for columns to fit data automatically.
-      + DATA nAutoFit      
+      + DATA nAutoFit
       + METHOD AutoFit()
         allows you to resize the columns if the browse is resized, the same behavior anchor to objects
         this requires:
@@ -407,14 +414,14 @@
     ! fixed size bitmaps in menu
   * source\misc.c
     + add function HB_FUNC( HWG_LASTKEY )
-      RETURN last key press same behavior Lastkey()    
+      RETURN last key press same behavior Lastkey()
 
 
 2008-03-28 16-35 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * source\htool.prg
   * include\guilib.ch
     Bug in use resource, fix by Luis Fernando Basso and Sandro Freire, error in use toolbar
- 
+
 2010-03-16 13:10 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source\barcode.prg
     ! reorder the include files on .c section of the code to compile properly
@@ -423,7 +430,7 @@
 
 2010-03-06 12:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\htab.prg
-    ! minor fix 
+    ! minor fix
 
 2010-03-04 23:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
@@ -435,10 +442,10 @@
   * source\hbrowse.prg
     ! minor fix in scroll in MODE append
   * source\hcwindow.prg
-    ! minor fix in getparentcolor  
+    ! minor fix in getparentcolor
   * source\hwindow.prg
-   ! fix in MDICREATE if window begging MAXIMIZED and objects to have property ANCHOR 
-  
+   ! fix in MDICREATE if window begging MAXIMIZED and objects to have property ANCHOR
+
 2010-02-26 13:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
     ! fixed scroll  in mode APPEND when rowpos = rowcount
@@ -450,10 +457,10 @@
     ! CLASS HStatic fixed paint in show disable mode transparent
   * source\hedit.prg
     ! minor fix in get numeric deletechar
-    
+
 2010-02-20 16:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
-    ! minor fix in FltRecNoRelative( oBrw ) 
+    ! minor fix in FltRecNoRelative( oBrw )
 
 2010-02-14 01:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
@@ -470,16 +477,16 @@
   * hwgui/source/window.c
     * added hack to pacify C compiler warnings/errors when compiled with
       old [x]Harbour header files using some wrong function declarations
-      
+
 2010-02-17 23:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg
     ! fixed Method Value
   * source\hsplash.prg
     + DATA oDlg
-    + METHOD Release() 
+    + METHOD Release()
     ! nWidth and nHeight can be passed to scale the Splash
       if oTime has a negative value then will splash NOMODAL
-      then 
+      then
       nTime := -1
       SPLASH oSplash TO "picture.jpg" TIME nTime WIDTH 644  HEIGHT 322
       ....

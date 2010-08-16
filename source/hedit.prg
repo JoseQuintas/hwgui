@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.181 2010-07-10 00:41:54 lfbasso Exp $
+ *$Id: hedit.prg,v 1.182 2010-08-16 14:56:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -245,14 +245,14 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                ::DeleteChar( .T. )
                RETURN 0
             ELSEIF wParam == VK_RETURN
-                     IF ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE.OR.;
+               IF ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE.OR.;
                    ! ::GetParentForm( Self ):lModal )
                    GetSkip( oParent, ::handle, , 1 )
                   RETURN 0
                ENDIF
                RETURN -1
             ELSEIF wParam == VK_TAB
-                     IF ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE.OR.;
+               IF ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE.OR.;
                    ! ::GetParentForm( Self ):lModal )
                   GetSkip( oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
                ENDIF
@@ -351,7 +351,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                RETURN 0
             ENDIF
             IF "K" $ ::cPicFunc .AND. ::lFocu 
-                ::value := ""
+                ::value := IIF( ::cType == "D", CTOD(""), IIF( ::cType == "N", 0, "" ) )
                 SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
             ENDIF
 
@@ -1639,7 +1639,9 @@ FUNCTION CheckFocus( oCtrl, lInside )
          oParent:Show()
          SetFocus( oParent:handle )
          SetFocus( GetFocus() )
-      ENDIF
+      ELSEIF ! lInside .AND. ! EMPTY( oParent:nInitFocus )  
+         RETURN .T.
+	    ENDIF
       RETURN .F.
    ENDIF
    IF oParent  != Nil .AND. lInside

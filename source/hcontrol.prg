@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.156 2010-06-17 15:52:05 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.157 2010-08-16 14:56:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -265,12 +265,12 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    nAnchor := ::anchor
    x9 := ::nLeft
    y9 := ::nTop
-   w9 := ::nWidth
+   w9 := ::nWidth - IIF( ::winclass = "EDIT" .AND. __ObjHasMsg( Self,"hUpDown" ), GetClientRect( ::hUpDown)[ 3 ], 0 )
    h9 := ::nHeight
 
    x1 := ::nLeft
    y1 := ::nTop
-   w1 := ::nWidth
+   w1 := ::nWidth - IIF( ::winclass = "EDIT" .AND. __ObjHasMsg( Self,"hUpDown" ), GetClientRect( ::hUpDown)[ 3 ], 0 )
    h1 := ::nHeight
   *- calculo relativo
    IF x > 0
@@ -351,13 +351,18 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
       ENDIF
       y1 := y9
    ENDIF
+   ::Move( x1, y1, w1, h1 )
+   /*
    MoveWindow( ::handle, x1, y1, w1, h1 )
    ::nLeft := x1
    ::nTop := y1
    ::nWidth := w1
    ::nHeight := h1
-   RedrawWindow( ::handle, RDW_INVALIDATE  + RDW_INTERNALPAINT  )
-   SetWindowPos( ::Handle, Nil, x1, y1, w1, h1, SWP_NOACTIVATE  + SWP_NOZORDER + SWP_NOOWNERZORDER + SWP_FRAMECHANGED)	 
+   */
+   IF isWindowVisible( ::handle )
+      SetWindowPos( ::Handle, Nil, x1, y1, w1, h1, SWP_NOREDRAW + SWP_NOACTIVATE  + SWP_NOZORDER + SWP_NOOWNERZORDER + SWP_FRAMECHANGED )	 
+      RedrawWindow( ::handle, RDW_INVALIDATE + RDW_ERASE  ) //+  RDW_INTERNALPAINT )
+   ENDIF
 
    RETURN Nil
 
@@ -668,8 +673,8 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS  HStatic
 METHOD SetValue( Value )  CLASS HStatic
     ::Auto_Size( value ) 
     IF ::backstyle = TRANSPARENT .AND. ::Title != value
-       RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_ERASENOW, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-       InvalidateRect( ::oParent:Handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight )
+       RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_ERASENOW, ::nLeft, ::nTop, ::nWidth - 1, ::nHeight - 1 )
+       InvalidateRect( ::oParent:Handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth - 1, ::nTop + ::nHeight - 1 )
     ENDIF   
     SetDlgItemText( ::oParent:handle, ::id, value )
     ::title := value 
@@ -1771,7 +1776,7 @@ METHOD Init CLASS HGroup
    IF  ! ::lInit
       //SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0 , SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER )
       Super:Init()  
-      SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0,0 , SWP_NOSIZE + SWP_NOMOVE + SWP_NOACTIVATE  + SWP_NOZORDER + SWP_NOOWNERZORDER + SWP_FRAMECHANGED)	     
+      SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0,0 , SWP_NOREDRAW + SWP_NOSIZE + SWP_NOMOVE + SWP_NOACTIVATE  + SWP_NOZORDER + SWP_NOOWNERZORDER + SWP_FRAMECHANGED)	 
    ENDIF
    
    RETURN NIL

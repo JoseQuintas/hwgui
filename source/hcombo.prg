@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.85 2010-04-09 04:14:59 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.86 2010-08-16 14:56:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -248,7 +248,6 @@ METHOD INIT() CLASS HComboBox
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       HWG_INITCOMBOPROC( ::handle )
-      Super:Init()
       IF ::aItems != Nil .AND. !Empty( ::aItems )
          /*
          IF ::value == Nil
@@ -286,6 +285,7 @@ METHOD INIT() CLASS HComboBox
          NewLongComboWidth := ( LongComboWidth - 2 ) * avgwidth
          SendMessage( ::handle, CB_SETDROPPEDWIDTH, NewLongComboWidth + 50, 0 )
       ENDIF
+      Super:Init()
       IF !::lResource
          // HEIGHT Items
          IF !Empty( ::nhItem )

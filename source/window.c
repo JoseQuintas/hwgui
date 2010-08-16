@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.89 2010-02-18 09:31:10 druzus Exp $
+ * $Id: window.c,v 1.90 2010-08-16 14:56:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -34,6 +34,7 @@
 #include "hwingui.h"
 
 #define  FIRST_MDICHILD_ID     501
+#define  WND_MDICHILD          3
 
 static LRESULT CALLBACK s_MainWndProc( HWND, UINT, WPARAM, LPARAM );
 static LRESULT CALLBACK s_FrameWndProc( HWND, UINT, WPARAM, LPARAM );
@@ -129,6 +130,32 @@ HB_FUNC( HWG_INITMAINWINDOW )
    hb_strfree( hMenu );
 
    HB_RETHANDLE( hWnd );
+}
+
+HB_FUNC( HWG_CENTERWINDOW )
+{
+   RECT rect, rectcli;
+   int w, h, x, y;
+
+   GetWindowRect( ( HWND ) HB_PARHANDLE( 1 ), &rect );
+   
+   if ( hb_parni( 2 ) ==  WND_MDICHILD ) 
+   { 
+      GetWindowRect( ( HWND ) aWindows[1], &rectcli );
+      x = rectcli.right - rectcli.left;
+      y = rectcli.bottom - rectcli.top;
+      w = rect.right - rect.left;
+      h = rect.bottom - rect.top;
+   }   
+   else
+   {
+      w = rect.right - rect.left;
+      h = rect.bottom - rect.top;
+      x = GetSystemMetrics( SM_CXSCREEN );
+      y = GetSystemMetrics( SM_CYSCREEN );
+   }
+   SetWindowPos( ( HWND ) HB_PARHANDLE( 1 ), HWND_TOP, ( x - w ) / 2,
+         ( y - h ) / 2, 0, 0, SWP_NOSIZE );
 }
 
 HB_FUNC( HWG_CENTERWINDOW )

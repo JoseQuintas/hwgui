@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.33 2010-07-04 02:10:26 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.34 2010-08-16 14:56:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -58,6 +58,8 @@ CLASS HUpDown INHERIT HControl
    METHOD Disable() INLINE ( Super:Disable(), EnableWindow( ::hUpDown, .F. ) )
    METHOD Valid()
    METHOD CreateUpDown()
+   METHOD Move( x1, y1, width, height ) INLINE  Super:Move( x1, y1, width + GetClientRect( ::hUpDown )[ 3 ], height ) ,;
+                                                SENDMESSAGE( ::hUpDown, UDM_SETBUDDY, ::oEditUpDown:handle, 0 )
 
 ENDCLASS
 
@@ -184,7 +186,7 @@ METHOD DisableBackColor( DisableBColor )
 
 METHOD Value( Value )  CLASS HUpDown
 
-   IF Value != Nil
+   IF Value != Nil .AND. ::oEditUpDown != Nil
        ::SetValue( Value )
        ::oEditUpDown:Title :=  ::Title
        ::oEditUpDown:Refresh()

@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.41 2010-05-24 14:57:03 lfbasso Exp $
+ * $Id: htool.prg,v 1.42 2010-08-16 14:56:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -157,7 +157,10 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,btnWidth,oFont,bInit
    DEFAULT  aitem TO { }
 
    //nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), TBSTYLE_FLAT )
-   nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), 0 )
+   nStyle  := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), 0 )
+   nHeight += IIF( Hwg_BitAnd( nStyle, WS_DLGFRAME + WS_BORDER ) > 0, 1, 0 )
+   nWidth  -= IIF( Hwg_BitAnd( nStyle, WS_DLGFRAME + WS_BORDER ) > 0, 2, 0 )
+
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor )
 
@@ -170,13 +173,14 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,btnWidth,oFont,bInit
    ::aItem := aItem
    ::nIndent := IIF( nIndent != NIL , nIndent, 1 )
    ::nSize := IIF( nSize != NIL .AND. nSize > 11 , nSize, Nil )
-
-   IF ! ::lVertical
-       ::Line := HLine():New( oWndParent,,, nLeft, nTop + nHeight + IIF( ( ! ISTHEMEACTIVE() .OR. ! ::WindowsManifest ) .AND. Hwg_BitAnd( nStyle,  TBSTYLE_FLAT ) > 0, 2, 0 ) , nWidth )       
-   ELSE
-       ::Line := HLine():New(oWndParent,,::lVertical,nLeft + nWidth + 1 ,nTop,nHeight)
+   ::lnoThemes := ! ISTHEMEACTIVE() .OR. ! ::WindowsManifest 
+   IF Hwg_BitAnd( ::Style, WS_DLGFRAME + WS_BORDER ) = 0
+      IF ! ::lVertical
+         ::Line := HLine():New( oWndParent,,, nLeft, nTop + nHeight + IIF( ::lnoThemes .AND. Hwg_BitAnd( nStyle,  TBSTYLE_FLAT ) > 0, 2, 1 ) , nWidth )       
+      ELSE
+         ::Line := HLine():New(oWndParent,,::lVertical,nLeft + nWidth + 1 ,nTop,nHeight)
+      ENDIF
    ENDIF
-
    IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI.AND.;
         ::oParent:aOffset[ 2 ] + ::oParent:aOffset[ 3 ] = 0
       IF ::nWidth > ::nHeight .OR. ::nWidth == 0
@@ -274,6 +278,12 @@ METHOD CREATETOOL CLASS hToolBar
      IF ::nIDB != Nil .AND. ::nIDB >= 0
         nlistimg := TOOLBAR_LOADSTANDARTIMAGE( ::handle, ::nIDB )
      ENDIF
+		 IF Hwg_BitAnd( ::Style,  TBSTYLE_LIST ) > 0 .AND. ::nSize = Nil   
+		    ::nSize := MAX( 16, ( ::nHeight - 16 )  )
+  	 ENDIF   
+	   IF ::nSize != Nil
+	      SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( ::nSize, ::nSize ) )
+	   ENDIF   
 
       FOR n := 1 TO Len( ::aItem )
 				 IF ::aItem[ n, 4 ] = BTNS_SEP
@@ -305,10 +315,11 @@ METHOD CREATETOOL CLASS hToolBar
 				 ENDIF
 				 
 				 nDrop := IIF( nDrop = 8, nDrop, IIF( Hwg_Bitand(::aItem[ n, 4 ], BTNS_DROPDOWN ) != 0 .AND.::aItem[ n, 4 ] < 128, 8, 1 ) )
+				 /*
 				 IF ::nSize != Nil
 				    SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( ::nSize, ::nSize ) )
 				 ENDIF   
-
+         */
          IF ValType( ::aItem[ n, 1 ] )  == "C" .OR. ::aItem[ n, 1 ] > 1
             IF ValType( ::aItem[ n, 1 ] )  == "C" .AND. At(".", ::aitem[ n, 1 ] ) != 0
                //AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION+ LR_LOADFROMFILE ) )
@@ -370,19 +381,24 @@ METHOD CREATETOOL CLASS hToolBar
             Imagelist_Add( hIm, aButton[ nPos ] )
          NEXT
          SendMessage( ::Handle, TB_SETIMAGELIST, 0, hIm )
+      ELSEIF Len(aButton ) = 0
+          SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( 0, 0 ) )    
+          //SendMessage( ::handle, TB_SETDRAWTEXTFLAGS, DT_CENTER+DT_VCENTER, DT_CENTER+DT_VCENTER )
       ENDIF
 
       SENDMESSAGE( ::Handle, TB_SETINDENT, ::nIndent,  0)
+      //SENDMESSAGE( ::Handle, TB_SETBUTTONWIDTH, MAKELPARAM( ::BtnWidth - 1, ::BtnWidth ) ) 
       IF Len( ::aItem ) > 0
          TOOLBARADDBUTTONS( ::handle, ::aItem, Len( ::aItem ) )
         SendMessage( ::handle, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS )
       ENDIF
 
       IF ::BtnWidth != Nil
+         nDrop += IIF( Hwg_BitAnd( ::Style, WS_DLGFRAME + WS_BORDER ) > 0, 5, 0 )
          IF  ! ::lVertical   //                -2 s nÆo tiver menu - 9 se tiver menu tipo 8
-           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth, ::nHeight - nDrop - 1 ) )
+            SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth, ::nHeight - nDrop - IIF( !::lnoThemes .AND. Hwg_BitAnd( nStyle,  TBSTYLE_FLAT ) > 0, 1, 2 ) ) )   
          ELSE
-           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - nDrop - 1, ::BtnWidth )  )
+            SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - nDrop - 1, ::BtnWidth )  )
          ENDIF
       ENDIF
       IF ::lTransp

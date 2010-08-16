@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.67 2010-07-04 21:46:28 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.68 2010-08-16 14:56:45 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -204,19 +204,26 @@ METHOD DelControl( oCtrl ) CLASS HCustomWindow
 
 METHOD Move( x1, y1, width, height )  CLASS HCustomWindow
 
-   IF x1 != NIL
+   x1     := IIF( x1     = NIL, ::nLeft, x1 )
+   y1     := IIF( y1     = NIL, ::nTop, y1 )
+   width  := IIF( width  = NIL, ::nWidth, width )
+   height := IIF( height = NIL, ::nHeight, height )
+
+   MoveWindow( ::handle, x1, y1, Width, Height )   
+
+   //IF x1 != NIL
       ::nLeft := x1
-   ENDIF
-   IF y1 != NIL
+   //ENDIF
+   //IF y1 != NIL
       ::nTop  := y1
-   ENDIF
-   IF width != NIL
+   //ENDIF
+   //IF width != NIL
       ::nWidth := width
-   ENDIF
-   IF height != NIL
+   //ENDIF
+   //IF height != NIL
       ::nHeight := height
-   ENDIF
-   MoveWindow( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+   //ENDIF
+   //MoveWindow( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
 
    RETURN NIL
 
@@ -308,24 +315,24 @@ METHOD SetFocusCtrl( oCtrl ) CLASS HCustomWindow
 
 METHOD Refresh( oCtrl ) CLASS HCustomWindow
   Local nlen , i, hCtrl := GetFocus()
-   oCtrl := IIF( oCtrl = Nil, self, Octrl )
+   oCtrl := IIF( oCtrl = Nil, Self, oCtrl )
    nlen := LEN( oCtrl:aControls )
 
-  IF IsWindowVisible( ::Handle )
-     FOR i = 1 to nLen
-        IF ! oCtrl:aControls[ i ]:lHide
+   IF IsWindowVisible( ::Handle )
+      FOR i = 1 to nLen
+         IF ! oCtrl:aControls[ i ]:lHide .AND. ::handle != hCtrl
             IF __ObjHasMethod(oCtrl:aControls[ i ],"REFRESH" )
-              oCtrl:aControls[ i ]:Refresh( )
-              IF oCtrl:aControls[ i ]:bRefresh != Nil
-                 EVAL( oCtrl:aControls[ i ]:bRefresh, oCtrl:aControls[ i ] )
-              ENDIF
-           ELSE
-              oCtrl:aControls[ i ]:SHOW()
+               oCtrl:aControls[ i ]:Refresh( )
+               IF oCtrl:aControls[ i ]:bRefresh != Nil
+                  EVAL( oCtrl:aControls[ i ]:bRefresh, oCtrl:aControls[ i ] )
                ENDIF
+            ELSE
+               oCtrl:aControls[ i ]:SHOW()
+            ENDIF
             IF LEN( oCtrl:aControls[ i ]:aControls ) > 0
-                ::Refresh( oCtrl:aControls[ i ] )
-             ENDIF
-        ENDIF
+               ::Refresh( oCtrl:aControls[ i ] )
+            ENDIF
+         ENDIF
       NEXT
       IF ::bRefresh != Nil .AND. ::handle != hCtrl
          Eval( ::bRefresh, Self ) 
@@ -376,8 +383,7 @@ METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
    LOCAL nlen , i, x1, y1
    nlen := Len( oCtrl:aControls )
    FOR i = 1 TO nlen
-      IF __ObjHasMsg( oCtrl:aControls[ i ], "ANCHOR" ) .AND. oCtrl:aControls[ i ]:anchor > 0 .AND.;
-           IsWindowVisible( ::GetParentForm():handle )
+      IF __ObjHasMsg( oCtrl:aControls[ i ], "ANCHOR" ) .AND. oCtrl:aControls[ i ]:anchor > 0 
          x1 := oCtrl:aControls[ i ]:nWidth
          y1 := oCtrl:aControls[ i ]:nHeight
          oCtrl:aControls[ i ]:onAnchor( x, y, w, h )
@@ -707,7 +713,7 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
 //lParam := HANDLETOPTR( lParam)
    oCtrl := oWnd:FindControl( , lParam )
 
-   IF  oCtrl != Nil
+   IF  oCtrl != Nil .AND. VALTYPE( oCtrl ) != "N"
       IF oCtrl:tcolor != NIL
          SetTextColor( wParam, oCtrl:tcolor )
       ENDIF
@@ -756,7 +762,7 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
                                         a[ 2 ] == iParLow } ) ) > 0
 
       IF oWnd:GetParentForm():Type < WND_DLG_RESOURCE
-         oWnd:GetParentForm():nFocus := GetFocus()
+         oWnd:GetParentForm():nFocus := lParam
       ENDIF
       Eval( oWnd:aEvents[ iItem, 3 ], oWnd, iParLow )
    ENDIF
@@ -783,7 +789,7 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
    ENDIF
    oWnd:lSuspendMsgsHandling  := .T.
    IF !EMPTY( oWnd:type) .AND. oWnd:Type = WND_MDI  .AND. !EMPTY( oWnd:Screen )
-     oWnd:Anchor( oWnd:Screen, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
+      oWnd:Anchor( oWnd:Screen, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
    ENDIF
    oWnd:Anchor( oWnd, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
    oWnd:lSuspendMsgsHandling  := .F.

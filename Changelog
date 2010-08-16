@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1294 2010-08-04 19:46:16 lculik Exp $
+ * $Id: Changelog,v 1.1295 2010-08-16 14:56:45 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,41 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-08-16 11:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcontrol.prg
+    ! fixed Method Anchor in the UPDOWN control
+  * source\hcombo.prg  
+    ! minor fix in INIT
+  * source\hedit.prg  
+    ! fixed value initial in "K" = ::cPicFunc
+  * source\window.c
+   + #define  WND_MDICHILD          3
+   ! fixed  HWG_CENTERWINDOW  for MDICHILD
+  * source\hcwindow.prg
+   ! fixed METHOD Move to work correctly with Anchor because movewindow trigered WM_SIZE 
+   ! minor other fix
+  * source\hwindow.prg 
+   ! minor fix in Function onSize
+   ! METHOD Center add new parameter in Hwg_CenterWindow( ::handle, ::Type )
+     to calculed correctly center of the window
+   ! METHOD OnEvent in HMainWindow  fixed limits of the MDICHILD MODAL
+   ! fixed lChild in the Method Activate in MDICHILD 
+   ! minor fix in FUNCTION onCommand when trigered menu MDICHILD
+  * source\hdialog.prg 
+   ! minor fix in Function onSize
+   ! METHOD Center add new parameter in Hwg_CenterWindow( ::handle, ::Type )
+   ! Method onEvent attrib position LEFT and TOP  of the Dialog in message WM_MOVE
+   * FUNCTION InitModalDlg
+     ! fixed anchor case Dialog have Menu
+     ! used wParam to receive the initial focus as described MSDN
+   ! fixed init focus in FUNCTION DlgCommand
+   ! minor fix in function Onsize in anchor
+  * source/htool.prg  
+   ! minor fix in METHOD CREATETOOL in relation bitmaps and text
+  * source/hupdown.prg 
+   + add METHOD Move( x1, y1, width, height ) 
+      fixed moved objetc, spinner and editbox
+      
 2010-08-04 17:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * gtk/htimer.prg
     ! some adjust to be windows compatible

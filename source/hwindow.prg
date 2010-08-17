@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.101 2010-08-16 14:56:45 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.102 2010-08-17 16:16:15 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -758,7 +758,7 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
    ENDIF
    iParHigh := HIWORD( wParam )
    iParLow := LOWORD( wParam )
-   IF oWnd:aEvents != Nil .AND. .AND. !oWnd:lSuspendMsgsHandling  .AND. ;
+   IF oWnd:aEvents != Nil .AND. !oWnd:lSuspendMsgsHandling  .AND. ;
       ( iItem := AScan( oWnd:aEvents, { | a | a[ 1 ] == iParHigh.and.a[ 2 ] == iParLow } ) ) > 0
       Eval( oWnd:aEvents[ iItem, 3 ], oWnd, iParLow )
    ELSEIF ValType( oWnd:menu ) == "A" .AND. ;
@@ -772,7 +772,7 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
    ELSEIF oWnd:oPopup != Nil .AND. ;
       ( aMenu := Hwg_FindMenuItem( oWnd:oPopup:aMenu, wParam, @iCont ) ) != Nil ;
       .AND. aMenu[ 1, iCont, 1 ] != Nil
-      Eval( aMenu[ 1, iCont, 1 ], iCont )
+      Eval( aMenu[ 1, iCont, 1 ], iCont, wParam )
    ELSEIF oWnd:oNotifyMenu != Nil .AND. ;
       ( aMenu := Hwg_FindMenuItem( oWnd:oNotifyMenu:aMenu, wParam, @iCont ) ) != Nil ;
       .AND. aMenu[ 1, iCont, 1 ] != Nil

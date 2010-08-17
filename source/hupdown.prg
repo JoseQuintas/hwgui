@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.34 2010-08-16 14:56:45 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.35 2010-08-17 13:35:33 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -12,9 +12,10 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 
-#define UDN_FIRST               (-721)        // updown
-#define UDN_DELTAPOS            (UDN_FIRST - 1)
-
+#define UDN_FIRST               ( -721 )        // updown
+#define UDN_DELTAPOS            ( UDN_FIRST - 1 ) 
+#define UDM_SETBUDDY            ( WM_USER + 105 )
+#define UDM_GETBUDDY            ( WM_USER + 106 )
 
 CLASS HUpDown INHERIT HControl
 

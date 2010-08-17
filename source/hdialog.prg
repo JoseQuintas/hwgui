@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.115 2010-08-16 14:56:45 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.116 2010-08-17 13:35:33 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -200,7 +200,7 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
-   LOCAL i, oTab, nPos
+   LOCAL i, oTab, nPos, aCoors
 
    IF msg = WM_GETMINMAXINFO
       IF ::minWidth  > - 1 .OR. ::maxWidth  > - 1 .OR. ;
@@ -508,7 +508,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
    ENDIF
    IF oDlg:aEvents != Nil .AND. ;
       ( i := AScan( oDlg:aEvents, { | a | a[ 1 ] == iParHigh.and.a[ 2 ] == iParLow } ) ) > 0
-      IF ! oDlg:lSuspendMsgsHandling .
+      IF ! oDlg:lSuspendMsgsHandling 
          Eval( oDlg:aEvents[ i, 3 ], oDlg, iParLow )
       ENDIF
    ELSEIF iParHigh == 0 .AND. ! oDlg:lSuspendMsgsHandling .AND. ( ;

@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.35 2010-08-17 13:35:33 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.36 2010-08-18 00:24:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -54,13 +54,13 @@ CLASS HUpDown INHERIT HControl
    METHOD DisableBackColor( DisableBColor ) SETGET                                             
    METHOD Hide() INLINE (::lHide := .T., HideWindow( ::handle ), HideWindow( ::hUpDown ) )
    METHOD Show() INLINE (::lHide := .F., ShowWindow( ::handle ), ShowWindow( ::hUpDown ) )
-   METHOD Enable()  INLINE ( Super:Enable(), EnableWindow( ::hUpDown, .T. ) , ;
-                            InvalidateRect( ::oParent:Handle, 1,  ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight ) )
+   METHOD Enable()  INLINE ( Super:Enable(), EnableWindow( ::hUpDown, .T. ), InvalidateRect( ::hUpDown, 1 )
+                          //  InvalidateRect( ::oParent:Handle, 1,  ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight ) )
    METHOD Disable() INLINE ( Super:Disable(), EnableWindow( ::hUpDown, .F. ) )
    METHOD Valid()
    METHOD CreateUpDown()
    METHOD Move( x1, y1, width, height ) INLINE  Super:Move( x1, y1, width + GetClientRect( ::hUpDown )[ 3 ], height ) ,;
-                                                SENDMESSAGE( ::hUpDown, UDM_SETBUDDY, ::oEditUpDown:handle, 0 )
+                                                SENDMESSAGE( ::hUpDown, UDM_SETBUDDY, ::oEditUpDown:handle, 0 ), InvalidateRect( ::hUpDown, 1 )
 
 ENDCLASS
 
@@ -222,7 +222,8 @@ METHOD Refresh()  CLASS HUpDown
    ENDIF
    ::oEditUpDown:Title :=  ::Title
    ::oEditUpDown:Refresh()
-
+   InvalidateRect( ::hUpDown, 1 )
+   
    RETURN Nil
 
 METHOD Valid() CLASS HUpDown

@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.67 2010-06-16 12:46:22 lfbasso Exp $
+ *$Id: htab.prg,v 1.68 2010-08-18 00:24:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -681,15 +681,8 @@ METHOD Notify( lParam ) CLASS HTab
 METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    Local oCtrl 
    //WRITELOG('TAB'+STR(MSG)+STR(WPARAM)+STR(LPARAM)+CHR(13))
-   IF msg = WM_LBUTTONDOWN
-      IF ::ShowDisablePage( lParam ) = 0
-          RETURN 0
-      ENDIF
-      ::lClick := .T.
-      ::SetFocus( 0 )
-   ELSEIF  msg = WM_MOUSEMOVE .OR. ( ::nPaintHeight = 0 .AND. msg = WM_NCHITTEST  )
-      RETURN ::ShowDisablePage( lParam )
-   ELSEIF msg = WM_PAINT 
+   
+   IF msg = WM_PAINT 
       IF ::nPaintHeight > 0 .AND. ::nActive > 0  .AND. GetFocus() != ::handle
          IF ( oCtrl := ::FindControl( , GetFocus() ) ) != Nil
             RedrawWindow( oCtrl:handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT )  // Force a complete redraw
@@ -698,6 +691,15 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
       RETURN - 1
    ELSEIF msg = WM_ERASEBKGND
       ::ShowDisablePage()
+      RETURN - 1
+   ELSEIF msg = WM_LBUTTONDOWN
+      IF ::ShowDisablePage( lParam ) = 0
+          RETURN 0
+      ENDIF
+      ::lClick := .T.
+      ::SetFocus( 0 )
+   ELSEIF  msg = WM_MOUSEMOVE .OR. ( ::nPaintHeight = 0 .AND. msg = WM_NCHITTEST  )
+      RETURN ::ShowDisablePage( lParam )
    ELSEIF ( msg = WM_SIZE .AND. Hwg_BitAnd( ::Style, TCS_BOTTOM  ) != 0)       //::SetPaintSizePos( .T. )
       SendMessage( ::oPaint:handle,	WM_PRINT, GETDC( ::handle ), PRF_CLIENT + PRF_CHILDREN + PRF_OWNED ) //PRF_CHECKVISIBLE )
       RETURN 0

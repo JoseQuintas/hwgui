@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.116 2010-08-17 13:35:33 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.117 2010-08-18 00:24:47 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -423,7 +423,7 @@ STATIC FUNCTION onEraseBk( oDlg, hDC )
        ENDIF
        RETURN 1
        */
-       FillRect( hDC, aCoors[1], aCoors[2], aCoors[1] + 1, aCoors[2] + 1 )
+       //FillRect( hDC, aCoors[1], aCoors[2], aCoors[1] + 1, aCoors[2] + 1 )
     ENDIF
 
     RETURN 0

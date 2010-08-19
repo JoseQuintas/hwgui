@@ -1,5 +1,5 @@
 /*
- * $Id: hupdown.prg,v 1.36 2010-08-18 00:24:47 lfbasso Exp $
+ * $Id: hupdown.prg,v 1.37 2010-08-19 14:52:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HUpDown class
@@ -54,7 +54,7 @@ CLASS HUpDown INHERIT HControl
    METHOD DisableBackColor( DisableBColor ) SETGET                                             
    METHOD Hide() INLINE (::lHide := .T., HideWindow( ::handle ), HideWindow( ::hUpDown ) )
    METHOD Show() INLINE (::lHide := .F., ShowWindow( ::handle ), ShowWindow( ::hUpDown ) )
-   METHOD Enable()  INLINE ( Super:Enable(), EnableWindow( ::hUpDown, .T. ), InvalidateRect( ::hUpDown, 1 )
+   METHOD Enable()  INLINE ( Super:Enable(), EnableWindow( ::hUpDown, .T. ), InvalidateRect( ::hUpDown, 1 ) )
                           //  InvalidateRect( ::oParent:Handle, 1,  ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight ) )
    METHOD Disable() INLINE ( Super:Disable(), EnableWindow( ::hUpDown, .F. ) )
    METHOD Valid()

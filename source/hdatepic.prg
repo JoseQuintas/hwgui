@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.29 2010-08-31 19:15:24 lfbasso Exp $
+ * $Id: hdatepic.prg,v 1.30 2010-08-31 20:21:26 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -47,8 +47,7 @@ ENDCLASS
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
             oFont, bInit, bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor, lshowtime ) CLASS HDatePicker
 
-   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), IIF( bSetGet != Nil,WS_TABSTOP, 0 ) )
-   nStyle += IIF( ! EMPTY( lShowTime ), Hwg_BitOr( nStyle, DTS_TIMEFORMAT ), 0 )
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), IIF( bSetGet != Nil,WS_TABSTOP , 0 ) + IIF( lShowTime == Nil.OR. ! lShowTime, 0, DTS_TIMEFORMAT ) )    
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               ,, ctooltip, tcolor, bcolor )
 

@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.85 2010-06-16 12:46:22 lfbasso Exp $
+ *$Id: windows.ch,v 1.86 2010-08-31 19:15:24 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -353,6 +353,7 @@
 */
 
 #define DTS_SHOWNONE        2          // 0x0002
+#define DTS_TIMEFORMAT      9 
 
 /*
  * Window Styles

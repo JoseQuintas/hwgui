@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.117 2010-08-18 00:24:47 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.118 2010-08-31 19:15:24 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -317,9 +317,6 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    InitObjects( oDlg )
    InitControls( oDlg, .T. )
    
-   POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS), 0)  
-   POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL), 0)
-
    IF oDlg:bInit != Nil
       oDlg:lSuspendMsgsHandling := .T.
       IF ValType( nReturn := Eval( oDlg:bInit, oDlg ) ) != "N"
@@ -332,6 +329,9 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       ENDIF
    ENDIF
    oDlg:lSuspendMsgsHandling := .F.
+
+   POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS), 0)  
+   POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL), 0)
    
    oDlg:nInitFocus := IIF( VALTYPE( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )   
  	 IF PtrtouLong( wParam ) == PtrtouLong( oDlg:nInitFocus ) 

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.110 2010-07-04 19:49:57 lfbasso Exp $
+ * $Id: control.c,v 1.111 2010-08-31 19:15:24 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -561,19 +561,34 @@ HB_FUNC( SETDATEPICKER )
       SYSTEMTIME sysTime;
 #ifndef HARBOUR_OLD_VERSION
       int lYear, lMonth, lDay;
+      int lHour, lMinute ;
 #else
       long lYear, lMonth, lDay;
+      long lHour, lMinute ;
 #endif
-
+      double dSecond ;
+      
       hb_dateDecode( hb_itemGetDL( pDate ), &lYear, &lMonth, &lDay );
+      if ( hb_pcount(  ) < 3 )
+      {
+         GetLocalTime( &st );
+         lHour = st.wHour;
+         lMinute = st.wMinute;
+         dSecond = st.wSecond;
+      }
+      else
+      {
+         lSeconds = hb_timeEncStr( ( LPTSTR ) HB_PARSTR( 3, &hStr, NULL ) ) ;
+         hb_timeDecode( lSeconds, &lHour, &lMinute, &dSecond );
+      }
 
       sysTime.wYear = ( unsigned short ) lYear;
       sysTime.wMonth = ( unsigned short ) lMonth;
       sysTime.wDay = ( unsigned short ) lDay;
       sysTime.wDayOfWeek = 0;
-      sysTime.wHour = 0;
-      sysTime.wMinute = 0;
-      sysTime.wSecond = 0;
+      sysTime.wHour = ( unsigned short ) lHour;
+      sysTime.wMinute = ( unsigned short ) lMinute;
+      sysTime.wSecond = dSecond;
       sysTime.wMilliseconds = 0;
 
       SendMessage( ( HWND ) HB_PARHANDLE( 1 ), DTM_SETSYSTEMTIME, GDT_VALID,
@@ -594,6 +609,18 @@ HB_FUNC( GETDATEPICKER )
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), DTM_GETSYSTEMTIME, 0,
                 ( LPARAM ) & st );
    hb_retd( st.wYear, st.wMonth, st.wDay );
+}
+
+HB_FUNC( GETTIMEPICKER )
+{
+   SYSTEMTIME st;
+   char szTime[9];
+
+   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), DTM_GETSYSTEMTIME, 0,
+                ( LPARAM ) & st );
+   
+   snprintf( szTime, 9, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
+   hb_retc( szTime ) ;
 }
 
 HB_FUNC( CREATETABCONTROL )

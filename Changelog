@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1296 2010-08-18 00:24:47 lfbasso Exp $
+ * $Id: Changelog,v 1.1297 2010-08-31 19:15:24 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,24 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-08-31 21:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+ * include\guilib.ch
+   + clause [<lShowTime: SHOWTIME>]   in xcommand @ <x>,<y> DATEPICKER [ <oPick> ]  ;
+ * include\windows.ch
+   + constant #define DTS_TIMEFORMAT      9 
+ * source\control.c
+   + function HB_FUNC( GETTIMEPICKER )
+   ! changed HB_FUNC( SETDATEPICKER ) to attrib TIME value
+ * source\hdatepic.prg
+   + DATA tValue
+   + DATA lShowTime      INIT .T.
+   ! add new parameter in method New (lshowtime )
+   ! changed METHODs to support DATE and TIME values
+ * source\hdialog.prg
+   ! minor fix
+ * source\hsayimg.prg
+   ! fix in nWidth
+   
 2010-08-17 21:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
  * source\hdialog.prg
    ! minor fix in onEraseBk

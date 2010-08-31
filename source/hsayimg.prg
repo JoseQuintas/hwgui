@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.28 2009-01-07 15:30:25 lfbasso Exp $
+ * $Id: hsayimg.prg,v 1.29 2010-08-31 19:15:24 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -94,7 +94,7 @@ CLASS HSayBmp INHERIT HSayImage
    DATA nStretch
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
-               bSize, ctooltip, bClick, bDblClick, lTransp, nStretch )
+               bSize, ctooltip, bClick, bDblClick, lTransp, nStretch, nStyle )
    METHOD Redefine( oWndParent, nId, Image, lRes, bInit, bSize, ctooltip, lTransp )
    METHOD Init()   
    METHOD Paint( lpdis )
@@ -107,7 +107,8 @@ ENDCLASS
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
             bSize, ctooltip, bClick, bDblClick, lTransp, nStretch ) CLASS HSayBmp
 
-   Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctooltip, bClick, bDblClick )
+   nStyle := IIF( nStyle = Nil, 0, nStyle )
+   Super:New( oWndParent, nId, SS_OWNERDRAW + nStyle, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctooltip, bClick, bDblClick )
 
    ::bPaint := { | o, lpdis | o:Paint( lpdis ) }
    ::lTransp := IIf( lTransp = Nil, .F., lTransp )

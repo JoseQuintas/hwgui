@@ -1,5 +1,5 @@
 /*
- * $Id: hdatepic.prg,v 1.28 2010-02-10 23:32:12 lfbasso Exp $
+ * $Id: hdatepic.prg,v 1.29 2010-08-31 19:15:24 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDatePicker class
@@ -22,12 +22,13 @@ CLASS HDatePicker INHERIT HControl
 
 CLASS VAR winclass   INIT "SYSDATETIMEPICK32"
    DATA bSetGet
-   DATA dValue
+   DATA dValue, tValue
    DATA bChange
    DATA lnoValid       INIT .F.
+   DATA lShowTime      INIT .T.
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-               oFont, bInit, bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor )
+               oFont, bInit, bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor, lshowtime )
    METHOD Activate()
    METHOD Init()
    METHOD OnEvent( msg, wParam, lParam )
@@ -44,14 +45,18 @@ CLASS VAR winclass   INIT "SYSDATETIMEPICK32"
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-            oFont, bInit, bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor ) CLASS HDatePicker
+            oFont, bInit, bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor, lshowtime ) CLASS HDatePicker
 
-   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), IIF( bSetGet != Nil,WS_TABSTOP, 0 ) ) 
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), IIF( bSetGet != Nil,WS_TABSTOP, 0 ) )
+   nStyle += IIF( ! EMPTY( lShowTime ), Hwg_BitOr( nStyle, DTS_TIMEFORMAT ), 0 )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               ,, ctooltip, tcolor, bcolor )
 
-   ::dValue   := IIf( vari == Nil .OR. ValType( vari ) != "D", CToD( Space( 8 ) ), vari )
-   ::title   := ::dValue
+   ::lShowTime := Hwg_BitAnd( nStyle, DTS_TIMEFORMAT ) > 0
+   ::dValue    := IIF( vari == Nil .OR. ValType( vari ) != "D", CToD( Space( 8 ) ), vari )
+   ::tValue    := IIF( vari == Nil .OR. Valtype( vari ) != "C", SPACE(6), vari )
+   ::title     := IIF( ! ::lShowTime, ::dValue, ::tValue )
+   
    ::bSetGet := bSetGet
    ::bChange := bChange
 
@@ -78,11 +83,12 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    RETURN Self
 
 METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bSize, bInit, ;
-                 bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor ) CLASS  HDatePicker
+                 bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor, lshowtime ) CLASS  HDatePicker
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize,, ctooltip, tcolor, bcolor )
    HWG_InitCommonControlsEx()
    ::dValue   := IIf( vari == Nil .OR. ValType( vari ) != "D", CToD( Space( 8 ) ), vari )
+   ::tValue    := IIF( vari == Nil .OR. Valtype( vari ) != "C", SPACE(6), vari )
    ::bSetGet := bSetGet
    ::bChange := bChange
    
@@ -120,7 +126,7 @@ METHOD Init() CLASS HDatePicker
       IF Empty( ::dValue )
          SetDatePickerNull( ::handle )
       ELSE
-         SetDatePicker( ::handle, ::dValue )
+         SetDatePicker( ::handle, ::dValue, ::tValue )
       ENDIF
    ENDIF
    RETURN Nil
@@ -156,36 +162,46 @@ RETURN -1
 METHOD Value( Value )  CLASS HDatePicker   
 
    IF Value != Nil
-       ::SetValue( Value )
+      IF ::lShowTime
+         ::SetValue( ::dValue, Value  )
+      ELSE
+         ::SetValue( Value, ::tValue )
+      ENDIF   
    ENDIF    
-   RETURN ::dValue
+   RETURN IIF( ::lShowTime, ::tValue, ::dValue )
         
 METHOD GetValue CLASS HDatePicker   
-   RETURN GetDatePicker( ::handle )
+   RETURN IIF( ! ::lShowTime, GetDatePicker( ::handle ), GetTimePicker( ::handle ) )
          
-METHOD SetValue( dValue ) CLASS HDatePicker
+METHOD SetValue( xValue ) CLASS HDatePicker
 
-   IF Empty( dValue )
+   IF Empty( xValue )
       SetDatePickerNull( ::handle )
+   ELSEIF ::lShowTime
+      SetDatePicker( ::handle, ::dValue, STRTRAN( xValue, ":", "" ) )
    ELSE
-      SetDatePicker( ::handle, dValue )
+      SetDatePicker( ::handle, xValue, STRTRAN( ::tValue, ":", "" ) )
    ENDIF
    ::dValue := GetDatePicker( ::handle )
-   ::title := ::dValue
+   ::tValue := GetTimePicker( ::handle )
+   ::title := IIF( ::lShowTime, ::tValue, ::dValue )
    IF ::bSetGet != Nil
-      Eval( ::bSetGet, ::dValue, Self )
+      Eval( ::bSetGet, IIF( ::lShowTime, ::tValue,::dValue ), Self )
    ENDIF
-   
    RETURN Nil
 
 METHOD Refresh() CLASS HDatePicker
    IF ::bSetGet != Nil
-      ::dValue := Eval( ::bSetGet,, nil )
+      IF ! ::lShowTime
+         ::dValue := Eval( ::bSetGet,, nil )
+      ELSE
+         ::tValue := Eval( ::bSetGet,, nil )
+      ENDIF   
    ENDIF
    IF Empty( ::dValue )
       SetDatePickerNull( ::handle )
    ELSE
-      SetDatePicker( ::handle, ::dValue )
+      SetDatePicker( ::handle, ::dValue, ::tValue )
    ENDIF
    RETURN Nil
 
@@ -200,12 +216,13 @@ METHOD onChange( nMess ) CLASS HDatePicker
          ::SetFocus()
       ENDIF
       ::dValue := GetDatePicker( ::handle )
+      ::tValue := GetTimePicker( ::handle )
       IF ::bSetGet != Nil
-         Eval( ::bSetGet, ::dValue, Self )
+         Eval( ::bSetGet, IIF( ::lShowTime, ::tValue, ::dValue ), Self )
       ENDIF
       IF ::bChange != Nil
          ::oparent:lSuspendMsgsHandling := .T.
-         Eval( ::bChange, ::dValue, Self )
+         Eval( ::bChange, IIF( ::lShowTime, ::tValue, ::dValue), Self )
          ::oparent:lSuspendMsgsHandling := .F.
       ENDIF
    ENDIF
@@ -221,7 +238,7 @@ METHOD When( ) CLASS HDatePicker
    IF ::bGetFocus != Nil
       ::oParent:lSuspendMsgsHandling := .T.
       ::lnoValid := .T.
-      res :=  Eval( ::bGetFocus, ::dValue, Self )
+      res :=  Eval( ::bGetFocus, IIF( ::lShowTime, ::tValue, ::dValue ), Self )
       ::oParent:lSuspendMsgsHandling := .F.
       ::lnoValid := ! res
       IF ! res
@@ -243,7 +260,8 @@ METHOD Valid( ) CLASS HDatePicker
    ENDIF
    IF ::bLostFocus != Nil
       ::oparent:lSuspendMsgsHandling := .T.
-      res := Eval( ::bLostFocus, ::dValue, Self )
+      res := Eval( ::bLostFocus, IIF( ::lShowTime, ::tValue, ::dValue ), Self )
+      res := IIF( ValType( res ) == "L", res, .T. )
       ::oparent:lSuspendMsgsHandling := .F.
       IF ! res
          ::SetFocus( )

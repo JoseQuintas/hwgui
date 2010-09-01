@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.29 2010-08-31 19:15:24 lfbasso Exp $
+ * $Id: hsayimg.prg,v 1.30 2010-09-01 15:32:06 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -105,7 +105,7 @@ CLASS HSayBmp INHERIT HSayImage
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
-            bSize, ctooltip, bClick, bDblClick, lTransp, nStretch ) CLASS HSayBmp
+            bSize, ctooltip, bClick, bDblClick, lTransp, nStretch, nStyle ) CLASS HSayBmp
 
    nStyle := IIF( nStyle = Nil, 0, nStyle )
    Super:New( oWndParent, nId, SS_OWNERDRAW + nStyle, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctooltip, bClick, bDblClick )

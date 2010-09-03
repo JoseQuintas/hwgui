@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1297 2010-08-31 19:15:24 lfbasso Exp $
+ * $Id: Changelog,v 1.1298 2010-09-03 13:20:16 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-09-03 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+ * source\control.c
+   ! fix function HB_FUNC( SETDATEPICKER ) compatible HARBOUR
+ * source\hdialog.prg
+   ! minor fix
+ 
 2010-08-31 21:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
  * include\guilib.ch
    + clause [<lShowTime: SHOWTIME>]   in xcommand @ <x>,<y> DATEPICKER [ <oPick> ]  ;

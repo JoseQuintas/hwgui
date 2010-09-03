@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.118 2010-08-31 19:15:24 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.119 2010-09-03 13:20:16 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -330,9 +330,6 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    ENDIF
    oDlg:lSuspendMsgsHandling := .F.
 
-   POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS), 0)  
-   POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL), 0)
-   
    oDlg:nInitFocus := IIF( VALTYPE( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )   
  	 IF PtrtouLong( wParam ) == PtrtouLong( oDlg:nInitFocus ) 
       oDlg:nInitFocus := 0
@@ -370,6 +367,10 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    IF ValType( oDlg:bOnActivate ) == "B"
       Eval( oDlg:bOnActivate, oDlg )
    ENDIF
+   
+   POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS), 0)  
+   POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL), 0)
+
    	 // adjust values of MIN and MAX size to Anchor work correctly   
    oDlg:rect := GetClientRect( oDlg:Handle )
    oDlg:nWidth  := oDlg:rect[ 3 ]

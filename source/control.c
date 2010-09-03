@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.112 2010-09-02 00:54:59 lfbasso Exp $
+ * $Id: control.c,v 1.113 2010-09-03 13:20:16 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -568,6 +568,7 @@ HB_FUNC( SETDATEPICKER )
       long lYear, lMonth, lDay;
       long lHour, lMinute ;
 #endif
+      int lMilliseconds = 0;
       double dSecond ;
       
       hb_dateDecode( hb_itemGetDL( pDate ), &lYear, &lMonth, &lDay );
@@ -581,7 +582,11 @@ HB_FUNC( SETDATEPICKER )
       else
       {
          lSeconds = hb_timeEncStr( ( LPTSTR ) HB_PARSTR( 3, &hStr, NULL ) ) ;
-         hb_timeDecode( lSeconds, &lHour, &lMinute, &dSecond );
+         #ifdef __XHARBOUR__
+            hb_timeDecode( lSeconds, &lHour, &lMinute, &dSecond );
+         #else
+            hb_timeDecode( lSeconds, &lHour, &lMinute, &dSecond, &lMilliseconds ) ;
+         #endif
       }
 
       sysTime.wYear = ( unsigned short ) lYear;
@@ -591,7 +596,7 @@ HB_FUNC( SETDATEPICKER )
       sysTime.wHour = ( unsigned short ) lHour;
       sysTime.wMinute = ( unsigned short ) lMinute;
       sysTime.wSecond = dSecond;
-      sysTime.wMilliseconds = 0;
+      sysTime.wMilliseconds = ( unsigned short ) lMilliseconds;
 
       SendMessage( ( HWND ) HB_PARHANDLE( 1 ), DTM_SETSYSTEMTIME, GDT_VALID,
                    ( LPARAM ) & sysTime );

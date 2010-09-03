@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.86 2010-08-16 14:56:45 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.87 2010-09-03 18:29:22 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -131,11 +131,10 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::value := Iif( vari == Nil .OR. Valtype( vari ) != "N", 1, vari )
    ENDIF
 
-
-   ::aItems        := IIF( aItems = Nil, {}, aClone( aItems ) )
+   aItems        := IIF( aItems = Nil, {}, aClone( aItems ) )
+   ::RowSource( aItems )
    ::aItemsBound   := {}
    ::bSetGet       := bSetGet
-   ::RowSource( ::aItems )
 
    ::Activate()
 
@@ -207,10 +206,11 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    ELSE
       ::value := Iif( vari == Nil .OR. Valtype( vari ) != "N", 1, vari )
    ENDIF
-   ::aItems        := IIF( aItems = Nil, {}, aClone( aItems ) )
+   aItems        := IIF( aItems = Nil, {}, aClone( aItems ) )
+   ::RowSource( aItems )
    ::aItemsBound   := {}
    ::bSetGet := bSetGet
-   ::RowSource( ::aItems )
+   
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
@@ -672,7 +672,7 @@ LOCAL ltab := GETKEYSTATE( VK_TAB ) < 0
    ENDIF
 RETURN .T.
 
-METHOD RowSource( xSource )
+METHOD RowSource( xSource ) CLASS HComboBox
 
    IF xSource != Nil
       IF VALTYPE( xSource ) = "A"
@@ -682,6 +682,7 @@ METHOD RowSource( xSource )
       ELSE
          ::xrowsource := { xSource, Nil }
       ENDIF
+      ::aItems := xSource
    ENDIF
    RETURN ::xRowSource
 
@@ -694,8 +695,9 @@ METHOD Populate
    ENDIF
    IF ::xrowsource[ 1 ] != Nil .AND. "->" $ ::xrowsource[ 1 ] //::aItems[ 1 ]
       cAlias := LEFT( ::xrowsource[ 1 ], AT("->", ::xrowsource[ 1 ]) - 1 )
-      value := STRTRAN( ::xrowsource[ 1 ] , calias + "->" )
-      cAlias := IIF( TYPE( ::xrowsource[ 1 ] ) = "U",  Nil, cAlias )
+      value := STRTRAN( ::xrowsource[ 1 ] , calias + "->", , ,1, 1 )
+      //cAlias := IIF( TYPE( ::xrowsource[ 1 ] ) = "U",  Nil, cAlias )
+      cAlias := IIF( VALTYPE( ::xrowsource[ 1 ] ) = "U",  Nil, cAlias ) 
       cValueBound := IIF( ::xrowsource[ 2 ]  != Nil  .AND. cAlias != Nil, STRTRAN( ::xrowsource[ 2 ] , calias + "->" ), Nil )
    ELSE
       cValueBound := IIF( VALTYPE( ::aItems[ 1 ] ) = "A" .AND. LEN(  ::aItems[ 1 ] ) > 1, ::aItems[ 1, 2 ], NIL )

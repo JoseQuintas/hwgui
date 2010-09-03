@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.102 2010-08-17 16:16:15 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.103 2010-09-03 13:23:42 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -1019,17 +1019,18 @@ STATIC FUNCTION onMdiNcActivate( oWnd, wParam )
 
 Static Function onMdiActivate( oWnd,wParam, lParam )
    Local  lScreen := oWnd:Screen != nil, aWndMain
-   /*
-   IF EMPTY( lParam ) // MDI CLIENTE
-      RETURN 0
-   ENDIF
-   */
+   Local lConf
+   If ValType( wParam ) == ValType( oWnd:Handle )
+      lConf := wParam = oWnd:Handle
+   Else
+      lConf := .F.
+   EndIf    
    // added
    IF  lScreen .AND. ( Empty( lParam ) .OR. ;
-       lParam = oWnd:Screen:Handle ) .AND. wParam != oWnd:Handle
+       lParam = oWnd:Screen:Handle ) .AND. !lConf //wParam != oWnd:Handle
       SetWindowPos( oWnd:Screen:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE )
       RETURN 0
-   ELSEIF oWnd:Handle = wParam
+   ELSEIF lConf //oWnd:Handle = wParam
       IF  oWnd:Screen:handle != wParam .AND. oWnd:bLostFocus != Nil //.AND.wParam == 0
          oWnd:lSuspendMsgsHandling := .t.
          //IF oWnd:Screen:handle = lParam

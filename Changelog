@@ -1,12 +1,15 @@
-/*
- * $Id: Changelog,v 1.1298 2010-09-03 13:20:16 lfbasso Exp $
- */
-
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+
+2010-09-03 09:54 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
+  * source\hwindow.prg
+    Bug in window MDI
+  * include\guilib.ch
+    No close command ]
 
 2010-09-03 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
  * source\control.c
@@ -32,6 +35,7 @@
  * source\hsayimg.prg
    ! fix in nWidth
    
+ 
 2010-08-17 21:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
  * source\hdialog.prg
    ! minor fix in onEraseBk

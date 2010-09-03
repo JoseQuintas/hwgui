@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.114 2010-09-03 14:53:49 lfbasso Exp $
+ * $Id: control.c,v 1.115 2010-09-03 14:56:28 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -572,7 +572,7 @@ HB_FUNC( SETDATEPICKER )
 #ifdef __XHARBOUR__      
       double dSecond ;
 #else
-      long dSecond ;
+      long lSecond ;
 #endif
       
       hb_dateDecode( hb_itemGetDL( pDate ), &lYear, &lMonth, &lDay );

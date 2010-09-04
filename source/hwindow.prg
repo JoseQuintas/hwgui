@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.103 2010-09-03 13:23:42 sandrorrfreire Exp $
+ *$Id: hwindow.prg,v 1.104 2010-09-04 17:50:30 sandrorrfreire Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -537,10 +537,12 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
    LOCAL i, oCtrl
-
+   LOCAL nFocus
+   
+   nFocus := If( Hb_IsNumeric( ::nFocus ), ::nFocus, 0)
    //IF msg = WM_NCLBUTTONDBLCLK .AND. ::lChild
    //   Return 0
-
+ 
    IF msg = WM_GETMINMAXINFO //= &H24
       IF ::minWidth  > -1 .OR. ::maxWidth  > -1 .OR. ::minHeight > -1 .OR. ::maxHeight > -1
          MINMAXWINDOW(::handle, lParam,;
@@ -549,11 +551,13 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
          IIF( ::maxWidth  > -1, ::maxWidth, Nil ),;
          IIF( ::maxHeight > -1, ::maxHeight, Nil ) )
          RETURN 0
+         
       ENDIF
-   ELSEIF msg = WM_SETFOCUS .AND. ::nFocus != 0
-      SETFOCUS( ::nFocus )
-      ::nFocus := 0
+   ELSEIF msg = WM_SETFOCUS .AND. nFocus != 0
+      SETFOCUS( nFocus )
+      ::nFocus := nFocus := 0
    ENDIF
+ 
    IF ( i := AScan( ::aMessages[ 1 ], msg ) ) != 0
       RETURN Eval( ::aMessages[ 2, i ], Self, wParam, lParam )
    ELSE
@@ -564,7 +568,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
          onTrackScroll( Self, msg, wParam, lParam )
       ELSEIF msg = WM_NOTIFY .AND.!::lSuspendMsgsHandling
          IF ( oCtrl := ::FindControl( , GetFocus() ) ) != Nil .AND. oCtrl:ClassName != "HTAB"
-            ::nFocus := oCtrl:handle
+            nFocus := oCtrl:handle
             SendMessage( oCtrl:handle, msg, wParam, lParam )
          ENDIF
       ENDIF
@@ -1004,17 +1008,18 @@ STATIC FUNCTION onMdiCommand( oWnd, wParam )
    RETURN 0
 
 STATIC FUNCTION onMdiNcActivate( oWnd, wParam )
-
+  
    IF ! Empty( oWnd:Screen ) 
       IF wParam = 1 .AND. oWnd:Screen:handle == oWnd:handle
          SetWindowPos( oWnd:Screen:HANDLE, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE )
          RETURN 1 
       ENDIF
    ENDIF   
-   IF wParam == 1 .AND. oWnd:nFocus > 0
+    
+   IF wParam == 1 //.AND. oWnd:nFocus > 0
       //SetFocus( oWnd:nFocus )   DISPARA O EVENTO LOSTFOCUS DO GET DUAS VEZES
    ENDIF
-
+ 
    RETURN - 1
 
 Static Function onMdiActivate( oWnd,wParam, lParam )

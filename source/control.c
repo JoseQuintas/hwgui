@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.118 2010-09-03 18:29:22 lfbasso Exp $
+ * $Id: control.c,v 1.119 2010-09-05 22:48:43 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -640,8 +640,9 @@ HB_FUNC( GETTIMEPICKER )
 
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), DTM_GETSYSTEMTIME, 0,
                 ( LPARAM ) & st );
-   
-   snprintf( szTime, 9, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
+
+   hb_snprintf( szTime, 9, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
+
    hb_retc( szTime ) ;
 }
 
@@ -818,7 +819,7 @@ HB_FUNC( TREEADDNODE )
       }
    }
 
-#if !defined(__BORLANDC__) ||  (__BORLANDC__ >= 1424)
+#if !defined(__BORLANDC__) ||  (__BORLANDC__ > 1424)
    is.item = tvi;
 #else
    is.DUMMYUNIONNAME.item = tvi;

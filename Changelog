@@ -4,7 +4,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
- 
+2010-09-06 05:45 UTC+0700 Andi Jahja <xharbour/AT/telkom/net/id>
+  * source/resource.c
+    ! reorder logic of start-up codes initialization
+
+  * source/control.c
+    ! use hb_snprintf
+    ! fixed compilation with BCC 5.90
+
+  * source/dialog.c
+    ! fixed compilation with BCC 5.90
+
+  * source/window.c
+    * casting for MSVC 6 and DMC
+
 2010-09-04 15:50 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * source\hwindow.prg
     Bug in GetFocus after MSGINFO in MDICHILD

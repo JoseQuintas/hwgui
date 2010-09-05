@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.91 2010-08-17 16:48:46 lfbasso Exp $
+ * $Id: window.c,v 1.92 2010-09-05 22:48:43 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -494,8 +494,13 @@ HB_FUNC( HWG_CREATEMDICHILDWINDOW )
    if( aWindows[0] )
    {
       hWnd = CreateMDIWindow(
+#if (((defined(_MSC_VER)&&(_MSC_VER<=1200))||defined(__DMC__))&&!defined(__XCC__)&&!defined(__POCC__))
+                  (LPSTR) s_szChild,         // pointer to registered child class name
+                  (LPSTR) lpTitle,           // pointer to window name
+#else
                   s_szChild,                 // pointer to registered child class name
                   lpTitle,                   // pointer to window name
+#endif
                   style,                     // window style
                   x,                         // horizontal position of window
                   y,                         // vertical position of window

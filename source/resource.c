@@ -1,5 +1,5 @@
 /*
- * $Id: resource.c,v 1.19 2010-01-26 08:09:33 druzus Exp $
+ * $Id: resource.c,v 1.20 2010-09-05 22:48:43 andijahja Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level resource functions
@@ -62,6 +62,9 @@ HB_CALL_ON_STARTUP_END( _hwgui_module_init_ )
 
 #if defined( HB_PRAGMA_STARTUP )
    #pragma startup _hwgui_module_init_
+#elif defined( HB_DATASEG_STARTUP )
+   #define HB_DATASEG_BODY    HB_DATASEG_FUNC( _hwgui_module_init_ )
+   #include "hbiniseg.h"
 #elif defined( HB_MSC_STARTUP )  // support for old [x]Harbour version
    #if defined( HB_OS_WIN_64 )
       #pragma section( HB_MSC_START_SEGMENT, long, read )
@@ -69,9 +72,6 @@ HB_CALL_ON_STARTUP_END( _hwgui_module_init_ )
    #pragma data_seg( HB_MSC_START_SEGMENT )
    static HB_$INITSYM hb_vm_auto_hwgui_module_init_ = _hwgui_module_init_;
    #pragma data_seg()
-#elif defined( HB_DATASEG_STARTUP )
-   #define HB_DATASEG_BODY    HB_DATASEG_FUNC( _hwgui_module_init_ )
-   #include "hbiniseg.h"
 #endif
 
 HB_FUNC( FINDRESOURCE )

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.119 2010-09-05 22:48:43 andijahja Exp $
+ * $Id: control.c,v 1.120 2010-09-06 14:08:05 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -641,8 +641,11 @@ HB_FUNC( GETTIMEPICKER )
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), DTM_GETSYSTEMTIME, 0,
                 ( LPARAM ) & st );
 
-   hb_snprintf( szTime, 9, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
-
+   #if __HARBOUR__ - 0 >= 0x010100
+      hb_snprintf( szTime, 9, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
+   #else
+      snprintf( szTime, 9, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
+   #endif
    hb_retc( szTime ) ;
 }
 

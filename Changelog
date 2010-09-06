@@ -4,6 +4,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-09-03 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/control.c
+    ! fix use hb_snprintf in old versions
+  
 2010-09-06 05:45 UTC+0700 Andi Jahja <xharbour/AT/telkom/net/id>
   * source/resource.c
     ! reorder logic of start-up codes initialization

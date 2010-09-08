@@ -4,6 +4,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-09-08 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\guilib.ch
+     + clause [<lShowTime: SHOWTIME>]   in xcommand @ <x>,<y> DATEPICKER [ <oPick> ]  ;
+  * source\hcontrol.prg
+    + add METHOD FontBold( lTrue ) SETGET 
+    + add METHOD FontItalic( lTrue ) SETGET 
+    + add METHOD FontUnderline( lTrue ) SETGET 
+      for change characteristic of the FONT is only necessary set it
+      oCtrl:FontBold := .T. or .F. 
+  * source\hdialog.prg
+    ! fix in ONDESTROY
+  * source\htree.prg
+    ! add msg KEYDOWN in ONEVENT
+
 2010-09-03 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/control.c
     ! fix use hb_snprintf in old versions

@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.19 2010-07-04 13:47:00 lfbasso Exp $
+ * $Id: htree.prg,v 1.20 2010-09-08 12:49:38 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -383,6 +383,11 @@ METHOD onEvent( msg, wParam, lParam )
 
    IF msg = WM_ERASEBKGND
       RETURN 0
+   ELSEIF msg = WM_KEYDOWN 
+      IF  ProcKeyList( Self, wParam )
+         RETURN 0
+      ENDIF
+      
    ELSEIF msg == WM_LBUTTONDOWN
 
    ELSEIF msg == WM_LBUTTONUP .AND. ::lDragging .AND. ::hitemDrop != Nil

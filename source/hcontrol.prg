@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.157 2010-08-16 14:56:45 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.158 2010-09-08 12:49:38 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -83,6 +83,10 @@ CLASS HControl INHERIT HCustomWindow
    METHOD SetToolTip( ctooltip ) 
    METHOD ControlSource( cControlSource ) SETGET 
    METHOD DisableBackColor( DisableBColor ) SETGET
+   METHOD FontBold( lTrue ) SETGET 
+   METHOD FontItalic( lTrue ) SETGET 
+   METHOD FontUnderline( lTrue ) SETGET 
+
    METHOD END()
 
 ENDCLASS
@@ -217,6 +221,69 @@ METHOD SetFont( oFont ) CLASS HControl
       SetWindowFont( ::handle, ::oParent:oFont:handle, .T. )
    ENDIF
    RETURN ::oFont
+
+METHOD FontBold( lTrue ) CLASS HControl
+   Local oFont
+   
+   IF ::oFont = NIL
+      IF ::GetParentForm() != Nil .AND. ::GetParentForm():oFont != Nil
+         oFont := ::GetParentForm():oFont
+      ELSEIF ::oParent:oFont != NIL
+         oFont := ::oParent:oFont
+      ENDIF  
+      IF oFont = Nil .AND. lTrue = Nil
+          RETURN .T.
+      ENDIF
+      ::oFont := IIF( oFont != Nil, HFont():Add( oFont:name, oFont:Width,,,,,), HFont():Add( "", 0, , IIF( !Empty( lTrue ), FW_BOLD, FW_REGULAR ), ,,) )
+   ENDIF  
+   IF lTrue != NIL  
+      ::oFont := ::oFont:SetFontStyle( lTrue )
+      SendMessage( ::handle, WM_SETFONT, ::oFont:handle, MAKELPARAM( 0, 1 ) )   
+      RedrawWindow( ::handle, RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT ) 
+   ENDIF
+   RETURN ::oFont:weight == FW_BOLD
+   
+METHOD FontItalic( lTrue ) CLASS HControl
+   Local oFont
+   
+   IF ::oFont = NIL
+      IF ::GetParentForm() != Nil .AND. ::GetParentForm():oFont != Nil
+         oFont := ::GetParentForm():oFont
+      ELSEIF ::oParent:oFont != NIL
+         oFont := ::oParent:oFont
+      ENDIF  
+      IF oFont = Nil .AND. lTrue = Nil
+          RETURN .F.
+      ENDIF
+      ::oFont := IIF( oFont != Nil, HFont():Add( oFont:name, oFont:width,,,,IIF( lTrue, 1, 0 ) ), HFont():Add( "", 0 ,,,, IIF( lTrue, 1, 0 ) ) )
+   ENDIF  
+   IF lTrue != NIL 
+      ::oFont := ::oFont:SetFontStyle( ,, lTrue )
+      SendMessage( ::handle, WM_SETFONT, ::oFont:handle, MAKELPARAM( 0, 1 ) )
+      RedrawWindow( ::handle, RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT ) 
+   ENDIF
+   RETURN ::oFont:Italic = 1
+
+METHOD FontUnderline( lTrue ) CLASS HControl
+   Local oFont
+   
+   IF ::oFont = NIL
+      IF ::GetParentForm() != Nil .AND. ::GetParentForm():oFont != Nil
+         oFont := ::GetParentForm():oFont
+      ELSEIF ::oParent:oFont != NIL
+         oFont := ::oParent:oFont
+      ENDIF  
+      IF oFont = Nil .AND. lTrue = Nil
+          RETURN .F.
+      ENDIF
+      ::oFont := IIF( oFont != Nil, HFont():Add( oFont:name, oFont:width,,,,, IIF( lTrue, 1, 0 ) ), HFont():Add( "", 0, ,,,, IIF( lTrue, 1, 0) ) )
+   ENDIF  
+   IF lTrue != NIL 
+      ::oFont := ::oFont:SetFontStyle( ,,,lTrue )
+      SendMessage( ::handle, WM_SETFONT, ::oFont:handle, MAKELPARAM( 0, 1 ) )
+      RedrawWindow( ::handle, RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT ) 
+   ENDIF
+   RETURN ::oFont:Underline = 1
 
 METHOD SetToolTip ( cToolTip )   
 
@@ -360,7 +427,8 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    ::nHeight := h1
    */
    IF isWindowVisible( ::handle )
-      SetWindowPos( ::Handle, Nil, x1, y1, w1, h1, SWP_NOREDRAW + SWP_NOACTIVATE  + SWP_NOZORDER + SWP_NOOWNERZORDER + SWP_FRAMECHANGED )	 
+      SetWindowPos( ::Handle, Nil, x1, y1, w1, h1, SWP_NOREDRAW + SWP_NOACTIVATE  + SWP_NOZORDER ) //+ SWP_NOOWNERZORDER + SWP_FRAMECHANGED )	 
+      InvalidateRect( ::oParent:handle, 0 ) 
       RedrawWindow( ::handle, RDW_INVALIDATE + RDW_ERASE  ) //+  RDW_INTERNALPAINT )
    ENDIF
 

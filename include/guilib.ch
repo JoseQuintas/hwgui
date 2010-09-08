@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.164 2010-09-03 13:23:42 sandrorrfreire Exp $
+ *$Id: guilib.ch,v 1.165 2010-09-08 12:49:38 lfbasso Exp $
  */
 
 #define HWG_VERSION            "2.17"
@@ -1076,10 +1076,11 @@
              [ STYLE <nStyle> ]         ;
              [ FONT <oFont> ]           ;
              [ TOOLTIP <ctoolt> ]       ;
+             [<lShowTime: SHOWTIME>]    ;
           => ;
           [<oPick> :=] HDatePicker():New( <oWnd>,<nId>,<dInit>,,<nStyle>,<x>,<y>, ;
              <width>,<height>,<oFont>,<bInit>,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>, ;
-             <color>,<bcolor> );;
+             <color>,<bcolor>,<.lShowTime.>  );;
           [ <oPick>:name := <(oPick)> ]
 
 #xcommand REDEFINE DATEPICKER [ <oPick> VAR  ] <vari> ;
@@ -1095,10 +1096,11 @@
              [ ON CHANGE <bChange> ]    ;
              [ FONT <oFont> ]           ;
              [ TOOLTIP <ctoolt> ]       ;
+             [<lShowTime: SHOWTIME>]    ;             
           => ;
           [<oPick> :=] HDatePicker():redefine( <oWnd>,<nId>,<dInit>,{|v|Iif(v==Nil,<vari>,<vari>:=v)}, ;
              <oFont>,<bSize>,<bInit>,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>, ;
-             <color>,<bcolor> )
+             <color>,<bcolor>,<.lShowTime.>  )
 
 #xcommand @ <x>,<y> SPLITTER [ <oSplit> ] ;
              [ OF <oWnd> ]              ;
@@ -1320,11 +1322,12 @@
              [ STYLE <nStyle> ]         ;
              [ FONT <oFont> ]           ;
              [ TOOLTIP <ctoolt> ]       ;
+             [<lShowTime: SHOWTIME>]    ;
           => ;
           [<oPick> :=] HDatePicker():New( <oWnd>,<nId>,<vari>,    ;
              {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
              <nStyle>,<x>,<y>,<width>,<height>,      ;
-             <oFont>,<bInit>,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>,<color>,<bcolor> );;
+             <oFont>,<bInit>,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>,<color>,<bcolor>,<.lShowTime.>  );;
           [ <oPick>:name := <(oPick)> ]
 
 #xcommand SAY <value> TO <oDlg> ID <id> ;

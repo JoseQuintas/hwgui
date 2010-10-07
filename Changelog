@@ -4,6 +4,9 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-10-07 19:18 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hedit.prg
+    ! Fix picture "K" now edit is selected
 
 
 2010-10-07 18:40 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>

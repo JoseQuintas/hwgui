@@ -4,6 +4,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+
+2010-10-07 18:40 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hownbtn.prg
+    ! Fix on click when up button
+
+
 2010-09-08 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
      + clause [<lShowTime: SHOWTIME>]   in xcommand @ <x>,<y> DATEPICKER [ <oPick> ]  ;

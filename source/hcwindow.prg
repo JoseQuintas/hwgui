@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.69 2010-10-13 14:17:30 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.70 2010-10-13 16:11:10 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -326,7 +326,6 @@ METHOD Refresh( lAll, oCtrl ) CLASS HCustomWindow
          IF ! oCtrl:aControls[ i ]:lHide .AND. ::handle != hCtrl
             IF  __ObjHasMethod(oCtrl:aControls[ i ], "REFRESH" )  .AND. ( ! EMPTY( lAll ) .OR. ;
                   ASCAN( ::GetList, {| o | o:Handle = oCtrl:aControls[ i ]:handle } ) > 0 )
-            IF __ObjHasMethod(oCtrl:aControls[ i ],"REFRESH" )
                oCtrl:aControls[ i ]:Refresh( )
                IF oCtrl:aControls[ i ]:bRefresh != Nil
                   EVAL( oCtrl:aControls[ i ]:bRefresh, oCtrl:aControls[ i ] )

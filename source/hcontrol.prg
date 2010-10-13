@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.158 2010-09-08 12:49:38 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.159 2010-10-13 14:17:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -328,6 +328,9 @@ METHOD END() CLASS HControl
 METHOD onAnchor( x, y, w, h ) CLASS HControl
    LOCAL nAnchor, nXincRelative, nYincRelative, nXincAbsolute, nYincAbsolute
    LOCAL x1, y1, w1, h1, x9, y9, w9, h9
+   LOCAL nCxv := IIF( HWG_BITAND( ::style, WS_VSCROLL ) != 0, GetSystemMetrics( SM_CXVSCROLL ) + 3 , 3 )
+   LOCAL nCyh := IIF( HWG_BITAND( ::style, WS_HSCROLL ) != 0, GetSystemMetrics( SM_CYHSCROLL ) + 3 , 3 )
+
 
    nAnchor := ::anchor
    x9 := ::nLeft
@@ -418,20 +421,41 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
       ENDIF
       y1 := y9
    ENDIF
-   ::Move( x1, y1, w1, h1 )
-   /*
-   MoveWindow( ::handle, x1, y1, w1, h1 )
-   ::nLeft := x1
-   ::nTop := y1
-   ::nWidth := w1
-   ::nHeight := h1
-   */
-   IF isWindowVisible( ::handle )
-      SetWindowPos( ::Handle, Nil, x1, y1, w1, h1, SWP_NOREDRAW + SWP_NOACTIVATE  + SWP_NOZORDER ) //+ SWP_NOOWNERZORDER + SWP_FRAMECHANGED )	 
-      InvalidateRect( ::oParent:handle, 0 ) 
-      RedrawWindow( ::handle, RDW_INVALIDATE + RDW_ERASE  ) //+  RDW_INTERNALPAINT )
-   ENDIF
-
+   // REDRAW AND INVALIDATE SCREEN
+   IF  ( x1 != X9 .OR. y1 != y9 .OR. w1 != w9 .OR. h1 != h9 ) 
+      IF isWindowVisible( ::handle )                      
+         IF x1 != x9 .or. y1 != y9
+            InvalidateRect( ::oParent:handle, 1, MAX( x9 - 1, 0 ), MAX( y9 - 1, 0 ), x9 + w9 + 1 , y9 + h9 + 1 )
+         ELSE
+            IF w1 < w9
+               InvalidateRect( ::oParent:handle, 1, x1 + w1 - nCxv, MAX( y1 - 2, 0 ),  x1 + w9 + 2 , y9 + h9 + 2 )
+            ENDIF
+            IF h1 < h9  
+               InvalidateRect( ::oParent:handle, 1, MAX( x1 - 5, 0 ) , y1 + h1 - nCyh, x1 + w9 + 2 , y1 + h9 + 2 )
+            ENDIF
+         ENDIF     
+         SetWindowPos( ::Handle, Nil, x9, y9, w9, h9, SWP_NOACTIVATE + SWP_NOZORDER ) 
+         ::Move( x1, y1, w1, h1, 0 )       
+         SetWindowPos( ::Handle, Nil, x1, y1, w1, h1, SWP_NOACTIVATE + SWP_NOZORDER )  
+         IF ( x1 != x9 .or. y1 != y9 .AND. ::bPaint != Nil ) .OR. ( ::backstyle = TRANSPARENT .AND. ;
+                               ( ::Title != Nil .AND. ! Empty( ::Title ) ) ) .OR. __ObjHasMsg( Self,"oImage" ) 
+            InvalidateRect( ::oParent:handle, 1, MAX( x1 - 1, 0 ), MAX( y1 - 1, 0 ), x1 + w1 + 1 , y1 + h1 + 1 )
+         ELSE
+            IF w1 > w9
+               InvalidateRect( ::oParent:handle, 1 , MAX( x1 + w9 - ( w1 - w9 + nCxv ), 0 ) , MAX( y1 - 1, 0 ) , x1 + w1 + 2  , y1 + h1 + 2  )
+            ENDIF
+            IF h1 > h9
+               InvalidateRect( ::oParent:handle, 1 , MAX( x1 - 1, 0) , MAX( y1 + h9 - ( h1 - h9 + nCyh ), 0 ) , x1 + w1 + 2 , y1 + h1 + 2 )
+            ENDIF 
+            IF  ( ! Empty( ::Title ) .OR. ::bPaint != Nil ) .AND. ( w1 != w9  .OR.  h1 != h9 )
+               RedrawWindow( ::handle, IIF( ::Title != Nil , RDW_INVALIDATE , 0 ) + RDW_INTERNALPAINT  ) 
+            ENDIF
+         ENDIF
+      ELSE
+         SetWindowPos( ::Handle, Nil, x9, y9, w9, h9, SWP_NOACTIVATE + SWP_NOZORDER ) 
+         ::Move( x1, y1, w1, h1, 0 )
+      ENDIF
+   ENDIF  
    RETURN Nil
 
 
@@ -739,14 +763,16 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS  HStatic
    
 
 METHOD SetValue( Value )  CLASS HStatic
-    ::Auto_Size( value ) 
-    IF ::backstyle = TRANSPARENT .AND. ::Title != value
-       RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_ERASENOW, ::nLeft, ::nTop, ::nWidth - 1, ::nHeight - 1 )
-       InvalidateRect( ::oParent:Handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth - 1, ::nTop + ::nHeight - 1 )
-    ENDIF   
-    SetDlgItemText( ::oParent:handle, ::id, value )
-    ::title := value 
-    RETURN Nil
+
+    ::Auto_Size( Value ) 
+    IF ::backstyle = TRANSPARENT .AND. ::Title != Value .AND. isWindowVisible( ::handle ) 
+       RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_ERASENOW + RDW_NOINTERNALPAINT + RDW_NOCHILDREN, ::nLeft, ::nTop, ::nWidth , ::nHeight )
+       InvalidateRect( ::oParent:Handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )       
+   ENDIF
+   ::Title := Value 
+   SetDlgItemText( ::oParent:handle, ::id, Value ) 
+   RedrawWindow( ::Handle, RDW_NOERASE + RDW_INVALIDATE,  ::nLeft, ::nTop, ::nWidth , ::nHeight ) 
+   RETURN Nil
 
 METHOD Paint( lpDis ) CLASS HStatic
    LOCAL drawInfo := GetDrawItemInfo( lpDis )
@@ -768,8 +794,8 @@ METHOD Paint( lpDis ) CLASS HStatic
    // Set transparent background
    SetBkMode( dc, ::backstyle )  
    IF  ::BackStyle = OPAQUE     
-      brBackground := IIF( !EMPTY( ::brush ),::brush, HBRUSH():Add( GetSysColor( COLOR_BTNFACE ) ) )
-      FillRect( dc, client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], brBackground:handle )
+      brBackground := IIF( ! EMPTY( ::brush ), ::brush:HANDLE, HBrush():Add( GetSysColor( COLOR_BTNFACE ) ):HANDLE ) 
+      FillRect( dc, client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], brBackground )
    ELSEIF ! ::isEnabled()   
  	    SetTextColor( dc, GetSysColor( COLOR_GRAYTEXT ) )         
    ENDIF
@@ -1089,6 +1115,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::m_bLButtonDown := .f.
    ::m_bIsToggle := .f.
 
+   cCaption := IIF( cCaption = Nil, "", cCaption )
    ::Caption := cCaption
    ::iStyle                             := iStyle
    ::hBitmap                            := IIF( EMPTY( hBitmap ), Nil, hBitmap )
@@ -1844,7 +1871,7 @@ METHOD Init CLASS HGroup
    IF  ! ::lInit
       //SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0 , SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER )
       Super:Init()  
-      SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0,0 , SWP_NOREDRAW + SWP_NOSIZE + SWP_NOMOVE + SWP_NOACTIVATE  + SWP_NOZORDER + SWP_NOOWNERZORDER + SWP_FRAMECHANGED)	 
+      SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0,0 , SWP_NOREDRAW + SWP_NOSIZE + SWP_NOMOVE + SWP_NOACTIVATE  + SWP_NOZORDER + SWP_NOOWNERZORDER )	 
    ENDIF
    
    RETURN NIL

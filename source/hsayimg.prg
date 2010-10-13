@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.30 2010-09-01 15:32:06 lfbasso Exp $
+ * $Id: hsayimg.prg,v 1.31 2010-10-13 14:17:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -35,7 +35,7 @@ ENDCLASS
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
             bSize, ctooltip, bClick, bDblClick ) CLASS HSayImage
 
-   nStyle := Hwg_BitOr( nStyle, SS_NOTIFY )
+   nStyle := Hwg_BitOr( nStyle, IIF( ISBLOCK( bClick ) .OR. ISBLOCK( bDblClick ), SS_NOTIFY , 0 ) )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop,               ;
               IIf( nWidth != Nil, nWidth, 0 ), IIf( nHeight != Nil, nHeight, 0 ),, ;
               bInit, bSize,, ctooltip )

@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.65 2010-01-28 03:06:01 druzus Exp $
+ * $Id: draw.c,v 1.66 2010-10-13 14:17:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -207,9 +207,9 @@ HB_FUNC( REDRAWWINDOW )
 {
    RECT rc;
 
-   if ( hb_pcount() > 2 )
+   if ( hb_pcount() > 3 )
    {
-      int x = ( hb_pcount() >= 3 && !ISNIL(3) )? hb_parni(3):0;
+      int x = ( hb_pcount() >  3 && !ISNIL(3) )? hb_parni(3):0;
       int y = ( hb_pcount() >= 4 && !ISNIL(4) )? hb_parni(4):0;
       int w = ( hb_pcount() >= 5 && !ISNIL(5) )? hb_parni(5):0;
       int h = ( hb_pcount() >= 6 && !ISNIL(6) )? hb_parni(6):0;
@@ -220,8 +220,8 @@ HB_FUNC( REDRAWWINDOW )
    }   
    RedrawWindow(
     ( HWND ) HB_PARHANDLE( 1 ),  // handle of window
-    ( hb_pcount() > 2 )? &rc:NULL,  // address of structure with update rectangle
-    NULL,                   // handle of update region
+    ( hb_pcount() > 3 )? &rc:NULL,  // address of structure with update rectangle
+    ( hb_pcount() == 3 ) ? ( HWND ) HB_PARHANDLE( 3 ):NULL,   // handle of update region
     ( UINT )hb_parni( 2 )     // array of redraw flags
    );
 }

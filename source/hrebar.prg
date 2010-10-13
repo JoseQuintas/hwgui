@@ -1,5 +1,5 @@
 /*
- * $Id: hrebar.prg,v 1.8 2010-05-24 14:57:03 lfbasso Exp $
+ * $Id: hrebar.prg,v 1.9 2010-10-13 14:17:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -26,6 +26,7 @@ CLASS hrebar INHERIT HControl
    DATA lVert
    DATA hTool
    DATA m_nWidth, m_nHeight
+   DATA aBands INIT  {}
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
                bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
@@ -36,6 +37,8 @@ CLASS hrebar INHERIT HControl
    METHOD INIT()
    METHOD ADDBARColor( pBar, clrFore, clrBack, pszText, dwStyle ) INLINE ADDBARCOLORS( ::handle, pBar, clrFore, clrBack, pszText, dwStyle )
    METHOD ADDBARBITMAP( pBar, pszText, pbmp, dwStyle ) INLINE ADDBARBITMAP( ::handle, pBar, pszText, pbmp, dwStyle )
+   METHOD RebarBandNew( pBar, pszText, clrFore, clrBack, pbmp, dwStyle ) INLINE AADD( ::aBands, { pBar, pszText, clrFore, clrBack, pbmp, dwStyle } )
+   METHOD CreateBands()    
 
 ENDCLASS
 
@@ -89,7 +92,26 @@ METHOD INIT CLASS hrebar
 
    IF ! ::lInit
       Super:Init()
+      ::CreateBands()
 //      REBARSETIMAGELIST(::handle,nil)
    ENDIF
    RETURN Nil
 
+
+METHOD CreateBands CLASS hrebar
+   LOCAL i, dwStyle
+   
+   dwStyle := RBBS_GRIPPERALWAYS + RBBS_USECHEVRON 
+   FOR i = 1 TO LEN( ::aBands )
+      ::aBands[ i, 4 ] := IIF( ::aBands[ i, 4 ] = Nil, GetSysColor( COLOR_3DFACE ), ::aBands[ i, 4 ] )
+      ::aBands[ i, 6 ] := Hwg_BitOr( dwStyle, ::aBands[ i, 6 ]  )
+      IF ! Empty( ::aBands[ i, 1 ] )
+         ::aBands[ i, 1 ] := IIF( ValType( ::aBands[ i, 1 ] ) = "C", &( ::aBands[ i, 1 ] ), ::aBands[ i, 1 ] )
+         IF ( ::aBands[ i, 5 ] != Nil )
+            ADDBARBITMAP( ::handle, ::aBands[ i, 1 ]:handle, ::aBands[ i, 2 ], ::aBands[ i, 5 ], ::aBands[ i, 6 ] )
+         ELSE   
+           ADDBARCOLORS( ::handle, ::aBands[ i, 1 ]:handle, ::aBands[ i, 3 ], ::aBands[ i, 4 ], ::aBands[ i, 2 ], ::aBands[ i, 6 ]  ) 
+         ENDIF  
+      ENDIF
+   NEXT   
+   RETURN Nil

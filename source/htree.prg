@@ -1,5 +1,5 @@
 /*
- * $Id: htree.prg,v 1.20 2010-09-08 12:49:38 lfbasso Exp $
+ * $Id: htree.prg,v 1.21 2010-10-13 14:17:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTree class
@@ -434,7 +434,7 @@ METHOD onEvent( msg, wParam, lParam )
          DragDropTree( ::hitemDrag, hitemNew , ::hitemDrop ) //htiParent ) 
       ELSEIF ::hitemDrop != Nil
          hitemNew := ::hitemDrop:AddNode( ::hitemDrag:Title, htiPrev ,htiNext, ::hitemDrag:bAction,, ::hitemDrag:lchecked, ::hitemDrag:bClick  ) //, ::hitemDrop:aImages )    
-         DragDropTree( ::hitemDrag, ::hitemDrop ) 
+         DragDropTree( ::hitemDrag, hitemNew,::hitemDrop ) 
       ENDIF
       hitemNew:cargo  := ::hitemDrag:cargo
       hitemNew:image1 := ::hitemDrag:image1
@@ -629,6 +629,6 @@ STATIC PROCEDURE DragDropTree( oDrag, oItem, oDrop )
       IF Len( oDrag:aitems[ i ]:aitems ) > 0
          DragDropTree( oDrag:aItems[ i ], hitemNew, oDrop )
       ENDIF   
-      oDrag:aItems[ i ]:delete()
+      //oDrag:aItems[ i ]:delete()
    NEXT
    RETURN 

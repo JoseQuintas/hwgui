@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.18 2010-06-16 12:46:22 lfbasso Exp $
+ * $Id: hrect.prg,v 1.19 2010-10-13 14:17:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -82,7 +82,7 @@ METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, nColor ) CLASS 
    Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop,,,,, bSize, { | o, lp | o:Paint( lp ) } )
 
 
-   ::title := ""
+   //::title := ""
    ::lVert := IIf( lVert == Nil, .F., lVert )
    IF ::lVert
       ::nWidth  := 10
@@ -198,7 +198,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor
    Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, ,;
               bInit, bSize, ::bPaint, , tcolor, bColor ) //= Nil
 
-   ::title := ""
+   //::title := ""
     // OPAQUE DEFAULT
    ::backStyle := IIF( nbackStyle = Nil, OPAQUE, nbackStyle )
 
@@ -345,7 +345,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ncStyle, bSiz
     Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, , ;
               bInit, bSize, ::bPaint,, tcolor, bColor )
 
-   ::title := ""
+   //::title := ""
    ::ncStyle := IIF( ncStyle = NIL .AND. nStyle < WS_TABSTOP, 3, ncStyle )
    ::lnoBorder := IIF( lnoBorder = NIL, .F., lnoBorder )
 

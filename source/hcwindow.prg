@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.68 2010-08-16 14:56:45 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.69 2010-10-13 14:17:30 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -202,14 +202,17 @@ METHOD DelControl( oCtrl ) CLASS HCustomWindow
 
    RETURN NIL
 
-METHOD Move( x1, y1, width, height )  CLASS HCustomWindow
+METHOD Move( x1, y1, width, height, nRePaint )  CLASS HCustomWindow
 
    x1     := IIF( x1     = NIL, ::nLeft, x1 )
    y1     := IIF( y1     = NIL, ::nTop, y1 )
    width  := IIF( width  = NIL, ::nWidth, width )
    height := IIF( height = NIL, ::nHeight, height )
-
-   MoveWindow( ::handle, x1, y1, Width, Height )   
+   IF nRePaint = Nil
+      MoveWindow( ::handle, x1, y1, Width, Height  )
+   ELSE
+      MoveWindow( ::handle, x1, y1, Width, Height, nRePaint )
+   ENDIF
 
    //IF x1 != NIL
       ::nLeft := x1
@@ -313,7 +316,7 @@ METHOD SetFocusCtrl( oCtrl ) CLASS HCustomWindow
    RETURN NIL
 
 
-METHOD Refresh( oCtrl ) CLASS HCustomWindow
+METHOD Refresh( lAll, oCtrl ) CLASS HCustomWindow
   Local nlen , i, hCtrl := GetFocus()
    oCtrl := IIF( oCtrl = Nil, Self, oCtrl )
    nlen := LEN( oCtrl:aControls )
@@ -321,6 +324,8 @@ METHOD Refresh( oCtrl ) CLASS HCustomWindow
    IF IsWindowVisible( ::Handle )
       FOR i = 1 to nLen
          IF ! oCtrl:aControls[ i ]:lHide .AND. ::handle != hCtrl
+            IF  __ObjHasMethod(oCtrl:aControls[ i ], "REFRESH" )  .AND. ( ! EMPTY( lAll ) .OR. ;
+                  ASCAN( ::GetList, {| o | o:Handle = oCtrl:aControls[ i ]:handle } ) > 0 )
             IF __ObjHasMethod(oCtrl:aControls[ i ],"REFRESH" )
                oCtrl:aControls[ i ]:Refresh( )
                IF oCtrl:aControls[ i ]:bRefresh != Nil
@@ -381,6 +386,12 @@ METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HCustomWindow
 
 METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
    LOCAL nlen , i, x1, y1
+   
+   IF oCtrl = Nil .OR.;
+       ASCAN( oCtrl:aControls, {| o | __ObjHasMsg( o,"ANCHOR") .AND. o:Anchor > 0 } ) = 0  
+      RETURN .F. 
+   ENDIF    
+
    nlen := Len( oCtrl:aControls )
    FOR i = 1 TO nlen
       IF __ObjHasMsg( oCtrl:aControls[ i ], "ANCHOR" ) .AND. oCtrl:aControls[ i ]:anchor > 0 
@@ -745,7 +756,7 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
 STATIC FUNCTION onDrawItem( oWnd, wParam, lParam )
    LOCAL oCtrl
    IF ! EMPTY( wParam ) .AND. ( oCtrl := oWnd:FindControl( wParam ) ) != NIL .AND. ;
-                          oCtrl:bPaint != NIL
+                 VALTYPE( oCtrl ) != "N"  .AND. oCtrl:bPaint != NIL
       Eval( oCtrl:bPaint, oCtrl, lParam )
       RETURN 1
 
@@ -787,12 +798,14 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       oWnd:ResetScrollbars()
       oWnd:SetupScrollbars()
    ENDIF
-   oWnd:lSuspendMsgsHandling  := .T.
-   IF !EMPTY( oWnd:type) .AND. oWnd:Type = WND_MDI  .AND. !EMPTY( oWnd:Screen )
+
+   IF !EMPTY( oWnd:Type) .AND. oWnd:Type = WND_MDI  .AND. !EMPTY( oWnd:Screen )
       oWnd:Anchor( oWnd:Screen, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
    ENDIF
-   oWnd:Anchor( oWnd, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
-   oWnd:lSuspendMsgsHandling  := .F.
+   IF ! EMPTY( oWnd:Type)
+      oWnd:Anchor( oWnd, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
+   ENDIF
+
    #ifdef __XHARBOUR__
 
       HB_SYMBOL_UNUSED( iCont )

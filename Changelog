@@ -4,6 +4,32 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2010-10-13 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/draw.c
+    ! fix in REDRAWWINDOW 
+  * source/hcontrol.prg
+    * METHOD onAnchor
+	  ! Removed flickering of controls during resize....
+    * CLASS HStatic
+	  ! minor fix in METHOD SetValue
+  * source/hcwindow.prg
+    ! METHOD Move( x1, y1, width, height, nRePaint )  add parameter nRepaint
+	! minor fix in onDrawItem
+	! minor fix in onSize
+	! minor fix in Anchor
+	! METHOD Refresh( lAll, oCtrl ) add parameter lAll to Refresh only Gets or all objects
+  * source/hrebar.prg
+    + add DATA aBands 
+	+ add METHOD RebarBandNew()
+    + add METHOD CreateBands()   
+  * source/HSayImage.prg
+    ! removed SS_NOTIFY by default style 
+  * source/hrect.prg
+    ! removed title := "" in classes because necessary in anchor
+  * source/htree.prg
+	! minor fix in function DragDropTree
+
 2010-10-07 19:18 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hedit.prg
     ! Fix picture "K" now edit is selected

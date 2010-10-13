@@ -4,7 +4,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-
+2010-10-13 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\windows.ch
+    + constants
+  * source\draw.c
+    ! fix in redrawwindow
+  * source\hedit.prg
+    ! minor fix in refresh()
+    
 2010-10-13 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/draw.c
     ! fix in REDRAWWINDOW 

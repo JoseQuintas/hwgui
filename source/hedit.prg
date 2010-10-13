@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.183 2010-10-07 17:21:37 giuseppem Exp $
+ *$Id: hedit.prg,v 1.184 2010-10-13 18:30:41 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -215,11 +215,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             COPYSTRINGTOCLIPBOARD( ::UnTransform( GETCLIPBOARDTEXT() ) )
             RETURN -1
          ELSEIF msg = WM_PASTE
-            ::lFirst := IIF( ::cType = "N" , .T., .F. )
+ 	          ::lFirst := IIF( ::cType = "N" .AND. "E" $ ::cPicFunc, .T., .F. )
             cClipboardText :=  GETCLIPBOARDTEXT()
             IF ! EMPTY( cClipboardText )
                nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
-               SendMessage(  ::handle, EM_SETSEL, nPos-1 , nPos -1  )
+               SendMessage(  ::handle, EM_SETSEL, nPos-1 , nPos - 1  )
                FOR nPos = 1 to Len( cClipboardText )
                   ::GetApplyKey( SUBSTR( cClipboardText , nPos, 1 ) )
                NEXT
@@ -558,7 +558,7 @@ METHOD Refresh()  CLASS HEdit
    ELSE
       SetDlgItemText( ::oParent:handle, ::id, ::title )
    ENDIF
-
+   RedrawWindow( ::Handle, RDW_UPDATENOW + RDW_NOCHILDREN )
    RETURN Nil
 
 METHOD SetText( c ) CLASS HEdit

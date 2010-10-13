@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.66 2010-10-13 14:17:30 lfbasso Exp $
+ * $Id: draw.c,v 1.67 2010-10-13 18:30:41 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -221,7 +221,7 @@ HB_FUNC( REDRAWWINDOW )
    RedrawWindow(
     ( HWND ) HB_PARHANDLE( 1 ),  // handle of window
     ( hb_pcount() > 3 )? &rc:NULL,  // address of structure with update rectangle
-    ( hb_pcount() == 3 ) ? ( HWND ) HB_PARHANDLE( 3 ):NULL,   // handle of update region
+     NULL,   // handle of update region
     ( UINT )hb_parni( 2 )     // array of redraw flags
    );
 }

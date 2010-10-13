@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.86 2010-08-31 19:15:24 lfbasso Exp $
+ *$Id: windows.ch,v 1.87 2010-10-13 18:30:41 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -1125,6 +1125,8 @@
 
 // GETSYSTEMMETRICS constants
 //--------------------------
+#define SM_CXVSCROLL      2
+#define SM_CYHSCROLL      3
 #define SM_CYCAPTION     4
 #define SM_CYMENU        15
 #define SM_CYSMCAPTION   51

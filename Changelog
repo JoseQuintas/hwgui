@@ -3,6 +3,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2010-10-15 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hdialog.prg
+    ! minor  fix in enddialog()
+    ! fix in initModalDlg in draw focus
+  * source\hrebar.prg
+    ! fix create band in WINDOW MAIN
 
 2010-10-13 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\windows.ch

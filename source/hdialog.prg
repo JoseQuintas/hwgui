@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.120 2010-09-08 12:49:38 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.121 2010-10-15 16:07:34 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -36,7 +36,7 @@ STATIC FUNCTION onDestroy( oDlg )
       oDlg:oEmbedded:END()
    ENDIF
    // IN CLASS INHERIT DIALOG DESTROY APLICATION
-   IF oDlg:oDefaultParent:ClassName = "HDIALOG"
+   IF oDlg:oDefaultParent:ClassName = "HDIALOG" .AND. oDlg:lModal
       oDlg:Super:onEvent( WM_DESTROY )
    ENDIF  
    oDlg:Del()
@@ -187,8 +187,10 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
          ::Add()
          Hwg_CreateDlgIndirect( hParent, Self, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
          
-         POSTMESSAGE( ::handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL), 0)
-         POSTMESSAGE( ::handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS), 0) 
+         IF  ::nInitShow > SW_HIDE
+            BRINGTOTOP( ::handle )
+            UPDATEWINDOW( ::handle ) 
+         ENDIF   
 
          /*
          IF ::oIcon != Nil
@@ -279,7 +281,7 @@ METHOD GetActive() CLASS HDialog
 // ------------------------------------
 
 STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
-   LOCAL nReturn := 1 
+   LOCAL nReturn := 1 , uis
 
    // HB_SYMBOL_UNUSED( wParam )
    HB_SYMBOL_UNUSED( lParam )
@@ -332,9 +334,15 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    oDlg:lSuspendMsgsHandling := .F.
 
    oDlg:nInitFocus := IIF( VALTYPE( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )   
- 	 IF PtrtouLong( wParam ) == PtrtouLong( oDlg:nInitFocus ) 
-      oDlg:nInitFocus := 0
-   ENDIF
+   
+   // draw focus
+   uis := SendMESSAGE( oDlg:handle , WM_QUERYUISTATE, 0, 0 )
+   IF uis != 0
+      POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )  //+ UISF_ACTIVE 
+      SENDMESSAGE( oDlg:handle, WM_ERASEBKGND, GetDC( oDlg:Handle ), 0 )
+   ELSE
+      POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS + UISF_HIDEACCEL ), 0 )                            
+   ENDIF 
   
    // CALL DIALOG NOT VISIBLE
    IF oDlg:nInitShow = SW_HIDE .AND. ! oDlg:lModal            
@@ -351,10 +359,6 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       oDlg:lSuspendMsgsHandling := .f.
    ENDIF
 
-   IF ! oDlg:lModal
-      oDlg:show()
-      //UpdateWindow( oDlg:handle )	   // force repaint objcts
-   ENDIF
    IF  ! EMPTY( oDlg:nInitFocus ) 
       SETFOCUS( oDlg:nInitFocus )
       nReturn := 0
@@ -365,14 +369,18 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    ELSEIF oDlg:nInitShow = SW_SHOWMAXIMIZED  //3
       oDlg:maximize()
    ENDIF
+   IF ! oDlg:lModal
+      oDlg:show()
+   ENDIF
+   
    IF ValType( oDlg:bOnActivate ) == "B"
       Eval( oDlg:bOnActivate, oDlg )
    ENDIF
-   
-   POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS), 0)  
-   POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL), 0)
 
    	 // adjust values of MIN and MAX size to Anchor work correctly   
+   oDlg:rect  := GetWindowRect( oDlg:Handle )
+   oDlg:nLeft := oDlg:rect[ 1 ]  
+   oDlg:nTop  := oDlg:rect[ 2 ] 
    oDlg:rect := GetClientRect( oDlg:Handle )
    oDlg:nWidth  := oDlg:rect[ 3 ]
    oDlg:nHeight := oDlg:rect[ 4 ]
@@ -743,7 +751,7 @@ FUNCTION GetModalHandle
    RETURN IIf( i > 0, HDialog():aModalDialogs[ i ]:handle, 0 )
 
 FUNCTION EndDialog( handle )
-   LOCAL oDlg, hFocus := GetFocus() 
+   LOCAL oDlg, hFocus := GetFocus(), oCtrl  
    LOCAL res
 
    IF handle == Nil
@@ -758,10 +766,8 @@ FUNCTION EndDialog( handle )
       ENDIF
    ENDIF
    // force control triggered killfocus
-   IF !EMPTY( hFocus ) .AND. oDlg:FindControl(, hFocus ) != Nil .AND.; 
-      PtrtouLong( GetParent( hFocus ) ) = PtrtouLong( oDlg:Handle )
+   IF ! EMPTY( hFocus ) .AND. ( oCtrl := oDlg:FindControl(, hFocus ) ) != Nil .AND. oCtrl:bLostFocus != Nil
       SendMessage( hFocus, WM_KILLFOCUS, 0, 0 )
-      SetFocus( hFocus )
    ENDIF
    IF oDlg:bDestroy != Nil
       oDlg:lSuspendMsgsHandling := .T.

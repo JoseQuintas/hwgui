@@ -3,6 +3,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-10-16 21:34 UTC+0700 Richard Roesnadi <richsoft8@yahoo.co.id>
+  * include\windows.ch 
+   + missing #define WM_QUERYUISTATE                 297   //0x0129
+
 2010-10-15 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hdialog.prg
     ! minor  fix in enddialog()

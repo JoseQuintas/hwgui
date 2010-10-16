@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.87 2010-10-13 18:30:41 lfbasso Exp $
+ *$Id: windows.ch,v 1.88 2010-10-16 14:37:45 richardroesnadi Exp $
  */
 
 #define WM_CREATE                       1
@@ -62,6 +62,7 @@
 #define WM_ENTERIDLE                    289
 #define WM_CHANGEUISTATE                295   //0x127 
 #define WM_UPDATEUISTATE                296   //0x128
+#define WM_QUERYUISTATE                 297   //0x0129
 
 #define WM_CTLCOLORMSGBOX               306     // 0x0132
 #define WM_CTLCOLOREDIT                 307     // 0x0133
@@ -92,6 +93,8 @@
 #define WM_MDISETMENU                   560     // 0x0230
 #define WM_ENTERSIZEMOVE                561     // 0x0231
 #define WM_EXITSIZEMOVE                 562     // 0x0232
+
+
 
 #define WM_CUT                          768     // 0x0300
 #define WM_COPY                         769     // 0x0301

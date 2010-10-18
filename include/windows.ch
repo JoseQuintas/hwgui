@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.89 2010-10-18 11:40:40 lfbasso Exp $
+ *$Id: windows.ch,v 1.90 2010-10-18 12:16:43 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -133,6 +133,7 @@
 #define UISF_HIDEFOCUS     3
 
 /* CONSTANTS TO   WM_PRINT */
+#DEFINE PRF_CHECKVISIBLE         1
 #DEFINE PRF_CLIENT               4
 #DEFINE PRF_ERASEBKGND           8
 #DEFINE PRF_CHILDREN            16

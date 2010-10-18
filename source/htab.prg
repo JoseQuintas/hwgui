@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.69 2010-10-18 11:40:40 lfbasso Exp $
+ *$Id: htab.prg,v 1.70 2010-10-18 12:16:43 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -511,8 +511,8 @@ METHOD ShowPage( nPage ) CLASS HTab
 
    RETURN Nil
 
-METHOD Refresh( ) CLASS HTab
-   LOCAL i, nFirst, nEnd
+METHOD Refresh( lAll ) CLASS HTab
+   LOCAL i 
 
    IF ::nActive != 0
       IF ! ::lResourceTab

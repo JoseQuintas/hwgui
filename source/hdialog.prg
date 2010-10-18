@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.121 2010-10-15 16:07:34 lfbasso Exp $
+ * $Id: hdialog.prg,v 1.122 2010-10-18 11:40:40 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -331,19 +331,24 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
          nReturn := 1
       ENDIF
    ENDIF
-   oDlg:lSuspendMsgsHandling := .F.
-
    oDlg:nInitFocus := IIF( VALTYPE( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )   
    
    // draw focus
    uis := SendMESSAGE( oDlg:handle , WM_QUERYUISTATE, 0, 0 )
    IF uis != 0
       POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )  //+ UISF_ACTIVE 
-      SENDMESSAGE( oDlg:handle, WM_ERASEBKGND, GetDC( oDlg:Handle ), 0 )
+      //SENDMESSAGE( oDlg:handle, WM_ERASEBKGND, GetDC( oDlg:Handle ), 0 )
+      POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )
    ELSE
       POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS + UISF_HIDEACCEL ), 0 )                            
    ENDIF 
-  
+   oDlg:lSuspendMsgsHandling := .F.
+
+   IF  ! EMPTY( oDlg:nInitFocus ) 
+      SETFOCUS( oDlg:nInitFocus )
+      nReturn := 0
+   ENDIF
+   
    // CALL DIALOG NOT VISIBLE
    IF oDlg:nInitShow = SW_HIDE .AND. ! oDlg:lModal            
       oDlg:Hide()
@@ -358,20 +363,19 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       Eval( oDlg:bGetFocus, oDlg )
       oDlg:lSuspendMsgsHandling := .f.
    ENDIF
-
-   IF  ! EMPTY( oDlg:nInitFocus ) 
-      SETFOCUS( oDlg:nInitFocus )
-      nReturn := 0
-   ENDIF
+   
+	 IF ! isWindowVisible( oDlg:handle )	
+	    SHOWWINDOW( oDlg:Handle, SW_SHOWDEFAULT ) // Sets the show state based on the SW_ value specified in the STARTUPINFO structure passed to the CreateProcess function by the program that started the application. 
+   ENDIF      
 
    IF oDlg:nInitShow = SW_SHOWMINIMIZED  //2
       oDlg:minimize()
    ELSEIF oDlg:nInitShow = SW_SHOWMAXIMIZED  //3
       oDlg:maximize()
    ENDIF
-   IF ! oDlg:lModal
-      oDlg:show()
-   ENDIF
+   //IF ! oDlg:lModal
+   //   oDlg:show()
+   //ENDIF
    
    IF ValType( oDlg:bOnActivate ) == "B"
       Eval( oDlg:bOnActivate, oDlg )

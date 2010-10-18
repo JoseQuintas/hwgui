@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.159 2010-10-13 14:17:30 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.160 2010-10-18 11:40:40 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -167,6 +167,8 @@ METHOD INIT CLASS HControl
         Eval( ::bInit, Self )
         ::oparent:lSuspendMsgsHandling := .F.
       ENDIF
+      // fix init position in FORM reduce  flickering
+      SetWindowPos( ::Handle, Nil, ::nLeft, ::nTop, ::nWidth, ::nHeight, SWP_NOACTIVATE + SWP_NOZORDER )
       ::lInit := .T.
    ENDIF
    RETURN NIL
@@ -424,7 +426,7 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    // REDRAW AND INVALIDATE SCREEN
    IF  ( x1 != X9 .OR. y1 != y9 .OR. w1 != w9 .OR. h1 != h9 ) 
       IF isWindowVisible( ::handle )                      
-         IF x1 != x9 .or. y1 != y9
+         IF ( x1 != x9 .or. y1 != y9 ) .AND. x9 < ::oParent:nWidth 
             InvalidateRect( ::oParent:handle, 1, MAX( x9 - 1, 0 ), MAX( y9 - 1, 0 ), x9 + w9 + 1 , y9 + h9 + 1 )
          ELSE
             IF w1 < w9
@@ -433,12 +435,13 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
             IF h1 < h9  
                InvalidateRect( ::oParent:handle, 1, MAX( x1 - 5, 0 ) , y1 + h1 - nCyh, x1 + w9 + 2 , y1 + h9 + 2 )
             ENDIF
-         ENDIF     
-         SetWindowPos( ::Handle, Nil, x9, y9, w9, h9, SWP_NOACTIVATE + SWP_NOZORDER ) 
+         ENDIF
+              
          ::Move( x1, y1, w1, h1, 0 )       
-         SetWindowPos( ::Handle, Nil, x1, y1, w1, h1, SWP_NOACTIVATE + SWP_NOZORDER )  
-         IF ( x1 != x9 .or. y1 != y9 .AND. ::bPaint != Nil ) .OR. ( ::backstyle = TRANSPARENT .AND. ;
-                               ( ::Title != Nil .AND. ! Empty( ::Title ) ) ) .OR. __ObjHasMsg( Self,"oImage" ) 
+         SetWindowPos( ::Handle, Nil, x1, y1, w1, h1, SWP_NOACTIVATE + SWP_NOZORDER + SWP_NOREDRAW )   
+         
+         IF ( ( x1 != x9 .OR. y1 != y9 ) .AND. ( ISBLOCK( ::bPaint ) .OR. x9 > ::oParent:nWidth ) ) .OR. ( ::backstyle = TRANSPARENT .AND. ;         
+                          ( ::Title != Nil .AND. ! Empty( ::Title ) ) ) .OR. __ObjHasMsg( Self,"oImage" ) 
             InvalidateRect( ::oParent:handle, 1, MAX( x1 - 1, 0 ), MAX( y1 - 1, 0 ), x1 + w1 + 1 , y1 + h1 + 1 )
          ELSE
             IF w1 > w9
@@ -447,12 +450,11 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
             IF h1 > h9
                InvalidateRect( ::oParent:handle, 1 , MAX( x1 - 1, 0) , MAX( y1 + h9 - ( h1 - h9 + nCyh ), 0 ) , x1 + w1 + 2 , y1 + h1 + 2 )
             ENDIF 
-            IF  ( ! Empty( ::Title ) .OR. ::bPaint != Nil ) .AND. ( w1 != w9  .OR.  h1 != h9 )
-               RedrawWindow( ::handle, IIF( ::Title != Nil , RDW_INVALIDATE , 0 ) + RDW_INTERNALPAINT  ) 
+            IF LEN( ::aControls ) = 0 .AND. ::Title != Nil
+               InvalidateRect( ::handle, 0 )
             ENDIF
          ENDIF
       ELSE
-         SetWindowPos( ::Handle, Nil, x9, y9, w9, h9, SWP_NOACTIVATE + SWP_NOZORDER ) 
          ::Move( x1, y1, w1, h1, 0 )
       ENDIF
    ENDIF  
@@ -1869,9 +1871,7 @@ METHOD Activate CLASS HGroup
 METHOD Init CLASS HGroup
 
    IF  ! ::lInit
-      //SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0 , SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER )
       Super:Init()  
-      SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0,0 , SWP_NOREDRAW + SWP_NOSIZE + SWP_NOMOVE + SWP_NOACTIVATE  + SWP_NOZORDER + SWP_NOOWNERZORDER )	 
    ENDIF
    
    RETURN NIL

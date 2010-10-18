@@ -1,5 +1,5 @@
 /*
- *$Id: windows.ch,v 1.88 2010-10-16 14:37:45 richardroesnadi Exp $
+ *$Id: windows.ch,v 1.89 2010-10-18 11:40:40 lfbasso Exp $
  */
 
 #define WM_CREATE                       1
@@ -533,15 +533,17 @@
 #define TCM_FIRST               4864     // Tab control messages
 #define TCM_SETIMAGELIST        4867     // (TCM_FIRST + 3)
 #define TCM_GETITEMCOUNT        4868     // (TCM_FIRST + 4)
+#define TCM_GETITEMRECT         ( TCM_FIRST + 10 )
 #define TCM_GETCURSEL           4875		 // TCM_FIRST + 11)
 #define TCM_SETCURSEL           4876     // (TCM_FIRST + 12)
+#define TCM_HITTEST             ( TCM_FIRST + 13 )
 #define TCM_SETITEMSIZE         ( TCM_FIRST + 41 )
 #define TCM_SETPADDING          ( TCM_FIRST + 43 )
+#define TCM_GETROWCOUNT         4908     // (TCM_FIRST + 44)
 #define TCM_GETCURFOCUS         4911     // (TCM_FIRST + 47)
 #define TCM_SETCURFOCUS         4912     // (TCM_FIRST + 48)
 #define TCM_SETMINTABWIDTH      ( TCM_FIRST + 49 )
 #define TCM_DESELECTALL         4914        //(TCM_FIRST + 50)
-
 
 /*
  * Combo Box styles

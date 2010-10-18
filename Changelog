@@ -4,6 +4,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-10-18 09:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * include\windows.ch
+    + add news constants
+  * source\hcontrol.prg
+    ! METHOD INIT fix position initial object in form
+    ! minor fix in anchor
+  * source\hdialog.prg
+    ! minor fix in initModalDlg in draw focus
+  * source\hrebar.prg
+    ! minor fix
+  * source\htab.prg
+    ! several problems fixed
+
+
 2010-10-16 22:21 UTC+0700 Richard Roesnadi <richsoft8@yahoo.co.id>
    + samples\barcode\barcode.prg
      ! now you can see dynamic barcode with xml datadriven and print it!.

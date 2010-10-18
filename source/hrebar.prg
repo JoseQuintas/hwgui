@@ -1,5 +1,5 @@
 /*
- * $Id: hrebar.prg,v 1.10 2010-10-15 16:07:34 lfbasso Exp $
+ * $Id: hrebar.prg,v 1.11 2010-10-18 11:40:40 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -53,6 +53,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
                           WS_VISIBLE + WS_CHILD ) 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor )
+   ::Title := ""           
    HWG_InitCommonControlsEx()
 
 

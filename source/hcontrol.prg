@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.160 2010-10-18 11:40:40 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.161 2010-10-19 19:47:02 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -167,8 +167,10 @@ METHOD INIT CLASS HControl
         Eval( ::bInit, Self )
         ::oparent:lSuspendMsgsHandling := .F.
       ENDIF
-      // fix init position in FORM reduce  flickering
-      SetWindowPos( ::Handle, Nil, ::nLeft, ::nTop, ::nWidth, ::nHeight, SWP_NOACTIVATE + SWP_NOZORDER )
+      IF ::GetParentForm():Type != WND_DLG_RESOURCE
+         // fix init position in FORM reduce  flickering
+         SetWindowPos( ::Handle, Nil, ::nLeft, ::nTop, ::nWidth, ::nHeight, SWP_NOACTIVATE + SWP_NOZORDER )
+      ENDIF   
       ::lInit := .T.
    ENDIF
    RETURN NIL

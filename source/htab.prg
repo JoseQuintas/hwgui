@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.70 2010-10-18 12:16:43 lfbasso Exp $
+ *$Id: htab.prg,v 1.71 2010-10-19 13:38:49 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -322,7 +322,6 @@ METHOD SetPaintSizePos( nFlag ) CLASS HTab
    ELSEIF nFlag > 0 
       ::npaintheight  := nFlag
       ::oPaint:nHeight := nFlag
-      Return Nil
    ENDIF  
  
    SetWindowPos( ::oPaint:Handle, Nil, ::oPaint:nLeft, ::oPaint:nTop, ::oPaint:nWidth, ::oPaint:nHeight, SWP_NOACTIVATE  ) //+ SWP_SHOWWINDOW  )

@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.161 2010-10-19 19:47:02 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.162 2010-10-21 11:46:07 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1274,11 +1274,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
 
    ELSEIF msg == WM_KEYDOWN
 
-   #ifdef __XHARBOUR__
-      IF xhb_BitTest( lParam )
-      #else
-         IF hb_BitTest( lParam , 30 )  // the key was down before ?
-         #endif
+#ifdef __XHARBOUR__
+      IF hb_BitIsSet( lParam, 30 )  // the key was down before ?
+#else
+      IF hb_BitTest( lParam, 30 )   // the key was down before ?
+#endif
          RETURN 0
       ENDIF
       IF ( ( wParam == VK_SPACE ) .or. ( wParam == VK_RETURN ) )

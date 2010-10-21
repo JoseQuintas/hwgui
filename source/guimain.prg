@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.41 2010-06-16 12:46:22 lfbasso Exp $
+ * $Id: guimain.prg,v 1.42 2010-10-21 11:46:07 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -11,8 +11,10 @@
 #include "windows.ch"
 #include "guilib.ch"
 #include "common.ch"
-#ifndef __XHARBOUR__
-  #include "hbcompat.ch"
+
+#ifdef __XHARBOUR__
+   #xtranslate hb_processOpen([<x,...>])   => hb_openProcess(<x>)
+   #xtranslate hb_NumToHex([<n,...>])      => NumToHex(<n>)
 #endif
 
 FUNCTION InitObjects( oWnd )
@@ -169,7 +171,7 @@ FUNCTION WAITRUN( cRun )
 //#ifdef __XHARBOUR__
 Local hIn, hOut, nRet, hProc
    // "Launching process", cProc
-   hProc := HB_OpenProcess( cRun , @hIn, @hOut, @hOut )
+   hProc := hb_processOpen( cRun , @hIn, @hOut, @hOut )
 
    // "Reading output"
    // "Waiting for process termination"
@@ -348,7 +350,7 @@ FUNCTION EndWindow()
 FUNCTION HdSerial( cDrive )
 
    LOCAL n       :=  HDGETSERIAL( cDrive )
-   LOCAL cHex    :=  NUMTOHEX( n )
+   LOCAL cHex    :=  HB_NUMTOHEX( n )
    LOCAL cResult := ""
    cResult := SubStr( cHex, 1, 4 ) + '-' + SubStr( cHex, 5, 4 )
 

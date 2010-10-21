@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.11 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: errorsys.prg,v 1.12 2010-10-21 11:46:07 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement
@@ -59,11 +59,7 @@ STATIC FUNCTION DefError( oError )
 
    n := 2
    WHILE ! Empty( ProcName( n ) )
-      #ifdef __XHARBOUR__
-         cMessage += Chr( 13 ) + Chr( 10 ) + "Called from " + ProcFile( n ) + "->" + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n ++ ) ) ) + ")"
-      #else
-         cMessage += Chr( 13 ) + Chr( 10 ) + "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n ++ ) ) ) + ")"
-      #endif
+      cMessage += Chr( 13 ) + Chr( 10 ) + "Called from " + ProcFile( n ) + "->" + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n ++ ) ) ) + ")"
    ENDDO
 
    //included aditional informations

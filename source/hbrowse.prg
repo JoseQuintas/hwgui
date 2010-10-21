@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.233 2010-07-30 20:53:59 giuseppem Exp $
+ * $Id: hbrowse.prg,v 1.234 2010-10-21 11:46:07 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HBrowse class - browse databases and arrays
@@ -22,13 +22,14 @@
 #include "windows.ch"
 #include "guilib.ch"
 #include "common.ch"
-#ifndef __XHARBOUR__
-  #include "hbcompat.ch"
-#endif
 
 #include "inkey.ch"
 #include "dbstruct.ch"
 #include "hbclass.ch"
+
+#ifdef __XHARBOUR__
+   #xtranslate hb_RAScan([<x,...>])        => RAScan(<x>)
+#endif
 
 REQUEST DBGoTop
 REQUEST DBGoTo
@@ -1680,7 +1681,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
       ELSE
          xSize := 0 
          IF fif = LEN( ::aColumns ) .AND. !lFixed 
-            fif := RAscan( ::aColumns,{| c | c:lhide = .F. } ) - 1
+            fif := hb_RAscan( ::aColumns,{| c | c:lhide = .F. } ) - 1
                //::nPaintCol := nColumn
             x -= ::aColumns[ fif + 1 ]:width
             lFixed := .T.
@@ -1825,7 +1826,7 @@ METHOD SeparatorOut( hDC, nRowsFill ) CLASS HBrowse
       ELSE
          xSize := 0 
          IF fif = LEN( ::aColumns ) .AND. !lFixed 
-            fif := RAscan( ::aColumns,{|c| c:lhide = .F.}) - 1
+            fif := hb_RAscan( ::aColumns,{|c| c:lhide = .F.}) - 1
             x -= ::aColumns[ fif + 1 ]:width
             lFixed := .T.
          ENDIF
@@ -1959,7 +1960,7 @@ METHOD FooterOut( hDC ) CLASS HBrowse
       ELSE
          xSize := 0 
          IF fif = LEN( ::aColumns ) .AND. !lFixed 
-            fif := RASCAN( ::aColumns, { | c | c:lhide = .F. } ) - 1
+            fif := hb_RASCAN( ::aColumns, { | c | c:lhide = .F. } ) - 1
             x -= ::aColumns[ fif + 1 ]:width
             lFixed := .T.
          ENDIF
@@ -2185,7 +2186,7 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                nCol ++
             ENDIF
             IF nColumn = LEN(::aColumns) .AND. !lFixed 
-               nColumn := RAscan( ::aColumns, {| c | c:lhide = .F. } ) - 1
+               nColumn := hb_RAscan( ::aColumns, {| c | c:lhide = .F. } ) - 1
                ::nPaintCol := nColumn
                x -= ::aColumns[ ::nPaintCol + 1 ]:width
                lFixed := .T.
@@ -3874,15 +3875,13 @@ STATIC FUNCTION LenVal( xVal, cType, cPict )
       END
       EXIT
 
-      #ifdef __XHARBOUR__
-         DEFAULT
-      #else
-      OTHERWISE
-      #endif
+#ifdef __XHARBOUR__
+   DEFAULT
+#else
+   OTHERWISE
+#endif
       nLen := 0
 
    END
 
    RETURN nLen
-
-

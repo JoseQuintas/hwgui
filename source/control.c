@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.120 2010-09-06 14:08:05 lfbasso Exp $
+ * $Id: control.c,v 1.121 2010-10-21 11:46:07 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -2215,14 +2215,3 @@ HB_FUNC( GETTABNAME )
                     ( LPTCITEM ) &tie );
    HB_RETSTR( tie.pszText );
 }
-
-
-#ifdef __XHARBOUR__
-
-HB_FUNC( XHB_BITTEST )
-{
-   LPARAM l = ( LPARAM ) hb_parnl( 1 );
-   hb_retl( l & 0x40000000 );
-}
-
-#endif

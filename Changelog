@@ -1,8 +1,27 @@
+/*
+ * $Id: Changelog,v 1.1314 2010-10-21 11:46:07 druzus Exp $
+ */
+
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-10-21 13:46 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/errorsys.prg
+    * PROCFILE() is fully supported by Harbour
+
+  * hwgui/source/hcontrol.prg
+    * use xHarbour native function hb_BitIsSet() to test bits in
+      number instead of locally implemented XHB_BITTEST()
+  * hwgui/source/control.c
+    - removed not longer used XHB_BITTEST() function
+
+  * hwgui/source/guimain.prg
+  * hwgui/source/hbrowse.prg
+    * added 3 simply #xtrnaslate rules and removed not longer necessary
+         #include "hbcompat.ch"
 
 2010-10-19 10:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hdialog.prg

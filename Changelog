@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1315 2010-10-23 20:34:25 giuseppem Exp $
+ * $Id: Changelog,v 1.1316 2010-10-26 12:18:09 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-10-26 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcwindow.prg
+    ! minor  fix in METHOD REFRESH()
+  * source/hcontrol.prg
+    ! minoR fix in METHOD INIT HCONTROL
 
 2010-10-23 22:32 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hdialog.prg
@@ -55,6 +61,7 @@
   * include\windows.ch 
    + missing #define WM_QUERYUISTATE                 297   //0x0129
 
+   
 2010-10-15 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hdialog.prg
     ! minor  fix in enddialog()

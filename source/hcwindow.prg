@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.70 2010-10-13 16:11:10 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.71 2010-10-26 12:18:09 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -281,7 +281,7 @@ LOCAL oForm := IIF( EMPTY( oCtrl ), Self, oCtrl )
    DO WHILE ( oForm:oParent ) != Nil .AND. ! __ObjHasMsg( oForm, "GETLIST" )
       oForm := oForm:oParent
    ENDDO
-   RETURN oForm
+   RETURN IIF( VALTYPE( oForm ) != "N", oForm, Nil )
 
 
 METHOD RefreshCtrl( oCtrl, nSeek ) CLASS HCustomWindow
@@ -334,7 +334,7 @@ METHOD Refresh( lAll, oCtrl ) CLASS HCustomWindow
                oCtrl:aControls[ i ]:SHOW()
             ENDIF
             IF LEN( oCtrl:aControls[ i ]:aControls ) > 0
-               ::Refresh( oCtrl:aControls[ i ] )
+               ::Refresh( lAll, oCtrl:aControls[ i ] )
             ENDIF
          ENDIF
       NEXT
@@ -682,7 +682,7 @@ STATIC FUNCTION onNotify( oWnd, wParam, lParam )
       NEXT
    ENDIF
 
-   IF oCtrl != NIL
+   IF oCtrl != NIL  .AND. VALTYPE( oCtrl ) != "N"
 
       IF __ObjHasMsg( oCtrl, "NOTIFY" )
          RETURN oCtrl:Notify( lParam )

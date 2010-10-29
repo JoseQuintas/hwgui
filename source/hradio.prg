@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.35 2010-05-24 14:57:03 lfbasso Exp $
+ * $Id: hradio.prg,v 1.36 2010-10-29 16:45:36 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -80,11 +80,11 @@ METHOD NewRg( oWndParent, nId, nStyle, vari, bSetGet, nLeft, nTop, nWidth, nHeig
               bGFocus,lTransp ) CLASS HRadioGroup
 
    ::oGroupCurrent := Self
-   ::aButtons := {}                             
-   Super:New( ::oParent, ,, ,,,,, bInit) 
+   ::aButtons := {}                        
+   Super:New( ::oParent,,,nLeft, nTop, nWidth, nHeight, oFont, bInit )
    ::oHGroup := HGroup():New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
-                              oFont, bInit, bSize,, tcolor, bColor, lTransp ) 
-                              
+                              oFont, bInit, bSize,, tcolor, bColor, lTransp, Self ) 
+   ::lInit := .T.                            
    ::bInit := bInit
    ::bClick := bClick
    ::bGetFocus := bGfocus    
@@ -123,7 +123,7 @@ METHOD EndGroup( nSelected )  CLASS HRadioGroup
       IF EMPTY( ::oParent )
          ::oParent := ::oGroupCurrent:aButtons[ nLen ]:oParent //GetParentForm()
       ENDIF 
-      ::Init()
+      //::Init()
    ENDIF
    ::oGroupCurrent := Nil
    RETURN Nil
@@ -131,17 +131,13 @@ METHOD EndGroup( nSelected )  CLASS HRadioGroup
 METHOD Init CLASS HRadioGroup
 
    IF ! ::lInit
+      /*
       IF ::oHGroup != Nil
         ::id := ::oHGroup:id
         ::handle := ::oHGroup:handle
       ENDIF
-      /*
-      IF ::bInit != Nil
-        ::oparent:lSuspendMsgsHandling := .t.
-        Eval( ::bInit, Self )
-        ::oparent:lSuspendMsgsHandling := .f.
-      ENDIF
       */
+      super:init()
    ENDIF
    RETURN  NIL
 
@@ -176,17 +172,6 @@ METHOD Refresh()  CLASS HRadioGroup
       ::SetValue( vari ) 
    ENDIF
    RETURN Nil
-/*
-METHOD Enabled( lEnabled ) CLASS HRadioGroup
-  IF lEnabled
-     ::enable()
-  ELSE   
-     ::disable()
-  ENDIF   
-  ::lEnabled := lEnabled
-  
-  RETURN ::lEnabled
-*/
 
 METHOD Enable() CLASS HRadioGroup
    LOCAL i, nLen := Len( ::aButtons )
@@ -242,21 +227,11 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
                        
    Super:New( oWndParent, nId, ::Style, nLeft, nTop, nWidth, nHeight, ;
               oFont, bInit, bSize, bPaint,ctooltip, tcolor, bColor )
-   /*                    
-   ::oFont   := oFont
-   ::nLeft   := nLeft
-   ::nTop    := nTop
-   ::nWidth  := nWidth
-   ::nHeight := nHeight
-   ::bInit   := bInit
-   ::bSize   := bSize
-   ::bPaint  := bPaint
-   ::tooltip := ctooltip
-   */
+              
    ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, TRANSPARENT, OPAQUE ) 
    
    ::Activate()
-   ::SetColor( tcolor, bColor, .t. )
+   //::SetColor( tcolor, bColor, .t. )
 
    //::oParent:AddControl( Self )
    

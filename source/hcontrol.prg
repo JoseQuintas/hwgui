@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.163 2010-10-26 12:18:09 lfbasso Exp $
+ * $Id: hcontrol.prg,v 1.164 2010-10-29 16:45:36 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -37,6 +37,7 @@
 #define BTNST_MAX_COLORS      6
 #define WM_SYSCOLORCHANGE               0x0015
 #define BS_TYPEMASK SS_TYPEMASK
+#define OFS_X	10 // distance from left/right side to beginning/end of text   
 
 //- HControl
 
@@ -361,46 +362,46 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    IF nAnchor >= ANCHOR_VERTFIX
     *- vertical fixed center
       nAnchor := nAnchor - ANCHOR_VERTFIX
-      y1 := y9 + Int( ( h - y ) * ( ( y9 + h9 / 2 ) / y ) )
+      y1 := y9 + Round( ( h - y ) * ( ( y9 + h9 / 2 ) / y ), 0 )
    ENDIF
    IF nAnchor >= ANCHOR_HORFIX
     *- horizontal fixed center
       nAnchor := nAnchor - ANCHOR_HORFIX
-      x1 := x9 + Int( ( w - x ) * ( ( x9 + w9 / 2 ) / x ) )
+      x1 := x9 + Round( ( w - x ) * ( ( x9 + w9 / 2 ) / x ), 0 )
    ENDIF
    IF nAnchor >= ANCHOR_RIGHTREL
       && relative - RIGHT RELATIVE
       nAnchor := nAnchor - ANCHOR_RIGHTREL
-      x1 := w - Int( ( x - x9 - w9 ) * nXincRelative ) - w9
+      x1 := w - Round( ( x - x9 - w9 ) * nXincRelative, 0 ) - w9
    ENDIF
    IF nAnchor >= ANCHOR_BOTTOMREL
       && relative - BOTTOM RELATIVE
       nAnchor := nAnchor - ANCHOR_BOTTOMREL
-      y1 := h - Int( ( y - y9 - h9 ) * nYincRelative ) - h9
+      y1 := h - Round( ( y - y9 - h9 ) * nYincRelative, 0 ) - h9
    ENDIF
    IF nAnchor >= ANCHOR_LEFTREL
       && relative - LEFT RELATIVE
       nAnchor := nAnchor - ANCHOR_LEFTREL
       IF x1 != x9
-         w1 := x1 - ( Int( x9 * nXincRelative ) ) + w9
+         w1 := x1 - ( Round( x9 * nXincRelative, 0 ) ) + w9
       ENDIF
-      x1 := Int( x9 * nXincRelative )
+      x1 := Round( x9 * nXincRelative )
    ENDIF
    IF nAnchor >= ANCHOR_TOPREL
       && relative  - TOP RELATIVE
       nAnchor := nAnchor - ANCHOR_TOPREL
       IF y1 != y9
-         h1 := y1 - ( Int( y9 * nYincRelative ) ) + h9
+         h1 := y1 - ( Round( y9 * nYincRelative, 0 ) ) + h9
       ENDIF
-      y1 := Int( y9 * nYincRelative )
+      y1 := Round( y9 * nYincRelative, 0 )
    ENDIF
    IF nAnchor >= ANCHOR_RIGHTABS
       && Absolute - RIGHT ABSOLUTE
       nAnchor := nAnchor - ANCHOR_RIGHTABS
       IF x1 != x9
-         w1 := x1 - ( x9 +  Int( nXincAbsolute ) ) + w9
+         w1 := x1 - ( x9 +  INT( nXincAbsolute ) ) + w9
       ENDIF
-      x1 := x9 +  Int( nXincAbsolute )
+      x1 := x9 +  INT( nXincAbsolute )
    ENDIF
    IF nAnchor >= ANCHOR_BOTTOMABS
       && Absolute - BOTTOM ABSOLUTE
@@ -430,7 +431,7 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    IF  ( x1 != X9 .OR. y1 != y9 .OR. w1 != w9 .OR. h1 != h9 ) 
       IF isWindowVisible( ::handle )                      
          IF ( x1 != x9 .or. y1 != y9 ) .AND. x9 < ::oParent:nWidth 
-            InvalidateRect( ::oParent:handle, 1, MAX( x9 - 1, 0 ), MAX( y9 - 1, 0 ), x9 + w9 + 1 , y9 + h9 + 1 )
+            InvalidateRect( ::oParent:handle, 1, MAX( x9 - 1, 0 ), MAX( y9 - 1, 0 ),  x9 + w9 + nCxv, y9 + h9 + nCyh )           
          ELSE
             IF w1 < w9
                InvalidateRect( ::oParent:handle, 1, x1 + w1 - nCxv, MAX( y1 - 2, 0 ),  x1 + w9 + 2 , y9 + h9 + 2 )
@@ -441,21 +442,25 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
          ENDIF
               
          ::Move( x1, y1, w1, h1, 0 )       
-         SetWindowPos( ::Handle, Nil, x1, y1, w1, h1, SWP_NOACTIVATE + SWP_NOZORDER + SWP_NOREDRAW )   
+         //SetWindowPos( ::Handle, Nil, x1, y1, w1, h1, SWP_NOACTIVATE + SWP_NOZORDER + SWP_NOREDRAW )   
          
          IF ( ( x1 != x9 .OR. y1 != y9 ) .AND. ( ISBLOCK( ::bPaint ) .OR. x9 > ::oParent:nWidth ) ) .OR. ( ::backstyle = TRANSPARENT .AND. ;         
                           ( ::Title != Nil .AND. ! Empty( ::Title ) ) ) .OR. __ObjHasMsg( Self,"oImage" ) 
-            InvalidateRect( ::oParent:handle, 1, MAX( x1 - 1, 0 ), MAX( y1 - 1, 0 ), x1 + w1 + 1 , y1 + h1 + 1 )
-         ELSE
-            IF w1 > w9
-               InvalidateRect( ::oParent:handle, 1 , MAX( x1 + w9 - ( w1 - w9 + nCxv ), 0 ) , MAX( y1 - 1, 0 ) , x1 + w1 + 2  , y1 + h1 + 2  )
+            IF  __ObjHasMsg( Self, "oImage" ) .OR.  ::backstyle = TRANSPARENT //.OR. w9 != w1
+               InvalidateRect( ::oParent:handle, 0, MAX( x1 - 1, 0 ), MAX( y1 - 1, 0 ), x1 + w1 + 1 , y1 + h1 + 1 )
+            ELSE
+               RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT ) 
             ENDIF
-            IF h1 > h9
-               InvalidateRect( ::oParent:handle, 1 , MAX( x1 - 1, 0) , MAX( y1 + h9 - ( h1 - h9 + nCyh ), 0 ) , x1 + w1 + 2 , y1 + h1 + 2 )
-            ENDIF 
+         ELSE
             IF LEN( ::aControls ) = 0 .AND. ::Title != Nil
                InvalidateRect( ::handle, 0 )
             ENDIF
+            IF w1 > w9
+               InvalidateRect( ::oParent:handle, 0 , MAX( x1 + w9 - ( w1 - w9 + nCxv ), 0 ) , MAX( y1 , 0 ) , x1 + w1 + 1  , y1 + h1   )
+            ENDIF
+            IF h1 > h9
+               InvalidateRect( ::oParent:handle, 0 , MAX( x1 , 0) , MAX( y1 + h9 - ( h1 - h9 + nCyh ), 0 ) , x1 + w1 + 1 , y1 + h1 )
+            ENDIF 
          ENDIF
       ELSE
          ::Move( x1, y1, w1, h1, 0 )
@@ -1841,24 +1846,34 @@ CLASS HGroup INHERIT HControl
 
 CLASS VAR winclass   INIT "BUTTON"
 
+   DATA oGroup
+   DATA oBrush 
+   DATA lTransparent  HIDDEN
+
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
-               cCaption, oFont, bInit, bSize, bPaint, tcolor, bColor, lTransp )
+               cCaption, oFont, bInit, bSize, bPaint, tcolor, bColor, lTransp, oGroup )
    METHOD Activate()
    METHOD Init()
-
+   METHOD Paint() 
+   
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
-            oFont, bInit, bSize, bPaint, tcolor, bColor, lTransp ) CLASS HGroup
+            oFont, bInit, bSize, bPaint, tcolor, bColor, lTransp, oGroup ) CLASS HGroup
 
    nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), BS_GROUPBOX )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
               oFont, bInit, bSize, bPaint,, tcolor, bColor )
 
    ::title   := cCaption
-   ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, TRANSPARENT, OPAQUE ) 
+   ::oGroup := oGroup
+
+   ::oBrush := IIF( bColor != Nil, ::brush,Nil )
+   ::lTransparent := IIF( lTransp != NIL, lTransp, .F. ) 
+   ::backStyle := IIF( ( lTransp != NIL .AND. lTransp ) .OR. ::bColor != Nil , TRANSPARENT, OPAQUE ) 
+   
    ::Activate()
-   ::setcolor( tcolor, bcolor )
+   //::setcolor( tcolor, bcolor )
 
    RETURN Self
 
@@ -1872,12 +1887,129 @@ METHOD Activate CLASS HGroup
    RETURN NIL
 
 METHOD Init CLASS HGroup
-
-   IF  ! ::lInit
-      Super:Init()  
-   ENDIF
-   
+   LOCAL nbs, i
+                                                                         
+   IF  ! ::lInit     
+      Super:Init()
+      
+      IF ::backStyle = TRANSPARENT .OR. ::bColor != Nil 
+         nbs := HWG_GETWINDOWSTYLE( ::handle )
+         nbs := modstyle( nbs, BS_TYPEMASK , BS_OWNERDRAW + WS_DISABLED )
+         HWG_SETWINDOWSTYLE ( ::handle, nbs )
+         ::bPaint   := { | o, p | o:paint( p ) }
+      ENDIF   
+      IF ::oGroup != Nil
+         ::oGroup:Handle := ::handle
+         ::oGroup:id := ::id
+         ::oFont := ::oGroup:oFont
+         ::oGroup:lInit := .f.
+         ::oGroup:Init()
+      ELSE
+         IF ::oBrush != Nil    
+            nbs :=  AScan( ::oparent:acontrols, { | o | o:handle == ::handle } )  
+            FOR i = 1 to LEN( ::oparent:acontrols )  //i - 1 TO 1 STEP - 1     // //     HWND_TOP
+               IF nbs != i .AND.;
+                   PtInRect( { ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight }, { ::oparent:acontrols[ i ]:nLeft, ::oparent:acontrols[ i ]:nTop } ) //.AND. NOUTOBJS = 0
+                   SetWindowPos( ::oparent:acontrols[ i ]:handle, ::Handle, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE + SWP_NOACTIVATE + SWP_FRAMECHANGED )
+               ENDIF 
+            NEXT
+         ELSE
+            SetWindowPos( ::Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE + SWP_NOREDRAW + SWP_NOACTIVATE + SWP_NOSENDCHANGING )         
+         ENDIF
+      ENDIF
+   ENDIF   
    RETURN NIL
+
+
+METHOD PAINT( lpdis ) CLASS HGroup
+   LOCAL drawInfo := GetDrawItemInfo( lpdis )
+   LOCAL DC := drawInfo[ 3 ]
+   LOCAL ppnOldPen, pnFrmDark,	pnFrmLight, iUpDist
+   LOCAL szText, aSize, dwStyle
+   LOCAL rc  := copyrect( { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ] - 1, drawInfo[ 7 ] - 1 } )
+   LOCAL rcText := { 0, 0, 0, 0 }
+   
+	 // determine text length
+	 szText :=  ::Title 
+   aSize :=  TxtRect( szText , Self ) 
+	// distance from window top to group rect
+	 iUpDist := ( aSize[ 2 ] / 2 )
+   dwStyle := ::Style //HWG_GETWINDOWSTYLE( ::handle ) //GetStyle();
+   IF !Empty( szText )
+	    // handle text alignment (Caution: BS_CENTER == BS_LEFT|BS_RIGHT!!!)
+	    rcText := { 0, rc[ 2 ] + iUpDist , 0, rc[ 2 ] + iUpDist  }
+    	IF hb_BitAnd( dwStyle, BS_CENTER ) == BS_RIGHT // right aligned
+		     rcText[ 3 ] := rc[ 3 ] + 2 - OFS_X  
+		     rcText[ 1 ] := rcText[ 3 ] - aSize[ 1 ]
+	    ELSEIF hb_BitAnd( dwStyle, BS_CENTER ) == BS_CENTER  // text centered
+		     rcText[ 1 ] := ( rc[ 3 ] - rc[ 1 ]  - aSize[ 1 ]  ) / 2
+		     rcText[ 3 ] := rcText[ 1 ] + aSize[ 1 ] + 2 
+	    ELSE //((!(dwStyle & BS_CENTER)) || ((dwStyle & BS_CENTER) == BS_LEFT))// left aligned	/ default
+  	     rcText[ 1 ] := rc[ 1 ] + OFS_X
+		     rcText[ 3 ] := rcText[ 1 ] + aSize[ 1 ] + 2
+	    ENDIF
+   ENDIF
+
+	 IF Hwg_BitAND( dwStyle, BS_FLAT) != 0  // "flat" frame
+		  //pnFrmDark  := CreatePen( PS_SOLID, 1, RGB(0, 0, 0) ) ) 
+		  pnFrmDark  := HPen():Add( PS_SOLID, 1,  RGB( 64, 64, 64 ) )  
+		  pnFrmLight := HPen():Add( PS_SOLID, 1, GetSysColor( COLOR_3DHILIGHT ) ) 
+
+		  ppnOldPen := SelectObject( dc, pnFrmDark:Handle )
+      MoveTo( dc, rcText[ 1 ] - 2, rcText[ 2 ]  )
+      LineTo( dc, rc[ 1 ], rcText[ 2 ] )
+      LineTo( dc, rc[ 1 ], rc[ 4 ] )
+      LineTo( dc, rc[ 3 ], rc[ 4 ] )
+      LineTo( dc, rc[ 3 ], rcText[ 4 ] )
+      LineTo( dc, rcText[ 3 ], rcText[ 4 ] )
+
+  		SelectObject( dc, pnFrmLight:handle)
+      MoveTo( dc, rcText[ 1 ] - 2, rcText[ 2 ] + 1 )
+      LineTo( dc, rc[ 1 ] + 1, rcText[ 2 ] + 1)
+		  LineTo( dc, rc[ 1 ] + 1, rc[ 4 ] - 1 )
+		  LineTo( dc, rc[ 3 ] - 1, rc[ 4 ] - 1 )
+		  LineTo( dc, rc[ 3 ] - 1, rcText[ 4 ] + 1 )
+		  LineTo( dc, rcText[ 3 ], rcText[ 4 ] + 1 )
+	 ELSE // 3D frame
+
+      pnFrmDark  := HPen():Add( PS_SOLID, 1, GetSysColor( COLOR_3DSHADOW ) )
+      pnFrmLight := HPen():Add( PS_SOLID, 1, GetSysColor( COLOR_3DHILIGHT ) ) 
+                           
+      ppnOldPen := SelectObject( dc, pnFrmDark:handle )
+      MoveTo( dc, rcText[ 1 ] - 2, rcText[ 2 ] )
+      LineTo( dc, rc[ 1 ], rcText[ 2 ] )
+      LineTo( dc, rc[ 1 ], rc[ 4 ] - 1 )
+      LineTo( dc, rc[ 3 ] - 1, rc[ 4 ] - 1 )
+      LineTo( dc, rc[ 3 ] - 1, rcText[ 4 ] )
+      LineTo( dc, rcText[ 3 ], rcText[ 4 ] ) 
+      
+    	SelectObject( dc, pnFrmLight:handle )
+      MoveTo( dc, rcText[ 1 ] - 2, rcText[ 2 ] + 1 )
+      LineTo( dc, rc[ 1 ] + 1, rcText[ 2 ] + 1 )
+      LineTo( dc, rc[ 1 ] + 1, rc[ 4 ] - 1 )
+      MoveTo( dc, rc[ 1 ], rc[ 4 ] )
+      LineTo( dc, rc[ 3 ], rc[ 4 ] )
+      LineTo( dc, rc[ 3 ], rcText[ 4 ] - 1)
+      MoveTo( dc, rc[ 3 ] - 2, rcText[ 4 ] + 1 ) 
+      LineTo( dc, rcText[ 3 ], rcText[ 4 ] + 1 )	
+   ENDIF
+  
+   // draw text (if any)
+   IF !Empty( szText ) && !(dwExStyle & (BS_ICON|BS_BITMAP)))
+     SetBkMode( dc, TRANSPARENT ) 		
+     IF ::oBrush != Nil
+        FillRect( DC, rc[ 1 ] + 2, rc[ 2 ] + iUpDist + 2 , rc[ 3 ] - 2, rc[ 4 ] - 2 , ::brush:handle )
+        IF ! ::lTransparent
+           FillRect( DC, rcText[ 1 ] - 2, rc[ 2 ] + 1 ,  rcText[ 3 ] + 1, rc[ 2 ] + iUpDist + 2 , ::brush:handle )
+        ENDIF   
+     ENDIF
+	   DrawText( dc, szText, rcText, DT_VCENTER + DT_LEFT + DT_SINGLELINE + DT_NOCLIP )
+   ENDIF
+ 	 // cleanup
+ 	 DeleteObject( pnFrmLight )
+ 	 DeleteObject( pnFrmDark )
+	 SelectObject( dc, ppnOldPen )
+   RETURN Nil
 
 
 

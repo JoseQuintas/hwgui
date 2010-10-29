@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1318 2010-10-29 15:15:48 lfbasso Exp $
+ * $Id: Changelog,v 1.1319 2010-10-29 16:45:36 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,21 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-10-29 14:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcontrol.prg
+    + #define OFS_X	10 
+    * CLASS HGROUP
+      + DATA oGroup
+      + DATA oBrush 
+      + DATA lTransparent  
+      + METHOD Paint()  
+      ! method Init changed style when ::backStyle = TRANSPARENT .OR. ::bColor != Nil 
+        Since groupboxes never get WM_DRAWITEM even if they are BS_OWNERDRAW,
+        we must handle our painting in OnPaint.
+      ! oGroup is attrib object RADIOGROUP 
+  * source\hradio.prg
+    ! fix code in Method NewRg to suport HGROUP class
 
 2010-10-29 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hdialog.prg

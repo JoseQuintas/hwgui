@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1316 2010-10-26 12:18:09 lfbasso Exp $
+ * $Id: Changelog,v 1.1317 2010-10-29 11:59:53 giuseppem Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-10-29 22:32 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hdialog.prg
+    ! reverted lActivated.
+    ! add lOnActivated tell if a dialog is activated.
+      my email is on the top <giuseppe-mastrangelo@tiscali.it> as ih header:
+      YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
+
 
 2010-10-26 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcwindow.prg

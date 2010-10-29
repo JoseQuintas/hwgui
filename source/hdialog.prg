@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.125 2010-10-29 12:00:24 giuseppem Exp $
+ * $Id: hdialog.prg,v 1.126 2010-10-29 15:15:48 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -65,6 +65,7 @@ CLASS VAR aModalDialogs  SHARED INIT { }
    // Added by Sandro Freire
    DATA lExitOnEsc   INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key,
    // Added by Sandro Freire
+   DATA lGetSkiponEsc  INIT .F.  // add by Basso - pressing ESC back focus , if first DEFAULT ESC EVENT
    DATA lRouteCommand  INIT .F.
    DATA nLastKey INIT 0
    DATA oIcon, oBmp
@@ -143,7 +144,7 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
    LOCAL oWnd, hParent
    
    ::lOnActivated := .T.
-   ::bOnActivate := bOnActivate
+   ::bOnActivate := IIF( bOnActivate != Nil, bOnActivate, ::bOnActivate )
    CreateGetList( Self )
    hParent := IIf( ::oParent != Nil .AND. ;
                    __ObjHasMsg( ::oParent, "HANDLE" ) .AND. ::oParent:handle != Nil ;
@@ -321,7 +322,8 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
 
    InitObjects( oDlg )
    InitControls( oDlg, .T. )
-   
+   uis := SendMESSAGE( oDlg:handle , WM_QUERYUISTATE, 0, 0 )
+      
    IF oDlg:bInit != Nil
       oDlg:lSuspendMsgsHandling := .T.
       IF ValType( nReturn := Eval( oDlg:bInit, oDlg ) ) != "N"
@@ -334,15 +336,6 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       ENDIF
    ENDIF
    oDlg:lSuspendMsgsHandling := .F.
-   // draw focus
-   uis := SendMESSAGE( oDlg:handle , WM_QUERYUISTATE, 0, 0 )
-   IF uis != 0
-      POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL ), 0 )  
-      POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )  
-   ELSE
-      POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL ), 0 )                            
-      POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 ) 
-   ENDIF 
    
    oDlg:nInitFocus := IIF( VALTYPE( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )   
    IF  ! EMPTY( oDlg:nInitFocus ) 
@@ -390,7 +383,17 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    oDlg:rect := GetClientRect( oDlg:Handle )
    oDlg:nWidth  := oDlg:rect[ 3 ]
    oDlg:nHeight := oDlg:rect[ 4 ]
-
+   
+   // draw focus
+   IF uis != 0
+      POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_INITIALIZE, UISF_HIDEACCEL ), 0 )    
+      POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )  
+   ELSE
+      POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL ), 0 )                            
+      POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 ) 
+      InvalidateRect( oDlg:Handle, 0 )      
+   ENDIF 
+   
    RETURN nReturn
 
 STATIC FUNCTION onEnterIdle( oDlg, wParam, lParam )
@@ -504,14 +507,24 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
             //setfocus(odlg:handle)
          ENDIF
       ELSEIF iParLow == IDCANCEL
-         IF ( oCtrl := oDlg:FindControl( IDCANCEL ) ) != Nil .AND. oCtrl:IsEnabled() 
-            PostMessage( oDlg:handle, WM_NEXTDLGCTL, oCtrl:Handle , 1 )
-         ELSEIF oCtrl != Nil .AND. ! oCtrl:IsEnabled() .AND. oDlg:lExitOnEsc
+         IF ( oCtrl := oDlg:FindControl( IDCANCEL ) ) != Nil .AND. ! oCtrl:IsEnabled() .AND. oDlg:lExitOnEsc
+            oDlg:nLastKey := VK_ESCAPE
             EndDialog( oDlg:handle )
             RETURN 1
+         ELSEIF oCtrl != Nil .AND. oCtrl:IsEnabled() 
+            oCtrl:SetFocus()
+            PostMessage( oDlg:handle, WM_NEXTDLGCTL, oCtrl:Handle , 1 )
+         ELSEIF oDlg:lGetSkiponEsc
+            hCtrl := GetFocus()
+            oCtrl := oDlg:FindControl( , hctrl )
+            IF oCtrl  != Nil .and. GetSkip( oCtrl:oParent, hCtrl, , - 1 )   
+               IF AScan( oDlg:GetList, { | o | o:handle == hCtrl } ) > 1
+                  RETURN 1
+               ENDIF
+            ENDIF
          ENDIF
          nEsc := ( getkeystate( VK_ESCAPE ) < 0 )
-         oDlg:nLastKey := VK_ESCAPE
+         //oDlg:nLastKey := VK_ESCAPE
       ELSEIF iParLow == IDHELP  // HELP
          SendMessage( oDlg:Handle, WM_HELP, 0, 0 )
       ENDIF

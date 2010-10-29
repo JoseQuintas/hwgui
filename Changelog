@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1317 2010-10-29 11:59:53 giuseppem Exp $
+ * $Id: Changelog,v 1.1318 2010-10-29 15:15:48 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-10-29 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/hdialog.prg
+   ! fixed ::bOnActivate value if pass in activate
+   + DATA lGetSkiponEsc  INIT .F.  
+      pressing ESC back focus IN getlist, if first DEFAULT ESC EVENT
+   ! FUNCTION DlgCommand add code to lGetSkiponEsc
+   
 2010-10-29 22:32 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hdialog.prg
     ! reverted lActivated.

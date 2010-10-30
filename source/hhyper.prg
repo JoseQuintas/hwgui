@@ -1,5 +1,5 @@
 /*
- * $Id: hhyper.prg,v 1.13 2010-05-24 14:57:03 lfbasso Exp $
+ * $Id: hhyper.prg,v 1.14 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HStaticLink class
@@ -45,7 +45,7 @@ CLASS VAR winclass INIT "STATIC"
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
                bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
-   METHOD Redefine( oWndParent, nId, oFont, bInit, ;
+   METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                     bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
    METHOD INIT()
    METHOD onEvent( msg, wParam, lParam )
@@ -61,7 +61,7 @@ CLASS VAR winclass INIT "STATIC"
    METHOD SetLinkText( csLinkText )
    METHOD SetLinkColor( sLinkColor )
    METHOD PAINT()
-   METHOD OnMouseMove( nFlags, point )
+   METHOD OnMouseMove( nFlags, lParam )
 
 ENDCLASS
 
@@ -148,7 +148,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 
    RETURN Self
 
-METHOD INIT CLASS HStaticLink
+METHOD INIT() CLASS HStaticLink
 
    IF ! ::lInit
       Super:init()
@@ -234,7 +234,7 @@ METHOD OnClicked() CLASS HStaticLink
 
    ::state := LBL_NORMAL
    //InvalidateRect( ::handle, 0 )
-   RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight ) 
+   RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )
    SetFocus( ::handle )
    //PostMessage( ::handle, WM_PAINT, 0, 0 )
 
@@ -284,12 +284,12 @@ METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
          ::state := LBL_NORMAL
          //InvalidateRect( ::handle, 0 )
          //PostMessage( ::handle, WM_PAINT, 0, 0 )
-         RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )                    
+         RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ENDIF
       IF ( ::state == LBL_NORMAL .AND. ! res ) .or. ;
          ( ::state == LBL_NORMAL .AND. ! res .and. ::m_bVisited )
          ::state := LBL_MOUSEOVER
-    		 RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )          
+    		 RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )
          //InvalidateRect( ::handle, 0 )
          //PostMessage( ::handle, WM_PAINT, 0, 0 )
          //SetCapture( ::handle )
@@ -301,13 +301,13 @@ METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
 METHOD PAint() CLASS HStaticLink
 
    LOCAL strtext    := ::Title
-   LOCAL nOldBkMode
+//   LOCAL nOldBkMode
    LOCAL dwFlags
-   LOCAL clrOldText
+//   LOCAL clrOldText
    LOCAL rcClient
-   LOCAL POLDFONT
-   LOCAL DWSTYLE
-   
+//   LOCAL POLDFONT
+//   LOCAL DWSTYLE
+
    IF EMPTY( ::oParent:handle )
       RETURN Nil
    ENDIF
@@ -317,11 +317,12 @@ METHOD PAint() CLASS HStaticLink
    ENDIF
 
    rcClient   := GetClientRect( ::handle )
-   nOldBkMode := ::dc:SetBkMode( TRANSPARENT )
+   ::dc:SetBkMode( TRANSPARENT )
    dwFlags    := 0
-   DWSTYLE    := ::style
+/*
+      DWSTYLE    := ::style
 
-   #ifdef __XHARBOUR__
+#ifdef __XHARBOUR__
       SWITCH( DWSTYLE & SS_TYPEMASK )
    CASE SS_RIGHT
       dwFlags := DT_RIGHT | DT_WORDBREAK
@@ -337,17 +338,18 @@ METHOD PAint() CLASS HStaticLink
       EXIT
    END
 #endif
+*/
 dwFlags  += ( DT_VCENTER + DT_END_ELLIPSIS )
 
-POLDFONT := ::dc:SelectObject( ::oFont:handle )
+::dc:SelectObject( ::oFont:handle )
 IF ::state == LBL_NORMAL
    IF ::m_bVisited
-      clrOldText := ::dc:SetTextColor( ::m_sVisitedColor )
+      ::dc:SetTextColor( ::m_sVisitedColor )
    ELSE
-      clrOldText := ::dc:SetTextColor( ::m_sLinkColor )
+      ::dc:SetTextColor( ::m_sLinkColor )
    ENDIF
 ELSEIF ::state == LBL_MOUSEOVER
-   clrOldText := ::dc:SetTextColor( ::m_sHoverColor )
+   ::dc:SetTextColor( ::m_sHoverColor )
 ENDIF
 
 ::dc:DrawText( strtext, rcClient, dwFlags )

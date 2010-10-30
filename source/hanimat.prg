@@ -1,5 +1,5 @@
 /*
- * $Id: hanimat.prg,v 1.11 2008-12-29 15:05:35 lfbasso Exp $
+ * $Id: hanimat.prg,v 1.12 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HAnimation class
@@ -50,7 +50,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    RETURN Self
 
-METHOD Activate CLASS HAnimation
+METHOD Activate() CLASS HAnimation
    IF ! Empty( ::oParent:handle )
       ::handle := Animate_Create( ::oParent:handle, ::id, ::style, ;
                                   ::nLeft, ::nTop, ::nWidth, ::nHeight )

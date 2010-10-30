@@ -1,5 +1,5 @@
 /*
- * $Id: hlistbox.prg,v 1.24 2010-04-13 14:45:32 lfbasso Exp $
+ * $Id: hlistbox.prg,v 1.25 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HListBox class
@@ -27,8 +27,9 @@ CLASS VAR winclass   INIT "LISTBOX"
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
               aItems,oFont,bInit,bSize,bPaint,bChange,cTooltip,tColor,bcolor,bGFocus,bLFocus, bKeydown, bDblclick,bOther )
    METHOD Activate()
-   METHOD Redefine( oWnd, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bDraw, bChange, cTooltip, bKeydown, bOther )
-   METHOD Init( aListbox, nCurrent )
+   METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
+                    bChange, cTooltip, bKeydown, bOther  )
+   METHOD Init()
    METHOD Refresh()
    METHOD Requery()
    METHOD Setitem( nPos )
@@ -90,7 +91,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    RETURN Self
 
-METHOD Activate CLASS HListBox
+METHOD Activate() CLASS HListBox
    IF ! Empty( ::oParent:handle )
       ::handle := CreateListbox( ::oParent:handle, ::id, ;
                                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
@@ -288,7 +289,7 @@ METHOD When( oCtrl ) CLASS HListBox
 
 
 METHOD Valid( oCtrl ) CLASS HListBox
-   LOCAL res := .t., oDlg, nSkip
+   LOCAL res, oDlg, nSkip
    LOCAL ltab :=  GETKEYSTATE( VK_TAB ) < 0
 
    HB_SYMBOL_UNUSED( oCtrl )

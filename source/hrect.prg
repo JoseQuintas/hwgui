@@ -1,5 +1,5 @@
 /*
- * $Id: hrect.prg,v 1.19 2010-10-13 14:17:30 lfbasso Exp $
+ * $Id: hrect.prg,v 1.20 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level class HRect (Panel)
@@ -35,7 +35,6 @@ METHOD New( oWndParent, nLeft, nTop, nRight, nBottom, lPress, nStyle ) CLASS HRe
    IF nStyle = NIL
       nStyle := 3
    ENDIF
-   nCor1 := COLOR_3DHILIGHT
    IF lPress
       nCor2 := COLOR_3DHILIGHT
       nCor1 := COLOR_3DSHADOW
@@ -71,7 +70,7 @@ CLASS VAR winclass   INIT "STATIC"
 
    METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, nColor )
    METHOD Activate()
-   METHOD Paint()
+   METHOD Paint( lpDis )
 
 ENDCLASS
 
@@ -98,7 +97,7 @@ METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, nColor ) CLASS 
    RETURN Self
 
 //---------------------------------------------------------------------------
-METHOD Activate CLASS HRect_Line
+METHOD Activate() CLASS HRect_Line
    IF ! Empty( ::oParent:handle )
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
@@ -141,10 +140,8 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, nBorder, nCurvature, 
    nfStyle := IIf( nfStyle = Nil, BS_TRANSPARENT , nfStyle )
    nCurvature := nCurvature
 
-   Self := HDrawShape():New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bcolor,,, ;
+   return HDrawShape():New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bcolor,,, ;
                              nBorder, nCurvature, nbStyle, nfStyle, bInit, nBackStyle )
-
-   RETURN Self
 
 //---------------------------------------------------------------------------
 
@@ -160,9 +157,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, nStyle, bSize, lnoBor
    nStyle := IIf( nStyle = NIL, 3, nStyle )  // FLAT
    lnoBorder := IIf( lnoBorder = NIL, .F., lnoBorder )  // FLAT
 
-   Self := HDrawShape():New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize,,, nStyle, lnoBorder,,,,, bInit ) //,bClick, bDblClick)
-
-   RETURN Self
+   return HDrawShape():New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize,,, nStyle, lnoBorder,,,,, bInit ) //,bClick, bDblClick)
 
 
 //---------------------------------------------------------------------------
@@ -177,11 +172,11 @@ CLASS VAR winclass   INIT "STATIC"
    DATA brushFill
    DATA bClick, bDblClick
 
-   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor, nStyle, ;
-               lnoBorder, nBorder, nCurvature, nbStyle, nfStyle, bInit, bClick, bDblClick, nBackStyle )
+   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor, ncStyle, ;
+               lnoBorder, nBorder, nCurvature, nbStyle, nfStyle, bInit, nBackStyle )
 
    METHOD Activate()
-   METHOD Paint( lDsip )
+   METHOD Paint( lpDis )
    METHOD SetColor( tcolor, bcolor, lRedraw )
    METHOD Curvature( nCurvature )
    //METHOD Refresh() INLINE SENDMESSAGE( ::handle, WM_PAINT, 0, 0 ), RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
@@ -221,7 +216,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor
 
 //---------------------------------------------------------------------------
 
-METHOD Activate CLASS HDrawShape
+METHOD Activate() CLASS HDrawShape
    IF ! Empty( ::oParent:handle )
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
@@ -232,7 +227,7 @@ METHOD Activate CLASS HDrawShape
 
 METHOD SetColor( tcolor, bColor, lRedraw ) CLASS HDrawShape
 
-   ::brushFill := HBrush():Add( tColor, ::nfstyle ) 
+   ::brushFill := HBrush():Add( tColor, ::nfstyle )
    Super:SetColor( tColor, bColor )
    IF ! Empty( lRedraw )
       RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
@@ -252,7 +247,7 @@ METHOD Curvature( nCurvature ) CLASS HDrawShape
 //---------------------------------------------------------------------------
 METHOD Paint( lpdis ) CLASS HDrawShape
    LOCAL drawInfo := GetDrawItemInfo( lpdis )
-   LOCAL hDC := drawInfo[ 3 ], oBrush, oldbkMode
+   LOCAL hDC := drawInfo[ 3 ], oldbkMode
    LOCAL  x1 := drawInfo[ 4 ], y1 := drawInfo[ 5 ]
    LOCAL  x2 := drawInfo[ 6 ], y2 := drawInfo[ 7 ]
 
@@ -283,12 +278,12 @@ METHOD Paint( lpdis ) CLASS HDrawShape
             SelectObject( hDC, ::Brush:handle )
          ENDIF
          //RoundRect( hDC, x1 + 1, y1 + 1, x2, y2 , ::nCurvature, ::nCurvature)
-      ENDIF   
+      ENDIF
       IF ::nfStyle != BS_TRANSPARENT .OR. ::backStyle = OPAQUE
          SelectObject( hDC, ::BrushFill:handle )
       ELSE
-         SelectObject( hDC, GetStockObject( NULL_BRUSH ) ) 
-      ENDIF        
+         SelectObject( hDC, GetStockObject( NULL_BRUSH ) )
+      ENDIF
       RoundRect( hDC, x1 + 1, y1 + 1, x2, y2 , ::nCurvature, ::nCurvature)
    ENDIF
    SetBKMode( hDC, oldbkMode )
@@ -331,8 +326,8 @@ CLASS HContainer INHERIT HControl
    METHOD Init()
    METHOD Create( ) INLINE ::lCreate := .T.
    METHOD onEvent( msg, wParam, lParam )
-   METHOD Paint( lpDisp )
-   METHOD Visible( lvisible ) SETGET
+   METHOD Paint( lpDis )
+   METHOD Visible( lVisibled ) SETGET
 
 ENDCLASS
 
@@ -365,7 +360,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ncStyle, bSiz
   Return Self
 
 //---------------------------------------------------------------------------
-METHOD Activate CLASS HContainer
+METHOD Activate() CLASS HContainer
 
    IF !Empty( ::oParent:handle )
       ::handle := CreateStatic( ::oParent:handle, ::id, ::style, ;
@@ -389,7 +384,7 @@ METHOD Activate CLASS HContainer
    ENDIF
    RETURN Nil
 
-METHOD Init CLASS HContainer
+METHOD Init() CLASS HContainer
 
    IF ! ::lInit
       Super:init()
@@ -414,8 +409,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HContainer
       RETURN - 1
    ELSEIF msg == WM_ERASEBKGND
       RETURN 0
-   ENDIF   
-   IF ::lTABSTOP       
+   ENDIF
+   IF ::lTABSTOP
       IF msg == WM_SETFOCUS
          GetSkip( ::oparent, ::handle, , ::nGetSkip )
       ELSEIF msg == WM_KEYUP
@@ -447,8 +442,8 @@ METHOD Visible( lVisibled ) CLASS HContainer
 
 //---------------------------------------------------------------------------
 METHOD Paint( lpdis ) CLASS HContainer
-   Local pps, drawInfo, hDC
-   Local aCoors, x1, y1, x2, y2
+   Local drawInfo, hDC
+   Local x1, y1, x2, y2
 
     drawInfo := GetDrawItemInfo( lpdis )
     hDC := drawInfo[ 3 ]
@@ -477,10 +472,10 @@ METHOD Paint( lpdis ) CLASS HContainer
       ELSE
          DrawEdge( hDC, x1, y1, x2, y2,0,0)
       ENDIF
-      IF ::backStyle != TRANSPARENT      
+      IF ::backStyle != TRANSPARENT
          IF ::Brush != Nil
             FillRect( hDC, x1 + 2, y1 + 2, x2 - 2, y2 - 2 , ::brush:handle )
-         ENDIF            
+         ENDIF
       ELSE
          FillRect( hDC, x1 + 2, y1 + 2, x2 - 2, y2 - 2 , GetStockObject( 5 ) )
       ENDIF

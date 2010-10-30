@@ -1,5 +1,5 @@
 /*
- * $Id: hwinprn.prg,v 1.4 2010-08-03 12:53:36 omm Exp $
+ * $Id: hwinprn.prg,v 1.5 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWinPrn class
@@ -54,7 +54,7 @@ CLASS HWinPrn INHERIT HObject
    METHOD NextPage()
    METHOD PrintLine( cLine,lNewLine )
    METHOD PrintText( cText )
-   METHOD PutCode( cText )
+   METHOD PutCode( cLine )
    METHOD EndDoc()
    METHOD End()
 

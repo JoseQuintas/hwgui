@@ -1,5 +1,5 @@
 /*
- * $Id: htimer.prg,v 1.14 2009-07-09 02:45:51 lfbasso Exp $
+ * $Id: htimer.prg,v 1.15 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTimer class
@@ -33,7 +33,7 @@ CLASS VAR aTimers   INIT { }
    ASSIGN Interval( x )  INLINE ::value := x,     ;
                                            SetTimer( ::oParent:handle, ::id, ::value )
 
-   METHOD New( oParent, id, value, bAction )
+   METHOD New( oParent, nId, value, bAction )
    METHOD Init()
    METHOD onAction()
    METHOD END()
@@ -64,7 +64,7 @@ METHOD New( oParent, nId, value, bAction ) CLASS HTimer
 
    RETURN Self
 
-METHOD Init CLASS HTimer
+METHOD Init() CLASS HTimer
    IF ! ::lInit
       IF ::value > 0
          SetTimer( ::oParent:handle, ::id, ::value )
@@ -86,7 +86,7 @@ METHOD END() CLASS HTimer
 METHOD onAction()
 
    TimerProc( , ::id, ::interval )
-   
+
 RETURN Nil
 
 

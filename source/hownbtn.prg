@@ -1,5 +1,5 @@
 /*
- * $Id: hownbtn.prg,v 1.47 2010-10-07 16:45:21 giuseppem Exp $
+ * $Id: hownbtn.prg,v 1.48 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
@@ -28,15 +28,15 @@ CLASS VAR cPath SHARED
    DATA oBitmap, xb, yb, widthb, heightb, lTransp, trColor
    DATA lEnabled INIT .T.
    DATA nOrder
-   
+
    DATA m_bFirstTime INIT .T.
    DATA hTheme
    DATA Themed INIT .F.
 
 
-   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
-               bInit, bSize, bPaint, bClick, lflat,              ;
-               cText, color, font, xt, yt, widtht, heightt,        ;
+   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
+               bInit, bSize, bPaint, bClick, lflat,             ;
+               cText, color, oFont, xt, yt, widtht, heightt,       ;
                bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
                cTooltip, lEnabled, lCheck, bColor,bGfocus, bLfocus, themed )
 
@@ -46,7 +46,7 @@ CLASS VAR cPath SHARED
    METHOD Redefine( oWndParent, nId, bInit, bSize, bPaint, bClick, lflat, ;
                     cText, color, font, xt, yt, widtht, heightt,     ;
                     bmp, lResour, xb, yb, widthb, heightb, lTr,      ;
-                    cTooltip, lEnabled, lCheck, bColor,bGfocus, bLfocus )
+                    cTooltip, lEnabled, lCheck )
    METHOD Paint()
    METHOD DrawItems( hDC )
    METHOD MouseMove( wParam, lParam )
@@ -60,7 +60,7 @@ CLASS VAR cPath SHARED
    METHOD onClick()
    METHOD onGetFocus()
    METHOD onLostFocus()
-   METHOD Refresh() 
+   METHOD Refresh()
    METHOD SetText( cCaption ) INLINE ::title := cCaption, ;
                 RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )
 
@@ -96,7 +96,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
       ::bcolor  := bcolor
       ::brush := HBrush():Add( bcolor )
    ENDIF
-   
+
    ::xt      := IIf( xt == Nil, 0, xt )
    ::yt      := IIf( yt == Nil, 0, yt )
    ::widtht  := IIf( widtht == Nil, 0, widtht )
@@ -132,7 +132,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
 
    RETURN Self
 
-METHOD Activate CLASS HOwnButton
+METHOD Activate() CLASS HOwnButton
    IF ! Empty( ::oParent:handle )
       ::handle := CreateOwnBtn( ::oParent:handle, ::id, ;
                                 ::nLeft, ::nTop, ::nWidth, ::nHeight )
@@ -152,12 +152,12 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
             HB_CLOSETHEMEDATA( ::htheme )
             ::hTheme := nil
          ENDIF
-         ::Themed := .F. 
+         ::Themed := .F.
       ENDIF
       ::m_bFirstTime := .T.
       RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
       RETURN 0
-      
+
    ELSEIF msg == WM_ERASEBKGND
       RETURN 0
    ELSEIF msg == WM_PAINT
@@ -191,7 +191,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
          ::release()
       ENDIF
       ::onLostFocus()
-   ELSEIF msg = WM_CHAR  .OR. msg = WM_KEYDOWN .OR. msg = WM_KEYUP   
+   ELSEIF msg = WM_CHAR  .OR. msg = WM_KEYDOWN .OR. msg = WM_KEYUP
       IF wParam = VK_SPACE
 				 ::Press()
          ::onClick()
@@ -205,7 +205,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
 
    RETURN - 1
 
-METHOD Init CLASS HOwnButton
+METHOD Init() CLASS HOwnButton
 
    IF ! ::lInit
       ::nHolder := 1
@@ -278,7 +278,7 @@ METHOD Paint() CLASS HOwnButton
       ::nWidth  := aCoors[ 3 ]
       ::nHeight := aCoors[ 4 ]
    ENDIF
-   IF ::Themed .AND. ::m_bFirstTime 
+   IF ::Themed .AND. ::m_bFirstTime
       ::m_bFirstTime := .F.
       IF ( ISTHEMEDLOAD() )
          IF ValType( ::hTheme ) == "P"
@@ -289,14 +289,14 @@ METHOD Paint() CLASS HOwnButton
          ENDIF
          ::hTheme := IIF( EMPTY( ::hTheme  ), Nil, ::hTheme )
       ENDIF
-      IF  Empty( ::hTheme ) 
+      IF  Empty( ::hTheme )
          ::Themed := .F.
       ENDIF
    ENDIF
    IF ::Themed
-      IF ! ::lEnabled 
+      IF ! ::lEnabled
          state :=  PBS_DISABLED
-      ELSE   
+      ELSE
          state := IIF( ::state == OBTN_PRESSED, PBS_PRESSED, PBS_NORMAL )
       ENDIF
       IF ::lCheck
@@ -328,7 +328,7 @@ METHOD Paint() CLASS HOwnButton
          ELSEIF ::state == OBTN_PRESSED
             DrawButton( hDC, 0, 0, aCoors[ 3 ], aCoors[ 4 ], 2 )
          ENDIF
-      ENDIF   
+      ENDIF
    ELSE
       IF ::Themed
          //SetBkMode( hdc, TRANSPARENT )
@@ -347,7 +347,7 @@ METHOD Paint() CLASS HOwnButton
          ENDIF
       ENDIF
    ENDIF
-   
+
    ::DrawItems( hDC )
 
    EndPaint( ::handle, pps )
@@ -443,7 +443,7 @@ METHOD MDown()  CLASS HOwnButton
       InvalidateRect( ::handle, 0 )
       ::SetFocus()
       RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
-   ELSEIF  ::lCheck   
+   ELSEIF  ::lCheck
       ::state := OBTN_NORMAL
       InvalidateRect( ::handle, 0 )
       PostMessage( ::handle, WM_PAINT, 0, 0 )
@@ -474,24 +474,24 @@ METHOD MUp() CLASS HOwnButton
 //   ENDIF
 
    RETURN Nil
-   
+
 METHOD Refresh()  CLASS HOwnButton
    InvalidateRect( ::handle, 0 )
-   RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW  ) 
+   RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW  )
    RETURN Nil
-   
+
 
 METHOD Release()  CLASS HOwnButton
    ::lPress := .F.
    ::state := OBTN_NORMAL
    InvalidateRect( ::handle, 0 )
-   RedrawWindow( ::handle, RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW + RDW_INVALIDATE ) 
+   RedrawWindow( ::handle, RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW + RDW_INVALIDATE )
    //PostMessage( ::handle, WM_PAINT, 0, 0 )
    RETURN Nil
 
 
 METHOD onGetFocus()  CLASS HOwnButton
-   LOCAL res := .t., oParent, nSkip := 1
+   LOCAL res := .t., nSkip
 
    IF !CheckFocus(Self, .f.)
       RETURN .t.
@@ -501,7 +501,6 @@ METHOD onGetFocus()  CLASS HOwnButton
       ::oparent:lSuspendMsgsHandling := .T.
       res := Eval( ::bGetFocus, ::title, Self )
       IF ! res
-         oParent := ParentGetDialog( Self )
          GetSkip( ::oParent, ::handle, , nSkip )
       ENDIF
    ENDIF

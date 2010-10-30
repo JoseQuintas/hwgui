@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.87 2010-09-03 18:29:22 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.88 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -67,26 +67,26 @@ CLASS HComboBox INHERIT HControl
    aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, ;
    bcolor, bLFocus, bIChange, nDisplay, nhItem, ncWidth )
    METHOD Activate()
-   METHOD Redefine( oWnd, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bDraw, bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay )
-   METHOD INIT( aCombo, nCurrent )
+   METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay )
+   METHOD INIT()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Requery()
    METHOD Refresh()
    METHOD Setitem( nPos )
    METHOD SetValue( xItem )
    METHOD GetValue()
-   METHOD AddItem( cItem )
-   METHOD DeleteItem( nPos )
+   METHOD AddItem( cItem, cItemBound )
+   METHOD DeleteItem( nIndex )
    METHOD Valid( )
    METHOD When( )
    METHOD onSelect()
    METHOD InteractiveChange( )
    METHOD onChange( )
    METHOD Populate() HIDDEN
-   METHOD GetValueBound( )
+   METHOD GetValueBound( xItem )
    METHOD RowSource( xSource ) SETGET
-   METHOD DisplayValue( cValue ) SETGET 
-   
+   METHOD DisplayValue( cValue ) SETGET
+
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, aItems, oFont, ;
@@ -170,10 +170,10 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::oParent:AddEvent( CBN_EDITUPDATE, Self, { | o, id | ::InteractiveChange( o:FindControl( id ) ) },, "interactiveChange" )
    ENDIF
    ::oParent:AddEvent( CBN_SELENDOK, Self, { | o, id | ::onSelect( o:FindControl( id ) ) },,"onSelect" )
-   
+
 RETURN Self
 
-METHOD Activate CLASS HComboBox
+METHOD Activate() CLASS HComboBox
 
    IF !Empty( ::oParent:handle )
       ::handle := CreateCombo( ::oParent:handle, ::id, ;
@@ -210,7 +210,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    ::RowSource( aItems )
    ::aItemsBound   := {}
    ::bSetGet := bSetGet
-   
+
 
    IF bSetGet != Nil
       ::bChangeSel := bChange
@@ -241,7 +241,7 @@ RETURN Self
 
 METHOD INIT() CLASS HComboBox
 
-   LOCAL LongComboWidth    := 0
+   LOCAL LongComboWidth
    LOCAL NewLongComboWidth, avgWidth, nHeightBox
 
    IF !::lInit
@@ -331,15 +331,15 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
             RETURN 0
          ENDIF
       ELSEIF msg = WM_KEYDOWN
-         ProcKeyList( Self, wParam ) 
-         IF wparam =  VK_RIGHT .OR. wParam == VK_RETURN //.AND. ! ::lEdit 	 	      
+         ProcKeyList( Self, wParam )
+         IF wparam =  VK_RIGHT .OR. wParam == VK_RETURN //.AND. ! ::lEdit 	 	
              GetSkip( ::oParent, ::handle, , 1 )
              RETURN 0
-         ELSEIF wparam =  VK_LEFT //.AND. ! ::lEdit 	 	      
-   	         GetSkip( ::oParent, ::handle, , -1 )   
+         ELSEIF wparam =  VK_LEFT //.AND. ! ::lEdit 	 	
+   	         GetSkip( ::oParent, ::handle, , -1 )
    	         RETURN 0
-         ENDIF   
-      ELSEIF msg = CB_GETDROPPEDSTATE  
+         ENDIF
+      ELSEIF msg = CB_GETDROPPEDSTATE
    	     IF GETKEYSTATE( VK_RETURN ) < 0
             ::GetValue()
 	       ENDIF
@@ -480,18 +480,18 @@ METHOD GetValue() CLASS HComboBox
 LOCAL nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
 
    //::value := Iif( ::lText, ::aItems[ nPos ], nPos )
-   IF ::lText 
+   IF ::lText
 	    IF ( ::lEdit .OR. Valtype( ::Value ) != "C" ) .AND. nPos <= 1
- 	       ::Value := GetEditText( ::oParent:handle, ::id ) 
+ 	       ::Value := GetEditText( ::oParent:handle, ::id )
  	       nPos := SendMessage( ::handle, CB_FINDSTRINGEXACT, -1, ::value ) + 1
  	    ELSEIF nPos > 0
          ::value := ::aItems[ nPos ]
-      ENDIF  
+      ENDIF
       //nPos := IIF( LEN( ::value ) > 0, AScan( ::aItems, ::Value ), 0 )
       ::cDisplayValue := ::Value
       ::value := Iif( nPos > 0, ::aItems[ nPos ], IIF( ::lEdit, "", ::value ) )
    ELSE
-      ::value := nPos 
+      ::value := nPos
    ENDIF
    ::ValueBound := IIF( nPos > 0, ::GetValueBound(), IIF( ::lText, "", 0 ) )
    IF ::bSetGet != Nil
@@ -520,17 +520,17 @@ Local nPos := SendMessage( ::handle,CB_GETCURSEL,0,0 ) + 1
       ::ValueBound := ::aItemsBound[ nPos ]
    ENDIF
    RETURN ::ValueBound
-   
+
 METHOD DisplayValue( cValue ) CLASS HComboBox
 
    IF cValue != Nil
-	    IF ::lEdit .AND. VALTYPE( cValue ) = "C" 
+	    IF ::lEdit .AND. VALTYPE( cValue ) = "C"
          SetDlgItemText( ::oParent:handle, ::id, cValue )
          ::cDisplayValue := cValue
       ENDIF
-   ENDIF   
+   ENDIF
    RETURN IIF( IsWindow( ::oParent:handle ), GetEditText( ::oParent:handle, ::id ), ::cDisplayValue )
- 
+
 
 METHOD DeleteItem( nIndex ) CLASS HComboBox
 
@@ -629,7 +629,7 @@ RETURN res
 
 METHOD Valid( ) CLASS HComboBox
 
-LOCAL oDlg, nPos, nSkip, res, hCtrl := getfocus()
+LOCAL oDlg, nSkip, res, hCtrl := getfocus()
 LOCAL ltab := GETKEYSTATE( VK_TAB ) < 0
 
    IF  ::lNoValid .OR. !CheckFocus( Self, .t. )
@@ -686,7 +686,7 @@ METHOD RowSource( xSource ) CLASS HComboBox
    ENDIF
    RETURN ::xRowSource
 
-METHOD Populate
+METHOD Populate()
    Local cAlias, nRecno, value, cValueBound
    Local i, numofchars, LongComboWidth := 0
 
@@ -697,7 +697,7 @@ METHOD Populate
       cAlias := LEFT( ::xrowsource[ 1 ], AT("->", ::xrowsource[ 1 ]) - 1 )
       value := STRTRAN( ::xrowsource[ 1 ] , calias + "->", , ,1, 1 )
       //cAlias := IIF( TYPE( ::xrowsource[ 1 ] ) = "U",  Nil, cAlias )
-      cAlias := IIF( VALTYPE( ::xrowsource[ 1 ] ) = "U",  Nil, cAlias ) 
+      cAlias := IIF( VALTYPE( ::xrowsource[ 1 ] ) = "U",  Nil, cAlias )
       cValueBound := IIF( ::xrowsource[ 2 ]  != Nil  .AND. cAlias != Nil, STRTRAN( ::xrowsource[ 2 ] , calias + "->" ), Nil )
    ELSE
       cValueBound := IIF( VALTYPE( ::aItems[ 1 ] ) = "A" .AND. LEN(  ::aItems[ 1 ] ) > 1, ::aItems[ 1, 2 ], NIL )
@@ -770,14 +770,15 @@ CLASS HCheckComboBox INHERIT HComboBox
    DATA aCheck
    DATA nWidthCheck INIT 0
    DATA m_strText INIT ""
-   METHOD onGetText( w, l )
-   METHOD OnGetTextLength( w, l )
+   METHOD onGetText( wParam, lParam )
+   METHOD OnGetTextLength( wParam, lParam )
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
    aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, ;
    tcolor, bcolor, bValid, acheck, nDisplay, nhItem, ncWidth )
-   METHOD Redefine( oWnd, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bDraw, bChange, ctooltip, bGFocus )
-   METHOD INIT( aCombo, nCurrent )
+   METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
+                    bChange, ctooltip, bGFocus, acheck )
+   METHOD INIT()
    METHOD Requery()
    METHOD Refresh()
    METHOD Paint( lpDis )

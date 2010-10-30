@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1319 2010-10-29 16:45:36 lfbasso Exp $
+ * $Id: Changelog,v 1.1320 2010-10-30 16:43:31 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,69 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+  * source\hcontrol.prg
+    * fixed error in missing Round() parameter
+  * source\barcode.prg
+    source\hcontrol.prg
+    source\drawwidg.prg
+    source\guimain.prg
+    source\hanimat.prg
+    source\hbrowse.prg
+    source\hcheck.prg
+    source\hcombo.prg
+    source\hcwindow.prg
+    source\hdatepic.prg
+    source\hdc.prg
+    source\hdialog.prg
+    source\hedit.prg
+    source\hfreeimg.prg
+    source\hfrmtmpl.prg
+    source\hgraph.prg
+    source\hgrid.prg
+    source\hgridex.prg
+    source\hhyper.prg
+    source\hipedit.prg
+    source\hlistbox.prg
+    source\hmonthc.prg
+    source\hnice.prg
+    source\hownbtn.prg
+    source\hpager.prg
+    source\hpanel.prg
+    source\hprinter.prg
+    source\hprogres.prg
+    source\hradio.prg
+    source\hrebar.prg
+    source\hrect.prg
+    source\hriched.prg
+    source\hsayimg.prg
+    source\hsplit.prg
+    source\htab.prg
+    source\htimer.prg
+    source\htool.prg
+    source\htrackbr.prg
+    source\htree.prg
+    source\hupdown.prg
+    source\hwindow.prg
+    source\hwinprn.prg
+    source\menu.prg
+    source\printdos.prg
+    source\richtext.prg
+    * purged unused code and unused variables
+    * reworked to match the parameters in class method declaration
+      and in method implementation
+  * hwgui.hbp
+    * added hbide compatible settings
+    * raised compile flag from w to w3
+      PLEASE: i ask for no more commit any source don't observing this
+      flag, as the code was very buggy and full of garbage.
+  
+  To hwGUI developers: as last 2.17 version was released long time ago,
+  i'm asking for your opinion about the state of the lib, mainly if it's
+  stable enough to release a new 2.18 version.
+  For my simple production applications appears to be quite stable and
+  functional.
+  Please, send comments on developers list.
+                    
 2010-10-29 14:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcontrol.prg
     + #define OFS_X	10 
@@ -36,7 +99,6 @@
     ! add lOnActivated tell if a dialog is activated.
       my email is on the top <giuseppe-mastrangelo@tiscali.it> as ih header:
       YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
-
 
 2010-10-26 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcwindow.prg

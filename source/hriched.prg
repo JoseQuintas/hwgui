@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.23 2010-04-05 14:30:42 lfbasso Exp $
+ * $Id: hriched.prg,v 1.24 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -38,12 +38,12 @@ CLASS VAR winclass   INIT "RichEdit20A"
    METHOD onLostFocus()
    METHOD When()
    METHOD Valid()
-   METHOD UpdatePos( ) 
+   METHOD UpdatePos( )
    METHOD onChange( )
-   METHOD ReadOnly( lreadOnly ) SETGET 
+   METHOD ReadOnly( lreadOnly ) SETGET
    METHOD SetColor( tColor, bColor, lRedraw )
    METHOD SaveFile( cFile )
-   
+
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -59,7 +59,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::bChange := bChange
    ::lAllowTabs := IIF( EMPTY( lAllowTabs ), ::lAllowTabs, lAllowTabs )
    ::lReadOnly := Hwg_BitAnd( nStyle, ES_READONLY ) != 0
-   
+
    hwg_InitRichEdit()
 
    ::Activate()
@@ -77,7 +77,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    RETURN Self
 
-METHOD Activate CLASS HRichEdit
+METHOD Activate() CLASS HRichEdit
    IF ! Empty( ::oParent:handle )
       ::handle := CreateRichEdit( ::oParent:handle, ::id, ;
                                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
@@ -95,7 +95,7 @@ METHOD Init()  CLASS HRichEdit
       IF ::bChange != Nil
          SendMessage( ::handle, EM_SETEVENTMASK, 0, ENM_SELCHANGE + ENM_CHANGE )
          ::oParent:AddEvent( EN_CHANGE, ::id, {| | ::onChange( )} )
-      ENDIF   
+      ENDIF
    ENDIF
    RETURN Nil
 
@@ -103,13 +103,13 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
    LOCAL nDelta, nret
 
    // writelog( str(msg) + str(wParam) + str(lParam) )
-   IF msg = WM_NOTIFY .OR. msg = WM_KEYUP .OR. msg == WM_LBUTTONDOWN .OR. msg == WM_LBUTTONUP 
+   IF msg = WM_NOTIFY .OR. msg = WM_KEYUP .OR. msg == WM_LBUTTONDOWN .OR. msg == WM_LBUTTONUP
       ::updatePos()
    ENDIF
    IF msg = EM_GETSEL .OR. msg = EM_LINEFROMCHAR .OR. msg = EM_LINEINDEX .OR. msg = EM_GETLINECOUNT
       Return - 1
    ENDIF
-   
+
    IF msg = WM_SETFOCUS .and. ::lSetFocus .AND. ISWINDOWVISIBLE(::handle)
       ::lSetFocus := .F.
       SendMessage( ::handle, EM_SETSEL, 0, 0 ) //Loword(npos),loword(npos))
@@ -153,7 +153,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
          RE_INSERTTEXT( ::handle, CHR( VK_TAB ) )
           RETURN 0
       ENDIF
-      IF wParam == VK_ESCAPE .AND. ::GetParentForm():Handle != ::oParent:handle      
+      IF wParam == VK_ESCAPE .AND. ::GetParentForm():Handle != ::oParent:handle
          IF GetParent(::oParent:handle) != Nil
             //SendMessage( GetParent(::oParent:handle),WM_CLOSE,0,0 )
          ENDIF
@@ -181,7 +181,7 @@ METHOD SetColor( tColor, bColor, lRedraw )  CLASS HRichEdit
       SendMessage( ::Handle, EM_SETBKGNDCOLOR, 0, bColor )  // cor de fundo
    ENDIF
    ::super:SetColor( tColor, bColor, lRedraw )
-   
+
    RETURN NIL
 
 METHOD ReadOnly( lreadOnly )
@@ -189,8 +189,8 @@ METHOD ReadOnly( lreadOnly )
    IF lreadOnly != Nil
       IF ! EMPTY( SENDMESSAGE( ::handle,  EM_SETREADONLY, IIF( lReadOnly, 1, 0 ), 0 ) )
           ::lReadOnly := lReadOnly
-      ENDIF    
-   ENDIF   
+      ENDIF
+   ENDIF
    RETURN ::lReadOnly
 
 METHOD UpdatePos( ) CLASS HRichEdit
@@ -199,16 +199,16 @@ METHOD UpdatePos( ) CLASS HRichEdit
 
 	 ::Line := SendMessage( ::Handle, EM_LINEFROMCHAR, pos1 - 1, 0 ) + 1
 	 ::LinesTotal := SendMessage( ::handle, EM_GETLINECOUNT, 0, 0 )
-	 ::SelText := RE_GETTEXTRANGE( ::handle, pos1, pos2 ) 
+	 ::SelText := RE_GETTEXTRANGE( ::handle, pos1, pos2 )
 	 ::SelStart := pos1
 	 ::SelLength := pos2 - pos1
-   ::Col := pos1 - SendMessage( ::Handle, EM_LINEINDEX, - 1, 0 ) 
+   ::Col := pos1 - SendMessage( ::Handle, EM_LINEINDEX, - 1, 0 )
 
    RETURN nPos
-   
+
 METHOD onChange( ) CLASS HRichEdit
 
-   IF ::bChange != Nil 
+   IF ::bChange != Nil
       ::oparent:lSuspendMsgsHandling := .t.
       Eval( ::bChange, ::gettext(), Self  )
       ::oparent:lSuspendMsgsHandling := .f.
@@ -246,13 +246,13 @@ METHOD Valid( ) CLASS HRichEdit
 
   RETURN .T.
 
-METHOD SaveFile( cFile )  CLASS HRichEdit 
+METHOD SaveFile( cFile )  CLASS HRichEdit
 
    IF !EMPTY( cFile )
       IF ! EMPTY( SAVERICHEDIT( ::Handle, cFile ) )
           RETURN .T.
-      ENDIF    
-   ENDIF   
+      ENDIF
+   ENDIF
    RETURN .F.
 
 

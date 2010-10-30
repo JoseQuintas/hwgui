@@ -1,5 +1,5 @@
 /*
- * $Id: barcode.prg,v 1.4 2010-03-16 16:21:55 lculik Exp $
+ * $Id: barcode.prg,v 1.5 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * Create Barcode for HWGUI application
  *
@@ -154,7 +154,7 @@ CLASS Barcode
    METHOD InitCodabar()
    METHOD InitSub5()
    METHOD InitIndustrial25( lCheck )
-   METHOD InitInterleave25( lCheck )
+   METHOD InitInterleave25( lMode )
    METHOD InitMatrix25( lCheck )
 
 ENDCLASS
@@ -268,10 +268,6 @@ METHOD CreateBarcode( cCode ) CLASS BarCode
    //nY    := ::nTop
 
    IF ::lTransparent = .F. .AND. ::nColPane <> RGB( 255, 255, 255 )
-      hPen      := Rich_CreatePen( , , ::nColPane )
-      hOldPen   := Rich_SelectObject( ::hDC, hPen )
-      hBrush    := Rich_CreateSolidBrush( ::nColPane )
-      hOldBrush := Rich_SelectObject( ::hDC, hBrush )
 
       IF ::lHorizontal = .F.
          RICH_Rectangle( ::hDC, nX, nY, nX + ::nHeight, nY + Min( Len( cCode ) * ::nPinWidth, ::nWidth ) )
@@ -588,7 +584,7 @@ METHOD InitEAN13() CLASS BarCode
    k := k + Str( control, 1, 0 )
 
    // preparacion de la cadena de impresion
-   cadena := []
+
    Dcha := SubStr( k, 8, 6 )
    Izda := SubStr( k, 2, 6 )
    Mascara := SubStr( primero, ( Val( SubStr( k, 1, 1 ) ) * 6 ) + 1, 6 )
@@ -816,15 +812,16 @@ METHOD InitInterleave25( lMode ) CLASS BarCode
    LOCAL cStart := "0000"
    LOCAL cStop  := "100"
    LOCAL cBar   := ""
-   LOCAL cIz    := ""
+   LOCAL cIz
    LOCAL cBarra := ""
-   LOCAL cDer   := ""
-   LOCAL nLen   := 0
+   LOCAL cDer
+   LOCAL nLen
    LOCAL nCheck := 0
    LOCAL cCode  := trans( ::cText, "@9" ) // only digits
 
    DEFAULT lMode := .F.
 
+   nLen   := Len( cCode )
    IF ( nLen % 2 = 1 .AND. ! lMode )
       nLen ++
       cCode += "0"
@@ -836,7 +833,6 @@ METHOD InitInterleave25( lMode ) CLASS BarCode
       cCode += Right( Str( nCheck, 10, 0 ), 1 )
    ENDIF
 
-   nLen   := Len( cCode )
    cBarra := cStart
 
    // preencoding .. interlaving

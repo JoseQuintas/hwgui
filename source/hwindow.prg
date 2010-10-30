@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.104 2010-09-04 17:50:30 sandrorrfreire Exp $
+ *$Id: hwindow.prg,v 1.105 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -24,7 +24,7 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
    IF oWnd:oEmbedded != Nil
       oWnd:oEmbedded:Resize( LOWORD( lParam ), HIWORD( lParam ) )
    ENDIF
-   //InvalidateRect( oWnd:handle, 0 ) 
+   //InvalidateRect( oWnd:handle, 0 )
    oWnd:Super:onEvent( WM_SIZE, wParam, lParam )
 
    oWnd:nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
@@ -37,7 +37,7 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       aCoors := GetClientRect( oWnd:handle )
       //MoveWindow( HWindow():aWindows[ 2 ]:handle, oWnd:aOffset[ 1 ], oWnd:aOffset[ 2 ], aCoors[ 3 ] - oWnd:aOffset[ 1 ] - oWnd:aOffset[ 3 ], aCoors[ 4 ] - oWnd:aOffset[ 2 ] - oWnd:aOffset[ 4 ] )
       //aCoors := GetClientRect(HWindow():aWindows[ 2 ]:handle )
-      SetWindowPos( HWindow():aWindows[ 2 ]:handle, Nil, oWnd:aOffset[ 1 ], oWnd:aOffset[ 2 ], aCoors[ 3 ] - oWnd:aOffset[ 1 ] - oWnd:aOffset[ 3 ], aCoors[ 4 ] - oWnd:aOffset[ 2 ] - oWnd:aOffset[ 4 ], SWP_NOZORDER)       
+      SetWindowPos( HWindow():aWindows[ 2 ]:handle, Nil, oWnd:aOffset[ 1 ], oWnd:aOffset[ 2 ], aCoors[ 3 ] - oWnd:aOffset[ 1 ] - oWnd:aOffset[ 3 ], aCoors[ 4 ] - oWnd:aOffset[ 2 ] - oWnd:aOffset[ 4 ], SWP_NOZORDER)
       aCoors := GetWindowRect( HWindow():aWindows[ 2 ]:handle )
       HWindow():aWindows[ 2 ]:nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
       HWindow():aWindows[ 2 ]:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
@@ -45,8 +45,8 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       IF !Empty( oWnd:Screen )
           oWnd:Screen:nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
           oWnd:Screen:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
-          InvalidateRect( oWnd:screen:handle, 0 )           
-          SetWindowPos( oWnd:screen:handle, Nil, 0, 0, oWnd:Screen:nWidth, oWnd:Screen:nHeight, SWP_NOACTIVATE + SWP_NOZORDER)                   
+          InvalidateRect( oWnd:screen:handle, 0 )
+          SetWindowPos( oWnd:screen:handle, Nil, 0, 0, oWnd:Screen:nWidth, oWnd:Screen:nHeight, SWP_NOACTIVATE + SWP_NOZORDER)
       ENDIF
       IF ! Empty( oWnd := oWnd:GetMdiActive() ) .AND.oWnd:Type = WND_MDICHILD .AND. oWnd:lmaximized .AND.;
                                                  ( oWnd:lModal .OR. oWnd:lChild )
@@ -97,10 +97,10 @@ CLASS VAR szAppName  SHARED INIT "HwGUI_App"
    DATA oEmbedded
    DATA bScroll
    DATA bSetForm
-   
-   METHOD New( Icon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
-               bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, cAppName, oBmp, cHelp, ;
-               nHelpId, bCloseQuery, bRefresh, lChild, lClipper , lNoClosable )
+
+   METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
+               bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
+               cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bRefresh, lChild, lClipper, lNoClosable, bSetForm )
    METHOD AddItem( oWnd )
    METHOD DelItem( oWnd )
    METHOD FindWindow( hWnd )
@@ -171,9 +171,9 @@ METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
    ENDIF
    IF  Hwg_Bitand( nStyle,WS_VSCROLL ) > 0
       ::nScrollBars += 2
-   ENDIF  
+   ENDIF
    ::bSetForm := bSetForm
-   
+
    RETURN Self
 
 METHOD AddItem( oWnd ) CLASS HWindow
@@ -297,7 +297,7 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMa
                                    ::bPaint, ::bGetFocus, ::bLostFocus, ::bOther, ::obmp )
       //handle := Hwg_InitClientWindow( oWndClient, ::nMenuPos, ::nLeft, ::nTop + 60, ::nWidth, ::nHeight )
       handle := Hwg_InitClientWindow( oWndClient, ::nMenuPos, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-      
+
       oWndClient:handle = handle
       ::oClient := HWindow():aWindows[ 2 ]
       // ADDED screen to backgroup to MDI MAIN
@@ -382,7 +382,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMainWindow
                FOR i = 1 to 6
                   FlashWindow( oMdi:Handle, 1 )
                   Sleep( 60 )
-               NEXT   
+               NEXT
                SetWindowPos( oMdi:Handle, HWND_TOP, 0, 0, 0, 0, ;
                              SWP_NOMOVE + SWP_NOSIZE +  SWP_NOOWNERZORDER + SWP_FRAMECHANGED)
                RETURN 0
@@ -439,8 +439,8 @@ CLASS VAR aMessages INIT { ;
    DATA oWndParent
    DATA lMaximized  INIT .F.
    DATA lResult  INIT .F.	
-   
-   METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal )
+
+   METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal)
    METHOD onEvent( msg, wParam, lParam )
    METHOD SetParent( oParent ) INLINE ::oWndParent := oParent
 
@@ -459,34 +459,34 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
                  ( Hwg_BitAnd( ::style, WS_MAXIMIZE ) != 0 .OR.  Hwg_BitAnd( ::style, WS_SIZEBOX ) != 0 )
    lCentered  := ( ! EMPTY( lCentered ) .AND. lCentered ) .OR. Hwg_BitAND( ::Style, DS_CENTER ) != 0
    ::lModal   := ! EMPTY( lModal ) .AND. lModal
-   ::lChild   := ::lModal .OR. ::lChild .OR. ::minWidth  > -1 .OR. ::maxWidth  > -1 .OR. ::minHeight > -1 .OR. ::maxHeight > -1 
-   
+   ::lChild   := ::lModal .OR. ::lChild .OR. ::minWidth  > -1 .OR. ::maxWidth  > -1 .OR. ::minHeight > -1 .OR. ::maxHeight > -1
+
    CreateGetList( Self )
    // Hwg_CreateMdiChildWindow( Self )
 
    ::Type := WND_MDICHILD
    ::oClient := HWindow():aWindows[ 2 ]
-   ::rect := GetWindowRect( ::handle )   
-   IF lCentered 
-      ::nLeft := ( ::oClient:nWidth - ::nWidth ) / 2 
-      ::nTop  := ( ::oClient:nHeight - ::nHeight ) / 2  
+   ::rect := GetWindowRect( ::handle )
+   IF lCentered
+      ::nLeft := ( ::oClient:nWidth - ::nWidth ) / 2
+      ::nTop  := ( ::oClient:nHeight - ::nHeight ) / 2
    ENDIF
-   ::aRectSave := { ::nLeft, ::nTop, ::nwidth, ::nHeight } 
-   
+   ::aRectSave := { ::nLeft, ::nTop, ::nwidth, ::nHeight }
+
    ::Style := Hwg_BitOr( ::Style , WS_VISIBLE ) - IIF( ! lshow , WS_VISIBLE , 0 )   			
    ::handle := Hwg_CreateMdiChildWindow( Self )
 
    IF lCentered
-      ::nLeft := ( ::oClient:nWidth - ::nWidth ) / 2 
-      ::nTop  := ( ::oClient:nHeight - ::nHeight ) / 2 
+      ::nLeft := ( ::oClient:nWidth - ::nWidth ) / 2
+      ::nTop  := ( ::oClient:nHeight - ::nHeight ) / 2
    ENDIF
    IF VALTYPE( ::TITLE ) = "N" .AND. ::title = - 1   // screen
       RETURN .T.
    ENDIF
-	     
+	
    // is necessary for set zorder control
    //InitControls( Self )  ??? maybe
-   
+
    /*  in ONMDICREATE
    /*
    InitObjects( Self,.T. )
@@ -496,22 +496,22 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
    */
 
    IF lShow
-      onMove( Self )  
-      IF lMinimized  
+      onMove( Self )
+      IF lMinimized
          ::Minimize()
       ELSEIF lMaximized
          ::maximize()
       ENDIF
-      //::show()   
+      //::show()
       upDateWindow( ::handle )
    ELSE
-      SetWindowPos( ::handle, Nil, ::nLeft, ::nTop, ::nWidth, ::nHeight, SWP_NOACTIVATE + SWP_NOZORDER )                                                      
-   ENDIF    
-   
+      SetWindowPos( ::handle, Nil, ::nLeft, ::nTop, ::nWidth, ::nHeight, SWP_NOACTIVATE + SWP_NOZORDER )
+   ENDIF
+
    // SCROLLSBARS
    IF ::nScrollBars > - 1
-      AEval( ::aControls, { | o | ::ncurHeight := max( o:nTop + o:nHeight + GetSystemMetrics( SM_CYMENU ) + GETSYSTEMMETRICS( SM_CYCAPTION ) + 12 , ::ncurHeight ) } )  
-      AEval( ::aControls, { | o | ::ncurWidth := max( o:nLeft + o:nWidth  + 24 , ::ncurWidth ) } )  
+      AEval( ::aControls, { | o | ::ncurHeight := max( o:nTop + o:nHeight + GetSystemMetrics( SM_CYMENU ) + GETSYSTEMMETRICS( SM_CYCAPTION ) + 12 , ::ncurHeight ) } )
+      AEval( ::aControls, { | o | ::ncurWidth := max( o:nLeft + o:nWidth  + 24 , ::ncurWidth ) } )
       ::ResetScrollbars()
       ::SetupScrollbars()
    ENDIF
@@ -538,11 +538,11 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
 METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
    LOCAL i, oCtrl
    LOCAL nFocus
-   
+
    nFocus := If( Hb_IsNumeric( ::nFocus ), ::nFocus, 0)
    //IF msg = WM_NCLBUTTONDBLCLK .AND. ::lChild
    //   Return 0
- 
+
    IF msg = WM_GETMINMAXINFO //= &H24
       IF ::minWidth  > -1 .OR. ::maxWidth  > -1 .OR. ::minHeight > -1 .OR. ::maxHeight > -1
          MINMAXWINDOW(::handle, lParam,;
@@ -551,13 +551,13 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
          IIF( ::maxWidth  > -1, ::maxWidth, Nil ),;
          IIF( ::maxHeight > -1, ::maxHeight, Nil ) )
          RETURN 0
-         
+
       ENDIF
    ELSEIF msg = WM_SETFOCUS .AND. nFocus != 0
       SETFOCUS( nFocus )
-      ::nFocus := nFocus := 0
+      ::nFocus := 0
    ENDIF
- 
+
    IF ( i := AScan( ::aMessages[ 1 ], msg ) ) != 0
       RETURN Eval( ::aMessages[ 2, i ], Self, wParam, lParam )
    ELSE
@@ -568,7 +568,6 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
          onTrackScroll( Self, msg, wParam, lParam )
       ELSEIF msg = WM_NOTIFY .AND.!::lSuspendMsgsHandling
          IF ( oCtrl := ::FindControl( , GetFocus() ) ) != Nil .AND. oCtrl:ClassName != "HTAB"
-            nFocus := oCtrl:handle
             SendMessage( oCtrl:handle, msg, wParam, lParam )
          ENDIF
       ENDIF
@@ -585,7 +584,7 @@ CLASS HChildWindow INHERIT HWindow
    METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
                bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
                cAppName, oBmp, cHelp, nHelpId, bRefresh )
-   METHOD Activate( lShow, lMaximized, lMinimized,lCentered, bActivate )
+   METHOD Activate( lShow, lMaximized, lMinimized,lCentered, bActivate, lModal)
    METHOD onEvent( msg, wParam, lParam )
 
 ENDCLASS
@@ -686,7 +685,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HChildWindow
    RETURN - 1
 
 FUNCTION ReleaseAllWindows( hWnd )
-   LOCAL oItem, iCont, nCont
+   LOCAL iCont, nCont
 
    //  Vamos mandar destruir as filhas
    // Destroi as CHILD's desta MAIN
@@ -701,8 +700,6 @@ FUNCTION ReleaseAllWindows( hWnd )
          ENDIF
       NEXT
    #else
-
-      HB_SYMBOL_UNUSED( oItem )
 
       nCont := Len( HWindow():aWindows )
 
@@ -789,12 +786,12 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
             IF IsWindowEnabled( oWnd:Screen:Handle )
                SetWindowPos( oWnd:Screen:HANDLE, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER + ;
                                                                           SWP_NOOWNERZORDER + SWP_FRAMECHANGED)
-            ENDIF   
+            ENDIF
             RETURN -1
          ENDIF
       ENDIF
       // menu MDICHILD
- 			IF oWnd:bMdiMenu != Nil 
+ 			IF oWnd:bMdiMenu != Nil
          Eval( oWnd:bMdiMenu, oWnd:GetMdiActive(), wParam  )
       ENDIF
       RETURN IIF( ! Empty( oWnd:Screen ) , -1 , 0 )
@@ -809,14 +806,14 @@ FUNCTION onMove( oWnd )
    oWnd:nLeft := aControls[ 1 ]
    oWnd:nTop  := aControls[ 2 ]
    IF oWnd:type == WND_MDICHILD  .AND. ! oWnd:lMaximized
-      //oWnd:aRectSave := { oWnd:nLeft, oWnd:nTop, oWnd:nWidth, oWnd:nHeight }              
+      //oWnd:aRectSave := { oWnd:nLeft, oWnd:nTop, oWnd:nWidth, oWnd:nHeight }
 			IF oWnd:nHeight > GETSYSTEMMETRICS( SM_CYCAPTION ) + 6
-	       oWnd:aRectSave := { oWnd:nLeft, oWnd:nTop, oWnd:nWidth, oWnd:nHeight } 
+	       oWnd:aRectSave := { oWnd:nLeft, oWnd:nTop, oWnd:nWidth, oWnd:nHeight }
       ELSE
         oWnd:aRectSave[ 1 ] := oWnd:nLeft
         oWnd:aRectSave[ 2 ] := oWnd:nTop
       ENDIF
-   ENDIF   
+   ENDIF
 
    RETURN - 1
 
@@ -876,7 +873,7 @@ STATIC FUNCTION onSysCommand( oWnd, wParam, lParam )
           SendMessage( oWnd:HANDLE, WM_SYSCOMMAND, SC_RESTORE, 0 )
           SendMessage( oWnd:HANDLE, WM_SYSCOMMAND, SC_MAXIMIZE, 0 )
           RETURN 0
-      ENDIF 
+      ENDIF
       ars := aClone( oWnd:aRectSave )
       IF oWnd:lMaximized
           // restore
@@ -958,7 +955,7 @@ STATIC FUNCTION onMdiCreate( oWnd, lParam )
 
    IF ISBLOCK( oWnd:bSetForm )
       EVAL( oWnd:bSetForm, oWnd )
-   ENDIF   
+   ENDIF
    IF ! EMPTY ( oWnd:oWndParent )
        oWnd:oParent := oWnd:oWndParent
    ENDIF
@@ -978,7 +975,7 @@ STATIC FUNCTION onMdiCreate( oWnd, lParam )
    //draw rect focus
    SENDMESSAGE( oWnd:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )
    SENDMESSAGE( oWnd:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL ), 0 )
-   
+
    RETURN - 1
 
 STATIC FUNCTION onMdiCommand( oWnd, wParam )
@@ -1008,18 +1005,18 @@ STATIC FUNCTION onMdiCommand( oWnd, wParam )
    RETURN 0
 
 STATIC FUNCTION onMdiNcActivate( oWnd, wParam )
-  
-   IF ! Empty( oWnd:Screen ) 
+
+   IF ! Empty( oWnd:Screen )
       IF wParam = 1 .AND. oWnd:Screen:handle == oWnd:handle
          SetWindowPos( oWnd:Screen:HANDLE, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE )
-         RETURN 1 
+         RETURN 1
       ENDIF
-   ENDIF   
-    
+   ENDIF
+
    IF wParam == 1 //.AND. oWnd:nFocus > 0
       //SetFocus( oWnd:nFocus )   DISPARA O EVENTO LOSTFOCUS DO GET DUAS VEZES
    ENDIF
- 
+
    RETURN - 1
 
 Static Function onMdiActivate( oWnd,wParam, lParam )
@@ -1029,7 +1026,7 @@ Static Function onMdiActivate( oWnd,wParam, lParam )
       lConf := wParam = oWnd:Handle
    Else
       lConf := .F.
-   EndIf    
+   EndIf
    // added
    IF  lScreen .AND. ( Empty( lParam ) .OR. ;
        lParam = oWnd:Screen:Handle ) .AND. !lConf //wParam != oWnd:Handle
@@ -1052,7 +1049,7 @@ Static Function onMdiActivate( oWnd,wParam, lParam )
    ELSEIF oWnd:Handle = lParam  //.AND. ownd:screen:handle != WPARAM
       IF ISBLOCK( oWnd:bSetForm )
          EVAL( oWnd:bSetForm, oWnd )
-      ENDIF   
+      ENDIF
       IF oWnd:lModal
          aWndMain := oWnd:GETMAIN():aWindows
          AEVAL( aWndMain,{| w | IIF( w:Type >= WND_MDICHILD .AND.;
@@ -1060,7 +1057,7 @@ Static Function onMdiActivate( oWnd,wParam, lParam )
      ENDIF
       IF oWnd:bGetFocus != Nil
          oWnd:lSuspendMsgsHandling := .t.
-         IF EMPTY( oWnd:nFocus ) 
+         IF EMPTY( oWnd:nFocus )
              UpdateWindow( oWnd:Handle)
          ENDIF
          Eval( oWnd:bGetFocus, oWnd )

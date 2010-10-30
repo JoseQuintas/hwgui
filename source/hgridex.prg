@@ -1,5 +1,5 @@
  /*
- * $Id: hgridex.prg,v 1.25 2009-03-25 13:15:49 lfbasso Exp $
+ * $Id: hgridex.prg,v 1.26 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class
@@ -72,15 +72,14 @@ CLASS VAR winclass INIT "SYSLISTVIEW32"
    METHOD RefreshLine()                          INLINE Listview_update( ::handle, Listview_getfirstitem( ::handle ) )
    METHOD SetItemCount( nItem )                    INLINE Listview_setitemcount( ::handle, nItem )
    METHOD Row()                                  INLINE Listview_getfirstitem( ::handle )
-   METHOD AddRow( aRow )
+   METHOD AddRow( a, bUpdate )
    METHOD Notify( lParam )
 
    METHOD DELETEROW()    INLINE IF( ::bFlag , ( SendMessage( ::HANDLE, LVM_DELETEITEM, ::iRowSelect , 0 ), ::bFlag := .f. ), .T. )
    METHOD DELETEALLROW() INLINE ::aItems := NIL, ::aColors := { }, SendMessage( ::Handle, LVM_DELETEALLITEMS, 0, 0 )
    METHOD SELECTALL()    INLINE ListViewSelectAll( ::Handle )
    METHOD SELECTLAST()   INLINE ListViewSelectLastItem( ::handle )
-   METHOD Redefine( oWndParent, nId, oFont, bInit, ;
-                    bSize, bPaint, ctooltip, tcolor, bcolor, lTransp , aItem )
+   METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, aItem )
    METHOD UpdateData()
    METHOD SETVIEW( style )  INLINE LISTVIEW_SETVIEW( ::handle, style )
 ENDCLASS
@@ -93,7 +92,7 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
    HB_SYMBOL_UNUSED( nItemCount )
 
    //nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_VISIBLE + WS_CHILD + WS_TABSTOP + LVS_REPORT )
-   nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP + WS_BORDER   ) 
+   nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP + WS_BORDER   )
    Super:New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, ;
               bSize, bPaint )
    DEFAULT aBit TO { }
@@ -124,7 +123,7 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
 
    RETURN Self
 
-METHOD Activate CLASS HGridEx
+METHOD Activate() CLASS HGridEx
    IF ! Empty( ::oParent:handle )
       ::Style :=  ::Style - WS_BORDER
       ::handle := ListView_Create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll )
@@ -138,7 +137,7 @@ METHOD Init() CLASS HGridEx
    LOCAL aBmpSize
    LOCAL n
    LOCAL n1
-   LOCAL aTemp, aTemp1, nmax := 0
+   LOCAL aTemp, aTemp1, nmax
 
    IF ! ::lInit
       Super:Init()
@@ -254,7 +253,7 @@ METHOD AddRow( a , bupdate ) CLASS HGRIDEX
 METHOD Notify( lParam )  CLASS HGRIDEX
    LOCAL nCode := GetNotifyCode( lParam )
    LOCAL Res, iSelect, oParent := ::GetParentForm()
-   
+
    IF nCode == NM_CUSTOMDRAW .and. GETNOTIFYCODEFROM( lParam ) == ::Handle
       Res := PROCESSCUSTU( ::handle, lParam, ::aColors )
       Hwg_SetDlgResult( oParent:Handle, Res )
@@ -280,14 +279,14 @@ METHOD Notify( lParam )  CLASS HGRIDEX
       LISTVIEWSORT( ::handle, lParam, ::hSort )
       RETURN  0
    ENDIF
-   IF nCode == NM_SETFOCUS 
-   ELSEIF nCode == NM_KILLFOCUS 
+   IF nCode == NM_SETFOCUS
+   ELSEIF nCode == NM_KILLFOCUS
    ENDIF
-   IF nCode == NM_RETURN 
+   IF nCode == NM_RETURN
    ENDIF
-   IF nCode == LVN_KEYDOWN 
+   IF nCode == LVN_KEYDOWN
    ENDIF
-   
+
    Res := ListViewNotify( Self, lParam )
    IF ValType( Res ) == "N"
       Hwg_SetDlgResult( oParent:Handle, Res )

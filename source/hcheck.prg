@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.44 2010-05-26 15:51:02 lfbasso Exp $
+ * $Id: hcheck.prg,v 1.45 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -23,7 +23,7 @@ CLASS VAR winclass   INIT "BUTTON"
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
                bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lEnter, lTransp )
    METHOD Activate()
-   METHOD Redefine( oWnd, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lEnter )
+   METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lEnter )
    METHOD Init()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Refresh()
@@ -49,7 +49,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::title   := cCaption
    ::value   := IIf( vari == Nil .OR. ValType( vari ) != "L", .F., vari )
    ::bSetGet := bSetGet
-   ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, TRANSPARENT, OPAQUE ) 
+   ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, TRANSPARENT, OPAQUE )
 
    ::Activate()
 
@@ -68,7 +68,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    RETURN Self
 
-METHOD Activate CLASS HCheckButton
+METHOD Activate() CLASS HCheckButton
    IF ! Empty( ::oParent:handle )
       ::handle := CreateButton( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
@@ -108,9 +108,8 @@ METHOD Init() CLASS HCheckButton
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HCheckButton
-    LOCAL oParent := ::oParent
 
-   IF ::bOther != Nil                                         
+   IF ::bOther != Nil
       IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
          RETURN 0
       ENDIF
@@ -188,10 +187,10 @@ METHOD Enable() CLASS HCheckButton
    RETURN Nil
 */
 
-METHOD onGotFocus CLASS HCheckButton
+METHOD onGotFocus() CLASS HCheckButton
    RETURN ::When( )
 
-METHOD onClick CLASS HCheckButton
+METHOD onClick() CLASS HCheckButton
    RETURN ::Valid( )
 
 METHOD killFocus() CLASS HCheckButton
@@ -216,7 +215,7 @@ METHOD killFocus() CLASS HCheckButton
    RETURN Nil
 
 METHOD When( ) CLASS HCheckButton
-   LOCAL res := .t., oParent, nSkip := 1
+   LOCAL res := .t., nSkip
 
    IF ! CheckFocus( Self, .f. )
       RETURN .t.
@@ -225,14 +224,13 @@ METHOD When( ) CLASS HCheckButton
    IF ::bGetFocus != Nil
       ::lnoValid := .T.
       ::oParent:lSuspendMsgsHandling := .t.
- 		  IF ::bSetGet != Nil  
+ 		  IF ::bSetGet != Nil
           res := Eval( ::bGetFocus, Eval( ::bSetGet, , Self ), Self )
       ELSE
           res := Eval( ::bGetFocus,::Value, Self )
-      ENDIF    
+      ENDIF
       ::lnoValid := ! res
       IF ! res
-         oParent := ParentGetDialog( Self )
          GetSkip( ::oParent, ::handle, , nSkip )
       ENDIF
    ENDIF

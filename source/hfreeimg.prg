@@ -1,5 +1,5 @@
 /*
- * $Id: hfreeimg.prg,v 1.11 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hfreeimg.prg,v 1.12 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFreeImage - Image handling class
@@ -132,9 +132,9 @@ CLASS HSayFImage INHERIT HSayImage
    DATA nZoom
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, bInit, ;
-               bSize, ctooltip )
+               bSize, ctooltip, cType )
    METHOD Redefine( oWndParent, nId, Image, bInit, bSize, ctooltip )
-   METHOD ReplaceImage( Image )
+   METHOD ReplaceImage( Image, cType )
    METHOD Paint( lpdis )
 
 ENDCLASS

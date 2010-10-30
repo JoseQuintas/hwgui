@@ -1,5 +1,5 @@
 /*
- * $Id: hdc.prg,v 1.10 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hdc.prg,v 1.11 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPAINTDC and HDC Classes
@@ -53,10 +53,10 @@ CLASS HDC
    METHOD fillsolidrect( lpRect, clr )
    METHOD fillrect( lpRect, clr )
    METHOD SelectClipRgn( pRgn )
-   METHOD SetTextcolor( x )
+   METHOD SetTextcolor( xColor )
    METHOD SetBkMode( xMode )
    METHOD SetBkColor(  clr ) INLINE    SetBkColor( ::m_hDC, clr )
-   METHOD SelectObject( xObject )
+   METHOD SelectObject( xMode )
    METHOD DrawText( strText, Rect, dwFlags )
    METHOD CreateCompatibleDc( x )
    METHOD patblt( a, s, d, f, g ) INLINE patblt( ::m_hDc, a, s, d, f, g )

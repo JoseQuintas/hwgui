@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.21 2010-02-08 09:59:02 druzus Exp $
+ * $Id: hmonthc.prg,v 1.22 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class
@@ -60,7 +60,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    ::bChange := bChange
    ::bSelect := bSelect
-   
+
    HWG_InitCommonControlsEx()
 
    /*
@@ -75,7 +75,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
 //--------------------------------------------------------------------------//
 
-METHOD Activate CLASS HMonthCalendar
+METHOD Activate() CLASS HMonthCalendar
 
    IF ! Empty( ::oParent:handle )
       ::handle := InitMonthCalendar ( ::oParent:handle, ::id, ::style, ;
@@ -130,7 +130,7 @@ METHOD onChange( ) CLASS HMonthCalendar
     ENDIF
 
    RETURN 0
-   
+
 METHOD onSelect( ) CLASS HMonthCalendar
 
    IF ::bSelect != Nil .AND. ! ::oparent:lSuspendMsgsHandling
@@ -169,7 +169,7 @@ HB_FUNC ( INITMONTHCALENDAR )
                          MONTHCAL_CLASS,
                          TEXT( "" ),
                          (LONG) hb_parnl(3), /* 0,0,0,0, */
-                         hb_parni(4), hb_parni(5),      /* x, y       */   
+                         hb_parni(4), hb_parni(5),      /* x, y       */
                          hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
                          (HWND) HB_PARHANDLE(1),
                          (HMENU) hb_parni(2),
@@ -179,7 +179,7 @@ HB_FUNC ( INITMONTHCALENDAR )
    MonthCal_GetMinReqRect( hMC, &rc );
 
    //SetWindowPos( hMC, NULL, hb_parni(4), hb_parni(5), rc.right, rc.bottom, SWP_NOZORDER );
-   SetWindowPos( hMC, NULL, hb_parni(4), hb_parni(5), hb_parni(6),hb_parni(7), SWP_NOZORDER ); 
+   SetWindowPos( hMC, NULL, hb_parni(4), hb_parni(5), hb_parni(6),hb_parni(7), SWP_NOZORDER );
 
     HB_RETHANDLE(  hMC );
 }

@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.71 2010-10-26 12:18:09 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.72 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -45,8 +45,9 @@ CLASS HObject
 ENDCLASS
 
 METHOD DelObject( oCtrl ) CLASS HObject
-LOCAL h := oCtrl:handle, id := oCtrl:id
-LOCAL i := Ascan( ::aObjects, {|o| o:handle == h } )
+
+   LOCAL h := oCtrl:handle
+   LOCAL i := Ascan( ::aObjects, {|o| o:handle == h } )
 
    SendMessage( h, WM_CLOSE, 0, 0 )
    IF i != 0
@@ -60,7 +61,7 @@ CLASS HCustomWindow INHERIT HObject
 
 CLASS VAR oDefaultParent SHARED
 CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
-   
+
    DATA handle        INIT 0
    DATA oParent
    DATA title
@@ -99,8 +100,8 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
                               // ON INIT {|| nInitFocus:=object:[handle] }  to the dialog definition
    DATA nCurWidth    INIT 0
    DATA nCurHeight   INIT 0
-   DATA nVScrollPos   INIT 0 
-   DATA nHScrollPos   INIT 0 
+   DATA nVScrollPos   INIT 0
+   DATA nHScrollPos   INIT 0
    DATA rect
    DATA nScrollBars INIT -1
    DATA lAutoScroll INIT .T.
@@ -117,15 +118,15 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    METHOD FindControl( nId, nHandle )
    METHOD Hide()              INLINE ( ::lHide := .T., HideWindow( ::handle ) )
    METHOD Show()              INLINE ( ::lHide := .F., ShowWindow( ::handle ) )
-   METHOD Move( x1, y1, width, height )
+   METHOD Move( x1, y1, width, height, nRePaint )
    METHOD onEvent( msg, wParam, lParam )
    METHOD END()
    METHOD SetColor( tcolor, bColor, lRepaint )
-   METHOD RefreshCtrl( oCtrl )
+   METHOD RefreshCtrl( oCtrl, nSeek )
    METHOD SetFocusCtrl( oCtrl )
-   METHOD Refresh()
+   METHOD Refresh( lAll, oCtrl )
    METHOD Anchor( oCtrl, x, y, w, h )
-   METHOD ScrollHV( msg, wParam, lParam )
+   METHOD ScrollHV( oForm, msg, wParam, lParam )
    METHOD ResetScrollbars()
    METHOD SetupScrollbars()
    METHOD SetTextClass ( x ) HIDDEN
@@ -134,7 +135,7 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    METHOD Closable( lClosable ) SETGET
    METHOD Release()        INLINE ::DelControl( Self )
    METHOD SetAll( cProperty, Value, aControls, cClass )
-   
+
 ENDCLASS
 
 METHOD AddEvent( nEvent, oCtrl, bAction, lNotify, cMethName ) CLASS HCustomWindow
@@ -339,7 +340,7 @@ METHOD Refresh( lAll, oCtrl ) CLASS HCustomWindow
          ENDIF
       NEXT
       IF ::bRefresh != Nil .AND. ::handle != hCtrl
-         Eval( ::bRefresh, Self ) 
+         Eval( ::bRefresh, Self )
       ENDIF
    ELSEIF  ::bRefresh != Nil
       Eval( ::bRefresh, Self )
@@ -385,15 +386,15 @@ METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HCustomWindow
 
 METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
    LOCAL nlen , i, x1, y1
-   
+
    IF oCtrl = Nil .OR.;
-       ASCAN( oCtrl:aControls, {| o | __ObjHasMsg( o,"ANCHOR") .AND. o:Anchor > 0 } ) = 0  
-      RETURN .F. 
-   ENDIF    
+       ASCAN( oCtrl:aControls, {| o | __ObjHasMsg( o,"ANCHOR") .AND. o:Anchor > 0 } ) = 0
+      RETURN .F.
+   ENDIF
 
    nlen := Len( oCtrl:aControls )
    FOR i = 1 TO nlen
-      IF __ObjHasMsg( oCtrl:aControls[ i ], "ANCHOR" ) .AND. oCtrl:aControls[ i ]:anchor > 0 
+      IF __ObjHasMsg( oCtrl:aControls[ i ], "ANCHOR" ) .AND. oCtrl:aControls[ i ]:anchor > 0
          x1 := oCtrl:aControls[ i ]:nWidth
          y1 := oCtrl:aControls[ i ]:nHeight
          oCtrl:aControls[ i ]:onAnchor( x, y, w, h )
@@ -407,7 +408,7 @@ METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
 
 METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
    Local nDelta, nSBCode , nPos, nInc, nInc2 := 0
-    
+
    HB_SYMBOL_UNUSED(lParam)
 
    nSBCode := loword(wParam)
@@ -418,7 +419,7 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
    IF ( msg = WM_VSCROLL ) .OR.msg == WM_MOUSEWHEEL
      // Handle vertical scrollbar messages
      #ifndef __XHARBOUR__
-      DO CASE 
+      DO CASE
          Case nSBCode = SB_TOP
              nInc := - oForm:nVscrollPos
          Case nSBCode = SB_BOTTOM
@@ -432,12 +433,12 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
          Case nSBCode  = SB_PAGEDOWN
             nInc := max( 1, oForm:nVertInc)
          Case nSBCode  = SB_THUMBTRACK
-            nPos := hiword( wParam ) 
+            nPos := hiword( wParam )
             nInc2 := IIF( nPos > oForm:nVscrollPos, 0.125, - 0.125 )
             nInc := nPos - oForm:nVscrollPos
          OTHERWISE
             nInc := 0
-       ENDCASE       
+       ENDCASE
      #else
       Switch (nSBCode)
          Case SB_TOP
@@ -453,12 +454,12 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
          Case SB_PAGEDOWN
             nInc := max( 1, oForm:nVertInc);   EXIT
          Case SB_THUMBTRACK
-            nPos := hiword( wParam ) 
+            nPos := hiword( wParam )
             nInc2 := IIF( nPos > oForm:nVscrollPos, 0.125, - 0.125 )
             nInc := nPos - oForm:nVscrollPos ; EXIT
          Default
             nInc := 0
-      END       
+      END
       #endif
       nInc := max( - oForm:nVscrollPos, min( nInc, oForm:nVscrollMax - oForm:nVscrollPos))
       oForm:nVscrollPos += nInc
@@ -466,10 +467,10 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
       ScrollWindow( oForm:handle, 0, nDelta ) //, Nil, NIL )
       SetScrollPos( oForm:Handle, SB_VERT, oForm:nVscrollPos, .T. )
 
-   ELSEIF ( msg = WM_HSCROLL ) //.OR. msg == WM_MOUSEWHEEL 
+   ELSEIF ( msg = WM_HSCROLL ) //.OR. msg == WM_MOUSEWHEEL
     // Handle vertical scrollbar messages
       #ifndef __XHARBOUR__
-       DO CASE 
+       DO CASE
          Case nSBCode = SB_TOP
              nInc := - oForm:nHscrollPos
          Case nSBCode = SB_BOTTOM
@@ -487,8 +488,8 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
             nInc := nPos - oForm:nHscrollPos
          OTHERWISE
             nInc := 0
-       ENDCASE       
-      #else 
+       ENDCASE
+      #else
       Switch (nSBCode)
          Case SB_TOP
              nInc := - oForm:nHscrollPos; EXIT
@@ -507,7 +508,7 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
             nInc := nPos - oForm:nHscrollPos; EXIT
          Default
             nInc := 0
-      END       
+      END
       #endif
       nInc := max( - oForm:nHscrollPos, min( nInc, oForm:nHscrollMax - oForm:nHscrollPos ) )
       oForm:nHscrollPos += nInc
@@ -520,8 +521,7 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
 
 METHOD SetupScrollbars() CLASS HCustomWindow
    LOCAL tempRect, nwMax, nhMax , aMenu
-   LOCAL nHorzInc := 0, nVertInc := 0
-   
+
    tempRect := GetClientRect( ::handle )
    aMenu := IIF( __objHasData( Self, "MENU" ), ::menu, Nil )
     // Calculate how many scrolling increments for the client area
@@ -538,45 +538,45 @@ METHOD SetupScrollbars() CLASS HCustomWindow
         IIF( amenu != Nil, GetSystemMetrics( SM_CYMENU ), 0 )  // MENU
    ENDIF
     // Set the vertical and horizontal scrolling info
-   IF ::nScrollBars = 0 .OR. ::nScrollBars = 2   
+   IF ::nScrollBars = 0 .OR. ::nScrollBars = 2
       ::nHscrollMax := max( 0, ::nHorzInc )
       IF ::nHscrollMax < HORZ_PTS / 2
-         ScrollWindow( ::Handle, ::nHscrollPos * HORZ_PTS, 0 ) 
+         ScrollWindow( ::Handle, ::nHscrollPos * HORZ_PTS, 0 )
       ENDIF
       ::nHscrollPos := min( ::nHscrollPos, ::nHscrollMax )
       SetScrollPos( ::handle, SB_HORZ, ::nHscrollPos, .T. )
       SetScrollInfo( ::Handle, SB_HORZ, 1, 0,  ::nHScrollMax / HORZ_PTS , ::nHscrollMax )
    ENDIF
    IF ::nScrollBars = 1 .OR. ::nScrollBars = 2
-      ::nVscrollMax := max( 0, ::nVertInc ) 
+      ::nVscrollMax := max( 0, ::nVertInc )
       IF ::nVscrollMax < VERT_PTS / 2
-         ScrollWindow( ::Handle, 0, ::nVscrollPos * VERT_PTS ) 
+         ScrollWindow( ::Handle, 0, ::nVscrollPos * VERT_PTS )
       ENDIF
-      ::nVscrollPos := min( ::nVscrollPos, ::nVscrollMax ) 
+      ::nVscrollPos := min( ::nVscrollPos, ::nVscrollMax )
       SetScrollPos( ::handle, SB_VERT, ::nVscrollPos, .T. )
       SetScrollInfo( ::Handle, SB_VERT, 1, 0, ::nVScrollMax / VERT_PTS , ::nVscrollMax )
    ENDIF
-   RETURN Nil  
+   RETURN Nil
 
-METHOD ResetScrollbars() CLASS HCustomWindow    
+METHOD ResetScrollbars() CLASS HCustomWindow
     // Reset our window scrolling information
    Local lMaximized := GetWindowPlacement( ::handle ) == SW_MAXIMIZE
-   IF lMaximized 
-      ScrollWindow( ::Handle, ::nHscrollPos * HORZ_PTS, 0 ) 
-      ScrollWindow( ::Handle, 0, ::nVscrollPos * VERT_PTS ) 
+   IF lMaximized
+      ScrollWindow( ::Handle, ::nHscrollPos * HORZ_PTS, 0 )
+      ScrollWindow( ::Handle, 0, ::nVscrollPos * VERT_PTS )
       ::nHscrollPos := 0
       ::nVscrollPos := 0
    ENDIF
-   
+
    IF ::nScrollBars = 0 .OR. ::nScrollBars = 2
-      ScrollWindow( ::Handle, 0 * HORZ_PTS, 0 ) 
+      ScrollWindow( ::Handle, 0 * HORZ_PTS, 0 )
       SetScrollPos( ::Handle, SB_HORZ, 0, .T. )
-   ENDIF   
+   ENDIF
    IF ::nScrollBars = 1 .OR. ::nScrollBars = 2
-      ScrollWindow( ::Handle, 0, 0 * VERT_PTS )   
+      ScrollWindow( ::Handle, 0, 0 * VERT_PTS )
       SetScrollPos( ::Handle, SB_VERT, 0, .T. )
    ENDIF
-   RETURN Nil 
+   RETURN Nil
 /*
 METHOD  ScrollHV( oForm, msg, wParam, lParam ) CLASS HCustomWindow
    LOCAL nDelta, nMaxPos,  wmsg , nPos
@@ -645,10 +645,10 @@ METHOD Closable( lClosable ) CLASS HCustomWindow
 METHOD SetAll( cProperty, Value, aControls, cClass ) CLASS HCustomWindow
 // cProperty Specifies the property to be set.
 // Value Specifies the new setting for the property. The data type of Value depends on the property being set.
- //aControls - property of the Control with objectos inside 
- // cClass baseclass hwgui 
-   Local nLen , i, x1, y1 //, oCtrl
-   
+ //aControls - property of the Control with objectos inside
+ // cClass baseclass hwgui
+   Local nLen , i //, oCtrl
+
    aControls := IIF( EMPTY( aControls ), ::aControls, aControls )
    nLen := IIF( VALTYPE( aControls ) = "C", Len( ::&aControls ), LEN( aControls ) )
 	 FOR i = 1 TO nLen
@@ -659,12 +659,12 @@ METHOD SetAll( cProperty, Value, aControls, cClass ) CLASS HCustomWindow
 	          __mvPrivate( "oCtrl" )
 	          &( "oCtrl" ) := aControls[ i ]
 	          &( "oCtrl:" + cProperty )
-	       ELSE  
+	       ELSE
 	          aControls[ i ]:&cProperty := Value
 	       ENDIF
-      ENDIF   
+      ENDIF
    NEXT
-   RETURN Nil 
+   RETURN Nil
 
 
 *---------------------------------------------------------
@@ -729,7 +729,7 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
       ENDIF
       SetBkMode( wParam, oCtrl:backstyle )
       IF !  oCtrl:IsEnabled() .AND. oCtrl:Disablebrush != Nil
-         SetBkColor( wParam, oCtrl:DisablebColor ) 
+         SetBkColor( wParam, oCtrl:DisablebColor )
          RETURN oCtrl:disablebrush:handle
       ELSEIF oCtrl:bcolor != NIL  .AND. oCtrl:BackStyle = OPAQUE
          SetBkColor( wParam, oCtrl:bcolor )
@@ -740,12 +740,12 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
          ENDIF
       ELSEIF oCtrl:BackStyle = TRANSPARENT
          IF ( oCtrl:classname $ "HCHECKBUTTON" .AND. (  ! oCtrl:lnoThemes .AND. ( ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest ) ) ) .OR.;
-            ( oCtrl:classname $ "HGROUP*HRADIOGROUP*HRADIOBUTTON" .AND. ! oCtrl:lnoThemes ) 
+            ( oCtrl:classname $ "HGROUP*HRADIOGROUP*HRADIOBUTTON" .AND. ! oCtrl:lnoThemes )
 				    RETURN GetBackColorParent( oCtrl, , .T. ):handle
-				 ENDIF 
-         IF __ObjHasMsg( oCtrl, "PAINT" ) .OR. oCtrl:winclass = "BUTTON"				 
+				 ENDIF
+         IF __ObjHasMsg( oCtrl, "PAINT" ) .OR. oCtrl:winclass = "BUTTON"				
 				    RETURN GetStockObject( NULL_BRUSH )
-				 ENDIF   
+				 ENDIF
 				 RETURN GetBackColorParent( oCtrl, , .T. ):handle
       ENDIF
    ENDIF
@@ -781,7 +781,7 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
 
 STATIC FUNCTION onSize( oWnd, wParam, lParam )
    LOCAL aControls := oWnd:aControls, nControls := Len( aControls )
-   LOCAL oItem, iCont, nw1, nh1, aCoors
+   LOCAL iCont, nw1, nh1, aCoors
 
    //HB_SYMBOL_UNUSED( wParam )
 
@@ -793,7 +793,7 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       oWnd:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
    ENDIF
    IF oWnd:nScrollBars > - 1 .AND. oWnd:lAutoScroll
-      onMove( oWnd )    
+      onMove( oWnd )
       oWnd:ResetScrollbars()
       oWnd:SetupScrollbars()
    ENDIF
@@ -815,8 +815,6 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
          ENDIF
       NEXT
    #else
-
-      HB_SYMBOL_UNUSED( oItem )
 
       FOR iCont := 1 TO nControls
          IF aControls[ iCont ]:bSize != NIL
@@ -889,19 +887,19 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
       Return .F.
    ENDIF
    IF iParHigh == IDOK
-      IF ( oCtrl := oWin:FindControl( IDOK ) ) != Nil .AND. oCtrl:IsEnabled()    
+      IF ( oCtrl := oWin:FindControl( IDOK ) ) != Nil .AND. oCtrl:IsEnabled()
          oCtrl:SetFocus()
   	     oWin:lResult := .T.
   	     IF lForce
 	       ELSEIF oCtrl:bClick != Nil .AND. ! lForce
 	          SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
 	       ELSEIF oWin:lExitOnEnter
-            oWin:close()  
-         ENDIF   
+            oWin:close()
+         ENDIF
          RETURN .T.
       ENDIF
    ELSEIF iParHigh == IDCANCEL
-      IF ( oCtrl := oWin:FindControl( IDCANCEL ) ) != Nil .AND. oCtrl:IsEnabled() 
+      IF ( oCtrl := oWin:FindControl( IDCANCEL ) ) != Nil .AND. oCtrl:IsEnabled()
          oCtrl:SetFocus()
          oWin:lResult := .F.
          SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
@@ -943,8 +941,8 @@ FUNCTION REMOVEPROPERTY( oObjectName, cPropertyName )
 
 
 FUNCTION FindAccelerator( oCtrl, lParam )
-  Local nlen , i ,pos 
-  
+  Local nlen , i ,pos
+
   nlen := LEN( oCtrl:aControls )
   FOR i = 1 to nLen
 	   IF oCtrl:aControls[ i ]:classname = "HTAB"
@@ -952,43 +950,43 @@ FUNCTION FindAccelerator( oCtrl, lParam )
         	          oCtrl:aControls[ i ]:Pages[ pos ]:Enabled
 	          oCtrl:aControls[ i ]:SetTab( pos )
 	          RETURN oCtrl:aControls[ i ]
-	      ENDIF    
-	   ENDIF   
+	      ENDIF
+	   ENDIF
      IF LEN(oCtrl:aControls[ i ]:aControls ) > 0
          RETURN FindAccelerator( oCtrl:aControls[ i ], lParam)
-	   ENDIF   
+	   ENDIF
      IF __ObjHasMsg( oCtrl:aControls[ i ],"TITLE") .AND. VALTYPE( oCtrl:aControls[ i ]:title) = "C" .AND. ;
          ! oCtrl:aControls[ i ]:lHide .AND. IsWindowEnabled( oCtrl:aControls[ i ]:handle )
-        IF ( pos := At( "&", oCtrl:aControls[ i ]:title ) ) > 0 .AND.  Upper( Chr( lParam)) ==  Upper( SubStr( oCtrl:aControls[ i ]:title, ++ pos, 1 ) )  
+        IF ( pos := At( "&", oCtrl:aControls[ i ]:title ) ) > 0 .AND.  Upper( Chr( lParam)) ==  Upper( SubStr( oCtrl:aControls[ i ]:title, ++ pos, 1 ) )
            RETURN oCtrl:aControls[ i ]
-        ENDIF    
-     ENDIF    
+        ENDIF
+     ENDIF
    NEXT
    RETURN Nil
 
 FUNCTION GetBackColorParent( oCtrl, lSelf, lTransparent )
    Local bColor := GetSysColor( COLOR_BTNFACE ), hTheme
    Local brush := nil
-   
+
    DEFAULT lTransparent := .F.
    IF lSelf == Nil .OR. ! lSelf
       oCtrl := oCtrl:oParent
    ENDIF
-   IF  oCtrl != Nil .AND. oCtrl:Classname = "HTAB" 
+   IF  oCtrl != Nil .AND. oCtrl:Classname = "HTAB"
        brush := HBrush():Add( bColor )
        IF Len( oCtrl:aPages ) > 0 .AND. oCtrl:Pages[ oCtrl:GETACTIVEPAGE() ]:bColor != Nil
           brush := oCtrl:Pages[ oCtrl:GetActivePage() ]:brush
-       ELSEIF ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest  
-          hTheme := hb_OpenThemeData( oCtrl:handle, "TAB" ) //oCtrl:oParent:WinClass ) 
+       ELSEIF ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest
+          hTheme := hb_OpenThemeData( oCtrl:handle, "TAB" ) //oCtrl:oParent:WinClass )
           IF !EMPTY( hTheme )
              bColor := HWG_GETTHEMESYSCOLOR( hTheme, COLOR_WINDOW  )
-             HB_CLOSETHEMEDATA( hTheme ) 
+             HB_CLOSETHEMEDATA( hTheme )
              brush := HBrush():Add( bColor )
-          ENDIF 
-       ENDIF   
-    ELSEIF oCtrl:bColor != Nil  
+          ENDIF
+       ENDIF
+    ELSEIF oCtrl:bColor != Nil
        brush := oCtrl:brush
     ELSEIF oCtrl:brush = Nil .AND. lTransparent
-       brush := HBrush():Add( bColor )   
+       brush := HBrush():Add( bColor )
     ENDIF
-    Return brush 
+    Return brush

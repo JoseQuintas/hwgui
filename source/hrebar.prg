@@ -1,5 +1,5 @@
 /*
- * $Id: hrebar.prg,v 1.11 2010-10-18 11:40:40 lfbasso Exp $
+ * $Id: hrebar.prg,v 1.12 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -30,15 +30,15 @@ CLASS hrebar INHERIT HControl
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
                bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
-   METHOD Redefine( oWndParent, nId, oFont, bInit, ;
+   METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                     bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
 
    METHOD Activate()
    METHOD INIT()
    METHOD ADDBARColor( pBar, clrFore, clrBack, pszText, dwStyle ) INLINE ADDBARCOLORS( ::handle, pBar, clrFore, clrBack, pszText, dwStyle )
    METHOD ADDBARBITMAP( pBar, pszText, pbmp, dwStyle ) INLINE ADDBARBITMAP( ::handle, pBar, pszText, pbmp, dwStyle )
-   METHOD RebarBandNew( pBar, pszText, clrFore, clrBack, pbmp, dwStyle ) INLINE ::CreateBands( pBar, pszText, clrFore, clrBack, pbmp, dwStyle )    
-   METHOD CreateBands()    
+   METHOD RebarBandNew( pBar, pszText, clrFore, clrBack, pbmp, dwStyle ) INLINE ::CreateBands( pBar, pszText, clrFore, clrBack, pbmp, dwStyle )
+   METHOD CreateBands( pBar, pszText, clrFore, clrBack, pbmp, dwStyle )
 
 ENDCLASS
 
@@ -50,10 +50,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
 
    DEFAULT  lvert  TO .f.
    nStyle   := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), ;
-                          WS_VISIBLE + WS_CHILD ) 
+                          WS_VISIBLE + WS_CHILD )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor )
-   ::Title := ""           
+   ::Title := ""
    HWG_InitCommonControlsEx()
 
 
@@ -78,7 +78,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    RETURN Self
 
 
-METHOD Activate CLASS hrebar
+METHOD Activate() CLASS hrebar
 
    IF ! Empty( ::oParent:handle )
 
@@ -89,7 +89,7 @@ METHOD Activate CLASS hrebar
    ENDIF
    RETURN Nil
 
-METHOD INIT CLASS hrebar
+METHOD INIT() CLASS hrebar
 
    IF ! ::lInit
       Super:Init()
@@ -104,11 +104,11 @@ METHOD CreateBands( pBar, pszText, clrFore, clrBack, pbmp, dwStyle ) CLASS hreba
 
    IF pBar != Nil
       AADD( ::aBands, { pBar, pszText, clrFore, clrBack, pbmp, dwStyle } )
-   ENDIF   
+   ENDIF
    IF ! ::lInit
        RETURN Nil
-   ENDIF    
-   dwStyle := RBBS_GRIPPERALWAYS + RBBS_USECHEVRON 
+   ENDIF
+   dwStyle := RBBS_GRIPPERALWAYS + RBBS_USECHEVRON
    FOR i = 1 TO LEN( ::aBands )
       ::aBands[ i, 4 ] := IIF( ::aBands[ i, 4 ] = Nil, GetSysColor( COLOR_3DFACE ), ::aBands[ i, 4 ] )
       ::aBands[ i, 6 ] := IIF( ::aBands[ i, 6 ] = Nil, dwStyle, ::aBands[ i, 6 ] )
@@ -116,10 +116,10 @@ METHOD CreateBands( pBar, pszText, clrFore, clrBack, pbmp, dwStyle ) CLASS hreba
          ::aBands[ i, 1 ] := IIF( ValType( ::aBands[ i, 1 ] ) = "C", &( ::aBands[ i, 1 ] ), ::aBands[ i, 1 ] )
          IF ( ::aBands[ i, 5 ] != Nil )
             ADDBARBITMAP( ::handle, ::aBands[ i, 1 ]:handle, ::aBands[ i, 2 ], ::aBands[ i, 5 ], ::aBands[ i, 6 ] )
-         ELSE   
-           ADDBARCOLORS( ::handle, ::aBands[ i, 1 ]:handle, ::aBands[ i, 3 ], ::aBands[ i, 4 ], ::aBands[ i, 2 ], ::aBands[ i, 6 ]  ) 
-         ENDIF  
+         ELSE
+           ADDBARCOLORS( ::handle, ::aBands[ i, 1 ]:handle, ::aBands[ i, 3 ], ::aBands[ i, 4 ], ::aBands[ i, 2 ], ::aBands[ i, 6 ]  )
+         ENDIF
       ENDIF
-   NEXT   
+   NEXT
    ::aBands := {}
    RETURN Nil

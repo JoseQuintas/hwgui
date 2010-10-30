@@ -1,5 +1,5 @@
 /*
- * $Id: hsplit.prg,v 1.13 2009-05-15 05:59:49 alkresin Exp $
+ * $Id: hsplit.prg,v 1.14 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSplitter class
@@ -26,7 +26,7 @@ CLASS VAR winclass INIT "STATIC"
    DATA bEndDrag
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-               bSize, bPaint, color, bcolor, aLeft, aRight )
+               bSize, bDraw, color, bcolor, aLeft, aRight )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -90,7 +90,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
 
    RETURN - 1
 
-METHOD Init CLASS HSplitter
+METHOD Init() CLASS HSplitter
 
    IF ! ::lInit
       Super:Init()

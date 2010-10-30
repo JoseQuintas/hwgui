@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.26 2009-09-22 16:39:50 lfbasso Exp $
+ * $Id: drawwidg.prg,v 1.27 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
@@ -231,7 +231,7 @@ CLASS VAR aBrushes   INIT { }
    DATA nHatch   INIT 99
    DATA nCounter INIT 1
 
-   METHOD Add( nColor )
+   METHOD Add( nColor, nHatch )
    METHOD Release()
 
 ENDCLASS
@@ -390,7 +390,7 @@ METHOD AddStandard( nId ) CLASS HBitmap
 METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
    LOCAL i, aBmpSize, cname
 
-   cname := CutPath( name ) 
+   cname := CutPath( name )
    #ifdef __XHARBOUR__
       FOR EACH i IN ::aBitmaps
          IF i:name == name .AND. ( nWidth == nil .OR. nHeight == nil )
@@ -406,11 +406,11 @@ METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
          ENDIF
       NEXT
    #endif
-   name := IIf( ! File( name ) .AND. FILE( CutPath( name ) ), CutPath( name ), name )   
+   name := IIf( ! File( name ) .AND. FILE( CutPath( name ) ), CutPath( name ), name )
    IF ! File( name )
       name := SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ),FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
    ENDIF
-   
+
 	 IF Lower( Right( name, 4 ) ) != ".bmp" .OR. ( nWidth == nil .AND. nHeight == nil .AND. lTranparent == Nil )
       IF Lower( Right( name, 4 ) ) == ".bmp"
          ::handle := OpenBitmap( name, hDC )
@@ -418,12 +418,12 @@ METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
          ::handle := OpenImage( name )
       ENDIF
    ELSE
-      IF lTranparent != Nil .AND. lTranparent 
-         ::handle := LoadImage( nil, name, IMAGE_BITMAP, nWidth, nHeight, LR_LOADFROMFILE + LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS) 
+      IF lTranparent != Nil .AND. lTranparent
+         ::handle := LoadImage( nil, name, IMAGE_BITMAP, nWidth, nHeight, LR_LOADFROMFILE + LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS)
       ELSE
-         ::handle := LoadImage( nil, name, IMAGE_BITMAP, nWidth, nHeight, LR_LOADFROMFILE ) 
-			ENDIF   
-	 ENDIF   
+         ::handle := LoadImage( nil, name, IMAGE_BITMAP, nWidth, nHeight, LR_LOADFROMFILE )
+			ENDIF
+	 ENDIF
    IF Empty( ::handle )
       RETURN Nil
    ENDIF
@@ -486,7 +486,7 @@ CLASS VAR aIcons   INIT { }
    DATA nCounter   INIT 1
 
    METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM )
-   METHOD AddFile( name, hDC )
+   METHOD AddFile( name, nWidth, nHeight )
    METHOD Draw( hDC, x, y )   INLINE DrawIcon( hDC, ::handle, x, y )
    METHOD Release()
 
@@ -551,7 +551,7 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
    IF nHeight == nil
       nHeight := 0
    ENDIF
-   cname := CutPath( name ) 
+   cname := CutPath( name )
    #ifdef __XHARBOUR__
       FOR EACH i IN  ::aIcons
          IF i:name == name
@@ -574,7 +574,7 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
    ENDIF
 
    //::handle := LoadImage( 0, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE + LR_LOADFROMFILE )
-   ::handle := LoadImage( 0, name, IMAGE_ICON, nWidth, nHeight, LR_DEFAULTSIZE + LR_LOADFROMFILE + LR_SHARED )   
+   ::handle := LoadImage( 0, name, IMAGE_ICON, nWidth, nHeight, LR_DEFAULTSIZE + LR_LOADFROMFILE + LR_SHARED )
    ::name := cname
    aIconSize := GetIconSize( ::handle )
    ::nWidth  := aIconSize[ 1 ]

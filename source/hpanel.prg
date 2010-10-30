@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.30 2010-05-24 14:57:03 lfbasso Exp $
+ * $Id: hpanel.prg,v 1.31 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPanel class
@@ -34,8 +34,8 @@ CLASS HPanel INHERIT HControl
    METHOD Hide()
    METHOD Show()
    METHOD Release()
-   METHOD Resize()  
-   
+   METHOD Resize()
+
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -68,7 +68,7 @@ LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
    ENDIF
 	 IF  Hwg_Bitand( nStyle,WS_VSCROLL ) > 0
 	   ::nScrollBars += 2
-	 ENDIF  
+	 ENDIF
 
    hwg_RegPanel()
    ::Activate()
@@ -90,7 +90,7 @@ LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
 
 RETURN Self
 
-METHOD Activate CLASS HPanel
+METHOD Activate() CLASS HPanel
    LOCAL handle := ::oParent:handle
    LOCAL aCoors, nWidth, nHeight
 
@@ -98,11 +98,11 @@ METHOD Activate CLASS HPanel
       ::handle := CreatePanel( handle, ::id, ;
                                ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       IF __ObjHasMsg( ::oParent, "AOFFSET" )
-         aCoors := GetWindowRect( ::handle )      
+         aCoors := GetWindowRect( ::handle )
          nWidth := aCoors[ 3 ] - aCoors[ 1 ]
          nHeight:= aCoors[ 4 ] - aCoors[ 2 ]
          IF nWidth > nHeight .OR. nWidth == 0
-            ::oParent:aOffset[2] += nHeight 
+            ::oParent:aOffset[2] += nHeight
          ELSEIF nHeight > nWidth .OR. nHeight == 0
             IF ::nLeft == 0
                ::oParent:aOffset[1] += nWidth
@@ -115,7 +115,7 @@ METHOD Activate CLASS HPanel
    ENDIF
    RETURN Nil
 
-METHOD Init CLASS HPanel
+METHOD Init() CLASS HPanel
 
    IF !::lInit
       IF ::bSize == Nil
@@ -129,11 +129,11 @@ METHOD Init CLASS HPanel
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       Hwg_InitWinCtrl( ::handle )
-      
-      ::rect := GetClientRect( ::handle )   
+
+      ::rect := GetClientRect( ::handle )
       IF ::nScrollBars > - 1 .AND. ::bScroll = Nil
-         AEval( ::aControls, { | o | ::ncurHeight := max( o:nTop +  o:nHeight + VERT_PTS ^ 2 + 6, ::ncurHeight ) } )  
-         AEval( ::aControls, { | o | ::ncurWidth := max(  o:nLeft + o:nWidth  + HORZ_PTS ^ 2 + 12, ::ncurWidth ) } )  
+         AEval( ::aControls, { | o | ::ncurHeight := max( o:nTop +  o:nHeight + VERT_PTS ^ 2 + 6, ::ncurHeight ) } )
+         AEval( ::aControls, { | o | ::ncurWidth := max(  o:nLeft + o:nWidth  + HORZ_PTS ^ 2 + 12, ::ncurWidth ) } )
          ::ResetScrollbars()
          ::SetupScrollbars()
       ENDIF
@@ -146,8 +146,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
    IF msg == WM_PAINT
       ::Paint()
    ELSEIF msg == WM_ERASEBKGND
-      IF ::backstyle = OPAQUE 
-         RETURN nrePaint 
+      IF ::backstyle = OPAQUE
+         RETURN nrePaint
          /*
          IF ::brush != Nil
             IF Valtype( ::brush ) != "N"
@@ -155,7 +155,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
             ENDIF
             RETURN 1
          ELSE
-            FillRect( wParam, 0,0, ::nWidth, ::nHeight, COLOR_3DFACE + 1 )  
+            FillRect( wParam, 0,0, ::nWidth, ::nHeight, COLOR_3DFACE + 1 )
             RETURN 1
          ENDIF
          */
@@ -186,7 +186,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
           getskip( ::oparent, ::handle, , 1 )
        ELSEIF   wParam = VK_UP
           getskip( ::oparent, ::handle, , -1 )
-       ELSEIF wParam = VK_TAB 
+       ELSEIF wParam = VK_TAB
           GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
        ENDIF
        RETURN 0
@@ -197,7 +197,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
              IF  msg == WM_MOUSEWHEEL
                  RETURN 0
              ENDIF
-         ENDIF   
+         ENDIF
          onTrackScroll( Self,msg,wParam,lParam )
       ENDIF
       Return Super:onEvent( msg, wParam, lParam )
@@ -214,23 +214,23 @@ LOCAL pps, hDC, aCoors, oPenLight, oPenGray
       Eval( ::bPaint, Self )
       RETURN Nil
    ENDIF
-   
+
    pps    := DefinePaintStru()
    hDC    := BeginPaint( ::handle, pps )
    aCoors := GetClientRect( ::handle )
-   
-   SetBkMode( hDC, ::backStyle )   
+
+   SetBkMode( hDC, ::backStyle )
    IF ::backstyle = OPAQUE .AND. nrePaint = -1
-      aCoors := GetClientRect( ::handle )  
+      aCoors := GetClientRect( ::handle )
       IF ::brush != Nil
          IF Valtype( ::brush ) != "N"
             FillRect( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ], aCoors[ 4 ], ::brush:handle )
          ENDIF
       ELSE
-         FillRect( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ], aCoors[ 4 ], COLOR_3DFACE + 1 )  
+         FillRect( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ], aCoors[ 4 ], COLOR_3DFACE + 1 )
       ENDIF
    ENDIF
-   nrePaint := -1    
+   nrePaint := -1
    IF ::nScrollBars = - 1
       IF  ! ::lBorder
          oPenLight := HPen():Add( BS_SOLID, 1, GetSysColor( COLOR_3DHILIGHT ) )
@@ -247,7 +247,7 @@ LOCAL pps, hDC, aCoors, oPenLight, oPenGray
    EndPaint( ::handle, pps )
    RETURN Nil
 
-METHOD Release CLASS HPanel
+METHOD Release() CLASS HPanel
 
    IF __ObjHasMsg( ::oParent, "AOFFSET" ) .AND. ::oParent:type == WND_MDI
       IF ::nWidth > ::nHeight .OR. ::nWidth == 0
@@ -261,14 +261,12 @@ METHOD Release CLASS HPanel
       ENDIF
       InvalidateRect(::oParent:handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight)
    ENDIF
-   SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, MAKELPARAM( ::nWidth, ::nHeight ) )   
+   SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, MAKELPARAM( ::nWidth, ::nHeight ) )
    ::oParent:DelControl( Self )
 RETURN Nil
 
-METHOD Hide CLASS HPanel
-   LOCAL i
-   LOCAL aCoors := GetWindowRect( ::handle )
-   
+METHOD Hide() CLASS HPanel
+
    IF ::lHide
       Return Nil
    ENDIF
@@ -285,13 +283,12 @@ METHOD Hide CLASS HPanel
       ENDIF
    ENDIF
 	 Super:Hide()
-	 IF ::oParent:type == WND_MDI 
+	 IF ::oParent:type == WND_MDI
        SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, MAKELPARAM( ::nWidth, ::nHeight ) )
-	 ENDIF   
+	 ENDIF
 	 RETURN Nil
 
-METHOD Show CLASS HPanel
-   LOCAL i
+METHOD Show() CLASS HPanel
 
    IF ! ::lHide
       Return Nil
@@ -299,7 +296,7 @@ METHOD Show CLASS HPanel
    nrePaint := 0
    IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI   //ISWINDOwVISIBLE( ::handle )
       IF ::nWidth > ::nHeight .OR. ::nWidth == 0
-         ::oParent:aOffset[2] += ::nHeight 
+         ::oParent:aOffset[2] += ::nHeight
       ELSEIF ::nHeight > ::nWidth .OR. ::nHeight == 0
          IF ::nLeft == 0
             ::oParent:aOffset[1] += ::nWidth
@@ -308,15 +305,15 @@ METHOD Show CLASS HPanel
          ENDIF
       ENDIF
    ENDIF
-   Super:Show()	 
+   Super:Show()	
    IF ::oParent:type == WND_MDI
        nrePaint := -1
        SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, MAKELPARAM( ::nWidth, ::nHeight ) )
-   ENDIF   
+   ENDIF
 	 RETURN Nil
 
-METHOD Resize CLASS HPanel
-   LOCAL i
+METHOD Resize() CLASS HPanel
+
    LOCAL aCoors := GetWindowRect( ::handle )
    Local nHeight := aCoors[ 4 ] - aCoors[ 2 ]
    Local nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
@@ -324,7 +321,7 @@ METHOD Resize CLASS HPanel
    IF !iswindowvisible( ::handle ) .OR. ::nHeight = nHeight
       Return Nil
    ENDIF
-   
+
    IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI   //ISWINDOwVISIBLE( ::handle )
       IF ::nWidth > ::nHeight .OR. ::nWidth == 0
          ::oParent:aOffset[2] += ( nHeight  - ::nHeight )
@@ -337,10 +334,10 @@ METHOD Resize CLASS HPanel
       ENDIF
       SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, MAKELPARAM( nWidth, nHeight ) )
    ELSE
-      RETURN Nil   
+      RETURN Nil
    ENDIF
    ::nWidth := aCoors[3] - aCoors[1]
    ::nHeight := aCoors[4] - aCoors[2]
-   RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW )  // Force a complete redraw    
+   RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW )  // Force a complete redraw
 	 RETURN Nil
-	 
+	

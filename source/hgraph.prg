@@ -1,5 +1,5 @@
 /*
- * $Id: hgraph.prg,v 1.8 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hgraph.prg,v 1.9 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGraph class
@@ -33,8 +33,8 @@ CLASS VAR winclass   INIT "STATIC"
                     bSize, ctooltip, tcolor, bcolor )
    METHOD Init()
    METHOD CalcMinMax()
-   METHOD Paint()
-   METHOD Rebuild( aValues )
+   METHOD Paint( lpDis )
+   METHOD Rebuild( aValues, nType )
 
 ENDCLASS
 
@@ -64,7 +64,7 @@ METHOD Redefine( oWndParent, nId, aValues, oFont, ;
 
    RETURN Self
 
-METHOD Activate CLASS HGraph
+METHOD Activate() CLASS HGraph
    IF ! Empty( ::oParent:handle )
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )

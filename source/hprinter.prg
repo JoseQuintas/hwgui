@@ -1,5 +1,5 @@
 /*
- * $Id: hprinter.prg,v 1.38 2009-09-10 16:11:36 lculik Exp $
+ * $Id: hprinter.prg,v 1.39 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
@@ -37,24 +37,24 @@ CLASS HPrinter INHERIT HObject
    DATA BinNumber      INIT 0
    DATA Landscape      INIT .F.
    DATA Copies         INIT 1
-   DATA fDuplexType    INIT 0      HIDDEN   
+   DATA fDuplexType    INIT 0      HIDDEN
    DATA fPrintQuality  INIT 0      HIDDEN
    DATA PaperLength    INIT 0                        // Value is * 1/10 of mm   1000 = 10cm
    DATA PaperWidth     INIT 0                        //   "    "    "     "       "     "
-   DATA PixelsPerInchY   
+   DATA PixelsPerInchY
    DATA PixelsPerInchX
-   DATA TopMargin        
-   DAta BottomMargin     
-   DATA LeftMargin       
-   DATA RightMargin      
+   DATA TopMargin
+   DAta BottomMargin
+   DATA LeftMargin
+   DATA RightMargin
 
 
 
 
    METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn )
-                                                                                            
+
    METHOD SetMode( nOrientation )
-   METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline )
+   METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline, nCharSet )
    METHOD SetFont( oFont )  INLINE SelectObject( ::hDC, oFont:handle )
    METHOD SetTextColor( nColor )  INLINE SetTextColor( ::hDC, nColor )
    METHOD SetTBkColor( nColor )   INLINE SetBKColor( ::hDC, nColor )
@@ -64,9 +64,9 @@ CLASS HPrinter INHERIT HObject
    METHOD StartPage()
    METHOD EndPage()
    METHOD ReleaseMeta()
-   METHOD PlayMeta( nPage, oWnd )
+   METHOD PlayMeta( oWnd )
    METHOD PrintMeta( nPage )
-   METHOD Preview( cTitle )
+   METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser  )
    METHOD END()
    METHOD Box( x1, y1, x2, y2, oPen, oBrush )
    METHOD Line( x1, y1, x2, y2, oPen )
@@ -78,7 +78,7 @@ CLASS HPrinter INHERIT HObject
 ENDCLASS
 
 METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn ) CLASS HPrinter
-                                                                                                       
+
    LOCAL aPrnCoors, cPrinterName
 
    IF Valtype(nFormType) ="N"
@@ -109,7 +109,7 @@ METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, 
       ::hDCPrn = hDCPrn
       ::cPrinterName := cPrinter
    ELSE
-   
+
       IF cPrinter == Nil
          ::hDCPrn := PrintSetup( @cPrinterName )
          ::cPrinterName := cPrinterName
@@ -122,15 +122,15 @@ METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, 
          ::cPrinterName := cPrinter
       ENDIF
    ENDIF
-   
+
    IF empty( ::hDCPrn )
       RETURN Nil
    ELSE
       if lProprierties
          if !Hwg_SetDocumentProperties(::hDCPrn, ::cPrinterName, @::FormType, @::Landscape, @::Copies, @::BinNumber, @::fDuplexType, @::fPrintQuality, @::PaperLength, @::PaperWidth )
            Return NIL
-         endif 
-      endif   
+         endif
+      endif
 
       aPrnCoors := GetDeviceArea( ::hDCPrn )
       ::nWidth  := IIf( ::lmm, aPrnCoors[ 3 ], aPrnCoors[ 1 ] )
@@ -142,9 +142,9 @@ METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, 
       ::PixelsPerInchY   := aPrnCoors[ 6 ]
       ::PixelsPerInchX   := aPrnCoors[ 5 ]
 
-      ::TopMargin        := aPrnCoors[ 10 ] 
+      ::TopMargin        := aPrnCoors[ 10 ]
       ::BottomMargin     := (::nPHeight - ::TopMargin)+1
-      ::LeftMargin       := aPrnCoors[ 11] 
+      ::LeftMargin       := aPrnCoors[ 11]
       ::RightMargin      := (::nPWidth - ::LeftMargin)+1
       // writelog( ::cPrinterName + str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6])+str(aPrnCoors[8])+str(aPrnCoors[9]) )
    ENDIF

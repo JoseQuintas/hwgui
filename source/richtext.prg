@@ -1,5 +1,5 @@
 /*
- * $Id: richtext.prg,v 1.9 2010-06-05 23:26:34 mlacecilia Exp $
+ * $Id: richtext.prg,v 1.10 2010-10-30 16:43:31 mlacecilia Exp $
  */
 /*
 旼컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴커
@@ -88,7 +88,7 @@ CLASS RichText
 
    DATA oPrinter
    // Methods for opening & closing output file, and setting defaults
-   METHOD New( cFileName, aFontData, nFontSize, nFontColor, nScale, aTrans ) CONSTRUCTOR
+   METHOD New( cFileName, aFontData, aFontFam, aFontChar, nFontSize, nFontColor, nScale, aHigh ) CONSTRUCTOR
    METHOD END() INLINE ::TextCode( "par\pard" ), ::CloseGroup(), FClose( ::hFile )
 
 
@@ -109,8 +109,8 @@ CLASS RichText
 
    // Higher-level page setup methods
    METHOD PageSetup( nLeft, nRight, nTop, nBottom, nWidth, nHeight, ;
-                     nTabWidth, lLandscape, cVertAlign, cPgNumPos, lPgNumTop, ;
-                     lNoWidow )
+                     nTabWidth, lLandscape, lNoWidow, cVertAlign, ;
+                     cPgNumPos, lPgNumTop )
 
    METHOD BeginHeader() INLINE ::OpenGroup(), ;
    IIf( ! ::lFacing, ::TextCode( "header \pard" ), ::TextCode( "headerr \pard" ) )
@@ -123,15 +123,15 @@ CLASS RichText
                      cHorzAlign, aTabPos, nIndent, nFIndent, nRIndent, nSpace, ;
                      lSpExact, nBefore, nAfter, lNoWidow, lBreak, ;
                      lBullet, cBulletChar, lHang, lDefault, lNoPar, ;
-                     nFontColor, cTypeBorder, cBordStyle, nBordCol, nShdPct, ;
-                     cShadPat, lChar, nStyle )
+                     nFontColor, cTypeBorder, cBordStyle, nBordCol, nShdPct, cShadPat, ;
+                     nStyle, lChar )
 
 
    // Table Management
    METHOD DefineTable( cTblHAlign, nTblFntNum, nTblFntSize, ;
                        cCellAppear, cCellHAlign, nTblRows, ;
                        nTblColumns, nTblRHgt, aTableCWid, cRowBorder, cCellBorder, aColPct, nCellPct, ;
-                       lTblNoSplit, nTblHdRows, aHeadTit, nTblHdHgt, nTblHdPct, nTblHdFont, ;
+                       lTblNoSplit, nTblHdRows, nTblHdHgt, nTblHdPct, nTblHdFont, ;
                        nTblHdFSize, cHeadAppear, cHeadHAlign, nTblHdColor , nTblHdFColor )
 
    METHOD BeginRow() INLINE ::TextCode( "trowd" ), ::nCurrRow += 1
@@ -153,7 +153,7 @@ CLASS RichText
    METHOD NewLine() INLINE FWrite( ::hFile, CRLF ), ::TextCode( "par" )
    METHOD NewPage() INLINE ::TextCode( "page" + CRLF )
    METHOD NumPage() INLINE ::TextCode( "chpgn" )
-   METHOD CurrDate()
+   METHOD CurrDate( cFormat )
 
 
    // General service methods
@@ -182,7 +182,7 @@ CLASS RichText
    // Frames
    // Text Boxes
    METHOD BegTextBox( cTexto, aOffset, ASize, cTipo, aColores, nWidth, nPatron, ;
-                      lSombra, aSombra, nFontNumber, nFontSize, cAppear, nFontColor, lRounded, lEnd )
+                      lSombra, aSombra, nFontNumber, nFontSize, cAppear, nFontColor, nIndent, lRounded, lEnd )
    METHOD EndTextBox()
    METHOD SetFrame( ASize, cHorzAlign, cVertAlign, lNoWrap, cXAlign, xpos, cYAlign, ypos )
 
@@ -190,7 +190,7 @@ CLASS RichText
    METHOD SetClrTab()
    // Lines, Bitmaps & Graphics
    METHOD Linea( aInicio, aFinal, nxoffset, nyoffset, ASize, cTipo, ;
-                 nColBlue, nColRed, nColGreen, nWidth, nPatron, lSombra, aSombra )
+                 aColores, nWidth, nPatron, lSombra, aSombra )
    METHOD Image( cName, ASize, nPercent, lCell, lInclude, lFrame, aFSize, cHorzAlign, ;
                  cVertAlign, lNoWrap, cXAlign, xpos, cYAlign, ypos )
 //    METHOD RtfJpg(cName,aSize,nPercent)
@@ -205,10 +205,10 @@ CLASS RichText
 
    // New Methods for table managament
    METHOD EndTable() INLINE ::CloseGroup()
-   METHOD TableDef( lHeader, nRowHead, cCellBorder, aCellPct )
+   METHOD TableDef( lHeader, nRowHead, cCellBorder, aColPct )
    METHOD TableCell( cText, nFontNumber, nFontSize, cAppear, cHorzAlign, ;
-                     nSpace, lSpExact, cCellBorder, nCellPct, nFontColor, ;
-                     lDefault, lHeader )
+                     nSpace, lSpExact, nFontColor, ;
+                     lDefault, lHeader, lPage, lDate )
    METHOD CellFormat( cCellBorder, aCellPct )
    METHOD DefNewTable( cTblHAlign, nTblFntNum, nTblFntSize, ;
                        cCellAppear, cCellHAlign, nTblRows, ;
@@ -1717,7 +1717,7 @@ METHOD SetFrame( ASize, cHorzAlign, cVertAlign, lNoWrap, ;
 METHOD Image( cName, ASize, nPercent, lCell, lInclude, lFrame, aFSize, cHorzAlign, ;
               cVertAlign, lNoWrap, cXAlign, xpos, cYAlign, ypos )
 
-   LOCAL cExt := ""
+   LOCAL cExt
 
    DEFAULT cName TO "", ;
    ASize TO { }, ;
@@ -1802,7 +1802,7 @@ METHOD IncStyle( cName, styletype, nFontNumber, nFontSize, ;
                  nFontColor, cAppear, cHorzAlign, nIndent, cKeys, ;
                  cTypeBorder, cBordStyle, nBordColor, nShdPct, cShadPat, lAdd, LUpdate ) CLASS RichText
 
-   LOCAL lParrafo := .F., lChar := .F., lSeccion := .F., i
+   LOCAL lParrafo := .F., lChar := .F., i
    LOCAL cEstilo := ""
 
    DEFAULT cName TO "", ;
@@ -1835,7 +1835,6 @@ METHOD IncStyle( cName, styletype, nFontNumber, nFontSize, ;
       lChar := .T.
    CASE styletype == "SECTION"
       ::NumCode( "ds", ::nStlSec, .F. )
-      lSeccion := .T.
    ENDCASE
 
    IF ! Empty( cKeys )
@@ -1950,7 +1949,7 @@ METHOD CharStyle( nStyle ) CLASS RichText
 **********************  END OF HAlignment()  ************************
 
 METHOD TextCode( cCode ) CLASS RichText
-   LOCAL codigo := ""
+   LOCAL codigo
 
    codigo :=  FormatCode( cCode )
 
@@ -2623,13 +2622,13 @@ FUNCTION cFileExt( cFile )
       CASE cType == 'O'
          RETURN "{ " + xExp:ClassName() + " Object }"
 
-      CASE cType == 'P'      
+      CASE cType == 'P'
 #if defined( __XHARBOUR__ )
          RETURN NumToHex( xExp )
 #else
          RETURN hb_NumToHex( xExp )
 #endif
- 
+
       CASE cType == 'H'
          RETURN "{ Hash of " +  LTrim( Str( Len( xExp ) ) ) + " Items }"
 

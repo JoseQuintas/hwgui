@@ -1,5 +1,5 @@
 /*
- * $Id: hnice.prg,v 1.9 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hnice.prg,v 1.10 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *
@@ -108,7 +108,7 @@ METHOD Redefine( oWndParent, nId, nStyleEx, ;
 
    RETURN Self
 
-METHOD Activate CLASS HNiceButton
+METHOD Activate() CLASS HNiceButton
 
    IF ! Empty( ::oParent:handle )
       ::handle := CreateNiceBtn( ::oParent:handle, ::id, ;
@@ -117,7 +117,7 @@ METHOD Activate CLASS HNiceButton
    ENDIF
    RETURN Nil
 
-METHOD INIT CLASS HNiceButton
+METHOD INIT() CLASS HNiceButton
 
    IF ! ::lInit
       Super:Init()
@@ -158,14 +158,10 @@ METHOD Create( ) CLASS HNICEButton
 
    LOCAL Region
    LOCAL Rct
-   LOCAL x
-   LOCAL y
    LOCAL w
    LOCAL h
 
    Rct    := GetClientRect( ::handle )
-   x      := Rct[ 1 ]
-   y      := Rct[ 2 ]
    w      := Rct[ 3 ] - Rct[ 1 ]
    h      := Rct[ 4 ] - Rct[ 2 ]
    Region := CreateRoundRectRgn( 0, 0, w, h, h * 0.90, h * 0.90 )
@@ -190,12 +186,10 @@ METHOD Moving( ) CLASS HNICEButton
 
 METHOD MouseMove( wParam, lParam ) CLASS HNICEButton
 
-   LOCAL aCoors
-   LOCAL xPos
-   LOCAL yPos
    LOCAL otmp
 
    HB_SYMBOL_UNUSED( wParam )
+   HB_SYMBOL_UNUSED( lParam )
 
    IF ::lFlat .AND. ::state != OBTN_INIT
       otmp := SetNiceBtnSelected()
@@ -206,10 +200,6 @@ METHOD MouseMove( wParam, lParam ) CLASS HNICEButton
          PostMessage( otmp:handle, WM_PAINT, 0, 0 )
          SetNiceBtnSelected( Nil )
       ENDIF
-
-      aCoors := GetClientRect( ::handle )
-      xPos   := LOWORD( lParam )
-      yPos   := HIWORD( lParam )
 
       IF ::state == OBTN_NORMAL
          ::state := OBTN_MOUSOVER
@@ -259,14 +249,13 @@ METHOD PAINT() CLASS HNICEButton
    LOCAL hDC       := BeginPaint( ::Handle, ps )
    LOCAL Rct
    LOCAL Size
-   LOCAL T         := Space( 2048 )
+   LOCAL T
    LOCAL XCtr
    LOCAL YCtr
    LOCAL x
    LOCAL y
    LOCAL w
    LOCAL h
-   LOCAL p
    //  *******************
 
    Rct  := GetClientRect( ::Handle )
@@ -291,10 +280,10 @@ METHOD PAINT() CLASS HNICEButton
    SetBkMode( hDC, TRANSPARENT )
 
    IF ( ::State == OBTN_MOUSOVER )
-      p := SetTextColor( hDC, VCOLOR( "FF0000" ) )
+      SetTextColor( hDC, VCOLOR( "FF0000" ) )
       TextOut( hDC, XCtr - ( Size[ 1 ] / 2 ) + 1, YCtr - ( Size[ 2 ] / 2 ) + 1, T )
    ELSE
-      p := SetTextColor( hDC, VCOLOR( "0000FF" ) )
+      SetTextColor( hDC, VCOLOR( "0000FF" ) )
       TextOut( hDC, XCtr - Size[ 1 ] / 2, YCtr - Size[ 2 ] / 2, T )
    ENDIF
 

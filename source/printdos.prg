@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.27 2010-01-18 17:28:54 druzus Exp $
+ * $Id: printdos.prg,v 1.28 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * CLASS PrintDos
  *
@@ -49,9 +49,9 @@ CLASS PrintDos
 
    METHOD New( oPorta ) CONSTRUCTOR
 
-   METHOD Say( oProw, oCol, oTexto, oPicture )
+//   METHOD Say( oProw, oCol, oTexto, oPicture )
 
-   METHOD SetCols( nRow, nCol )
+//   METHOD SetCols( nRow, nCol )
 
    METHOD gWrite( oText )
 
@@ -69,13 +69,14 @@ CLASS PrintDos
 
    METHOD UnBold()     //Added by  por Fernando Athayde
 
-   METHOD Comando()
+   METHOD Comando( oComm1, oComm2, oComm3, oComm4, oComm5, oComm6, oComm7, ;
+                oComm8, oComm9, oComm10 )
 
    METHOD SetPrc( x, y )
 
-   METHOD PrinterFile( oFile )
+//   METHOD PrinterFile( oFile )
 
-   METHOD TxttoGraphic( oFile, osize, oPreview )
+//   METHOD TxttoGraphic( oFile, osize, oPreview )
 
    METHOD Preview( fname, cTitle )
 
@@ -238,7 +239,7 @@ METHOD DesCompress() CLASS PrintDos
 
    RETURN Nil
 
-//*** Contribution Fernando Athayde ***
+/* *** Contribution Fernando Athayde ***
 
 METHOD Bold() CLASS PrintDos
 
@@ -372,7 +373,7 @@ METHOD TxttoGraphic( fName, osize, oPreview ) CLASS PrintDos
 
    LOCAL strbuf := Space( 2052 ), poz := 2052, stroka
    LOCAL han := FOpen( fName, FO_READ + FO_SHARED )
-   LOCAL oCol := 0, oPage := 1  //Added by  Por Fernando Athayde
+   LOCAL oCol := 0 //Added by  Por Fernando Athayde
    LOCAL oPrinter
    LOCAL oFont
 
@@ -406,7 +407,6 @@ METHOD TxttoGraphic( fName, osize, oPreview ) CLASS PrintDos
          IF Left( stroka, 1 ) == Chr( 12 )
             oPrinter:EndPage()
             oPrinter:StartPage()
-            ++ oPage
             oCol := 0  //Added by  Por Fernando Athayde
          ENDIF
 
@@ -553,6 +553,7 @@ FUNCTION regenfile( o, new )
    NEXT
 
    RETURN Nil
+*/
 
 #PRAGMA BEGINDUMP
 /*

@@ -1,5 +1,5 @@
 /*
- * $Id: hipedit.prg,v 1.13 2008-11-24 10:02:12 mlacecilia Exp $
+ * $Id: hipedit.prg,v 1.14 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -84,7 +84,7 @@ METHOD New( oWndParent, nId, aValue, bSetGet, nStyle, nLeft, nTop, nWidth, nHeig
 
    RETURN Self
 
-METHOD Activate CLASS HIPedit
+METHOD Activate() CLASS HIPedit
    IF ! Empty( ::oParent:handle )
       ::handle := InitIPAddress ( ::oParent:handle, ::id, ::style , ;
                                   ::nLeft, ::nTop, ::nWidth, ::nHeight )

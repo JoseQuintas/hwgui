@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.42 2010-10-21 11:46:07 druzus Exp $
+ * $Id: guimain.prg,v 1.43 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions
@@ -264,7 +264,7 @@ FUNCTION WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel,
    oBrw:oFont  := oFont
    oBrw:bSize  := { | o, x, y | MoveWindow( o:handle, addX / 2, 10, x - addX, y - addY ) }
    oBrw:bEnter := { | o | nChoice := o:nCurrent, EndDialog( o:oParent:handle ) }
-   oBrw:bKeyDown := {|o,key|Iif(key==27,(EndDialog(oDlg:handle),.F.),.T.)}
+   oBrw:bKeyDown := {|o,key|HB_SYMBOL_UNUSED(o),Iif(key==27,(EndDialog(oDlg:handle),.F.),.T.)}
 
    oBrw:lDispHead := .F.
    IF clrT != Nil
@@ -351,7 +351,7 @@ FUNCTION HdSerial( cDrive )
 
    LOCAL n       :=  HDGETSERIAL( cDrive )
    LOCAL cHex    :=  HB_NUMTOHEX( n )
-   LOCAL cResult := ""
+   LOCAL cResult
    cResult := SubStr( cHex, 1, 4 ) + '-' + SubStr( cHex, 5, 4 )
 
    RETURN cResult
@@ -441,7 +441,7 @@ FUNCTION TxtRect( cTxt, oWin, oFont )
    LOCAL hDC
    LOCAL ASize
    LOCAL hFont
-  
+
    oFont := IIF( oFont != Nil, oFont, oWin:oFont )
 
    hDC       := GetDC( oWin:handle )

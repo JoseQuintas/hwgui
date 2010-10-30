@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.31 2010-10-13 14:17:30 lfbasso Exp $
+ * $Id: hsayimg.prg,v 1.32 2010-10-30 16:43:31 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HSayImage class
@@ -24,7 +24,7 @@ CLASS VAR winclass   INIT "STATIC"
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
                bSize, ctooltip, bClick, bDblClick )
-   METHOD Redefine( oWndParent, nId, bInit, bSize, ctooltip, bClick, bDblClick )
+   METHOD Redefine( oWndParent, nId, bInit, bSize, ctooltip )
    METHOD Activate()
    METHOD END()  INLINE ( Super:END(), IIf( ::oImage <> Nil, ::oImage:Release(), ::oImage := Nil ), ::oImage := Nil )
    METHOD onClick()
@@ -56,7 +56,7 @@ METHOD Redefine( oWndParent, nId, bInit, bSize, ctooltip ) CLASS HSayImage
 
    RETURN Self
 
-METHOD Activate CLASS HSayImage
+METHOD Activate() CLASS HSayImage
 
    IF ! Empty( ::oParent:handle )
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
@@ -95,8 +95,8 @@ CLASS HSayBmp INHERIT HSayImage
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
                bSize, ctooltip, bClick, bDblClick, lTransp, nStretch, nStyle )
-   METHOD Redefine( oWndParent, nId, Image, lRes, bInit, bSize, ctooltip, lTransp )
-   METHOD Init()   
+   METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip, lTransp )
+   METHOD Init()
    METHOD Paint( lpdis )
    METHOD ReplaceBitmap( Image, lRes )
    //METHOD REFRESH() INLINE ::HIDE(), SENDMESSAGE( ::handle, WM_PAINT, 0, 0 ), ::SHOW()
@@ -149,7 +149,7 @@ METHOD Init() CLASS HSayBmp
       Super:Init()
       IF ::oImage != Nil .AND. !empty( ::oImage:Handle )
          SendMessage( ::handle,STM_SETIMAGE, IMAGE_BITMAP, ::oImage:handle )
-      ENDIF   
+      ENDIF
    ENDIF
 Return Nil
 
@@ -209,7 +209,7 @@ CLASS HSayIcon INHERIT HSayImage
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
                bSize, ctooltip, lOEM, bClick, bDblClick )
-   METHOD Redefine( oWndParent, nId, Image, lRes, bInit, bSize, ctooltip )
+   METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip )
    METHOD Init()
    METHOD REFRESH() INLINE SendMessage( ::handle, STM_SETIMAGE, IMAGE_ICON, ::oImage:handle )
 

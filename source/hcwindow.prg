@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.74 2010-10-31 11:59:46 lfbasso Exp $
+ *$Id: hcwindow.prg,v 1.75 2010-10-31 15:33:26 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -780,10 +780,8 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
    RETURN 1
 
 STATIC FUNCTION onSize( oWnd, wParam, lParam )
-   LOCAL aControls := oWnd:aControls, nControls := Len( aControls )
-   LOCAL oItem, iCont, nw1, nh1, aCoors
-
-   //HB_SYMBOL_UNUSED( wParam )
+   LOCAL aControls := oWnd:aControls
+   LOCAL oItem, nw1, nh1, aCoors
 
    nw1 := oWnd:nWidth
    nh1 := oWnd:nHeight
@@ -797,7 +795,6 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       oWnd:ResetScrollbars()
       oWnd:SetupScrollbars()
    ENDIF
-
    IF !EMPTY( oWnd:Type) .AND. oWnd:Type = WND_MDI  .AND. !EMPTY( oWnd:Screen )
       oWnd:Anchor( oWnd:Screen, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
    ENDIF
@@ -805,25 +802,11 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       oWnd:Anchor( oWnd, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
    ENDIF
 
-   #ifdef __XHARBOUR__
-
-      HB_SYMBOL_UNUSED( iCont )
-
-      FOR EACH oItem IN aControls
-         IF oItem:bSize != NIL
-            Eval( oItem:bSize, oItem, LOWORD( lParam ), HIWORD( lParam ) )
-         ENDIF
-      NEXT
-   #else
-
-      FOR iCont := 1 TO nControls
-         IF aControls[ iCont ]:bSize != NIL
-            Eval( aControls[ iCont ]:bSize, aControls[ iCont ], ;
-                  LOWORD( lParam ), HIWORD( lParam ) )
-         ENDIF
-      NEXT
-   #endif
-
+   FOR EACH oItem IN aControls
+      IF oItem:bSize != NIL
+         Eval( oItem:bSize, oItem, LOWORD( lParam ), HIWORD( lParam ) )
+      ENDIF
+   NEXT
    RETURN - 1
 
 FUNCTION onTrackScroll( oWnd, msg, wParam, lParam )
@@ -881,6 +864,7 @@ LOCAL oParent, nCtrl,nPos
 FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
    Local oWin := oCtrl:GetParentForm()
    Local iParHigh := IIF( nKey = VK_RETURN, IDOK, IDCANCEL )
+   LOCAL oCtrlFocu := oCtrl
 
    lForce := ! Empty( lForce )
    IF ( oWin:Type >= WND_DLG_RESOURCE .AND. ! lForce  ) .OR. ( nKey != VK_RETURN .AND. nKey != VK_ESCAPE )
@@ -888,7 +872,7 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
    ENDIF
    IF iParHigh == IDOK
       IF ( oCtrl := oWin:FindControl( IDOK ) ) != Nil .AND. oCtrl:IsEnabled()
-         oCtrl:SetFocus()
+        oCtrl:SetFocus()
   	     oWin:lResult := .T.
   	     IF lForce
 	       ELSEIF oCtrl:bClick != Nil .AND. ! lForce
@@ -904,11 +888,11 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
          oWin:lResult := .F.
          SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
       ELSEIF oWin:lGetSkiponEsc
-         oCtrl :=  oCtrlFocu
+         oCtrl := oCtrlFocu
          IF oCtrl  != Nil .AND.  __ObjHasMsg( oCtrl, "OGROUP" )  .AND. oCtrl:oGroup:oHGroup != Nil
              oCtrl := oCtrl:oGroup:oHGroup
          ENDIF
-         IF oCtrl  != Nil .and. GetSkip( oCtrl:oParent, oCtrl:Handle, , - 1 )   
+         IF oCtrl  != Nil .and. GetSkip( oCtrl:oParent, oCtrl:Handle, , - 1 )
             IF AScan( oWin:GetList, { | o | o:handle == oCtrl:Handle } ) > 1
                RETURN .T.
             ENDIF

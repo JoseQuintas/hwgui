@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.107 2010-10-31 11:59:46 lfbasso Exp $
+ *$Id: hwindow.prg,v 1.108 2010-10-31 15:33:26 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -686,35 +686,14 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HChildWindow
    RETURN - 1
 
 FUNCTION ReleaseAllWindows( hWnd )
-   LOCAL oItem, iCont, nCont
+   LOCAL oItem
 
-   //  Vamos mandar destruir as filhas
-   // Destroi as CHILD's desta MAIN
-   #ifdef __XHARBOUR__
-
-      HB_SYMBOL_UNUSED( iCont )
-      HB_SYMBOL_UNUSED( nCont )
-
-      FOR EACH oItem IN HWindow():aWindows
-         IF oItem:oParent != Nil .AND. PtrtoUlong( oItem:oParent:handle ) == PtrtoUlong( hWnd )
-            SendMessage( oItem:handle, WM_CLOSE, 0, 0 )
-         ENDIF
-      NEXT
-   #else
-
-      nCont := Len( HWindow():aWindows )
-
-      FOR iCont := nCont TO 1 STEP - 1
-
-         IF HWindow():aWindows[ iCont ]:oParent != Nil .AND. ;
-            HWindow():aWindows[ iCont ]:oParent:handle == hWnd
-            SendMessage( HWindow():aWindows[ iCont ]:handle, WM_CLOSE, 0, 0 )
-         ENDIF
-
-      NEXT
-   #endif
-
-   IF PtrtoUlong( HWindow():aWindows[ 1 ]:handle ) == PtrtoUlong( hWnd )
+   FOR EACH oItem IN HWindow():aWindows
+      IF oItem:oParent != Nil .AND. PtrToUlong( oItem:oParent:handle ) == PtrToUlong( hWnd )
+         SendMessage( oItem:handle, WM_CLOSE, 0, 0 )
+      ENDIF
+   NEXT
+   IF PtrToUlong( HWindow():aWindows[ 1 ]:handle ) == PtrToUlong( hWnd )
       PostQuitMessage( 0 )
    ENDIF
 

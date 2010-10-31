@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1323 2010-10-31 11:59:46 lfbasso Exp $
+ * $Id: Changelog,v 1.1324 2010-10-31 15:33:26 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,17 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-10-31 16:35 UTC+0100 Maurizio la Cecilia <m.lacecilia at gmail.com>
+  * Changelog
+    * corrected wrong date in my previous commit
+  * source\hcwindow.prg
+    * declared missed local declaration and assignment in ProcOkCancel()
+    * unified code for both Harbour and xHarbour
+  * source\hwindow.prg
+    * unified code for both Harbour and xHarbour
+  * source\richedit.c
+    * deleted doubled EditStreamCallback() function code
 
 2010-10-31 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcheck.prg
@@ -42,7 +53,7 @@
     ! reverted deletion of declaration oitem because is used in source.
 
 
-2010-11-01 08:58 UTC+0100 Maurizio la Cecilia <m.lacecilia at gmail.com>
+2010-10-31 08:58 UTC+0100 Maurizio la Cecilia <m.lacecilia at gmail.com>
    
    * hwgui.hbp
      * deleted wrong ref to xhb.hbc 

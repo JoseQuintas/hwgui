@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.37 2010-10-31 11:59:46 lfbasso Exp $
+ * $Id: richedit.c,v 1.38 2010-10-31 15:33:26 mlacecilia Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -490,12 +490,6 @@ static DWORD CALLBACK EditStreamCallback( DWORD_PTR dwCookie, LPBYTE lpBuff, LON
 {
  HANDLE hFile = (HANDLE)dwCookie;
  return ! ReadFile(hFile, lpBuff, cb, ( DWORD * ) pcb, NULL );
-}
-
-static DWORD CALLBACK EditStreamCallback(DWORD_PTR dwCookie, LPBYTE lpBuff, LONG cb, PLONG pcb)
-{
- HANDLE hFile = (HANDLE)dwCookie;
- return !ReadFile(hFile, lpBuff, cb, (DWORD *)pcb, NULL);
 }
 
 HB_FUNC( SAVERICHEDIT )

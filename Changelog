@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1320 2010-10-30 16:43:31 mlacecilia Exp $
+ * $Id: Changelog,v 1.1321 2010-10-31 07:57:50 mlacecilia Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-11-01 08:58 UTC+0100 Maurizio la Cecilia <m.lacecilia at gmail.com>
+   
+   * hwgui.hbp
+     * deleted wrong ref to xhb.hbc 
+   * source/printdos.prg  
+     * reworked the code as was left in a pending edit mode and wrongly
+       committed
+   Thanks to Itamar Lins who reported quickly this oversights.    
+
+2010-10-30 18:43 UTC+0100 Maurizio la Cecilia <m.lacecilia at gmail.com>
   * source\hcontrol.prg
     * fixed error in missing Round() parameter
   * source\barcode.prg

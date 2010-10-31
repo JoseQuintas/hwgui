@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.28 2010-10-30 16:43:31 mlacecilia Exp $
+ * $Id: printdos.prg,v 1.29 2010-10-31 07:57:50 mlacecilia Exp $
  *
  * CLASS PrintDos
  *
@@ -49,9 +49,9 @@ CLASS PrintDos
 
    METHOD New( oPorta ) CONSTRUCTOR
 
-//   METHOD Say( oProw, oCol, oTexto, oPicture )
+   METHOD Say( oPRow, oPCol, oTexto, oPicture )
 
-//   METHOD SetCols( nRow, nCol )
+   METHOD SetCols( nPRow, nPCol )
 
    METHOD gWrite( oText )
 
@@ -74,9 +74,9 @@ CLASS PrintDos
 
    METHOD SetPrc( x, y )
 
-//   METHOD PrinterFile( oFile )
+   METHOD PrinterFile( fName )
 
-//   METHOD TxttoGraphic( oFile, osize, oPreview )
+   METHOD TxttoGraphic( fName, osize, oPreview )
 
    METHOD Preview( fname, cTitle )
 
@@ -239,7 +239,7 @@ METHOD DesCompress() CLASS PrintDos
 
    RETURN Nil
 
-/* *** Contribution Fernando Athayde ***
+/* *** Contribution Fernando Athayde *** */
 
 METHOD Bold() CLASS PrintDos
 
@@ -428,7 +428,7 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
    LOCAL oedit1
    LOCAL strbuf := Space( 2052 ), poz := 2052, stroka
    LOCAL han := FOpen( fName, FO_READ + FO_SHARED )
-   LOCAL oCol := 10, oPage := 1, nPage := 1
+   LOCAL oPage := 1, nPage := 1
    LOCAL oFont := HFont():Add( "Courier New", 0, - 13 )
    LOCAL oText := { "" }
    LOCAL oDlg, oColor1, oColor2
@@ -450,7 +450,6 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
             AAdd( oText, "" )
             ++ oPage
          ENDIF
-         oCol := oCol + 30
       ENDDO
       FClose( han )
    ELSE
@@ -531,7 +530,7 @@ FUNCTION regenfile( o, new )
    LOCAL stroka
    LOCAL o1 := printdos():new( new )
    LOCAL nLine := 0
-   LOCAL nChr12 := 0
+   LOCAL nChr12
    LOCAL i
 
    FOR i := 1 TO Len( aText )
@@ -553,7 +552,6 @@ FUNCTION regenfile( o, new )
    NEXT
 
    RETURN Nil
-*/
 
 #PRAGMA BEGINDUMP
 /*

@@ -1,5 +1,5 @@
 #
-# $Id: hwgui.hbp,v 1.2 2010-10-30 16:43:31 mlacecilia Exp $
+# $Id: hwgui.hbp,v 1.3 2010-10-31 07:57:50 mlacecilia Exp $
 #
 
 -3rd=hbide_version=1.0
@@ -16,7 +16,6 @@
 -es2
 -iinclude
  
-xhb.hbc
 hwgui.hbm
 
  

@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.72 2010-10-30 16:43:31 mlacecilia Exp $
+ *$Id: hcwindow.prg,v 1.73 2010-10-31 09:20:43 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -781,7 +781,7 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
 
 STATIC FUNCTION onSize( oWnd, wParam, lParam )
    LOCAL aControls := oWnd:aControls, nControls := Len( aControls )
-   LOCAL iCont, nw1, nh1, aCoors
+   LOCAL oItem, iCont, nw1, nh1, aCoors
 
    //HB_SYMBOL_UNUSED( wParam )
 

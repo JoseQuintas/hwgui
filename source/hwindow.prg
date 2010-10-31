@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.105 2010-10-30 16:43:31 mlacecilia Exp $
+ *$Id: hwindow.prg,v 1.106 2010-10-31 09:21:12 giuseppem Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -685,7 +685,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HChildWindow
    RETURN - 1
 
 FUNCTION ReleaseAllWindows( hWnd )
-   LOCAL iCont, nCont
+   LOCAL oItem, iCont, nCont
 
    //  Vamos mandar destruir as filhas
    // Destroi as CHILD's desta MAIN

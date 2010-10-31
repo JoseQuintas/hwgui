@@ -1,5 +1,5 @@
 /*
- *$Id: hcwindow.prg,v 1.73 2010-10-31 09:20:43 giuseppem Exp $
+ *$Id: hcwindow.prg,v 1.74 2010-10-31 11:59:46 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
@@ -903,6 +903,16 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
          oCtrl:SetFocus()
          oWin:lResult := .F.
          SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
+      ELSEIF oWin:lGetSkiponEsc
+         oCtrl :=  oCtrlFocu
+         IF oCtrl  != Nil .AND.  __ObjHasMsg( oCtrl, "OGROUP" )  .AND. oCtrl:oGroup:oHGroup != Nil
+             oCtrl := oCtrl:oGroup:oHGroup
+         ENDIF
+         IF oCtrl  != Nil .and. GetSkip( oCtrl:oParent, oCtrl:Handle, , - 1 )   
+            IF AScan( oWin:GetList, { | o | o:handle == oCtrl:Handle } ) > 1
+               RETURN .T.
+            ENDIF
+         ENDIF
       ELSEIF oWin:lExitOnEsc
           oWin:close()
       ELSEIF ! oWin:lExitOnEsc

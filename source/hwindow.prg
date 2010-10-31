@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.106 2010-10-31 09:21:12 giuseppem Exp $
+ *$Id: hwindow.prg,v 1.107 2010-10-31 11:59:46 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class
@@ -87,6 +87,7 @@ CLASS VAR szAppName  SHARED INIT "HwGUI_App"
    DATA nLastKey INIT 0
    DATA lExitOnEnter INIT .F.
    DATA lExitOnEsc INIT .F.
+   DATA lGetSkiponEsc INIT .F.
    DATA bCloseQuery
    Data nFocus  INIT 0
    DATA oClient

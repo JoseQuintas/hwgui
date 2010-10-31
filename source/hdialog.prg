@@ -1,5 +1,5 @@
 /*
- * $Id: hdialog.prg,v 1.127 2010-10-30 16:43:31 mlacecilia Exp $
+ * $Id: hdialog.prg,v 1.128 2010-10-31 11:59:46 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HDialog class
@@ -390,7 +390,7 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_INITIALIZE, UISF_HIDEACCEL ), 0 )
       POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )
    ELSE
-      POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL ), 0 )
+      POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_INITIALIZE, UISF_HIDEACCEL ), 0 ) 
       POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )
       InvalidateRect( oDlg:Handle, 0 )
    ENDIF
@@ -517,6 +517,10 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
          ELSEIF oDlg:lGetSkiponEsc
             hCtrl := GetFocus()
             oCtrl := oDlg:FindControl( , hctrl )
+            IF oCtrl  != Nil .AND. __ObjHasMsg( oCtrl, "OGROUP" )  .AND. oCtrl:oGroup:oHGroup != Nil
+                oCtrl := oCtrl:oGroup:oHGroup
+                hCtrl := oCtrl:handle
+            ENDIF
             IF oCtrl  != Nil .and. GetSkip( oCtrl:oParent, hCtrl, , - 1 )
                IF AScan( oDlg:GetList, { | o | o:handle == hCtrl } ) > 1
                   RETURN 1

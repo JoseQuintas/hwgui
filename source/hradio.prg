@@ -1,5 +1,5 @@
 /*
- * $Id: hradio.prg,v 1.37 2010-10-30 16:43:31 mlacecilia Exp $
+ * $Id: hradio.prg,v 1.38 2010-10-31 11:59:46 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRadioButton class
@@ -84,7 +84,8 @@ METHOD NewRg( oWndParent, nId, nStyle, vari, bSetGet, nLeft, nTop, nWidth, nHeig
    ::aButtons := {}
    Super:New( ::oParent,,,nLeft, nTop, nWidth, nHeight, oFont, bInit )
    ::oHGroup := HGroup():New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
-                              oFont, bInit, bSize,, tcolor, bColor, lTransp, Self )
+                              oFont, bInit, bSize, , tcolor, bColor, lTransp, Self )
+                              
    ::lInit := .T.
    ::bInit := bInit
    ::bClick := bClick
@@ -330,8 +331,8 @@ METHOD onevent( msg, wParam, lParam ) CLASS HRadioButton
       ENDIF
    ENDIF
    IF msg = WM_KEYDOWN
-      IF  ProcKeyList( Self, wParam )
-      ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP
+      //IF  ProcKeyList( Self, wParam )
+      IF wParam = VK_LEFT .OR. wParam = VK_UP
          GetSkip( ::oparent, ::handle, , -1 )
          RETURN 0
       ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN
@@ -346,6 +347,8 @@ METHOD onevent( msg, wParam, lParam ) CLASS HRadioButton
          RETURN 0
       ENDIF
    ELSEIF msg == WM_KEYUP
+      ProcKeyList( Self, wParam )   // working in MDICHILD AND DIALOG
+
    ELSEIF msg == WM_NOTIFY
    ENDIF
    IF  msg = WM_GETDLGCODE .AND.  ! EMPTY( wParam )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1322 2010-10-31 09:20:18 giuseppem Exp $
+ * $Id: Changelog,v 1.1323 2010-10-31 11:59:46 lfbasso Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,34 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-10-31 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source\hcheck.prg
+  * source\hcombo.prg
+  * source\hradio.prg
+    ! fix in ONEVENT to compatible with lGetSkiponEsc
+  * source\hcontrol.prg
+    ! fix in CLASS HGROUP
+  * source\hcwindow.prg
+    ! add code to lGetSkiponEsc in FUNCTION ProcOkCancel
+  * source\hdialog.prg
+    ! fix in DLGCOMMAND to lGetSkiponEsc
+  * source\hriched.prg
+    + DATA hdcPrinter
+    + METHOD OpenFile( cFile )
+    + METHOD Print()   
+      modifications by Srdjan Dragojlovic
+  * source\hwindow.prg
+    + DATA lGetSkiponEsc same behavior DIALOG in MDICHILD
+  * source\richedit.c
+    + HB_FUNC( RE_SETZOOM )
+    + HB_FUNC( RE_ZOOMOFF )
+    + HB_FUNC( RE_GETZOOM )
+    + HB_FUNC( PRINTRTF )
+      modifications by Srdjan Dragojlovic
+  * source\wprint.c
+    + HB_FUNC( HWG_ABORTDOC )
+      modifications by Srdjan Dragojlovic
+      
 2010-10-31 10:10 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hcwindow.prg
   * source/hwindow.prg

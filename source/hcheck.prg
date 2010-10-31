@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.45 2010-10-30 16:43:31 mlacecilia Exp $
+ * $Id: hcheck.prg,v 1.46 2010-10-31 11:59:46 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class
@@ -115,8 +115,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCheckButton
       ENDIF
    ENDIF
    IF msg = WM_KEYDOWN
-      IF ProcKeyList( Self, wParam )
-      ELSEIF  wParam = VK_TAB
+      //IF ProcKeyList( Self, wParam )
+      IF  wParam = VK_TAB
          GetSkip( ::oparent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1)  )
          RETURN 0
       ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP
@@ -131,11 +131,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCheckButton
             ::VALID()
             RETURN 0 //-1
          ELSE
-                GetSkip( ::oparent, ::handle, , 1 )
-                RETURN 0
+            GetSkip( ::oparent, ::handle, , 1 )
+            RETURN 0
          ENDIF
       ENDIF
    ELSEIF msg == WM_KEYUP
+      ProcKeyList( Self, wParam ) // working in MDICHILD AND DIALOG
+      
     ELSEIF  msg = WM_GETDLGCODE .AND. GETDLGMESSAGE( lParam ) != 0
       IF wParam = VK_RETURN .OR. wParam = VK_TAB
       ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND.wParam != VK_ESCAPE

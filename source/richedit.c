@@ -1,5 +1,5 @@
 /*
- * $Id: richedit.c,v 1.36 2010-05-21 17:33:15 mlacecilia Exp $
+ * $Id: richedit.c,v 1.37 2010-10-31 11:59:46 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
@@ -370,6 +370,74 @@ HB_FUNC( RE_FINDTEXT )
    hb_retnl( lPos );
 }
 
+HB_FUNC( RE_SETZOOM )
+{
+   HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );
+   int nNum = hb_parni(2); 
+   int nDen = hb_parni(3); 
+   hb_retnl( (BOOL) SendMessage(hwnd, EM_SETZOOM, nNum, nDen) );
+}
+
+
+HB_FUNC( RE_ZOOMOFF )
+{
+   HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );
+   hb_retnl( (BOOL) SendMessage(hwnd, EM_SETZOOM, 0, 0L ) );
+}
+
+HB_FUNC( RE_GETZOOM )
+{
+   HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );
+   int nNum = hb_parni(2); 
+   int nDen = hb_parni(3); 
+   hb_retnl( (BOOL) SendMessage(hwnd, EM_GETZOOM, (WPARAM)&nNum, (LPARAM)&nDen) );
+   hb_storni( nNum, 2 );
+   hb_storni( nDen, 3 );
+}
+
+HB_FUNC( PRINTRTF )
+{
+    HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );     
+    HDC hdc = ( HDC ) HB_PARHANDLE( 2 );
+    FORMATRANGE fr;
+    BOOL fSuccess = TRUE;
+    int cxPhysOffset = GetDeviceCaps(hdc, PHYSICALOFFSETX);
+    int cyPhysOffset = GetDeviceCaps(hdc, PHYSICALOFFSETY);
+    int cxPhys = GetDeviceCaps(hdc, PHYSICALWIDTH);
+    int cyPhys = GetDeviceCaps(hdc, PHYSICALHEIGHT);
+    int ppi_x = GetDeviceCaps(hdc,LOGPIXELSX);
+    int ppi_y = GetDeviceCaps(hdc,LOGPIXELSX);
+    int cpMin;
+
+    SendMessage(hwnd, EM_SETTARGETDEVICE, (WPARAM)hdc, cxPhys/2);
+    fr.hdc = hdc;
+    fr.hdcTarget = hdc;
+    fr.rc.left = 1440 * cxPhysOffset/ppi_x;
+    fr.rc.right = 1440 * (cxPhysOffset + cxPhys)/ppi_x;
+    fr.rc.top = 1440* cyPhysOffset/ppi_y;
+    fr.rc.bottom = 1440 * (cyPhysOffset + cyPhys)/ppi_y;
+
+    SendMessage(hwnd, EM_SETSEL, 0, (LPARAM) -1 );
+    SendMessage(hwnd, EM_EXGETSEL, 0, (LPARAM)&fr.chrg);
+    while (fr.chrg.cpMin < fr.chrg.cpMax && fSuccess) 
+    {
+        fSuccess = StartPage(hdc) > 0;
+        if (!fSuccess) break;
+        cpMin = SendMessage(hwnd, EM_FORMATRANGE, TRUE, (LPARAM)&fr);
+        if (cpMin <= fr.chrg.cpMin) 
+        {
+            fSuccess = FALSE;
+            break;
+        }
+        fr.chrg.cpMin = cpMin;
+        fSuccess = EndPage(hdc) > 0;
+    }
+    SendMessage( hwnd, EM_FORMATRANGE, FALSE, 0);
+    SendMessage( hwnd, EM_EXSETSEL, 0, ( LPARAM ) &fr.chrg );
+    SendMessage( hwnd, EM_HIDESELECTION, 0, 0 );
+    hb_retnl( (BOOL) fSuccess);
+}
+
 HB_FUNC( HWG_INITRICHPROC )
 {
    wpOrigRichProc = ( WNDPROC ) SetWindowLong( ( HWND ) HB_PARHANDLE( 1 ),
@@ -418,6 +486,18 @@ static DWORD CALLBACK RichStreamOutCallback( DWORD dwCookie, LPBYTE pbBuff, LONG
    return 0;
 }
 
+static DWORD CALLBACK EditStreamCallback( DWORD_PTR dwCookie, LPBYTE lpBuff, LONG cb, PLONG pcb )
+{
+ HANDLE hFile = (HANDLE)dwCookie;
+ return ! ReadFile(hFile, lpBuff, cb, ( DWORD * ) pcb, NULL );
+}
+
+static DWORD CALLBACK EditStreamCallback(DWORD_PTR dwCookie, LPBYTE lpBuff, LONG cb, PLONG pcb)
+{
+ HANDLE hFile = (HANDLE)dwCookie;
+ return !ReadFile(hFile, lpBuff, cb, (DWORD *)pcb, NULL);
+}
+
 HB_FUNC( SAVERICHEDIT )
 {
 
@@ -442,4 +522,28 @@ HB_FUNC( SAVERICHEDIT )
    CloseHandle( hFile );
    HB_RETHANDLE( hFile );
   
+}
+
+HB_FUNC( LOADRICHEDIT )
+{
+
+   HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
+   HANDLE hFile ;
+   EDITSTREAM es;
+   void * hFileName; 
+   LPCTSTR lpFileName;
+   HB_SIZE nSize ;
+   
+   lpFileName = HB_PARSTR( 2, &hFileName, &nSize );
+   hFile = CreateFile( lpFileName, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+   if ( hFile == INVALID_HANDLE_VALUE )
+   {
+      hb_retni( 0 );
+      return;
+   }
+   es.dwCookie = ( DWORD ) hFile;
+   es.pfnCallback = EditStreamCallback; 
+   SendMessage( hWnd, EM_STREAMIN, ( WPARAM ) SF_RTF, ( LPARAM )&es) ;
+   CloseHandle( hFile );
+   HB_RETHANDLE( hFile );  
 }

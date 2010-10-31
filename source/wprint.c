@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.29 2010-02-18 09:43:23 druzus Exp $
+ * $Id: wprint.c,v 1.30 2010-10-31 11:59:46 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -266,6 +266,11 @@ HB_FUNC( HWG_STARTDOC )
 HB_FUNC( HWG_ENDDOC )
 {
    EndDoc( ( HDC ) HB_PARHANDLE( 1 ) );
+}
+
+HB_FUNC( HWG_ABORTDOC )
+{
+   AbortDoc( ( HDC ) HB_PARHANDLE( 1 ) );
 }
 
 HB_FUNC( HWG_STARTPAGE )

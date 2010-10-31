@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.88 2010-10-30 16:43:31 mlacecilia Exp $
+ * $Id: hcombo.prg,v 1.89 2010-10-31 11:59:46 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -331,7 +331,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
             RETURN 0
          ENDIF
       ELSEIF msg = WM_KEYDOWN
-         ProcKeyList( Self, wParam )
+         //ProcKeyList( Self, wParam )
          IF wparam =  VK_RIGHT .OR. wParam == VK_RETURN //.AND. ! ::lEdit 	 	
              GetSkip( ::oParent, ::handle, , 1 )
              RETURN 0
@@ -339,6 +339,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
    	         GetSkip( ::oParent, ::handle, , -1 )
    	         RETURN 0
          ENDIF
+      ELSEIF msg = WM_KEYUP
+         ProcKeyList( Self, wParam )        //working in MDICHILD AND DIALOG
+         
       ELSEIF msg = CB_GETDROPPEDSTATE
    	     IF GETKEYSTATE( VK_RETURN ) < 0
             ::GetValue()

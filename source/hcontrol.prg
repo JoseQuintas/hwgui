@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.165 2010-10-30 16:43:31 mlacecilia Exp $
+ * $Id: hcontrol.prg,v 1.166 2010-10-31 11:59:46 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes
@@ -1839,12 +1839,12 @@ CLASS HGroup INHERIT HControl
 
 CLASS VAR winclass   INIT "BUTTON"
 
-   DATA oGroup
+   DATA oRGroup
    DATA oBrush
    DATA lTransparent  HIDDEN
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
-               cCaption, oFont, bInit, bSize, bPaint, tcolor, bColor, lTransp, oGroup )
+               cCaption, oFont, bInit, bSize, bPaint, tcolor, bColor, lTransp, oRGroup )
    METHOD Activate()
    METHOD Init()
    METHOD Paint( lpDis )
@@ -1852,14 +1852,15 @@ CLASS VAR winclass   INIT "BUTTON"
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
-            oFont, bInit, bSize, bPaint, tcolor, bColor, lTransp, oGroup ) CLASS HGroup
+            oFont, bInit, bSize, bPaint, tcolor, bColor, lTransp, oRGroup ) CLASS HGroup
 
    nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), BS_GROUPBOX )
+   
+   ::title   := cCaption
+   ::oRGroup := oRGroup
+
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
               oFont, bInit, bSize, bPaint,, tcolor, bColor )
-
-   ::title   := cCaption
-   ::oGroup := oGroup
 
    ::oBrush := IIF( bColor != Nil, ::brush,Nil )
    ::lTransparent := IIF( lTransp != NIL, lTransp, .F. )
@@ -1891,16 +1892,16 @@ METHOD Init() CLASS HGroup
          HWG_SETWINDOWSTYLE ( ::handle, nbs )
          ::bPaint   := { | o, p | o:paint( p ) }
       ENDIF
-      IF ::oGroup != Nil
-         ::oGroup:Handle := ::handle
-         ::oGroup:id := ::id
-         ::oFont := ::oGroup:oFont
-         ::oGroup:lInit := .f.
-         ::oGroup:Init()
+      IF ::oRGroup != Nil
+         ::oRGroup:Handle := ::handle
+         ::oRGroup:id := ::id
+         ::oFont := ::oRGroup:oFont
+         ::oRGroup:lInit := .f.
+         ::oRGroup:Init()
       ELSE
          IF ::oBrush != Nil
             nbs :=  AScan( ::oparent:acontrols, { | o | o:handle == ::handle } )
-            FOR i = 1 to LEN( ::oparent:acontrols )  //i - 1 TO 1 STEP - 1     // //     HWND_TOP
+            FOR i = LEN( ::oparent:acontrols ) TO 1 STEP - 1    
                IF nbs != i .AND.;
                    PtInRect( { ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight }, { ::oparent:acontrols[ i ]:nLeft, ::oparent:acontrols[ i ]:nTop } ) //.AND. NOUTOBJS = 0
                    SetWindowPos( ::oparent:acontrols[ i ]:handle, ::Handle, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE + SWP_NOACTIVATE + SWP_FRAMECHANGED )

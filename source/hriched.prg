@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.24 2010-10-30 16:43:31 mlacecilia Exp $
+ * $Id: hriched.prg,v 1.25 2010-10-31 11:59:46 lfbasso Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -26,6 +26,9 @@ CLASS VAR winclass   INIT "RichEdit20A"
 	 DATA SelStart   INIT 0
    DATA SelText    INIT 0
    DATA SelLength  INIT 0
+   
+   DATA hdcPrinter
+   
 	 DATA bChange
 
    METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -43,6 +46,8 @@ CLASS VAR winclass   INIT "RichEdit20A"
    METHOD ReadOnly( lreadOnly ) SETGET
    METHOD SetColor( tColor, bColor, lRedraw )
    METHOD SaveFile( cFile )
+   METHOD OpenFile( cFile )
+   METHOD Print()   
 
 ENDCLASS
 
@@ -253,6 +258,29 @@ METHOD SaveFile( cFile )  CLASS HRichEdit
           RETURN .T.
       ENDIF
    ENDIF
+   RETURN .F.
+
+METHOD OpenFile( cFile )  CLASS HRichEdit 
+
+   IF !EMPTY( cFile )
+      IF ! EMPTY( LOADRICHEDIT( ::Handle, cFile ) )
+          RETURN .T.
+      ENDIF    
+   ENDIF   
+   RETURN .F.
+
+METHOD Print( )  CLASS HRichEdit
+
+   IF ::hDCPrinter = Nil
+    //  ::hDCPrinter := PrintSetup()
+   ENDIF   
+   IF HWG_STARTDOC( ::hDCPrinter ) <> 0
+      IF PrintRTF( ::Handle, ::hDCPrinter ) <> 0
+	       HWG_ENDDOC( ::hDCPrinter )
+      ELSE
+         HWG_ABORTDOC( ::hDCPrinter )
+      ENDIF
+   ENDIF 
    RETURN .F.
 
 

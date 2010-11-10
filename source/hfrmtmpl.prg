@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.73 2010-11-10 19:15:42 druzus Exp $
+ * $Id: hfrmtmpl.prg,v 1.74 2010-11-10 22:13:23 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -8,9 +8,17 @@
  * www - http://kresin.belgorod.su
 */
 
+#include "windows.ch"
+#include "hbclass.ch"
+#include "guilib.ch"
+#include "hxml.ch"
+
 #ifdef __XHARBOUR__
    #xtranslate HB_AT( < x, ... > ) => At( < x > )
 #endif
+
+#define  CONTROL_FIRST_ID   34000
+
 // nando
 STATIC coName
 //
@@ -59,13 +67,6 @@ STATIC aCtrls := { ;
        "HTimer():New(oPrnt,nId,nInterval, onAction)" , ;
        "HStaticLink():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,cTooltip,TextColor,BackColor,lTransp,Link,VisitedColor,LinkColor,HoverColor)" ;
      }
-
-#include "windows.ch"
-#include "hbclass.ch"
-#include "guilib.ch"
-#include "hxml.ch"
-
-#define  CONTROL_FIRST_ID   34000
 
 STATIC aPenType  := { "SOLID", "DASH", "DOT", "DASHDOT", "DASHDOTDOT" }
 STATIC aJustify  := { "Left", "Center", "Right" }

@@ -1,5 +1,5 @@
 /*
- *$Id: message.c,v 1.18 2010-11-10 15:51:43 druzus Exp $
+ *$Id: message.c,v 1.19 2010-11-10 22:13:23 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level messages functions
@@ -9,6 +9,8 @@
 */
 
 #include "hwingui.h"
+#include <commctrl.h>
+#include <richedit.h>
 
 static int s_msgbox( UINT uType )
 {
@@ -70,9 +72,6 @@ HB_FUNC( MSGBEEP )
    MessageBeep( ( hb_pcount() == 0 ) ? ( LONG ) 0xFFFFFFFF : hb_parnl( 1 ) );
 }
 
-
-#include <commctrl.h>
-#include <richedit.h>
 HB_FUNC( MSGTEMP )
 {
    char cres[ 60 ];

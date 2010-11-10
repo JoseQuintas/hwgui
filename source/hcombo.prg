@@ -1,5 +1,5 @@
 /*
- * $Id: hcombo.prg,v 1.89 2010-10-31 11:59:46 lfbasso Exp $
+ * $Id: hcombo.prg,v 1.90 2010-11-10 22:13:23 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCombo class
@@ -20,8 +20,6 @@
 #include "common.ch"
 
 #pragma begindump
-#include <windows.h>
-#include "hbapi.h"
 #include "hwingui.h"
 HB_FUNC( COPYDATA )
 {

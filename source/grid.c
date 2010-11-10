@@ -1,5 +1,5 @@
  /*
-  * $Id: grid.c,v 1.41 2010-11-10 15:51:43 druzus Exp $
+  * $Id: grid.c,v 1.42 2010-11-10 22:13:23 druzus Exp $
   *
   * HWGUI - Harbour Win32 GUI library source code:
   * HGrid class
@@ -11,12 +11,12 @@
   * Extended function Copyright 2006 Luiz Rafael Culik Guimaraes <luiz@xharbour.com.br>
   */
 
+#include "hwingui.h"
+#include <commctrl.h>
 #if defined(__POCC__) || defined(__XCC__)
 #include <unknwn.h>
 #endif
 #include <shlobj.h>
-#include "hwingui.h"
-#include <commctrl.h>
 #if defined(__DMC__)
 #include "missing.h"
 #endif

@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.121 2010-10-21 11:46:07 druzus Exp $
+ * $Id: control.c,v 1.122 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
@@ -10,22 +10,18 @@
 
 #define HB_OS_WIN_32_USED
 
-#define _WIN32_WINNT 0x0400
-#define _WIN32_IE    0x0400
 #define OEMRESOURCE
-#include <windows.h>
+#include "hwingui.h"
 #include <commctrl.h>
 #include <winuser.h>
 #if defined(__DMC__)
 #include "missing.h"
 #endif
 
-#include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbdate.h"
 #include "hbtrace.h"
-#include "hwingui.h"
 #ifdef __XHARBOUR__
    #include "hbfast.h"
 #endif
@@ -556,25 +552,25 @@ HB_FUNC( SETDATEPICKER )
 {
    PHB_ITEM pDate = hb_param( 2, HB_IT_DATE );
    ULONG ulLen;
-   long lSeconds = 0 ;
+   long lSeconds = 0;
 
    if( pDate )
    {
-      SYSTEMTIME sysTime, st ;
+      SYSTEMTIME sysTime, st;
 #ifndef HARBOUR_OLD_VERSION
       int lYear, lMonth, lDay;
-      int lHour, lMinute ;
+      int lHour, lMinute;
 #else
       long lYear, lMonth, lDay;
-      long lHour, lMinute ;
+      long lHour, lMinute;
 #endif
       int lMilliseconds = 0;
-#ifdef __XHARBOUR__      
-      double lSecond ;
+#ifdef __XHARBOUR__
+      double lSecond;
 #else
-      int lSecond ;
+      int lSecond;
 #endif
-      
+
       hb_dateDecode( hb_itemGetDL( pDate ), &lYear, &lMonth, &lDay );
       if ( hb_pcount(  ) < 3 )
       {
@@ -585,13 +581,12 @@ HB_FUNC( SETDATEPICKER )
       }
       else
       {
-         void * hStr ;
-         LPCTSTR szTime =  HB_PARSTR( 3, &hStr, NULL )  ;
+         const char * szTime =  hb_parc( 3 );
          if( szTime )
          {
             ulLen = strlen( szTime );
             if( ulLen >= 4 )
-            {                                                          
+            {
                lSeconds = (LONG) hb_strVal( szTime, 2 ) * 3600 * 1000 +
                           (LONG) hb_strVal( szTime + 2, 2 ) * 60 * 1000 +
                           (LONG)(hb_strVal( szTime + 4, ulLen - 4 ) * 1000 );

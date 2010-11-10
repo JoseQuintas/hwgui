@@ -1,5 +1,5 @@
 /*
- * $Id: nice.c,v 1.20 2010-02-15 13:18:39 druzus Exp $
+ * $Id: nice.c,v 1.21 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * 
@@ -8,18 +8,12 @@
  * www - http://sites.uol.com.br/culikr/
 */
 
-#define HB_OS_WIN_32_USED
-
-#define _WIN32_WINNT 0x0500
-#define OEMRESOURCE
-#include <windows.h>
+#include "hwingui.h"
 #include <commctrl.h>
 
-#include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include "hwingui.h"
 
 #ifndef GRADIENT_FILL_RECT_H
 

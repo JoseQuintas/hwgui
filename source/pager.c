@@ -1,19 +1,13 @@
 /*
- * $Id: pager.c,v 1.9 2009-06-29 11:22:04 alkresin Exp $
+ * $Id: pager.c,v 1.10 2010-11-10 15:51:43 druzus Exp $
 */
 
-#define _WIN32_WINNT 0x0400
-#define _WIN32_IE    0x0400
-
-#include <windows.h>
+#include "hwingui.h"
 #include <commctrl.h>
-
-#include "hbapi.h"
 
 #if ( defined(__DMC__) || defined(__WATCOMC__) )
 #include "missing.h"
 #endif
-#include "guilib.h"
 
 HB_FUNC( PAGERSETCHILD )
 {

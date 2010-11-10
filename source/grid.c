@@ -1,5 +1,5 @@
  /*
-  * $Id: grid.c,v 1.40 2010-02-11 18:18:29 druzus Exp $
+  * $Id: grid.c,v 1.41 2010-11-10 15:51:43 druzus Exp $
   *
   * HWGUI - Harbour Win32 GUI library source code:
   * HGrid class
@@ -11,30 +11,20 @@
   * Extended function Copyright 2006 Luiz Rafael Culik Guimaraes <luiz@xharbour.com.br>
   */
 
-#define _WIN32_IE      0x0500
-#define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
-
 #if defined(__POCC__) || defined(__XCC__)
 #include <unknwn.h>
 #endif
+#include <shlobj.h>
+#include "hwingui.h"
+#include <commctrl.h>
+#if defined(__DMC__)
+#include "missing.h"
+#endif
+#include "hbapiitm.h"
 
 #if defined(__MINGW32__) && !defined(CDRF_NOTIFYSUBITEMDRAW)
 #define CDRF_NOTIFYSUBITEMDRAW  0x00000020
 #endif
-
-#include <shlobj.h>
-
-#include <windows.h>
-#include <commctrl.h>
-
-#if defined(__DMC__)
-#include "missing.h"
-#endif
-
-#include "hbapi.h"
-#include "hbapiitm.h"
-#include "hwingui.h"
 
 #ifndef LVM_SORTITEMSEX
 #define LVM_SORTITEMSEX          (LVM_FIRST + 81)

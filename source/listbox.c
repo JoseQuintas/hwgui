@@ -1,5 +1,5 @@
 /*
- * $Id: listbox.c,v 1.13 2010-01-25 15:17:28 druzus Exp $
+ * $Id: listbox.c,v 1.14 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HList class
@@ -10,23 +10,13 @@
  * Vic McClung
 */
 
-#define HB_OS_WIN_32_USED
-
-#define _WIN32_WINNT 0x0400
-// #define OEMRESOURCE
-#include <windows.h>
-
+#include "hwingui.h"
 #if defined(__MINGW32__) || defined(__WATCOMC__)
 #include <prsht.h>
 #endif
-
-#include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include "item.api"
-#include "hwingui.h"
-
 
 HB_FUNC( LISTBOXADDSTRING )
 {

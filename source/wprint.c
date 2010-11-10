@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.30 2010-10-31 11:59:46 lfbasso Exp $
+ * $Id: wprint.c,v 1.31 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -8,14 +8,10 @@
  * www - http://kresin.belgorod.su
 */
 
-#define HB_OS_WIN_32_USED
-
-#define _WIN32_WINNT 0x0500
 #define OEMRESOURCE
-#include <windows.h>
+#include "hwingui.h"
 #include <commctrl.h>
 
-#include "hbapi.h"
 #include "hwingui.h"
 #include "hbapiitm.h"
 #include "hbvm.h"

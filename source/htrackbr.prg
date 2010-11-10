@@ -1,5 +1,5 @@
 /*
- * $Id: htrackbr.prg,v 1.17 2010-10-30 16:43:31 mlacecilia Exp $
+ * $Id: htrackbr.prg,v 1.18 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTrackBar class
@@ -151,15 +151,8 @@ METHOD GetValue() CLASS HTrackBar
 
 #pragma BEGINDUMP
 
-
-#define _WIN32_IE      0x0500
-#define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
-
-#include <windows.h>
+#include "hwingui.h"
 #include <commctrl.h>
-#include "guilib.h"
-#include "hbapi.h"
 
 HB_FUNC ( INITTRACKBAR )
 {

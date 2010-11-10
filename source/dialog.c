@@ -1,5 +1,5 @@
 /*
- * $Id: dialog.c,v 1.46 2010-09-05 22:48:43 andijahja Exp $
+ * $Id: dialog.c,v 1.47 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level dialog boxes functions
@@ -8,25 +8,18 @@
  * www - http://kresin.belgorod.su
 */
 
-#define HB_OS_WIN_32_USED
-
-#define _WIN32_WINNT 0x0400
 // #define OEMRESOURCE
-#include <windows.h>
+#include "hwingui.h"
 
 #if defined(__MINGW32__) || defined(__WATCOMC__)
 #include <prsht.h>
 #endif
-
 #if defined(__DMC__)
 #define GetWindowLongPtr GetWindowLong
 #endif
 
-#include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "item.api"
-#include "hwingui.h"
 
 #define  WM_PSPNOTIFY         WM_USER+1010
 

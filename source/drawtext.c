@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.28 2010-01-25 02:14:00 druzus Exp $
+ * $Id: drawtext.c,v 1.29 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
@@ -8,19 +8,12 @@
  * www - http://www.geocities.com/alkresin/
 */
 
-#define HB_OS_WIN_32_USED
-
-#define _WIN32_WINNT 0x0400
 #define OEMRESOURCE
-#include <windows.h>
+#include "hwingui.h"
 #include <commctrl.h>
-
-#include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include "item.api"
-#include "hwingui.h"
 
 HB_FUNC_EXTERN( HB_OEMTOANSI );
 HB_FUNC_EXTERN( HB_ANSITOOEM );
@@ -112,31 +105,31 @@ HB_FUNC( DRAWTEXT )
 HB_FUNC( GETTEXTMETRIC )
 {
    TEXTMETRIC tm;
-   PHB_ITEM aMetr = _itemArrayNew( 4 );
+   PHB_ITEM aMetr = hb_itemArrayNew( 4 );
    PHB_ITEM temp;
 
    GetTextMetrics( ( HDC ) HB_PARHANDLE( 1 ),   // handle of device context
          &tm                    // address of text metrics structure
           );
 
-   temp = _itemPutNL( NULL, tm.tmHeight );
-   _itemArrayPut( aMetr, 1, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, tm.tmHeight );
+   hb_itemArrayPut( aMetr, 1, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, tm.tmAveCharWidth );
-   _itemArrayPut( aMetr, 2, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, tm.tmAveCharWidth );
+   hb_itemArrayPut( aMetr, 2, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, tm.tmMaxCharWidth );
-   _itemArrayPut( aMetr, 3, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, tm.tmMaxCharWidth );
+   hb_itemArrayPut( aMetr, 3, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, tm.tmExternalLeading );
-   _itemArrayPut( aMetr, 4, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, tm.tmExternalLeading );
+   hb_itemArrayPut( aMetr, 4, temp );
+   hb_itemRelease( temp );
 
-   _itemReturn( aMetr );
-   _itemRelease( aMetr );
+   hb_itemReturn( aMetr );
+   hb_itemRelease( aMetr );
 }
 
 HB_FUNC( GETTEXTSIZE )
@@ -146,104 +139,104 @@ HB_FUNC( GETTEXTSIZE )
    HB_SIZE nLen;
    LPCTSTR lpText = HB_PARSTR( 2, &hText, &nLen );
    SIZE sz;
-   PHB_ITEM aMetr = _itemArrayNew( 2 );
+   PHB_ITEM aMetr = hb_itemArrayNew( 2 );
    PHB_ITEM temp;
 
    GetTextExtentPoint32( ( HDC ) HB_PARHANDLE( 1 ), lpText, nLen, &sz );
    hb_strfree( hText );
 
-   temp = _itemPutNL( NULL, sz.cx );
-   _itemArrayPut( aMetr, 1, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, sz.cx );
+   hb_itemArrayPut( aMetr, 1, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, sz.cy );
-   _itemArrayPut( aMetr, 2, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, sz.cy );
+   hb_itemArrayPut( aMetr, 2, temp );
+   hb_itemRelease( temp );
 
-   _itemReturn( aMetr );
-   _itemRelease( aMetr );
+   hb_itemReturn( aMetr );
+   hb_itemRelease( aMetr );
 }
 
 HB_FUNC( GETCLIENTRECT )
 {
    RECT rc;
-   PHB_ITEM aMetr = _itemArrayNew( 4 );
+   PHB_ITEM aMetr = hb_itemArrayNew( 4 );
    PHB_ITEM temp;
 
    GetClientRect( ( HWND ) HB_PARHANDLE( 1 ), &rc );
 
-   temp = _itemPutNL( NULL, rc.left );
-   _itemArrayPut( aMetr, 1, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, rc.left );
+   hb_itemArrayPut( aMetr, 1, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, rc.top );
-   _itemArrayPut( aMetr, 2, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, rc.top );
+   hb_itemArrayPut( aMetr, 2, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, rc.right );
-   _itemArrayPut( aMetr, 3, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, rc.right );
+   hb_itemArrayPut( aMetr, 3, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, rc.bottom );
-   _itemArrayPut( aMetr, 4, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, rc.bottom );
+   hb_itemArrayPut( aMetr, 4, temp );
+   hb_itemRelease( temp );
 
-   _itemReturn( aMetr );
-   _itemRelease( aMetr );
+   hb_itemReturn( aMetr );
+   hb_itemRelease( aMetr );
 }
 
 HB_FUNC( GETWINDOWRECT )
 {
    RECT rc;
-   PHB_ITEM aMetr = _itemArrayNew( 4 );
+   PHB_ITEM aMetr = hb_itemArrayNew( 4 );
    PHB_ITEM temp;
 
    GetWindowRect( ( HWND ) HB_PARHANDLE( 1 ), &rc );
 
-   temp = _itemPutNL( NULL, rc.left );
-   _itemArrayPut( aMetr, 1, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, rc.left );
+   hb_itemArrayPut( aMetr, 1, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, rc.top );
-   _itemArrayPut( aMetr, 2, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, rc.top );
+   hb_itemArrayPut( aMetr, 2, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, rc.right );
-   _itemArrayPut( aMetr, 3, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, rc.right );
+   hb_itemArrayPut( aMetr, 3, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, rc.bottom );
-   _itemArrayPut( aMetr, 4, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, rc.bottom );
+   hb_itemArrayPut( aMetr, 4, temp );
+   hb_itemRelease( temp );
 
-   _itemReturn( aMetr );
-   _itemRelease( aMetr );
+   hb_itemReturn( aMetr );
+   hb_itemRelease( aMetr );
 }
 
 HB_FUNC( GETCLIENTAREA )
 {
    PAINTSTRUCT *pps = ( PAINTSTRUCT * ) HB_PARHANDLE( 1 );
-   PHB_ITEM aMetr = _itemArrayNew( 4 );
+   PHB_ITEM aMetr = hb_itemArrayNew( 4 );
    PHB_ITEM temp;
 
-   temp = _itemPutNL( NULL, pps->rcPaint.left );
-   _itemArrayPut( aMetr, 1, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, pps->rcPaint.left );
+   hb_itemArrayPut( aMetr, 1, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, pps->rcPaint.top );
-   _itemArrayPut( aMetr, 2, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, pps->rcPaint.top );
+   hb_itemArrayPut( aMetr, 2, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, pps->rcPaint.right );
-   _itemArrayPut( aMetr, 3, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, pps->rcPaint.right );
+   hb_itemArrayPut( aMetr, 3, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNL( NULL, pps->rcPaint.bottom );
-   _itemArrayPut( aMetr, 4, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNL( NULL, pps->rcPaint.bottom );
+   hb_itemArrayPut( aMetr, 4, temp );
+   hb_itemRelease( temp );
 
-   _itemReturn( aMetr );
-   _itemRelease( aMetr );
+   hb_itemReturn( aMetr );
+   hb_itemRelease( aMetr );
 }
 
 HB_FUNC( SETTEXTCOLOR )
@@ -285,7 +278,7 @@ HB_FUNC( GETTEXTSIZE )
 
    HDC hdc = GetDC( (HWND)HB_PARHANDLE(1) );
    SIZE size;
-   PHB_ITEM aMetr = _itemArrayNew( 2 );
+   PHB_ITEM aMetr = hb_itemArrayNew( 2 );
    PHB_ITEM temp;
    void * hString;
 
@@ -296,16 +289,16 @@ HB_FUNC( GETTEXTSIZE )
    );
    hb_strfree( hString );
 
-   temp = _itemPutNI( NULL, size.cx );
-   _itemArrayPut( aMetr, 1, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNI( NULL, size.cx );
+   hb_itemArrayPut( aMetr, 1, temp );
+   hb_itemRelease( temp );
 
-   temp = _itemPutNI( NULL, size.cy );
-   _itemArrayPut( aMetr, 2, temp );
-   _itemRelease( temp );
+   temp = hb_itemPutNI( NULL, size.cy );
+   hb_itemArrayPut( aMetr, 2, temp );
+   hb_itemRelease( temp );
 
-   _itemReturn( aMetr );
-   _itemRelease( aMetr );
+   hb_itemReturn( aMetr );
+   hb_itemRelease( aMetr );
 
 }
 */

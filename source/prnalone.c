@@ -6,17 +6,13 @@
  * www - http://www.geocities.com/alkresin/
 */
 
-#define _WIN32_WINNT 0x0400
 #define OEMRESOURCE
-#include <windows.h>
+#include "hwingui.h"
 #include <commctrl.h>
 
-#include "hbapi.h"
-#include "guilib.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif
@@ -42,7 +38,9 @@ HB_FUNC( PRINTSETUP )
 
 HB_FUNC( OPENPRINTER )
 {
-   HB_RETHANDLE( CreateDC( NULL, hb_parc( 1 ), NULL, NULL ) );
+   void * hStr;
+   HB_RETHANDLE( CreateDC( NULL, HB_PARSTR( 1, &hStr, NULL ), NULL, NULL ) );
+   hb_strfree( hStr );
 }
 
 HB_FUNC( OPENDEFAULTPRINTER )
@@ -83,14 +81,18 @@ HB_FUNC( OPENDEFAULTPRINTER )
 
 HB_FUNC( STARTDOC )
 {
+   void * hStr;
    DOCINFO di;
+
    di.cbSize = sizeof( DOCINFO );
-   di.lpszDocName = hb_parc( 2 );
+   di.lpszDocName = HB_PARSTR( 2, &hStr, NULL );
    di.lpszOutput = NULL;
    di.lpszDatatype = NULL;
    di.fwType = 0;
 
    hb_retnl( ( LONG ) StartDoc( ( HDC ) HB_PARHANDLE( 1 ), &di ) );
+
+   hb_strfree( hStr );
 }
 
 HB_FUNC( ENDDOC )
@@ -161,9 +163,11 @@ HB_FUNC( GETDEVICEAREA )
 
 HB_FUNC( DRAWTEXT )
 {
-   const char *cText = hb_parc( 2 );
+   void * hText;
+   HB_SIZE nSize;
+   LPCTSTR lpText = HB_PARSTR( 2, &hText, &nSize );
 
-   if( cText )
+   if( lpText )
    {
       RECT rc;
 
@@ -172,9 +176,10 @@ HB_FUNC( DRAWTEXT )
       rc.right = hb_parni( 5 );
       rc.bottom = hb_parni( 6 );
 
-      DrawText( ( HDC ) HB_PARHANDLE( 1 ), // handle of device context 
-                cText,              // address of string 
-                hb_parclen( 2 ),    // number of characters in string 
+      DrawText( ( HDC ) HB_PARHANDLE( 1 ), // handle of device context
+                lpText,                    // address of string
+                nSize,                     // number of characters in string
                 &rc, hb_parni( 7 ) );
    }
+   hb_strfree( hText );
 }

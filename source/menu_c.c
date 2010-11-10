@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.50 2010-02-05 12:02:33 druzus Exp $
+ * $Id: menu_c.c,v 1.51 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions
@@ -8,21 +8,15 @@
  * www - http://kresin.belgorod.su
 */
 
-#define HB_OS_WIN_32_USED
-
-#define _WIN32_WINNT 0x0500
-#define WINVER 0x0500
 #define OEMRESOURCE
-#include <windows.h>
+#include "hwingui.h"
 #include <commctrl.h>
 #ifdef __DMC__
-#define MIIM_BITMAP	0x00000080
+#define MIIM_BITMAP     0x00000080
 #endif
-#include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include "hwingui.h"
 
 #define  FLAG_DISABLED   1
 

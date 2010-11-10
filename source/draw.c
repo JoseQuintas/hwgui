@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.67 2010-10-13 18:30:41 lfbasso Exp $
+ * $Id: draw.c,v 1.68 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
@@ -8,23 +8,15 @@
  * www - http://kresin.belgorod.su
 */
 
-#define HB_OS_WIN_32_USED
-
-#define _WIN32_WINNT 0x0500
 #define OEMRESOURCE
 #ifdef __DMC__
 #define __DRAW_C__
 #endif
-
-#include <windows.h>
-
-#include "hbapi.h"
+#include "hwingui.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include "item.api"
 #include "missing.h"
-#include "hwingui.h"
 
 #if defined( __BORLANDC__ ) && __BORLANDC__ == 0x0550
 #ifdef __cplusplus
@@ -49,6 +41,10 @@ BOOL Array2Rect( PHB_ITEM aRect, RECT * rc )
       rc->right = hb_arrayGetNL( aRect, 3 );
       rc->bottom = hb_arrayGetNL( aRect, 4 );
       return TRUE;
+   }
+   else
+   {
+      rc->left = rc->top = rc->right = rc->bottom = 0;
    }
    return FALSE;
 }
@@ -368,7 +364,7 @@ HB_FUNC( DRAWBITMAP )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
-   DWORD dwraster = ( ISNIL( 3 ) ) ? SRCCOPY : hb_parnl( 3 );
+   DWORD dwraster = ( ISNIL( 3 ) ) ? SRCCOPY : ( DWORD ) hb_parnl( 3 );
    HBITMAP hBitmap = ( HBITMAP ) HB_PARHANDLE( 2 );
    BITMAP bitmap;
    int nWidthDest = ( hb_pcount(  ) >= 5 && !ISNIL( 6 ) ) ? hb_parni( 6 ) : 0;
@@ -469,7 +465,7 @@ HB_FUNC( SPREADBITMAP )
    HDC hDC =
          ISPOINTER( 1 ) ? ( HDC ) HB_PARHANDLE( 1 ) : ( HDC ) hb_parnl( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
-   DWORD dwraster = ( ISNIL( 4 ) ) ? SRCCOPY : hb_parnl( 4 );
+   DWORD dwraster = ( ISNIL( 4 ) ) ? SRCCOPY : ( DWORD ) hb_parnl( 4 );
    HBITMAP hBitmap = ( HBITMAP ) HB_PARHANDLE( 3 );
    BITMAP bitmap;
    RECT rc;
@@ -501,7 +497,7 @@ HB_FUNC( CENTERBITMAP )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
-   DWORD dwraster = ( ISNIL( 4 ) ) ? SRCCOPY : hb_parnl( 4 );
+   DWORD dwraster = ( ISNIL( 4 ) ) ? SRCCOPY : ( DWORD ) hb_parnl( 4 );
    HBITMAP hBitmap = ( HBITMAP ) HB_PARHANDLE( 3 );
    BITMAP bitmap;
    RECT rc;

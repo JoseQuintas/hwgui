@@ -1,5 +1,5 @@
 /*
- *$Id: message.c,v 1.17 2010-02-06 02:06:43 druzus Exp $
+ *$Id: message.c,v 1.18 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level messages functions
@@ -8,12 +8,6 @@
  * www - http://www.geocities.com/alkresin/
 */
 
-#define HB_OS_WIN_32_USED
-
-#define _WIN32_WINNT 0x0400
-#include <windows.h>
-
-#include "hbapi.h"
 #include "hwingui.h"
 
 static int s_msgbox( UINT uType )

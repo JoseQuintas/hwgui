@@ -1,11 +1,5 @@
-#define _WIN32_IE      0x0500
-#define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
-
-#include <windows.h>
-#include <commctrl.h>
-#include "hbapi.h"
 #include "hwingui.h"
+#include <commctrl.h>
 
 HB_FUNC( ANIMATE_CREATE )
 {
@@ -20,7 +14,9 @@ HB_FUNC( ANIMATE_CREATE )
 
 HB_FUNC( ANIMATE_OPEN )
 {
-   Animate_Open( ( HWND ) HB_PARHANDLE( 1 ), hb_parc( 2 ) );
+   void * hStr;
+   Animate_Open( ( HWND ) HB_PARHANDLE( 1 ), HB_PARSTR( 2, &hStr, NULL ) );
+   hb_strfree( hStr );
 }
 
 HB_FUNC( ANIMATE_PLAY )

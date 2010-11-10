@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.92 2010-09-05 22:48:43 andijahja Exp $
+ * $Id: window.c,v 1.93 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -8,22 +8,17 @@
  * www - http://kresin.belgorod.su
 */
 
-#define HB_OS_WIN_32_USED
-
-#define _WIN32_WINNT 0x0400
-#define _WIN32_IE    0x0400
 #define OEMRESOURCE
-#include <windows.h>
+#include "hwingui.h"
 #include <commctrl.h>
 #if defined(__DMC__)
 #include "missing.h"
 #endif
-#include "hbapi.h"
+
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include "item.api"
 #if !defined(__XHARBOUR__)
 #include "hbapicls.h"
 #endif
@@ -31,7 +26,6 @@
 #include <math.h>
 #include <float.h>
 #include <limits.h>
-#include "hwingui.h"
 
 #define  FIRST_MDICHILD_ID     501
 #define  WND_MDICHILD          3

@@ -1,5 +1,5 @@
 /*
- * $Id: media_c.c,v 1.17 2010-03-16 16:27:03 lculik Exp $
+ * $Id: media_c.c,v 1.18 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level media functions
@@ -8,18 +8,12 @@
  * www - http://www.geocities.com/alkresin/
 */
 
-#define HB_OS_WIN_32_USED
-
-#define _WIN32_WINNT 0x0400
-#define OEMRESOURCE
-#include <windows.h>
+#include "hwingui.h"
 #include <commctrl.h>
 
-#include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include "hwingui.h"
 
 /*
  *  PlaySound( cName, lSync, lLoop )

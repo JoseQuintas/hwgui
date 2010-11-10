@@ -1,5 +1,5 @@
 /*
- * $Id: cxshade.c,v 1.11 2009-12-18 02:07:05 andijahja Exp $
+ * $Id: cxshade.c,v 1.12 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level functions for special drawing effects
@@ -11,11 +11,8 @@
  * www - http://kresin.belgorod.su
 */
 
-#include "windows.h"
-#include "hbapi.h"
+#include "hwingui.h"
 #include "hbapiitm.h"
-
-#include "guilib.h"
 
 #define STATE_DEFAULT    1
 #define STATE_SELECTED   2

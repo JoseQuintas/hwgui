@@ -1,18 +1,13 @@
 // Registry interface
 
-#define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
-
-#include <windows.h>
+#include "hwingui.h"
 #include <shlobj.h>
 //#include <commctrl.h>
 
-#include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
 #include "winreg.h"
-#include "hwingui.h"
 
 #if defined(__DMC__)
 __inline long PtrToLong( const void *p )

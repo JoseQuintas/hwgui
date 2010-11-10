@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.25 2010-10-31 11:59:46 lfbasso Exp $
+ * $Id: hriched.prg,v 1.26 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class
@@ -17,19 +17,19 @@ CLASS HRichEdit INHERIT HControl
 CLASS VAR winclass   INIT "RichEdit20A"
    DATA lChanged    INIT .F.
    DATA lSetFocus   INIT .T.
-	 DATA lAllowTabs  INIT .F.
-	 DATA lctrltab    HIDDEN
+   DATA lAllowTabs  INIT .F.
+   DATA lctrltab    HIDDEN
    DATA lReadOnly  INIT .F.
- 	 DATA Col        INIT 0
+   DATA Col        INIT 0
    DATA Line       INIT 0
    DATA LinesTotal INIT 0
-	 DATA SelStart   INIT 0
+   DATA SelStart   INIT 0
    DATA SelText    INIT 0
    DATA SelLength  INIT 0
-   
+
    DATA hdcPrinter
-   
-	 DATA bChange
+
+   DATA bChange
 
    METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip,;

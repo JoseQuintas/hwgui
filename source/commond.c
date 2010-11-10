@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.37 2010-01-27 09:18:35 druzus Exp $
+ * $Id: commond.c,v 1.38 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level common dialogs functions
@@ -8,16 +8,10 @@
  * www - http://kresin.belgorod.su
 */
 
-#define HB_OS_WIN_32_USED
-
-#define _WIN32_WINNT 0x0400
 #define OEMRESOURCE
-#include <windows.h>
-
-#include "hbapi.h"
+#include "hwingui.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "hwingui.h"
 
 HB_FUNC( SELECTFONT )
 {
@@ -350,13 +344,6 @@ HB_FUNC( HDGETSERIAL )
    hb_retnl( Get_SerialNumber( HB_PARSTR( 1, &hStr, NULL ) ) );
    hb_strfree( hStr );
 }
-
-#define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
-#include <windows.h>
-#include "hbapi.h"
-#include "hbapiitm.h"
-#include "hbapi.h"
 
 /*
  The functions added by extract for the Minigui Lib Open Source project

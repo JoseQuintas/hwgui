@@ -1,5 +1,5 @@
 /*
- * $Id: c_ipaddr.c,v 1.15 2010-01-25 02:14:00 druzus Exp $
+ * $Id: c_ipaddr.c,v 1.16 2010-11-10 15:51:43 druzus Exp $
 */
 
 /*----------------------------------------------------------------------------
@@ -42,17 +42,14 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#define _WIN32_IE      0x0500
-#define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
+#include "hwingui.h"
+
 #if defined(__POCC__) || defined(__XCC__)
 #include <unknwn.h>
 #endif
 #include <shlobj.h>
 
-#include <windows.h>
 #include "winreg.h"
-#include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
@@ -60,7 +57,6 @@
 #if defined(__DMC__)
 #include "missing.h"
 #endif
-#include "guilib.h"
 
 HB_FUNC_EXTERN( HWG_INITCOMMONCONTROLSEX );
 

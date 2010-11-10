@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.62 2010-07-04 02:10:27 lfbasso Exp $
+ * $Id: misc.c,v 1.63 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Miscellaneous functions
@@ -8,11 +8,8 @@
  * www - http://www.geocities.com/alkresin/
 */
 
-#define HB_OS_WIN_32_USED
-
-#define _WIN32_WINNT 0x0400
 #define OEMRESOURCE
-#include <windows.h>
+#include "hwingui.h"
 #include <commctrl.h>
 #include <math.h>
 
@@ -21,7 +18,6 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 
-#include "hwingui.h"
 #include "missing.h"
 
 void writelog( char *s )
@@ -57,58 +53,70 @@ HB_FUNC( RELEASECAPTURE )
 
 HB_FUNC( COPYSTRINGTOCLIPBOARD )
 {
-   HGLOBAL hglbCopy;
-   char *lptstrCopy;
-   const char *cStr = hb_parc( 1 );
-   int nLen = strlen( cStr );
-
-   if( !OpenClipboard( GetActiveWindow() ) )
-      return;
-
-   EmptyClipboard();
-
-   hglbCopy = GlobalAlloc( GMEM_DDESHARE, ( nLen + 1 ) * sizeof( TCHAR ) );
-
-   if( hglbCopy == NULL )
+   if( OpenClipboard( GetActiveWindow() ) )
    {
+      HGLOBAL hglbCopy;
+      char *lptstrCopy;
+      void * hStr;
+      HB_SIZE nLen;
+      LPCTSTR lpStr;
+
+      EmptyClipboard();
+
+      lpStr = HB_PARSTRDEF( 1, &hStr, &nLen );
+      hglbCopy = GlobalAlloc( GMEM_DDESHARE, ( nLen + 1 ) * sizeof( TCHAR ) );
+      if( hglbCopy != NULL )
+      {
+         // Lock the handle and copy the text to the buffer.
+         lptstrCopy = ( char * ) GlobalLock( hglbCopy );
+         memcpy( lptstrCopy, lpStr, nLen * sizeof( TCHAR ) );
+         lptstrCopy[ nLen ] = 0;       // null character
+         GlobalUnlock( hglbCopy );
+         hb_strfree( hStr );
+
+         // Place the handle on the clipboard.
+#ifdef UNICODE
+         SetClipboardData( CF_UNICODETEXT, hglbCopy );
+#else
+         SetClipboardData( CF_TEXT, hglbCopy );
+#endif
+      }
       CloseClipboard();
-      return;
    }
-
-   // Lock the handle and copy the text to the buffer.
-
-   // TOFIX: it's not UNICODE safe code
-   lptstrCopy = ( char * ) GlobalLock( hglbCopy );
-   memcpy( lptstrCopy, cStr, nLen * sizeof( TCHAR ) );
-   lptstrCopy[nLen] = ( TCHAR ) 0;      // null character
-   GlobalUnlock( hglbCopy );
-
-   // Place the handle on the clipboard.
-   SetClipboardData( CF_TEXT, hglbCopy );
-
-   CloseClipboard();
 }
 
 HB_FUNC( GETCLIPBOARDTEXT )
 {
-   HWND hwnd;
-   HANDLE hData;
-   char *buffer;
+   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   LPTSTR lpText = NULL;
 
-   hwnd = ( HWND ) hb_parnl( 1 );
-
-   if( !OpenClipboard( hwnd ) )
-      hb_retc( "" );
-   else
+   if( OpenClipboard( hWnd ) )
    {
-      // TOFIX: it's not UNICODE safe code
-      hData = GetClipboardData( CF_TEXT );
-      buffer = ( char * ) GlobalLock( hData );
-
-      GlobalUnlock( hData );
+#ifdef UNICODE
+      HGLOBAL hglb = GetClipboardData( CF_UNICODETEXT );
+#else
+      HGLOBAL hglb = GetClipboardData( CF_TEXT );
+#endif
+      if( hglb )
+      {
+         LPVOID lpMem = GlobalLock( hglb );
+         if( lpMem )
+         {
+            HB_SIZE nSize = ( HB_SIZE ) GlobalSize( hglb );
+            if( nSize )
+            {
+               lpText = ( LPTSTR ) hb_xgrab( nSize + 1 );
+               memcpy( lpText, lpMem, nSize );
+               lpText[ nSize ] = 0;
+            }
+            ( void ) GlobalUnlock( hglb );
+         }
+      }
       CloseClipboard();
-      hb_retc( buffer );
    }
+   HB_RETSTR( lpText );
+   if( lpText )
+      hb_xfree( lpText );
 }
 
 HB_FUNC( GETSTOCKOBJECT )

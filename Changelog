@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1324 2010-10-31 15:33:26 mlacecilia Exp $
+ * $Id: Changelog,v 1.1325 2010-11-10 15:51:43 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,71 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-11-10 16:51 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/animat.c
+    ! fixed Animate_Open() for UNICODE builds
+
+  * hwgui/source/control.c
+    ! fixed wrongly used STR API in place were char * string should
+      be retrieved from HVM item.
+
+  * hwgui/source/draw.c
+    * pacified warnings
+
+  * hwgui/source/drawtext.c
+    * replaced _item*() functions with hb_item*() ones
+
+  * hwgui/source/hriched.prg
+    * replaced TABs with SPACEs
+
+  * hwgui/source/misc.c
+    ! fixed COPYSTRINGTOCLIPBOARD() and GETCLIPBOARDTEXT() to work
+      with UNICODE builds
+
+  * hwgui/source/prnalone.c
+    ! fixed to work with UNICODE builds
+
+  * hwgui/source/richedit.c
+    ! fixed CREATERICHEDIT() to work with UNICODE builds
+
+  * hwgui/source/shellapi.c
+    ! fixed possible GPF in SELECTFOLDER() function
+    ! fixed memory leak in SELECTFOLDER() function
+
+  * hwgui/include/hwingui.h
+    * set _WIN32_WINNT, _WIN32_IE and WINVER in one place before
+      #include <windows.h>
+
+  * hwgui/source/animat.c
+  * hwgui/source/c_ipaddr.c
+  * hwgui/source/commond.c
+  * hwgui/source/control.c
+  * hwgui/source/cxshade.c
+  * hwgui/source/dialog.c
+  * hwgui/source/draw.c
+  * hwgui/source/drawtext.c
+  * hwgui/source/freeimg.c
+  * hwgui/source/grid.c
+  * hwgui/source/listbox.c
+  * hwgui/source/media_c.c
+  * hwgui/source/menu_c.c
+  * hwgui/source/message.c
+  * hwgui/source/misc.c
+  * hwgui/source/nice.c
+  * hwgui/source/pager.c
+  * hwgui/source/prnalone.c
+  * hwgui/source/resource.c
+  * hwgui/source/richedit.c
+  * hwgui/source/shellapi.c
+  * hwgui/source/theme.c
+  * hwgui/source/window.c
+  * hwgui/source/winreg.c
+  * hwgui/source/wprint.c
+  * hwgui/source/barcode.prg
+  * hwgui/source/hmonthc.prg
+  * hwgui/source/htrackbr.prg
+    * cleaned windows header including and version setting
 
 2010-10-31 16:35 UTC+0100 Maurizio la Cecilia <m.lacecilia at gmail.com>
   * Changelog

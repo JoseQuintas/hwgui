@@ -1,5 +1,5 @@
 /*
- * $Id: shellapi.c,v 1.18 2010-02-08 09:59:02 druzus Exp $
+ * $Id: shellapi.c,v 1.19 2010-11-10 15:51:43 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Shell API wrappers
@@ -8,16 +8,11 @@
  * www - http://kresin.belgorod.su
 */
 
-#define HB_OS_WIN_32_USED
-
-#define _WIN32_WINNT 0x0400
-// #define OEMRESOURCE
-#include <windows.h>
+#include "hwingui.h"
 #include <shlobj.h>
 
 #include "hbapi.h"
 #include "hbapiitm.h"
-#include "hwingui.h"
 
 #define  ID_NOTIFYICON   1
 #define  WM_NOTIFYICON   WM_USER+1000
@@ -40,6 +35,7 @@ HB_FUNC( SELECTFOLDER )
 {
    BROWSEINFO bi;
    TCHAR lpBuffer[ MAX_PATH ];
+   LPCTSTR lpResult = NULL;
    LPITEMIDLIST pidlBrowse;     // PIDL selected by user 
    void * hTitle;
 
@@ -54,8 +50,13 @@ HB_FUNC( SELECTFOLDER )
 
    // Browse for a folder and return its PIDL. 
    pidlBrowse = SHBrowseForFolder( &bi );
-   SHGetPathFromIDList( pidlBrowse, lpBuffer );
-   HB_RETSTR( lpBuffer );
+   if( pidlBrowse != NULL )
+   {
+      if( SHGetPathFromIDList( pidlBrowse, lpBuffer ) )
+         lpResult = lpBuffer;
+      CoTaskMemFree( pidlBrowse );
+   }
+   HB_RETSTR( lpResult );
    hb_strfree( hTitle );
 }
 

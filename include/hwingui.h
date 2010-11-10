@@ -1,6 +1,18 @@
 /*
- *$Id: hwingui.h,v 1.9 2010-02-15 13:18:38 druzus Exp $
+ *$Id: hwingui.h,v 1.10 2010-11-10 15:51:43 druzus Exp $
  */
+
+#define HB_OS_WIN_32_USED
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT   0x0502
+#endif
+#ifndef _WIN32_IE
+   #define _WIN32_IE      0x0501
+#endif
+#ifndef WINVER
+    #define WINVER  0x0500
+#endif
 
 #include <windows.h>
 #include "guilib.h"

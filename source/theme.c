@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.28 2010-11-10 15:51:43 druzus Exp $
+ * $Id: theme.c,v 1.29 2010-11-10 19:15:42 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions
@@ -14,6 +14,7 @@
 #if defined(__DMC__)
 #include "missing.h"
 #endif
+#include "hbapiitm.h"
 
 //#include <tmschema.h>
 #ifndef BS_TYPEMASK
@@ -76,10 +77,6 @@
 #define BUTTON_BTNPRESSED      0x40
 #define BUTTON_UNKNOWN2        0x20
 #define BUTTON_UNKNOWN3        0x10
-
-#include "hbapi.h"
-#include "hwingui.h"
-#include "hbapiitm.h"
 
 BOOL Themed = FALSE;
 HMODULE m_hThemeDll;

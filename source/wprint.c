@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.31 2010-11-10 15:51:43 druzus Exp $
+ * $Id: wprint.c,v 1.32 2010-11-10 19:15:42 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions
@@ -12,7 +12,6 @@
 #include "hwingui.h"
 #include <commctrl.h>
 
-#include "hwingui.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"

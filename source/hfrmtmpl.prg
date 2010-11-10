@@ -1,5 +1,5 @@
 /*
- * $Id: hfrmtmpl.prg,v 1.72 2010-10-30 16:43:31 mlacecilia Exp $
+ * $Id: hfrmtmpl.prg,v 1.73 2010-11-10 19:15:42 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HFormTmpl Class
@@ -576,12 +576,11 @@ STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl, cName )
 
    RETURN arrExe
 
-STATIC FUNCTION CompileErr( e, stroka )
+STATIC PROCEDURE CompileErr( e, stroka )
 
    MsgStop( ErrorMessage( e ) + Chr( 10 ) + Chr( 13 ) + "in" + Chr( 10 ) + Chr( 13 ) + ;
             AllTrim( stroka ), "Script compiling error" )
    BREAK( nil )
-   RETURN .T.
 
 STATIC FUNCTION ReadCtrl( oCtrlDesc, oContainer, oForm )
    LOCAL oCtrl := HCtrlTmpl():New( oContainer )
@@ -636,11 +635,11 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
       LOCAL cKey := ""
    #endif
 //
-   MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop
-   MEMVAR onInit, onSize, onPaint, onEnter, onGetfocus, onLostfocus, lNoVScroll, lAppend, lAutoedit, bUpdate, onKeyDown, onPosChg
+   MEMVAR oPrnt, nId, nStyle, nLeft, nTop
+   MEMVAR onInit, lNoVScroll, lAppend, lAutoedit
    MEMVAR nWidth, nHeight, oFont, lNoBorder, bSetGet, ctoolTip
-   MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs, tmp_nSheet
-   MEMVAR aImages, lEditLabels, aParts , Link
+   MEMVAR name, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs, tmp_nSheet
+   MEMVAR aParts
    MEMVAR lEnabled, shadeID, palette, granularity, highlight, coloring, shcolor
 // nando
    MEMVAR fBlock, cHeader, nJusHead, lEdit, nJusLine, bWhen, bValid, ClrBlck, HeadClick

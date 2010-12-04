@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.93 2010-11-10 15:51:43 druzus Exp $
+ * $Id: window.c,v 1.94 2010-12-04 13:35:44 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -17,6 +17,7 @@
 
 #include "hbapifs.h"
 #include "hbapiitm.h"
+#include "hbapicdp.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #if !defined(__XHARBOUR__)
@@ -910,6 +911,16 @@ void hwg_strfree( void * hString )
       hb_xfree( hString );
 }
 #endif
+
+HB_FUNC( HWG_SETUTF8 )
+{
+#ifndef __XHARBOUR__
+   PHB_CODEPAGE cdp = hb_cdpFindExt( "UTF8" );
+
+   if( cdp )
+      hb_vmSetCDP( cdp );
+#endif
+}
 
 HB_FUNC( EXITPROCESS )
 {

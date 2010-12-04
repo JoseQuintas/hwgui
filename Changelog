@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1327 2010-11-10 22:13:23 druzus Exp $
+ * $Id: Changelog,v 1.1328 2010-12-04 13:35:44 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-12-04 14:35 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/window.c
+    + added new function HWG_SETUTF8() which sets UTF8 as base CP in
+      Harbour VM.
+      Now Harbour users who want to use HWGUI with applications using
+      UTF8 strings can easy make it using HWGUI compiled with UNICODE
+      macro. It's enough to add at the beginning of executed PRG code:
+         HWG_SETUTF8()
+      which informs Harbour VM that strings in user application use
+      UTF8 encoding.
+      To compile HWGUI with UNICODE macro is enough to execute:
+         hbmk2 hbxml.hbp hwg_qhtm.hbp hwgui.hbp procmisc.hbp -cflag=-DUNICODE
 
 2010-11-10 23:13 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/grid.c

@@ -1,4 +1,4 @@
-# $Id: makefile.gcc,v 1.28 2009-04-13 08:56:37 alkresin Exp $
+# $Id: makefile.gcc,v 1.29 2010-12-15 18:26:28 lculik Exp $
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 
@@ -11,7 +11,7 @@ PROCMISC_DIR = source\procmisc
 HBXML_DIR    = source\xml
 HWGQHTM_DIR  = source\qhtm
 
-CFLAGS = -Wall -mno-cygwin -O3 -march=pentium
+CFLAGS = -Wall -mno-cygwin -O3 -march=pentium -DHWG_USE_POINTER_ITEM
 
 all: \
    $(LIB_DIR)/libhwgui.a \

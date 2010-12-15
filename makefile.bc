@@ -1,4 +1,4 @@
-# $Id: makefile.bc,v 1.45 2009-04-13 08:56:37 alkresin Exp $
+# $Id: makefile.bc,v 1.46 2010-12-15 18:26:28 lculik Exp $
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -63,7 +63,7 @@ ACTIVEX_DIR  = source\activex
 # C compiler definition and C flags. These should never have to change.
 #
 
-CFLAGS               = -I$(INCLUDE_DIR) -5 -6 -d $(C_USR) $(CFLAGS) -D__WIN32__ -g255
+CFLAGS               = -I$(INCLUDE_DIR) -5 -6 -d $(C_USR) $(CFLAGS) -D__WIN32__ -g255 -DHWG_USE_POINTER_ITEM
 #CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__ -g255
 !if $d(HB_MULTI_GT)
 CFLAGS               = $(CFLAGS) -DHB_MULTI_GT

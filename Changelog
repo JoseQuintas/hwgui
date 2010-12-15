@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1329 2010-12-15 18:21:44 lculik Exp $
+ * $Id: Changelog,v 1.1330 2010-12-15 18:26:28 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,8 +7,15 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2010-12-15 16:30 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
+  * makefile.bc
+    makefile.gcc
+    makefile.pc
+    makefile.vc
+    makefile.wc
+    ! cflags updated to use -DHWG_USE_POINTER_ITEM
 
-2010-12-15 16:20 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com
+2010-12-15 16:20 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/htab.prg
     ! fixed ShowDisablePage() was comparing an pointer to numeric
     ! To developer, the LPARAM parameter on onevent method passed as 

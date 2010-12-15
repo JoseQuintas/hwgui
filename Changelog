@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1328 2010-12-04 13:35:44 druzus Exp $
+ * $Id: Changelog,v 1.1329 2010-12-15 18:21:44 lculik Exp $
  */
 
 /* Use this format for the entry headers:
@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-12-15 16:20 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com
+  * source/htab.prg
+    ! fixed ShowDisablePage() was comparing an pointer to numeric
+    ! To developer, the LPARAM parameter on onevent method passed as 
+      parameter to other function/method, should use PtrToulong( param) before comparing numeric values
+      
 2010-12-04 14:35 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/window.c
     + added new function HWG_SETUTF8() which sets UTF8 as base CP in

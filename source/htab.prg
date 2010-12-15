@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.72 2010-10-30 16:43:31 mlacecilia Exp $
+ *$Id: htab.prg,v 1.73 2010-12-15 18:21:44 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -781,7 +781,7 @@ METHOD ShowDisablePage( nPageEnable ) CLASS HTab
    IF ! isWindowVisible(::handle) .OR. ( Ascan( ::Pages, {| p | ! p:lEnabled } ) = 0  .AND. nPageEnable = Nil )
       RETURN - 1
    ENDIF
-   IF  nPageEnable != Nil .AND.  nPageEnable > 128
+   IF  nPageEnable != Nil .AND.  PtrtoUlong( nPageEnable ) > 128
       pt[ 1 ] = LOWORD( nPageEnable )
       pt[ 2 ] = HIWORD( nPageEnable )
    ENDIF

@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.73 2010-12-15 18:21:44 lculik Exp $
+ *$Id: htab.prg,v 1.74 2010-12-16 11:16:00 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
@@ -786,7 +786,7 @@ METHOD ShowDisablePage( nPageEnable ) CLASS HTab
       pt[ 2 ] = HIWORD( nPageEnable )
    ENDIF
    FOR i = 1 to Len( ::Pages )
-      IF ! ::pages[ i ]:enabled .OR. i = nPageEnable
+      IF ! ::pages[ i ]:enabled .OR. i = PtrtoUlong(nPageEnable)
          //client_rect := ::Pages[ i ]:aItemPos
          client_rect := TabItemPos( ::Handle, i - 1 )
          IF ( PtInRect( client_rect, pt ) )

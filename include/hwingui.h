@@ -1,5 +1,5 @@
 /*
- *$Id: hwingui.h,v 1.10 2010-11-10 15:51:43 druzus Exp $
+ *$Id: hwingui.h,v 1.11 2010-12-19 15:45:27 druzus Exp $
  */
 
 #define HB_OS_WIN_32_USED
@@ -29,27 +29,59 @@
    #endif
 #endif
 
-#if !defined( __XHARBOUR__ ) && ( __HARBOUR__ - 0 > 0x020000 )
+#if !defined( __XHARBOUR__ ) && ( __HARBOUR__ - 0 > 0x020000 ) && \
+    !defined( HB_EMULATE_STR_API )
    #include "hbwinuni.h"
    #include "hbwince.h"
    #define HB_HAS_STR_FUNC
 #else
    #undef HB_HAS_STR_FUNC
 
-   #define HB_PARSTR( n, h, len )                hwg_strget( hb_param( n, HB_IT_ANY ), h, len )
-   #define HB_PARSTRDEF( n, h, len )             hwg_strnull( hwg_strget( hb_param( n, HB_IT_ANY ), h, len ) )
-   #define HB_RETSTR( str )                      hb_retc( str )
-   #define HB_RETSTRLEN( str, len )              hb_retclen( str, len )
-   #define HB_STORSTR( str, n )                  hb_storc( str, n )
-   #define HB_STORSTRLEN( str, len, n )          hb_storclen( str, len, n )
-   #define HB_ARRAYGETSTR( arr, n, h, len )      hwg_strget( hb_arrayGetItemPtr( arr, n ), h, len )
-   #define HB_ARRAYSETSTR( arr, n, str )         hb_arraySetC( arr, n, str )
-   #define HB_ARRAYSETSTRLEN( arr, n, str, len ) hb_arraySetCL( arr, n, str, len )
-   #define HB_ITEMCOPYSTR( itm, str, len )       hwg_strcopy( itm, str, len )
-   #define HB_ITEMGETSTR( itm, h, len )          hwg_strget( itm, h, len )
-   #define HB_ITEMPUTSTR( itm, str )             hb_itemPutC( itm, str )
-   #define HB_ITEMPUTSTRLEN( itm, str, len )     hb_itemPutCL( itm, str, len )
-   #define HB_STRUNSHARE( h, str, len )          hwg_strunshare( h, str, len )
+   #if !defined( HB_EMULATE_STR_API ) && defined( UNICODE )
+      #define HB_EMULATE_STR_API
+   #endif
+
+   #if defined( HB_EMULATE_STR_API ) && defined( UNICODE )
+      #define HB_PARSTR( n, h, len )                hwg_wstrget( hb_param( n, HB_IT_ANY ), h, len )
+      #define HB_PARSTRDEF( n, h, len )             hwg_wstrnull( hwg_wstrget( hb_param( n, HB_IT_ANY ), h, len ) )
+      #define HB_RETSTR( str )                      hwg_wstrset( hb_param( -1, HB_IT_ANY ), str )
+      #define HB_RETSTRLEN( str, len )              hwg_wstrlenset( hb_param( -1, HB_IT_ANY ), str, len )
+      #define HB_STORSTR( str, n )                  hwg_wstrset( hb_param( n, HB_IT_BYREF ), str )
+      #define HB_STORSTRLEN( str, len, n )          hwg_wstrlenset( hb_param( n, HB_IT_BYREF ), str, len )
+      #define HB_ARRAYGETSTR( arr, n, h, len )      hwg_wstrget( hb_arrayGetItemPtr( arr, n ), h, len )
+      #define HB_ARRAYSETSTR( arr, n, str )         hwg_wstrset( hb_arrayGetItemPtr( arr, n ), str )
+      #define HB_ARRAYSETSTRLEN( arr, n, str, len ) hwg_wstrlenset( hb_arrayGetItemPtr( arr, n ), str, len )
+      #define HB_ITEMCOPYSTR( itm, str, len )       hwg_wstrcopy( itm, str, len )
+      #define HB_ITEMGETSTR( itm, h, len )          hwg_wstrget( itm, h, len )
+      #define HB_ITEMPUTSTR( itm, str )             hwg_wstrput( itm, str )
+      #define HB_ITEMPUTSTRLEN( itm, str, len )     hwg_wstrlenput( itm, str, len )
+      #define HB_STRUNSHARE( h, str, len )          hwg_wstrunshare( h, str, len )
+      #define hb_strfree( h )                       hwg_wstrfree( h )
+   #else
+      #define HB_PARSTR( n, h, len )                hwg_strget( hb_param( n, HB_IT_ANY ), h, len )
+      #define HB_PARSTRDEF( n, h, len )             hwg_strnull( hwg_strget( hb_param( n, HB_IT_ANY ), h, len ) )
+      #define HB_RETSTR( str )                      hb_retc( str )
+      #define HB_RETSTRLEN( str, len )              hb_retclen( str, len )
+      #define HB_STORSTR( str, n )                  hb_storc( str, n )
+      #define HB_STORSTRLEN( str, len, n )          hb_storclen( str, len, n )
+      #define HB_ARRAYGETSTR( arr, n, h, len )      hwg_strget( hb_arrayGetItemPtr( arr, n ), h, len )
+      #define HB_ARRAYSETSTR( arr, n, str )         hb_arraySetC( arr, n, str )
+      #define HB_ARRAYSETSTRLEN( arr, n, str, len ) hb_arraySetCL( arr, n, str, len )
+      #define HB_ITEMCOPYSTR( itm, str, len )       hwg_strcopy( itm, str, len )
+      #define HB_ITEMGETSTR( itm, h, len )          hwg_strget( itm, h, len )
+      #define HB_ITEMPUTSTR( itm, str )             hb_itemPutC( itm, str )
+      #define HB_ITEMPUTSTRLEN( itm, str, len )     hb_itemPutCL( itm, str, len )
+      #define HB_STRUNSHARE( h, str, len )          hwg_strunshare( h, str, len )
+      #define hb_strfree( h )                       hwg_strfree( h )
+
+      /* hack to pacify warning in old [x]Harbour versions which wrongly
+       * defined some functions using strings
+       */
+      #if defined( __XHARBOUR__ ) || ( __HARBOUR__ - 0  == 0 )
+         #undef HB_STORSTR
+         #define HB_STORSTR( str, n )                  hb_storc( ( char * ) str, n )
+      #endif
+   #endif
 
    HB_EXTERN_BEGIN
    extern const char *  hwg_strnull( const char * str );
@@ -57,22 +89,24 @@
    extern HB_SIZE       hwg_strcopy( PHB_ITEM pItem, char * pStr, HB_SIZE ulLen );
    extern char *        hwg_strunshare( void ** phStr, const char * pStr, HB_SIZE ulLen );
    extern void          hwg_strfree( void * hString );
+   #if defined( HB_EMULATE_STR_API )
+      extern const wchar_t *  hwg_wstrnull( const wchar_t * str );
+      extern const wchar_t *  hwg_wstrget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pulLen );
+      extern PHB_ITEM         hwg_wstrput( PHB_ITEM pItem, const wchar_t * pStr );
+      extern void             hwg_wstrset( PHB_ITEM pItem, const wchar_t * pStr );
+      extern PHB_ITEM         hwg_wstrlenput( PHB_ITEM pItem, const wchar_t * pStr, HB_SIZE ulLen );
+      extern void             hwg_wstrlenset( PHB_ITEM pItem, const wchar_t * pStr, HB_SIZE ulLen );
+      extern HB_SIZE          hwg_wstrcopy( PHB_ITEM pItem, wchar_t * pStr, HB_SIZE ulLen );
+      extern wchar_t *        hwg_wstrunshare( void ** phStr, const wchar_t * pStr, HB_SIZE ulLen );
+      extern void             hwg_wstrfree( void * hString );
+   #endif
    HB_EXTERN_END
-
-   #define hb_strfree( h )    hwg_strfree( h )
 
    #if defined( HB_OS_WIN_CE )
       #undef  GetProcAddress
       #define GetProcAddress  GetProcAddressA
    #endif
 
-   /* hack to pacify warning in old [x]Harbour versions which wrongly
-    * defined some functions using strings
-    */
-   #if defined( __XHARBOUR__ ) || ( __HARBOUR__ - 0  == 0 )
-      #undef HB_STORSTR
-      #define HB_STORSTR( str, n )                  hb_storc( ( char * ) str, n )
-   #endif
 #endif
 
 HB_EXTERN_BEGIN

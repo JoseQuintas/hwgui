@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1330 2010-12-15 18:26:28 lculik Exp $
+ * $Id: Changelog,v 1.1331 2010-12-19 15:45:27 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,34 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-12-19 16:45 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/include/hwingui.h
+  * hwgui/source/window.c
+    + added internal HWGUI code to emulate Harbour STR API.
+      It's enabled by default when xHarbour or old Harbour version is used
+      and UNICODE macro is set during HWGUI compilation.
+      It means that now also xHarbour users can use HWGUI with UTF8 strings.
+      Just like for Harbour useres it's enough to compile HWGUI with UNICODE
+      macro and add at the beginning of executed PRG code:
+         HWG_SETUTF8()
+      Please test. If more users will use UNICODE HWGUI builds then there
+      is bigger chance to keep it alive and updated.
+      xHarbour users probably do not use HBMK2 build tool from Harbour
+      which allows to compile HWGUI with any supported C compiler
+      so to create UNICODE HWGUI libraries they will have to hack
+      existing make files and add -DUNICODE to C compiler flags.
+      Maybe someone can create some common method to set C compiler
+      flags in different make files. Now only Makefile, Makefile.scr
+      and makefile.bc respects C_USR envvar set by user.
+
+      Please also remember that UNICODE HWGUI builds should be
+      interesting for all Harbour users who want to use any Harbour
+      CP in their code. It's not only oriented for UTF8 encoding.
+      Such build can work well with any encoding set by
+      HB_CDPSELECT( <cCP> ) / SET( _SET_CODEPAGE, <cCP> ) and can
+      automatically make all necessary translations between HVM CP
+      and UNICODE.
 2010-12-15 16:30 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * makefile.bc
     makefile.gcc

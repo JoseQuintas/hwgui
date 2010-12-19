@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.94 2010-12-04 13:35:44 druzus Exp $
+ * $Id: window.c,v 1.95 2010-12-19 15:45:27 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -841,7 +841,7 @@ const char * hwg_strnull( const char * str )
    return str ? str : "";
 }
 
-const char * hwg_strget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pulLen )
+const char * hwg_strget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pnLen )
 {
    const char * pStr;
 
@@ -849,20 +849,20 @@ const char * hwg_strget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pulLen )
    {
       *phStr = ( void * ) s_szConstStr;
       pStr = hb_itemGetCPtr( pItem );
-      if( pulLen )
-         *pulLen = hb_itemGetCLen( pItem );
+      if( pnLen )
+         *pnLen = hb_itemGetCLen( pItem );
    }
    else
    {
       *phStr = NULL;
       pStr = NULL;
-      if( pulLen )
-         *pulLen = 0;
+      if( pnLen )
+         *pnLen = 0;
    }
    return pStr;
 }
 
-HB_SIZE hwg_strcopy( PHB_ITEM pItem, char * pStr, HB_SIZE ulLen )
+HB_SIZE hwg_strcopy( PHB_ITEM pItem, char * pStr, HB_SIZE nLen )
 {
    if( pItem && HB_IS_STRING( pItem ) )
    {
@@ -870,33 +870,33 @@ HB_SIZE hwg_strcopy( PHB_ITEM pItem, char * pStr, HB_SIZE ulLen )
 
       if( pStr )
       {
-         if( size > ulLen )
-            size = ulLen;
+         if( size > nLen )
+            size = nLen;
          if( size )
             memcpy( pStr, hb_itemGetCPtr( pItem ), size );
-         if( size < ulLen )
+         if( size < nLen )
             pStr[ size ] = '\0';
       }
-      else if( ulLen && size > ulLen )
-         size = ulLen;
+      else if( nLen && size > nLen )
+         size = nLen;
       return size;
    }
-   else if( pStr && ulLen )
+   else if( pStr && nLen )
       pStr[ 0 ] = '\0';
 
    return 0;
 }
 
-char * hwg_strunshare( void ** phStr, const char * pStr, HB_SIZE ulLen )
+char * hwg_strunshare( void ** phStr, const char * pStr, HB_SIZE nLen )
 {
    if( pStr == NULL || phStr == NULL || *phStr == NULL )
       return NULL;
 
-   if( *phStr == ( void * ) s_szConstStr && ulLen > 0 )
+   if( *phStr == ( void * ) s_szConstStr && nLen > 0 )
    {
-      char * pszDest = ( char * ) hb_xgrab( ( ulLen + 1 ) * sizeof( char ) );
-      memcpy( pszDest, pStr, ulLen * sizeof( char ) );
-      pszDest[ ulLen ] = 0;
+      char * pszDest = ( char * ) hb_xgrab( ( nLen + 1 ) * sizeof( char ) );
+      memcpy( pszDest, pStr, nLen * sizeof( char ) );
+      pszDest[ nLen ] = 0;
       * phStr = ( void * ) pszDest;
 
       return pszDest;
@@ -910,11 +910,157 @@ void hwg_strfree( void * hString )
    if( hString && hString != ( void * ) s_szConstStr )
       hb_xfree( hString );
 }
-#endif
+#endif /* !HB_HAS_STR_FUNC */
+
+#if defined( HB_EMULATE_STR_API )
+
+static int s_iVM_CP = CP_ACP; /* CP_OEMCP */
+
+static const wchar_t s_wszConstStr[ 1 ] = { 0 };
+
+const wchar_t * hwg_wstrnull( const wchar_t * str )
+{
+   return str ? str : L"";
+}
+
+const wchar_t * hwg_wstrget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pnLen )
+{
+   const wchar_t * pStr;
+
+   if( pItem && HB_IS_STRING( pItem ) )
+   {
+      HB_SIZE nLen = hb_itemGetCLen( pItem ), nDest = 0;
+      const char * pszText = hb_itemGetCPtr( pItem );
+
+      if( nLen )
+         nDest = MultiByteToWideChar( s_iVM_CP, 0, pszText, nLen, NULL, 0 );
+
+      if( nDest == 0 )
+      {
+         *phStr = ( void * ) s_wszConstStr;
+         pStr = s_wszConstStr;
+      }
+      else
+      {
+         wchar_t * pResult = ( wchar_t * ) hb_xgrab( nDest + 1 );
+
+         pResult[ nDest ] = 0;
+         nDest = MultiByteToWideChar( s_iVM_CP, 0, pszText, nLen, pResult, nDest );
+         *phStr = ( void * ) pResult;
+         pStr = pResult;
+      }
+      if( pnLen )
+         *pnLen = nDest;
+   }
+   else
+   {
+      *phStr = NULL;
+      pStr = NULL;
+      if( pnLen )
+         *pnLen = 0;
+   }
+   return pStr;
+}
+
+void hwg_wstrlenset( PHB_ITEM pItem, const wchar_t * pStr, HB_SIZE nLen )
+{
+   if( pItem )
+   {
+      HB_SIZE nDest = 0;
+
+      if( pStr != NULL && nLen > 0 )
+         nDest = WideCharToMultiByte( s_iVM_CP, 0, pStr, nLen, NULL, 0, NULL, NULL );
+
+      if( nDest )
+      {
+         char * pResult = ( char * ) hb_xgrab( nDest + 1 );
+
+         nDest = WideCharToMultiByte( s_iVM_CP, 0, pStr, nLen, pResult, nDest, NULL, NULL );
+         hb_itemPutCLPtr( pItem, pResult, nDest );
+      }
+      else
+         hb_itemPutC( pItem, NULL );
+   }
+}
+
+PHB_ITEM hwg_wstrlenput( PHB_ITEM pItem, const wchar_t * pStr, HB_SIZE nLen )
+{
+   if( pItem == NULL )
+      pItem = hb_itemNew( NULL );
+
+   hwg_wstrlenset( pItem, pStr, nLen );
+
+   return pItem;
+}
+
+PHB_ITEM hwg_wstrput( PHB_ITEM pItem, const wchar_t * pStr )
+{
+   return hwg_wstrlenput( pItem, pStr, pStr ? wcslen( pStr ) : 0 );
+}
+
+void hwg_wstrset( PHB_ITEM pItem, const wchar_t * pStr )
+{
+   hwg_wstrlenset( pItem, pStr, pStr ? wcslen( pStr ) : 0 );
+}
+
+HB_SIZE hwg_wstrcopy( PHB_ITEM pItem, wchar_t * pStr, HB_SIZE nLen )
+{
+   if( pItem && HB_IS_STRING( pItem ) )
+   {
+      const char * text = hb_itemGetCPtr( pItem );
+      HB_SIZE size = hb_itemGetCLen( pItem );
+
+      if( pStr )
+      {
+         size = MultiByteToWideChar( s_iVM_CP, 0, text, size, pStr, nLen );
+         if( size < nLen )
+            pStr[ size ] = '\0';
+      }
+      else
+      {
+         size = MultiByteToWideChar( s_iVM_CP, 0, text, size, NULL, 0 );
+         if( nLen && size > nLen )
+            size = nLen;
+      }
+      return size;
+   }
+   else if( pStr && nLen )
+      pStr[ 0 ] = '\0';
+
+   return 0;
+}
+
+wchar_t * hwg_wstrunshare( void ** phStr, const wchar_t * pStr, HB_SIZE nLen )
+{
+   if( pStr == NULL || phStr == NULL || *phStr == NULL )
+      return NULL;
+
+   if( *phStr == ( void * ) s_wszConstStr && nLen > 0 )
+   {
+      wchar_t * pszDest = ( wchar_t * ) hb_xgrab( ( nLen + 1 ) * sizeof( wchar_t ) );
+      memcpy( pszDest, pStr, nLen * sizeof( wchar_t ) );
+      pszDest[ nLen ] = 0;
+      * phStr = ( void * ) pszDest;
+
+      return pszDest;
+   }
+
+   return ( wchar_t * ) pStr;
+}
+
+void hwg_wstrfree( void * hString )
+{
+   if( hString && hString != ( void * ) s_wszConstStr )
+      hb_xfree( hString );
+}
+
+#endif /* HB_EMULATE_STR_API */
 
 HB_FUNC( HWG_SETUTF8 )
 {
-#ifndef __XHARBOUR__
+#if defined( HB_EMULATE_STR_API )
+   s_iVM_CP = CP_UTF8;
+#elif ! defined( __XHARBOUR__ )
    PHB_CODEPAGE cdp = hb_cdpFindExt( "UTF8" );
 
    if( cdp )

@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1331 2010-12-19 15:45:27 druzus Exp $
+ * $Id: Changelog,v 1.1332 2010-12-20 15:27:03 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-12-20 16:26 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/window.c
+    ! fixed typo in buffer size calculation which caused buffer overflow
+      in xHarbour UNICODE builds using emulation of Harbour STR API.
 
 2010-12-19 16:45 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/include/hwingui.h
@@ -35,6 +40,7 @@
       HB_CDPSELECT( <cCP> ) / SET( _SET_CODEPAGE, <cCP> ) and can
       automatically make all necessary translations between HVM CP
       and UNICODE.
+
 2010-12-15 16:30 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * makefile.bc
     makefile.gcc

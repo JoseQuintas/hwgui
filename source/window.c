@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.95 2010-12-19 15:45:27 druzus Exp $
+ * $Id: window.c,v 1.96 2010-12-20 15:27:03 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions
@@ -942,7 +942,7 @@ const wchar_t * hwg_wstrget( PHB_ITEM pItem, void ** phStr, HB_SIZE * pnLen )
       }
       else
       {
-         wchar_t * pResult = ( wchar_t * ) hb_xgrab( nDest + 1 );
+         wchar_t * pResult = ( wchar_t * ) hb_xgrab( ( nDest + 1 ) * sizeof( wchar_t ) );
 
          pResult[ nDest ] = 0;
          nDest = MultiByteToWideChar( s_iVM_CP, 0, pszText, nLen, pResult, nDest );

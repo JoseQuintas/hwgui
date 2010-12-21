@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.185 2010-10-30 16:43:31 mlacecilia Exp $
+ *$Id: hedit.prg,v 1.186 2010-12-21 21:18:17 lculik Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -1491,7 +1491,7 @@ STATIC FUNCTION NextFocusTab( oParent, hCtrl, nSkip )
    RETURN nextHandle
 
 STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
-   Local nextHandle := 0,  i, nWindow
+   Local nextHandle := nil,  i, nWindow
    Local lGroup := Hwg_BitAND( HWG_GETWINDOWSTYLE(  hctrl ), WS_GROUP ) != 0
    Local lHradio
    Local lnoTabStop := .T.
@@ -1503,7 +1503,7 @@ STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
    IF i > 0 .and. Len( oParent:acontrols[ i ]:aControls ) > 0 .AND.;
       oParent:aControls[ i ]:className != "HTAB" .AND. ( hCtrl != nextHandle )
       nextHandle := NextFocusContainer( oParent:aControls[ i ], hCtrl , nSkip )
-      IF nextHandle > 0
+      IF !empty( nextHandle  )
          RETURN nextHandle
       ENDIF
    ENDIF
@@ -1547,8 +1547,8 @@ STATIC FUNCTION NextFocusContainer(oParent,hCtrl,nSkip)
    Local lnoTabStop := .f.
 
    AEVAL(oparent:acontrols,{|o| IIF(Hwg_BitAND( HWG_GETWINDOWSTYLE(  o:handle ), WS_TABSTOP ) != 0, lnoTabStop := .T., .T. ) } )
-   IF !lnoTabStop .OR. hCtrl= 0
-      RETURN 0 //nexthandle
+   IF !lnoTabStop .OR. empty( hCtrl )
+      RETURN nil //nexthandle
    ENDIF
    nWindow := oParent:handle
    i := AScan( oparent:acontrols, { | o | o:handle == hCtrl } )

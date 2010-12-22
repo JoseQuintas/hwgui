@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1333 2010-12-21 21:18:17 lculik Exp $
+ * $Id: Changelog,v 1.1334 2010-12-22 00:21:27 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,10 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-12-22 01:21 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/drawwidg.prg
+    ! use hb_valToStr() instead of str() to work well with handles
+      stored as pointer and numeric items
+
 2010-12-21 19:20  UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/hedit.prg
     ! fixed NextFocus function since it was not respectiong pointer items in comparasion
-    
+
 2010-12-20 16:26 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/window.c
     ! fixed typo in buffer size calculation which caused buffer overflow

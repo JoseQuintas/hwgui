@@ -1,5 +1,5 @@
 /*
- * $Id: Changelog,v 1.1334 2010-12-22 00:21:27 druzus Exp $
+ * $Id: Changelog,v 1.1335 2010-12-22 00:55:16 druzus Exp $
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-12-22 01:55 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/hedit.prg
+    ! fixed NextFocusTab(), NextFocus() and NextFocusContainer() to work
+      with handlers in pointer items
 
 2010-12-22 01:21 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/drawwidg.prg

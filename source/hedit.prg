@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.186 2010-12-21 21:18:17 lculik Exp $
+ *$Id: hedit.prg,v 1.187 2010-12-22 00:55:16 druzus Exp $
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class
@@ -1407,7 +1407,7 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
 
    IF i > 0
       oCtrl:nGetSkip := nSkip
- 	    oCtrl:oParent:lGetSkipLostFocus := .T.
+      oCtrl:oParent:lGetSkipLostFocus := .T.
    ENDIF
    IF ! Empty( nextHandle )
       // i := AScan( oparent:acontrols, { | o | o:handle == nextHandle } )
@@ -1431,13 +1431,13 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
    IF hctrl == nextHandle .AND. oCtrl != Nil
      // necessario para executa um codigo do lostfcosu
       IF  __ObjHasMsg(oCtrl,"BLOSTFOCUS") .AND. oCtrl:blostfocus != Nil
-   	     sendmessage( nexthandle, WM_KILLFOCUS, 0,  0)
+         sendmessage( nexthandle, WM_KILLFOCUS, 0,  0)
       ENDIF
-	 ENDIF
+   ENDIF
    RETURN .T.
 
 STATIC FUNCTION NextFocusTab( oParent, hCtrl, nSkip )
-   LOCAL nextHandle := 0, i, nPage, nFirst , nLast , k := 0
+   LOCAL nextHandle := NIL, i, nPage, nFirst , nLast , k := 0
 
    IF Len( oParent:aPages ) > 0
       oParent:SetFocus()
@@ -1453,7 +1453,7 @@ STATIC FUNCTION NextFocusTab( oParent, hCtrl, nSkip )
             k := AScan( oParent:acontrols, { | o | o:Handle == nextHandle } )
             IF LEN( oParent:aControls[ k ]:aControls ) > 0 .AND. hCtrl != nextHandle .AND. oParent:aControls[ k ]:classname != "HTAB"
                nextHandle := NextFocusContainer( oParent:aControls[ k ], oParent:aControls[ k ]:Handle, nSkip )
-               RETURN IIF( nextHandle > 0, nextHandle, NextFocusTab( oParent, oParent:aControls[ k ]:Handle, nSkip ) )
+               RETURN IIF( !Empty( nextHandle ), nextHandle, NextFocusTab( oParent, oParent:aControls[ k ]:Handle, nSkip ) )
             ENDIF
          ENDIF
       ELSE
@@ -1483,7 +1483,7 @@ STATIC FUNCTION NextFocusTab( oParent, hCtrl, nSkip )
          ELSE
             PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle , 1 )
          ENDIF
-         IF nexthandle > 0 .AND. Hwg_BitaND( HWG_GETWINDOWSTYLE( nextHandle ), WS_TABSTOP ) = 0
+         IF !Empty( nextHandle ) .AND. Hwg_BitaND( HWG_GETWINDOWSTYLE( nextHandle ), WS_TABSTOP ) = 0
             NextFocusTab( oParent, nextHandle, nSkip )
          ENDIF
       ENDIF
@@ -1491,7 +1491,7 @@ STATIC FUNCTION NextFocusTab( oParent, hCtrl, nSkip )
    RETURN nextHandle
 
 STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
-   Local nextHandle := nil,  i, nWindow
+   Local nextHandle := NIL,  i, nWindow
    Local lGroup := Hwg_BitAND( HWG_GETWINDOWSTYLE(  hctrl ), WS_GROUP ) != 0
    Local lHradio
    Local lnoTabStop := .T.
@@ -1525,7 +1525,7 @@ STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
        ENDIF
          i := AScan( oParent:aControls, { | o | o:Handle == nextHandle } )
       IF ( lnoTabStop .AND. i > 0 .AND. hCtrl != NextHandle ) .OR. ( i > 0 .AND. i <= LEN( oParent:aControls ).AND. ;
-           oparent:acontrols[ i ]:classname = "HGROUP") .OR. ( i = 0 .AND. nextHandle > 0 )
+           oparent:acontrols[ i ]:classname = "HGROUP") .OR. ( i = 0 .AND. !Empty( nextHandle ) )
           RETURN NextFocus( oParent, nextHandle, nSkip )
       ENDIF
       /*
@@ -1541,7 +1541,7 @@ STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
    RETURN nextHandle
 
 STATIC FUNCTION NextFocusContainer(oParent,hCtrl,nSkip)
-   Local nextHandle := 0,  i, i2, nWindow
+   Local nextHandle := NIL,  i, i2, nWindow
    Local lGroup := Hwg_BitAND( HWG_GETWINDOWSTYLE(  hctrl ), WS_GROUP ) != 0
    Local lHradio
    Local lnoTabStop := .f.
@@ -1569,7 +1569,7 @@ STATIC FUNCTION NextFocusContainer(oParent,hCtrl,nSkip)
         lnoTabStop := .F.
       ENDIF
       i2 := AScan( oParent:aControls, { | o | o:Handle == nextHandle } )
-      IF ( ( i2 < i .AND. nSkip > 0 ) .OR. ( i2 > i .AND. nSkip < 0 )) .OR. hCtrl = nextHandle
+      IF ( ( i2 < i .AND. nSkip > 0 ) .OR. ( i2 > i .AND. nSkip < 0 )) .OR. hCtrl == nextHandle
           RETURN IIF( oParent:oParent:className == "HTAB", NextFocusTab(oParent:oParent, nWindow, nSkip ), ;
                        NextFocus( oParent:oparent, hCtrl, nSkip ) )
       ENDIF

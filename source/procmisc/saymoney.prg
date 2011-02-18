@@ -1,5 +1,5 @@
 /*
- * $Id: saymoney.prg,v 1.1 2008-09-10 18:22:35 mlacecilia Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions

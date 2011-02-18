@@ -1,5 +1,5 @@
 #
-# $Id: hwgui.hbc,v 1.1 2009-06-08 11:32:26 alkresin Exp $
+# $Id$
 #
 
 # Include this file in hbmk2 command line to build an app:

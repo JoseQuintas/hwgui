@@ -1,5 +1,5 @@
 /*
- * $Id: video.prg,v 1.6 2008-11-24 10:02:17 mlacecilia Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * TVideo component

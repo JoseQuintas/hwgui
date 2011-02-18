@@ -1,5 +1,5 @@
 /*
- * $Id: misc.c,v 1.12 2010-02-06 02:06:42 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Miscellaneous functions

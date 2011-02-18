@@ -1,5 +1,5 @@
 /*
- * $Id: viewer.prg,v 1.3 2007-05-26 19:48:51 richardroesnadi Exp $
+ * $Id$
  *
  * JPEG, BMP, PNG, MNG, TIFF images viewer.
  * FreeImage.dll should present to use this sample

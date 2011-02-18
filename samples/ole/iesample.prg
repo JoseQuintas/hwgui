@@ -1,5 +1,5 @@
 /*
- *$Id: iesample.prg,v 1.1 2008-09-19 20:09:30 sandrorrfreire Exp $
+ *$Id$
  *
  * HWGUI - Harbour Win32 and Linux (GTK) GUI library
  * iesample.prg - sample of ActiveX container for the IE browser object

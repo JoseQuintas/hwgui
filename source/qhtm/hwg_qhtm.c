@@ -1,5 +1,5 @@
 /*
- * $Id: hwg_qhtm.c,v 1.10 2010-02-15 13:18:42 druzus Exp $
+ * $Id$
 
  * QHTM wrappers for Harbour/HwGUI
  *

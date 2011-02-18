@@ -1,5 +1,5 @@
 /*
- *$Id: repmain.h,v 1.3 2009-01-21 04:57:14 marcosgambeta Exp $
+ *$Id$
  */
 
 #define FORM_WIDTH       1

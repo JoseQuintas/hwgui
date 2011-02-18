@@ -1,5 +1,5 @@
 /*
- * $Id: browse_2.prg,v 1.2 2008-09-19 23:27:59 mlacecilia Exp $
+ * $Id$
  */
  
 #include "windows.ch"

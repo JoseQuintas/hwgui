@@ -1,6 +1,6 @@
 
 /*
- *$Id: hedit.prg,v 1.187 2010-12-22 00:55:16 druzus Exp $
+ *$Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HEdit class

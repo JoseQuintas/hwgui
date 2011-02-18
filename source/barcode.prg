@@ -1,5 +1,5 @@
 /*
- * $Id: barcode.prg,v 1.6 2010-11-10 15:51:43 druzus Exp $
+ * $Id$
  *
  * Create Barcode for HWGUI application
  *

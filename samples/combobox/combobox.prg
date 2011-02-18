@@ -1,5 +1,5 @@
 /*
- * $Id: combobox.prg,v 1.3 2010-01-26 12:03:00 lfbasso Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library
  *

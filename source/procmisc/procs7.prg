@@ -1,5 +1,5 @@
 /*
- * $Id: procs7.prg,v 1.5 2009-05-15 11:38:57 alkresin Exp $
+ * $Id$
  *
  * Common procedures
  *

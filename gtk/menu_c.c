@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.13 2009-08-20 09:16:36 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level menu functions

@@ -1,5 +1,5 @@
 /*
- * $Id: hctrl.prg,v 1.31 2010-01-20 09:13:56 druzus Exp $
+ * $Id$
  *
  * Designer
  * HControlGen class

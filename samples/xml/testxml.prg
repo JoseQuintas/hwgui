@@ -1,5 +1,5 @@
 /*
- * $Id: testxml.prg,v 1.1 2008-09-19 20:09:34 sandrorrfreire Exp $
+ * $Id$
  *
  * This sample demonstrates reading/writing XML file and handling menu items
  * while run-time.

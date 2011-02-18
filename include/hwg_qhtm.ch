@@ -1,5 +1,5 @@
 /*
- * $Id: hwg_qhtm.ch,v 1.3 2009-01-21 04:57:14 marcosgambeta Exp $
+ * $Id$
 */
 
 #ifndef __HWG_QHTM_CH__

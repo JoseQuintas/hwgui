@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.h,v 1.26 2010-02-15 13:18:34 druzus Exp $
+ *$Id$
  */
 
 #include "hbapi.h"

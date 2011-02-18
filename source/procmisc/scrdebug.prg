@@ -1,5 +1,5 @@
 /*
- * $Id: scrdebug.prg,v 1.4 2009-05-07 06:56:27 alkresin Exp $
+ * $Id$
  *
  * Common procedures
  * Scripts Debugger

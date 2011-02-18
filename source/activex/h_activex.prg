@@ -1,5 +1,5 @@
 /*
- * $Id: h_activex.prg,v 1.1 2008-03-31 23:07:57 fperillo Exp $
+ * $Id$
  */
 /*
  * ooHG source code:

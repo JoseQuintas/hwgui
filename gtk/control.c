@@ -1,5 +1,5 @@
 /*
- * $Id: control.c,v 1.40 2009-12-09 15:24:44 lculik Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Widget creation functions

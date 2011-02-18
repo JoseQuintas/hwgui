@@ -1,5 +1,5 @@
 /*
- * $Id: hwinprn.prg,v 1.3 2009-05-04 07:29:09 alkresin Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWinPrn class

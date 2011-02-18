@@ -1,5 +1,5 @@
 /*
- * $Id: arr2str.c,v 1.11 2009-08-20 09:16:37 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Array / String conversion functions

@@ -1,5 +1,5 @@
 /*
- * $Id: window.c,v 1.96 2010-12-20 15:27:03 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level windows functions

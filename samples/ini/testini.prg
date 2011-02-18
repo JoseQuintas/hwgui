@@ -1,5 +1,5 @@
 /*
- *$Id: testini.prg,v 1.1 2008-09-19 19:55:50 sandrorrfreire Exp $
+ *$Id$
  *
  * HwGUI Samples
  * testini.prg - Test to use files ini 

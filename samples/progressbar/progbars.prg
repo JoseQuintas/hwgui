@@ -1,5 +1,5 @@
 /*
- * $Id: progbars.prg,v 1.3 2008-12-07 15:00:10 lfbasso Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library
  * Sample of using HProgressBar class

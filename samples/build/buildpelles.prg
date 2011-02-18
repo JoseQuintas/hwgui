@@ -1,5 +1,5 @@
 /*
- *$Id: buildpelles.prg,v 1.1 2008-09-19 19:55:47 sandrorrfreire Exp $
+ *$Id$
  *
  * HWGUI - Harbour Win32 GUI library 
  * 

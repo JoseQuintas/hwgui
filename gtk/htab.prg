@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.7 2009-05-04 07:26:51 alkresin Exp $
+ *$Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HTab class

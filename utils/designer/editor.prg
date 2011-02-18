@@ -1,5 +1,5 @@
 /*
- * $Id: editor.prg,v 1.30 2010-01-20 09:13:55 druzus Exp $
+ * $Id$
  *
  * Designer
  * Simple code editor

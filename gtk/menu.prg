@@ -1,5 +1,5 @@
 /*
- * $Id: menu.prg,v 1.13 2009-04-30 16:03:44 alkresin Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Prg level menu functions

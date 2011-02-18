@@ -1,5 +1,5 @@
 /*
- * $Id: theme.c,v 1.29 2010-11-10 19:15:42 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Theme related functions

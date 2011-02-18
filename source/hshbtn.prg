@@ -1,5 +1,5 @@
 /*
- * $Id: hshbtn.prg,v 1.3 2008-11-24 10:02:14 mlacecilia Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HShadeButton class, inherited from HOwnButton

@@ -1,4 +1,4 @@
-# $Id: makefile.pc,v 1.23 2010-12-15 18:26:28 lculik Exp $
+# $Id$
 # makefile for Pelles C 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 

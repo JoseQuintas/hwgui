@@ -1,5 +1,5 @@
 /*
- * $Id: printdos.prg,v 1.29 2010-10-31 07:57:50 mlacecilia Exp $
+ * $Id$
  *
  * CLASS PrintDos
  *

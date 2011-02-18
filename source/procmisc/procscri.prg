@@ -1,5 +1,5 @@
 /*
- * $Id: procscri.prg,v 1.16 2009-04-13 08:56:37 alkresin Exp $
+ * $Id$
  *
  * Common procedures
  * Scripts

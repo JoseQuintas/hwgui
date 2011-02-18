@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.2 2008-07-17 19:45:09 mlacecilia Exp $
+ *$Id$
  */
 
 #include "guilib.h"

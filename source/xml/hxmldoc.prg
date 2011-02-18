@@ -1,5 +1,5 @@
 /*
- * $Id: hxmldoc.prg,v 1.10 2004-08-02 09:28:54 lf_sfnet Exp $
+ * $Id$
  *
  * Harbour XML Library
  * HXmlDoc class

@@ -1,5 +1,5 @@
 /*
- *$Id: dbview.prg,v 1.1 2008-09-19 19:55:48 sandrorrfreire Exp $
+ *$Id$
  *
  * HWGUI - Harbour Win32 and Linux (GTK) GUI library
  * dbview.prg - dbf browsing sample

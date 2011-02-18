@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.8 2006-08-07 12:02:28 alkresin Exp $
+ *$Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HWindow class

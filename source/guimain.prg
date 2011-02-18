@@ -1,5 +1,5 @@
 /*
- * $Id: guimain.prg,v 1.43 2010-10-30 16:43:31 mlacecilia Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Main prg level functions

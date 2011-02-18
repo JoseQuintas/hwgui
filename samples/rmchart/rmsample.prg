@@ -1,5 +1,5 @@
 /*
- *$Id: rmsample.prg,v 1.1 2008-09-19 20:09:31 sandrorrfreire Exp $
+ *$Id$
  *
  * HWGUI - Harbour Win32 and Linux (GTK) GUI library
  * rmsample.prg - sample of ActiveX container for the RMCHART ocx

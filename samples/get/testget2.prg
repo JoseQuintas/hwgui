@@ -1,5 +1,5 @@
 /*
- *$Id: testget2.prg,v 1.1 2008-09-19 19:55:48 sandrorrfreire Exp $
+ *$Id$
  *
  * HwGUI Samples
  * testget2.prg - GET system and Timer in dialog box.

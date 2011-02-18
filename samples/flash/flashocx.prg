@@ -1,5 +1,5 @@
 /*
- *$Id: flashocx.prg,v 1.1 2008-09-19 19:55:48 sandrorrfreire Exp $
+ *$Id$
  *
  * HWGUI - Harbour Win32 and Linux (GTK) GUI library
  * flashocx.prg - sample of ActiveX container for the Acrobat Reader ocx

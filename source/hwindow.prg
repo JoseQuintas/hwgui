@@ -1,5 +1,5 @@
 /*
- *$Id: hwindow.prg,v 1.108 2010-10-31 15:33:26 mlacecilia Exp $
+ *$Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HWindow class

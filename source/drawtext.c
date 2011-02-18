@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.29 2010-11-10 15:51:43 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions

@@ -1,5 +1,5 @@
 /*
- * $Id: hsayimg.prg,v 1.2 2006-06-09 11:06:59 alkresin Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HSayImage class

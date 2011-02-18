@@ -1,5 +1,5 @@
 /*
- * $Id: richtext.ch,v 1.3 2009-01-21 04:57:14 marcosgambeta Exp $
+ * $Id$
  *
 旼컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴커
 �        Class: RichText                                                   �

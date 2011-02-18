@@ -1,5 +1,5 @@
 /*
- *$Id: hradio.prg,v 1.4 2005-10-21 08:50:15 alkresin Exp $
+ *$Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HRadioButton class

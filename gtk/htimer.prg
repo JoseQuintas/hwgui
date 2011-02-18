@@ -1,5 +1,5 @@
 /*
- *$Id: htimer.prg,v 1.2 2010-08-04 19:46:16 lculik Exp $
+ *$Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HTimer class 

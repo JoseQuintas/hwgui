@@ -1,5 +1,5 @@
 /*
- * $Id: drawtext.c,v 1.13 2009-05-06 10:13:04 alkresin Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level text functions

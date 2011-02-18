@@ -1,7 +1,7 @@
 /*
 /*
 /*
- * $Id: designer.prg,v 1.37 2009-12-29 22:29:17 andijahja Exp $
+ * $Id$
  *
  * Designer
  * Main file

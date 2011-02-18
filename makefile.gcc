@@ -1,4 +1,4 @@
-# $Id: makefile.gcc,v 1.29 2010-12-15 18:26:28 lculik Exp $
+# $Id$
 # makefile for MINGW compiler
 # Building of libhwgui.a - Harbour Win32 GUI library
 

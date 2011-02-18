@@ -1,5 +1,5 @@
 /*
- * $Id: xmlparse.c,v 1.28 2010-01-19 15:45:43 druzus Exp $
+ * $Id$
  *
  * Harbour XML Library
  * C level XML parse functions

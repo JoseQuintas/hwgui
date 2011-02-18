@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.12 2010-10-21 11:46:07 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement

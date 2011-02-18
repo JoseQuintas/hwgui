@@ -1,5 +1,5 @@
 /*
- * $Id: hmonthc.prg,v 1.1 2008-05-06 13:55:21 lculik Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HMonthCalendar class

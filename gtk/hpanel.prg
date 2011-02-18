@@ -1,5 +1,5 @@
 /*
- * $Id: hpanel.prg,v 1.7 2009-05-05 09:31:48 alkresin Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HPanel class 

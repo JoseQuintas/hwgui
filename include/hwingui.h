@@ -1,5 +1,5 @@
 /*
- *$Id: hwingui.h,v 1.11 2010-12-19 15:45:27 druzus Exp $
+ *$Id$
  */
 
 #define HB_OS_WIN_32_USED

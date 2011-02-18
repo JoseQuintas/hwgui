@@ -1,5 +1,5 @@
 /*
- * $Id: XMLRUN.prg,v 1.3 2010-01-20 09:15:42 druzus Exp $
+ * $Id$
  *
  * The Runtime for xml (create from designer.exe)
  *

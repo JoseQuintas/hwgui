@@ -1,5 +1,5 @@
 /*
- * $Id: hwreport.prg,v 1.5 2007-11-26 04:48:43 andijahja Exp $
+ * $Id$
  *
  * Repbuild - Visual Report Builder
  * Main file

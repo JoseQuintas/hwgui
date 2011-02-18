@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.28 2010-12-22 00:21:27 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling

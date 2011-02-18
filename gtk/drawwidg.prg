@@ -1,5 +1,5 @@
 /*
- * $Id: drawwidg.prg,v 1.10 2009-05-04 07:26:51 alkresin Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling

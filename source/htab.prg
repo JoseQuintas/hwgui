@@ -1,5 +1,5 @@
 /*
- *$Id: htab.prg,v 1.74 2010-12-16 11:16:00 lculik Exp $
+ *$Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class

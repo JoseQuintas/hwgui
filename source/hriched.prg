@@ -1,5 +1,5 @@
 /*
- * $Id: hriched.prg,v 1.26 2010-11-10 15:51:43 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HRichEdit class

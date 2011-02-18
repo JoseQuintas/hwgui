@@ -1,5 +1,5 @@
 /*
- * $Id: blowfish.c,v 1.12 2010-01-19 15:45:43 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Encryption/Decryption functions, using BlowFish algorithm,

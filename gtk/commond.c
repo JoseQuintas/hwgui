@@ -1,5 +1,5 @@
 /*
- * $Id: commond.c,v 1.14 2009-08-20 09:16:35 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions

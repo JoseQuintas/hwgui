@@ -1,5 +1,5 @@
 /*
- * $Id: hgraph.prg,v 1.5 2005-10-21 08:50:15 alkresin Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HGraph class

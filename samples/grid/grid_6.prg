@@ -1,5 +1,5 @@
 /*
- * $Id: grid_6.prg,v 1.3 2008-10-08 18:06:39 lculik Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HGrid class

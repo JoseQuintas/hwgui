@@ -1,5 +1,5 @@
 /*
- * $Id: shadebtn.prg,v 1.1 2008-09-19 20:09:31 sandrorrfreire Exp $
+ * $Id$
  * Shade buttons sample
  * 
 */

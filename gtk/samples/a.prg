@@ -1,5 +1,5 @@
 /*
- * $Id: a.prg,v 1.6 2006-02-15 16:56:58 lf_sfnet Exp $
+ * $Id$
  * HWGUI using sample
  * 
  *

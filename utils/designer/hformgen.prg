@@ -1,5 +1,5 @@
 /*
- * $Id: hformgen.prg,v 1.49 2009-04-13 11:04:58 alkresin Exp $
+ * $Id$
  *
  * Designer
  * HFormGen class

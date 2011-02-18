@@ -1,5 +1,5 @@
 /*
- * $Id: hsplash.prg,v 1.6 2010-02-18 01:25:18 lfbasso Exp $
+ * $Id$
  *
  * HwGUI Harbour Win32 Gui Copyright (c) Alexander Kresin
  *

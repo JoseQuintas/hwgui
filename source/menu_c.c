@@ -1,5 +1,5 @@
 /*
- * $Id: menu_c.c,v 1.51 2010-11-10 15:51:43 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions

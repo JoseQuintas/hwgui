@@ -1,5 +1,5 @@
 /*
- * $Id: hcheck.prg,v 1.46 2010-10-31 11:59:46 lfbasso Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCheckButton class

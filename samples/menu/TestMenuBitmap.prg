@@ -1,5 +1,5 @@
 /*
- * $Id: TestMenuBitmap.prg,v 1.2 2009-03-26 01:02:54 lculik Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level menu functions

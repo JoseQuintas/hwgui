@@ -1,5 +1,5 @@
 /*
- * $Id: gtk.ch,v 1.2 2009-01-21 04:57:14 marcosgambeta Exp $
+ * $Id$
  *
  * Header file for a Linux GTK application
  *

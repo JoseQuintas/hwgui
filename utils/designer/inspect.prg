@@ -1,5 +1,5 @@
 /*
- * $Id: inspect.prg,v 1.23 2010-01-20 09:14:07 druzus Exp $
+ * $Id$
  *
  * Designer
  * Object Inspector

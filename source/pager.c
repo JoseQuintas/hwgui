@@ -1,5 +1,5 @@
 /*
- * $Id: pager.c,v 1.10 2010-11-10 15:51:43 druzus Exp $
+ * $Id$
 */
 
 #include "hwingui.h"

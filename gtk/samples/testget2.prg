@@ -1,5 +1,5 @@
 /*
- *$Id: testget2.prg,v 1.2 2008-10-20 15:11:50 mlacecilia Exp $
+ *$Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code: 
  * testget2.prg - GET system and Timer in dialog box sample

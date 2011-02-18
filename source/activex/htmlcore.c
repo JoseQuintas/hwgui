@@ -1,5 +1,5 @@
 /*
- * $Id: htmlcore.c,v 1.2 2009-06-29 11:22:05 alkresin Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * ActiveX container

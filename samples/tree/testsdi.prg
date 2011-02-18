@@ -1,5 +1,5 @@
 /*
- * $Id: testsdi.prg,v 1.1 2008-09-19 20:09:34 sandrorrfreire Exp $
+ * $Id$
  *
  * This sample demonstrates the using of a TREE control
  * 

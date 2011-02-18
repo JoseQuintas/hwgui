@@ -1,5 +1,5 @@
 /*
- * $Id: message.c,v 1.5 2009-08-20 09:16:36 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Message box functions

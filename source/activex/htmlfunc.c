@@ -1,5 +1,5 @@
 /*
- * $Id: htmlfunc.c,v 1.4 2009-06-29 11:22:05 alkresin Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * ActiveX container

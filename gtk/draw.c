@@ -1,5 +1,5 @@
 /*
- * $Id: draw.c,v 1.13 2006-12-20 10:32:25 alkresin Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level painting functions

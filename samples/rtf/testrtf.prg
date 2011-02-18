@@ -1,5 +1,5 @@
 /*
- * $Id: testrtf.prg,v 1.1 2008-09-19 20:09:31 sandrorrfreire Exp $
+ * $Id$
  *
  * The sample implemented by Sandro Freire <sandrorrfreire@yahoo.com.br>
  */

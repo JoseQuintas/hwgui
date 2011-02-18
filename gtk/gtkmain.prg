@@ -1,5 +1,5 @@
 /*
- * $Id: gtkmain.prg,v 1.10 2008-01-28 12:44:30 lculik Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Main prg level functions

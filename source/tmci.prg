@@ -1,5 +1,5 @@
 /*
- * $Id: tmci.prg,v 1.4 2008-11-24 10:02:16 mlacecilia Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement

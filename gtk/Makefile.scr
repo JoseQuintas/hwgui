@@ -1,4 +1,4 @@
-# $Id: Makefile.scr,v 1.6 2009-05-26 16:24:20 lculik Exp $
+# $Id$
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 # by default build Harbour platform native binaries

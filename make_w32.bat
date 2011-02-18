@@ -1,6 +1,6 @@
 @echo off
 
-rem $Id: make_w32.bat,v 1.1 2004-04-10 22:25:31 andijahja Exp $
+rem $Id$
 rem
 rem Batch file for building under Open-Watcom (OW)
 rem

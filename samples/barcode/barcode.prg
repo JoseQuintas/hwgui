@@ -1,5 +1,5 @@
 /*
- *$Id: barcode.prg,v 1.2 2010-10-16 15:32:04 richardroesnadi Exp $
+ *$Id$
  *
  * HWGUI - Harbour Win32 GUI library 
  * 

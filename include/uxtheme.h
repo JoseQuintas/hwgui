@@ -1,5 +1,5 @@
 /*
- * $Id: uxtheme.h,v 1.4 2009-01-21 04:57:14 marcosgambeta Exp $
+ * $Id$
  *
 */
 

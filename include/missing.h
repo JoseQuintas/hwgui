@@ -1,5 +1,5 @@
 /*
- *$Id: missing.h,v 1.5 2009-12-15 07:19:16 andijahja Exp $
+ *$Id$
  */
 #ifndef ___MISSING_H___
 #define ___MISSING_H___

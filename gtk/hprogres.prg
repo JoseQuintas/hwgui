@@ -1,5 +1,5 @@
 /*
- * $Id: hprogres.prg,v 1.1 2008-01-20 21:36:03 lculik Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HProgressBar class

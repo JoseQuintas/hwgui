@@ -1,5 +1,5 @@
 /*
- *$Id: guilib.ch,v 1.165 2010-09-08 12:49:38 lfbasso Exp $
+ *$Id$
  */
 
 #define HWG_VERSION            "2.17"

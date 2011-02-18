@@ -1,5 +1,5 @@
 /*
- * $Id: htool.prg,v 1.4 2009-08-10 01:39:59 lculik Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  *

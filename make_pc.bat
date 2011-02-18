@@ -1,6 +1,6 @@
 @echo off
 
-rem $Id: make_pc.bat,v 1.2 2004-11-16 12:26:44 sandrorrfreire Exp $
+rem $Id$
 rem
 rem Batch file for building under Pelles C
 rem

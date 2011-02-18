@@ -1,5 +1,5 @@
 /*
- *$Id: message.c,v 1.19 2010-11-10 22:13:23 druzus Exp $
+ *$Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level messages functions

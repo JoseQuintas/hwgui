@@ -1,5 +1,5 @@
 /*
- * $Id: procini.prg,v 1.4 2009-04-13 12:20:25 alkresin Exp $
+ * $Id$
  *
  * Common procedures
  * Ini files reading

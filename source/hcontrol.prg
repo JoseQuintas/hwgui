@@ -1,5 +1,5 @@
 /*
- * $Id: hcontrol.prg,v 1.166 2010-10-31 11:59:46 lfbasso Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes

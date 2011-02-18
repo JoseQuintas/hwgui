@@ -1,5 +1,5 @@
 /*
- *$Id: hdialog.prg,v 1.16 2009-11-14 07:23:36 lculik Exp $
+ *$Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class

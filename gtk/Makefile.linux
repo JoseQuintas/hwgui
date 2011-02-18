@@ -1,4 +1,4 @@
-# $Id: Makefile.linux,v 1.13 2009-05-26 16:24:19 lculik Exp $
+# $Id$
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 ifeq ($(HB_ROOT),)

@@ -1,5 +1,5 @@
 /*
- *$Id: hwmake.prg,v 1.10 2008-11-28 23:55:14 sandrorrfreire Exp $
+ *$Id$
  *
  * HWGUI - Harbour Win32 GUI library 
  * 

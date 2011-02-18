@@ -1,5 +1,5 @@
 /*
- * $Id: wprint.c,v 1.32 2010-11-10 19:15:42 druzus Exp $
+ * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level print functions

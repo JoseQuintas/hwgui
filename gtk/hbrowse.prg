@@ -1,5 +1,5 @@
 /*
- * $Id: hbrowse.prg,v 1.20 2009-05-07 06:56:27 alkresin Exp $
+ * $Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HBrowse class - browse databases and arrays

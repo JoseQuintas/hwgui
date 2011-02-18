@@ -1,5 +1,5 @@
 /*
- *$Id: hcontrol.prg,v 1.19 2009-12-09 15:24:45 lculik Exp $
+ *$Id$
  *
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HControl, HStatus, HStatic, HButton, HGroup, HLine classes 

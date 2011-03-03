@@ -2313,7 +2313,7 @@ METHOD DoVScroll( wParam ) CLASS HBrowse
          Eval( ::bSkip, Self, 1 )
          Eval( ::bSkip, Self, - 1 )
          VScrollPos( Self, 0, .f. )
-         ::refresh( ::nFootRows > 0 )
+         ::refresh()
       ENDIF
    ENDIF
    RETURN 0

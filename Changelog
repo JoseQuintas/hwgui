@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-02-23 18:13 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/makefile.bc
+    ! Reverted cflags updated to use -DHWG_USE_POINTER_ITEM fo problem with xharbour.
+
+2011-02-23 17:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hbrowse.prg
+    ! SB_THUMBPOSITION and SB_THUMBTRACK not replicate last record.
+
+
 2011-02-18 14:20 UTC+0100 Maurizio la Cecilia (m.lacecilia at gmail.com)
 
   * SVN maintenance revision:

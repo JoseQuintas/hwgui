@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-03-30 11:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
+  * source/htool.prg
+    ! fixed to work also on non resource windows
+    
 2011-02-23 18:13 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/makefile.bc
     ! Reverted cflags updated to use -DHWG_USE_POINTER_ITEM fo problem with xharbour.

@@ -343,7 +343,7 @@ METHOD CREATETOOL() CLASS hToolBar
          ENDIF
 
       NEXT
-      IF Len( aButton ) > 0 .AND. ::lResource
+      IF Len( aButton ) > 0 //.AND. ::lResource
 
          aBmpSize := GetBitmapSize( aButton[ 1 ] )
          /*

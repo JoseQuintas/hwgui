@@ -7,7 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
-
+2011-03-30 11:01 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
+  * makefile.bc
+    ! added back -DHWG_USE_POINTER_ITEM 
+    
 2011-03-30 11:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/htool.prg
     ! fixed to work also on non resource windows

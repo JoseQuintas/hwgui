@@ -1846,6 +1846,15 @@ HB_FUNC( TOOLBAR_GETINFOTIPID )
    hb_retnl( idButton );
 }
 
+
+HB_FUNC( TOOLBAR_IDCLICK )
+{
+   LPNMMOUSE pDispInfo = ( LPNMMOUSE ) HB_PARHANDLE( 1 );
+   DWORD idButton = pDispInfo->dwItemSpec;
+   hb_retnl( idButton );
+}
+
+
 HB_FUNC( TOOLBAR_SUBMENU )
 {
    LPNMTOOLBAR lpnmTB = ( LPNMTOOLBAR ) HB_PARHANDLE( 1 );

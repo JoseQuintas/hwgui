@@ -438,6 +438,12 @@ METHOD Notify( lParam ) CLASS hToolBar
       ELSE
          TOOLBAR_SUBMENU( lParam, 1, ::oParent:handle )
       ENDIF
+   elseif nCode == NM_CLICK
+      nId := TOOLBAR_IDCLICK( lParam )     
+      nPos := AScan( ::aItem,  { | x | x[ 2 ] == nId } )
+      if nPos > 0
+         eval( ::aItem[nPos,7])
+      endif
    ENDIF
 
    RETURN 0

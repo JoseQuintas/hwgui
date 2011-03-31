@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2011-03-31 11:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
+  * source/htool.prg
+    ! fixed click when toolbar is on main window
+  * source/control.b
+    ! added function TOOLBAR_IDCLICK
+      
 2011-03-31 09:01 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/dialog.c
     ! fixed s_DlgProc and s_ModalDlgProc to correct process return values of follow messages WM_CTLCOLORSTATIC, 

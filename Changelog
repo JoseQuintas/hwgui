@@ -7,6 +7,11 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2011-03-31 09:01 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
+  * source/dialog.c
+    ! fixed s_DlgProc and s_ModalDlgProc to correct process return values of follow messages WM_CTLCOLORSTATIC, 
+    WM_CTLCOLOREDIT, WM_CTLCOLORBTN, WM_CTLCOLORLISTBOX, WM_CTLCOLORDLG when hwgui is compiled with -DHWG_USE_POINTER_ITEM 
+    
 2011-03-30 11:01 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * makefile.bc
     ! added back -DHWG_USE_POINTER_ITEM 
@@ -22,7 +27,6 @@
 2011-02-23 17:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! SB_THUMBPOSITION and SB_THUMBTRACK not replicate last record.
-
 
 2011-02-18 14:20 UTC+0100 Maurizio la Cecilia (m.lacecilia at gmail.com)
 

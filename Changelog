@@ -7,25 +7,337 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-04-02 09:28 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/gtk/build.sh
+  * hwgui/gtk/samples/bldgw.bat
+  * hwgui/gtk/samples/build.sh
+  * hwgui/Changelog.002
+  * hwgui/Changelog
+  * hwgui/make_b32.bat
+  * hwgui/Changelog.004
+  * hwgui/make_pc.bat
+  * hwgui/doc/hwgdoc_commands.html
+  * hwgui/doc/author.jpg
+  * hwgui/doc/hwgdoc_functions.html
+  * hwgui/doc/hwgdoc_misc.html
+  * hwgui/doc/hwgdoc_classes.html
+  * hwgui/doc/hwgdoc.html
+  * hwgui/doc/table.css
+  * hwgui/make_vc.bat
+  * hwgui/makemngw.bat
+  * hwgui/make_w32.bat
+  * hwgui/makedll.bat
+  * hwgui/make_gtk.sh
+  * hwgui/make_gnu.sh
+  * hwgui/contrib/menus/test.bat
+  * hwgui/source/qhtm/Makefile
+  * hwgui/source/Makefile
+  * hwgui/source/procmisc/Makefile
+  * hwgui/source/xml/Makefile
+  * hwgui/utils/designer/blddesig.bat
+  * hwgui/utils/designer/xmlrun/bldxml.bat
+  * hwgui/utils/designer/xmlrun/ALBUM.CDX
+  * hwgui/utils/designer/resource/bmp/smtoolbar.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_menu.bmp
+  * hwgui/utils/designer/resource/bmp/smcdrom.bmp
+  * hwgui/utils/designer/resource/bmp/smfontcolor.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_grid2.bmp
+  * hwgui/utils/designer/resource/bmp/smfont.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_area.bmp
+  * hwgui/utils/designer/resource/bmp/smfontcenter.bmp
+  * hwgui/utils/designer/resource/bmp/ok.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_bmp.bmp
+  * hwgui/utils/designer/resource/bmp/smaligntop.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_timer.bmp
+  * hwgui/utils/designer/resource/bmp/smtrash.bmp
+  * hwgui/utils/designer/resource/bmp/smimage.bmp
+  * hwgui/utils/designer/resource/bmp/smdotyellow.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_anim.bmp
+  * hwgui/utils/designer/resource/bmp/smcenterhorz.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_edit.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_icon.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_new.bmp
+  * hwgui/utils/designer/resource/bmp/smbrowfilt.bmp
+  * hwgui/utils/designer/resource/bmp/smbook.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_progbar.bmp
+  * hwgui/utils/designer/resource/bmp/smbrowse.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_track.bmp
+  * hwgui/utils/designer/resource/bmp/smfontright.bmp
+  * hwgui/utils/designer/resource/bmp/smundo.bmp
+  * hwgui/utils/designer/resource/bmp/smfontbold.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_button.bmp
+  * hwgui/utils/designer/resource/bmp/smcopy.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_page.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_rhline.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_calen.bmp
+  * hwgui/utils/designer/resource/bmp/smfontleft.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_listbox.bmp
+  * hwgui/utils/designer/resource/bmp/smprinter.bmp
+  * hwgui/utils/designer/resource/bmp/cancel.bmp
+  * hwgui/utils/designer/resource/bmp/smkey.bmp
+  * hwgui/utils/designer/resource/bmp/smredo.bmp
+  * hwgui/utils/designer/resource/bmp/smexit2.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_column.bmp
+  * hwgui/utils/designer/resource/bmp/smcut.bmp
+  * hwgui/utils/designer/resource/bmp/smexit3.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_save.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_radio.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_rvline.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_panel.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_hline.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_tree.bmp
+  * hwgui/utils/designer/resource/bmp/smascend.bmp
+  * hwgui/utils/designer/resource/bmp/smdotret.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_hlink.bmp
+  * hwgui/utils/designer/resource/bmp/smsum.bmp
+  * hwgui/utils/designer/resource/bmp/smclose.bmp
+  * hwgui/utils/designer/resource/bmp/smconfig.bmp
+  * hwgui/utils/designer/resource/bmp/smdotgreen.bmp
+  * hwgui/utils/designer/resource/bmp/smfloopy.bmp
+  * hwgui/utils/designer/resource/bmp/smok.bmp
+  * hwgui/utils/designer/resource/bmp/smexit.bmp
+  * hwgui/utils/designer/resource/bmp/smhelp2.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_updown.bmp
+  * hwgui/utils/designer/resource/bmp/smbrowfind.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_tool.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_vline.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_date.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_check.bmp
+  * hwgui/utils/designer/resource/bmp/smpaste.bmp
+  * hwgui/utils/designer/resource/bmp/smdesc.bmp
+  * hwgui/utils/designer/resource/bmp/smnext.bmp
+  * hwgui/utils/designer/resource/bmp/smsameheight.bmp
+  * hwgui/utils/designer/resource/bmp/smcentervert.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_grid.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_static.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_box.bmp
+  * hwgui/utils/designer/resource/bmp/smworld.bmp
+  * hwgui/utils/designer/resource/bmp/smalignright.bmp
+  * hwgui/utils/designer/resource/bmp/smsound.bmp
+  * hwgui/utils/designer/resource/bmp/smnotepad.bmp
+  * hwgui/utils/designer/resource/bmp/smhd.bmp
+  * hwgui/utils/designer/resource/bmp/sminfo.bmp
+  * hwgui/utils/designer/resource/bmp/smfontitalic.bmp
+  * hwgui/utils/designer/resource/bmp/smplayer.bmp
+  * hwgui/utils/designer/resource/bmp/smcolumn.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_combo.bmp
+  * hwgui/utils/designer/resource/bmp/smsave.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_open.bmp
+  * hwgui/utils/designer/resource/bmp/smlast.bmp
+  * hwgui/utils/designer/resource/bmp/smfontunder.bmp
+  * hwgui/utils/designer/resource/bmp/smricheditbox.bmp
+  * hwgui/utils/designer/resource/bmp/smalignleft.bmp
+  * hwgui/utils/designer/resource/bmp/smhyperlink.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_rgroup.bmp
+  * hwgui/utils/designer/resource/bmp/smprev.bmp
+  * hwgui/utils/designer/resource/bmp/smfind.bmp
+  * hwgui/utils/designer/resource/bmp/smproprie.bmp
+  * hwgui/utils/designer/resource/bmp/smtimer.bmp
+  * hwgui/utils/designer/resource/bmp/hwg.ico
+  * hwgui/utils/designer/resource/bmp/bmp_status.bmp
+  * hwgui/utils/designer/resource/bmp/smpreview.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_rich.bmp
+  * hwgui/utils/designer/resource/bmp/smmse.bmp
+  * hwgui/utils/designer/resource/bmp/smcancel.bmp
+  * hwgui/utils/designer/resource/bmp/smgrid.bmp
+  * hwgui/utils/designer/resource/bmp/smsamewidth.bmp
+  * hwgui/utils/designer/resource/bmp/smnet.bmp
+  * hwgui/utils/designer/resource/bmp/smclip.bmp
+  * hwgui/utils/designer/resource/bmp/smfirst.bmp
+  * hwgui/utils/designer/resource/bmp/smmoney.bmp
+  * hwgui/utils/designer/resource/bmp/smsaveall.bmp
+  * hwgui/utils/designer/resource/bmp/smadd.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_arrow.bmp
+  * hwgui/utils/designer/resource/bmp/smhelp.bmp
+  * hwgui/utils/designer/resource/bmp/smnew.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_group.bmp
+  * hwgui/utils/designer/resource/bmp/bmp_browse.bmp
+  * hwgui/utils/designer/resource/bmp/smback.bmp
+  * hwgui/utils/designer/resource/bmp/smexcel.bmp
+  * hwgui/utils/designer/resource/bmp/smopen.bmp
+  * hwgui/utils/designer/dlldesig.bat
+  * hwgui/utils/designer/bldlib.bat
+  * hwgui/utils/designer/samples/bldexam.bat
+  * hwgui/utils/designer/samples/FT/setup.JPG
+  * hwgui/utils/designer/samples/FT/open.JPG
+  * hwgui/utils/designer/samples/FT/PRINTER.JPG
+  * hwgui/utils/designer/samples/FT/close.JPG
+  * hwgui/utils/designer/samples/FT/help.JPG
+  * hwgui/utils/designer/samples/FT/NEW24X24.JPG
+  * hwgui/utils/designer/samples/FT/save.JPG
+  * hwgui/utils/designer/samples/FT/smExcel.bmp
+  * hwgui/utils/designer/designer.hbp
+  * hwgui/utils/dbc/bldcdx.bat
+  * hwgui/utils/dbc/bld.bat
+  * hwgui/utils/hwreport/bldexam.bat
+  * hwgui/utils/hwreport/bldhwrep.bat
+  * hwgui/utils/hwmake/bld.bat
+  * hwgui/samples/ini/bld.bat
+  * hwgui/samples/animation/bld.bat
+  * hwgui/samples/animation/animation.hbp
+  * hwgui/samples/animation/processando.avi
+  * hwgui/samples/monthcalendar/testhmonth.hbp
+  * hwgui/samples/monthcalendar/bld.bat
+  * hwgui/samples/ole/hole.hbp
+  * hwgui/samples/ole/bld.bat
+  * hwgui/samples/ole/iesample.hbp
+  * hwgui/samples/image/DOOR.BMP
+  * hwgui/samples/image/ok.ico
+  * hwgui/samples/image/New_m.bmp
+  * hwgui/samples/image/exit.bmp
+  * hwgui/samples/image/Open_m.bmp
+  * hwgui/samples/image/cl_fl.bmp
+  * hwgui/samples/image/cancel.ico
+  * hwgui/samples/image/PIM.ICO
+  * hwgui/samples/image/Exit_m.bmp
+  * hwgui/samples/image/NEW.BMP
+  * hwgui/samples/image/book.bmp
+  * hwgui/samples/image/astro.jpg
+  * hwgui/samples/image/SAVE.BMP
+  * hwgui/samples/image/op_fl.bmp
+  * hwgui/samples/image/BUILD.BMP
+  * hwgui/samples/image/LOGO.BMP
+  * hwgui/samples/image/open.bmp
+  * hwgui/samples/spliter/testspli.hbp
+  * hwgui/samples/spliter/bld.bat
+  * hwgui/samples/spliter/splitv.cur
+  * hwgui/samples/spliter/cursor_7.cur
+  * hwgui/samples/spliter/splith.cur
+  * hwgui/samples/listbox/demohlist.hbp
+  * hwgui/samples/listbox/bld.bat
+  * hwgui/samples/hwedit/child.ico
+  * hwgui/samples/hwedit/editor.hbp
+  * hwgui/samples/hwedit/editor.ico
+  * hwgui/samples/hwedit/bld.bat
+  * hwgui/samples/hwedit/config.dat
+  * hwgui/samples/trayicon/bld.bat
+  * hwgui/samples/trayicon/testtray.hbp
+  * hwgui/samples/bldpc.bat
+  * hwgui/samples/rtf/testrtf.hbp
+  * hwgui/samples/rtf/bld.bat
+  * hwgui/samples/barcode/bld.bat
+  * hwgui/samples/tree/bld.bat
+  * hwgui/samples/tree/testsdi.hbp
+  * hwgui/samples/tree/testtree.hbp
+  * hwgui/samples/bldvc.bat
+  * hwgui/samples/rmchart/bld.bat
+  * hwgui/samples/rmchart/rmsample.hbp
+  * hwgui/samples/graph/bld.bat
+  * hwgui/samples/graph/graph.hbp
+  * hwgui/samples/viewer/bld_view.bat
+  * hwgui/samples/viewer/bldgw.bat
+  * hwgui/samples/viewer/viewer.hbp
+  * hwgui/samples/browse/arbrow1.hbp
+  * hwgui/samples/browse/arbrow2.hbp
+  * hwgui/samples/browse/browse_1.hbp
+  * hwgui/samples/browse/browse_2.hbp
+  * hwgui/samples/browse/browse_3.hbp
+  * hwgui/samples/browse/browse_4.hbp
+  * hwgui/samples/browse/testbrw.hbp
+  * hwgui/samples/browse/bld.bat
+  * hwgui/samples/browse/colrbloc.hbp
+  * hwgui/samples/menu/bld.bat
+  * hwgui/samples/menu/testmenubitmap.hbp
+  * hwgui/samples/database/bld.bat
+  * hwgui/samples/database/dbview.hbp
+  * hwgui/samples/database/demodbf.hbp
+  * hwgui/samples/tab/tab3.hbp
+  * hwgui/samples/tab/bld.bat
+  * hwgui/samples/tab/tab.hbp
+  * hwgui/samples/combobox/combobox.hbp
+  * hwgui/samples/combobox/bld.bat
+  * hwgui/samples/propsh/propsh.hbp
+  * hwgui/samples/propsh/bld.bat
+  * hwgui/samples/Makefile.pc
+  * hwgui/samples/get/bld.bat
+  * hwgui/samples/get/testget1.hbp
+  * hwgui/samples/get/testget2.hbp
+  * hwgui/samples/get/testget3.hbp
+  * hwgui/samples/get/testget4.hbp
+  * hwgui/samples/maximize/demomaximize.hbp
+  * hwgui/samples/maximize/bld.bat
+  * hwgui/samples/scrollbar/bld.bat
+  * hwgui/samples/scrollbar/tstscrlbar.hbp
+  * hwgui/samples/grid/grid_3.hbp
+  * hwgui/samples/grid/grid_4.hbp
+  * hwgui/samples/grid/grid_5.hbp
+  * hwgui/samples/grid/grid_6.hbp
+  * hwgui/samples/grid/bld.bat
+  * hwgui/samples/grid/grid_1.hbp
+  * hwgui/samples/grid/grid_2.hbp
+  * hwgui/samples/bld4dll.bat
+  * hwgui/samples/help/helpdemo.hbp
+  * hwgui/samples/help/bld.bat
+  * hwgui/samples/shadebtn/shadebtn.hbp
+  * hwgui/samples/shadebtn/bld.bat
+  * hwgui/samples/trackbar/trackbar.hbp
+  * hwgui/samples/trackbar/bld.bat
+  * hwgui/samples/progressbar/bld.bat
+  * hwgui/samples/progressbar/progbars.hbp
+  * hwgui/samples/flash/flashocx.hbp
+  * hwgui/samples/flash/bld.bat
+  * hwgui/samples/build/bld.bat
+  * hwgui/samples/build/buildpelles.hbp
+  * hwgui/samples/xml/bld.bat
+  * hwgui/samples/xml/testxml.hbp
+  * hwgui/samples/hsplash/Hwgui.bmp
+  * hwgui/samples/hsplash/bld.bat
+  * hwgui/samples/hsplash/tstsplash.hbp
+  * hwgui/samples/printdos/bld.bat
+  * hwgui/samples/printdos/tstprdos.hbp
+  * hwgui/samples/hello/bld.bat
+  * hwgui/samples/hello/hello.hbp
+  * hwgui/samples/bldgw.bat
+  * hwgui/samples/mysql/bldwin.bat
+  * hwgui/samples/mysql/bld.bat
+  * hwgui/samples/mysql/hwmysql.hbp
+  * hwgui/samples/bld.bat
+  * hwgui/samples/browsefilter/browsefilter.hbp
+  * hwgui/samples/browsefilter/bld.bat
+  * hwgui/samples/all/bld.bat
+  * hwgui/samples/all/a.hbp
+  * hwgui/samples/all/test1.hbp
+  * hwgui/samples/pdf/pdfreader.hbp
+  * hwgui/samples/pdf/bld.bat
+  * hwgui/samples/pdf/sample.pdf
+  * hwgui/samples/ipadress/testip.hbp
+  * hwgui/samples/ipadress/bld.bat
+  * hwgui/samples/nicebutton/bld.bat
+  * hwgui/samples/nicebutton/nice.hbp
+  * hwgui/samples/nicebutton/nice2.hbp
+  * hwgui/samples/mdichild/bld.bat
+  * hwgui/samples/mdichild/testchild.hbp
+  * hwgui/samples/winprn/winprn.hbp
+  * hwgui/samples/winprn/bld.bat
+  * hwgui/samples/hbrun/bld.bat
+  * hwgui/samples/hbrun/hbrun.hbp
+    ! fixed existing SVN attributes
+    * set SVN attributes:
+         svn:keywords=Author Date Id Revision
+         svn:eol-style={native|LF|CRLF}
+         svn:executable
+      Correct attributes chose using file extensions.
+
 2011-03-31 11:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/htool.prg
     ! fixed click when toolbar is on main window
   * source/control.b
     ! added function TOOLBAR_IDCLICK
-      
+
 2011-03-31 09:01 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/dialog.c
     ! fixed s_DlgProc and s_ModalDlgProc to correct process return values of follow messages WM_CTLCOLORSTATIC, 
     WM_CTLCOLOREDIT, WM_CTLCOLORBTN, WM_CTLCOLORLISTBOX, WM_CTLCOLORDLG when hwgui is compiled with -DHWG_USE_POINTER_ITEM 
-    
+
 2011-03-30 11:01 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * makefile.bc
     ! added back -DHWG_USE_POINTER_ITEM 
-    
+
 2011-03-30 11:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/htool.prg
     ! fixed to work also on non resource windows
-    
+
 2011-02-23 18:13 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/makefile.bc
     ! Reverted cflags updated to use -DHWG_USE_POINTER_ITEM fo problem with xharbour.

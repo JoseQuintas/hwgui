@@ -7,12 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
 2010-02-11 13:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
     + DT_NOPREFIX + DT_NOCLIP in TEXT in lines of the Browse
       Turns off processing of prefix characters. interprets the mnemonic-prefix character & as a directive to underscore
-      Draws without clipping. DrawText is somewhat faster when DT_NOCLIP is used. 
-       
+      Draws without clipping. DrawText is somewhat faster when DT_NOCLIP is used.
+
 2010-02-11 19:18 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/grid.c
     ! fixed LISTVIEW_SETDISPINFO() to use internal LV_DISPINFO buffer
@@ -28,7 +29,7 @@
       memory area used for string item.
 
     All above fixes created by Francesco Perillo - many thanks.
-    
+
 2010-02-11 13:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcheck.prg
     ! fix in METHOD WHEN if bsetget = Nil

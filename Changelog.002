@@ -7,27 +7,27 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
-     
+
 2008-01-28 10:40 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * gtk/gtkmain.c
     ! added writestatus function
-    
+
 2008-01-28 10:25 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * gtk/drawtext.c
     ! fixed WriteStatus Function
-    
+
 2008-01-28 10:10 Luiz Rafael Culik <Luiz at xharbour.com.br>
-  * gtk/control.c    
+  * gtk/control.c
     ! Added Status Bar Functions
   * gtk/hcontrol.prg
     ! uncommented hstatus class
-    
+
 2008-01-28 09:40 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * gtk/hcontrol.prg 
     ! added Hbuttonex classe like windows version
-  * gtk/control.c    
+  * gtk/control.c
     ! enhaced CreateButton to accept an 9th parameter with image to display
-    
+
 2008-01-22 13:24 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/draw.c
     * commented unused part of code to avoid warnings

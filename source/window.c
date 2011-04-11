@@ -612,7 +612,7 @@ HB_FUNC( HIDEWINDOW )
 
 HB_FUNC( SHOWWINDOW )
 {
-   ShowWindow( ( HWND ) HB_PARHANDLE( 1 ), SW_SHOW );
+   ShowWindow( ( HWND ) HB_PARHANDLE( 1 ), ( ISNIL( 2 ) ) ? SW_SHOW : hb_parni( 2 ) ) ;
 }
 
 HB_FUNC( HWG_RESTOREWINDOW )

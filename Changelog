@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-04-11 10:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/window.c
+    + add parameter INT nCmdShow in HB_FUNC( SHOWWINDOW )
+	   Controls how the window is to be shown.
+
 2011-04-02 09:28 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/gtk/build.sh
   * hwgui/gtk/samples/bldgw.bat

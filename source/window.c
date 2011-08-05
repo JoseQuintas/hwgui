@@ -92,11 +92,11 @@ HB_FUNC( HWG_INITMAINWINDOW )
       wndclass.cbWndExtra = 0;
       wndclass.hInstance = ( HINSTANCE ) hInstance;
       wndclass.hIcon = ( hb_pcount(  ) > 4 &&
-            !ISNIL( 5 ) ) ? ( HICON ) HB_PARHANDLE( 5 ) :
-                            LoadIcon( ( HINSTANCE ) hInstance, TEXT( "" ) );
+            !HB_ISNIL( 5 ) ) ? ( HICON ) HB_PARHANDLE( 5 ) :
+                               LoadIcon( ( HINSTANCE ) hInstance, TEXT( "" ) );
       wndclass.hCursor = LoadCursor( NULL, IDC_ARROW );
       wndclass.hbrBackground = ( ( ( hb_pcount(  ) > 5 &&
-                        !ISNIL( 6 ) ) ? ( ( hb_parnl( 6 ) ==
+                        !HB_ISNIL( 6 ) ) ? ( ( hb_parnl( 6 ) ==
                               -1 ) ? ( HBRUSH ) NULL : ( HBRUSH )
                         HB_PARHANDLE( 6 ) ) : ( HBRUSH ) ( COLOR_WINDOW +
                         1 ) ) );
@@ -195,13 +195,13 @@ void ProcessMdiMessage( HWND hJanBase, HWND hJanClient, MSG msg,
  */
 HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 {
-   HACCEL hAcceler = ( ISNIL( 2 ) ) ? NULL : ( HACCEL ) hb_parnl( 2 );
+   HACCEL hAcceler = ( HB_ISNIL( 2 ) ) ? NULL : ( HACCEL ) hb_parnl( 2 );
    MSG msg;
 
    if( hb_parl( 1 ) )
    {
-      ShowWindow( aWindows[0], ( ISLOG( 3 ) &&
-                  hb_parl( 3 ) ) ? SW_SHOWMAXIMIZED : ( ( ISLOG( 4 ) &&
+      ShowWindow( aWindows[0], ( HB_ISLOG( 3 ) &&
+                  hb_parl( 3 ) ) ? SW_SHOWMAXIMIZED : ( ( HB_ISLOG( 4 ) &&
                         hb_parl( 4 ) ) ? SW_SHOWMINIMIZED : SW_SHOWNORMAL ) );
    }
 
@@ -214,8 +214,8 @@ HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 HB_FUNC( HWG_PROCESSMESSAGE )
 {
    MSG msg;
-   BOOL lMdi = ( ISNIL( 1 ) ) ? 0 : hb_parl( 1 );
-   int nSleep = ( ISNIL( 2 ) ) ? 1 : hb_parni( 2 );
+   BOOL lMdi = ( HB_ISNIL( 1 ) ) ? 0 : hb_parl( 1 );
+   int nSleep = ( HB_ISNIL( 2 ) ) ? 1 : hb_parni( 2 );
 
    if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
    {
@@ -265,16 +265,16 @@ HB_FUNC( HWG_INITCHILDWINDOW )
       wndclass.cbWndExtra = 0;
       wndclass.hInstance = ( HINSTANCE ) hInstance;
       wndclass.hIcon = ( hb_pcount(  ) > 4 &&
-            !ISNIL( 5 ) ) ? ( HICON ) HB_PARHANDLE( 5 ) :
+            !HB_ISNIL( 5 ) ) ? ( HICON ) HB_PARHANDLE( 5 ) :
             LoadIcon( ( HINSTANCE ) hInstance, TEXT( "" ) );
       wndclass.hCursor = LoadCursor( NULL, IDC_ARROW );
-      wndclass.hbrBackground = ( ( ( hb_pcount(  ) > 5 && !ISNIL( 6 ) ) ?
+      wndclass.hbrBackground = ( ( ( hb_pcount(  ) > 5 && !HB_ISNIL( 6 ) ) ?
                   ( ( hb_parnl( 6 ) ==
                               -1 ) ? ( HBRUSH ) NULL : ( HBRUSH )
                         HB_PARHANDLE( 6 ) ) : ( HBRUSH ) ( COLOR_WINDOW +
                         1 ) ) );
       /*
-         wndclass.hbrBackground = ( ( (hb_pcount()>5 && !ISNIL(6))?
+         wndclass.hbrBackground = ( ( (hb_pcount()>5 && !HB_ISNIL(6))?
          ( (hb_parnl(6)==-1)? (HBRUSH)(COLOR_WINDOW+1) :
          CreateSolidBrush( hb_parnl(6) ) )
          : (HBRUSH)(COLOR_WINDOW+1) ) );
@@ -317,8 +317,8 @@ HB_FUNC( HWG_INITCHILDWINDOW )
 HB_FUNC( HWG_ACTIVATECHILDWINDOW )
 {
    // ShowWindow( (HWND) HB_PARHANDLE(2), hb_parl(1) ? SW_SHOWNORMAL : SW_HIDE );
-   ShowWindow( ( HWND ) HB_PARHANDLE( 2 ), ( ISLOG( 3 ) &&
-               hb_parl( 3 ) ) ? SW_SHOWMAXIMIZED : ( ( ISLOG( 4 ) &&
+   ShowWindow( ( HWND ) HB_PARHANDLE( 2 ), ( HB_ISLOG( 3 ) &&
+               hb_parl( 3 ) ) ? SW_SHOWMAXIMIZED : ( ( HB_ISLOG( 4 ) &&
                      hb_parl( 4 ) ) ? SW_SHOWMINIMIZED : SW_SHOWNORMAL ) );
 }
 
@@ -353,7 +353,7 @@ HB_FUNC( HWG_INITMDIWINDOW )
       wndclass.cbWndExtra = 0;
       wndclass.hInstance = ( HINSTANCE ) hInstance;
       wndclass.hIcon = ( hb_pcount(  ) > 4 &&
-            !ISNIL( 5 ) ) ? ( HICON ) HB_PARHANDLE( 5 ) :
+            !HB_ISNIL( 5 ) ) ? ( HICON ) HB_PARHANDLE( 5 ) :
                             LoadIcon( ( HINSTANCE ) hInstance, TEXT( "" ) );
       wndclass.hCursor = LoadCursor( NULL, IDC_ARROW );
       wndclass.hbrBackground = ( HBRUSH ) ( COLOR_WINDOW + 1 );
@@ -368,10 +368,10 @@ HB_FUNC( HWG_INITMDIWINDOW )
       {
          // Register client window
          wc.lpfnWndProc = ( WNDPROC ) s_MDIChildWndProc;
-         wc.hIcon = ( hb_pcount(  ) > 4 && !ISNIL( 5 ) ) ?
+         wc.hIcon = ( hb_pcount(  ) > 4 && !HB_ISNIL( 5 ) ) ?
                     ( HICON ) HB_PARHANDLE( 5 ) :
                     LoadIcon( ( HINSTANCE ) hInstance, TEXT( "" ) );
-         wc.hbrBackground = ( hb_pcount(  ) > 5 && !ISNIL( 6 ) ) ?
+         wc.hbrBackground = ( hb_pcount(  ) > 5 && !HB_ISNIL( 6 ) ) ?
              ( HBRUSH ) HB_PARHANDLE( 6 ) : ( HBRUSH ) ( COLOR_WINDOW + 1 );
          wc.lpszMenuName = NULL;
          wc.cbWndExtra = 0;
@@ -420,7 +420,7 @@ HB_FUNC( HWG_INITCLIENTWINDOW )
 {
    CLIENTCREATESTRUCT ccs;
    HWND hWnd;
-   int nPos = ( hb_pcount(  ) > 1 && !ISNIL( 2 ) ) ? hb_parni( 2 ) : 0;
+   int nPos = ( hb_pcount(  ) > 1 && !HB_ISNIL( 2 ) ) ? hb_parni( 2 ) : 0;
    int x = hb_parnl( 3 );
    int y = hb_parnl( 4 );
    int width = hb_parnl( 5 );
@@ -441,13 +441,13 @@ HB_FUNC( HWG_INITCLIENTWINDOW )
 
 HB_FUNC( HWG_ACTIVATEMDIWINDOW )
 {
-   HACCEL hAcceler = ( ISNIL( 2 ) ) ? NULL : ( HACCEL ) hb_parnl( 2 );
+   HACCEL hAcceler = ( HB_ISNIL( 2 ) ) ? NULL : ( HACCEL ) hb_parnl( 2 );
    MSG msg;
 
    if( hb_parl( 1 ) )
    {
-      ShowWindow( aWindows[0], ( ISLOG( 3 ) &&
-                  hb_parl( 3 ) ) ? SW_SHOWMAXIMIZED : ( ( ISLOG( 4 ) &&
+      ShowWindow( aWindows[0], ( HB_ISLOG( 3 ) &&
+                  hb_parl( 3 ) ) ? SW_SHOWMAXIMIZED : ( ( HB_ISLOG( 4 ) &&
                         hb_parl( 4 ) ) ? SW_SHOWMINIMIZED : SW_SHOWNORMAL ) );
       ShowWindow( aWindows[1], SW_SHOW );
    }
@@ -518,7 +518,7 @@ HB_FUNC( SENDMESSAGE )
    hb_retnl( ( LONG ) SendMessage( ( HWND ) HB_PARHANDLE( 1 ),  // handle of destination window
                   ( UINT ) hb_parni( 2 ),  // message to send
                   ( WPARAM ) hb_parnl( 3 ),        // first message parameter
-                  lpText ? ( LPARAM ) lpText : ISPOINTER( 4 ) ? ( LPARAM ) HB_PARHANDLE( 4 ) : ( LPARAM ) hb_parnl( 4 )     // second message parameter
+                  lpText ? ( LPARAM ) lpText : HB_ISPOINTER( 4 ) ? ( LPARAM ) HB_PARHANDLE( 4 ) : ( LPARAM ) hb_parnl( 4 )     // second message parameter
                ) );
    hb_strfree( hText );
 }
@@ -528,7 +528,7 @@ HB_FUNC( POSTMESSAGE )
 
    hb_retnl( ( LONG ) PostMessage( ( HWND ) HB_PARHANDLE( 1 ),  // handle of destination window
                ( UINT ) hb_parni( 2 ),  // message to send
-               ISPOINTER( 3 ) ? ( WPARAM ) HB_PARHANDLE( 3 ) : ( WPARAM ) hb_parnl( 3 ),        // first message parameter
+               HB_ISPOINTER( 3 ) ? ( WPARAM ) HB_PARHANDLE( 3 ) : ( WPARAM ) hb_parnl( 3 ),        // first message parameter
                ( LPARAM ) hb_parnl( 4 ) // second message parameter
           ) );
 
@@ -586,7 +586,7 @@ HB_FUNC( SETWINDOWFONT )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), WM_SETFONT,
          ( WPARAM ) hb_parnl( 2 ),
-         MAKELPARAM( ( ISNIL( 3 ) ) ? 0 : hb_parl( 3 ), 0 ) );
+         MAKELPARAM( ( HB_ISNIL( 3 ) ) ? 0 : hb_parl( 3 ), 0 ) );
 }
 
 HB_FUNC( ENABLEWINDOW )
@@ -612,7 +612,7 @@ HB_FUNC( HIDEWINDOW )
 
 HB_FUNC( SHOWWINDOW )
 {
-   ShowWindow( ( HWND ) HB_PARHANDLE( 1 ), ( ISNIL( 2 ) ) ? SW_SHOW : hb_parni( 2 ) ) ;
+   ShowWindow( ( HWND ) HB_PARHANDLE( 1 ), ( HB_ISNIL( 2 ) ) ? SW_SHOW : hb_parni( 2 ) ) ;
 }
 
 HB_FUNC( HWG_RESTOREWINDOW )
@@ -1159,10 +1159,10 @@ HB_FUNC( MAKELPARAM )
 HB_FUNC( SETWINDOWPOS )
 {
    BOOL res;
-   HWND hWnd = ( ISNUM( 1 ) ||
-         ISPOINTER( 1 ) ) ? ( HWND ) HB_PARHANDLE( 1 ) : NULL;
-   HWND hWndInsertAfter = ( ISNUM( 2 ) ||
-         ISPOINTER( 2 ) ) ? ( HWND ) HB_PARHANDLE( 2 ) : NULL;
+   HWND hWnd = ( HB_ISNUM( 1 ) ||
+         HB_ISPOINTER( 1 ) ) ? ( HWND ) HB_PARHANDLE( 1 ) : NULL;
+   HWND hWndInsertAfter = ( HB_ISNUM( 2 ) ||
+         HB_ISPOINTER( 2 ) ) ? ( HWND ) HB_PARHANDLE( 2 ) : NULL;
    int X = hb_parni( 3 );
    int Y = hb_parni( 4 );
    int cx = hb_parni( 5 );
@@ -1387,10 +1387,10 @@ HB_FUNC( MINMAXWINDOW )
    DWORD m_fxMax;
    DWORD m_fyMax;
 
-   m_fxMin = ( ISNIL( 3 ) ) ? lpMMI->ptMinTrackSize.x : hb_parni( 3 );
-   m_fyMin = ( ISNIL( 4 ) ) ? lpMMI->ptMinTrackSize.y : hb_parni( 4 );
-   m_fxMax = ( ISNIL( 5 ) ) ? lpMMI->ptMaxTrackSize.x : hb_parni( 5 );
-   m_fyMax = ( ISNIL( 6 ) ) ? lpMMI->ptMaxTrackSize.y : hb_parni( 6 );
+   m_fxMin = ( HB_ISNIL( 3 ) ) ? lpMMI->ptMinTrackSize.x : hb_parni( 3 );
+   m_fyMin = ( HB_ISNIL( 4 ) ) ? lpMMI->ptMinTrackSize.y : hb_parni( 4 );
+   m_fxMax = ( HB_ISNIL( 5 ) ) ? lpMMI->ptMaxTrackSize.x : hb_parni( 5 );
+   m_fyMax = ( HB_ISNIL( 6 ) ) ? lpMMI->ptMaxTrackSize.y : hb_parni( 6 );
    lpMMI->ptMinTrackSize.x = m_fxMin;
    lpMMI->ptMinTrackSize.y = m_fyMin;
    lpMMI->ptMaxTrackSize.x = m_fxMax;

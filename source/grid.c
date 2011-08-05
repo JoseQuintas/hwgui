@@ -522,7 +522,7 @@ HB_FUNC( LISTVIEWSORTINFONEW )
    //LPNMLISTVIEW phdNotify = ( LPNMLISTVIEW ) hb_parnl( 1 ) ;
    PSORTINFO p;
 
-   if( ISPOINTER( 2 ) )
+   if( HB_ISPOINTER( 2 ) )
    {
       return;
    }

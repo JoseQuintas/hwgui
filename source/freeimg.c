@@ -605,7 +605,7 @@ HB_FUNC( FI_DRAW )
    // char cres[40];
    // BOOL l;
 
-   if( hb_pcount(  ) > 6 && !ISNIL( 7 ) )
+   if( hb_pcount(  ) > 6 && !HB_ISNIL( 7 ) )
    {
       nDestWidth = hb_parni( 7 );
       nDestHeight = hb_parni( 8 );

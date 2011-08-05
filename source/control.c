@@ -98,10 +98,10 @@ HB_FUNC( MOVEWINDOW )
 
    GetWindowRect( ( HWND ) HB_PARHANDLE( 1 ), &rc );
    MoveWindow( ( HWND ) HB_PARHANDLE( 1 ),      // handle of window
-         ( ISNIL( 2 ) ) ? rc.left : hb_parni( 2 ),      // horizontal position
-         ( ISNIL( 3 ) ) ? rc.top : hb_parni( 3 ),       // vertical position
-         ( ISNIL( 4 ) ) ? rc.right - rc.left : hb_parni( 4 ),   // width
-         ( ISNIL( 5 ) ) ? rc.bottom - rc.top : hb_parni( 5 ),   // height
+         ( HB_ISNIL( 2 ) ) ? rc.left : hb_parni( 2 ),      // horizontal position
+         ( HB_ISNIL( 3 ) ) ? rc.top : hb_parni( 3 ),       // vertical position
+         ( HB_ISNIL( 4 ) ) ? rc.right - rc.left : hb_parni( 4 ),   // width
+         ( HB_ISNIL( 5 ) ) ? rc.bottom - rc.top : hb_parni( 5 ),   // height
          ( hb_pcount(  ) < 6 ) ? TRUE : hb_parl( 6 )    // repaint flag
           );
 }
@@ -123,7 +123,7 @@ HB_FUNC( CREATEPROGRESSBAR )
       x1 = hb_parni( 4 );
       y1 = hb_parni( 5 );
       nwidth = hb_parni( 6 );
-      nheight = hb_pcount(  ) > 6 && !ISNIL( 7 ) ? hb_parni( 7 ) : cyVScroll ;
+      nheight = hb_pcount(  ) > 6 && !HB_ISNIL( 7 ) ? hb_parni( 7 ) : cyVScroll ;
    }
    else
    {
@@ -206,7 +206,7 @@ HB_FUNC( CREATESTATIC )
 {
    ULONG ulStyle = hb_parnl( 3 );
    ULONG ulExStyle =
-         ( ( !ISNIL( 8 ) ) ? hb_parnl( 8 ) : 0 ) | ( ( ulStyle & WS_BORDER ) ?
+         ( ( !HB_ISNIL( 8 ) ) ? hb_parnl( 8 ) : 0 ) | ( ( ulStyle & WS_BORDER ) ?
          WS_EX_CLIENTEDGE : 0 );
    HWND hWndCtrl = CreateWindowEx( ulExStyle,   /* extended style */
          TEXT( "STATIC" ),      /* predefined class  */
@@ -749,7 +749,7 @@ HB_FUNC( TAB_HITTEST )
    HWND hTab = ( HWND ) HB_PARHANDLE( 1 );
    int res;
 
-   if( hb_pcount(  ) > 1 && ISNUM( 2 ) && ISNUM( 3 ) )
+   if( hb_pcount(  ) > 1 && HB_ISNUM( 2 ) && HB_ISNUM( 3 ) )
    {
       ht.pt.x = hb_parni( 2 );
       ht.pt.y = hb_parni( 3 );
@@ -783,9 +783,9 @@ HB_FUNC( CREATETREE )
          ( HMENU ) hb_parni( 2 ),       /* control ID  */
          GetModuleHandle( NULL ), NULL );
 
-   if( !ISNIL( 8 ) )
+   if( !HB_ISNIL( 8 ) )
       SendMessage( hCtrl, TVM_SETTEXTCOLOR, 0, ( LPARAM ) ( hb_parnl( 8 ) ) );
-   if( !ISNIL( 9 ) )
+   if( !HB_ISNIL( 9 ) )
       SendMessage( hCtrl, TVM_SETBKCOLOR, 0, ( LPARAM ) ( hb_parnl( 9 ) ) );
 
    HB_RETHANDLE( hCtrl );
@@ -806,11 +806,11 @@ HB_FUNC( TREEADDNODE )
    tvi.mask = TVIF_TEXT | TVIF_PARAM;
    tvi.pszText = ( LPTSTR ) HB_PARSTR( 6, &hStr, NULL );
    tvi.lParam = ( LPARAM ) ( hb_itemNew( pObject ) );
-   if( hb_pcount(  ) > 6 && !ISNIL( 7 ) )
+   if( hb_pcount(  ) > 6 && !HB_ISNIL( 7 ) )
    {
       tvi.iImage = hb_parni( 7 );
       tvi.mask |= TVIF_IMAGE;
-      if( hb_pcount(  ) > 7 && !ISNIL( 8 ) )
+      if( hb_pcount(  ) > 7 && !HB_ISNIL( 8 ) )
       {
          tvi.iSelectedImage = hb_parni( 8 );
          tvi.mask |= TVIF_SELECTEDIMAGE;
@@ -823,7 +823,7 @@ HB_FUNC( TREEADDNODE )
    is.DUMMYUNIONNAME.item = tvi;
 #endif
 
-   is.hParent = ( ISNIL( 3 ) ? NULL : ( HTREEITEM ) HB_PARHANDLE( 3 ) );
+   is.hParent = ( HB_ISNIL( 3 ) ? NULL : ( HTREEITEM ) HB_PARHANDLE( 3 ) );
    if( nPos == 0 )
       is.hInsertAfter = ( HTREEITEM ) HB_PARHANDLE( 4 );
    else if( nPos == 1 )
@@ -995,7 +995,7 @@ HB_FUNC( TREE_HITTEST )
    TV_HITTESTINFO ht;
    HWND hTree = ( HWND ) HB_PARHANDLE( 1 );
 
-   if( hb_pcount(  ) > 1 && ISNUM( 2 ) && ISNUM( 3 ) )
+   if( hb_pcount(  ) > 1 && HB_ISNUM( 2 ) && HB_ISNUM( 3 ) )
    {
       ht.pt.x = hb_parni( 2 );
       ht.pt.y = hb_parni( 3 );
@@ -1053,7 +1053,7 @@ HB_FUNC( TREE_RELEASENODE )
 HB_FUNC( CREATEIMAGELIST )
 {
    PHB_ITEM pArray = hb_param( 1, HB_IT_ARRAY );
-   UINT flags = ( ISNIL( 5 ) ) ? ILC_COLOR : hb_parni( 5 );
+   UINT flags = ( HB_ISNIL( 5 ) ) ? ILC_COLOR : hb_parni( 5 );
    HIMAGELIST himl;
    ULONG ul, ulLen = hb_arrayLen( pArray );
    HBITMAP hbmp;
@@ -1702,7 +1702,7 @@ HB_FUNC( CREATETOOLBAR )
 
    ULONG ulStyle = hb_parnl( 3 );
    ULONG ulExStyle =
-         ( ( !ISNIL( 8 ) ) ? hb_parnl( 8 ) : 0 ) | ( ( ulStyle & WS_BORDER ) ?
+         ( ( !HB_ISNIL( 8 ) ) ? hb_parnl( 8 ) : 0 ) | ( ( ulStyle & WS_BORDER ) ?
          WS_EX_CLIENTEDGE : 0 );
 
    HWND hWndCtrl = CreateWindowEx( ulExStyle,   /* extended style */
@@ -1949,7 +1949,7 @@ HB_FUNC( CREATEREBAR )
 {
    ULONG ulStyle = hb_parnl( 3 );
    ULONG ulExStyle =
-         ( ( !ISNIL( 8 ) ) ? hb_parnl( 8 ) : 0 ) | ( ( ulStyle & WS_BORDER ) ?
+         ( ( !HB_ISNIL( 8 ) ) ? hb_parnl( 8 ) : 0 ) | ( ( ulStyle & WS_BORDER ) ?
          WS_EX_CLIENTEDGE : 0 ) | WS_EX_TOOLWINDOW;
    HWND hWndCtrl = CreateWindowEx( ulExStyle,   /* extended style */
          REBARCLASSNAME,        /* predefined class  */
@@ -1971,15 +1971,15 @@ HB_FUNC( CREATEREBAR )
 HB_FUNC( REBARSETIMAGELIST )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
-   HIMAGELIST p = ( ISNUM( 2 ) ||
-         ISPOINTER( 2 ) ) ? ( HIMAGELIST ) HB_PARHANDLE( 2 ) : NULL;
+   HIMAGELIST p = ( HB_ISNUM( 2 ) ||
+         HB_ISPOINTER( 2 ) ) ? ( HIMAGELIST ) HB_PARHANDLE( 2 ) : NULL;
    REBARINFO rbi;
 
    memset( &rbi, '\0', sizeof( rbi ) );
    rbi.cbSize = sizeof( REBARINFO );
-   rbi.fMask = ( ISNUM( 2 ) || ISPOINTER( 2 ) ) ? RBIM_IMAGELIST : 0;
-   rbi.himl = ( ISNUM( 2 ) ||
-         ISPOINTER( 2 ) ) ? ( HIMAGELIST ) p : ( HIMAGELIST ) NULL;
+   rbi.fMask = ( HB_ISNUM( 2 ) || HB_ISPOINTER( 2 ) ) ? RBIM_IMAGELIST : 0;
+   rbi.himl = ( HB_ISNUM( 2 ) ||
+         HB_ISPOINTER( 2 ) ) ? ( HIMAGELIST ) p : ( HIMAGELIST ) NULL;
    SendMessage( hWnd, RB_SETBARINFO, 0, ( LPARAM ) & rbi );
 }
 

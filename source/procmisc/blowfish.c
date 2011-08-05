@@ -445,7 +445,7 @@ HB_FUNC( BF_ENCRYPT )
    int iKeylen, iDiff;
    unsigned long int ul, ulLen, ulPairs;
 
-   if( ISNIL( 2 ) )
+   if( HB_ISNIL( 2 ) )
    {
       key = ( unsigned char * ) hb_xgrab( 5 );
       hb_strncpy( ( char * ) key, keyDefault, sizeof( key ) - 1 );
@@ -466,7 +466,7 @@ HB_FUNC( BF_ENCRYPT )
 
    Blowfish_Init( &ctx, key, iKeylen );
 
-   if( ISNIL( 3 ) )
+   if( HB_ISNIL( 3 ) )
       ulLen = ( unsigned long ) hb_parclen( 1 );
    else
       ulLen = ( unsigned long ) hb_parnl( 3 );
@@ -501,7 +501,7 @@ HB_FUNC( BF_DECRYPT )
    int iKeylen, iDiff;
    unsigned long int ul, ulLen, ulPairs;
 
-   if( ISNIL( 2 ) )
+   if( HB_ISNIL( 2 ) )
    {
       key = ( unsigned char * ) hb_xgrab( 5 );
       hb_strncpy( ( char * ) key, keyDefault, sizeof( key ) - 1);
@@ -522,7 +522,7 @@ HB_FUNC( BF_DECRYPT )
 
    Blowfish_Init( &ctx, key, iKeylen );
 
-   if( ISNIL( 3 ) )
+   if( HB_ISNIL( 3 ) )
       ulLen = ( unsigned long ) hb_parclen( 1 );
    else
       ulLen = ( unsigned long ) hb_parnl( 3 );

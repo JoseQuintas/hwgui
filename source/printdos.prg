@@ -560,7 +560,7 @@ FUNCTION regenfile( o, new )
    NTXTLINE( cFile )  -> nLines
 */
 
-#include "hbapi.h"
+#include "guilib.h"
 #include "hbapiitm.h"
 #include "hbstack.h"
 #ifdef __XHARBOUR__
@@ -573,7 +573,7 @@ FUNCTION regenfile( o, new )
 // #define LINE_MAX 16384
 #define LINE_MAX    0x20000
 //----------------------------------------------------------------------------//
-static BOOL file_read ( FILE *stream, char *string )
+static HB_BOOL file_read ( FILE *stream, char *string )
 {
    int ch, cnbr = 0;
 
@@ -599,7 +599,7 @@ static BOOL file_read ( FILE *stream, char *string )
       if (cnbr >= LINE_MAX)
       {
          string [LINE_MAX] = '\0';
-         return (TRUE);
+         return (HB_TRUE);
       }
    }
 }

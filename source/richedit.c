@@ -76,7 +76,7 @@ HB_FUNC( RE_SETCHARFORMAT )
    SendMessage( hCtrl, EM_EXGETSEL, 0, ( LPARAM ) & chrOld );
    SendMessage( hCtrl, EM_HIDESELECTION, 1, 0 );
 
-   if( ISARRAY( 2 ) )
+   if( HB_ISARRAY( 2 ) )
    {
       ULONG ul, ulLen, ulLen1;
       PHB_ITEM pArr1;
@@ -166,44 +166,44 @@ HB_FUNC( RE_SETCHARFORMAT )
       memset( &cf, 0, sizeof( CHARFORMAT2 ) );
       cf.cbSize = sizeof( CHARFORMAT2 );
 
-      if( !ISNIL( 4 ) )
+      if( !HB_ISNIL( 4 ) )
       {
          cf.crTextColor = ( COLORREF ) hb_parnl( 4 );
          cf.dwMask |= CFM_COLOR;
       }
-      if( !ISNIL( 5 ) )
+      if( !HB_ISNIL( 5 ) )
       {
          HB_ITEMCOPYSTR( hb_param( 5, HB_IT_ANY ),
                          cf.szFaceName, HB_SIZEOFARRAY( cf.szFaceName ) );
          cf.szFaceName[ HB_SIZEOFARRAY( cf.szFaceName ) - 1 ] = '\0';
          cf.dwMask |= CFM_FACE;
       }
-      if( !ISNIL( 6 ) )
+      if( !HB_ISNIL( 6 ) )
       {
          cf.yHeight = hb_parnl( 6 );
          cf.dwMask |= CFM_SIZE;
       }
-      if( !ISNIL( 7 ) )
+      if( !HB_ISNIL( 7 ) )
       {
          cf.dwEffects |= ( hb_parl( 7 ) ) ? CFE_BOLD : 0;
          cf.dwMask |= CFM_BOLD;
       }
-      if( !ISNIL( 8 ) )
+      if( !HB_ISNIL( 8 ) )
       {
          cf.dwEffects |= ( hb_parl( 8 ) ) ? CFE_ITALIC : 0;
          cf.dwMask |= CFM_ITALIC;
       }
-      if( !ISNIL( 9 ) )
+      if( !HB_ISNIL( 9 ) )
       {
          cf.dwEffects |= ( hb_parl( 9 ) ) ? CFE_UNDERLINE : 0;
          cf.dwMask |= CFM_UNDERLINE;
       }
-      if( !ISNIL( 10 ) )
+      if( !HB_ISNIL( 10 ) )
       {
          cf.bCharSet = ( BYTE ) hb_parnl( 10 );
          cf.dwMask |= CFM_CHARSET;
       }
-      if( !ISNIL( 11 ) )
+      if( !HB_ISNIL( 11 ) )
       {
          if( hb_parl( 9 ) )
             cf.dwEffects |= CFE_SUPERSCRIPT;
@@ -211,7 +211,7 @@ HB_FUNC( RE_SETCHARFORMAT )
             cf.dwEffects |= CFE_SUBSCRIPT;
          cf.dwMask |= CFM_SUPERSCRIPT;
       }
-      if( !ISNIL( 12 ) )
+      if( !HB_ISNIL( 12 ) )
       {
          cf.dwEffects |= CFE_PROTECTED;
          cf.dwMask |= CFM_PROTECTED;
@@ -237,12 +237,12 @@ HB_FUNC( RE_SETDEFAULT )
    memset( &cf, 0, sizeof( CHARFORMAT2 ) );
    cf.cbSize = sizeof( CHARFORMAT2 );
 
-   if( ISNUM( 2 ) )
+   if( HB_ISNUM( 2 ) )
    {
       cf.crTextColor = ( COLORREF ) hb_parnl( 2 );
       cf.dwMask |= CFM_COLOR;
    }
-   if( ISCHAR( 3 ) )
+   if( HB_ISCHAR( 3 ) )
    {
       HB_ITEMCOPYSTR( hb_param( 3, HB_IT_ANY ),
                       cf.szFaceName, HB_SIZEOFARRAY( cf.szFaceName ) );
@@ -250,26 +250,26 @@ HB_FUNC( RE_SETDEFAULT )
       cf.dwMask |= CFM_FACE;
    }
 
-   if( ISNUM( 4 ) )
+   if( HB_ISNUM( 4 ) )
    {
       cf.yHeight = hb_parnl( 4 );
       cf.dwMask |= CFM_SIZE;
    }
 
-   if( !ISNIL( 5 ) )
+   if( !HB_ISNIL( 5 ) )
    {
       cf.dwEffects |= ( hb_parl( 5 ) ) ? CFE_BOLD : 0;
    }
-   if( !ISNIL( 6 ) )
+   if( !HB_ISNIL( 6 ) )
    {
       cf.dwEffects |= ( hb_parl( 6 ) ) ? CFE_ITALIC : 0;
    }
-   if( !ISNIL( 7 ) )
+   if( !HB_ISNIL( 7 ) )
    {
       cf.dwEffects |= ( hb_parl( 7 ) ) ? CFE_UNDERLINE : 0;
    }
 
-   if( ISNUM( 8 ) )
+   if( HB_ISNUM( 8 ) )
    {
       cf.bCharSet = ( BYTE ) hb_parnl( 8 );
       cf.dwMask |= CFM_CHARSET;
@@ -351,12 +351,12 @@ HB_FUNC( RE_FINDTEXT )
    HWND hCtrl = ( HWND ) HB_PARHANDLE( 1 );
    FINDTEXTEX ft;
    LONG lPos;
-   LONG lFlag = ( ( ISNIL( 4 ) || !hb_parl( 4 ) ) ? 0 : FR_MATCHCASE ) |
-         ( ( ISNIL( 5 ) || !hb_parl( 5 ) ) ? 0 : FR_WHOLEWORD ) |
-         ( ( ISNIL( 6 ) || !hb_parl( 6 ) ) ? FR_DOWN : 0 );
+   LONG lFlag = ( ( HB_ISNIL( 4 ) || !hb_parl( 4 ) ) ? 0 : FR_MATCHCASE ) |
+         ( ( HB_ISNIL( 5 ) || !hb_parl( 5 ) ) ? 0 : FR_WHOLEWORD ) |
+         ( ( HB_ISNIL( 6 ) || !hb_parl( 6 ) ) ? FR_DOWN : 0 );
    void * hString;
 
-   ft.chrg.cpMin = ( ISNIL( 3 ) ) ? 0 : hb_parnl( 3 );
+   ft.chrg.cpMin = ( HB_ISNIL( 3 ) ) ? 0 : hb_parnl( 3 );
    ft.chrg.cpMax = -1;
    ft.lpstrText = ( LPTSTR ) HB_PARSTR( 2, &hString, NULL );
 

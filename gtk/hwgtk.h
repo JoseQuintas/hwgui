@@ -10,7 +10,7 @@ typedef struct HWGUI_HDC_STRU
   GdkGC * gc;
   PangoFontDescription * hFont;
   PangoLayout * layout;
-  LONG fcolor, bcolor;
+  long fcolor, bcolor;
 } HWGUI_HDC, * PHWGUI_HDC;
 
 typedef struct HWGUI_PPS_STRU

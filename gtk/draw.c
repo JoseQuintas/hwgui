@@ -20,7 +20,7 @@
 #endif
 // static HWGUI_PEN default_pen = { HWGUI_OBJECT_PEN,1,GDK_LINE_SOLID, };
 
-void hwg_parse_color( ULONG ncolor, GdkColor * pColor )
+void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor )
 {
    char color[10]={0};
 
@@ -64,7 +64,7 @@ HB_FUNC( INVALIDATERECT )
       rc.height = hb_parni(6) - rc.y + 1;
    }
    gdk_window_invalidate_rect( ((GtkWidget*)hb_parnl(1))->window,
-      ( hb_pcount() > 2 )? &rc:NULL, ( ISNUM(2) )? hb_parni(2):1 );
+      ( hb_pcount() > 2 )? &rc:NULL, ( HB_ISNUM(2) )? hb_parni(2):1 );
 */
 }
 
@@ -97,7 +97,7 @@ HB_FUNC( PIE )
     hb_parni(9) 	// y-coord. of second radial's endpoint 
    );
    if( !res )
-     hb_retnl( (LONG) GetLastError() );
+     hb_retnl( (HB_LONG) GetLastError() );
    else
      hb_retnl( 0 );
 */     
@@ -167,7 +167,7 @@ HB_FUNC( DRAWBUTTON )
    int top = hb_parni( 3 );
    int right = hb_parni( 4 );
    int bottom = hb_parni( 5 );
-   UINT iType = hb_parni( 6 );
+   unsigned int iType = hb_parni( 6 );
    GtkStyle * style = hDC->widget->style;
 
    if( iType == 0 )
@@ -217,8 +217,8 @@ HB_FUNC( DRAWEDGE )
 /*
    RECT rc;
    HDC hDC = (HDC) hb_parnl( 1 );
-   UINT edge = (ISNIL(6))? EDGE_RAISED : (UINT) hb_parni(6);
-   UINT grfFlags = (ISNIL(7))? BF_RECT : (UINT) hb_parni(7);
+   UINT edge = (HB_ISNIL(6))? EDGE_RAISED : (UINT) hb_parni(6);
+   UINT grfFlags = (HB_ISNIL(7))? BF_RECT : (UINT) hb_parni(7);
 
    rc.left = hb_parni( 2 );
    rc.top = hb_parni( 3 );
@@ -232,17 +232,17 @@ HB_FUNC( DRAWEDGE )
 HB_FUNC( LOADICON )
 {
 /*
-   if( ISNUM(1) )
-      hb_retnl( (LONG) LoadIcon( NULL, (LPCTSTR) hb_parnl( 1 ) ) );
+   if( HB_ISNUM(1) )
+      hb_retnl( (HB_LONG) LoadIcon( NULL, (LPCTSTR) hb_parnl( 1 ) ) );
    else
-      hb_retnl( (LONG) LoadIcon( GetModuleHandle( NULL ), (LPCTSTR) hb_parc( 1 ) ) );
+      hb_retnl( (HB_LONG) LoadIcon( GetModuleHandle( NULL ), (LPCTSTR) hb_parc( 1 ) ) );
 */      
 }
 
 HB_FUNC( LOADIMAGE )
 {
 /*
-   hb_retnl( (LONG) 
+   hb_retnl( (HB_LONG) 
           LoadImage( (HINSTANCE)hb_parnl(1),    // handle of the instance that contains the image
                   (LPCTSTR)hb_parc(2),          // name or identifier of image
                   (UINT) hb_parni(3),           // type of image
@@ -256,10 +256,10 @@ HB_FUNC( LOADIMAGE )
 HB_FUNC( LOADBITMAP )
 {
 /*
-   if( ISNUM(1) )
-      hb_retnl( (LONG) LoadBitmap( NULL, (LPCTSTR) hb_parnl( 1 ) ) );
+   if( HB_ISNUM(1) )
+      hb_retnl( (HB_LONG) LoadBitmap( NULL, (LPCTSTR) hb_parnl( 1 ) ) );
    else
-      hb_retnl( (LONG) LoadBitmap( GetModuleHandle( NULL ), (LPCTSTR) hb_parc( 1 ) ) );
+      hb_retnl( (HB_LONG) LoadBitmap( GetModuleHandle( NULL ), (LPCTSTR) hb_parc( 1 ) ) );
 */      
 }
 
@@ -382,7 +382,7 @@ HB_FUNC( DRAWICON )
 
 HB_FUNC( GETSYSCOLOR )
 {
-   hb_retnl( 0 );  // (LONG) GetSysColor( hb_parni( 1 ) ) );
+   hb_retnl( 0 );  // (HB_LONG) GetSysColor( hb_parni( 1 ) ) );
 }
 
 #define  PS_SOLID   0
@@ -390,7 +390,7 @@ HB_FUNC( GETSYSCOLOR )
 HB_FUNC( CREATEPEN )
 {
    PHWGUI_PEN hpen = (PHWGUI_PEN) hb_xgrab( sizeof(HWGUI_PEN) );
-   ULONG ncolor = (ULONG) hb_parnl(3);
+   HB_ULONG ncolor = (HB_ULONG) hb_parnl(3);
 
    hpen->type = HWGUI_OBJECT_PEN;
    hpen->style = ( hb_parni(1) == PS_SOLID )? GDK_LINE_SOLID : GDK_LINE_ON_OFF_DASH;
@@ -404,7 +404,7 @@ HB_FUNC( CREATEPEN )
 HB_FUNC( CREATESOLIDBRUSH )
 {
    PHWGUI_BRUSH hbrush = (PHWGUI_BRUSH) hb_xgrab( sizeof(HWGUI_BRUSH) );
-   ULONG ncolor = (ULONG) hb_parnl(1);
+   HB_ULONG ncolor = (HB_ULONG) hb_parnl(1);
 
    hbrush->type = HWGUI_OBJECT_BRUSH;
    
@@ -546,7 +546,7 @@ HB_FUNC( GETDRAWITEMINFO )
    _itemArrayPut( aMetr, 2, temp );
    _itemRelease( temp );
 
-   temp = _itemPutNL( NULL, (LONG)lpdis->hDC );
+   temp = _itemPutNL( NULL, (HB_LONG)lpdis->hDC );
    _itemArrayPut( aMetr, 3, temp );
    _itemRelease( temp );
 

@@ -106,13 +106,13 @@ HB_FUNC( HWG_COS )
 #ifndef __XHARBOUR__
 HB_FUNC( NUMTOHEX )
 {
-   ULONG ulNum;
+   HB_ULONG ulNum;
    int iCipher;
    char ret[32];
    char tmp[32];
    int len = 0, len1 = 0;
 
-   ulNum = (ULONG) hb_parnl( 1 );
+   ulNum = (HB_ULONG) hb_parnl( 1 );
 
    while ( ulNum > 0 )
    {

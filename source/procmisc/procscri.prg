@@ -80,6 +80,7 @@ LOCAL aFormCode, aFormName
 RETURN aScr
 
 FUNCTION RdScript( scrSource, strbuf, poz, lppNoInit, cTitle )
+STATIC s_pp
 LOCAL han
 LOCAL rezArray := Iif( lDebugInfo, { "", {}, {} }, { "", {} } )
 
@@ -104,15 +105,15 @@ LOCAL rezArray := Iif( lDebugInfo, { "", {}, {} }, { "", {} } )
       han := scrSource
    ENDIF
    IF han == Nil .OR. han != - 1
-      IF !lppNoInit
-         __pp_init()
+      IF !lppNoInit .or. s_pp == NIL
+         s_pp := __pp_init()
       ENDIF
       IF VALTYPE( scrSource ) == "C"
          WndOut( "Compiling ..." )
          WndOut( "" )
       ENDIF
       numlin := 0
-      IF !CompileScr( han, @strbuf, @poz, rezArray, scrSource )
+      IF !CompileScr( s_pp, han, @strbuf, @poz, rezArray, scrSource )
          rezArray := Nil
       ENDIF
       IF scrSource != Nil .AND. VALTYPE( scrSource ) == "C"
@@ -120,7 +121,7 @@ LOCAL rezArray := Iif( lDebugInfo, { "", {}, {} }, { "", {} } )
          FCLOSE( han )
       ENDIF
       IF !lppNoInit
-         __pp_free()
+         s_pp := NIL
       ENDIF
    ELSE
 #ifdef __WINDOWS__
@@ -135,7 +136,7 @@ LOCAL rezArray := Iif( lDebugInfo, { "", {}, {} }, { "", {} } )
    ENDIF
 RETURN rezArray
 
-STATIC FUNCTION COMPILESCR( han, strbuf, poz, rezArray, scrSource )
+STATIC FUNCTION COMPILESCR( pp, han, strbuf, poz, rezArray, scrSource )
 LOCAL scom, poz1, stroka, strfull := "", bOldError, i, tmpArray := {}
 Local cLine, lDebug := ( Len( rezArray ) >= 3 )
 
@@ -176,13 +177,13 @@ Local cLine, lDebug := ( Len( rezArray ) >= 3 )
                LOOP
 #ifdef __HARBOUR__
             ELSE
-               __Preprocess( stroka )
+               __pp_process( pp, stroka )
                LOOP
 #endif
             ENDIF
 #ifdef __HARBOUR__
          ELSE
-            stroka := __Preprocess( stroka )
+            stroka := __pp_process( pp, stroka )
 #endif
          ENDIF
 
@@ -261,7 +262,7 @@ Local cLine, lDebug := ( Len( rezArray ) >= 3 )
             scom := UPPER( LEFT( stroka, IIF( poz1 != 0, poz1 - 1, 999 ) ) )
             AADD( rezArray[2], Iif( lDebug,{ scom,{},{} },{ scom,{} } ) )
             AADD( tmpArray, "" )
-            IF !CompileScr( han, @strbuf, @poz, rezArray[2,Len(rezArray[2])] )
+            IF !CompileScr( pp, han, @strbuf, @poz, rezArray[2,Len(rezArray[2])] )
                RETURN .F.
             ENDIF
          CASE scom == "#ENDSCRIPT" .OR. Left( scom,7 ) == "ENDFUNC"

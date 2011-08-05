@@ -48,7 +48,7 @@ HB_FUNC( HWG__ADDMENUITEM )
    MENUITEMINFO mii;
 
 
-   if( !ISNIL( 6 ) && ( hb_parni( 6 ) & FLAG_DISABLED ) )
+   if( !HB_ISNIL( 6 ) && ( hb_parni( 6 ) & FLAG_DISABLED ) )
    {
       uFlags |= MFS_DISABLED;
    }
@@ -112,14 +112,14 @@ HB_FUNC( HWG__ADDMENUITEM )
 {
 
    MENUITEMINFO mii;
-   BOOL fByPosition = ( ISNIL(4) )? 0:(BOOL) hb_parl(4);
+   BOOL fByPosition = ( HB_ISNIL(4) )? 0:(BOOL) hb_parl(4);
    void * hData;
 
    mii.cbSize = sizeof( MENUITEMINFO );
    mii.fMask = MIIM_TYPE | MIIM_STATE | MIIM_ID;
-   mii.fState = ( ISNIL(6) || hb_parl( 6 ) )? 0:MFS_DISABLED;
+   mii.fState = ( HB_ISNIL(6) || hb_parl( 6 ) )? 0:MFS_DISABLED;
    mii.wID = hb_parni( 5 );
-   if( ISCHAR( 2 ) )
+   if( HB_ISCHAR( 2 ) )
    {
       mii.dwTypeData = ( LPTSTR ) HB_PARSTR( 2, &hData, NULL );
       mii.cch = strlen( mii.dwTypeData );
@@ -167,17 +167,17 @@ HB_FUNC( HWG__SETMENU )
 HB_FUNC( GETMENUHANDLE )
 {
    HWND handle = ( hb_pcount() > 0 &&
-         !ISNIL( 1 ) ) ? ( HWND ) HB_PARHANDLE( 1 ) : aWindows[0];
+         !HB_ISNIL( 1 ) ) ? ( HWND ) HB_PARHANDLE( 1 ) : aWindows[0];
    HB_RETHANDLE( GetMenu( handle ) );
 }
 
 HB_FUNC( CHECKMENUITEM )
 {
    HMENU hMenu;
-   UINT uCheck = ( hb_pcount() < 3 || !ISLOG( 3 ) ||
+   UINT uCheck = ( hb_pcount() < 3 || !HB_ISLOG( 3 ) ||
          hb_parl( 3 ) ) ? MF_CHECKED : MF_UNCHECKED;
 
-   if( ISOBJECT( 1 ) )
+   if( HB_ISOBJECT( 1 ) )
    {
       PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
       hMenu = ( HMENU ) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
@@ -185,7 +185,7 @@ HB_FUNC( CHECKMENUITEM )
    else
    {
       HWND handle = ( hb_pcount() > 0 &&
-            !ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
+            !HB_ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
       hMenu = GetMenu( handle );
    }
    if( !hMenu )
@@ -208,7 +208,7 @@ HB_FUNC( ISCHECKEDMENUITEM )
    HMENU hMenu;
    UINT uCheck;
 
-   if( ISOBJECT( 1 ) )
+   if( HB_ISOBJECT( 1 ) )
    {
       PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
       hMenu = ( HMENU ) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
@@ -216,7 +216,7 @@ HB_FUNC( ISCHECKEDMENUITEM )
    else
    {
       HWND handle = ( hb_pcount() > 0 &&
-            !ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
+            !HB_ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
       hMenu = GetMenu( handle );
    }
    if( !hMenu )
@@ -236,13 +236,13 @@ HB_FUNC( ISCHECKEDMENUITEM )
 
 HB_FUNC( ENABLEMENUITEM )
 {
-   HMENU hMenu;                 // = ( hb_pcount()>0 && !ISNIL(1) )? (( HMENU ) HB_PARHANDLE(1)) : GetMenu(aWindows[0]);
-   UINT uEnable = ( hb_pcount() < 3 || !ISLOG( 3 ) ||
+   HMENU hMenu;                 // = ( hb_pcount()>0 && !HB_ISNIL(1) )? (( HMENU ) HB_PARHANDLE(1)) : GetMenu(aWindows[0]);
+   UINT uEnable = ( hb_pcount() < 3 || !HB_ISLOG( 3 ) ||
          hb_parl( 3 ) ) ? MF_ENABLED : MF_GRAYED;
-   UINT uFlag = ( hb_pcount() < 4 || !ISLOG( 4 ) ||
+   UINT uFlag = ( hb_pcount() < 4 || !HB_ISLOG( 4 ) ||
          hb_parl( 4 ) ) ? MF_BYCOMMAND : MF_BYPOSITION;
 
-   if( ISOBJECT( 1 ) )
+   if( HB_ISOBJECT( 1 ) )
    {
       PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
       hMenu = ( HMENU ) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
@@ -250,7 +250,7 @@ HB_FUNC( ENABLEMENUITEM )
    else
    {
       HWND handle = ( hb_pcount() > 0 &&
-            !ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
+            !HB_ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
       hMenu = GetMenu( handle );
    }
    if( !hMenu )
@@ -273,12 +273,12 @@ HB_FUNC( ENABLEMENUITEM )
 
 HB_FUNC( ISENABLEDMENUITEM )
 {
-   HMENU hMenu;                 // = ( hb_pcount()>0 && !ISNIL(1) )? (( HMENU ) HB_PARHANDLE(1)):GetMenu(aWindows[0]);
+   HMENU hMenu;                 // = ( hb_pcount()>0 && !HB_ISNIL(1) )? (( HMENU ) HB_PARHANDLE(1)):GetMenu(aWindows[0]);
    UINT uCheck;
-   UINT uFlag = ( hb_pcount() < 3 || !ISLOG( 3 ) ||
+   UINT uFlag = ( hb_pcount() < 3 || !HB_ISLOG( 3 ) ||
          hb_parl( 3 ) ) ? MF_BYCOMMAND : MF_BYPOSITION;
 
-   if( ISOBJECT( 1 ) )
+   if( HB_ISOBJECT( 1 ) )
    {
       PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
       hMenu = ( HMENU ) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
@@ -286,7 +286,7 @@ HB_FUNC( ISENABLEDMENUITEM )
    else
    {
       HWND handle = ( hb_pcount() > 0 &&
-            !ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
+            !HB_ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
       hMenu = GetMenu( handle );
    }
    if( !hMenu )
@@ -307,7 +307,7 @@ HB_FUNC( ISENABLEDMENUITEM )
 HB_FUNC( HWG_DELETEMENU )
 {
    HMENU hMenu = ( hb_pcount() > 0 &&
-         !ISNIL( 1 ) ) ? ( ( HMENU ) HB_PARHANDLE( 1 ) ) :
+         !HB_ISNIL( 1 ) ) ? ( ( HMENU ) HB_PARHANDLE( 1 ) ) :
          GetMenu( aWindows[0] );
 
    if( hMenu )
@@ -324,7 +324,7 @@ HB_FUNC( HWG_TRACKMENU )
    HWND hWnd = ( HWND ) HB_PARHANDLE( 4 );
    SetForegroundWindow( hWnd );
    hb_retl( TrackPopupMenu( ( HMENU ) HB_PARHANDLE( 1 ),        // handle of shortcut menu
-               ISNIL( 5 ) ? TPM_RIGHTALIGN : hb_parni( 5 ),     // screen-position and mouse-button flags
+               HB_ISNIL( 5 ) ? TPM_RIGHTALIGN : hb_parni( 5 ),     // screen-position and mouse-button flags
                hb_parni( 2 ),   // horizontal position, in screen coordinates
                hb_parni( 3 ),   // vertical position, in screen coordinates
                0,               // reserved, must be zero
@@ -386,7 +386,7 @@ HB_FUNC( GETMENUCAPTION )
 {
    HMENU hMenu;
 
-   if( ISOBJECT( 1 ) )
+   if( HB_ISOBJECT( 1 ) )
    {
       PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
       hMenu = ( HMENU ) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
@@ -394,7 +394,7 @@ HB_FUNC( GETMENUCAPTION )
    else
    {
       HWND handle = ( hb_pcount() > 0 &&
-            !ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
+            !HB_ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
       hMenu = GetMenu( handle );
    }
    if( !hMenu )
@@ -435,7 +435,7 @@ HB_FUNC( SETMENUCAPTION )
 {
    HMENU hMenu;
 
-   if( ISOBJECT( 1 ) )
+   if( HB_ISOBJECT( 1 ) )
    {
       PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
       hMenu = ( HMENU ) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
@@ -443,7 +443,7 @@ HB_FUNC( SETMENUCAPTION )
    else
    {
       HWND handle = ( hb_pcount() > 0 &&
-            !ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
+            !HB_ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
       hMenu = GetMenu( handle );
    }
    if( !hMenu )
@@ -553,8 +553,8 @@ HB_FUNC( MODIFYMENU )
 HB_FUNC( ENABLEMENUSYSTEMITEM )
 {
    HMENU hMenu; 
-   UINT  uEnable = ( hb_pcount() < 3 || !ISLOG( 3 ) || hb_parl( 3 ) )? MF_ENABLED:MF_GRAYED;
-   UINT  uFlag = ( hb_pcount() < 4 || !ISLOG( 4 ) || hb_parl( 4 ) )? MF_BYCOMMAND:MF_BYPOSITION;
+   UINT  uEnable = ( hb_pcount() < 3 || !HB_ISLOG( 3 ) || hb_parl( 3 ) )? MF_ENABLED:MF_GRAYED;
+   UINT  uFlag = ( hb_pcount() < 4 || !HB_ISLOG( 4 ) || hb_parl( 4 ) )? MF_BYCOMMAND:MF_BYPOSITION;
 
    hMenu = ( HMENU ) GetSystemMenu( ( HWND ) HB_PARHANDLE( 1 ), 0 ) ;
    if( !hMenu )

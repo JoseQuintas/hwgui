@@ -23,7 +23,7 @@
 #include "hbfast.h"
 #endif
 
-void hwg_parse_color( ULONG ncolor, GdkColor * pColor );
+void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor );
 
 HB_FUNC( DELETEDC )
 {
@@ -72,13 +72,13 @@ HB_FUNC( DRAWTEXT )
    {
       hwg_parse_color( hDC->bcolor, &bcolor );   
    }
-   
+
    pango_layout_set_text( hDC->layout, cText, -1 );
-   
+
    pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
    pango_layout_set_width( hDC->layout, -1 );
-   
-   if( !ISNIL(7) && ( hb_parni(7) & ( DT_CENTER | DT_RIGHT ) ) &&
+
+   if( !HB_ISNIL(7) && ( hb_parni(7) & ( DT_CENTER | DT_RIGHT ) ) &&
          ( rc.width < ( iWidth-10 ) ) )
    {
       pango_layout_set_width( hDC->layout, iWidth*PANGO_SCALE );
@@ -143,7 +143,7 @@ HB_FUNC( GETTEXTSIZE )
    PangoRectangle rc;
    PHB_ITEM aMetr = hb_itemArrayNew( 2 );
 
-   if( ISCHAR(2) )
+   if( HB_ISCHAR(2) )
       pango_layout_set_text( hDC->layout, cText, -1 );
    pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
 
@@ -211,12 +211,12 @@ HB_FUNC( SETTRANSPARENTMODE )
 
 HB_FUNC( GETTEXTCOLOR )
 {
-   // hb_retnl( (LONG) GetTextColor( (HDC) hb_parnl( 1 ) ) );
+   // hb_retnl( (HB_LONG) GetTextColor( (HDC) hb_parnl( 1 ) ) );
 }
 
 HB_FUNC( GETBKCOLOR )
 {
-   // hb_retnl( (LONG) GetBkColor( (HDC) hb_parnl( 1 ) ) );
+   // hb_retnl( (HB_LONG) GetBkColor( (HDC) hb_parnl( 1 ) ) );
 }
 
 
@@ -257,7 +257,7 @@ HB_FUNC( WRITESTATUSWINDOW )
 
 HB_FUNC( WINDOWFROMDC )
 {
-   // hb_retnl( (LONG) WindowFromDC( (HDC) hb_parnl( 1 ) ) );
+   // hb_retnl( (HB_LONG) WindowFromDC( (HDC) hb_parnl( 1 ) ) );
 }
 
 /* CreateFont( fontName, nWidth, hHeight [,fnWeight] [,fdwCharSet], 
@@ -270,10 +270,10 @@ HB_FUNC( CREATEFONT )
 
    hFont = pango_font_description_new();
    pango_font_description_set_family( hFont, hb_parc(1) );
-   if( !ISNIL(6) )
+   if( !HB_ISNIL(6) )
       pango_font_description_set_style( hFont, (hb_parni(6))? PANGO_STYLE_ITALIC : PANGO_STYLE_NORMAL );
    pango_font_description_set_size( hFont, hb_parni(3) );
-   if( !ISNIL(4) )
+   if( !HB_ISNIL(4) )
       pango_font_description_set_weight( hFont, hb_parni(4) );
 
    h->type = HWGUI_OBJECT_FONT;

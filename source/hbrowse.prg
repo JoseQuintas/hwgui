@@ -1537,7 +1537,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    RETURN Nil
 
 //----------------------------------------------------//
-// TODO: __StrToken can create problems.... can't have separator as first char
+// TODO: hb_tokenGet() can create problems.... can't have separator as first char
 METHOD HeaderOut( hDC ) CLASS HBrowse
    LOCAL x, oldc, fif, xSize, lFixed := .F., xSizeMax
    LOCAL oPen, oldBkColor
@@ -1611,7 +1611,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
             SelectObject( hDC, oPenHdr:handle )
             cStr := oColumn:cGrid + ';'
             FOR nLine := 1 TO ::nHeadRows
-               cNWSE := __StrToken( @cStr, nLine, ';' )
+               cNWSE := hb_tokenGet( @cStr, nLine, ';' )
                IF At( 'S', cNWSE ) != 0
                   DrawLine( hDC, x - 1, ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine ), x + xSize - 1, ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine ) )
                ENDIF
@@ -1653,7 +1653,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
          cStr := oColumn:heading + ';'
          FOR nLine := 1 TO ::nHeadRows
             aTxtSize := IIF( nLine = 1, TxtRect( cStr, Self ), aTxtSize )
-            DrawText( hDC, __StrToken( @cStr, nLine, ';' ), ;
+            DrawText( hDC, hb_tokenGet( @cStr, nLine, ';' ), ;
                       x + ::aMargin[ 4 ] + 1 + nMe, ;
                       ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine + 1 ) +  ::aMargin[ 1 ] + 1, ;
                       x + xSize - ( 2 + ::aMargin[ 2 ] + nMd ) , ;
@@ -1933,7 +1933,7 @@ METHOD FooterOut( hDC ) CLASS HBrowse
 
         FOR nLine := 1 TO ::nFootRows
 
-           DrawText( hDC, __StrToken( @cStr, nLine, ';' ), ;
+           DrawText( hDC, hb_tokenGet( @cStr, nLine, ';' ), ;
                    x + ::aMargin[ 4 ], ;
                    nY + ( nLine - 1 ) * ( ::nFootHeight + 1 ) + 1 + ::aMargin[ 1 ], ;
                    x + xSize - ( 1 + ::aMargin[ 2 ] ), ;
@@ -3665,7 +3665,7 @@ STATIC FUNCTION HdrToken( cStr, nMaxLen, nCount )
 
    nMaxLen := nCount := 0
    cStr += ';'
-   DO WHILE ( nL := Len( __StrTkPtr( @cStr, @nPos, ";" ) ) ) != 0
+   DO WHILE ( nL := Len( hb_tokenPtr( @cStr, @nPos, ";" ) ) ) != 0
       nMaxLen := Max( nMaxLen, nL )
       nCount ++
    ENDDO

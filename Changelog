@@ -8,6 +8,49 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-08-05 15:13 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/gtk/menu_c.c
+  * hwgui/gtk/control.c
+  * hwgui/gtk/wprint.c
+  * hwgui/gtk/hwgtk.h
+  * hwgui/gtk/draw.c
+  * hwgui/gtk/drawtext.c
+  * hwgui/gtk/window.c
+  * hwgui/gtk/hbrowse.prg
+  * hwgui/gtk/misc.c
+  * hwgui/gtk/commond.c
+  * hwgui/include/guilib.h
+  * hwgui/source/dialog.c
+  * hwgui/source/theme.c
+  * hwgui/source/menu_c.c
+  * hwgui/source/nice.c
+  * hwgui/source/control.c
+  * hwgui/source/wprint.c
+  * hwgui/source/winreg.c
+  * hwgui/source/draw.c
+  * hwgui/source/shellapi.c
+  * hwgui/source/animat.c
+  * hwgui/source/cxshade.c
+  * hwgui/source/grid.c
+  * hwgui/source/procmisc/arr2str.c
+  * hwgui/source/procmisc/procscri.prg
+  * hwgui/source/procmisc/blowfish.c
+  * hwgui/source/hfrmtmpl.prg
+  * hwgui/source/drawtext.c
+  * hwgui/source/window.c
+  * hwgui/source/printdos.prg
+  * hwgui/source/freeimg.c
+  * hwgui/source/xml/xmlparse.c
+  * hwgui/source/hbrowse.prg
+  * hwgui/source/media_c.c
+  * hwgui/source/misc.c
+  * hwgui/source/richedit.c
+  * hwgui/source/commond.c
+  * hwgui/Makefile.scr
+    * updated to compile with 3.1dev Harbour header files.
+      I added some macros to emulate missing definitions in xHarbour
+      builds so they should still work.
+
 2011-04-11 10:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/window.c
     + add parameter INT nCmdShow in HB_FUNC( SHOWWINDOW )

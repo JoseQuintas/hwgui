@@ -20,7 +20,7 @@
 #endif
 
 extern GtkWidget * GetActiveWindow( void );
-extern void hwg_parse_color( ULONG ncolor, GdkColor * pColor );
+extern void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor );
 
 void store_font( gpointer fontseldlg )
 {
@@ -45,11 +45,11 @@ void store_font( gpointer fontseldlg )
    hb_itemArrayPut( aMetr, 3, temp );
    hb_itemRelease( temp );
 
-   temp = hb_itemPutNL( NULL, (LONG) pango_font_description_get_size( hFont ) );
+   temp = hb_itemPutNL( NULL, (HB_LONG) pango_font_description_get_size( hFont ) );
    hb_itemArrayPut( aMetr, 4, temp );
    hb_itemRelease( temp );
 
-   temp = hb_itemPutNL( NULL, (LONG) pango_font_description_get_weight( hFont ) );
+   temp = hb_itemPutNL( NULL, (HB_LONG) pango_font_description_get_weight( hFont ) );
    hb_itemArrayPut( aMetr, 5, temp );
    hb_itemRelease( temp );
 
@@ -57,7 +57,7 @@ void store_font( gpointer fontseldlg )
    hb_itemArrayPut( aMetr, 6, temp );
    hb_itemRelease( temp );
 
-   temp = hb_itemPutNI( NULL, (LONG) pango_font_description_get_style( hFont ) );
+   temp = hb_itemPutNI( NULL, (HB_LONG) pango_font_description_get_style( hFont ) );
    hb_itemArrayPut( aMetr, 7, temp );
    hb_itemRelease( temp );
 
@@ -85,12 +85,12 @@ HB_FUNC( SELECTFONT )
 {
    GtkWidget *fontseldlg;
    GtkFontSelection *fontsel;
-   const char *cTitle = ( hb_pcount()>2 && ISCHAR(3) )? hb_parc(3):"Select Font";
+   const char *cTitle = ( hb_pcount()>2 && HB_ISCHAR(3) )? hb_parc(3):"Select Font";
 
    fontseldlg = gtk_font_selection_dialog_new( cTitle );
    fontsel = GTK_FONT_SELECTION( GTK_FONT_SELECTION_DIALOG (fontseldlg)->fontsel );
 
-   if( hb_pcount() > 0 && !ISNIL(1) )
+   if( hb_pcount() > 0 && !HB_ISNIL(1) )
    {
    }
 
@@ -127,8 +127,8 @@ void cancel_filedlg( gpointer file_selector )
 HB_FUNC( SELECTFILE )
 {
    GtkWidget * file_selector;
-   const char * cMask = ( hb_pcount()>1 && ISCHAR(2) )? hb_parc(2):NULL;
-   const char *cTitle = ( hb_pcount()>3 && ISCHAR(4) )? hb_parc(4):"Select a file";
+   const char * cMask = ( hb_pcount()>1 && HB_ISCHAR(2) )? hb_parc(2):NULL;
+   const char *cTitle = ( hb_pcount()>3 && HB_ISCHAR(4) )? hb_parc(4):"Select a file";
 
    file_selector = gtk_file_selection_new( cTitle );
 
@@ -163,7 +163,7 @@ void store_color( gpointer colorseldlg )
    // sprintf( ss,"%ld %ld %ld %ld \n\r",color.pixel,color.red,color.green,color.blue );
    // g_print(ss);
 
-   hb_retnl( (ULONG) ( (color.red>>8) + (color.green&0xff00) + ((color.blue&0xff00)<<8) ) );
+   hb_retnl( (HB_ULONG) ( (color.red>>8) + (color.green&0xff00) + ((color.blue&0xff00)<<8) ) );
    gtk_widget_destroy( (GtkWidget*) colorseldlg );
 }
 
@@ -172,15 +172,15 @@ HB_FUNC( HWG_CHOOSECOLOR )
    GtkWidget *colorseldlg;
    GtkColorSelection *colorsel;
    GtkWidget * hParent = GetActiveWindow();
-   const char *cTitle = ( hb_pcount()>2 && ISCHAR(3) )? hb_parc(3):"Select color";
+   const char *cTitle = ( hb_pcount()>2 && HB_ISCHAR(3) )? hb_parc(3):"Select color";
 
    colorseldlg = gtk_color_selection_dialog_new( cTitle );
    colorsel = GTK_COLOR_SELECTION( GTK_COLOR_SELECTION_DIALOG (colorseldlg)->colorsel );
 
-   if( hb_pcount() > 0 && !ISNIL(1) )
+   if( hb_pcount() > 0 && !HB_ISNIL(1) )
    {
       // char ss[30]={0};
-      ULONG ulColor = (ULONG) hb_parnl(1);
+      HB_ULONG ulColor = (HB_ULONG) hb_parnl(1);
       GdkColor color;
       hwg_parse_color( ulColor, &color );
       /*

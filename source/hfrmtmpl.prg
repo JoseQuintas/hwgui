@@ -170,7 +170,7 @@ ENDCLASS
 METHOD Read( fname, cId ) CLASS HFormTmpl
    LOCAL oDoc
    LOCAL i, j, nCtrl := 0, aItems, o, aProp := { }, aMethods := { }
-   LOCAL cPre, cName
+   LOCAL cPre, cName, pp
 
    IF cId != Nil .AND. ( o := HFormTmpl():Find( cId ) ) != Nil
       RETURN o
@@ -195,7 +195,7 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
    ::aProp := aProp
    ::aMethods := aMethods
 
-   __pp_init()
+   pp := __pp_init()
    AAdd( ::aForms, Self )
    aItems := oDoc:aItems[ 1 ]:aItems
    FOR i := 1 TO Len( aItems )
@@ -213,27 +213,27 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
             ENDIF
          NEXT
       ELSEIF aItems[ i ]:title == "method"
-         Aadd( aMethods, { cName := Lower(aItems[i]:GetAttribute("name")),CompileMethod(aItems[i]:aItems[1]:aItems[1],Self,,cName) } )
+         Aadd( aMethods, { cName := Lower(aItems[i]:GetAttribute("name")),CompileMethod(pp,aItems[i]:aItems[1]:aItems[1],Self,,cName) } )
          IF aMethods[ ( j := Len( aMethods ) ), 1 ] == "common"
             ::aFuncs := ::aMethods[ j, 2, 2 ]
             FOR j := 1 TO Len( ::aFuncs[ 2 ] )
                cPre := "#xtranslate " + ::aFuncs[ 2, j, 1 ] + ;
                        "( <params,...> ) => callfunc('"  + ;
                                                       Upper( ::aFuncs[ 2, j, 1 ] ) + "',\{ <params> \}, oDlg:oParent:aFuncs )"
-               __Preprocess( cPre )
+               __pp_process( pp, cPre )
                cPre := "#xtranslate " + ::aFuncs[ 2, j, 1 ] + ;
                        "() => callfunc('"  + ;
                                         Upper( ::aFuncs[ 2, j, 1 ] ) + "',, oDlg:oParent:aFuncs )"
-               __Preprocess( cPre )
+               __pp_process( pp, cPre )
             NEXT
          ENDIF
       ELSEIF aItems[ i ]:title == "part"
          nCtrl ++
          ::nContainer := nCtrl
-         ReadCtrl( aItems[ i ], Self, Self )
+         ReadCtrl( pp, aItems[ i ], Self, Self )
       ENDIF
    NEXT
-   __pp_free()
+   pp := NIL
    SetDebugInfo( .F. )
    RETURN Self
 
@@ -451,18 +451,18 @@ METHOD Close() CLASS HFormTmpl
 
 // ------------------------------
 
-STATIC FUNCTION ReadTree( oForm, aParent, oDesc )
+STATIC FUNCTION ReadTree( pp, oForm, aParent, oDesc )
    LOCAL i, aTree := { }, oNode, subarr
 
    FOR i := 1 TO Len( oDesc:aItems )
       oNode := oDesc:aItems[ i ]
       IF oNode:Type == HBXML_TYPE_CDATA
-         aParent[ 1 ] := CompileMethod( oNode:aItems[ 1 ], oForm )
+         aParent[ 1 ] := CompileMethod( pp, oNode:aItems[ 1 ], oForm )
       ELSE
          AAdd( aTree, { Nil, oNode:GetAttribute( "name" ), ;
                         Val( oNode:GetAttribute( "id" ) ), .T. } )
          IF ! Empty( oNode:aItems )
-            IF ( subarr := ReadTree( oForm, ATail( aTree ), oNode ) ) != Nil
+            IF ( subarr := ReadTree( pp, oForm, ATail( aTree ), oNode ) ) != Nil
                aTree[ Len( aTree ), 1 ] := subarr
             ENDIF
          ENDIF
@@ -503,7 +503,7 @@ FUNCTION ParseMethod( cMethod )
 
    RETURN arr
 
-STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl, cName )
+STATIC FUNCTION CompileMethod( pp, cMethod, oForm, oCtrl, cName )
    LOCAL arr, arrExe, nContainer := 0, cCode1, cCode, bOldError, bRes, cParam, nPos
 
    IF cMethod = Nil .OR. Empty( cMethod )
@@ -530,14 +530,14 @@ STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl, cName )
       cCode := Iif( Lower( Left(arr[1],6) ) == "return", Ltrim( Substr( arr[1],8 ) ), arr[1] )
       bOldError := ERRORBLOCK( {|e|CompileErr(e,cCode)} )
       BEGIN SEQUENCE
-         bRes := &( "{||" + __Preprocess( cCode ) + "}" )
+         bRes := &( "{||" + __pp_process( pp, cCode ) + "}" )
       END SEQUENCE
       ERRORBLOCK( bOldError )
       Return bRes
    ELSEIF !Empty(arr) .AND. !Empty( cParam )
       IF Len( arr ) == 2
          cCode := Iif( Lower( Left(arr[2],6) ) == "return", Ltrim( Substr( arr[2],8 ) ), arr[2] )
-         cCode := "{|" + cParam + "|" + __Preprocess( cCode ) + "}"
+         cCode := "{|" + cParam + "|" + __pp_process( pp, cCode ) + "}"
          bOldError := ERRORBLOCK( {|e|CompileErr(e,cCode)} )
          BEGIN SEQUENCE
             bRes := &cCode
@@ -583,7 +583,7 @@ STATIC PROCEDURE CompileErr( e, stroka )
             AllTrim( stroka ), "Script compiling error" )
    BREAK( nil )
 
-STATIC FUNCTION ReadCtrl( oCtrlDesc, oContainer, oForm )
+STATIC FUNCTION ReadCtrl( pp, oCtrlDesc, oContainer, oForm )
    LOCAL oCtrl := HCtrlTmpl():New( oContainer )
    LOCAL i, j, o, cName, aProp := { }, aMethods := { }, aItems := oCtrlDesc:aItems
 
@@ -604,16 +604,16 @@ STATIC FUNCTION ReadCtrl( oCtrlDesc, oContainer, oForm )
                   AAdd( oForm:aNames, hfrm_GetProperty( o:aItems[ 1 ] ) )
                ENDIF
                IF cName == "atree"
-                  AAdd( aProp, { cName, ReadTree( oForm,, o ) } )
+                  AAdd( aProp, { cName, ReadTree( pp, oForm,, o ) } )
                ELSE
                   AAdd( aProp, { cName, IIf( Empty( o:aItems ), "", o:aItems[ 1 ] ) } )
                ENDIF
             ENDIF
          NEXT
       ELSEIF aItems[ i ]:title == "method"
-         Aadd( aMethods, { cName := Lower(aItems[i]:GetAttribute("name")),CompileMethod(aItems[i]:aItems[1]:aItems[1],oForm,oCtrl,cName) } )
+         Aadd( aMethods, { cName := Lower(aItems[i]:GetAttribute("name")),CompileMethod(pp,aItems[i]:aItems[1]:aItems[1],oForm,oCtrl,cName) } )
       ELSEIF aItems[ i ]:title == "part"
-         ReadCtrl( aItems[ i ], oCtrl, oForm )
+         ReadCtrl( pp, aItems[ i ], oCtrl, oForm )
       ENDIF
    NEXT
 
@@ -1242,7 +1242,7 @@ ENDCLASS
 METHOD Read( fname, cId ) CLASS HRepTmpl
    LOCAL oDoc
    LOCAL i, j, aItems, o, aProp := { }, aMethods := { }
-   LOCAL cPre, cName
+   LOCAL cPre, cName, pp
 
    IF cId != Nil .AND. ( o := HFormTmpl():Find( cId ) ) != Nil
       RETURN o
@@ -1268,7 +1268,7 @@ METHOD Read( fname, cId ) CLASS HRepTmpl
    ::aProp := aProp
    ::aMethods := aMethods
 
-   __pp_init()
+   pp := __pp_init()
    AAdd( ::aReports, Self )
    aItems := oDoc:aItems[ 1 ]:aItems
    FOR i := 1 TO Len( aItems )
@@ -1293,18 +1293,18 @@ METHOD Read( fname, cId ) CLASS HRepTmpl
                cPre := "#xtranslate " + ::aFuncs[ 2, j, 1 ] + ;
                        "( <params,...> ) => callfunc('"  + ;
                                                       Upper( ::aFuncs[ 2, j, 1 ] ) + "',\{ <params> \}, oReport:aFuncs )"
-               __Preprocess( cPre )
+               __pp_process( pp, cPre )
                cPre := "#xtranslate " + ::aFuncs[ 2, j, 1 ] + ;
                        "() => callfunc('"  + ;
                                         Upper( ::aFuncs[ 2, j, 1 ] ) + "',, oReport:aFuncs )"
-               __Preprocess( cPre )
+               __pp_process( pp, cPre )
             NEXT
          ENDIF
       ELSEIF aItems[ i ]:title == "part"
          ReadRepItem( aItems[ i ], Self )
       ENDIF
    NEXT
-   __pp_free()
+   pp := NIL
    SetDebugInfo( .F. )
    RETURN Self
 

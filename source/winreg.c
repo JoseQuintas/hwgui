@@ -207,7 +207,7 @@ HB_FUNC( REGCREATEKEYEX )
    SECURITY_ATTRIBUTES *sa = NULL;
    void * hValue, * hClass;
 
-   if( ISCHAR( 7 ) )
+   if( HB_ISCHAR( 7 ) )
       sa = ( SECURITY_ATTRIBUTES * ) hb_parc( 7 );
 
    nErr = RegCreateKeyEx( ( HKEY ) hb_parnl( 1 ),

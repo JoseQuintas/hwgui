@@ -47,8 +47,8 @@ void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long 
 PHB_DYNS pSym_onEvent = NULL;
 
 #define HB_IT_DEFAULT   ( ( HB_TYPE ) 0x40000 )
-LONG Prevp2  = -1;
-LONG prevp2=-1;
+HB_LONG Prevp2  = -1;
+HB_LONG prevp2=-1;
 
 typedef struct
 {
@@ -85,13 +85,13 @@ HB_FUNC( HWG_INITMAINWINDOW )
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
    // char *szAppName = hb_parc(2);
    gchar *gcTitle = hwg_convert_to_utf8( hb_parcx( 3 ) );
-   // LONG nStyle =  hb_parnl(7);
+   // HB_LONG nStyle =  hb_parnl(7);
    // char *cMenu = hb_parc( 4 );
    int x = hb_parnl(8);
    int y = hb_parnl(9);
    int width = hb_parnl(10);
    int height = hb_parnl(11);
-   PHWGUI_PIXBUF szFile = ISPOINTER(5) ? (PHWGUI_PIXBUF) HB_PARHANDLE(5): NULL;  
+   PHWGUI_PIXBUF szFile = HB_ISPOINTER(5) ? (PHWGUI_PIXBUF) HB_PARHANDLE(5): NULL;  
 
 
    PHB_ITEM temp;
@@ -189,13 +189,13 @@ HB_FUNC( HWG_CREATEDLG )
 HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 {
    GtkWidget * hWnd = (GtkWidget*) HB_PARHANDLE(1);
-   // HACCEL hAcceler = ( ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
+   // HACCEL hAcceler = ( HB_ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
 
-   if( !ISNIL(3) && hb_parl(3) )
+   if( !HB_ISNIL(3) && hb_parl(3) )
    {
       gtk_window_maximize( (GtkWindow*) hWnd );
    }
-   if( !ISNIL(4) && hb_parl(4) )
+   if( !HB_ISNIL(4) && hb_parl(4) )
    {
       gtk_window_iconify( (GtkWindow*) hWnd );
    }
@@ -207,7 +207,7 @@ HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 HB_FUNC( HWG_ACTIVATEDIALOG )
 {
    // gtk_widget_show_all( (GtkWidget*) HB_PARHANDLE(1) );
-   if( ISNIL(2) || !hb_parl(2) )
+   if( HB_ISNIL(2) || !hb_parl(2) )
       gtk_main();
 }
 
@@ -231,8 +231,8 @@ gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data
 
    if( pSym_onEvent && gObject )
    {
-      LONG p3 = ( (ULONG)(allocation->width) & 0xFFFF ) |
-                 ( ( (ULONG)(allocation->height) << 16 ) & 0xFFFF0000 );
+      HB_LONG p3 = ( (HB_ULONG)(allocation->width) & 0xFFFF ) |
+                 ( ( (HB_ULONG)(allocation->height) << 16 ) & 0xFFFF0000 );
 
       /* g_signal_handlers_block_matched( (gpointer)widget, G_SIGNAL_MATCH_FUNC,
           0, 0, 0, G_CALLBACK (cb_signal_size), 0 ); */
@@ -253,7 +253,7 @@ gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data
 void cb_signal( GtkWidget *widget,gchar* data )
 {
    gpointer gObject;
-   LONG p1, p2, p3;
+   HB_LONG p1, p2, p3;
 
    sscanf( (char*)data,"%ld %ld %ld",&p1,&p2,&p3 );
    if( !p1 )
@@ -274,179 +274,179 @@ void cb_signal( GtkWidget *widget,gchar* data )
       hb_vmPush( ( PHB_ITEM ) gObject );
       hb_vmPushLong( p1 );
       hb_vmPushLong( p2 );
-      hb_vmPushLong( (LONG) p3 );
+      hb_vmPushLong( (HB_LONG) p3 );
       hb_vmSend( 3 );
       /* res = hb_parnl( -1 ); */
    }
 }
-static LONG ToKey(LONG a,LONG b)
+static HB_LONG ToKey(HB_LONG a,HB_LONG b)
 {
 
 if ( a == GDK_asciitilde || a == GDK_dead_tilde)
 {
    if ( b== GDK_A) 
-      return (LONG)GDK_Atilde;
+      return (HB_LONG)GDK_Atilde;
    else if ( b == GDK_a )      
-      return (LONG)GDK_atilde;
+      return (HB_LONG)GDK_atilde;
    else if ( b== GDK_N) 
-      return (LONG)GDK_Ntilde;
+      return (HB_LONG)GDK_Ntilde;
    else if ( b == GDK_n )      
-      return (LONG)GDK_ntilde;
+      return (HB_LONG)GDK_ntilde;
    else if ( b== GDK_O) 
-      return (LONG)GDK_Otilde;
+      return (HB_LONG)GDK_Otilde;
    else if ( b == GDK_o )      
-      return (LONG)GDK_otilde;                   
+      return (HB_LONG)GDK_otilde;                   
 }      
 if  ( a == GDK_asciicircum || a ==GDK_dead_circumflex) 
 {
    if ( b== GDK_A) 
-      return (LONG)GDK_Acircumflex;
+      return (HB_LONG)GDK_Acircumflex;
    else if ( b == GDK_a )      
-      return (LONG)GDK_acircumflex;
+      return (HB_LONG)GDK_acircumflex;
    else if ( b== GDK_E) 
-      return (LONG)GDK_Ecircumflex;
+      return (HB_LONG)GDK_Ecircumflex;
    else if ( b == GDK_e )      
-      return (LONG)GDK_ecircumflex;      
+      return (HB_LONG)GDK_ecircumflex;      
    else if ( b== GDK_I) 
-      return (LONG)GDK_Icircumflex;
+      return (HB_LONG)GDK_Icircumflex;
    else if ( b == GDK_i )      
-      return (LONG)GDK_icircumflex;      
+      return (HB_LONG)GDK_icircumflex;      
    else if ( b== GDK_O) 
-      return (LONG)GDK_Ocircumflex;
+      return (HB_LONG)GDK_Ocircumflex;
    else if ( b == GDK_o )      
-      return (LONG)GDK_ocircumflex;      
+      return (HB_LONG)GDK_ocircumflex;      
    else if ( b== GDK_U) 
-      return (LONG)GDK_Ucircumflex;
+      return (HB_LONG)GDK_Ucircumflex;
    else if ( b == GDK_u )      
-      return (LONG)GDK_ucircumflex;      
+      return (HB_LONG)GDK_ucircumflex;      
    else if ( b== GDK_C) 
-      return (LONG)GDK_Ccircumflex;
+      return (HB_LONG)GDK_Ccircumflex;
    else if ( b == GDK_C )      
-      return (LONG)GDK_Ccircumflex;
+      return (HB_LONG)GDK_Ccircumflex;
    else if ( b== GDK_H) 
-      return (LONG)GDK_Hcircumflex;
+      return (HB_LONG)GDK_Hcircumflex;
    else if ( b == GDK_h )      
-      return (LONG)GDK_hcircumflex;      
+      return (HB_LONG)GDK_hcircumflex;      
    else if ( b== GDK_J) 
-      return (LONG)GDK_Jcircumflex;
+      return (HB_LONG)GDK_Jcircumflex;
    else if ( b == GDK_j )      
-      return (LONG)GDK_jcircumflex;      
+      return (HB_LONG)GDK_jcircumflex;      
    else if ( b== GDK_G) 
-      return (LONG)GDK_Gcircumflex;
+      return (HB_LONG)GDK_Gcircumflex;
    else if ( b == GDK_g )      
-      return (LONG)GDK_gcircumflex;      
+      return (HB_LONG)GDK_gcircumflex;      
    else if ( b== GDK_S) 
-      return (LONG)GDK_Scircumflex;
+      return (HB_LONG)GDK_Scircumflex;
    else if ( b == GDK_s )      
-      return (LONG)GDK_scircumflex;            
+      return (HB_LONG)GDK_scircumflex;            
 }
 	
 if ( a == GDK_grave  || a==GDK_dead_grave ) 
 {
    if ( b== GDK_A) 
-      return (LONG)GDK_Agrave;
+      return (HB_LONG)GDK_Agrave;
    else if ( b == GDK_a )      
-      return (LONG)GDK_agrave;
+      return (HB_LONG)GDK_agrave;
    else if ( b== GDK_E) 
-      return (LONG)GDK_Egrave;
+      return (HB_LONG)GDK_Egrave;
    else if ( b == GDK_e )      
-      return (LONG)GDK_egrave;      
+      return (HB_LONG)GDK_egrave;      
    else if ( b== GDK_I) 
-      return (LONG)GDK_Igrave;
+      return (HB_LONG)GDK_Igrave;
    else if ( b == GDK_i )      
-      return (LONG)GDK_igrave;      
+      return (HB_LONG)GDK_igrave;      
    else if ( b== GDK_O) 
-      return (LONG)GDK_Ograve;
+      return (HB_LONG)GDK_Ograve;
    else if ( b == GDK_o )      
-      return (LONG)GDK_ograve;      
+      return (HB_LONG)GDK_ograve;      
    else if ( b== GDK_U) 
-      return (LONG)GDK_Ugrave;
+      return (HB_LONG)GDK_Ugrave;
    else if ( b == GDK_u )      
-      return (LONG)GDK_ugrave;      
+      return (HB_LONG)GDK_ugrave;      
    else if ( b== GDK_C) 
-      return (LONG)GDK_Ccedilla;
+      return (HB_LONG)GDK_Ccedilla;
    else if ( b == GDK_c )      
-      return (LONG)GDK_ccedilla ;           
+      return (HB_LONG)GDK_ccedilla ;           
       
 }
 
 if ( a == GDK_acute  ||  a == GDK_dead_acute)
 {
   if ( b== GDK_A) 
-      return (LONG)GDK_Aacute;
+      return (HB_LONG)GDK_Aacute;
    else if ( b == GDK_a )      
-      return (LONG)GDK_aacute;
+      return (HB_LONG)GDK_aacute;
    else if ( b== GDK_E) 
-      return (LONG)GDK_Eacute;
+      return (HB_LONG)GDK_Eacute;
    else if ( b == GDK_e )      
-      return (LONG)GDK_eacute;      
+      return (HB_LONG)GDK_eacute;      
    else if ( b== GDK_I) 
-      return (LONG)GDK_Iacute;
+      return (HB_LONG)GDK_Iacute;
    else if ( b == GDK_i )      
-      return (LONG)GDK_iacute;      
+      return (HB_LONG)GDK_iacute;      
    else if ( b== GDK_O) 
-      return (LONG)GDK_Oacute;
+      return (HB_LONG)GDK_Oacute;
    else if ( b == GDK_o )      
-      return (LONG)GDK_oacute;      
+      return (HB_LONG)GDK_oacute;      
    else if ( b== GDK_U) 
-      return (LONG)GDK_Uacute;
+      return (HB_LONG)GDK_Uacute;
    else if ( b == GDK_u )      
-      return (LONG)GDK_uacute;      
+      return (HB_LONG)GDK_uacute;      
    else if ( b== GDK_Y) 
-      return (LONG)GDK_Yacute;
+      return (HB_LONG)GDK_Yacute;
    else if ( b == GDK_y )      
-      return (LONG)GDK_yacute;            
+      return (HB_LONG)GDK_yacute;            
    else if ( b== GDK_C) 
-      return (LONG)GDK_Cacute;
+      return (HB_LONG)GDK_Cacute;
    else if ( b == GDK_c )      
-      return (LONG)GDK_cacute;
+      return (HB_LONG)GDK_cacute;
    else if ( b== GDK_L) 
-      return (LONG)GDK_Lacute;
+      return (HB_LONG)GDK_Lacute;
    else if ( b == GDK_l )      
-      return (LONG)GDK_lacute;      
+      return (HB_LONG)GDK_lacute;      
    else if ( b== GDK_N) 
-      return (LONG)GDK_Nacute;
+      return (HB_LONG)GDK_Nacute;
    else if ( b == GDK_n )      
-      return (LONG)GDK_nacute;      
+      return (HB_LONG)GDK_nacute;      
    else if ( b== GDK_R) 
-      return (LONG)GDK_Racute;
+      return (HB_LONG)GDK_Racute;
    else if ( b == GDK_r )      
-      return (LONG)GDK_racute;      
+      return (HB_LONG)GDK_racute;      
    else if ( b== GDK_S) 
-      return (LONG)GDK_Sacute;
+      return (HB_LONG)GDK_Sacute;
    else if ( b == GDK_s )      
-      return (LONG)GDK_sacute;      
+      return (HB_LONG)GDK_sacute;      
    else if ( b== GDK_Z) 
-      return (LONG)GDK_Zacute;
+      return (HB_LONG)GDK_Zacute;
    else if ( b == GDK_z )      
-      return (LONG)GDK_zacute;                  
+      return (HB_LONG)GDK_zacute;                  
 }
 if ( a == GDK_diaeresis|| a==GDK_dead_diaeresis)	
 {
   if ( b== GDK_A) 
-      return (LONG)GDK_Adiaeresis;
+      return (HB_LONG)GDK_Adiaeresis;
    else if ( b == GDK_a )      
-      return (LONG)GDK_adiaeresis;
+      return (HB_LONG)GDK_adiaeresis;
    else if ( b== GDK_E) 
-      return (LONG)GDK_Ediaeresis;
+      return (HB_LONG)GDK_Ediaeresis;
    else if ( b == GDK_e )      
-      return (LONG)GDK_ediaeresis;      
+      return (HB_LONG)GDK_ediaeresis;      
    else if ( b== GDK_I) 
-      return (LONG)GDK_Idiaeresis;
+      return (HB_LONG)GDK_Idiaeresis;
    else if ( b == GDK_i )      
-      return (LONG)GDK_idiaeresis;      
+      return (HB_LONG)GDK_idiaeresis;      
    else if ( b== GDK_O) 
-      return (LONG)GDK_Odiaeresis;
+      return (HB_LONG)GDK_Odiaeresis;
    else if ( b == GDK_o )      
-      return (LONG)GDK_odiaeresis;      
+      return (HB_LONG)GDK_odiaeresis;      
    else if ( b== GDK_U) 
-      return (LONG)GDK_Udiaeresis;
+      return (HB_LONG)GDK_Udiaeresis;
    else if ( b == GDK_u )      
-      return (LONG)GDK_udiaeresis;      
+      return (HB_LONG)GDK_udiaeresis;      
    else if ( b== GDK_Y) 
-      return (LONG)GDK_Ydiaeresis;
+      return (HB_LONG)GDK_Ydiaeresis;
    else if ( b == GDK_y )      
-      return (LONG)GDK_ydiaeresis;       	
+      return (HB_LONG)GDK_ydiaeresis;       	
 
 }
  return b;      
@@ -456,7 +456,7 @@ if ( a == GDK_diaeresis|| a==GDK_dead_diaeresis)
 static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
 {
    gpointer gObject = g_object_get_data( (GObject*) widget, "obj" );
-   LONG lRes;
+   HB_LONG lRes;
    gunichar uchar;   
    gchar* tmpbuf;
    gchar *res = NULL;
@@ -468,7 +468,7 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
    //   gObject = g_object_get_data( (GObject*) (widget->parent->parent), "obj" );
    if( pSym_onEvent && gObject )
    {
-      LONG p1, p2, p3;
+      HB_LONG p1, p2, p3;
 
       if( event->type == GDK_KEY_PRESS || event->type == GDK_KEY_RELEASE )
       {
@@ -484,7 +484,7 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
          {
             if ( prevp2 != -1 )
             {
-               p2 = ToKey(prevp2,(LONG)p2);
+               p2 = ToKey(prevp2,(HB_LONG)p2);
                uchar= gdk_keyval_to_unicode(p2);
                prevp2=-1;
             }
@@ -511,13 +511,13 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
          p1 = (event->type==GDK_BUTTON_PRESS)? WM_LBUTTONDOWN : 
               ( (event->type==GDK_BUTTON_RELEASE)? WM_LBUTTONUP : WM_LBUTTONDBLCLK );
          p2 = 0;
-         p3 = ( ((ULONG)(((GdkEventButton*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventButton*)event)->y)) << 16 ) & 0xFFFF0000 );
+         p3 = ( ((HB_ULONG)(((GdkEventButton*)event)->x)) & 0xFFFF ) | ( ( ((HB_ULONG)(((GdkEventButton*)event)->y)) << 16 ) & 0xFFFF0000 );
       }
       else if( event->type == GDK_MOTION_NOTIFY )
       {
          p1 = WM_MOUSEMOVE;
          p2 = ( ((GdkEventMotion*)event)->state & GDK_BUTTON1_MASK )? 1:0;
-         p3 = ( ((ULONG)(((GdkEventMotion*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
+         p3 = ( ((HB_ULONG)(((GdkEventMotion*)event)->x)) & 0xFFFF ) | ( ( ((HB_ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
       }
       else if( event->type == GDK_CONFIGURE )
       {
@@ -539,7 +539,7 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
          p1 = WM_MOUSEMOVE;
          p2 = ( ((GdkEventCrossing*)event)->state & GDK_BUTTON1_MASK )? 1:0 | 
               ( event->type == GDK_ENTER_NOTIFY )? 0x10:0;
-         p3 = ( ((ULONG)(((GdkEventCrossing*)event)->x)) & 0xFFFF ) | ( ( ((ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
+         p3 = ( ((HB_ULONG)(((GdkEventCrossing*)event)->x)) & 0xFFFF ) | ( ( ((HB_ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
       }
       else
          sscanf( (char*)data,"%ld %ld %ld",&p1,&p2,&p3 );
@@ -664,7 +664,7 @@ HB_FUNC( GETWINDOWTEXT )
 HB_FUNC( ENABLEWINDOW )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE( 1 );
-   BOOL lEnable = hb_parl( 2 );
+   HB_BOOL lEnable = hb_parl( 2 );
    gtk_widget_set_sensitive( widget, lEnable );
 }
 
@@ -677,9 +677,9 @@ HB_FUNC( MOVEWINDOW )
 {
    GtkWidget * hWnd = (GtkWidget*)HB_PARHANDLE(1);
 
-   if( !ISNIL(2) || !ISNIL(3) )
+   if( !HB_ISNIL(2) || !HB_ISNIL(3) )
       gtk_window_move( GTK_WINDOW(hWnd), hb_parni(2), hb_parni(3) );
-   if( !ISNIL(4) || !ISNIL(5) )
+   if( !HB_ISNIL(4) || !HB_ISNIL(5) )
       gtk_window_resize( GTK_WINDOW(hWnd), hb_parni(4), hb_parni(5) );
 }
 
@@ -751,7 +751,7 @@ HB_FUNC( HWG_DESTROYWINDOW )
 HB_FUNC( HWG_SET_MODAL )
 {
    gtk_window_set_modal( (GtkWindow *) HB_PARHANDLE(1), 1 );
-   if( !ISNIL(2) )
+   if( !HB_ISNIL(2) )
       gtk_window_set_transient_for( (GtkWindow *) HB_PARHANDLE(1), (GtkWindow *) HB_PARHANDLE(2) );
 }
 

@@ -19,7 +19,7 @@ HB_FUNC( SELECTFONT )
    CHOOSEFONT cf;
    LOGFONT lf;
    HFONT hfont;
-   PHB_ITEM pObj = ( ISNIL( 1 ) ) ? NULL : hb_param( 1, HB_IT_OBJECT );
+   PHB_ITEM pObj = ( HB_ISNIL( 1 ) ) ? NULL : hb_param( 1, HB_IT_OBJECT );
    PHB_ITEM temp1;
    PHB_ITEM aMetr = hb_itemArrayNew( 9 ), temp;
 
@@ -118,7 +118,7 @@ HB_FUNC( SELECTFILE )
    LPTSTR lpFilter;
    void * hTitle, * hInitDir;
 
-   if( ISCHAR( 1 ) && ISCHAR( 2 ) )
+   if( HB_ISCHAR( 1 ) && HB_ISCHAR( 2 ) )
    {
       void * hStr1, * hStr2;
       LPCTSTR lpStr1, lpStr2;
@@ -135,7 +135,7 @@ HB_FUNC( SELECTFILE )
       hb_strfree( hStr1 );
       hb_strfree( hStr2 );
    }
-   else if( ISARRAY( 1 ) && ISARRAY( 2 ) )
+   else if( HB_ISARRAY( 1 ) && HB_ISARRAY( 2 ) )
    {
       struct _hb_arrStr {
          void *   hStr1;
@@ -308,14 +308,14 @@ HB_FUNC( HWG_CHOOSECOLOR )
 {
    CHOOSECOLOR cc;
    COLORREF rgb[16];
-   DWORD nStyle = ( ISLOG( 2 ) && hb_parl( 2 ) ) ? CC_FULLOPEN : 0;
+   DWORD nStyle = ( HB_ISLOG( 2 ) && hb_parl( 2 ) ) ? CC_FULLOPEN : 0;
 
    memset( ( void * ) &cc, 0, sizeof( CHOOSECOLOR ) );
 
    cc.lStructSize = sizeof( CHOOSECOLOR );
    cc.hwndOwner = GetActiveWindow(  );
    cc.lpCustColors = rgb;
-   if( ISNUM( 1 ) )
+   if( HB_ISNUM( 1 ) )
    {
       cc.rgbResult = ( COLORREF ) hb_parnl( 1 );
       nStyle |= CC_RGBINIT;
@@ -511,7 +511,7 @@ HB_FUNC( _GETOPENFILENAME )
    ofn.hInstance = GetModuleHandle( NULL );
    ofn.lStructSize = sizeof( ofn );
    ofn.hwndOwner =
-         ( ISNIL( 1 ) ? GetActiveWindow(  ) : ( HWND ) HB_PARHANDLE( 1 ) );
+         ( HB_ISNIL( 1 ) ? GetActiveWindow(  ) : ( HWND ) HB_PARHANDLE( 1 ) );
    ofn.lpstrTitle = HB_PARSTR( 3, &hTitle, NULL );
    ofn.lpstrFilter = HB_PARSTR( 4, &hFilter, NULL );
    ofn.Flags = OFN_EXPLORER | OFN_ALLOWMULTISELECT;

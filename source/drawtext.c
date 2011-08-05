@@ -90,8 +90,8 @@ HB_FUNC( DRAWTEXT )
                      &rc, uFormat );
    hb_strfree( hText );
 
-   //if( ISBYREF( uiPos ) )
-   if( ISARRAY( 8 ) )
+   //if( HB_ISBYREF( uiPos ) )
+   if( HB_ISARRAY( 8 ) )
    {
       hb_storvni( rc.left, 8, 1 );
       hb_storvni( rc.top, 8, 2 );
@@ -347,11 +347,11 @@ HB_FUNC( WINDOWFROMDC )
 HB_FUNC( CREATEFONT )
 {
    HFONT hFont;
-   int fnWeight = ( ISNIL( 4 ) ) ? 0 : hb_parni( 4 );
-   DWORD fdwCharSet = ( ISNIL( 5 ) ) ? 0 : hb_parni( 5 );
-   DWORD fdwItalic = ( ISNIL( 6 ) ) ? 0 : hb_parni( 6 );
-   DWORD fdwUnderline = ( ISNIL( 7 ) ) ? 0 : hb_parni( 7 );
-   DWORD fdwStrikeOut = ( ISNIL( 8 ) ) ? 0 : hb_parni( 8 );
+   int fnWeight = ( HB_ISNIL( 4 ) ) ? 0 : hb_parni( 4 );
+   DWORD fdwCharSet = ( HB_ISNIL( 5 ) ) ? 0 : hb_parni( 5 );
+   DWORD fdwItalic = ( HB_ISNIL( 6 ) ) ? 0 : hb_parni( 6 );
+   DWORD fdwUnderline = ( HB_ISNIL( 7 ) ) ? 0 : hb_parni( 7 );
+   DWORD fdwStrikeOut = ( HB_ISNIL( 8 ) ) ? 0 : hb_parni( 8 );
    void * hString;
 
    hFont = CreateFont( hb_parni( 3 ),   // logical height of font

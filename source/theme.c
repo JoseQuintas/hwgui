@@ -1797,9 +1797,9 @@ HB_FUNC( HB_DRAWTHEMEBACKGROUND )
    RECT pRect;
    RECT pClipRect;
 
-   if( ISARRAY( 5 ) )
+   if( HB_ISARRAY( 5 ) )
       Array2Rect( hb_param( 5, HB_IT_ARRAY ), &pRect );
-   if( ISARRAY( 6 ) )
+   if( HB_ISARRAY( 6 ) )
       Array2Rect( hb_param( 6, HB_IT_ARRAY ), &pClipRect );
 
    hb_retnl( hb_DrawThemeBackground( hTheme, hdc,
@@ -1815,15 +1815,15 @@ HB_FUNC( DRAWTHEICON )
    RECT rpTitle;
    BOOL bIsPressed = hb_parl( 6 );
    BOOL bIsDisabled = hb_parl( 7 );
-   HICON hIco = ( ISNUM( 8 ) ||
-         ISPOINTER( 8 ) ) ? ( HICON ) HB_PARHANDLE( 8 ) : NULL;
-   HBITMAP hBit = ( ISNUM( 9 ) ||
-         ISPOINTER( 9 ) ) ? ( HBITMAP ) HB_PARHANDLE( 9 ) : NULL;
+   HICON hIco = ( HB_ISNUM( 8 ) ||
+         HB_ISPOINTER( 8 ) ) ? ( HICON ) HB_PARHANDLE( 8 ) : NULL;
+   HBITMAP hBit = ( HB_ISNUM( 9 ) ||
+         HB_ISPOINTER( 9 ) ) ? ( HBITMAP ) HB_PARHANDLE( 9 ) : NULL;
    int iStyle = hb_parni( 10 );
 
-   if( ISARRAY( 4 ) )
+   if( HB_ISARRAY( 4 ) )
       Array2Rect( hb_param( 4, HB_IT_ARRAY ), &rpItem );
-   if( ISARRAY( 5 ) )
+   if( HB_ISARRAY( 5 ) )
       Array2Rect( hb_param( 5, HB_IT_ARRAY ), &rpTitle );
 
    DrawTheIcon( hButtonWnd, dc, bHasTitle, &rpItem, &rpTitle, bIsPressed,
@@ -1857,15 +1857,15 @@ HB_FUNC( PREPAREIMAGERECT )
    DWORD cy =0 ;
    //
    BOOL bIsPressed = hb_parl( 6 );
-   HICON   hIco = (ISNUM( 7 ) ||
-         ISPOINTER( 7 ) ) ? ( HICON ) HB_PARHANDLE( 7 ) : NULL;
-   HBITMAP hBitmap = (ISNUM( 8 ) ||
-         ISPOINTER( 8 ) ) ? ( HBITMAP ) HB_PARHANDLE( 8 ) : NULL;
+   HICON   hIco = (HB_ISNUM( 7 ) ||
+         HB_ISPOINTER( 7 ) ) ? ( HICON ) HB_PARHANDLE( 7 ) : NULL;
+   HBITMAP hBitmap = (HB_ISNUM( 8 ) ||
+         HB_ISPOINTER( 8 ) ) ? ( HBITMAP ) HB_PARHANDLE( 8 ) : NULL;
    int iStyle = hb_parni( 9 );
 
-   if( ISARRAY( 4 ) )
+   if( HB_ISARRAY( 4 ) )
       Array2Rect( hb_param( 4, HB_IT_ARRAY ), &rpItem );
-   if( ISARRAY( 5 ) )
+   if( HB_ISARRAY( 5 ) )
       Array2Rect( hb_param( 5, HB_IT_ARRAY ), &rpTitle );
 
    if ( hIco )
@@ -1902,7 +1902,7 @@ HB_FUNC( HB_DRAWTHEMETEXT )
    int mlen = MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, pText, -1, NULL, 0 );
    WCHAR *output = ( WCHAR * ) hb_xgrab( mlen * sizeof( WCHAR ) );
 
-   if( ISARRAY( 8 ) )
+   if( HB_ISARRAY( 8 ) )
       Array2Rect( hb_param( 8, HB_IT_ARRAY ), &pRect );
    MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, pText, -1, output, mlen );
    hb_DrawThemeText( hTheme, hdc, iPartId,
@@ -1978,7 +1978,7 @@ HB_FUNC( HB_DRAWTHEMEPARENTBACKGROUND )
    HDC hdc = ( HDC ) HB_PARHANDLE( 2 );
    RECT pRect;
 
-   if( ISARRAY( 3 ) )
+   if( HB_ISARRAY( 3 ) )
       Array2Rect( hb_param( 3, HB_IT_ARRAY ), &pRect );
 
    hb_retnl( hb_DrawThemeParentBackground( hTheme, hdc, &pRect ) );

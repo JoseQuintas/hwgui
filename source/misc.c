@@ -126,13 +126,13 @@ HB_FUNC( GETSTOCKOBJECT )
 
 HB_FUNC( LOWORD )
 {
-   hb_retni( ( int ) ( ( ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
+   hb_retni( ( int ) ( ( HB_ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
                               ( ULONG ) hb_parnl( 1 ) ) & 0xFFFF ) );
 }
 
 HB_FUNC( HIWORD )
 {
-   hb_retni( ( int ) ( ( ( ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
+   hb_retni( ( int ) ( ( ( HB_ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
                               ( ULONG ) hb_parnl( 1 ) ) >> 16 ) & 0xFFFF ) );
 }
 
@@ -332,7 +332,7 @@ HB_FUNC( PTS2PIX )
    HDC hDC;
    BOOL lDC = 1;
 
-   if( hb_pcount() > 1 && !ISNIL( 1 ) )
+   if( hb_pcount() > 1 && !HB_ISNIL( 1 ) )
    {
       hDC = ( HDC ) HB_PARHANDLE( 2 );
       lDC = 0;
@@ -387,7 +387,7 @@ HB_FUNC( SHELLABOUT )
    hb_retni( ShellAbout( 0,
                          HB_PARSTRDEF( 1, &hStr1, NULL ),
                          HB_PARSTRDEF( 2, &hStr2, NULL ),
-                         ( ISNIL( 3 ) ? NULL : ( HICON ) HB_PARHANDLE( 3 ) ) ) );
+                         ( HB_ISNIL( 3 ) ? NULL : ( HICON ) HB_PARHANDLE( 3 ) ) ) );
    hb_strfree( hStr1 );
    hb_strfree( hStr2 );
 }
@@ -454,11 +454,11 @@ HB_FUNC( SLEEP )
 
 HB_FUNC( KEYB_EVENT )
 {
-   DWORD dwFlags = ( !( ISNIL( 2 ) ) &&
+   DWORD dwFlags = ( !( HB_ISNIL( 2 ) ) &&
          hb_parl( 2 ) ) ? KEYEVENTF_EXTENDEDKEY : 0;
-   int bShift = ( !( ISNIL( 3 ) ) && hb_parl( 3 ) ) ? TRUE : FALSE;
-   int bCtrl = ( !( ISNIL( 4 ) ) && hb_parl( 4 ) ) ? TRUE : FALSE;
-   int bAlt = ( !( ISNIL( 5 ) ) && hb_parl( 5 ) ) ? TRUE : FALSE;
+   int bShift = ( !( HB_ISNIL( 3 ) ) && hb_parl( 3 ) ) ? TRUE : FALSE;
+   int bCtrl = ( !( HB_ISNIL( 4 ) ) && hb_parl( 4 ) ) ? TRUE : FALSE;
+   int bAlt = ( !( HB_ISNIL( 5 ) ) && hb_parl( 5 ) ) ? TRUE : FALSE;
 
    if( bShift )
       keybd_event( VK_SHIFT, 0, 0, 0 );
@@ -485,19 +485,19 @@ HB_FUNC( SETSCROLLINFO )
    SCROLLINFO si;
    UINT fMask = ( hb_pcount() < 4 ) ? SIF_DISABLENOSCROLL : 0;
 
-   if( hb_pcount() > 3 && !ISNIL( 4 ) )
+   if( hb_pcount() > 3 && !HB_ISNIL( 4 ) )
    {
       si.nPos = hb_parni( 4 );
       fMask |= SIF_POS;
    }
 
-   if( hb_pcount() > 4 && !ISNIL( 5 ) )
+   if( hb_pcount() > 4 && !HB_ISNIL( 5 ) )
    {
       si.nPage = hb_parni( 5 );
       fMask |= SIF_PAGE;
    }
 
-   if( hb_pcount() > 5 && !ISNIL( 6 ) )
+   if( hb_pcount() > 5 && !HB_ISNIL( 6 ) )
    {
       si.nMin = 1;
       si.nMax = hb_parni( 6 );
@@ -741,8 +741,8 @@ HB_FUNC( GETNEXTDLGGROUPITEM )
 
 HB_FUNC( PTRTOULONG )
 {
-   hb_retnl( ISPOINTER( 1 ) ? ( LONG ) PtrToUlong( hb_parptr( 1 ) ) :
-                              hb_parnl( 1 ) );
+   hb_retnl( HB_ISPOINTER( 1 ) ? ( LONG ) PtrToUlong( hb_parptr( 1 ) ) :
+                                 hb_parnl( 1 ) );
 }
 
 HB_FUNC( OUTPUTDEBUGSTRING )

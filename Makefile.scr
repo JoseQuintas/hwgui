@@ -15,7 +15,7 @@ HBXML_DIR    = source/xml
 HWGQHTM_DIR  = source/qhtm
 ACTIVEX_DIR  = source/activex
 
-CFLAGS = -W -Wall -O3 -mno-cygwin -DHWG_USE_POINTER_ITEM
+CFLAGS = -W -Wall -O3 -DHWG_USE_POINTER_ITEM
 CFLAGS += -I$(INC_DIR)
 CFLAGS += $(C_USR)
 

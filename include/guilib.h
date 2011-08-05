@@ -50,6 +50,35 @@
    typedef FHANDLE HB_FHANDLE;
 #endif
 #if defined( __XHARBOUR__ ) || ( __HARBOUR__ - 0 < 0x020000 )
-   typedef ULONG HB_SIZE;
-   #define hb_storvni hb_storni
+   #define hb_storvni      hb_storni
+
+   #define HB_LONG         LONG
+   #define HB_ULONG        ULONG
+
+   typedef unsigned char   HB_BYTE;
+   typedef int             HB_BOOL;
+   typedef unsigned short  HB_USHORT;
+   typedef ULONG           HB_SIZE;
+#endif
+
+#if !defined( HB_FALSE )
+   #define HB_FALSE      0
+#endif
+#if !defined( HB_TRUE )
+   #define HB_TRUE       (!0)
+#endif
+#if !defined( HB_ISNIL )
+   #define HB_ISNIL( n )         ISNIL( n )
+   #define HB_ISCHAR( n )        ISCHAR( n )
+   #define HB_ISNUM( n )         ISNUM( n )
+   #define HB_ISLOG( n )         ISLOG( n )
+   #define HB_ISDATE( n )        ISDATE( n )
+   #define HB_ISMEMO( n )        ISMEMO( n )
+   #define HB_ISBYREF( n )       ISBYREF( n )
+   #define HB_ISARRAY( n )       ISARRAY( n )
+   #define HB_ISOBJECT( n )      ISOBJECT( n )
+   #define HB_ISBLOCK( n )       ISBLOCK( n )
+   #define HB_ISPOINTER( n )     ISPOINTER( n )
+   #define HB_ISHASH( n )        ISHASH( n )
+   #define HB_ISSYMBOL( n )      ISSYMBOL( n )
 #endif

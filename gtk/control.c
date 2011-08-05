@@ -65,11 +65,11 @@ GtkFixed * getFixedBox( GObject * handle )
 */
 HB_FUNC( CREATESTATIC )
 {
-   ULONG ulStyle = hb_parnl(3);
+   HB_ULONG ulStyle = hb_parnl(3);
    const char * cTitle = ( hb_pcount() > 8 )? hb_parc(9) : "";
    GtkWidget * hCtrl, * hLabel;
    GtkFixed * box;
-   ULONG ulExtStyle = hb_parnl( 8 ) ;
+   HB_ULONG ulExtStyle = hb_parnl( 8 ) ;
 
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
       hCtrl = gtk_drawing_area_new();
@@ -119,10 +119,10 @@ HB_FUNC( HWG_STATIC_SETTEXT )
 HB_FUNC( CREATEBUTTON )
 {
    GtkWidget * hCtrl,* img;
-   ULONG ulStyle = hb_parnl( 3 );
+   HB_ULONG ulStyle = hb_parnl( 3 );
    const char * cTitle = ( hb_pcount() > 7 )? hb_parc(8) : "";
    GtkFixed * box;
-   PHWGUI_PIXBUF szFile = ISPOINTER(9) ? (PHWGUI_PIXBUF) HB_PARHANDLE(9): NULL;
+   PHWGUI_PIXBUF szFile = HB_ISPOINTER(9) ? (PHWGUI_PIXBUF) HB_PARHANDLE(9): NULL;
    gchar * gcTitle = hwg_convert_to_utf8( cTitle );
 
    if( ( ulStyle & 0xf ) == BS_AUTORADIOBUTTON )
@@ -173,7 +173,7 @@ HB_FUNC( CREATEEDIT )
 {
    GtkWidget * hCtrl;
    const char * cTitle = ( hb_pcount() > 7 )? hb_parc(8) : "";
-   unsigned long ulStyle = (ISNIL(3))? 0 : hb_parnl(3);
+   unsigned long ulStyle = (HB_ISNIL(3))? 0 : hb_parnl(3);
 
    if( ulStyle & ES_MULTILINE )
    {
@@ -284,7 +284,7 @@ HB_FUNC( HWG_COMBOSETARRAY )
 
    if( pArray )
    {
-      ULONG ul, ulLen = hb_arrayLen( pArray );
+      HB_ULONG ul, ulLen = hb_arrayLen( pArray );
       char * cItem;
 
       for( ul = 1; ul <= ulLen; ++ul )
@@ -432,18 +432,18 @@ HB_FUNC( CREATEBROWSE )
 HB_FUNC( HWG_GETADJVALUE )
 {
    GtkAdjustment *adj = (GtkAdjustment *) HB_PARHANDLE(1);
-   int iOption = (ISNIL(2))? 0 : hb_parni(2);
+   int iOption = (HB_ISNIL(2))? 0 : hb_parni(2);
 
    if( iOption == 0 )
-      hb_retnl( (LONG) adj->value );
+      hb_retnl( (HB_LONG) adj->value );
    else if( iOption == 1 )
-      hb_retnl( (LONG) adj->upper );
+      hb_retnl( (HB_LONG) adj->upper );
    else if( iOption == 2 )
-      hb_retnl( (LONG) adj->step_increment );
+      hb_retnl( (HB_LONG) adj->step_increment );
    else if( iOption == 3 )
-      hb_retnl( (LONG) adj->page_increment );
+      hb_retnl( (HB_LONG) adj->page_increment );
    else if( iOption == 4 )
-      hb_retnl( (LONG) adj->page_size );
+      hb_retnl( (HB_LONG) adj->page_size );
    else
       hb_retnl( 0 );
 }
@@ -457,27 +457,27 @@ HB_FUNC( HWG_SETADJOPTIONS )
    gdouble value;
    int lChanged = 0;
 
-   if( !ISNIL(2) && ( value = (gdouble)hb_parnl(2) ) != adj->value )
+   if( !HB_ISNIL(2) && ( value = (gdouble)hb_parnl(2) ) != adj->value )
    {
       adj->value = value;
       lChanged = 1;
    }
-   if( !ISNIL(3) && ( value = (gdouble)hb_parnl(3) ) != adj->upper )
+   if( !HB_ISNIL(3) && ( value = (gdouble)hb_parnl(3) ) != adj->upper )
    {
       adj->upper = value;
       lChanged = 1;
    }
-   if( !ISNIL(4) && ( value = (gdouble)hb_parnl(4) ) != adj->step_increment )
+   if( !HB_ISNIL(4) && ( value = (gdouble)hb_parnl(4) ) != adj->step_increment )
    {
       adj->step_increment = value;
       lChanged = 1;
    }
-   if( !ISNIL(5) && ( value = (gdouble)hb_parnl(5) ) != adj->page_increment )
+   if( !HB_ISNIL(5) && ( value = (gdouble)hb_parnl(5) ) != adj->page_increment )
    {
       adj->page_increment = value;
       lChanged = 1;
    }
-   if( !ISNIL(6) && ( value = (gdouble)hb_parnl(6) ) != adj->page_size )
+   if( !HB_ISNIL(6) && ( value = (gdouble)hb_parnl(6) ) != adj->page_size )
    {
       adj->page_size = value;
       lChanged = 1;
@@ -523,7 +523,7 @@ HB_FUNC( GETCURRENTTAB )
 
 HB_FUNC( HWG_CREATESEP )
 {
-   BOOL lVert = hb_parl(2);
+   HB_BOOL lVert = hb_parl(2);
    GtkWidget * hCtrl;
    GtkFixed * box;
 
@@ -619,7 +619,7 @@ HB_FUNC( ADDTOOLTIP )
 
 static gint cb_timer( gchar * data )
 {
-   LONG p1;
+   HB_LONG p1;
 
    sscanf( (char*)data,"%ld",&p1 );
 
@@ -630,7 +630,7 @@ static gint cb_timer( gchar * data )
    {
       hb_vmPushSymbol( hb_dynsymSymbol( pSymTimerProc ) );
       hb_vmPushNil();
-      hb_vmPushLong( (LONG ) p1 );
+      hb_vmPushLong( (HB_LONG ) p1 );
       hb_vmDo( 1 );
    }
    return 1;
@@ -663,9 +663,9 @@ HB_FUNC( GETPARENT )
 
 HB_FUNC( LOADCURSOR )
 {
-   if( ISCHAR(1) )
+   if( HB_ISCHAR(1) )
    {
-      // hb_retnl( (LONG) LoadCursor( GetModuleHandle( NULL ), hb_parc( 1 )  ) );
+      // hb_retnl( (HB_LONG) LoadCursor( GetModuleHandle( NULL ), hb_parc( 1 )  ) );
    }
    else
       HB_RETHANDLE( gdk_cursor_new( (GdkCursorType) hb_parni(1) ) );
@@ -673,7 +673,7 @@ HB_FUNC( LOADCURSOR )
 
 HB_FUNC( HWG_SETCURSOR )
 {
-   GtkWidget * widget = (ISPOINTER(2))? (GtkWidget*) HB_PARHANDLE(2) : GetActiveWindow();
+   GtkWidget * widget = (HB_ISPOINTER(2))? (GtkWidget*) HB_PARHANDLE(2) : GetActiveWindow();
    gdk_window_set_cursor( widget->window, (GdkCursor*) HB_PARHANDLE(1) );
 }
 
@@ -682,23 +682,23 @@ HB_FUNC( HWG_MOVEWIDGET )
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
    GtkWidget * ch_widget = NULL;
 
-   if( !ISNIL(6) && hb_parl(6) )
+   if( !HB_ISNIL(6) && hb_parl(6) )
    {
       ch_widget = widget;
       widget = widget->parent;
    }
  
-   if( !ISNIL(2) && !ISNIL(3) )
+   if( !HB_ISNIL(2) && !HB_ISNIL(3) )
    {
       gtk_fixed_move( (GtkFixed*) (widget->parent), widget, hb_parni(2), hb_parni(3) );
    }
-   if( !ISNIL(4) || !ISNIL(5) )
+   if( !HB_ISNIL(4) || !HB_ISNIL(5) )
    {
       gint w, h, w1, h1;
 
       gtk_widget_get_size_request( widget, &w, &h );
-      w1 = ( ISNIL(4) )? w : hb_parni(4);
-      h1 = ( ISNIL(5) )? h : hb_parni(5);
+      w1 = ( HB_ISNIL(4) )? w : hb_parni(4);
+      h1 = ( HB_ISNIL(5) )? h : hb_parni(5);
       if( w != w1 || h != h1 )
       {
          gtk_widget_set_size_request( widget, w1, h1 );
@@ -797,9 +797,9 @@ HB_FUNC(CREATETOOLBARBUTTON)
 #if GTK_CHECK_VERSION(2,4,1)
   GtkWidget *toolbutton1,*img;   
   GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
-  PHWGUI_PIXBUF szFile = ISPOINTER(2) ? (PHWGUI_PIXBUF) HB_PARHANDLE(2): NULL;  
-  const char * szLabel = ISCHAR( 3 ) ? hb_parc( 3 ) : NULL ;
-  BOOL lSep = hb_parl( 4 );
+  PHWGUI_PIXBUF szFile = HB_ISPOINTER(2) ? (PHWGUI_PIXBUF) HB_PARHANDLE(2): NULL;  
+  const char * szLabel = HB_ISCHAR( 3 ) ? hb_parc( 3 ) : NULL ;
+  HB_BOOL lSep = hb_parl( 4 );
   gchar * gcLabel = NULL;
 
   if ( szLabel )
@@ -958,14 +958,14 @@ HB_FUNC( MONTHCALENDAR_SETACTION )
    g_signal_connect (hCtrl, "day-selected", G_CALLBACK (toolbar_clicked), (void*) pItem);
 }			    
 
-void hwg_parse_color( ULONG ncolor, GdkColor * pColor );
+void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor );
 
 HB_FUNC( SETFGCOLOR )
 {
    GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
    GdkColor fColor;
    GtkWidget *label ;
-   ULONG hColor = hb_parnl( 2 ) ;
+   HB_ULONG hColor = hb_parnl( 2 ) ;
 
    if (GTK_IS_BUTTON(hCtrl) )
       label = gtk_bin_get_child(GTK_BIN(hCtrl));
@@ -986,7 +986,7 @@ HB_FUNC(SETBGCOLOR)
   GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
   GdkColor fColor;
   GtkWidget *label ;
-  ULONG hColor = hb_parnl( 2 ) ;
+  HB_ULONG hColor = hb_parnl( 2 ) ;
 //  TraceLog("cor.txt","cor = %lu control = %lu\n" , hColor,hCtrl);
   hwg_parse_color( hColor, &fColor );
 //  label = g_object_get_data( (GObject*) hCtrl, "label" );  
@@ -1007,7 +1007,7 @@ HB_FUNC(SETBGCOLOR)
 */
 HB_FUNC( CREATESPLITTER )
 {
-   ULONG ulStyle = hb_parnl(3);
+   HB_ULONG ulStyle = hb_parnl(3);
    GtkWidget * hCtrl;
    GtkFixed *box, *fbox;
 

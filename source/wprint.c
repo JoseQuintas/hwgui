@@ -201,7 +201,7 @@ HB_FUNC( SETPRINTERMODE )
    void * hPrinterName;
    LPCTSTR lpPrinterName = HB_PARSTR( 1, &hPrinterName, NULL );
    HANDLE hPrinter =
-         ( ISNIL( 2 ) ) ? ( HANDLE ) NULL : ( HANDLE ) HB_PARHANDLE( 2 );
+         ( HB_ISNIL( 2 ) ) ? ( HANDLE ) NULL : ( HANDLE ) HB_PARHANDLE( 2 );
    long int nSize;
    PDEVMODE pdm;
 
@@ -218,7 +218,7 @@ HB_FUNC( SETPRINTERMODE )
       DocumentProperties( NULL, hPrinter, ( LPTSTR ) lpPrinterName, pdm, NULL, DM_OUT_BUFFER );
 
       /* Changing of values */
-      if( !ISNIL( 3 ) )
+      if( !HB_ISNIL( 3 ) )
       {
          pdm->dmOrientation = hb_parni( 3 );
          pdm->dmFields = pdm->dmFields | DM_ORIENTATION;
@@ -508,11 +508,12 @@ HB_FUNC( HWG_SETDOCUMENTPROPERTIES )
 
         if (pDevMode && DocumentProperties(0,hPrinter,( LPTSTR ) lpPrinterName, pDevMode,pDevMode,DM_OUT_BUFFER) == IDOK )  // Get the current settings
         {
-          BOOL  bAskUser = ISBYREF(3) || ISBYREF(4) || ISBYREF(5) ||
-                           ISBYREF(6) || ISBYREF(7) || ISBYREF(8) || ISBYREF(9) || ISBYREF(10) ; //x 20070421
+          BOOL  bAskUser = HB_ISBYREF(3) || HB_ISBYREF(4) || HB_ISBYREF(5) ||
+                           HB_ISBYREF(6) || HB_ISBYREF(7) || HB_ISBYREF(8) ||
+                           HB_ISBYREF(9) || HB_ISBYREF(10) ; //x 20070421
           DWORD dInit = 0; //x 20070421
           DWORD fMode ;
-          BOOL bCustomFormSize  = ( ISNUM( 9 ) && hb_parnl( 9 ) > 0 ) && ( ISNUM( 10 ) && hb_parnl( 10 ) > 0 ) ;  // Must set both Length & Width
+          BOOL bCustomFormSize  = ( HB_ISNUM( 9 ) && hb_parnl( 9 ) > 0 ) && ( HB_ISNUM( 10 ) && hb_parnl( 10 ) > 0 ) ;  // Must set both Length & Width
 
           if ( bCustomFormSize )
           {
@@ -527,7 +528,7 @@ HB_FUNC( HWG_SETDOCUMENTPROPERTIES )
           }
           else
           {
-            if ( ISCHAR( 3 ) )    // this doesn't work for Win9X
+            if ( HB_ISCHAR( 3 ) )    // this doesn't work for Win9X
             {
               if ( !bW9X )
               {
@@ -543,38 +544,38 @@ HB_FUNC( HWG_SETDOCUMENTPROPERTIES )
                 hb_strfree( hFormName );
               }
             }
-            else if ( ISNUM(3) && hb_parnl(3) ) // 22/02/2007 don't change if 0
+            else if ( HB_ISNUM(3) && hb_parnl(3) ) // 22/02/2007 don't change if 0
             {
               pDevMode->dmPaperSize     = ( short ) hb_parnl(3) ;
               dInit |= DM_PAPERSIZE;
             }
           }
 
-          if (ISLOG(4))
+          if (HB_ISLOG(4))
           {
             pDevMode->dmOrientation   = ( short ) (hb_parl(4) ? 2 : 1) ;
             dInit |= DM_ORIENTATION;
           }
 
-          if (ISNUM(5) && hb_parnl(5) > 0)
+          if (HB_ISNUM(5) && hb_parnl(5) > 0)
           {
             pDevMode->dmCopies        = ( short ) hb_parnl(5) ;
             dInit |= DM_COPIES;
           }
 
-          if ( ISNUM(6) && hb_parnl(6) ) // 22/02/2007 don't change if 0
+          if ( HB_ISNUM(6) && hb_parnl(6) ) // 22/02/2007 don't change if 0
           {
             pDevMode->dmDefaultSource = ( short ) hb_parnl(6) ;
             dInit |= DM_DEFAULTSOURCE;
           }
 
-          if (ISNUM(7)  && hb_parnl(7) ) // 22/02/2007 don't change if 0
+          if (HB_ISNUM(7)  && hb_parnl(7) ) // 22/02/2007 don't change if 0
           {
             pDevMode->dmDuplex = ( short ) hb_parnl(7) ;
             dInit |= DM_DUPLEX;
           }
 
-          if (ISNUM(8) && hb_parnl(8) ) // 22/02/2007 don't change if 0
+          if (HB_ISNUM(8) && hb_parnl(8) ) // 22/02/2007 don't change if 0
           {
             pDevMode->dmPrintQuality = ( short ) hb_parnl(8) ;
             dInit |= DM_PRINTQUALITY;
@@ -596,9 +597,9 @@ HB_FUNC( HWG_SETDOCUMENTPROPERTIES )
            */
           if ( DocumentProperties(0,hPrinter,( LPTSTR ) lpPrinterName, pDevMode,pDevMode, fMode) == IDOK || bW9X )
           {
-            if (ISBYREF(3) && !bCustomFormSize )
+            if (HB_ISBYREF(3) && !bCustomFormSize )
             {
-              if ( ISCHAR( 3 ) )
+              if ( HB_ISCHAR( 3 ) )
               {
                 if ( !bW9X )
                 {
@@ -610,31 +611,31 @@ HB_FUNC( HWG_SETDOCUMENTPROPERTIES )
                 hb_stornl( (LONG) pDevMode->dmPaperSize,3);
               }
             }
-            if (ISBYREF(4))
+            if (HB_ISBYREF(4))
             {
                hb_storl(pDevMode->dmOrientation==2,4);
             }
-            if (ISBYREF(5))
+            if (HB_ISBYREF(5))
             {
                hb_stornl( (LONG) pDevMode->dmCopies,5);
             }
-            if (ISBYREF(6))
+            if (HB_ISBYREF(6))
             {
                hb_stornl( (LONG) pDevMode->dmDefaultSource,6);
             }
-            if (ISBYREF(7))
+            if (HB_ISBYREF(7))
             {
                hb_stornl( (LONG) pDevMode->dmDuplex,7);
             }
-            if (ISBYREF(8))
+            if (HB_ISBYREF(8))
             {
                hb_stornl( (LONG) pDevMode->dmPrintQuality,8);
             }
-            if (ISBYREF(9))
+            if (HB_ISBYREF(9))
             {
                hb_stornl( (LONG) pDevMode->dmPaperLength, 9 ) ;
             }
-            if (ISBYREF(10))
+            if (HB_ISBYREF(10))
             {
                hb_stornl( (LONG) pDevMode->dmPaperWidth, 10 ) ;
             }

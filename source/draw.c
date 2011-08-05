@@ -172,7 +172,7 @@ HB_FUNC( FILLRECT )
    rc.right = hb_parni( 4 );
    rc.bottom = hb_parni( 5 );
 
-   FillRect( ISPOINTER( 1 ) ? ( HDC ) HB_PARHANDLE( 1 ) : ( HDC ) hb_parnl( 1 ),        // handle to device context
+   FillRect( HB_ISPOINTER( 1 ) ? ( HDC ) HB_PARHANDLE( 1 ) : ( HDC ) hb_parnl( 1 ),        // handle to device context
          &rc,                   // pointer to structure with rectangle
          ( HBRUSH ) HB_PARHANDLE( 6 )   // handle to brush
           );
@@ -205,10 +205,10 @@ HB_FUNC( REDRAWWINDOW )
 
    if ( hb_pcount() > 3 )
    {
-      int x = ( hb_pcount() >  3 && !ISNIL(3) )? hb_parni(3):0;
-      int y = ( hb_pcount() >= 4 && !ISNIL(4) )? hb_parni(4):0;
-      int w = ( hb_pcount() >= 5 && !ISNIL(5) )? hb_parni(5):0;
-      int h = ( hb_pcount() >= 6 && !ISNIL(6) )? hb_parni(6):0;
+      int x = ( hb_pcount() >  3 && !HB_ISNIL(3) )? hb_parni(3):0;
+      int y = ( hb_pcount() >= 4 && !HB_ISNIL(4) )? hb_parni(4):0;
+      int w = ( hb_pcount() >= 5 && !HB_ISNIL(5) )? hb_parni(5):0;
+      int h = ( hb_pcount() >= 6 && !HB_ISNIL(6) )? hb_parni(6):0;
       rc.left  = x - 1;
       rc.top   = y - 1;
       rc.right = x + w + 1;
@@ -271,8 +271,8 @@ HB_FUNC( DRAWEDGE )
 {
    RECT rc;
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
-   UINT edge = ( ISNIL( 6 ) ) ? EDGE_RAISED : ( UINT ) hb_parni( 6 );
-   UINT grfFlags = ( ISNIL( 7 ) ) ? BF_RECT : ( UINT ) hb_parni( 7 );
+   UINT edge = ( HB_ISNIL( 6 ) ) ? EDGE_RAISED : ( UINT ) hb_parni( 6 );
+   UINT grfFlags = ( HB_ISNIL( 7 ) ) ? BF_RECT : ( UINT ) hb_parni( 7 );
 
    rc.left = hb_parni( 2 );
    rc.top = hb_parni( 3 );
@@ -284,7 +284,7 @@ HB_FUNC( DRAWEDGE )
 
 HB_FUNC( LOADICON )
 {
-   if( ISNUM( 1 ) )
+   if( HB_ISNUM( 1 ) )
       HB_RETHANDLE( LoadIcon( NULL, MAKEINTRESOURCE( hb_parni( 1 ) ) ) );
    else
    {
@@ -298,8 +298,8 @@ HB_FUNC( LOADIMAGE )
 {
    void * hString = NULL;
 
-   HB_RETHANDLE( LoadImage( ISNIL( 1 ) ? GetModuleHandle( NULL ) : ( HINSTANCE ) hb_parnl( 1 ), // handle of the instance that contains the image
-               ISNUM( 2 ) ? MAKEINTRESOURCE( hb_parni( 2 ) ) : HB_PARSTR( 2, &hString, NULL ),  // name or identifier of image
+   HB_RETHANDLE( LoadImage( HB_ISNIL( 1 ) ? GetModuleHandle( NULL ) : ( HINSTANCE ) hb_parnl( 1 ), // handle of the instance that contains the image
+               HB_ISNUM( 2 ) ? MAKEINTRESOURCE( hb_parni( 2 ) ) : HB_PARSTR( 2, &hString, NULL ),  // name or identifier of image
                ( UINT ) hb_parni( 3 ),  // type of image
                hb_parni( 4 ),   // desired width
                hb_parni( 5 ),   // desired height
@@ -310,9 +310,9 @@ HB_FUNC( LOADIMAGE )
 
 HB_FUNC( LOADBITMAP )
 {
-   if( ISNUM( 1 ) )
+   if( HB_ISNUM( 1 ) )
    {
-      if( !ISNIL( 2 ) && hb_parl( 2 ) )
+      if( !HB_ISNIL( 2 ) && hb_parl( 2 ) )
          HB_RETHANDLE( LoadBitmap( NULL, MAKEINTRESOURCE( hb_parni( 1 ) ) ) );
       else
          HB_RETHANDLE( LoadBitmap( GetModuleHandle( NULL ),
@@ -332,7 +332,7 @@ HB_FUNC( LOADBITMAP )
 HB_FUNC( WINDOW2BITMAP )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
-   BOOL lFull = ( ISNIL( 2 ) ) ? 0 : ( BOOL ) hb_parl( 2 );
+   BOOL lFull = ( HB_ISNIL( 2 ) ) ? 0 : ( BOOL ) hb_parl( 2 );
    HDC hDC = ( lFull ) ? GetWindowDC( hWnd ) : GetDC( hWnd );
    HDC hDCmem = CreateCompatibleDC( hDC );
    HBITMAP hBitmap;
@@ -364,12 +364,12 @@ HB_FUNC( DRAWBITMAP )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
-   DWORD dwraster = ( ISNIL( 3 ) ) ? SRCCOPY : ( DWORD ) hb_parnl( 3 );
+   DWORD dwraster = ( HB_ISNIL( 3 ) ) ? SRCCOPY : ( DWORD ) hb_parnl( 3 );
    HBITMAP hBitmap = ( HBITMAP ) HB_PARHANDLE( 2 );
    BITMAP bitmap;
-   int nWidthDest = ( hb_pcount(  ) >= 5 && !ISNIL( 6 ) ) ? hb_parni( 6 ) : 0;
+   int nWidthDest = ( hb_pcount(  ) >= 5 && !HB_ISNIL( 6 ) ) ? hb_parni( 6 ) : 0;
    int nHeightDest = ( hb_pcount(  ) >= 6 &&
-         !ISNIL( 7 ) ) ? hb_parni( 7 ) : 0;
+         !HB_ISNIL( 7 ) ) ? hb_parni( 7 ) : 0;
 
    SelectObject( hDCmem, hBitmap );
    GetObject( hBitmap, sizeof( BITMAP ), ( LPVOID ) & bitmap );
@@ -397,7 +397,7 @@ HB_FUNC( DRAWTRANSPARENTBITMAP )
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HBITMAP hBitmap = ( HBITMAP ) HB_PARHANDLE( 2 );
    COLORREF trColor =
-         ( ISNIL( 5 ) ) ? 0x00FFFFFF : ( COLORREF ) hb_parnl( 5 );
+         ( HB_ISNIL( 5 ) ) ? 0x00FFFFFF : ( COLORREF ) hb_parnl( 5 );
    COLORREF crOldBack = SetBkColor( hDC, 0x00FFFFFF );
    COLORREF crOldText = SetTextColor( hDC, 0 );
    HBITMAP bitmapTrans;
@@ -406,9 +406,9 @@ HB_FUNC( DRAWTRANSPARENTBITMAP )
    HDC dcImage, dcTrans;
    int x = hb_parni( 3 );
    int y = hb_parni( 4 );
-   int nWidthDest = ( hb_pcount(  ) >= 5 && !ISNIL( 6 ) ) ? hb_parni( 6 ) : 0;
+   int nWidthDest = ( hb_pcount(  ) >= 5 && !HB_ISNIL( 6 ) ) ? hb_parni( 6 ) : 0;
    int nHeightDest = ( hb_pcount(  ) >= 6 &&
-         !ISNIL( 7 ) ) ? hb_parni( 7 ) : 0;
+         !HB_ISNIL( 7 ) ) ? hb_parni( 7 ) : 0;
 
    // Create two memory dcs for the image and the mask
    dcImage = CreateCompatibleDC( hDC );
@@ -463,9 +463,9 @@ HB_FUNC( DRAWTRANSPARENTBITMAP )
 HB_FUNC( SPREADBITMAP )
 {
    HDC hDC =
-         ISPOINTER( 1 ) ? ( HDC ) HB_PARHANDLE( 1 ) : ( HDC ) hb_parnl( 1 );
+         HB_ISPOINTER( 1 ) ? ( HDC ) HB_PARHANDLE( 1 ) : ( HDC ) hb_parnl( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
-   DWORD dwraster = ( ISNIL( 4 ) ) ? SRCCOPY : ( DWORD ) hb_parnl( 4 );
+   DWORD dwraster = ( HB_ISNIL( 4 ) ) ? SRCCOPY : ( DWORD ) hb_parnl( 4 );
    HBITMAP hBitmap = ( HBITMAP ) HB_PARHANDLE( 3 );
    BITMAP bitmap;
    RECT rc;
@@ -497,12 +497,12 @@ HB_FUNC( CENTERBITMAP )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
-   DWORD dwraster = ( ISNIL( 4 ) ) ? SRCCOPY : ( DWORD ) hb_parnl( 4 );
+   DWORD dwraster = ( HB_ISNIL( 4 ) ) ? SRCCOPY : ( DWORD ) hb_parnl( 4 );
    HBITMAP hBitmap = ( HBITMAP ) HB_PARHANDLE( 3 );
    BITMAP bitmap;
    RECT rc;
    HBRUSH hBrush =
-         ( ISNIL( 5 ) ) ? ( HBRUSH ) ( COLOR_WINDOW +
+         ( HB_ISNIL( 5 ) ) ? ( HBRUSH ) ( COLOR_WINDOW +
          1 ) : ( HBRUSH ) HB_PARHANDLE( 5 );
 
    SelectObject( hDCmem, hBitmap );
@@ -584,7 +584,7 @@ HB_FUNC( OPENBITMAP )
    LPVOID lpvBits;
    HGLOBAL hmem1, hmem2;
    HBITMAP hbm;
-   HDC hDC = ( hb_pcount(  ) > 1 && !ISNIL( 2 ) ) ?
+   HDC hDC = ( hb_pcount(  ) > 1 && !HB_ISNIL( 2 ) ) ?
              ( HDC ) HB_PARHANDLE( 2 ) : NULL;
    void * hString;
    HANDLE hfbm;
@@ -663,7 +663,7 @@ HB_FUNC( OPENBITMAP )
    hbm = CreateDIBitmap( hDC, &bmih, CBM_INIT, lpvBits, lpbmi,
          DIB_RGB_COLORS );
 
-   if( hb_pcount(  ) < 2 || ISNIL( 2 ) )
+   if( hb_pcount(  ) < 2 || HB_ISNIL( 2 ) )
       ReleaseDC( 0, hDC );
 
    /* Unlock the global memory objects and close the .BMP file. */
@@ -834,7 +834,7 @@ HB_FUNC( DRAWGRAYBITMAP )
 HB_FUNC( OPENIMAGE )
 {
    const char *cFileName = hb_parc( 1 );
-   BOOL lString = ( ISNIL( 2 ) ) ? 0 : hb_parl( 2 );
+   BOOL lString = ( HB_ISNIL( 2 ) ) ? 0 : hb_parl( 2 );
    int iFileSize;
    FILE *fp;
    // IPicture * pPic;
@@ -1019,7 +1019,7 @@ HB_FUNC( INFLATERECT )
    int x = hb_parni( 2 );
    int y = hb_parni( 3 );
 
-   if( ISARRAY( 1 ) )
+   if( HB_ISARRAY( 1 ) )
       Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect );
    hb_retl( InflateRect( &pRect, x, y ) );
 
@@ -1035,7 +1035,7 @@ HB_FUNC( FRAMERECT )
    HBRUSH hbr = ( HBRUSH ) HB_PARHANDLE( 3 );
    RECT pRect;
 
-   if( ISARRAY( 2 ) )
+   if( HB_ISARRAY( 2 ) )
       Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect );
 
    hb_retni( FrameRect( hdc, &pRect, hbr ) );
@@ -1048,7 +1048,7 @@ HB_FUNC( DRAWFRAMECONTROL )
    UINT uType = hb_parni( 3 );  // frame-control type
    UINT uState = hb_parni( 4 ); // frame-control state
 
-   if( ISARRAY( 2 ) )
+   if( HB_ISARRAY( 2 ) )
       Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect );
 
    hb_retl( DrawFrameControl( hdc, &pRect, uType, uState ) );
@@ -1060,7 +1060,7 @@ HB_FUNC( OFFSETRECT )
    int x = hb_parni( 2 );
    int y = hb_parni( 3 );
 
-   if( ISARRAY( 1 ) )
+   if( HB_ISARRAY( 1 ) )
       Array2Rect( hb_param( 1, HB_IT_ARRAY ), &pRect );
 
    hb_retl( OffsetRect( &pRect, x, y ) );
@@ -1074,7 +1074,7 @@ HB_FUNC( DRAWFOCUSRECT )
 {
    RECT pRect;
    HDC hc = ( HDC ) HB_PARHANDLE( 1 );
-   if( ISARRAY( 2 ) )
+   if( HB_ISARRAY( 2 ) )
       Array2Rect( hb_param( 2, HB_IT_ARRAY ), &pRect );
    hb_retl( DrawFocusRect( hc, &pRect ) );
 }

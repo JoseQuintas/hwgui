@@ -729,7 +729,7 @@ HB_FUNC( SHADE_NEW )
 
    SetRect( &rect, hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ),
          hb_parni( 4 ) );
-   pshade = cxshade_New( &rect, ( ISNIL( 5 ) ) ? 0 : hb_parl( 5 ) );
+   pshade = cxshade_New( &rect, ( HB_ISNIL( 5 ) ) ? 0 : hb_parl( 5 ) );
    HB_RETHANDLE( pshade );
 }
 
@@ -747,20 +747,20 @@ HB_FUNC( SHADE_RELEASE )
 HB_FUNC( SHADE_SET )
 {
    PCXSHADE pshade = ( PCXSHADE ) HB_PARHANDLE( 1 );
-   UINT shadeID = ( ISNIL( 2 ) ) ? SHS_SOFTBUMP : hb_parni( 2 );
-   BYTE palette = ( ISNIL( 3 ) ) ? 0 : ( BYTE ) hb_parni( 3 );
-   BYTE granularity = ( ISNIL( 4 ) ) ? 8 : ( BYTE ) hb_parni( 4 );
-   BYTE highlight = ( ISNIL( 5 ) ) ? 10 : ( BYTE ) hb_parni( 5 );
-   BYTE coloring = ( ISNIL( 6 ) ) ? 0 : ( BYTE ) hb_parni( 6 );
-   COLORREF color = ( ISNIL( 7 ) ) ? 0 : ( COLORREF ) hb_parnl( 7 );
+   UINT shadeID = ( HB_ISNIL( 2 ) ) ? SHS_SOFTBUMP : hb_parni( 2 );
+   BYTE palette = ( HB_ISNIL( 3 ) ) ? 0 : ( BYTE ) hb_parni( 3 );
+   BYTE granularity = ( HB_ISNIL( 4 ) ) ? 8 : ( BYTE ) hb_parni( 4 );
+   BYTE highlight = ( HB_ISNIL( 5 ) ) ? 10 : ( BYTE ) hb_parni( 5 );
+   BYTE coloring = ( HB_ISNIL( 6 ) ) ? 0 : ( BYTE ) hb_parni( 6 );
+   COLORREF color = ( HB_ISNIL( 7 ) ) ? 0 : ( COLORREF ) hb_parnl( 7 );
    RECT rect;
 
-   if( !ISNIL( 7 ) )
+   if( !HB_ISNIL( 7 ) )
       SetRect( &rect, hb_parni( 7 ), hb_parni( 8 ), hb_parni( 9 ),
             hb_parni( 10 ) );
 
    cxshade_SetShade( pshade, shadeID, palette, granularity, highlight,
-         coloring, color, ( ISNIL( 8 ) ) ? NULL : &rect );
+         coloring, color, ( HB_ISNIL( 8 ) ) ? NULL : &rect );
 }
 
 /*

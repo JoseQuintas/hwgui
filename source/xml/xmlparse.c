@@ -46,7 +46,7 @@
 
 static unsigned char *cBuffer;
 static int nParseError;
-static ULONG ulOffset;
+static HB_ULONG ulOffset;
 
 static unsigned char *predefinedEntity1[] =
       { ( unsigned char * ) "lt;", ( unsigned char * ) "gt;",
@@ -66,7 +66,7 @@ HB_FUNC( HBXML_TRANSFORM )
    PHB_ITEM pItem;
    unsigned char *pBuffer = ( unsigned char * ) hb_parc( 1 ), *pNew;
    unsigned char *ptr, *ptr1, *ptrs, c;
-   ULONG ulLen = hb_parclen( 1 );
+   HB_ULONG ulLen = hb_parclen( 1 );
    int iLenAdd = 0, iLen;
 
    ptr = pBuffer;
@@ -113,10 +113,10 @@ HB_FUNC( HBXML_TRANSFORM )
 }
 
 /*
- * hbxml_pp( unsigned char * ptr, ULONG ulLen )
+ * hbxml_pp( unsigned char * ptr, HB_ULONG ulLen )
  * Translation of the predefined entities ( &lt;, etc. )
  */
-PHB_ITEM hbxml_pp( unsigned char *ptr, ULONG ulLen )
+PHB_ITEM hbxml_pp( unsigned char *ptr, HB_ULONG ulLen )
 {
    unsigned char *ptrStart = ptr;
    unsigned char *predefinedEntity1[] =
@@ -125,7 +125,7 @@ PHB_ITEM hbxml_pp( unsigned char *ptr, ULONG ulLen )
             ( unsigned char * ) "apos;" };
    unsigned char *predefinedEntity2 = ( unsigned char * ) "<>&\"\'";
    int i, nlen;
-   ULONG ul = 0, ul1;
+   HB_ULONG ul = 0, ul1;
 
    while( ul < ulLen )
    {
@@ -181,7 +181,7 @@ PHB_ITEM hbxml_pp( unsigned char *ptr, ULONG ulLen )
    return hb_itemPutCL( NULL, ( char * ) ptrStart, ulLen );
 }
 
-PHB_ITEM hbxml_getattr( unsigned char **pBuffer, BOOL * lSingle )
+PHB_ITEM hbxml_getattr( unsigned char **pBuffer, HB_BOOL * lSingle )
 {
 
    unsigned char *ptr, cQuo;
@@ -189,10 +189,10 @@ PHB_ITEM hbxml_getattr( unsigned char **pBuffer, BOOL * lSingle )
    PHB_ITEM pArray = hb_itemNew( NULL );
    PHB_ITEM pSubArray = NULL;
    PHB_ITEM pTemp;
-   BOOL bPI = 0;
+   HB_BOOL bPI = 0;
 
    hb_arrayNew( pArray, 0 );
-   *lSingle = FALSE;
+   *lSingle = HB_FALSE;
    if( **pBuffer == '<' )
    {
       ( *pBuffer )++;
@@ -302,7 +302,7 @@ PHB_ITEM hbxml_addnode( PHB_ITEM pParent )
    return pNode;
 }
 
-BOOL hbxml_readComment( PHB_ITEM pParent, unsigned char **pBuffer )
+HB_BOOL hbxml_readComment( PHB_ITEM pParent, unsigned char **pBuffer )
 {
    unsigned char *ptr;
    PHB_ITEM pNode = hbxml_addnode( pParent );
@@ -332,10 +332,10 @@ BOOL hbxml_readComment( PHB_ITEM pParent, unsigned char **pBuffer )
       hbxml_error( HBXML_ERROR_TERMINATION, *pBuffer );
 
    hb_itemRelease( pNode );
-   return ( nParseError ) ? FALSE : TRUE;
+   return ( nParseError ) ? HB_FALSE : HB_TRUE;
 }
 
-BOOL hbxml_readCDATA( PHB_ITEM pParent, unsigned char **pBuffer )
+HB_BOOL hbxml_readCDATA( PHB_ITEM pParent, unsigned char **pBuffer )
 {
    unsigned char *ptr;
    PHB_ITEM pNode = hbxml_addnode( pParent );
@@ -365,18 +365,18 @@ BOOL hbxml_readCDATA( PHB_ITEM pParent, unsigned char **pBuffer )
       hbxml_error( HBXML_ERROR_TERMINATION, *pBuffer );
 
    hb_itemRelease( pNode );
-   return ( nParseError ) ? FALSE : TRUE;
+   return ( nParseError ) ? HB_FALSE : HB_TRUE;
 }
 
-BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
+HB_BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
 {
    PHB_ITEM pNode = hbxml_addnode( pParent );
    PHB_ITEM pArray;
    unsigned char *ptr, cNodeName[50];
    PHB_ITEM pTemp;
    int nLenNodeName;
-   BOOL lEmpty;
-   BOOL lSingle;
+   HB_BOOL lEmpty;
+   HB_BOOL lSingle;
 
    ( *pBuffer )++;
    if( **pBuffer == '?' )
@@ -397,7 +397,7 @@ BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
    if( ( pArray = hbxml_getattr( pBuffer, &lSingle ) ) == NULL )
    {
       hb_itemRelease( pNode );
-      return FALSE;
+      return HB_FALSE;
    }
    else
    {
@@ -414,15 +414,15 @@ BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
 
    if( !lSingle )
    {
-      while( TRUE )
+      while( HB_TRUE )
       {
          ptr = *pBuffer;
-         lEmpty = TRUE;
+         lEmpty = HB_TRUE;
          while( **pBuffer != '<' )
          {
             if( lEmpty && ( **pBuffer != ' ' && **pBuffer != '\t' &&
                         **pBuffer != '\r' && **pBuffer != '\n' ) )
-               lEmpty = FALSE;
+               lEmpty = HB_FALSE;
             ( *pBuffer )++;
          }
          if( !lEmpty )
@@ -452,7 +452,7 @@ BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
                if( !hbxml_readComment( pNode, pBuffer ) )
                {
                   hb_itemRelease( pNode );
-                  return FALSE;
+                  return HB_FALSE;
                }
             }
             else if( !memcmp( *pBuffer + 1, "![CDATA[", 8 ) )
@@ -460,7 +460,7 @@ BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
                if( !hbxml_readCDATA( pNode, pBuffer ) )
                {
                   hb_itemRelease( pNode );
-                  return FALSE;
+                  return HB_FALSE;
                }
             }
             else
@@ -468,14 +468,14 @@ BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
                if( !hbxml_readElement( pNode, pBuffer ) )
                {
                   hb_itemRelease( pNode );
-                  return FALSE;
+                  return HB_FALSE;
                }
             }
          }
       }
    }
    hb_itemRelease( pNode );
-   return TRUE;
+   return HB_TRUE;
 
 }
 
@@ -486,25 +486,25 @@ BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
 HB_FUNC( HBXML_GETDOC )
 {
    PHB_ITEM pDoc = hb_param( 1, HB_IT_OBJECT );
-   BOOL bFile;
+   HB_BOOL bFile;
    unsigned char *ptr;
    int iMainTags = 0;
 
-   if( ISCHAR( 2 ) )
+   if( HB_ISCHAR( 2 ) )
    {
       cBuffer = ( unsigned char * ) hb_parc( 2 );
-      bFile = FALSE;
+      bFile = HB_FALSE;
    }
-   else if( ISNUM( 2 ) )
+   else if( HB_ISNUM( 2 ) )
    {
       HB_FHANDLE hInput = ( HB_FHANDLE ) hb_parnint( 2 );
-      ULONG ulLen = hb_fsSeek( hInput, 0, FS_END ), ulRead;
+      HB_ULONG ulLen = hb_fsSeek( hInput, 0, FS_END ), ulRead;
 
       hb_fsSeek( hInput, 0, FS_SET );
       cBuffer = ( unsigned char * ) hb_xgrab( ulLen + 1 );
-      ulRead = hb_fsReadLarge( hInput, ( BYTE * ) cBuffer, ulLen );
+      ulRead = hb_fsReadLarge( hInput, ( HB_BYTE * ) cBuffer, ulLen );
       cBuffer[ulRead] = '\0';
-      bFile = TRUE;
+      bFile = HB_TRUE;
    }
    else
       return;
@@ -518,7 +518,7 @@ HB_FUNC( HBXML_GETDOC )
    {
       if( !memcmp( ptr + 1, "?xml", 4 ) )
       {
-         BOOL lSingle;
+         HB_BOOL lSingle;
          PHB_ITEM pArray = hbxml_getattr( &ptr, &lSingle );
          hb_objSendMsg( pDoc, "_AATTR", 1, pArray );
          hb_itemRelease( pArray );
@@ -529,7 +529,7 @@ HB_FUNC( HBXML_GETDOC )
          hbxml_getdoctype( pDoc, &ptr );
          HB_SKIPTABSPACES( ptr );
       }
-      while( TRUE )
+      while( HB_TRUE )
       {
          if( !memcmp( ptr + 1, "!--", 3 ) )
          {

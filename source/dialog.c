@@ -109,7 +109,7 @@ HB_FUNC( SETDLGITEMINT )
    SetDlgItemInt( ( HWND ) HB_PARHANDLE( 1 ),   // handle of dialog box
                   hb_parni( 2 ),                // identifier of control
                   ( UINT ) hb_parni( 3 ),       // text to set
-                  ( hb_pcount(  ) < 4 || ISNIL( 4 ) || !hb_parl( 4 ) ) ? 0 : 1 );
+                  ( hb_pcount(  ) < 4 || HB_ISNIL( 4 ) || !hb_parl( 4 ) ) ? 0 : 1 );
 }
 
 HB_FUNC( GETDLGITEMTEXT )
@@ -424,12 +424,12 @@ HB_FUNC( _PROPERTYSHEET )
    HPROPSHEETPAGE psp[10];
    PROPSHEETHEADER psh;
    void * hCaption;
-   DWORD dwFlags = ( hb_pcount(  ) < 5 || ISNIL( 5 ) ||
+   DWORD dwFlags = ( hb_pcount(  ) < 5 || HB_ISNIL( 5 ) ||
          !hb_parl( 5 ) ) ? 0 : PSH_MODELESS;
 
-   if( hb_pcount(  ) > 5 && !ISNIL( 6 ) && hb_parl( 6 ) )
+   if( hb_pcount(  ) > 5 && !HB_ISNIL( 6 ) && hb_parl( 6 ) )
       dwFlags |= PSH_NOAPPLYNOW;
-   if( hb_pcount(  ) > 6 && !ISNIL( 7 ) && hb_parl( 7 ) )
+   if( hb_pcount(  ) > 6 && !HB_ISNIL( 7 ) && hb_parl( 7 ) )
       dwFlags |= PSH_WIZARD;
    for( i = 0; i < nPages; i++ )
       psp[i] = ( HPROPSHEETPAGE ) hb_arrayGetNL( pArr, i + 1 );
@@ -467,11 +467,11 @@ HB_FUNC( HWG_CREATEDLGINDIRECT )
    PHB_ITEM pObject = hb_param( 2, HB_IT_OBJECT );
    BOOL fFree = FALSE;
 
-   if( hb_pcount(  ) > 7 && !ISNIL( 8 ) )
+   if( hb_pcount(  ) > 7 && !HB_ISNIL( 8 ) )
       pdlgtemplate = ( LPDLGTEMPLATE ) hb_parnl( 8 );
    else
    {
-      ULONG ulStyle = ( ( hb_pcount(  ) > 6 && !ISNIL( 7 ) ) ? ( ULONG ) hb_parnd( 7 ) : WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX );        // | DS_SETFONT;
+      ULONG ulStyle = ( ( hb_pcount(  ) > 6 && !HB_ISNIL( 7 ) ) ? ( ULONG ) hb_parnd( 7 ) : WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX );        // | DS_SETFONT;
 
       pdlgtemplate = s_CreateDlgTemplate( pObject, hb_parni( 3 ), hb_parni( 4 ),
             hb_parni( 5 ), hb_parni( 6 ), ulStyle );
@@ -492,7 +492,7 @@ HB_FUNC( HWG_CREATEDLGINDIRECT )
 HB_FUNC( HWG_DLGBOXINDIRECT )
 {
    PHB_ITEM pObject = hb_param( 2, HB_IT_OBJECT );
-   ULONG ulStyle = ( ( hb_pcount(  ) > 6 && !ISNIL( 7 ) ) ? ( ULONG ) hb_parnd( 7 ) : WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU );        // | DS_SETFONT;
+   ULONG ulStyle = ( ( hb_pcount(  ) > 6 && !HB_ISNIL( 7 ) ) ? ( ULONG ) hb_parnd( 7 ) : WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU );        // | DS_SETFONT;
    int x1 = hb_parni( 3 ), y1 = hb_parni( 4 ),
        dwidth = hb_parni( 5 ), dheight = hb_parni( 6 );
    LPDLGTEMPLATE pdlgtemplate =

@@ -35,7 +35,7 @@ HB_FUNC( HWG__CREATEMENU )
 
 HB_FUNC( HWG__CREATEPOPUPMENU )
 {
-   // hb_retnl( (LONG) CreatePopupMenu() );
+   // hb_retnl( (HB_LONG) CreatePopupMenu() );
 }
 
 /*
@@ -45,10 +45,10 @@ HB_FUNC( HWG__CREATEPOPUPMENU )
 HB_FUNC( HWG__ADDMENUITEM )
 {
    GtkWidget * hMenu;
-   BOOL lString = FALSE, lCheck = FALSE;
+   HB_BOOL lString = HB_FALSE, lCheck = HB_FALSE;
    const char * lpNewItem = NULL;
 
-   if( ISCHAR( 2 ) )
+   if( HB_ISCHAR( 2 ) )
    {
       const char * ptr;
       lpNewItem	 = hb_parc(2);
@@ -63,7 +63,7 @@ HB_FUNC( HWG__ADDMENUITEM )
          ptr ++;
       }
    }
-   if( !ISNIL(6) && ( hb_parni(6) & FLAG_CHECK ) )
+   if( !HB_ISNIL(6) && ( hb_parni(6) & FLAG_CHECK ) )
       lCheck = TRUE;
 
    if( lCheck )
@@ -90,7 +90,7 @@ HB_FUNC( HWG__ADDMENUITEM )
    else
    {
       char buf[20]={0};
-      sprintf( buf,"0 %ld %ld",hb_parnl(5),( LONG ) HB_PARHANDLE(4) );
+      sprintf( buf,"0 %ld %ld",hb_parnl(5),( HB_LONG ) HB_PARHANDLE(4) );
       g_signal_connect(G_OBJECT (hMenu), "activate",
           G_CALLBACK (cb_signal), (gpointer) g_strdup (buf));
 
@@ -115,8 +115,8 @@ HB_FUNC( HWG__SETMENU )
 
 HB_FUNC( GETMENUHANDLE )
 {
-   // HWND handle = ( hb_pcount()>0 && !ISNIL(1) )? (HWND)hb_parnl(1):aWindows[0];
-   // hb_retnl( (LONG) GetMenu( handle ) );
+   // HWND handle = ( hb_pcount()>0 && !HB_ISNIL(1) )? (HWND)hb_parnl(1):aWindows[0];
+   // hb_retnl( (HB_LONG) GetMenu( handle ) );
 }
 
 HB_FUNC( HWG_CHECKMENUITEM )
@@ -125,7 +125,7 @@ HB_FUNC( HWG_CHECKMENUITEM )
 
    g_signal_handlers_block_matched( (gpointer)check_menu_item, G_SIGNAL_MATCH_FUNC,
        0, 0, 0, G_CALLBACK (cb_signal), 0 );
-   gtk_check_menu_item_set_active( check_menu_item, (ISNIL(2))? 1 : hb_parl(2) );
+   gtk_check_menu_item_set_active( check_menu_item, (HB_ISNIL(2))? 1 : hb_parl(2) );
    g_signal_handlers_unblock_matched( (gpointer)check_menu_item, G_SIGNAL_MATCH_FUNC,
        0, 0, 0, G_CALLBACK (cb_signal), 0 );
 
@@ -142,7 +142,7 @@ HB_FUNC( HWG_ENABLEMENUITEM )
 {
    GtkMenuItem * menu_item = (GtkMenuItem *) HB_PARHANDLE(1);
 
-   gtk_widget_set_sensitive( (GtkWidget*)menu_item, (ISNIL(2))? 1 : hb_parl(2) );
+   gtk_widget_set_sensitive( (GtkWidget*)menu_item, (HB_ISNIL(2))? 1 : hb_parl(2) );
 }
 
 HB_FUNC( HWG_ISENABLEDMENUITEM )
@@ -196,7 +196,7 @@ HB_FUNC( CREATEACCELERATORTABLE )
    h = CreateAcceleratorTable( lpaccl,cEntries );
 
    hb_xfree( lpaccl );
-   hb_retnl( (LONG) h );
+   hb_retnl( (HB_LONG) h );
 */   
 }
 

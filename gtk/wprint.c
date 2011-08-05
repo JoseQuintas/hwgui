@@ -60,7 +60,7 @@ HB_FUNC( HWG_OPENPRINTER )
 
    print->job = gnome_print_job_new( print->config );
    print->gpc = gnome_print_job_get_context( print->job );
-   hb_retnl( (LONG) print );
+   hb_retnl( (HB_LONG) print );
 }
 
 HB_FUNC( HWG_OPENDEFAULTPRINTER )
@@ -82,7 +82,7 @@ HB_FUNC( HWG_OPENDEFAULTPRINTER )
 
    print->job = gnome_print_job_new( print->config );
    print->gpc = gnome_print_job_get_context( print->job );
-   hb_retnl( (LONG) print );
+   hb_retnl( (HB_LONG) print );
 }
 
 HB_FUNC( HWG_GETPRINTERS )
@@ -92,7 +92,7 @@ HB_FUNC( HWG_GETPRINTERS )
 
    if( hInput != -1 )
    {
-      ULONG ulLen = hb_fsSeek( hInput, 0, FS_END );
+      HB_ULONG ulLen = hb_fsSeek( hInput, 0, FS_END );
       unsigned char *cBuffer, *ptr, *ptr1;
 
       hb_fsSeek( hInput, 0, FS_SET );
@@ -170,7 +170,7 @@ HB_FUNC( HWG_STARTDOC )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1); 
 
-   hb_retnl( (LONG) print->job );
+   hb_retnl( (HB_LONG) print->job );
 }
 
 HB_FUNC( HWG_ENDDOC )
@@ -184,13 +184,13 @@ HB_FUNC( HWG_ENDDOC )
 HB_FUNC( HWG_STARTPAGE )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
-   hb_retnl( (LONG) gnome_print_beginpage( print->gpc, NULL ) );
+   hb_retnl( (HB_LONG) gnome_print_beginpage( print->gpc, NULL ) );
 }
 
 HB_FUNC( HWG_ENDPAGE )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
-   hb_retnl( (LONG) gnome_print_showpage( print->gpc ) );
+   hb_retnl( (HB_LONG) gnome_print_showpage( print->gpc ) );
 }
 
 /*
@@ -212,19 +212,19 @@ HB_FUNC( HWG_GP_GETDEVICEAREA )
    
    gnome_print_config_get_page_size( print->config, &width, &height );
 
-   temp = hb_itemPutNL( NULL, (LONG)width );
+   temp = hb_itemPutNL( NULL, (HB_LONG)width );
    hb_itemArrayPut( aMetr, 1, temp );
    hb_itemRelease( temp );
 
-   temp = hb_itemPutNL( NULL, (LONG)height );
+   temp = hb_itemPutNL( NULL, (HB_LONG)height );
    hb_itemArrayPut( aMetr, 2, temp );
    hb_itemRelease( temp );
 
-   temp = hb_itemPutNL( NULL, (LONG)(width*25.4/72) );
+   temp = hb_itemPutNL( NULL, (HB_LONG)(width*25.4/72) );
    hb_itemArrayPut( aMetr, 3, temp );
    hb_itemRelease( temp );
 
-   temp = hb_itemPutNL( NULL, (LONG)(height*25.4/72) );
+   temp = hb_itemPutNL( NULL, (HB_LONG)(height*25.4/72) );
    hb_itemArrayPut( aMetr, 4, temp );
    hb_itemRelease( temp );
 
@@ -240,11 +240,11 @@ HB_FUNC( HWG_GP_GETDEVICEAREA )
    hb_itemArrayPut( aMetr, 7, temp );
    hb_itemRelease( temp );
 
-   temp = hb_itemPutNL( NULL, (LONG)width );
+   temp = hb_itemPutNL( NULL, (HB_LONG)width );
    hb_itemArrayPut( aMetr, 8, temp );
    hb_itemRelease( temp );
 
-   temp = hb_itemPutNL( NULL, (LONG)height );
+   temp = hb_itemPutNL( NULL, (HB_LONG)height );
    hb_itemArrayPut( aMetr, 9, temp );
    hb_itemRelease( temp );
 
@@ -275,7 +275,7 @@ HB_FUNC( HWG_GP_DRAWTEXT )
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
    char * cText = hwg_convert_to_utf8( hb_parc(2) );
    // guchar *cText = g_convert( hb_parc(2),-1,"UTF-8","KOI8-R",NULL,NULL,NULL );
-   int iOption = (ISNIL(7))? 0 : hb_parni(7);
+   int iOption = (HB_ISNIL(7))? 0 : hb_parni(7);
    int x1 = hb_parni(3);
 
    if( print->font && ( iOption == DT_RIGHT || iOption == DT_CENTER ) )
@@ -300,7 +300,7 @@ HB_FUNC( HWG_GP_DRAWTEXT )
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
    int i = 0, nLen = hb_parclen(2);
    gchar *p, *cText;
-   int iOption = (ISNIL(7))? 0 : hb_parni(7);
+   int iOption = (HB_ISNIL(7))? 0 : hb_parni(7);
    gdouble x1 = (gdouble)hb_parni(3);
    gdouble x2 = (gdouble)hb_parni(5);
    gdouble delta, dWidth = 0;
@@ -339,7 +339,7 @@ HB_FUNC( HWG_GP_ADDFONT )
 {
    GnomeFont *font = gnome_font_find_closest ( (const guchar*)hb_parc(1), hb_parni(2) );
    
-   hb_retnl( (LONG) font );
+   hb_retnl( (HB_LONG) font );
 }
 
 HB_FUNC( HWG_GP_SETFONT )
@@ -391,12 +391,12 @@ HB_FUNC( HWG_GP_GETTEXTSIZE )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
    char * cText;
-   GnomeFont *font = (ISNIL(3))? print->font : ( (GnomeFont *) hb_parnl(3) );
+   GnomeFont *font = (HB_ISNIL(3))? print->font : ( (GnomeFont *) hb_parnl(3) );
 
    if( font )
    {
       cText = hwg_convert_to_utf8( hb_parc(2) );
-      hb_retnl( (LONG) gnome_font_get_width_utf8( font, cText ) );
+      hb_retnl( (HB_LONG) gnome_font_get_width_utf8( font, cText ) );
       g_free( cText );
    }
    else

@@ -46,9 +46,9 @@ HB_FUNC( MCISENDSTRING )
 
    hb_retnl( ( LONG ) mciSendString( HB_PARSTR( 1, &hCommand, NULL ),
                                      cBuffer, HB_SIZEOFARRAY( cBuffer ),
-                                     ( ISNIL( 3 ) ) ? GetActiveWindow() :
+                                     ( HB_ISNIL( 3 ) ) ? GetActiveWindow() :
                                      ( HWND ) HB_PARHANDLE( 3 ) ) );
-   if( !ISNIL( 2 ) )
+   if( !HB_ISNIL( 2 ) )
       HB_STORSTR( cBuffer, 2 );
    hb_strfree( hCommand );
 }

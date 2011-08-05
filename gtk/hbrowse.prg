@@ -727,7 +727,7 @@ Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
             SelectObject( hDC, oPenHdr:handle )
             cStr := oColumn:cGrid + ';'
             for nLine := 1 to ::nHeadRows
-               cNWSE := __StrToken(@cStr, nLine, ';')
+               cNWSE := hb_tokenGet(@cStr, nLine, ';')
                if At('S', cNWSE) != 0
                   DrawLine(hDC, x-1, ::y1-(::height)*(::nHeadRows-nLine), x+xSize-1, ::y1-(::height)*(::nHeadRows-nLine))
                endif
@@ -746,7 +746,7 @@ Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
          // Ahora Titulos Justificados !!!
          cStr := oColumn:heading + ';'
          for nLine := 1 to ::nHeadRows
-            DrawText( hDC, __StrToken(@cStr, nLine, ';'), x, ::y1-(::height)*(::nHeadRows-nLine+1)+1, x+xSize-1,::y1-(::height)*(::nHeadRows-nLine),;
+            DrawText( hDC, hb_tokenGet(@cStr, nLine, ';'), x, ::y1-(::height)*(::nHeadRows-nLine+1)+1, x+xSize-1,::y1-(::height)*(::nHeadRows-nLine),;
                oColumn:nJusHead  + if(oColumn:lSpandHead, DT_NOCLIP, 0) )
          next
       endif
@@ -812,7 +812,7 @@ Local oColumn
       if oColumn:footing <> nil
          cStr := oColumn:footing + ';'
          for nLine := 1 to ::nFootRows
-            DrawText( hDC, __StrToken(@cStr, nLine, ';'),;
+            DrawText( hDC, hb_tokenGet(@cStr, nLine, ';'),;
                x, ::y1+(::rowCount+nLine-1)*(::height+1)+1, x+xSize-1, ::y1+(::rowCount+nLine)*(::height+1),;
                oColumn:nJusLin + if(oColumn:lSpandFoot, DT_NOCLIP, 0) )
          next
@@ -1814,7 +1814,7 @@ Local nL, nPos := 0
 
    nMaxLen := nCount := 0
    cStr += ';'
-   while (nL := Len(__StrTkPtr(@cStr, @nPos, ";"))) != 0
+   while (nL := Len(hb_tokenPtr(@cStr, @nPos, ";"))) != 0
       nMaxLen := Max( nMaxLen, nL )
       nCount ++
    enddo

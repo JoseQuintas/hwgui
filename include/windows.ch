@@ -470,7 +470,11 @@
 #define BS_USERBUTTON       8       // 0x00000008L
 #define BS_AUTORADIOBUTTON  9       // 0x00000009L
 #define BS_OWNERDRAW        11      // 0x0000000BL
+#define BS_SPLITBUTTON      12        // 0x0000000C
+#define BS_COMMANDLINK      14        // 0x0000000E
 #define BS_LEFTTEXT         32      // 0x00000020L
+
+#DEFINE BCM_SETNOTE         5641     // 0x00001609
 
 #define IDC_ARROW           32512
 #define IDC_IBEAM           32513

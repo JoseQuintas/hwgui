@@ -1998,3 +1998,43 @@ HB_FUNC( HWG_GETTHEMESYSCOLOR )
    HB_RETHANDLE( hb_GetThemeSysColor( hTheme, iColor ) );
 }
 
+
+/* NANDO  18/09/2011 */
+                                                            
+HB_FUNC( HWG_SETWINDOWTHEME)
+{
+   HWND hwnd = (HWND) HB_PARHANDLE( 1 ) ;
+   //LPCWSTR pszSubAppName = hb_parc(2);
+   //LPCWSTR pszSubIdList = hb_parc(3);
+   int ienable = hb_parni(2);
+   HRESULT hres ;
+   //BOOL ret = FALSE;
+   OSVERSIONINFO ovi = {0};
+   ovi.dwOSVersionInfoSize = sizeof ovi;
+   GetVersionEx(&ovi);
+   if (ovi.dwMajorVersion >= 5 && ovi.dwMinorVersion==1 )
+      //Windows XP detected
+      if ( ienable == 0 )
+         hb_SetWindowTheme( hwnd, L" ", L" " ) ; // pszSubAppName,L pszSubIdList) ;
+      else 
+         hb_SetWindowTheme( hwnd, NULL, NULL) ;
+}
+
+HB_FUNC( HWG_GETWINDOWTHEME )
+{
+   HWND hwnd = (HWND) HB_PARHANDLE( 1 ) ;
+   
+   //BOOL ret = FALSE;
+   OSVERSIONINFO ovi = {0};
+   ovi.dwOSVersionInfoSize = sizeof ovi;
+   GetVersionEx(&ovi);
+   if (ovi.dwMajorVersion >= 5 && ovi.dwMinorVersion==1 )
+   {
+     //Windows XP detected
+      HTHEME hTheme; // = (HTHEME) hb_parptr(1) ;
+      hTheme = hb_GetWindowTheme( hwnd );
+      HB_RETHANDLE ( hTheme );
+   }
+   else
+      HB_RETHANDLE ( 0 );
+}

@@ -8,6 +8,57 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-09-18 20:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hcontrol.prg
+     * METHOD INIT()
+	   ! minor fix
+	   ! add ::lnoThemes condition to removed Themed of the object
+     * METHOD Enable() 
+	   ! fixed enabled when the next control is enabled by the previous control if he was disabled
+	 * METHOD onAnchor
+       ! add anchor to status bar parts and toolbar buttons	 
+     * CLASS HStatus
+	   + DATA nStatusHeight
+       + METHOD StatusHeight( nHeight ) changed height 
+       + METHOD Resize() resize parts when Anchor is triggered
+     * CLASS HStatic
+	   + DATA hBrushDefault  HIDDEN
+	   * METHOD SetValue()
+	     ! minor fix and optimized
+       * METHOD Paint		 
+	     ! minor fix
+     * CLASS HButton
+       + DATA cNote  HIDDEN
+       + DATA lFlat INIT .F.  in BUTTONEX enable mode Flat 
+	   + METHOD onLostFocus()  
+       + METHOD NoteCaption( cNote ) only working in Windows 7
+     * CLASS HButtonEX
+	   * METHOD SetText
+	     ! minor fix 
+       * METHOD onEvent
+	     ! fixed ESCAPE when IDCANCEL is disabled
+       * METHOD Paint
+	     ! add effect flat
+		 ! fixed multiline draw 
+	* CLASS HGroup 
+	  * METHOD Paint
+	    ! minor fix
+   * source/window.c   
+	 + HB_FUNC( ANSITOUNICODE )
+	   ! caracters converts ANSI to UNICODE
+	     used to show in Caption with Buttonex style BS_COMMANDLINK
+   * source/themed.c   		 
+     + HB_FUNC( HWG_SETWINDOWTHEME)	
+	   ! add or remove themes of individual controls
+	     HWG_SETWINDOWTHEME( octrl:handle, 0 ) remove themes
+	     HWG_SETWINDOWTHEME( oCtrl:handle, 1 ) add themes
+     + HB_FUNC( HWG_GETWINDOWTHEME )	 
+       ! return Themes of objetcts	
+   * source/windows.ch   		 	   
+	 + #define BS_SPLITBUTTON   
+     + #define BS_COMMANDLINK	  
+	 + #DEFINE BCM_SETNOTE         
+
 2011-09-18 15:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/guimain.prg
     * FUNCTION MsgGet

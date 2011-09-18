@@ -1419,3 +1419,15 @@ HB_FUNC( FLASHWINDOW )
    int itrue = hb_parni( 2 );
    FlashWindow(  hWnd, itrue ) ;
 } 
+
+HB_FUNC( ANSITOUNICODE )
+{
+   void * hText;
+#if !defined(__XHARBOUR__)
+   LPCWSTR lpText = hb_parstr_u16( 4, HB_CDP_ENDIAN_NATIVE, &hText, NULL );
+#else
+   LPCWSTR lpText = hwg_wstrget( hb_param( 1, HB_IT_ANY ), &hText, NULL );
+#endif
+   HB_RETSTRLEN( lpText, 1024 );   
+   hb_strfree( hText );
+}

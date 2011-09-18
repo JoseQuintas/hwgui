@@ -8,6 +8,62 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2011-04-11 10:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/guimain.prg
+    * FUNCTION MsgGet
+	  ! add Anchor to controls in Dialog also to be resized if the dialog is
+	  ! moved KEYB_EVENT to onActivate event not to fail in creating the DIALOG
+  * source/hcwindow.prg
+    * METHOD Show( nShow )     
+	  ! add parameter nShow that defines how the event occurs
+	* METHOD Refresh( lAll, oCtrl )
+	  ! fixed and optimized the event in bsetget in TABs avoiding recursion
+    * METHOD SetTextClass( x )
+	  ! minor fix
+    * FUNCTION onCtlColor	  
+	  ! minor fix
+    * FUNCTION onSize	   
+	  ! fixed triggered Anchor in MDI CHILDS  when the Main window is minimized and then restored
+    * FUNCTION ProcOkCancel	  
+	  fixed ESCAPE when IDCANCEL ID is disabled
+    + FUNCTION ADDMETHOD	   
+	  add METHOD in Class
+    * FUNCTION GetBackColorParent	  
+	  ! minor fix and optimized
+  * source/hdialog.prg
+    + DATA hAccel only compatible with window Main and and avoid the occurrence and run-time error
+    + DATA WindowState changed nInitShow  assigns the window state in initModalDlg
+	* method onEvent
+	  ! add msg = WM_UPDATEUISTATE to prevent the screen flicker
+      ! add msg = WM_NCPAINT  to triggered onActivate in MODAL DIALOG only visible
+     * METHOD FindDialog( hWnd, lAll ) 
+	   ! add parameter lAll to search modaldialogs
+     * FUNCTION InitModalDlg	   
+	   ! minor fix and changed bOnActivate event MODAIS DIALOGS removed from InitModalDlg to onActivate Function
+	     to be triggered when the dialog is visible
+	 * FUNCTION DlgCommand
+       ! minor fix and optimization 
+	     enable the EXIT DIALOG with keypress ESCAPE when there is dialog with esc IDCANCEL, but being disabled
+     * FUNCTION onActivate	   
+	   ! add event bonActivate in MODAIS DIALOGS
+  * source/hwindow.prg
+    + DATA WindowState changed nInitShow assigns the window state
+	+ METHOD GetMdiMain()
+	+ METHOD isMaximized() returns if the window is maximized
+    + METHOD isMinimized() returns if the window is minimized
+    + METHOD isNormal() returns if the window is normal
+	* METHOD Activate CLASS HMDIChildWindow
+	  ! synchronization state of the MDI Child windows with the MDI Main window
+    * FUNCTION onCommand
+	  ! fix in event bMdiMenu
+	* FUNCTION onMdiCreate  
+      ! minor fix to adjust the window creation with event noanchor
+    * FUNCTION onMdiCommand
+	  ! fixed the saving Focu of the control in events in MDI CHILD
+	* FUNCTION onMdiNcActivate
+	  ! added bgetfocus event to the windows maximized MDI CHILD who was not fired
+	  
 2011-08-05 15:13 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/gtk/menu_c.c
   * hwgui/gtk/control.c

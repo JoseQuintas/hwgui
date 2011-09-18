@@ -36,7 +36,7 @@ STATIC FUNCTION onDestroy( oDlg )
       oDlg:oEmbedded:END()
    ENDIF
    // IN CLASS INHERIT DIALOG DESTROY APLICATION
-   IF oDlg:oDefaultParent:ClassName = "HDIALOG" .AND. oDlg:lModal
+   IF oDlg:oDefaultParent:CLASSNAME = "HDIALOG"  .AND. HWindow():GetMain() == Nil
       oDlg:Super:onEvent( WM_DESTROY )
    ENDIF
    oDlg:Del()
@@ -50,7 +50,7 @@ CLASS HDialog INHERIT HCustomWindow
 CLASS VAR aDialogs       SHARED INIT { }
 CLASS VAR aModalDialogs  SHARED INIT { }
 
-   DATA menu
+   DATA menu , hAccel
    DATA oPopup                // Context menu for a dialog
    DATA lBmpCenter INIT .F.
    DATA nBmpClr
@@ -75,7 +75,7 @@ CLASS VAR aModalDialogs  SHARED INIT { }
    DATA oEmbedded
    DATA bOnActivate
    DATA lOnActivated INIT .F.
-   DATA nInitShow INIT 0
+   DATA WindowState  INIT 0
    DATA nScrollBars INIT - 1
    DATA bScroll
 
@@ -152,7 +152,7 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
                    IIf( ( oWnd := HWindow():GetMain() ) != Nil,    ;
                         oWnd:handle, GetActiveWindow() ) )
 
-   ::nInitShow := IIf( ValType( nShow ) = "N", nShow, SW_SHOWNORMAL )
+   ::WindowState := IIF( valtype( nShow ) = "N", nShow, SW_SHOWNORMAL ) 
    IF ::Type == WND_DLG_RESOURCE
       IF lNoModal == Nil .OR. ! lNoModal
          ::lModal := .T.
@@ -190,7 +190,7 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
          ::Add()
          Hwg_CreateDlgIndirect( hParent, Self, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
 
-         IF  ::nInitShow > SW_HIDE
+         IF  ::WindowState > SW_HIDE
             BRINGTOTOP( ::handle )
             UPDATEWINDOW( ::handle )
          ENDIF
@@ -224,6 +224,15 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
       aCoors := GetWindowRect( ::handle )
       ::nLeft := aCoors[ 1 ]
 			::nTop  := aCoors[ 2 ]
+	 ELSEIF  msg = WM_UPDATEUISTATE .AND. HIWORD( wParam ) != UISF_HIDEFOCUS 
+	   // prevent the screen flicker
+	    RETURN 1
+   ELSEIF ! ::lActivated .AND. msg = WM_NCPAINT  
+      /* triggered on activate the modal dialog is visible only when */
+      ::lActivated := .T.
+      IF ::lModal .AND. Valtype( ::bOnActivate) == "B"
+         POSTMESSAGE( ::Handle, WM_ACTIVATE, MAKEWPARAM( WA_ACTIVE, 0 ), ::handle ) 
+      ENDIF
    ENDIF
    IF ( i := AScan( aMessModalDlg, { | a | a[ 1 ] == msg } ) ) != 0
       IF ::lRouteCommand .and. ( msg == WM_COMMAND .or. msg == WM_NOTIFY )
@@ -271,8 +280,12 @@ METHOD Del() CLASS HDialog
    ENDIF
    RETURN Nil
 
-METHOD FindDialog( hWnd ) CLASS HDialog
+METHOD FindDialog( hWnd, lAll ) CLASS HDialog
    LOCAL i := AScan( ::aDialogs, { | o | o:handle == hWnd } )
+   IF i = 0 .AND. ( lAll != Nil .AND. lAll )
+      i := Ascan( ::aModalDialogs, {| o | o:handle == hWnd } )
+      RETURN Iif( i == 0, Nil, ::aModalDialogs[ i ] )
+   ENDIF  
    RETURN IIf( i == 0, Nil, ::aDialogs[ i ] )
 
 METHOD GetActive() CLASS HDialog
@@ -311,11 +324,11 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    IF oDlg:oIcon != Nil
       SendMessage( oDlg:handle, WM_SETICON, 1, oDlg:oIcon:handle )
    ENDIF
-   IF oDlg:Title != NIL
-      SetWindowText( oDlg:Handle, oDlg:Title )
-   ENDIF
    IF oDlg:oFont != Nil
       SendMessage( oDlg:handle, WM_SETFONT, oDlg:oFont:handle, 0 )
+   ENDIF
+   IF oDlg:Title != NIL
+      SetWindowText( oDlg:Handle, oDlg:Title )
    ENDIF
    IF ! oDlg:lClosable
       oDlg:Closable( .F. )
@@ -323,7 +336,6 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
 
    InitObjects( oDlg )
    InitControls( oDlg, .T. )
-   uis := SendMESSAGE( oDlg:handle , WM_QUERYUISTATE, 0, 0 )
 
    IF oDlg:bInit != Nil
       oDlg:lSuspendMsgsHandling := .T.
@@ -340,44 +352,41 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
 
    oDlg:nInitFocus := IIF( VALTYPE( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )
    IF  ! EMPTY( oDlg:nInitFocus )
-      SETFOCUS( oDlg:nInitFocus )
+      IF  PtrtouLong( oDlg:FindControl( , oDlg:nInitFocus ):oParent:Handle ) == PtrtouLong( oDlg:Handle )
+         SETFOCUS( oDlg:nInitFocus )
+      ENDIF    
       nReturn := 0
+   ENDIF
+   
+   uis := SendMESSAGE( oDlg:handle , WM_QUERYUISTATE, 0, 0 )
+   // draw focus
+   IF  uis != 0 
+      // triggered to mouse
+      SENDMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL ), 0 )  
+   ELSE
+      SENDMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEACCEL ), 0 )  
    ENDIF
 
    // CALL DIALOG NOT VISIBLE
-   IF oDlg:nInitShow = SW_HIDE .AND. ! oDlg:lModal
+   IF oDlg:WindowState = SW_HIDE .AND. ! oDlg:lModal
       oDlg:Hide()
       oDlg:lHide := .T.
       oDlg:lResult := oDlg
-      oDlg:nInitShow := SW_SHOWNORMAL
+      *-oDlg:WindowState := SW_SHOWNORMAL
       RETURN oDlg
    ENDIF
 
+   IF ! oDlg:lModal .AND. ! isWindowVisible( oDlg:handle )	
+       SHOWWINDOW( oDlg:Handle, SW_SHOWDEFAULT )      
+   ENDIF
+    
    IF oDlg:bGetFocus != Nil
       oDlg:lSuspendMsgsHandling := .t.
       Eval( oDlg:bGetFocus, oDlg )
       oDlg:lSuspendMsgsHandling := .f.
    ENDIF
 
-	 IF ! isWindowVisible( oDlg:handle )	
-	    SHOWWINDOW( oDlg:Handle, SW_SHOWDEFAULT ) // Sets the show state based on the SW_ value specified in the STARTUPINFO structure passed to the CreateProcess function by the program that started the application.
-   ENDIF
-   InvalidateRect( oDlg:handle, 0 )
-
-   IF oDlg:nInitShow = SW_SHOWMINIMIZED  //2
-      oDlg:minimize()
-   ELSEIF oDlg:nInitShow = SW_SHOWMAXIMIZED  //3
-      oDlg:maximize()
-   ENDIF
-   //IF ! oDlg:lModal
-   //   oDlg:show()
-   //ENDIF
-
-   IF ValType( oDlg:bOnActivate ) == "B"
-      Eval( oDlg:bOnActivate, oDlg )
-   ENDIF
-
-   	 // adjust values of MIN and MAX size to Anchor work correctly
+  	 // adjust values of MIN and MAX size to Anchor work correctly
    oDlg:rect  := GetWindowRect( oDlg:Handle )
    oDlg:nLeft := oDlg:rect[ 1 ]
    oDlg:nTop  := oDlg:rect[ 2 ]
@@ -385,15 +394,20 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    oDlg:nWidth  := oDlg:rect[ 3 ]
    oDlg:nHeight := oDlg:rect[ 4 ]
 
-   // draw focus
-   IF uis != 0
-      POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_INITIALIZE, UISF_HIDEACCEL ), 0 )
-      POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )
-   ELSE
-      POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_INITIALIZE, UISF_HIDEACCEL ), 0 ) 
-      POSTMESSAGE( oDlg:handle, WM_UPDATEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )
-      InvalidateRect( oDlg:Handle, 0 )
+   IF oDlg:WindowState = SW_SHOWMINIMIZED  //2
+      oDlg:minimize()
+   ELSEIF oDlg:WindowState = SW_SHOWMAXIMIZED  //3
+      oDlg:maximize()
    ENDIF
+
+   IF ! oDlg:lModal            
+     *- oDlg:lActivated := .T.
+      IF Valtype(oDlg:bOnActivate) == "B"
+         Eval(oDlg:bOnActivate, oDlg)
+      ENDIF  
+   ENDIF
+   
+   POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )
 
    RETURN nReturn
 
@@ -471,7 +485,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
             RETURN 1
          ENDIF
          IF oCtrl != Nil .AND. GetNextDlgTabItem( GetActiveWindow() , hCtrl, 1 ) == hCtrl
-            *IF __ObjHasMsg(oCtrl,"BVALID") .AND. oCtrl:bValid != NIl
+            /*
             IF  __ObjHasMsg( oCtrl, "BLOSTFOCUS" ) .AND. oCtrl:blostfocus != NIl .AND. !oDlg:lClipper
                oCtrl:setfocus()
                IF __ObjHasMsg( oCtrl, "BVALID" )
@@ -481,6 +495,8 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
                   Eval( oCtrl:bLostFocus, oCtrl )
                ENDIF
             ENDIF
+             */
+            SendMessage( oCtrl:Handle, WM_KILLFOCUS, 0, 0 )
          ENDIF
          IF oCtrl != Nil .AND. oCtrl:id == IDOK .AND.  __ObjHasMsg( oCtrl,"BCLICK" ) .AND. oCtrl:bClick = Nil
             oDlg:lResult := .T.
@@ -508,9 +524,13 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
          ENDIF
       ELSEIF iParLow == IDCANCEL
          IF ( oCtrl := oDlg:FindControl( IDCANCEL ) ) != Nil .AND. ! oCtrl:IsEnabled() .AND. oDlg:lExitOnEsc
-            oDlg:nLastKey := VK_ESCAPE
-            EndDialog( oDlg:handle )
-            RETURN 1
+            oDlg:nLastKey := 27
+            IF EMPTY( EndDialog( oDlg:handle ) )
+               RETURN 1
+            ENDIF
+            oDlg:bDestroy := Nil
+            SENDMessage( oCtrl:handle, WM_CLOSE, 0, 0 )    
+            RETURN 0
          ELSEIF oCtrl != Nil .AND. oCtrl:IsEnabled()
             oCtrl:SetFocus()
             PostMessage( oDlg:handle, WM_NEXTDLGCTL, oCtrl:Handle , 1 )
@@ -534,9 +554,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       ENDIF
    ENDIF
 
-   //IF ( ValType( oDlg:nInitFocus ) = "O" .OR. oDlg:nInitFocus > 0 ) .AND. ! isWindowVisible( oDlg:handle )
-   //   oDlg:nInitFocus := IIf( ValType( oDlg:nInitFocus ) = "O", oDlg:nInitFocus:Handle, oDlg:nInitFocus )
-   IF oDlg:nInitFocus > 0 .AND. !isWindowVisible( oDlg:handle )
+   IF oDlg:nInitFocus > 0 //.AND. !isWindowVisible( oDlg:handle )
       PostMessage( oDlg:Handle, WM_NEXTDLGCTL, oDlg:nInitFocus , 1 )
    ENDIF
    IF oDlg:aEvents != Nil .AND. ;
@@ -544,21 +562,23 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       IF ! oDlg:lSuspendMsgsHandling
          Eval( oDlg:aEvents[ i, 3 ], oDlg, iParLow )
       ENDIF
-   ELSEIF iParHigh == 0 .AND. ! oDlg:lSuspendMsgsHandling .AND. ( ;
+   ELSEIF iParHigh == 0  //.AND. ! oDlg:lSuspendMsgsHandling .AND. ( ;
         ( iParLow == IDOK .AND. oDlg:FindControl( IDOK ) != nil ) .OR. ;
           iParLow == IDCANCEL )
       IF iParLow == IDOK
-         oCtrl := oDlg:FindControl( IDOK )
-         oDlg:lResult := .T.
-         IF  __ObjHasMsg( oCtrl, "BCLICK" ) .AND. oCtrl:bClick != Nil
+         oDlg:lResult := .T.          
+         IF ( oCtrl := oDlg:FindControl( IDOK ) ) != Nil .AND. __ObjHasMsg( oCtrl, "BCLICK" ) .AND. oCtrl:bClick != Nil
    	        RETURN 1
-         ENDIF	
+   	     ELSEIF oDlg:lExitOnEnter  .OR. oCtrl  != Nil
+   	        EndDialog( oDlg:handle )
+         ENDIF	 
       ENDIF
       //Replaced by Sandro
-      IF oDlg:lExitOnEsc .OR. ! nEsc
-         EndDialog( oDlg:handle )
+      IF iParLow == IDCANCEL .AND. (oDlg:lExitOnEsc .OR. ! nEsc )
+          oDlg:nLastKey := 27
+          EndDialog( oDlg:handle )
       ELSEIF ! oDlg:lExitOnEsc
-         oDlg:nLastKey := 0
+          oDlg:nLastKey := 0
       ENDIF
    ELSEIF __ObjHasMsg( oDlg, "MENU" ) .AND. ValType( oDlg:menu ) == "A" .AND. ;
       ( aMenu := Hwg_FindMenuItem( oDlg:menu, iParLow, @i ) ) != Nil
@@ -573,7 +593,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       .AND. aMenu[ 1, i, 1 ] != Nil
       Eval( aMenu[ 1, i, 1 ], i, wParam )
    ENDIF
-   IF oDlg:nInitFocus > 0
+   IF ! Empty( oDlg:nInitFocus )
       oDlg:nInitFocus := 0
    ENDIF
 
@@ -641,9 +661,16 @@ STATIC FUNCTION onSize( oDlg, wParam, lParam )
 STATIC FUNCTION onActivate( oDlg, wParam, lParam )
    LOCAL iParLow := LOWORD( wParam ), iParHigh := HIWORD( wParam )
 
-   HB_SYMBOL_UNUSED( lParam )
+   //HB_SYMBOL_UNUSED( lParam )
 
-   IF ( iParLow = WA_ACTIVE .OR. iParLow = WA_CLICKACTIVE ) .AND. IsWindowVisible( oDlg:handle ) //.AND. PtrtoUlong( lParam ) = 0
+   IF  iParLow = WA_ACTIVE  .AND. lParam = oDlg:Handle
+      IF Valtype( oDlg:bOnActivate) == "B"
+        *- oDlg:lSuspendMsgsHandling := .t.
+         Eval( oDlg:bOnActivate, oDlg )
+         *-oDlg:lSuspendMsgsHandling := .F.
+      ENDIF
+
+   ELSEIF ( iParLow = WA_ACTIVE .OR. iParLow = WA_CLICKACTIVE ) .AND. IsWindowVisible( oDlg:handle ) //.AND. PtrtoUlong( lParam ) = 0
       IF oDlg:bGetFocus != Nil //.AND. IsWindowVisible(::handle)
          oDlg:lSuspendMsgsHandling := .t.
          IF iParHigh > 0  // MINIMIZED
@@ -656,9 +683,9 @@ STATIC FUNCTION onActivate( oDlg, wParam, lParam )
       oDlg:lSuspendMsgsHandling := .t.
       Eval( oDlg:bLostFocus, oDlg, lParam  )
       oDlg:lSuspendMsgsHandling := .f.
-      IF ! oDlg:lModal
-         RETURN 1
-      ENDIF
+      //IF ! oDlg:lModal
+      //   RETURN 1
+      //ENDIF
    ENDIF
    RETURN 0
 
@@ -787,13 +814,14 @@ FUNCTION EndDialog( handle )
       ENDIF
    ENDIF
    // force control triggered killfocus
-   IF ! EMPTY( hFocus ) .AND. ( oCtrl := oDlg:FindControl(, hFocus ) ) != Nil .AND. oCtrl:bLostFocus != Nil
+   IF ! EMPTY( hFocus ) .AND. ( oCtrl := oDlg:FindControl(, hFocus ) ) != Nil .AND.;
+      oCtrl:bLostFocus != Nil .AND. oDlg:lModal
       SendMessage( hFocus, WM_KILLFOCUS, 0, 0 )
    ENDIF
    IF oDlg:bDestroy != Nil
-      oDlg:lSuspendMsgsHandling := .T.
+      //oDlg:lSuspendMsgsHandling := .T.
       res := Eval( oDlg:bDestroy, oDlg )
-      oDlg:lSuspendMsgsHandling := .F.
+      //oDlg:lSuspendMsgsHandling := .F.
       IF ! res
          oDlg:nLastKey := 0
          RETURN Nil
@@ -836,7 +864,7 @@ STATIC FUNCTION onSysCommand( oDlg, wParam, lParam )
       IF ! oDlg:Closable
          RETURN 1
       ENDIF
-  ELSEIF wParam == SC_MINIMIZE
+   ELSEIF wParam == SC_MINIMIZE
    ELSEIF wParam == SC_MAXIMIZE .OR. wparam == SC_MAXIMIZE2
    ELSEIF wParam == SC_RESTORE .OR. wParam == SC_RESTORE2
    ELSEIF wParam = SC_NEXTWINDOW .OR. wParam = SC_PREVWINDOW

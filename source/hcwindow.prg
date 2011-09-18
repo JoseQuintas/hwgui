@@ -117,7 +117,9 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    METHOD AddEvent( nEvent, oCtrl, bAction, lNotify, cMethName )
    METHOD FindControl( nId, nHandle )
    METHOD Hide()              INLINE ( ::lHide := .T., HideWindow( ::handle ) )
-   METHOD Show()              INLINE ( ::lHide := .F., ShowWindow( ::handle ) )
+   //METHOD Show( )              INLINE ( ::lHide := .F., ShowWindow( ::handle ) )
+   METHOD Show( nShow )       INLINE ( ::lHide := .F., IIF( nShow = Nil, ShowWindow( ::handle  ),;
+                                       ShowWindow( ::handle, nShow  )  ) )
    METHOD Move( x1, y1, width, height, nRePaint )
    METHOD onEvent( msg, wParam, lParam )
    METHOD END()
@@ -282,7 +284,7 @@ LOCAL oForm := IIF( EMPTY( oCtrl ), Self, oCtrl )
    DO WHILE ( oForm:oParent ) != Nil .AND. ! __ObjHasMsg( oForm, "GETLIST" )
       oForm := oForm:oParent
    ENDDO
-   RETURN IIF( VALTYPE( oForm ) != "N", oForm, Nil )
+   RETURN IIF( VALTYPE( oForm ) == "O", oForm, ::oParent )
 
 
 METHOD RefreshCtrl( oCtrl, nSeek ) CLASS HCustomWindow
@@ -318,33 +320,36 @@ METHOD SetFocusCtrl( oCtrl ) CLASS HCustomWindow
 
 
 METHOD Refresh( lAll, oCtrl ) CLASS HCustomWindow
-  Local nlen , i, hCtrl := GetFocus()
-   oCtrl := IIF( oCtrl = Nil, Self, oCtrl )
-   nlen := LEN( oCtrl:aControls )
+   LOCAL nlen , i, hCtrl := GetFocus(), oCtrlTmp, lRefresh
+   
+	 oCtrl := IIF( oCtrl == Nil, Self, oCtrl )
+	 lAll  := IIF( lAll  == Nil, .F., lAll )
+	 nLen  := LEN( oCtrl:aControls )
 
-   IF IsWindowVisible( ::Handle )
+   IF IsWindowVisible( ::Handle ) .OR. nLen > 0
       FOR i = 1 to nLen
-         IF ! oCtrl:aControls[ i ]:lHide .AND. ::handle != hCtrl
-            IF  __ObjHasMethod(oCtrl:aControls[ i ], "REFRESH" )  .AND. ( ! EMPTY( lAll ) .OR. ;
-                  ASCAN( ::GetList, {| o | o:Handle = oCtrl:aControls[ i ]:handle } ) > 0 )
-               oCtrl:aControls[ i ]:Refresh( )
-               IF oCtrl:aControls[ i ]:bRefresh != Nil
-                  EVAL( oCtrl:aControls[ i ]:bRefresh, oCtrl:aControls[ i ] )
-               ENDIF
-            ELSE
-               oCtrl:aControls[ i ]:SHOW()
-            ENDIF
-            IF LEN( oCtrl:aControls[ i ]:aControls ) > 0
-               ::Refresh( lAll, oCtrl:aControls[ i ] )
-            ENDIF
+         oCtrlTmp :=  oCtrl:aControls[ i ]
+         lRefresh :=  ! Empty( __ObjHasMethod( oCtrlTmp, "REFRESH" ) )
+         IF ( ( oCtrlTmp:Handle != hCtrl .OR. LEN( oCtrlTmp:aControls) = 0) .OR.  lAll ) .AND. ;
+            ( ! oCtrlTmp:lHide .OR.  __ObjHasMsg( oCtrlTmp, "BSETGET" ) ) 
+  	        IF LEN( oCtrlTmp:aControls) > 0
+  	            ::Refresh( lAll, oCtrlTmp )
+		        ELSEIF  ! Empty( lRefresh ) .AND. ( lAll .OR. ASCAN( ::GetList, {| o | o:Handle == oCtrlTmp:handle } ) > 0 ) 
+               oCtrlTmp:Refresh( )
+               IF oCtrlTmp:bRefresh != Nil  
+                  EVAL( oCtrlTmp:bRefresh, oCtrlTmp )
+               ENDIF   
+            ELSEIF  IsWindowEnabled( oCtrlTmp:Handle ) .AND. ! oCtrlTmp:lHide .AND.  ! lRefresh
+               oCtrlTmp:SHOW( SW_SHOWNOACTIVATE )
+				    ENDIF  
          ENDIF
       NEXT
-      IF ::bRefresh != Nil .AND. ::handle != hCtrl
-         Eval( ::bRefresh, Self )
+      IF oCtrl:bRefresh != Nil .AND. oCtrl:handle != hCtrl
+         Eval( oCtrl:bRefresh, Self ) 
       ENDIF
-   ELSEIF  ::bRefresh != Nil
-      Eval( ::bRefresh, Self )
-   ENDIF
+   ELSEIF  oCtrl:bRefresh != Nil
+      Eval( oCtrl:bRefresh, Self )
+   ENDIF  
    RETURN Nil
 
 
@@ -352,14 +357,11 @@ METHOD SetTextClass( x ) CLASS HCustomWindow
 
    IF __ObjHasMsg( Self, "SETTEXT" ) //.AND. ::classname != "HBUTTONEX"
        ::SetText( x )
-    ELSEIF __ObjHasMsg( Self, "SETVALUE" )
-       ::SetValue( x )
     ELSE
        ::title := x
        SENDMESSAGE( ::handle, WM_SETTEXT, 0, ::Title )
     ENDIF
-    ::Refresh()
-
+    //::Refresh()
    RETURN NIL
 
 METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HCustomWindow
@@ -739,14 +741,20 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
             RETURN oCtrl:oParent:brush:handle
          ENDIF
       ELSEIF oCtrl:BackStyle = TRANSPARENT
+         /*
          IF ( oCtrl:classname $ "HCHECKBUTTON" .AND. (  ! oCtrl:lnoThemes .AND. ( ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest ) ) ) .OR.;
             ( oCtrl:classname $ "HGROUP*HRADIOGROUP*HRADIOBUTTON" .AND. ! oCtrl:lnoThemes )
 				    RETURN GetBackColorParent( oCtrl, , .T. ):handle
 				 ENDIF
-         IF __ObjHasMsg( oCtrl, "PAINT" ) .OR. oCtrl:winclass = "BUTTON"				
+				 */
+				 IF  __ObjHasMsg( oCtrl, "PAINT" ) .OR. ( oCtrl:winClass == "BUTTON"  .AND. oCtrl:classname != "HCHECKBUTTON" )
 				    RETURN GetStockObject( NULL_BRUSH )
 				 ENDIF
 				 RETURN GetBackColorParent( oCtrl, , .T. ):handle
+      ELSEIF oCtrl:winClass == "BUTTON"  .AND. ( ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest )
+         RETURN GetBackColorParent( oCtrl, , .T. ):handle
+      ENDIF
+				 
       ENDIF
    ENDIF
 
@@ -781,14 +789,23 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
 
 STATIC FUNCTION onSize( oWnd, wParam, lParam )
    LOCAL aControls := oWnd:aControls
-   LOCAL oItem, nw1, nh1, aCoors
+   LOCAL oItem, nw1, nh1, aCoors, nWindowState
+   
+   IF EMPTY( oWnd:Type )
+      RETURN NIL
+   ENDIF
 
    nw1 := oWnd:nWidth
    nh1 := oWnd:nHeight
-   IF wParam != 1  //SIZE_MINIMIZED
+   nWindowState := oWnd:WindowState
+   IF wParam != 1 .AND. ( oWnd:GETMDIMAIN() != Nil .AND. ! oWnd:GETMDIMAIN():IsMinimized() ) //SIZE_MINIMIZED 
+
       aCoors := GetWindowRect( oWnd:handle )
       oWnd:nWidth := aCoors[ 3 ] - aCoors[ 1 ]
       oWnd:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
+      IF  oWnd:Type = WND_MDICHILD .AND. oWnd:GETMDIMAIN() != Nil .AND. wParam != 1 .AND. oWnd:GETMDIMAIN():WindowState = 2
+          nWindowState := SW_SHOWMINIMIZED
+      ENDIF 
    ENDIF
    IF oWnd:nScrollBars > - 1 .AND. oWnd:lAutoScroll
       onMove( oWnd )
@@ -862,17 +879,18 @@ LOCAL oParent, nCtrl,nPos
    RETURN .F.
 
 FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
-   Local oWin := oCtrl:GetParentForm()
-   Local iParHigh := IIF( nKey = VK_RETURN, IDOK, IDCANCEL )
+   Local oWin := oCtrl:GetParentForm(), lEscape
+   Local iParHigh := IIF( nKey = VK_RETURN, IDOK, IDCANCEL ), i
    LOCAL oCtrlFocu := oCtrl
 
    lForce := ! Empty( lForce )
-   IF ( oWin:Type >= WND_DLG_RESOURCE .AND. ! lForce  ) .OR. ( nKey != VK_RETURN .AND. nKey != VK_ESCAPE )
+   lEscape := nKey = VK_ESCAPE .AND. ( oCtrl := oWin:FindControl( IDCANCEL ) ) != Nil .AND. ! oCtrl:IsEnabled()
+   IF ( ( oWin:Type >= WND_DLG_RESOURCE .AND. oWin:lModal) .AND. ! lForce .and. !lEscape )  .OR. ( nKey != VK_RETURN .AND. nKey != VK_ESCAPE )
       Return .F.
-   ENDIF
+	 ENDIF
    IF iParHigh == IDOK
       IF ( oCtrl := oWin:FindControl( IDOK ) ) != Nil .AND. oCtrl:IsEnabled()
-        oCtrl:SetFocus()
+         oCtrl:SetFocus()
   	     oWin:lResult := .T.
   	     IF lForce
 	       ELSEIF oCtrl:bClick != Nil .AND. ! lForce
@@ -901,9 +919,20 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
           oWin:close()
       ELSEIF ! oWin:lExitOnEsc
          oWin:nLastKey := 0
+         RETURN .F.
       ENDIF
       RETURN .T.
    ENDIF
+   RETURN .F.
+
+FUNCTION ADDMETHOD( oObjectName, cMethodName, pFunction )    
+
+   IF VALTYPE( oObjectName ) = "O" .AND. ! EMPTY( cMethodName )
+      IF ! __ObjHasMsg( oObjectName, cMethodName )
+          __objAddMethod( oObjectName, cMethodName, pFunction )  
+      ENDIF   
+      RETURN .T.
+   ENDIF	    
    RETURN .F.
 
 FUNCTION ADDPROPERTY( oObjectName, cPropertyName, eNewValue )
@@ -941,7 +970,7 @@ FUNCTION FindAccelerator( oCtrl, lParam )
   FOR i = 1 to nLen
 	   IF oCtrl:aControls[ i ]:classname = "HTAB"
 	      IF ( pos := FindTabAccelerator( oCtrl:aControls[ i ], lParam ) ) > 0 .AND. ;
-        	          oCtrl:aControls[ i ]:Pages[ pos ]:Enabled
+        	  oCtrl:aControls[ i ]:Pages[ pos ]:Enabled
 	          oCtrl:aControls[ i ]:SetTab( pos )
 	          RETURN oCtrl:aControls[ i ]
 	      ENDIF
@@ -967,20 +996,23 @@ FUNCTION GetBackColorParent( oCtrl, lSelf, lTransparent )
       oCtrl := oCtrl:oParent
    ENDIF
    IF  oCtrl != Nil .AND. oCtrl:Classname = "HTAB"
-       brush := HBrush():Add( bColor )
+       *-brush := HBrush():Add( bColor )
        IF Len( oCtrl:aPages ) > 0 .AND. oCtrl:Pages[ oCtrl:GETACTIVEPAGE() ]:bColor != Nil
-          brush := oCtrl:Pages[ oCtrl:GetActivePage() ]:brush
+          *-brush := oCtrl:Pages[ oCtrl:GetActivePage() ]:brush
+          bColor := oCtrl:Pages[ oCtrl:GetActivePage() ]:bColor
        ELSEIF ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest
           hTheme := hb_OpenThemeData( oCtrl:handle, "TAB" ) //oCtrl:oParent:WinClass )
           IF !EMPTY( hTheme )
              bColor := HWG_GETTHEMESYSCOLOR( hTheme, COLOR_WINDOW  )
              HB_CLOSETHEMEDATA( hTheme )
-             brush := HBrush():Add( bColor )
+             *-brush := HBrush():Add( bColor )
           ENDIF
        ENDIF
     ELSEIF oCtrl:bColor != Nil
-       brush := oCtrl:brush
-    ELSEIF oCtrl:brush = Nil .AND. lTransparent
-       brush := HBrush():Add( bColor )
+       *-brush := oCtrl:brush
+       bColor := oCtrl:bColor
+    *-ELSEIF oCtrl:brush = Nil .AND. lTransparent
+    *-   brush := HBrush():Add( bColor )
     ENDIF
+    brush := HBrush():Add( bColor ) 
     Return brush

@@ -17,9 +17,22 @@
    #xtranslate hb_NumToHex([<n,...>])      => NumToHex(<n>)
 #endif
 
-FUNCTION InitObjects( oWnd )
-   LOCAL i, pArray := oWnd:aObjects //, lInit
+STATIC _winwait
 
+FUNCTION InitObjects( oWnd )
+   LOCAL i, pArray := oWnd:aObjects 
+   LOCAL LoadArray := HObject():aObjects
+   
+   IF !EMPTY( LoadArray )
+      FOR i := 1 TO Len( LoadArray )
+         IF ! EMPTY( oWnd:Handle )
+            IF __ObjHasMsg( LoadArray[ i ],"INIT")
+               LoadArray[ i ]:Init( oWnd )
+               LoadArray[ i ]:lInit := .T.
+            ENDIF
+         ENDIF
+      NEXT   
+   ENDIF
    IF pArray != Nil
       FOR i := 1 TO Len( pArray )
          IF __ObjHasMsg( pArray[ i ], "INIT" )
@@ -27,6 +40,7 @@ FUNCTION InitObjects( oWnd )
          ENDIF
       NEXT
    ENDIF
+   HObject():aObjects := {}
    RETURN .T.
 
 FUNCTION InitControls( oWnd, lNoActivate )
@@ -37,7 +51,7 @@ FUNCTION InitControls( oWnd, lNoActivate )
    IF pArray != Nil
       FOR i := 1 TO Len( pArray )
          // writelog( "InitControl1"+str(pArray[i]:handle)+"/"+pArray[i]:classname+" "+str(pArray[i]:nWidth)+"/"+str(pArray[i]:nHeight) )
-         IF Empty( pArray[ i ]:handle )  .AND. ! lNoActivate
+         IF Empty( pArray[ i ]:handle ) .AND. ! lNoActivate
 //         IF empty(pArray[i]:handle ) .AND. !lNoActivate
             lInit := pArray[ i ]:lInit
             pArray[ i ]:lInit := .T.
@@ -59,7 +73,6 @@ FUNCTION InitControls( oWnd, lNoActivate )
          IF ! pArray[i]:lInit
             pArray[i]:Super:Init()
          ENDIF
-
       NEXT
    ENDIF
 
@@ -138,25 +151,28 @@ FUNCTION VColor( cColor )
 FUNCTION MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cResIni )
    LOCAL oModDlg, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
    LOCAL cRes := IIf( cResIni != Nil, Trim( cResIni ), "" )
-
+   /*
    IF ! Empty( cRes )
       Keyb_Event( VK_END )
    ENDIF
+   */
    nStyle := IIf( nStyle == Nil, 0, nStyle )
    x := IIf( x == Nil, 210, x )
    y := IIf( y == Nil, 10, y )
    nDlgStyle := IIf( nDlgStyle == Nil, 0, nDlgStyle )
 
    INIT DIALOG oModDlg TITLE cTitle At x, y SIZE 300, 140 ;
-        FONT oFont CLIPPER STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + nDlgStyle
+        FONT oFont CLIPPER ;
+        STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + nDlgStyle
 
    @ 20, 10 SAY cText SIZE 260, 22
    @ 20, 35 GET cRes  SIZE 260, 26 STYLE WS_TABSTOP + ES_AUTOHSCROLL + nStyle
-
+   oModDlg:aControls[ 2 ]:Anchor := 11
    @ 20, 95 BUTTON "Ok" ID IDOK SIZE 100, 32
    @ 180, 95 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
-
-   ACTIVATE DIALOG oModDlg
+   oModDlg:aControls[ 4 ]:Anchor := 9
+   
+   ACTIVATE DIALOG oModDlg ON ACTIVATE { || IIF( ! EMPTY( cRes ), KEYB_EVENT( VK_END ), .T. ) }
 
    oFont:Release()
    IF oModDlg:lResult

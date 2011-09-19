@@ -344,7 +344,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
          IF wParam = VK_RETURN  
             RETURN 0
          ELSEIF wParam = VK_ESCAPE  .AND. ;
-                  ( oID := ::GetParentForm:FindControl( IDCANCEL ) ) != Nil .AND. ! oID:IsEnabled() 
+                  ( oCtrl := ::GetParentForm:FindControl( IDCANCEL ) ) != Nil .AND. ! oCtrl:IsEnabled() 
             RETURN DLGC_WANTMESSAGE  
          ENDIF
 		     RETURN  DLGC_WANTCHARS + DLGC_WANTARROWS 

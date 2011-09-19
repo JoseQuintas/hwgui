@@ -1769,6 +1769,21 @@ HB_FUNC( TOOLBARADDBUTTONS )
 }
 
 
+HB_FUNC( TOOLBAR_SETBUTTONINFO )
+{
+   TBBUTTONINFO tb;
+   HWND hWndCtrl = ( HWND ) HB_PARHANDLE( 1 );
+   int iIDB = hb_parni( 2 );
+   void * hStr;
+
+   tb.cbSize = sizeof( tb );
+   tb.dwMask = TBIF_TEXT;
+   tb.pszText = ( LPTSTR ) HB_PARSTR( 3, &hStr, NULL );
+   //tb.cchText = 1000  ;
+   
+   SendMessage( hWndCtrl, TB_SETBUTTONINFO, iIDB, ( LPARAM ) & tb );
+}
+
 HB_FUNC( TOOLBAR_LOADIMAGE )
 {
    TBADDBITMAP tbab;

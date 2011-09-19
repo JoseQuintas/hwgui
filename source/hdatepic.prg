@@ -122,11 +122,7 @@ METHOD Init() CLASS HDatePicker
       SetWindowObject( ::handle, Self )
       HWG_INITDATEPICKERPROC( ::handle )
       Super:Init()
-      IF Empty( ::dValue )
-         SetDatePickerNull( ::handle )
-      ELSE
-         SetDatePicker( ::handle, ::dValue, ::tValue )
-      ENDIF
+      ::Refresh()
    ENDIF
    RETURN Nil
 
@@ -161,11 +157,7 @@ RETURN -1
 METHOD Value( Value )  CLASS HDatePicker
 
    IF Value != Nil
-      IF ::lShowTime
-         ::SetValue( ::dValue, Value  )
-      ELSE
-         ::SetValue( Value, ::tValue )
-      ENDIF
+      ::SetValue( ::dValue, Value  )
    ENDIF
    RETURN IIF( ::lShowTime, ::tValue, ::dValue )
 
@@ -190,6 +182,7 @@ METHOD SetValue( xValue ) CLASS HDatePicker
    RETURN Nil
 
 METHOD Refresh() CLASS HDatePicker
+
    IF ::bSetGet != Nil
       IF ! ::lShowTime
          ::dValue := Eval( ::bSetGet,, nil )
@@ -197,10 +190,11 @@ METHOD Refresh() CLASS HDatePicker
          ::tValue := Eval( ::bSetGet,, nil )
       ENDIF
    ENDIF
-   IF Empty( ::dValue )
-      SetDatePickerNull( ::handle )
+   IF Empty( ::dValue ) .AND. ! ::lShowTime
+      //SetDatePickerNull( ::handle )
+      SetDatePicker( ::handle, date(), STRTRAN( Time(), ":", "" ) )
    ELSE
-      SetDatePicker( ::handle, ::dValue, ::tValue )
+      ::SetValue( IIF( ! ::lShowTime, ::dValue, ::tValue ) )
    ENDIF
    RETURN Nil
 
@@ -238,10 +232,13 @@ METHOD When( ) CLASS HDatePicker
       ::oParent:lSuspendMsgsHandling := .T.
       ::lnoValid := .T.
       res :=  Eval( ::bGetFocus, IIF( ::lShowTime, ::tValue, ::dValue ), Self )
-      ::oParent:lSuspendMsgsHandling := .F.
       ::lnoValid := ! res
+      ::oParent:lSuspendMsgsHandling := .F.
       IF ! res
          GetSkip( ::oParent, ::handle, , nSkip )
+         SendMessage( ::handle, DTM_CLOSEMONTHCAL, 0, 0 )
+      ELSE
+         ::setfocus()   
       ENDIF
    ENDIF
 
@@ -250,6 +247,9 @@ METHOD When( ) CLASS HDatePicker
 METHOD Valid( ) CLASS HDatePicker
    LOCAL  res := .t.
 
+   IF PtrtouLong( GetParent( GetFocus() ) ) != PtrtouLong( ::GetParentForm():Handle )
+      RETURN .T.
+   ENDIF
    IF ! CheckFocus( Self, .T. ) .OR. ::lnoValid
       RETURN .T.
    ENDIF
@@ -263,6 +263,7 @@ METHOD Valid( ) CLASS HDatePicker
       res := IIF( ValType( res ) == "L", res, .T. )
       ::oparent:lSuspendMsgsHandling := .F.
       IF ! res
+         POSTMESSAGE( ::handle, WM_KEYDOWN, VK_RIGHT, 0 )
          ::SetFocus( )
       ENDIF
    ENDIF

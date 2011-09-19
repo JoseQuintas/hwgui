@@ -36,6 +36,7 @@ CLASS HUpDown INHERIT HControl
    DATA lNoBorder
    DATA cPicture
    DATA oEditUpDown
+   DATA bColorOld   HIDDEN
 
    DATA lCreate    INIT .F. HIDDEN //
 
@@ -46,6 +47,7 @@ CLASS HUpDown INHERIT HControl
 
    METHOD Activate()
    METHOD Init()
+   METHOD CreateUpDown()
    METHOD SetValue( nValue )
    METHOD Value( Value ) SETGET
    METHOD Refresh()
@@ -54,13 +56,16 @@ CLASS HUpDown INHERIT HControl
    METHOD DisableBackColor( DisableBColor ) SETGET
    METHOD Hide() INLINE (::lHide := .T., HideWindow( ::handle ), HideWindow( ::hUpDown ) )
    METHOD Show() INLINE (::lHide := .F., ShowWindow( ::handle ), ShowWindow( ::hUpDown ) )
-   METHOD Enable()  INLINE ( Super:Enable(), EnableWindow( ::hUpDown, .T. ), InvalidateRect( ::hUpDown, 1 ) )
+   METHOD Enable()  INLINE ( Super:Enable(), EnableWindow( ::hUpDown, .T. ), InvalidateRect( ::hUpDown, 0 ) )
                           //  InvalidateRect( ::oParent:Handle, 1,  ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight ) )
    METHOD Disable() INLINE ( Super:Disable(), EnableWindow( ::hUpDown, .F. ) )
    METHOD Valid()
-   METHOD CreateUpDown()
-   METHOD Move( x1, y1, width, height ) INLINE  Super:Move( x1, y1, width + GetClientRect( ::hUpDown )[ 3 ], height ) ,;
-                                                SENDMESSAGE( ::hUpDown, UDM_SETBUDDY, ::oEditUpDown:handle, 0 ), InvalidateRect( ::hUpDown, 1 )
+   METHOD When() 
+   METHOD SetRange( nLower, nUpper ) 
+   METHOD Move( x1, y1, width, height, nRepaint ) INLINE ; 
+                              Super:Move( x1, y1 , IIF( width != Nil, width, ::nWidth ) + GetClientRect( ::hUpDown )[ 3 ] - 1, height, nRepaint  ) ,;
+                              SENDMESSAGE( ::hUpDown, UDM_SETBUDDY, ::oEditUpDown:handle, 0 ),;
+                              IIF( ::lHide, ::Hide(), ::Show() )
 
 ENDCLASS
 
@@ -84,7 +89,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    ::nValue := Vari
    ::title := Str( vari )
    ::bSetGet := bSetGet
-
+   ::bColorOld := bColor
    Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )
 
@@ -127,7 +132,7 @@ METHOD Activate() CLASS HUpDown
            ::oFont, ::bInit, ::bSize, ::bPaint, ::bGetfocus, ::bLostfocus, ::tooltip, ::tcolor, ::bcolor, ::cPicture,;
            ::lNoBorder, ::nMaxLength, , ::bKeyDown, ::bChange, ::bOther , ::controlsource)
       ::oEditUpDown:Name := "oEditUpDown"
-
+      ::SetColor( ::tColor, ::oEditUpDown:bColor ) 
       ::Init()
    ENDIF
 
@@ -138,6 +143,7 @@ METHOD Init()  CLASS HUpDown
    IF !::lInit
       Super:Init()
       ::Createupdown()
+      ::DisableBackColor := ::DisablebColor
       ::Refresh()
    ENDIF
    Return Nil
@@ -153,7 +159,8 @@ METHOD CREATEUPDOWN() CLASS Hupdown
        ::Activate()
        AddToolTip( ::GetParentForm():handle, ::oEditUpDown:handle, ::tooltip )
        ::oEditUpDown:SetFont( ::oFont )
-       SETWINDOWPOS( ::oEditUpDown:handle, ::Handle,  0,0,0,0, SWP_NOSIZE +  SWP_NOMOVE )
+       ::oEditUpDown:DisableBrush := ::DisableBrush  
+       SETWINDOWPOS( ::oEditUpDown:handle, ::Handle, 0, 0, 0, 0, SWP_NOSIZE +  SWP_NOMOVE )
        DESTROYWINDOW( ::Handle )
    ELSEIF ::getParentForm():Type < WND_DLG_RESOURCE .AND. ::oParent:ClassName = "HTAB" //!EMPTY( ::oParent:oParent )
       // MDICHILD WITH TAB
@@ -184,6 +191,13 @@ METHOD DisableBackColor( DisableBColor )
     ENDIF
     RETURN ::DisableBColor
 
+METHOD SetRange( nLower, nUpper ) CLASS HUpDown
+   
+   ::nLower := IIF( nLower != Nil, nLower, ::nLower )
+   ::nUpper := IIF( nUpper != Nil, nUpper, ::nUpper )
+   SETRANGEUPDOWN( ::nLower, ::nUpper )
+
+   RETURN Nil
 
 METHOD Value( Value )  CLASS HUpDown
 
@@ -222,7 +236,9 @@ METHOD Refresh()  CLASS HUpDown
    ENDIF
    ::oEditUpDown:Title :=  ::Title
    ::oEditUpDown:Refresh()
-   InvalidateRect( ::hUpDown, 1 )
+   IF GetFocus() == ::handle
+      InvalidateRect( ::hUpDown, 0 )
+   ENDIF
 
    RETURN Nil
 
@@ -271,11 +287,12 @@ METHOD Notify( lParam ) CLASS HeditUpDown
    Local nCode := GetNotifyCode( lParam )
    Local iPos := GETNOTIFYDELTAPOS( lParam, 1 )
    Local iDelta := GETNOTIFYDELTAPOS( lParam , 2 )
-   Local vari
+   Local vari, res
 
    //iDelta := IIF( iDelta < 0,  1, - 1) // IIF( ::oParent:oParent = Nil , - 1 ,  1 )
 
  	 IF ::oUpDown = Nil .OR. Hwg_BitAnd( GetWindowLong( ::handle, GWL_STYLE ), ES_READONLY ) != 0 .OR. ;
+ 	     GetFocus() != ::Handle .OR. ;
        ( ::oUpDown:bGetFocus != Nil .AND. ! Eval( ::oUpDown:bGetFocus, ::oUpDown:nValue, ::oUpDown ) )
 	     Return 0
    ENDIF
@@ -284,6 +301,7 @@ METHOD Notify( lParam ) CLASS HeditUpDown
 
    IF ( vari <= ::oUpDown:nLower .AND. iDelta < 0 ) .OR. ;
        ( vari >= ::oUpDown:nUpper .AND. iDelta > 0 ) .OR. ::oUpDown:Increment = 0
+       ::SetFocus()
        RETURN 0
    ENDIF
    vari :=  vari + ( ::oUpDown:Increment * idelta )
@@ -295,11 +313,14 @@ METHOD Notify( lParam ) CLASS HeditUpDown
    IF nCode = UDN_DELTAPOS .AND. ( ::oUpDown:bClickUp != Nil .OR. ::oUpDown:bClickDown != Nil )
       ::oparent:lSuspendMsgsHandling := .T.
       IF iDelta < 0 .AND. ::oUpDown:bClickDown  != Nil
-          Eval( ::oUpDown:bClickDown, ::oUpDown, ::oUpDown:nValue, iDelta, ipos )
+         res := Eval( ::oUpDown:bClickDown, ::oUpDown, ::oUpDown:nValue, iDelta, ipos )
       ELSEIF iDelta > 0 .AND. ::oUpDown:bClickUp  != Nil
-          Eval( ::oUpDown:bClickUp, ::oUpDown, ::oUpDown:nValue, iDelta, ipos )
+         res := Eval( ::oUpDown:bClickUp, ::oUpDown, ::oUpDown:nValue, iDelta, ipos )
       ENDIF
       ::oparent:lSuspendMsgsHandling := .F.
+      IF VALTYPE( res ) = "L" .AND. !res
+         RETURN 0
+      ENDIF
    ENDIF
    IF nCode = UDN_FIRST
 

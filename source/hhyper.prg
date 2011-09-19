@@ -151,13 +151,17 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 METHOD INIT() CLASS HStaticLink
 
    IF ! ::lInit
+      ::nWidth := Min( TxtRect( ::Title, Self )[ 1 ] + 5, ::nWidth )
+      ::move( , , ::nWidth , )
       Super:init()
+      /*  init in HSATIC
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       Hwg_InitWinCtrl( ::handle )
       IF ::Title != NIL
          SETWINDOWTEXT( ::handle, ::title )
       ENDIF
+      */
    ENDIF
 
    RETURN NIL

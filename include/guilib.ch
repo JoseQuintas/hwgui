@@ -1196,12 +1196,15 @@
              [ FONT <oFont> ]           ;
              [ TOOLTIP <ctoolt> ]       ;
              [ WHEN <bWhen> ]           ;
+             [ VALID <bLfocus> ]        ;
              [ <lEnter: ENTER> ]        ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;             
           => ;
           [<oCheck> := ] HCheckButton():New( <oWnd>,<nId>,<vari>,              ;
              {|v|Iif(v==Nil,<vari>,<vari>:=v)},                   ;
              <nStyle>,<x>,<y>,<width>,<height>,<caption>,<oFont>, ;
-             ,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen>,<.lEnter.>,<.lTransp.>);;
+             <bInit>,<bSize>,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen>,<.lEnter.>,<.lTransp.>,<bLFocus>);;
           [ <oCheck>:name := <(oCheck)> ]
 
 #xcommand REDEFINE GET CHECKBOX [ <oCheck> VAR ] <vari>  ;

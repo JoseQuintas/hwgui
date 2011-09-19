@@ -8,6 +8,89 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-09-18 23:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/control.c
+     + HB_FUNC( TOOLBAR_SETBUTTONINFO )
+   * source/Guilib.ch	 
+	 * #xcommand @ <x>,<y> GET CHECKBOX 
+	   + [ VALID <bLfocus> ]        ;
+	   + [ ON INIT <bInit> ]        ;
+       + [ ON SIZE <bSize> ]        ;             
+   * source/hcheck.prg	 
+     * changed DATA Value to DATA lValue
+	 + DATA bClick
+	 + METHOD Value ( lValue ) SETGET
+	 * METHOD NEW()
+	   + parameter bLFocus
+	 * METHOD onevent
+       ! minor fix in ESCAPE	 
+   * source/hcombo.prg
+     + DATA ldropshow INIT .F.
+	 + METHOD onDropDown( ) 
+	 + METHOD SetCueBanner( cText, lShowFoco ) 
+	   Sets the cue banner text that is displayed for the edit control of a combo box.
+	 * METHOD New and Redefine
+	   ! add Event CBN_DROPDOWN
+       ! add Event CBN_CLOSEUP
+     * METHOD onEvent()
+       ! fixed ESCAPE key	 
+	 * METHOD Refresh()
+	 * METHOD SetValue()
+     * METHOD GetValue()	   
+	 * METHOD GetValueBound
+     * METHOD DeleteItem
+	 * METHOD AddItem
+	   ! fixed valuebound
+	 * METHOD RowSource  
+	 * METHOD Populate
+	   ! fix to xHarbour and Harbour
+   * source/hdatepic.prg	   
+     * SetValue
+     * SetValue
+     * METHOD Refresh()
+     * METHOD When( )
+     * METHOD Valid( )
+	   ! minor fix
+   * source/hedit.prg	   	   
+     + METHOD SetCueBanner ( cText, lshowFoco ) 
+	   Sets the textual cue, or tip, that is displayed by the edit control to prompt the user for information.
+	   TRUE if the cue banner should show even when the edit control has focus; otherwise, FALSE.
+	   FALSE is the default behavior—the cue banner disappears when the user clicks in the control.
+	 * METHOD New
+       ! defines the number of characters based on the size of control when there is no picture and no maxlenght	 
+	 * METHOD onEvent
+       ! fix in MSG = WM_CHAR and wParam == VK_RETURN and wParam == VK_ESCAPE
+	   ! fix in MSG = WM_KEYDOWN and  fix in picture = "K" in focus
+       ! fix in msg == WM_KEYDOWN when no bsetget
+	   ! fix in msg == WM_GETDLGCODE and wParam = VK_ESCAPE
+     * METHOD Refresh()
+	   ! minor fix
+	 * METHOD onChange( )   
+	   ! fixed
+	 * FUNCTION CheckFocus
+	   ! fix the loss of focus due to the activation of the new form from the LostFocus
+   * source/hhyper.prg	   
+	 METHOD INIT() 
+	   ! fix and adjusted length of the text based on the Font
+   * source/hupdown.prg	   	   
+     + DATA bColorOld   HIDDEN
+	   ! fixed text color
+	 + METHOD SetRange( nLower, nUpper ) 
+	    attrib new rangers to up and down values
+	 * METHOD Move
+	   ! fixed
+	 * METHOD Notify
+	   ! minor fix
+   * source/htool.prg	 
+     * CLASS HToolButton   
+	   + DATA title
+	   + METHOD Caption( cText ) SETGET
+	     ! changed caption of button 
+     * CLASS HTool		 
+	   + nDrop
+	   + METHOD RESIZE( w1, w9 )
+	   
+     
 2011-09-18 20:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/drawwidg.prg
      * CLASS HFont 

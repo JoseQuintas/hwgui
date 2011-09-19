@@ -754,8 +754,6 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
       ELSEIF oCtrl:winClass == "BUTTON"  .AND. ( ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest )
          RETURN GetBackColorParent( oCtrl, , .T. ):handle
       ENDIF
-				 
-      ENDIF
    ENDIF
 
    RETURN - 1

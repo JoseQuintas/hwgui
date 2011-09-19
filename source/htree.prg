@@ -500,7 +500,7 @@ METHOD FindChildPos( oNode, h ) CLASS HTree
 
 METHOD SearchString( cText, iNivel, oNode, inodo ) CLASS HTree
    LOCAL aItems := IIF( oNode = Nil, ::aItems,  oNode:aItems )
-   Local  i := 0, alen := Len( aItems )
+   Local  i , alen := Len( aItems )
    LOCAL oNodeRet
    
    iNodo := IIF( inodo = Nil, 0, iNodo )
@@ -620,7 +620,7 @@ METHOD Notify( lParam )  CLASS HTree
          Eval( ::bRClick, oItem, Self, nAct )
       ENDIF
    ELSEIF nCode == - 24 .and. ::oitem != Nil
-      nhitem := tree_Hittest( ::handle,,, @nAct )
+      //nhitem := tree_Hittest( ::handle,,, @nAct )
       IF ::bCheck != Nil
          lEval := Eval( ::bCheck, ! ::oItem:checked, ::oItem, Self )
       ENDIF

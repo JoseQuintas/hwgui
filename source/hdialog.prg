@@ -86,7 +86,7 @@ CLASS VAR aModalDialogs  SHARED INIT { }
    METHOD onEvent( msg, wParam, lParam )
    METHOD Add()      INLINE AAdd( IIf( ::lModal, ::aModalDialogs, ::aDialogs ), Self )
    METHOD Del()
-   METHOD FindDialog( hWnd )
+   METHOD FindDialog( hWnd, lAll )
    METHOD GetActive()
    METHOD Center()   INLINE Hwg_CenterWindow( ::handle , ::Type )
    METHOD Restore()  INLINE SendMessage( ::handle,  WM_SYSCOMMAND, SC_RESTORE, 0 )

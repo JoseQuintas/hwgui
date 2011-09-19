@@ -1152,7 +1152,7 @@ CLASS HButtonEX INHERIT HButton
    DATA m_dcBk
    DATA m_bFirstTime INIT .T.
    DATA Themed INIT .F.
-   DATA lnoThemes  INIT .F. HIDDEN
+   //DATA lnoThemes  INIT .F. HIDDEN
    DATA m_crColors INIT Array( 6 )
    DATA m_crBrush INIT Array( 6 )
    DATA hTheme

@@ -95,6 +95,8 @@
      + HB_FUNC( SETRANGEUPDOWN )
    * source/draw.c
 	 + HB_FUNC( GETSYSCOLORBRUSH )
+   * source/windows.ch   		 	    
+	 + CB_SETCUEBANNER
 
 2011-09-18 20:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/drawwidg.prg

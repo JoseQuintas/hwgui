@@ -262,7 +262,6 @@ METHOD CREATETOOL() CLASS hToolBar
    Local n,n1
    Local aTemp
    Local aButton :={}
-   Local nStyle
    Local oButton
    Local aBmpSize, hIm, nPos
    Local hImage, img, nlistimg, ndrop := 0
@@ -353,11 +352,13 @@ METHOD CREATETOOL() CLASS hToolBar
                TOOLBAR_LOADIMAGE( ::Handle, aButton[ img ])
             ENDIF
          ELSE
+           /*
            IF ::aItem[ n, 1 ] > 1
                hImage := HBitmap():AddResource( ::aitem[ n, 1 ], LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS,,::nSize,::nSize ):handle 
            ENDIF
+           */
                // AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
-//               hImage := HBitmap():AddResource( ::aitem[ n, 1 ], LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS + LR_SHARED,,::nSize,::nSize ):handle
+           //  hImage := HBitmap():AddResource( ::aitem[ n, 1 ], LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS + LR_SHARED,,::nSize,::nSize ):handle
          ENDIF
      NEXT
       IF Len( aButton ) > 0 //.AND. ::lResource
@@ -413,7 +414,7 @@ METHOD CREATETOOL() CLASS hToolBar
          nDrop += IIF( Hwg_BitAnd( ::Style, WS_DLGFRAME + WS_BORDER ) > 0, 5, 0 )
          ::nDrop := nDrop
          IF  ! ::lVertical   //                -2 s nÆo tiver menu - 9 se tiver menu tipo 8
-            SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth, ::nHeight - nDrop - IIF( !::lnoThemes .AND. Hwg_BitAnd( nStyle,  TBSTYLE_FLAT ) > 0, 1, 2 ) ) )
+            SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth, ::nHeight - nDrop - IIF( !::lnoThemes .AND. Hwg_BitAnd( ::Style,  TBSTYLE_FLAT ) > 0, 1, 2 ) ) )
          ELSE
             SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - nDrop - 1, ::BtnWidth )  )
          ENDIF
@@ -508,7 +509,6 @@ METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu, cName) CLASS hTo
    RETURN oButton
 
 METHOD Resize( xIncrSize ) CLASS hToolBar
-   LOCAL nDrop := 0
    
    IF ::Anchor = 0
       RETURN Nil
@@ -525,7 +525,7 @@ METHOD Resize( xIncrSize ) CLASS hToolBar
            SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - ::nDrop - 1, ::BtnWidth )  )
 				ENDIF   
    ENDIF   
-   IF w1 != w9
+   IF xIncrSize != 1
       ::Move( ::nLeft, ::nTop, ::nWidth + 1, ::nHeight, 0 )
    ENDIF
    RETURN NIL

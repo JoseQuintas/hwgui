@@ -25,6 +25,7 @@ CLASS VAR aFonts   INIT { }
    METHOD Add( fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut, nHandle )
    METHOD Select( oFont )
    METHOD Release()
+   METHOD SetFontStyle( lBold, nChar ,lItalic, lUnder, lStrike )
 
 ENDCLASS
 
@@ -77,14 +78,30 @@ METHOD Add( fontName, nWidth, nHeight , fnWeight, ;
 
    RETURN Self
 
-METHOD Select( oFont ) CLASS HFont
+METHOD Select( oFont, nCharSet  ) CLASS HFont
    LOCAL af := SelectFont( oFont )
 
    IF af == Nil
       RETURN Nil
    ENDIF
 
-   RETURN ::Add( af[ 2 ], af[ 3 ], af[ 4 ], af[ 5 ], af[ 6 ], af[ 7 ], af[ 8 ], af[ 9 ], af[ 1 ] )
+   RETURN ::Add( af[ 2 ], af[ 3 ], af[ 4 ], af[ 5 ], IIF( Empty( nCharSet ), af[ 6 ], nCharSet ), af[ 7 ], af[ 8 ], af[ 9 ], af[ 1 ] )
+
+METHOD SetFontStyle( lBold, nCharSet ,lItalic, lUnder, lStrike, nHeight ) CLASS HFont
+   LOCAL  weight, Italic, Underline, StrikeOut
+   
+   IF lBold != Nil
+      weight = IIF( lBold, FW_BOLD, FW_REGULAR )
+   ELSE   
+      weight := ::weight
+   ENDIF
+   Italic    := IIF( lItalic = Nil, ::Italic, IIF( lItalic, 1, 0 ) )
+   Underline := IIF( lUnder  = Nil, ::Underline, IIF( lUnder , 1, 0 ) )
+   StrikeOut := IIF( lStrike = Nil, ::StrikeOut, IIF( lStrike , 1, 0 ) )
+   nheight   := IIF( nheight = Nil, ::height, nheight )
+   nCharSet  := IIF( nCharSet = Nil, ::CharSet, nCharSet )
+   RETURN ::Add( ::name, ::width, nheight, weight,;
+                 nCharSet, Italic, Underline, StrikeOut ) // ::handle )
 
 METHOD Release() CLASS HFont
    LOCAL i, nlen := Len( ::aFonts )

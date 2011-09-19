@@ -9,6 +9,11 @@
 */
 
 2011-09-18 20:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/drawwidg.prg
+     * CLASS HFont 
+       + METHOD SetFontStyle( lBold, nCharSet ,lItalic, lUnder, lStrike, nHeight )
+       * METHOD Select( oFont, nCharSet  ) 
+	     ! add parameter nCharSet
    * source/hcontrol.prg
      * METHOD INIT()
 	   ! minor fix
@@ -58,6 +63,7 @@
 	 + #define BS_SPLITBUTTON   
      + #define BS_COMMANDLINK	  
 	 + #DEFINE BCM_SETNOTE         
+	
 
 2011-09-18 15:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/guimain.prg

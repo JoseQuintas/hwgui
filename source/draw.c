@@ -687,6 +687,11 @@ HB_FUNC( GETSYSCOLOR )
    hb_retnl( ( LONG ) GetSysColor( hb_parni( 1 ) ) );
 }
 
+HB_FUNC( GETSYSCOLORBRUSH )
+{
+   HB_RETHANDLE( GetSysColorBrush(  hb_parni( 1 ) ) ) ;
+}
+
 HB_FUNC( CREATEPEN )
 {
    HB_RETHANDLE( CreatePen( hb_parni( 1 ),      // pen style

@@ -60,7 +60,6 @@ CLASS HUpDown INHERIT HControl
                           //  InvalidateRect( ::oParent:Handle, 1,  ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight ) )
    METHOD Disable() INLINE ( Super:Disable(), EnableWindow( ::hUpDown, .F. ) )
    METHOD Valid()
-   METHOD When() 
    METHOD SetRange( nLower, nUpper ) 
    METHOD Move( x1, y1, width, height, nRepaint ) INLINE ; 
                               Super:Move( x1, y1 , IIF( width != Nil, width, ::nWidth ) + GetClientRect( ::hUpDown )[ 3 ] - 1, height, nRepaint  ) ,;

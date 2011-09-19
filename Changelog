@@ -90,7 +90,12 @@
 	   + nDrop
 	   + METHOD RESIZE( w1, w9 )
 	   
-     
+2011-09-19 08:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>     
+   * source/control.c
+     + HB_FUNC( SETRANGEUPDOWN )
+   * source/draw.c
+	 + HB_FUNC( GETSYSCOLORBRUSH )
+
 2011-09-18 20:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/drawwidg.prg
      * CLASS HFont 

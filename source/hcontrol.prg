@@ -1052,11 +1052,11 @@ METHOD onevent( msg, wParam, lParam ) CLASS HButton
          ENDIF
       ENDIF
    ELSEIF msg == WM_KEYUP
-      IF ( wParam == VK_RETURN .OR. ( wParam == VK_SPACE )
+      IF ( wParam == VK_RETURN .OR. wParam == VK_SPACE )
          SendMessage( ::handle, WM_LBUTTONUP, 0, MAKELPARAM( 1, 1 ) )
          RETURN 0
       ENDIF
-    ELSEIF  msg = WM_GETDLGCODE .AND. ! EMPTY( lParam )
+   ELSEIF  msg = WM_GETDLGCODE .AND. ! EMPTY( lParam )
       IF wParam = VK_RETURN .OR. wParam = VK_TAB
       ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND.wParam != VK_ESCAPE
       ELSEIF GETDLGMESSAGE( lParam ) = WM_CHAR .OR.wParam = VK_ESCAPE

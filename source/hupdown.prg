@@ -180,7 +180,7 @@ METHOD CREATEUPDOWN() CLASS Hupdown
    ENDIF
    RETURN Nil
 
-METHOD DisableBackColor( DisableBColor )
+METHOD DisableBackColor( DisableBColor ) CLASS HUpDown
 
     IF DisableBColor != NIL
        Super:DisableBackColor( DisableBColor )

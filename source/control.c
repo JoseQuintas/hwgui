@@ -523,6 +523,12 @@ HB_FUNC( SETUPDOWN )
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), UDM_SETPOS, 0, hb_parnl( 2 ) );
 }
 
+HB_FUNC( SETRANGEUPDOWN )
+{
+   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), UDM_SETRANGE32, hb_parnl( 2 ), hb_parnl( 3 ) );
+}
+
+
 HB_FUNC( GETNOTIFYDELTAPOS )
 {
    int iItem = hb_parnl( 2 ) ;

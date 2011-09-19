@@ -8,6 +8,29 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-09-18 11:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/htree.prg
+     * CLASS HTreeNode
+       + METHOD GetLevel( h )
+	     return level of node
+     * CLASS HTree		 
+	   + METHOD SearchString( cText, iNivel, oNode, inodo )
+	     search text in tree and return node
+       + METHOD Selecteds( oItem, aSels )
+	     return selecteds in checkmark
+	   * PROCEDURE MarkCheckTree	 
+	     ! fixed recursive state
+
+
+
+2011-09-19 08:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>     
+   * source/control.c
+     + HB_FUNC( SETRANGEUPDOWN )
+   * source/draw.c
+	 + HB_FUNC( GETSYSCOLORBRUSH )
+   * source/windows.ch   		 	    
+	 + CB_SETCUEBANNER
+
 2011-09-18 23:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/control.c
      + HB_FUNC( TOOLBAR_SETBUTTONINFO )
@@ -90,14 +113,6 @@
 	   + nDrop
 	   + METHOD RESIZE( w1, w9 )
 	   
-2011-09-19 08:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>     
-   * source/control.c
-     + HB_FUNC( SETRANGEUPDOWN )
-   * source/draw.c
-	 + HB_FUNC( GETSYSCOLORBRUSH )
-   * source/windows.ch   		 	    
-	 + CB_SETCUEBANNER
-
 2011-09-18 20:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/drawwidg.prg
      * CLASS HFont 

@@ -22,6 +22,7 @@
 #define TVM_SETITEM          4426   // (TV_FIRST + 63)
 #define TVM_SETITEMHEIGHT    4379   // (TV_FIRST + 27)
 #define TVM_GETITEMHEIGHT    4380
+#define TVM_SETLINECOLOR     4392 
 
 #define TVE_COLLAPSE            0x0001
 #define TVE_EXPAND              0x0002
@@ -97,10 +98,11 @@
 #define TREE_SETITEM_CHECK          2
 
 //#define  NM_CLICK               - 2
-#define  NM_DBLCLK              - 3
-#define  NM_RCLICK              - 5
-#define  NM_SETCURSOR           - 17    // uses NMMOUSE struct
-#define NM_CHAR                 - 18   // uses NMCHAR struct
+#define  NM_DBLCLK               - 3
+#define  NM_RCLICK               - 5
+#define  NM_KILLFOCUS            - 8
+#define  NM_SETCURSOR            - 17    // uses NMMOUSE struct
+#define  NM_CHAR                 - 18   // uses NMCHAR struct
 
 
 
@@ -122,6 +124,7 @@ CLASS HTreeNode INHERIT HObject
    METHOD GetText()  INLINE TreeGetNodeText( ::oTree:handle, ::handle )
    METHOD SetText( cText ) INLINE TreeSetItem( ::oTree:handle, ::handle, TREE_SETITEM_TEXT, cText ), ::title := cText
    METHOD Checked( lChecked )  SETGET
+   METHOD GetLevel( h )
 
 ENDCLASS
 
@@ -245,7 +248,7 @@ METHOD FindChild( h ) CLASS HTreeNode
    NEXT
    RETURN Nil
 
-METHOD Checked( lChecked )
+METHOD Checked( lChecked ) CLASS HTreeNode
    LOCAL state
 
    IF lChecked != NIL
@@ -256,6 +259,16 @@ METHOD Checked( lChecked )
       ::lChecked := int( state/4092 ) = 2
    ENDIF
    RETURN ::lChecked
+
+METHOD GetLevel( h ) CLASS HTreeNode
+   LOCAL iLevel := 1
+   
+   LOCAL oNode := IIF( EMPTY( h ), Self, h )
+   DO WHILE ( oNode:oParent ) != Nil 
+	    oNode := oNode:oParent
+	    iLevel ++
+   ENDDO
+   RETURN iLevel
 
 CLASS HTree INHERIT HControl
 
@@ -292,6 +305,8 @@ CLASS VAR winclass   INIT "SysTreeView32"
    METHOD isExpand( oNodo ) INLINE ! CheckBit( oNodo, TVE_EXPAND )
    METHOD onEvent( msg, wParam, lParam )
    METHOD ItemHeight( nHeight ) SETGET
+   METHOD SearchString( cText, iNivel, oNode, inodo )
+   METHOD Selecteds( oItem, aSels )
 
 ENDCLASS
 
@@ -304,8 +319,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit,
    lCheckBox   := IIf( lCheckBox == Nil, .F., lCheckBox )
    lDragDrop   := IIf( lDragDrop == Nil, .F., lDragDrop )
 
-   nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP + WS_BORDER + TVS_HASLINES +  ;
-                            TVS_LINESATROOT + TVS_HASBUTTONS  + ; //+ TVS_SHOWSELALWAYS
+   nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP + WS_BORDER + TVS_FULLROWSELECT + ; //TVS_HASLINES +  ;
+                            TVS_LINESATROOT + TVS_HASBUTTONS  + TVS_SHOWSELALWAYS + ;
                           IIf( lEditLabels == Nil.OR. ! lEditLabels, 0, TVS_EDITLABELS ) +;
                           IIf( lCheckBox == Nil.OR. ! lCheckBox, 0, TVS_CHECKBOXES ) +;
                           IIF( ! lDragDrop, TVS_DISABLEDRAGDROP, 0 ) )
@@ -483,6 +498,26 @@ METHOD FindChildPos( oNode, h ) CLASS HTree
    NEXT
    RETURN 0
 
+METHOD SearchString( cText, iNivel, oNode, inodo ) CLASS HTree
+   LOCAL aItems := IIF( oNode = Nil, ::aItems,  oNode:aItems )
+   Local  i := 0, alen := Len( aItems )
+   LOCAL oNodeRet
+   
+   iNodo := IIF( inodo = Nil, 0, iNodo )
+   FOR i := 1 TO aLen
+      IF ! Empty( aItems[ i ]:aItems ) .AND. ;
+         ( oNodeRet := ::SearchString( cText, iNivel, aItems[ i ], iNodo ) ) != Nil 
+         RETURN oNodeRet
+      ENDIF
+      IF  aItems[ i ]:Title = cText .AND. ( iNivel == Nil .OR. aItems[ i ]:GetLevel( ) = iNivel )       
+         iNodo ++ 
+         RETURN aItems[ i ]
+      ELSE
+         iNodo ++   
+      ENDIF
+   NEXT
+   RETURN Nil 
+
 METHOD Clean() CLASS HTree
 
    ::lEmpty := .T.
@@ -557,12 +592,15 @@ METHOD Notify( lParam )  CLASS HTree
 
    ELSEIF nCode = TVN_KEYDOWN
 
-	 ELSEIF nCode = NM_CLICK  .AND. ::oitem != Nil .AND. !::lEditLabels
-	    nHitem :=  Tree_GetNotify( lParam, 1 )
+	 ELSEIF nCode = NM_CLICK  .AND. ::oitem != Nil // .AND. !::lEditLabels
+	    //nHitem :=  Tree_GetNotify( lParam, 1 )
+	    nHitem :=  GETNOTIFYcode( lParam )
 	    IF ! EMPTY( nHitem ) .AND. nHitem != ::oitem:Handle
          oItem  := tree_Hittest( ::handle,,, @nAct )
          //TreeSetItem( ::handle, Tree_GetNotify( lParam, 1 ), nil )
-         ::Select( oItem )
+         IF oItem  != Nil
+            ::Select( oItem )
+         ENDIF   
       ELSEIF ! ::lEditLabels .AND. EMPTY( nHitem )
          IF ! ::oItem:oTree:lEmpty
             IF ::oItem:bClick != Nil
@@ -582,6 +620,7 @@ METHOD Notify( lParam )  CLASS HTree
          Eval( ::bRClick, oItem, Self, nAct )
       ENDIF
    ELSEIF nCode == - 24 .and. ::oitem != Nil
+      nhitem := tree_Hittest( ::handle,,, @nAct )
       IF ::bCheck != Nil
          lEval := Eval( ::bCheck, ! ::oItem:checked, ::oItem, Self )
       ENDIF
@@ -592,10 +631,25 @@ METHOD Notify( lParam )  CLASS HTree
       ENDIF
    ENDIF
 
-   IF oitem != Nil
+   IF ValType( oItem ) == "O"
       ::oItem := oItem
    ENDIF
    RETURN 0
+
+METHOD Selecteds( oItem, aSels )  CLASS HTree
+   LOCAL i, iLen
+   LOCAL aSelecteds := IIF( aSels = Nil, {}, aSels )
+   
+   oItem := IIF( oItem = Nil, Self, oItem )
+   iLen :=  Len( oItem:aitems )
+   
+   FOR i := 1 TO iLen
+      IF oItem:aItems[ i ]:checked
+         AADD( aSelecteds, oItem:aItems[ i ] )
+      ENDIF   
+      ::Selecteds( oItem:aItems[ i ], aSelecteds )
+   NEXT
+   RETURN aSelecteds
 
 STATIC PROCEDURE ReleaseTree( aItems )
    LOCAL i, iLen := Len( aItems )
@@ -609,13 +663,21 @@ STATIC PROCEDURE ReleaseTree( aItems )
    RETURN
 
 STATIC PROCEDURE MarkCheckTree( oItem, state )
-   LOCAL i, iLen := Len( oItem:aitems  )
+   LOCAL i, iLen := Len( oItem:aitems  ), oParent
 
    FOR i := 1 TO iLen
       TreeSetItem( oItem:oTree:handle, oItem:aitems[ i ]:handle, TREE_SETITEM_CHECK, state )
-      MarkCheckTree( oItem:aItems[ i ], state )
+      MarkCheckTree( oItem:aItems[ i ], state )   
    NEXT
-   RETURN
+   IF state = 1
+      oParent = oItem:oParent
+      DO WHILE oParent != Nil
+         TreeSetItem( oItem:oTree:handle, oParent:handle, TREE_SETITEM_CHECK, state )
+         oParent := oParent:oParent
+      ENDDO
+   ENDIF
+   RETURN 
+
 
 STATIC PROCEDURE DragDropTree( oDrag, oItem, oDrop )
    LOCAL i, iLen := Len( oDrag:aitems  ), hitemNew

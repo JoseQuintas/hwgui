@@ -113,7 +113,7 @@ METHOD Init() CLASS HCheckButton
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HCheckButton
-   LOCAL oParent := ::oParent
+   LOCAL oCtrl
    
    IF ::bOther != Nil
       IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
@@ -148,7 +148,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCheckButton
       IF wParam = VK_RETURN .OR. wParam = VK_TAB
 	        RETURN -1
       ELSEIF wParam = VK_ESCAPE  .AND. ;
-            ( oParent := ::GetParentForm:FindControl( IDCANCEL ) ) != Nil .AND. ! oParent:IsEnabled() 
+            ( oCtrl := ::GetParentForm:FindControl( IDCANCEL ) ) != Nil .AND. ! oCtrl:IsEnabled() 
          RETURN DLGC_WANTMESSAGE  
       ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND.wParam != VK_ESCAPE    
       ELSEIF GETDLGMESSAGE( lParam ) = WM_CHAR .OR.wParam = VK_ESCAPE .OR.;
@@ -170,11 +170,10 @@ METHOD SetValue( lValue ) CLASS HCheckButton
 
    RETURN Nil
    
-METHOD Value( Value ) CLASS HCheckButton
-   LOCAL vari
+METHOD Value( lValue ) CLASS HCheckButton
 
-   IF Value != Nil
-       ::SetValue( Value )
+   IF lValue != Nil
+       ::SetValue( lValue )
    ENDIF
 	 RETURN ::lValue
    

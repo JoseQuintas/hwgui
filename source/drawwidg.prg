@@ -23,9 +23,9 @@ CLASS VAR aFonts   INIT { }
    DATA nCounter   INIT 1
 
    METHOD Add( fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut, nHandle )
-   METHOD Select( oFont )
+   METHOD Select( oFont, nCharSet )
    METHOD Release()
-   METHOD SetFontStyle( lBold, nChar ,lItalic, lUnder, lStrike )
+   METHOD SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight ) CLASS HFont
 
 ENDCLASS
 
@@ -87,7 +87,7 @@ METHOD Select( oFont, nCharSet  ) CLASS HFont
 
    RETURN ::Add( af[ 2 ], af[ 3 ], af[ 4 ], af[ 5 ], IIF( Empty( nCharSet ), af[ 6 ], nCharSet ), af[ 7 ], af[ 8 ], af[ 9 ], af[ 1 ] )
 
-METHOD SetFontStyle( lBold, nCharSet ,lItalic, lUnder, lStrike, nHeight ) CLASS HFont
+METHOD SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight ) CLASS HFont
    LOCAL  weight, Italic, Underline, StrikeOut
    
    IF lBold != Nil

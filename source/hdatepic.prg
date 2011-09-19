@@ -14,7 +14,8 @@
 
 #define DTN_DATETIMECHANGE    - 759
 #define DTN_CLOSEUP           - 753
-#define DTM_GETMONTHCAL       4104   // 0x1008
+#define DTM_GETMONTHCAL        4104   // 0x1008
+#define DTM_CLOSEMONTHCAL      4109 
 #define NM_KILLFOCUS          - 8
 #define NM_SETFOCUS           - 7
 

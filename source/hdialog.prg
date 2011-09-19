@@ -562,7 +562,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       IF ! oDlg:lSuspendMsgsHandling
          Eval( oDlg:aEvents[ i, 3 ], oDlg, iParLow )
       ENDIF
-   ELSEIF iParHigh == 0 .AND. ; //.AND. ! oDlg:lSuspendMsgsHandling .AND. ( ;
+   ELSEIF iParHigh == 0 .AND. ( ; //.AND. ! oDlg:lSuspendMsgsHandling .AND. ( ;
         ( iParLow == IDOK .AND. oDlg:FindControl( IDOK ) != nil ) .OR. ;
           iParLow == IDCANCEL )
       IF iParLow == IDOK

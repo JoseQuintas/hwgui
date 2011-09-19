@@ -676,7 +676,7 @@ CLASS VAR winclass   INIT "STATIC"
    // METHOD SetValue( value ) INLINE SetDlgItemText( ::oParent:handle, ::id, ;
    //
    METHOD SetText( value ) INLINE ::SetValue( value )
-   METHOD SetValue( value )
+   METHOD SetValue( cValue )
    METHOD Auto_Size( cValue )  HIDDEN
    METHOD Init()
    METHOD PAINT( lpDis )
@@ -1103,7 +1103,7 @@ METHOD Notify( lParam ) CLASS HButton
 */
 
 METHOD NoteCaption( cNote )  CLASS HButton         //*
-#DEFINE BCM_SETNOTE  0x00001609
+//#DEFINE BCM_SETNOTE  0x00001609
    IF cNote != Nil     
       IF Hwg_BitOr( ::Style, BS_COMMANDLINK ) > 0
          SENDMESSAGE( ::Handle, BCM_SETNOTE, 0, ANSITOUNICODE( cNote ) )
@@ -1334,7 +1334,7 @@ METHOD INIT() CLASS HButtonEx
 METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
 
    LOCAL pt := {, }, rectButton, acoor
-   LOCAL pos, nID
+   LOCAL pos, nID, oParent
 
    IF msg == WM_THEMECHANGED
       IF ::Themed
@@ -1595,8 +1595,8 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
    LOCAL uState
    LOCAL captionRectHeight
    LOCAL centerRectHeight
-   LOCAL captionRectWidth
-   LOCAL centerRectWidth
+   //LOCAL captionRectWidth
+   //LOCAL centerRectWidth
    LOCAL uAlign, uStyleTmp
    LOCAL aTxtSize := IIf( ! Empty( ::caption ), TxtRect( ::caption, Self ), { 0, 0 } )
    LOCAL aBmpSize := IIf( ! Empty( ::hbitmap ), GetBitmapSize( ::hbitmap ), { 0, 0 } )
@@ -1805,8 +1805,10 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
       ELSE
           uAlign += DT_CENTER
       ENDIF
-
+      
+      //captionRectWidth  := captionRect[ 3 ] - captionRect[ 1 ]
       captionRectHeight := captionRect[ 4 ] - captionRect[ 2 ]
+      //centerRectWidth   := centerRect[ 3 ] - centerRect[ 1 ]
       centerRectHeight  := centerRect[ 4 ] - centerRect[ 2 ]
 //ok      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
 //      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
@@ -2060,7 +2062,7 @@ METHOD PAINT( lpdis ) CLASS HGroup
    LOCAL ppnOldPen, pnFrmDark,	pnFrmLight, iUpDist
    LOCAL szText, aSize, dwStyle
    LOCAL rc  := copyrect( { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ] - 1, drawInfo[ 7 ] - 1 } )
-   LOCAL rcText := { 0, 0, 0, 0 }
+   LOCAL rcText 
 
 	 // determine text length
 	 szText :=  ::Title

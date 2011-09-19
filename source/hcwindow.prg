@@ -1007,11 +1007,11 @@ FUNCTION GetBackColorParent( oCtrl, lSelf, lTransparent )
              *-brush := HBrush():Add( bColor )
           ENDIF
        ENDIF
-    ELSEIF oCtrl:bColor != Nil
+   ELSEIF oCtrl:bColor != Nil
        *-brush := oCtrl:brush
        bColor := oCtrl:bColor
     *-ELSEIF oCtrl:brush = Nil .AND. lTransparent
     *-   brush := HBrush():Add( bColor )
-    ENDIF
-    brush := HBrush():Add( bColor ) 
-    Return brush
+   ENDIF
+   brush := HBrush():Add( bColor ) 
+   Return brush

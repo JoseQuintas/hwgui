@@ -395,7 +395,7 @@ METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
    ENDIF
 
    nlen := Len( oCtrl:aControls )
-   FOR i = 1 TO nlen
+   FOR i = nLen TO 1 STEP -1
       IF __ObjHasMsg( oCtrl:aControls[ i ], "ANCHOR" ) .AND. oCtrl:aControls[ i ]:anchor > 0
          x1 := oCtrl:aControls[ i ]:nWidth
          y1 := oCtrl:aControls[ i ]:nHeight

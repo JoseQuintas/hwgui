@@ -154,7 +154,7 @@ CLASS HToolBar INHERIT HControl
    METHOD ShowButton( idButton ) INLINE SENDMESSAGE( ::handle, TB_HIDEBUTTON, INT( idButton ), MAKELONG( 0, 0 ) )
    METHOD HideButton( idButton ) INLINE SENDMESSAGE( ::handle, TB_HIDEBUTTON, INT( idButton ), MAKELONG( 1, 0 ) )
    METHOD REFRESH()
-   METHOD RESIZE( w1, w9 ) 
+   METHOD Resize( xIncrSize )
 
 ENDCLASS
 
@@ -507,13 +507,13 @@ METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu, cName) CLASS hTo
    Endif
    RETURN oButton
 
-METHOD RESIZE( w1, w9 ) CLASS hToolBar
+METHOD Resize( xIncrSize ) CLASS hToolBar
    LOCAL nDrop := 0
    
    IF ::Anchor = 0
       RETURN Nil
    ENDIF
-   ::BtnWidth := Round( (::BtnWidth ) * ( w1 / w9 ) , 0) - 2
+   ::BtnWidth := Round( (::BtnWidth ) * xIncrSize , 0) - 2
     
    SENDMESSAGE( ::Handle, TB_SETBUTTONWIDTH, MAKELPARAM( ::BtnWidth - 1, ::BtnWidth + 1 ) ) 
      

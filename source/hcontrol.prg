@@ -513,8 +513,7 @@ CLASS VAR winclass   INIT "msctls_statusbar32"
    METHOD GetTextPanel( nPart )
    METHOD SetIconPanel( nPart, cIcon, nWidth, nHeight )
    METHOD StatusHeight( nHeight )
-   METHOD Resize()
-
+   METHOD Resize( xIncrSize )
 
 ENDCLASS
 

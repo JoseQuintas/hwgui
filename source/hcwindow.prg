@@ -812,13 +812,14 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       oWnd:ResetScrollbars()
       oWnd:SetupScrollbars()
    ENDIF
-   IF !EMPTY( oWnd:Type) .AND. oWnd:Type = WND_MDI  .AND. !EMPTY( oWnd:Screen )
-      oWnd:Anchor( oWnd:Screen, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
+   IF  wParam != 1 .AND. nWindowState != 2 
+      IF !EMPTY( oWnd:Type) .AND. oWnd:Type = WND_MDI  .AND. !EMPTY( oWnd:Screen )
+         oWnd:Anchor( oWnd:Screen, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
+      ENDIF
+      IF ! EMPTY( oWnd:Type)
+         oWnd:Anchor( oWnd, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
+      ENDIF
    ENDIF
-   IF ! EMPTY( oWnd:Type)
-      oWnd:Anchor( oWnd, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
-   ENDIF
-
    FOR EACH oItem IN aControls
       IF oItem:bSize != NIL
          Eval( oItem:bSize, oItem, LOWORD( lParam ), HIWORD( lParam ) )
@@ -880,7 +881,7 @@ LOCAL oParent, nCtrl,nPos
 
 FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
    Local oWin := oCtrl:GetParentForm(), lEscape
-   Local iParHigh := IIF( nKey = VK_RETURN, IDOK, IDCANCEL ), i
+   Local iParHigh := IIF( nKey = VK_RETURN, IDOK, IDCANCEL )
    LOCAL oCtrlFocu := oCtrl
 
    lForce := ! Empty( lForce )

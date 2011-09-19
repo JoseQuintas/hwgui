@@ -2007,12 +2007,12 @@ HB_FUNC( HWG_SETWINDOWTHEME)
    //LPCWSTR pszSubAppName = hb_parc(2);
    //LPCWSTR pszSubIdList = hb_parc(3);
    int ienable = hb_parni(2);
-   HRESULT hres ;
+   //HRESULT hres ;
    //BOOL ret = FALSE;
    OSVERSIONINFO ovi = {0};
    ovi.dwOSVersionInfoSize = sizeof ovi;
    GetVersionEx(&ovi);
-   if (ovi.dwMajorVersion >= 5 && ovi.dwMinorVersion==1 )
+   if (ovi.dwMajorVersion) >= 5 && ovi.dwMinorVersion==1 )
       //Windows XP detected
       if ( ienable == 0 )
          hb_SetWindowTheme( hwnd, L" ", L" " ) ; // pszSubAppName,L pszSubIdList) ;
@@ -2028,7 +2028,7 @@ HB_FUNC( HWG_GETWINDOWTHEME )
    OSVERSIONINFO ovi = {0};
    ovi.dwOSVersionInfoSize = sizeof ovi;
    GetVersionEx(&ovi);
-   if (ovi.dwMajorVersion >= 5 && ovi.dwMinorVersion==1 )
+   if (ovi.dwMajorVersion) >= 5 && ovi.dwMinorVersion==1 )
    {
      //Windows XP detected
       HTHEME hTheme; // = (HTHEME) hb_parptr(1) ;

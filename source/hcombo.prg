@@ -75,7 +75,7 @@ CLASS HComboBox INHERIT HControl
    METHOD SetValue( xItem )
    METHOD GetValue()
    METHOD AddItem( cItem, cItemBound )
-   METHOD DeleteItem( nIndex )
+   METHOD DeleteItem( xIndex )
    METHOD Valid( )
    METHOD When( )
    METHOD onSelect()
@@ -323,7 +323,8 @@ METHOD INIT() CLASS HComboBox
 RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
-
+   LOCAL oCtrl
+   
    IF ::bOther != Nil
       IF Eval( ::bOther, Self, msg, wParam, lParam ) != - 1
          RETURN 0
@@ -403,7 +404,7 @@ METHOD Requery() CLASS HComboBox
 RETURN Nil
 
 METHOD Refresh() CLASS HComboBox
-   LOCAL vari, variget
+   LOCAL vari
 
    IF ::bSetGet != Nil
       vari := Eval( ::bSetGet,, Self )

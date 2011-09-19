@@ -215,6 +215,9 @@
 #define CB_GETITEMHEIGHT            0x0154
 #define CB_GETDROPPEDSTATE          343
 #define CB_FINDSTRINGEXACT          344
+#define CB_SETDROPPEDWIDTH          0x0160
+#define CB_SETCUEBANNER             5891 // 0x1703
+
 
 /* Brush Styles */
 #define BS_SOLID            0
@@ -1414,7 +1417,6 @@
 
 #define _SRCCOPY                0x00CC0020 /* dest = source                   */
 #define _SRCPAINT               0x00EE0086 /* dest = source OR dest           */
-#define CB_SETDROPPEDWIDTH      0x0160
 
 
 #define DLGC_WANTARROWS      0x0001      /* Control wants arrow keys         */

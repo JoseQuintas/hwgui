@@ -316,7 +316,8 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMa
                 0,0, ::nWidth * 2, ::nheight * 2, -1,,,,,,,,,,,::oBmp,,,,,)
       ::Screen:Activate( .T., .T. )
       // END
-
+      oWndClient:handle := handle
+      
       IF ::bInit != Nil
          lres := Eval( ::bInit, Self )
          IF ValType( lres ) = "L" .AND. ! lres
@@ -680,7 +681,7 @@ METHOD Activate( lShow, lMaximized, lMinimized,lCentered, bActivate, lModal ) CL
 
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HChildWindow
-   LOCAL i
+   LOCAL i, oCtrl
 
    IF msg == WM_DESTROY
       RETURN onDestroy( Self )

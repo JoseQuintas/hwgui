@@ -387,7 +387,7 @@ METHOD Activate() CLASS HTree
    RETURN Nil
 
 
-METHOD onEvent( msg, wParam, lParam )
+METHOD onEvent( msg, wParam, lParam ) CLASS HTree
    Local nEval, hitemNew, htiParent, htiPrev, htiNext
 
    IF ::bOther != Nil

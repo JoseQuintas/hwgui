@@ -8,6 +8,26 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-09-20 20:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/window.C
+     + static void s_ClearKeyboard( void )
+     + HB_FUNC( CLEARKEYBOARD )
+       The WM_KEYFIRST and WM_KEYLAST constants can be used as filter values to retrieve all keyboard messages,
+          the WM_MOUSEFIRST and WM_MOUSELAST constants can be used to retrieve all mouse messages. 
+   * source/hradio.prg	  
+     * CLASS HRadioGroup
+	   + DATA lEnabled  INIT .T.
+	     accepted STYLE WS_DISABLED in radiogroup in the creation of control disabling all radiobuttons
+	   ! changed DATA value to DATA nValue
+	   + METHOD Value ( nValue ) SETGET
+     * CLASS HRadioButton	   
+	   * METHOD onevent
+       * METHOD onGotFocus
+       * METHOD onClick
+       * METHOD Valid
+       * METHOD When()
+       ! fixed navegation in DIALOG and MDICHILD
+
 2011-09-20 09:20 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
    * utils\designer\designer.iml
      * some cleanup

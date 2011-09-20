@@ -55,6 +55,17 @@ static void s_doEvents( void )
    };
 }
 
+static void s_ClearKeyboard( void )
+{
+   MSG msg;
+
+   // For keyboard 
+   while( PeekMessage( &msg, ( HWND ) NULL, WM_KEYFIRST, WM_KEYLAST, PM_REMOVE ) ) ;
+   // For Mouse
+   while( PeekMessage( &msg, ( HWND ) NULL, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE ) ) ;
+}
+
+
 /* Consume all queued events, useful to update all the controls... I split in 2 parts because I feel
  * that s_doEvents should be called internally by some other functions...
  */
@@ -1430,4 +1441,9 @@ HB_FUNC( ANSITOUNICODE )
 #endif
    HB_RETSTRLEN( lpText, 1024 );   
    hb_strfree( hText );
+}
+
+HB_FUNC( CLEARKEYBOARD )
+{
+   s_ClearKeyboard() ;
 }

@@ -30,6 +30,7 @@
 
 #define WM_NOTIFY                       78   // 0x004E
 #define WM_HELP                         83
+#define WM_NOTIFYFORMAT                 85
 #define WM_SETICON                      128    // 0x0080
 
 #define WM_NCCREATE                     129

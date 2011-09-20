@@ -8,223 +8,227 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-09-20 09:20 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
+   * utils\designer\designer.iml
+     * some cleanup
+
 2011-09-18 11:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htree.prg
      * CLASS HTreeNode
        + METHOD GetLevel( h )
-	     return level of node
-     * CLASS HTree		 
-	   + METHOD SearchString( cText, iNivel, oNode, inodo )
-	     search text in tree and return node
+         return level of node
+     * CLASS HTree
+       + METHOD SearchString( cText, iNivel, oNode, inodo )
+         search text in tree and return node
        + METHOD Selecteds( oItem, aSels )
-	     return selecteds in checkmark
-	   * PROCEDURE MarkCheckTree	 
-	     ! fixed recursive state
+         return selecteds in checkmark
+       * PROCEDURE MarkCheckTree
+         ! fixed recursive state
 
 
 
-2011-09-19 08:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>     
+2011-09-19 08:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/control.c
      + HB_FUNC( SETRANGEUPDOWN )
    * source/draw.c
-	 + HB_FUNC( GETSYSCOLORBRUSH )
-   * source/windows.ch   		 	    
-	 + CB_SETCUEBANNER
+     + HB_FUNC( GETSYSCOLORBRUSH )
+   * source/windows.ch
+     + CB_SETCUEBANNER
 
 2011-09-18 23:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/control.c
      + HB_FUNC( TOOLBAR_SETBUTTONINFO )
-   * source/Guilib.ch	 
-	 * #xcommand @ <x>,<y> GET CHECKBOX 
-	   + [ VALID <bLfocus> ]        ;
-	   + [ ON INIT <bInit> ]        ;
-       + [ ON SIZE <bSize> ]        ;             
-   * source/hcheck.prg	 
+   * source/Guilib.ch
+     * #xcommand @ <x>,<y> GET CHECKBOX
+       + [ VALID <bLfocus> ]        ;
+       + [ ON INIT <bInit> ]        ;
+       + [ ON SIZE <bSize> ]        ;
+   * source/hcheck.prg
      * changed DATA Value to DATA lValue
-	 + DATA bClick
-	 + METHOD Value ( lValue ) SETGET
-	 * METHOD NEW()
-	   + parameter bLFocus
-	 * METHOD onevent
-       ! minor fix in ESCAPE	 
+     + DATA bClick
+     + METHOD Value ( lValue ) SETGET
+     * METHOD NEW()
+       + parameter bLFocus
+     * METHOD onevent
+       ! minor fix in ESCAPE
    * source/hcombo.prg
      + DATA ldropshow INIT .F.
-	 + METHOD onDropDown( ) 
-	 + METHOD SetCueBanner( cText, lShowFoco ) 
-	   Sets the cue banner text that is displayed for the edit control of a combo box.
-	 * METHOD New and Redefine
-	   ! add Event CBN_DROPDOWN
+     + METHOD onDropDown( )
+     + METHOD SetCueBanner( cText, lShowFoco )
+       Sets the cue banner text that is displayed for the edit control of a combo box.
+     * METHOD New and Redefine
+       ! add Event CBN_DROPDOWN
        ! add Event CBN_CLOSEUP
      * METHOD onEvent()
-       ! fixed ESCAPE key	 
-	 * METHOD Refresh()
-	 * METHOD SetValue()
-     * METHOD GetValue()	   
-	 * METHOD GetValueBound
+       ! fixed ESCAPE key
+     * METHOD Refresh()
+     * METHOD SetValue()
+     * METHOD GetValue()
+     * METHOD GetValueBound
      * METHOD DeleteItem
-	 * METHOD AddItem
-	   ! fixed valuebound
-	 * METHOD RowSource  
-	 * METHOD Populate
-	   ! fix to xHarbour and Harbour
-   * source/hdatepic.prg	   
+     * METHOD AddItem
+       ! fixed valuebound
+     * METHOD RowSource
+     * METHOD Populate
+       ! fix to xHarbour and Harbour
+   * source/hdatepic.prg
      * SetValue
      * SetValue
      * METHOD Refresh()
      * METHOD When( )
      * METHOD Valid( )
-	   ! minor fix
-   * source/hedit.prg	   	   
-     + METHOD SetCueBanner ( cText, lshowFoco ) 
-	   Sets the textual cue, or tip, that is displayed by the edit control to prompt the user for information.
-	   TRUE if the cue banner should show even when the edit control has focus; otherwise, FALSE.
-	   FALSE is the default behavior—the cue banner disappears when the user clicks in the control.
-	 * METHOD New
-       ! defines the number of characters based on the size of control when there is no picture and no maxlenght	 
-	 * METHOD onEvent
+       ! minor fix
+   * source/hedit.prg
+     + METHOD SetCueBanner ( cText, lshowFoco )
+       Sets the textual cue, or tip, that is displayed by the edit control to prompt the user for information.
+       TRUE if the cue banner should show even when the edit control has focus; otherwise, FALSE.
+       FALSE is the default behavior—the cue banner disappears when the user clicks in the control.
+     * METHOD New
+       ! defines the number of characters based on the size of control when there is no picture and no maxlenght
+     * METHOD onEvent
        ! fix in MSG = WM_CHAR and wParam == VK_RETURN and wParam == VK_ESCAPE
-	   ! fix in MSG = WM_KEYDOWN and  fix in picture = "K" in focus
+       ! fix in MSG = WM_KEYDOWN and  fix in picture = "K" in focus
        ! fix in msg == WM_KEYDOWN when no bsetget
-	   ! fix in msg == WM_GETDLGCODE and wParam = VK_ESCAPE
+       ! fix in msg == WM_GETDLGCODE and wParam = VK_ESCAPE
      * METHOD Refresh()
-	   ! minor fix
-	 * METHOD onChange( )   
-	   ! fixed
-	 * FUNCTION CheckFocus
-	   ! fix the loss of focus due to the activation of the new form from the LostFocus
-   * source/hhyper.prg	   
-	 METHOD INIT() 
-	   ! fix and adjusted length of the text based on the Font
-   * source/hupdown.prg	   	   
+       ! minor fix
+     * METHOD onChange( )
+       ! fixed
+     * FUNCTION CheckFocus
+       ! fix the loss of focus due to the activation of the new form from the LostFocus
+   * source/hhyper.prg
+     METHOD INIT()
+       ! fix and adjusted length of the text based on the Font
+   * source/hupdown.prg
      + DATA bColorOld   HIDDEN
-	   ! fixed text color
-	 + METHOD SetRange( nLower, nUpper ) 
-	    attrib new rangers to up and down values
-	 * METHOD Move
-	   ! fixed
-	 * METHOD Notify
-	   ! minor fix
-   * source/htool.prg	 
-     * CLASS HToolButton   
-	   + DATA title
-	   + METHOD Caption( cText ) SETGET
-	     ! changed caption of button 
-     * CLASS HTool		 
-	   + nDrop
-	   + METHOD RESIZE( w1, w9 )
-	   
+       ! fixed text color
+     + METHOD SetRange( nLower, nUpper )
+        attrib new rangers to up and down values
+     * METHOD Move
+       ! fixed
+     * METHOD Notify
+       ! minor fix
+   * source/htool.prg
+     * CLASS HToolButton
+       + DATA title
+       + METHOD Caption( cText ) SETGET
+         ! changed caption of button
+     * CLASS HTool
+       + nDrop
+       + METHOD RESIZE( w1, w9 )
+
 2011-09-18 20:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/drawwidg.prg
-     * CLASS HFont 
+     * CLASS HFont
        + METHOD SetFontStyle( lBold, nCharSet ,lItalic, lUnder, lStrike, nHeight )
-       * METHOD Select( oFont, nCharSet  ) 
-	     ! add parameter nCharSet
+       * METHOD Select( oFont, nCharSet  )
+         ! add parameter nCharSet
    * source/hcontrol.prg
      * METHOD INIT()
-	   ! minor fix
-	   ! add ::lnoThemes condition to removed Themed of the object
-     * METHOD Enable() 
-	   ! fixed enabled when the next control is enabled by the previous control if he was disabled
-	 * METHOD onAnchor
-       ! add anchor to status bar parts and toolbar buttons	 
+       ! minor fix
+       ! add ::lnoThemes condition to removed Themed of the object
+     * METHOD Enable()
+       ! fixed enabled when the next control is enabled by the previous control if he was disabled
+     * METHOD onAnchor
+       ! add anchor to status bar parts and toolbar buttons
      * CLASS HStatus
-	   + DATA nStatusHeight
-       + METHOD StatusHeight( nHeight ) changed height 
+       + DATA nStatusHeight
+       + METHOD StatusHeight( nHeight ) changed height
        + METHOD Resize() resize parts when Anchor is triggered
      * CLASS HStatic
-	   + DATA hBrushDefault  HIDDEN
-	   * METHOD SetValue()
-	     ! minor fix and optimized
-       * METHOD Paint		 
-	     ! minor fix
+       + DATA hBrushDefault  HIDDEN
+       * METHOD SetValue()
+         ! minor fix and optimized
+       * METHOD Paint
+         ! minor fix
      * CLASS HButton
        + DATA cNote  HIDDEN
-       + DATA lFlat INIT .F.  in BUTTONEX enable mode Flat 
-	   + METHOD onLostFocus()  
+       + DATA lFlat INIT .F.  in BUTTONEX enable mode Flat
+       + METHOD onLostFocus()
        + METHOD NoteCaption( cNote ) only working in Windows 7
      * CLASS HButtonEX
-	   * METHOD SetText
-	     ! minor fix 
+       * METHOD SetText
+         ! minor fix
        * METHOD onEvent
-	     ! fixed ESCAPE when IDCANCEL is disabled
+         ! fixed ESCAPE when IDCANCEL is disabled
        * METHOD Paint
-	     ! add effect flat
-		 ! fixed multiline draw 
-	* CLASS HGroup 
-	  * METHOD Paint
-	    ! minor fix
-   * source/window.c   
-	 + HB_FUNC( ANSITOUNICODE )
-	   ! caracters converts ANSI to UNICODE
-	     used to show in Caption with Buttonex style BS_COMMANDLINK
-   * source/themed.c   		 
-     + HB_FUNC( HWG_SETWINDOWTHEME)	
-	   ! add or remove themes of individual controls
-	     HWG_SETWINDOWTHEME( octrl:handle, 0 ) remove themes
-	     HWG_SETWINDOWTHEME( oCtrl:handle, 1 ) add themes
-     + HB_FUNC( HWG_GETWINDOWTHEME )	 
-       ! return Themes of objetcts	
-   * source/windows.ch   		 	   
-	 + #define BS_SPLITBUTTON   
-     + #define BS_COMMANDLINK	  
-	 + #DEFINE BCM_SETNOTE         
-	
+         ! add effect flat
+         ! fixed multiline draw
+    * CLASS HGroup
+      * METHOD Paint
+        ! minor fix
+   * source/window.c
+     + HB_FUNC( ANSITOUNICODE )
+       ! caracters converts ANSI to UNICODE
+         used to show in Caption with Buttonex style BS_COMMANDLINK
+   * source/themed.c
+     + HB_FUNC( HWG_SETWINDOWTHEME)
+       ! add or remove themes of individual controls
+         HWG_SETWINDOWTHEME( octrl:handle, 0 ) remove themes
+         HWG_SETWINDOWTHEME( oCtrl:handle, 1 ) add themes
+     + HB_FUNC( HWG_GETWINDOWTHEME )
+       ! return Themes of objetcts
+   * source/windows.ch
+     + #define BS_SPLITBUTTON
+     + #define BS_COMMANDLINK
+     + #DEFINE BCM_SETNOTE
+
 
 2011-09-18 15:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/guimain.prg
     * FUNCTION MsgGet
-	  ! add Anchor to controls in Dialog also to be resized if the dialog is
-	  ! moved KEYB_EVENT to onActivate event not to fail in creating the DIALOG
+      ! add Anchor to controls in Dialog also to be resized if the dialog is
+      ! moved KEYB_EVENT to onActivate event not to fail in creating the DIALOG
   * source/hcwindow.prg
-    * METHOD Show( nShow )     
-	  ! add parameter nShow that defines how the event occurs
-	* METHOD Refresh( lAll, oCtrl )
-	  ! fixed and optimized the event in bsetget in TABs avoiding recursion
+    * METHOD Show( nShow )
+      ! add parameter nShow that defines how the event occurs
+    * METHOD Refresh( lAll, oCtrl )
+      ! fixed and optimized the event in bsetget in TABs avoiding recursion
     * METHOD SetTextClass( x )
-	  ! minor fix
-    * FUNCTION onCtlColor	  
-	  ! minor fix
-    * FUNCTION onSize	   
-	  ! fixed triggered Anchor in MDI CHILDS  when the Main window is minimized and then restored
-    * FUNCTION ProcOkCancel	  
-	  fixed ESCAPE when IDCANCEL ID is disabled
-    + FUNCTION ADDMETHOD	   
-	  add METHOD in Class
-    * FUNCTION GetBackColorParent	  
-	  ! minor fix and optimized
+      ! minor fix
+    * FUNCTION onCtlColor
+      ! minor fix
+    * FUNCTION onSize
+      ! fixed triggered Anchor in MDI CHILDS  when the Main window is minimized and then restored
+    * FUNCTION ProcOkCancel
+      fixed ESCAPE when IDCANCEL ID is disabled
+    + FUNCTION ADDMETHOD
+      add METHOD in Class
+    * FUNCTION GetBackColorParent
+      ! minor fix and optimized
   * source/hdialog.prg
     + DATA hAccel only compatible with window Main and and avoid the occurrence and run-time error
     + DATA WindowState changed nInitShow  assigns the window state in initModalDlg
-	* method onEvent
-	  ! add msg = WM_UPDATEUISTATE to prevent the screen flicker
+    * method onEvent
+      ! add msg = WM_UPDATEUISTATE to prevent the screen flicker
       ! add msg = WM_NCPAINT  to triggered onActivate in MODAL DIALOG only visible
-     * METHOD FindDialog( hWnd, lAll ) 
-	   ! add parameter lAll to search modaldialogs
-     * FUNCTION InitModalDlg	   
-	   ! minor fix and changed bOnActivate event MODAIS DIALOGS removed from InitModalDlg to onActivate Function
-	     to be triggered when the dialog is visible
-	 * FUNCTION DlgCommand
-       ! minor fix and optimization 
-	     enable the EXIT DIALOG with keypress ESCAPE when there is dialog with esc IDCANCEL, but being disabled
-     * FUNCTION onActivate	   
-	   ! add event bonActivate in MODAIS DIALOGS
+     * METHOD FindDialog( hWnd, lAll )
+       ! add parameter lAll to search modaldialogs
+     * FUNCTION InitModalDlg
+       ! minor fix and changed bOnActivate event MODAIS DIALOGS removed from InitModalDlg to onActivate Function
+         to be triggered when the dialog is visible
+     * FUNCTION DlgCommand
+       ! minor fix and optimization
+         enable the EXIT DIALOG with keypress ESCAPE when there is dialog with esc IDCANCEL, but being disabled
+     * FUNCTION onActivate
+       ! add event bonActivate in MODAIS DIALOGS
   * source/hwindow.prg
     + DATA WindowState changed nInitShow assigns the window state
-	+ METHOD GetMdiMain()
-	+ METHOD isMaximized() returns if the window is maximized
+    + METHOD GetMdiMain()
+    + METHOD isMaximized() returns if the window is maximized
     + METHOD isMinimized() returns if the window is minimized
     + METHOD isNormal() returns if the window is normal
-	* METHOD Activate CLASS HMDIChildWindow
-	  ! synchronization state of the MDI Child windows with the MDI Main window
+    * METHOD Activate CLASS HMDIChildWindow
+      ! synchronization state of the MDI Child windows with the MDI Main window
     * FUNCTION onCommand
-	  ! fix in event bMdiMenu
-	* FUNCTION onMdiCreate  
+      ! fix in event bMdiMenu
+    * FUNCTION onMdiCreate
       ! minor fix to adjust the window creation with event noanchor
     * FUNCTION onMdiCommand
-	  ! fixed the saving Focu of the control in events in MDI CHILD
-	* FUNCTION onMdiNcActivate
-	  ! added bgetfocus event to the windows maximized MDI CHILD who was not fired
-	  
+      ! fixed the saving Focu of the control in events in MDI CHILD
+    * FUNCTION onMdiNcActivate
+      ! added bgetfocus event to the windows maximized MDI CHILD who was not fired
+
 2011-08-05 15:13 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/gtk/menu_c.c
   * hwgui/gtk/control.c
@@ -271,7 +275,7 @@
 2011-04-11 10:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/window.c
     + add parameter INT nCmdShow in HB_FUNC( SHOWWINDOW )
-	   Controls how the window is to be shown.
+       Controls how the window is to be shown.
 
 2011-04-02 09:28 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/gtk/build.sh
@@ -592,12 +596,12 @@
 
 2011-03-31 09:01 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/dialog.c
-    ! fixed s_DlgProc and s_ModalDlgProc to correct process return values of follow messages WM_CTLCOLORSTATIC, 
-    WM_CTLCOLOREDIT, WM_CTLCOLORBTN, WM_CTLCOLORLISTBOX, WM_CTLCOLORDLG when hwgui is compiled with -DHWG_USE_POINTER_ITEM 
+    ! fixed s_DlgProc and s_ModalDlgProc to correct process return values of follow messages WM_CTLCOLORSTATIC,
+    WM_CTLCOLOREDIT, WM_CTLCOLORBTN, WM_CTLCOLORLISTBOX, WM_CTLCOLORDLG when hwgui is compiled with -DHWG_USE_POINTER_ITEM
 
 2011-03-30 11:01 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * makefile.bc
-    ! added back -DHWG_USE_POINTER_ITEM 
+    ! added back -DHWG_USE_POINTER_ITEM
 
 2011-03-30 11:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/htool.prg
@@ -674,9 +678,9 @@
 2010-12-15 16:20 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/htab.prg
     ! fixed ShowDisablePage() was comparing an pointer to numeric
-    ! To developer, the LPARAM parameter on onevent method passed as 
+    ! To developer, the LPARAM parameter on onevent method passed as
       parameter to other function/method, should use PtrToulong( param) before comparing numeric values
-      
+
 2010-12-04 14:35 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/window.c
     + added new function HWG_SETUTF8() which sets UTF8 as base CP in
@@ -796,7 +800,7 @@
   * source\hriched.prg
     + DATA hdcPrinter
     + METHOD OpenFile( cFile )
-    + METHOD Print()   
+    + METHOD Print()
       modifications by Srdjan Dragojlovic
   * source\hwindow.prg
     + DATA lGetSkiponEsc same behavior DIALOG in MDICHILD
@@ -809,7 +813,7 @@
   * source\wprint.c
     + HB_FUNC( HWG_ABORTDOC )
       modifications by Srdjan Dragojlovic
-      
+
 2010-10-31 10:10 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hcwindow.prg
   * source/hwindow.prg
@@ -817,13 +821,13 @@
 
 
 2010-10-31 08:58 UTC+0100 Maurizio la Cecilia <m.lacecilia at gmail.com>
-   
+
    * hwgui.hbp
-     * deleted wrong ref to xhb.hbc 
-   * source/printdos.prg  
+     * deleted wrong ref to xhb.hbc
+   * source/printdos.prg
      * reworked the code as was left in a pending edit mode and wrongly
        committed
-   Thanks to Itamar Lins who reported quickly this oversights.    
+   Thanks to Itamar Lins who reported quickly this oversights.
 
 2010-10-30 18:43 UTC+0100 Maurizio la Cecilia <m.lacecilia at gmail.com>
   * source\hcontrol.prg
@@ -881,36 +885,36 @@
     * raised compile flag from w to w3
       PLEASE: i ask for no more commit any source don't observing this
       flag, as the code was very buggy and full of garbage.
-  
+
   To hwGUI developers: as last 2.17 version was released long time ago,
   i'm asking for your opinion about the state of the lib, mainly if it's
   stable enough to release a new 2.18 version.
   For my simple production applications appears to be quite stable and
   functional.
   Please, send comments on developers list.
-                    
+
 2010-10-29 14:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcontrol.prg
-    + #define OFS_X	10 
+    + #define OFS_X 10
     * CLASS HGROUP
       + DATA oGroup
-      + DATA oBrush 
-      + DATA lTransparent  
-      + METHOD Paint()  
-      ! method Init changed style when ::backStyle = TRANSPARENT .OR. ::bColor != Nil 
+      + DATA oBrush
+      + DATA lTransparent
+      + METHOD Paint()
+      ! method Init changed style when ::backStyle = TRANSPARENT .OR. ::bColor != Nil
         Since groupboxes never get WM_DRAWITEM even if they are BS_OWNERDRAW,
         we must handle our painting in OnPaint.
-      ! oGroup is attrib object RADIOGROUP 
+      ! oGroup is attrib object RADIOGROUP
   * source\hradio.prg
     ! fix code in Method NewRg to suport HGROUP class
 
 2010-10-29 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hdialog.prg
    ! fixed ::bOnActivate value if pass in activate
-   + DATA lGetSkiponEsc  INIT .F.  
+   + DATA lGetSkiponEsc  INIT .F.
       pressing ESC back focus IN getlist, if first DEFAULT ESC EVENT
    ! FUNCTION DlgCommand add code to lGetSkiponEsc
-   
+
 2010-10-29 22:32 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hdialog.prg
     ! reverted lActivated.
@@ -968,10 +972,10 @@
      ! now you can see dynamic barcode with xml datadriven and print it!.
 
 2010-10-16 21:34 UTC+0700 Richard Roesnadi <richsoft8@yahoo.co.id>
-  * include\windows.ch 
+  * include\windows.ch
    + missing #define WM_QUERYUISTATE                 297   //0x0129
 
-   
+
 2010-10-15 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hdialog.prg
     ! minor  fix in enddialog()
@@ -986,31 +990,31 @@
     ! fix in redrawwindow
   * source\hedit.prg
     ! minor fix in refresh()
-    
+
 2010-10-13 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/draw.c
-    ! fix in REDRAWWINDOW 
+    ! fix in REDRAWWINDOW
   * source/hcontrol.prg
     * METHOD onAnchor
-	  ! Removed flickering of controls during resize....
+      ! Removed flickering of controls during resize....
     * CLASS HStatic
-	  ! minor fix in METHOD SetValue
+      ! minor fix in METHOD SetValue
   * source/hcwindow.prg
     ! METHOD Move( x1, y1, width, height, nRePaint )  add parameter nRepaint
-	! minor fix in onDrawItem
-	! minor fix in onSize
-	! minor fix in Anchor
-	! METHOD Refresh( lAll, oCtrl ) add parameter lAll to Refresh only Gets or all objects
+    ! minor fix in onDrawItem
+    ! minor fix in onSize
+    ! minor fix in Anchor
+    ! METHOD Refresh( lAll, oCtrl ) add parameter lAll to Refresh only Gets or all objects
   * source/hrebar.prg
-    + add DATA aBands 
-	+ add METHOD RebarBandNew()
-    + add METHOD CreateBands()   
+    + add DATA aBands
+    + add METHOD RebarBandNew()
+    + add METHOD CreateBands()
   * source/HSayImage.prg
-    ! removed SS_NOTIFY by default style 
+    ! removed SS_NOTIFY by default style
   * source/hrect.prg
     ! removed title := "" in classes because necessary in anchor
   * source/htree.prg
-	! minor fix in function DragDropTree
+    ! minor fix in function DragDropTree
 
 2010-10-07 19:18 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hedit.prg
@@ -1026,11 +1030,11 @@
   * include\guilib.ch
      + clause [<lShowTime: SHOWTIME>]   in xcommand @ <x>,<y> DATEPICKER [ <oPick> ]  ;
   * source\hcontrol.prg
-    + add METHOD FontBold( lTrue ) SETGET 
-    + add METHOD FontItalic( lTrue ) SETGET 
-    + add METHOD FontUnderline( lTrue ) SETGET 
+    + add METHOD FontBold( lTrue ) SETGET
+    + add METHOD FontItalic( lTrue ) SETGET
+    + add METHOD FontUnderline( lTrue ) SETGET
       for change characteristic of the FONT is only necessary set it
-      oCtrl:FontBold := .T. or .F. 
+      oCtrl:FontBold := .T. or .F.
   * source\hdialog.prg
     ! fix in ONDESTROY
   * source\htree.prg
@@ -1039,7 +1043,7 @@
 2010-09-03 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/control.c
     ! fix use hb_snprintf in old versions
-  
+
 2010-09-06 05:45 UTC+0700 Andi Jahja <xharbour/AT/telkom/net/id>
   * source/resource.c
     ! reorder logic of start-up codes initialization
@@ -1057,13 +1061,13 @@
 2010-09-04 15:50 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * source\hwindow.prg
     Bug in GetFocus after MSGINFO in MDICHILD
- 
+
 2010-09-03 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
  * source\control.c
    ! fixed function HB_FUNC( SETDATEPICKER ) compatible HARBOUR
  * source\hcombo.prg
    ! minor fix in rowsource and populate methods
- 
+
 
 2010-09-03 09:54 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * source\hwindow.prg
@@ -1076,12 +1080,12 @@
    ! fix function HB_FUNC( SETDATEPICKER ) compatible HARBOUR
  * source\hdialog.prg
    ! minor fix
- 
+
 2010-08-31 21:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
  * include\guilib.ch
    + clause [<lShowTime: SHOWTIME>]   in xcommand @ <x>,<y> DATEPICKER [ <oPick> ]  ;
  * include\windows.ch
-   + constant #define DTS_TIMEFORMAT      9 
+   + constant #define DTS_TIMEFORMAT      9
  * source\control.c
    + function HB_FUNC( GETTIMEPICKER )
    ! changed HB_FUNC( SETDATEPICKER ) to attrib TIME value
@@ -1094,13 +1098,13 @@
    ! minor fix
  * source\hsayimg.prg
    ! fix in nWidth
-   
- 
+
+
 2010-08-17 21:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
  * source\hdialog.prg
    ! minor fix in onEraseBk
  * source\hownbtn.prg
-   ! minor fix in Refresh() 
+   ! minor fix in Refresh()
  * source\htab.prg
    ! minor fix in onEvent msg = onEraseBk
  * source\hupdown.prg
@@ -1109,24 +1113,24 @@
 2010-08-16 11:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hcontrol.prg
     ! fixed Method Anchor in the UPDOWN control
-  * source\hcombo.prg  
+  * source\hcombo.prg
     ! minor fix in INIT
-  * source\hedit.prg  
+  * source\hedit.prg
     ! fixed value initial in "K" = ::cPicFunc
   * source\window.c
    + #define  WND_MDICHILD          3
    ! fixed  HWG_CENTERWINDOW  for MDICHILD
   * source\hcwindow.prg
-   ! fixed METHOD Move to work correctly with Anchor because movewindow trigered WM_SIZE 
+   ! fixed METHOD Move to work correctly with Anchor because movewindow trigered WM_SIZE
    ! minor other fix
-  * source\hwindow.prg 
+  * source\hwindow.prg
    ! minor fix in Function onSize
    ! METHOD Center add new parameter in Hwg_CenterWindow( ::handle, ::Type )
      to calculed correctly center of the window
    ! METHOD OnEvent in HMainWindow  fixed limits of the MDICHILD MODAL
-   ! fixed lChild in the Method Activate in MDICHILD 
+   ! fixed lChild in the Method Activate in MDICHILD
    ! minor fix in FUNCTION onCommand when trigered menu MDICHILD
-  * source\hdialog.prg 
+  * source\hdialog.prg
    ! minor fix in Function onSize
    ! METHOD Center add new parameter in Hwg_CenterWindow( ::handle, ::Type )
    ! Method onEvent attrib position LEFT and TOP  of the Dialog in message WM_MOVE
@@ -1135,12 +1139,12 @@
      ! used wParam to receive the initial focus as described MSDN
    ! fixed init focus in FUNCTION DlgCommand
    ! minor fix in function Onsize in anchor
-  * source/htool.prg  
+  * source/htool.prg
    ! minor fix in METHOD CREATETOOL in relation bitmaps and text
-  * source/hupdown.prg 
-   + add METHOD Move( x1, y1, width, height ) 
+  * source/hupdown.prg
+   + add METHOD Move( x1, y1, width, height )
       fixed moved objetc, spinner and editbox
-      
+
 2010-08-04 17:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * gtk/htimer.prg
     ! some adjust to be windows compatible

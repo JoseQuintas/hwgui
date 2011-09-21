@@ -29,7 +29,6 @@
 #define TVE_TOGGLE              0x0003
 
 #define TVSIL_NORMAL            0
-#define TVHT_ONITEMBUTTON       64
 
 #define TVS_HASBUTTONS          1   // 0x0001
 #define TVS_HASLINES            2   // 0x0002
@@ -594,10 +593,10 @@ METHOD Notify( lParam )  CLASS HTree
    ELSEIF nCode = TVN_KEYDOWN
 
 	 ELSEIF nCode = NM_CLICK  .AND. ::oitem != Nil // .AND. !::lEditLabels
-	    //nHitem :=  Tree_GetNotify( lParam, 1 )
+	    nHitem :=  Tree_GetNotify( lParam, 1 )
 	    //nHitem :=  GETNOTIFYcode( lParam )
 	    oItem  := tree_Hittest( ::handle,,, @nAct )
-	    IF nAct = TVHT_ONITEMBUTTON
+	    IF nAct = TVHT_ONITEMSTATEICON
 	       IF oItem:Handle != ::oitem:Handle 
             ::Select( oItem )
             ::oItem := oItem

@@ -2019,7 +2019,7 @@ METHOD Activate() CLASS HGroup
    RETURN NIL
 
 METHOD Init() CLASS HGroup
-   LOCAL nbs, i
+   LOCAL nbs
 
    IF  ! ::lInit
       Super:Init()

@@ -258,7 +258,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
       // IF ::oGroup:bSetGet != Nil
       ::bLostFocus := bClick
       *- ::oParent:AddEvent( BN_CLICKED, self, { | o, id | ::Valid( o:FindControl( id ) ) },, "onClick" )
-      ::oParent:AddEvent( BN_CLICKED, self, { | o, id | ::onClick( ) },,"onClick" )
+      ::oParent:AddEvent( BN_CLICKED, self, { |  | ::onClick( ) },,"onClick" )
       // ENDIF
    ENDIF
 
@@ -319,13 +319,14 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip,
       AAdd( ::oGroup:aButtons, Self )
       // IF ::oGroup:bSetGet != Nil
       ::bLostFocus := bClick
-      ::oParent:AddEvent( BN_CLICKED, self, { | o, id | ::Valid( o:FindControl( id ) ) },, "onClick" )
+      //::oParent:AddEvent( BN_CLICKED, self, { | o, id | ::Valid( o:FindControl( id ) ) },, "onClick" )
+      ::oParent:AddEvent( BN_CLICKED, self, { |  | ::onClick( ) },,"onClick" )
       // ENDIF
    ENDIF
    RETURN Self
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HRadioButton
-	 LOCAL oParent := ::oParent
+	 LOCAL oCtrl
 	  
    IF ::bOther != Nil
       IF Eval( ::bOther,Self,msg,wParam,lParam ) != -1
@@ -336,7 +337,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HRadioButton
 	    IF  wParam = VK_RETURN .AND. ProcOkCancel( Self, wParam, ::GetParentForm():Type >= WND_DLG_RESOURCE )
          RETURN 0
       ELSEIF wParam = VK_ESCAPE  .AND. ;
-                  ( oParent := ::GetParentForm:FindControl( IDCANCEL ) ) != Nil .AND. ! oParent:IsEnabled() 
+                  ( oCtrl := ::GetParentForm:FindControl( IDCANCEL ) ) != Nil .AND. ! oCtrl:IsEnabled() 
          RETURN DLGC_WANTMESSAGE  
 	    ELSEIF ( wParam != VK_TAB .AND. GETDLGMESSAGE( lParam ) = WM_CHAR ) .OR. GETDLGMESSAGE( lParam ) = WM_SYSCHAR .OR. ;
                wParam = VK_ESCAPE 
@@ -437,7 +438,7 @@ METHOD When( ) CLASS HRadioButton
 
 METHOD Valid( nKey ) CLASS HRadioButton
    LOCAL nEnter := IIF( nKey = nil, 1, nkey)
-   LOCAL nValue := ::oGroup:nValue, hctrl, iValue
+   LOCAL hctrl, iValue
 
    IF ::lnoValid .OR. getkeystate( VK_LEFT ) + getkeystate( VK_RIGHT ) + GetKeyState( VK_UP ) + ;
        GetKeyState( VK_DOWN ) + GetKeyState( VK_TAB ) < 0 .OR. ::oGroup = Nil .OR. ::lwhen

@@ -29,6 +29,7 @@
 #define TVE_TOGGLE              0x0003
 
 #define TVSIL_NORMAL            0
+#define TVHT_ONITEMBUTTON       64
 
 #define TVS_HASBUTTONS          1   // 0x0001
 #define TVS_HASLINES            2   // 0x0002
@@ -594,13 +595,21 @@ METHOD Notify( lParam )  CLASS HTree
 
 	 ELSEIF nCode = NM_CLICK  .AND. ::oitem != Nil // .AND. !::lEditLabels
 	    //nHitem :=  Tree_GetNotify( lParam, 1 )
-	    nHitem :=  GETNOTIFYcode( lParam )
-	    IF ! EMPTY( nHitem ) .AND. nHitem != ::oitem:Handle
-         oItem  := tree_Hittest( ::handle,,, @nAct )
-         //TreeSetItem( ::handle, Tree_GetNotify( lParam, 1 ), nil )
-         IF oItem  != Nil
+	    //nHitem :=  GETNOTIFYcode( lParam )
+	    oItem  := tree_Hittest( ::handle,,, @nAct )
+	    IF nAct = TVHT_ONITEMBUTTON
+	       IF oItem:Handle != ::oitem:Handle 
             ::Select( oItem )
-         ENDIF   
+            ::oItem := oItem
+         ENDIF
+         IF ::bCheck != Nil
+            lEval := Eval( ::bCheck, ! ::oItem:checked, ::oItem, Self )
+         ENDIF
+         IF lEval == Nil .OR. ! EMPTY( lEval )
+            MarkCheckTree( ::oItem, IIF( ::oItem:checked, 1, 2 ) )
+            RETURN 0   
+         ENDIF
+         RETURN 1   
       ELSEIF ! ::lEditLabels .AND. EMPTY( nHitem )
          IF ! ::oItem:oTree:lEmpty
             IF ::oItem:bClick != Nil
@@ -619,6 +628,8 @@ METHOD Notify( lParam )  CLASS HTree
          oItem  := tree_Hittest( ::handle,,, @nAct )
          Eval( ::bRClick, oItem, Self, nAct )
       ENDIF
+      
+      /* working only windows 7
    ELSEIF nCode == - 24 .and. ::oitem != Nil
       //nhitem := tree_Hittest( ::handle,,, @nAct )
       IF ::bCheck != Nil
@@ -629,6 +640,7 @@ METHOD Notify( lParam )  CLASS HTree
       ELSE
          RETURN 1
       ENDIF
+      */
    ENDIF
 
    IF ValType( oItem ) == "O"

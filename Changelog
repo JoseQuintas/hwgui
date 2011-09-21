@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-09-21 00:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/htree.prg
+     + TVHT_ONITEMBUTTON
+     * CLASS HTree
+	   * METHOD Notify
+	   * PROCEDURE MarkCheckTree
+	     ! fixed NM_CLICK in STYLE TVS_CHECKBOXES
+   
+
 2011-09-20 20:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/window.C
      + static void s_ClearKeyboard( void )

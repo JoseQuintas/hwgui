@@ -473,4 +473,3 @@ METHOD Valid( nKey ) CLASS HRadioButton
    ::oParent:lSuspendMsgsHandling := .F.  
    
    RETURN .T.
-

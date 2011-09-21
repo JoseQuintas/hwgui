@@ -597,7 +597,7 @@ METHOD Notify( lParam )  CLASS HTree
 	    //nHitem :=  GETNOTIFYcode( lParam )
 	    oItem  := tree_Hittest( ::handle,,, @nAct )
 	    IF nAct = TVHT_ONITEMSTATEICON
-	       IF oItem:Handle != ::oitem:Handle 
+	       IF ::oItem == Nil .OR. oItem:Handle != ::oitem:Handle 
             ::Select( oItem )
             ::oItem := oItem
          ENDIF

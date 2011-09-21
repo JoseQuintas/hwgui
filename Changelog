@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-09-21 08:85 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/htree.prg
+     * METHOD Select( oNode )
+	   ! fixed oitem selected
+
 2011-09-21 00:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htree.prg
      + TVHT_ONITEMBUTTON

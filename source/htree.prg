@@ -299,7 +299,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
    METHOD GetSelected()   INLINE TreeGetSelected( ::handle )
    METHOD EditLabel( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_EDITLABEL, 0, o:handle ) }
    METHOD Expand( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_EXPAND, TVE_EXPAND, o:handle ) }
-   METHOD Select( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_SELECTITEM, TVGN_CARET, o:handle ) }
+   METHOD Select( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_SELECTITEM, TVGN_CARET, o:handle ), ::oItem := TreeGetSelected( ::handle ) }
    METHOD Clean()
    METHOD Notify( lParam )
    METHOD END()   INLINE ( Super:END(), ReleaseTree( ::aItems ) )

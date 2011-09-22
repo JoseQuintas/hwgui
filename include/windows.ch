@@ -103,6 +103,7 @@
 #define WM_CLEAR                        771     // 0x0303
 
 #DEFINE WM_PRINT                        791
+#DEFINE	WM_PRINTCLIENT                  792
 
 #define WM_USER                        1024    // 0x0400
 

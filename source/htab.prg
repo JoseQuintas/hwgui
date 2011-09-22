@@ -432,7 +432,7 @@ METHOD EndPage() CLASS HTab
    RETURN Nil
 
 METHOD ChangePage( nPage ) CLASS HTab
-   LOCAL client_rect
+   //LOCAL client_rect
 
    IF nPage = ::nActive  &&.OR. ! ::pages[ nPage ]:enabled
       //SetTabFocus( Self, nPage, .F. )

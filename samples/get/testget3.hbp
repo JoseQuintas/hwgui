@@ -4,6 +4,5 @@ testget3.rc
 -lhwgui
 -lprocmisc
 -lhbxml
--lhwg_qhtm
 -L..\..\lib
 -gtgui

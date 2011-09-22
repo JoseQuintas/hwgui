@@ -317,8 +317,9 @@ METHOD INIT() CLASS HComboBox
    ::Refresh()
    IF ::lEdit
       SendMessage( ::handle, CB_SETEDITSEL , -1, 0 )
+      SendMessage( ::handle, WM_SETREDRAW, 1 , 0 )
    ENDIF
-   SendMessage( ::handle, WM_SETREDRAW, 1 , 0 )
+ 
    
 RETURN Nil
 
@@ -444,7 +445,7 @@ METHOD Refresh() CLASS HComboBox
       ComboSetString( ::handle, AScan( ::aItems, ::value, , , .T.  ) )
    ELSE
       ComboSetString( ::handle, ::value )
-      ::SetItem(::value )
+      *-::SetItem(::value )
    ENDIF
    ::valueBound := ::GetValueBound()
 
@@ -471,7 +472,7 @@ METHOD SetItem( nPos ) CLASS HComboBox
       ::ValueBound := ::GetValueBound()
    ENDIF
 
-   SendMessage( ::handle, CB_SETCURSEL, nPos - 1, 0 )
+   ComboSetString( ::handle, nPos ) 
 
    IF ::bSetGet != Nil
       IF ::columnBound = 1
@@ -536,6 +537,9 @@ METHOD GetValue() CLASS HComboBox
 METHOD GetValueBound( xItem ) CLASS HComboBox
    LOCAL nPos := SendMessage( ::handle,CB_GETCURSEL,0,0 ) + 1
 
+   IF ::columnBound = 1
+      RETURN Nil
+   ENDIF
    IF xItem = Nil
       IF ::lText
           //nPos := IIF( ::Value = Nil,0, AScan( ::aItems, ::Value ) )
@@ -633,14 +637,16 @@ METHOD onSelect() CLASS HComboBox
 
 METHOD onChange( ) CLASS HComboBox
 
-LOCAL nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
-
    IF GetFocus() != ::handle
       RETURN Nil
    ENDIF
+   IF  ! isWindowVisible( ::handle) 
+      ::SetItem( ::Value )
+      RETURN Nil
+   ENDIF
    
-   ::SetItem( nPos )
    IF ::bChangeSel != Nil
+      ::SetItem( SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1 )
       ::oparent:lSuspendMsgsHandling := .T.
       Eval( ::bChangeSel, nPos, Self )
       ::oparent:lSuspendMsgsHandling := .F.

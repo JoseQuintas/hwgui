@@ -329,13 +329,13 @@ METHOD SetPaintSizePos( nFlag ) CLASS HTab
    ELSEIF nFlag = - 2
       SetWindowPos( ::oPaint:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE+ SWP_NOREDRAW + SWP_NOACTIVATE +SWP_NOSENDCHANGING)
       RETURN Nil
-   ELSEIF nFlag = 1
-      RETURN Nil
    ELSEIF nFlag > 0
       ::npaintheight  := nFlag
       ::oPaint:nHeight := nFlag
+      IF ! IsWindowEnabled( ::Handle ) 
+         RETURN Nil
+      ENDIF
    ENDIF
-
    SetWindowPos( ::oPaint:Handle, Nil, ::oPaint:nLeft, ::oPaint:nTop, ::oPaint:nWidth, ::oPaint:nHeight, SWP_NOACTIVATE  ) //+ SWP_SHOWWINDOW  )
    RETURN Nil
 

@@ -8,7 +8,7 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2011-09-22 10:45 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
+2011-09-22 16:35 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
    * source/htab.prg
      * remove ::nPages++, not used
 

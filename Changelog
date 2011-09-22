@@ -10,11 +10,13 @@
 
 2011-09-22 16:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcontrol.prg
-     ! changed  hb_BitIsSet( lParam, 30 ) to hb_BitIsSet( PtrtoUlong( lParam ), 30 )  // the key was down before ?
+     * CLASS HBUTTONEx
+	   * METHOD onEvent
+         ! changed  hb_BitIsSet( lParam, 30 ) to hb_BitIsSet( PtrtoUlong( lParam ), 30 )  // the key was down before ?
    * source/hcombo.prg
      * METHOD Refresh( )
 	 * METHOD GetValueBound( )
-	 ! minor fix 
+	   ! minor fix 
      * METHOD onChange( )
        ! fixed   
 	  

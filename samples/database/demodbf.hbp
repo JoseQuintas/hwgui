@@ -3,6 +3,5 @@ demodbf.prg
 -lhwgui
 -lprocmisc
 -lhbxml
--lhwg_qhtm
 -L..\..\lib
 -gtgui

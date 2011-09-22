@@ -9,6 +9,72 @@
 */
 
 2011-09-22 10:45 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
+  * samples\all\a.hbp
+  * samples\animation\animation.hbp
+  * samples\browse\arbrow1.hbp
+  * samples\browse\arbrow2.hbp
+  * samples\browse\browse_1.hbp
+  * samples\browse\browse_2.hbp
+  * samples\browse\browse_3.hbp
+  * samples\browse\browse_4.hbp
+  * samples\browsefilter\browsefilter.hbp
+  * samples\build\buildpelles.hbp
+  * samples\browse\colrbloc.hbp
+  * samples\combobox\combobox.hbp
+  * samples\database\dbview.hbp
+  * samples\database\demodbf.hbp
+  * samples\listbox\demohlist.hbp
+  * samples\maximize\demomaximize.hbp
+  * samples\hwedit\editor.hbp
+  * samples\flash\flashocx.hbp
+  * samples\graph\graph.hbp
+  * samples\grid\grid_1.hbp
+  * samples\grid\grid_2.hbp
+  * samples\grid\grid_3.hbp
+  * samples\grid\grid_4.hbp
+  * samples\grid\grid_5.hbp
+  * samples\grid\grid_6.hbp
+  * samples\hbrun\hbrun.hbp
+  * samples\hello\hello.hbp
+  * samples\help\helpdemo.hbp
+  * samples\ole\hole.hbp
+  * samples\mysql\hwmysql.hbp
+  * samples\ole\iesample.hbp
+  * samples\nicebutton\nice.hbp
+  * samples\nicebutton\nice2.hbp
+  * samples\pdf\pdfreader.hbp
+  * samples\progressbar\progbars.hbp
+  * samples\propsh\propsh.hbp
+  * samples\rmchart\rmsample.hbp
+  * samples\shadebtn\shadebtn.hbp
+  * samples\tab\tab.hbp
+  * samples\tab\tab3.hbp
+  * samples\all\test1.hbp
+  * samples\browse\testbrw.hbp
+  * samples\mdichild\testchild.hbp
+  * samples\get\testget1.hbp
+  * samples\get\testget2.hbp
+  * samples\get\testget3.hbp
+  * samples\get\testget4.hbp
+  * samples\monthcalendar\testhmonth.hbp
+  * samples\ini\testini.hbp
+  * samples\ipadress\testip.hbp
+  * samples\menu\testmenubitmap.hbp
+  * samples\rtf\testrtf.hbp
+  * samples\tree\testsdi.hbp
+  * samples\spliter\testspli.hbp
+  * samples\trayicon\testtray.hbp
+  * samples\tree\testtree.hbp
+  * samples\xml\testxml.hbp
+  * samples\trackbar\trackbar.hbp
+  * samples\printdos\tstprdos.hbp
+  * samples\scrollbar\tstscrlbar.hbp
+  * samples\hsplash\tstsplash.hbp
+  * samples\viewer\viewer.hbp
+  * samples\winprn\winprn.hbp
+    * remove -lhwg_qhtm because this lib not need to build samples
+
+2011-09-22 10:45 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
    - ChangeLog.001
    - ChangeLog.002
    - ChangeLog.003
@@ -69,8 +135,6 @@
          return selecteds in checkmark
        * PROCEDURE MarkCheckTree
          ! fixed recursive state
-
-
 
 2011-09-19 08:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/control.c
@@ -217,7 +281,6 @@
      + #define BS_SPLITBUTTON
      + #define BS_COMMANDLINK
      + #DEFINE BCM_SETNOTE
-
 
 2011-09-18 15:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/guimain.prg
@@ -864,7 +927,6 @@
   * source/hwindow.prg
     ! reverted deletion of declaration oitem because is used in source.
 
-
 2010-10-31 08:58 UTC+0100 Maurizio la Cecilia <m.lacecilia at gmail.com>
 
    * hwgui.hbp
@@ -977,7 +1039,6 @@
   * source/hdialog.prg
     ! set lActivated to true in METHOD Activate.
 
-
 2010-10-21 13:46 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/errorsys.prg
     * PROCFILE() is fully supported by Harbour
@@ -1019,7 +1080,6 @@
 2010-10-16 21:34 UTC+0700 Richard Roesnadi <richsoft8@yahoo.co.id>
   * include\windows.ch
    + missing #define WM_QUERYUISTATE                 297   //0x0129
-
 
 2010-10-15 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hdialog.prg
@@ -1065,11 +1125,9 @@
   * source/hedit.prg
     ! Fix picture "K" now edit is selected
 
-
 2010-10-07 18:40 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hownbtn.prg
     ! Fix on click when up button
-
 
 2010-09-08 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\guilib.ch
@@ -1113,7 +1171,6 @@
  * source\hcombo.prg
    ! minor fix in rowsource and populate methods
 
-
 2010-09-03 09:54 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * source\hwindow.prg
     Bug in window MDI
@@ -1143,7 +1200,6 @@
    ! minor fix
  * source\hsayimg.prg
    ! fix in nWidth
-
 
 2010-08-17 21:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
  * source\hdialog.prg
@@ -1601,7 +1657,6 @@
   * source\misc.c
     + add function HB_FUNC( HWG_LASTKEY )
       RETURN last key press same behavior Lastkey()
-
 
 2008-03-28 16-35 UTC-0300 Sandro R. R. Freire <sandrorrfreire at yahoo.com.br>
   * source\htool.prg
@@ -2151,7 +2206,6 @@
       within a month calendar control.
   * source\htab.prg
     ! minor fix
-
 
 2010-01-25 03:13 UTC+0100 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/source/commond.c
@@ -2941,7 +2995,6 @@
       empty string ("") if no characters are selected.
       OR Specifies the string containing the selected text.
 
-
 2009-11-20 15:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg
     ! fix XHARBOUR COMMERCIAL
@@ -2964,7 +3017,6 @@
 2009-11-19 17:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hedit.prg
     ! Fix Method When for field of type Date.
-
 
 2009-11-19 06:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\drawtext.c
@@ -3167,7 +3219,6 @@
   * gtk/hcontrol.prg
     ! pequenos ajustes
 
-
 2009-11-12 08:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * gtk/hcwindow.prg
     ! added missing datas
@@ -3177,7 +3228,6 @@
     ! fixed GetValueBound in REDEFINE
   * source\htool.prg
     ! minor fix
-
 
 2009-10-12 10:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
@@ -3226,7 +3276,6 @@
      ! minor fix in SEPARATOROUT
    * source\hupdown.prg
      ! minor fix in create WINDOW MAIN
-
 
 2009-09-24 14:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hbrowse.prg
@@ -3457,7 +3506,6 @@
   * source/hcheck.prg
     ! fixed setvalue and refresh
 
-
 2009-09-10 13:30 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source/wprint.c
     ! small fix to hwg_setdocumentproperty
@@ -3465,7 +3513,6 @@
     ! added some new properties
   * source/hwindow.prg
     ! minor fix to findwindow method
-
 
 2009-09-05 15:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hedit.prg
@@ -4162,7 +4209,6 @@
   * source/procmisc/Makefile
     * makefiles has been updated due to adding the scrdebug.prg
 
-
 2009-04-08 10:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\drawwidg.prg
     + CLASS HBitmap add parameters width ,height in AddResource, AddFile and parameter
@@ -4295,7 +4341,6 @@
   * source\hprogres.prg
     ! fix in nRange,nMaxPos for STEP
     * add new parameter in METHOD STEP to update Title of NEWBOX
-
 
 2009-03-17 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * include\windows.ch
@@ -4623,7 +4668,6 @@
     ! fix in MAXLENGHT PASSWORD
     ! fix in ES_MULTINLINE when it receives the focus
 
-
 2009-01-27 01:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source\hedit.prg
     ! fix for SET CONFIRM
@@ -4855,7 +4899,6 @@
     utils/designer/hctrl.prg
     ! fixes to work properly when hwgui is compiled in pointer mode
 
-
 2008-11-24 11:00 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\*.prg
     general reformatting and clean of unused variables/parameters,
@@ -5062,7 +5105,6 @@
      * fixed event bACTIVATE in WINDOW MAIN
      * now ON INIT event if on FALSE Return is canceling the creation of WINDOW
 
-
 2008-10-30 20:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
    * source\hownbtn.prg
      * fixed end() method not destroying the object
@@ -5150,7 +5192,6 @@
     source/media_c.c
      ! changes for allow correct usage when  HWG_USE_POINTER_ITEM is used on
        hwgui compilation
-
 
 2008-10-23 08:30 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source\hedit.prg
@@ -5482,7 +5523,6 @@
    * source\menu_c.c
     ! fixes HWG__ADDMENUITEM return value when  HWG_USE_POINTER_ITEM is defined
 
-
 2008-10-03 17:00 UTC-0300 Luiz Rafael Culik <Luiz at xharbour.com.br>
   * source\winreg.c
     ! updated to compile with harbour
@@ -5520,7 +5560,6 @@
     ! minor fix to addrowex to ogrid command
   * source/hgridex.prg
     ! minor change to addrow
-
 
 2008-09-25 22:00 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   changes made by Luis Fernando Basso
@@ -5892,7 +5931,6 @@
                 sayRupiah(nValue)  -> Say in Rupiah
         You may add your country say Money at here
   * utils\designer\samples\saymoney.xml
-
 
 2008-08-06 16:20 UTC+0200 Alex Strickland <sscc @ mweb . co . za>
   * source\drawwidg.prg
@@ -6776,7 +6814,6 @@
   * gtk/Makefile.linux
     ! Added new depencencies
 
-
 2008-04-15 23:20 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hdialog.prg
     ! Equated Enter key to Tab key in Dialog.
@@ -6983,7 +7020,6 @@
   * source/hbrowse.prg
     ! fix type for get edit with maxlenght
 
-
 2008-02-15 23:00 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! fix get edit with maxlenght
@@ -7023,7 +7059,6 @@
     source/hdialog.prg
     source/hpanel.prg
         + added the mouse wheel management to scrollbars
-
 
 2008-02-20 01:15 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hcwindow.prg
@@ -7092,7 +7127,6 @@
 2008-02-02 24:46 UTC+0700 richard roesnadi  <roesnadi8@yahoo.co.id>
   * source\draw.c
     !Rectangle back to original for convenient with designer
-
 
 2008-02-02 19:55 UTC+0700 richard roesnadi  <roesnadi8@yahoo.co.id>
   * utils/designer/extmodul.ch
@@ -7231,7 +7265,6 @@
   * include/windows.ch
     ! added new defines
 
-
 2007-12-20 08:40 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * source/htool.prg
     ! minor fix
@@ -7243,7 +7276,6 @@
     ! fixed  X picture usage
     ! added possibility to execute bother codeblock before key handling
 
-
 2007-12-19 19:45 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hedit.prg
     ! changed __When to avoid the first or the last get can gain focus
@@ -7253,8 +7285,6 @@
   * hwgui/make_gnu.sh
   * hwgui/make_gtk.sh
     * added comments and minor cleanup
-
-
 
 2007-12-06  01:59 UTC+0700  Richard Roesnadi <roesnadi8@yahoo.co.id>
     *source\menu_c.c        fixed for designer
@@ -7894,6 +7924,7 @@
      * Forced the deletion of chars (VK_DELETE and VK_BACK) to HwGui because
        the hedit normally don't redraws the client area and buttons owned by
        the editbox are lost until any alphanumeric char is inserted
+
 2007-06-14 10:30 UTC+0200 Alexey Myronenko <atzct@obukhov.kiev.ua>
    * utils\designer\resource\widgets.xml
      * added VSCROLL style and FONT to combobox class
@@ -8152,7 +8183,6 @@
 +Display character not limited length from HColumn() initial.
  if resize column length by mouse, string is display full.
 
-
 2007-03-22  23:15 UTC+0700 Richard Roesnadi
 * Minor fix sugest from serge (seohic) hwgui-forum
     menu bug prg 277 & browse cancelling edit mode with mouse
@@ -8360,7 +8390,6 @@
    * source/hdialog.prg
      ! change onevent method to route commands when main dialog has an tab redefined control with dialog as children
        to route the command set the dialog:lRoutecommand to .t.
-
 
 2006-11-10 10:30 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
    * include/windows.ch
@@ -10269,7 +10298,6 @@
   * gtk/hdialog.prg
     added a missed oWnd local definition
 
-
 2005-01-16 17:06 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hedit.prg
     ! Fixed "ENTER" key handling in multiline controls
@@ -11015,7 +11043,6 @@
   * samples/a.prg
     Samples to new comands to TAB
 
-
 2004-08-17 10-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * source/hedit.prg
     Bug line 153, in execution run time
@@ -11163,7 +11190,6 @@
        cTitle:   Window Title
        SelectMultipleFiles(cDescr, cTip, cIniDir, cTitle )
      Return the Array contain files selected
-
 
 2004-07-22 08-45 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
   * Suggestions
@@ -11526,7 +11552,6 @@
    * utils/designer/hformgen.prg
    * utils/designer/resource/widgets.xml
      ! Bugs fixed, reported by Alexey Mironenko
-
 
 2004-06-16 20:30 UTC-0300 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
    * source/htree.prg
@@ -11891,7 +11916,6 @@
   + samples/nice.h
     ! tests for nicebuttons
 
-
 2004-05-21 13:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hwindow.prg
     * HCustomWindow():DelControl() method extended.
@@ -12173,7 +12197,6 @@
     Otimized method Comando
   * samples/tstprdos.prg
     new test to printdos
-
 
 2004-04-20 12:07 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
   * make_b32.bat
@@ -12944,11 +12967,8 @@
      * Ip classe
    * include/guimain.ch
       New Command @ x,y GET IPADDRESS <oIP> VAR <vari>
-|  * makefile.bc
+   * makefile.bc
       updated to include new dependencies
-
-
-
 
 2003-12-01 11:00 UTC-0300 Luiz Rafael Culik <culikr@brturbo.com>
    * makefile.bc

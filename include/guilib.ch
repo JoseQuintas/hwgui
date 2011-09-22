@@ -618,8 +618,9 @@
             [ <enable: DISABLED> ]     ;
             [ COLOR <tcolor>]          ;
             [ BACKCOLOR <bcolor>]      ; 
+            [ TOOLTIP <ctoolt> ]       ;
           =>;
-          <oTab>:StartPage( <cname>, ,! <.enable.> ,<tcolor>,<bcolor> )
+          <oTab>:StartPage( <cname>, ,! <.enable.> ,<tcolor>,<bcolor>, <ctoolt> )
 
 #xcommand END PAGE OF <oTab> => <oTab>:EndPage()
 

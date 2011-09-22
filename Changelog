@@ -8,6 +8,52 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-09-22 09:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include/guilib.ch
+     * #xcommand BEGIN PAGE <cname> OF <oTab> ;
+	   + [ TOOLTIP <ctoolt> ]       ;
+	   assign a tooltip for each page of the TAB
+   * source/htab.prg
+     * CLASS HPage 
+	   + DATA Tooltip
+       * METHOD New( cCaption, nPage, lEnabled, tcolor, bcolor, cTooltip )
+         add parameter cToolTip	   
+     * CLASS HTab		 
+	  + METHOD ShowToolTips( lParam )
+      + METHOD onChange( )
+	  * METHOD StartPage
+	    ! add parameter  cTooltip 
+	  * METHOD Init
+      * METHOD SetPaintSizePos
+	    ! minor fix
+      * METHOD SetTab
+	    ! changed, SETCURFOCUS occurs after the page is changed
+      * METHOD ChangePage
+	    changed, event onChange occurs before the objects of the page to show
+      * METHOD RedrawControls()			
+	  *	METHOD ShowPage
+	    ! minor fix in show objects
+	  * METHOD Refresh
+	    ! fixed
+	  *	METHOD Notify
+	    ! fixed  SETCURFOCUS when Page is disabled
+      *	METHOD onEvent
+		* msg = WM_MOUSEMOVE
+		  ! handling show tooltip in pages
+		* msg = WM_PRINT
+        * msg = WM_SIZE
+		* msg == WM_KEYDOWN 
+          ! minor fix		
+	    * msg = WM_GETDLGCODE
+		  ! fixed msg ESCAPE
+		! fixed init focus in TAB  
+       * METHOD ShowDisablePage		
+	   * Function SetTabFocus
+	     !minor fix
+      * CLASS HPaintTab
+	    * METHOD showTextTabs
+		  fixed show effect disabled
+
 2011-09-22 10:45 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
   * samples\all\a.hbp
   * samples\animation\animation.hbp

@@ -168,7 +168,6 @@ CLASS VAR winclass   INIT "SysTabControl32"
    METHOD EnablePage( nPage ) INLINE ::Pages[ nPage ]:enable()
    METHOD SetPaintSizePos( nFlag  )
    METHOD RedrawControls()
-   METHOD Refresh() 
    METHOD ShowToolTips( lParam )
    METHOD onChange( )
 
@@ -197,10 +196,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::bChange := bChange
    ::bChange2 := bChange
 
-   ::bGetFocus :=  bGetFocus )
-   ::bLostFocus :=  bLostFocus )
-   ::bAction   := bClick )
-   ::bRClick   := bRClick)
+   ::bGetFocus :=  bGetFocus 
+   ::bLostFocus :=  bLostFocus
+   ::bAction   := bClick 
+   ::bRClick   := bRClick
 
    IF aImages != Nil
       ::aImages := { }
@@ -440,7 +439,7 @@ METHOD ChangePage( nPage ) CLASS HTab
       RETURN Nil
    ENDIF
    IF ! Empty( ::aPages ) .AND. ::pages[ nPage ]:enabled
-      client_rect := TabItemPos( ::Handle, ::nActive - 1 )
+      *-client_rect := TabItemPos( ::Handle, ::nActive - 1 )
       IF ::nActive > 0
          ::HidePage( ::nActive )
          IF ::Pages[ nPage ]:brush != Nil
@@ -722,7 +721,8 @@ METHOD Notify( lParam ) CLASS HTab
 
 
 METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
-
+   LOCAL oCtrl
+   
    IF (msg >= TCM_FIRST .AND. msg < TCM_FIRST + 61 )  // optimized only
        RETURN -1
    ENDIF
@@ -742,7 +742,7 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
    ELSEIF msg =  WM_ERASEBKGND
       ::ShowDisablePage()
       Return - 1
-   ELSEIF  msg = WM_PRINTCLIENT .OR msg = WM_NCHITTEST  .OR. msg = WM_UPDATEUISTATE 
+   ELSEIF  msg = WM_PRINTCLIENT .OR. msg = WM_NCHITTEST  .OR. msg = WM_UPDATEUISTATE 
       Return -1  // painted objects without METHOD PAINT
 
    ELSEIF  msg = WM_PRINT

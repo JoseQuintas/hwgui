@@ -65,8 +65,8 @@
          <property name="Transparent" type="L" value="False" />
          <property name="WordWrap" type="L" value="False" />
          <property name="3DLook" type="L" value="False" />
-	   <property name="Enabled" type="L" value="True" />
-  	   <property name="ToolTip" type="C" value=""/>
+       <property name="Enabled" type="L" value="True" />
+       <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -91,10 +91,10 @@
          <property name="Font" type="O" />
          <property name="Justify" type="C" value="Left"/>
          <property name="cPicture" type="C" />
-	   <property name="nMaxLength" type="N" />
+       <property name="nMaxLength" type="N" />
          <property name="Password" type="L" value="False"/>
          <property name="Multiline" type="L" value="False"/>
-	   <property name="Enabled" type="L" value="True" />
+       <property name="Enabled" type="L" value="True" />
          <property name="AutoHScroll" type="L" value="False"/>
          <property name="BarsHScroll" type="L" value="False"/>
          <property name="AutoVScroll" type="L" value="False"/>
@@ -145,7 +145,7 @@
          </paint>
          <property name="Name" type="C" />
          <property name="varName" type="C" />
-	   <property name="Alignment" type="C" value="CenterLeft" />
+       <property name="Alignment" type="C" value="CenterLeft" />
          <property name="Caption" type="C" value="CheckBox" />
          <property name="Justify" type="C" value="Left"/>
          <property name="WordWrap" type="L" value="False" />
@@ -158,7 +158,7 @@
          <property name="BackColor" type="N" value="16777215" />
          <property name="3DLook" type="L" value="False" />
          <property name="ToolTip" type="C" value=""/>
-	   <property name="Enabled" type="L" value="True" />
+       <property name="Enabled" type="L" value="True" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onClick" />
@@ -171,7 +171,7 @@
             ]]>
          </paint>
          <property name="Name" type="C" />
-	   <property name="Alignment" type="C" value="Center Left" />
+       <property name="Alignment" type="C" value="Center Left" />
          <property name="Caption" type="C" value="CheckBox" />
          <property name="Justify" type="C" value="Left"/>
          <property name="WordWrap" type="L" value="False" />
@@ -249,10 +249,10 @@
          <property name="lEdit" type="L" value="False" />
          <property name="lText" type="L" value="False" />
          <property name="aSort" type="L" value="False" />
-   	   <property name="VSCROLL" type="L" value="False" />
+       <property name="VSCROLL" type="L" value="False" />
          <property name="3DLook" type="L" value="False" />
-	   <property name="Enabled" type="L" value="True" />
-	   <property name="Check" type="A"  />
+       <property name="Enabled" type="L" value="True" />
+       <property name="Check" type="A"  />
          <property name="ToolTip" type="C" value=""/>
          <property name="Font" type="O" />
          <method name="onInit" />
@@ -279,9 +279,9 @@
          <property name="VarItems" type="C" />
          <property name="Items" type="A" />
          <property name="nInitValue" type="N" value="1"/>
-   	   <property name="VSCROLL" type="L" value="False" />
+       <property name="VSCROLL" type="L" value="False" />
          <property name="3DLook" type="L" value="False" />
-	   <property name="Enabled" type="L" value="True" />
+       <property name="Enabled" type="L" value="True" />
          <property name="ToolTip" type="C" value=""/>
          <property name="Font" type="O" />
          <method name="onInit" />
@@ -306,7 +306,7 @@
          <property name="Height" type="N" value="60" />
          <property name="Bitmap" type="C" value="" />
          <property name="lResource" type="L" value="False" />
-		 <property name="ToolTip" type="C" value=""/>
+         <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
       </widget>
@@ -327,7 +327,7 @@
          <property name="Height" type="N" value="32" />
          <property name="Icon" type="C" value="" />
          <property name="lResource" type="L" value="False" />
-		 <property name="ToolTip" type="C" value=""/>
+         <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
       </widget>
@@ -370,9 +370,9 @@
          <property name="BarsVScroll" type="L" value="False"/>
          <property name="Justify" type="C" value="Left"/>
          <property name="Border" type="L" value="True"/>
-	   <property name="ReadOnly" type="L" value="False" />
-	   <property name="Enabled" type="L" value="True" />
-   	 <property name="ToolTip" type="C" value=""/>
+       <property name="ReadOnly" type="L" value="False" />
+       <property name="Enabled" type="L" value="True" />
+     <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -403,7 +403,7 @@
          <property name="cPicture" type="C" />
          <property name="Border" type="L" value="False"/>
          <property name="3DLook" type="L" value="False" />
-      	 <property name="ToolTip" type="C" value=""/>
+         <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -427,12 +427,12 @@
          <property name="Width" type="N" value="80" />
          <property name="Height" type="N" value="24" />
          <property name="BackColor" type="N" value="16777215" />
-	   <property name="Layout" type="C" value="0-Date"/>
-	   <property name="Checked" type="L" value="False"/>
+       <property name="Layout" type="C" value="0-Date"/>
+       <property name="Checked" type="L" value="False"/>
          <property name="Font" type="O" />
          <property name="Enabled" type="L" value="True" />
          <property name="3DLook" type="L" value="False" />
-	   <property name="ToolTip" type="C" value=""/>
+       <property name="ToolTip" type="C" value=""/>
          <method name="onChange" />
          <method name="onGetFocus" />
          <method name="onLostFocus" />
@@ -453,7 +453,7 @@
          <property name="Border" type="L" value="False"/>
          <property name="3DLook" type="L" value="False" />
          <property name="Enabled" type="L" value="True" />
-	   <property name="ToolTip" type="C" value=""/>
+       <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onChange" />
       </widget>
@@ -474,7 +474,7 @@
          <property name="TickStyle" type="C" value="Auto" />
          <property name="TickMarks" type="C" value="Bottom" />
          <property name="3DLook" type="L" value="False" />
-	   <property name="ToolTip" type="C" value=""/>
+       <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onChange" />
          <method name="onSize" />
@@ -559,7 +559,7 @@
          <property name="Center" type="L" value="False" />
          <property name="Transparent" type="L" value="False" />
       </widget>
-	  <widget class="progressbar" name="Progress bar control" bmp="BMP_PROGBAR">
+      <widget class="progressbar" name="Progress bar control" bmp="BMP_PROGBAR">
         <paint>
            <![CDATA[
            DrawEdge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,10 )
@@ -572,7 +572,7 @@
         <property name="Height" type="N" value="18"/>
         <property name="BarWidth" type="N" value="0"/>
         <property name="Range" type="N" value="0"/>
-	<property name="ToolTip" type="C" value=""/>
+    <property name="ToolTip" type="C" value=""/>
         <method name="onInit" />
         <method name="onSize" />
         <method name="onPaint" />
@@ -605,8 +605,8 @@
          <property name="VisitColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(8))) ]]></property>
          <property name="LinkColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(8))) ]]></property>
          <property name="HoverColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(8))) ]]></property>
-	   <property name="Enabled" type="L" value="True" />
-  	   <property name="ToolTip" type="C" value=""/>
+       <property name="Enabled" type="L" value="True" />
+       <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -710,20 +710,20 @@
          <property name="Granularity" type="N" value="0" />
          <property name="Highlight" type="N" value="0" />
          <property name="Enabled" type="L" value="True" />
-	 <property name="ToolTip" type="C" value=""/>
+     <property name="ToolTip" type="C" value=""/>
          <property name="LocalOnClickParam" type="C" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
          <method name="onClick" />
-      </widget>	  
+      </widget>
       <widget class="buttonex" name="Push button Ex" bmp="BMP_BUTTON">
          <paint>
             <![CDATA[
             private xt := 2,yt,cpp  //Max(Val(oCtrl:GetProp("TextLeft")),2),yt
             DrawButton( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
             if oCtrl:oBitmap != Nil
-     	        cpp := oCtrl:GetProp("PicturePosition") // array="Left,Center,Right" >
+                cpp := oCtrl:GetProp("PicturePosition") // array="Left,Center,Right" >
               yt := (oCtrl:nHeight-oCtrl:oBitmap:nHeight)/2
               xt := Iif(cpp="0-Left",1,iif(cpp="2-Right",oCtrl:nWidth-oCtrl:oBitmap:nWidth,(oCtrl:nWidth-oCtrl:oBitmap:nWidth)/2 ))
               if cpp="0" // left
@@ -735,9 +735,9 @@
               else // center
                 DrawText( hDC,oCtrl:title,0,yt/2+19,oCtrl:nWidth,yt+oCtrl:nHeight,37 )
                 DrawBitmap( hDC,oCtrl:oBitmap:handle,,xt,yt-8,oCtrl:oBitmap:nWidth,oCtrl:oBitmap:nHeight )
-              endif 
+              endif
             else
-		  DrawText( hDC,oCtrl:title,xt,0,oCtrl:nWidth-xt*2,oCtrl:nHeight,37 )
+          DrawText( hDC,oCtrl:title,xt,0,oCtrl:nWidth-xt*2,oCtrl:nHeight,37 )
             endif
             ]]>
          </paint>
@@ -868,7 +868,7 @@
          <property name="GridLines" type="L" value="True" />
          <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(8))) ]]></property>
          <property name="BackColor" type="N"><![CDATA[ Ltrim(Str(GetSysColor(15))) ]]></property>
-	   <property name="Bitmap" type="A" />
+       <property name="Bitmap" type="A" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -882,7 +882,7 @@
       <widget class="timer" name="Timer" bmp="BMP_TIMER">
          <paint>
             <![CDATA[
-		oCtrl:oBitmap := HBitmap():AddFile("resource\bmp\smTimer.bmp")
+        oCtrl:oBitmap := HBitmap():AddFile("resource\bmp\smTimer.bmp")
             if oCtrl:oBitmap != Nil
               DrawEdge( hDC,0,0,oCtrl:nWidth+7,oCtrl:nHeight+7,5 )
               DrawBitmap( hDC,oCtrl:oBitmap:handle,,0,0,oCtrl:nWidth,oCtrl:nHeight )
@@ -896,7 +896,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="16" />
          <property name="Height" type="N" value="16" />
-	   <property name="Interval" type="N" value="0"/>
+       <property name="Interval" type="N" value="0"/>
          <method name="onAction" />
       </widget>
       <widget class="toolbar" name="Toolbar" bmp="BMP_TOOL"  container="Yes">
@@ -981,8 +981,8 @@
       </property>
       <property name="AutoSize">
          <code2><![CDATA[ IF value=="True"
-            Autosize( oCtrl )
-            ENDIF ]]></code2>
+                          Autosize( oCtrl )
+                          ENDIF ]]></code2>
       </property>
       <property name="Id" array="   ,IDOK,IDCANCEL" >
       </property>
@@ -1017,9 +1017,9 @@
       </property>
       <property name="JustifyLine" array="0-Left,1-Center,2-Right">
       </property>
-	<property name="Alignment" array="CenterLeft,CenterRigth,TopLeft,TopRight,BottomLeft,BottomRight" >
+    <property name="Alignment" array="CenterLeft,CenterRigth,TopLeft,TopRight,BottomLeft,BottomRight" >
       </property>
-	<property name="PicturePosition" array="0-Left,1-Center,2-Right">
+    <property name="PicturePosition" array="0-Left,1-Center,2-Right">
       </property>
       <property name="TickStyle" array="Manual,Auto,None">
       </property>
@@ -1054,11 +1054,11 @@
          <code2><![CDATA[
            Private cAlias
             cAlias := LEFT(CutPath( value ),AT(".",CutPath( value ))-1)
-            IF !EMPTY(value) .AND. SELECT(cAlias) = 0 
+            IF !EMPTY(value) .AND. SELECT(cAlias) = 0
                IF select(calias) = 0
                  USE (value) NEW SHARED ALIAS (cAlias) //ftmp
                ENDIF
-      	 ENDIF 
+         ENDIF
           ]]></code2>
       </property>
       <property name="lVertical">
@@ -1080,26 +1080,26 @@
       </property>
       <property name="Bitmap" dlg="file">
          <code2><![CDATA[
-	   if oCtrl:ClassName()=="HDIALOG"
+       if oCtrl:ClassName()=="HDIALOG"
               oCtrl:oBmp := Iif( At(".",value)!=0,HBitmap():AddFile(value), HBitmap():AddResource(value) )
-	   else
-	    if !empty(value)
+       else
+        if !empty(value)
                 oCtrl:oBitmap := Iif( At(".",value)!=0,HBitmap():AddFile(value), HBitmap():AddResource(value) )
-	    endif
+        endif
             if oCtrl:oBitmap != Nil
               //oCtrl:nWidth := oCtrl:oBitmap:nWidth
               //oCtrl:nHeight:= oCtrl:oBitmap:nHeight
               //oCtrl:SetProp( "Height",Ltrim(Str(oCtrl:nHeight)) )
               //oCtrl:SetProp( "Width",Ltrim(Str(oCtrl:nWidth)) )
             endif
-	   endif
+       endif
           ]]></code2>
       </property>
       <property name="BtnBitmap" dlg="file">
          <code2><![CDATA[
             if !empty(value)
             oCtrl:oBitmap := Iif( At(".",value)!=0,HBitmap():AddFile(value),  HBitmap():AddResource(value) )
-	    endif
+        endif
           ]]></code2>
       </property>
       <property name="Icon" dlg="file">
@@ -1109,7 +1109,7 @@
            else
            if !empty(value)
               oCtrl:oBitmap := Iif( At(".",value)!=0,HIcon():AddFile(value),HIcon():Resource(value))
-	   endif
+       endif
            endif
           ]]></code3>
       </property>
@@ -1129,7 +1129,7 @@
       </property>
       <property name="Effect" array="SHS_METAL,SHS_SOFTBUMP,SHS_NOISE,SHS_HARDBUMP,SHS_HSHADE,SHS_VSHADE,SHS_DIAGSHADE,SHS_HBUMP">
       </property>
-	  <property name="Palette" array="PAL_DEFAULT,PAL_METAL">
+      <property name="Palette" array="PAL_DEFAULT,PAL_METAL">
       </property>
    </data>
    <methods>

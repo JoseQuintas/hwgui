@@ -9,6 +9,11 @@
 */
 
 2011-09-22 16:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hcwindow.prg
+     * FUNCTION onSize
+	   ! fixed event onSize
+
+2011-09-22 16:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcontrol.prg
      * CLASS HBUTTONEx
 	   * METHOD onEvent

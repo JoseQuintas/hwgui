@@ -789,21 +789,23 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
    LOCAL aControls := oWnd:aControls
    LOCAL oItem, nw1, nh1, aCoors, nWindowState
    
-   IF EMPTY( oWnd:Type )
-      RETURN NIL
-   ENDIF
-
    nw1 := oWnd:nWidth
    nh1 := oWnd:nHeight
-   nWindowState := oWnd:WindowState
-   IF wParam != 1 .AND. ( oWnd:GETMDIMAIN() != Nil .AND. ! oWnd:GETMDIMAIN():IsMinimized() ) //SIZE_MINIMIZED 
-
+   
+   IF EMPTY( oWnd:Type )
       aCoors := GetWindowRect( oWnd:handle )
       oWnd:nWidth := aCoors[ 3 ] - aCoors[ 1 ]
       oWnd:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
-      IF  oWnd:Type = WND_MDICHILD .AND. oWnd:GETMDIMAIN() != Nil .AND. wParam != 1 .AND. oWnd:GETMDIMAIN():WindowState = 2
-          nWindowState := SW_SHOWMINIMIZED
-      ENDIF 
+   ELSE
+      nWindowState := oWnd:WindowState
+      IF wParam != 1 .AND. ( oWnd:GETMDIMAIN() != Nil .AND. ! oWnd:GETMDIMAIN():IsMinimized() ) //SIZE_MINIMIZED 
+         aCoors := GetWindowRect( oWnd:handle )
+         oWnd:nWidth := aCoors[ 3 ] - aCoors[ 1 ]
+         oWnd:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
+         IF  oWnd:Type = WND_MDICHILD .AND. oWnd:GETMDIMAIN() != Nil .AND. wParam != 1 .AND. oWnd:GETMDIMAIN():WindowState = 2
+             nWindowState := SW_SHOWMINIMIZED
+         ENDIF 
+      ENDIF
    ENDIF
    IF oWnd:nScrollBars > - 1 .AND. oWnd:lAutoScroll
       onMove( oWnd )

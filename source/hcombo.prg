@@ -648,7 +648,7 @@ METHOD onChange( ) CLASS HComboBox
    IF ::bChangeSel != Nil
       ::SetItem( SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1 )
       ::oparent:lSuspendMsgsHandling := .T.
-      Eval( ::bChangeSel, nPos, Self )
+      Eval( ::bChangeSel, ::Value, Self )
       ::oparent:lSuspendMsgsHandling := .F.
    ENDIF
 RETURN Nil

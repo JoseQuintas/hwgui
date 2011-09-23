@@ -405,7 +405,7 @@ METHOD AddStandard( nId ) CLASS HBitmap
    RETURN Self
 
 METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
-   LOCAL i, aBmpSize, cname
+   LOCAL i, aBmpSize, cname, cCurDir
 
    cname := CutPath( name )
    #ifdef __XHARBOUR__
@@ -425,7 +425,9 @@ METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
    #endif
    name := IIf( ! File( name ) .AND. FILE( CutPath( name ) ), CutPath( name ), name )
    IF ! File( name )
+      cCurDir  := DiskName()+':\'+CurDir()
       name := SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ),FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
+      DirChange( cCurDir )    
    ENDIF
 
 	 IF Lower( Right( name, 4 ) ) != ".bmp" .OR. ( nWidth == nil .AND. nHeight == nil .AND. lTranparent == Nil )
@@ -559,7 +561,7 @@ METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
    RETURN Self
 
 METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
-   LOCAL i, aIconSize, cname
+   LOCAL i, aIconSize, cname, cCurDir
 
 
    IF nWidth == nil
@@ -587,7 +589,9 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
    // ::classname:= "HICON"
    name := IIf( ! File( name ) .AND.FILE( CutPath( name ) ), CutPath( name ), name )
    IF ! File( name )
+      cCurDir  := DiskName()+':\'+CurDir()
       name := SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ),FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
+      DirChange( cCurDir )      
    ENDIF
 
    //::handle := LoadImage( 0, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE + LR_LOADFROMFILE )

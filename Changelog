@@ -8,37 +8,40 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-09-23 16:15 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
+   * utils\designer\resource\widgets.xml
+     * small fix
 
 2011-09-23 09:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/drawwidg.prg
      * CLASS HBitmap
        * METHOD AddFile()
-	 *  CLASS HIcon
-       * METHOD AddFile( name, nWidth, nHeight ) 
-	   ! Save e Restore current directory in calling function SelectFile
+     *  CLASS HIcon
+       * METHOD AddFile( name, nWidth, nHeight )
+       ! Save e Restore current directory in calling function SelectFile
 
 2011-09-23 08:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcwindow.prg
      * FUNCTION onSize
-	   ! fixed event onSize
+       ! fixed event onSize
 
 2011-09-22 16:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcontrol.prg
      * CLASS HBUTTONEx
-	   * METHOD onEvent
+       * METHOD onEvent
          ! changed  hb_BitIsSet( lParam, 30 ) to hb_BitIsSet( PtrtoUlong( lParam ), 30 )  // the key was down before ?
    * source/hcombo.prg
      * METHOD Refresh( )
-	 * METHOD GetValueBound( )
-	   ! minor fix 
+     * METHOD GetValueBound( )
+       ! minor fix
      * METHOD onChange( )
-       ! fixed   
-	  
+       ! fixed
+
 2011-09-22 10:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htab.prg
      * METHOD SetPaintSizePos
        ! minor fix
-	   
+
 2011-09-22 16:35 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
    * source/htab.prg
      * remove ::nPages++, not used

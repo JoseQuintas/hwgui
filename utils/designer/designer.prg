@@ -525,7 +525,7 @@ Memvar oDesigner
                   cText := oWidget:GetAttribute( "text" )
                   cBmp := oWidget:GetAttribute( "bmp" )
                   IF cText != Nil .OR. cBmp != Nil
-                    oButton := HOwnButton():New( ,,,x1,28,30,26, ;
+                    oButton := HOwnButton():New( ,,,x1,32,30,26, ;
                                ,,,{|o,id|ClickBtn(o,id)},.T.,    ;
                                cText,,,,,,,                      ;
                                cBmp,At(".",cBmp)==0,,,,,.F.,,    ;
@@ -594,9 +594,9 @@ Local i, x1, y1, oBtn
    FOR i := 1 TO Len( oTab:aControls )
       oBtn := oTab:aControls[i]
       IF oBtn:Classname == "HOWNBUTTON"
-         IF oBtn:nLeft == 4 .AND. oBtn:nTop == 28
+         IF oBtn:nLeft == 4 .AND. oBtn:nTop == 32
             x1 := 4
-            y1 := 28
+            y1 := 32
          ELSE
             IF oBtn:nLeft != x1 .OR. oBtn:nTop != y1
                oBtn:Move( x1, y1 )
@@ -605,7 +605,7 @@ Local i, x1, y1, oBtn
          x1 += 30
          IF x1 + oBtn:nWidth > x
             x1 := 4
-            y1 += 26
+            y1 += 30
          ENDIF
       ENDIF
    NEXT

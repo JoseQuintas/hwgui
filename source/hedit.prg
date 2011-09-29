@@ -43,6 +43,7 @@ CLASS VAR winclass   INIT "EDIT"
    //DATA nColorinFocus  INIT vcolor( 'CCFFFF' )
    DATA lFocu          INIT .F.
    DATA lReadOnly      INIT .F.
+   DATA lNoPaste       INIT .F.
    DATA oUpDown
    DATA lCopy  INIT .F.  HIDDEN
    DATA nSelStart  INIT 0  HIDDEN
@@ -221,7 +222,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ::lcopy := .F.
             COPYSTRINGTOCLIPBOARD( ::UnTransform( GETCLIPBOARDTEXT() ) )
             RETURN -1
-         ELSEIF msg = WM_PASTE
+         ELSEIF msg = WM_PASTE .AND. ! ::lNoPaste
  	          ::lFirst := IIF( ::cType = "N" .AND. "E" $ ::cPicFunc, .T., .F. )
             cClipboardText :=  GETCLIPBOARDTEXT()
             IF ! EMPTY( cClipboardText )
@@ -388,11 +389,17 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          ENDIF
       ELSE
          // no bsetget
-         IF msg == WM_KEYDOWN
+         IF msg == WM_CHAR
+            IF wParam == VK_TAB .OR. wParam == VK_ESCAPE
+               RETURN 0
+            ENDIF          
+            RETURN -1
+         ELSEIF msg == WM_KEYDOWN
             IF wParam == VK_TAB .AND. ::GetParentForm():Type >= WND_DLG_RESOURCE    // Tab
                nexthandle := GetNextDlgTabItem ( GetActiveWindow(), GetFocus(), ;
 					                                  IsCtrlShift(.f., .t.) )
-               SetFocus( nexthandle )
+               //SetFocus( nexthandle )
+               PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle, 1 )
                RETURN 0
             ELSEIF  wParam == VK_RETURN .AND. ProcOkCancel( Self, wParam, ::GetParentForm():Type >= WND_DLG_RESOURCE )   
                RETURN - 1
@@ -501,7 +508,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          RETURN DLGC_WANTMESSAGE   
       ENDIF   
       IF ! ::lMultiLine .OR. wParam = VK_ESCAPE
-         RETURN DLGC_WANTARROWS + DLGC_WANTTAB + DLGC_WANTCHARS
+         IF ::bSetGet != Nil
+             RETURN DLGC_WANTARROWS + DLGC_WANTTAB + DLGC_WANTCHARS
+         ENDIF    
       ENDIF
    ELSEIF msg == WM_DESTROY
       ::END()

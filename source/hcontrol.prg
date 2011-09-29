@@ -74,8 +74,10 @@ CLASS HControl INHERIT HCustomWindow
    METHOD SetFont( oFont )
 
    //METHOD SetFocus()    INLINE SendMessage( GetActiveWindow(), WM_NEXTDLGCTL, ::handle, 1 )
-   METHOD SetFocus()    INLINE IIF( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE, SetFocus( ::handle ),;
-                         SendMessage( GetActiveWindow(), WM_NEXTDLGCTL,::handle, 1 ) )
+   METHOD SetFocus()    INLINE IIF( ! IsWindowEnabled( ::Handle ),  GetSkip( ::oParent, ::handle, , 1 ) , ;
+                               IIF( ::GetParentForm():Type < WND_DLG_RESOURCE, SetFocus( ::handle ), ;
+                                    SendMessage( GetActiveWindow(), WM_NEXTDLGCTL,::handle, 1 ) ) )
+                         
    METHOD GetText()     INLINE GetWindowText( ::handle )
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c ), ::title := c, ::Refresh()
    METHOD Refresh()     VIRTUAL
@@ -1045,7 +1047,7 @@ METHOD onevent( msg, wParam, lParam ) CLASS HButton
          ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP
             GetSkip( ::oparent, ::handle, , -1 )
             RETURN 0
-         ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN
+         ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN         
             GetSkip( ::oparent, ::handle, , 1 )
             RETURN 0
          ENDIF
@@ -1513,14 +1515,16 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
    RETURN - 1
 
 
-
 METHOD CancelHover() CLASS HBUTTONEx
 
-   IF ( ::bMouseOverButton )
+   IF ( ::bMouseOverButton ) .AND. ::id != IDOK //NANDO
       ::bMouseOverButton := .F.
-      Invalidaterect( ::handle, .f. )
+      IF !::lflat
+         Invalidaterect( ::handle, .f. )
+      ELSE
+         InvalidateRect( ::oParent:Handle, 1 , ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )   
+      ENDIF
    ENDIF
-
    RETURN nil
 
 METHOD SetDefaultColor( tColor, bColor, lPaint ) CLASS HBUTTONEx

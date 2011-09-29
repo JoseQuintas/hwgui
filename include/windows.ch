@@ -141,6 +141,12 @@
 #DEFINE PRF_CHILDREN            16
 #DEFINE PRF_OWNED               32
 
+/* CONSTANTS TO TRACKMOUSEEVENT */
+#DEFINE  TME_CANCEL            0x80000000 
+#DEFINE  TME_HOVER             1
+#DEFINE  TME_LEAVE             2 
+
+
 
 /*
  * Dialog Box Command IDs

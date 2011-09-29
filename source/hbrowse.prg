@@ -29,11 +29,12 @@
 
 #ifdef __XHARBOUR__
    #xtranslate hb_RAScan([<x,...>])        => RAScan(<x>)
+ *  #xtranslate hb_tokenGet([<x>,<n>,<c>] ) =>  __StrToken(<x>,<n>,<c>)
 #endif
 
 REQUEST DBGoTop
 REQUEST DBGoTo
-REQUEST DBGoBottom
+REQUEST DBGoBottom    
 REQUEST DBSkip
 REQUEST RecCount
 REQUEST RecNo
@@ -51,6 +52,7 @@ STATIC oCursor     := 0
 STATIC oPen64
 STATIC xDrag
 STATIC xDragMove := 0
+STATIC xToolTip 
 
 //----------------------------------------------------//
 CLASS HColumn INHERIT HObject
@@ -93,6 +95,9 @@ CLASS HColumn INHERIT HObject
    DATA Column
    DATA nSortMark INIT 0
    DATA Resizable INIT .T.
+   DATA ToolTip 
+   DATA aHints INIT {}
+   DATA Hint INIT .F.
 
    METHOD New( cHeading, block, Type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick, tcolor, bColor, bClick )
    METHOD Visible( lVisible ) SETGET
@@ -260,11 +265,13 @@ CLASS HBrowse INHERIT HControl
    DATA nAutoFit
    DATA lNoVScroll   INIT .F.
    DATA lDisableVScrollPos INIT .F.
+   DATA oTimer  HIDDEN 
+   DATA nSetRefresh  INIT 0 HIDDEN 
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
-                bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,;
-                lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect,;
-                lDescend, bWhile, bFirst, bLast, bFor, bOther,tcolor, bcolor, brclick )
+               bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,;
+               lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,lMultiSelect,;
+               lDescend, bWhile, bFirst, bLast, bFor, bOther,tcolor, bcolor, brclick, bChgRowCol, ctooltip )
    METHOD InitBrw( nType, lInit )
    METHOD Rebuild()
    METHOD Activate()
@@ -316,6 +323,8 @@ CLASS HBrowse INHERIT HControl
    METHOD DeleteMark( lDeleteMark ) SETGET
 //   METHOD BrwScrollVPos()
    // new
+   METHOD ShowColToolTips( lParam )
+	 METHOD SetRefresh( nSeconds ) SETGET
    METHOD When()
    METHOD Valid()
    METHOD ChangeRowCol( nRowColChange )
@@ -328,7 +337,7 @@ ENDCLASS
 METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
             bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, ;
             lNoBorder, lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, ;
-            lDescend, bWhile, bFirst, bLast, bFor, bOther, tcolor, bcolor, bRclick ) CLASS HBrowse
+            lDescend, bWhile, bFirst, bLast, bFor, bOther, tcolor, bcolor, bRclick, bChgRowCol, ctooltip ) CLASS HBrowse
 
    lNoVScroll := IIf( lNoVScroll = Nil , .F., lNoVScroll )
    nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE + WS_TABSTOP + ;
@@ -337,7 +346,7 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
    nStyle   -= IIF( Hwg_BitAND( nStyle, WS_VSCROLL ) > 0 .AND. lNoVScroll, WS_VSCROLL, 0 )
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, IIf( nWidth == Nil, 0, nWidth ), ;
-              IIf( nHeight == Nil, 0, nHeight ), oFont, bInit, bSize, bPaint, ,tColor, bColor )
+              IIf( nHeight == Nil, 0, nHeight ), oFont, bInit, bSize, bPaint, ctooltip ,tColor, bColor )
 
    ::lNoVScroll := lNoVScroll
    ::Type    := lType
@@ -350,11 +359,12 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
    ::bLostFocus  := bLfocus
    ::bOther :=  bOther
 
-   ::lAppable    := IIf( lAppend == Nil, .F., lAppend )
-   ::lAutoedit   := IIf( lAutoedit == Nil, .F., lAutoedit )
-   ::bUpdate     := bUpdate
-   ::bKeyDown    := bKeyDown
-   ::bPosChanged := bPosChg
+   ::lAppable      := IIf( lAppend == Nil, .F., lAppend )
+   ::lAutoedit     := IIf( lAutoedit == Nil, .F., lAutoedit )
+   ::bUpdate       := bUpdate
+   ::bKeyDown      := bKeyDown
+   ::bPosChanged   := bPosChg
+   ::bChangeRowCol := bChgRowCol
    IF lMultiSelect != Nil .AND. lMultiSelect
       ::aSelected := { }
    ENDIF
@@ -377,7 +387,6 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
    ELSE
       ::lFilter := .F.
    ENDIF
-
    hwg_RegBrowse()
    ::InitBrw( , .F. )
    ::Activate()
@@ -766,8 +775,13 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             IF ( ! ::allMouseOver ) .AND. ::hTheme != Nil
                ::allMouseOver := .T.
                TRACKMOUSEVENT( ::handle )
+            ELSE
+               TRACKMOUSEVENT( ::handle, TME_HOVER + TME_LEAVE )      
             ENDIF
          ENDIF
+      ELSEIF msg =  WM_MOUSEHOVER 
+         ::ShowColToolTips( lParam ) 
+         
       ELSEIF ( msg = WM_MOUSELEAVE .OR. msg = WM_NCMOUSELEAVE ) //.AND.! ::oParent:lSuspendMsgsHandling
          IF ::allMouseOver
             ::MouseMove( 0, 0 )
@@ -906,6 +920,10 @@ METHOD END() CLASS HBrowse
    IF oPen64 != Nil
       oPen64:Release()
    ENDIF
+   IF ::oTimer != Nil
+      ::oTimer:End()
+   ENDIF   
+
 
    RETURN Nil
 
@@ -928,6 +946,43 @@ METHOD DeleteMark( lDeleteMark ) CLASS HBrowse
       ENDIF
    ENDIF
    RETURN ::lDeleteMark
+
+METHOD ShowColToolTips( lParam ) CLASS HBrowse
+   LOCAL pt := {, }, cTip := ""
+
+   IF Ascan( ::aColumns, {| c | c:Hint != .F. .AND. c:Tooltip != Nil } ) = 0 
+       RETURN Nil
+   ENDIF
+   pt := ::ButtonDown( lParam, .T. )
+   IF pt = Nil .OR. pt[ 1 ] = - 1
+      RETURN Nil
+   ELSEIF pt[ 1 ] != 0 .AND. pt[ 2 ] != 0 .AND. ::aColumns[ pt[ 2 ] ]:Hint 
+      cTip := ::aColumns[ pt[ 2 ] ]:aHints[ pt[ 1 ] ]
+   ELSEIF pt[ 2 ] != 0 .AND. ::aColumns[ pt[ 2 ] ]:ToolTip != Nil
+      cTip := ::aColumns[ pt[ 2 ] ]:ToolTip
+   ENDIF   
+   IF ! EMPTY( cTip ) .OR. ! EMPTY( xToolTip ) 
+      SETTOOLTIPTITLE( ::GetparentForm():handle, ::handle, cTip )
+      xToolTip := IIF( ! EMPTY( cTip ), cTip, IIF( ! EMPTY( xToolTip ), Nil, xToolTip ) )
+   ENDIF
+   RETURN NIL
+
+METHOD SetRefresh( nSeconds ) CLASS HBrowse
+   
+   IF nSeconds != Nil //.AND. ::Type == BRW_DATABASE
+      IF ::oTimer != Nil 
+         ::oTimer:Interval := nSeconds * 1000
+      ELSEIF nSeconds > 0    
+         SET TIMER ::oTimer OF ::GetParentForm() VALUE ( nSeconds * 1000)  ACTION { || IIF( isWindowVisible( ::Handle ),; 
+                                     ( ::internal[ 1 ] := 12, INVALIDATERect( ::handle, 0,;
+                                                            ::x1 , ;
+                                                            ::y1 ,;
+                                                            ::x1 + ::xAdjRight,;
+                                                            ::y1 + ::rowCount * ( ::height + 1 ) + 1 ) ), Nil ) } 
+      ENDIF
+      ::nSetRefresh := nSeconds   
+   ENDIF
+   RETURN ::nSetRefresh
 
 //----------------------------------------------------//
 METHOD InitBrw( nType, lInit )  CLASS HBrowse
@@ -1413,6 +1468,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
       cursor_row := 1
       ::oParent:lSuspendMsgsHandling := .T.
       ::internal[ 3 ] := Eval( ::bRecno, Self )
+       AEVAL( ::aColumns, {| c | c:aHints := {} } )
       DO WHILE .T.
          // if we are on the current record, set current video line
          IF Eval( ::bRecno, Self ) == tmp
@@ -1611,7 +1667,11 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
             SelectObject( hDC, oPenHdr:handle )
             cStr := oColumn:cGrid + ';'
             FOR nLine := 1 TO ::nHeadRows
+               #ifdef __XHARBOUR__
+               cNWSE := __StrToken( @cStr, nLine, ';' )
+               #else
                cNWSE := hb_tokenGet( @cStr, nLine, ';' )
+               #endif
                IF At( 'S', cNWSE ) != 0
                   DrawLine( hDC, x - 1, ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine ), x + xSize - 1, ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine ) )
                ENDIF
@@ -1653,6 +1713,9 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
          cStr := oColumn:heading + ';'
          FOR nLine := 1 TO ::nHeadRows
             aTxtSize := IIF( nLine = 1, TxtRect( cStr, Self ), aTxtSize )
+            *#ifdef __XHARBOUR__
+            * DrawText( hDC, __StrToken( @cStr, nLine, ';' ), ;
+            
             DrawText( hDC, hb_tokenGet( @cStr, nLine, ';' ), ;
                       x + ::aMargin[ 4 ] + 1 + nMe, ;
                       ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine + 1 ) +  ::aMargin[ 1 ] + 1, ;
@@ -1932,8 +1995,10 @@ METHOD FooterOut( hDC ) CLASS HBrowse
         nY := ::y2 - nPixelFooterHeight
 
         FOR nLine := 1 TO ::nFootRows
+            //#ifdef __XHARBOUR__
+            //DrawText( hDC, __StrToken( @cStr, nLine, ';' ), ;
 
-           DrawText( hDC, hb_tokenGet( @cStr, nLine, ';' ), ;
+            DrawText( hDC, hb_tokenGet( @cStr, nLine, ';' ), ;
                    x + ::aMargin[ 4 ], ;
                    nY + ( nLine - 1 ) * ( ::nFootHeight + 1 ) + 1 + ::aMargin[ 1 ], ;
                    x + xSize - ( 1 + ::aMargin[ 2 ] ), ;
@@ -2142,7 +2207,9 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                      SelectObject( hDC, ::ofont:handle )
                      lColumnFont := .F.
                   ENDIF
-
+                  IF ::aColumns[ ::nPaintCol ]:Hint
+                      AADD( ::aColumns[ ::nPaintCol ]:aHints, sViv )
+                  ENDIF  
                   DrawText( hDC, sviv,  ;
                             x + ::aMargin[ 4 ] + 1, ;
                             ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1 + ::aMargin[ 1 ] , ;
@@ -3085,6 +3152,10 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
             ENDIF
          ENDIF
 
+         IF Type != "L" .AND. ::nSetRefresh > 0
+            ::oTimer:Interval := 0
+         ENDIF
+
          ACTIVATE DIALOG oModDlg
 
          ::lNoValid := .F.
@@ -3175,6 +3246,10 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
          ENDIF
          ::SetFocus()
          SET( _SET_EXIT, lReadExit )
+         
+         IF ::nSetRefresh > 0
+            ::oTimer:Interval := ::nSetRefresh
+         ENDIF
 
       ELSEIF ::lEditable
          ::DoHScroll( SB_LINERIGHT )
@@ -3303,10 +3378,14 @@ METHOD ChangeRowCol( nRowColChange ) CLASS HBrowse
 // 2 Column change
 // 3 Row and column change
    LOCAL res := .T.
+   LOCAL lSuspendMsgsHandling := ::oParent:lSuspendMsgsHandling
    IF ::bChangeRowCol != Nil .AND.  !::oParent:lSuspendMsgsHandling
       ::oParent:lSuspendMsgsHandling := .T.
       res :=  Eval( ::bChangeRowCol, nRowColChange, Self, ::SetColumn() )
-       ::oParent:lSuspendMsgsHandling := .F.
+      ::oParent:lSuspendMsgsHandling := lSuspendMsgsHandling
+   ENDIF
+   IF nRowColChange > 0
+      ::lSuspendMsgsHandling := .F.
    ENDIF
    RETURN ! EMPTY( res )
 
@@ -3665,7 +3744,11 @@ STATIC FUNCTION HdrToken( cStr, nMaxLen, nCount )
 
    nMaxLen := nCount := 0
    cStr += ';'
+   #ifdef __XHARBOUR__
+   DO WHILE ( nL := Len( __StrTkPtr( @cStr, @nPos, ";" ) ) ) != 0
+   #else
    DO WHILE ( nL := Len( hb_tokenPtr( @cStr, @nPos, ";" ) ) ) != 0
+   #endif
       nMaxLen := Max( nMaxLen, nL )
       nCount ++
    ENDDO
@@ -3872,3 +3955,4 @@ STATIC FUNCTION LenVal( xVal, cType, cPict )
    END
 
    RETURN nLen
+   

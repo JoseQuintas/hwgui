@@ -8,6 +8,50 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-09-29 06:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include/guilib.ch
+     #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;
+	 + [ TOOLTIP <ctoolt> ] 	 ; 
+   * include/window.ch	 
+	 + add CONSTANTS TO TRACKMOUSEEVENT 
+     + #DEFINE  TME_CANCEL
+     + #DEFINE  TME_HOVER    
+     + #DEFINE  TME_LEAVE    
+   * source/theme.c
+     * HB_FUNC( TRACKMOUSEVENT )
+	   ! added suport to message WM_MOUSEHOVER
+   * source/hbrowse.prg
+     + STATIC xToolTip 
+     * CLASS HColumn 
+	   + DATA ToolTip 
+	     show tooltip in header of the column
+       + DATA aHints INIT {} 
+	     stores the contents of the column is Hint := .T.
+       + DATA Hint INIT .F.
+         show tooltip value column case hint := .T.
+     * CLASS HBrowse
+	   + DATA oTimer  HIDDEN 
+       + DATA nSetRefresh  INIT 0 HIDDEN 
+       + METHOD ShowColToolTips( lParam )
+	   + METHOD SetRefresh( nSeconds ) CLASS HBrowse
+       * METHOD New(
+         + parameter ctooltip
+	   * METHOD onEvent
+         + handling msg =  WM_MOUSEHOVER 
+           to  Show ToolTips
+   * source/hcontrol.prg
+     * CLASS HControl
+	   * METHOD SetFocus()
+	     ! fixed focus, adjusted the focus to the control. If the control is disabled, the next control automatically takes the focus
+     * CLASS HButtonEX 
+	   * METHOD CancelHover()
+	     ! fixed STYLE FLAT
+   * source/hedit.prg
+     + DATA lNoPaste  
+	   enable or disable the message WM_PAST in control lnoPaste := .T. | .F.
+	 * METHOD onEvent
+       ! fixed message WM_CHAR when bsetget = nil	 
+
 2011-09-26 09:55 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
    * utils\designer\designer.prg
      * small fix (output buttons in tab)

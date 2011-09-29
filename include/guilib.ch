@@ -873,13 +873,14 @@
              [ FOR <bFor> ]             ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
              [ ON OTHER MESSAGES <bOther> ] ;
              [ ON OTHERMESSAGES <bOther>  ] ;
+             [ TOOLTIP <ctoolt> ]       ;
              [ <class: CLASS> <classname> ] ;
           => ;
           [<oBrw> :=] __IIF(<.class.>, <classname>, HBrowse)():New( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,0)),;
              <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>, ;
              <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.>, <.lAppend.>,;
              <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg>, <.lMulti.>, <.lDescend.>,;
-             <bWhile>, <bFirst>, <bLast>, <bFor>, <bOther>, <color>, <bcolor>, <bRClick>,<bChgrowcol>  );;
+             <bWhile>, <bFirst>, <bLast>, <bFor>, <bOther>, <color>, <bcolor>, <bRClick>,<bChgrowcol>, <ctoolt>  );;
           [ <oBrw>:name := <(oBrw)> ]
 
 #xcommand REDEFINE BROWSE [ <oBrw> ]   ;

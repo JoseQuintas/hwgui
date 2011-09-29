@@ -1920,11 +1920,14 @@ HB_FUNC( HB_CLOSETHEMEDATA )
 HB_FUNC( TRACKMOUSEVENT )
 {
    HWND m_hWnd = ( HWND ) HB_PARHANDLE( 1 );
+   DWORD dwFlags = ( DWORD ) hb_parnl( 2 );
+   DWORD dwHoverTime = ( DWORD ) hb_parnl( 3 );
    TRACKMOUSEEVENT csTME;
 
    csTME.cbSize = sizeof( csTME );
-   csTME.dwFlags = TME_LEAVE;
+   csTME.dwFlags = hb_pcount() == 2 ? dwFlags : TME_LEAVE ;
    csTME.hwndTrack = m_hWnd;
+   csTME.dwHoverTime = hb_pcount() == 3 ? dwHoverTime : HOVER_DEFAULT ;
    _TrackMouseEvent( &csTME );
 }
 

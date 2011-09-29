@@ -298,7 +298,7 @@ CLASS HBrowse INHERIT HControl
    METHOD Bottom( lPaint )
    METHOD Top()
    METHOD Home()  INLINE ::DoHScroll( SB_LEFT )
-   METHOD ButtonDown( lParam )
+   METHOD ButtonDown( lParam, lReturnRowCol )
    METHOD ButtonUp( lParam )
    METHOD ButtonDbl( lParam )
    METHOD MouseMove( wParam, lParam )
@@ -2635,7 +2635,7 @@ METHOD TOP() CLASS HBrowse
    RETURN Nil
 
 //----------------------------------------------------//
-METHOD ButtonDown( lParam ) CLASS HBrowse
+METHOD ButtonDown( lParam, lReturnRowCol ) CLASS HBrowse
 
    LOCAL nLine
    LOCAL STEP, res
@@ -2686,6 +2686,9 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
    ENDIF
    //nando
    fif := aColumns[ fif, 2 ]
+   IF lReturnRowCol != Nil .AND. lReturnRowCol
+       RETURN { IIF( nLine <= ::rowCurrCount, nLine, - 1 ), fif }
+   ENDIF
 
 IF nLine > 0 .AND. nLine <= ::rowCurrCount
    // NEW

@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-09-29 08:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hbrowse.prg
+     * CLASS HBrowse
+	   * METHOD ButtonDown( lParam, lReturnRowCol )
+	     + parameter lReturnRowCol
+		   return Col and Row to show tooltip
+
 2011-09-29 06:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include/guilib.ch
      #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;

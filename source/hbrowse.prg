@@ -948,7 +948,7 @@ METHOD DeleteMark( lDeleteMark ) CLASS HBrowse
    RETURN ::lDeleteMark
 
 METHOD ShowColToolTips( lParam ) CLASS HBrowse
-   LOCAL pt := {, }, cTip := ""
+   LOCAL pt, cTip := ""
 
    IF Ascan( ::aColumns, {| c | c:Hint != .F. .AND. c:Tooltip != Nil } ) = 0 
        RETURN Nil

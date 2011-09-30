@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-09-29 08:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hupdown.prg
+     * changed DATA hUpDown -> hwndUpDown
+	   had to change the name of the property because it had the same name of the class and fails to create new class inherited it
+
 2011-09-30 12:15 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
    * source\procmisc\procscri.prg
      * add REQUEST __PP_STDRULES

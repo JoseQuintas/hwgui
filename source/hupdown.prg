@@ -24,7 +24,7 @@ CLASS HUpDown INHERIT HControl
    DATA bSetGet
    DATA nValue
    DATA bValid
-   DATA hUpDown, idUpDown, styleUpDown
+   DATA hwndUpDown, idUpDown, styleUpDown
    DATA bkeydown, bkeyup, bchange
    DATA bClickDown, bClickUp
    DATA nLower       INIT -9999  //0
@@ -54,16 +54,16 @@ CLASS HUpDown INHERIT HControl
    METHOD SetColor( tColor, bColor, lRedraw ) INLINE super:SetColor(tColor, bColor, lRedraw ), IIF( ::oEditUpDown != Nil, ;
                                              ::oEditUpDown:SetColor( tColor, bColor, lRedraw ),)
    METHOD DisableBackColor( DisableBColor ) SETGET
-   METHOD Hide() INLINE (::lHide := .T., HideWindow( ::handle ), HideWindow( ::hUpDown ) )
-   METHOD Show() INLINE (::lHide := .F., ShowWindow( ::handle ), ShowWindow( ::hUpDown ) )
-   METHOD Enable()  INLINE ( Super:Enable(), EnableWindow( ::hUpDown, .T. ), InvalidateRect( ::hUpDown, 0 ) )
+   METHOD Hide() INLINE (::lHide := .T., HideWindow( ::handle ), HideWindow( ::hwndUpDown ) )
+   METHOD Show() INLINE (::lHide := .F., ShowWindow( ::handle ), ShowWindow( ::hwndUpDown ) )
+   METHOD Enable()  INLINE ( Super:Enable(), EnableWindow( ::hwndUpDown, .T. ), InvalidateRect( ::hwndUpDown, 0 ) )
                           //  InvalidateRect( ::oParent:Handle, 1,  ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight ) )
-   METHOD Disable() INLINE ( Super:Disable(), EnableWindow( ::hUpDown, .F. ) )
+   METHOD Disable() INLINE ( Super:Disable(), EnableWindow( ::hwndUpDown, .F. ) )
    METHOD Valid()
    METHOD SetRange( nLower, nUpper ) 
    METHOD Move( x1, y1, width, height, nRepaint ) INLINE ; 
-                              Super:Move( x1, y1 , IIF( width != Nil, width, ::nWidth ) + GetClientRect( ::hUpDown )[ 3 ] - 1, height, nRepaint  ) ,;
-                              SENDMESSAGE( ::hUpDown, UDM_SETBUDDY, ::oEditUpDown:handle, 0 ),;
+                              Super:Move( x1, y1 , IIF( width != Nil, width, ::nWidth ) + GetClientRect( ::hwndUpDown )[ 3 ] - 1, height, nRepaint  ) ,;
+                              SENDMESSAGE( ::hwndUpDown, UDM_SETBUDDY, ::oEditUpDown:handle, 0 ),;
                               IIF( ::lHide, ::Hide(), ::Show() )
 
 ENDCLASS
@@ -168,7 +168,7 @@ METHOD CREATEUPDOWN() CLASS Hupdown
       Hwg_InitEditProc( ::oEditUpDown:handle )
     ENDIF
    ::handle := ::oEditUpDown:handle
-   ::hUpDown := CreateUpDownControl( ::oParent:handle, ::idUpDown, ;
+   ::hwndUpDown := CreateUpDownControl( ::oParent:handle, ::idUpDown, ;
                                      ::styleUpDown, 0, 0, ::nUpDownWidth, 0, ::handle, -2147483647, 2147483647, Val(::title) )
                                     // ::styleUpDown, 0, 0, ::nUpDownWidth, 0, ::handle, ::nLower, ::nUpper,Val(::title) )
    ::oEditUpDown:oUpDown := Self
@@ -214,7 +214,7 @@ METHOD SetValue( nValue )  CLASS HUpDown
    ENDIF
    ::nValue := nValue
    ::title := Str( ::nValue )
-   SetUpDown( ::hUpDown, ::nValue )
+   SetUpDown( ::hwndUpDown, ::nValue )
    IF ::bSetGet != Nil
       Eval( ::bSetGet, ::nValue, Self )
    ENDIF
@@ -227,16 +227,16 @@ METHOD Refresh()  CLASS HUpDown
       ::nValue := Eval( ::bSetGet )
       IF Str(::nValue) != ::title
          //::title := Str( ::nValue )
-         //SetUpDown( ::hUpDown, ::nValue )
+         //SetUpDown( ::hwndUpDown, ::nValue )
          ::SetValue( ::nValue )
       ENDIF
    ELSE
-      SetUpDown( ::hUpDown, Val(::title) )
+      SetUpDown( ::hwndUpDown, Val(::title) )
    ENDIF
    ::oEditUpDown:Title :=  ::Title
    ::oEditUpDown:Refresh()
    IF GetFocus() == ::handle
-      InvalidateRect( ::hUpDown, 0 )
+      InvalidateRect( ::hwndUpDown, 0 )
    ENDIF
 
    RETURN Nil
@@ -358,8 +358,8 @@ CLASS VAR winclass   INIT "EDIT"
    METHOD Init()
    METHOD OnEvent(msg,wParam,lParam)
    METHOD Refresh()
-   METHOD Hide() INLINE ( ::lHide := .T., HideWindow( ::handle ), HideWindow( ::hUpDown ) )
-   METHOD Show() INLINE ( ::lHide := .F., ShowWindow( ::handle ), ShowWindow( ::hUpDown ) )
+   METHOD Hide() INLINE ( ::lHide := .T., HideWindow( ::handle ), HideWindow( ::hwndUpDown ) )
+   METHOD Show() INLINE ( ::lHide := .F., ShowWindow( ::handle ), ShowWindow( ::hwndUpDown ) )
 
 ENDCLASS
 
@@ -422,7 +422,7 @@ METHOD Init()  CLASS HUpDown
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       HWG_INITUpDownPROC( ::handle )
-      ::hUpDown := CreateUpDownControl( ::oParent:handle, ::idUpDown, ;
+      ::hwndUpDown := CreateUpDownControl( ::oParent:handle, ::idUpDown, ;
                                         ::styleUpDown, 0, 0, ::nUpDownWidth, 0, ::handle, ::nUpper, ::nLower, Val( ::title ) )
    ENDIF
    RETURN Nil
@@ -458,10 +458,10 @@ METHOD Refresh()  CLASS HUpDown
       ::value := Eval( ::bSetGet )
       IF Str( ::value ) != ::title
          ::title := Str( ::value )
-         SetUpDown( ::hUpDown, ::value )
+         SetUpDown( ::hwndUpDown, ::value )
       ENDIF
    ELSE
-      SetUpDown( ::hUpDown, Val( ::title ) )
+      SetUpDown( ::hwndUpDown, Val( ::title ) )
    ENDIF
 
    RETURN Nil

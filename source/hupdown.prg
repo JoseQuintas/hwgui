@@ -270,6 +270,7 @@ CLASS HEditUpDown INHERIT HEdit
     METHOD INIT()
     METHOD Notify( lParam )
     METHOD Refresh()
+    METHOD Move()  VIRTUAL
 
 ENDCLASS
 

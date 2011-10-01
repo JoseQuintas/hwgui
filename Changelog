@@ -8,7 +8,31 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2011-09-29 08:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+2011-10-01 16:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/theme.c
+   * source/window.c
+     ! removed warnings in compilation
+   * source/hcontrl.prg
+     * CLASS HControl
+       * METHOD onAnchor
+         ! changed  hUpDown -> hwndUpDown because changed in hupdown class
+   * source/hriched.prg
+     * METHOD onEvent
+	   ! handling msg == WM_MOUSEACTIVATE to correctly position the mouse when you get the focus
+   * source/hdialog.prg
+     * Function InitModalDlg
+	   ! minor fix to adjust position and scrollbars 
+   * source/hcwindow.prg
+     * METHOD Move
+	   ! fixed resizing of DIALOGS without WS_CHILD style , so it was necessary to calculate the difference
+	   between client area and non-client area
+     * METHOD SetupScrollbars()
+       ! minor fix 
+   * source/hupdown.prg	   
+ 	 * CLASS HEditUpDown   
+	   + METHOD Move
+
+2011-09-30 08:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hupdown.prg
      * changed DATA hUpDown -> hwndUpDown
 	   had to change the name of the property because it had the same name of the class and fails to create new class inherited it

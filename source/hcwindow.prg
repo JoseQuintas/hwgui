@@ -206,15 +206,24 @@ METHOD DelControl( oCtrl ) CLASS HCustomWindow
    RETURN NIL
 
 METHOD Move( x1, y1, width, height, nRePaint )  CLASS HCustomWindow
-
+   LOCAL rect, nHx := 0, nWx := 0
+   
    x1     := IIF( x1     = NIL, ::nLeft, x1 )
    y1     := IIF( y1     = NIL, ::nTop, y1 )
    width  := IIF( width  = NIL, ::nWidth, width )
    height := IIF( height = NIL, ::nHeight, height )
+   IF  Hwg_BitAnd( ::style,WS_CHILD ) = 0
+      rect := GetwindowRect( ::Handle )
+      nHx := rect[ 4 ] - rect[ 2 ]  - GetclientRect( ::Handle )[ 4 ] - ;
+                 IIF( Hwg_BitAnd( ::style, WS_HSCROLL ) > 0, GetSystemMetrics( SM_CYHSCROLL ), 0 )
+      nWx := rect[ 3 ] - rect[ 1 ]  - GetclientRect( ::Handle )[ 3 ] - ;
+                 IIF( Hwg_BitAnd( ::style, WS_VSCROLL ) > 0, GetSystemMetrics( SM_CXVSCROLL ), 0 )
+   ENDIF
+
    IF nRePaint = Nil
-      MoveWindow( ::handle, x1, y1, Width, Height  )
+      MoveWindow( ::handle, x1, y1, Width + nWx, Height + nHx  )
    ELSE
-      MoveWindow( ::handle, x1, y1, Width, Height, nRePaint )
+      MoveWindow( ::handle, x1, y1, Width + nWx, Height + nHx, nRePaint )
    ENDIF
 
    //IF x1 != NIL
@@ -536,14 +545,16 @@ METHOD SetupScrollbars() CLASS HCustomWindow
       nwMax := max( ::ncurWidth, ::Rect[ 3 ] )
       nhMax := max( ::ncurHeight, ::Rect[ 4 ] )
       ::nHorzInc := ( nwMax - tempRect[ 3 ] ) / HORZ_PTS - HORZ_PTS
-      ::nVertInc := ( nhMax - tempRect[ 4 ] ) / VERT_PTS - ;
-        IIF( amenu != Nil, GetSystemMetrics( SM_CYMENU ), 0 )  // MENU
+      ::nVertInc := ( nhMax - tempRect[ 4 ] ) / VERT_PTS + VERT_PTS - ;
+           IIF( amenu != Nil, GetSystemMetrics( SM_CYMENU ), 0 )  // MENU
    ENDIF
     // Set the vertical and horizontal scrolling info
    IF ::nScrollBars = 0 .OR. ::nScrollBars = 2
       ::nHscrollMax := max( 0, ::nHorzInc )
       IF ::nHscrollMax < HORZ_PTS / 2
          ScrollWindow( ::Handle, ::nHscrollPos * HORZ_PTS, 0 )
+      ELSEIF ::nHScrollMax / HORZ_PTS < HORZ_PTS   
+          ::nHScrollMax := 0
       ENDIF
       ::nHscrollPos := min( ::nHscrollPos, ::nHscrollMax )
       SetScrollPos( ::handle, SB_HORZ, ::nHscrollPos, .T. )
@@ -551,8 +562,10 @@ METHOD SetupScrollbars() CLASS HCustomWindow
    ENDIF
    IF ::nScrollBars = 1 .OR. ::nScrollBars = 2
       ::nVscrollMax := max( 0, ::nVertInc )
-      IF ::nVscrollMax < VERT_PTS / 2
-         ScrollWindow( ::Handle, 0, ::nVscrollPos * VERT_PTS )
+      IF ::nVscrollMax < VERT_PTS / 2 
+          ScrollWindow( ::Handle, 0, ::nVscrollPos * VERT_PTS ) 
+      ELSEIF ::nVScrollMax / VERT_PTS < VERT_PTS   
+          ::nVScrollMax := 0
       ENDIF
       ::nVscrollPos := min( ::nVscrollPos, ::nVscrollMax )
       SetScrollPos( ::handle, SB_VERT, ::nVscrollPos, .T. )
@@ -791,15 +804,14 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
    
    nw1 := oWnd:nWidth
    nh1 := oWnd:nHeight
+   aCoors := GetWindowRect( oWnd:handle )
    
    IF EMPTY( oWnd:Type )
-      aCoors := GetWindowRect( oWnd:handle )
       oWnd:nWidth := aCoors[ 3 ] - aCoors[ 1 ]
       oWnd:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
    ELSE
       nWindowState := oWnd:WindowState
       IF wParam != 1 .AND. ( oWnd:GETMDIMAIN() != Nil .AND. ! oWnd:GETMDIMAIN():IsMinimized() ) //SIZE_MINIMIZED 
-         aCoors := GetWindowRect( oWnd:handle )
          oWnd:nWidth := aCoors[ 3 ] - aCoors[ 1 ]
          oWnd:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
          IF  oWnd:Type = WND_MDICHILD .AND. oWnd:GETMDIMAIN() != Nil .AND. wParam != 1 .AND. oWnd:GETMDIMAIN():WindowState = 2

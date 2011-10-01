@@ -108,10 +108,14 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
    LOCAL nDelta, nret
 
    // writelog( str(msg) + str(wParam) + str(lParam) )
-   IF msg = WM_NOTIFY .OR. msg = WM_KEYUP .OR. msg == WM_LBUTTONDOWN .OR. msg == WM_LBUTTONUP
+   IF msg = WM_KEYUP .OR. msg == WM_LBUTTONDOWN .OR. msg == WM_LBUTTONUP // msg = WM_NOTIFY .OR.
       ::updatePos()
+   ELSEIF msg == WM_MOUSEACTIVATE 
+      ::SetFocus( )
    ENDIF
-   IF msg = EM_GETSEL .OR. msg = EM_LINEFROMCHAR .OR. msg = EM_LINEINDEX .OR. msg = EM_GETLINECOUNT
+   IF  msg = EM_GETSEL .OR. msg = EM_LINEFROMCHAR .OR. msg = EM_LINEINDEX .OR. ;
+       msg = EM_GETLINECOUNT .OR. msg = EM_SETSEL .OR. msg = EM_SETCHARFORMAT .OR. ;
+       msg = EM_HIDESELECTION .OR. msg = WM_GETTEXTLENGTH .OR. msg = EM_GETFIRSTVISIBLELINE
       Return - 1
    ENDIF
 
@@ -232,7 +236,7 @@ METHOD When( ) CLASS HRichEdit
     IF !CheckFocus( Self, .f. )
        RETURN .t.
    ENDIF
-
+   ::title := ::GetText()
    ::oparent:lSuspendMsgsHandling := .t.
    Eval( ::bGetFocus, ::title, Self )
    ::oparent:lSuspendMsgsHandling := .f.
@@ -241,10 +245,10 @@ METHOD When( ) CLASS HRichEdit
 
 METHOD Valid( ) CLASS HRichEdit
 
-    IF ::bLostFocus != Nil .AND. !CheckFocus( Self, .T. )
+   IF ::bLostFocus != Nil .AND. !CheckFocus( Self, .T. )
        RETURN .T.
-     ENDIF
-
+   ENDIF
+   ::title := ::GetText()
    ::oparent:lSuspendMsgsHandling := .t.
    Eval( ::bLostFocus, ::title, Self )
    ::oparent:lSuspendMsgsHandling := .f.

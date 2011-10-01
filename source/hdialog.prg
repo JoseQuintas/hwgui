@@ -189,10 +189,12 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
          ::lResult := .F.
          ::Add()
          Hwg_CreateDlgIndirect( hParent, Self, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
-
          IF  ::WindowState > SW_HIDE
-            BRINGTOTOP( ::handle )
-            UPDATEWINDOW( ::handle )
+           *InvalidateRect( ::handle, 1 )
+            *BRINGTOTOP( ::handle )
+            *UPDATEWINDOW( ::handle )
+            SetWindowPos( ::Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE + SWP_FRAMECHANGED )
+            RedrawWindow( ::handle, RDW_UPDATENOW + RDW_NOCHILDREN ) 
          ENDIF
 
          /*
@@ -207,7 +209,7 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
    LOCAL i, oTab, nPos, aCoors
-
+   *  WRITELOG(STR(MSG)+STR(WPARAM)+STR(LPARAM)+CHR(13))
    IF msg = WM_GETMINMAXINFO
       IF ::minWidth  > - 1 .OR. ::maxWidth  > - 1 .OR. ;
          ::minHeight > - 1 .OR. ::maxHeight > - 1
@@ -298,7 +300,6 @@ METHOD GetActive() CLASS HDialog
 
 STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    LOCAL nReturn := 1 , uis
-
    // HB_SYMBOL_UNUSED( wParam )
    HB_SYMBOL_UNUSED( lParam )
    HB_SYMBOL_UNUSED( wParam )
@@ -312,14 +313,8 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       hwg__SetMenu( oDlg:handle, oDlg:menu[5] )
    ENDIF
 
-   oDlg:rect := GetWindowRect( odlg:handle )
-
-   IF oDlg:nScrollBars > - 1
-      AEval( oDlg:aControls, { | o | oDlg:ncurHeight := max( o:nTop + o:nHeight + GETSYSTEMMETRICS( SM_CYCAPTION ) + GETSYSTEMMETRICS( SM_CYCAPTION ) + 12 , oDlg:ncurHeight ) } )
-      AEval( oDlg:aControls, { | o | oDlg:ncurWidth := max( o:nLeft + o:nWidth  + 24 , oDlg:ncurWidth ) } )
-      oDlg:ResetScrollbars()
-      oDlg:SetupScrollbars()
-   ENDIF
+  *- oDlg:rect := GetWindowRect( odlg:handle )
+   oDlg:rect := GetclientRect( oDlg:handle )
 
    IF oDlg:oIcon != Nil
       SendMessage( oDlg:handle, WM_SETICON, 1, oDlg:oIcon:handle )
@@ -336,6 +331,7 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
 
    InitObjects( oDlg )
    InitControls( oDlg, .T. )
+   
 
    IF oDlg:bInit != Nil
       oDlg:lSuspendMsgsHandling := .T.
@@ -376,24 +372,19 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       RETURN oDlg
    ENDIF
 
+   POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )    
+   
    IF ! oDlg:lModal .AND. ! isWindowVisible( oDlg:handle )	
-       SHOWWINDOW( oDlg:Handle, SW_SHOWDEFAULT )      
+       SHOWWINDOW( oDlg:Handle, SW_SHOWDEFAULT )
    ENDIF
-    
+
    IF oDlg:bGetFocus != Nil
       oDlg:lSuspendMsgsHandling := .t.
       Eval( oDlg:bGetFocus, oDlg )
       oDlg:lSuspendMsgsHandling := .f.
    ENDIF
 
-  	 // adjust values of MIN and MAX size to Anchor work correctly
-   oDlg:rect  := GetWindowRect( oDlg:Handle )
-   oDlg:nLeft := oDlg:rect[ 1 ]
-   oDlg:nTop  := oDlg:rect[ 2 ]
-   oDlg:rect := GetClientRect( oDlg:Handle )
-   oDlg:nWidth  := oDlg:rect[ 3 ]
-   oDlg:nHeight := oDlg:rect[ 4 ]
-
+   
    IF oDlg:WindowState = SW_SHOWMINIMIZED  //2
       oDlg:minimize()
    ELSEIF oDlg:WindowState = SW_SHOWMAXIMIZED  //3
@@ -407,8 +398,14 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       ENDIF  
    ENDIF
    
-   POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )
-
+   oDlg:rect := GetclientRect( oDlg:handle )
+   IF oDlg:nScrollBars > - 1    
+      AEval( oDlg:aControls, { | o | oDlg:ncurHeight := max( o:nTop + o:nHeight + VERT_PTS * 4, oDlg:ncurHeight ) } )  
+      AEval( oDlg:aControls, { | o | oDlg:ncurWidth := max( o:nLeft + o:nWidth  + HORZ_PTS * 4, oDlg:ncurWidth ) } )  
+       oDlg:ResetScrollbars()
+      oDlg:SetupScrollbars()
+   ENDIF
+   
    RETURN nReturn
 
 STATIC FUNCTION onEnterIdle( oDlg, wParam, lParam )

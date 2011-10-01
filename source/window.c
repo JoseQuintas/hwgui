@@ -1433,13 +1433,13 @@ HB_FUNC( FLASHWINDOW )
 
 HB_FUNC( ANSITOUNICODE )
 {
-   void * hText;
+   void * hText = ( TCHAR * ) hb_xgrab( ( 1024 + 1 ) * sizeof( TCHAR  ) );
 #if !defined(__XHARBOUR__)
-   LPCWSTR lpText = hb_parstr_u16( 4, HB_CDP_ENDIAN_NATIVE, &hText, NULL );
+    hb_parstr_u16( 1, HB_CDP_ENDIAN_NATIVE, &hText, NULL );
 #else
-   LPCWSTR lpText = hwg_wstrget( hb_param( 1, HB_IT_ANY ), &hText, NULL );
+    hwg_wstrget( hb_param( 1, HB_IT_ANY ), &hText, NULL );
 #endif
-   HB_RETSTRLEN( lpText, 1024 );   
+   HB_RETSTRLEN( hText, 1024 );   
    hb_strfree( hText );
 }
 

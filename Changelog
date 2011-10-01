@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-01 18:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include/windows.ch
+     + constants WM_MOUSEACTIVATE, EM_SETCHARFORMAT, EM_HIDESELECTION
+   * source/hpanel
+     ! initialize ::nGetSkip := 1 in method New
+
 2011-10-01 16:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/theme.c
    * source/window.c

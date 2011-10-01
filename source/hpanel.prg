@@ -63,6 +63,7 @@ LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
       ENDIF
    ENDIF
    */
+   ::nGetSkip := 1
    IF Hwg_Bitand( nStyle,WS_HSCROLL ) > 0
       ::nScrollBars ++
    ENDIF
@@ -173,6 +174,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
       ENDIF
       ::Resize()
       ::Super:onEvent( WM_SIZE, wParam, lParam )
+
    ELSEIF msg == WM_DESTROY
       IF ::oEmbedded != Nil
          ::oEmbedded:END()
@@ -285,6 +287,7 @@ METHOD Hide() CLASS HPanel
 	 Super:Hide()
 	 IF ::oParent:type == WND_MDI
        SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, MAKELPARAM( ::nWidth, ::nHeight ) )
+       InvalidateRect( ::oParent:handle, 1, ::nLeft, ::nTop + 1, ::nLeft + ::nWidth, ::nTop + ::nHeight )
 	 ENDIF
 	 RETURN Nil
 
@@ -307,8 +310,8 @@ METHOD Show() CLASS HPanel
    ENDIF
    Super:Show()	
    IF ::oParent:type == WND_MDI
-       nrePaint := -1
        SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, MAKELPARAM( ::nWidth, ::nHeight ) )
+       nrePaint := -1
    ENDIF
 	 RETURN Nil
 

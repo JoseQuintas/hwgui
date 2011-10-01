@@ -20,6 +20,7 @@
 #define WM_ERASEBKGND                   20   // 0x0014
 #define WM_ENDSESSION                   22   // 0x0016
 #define WM_ACTIVATEAPP                  28
+#DEFINE WM_MOUSEACTIVATE                33
 #define WM_GETMINMAXINFO                36   // 0x0024
 #define WM_NEXTDLGCTL                   40   // 0x0028
 #define WM_DRAWITEM                     43   // 0x002B
@@ -715,8 +716,11 @@
 #define EM_GETLIMITTEXT         213     // 0x00D5
 #define EM_POSFROMCHAR          214     // 0x00D6
 #define EM_CHARFROMPOS          215     // 0x00D7
-#define EM_SETBKGNDCOLOR       1091
-#define EM_SETEVENTMASK        1093     // (WM_USER + 69)
+#define EM_HIDESELECTION        1087
+#define EM_SETBKGNDCOLOR        1091
+#define EM_SETCHARFORMAT        1092     // (WM_USER + 68)
+#define EM_SETEVENTMASK         1093     // (WM_USER + 69)
+
 
 #define ENM_CHANGE             1        // 0x00000001
 #define ENM_SELCHANGE          524288   // 0x00080000

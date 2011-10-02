@@ -2012,25 +2012,25 @@ HB_FUNC( HWG_SETWINDOWTHEME)
    int ienable = hb_parni(2);
    //HRESULT hres ;
    //BOOL ret = FALSE;
-   OSVERSIONINFO ovi = {0};
+   OSVERSIONINFO ovi;
    ovi.dwOSVersionInfoSize = sizeof ovi;
    ovi.dwMajorVersion = 0;
    ovi.dwMinorVersion = 0;
    GetVersionEx(&ovi);
    if (ovi.dwMajorVersion >= 5 && ovi.dwMinorVersion==1 )
+      {
       //Windows XP detected
       if ( ienable == 0 )
-      {
          hb_SetWindowTheme( hwnd, L" ", L" " ) ; // pszSubAppName,L pszSubIdList) ;
-      }   
       else 
          hb_SetWindowTheme( hwnd, NULL, NULL) ;
+      }   
 }
 
 HB_FUNC( HWG_GETWINDOWTHEME )
 {
    //BOOL ret = FALSE;
-   OSVERSIONINFO ovi = {0};
+   OSVERSIONINFO ovi ;
    ovi.dwOSVersionInfoSize = sizeof ovi;
    ovi.dwMajorVersion = 0;
    ovi.dwMinorVersion = 0;

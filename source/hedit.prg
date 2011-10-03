@@ -275,6 +275,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                                 ! oParent:FindControl( IDCANCEL ):IsEnabled() 
                    SendMessage( oParent:handle, WM_COMMAND, makewparam( IDCANCEL, 0 ), ::handle )
                ENDIF    
+  					   IF ( oParent:Type < WND_DLG_RESOURCE .OR. ! oParent:lModal )
+                   SETFOCUS( 0 )                                            
+                   ProcOkCancel( Self, VK_ESCAPE )    
+               ENDIF   
                RETURN 0 //-1
             ENDIF
             //

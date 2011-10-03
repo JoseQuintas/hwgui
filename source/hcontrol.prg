@@ -1697,19 +1697,31 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
 //      IF VALTYPE( ::hbitmap ) != "N"
 //         uAlign := DT_CENTER
 //      ENDIF
-   uAlign := DT_LEFT
-   IF ValType( ::hbitmap ) == "N"
-      uAlign := DT_CENTER
+
+   uAlign := 0 //DT_LEFT
+   IF ValType( ::hbitmap ) == "N" .OR. ValType( ::hicon ) == "N"
+      uAlign := DT_CENTER + DT_VCENTER
    ENDIF
+   /*
    IF ValType( ::hicon ) == "N"
       uAlign := DT_CENTER
    ENDIF
+   */
+   IF uAlign != DT_CENTER + DT_VCENTER
+      uAlign := IIF( HWG_BITAND( ::Style, BS_TOP ) != 0, DT_TOP, DT_VCENTER )
+      uAlign += IIF( HWG_BITAND( ::Style, BS_BOTTOM ) != 0, DT_BOTTOM - DT_VCENTER , 0 ) 
+      uAlign += IIF( HWG_BITAND( ::Style, BS_LEFT ) != 0, DT_LEFT, DT_CENTER )
+      uAlign += IIF( HWG_BITAND( ::Style, BS_RIGHT ) != 0, DT_RIGHT - DT_CENTER, 0 ) 
+   ELSE   
+      uAlign := IIF( uAlign = 0, DT_CENTER + DT_VCENTER, uAlign )
+   ENDIF   
+
 
 //             DT_CENTER | DT_VCENTER | DT_SINGLELINE
 //   uAlign += DT_WORDBREAK + DT_CENTER + DT_CALCRECT +  DT_VCENTER + DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
-   uAlign += DT_VCENTER
+ //  uAlign += DT_VCENTER
    uStyleTmp := HWG_GETWINDOWSTYLE( ::handle )
-
+   itemRectOld := aclone(itemRect)
    IF hb_BitAnd( uStyleTmp, BS_MULTILINE ) != 0 .AND. !EMPTY(::caption) .AND. ;
       INT( aTxtSize[ 2 ] ) !=  INT( DrawText( dc, ::caption, itemRect[ 1 ], itemRect[ 2 ],;
           itemRect[ 3 ] - IIF( ::iStyle = ST_ALIGN_VERT, 0, aBmpSize[ 1 ] + 8 ),;
@@ -1776,6 +1788,8 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
          captionRect[ 3 ] -= ::PictureMargin 
        ENDIF  
        DrawTheIcon( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, bIsDisabled, ::hIcon, ::hbitmap, ::iStyle )
+   ELSE    
+       InflateRect( @captionRect, - 3, - 3 )       
    ENDIF
    itemRect1    := aclone( itemRect )
    captionRect1 := aclone( captionRect )
@@ -1806,7 +1820,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
              DrawText( dc, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], uAlign , @captionRect )
           ENDIF
       ELSE
-          uAlign += DT_CENTER
+         *- uAlign += DT_CENTER
       ENDIF
       
       //captionRectWidth  := captionRect[ 3 ] - captionRect[ 1 ]

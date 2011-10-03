@@ -86,7 +86,7 @@ CLASS VAR szAppName  SHARED INIT "HwGUI_App"
    DATA KeyList  INIT { }      // The array of keys ( as Clipper's SET KEY )
    DATA nLastKey INIT 0
    DATA lExitOnEnter INIT .F.
-   DATA lExitOnEsc INIT .F.
+   DATA lExitOnEsc INIT .T.
    DATA lGetSkiponEsc INIT .F.
    DATA bCloseQuery
    Data nFocus  INIT 0

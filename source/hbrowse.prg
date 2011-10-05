@@ -104,6 +104,7 @@ CLASS HColumn INHERIT HObject
    METHOD Hide()
    METHOD Show()
    METHOD SortMark( nSortMark ) SETGET
+   METHOD Value( xValue ) SETGET
 
 ENDCLASS
 
@@ -164,6 +165,37 @@ METHOD Visible( lVisible ) CLASS HColumn
       ::nSortMark := nSortMark
     ENDIF
     RETURN ::nSortMark
+
+METHOD Value( xValue ) CLASS HColumn
+   Local varbuf
+   
+   IF xValue != Nil
+      varbuf := xValue
+      IF ::oParent:Type == BRW_DATABASE
+         IF ( ::oParent:Alias ) ->( RLock() )
+            ( ::oParent:Alias ) ->( Eval( ::block, varbuf, ::oParent, ::Column ) )
+            ( ::oParent:Alias ) ->( DBUnlock() )
+         ELSE
+             MsgStop( "Can't lock the record!" )
+         ENDIF
+      ELSEIF ::oParent:nRecords  > 0
+         Eval( ::block,  varbuf, ::oParent, ::Column )
+      ENDIF
+      /* Execute block after changes are made */
+      IF ::oParent:bUpdate != Nil .AND. ! ::oParent:lSuspendMsgsHandling
+         ::oParent:lSuspendMsgsHandling := .T.                                                   
+         Eval( ::oParent:bUpdate, ::oParent, ::Column )
+         ::oParent:lSuspendMsgsHandling := .F.                                                             
+      END
+   ELSE
+      IF ::oParent:Type == BRW_DATABASE
+         varbuf := ( ::oParent:Alias ) ->( Eval( ::block,, ::oParent, ::Column ) )
+      ELSEIF ::oParent:nRecords  > 0
+         varbuf :=  Eval( ::block,, ::oParent, ::Column ) 
+      ENDIF    
+   ENDIF
+   RETURN varbuf
+    
 
 //----------------------------------------------------//
 CLASS HBrowse INHERIT HControl

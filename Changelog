@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-05 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hbrowse.prg
+     * CLASS HColumn
+       + METHOD Value( xValue ) 
+	     Return or attrib value to cell -> oBrowse:aColumns[2]:value := xvalue or  xvalue := oBrowse:aColumns[2]:value 
+
 2011-10-03 13:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcontrl.prg
      * CLASS HButtonex

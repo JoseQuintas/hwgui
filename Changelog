@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-06 11:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   + file make_b32pointer.bat
+     compiled with FLAGS DHWG_USE_POINTER_ITEM
+
 2011-10-06 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    + file makefilepointer.bc
      compiled with FLAGS DHWG_USE_POINTER_ITEM

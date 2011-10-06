@@ -366,7 +366,8 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
    INIT DIALOG oDlg TITLE cTitle                  ;
         At 40, 10 SIZE GetDesktopWidth(), GetDesktopHeight()                        ;
         STYLE hwg_multibitor( WS_POPUP, WS_VISIBLE, WS_CAPTION, WS_SYSMENU, WS_SIZEBOX, WS_MAXIMIZEBOX, WS_CLIPCHILDREN ) ;
-        ON INIT { | o | o:Maximize(), ::ResizePreviewDlg( oCanvas, 1 ), SetTimer( oCanvas, @oTimer ) } ;
+        ICON HIcon():AddResource("ICON_PRW");     
+        ON INIT { | o | o:Maximize(), ::ResizePreviewDlg( oCanvas, 1 ), SetTimerPrinter( oCanvas, @oTimer ) } ;
         ON EXIT { || oCanvas:brush := NIL, .T. }
 
 
@@ -500,7 +501,7 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
 
    RETURN Nil
 
-STATIC FUNCTION SetTimer( oDlg, oTimer )
+STATIC FUNCTION SetTimerPrinter( oDlg, oTimer )
    SET TIMER oTimer OF oDlg VALUE 500 ACTION { || TimerFunc( oDlg ) }
    RETURN Nil
 

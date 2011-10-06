@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-06 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   + file makefilepointer.bc
+     compiled with FLAGS DHWG_USE_POINTER_ITEM
+   * file makefile.bc
+     REMOVED compiled with FLAGS DHWG_USE_POINTER_ITEM
+   * include/guilib.ch
+     * #xcommand @ <x>, <y>  SHAPE [<oShape>] [OF <oWnd>] ;
+	 + clause [ BACKSTYLE <nbackStyle>]  ;
+   * source/hcontrol.prg
+   * source/hedit.prg
+     ! minor fix in user pointer in handle
+   * source/window.c
+     ! changed #if defined( HB_EMULATE_STR_API )  to #if ! defined( HB_EMULATE_STR_API )
+
 2011-10-05 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
      * CLASS HColumn

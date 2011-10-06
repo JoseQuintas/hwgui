@@ -163,7 +163,7 @@ METHOD INIT() CLASS HControl
       ELSEIF oForm != NIL  .AND. VALTYPE( oForm ) != "N" .AND. oForm:oFont != Nil         
          SetCtrlFont( ::oParent:handle, ::id, oForm:oFont:handle )
       ELSEIF ::oParent != Nil .AND. ::oParent:oFont != NIL
-         SetCtrlFont( ::oParent:handle, ::id, ::oParent:oFont:handle )
+         SetCtrlFont( ::handle, ::id, ::oParent:oFont:handle )
       ENDIF
       IF oForm != Nil .AND. oForm:Type != WND_DLG_RESOURCE  .AND. ( ::nLeft + ::nTop + ::nWidth + ::nHeight  != 0 )
          // fix init position in FORM reduce  flickering
@@ -213,8 +213,8 @@ METHOD Enable() CLASS HControl
      
    EnableWindow( ::handle, .T. )
    IF ::oParent:lGetSkipLostFocus .AND. ! lEnable .AND. Hwg_BitaND( HWG_GETWINDOWSTYLE( ::Handle ), WS_TABSTOP ) > 0
-      nNext := Ascan( ::oParent:aControls, { | o | o:Handle = GetFocus() } )
-      nPos  := Ascan( ::oParent:acontrols, { | o | o:Handle = ::handle } )  
+      nNext := Ascan( ::oParent:aControls, { | o | PtrtouLong( o:Handle ) = PtrtouLong( GetFocus() ) } )
+      nPos  := Ascan( ::oParent:acontrols, { | o | PtrtouLong( o:Handle ) = PtrtouLong( ::handle ) } )  
       IF nPos < nNext
          SendMessage(  GetActiveWindow() , WM_NEXTDLGCTL,::handle, 1) 
       ENDIF    
@@ -973,9 +973,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    */
    IF ::id > 2 .OR. ::bClick != NIL
       IF ::id < 3
-         ::GetParentForm():AddEvent( 0, Self, { || ::onClick() } )
+         ::GetParentForm():AddEvent( BN_CLICKED, Self, { || ::onClick() } )
       ENDIF
-      ::oParent:AddEvent( 0, Self, { || ::onClick() } )
+      ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
    ENDIF
    RETURN Self
 
@@ -1002,14 +1002,14 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::oParent:AddEvent( BN_KILLFOCUS, self, {|| ::onLostFocus()})
    ::bClick  := bClick
    IF bClick != NIL
-      ::oParent:AddEvent( 0, Self, { || ::onClick() } )
+      ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
    ENDIF
    RETURN Self
 
 METHOD Init() CLASS HButton
    IF ! ::lInit
       IF !( ::GetParentForm( ):classname == ::oParent:classname .AND.;
-            ::GetParentForm():Type >= WND_DLG_RESOURCE ) .OR. ;
+            ::GetParentForm( ):Type >= WND_DLG_RESOURCE ) .OR. ;
           ! ::GetParentForm( ):lModal  .OR. ::nHolder = 1
          ::nHolder := 1
          SetWindowObject( ::handle, Self )
@@ -1116,7 +1116,7 @@ METHOD NoteCaption( cNote )  CLASS HButton         //*
 METHOD onGetFocus()  CLASS HButton
    LOCAL res := .t., nSkip
 
-   IF ! CheckFocus( Self, .f. ) .OR. ::bGetFocus = Nil
+   IF  ::bGetFocus = Nil .OR. ! CheckFocus( Self, .f. )
       RETURN .t.
    ENDIF
    nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 .and. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
@@ -1305,7 +1305,8 @@ METHOD INIT() CLASS HButtonEx
       //SetWindowObject( ::handle, Self )
       //HWG_INITBUTTONPROC( ::handle )
       // call in HBUTTON CLASS
-      ::SetDefaultColor( ,, .F. )
+      
+      //::SetDefaultColor( ,, .F. )
       IF HB_IsNumeric( ::handle ) .and. ::handle > 0
          nbs := HWG_GETWINDOWSTYLE( ::handle )
 

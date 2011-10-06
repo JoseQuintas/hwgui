@@ -1958,13 +1958,14 @@ Added by Marcos Antonio Gambeta
              [ CURVATURE <nCurvature>]  ;
              [ COLOR <tcolor> ]         ;
              [ BACKCOLOR <bcolor> ]     ;
+             [ BACKSTYLE <nbackStyle>]  ;
              [ BORDERSTYLE <nbStyle>]   ;
              [ FILLSTYLE <nfStyle>]     ;
              [ ON INIT <bInit> ]        ;
              [ ON SIZE <bSize> ]        ;
           => ;
           <oShape> := HShape():New(<oWnd>, <nId>, <x>, <y>, <width>, <height>, ;
-             <nBorder>, <nCurvature>, <nbStyle>,<nfStyle>, <tcolor>, <bcolor>, <bSize>,<bInit>);;
+             <nBorder>, <nCurvature>, <nbStyle>,<nfStyle>, <tcolor>, <bcolor>, <bSize>,<bInit>,<nbackStyle>);;
           [ <oShape>:name := <(oShape)> ]
 
 #xcommand @ <x>, <y>  CONTAINER [<oCnt>] [OF <oWnd>] ;

@@ -1,0 +1,350 @@
+# $Id: makefile.bc 1620 2011-03-30 14:01:41Z lculik $
+# makefile for Borland C/C++ 32 bits
+# Building of hwgui.lib - Harbour Win32 GUI library
+
+# ---------------------------------------------------------------
+# "echo." intentionally used instead of "echo", to avoid conflicts
+# with external commands named echo.
+# using macros for ECHO and DEL to allow overiding such as:
+#
+#    set ECHO=cmd /c echo
+#    set DEL=cmd /c del
+#
+# The above might be needed on Windows 2000 and XP.
+# The macros are referenced in makefile.bc
+# ---------------------------------------------------------------
+
+.AUTODEPEND
+
+!if !$d(ECHO)
+   ECHO = echo.
+!endif
+!if !$d(DEL)
+   DEL = del
+!endif
+
+HRB_DIR = $(HB_PATH)
+INCLUDE_DIR = include;$(HRB_DIR)\include
+HARBOUR_EXE = $(HRB_DIR)\bin\harbour.exe
+
+CC = bcc32
+LINKER = TLIB
+
+BIN_DIR  = $(HRB_DIR)\bin
+LIB_DIR  = lib
+
+HWGUI_OBJ_DIR      = $(OBJ_DIR)
+PROCMISC_OBJ_DIR   = $(OBJ_DIR)
+HBXML_OBJ_DIR      = $(OBJ_DIR)
+HWGQHTM_OBJ_DIR    = $(OBJ_DIR)
+ACTIVEX_OBJ_DIR    = $(OBJ_DIR)
+
+# This is needed, otherwise the libs may overflow when
+# debug info is requested with -v -y
+# if debug info is requested, set ARFLAGS to /P64 in your environment
+!if !$d(ARFLAGS)
+    ARFLAGS = /0
+!endif
+
+#!if !$d(BCC_NOOPTIM)
+#    CFLAGS = -O2 $(CFLAGS)
+#!endif
+
+#
+# Directory macros. These should never have to change.
+#
+PROCMISC_DIR = source\procmisc
+HWGUI_DIR    = source
+HBXML_DIR    = source\xml
+HWGQHTM_DIR  = source\qhtm
+ACTIVEX_DIR  = source\activex
+
+#
+# C compiler definition and C flags. These should never have to change.
+#
+
+CFLAGS               = -I$(INCLUDE_DIR) -5 -6 -d $(C_USR) $(CFLAGS) -D__WIN32__ -g255 -DHWG_USE_POINTER_ITEM
+#CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__ -g255
+!if $d(HB_MULTI_GT)
+CFLAGS               = $(CFLAGS) -DHB_MULTI_GT
+!endif
+
+CLIBFLAGS            = -c $(CFLAGS) $(CLIBFLAGS)
+CLIBFLAGSDEBUG       = -v $(CLIBFLAGS)
+HARBOURFLAGS         = -i$(INCLUDE_DIR) -n -q0 -w -es2 -gc0 $(PRG_USR) $(HARBOURFLAGS)
+LDFLAGS              = $(LDFLAGS)
+
+!if $d(HB_THREAD_SUPPORT)
+   CLIBFLAGS = -tWM -DHB_THREAD_SUPPORT $(CLIBFLAGS)
+   HB_MT_FLAGS=-DHB_THREAD_SUPPORT
+   HARBOURFLAGS= $(HARBOURFLAGS) $(HB_MT_FLAGS)
+!endif
+
+CC_CMD = $(CC) $(CLIBFLAGS) -o$@ $**
+CC_CMD_DLL = $(CC) $(CLIBFLAGS) -DHB_EXEMEM_USED -o$@ $**
+HB_CMD = $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+#
+# Macros to access our library names
+#
+
+HWGUI_LIB    =   $(LIB_DIR)\hwgui$(HB_MT).lib
+PROCMISC_LIB =   $(LIB_DIR)\procmisc.lib
+HBXML_LIB    =   $(LIB_DIR)\hbxml.lib
+HWGQHTM_LIB  =   $(LIB_DIR)\hwg_qhtm.lib
+ACTIVEX_LIB  =   $(LIB_DIR)\hbactivex.lib
+
+#
+# Rules
+#
+
+#
+# RTL.LIB rules
+#
+
+HWGUI_LIB_OBJS = \
+   $(HWGUI_OBJ_DIR)\hipedit.obj \
+   $(HWGUI_OBJ_DIR)\animat.obj \
+   $(HWGUI_OBJ_DIR)\commond.obj \
+   $(HWGUI_OBJ_DIR)\control.obj \
+   $(HWGUI_OBJ_DIR)\cxshade.obj \
+   $(HWGUI_OBJ_DIR)\dialog.obj  \
+   $(HWGUI_OBJ_DIR)\draw.obj \
+   $(HWGUI_OBJ_DIR)\winreg.obj \
+   $(HWGUI_OBJ_DIR)\drawtext.obj \
+   $(HWGUI_OBJ_DIR)\freeimg.obj \
+   $(HWGUI_OBJ_DIR)\grid.obj \
+   $(HWGUI_OBJ_DIR)\media_c.obj \
+   $(HWGUI_OBJ_DIR)\menu_c.obj \
+   $(HWGUI_OBJ_DIR)\message.obj \
+   $(HWGUI_OBJ_DIR)\errorsys.obj \
+   $(HWGUI_OBJ_DIR)\misc.obj \
+   $(HWGUI_OBJ_DIR)\nice.obj \
+   $(HWGUI_OBJ_DIR)\resource.obj \
+   $(HWGUI_OBJ_DIR)\richedit.obj \
+   $(HWGUI_OBJ_DIR)\shellapi.obj  \
+   $(HWGUI_OBJ_DIR)\theme.obj \
+   $(HWGUI_OBJ_DIR)\window.obj \
+   $(HWGUI_OBJ_DIR)\wprint.obj \
+   $(HWGUI_OBJ_DIR)\drawwidg.obj \
+   $(HWGUI_OBJ_DIR)\guimain.obj \
+   $(HWGUI_OBJ_DIR)\barcode.obj \
+   $(HWGUI_OBJ_DIR)\hbrowse.obj \
+   $(HWGUI_OBJ_DIR)\hcheck.obj \
+   $(HWGUI_OBJ_DIR)\hcombo.obj \
+   $(HWGUI_OBJ_DIR)\hcontrol.obj \
+   $(HWGUI_OBJ_DIR)\hcwindow.obj \
+   $(HWGUI_OBJ_DIR)\hdatepic.obj \
+   $(HWGUI_OBJ_DIR)\hdialog.obj \
+   $(HWGUI_OBJ_DIR)\hedit.obj \
+   $(HWGUI_OBJ_DIR)\hfreeimg.obj \
+   $(HWGUI_OBJ_DIR)\hfrmtmpl.obj \
+   $(HWGUI_OBJ_DIR)\hgraph.obj \
+   $(HWGUI_OBJ_DIR)\hgrid.obj \
+   $(HWGUI_OBJ_DIR)\hgridex.obj \
+   $(HWGUI_OBJ_DIR)\hlistbox.obj \
+   $(HWGUI_OBJ_DIR)\htool.obj \
+   $(HWGUI_OBJ_DIR)\hmonthc.obj \
+   $(HWGUI_OBJ_DIR)\htrackbr.obj \
+   $(HWGUI_OBJ_DIR)\hanimat.obj \
+   $(HWGUI_OBJ_DIR)\hnice.obj \
+   $(HWGUI_OBJ_DIR)\hownbtn.obj \
+   $(HWGUI_OBJ_DIR)\hpanel.obj \
+   $(HWGUI_OBJ_DIR)\hprinter.obj \
+   $(HWGUI_OBJ_DIR)\hprogres.obj \
+   $(HWGUI_OBJ_DIR)\hradio.obj \
+   $(HWGUI_OBJ_DIR)\hpager.obj \
+   $(HWGUI_OBJ_DIR)\hrebar.obj \
+   $(HWGUI_OBJ_DIR)\hriched.obj \
+   $(HWGUI_OBJ_DIR)\hsayimg.obj \
+   $(HWGUI_OBJ_DIR)\hshbtn.obj \
+   $(HWGUI_OBJ_DIR)\hsplash.obj \
+   $(HWGUI_OBJ_DIR)\hsplit.obj \
+   $(HWGUI_OBJ_DIR)\htab.obj \
+   $(HWGUI_OBJ_DIR)\htimer.obj \
+   $(HWGUI_OBJ_DIR)\htree.obj \
+   $(HWGUI_OBJ_DIR)\hrect.obj \
+   $(HWGUI_OBJ_DIR)\hupdown.obj \
+   $(HWGUI_OBJ_DIR)\hwindow.obj \
+   $(HWGUI_OBJ_DIR)\hwinprn.obj \
+   $(HWGUI_OBJ_DIR)\menu.obj \
+   $(HWGUI_OBJ_DIR)\c_ipaddr.obj \
+   $(HWGUI_OBJ_DIR)\listbox.obj \
+   $(HWGUI_OBJ_DIR)\repexec.obj \
+   $(HWGUI_OBJ_DIR)\printdos.obj \
+   $(HWGUI_OBJ_DIR)\hdc.obj \
+   $(HWGUI_OBJ_DIR)\pager.obj \
+   $(HWGUI_OBJ_DIR)\hhyper.obj \
+   $(HWGUI_OBJ_DIR)\richtext.obj
+
+#
+# PROCMISC.LIB rules
+#
+
+PROCMISC_LIB_OBJS = \
+   $(PROCMISC_OBJ_DIR)\arr2str.obj \
+   $(PROCMISC_OBJ_DIR)\blowfish.obj \
+   $(PROCMISC_OBJ_DIR)\procini.obj \
+   $(PROCMISC_OBJ_DIR)\procs7.obj \
+   $(PROCMISC_OBJ_DIR)\saymoney.obj \
+   $(PROCMISC_OBJ_DIR)\procscri.obj \
+   $(PROCMISC_OBJ_DIR)\scrdebug.obj
+
+#
+# HWG_QHTM.LIB rules
+#
+
+HWGQHTM_LIB_OBJS = \
+   $(HWGQHTM_OBJ_DIR)\hwg_qhtm.obj \
+   $(HWGQHTM_OBJ_DIR)\hqhtm.obj
+
+#
+# HBXML.LIB rules
+#
+HBXML_LIB_OBJS = \
+   $(HBXML_OBJ_DIR)\hxmldoc.obj    \
+   $(HBXML_OBJ_DIR)\xmlparse.obj
+
+#
+# HBACTIVEX.LIB rules
+#
+ACTIVEX_LIB_OBJS = \
+   $(ACTIVEX_OBJ_DIR)\htmlcore.obj \
+   $(ACTIVEX_OBJ_DIR)\htmlfunc.obj \
+   $(ACTIVEX_OBJ_DIR)\hhtml.obj \
+   $(ACTIVEX_OBJ_DIR)\h_activex.obj \
+   $(ACTIVEX_OBJ_DIR)\c_activex.obj
+
+
+#
+# Our default target
+#
+
+!if $d(HB_THREAD_SUPPORT)
+   PROJECT = \
+      $(HWGUI_LIB)
+!else
+   PROJECT = \
+      $(HWGUI_LIB)
+!endif
+
+PROJECT = \
+   $(PROJECT) \
+
+!if !$d(HB_THREAD_SUPPORT)
+
+PROJECT = \
+   $(PROJECT) \
+   $(PROCMISC_LIB) \
+   $(HBXML_LIB) \
+   $(HWGQHTM_LIB)
+!endif
+
+!if "$(ACTIVEX_SUPPORT)" == "ON"
+PROJECT = \
+   $(PROJECT) \
+   $(ACTIVEX_LIB)
+!endif
+
+
+ALL: $(PROJECT)
+
+#
+# Library dependencies and build rules
+#
+
+$(HWGUI_LIB) : $(HWGUI_LIB_OBJS)
+    IF EXIST "$(HWGUI_LIB)" $(DEL) "$(HWGUI_LIB)" > NUL
+    $(LINKER) "$(HWGUI_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+$(PROCMISC_LIB) : $(PROCMISC_LIB_OBJS)
+    IF EXIST "$(PROCMISC_LIB)" $(DEL) "$(PROCMISC_LIB)" > NUL
+    $(LINKER) "$(PROCMISC_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+$(HBXML_LIB) : $(HBXML_LIB_OBJS)
+    IF EXIST "$(HBXML_LIB)" $(DEL) "$(HBXML_LIB)" > NUL
+    $(LINKER) "$(HBXML_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+$(HWGQHTM_LIB) : $(HWGQHTM_LIB_OBJS)
+    IF EXIST "$(HWGQHTM_LIB)" $(DEL) "$(HWGQHTM_LIB)" > NUL
+    $(LINKER) "$(HWGQHTM_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+$(ACTIVEX_LIB) : $(ACTIVEX_LIB_OBJS)
+    IF EXIST "$(ACTIVEX_LIB)" $(DEL) "$(ACTIVEX_LIB)" > NUL
+    $(LINKER) "$(ACTIVEX_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+# здддддддддддддддддддддддд©
+# Ё HWGUI.LIB Dependencies Ёш
+# юддддддддддддддддддддддддыш
+#  ъъъъъъъъъъъъъъъъъъъъъъъъъъ
+
+{$(HWGUI_DIR)}.prg{$(OBJ_DIR)}.c:
+    $(HB_CMD)
+
+.c.obj:
+    $(CC_CMD)
+
+{$(HWGUI_DIR)}.c{$(OBJ_DIR)}.obj:
+    $(CC_CMD)
+
+#
+# PROCMISC.LIB dependencies
+#
+
+{$(PROCMISC_DIR)}.prg{$(PROCMISC_OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(PROCMISC_DIR)}.c{$(PROCMISC_OBJ_DIR)}.obj:
+   $(CC_CMD)
+
+#
+# HBXML.LIB dependencies
+#
+
+{$(HBXML_DIR)}.prg{$(HBXML_OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(HBXML_DIR)}.c{$(HBXML_OBJ_DIR)}.obj:
+   $(CC_CMD)
+
+
+#
+# HWG_QHTM.LIB dependencies
+#
+
+{$(HWGQHTM_DIR)}.prg{$(HWGQHTM_OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(HWGQHTM_DIR)}.c{$(HWGQHTM_OBJ_DIR)}.obj:
+   $(CC_CMD)
+
+#
+# ACTIVEX.LIB dependencies
+#
+
+{$(ACTIVEX_DIR)}.prg{$(ACTIVEX_OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(ACTIVEX_DIR)}.c{$(ACTIVEX_OBJ_DIR)}.obj:
+   $(CC_CMD)
+

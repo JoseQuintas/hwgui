@@ -923,7 +923,7 @@ void hwg_strfree( void * hString )
 }
 #endif /* !HB_HAS_STR_FUNC */
 
-#if defined( HB_EMULATE_STR_API )
+#if ! defined( HB_EMULATE_STR_API )
 
 static int s_iVM_CP = CP_ACP; /* CP_OEMCP */
 

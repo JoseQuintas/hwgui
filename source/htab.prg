@@ -571,6 +571,7 @@ METHOD RedrawControls() CLASS HTab
                 */
             ENDIF
          NEXT
+         ::oParent:lSuspendMsgsHandling := .T.
       ENDIF
    ENDIF
    RETURN Nil
@@ -977,6 +978,7 @@ METHOD Paint( lpdis ) CLASS HPaintTab
         ::oParent:RedrawControls( )
       ENDIF
    ENDIF
+
    ::hDC := GetDC( ::oParent:handle )
    FOR i = 1 to Len( ::oParent:Pages )
       oPage := ::oParent:Pages[ i ]

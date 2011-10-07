@@ -571,7 +571,7 @@ METHOD RedrawControls() CLASS HTab
                 */
             ENDIF
          NEXT
-         ::oParent:lSuspendMsgsHandling := .T.
+         ::oParent:lSuspendMsgsHandling := .F.
       ENDIF
    ENDIF
    RETURN Nil

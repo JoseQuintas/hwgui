@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-08 11:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/htab.prg
+     * METHOD ONEVENT
+	   ! minor fix in set focu initial 
+
 2011-10-08 10:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hedit.prg
      * FUNCTION CheckFocus

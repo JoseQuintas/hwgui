@@ -360,12 +360,12 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    nAnchor := ::anchor
    x9 := ::nLeft
    y9 := ::nTop
-   w9 := ::nWidth - IIF( ::winclass = "EDIT" .AND. __ObjHasMsg( Self,"hwndUpDown" ), GetClientRect( ::hwndUpDown)[ 3 ], 0 )
+   w9 := ::nWidth  //- IIF( ::winclass = "EDIT" .AND. __ObjHasMsg( Self,"hwndUpDown" ), GetClientRect( ::hwndUpDown)[ 3 ], 0 )
    h9 := ::nHeight
 
    x1 := ::nLeft
    y1 := ::nTop
-   w1 := ::nWidth - IIF( ::winclass = "EDIT" .AND. __ObjHasMsg( Self,"hwndUpDown" ), GetClientRect( ::hwndUpDown)[ 3 ], 0 )
+   w1 := ::nWidth  //- IIF( ::winclass = "EDIT" .AND. __ObjHasMsg( Self,"hwndUpDown" ), GetClientRect( ::hwndUpDown)[ 3 ], 0 )
    h1 := ::nHeight
   *- calculo relativo
    IF x > 0
@@ -1069,6 +1069,7 @@ METHOD onevent( msg, wParam, lParam ) CLASS HButton
 
 
 METHOD onClick()  CLASS HButton
+
    IF ::bClick != Nil
       //::oParent:lSuspendMsgsHandling := .T.
       Eval( ::bClick, Self, ::id )
@@ -1365,7 +1366,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
             SendMessage( ::handle, BM_SETSTATE, ::m_bToggled, 0 )
             ::bMouseOverButton := .F.
             RETURN 0
-         ENDIF
+         ENDIF    
       ENDIF
       IF( ! ::bMouseOverButton )
          ::bMouseOverButton := .T.

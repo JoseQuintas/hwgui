@@ -214,7 +214,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    IF ! ::lMultiLine
 
       IF ::bSetGet != Nil
-
          IF msg = WM_COPY .OR. msg = WM_CUT
             ::lcopy := .T.
             RETURN - 1
@@ -416,6 +415,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       IF lColorinFocus
          IF msg == WM_SETFOCUS
 //            ::bColorOld := ::bcolor
+
             ::nSelStart := IIF( Empty( ::title ), 0, ::nSelStart )
             ::SetColor( tColorSelect, bColorSelect )
             SendMessage( ::handle, EM_SETSEL, ::selStart, ::selStart ) // era -1
@@ -613,7 +613,8 @@ METHOD SetText( c ) CLASS HEdit
          ::title := c
       ENDIF
       //Super:SetText( ::title )
-      SetWindowText( ::Handle, ::Title )
+      //SetWindowText( ::Handle, ::Title )
+      SetDlgItemText( ::oParent:handle, ::id, ::title )
       IF ::bSetGet != Nil
          Eval( ::bSetGet, c, Self )
       ENDIF
@@ -1105,6 +1106,7 @@ METHOD When() CLASS HEdit
    IF ! CheckFocus( Self, .f. )
       RETURN .F.
    ENDIF
+
    ::lFirst := .T.
    nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 ;
                                                  .and. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
@@ -1704,6 +1706,7 @@ FUNCTION CheckFocus( oCtrl, lInside )
          SetFocus( oParent:handle )
          SetFocus( GetFocus() )
       ELSEIF ! lInside .AND. ! EMPTY( oParent:nInitFocus )
+         SetFocus( oParent:handle )
          RETURN .T.
 	    ENDIF
       RETURN .F.

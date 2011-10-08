@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-08 10:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hedit.prg
+     * FUNCTION CheckFocus
+	   ! minor fix
+   * source/hcontrol.prg
+     * METHOD onAchor
+	   ! fix resize hupdown
+   * source/hupdown.prg	   
+     ! fix method move in resize
+ 
 2011-10-06 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hprinter.prg
      ! changed name FUNCTION SetTimer to FUNCTION SetTimerPrinter because name SetTimer conflict wit function in class Htimer

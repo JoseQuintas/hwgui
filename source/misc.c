@@ -164,9 +164,8 @@ HB_FUNC( SETBIT )
 
 HB_FUNC( CHECKBIT )
 {
-   hb_retl( ( HB_ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
-                              ( ULONG ) hb_parnl( 1 ) ) & ( 1 << ( hb_parni( 2 ) - 1 ) ) );
-
+   hb_retl (    ( HB_ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :( ULONG ) hb_parnl( 1 ) ) & ( 1 << (  hb_parni( 2 ) - 1 )   )    );
+}
 
 HB_FUNC( HWG_SIN )
 {

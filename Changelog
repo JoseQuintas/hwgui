@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-08 13:00  UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
+   * source/misc.c
+     ! fixed HWG_BITOR,HWG_BITAND,HWG_BITANDINVERSE,CHECKBIT  to handle correctly pointer type parameters
+     
 2011-10-08 12:49  UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
    * source/hdialog.prg
      ! fix test for initial focus, you cannot compare an pointer with number

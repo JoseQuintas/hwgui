@@ -138,17 +138,20 @@ HB_FUNC( HIWORD )
 
 HB_FUNC( HWG_BITOR )
 {
-   hb_retnl( hb_parnl( 1 ) | hb_parnl( 2 ) );
+   hb_retnl(( HB_ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
+                              ( ULONG ) hb_parnl( 1 ) ) | hb_parnl( 2 ) );
 }
 
 HB_FUNC( HWG_BITAND )
 {
-   hb_retnl( hb_parnl( 1 ) & hb_parnl( 2 ) );
+   hb_retnl( ( HB_ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
+                              ( ULONG ) hb_parnl( 1 ) ) & hb_parnl( 2 ) );
 }
 
 HB_FUNC( HWG_BITANDINVERSE )
 {
-   hb_retnl( hb_parnl( 1 ) & ( ~hb_parnl( 2 ) ) );
+   hb_retnl( ( HB_ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
+                              ( ULONG ) hb_parnl( 1 ) ) & ( ~hb_parnl( 2 ) ) );
 }
 
 HB_FUNC( SETBIT )
@@ -161,8 +164,9 @@ HB_FUNC( SETBIT )
 
 HB_FUNC( CHECKBIT )
 {
-   hb_retl( hb_parnl( 1 ) & ( 1 << ( hb_parni( 2 ) - 1 ) ) );
-}
+   hb_retl( ( HB_ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
+                              ( ULONG ) hb_parnl( 1 ) ) & ( 1 << ( hb_parni( 2 ) - 1 ) ) );
+
 
 HB_FUNC( HWG_SIN )
 {

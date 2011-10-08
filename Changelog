@@ -8,19 +8,25 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-08 12:49  UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
+   * source/hdialog.prg
+     ! fix test for initial focus, you cannot compare an pointer with number
+     ! is you need, do like bellow
+       if ptrtoulong(pointer) > 0
+   
 2011-10-08 11:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htab.prg
      * METHOD ONEVENT
-	   ! minor fix in set focu initial 
+      ! minor fix in set focu initial 
 
 2011-10-08 10:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hedit.prg
      * FUNCTION CheckFocus
-	   ! minor fix
+      ! minor fix
    * source/hcontrol.prg
      * METHOD onAchor
-	   ! fix resize hupdown
-   * source/hupdown.prg	   
+      ! fix resize hupdown
+   * source/hupdown.prg      
      ! fix method move in resize
  
 2011-10-06 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
@@ -39,7 +45,7 @@
      REMOVED compiled with FLAGS DHWG_USE_POINTER_ITEM
    * include/guilib.ch
      * #xcommand @ <x>, <y>  SHAPE [<oShape>] [OF <oWnd>] ;
-	 + clause [ BACKSTYLE <nbackStyle>]  ;
+    + clause [ BACKSTYLE <nbackStyle>]  ;
    * source/hcontrol.prg
    * source/hedit.prg
      ! minor fix in user pointer in handle
@@ -50,16 +56,16 @@
    * source/hbrowse.prg
      * CLASS HColumn
        + METHOD Value( xValue ) 
-	     Return or attrib value to cell -> oBrowse:aColumns[2]:value := xvalue or  xvalue := oBrowse:aColumns[2]:value 
+        Return or attrib value to cell -> oBrowse:aColumns[2]:value := xvalue or  xvalue := oBrowse:aColumns[2]:value 
 
 2011-10-03 13:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcontrl.prg
      * CLASS HButtonex
        * METHOD PAINT
          ! fixed STYLEs to justify 
-   * source/hedit.prg		 
+   * source/hedit.prg       
      ! fixed ESCAPE in MDICHILD
-   * source/hwindow.prg		  
+   * source/hwindow.prg        
      ! definite DATA lExitOnEsc .T. default as the DIALOG
      
 
@@ -79,24 +85,24 @@
          ! changed  hUpDown -> hwndUpDown because changed in hupdown class
    * source/hriched.prg
      * METHOD onEvent
-	   ! handling msg == WM_MOUSEACTIVATE to correctly position the mouse when you get the focus
+      ! handling msg == WM_MOUSEACTIVATE to correctly position the mouse when you get the focus
    * source/hdialog.prg
      * Function InitModalDlg
-	   ! minor fix to adjust position and scrollbars 
+      ! minor fix to adjust position and scrollbars 
    * source/hcwindow.prg
      * METHOD Move
-	   ! fixed resizing of DIALOGS without WS_CHILD style , so it was necessary to calculate the difference
-	   between client area and non-client area
+      ! fixed resizing of DIALOGS without WS_CHILD style , so it was necessary to calculate the difference
+      between client area and non-client area
      * METHOD SetupScrollbars()
        ! minor fix 
-   * source/hupdown.prg	   
- 	 * CLASS HEditUpDown   
-	   + METHOD Move
+   * source/hupdown.prg      
+     * CLASS HEditUpDown   
+      + METHOD Move
 
 2011-09-30 08:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hupdown.prg
      * changed DATA hUpDown -> hwndUpDown
-	   had to change the name of the property because it had the same name of the class and fails to create new class inherited it
+      had to change the name of the property because it had the same name of the class and fails to create new class inherited it
 
 2011-09-30 12:15 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
    * source\procmisc\procscri.prg

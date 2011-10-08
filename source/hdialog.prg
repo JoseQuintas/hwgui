@@ -222,13 +222,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
       ENDIF
    ELSEIF msg = WM_MENUCHAR
       RETURN onSysCommand( Self, SC_KEYMENU, LoWord( wParam ) )
-	 ELSEIF msg = WM_MOVE //.or. msg = 0x216
+    ELSEIF msg = WM_MOVE //.or. msg = 0x216
       aCoors := GetWindowRect( ::handle )
       ::nLeft := aCoors[ 1 ]
-			::nTop  := aCoors[ 2 ]
-	 ELSEIF  msg = WM_UPDATEUISTATE .AND. HIWORD( wParam ) != UISF_HIDEFOCUS 
-	   // prevent the screen flicker
-	    RETURN 1
+         ::nTop  := aCoors[ 2 ]
+    ELSEIF  msg = WM_UPDATEUISTATE .AND. HIWORD( wParam ) != UISF_HIDEFOCUS 
+      // prevent the screen flicker
+       RETURN 1
    ELSEIF ! ::lActivated .AND. msg = WM_NCPAINT  
       /* triggered on activate the modal dialog is visible only when */
       ::lActivated := .T.
@@ -374,7 +374,7 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
 
    POSTMESSAGE( oDlg:handle, WM_CHANGEUISTATE, makelong( UIS_CLEAR, UISF_HIDEFOCUS ), 0 )    
    
-   IF ! oDlg:lModal .AND. ! isWindowVisible( oDlg:handle )	
+   IF ! oDlg:lModal .AND. ! isWindowVisible( oDlg:handle )   
        SHOWWINDOW( oDlg:Handle, SW_SHOWDEFAULT )
    ENDIF
 
@@ -551,7 +551,9 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       ENDIF
    ENDIF
 
-   IF oDlg:nInitFocus > 0 //.AND. !isWindowVisible( oDlg:handle )
+   //IF oDlg:nInitFocus > 0 //.AND. !isWindowVisible( oDlg:handle )
+   // comentado, vc não pode testar um ponteiro como se fosse numerico
+   IF !empty( oDlg:nInitFocus )  //.AND. !isWindowVisible( oDlg:handle )
       PostMessage( oDlg:Handle, WM_NEXTDLGCTL, oDlg:nInitFocus , 1 )
    ENDIF
    IF oDlg:aEvents != Nil .AND. ;
@@ -565,10 +567,10 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
       IF iParLow == IDOK
          oDlg:lResult := .T.          
          IF ( oCtrl := oDlg:FindControl( IDOK ) ) != Nil .AND. __ObjHasMsg( oCtrl, "BCLICK" ) .AND. oCtrl:bClick != Nil
-   	        RETURN 1
-   	     ELSEIF oDlg:lExitOnEnter  .OR. oCtrl  != Nil
-   	        EndDialog( oDlg:handle )
-         ENDIF	 
+              RETURN 1
+           ELSEIF oDlg:lExitOnEnter  .OR. oCtrl  != Nil
+              EndDialog( oDlg:handle )
+         ENDIF    
       ENDIF
       //Replaced by Sandro
       IF iParLow == IDCANCEL .AND. (oDlg:lExitOnEsc .OR. ! nEsc )
@@ -634,7 +636,7 @@ STATIC FUNCTION onSize( oDlg, wParam, lParam )
       oDlg:nHeight := HIWORD( lParam ) //aControls[4]-aControls[2]
    ENDIF
    // SCROLL BARS code here.
-	 IF oDlg:nScrollBars > - 1 .AND. oDlg:lAutoScroll
+    IF oDlg:nScrollBars > - 1 .AND. oDlg:lAutoScroll
       oDlg:ResetScrollbars()
       oDlg:SetupScrollbars()
    ENDIF
@@ -866,7 +868,7 @@ STATIC FUNCTION onSysCommand( oDlg, wParam, lParam )
    ELSEIF wParam == SC_RESTORE .OR. wParam == SC_RESTORE2
    ELSEIF wParam = SC_NEXTWINDOW .OR. wParam = SC_PREVWINDOW
    ELSEIF wParam = SC_KEYMENU
-  	   // accelerator IN TAB/CONTAINER
+        // accelerator IN TAB/CONTAINER
        IF ( oCtrl := FindAccelerator( oDlg, lParam ) ) != Nil
           oCtrl:SetFocus()
           SendMessage( oCtrl:handle, WM_SYSKEYUP, lParam, 0 )
@@ -882,4 +884,3 @@ STATIC FUNCTION onSysCommand( oDlg, wParam, lParam )
    EXIT PROCEDURE Hwg_ExitProcedure
    Hwg_ExitProc()
    RETURN
-

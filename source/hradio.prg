@@ -223,6 +223,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ::id      := IIf( nId == Nil, ::NewId(), nId )
    ::title   := cCaption
    ::oGroup  := HRadioGroup():oGroupCurrent
+   ::Enabled := ! Hwg_BitAnd( nStyle, WS_DISABLED ) > 0
    ::style   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), BS_RADIOBUTTON + ; // BS_AUTORADIOBUTTON+;
                         BS_NOTIFY + ;  // WS_CHILD + WS_VISIBLE
                        IIf( ::oGroup != Nil .AND. Empty( ::oGroup:aButtons ), WS_GROUP , 0 ) )
@@ -277,7 +278,7 @@ METHOD Init() CLASS HRadioButton
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       HWG_INITBUTTONPROC( ::handle )
-      ::Enabled :=  ::oGroup:lEnabled
+      ::Enabled :=  ::oGroup:lEnabled .AND. ::Enabled 
       Super:Init()
    ENDIF
 Return Nil

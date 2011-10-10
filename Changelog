@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-09 23:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hedit.prg
+     + FUNCTION GetWindowParent( nHandle )
+	 * FUNCTION CheckFocus
+      ! minor fix in 
+   * source/hradio.prg
+     ! fixed initial STYLE DISABLED in radiobuttons
+	 
 2011-10-08 13:00  UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
    * source/misc.c
      ! fixed HWG_BITOR,HWG_BITAND,HWG_BITANDINVERSE,CHECKBIT  to handle correctly pointer type parameters

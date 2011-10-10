@@ -1698,26 +1698,28 @@ Luis Fernando Basso contribution
 */
 FUNCTION CheckFocus( oCtrl, lInside )
    LOCAL oParent := ParentGetDialog( oCtrl )
+   LOCAL hGetFocus := PtrtouLong( GetFocus() )
 
-   //oCtrl:oParent:lGetSkipLostFocus := .F.
    IF ( !EMPTY( oParent ) .AND. ! IsWindowVisible( oParent:handle ) ) .OR. Empty( GetActiveWindow() ) // == 0
       IF ! lInside .and. Empty( oParent:nInitFocus ) // = 0
          oParent:Show()
          SetFocus( oParent:handle )
-         SetFocus( GetFocus() )
+         SetFocus( hGetFocus )
       ELSEIF ! lInside .AND. ! EMPTY( oParent:nInitFocus )
-         SetFocus( oParent:handle )
+       //  SetFocus( oParent:handle )
          RETURN .T.
 	    ENDIF
       RETURN .F.
    ENDIF
    IF oParent  != Nil .AND. lInside
-     IF ( ( ! Empty( GetFocus() ) .AND. PtrtouLong( GetParent( GetFocus() ) ) != PtrtouLong( oParent:Handle ) .AND.;
-         oParent:lModal ) .OR. ( PtrtouLong( GetFocus() ) = PtrtouLong( oCtrl:oParent:Handle ) ) ) .AND. ;
+     IF ( ( ! Empty( hGetFocus ) .AND. GetWindowParent( hGetFocus )  != PtrtouLong( oParent:Handle ) .AND.;
+         oParent:lModal ) .OR. (  hGetFocus  = PtrtouLong( oCtrl:oParent:Handle ) ) ) .AND. ;
          PtrtouLong( oParent:handle ) = PtrtouLong( oCtrl:oParent:Handle )
-     //IF PtrtouLong( GETFOCUS() ) = PtrtouLong( oCtrl:oParent:Handle ) .AND.;
-     //   PtrtouLong( oParent:handle ) = PtrtouLong( oCtrl:oParent:Handle )
+       /*   
+      IF PtrtouLong( GETFOCUS() ) = PtrtouLong( oCtrl:oParent:Handle ) .AND.;
+        PtrtouLong( oParent:handle ) = PtrtouLong( oCtrl:oParent:Handle )
          RETURN .F.
+         */
       ENDIF
   ELSE
      oCtrl:oParent:lGetSkipLostFocus := .F.
@@ -1726,4 +1728,10 @@ FUNCTION CheckFocus( oCtrl, lInside )
   RETURN .T.
 
 
+FUNCTION GetWindowParent( nHandle )
+
+   DO WHILE !Empty( GetParent( nHandle ) ) .AND. PtrtouLong( nHandle ) != PtrtouLong( GetActiveWindow() ) 
+      nHandle := GetParent( nHandle )
+   ENDDO 
+   RETURN PtrtouLong( nHandle )
 

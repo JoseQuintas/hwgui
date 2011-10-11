@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2011-10-11 00:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hbrowse.prg
+     ! translate hb_tokenGet([<x>,<n>,<c>] ) =>  __StrToken(<x>,<n>,<c>) when compiled with XHARBOUR
+
 2011-10-10 23:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcombox.prg
      * METHOD Requery

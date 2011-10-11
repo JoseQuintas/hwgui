@@ -29,7 +29,7 @@
 
 #ifdef __XHARBOUR__
    #xtranslate hb_RAScan([<x,...>])        => RAScan(<x>)
- *  #xtranslate hb_tokenGet([<x>,<n>,<c>] ) =>  __StrToken(<x>,<n>,<c>)
+   #xtranslate hb_tokenGet([<x>,<n>,<c>] ) =>  __StrToken(<x>,<n>,<c>)
 #endif
 
 REQUEST DBGoTop
@@ -1699,11 +1699,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
             SelectObject( hDC, oPenHdr:handle )
             cStr := oColumn:cGrid + ';'
             FOR nLine := 1 TO ::nHeadRows
-               #ifdef __XHARBOUR__
-               cNWSE := __StrToken( @cStr, nLine, ';' )
-               #else
                cNWSE := hb_tokenGet( @cStr, nLine, ';' )
-               #endif
                IF At( 'S', cNWSE ) != 0
                   DrawLine( hDC, x - 1, ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine ), x + xSize - 1, ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine ) )
                ENDIF
@@ -1745,9 +1741,6 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
          cStr := oColumn:heading + ';'
          FOR nLine := 1 TO ::nHeadRows
             aTxtSize := IIF( nLine = 1, TxtRect( cStr, Self ), aTxtSize )
-            *#ifdef __XHARBOUR__
-            * DrawText( hDC, __StrToken( @cStr, nLine, ';' ), ;
-            
             DrawText( hDC, hb_tokenGet( @cStr, nLine, ';' ), ;
                       x + ::aMargin[ 4 ] + 1 + nMe, ;
                       ::y1 - ( ::nHeadHeight ) * ( ::nHeadRows - nLine + 1 ) +  ::aMargin[ 1 ] + 1, ;
@@ -2027,9 +2020,6 @@ METHOD FooterOut( hDC ) CLASS HBrowse
         nY := ::y2 - nPixelFooterHeight
 
         FOR nLine := 1 TO ::nFootRows
-            //#ifdef __XHARBOUR__
-            //DrawText( hDC, __StrToken( @cStr, nLine, ';' ), ;
-
             DrawText( hDC, hb_tokenGet( @cStr, nLine, ';' ), ;
                    x + ::aMargin[ 4 ], ;
                    nY + ( nLine - 1 ) * ( ::nFootHeight + 1 ) + 1 + ::aMargin[ 1 ], ;
@@ -3779,11 +3769,7 @@ STATIC FUNCTION HdrToken( cStr, nMaxLen, nCount )
 
    nMaxLen := nCount := 0
    cStr += ';'
-   #ifdef __XHARBOUR__
-   DO WHILE ( nL := Len( __StrTkPtr( @cStr, @nPos, ";" ) ) ) != 0
-   #else
    DO WHILE ( nL := Len( hb_tokenPtr( @cStr, @nPos, ";" ) ) ) != 0
-   #endif
       nMaxLen := Max( nMaxLen, nL )
       nCount ++
    ENDDO

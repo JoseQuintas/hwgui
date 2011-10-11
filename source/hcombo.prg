@@ -395,13 +395,17 @@ METHOD Requery() CLASS HComboBox
 
    SendMessage( ::handle, CB_RESETCONTENT, 0, 0 )
    ::Populate()
+   
    /*
    FOR i := 1 TO Len( ::aItems )
       ComboAddString( ::handle, ::aItems[ i ] )
    NEXT
    */
    //::Refresh()
-
+   IF ::bSetGet = Nil
+      ::SetItem( 1 )
+   ENDIF
+   
 RETURN Nil
 
 METHOD Refresh() CLASS HComboBox
@@ -749,7 +753,7 @@ METHOD RowSource( xSource ) CLASS HComboBox
    RETURN ::xRowSource   
 
 
-METHOD Populate()
+METHOD Populate() CLASS HComboBox
    Local cAlias, nRecno, value, cValueBound
    Local i, numofchars, LongComboWidth := 0
    Local xRowSource

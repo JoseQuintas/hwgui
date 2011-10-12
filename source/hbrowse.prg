@@ -3769,7 +3769,11 @@ STATIC FUNCTION HdrToken( cStr, nMaxLen, nCount )
 
    nMaxLen := nCount := 0
    cStr += ';'
+#ifdef __XHARBOUR__
+   DO WHILE ( nL := Len( __StrTkPtr( @cStr, @nPos, ";" ) ) ) != 0
+#else   
    DO WHILE ( nL := Len( hb_tokenPtr( @cStr, @nPos, ";" ) ) ) != 0
+#endif   
       nMaxLen := Max( nMaxLen, nL )
       nCount ++
    ENDDO

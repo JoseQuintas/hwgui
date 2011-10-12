@@ -9,6 +9,17 @@
 */
 
 
+2011-10-12 10:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include/guilib.ch
+     #xcommand GET RADIOGROUP [ <ogr> VAR ] <vari>  ;
+	 + CLAUSE  [ STYLE <nStyle> ]         ;
+   * source/hradio.prg
+     * METHOD New()
+	   + parameter nStyle  
+	     possible to disable the creation radiogroup 
+         ::lEnabled :=  ! Hwg_BitAnd( nStyle, WS_DISABLED ) > 0
+
+
 2011-10-11 00:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
      ! translate hb_tokenGet([<x>,<n>,<c>] ) =>  __StrToken(<x>,<n>,<c>) when compiled with XHARBOUR

@@ -25,7 +25,7 @@ CLASS HRadioGroup INHERIT HControl //HObject
    DATA bClick
 
 
-   METHOD New( vari, bSetGet, bInit, bClick, bGFocus )
+   METHOD New( vari, bSetGet, bInit, bClick, bGFocus, nStyle )
    METHOD Newrg( oWndParent, nId, nStyle, vari, bSetGet, nLeft, nTop, nWidth, nHeight, ;
               cCaption, oFont, bInit, bSize,tcolor, bColor,bClick,;
               bGFocus,lTransp )
@@ -43,11 +43,12 @@ CLASS HRadioGroup INHERIT HControl //HObject
 
 ENDCLASS
 
-METHOD New( vari, bSetGet, bInit, bClick, bGFocus ) CLASS HRadioGroup
+METHOD New( vari, bSetGet, bInit, bClick, bGFocus, nStyle ) CLASS HRadioGroup
 
    ::oGroupCurrent := Self
    ::aButtons := { }
    ::oParent := IIF( HWindow():GetMain() != Nil, HWindow():GetMain():oDefaultParent, Nil )
+   ::lEnabled :=  ! Hwg_BitAnd( nStyle, WS_DISABLED ) > 0
 
    Super:New( ::oParent, ,, ,,,,, bInit)
 
@@ -73,7 +74,7 @@ METHOD NewRg( oWndParent, nId, nStyle, vari, bSetGet, nLeft, nTop, nWidth, nHeig
    ::oGroupCurrent := Self
    ::aButtons := {}
    ::lEnabled :=  ! Hwg_BitAnd( nStyle, WS_DISABLED ) > 0
-   
+
    Super:New( ::oParent,,,nLeft, nTop, nWidth, nHeight, oFont, bInit )
    ::oHGroup := HGroup():New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
                               oFont, bInit, bSize, , tcolor, bColor, lTransp, Self )

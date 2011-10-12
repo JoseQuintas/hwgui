@@ -671,10 +671,11 @@
 
 #xcommand GET RADIOGROUP [ <ogr> VAR ] <vari>  ;
              [ ON INIT <bInit> ]        ;
+             [ STYLE <nStyle> ]         ;
              [ ON CLICK <bClick> ]      ;
              [ ON GETFOCUS <bWhen> ]           ;
           => [<ogr> := ] HRadioGroup():New( <vari>, {|v|Iif(v==Nil,<vari>,<vari>:=v)}, ;
-					     <bInit>,<bClick>,<bWhen> )
+					     <bInit>,<bClick>,<bWhen>, <nStyle> )
 
           //nando
 #xcommand @ <x>,<y> GET RADIOGROUP [ <ogr> VAR ] <vari>  ;
@@ -1958,9 +1959,9 @@ Added by Marcos Antonio Gambeta
              [ CURVATURE <nCurvature>]  ;
              [ COLOR <tcolor> ]         ;
              [ BACKCOLOR <bcolor> ]     ;
-             [ BACKSTYLE <nbackStyle>]  ;
              [ BORDERSTYLE <nbStyle>]   ;
              [ FILLSTYLE <nfStyle>]     ;
+             [ BACKSTYLE <nbackStyle>]  ;
              [ ON INIT <bInit> ]        ;
              [ ON SIZE <bSize> ]        ;
           => ;

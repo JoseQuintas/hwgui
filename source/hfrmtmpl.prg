@@ -852,6 +852,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
          cRelexpr := IIf( xProperty != Nil .AND. ! Empty( xProperty ), Trim( xProperty ), "" )
       ELSEIF cPName == "linkmaster"
          cLink := IIf( xProperty != Nil .AND. ! Empty( xProperty ), Trim( xProperty ), "" )
+/*
       ELSEIF cPName == "filedbf"
          IF ! Empty( xProperty )
             cAliasdbf := Left( CutPath( xProperty ), At( ".", CutPath( xProperty ) ) - 1 )
@@ -860,6 +861,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
             ENDIF
             Select ( Left( CutPath( xProperty ), At( ".", CutPath( xProperty ) ) - 1 ) )
          ENDIF
+*/
       ELSEIF cPName == "columnscount"
          nColumns :=  xProperty
       ELSEIF cPName == "columnsfreeze"

@@ -8,17 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-13 10:55 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
+   * source\hfrmtmpl.prg
+     * comment the property "filedbf" because the table may not exist in
+       designe mode and we will get error in that case.
 
 2011-10-12 10:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include/guilib.ch
      #xcommand GET RADIOGROUP [ <ogr> VAR ] <vari>  ;
-	 + CLAUSE  [ STYLE <nStyle> ]         ;
+     + CLAUSE  [ STYLE <nStyle> ]         ;
    * source/hradio.prg
      * METHOD New()
-	   + parameter nStyle  
-	     possible to disable the creation radiogroup 
+       + parameter nStyle
+         possible to disable the creation radiogroup
          ::lEnabled :=  ! Hwg_BitAnd( nStyle, WS_DISABLED ) > 0
-
 
 2011-10-11 00:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
@@ -27,30 +30,30 @@
 2011-10-10 23:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcombox.prg
      * METHOD Requery
-	   ! assigned initial value when bsetget = nil
+       ! assigned initial value when bsetget = nil
 
 2011-10-09 23:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hedit.prg
      + FUNCTION GetWindowParent( nHandle )
-	 * FUNCTION CheckFocus
-      ! minor fix in 
+     * FUNCTION CheckFocus
+      ! minor fix in
    * source/hradio.prg
      ! fixed initial STYLE DISABLED in radiobuttons
-	 
+
 2011-10-08 13:00  UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
    * source/misc.c
      ! fixed HWG_BITOR,HWG_BITAND,HWG_BITANDINVERSE,CHECKBIT  to handle correctly pointer type parameters
-     
+
 2011-10-08 12:49  UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
    * source/hdialog.prg
      ! fix test for initial focus, you cannot compare an pointer with number
      ! is you need, do like bellow
        if ptrtoulong(pointer) > 0
-   
+
 2011-10-08 11:35 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htab.prg
      * METHOD ONEVENT
-      ! minor fix in set focu initial 
+      ! minor fix in set focu initial
 
 2011-10-08 10:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hedit.prg
@@ -59,13 +62,12 @@
    * source/hcontrol.prg
      * METHOD onAchor
       ! fix resize hupdown
-   * source/hupdown.prg      
+   * source/hupdown.prg
      ! fix method move in resize
- 
+
 2011-10-06 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hprinter.prg
      ! changed name FUNCTION SetTimer to FUNCTION SetTimerPrinter because name SetTimer conflict wit function in class Htimer
-
 
 2011-10-06 11:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    + file make_b32pointer.bat
@@ -88,19 +90,18 @@
 2011-10-05 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
      * CLASS HColumn
-       + METHOD Value( xValue ) 
-        Return or attrib value to cell -> oBrowse:aColumns[2]:value := xvalue or  xvalue := oBrowse:aColumns[2]:value 
+       + METHOD Value( xValue )
+        Return or attrib value to cell -> oBrowse:aColumns[2]:value := xvalue or  xvalue := oBrowse:aColumns[2]:value
 
 2011-10-03 13:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcontrl.prg
      * CLASS HButtonex
        * METHOD PAINT
-         ! fixed STYLEs to justify 
-   * source/hedit.prg       
+         ! fixed STYLEs to justify
+   * source/hedit.prg
      ! fixed ESCAPE in MDICHILD
-   * source/hwindow.prg        
+   * source/hwindow.prg
      ! definite DATA lExitOnEsc .T. default as the DIALOG
-     
 
 2011-10-01 18:15 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include/windows.ch
@@ -121,15 +122,15 @@
       ! handling msg == WM_MOUSEACTIVATE to correctly position the mouse when you get the focus
    * source/hdialog.prg
      * Function InitModalDlg
-      ! minor fix to adjust position and scrollbars 
+      ! minor fix to adjust position and scrollbars
    * source/hcwindow.prg
      * METHOD Move
       ! fixed resizing of DIALOGS without WS_CHILD style , so it was necessary to calculate the difference
       between client area and non-client area
      * METHOD SetupScrollbars()
-       ! minor fix 
-   * source/hupdown.prg      
-     * CLASS HEditUpDown   
+       ! minor fix
+   * source/hupdown.prg
+     * CLASS HEditUpDown
       + METHOD Move
 
 2011-09-30 08:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>

@@ -220,6 +220,7 @@
 #define CB_FINDSTRING               332
 #define CB_SELECTSTRING             333
 #define CB_SETCURSEL                334
+#DEFINE CB_SHOWDROPDOWN             335
 #define CB_SETITEMHEIGHT            0x0153
 #define CB_GETITEMHEIGHT            0x0154
 #define CB_GETDROPPEDSTATE          343

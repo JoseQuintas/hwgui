@@ -68,7 +68,7 @@ CLASS HComboBox INHERIT HControl
                aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, ;
                bcolor, bLFocus, bIChange, nDisplay, nhItem, ncWidth, nMaxLength )
    METHOD Activate()
-   METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay )
+   METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay, nMaxLength )
    METHOD INIT()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Requery()

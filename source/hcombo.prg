@@ -89,7 +89,7 @@ CLASS HComboBox INHERIT HControl
    METHOD DisplayValue( cValue ) SETGET
    METHOD onDropDown( ) INLINE ::ldropshow := .T.
    METHOD SetCueBanner( cText, lShowFoco ) 
-   METHOD MaxLength() SETGET
+   METHOD MaxLength( nMaxLength ) SETGET
    
 ENDCLASS
 

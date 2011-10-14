@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-14 21:47 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hbrowse.prg
+    ! If column is combo display value of aList and not the numeric of index.
+
 2011-10-14 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include/windows.ch
      + #DEFINE CB_SHOWDROPDOWN 335

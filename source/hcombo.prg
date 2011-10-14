@@ -205,7 +205,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
       // CBS_NOINTEGRALHEIGHT. CRIATE VERTICAL SCROOL BAR
    ELSE
       nDisplay := 6
-   ENDIF
+   ENDIF                                                                    
    //::nHeight := ( ::nHeight + 16.250 ) *  nDisplay
    ::lResource := .T.
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, bSize, bPaint, ctooltip )

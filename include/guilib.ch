@@ -754,6 +754,7 @@
              [ DISPLAYCOUNT <nDisplay>] ;
              [ ITEMHEIGHT <nhItem>    ] ; 
              [ COLUMNWIDTH <ncWidth>  ] ;
+             [ MAXLENGTH <nMaxLength> ] ;
              [ COLOR <color> ]          ;
              [ BACKCOLOR <bcolor> ]     ;
              [ ON INIT <bInit> ]        ;
@@ -772,7 +773,7 @@
           [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
              <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,;
              <.edit.>,<.text.>,<bGfocus>,<color>,<bcolor>, <bLfocus>,<bIChange>,;
-						 <nDisplay>,<nhItem>,<ncWidth>);;
+						 <nDisplay>,<nhItem>,<ncWidth>,<nMaxLength>);;
           [ <oCombo>:name := <(oCombo)> ]
 
 #xcommand REDEFINE COMBOBOX [ <oCombo> ITEMS ] <aItems> ;
@@ -780,6 +781,7 @@
             ID <nId>                   ;
             [ INIT <nInit>    ]        ;
             [ DISPLAYCOUNT <nDisplay>] ;
+            [ MAXLENGTH <nMaxLength> ] ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
@@ -791,7 +793,7 @@
             [ ON INTERACTIVECHANGE <bIChange> ]    ;
           => ;
     [<oCombo> := ] HComboBox():Redefine( <oWnd>,<nId>,<nInit>,,<aItems>,<oFont>,<bInit>, ;
-             <bSize>,<bDraw>,<bChange>,<ctoolt>,<bGfocus>, <bLfocus>, <bIChange>,<nDisplay>)
+             <bSize>,<bDraw>,<bChange>,<ctoolt>,<bGfocus>, <bLfocus>, <bIChange>,<nDisplay>,<nMaxLength>)
 
 #xcommand @ <x>,<y> UPDOWN [ <oUpd> INIT ] <nInit> ;
              RANGE <nLower>,<nUpper>    ;
@@ -1233,6 +1235,7 @@
             [ DISPLAYCOUNT <nDisplay>] ;
             [ ITEMHEIGHT <nhItem>    ] ; 
             [ COLUMNWIDTH <ncWidth>  ] ;
+            [ MAXLENGTH <nMaxLength> ] ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
             [ ON INIT <bInit> ]        ;
@@ -1251,7 +1254,7 @@
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
                     <aItems>,<oFont>,<bInit>,,,<bChange>,<ctoolt>, ;
                     <.edit.>,<.text.>,<bGfocus>,<color>,<bcolor>,;
-										<bLfocus>,<bIChange>,<nDisplay>,<nhItem>,<ncWidth> );;
+										<bLfocus>,<bIChange>,<nDisplay>,<nhItem>,<ncWidth>,<nMaxLength> );;
     [ <oCombo>:name := <(oCombo)> ]                                                                      
 
 
@@ -1260,6 +1263,7 @@
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
             [ DISPLAYCOUNT <nDisplay>] ;
+            [ MAXLENGTH <nMaxLength> ] ;
             [ ON CHANGE <bChange> ]    ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
@@ -1269,7 +1273,7 @@
           => ;
     [<oCombo> := ] HComboBox():Redefine( <oWnd>,<nId>,<vari>, ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},        ;
-                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>,<bGfocus>, <bLfocus>,<bIChange>,<nDisplay>)
+                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>,<bGfocus>, <bLfocus>,<bIChange>,<nDisplay>, <nMaxLength>)
 
 #xcommand REDEFINE GET COMBOBOXEX [ <oCombo> VAR ] <vari> ;
              ITEMS  <aItems>            ;

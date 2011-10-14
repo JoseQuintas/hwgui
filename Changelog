@@ -8,6 +8,21 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-14 08:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include/guilib.ch
+     #xcommand @ <x>,<y> COMBOBOX [ <oCombo> ITEMS ] <aItems> ;
+	 #xcommand REDEFINE COMBOBOX [ <oCombo> ITEMS ] <aItems> ;
+	 + CLAUSE [ MAXLENGTH <nMaxLength> ] ; 
+   * source/hcombox.prg
+     + DATA nMaxLength     INIT Nil
+     + METHOD MaxLength( nMaxLength ) 
+	   assigned size limit text in combobox EDIT same behavior EDIT
+     * METHOD Requery
+	   ! fix assigned initial value when bsetget = nil
+	 ! fixed nHeight in METHOD ACTIVATE   
+	 * METHOD onEvent
+	   ! fixed use ARROWS in combo EDIT
+
 2011-10-13 10:55 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
    * source\hfrmtmpl.prg
      * comment the property "filedbf" because the table may not exist in

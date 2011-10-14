@@ -61,10 +61,12 @@ CLASS HComboBox INHERIT HControl
    DATA nHeightBox
    DATA lResource INIT .F.
    DATA ldropshow INIT .F.
+   DATA nMaxLength     INIT Nil
+   
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
                aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, ;
-               bcolor, bLFocus, bIChange, nDisplay, nhItem, ncWidth )
+               bcolor, bLFocus, bIChange, nDisplay, nhItem, ncWidth, nMaxLength )
    METHOD Activate()
    METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay )
    METHOD INIT()
@@ -87,12 +89,13 @@ CLASS HComboBox INHERIT HControl
    METHOD DisplayValue( cValue ) SETGET
    METHOD onDropDown( ) INLINE ::ldropshow := .T.
    METHOD SetCueBanner( cText, lShowFoco ) 
-
+   METHOD MaxLength() SETGET
+   
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, aItems, oFont, ;
                bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, bcolor, bLFocus, ;
-               bIChange, nDisplay, nhItem, ncWidth ) CLASS HComboBox
+               bIChange, nDisplay, nhItem, ncWidth, nMaxLength ) CLASS HComboBox
 
    IF !Empty( nDisplay ) .AND. nDisplay > 0
       nStyle := Hwg_BitOr( nStyle, CBS_NOINTEGRALHEIGHT  + WS_VSCROLL )
@@ -124,6 +127,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    IF lEdit
       ::lText := .t.
+      IF nMaxLength != Nil
+         ::MaxLength := nMaxLength
+      ENDIF   
    ENDIF
 
    IF ::lText
@@ -183,11 +189,12 @@ METHOD Activate() CLASS HComboBox
       ::handle := CreateCombo( ::oParent:handle, ::id, ;
                                ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
+      ::nHeight := INT( ::nHeightBox / 0.75 )      
    ENDIF
 RETURN Nil
 
 METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
-                    bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay ) CLASS HComboBox
+                    bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay, nMaxLength ) CLASS HComboBox
 
    HB_SYMBOL_UNUSED( bLFocus)
    HB_SYMBOL_UNUSED( bIChange )
@@ -210,6 +217,10 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    ELSE
       ::value := Iif( vari == Nil .OR. Valtype( vari ) != "N", 1, vari )
    ENDIF
+   IF nMaxLength != Nil
+       ::MaxLength := nMaxLength
+   ENDIF   
+
    aItems        := IIF( aItems = Nil, {}, aClone( aItems ) )
    ::RowSource( aItems )
    ::aItemsBound   := {}
@@ -331,6 +342,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
          RETURN 0
       ENDIF
    ENDIF
+   IF msg = WM_MOUSEWHEEL .AND. ::oParent:nScrollBars != -1 .AND. ::oParent:bScroll = Nil
+      super:ScrollHV( ::oParent, msg, wParam, lParam )
+      RETURN 0 
+   ELSEIF msg = CB_SHOWDROPDOWN 
+      ::ldropshow := IIF( wParam = 1, .T., ::ldropshow ) 
+   ENDIF
+   
    IF ::bSetGet != Nil .OR. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
       IF msg == WM_CHAR .AND. ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE .OR. ;
           ! ::GetParentForm( Self ) :lModal )
@@ -364,19 +382,21 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
 
       ELSEIF msg = WM_KEYUP
          ProcKeyList( Self, wParam )        //working in MDICHILD AND DIALOG
-         
+      ELSEIF msg =  WM_COMMAND  .AND. ::lEdit  .AND. ! ::ldropshow 
+         IF GETKEYSTATE( VK_DOWN ) + GETKEYSTATE( VK_UP ) < 0 .AND. GetKeyState( VK_SHIFT ) > 0 .AND. HiWord( wParam ) = 1
+            RETURN 0
+        ENDIF
       ELSEIF msg = CB_GETDROPPEDSTATE  .AND. ! ::ldropshow
    	     IF GETKEYSTATE( VK_RETURN ) < 0
             ::GetValue()
 	       ENDIF
-         IF GETKEYSTATE( VK_DOWN ) + GETKEYSTATE( VK_TAB ) < 0
+   	     IF GETKEYSTATE( VK_TAB ) + GETKEYSTATE( VK_DOWN ) < 0 .AND. GetKeyState( VK_SHIFT ) > 0 
             IF ::oParent:oParent = Nil
              //  GetSkip( ::oParent, GetAncestor( ::handle, GA_PARENT ),, 1 )
             ENDIF
             GetSkip( ::oParent, ::handle,, 1 )
-            RETURN 1
-         ENDIF
-         IF GETKEYSTATE( VK_UP ) < 0
+            RETURN 0
+   	     ELSEIF GETKEYSTATE( VK_UP ) < 0 .AND.  GetKeyState( VK_SHIFT ) > 0
             IF ::oParent:oParent = Nil
              //  GetSkip( ::oParent, GetAncestor( ::handle, GA_PARENT ),, 1 )
             ENDIF
@@ -391,6 +411,14 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
 
    RETURN - 1
 
+METHOD MaxLength( nMaxLength ) CLASS HComboBox
+   
+   IF nMaxLength != Nil .AND. ::lEdit
+       Sendmessage( ::handle, CB_LIMITTEXT, nMaxLength, 0 )
+       ::nMaxLength := nMaxLength 
+   ENDIF
+   RETURN ::nMaxLength
+
 METHOD Requery() CLASS HComboBox
 
    SendMessage( ::handle, CB_RESETCONTENT, 0, 0 )
@@ -402,7 +430,7 @@ METHOD Requery() CLASS HComboBox
    NEXT
    */
    //::Refresh()
-   IF ::bSetGet = Nil
+   IF ::bSetGet = Nil .AND. LEN( ::aItems ) > 0 
       ::SetItem( 1 )
    ENDIF
    

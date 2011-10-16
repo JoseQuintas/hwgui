@@ -430,7 +430,7 @@ METHOD Requery() CLASS HComboBox
    NEXT
    */
    //::Refresh()
-   IF ::bSetGet = Nil .AND. LEN( ::aItems ) > 0 
+   IF  Empty( ::Value ) .AND. LEN( ::aItems ) > 0 .AND. ::bSetGet = Nil .AND. ! ::lEdit
       ::SetItem( 1 )
    ENDIF
    

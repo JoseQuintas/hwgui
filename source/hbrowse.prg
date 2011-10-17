@@ -3569,7 +3569,11 @@ METHOD FldStr( oBrw, numf ) CLASS HBrowse
             cRes := vartmp
          ELSEIF Type == "N"
             IF oBrw:aColumns[ numf ]:aList != Nil .AND. ( oBrw:aColumns[ numf ]:bWhen = Nil .OR. Eval( oBrw:aColumns[ numf ]:bWhen ) )
-               cRes := oBrw:aColumns[ numf ]:aList[vartmp]
+               IF vartmp == 0
+                  cRes := ""
+               ELSE
+                  cRes := oBrw:aColumns[ numf ]:aList[vartmp]
+               ENDIF
             ELSE
                cRes := PadL( Str( vartmp, oBrw:aColumns[ numf ]:length, ;
                                   oBrw:aColumns[ numf ]:dec ), oBrw:aColumns[ numf ]:length )

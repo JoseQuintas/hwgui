@@ -1250,7 +1250,7 @@ METHOD onChange( ) CLASS HEdit
       ::oparent:lSuspendMsgsHandling := .F.
     ENDIF
    //SendMessage( ::handle,  EM_SETSEL, 0, nPos )
-
+                                               
    RETURN Nil
 
 
@@ -1493,7 +1493,7 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
       ENDIF
       
    ENDIF
-   IF PtrtouLong( hctrl ) == PtrtouLong( nextHandle ) .AND. oCtrl != Nil
+   IF nSkip != 0 .AND. PtrtouLong( hctrl ) == PtrtouLong( nextHandle ) .AND. oCtrl != Nil
      // necessario para executa um codigo do lostfcosu
       IF  __ObjHasMsg(oCtrl,"BLOSTFOCUS") .AND. oCtrl:blostfocus != Nil
          sendmessage( nexthandle, WM_KILLFOCUS, 0,  0)
@@ -1712,8 +1712,8 @@ FUNCTION CheckFocus( oCtrl, lInside )
       RETURN .F.
    ENDIF
    IF oParent  != Nil .AND. lInside
-     IF ( ( ! Empty( hGetFocus ) .AND. GetWindowParent( hGetFocus )  != PtrtouLong( oParent:Handle ) .AND.;
-         oParent:lModal ) .OR. (  hGetFocus  = PtrtouLong( oCtrl:oParent:Handle ) ) ) .AND. ;
+     IF ( ( ! Empty( hGetFocus ) .AND. oParent:lModal .AND. GetWindowParent( hGetFocus )  != ;
+         PtrtouLong( oParent:Handle ) ) .OR. (  hGetFocus  = PtrtouLong( oCtrl:oParent:Handle ) ) ) .AND. ;
          PtrtouLong( oParent:handle ) = PtrtouLong( oCtrl:oParent:Handle )
        /*   
       IF PtrtouLong( GETFOCUS() ) = PtrtouLong( oCtrl:oParent:Handle ) .AND.;

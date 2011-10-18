@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-18 08:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/hedit.prg
+    * FUNCTION GetSkip
+	 ! minor fix 
+  * source/htab.prg
+    * METHOD onEvent
+	  ! minor fix in initfocus
+
 2011-10-17 13:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! Fix.

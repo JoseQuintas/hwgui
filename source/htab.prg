@@ -821,8 +821,8 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
       ::oparent:lSuspendMsgsHandling := .f.
    ENDIF
    IF ! ( ( msg = WM_COMMAND .OR. msg = WM_NOTIFY) .AND. ::oParent:lSuspendMsgsHandling .AND. ::lSuspendMsgsHandling )
-      IF ::GetParentForm():nInitFocus > 0  .AND. PtrtouLong( GetParent( ::GetParentForm():nInitFocus ) ) = PtrtouLong( ::Handle ) 
-          GetSkip( ::oParent, ::oParent:nInitFocus , , 0 )
+      IF msg = WM_NCPAINT .AND. ::GetParentForm():nInitFocus > 0  .AND. PtrtouLong( GetParent( ::GetParentForm():nInitFocus ) ) = PtrtouLong( ::Handle ) 
+          GetSkip( ::oParent, ::GetParentForm():nInitFocus , , 0 )
           ::GetParentForm():nInitFocus := 0
       ENDIF
       IF msg == WM_KILLFOCUS .AND. ::GetParentForm() != Nil  .AND. ::GetParentForm():Type < WND_DLG_RESOURCE

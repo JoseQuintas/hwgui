@@ -494,7 +494,7 @@ PRIVATE iscr := 1, bOldError
    WndOut()
 
    RetValue := scr_RetValue
-   scr_RetValue := Nil
+/*   scr_RetValue := Nil */
 RETURN RetValue
 
 FUNCTION CallFunc( cProc, aParams, aScript )

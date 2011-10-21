@@ -1411,6 +1411,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
 
    ELSEIF msg == WM_SYSKEYUP .OR. ( msg == WM_KEYUP .AND.;
                      ASCAN( { VK_SPACE, VK_RETURN, VK_ESCAPE }, wParam ) = 0 )
+     IF   CheckBit( lParam, 23 ) .AND. ( wParam > 96 .AND. wParam < 106 ) 
+        wParam -= 48
+     ENDIF
      IF ! EMPTY( ::title) .AND. ( pos := At( "&", ::title ) ) > 0 .AND. wParam == Asc( Upper( SubStr( ::title, ++ pos, 1 ) ) )
         IF ValType( ::bClick ) == "B" .OR. ::id < 3
            SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, BN_CLICKED ), ::handle )

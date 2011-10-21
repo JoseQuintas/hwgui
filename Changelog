@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-18 08:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hcontrol.prg
+     * CLASS BUTTONEX
+	   * METHOD onEvent
+	     ! msg == WM_SYSKEYUP .OR. ( msg == WM_KEYUP
+	       support numeric keyboard shortcuts extended
+
 2011-10-20 14:20 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
    * source\procmisc\procscri.prg
      * commented the line in Func DoScript /*   scr_RetValue := Nil  */

@@ -104,7 +104,7 @@
 #define  NM_SETCURSOR            - 17    // uses NMMOUSE struct
 #define  NM_CHAR                 - 18   // uses NMCHAR struct
 
-
+Static s_aEvents
 
 CLASS HTreeNode INHERIT HObject
 
@@ -297,7 +297,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
    METHOD FindChildPos( oNode, h )
    METHOD GetSelected()   INLINE TreeGetSelected( ::handle )
    METHOD EditLabel( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_EDITLABEL, 0, o:handle ) }
-   METHOD Expand( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_EXPAND, TVE_EXPAND, o:handle ) }
+   METHOD Expand( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_EXPAND, TVE_EXPAND, o:handle ), REDRAWWINDOW( ::handle , RDW_NOERASE + RDW_FRAME + RDW_INVALIDATE  )}
    METHOD Select( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_SELECTITEM, TVGN_CARET, o:handle ), ::oItem := TreeGetSelected( ::handle ) }
    METHOD Clean()
    METHOD Notify( lParam )
@@ -398,7 +398,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTree
 
    IF msg = WM_ERASEBKGND
       RETURN 0
-   ELSEIF msg = WM_KEYDOWN
+   ELSEIF msg = WM_KEYUP
       IF  ProcKeyList( Self, wParam )
          RETURN 0
       ENDIF
@@ -461,7 +461,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTree
          Eval( ::bDrop, Self, hitemNew, ::hitemDrop )
       ENDIF
 
-   ELSEIF msg = WM_LBUTTONDBLCLK
+   ELSEIF  ::lEditLabels .AND. ( msg = WM_LBUTTONDBLCLK .OR. msg = WM_CHAR ) 
+      ::EditLabel( ::oSelected )
+      RETURN 0
+   ENDIF
 
    ENDIF
    RETURN -1
@@ -564,6 +567,10 @@ METHOD Notify( lParam )  CLASS HTree
       ENDIF
 	
    ELSEIF nCode == TVN_BEGINLABELEDIT .or. nCode == TVN_BEGINLABELEDITW
+       s_aEvents := aClone( ::oParent:aEvents )
+      ::oParent:AddEvent( 0, IDOK, { || SendMessage( ::handle, TVM_ENDEDITLABELNOW , 0, 0 ) } )
+      ::oParent:AddEvent( 0, IDCANCEL, { || SendMessage( ::handle, TVM_ENDEDITLABELNOW , 1, 0 ) } )
+
       // Return 1
 
    ELSEIF nCode == TVN_ENDLABELEDIT  .or. nCode == TVN_ENDLABELEDITW
@@ -576,6 +583,8 @@ METHOD Notify( lParam )  CLASS HTree
             ENDIF
          ENDIF
       ENDIF
+      ::oParent:aEvents := s_aEvents
+      
    ELSEIF nCode == TVN_ITEMEXPANDING .or. nCode == TVN_ITEMEXPANDINGW
       oItem := Tree_GetNotify( lParam, TREE_GETNOTIFY_PARAM )
       IF ValType( oItem ) == "O"

@@ -417,18 +417,26 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    IF nAnchor >= ANCHOR_RIGHTABS
       && Absolute - RIGHT ABSOLUTE
       nAnchor := nAnchor - ANCHOR_RIGHTABS
-      IF x1 != x9
-         w1 := x1 - ( x9 +  INT( nXincAbsolute ) ) + w9
-      ENDIF
-      x1 := x9 +  INT( nXincAbsolute )
+      IF HWG_BITAND( ::Anchor, ANCHOR_LEFTREL ) != 0
+         w1 := INT( nxIncAbsolute ) - ( x1 - x9 ) + w9 
+      ELSE
+         IF x1 != x9
+            w1 := x1 - ( x9 +  INT( nXincAbsolute ) ) + w9
+         ENDIF
+         x1 := x9 +  INT( nXincAbsolute )
+      ENDIF   
    ENDIF
    IF nAnchor >= ANCHOR_BOTTOMABS
       && Absolute - BOTTOM ABSOLUTE
       nAnchor := nAnchor - ANCHOR_BOTTOMABS
-      IF y1 != y9
-         h1 := y1 - ( y9 +  Int( nYincAbsolute ) ) + h9
-      ENDIF
-      y1 := y9 +  Int( nYincAbsolute )
+      IF HWG_BITAND( ::Anchor, ANCHOR_TOPREL ) != 0
+         h1 := INT( nyIncAbsolute ) - ( y1 - y9 ) + h9 
+      ELSE
+         IF y1 != y9
+            h1 := y1 - ( y9 +  Int( nYincAbsolute ) ) + h9
+         ENDIF
+         y1 := y9 +  Int( nYincAbsolute )
+      ENDIF   
    ENDIF
    IF nAnchor >= ANCHOR_LEFTABS
       && Absolute - LEFT ABSOLUTE
@@ -1411,7 +1419,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
 
    ELSEIF msg == WM_SYSKEYUP .OR. ( msg == WM_KEYUP .AND.;
                      ASCAN( { VK_SPACE, VK_RETURN, VK_ESCAPE }, wParam ) = 0 )
-     IF   CheckBit( lParam, 23 ) .AND. ( wParam > 96 .AND. wParam < 106 ) 
+     IF   CheckBit( lParam, 23 ) .AND. ( wParam > 95 .AND. wParam < 106 ) 
         wParam -= 48
      ENDIF
      IF ! EMPTY( ::title) .AND. ( pos := At( "&", ::title ) ) > 0 .AND. wParam == Asc( Upper( SubStr( ::title, ++ pos, 1 ) ) )

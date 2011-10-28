@@ -465,8 +465,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTree
       ::EditLabel( ::oSelected )
       RETURN 0
    ENDIF
-
-   ENDIF
    RETURN -1
 
 

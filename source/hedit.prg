@@ -380,8 +380,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
          ELSEIF msg == WM_LBUTTONDOWN
             IF GetFocus() != ::handle
-               SetFocus( ::handle )
-               RETURN 0
+               //SetFocus( ::handle )
+               //RETURN 0
             ENDIF
 
          ELSEIF msg == WM_LBUTTONUP
@@ -413,7 +413,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          ENDIF
       ENDIF
       IF lColorinFocus
-         IF msg == WM_SETFOCUS
+         IF msg == WM_SETFOCUS 
 //            ::bColorOld := ::bcolor
 
             ::nSelStart := IIF( Empty( ::title ), 0, ::nSelStart )
@@ -431,8 +431,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          ::lFocu := .T.
          IF "K" $ ::cPicFunc
             SendMessage( ::handle, EM_SETSEL, 0, - 1 )
-         ELSEIF ::selstart = 0 .AND. ::lPicComplex
-            *-SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
+         ELSEIF ::selstart = 0 .AND. "R" $ ::cPicFunc  //.AND. ::lPicComplex
+            SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
+            
          ENDIF
          IF ::lPicComplex .AND. ::cType <> "N"
             ::Title := Transform( ::Title, ::cPicFunc + " " + ::cPicMask )
@@ -595,7 +596,7 @@ METHOD Refresh()  CLASS HEdit
       ::title := vari
    ENDIF
    SetDlgItemText( ::oParent:handle, ::id, ::title )
-   IF PtrtouLong( GetFocus() ) == PtrtouLong( ::handle )  .AND. isWindowVisible( ::handle )
+   IF isWindowVisible( ::handle ) .AND.  PtrtouLong( GetFocus() ) == PtrtouLong( ::handle )  
       RedrawWindow( ::Handle, RDW_NOERASE + RDW_INVALIDATE + RDW_FRAME + RDW_UPDATENOW ) //+ RDW_NOCHILDREN ) 
    ENDIF
    RETURN Nil
@@ -697,7 +698,6 @@ METHOD IsEditable( nPos, lDel ) CLASS HEdit
    ENDIF
 
    cChar := SubStr( ::cPicMask, nPos, 1 )
-
    IF ::cType == "C"
       RETURN cChar $ "!ANX9#"
    ELSEIF ::cType == "N"       // nando add
@@ -785,7 +785,6 @@ METHOD DeleteChar( lBack ) CLASS HEdit
    /* NEW */
    IF nPosEnd - nPosStart - 1 > 1 .AND.::lPicComplex .AND. ::cType <> "N" //.AND. NPOSEND < nGetLen
       lBack := .T.
-
    ELSE
       IF lBack .AND. ! ::IsEditable( nPosStart + 1, .T. ) //.AND.  ::cType <> "N"
           nPosStart -= IIF( ::cType <> "N", 1, 0 )
@@ -1236,11 +1235,9 @@ METHOD onChange( ) CLASS HEdit
       vari := ::UnTransform( GetEditText( ::oParent:handle, ::id ), 'vali' ) 
       vari := Val( LTrim( vari ) )
    ELSE
-       //vari := ::GetText()
       vari := ::UnTransform( GetEditText( ::oParent:handle, ::id ), 'vali' )
-      ::Title := vari  // AQUI DA PROBLEMAS NA MASCARA DO CAMPO
+      // ::Title := vari  // AQUI DA PROBLEMAS NA MASCARA DO CAMPO
    ENDIF
-    //writelog( vari +str(selstart)+chr(13))
    IF ::bSetGet != Nil
        Eval( ::bSetGet, vari, Self )
    ENDIF

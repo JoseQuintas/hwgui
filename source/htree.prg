@@ -18,6 +18,8 @@
 #define TVM_GETNEXTITEM      4362   // (TV_FIRST + 10)
 #define TVM_SELECTITEM       4363   // (TV_FIRST + 11)
 #define TVM_EDITLABEL        4366   // (TV_FIRST + 14)
+#define TVM_GETEDITCONTROL   4367   // (TV_FIRST + 15)
+#define TVM_ENDEDITLABELNOW  4374   //(TV_FIRST + 22)
 #define TVM_GETITEMSTATE     4391   // (TV_FIRST + 39)
 #define TVM_SETITEM          4426   // (TV_FIRST + 63)
 #define TVM_SETITEMHEIGHT    4379   // (TV_FIRST + 27)

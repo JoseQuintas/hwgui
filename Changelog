@@ -8,7 +8,7 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2011-10-27 23:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+2011-10-29 20:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * samples/all/a.prg
      ! fix size combo in samples
      + add new sample MDIChildFromPrg same behavior DialogFromPrg

@@ -259,6 +259,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                    ! ::GetParentForm():lModal )
                    GetSkip( oParent, ::handle, , 1 )
                   RETURN 0
+               ELSEIF  ::GetParentForm():Type < WND_DLG_RESOURCE
+                  RETURN 0   
                ENDIF
                RETURN -1
             ELSEIF wParam == VK_TAB
@@ -271,12 +273,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                oParent := ::GetParentForm( )
                IF oParent:Handle == ::oParent:Handle .AND. oParent:lExitOnEsc .AND. ;
                                   oParent:FindControl( IDCANCEL ) != Nil .AND. ;
-                                ! oParent:FindControl( IDCANCEL ):IsEnabled() 
+                                ! oParent:FindControl( IDCANCEL ):IsEnabled()       
                    SendMessage( oParent:handle, WM_COMMAND, makewparam( IDCANCEL, 0 ), ::handle )
                ENDIF    
   					   IF ( oParent:Type < WND_DLG_RESOURCE .OR. ! oParent:lModal )
                    SETFOCUS( 0 )                                            
                    ProcOkCancel( Self, VK_ESCAPE )    
+                   RETURN 0
                ENDIF   
                RETURN 0 //-1
             ENDIF
@@ -393,7 +396,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ELSE
          // no bsetget
          IF msg == WM_CHAR
-            IF wParam == VK_TAB .OR. wParam == VK_ESCAPE
+            IF wParam == VK_TAB .OR. wParam == VK_ESCAPE .OR. wParam == VK_RETURN
                RETURN 0
             ENDIF          
             RETURN -1
@@ -404,10 +407,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                //SetFocus( nexthandle )
                PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle, 1 )
                RETURN 0
-            ELSEIF  wParam == VK_RETURN .AND. ProcOkCancel( Self, wParam, ::GetParentForm():Type >= WND_DLG_RESOURCE )   
+            ELSEIF  ( wParam == VK_RETURN .OR. wParam == VK_ESCAPE ).AND. ProcOkCancel( Self, wParam, ::GetParentForm():Type >= WND_DLG_RESOURCE )   
                RETURN - 1
             ELSEIF ( wParam == VK_RETURN .OR. wParam == VK_TAB ) .AND. ::GetParentForm():Type < WND_DLG_RESOURCE
                GetSkip( oParent, ::handle, , 1 )
+               
                RETURN 0
             ENDIF
          ENDIF
@@ -482,7 +486,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    ENDIF
 
    //IF msg == WM_KEYDOWN
-   IF msg == WM_KEYUP .OR. msg == WM_SYSKEYUP     /* BETTER FOR DESIGNER */
+   IF ( msg == WM_KEYUP .OR. msg == WM_SYSKEYUP ) .AND. wParam != VK_ESCAPE     /* BETTER FOR DESIGNER */
       IF ! ProcKeyList( Self, wParam )      
          IF ::bKeyUp != Nil
             IF !Eval( ::bKeyUp,Self,wParam )

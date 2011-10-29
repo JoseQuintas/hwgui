@@ -51,6 +51,7 @@ Private nColor, oBmp2
          MENUITEM "&MsgGet" ;
                ACTION CopyStringToClipboard(MsgGet("Dialog Sample","Input table name"))
          MENUITEM "&Dialog from prg" ACTION DialogFromPrg()
+         MENUITEM "&MdiChild from prg" ACTION MdiChildFromPrg( )
          MENUITEM "&DOS print" ACTION PrintDos()
          MENUITEM "&Windows print" ;
                ACTION Iif( OpenReport("a.rpt","Simple"),PrintReport(,,.T.),.F.)
@@ -92,7 +93,9 @@ Local e5 := 10320.54
 
    PREPARE FONT oFontBtn NAME "MS Sans Serif" WIDTH 0 HEIGHT -12
 
-   INIT WINDOW oChildWnd MDICHILD TITLE "Child" STYLE WS_VISIBLE + WS_OVERLAPPEDWINDOW
+   INIT WINDOW oChildWnd MDICHILD TITLE "Child";
+     STYLE WS_CHILD+ WS_OVERLAPPEDWINDOW 
+     //STYLE WS_VISIBLE + WS_OVERLAPPEDWINDOW
 
    @ 0,0 PANEL oPanel OF oChildWnd SIZE 0,44
 
@@ -121,17 +124,80 @@ Local e5 := 10320.54
         PICTURE "@e 999,999,999.99"     ;
         SIZE 260, 25
 
-   @ 20,190  BUTTON "Ok" SIZE 100, 32 ON CLICK {||( MsgInfo( e1 + chr(10) + chr(13) + ;
+   @ 20,190  BUTTONEX "Ok" SIZE 100, 32 ON CLICK {||( MsgInfo( e1 + chr(10) + chr(13) + ;
                Dtoc(e2) + chr(10) + chr(13) + ;
                Str(e3) + chr(10) + chr(13) +  ;
                e4 + chr(10) + chr(13) +       ;
                Str(e5) + chr(10) + chr(13)    ;
                ,"Results:" ) ,oChildWnd:Close() )}
-   @ 180,190 BUTTON "Cancel" SIZE 100, 32 ON CLICK {||oChildWnd:Close()}
+   @ 180,190 BUTTONEX "Cancel" SIZE 100, 32 ON CLICK {||oChildWnd:Close()}
 
    oChildWnd:Activate()
 
 Return Nil
+
+Function MdiChildFromPrg( o )
+Local cTitle := "MdiChild from prg", cText := "Input something"
+Local oChildWnd, oFont := HFont():Add( "MS Sans Serif",0,-13 )
+Local cRes, aCombo := { "First","Second" }, oEdit, vard := "Monday"
+// Local aTabs := { "Monday","Tuesday","Wednesday","Thursday","Friday" }
+Local oCmd1, oCmd2, oCmd3
+
+   INIT WINDOW oChildWnd MDICHILD TITLE "Child";
+   AT 210,10  SIZE 350,350                    ;
+   FONT oFont                                 ;
+   STYLE WS_CHILD+ WS_OVERLAPPEDWINDOW        ;
+   ON EXIT {||MsgYesNo("Really exit ?")}
+
+   @ 20,10 SAY cText SIZE 260, 22
+   @ 20,35 EDITBOX oEdit CAPTION ""    ;
+        STYLE WS_DLGFRAME              ;
+        SIZE 260, 26 COLOR Vcolor("FF0000")
+   oEdit:anchor := 11
+   
+   @ 20,70 CHECKBOX "Check 1" SIZE 90, 20
+   @ 20,95 CHECKBOX "Check 2"  ;
+        SIZE 90, 20 COLOR Iif( nColor==Nil,Vcolor("0000FF"),nColor )
+
+   @ 160,70 GROUPBOX "RadioGroup"  SIZE 130, 75
+
+   RADIOGROUP
+   @ 180,90 RADIOBUTTON "Radio 1"  ;
+        SIZE 90, 20 ON CLICK {||oEdit:SetColor(Vcolor("0000FF"),,.T.)}
+   @ 180,115 RADIOBUTTON "Radio 2" ;
+        SIZE 90, 20 ON CLICK {||oEdit:SetColor(Vcolor("FF0000"),,.T.)}
+   END RADIOGROUP SELECTED 2
+
+   @ 20,120 COMBOBOX aCombo STYLE WS_TABSTOP ;
+        SIZE 120, 24
+
+   @ 20,160 UPDOWN 10 RANGE -10,50 SIZE 50,32 STYLE WS_BORDER
+
+   @ 160,150 TAB oTab ITEMS {} SIZE 130,66
+   oTab:Anchor := 240
+   BEGIN PAGE "Monday" OF oTab
+      @ 20,34 GET vard SIZE 80,22 STYLE WS_BORDER
+   END PAGE OF oTab
+   BEGIN PAGE "Tuesday" OF oTab
+      @ 20,34 EDITBOX "" SIZE 80,22 STYLE WS_BORDER
+   END PAGE OF oTab
+
+   @ 100,220 LINE LENGTH 100
+
+   @ 20,240 BUTTONEX oCmd1 CAPTION "Ok" ID IDOK  ;
+        SIZE 100, 32 COLOR Vcolor("FF0000")
+   @ 140,240 BUTTONEX oCmd2 CAPTION "11"   ;
+        SIZE 20, 32 ON CLICK {|o|CreateC(o)}
+   @ 180,240 BUTTONEX oCmd3 CAPTION "Cancel" ID IDCANCEL  ;
+        SIZE 100, 32
+   oCmd1:Anchor := 4
+   oCmd2:Anchor := 4
+   oCmd3:Anchor := 4
+   
+   ACTIVATE WINDOW oChildWnd
+ 
+Return Nil
+
 
 function NoExit()
 Local oDlg, oGet, vGet:="Dialog if no close in ENTER or EXIT"
@@ -365,16 +431,16 @@ Local cRes, aCombo := { "First","Second" }, oEdit, vard := "Monday"
    END RADIOGROUP SELECTED 2
 
    @ 20,120 COMBOBOX aCombo STYLE WS_TABSTOP ;
-        SIZE 100, 150
+        SIZE 120, 24
 
    @ 20,160 UPDOWN 10 RANGE -10,50 SIZE 50,32 STYLE WS_BORDER
 
-   @ 160,160 TAB oTab ITEMS {} SIZE 130,56
+   @ 160,150 TAB oTab ITEMS {} SIZE 130,66
    BEGIN PAGE "Monday" OF oTab
-      @ 20,28 GET vard SIZE 80,22 STYLE WS_BORDER
+      @ 20,34 GET vard SIZE 80,22 STYLE WS_BORDER
    END PAGE OF oTab
    BEGIN PAGE "Tuesday" OF oTab
-      @ 20,28 EDITBOX "" SIZE 80,22 STYLE WS_BORDER
+      @ 20,34 EDITBOX "" SIZE 80,22 STYLE WS_BORDER
    END PAGE OF oTab
 
    @ 100,220 LINE LENGTH 100
@@ -395,7 +461,7 @@ Return Nil
 Static Function CreateC( oDlg )
 Static lFirst := .F., o
    IF !lFirst
-      @ 100,200 DATEPICKER o SIZE 80, 24
+      @ 50,200 DATEPICKER o SIZE 80, 24
       lFirst := .T.
    ENDIF
    SendMessage( o:handle,DTM_SETFORMAT,0,"dd':'MM':'yyyy" )

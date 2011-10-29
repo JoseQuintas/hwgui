@@ -384,7 +384,7 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
       y1 := y9 + Round( ( h - y ) * ( ( y9 + h9 / 2 ) / y ), 0 )
    ENDIF
    IF nAnchor >= ANCHOR_HORFIX
-    *- horizontal fixed center
+    *- horizontal fixed center                                                    
       nAnchor := nAnchor - ANCHOR_HORFIX
       x1 := x9 + Round( ( w - x ) * ( ( x9 + w9 / 2 ) / x ), 0 )
    ENDIF

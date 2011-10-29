@@ -336,7 +336,7 @@ RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
    LOCAL oCtrl
-   
+
    IF ::bOther != Nil
       IF Eval( ::bOther, Self, msg, wParam, lParam ) != - 1
          RETURN 0
@@ -355,13 +355,16 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
          IF wParam = VK_TAB
             GetSkip( ::oParent, ::handle,, Iif( IsCtrlShift( .f., .t. ), - 1, 1 ) )
             RETURN 0
-         ELSEIF wParam == VK_RETURN
+         ELSEIF wParam == VK_RETURN .AND. ;
+            ! ProcOkCancel( Self, wParam, ::GetParentForm():Type >= WND_DLG_RESOURCE ) .AND.;
+						     ( ::GetParentForm():Type < WND_DLG_RESOURCE.OR.;
+                   ! ::GetParentForm():lModal )
             GetSkip( ::oParent, ::handle,, 1 )
             RETURN 0
          ENDIF
       ELSEIF msg == WM_GETDLGCODE 
          IF wParam = VK_RETURN  
-            RETURN 0
+            RETURN DLGC_WANTMESSAGE
          ELSEIF wParam = VK_ESCAPE  .AND. ;
                   ( oCtrl := ::GetParentForm:FindControl( IDCANCEL ) ) != Nil .AND. ! oCtrl:IsEnabled() 
             RETURN DLGC_WANTMESSAGE  

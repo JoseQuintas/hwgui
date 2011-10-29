@@ -9,6 +9,17 @@
 */
 
 2011-10-27 23:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * samples/all/a.prg
+     ! fix size combo in samples
+     + add new sample MDIChildFromPrg same behavior DialogFromPrg
+   * source/hcombo.prg
+   * source/hcontrol.prg
+   * source/hcwindow.prg
+   * source/hedit.prg
+   * source/hwindow.prg
+     ! fix ESCAPE in MDICHILD 
+
+2011-10-27 23:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hedit.prg
      ! minor fix in picture with R and msg == WM_LBUTTONDOWN
 

@@ -760,7 +760,7 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
 				    RETURN GetBackColorParent( oCtrl, , .T. ):handle
 				 ENDIF
 				 */
-				 IF  __ObjHasMsg( oCtrl, "PAINT" ) .OR. ( oCtrl:winClass == "BUTTON"  .AND. oCtrl:classname != "HCHECKBUTTON" )
+				 IF  __ObjHasMsg( oCtrl, "PAINT" ) .OR. oCtrl:lnoThemes .OR. ( oCtrl:winClass == "BUTTON"  .AND. oCtrl:classname != "HCHECKBUTTON" )
 				    RETURN GetStockObject( NULL_BRUSH )
 				 ENDIF
 				 RETURN GetBackColorParent( oCtrl, , .T. ):handle
@@ -873,7 +873,7 @@ PROCEDURE HB_GT_DEFAULT_NUL()
 FUNCTION ProcKeyList( oCtrl, wParam, oMain )
 LOCAL oParent, nCtrl,nPos
 
-   IF ( wParam = VK_RETURN .OR. wParam = VK_ESCAPE ) .AND.  ProcOkCancel( oCtrl, wParam )
+   IF ( wParam = VK_RETURN .OR. wParam = VK_ESCAPE ) .AND. ProcOkCancel( oCtrl, wParam )
       RETURN .F.
    ENDIF
    IF wParam != VK_SHIFT  .AND. wParam != VK_CONTROL .AND. wParam != VK_MENU
@@ -906,7 +906,7 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
          oCtrl:SetFocus()
   	     oWin:lResult := .T.
   	     IF lForce
-	       ELSEIF oCtrl:bClick != Nil .AND. ! lForce
+	       ELSEIF ISBLOCK( oCtrl:bClick ) .AND. ! lForce
 	          SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
 	       ELSEIF oWin:lExitOnEnter
             oWin:close()
@@ -914,7 +914,7 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
          RETURN .T.
       ENDIF
    ELSEIF iParHigh == IDCANCEL
-      IF ( oCtrl := oWin:FindControl( IDCANCEL ) ) != Nil .AND. oCtrl:IsEnabled()
+      IF ( oCtrl := oWin:FindControl( IDCANCEL ) ) != Nil .AND. oCtrl:IsEnabled() 
          oCtrl:SetFocus()
          oWin:lResult := .F.
          SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
@@ -927,9 +927,15 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
             IF AScan( oWin:GetList, { | o | o:handle == oCtrl:Handle } ) > 1
                RETURN .T.
             ENDIF
-         ENDIF
+         ENDIF                                               
       ELSEIF oWin:lExitOnEsc
+*        					      hwg_WriteLog("HCW esc"+str(OWIN:handle)+chr(13))
           oWin:close()
+       *   oCtrlFocu := GetFocus()
+       *   SetFocus( 0 )
+       *   SendMessage( oCtrlFocu , WM_KEYUP, 0, 0 ) 
+          //          SetFocus( GetParent(oCtrlFocu ) )
+
       ELSEIF ! oWin:lExitOnEsc
          oWin:nLastKey := 0
          RETURN .F.

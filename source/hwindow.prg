@@ -509,7 +509,7 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
       Eval( ::bInit,Self )
    ENDIF
    */
-
+   
    IF lShow
       *-onMove( Self )
       IF lMinimized  .OR. ::WindowState = SW_SHOWMINIMIZED
@@ -856,7 +856,7 @@ LOCAL aCoors,  oWndArea
 
 STATIC FUNCTION onSysCommand( oWnd, wParam, lParam )
    Local i, ars, oChild, oCtrl
-
+   
    IF wParam == SC_CLOSE
       IF ISBLOCK( oWnd:bDestroy )
          oWnd:lSuspendMsgsHandling := .T.
@@ -905,7 +905,7 @@ STATIC FUNCTION onSysCommand( oWnd, wParam, lParam )
       oWnd:lMaximized := ! oWnd:lMaximized
       RETURN 0
    ELSEIF  (wParam == SC_MAXIMIZE .OR. wparam == SC_MAXIMIZE2 ) //.AND. oWnd:type != WND_MDICHILD
-
+   
    ELSEIF wParam == SC_RESTORE .OR. wParam == SC_RESTORE2
 
    ELSEIF wParam = SC_NEXTWINDOW .OR. wParam = SC_PREVWINDOW
@@ -978,6 +978,10 @@ STATIC FUNCTION onMdiCreate( oWnd, lParam )
    IF ! oWnd:lClosable
       oWnd:Closable( .F. )
    ENDIF
+   IF oWnd:oFont != Nil
+      SendMessage( oWnd:handle, WM_SETFONT, oWnd:oFont:handle, 0 )
+   ENDIF
+
    InitControls( oWnd )
    InitObjects( oWnd, .T. )
    IF oWnd:bInit != Nil

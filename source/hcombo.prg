@@ -393,6 +393,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
    	     IF GETKEYSTATE( VK_RETURN ) < 0
             ::GetValue()
 	       ENDIF
+         IF ( GETKEYSTATE( VK_RETURN ) < 0 .OR. GETKEYSTATE( VK_ESCAPE ) < 0 ) .AND. ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE .OR.;
+            ! ::GetParentForm( Self ):lModal )
+	          ProcOkCancel( Self, IIF( GETKEYSTATE( VK_RETURN ) < 0, VK_RETURN, VK_ESCAPE ) )
+	       ENDIF	       
    	     IF GETKEYSTATE( VK_TAB ) + GETKEYSTATE( VK_DOWN ) < 0 .AND. GetKeyState( VK_SHIFT ) > 0 
             IF ::oParent:oParent = Nil
              //  GetSkip( ::oParent, GetAncestor( ::handle, GA_PARENT ),, 1 )

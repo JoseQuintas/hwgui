@@ -15,10 +15,10 @@
 CLASS HRichEdit INHERIT HControl
 
 CLASS VAR winclass   INIT "RichEdit20A"
-   DATA lChanged    INIT .F.
-   DATA lSetFocus   INIT .T.
-   DATA lAllowTabs  INIT .F.
-   DATA lctrltab    HIDDEN
+   DATA lChanged   INIT .F.
+   DATA lSetFocus  INIT .T.
+   DATA lAllowTabs INIT .F.
+   DATA lctrltab   HIDDEN
    DATA lReadOnly  INIT .F.
    DATA Col        INIT 0
    DATA Line       INIT 0
@@ -33,7 +33,7 @@ CLASS VAR winclass   INIT "RichEdit20A"
 
    METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip,;
-               tcolor, bcolor, bOther, lAllowTabs, bChange )
+               tcolor, bcolor, bOther, lAllowTabs, bChange, lnoBorder )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -53,9 +53,10 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
             oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
-            tcolor, bcolor, bOther, lAllowTabs, bChange ) CLASS HRichEdit
+            tcolor, bcolor, bOther, lAllowTabs, bChange, lnoBorder ) CLASS HRichEdit
 
-   nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE + WS_TABSTOP + WS_BORDER )
+   nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE + WS_TABSTOP + ; // WS_BORDER )
+                        IIf( lNoBorder = Nil.OR. ! lNoBorder, WS_BORDER, 0 ) )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, IIf( bcolor == Nil, GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor ) )
 
@@ -105,12 +106,12 @@ METHOD Init()  CLASS HRichEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
-   LOCAL nDelta, nret
+   LOCAL nDelta, nret                                        
 
-   // writelog( str(msg) + str(wParam) + str(lParam) )
+   //HWG_writelog( 'rich' + str(msg) + str(wParam) + str(lParam) + chr(13) )
    IF msg = WM_KEYUP .OR. msg == WM_LBUTTONDOWN .OR. msg == WM_LBUTTONUP // msg = WM_NOTIFY .OR.
       ::updatePos()
-   ELSEIF msg == WM_MOUSEACTIVATE 
+   ELSEIF msg == WM_MOUSEACTIVATE  .AND. ::GetParentForm( ):Type < WND_DLG_RESOURCE
       ::SetFocus( )
    ENDIF
    IF  msg = EM_GETSEL .OR. msg = EM_LINEFROMCHAR .OR. msg = EM_LINEINDEX .OR. ;
@@ -118,15 +119,17 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
        msg = EM_HIDESELECTION .OR. msg = WM_GETTEXTLENGTH .OR. msg = EM_GETFIRSTVISIBLELINE
       Return - 1
    ENDIF
-
-   IF msg = WM_SETFOCUS .and. ::lSetFocus .AND. ISWINDOWVISIBLE(::handle)
+   IF msg = WM_SETFOCUS .AND. ::lSetFocus //.AND. ISWINDOWVISIBLE(::handle)
       ::lSetFocus := .F.
-      SendMessage( ::handle, EM_SETSEL, 0, 0 ) //Loword(npos),loword(npos))
+      PostMessage( ::handle, EM_SETSEL, 0, 0 ) 
    ELSEIF msg = WM_SETFOCUS .AND. ::lAllowTabs .AND. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
         ::lctrltab := ::GetParentForm( Self ):lDisableCtrlTab
         ::GetParentForm( Self ):lDisableCtrlTab := ::lAllowTabs
    ELSEIF msg = WM_KILLFOCUS .AND. ::lAllowTabs .AND. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
         ::GetParentForm( Self ):lDisableCtrlTab := ::lctrltab
+   ENDIF
+   IF msg == WM_KEYDOWN .AND. ( wParam = VK_DELETE .OR. wParam = VK_BACK )  //46Del
+      ::lChanged := .T.
    ENDIF
    IF msg == WM_CHAR
       IF wParam = VK_TAB .AND. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
@@ -137,8 +140,6 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
        IF !IsCtrlShift( .T., .F.)
          ::lChanged := .T.
       ENDIF
-   ELSEIF msg == WM_KEYDOWN .AND. wParam = 46  //Del
-      ::lChanged := .T.
    ELSEIF ::bOther != Nil
       nret := Eval( ::bOther, Self, msg, wParam, lParam )
       IF ValType( nret ) != "N" .OR. nret > - 1

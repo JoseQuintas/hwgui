@@ -80,8 +80,9 @@
 #define WM_LBUTTONDBLCLK                515    // 0x0203
 #define WM_RBUTTONDOWN                  516    // 0x0204
 #define WM_RBUTTONUP                    517    // 0x0205
-#define WM_MBUTTONUP	                520    // 0x0208
+#define WM_MBUTTONUP	                  520    // 0x0208
 #define WM_PARENTNOTIFY                 528    // 0x0210
+#define	WM_MOVING                       534    //  0x0216,
 #define WM_MDICREATE                    544     // 0x0220
 #define WM_MDIDESTROY                   545     // 0x0221
 #define WM_MDIACTIVATE                  546     // 0x0222

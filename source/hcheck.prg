@@ -175,7 +175,7 @@ METHOD Value( lValue ) CLASS HCheckButton
    IF lValue != Nil
        ::SetValue( lValue )
    ENDIF
-	 RETURN ::lValue
+	 RETURN SendMessage( ::handle,BM_GETCHECK, 0, 0 ) == 1 
    
 METHOD Refresh() CLASS HCheckButton
    LOCAL var
@@ -215,6 +215,10 @@ METHOD onClick() CLASS HCheckButton
 METHOD killFocus() CLASS HCheckButton
    LOCAL ndown := Getkeystate( VK_RIGHT ) + Getkeystate( VK_DOWN ) + GetKeyState( VK_TAB )
    LOCAL nSkip := 0
+
+   IF ! CheckFocus( Self, .T. )
+      RETURN .t.
+   ENDIF
 
    IF ::oParent:classname = "HTAB"
       IF getkeystate( VK_LEFT ) + getkeystate( VK_UP ) < 0 .OR. ;

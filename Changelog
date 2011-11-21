@@ -8,6 +8,40 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-11-21 10:20 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include/windows.ch
+     + constant WM_MOVING  534
+   * source/hbrowse.prg
+     ! fixed ESCAPE in MDICHILD when lEsc := .T.
+   * source/hcheck.prg
+     * METHOD Value
+	   ! minor fix
+   * source/hcontrol.prg
+     * CLASS Buttonex
+	   * METHOD PAINT
+	   ! minor fix
+   * source/hcwindow.prg
+     * FUNCTION onCommand(
+     * FUNCTION onCtlColor
+       ! minor fix
+   * source/hwindow.prg
+     * FUNCTION onSize
+	   ! minor fix when MDICHILD maximized and CHILD or MODAL
+	 * CLASS HMainWindow
+       * METHOD onEvent
+	     ! minor fix in msg WM_PARENTNOTIFY
+     * CLASS HMDIChildWindow 		 
+	   + DATA lSizeBox  
+       + DATA aChilds  
+       + DATA hActive 
+	   * METHOD Activate
+	     ! in MDIChild when the edges are fixed and can not resize, the edge is thin, 
+		   so to simulate a 3d edge was added to the style DS_3DLOOK but disabling window resize
+	   * FUNCTION onSysCommand
+         ! fixed SC_MAXIMIZE when MDICHILD is MODAL or CHILD	   
+       * Function onMdiActivate		   
+	     ! fix when MDI is MODAL
+		 
 2011-11-12 11:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hriched.prg
      ! minor fix in onEvent 

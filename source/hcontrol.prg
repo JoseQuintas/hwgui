@@ -236,7 +236,7 @@ METHOD DisableBackColor( DisableBColor )
    RETURN ::DisableBColor
 
 METHOD SetFont( oFont ) CLASS HControl
-
+     
    IF oFont != NIL
       IF  VALTYPE( oFont ) = "O"
          ::oFont := oFont:SetFontStyle()
@@ -1824,7 +1824,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
           ELSEIF !EMPTY(::caption)
              // figura no topo texto em baixo
              IF ::iStyle = ST_ALIGN_OVERLAP //ST_ALIGN_VERT
-                captionRect[ 2 ] :=  itemRect1[ 2 ] + aBmpSize[ 2 ] + 1
+                captionRect[ 2 ] :=  itemRect1[ 2 ] + aBmpSize[ 2 ] //+ 1
                 uAlign -= ST_ALIGN_OVERLAP + 1
              ELSE
                 captionRect[ 2 ] :=  ( ::nHeight - nHeight ) / 2 + 2

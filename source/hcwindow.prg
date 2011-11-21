@@ -744,6 +744,7 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
       ENDIF
       SetBkMode( wParam, oCtrl:backstyle )
       IF !  oCtrl:IsEnabled() .AND. oCtrl:Disablebrush != Nil
+         SetBkMode( wParam, TRANSPARENT ) 
          SetBkColor( wParam, oCtrl:DisablebColor )
          RETURN oCtrl:disablebrush:handle
       ELSEIF oCtrl:bcolor != NIL  .AND. oCtrl:BackStyle = OPAQUE
@@ -784,9 +785,10 @@ STATIC FUNCTION onDrawItem( oWnd, wParam, lParam )
 
 STATIC FUNCTION onCommand( oWnd, wParam, lParam )
    LOCAL iItem, iParHigh := HIWORD( wParam ), iParLow := LOWORD( wParam )
-
+   LOCAL oForm := oWnd:GetParentForm()
+   
    HB_SYMBOL_UNUSED( lParam )
-   IF oWnd:aEvents != NIL .AND. ! oWnd:lSuspendMsgsHandling .AND. ;
+   IF oWnd:aEvents != NIL .AND. ! oForm:lSuspendMsgsHandling .AND. ! oWnd:lSuspendMsgsHandling .AND. ;
       ( iItem := AScan( oWnd:aEvents, { | a | a[ 1 ] == iParHigh .AND. ;
                                         a[ 2 ] == iParLow } ) ) > 0
 

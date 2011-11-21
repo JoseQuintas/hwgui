@@ -539,6 +539,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          RETURN 1
 
       ELSEIF msg == WM_ERASEBKGND
+         ::isMouseOver := .F.
          RETURN 0
 
       ELSEIF msg = WM_SIZE
@@ -596,6 +597,13 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
       ELSEIF msg == WM_GETDLGCODE
          ::isMouseOver := .F.
+         IF wParam = VK_ESCAPE   .AND. ;          // DIALOG MODAL
+                  ( oParent := ::GetParentForm:FindControl( IDCANCEL ) ) != Nil .AND. ! oParent:IsEnabled() 
+              RETURN DLGC_WANTMESSAGE   
+         ELSEIF ( wParam = VK_ESCAPE .AND. ::GetParentForm():handle != ::oParent:Handle .AND. ::lEsc ) .OR. ; //! ::lAutoEdit
+                ( wParam = VK_RETURN .AND. ::GetParentForm():FindControl( IDOK ) != Nil )
+            RETURN -1
+         ENDIF   
          RETURN DLGC_WANTALLKEYS
 
       ELSEIF msg == WM_COMMAND
@@ -775,7 +783,11 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             ::Edit( VK_RETURN )
 
          ELSEIF wParam == VK_ESCAPE .AND. ::lESC
-            SendMessage( GetParent( ::handle ), WM_CLOSE, 0, 0 )
+            IF ::GetParentForm( ):Type < WND_DLG_RESOURCE 
+               SendMessage( GetParent( ::handle ), WM_SYSCOMMAND, SC_CLOSE, 0 )
+            ELSE    
+               SendMessage( GetParent( ::handle ), WM_CLOSE, 0, 0 )
+            ENDIF
          ELSEIF wParam == VK_CONTROL  //17
             ::lCtrlPress := .T.
          ELSEIF wParam == VK_SHIFT   //16

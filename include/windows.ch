@@ -1010,7 +1010,7 @@
 #define WM_NEXTMENU                     0x0213
 #define WM_SIZING                       0x0214
 #define WM_CAPTURECHANGED               0x0215
-#define WM_MOVING                       0x0216
+
 
 #define WM_MOUSEWHEEL  0x020A
 

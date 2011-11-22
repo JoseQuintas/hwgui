@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-11-22 19:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hbrowse.prg
+    ! Fix combo selected
+
 2011-11-21 10:20 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include/windows.ch
      + constant WM_MOVING  534

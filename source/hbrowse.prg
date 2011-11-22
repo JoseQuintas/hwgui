@@ -3139,7 +3139,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                DISPLAYCOUNT  IIF( LEN( oColumn:aList ) > ::rowCount , ::rowCount - 1, LEN( oColumn:aList ) ) ;
                VALID {| oColumn, oGet | ::ValidColumn( oColumn, oGet )};
                WHEN {| oColumn, oGet | ::WhenColumn( oColumn, oGet )}
-            oCombo:bSelect := { || KEYB_EVENT( VK_RETURN ) }
+            //oCombo:bSelect := { || KEYB_EVENT( VK_RETURN ) }
 
             oModDlg:AddEvent( 0, IDOK, { || oModDlg:lResult := .T. , oModDlg:close() } )
 

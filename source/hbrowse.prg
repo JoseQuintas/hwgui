@@ -3137,17 +3137,11 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                SIZE nWidth, ::height + 1      ;
                FONT oComboFont  ;
                DISPLAYCOUNT  IIF( LEN( oColumn:aList ) > ::rowCount , ::rowCount - 1, LEN( oColumn:aList ) ) ;
-               VALID oColumn:bValid           ;
-               WHEN oColumn:bWhen
-               oCombo:bSelect := { || KEYB_EVENT( VK_RETURN ) }
-               //VALID {| oColumn, oGet | ::ValidColumn( oColumn, oGet )};
-               //WHEN {| oColumn, oGet | ::WhenColumn( oColumn, oGet )};
+               VALID {| oColumn, oGet | ::ValidColumn( oColumn, oGet )};
+               WHEN {| oColumn, oGet | ::WhenColumn( oColumn, oGet )}
+            oCombo:bSelect := { || KEYB_EVENT( VK_RETURN ) }
 
-              IF oColumn:bValid != NIL
-                 oCombo:bValid := oColumn:bValid
-              ENDIF
-
-             oModDlg:AddEvent( 0, IDOK, { || oModDlg:lResult := .T. , oModDlg:close() } )
+            oModDlg:AddEvent( 0, IDOK, { || oModDlg:lResult := .T. , oModDlg:close() } )
 
          ELSE
             IF Type == "L"

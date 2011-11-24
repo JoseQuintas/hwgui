@@ -1055,7 +1055,9 @@ PRIVATE cTempParameter,aParameters
   //Fwrite( han,'#include "windows.ch"'+ _Chr(10)  )
   //Fwrite( han,'#include "guilib.ch"' + _Chr(10)+ _Chr(10) )
   Fwrite( han,'#include "hwgui.ch"' + _Chr(10)+ _Chr(10) )
+#ifdef __XHARBOUR__
   Fwrite( han,'#include "ttable.ch"' + _Chr(10)+ _Chr(10) )
+#endif
   Fwrite( han,'#include "common.ch"' + _Chr(10)+ _Chr(10) )
 
 

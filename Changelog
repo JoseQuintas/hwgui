@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-11-24 11:20 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
+   * utils\designer\resource\f_hwgprg.prg
+     * include ttable.ch for xHarbour
+
 2011-11-22 20:30 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
     ! New Fix combo selected
@@ -23,36 +27,36 @@
      ! fixed ESCAPE in MDICHILD when lEsc := .T.
    * source/hcheck.prg
      * METHOD Value
-	   ! minor fix
+      ! minor fix
    * source/hcontrol.prg
      * CLASS Buttonex
-	   * METHOD PAINT
-	   ! minor fix
+      * METHOD PAINT
+      ! minor fix
    * source/hcwindow.prg
      * FUNCTION onCommand(
      * FUNCTION onCtlColor
        ! minor fix
    * source/hwindow.prg
      * FUNCTION onSize
-	   ! minor fix when MDICHILD maximized and CHILD or MODAL
-	 * CLASS HMainWindow
+      ! minor fix when MDICHILD maximized and CHILD or MODAL
+    * CLASS HMainWindow
        * METHOD onEvent
-	     ! minor fix in msg WM_PARENTNOTIFY
-     * CLASS HMDIChildWindow 		 
-	   + DATA lSizeBox  
-       + DATA aChilds  
-       + DATA hActive 
-	   * METHOD Activate
-	     ! in MDIChild when the edges are fixed and can not resize, the edge is thin, 
-		   so to simulate a 3d edge was added to the style DS_3DLOOK but disabling window resize
-	   * FUNCTION onSysCommand
-         ! fixed SC_MAXIMIZE when MDICHILD is MODAL or CHILD	   
-       * Function onMdiActivate		   
-	     ! fix when MDI is MODAL
-		 
+        ! minor fix in msg WM_PARENTNOTIFY
+     * CLASS HMDIChildWindow
+      + DATA lSizeBox
+       + DATA aChilds
+       + DATA hActive
+      * METHOD Activate
+        ! in MDIChild when the edges are fixed and can not resize, the edge is thin,
+         so to simulate a 3d edge was added to the style DS_3DLOOK but disabling window resize
+      * FUNCTION onSysCommand
+         ! fixed SC_MAXIMIZE when MDICHILD is MODAL or CHILD
+       * Function onMdiActivate
+        ! fix when MDI is MODAL
+
 2011-11-12 11:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hriched.prg
-     ! minor fix in onEvent 
+     ! minor fix in onEvent
 
 2011-10-29 20:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * samples/all/a.prg
@@ -63,7 +67,7 @@
    * source/hcwindow.prg
    * source/hedit.prg
    * source/hwindow.prg
-     ! fix ESCAPE in MDICHILD 
+     ! fix ESCAPE in MDICHILD
 
 2011-10-27 23:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hedit.prg
@@ -72,21 +76,21 @@
 2011-10-27 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcontrol.prg
      * CLASS HControl
-	   * METHOD onAnchor
-	     ! fixed resize when Anchor = LEFT RELATIVE and RIGHT ABSOLUTE and
-		                     Anchor = TOP RELATIVE and BOTTOM ABSOLUTE
-	* source/htree.prg
-	  * METHOD onEvent
-	    ! handling msg WM_LBUTTONDBLCLK .OR. msg = WM_CHAR to edit label lEditLabels 
+      * METHOD onAnchor
+        ! fixed resize when Anchor = LEFT RELATIVE and RIGHT ABSOLUTE and
+                           Anchor = TOP RELATIVE and BOTTOM ABSOLUTE
+   * source/htree.prg
+     * METHOD onEvent
+       ! handling msg WM_LBUTTONDBLCLK .OR. msg = WM_CHAR to edit label lEditLabels
       * METHOD Notify
-        ! fixed ESCAPE and RETURN in edit Label	  
+        ! fixed ESCAPE and RETURN in edit Label
 
 2011-10-21 14:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcontrol.prg
      * CLASS BUTTONEX
-	   * METHOD onEvent
-	     ! msg == WM_SYSKEYUP .OR. ( msg == WM_KEYUP
-	       support numeric keyboard shortcuts extended
+      * METHOD onEvent
+        ! msg == WM_SYSKEYUP .OR. ( msg == WM_KEYUP
+          support numeric keyboard shortcuts extended
 
 2011-10-20 14:20 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
    * source\procmisc\procscri.prg

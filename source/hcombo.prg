@@ -504,7 +504,7 @@ METHOD SetItem( nPos ) CLASS HComboBox
          ::ValueBound := ::GetValueBound()
       ELSE
          ::value := ""
-         ::valueBound := ""
+         ::valueBound := IIF( ::bSetGet != Nil, Eval( ::bSetGet,, Self ), ::valueBound )
       ENDIF
    ELSE
       ::value := nPos
@@ -563,7 +563,7 @@ METHOD GetValue() CLASS HComboBox
    ELSE
       ::value := nPos
    ENDIF
-   ::ValueBound := IIF( nPos > 0, ::GetValueBound(), IIF( ::lText, "", 0 ) )
+   ::ValueBound := IIF( nPos > 0, ::GetValueBound(), ::ValueBound ) // IIF( ::lText, "", 0 ) )
    IF ::bSetGet != Nil
       IF ::columnBound = 1
          Eval( ::bSetGet, ::value, Self )
@@ -590,7 +590,7 @@ METHOD GetValueBound( xItem ) CLASS HComboBox
       ::setItem( nPos )
       RETURN IIF( nPos > 0, ::aItems[ nPos ], xItem )
    ENDIF
-   ::ValueBound := IIF( ::lText, "", 0 )
+   //::ValueBound := IIF( ::lText, "", 0 )
    IF nPos > 0 .AND. nPos <=  LEN( ::aItemsBound ) // LEN( ::aItems ) = LEN( ::aItemsBound )
       ::ValueBound := ::aItemsBound[ nPos ]
    ENDIF

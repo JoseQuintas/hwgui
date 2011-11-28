@@ -111,9 +111,12 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF vari != Nil
       ::cType   := ValType( vari )
    ENDIF
+   ::SetText( vari )
+   /*
    IF bSetGet == Nil
       ::title := vari
    ENDIF
+   */
    ::lReadOnly := Hwg_BitAnd( nStyle, ES_READONLY ) != 0
    ::bSetGet := bSetGet
    ::bKeyDown := bKeyDown
@@ -600,10 +603,10 @@ METHOD Refresh()  CLASS HEdit
       ::title := vari
    ENDIF
    SetDlgItemText( ::oParent:handle, ::id, ::title )
-   IF isWindowVisible( ::handle ) .AND.  PtrtouLong( GetFocus() ) == PtrtouLong( ::handle )  
+   IF isWindowVisible( ::handle ) .AND.   !Empty( GetWindowParent( ::handle ) ) //PtrtouLong( GetFocus() ) == PtrtouLong( ::handle )  
       RedrawWindow( ::Handle, RDW_NOERASE + RDW_INVALIDATE + RDW_FRAME + RDW_UPDATENOW ) //+ RDW_NOCHILDREN ) 
    ENDIF
-   RETURN Nil
+   RETURN Nil                           
 
 METHOD SetText( c ) CLASS HEdit
 
@@ -1699,7 +1702,7 @@ Luis Fernando Basso contribution
 */
 FUNCTION CheckFocus( oCtrl, lInside )
    LOCAL oParent := ParentGetDialog( oCtrl )
-   LOCAL hGetFocus := PtrtouLong( GetFocus() )
+   LOCAL hGetFocus := PtrtouLong( GetFocus() ), lModal
 
    IF ( !EMPTY( oParent ) .AND. ! IsWindowVisible( oParent:handle ) ) .OR. Empty( GetActiveWindow() ) // == 0
       IF ! lInside .and. Empty( oParent:nInitFocus ) // = 0
@@ -1713,7 +1716,8 @@ FUNCTION CheckFocus( oCtrl, lInside )
       RETURN .F.
    ENDIF
    IF oParent  != Nil .AND. lInside
-     IF ( ( ! Empty( hGetFocus ) .AND. oParent:lModal .AND. GetWindowParent( hGetFocus )  != ;
+     lModal :=  oParent:lModal .AND.  oParent:Type >  WND_DLG_RESOURCE 
+     IF ( ( ! Empty( hGetFocus ) .AND. lModal .AND. GetWindowParent( hGetFocus )  != ;
          PtrtouLong( oParent:Handle ) ) .OR. (  hGetFocus  = PtrtouLong( oCtrl:oParent:Handle ) ) ) .AND. ;
          PtrtouLong( oParent:handle ) = PtrtouLong( oCtrl:oParent:Handle )
        /*   

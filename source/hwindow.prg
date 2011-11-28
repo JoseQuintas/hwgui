@@ -593,12 +593,12 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
    ELSEIF msg = WM_SETFOCUS .AND. nFocus != 0
       SETFOCUS( nFocus )
       *-::nFocus := 0
-   ELSEIF msg = WM_DESTROY .AND. ::lModal
+   ELSEIF msg = WM_DESTROY .AND. ::lModal .AND. ::Screen:Handle != ::handle
+      IF ! EMPTY( ::hActive ) .AND. ::hActive != ::Screen:Handle
+         PostMessage( nFocus, WM_SETFOCUS, 0, 0 )
+         PostMessage( ::hActive , WM_SETFOCUS, 0, 0 )
+      ENDIF 
       ::GETMDIMAIN():lSuspendMsgsHandling := .F.
-      IF ! EMPTY( ::hActive )
-         SETFOCUS( nFocus )
-         SETFOCUS( ::hActive ) 
-      ENDIF         
    ENDIF
 
    IF ( i := AScan( ::aMessages[ 1 ], msg ) ) != 0

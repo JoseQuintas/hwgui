@@ -364,12 +364,13 @@ METHOD Refresh( lAll, oCtrl ) CLASS HCustomWindow
 
 METHOD SetTextClass( x ) CLASS HCustomWindow
 
-   IF __ObjHasMsg( Self, "SETTEXT" ) //.AND. ::classname != "HBUTTONEX"
-       ::SetText( x )
-    ELSE
-       ::title := x
-       SENDMESSAGE( ::handle, WM_SETTEXT, 0, ::Title )
-    ENDIF
+   IF  __ObjHasMsg( Self, "SETVALUE" ) .AND. ::winClass != "STATIC" 
+   ELSEIF __ObjHasMsg( Self, "SETTEXT" ) //.AND. ::classname != "HBUTTONEX"
+      ::SetText( x )
+   ELSE
+      ::title := x
+      SENDMESSAGE( ::handle, WM_SETTEXT, 0, ::Title )
+   ENDIF
     //::Refresh()
    RETURN NIL
 
@@ -792,8 +793,8 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
       ( iItem := AScan( oWnd:aEvents, { | a | a[ 1 ] == iParHigh .AND. ;
                                         a[ 2 ] == iParLow } ) ) > 0
 
-      IF oWnd:GetParentForm():Type < WND_DLG_RESOURCE
-         oWnd:GetParentForm():nFocus := lParam
+      IF oForm:Type < WND_DLG_RESOURCE
+         oForm:nFocus := GetFocus() //lParam
       ENDIF
       Eval( oWnd:aEvents[ iItem, 3 ], oWnd, iParLow )
    ENDIF

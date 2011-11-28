@@ -133,16 +133,18 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
                MENUITEM "&Save as ..." ACTION ( oDesigner:lSingleForm:=.F.,HFormGen():oDlgSelected:oParent:Save(.T.),oDesigner:lSingleForm:=.T. )
             EndIf
          ENDIF
+         SEPARATOR
+         MENU TITLE "Recent "+iif(!oDesigner:lReport,"Form","Report")
          If !lOmmitMenuFile
-            SEPARATOR
             i := 1
             DO WHILE i <= MAX_RECENT_FILES .AND. oDesigner:aRecent[i] != Nil
-               Hwg_DefineMenuItem( CutPath(oDesigner:aRecent[i]), 1020+i, ;
+               Hwg_DefineMenuItem( oDesigner:aRecent[i], 1020+i, ;
                   &( "{||HFormGen():Open('"+oDesigner:aRecent[i]+"')}" ) )
                i ++
             ENDDO
-            SEPARATOR
          EndIf
+         ENDMENU
+         SEPARATOR
          MENUITEM If(!lOmmitMenuFile,"&Exit","&Close Designer") ACTION oDesigner:oMainWnd:Close()
       ENDMENU
       MENU TITLE "&Edit"

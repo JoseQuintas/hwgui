@@ -189,7 +189,7 @@ FUNCTION Browse2Prg
 
    cName := Trim( oCtrl:GetProp( "Name" ) )
 
-   cBrowser += "    // " + cname + "    *- SCRIPT GERADO AUTOMATICAMENTE PELO DESIGNER" + _CHR( 10 ) + "    //  " + _CHR( 10 )
+//   cBrowser += "    // " + cname + "    *- SCRIPT GERADO AUTOMATICAMENTE PELO DESIGNER" + _CHR( 10 ) + "    //  " + _CHR( 10 )
    nType := iif( oCtrl:GetProp( "BrwType" ) != "dbf" , BRW_ARRAY, BRW_DATABASE )
    IF cName = Nil .OR. Empty( cName ) .OR. ( ( cAlias := oCtrl:GetProp("FileDbf" ) )  = Nil .AND. nType = BRW_DATABASE )
       RETURN cBrowser
@@ -894,9 +894,9 @@ FUNCTION Ctrl2Prg
             IF Lower( Left( oCtrl:aMethods[ i, 2 ],10 ) ) == "parameters"
 
                // Note, do we look for a CR or a LF??
-               j := At( _Chr( 13 ), oCtrl:aMethods[ i, 2 ] )
+               j := At( _Chr( 10 ), oCtrl:aMethods[ i, 2 ] )
 
-               temp := SubStr( oCtrl:aMethods[ i, 2 ], 12, j - 12 )
+               temp := SubStr( oCtrl:aMethods[ i, 2 ], 12, j - 13 )
             ELSEIF Lower( Left( oCtrl:aMethods[ i, 2 ],1 ) ) == "("
                // Note, do we look for a CR or a LF??
                j := At( ")", oCtrl:aMethods[ i, 2 ] )
@@ -916,7 +916,6 @@ FUNCTION Ctrl2Prg
 
                cMethod := "ON " + Upper( SubStr( oCtrl:aMethods[i,1],3 ) )
 
-
             ENDIF
 
             IF ValType( cName := Callfunc( "FUNC_NAME", { oCtrl, i } ) ) == "C"
@@ -928,7 +927,6 @@ FUNCTION Ctrl2Prg
                   stroka := "ON INIT {|| " + cName + " := HTimer():New( " + cFormName + ",," + iif( temp != Nil, temp, '0' ) + "," + stroka + " )}"
                   FWrite( han, " ; //OBJECT TIMER " + _Chr( 10 ) + Space( 8 ) + stroka )
                ELSE
-
                   IF lsubParameter
                      //temp :=  " {|" + temp + "| " +  cName +"("+ cFormParameters + ")  }"
                      FWrite( han, " ;" + _Chr( 10 ) + Space( 8 ) + cMethod + "{ ||" + cName + "(" + cFormParameters + ")  }"  )
@@ -954,8 +952,7 @@ FUNCTION Ctrl2Prg
                      //temp :=  " {|" + temp + "| " +  cName +"("+ cFormParameters + ")  }"
                      FWrite( han, " ;" + _Chr( 10 ) + Space( 8 ) + cMethod + "{ ||" + cName + "(" + cFormParameters + ")  }"  )
                   ELSE
-                     FWrite( han, " ;" + _Chr( 10 ) + Space( 8 ) + cMethod + " {|" + temp + "| " + ;
-                        iif( Len( cName ) == 1, cName[ 1 ], cName[ 2 ] ) + " }" )
+                     FWrite( han, " ;" + _Chr( 10 ) + Space( 8 ) + cMethod + " {|" + temp + "| " +  iif( Len( cName ) == 1, cName[ 1 ], cName[ 2 ] ) + " }" )
                   ENDIF
 
                ENDIF
@@ -1288,9 +1285,9 @@ FUNCTION Ctrl2Prg
          IF Lower( Left( oForm:aMethods[ i, 2 ],10 ) ) == "parameters"
 
             // Note, do we look for a CR or a LF??
-            j := At( _Chr( 13 ), oForm:aMethods[ i, 2 ] )
+            j := At( _Chr( 10 ), oForm:aMethods[ i, 2 ] )
 
-            temp := SubStr( oForm:aMethods[ i, 2 ], 12, j - 12 )
+            temp := SubStr( oForm:aMethods[ i, 2 ], 12, j - 13 )
          ELSE
             temp := ""
          ENDIF

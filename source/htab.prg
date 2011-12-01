@@ -763,7 +763,6 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
       IF ::nPaintHeight > 1
          PostMessage( ::handle, WM_PRINT, GETDC( ::handle ), PRF_CHECKVISIBLE )
       ENDIF
-      RETURN -1
 
    ELSEIF  msg = WM_SETFONT .AND. ::oFont != Nil .AND. ::lInit
       SendMessage( ::handle,    WM_PRINT, GETDC( ::handle ) , PRF_CHECKVISIBLE ) //+ PRF_ERASEBKGND ) //PRF_CLIENT + PRF_CHILDREN + PRF_OWNED )

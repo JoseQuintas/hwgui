@@ -364,7 +364,7 @@ METHOD Refresh( lAll, oCtrl ) CLASS HCustomWindow
 
 METHOD SetTextClass( x ) CLASS HCustomWindow
 
-   IF  __ObjHasMsg( Self, "SETVALUE" ) .AND. ::winClass != "STATIC" 
+   IF  __ObjHasMsg( Self, "SETVALUE" ) .AND. ::winClass != "STATIC" .AND. ::winclass != "BUTTON" 
    ELSEIF __ObjHasMsg( Self, "SETTEXT" ) //.AND. ::classname != "HBUTTONEX"
       ::SetText( x )
    ELSE

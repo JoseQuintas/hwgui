@@ -3075,7 +3075,9 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
          x1  := ::x1
          fif := IIf( ::freeze > 0, 1, ::nLeftCol )
          DO WHILE fif < fipos
-            x1 += ::aColumns[ fif ]:width
+            IF !::aColumns[ fif ]:lhide
+               x1 += ::aColumns[ fif ]:width
+            ENDIF
             fif := IIf( fif = ::freeze, ::nLeftCol, fif + 1 )
          ENDDO
          nWidth := Min( ::aColumns[ fif ]:width, ::x2 - x1 - 1 )

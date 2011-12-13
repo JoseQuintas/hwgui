@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-12-13 10:15 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
+  * source/hbrowse.prg
+    ! Fix edit position when one or more columns are Hide.
+
 2011-12-05 15:45 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
   * source\hbrowse.prg
    * If cursor in not in the last line, go to the last (fixed)

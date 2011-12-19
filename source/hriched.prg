@@ -14,7 +14,11 @@
 
 CLASS HRichEdit INHERIT HControl
 
-CLASS VAR winclass   INIT "RichEdit20A"
+#ifdef UNICODE
+   CLASS VAR winclass INIT "RichEdit20W"
+#else
+   CLASS VAR winclass INIT "RichEdit20A"
+#endif
    DATA lChanged   INIT .F.
    DATA lSetFocus  INIT .T.
    DATA lAllowTabs INIT .F.
@@ -47,7 +51,7 @@ CLASS VAR winclass   INIT "RichEdit20A"
    METHOD SetColor( tColor, bColor, lRedraw )
    METHOD SaveFile( cFile )
    METHOD OpenFile( cFile )
-   METHOD Print()   
+   METHOD Print()
 
 ENDCLASS
 
@@ -106,7 +110,7 @@ METHOD Init()  CLASS HRichEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
-   LOCAL nDelta, nret                                        
+   LOCAL nDelta, nret
 
    //HWG_writelog( 'rich' + str(msg) + str(wParam) + str(lParam) + chr(13) )
    IF msg = WM_KEYUP .OR. msg == WM_LBUTTONDOWN .OR. msg == WM_LBUTTONUP // msg = WM_NOTIFY .OR.
@@ -121,7 +125,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
    ENDIF
    IF msg = WM_SETFOCUS .AND. ::lSetFocus //.AND. ISWINDOWVISIBLE(::handle)
       ::lSetFocus := .F.
-      PostMessage( ::handle, EM_SETSEL, 0, 0 ) 
+      PostMessage( ::handle, EM_SETSEL, 0, 0 )
    ELSEIF msg = WM_SETFOCUS .AND. ::lAllowTabs .AND. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
         ::lctrltab := ::GetParentForm( Self ):lDisableCtrlTab
         ::GetParentForm( Self ):lDisableCtrlTab := ::lAllowTabs
@@ -204,14 +208,14 @@ METHOD ReadOnly( lreadOnly )
    RETURN ::lReadOnly
 
 METHOD UpdatePos( ) CLASS HRichEdit
- 	 LOCAL npos := SendMessage( ::handle, EM_GETSEL, 0, 0 )
-   LOCAL pos1 := Loword( npos ) + 1,	pos2 := Hiword( npos ) + 1
+    LOCAL npos := SendMessage( ::handle, EM_GETSEL, 0, 0 )
+   LOCAL pos1 := Loword( npos ) + 1,   pos2 := Hiword( npos ) + 1
 
-	 ::Line := SendMessage( ::Handle, EM_LINEFROMCHAR, pos1 - 1, 0 ) + 1
-	 ::LinesTotal := SendMessage( ::handle, EM_GETLINECOUNT, 0, 0 )
-	 ::SelText := RE_GETTEXTRANGE( ::handle, pos1, pos2 )
-	 ::SelStart := pos1
-	 ::SelLength := pos2 - pos1
+    ::Line := SendMessage( ::Handle, EM_LINEFROMCHAR, pos1 - 1, 0 ) + 1
+    ::LinesTotal := SendMessage( ::handle, EM_GETLINECOUNT, 0, 0 )
+    ::SelText := RE_GETTEXTRANGE( ::handle, pos1, pos2 )
+    ::SelStart := pos1
+    ::SelLength := pos2 - pos1
    ::Col := pos1 - SendMessage( ::Handle, EM_LINEINDEX, - 1, 0 )
 
    RETURN nPos
@@ -265,27 +269,27 @@ METHOD SaveFile( cFile )  CLASS HRichEdit
    ENDIF
    RETURN .F.
 
-METHOD OpenFile( cFile )  CLASS HRichEdit 
+METHOD OpenFile( cFile )  CLASS HRichEdit
 
    IF !EMPTY( cFile )
       IF ! EMPTY( LOADRICHEDIT( ::Handle, cFile ) )
           RETURN .T.
-      ENDIF    
-   ENDIF   
+      ENDIF
+   ENDIF
    RETURN .F.
 
 METHOD Print( )  CLASS HRichEdit
 
    IF ::hDCPrinter = Nil
     //  ::hDCPrinter := PrintSetup()
-   ENDIF   
+   ENDIF
    IF HWG_STARTDOC( ::hDCPrinter ) <> 0
       IF PrintRTF( ::Handle, ::hDCPrinter ) <> 0
-	       HWG_ENDDOC( ::hDCPrinter )
+          HWG_ENDDOC( ::hDCPrinter )
       ELSE
          HWG_ABORTDOC( ::hDCPrinter )
       ENDIF
-   ENDIF 
+   ENDIF
    RETURN .F.
 
 

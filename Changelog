@@ -9,7 +9,7 @@
 */
 
 2011-12-19 08:20 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
-  * source\hriched.prg
+  * source\hriched.prg 
     * fix build for unicode, suggested by Tom
 
 2011-12-13 10:15 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>

@@ -72,11 +72,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
    METHOD Enabled( lEnabled ) SETGET
    METHOD SetFont( oFont )
-
-   //METHOD SetFocus()    INLINE SendMessage( GetActiveWindow(), WM_NEXTDLGCTL, ::handle, 1 )
-   METHOD SetFocus()    INLINE IIF( ! IsWindowEnabled( ::Handle ),  GetSkip( ::oParent, ::handle, , 1 ) , ;
-                               IIF( ::GetParentForm():Type < WND_DLG_RESOURCE, SetFocus( ::handle ), ;
-                                    SendMessage( GetActiveWindow(), WM_NEXTDLGCTL,::handle, 1 ) ) )
+   METHOD SetFocus( lValid )    
                          
    METHOD GetText()     INLINE GetWindowText( ::handle )
    METHOD SetText( c )  INLINE SetWindowText( ::Handle, c ), ::title := c, ::Refresh()
@@ -208,6 +204,22 @@ METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HControl
    RETURN NIL
    */
 
+METHOD SetFocus( lValid ) CLASS HControl
+   LOCAL lSuspend := ::oParent:lSuspendMsgsHandling  
+   
+   IF ! IsWindowEnabled( ::Handle )
+       GetSkip( ::oParent, ::handle, , 1 ) 
+   ELSE
+      ::oParent:lSuspendMsgsHandling  := ! Empty( lValid )
+      IF ::GetParentForm():Type < WND_DLG_RESOURCE
+         SetFocus( ::handle )
+      ELSE
+         SendMessage( GetActiveWindow(), WM_NEXTDLGCTL, ::handle, 1 ) 
+      ENDIF
+      ::oParent:lSuspendMsgsHandling  := lSuspend
+   ENDIF
+   RETURN Nil
+
 METHOD Enable() CLASS HControl
    Local lEnable := IsWindowEnabled( ::Handle ), nPos, nNext
      
@@ -310,7 +322,7 @@ METHOD FontUnderline( lTrue ) CLASS HControl
    ENDIF
    RETURN ::oFont:Underline = 1
 
-METHOD SetToolTip ( cToolTip )
+METHOD SetToolTip ( cToolTip ) CLASS HControl
 
    IF VALTYPE( cToolTip ) = "C"  .AND. cToolTip != ::ToolTip
       SETTOOLTIPTITLE( ::GetparentForm():handle, ::handle, ctooltip )
@@ -1132,11 +1144,15 @@ METHOD onGetFocus()  CLASS HButton
    IF ::bGetFocus != Nil
       ::oParent:lSuspendMsgsHandling := .t.
       res := Eval( ::bGetFocus, ::title, Self )
-      IF ! res
-         GetSkip( ::oParent, ::handle, , nSkip )
+      ::oParent:lSuspendMsgsHandling := .f.
+      IF res != Nil .AND.  EMPTY( res )
+         WhenSetFocus( Self, nSkip )
+         IF ::lflat 
+            InvalidateRect( ::oParent:Handle, 1 , ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )   
+         ENDIF
       ENDIF
    ENDIF
-   ::oParent:lSuspendMsgsHandling := .f.
+
    RETURN res
    
 METHOD onLostFocus()  CLASS HButton

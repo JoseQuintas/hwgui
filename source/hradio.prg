@@ -48,6 +48,7 @@ METHOD New( vari, bSetGet, bInit, bClick, bGFocus, nStyle ) CLASS HRadioGroup
    ::oGroupCurrent := Self
    ::aButtons := { }
    ::oParent := IIF( HWindow():GetMain() != Nil, HWindow():GetMain():oDefaultParent, Nil )
+
    ::lEnabled :=  ! Hwg_BitAnd( nStyle, WS_DISABLED ) > 0
 
    Super:New( ::oParent, ,, ,,,,, bInit)
@@ -430,7 +431,7 @@ METHOD When( ) CLASS HRadioButton
       ::lnoValid := ! res
       ::oparent:lSuspendMsgsHandling := .f.
       IF ! res
-         GetSkip( ::oParent, ::handle, , nSkip )
+         WhenSetFocus( Self, nSkip )
       ELSE
          ::SETfOCUS()   
       ENDIF
@@ -454,7 +455,7 @@ METHOD Valid( nKey ) CLASS HRadioButton
          IF  ! ::GetValue() 
             ::oGroup:nValue  := iValue
 	          ::oGroup:SetValue( ::oGroup:nValue )	   
-            ::SetFocus() 
+            ::SetFocus( .T. ) 
          ENDIF
       ELSEIF nEnter = 0 .AND. ! GetKeyState( VK_RETURN ) < 0
          IF ! ::GetValue()
@@ -470,7 +471,7 @@ METHOD Valid( nKey ) CLASS HRadioButton
    IF ::bLostFocus != Nil .AND. ( nEnter = 0 .OR. iValue = Len( ::oGroup:aButtons ) )
       Eval( ::bLostFocus, Self, ::oGroup:nValue )
    ENDIF
-   IF nEnter = VK_RETURN .AND. GetFocus() = hctrl
+   IF nEnter = VK_RETURN .AND. SELFFOCUS( hctrl )
        GetSkip( ::oParent, hCtrl, , 1 )
    ENDIF
    ::oParent:lSuspendMsgsHandling := .F.  

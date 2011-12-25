@@ -235,8 +235,8 @@ METHOD When( ) CLASS HDatePicker
       res :=  Eval( ::bGetFocus, IIF( ::lShowTime, ::tValue, ::dValue ), Self )
       ::lnoValid := ! res
       ::oParent:lSuspendMsgsHandling := .F.
-      IF ! res
-         GetSkip( ::oParent, ::handle, , nSkip )
+      IF VALTYPE(res) = "L" .AND. ! res
+         WhenSetFocus( Self, nSkip )
          SendMessage( ::handle, DTM_CLOSEMONTHCAL, 0, 0 )
       ELSE
          ::setfocus()   
@@ -248,7 +248,7 @@ METHOD When( ) CLASS HDatePicker
 METHOD Valid( ) CLASS HDatePicker
    LOCAL  res := .t.
 
-   IF PtrtouLong( GetParent( GetFocus() ) ) != PtrtouLong( ::GetParentForm():Handle )
+   IF ! SELFFOCUS( GetParent( GetFocus() ) , ::getparentform():Handle )
       RETURN .T.
    ENDIF
    IF ! CheckFocus( Self, .T. ) .OR. ::lnoValid
@@ -265,7 +265,7 @@ METHOD Valid( ) CLASS HDatePicker
       ::oparent:lSuspendMsgsHandling := .F.
       IF ! res
          POSTMESSAGE( ::handle, WM_KEYDOWN, VK_RIGHT, 0 )
-         ::SetFocus( )
+         ::SetFocus( .T. )
       ENDIF
    ENDIF
    RETURN res

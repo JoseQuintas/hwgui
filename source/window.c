@@ -555,6 +555,12 @@ HB_FUNC( GETFOCUS )
    HB_RETHANDLE( GetFocus(  ) );
 }
 
+HB_FUNC( SELFFOCUS )
+{
+   HWND  hWnd = HB_ISNIL( 2 ) ? ( HWND ) GetFocus( ) : ( HWND ) HB_PARHANDLE( 2 )  ;
+   hb_retl( ( HWND ) HB_PARHANDLE( 1 ) == hWnd ) ;
+}
+
 HB_FUNC( SETWINDOWOBJECT )
 {
    SetWindowObject( ( HWND ) HB_PARHANDLE( 1 ), hb_param( 2, HB_IT_OBJECT ) );

@@ -441,7 +441,8 @@ METHOD MDown()  CLASS HOwnButton
    IF ::state != OBTN_PRESSED
       ::state := OBTN_PRESSED
       InvalidateRect( ::handle, 0 )
-      ::SetFocus()
+      //::SetFocus()
+      SendMessage( ::Handle, WM_SETFOCUS, 0, 0 )
       RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
    ELSEIF  ::lCheck
       ::state := OBTN_NORMAL
@@ -493,15 +494,15 @@ METHOD Release()  CLASS HOwnButton
 METHOD onGetFocus()  CLASS HOwnButton
    LOCAL res := .t., nSkip
 
-   IF !CheckFocus(Self, .f.)
+   IF ::bGetFocus == Nil .OR. !CheckFocus(Self, .f.)
       RETURN .t.
    ENDIF
    nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
    IF ::bGetFocus != Nil
       ::oparent:lSuspendMsgsHandling := .T.
       res := Eval( ::bGetFocus, ::title, Self )
-      IF ! res
-         GetSkip( ::oParent, ::handle, , nSkip )
+      IF res != Nil .AND. EMPTY( res )
+         WhenSetFocus( Self,nSkip )
       ENDIF
    ENDIF
    ::oparent:lSuspendMsgsHandling := .F.
@@ -521,7 +522,7 @@ METHOD onLostFocus()  CLASS HOwnButton
 
 METHOD onClick()  CLASS HOwnButton
    IF ::bClick != Nil
-      ::oParent:lSuspendMsgsHandling := .T.
+      //::oParent:lSuspendMsgsHandling := .T.
       Eval( ::bClick, Self, ::id )
       ::oParent:lSuspendMsgsHandling := .F.
    ENDIF

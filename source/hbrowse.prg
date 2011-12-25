@@ -3438,7 +3438,7 @@ METHOD When() CLASS HBrowse
         res := IIF(VALTYPE(res) = "L", res, .T.)
       ::lnoValid := ! res
       IF ! res
-         GetSkip( ::oParent, ::handle, , nSkip )
+         WhenSetFocus( Self, nSkip )
       ENDIF
         ::oParent:lSuspendMsgsHandling := .F.
    ENDIF
@@ -3456,7 +3456,7 @@ METHOD Valid() CLASS HBrowse
        res := Eval( ::bLostFocus, ::COLPOS, Self )
        res := IIF( VALTYPE(res) = "L", res, .T. )
        IF VALTYPE(res) = "L" .AND. ! res
-          ::setfocus()
+          ::setfocus( .T. )
           ::oParent:lSuspendMsgsHandling := .F.
           RETURN .F.
        ENDIF

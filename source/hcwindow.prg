@@ -913,6 +913,8 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
 	          SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
 	       ELSEIF oWin:lExitOnEnter
             oWin:close()
+         ELSE
+            SendMessage( oWin:handle, WM_COMMAND, makewparam( IDOK, 0 ), oCtrlFocu:handle )      
          ENDIF
          RETURN .T.
       ENDIF
@@ -932,15 +934,10 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
             ENDIF
          ENDIF                                               
       ELSEIF oWin:lExitOnEsc
-*        					      hwg_WriteLog("HCW esc"+str(OWIN:handle)+chr(13))
           oWin:close()
-       *   oCtrlFocu := GetFocus()
-       *   SetFocus( 0 )
-       *   SendMessage( oCtrlFocu , WM_KEYUP, 0, 0 ) 
-          //          SetFocus( GetParent(oCtrlFocu ) )
-
       ELSEIF ! oWin:lExitOnEsc
          oWin:nLastKey := 0
+         SendMessage( oWin:handle, WM_COMMAND, makewparam( IDCANCEL, 0 ), oCtrlFocu:handle )
          RETURN .F.
       ENDIF
       RETURN .T.

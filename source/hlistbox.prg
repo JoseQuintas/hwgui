@@ -270,8 +270,7 @@ METHOD When( oCtrl ) CLASS HListBox
    IF ! CheckFocus( Self, .f. )
       RETURN .t.
    ENDIF
-   ::SetFocus()
-   nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 .AND. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
+    nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 .AND. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
    IF ::bSetGet != Nil
       Eval( ::bSetGet, ::value, Self )
    ENDIF
@@ -282,7 +281,9 @@ METHOD When( oCtrl ) CLASS HListBox
       ::oparent:lSuspendMsgsHandling := .f.
       ::lnoValid := ! res
       IF ! res
-         GetSkip( ::oParent, ::handle, , nSkip )
+         WhenSetFocus( Self, nSkip )
+      ELSE
+         ::SetFocus()      
       ENDIF
    ENDIF
    RETURN res
@@ -311,7 +312,7 @@ METHOD Valid( oCtrl ) CLASS HListBox
          res := Eval( ::bLostFocus, ::value, Self )
          ::oparent:lSuspendMsgsHandling := .f.
          IF ! res
-            ::SetFocus() //( ::handle )
+            ::SetFocus( .T. ) //( ::handle )
             IF oDlg != Nil
                oDlg:nLastKey := 0
             ENDIF
@@ -322,10 +323,12 @@ METHOD Valid( oCtrl ) CLASS HListBox
          oDlg:nLastKey := 0
       ENDIF
    ENDIF
+   /*
    IF lTab .AND. GETFOCUS() = ::handle
       IF ::oParent:CLASSNAME = "HTAB"
          ::oParent:SETFOCUS()
       ENDIF
       GetSkip( ::oparent, ::handle,, nSkip )
    ENDIF
+   */
    RETURN .T.

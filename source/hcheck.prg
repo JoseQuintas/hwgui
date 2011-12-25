@@ -259,7 +259,7 @@ METHOD When( ) CLASS HCheckButton
       ENDIF
       ::lnoValid := ! res
       IF ! res
-         GetSkip( ::oParent, ::handle, , nSkip )
+         WhenSetFocus( Self, nSkip )
       ENDIF
    ENDIF
    ::oParent:lSuspendMsgsHandling := .f.

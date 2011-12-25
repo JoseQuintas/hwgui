@@ -674,9 +674,9 @@ METHOD onSelect() CLASS HComboBox
    ENDIF
    RETURN .T.
 
-METHOD onChange( ) CLASS HComboBox
+METHOD onChange( lForce ) CLASS HComboBox
 
-   IF GetFocus() != ::handle
+   IF ! SelfFocus( ::handle ) .AND. Empty( lForce )
       RETURN Nil
    ENDIF
    IF  ! isWindowVisible( ::handle) 
@@ -717,14 +717,14 @@ LOCAL res := .t., oParent, nSkip
       ENDIF
       ::oParent:lSuspendMsgsHandling := .F.
       ::lnoValid                     := !res
-      IF !res
+      IF VALTYPE(res) = "L" .AND. ! res
          oParent := ParentGetDialog( Self )
          IF Self == ATail( oParent:GetList )
             nSkip := - 1
          ELSEIF Self == oParent:getList[ 1 ]
             nSkip := 1
          ENDIF
-         GetSkip( ::oParent, ::handle,, nSkip )
+         WhenSetFocus( Self, nSkip )
       ENDIF
    ENDIF
 RETURN res
@@ -748,7 +748,7 @@ METHOD Valid( ) CLASS HComboBox
          ::oparent:lSuspendMsgsHandling := .T.
          res := Eval( ::bLostFocus, ::value, Self )
          IF VALTYPE(res) = "L" .AND. ! res
-            SetFocus( ::handle )
+            ::SetFocus( .T. )
             IF oDlg != Nil
                oDlg:nLastKey := 0
             ENDIF
@@ -760,14 +760,14 @@ METHOD Valid( ) CLASS HComboBox
       IF oDlg != Nil
          oDlg:nLastKey := 0
       ENDIF
-      IF ltab .AND. GETFOCUS() = hCtrl
-         IF ::oParent:CLASSNAME = "HTAB"
+      IF lTab .AND. SelfFocus( hCtrl ) .AND. ! SelfFocus( ::oParent:handle, oDlg:Handle )
+        // IF ::oParent:CLASSNAME = "HTAB"
             ::oParent:SETFOCUS()
             Getskip( ::oparent, ::handle,, nSkip )
-         ENDIF
+       //  ENDIF
       ENDIF
       ::oparent:lSuspendMsgsHandling := .F.
-      IF empty( GETFOCUS() ) // getfocus return pointer = 0                 //::nValidSetfocus = ::handle
+      IF Empty( GETFOCUS() ) // getfocus return pointer = 0                 //::nValidSetfocus = ::handle
          GetSkip( ::oParent, ::handle,, ::nGetSkip )
       ENDIF
    ENDIF
@@ -798,7 +798,10 @@ METHOD Populate() CLASS HComboBox
    ENDIF
    xRowSource := iif( hb_IsArray( ::xRowSource[ 1 ] ), ::xRowSource[ 1, 1 ], ::xRowSource[ 1 ] )   
    IF xRowSource != Nil .AND. ( i := At( "->", xRowSource ) ) > 0 
-      cAlias := LEFT( xRowSource, i - 1 )
+       cAlias := AlLTRIM( LEFT( xRowSource, i - 1 ) )
+       IF Select( cAlias ) = 0 .AND. ( i := At( "(", cAlias ) ) > 0 
+          cAlias := LTRIM( SUBSTR( cAlias, i + 1 ) )
+       ENDIF   
       value  := STRTRAN( xRowSource, calias + "->", , ,1, 1 )
       cAlias := IIF( VALTYPE( xRowSource ) == "U",  Nil, cAlias )
       cValueBound := IIF( ::xrowsource[ 2 ]  != Nil  .AND. cAlias != Nil, STRTRAN( ::xrowsource[ 2 ] , calias + "->" ), Nil )

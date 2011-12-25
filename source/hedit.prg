@@ -75,7 +75,7 @@ CLASS VAR winclass   INIT "EDIT"
    METHOD GetApplyKey( cKey ) PROTECTED
    METHOD Valid() //PROTECTED BECAUSE IS CALL IN HDIALOG
    METHOD When() //PROTECTED
-   METHOD onChange() //PROTECTED
+   METHOD onChange( lForce ) //PROTECTED
    METHOD IsBadDate( cBuffer ) PROTECTED
    METHOD Untransform( cBuffer ) PROTECTED
    METHOD FirstEditable() PROTECTED
@@ -128,7 +128,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
        ::lWantReturn := Hwg_BitAnd( nStyle, ES_WANTRETURN ) != 0
       //ENDIF
    ENDIF
-   IF ( ! Empty( cPicture ) .or. cPicture == Nil) .And. ( nMaxLength != Nil .AND. ! Empty( nMaxLength ) )
+   IF (  Empty( cPicture ) .or. cPicture == Nil) .And. ( nMaxLength != Nil .AND. ! Empty( nMaxLength ) )
       ::nMaxLength := nMaxLength
    ENDIF
    IF ::cType == "N" .AND. Hwg_BitAnd( nStyle, ES_LEFT + ES_CENTER ) == 0
@@ -436,6 +436,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ENDIF
       IF msg == WM_SETFOCUS //.AND. ::cType = "N"
          ::lFocu := .T.
+         ::lnoValid := .F.
          IF "K" $ ::cPicFunc
             SendMessage( ::handle, EM_SETSEL, 0, - 1 )
          ELSEIF ::selstart = 0 .AND. "R" $ ::cPicFunc  //.AND. ::lPicComplex
@@ -683,6 +684,7 @@ METHOD ParsePict( cPicture, vari ) CLASS HEdit
    ENDIF
 
    IF ! Empty( ::cPicMask )
+      ::nMaxLength := Nil
       masklen := Len( ::cPicMask )
       FOR i := 1 TO masklen
          cChar := SubStr( ::cPicMask, i, 1 )
@@ -1139,7 +1141,7 @@ METHOD When() CLASS HEdit
             nSkip := 1
          ENDIF
          */
-         GetSkip( ::oParent, ::handle, , nSkip )
+         WhenSetFocus( Self, nSkip )
       ELSE   
          ::setfocus()
       ENDIF
@@ -1193,7 +1195,7 @@ METHOD Valid( ) CLASS HEdit
                IF oDlg != Nil
                   oDlg:nLastKey := 0
                ENDIF
-               ::SetFocus()
+               ::SetFocus( .T. )
                ::oparent:lSuspendMsgsHandling := .F.
                RETURN .F.
             ENDIF
@@ -1231,11 +1233,11 @@ METHOD Valid( ) CLASS HEdit
    ::oparent:lSuspendMsgsHandling := .F.
    RETURN .T.
 
-METHOD onChange( ) CLASS HEdit
+METHOD onChange( lForce ) CLASS HEdit
    *-LOCAL  nPos := HIWORD( SendMessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
    LOCAL vari
    
-   IF  PtrtouLong( GetFocus() ) !=  PtrtouLong( ::handle )
+   IF ! SelfFocus( ::handle ) .AND. Empty( lForce )
       RETURN Nil
    ENDIF
    IF ::cType == "N"
@@ -1717,25 +1719,26 @@ FUNCTION CheckFocus( oCtrl, lInside )
    ENDIF
    IF oParent  != Nil .AND. lInside
      lModal :=  oParent:lModal .AND.  oParent:Type >  WND_DLG_RESOURCE 
-     IF ( ( ! Empty( hGetFocus ) .AND. lModal .AND. GetWindowParent( hGetFocus )  != ;
-         PtrtouLong( oParent:Handle ) ) .OR. (  hGetFocus  = PtrtouLong( oCtrl:oParent:Handle ) ) ) .AND. ;
-         PtrtouLong( oParent:handle ) = PtrtouLong( oCtrl:oParent:Handle )
-       /*   
-      IF PtrtouLong( GETFOCUS() ) = PtrtouLong( oCtrl:oParent:Handle ) .AND.;
-        PtrtouLong( oParent:handle ) = PtrtouLong( oCtrl:oParent:Handle )
-         RETURN .F.
-         */
-      ENDIF
+     IF ( ( ! Empty( hGetFocus ) .AND. lModal .AND. ! SELFFOCUS( GetWindowParent( hGetFocus ), oParent:Handle ) ) .OR. ;
+        (  SELFFOCUS( hGetFocus, oCtrl:oParent:Handle  ) ) ) .AND. SELFFOCUS( oParent:handle, oCtrl:oParent:Handle ) 
+        RETURN .F.
+     ENDIF
   ELSE
      oCtrl:oParent:lGetSkipLostFocus := .F.
   ENDIF
 
   RETURN .T.
 
+FUNCTION WhenSetFocus( oCtrl, nSkip )
+
+   IF  SelfFocus( oCtrl:Handle ) .OR. EMPTY( GetFocus() )
+       GetSkip( oCtrl:oParent, oCtrl:handle, , nSkip )
+   ENDIF   
+   RETURN Nil
 
 FUNCTION GetWindowParent( nHandle )
 
-   DO WHILE !Empty( GetParent( nHandle ) ) .AND. PtrtouLong( nHandle ) != PtrtouLong( GetActiveWindow() ) 
+   DO WHILE ! Empty( GetParent( nHandle ) ) .AND. ! SelfFocus( nHandle, GetActiveWindow() ) 
       nHandle := GetParent( nHandle )
    ENDDO 
    RETURN PtrtouLong( nHandle )

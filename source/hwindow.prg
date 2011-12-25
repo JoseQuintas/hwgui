@@ -663,6 +663,9 @@ METHOD Activate( lShow, lMaximized, lMinimized,lCentered, bActivate, lModal ) CL
    HB_SYMBOL_UNUSED( lModal )
 
    DEFAULT lShow := .T.
+   lMinimized := !EMPTY( lMinimized ) .AND. lMinimized .AND. Hwg_BitAnd( ::style, WS_MINIMIZE ) != 0
+   lMaximized := !EMPTY( lMaximized ) .AND. lMaximized .AND. Hwg_BitAnd( ::style, WS_MAXIMIZE ) != 0 
+
    ::Type := WND_CHILD
 
    CreateGetList( Self )
@@ -687,6 +690,7 @@ METHOD Activate( lShow, lMaximized, lMinimized,lCentered, bActivate, lModal ) CL
         ::nTop  := (::oParent:nHeight - ::nHeight) / 2
       ENDIF
    ENDIF
+   
    SetWindowPos( ::Handle, HWND_TOP, ::nLeft, ::nTop, 0, 0,;
                   SWP_NOSIZE + SWP_NOOWNERZORDER + SWP_FRAMECHANGED)
    IF ( bActivate  != NIL )
@@ -990,6 +994,14 @@ STATIC FUNCTION onNotifyIcon( oWnd, wParam, lParam )
          IF ISBLOCK( oWnd:bNotify )
             Eval( oWnd:bNotify )
          ENDIF
+      ELSEIF PtrtoUlong(lParam) == WM_MOUSEMOVE
+         /*
+         IF ISBLOCK( oWnd:bNotify )
+            oWnd:lSuspendMsgsHandling := .T.
+            Eval( oWnd:bNotify )
+            oWnd:lSuspendMsgsHandling := .F.
+         ENDIF
+         */
       ELSEIF PtrtoUlong(lParam) == WM_RBUTTONDOWN
          IF oWnd:oNotifyMenu != Nil
             ar := hwg_GetCursorPos()
@@ -1033,7 +1045,7 @@ STATIC FUNCTION onMdiCreate( oWnd, lParam )
    IF oWnd:WindowState > 0
       onMove( oWnd )  
    ENDIF 
-   RETURN - 1
+   RETURN - 1                                                                
 
 STATIC FUNCTION onMdiCommand( oWnd, wParam )
    LOCAL iParHigh, iParLow, iItem, aMenu, oCtrl

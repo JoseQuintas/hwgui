@@ -8,6 +8,32 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-12-25 18:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/hcontrol.prg
+    * CLASS HControl
+      * METHOD SetFocus( lValid )
+	    + add parameter lValid
+		Fixed SetFocus event when he was fired from inside the event WHEN or GetFocus
+  * source/hedit.prg
+    + FUNCTION WhenSetFocus( oCtrl, nSkip )
+	  sets the Control focus when in the Event WHEN or GetFocus is returned false
+  * source/hbrowse.prg
+  * source/hcheck.prg
+  * source/hcombo.prg
+  * source/hdatepic.prg
+  * source/hedit.prg
+  * source/hlistbox.prg
+  * source/hownbtn.prg
+  * source/hradio.prg
+    * METHOD WHEN and VALID
+     ! changed the handles comparisons between focus for the use of function SELFFOCUS
+  * source/hcwindow.prg	 
+  * source/hwindow.prg
+    ! minor fix
+  * source/window.c
+    + HB_FUNC( SELFFOCUS )
+	  compares two handlers returning logical values. When only one parameter is passed, the comparison is made as GetFocus()
+	  
 2011-12-25 18:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include/guilib.ch
      * xcommand MENU [ OF <oWnd> ] [ ID <nId> ] [ TITLE <cTitle> ]

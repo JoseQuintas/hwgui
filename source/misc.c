@@ -776,3 +776,13 @@ HB_FUNC( HWG_LASTKEY )
       }   
     hb_retni( 0 ) ;
 }
+
+HB_FUNC( HWG_ISWIN7 )
+{
+   OSVERSIONINFO ovi;
+   ovi.dwOSVersionInfoSize = sizeof ovi;
+   ovi.dwMajorVersion = 0;
+   ovi.dwMinorVersion = 0;
+   GetVersionEx(&ovi);
+   hb_retl (ovi.dwMajorVersion >= 6 && ovi.dwMinorVersion==1) ;
+}

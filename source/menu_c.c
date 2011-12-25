@@ -570,3 +570,34 @@ HB_FUNC( ENABLEMENUSYSTEMITEM )
                                   ) );
    }
 }
+
+
+HB_FUNC( HWG_SETMENUINFO )
+{
+ 
+   HMENU hMenu; 
+   MENUINFO mi;
+   HBRUSH   hbrush;
+    
+   hbrush = hb_pcount() > 1 && ! ISNIL( 2 ) ? CreateSolidBrush( ( COLORREF ) hb_parnl( 2 ) ) : NULL ; 
+   if( ISOBJECT( 1 ) )
+   {
+      PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
+      hMenu = ( HMENU ) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
+   }
+   else
+   {
+      HWND handle = ( hb_pcount() > 0 &&
+            !ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
+      hMenu = GetMenu( handle );
+   }
+   if( !hMenu )
+      hMenu = ( HMENU ) HB_PARHANDLE( 1 );
+   if( hMenu )
+   {
+      mi.cbSize          = sizeof( mi );
+      mi.fMask           = MIM_APPLYTOSUBMENUS | MIM_BACKGROUND ;
+      mi.hbrBack         = hbrush;
+      SetMenuInfo( hMenu, &mi );
+   } 
+}

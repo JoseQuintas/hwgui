@@ -18,6 +18,7 @@
 #define  FLAG_CHECK      2
 
 STATIC _aMenuDef, _oWnd, _aAccel, _nLevel, _Id, _oMenu, _oBitmap
+STATIC s_nWidthBmp, s_nHeightBmp,s_nbkColor  
 
 CLASS HMenu INHERIT HObject
    DATA handle
@@ -170,13 +171,16 @@ FUNCTION BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
    ENDDO
    IF hWnd != Nil .AND. oWnd != Nil
       Hwg_SetMenu( oWnd, aMenu )
+      IF s_nbkColor != Nil
+         Hwg_SetMenuInfo( oWnd:Handle, s_nbkColor )
+      ENDIF   
    ELSEIF _oMenu != Nil
       _oMenu:handle := aMenu[ 5 ]
       _oMenu:aMenu := aMenu
    ENDIF
    RETURN Nil
 
-FUNCTION Hwg_BeginMenu( oWnd, nId, cTitle )
+FUNCTION Hwg_BeginMenu( oWnd, nId, cTitle, nbkColor, nWidthBmp, nHeightBmp )
    LOCAL aMenu, i
    IF oWnd != Nil
       _aMenuDef := { }
@@ -186,6 +190,9 @@ FUNCTION Hwg_BeginMenu( oWnd, nId, cTitle )
       _oMenu    := Nil
       _nLevel   := 0
       _Id       := IIf( nId == Nil, MENU_FIRST_ID, nId )
+      s_nWidthBmp  := IIF( nWidthBmp = Nil .OR. ! HWG_ISWIN7(), GETSYSTEMMETRICS( SM_CXMENUCHECK ), nWidthBmp )
+      s_nHeightBmp := IIF( nHeightBmp = Nil .OR. ! HWG_ISWIN7(), GETSYSTEMMETRICS( SM_CYMENUCHECK ), nHeightBmp )
+      s_nbkColor   := nbkColor 
    ELSE
       nId   := IIf( nId == Nil, ++ _Id, nId )
       aMenu := _aMenuDef
@@ -242,9 +249,9 @@ FUNCTION Hwg_DefineMenuItem( cItem, nId, bItem, lDisabled, accFlag, accKey, lBit
    IF lBitmap != Nil .or. ! Empty( lBitmap )
       IF lResource == Nil ;lResource := .F. ; ENDIF
       IF lResource .OR. AT("." ,lBitmap ) = 0
-         oBmp := HBitmap():AddResource( lBitmap, LR_LOADMAP3DCOLORS + LR_SHARED + LR_LOADTRANSPARENT , , GETSYSTEMMETRICS( SM_CXMENUCHECK ), GETSYSTEMMETRICS( SM_CYMENUCHECK ) )
+         oBmp := HBitmap():AddResource( lBitmap, LR_LOADMAP3DCOLORS + LR_SHARED + LR_LOADTRANSPARENT , ,s_nWidthBmp, s_nHeightBmp  )
       ELSE
-         oBmp := HBitmap():AddFile( lBitmap, , .T. , GETSYSTEMMETRICS( SM_CXMENUCHECK ), GETSYSTEMMETRICS( SM_CYMENUCHECK ) )
+         oBmp := HBitmap():AddFile( lBitmap, , .T. , s_nWidthBmp, s_nHeightBmp  )
       ENDIF
       AAdd( _oBitmap, { .t., oBmp:Handle, cItem, nId } )
    ELSE

@@ -1346,9 +1346,9 @@
 
 /*   Menu system     */
 
-#xcommand MENU [ OF <oWnd> ] [ ID <nId> ] [ TITLE <cTitle> ] ;
+#xcommand MENU [ OF <oWnd> ] [ ID <nId> ] [ TITLE <cTitle> ] [ COLOR <bcolor> ] [ BMPSIZE <nWidthBmp>, <nHeighBmp> ] ;
           => ;
-          Hwg_BeginMenu( <oWnd>, <nId>, <cTitle> )
+          Hwg_BeginMenu( <oWnd>, <nId>, <cTitle>, <bcolor>, <nWidthBmp>,<nHeighBmp> )
 
 #xcommand CONTEXT MENU <oMenu> => <oMenu> := Hwg_ContextMenu()
 

@@ -238,7 +238,7 @@ METHOD OnClicked() CLASS HStaticLink
 
    ::state := LBL_NORMAL
    //InvalidateRect( ::handle, 0 )
-   RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )
+   RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT  , ::nLeft, ::nTop, ::nWidth, ::nHeight ) 
    SetFocus( ::handle )
    //PostMessage( ::handle, WM_PAINT, 0, 0 )
 
@@ -288,12 +288,12 @@ METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
          ::state := LBL_NORMAL
          //InvalidateRect( ::handle, 0 )
          //PostMessage( ::handle, WM_PAINT, 0, 0 )
-         RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )
+         RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ENDIF
       IF ( ::state == LBL_NORMAL .AND. ! res ) .or. ;
          ( ::state == LBL_NORMAL .AND. ! res .and. ::m_bVisited )
          ::state := LBL_MOUSEOVER
-    		 RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE , ::nLeft, ::nTop, ::nWidth, ::nHeight )
+    		 RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth, ::nHeight )
          //InvalidateRect( ::handle, 0 )
          //PostMessage( ::handle, WM_PAINT, 0, 0 )
          //SetCapture( ::handle )
@@ -321,7 +321,8 @@ METHOD PAint() CLASS HStaticLink
    ENDIF
 
    rcClient   := GetClientRect( ::handle )
-   ::dc:SetBkMode( TRANSPARENT )
+   ::dc:SetBkMode( ::backstyle ) //TRANSPARENT )
+   ::dc:SetBkColor( IIF( ::bColor = NIL, GetSysColor( COLOR_3DFACE ), ::bcolor ) )
    dwFlags    := 0
 /*
       DWSTYLE    := ::style
@@ -343,21 +344,21 @@ METHOD PAint() CLASS HStaticLink
    END
 #endif
 */
-dwFlags  += ( DT_VCENTER + DT_END_ELLIPSIS )
-
-::dc:SelectObject( ::oFont:handle )
-IF ::state == LBL_NORMAL
-   IF ::m_bVisited
-      ::dc:SetTextColor( ::m_sVisitedColor )
-   ELSE
-      ::dc:SetTextColor( ::m_sLinkColor )
+   dwFlags  += ( DT_VCENTER + DT_END_ELLIPSIS )
+   
+   ::dc:SelectObject( ::oFont:handle )
+   IF ::state == LBL_NORMAL
+      IF ::m_bVisited
+         ::dc:SetTextColor( ::m_sVisitedColor )
+      ELSE
+         ::dc:SetTextColor( ::m_sLinkColor )
+      ENDIF
+   ELSEIF ::state == LBL_MOUSEOVER
+      ::dc:SetTextColor( ::m_sHoverColor )
    ENDIF
-ELSEIF ::state == LBL_MOUSEOVER
-   ::dc:SetTextColor( ::m_sHoverColor )
-ENDIF
 
-::dc:DrawText( strtext, rcClient, dwFlags )
-::dc:END()
+   ::dc:DrawText( strtext, rcClient, dwFlags )
+   ::dc:END()
 
-RETURN NIL
+  RETURN NIL
 

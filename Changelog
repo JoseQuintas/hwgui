@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-12-26 09:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/hhyper.prg
+    * METHOD PAINT
+	  ! minor fix
+
 2011-12-25 18:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hcontrol.prg
     * CLASS HControl

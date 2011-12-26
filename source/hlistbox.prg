@@ -290,15 +290,15 @@ METHOD When( oCtrl ) CLASS HListBox
 
 
 METHOD Valid( oCtrl ) CLASS HListBox
-   LOCAL res, oDlg, nSkip
-   //LOCAL ltab :=  GETKEYSTATE( VK_TAB ) < 0
+   LOCAL res, oDlg
+   //LOCAL ltab :=  GETKEYSTATE( VK_TAB ) < 0, , nSkip
 
    HB_SYMBOL_UNUSED( oCtrl )
 
    IF ! CheckFocus( Self, .t. ) .or. ::lNoValid
       RETURN .t.
    ENDIF
-   nSkip := IIf( GetKeyState( VK_SHIFT ) < 0 , - 1, 1 )
+   //nSkip := IIf( GetKeyState( VK_SHIFT ) < 0 , - 1, 1 )
    IF ( oDlg := ParentGetDialog( Self ) ) == Nil .OR. oDlg:nLastKey != 27
       ::value := SendMessage( ::handle, LB_GETCURSEL, 0, 0 ) + 1
       IF ::bSetGet != Nil
@@ -323,6 +323,10 @@ METHOD Valid( oCtrl ) CLASS HListBox
          oDlg:nLastKey := 0
       ENDIF
    ENDIF
+   IF Empty( GetFocus() )
+       GetSkip( ::oParent, ::handle,, ::nGetSkip )
+   ENDIF
+
    /*
    IF lTab .AND. GETFOCUS() = ::handle
       IF ::oParent:CLASSNAME = "HTAB"

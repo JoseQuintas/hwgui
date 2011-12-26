@@ -577,10 +577,9 @@ HB_FUNC( HWG_SETMENUINFO )
  
    HMENU hMenu; 
    MENUINFO mi;
-   HBRUSH   hbrush;
-    
-   hbrush = hb_pcount() > 1 && ! ISNIL( 2 ) ? CreateSolidBrush( ( COLORREF ) hb_parnl( 2 ) ) : NULL ; 
-   if( ISOBJECT( 1 ) )
+   HBRUSH hbrush;
+   
+   if( HB_ISOBJECT( 1 ) )
    {
       PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
       hMenu = ( HMENU ) HB_GETHANDLE( GetObjectVar( pObject, "HANDLE" ) );
@@ -588,13 +587,14 @@ HB_FUNC( HWG_SETMENUINFO )
    else
    {
       HWND handle = ( hb_pcount() > 0 &&
-            !ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
+            ! HB_ISNIL( 1 ) ) ? ( ( HWND ) HB_PARHANDLE( 1 ) ) : aWindows[0];
       hMenu = GetMenu( handle );
    }
    if( !hMenu )
       hMenu = ( HMENU ) HB_PARHANDLE( 1 );
    if( hMenu )
    {
+      hbrush = hb_pcount() > 1 && ! ISNIL( 2 ) ? CreateSolidBrush( ( COLORREF ) hb_parnl( 2 ) ) : NULL ; 
       mi.cbSize          = sizeof( mi );
       mi.fMask           = MIM_APPLYTOSUBMENUS | MIM_BACKGROUND ;
       mi.hbrBack         = hbrush;

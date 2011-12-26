@@ -279,7 +279,7 @@ METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
       xPos := LOWORD( lParam )
       yPos := HIWORD( lParam )
       //IF xPos > ::nWidth .OR. yPos > ::nHeight
-      IF xpos <= 4 .OR. xPos  >= ::nWidth - 4 .OR. yPos  >= ::nHeight - 4 .OR. ypos <= 4
+      IF xpos <= 0 .OR. xPos  >= ::nWidth - 6 .OR. yPos  >= ::nHeight - 6 .OR. ypos <= 0
          //ReleaseCapture()
          res := .T.
       ENDIF

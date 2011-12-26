@@ -82,7 +82,7 @@ CLASS HComboBox INHERIT HControl
    METHOD When( )
    METHOD onSelect()
    METHOD InteractiveChange( )
-   METHOD onChange( )
+   METHOD onChange( lForce )
    METHOD Populate() HIDDEN
    METHOD GetValueBound( xItem )
    METHOD RowSource( xSource ) SETGET

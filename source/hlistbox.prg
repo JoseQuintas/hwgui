@@ -291,7 +291,7 @@ METHOD When( oCtrl ) CLASS HListBox
 
 METHOD Valid( oCtrl ) CLASS HListBox
    LOCAL res, oDlg, nSkip
-   LOCAL ltab :=  GETKEYSTATE( VK_TAB ) < 0
+   //LOCAL ltab :=  GETKEYSTATE( VK_TAB ) < 0
 
    HB_SYMBOL_UNUSED( oCtrl )
 

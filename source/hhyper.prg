@@ -60,7 +60,7 @@ CLASS VAR winclass INIT "STATIC"
    METHOD OnSetCursor( pWnd, nHitTest, message )
    METHOD SetLinkText( csLinkText )
    METHOD SetLinkColor( sLinkColor )
-   METHOD PAINT()
+   METHOD PAint( lpDis ) 
    METHOD OnMouseMove( nFlags, lParam )
 
 ENDCLASS

@@ -3043,7 +3043,7 @@ METHOD onClick( ) CLASS HBrowse
 
 //----------------------------------------------------//
 METHOD Edit( wParam, lParam ) CLASS HBrowse
-   LOCAL fipos, lRes, x1, y1, fif, nWidth, lReadExit, rowPos
+   LOCAL fipos, x1, y1, fif, nWidth, lReadExit, rowPos
    LOCAL oModDlg, oColumn, aCoors, nChoic, bInit, oGet, Type
    LOCAL oComboFont, oCombo, oBtn
    LOCAL oGet1, owb1, owb2 , nHget

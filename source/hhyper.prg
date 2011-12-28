@@ -155,7 +155,7 @@ METHOD INIT() CLASS HStaticLink
    IF ! ::lInit
       ::nWidth := Min( TxtRect( ::Title, Self )[ 1 ] + 5, ::nWidth )
       ::move( , , ::nWidth , , )
-      IF ::GetParentForm():Type  < WND_DLG_RESOURCE
+      IF ::GetParentForm():Type  <= WND_MDI
          ::nHolder := 1
          SetWindowObject( ::handle, Self )
          Hwg_InitWinCtrl( ::handle )

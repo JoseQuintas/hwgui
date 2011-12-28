@@ -727,9 +727,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::nStyleHS := IIf( nStyle == Nil, 0, nStyle )
    ::BackStyle := OPAQUE
    IF ( lTransp != NIL .AND. lTransp ) //.OR. ::lOwnerDraw
-      //::lTransparent := .T.
       ::BackStyle := TRANSPARENT
-      ::extStyle += WS_EX_TRANSPARENT
+      ::extStyle += WS_EX_TRANSPARENT 
       bPaint := { | o, p | o:paint( p ) }
       nStyle := SS_OWNERDRAW + Hwg_Bitand( nStyle, SS_NOTIFY )
    ELSEIF nStyle - SS_NOTIFY > 32 .OR. ::nStyleHS - SS_NOTIFY = 2
@@ -799,10 +798,11 @@ METHOD Activate() CLASS HStatic
 METHOD Init() CLASS HStatic
    IF ! ::lInit
       Super:init()
-      
-      ::nHolder := 1
-      SetWindowObject( ::handle, Self )
-      Hwg_InitStaticProc( ::handle )
+      IF ::nHolder != 1
+         ::nHolder := 1
+         SetWindowObject( ::handle, Self )
+         Hwg_InitStaticProc( ::handle )
+      ENDIF
       IF ::classname == "HSTATIC"    
          ::Auto_Size( ::Title )
       ENDIF
@@ -882,6 +882,8 @@ METHOD Paint( lpDis ) CLASS HStatic
    IF  ::BackStyle = OPAQUE
       brBackground := IIF( ! EMPTY( ::brush ), ::brush, ::hBrushDefault )
       FillRect( dc, client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], brBackground:handle )
+   ELSE
+         SelectObject( DC, GetStockObject( NULL_BRUSH  ))   
    ENDIF   
    
    IF ! ::isEnabled()

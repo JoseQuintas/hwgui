@@ -8,6 +8,26 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-12-28 08:20 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/hbrowse.prg
+    * CLASS HBrowse
+      + METHOD onClick( ) 
+	  * METHOD Edit( )  
+	    ! changed valdidation bEnter to Method onClick
+  * source/hcontrol.prg
+    * CLASS HStatic
+	  * METHOD Init( ) 
+		! minor fix to work hhyperlink
+  * source/hhyper.prg
+	* METHOD INIT
+	* METHOD onEvent
+	* METHOD OnMouseMove
+	* METHOD PAint
+	  ! fixed to work in MAIN and DIALOGS
+    * source/hedit.prg
+	  * METHOD NEW
+	    ! minor fix in maxlenght
+	  
 2011-12-26 09:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hhyper.prg
     * METHOD PAINT

@@ -337,6 +337,7 @@ CLASS HBrowse INHERIT HControl
    METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos )
    METHOD Edit( wParam, lParam )
    METHOD Append() INLINE ( ::Bottom( .F. ), ::LineDown() )
+   METHOD onClick( ) 
    METHOD RefreshLine()
    METHOD Refresh( lFull, lLineUp )
    METHOD ShowSizes()
@@ -362,6 +363,7 @@ CLASS HBrowse INHERIT HControl
    METHOD ChangeRowCol( nRowColChange )
    METHOD EditLogical( wParam, lParam )   HIDDEN
    METHOD AutoFit()
+
 
 ENDCLASS
 
@@ -3026,6 +3028,19 @@ METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
    ENDIF
    RETURN nil
 
+METHOD onClick( ) CLASS HBrowse
+    LOCAL  lRes := .F.
+    
+    IF ::bEnter != Nil
+       ::oParent:lSuspendMsgsHandling := .T.
+       lRes := Eval( ::bEnter, Self, ::fipos )  
+       ::oParent:lSuspendMsgsHandling := .F.
+       IF  ValType( lRes ) != "L"
+           RETURN .T.
+       ENDIF
+    ENDIF   
+    RETURN lRes
+
 //----------------------------------------------------//
 METHOD Edit( wParam, lParam ) CLASS HBrowse
    LOCAL fipos, lRes, x1, y1, fif, nWidth, lReadExit, rowPos
@@ -3036,8 +3051,9 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    fipos := Min( ::colpos + ::nLeftCol - 1 - ::freeze, Len( ::aColumns ) )
    ::fiPos := fipos
 
-   IF  ( ! Eval( ::bEof, Self ) .OR. ::lAppMode ) .AND. ;
-      ( ::bEnter == Nil .OR. ( ValType( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. ! lRes ) )
+   //IF  ( ! Eval( ::bEof, Self ) .OR. ::lAppMode ) .AND. ;
+   //   ( ::bEnter == Nil .OR. ( ValType( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. ! lRes ) )
+   IF  ( ! Eval( ::bEof, Self ) .OR. ::lAppMode ) .AND. ( ! ::onClick( )  )      
       oColumn := ::aColumns[ fipos ]
       IF ::Type == BRW_DATABASE
          ::varbuf := ( ::Alias ) ->( Eval( oColumn:block,, Self, fipos ) )

@@ -128,7 +128,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
        ::lWantReturn := Hwg_BitAnd( nStyle, ES_WANTRETURN ) != 0
       //ENDIF
    ENDIF
-   IF (  Empty( cPicture ) .or. cPicture == Nil) .And. ( nMaxLength != Nil .AND. ! Empty( nMaxLength ) )
+   IF ( nMaxLength != Nil .AND. ! Empty( nMaxLength ) ) //.AND. (  Empty( cPicture ) .or. cPicture == Nil) 
       ::nMaxLength := nMaxLength
    ENDIF
    IF ::cType == "N" .AND. Hwg_BitAnd( nStyle, ES_LEFT + ES_CENTER ) == 0

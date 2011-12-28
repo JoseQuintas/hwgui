@@ -68,7 +68,8 @@ ENDCLASS
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
             bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor ) CLASS HStaticLink
    LOCAL oPrevFont
-
+   
+   nStyle := Hwg_BitOR( nStyle, SS_NOTIFY + SS_RIGHT )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )
 
@@ -99,7 +100,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
                                  oPrevFont:weight, oPrevFont:charset, oPrevFont:italic, 1, oPrevFont:StrikeOut )
       ENDIF
    ENDIF
-
+   
    IF lTransp != NIL .AND. lTransp
       //::extStyle += WS_EX_TRANSPARENT
       ::backstyle := TRANSPARENT
@@ -112,6 +113,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
 METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                  bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )  CLASS HStaticLink
    LOCAL oPrevFont
+
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor )
 
@@ -152,16 +154,13 @@ METHOD INIT() CLASS HStaticLink
 
    IF ! ::lInit
       ::nWidth := Min( TxtRect( ::Title, Self )[ 1 ] + 5, ::nWidth )
-      ::move( , , ::nWidth , )
-      Super:init()
-      /*  init in HSATIC
-      ::nHolder := 1
-      SetWindowObject( ::handle, Self )
-      Hwg_InitWinCtrl( ::handle )
-      IF ::Title != NIL
-         SETWINDOWTEXT( ::handle, ::title )
+      ::move( , , ::nWidth , , )
+      IF ::GetParentForm():Type  < WND_DLG_RESOURCE
+         ::nHolder := 1
+         SetWindowObject( ::handle, Self )
+         Hwg_InitWinCtrl( ::handle )
       ENDIF
-      */
+      Super:init()
    ENDIF
 
    RETURN NIL
@@ -170,7 +169,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
 
 
    IF msg == WM_PAINT
-      ::PAint()
+      //::PAint( )
+      
    ELSEIF msg == WM_MOUSEMOVE
       hwg_SetCursor( ::m_hHyperCursor )
       ::OnMouseMove( wParam, lParam )
@@ -237,10 +237,9 @@ METHOD OnClicked() CLASS HStaticLink
    ::m_bVisited := .T.
 
    ::state := LBL_NORMAL
-   //InvalidateRect( ::handle, 0 )
+   InvalidateRect( ::handle, 0 )
    RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT  , ::nLeft, ::nTop, ::nWidth, ::nHeight ) 
    SetFocus( ::handle )
-   //PostMessage( ::handle, WM_PAINT, 0, 0 )
 
    RETURN NIL
 
@@ -278,32 +277,29 @@ METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
    IF ::state != LBL_INIT
       xPos := LOWORD( lParam )
       yPos := HIWORD( lParam )
-      //IF xPos > ::nWidth .OR. yPos > ::nHeight
-      IF xpos <= 0 .OR. xPos  >= ::nWidth - 6 .OR. yPos  >= ::nHeight - 6 .OR. ypos <= 0
+      IF ( !  PtInRect( { 4, 4, ::nWidth - 4, ::nHeight - 4 }, { xPos, yPos } ) )
          //ReleaseCapture()
          res := .T.
       ENDIF
-
       IF ( res .AND. ! ::m_bVisited ) .or. ( res .AND. ::m_bVisited )
          ::state := LBL_NORMAL
-         //InvalidateRect( ::handle, 0 )
-         //PostMessage( ::handle, WM_PAINT, 0, 0 )
+         InvalidateRect( ::handle, 0 )
          RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ENDIF
       IF ( ::state == LBL_NORMAL .AND. ! res ) .or. ;
          ( ::state == LBL_NORMAL .AND. ! res .and. ::m_bVisited )
          ::state := LBL_MOUSEOVER
+         InvalidateRect( ::handle, 0 )
     		 RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth, ::nHeight )
-         //InvalidateRect( ::handle, 0 )
-         //PostMessage( ::handle, WM_PAINT, 0, 0 )
          //SetCapture( ::handle )
       ENDIF
 
    ENDIF
    RETURN NIL
 
-METHOD PAint() CLASS HStaticLink
-
+METHOD PAint( lpDis ) CLASS HStaticLink
+   LOCAL drawInfo := GetDrawItemInfo( lpDis )
+   LOCAL dc := drawInfo[ 3 ]
    LOCAL strtext    := ::Title
 //   LOCAL nOldBkMode
    LOCAL dwFlags
@@ -315,50 +311,36 @@ METHOD PAint() CLASS HStaticLink
    IF EMPTY( ::oParent:handle )
       RETURN Nil
    ENDIF
-   ::dc := HPAINTDC():new( ::handle )
    IF ::state == LBL_INIT
       ::State := LBL_NORMAL
    ENDIF
-
-   rcClient   := GetClientRect( ::handle )
-   ::dc:SetBkMode( ::backstyle ) //TRANSPARENT )
-   ::dc:SetBkColor( IIF( ::bColor = NIL, GetSysColor( COLOR_3DFACE ), ::bcolor ) )
+   rcClient   := CopyRect( { drawInfo[ 4 ] , drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] } )
+   SetBkMode( ::backstyle ) //TRANSPARENT )
+   IF ::backstyle != TRANSPARENT
+       SetBkColor( DC,  IIF( ::bColor = NIL, GetSysColor( COLOR_3DFACE ), ::bcolor ) )
+       FillRect( dc, rcclient[ 1 ], rcclient[ 2 ], rcclient[ 3 ], rcclient[ 4 ] ) //, ::brush:handle )
+   ENDIF    
    dwFlags    := 0
-/*
-      DWSTYLE    := ::style
-
-#ifdef __XHARBOUR__
-      SWITCH( DWSTYLE & SS_TYPEMASK )
-   CASE SS_RIGHT
-      dwFlags := DT_RIGHT | DT_WORDBREAK
-      EXIT
-   CASE SS_CENTER
-      dwFlags := SS_CENTER | DT_WORDBREAK
-      EXIT
-   CASE SS_LEFTNOWORDWRAP
-      dwFlags := DT_LEFT
-      EXIT
-      DEFAULT
-      dwFlags := DT_LEFT | DT_WORDBREAK
-      EXIT
-   END
-#endif
-*/
    dwFlags  += ( DT_VCENTER + DT_END_ELLIPSIS )
    
-   ::dc:SelectObject( ::oFont:handle )
+   //::dc:SelectObject( ::oFont:handle )
+   SelectObject( dc, ::oFont:handle )
    IF ::state == LBL_NORMAL
       IF ::m_bVisited
-         ::dc:SetTextColor( ::m_sVisitedColor )
+         //::dc:SetTextColor( ::m_sVisitedColor )
+         SetTextColor( dc,::m_sVisitedColor )
       ELSE
-         ::dc:SetTextColor( ::m_sLinkColor )
+         //::dc:SetTextColor( ::m_sLinkColor )
+         SetTextColor( dc, ::m_sLinkColor )
       ENDIF
    ELSEIF ::state == LBL_MOUSEOVER
-      ::dc:SetTextColor( ::m_sHoverColor )
+      //::dc:SetTextColor( ::m_sHoverColor )
+      SetTextColor( dc,::m_sHoverColor )
    ENDIF
 
-   ::dc:DrawText( strtext, rcClient, dwFlags )
-   ::dc:END()
+   //::dc:DrawText( strtext, rcClient, dwFlags )
+   DrawText( dc, strtext, rcClient, dwFlags )
+  // ::dc:END()
 
   RETURN NIL
 

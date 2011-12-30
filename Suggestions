@@ -8,23 +8,24 @@
  *
  * Suggest By Name   DATE  UTC
  * Suggestion
- * Analyzed for          
+ * Analyzed for
  * Made For
  /
 
- 
+2011-12-30 10:50 test
+
 2011-09-04 07:33 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
- 
+
  1.HW_WEBCAM  Class
- 2.HW_SMS     Class  
- 
+ 2.HW_SMS     Class
+
 
 2010-10-16 21:57 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
 DESIGNER has too buggy :((
 
 2007-05-27 02-30 UTC+0700 Richard Roesnadi <roesnadi8@yahoo.co.id>
 
-DESIGNER : 
+DESIGNER :
    + ADDITIONAL SOME HWGUI'S CONTROL LIKE:
    1.REBAR
    2.PAGER
@@ -37,13 +38,13 @@ DESIGNER :
    9.ACTIVEX
 
    * EDITOR :
-   DISPLAY FIELD'S OF DBF WHEN TYPE DBFNAME->{SPACE} LIKE MULTI-EDIT EDITOR 
-     
-   * MENU CONTROL : 
-   ADD BITMAP 
-    
+   DISPLAY FIELD'S OF DBF WHEN TYPE DBFNAME->{SPACE} LIKE MULTI-EDIT EDITOR
 
-  
+   * MENU CONTROL :
+   ADD BITMAP
+
+
+
 2004-09-08 14-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
 New class similar to TBROWSE
 

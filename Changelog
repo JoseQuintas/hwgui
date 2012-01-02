@@ -7,6 +7,19 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-01-02 09:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/hhyper.prg
+    ! minor fix in Method Init to work in MAIN MDICHILD and DIALOG
+  * source/htool.prg	
+    * CLASS HToolButton
+	  * METHOD New
+	    - //  ::oParent:oParent:AddEvent( BN_CLICKED, Self, {|| ::ONCLICK()},,"click" )
+		event Click is triggered in Method Notify
+    * CLASS HTool
+	  * METHOD Notifify
+	    ! minor fix in NM_CLICK
+
 2011-12-29 13:42 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   ! changelog
     ! apenas um teste para ser se o email automatico esta funcionando

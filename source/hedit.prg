@@ -964,8 +964,9 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
       ENDIF
       //IF ! Empty( ::cPicFunc ) .OR. ! Empty( ::cPicMask )
       IF ( ! Empty( ::cPicFunc ) .OR. ! Empty( ::cPicMask ) ) .AND. ;
-      ( ! cKey $ ",." .OR. RIGHT( TRIM( ::title ), 1 ) = '.'   )
-         ::title := Transform( vari, ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
+         ( ! cKey $ ",." .OR. RIGHT( TRIM( ::title ), 1 ) = '.'   )
+         *-::title := Transform( vari, ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
+         ::title := Transform( vari, STRTRAN(::cPicFunc, "Z", "" ) + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
          IF lSignal
            ::title := "-" + substr( ::title, 2 )
          ENDIF

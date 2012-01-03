@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-01-03 20:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/hedit.prg
+    * METHOD GetApplyKey
+	  ! fixed picture when PICFUNC "@Z" If 0, converts currency or numeric values to spaces.
+  	    in case if the number is less than 1.
+ 
 2012-01-02 09:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hhyper.prg
     ! minor fix in Method Init to work in MAIN MDICHILD and DIALOG

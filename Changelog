@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-01-12 10:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/commond.c
+    * HB_FUNC( SAVEFILE )
+	  + parameters sixth
+	    < .T. OR .F. > confirmation OVERWRITEPROMPT in write file If the file already exists
+
+
 2012-01-03 20:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hedit.prg
     * METHOD GetApplyKey

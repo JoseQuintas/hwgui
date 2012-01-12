@@ -248,6 +248,8 @@ HB_FUNC( SAVEFILE )
    ofn.lpstrInitialDir = HB_PARSTR( 4, &hInitDir, NULL );
    ofn.lpstrTitle = HB_PARSTR( 5, &hTitle, NULL );
    ofn.Flags = OFN_FILEMUSTEXIST | OFN_EXPLORER;
+   if ( HB_ISLOG( 6 ) && hb_parl( 6 ) )
+      ofn.Flags = ofn.Flags | OFN_OVERWRITEPROMPT;
 
    if( GetSaveFileName( &ofn ) )
       HB_RETSTR( ofn.lpstrFile );

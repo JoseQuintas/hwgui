@@ -8,6 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2012-01-20 10:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * samples
+    + folder Resource
+  * samples/browse/browse_2.prg
+    ! fix in pictures 
+  * source/hbrowse.prg
+    + STATIC axPosMouseOver 
+    METHOD onEvent()
+	METHOD MouseMove()
+    METHOD ButtomDown()
+	! fix in header with themed
+  * source/hownbtn.prg
+    * METHOD MUp()
+      ! minor fix 
+
+
 2012-01-12 10:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/commond.c
     * HB_FUNC( SAVEFILE )

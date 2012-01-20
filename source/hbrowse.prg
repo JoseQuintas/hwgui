@@ -52,6 +52,7 @@ STATIC oCursor     := 0
 STATIC oPen64
 STATIC xDrag
 STATIC xDragMove := 0
+STATIC axPosMouseOver := {0,0}
 STATIC xToolTip
 
 //----------------------------------------------------//
@@ -541,36 +542,43 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          RETURN 1
 
       ELSEIF msg == WM_ERASEBKGND
-         ::isMouseOver := .F.
          RETURN 0
 
       ELSEIF msg = WM_SIZE
+         ::oParent:lSuspendMsgsHandling := .F.
+         ::lRepaintBackground := .T.
+         ::isMouseOver := .F.
          IF ::AutoColumnFit = 1
+            IF ! isWindowVisible( ::oParent:Handle )
+               ::Rebuild()
+               ::lRepaintBackground := .F.
+            ENDIF
             ::AutoFit()
          ENDIF
-         ::lRepaintBackground := .T.
 
-      ELSEIF msg = WM_SETFONT .AND. ::oHeadFont = Nil .AND. isWindowVisible( ::Handle )
+
+      ELSEIF msg = WM_SETFONT .AND. ::oHeadFont = Nil .AND. ::lInit
          ::nHeadHeight := 0
          ::nFootHeight := 0
 
-      ELSEIF msg == WM_SETFOCUS .AND. ! ::oParent:lSuspendMsgsHandling
+      ELSEIF msg == WM_SETFOCUS .AND. ! ::lSuspendMsgsHandling
          ::When()
          /*
          IF ::bGetFocus != Nil
             Eval( ::bGetFocus, Self )
          ENDIF
          */
-      ELSEIF msg == WM_KILLFOCUS .AND. ! ::oParent:lSuspendMsgsHandling
+      ELSEIF msg == WM_KILLFOCUS .AND. ! ::lSuspendMsgsHandling
          ::Valid()
          /*
          IF ::bLostFocus != Nil
             Eval( ::bLostFocus, Self )
          ENDIF
-         */
+
          IF ::GetParentForm( self ):Type < WND_DLG_RESOURCE
              SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, 0 ), ::handle )
          ENDIF
+         */
          ::internal[ 1 ] := 15 //force redraw header,footer and separator
 
       ELSEIF msg == WM_HSCROLL
@@ -584,7 +592,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
              nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 )
              nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , nShiftAltCtrl )
              //nShiftAltCtrl += IIF( wParam > 111, 4, nShiftAltCtrl )
-             IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
+             IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B' .AND. wParam != VK_TAB .AND. wParam != VK_RETURN
                 IF EMPTY( Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl, msg ) )
                    RETURN 0
                 ENDIF
@@ -616,7 +624,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             DlgCommand( Self, wParam, lParam )
          ENDIF
 
-      ELSEIF msg == WM_KEYUP .AND. ! ::oParent:lSuspendMsgsHandling
+      ELSEIF msg == WM_KEYUP //.AND. ! ::oParent:lSuspendMsgsHandling
          IF wParam == 17
             ::lCtrlPress := .F.
          ENDIF
@@ -634,7 +642,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
                ::DoHScroll( iif( IsCtrlShift( .F., .T. ), SB_LINELEFT, SB_LINERIGHT ) )
             ENDIF
             */
-          ENDIF
+         ENDIF
          IF wParam != VK_SHIFT .AND. wParam != VK_CONTROL .AND. wParam != 18
             oParent := ::oParent
             DO WHILE oParent != Nil .AND. ! __ObjHasMsg( oParent, "GETLIST" )
@@ -662,7 +670,8 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
                 RETURN 0
              ENDIF
          ENDIF
-         IF wParam == 33 .OR. wParam == 34 .OR. wParam == 38 .OR. wParam == 40
+         ::isMouseOver := .F.
+         IF wParam == VK_PRIOR .OR. wParam == VK_NEXT .OR. wParam == VK_UP .OR. wParam == VK_DOWN
             IF ! ::ChangeRowCol( 1 )
                RETURN -1
             ENDIF
@@ -830,9 +839,10 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
       ELSEIF ( msg = WM_MOUSELEAVE .OR. msg = WM_NCMOUSELEAVE ) //.AND.! ::oParent:lSuspendMsgsHandling
          IF ::allMouseOver
-            ::MouseMove( 0, 0 )
+            //::MouseMove( 0, 0 )
+            ::MouseMove( wParam, lParam )
             ::allMouseOver := .F.
-            ::isMouseOver := .F.
+            //::isMouseOver := .F.
          ENDIF
 
       ELSEIF msg == WM_MBUTTONUP
@@ -850,6 +860,10 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
                     LOWORD( lParam ), HIWORD( lParam ) )
       */
       ELSEIF msg == WM_DESTROY
+        IF ValType( ::hTheme ) == "P"
+           HB_CLOSETHEMEDATA( ::htheme )
+          ::hTheme       := nil
+        ENDIF
         ::END()
       ENDIF
 
@@ -1312,7 +1326,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    LOCAL pps, hDC
    LOCAL oldfont, aMetrHead,  nRecFilter
 
-   IF ! ::active .OR. Empty( ::aColumns ) .OR. ::lHeadClick  .OR. ::isMouseOver //.AND. ::internal[ 1 ] = WM_MOUSEMOVE )
+   IF ! ::active .OR. Empty( ::aColumns ) .OR. ::lHeadClick  //.OR. ::isMouseOver //.AND. ::internal[ 1 ] = WM_MOUSEMOVE )
       pps := DefinePaintStru()
       hDC := BeginPaint( ::handle, pps )
       IF ::lHeadClick   .OR. ::isMouseOver
@@ -1321,6 +1335,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
           ::oParent:lSuspendMsgsHandling := .F.
       ENDIF
       EndPaint( ::handle, pps )
+      ::isMouseOver := .F.
       RETURN Nil
    ENDIF
    IF ( ::m_bFirstTime ) .AND. ::Themed
@@ -1735,6 +1750,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
          IF ! oColumn:lHeadClick
             state := IIF( ::hTheme != Nil, IIF( ::xPosMouseOver > x .AND. ::xPosMouseOver < x + xsize - 3,;
                                                 PBS_HOT, PBS_NORMAL ), PBS_NORMAL )
+            axPosMouseOver  := IIF( ::xPosMouseOver > x .AND. ::xPosMouseOver < x + xsize - 3,{x, x + xsize },axPosMouseOver )
          ELSE
             state := IIF( ::hTheme != Nil, PBS_PRESSED, 6 )
             InflateRect( @aItemRect, - 1, - 1 )
@@ -2500,16 +2516,22 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
          ::lAppMode := .T.
       ELSE
          Eval( ::bSkip, Self, - 1 )
-         ::SetFocus()
+         IF !SELFFOCUS( ::handle )
+           ::SetFocus()
+         ENDIF
          RETURN Nil
       ENDIF
    ENDIF
    ::rowPos ++
    IF ::rowPos > ::rowCount
       ::rowPos := ::rowCount
-      //FP InvalidateRect( ::handle, 0 )
-      //::Refresh()
-      ::Refresh( .F. )  //::nFootRows > 0 )
+      IF ::lAppMode
+          //::nLeftCol  := ::freeze + 1
+          RedrawWindow( ::handle, RDW_INVALIDATE + RDW_UPDATENOW + RDW_NOERASE )
+      ELSE
+          RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT )
+      ENDIF
+      //::Refresh( .F. )  //::nFootRows > 0 )
       ::internal[ 1 ] := 14
    ELSE
       ::internal[ 1 ] := 0
@@ -2531,7 +2553,9 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
       IF ::rowPos > 1
          ::rowPos --
       ENDIF
-      ::colPos := ::nLeftCol := 1
+      //::colPos := ::nLeftCol := 1
+      ::colPos := Max( 1,  Ascan( ::aColumns, {| c |  c:lEditable } ) )
+      ::nLeftCol  := ::freeze + 1
    ENDIF
    IF ! ::lAppMode  .OR. ::nLeftCol == 1
       ::internal[ 1 ] := SetBit( ::internal[ 1 ], 1, 0 )
@@ -2649,9 +2673,9 @@ METHOD BOTTOM( lPaint ) CLASS HBrowse
 
    IF lPaint == Nil .OR. lPaint
       ::Refresh( ::nFootRows > 0 )
-      ::SetFocus( )
+      //::SetFocus( )
    ELSE
-      InvalidateRect( ::handle, 0 )
+      //InvalidateRect( ::handle, 0 )
       ::internal[ 1 ] := SetBit( ::internal[ 1 ], 1, 0 )
    ENDIF
    RETURN Nil
@@ -2783,17 +2807,18 @@ ELSEIF nLine == 0
       ::isMouseOver := .F.
       Hwg_SetCursor( oCursor )
       xDrag := LOWORD( lParam )
-      xDragMove := 0
+      xDragMove := xDrag
       InvalidateRect( ::handle, 0 )
-   ELSEIF ::lDispHead .AND. ;
-      nLine >= - ::nHeadRows .AND. ;
+   ELSEIF ::lDispHead .AND.  nLine >= - ::nHeadRows .AND. ;
       fif <= Len( ::aColumns ) //.AND. ;
       //::aColumns[ fif ]:bHeadClick != nil
       ::aColumns[ fif ]:lHeadClick := .T.
       InvalidateRect( ::handle, 0, ::x1, ::y1 - ::nHeadHeight * ::nHeadRows, ::x2, ::y1 )
       IF ::aColumns[ fif ]:bHeadClick != nil
          ::isMouseOver := .F.
+         ::oParent:lSuspendMsgsHandling := .T.
          Eval( ::aColumns[ fif ]:bHeadClick, ::aColumns[ fif ], fif, Self )
+         ::oParent:lSuspendMsgsHandling := .F.
       ENDIF
       ::lHeadClick := .T.
    ENDIF
@@ -2830,7 +2855,7 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
          Hwg_SetCursor( arrowCursor )
          oCursor := 0
          ::isMouseOver := .F.
-         xDragMove := 0
+         //xDragMove := 0
          InvalidateRect( ::handle, 0 )
          ::lResizing := .F.
       ENDIF
@@ -2956,15 +2981,17 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
    IF ! ::active .OR. Empty( ::aColumns ) .OR. ::x1 == Nil
       RETURN Nil
    ENDIF
-   IF ::lDispSep .AND.  yPos <= ::nHeadHeight * ::nHeadRows + 1 .AND. ; // ::height*::nHeadRows+1
+   IF ::isMouseOver
+      InvalidateRect( ::handle, 0, axPosMouseOver[ 1 ], ::y1 - ::nHeadHeight * ::nHeadRows, axPosMouseOver[ 2 ] , ::y1 )
+   ENDIF
+   IF ::lDispHead .AND. ( yPos <= ::nHeadHeight * ::nHeadRows + 1 .OR.; // ::height*::nHeadRows+1
+       ( ::lResizing .AND. yPos > ::y1 ) ) .AND. ;
       ( xPos >= ::x1 .AND. xPos <= Max( xDragMove, ::xAdjRight ) + 4 )
       IF wParam == MK_LBUTTON .AND. ::lResizing
          Hwg_SetCursor( oCursor )
          res := .T.
-         InvalidateRect( ::handle, 1, xDragMove - 18 , ::y1 - ( ::nHeadHeight * ::nHeadRows ), xDragMove + 18 , ::y2 - ( ::nFootHeight * ::nFootRows ) - 1 )
          xDragMove := xPos
-         ::isMouseOver := .F.
-         //::internal[ 1 ] := 2
+         ::isMouseOver := .T.
          InvalidateRect( ::handle, 0, xPos - 18 , ::y1 - ( ::nHeadHeight * ::nHeadRows ), xPos + 18 , ::y2 - ( ::nFootHeight * ::nFootRows ) - 1 )
       ELSE
          i := IIf( ::freeze > 0, 1, ::nLeftCol )
@@ -2997,7 +3024,7 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
       ::isMouseOver := IIF( ::hTheme != Nil .AND. ::xPosMouseOver != 0, .T., .F. )
    ENDIF
    IF ::isMouseOver
-      InvalidateRect( ::handle, 1, ::x1, ::y1 - ::nHeadHeight * ::nHeadRows, ::xAdjRight, ::y1 )
+      InvalidateRect( ::handle, 0, ::xPosMouseOver-1, ::y1 - ::nHeadHeight * ::nHeadRows, ::xPosMouseOver + 1, ::y1 )
    ENDIF
 
    RETURN Nil

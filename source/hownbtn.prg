@@ -440,9 +440,10 @@ METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
 METHOD MDown()  CLASS HOwnButton
    IF ::state != OBTN_PRESSED
       ::state := OBTN_PRESSED
-      InvalidateRect( ::handle, 0 )
+      //InvalidateRect( ::handle, 0 )
       //::SetFocus()
       SendMessage( ::Handle, WM_SETFOCUS, 0, 0 )
+      InvalidateRect( ::handle, 0 )
       RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
    ELSEIF  ::lCheck
       ::state := OBTN_NORMAL
@@ -469,10 +470,7 @@ METHOD MUp() CLASS HOwnButton
          Eval( ::bClick, ::oParent, ::id )
          Release()
       ENDIF
-      InvalidateRect( ::handle, 0 )
-      //SendMessage( ::handle, WM_PAINT, 0, 0 )
-      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
-//   ENDIF
+      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW  )
 
    RETURN Nil
 

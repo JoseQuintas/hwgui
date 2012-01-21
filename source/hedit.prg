@@ -1465,6 +1465,7 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
    ENDIF
    i := AScan( oParent:acontrols, { | o | PtrtouLong( o:handle ) == PtrtouLong( hCtrl ) } )
    oCtrl := IIf( i > 0, oParent:acontrols[ i ], oParent )
+
    IF nSkip != 0
       nextHandle := IIF( oParent:className == "HTAB", NextFocusTab( oParent, hCtrl, nSkip), ;
                  IIF( oParent:className == oForm:ClassName, NextFocus( oParent, hCtrl, nSkip ),;
@@ -1481,13 +1482,13 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
       oCtrl:oParent:lGetSkipLostFocus := .T.
    ENDIF
    IF ! Empty( nextHandle )
-      // i := AScan( oparent:acontrols, { | o | o:handle == nextHandle } )
+       i := AScan( oparent:acontrols, { | o | o:handle == nextHandle } )
       //oCtrl := IIF( i > 0, oparent:acontrols[i], oParent)
       IF oForm:classname == oParent:classname  .OR. oParent:className != "HTAB"
          IF oParent:Type = Nil .OR. oParent:Type < WND_DLG_RESOURCE
              SetFocus( nextHandle )
          ELSE
-             PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
+            PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
          ENDIF
       ELSE
          IF oForm:Type < WND_DLG_RESOURCE .AND. PtrtouLong( oParent:handle ) = PtrtouLong( getFocus() ) //oParent:oParent:Type < WND_DLG_RESOURCE
@@ -1582,7 +1583,7 @@ STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
    lHradio :=  i > 0 .AND. oParent:acontrols[ i ]:CLASSNAME = "HRADIOB"
       // TABs DO resource
    IF oParent:Type = WND_DLG_RESOURCE
-      nextHandle := GetNextDlgGroupItem( oParent:handle , hctrl,( nSkip < 0 ) )
+      nextHandle := GetNextDlgTabItem( nWindow , hctrl,( nSkip < 0 ) )
    ELSE
       IF  lHradio .OR.  lGroup
          nexthandle := GetNextDlgGroupItem( nWindow , hctrl,( nSkip < 0 ) )

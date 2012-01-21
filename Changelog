@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-01-20 21:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/hedit.prg
+    * FUNCTION NextFocus
+	  ! minor fix in DIALOGS RESOURCE
 
 2012-01-20 10:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * samples

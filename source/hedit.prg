@@ -1482,7 +1482,7 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
       oCtrl:oParent:lGetSkipLostFocus := .T.
    ENDIF
    IF ! Empty( nextHandle )
-       i := AScan( oparent:acontrols, { | o | o:handle == nextHandle } )
+      //i := AScan( oparent:acontrols, { | o | o:handle == nextHandle } )
       //oCtrl := IIF( i > 0, oparent:acontrols[i], oParent)
       IF oForm:classname == oParent:classname  .OR. oParent:className != "HTAB"
          IF oParent:Type = Nil .OR. oParent:Type < WND_DLG_RESOURCE

@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2012-01-21 10:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/hedit.prg
+    * deleted unused assignment causing warning with -w3 compile flag
+  * include/windows.ch
+    + added system metrics constants
+  * source/drawtext.c
+    + added four items to the returned array from GetTextMetrics()
+	  function: InternalLeading, Ascent, Descent, Weight
+	  This values would be useful to better tailor controls in base of 
+	  font properties
+	  
 2012-01-20 21:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hedit.prg
     * FUNCTION NextFocus

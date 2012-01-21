@@ -105,7 +105,7 @@ HB_FUNC( DRAWTEXT )
 HB_FUNC( GETTEXTMETRIC )
 {
    TEXTMETRIC tm;
-   PHB_ITEM aMetr = hb_itemArrayNew( 4 );
+   PHB_ITEM aMetr = hb_itemArrayNew( 8 );
    PHB_ITEM temp;
 
    GetTextMetrics( ( HDC ) HB_PARHANDLE( 1 ),   // handle of device context
@@ -126,6 +126,22 @@ HB_FUNC( GETTEXTMETRIC )
 
    temp = hb_itemPutNL( NULL, tm.tmExternalLeading );
    hb_itemArrayPut( aMetr, 4, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, tm.tmInternalLeading );
+   hb_itemArrayPut( aMetr, 5, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, tm.tmAscent );
+   hb_itemArrayPut( aMetr, 6, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, tm.tmDescent );
+   hb_itemArrayPut( aMetr, 7, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, tm.tmWeight );
+   hb_itemArrayPut( aMetr, 8, temp );
    hb_itemRelease( temp );
 
    hb_itemReturn( aMetr );

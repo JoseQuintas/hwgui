@@ -1470,7 +1470,6 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
       nextHandle := IIF( oParent:className == "HTAB", NextFocusTab( oParent, hCtrl, nSkip), ;
                  IIF( oParent:className == oForm:ClassName, NextFocus( oParent, hCtrl, nSkip ),;
                       NextFocuscontainer( oParent, hCtrl, nSkip ) ) )
-
    //nextHandle := IIf( oParent:className == "HTAB", NextFocusTab( oParent, hCtrl, nSkip ), ;
    //                   NextFocus( oParent, hCtrl, nSkip ) )
    ELSE
@@ -1501,7 +1500,7 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
       ENDIF
       
    ENDIF
-   IF nSkip != 0 .AND. PtrtouLong( hctrl ) == PtrtouLong( nextHandle ) .AND. oCtrl != Nil
+   IF nSkip != 0 .AND. SELFFOCUS( hctrl, nextHandle ) .AND. oCtrl != Nil
      // necessario para executa um codigo do lostfcosu
       IF  __ObjHasMsg(oCtrl,"BLOSTFOCUS") .AND. oCtrl:blostfocus != Nil
          sendmessage( nexthandle, WM_KILLFOCUS, 0,  0)
@@ -1570,9 +1569,9 @@ STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
    Local lnoTabStop := .T.
 
    oParent := IIF( oParent:Type = Nil, oParent:GetParentForm(), oParent )
-   nWindow := IIF( oParent:Type < WND_DLG_RESOURCE, oParent:Handle, GetActiveWindow() )
+   nWindow := IIF( oParent:Type <= WND_DLG_RESOURCE, oParent:Handle, GetActiveWindow() )
 
-   i := AScan( oparent:acontrols, { | o | PtrtouLong( o:Handle ) == PtrtouLong( hCtrl ) } )
+   i := AScan( oparent:acontrols, { | o | SelfFocus( o:Handle, hCtrl ) } )
    IF i > 0 .and. Len( oParent:acontrols[ i ]:aControls ) > 0 .AND.;
       oParent:aControls[ i ]:className != "HTAB" .AND. ( PtrtouLong( hCtrl ) != PtrtouLong( nextHandle ) )
       nextHandle := NextFocusContainer( oParent:aControls[ i ], hCtrl , nSkip )
@@ -1582,9 +1581,9 @@ STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
    ENDIF
    lHradio :=  i > 0 .AND. oParent:acontrols[ i ]:CLASSNAME = "HRADIOB"
       // TABs DO resource
-   IF oParent:Type = WND_DLG_RESOURCE
+   //IF oParent:Type = WND_DLG_RESOURCE
       nextHandle := GetNextDlgTabItem( nWindow , hctrl,( nSkip < 0 ) )
-   ELSE
+   //ELSE
       IF  lHradio .OR.  lGroup
          nexthandle := GetNextDlgGroupItem( nWindow , hctrl,( nSkip < 0 ) )
          i := AScan( oParent:aControls, { | o | PtrtouLong( o:Handle ) == PtrtouLong( nextHandle ) } )
@@ -1597,22 +1596,13 @@ STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
       ELSE
          lnoTabStop := .F.
        ENDIF
-      i := AScan( oParent:aControls, { | o | PtrtouLong( o:Handle ) ==  PtrtouLong( nextHandle ) } )
+      i := AScan( oParent:aControls, { | o | SelfFocus( o:Handle,  nextHandle ) } )
                                                          
-      IF ( lnoTabStop .AND. i > 0 .AND.PtrtouLong( hCtrl ) != PtrtouLong( NextHandle ) ) .OR. ( i > 0 .AND. i <= LEN( oParent:aControls ).AND. ;
+      IF ( lnoTabStop .AND. i > 0 .AND. !SelfFocus( hCtrl, NextHandle ) ) .OR. ( i > 0 .AND. i <= LEN( oParent:aControls ).AND. ;
            oparent:acontrols[ i ]:classname = "HGROUP") .OR. ( i = 0 .AND. !Empty( nextHandle ) )
           RETURN NextFocus( oParent, nextHandle, nSkip )
       ENDIF
-      /*
-          nextHandle := GetNextDlgTabItem ( nWindow , nextHandle, ( nSkip < 0 ) )
-              i := AScan( oparent:aControls, { | o | o:Handle == nextHandle } )
-      ENDIF
-      IF i > 0 .AND. LEN( oParent:aControls[ i ]:aControls ) > 0 .AND. nSkip > 0 .AND. ;
-        oParent:aControls[ i ]:className != "HTAB"
-        RETURN NextFocus( oParent, nextHandle, nSkip )
-      ENDIF
-      */
-   ENDIF
+   //ENDIF
    RETURN nextHandle
 
 STATIC FUNCTION NextFocusContainer(oParent,hCtrl,nSkip)

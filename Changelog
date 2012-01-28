@@ -8,14 +8,24 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-01-28 19:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * changelog
+    ! translated previous message to be correctly in english
+  * source/hdatepic.prg
+    ! fixed method declaration causding warning
+  * hwgui.hbc
+    * changed to contain the source names and no more the hbm reference
+	  this way the xbIDE users will open the sources in the editor
+	  directly from the project tree
+
 2012-01-28 10:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/hcombo.prg
-    ! ajuste no metodo redefine para suportar ledit e ltext
-    ! habilitado o oninteractivechange para metodo redefine  
+    ! changed redefine method adding ledit and ltext clauses
+    ! enabled the oninteractivechange parameter in redefine method
   * source/hdatepicker.prg
-    ! ajuste no metodo redefine para mostrar ou não hora
+    ! parametrized the displaying of the hour
   * include/guilib.ch
-    ! ajustado o comando redefine get combobox para suportar clasulas text e edit    
+    ! changed hcombo redefine method adding ledit and ltext clauses    
 
 2012-01-23 08:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hedit.prg

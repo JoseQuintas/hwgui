@@ -37,7 +37,7 @@ CLASS VAR winclass   INIT "SYSDATETIMEPICK32"
    METHOD GetValue()
    METHOD SetValue( xValue )
    METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bSize, bInit, ;
-                    bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor )
+                    bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor, lShowTime )
    METHOD onChange( nMess )
    METHOD When( )
    METHOD Valid( )

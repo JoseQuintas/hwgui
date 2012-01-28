@@ -68,7 +68,7 @@ CLASS HComboBox INHERIT HControl
                aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, ;
                bcolor, bLFocus, bIChange, nDisplay, nhItem, ncWidth, nMaxLength )
    METHOD Activate()
-   METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay, nMaxLength )
+   METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay, nMaxLength, ledit, ltext )
    METHOD INIT()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Requery()
@@ -194,10 +194,19 @@ METHOD Activate() CLASS HComboBox
 RETURN Nil
 
 METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
-                    bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay, nMaxLength ) CLASS HComboBox
+                    bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay, nMaxLength,ledit, ltext  ) CLASS HComboBox
 
    HB_SYMBOL_UNUSED( bLFocus)
-   HB_SYMBOL_UNUSED( bIChange )
+//   HB_SYMBOL_UNUSED( bIChange )
+   IF lEdit == Nil
+      lEdit := .f.
+   ENDIF
+   IF lText == Nil
+      lText := .f.
+   ENDIF
+   
+   ::lEdit := lEdit
+   ::lText := lText
 
    //::nHeightBox := INT( 22 * 0.75 ) //   Meets A 22'S EDITBOX
    IF !Empty( nDisplay ) .AND. nDisplay > 0
@@ -248,12 +257,18 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    IF bGFocus != Nil .AND. bSetGet == Nil
       ::oParent:AddEvent( CBN_SETFOCUS, self, { | o, id | ::When( o:FindControl( id ) ) },, "onGotFocus" )
    ENDIF
+   IF bIChange != Nil .AND. ::lEdit
+      ::bchangeInt := bIChange
+     // ::oParent:AddEvent( CBN_EDITUPDATE, Self, { | o, id | __InteractiveChange( o:FindControl( id ) ) },, "interactiveChange" )
+      ::oParent:AddEvent( CBN_EDITUPDATE, Self, { | o, id | ::InteractiveChange( o:FindControl( id ) ) },, "interactiveChange" )
+   ENDIF
+   
    ::oParent:AddEvent( CBN_SELENDOK, Self, { | o, id | ::onSelect( o:FindControl( id ) ) },,"onSelect" )
    //::Refresh() // By Luiz Henrique dos Santos
    ::oParent:AddEvent( CBN_DROPDOWN, Self, { | o, id | ::onDropDown( o:FindControl( id ) ) },,"ondropdown" )
    ::oParent:AddEvent( CBN_CLOSEUP, Self, {|| ::ldropshow := .F. }, ,) 
 
-   ::Requery()
+   //::Requery()
 
 RETURN Self
 

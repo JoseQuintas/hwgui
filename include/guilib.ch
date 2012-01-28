@@ -1270,10 +1270,12 @@
             [ WHEN  <bGfocus> ]        ;
             [ VALID <bLfocus> ]        ;
             [ ON INTERACTIVECHANGE <bIChange> ]    ;
+            [ <edit: EDIT> ]           ;
+            [ <text: TEXT> ]           ;            
           => ;
     [<oCombo> := ] HComboBox():Redefine( <oWnd>,<nId>,<vari>, ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},        ;
-                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>,<bGfocus>, <bLfocus>,<bIChange>,<nDisplay>, <nMaxLength>)
+                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>,<bGfocus>, <bLfocus>,<bIChange>,<nDisplay>, <nMaxLength>,<.edit.>,<.text.>)
 
 #xcommand REDEFINE GET COMBOBOXEX [ <oCombo> VAR ] <vari> ;
              ITEMS  <aItems>            ;

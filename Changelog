@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-01-30 09:05 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
+  * source/hpanel.prg
+    * commented processing wm_keyup which made it impossible to move
+      controls in designer of reports
+
 2012-01-28 19:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * changelog
     ! translated previous message to be correctly in english
@@ -15,8 +20,8 @@
     ! fixed method declaration causding warning
   * hwgui.hbc
     * changed to contain the source names and no more the hbm reference
-	  this way the xbIDE users will open the sources in the editor
-	  directly from the project tree
+     this way the xbIDE users will open the sources in the editor
+     directly from the project tree
 
 2012-01-28 10:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/hcombo.prg
@@ -25,12 +30,12 @@
   * source/hdatepicker.prg
     ! parametrized the displaying of the hour
   * include/guilib.ch
-    ! changed hcombo redefine method adding ledit and ltext clauses    
+    ! changed hcombo redefine method adding ledit and ltext clauses
 
 2012-01-23 08:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hedit.prg
     * FUNCTION NextFocus
-	  ! minor fix in DIALOGS RESOURCE
+     ! minor fix in DIALOGS RESOURCE
 
 2012-01-21 10:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hedit.prg
@@ -39,94 +44,92 @@
     + added system metrics constants
   * source/drawtext.c
     + added four items to the returned array from GetTextMetrics()
-	  function: InternalLeading, Ascent, Descent, Weight
-	  This values would be useful to better tailor controls in base of 
-	  font properties
-	  
+     function: InternalLeading, Ascent, Descent, Weight
+     This values would be useful to better tailor controls in base of
+     font properties
+
 2012-01-20 21:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hedit.prg
     * FUNCTION NextFocus
-	  ! minor fix in DIALOGS RESOURCE
+     ! minor fix in DIALOGS RESOURCE
 
 2012-01-20 10:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * samples
     + folder Resource
   * samples/browse/browse_2.prg
-    ! fix in pictures 
+    ! fix in pictures
   * source/hbrowse.prg
-    + STATIC axPosMouseOver 
+    + STATIC axPosMouseOver
     METHOD onEvent()
-	METHOD MouseMove()
+   METHOD MouseMove()
     METHOD ButtomDown()
-	! fix in header with themed
+   ! fix in header with themed
   * source/hownbtn.prg
     * METHOD MUp()
-      ! minor fix 
-
+      ! minor fix
 
 2012-01-12 10:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/commond.c
     * HB_FUNC( SAVEFILE )
-	  + parameters sixth
-	    < .T. OR .F. > confirmation OVERWRITEPROMPT in write file If the file already exists
-
+     + parameters sixth
+       < .T. OR .F. > confirmation OVERWRITEPROMPT in write file If the file already exists
 
 2012-01-03 20:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hedit.prg
     * METHOD GetApplyKey
-	  ! fixed picture when PICFUNC "@Z" If 0, converts currency or numeric values to spaces.
-  	    in case if the number is less than 1.
- 
+     ! fixed picture when PICFUNC "@Z" If 0, converts currency or numeric values to spaces.
+       in case if the number is less than 1.
+
 2012-01-02 09:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hhyper.prg
     ! minor fix in Method Init to work in MAIN MDICHILD and DIALOG
-  * source/htool.prg	
+  * source/htool.prg
     * CLASS HToolButton
-	  * METHOD New
-	    - //  ::oParent:oParent:AddEvent( BN_CLICKED, Self, {|| ::ONCLICK()},,"click" )
-		event Click is triggered in Method Notify
+     * METHOD New
+       - //  ::oParent:oParent:AddEvent( BN_CLICKED, Self, {|| ::ONCLICK()},,"click" )
+      event Click is triggered in Method Notify
     * CLASS HTool
-	  * METHOD Notifify
-	    ! minor fix in NM_CLICK
+     * METHOD Notifify
+       ! minor fix in NM_CLICK
 
 2011-12-29 13:42 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   ! changelog
     ! apenas um teste para ser se o email automatico esta funcionando
-    
+
 2011-12-28 08:20 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hbrowse.prg
     * CLASS HBrowse
-      + METHOD onClick( ) 
-	  * METHOD Edit( )  
-	    ! changed valdidation bEnter to Method onClick
+      + METHOD onClick( )
+     * METHOD Edit( )
+       ! changed valdidation bEnter to Method onClick
   * source/hcontrol.prg
     * CLASS HStatic
-	  * METHOD Init( ) 
-		! minor fix to work hhyperlink
+     * METHOD Init( )
+      ! minor fix to work hhyperlink
   * source/hhyper.prg
-	* METHOD INIT
-	* METHOD onEvent
-	* METHOD OnMouseMove
-	* METHOD PAint
-	  ! fixed to work in MAIN and DIALOGS
+   * METHOD INIT
+   * METHOD onEvent
+   * METHOD OnMouseMove
+   * METHOD PAint
+     ! fixed to work in MAIN and DIALOGS
     * source/hedit.prg
-	  * METHOD NEW
-	    ! minor fix in maxlenght
-	  
+     * METHOD NEW
+       ! minor fix in maxlenght
+
 2011-12-26 09:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hhyper.prg
     * METHOD PAINT
-	  ! minor fix
+     ! minor fix
 
 2011-12-25 18:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hcontrol.prg
     * CLASS HControl
       * METHOD SetFocus( lValid )
-	    + add parameter lValid
-		Fixed SetFocus event when he was fired from inside the event WHEN or GetFocus
+       + add parameter lValid
+      Fixed SetFocus event when he was fired from inside the event WHEN or GetFocus
   * source/hedit.prg
     + FUNCTION WhenSetFocus( oCtrl, nSkip )
-	  sets the Control focus when in the Event WHEN or GetFocus is returned false
+     sets the Control focus when in the Event WHEN or GetFocus is returned false
   * source/hbrowse.prg
   * source/hcheck.prg
   * source/hcombo.prg
@@ -137,30 +140,30 @@
   * source/hradio.prg
     * METHOD WHEN and VALID
      ! changed the handles comparisons between focus for the use of function SELFFOCUS
-  * source/hcwindow.prg	 
+  * source/hcwindow.prg
   * source/hwindow.prg
     ! minor fix
   * source/window.c
     + HB_FUNC( SELFFOCUS )
-	  compares two handlers returning logical values. When only one parameter is passed, the comparison is made as GetFocus()
-	  
+     compares two handlers returning logical values. When only one parameter is passed, the comparison is made as GetFocus()
+
 2011-12-25 18:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include/guilib.ch
      * xcommand MENU [ OF <oWnd> ] [ ID <nId> ] [ TITLE <cTitle> ]
-	  + [ COLOR <bcolor> ] [ BMPSIZE <nWidthBmp>, <nHeighBmp> ]
+     + [ COLOR <bcolor> ] [ BMPSIZE <nWidthBmp>, <nHeighBmp> ]
    * source/menu.prg
-     + STATIC s_nWidthBmp, s_nHeightBmp,s_nbkColor 
+     + STATIC s_nWidthBmp, s_nHeightBmp,s_nbkColor
      * FUNCTION BuildMenu
-  	   ! suport to bcolor 
+      ! suport to bcolor
      * FUNCTION Hwg_BeginMenu
-	   + parameters nbkColor, nWidthBmp, nHeightBmp 
+      + parameters nbkColor, nWidthBmp, nHeightBmp
    * source/menu_c.c
      + HB_FUNC( HWG_SETMENUINFO )
-   * source/misc.c	  
+   * source/misc.c
      + HB_FUNC( HWG_ISWIN7 )
 
 2011-12-19 08:20 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
-  * source\hriched.prg 
+  * source\hriched.prg
     * fix build for unicode, suggested by Tom
 
 2011-12-13 10:15 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>

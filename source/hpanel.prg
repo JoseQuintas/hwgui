@@ -67,9 +67,9 @@ LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
    IF Hwg_Bitand( nStyle,WS_HSCROLL ) > 0
       ::nScrollBars ++
    ENDIF
-	 IF  Hwg_Bitand( nStyle,WS_VSCROLL ) > 0
-	   ::nScrollBars += 2
-	 ENDIF
+    IF  Hwg_Bitand( nStyle,WS_VSCROLL ) > 0
+      ::nScrollBars += 2
+    ENDIF
 
    hwg_RegPanel()
    ::Activate()
@@ -183,6 +183,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
       RETURN 0
    ELSEIF msg = WM_SETFOCUS
       getskip( ::oParent, ::handle, , ::nGetSkip )
+/*
    ELSEIF msg = WM_KEYUP
        IF wParam = VK_DOWN
           getskip( ::oparent, ::handle, , 1 )
@@ -192,6 +193,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
           GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
        ENDIF
        RETURN 0
+*/
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
          IF ::nScrollBars != -1 .AND. ::bScroll = Nil
@@ -284,12 +286,12 @@ METHOD Hide() CLASS HPanel
          ENDIF
       ENDIF
    ENDIF
-	 Super:Hide()
-	 IF ::oParent:type == WND_MDI
+    Super:Hide()
+    IF ::oParent:type == WND_MDI
        SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, MAKELPARAM( ::nWidth, ::nHeight ) )
        InvalidateRect( ::oParent:handle, 1, ::nLeft, ::nTop + 1, ::nLeft + ::nWidth, ::nTop + ::nHeight )
-	 ENDIF
-	 RETURN Nil
+    ENDIF
+    RETURN Nil
 
 METHOD Show() CLASS HPanel
 
@@ -308,12 +310,12 @@ METHOD Show() CLASS HPanel
          ENDIF
       ENDIF
    ENDIF
-   Super:Show()	
+   Super:Show()
    IF ::oParent:type == WND_MDI
        SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, MAKELPARAM( ::nWidth, ::nHeight ) )
        nrePaint := -1
    ENDIF
-	 RETURN Nil
+    RETURN Nil
 
 METHOD Resize() CLASS HPanel
 
@@ -342,5 +344,5 @@ METHOD Resize() CLASS HPanel
    ::nWidth := aCoors[3] - aCoors[1]
    ::nHeight := aCoors[4] - aCoors[2]
    RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW )  // Force a complete redraw
-	 RETURN Nil
-	
+    RETURN Nil
+

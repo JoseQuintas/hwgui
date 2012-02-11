@@ -7,6 +7,28 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2012-02-11 12:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
+ - samples/image/BUILD.BMP
+   samples/image/DOOR.BMP
+   samples/image/Exit_m.bmp
+   samples/image/LOGO.BMP
+   samples/image/NEW.BMP
+   samples/image/New_m.bmp
+   samples/image/Open_m.bmp
+   samples/image/PIM.ICO
+   samples/image/SAVE.BMP
+   ! removed to renamed to lowecase
+ + samples/image/exit_m.bmp
+   samples/image/open_m.bmp
+   samples/image/build.bmp
+   samples/image/door.bmp
+   samples/image/logo.bmp
+   samples/image/new.bmp
+   samples/image/new_m.bmp
+   samples/image/pim.ico
+   samples/image/save.bmp
+   ! added lower case file name of removed files
+
 
 2012-01-30 09:05 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
   * source/hpanel.prg

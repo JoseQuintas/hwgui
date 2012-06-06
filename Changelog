@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-06-06 15:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/xml/hxmldoc.prg
+   * source/xml/xmlparse.c
+     * Errors handling has been improved.
+     * HXMLDoc():Read() returns Nil if an error had been occured and the
+       HXMLDoc:nLastErr keeps the error code.
+
 2012-06-06 12:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/xml/hxmldoc.prg
      ! Small fixes and additions, which I've made earlier

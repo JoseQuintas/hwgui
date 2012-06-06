@@ -19,6 +19,7 @@
 
 CLASS HXMLNode
 
+   CLASS VAR nLastErr SHARED
    DATA title
    DATA type
    DATA aItems  INIT {}
@@ -215,15 +216,15 @@ Local han
    IF fname != Nil
       han := FOpen( fname, FO_READ )
       IF han != -1
-         hbxml_GetDoc( Self,han )
+         ::nLastErr := hbxml_GetDoc( Self,han )
          FClose( han )
       ENDIF
    ELSEIF buffer != Nil
-      hbxml_GetDoc( Self,buffer )
+      ::nLastErr := hbxml_GetDoc( Self,buffer )
    ELSE
       Return Nil
    ENDIF
-Return Self
+Return Iif( ::nLastErr == 0, Self, Nil )
 
 METHOD Save( fname,lNoHeader ) CLASS HXMLDoc
 Local handle := -2

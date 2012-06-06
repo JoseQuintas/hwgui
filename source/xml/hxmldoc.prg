@@ -23,11 +23,13 @@ CLASS HXMLNode
    DATA type
    DATA aItems  INIT {}
    DATA aAttr   INIT {}
+   DATA cargo
 
    METHOD New( cTitle, type, aAttr )
    METHOD Add( xItem )
    METHOD GetAttribute( cName )
    METHOD SetAttribute( cName,cValue )
+   METHOD DelAttribute( cName )
    METHOD Save( handle,level )
    METHOD Find( cTitle,nStart )
 ENDCLASS
@@ -63,10 +65,23 @@ Local i := Ascan( ::aAttr,{|a|a[1]==cName} )
 
 Return .T.
 
-METHOD Save( handle,level ) CLASS HXMLNode
-Local i, s, lNewLine
+METHOD DelAttribute( cName ) CLASS HXMLNode
+Local i := Ascan( ::aAttr,{|a|a[1]==cName} )
 
-   s := Space(level*2) + '<'
+   IF i != 0
+      Adel( ::aAttr, i )
+      Asize( ::aAttr, Len( ::aAttr ) - 1 )
+   ENDIF
+Return .T.
+
+METHOD Save( handle,level ) CLASS HXMLNode
+Local i, s := Space(level*2)+'<', lNewLine
+
+   IF !__mvExist( "HXML_NEWLINE" )
+      __mvPrivate( "HXML_NEWLINE" )
+      __mvPut( "HXML_NEWLINE", .T. )
+   ENDIF
+   lNewLine := m->hxml_newline
    IF ::type == HBXML_TYPE_COMMENT
       s += '!--'
    ELSEIF ::type == HBXML_TYPE_CDATA
@@ -81,20 +96,20 @@ Local i, s, lNewLine
          s += ' ' + ::aAttr[i,1] + '="' + HBXML_Transform(::aAttr[i,2]) + '"'
       NEXT
    ENDIF
-   IF ::type == HBXML_TYPE_COMMENT
-      s += '-->' + Chr(10)
-   ELSEIF ::type == HBXML_TYPE_PI
+   IF ::type == HBXML_TYPE_PI
       s += '?>' + Chr(10)
+      m->hxml_newline := .T.
    ELSEIF ::type == HBXML_TYPE_SINGLE
       s += '/>' + Chr(10)
+      m->hxml_newline := .T.
    ELSEIF ::type == HBXML_TYPE_TAG
       s += '>'
-      IF Len(::aItems) == 1 .AND. Valtype(::aItems[1]) == "C" .AND. ;
-                Len(::aItems[1]) + Len(s) < 80
-         lNewLine := .F.
+      IF Empty( ::aItems ) .OR. ( Len(::aItems) == 1 .AND. ;
+            Valtype(::aItems[1]) == "C" .AND. Len(::aItems[1]) + Len(s) < 80 )
+         lNewLine := m->hxml_newline := .F.
       ELSE
          s += Chr(10)
-         lNewLine := .T.
+         lNewLine := m->hxml_newline := .T.
       ENDIF
    ENDIF
    IF handle >= 0
@@ -104,33 +119,45 @@ Local i, s, lNewLine
    FOR i := 1 TO Len( ::aItems )
       IF Valtype( ::aItems[i] ) == "C"
         IF handle >= 0
-           IF ::type == HBXML_TYPE_CDATA
+           IF ::type == HBXML_TYPE_CDATA .OR. ::type == HBXML_TYPE_COMMENT
               FWrite( handle, ::aItems[i] )
            ELSE
               FWrite( handle, HBXML_Transform( ::aItems[i] ) )
            ENDIF
+           IF lNewLine
+              FWrite( handle, Chr(10) )
+           ENDIF
         ELSE
-           IF ::type == HBXML_TYPE_CDATA
+           IF ::type == HBXML_TYPE_CDATA .OR. ::type == HBXML_TYPE_COMMENT
               s += ::aItems[i]
            ELSE
               s += HBXML_Transform( ::aItems[i] )
            ENDIF
+           IF lNewLine
+              s += Chr(10)
+           ENDIF
         ENDIF
+        m->hxml_newline := .F.
       ELSE
         s += ::aItems[i]:Save( handle, level+1 )
       ENDIF
    NEXT
+   m->hxml_newline := .T.
    IF handle >= 0
       IF ::type == HBXML_TYPE_TAG
          FWrite( handle, Iif(lNewLine,Space(level*2),"") + '</' + ::title + '>' + Chr(10 ) )
       ELSEIF ::type == HBXML_TYPE_CDATA
          FWrite( handle, ']]>' + Chr(10) )
+      ELSEIF ::type == HBXML_TYPE_COMMENT
+         FWrite( handle, '-->' + Chr(10) )
       ENDIF
    ELSE
       IF ::type == HBXML_TYPE_TAG
          s += Iif(lNewLine,Space(level*2),"") + '</' + ::title + '>' + Chr(10 )
       ELSEIF ::type == HBXML_TYPE_CDATA
          s += ']]>' + Chr(10)
+      ELSEIF ::type == HBXML_TYPE_COMMENT
+         s += '-->' + Chr(10)
       ENDIF
       Return s
    ENDIF

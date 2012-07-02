@@ -8,6 +8,25 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-07-02 21:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/htree.prg
+     + DATA bKeyDown
+     + METHOD Top() 
+     + METHOD Bottom()
+     * Method Notify()
+	   * add Notify TVN_KEYDOWN handling keyDown event passing three parameters ; ::oItem, nKeyDown, Self 
+   * source/hsplit.prg
+    * METHOD Paint()
+    * METHOD DragAll() 
+	  ! fix in redraw 
+   * source/hpanel.prg
+     + METHOD ResizeOffSet( nMode , lRelease )
+	 * METHOD Hide()
+     * METHOD Show()
+     * METHOD Release()
+     * METHOD Resize()
+	   ! fixes in redraw and reposition in MDI_MAIN
+
 2012-06-06 15:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/xml/hxmldoc.prg
    * source/xml/xmlparse.c

@@ -151,6 +151,7 @@ METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages, lchecked, bC
       FOR i := 1 TO Len( aImages )
          cImage := Upper( aImages[ i ] )
          IF ( h := AScan( oTree:aImages, cImage ) ) == 0
+            msginfo(cimage)
             AAdd( oTree:aImages, cImage )
             aImages[ i ] := IIf( oTree:Type, LoadBitmap( aImages[ i ] ), OpenBitmap( aImages[ i ] ) )
             Imagelist_Add( oTree:himl, aImages[ i ] )
@@ -280,15 +281,15 @@ CLASS VAR winclass   INIT "SysTreeView32"
    DATA oSelected
    DATA oItem, oItemOld
    DATA hIml, aImages, Image1, Image2
-   DATA bItemChange, bExpand, bRClick, bDblClick, bAction, bCheck
+   DATA bItemChange, bExpand, bRClick, bDblClick, bAction, bCheck, bKeyDown
    DATA bdrag, bdrop
    DATA lEmpty INIT .T.
    DATA lEditLabels INIT .F. HIDDEN
    DATA lCheckbox   INIT .F. HIDDEN
    DATA lDragDrop   INIT .F. HIDDEN
 
-   DATA		lDragging INIT .F. HIDDEN
-	 DATA	  hitemDrag, hitemDrop HIDDEN
+   DATA	lDragging  INIT .F. HIDDEN
+	DATA  hitemDrag, hitemDrop HIDDEN
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, bSize, color, bcolor, ;
                aImages, lResour, lEditLabels, bAction, nBC, bRClick, bDblClick, lCheckbox,  bCheck, lDragDrop, bDrag, bDrop, bOther )
@@ -297,7 +298,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
    METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages )
    METHOD FindChild( h )
    METHOD FindChildPos( oNode, h )
-   METHOD GetSelected()   INLINE TreeGetSelected( ::handle )
+   METHOD GetSelected() INLINE IIF( VALTYPE( ::oItem := TreeGetSelected( ::handle ) ) = "O", ::oItem, Nil )
    METHOD EditLabel( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_EDITLABEL, 0, o:handle ) }
    METHOD Expand( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_EXPAND, TVE_EXPAND, o:handle ), REDRAWWINDOW( ::handle , RDW_NOERASE + RDW_FRAME + RDW_INVALIDATE  )}
    METHOD Select( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_SELECTITEM, TVGN_CARET, o:handle ), ::oItem := TreeGetSelected( ::handle ) }
@@ -309,6 +310,8 @@ CLASS VAR winclass   INIT "SysTreeView32"
    METHOD ItemHeight( nHeight ) SETGET
    METHOD SearchString( cText, iNivel, oNode, inodo )
    METHOD Selecteds( oItem, aSels )
+   METHOD Top()    INLINE ::select( ::aItems[ 1 ] ), SendMessage( ::Handle, WM_VSCROLL, MAKEWPARAM( 0, SB_TOP ), Nil )
+   METHOD Bottom() INLINE ::select( ::aItems[ LEN( ::aItems ) ] ), SendMessage( ::Handle, WM_VSCROLL, MAKEWPARAM( 0, SB_BOTTOM ), Nil )
 
 ENDCLASS
 
@@ -320,8 +323,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit,
    lEditLabels := IIf( lEditLabels == Nil, .F., lEditLabels )
    lCheckBox   := IIf( lCheckBox == Nil, .F., lCheckBox )
    lDragDrop   := IIf( lDragDrop == Nil, .F., lDragDrop )
-
-   nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP + WS_BORDER + TVS_FULLROWSELECT + ; //TVS_HASLINES +  ;
+                                                                   //   + WS_BORDER
+   nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP  + TVS_FULLROWSELECT + TVS_TRACKSELECT+; //TVS_HASLINES +  ;
                             TVS_LINESATROOT + TVS_HASBUTTONS  + TVS_SHOWSELALWAYS + ;
                           IIf( lEditLabels == Nil.OR. ! lEditLabels, 0, TVS_EDITLABELS ) +;
                           IIf( lCheckBox == Nil.OR. ! lCheckBox, 0, TVS_CHECKBOXES ) +;
@@ -397,9 +400,14 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTree
          RETURN 0
       ENDIF
    ENDIF
-
    IF msg = WM_ERASEBKGND
       RETURN 0
+   ELSEIF msg = WM_CHAR
+      IF wParam = 27
+         Return DLGC_WANTMESSAGE
+      ENDIF
+      RETURN 0
+
    ELSEIF msg = WM_KEYUP
       IF  ProcKeyList( Self, wParam )
          RETURN 0
@@ -463,7 +471,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTree
          Eval( ::bDrop, Self, hitemNew, ::hitemDrop )
       ENDIF
 
-   ELSEIF  ::lEditLabels .AND. ( msg = WM_LBUTTONDBLCLK .OR. msg = WM_CHAR ) 
+   ELSEIF  ::lEditLabels .AND. ( ( msg = WM_LBUTTONDBLCLK .AND. ::bDblClick = Nil ) .OR. msg = WM_CHAR )
       ::EditLabel( ::oSelected )
       RETURN 0
    ENDIF
@@ -541,22 +549,23 @@ METHOD ItemHeight( nHeight )  CLASS HTree
 
 METHOD Notify( lParam )  CLASS HTree
    LOCAL nCode := GetNotifyCode( lParam ), oItem, cText, nAct, nHitem, leval
-
-	 IF ncode = NM_SETCURSOR .AND. ::lDragging
-	    ::hitemDrop := tree_Hittest( ::handle,,, @nAct )
-	    IF ::hitemDrop != Nil
-	       SendMessage( ::handle, TVM_SELECTITEM, TVGN_DROPHILITE, ::hitemDrop:handle )
-	    ENDIF
-	 ENDIF
+   LOCAL nkeyDown := GetNotifyKeydown( lParam )
+    
+	IF ncode = NM_SETCURSOR .AND. ::lDragging
+	   ::hitemDrop := tree_Hittest( ::handle,,, @nAct )
+	   IF ::hitemDrop != Nil
+	      SendMessage( ::handle, TVM_SELECTITEM, TVGN_DROPHILITE, ::hitemDrop:handle )
+	   ENDIF
+	ENDIF
 	
-	 IF nCode == TVN_SELCHANGING  //.AND. ::oitem != Nil // .OR. NCODE = -500
+	IF nCode == TVN_SELCHANGING  //.AND. ::oitem != Nil // .OR. NCODE = -500
 
    ELSEIF nCode == TVN_SELCHANGED //.OR. nCode == TVN_ITEMCHANGEDW
       ::oItemOld := Tree_GetNotify( lParam, TREE_GETNOTIFY_OLDPARAM )
       oItem := Tree_GetNotify( lParam, TREE_GETNOTIFY_PARAM )
       IF ValType( oItem ) == "O"
          oItem:oTree:oSelected := oItem
-         IF ! oItem:oTree:lEmpty
+         IF oItem != Nil .AND. ! oItem:oTree:lEmpty
             IF oItem:bAction != Nil
                Eval( oItem:bAction, oItem, Self )
             ELSEIF oItem:oTree:bAction != Nil
@@ -567,7 +576,7 @@ METHOD Notify( lParam )  CLASS HTree
       ENDIF
 	
    ELSEIF nCode == TVN_BEGINLABELEDIT .or. nCode == TVN_BEGINLABELEDITW
-       s_aEvents := aClone( ::oParent:aEvents )
+      s_aEvents := aClone( ::oParent:aEvents )
       ::oParent:AddEvent( 0, IDOK, { || SendMessage( ::handle, TVM_ENDEDITLABELNOW , 0, 0 ) } )
       ::oParent:AddEvent( 0, IDCANCEL, { || SendMessage( ::handle, TVM_ENDEDITLABELNOW , 1, 0 ) } )
 
@@ -600,8 +609,11 @@ METHOD Notify( lParam )  CLASS HTree
       ::lDragging := .T.
 
    ELSEIF nCode = TVN_KEYDOWN
+      IF ::oItem:oTree:bKeyDown != Nil
+         Eval( ::oItem:oTree:bKeyDown, ::oItem, nKeyDown, Self )
+      ENDIF
 
-	 ELSEIF nCode = NM_CLICK  .AND. ::oitem != Nil // .AND. !::lEditLabels
+	 ELSEIF nCode = NM_CLICK  //.AND. ::oitem != Nil // .AND. !::lEditLabels
 	    nHitem :=  Tree_GetNotify( lParam, 1 )
 	    //nHitem :=  GETNOTIFYcode( lParam )
 	    oItem  := tree_Hittest( ::handle,,, @nAct )

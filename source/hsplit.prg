@@ -77,6 +77,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
       Hwg_SetCursor( ::hCursor )
       SetCapture( ::handle )
       ::lCaptured := .T.
+      InvalidateRect( ::handle, 1 )
    ELSEIF msg == WM_LBUTTONUP
       ReleaseCapture()
       ::DragAll()
@@ -102,21 +103,27 @@ METHOD Init() CLASS HSplitter
    RETURN Nil
 
 METHOD Paint() CLASS HSplitter
-   LOCAL pps, hDC, aCoors, x1, y1, x2, y2
+   LOCAL pps, hDC, aCoors, x1, y1, x2, y2, oBrushFill
 
 
    pps := DefinePaintStru()
    hDC := BeginPaint( ::handle, pps )
    aCoors := GetClientRect( ::handle )
-   x1 := aCoors[ 1 ] + IIf( ::lVertical, 1, 5 )
-   y1 := aCoors[ 2 ] + IIf( ::lVertical, 5, 1 )
-   x2 := aCoors[ 3 ] - IIf( ::lVertical, 0, 5 )
-   y2 := aCoors[ 4 ] - IIf( ::lVertical, 5, 0 )
+   x1 := aCoors[ 1 ] + IIf( ::lVertical, 1, 2 )
+   y1 := aCoors[ 2 ] + IIf( ::lVertical, 2, 1 )
+   x2 := aCoors[ 3 ] - IIf( ::lVertical, 0, 3 )
+   y2 := aCoors[ 4 ] - IIf( ::lVertical, 3, 0 )
 
    IF ::bPaint != Nil
       Eval( ::bPaint, Self )
    ELSE
-      DrawEdge( hDC, x1, y1, x2, y2, EDGE_ETCHED, IIf( ::lVertical, BF_LEFT, BF_TOP ) )
+      IF ::lCaptured
+         DrawEdge( hDC, x1, y1, x2, y2, EDGE_ETCHED, Iif( ::lVertical,BF_RECT,BF_TOP ) + BF_MIDDLE )
+         oBrushFill := HBrush():Add( RGB( 160,160,160 ) )
+         FillRect( hDC, x1 + 1, y1 + 1, x2 - 1, y2 - 1, oBrushFill:handle )
+      ELSE
+         DrawEdge( hDC, x1, y1, x2, y2, EDGE_ETCHED, IIf( ::lVertical, BF_LEFT, BF_TOP ) )
+      ENDIF
    ENDIF
    EndPaint( ::handle, pps )
 
@@ -142,33 +149,36 @@ METHOD Drag( lParam ) CLASS HSplitter
    RETURN Nil
 
 METHOD DragAll() CLASS HSplitter
-   LOCAL i, oCtrl, nDiff
+   LOCAL i, oCtrl, xDiff := 0, yDiff := 0
 
    FOR i := 1 TO Len( ::aRight )
       oCtrl := ::aRight[ i ]
       IF ::lVertical
-         nDiff := ::nLeft + ::nWidth - oCtrl:nLeft
-         oCtrl:nLeft += nDiff
-         oCtrl:nWidth -= nDiff
+         xDiff := ::nLeft + ::nWidth - oCtrl:nLeft
+         //oCtrl:nLeft += nDiff
+         //oCtrl:nWidth -= nDiff
       ELSE
-         nDiff := ::nTop + ::nHeight - oCtrl:nTop
-         oCtrl:nTop += nDiff
-         oCtrl:nHeight -= nDiff
+         yDiff := ::nTop + ::nHeight - oCtrl:nTop
+         //oCtrl:nTop += nDiff
+         //oCtrl:nHeight -= nDiff
       ENDIF
-      oCtrl:Move( oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth, oCtrl:nHeight )
+      oCtrl:Move( oCtrl:nLeft + xDiff, oCtrl:nTop + yDiff, oCtrl:nWidth - xDiff, oCtrl:nHeight - yDiff )
+      InvalidateRect( oCtrl:oParent:Handle, 1, oCtrl:nLeft, oCtrl:nTop, oCtrl:nleft + oCtrl:nWidth, oCtrl:nTop + oCtrl:nHeight )
    NEXT
    FOR i := 1 TO Len( ::aLeft )
       oCtrl := ::aLeft[ i ]
       IF ::lVertical
-         nDiff := ::nLeft - ( oCtrl:nLeft + oCtrl:nWidth )
-         oCtrl:nWidth += nDiff
+         xDiff := ::nLeft - ( oCtrl:nLeft + oCtrl:nWidth )
+         //oCtrl:nWidth += nDiff
       ELSE
-         nDiff := ::nTop - ( oCtrl:nTop + oCtrl:nHeight )
-         oCtrl:nHeight += nDiff
+         yDiff := ::nTop - ( oCtrl:nTop + oCtrl:nHeight )
+        // oCtrl:nHeight += nDiff
       ENDIF
-      oCtrl:Move( oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth, oCtrl:nHeight )
+      oCtrl:Move( oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth + xDiff, oCtrl:nHeight + yDiff )
+      InvalidateRect( oCtrl:oParent:Handle, 1, oCtrl:nLeft, oCtrl:nTop, oCtrl:nleft + oCtrl:nWidth, oCtrl:nTop+oCtrl:nHeight )
    NEXT
    ::lMoved := .F.
+   InvalidateRect( ::oParent:handle, 1, ::nleft,::ntop, ::nleft + ::nwidth, ::nTop + ::nHeight )
 
    RETURN Nil
 

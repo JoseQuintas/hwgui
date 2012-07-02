@@ -40,11 +40,21 @@ CLASS HStaticLink FROM HSTATIC
    DATA m_sHoverColor
    DATA m_sLinkColor
    DATA m_sVisitedColor
+   
+   DATA allMouseOver INIT .F.
+   DATA hBitmap
+   DATA iStyle         INIT ST_ALIGN_HORIZ  //ST_ALIGN_HORIZ_RIGHT
+   DATA lAllUnderline  INIT .T.
+   DATA oFontUnder
+   DATA llost INIT .F.
+   DATA lOverTitle    INIT .F.
+   DATA nWidthOver
+
 
 CLASS VAR winclass INIT "STATIC"
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-               bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
+               bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor, hbitmap, bClick )
    METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                     bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
    METHOD INIT()
@@ -62,14 +72,19 @@ CLASS VAR winclass INIT "STATIC"
    METHOD SetLinkColor( sLinkColor )
    METHOD PAint( lpDis ) 
    METHOD OnMouseMove( nFlags, lParam )
+   METHOD Resize( )
 
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-            bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor ) CLASS HStaticLink
+            bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor, hbitmap, bClick ) CLASS HStaticLink
    LOCAL oPrevFont
    
    nStyle := Hwg_BitOR( nStyle, SS_NOTIFY + SS_RIGHT )
+   ::lAllUnderline := IIF( EMPTY( cLink ), .F., ::lAllUnderline )
+   ::title := IIF(cCaption != Nil,cCaption ,"HWGUI HomePage")
+   ::hbitmap := hbitmap
+
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )
 
@@ -90,16 +105,17 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
          ::oFont := HFONT():Add( ::oParent:oFont:name, ::oParent:oFont:width, ::oParent:oFont:height, ;
                                  ::oParent:oFont:weight, ::oParent:oFont:charset, ::oParent:oFont:italic, 1, ::oParent:oFont:StrikeOut )
       ELSE
-         ::oFont := HFONT():Add( "Arial", 0, - 12, , , , 1, )
+         ::oFont := HFONT():Add( "Arial", 0, - 12, , , , IIF( ::lAllUnderline, 1, ), )
       ENDIF
    ELSE
-      IF ::oFont:Underline  == 0
+      IF ::oFont:Underline  == 0 .AND. ::lAllUnderline
          oPrevFont := ::oFont
          ::oFont:Release()
          ::oFont := HFONT():Add( oPrevFont:name, oPrevFont:width, oPrevFont:height, ;
                                  oPrevFont:weight, oPrevFont:charset, oPrevFont:italic, 1, oPrevFont:StrikeOut )
       ENDIF
    ENDIF
+   ::oFontUnder := HFONT():Add( ::oFont:Name, 0, ::oFont:Height, , , , 1 )
    
    IF lTransp != NIL .AND. lTransp
       //::extStyle += WS_EX_TRANSPARENT
@@ -153,13 +169,14 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 METHOD INIT() CLASS HStaticLink
 
    IF ! ::lInit
-      ::nWidth := Min( TxtRect( ::Title, Self )[ 1 ] + 5, ::nWidth )
-      ::move( , , ::nWidth , , )
-      IF ::GetParentForm():Type  <= WND_MDICHILD
+      ::Resize( )
+      /*
+      IF ::GetParentForm():Type <= WND_MDICHILD
          ::nHolder := 1
          SetWindowObject( ::handle, Self )
          Hwg_InitWinCtrl( ::handle )
       ENDIF
+      */
       Super:init()
       IF ::Title != NIL
          SETWINDOWTEXT( ::handle, ::title )
@@ -175,10 +192,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
       //::PAint( )
       
    ELSEIF msg == WM_MOUSEMOVE
-      hwg_SetCursor( ::m_hHyperCursor )
+     // hwg_SetCursor( ::m_hHyperCursor )
       ::OnMouseMove( wParam, lParam )
    ELSEIF msg == WM_SETCURSOR
       ::OnSetCursor( msg, wParam, lParam )
+      TRACKMOUSEVENT( ::handle )
    ELSEIF msg == WM_LBUTTONDOWN
       hwg_SetCursor( ::m_hHyperCursor )
       ::OnClicked()
@@ -229,20 +247,21 @@ METHOD SetHoverColor( cHoverColor ) CLASS HStaticLink
 METHOD OnClicked() CLASS HStaticLink
    LOCAL nCtrlID
 
-   IF ( ::m_bFireChild )
-      nCtrlID := ::id
-      ::SendMessage( ::oparent:Handle, _HYPERLINK_EVENT, nCtrlID, 0 )
-      //::PostMessage(pParent->m_hWnd, __EVENT_ID_, (WPARAM)nCtrlID, 0)
-   ELSE
-      ::GoToLinkUrl( ::m_csUrl )
+   IF ! ISBLOCK( ::bClick )
+      IF ( ::m_bFireChild )
+         nCtrlID := ::id
+         ::SendMessage( ::oparent:Handle, _HYPERLINK_EVENT, nCtrlID, 0 )
+        //::PostMessage(pParent->m_hWnd, __EVENT_ID_, (WPARAM)nCtrlID, 0)
+      ELSE
+         ::GoToLinkUrl( ::m_csUrl )
+      ENDIF
+
+      ::m_bVisited := .T.
    ENDIF
-
-   ::m_bVisited := .T.
-
    ::state := LBL_NORMAL
    InvalidateRect( ::handle, 0 )
    RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT  , ::nLeft, ::nTop, ::nWidth, ::nHeight ) 
-   SetFocus( ::handle )
+   ::SetFocus( )
 
    RETURN NIL
 
@@ -252,7 +271,7 @@ METHOD OnSetCursor( pWnd, nHitTest, message ) CLASS HStaticLink
    HB_SYMBOL_UNUSED( nHitTest )
    HB_SYMBOL_UNUSED( message )
 
-   hwg_SetCursor( ::m_hHyperCursor )
+  // hwg_SetCursor( ::m_hHyperCursor )
 
    RETURN .t.
 
@@ -280,9 +299,14 @@ METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
    IF ::state != LBL_INIT
       xPos := LOWORD( lParam )
       yPos := HIWORD( lParam )
-      IF ( !  PtInRect( { 4, 4, ::nWidth - 4, ::nHeight - 4 }, { xPos, yPos } ) )
-         //ReleaseCapture()
-         res := .T.
+      IF (  ! PtInRect( { 0, 0, ::nWidthOver , ::nHeight }, { xPos, yPos } ) ) .AND. ::state != LBL_MOUSEOVER
+          res := .T.
+      ELSE
+        hwg_SetCursor( ::m_hHyperCursor )
+        IF ( !  PtInRect( { 3, 3, ::nWidthover - 3, ::nHeight - 3 }, { xPos, yPos } ) )
+           //ReleaseCapture()
+           res := .T.
+        ENDIF
       ENDIF
       IF ( res .AND. ! ::m_bVisited ) .or. ( res .AND. ::m_bVisited )
          ::state := LBL_NORMAL
@@ -298,6 +322,7 @@ METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
       ENDIF
 
    ENDIF
+
    RETURN NIL
 
 METHOD PAint( lpDis ) CLASS HStaticLink
@@ -310,6 +335,11 @@ METHOD PAint( lpDis ) CLASS HStaticLink
    LOCAL rcClient
 //   LOCAL POLDFONT
 //   LOCAL DWSTYLE
+   LOCAL bHasTitle
+   LOCAL aBmpSize    := IIF( ! EMPTY( ::hbitmap ), GetBitmapSize( ::hbitmap ),{0,0} )
+   LOCAL itemRect    := copyrect( { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] } )
+   LOCAL captionRect := { drawInfo[ 4 ]  , drawInfo[ 5 ], drawInfo[ 6 ] , drawInfo[ 7 ]  }
+
 
    IF EMPTY( ::oParent:handle )
       RETURN Nil
@@ -318,12 +348,26 @@ METHOD PAint( lpDis ) CLASS HStaticLink
       ::State := LBL_NORMAL
    ENDIF
    rcClient   := CopyRect( { drawInfo[ 4 ] , drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] } )
-   SetBkMode( ::backstyle ) //TRANSPARENT )
+   
+   IF  ValType( ::hbitmap ) == "N"
+      bHasTitle := ValType( strtext ) == "C" .and. ! Empty( strtext )
+      itemRect[ 4 ] := aBmpSize[ 2 ] + 1
+      bmpRect := PrepareImageRect( ::handle, dc, bHasTitle, @itemRect, @captionRect, , , ::hbitmap, ::iStyle )
+      itemRect[ 4 ] := drawInfo[ 7 ]
+      IF ::backstyle = TRANSPARENT
+         DrawTransparentBitmap( dc, ::hbitmap, bmpRect[ 1 ], bmpRect[ 2 ] )
+      ELSE
+         DrawBitmap( dc, ::hbitmap, , bmpRect[ 1 ], bmpRect[ 2 ] )
+      ENDIF
+      rcclient[ 1 ] +=  IIF( ::iStyle = ST_ALIGN_HORIZ, aBmpSize[ 1 ] + 8, 1 )
+   ENDIF
+   SetBkMode( DC, ::backstyle )
    IF ::backstyle != TRANSPARENT
        SetBkColor( DC,  IIF( ::bColor = NIL, GetSysColor( COLOR_3DFACE ), ::bcolor ) )
        FillRect( dc, rcclient[ 1 ], rcclient[ 2 ], rcclient[ 3 ], rcclient[ 4 ] ) //, ::brush:handle )
-   ENDIF    
-   dwFlags    := 0
+   ENDIF
+   dwFlags    := DT_LEFT | DT_WORDBREAK
+   dwstyle    := ::style
    dwFlags  += ( DT_VCENTER + DT_END_ELLIPSIS )
    
    //::dc:SelectObject( ::oFont:handle )
@@ -331,19 +375,46 @@ METHOD PAint( lpDis ) CLASS HStaticLink
    IF ::state == LBL_NORMAL
       IF ::m_bVisited
          //::dc:SetTextColor( ::m_sVisitedColor )
-         SetTextColor( dc,::m_sVisitedColor )
+         SetTextColor( DC,::m_sVisitedColor )
       ELSE
          //::dc:SetTextColor( ::m_sLinkColor )
-         SetTextColor( dc, ::m_sLinkColor )
+         SetTextColor( DC, ::m_sLinkColor )
       ENDIF
    ELSEIF ::state == LBL_MOUSEOVER
       //::dc:SetTextColor( ::m_sHoverColor )
-      SetTextColor( dc,::m_sHoverColor )
+      SetTextColor( DC,::m_sHoverColor )
    ENDIF
 
    //::dc:DrawText( strtext, rcClient, dwFlags )
-   DrawText( dc, strtext, rcClient, dwFlags )
+   IF ::state = LBL_MOUSEOVER .AND. ! ::lAllUnderline
+      SelectObject( DC, ::oFontUnder:handle )
+      DrawText( dc, strText, rcClient, dwFlags )
+      SelectObject( DC, ::oFont:handle )
+   ELSE
+      DrawText( dc, strText, rcClient, dwFlags )
+   ENDIF
+
   // ::dc:END()
 
   RETURN NIL
 
+
+METHOD Resize( x, y ) CLASS HStaticLink
+   LOCAL aCoors := GetClientRect( ::handle )
+   LOCAL aBmpSize, aTxtSize
+
+   aBmpSize := IIF( ! EMPTY( ::hbitmap ), GetBitmapSize( ::hbitmap ), { 0,0 } )
+   aBmpSize[ 1 ] += IIF( aBmpSize[ 1 ] > 0, 6, 0 )
+   aTxtSize := TxtRect( ::Title, Self )
+   aTxtSize[ 2 ] += IIF( ::lAllUnderline, 0, 3 )
+   IF aTxtSize[ 1 ] + 1  <  ::nWidth - aBmpSize[ 1 ] //tava 20
+      ::nHeight := aTxtSize[ 2 ] + 2
+   ELSE
+      ::nHeight := aTxtSize[ 2 ] * 2 + 1
+   ENDIF
+   ::nWidthOver  := MIN( aTxtSize[ 1 ] + 1 + aBmpSize[ 1 ], ::nWidth )
+   ::nHeight := MAX( ::nHeight, aTxtSize[ 2 ] )
+   ::nHeight := MAX( ::nHeight, aBmpSize[ 2 ] + 4 )
+   ::Move( , , , ::nHeight, 0 )
+   
+   RETURN Nil

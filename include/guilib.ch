@@ -43,8 +43,8 @@
 #define ANCHOR_HORFIX          256 // Anchors center of control relative to left and right borders but remains fixed in size.
 #define ANCHOR_VERTFIX         512 // Anchors center of control relative to top and bottom borders but remains fixed in size.
 
-#define HORZ_PTS 7 //8
-#define VERT_PTS 3.5 //4
+#define HORZ_PTS 9
+#define VERT_PTS 12
 
 #ifdef __XHARBOUR__
   #ifndef HB_SYMBOL_UNUSED
@@ -1155,6 +1155,7 @@
              [<lnoborder: NOBORDER>]    ;
              [ FONT <oFont> ]           ;
              [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
              [ TOOLTIP <ctoolt> ]       ;
              [ ON KEYDOWN <bKeyDown>   ];
              [ ON CHANGE <bChange> ]    ;
@@ -1162,7 +1163,7 @@
           => ;
           [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<vari>,               ;
              {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;
-             <nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,,,  ;
+             <nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize> ,,  ;
              <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,;
              <.lnoborder.>,<nMaxLength>,<.lPassword.>,<bKeyDown>,<bChange>,<bOther>);;
           [ <oEdit>:name := <(oEdit)> ]
@@ -1658,16 +1659,18 @@ Added by Marcos Antonio Gambeta
              [ ON INIT <bInit> ]        ;
              [ ON SIZE <bSize> ]        ;
              [ ON PAINT <bDraw> ]       ;
+             [ ON CLICK <bClick> ]      ;
              [ STYLE <nStyle> ]         ;
              [ FONT <oFont> ]           ;
              [ TOOLTIP <ctoolt> ]       ;
+             [ BITMAP <hbit> ]          ;
              [ VISITCOLOR <vcolor> ]    ;
              [ LINKCOLOR <lcolor> ]     ;
              [ HOVERCOLOR <hcolor> ]    ;
           => ;
           [<oSay> := ] HStaticLink():New( <oWnd>, <nId>, <nStyle>, <x>, <y>, <width>, ;
              <height>, <caption>, <oFont>, <bInit>, <bSize>, <bDraw>, <ctoolt>, ;
-             <color>, <bcolor>, <.lTransp.>, <cLink>, <vcolor>, <lcolor>, <hcolor> );;
+             <color>, <bcolor>, <.lTransp.>, <cLink>, <vcolor>, <lcolor>, <hcolor>,<hbit>, <bClick>  );;
           [ <oSay>:name := <(oSay)> ]
 
 #xcommand REDEFINE SAY [ <oSay> CAPTION ] <cCaption>      ;
@@ -1708,9 +1711,10 @@ Added by Marcos Antonio Gambeta
             [ SIZE <width>, <height> ]  ;
             [ BUTTONWIDTH <btnwidth> ]  ;
             [ INDENT <nIndent>       ]  ;
-						[ BITMAPSIZE <nSize>     ]  ;
+			[ BITMAPSIZE <nSize>     ]  ;
             [ FONT <oFont> ]           ;   
             [ ON INIT <bInit> ]         ;
+            [ ON SIZE <bSize> ]         ;
             [<lTransp: TRANSPARENT>]    ;
             [<lVertical: VERTICAL>]     ;
             [ STYLE <nStyle> ]          ;
@@ -1718,7 +1722,7 @@ Added by Marcos Antonio Gambeta
             [ ITEMS <aItems> ]          ;
           => ;
     [<oTool> := ]  Htoolbar():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,<btnwidth>,<oFont>,;
-              <bInit>,,,,,,<.lTransp.>,<.lVertical.>,<aItems>,<nSize>,<nIndent>,<nIDB>) ;;
+              <bInit>,<bSize>,,,,,<.lTransp.>,<.lVertical.>,<aItems>,<nSize>,<nIndent>,<nIDB>) ;;
     [ <oTool>:name := <(oTool)> ] 
 
 #xcommand REDEFINE TOOLBAR  <oSay>     ;

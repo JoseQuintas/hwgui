@@ -131,6 +131,7 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    METHOD ScrollHV( oForm, msg, wParam, lParam )
    METHOD ResetScrollbars()
    METHOD SetupScrollbars()
+   METHOD RedefineScrollbars()
    METHOD SetTextClass ( x ) HIDDEN
    METHOD GetParentForm( oCtrl )
    METHOD ActiveControl()  INLINE ::FindControl( , GetFocus() )
@@ -419,7 +420,7 @@ METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
    RETURN .T.
 
 METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
-   Local nDelta, nSBCode , nPos, nInc, nInc2 := 0
+   Local nDelta, nSBCode , nPos, nInc
 
    HB_SYMBOL_UNUSED(lParam)
 
@@ -446,7 +447,6 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
             nInc := max( 1, oForm:nVertInc)
          Case nSBCode  = SB_THUMBTRACK
             nPos := hiword( wParam )
-            nInc2 := IIF( nPos > oForm:nVscrollPos, 0.125, - 0.125 )
             nInc := nPos - oForm:nVscrollPos
          OTHERWISE
             nInc := 0
@@ -462,20 +462,19 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
          Case SB_LINEDOWN
              nInc := Int( oForm:nVertInc * 0.05 + 0.49); EXIT
          Case SB_PAGEUP
-             nInc := min( - 1, - oForm:nVertInc );  EXIT
+             nInc := min( - 1, - oForm:nVertInc / 2 );  EXIT
          Case SB_PAGEDOWN
-            nInc := max( 1, oForm:nVertInc);   EXIT
+            nInc := max( 1, oForm:nVertInc / 2 );   EXIT
          Case SB_THUMBTRACK
             nPos := hiword( wParam )
-            nInc2 := IIF( nPos > oForm:nVscrollPos, 0.125, - 0.125 )
             nInc := nPos - oForm:nVscrollPos ; EXIT
          Default
             nInc := 0
       END
       #endif
-      nInc := max( - oForm:nVscrollPos, min( nInc, oForm:nVscrollMax - oForm:nVscrollPos))
+      nInc := Max( - oForm:nVscrollPos, Min( nInc, oForm:nVscrollMax - oForm:nVscrollPos))
       oForm:nVscrollPos += nInc
-      nDelta := - VERT_PTS * ( nInc +  nInc2 )
+      nDelta := - VERT_PTS * nInc
       ScrollWindow( oForm:handle, 0, nDelta ) //, Nil, NIL )
       SetScrollPos( oForm:Handle, SB_VERT, oForm:nVscrollPos, .T. )
 
@@ -530,60 +529,97 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
    ENDIF 	
    RETURN Nil
 
+METHOD RedefineScrollbars() CLASS HCustomWindow
+   LOCAL nPosVert := GetScrollPos( ::handle, SB_VERT )
+   LOCAL nPosHorz := GetScrollPos( ::handle, SB_HORZ )
+
+   ::rect := GetClientRect( ::handle )
+   IF ::nScrollBars > - 1 .AND. ::bScroll = Nil
+      IF  ::nVscrollPos = 0
+          ::ncurHeight := 0                                                              //* 4
+          AEval( ::aControls, { | o | ::ncurHeight := INT( Max( o:nTop + o:nHeight + VERT_PTS * 1, ;
+                                      ::ncurHeight ) ) } )
+      ENDIF
+      IF  ::nHscrollPos = 0
+          ::ncurWidth  := 0                                                           // * 4
+          AEval( ::aControls, { | o | ::ncurWidth := INT( Max( o:nLeft + o:nWidth  + HORZ_PTS * 1, ;
+                                      ::ncurWidth ) ) } )
+      ENDIF
+      ::ResetScrollbars()
+      ::SetupScrollbars()
+   ENDIF
+   RETURN Nil
+
 
 METHOD SetupScrollbars() CLASS HCustomWindow
-   LOCAL tempRect, nwMax, nhMax , aMenu
+   LOCAL tempRect, nwMax, nhMax , aMenu, nPos
 
    tempRect := GetClientRect( ::handle )
    aMenu := IIF( __objHasData( Self, "MENU" ), ::menu, Nil )
     // Calculate how many scrolling increments for the client area
    IF ::Type = WND_MDICHILD //.AND. ::aRectSave != Nil
-      nwMax := max( ::ncurWidth, tempRect[ 3 ] ) //::maxWidth
-      nhMax := max( ::ncurHeight , tempRect[ 4 ] ) //::maxHeight
+      nwMax := Max( ::ncurWidth, tempRect[ 3 ] ) //::maxWidth
+      nhMax := Max( ::ncurHeight , tempRect[ 4 ] ) //::maxHeight
       ::nHorzInc := INT( ( nwMax - tempRect[ 3 ] ) / HORZ_PTS )
       ::nVertInc := INT( ( nhMax - tempRect[ 4 ] ) / VERT_PTS )
    ELSE
-      nwMax := max( ::ncurWidth, ::Rect[ 3 ] )
-      nhMax := max( ::ncurHeight, ::Rect[ 4 ] )
-      ::nHorzInc := ( nwMax - tempRect[ 3 ] ) / HORZ_PTS - HORZ_PTS
-      ::nVertInc := ( nhMax - tempRect[ 4 ] ) / VERT_PTS + VERT_PTS - ;
-           IIF( amenu != Nil, GetSystemMetrics( SM_CYMENU ), 0 )  // MENU
+      nwMax := Max( ::ncurWidth, ::Rect[ 3 ] )
+      nhMax := Max( ::ncurHeight, ::Rect[ 4 ] )
+      ::nHorzInc := INT( ( nwMax - tempRect[ 3 ] ) / HORZ_PTS + HORZ_PTS )
+      ::nVertInc := INT( ( nhMax - tempRect[ 4 ] ) / VERT_PTS + VERT_PTS - ;
+                      IIF( amenu != Nil, GetSystemMetrics( SM_CYMENU ), 0 ) )  // MENU
    ENDIF
     // Set the vertical and horizontal scrolling info
    IF ::nScrollBars = 0 .OR. ::nScrollBars = 2
-      ::nHscrollMax := max( 0, ::nHorzInc )
+      ::nHscrollMax := Max( 0, ::nHorzInc )
       IF ::nHscrollMax < HORZ_PTS / 2
-         ScrollWindow( ::Handle, ::nHscrollPos * HORZ_PTS, 0 )
-      ELSEIF ::nHScrollMax / HORZ_PTS < HORZ_PTS   
+        *-  ScrollWindow( ::Handle, ::nHscrollPos * HORZ_PTS, 0 )
+      ELSEIF ::nHScrollMax <= HORZ_PTS
           ::nHScrollMax := 0
       ENDIF
-      ::nHscrollPos := min( ::nHscrollPos, ::nHscrollMax )
+      ::nHscrollPos := Min( ::nHscrollPos, ::nHscrollMax )
       SetScrollPos( ::handle, SB_HORZ, ::nHscrollPos, .T. )
-      SetScrollInfo( ::Handle, SB_HORZ, 1, 0,  ::nHScrollMax / HORZ_PTS , ::nHscrollMax )
+      SetScrollInfo( ::Handle, SB_HORZ, 1, ::nHScrollPos , HORZ_PTS, ::nHscrollMax )
+      IF ::nHscrollPos > 0
+         nPos := GetScrollPos( ::handle, SB_HORZ )
+         IF nPos < ::nHscrollPos
+             ScrollWindow( ::Handle, 0, ( ::nHscrollPos - nPos ) * SB_HORZ )
+             ::nVscrollPos := nPos
+             SetScrollPos( ::Handle, SB_HORZ, ::nHscrollPos, .T. )
+         ENDIF
+      ENDIF
    ENDIF
    IF ::nScrollBars = 1 .OR. ::nScrollBars = 2
-      ::nVscrollMax := max( 0, ::nVertInc )
+      ::nVscrollMax := INT( Max( 0, ::nVertInc ) )
       IF ::nVscrollMax < VERT_PTS / 2 
-          ScrollWindow( ::Handle, 0, ::nVscrollPos * VERT_PTS ) 
-      ELSEIF ::nVScrollMax / VERT_PTS < VERT_PTS   
-          ::nVScrollMax := 0
+        *-  ScrollWindow( ::Handle, 0, ::nVscrollPos * VERT_PTS )
+      ELSEIF ::nVScrollMax <= VERT_PTS
+         ::nVScrollMax := 0
       ENDIF
-      ::nVscrollPos := min( ::nVscrollPos, ::nVscrollMax )
-      SetScrollPos( ::handle, SB_VERT, ::nVscrollPos, .T. )
-      SetScrollInfo( ::Handle, SB_VERT, 1, 0, ::nVScrollMax / VERT_PTS , ::nVscrollMax )
+      SetScrollPos( ::Handle, SB_VERT, ::nVscrollPos, .T. )
+      SetScrollInfo( ::Handle, SB_VERT, 1, ::nVscrollPos , VERT_PTS,  ::nVscrollMax )
+      IF ::nVscrollPos > 0 //.AND. nPosVert != ::nVscrollPos
+         nPos := GetScrollPos( ::handle, SB_VERT )
+         IF nPos < ::nVscrollPos
+             ScrollWindow( ::Handle, 0, ( ::nVscrollPos - nPos ) * VERT_PTS )
+             ::nVscrollPos := nPos
+             SetScrollPos( ::Handle, SB_VERT, ::nVscrollPos, .T. )
+         ENDIF
+      ENDIF
    ENDIF
    RETURN Nil
 
 METHOD ResetScrollbars() CLASS HCustomWindow
     // Reset our window scrolling information
    Local lMaximized := GetWindowPlacement( ::handle ) == SW_MAXIMIZE
+   
    IF lMaximized
       ScrollWindow( ::Handle, ::nHscrollPos * HORZ_PTS, 0 )
       ScrollWindow( ::Handle, 0, ::nVscrollPos * VERT_PTS )
       ::nHscrollPos := 0
       ::nVscrollPos := 0
    ENDIF
-
+   /*
    IF ::nScrollBars = 0 .OR. ::nScrollBars = 2
       ScrollWindow( ::Handle, 0 * HORZ_PTS, 0 )
       SetScrollPos( ::Handle, SB_HORZ, 0, .T. )
@@ -592,7 +628,9 @@ METHOD ResetScrollbars() CLASS HCustomWindow
       ScrollWindow( ::Handle, 0, 0 * VERT_PTS )
       SetScrollPos( ::Handle, SB_VERT, 0, .T. )
    ENDIF
+   */
    RETURN Nil
+
 /*
 METHOD  ScrollHV( oForm, msg, wParam, lParam ) CLASS HCustomWindow
    LOCAL nDelta, nMaxPos,  wmsg , nPos
@@ -808,33 +846,38 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
    nw1 := oWnd:nWidth
    nh1 := oWnd:nHeight
    aCoors := GetWindowRect( oWnd:handle )
-   
    IF EMPTY( oWnd:Type )
-      oWnd:nWidth := aCoors[ 3 ] - aCoors[ 1 ]
+      oWnd:nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
       oWnd:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
    ELSE
       nWindowState := oWnd:WindowState
       IF wParam != 1 .AND. ( oWnd:GETMDIMAIN() != Nil .AND. ! oWnd:GETMDIMAIN():IsMinimized() ) //SIZE_MINIMIZED 
-         oWnd:nWidth := aCoors[ 3 ] - aCoors[ 1 ]
+         oWnd:nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
          oWnd:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
          IF  oWnd:Type = WND_MDICHILD .AND. oWnd:GETMDIMAIN() != Nil .AND. wParam != 1 .AND. oWnd:GETMDIMAIN():WindowState = 2
              nWindowState := SW_SHOWMINIMIZED
          ENDIF 
       ENDIF
    ENDIF
-   IF oWnd:nScrollBars > - 1 .AND. oWnd:lAutoScroll
+   IF oWnd:nScrollBars > - 1 .AND. oWnd:lAutoScroll .AND. ! EMPTY( oWnd:Type )
       onMove( oWnd )
       oWnd:ResetScrollbars()
       oWnd:SetupScrollbars()
    ENDIF
-   IF  wParam != 1 .AND. nWindowState != 2 
-      IF !EMPTY( oWnd:Type) .AND. oWnd:Type = WND_MDI  .AND. !EMPTY( oWnd:Screen )
+   IF  wParam != 1 .AND. nWindowState != 2
+      IF !EMPTY( oWnd:Type) .AND. oWnd:Type = WND_MDI  .AND. ! EMPTY( oWnd:Screen )
          oWnd:Anchor( oWnd:Screen, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
       ENDIF
       IF ! EMPTY( oWnd:Type)
-         oWnd:Anchor( oWnd, nw1, nh1, oWnd:nWidth, oWnd:nHeight )
+         oWnd:Anchor( oWnd, nw1, nh1, oWnd:nWidth, oWnd:nHeight)
       ENDIF
    ENDIF
+      IF oWnd:nScrollBars > - 1 .AND. oWnd:lAutoScroll .AND. ! EMPTY( oWnd:Type )
+      onMove( oWnd )
+      oWnd:ResetScrollbars()
+      oWnd:SetupScrollbars()
+   ENDIF
+
    FOR EACH oItem IN aControls
       IF oItem:bSize != NIL
          Eval( oItem:bSize, oItem, LOWORD( lParam ), HIWORD( lParam ) )

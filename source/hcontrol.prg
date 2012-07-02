@@ -67,7 +67,8 @@ CLASS HControl INHERIT HCustomWindow
    METHOD Show( nShow )  INLINE ::Super:Show( nShow ), IIF( ::oParent:lGetSkipLostFocus,;
                         PostMessage(  GetActiveWindow() , WM_NEXTDLGCTL, IIF( ::oParent:FindControl(, GetFocus() ) != NIL, 0, ::handle ), 1 ) , .T. )
    METHOD Hide()        INLINE ( ::oParent:lGetSkipLostFocus := .F., ::Super:Hide() )
-   METHOD Disable()     INLINE EnableWindow( ::handle, .F. )
+   //METHOD Disable()     INLINE EnableWindow( ::handle, .F. )
+   METHOD Disable()     INLINE ( IIF( SELFFOCUS( ::Handle ), SendMessage( GetActiveWindow(), WM_NEXTDLGCTL, 0, 0 ) , ), EnableWindow( ::handle, .F. ) )
    METHOD Enable()      
    METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
    METHOD Enabled( lEnabled ) SETGET
@@ -208,7 +209,10 @@ METHOD SetFocus( lValid ) CLASS HControl
    LOCAL lSuspend := ::oParent:lSuspendMsgsHandling  
    
    IF ! IsWindowEnabled( ::Handle )
-       GetSkip( ::oParent, ::handle, , 1 ) 
+       ::oParent:lSuspendMsgsHandling  := .T.
+      // GetSkip( ::oParent, ::handle, , 1 ) 
+       SendMessage( GetActiveWindow(), WM_NEXTDLGCTL, 0, 0 ) 
+       ::oParent:lSuspendMsgsHandling  := lSuspend
    ELSE
       ::oParent:lSuspendMsgsHandling  := ! Empty( lValid )
       IF ::GetParentForm():Type < WND_DLG_RESOURCE
@@ -218,6 +222,10 @@ METHOD SetFocus( lValid ) CLASS HControl
       ENDIF
       ::oParent:lSuspendMsgsHandling  := lSuspend
    ENDIF
+   IF ::GetParentForm():Type < WND_DLG_RESOURCE
+      ::GetParentForm():nFocus := ::Handle
+   ENDIF   
+   
    RETURN Nil
 
 METHOD Enable() CLASS HControl
@@ -469,37 +477,46 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    // REDRAW AND INVALIDATE SCREEN
    IF  ( x1 != X9 .OR. y1 != y9 .OR. w1 != w9 .OR. h1 != h9 )
       IF isWindowVisible( ::handle )
-         IF ( x1 != x9 .or. y1 != y9 ) .AND. x9 < ::oParent:nWidth
-            InvalidateRect( ::oParent:handle, 1, MAX( x9 - 1, 0 ), MAX( y9 - 1, 0 ),  x9 + w9 + nCxv, y9 + h9 + nCyh )
-         ELSE
-            IF w1 < w9
-               InvalidateRect( ::oParent:handle, 1, x1 + w1 - nCxv, MAX( y1 - 2, 0 ),  x1 + w9 + 2 , y9 + h9 + 2 )
-            ENDIF
-            IF h1 < h9
-               InvalidateRect( ::oParent:handle, 1, MAX( x1 - 5, 0 ) , y1 + h1 - nCyh, x1 + w9 + 2 , y1 + h9 + 2 )
-            ENDIF
-         ENDIF
+        IF HWG_BITAND( ::Style, WS_CLIPCHILDREN ) = 0  .AND. ( w1 > w9 .OR. h1 > H9 )
+          IF ( x1 != x9 .or. y1 != y9 ) .AND. x9 < ::oParent:nWidth
+                   InvalidateRect( ::oParent:handle, 1, MAX( x9 - 1, 0 ), MAX( y9 - 1, 0 ), ;
+                                                     x9 + w9 + nCxv, y9 + h9 + nCyh )
+          ELSE
+             IF w1 < w9
+                InvalidateRect( ::oParent:handle, 1, x1 + w1 - nCxv, MAX( y1 - 2, 0 ), ;
+                                                    x1 + w9 + 2 , y9 + h9 + 2 )
+             ENDIF
+             IF h1 < h9
+                InvalidateRect( ::oParent:handle, 0, MAX( x1 - 5, 0 ) , y1 + h1 - nCyh, ;
+                                                        x1 + w9 + 2 , y1 + h9 + 2 )
+             ENDIF
+          ENDIF
 
-         ::Move( x1, y1, w1, h1, 0 )
-         //SetWindowPos( ::Handle, Nil, x1, y1, w1, h1, SWP_NOACTIVATE + SWP_NOZORDER + SWP_NOREDRAW )
+          ::Move( x1, y1, w1, h1, 0 ) //HWG_BITAND( ::Style, WS_CLIPCHILDREN ) )
 
-         IF ( ( x1 != x9 .OR. y1 != y9 ) .AND. ( ISBLOCK( ::bPaint ) .OR. x9 + w9 > ::oParent:nWidth ) ) .OR. ( ::backstyle = TRANSPARENT .AND. ;
-                          ( ::Title != Nil .AND. ! Empty( ::Title ) ) ) .OR. __ObjHasMsg( Self,"oImage" )
-            IF  __ObjHasMsg( Self, "oImage" ) .OR.  ::backstyle = TRANSPARENT //.OR. w9 != w1
-               InvalidateRect( ::oParent:handle, 0, MAX( x1 - 1, 0 ), MAX( y1 - 1, 0 ), x1 + w1 + 1 , y1 + h1 + 1 )
-            ELSE
-               RedrawWindow( ::handle, RDW_NOERASE + RDW_INVALIDATE + RDW_INTERNALPAINT )
-            ENDIF
-         ELSE
-            IF LEN( ::aControls ) = 0 .AND. ::Title != Nil
+          IF ( ( x1 != x9 .OR. y1 != y9 ) .AND. ( ISBLOCK( ::bPaint ) .OR. ;
+                      x9 + w9 > ::oParent:nWidth ) ) .OR. ( ::backstyle = TRANSPARENT .AND. ;
+                    ( ::Title != Nil .AND. ! Empty( ::Title ) ) ) .OR. __ObjHasMsg( Self,"oImage" )
+             IF  __ObjHasMsg( Self, "oImage" ) .OR.  ::backstyle = TRANSPARENT //.OR. w9 != w1
+                InvalidateRect( ::oParent:handle, 0, MAX( x1 - 1, 0 ), MAX( y1 - 1, 0 ), x1 + w1 + 1 , y1 + h1 + 1 )
+             ELSE
+                RedrawWindow( ::handle, RDW_NOERASE + RDW_INVALIDATE + RDW_INTERNALPAINT )
+             ENDIF
+          ELSE
+             IF LEN( ::aControls ) = 0 .AND. ::Title != Nil
                InvalidateRect( ::handle, 0 )
-            ENDIF
-            IF w1 > w9
-               InvalidateRect( ::oParent:handle, 0 , MAX( x1 + w9 - ( w1 - w9 + nCxv ), 0 ) , MAX( y1 , 0 ) , x1 + w1 + 1  , y1 + h1   )
-            ENDIF
-            IF h1 > h9
-               InvalidateRect( ::oParent:handle, 0 , MAX( x1 , 0) , MAX( y1 + h9 - ( h1 - h9 + nCyh ), 0 ) , x1 + w1 + 1 , y1 + h1 )
-            ENDIF
+             ENDIF
+             IF w1 > w9
+                InvalidateRect( ::oParent:handle, 0 , MAX( x1 + w9 - ( w1 - w9 + nCxv ), 0 ) ,;
+                                                     MAX( y1 , 0 ) , x1 + w1 + 1  , y1 + h1   )
+             ENDIF
+             IF h1 > h9
+                InvalidateRect( ::oParent:handle, 1 , MAX( x1 , 0) , ;
+                                     MAX( y1 + h9 - ( h1 - h9 + nCyh ), 0 ) , x1 + w1 + 1 , y1 + h1 )
+             ENDIF
+           ENDIF
+         ELSE
+            ::Move( x1, y1, w1, h1, 1 )
          ENDIF
          IF ( ::winClass == "ToolbarWindow32" .OR. ::winClass == "msctls_statusbar32" )
             ::Resize( nXincRelative, 1 ) 

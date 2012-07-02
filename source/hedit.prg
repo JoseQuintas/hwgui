@@ -1167,6 +1167,10 @@ METHOD Valid( ) CLASS HEdit
                RETURN .T.
             ENDIF
             vari := CToD( vari )
+            IF  CSetCent( ) .AND. LEN( Trim ( ::title ) ) < 10
+               ::title :=  DTOC( vari ) .AND. LEN( ::title ) = 8
+               SetDlgItemText( ::oParent:handle, ::id, ::title )
+            ENDIF
          ELSEIF ::cType == "N"
             vari := Val( LTrim( vari ) )
             ::title := Transform( vari, ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )

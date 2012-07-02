@@ -9,6 +9,63 @@
 */
 
 
+2012-07-02 14:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/guilib.ch
+     * #xcommand @ <x>,<y> GET 
+     + [ ON SIZE <bSize> ]        ;
+   * #xcommand @ <x>,<y> SAY [ <oSay> CAPTION ] <caption> ; [ OF <oWnd> ] ;             LINK <cLink>               ;
+	 + [ ON CLICK <bClick> ]      ;
+       [ STYLE <nStyle> ]         ;
+       [ BITMAP <hbit> ]          ;
+   * #xcommand @ <x>,<y> TOOLBAR [ <oTool> ] 
+     + [ ON SIZE <bSize> ]         ;
+   * source/guimain.prg
+     * FUNCTION FindSelf( hCtrl )
+	   ! minor fix.
+   * source/hcwindow.prg	   	   
+     + METHOD RedefineScrollbars()	   
+	 * METHOD ScrollHV
+	 * METHOD SetupScrollbars()
+	 * METHOD ResetScrollbars()
+	 * FUNCTION onSize
+	   ! fixes for scrooling of objects in containers
+   * source/hdatepic.prg	   
+     * METHOD Value
+	 * METHOD Valid
+	   ! minor fix
+   * source/hedit.prg
+     * METHOD Valid	  
+	   ! fixed show to value type = "D" and SET CENTURY ON
+   * source/hcontrol.prg
+	 * CLASS HControl
+	   * METHOD Disable()
+	   * METHOD SetFocus
+	     ! minor Fix
+	   * METHOD onAnchor( x, y, w, h )
+	     ! Minor Fix
+   * source/hhyper.prg		 
+     + DATA allMouseOver INIT .F.
+     + DATA hBitmap
+     + DATA iStyle         INIT ST_ALIGN_HORIZ  
+     + DATA lAllUnderline  INIT .T.
+     + DATA oFontUnder
+     + DATA llost INIT .F.
+     + DATA lOverTitle    INIT .F.
+     + DATA nWidthOver
+     * METHOD New( )
+	   ! add parameters hbitmap, bClick 
+	 + METHOD Resize( )
+     * METHOD INIT()
+	 * METHOD OnClicked()
+       ! changed onclick event now accepts a block of code
+	 * METHOD PAint( lpDis )
+	   ! add suport to images
+   * source/hwindow.prg 
+	 * CLASS HMainWindow
+	   * METHOD Activate( ()
+	     ! add triggering event INIT of the objects
+     * STATIC FUNCTION onEraseBk		 
+	   ! minor fix
 2012-07-02 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/draw.c
      + void TransparentBmp

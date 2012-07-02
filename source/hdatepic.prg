@@ -158,7 +158,7 @@ RETURN -1
 METHOD Value( Value )  CLASS HDatePicker
 
    IF Value != Nil
-      ::SetValue( ::dValue, Value  )
+      ::SetValue( Value  )
    ENDIF
    RETURN IIF( ::lShowTime, ::tValue, ::dValue )
 
@@ -256,7 +256,7 @@ METHOD Valid( ) CLASS HDatePicker
    ENDIF
    ::dValue := GetDatePicker( ::handle )
    IF ::bSetGet != Nil
-      Eval( ::bSetGet, ::dValue, Self )
+      Eval( ::bSetGet, IIF( ::lShowTime, ::tValue,::dValue ), Self )
    ENDIF
    IF ::bLostFocus != Nil
       ::oparent:lSuspendMsgsHandling := .T.

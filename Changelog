@@ -8,7 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-07-02 21:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+
+2012-07-02 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/draw.c
+     + void TransparentBmp
+	 * HB_FUNC( DRAWTRANSPARENTBITMAP )
+	   changed transparency method of using the function TransparentBmp
+   * source/nice.c
+     + void Gradient
+	 * HB_FUNC( GRADIENT )
+   * source/misc.c 
+	 * HB_FUNC( SETSCROLLINFO )
+	   ! changed si.nMin = 1 to si.nMin = 0;
+	   
+2012-07-02 13:20 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htree.prg
      + DATA bKeyDown
      + METHOD Top() 

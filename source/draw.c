@@ -32,6 +32,18 @@ STDAPI OleLoadPicture(LPSTREAM,LONG,BOOL,REFIID,PVOID*);
 #endif
 #endif
 
+typedef int ( _stdcall * TRANSPARENTBLT ) ( HDC, int, int, int, int, HDC, int, int, int, int, int );
+
+static TRANSPARENTBLT s_pTransparentBlt = NULL;
+
+void TransparentBmp( HDC hDC, int x, int  y, int nWidthDest, int nHeightDest, HDC dcImage, int bmWidth, int bmHeight, int trColor )
+{
+   if( s_pTransparentBlt == NULL )
+       s_pTransparentBlt = ( TRANSPARENTBLT ) GetProcAddress( LoadLibrary( TEXT( "MSIMG32.DLL" ) ),
+                             "TransparentBlt" );
+   s_pTransparentBlt( hDC, x, y, nWidthDest, nHeightDest, dcImage, 0, 0, bmWidth, bmHeight, trColor );
+}
+
 BOOL Array2Rect( PHB_ITEM aRect, RECT * rc )
 {
    if( HB_IS_ARRAY( aRect ) && hb_arrayLen( aRect ) == 4 )
@@ -425,6 +437,7 @@ HB_FUNC( DRAWTRANSPARENTBITMAP )
    if( nWidthDest && ( nWidthDest != bitmap.bmWidth ||
                nHeightDest != bitmap.bmHeight ) )
    {
+      /*
       BitBlt( dcTrans, 0, 0, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0,
             SRCCOPY );
       SetStretchBltMode(  hDC, COLORONCOLOR );    
@@ -434,9 +447,14 @@ HB_FUNC( DRAWTRANSPARENTBITMAP )
             bitmap.bmWidth, bitmap.bmHeight, SRCAND );
       StretchBlt( hDC, 0, 0, nWidthDest, nHeightDest, dcImage, 0, 0,
             bitmap.bmWidth, bitmap.bmHeight, SRCINVERT );
+      */
+      SetStretchBltMode(  hDC, COLORONCOLOR );
+      TransparentBmp( hDC, x, y, nWidthDest, nHeightDest, dcImage, bitmap.bmWidth, bitmap.bmHeight, trColor );
+
    }
    else
    {
+      /*
       BitBlt( dcTrans, 0, 0, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0,
             SRCCOPY );
       // Do the work - True Mask method - cool if not actual display
@@ -446,6 +464,8 @@ HB_FUNC( DRAWTRANSPARENTBITMAP )
             SRCAND );
       BitBlt( hDC, x, y, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0,
             SRCINVERT );
+     */
+     TransparentBmp( hDC, x, y, bitmap.bmWidth, bitmap.bmHeight, dcImage, bitmap.bmWidth, bitmap.bmHeight, trColor );
    }
    // Restore settings
    SelectObject( dcImage, pOldBitmapImage );

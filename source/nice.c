@@ -94,6 +94,42 @@ void Draw_Gradient( HDC hdc, int x, int y, int w, int h, int r, int g, int b )
    s_pGradientfill( hdc, Vert, 2, &Rect, 1, GRADIENT_FILL_RECT_V );
 }
 
+void Gradient( HDC hdc, int x, int y, int w, int h, int color1, int color2, int nmode ) //int , int g, int b, int nMode )
+{
+   TRIVERTEX Vert[2];
+   GRADIENT_RECT Rect;
+   int r, g, b, r2, g2, b2 ;
+   HB_SYMBOL_UNUSED( x );
+   HB_SYMBOL_UNUSED( y );
+
+   r  = color1 % 256 ;
+   g  = color1 / 256  % 256 ;
+   b  = color1 / 256 / 256  % 256  ;
+   r2 = color2 % 256 ;
+   g2 = color2 / 256  % 256 ;
+   b2 = color2 / 256 / 256  % 256 ;
+
+
+   // ******************************************************
+   Vert[0].x = 0;
+   Vert[0].y = 0;
+   Vert[0].Red = 65535 - ( 65535 - ( r * 256 ) );
+   Vert[0].Green = 65535 - ( 65535 - ( g * 256 ) );
+   Vert[0].Blue = 65535 - ( 65535 - ( b * 256 ) );
+   Vert[0].Alpha = 0;
+   // ******************************************************
+   Vert[1].x = w ;
+   Vert[1].y = h ;
+   Vert[1].Red = 65535 - ( 65535 - ( r2 * 256 ) );
+   Vert[1].Green = 65535 - ( 65535 - ( g2 * 256 ) );
+   Vert[1].Blue = 65535 - ( 65535 - ( b2 * 256 ) );
+   Vert[1].Alpha = 0;
+   // ******************************************************
+   Rect.UpperLeft = 0;
+   Rect.LowerRight = 1;
+   // ******************************************************
+   s_pGradientfill( hdc, Vert, 2, &Rect, 1, nmode ); //GRADIENT_FILL_RECT_H );
+}
 
 LRESULT CALLBACK NiceButtProc( HWND hWnd, UINT message, WPARAM wParam,
       LPARAM lParam )
@@ -205,6 +241,21 @@ HB_FUNC( DRAW_GRADIENT )
    Draw_Gradient( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 2 ), hb_parni( 3 ),
          hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),
          hb_parni( 8 ) );
+}
+
+HB_FUNC( GRADIENT )
+{
+   if( s_pGradientfill == NULL )
+      s_pGradientfill = ( GRADIENTFILL )
+                     GetProcAddress( LoadLibrary( TEXT( "MSIMG32.DLL" ) ),
+                                     "GradientFill" );
+   //void Gradient( HDC hdc, int x, int y, int w, int h, int color1, int color2, int nmode )
+
+   Gradient( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 2 ), hb_parni( 3 ),
+            hb_parni( 4 ), hb_parni( 5 ),
+           ( hb_pcount() > 5 && ! HB_ISNIL( 6 ) ) ? hb_parni( 6 ): 16777215  ,
+           ( hb_pcount() > 6 && ! HB_ISNIL( 7 ) ) ? hb_parni( 7 ): 16777215  ,
+           ( hb_pcount() > 7 && ! HB_ISNIL( 8 ) ) ? hb_parni( 8 ): 0 )  ;
 }
 
 HB_FUNC( MAKELONG )

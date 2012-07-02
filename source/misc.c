@@ -481,7 +481,7 @@ HB_FUNC( KEYB_EVENT )
       keybd_event( VK_MENU, 0, KEYEVENTF_KEYUP, 0 );
 }
 
-/* SetScrollInfo( hWnd, nType, nRedraw, nPos, nPage )
+/* SetScrollInfo( hWnd, nType, nRedraw, nPos, nPage, nmax )
 */
 HB_FUNC( SETSCROLLINFO )
 {
@@ -502,7 +502,7 @@ HB_FUNC( SETSCROLLINFO )
 
    if( hb_pcount() > 5 && !HB_ISNIL( 6 ) )
    {
-      si.nMin = 1;
+      si.nMin = 0;
       si.nMax = hb_parni( 6 );
       fMask |= SIF_RANGE;
    }

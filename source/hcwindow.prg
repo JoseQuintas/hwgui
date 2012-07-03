@@ -530,8 +530,6 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
    RETURN Nil
 
 METHOD RedefineScrollbars() CLASS HCustomWindow
-   LOCAL nPosVert := GetScrollPos( ::handle, SB_VERT )
-   LOCAL nPosHorz := GetScrollPos( ::handle, SB_HORZ )
 
    ::rect := GetClientRect( ::handle )
    IF ::nScrollBars > - 1 .AND. ::bScroll = Nil

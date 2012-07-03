@@ -310,8 +310,8 @@ CLASS VAR winclass   INIT "SysTreeView32"
    METHOD ItemHeight( nHeight ) SETGET
    METHOD SearchString( cText, iNivel, oNode, inodo )
    METHOD Selecteds( oItem, aSels )
-   METHOD Top()    INLINE ::select( ::aItems[ 1 ] ), SendMessage( ::Handle, WM_VSCROLL, MAKEWPARAM( 0, SB_TOP ), Nil )
-   METHOD Bottom() INLINE ::select( ::aItems[ LEN( ::aItems ) ] ), SendMessage( ::Handle, WM_VSCROLL, MAKEWPARAM( 0, SB_BOTTOM ), Nil )
+   METHOD Top()    INLINE IIF( !Empty( ::aItems ), ( ::Select( ::aItems[ 1 ] ), SendMessage( ::Handle, WM_VSCROLL, MAKEWPARAM( 0, SB_TOP ), Nil ) ), )
+   METHOD Bottom() INLINE IIF( !Empty( ::aItems ), ( ::Select( ::aItems[ LEN( ::aItems ) ] ), SendMessage( ::Handle, WM_VSCROLL, MAKEWPARAM( 0, SB_BOTTOM ), Nil ) ),)
 
 ENDCLASS
 

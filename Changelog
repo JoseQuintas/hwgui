@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-07-03 13:20 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/htree.prg
+     * METHOD Top()
+     * METHOD Bottom()
+	   ! minor fixes
+
 2012-07-02 17:05 UTC-0300 Alexey Myronenko <m.oleksa at ukr.net>
    *  Removed by Luis Fernando Basso:
       * LOCAL nPosVert := GetScrollPos( ::handle, SB_VERT )
@@ -96,7 +102,7 @@
      ! fix in redraw
    * source/hpanel.prg
      + METHOD ResizeOffSet( nMode , lRelease )
-    * METHOD Hide()
+     * METHOD Hide()
      * METHOD Show()
      * METHOD Release()
      * METHOD Resize()

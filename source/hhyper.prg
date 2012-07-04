@@ -367,7 +367,7 @@ METHOD PAint( lpDis ) CLASS HStaticLink
        FillRect( dc, rcclient[ 1 ], rcclient[ 2 ], rcclient[ 3 ], rcclient[ 4 ] ) //, ::brush:handle )
    ENDIF
    dwFlags    := DT_LEFT + DT_WORDBREAK
-   dwstyle    := ::style
+   //dwstyle    := ::style
    dwFlags  += ( DT_VCENTER + DT_END_ELLIPSIS )
    
    //::dc:SelectObject( ::oFont:handle )

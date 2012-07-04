@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-07-04 08:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hpanel.prg
+     * METHOD Activate()
+     * METHOD onEvent()
+	 * METHOD RESIZEOFFSET()
+	   ! minor fixes in variables
+
 2012-07-03 13:20 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htree.prg
      * METHOD Top()

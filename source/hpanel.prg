@@ -36,7 +36,7 @@ CLASS HPanel INHERIT HControl
    METHOD Show()
    METHOD Release()
    METHOD Resize()
-   METHOD ResizeOffSet( nMode , lRelease )
+   METHOD ResizeOffSet( nMode )
 
 ENDCLASS
 
@@ -95,7 +95,6 @@ RETURN Self
 
 METHOD Activate() CLASS HPanel
    LOCAL handle := ::oParent:handle
-   LOCAL aCoors, nWidth, nHeight
 
    IF !Empty( handle )
       ::handle := CreatePanel( handle, ::id, ;
@@ -143,12 +142,13 @@ METHOD Init() CLASS HPanel
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
+   LOCAL nret
 
    IF msg == WM_PAINT
       ::Paint()
       *-RedrawWindow( ::handle, RDW_NOERASE +  RDW_FRAME + RDW_INVALIDATE )
    ELSEIF msg == WM_NCPAINT
-      RedrawWindow( ::handle, RDW_NOERASE +  RDW_FRAME + RDW_INVALIDATE )
+     *- RedrawWindow( ::handle, RDW_NOERASE +  RDW_FRAME + RDW_INVALIDATE + RDW_INTERNALPAINT )
    ELSEIF msg == WM_ERASEBKGND
       IF ::backstyle = OPAQUE
          RETURN nrePaint
@@ -270,7 +270,7 @@ LOCAL pps, hDC, aCoors, oPenLight, oPenGray
 METHOD Release() CLASS HPanel
 
    InvalidateRect(::oParent:handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight)
-   ::ResizeOffSet( 3, .T. )
+   ::ResizeOffSet( 3 )
    /*
    IF __ObjHasMsg( ::oParent, "AOFFSET" ) .AND. ::oParent:type == WND_MDI
       IF (::nWidth > ::nHeight .OR. ::nWidth == 0 ).AND. ::oParent:aOffset[2] > 0
@@ -388,7 +388,7 @@ METHOD Resize() CLASS HPanel
    RETURN Nil
 
 /* nMode => nMode = 0 INIT  / nMode = 1 RESIZE  / nMode = 2 SHOW  / nMode = 3 HIDE */
-METHOD ResizeOffSet( nMode , lRelease ) CLASS HPanel
+METHOD ResizeOffSet( nMode ) CLASS HPanel
    LOCAL aCoors := GetWindowRect( ::handle )
    LOCAL nHeight := aCoors[ 4 ] - aCoors[ 2 ]
    LOCAL nWidth  := aCoors[ 3 ] - aCoors[ 1 ]

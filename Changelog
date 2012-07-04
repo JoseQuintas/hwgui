@@ -7,6 +7,10 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+2012-07-04 11:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hedit.prg
+     * METHOD Valid
+      ! fixed show to value type = "D" and SET CENTURY ON
 
 2012-07-04 08:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hhyper.prg

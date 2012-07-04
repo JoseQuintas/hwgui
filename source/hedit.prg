@@ -1168,7 +1168,7 @@ METHOD Valid( ) CLASS HEdit
             ENDIF
             vari := CToD( vari )
             IF  CSetCent( ) .AND. LEN( Trim ( ::title ) ) < 10
-               ::title :=  DTOC( vari ) .AND. LEN( ::title ) = 8
+               ::title :=  DTOC( vari )
                SetDlgItemText( ::oParent:handle, ::id, ::title )
             ENDIF
          ELSEIF ::cType == "N"

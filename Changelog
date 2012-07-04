@@ -7,6 +7,12 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-04 21:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hedit.prg
+     * METHOD Valid
+      ! changed  CSetCent( ) to  __SetCentury() 
+
 2012-07-04 11:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hedit.prg
      * METHOD Valid

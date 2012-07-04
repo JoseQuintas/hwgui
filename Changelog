@@ -9,6 +9,8 @@
 */
 
 2012-07-04 08:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hhyper.prg
+    ! minor fixes in variables
    * source/hpanel.prg
      * METHOD Activate()
      * METHOD onEvent()

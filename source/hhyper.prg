@@ -86,7 +86,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ::hbitmap := hbitmap
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-              bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )
+              bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, bClick )
 
    DEFAULT vColor TO RGB( 5, 34, 143 )
    DEFAULT lColor TO RGB( 0, 0, 255 )
@@ -339,7 +339,7 @@ METHOD PAint( lpDis ) CLASS HStaticLink
    LOCAL aBmpSize    := IIF( ! EMPTY( ::hbitmap ), GetBitmapSize( ::hbitmap ),{0,0} )
    LOCAL itemRect    := copyrect( { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] } )
    LOCAL captionRect := { drawInfo[ 4 ]  , drawInfo[ 5 ], drawInfo[ 6 ] , drawInfo[ 7 ]  }
-
+   LOCAL bmpRect
 
    IF EMPTY( ::oParent:handle )
       RETURN Nil
@@ -366,7 +366,7 @@ METHOD PAint( lpDis ) CLASS HStaticLink
        SetBkColor( DC,  IIF( ::bColor = NIL, GetSysColor( COLOR_3DFACE ), ::bcolor ) )
        FillRect( dc, rcclient[ 1 ], rcclient[ 2 ], rcclient[ 3 ], rcclient[ 4 ] ) //, ::brush:handle )
    ENDIF
-   dwFlags    := DT_LEFT | DT_WORDBREAK
+   dwFlags    := DT_LEFT + DT_WORDBREAK
    dwstyle    := ::style
    dwFlags  += ( DT_VCENTER + DT_END_ELLIPSIS )
    
@@ -399,8 +399,8 @@ METHOD PAint( lpDis ) CLASS HStaticLink
   RETURN NIL
 
 
-METHOD Resize( x, y ) CLASS HStaticLink
-   LOCAL aCoors := GetClientRect( ::handle )
+METHOD Resize( ) CLASS HStaticLink
+   //LOCAL aCoors := GetClientRect( ::handle )
    LOCAL aBmpSize, aTxtSize
 
    aBmpSize := IIF( ! EMPTY( ::hbitmap ), GetBitmapSize( ::hbitmap ), { 0,0 } )

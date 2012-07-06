@@ -27,6 +27,24 @@
 #define BIF_EDITBOX            0x0010   // Add an editbox to the dialog
 #endif
 
+static int ( CALLBACK BrowseCallbackProc ) (  HWND hwnd,  UINT uMsg,  LPARAM lParam,  LPARAM lpData )
+{
+	// If the BFFM_INITIALIZED message is received
+	// set the path to the start path.
+	lParam = TRUE;
+	switch ( uMsg )
+	{
+		case BFFM_INITIALIZED:
+		{
+			if ( NULL != lpData )
+			{
+				SendMessage( hwnd, BFFM_SETSELECTION, lParam, lpData );
+			}
+		}
+	}
+	return 0; // The function should always return 0.
+}
+
 /*
  *  SelectFolder( cTitle )
  */
@@ -38,14 +56,17 @@ HB_FUNC( SELECTFOLDER )
    LPCTSTR lpResult = NULL;
    LPITEMIDLIST pidlBrowse;     // PIDL selected by user 
    void * hTitle;
+   void * hFolderName;
+   LPCTSTR lpFolderName;
 
+   lpFolderName = HB_PARSTR( 2, &hFolderName, NULL ) ;
    bi.hwndOwner = GetActiveWindow();
-   bi.pidlRoot = NULL;
+   bi.pidlRoot = NULL ;
    bi.pszDisplayName = lpBuffer;
    bi.lpszTitle = HB_PARSTRDEF( 1, &hTitle, NULL );
-   bi.ulFlags = BIF_USENEWUI;
-   bi.lpfn = NULL;
-   bi.lParam = 0;
+   bi.ulFlags = BIF_USENEWUI | BIF_NEWDIALOGSTYLE;
+   bi.lpfn = BrowseCallbackProc ; // = NULL;
+   bi.lParam = lpFolderName ? ( LPARAM ) lpFolderName : 0 ;
    bi.iImage = 0;
 
    // Browse for a folder and return its PIDL. 
@@ -58,6 +79,7 @@ HB_FUNC( SELECTFOLDER )
    }
    HB_RETSTR( lpResult );
    hb_strfree( hTitle );
+   hb_strfree( hFolderName );
 }
 
 /*

@@ -36,7 +36,7 @@ static int ( CALLBACK BrowseCallbackProc ) (  HWND hwnd,  UINT uMsg,  LPARAM lPa
 	{
 		case BFFM_INITIALIZED:
 		{
-			if ( NULL != lpData )
+			if ( lpData  != (LPARAM)NULL )
 			{
 				SendMessage( hwnd, BFFM_SETSELECTION, lParam, lpData );
 			}

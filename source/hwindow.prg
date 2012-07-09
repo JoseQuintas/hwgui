@@ -611,8 +611,8 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
    ELSEIF msg = WM_SETFOCUS .AND. nFocus != 0
       SETFOCUS( nFocus )
       *-::nFocus := 0
-   ELSEIF msg = WM_DESTROY .AND. ::lModal .AND. ::Screen:Handle != ::handle
-      IF ! EMPTY( ::hActive ) .AND. ::hActive != ::Screen:Handle
+   ELSEIF msg = WM_DESTROY .AND. ::lModal .AND. ! SelfFocus( ::Screen:Handle, ::handle )
+      IF ! EMPTY( ::hActive ) .AND. ! SelfFocus( ::hActive, ::Screen:Handle )
          PostMessage( nFocus, WM_SETFOCUS, 0, 0 )
          PostMessage( ::hActive , WM_SETFOCUS, 0, 0 )
       ENDIF 
@@ -875,7 +875,9 @@ FUNCTION onMove( oWnd )
         oWnd:aRectSave[ 2 ] := oWnd:nTop
       ENDIF
    ENDIF
-
+   IF oWnd:isMinimized() .AND. !Empty( oWnd:Screen )
+      SetWindowPos( oWnd:Screen:HANDLE, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE )
+   ENDIF
    RETURN - 1
 
 STATIC FUNCTION onEraseBk( oWnd, wParam )
@@ -890,7 +892,6 @@ LOCAL aCoors,  oWndArea
        ENDIF
        Return 1
   ELSEIF oWnd:type != WND_MDI //.AND. oWnd:type != WND_MAIN
-
       aCoors := GetClientRect( oWnd:handle )
       IF oWnd:brush != Nil
          IF ValType( oWnd:brush ) != "N"
@@ -905,6 +906,7 @@ LOCAL aCoors,  oWndArea
          FillRect( wParam, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ] + 1, aCoors[ 4 ] + 1, COLOR_3DFACE + 1 )
          RETURN 1
       ENDIF
+
    ENDIF
    RETURN - 1
 
@@ -938,6 +940,9 @@ STATIC FUNCTION onSysCommand( oWnd, wParam, lParam )
          oWnd:Hide()
          RETURN 0
       ENDIF
+               SetWindowPos( oWnd:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER +;
+                                                         SWP_NOOWNERZORDER + SWP_FRAMECHANGED)
+
    ELSEIF ( wParam == SC_MAXIMIZE .OR. wparam == SC_MAXIMIZE2 ) .AND. ;
       oWnd:type == WND_MDICHILD .AND. ( oWnd:lChild .OR. oWnd:lModal )
       IF oWnd:WindowState == SW_SHOWMINIMIZED
@@ -1103,11 +1108,11 @@ STATIC FUNCTION onMdiCommand( oWnd, wParam )
 STATIC FUNCTION onMdiNcActivate( oWnd, wParam )
 
    IF ! Empty( oWnd:Screen )
-      IF wParam = 1 .AND. oWnd:Screen:handle == oWnd:handle
+      IF wParam = 1 .AND. SelfFocus( oWnd:Screen:handle, oWnd:handle )
          SetWindowPos( oWnd:Screen:HANDLE, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE )
          RETURN 1
       ENDIF
-      IF wParam == 1 .AND. oWnd:Screen:Handle != oWnd:HANDLE 
+      IF wParam == 1 .AND. ! SelfFocus( oWnd:Screen:Handle, oWnd:HANDLE )
          // triggered ON GETFOCUS MDI CHILD MAXIMIZED
          IF ISBLOCK( oWnd:bSetForm )
             EVAL( oWnd:bSetForm, oWnd )
@@ -1148,11 +1153,11 @@ Static Function onMdiActivate( oWnd,wParam, lParam )
    ENDIF
    
    IF  lScreen .AND. ( Empty( lParam ) .OR. ;
-       lParam = oWnd:Screen:Handle ) .AND. !lConf //wParam != oWnd:Handle
+       SelfFocus( lParam, oWnd:Screen:Handle ) ) .AND. !lConf //wParam != oWnd:Handle
       *-SetWindowPos( oWnd:Screen:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE )
       RETURN 0
    ELSEIF lConf //oWnd:Handle = wParam
-      IF  oWnd:Screen:handle != wParam .AND. oWnd:bLostFocus != Nil //.AND.wParam == 0
+      IF  ! SelfFocus( oWnd:Screen:handle, wParam ) .AND. oWnd:bLostFocus != Nil //.AND.wParam == 0
          oWnd:lSuspendMsgsHandling := .t.
          //IF oWnd:Screen:handle = lParam
          //   SetWindowPos( oWnd:Screen:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE )
@@ -1165,7 +1170,7 @@ Static Function onMdiActivate( oWnd,wParam, lParam )
          AEVAL( aWndMain,{| w | IIF( w:Type >= WND_MDICHILD .AND.;
              PtrtoUlong( w:Handle ) != PtrtoUlong( wParam ), EnableWindow( w:Handle, .T. ), ) })
       ENDIF
-   ELSEIF oWnd:Handle = lParam  //.AND. ownd:screen:handle != WPARAM
+   ELSEIF SelfFocus( oWnd:Handle, lParam ) //.AND. ownd:screen:handle != WPARAM
       IF ISBLOCK( oWnd:bSetForm )
          EVAL( oWnd:bSetForm, oWnd )
       ENDIF

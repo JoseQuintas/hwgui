@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-07-09 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hwindow.prg
+     * FUNCTION onMove
+	   ! fixed visibility WIN_MDICHILD minimized
+
 2012-07-09 10:40 Luiz Rafael Culik (luiz at xharbour.com)
    * source/shellapi.c
      ! pacified warnings

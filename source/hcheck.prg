@@ -144,13 +144,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCheckButton
    ELSEIF msg == WM_KEYUP
       ProcKeyList( Self, wParam ) // working in MDICHILD AND DIALOG
 
-	 ELSEIF  msg = WM_GETDLGCODE .AND. lParam != 0
+	 ELSEIF  msg = WM_GETDLGCODE .AND. !EMPTY( lParam )
       IF wParam = VK_RETURN .OR. wParam = VK_TAB
 	        RETURN -1
       ELSEIF wParam = VK_ESCAPE  .AND. ;
             ( oCtrl := ::GetParentForm:FindControl( IDCANCEL ) ) != Nil .AND. ! oCtrl:IsEnabled() 
          RETURN DLGC_WANTMESSAGE  
-      ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND.wParam != VK_ESCAPE    
+      ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND. wParam != VK_ESCAPE
       ELSEIF GETDLGMESSAGE( lParam ) = WM_CHAR .OR.wParam = VK_ESCAPE .OR.;
          GETDLGMESSAGE( lParam ) = WM_SYSCHAR
          RETURN -1

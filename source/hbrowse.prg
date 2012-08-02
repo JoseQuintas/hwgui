@@ -444,8 +444,8 @@ METHOD Init() CLASS HBrowse
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       Super:Init()
-      VScrollPos( Self, 0, .f. )
       ::InitBrw( , .T. )
+      VScrollPos( Self, 0, .F. )
       IF ::GetParentForm( ):Type < WND_DLG_RESOURCE
          ::GetParentForm():lDisableCtrlTab := .T.
       ENDIF

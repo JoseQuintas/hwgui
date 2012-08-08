@@ -593,7 +593,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
              nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , nShiftAltCtrl )
              //nShiftAltCtrl += IIF( wParam > 111, 4, nShiftAltCtrl )
              IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B' .AND. wParam != VK_TAB .AND. wParam != VK_RETURN
-                IF EMPTY( Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl, msg ) )
+                IF EMPTY( nRet := Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl, msg ) ) .and. nRet != Nil
                    RETURN 0
                 ENDIF
              ENDIF
@@ -661,13 +661,13 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
       ELSEIF msg == WM_KEYDOWN .AND. ! ::oParent:lSuspendMsgsHandling
          //::isMouseOver := .F.
-         IF ( ( CheckBit( lParam, 25 ) .AND. wParam != 111 ) .OR.  ( wParam > 111 .AND. wParam < 124 ) .AND.;
+         IF ( ( CheckBit( lParam, 25 ) .AND. wParam != 111 ) .OR.  ( wParam > 111 .AND. wParam < 124 ) .OR.;
                wParam = VK_TAB .OR. wParam = VK_RETURN )   .AND.;
                ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
              nShiftAltCtrl := IIF( IsCtrlShift( .F., .T. ), 1 , 0 )
-             nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , 0 )
+             nShiftAltCtrl += IIF( IsCtrlShift( .T., .F. ), 2 , nShiftAltCtrl )
              nShiftAltCtrl += IIF( wParam > 111, 4, nShiftAltCtrl )
-             IF EMPTY( Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl, msg ) )
+             IF EMPTY( nRet := Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl, msg ) ) .AND. nRet != Nil
                 RETURN 0
              ENDIF
          ENDIF

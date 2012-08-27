@@ -70,14 +70,15 @@ CLASS VAR aModalDialogs  SHARED INIT { }
    DATA nLastKey INIT 0
    DATA oIcon, oBmp
    DATA bActivate
-   DATA lActivated INIT .F.
+   DATA lActivated   INIT .F.
    DATA xResourceID
    DATA oEmbedded
    DATA bOnActivate
    DATA lOnActivated INIT .F.
    DATA WindowState  INIT 0
-   DATA nScrollBars INIT - 1
+   DATA nScrollBars  INIT - 1
    DATA bScroll
+   DATA lContainer   INIT .F.
 
    METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
                bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId,;
@@ -136,7 +137,8 @@ METHOD NEW( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
    IF  Hwg_Bitand( nStyle, WS_VSCROLL ) > 0
       ::nScrollBars += 2
    ENDIF
-
+   ::lContainer := Hwg_Bitand( nStyle, DS_CONTROL ) > 0
+   
    RETURN Self
 
 
@@ -209,7 +211,7 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
    LOCAL i, oTab, nPos, aCoors
-   *  WRITELOG(STR(MSG)+STR(WPARAM)+STR(LPARAM)+CHR(13))
+   
    IF msg = WM_GETMINMAXINFO
       IF ::minWidth  > - 1 .OR. ::maxWidth  > - 1 .OR. ;
          ::minHeight > - 1 .OR. ::maxHeight > - 1
@@ -662,7 +664,13 @@ STATIC FUNCTION onActivate( oDlg, wParam, lParam )
 
    //HB_SYMBOL_UNUSED( lParam )
 
-   IF  iParLow = WA_ACTIVE  .AND. lParam = oDlg:Handle
+   IF ( iParLow = WA_ACTIVE .OR. iParLow = WA_CLICKACTIVE ) .AND. oDlg:lContainer .AND. ;
+                                                    ! SelfFocus( lParam, oDlg:Handle )
+      UpdateWindow( oDlg:Handle )
+      SENDMessage( lParam, WM_NCACTIVATE, 1, Nil )
+      RETURN 0
+   ENDIF
+   IF  iParLow = WA_ACTIVE  .AND. SelfFocus( lParam, oDlg:Handle )
       IF Valtype( oDlg:bOnActivate) == "B"
         *- oDlg:lSuspendMsgsHandling := .t.
          Eval( oDlg:bOnActivate, oDlg )

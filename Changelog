@@ -8,19 +8,43 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-08-27 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hbrowse.prg
+     * CLASS HBrowse
+       + DATA Highlight        INIT .F. // only editable is Highlight. (Default) 
+       + DATA HighlightStyle   INIT  1  // 0 No color highlighting for grid row
+                                       // 1 Enable highlighting for current row. (Default)
+                                       // 2 nopersist highlighting 
+                                       // 3 nopersist when grid is not the current active control.
+       * METHOD onEvent
+	     ! msg == WM_MOUSEWHEEL remove RETURN 0 because bother would not be executed
+	   * METHOD PAINT()
+	   * METHOD LineOut()
+	   * METHOD SetColumn()
+	   * FUNCTION LINELEFT()
+	   * FUNCTION LINERIGHT()
+	     ! code need for new features
+	   * METHOD EDIT()
+         ! add DS_CONTROL in style DIALOG 	   
+   * source/hdialog.prg
+	 + DATA lContainer   INIT .F.
+	   ! when the dialog has the style DS_CONTROL the active window does not lose the style of activated
+	 * FUNCTION onActivate
+	   ! code needed for the style DS_CONTROL
+
 2012-08-08 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
-     * METHOS onEvent
+     * METHOD onEvent
 	   ! minor fix in WM_KEYDOWN and WM_CHAR
 
 2012-08-06 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
-     * METHOS onEvent
+     * METHOD onEvent
 	   ! fixed VK_RETURN in WM_KEYDOWN
 
 2012-08-03 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
-     * METHOS INIT
+     * METHOD INIT
 	   - VScrollPos( Self, 0, .F. ) ( comment , no necessary )
 
 2012-07-09 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>

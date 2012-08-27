@@ -300,6 +300,11 @@ CLASS HBrowse INHERIT HControl
    DATA lDisableVScrollPos INIT .F.
    DATA oTimer  HIDDEN
    DATA nSetRefresh  INIT 0 HIDDEN
+   DATA Highlight        INIT .F. // only editable is Highlight
+   DATA HighlightStyle   INIT  1  // 0 No color highlighting for grid row
+                                  // 1 Enable highlighting for current row. (Default)
+                                  // 2 nopersit highlighting //for current row and current cell
+                                  // 3 nopersist when grid is not the current active control.
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,;
@@ -514,7 +519,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
                     IIF( HIWORD( wParam ) > 32768, ;
                         HIWORD( wParam ) - 65535, HIWORD( wParam ) ), ;
                     LOWORD( lParam ), HIWORD( lParam ) )
-         RETURN 0
+         //RETURN 0 because bother is not run
       ENDIF
       //
       IF ::bOther != Nil
@@ -522,7 +527,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             nRet := IIF( VALTYPE( nRet ) = "L" .AND. ! nRet, 0, -1 )
          ENDIF
          IF nRet >= 0
-                RETURN -1
+             RETURN -1
          ENDIF
       ENDIF
       IF msg == WM_THEMECHANGED
@@ -1589,7 +1594,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
 
    // Highlights the selected ROW
    // we can have a modality with CELL selection only or ROW selection
-   IF ! ::lHeadClick .AND. ! ::lEditable // .AND. ! ::lResizing
+   IF  !::lHeadClick  .AND. ( ! ::lEditable .OR. ( ::lEditable .AND. ::Highlight ) ) // .AND.! ::lResizing
       ::LineOut( ::rowPos, 0, hDC, ! ::lResizing )
    ENDIF
    // Highligths the selected cell
@@ -1597,7 +1602,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    //     to move the "cursor cell" if lEditable is FALSE
    //     Actually: if lEditable is FALSE we can only have LINE selection
 //   if ::lEditable
-   IF lLostFocus == NIL .AND. !::lHeadClick .AND. ::lEditable // .AND. !::lResizing
+   IF lLostFocus == NIL .AND. ! ::lHeadClick  .AND. ( ::lEditable .OR. ::Highlight )  //.AND. !::lResizing
       ::LineOut( ::rowPos, ::colpos, hDC, ! ::lResizing )
    ENDIF
 //   endif
@@ -2111,13 +2116,11 @@ METHOD FooterOut( hDC ) CLASS HBrowse
 //-------------- -Row--  --Col-- ------------------------------//
 METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
    LOCAL x, nColumn, sviv, xSize, lFixed := .F., xSizeMax
-   LOCAL j, ob, bw, bh, y1, hBReal
+   LOCAL j, ob, bw, bh, y1, hBReal, oPen
    LOCAL oldBkColor, oldTColor, oldBk1Color, oldT1Color
-   LOCAL oLineBrush :=  IIf( nCol >= 1, HBrush():Add( ::htbColor ), IIf( lSelected, ::brushSel, ::brush ) )
    LOCAL lColumnFont := .F.
    LOCAL rcBitmap, ncheck, nstate, nCheckHeight
-
-//Local nPaintCol, nPaintRow
+   LOCAL oLineBrush :=  IIf( nCol >= 1, HBrush():Add( ::htbColor ), IIf( lSelected, ::brushSel, ::brush ) )
    LOCAL aCores
 
    nColumn := 1
@@ -2153,9 +2156,28 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                         ::x1  - ::nDeleteMark - 1 , ::y1 + ( ::height + 1 ) * ::nPaintRow - 0 ) //, IIF( Deleted(), GetStockObject( 7 ), ::brush:handle ))
           ENDIF
           IF lSelected
-              DrawTransparentBitmap( hDC, ::oBmpMark:Handle, ::x1 - ::nShowMark - ::nDeleteMark + 1,;
+*                       msginfo(str(::HighlightStyle))
+             DrawTransparentBitmap( hDC, ::oBmpMark:Handle, ::x1 - ::nShowMark - ::nDeleteMark + 1,;
                           ( ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) ) + ;
                           ( ( ::y1 + ( ::height + 1 ) * ( ::nPaintRow  ) ) - ( ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) ) ) / 2 - 6 )
+             IF ::HighlightStyle = 2 .OR. ( ( ::HighlightStyle = 0 .AND. SelfFocus( ::Handle ) ) .OR. ;
+                  ( ::HighlightStyle = 3 .AND. ( ! SelfFocus( ::Handle ) .or. ::lEditable ) ) )
+                IF ! ::lEditable  .OR. ::HighlightStyle = 3
+                   oPen := HPen():Add( 0, 1, ::bcolorSel )
+                   SelectObject( hDC, GetStockObject( NULL_BRUSH ) )
+                   SelectObject( hDC, oPen:handle )
+                   RoundRect( hDC, ::x1, ;
+                                 ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1  , ;
+                                 ::x2 - 1  ,;
+                                 ::y1 + ( ::height + 1 ) * ::nPaintRow  , 0, 0 )
+                   DeleteObject( oPen )
+                   IF ( ! ::lEditable .AND. nCol = 0 )  .OR. ( ::HighlightStyle = 3 .AND. ! SelfFocus( ::Handle ) )
+                      RETURN NIL
+                   ENDIF
+                ENDIF
+             ELSEIF ::HighlightStyle = 0 //.OR. ::HighlightStyle = 3
+                RETURN NIL
+             ENDIF
           ENDIF
       ENDIF
       ::nVisibleColLeft :=  ::nPaintCol
@@ -2334,8 +2356,9 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
 //----------------------------------------------------//
 METHOD SetColumn( nCol ) CLASS HBrowse
    LOCAL nColPos, lPaint := .f.
+   LOCAL lEditable := ::lEditable .OR. ::Highlight
 
-   IF ::lEditable .OR. ::lAutoEdit
+   IF lEditable .OR. ::lAutoEdit
       IF nCol != nil .AND. nCol >= 1 .AND. nCol <= Len( ::aColumns )
          IF nCol <= ::freeze
             ::colpos := nCol
@@ -2368,8 +2391,9 @@ METHOD SetColumn( nCol ) CLASS HBrowse
 //----------------------------------------------------//
 STATIC FUNCTION LINERIGHT( oBrw )
    LOCAL i
-
-   IF oBrw:lEditable .OR. oBrw:lAutoEdit
+   LOCAL lEditable := oBrw:lEditable .OR. oBrw:Highlight
+   
+   IF lEditable .OR. oBrw:lAutoEdit
       IF oBrw:colpos < oBrw:nColumns
          oBrw:colpos ++
          RETURN Nil
@@ -2388,13 +2412,14 @@ STATIC FUNCTION LINERIGHT( oBrw )
 //----------------------------------------------------//
 // Move the visible browse one step to the left
 STATIC FUNCTION LINELEFT( oBrw )
+   LOCAL lEditable := oBrw:lEditable .OR. oBrw:Highlight
 
-   IF oBrw:lEditable .OR. oBrw:lAutoEdit
+   IF lEditable .OR. oBrw:lAutoEdit
       oBrw:colpos --
    ENDIF
-   IF oBrw:nLeftCol > oBrw:freeze + 1 .AND. ( ! oBrw:lEditable .OR. oBrw:colpos < oBrw:freeze + 1 )
+   IF oBrw:nLeftCol > oBrw:freeze + 1 .AND. ( ! lEditable .OR. oBrw:colpos < oBrw:freeze + 1 )
       oBrw:nLeftCol --
-      IF ! oBrw:lEditable .OR. oBrw:colpos < oBrw:freeze + 1
+      IF ! lEditable .OR. oBrw:colpos < oBrw:freeze + 1
          oBrw:colpos := oBrw:freeze + 1
       ENDIF
    ENDIF
@@ -2702,6 +2727,7 @@ METHOD ButtonDown( lParam, lReturnRowCol ) CLASS HBrowse
    LOCAL STEP, res
    LOCAL xm, x1, fif
    LOCAL aColumns := {}, nCols := 1, xSize := 0
+   LOCAL lEditable := ::lEditable .OR. ::Highlight
 
    // Calculate the line you clicked on, keeping track of header
    IF( ::lDispHead )
@@ -2782,7 +2808,7 @@ IF nLine > 0 .AND. nLine <= ::rowCurrCount
       ENDIF
       */
    ENDIF
-   IF ::lEditable .OR. ::lAutoEdit
+   IF lEditable .OR. ::lAutoEdit
 
       IF ::colpos != fif - ::nLeftCol + 1 + ::freeze
          // Colpos should not go beyond last column or I get bound errors on ::Edit()
@@ -3154,7 +3180,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
          IF Type <> "M"
             INIT DIALOG oModDlg ;
-                 STYLE WS_POPUP + 1 + IIf( oColumn:aList == Nil, WS_BORDER, 0 ) ;
+                 STYLE WS_POPUP + 1 + IIf( oColumn:aList == Nil, WS_BORDER, 0 ) + DS_CONTROL ;
                  At x1, y1 - IIf( oColumn:aList == Nil, 1, 0 ) ;
                  SIZE nWidth - 1, ::height + IIf( oColumn:aList == Nil, 1, 0 ) ;
                  ON INIT bInit ;
@@ -3163,7 +3189,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
             INIT DIALOG oModDlg title "memo edit" At 0, 0 SIZE 400, 300 ON INIT { | o | o:center() }
          ENDIF
 
-         IF oColumn:aList != Nil .AND. ( oColumn:bWhen = Nil .OR. Eval( oColumn:bWhen ) )
+         IF oColumn:aList != Nil  .AND. ( oColumn:bWhen = Nil .OR. Eval( oColumn:bWhen ) )
             oModDlg:brush := - 1
             oModDlg:nHeight := ::height + 1 // * 5
 
@@ -3467,24 +3493,27 @@ METHOD ChangeRowCol( nRowColChange ) CLASS HBrowse
    RETURN ! EMPTY( res )
 
 METHOD When() CLASS HBrowse
-  LOCAL nSkip, res := .T.
+   LOCAL nSkip, res := .T.
 
-   IF !CheckFocus(self, .f.)
+   IF !CheckFocus(self, .f. )
       RETURN .F.
    ENDIF
-  nSkip := iif( GetKeyState( VK_UP ) < 0 .or. (GetKeyState( VK_TAB ) < 0 .and. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
+  	IF ::HighlightStyle = 0 .OR. ::HighlightStyle = 3
+      ::RefreshLine()
+	  ENDIF
 
-  IF ::bGetFocus != Nil
-        ::oParent:lSuspendMsgsHandling := .T.
-        ::lnoValid := .T.
+   IF ::bGetFocus != Nil
+      nSkip := iif( GetKeyState( VK_UP ) < 0 .OR. (GetKeyState( VK_TAB ) < 0 .AND. GetKeyState(VK_SHIFT) < 0 ), -1, 1 )
+      ::oParent:lSuspendMsgsHandling := .T.
+      ::lnoValid := .T.
         //::setfocus()
-        res := Eval( ::bGetFocus, ::COLPOS, Self )
-        res := IIF(VALTYPE(res) = "L", res, .T.)
+      res := Eval( ::bGetFocus, ::Colpos, Self )
+      res := IIF( VALTYPE(res) = "L", res, .T.)
       ::lnoValid := ! res
       IF ! res
          WhenSetFocus( Self, nSkip )
       ENDIF
-        ::oParent:lSuspendMsgsHandling := .F.
+      ::oParent:lSuspendMsgsHandling := .F.
    ENDIF
    RETURN res
 
@@ -3492,28 +3521,33 @@ METHOD Valid() CLASS HBrowse
    LOCAL res
 
     //IF ::bLostFocus != Nil .AND. ( ! CheckFocus( Self, .t. ) .OR.::lNoValid  )
-    IF !CheckFocus(self, .T.) .OR. ::lNoValid
+   IF !CheckFocus(self, .T. ) .OR. ::lNoValid
       RETURN .T.
-    ENDIF
+   ENDIF
+ 	 IF ::HighlightStyle = 0 .OR. ::HighlightStyle = 3
+      ::RefreshLine()
+	  ENDIF
    IF ::bLostFocus != Nil
-       ::oParent:lSuspendMsgsHandling := .T.
-       res := Eval( ::bLostFocus, ::COLPOS, Self )
-       res := IIF( VALTYPE(res) = "L", res, .T. )
-       IF VALTYPE(res) = "L" .AND. ! res
-          ::setfocus( .T. )
-          ::oParent:lSuspendMsgsHandling := .F.
-          RETURN .F.
-       ENDIF
-       ::oParent:lSuspendMsgsHandling := .F.
+      ::oParent:lSuspendMsgsHandling := .T.
+      res := Eval( ::bLostFocus, ::ColPos, Self )
+      res := IIF( VALTYPE(res) = "L", res, .T. )
+      IF VALTYPE(res) = "L" .AND. ! res
+         ::setfocus( .T. )
+         ::oParent:lSuspendMsgsHandling := .F.
+         RETURN .F.
+      ENDIF
+      ::oParent:lSuspendMsgsHandling := .F.
    ENDIF
    RETURN .T.
 
 
 //----------------------------------------------------//
 METHOD RefreshLine() CLASS HBrowse
+   LOCAL nInternal := ::internal[ 1 ]
 
    ::internal[ 1 ] := 0
    InvalidateRect( ::handle, 0, ::x1 - ::nDeleteMark , ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::rowPos )
+   ::internal[ 1 ] := nInternal
    RETURN Nil
 
 //----------------------------------------------------//

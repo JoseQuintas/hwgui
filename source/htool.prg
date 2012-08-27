@@ -130,7 +130,7 @@ CLASS HToolBar INHERIT HControl
    DATA lCreate    INIT .F. HIDDEN
    DATA lResource  INIT .F. HIDDEN
    DATA nOrder
-   DATA BtnWidth  //
+   DATA BtnWidth, BtnHeight
    DATA nIDB
    DATA aButtons    INIT {}
    DATA aSeparators INIT {}
@@ -167,7 +167,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, btnWidth, oFo
    DEFAULT  aitem TO { }
 
    //nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), TBSTYLE_FLAT )
-   nStyle  := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), 0 )
+   nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), IIF( Hwg_BitAnd( nStyle, WS_DLGFRAME + WS_BORDER ) > 0, CCS_NODIVIDER , 0 ) )
    nHeight += IIF( Hwg_BitAnd( nStyle, WS_DLGFRAME + WS_BORDER ) > 0, 1, 0 )
    nWidth  -= IIF( Hwg_BitAnd( nStyle, WS_DLGFRAME + WS_BORDER ) > 0, 2, 0 )
 
@@ -410,11 +410,11 @@ METHOD CREATETOOL() CLASS hToolBar
       ELSEIF Hwg_BitAnd( ::Style,  TBSTYLE_FLAT ) > 0
          nMax := 2
       ENDIF
-      ::ndrop := nMax + IIF( ! ::WindowsManifest ,0, nDrop )
+      ::ndrop := nMax + IIF( ! ::WindowsManifest , 0, nDrop )
       ::BtnHeight := MAX( HIWORD( SENDMESSAGE( ::handle, TB_GETBUTTONSIZE, 0, 0 ) ),;
                      ::nHeight - ::nDrop - IIF( ! ::lnoThemes .AND. Hwg_BitAnd( ::Style,  TBSTYLE_FLAT ) > 0, 0, 2 ) )
       IF  ! ::lVertical
-         SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth , ::BtnHeight ) )
+         SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth , ::BtnHeight - 7 ) )
       ELSE
         SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - ::nDrop - 1, ::BtnWidth )  )
   		  ENDIF

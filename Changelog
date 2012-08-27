@@ -44,7 +44,7 @@
 	    ! fixed!
 	* source/htool.prg   
 	  - DATA nSize
-      + DATA nwSize, nHSize	
+      + DATA nwSize, nHSize, BtnHeight	
 	  *	METHOD New()
 	    ! add news parameters nWSize,nHSize ( height and width bitmap ) and remove parameter size (width bitmap )
       *	METHOD CREATETOOL()		

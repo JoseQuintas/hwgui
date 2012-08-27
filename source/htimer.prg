@@ -75,7 +75,9 @@ METHOD Init() CLASS HTimer
 METHOD END() CLASS HTimer
    LOCAL i
 
-   KillTimer( ::oParent:handle, ::id )
+   IF ::oParent != Nil
+      KillTimer( ::oParent:handle, ::id )
+   ENDIF
    IF ( i := AScan( ::aTimers, { | o | o:id == ::id } ) ) > 0
       ADel( ::aTimers, i )
       ASize( ::aTimers, Len( ::aTimers ) - 1 )

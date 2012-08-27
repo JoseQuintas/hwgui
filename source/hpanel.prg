@@ -145,8 +145,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
    LOCAL nret
 
    IF msg == WM_PAINT
+      InvalidateRect( ::handle, 0 )
       ::Paint()
-      *-RedrawWindow( ::handle, RDW_NOERASE +  RDW_FRAME + RDW_INVALIDATE )
    ELSEIF msg == WM_NCPAINT
      *- RedrawWindow( ::handle, RDW_NOERASE +  RDW_FRAME + RDW_INVALIDATE + RDW_INTERNALPAINT )
    ELSEIF msg == WM_ERASEBKGND
@@ -246,8 +246,7 @@ LOCAL pps, hDC, aCoors, oPenLight, oPenGray
             FillRect( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ], aCoors[ 4 ], ::brush:handle )
          ENDIF
       ELSE
-       *  FillRect( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ], aCoors[ 4 ], COLOR_3DFACE + 1 )
-         Gradient( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ], aCoors[ 4 ], RGB( 230, 240, 255 ), RGB( 255, 255, 2555 ), 0 )
+         FillRect( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ], aCoors[ 4 ], COLOR_3DFACE + 1 )
       ENDIF
    ENDIF
    nrePaint := -1
@@ -384,7 +383,8 @@ METHOD Resize() CLASS HPanel
    */
    ::nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
    ::nHeight := aCoors[ 4 ] - aCoors[ 2 ]
-   RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW )  // Force a complete redraw
+ //  RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW )  // Force a complete redraw
+ 
    RETURN Nil
 
 /* nMode => nMode = 0 INIT  / nMode = 1 RESIZE  / nMode = 2 SHOW  / nMode = 3 HIDE */

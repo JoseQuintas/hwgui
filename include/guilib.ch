@@ -918,8 +918,8 @@
              [ WHEN <bWhen> ]           ;
              [ ON CLICK <bClick> ]      ;
              [ ITEMS <aItem> ]          ;
-             [ COLORBLOCK <bClrBlck> ]  ;
-             [ BHEADCLICK <bHeadClick> ]  ;
+             [ [ON] COLORBLOCK <bClrBlck> ]  ;
+             [ [ON] BHEADCLICK <bHeadClick> ]  ;
           => ;
           <oBrw>:AddColumn( HColumn():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
              <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <{bClrBlck}>, <{bHeadClick}>, <color>, <bcolor>, <bClick> ) )
@@ -1113,12 +1113,14 @@
              [ SIZE <width>, <height> ] ;
              [ COLOR <color> ]          ;
              [ BACKCOLOR <bcolor> ]     ;
+             [ <lTransp: TRANSPARENT>]  ;
+             [ <lScroll: SCROLLING>  ]  ;
              [ ON SIZE <bSize> ]        ;
              [ ON PAINT <bDraw> ]       ;
              [ DIVIDE <aLeft> FROM <aRight> ] ;
           => ;
           [<oSplit> :=] HSplitter():New( <oWnd>,<nId>,<x>,<y>,<width>,<height>,<bSize>,<bDraw>,;
-             <color>,<bcolor>,<aLeft>,<aRight> );;
+             <color>,<bcolor>,<aLeft>,<aRight>, <lTransp>, <lScroll> );;
           [ <oSplit>:name := <(oSplit)> ]
 
 #xcommand PREPARE FONT <oFont>       ;
@@ -1349,7 +1351,9 @@
 
 /*   Menu system     */
 
-#xcommand MENU [ OF <oWnd> ] [ ID <nId> ] [ TITLE <cTitle> ] [ COLOR <bcolor> ] [ BMPSIZE <nWidthBmp>, <nHeighBmp> ] ;
+#xcommand MENU [ OF <oWnd> ] [ ID <nId> ] [ TITLE <cTitle> ] ;
+               [[ BACKCOLOR <bcolor> ][ COLOR <bcolor> ]]    ;
+               [ BMPSIZE <nWidthBmp>, <nHeighBmp> ]          ;
           => ;
           Hwg_BeginMenu( <oWnd>, <nId>, <cTitle>, <bcolor>, <nWidthBmp>,<nHeighBmp> )
 
@@ -1711,8 +1715,8 @@ Added by Marcos Antonio Gambeta
             [ SIZE <width>, <height> ]  ;
             [ BUTTONWIDTH <btnwidth> ]  ;
             [ INDENT <nIndent>       ]  ;
-			[ BITMAPSIZE <nSize>     ]  ;
-            [ FONT <oFont> ]           ;   
+		         	[ BITMAPSIZE <bmpwidth> [, <bmpheight> ] ]  ;
+            [ FONT <oFont> ]            ;
             [ ON INIT <bInit> ]         ;
             [ ON SIZE <bSize> ]         ;
             [<lTransp: TRANSPARENT>]    ;
@@ -1722,7 +1726,7 @@ Added by Marcos Antonio Gambeta
             [ ITEMS <aItems> ]          ;
           => ;
     [<oTool> := ]  Htoolbar():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,<btnwidth>,<oFont>,;
-              <bInit>,<bSize>,,,,,<.lTransp.>,<.lVertical.>,<aItems>,<nSize>,<nIndent>,<nIDB>) ;;
+              <bInit>,<bSize>,,,,,<.lTransp.>,<.lVertical.>,<aItems>,<bmpwidth>,<bmpheight>,<nIndent>,<nIDB>) ;;
     [ <oTool>:name := <(oTool)> ] 
 
 #xcommand REDEFINE TOOLBAR  <oSay>     ;
@@ -1975,7 +1979,7 @@ Added by Marcos Antonio Gambeta
              [ ON INIT <bInit> ]        ;
              [ ON SIZE <bSize> ]        ;
           => ;
-          <oShape> := HShape():New(<oWnd>, <nId>, <x>, <y>, <width>, <height>, ;
+          [ <oShape> := ] HShape():New(<oWnd>, <nId>, <x>, <y>, <width>, <height>, ;
              <nBorder>, <nCurvature>, <nbStyle>,<nfStyle>, <tcolor>, <bcolor>, <bSize>,<bInit>,<nbackStyle>);;
           [ <oShape>:name := <(oShape)> ]
 

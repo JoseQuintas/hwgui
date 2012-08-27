@@ -137,32 +137,32 @@ CLASS HToolBar INHERIT HControl
    Data aItem       INIT {}
    DATA Line
    DATA nIndent
-   DATA nSize
-   data nDrop
+   DATA nwSize, nHSize
+   DATA nDrop
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,btnWidth,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp, lVertical ,aItem, nSize,nIndent, nIDB )
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp, lVertical ,aItem, nWSize,nHSize, nIndent, nIDB )
    METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                     bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, aItem )
 
    METHOD Activate()
    METHOD INIT()
    METHOD CreateTool()
-   METHOD AddButton( nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu, cName )
+   METHOD AddButton( nBitIp, nId, bState, bStyle, cText, bClick, c, aMenu, cName, nIndex )
    METHOD Notify( lParam )
    METHOD EnableButton( idButton, lEnable ) INLINE SENDMESSAGE( ::handle, TB_ENABLEBUTTON, INT( idButton ), MAKELONG( IIF( lEnable, 1, 0 ), 0) )
    METHOD ShowButton( idButton ) INLINE SENDMESSAGE( ::handle, TB_HIDEBUTTON, INT( idButton ), MAKELONG( 0, 0 ) )
    METHOD HideButton( idButton ) INLINE SENDMESSAGE( ::handle, TB_HIDEBUTTON, INT( idButton ), MAKELONG( 1, 0 ) )
-   METHOD REFRESH()
-   METHOD Resize( xIncrSize )
+   METHOD REFRESH() VIRTUAL
+   METHOD RESIZE( xIncrSize, lWidth, lHeight  )
 
 ENDCLASS
 
-METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,btnWidth,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp, lVertical ,aItem, nSize,nIndent, nIDB ) CLASS hToolBar
+METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, btnWidth, oFont, bInit, ;
+                  bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, lVertical ,aItem, nWSize,nHSize, nIndent, nIDB ) CLASS hToolBar
 
    //HB_SYMBOL_UNUSED( cCaption )
-   HB_SYMBOL_UNUSED( lTransp )
+   //HB_SYMBOL_UNUSED( lTransp )
 
    DEFAULT  aitem TO { }
 
@@ -186,7 +186,8 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,btnWidth,oFont,bInit
    ::nIDB := nIDB
    ::aItem := aItem
    ::nIndent := IIF( nIndent != NIL , nIndent, 1 )
-   ::nSize := IIF( nSize != NIL .AND. nSize > 11 , nSize, Nil )
+   ::nwSize := IIF( nwSize != NIL .AND. nwSize > 11 , nwSize, 16 )
+   ::nhSize := IIF( nhSize != NIL .AND. nhSize > 11 , nhSize, ::nwSize - 1 )
    ::lnoThemes := ! ISTHEMEACTIVE() .OR. ! ::WindowsManifest
    IF Hwg_BitAnd( ::Style, WS_DLGFRAME + WS_BORDER ) = 0
       IF ! ::lVertical
@@ -195,7 +196,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,btnWidth,oFont,bInit
          ::Line := HLine():New(oWndParent,,::lVertical,nLeft + nWidth + 1 ,nTop,nHeight)
       ENDIF
    ENDIF
-   IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI.AND.;
+   IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI .AND. ;
         ::oParent:aOffset[ 2 ] + ::oParent:aOffset[ 3 ] = 0
       IF ::nWidth > ::nHeight .OR. ::nWidth == 0
          ::oParent:aOffset[ 2 ] := ::nHeight
@@ -262,25 +263,25 @@ METHOD CREATETOOL() CLASS hToolBar
    Local n,n1
    Local aTemp
    Local aButton :={}
-   Local oButton
    Local aBmpSize, hIm, nPos
+   Local nMax := 0
    Local hImage, img, nlistimg, ndrop := 0
 
    IF ! ::lResource
       IF Empty( ::handle )
          RETURN Nil
-			ENDIF
-			IF !::lCreate
-			   DESTROYWINDOW( ::Handle )
-			   ::activate()
-			   //IF !EMPTY( ::oFont )
+			   ENDIF
+		   	IF !::lCreate
+			      DESTROYWINDOW( ::Handle )
+			      ::Activate()
+			      //IF !EMPTY( ::oFont )
 			      ::SetFont( ::oFont )
-			   //ENDIF
-		  ENDIF
+			      //ENDIF
+		    ENDIF
    ELSE
-       FOR n = 1 TO Len( ::aitem )
-         oButton := ::AddButton(::aitem[ n, 1 ],::aitem[ n, 2 ],::aitem[ n, 3 ],::aitem[ n, 4 ],::aitem[ n, 6 ], ::aitem[ n, 7 ], ::aitem[ n, 8 ], ::aitem[ n, 9 ] )
-         ::aItem[n, 11] := oButton
+      FOR n = 1 TO Len( ::aitem )
+         ::AddButton(::aitem[ n, 1 ],::aitem[ n, 2 ],::aitem[ n, 3 ],::aitem[ n, 4 ],::aitem[ n, 6 ], ::aitem[ n, 7 ], ::aitem[ n, 8 ], ::aitem[ n, 9 ], , n )
+         //::aItem[n, 11] := oButton
       NEXT
    ENDIF
      /*
@@ -289,69 +290,62 @@ METHOD CREATETOOL() CLASS hToolBar
         SendMessage( ::handle, TB_SETSTYLE, 0, nStyle )
      ENDIF
      */
-     nlistimg := 0
-     IF ::nIDB != Nil .AND. ::nIDB >= 0
-        nlistimg := TOOLBAR_LOADSTANDARTIMAGE( ::handle, ::nIDB )
-     ENDIF
-		 IF Hwg_BitAnd( ::Style,  TBSTYLE_LIST ) > 0 .AND. ::nSize = Nil
-		    ::nSize := MAX( 16, ( ::nHeight - 16 )  )
-  	 ENDIF
-	   IF ::nSize != Nil
-	      SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( ::nSize, ::nSize ) )
-	   ENDIF
+   nlistimg := 0
+   IF ::nIDB != Nil .AND. ::nIDB >= 0
+      nlistimg := TOOLBAR_LOADSTANDARTIMAGE( ::handle, ::nIDB )
+   ENDIF
+		 IF Hwg_BitAnd( ::Style,  TBSTYLE_LIST ) > 0 .AND. ::nwSize = Nil
+		    ::nwSize := MAX( 16, ( ::nHeight - 16 )  )
+  	ENDIF
+	  IF ::nwSize != Nil
+	     SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( ::nwSize, ::nhSize ) )
+	  ENDIF
 
-      FOR n := 1 TO Len( ::aItem )
-				 IF ::aItem[ n, 4 ] = BTNS_SEP
-				    LOOP
-				 ENDIF
-         IF ValType( ::aItem[ n, 7 ] ) == "B"
+   FOR n := 1 TO Len( ::aItem )
+      IF ValType( ::aItem[ n, 7 ] ) == "B"
+          //::oParent:AddEvent( BN_CLICKED, ::aItem[ n, 2 ], ::aItem[ n , 7 ] )
+      ENDIF
+      IF ValType( ::aItem[ n, 9 ] ) == "A"
+         ::aItem[ n, 10 ] := hwg__CreatePopupMenu()
+         ::aItem[ n, 11 ]:hMenu := ::aItem[ n, 10 ]
+         aTemp := ::aItem[ n, 9 ]
 
-            //::oParent:AddEvent( BN_CLICKED, ::aItem[ n, 2 ], ::aItem[ n , 7 ] )
-
-         ENDIF
-
-         IF ValType( ::aItem[ n, 9 ] ) == "A"
-
-
-            ::aItem[ n, 10 ] := hwg__CreatePopupMenu()
-            ::aItem[ n, 11 ]:hMenu := ::aItem[ n, 10 ]
-            aTemp := ::aItem[ n, 9 ]
-
-            FOR n1 := 1 TO Len( aTemp )
-               aTemp[ n1, 1 ] := IIF( aTemp[ n1, 1 ] = "-", NIL, aTemp[ n1, 1 ] )
-               hwg__AddMenuItem( ::aItem[ n, 10 ], aTemp[ n1, 1 ], - 1, .F., aTemp[ n1, 2 ], , .F. )
-               ::oParent:AddEvent( BN_CLICKED, aTemp[ n1, 2 ], aTemp[ n1, 3 ] )
-            NEXT
-
-         ENDIF
-
-       	 IF ::aItem[ n, 4 ] = BTNS_SEP
-				    LOOP
-				 ENDIF
-				
-				 nDrop := IIF( nDrop = 8, nDrop, IIF( Hwg_Bitand(::aItem[ n, 4 ], BTNS_DROPDOWN ) != 0 .AND.::aItem[ n, 4 ] < 128, 8, 1 ) )
+         FOR n1 := 1 TO Len( aTemp )
+            aTemp[ n1, 1 ] := IIF( aTemp[ n1, 1 ] = "-", NIL, aTemp[ n1, 1 ] )
+            hwg__AddMenuItem( ::aItem[ n, 10 ], aTemp[ n1, 1 ], - 1, .F., aTemp[ n1, 2 ], , .F. )
+            ::oParent:AddEvent( BN_CLICKED, aTemp[ n1, 2 ], aTemp[ n1, 3 ] )
+         NEXT
+      ENDIF
+			   IF ::aItem[ n, 4 ] = BTNS_SEP
+				     LOOP
+				  ENDIF
+				  nDrop := Max( nDrop, IIF( Hwg_Bitand(::aItem[ n, 4 ], BTNS_WHOLEDROPDOWN ) != 0, 0, ;
+               IIF( Hwg_Bitand(::aItem[ n, 4 ], BTNS_DROPDOWN ) != 0, 8,0 ) ) )
 				 /*
 				 IF ::nSize != Nil
 				    SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( ::nSize, ::nSize ) )
 				 ENDIF
          */
-         IF ValType( ::aItem[ n, 1 ] )  == "C" .OR. ::aItem[ n, 1 ] > 1
-            IF ValType( ::aItem[ n, 1 ] )  == "C" .AND. At(".", ::aitem[ n, 1 ] ) != 0
+      IF ValType( ::aItem[ n, 1 ] )  == "C" .OR. ::aItem[ n, 1 ] > 1
+         IF ValType( ::aItem[ n, 1 ] )  == "C" .AND. At(".", ::aitem[ n, 1 ] ) != 0
+            IF !File( ::aitem[ n, 1 ] )
+               Loop
+            ENDIF
                //AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION+ LR_LOADFROMFILE ) )
-               hImage := HBITMAP():AddFile( ::aitem[ n, 1 ], , .T., ::nSize, ::nSize ):handle
-            ELSE
-              // AAdd( aButton, HBitmap():AddResource( ::aitem[ n, 1 ] ):handle )
-               hImage := HBitmap():AddResource( ::aitem[ n, 1 ], LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS, ,::nSize,::nSize ):handle
-            ENDIF
-            IF ( img := Ascan( aButton, hImage )) = 0
-               AAdd( aButton, hImage )
-               img := Len( aButton )
-            ENDIF
-            ::aItem[n ,1 ] := img + nlistimg //n
-            IF ! ::lResource
-               TOOLBAR_LOADIMAGE( ::Handle, aButton[ img ])
-            ENDIF
+            hImage := HBITMAP():AddFile( ::aitem[ n, 1 ], , .T., ::nwSize, ::nhSize ):handle
          ELSE
+              // AAdd( aButton, HBitmap():AddResource( ::aitem[ n, 1 ] ):handle )
+            hImage := HBitmap():AddResource( ::aitem[ n, 1 ], LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS, ,::nwSize,::nhSize ):handle
+         ENDIF
+         IF ( img := Ascan( aButton, hImage )) = 0
+            AAdd( aButton, hImage )
+            img := Len( aButton )
+         ENDIF
+         ::aItem[ n ,1 ] := img + nlistimg //n
+         IF ! ::lResource
+            TOOLBAR_LOADIMAGE( ::Handle, aButton[ img ])
+         ENDIF
+      ELSE
            /*
            IF ::aItem[ n, 1 ] > 1
                hImage := HBitmap():AddResource( ::aitem[ n, 1 ], LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS,,::nSize,::nSize ):handle 
@@ -359,11 +353,10 @@ METHOD CREATETOOL() CLASS hToolBar
            */
                // AAdd( aButton, LoadImage( , ::aitem[ n, 1 ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
            //  hImage := HBitmap():AddResource( ::aitem[ n, 1 ], LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS + LR_SHARED,,::nSize,::nSize ):handle
-         ENDIF
-     NEXT
-      IF Len( aButton ) > 0 //.AND. ::lResource
-
-         aBmpSize := GetBitmapSize( aButton[ 1 ] )
+      ENDIF
+   NEXT
+   IF Len( aButton ) > 0 //.AND. ::lResource
+      aBmpSize := GetBitmapSize( aButton[ 1 ] )
          /*
          nmax := aBmpSize[ 3 ]
 
@@ -383,8 +376,8 @@ METHOD CREATETOOL() CLASS hToolBar
             hIm := CreateImageList( { } , aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLORDDB + ILC_MASK )
          ENDIF
          */
-         hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLORDDB + ILC_MASK )
-         FOR nPos := 1 TO Len( aButton )
+      hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLORDDB + ILC_MASK )
+      FOR nPos := 1 TO Len( aButton )
 
 //            aBmpSize := GetBitmapSize( aButton[ nPos ] )
             /*
@@ -395,30 +388,38 @@ METHOD CREATETOOL() CLASS hToolBar
                Imagelist_Add( hIm, aButton[ nPos ] )
             ENDIF
             */
-            Imagelist_Add( hIm, aButton[ nPos ] )
-         NEXT
-         SendMessage( ::Handle, TB_SETIMAGELIST, 0, hIm )
-      ELSEIF Len(aButton ) = 0
-          SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( 0, 0 ) )
+         Imagelist_Add( hIm, aButton[ nPos ] )
+      NEXT
+      SendMessage( ::Handle, TB_SETIMAGELIST, 0, hIm )
+   ELSEIF Len(aButton ) = 0
+      SendMessage( ::HANDLE ,TB_SETBITMAPSIZE,0, MAKELONG ( 0, 0 ) )
           //SendMessage( ::handle, TB_SETDRAWTEXTFLAGS, DT_CENTER+DT_VCENTER, DT_CENTER+DT_VCENTER )
+   ENDIF
+   SENDMESSAGE( ::Handle, TB_SETINDENT, ::nIndent,  0)
+   IF !Empty( ::BtnWidth )
+      SENDMESSAGE( ::Handle, TB_SETBUTTONWIDTH, 0, MAKELPARAM( ::BtnWidth -1, ::BtnWidth + 1  ) )
+         //SENDMESSAGE( ::Handle, TB_SETBUTTONWIDTH, MAKELPARAM( ::BtnWidth, ::BtnWidth ) )
+   ENDIF
+   IF Len( ::aItem ) > 0
+      TOOLBARADDBUTTONS( ::handle, ::aItem, Len( ::aItem ) )
+      SendMessage( ::handle, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS )
+   ENDIF
+   IF ::BtnWidth != Nil
+      IF Hwg_BitAnd( ::Style, CCS_NODIVIDER  ) > 0
+         nMax := IIF( Hwg_BitAnd( ::Style, WS_DLGFRAME + WS_BORDER ) > 0 , 4, 2 )
+      ELSEIF Hwg_BitAnd( ::Style,  TBSTYLE_FLAT ) > 0
+         nMax := 2
       ENDIF
-
-      SENDMESSAGE( ::Handle, TB_SETINDENT, ::nIndent,  0)
-      SENDMESSAGE( ::Handle, TB_SETBUTTONWIDTH, MAKELPARAM( ::BtnWidth, ::BtnWidth ) )
-      IF Len( ::aItem ) > 0
-         TOOLBARADDBUTTONS( ::handle, ::aItem, Len( ::aItem ) )
-        SendMessage( ::handle, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS )
-      ENDIF
-
-      IF ::BtnWidth != Nil
-         nDrop += IIF( Hwg_BitAnd( ::Style, WS_DLGFRAME + WS_BORDER ) > 0, 5, 0 )
-         ::nDrop := nDrop
-         IF  ! ::lVertical   //                -2 s nÆo tiver menu - 9 se tiver menu tipo 8
-            SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth, ::nHeight - nDrop - IIF( !::lnoThemes .AND. Hwg_BitAnd( ::Style,  TBSTYLE_FLAT ) > 0, 1, 2 ) ) )
-         ELSE
-            SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - nDrop - 1, ::BtnWidth )  )
-         ENDIF
-      ENDIF
+      ::ndrop := nMax + IIF( ! ::WindowsManifest ,0, nDrop )
+      ::BtnHeight := MAX( HIWORD( SENDMESSAGE( ::handle, TB_GETBUTTONSIZE, 0, 0 ) ),;
+                     ::nHeight - ::nDrop - IIF( ! ::lnoThemes .AND. Hwg_BitAnd( ::Style,  TBSTYLE_FLAT ) > 0, 0, 2 ) )
+      IF  ! ::lVertical
+         SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth , ::BtnHeight ) )
+      ELSE
+        SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - ::nDrop - 1, ::BtnWidth )  )
+  		  ENDIF
+   ENDIF
+   ::BtnWidth := LOWORD( SENDMESSAGE( ::handle, TB_GETBUTTONSIZE, 0, 0 ) )
       /*
       IF ::lTransp
          nStyle := SendMessage( ::handle, TB_GETSTYLE, 0, 0 ) + TBSTYLE_TRANSPARENT
@@ -468,16 +469,7 @@ METHOD Notify( lParam ) CLASS hToolBar
 
    RETURN 0
 
-METHOD REFRESH() CLASS htoolbar
-   /*
-   IF ::lInit
-      ::lInit := .f.
-   ENDIF
-   ::init()
-   */
-   RETURN nil
-
-METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu, cName) CLASS hToolBar
+METHOD AddButton( nBitIp, nId, bState, bStyle, cText, bClick, c, aMenu, cName, nIndex ) CLASS hToolBar
    Local hMenu := Nil, oButton
 
    DEFAULT nBitIp to -1
@@ -505,28 +497,33 @@ METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu, cName) CLASS hTo
    oButton := HToolButton():New(Self,cName,nBitIp,nId,bState,bStyle,cText,bClick, c ,aMenu)
    IF ! ::lResource
       AAdd( ::aItem ,{ nBitIp, nId, bState, bStyle, 0, cText, bClick, c, aMenu, hMenu, oButton } )
+   ELSE
+      ::aItem[ nIndex ] := { nBitIp, nId, bState, bStyle, 0, cText, bClick, c, aMenu, hMenu, oButton }
    Endif
    RETURN oButton
 
-METHOD Resize( xIncrSize ) CLASS hToolBar
-   
-   IF ::Anchor = 0
+METHOD RESIZE( xIncrSize, lWidth, lHeight  ) CLASS hToolBar
+   LOCAL nSize
+
+   IF ::Anchor = 0 .OR. ( ! lWidth .AND. ! lHeight )
       RETURN Nil
    ENDIF
-   ::BtnWidth := Round( (::BtnWidth ) * xIncrSize , 0) - 2
-    
-   SENDMESSAGE( ::Handle, TB_SETBUTTONWIDTH, MAKELPARAM( ::BtnWidth - 1, ::BtnWidth + 1 ) ) 
-     
-   IF ::BtnWidth != Nil
-        IF  ! ::lVertical   //                -2 s nÆo tiver menu - 9 se tiver menu tipo 8
-           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth, ::nHeight - ::nDrop - ;
-                 IIF( !::lnoThemes .AND. Hwg_BitAnd( ::Style,  TBSTYLE_FLAT ) > 0, 1, 2 ) ) )   
-        ELSE
-           SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - ::nDrop - 1, ::BtnWidth )  )
-				ENDIF   
-   ENDIF   
+   nSize := SENDMESSAGE( ::handle, TB_GETBUTTONSIZE, 0, 0 )
    IF xIncrSize != 1
-      ::Move( ::nLeft, ::nTop, ::nWidth + 1, ::nHeight, 0 )
+      ::Move( ::nLeft, ::nTop, ::nWidth, ::nHeight, 0 )
+   ENDIF
+   IF xIncrSize < 1 .OR. LOWORD( nSize) <= ::BtnWidth
+      ::BtnWidth :=  ::BtnWidth  * xIncrSize
+   ELSE
+      ::BtnWidth :=  LOWORD( nSize) * xIncrSize
+   ENDIF
+   SENDMESSAGE( ::Handle, TB_SETBUTTONWIDTH, MAKELPARAM( ::BtnWidth - 1, ::BtnWidth + 1 ) )
+   IF ::BtnWidth != Nil
+      IF  ! ::lVertical
+         SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth, ::BtnHeight ))
+      ELSE
+         SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - ::nDrop - 1, ::BtnWidth )  )
+		    ENDIF
    ENDIF
    RETURN NIL
 

@@ -72,7 +72,7 @@ CLASS VAR winclass INIT "STATIC"
    METHOD SetLinkColor( sLinkColor )
    METHOD PAint( lpDis ) 
    METHOD OnMouseMove( nFlags, lParam )
-   METHOD Resize( )
+   METHOD Resize( x, y )
 
 ENDCLASS
 
@@ -80,13 +80,13 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
             bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor, hbitmap, bClick ) CLASS HStaticLink
    LOCAL oPrevFont
    
-   nStyle := Hwg_BitOR( nStyle, SS_NOTIFY + SS_RIGHT )
+   nStyle := Hwg_BitOR( nStyle, SS_NOTIFY + SS_RIGHT  )
    ::lAllUnderline := IIF( EMPTY( cLink ), .F., ::lAllUnderline )
    ::title := IIF(cCaption != Nil,cCaption ,"HWGUI HomePage")
    ::hbitmap := hbitmap
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-              bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, bClick )
+              bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )//, bClick )
 
    DEFAULT vColor TO RGB( 5, 34, 143 )
    DEFAULT lColor TO RGB( 0, 0, 255 )
@@ -116,7 +116,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
       ENDIF
    ENDIF
    ::oFontUnder := HFONT():Add( ::oFont:Name, 0, ::oFont:Height, , , , 1 )
-   
+   ::nWidthOver := nWidth
    IF lTransp != NIL .AND. lTransp
       //::extStyle += WS_EX_TRANSPARENT
       ::backstyle := TRANSPARENT
@@ -169,37 +169,53 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 METHOD INIT() CLASS HStaticLink
 
    IF ! ::lInit
-      ::Resize( )
+
       /*
-      IF ::GetParentForm():Type <= WND_MDICHILD
+      IF ::GetParentForm():Type <= WND_MDICHILD .OR. ::TYPE = NIL
          ::nHolder := 1
          SetWindowObject( ::handle, Self )
-         Hwg_InitWinCtrl( ::handle )
+       *  Hwg_InitWinCtrl( ::handle )
+         HWG_INITSTATICPROC( ::handle )
       ENDIF
       */
+      ::Resize( )
       Super:init()
       IF ::Title != NIL
          SETWINDOWTEXT( ::handle, ::title )
       ENDIF
+
    ENDIF
 
    RETURN NIL
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
 
-
    IF msg == WM_PAINT
       //::PAint( )
       
    ELSEIF msg == WM_MOUSEMOVE
-     // hwg_SetCursor( ::m_hHyperCursor )
-      ::OnMouseMove( wParam, lParam )
+      hwg_SetCursor( ::m_hHyperCursor )
+     ::OnMouseMove( wParam, lParam )
+        /*
+         IF ::state != LBL_MOUSEOVER
+            //::allMouseOver := .T.
+      *      ::state := LBL_MOUSEOVER
+            TRACKMOUSEVENT( ::handle )
+          ELSE
+            TRACKMOUSEVENT( ::handle, TME_HOVER + TME_LEAVE  )
+         ENDIF
+        */
+   ELSEIF ( msg = WM_MOUSELEAVE .OR. msg = WM_NCMOUSELEAVE )
+        ::state := LBL_NORMAL
+   ELSEIF msg =  WM_MOUSEHOVER
    ELSEIF msg == WM_SETCURSOR
       ::OnSetCursor( msg, wParam, lParam )
-      TRACKMOUSEVENT( ::handle )
+
    ELSEIF msg == WM_LBUTTONDOWN
       hwg_SetCursor( ::m_hHyperCursor )
       ::OnClicked()
+   ELSEIF msg == WM_SIZE
+
    ENDIF
 
    RETURN - 1
@@ -247,15 +263,16 @@ METHOD SetHoverColor( cHoverColor ) CLASS HStaticLink
 METHOD OnClicked() CLASS HStaticLink
    LOCAL nCtrlID
 
-   IF ! ISBLOCK( ::bClick )
+   IF ISBLOCK( ::bClick )
+      ::state := LBL_NORMAL
+
+   ELSEIF !EMPTY( ::m_csUrl)
       IF ( ::m_bFireChild )
          nCtrlID := ::id
          ::SendMessage( ::oparent:Handle, _HYPERLINK_EVENT, nCtrlID, 0 )
-        //::PostMessage(pParent->m_hWnd, __EVENT_ID_, (WPARAM)nCtrlID, 0)
       ELSE
          ::GoToLinkUrl( ::m_csUrl )
       ENDIF
-
       ::m_bVisited := .T.
    ENDIF
    ::state := LBL_NORMAL
@@ -271,7 +288,7 @@ METHOD OnSetCursor( pWnd, nHitTest, message ) CLASS HStaticLink
    HB_SYMBOL_UNUSED( nHitTest )
    HB_SYMBOL_UNUSED( message )
 
-  // hwg_SetCursor( ::m_hHyperCursor )
+   hwg_SetCursor( ::m_hHyperCursor )
 
    RETURN .t.
 
@@ -303,7 +320,7 @@ METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
           res := .T.
       ELSE
         hwg_SetCursor( ::m_hHyperCursor )
-        IF ( !  PtInRect( { 3, 3, ::nWidthover - 3, ::nHeight - 3 }, { xPos, yPos } ) )
+        IF ( !  PtInRect( { 4, 4, ::nWidthover - 6, ::nHeight - 6 }, { xPos, yPos } ) )
            //ReleaseCapture()
            res := .T.
         ENDIF
@@ -317,7 +334,7 @@ METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
          ( ::state == LBL_NORMAL .AND. ! res .and. ::m_bVisited )
          ::state := LBL_MOUSEOVER
          InvalidateRect( ::handle, 0 )
-    		 RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth, ::nHeight )
+    	   RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth, ::nHeight )
          //SetCapture( ::handle )
       ENDIF
 
@@ -340,10 +357,7 @@ METHOD PAint( lpDis ) CLASS HStaticLink
    LOCAL itemRect    := copyrect( { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] } )
    LOCAL captionRect := { drawInfo[ 4 ]  , drawInfo[ 5 ], drawInfo[ 6 ] , drawInfo[ 7 ]  }
    LOCAL bmpRect
-
-   IF EMPTY( ::oParent:handle )
-      RETURN Nil
-   ENDIF
+   
    IF ::state == LBL_INIT
       ::State := LBL_NORMAL
    ENDIF
@@ -399,12 +413,19 @@ METHOD PAint( lpDis ) CLASS HStaticLink
   RETURN NIL
 
 
-METHOD Resize( ) CLASS HStaticLink
+METHOD Resize( x, y ) CLASS HStaticLink
    //LOCAL aCoors := GetClientRect( ::handle )
    LOCAL aBmpSize, aTxtSize
+   LOCAL nHeight := ::nHeight
+   
+   IF x != Nil .AND. x + y = 0
+      RETURN Nil
+   ENDIF
 
+   x := iif( x == Nil, 0, x - ::nWidth + 1 )
    aBmpSize := IIF( ! EMPTY( ::hbitmap ), GetBitmapSize( ::hbitmap ), { 0,0 } )
    aBmpSize[ 1 ] += IIF( aBmpSize[ 1 ] > 0, 6, 0 )
+   ::Move( , , ::nWidth + x , , 0 )
    aTxtSize := TxtRect( ::Title, Self )
    aTxtSize[ 2 ] += IIF( ::lAllUnderline, 0, 3 )
    IF aTxtSize[ 1 ] + 1  <  ::nWidth - aBmpSize[ 1 ] //tava 20
@@ -415,6 +436,10 @@ METHOD Resize( ) CLASS HStaticLink
    ::nWidthOver  := MIN( aTxtSize[ 1 ] + 1 + aBmpSize[ 1 ], ::nWidth )
    ::nHeight := MAX( ::nHeight, aTxtSize[ 2 ] )
    ::nHeight := MAX( ::nHeight, aBmpSize[ 2 ] + 4 )
-   ::Move( , , , ::nHeight, 0 )
-   
+
+   IF nHeight != ::nHeight
+      ::Move( , , , ::nHeight , 0 )
+      Invalidaterect( ::Handle, 0 )
+   ENDIF
+
    RETURN Nil

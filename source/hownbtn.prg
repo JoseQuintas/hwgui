@@ -193,7 +193,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
       ::onLostFocus()
    ELSEIF msg = WM_CHAR  .OR. msg = WM_KEYDOWN .OR. msg = WM_KEYUP
       IF wParam = VK_SPACE
-				 ::Press()
+			::Press()
          ::onClick()
          ::Release()
       ENDIF
@@ -317,7 +317,7 @@ METHOD Paint() CLASS HOwnButton
          ENDIF
       ELSE
          IF ::state == OBTN_NORMAL
-            IF ::handle != GetFocus()
+            IF ! SelfFocus( ::handle, GetFocus() )
                // NORM
                DrawButton( hDC, 0, 0, aCoors[ 3 ], aCoors[ 4 ], 0 )
             ELSE
@@ -332,7 +332,7 @@ METHOD Paint() CLASS HOwnButton
    ELSE
       IF ::Themed
          //SetBkMode( hdc, TRANSPARENT )
-         IF ::handle = getfocus() .AND. ::lCheck
+         IF  SelfFocus( ::handle, GetFocus() ) .AND. ::lCheck
             hb_DrawThemeBackground( ::hTheme, hdc, BP_PUSHBUTTON, PBS_PRESSED, aCoors, Nil )
          ELSE //IF ::state != OBTN_NORMAL
             hb_DrawThemeBackground( ::hTheme, hdc, BP_PUSHBUTTON, state, aCoors, Nil )

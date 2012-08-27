@@ -37,7 +37,7 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       aCoors := GetClientRect( oWnd:handle )
       //MoveWindow( HWindow():aWindows[ 2 ]:handle, oWnd:aOffset[ 1 ], oWnd:aOffset[ 2 ], aCoors[ 3 ] - oWnd:aOffset[ 1 ] - oWnd:aOffset[ 3 ], aCoors[ 4 ] - oWnd:aOffset[ 2 ] - oWnd:aOffset[ 4 ] )
       //aCoors := GetClientRect(HWindow():aWindows[ 2 ]:handle )
-      SetWindowPos( HWindow():aWindows[ 2 ]:handle, Nil, oWnd:aOffset[ 1 ], oWnd:aOffset[ 2 ], aCoors[ 3 ] - oWnd:aOffset[ 1 ] - oWnd:aOffset[ 3 ], aCoors[ 4 ] - oWnd:aOffset[ 2 ] - oWnd:aOffset[ 4 ] , SWP_NOZORDER)
+      SetWindowPos( HWindow():aWindows[ 2 ]:handle, Nil, oWnd:aOffset[ 1 ], oWnd:aOffset[ 2 ], aCoors[ 3 ] - oWnd:aOffset[ 1 ] - oWnd:aOffset[ 3 ], aCoors[ 4 ] - oWnd:aOffset[ 2 ] - oWnd:aOffset[ 4 ] , SWP_NOZORDER + SWP_NOACTIVATE )
       aCoors := GetWindowRect( HWindow():aWindows[ 2 ]:handle )
       HWindow():aWindows[ 2 ]:nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
       HWindow():aWindows[ 2 ]:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
@@ -45,12 +45,13 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       IF !Empty( oWnd:Screen )
           oWnd:Screen:nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
           oWnd:Screen:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
-          InvalidateRect( oWnd:screen:handle, 0 )
-          SetWindowPos( oWnd:screen:handle, Nil, 0, 0, oWnd:Screen:nWidth, oWnd:Screen:nHeight, SWP_NOACTIVATE + SWP_NOZORDER)
+          //InvalidateRect( oWnd:Screen:handle, 1 )   // flick in screen in resize window
+          SetWindowPos( oWnd:screen:handle, Nil, 0, 0, oWnd:Screen:nWidth, oWnd:Screen:nHeight, SWP_NOACTIVATE + SWP_NOSENDCHANGING + SWP_NOZORDER )
+          InvalidateRect( oWnd:Screen:handle, 1 )
       ENDIF
-      IF ! SELFFOCUS( oWnd:Screen:Handle, oWnd:handle ) .AND. ! Empty( oWnd := oWnd:GetMdiActive() ) .AND.oWnd:Type = WND_MDICHILD .AND. oWnd:lmaximized .AND.;
-                                                 ( oWnd:lModal .OR. oWnd:lChild )
-         oWnd:lmaximized := .F.
+      IF ! Empty( oWnd := oWnd:GetMdiActive() ) .AND.oWnd:type = WND_MDICHILD .AND. oWnd:lMaximized .AND.;
+           ( oWnd:lModal .OR. oWnd:lChild )
+         oWnd:lMaximized := .F.
          *-SENDMESSAGE( oWnd:handle, WM_SYSCOMMAND, SC_MAXIMIZE, 0 )
       ENDIF
       //
@@ -315,8 +316,8 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMa
 
       // ADDED screen to backgroup to MDI MAIN
       ::Screen := HMdiChildWindow():New(, ::tcolor, WS_CHILD + MB_USERICON + WS_MAXIMIZE + WS_DISABLED,;
-                  0, 0, ::nWidth * 1, ::nheight * 1, ; //- GETSYSTEMMETRICS( SM_CYSMCAPTION ) - GETSYSTEMMETRICS( SM_CYSMCAPTION ) , ;
-                 -1 ,,,,,,,,,,,::oBmp,,,,,, .T.)
+                  0, 0, ::nWidth * 1, ::nheight * 1 - GETSYSTEMMETRICS( SM_CYSMCAPTION ) - GETSYSTEMMETRICS( SM_CYSMCAPTION ) , ;
+                 -1 ,,,,,,,,,,,::oBmp,,,,,, )
       ::Screen:lExitOnEsc := .F.
       //::Screen:lClipper := .F.
       ::Screen:Activate( .T., .T. )
@@ -334,33 +335,29 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMa
             RETURN Nil
          ENDIF
       ENDIF
-      
-      ::Screen:lBmpCenter := ::lBmpCenter
-      *-EnableWindow( ::Screen:Handle, .T. )
-      ::Screen:Maximize()
-      SetWindowPos( ::Screen:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOREDRAW + SWP_NOACTIVATE + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER +;
+      IF ::Screen != Nil
+        ::Screen:lBmpCenter := ::lBmpCenter
+         ::Screen:Maximize()
+         SetWindowPos( ::Screen:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOREDRAW + SWP_NOACTIVATE + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER +;
                                                               SWP_NOOWNERZORDER + SWP_FRAMECHANGED )
-      ::Screen:Restore()
+         ::Screen:Restore()
+      ENDIF
       IF lMaximized
          ::maximize()
       ELSEIF lMinimized
          ::minimize()
       ELSEIF lCentered
          ::center()
-      ELSE
-
       ENDIF
 
       IF ( bActivate  != NIL )
          Eval( bActivate, Self )
       ENDIF
-
+       AddToolTip( ::handle, ::handle, "" )
       Hwg_ActivateMdiWindow( ( lShow == Nil .OR. lShow ), ::hAccel, lMaximized, lMinimized )
 
    ELSEIF ::Type == WND_MAIN
    
-      InitControls( Self )
-      
       IF ::bInit != Nil
          lres := Eval( ::bInit, Self )
          IF ValType( lres ) = "L" .AND. ! lres
@@ -569,10 +566,6 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
    ENDIF
    */
 
-   IF bActivate != NIL
-      Eval( bActivate, Self )
-   ENDIF
-
    IF ( ValType( ::nInitFocus ) = "O" .OR. ::nInitFocus > 0 )
       ::nInitFocus := IIf( ValType( ::nInitFocus ) = "O", ::nInitFocus:Handle, ::nInitFocus )
       SETFOCUS( ::nInitFocus )
@@ -580,11 +573,16 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
    ELSEIF PtrtoUlong( GETFOCUS() ) = PtrtoUlong( ::handle ) .AND. Len( ::acontrols ) > 0
       ::nFocus := ASCAN( ::aControls,{|o| Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_TABSTOP ) != 0 .AND. ;
                  Hwg_BitaND( HWG_GETWINDOWSTYLE( o:handle ), WS_DISABLED ) = 0 } )
-         IF ::nFocus > 0
+      IF ::nFocus > 0
          SETFOCUS( ::acontrols[ ::nFocus ]:handle )
          ::nFocus := GetFocus() //get::acontrols[1]:handle
       ENDIF
    ENDIF
+   
+   IF bActivate != NIL
+      Eval( bActivate, Self )
+   ENDIF
+
 
    RETURN Nil
 
@@ -898,7 +896,7 @@ LOCAL aCoors,  oWndArea
             FillRect( wParam, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ] + 1, aCoors[ 4 ] + 1, oWnd:brush:handle )
             IF !Empty( oWnd:Screen ) .AND. SELFFOCUS( oWnd:handle, oWnd:Screen:Handle )
                SetWindowPos( oWnd:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER +;
-                                                         SWP_NOOWNERZORDER + SWP_FRAMECHANGED)
+                                                         SWP_NOOWNERZORDER )
             ENDIF
             RETURN 1
          ENDIF

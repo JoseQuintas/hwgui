@@ -1100,6 +1100,7 @@
 #define BTNS_CHECK      TBSTYLE_CHECK       // 0x0002
 #define BTNS_GROUP      TBSTYLE_GROUP       // 0x0004
 #define BTNS_CHECKGROUP TBSTYLE_CHECKGROUP  // (TBSTYLE_GROUP | TBSTYLE_CHECK)
+#define BTNS_WHOLEDROPDOWN      0x0080
 
 #define TB_ENABLEBUTTON         (WM_USER + 1)
 #define TB_HIDEBUTTON           (WM_USER + 4)
@@ -1110,6 +1111,7 @@
 #define TB_GETSTATE             (WM_USER + 18)
 #define TB_SETBITMAPSIZE        (WM_USER + 32)
 #define TB_SETINDENT            (WM_USER + 47)
+#define TB_GETBUTTONSIZE        (WM_USER + 58)
 #define TB_SETBUTTONWIDTH       (WM_USER + 59)
 
 #define TTN_FIRST -520

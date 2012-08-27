@@ -8,6 +8,57 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-08-27 12:59 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include/guilib.ch
+     ! fix in  <oShape> :=  HShape():New = [ <oShape> := ] HShape():New
+	 * #xcommand @ <x>,<y> TOOLBAR [ <oTool> ] ;
+	   ! changed[ BITMAPSIZE <bmpwidth> [, <bmpheight> ] ]  ;
+	 * #xcommand @ <x>,<y> SPLITTER [ <oSplit> ] ;
+	   ! add [ <lTransp: TRANSPARENT>]  ;
+             [ <lScroll: SCROLLING>  ]  ;
+   * include/window.ch			 
+     + #define TB_GETBUTTONSIZE        (WM_USER + 58)
+	 + #define BTNS_WHOLEDROPDOWN      0x0080
+   * source/hpanel.prg
+     * METHOD onEvent()
+       ! minor fix in Paint()
+   * source/hsplit.prg
+       + DATA lScrolling
+	 * METHOD New()
+	   ! add two news parameters lTransp, lScrolling ) transparent and real scrolling 
+     * METHOD onEvent()	   
+     * METHOD Paint()
+	 * METHOD Drag()
+     * METHOD DragAll()
+       ! code need for new features
+	* source/htimer.prg   
+	  * METHOD END()
+	    ! minor fix.
+    * source/hownbtn.prg   		
+	  * METHOD onEvent()
+	  * METHOD Paint(0
+	    ! minor fix
+	* source/hhyper.prg   	
+      * METHOD OnClicked()	
+	  *	METHOD Resize()
+	    ! fixed!
+	* source/htool.prg   
+	  - DATA nSize
+      + DATA nwSize, nHSize	
+	  *	METHOD New()
+	    ! add news parameters nWSize,nHSize ( height and width bitmap ) and remove parameter size (width bitmap )
+      *	METHOD CREATETOOL()		
+	    ! fix news parameters
+	  *	METHOD REFRESH()
+	    ! changed to VIRTUAL
+	  *	METHOD Resize()
+	    ! fixed!
+    * source/hwindow.prg		
+	  * FUNCTION onSize
+	    ! minor fix
+	* CLASS HMDIChildWindow		
+      * METHOD Activate
+	    ! moved bactivate to end
 
 2012-08-27 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcontrol.prg
@@ -23,6 +74,8 @@
      * CLASS HBUTTONEx		 
 	   * METHOD onEvent
 	     ! add event bOther
+	   * METHOD PAINT()
+         ! draw focus only style WS_TABSTOP	   
    
 2012-08-27 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
@@ -190,8 +243,8 @@
      * Method Notify()
       * add Notify TVN_KEYDOWN handling keyDown event passing three parameters ; ::oItem, nKeyDown, Self
    * source/hsplit.prg
-    * METHOD Paint()
-    * METHOD DragAll()
+     * METHOD Paint()
+     * METHOD DragAll()
      ! fix in redraw
    * source/hpanel.prg
      + METHOD ResizeOffSet( nMode , lRelease )

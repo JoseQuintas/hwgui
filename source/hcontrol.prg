@@ -47,6 +47,7 @@ CLASS HControl INHERIT HCustomWindow
    DATA   tooltip
    DATA   lInit           INIT .F.
    DATA   lnoValid        INIT .F.
+   DATA   lnoWhen         INIT .F.
    DATA   nGetSkip        INIT 0
    DATA   Anchor          INIT 0
    DATA   BackStyle       INIT OPAQUE
@@ -373,8 +374,8 @@ METHOD END() CLASS HControl
 METHOD onAnchor( x, y, w, h ) CLASS HControl
    LOCAL nAnchor, nXincRelative, nYincRelative, nXincAbsolute, nYincAbsolute
    LOCAL x1, y1, w1, h1, x9, y9, w9, h9
-   LOCAL nCxv := IIF( HWG_BITAND( ::style, WS_VSCROLL ) != 0, GetSystemMetrics( SM_CXVSCROLL ) + 3 , 3 )
-   LOCAL nCyh := IIF( HWG_BITAND( ::style, WS_HSCROLL ) != 0, GetSystemMetrics( SM_CYHSCROLL ) + 3 , 3 )
+   LOCAL nCxv := IIF( HWG_BITAND( ::style, WS_VSCROLL ) != 0, GetSystemMetrics( SM_CXVSCROLL ) + 1 , 3 )
+   LOCAL nCyh := IIF( HWG_BITAND( ::style, WS_HSCROLL ) != 0, GetSystemMetrics( SM_CYHSCROLL ) + 1 , 3 )
 
 
    nAnchor := ::anchor
@@ -401,38 +402,38 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    IF nAnchor >= ANCHOR_VERTFIX
     *- vertical fixed center
       nAnchor := nAnchor - ANCHOR_VERTFIX
-      y1 := y9 + Round( ( h - y ) * ( ( y9 + h9 / 2 ) / y ), 0 )
+      y1 := y9 + Round( ( h - y ) * ( ( y9 + h9 / 2 ) / y ), 2 )
    ENDIF
    IF nAnchor >= ANCHOR_HORFIX
     *- horizontal fixed center                                                    
       nAnchor := nAnchor - ANCHOR_HORFIX
-      x1 := x9 + Round( ( w - x ) * ( ( x9 + w9 / 2 ) / x ), 0 )
+      x1 := x9 + Round( ( w - x ) * ( ( x9 + w9 / 2 ) / x ), 2 )
    ENDIF
    IF nAnchor >= ANCHOR_RIGHTREL
       && relative - RIGHT RELATIVE
       nAnchor := nAnchor - ANCHOR_RIGHTREL
-      x1 := w - Round( ( x - x9 - w9 ) * nXincRelative, 0 ) - w9
+      x1 := w - Round( ( x - x9 - w9 ) * nXincRelative, 2 ) - w9
    ENDIF
    IF nAnchor >= ANCHOR_BOTTOMREL
       && relative - BOTTOM RELATIVE
       nAnchor := nAnchor - ANCHOR_BOTTOMREL
-      y1 := h - Round( ( y - y9 - h9 ) * nYincRelative, 0 ) - h9
+      y1 := h - Round( ( y - y9 - h9 ) * nYincRelative, 2 ) - h9
    ENDIF
    IF nAnchor >= ANCHOR_LEFTREL
       && relative - LEFT RELATIVE
       nAnchor := nAnchor - ANCHOR_LEFTREL
       IF x1 != x9
-         w1 := x1 - ( Round( x9 * nXincRelative, 0 ) ) + w9
+         w1 := x1 - ( Round( x9 * nXincRelative, 2 ) ) + w9
       ENDIF
-      x1 := Round( x9 * nXincRelative, 0 )
+      x1 := Round( x9 * nXincRelative, 2 )
    ENDIF
    IF nAnchor >= ANCHOR_TOPREL
       && relative  - TOP RELATIVE
       nAnchor := nAnchor - ANCHOR_TOPREL
       IF y1 != y9
-         h1 := y1 - ( Round( y9 * nYincRelative, 0 ) ) + h9
+         h1 := y1 - ( Round( y9 * nYincRelative, 2 ) ) + h9
       ENDIF
-      y1 := Round( y9 * nYincRelative, 0 )
+      y1 := Round( y9 * nYincRelative, 2 )
    ENDIF
    IF nAnchor >= ANCHOR_RIGHTABS
       && Absolute - RIGHT ABSOLUTE
@@ -477,54 +478,53 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    // REDRAW AND INVALIDATE SCREEN
    IF  ( x1 != X9 .OR. y1 != y9 .OR. w1 != w9 .OR. h1 != h9 )
       IF isWindowVisible( ::handle )
-        IF HWG_BITAND( ::Style, WS_CLIPCHILDREN ) = 0  .AND. ( w1 > w9 .OR. h1 > H9 )
-          IF ( x1 != x9 .or. y1 != y9 ) .AND. x9 < ::oParent:nWidth
+         IF ( x1 != x9 .or. y1 != y9 ) .AND. x9 < ::oParent:nWidth
                    InvalidateRect( ::oParent:handle, 1, MAX( x9 - 1, 0 ), MAX( y9 - 1, 0 ), ;
                                                      x9 + w9 + nCxv, y9 + h9 + nCyh )
-          ELSE
+         ELSE
              IF w1 < w9
-                InvalidateRect( ::oParent:handle, 1, x1 + w1 - nCxv, MAX( y1 - 2, 0 ), ;
-                                                    x1 + w9 + 2 , y9 + h9 + 2 )
+                InvalidateRect( ::oParent:handle, 1, x1 + w1 - nCxv - 1, MAX( y1 - 2, 0 ), ;
+                                                    x1 + w9 + 2 , y9 + h9 + nCxv + 1)
+
              ENDIF
              IF h1 < h9
-                InvalidateRect( ::oParent:handle, 0, MAX( x1 - 5, 0 ) , y1 + h1 - nCyh, ;
-                                                        x1 + w9 + 2 , y1 + h9 + 2 )
+                InvalidateRect( ::oParent:handle, 1, MAX( x1 - 5, 0 ) , y1 + h1 - nCyh - 1, ;
+                                                        x1 + w9 + 2 , y1 + h9 + nCYh )
              ENDIF
-          ENDIF
+         ENDIF
+*         ::Move( x1, y1, w1, h1,  HWG_BITAND( ::Style, WS_CLIPSIBLINGS + WS_CLIPCHILDREN ) = 0 )
 
-          ::Move( x1, y1, w1, h1, 0 ) //HWG_BITAND( ::Style, WS_CLIPCHILDREN ) )
-
-          IF ( ( x1 != x9 .OR. y1 != y9 ) .AND. ( ISBLOCK( ::bPaint ) .OR. ;
+         IF ( ( x1 != x9 .OR. y1 != y9 ) .AND. ( ISBLOCK( ::bPaint ) .OR. ;
                       x9 + w9 > ::oParent:nWidth ) ) .OR. ( ::backstyle = TRANSPARENT .AND. ;
                     ( ::Title != Nil .AND. ! Empty( ::Title ) ) ) .OR. __ObjHasMsg( Self,"oImage" )
              IF  __ObjHasMsg( Self, "oImage" ) .OR.  ::backstyle = TRANSPARENT //.OR. w9 != w1
-                InvalidateRect( ::oParent:handle, 0, MAX( x1 - 1, 0 ), MAX( y1 - 1, 0 ), x1 + w1 + 1 , y1 + h1 + 1 )
+                InvalidateRect( ::oParent:handle, 1, MAX( x1 - 1, 0 ), MAX( y1 - 1, 0 ), x1 + w1 + 1 , y1 + h1 + 1 )
              ELSE
                 RedrawWindow( ::handle, RDW_NOERASE + RDW_INVALIDATE + RDW_INTERNALPAINT )
              ENDIF
-          ELSE
+         ELSE
              IF LEN( ::aControls ) = 0 .AND. ::Title != Nil
                InvalidateRect( ::handle, 0 )
              ENDIF
              IF w1 > w9
-                InvalidateRect( ::oParent:handle, 0 , MAX( x1 + w9 - ( w1 - w9 + nCxv ), 0 ) ,;
-                                                     MAX( y1 , 0 ) , x1 + w1 + 1  , y1 + h1   )
+                InvalidateRect( ::oParent:handle, 1 , MAX( x1 + w9 - nCxv - 1, 0 ) ,;
+                                                     MAX( y1 , 0 ) , x1 + w1 + nCxv  , y1 + h1 + 2  )
              ENDIF
              IF h1 > h9
-                InvalidateRect( ::oParent:handle, 1 , MAX( x1 , 0) , ;
-                                     MAX( y1 + h9 - ( h1 - h9 + nCyh ), 0 ) , x1 + w1 + 1 , y1 + h1 )
+                InvalidateRect( ::oParent:handle, 1 , MAX( x1 , 0 ) , ;
+                               MAX( y1 + h9 - nCyh - 1 , 1 ) , x1 + w1 + 2 , y1 + h1 + nCyh )
              ENDIF
-           ENDIF
-         ELSE
-            ::Move( x1, y1, w1, h1, 1 )
          ENDIF
+         // redefine new position e new size
+         ::Move( x1, y1, w1, h1,  HWG_BITAND( ::Style, WS_CLIPSIBLINGS + WS_CLIPCHILDREN ) = 0 )
+         
          IF ( ::winClass == "ToolbarWindow32" .OR. ::winClass == "msctls_statusbar32" )
-            ::Resize( nXincRelative, 1 ) 
+            ::Resize( nXincRelative, w1 != w9, h1 != h9 )
          ENDIF
       ELSE
          ::Move( x1, y1, w1, h1, 0 )
          IF ( ::winClass == "ToolbarWindow32" .OR. ::winClass == "msctls_statusbar32" )
-            ::Resize( nXincRelative, 1 ) 
+            ::Resize( nXincRelative, w1 != w9, h1 != h9 )
          ENDIF
       ENDIF
    ENDIF
@@ -538,11 +538,11 @@ CLASS HStatus INHERIT HControl
 CLASS VAR winclass   INIT "msctls_statusbar32"
 
    DATA aParts
-   DATA nStatusHeight
+   DATA nStatusHeight   INIT 0
    DATA bDblClick
    DATA bRClick
 
-   METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint, bRClick, bDblClick )
+   METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint, bRClick, bDblClick, nHeight )
    METHOD Activate()
    METHOD Init()
    METHOD Notify( lParam )
@@ -556,16 +556,16 @@ CLASS VAR winclass   INIT "msctls_statusbar32"
 
 ENDCLASS
 
-METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint, bRClick, bDblClick ) CLASS HStatus
+METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint, bRClick, bDblClick, nHeight ) CLASS HStatus
 
-   bSize  := IIf( bSize != NIL, bSize, { | o, x, y | o:Move( 0, y - 20, x, 20 ) } )
+   bSize  := IIf( bSize != NIL, bSize, { | o, x, y | o:Move( 0, y - ::nStatusHeight, x, ::nStatusHeight ) } )
    nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), ;
-                        WS_CHILD + WS_VISIBLE + WS_OVERLAPPED + ;
-                        WS_CLIPSIBLINGS )
+                        WS_CHILD + WS_VISIBLE + WS_OVERLAPPED + WS_CLIPSIBLINGS )
    Super:New( oWndParent, nId, nStyle, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint )
 
    //::nHeight   := nHeight
+   ::nStatusHeight := IIF( nHeight = Nil, ::nStatusHeight, nHeight )
    ::aParts    := aParts
    ::bDblClick := bDblClick
    ::bRClick   := bRClick
@@ -579,11 +579,14 @@ METHOD Activate() CLASS HStatus
 
    IF ! Empty( ::oParent:handle )
       ::handle := CreateStatusWindow( ::oParent:handle, ::id )
+      ::StatusHeight( ::nStatusHeight )
       ::Init()
+      /*
       IF __ObjHasMsg( ::oParent, "AOFFSET" )
          aCoors := GetWindowRect( ::handle )
          ::oParent:aOffset[ 4 ] := aCoors[ 4 ] - aCoors[ 2 ]
       ENDIF
+      */
    ENDIF
    RETURN NIL
 
@@ -635,16 +638,25 @@ LOCAL nParts := GetNotifySBParts( lParam ) - 1
    RETURN Nil
 
 
-METHOD StatusHeight( nHeight ) CLASS HStatus
+METHOD StatusHeight( nHeight  ) CLASS HStatus
+   LOCAL aCoors
 
-   IF nHeight != Nil .AND. nHeight > 0
+   IF nHeight != Nil
+      aCoors := GetWindowRect( ::handle )
       IF nHeight != 0
-         SendMessage( ::handle,;              // (HWND) handle to destination control
-                SB_SETMINHEIGHT, nHeight, 0 ) // (UINT) message ID  // = (WPARAM)(int) minHeight;  0L; not used, must be zero
-         ::nStatusHeight := nHeight
-         RedrawWindow( ::handle, RDW_NOERASE + RDW_INVALIDATE + RDW_FRAME )
+         IF  ::lInit .AND. __ObjHasMsg( ::oParent, "AOFFSET" )
+            ::oParent:aOffset[ 4 ] -= ( aCoors[ 4 ] - aCoors[ 2 ] )
+         ENDIF
+         SendMessage( ::handle,;           // (HWND) handle to destination control
+                SB_SETMINHEIGHT, nHeight, 0 )      // (UINT) message ID  // = (WPARAM)(int) minHeight;
+         SendMessage( ::handle, WM_SIZE, 0, 0 )
+         aCoors := GetWindowRect( ::handle )
       ENDIF
-   ENDIF   
+      ::nStatusHeight := ( aCoors[ 4 ] - aCoors[ 2 ] ) - 1
+      IF __ObjHasMsg( ::oParent, "AOFFSET" )
+         ::oParent:aOffset[ 4 ] += ( aCoors[ 4 ] - aCoors[ 2 ]  )
+      ENDIF
+   ENDIF
    RETURN ::nStatusHeight
 
 METHOD GetTextPanel( nPart ) CLASS HStatus
@@ -728,19 +740,19 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
             cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
             bColor, lTransp, bClick, bDblClick, bOther ) CLASS HStatic
 
-   Local nBorder
+   Local nStyles
    // Enabling style for tooltips
    //IF ValType( cTooltip ) == "C"
    //   IF nStyle == NIL
    //      nStyle := SS_NOTIFY
    //   ELSE
-   nBorder := IIF( Hwg_BitAND( nStyle, WS_BORDER ) != 0, WS_BORDER, 0 )
-   nBorder += IIF( Hwg_BitAND( nStyle, WS_DLGFRAME ) != 0, WS_DLGFRAME, 0 )
-   nStyle := Hwg_BitOr( nStyle, SS_NOTIFY ) - nBorder
+   nStyles := IIF(Hwg_BitAND( nStyle, WS_BORDER ) != 0, WS_BORDER, 0 )
+   nStyles += IIF(Hwg_BitAND( nStyle, WS_DLGFRAME ) != 0, WS_DLGFRAME , 0 )
+   nStyles += IIF(Hwg_BitAND( nStyle, WS_DISABLED ) != 0, WS_DISABLED , 0 )
+   nStyle  := Hwg_BitOr( nStyle, SS_NOTIFY ) - nStyles
    //    ENDIF
    // ENDIF
    //
-
    ::nStyleHS := IIf( nStyle == Nil, 0, nStyle )
    ::BackStyle := OPAQUE
    IF ( lTransp != NIL .AND. lTransp ) //.OR. ::lOwnerDraw
@@ -754,7 +766,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ENDIF
    ::hBrushDefault := HBrush():Add( GetSysColor( COLOR_BTNFACE ) )
    
-   Super:New( oWndParent, nId, nStyle + nBorder, nLeft, nTop, nWidth, nHeight, oFont, ;
+   Super:New( oWndParent, nId, nStyle + nStyles, nLeft, nTop, nWidth, nHeight, oFont, ;
               bInit, bSize, bPaint, cTooltip, tcolor, bColor )
 
    IF ::oParent:oParent != Nil
@@ -899,14 +911,15 @@ METHOD Paint( lpDis ) CLASS HStatic
    IF  ::BackStyle = OPAQUE
       brBackground := IIF( ! EMPTY( ::brush ), ::brush, ::hBrushDefault )
       FillRect( dc, client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], brBackground:handle )
-   ELSE
-         SelectObject( DC, GetStockObject( NULL_BRUSH  ))   
-   ENDIF   
-   
-   IF ! ::isEnabled()
- 	    SetTextColor( dc, GetSysColor( COLOR_GRAYTEXT ) )
-   ELSEIF ::tcolor != NIL .AND. ::isEnabled()
-      SetTextColor( dc, ::tcolor )  	    
+   ENDIF
+
+   IF ::tcolor != NIL .AND. ::isEnabled()
+      SetTextColor( dc, ::tcolor )
+   ELSEIF ! ::isEnabled()
+      SetTextColor( dc, 16777215 ) //GetSysColor( COLOR_WINDOW ) )
+      DrawText( dc, szText, { client_rect[ 1 ] + 1, client_rect[ 2 ] + 1, client_rect[ 3 ] + 1, client_rect[ 4 ] + 1 }, dwtext )
+      SetBkMode( dc, TRANSPARENT )
+      SetTextColor( dc, 10526880 ) //GetSysColor( COLOR_GRAYTEXT ) )
    ENDIF
    // Draw the text
    DrawText( dc, szText, client_rect, dwtext )
@@ -1380,7 +1393,8 @@ METHOD INIT() CLASS HButtonEx
 METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
 
    LOCAL pt := {, }, rectButton, acoor
-   LOCAL pos, nID, oParent
+   LOCAL pos, nID, oParent, nEval
+
 
    IF msg == WM_THEMECHANGED
       IF ::Themed
@@ -1420,8 +1434,15 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
    ELSEIF msg == WM_MOUSELEAVE
       ::CancelHover()
       RETURN 0
-
-   ELSEIF msg == WM_KEYDOWN
+   ENDIF
+   
+   IF ::bOther != Nil
+      IF ( nEval := Eval( ::bOther, Self, msg, wParam, lParam )) != -1 .AND. nEval != Nil
+         RETURN 0
+      ENDIF
+   ENDIF
+   
+   IF msg == WM_KEYDOWN
 
 #ifdef __XHARBOUR__
       IF hb_BitIsSet( PtrtoUlong( lParam ), 30 )  // the key was down before ?
@@ -2002,7 +2023,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
    ENDIF
 
    // Draw the focus rect
-   IF bIsFocused .and. bDrawFocusRect
+   IF bIsFocused .and. bDrawFocusRect .AND. Hwg_BitaND( ::sTyle, WS_TABSTOP ) != 0
 
       focusRect := COPYRECT( itemRect )
       InflateRect( @focusRect, - 3, - 3 )

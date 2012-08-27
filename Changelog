@@ -8,6 +8,22 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2012-08-27 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hcontrol.prg
+     + DATA   lnoWhen         INIT .F.
+	   necessary to avoid recursion WHEN the event without losing focus of the object
+	 * CLASS HStatic
+	   * METHOD NEW()
+	   * METHOD PAINT()
+	     ! fixed style DISABLED
+	 * CLASS HStatus 
+	   * METHOD StatusHeight( nHeight )
+	     ! fixed!
+     * CLASS HBUTTONEx		 
+	   * METHOD onEvent
+	     ! add event bOther
+   
 2012-08-27 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
      * CLASS HBrowse
@@ -21,6 +37,9 @@
 	   * METHOD PAINT()
 	   * METHOD LineOut()
 	   * METHOD SetColumn()
+	   * METHOD RefreshLine()
+	   * METHOD When()
+	   * METHOD Valid()
 	   * FUNCTION LINELEFT()
 	   * FUNCTION LINERIGHT()
 	     ! code need for new features

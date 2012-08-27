@@ -50,7 +50,6 @@ CLASS VAR winclass   INIT "EDIT"
    DATA cSelText   INIT "" HIDDEN
    DATA nSelLength INIT 0 HIDDEN
 
-
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, ;
                lNoBorder, nMaxLength, lPassword, bKeyDown, bChange, bOther )
@@ -142,7 +141,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    //   ::nMaxLength := nMaxLength
    //ENDIF
    ::ParsePict( cPicture, vari )
-
+  * ::SetText( vari )
+      
    ::Activate()
 
    ::DisableBackColor := bDisablecolor
@@ -166,17 +166,17 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       IF bGfocus != Nil
          ::oParent:AddEvent( EN_SETFOCUS, Self, { | | ::When( ) },, "onGotFocus"  )
       ENDIF
-      IF bLfocus != Nil
+      //IF bLfocus != Nil
          ::oParent:AddEvent( EN_KILLFOCUS, Self, { | | ::Valid( ) },, "onLostFocus" )
          ::bValid := { | | ::Valid( ) }
-      ENDIF
+      //ENDIF
    ENDIF
 
    ::bColorOld := ::bcolor
    ::tColorOld := IIf( tcolor = Nil, 0, ::tcolor )
 
    IF ::cType != "D"
-       SET( _SET_INSERT, .T. )
+       SET( _SET_INSERT, ! ::lPicComplex )
     ENDIF
 
    RETURN Self
@@ -201,6 +201,7 @@ METHOD Init()  CLASS HEdit
       *IF ::bChange != Nil .OR. ::lMultiLine
          ::oParent:AddEvent( EN_CHANGE, Self, { | | ::onChange( ) },, "onChange"  )
       *ENDIF
+
    ENDIF
    RETURN Nil
 
@@ -214,6 +215,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          RETURN 0
       ENDIF
    ENDIF
+   //HWG_WRITELOG(STR(MSG)+::TITLE+CHR(13))
    IF ! ::lMultiLine
 
       IF ::bSetGet != Nil
@@ -441,9 +443,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             SendMessage( ::handle, EM_SETSEL, 0, - 1 )
          ELSEIF ::selstart = 0 .AND. "R" $ ::cPicFunc  //.AND. ::lPicComplex
             SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
-            
          ENDIF
-         IF ::lPicComplex .AND. ::cType <> "N"
+         //IF ( ::lPicComplex .OR. !Empty( ::cPicMask ) ) .AND. ::cType <> "N" .AND. ! ::lFirst
+         IF "R" $ ::cPicFunc .AND. ::cType <> "N" .AND. ! ::lFirst
             ::Title := Transform( ::Title, ::cPicFunc + " " + ::cPicMask )
          ENDIF
       ENDIF
@@ -582,13 +584,15 @@ METHOD Value( Value )  CLASS HEdit
        ::SetText( Value )
        ::Refresh()
    ENDIF
-   vari := ::UnTransform( ::Title )
+   //vari := ::UnTransform( ::Title )
+   vari := ::UnTransform( GetEditText( ::oParent:handle, ::id ) )
+
    IF ::cType == "D"
       vari := CToD( vari )
    ELSEIF ::cType == "N"
       vari := Val( LTrim( vari ) )
    ENDIF
-	 RETURN vari
+	RETURN vari
 
 METHOD Refresh()  CLASS HEdit
    LOCAL vari
@@ -618,12 +622,14 @@ METHOD SetText( c ) CLASS HEdit
       ENDIF
       IF ! Empty( ::cPicFunc ) .OR. ! Empty( ::cPicMask )
          ::title := Transform( c, ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
+        // ::Title := Transform( ::Title, ::cPicFunc + " " + ::cPicMask )
       ELSE
          ::title := c
       ENDIF
       //Super:SetText( ::title )
       //SetWindowText( ::Handle, ::Title )
       SetDlgItemText( ::oParent:handle, ::id, ::title )
+ *     msginfo(::title)
       IF ::bSetGet != Nil
          Eval( ::bSetGet, c, Self )
       ENDIF
@@ -791,6 +797,7 @@ METHOD DeleteChar( lBack ) CLASS HEdit
    ELSE
       nPosEnd += 1
    ENDIF
+  // msginfo(STR(NPOSEND)+STR(NPOSSTART)+::TITLE)
    /* NEW */
    IF nPosEnd - nPosStart - 1 > 1 .AND.::lPicComplex .AND. ::cType <> "N" //.AND. NPOSEND < nGetLen
       lBack := .T.
@@ -935,7 +942,6 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
    IF HIWORD( x ) != LOWORD( x )
       ::DeleteChar( .f. )
    ENDIF
-
    ::title := GetEditText( ::oParent:handle, ::id )
    IF ::cType == "N" .and. cKey $ ".," .AND. ;
       ( nPos := At( ".", ::cPicMask ) ) != 0
@@ -1144,7 +1150,7 @@ METHOD When() CLASS HEdit
          */
          WhenSetFocus( Self, nSkip )
       ELSE   
-         ::setfocus()
+         ::SetFocus()
       ENDIF
    ENDIF
    RETURN res
@@ -1152,7 +1158,8 @@ METHOD When() CLASS HEdit
 METHOD Valid( ) CLASS HEdit
    LOCAL res := .T., vari, oDlg
 
-   IF ::bLostFocus != Nil .AND. ( ::lNoValid .OR. ! CheckFocus( Self, .T. ) )
+   //IF ::bLostFocus != Nil .AND. ( ::lNoValid .OR. ! CheckFocus( Self, .T. ) )
+   IF ( ! CheckFocus( Self, .T. ) .OR. ::lNoValid ) .AND. ::bLostFocus != Nil
       RETURN .t.
    ENDIF
    IF ::bSetGet != Nil
@@ -1214,12 +1221,12 @@ METHOD Valid( ) CLASS HEdit
       ENDIF
    ELSE
      IF ::lMultiLine
-            ::title := ::GetText()
+        ::title := ::GetText()
      ENDIF
-       IF ::bLostFocus != Nil .OR. ::oUpDown != Nil
+     IF ::bLostFocus != Nil .OR. ::oUpDown != Nil
         ::oparent:lSuspendMsgsHandling := .T.
         IF ::bLostFocus != Nil
-             res := Eval( ::bLostFocus, vari, Self )
+           res := Eval( ::bLostFocus, vari, Self )
            res := IIF( ValType(res) == "L", res, .T. )
         ENDIF
         IF res .AND. ::oUpDown != Nil // updown control
@@ -1710,22 +1717,27 @@ FUNCTION CheckFocus( oCtrl, lInside )
       ELSEIF ! lInside .AND. ! EMPTY( oParent:nInitFocus )
        //  SetFocus( oParent:handle )
          RETURN .T.
-	    ENDIF
+	  ENDIF
+      RETURN .F.
+   ELSEIF ! lInside .AND. ! oCtrl:lNoWhen
+      oCtrl:lNoWhen := .T.
+   ELSEIF ! lInside
       RETURN .F.
    ENDIF
-   IF oParent  != Nil .AND. lInside
-     lModal :=  oParent:lModal .AND.  oParent:Type >  WND_DLG_RESOURCE 
-     IF ( ( ! Empty( hGetFocus ) .AND. lModal .AND. ! SELFFOCUS( GetWindowParent( hGetFocus ), oParent:Handle ) ) .OR. ;
-        (  SELFFOCUS( hGetFocus, oCtrl:oParent:Handle  ) ) ) .AND. SELFFOCUS( oParent:handle, oCtrl:oParent:Handle ) 
-        RETURN .F.
-     ENDIF
-  ELSE
-     oCtrl:oParent:lGetSkipLostFocus := .F.
-  ENDIF
+   IF oParent  != Nil .AND. lInside   // valid
+      lModal :=  oParent:lModal .AND.  oParent:Type >  WND_DLG_RESOURCE
+      IF ( ( ! Empty( hGetFocus ) .AND. lModal .AND. ! SELFFOCUS( GetWindowParent( hGetFocus ), oParent:Handle ) ) .OR. ;
+         (  SELFFOCUS( hGetFocus, oCtrl:oParent:Handle  ) ) ) .AND. SELFFOCUS( oParent:handle, oCtrl:oParent:Handle )
+         RETURN .F.
+      ENDIF
+      oCtrl:lNoWhen := .F.
+   ELSE
+      oCtrl:oParent:lGetSkipLostFocus := .F.
+   ENDIF
 
-  RETURN .T.
+   RETURN .T.
 
-FUNCTION WhenSetFocus( oCtrl, nSkip )
+FUNCTION WhenSetFocus( oCtrl, nSkip ) 
 
    IF  SelfFocus( oCtrl:Handle ) .OR. EMPTY( GetFocus() )
        GetSkip( oCtrl:oParent, oCtrl:handle, , nSkip )

@@ -830,7 +830,9 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
                                         a[ 2 ] == iParLow } ) ) > 0
 
       IF oForm:Type < WND_DLG_RESOURCE
-         oForm:nFocus := GetFocus() //lParam
+         IF SelfFocus( GetParent( GetFocus() ) , oForm:Handle )
+            oForm:nFocus := GetFocus() //lParam
+         ENDIF
       ENDIF
       Eval( oWnd:aEvents[ iItem, 3 ], oWnd, iParLow )
    ENDIF
@@ -869,11 +871,6 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       IF ! EMPTY( oWnd:Type)
          oWnd:Anchor( oWnd, nw1, nh1, oWnd:nWidth, oWnd:nHeight)
       ENDIF
-   ENDIF
-      IF oWnd:nScrollBars > - 1 .AND. oWnd:lAutoScroll .AND. ! EMPTY( oWnd:Type )
-      onMove( oWnd )
-      oWnd:ResetScrollbars()
-      oWnd:SetupScrollbars()
    ENDIF
 
    FOR EACH oItem IN aControls

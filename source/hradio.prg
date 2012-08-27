@@ -254,7 +254,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
       ::lnoValid := .T.
    ENDIF
 
-   //::oParent:AddEvent( BN_KILLFOCUS, Self, { || ::Notify( WM_KEYDOWN ) } )
+   ::oParent:AddEvent( BN_KILLFOCUS, Self, { || CheckFocus( Self, .T. ) } )
 
    IF ::oGroup != Nil
       AAdd( ::oGroup:aButtons, Self )
@@ -318,6 +318,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip,
       ::lnoValid := .T.
    ENDIF
    //::oParent:AddEvent( BN_KILLFOCUS, Self, { || ::Notify( WM_KEYDOWN ) } )
+   ::oParent:AddEvent( BN_KILLFOCUS, Self, { || CheckFocus( Self, .T. ) } )
    IF ::oGroup != Nil
       AAdd( ::oGroup:aButtons, Self )
       // IF ::oGroup:bSetGet != Nil

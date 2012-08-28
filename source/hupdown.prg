@@ -223,8 +223,8 @@ METHOD SetValue( nValue )  CLASS HUpDown
 
 METHOD Refresh()  CLASS HUpDown
 
-   IF ::bSetGet != Nil .AND. ::nValue != Nil
-      ::nValue := Eval( ::bSetGet )
+   IF ::bSetGet != Nil //.AND. ::nValue != Nil
+      ::nValue := Eval( ::bSetGet, , Self )
       IF Str(::nValue) != ::title
          //::title := Str( ::nValue )
          //SetUpDown( ::hwndUpDown, ::nValue )
@@ -235,7 +235,7 @@ METHOD Refresh()  CLASS HUpDown
    ENDIF
    ::oEditUpDown:Title :=  ::Title
    ::oEditUpDown:Refresh()
-   IF GetFocus() == ::handle
+   IF SelfFocus( ::handle )
       InvalidateRect( ::hwndUpDown, 0 )
    ENDIF
 
@@ -330,7 +330,7 @@ METHOD Notify( lParam ) CLASS HeditUpDown
    METHOD Refresh()  CLASS HeditUpDown
    LOCAL vari
 
-   vari := ::oUpDown:nValue
+   vari := ::Value
    IF  ::bSetGet != Nil  .AND. ::title != Nil
       ::Title := Transform( vari , ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
    ENDIF

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{16,0,415,325}</property>
+    <property name="Name">[]</property>
+    <property name="Caption">[Calculando]</property>
+    <property name="AlwaysOnTop">.F.</property>
+    <property name="AutoCenter">.T.</property>
+    <property name="Font">
+      <font name="Verdana" width="0" height="-13" weight="400"/>
+    </property>
+    <property name="Icon">[]</property>
+    <property name="FormType">[dlgModal]</property>
+    <property name="Modal">.F.</property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="ScopeCtrlObj">[Local]</property>
+    <property name="ScopeVarObj">[Local]</property>
+    <property name="lClipper">.T.</property>
+    <property name="lExitOnEnter">.T.</property>
+    <property name="lExitOnESC">.T.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
+    <property name="TitleBar">.T.</property>
+    <property name="StyleBorder">[3 - Sizable (Default)]</property>
+    <property name="NoIcon">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.F.</property>
+    <property name="Maximizebox">.F.</property>
+    <property name="Closable">.T.</property>
+    <property name="AbsAlignment">.T.</property>
+    <property name="WindowState">[1 - Normal (Default)]</property>
+    <property name="minHeight">-1</property>
+    <property name="maxHeight">-1</property>
+    <property name="minWidth">-1</property>
+    <property name="maxWidth">-1</property>
+    <property name="ScrollBars">[0 - None (Default)]</property>
+    <property name="DSControl">.F.</property>
+  </style>
+  <part class="group" inclass="">
+    <style>
+      <property name="Geometry">{22,30,368,106}</property>
+      <property name="Name">[oGroup1]</property>
+      <property name="Caption">[Calculator]</property>
+      <property name="TabIndex">1</property>
+    </style>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{272,63,106,36}</property>
+        <property name="Name">[oOw1]</property>
+        <property name="Caption">[Calculator]</property>
+        <property name="TextLeft">3</property>
+        <property name="Bitmap">[..\image\calcular.bmp]</property>
+        <property name="BmpLeft">74</property>
+        <property name="TabIndex">3</property>
+      </style>
+      <method name="onClick"  ="">
+        <![CDATA[LOCAL ocalc
+
+oCalc := HCalculator():New('Calculator')
+oCalc:Show()]]>
+      </method>
+    </part>
+    <part class="label">
+      <style>
+        <property name="Geometry">{72,102,235,26}</property>
+        <property name="Name">[oLabel2]</property>
+        <property name="Caption">[F2 - activate calculator]</property>
+        <property name="Justify">[Center]</property>
+        <property name="VAlignment">[Center]</property>
+        <property name="WordWrap">.F.</property>
+        <property name="3DLook">.T.</property>
+        <property name="Enabled">.F.</property>
+        <property name="TabIndex">3</property>
+      </style>
+    </part>
+    <part class="updown">
+      <style>
+        <property name="Geometry">{119,71,149,24}</property>
+        <property name="Name">[oValue]</property>
+        <property name="varName">[vValue]</property>
+        <property name="nLower">-2147483647</property>
+        <property name="nUpper">2147483647</property>
+        <property name="FontBold">.T.</property>
+        <property name="cPicture">[999,999.99]</property>
+        <property name="TabIndex">4</property>
+      </style>
+      <method name="onLostFocus"  ="">
+        <![CDATA[thisform:oLabel2:disable( )]]>
+      </method>
+      <method name="onGetFocus"  ="">
+        <![CDATA[thisform:oLabel2:Enable( )]]>
+      </method>
+      <method name="onKeyDown"  ="">
+        <![CDATA[Parameters This, nKeyPress, nShiftAltCtrl
+LOCAL oCalc
+
+IF nKeyPress = VK_F2
+   oCalc := HCalculator():New()
+   oCalc:Show( This, .T. )
+ENDIF
+RETURN .T.   ]]>
+      </method>
+    </part>
+    <part class="label">
+      <style>
+        <property name="Geometry">{72,74,42,21}</property>
+        <property name="Name">[oLabel1]</property>
+        <property name="Caption">[Value:]</property>
+        <property name="TabIndex">5</property>
+      </style>
+    </part>
+  </part>
+  <part class="buttonex" inclass="">
+    <style>
+      <property name="Geometry">{297,271,100,42}</property>
+      <property name="Name">[oBtn1]</property>
+      <property name="Caption">[OK]</property>
+      <property name="TabIndex">2</property>
+    </style>
+    <method name="onClick"  ="">
+      <![CDATA[thisform:Close( )]]>
+    </method>
+  </part>
+</part>

@@ -156,10 +156,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF ::bSetGet != Nil
       ::bGetFocus := bGfocus
       ::bLostFocus := bLfocus
-      IF bGfocus != Nil
-         ::lnoValid := .T.
-         ::oParent:AddEvent( EN_SETFOCUS, Self, { | | ::When( ) },, "onGotFocus"  )
-      ENDIF
+      ::lnoValid := IIF( bGfocus != Nil, .T., .F. )
+      ::oParent:AddEvent( EN_SETFOCUS,  Self, { | | ::When( ) },, "onGotFocus"  )
       ::oParent:AddEvent( EN_KILLFOCUS, Self, { | | ::Valid( ) },, "onLostFocus" )
       ::bValid := { | | ::Valid( ) }
    ELSE
@@ -176,8 +174,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::tColorOld := IIf( tcolor = Nil, 0, ::tcolor )
 
    IF ::cType != "D"
-       SET( _SET_INSERT, ! ::lPicComplex )
-    ENDIF
+      SET( _SET_INSERT, ! ::lPicComplex )
+   ENDIF
 
    RETURN Self
 
@@ -281,7 +279,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                                 ! oParent:FindControl( IDCANCEL ):IsEnabled()       
                    SendMessage( oParent:handle, WM_COMMAND, makewparam( IDCANCEL, 0 ), ::handle )
                ENDIF    
-  					   IF ( oParent:Type < WND_DLG_RESOURCE .OR. ! oParent:lModal )
+  					        IF ( oParent:Type < WND_DLG_RESOURCE .OR. ! oParent:lModal )
                    SETFOCUS( 0 )                                            
                    ProcOkCancel( Self, VK_ESCAPE )    
                    RETURN 0
@@ -383,7 +381,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             IF "K" $ ::cPicFunc .AND. ::lFocu  .AND. ! EMPTY( ::Title )
                 *- ::value := IIF( ::cType == "D", CTOD(""), IIF( ::cType == "N", 0, "" ) )
                 *- SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
-                ::Title :=  IIF( ::cType == "D", CTOD(""), IIF( ::cType == "N", 0, "" ) )
+                ::Title := IIF( ::cType == "D", CTOD(""), IIF( ::cType == "N", 0, "" ) )
             ENDIF
 
          ELSEIF msg == WM_LBUTTONDOWN
@@ -424,7 +422,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       IF lColorinFocus
          IF msg == WM_SETFOCUS 
 //            ::bColorOld := ::bcolor
-
             ::nSelStart := IIF( Empty( ::title ), 0, ::nSelStart )
             ::SetColor( tColorSelect, bColorSelect )
             SendMessage( ::handle, EM_SETSEL, ::selStart, ::selStart ) // era -1
@@ -445,7 +442,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             SendMessage( ::handle, EM_SETSEL, ::FirstEditable() - 1, ::FirstEditable() - 1 )
          ENDIF
          //IF ( ::lPicComplex .OR. !Empty( ::cPicMask ) ) .AND. ::cType <> "N" .AND. ! ::lFirst
-         IF "R" $ ::cPicFunc .AND. ::cType <> "N" .AND. ! ::lFirst
+         IF ::lPicComplex .AND. ::cType <> "N" .AND. ! ::lFirst
             ::Title := Transform( ::Title, ::cPicFunc + " " + ::cPicMask )
          ENDIF
       ENDIF
@@ -558,6 +555,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
    IF bSetGet != Nil
       ::bGetFocus := bGfocus
       ::bLostFocus := bLfocus
+      ::lnoValid := IIF( bGfocus != Nil, .T., .F. )
       ::oParent:AddEvent( EN_SETFOCUS, Self, { | | ::When( ) },, "onGotFocus" )
       ::oParent:AddEvent( EN_KILLFOCUS, Self, { | | ::Valid( ) },, "onLostFocus" )
       ::bValid := { | | ::Valid() }
@@ -592,20 +590,20 @@ METHOD Value( Value )  CLASS HEdit
    ELSEIF ::cType == "N"
       vari := Val( LTrim( vari ) )
    ENDIF
-	RETURN vari
+   RETURN vari
 
 METHOD Refresh()  CLASS HEdit
    LOCAL vari
-
    IF ::bSetGet != Nil
       vari := Eval( ::bSetGet,, Self )
       IF ! Empty( ::cPicFunc ) .OR. ! Empty( ::cPicMask )
          vari := IIF( vari = Nil, "", Vari )
          vari := Transform( vari, ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
       ELSE
-         vari := IIf( ::cType == "D", DToC( vari ), IIf( ::cType == "N", Str( vari ), IIf( ::cType == "C" .and. ValType( vari ) == "C", Trim( vari ), "" ) ) )
+         vari := IIf( ::cType == "D", DToC( vari ), IIf( ::cType == "N", Str( vari ), ;
+                 IIf( ::cType == "C" .And. ValType( vari ) == "C", Trim( vari ), "" ) ) )
       ENDIF
-      ::title := vari
+      ::Title := vari
    ENDIF
    SetDlgItemText( ::oParent:handle, ::id, ::title )
    IF isWindowVisible( ::handle ) .AND.   !Empty( GetWindowParent( ::handle ) ) //PtrtouLong( GetFocus() ) == PtrtouLong( ::handle )  
@@ -629,7 +627,6 @@ METHOD SetText( c ) CLASS HEdit
       //Super:SetText( ::title )
       //SetWindowText( ::Handle, ::Title )
       SetDlgItemText( ::oParent:handle, ::id, ::title )
- *     msginfo(::title)
       IF ::bSetGet != Nil
          Eval( ::bSetGet, c, Self )
       ENDIF
@@ -700,6 +697,11 @@ METHOD ParsePict( cPicture, vari ) CLASS HEdit
          ENDIF
       NEXT
    ENDIF
+   IF Eval( ::bSetGet,, Self ) != Nil
+      ::title := Transform( Eval( ::bSetGet,, Self ) , ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
+      SetDlgItemText( ::oParent:handle, ::id, ::title )
+   ENDIF
+
    RETURN Nil
 
 METHOD IsEditable( nPos, lDel ) CLASS HEdit
@@ -1035,9 +1037,7 @@ METHOD GetApplyKey( cKey ) CLASS HEdit
          ::KeyRight( nPos )
          //Added By Sandro Freire
          IF ::cType == "N"
-
             IF ! Empty( ::cPicMask )
-
                nDecimals := Len( SubStr(  ::cPicMask, At( ".", ::cPicMask ), Len( ::cPicMask ) ) )
 
                IF nDecimals <= 0
@@ -1135,7 +1135,7 @@ METHOD When() CLASS HEdit
         vari := ::title
       ENDIF
       ::oParent:lSuspendMsgsHandling := .T.
-      res := Eval( ::bGetFocus, vari, Self )
+      res := Eval( ::bGetFocus, vari, IIF( ::oUpDown = Nil, Self, ::oUpDown ) )
       res := IIf( ValType( res ) == "L", res, .T. )
       ::lnoValid := ! res
       ::oParent:lSuspendMsgsHandling := .F.
@@ -1196,7 +1196,7 @@ METHOD Valid( ) CLASS HEdit
                ::oUpDown:nValue := vari
             ENDIF
             IF ::bLostFocus != Nil
-               res := Eval( ::bLostFocus, vari, Self )
+               res := Eval( ::bLostFocus, vari, IIF( ::oUpDown = Nil, Self, ::oUpDown ) )
                res := IIF( ValType( res ) == "L", res, .T. )
             ENDIF
             IF res .AND. ::oUpDown != Nil // updown control

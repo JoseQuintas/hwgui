@@ -1,10 +1,19 @@
+/*
+ * $Id: calculator.prg
+ *
+ * HWGUI - Harbour Win32 GUI library
+ *
+ * Sample
+ *
+*/
+
 
 #Include "hwgui.ch"
 STATIC Thisform
 
 Function Main ()
 
-   INIT WINDOW oMain MAIN TITLE "Calculato Sample" ;
+   INIT WINDOW oMain MAIN TITLE "Calculator Sample" ;
       AT 0,0 ;
       SIZE GetDesktopWidth() - 100, GetDesktopHeight() - 78
 

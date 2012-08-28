@@ -1,5 +1,5 @@
 /*
- *
+ * $Id: hcalculator.prg
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * HCalculator class

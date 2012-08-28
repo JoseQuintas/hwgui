@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-08-27 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include/window.ch			 
+     ! constant moved from place
+   * source/hbrowse.prg
+     ! commented two functions that are not being used
+	   STATIC FUNCTION FltRecNoRelative
+	   STATIC FUNCTION FltRecCount
 
 2012-08-27 14:59 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcwindow.prg

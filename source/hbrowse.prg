@@ -3992,6 +3992,7 @@ STATIC FUNCTION FltEOF( oBrw )
    ENDIF
    RETURN lRet
 
+   /*  no used
 STATIC FUNCTION FltRecCount( oBrw )
    LOCAL nRecord, nCount := 0
    nRecord := FltRecNo( oBrw )
@@ -4008,7 +4009,8 @@ STATIC FUNCTION FltRecCount( oBrw )
    ENDDO
    FltGoTo( oBrw, nRecord )
    RETURN nCount
-
+  */
+  
 STATIC FUNCTION FltGoTo( oBrw, nRecord )
    HB_SYMBOL_UNUSED( oBrw )
    RETURN ( oBrw:Alias )->( DBGoTo( nRecord ) )
@@ -4018,7 +4020,7 @@ STATIC FUNCTION FltRecNo( oBrw )
    RETURN ( oBrw:Alias )->( RecNo() )
 
 //End Implementation by Luiz
-
+/*  no used
 STATIC FUNCTION FltRecNoRelative( oBrw )
    HB_SYMBOL_UNUSED( oBrw )
    IF oBrw:lFilter .AND. EMPTY( oBrw:RelationalExpr )
@@ -4028,7 +4030,8 @@ STATIC FUNCTION FltRecNoRelative( oBrw )
       RETURN oBrw:nRecords
    ENDIF
    RETURN ( oBrw:Alias )->( RecNo() )
-
+ */
+ 
 STATIC FUNCTION LenVal( xVal, cType, cPict )
    LOCAL nLen
 

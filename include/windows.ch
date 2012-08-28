@@ -80,9 +80,13 @@
 #define WM_LBUTTONDBLCLK                515    // 0x0203
 #define WM_RBUTTONDOWN                  516    // 0x0204
 #define WM_RBUTTONUP                    517    // 0x0205
-#define WM_MBUTTONUP	                  520    // 0x0208
+#define WM_MBUTTONUP	                   520    // 0x0208
+#define WM_MOUSEWHEEL                   522    // 0x020A
 #define WM_PARENTNOTIFY                 528    // 0x0210
-#define	WM_MOVING                       534    //  0x0216,
+#define WM_NEXTMENU                     531    // 0x0213
+#define WM_SIZING                       532    // 0x0214
+#define WM_CAPTURECHANGED               533     // 0x0215
+#define	WM_MOVING                       534     //  0x0216,
 #define WM_MDICREATE                    544     // 0x0220
 #define WM_MDIDESTROY                   545     // 0x0221
 #define WM_MDIACTIVATE                  546     // 0x0222
@@ -96,8 +100,6 @@
 #define WM_MDISETMENU                   560     // 0x0230
 #define WM_ENTERSIZEMOVE                561     // 0x0231
 #define WM_EXITSIZEMOVE                 562     // 0x0232
-
-
 
 #define WM_CUT                          768     // 0x0300
 #define WM_COPY                         769     // 0x0301
@@ -1007,12 +1009,6 @@
 // #define BS_NOTIFY               16384   // 0x00004000L
 
 // more messages
-#define WM_NEXTMENU                     0x0213
-#define WM_SIZING                       0x0214
-#define WM_CAPTURECHANGED               0x0215
-
-
-#define WM_MOUSEWHEEL  0x020A
 
 #define TB_LINEUP               0
 #define TB_LINEDOWN             1

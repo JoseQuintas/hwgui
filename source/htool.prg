@@ -414,10 +414,10 @@ METHOD CREATETOOL() CLASS hToolBar
       ::BtnHeight := MAX( HIWORD( SENDMESSAGE( ::handle, TB_GETBUTTONSIZE, 0, 0 ) ),;
                      ::nHeight - ::nDrop - IIF( ! ::lnoThemes .AND. Hwg_BitAnd( ::Style,  TBSTYLE_FLAT ) > 0, 0, 2 ) )
       IF  ! ::lVertical
-         SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth , ::BtnHeight - 7 ) )
+         SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::BtnWidth , ::BtnHeight ) )
       ELSE
-        SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - ::nDrop - 1, ::BtnWidth )  )
-  		  ENDIF
+         SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - ::nDrop - 1, ::BtnWidth )  )
+      ENDIF
    ENDIF
    ::BtnWidth := LOWORD( SENDMESSAGE( ::handle, TB_GETBUTTONSIZE, 0, 0 ) )
       /*

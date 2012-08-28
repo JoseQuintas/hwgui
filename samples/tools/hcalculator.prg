@@ -216,6 +216,9 @@ METHOD Calculando( cNumero ) CLASS HCalculator
    Local nLen := Len( oForm:oVisor:Caption ), nCars
    Private nCalculo1 , ncalculo2
 
+   IF IsCtrlShift( .F., .T. ) .AND. ( cNumero = "5" .OR. cNumero = "8" )
+      cNumero := IIF( cNumero = "8", "*", IIF( cNumero = "5", "%", cNumero ) )
+   ENDIF
    If cNumero $ "/*-+%="
       nCars := oForm:oCalculo:nWidth / ::nFontSize
       oForm:oCalculo:Caption += oForm:oVisor:Caption + " "+cNumero+" "
@@ -307,31 +310,19 @@ METHOD INIT( ) CLASS HCalculator
 
    SETDLGKEY( ::oFormCalc ,,8,{|| ::Calculando( " ") })
    SETDLGKEY( ::oFormCalc ,,46,{|| ::Calculando( "") })
-   SETDLGKEY( ::oFormCalc ,,48,{|| ::Calculando( "0") })
-   SETDLGKEY( ::oFormCalc ,,49,{|| ::Calculando( "1") })
-   SETDLGKEY( ::oFormCalc ,,50,{|| ::Calculando( "2") })
-   SETDLGKEY( ::oFormCalc ,,51,{|| ::Calculando( "3") })
-   SETDLGKEY( ::oFormCalc ,,52,{|| ::Calculando( "4") })
-   SETDLGKEY( ::oFormCalc ,,53,{|| ::Calculando( "5") })
-   SETDLGKEY( ::oFormCalc ,,54,{|| ::Calculando( "6") })
-   SETDLGKEY( ::oFormCalc ,,55,{|| ::Calculando( "7") })
-   SETDLGKEY( ::oFormCalc ,,56,{|| ::Calculando( "8") })
-   SETDLGKEY( ::oFormCalc ,,57,{|| ::Calculando( "9") })
-   SETDLGKEY( ::oFormCalc ,VK_SHIFT,56,{|| ::Calculando( "*") })
    SETDLGKEY( ::oFormCalc ,,110,{|| ::Calculando( ",") })
    SETDLGKEY( ::oFormCalc ,,188,{|| ::Calculando( ",") })
    SETDLGKEY( ::oFormCalc ,,190,{|| ::Calculando( ".") })
    SETDLGKEY( ::oFormCalc ,,194,{|| ::Calculando( ".") })
    SETDLGKEY( ::oFormCalc ,,106,{|| ::Calculando( "*") })
    SETDLGKEY( ::oFormCalc ,,107,{|| ::Calculando( "+") })
+   SETDLGKEY( ::oFormCalc ,FSHIFT,187,{|| ::Calculando( "+") })
    SETDLGKEY( ::oFormCalc ,,109,{|| ::Calculando( "-") })
+   SETDLGKEY( ::oFormCalc ,,189,{|| ::Calculando( "-") })
    SETDLGKEY( ::oFormCalc ,,111,{|| ::Calculando( "/") })
-   SETDLGKEY( ::oFormCalc ,,186,{|| ::Calculando( "*") })
+   SETDLGKEY( ::oFormCalc ,,193,{|| ::Calculando( "/") })
    SETDLGKEY( ::oFormCalc ,,187,{|| ::Calculando( "=") })
    SETDLGKEY( ::oFormCalc ,,13,{|| ::Calculando( "=") })
-   SETDLGKEY( ::oFormCalc ,VK_SHIFT,187,{|| ::Calculando( "+") })
-   SETDLGKEY( ::oFormCalc ,,189,{|| ::Calculando( "-") })
-   SETDLGKEY( ::oFormCalc ,,81,{|| ::Calculando( "/") })
 
    ::lClear := .t.
    ::aOperando := { , , 0 }

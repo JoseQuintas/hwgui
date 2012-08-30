@@ -1011,7 +1011,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
               
    ::Activate()
    //IF bGFocus != NIL
-      ::bGetFocus  := bGFocus
+   ::bGetFocus  := bGFocus
    ::oParent:AddEvent( BN_SETFOCUS, Self, { || ::onGetFocus() } )
    ::oParent:AddEvent( BN_KILLFOCUS, self, {|| ::onLostFocus()})
    //ENDIF
@@ -1047,10 +1047,10 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
               bSize, bPaint, cTooltip, tcolor, bColor )
 
    ::title   := cCaption
-   IF bGFocus != NIL
-      ::bGetFocus  := bGFocus
-      ::oParent:AddEvent( BN_SETFOCUS, Self, { || ::onGetFocus() } )
-   ENDIF                                        
+   //IF bGFocus != NIL
+   ::bGetFocus  := bGFocus
+   ::oParent:AddEvent( BN_SETFOCUS, Self, { || ::onGetFocus() } )
+   //ENDIF
    ::oParent:AddEvent( BN_KILLFOCUS, self, {|| ::onLostFocus()})
    ::bClick  := bClick
    IF bClick != NIL
@@ -1169,11 +1169,11 @@ METHOD NoteCaption( cNote )  CLASS HButton         //*
 METHOD onGetFocus()  CLASS HButton
    LOCAL res := .t., nSkip
 
-   IF  ::bGetFocus = Nil .OR. ! CheckFocus( Self, .f. )
+   IF  ! CheckFocus( Self, .f. ) .OR. ::bGetFocus = Nil
       RETURN .t.
    ENDIF
-   nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 .and. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
    IF ::bGetFocus != Nil
+      nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 .and. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
       ::oParent:lSuspendMsgsHandling := .t.
       res := Eval( ::bGetFocus, ::title, Self )
       ::oParent:lSuspendMsgsHandling := .f.
@@ -1192,7 +1192,8 @@ METHOD onLostFocus()  CLASS HButton
   IF ::lflat
      InvalidateRect( ::oParent:Handle, 1 , ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )   
   ENDIF
-  IF ::bLostFocus != Nil .AND. PtrtouLong( GetParent( GetFocus() ) ) = PtrtouLong( ::getparentform():Handle ) //CheckFocus( Self, .f. ) 
+  ::lnoWhen := .F.
+  IF ::bLostFocus != Nil .AND. SelfFocus( GetParent( GetFocus() ), ::getparentform():Handle )
  		  ::oparent:lSuspendMsgsHandling := .t.
       Eval( ::bLostFocus, ::title, Self)
       ::oparent:lSuspendMsgsHandling := .f.

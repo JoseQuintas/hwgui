@@ -86,7 +86,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ::hbitmap := hbitmap
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-              bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )//, bClick )
+              bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, bClick )
 
    DEFAULT vColor TO RGB( 5, 34, 143 )
    DEFAULT lColor TO RGB( 0, 0, 255 )

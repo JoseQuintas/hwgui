@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-08-30 16:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+    * source/hhyper.prg			 
+      * METHOD NEW()
+	    ! fix in parameter bClick
+
 2012-08-30 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * source/hcontrol.prg			 
      * CLASS HButton
@@ -54,7 +59,7 @@
    * source/hedit.prg	  
      * METHOD New()
 	   activate KILLFOCUS when ::bSetGet = Nil .and. bLostFocus = Nil
-	   force the pass through function CHECKFOCUS to set PROPERTY lwhen 
+	   force the pass through function CHECKFOCUS to set PROPERTY lnowhen 
 	 * METHOD onEvent()  
 	   ! msg == WM_SETFOCUS changed condition  ( ::lPicComplex )  to ( "R" $ ::cPicFunc )
      * METHOD Value
@@ -84,7 +89,7 @@
      * METHOD onEvent()
        ! minor fix in Paint()
    * source/hsplit.prg
-       + DATA lScrolling
+     + DATA lScrolling
 	 * METHOD New()
 	   ! add two news parameters lTransp, lScrolling ) transparent and real scrolling 
      * METHOD onEvent()	   

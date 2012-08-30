@@ -575,7 +575,6 @@ METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint, bRClic
    RETURN Self
 
 METHOD Activate() CLASS HStatus
-   LOCAL aCoors
 
    IF ! Empty( ::oParent:handle )
       ::handle := CreateStatusWindow( ::oParent:handle, ::id )

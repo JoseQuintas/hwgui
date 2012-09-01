@@ -1232,7 +1232,8 @@ METHOD Rebuild() CLASS HBrowse
       IF oColumn:lEditable
          ::lEditable := .T.
       ENDIF
-      FontSize := TxtRect(  "a", Self, oColumn:oFont )[ 1 ]
+      //FontSize := TxtRect(  "a", Self, oColumn:oFont )[ 1 ]
+      FontSize := IIF( oColumn:type = "N" .OR. oColumn:type = "D", TxtRect( "9", Self, oColumn:oFont )[1] , TxtRect( "N", Self, oColumn:oFont )[1] )
       IF oColumn:aBitmaps != Nil
          IF oColumn:heading != nil
             /*
@@ -1342,6 +1343,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
       ENDIF
       EndPaint( ::handle, pps )
       ::isMouseOver := .F.
+
       RETURN Nil
    ENDIF
    IF ( ::m_bFirstTime ) .AND. ::Themed
@@ -2131,8 +2133,8 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
       Eval( ::bLineOut, Self, lSelected )
    ENDIF
    IF ::nRecords > 0 .OR. lClear
-      oldBkColor := SetBkColor(   hDC, IIf( nCol >= 1, ::htbcolor, IIf( lSelected, ::bcolorSel, ::bcolor ) ) )
-      oldTColor  := SetTextColor( hDC, IIf( nCol >= 1, ::httcolor, IIf( lSelected, ::tcolorSel, ::tcolor ) ) )
+  *    oldBkColor := SetBkColor(   hDC, IIf( nCol >= 1, ::htbcolor, IIf( lSelected, ::bcolorSel, ::bcolor ) ) )
+  *    oldTColor  := SetTextColor( hDC, IIf( nCol >= 1, ::httcolor, IIf( lSelected, ::tcolorSel, ::tcolor ) ) )
       ::nPaintCol  := IIf( ::freeze > 0, 1, ::nLeftCol )
       ::nPaintRow  := nRow
       IF ::lDeleteMark
@@ -2156,7 +2158,6 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                         ::x1  - ::nDeleteMark - 1 , ::y1 + ( ::height + 1 ) * ::nPaintRow - 0 ) //, IIF( Deleted(), GetStockObject( 7 ), ::brush:handle ))
           ENDIF
           IF lSelected
-*                       msginfo(str(::HighlightStyle))
              DrawTransparentBitmap( hDC, ::oBmpMark:Handle, ::x1 - ::nShowMark - ::nDeleteMark + 1,;
                           ( ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) ) + ;
                           ( ( ::y1 + ( ::height + 1 ) * ( ::nPaintRow  ) ) - ( ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) ) ) / 2 - 6 )
@@ -2180,6 +2181,8 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
              ENDIF
           ENDIF
       ENDIF
+      oldBkColor := SetBkColor(   hDC, IIf( nCol >= 1, ::htbcolor, IIf( lSelected, ::bcolorSel, ::bcolor ) ) )
+      oldTColor  := SetTextColor( hDC, IIf( nCol >= 1, ::httcolor, IIf( lSelected, ::tcolorSel, ::tcolor ) ) )
       ::nVisibleColLeft :=  ::nPaintCol
       WHILE x < ::x2 - 2
          // if bColorBlock defined get the colors
@@ -2841,6 +2844,7 @@ ELSEIF nLine == 0
       //::aColumns[ fif ]:bHeadClick != nil
       ::aColumns[ fif ]:lHeadClick := .T.
       InvalidateRect( ::handle, 0, ::x1, ::y1 - ::nHeadHeight * ::nHeadRows, ::x2, ::y1 )
+     * MSGINFO('C')
       IF ::aColumns[ fif ]:bHeadClick != nil
          ::isMouseOver := .F.
          ::oParent:lSuspendMsgsHandling := .T.
@@ -2850,9 +2854,10 @@ ELSEIF nLine == 0
       ::lHeadClick := .T.
    ENDIF
 ENDIF
-   IF  PtrtouLong( GetActiveWindow() ) = PtrtouLong( ::GetParentForm():Handle )  .OR. ;
-       ::GetParentForm( ):Type < WND_DLG_RESOURCE
+   IF  ( PtrtouLong( GetActiveWindow() ) = PtrtouLong( ::GetParentForm():Handle )  .OR. ;
+       ::GetParentForm( ):Type < WND_DLG_RESOURCE )
        ::SetFocus()
+       ::RefreshLine()
    ENDIF
 
 

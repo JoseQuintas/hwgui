@@ -1,0 +1,7 @@
+testchild.prg
+-i..\..\include
+-lhwgui
+-lprocmisc
+-lhbxml
+-L..\..\lib
+-gtgui

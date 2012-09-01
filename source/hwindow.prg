@@ -107,6 +107,7 @@ CLASS VAR szAppName  SHARED INIT "HwGUI_App"
    METHOD AddItem( oWnd )
    METHOD DelItem( oWnd )
    METHOD FindWindow( hWnd )
+   METHOD FindWindowTitle( cTitle )
    METHOD GetMain()
    METHOD GetMdiMain() INLINE IIF( ::GetMain() != Nil, ::aWindows[ 1 ] , Nil )
    METHOD Center()   INLINE Hwg_CenterWindow( ::handle, ::Type )
@@ -198,6 +199,10 @@ METHOD DelItem( oWnd ) CLASS HWindow
 
 METHOD FindWindow( hWnd ) CLASS HWindow
    LOCAL i := AScan( ::aWindows, { | o | PtrtoUlong(o:handle) == PtrtoUlong(hWnd) } )
+   RETURN IIf( i == 0, Nil, ::aWindows[ i ] )
+
+METHOD FindWindowTitle( cTitle ) CLASS HWindow
+   LOCAL i := AScan( ::aWindows, { | o | VALTYPE( o:Title ) = "C" .AND. o:Title == cTitle } )
    RETURN IIf( i == 0, Nil, ::aWindows[ i ] )
 
 METHOD GetMain() CLASS HWindow

@@ -8,6 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-09-01 21:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * samples
+     + folder winchild
+	   ! moved files from folder mdichid to folder winchild
+   * samples\mdichild	   
+     + sample testmdichil.prg
+    * source/hbrowse.prg		
+      * METHOD Rebuild() 	
+	    ! fixed FontSize 
+	  * METHOD LineOut()
+	  * METHOD ButtonDown 	
+	    ! fix in new feature highlightstyle
+    * source/hwindow.prg
+	  * CLASS HWindow 
+        + METHOD FindWindowTitle( cTitle )
+	      A window search by name	
+
 2012-08-30 16:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * source/hhyper.prg			 
       * METHOD NEW()

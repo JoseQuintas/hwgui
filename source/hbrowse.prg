@@ -1233,7 +1233,8 @@ METHOD Rebuild() CLASS HBrowse
          ::lEditable := .T.
       ENDIF
       //FontSize := TxtRect(  "a", Self, oColumn:oFont )[ 1 ]
-      FontSize := IIF( oColumn:type = "N" .OR. oColumn:type = "D", TxtRect( "9", Self, oColumn:oFont )[1] , TxtRect( "N", Self, oColumn:oFont )[1] )
+      FontSize := IIF( Empty( oColumn:type ) .OR. ! oColumn:type $ "DN", TxtRect( "N", Self, oColumn:oFont )[1] , ;
+                                                                         TxtRect( "9", Self, oColumn:oFont )[1] )
       IF oColumn:aBitmaps != Nil
          IF oColumn:heading != nil
             /*
@@ -1281,7 +1282,7 @@ METHOD Rebuild() CLASS HBrowse
             xSize := Round( ( nColLen  ) * 6, 0 )
          ENDIF
          */
-         xSize := Round( ( nColLen + 0.8 ) * ( (  FontSize ) ), 0 )
+         xSize := Round( ( nColLen + 0.6 ) * ( (  FontSize ) ), 0 )
       ENDIF
       xSize := ::aMargin[ 4 ] + xSize + ::aMargin[ 2 ]
       IF Empty( oColumn:width )
@@ -2225,21 +2226,23 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
          ENDIF
          IF !::aColumns[ ::nPaintCol ]:lHide
            IF nCol == 0 .OR. nCol == nColumn
-              hBReal := oLineBrush:handle
-              IF ! lClear
+             hBReal := oLineBrush:handle
+             IF ! lClear
                 IF ::aColumns[ ::nPaintCol ]:bColor != Nil .AND. ::aColumns[ ::nPaintCol ]:brush == Nil
                    ::aColumns[ ::nPaintCol ]:brush := HBrush():Add( ::aColumns[ ::nPaintCol ]:bColor )
                 ENDIF
-                //hBReal := IIf( ::aColumns[ ::nPaintCol ]:brush != Nil .AND. ( ::nPaintCol != ::colPos .OR. ! lSelected ), ;
-                hBReal := IIf( ::aColumns[ ::nPaintCol ]:brush != Nil .AND. !( lSelected .AND. EMPTY( aCores ) ),;
-                           ::aColumns[ ::nPaintCol ]:brush:handle, oLineBrush:handle )
-              ENDIF
+                 //hBReal := IIf( ::aColumns[ ::nPaintCol ]:brush != Nil .AND. ( ::nPaintCol != ::colPos .OR. ! lSelected ), ;
+                 hBReal := IIf( ::aColumns[ ::nPaintCol ]:brush != Nil .AND. !( lSelected .AND. EMPTY( aCores ) ),;
+                          ::aColumns[ ::nPaintCol ]:brush:handle, oLineBrush:handle )
+             ENDIF
              // Fill background color of a cell
              FillRect( hDC, x, ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1, ;
                       x + xSize - IIf( ::lSep3d, 2, 1 ), ::y1 + ( ::height + 1 ) * ::nPaintRow, hBReal )
              IF xSize != xSizeMax
+                // ! adjright
+                hBReal := HBrush():Add( 16185336 ):Handle
                 FillRect( hDC, x + xsize, ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1 , ;
-                       x + xSizeMax - IIF( ::lSep3d, 2, 1 ) , ::y1 + ( ::height + 1 ) * ::nPaintRow, HBrush():Add( 16185336 ):Handle ) //::brush:handle )
+                       x + xSizeMax - IIF( ::lSep3d, 2, 1 ) , ::y1 + ( ::height + 1 ) * ::nPaintRow, hBReal ) //::brush:handle )
              ENDIF
              IF ! lClear
                IF ::aColumns[ ::nPaintCol ]:aBitmaps != Nil .AND. ! Empty( ::aColumns[ ::nPaintCol ]:aBitmaps )

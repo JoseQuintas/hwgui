@@ -14,7 +14,7 @@
 
 REQUEST HB_CODEPAGE_RU866
 REQUEST HB_CODEPAGE_RUKOI8
-REQUEST HB_CODEPAGE_RU1251
+//REQUEST HB_CODEPAGE_RU1251
 
 REQUEST DBFCDX
 REQUEST DBFFPT
@@ -25,7 +25,7 @@ REQUEST ORDKEYCOUNT
 Static aFieldTypes := { "C","N","D","L" }
 Static dbv_cLocate, dbv_nRec, dbv_cSeek
 
-Function Main
+Function zMain
 Local oWndMain, oPanel
 Memvar oBrw, oFont
 Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
@@ -122,10 +122,8 @@ Memvar oBrw, oSay1, oSay2, DataCP, currentCP, currFname
       
       oBrw:InitBrw( 2 )
       oBrw:active := .F.
-      CreateList( oBrw,.T. )
-      Aadd( oBrw:aColumns,Nil )
-      Ains( oBrw:aColumns,1 )
-      oBrw:aColumns[1] := HColumn():New( "*",{|v,o|Iif(Deleted(),'*',' ')},"C",1,0 )
+      CreateList( oBrw, .T. )
+      oBrw:InsColumn( HColumn():New( "*", {|| Iif(Deleted(),'*',' ') }, "C", 1, 0 ), 1 )
       oBrw:active := .T.
       oBrw:Refresh()
       oSay1:SetValue( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )

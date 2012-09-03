@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-09-03 11:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * samples\database\dbfview.prg
+     FUNCTION FileOpen 
+     ! minor fix 
+   * source/hbrowse.prg	
+     * CLASS HColumn
+       + METHOD Editable( lEditable ) SETGET
+       * METHOD NEW()
+         ! minor fix in leditable
+
 2012-09-03 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg	
      * METHOD REBUILD()

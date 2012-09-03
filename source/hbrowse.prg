@@ -106,6 +106,7 @@ CLASS HColumn INHERIT HObject
    METHOD Show()
    METHOD SortMark( nSortMark ) SETGET
    METHOD Value( xValue ) SETGET
+   METHOD Editable( lEditable ) SETGET
 
 ENDCLASS
 
@@ -117,7 +118,7 @@ METHOD New( cHeading, block, Type, length, dec, lEditable, nJusHead, nJusLin, cP
    ::Type      := Type
    ::length    := length
    ::dec       := dec
-   ::lEditable := lEditable  // IIf( lEditable != Nil, lEditable, .F. )
+   ::lEditable := IIf( lEditable != Nil, lEditable, ::lEditable )
    ::nJusHead  := IIf( nJusHead == nil,  DT_LEFT, nJusHead ) + DT_VCENTER + DT_SINGLELINE // Por default
    ::nJusLin   := nJusLin //IIf( nJusLin  == nil,  DT_LEFT, nJusLin  ) + DT_VCENTER + DT_SINGLELINE // Justif.Izquierda
    ::nJusFoot  := IIf( nJusLin  == nil, DT_LEFT, nJusLin  )
@@ -155,6 +156,14 @@ METHOD Visible( lVisible ) CLASS HColumn
     ::lHide := .F.
     ::oParent:Refresh()
     RETURN ::lHide
+
+METHOD Editable( lEditable ) CLASS HColumn
+   IF lEditable != Nil
+      ::lEditable := lEditable
+      ::oParent:lEditable := lEditable .OR. Ascan( ::oParent:aColumns, {| c |  c:lEditable } ) > 0
+      RedrawWindow( ::oParent:handle, RDW_INVALIDATE + RDW_INTERNALPAINT )
+   ENDIF
+   RETURN ::lEditable
 
  METHOD SortMark( nSortMark ) CLASS HColumn
 

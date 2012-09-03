@@ -1302,6 +1302,7 @@ METHOD AutoFit( ) CLASS HBrowse
    IF ::AutoColumnFit = 2
       RETURN .F.
    ENDIF
+   ::lAdjRight := .F.
    ::oParent:lSuspendMsgsHandling := .T.
    RedrawWindow( ::handle, RDW_VALIDATE + RDW_UPDATENOW )
    ::oParent:lSuspendMsgsHandling := .F.
@@ -1414,7 +1415,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    ::y1 := aCoors[ 2 ] + IIf( ::lDispHead, ::nHeadHeight * ::nHeadRows, 0 )
    ::x2 := aCoors[ 3 ]
    ::y2 := aCoors[ 4 ] // - Iif( ::nFootRows > 0, ::nFootHeight*::nFootRows, 0 )
-   ::xAdjRight := ::x2
+   *--::xAdjRight := ::x2
    IF ::lRepaintBackground
       //FillRect( hDC, ::x1 - ::nDeleteMark, ::y1,  ::x2, ::y2 - ( ::nFootHeight * ::nFootRows ), ::brush:handle )
       FillRect( hDC, ::x1 - ::nDeleteMark, ::y1, ::xAdjRight, ::y2 - ( ::nFootHeight * ::nFootRows ), ::brush:handle )
@@ -1468,6 +1469,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
          Eval( ::bSkip, Self, 1 )
        ENDDO
        */
+       ::xAdjRight := ::x2
        ::HeaderOut( hDC )
        *Eval( ::bGoTo, Self, tmp )
 
@@ -1843,6 +1845,9 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
                ::x2 , ;
                ::y1   )
    ENDIF
+   IF ! ::lAdjRight
+      DrawLine( hDC, ::xAdjRight, ::y1 - 1, ::x2 , ::y1 - 1  )
+   ENDIF
 
    SetBkColor( hDC, oldBkColor )
    IF ::headColor <> Nil
@@ -1960,8 +1965,16 @@ METHOD SeparatorOut( hDC, nRowsFill ) CLASS HBrowse
    //  SEPARATOR HORIZONT
     SelectObject( hDC, oPen:handle )
     IF ! ::lAdjRight
-       DrawLine( hDC, x - 1, ::y1 - ( ::height * ::nHeadRows ), x - 1, ::y1 + ( ::height + 1 ) * ( nRowsFill ) )
-       //DrawLine( hDC, ::x2 - 1, ::y1 - ( ::height * ::nHeadRows ), ::x2 - 1, ::y1 + ( ::height + 1 ) * ( nRows ) )
+       IF ::lSep3d
+         SelectObject( hDC, oPenLight:handle )
+         DrawLine( hDC, x - 1 , ::y1 - ( ::height * ::nHeadRows ), x - 1 , ::y1 + ( ::height + 1 ) * ( nRowsFill ) )
+         SelectObject( hDC, oPen:handle )
+         DrawLine( hDC, x - 2 , ::y1 - ( ::height * ::nHeadRows ), x - 2 , ::y1 + ( ::height + 1 ) * ( nRowsFill ) )
+       ELSE
+          DrawLine( hDC, x - 1 , ::y1 - ( ::height * ::nHeadRows ), x - 1 , ::y1 + ( ::height + 1 ) * ( nRowsFill ) )
+       ENDIF
+      // DrawLine( hDC, x - 1, ::y1 - ( ::height * ::nHeadRows ), x - 1, ::y1 + ( ::height + 1 ) * ( nRowsFill ) )
+
     ELSE
        DrawLine( hDC, x, ::y1 - ( ::height * ::nHeadRows ), x , ::y1 + ( ::height + 1 ) * ( nRowsFill ) )
     ENDIF
@@ -2162,17 +2175,18 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                           ( ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) ) + ;
                           ( ( ::y1 + ( ::height + 1 ) * ( ::nPaintRow  ) ) - ( ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) ) ) / 2 - 6 )
              IF ::HighlightStyle = 2 .OR. ( ( ::HighlightStyle = 0 .AND. SelfFocus( ::Handle ) ) .OR. ;
-                  ( ::HighlightStyle = 3 .AND. ( ! SelfFocus( ::Handle ) .or. ::lEditable ) ) )
-                IF ! ::lEditable  .OR. ::HighlightStyle = 3
+                  ( ::HighlightStyle = 3 .AND. (  ::Highlight .OR. ::lEditable .OR. ! SelfFocus( ::Handle ) ) ) )
+                IF ! ::lEditable  .OR. ::HighlightStyle = 3 .OR. ::HighlightStyle = 0
+                   ::internal[ 1 ] := 1
                    oPen := HPen():Add( 0, 1, ::bcolorSel )
                    SelectObject( hDC, GetStockObject( NULL_BRUSH ) )
                    SelectObject( hDC, oPen:handle )
                    RoundRect( hDC, ::x1, ;
                                  ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1  , ;
-                                 ::x2 - 1  ,;
+                                 ::xAdjRight - 2,;  //::x2 - 1  ,;
                                  ::y1 + ( ::height + 1 ) * ::nPaintRow  , 0, 0 )
                    DeleteObject( oPen )
-                   IF ( ! ::lEditable .AND. nCol = 0 )  .OR. ( ::HighlightStyle = 3 .AND. ! SelfFocus( ::Handle ) )
+                   IF ( ( ::Highlight .OR. ! ::lEditable ) .AND. nCol = 0 )  .OR. ( ::HighlightStyle = 3 .AND. ! SelfFocus( ::Handle ) )
                       RETURN NIL
                    ENDIF
                 ENDIF
@@ -2225,7 +2239,7 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                       x + xSize - IIf( ::lSep3d, 2, 1 ), ::y1 + ( ::height + 1 ) * ::nPaintRow, hBReal )
              IF xSize != xSizeMax
                 FillRect( hDC, x + xsize, ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1 , ;
-                       x + xSizeMax - IIF( ::lSep3d, 2, 1 ) , ::y1 + ( ::height + 1 ) * ::nPaintRow, ::brush:handle )
+                       x + xSizeMax - IIF( ::lSep3d, 2, 1 ) , ::y1 + ( ::height + 1 ) * ::nPaintRow, HBrush():Add( 16185336 ):Handle ) //::brush:handle )
              ENDIF
              IF ! lClear
                IF ::aColumns[ ::nPaintCol ]:aBitmaps != Nil .AND. ! Empty( ::aColumns[ ::nPaintCol ]:aBitmaps )
@@ -2610,8 +2624,8 @@ METHOD LINEUP() CLASS HBrowse
       ::rowPos --
       IF ::rowPos = 0  // needs scroll
          ::rowPos := 1
-         // InvalidateRect( ::handle, 0 )
-         ::Refresh( .F., .T. )
+         RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT )
+         //::Refresh( .F., .T. )
          ::internal[ 1 ] := 14
       ELSE
          ::internal[ 1 ] := 0

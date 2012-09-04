@@ -115,7 +115,7 @@ METHOD New( cHeading, block, Type, length, dec, lEditable, nJusHead, nJusLin, cP
 
    ::heading   := IIf( cHeading == nil, "", cHeading )
    ::block     := block
-   ::Type      := Type
+   ::Type      := IIF( Type != Nil, UPPER( Type ), Type )
    ::length    := length
    ::dec       := dec
    ::lEditable := IIf( lEditable != Nil, lEditable, ::lEditable )
@@ -1242,8 +1242,7 @@ METHOD Rebuild() CLASS HBrowse
          ::lEditable := .T.
       ENDIF
       //FontSize := TxtRect(  "a", Self, oColumn:oFont )[ 1 ]
-      FontSize := IIF( Empty( oColumn:type ) .OR. ! oColumn:type $ "DN", TxtRect( "N", Self, oColumn:oFont )[1] , ;
-                                                                         TxtRect( "9", Self, oColumn:oFont )[1] )
+      FontSize := IIF( oColumn:type $ "DN", TxtRect( "9", Self, oColumn:oFont )[1], TxtRect( "N", Self, oColumn:oFont )[1] )
       IF oColumn:aBitmaps != Nil
          IF oColumn:heading != nil
             /*
@@ -1253,7 +1252,7 @@ METHOD Rebuild() CLASS HBrowse
                xSize := Round( ( Len( oColumn:heading ) + 2 ) * 6, 0 )
             ENDIF
             */
-            xSize := Round( ( Len( oColumn:heading ) + 0.8 ) * FontSize, 0 )
+            xSize := Round( ( Len( oColumn:heading ) + 0.6 ) * FontSize, 0 )
          ELSE
             xSize := 0
          ENDIF

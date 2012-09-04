@@ -3203,7 +3203,8 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
          ::lNoValid := .T.
          IF Type <> "L"
             bInit := IIf( wParam == Nil .OR. wParam = 13 .OR. Empty( lParam ), { | o | MoveWindow( o:handle, x1, y1, nWidth, o:nHeight + 1 ) }, ;
-                       { | o | MoveWindow( o:handle, x1, y1, nWidth, o:nHeight + 1 ), PostMessage( o:aControls[ 1 ]:handle, WM_CHAR, wParam, lParam ) } )
+                       { | o | MoveWindow( o:handle, x1, y1, nWidth, o:nHeight + 1 ), ;
+                           o:aControls[ 1 ]:SetFocus(), PostMessage( o:aControls[ 1 ]:handle, WM_CHAR, wParam, lParam ) } )
          ELSE
             bInit := { || .F. }
          ENDIF
@@ -3249,13 +3250,14 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
             IF Type == "L"
                oModDlg:lResult := .T.
             ELSEIF Type <> "M"
-               nHGet := Max( ( ::height - ( TxtRect( "A", self ) )[ 2 ] ) / 2 , 0 )
+               nHGet := Max( ( ::height - ( TxtRect( "N", self ) )[ 2 ] ) / 2 , 0 )
                @ 0, nHGet GET oGet VAR ::varbuf       ;
                   SIZE nWidth - IIF( oColumn:bClick != NIL, 16, 0 ) , ::height         ;
                   NOBORDER                       ;
                   STYLE ES_AUTOHSCROLL           ;
                   FONT ::oFont                   ;
-                  PICTURE oColumn:picture        ;
+                  PICTURE IIF( EMPTY( oColumn:picture ), Nil, oColumn:picture )        ;
+                  MAXLENGTH IIF( EMPTY( oColumn:picture ), oColumn:length, Nil )       ;
                   VALID { | oColumn, oGet | ::ValidColumn( oColumn, oGet, oBtn ) };
                   WHEN { | oColumn, oGet | ::WhenColumn( oColumn, oGet, oBtn ) }
                   //VALID oColumn:bValid           ;

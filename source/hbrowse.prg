@@ -3013,9 +3013,9 @@ METHOD ButtonRDown( lParam ) CLASS HBrowse
    RETURN Nil
 
 METHOD ButtonDbl( lParam ) CLASS HBrowse
-   LOCAL nLine := Int( HIWORD( lParam ) / ( ::height + 1 ) + IIf( ::lDispHead, 1 - ::nHeadRows, 1 ) )
+   LOCAL nLine := Int( IIF( ::lDispHead , ( ( HIWORD( lParam ) - ( ::nHeadHeight * ::nHeadRows ) ) / ( ::height + 1 ) + 1 )  ,;
+                                              HIWORD( lParam ) / ( ::height + 1 ) + 1  ) )
 
-   // writelog( "ButtonDbl"+str(nLine)+ str(::rowCurrCount) )
    IF nLine > 0 .and. nLine <= ::rowCurrCount
       ::ButtonDown( lParam )
       ::Edit()

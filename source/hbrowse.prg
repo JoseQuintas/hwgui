@@ -1857,7 +1857,6 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
    IF ! ::lAdjRight
       DrawLine( hDC, ::xAdjRight, ::y1 - 1, ::x2 , ::y1 - 1  )
    ENDIF
-
    SetBkColor( hDC, oldBkColor )
    IF ::headColor <> Nil
       SetTextColor( hDC, oldc )
@@ -2248,7 +2247,7 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowse
                       x + xSize - IIf( ::lSep3d, 2, 1 ), ::y1 + ( ::height + 1 ) * ::nPaintRow, hBReal )
              IF xSize != xSizeMax
                 // ! adjright
-                hBReal := HBrush():Add( 16185336 ):Handle
+                hBReal := HBrush():Add( 16448764 ):Handle
                 FillRect( hDC, x + xsize, ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1 , ;
                        x + xSizeMax - IIF( ::lSep3d, 2, 1 ) , ::y1 + ( ::height + 1 ) * ::nPaintRow, hBReal ) //::brush:handle )
              ENDIF
@@ -3252,12 +3251,11 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
             ELSEIF Type <> "M"
                nHGet := Max( ( ::height - ( TxtRect( "N", self ) )[ 2 ] ) / 2 , 0 )
                @ 0, nHGet GET oGet VAR ::varbuf       ;
-                  SIZE nWidth - IIF( oColumn:bClick != NIL, 16, 0 ) , ::height         ;
+                  SIZE nWidth - IIF( oColumn:bClick != NIL, 16, 1 ) , ::height   ;
                   NOBORDER                       ;
                   STYLE ES_AUTOHSCROLL           ;
                   FONT ::oFont                   ;
-                  PICTURE IIF( EMPTY( oColumn:picture ), Nil, oColumn:picture )        ;
-                  MAXLENGTH IIF( EMPTY( oColumn:picture ), oColumn:length, Nil )       ;
+                  PICTURE IIF( EMPTY( oColumn:picture ), Nil, oColumn:picture )   ;
                   VALID { | oColumn, oGet | ::ValidColumn( oColumn, oGet, oBtn ) };
                   WHEN { | oColumn, oGet | ::WhenColumn( oColumn, oGet, oBtn ) }
                   //VALID oColumn:bValid           ;

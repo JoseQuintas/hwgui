@@ -8,12 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-09-03 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+2012-09-04 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg	
      METHOD Edit()
 	 ! revert changed in Get 
 
-2012-09-03 11:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+2012-09-04 11:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg	
      METHOD Edit()
 	 ! minor fix

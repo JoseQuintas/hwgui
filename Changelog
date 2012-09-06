@@ -9,6 +9,11 @@
 */
 
 2012-09-05 16:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hedit.prg	
+     * METHOD Valid()
+	  ! minor fix in bad date return
+
+2012-09-05 16:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg	
      * METHOD ButtonDbl()
 	  ! fix in nLine

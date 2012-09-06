@@ -1168,10 +1168,11 @@ METHOD Valid( ) CLASS HEdit
          ::title := vari
          IF ::cType == "D"
             IF ::IsBadDate( vari )
-                MsgBeep()
-               //SetFocus( 0)
-               ::SetFocus( )
-               RETURN .T.
+               SetFocus( 0 )
+               ::SetFocus( .T. )
+               MsgBeep()
+               SendMessage( ::handle, EM_SETSEL, 0, 0 )
+               RETURN .F.
             ENDIF
             vari := CToD( vari )
             IF __SetCentury() .AND. LEN( Trim ( ::title ) ) < 10

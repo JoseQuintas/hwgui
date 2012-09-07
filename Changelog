@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-09-07 20:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hdatepic.prg	
+     * METHOD Refresh()
+	  ! minor fix 
+
 2012-09-05 16:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hedit.prg	
      * METHOD Valid()

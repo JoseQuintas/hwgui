@@ -48,7 +48,8 @@ ENDCLASS
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
             oFont, bInit, bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor, lShowTime ) CLASS HDatePicker
 
-   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), IIF( bSetGet != Nil,WS_TABSTOP , 0 ) + IIF( lShowTime == Nil.OR. ! lShowTime, 0, DTS_TIMEFORMAT ) )
+   nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), IIF( bSetGet != Nil,WS_TABSTOP , 0 ) + ;
+                        IIF( lShowTime == Nil.OR. ! lShowTime, 0, DTS_TIMEFORMAT ) )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               ,, ctooltip, tcolor, bcolor )
 
@@ -170,7 +171,7 @@ METHOD SetValue( xValue ) CLASS HDatePicker
    IF Empty( xValue )
       SetDatePickerNull( ::handle )
    ELSEIF ::lShowTime
-      SetDatePicker( ::handle, ::dValue, STRTRAN( xValue, ":", "" ) )
+      SetDatePicker( ::handle, Date(), STRTRAN( xValue, ":", "" ) )
    ELSE
       SetDatePicker( ::handle, xValue, STRTRAN( ::tValue, ":", "" ) )
    ENDIF
@@ -186,9 +187,9 @@ METHOD Refresh() CLASS HDatePicker
 
    IF ::bSetGet != Nil
       IF ! ::lShowTime
-         ::dValue := Eval( ::bSetGet,, nil )
+         ::dValue := Eval( ::bSetGet,, Self )
       ELSE
-         ::tValue := Eval( ::bSetGet,, nil )
+         ::tValue := Eval( ::bSetGet,, Self )
       ENDIF
    ENDIF
    IF Empty( ::dValue ) .AND. ! ::lShowTime
@@ -228,8 +229,8 @@ METHOD When( ) CLASS HDatePicker
    IF ! CheckFocus( Self, .f. )
       RETURN .t.
    ENDIF
-   nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 .and. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
    IF ::bGetFocus != Nil
+      nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 .and. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
       ::oParent:lSuspendMsgsHandling := .T.
       ::lnoValid := .T.
       res :=  Eval( ::bGetFocus, IIF( ::lShowTime, ::tValue, ::dValue ), Self )
@@ -239,7 +240,7 @@ METHOD When( ) CLASS HDatePicker
          WhenSetFocus( Self, nSkip )
          SendMessage( ::handle, DTM_CLOSEMONTHCAL, 0, 0 )
       ELSE
-         ::setfocus()   
+         ::SetFocus()
       ENDIF
    ENDIF
 
@@ -248,7 +249,7 @@ METHOD When( ) CLASS HDatePicker
 METHOD Valid( ) CLASS HDatePicker
    LOCAL  res := .t.
 
-   IF ! SELFFOCUS( GetParent( GetFocus() ) , ::getparentform():Handle )
+   IF ! SELFFOCUS( GetParent( GetFocus() ) , ::GetParentForm():Handle )
       RETURN .T.
    ENDIF
    IF ! CheckFocus( Self, .T. ) .OR. ::lnoValid

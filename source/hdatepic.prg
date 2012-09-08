@@ -87,6 +87,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bSize, bInit, ;
                  bGfocus, bLfocus, bChange, ctooltip, tcolor, bcolor, lShowTime ) CLASS  HDatePicker
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize,, ctooltip, tcolor, bcolor )
+              
    HWG_InitCommonControlsEx()
    ::dValue   := IIf( vari == Nil .OR. ValType( vari ) != "D", CToD( Space( 8 ) ), vari )
    ::tValue    := IIF( vari == Nil .OR. Valtype( vari ) != "C", SPACE(6), vari )

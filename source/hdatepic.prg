@@ -250,9 +250,11 @@ METHOD When( ) CLASS HDatePicker
 METHOD Valid( ) CLASS HDatePicker
    LOCAL  res := .t.
 
+   /*
    IF ! SELFFOCUS( GetParent( GetFocus() ) , ::GetParentForm():Handle )
       RETURN .T.
    ENDIF
+   */
    IF ! CheckFocus( Self, .T. ) .OR. ::lnoValid
       RETURN .T.
    ENDIF

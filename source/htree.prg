@@ -151,7 +151,6 @@ METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages, lchecked, bC
       FOR i := 1 TO Len( aImages )
          cImage := Upper( aImages[ i ] )
          IF ( h := AScan( oTree:aImages, cImage ) ) == 0
-            msginfo(cimage)
             AAdd( oTree:aImages, cImage )
             aImages[ i ] := IIf( oTree:Type, LoadBitmap( aImages[ i ] ), OpenBitmap( aImages[ i ] ) )
             Imagelist_Add( oTree:himl, aImages[ i ] )

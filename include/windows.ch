@@ -583,7 +583,25 @@
 #define CBS_UPPERCASE         8192 //$2000
 #define CBS_LOWERCASE         16384 //$4000
 
-
+/*
+ * Tree styles
+ */
+#define TVS_HASBUTTONS          1   // 0x0001
+#define TVS_HASLINES            2   // 0x0002
+#define TVS_LINESATROOT         4   // 0x0004
+#define TVS_EDITLABELS          8   // 0x0008
+#define TVS_DISABLEDRAGDROP    16   // 0x0010
+#define TVS_SHOWSELALWAYS      32   // 0x0020
+#define TVS_RTLREADING         64   // 0x0040
+#define TVS_NOTOOLTIPS        128   // 0x0080
+#define TVS_CHECKBOXES        256   // 0x0100
+#define TVS_TRACKSELECT       512   // 0x0200
+#define TVS_SINGLEEXPAND     1024   // 0x0400
+#define TVS_INFOTIP          2048   // 0x0800
+#define TVS_FULLROWSELECT    4096   // 0x1000
+#define TVS_NOSCROLL         8192   // 0x2000
+#define TVS_NONEVENHEIGHT   16384   // 0x4000
+#define TVS_NOHSCROLL       32768   // 0x8000  // TVS_NOSCROLL overrides this
 
 /*
  * MessageBox() Flags

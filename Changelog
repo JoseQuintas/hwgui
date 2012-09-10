@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-09-10 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include/window.ch			
+   * source/htree.prg			   
+     ! constant moved from htree to window.ch
+
 2012-09-09 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htree.prg			
      * Method Expand()

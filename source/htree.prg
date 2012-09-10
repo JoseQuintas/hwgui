@@ -32,24 +32,6 @@
 
 #define TVSIL_NORMAL            0
 
-#define TVS_HASBUTTONS          1   // 0x0001
-#define TVS_HASLINES            2   // 0x0002
-#define TVS_LINESATROOT         4   // 0x0004
-#define TVS_EDITLABELS          8   // 0x0008
-#define TVS_DISABLEDRAGDROP    16   // 0x0010
-#define TVS_SHOWSELALWAYS      32   // 0x0020
-#define TVS_RTLREADING         64   // 0x0040
-#define TVS_NOTOOLTIPS        128   // 0x0080
-#define TVS_CHECKBOXES        256   // 0x0100
-#define TVS_TRACKSELECT       512   // 0x0200
-#define TVS_SINGLEEXPAND     1024   // 0x0400
-#define TVS_INFOTIP          2048   // 0x0800
-#define TVS_FULLROWSELECT    4096   // 0x1000
-#define TVS_NOSCROLL         8192   // 0x2000
-#define TVS_NONEVENHEIGHT   16384   // 0x4000
-#define TVS_NOHSCROLL       32768   // 0x8000  // TVS_NOSCROLL overrides this
-
-
 #define TVGN_ROOT               0   // 0x0000
 #define TVGN_NEXT               1   // 0x0001
 #define TVGN_PREVIOUS           2   // 0x0002
@@ -323,7 +305,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit,
    lCheckBox   := IIf( lCheckBox == Nil, .F., lCheckBox )
    lDragDrop   := IIf( lDragDrop == Nil, .F., lDragDrop )
 
-   nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP  + WS_BORDER + TVS_FULLROWSELECT + TVS_TRACKSELECT+; //TVS_HASLINES +  ;
+   nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP  + TVS_FULLROWSELECT + TVS_TRACKSELECT+; //TVS_HASLINES +  ;
                             TVS_LINESATROOT + TVS_HASBUTTONS  + TVS_SHOWSELALWAYS + ;
                           IIf( lEditLabels == Nil.OR. ! lEditLabels, 0, TVS_EDITLABELS ) +;
                           IIf( lCheckBox == Nil.OR. ! lCheckBox, 0, TVS_CHECKBOXES ) +;
@@ -686,12 +668,12 @@ METHOD Expand( oNode, lAllNode )  CLASS HTree
    LOCAL i, iLen := Len( oNode:aitems  )
    
    SendMessage( ::handle, TVM_EXPAND, TVE_EXPAND, oNode:handle )
-   REDRAWWINDOW( ::handle , RDW_NOERASE + RDW_FRAME + RDW_INVALIDATE  )
    FOR i := 1 TO iLen
       IF ! EMPTY( lAllNode ) .AND. Len( oNode:aitems ) > 0
          ::Expand( oNode:aItems[ i ], lAllNode )
       ENDIF
    NEXT
+   REDRAWWINDOW( ::handle , RDW_NOERASE + RDW_FRAME + RDW_INVALIDATE  )
    RETURN Nil
 
 STATIC PROCEDURE ReleaseTree( aItems )

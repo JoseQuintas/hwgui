@@ -564,12 +564,13 @@ METHOD ExecuteTool( nid ) CLASS htoolbarex
    ENDIF
    RETURN - 200
 
+/*
 STATIC FUNCTION IsAltShift( lAlt )
    LOCAL cKeyb := GetKeyboardState()
 
    IF lAlt == Nil ; lAlt := .T. ; ENDIF
    RETURN ( lAlt .AND. ( Asc( SubStr( cKeyb, VK_MENU + 1, 1 ) ) >= 128 ) )
-
+   */
 
 PROCEDURE MyDestructor CLASS htoolbarex
    unsethook()

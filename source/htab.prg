@@ -185,7 +185,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
             oFont, bInit, bSize, bPaint, aTabs, bChange, aImages, lResour, nBC, bClick, bGetFocus, bLostFocus, bRClick ) CLASS HTab
    LOCAL i
 
-   nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE + WS_TABSTOP + TCS_TOOLTIPS )
+   nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_CLIPSIBLINGS + WS_TABSTOP + TCS_TOOLTIPS )
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint )
@@ -270,7 +270,7 @@ METHOD Init() CLASS HTab
       IF ::himl != Nil
          SendMessage( ::handle, TCM_SETIMAGELIST, 0, ::himl )
       ENDIF
-      AddToolTip( ::handle, ::handle, "" )
+      AddToolTip( ::GetParentForm():handle, ::handle, "" )
       Super:Init()
 
       IF Len( ::aPages ) > 0

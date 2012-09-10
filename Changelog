@@ -8,13 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-09-09 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/htree.prg			
+     * Method Expand()
+	   ! add new parameter lAllNode expand all node 
+
 2012-09-09 20:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hdatepic.prg	
      * METHOD Valid()
 	  ! minor fix 
 	    removed unnecessary code
    * source/htree.prg			
-     * Method new()
+     * Method New()
 	   ! Remove unnecessary msginfo 
 
 2012-09-07 20:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>

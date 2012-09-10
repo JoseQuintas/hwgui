@@ -299,7 +299,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
    METHOD FindChildPos( oNode, h )
    METHOD GetSelected() INLINE IIF( VALTYPE( ::oItem := TreeGetSelected( ::handle ) ) = "O", ::oItem, Nil )
    METHOD EditLabel( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_EDITLABEL, 0, o:handle ) }
-   METHOD Expand( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_EXPAND, TVE_EXPAND, o:handle ), REDRAWWINDOW( ::handle , RDW_NOERASE + RDW_FRAME + RDW_INVALIDATE  )}
+   METHOD Expand( oNode, lAll ) //BLOCK { | Self, o | SendMessage( ::handle, TVM_EXPAND, TVE_EXPAND, o:handle ), REDRAWWINDOW( ::handle , RDW_NOERASE + RDW_FRAME + RDW_INVALIDATE  )}
    METHOD Select( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_SELECTITEM, TVGN_CARET, o:handle ), ::oItem := TreeGetSelected( ::handle ) }
    METHOD Clean()
    METHOD Notify( lParam )
@@ -322,8 +322,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit,
    lEditLabels := IIf( lEditLabels == Nil, .F., lEditLabels )
    lCheckBox   := IIf( lCheckBox == Nil, .F., lCheckBox )
    lDragDrop   := IIf( lDragDrop == Nil, .F., lDragDrop )
-                                                                   //   + WS_BORDER
-   nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP  + TVS_FULLROWSELECT + TVS_TRACKSELECT+; //TVS_HASLINES +  ;
+
+   nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP  + WS_BORDER + TVS_FULLROWSELECT + TVS_TRACKSELECT+; //TVS_HASLINES +  ;
                             TVS_LINESATROOT + TVS_HASBUTTONS  + TVS_SHOWSELALWAYS + ;
                           IIf( lEditLabels == Nil.OR. ! lEditLabels, 0, TVS_EDITLABELS ) +;
                           IIf( lCheckBox == Nil.OR. ! lCheckBox, 0, TVS_CHECKBOXES ) +;
@@ -681,6 +681,18 @@ METHOD Selecteds( oItem, aSels )  CLASS HTree
       ::Selecteds( oItem:aItems[ i ], aSelecteds )
    NEXT
    RETURN aSelecteds
+
+METHOD Expand( oNode, lAllNode )  CLASS HTree
+   LOCAL i, iLen := Len( oNode:aitems  )
+   
+   SendMessage( ::handle, TVM_EXPAND, TVE_EXPAND, oNode:handle )
+   REDRAWWINDOW( ::handle , RDW_NOERASE + RDW_FRAME + RDW_INVALIDATE  )
+   FOR i := 1 TO iLen
+      IF ! EMPTY( lAllNode ) .AND. Len( oNode:aitems ) > 0
+         ::Expand( oNode:aItems[ i ], lAllNode )
+      ENDIF
+   NEXT
+   RETURN Nil
 
 STATIC PROCEDURE ReleaseTree( aItems )
    LOCAL i, iLen := Len( aItems )

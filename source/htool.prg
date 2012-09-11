@@ -172,15 +172,13 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, btnWidth, oFo
    nWidth  -= IIF( Hwg_BitAnd( nStyle, WS_DLGFRAME + WS_BORDER ) > 0, 2, 0 )
 
    ::lTransp := IIF( lTransp != NIL, lTransp, .F. )
-   ::lVertical := IIF( lVertical != NIL .AND. TYPE( "lVertical" ) = "L", lVertical, ::lVertical )
+   ::lVertical := IIF( lVertical != NIL .AND. VALTYPE( lVertical ) = "L", lVertical, ::lVertical )
    IF ::lTransp  .OR. ::lVertical
       nStyle += IIF( ::lTransp, TBSTYLE_TRANSPARENT, IIF( ::lVertical, CCS_VERT, 0 ) )
    ENDIF
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor )
-
-   HWG_InitCommonControlsEx()
 
    ::BtnWidth :=  BtnWidth //!= Nil, BtnWidth, 32 )
    ::nIDB := nIDB
@@ -189,11 +187,12 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, btnWidth, oFo
    ::nwSize := IIF( nwSize != NIL .AND. nwSize > 11 , nwSize, 16 )
    ::nhSize := IIF( nhSize != NIL .AND. nhSize > 11 , nhSize, ::nwSize - 1 )
    ::lnoThemes := ! ISTHEMEACTIVE() .OR. ! ::WindowsManifest
-   IF Hwg_BitAnd( ::Style, WS_DLGFRAME + WS_BORDER ) = 0
+   IF Hwg_BitAnd( ::Style, WS_DLGFRAME + WS_BORDER + CCS_NODIVIDER ) = 0
       IF ! ::lVertical
-         ::Line := HLine():New( oWndParent,,, nLeft, nTop + nHeight + IIF( ::lnoThemes .AND. Hwg_BitAnd( nStyle,  TBSTYLE_FLAT ) > 0, 2, 1 ) , nWidth )
+         ::Line := HLine():New( oWndParent,,, nLeft, nTop + nHeight + ;
+                   IIF( ::lnoThemes .AND. Hwg_BitAnd( nStyle,  TBSTYLE_FLAT ) > 0, 2, 1 ) , nWidth )
       ELSE
-         ::Line := HLine():New(oWndParent,,::lVertical,nLeft + nWidth + 1 ,nTop,nHeight)
+         ::Line := HLine():New(oWndParent,,::lVertical,nLeft + nWidth + 1 ,nTop,nHeight )
       ENDIF
    ENDIF
    IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI .AND. ;
@@ -202,14 +201,16 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, btnWidth, oFo
          ::oParent:aOffset[ 2 ] := ::nHeight
       ELSEIF ::nHeight > ::nWidth .OR. ::nHeight == 0
          IF ::nLeft == 0
-            ::oParent:aOffset[ 1 ] := ::nWidth
+            ::oParent:aOffset[ 1 ] += ::nWidth
          ELSE
-            ::oParent:aOffset[ 3 ] := ::nWidth
+            ::oParent:aOffset[ 3 ] += ::nWidth
          ENDIF
       ENDIF
    ENDIF
 
    ::extstyle:= TBSTYLE_EX_MIXEDBUTTONS 
+   
+   HWG_InitCommonControlsEx()
    
    ::Activate()
 

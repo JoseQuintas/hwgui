@@ -8,7 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-09-10 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+2012-09-11 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/htool.prg			   
+     * Method New()
+	     ! fix in vertical style
+
+2012-09-10 16:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htab.prg			   
      * CLASS HTab
        * Method Init()

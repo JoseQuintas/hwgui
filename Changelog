@@ -8,6 +8,21 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-09-12 09:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * samples\mdichild	   
+     ! fixed sample testmdichil.prg
+   * source/htree.prg			
+     * Method Expand()
+       ! fix in name parameter
+   * source/HDialog	   	   
+     * METHOD FindDialog( hWndTitle, lAll ) 
+	  ! changed parameter the methodo now can search for the title or handle
+    * source/hwindow.prg
+	  * CLASS HWindow 
+        - METHOD FindWindowTitle( cTitle )
+	    * METHOD FindWindow( hWndTitle )
+		  ! changed parameter the methodo now can search for the title or handle   
+  
 2012-09-11 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htool.prg			   
      * Method New()

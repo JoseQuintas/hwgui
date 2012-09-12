@@ -87,7 +87,7 @@ CLASS VAR aModalDialogs  SHARED INIT { }
    METHOD onEvent( msg, wParam, lParam )
    METHOD Add()      INLINE AAdd( IIf( ::lModal, ::aModalDialogs, ::aDialogs ), Self )
    METHOD Del()
-   METHOD FindDialog( hWnd, lAll )
+   METHOD FindDialog( hWndTitle, lAll )
    METHOD GetActive()
    METHOD Center()   INLINE Hwg_CenterWindow( ::handle , ::Type )
    METHOD Restore()  INLINE SendMessage( ::handle,  WM_SYSCOMMAND, SC_RESTORE, 0 )
@@ -155,6 +155,7 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
                         oWnd:handle, GetActiveWindow() ) )
 
    ::WindowState := IIF( valtype( nShow ) = "N", nShow, SW_SHOWNORMAL ) 
+
    IF ::Type == WND_DLG_RESOURCE
       IF lNoModal == Nil .OR. ! lNoModal
          ::lModal := .T.
@@ -284,12 +285,22 @@ METHOD Del() CLASS HDialog
    ENDIF
    RETURN Nil
 
-METHOD FindDialog( hWnd, lAll ) CLASS HDialog
-   LOCAL i := AScan( ::aDialogs, { | o | o:handle == hWnd } )
-   IF i = 0 .AND. ( lAll != Nil .AND. lAll )
-      i := Ascan( ::aModalDialogs, {| o | o:handle == hWnd } )
-      RETURN Iif( i == 0, Nil, ::aModalDialogs[ i ] )
-   ENDIF  
+METHOD FindDialog( hWndTitle, lAll ) CLASS HDialog
+   LOCAL cType := VALTYPE( hWndTitle ), i
+   
+   IF cType != "C"
+      i := AScan( ::aDialogs, { | o | SelfFocus( o:handle, hWndTitle ) } )
+      IF i = 0 .AND. ( lAll != Nil .AND. lAll )
+          i := AScan( ::aModalDialogs, {| o | SelfFocus( o:handle, hWndTitle ) } )
+          RETURN Iif( i == 0, Nil, ::aModalDialogs[ i ] )
+      ENDIF
+   ELSE
+      i := AScan( ::aDialogs, { | o | VALTYPE( o:Title ) == "C" .AND. o:Title == hWndTitle } )
+      IF i = 0 .AND. ( lAll != Nil .AND. lAll )
+         i := AScan( ::aModalDialogs, { | o | VALTYPE( o:Title ) = "C" .AND. o:Title == hWndTitle } )
+         RETURN Iif( i == 0, Nil, ::aModalDialogs[ i ] )
+      ENDIF
+   ENDIF
    RETURN IIf( i == 0, Nil, ::aDialogs[ i ] )
 
 METHOD GetActive() CLASS HDialog

@@ -106,8 +106,7 @@ CLASS VAR szAppName  SHARED INIT "HwGUI_App"
                cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bRefresh, lChild, lClipper, lNoClosable, bSetForm )
    METHOD AddItem( oWnd )
    METHOD DelItem( oWnd )
-   METHOD FindWindow( hWnd )
-   METHOD FindWindowTitle( cTitle )
+   METHOD FindWindow( hWndTitle )
    METHOD GetMain()
    METHOD GetMdiMain() INLINE IIF( ::GetMain() != Nil, ::aWindows[ 1 ] , Nil )
    METHOD Center()   INLINE Hwg_CenterWindow( ::handle, ::Type )
@@ -197,14 +196,16 @@ METHOD DelItem( oWnd ) CLASS HWindow
    ENDIF
    RETURN Nil
 
-METHOD FindWindow( hWnd ) CLASS HWindow
-   LOCAL i := AScan( ::aWindows, { | o | PtrtoUlong(o:handle) == PtrtoUlong(hWnd) } )
+METHOD FindWindow( hWndTitle ) CLASS HWindow
+   LOCAL cType := VALTYPE( hWndTitle ), i
+   
+   IF cType != "C"
+      i := AScan( ::aWindows, { | o | PtrtoUlong( o:handle ) == PtrtoUlong( hWndTitle ) } )
+   ELSE
+      i := AScan( ::aWindows, { | o | VALTYPE( o:Title ) = "C" .AND. o:Title == hWndTitle } )
+   ENDIF
    RETURN IIf( i == 0, Nil, ::aWindows[ i ] )
-
-METHOD FindWindowTitle( cTitle ) CLASS HWindow
-   LOCAL i := AScan( ::aWindows, { | o | VALTYPE( o:Title ) = "C" .AND. o:Title == cTitle } )
-   RETURN IIf( i == 0, Nil, ::aWindows[ i ] )
-
+   
 METHOD GetMain() CLASS HWindow
    RETURN IIf( Len( ::aWindows ) > 0,              ;
                IIf( ::aWindows[ 1 ]:Type == WND_MAIN, ;

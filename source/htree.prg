@@ -281,7 +281,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
    METHOD FindChildPos( oNode, h )
    METHOD GetSelected() INLINE IIF( VALTYPE( ::oItem := TreeGetSelected( ::handle ) ) = "O", ::oItem, Nil )
    METHOD EditLabel( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_EDITLABEL, 0, o:handle ) }
-   METHOD Expand( oNode, lAll ) //BLOCK { | Self, o | SendMessage( ::handle, TVM_EXPAND, TVE_EXPAND, o:handle ), REDRAWWINDOW( ::handle , RDW_NOERASE + RDW_FRAME + RDW_INVALIDATE  )}
+   METHOD Expand( oNode, lAllNode )   //BLOCK { | Self, o | SendMessage( ::handle, TVM_EXPAND, TVE_EXPAND, o:handle ), REDRAWWINDOW( ::handle , RDW_NOERASE + RDW_FRAME + RDW_INVALIDATE  )}
    METHOD Select( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_SELECTITEM, TVGN_CARET, o:handle ), ::oItem := TreeGetSelected( ::handle ) }
    METHOD Clean()
    METHOD Notify( lParam )

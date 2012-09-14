@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-09-14 10:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+    * source/guimain.prg
+      * FUNCTION InitControls
+	    ! minor fix to init control
+    * source/window.c
+	  * HB_FUNC( HWG_CENTERWINDOW )
+	    ! add  SWP_NOREDRAW + SWP_NOACTIVATE reduce flicker
+    * source/hwindow.prg
+	  * CLASS HMainWindow 
+	    * METHOD Activate
+		  ! minor fix initcontrol
+
 2012-09-12 09:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * samples\mdichild	   
      ! fixed sample testmdichil.prg

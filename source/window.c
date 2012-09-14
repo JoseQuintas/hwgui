@@ -161,7 +161,7 @@ HB_FUNC( HWG_CENTERWINDOW )
       y = GetSystemMetrics( SM_CYSCREEN );
    }
    SetWindowPos( ( HWND ) HB_PARHANDLE( 1 ), HWND_TOP, ( x - w ) / 2,
-         ( y - h ) / 2, 0, 0, SWP_NOSIZE );
+         ( y - h ) / 2, 0, 0, SWP_NOSIZE + SWP_NOREDRAW + SWP_NOACTIVATE );
 }
 
 

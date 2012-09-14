@@ -691,7 +691,7 @@ METHOD Activate( lShow, lMaximized, lMinimized,lCentered, bActivate, lModal ) CL
    ::Type := WND_CHILD
 
    CreateGetList( Self )
-   InitControls( SELF,.T. )
+   InitControls( SELF )
    InitObjects( Self, .T. )
    SENDMESSAGE( ::handle, WM_UPDATEUISTATE, makelong(UIS_CLEAR,UISF_HIDEFOCUS), 0)
    IF ::bInit != Nil

@@ -45,6 +45,10 @@ HB_EXTERN_END
    #define TB_GETIMAGELIST         (WM_USER + 49)
 #endif
 
+#if _MSC_VER
+#define snprintf _snprintf
+#endif
+
 // LRESULT CALLBACK OwnBtnProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK WinCtrlProc( HWND, UINT, WPARAM, LPARAM );
 LRESULT APIENTRY SplitterProc( HWND hwnd, UINT uMsg, WPARAM wParam,

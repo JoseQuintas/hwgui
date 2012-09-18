@@ -14,8 +14,6 @@
 
 #define TRANSPARENT 1
 
-STATIC nrePaint := - 1
-
 CLASS HPanel INHERIT HControl
 
    DATA winclass Init "PANEL"
@@ -23,6 +21,7 @@ CLASS HPanel INHERIT HControl
    DATA bScroll
    DATA lResizeX, lResizeY HIDDEN
    DATA lBorder INIT .F.
+   DATA nRePaint  INIT  - 1
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                bInit, bSize, bPaint, bcolor )
@@ -151,7 +150,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
      *- RedrawWindow( ::handle, RDW_NOERASE +  RDW_FRAME + RDW_INVALIDATE + RDW_INTERNALPAINT )
    ELSEIF msg == WM_ERASEBKGND
       IF ::backstyle = OPAQUE
-         RETURN nrePaint
+         RETURN ::nrePaint
          /*
          IF ::brush != Nil
             IF Valtype( ::brush ) != "N"
@@ -239,7 +238,7 @@ LOCAL pps, hDC, aCoors, oPenLight, oPenGray
    aCoors := GetClientRect( ::handle )
 
    SetBkMode( hDC, ::backStyle )
-   IF ::backstyle = OPAQUE .AND. nrePaint = -1
+   IF ::backstyle = OPAQUE .AND. ::nrePaint = -1
       aCoors := GetClientRect( ::handle )
       IF ::brush != Nil
          IF Valtype( ::brush ) != "N"
@@ -249,7 +248,7 @@ LOCAL pps, hDC, aCoors, oPenLight, oPenGray
          FillRect( hDC, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ], aCoors[ 4 ], COLOR_3DFACE + 1 )
       ENDIF
    ENDIF
-   nrePaint := -1
+   ::nrePaint := -1
    IF ::nScrollBars = - 1
       IF  ! ::lBorder
          oPenLight := HPen():Add( BS_SOLID, 1, GetSysColor( COLOR_3DHILIGHT ) )
@@ -302,7 +301,7 @@ METHOD Hide() CLASS HPanel
    IF ::lHide
       Return Nil
    ENDIF
-   nrePaint := 0
+   ::nrePaint := 0
    lres := ::ResizeOffSet( 3 )
    /*
    IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI
@@ -330,7 +329,7 @@ METHOD Show() CLASS HPanel
    IF ! ::lHide
       Return Nil
    ENDIF
-   nrePaint := 0
+   ::nrePaint := - 1
    lRes := ::ResizeOffSet( 2 )
    /*
    IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI   //ISWINDOwVISIBLE( ::handle )
@@ -349,7 +348,6 @@ METHOD Show() CLASS HPanel
    IF ::oParent:type == WND_MDI .AND. lRes
        //SENDMESSAGE( ::oParent:Handle, WM_SIZE, 0, MAKELPARAM( ::oParent:nWidth, ::oParent:nHeight ) )
        InvalidateRect( ::oParent:handle, 1, ::nLeft, ::nTop+1, ::nLeft + ::nWidth, ::nTop + ::nHeight )
-       nrePaint := -1
    ENDIF
    RETURN Nil
 

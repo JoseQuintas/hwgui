@@ -243,7 +243,6 @@ METHOD Activate() CLASS hToolBar
       ::lCreate := .T.
       ::handle := CREATETOOLBAR( ::oParent:handle, ::id, ;
                                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::extStyle )
-
       ::Init()
    ENDIF
    RETURN Nil
@@ -272,7 +271,7 @@ METHOD CREATETOOL() CLASS hToolBar
       IF Empty( ::handle )
          RETURN Nil
 			   ENDIF
-		   	IF !::lCreate
+		   	IF ! ::lCreate
 			      DESTROYWINDOW( ::Handle )
 			      ::Activate()
 			      //IF !EMPTY( ::oFont )
@@ -525,6 +524,7 @@ METHOD RESIZE( xIncrSize, lWidth, lHeight  ) CLASS hToolBar
       ELSE
          SENDMESSAGE( ::handle, TB_SETBUTTONSIZE, 0,  MAKELPARAM( ::nWidth - ::nDrop - 1, ::BtnWidth )  )
 		    ENDIF
+		    SENDMESSAGE( ::handle, WM_SIZE, 0,  0 )
    ENDIF
    RETURN NIL
 

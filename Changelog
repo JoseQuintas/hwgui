@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-09-19 20:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+    * include/guilib.ch
+	  * #xcommand @ <x>,<y> BUTTONEX [ <oTool> ] ;
+	    + [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;
+    * source/hcontrol.prg
+	  * CLASS Buttonex 
+	    * METHOD New()
+	      + parameter bOther
+    * source/htool.prg
+	  * METHOD Resize()
+	    ! minor fix
+	
 2012-09-19 90:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * source/hedit.prg
 	  * FUNCTION CheckFocus()

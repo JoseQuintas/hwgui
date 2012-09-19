@@ -13,6 +13,7 @@
 #include "guilib.ch"
 
 #define STM_SETIMAGE        370    // 0x0172
+#define TRANSPARENT 1
 
 //- HSayImage
 
@@ -60,7 +61,7 @@ METHOD Activate() CLASS HSayImage
 
    IF ! Empty( ::oParent:handle )
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
-                                ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+                                ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::extStyle )
       ::Init()
    ENDIF
    RETURN Nil
@@ -90,7 +91,6 @@ CLASS HSayBmp INHERIT HSayImage
    DATA nOffsetV  INIT 0
    DATA nOffsetH  INIT 0
    DATA nZoom
-   DATA lTransp
    DATA nStretch
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
@@ -111,8 +111,11 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
    Super:New( oWndParent, nId, SS_OWNERDRAW + nStyle, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctooltip, bClick, bDblClick )
 
    ::bPaint := { | o, lpdis | o:Paint( lpdis ) }
-   ::lTransp := IIf( lTransp = Nil, .F., lTransp )
    ::nStretch := IIf( nStretch = Nil, 0, nStretch )
+   IF lTransp != Nil .AND. lTransp
+      ::BackStyle := TRANSPARENT
+      ::extStyle +=  WS_EX_TRANSPARENT
+   ENDIF
 
    IF Image != Nil .AND. ! Empty( Image )
       IF lRes == Nil ; lRes := .F. ; ENDIF
@@ -135,7 +138,10 @@ METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip, lTransp 
 
    Super:Redefine( oWndParent, nId, bInit, bSize, ctooltip )
    ::bPaint := { | o, lpdis | o:Paint( lpdis ) }
-   ::lTransp := IIf( lTransp = Nil, .F., lTransp )
+   IF lTransp != Nil .AND. lTransp
+      ::BackStyle := TRANSPARENT
+      ::extStyle +=  WS_EX_TRANSPARENT
+   ENDIF
    IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := IIf( lRes .OR. ValType( xImage ) == "N",     ;
                     HBitmap():AddResource( xImage ), ;
@@ -158,7 +164,7 @@ METHOD Paint( lpdis ) CLASS HSayBmp
 
    IF ::oImage != Nil .AND. !empty( ::oImage:Handle )
       IF ::nZoom == Nil
-         IF ::lTransp
+         IF ::BackStyle = TRANSPARENT
             IF ::nStretch = 1  // isometric
                DrawTransparentBitmap( drawInfo[ 3 ], ::oImage:handle, drawInfo[ 4 ] + ::nOffsetH, ;
                                       drawInfo[ 5 ] + ::nOffsetV,, ) // ::nWidth+1, ::nHeight+1 )

@@ -8,6 +8,34 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-09-19 90:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+    * source/hedit.prg
+	  FUNCTION CheckFocus()
+	  ! minor fix when combobox EDIT and BUTTON IDOK
+	* source/hdialog.prg
+	  FUNCTION DlgCommand()
+	  ! minor fix when combobox EDIT and BUTTON IDCANCEL
+    * source/hsayimg.prg
+	  + #define TRANSPARENT 1
+	  * CLASS HSayBmp 
+	    - DATA lTransp
+		* METHOD New()
+		* METHOD Redefine()
+		  + add ::extStyle +=  WS_EX_TRANSPARENT in mode transparent
+		    enables transparency in images on screens placed MDI
+		* METHOD PAINT()
+          ! REMOVE ::ltransp and add ::backstyle		
+	* source/hwindow.prg	  
+	  * CLASS HMainWindow
+	    * METHOD NEW()
+		* METHOD ACTIVATE()
+	      ! Moved the creation of MDIChild screen, the window background for MDMAIN,
+   		   from method ACTIVATE TO method NEW to enable the addition of the objects in their creation
+		! minor fix in SETWINDOWPOS   
+    * source/window.c
+	  * HB_FUNC( HWG_CENTERWINDOW )
+	    ! add  SWP_FRAMECHANGED + SWP_NOSENDCHANGING and remove SWP_NOREDRAW 
+
 2012-09-17 21:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * source/hpanel.prg
 	  - STATIC nrePaint

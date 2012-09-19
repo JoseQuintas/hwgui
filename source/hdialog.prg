@@ -541,8 +541,8 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
             oDlg:bDestroy := Nil
             SENDMessage( oCtrl:handle, WM_CLOSE, 0, 0 )    
             RETURN 0
-         ELSEIF oCtrl != Nil .AND. oCtrl:IsEnabled()
-            oCtrl:SetFocus()
+         ELSEIF oCtrl != Nil .AND. oCtrl:IsEnabled() .AND. ! Selffocus( oCtrl:Handle )
+            //oCtrl:SetFocus()
             PostMessage( oDlg:handle, WM_NEXTDLGCTL, oCtrl:Handle , 1 )
          ELSEIF oDlg:lGetSkiponEsc
             hCtrl := GetFocus()

@@ -1728,7 +1728,8 @@ FUNCTION CheckFocus( oCtrl, lInside )
    IF oParent  != Nil .AND. lInside   // valid
       lModal :=  oParent:lModal .AND.  oParent:Type >  WND_DLG_RESOURCE
       IF ( ( ! Empty( hGetFocus ) .AND. lModal .AND. ! SELFFOCUS( GetWindowParent( hGetFocus ), oParent:Handle ) ) .OR. ;
-         (  SELFFOCUS( hGetFocus, oCtrl:oParent:Handle  ) ) ) .AND. SELFFOCUS( oParent:handle, oCtrl:oParent:Handle )
+         (  SELFFOCUS( hGetFocus, oCtrl:oParent:Handle  ) ) ) .AND. ;
+            SELFFOCUS( oParent:handle, oCtrl:oParent:Handle ) .And. ! EMPTY( GetParent( hGetFocus ) )
          RETURN .F.
       ENDIF
       oCtrl:lNoWhen := .F.

@@ -283,7 +283,7 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
                      -1 ,,,,,::bSize ,,,,,,::oBmp,,,,,, )
       ::Screen:Type    := WND_MDICHILD
       
-      oDefaultParent := Self
+      ::oDefaultParent := Self
 
    ELSEIF lType == WND_MAIN
 

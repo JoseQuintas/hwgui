@@ -10,11 +10,11 @@
 
 2012-09-19 90:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * source/hedit.prg
-	  FUNCTION CheckFocus()
-	  ! minor fix when combobox EDIT and BUTTON IDOK
+	  * FUNCTION CheckFocus()
+	    ! minor fix when combobox EDIT and BUTTON IDOK
 	* source/hdialog.prg
-	  FUNCTION DlgCommand()
-	  ! minor fix when combobox EDIT and BUTTON IDCANCEL
+	  * FUNCTION DlgCommand()
+	    ! minor fix when combobox EDIT and BUTTON IDCANCEL
     * source/hsayimg.prg
 	  + #define TRANSPARENT 1
 	  * CLASS HSayBmp 
@@ -29,7 +29,7 @@
 	  * CLASS HMainWindow
 	    * METHOD NEW()
 		* METHOD ACTIVATE()
-	      ! Moved the creation of MDIChild screen, the window background for MDMAIN,
+	      ! Moved the creation of MDIChild screen, the window background for MDIMAIN,
    		   from method ACTIVATE TO method NEW to enable the addition of the objects in their creation
 		! minor fix in SETWINDOWPOS   
     * source/window.c

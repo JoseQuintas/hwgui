@@ -824,11 +824,11 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
       IF Len( HWindow():aWindows ) > 2 .AND. ( nHandle := SendMessage( HWindow():aWindows[ 2 ]:handle, WM_MDIGETACTIVE, 0, 0 ) ) > 0
          SendMessage( HWindow():aWindows[ 2 ]:handle, WM_MDIMAXIMIZE, nHandle, 0 )
       ENDIF
-   ELSEIF wParam >= FIRST_MDICHILD_ID .AND. wParam < FIRST_MDICHILD_ID + MAX_MDICHILD_WINDOWS
+   ELSEIF wParam > FIRST_MDICHILD_ID .AND. wParam < FIRST_MDICHILD_ID + MAX_MDICHILD_WINDOWS
       IF oWnd:bMdiMenu != Nil 
-         Eval( oWnd:bMdiMenu, HWindow():aWindows[ wParam - FIRST_MDICHILD_ID + 3 ], wParam - 1  )
+         Eval( oWnd:bMdiMenu, HWindow():aWindows[ wParam - FIRST_MDICHILD_ID + 2 ], wParam  )
       ENDIF
-      nHandle := HWindow():aWindows[ wParam - FIRST_MDICHILD_ID + 3 ]:handle
+      nHandle := HWindow():aWindows[ wParam - FIRST_MDICHILD_ID + 2 ]:handle
       SendMessage( HWindow():aWindows[ 2 ]:handle, WM_MDIACTIVATE, nHandle, 0 )
    ENDIF
    iParHigh := HIWORD( wParam )

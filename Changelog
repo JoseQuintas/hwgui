@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-09-29 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+    * source/hwindow.prg
+	  * FUNCTION onCommand
+	    ! minor fix in activate MDICHILD from menu
+		
 2012-09-19 20:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * include/guilib.ch
 	  * #xcommand @ <x>,<y> BUTTONEX [ <oTool> ] ;

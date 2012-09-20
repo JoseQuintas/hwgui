@@ -1232,7 +1232,7 @@ CLASS HButtonEX INHERIT HButton
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
-               tcolor, bColor, hBitmap, iStyle, hicon, Transp, bGFocus, nPictureMargin, lnoThemes )
+               tcolor, bColor, hBitmap, iStyle, hicon, Transp, bGFocus, nPictureMargin, lnoThemes, bOther )
    DATA iStyle
    DATA m_bmpBk, m_pbmpOldBk
    DATA  bMouseOverButton INIT .f.

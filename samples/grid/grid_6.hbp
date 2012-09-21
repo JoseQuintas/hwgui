@@ -4,4 +4,4 @@ grid_6.prg
 -lprocmisc
 -lhbxml
 -L..\..\lib
--gtgui
+-gui

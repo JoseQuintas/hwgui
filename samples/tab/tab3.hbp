@@ -4,4 +4,4 @@ tab3.prg
 -lprocmisc
 -lhbxml
 -L..\..\lib
--gtgui
+-gui

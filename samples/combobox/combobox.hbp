@@ -4,4 +4,4 @@ combobox.prg
 -lprocmisc
 -lhbxml
 -L..\..\lib
--gtgui
+-gui

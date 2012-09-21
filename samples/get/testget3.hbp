@@ -5,4 +5,4 @@ testget3.rc
 -lprocmisc
 -lhbxml
 -L..\..\lib
--gtgui
+-gui

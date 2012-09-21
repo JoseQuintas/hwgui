@@ -8,11 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-09-29 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+2012-09-21 11:58 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at uol.com.br>
+  * samples\*\*.hbp
+    "-gtgui" replaced by "-gui"
+
+2012-09-20 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * source/hwindow.prg
 	  * FUNCTION onCommand
 	    ! minor fix in activate MDICHILD from menu
-		
+
 2012-09-19 20:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * include/guilib.ch
 	  * #xcommand @ <x>,<y> BUTTONEX [ <oTool> ] ;
@@ -51,7 +55,7 @@
 		! minor fix in SETWINDOWPOS   
     * source/window.c
 	  * HB_FUNC( HWG_CENTERWINDOW )
-	    ! add  SWP_FRAMECHANGED + SWP_NOSENDCHANGING and remove SWP_NOREDRAW 
+	    ! add  SWP_FRAMECHANGED + SWP_NOSENDCHANGING and remove SWP_NOREDRAW
 
 2012-09-17 21:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * source/hpanel.prg

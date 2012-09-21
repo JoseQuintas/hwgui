@@ -1,7 +1,7 @@
-testmdichild.prg 
+testmdichild.prg
 -i..\..\include
 -lhwgui
 -lprocmisc
 -lhbxml
 -L..\..\lib
--gtgui
+-gui

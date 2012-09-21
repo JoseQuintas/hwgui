@@ -4,4 +4,4 @@ rmsample.prg
 -lprocmisc
 -lhbxml
 -L..\..\lib
--gtgui
+-gui

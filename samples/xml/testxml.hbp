@@ -4,4 +4,4 @@ testxml.prg
 -lprocmisc
 -lhbxml
 -L..\..\lib
--gtgui
+-gui

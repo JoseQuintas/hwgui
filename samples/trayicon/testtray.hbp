@@ -4,4 +4,4 @@ testtray.prg
 -lprocmisc
 -lhbxml
 -L..\..\lib
--gtgui
+-gui

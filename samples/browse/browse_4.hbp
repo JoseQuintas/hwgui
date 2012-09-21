@@ -4,4 +4,4 @@ browse_4.prg
 -lprocmisc
 -lhbxml
 -L..\..\lib
--gtgui
+-gui

@@ -5,4 +5,4 @@ animation.rc
 -lprocmisc
 -lhbxml
 -L..\..\lib
--gtgui
+-gui

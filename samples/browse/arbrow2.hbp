@@ -4,4 +4,4 @@ arbrow2.prg
 -lprocmisc
 -lhbxml
 -L..\..\lib
--gtgui
+-gui

@@ -306,7 +306,7 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
    RETURN Self
 
 METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMainWindow
-   LOCAL oWndClient, handle, lres, oMdi
+   LOCAL oWndClient, handle, lres
 
    DEFAULT lMaximized := .F.
    DEFAULT lMinimized := .F.

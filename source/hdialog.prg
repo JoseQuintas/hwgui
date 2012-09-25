@@ -483,8 +483,8 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
    IF iParHigh == 0
       IF iParLow == IDOK
          hCtrl := GetFocus()
-         oCtrl := oDlg:FindControl(, hCtrl ) .OR. ! SelfFocus( oCtrl:Handle, hCtrl )
-         IF oCtrl == nil
+         oCtrl := oDlg:FindControl(, hCtrl )
+         IF oCtrl == nil .OR. ! SelfFocus( oCtrl:Handle, hCtrl )
             hCtrl := GetAncestor( hCtrl, GA_PARENT )
             IF ( oCtrl := oDlg:FindControl( , hCtrl ) ) != Nil
                GetSkip( oCtrl:oParent, hCtrl, , 1 )

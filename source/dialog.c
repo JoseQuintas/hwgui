@@ -177,6 +177,16 @@ HB_FUNC( COMBOADDSTRING )
    hb_strfree( hText );
 }
 
+HB_FUNC( COMBOINSERTSTRING )
+{
+   void * hText;
+
+   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), CB_INSERTSTRING, ( WPARAM ) hb_parni( 2 ),
+                ( LPARAM ) HB_PARSTR( 3, &hText, NULL ) );
+   hb_strfree( hText );
+}
+
+
 HB_FUNC( COMBOSETSTRING )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), CB_SETCURSEL,

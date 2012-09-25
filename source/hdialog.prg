@@ -483,7 +483,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
    IF iParHigh == 0
       IF iParLow == IDOK
          hCtrl := GetFocus()
-         oCtrl := oDlg:FindControl(, hCtrl )
+         oCtrl := oDlg:FindControl(, hCtrl ) .OR. ! SelfFocus( oCtrl:Handle, hCtrl )
          IF oCtrl == nil
             hCtrl := GetAncestor( hCtrl, GA_PARENT )
             IF ( oCtrl := oDlg:FindControl( , hCtrl ) ) != Nil
@@ -494,18 +494,7 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
          IF oCtrl != Nil .AND. oCtrl:classname = "HTAB"
             RETURN 1
          ENDIF
-         IF oCtrl != Nil .AND. GetNextDlgTabItem( GetActiveWindow() , hCtrl, 1 ) == hCtrl
-            /*
-            IF  __ObjHasMsg( oCtrl, "BLOSTFOCUS" ) .AND. oCtrl:blostfocus != NIl .AND. !oDlg:lClipper
-               oCtrl:setfocus()
-               IF __ObjHasMsg( oCtrl, "BVALID" )
-                  Eval( oCtrl:bValid, oCtrl )
-                  oCtrl:Refresh()
-               ELSE
-                  Eval( oCtrl:bLostFocus, oCtrl )
-               ENDIF
-            ENDIF
-             */
+         IF oCtrl != Nil .AND. GetNextDlgTabItem( GetActiveWindow() , hCtrl, 1 ) == hCtrl .OR. SelfFocus( oCtrl:Handle, hCtrl )
             SendMessage( oCtrl:Handle, WM_KILLFOCUS, 0, 0 )
          ENDIF
          IF oCtrl != Nil .AND. oCtrl:id == IDOK .AND.  __ObjHasMsg( oCtrl,"BCLICK" ) .AND. oCtrl:bClick = Nil

@@ -188,11 +188,9 @@ METHOD DragAll( lScroll ) CLASS HSplitter
          //oCtrl:nHeight -= nDiff
       ENDIF
       oCtrl:Move( oCtrl:nLeft + xDiff, oCtrl:nTop + yDiff, oCtrl:nWidth - xDiff ,oCtrl:nHeight - yDiff, ! lScroll )
-      //InvalidateRect( oCtrl:oParent:Handle, 1, oCtrl:nLeft, oCtrl:nTop, oCtrl:nleft + oCtrl:nWidth, oCtrl:nTop + oCtrl:nHeight )
-      IF oCtrl:winclass == "STATIC"
+      //IF oCtrl:winclass == "STATIC"
           InvalidateRect( oCtrl:Handle, 1 )
-      ENDIF
-
+      //ENDIF
    NEXT
    FOR i := 1 TO Len( ::aLeft )
       oCtrl := ::aLeft[ i ]
@@ -200,20 +198,21 @@ METHOD DragAll( lScroll ) CLASS HSplitter
          xDiff := ::nLeft - ( oCtrl:nLeft + oCtrl:nWidth )
          //oCtrl:nWidth += nDiff
       ELSE
-
          yDiff := ::nTop - ( oCtrl:nTop + oCtrl:nHeight )
         // oCtrl:nHeight += nDiff
       ENDIF
       oCtrl:Move( oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth + xDiff, oCtrl:nHeight + yDiff , ! lScroll )
-      IF oCtrl:winclass == "STATIC"
+      //IF oCtrl:winclass == "STATIC"
          InvalidateRect( oCtrl:Handle, 1 )
-      ENDIF
-
-      //InvalidateRect( oCtrl:oParent:Handle, 1, oCtrl:nLeft, oCtrl:nTop, oCtrl:nleft + oCtrl:nWidth, oCtrl:nTop+oCtrl:nHeight )
+      //ENDIF
    NEXT
    //::lMoved := .F.
    IF ! lScroll
-      InvalidateRect( ::oParent:handle, 1, ::nleft, ::ntop, ::nleft + ::nwidth, ::nTop + ::nHeight )
+      InvalidateRect( ::oParent:handle, 1, ::nLeft ,::nTop  , ::nLeft + ::nWidth , ::nTop + ::nHeight  )
+   ELSEIF ::lVertical
+      InvalidateRect( ::oParent:Handle, 0, ::nLeft - ::nWidth - xDiff - 1 , ::nTop , ::nLeft + ::nWidth + xDiff + 1, ::nTop + ::nHeight )
+   ELSE
+      InvalidateRect( ::oParent:Handle, 0, ::nLeft , ::nTop - ::nHeight - yDiff - 1 , ::nLeft + ::nWidth, ::nTop + ::nHeight + yDiff + 1 )
    ENDIF
    IF ::bEndDrag != Nil
       Eval( ::bEndDrag,Self )

@@ -8,6 +8,27 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-09-25 19:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include/guilib.ch
+     * #xcommand @ <x>,<y> SPLITTER [ <oSplit> ] ;
+	   ! fix in TRANSPARENT and SCROLLING
+   * source/dialog.c
+     + HB_FUNC( COMBOINSERTSTRING )
+	   add new item into combobox  in the position at which to insert the string
+   * source/hcombo.prg
+     * METHOD AddItem( cItem, cItemBound, nPos )
+	   + new parameter nPos
+   * source/hdialog.prg
+     * FUNCTION DlgCommand
+	   ! fix  combobox EDIT and BUTTON IDOK
+   * source/hedit.prg
+     * FUNCTION CheckFocus()
+	   ! revert change in 2012-09-19 90:30 
+   * source/hsplit.prg	   
+	 *  METHOD DragAll()
+	   ! minor fix in scrolling 
+
+
 2012-09-21 11:58 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at uol.com.br>
   * samples\*\*.hbp
     "-gtgui" replaced by "-gui"

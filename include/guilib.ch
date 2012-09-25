@@ -1122,7 +1122,7 @@
              [ DIVIDE <aLeft> FROM <aRight> ] ;
           => ;
           [<oSplit> :=] HSplitter():New( <oWnd>,<nId>,<x>,<y>,<width>,<height>,<bSize>,<bDraw>,;
-             <color>,<bcolor>,<aLeft>,<aRight>, <lTransp>, <lScroll> );;
+             <color>,<bcolor>,<aLeft>,<aRight>, <.lTransp.>, <.lScroll.> );;
           [ <oSplit>:name := <(oSplit)> ]
 
 #xcommand PREPARE FONT <oFont>       ;

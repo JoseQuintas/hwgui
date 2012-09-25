@@ -76,7 +76,7 @@ CLASS HComboBox INHERIT HControl
    METHOD Setitem( nPos )
    METHOD SetValue( xItem )
    METHOD GetValue()
-   METHOD AddItem( cItem, cItemBound )
+   METHOD AddItem( cItem, cItemBound, nPos )
    METHOD DeleteItem( xIndex )
    METHOD Valid( )
    METHOD When( )
@@ -642,7 +642,7 @@ METHOD DeleteItem( xIndex ) CLASS HComboBox
    ENDIF
 RETURN .F.
 
-METHOD AddItem( cItem, cItemBound ) CLASS HComboBox
+METHOD AddItem( cItem, cItemBound, nPos ) CLASS HComboBox
 
    LOCAL nCount
 
@@ -652,11 +652,26 @@ METHOD AddItem( cItem, cItemBound ) CLASS HComboBox
          ::RowSource(  { { cItem,  cItemBound } } ) 
          ::Aitems := { }
       ENDIF
-      AADD( ::AitemsBound, cItemBound )
+      IF nPos != Nil .AND. nPos > 0 .AND. nPos < nCount
+         aSize( ::AitemsBound, nCount + 1 )
+         aIns( ::AitemsBound, nPos, cItemBound )
+      ELSE
+         AADD( ::AitemsBound, cItemBound )
+      ENDIF
       ::columnBound := 2
    ENDIF   
-   AADD( ::Aitems, cItem )  
-   ComboAddString( ::handle, cItem )    //::aItems[i] )
+   IF nPos != Nil .AND. nPos > 0 .AND. nPos < nCount
+       aSize( ::Aitems, nCount + 1 )
+       aIns( ::Aitems, nPos, cItem )
+    ELSE
+       AADD( ::Aitems, cItem )
+    ENDIF
+    IF nPos != Nil .AND. nPos > 0 .AND. nPos < nCount
+       ComboInsertString( ::handle, nPos - 1, cItem )  //::aItems[i] )
+    ELSE
+       ComboAddString( ::handle, cItem)  //::aItems[i] )
+    ENDIF
+
 RETURN nCount
 
 METHOD SetCueBanner( cText, lShowFoco ) CLASS HComboBox
@@ -699,8 +714,9 @@ METHOD onChange( lForce ) CLASS HComboBox
       RETURN Nil
    ENDIF
    
+   ::SetItem( SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1 )
    IF ::bChangeSel != Nil
-      ::SetItem( SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1 )
+      //::SetItem( SendMessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1 )
       ::oparent:lSuspendMsgsHandling := .T.
       Eval( ::bChangeSel, ::Value, Self )
       ::oparent:lSuspendMsgsHandling := .F.

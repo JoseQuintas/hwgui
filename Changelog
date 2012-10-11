@@ -8,25 +8,31 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-10-11 11:58 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
+  - Readme.activex
+  + activex.txt
+    * Readme.activex renamed to activex.txt, because the readme file
+      shows on sf code page automatic
+
 2012-09-25 19:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include/guilib.ch
      * #xcommand @ <x>,<y> SPLITTER [ <oSplit> ] ;
-	   ! fix in TRANSPARENT and SCROLLING
+      ! fix in TRANSPARENT and SCROLLING
    * source/dialog.c
      + HB_FUNC( COMBOINSERTSTRING )
-	   add new item into combobox  in the position at which to insert the string
+      add new item into combobox  in the position at which to insert the string
    * source/hcombo.prg
      * METHOD AddItem( cItem, cItemBound, nPos )
-	   + new parameter nPos
+      + new parameter nPos
    * source/hdialog.prg
      * FUNCTION DlgCommand
-	   ! fix  combobox EDIT and BUTTON IDOK
+      ! fix  combobox EDIT and BUTTON IDOK
    * source/hedit.prg
      * FUNCTION CheckFocus()
-	   ! revert change in 2012-09-19 90:30 
-   * source/hsplit.prg	   
-	 *  METHOD DragAll()
-	   ! minor fix in scrolling 
+      ! revert change in 2012-09-19 90:30
+   * source/hsplit.prg
+    *  METHOD DragAll()
+      ! minor fix in scrolling
 
 
 2012-09-21 11:58 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at uol.com.br>
@@ -35,56 +41,56 @@
 
 2012-09-20 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * source/hwindow.prg
-	  * FUNCTION onCommand
-	    ! minor fix in activate MDICHILD from menu
+     * FUNCTION onCommand
+       ! minor fix in activate MDICHILD from menu
 
 2012-09-19 20:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * include/guilib.ch
-	  * #xcommand @ <x>,<y> BUTTONEX [ <oTool> ] ;
-	    + [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;
+     * #xcommand @ <x>,<y> BUTTONEX [ <oTool> ] ;
+       + [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;
     * source/hcontrol.prg
-	  * CLASS Buttonex 
-	    * METHOD New()
-	      + parameter bOther
+     * CLASS Buttonex
+       * METHOD New()
+         + parameter bOther
     * source/htool.prg
-	  * METHOD Resize()
-	    ! minor fix
-	
+     * METHOD Resize()
+       ! minor fix
+
 2012-09-19 90:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * source/hedit.prg
-	  * FUNCTION CheckFocus()
-	    ! minor fix when combobox EDIT and BUTTON IDOK
-	* source/hdialog.prg
-	  * FUNCTION DlgCommand()
-	    ! minor fix when combobox EDIT and BUTTON IDCANCEL
+     * FUNCTION CheckFocus()
+       ! minor fix when combobox EDIT and BUTTON IDOK
+   * source/hdialog.prg
+     * FUNCTION DlgCommand()
+       ! minor fix when combobox EDIT and BUTTON IDCANCEL
     * source/hsayimg.prg
-	  + #define TRANSPARENT 1
-	  * CLASS HSayBmp 
-	    - DATA lTransp
-		* METHOD New()
-		* METHOD Redefine()
-		  + add ::extStyle +=  WS_EX_TRANSPARENT in mode transparent
-		    enables transparency in images on screens placed MDI
-		* METHOD PAINT()
-          ! REMOVE ::ltransp and add ::backstyle		
-	* source/hwindow.prg	  
-	  * CLASS HMainWindow
-	    * METHOD NEW()
-		* METHOD ACTIVATE()
-	      ! Moved the creation of MDIChild screen, the window background for MDIMAIN,
-   		   from method ACTIVATE TO method NEW to enable the addition of the objects in their creation
-		! minor fix in SETWINDOWPOS   
+     + #define TRANSPARENT 1
+     * CLASS HSayBmp
+       - DATA lTransp
+      * METHOD New()
+      * METHOD Redefine()
+        + add ::extStyle +=  WS_EX_TRANSPARENT in mode transparent
+          enables transparency in images on screens placed MDI
+      * METHOD PAINT()
+          ! REMOVE ::ltransp and add ::backstyle
+   * source/hwindow.prg
+     * CLASS HMainWindow
+       * METHOD NEW()
+      * METHOD ACTIVATE()
+         ! Moved the creation of MDIChild screen, the window background for MDIMAIN,
+            from method ACTIVATE TO method NEW to enable the addition of the objects in their creation
+      ! minor fix in SETWINDOWPOS
     * source/window.c
-	  * HB_FUNC( HWG_CENTERWINDOW )
-	    ! add  SWP_FRAMECHANGED + SWP_NOSENDCHANGING and remove SWP_NOREDRAW
+     * HB_FUNC( HWG_CENTERWINDOW )
+       ! add  SWP_FRAMECHANGED + SWP_NOSENDCHANGING and remove SWP_NOREDRAW
 
 2012-09-17 21:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * source/hpanel.prg
-	  - STATIC nrePaint
-	  + DATA nrePaint
-	  * METHOD PAINT()
-	  * METHOD Show()
-	    ! fixed backcolor
+     - STATIC nrePaint
+     + DATA nrePaint
+     * METHOD PAINT()
+     * METHOD Show()
+       ! fixed backcolor
 
 2012-09-17 20:10 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at uol.com.br>
   * source\control.c
@@ -96,146 +102,146 @@
 2012-09-14 10:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
     * source/guimain.prg
       * FUNCTION InitControls
-	    ! minor fix to init control
+       ! minor fix to init control
     * source/window.c
-	  * HB_FUNC( HWG_CENTERWINDOW )
-	    ! add  SWP_NOREDRAW + SWP_NOACTIVATE reduce flicker
+     * HB_FUNC( HWG_CENTERWINDOW )
+       ! add  SWP_NOREDRAW + SWP_NOACTIVATE reduce flicker
     * source/hwindow.prg
-	  * CLASS HMainWindow 
-	    * METHOD Activate
-		  ! minor fix initcontrol
+     * CLASS HMainWindow
+       * METHOD Activate
+        ! minor fix initcontrol
 
 2012-09-12 09:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * samples\mdichild	   
+   * samples\mdichild
      ! fixed sample testmdichil.prg
-   * source/htree.prg			
+   * source/htree.prg
      * Method Expand()
        ! fix in name parameter
-   * source/HDialog	   	   
-     * METHOD FindDialog( hWndTitle, lAll ) 
-	  ! changed parameter the methodo now can search for the title or handle
+   * source/HDialog
+     * METHOD FindDialog( hWndTitle, lAll )
+     ! changed parameter the methodo now can search for the title or handle
     * source/hwindow.prg
-	  * CLASS HWindow 
+     * CLASS HWindow
         - METHOD FindWindowTitle( cTitle )
-	    * METHOD FindWindow( hWndTitle )
-		  ! changed parameter the methodo now can search for the title or handle   
-  
+       * METHOD FindWindow( hWndTitle )
+        ! changed parameter the methodo now can search for the title or handle
+
 2012-09-11 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * source/htool.prg			   
+   * source/htool.prg
      * Method New()
-	     ! fix in vertical style
+        ! fix in vertical style
 
 2012-09-10 16:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * source/htab.prg			   
+   * source/htab.prg
      * CLASS HTab
        * Method Init()
-	     ! fix in tooltip
+        ! fix in tooltip
 
 2012-09-10 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * source/htools.prg			   
-     ! comment in unnecessary function  
+   * source/htools.prg
+     ! comment in unnecessary function
 
 2012-09-10 08:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * include/window.ch			
-   * source/htree.prg			   
+   * include/window.ch
+   * source/htree.prg
      ! constant moved from htree to window.ch
 
 2012-09-09 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * source/htree.prg			
+   * source/htree.prg
      * Method Expand()
-	   ! add new parameter lAllNode expand all node 
+      ! add new parameter lAllNode expand all node
 
 2012-09-09 20:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * source/hdatepic.prg	
+   * source/hdatepic.prg
      * METHOD Valid()
-	  ! minor fix 
-	    removed unnecessary code
-   * source/htree.prg			
+     ! minor fix
+       removed unnecessary code
+   * source/htree.prg
      * Method New()
-	   ! Remove unnecessary msginfo 
+      ! Remove unnecessary msginfo
 
 2012-09-07 20:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * source/hdatepic.prg	
+   * source/hdatepic.prg
      * METHOD Refresh()
-	  ! minor fix 
+     ! minor fix
 
 2012-09-05 16:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * source/hedit.prg	
+   * source/hedit.prg
      * METHOD Valid()
-	  ! minor fix in bad date return
+     ! minor fix in bad date return
 
 2012-09-05 16:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * source/hbrowse.prg	
+   * source/hbrowse.prg
      * METHOD ButtonDbl()
-	  ! fix in nLine
+     ! fix in nLine
 
 2012-09-04 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * source/hbrowse.prg	
+   * source/hbrowse.prg
      * METHOD Edit()
-	   ! revert changed in Get 
+      ! revert changed in Get
 
 2012-09-04 11:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * source/hbrowse.prg	
+   * source/hbrowse.prg
      * METHOD Edit()
-	   ! minor fix
-	 
+      ! minor fix
+
 2012-09-04 08:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * source/hbrowse.prg	
+   * source/hbrowse.prg
      * METHOD REBUILD()
        ! minor fix in fontsize
 
 2012-09-03 11:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * samples\database\dbfview.prg
-     FUNCTION FileOpen 
-     ! minor fix 
-   * source/hbrowse.prg	
+     FUNCTION FileOpen
+     ! minor fix
+   * source/hbrowse.prg
      * CLASS HColumn
        + METHOD Editable( lEditable ) SETGET
        * METHOD NEW()
          ! minor fix in leditable
 
 2012-09-03 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * source/hbrowse.prg	
+   * source/hbrowse.prg
      * METHOD REBUILD()
        ! minor fix in fontsize
 
 2012-09-02 21:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * source/hbrowse.prg	
+   * source/hbrowse.prg
      * METHOD Paint()
-	 * METHOD HeaderOut()
-	 * METHOD LineOut()
-	 * METHOD SeparatorOut()
-	   ! minor fixes in AdjRight and HighLightStyle
-	   
+    * METHOD HeaderOut()
+    * METHOD LineOut()
+    * METHOD SeparatorOut()
+      ! minor fixes in AdjRight and HighLightStyle
+
 2012-09-01 21:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * samples
      + folder winchild
-	   ! moved files from folder mdichid to folder winchild
-   * samples\mdichild	   
+      ! moved files from folder mdichid to folder winchild
+   * samples\mdichild
      + sample testmdichil.prg
-    * source/hbrowse.prg		
-      * METHOD Rebuild() 	
-	    ! fixed FontSize 
-	  * METHOD LineOut()
-	  * METHOD ButtonDown 	
-	    ! fix in new feature highlightstyle
+    * source/hbrowse.prg
+      * METHOD Rebuild()
+       ! fixed FontSize
+     * METHOD LineOut()
+     * METHOD ButtonDown
+       ! fix in new feature highlightstyle
     * source/hwindow.prg
-	  * CLASS HWindow 
+     * CLASS HWindow
         + METHOD FindWindowTitle( cTitle )
-	      A window search by name	
+         A window search by name
 
 2012-08-30 16:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-    * source/hhyper.prg			 
+    * source/hhyper.prg
       * METHOD NEW()
-	    ! fix in parameter bClick
+       ! fix in parameter bClick
 
 2012-08-30 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-    * source/hcontrol.prg			 
+    * source/hcontrol.prg
      * CLASS HButton
-	   * METHOD REDEFINE()
-	   * METHOD WHEN()
-	   * METHOD VALID()
-	     ! minor fix
+      * METHOD REDEFINE()
+      * METHOD WHEN()
+      * METHOD VALID()
+        ! minor fix
 
 2012-08-28 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * samples/tools/hcalculator.prg
@@ -245,182 +251,182 @@
    * samples
      + folder Tools
      + file class hcalculator.prg
-	 + file calculator.prg 
-	 + file calculator.xml
-   * source/hedit.prg			 
+    + file calculator.prg
+    + file calculator.xml
+   * source/hedit.prg
      * METHOD NEW()
-	   ! add event setfocus when bGetFocus = nil
+      ! add event setfocus when bGetFocus = nil
      * METHOD VALID()
-	 * METHOD WHEN()
-	   ! fix when object is hupdown class
+    * METHOD WHEN()
+      ! fix when object is hupdown class
    * source/hupdown.prg
-   	 * METHOD Refresh()
-	   ! minor fix
-      
+       * METHOD Refresh()
+      ! minor fix
+
 
 2012-08-27 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
-   * include/window.ch			 
+   * include/window.ch
      ! constant moved from place
    * source/hbrowse.prg
      ! commented two functions that are not being used
-	   STATIC FUNCTION FltRecNoRelative
-	   STATIC FUNCTION FltRecCount
+      STATIC FUNCTION FltRecNoRelative
+      STATIC FUNCTION FltRecCount
    * source/htool.prg
-     ! update source correct last commit   
+     ! update source correct last commit
 
 2012-08-27 14:59 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcwindow.prg
      * STATIC FUNCTION onCommand
-	   ! minor fix
-   * source/hedit.prg	  
+      ! minor fix
+   * source/hedit.prg
      * METHOD New()
-	   activate KILLFOCUS when ::bSetGet = Nil .and. bLostFocus = Nil
-	   force the pass through function CHECKFOCUS to set PROPERTY lnowhen 
-	 * METHOD onEvent()  
-	   ! msg == WM_SETFOCUS changed condition  ( ::lPicComplex )  to ( "R" $ ::cPicFunc )
+      activate KILLFOCUS when ::bSetGet = Nil .and. bLostFocus = Nil
+      force the pass through function CHECKFOCUS to set PROPERTY lnowhen
+    * METHOD onEvent()
+      ! msg == WM_SETFOCUS changed condition  ( ::lPicComplex )  to ( "R" $ ::cPicFunc )
      * METHOD Value
-	   ! returns the actual value in Editbox and not value in ::title
-     * METHOD Valid( ) CLASS HEdit	   
-	   ! changed the order of comparison in the initial condition
+      ! returns the actual value in Editbox and not value in ::title
+     * METHOD Valid( ) CLASS HEdit
+      ! changed the order of comparison in the initial condition
      * FUNCTION CheckFocus( )
-	   ! changed and added a new control for the methods WHEN objects
-   * source/hradio.prg	  
+      ! changed and added a new control for the methods WHEN objects
+   * source/hradio.prg
      * METHOD New()
-	 * METHOD Redefine()
+    * METHOD Redefine()
        + ::oParent:AddEvent( BN_KILLFOCUS, Self, { || CheckFocus( Self, .T. ) } )
-	    force the pass through function CHECKFOCUS to set PROPERTY lwhen 
-   
+       force the pass through function CHECKFOCUS to set PROPERTY lwhen
+
 2012-08-27 12:59 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include/guilib.ch
      ! fix in  <oShape> :=  HShape():New = [ <oShape> := ] HShape():New
-	 * #xcommand @ <x>,<y> TOOLBAR [ <oTool> ] ;
-	   ! changed[ BITMAPSIZE <bmpwidth> [, <bmpheight> ] ]  ;
-	 * #xcommand @ <x>,<y> SPLITTER [ <oSplit> ] ;
-	   ! add [ <lTransp: TRANSPARENT>]  ;
+    * #xcommand @ <x>,<y> TOOLBAR [ <oTool> ] ;
+      ! changed[ BITMAPSIZE <bmpwidth> [, <bmpheight> ] ]  ;
+    * #xcommand @ <x>,<y> SPLITTER [ <oSplit> ] ;
+      ! add [ <lTransp: TRANSPARENT>]  ;
              [ <lScroll: SCROLLING>  ]  ;
-   * include/window.ch			 
+   * include/window.ch
      + #define TB_GETBUTTONSIZE        (WM_USER + 58)
-	 + #define BTNS_WHOLEDROPDOWN      0x0080
+    + #define BTNS_WHOLEDROPDOWN      0x0080
    * source/hpanel.prg
      * METHOD onEvent()
        ! minor fix in Paint()
    * source/hsplit.prg
      + DATA lScrolling
-	 * METHOD New()
-	   ! add two news parameters lTransp, lScrolling ) transparent and real scrolling 
-     * METHOD onEvent()	   
+    * METHOD New()
+      ! add two news parameters lTransp, lScrolling ) transparent and real scrolling
+     * METHOD onEvent()
      * METHOD Paint()
-	 * METHOD Drag()
+    * METHOD Drag()
      * METHOD DragAll()
        ! code need for new features
-	* source/htimer.prg   
-	  * METHOD END()
-	    ! minor fix.
-    * source/hownbtn.prg   		
-	  * METHOD onEvent()
-	  * METHOD Paint(0
-	    ! minor fix
-	* source/hhyper.prg   	
-      * METHOD OnClicked()	
-	  *	METHOD Resize()
-	    ! fixed!
-	* source/htool.prg   
-	  - DATA nSize
-      + DATA nwSize, nHSize, BtnHeight	
-	  *	METHOD New()
-	    ! add news parameters nWSize,nHSize ( height and width bitmap ) and remove parameter size (width bitmap )
-      *	METHOD CREATETOOL()		
-	    ! fix news parameters
-	  *	METHOD REFRESH()
-	    ! changed to VIRTUAL
-	  *	METHOD Resize()
-	    ! fixed!
-    * source/hwindow.prg		
-	  * FUNCTION onSize
-	    ! minor fix
-	  * CLASS HMDIChildWindow		
+   * source/htimer.prg
+     * METHOD END()
+       ! minor fix.
+    * source/hownbtn.prg
+     * METHOD onEvent()
+     * METHOD Paint(0
+       ! minor fix
+   * source/hhyper.prg
+      * METHOD OnClicked()
+     *   METHOD Resize()
+       ! fixed!
+   * source/htool.prg
+     - DATA nSize
+      + DATA nwSize, nHSize, BtnHeight
+     *   METHOD New()
+       ! add news parameters nWSize,nHSize ( height and width bitmap ) and remove parameter size (width bitmap )
+      *  METHOD CREATETOOL()
+       ! fix news parameters
+     *   METHOD REFRESH()
+       ! changed to VIRTUAL
+     *   METHOD Resize()
+       ! fixed!
+    * source/hwindow.prg
+     * FUNCTION onSize
+       ! minor fix
+     * CLASS HMDIChildWindow
         * METHOD Activate
-	     ! moved bactivate to end
+        ! moved bactivate to end
 
 2012-08-27 10:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcontrol.prg
      + DATA   lnoWhen         INIT .F.
-	   necessary to avoid recursion WHEN the event without losing focus of the object
-	 * CLASS HStatic
-	   * METHOD NEW()
-	   * METHOD PAINT()
-	     ! fixed style DISABLED
-	 * CLASS HStatus 
-	   * METHOD StatusHeight( nHeight )
-	     ! fixed!
-     * CLASS HBUTTONEx		 
-	   * METHOD onEvent
-	     ! add event bOther
-	   * METHOD PAINT()
-         ! draw focus only style WS_TABSTOP	   
-   
+      necessary to avoid recursion WHEN the event without losing focus of the object
+    * CLASS HStatic
+      * METHOD NEW()
+      * METHOD PAINT()
+        ! fixed style DISABLED
+    * CLASS HStatus
+      * METHOD StatusHeight( nHeight )
+        ! fixed!
+     * CLASS HBUTTONEx
+      * METHOD onEvent
+        ! add event bOther
+      * METHOD PAINT()
+         ! draw focus only style WS_TABSTOP
+
 2012-08-27 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
      * CLASS HBrowse
-       + DATA Highlight        INIT .F. // only editable is Highlight. (Default) 
+       + DATA Highlight        INIT .F. // only editable is Highlight. (Default)
        + DATA HighlightStyle   INIT  1  // 0 No color highlighting for grid row
                                        // 1 Enable highlighting for current row. (Default)
-                                       // 2 nopersist highlighting 
+                                       // 2 nopersist highlighting
                                        // 3 nopersist when grid is not the current active control.
        * METHOD onEvent
-	     ! msg == WM_MOUSEWHEEL remove RETURN 0 because bother would not be executed
-	   * METHOD PAINT()
-	   * METHOD LineOut()
-	   * METHOD SetColumn()
-	   * METHOD RefreshLine()
-	   * METHOD When()
-	   * METHOD Valid()
-	   * FUNCTION LINELEFT()
-	   * FUNCTION LINERIGHT()
-	     ! code need for new features
-	   * METHOD EDIT()
-         ! add DS_CONTROL in style DIALOG 	   
+        ! msg == WM_MOUSEWHEEL remove RETURN 0 because bother would not be executed
+      * METHOD PAINT()
+      * METHOD LineOut()
+      * METHOD SetColumn()
+      * METHOD RefreshLine()
+      * METHOD When()
+      * METHOD Valid()
+      * FUNCTION LINELEFT()
+      * FUNCTION LINERIGHT()
+        ! code need for new features
+      * METHOD EDIT()
+         ! add DS_CONTROL in style DIALOG
    * source/hdialog.prg
-	 + DATA lContainer   INIT .F.
-	   ! when the dialog has the style DS_CONTROL the active window does not lose the style of activated
-	 * FUNCTION onActivate
-	   ! code needed for the style DS_CONTROL
+    + DATA lContainer   INIT .F.
+      ! when the dialog has the style DS_CONTROL the active window does not lose the style of activated
+    * FUNCTION onActivate
+      ! code needed for the style DS_CONTROL
 
 2012-08-08 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
      * METHOD onEvent
-	   ! minor fix in WM_KEYDOWN and WM_CHAR
+      ! minor fix in WM_KEYDOWN and WM_CHAR
 
 2012-08-06 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
      * METHOD onEvent
-	   ! fixed VK_RETURN in WM_KEYDOWN
+      ! fixed VK_RETURN in WM_KEYDOWN
 
 2012-08-03 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
      * METHOD INIT
-	   - VScrollPos( Self, 0, .F. ) ( comment , no necessary )
+      - VScrollPos( Self, 0, .F. ) ( comment , no necessary )
 
 2012-07-09 12:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hwindow.prg
      * FUNCTION onMove
-	   ! fixed visibility WIN_MDICHILD minimized
+      ! fixed visibility WIN_MDICHILD minimized
 
 2012-07-09 10:40 Luiz Rafael Culik (luiz at xharbour.com)
    * source/shellapi.c
      ! pacified warnings
-          
+
 2012-07-06 08:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/shellapi.c
      + static int ( CALLBACK BrowseCallbackProc )
-	* HB_FUNC( SELECTFOLDER )
-      ! add new parameter FolderName provides a way to specify an initial directory	
+   * HB_FUNC( SELECTFOLDER )
+      ! add new parameter FolderName provides a way to specify an initial directory
         then ex: SELECTFOLDER( "Title window","c:\windows")
-		
+
 2012-07-04 21:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hedit.prg
      * METHOD Valid
-      ! changed  CSetCent( ) to  __SetCentury() 
+      ! changed  CSetCent( ) to  __SetCentury()
 
 2012-07-04 11:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hedit.prg
@@ -433,14 +439,14 @@
    * source/hpanel.prg
      * METHOD Activate()
      * METHOD onEvent()
-	 * METHOD RESIZEOFFSET()
-	   ! minor fixes in variables
+    * METHOD RESIZEOFFSET()
+      ! minor fixes in variables
 
 2012-07-03 13:20 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htree.prg
      * METHOD Top()
      * METHOD Bottom()
-	   ! minor fixes
+      ! minor fixes
 
 2012-07-02 17:05 UTC-0300 Alexey Myronenko <m.oleksa at ukr.net>
    *  Removed by Luis Fernando Basso:

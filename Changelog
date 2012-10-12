@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-10-12 09:55 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
+  * utils/designer/designer.prg
+  * utils/designer/editor.prg
+  * utils/designer/hctrl.prg
+  * utils/designer/hformgen.prg
+  * utils/designer/inspect.prg
+    * formatting
+
 2012-10-11 11:58 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
   - Readme.activex
   + activex.txt

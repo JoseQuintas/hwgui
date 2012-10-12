@@ -1,6 +1,4 @@
 /*
-/*
-/*
  * $Id$
  *
  * Designer
@@ -9,7 +7,6 @@
  * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
 */
-
 
 // LFB pos
 #include "hbextern.ch"
@@ -42,26 +39,25 @@ REQUEST HWG_GETPRINTERS
    REQUEST HB_GT_NUL_DEFAULT
 #endif
 
-Function _AppMain( p0, p1, p2 )
-Local oPanel, oTab, oFont, oStatus1, cResForm, i
-// Local oMainWin
-Memvar oDesigner, cCurDir, oDlgx
-Memvar crossCursor, vertCursor, horzCursor, handCursor
+FUNCTION _AppMain( p0, p1, p2 )
+   LOCAL oPanel, oTab, oFont, oStatus1, cResForm, i
+   // LOCAL oMainWin
+   MEMVAR oDesigner, cCurDir, oDlgx
+   MEMVAR crossCursor, vertCursor, horzCursor, handCursor
 
-Public oDesigner, cCurDir, oMenuTool
-Public crossCursor, vertCursor, horzCursor, handCursor
-// :LFB
-REQUEST DBFCDX,DBFFPT
-RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
-// :END LFB
-
+   PUBLIC oDesigner, cCurDir, oMenuTool
+   PUBLIC crossCursor, vertCursor, horzCursor, handCursor
+   // :LFB
+   REQUEST DBFCDX,DBFFPT
+   RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
+   // :END LFB
 
    oDesigner := HDesigner():New()
 
-   IF p0 != Nil .AND. ( p0 == "-r" .OR. p0 == "/r" )
+   IF p0 != NIL .AND. ( p0 == "-r" .OR. p0 == "/r" )
       oDesigner:lReport := .T.
-      IF p1 != Nil
-         IF Left( p1,1 ) $ "-/"
+      IF p1 != NIL
+         IF Left( p1, 1 ) $ "-/"
             p0 := p1
             p1 := p2
          ELSE
@@ -88,7 +84,7 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
    oDesigner:ds_mypath := cCurDir
 
    IF !ReadIniFiles()
-      Return Nil
+      RETURN Nil
    ENDIF
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
@@ -111,9 +107,9 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
  //  INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE 280,200 TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
 
    INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE 400,200 ;
-       TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
-       FONT oFont                                                ;
-       ON EXIT {||EndIde()}
+      TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
+      FONT oFont                                                ;
+      ON EXIT {||EndIde()}
 
 #endif
 
@@ -127,22 +123,22 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
             MENUITEM "&Save as ..." ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(.T.),MsgStop("No Form in use!"))
             MENUITEM "&Close "+iif(!oDesigner:lReport,"Form","Report")  ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:End(),MsgStop("No Form in use!", "Designer"))
          ELSE
-            If !lOmmitMenuFile
+            IF !lOmmitMenuFile
                MENUITEM "&Open "+iif(!oDesigner:lReport,"Form","Report") ACTION HFormGen():OpenR()
                SEPARATOR
                MENUITEM "&Save as ..." ACTION ( oDesigner:lSingleForm:=.F.,HFormGen():oDlgSelected:oParent:Save(.T.),oDesigner:lSingleForm:=.T. )
-            EndIf
+            ENDIF
          ENDIF
          SEPARATOR
          MENU TITLE "Recent "+iif(!oDesigner:lReport,"Form","Report")
-         If !lOmmitMenuFile
+         IF !lOmmitMenuFile
             i := 1
             DO WHILE i <= MAX_RECENT_FILES .AND. oDesigner:aRecent[i] != Nil
                Hwg_DefineMenuItem( oDesigner:aRecent[i], 1020+i, ;
                   &( "{||HFormGen():Open('"+oDesigner:aRecent[i]+"')}" ) )
                i ++
             ENDDO
-         EndIf
+         ENDIF
          ENDMENU
          SEPARATOR
          MENUITEM If(!lOmmitMenuFile,"&Exit","&Close Designer") ACTION oDesigner:oMainWnd:Close()
@@ -153,7 +149,7 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
       ENDMENU
       MENU TITLE "&View"
          MENUITEM "&Object Inspector" ID 1010 ACTION Iif( oDesigner:oDlgInsp==Nil,InspOpen(),oDesigner:oDlgInsp:Close() )
-    SEPARATOR
+         SEPARATOR
          MENUITEM "&Show Grid 5px" ID 1050 ACTION ShowGrid5px()
          MENUITEM "&Show Grid 10px" ID 1052 ACTION ShowGrid10px()
          MENUITEM "S&nap to Grid" ID 1051 ACTION CheckMenuItem(oDesigner:oMainWnd:handle,1051,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1051))
@@ -173,11 +169,11 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
       ENDMENU
    ENDMENU
 
-   if ( oDesigner:nPixelGrid == 12 )
+   IF ( oDesigner:nPixelGrid == 12 )
        CheckMenuItem(oDesigner:oMainWnd:handle,1050,.T.)
-   else
+   ELSE
        CheckMenuItem(oDesigner:oMainWnd:handle,1052,.T.)
-   endif
+   ENDIF
 
    @ 0,0 PANEL oPanel SIZE 280,200 ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,y-21),statusbarmsg('')}
 
@@ -258,11 +254,10 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
 
    ENDIF
 
-    ADD STATUS oStatus1 TO oDesigner:oMainWnd ;
-       PARTS oDesigner:oMainWnd:nWidth-280,80,80, 40,40,40 ;
-       FONT HFont():Add( "MS Sans Serif",0,-12,400,,,)
+   ADD STATUS oStatus1 TO oDesigner:oMainWnd ;
+      PARTS oDesigner:oMainWnd:nWidth-280,80,80, 40,40,40 ;
+      FONT HFont():Add( "MS Sans Serif",0,-12,400,,,)
 
-         //
    @ 3,30 TAB oTab ITEMS {} OF oPanel SIZE 380,310 FONT oFont ;
       ON SIZE {|o,x,y|ArrangeBtn(o,x,y)}
 
@@ -296,7 +291,6 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
       SEPARATOR
       MENUITEM "Classe Objeto" ACTION objinspector(GetCtrlSelected(HFormGen():oDlgSelected))
            //Iif( oDesigner:oDlgInsp==Nil,InspOpen(), HWG_BRINGWINDOWTOTOP(oDesigner:oDlgInsp:handle) )
-
    ENDMENU
 
    CONTEXT MENU oDesigner:oTabMenu
@@ -325,7 +319,6 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
       MENUITEM "Objetos" ACTION socontroles()
       SEPARATOR
       MENUITEM "Classe Objeto" ACTION objinspector(GetCtrlSelected(HFormGen():oDlgSelected))
-
    ENDMENU
 
    CONTEXT MENU oDesigner:oDlgMenu
@@ -345,7 +338,7 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
 #ifdef MODAL
    ACTIVATE DIALOG oDesigner:oMainWnd
    cResForm := oDesigner:cResForm
-   oDesigner := Nil
+   oDesigner := NIL
 #else
    ACTIVATE DIALOG oDesigner:oMainWnd NOMODAL
 #endif
@@ -354,44 +347,44 @@ RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
    ACTIVATE WINDOW oDesigner:oMainWnd
 #endif
 
+   RETURN cResForm
 
-Return cResForm
+STATIC FUNCTION ShowGrid10px()
+   // local nForm, nForms
+   MEMVAR oDesigner
+   IF ( oDesigner:oDlgInsp == NIL )
+      CheckMenuItem(oDesigner:oMainWnd:handle,1052,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1052))
+      CheckMenuItem(oDesigner:oMainWnd:handle,1050,.F.)
+      IF (IsCheckedMenuItem(oDesigner:oMainWnd:handle,1052))
+         oDesigner:nPixelGrid := 18
+         oDesigner:lShowGrid  := .T.
+      ELSE
+         oDesigner:nPixelGrid := 0
+         oDesigner:lShowGrid  := .F.
+      ENDIF
+   ELSE
+      msginfo( "Close the form(s) first to change the grid status","Warning")
+   ENDIF
+   RETURN ( NIL )
 
-static Function ShowGrid10px()
-// local nForm, nForms
-memvar oDesigner
-if ( oDesigner:oDlgInsp == NIL )
-    CheckMenuItem(oDesigner:oMainWnd:handle,1052,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1052))
-    CheckMenuItem(oDesigner:oMainWnd:handle,1050,.F.)
-    if (IsCheckedMenuItem(oDesigner:oMainWnd:handle,1052))
-        oDesigner:nPixelGrid := 18
-   oDesigner:lShowGrid  := .T.
-    else
-        oDesigner:nPixelGrid := 0
-        oDesigner:lShowGrid  := .F.
-    endif
-else
-    msginfo( "Close the form(s) first to change the grid status","Warning")
-endif
-Return ( NIL )
+STATIC FUNCTION ShowGrid5px()
+   //local nForm, nForms
+   MEMVAR oDesigner
+   IF ( oDesigner:oDlgInsp == NIL )
+      CheckMenuItem(oDesigner:oMainWnd:handle,1050,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1050))
+      CheckMenuItem(oDesigner:oMainWnd:handle,1052,.F.)
+      IF (IsCheckedMenuItem(oDesigner:oMainWnd:handle,1050))
+         oDesigner:nPixelGrid := 12
+         oDesigner:lShowGrid  := .T.
+      ELSE
+         oDesigner:nPixelGrid := 0
+         oDesigner:lShowGrid  := .F.
+      ENDIF
+   ELSE
+      msginfo( "Close the form first to change the grid status","Warning")
+   ENDIF
 
-static Function ShowGrid5px()
-//local nForm, nForms
-memvar oDesigner
-if ( oDesigner:oDlgInsp == NIL )
-    CheckMenuItem(oDesigner:oMainWnd:handle,1050,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1050))
-    CheckMenuItem(oDesigner:oMainWnd:handle,1052,.F.)
-    if (IsCheckedMenuItem(oDesigner:oMainWnd:handle,1050))
-        oDesigner:nPixelGrid := 12
-            oDesigner:lShowGrid  := .T.
-    else
-        oDesigner:nPixelGrid := 0
-        oDesigner:lShowGrid  := .F.
-    endif
-else
-    msginfo( "Close the form first to change the grid status","Warning")
-endif
-Return ( NIL )
+   RETURN ( NIL )
 
 // -----------------
 CLASS HDesigner
@@ -419,7 +412,7 @@ CLASS HDesigner
 ENDCLASS
 // -----------------
 
-Static Function StartDes( oDlg,p1,cForm )
+STATIC FUNCTION StartDes( oDlg,p1,cForm )
 
    MoveWindow( oDlg:handle,0,0,oDlg:nWidth+10,oDlg:nHeight )
 
@@ -427,7 +420,7 @@ Static Function StartDes( oDlg,p1,cForm )
       IF ( p1 := Substr( p1,2,1 ) ) == "n"
          HFormGen():New()
       ELSEIF p1 == "f"
-         IF cForm == Nil
+         IF cForm == NIL
             HFormGen():New()
          ELSE
             HFormGen():Open( cForm )
@@ -435,7 +428,7 @@ Static Function StartDes( oDlg,p1,cForm )
 #ifdef INTEGRATED
 // #ifdef MODAL
       ELSEIF p1 == "s"
-         IF cForm == Nil
+         IF cForm == NIL
             HFormGen():New()
          ELSE
             HFormGen():Open( ,cForm )
@@ -447,12 +440,12 @@ Static Function StartDes( oDlg,p1,cForm )
       ENDIF
    ENDIF
 
-Return Nil
+   RETURN NIL
 
-Static Function ReadIniFiles()
-Local oIni := HXMLDoc():Read( "Designer.iml" )
-Local i, oNode, cWidgetsFileName, cwitem, cfitem, critem, l_ds_mypath, j
-memvar oDesigner, cCurDir
+STATIC FUNCTION ReadIniFiles()
+   LOCAL oIni := HXMLDoc():Read( "Designer.iml" )
+   LOCAL i, oNode, cWidgetsFileName, cwitem, cfitem, critem, l_ds_mypath, j
+   MEMVAR oDesigner, cCurDir
 
    IF oDesigner:lReport
       cwItem := "rep_widgetset"
@@ -474,25 +467,25 @@ memvar oDesigner, cCurDir
          ENDIF
       ELSEIF oNode:title == cfitem
          Aadd( oDesigner:aFormats, { oNode:GetAttribute("name"), oNode:GetAttribute("ext"), ;
-             oNode:GetAttribute("file"),oNode:GetAttribute("rdscr"), ;
-             oNode:GetAttribute("wrscr"),oNode:GetAttribute("cnvtable") } )
+            oNode:GetAttribute("file"),oNode:GetAttribute("rdscr"), ;
+            oNode:GetAttribute("wrscr"),oNode:GetAttribute("cnvtable") } )
       ELSEIF oNode:title == "editor"
          LoadEdOptions( oNode:aItems[1] )
       ELSEIF oNode:title == "grid"
-             l_ds_mypath := oNode:GetAttribute("default")
-             IF !Empty( l_ds_mypath )
-                oDesigner:nPixelGrid := val( l_ds_mypath )
-                if empty( oDesigner:nPixelGrid )
-                    oDesigner:lShowGrid := .F.
-                else
-                    oDesigner:lShowGrid := .T.
-      endif
-             ENDIF
+         l_ds_mypath := oNode:GetAttribute("default")
+         IF !Empty( l_ds_mypath )
+            oDesigner:nPixelGrid := val( l_ds_mypath )
+            IF empty( oDesigner:nPixelGrid )
+               oDesigner:lShowGrid := .F.
+            ELSE
+               oDesigner:lShowGrid := .T.
+            ENDIF
+         ENDIF
       ELSEIF oNode:title == "dirpath"
-             l_ds_mypath := oNode:GetAttribute("default")
-             IF !Empty( l_ds_mypath )
-                oDesigner:ds_mypath := Lower( l_ds_mypath )
-             ENDIF
+         l_ds_mypath := oNode:GetAttribute("default")
+         IF !Empty( l_ds_mypath )
+            oDesigner:ds_mypath := Lower( l_ds_mypath )
+         ENDIF
       ELSEIF oNode:title == critem .AND. !oDesigner:lSingleForm
          FOR j := 1 TO Min( Len( oNode:aItems ),MAX_RECENT_FILES )
             oDesigner:aRecent[j] := Lower( Trim( oNode:aItems[j]:aItems[1] ) )
@@ -505,15 +498,15 @@ memvar oDesigner, cCurDir
    ENDIF
    IF oDesigner:oWidgetsSet == Nil .OR. Empty( oDesigner:oWidgetsSet:aItems )
       MsgStop( "Widgets file isn't found!","Designer error" )
-      Return .F.
+      RETURN .F.
    ENDIF
 
-Return .T.
+   RETURN .T.
 
-Static Function BuildSet( oTab )
-Local i, j, j1, aSet, oWidget, oProperty, b1, b2, b3, cDlg, arr, b4
-Local x1, cText,cBmp, oButton
-Memvar oDesigner
+STATIC FUNCTION BuildSet( oTab )
+   LOCAL i, j, j1, aSet, oWidget, oProperty, b1, b2, b3, cDlg, arr, b4
+   LOCAL x1, cText,cBmp, oButton
+   MEMVAR oDesigner
 
    IF !Empty( oDesigner:oWidgetsSet:aItems )
       aSet := oDesigner:oWidgetsSet:aItems[1]:aItems
@@ -527,13 +520,13 @@ Memvar oDesigner
                   cText := oWidget:GetAttribute( "text" )
                   cBmp := oWidget:GetAttribute( "bmp" )
                   IF cText != Nil .OR. cBmp != Nil
-                    oButton := HOwnButton():New( ,,,x1,32,30,26, ;
-                               ,,,{|o,id|ClickBtn(o,id)},.T.,    ;
-                               cText,,,,,,,                      ;
-                               cBmp,At(".",cBmp)==0,,,,,.F.,,    ;
-                               oWidget:GetAttribute( "name" ) )
-                    oButton:cargo := oWidget
-                    x1 += 30
+                     oButton := HOwnButton():New( ,,,x1,32,30,26, ;
+                        ,,,{|o,id|ClickBtn(o,id)},.T.,    ;
+                        cText,,,,,,,                      ;
+                        cBmp,At(".",cBmp)==0,,,,,.F.,,    ;
+                        oWidget:GetAttribute( "name" ) )
+                     oButton:cargo := oWidget
+                     x1 += 30
                   ENDIF
                ENDIF
             NEXT
@@ -556,15 +549,14 @@ Memvar oDesigner
                         b4 := oProperty:aItems[j1]:aItems[1]:aItems[1]
                      ENDIF
                   NEXT
-
                   cDlg := oProperty:GetAttribute("array")
                   IF cDlg != Nil
                      arr := {}
-                      DO WHILE ( j1 := At( ",",cDlg ) ) > 0
-                           Aadd( arr,Left( cDlg,j1-1 ) )
-                          cDlg := LTrim( SubStr( cDlg,j1+1 ) )
-                         ENDDO
-                      Aadd( arr, cDlg )
+                     DO WHILE ( j1 := At( ",",cDlg ) ) > 0
+                        Aadd( arr,Left( cDlg,j1-1 ) )
+                        cDlg := LTrim( SubStr( cDlg,j1+1 ) )
+                     ENDDO
+                     Aadd( arr, cDlg )
                   ELSE
                      arr := Nil
                   ENDIF
@@ -572,25 +564,25 @@ Memvar oDesigner
                   IF cDlg != Nil
                      cDlg := Lower( cDlg )
                   ENDIF
-
                   Aadd( oDesigner:aDataDef, { Lower(oProperty:GetAttribute("name")), ;
-                                     b1,b2,b3,cDlg,arr,b4 } )
+                     b1,b2,b3,cDlg,arr,b4 } )
                ENDIF
             NEXT
          ELSEIF aSet[i]:title == "methods"
             FOR j := 1 TO Len( aSet[i]:aItems )
                IF aSet[i]:aItems[j]:title == "method"
                   Aadd( oDesigner:aMethDef, { Lower(aSet[i]:aItems[j]:GetAttribute("name")), ;
-                                     aSet[i]:aItems[j]:GetAttribute("params") } )
+                     aSet[i]:aItems[j]:GetAttribute("params") } )
                ENDIF
             NEXT
          ENDIF
       NEXT
    ENDIF
-Return Nil
 
-Static Function ArrangeBtn( oTab,x,y )
-Local i, x1, y1, oBtn
+   RETURN NIL
+
+STATIC FUNCTION ArrangeBtn( oTab,x,y )
+   LOCAL i, x1, y1, oBtn
 
    oTab:Move( ,, x-6, y-33 )
    FOR i := 1 TO Len( oTab:aControls )
@@ -611,25 +603,27 @@ Local i, x1, y1, oBtn
          ENDIF
       ENDIF
    NEXT
-Return Nil
 
-Static Function ClickBtn( oTab,nId ) //, cItem,cText,nWidth,nHeight )
-Local oBtn := oTab:FindControl( nId )
-Memvar oDesigner
+   RETURN NIL
+
+STATIC FUNCTION ClickBtn( oTab,nId ) //, cItem,cText,nWidth,nHeight )
+   LOCAL oBtn := oTab:FindControl( nId )
+   MEMVAR oDesigner
 
    IF !Empty( HFormGen():aForms )
       oDesigner:addItem := oBtn:cargo
-      IF oDesigner:oBtnPressed != Nil
+      IF oDesigner:oBtnPressed != NIL
          oDesigner:oBtnPressed:Release()
       ENDIF
       oBtn:Press()
       oDesigner:oBtnPressed := oBtn
    ENDIF
-Return Nil
 
-Function DeleteCtrl()
-Local oDlg := HFormGen():oDlgSelected, oCtrl, i
-Memvar oDesigner
+   RETURN NIL
+
+FUNCTION DeleteCtrl()
+   LOCAL oDlg := HFormGen():oDlgSelected, oCtrl, i
+   MEMVAR oDesigner
 
    IF oDlg != Nil .AND. ( oCtrl := GetCtrlSelected( oDlg ) ) != Nil
       IF oCtrl:oContainer != Nil
@@ -644,28 +638,29 @@ Memvar oDesigner
       ELSE
          oDlg:DelControl( oCtrl )
       ENDIF
-     InspSetCombo( )
+      InspSetCombo( )
       SetCtrlSelected( oDlg )
       oDlg:oParent:lChanged := .T.
    ENDIF
 
-Return Nil
+   RETURN NIL
 
-Function FindWidget( cClass )
-memvar  odesigner
-Local i, aSet := oDesigner:oWidgetsSet:aItems[1]:aItems, oNode
+FUNCTION FindWidget( cClass )
+   MEMVAR  odesigner
+   LOCAL i, aSet := oDesigner:oWidgetsSet:aItems[1]:aItems, oNode
 
    FOR i := 1 TO Len( aSet )
       IF aSet[i]:title == "set"
          IF ( oNode := aSet[i]:Find( "widget",1,{|o|o:GetAttribute("class")==cClass} ) ) != Nil
-            Return oNode
+            RETURN oNode
          ENDIF
       ENDIF
    NEXT
-Return Nil
 
-Function Evalcode( xCode )
-Local nLines
+   RETURN NIL
+
+FUNCTION Evalcode( xCode )
+   LOCAL nLines
 
    IF Valtype( xCode ) == "C"
       nLines := mlCount( xCode )
@@ -676,24 +671,24 @@ Local nLines
       ENDIF
    ENDIF
    IF Valtype( xCode ) == "A"
-      Return DoScript( xCode )
+      RETURN DoScript( xCode )
    ELSE
-      Return Eval( xCode )
+      RETURN Eval( xCode )
    ENDIF
 
-Return Nil
+   RETURN NIL
 
-Static Function CreateIni( oIni )
-Local oNode := oIni:Add( HXMLNode():New( "designer" ) )
+STATIC FUNCTION CreateIni( oIni )
+   LOCAL oNode := oIni:Add( HXMLNode():New( "designer" ) )
 
    oNode:Add( HXMLNode():New( "widgetset",,,"widgets.xml" ) )
-
    oIni:Save( "designer.iml" )
-Return Nil
 
-Function AddRecent( oForm )
-Local i, cItem := Lower( Trim( oForm:path+oForm:filename ) )
-Memvar oDesigner
+   RETURN NIL
+
+FUNCTION AddRecent( oForm )
+   LOCAL i, cItem := Lower( Trim( oForm:path+oForm:filename ) )
+   MEMVAR oDesigner
 
    IF oDesigner:aRecent[1] == Nil .OR. !( oDesigner:aRecent[1] == cItem )
       FOR i := 1 TO MAX_RECENT_FILES
@@ -708,103 +703,102 @@ Memvar oDesigner
       oDesigner:lChgRecent := .T.
    ENDIF
 
-Return Nil
+   RETURN NIL
 
-Static Function EndIde
-Local i, j, alen := Len( HFormGen():aForms ), lRes := .T., oIni, critem, oNode
-Memvar oDesigner, cCurDir
+STATIC FUNCTION EndIde
+   LOCAL i, j, alen := Len( HFormGen():aForms ), lRes := .T., oIni, critem, oNode
+   MEMVAR oDesigner, cCurDir
 
-  IF alen > 0
-     IF MsgYesNo( "Do you really want to quit ?", "Designer" )
-        FOR i := Len( HFormGen():aForms ) TO 1 STEP -1
-           HFormGen():aForms[i]:End( ,.F. )
-        NEXT
-     ELSE
-        lRes := .F.
-     ENDIF
-  ENDIF
-  IF !oDesigner:lSingleForm .AND. ( oDesigner:lChgRecent .OR. oDesigner:lChgPath .OR. .T. )
-     critem := Iif( oDesigner:lReport, "rep_recent", "recent" )
-     oIni := HXMLDoc():Read( cCurDir+"Designer.iml" )
-     IF oDesigner:lChgPath
-        i := 1
-        oNode := HXMLNode():New( "dirpath",HBXML_TYPE_SINGLE,{{"default",oDesigner:ds_myPath}} )
-        IF oIni:aItems[1]:Find( "dirpath",@i ) == Nil
-           oIni:aItems[1]:Add( oNode )
-        ELSE
-           oIni:aItems[1]:aItems[i] := oNode
-        ENDIF
-     ENDIF
-     IF oDesigner:lChgRecent
-        i := 1
-        IF oIni:aItems[1]:Find( critem,@i ) == Nil
-           oIni:aItems[1]:Add( HXMLNode():New( critem,, ) )
-           i := Len( oIni:aItems[1]:aItems )
-        ENDIF
-        j := 1
-        oIni:aItems[1]:aItems[i]:aItems := {}
-        DO WHILE j <= MAX_RECENT_FILES .AND. oDesigner:aRecent[j] != Nil
-           oIni:aItems[1]:aItems[i]:Add( HXMLNode():New( "file",,,oDesigner:aRecent[j] ) )
-           j ++
-        ENDDO
-     ENDIF
+   IF alen > 0
+      IF MsgYesNo( "Do you really want to quit ?", "Designer" )
+         FOR i := Len( HFormGen():aForms ) TO 1 STEP -1
+            HFormGen():aForms[i]:End( ,.F. )
+         NEXT
+      ELSE
+         lRes := .F.
+      ENDIF
+   ENDIF
+   IF !oDesigner:lSingleForm .AND. ( oDesigner:lChgRecent .OR. oDesigner:lChgPath .OR. .T. )
+      critem := Iif( oDesigner:lReport, "rep_recent", "recent" )
+      oIni := HXMLDoc():Read( cCurDir+"Designer.iml" )
+      IF oDesigner:lChgPath
+         i := 1
+         oNode := HXMLNode():New( "dirpath",HBXML_TYPE_SINGLE,{{"default",oDesigner:ds_myPath}} )
+         IF oIni:aItems[1]:Find( "dirpath",@i ) == Nil
+            oIni:aItems[1]:Add( oNode )
+         ELSE
+            oIni:aItems[1]:aItems[i] := oNode
+         ENDIF
+      ENDIF
+      IF oDesigner:lChgRecent
+         i := 1
+         IF oIni:aItems[1]:Find( critem,@i ) == Nil
+            oIni:aItems[1]:Add( HXMLNode():New( critem,, ) )
+            i := Len( oIni:aItems[1]:aItems )
+         ENDIF
+         j := 1
+         oIni:aItems[1]:aItems[i]:aItems := {}
+         DO WHILE j <= MAX_RECENT_FILES .AND. oDesigner:aRecent[j] != Nil
+            oIni:aItems[1]:aItems[i]:Add( HXMLNode():New( "file",,,oDesigner:aRecent[j] ) )
+            j ++
+         ENDDO
+      ENDIF
+      i := 1
+      oNode := HXMLNode():New( "grid",HBXML_TYPE_SINGLE,{{"default",alltrim(str(oDesigner:nPixelGrid))}} )
+      IF oIni:aItems[1]:Find( "grid",@i ) == Nil
+         oIni:aItems[1]:Add( oNode )
+      ELSE
+         oIni:aItems[1]:aItems[i] := oNode
+      ENDIF
 
-        i := 1
-        oNode := HXMLNode():New( "grid",HBXML_TYPE_SINGLE,{{"default",alltrim(str(oDesigner:nPixelGrid))}} )
-        IF oIni:aItems[1]:Find( "grid",@i ) == Nil
-           oIni:aItems[1]:Add( oNode )
-        ELSE
-           oIni:aItems[1]:aItems[i] := oNode
-        ENDIF
-
-     oIni:Save( cCurDir+"Designer.iml" )
-  ENDIF
-  IF lRes
-     oDesigner:oCtrlMenu:End()
-     oDesigner:oTabMenu:End()
-     IF HDTheme():lChanged
-        SaveEdOptions()
-     ENDIF
+      oIni:Save( cCurDir+"Designer.iml" )
+   ENDIF
+   IF lRes
+      oDesigner:oCtrlMenu:End()
+      oDesigner:oTabMenu:End()
+      IF HDTheme():lChanged
+         SaveEdOptions()
+      ENDIF
 #ifndef MODAL
-     oDesigner := Nil
+      oDesigner := Nil
 #endif
-  ENDIF
+   ENDIF
 
-Return lRes
+   RETURN lRes
 
+FUNCTION SetOmmitMenuFile(lom)
 
-Function SetOmmitMenuFile(lom)
-lOmmitMenuFile := lOm
-Return lOm
+   lOmmitMenuFile := lOm
+
+   RETURN lOm
 
 // : LFB
-Function StatusBarMsg(cfile,cpos,ctam)
-memvar oDesigner
+FUNCTION StatusBarMsg(cfile,cpos,ctam)
+   MEMVAR oDesigner
 
-  //cfile := IIF(cfile = Nil,'',cfile)
-  cpos := IIF(cpos = Nil,'',cpos)
-  ctam := IIF(ctam = Nil,'',ctam)
+   //cfile := IIF(cfile = Nil,'',cfile)
+   cpos := IIF(cpos = Nil,'',cpos)
+   ctam := IIF(ctam = Nil,'',ctam)
    IF cFile != Nil
-     WriteStatus( oDesigner:oMainWnd,1,"File: "+cfile ,.T.)
-  ENDIF
-  WriteStatus( oDesigner:oMainWnd,2,cpos ,.T.)
-  WriteStatus(oDesigner:oMainWnd,3,ctam ,.T.)
+      WriteStatus( oDesigner:oMainWnd,1,"File: "+cfile ,.T.)
+   ENDIF
+   WriteStatus( oDesigner:oMainWnd,2,cpos ,.T.)
+   WriteStatus(oDesigner:oMainWnd,3,ctam ,.T.)
 
-  *WriteStatus( OdLG,4,"INS" ,.T.)
-  WriteStatus(oDesigner:oMainWnd,5,IIF(IsNUmLockActive(),"NUM" ,"   "),.T.)
-  WriteStatus(oDesigner:oMainWnd,6,IIF(IsCapsLockActive(),"CAPS","    ") ,.T.)
+   *WriteStatus( OdLG,4,"INS" ,.T.)
+   WriteStatus(oDesigner:oMainWnd,5,IIF(IsNUmLockActive(),"NUM" ,"   "),.T.)
+   WriteStatus(oDesigner:oMainWnd,6,IIF(IsCapsLockActive(),"CAPS","    ") ,.T.)
 
-RETURN Nil
-
+   RETURN NIL
 
 FUNCTION SoControles
-LOCAL opanelx, oTabx
-Local oFont
+   LOCAL opanelx, oTabx
+   LOCAL oFont
 
    IF !empty(hwg_findwindow(0,"Toolbars - Classes ") )// > 0
-     Showwindow(oDlgx:handle)
-     SetFocus( oDlgx:handle )
-     RETURN NIL
+      Showwindow(oDlgx:handle)
+      SetFocus( oDlgx:handle )
+      RETURN NIL
    ENDIF
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
@@ -814,43 +808,44 @@ Local oFont
       STYLE WS_VISIBLE + WS_SYSMENU + DS_SYSMODAL + WS_SIZEBOX + MB_USERICON    ;
       ON EXIT {||  oDlgx := Nil, .t.}
 
-      //ON OTHER MESSAGES {|o,m,wp,lp|MessagesOthers(o,m,wp,lp)}
+   //ON OTHER MESSAGES {|o,m,wp,lp|MessagesOthers(o,m,wp,lp)}
 
    @ 0,0 PANEL oPanelx SIZE 395,98 ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x+4,y+20)}
    @ 1,1 TAB oTabx ITEMS {} OF oPanelx SIZE 390,98 FONT oFont ;
-       ON SIZE {|o,x,y|ArrangeBtn(o,x,y)}
+      ON SIZE {|o,x,y|ArrangeBtn(o,x,y)}
 
    CONTEXT MENU oMenuTool
       MENUITEM "AlwaysOnTop" ACTION ActiveTopMost( 0, .t. )
-         //{||oDesigner:oDlgInsp:Close(),inspOpen(.T.)}
+      //{||oDesigner:oDlgInsp:Close(),inspOpen(.T.)}
       MENUITEM "Normal" ACTION ActiveTopMost( 0, .f. )
-         //{||oDesigner:oDlgInsp:Close(),inspOpen(.F.)}
+      //{||oDesigner:oDlgInsp:Close(),inspOpen(.F.)}
       MENUITEM "Hide" ACTION oDlgX:CLOSE()
-    ENDMENU
+   ENDMENU
 
    BuildSet( oTabx )
 
    HWG_InitCommonControlsEx()
 
-    ACTIVATE DIALOG ODLGx NOMODAL
+   ACTIVATE DIALOG ODLGx NOMODAL
 
-RETURN nil
+   RETURN NIL
 
+FUNCTION InspShow()
+   MEMVAR oDesigner
 
-Function InspShow()
-MEMVAR oDesigner
-
-  Iif( oDesigner:oDlgInsp==Nil,InspOpen(),oDesigner:oDlgInsp:show() )
+   Iif( oDesigner:oDlgInsp==Nil,InspOpen(),oDesigner:oDlgInsp:show() )
    HWG_BRINGWINDOWTOTOP(oDesigner:oDlgInsp:handle)
-RETURN NIL
+
+   RETURN NIL
 
 FUNCTION HWLASTKEY
- LOCAL ckeyb := GETKEYBOARDSTATE() ,i
- FOR i= 1 to 255
-   IF Asc(Substr(ckeyb,i,1)) >= 128
+   LOCAL ckeyb := GETKEYBOARDSTATE() ,i
+   FOR i= 1 to 255
+      IF Asc(Substr(ckeyb,i,1)) >= 128
          RETURN i - 1
-   ENDIF
- NEXT
- RETURN 0
+      ENDIF
+   NEXT
 
- // :END LFB
+   RETURN 0
+
+   // :END LFB

@@ -22,8 +22,7 @@
 
 CLASS HTrackBar INHERIT HControl
 
-CLASS VAR winclass   INIT "msctls_trackbar32"
-
+   CLASS VAR winclass INIT "msctls_trackbar32"
    DATA value
    DATA bChange
    DATA bThumbDrag
@@ -32,8 +31,8 @@ CLASS VAR winclass   INIT "msctls_trackbar32"
    DATA hCursor
 
    METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
-               bInit, bSize, bPaint, cTooltip, bChange, bDrag, nLow, nHigh, ;
-               lVertical, TickStyle, TickMarks )
+         bInit, bSize, bPaint, cTooltip, bChange, bDrag, nLow, nHigh, ;
+         lVertical, TickStyle, TickMarks )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -44,21 +43,21 @@ CLASS VAR winclass   INIT "msctls_trackbar32"
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
-            bInit, bSize, bPaint, cTooltip, bChange, bDrag, nLow, nHigh, ;
-            lVertical, TickStyle, TickMarks ) CLASS HTrackBar
+      bInit, bSize, bPaint, cTooltip, bChange, bDrag, nLow, nHigh, ;
+      lVertical, TickStyle, TickMarks ) CLASS HTrackBar
 
    IF TickStyle == NIL ; TickStyle := TBS_AUTOTICKS ; ENDIF
    IF TickMarks == NIL ; TickMarks := 0 ; ENDIF
    IF bPaint != NIL
       TickStyle := Hwg_BitOr( TickStyle, TBS_AUTOTICKS )
    ENDIF
-   nStyle   := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), ;
-                          WS_CHILD + WS_VISIBLE + WS_TABSTOP )
-   nStyle   += IIf( lVertical != NIL .AND. lVertical, TBS_VERT, 0 )
-   nStyle   += TickStyle + TickMarks
+   nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), ;
+         WS_CHILD + WS_VISIBLE + WS_TABSTOP )
+   nStyle += IIf( lVertical != NIL .AND. lVertical, TBS_VERT, 0 )
+   nStyle += TickStyle + TickMarks
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,, ;
-              bInit, bSize, bPaint, cTooltip )
+         bInit, bSize, bPaint, cTooltip )
 
    ::value      := IIf( ValType( vari ) == "N", vari, 0 )
    ::bChange    := bChange
@@ -74,10 +73,11 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
 METHOD Activate() CLASS HTrackBar
    IF ! Empty( ::oParent:handle )
       ::handle := InitTrackBar ( ::oParent:handle, ::id, ::style, ;
-                                 ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
-                                 ::nLow, ::nHigh )
+            ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
+            ::nLow, ::nHigh )
       ::Init()
    ENDIF
+
    RETURN NIL
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HTrackBar
@@ -88,38 +88,31 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTrackBar
          Eval( ::bPaint, Self )
          RETURN 0
       ENDIF
-
    ELSEIF msg == WM_MOUSEMOVE
       IF ::hCursor != NIL
          Hwg_SetCursor( ::hCursor )
       ENDIF
-
    ELSEIF msg == WM_ERASEBKGND
       IF ::brush != NIL
          aCoors := GetClientRect( ::handle )
          FillRect( wParam, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ] + 1, ;
-                   aCoors[ 4 ] + 1, ::brush:handle )
+               aCoors[ 4 ] + 1, ::brush:handle )
          RETURN 1
       ENDIF
-
    ELSEIF msg == WM_DESTROY
       ::END()
-
    ELSEIF msg == WM_CHAR
       IF wParam = VK_TAB
          GetSkip( ::oParent, ::handle, , ;
-				          iif( IsCtrlShift(.f., .t.), -1, 1) )
+               iif( IsCtrlShift(.f., .t.), -1, 1) )
+         RETURN 0
+      ENDIF
+    ELSEIF msg = WM_KEYDOWN
+       IF ProcKeyList( Self, wParam )
           RETURN 0
       ENDIF
-
-	 ELSEIF msg = WM_KEYDOWN
-	    IF  ProcKeyList( Self, wParam )
-	       RETURN 0
-      ENDIF
-
    ELSEIF ::bOther != NIL
       RETURN Eval( ::bOther, Self, msg, wParam, lParam )
-
    ENDIF
 
    RETURN - 1
@@ -129,13 +122,13 @@ METHOD Init() CLASS HTrackBar
       Super:Init()
       TrackBarSetRange( ::handle, ::nLow, ::nHigh )
       SendMessage( ::handle, TBM_SETPOS, 1, ::value )
-
       IF ::bPaint != NIL
          ::nHolder := 1
          SetWindowObject( ::handle, Self )
          Hwg_InitTrackProc( ::handle )
       ENDIF
    ENDIF
+
    RETURN NIL
 
 METHOD SetValue( nValue ) CLASS HTrackBar
@@ -143,10 +136,12 @@ METHOD SetValue( nValue ) CLASS HTrackBar
       SendMessage( ::handle, TBM_SETPOS, 1, nValue )
       ::value := nValue
    ENDIF
+
    RETURN NIL
 
 METHOD GetValue() CLASS HTrackBar
    ::value := SendMessage( ::handle, TBM_GETPOS, 0, 0 )
+
    RETURN ( ::value )
 
 #pragma BEGINDUMP

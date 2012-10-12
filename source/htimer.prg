@@ -17,8 +17,7 @@
 
 CLASS HTimer INHERIT HObject
 
-CLASS VAR aTimers   INIT { }
-
+   CLASS VAR aTimers   INIT { }
    DATA lInit   INIT .F.
    DATA id
    DATA value
@@ -28,10 +27,9 @@ CLASS VAR aTimers   INIT { }
    DATA   xName          HIDDEN
    ACCESS Name           INLINE ::xName
    ASSIGN Name( cName )  INLINE IIF( !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. ! ":" $ cName .AND. ! "[" $ cName,;
-			( ::xName := cName, __objAddData( ::oParent, cName ), ::oParent: & ( cName ) := Self), Nil)
+         ( ::xName := cName, __objAddData( ::oParent, cName ), ::oParent: & ( cName ) := Self), Nil)
    ACCESS Interval       INLINE ::value
-   ASSIGN Interval( x )  INLINE ::value := x,     ;
-                                           SetTimer( ::oParent:handle, ::id, ::value )
+   ASSIGN Interval( x )  INLINE ::value := x, SetTimer( ::oParent:handle, ::id, ::value )
 
    METHOD New( oParent, nId, value, bAction )
    METHOD Init()
@@ -43,8 +41,8 @@ ENDCLASS
 
 METHOD New( oParent, nId, value, bAction ) CLASS HTimer
 
-   ::oParent := Iif( oParent==Nil, HWindow():GetMain():oDefaultParent, oParent )
-   IF nId == nil
+   ::oParent := Iif( oParent==NIL, HWindow():GetMain():oDefaultParent, oParent )
+   IF nId == NIL
       nId := TIMER_FIRST_ID
       DO WHILE AScan( ::aTimers, { | o | o:id == nId } ) !=  0
          nId ++
@@ -54,9 +52,9 @@ METHOD New( oParent, nId, value, bAction ) CLASS HTimer
    ::value   := IIF( VALTYPE( value ) = "N", value, 0 )
    ::bAction := bAction
    /*
-    if ::value > 0
+   IF ::value > 0
       SetTimer( oParent:handle, ::id, ::value )
-   endif
+   ENDIF
    */
    ::Init()
    AAdd( ::aTimers, Self )
@@ -70,12 +68,13 @@ METHOD Init() CLASS HTimer
          SetTimer( ::oParent:handle, ::id, ::value )
       ENDIF
    ENDIF
+
    RETURN  NIL
 
 METHOD END() CLASS HTimer
    LOCAL i
 
-   IF ::oParent != Nil
+   IF ::oParent != NIL
       KillTimer( ::oParent:handle, ::id )
    ENDIF
    IF ( i := AScan( ::aTimers, { | o | o:id == ::id } ) ) > 0
@@ -83,13 +82,13 @@ METHOD END() CLASS HTimer
       ASize( ::aTimers, Len( ::aTimers ) - 1 )
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD onAction()
 
    TimerProc( , ::id, ::interval )
 
-RETURN Nil
+   RETURN NIL
 
 
 FUNCTION TimerProc( hWnd, idTimer, Time )
@@ -102,11 +101,9 @@ FUNCTION TimerProc( hWnd, idTimer, Time )
       Eval( HTimer():aTimers[ i ]:bAction, HTimer():aTimers[i], time )
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
-
-
-   EXIT PROCEDURE CleanTimers
+EXIT PROCEDURE CleanTimers
    LOCAL oTimer, i
 
    FOR i := 1 TO Len( HTimer():aTimers )

@@ -17,8 +17,7 @@
 
 CLASS HSplitter INHERIT HControl
 
-CLASS VAR winclass INIT "STATIC"
-
+   CLASS VAR winclass INIT "STATIC"
    DATA aLeft
    DATA aRight
    DATA lVertical
@@ -29,7 +28,7 @@ CLASS VAR winclass INIT "STATIC"
    DATA lScrolling
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-               bSize, bDraw, color, bcolor, aLeft, aRight, lTransp, lScrolling )
+         bSize, bDraw, color, bcolor, aLeft, aRight, lTransp, lScrolling )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -40,17 +39,17 @@ CLASS VAR winclass INIT "STATIC"
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-            bSize, bDraw, color, bcolor, aLeft, aRight, lTransp, lScrolling ) CLASS HSplitter
-                                                         //+  WS_CLIPCHILDREN
+      bSize, bDraw, color, bcolor, aLeft, aRight, lTransp, lScrolling ) CLASS HSplitter
+   //+  WS_CLIPCHILDREN
    Super:New( oWndParent, nId, WS_VISIBLE + SS_OWNERDRAW , nLeft, nTop, nWidth, nHeight,,, ;
-              bSize, bDraw,, color, bcolor )
+         bSize, bDraw,, color, bcolor )
 
-   ::title   := ""
-   
-   ::aLeft   := IIf( aLeft == Nil, { }, aLeft )
-   ::aRight  := IIf( aRight == Nil, { }, aRight )
+   ::title := ""
+
+   ::aLeft := IIf( aLeft == NIL, { }, aLeft )
+   ::aRight := IIf( aRight == NIL, { }, aRight )
    ::lVertical := ( ::nHeight > ::nWidth )
-   ::lScrolling := Iif( lScrolling == Nil, .F., lScrolling )
+   ::lScrolling := Iif( lScrolling == NIL, .F., lScrolling )
    IF ( lTransp != NIL .AND. lTransp )
       ::BackStyle := TRANSPARENT
       ::extStyle += WS_EX_TRANSPARENT
@@ -62,10 +61,11 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
 METHOD Activate() CLASS HSplitter
    IF ! Empty( ::oParent:handle )
       ::handle := CreateStatic( ::oParent:handle, ::id, ;
-                                ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::extStyle )
+            ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::extStyle )
       ::Init()
    ENDIF
-   RETURN Nil
+
+   RETURN NIL
 
 METHOD Init() CLASS HSplitter
 
@@ -76,14 +76,14 @@ METHOD Init() CLASS HSplitter
       Hwg_InitWinCtrl( ::handle )
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
 
    HB_SYMBOL_UNUSED( wParam )
 
    IF msg == WM_MOUSEMOVE
-      IF ::hCursor == Nil
+      IF ::hCursor == NIL
          ::hCursor := LoadCursor( IIf( ::lVertical, IDC_SIZEWE, IDC_SIZENS ) )
       ENDIF
       Hwg_SetCursor( ::hCursor )
@@ -96,7 +96,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
    ELSEIF msg == WM_PAINT
       ::Paint()
    ELSEIF msg == WM_ERASEBKGND
-
    ELSEIF msg == WM_LBUTTONDOWN
       Hwg_SetCursor( ::hCursor )
       SetCapture( ::handle )
@@ -107,8 +106,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
       ::lCaptured := .F.
       ::lMoved := .F.
       ::DragAll( .F. )
-      IF ::bEndDrag != Nil
-       //  Eval( ::bEndDrag, Self )
+      IF ::bEndDrag != NIL
+         // Eval( ::bEndDrag, Self )
       ENDIF
    ELSEIF msg == WM_DESTROY
       ::END()
@@ -116,22 +115,20 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
 
    RETURN - 1
 
-
 METHOD Paint() CLASS HSplitter
    LOCAL pps, hDC, aCoors, x1, y1, x2, y2, oBrushFill
-
 
    pps := DefinePaintStru()
    hDC := BeginPaint( ::handle, pps )
    aCoors := GetClientRect( ::handle )
-   
+
    x1 := aCoors[ 1 ] //+ IIf( ::lVertical, 1, 2 )
    y1 := aCoors[ 2 ] //+ IIf( ::lVertical, 2, 1 )
    x2 := aCoors[ 3 ] //- IIf( ::lVertical, 0, 3 )
    y2 := aCoors[ 4 ] //- IIf( ::lVertical, 3, 0 )
 
    SetBkMode( hDC, ::backStyle )
-   IF ::bPaint != Nil
+   IF ::bPaint != NIL
       Eval( ::bPaint, Self )
    ELSEIF ! ::lScrolling
       IF ::lCaptured
@@ -147,7 +144,7 @@ METHOD Paint() CLASS HSplitter
    ENDIF
    EndPaint( ::handle, pps )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD Drag( lParam ) CLASS HSplitter
    LOCAL xPos := LOWORD( lParam ), yPos := HIWORD( lParam )
@@ -169,7 +166,7 @@ METHOD Drag( lParam ) CLASS HSplitter
    InvalidateRect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nleft + ::nWidth , ::nTop + ::nHeight )
    ::lMoved := .T.
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD DragAll( lScroll ) CLASS HSplitter
    LOCAL i, oCtrl, xDiff := 0, yDiff := 0
@@ -214,9 +211,8 @@ METHOD DragAll( lScroll ) CLASS HSplitter
    ELSE
       InvalidateRect( ::oParent:Handle, 0, ::nLeft , ::nTop - ::nHeight - yDiff - 1 , ::nLeft + ::nWidth, ::nTop + ::nHeight + yDiff + 1 )
    ENDIF
-   IF ::bEndDrag != Nil
+   IF ::bEndDrag != NIL
       Eval( ::bEndDrag,Self )
    ENDIF
 
-   RETURN Nil
-
+   RETURN NIL

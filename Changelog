@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-10-16 09:27 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
+  * source/hpanel.prg
+  * source/hprinter.prg
+  * source/hprogres.prg
+  * source/hradio.prg
+  * source/hrebar.prg
+  * source/hrect.prg
+  * source/hsayimg.prg
+  * source/htab.prg
+    * formatting
+  * source/hradio.prg
+    * a duplicate line is deleted ::oParent:AddControl( Self )
+
 2012-10-12 15:37 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
   * source/hbrowse.prg
   * source/hcheck.prg

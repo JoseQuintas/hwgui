@@ -20,7 +20,7 @@ CLASS hrebar INHERIT HControl
 
    DATA winclass INIT "ReBarWindow32"
    DATA TEXT, id, nTop, nLeft, nwidth, nheight
-   CLASSDATA oSelected INIT Nil
+   CLASSDATA oSelected INIT NIL
    DATA ExStyle
    DATA bClick
    DATA lVert
@@ -29,10 +29,9 @@ CLASS hrebar INHERIT HControl
    DATA aBands INIT  {}
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-               bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
+         bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
    METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
-                    bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
-
+         bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
    METHOD Activate()
    METHOD INIT()
    METHOD ADDBARColor( pBar, clrFore, clrBack, pszText, dwStyle ) INLINE ADDBARCOLORS( ::handle, pBar, clrFore, clrBack, pszText, dwStyle )
@@ -42,84 +41,78 @@ CLASS hrebar INHERIT HControl
 
 ENDCLASS
 
-
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-            bSize, bPaint, ctooltip, tcolor, bcolor, lvert ) CLASS hrebar
+      bSize, bPaint, ctooltip, tcolor, bcolor, lvert ) CLASS hrebar
 
    HB_SYMBOL_UNUSED( cCaption )
 
    DEFAULT  lvert  TO .f.
-   nStyle   := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), ;
-                          WS_VISIBLE + WS_CHILD )
+   nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), WS_VISIBLE + WS_CHILD )
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
-              bSize, bPaint, ctooltip, tcolor, bcolor )
+         bSize, bPaint, ctooltip, tcolor, bcolor )
    ::Title := ""
    HWG_InitCommonControlsEx()
-
 
    ::Activate()
 
    RETURN Self
 
-
-
-METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
-                 bSize, bPaint, ctooltip, tcolor, bcolor, lVert )  CLASS hrebar
+METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, bSize, bPaint, ;
+      ctooltip, tcolor, bcolor, lVert )  CLASS hrebar
 
    HB_SYMBOL_UNUSED( cCaption )
 
    DEFAULT  lVert TO .f.
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
-              bSize, bPaint, ctooltip, tcolor, bcolor )
+   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, bSize, bPaint, ;
+         ctooltip, tcolor, bcolor )
    HWG_InitCommonControlsEx()
 
-   ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
+   ::style := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
 
    RETURN Self
-
 
 METHOD Activate() CLASS hrebar
 
    IF ! Empty( ::oParent:handle )
-
       ::handle := CREATEREBAR( ::oParent:handle, ::id, ;
-                               ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-
+            ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
-   RETURN Nil
+
+   RETURN NIL
 
 METHOD INIT() CLASS hrebar
 
    IF ! ::lInit
       Super:Init()
       ::CreateBands()
-//      REBARSETIMAGELIST(::handle,nil)
+      // REBARSETIMAGELIST(::handle,nil)
    ENDIF
-   RETURN Nil
 
+   RETURN NIL
 
 METHOD CreateBands( pBar, pszText, clrFore, clrBack, pbmp, dwStyle ) CLASS hrebar
    LOCAL i
 
-   IF pBar != Nil
+   IF pBar != NIL
       AADD( ::aBands, { pBar, pszText, clrFore, clrBack, pbmp, dwStyle } )
    ENDIF
    IF ! ::lInit
-       RETURN Nil
+       RETURN NIL
    ENDIF
    dwStyle := RBBS_GRIPPERALWAYS + RBBS_USECHEVRON
    FOR i = 1 TO LEN( ::aBands )
-      ::aBands[ i, 4 ] := IIF( ::aBands[ i, 4 ] = Nil, GetSysColor( COLOR_3DFACE ), ::aBands[ i, 4 ] )
-      ::aBands[ i, 6 ] := IIF( ::aBands[ i, 6 ] = Nil, dwStyle, ::aBands[ i, 6 ] )
+      ::aBands[ i, 4 ] := IIF( ::aBands[ i, 4 ] = NIL, GetSysColor( COLOR_3DFACE ), ::aBands[ i, 4 ] )
+      ::aBands[ i, 6 ] := IIF( ::aBands[ i, 6 ] = NIL, dwStyle, ::aBands[ i, 6 ] )
       IF ! Empty( ::aBands[ i, 1 ] )
          ::aBands[ i, 1 ] := IIF( ValType( ::aBands[ i, 1 ] ) = "C", &( ::aBands[ i, 1 ] ), ::aBands[ i, 1 ] )
-         IF ( ::aBands[ i, 5 ] != Nil )
+         IF ( ::aBands[ i, 5 ] != NIL )
             ADDBARBITMAP( ::handle, ::aBands[ i, 1 ]:handle, ::aBands[ i, 2 ], ::aBands[ i, 5 ], ::aBands[ i, 6 ] )
          ELSE
-           ADDBARCOLORS( ::handle, ::aBands[ i, 1 ]:handle, ::aBands[ i, 3 ], ::aBands[ i, 4 ], ::aBands[ i, 2 ], ::aBands[ i, 6 ]  )
+            ADDBARCOLORS( ::handle, ::aBands[ i, 1 ]:handle, ::aBands[ i, 3 ], ::aBands[ i, 4 ], ::aBands[ i, 2 ], ::aBands[ i, 6 ]  )
          ENDIF
       ENDIF
    NEXT
    ::aBands := {}
-   RETURN Nil
+
+   RETURN NIL

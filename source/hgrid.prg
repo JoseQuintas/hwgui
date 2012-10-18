@@ -157,7 +157,7 @@ METHOD Init() CLASS HGrid
       Listview_Init( ::handle, ::ItemCount, ::lNoLines )
 
       FOR i := 1 TO Len( ::aColumns )
-         Listview_addcolumn( ::handle, i, ::aColumns[ i, 2 ], ::aColumns[ i, 1 ], ::aColumns[ i, 3 ], IF( ::aColumns[ i, 4 ] != nil, ::aColumns[ i, 4 ], 0 ) )
+         Listview_addcolumn( ::handle, i, ::aColumns[ i, 2 ], ::aColumns[ i, 1 ], ::aColumns[ i, 3 ], IIF( ::aColumns[ i, 4 ] != nil, ::aColumns[ i, 4 ], 0 ) )
       NEXT
 
       IF ::color != nil

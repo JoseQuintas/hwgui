@@ -469,7 +469,7 @@ METHOD InitCode128( cMode ) CLASS BarCode
          nSum   := 105
       ELSE
          FOR n := 1 TO Len( cCode )
-            nCount += IF( Asc( SubStr( cCode, n, 1 ) ) > 31, 1, 0 ) // no cars. de control
+            nCount += IIF( Asc( SubStr( cCode, n, 1 ) ) > 31, 1, 0 ) // no cars. de control
          NEXT
          IF nCount < Len( cCode ) / 2
             lCodeA := .T.

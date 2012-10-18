@@ -20,9 +20,9 @@
 STATIC _winwait
 
 FUNCTION InitObjects( oWnd )
-   LOCAL i, pArray := oWnd:aObjects 
+   LOCAL i, pArray := oWnd:aObjects
    LOCAL LoadArray := HObject():aObjects
-   
+
    IF !EMPTY( LoadArray )
       FOR i := 1 TO Len( LoadArray )
          IF ! EMPTY( oWnd:Handle )
@@ -31,7 +31,7 @@ FUNCTION InitObjects( oWnd )
                LoadArray[ i ]:lInit := .T.
             ENDIF
          ENDIF
-      NEXT   
+      NEXT
    ENDIF
    IF pArray != Nil
       FOR i := 1 TO Len( pArray )
@@ -61,7 +61,7 @@ FUNCTION InitControls( oWnd, lNoActivate )
             pArray[ i ]:lInit := .T.
          ENDIF
 //           IF empty(pArray[i]:handle)// <= 0
-         IF IF( ValType( pArray[ i ]:handle ) == "P", ptrtoulong( pArray[ i ]:handle ), pArray[ i ]:handle ) <= 0
+         IF IIF( ValType( pArray[ i ]:handle ) == "P", ptrtoulong( pArray[ i ]:handle ), pArray[ i ]:handle ) <= 0
             pArray[ i ]:handle := GetDlgItem( oWnd:handle, pArray[ i ]:id )
 
             // writelog( "InitControl2"+str(pArray[i]:handle)+"/"+pArray[i]:classname )
@@ -172,7 +172,7 @@ FUNCTION MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cResIni )
    @ 20, 95 BUTTON "Ok" ID IDOK SIZE 100, 32
    @ 180, 95 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
    oModDlg:aControls[ 4 ]:Anchor := 9
-   
+
    ACTIVATE DIALOG oModDlg ON ACTIVATE { || IIF( ! EMPTY( cRes ), KEYB_EVENT( VK_END ), .T. ) }
 
    oFont:Release()

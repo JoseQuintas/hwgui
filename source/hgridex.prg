@@ -75,7 +75,7 @@ CLASS VAR winclass INIT "SYSLISTVIEW32"
    METHOD AddRow( a, bUpdate )
    METHOD Notify( lParam )
 
-   METHOD DELETEROW()    INLINE IF( ::bFlag , ( SendMessage( ::HANDLE, LVM_DELETEITEM, ::iRowSelect , 0 ), ::bFlag := .f. ), .T. )
+   METHOD DELETEROW()    INLINE IIF( ::bFlag , ( SendMessage( ::HANDLE, LVM_DELETEITEM, ::iRowSelect , 0 ), ::bFlag := .f. ), .T. )
    METHOD DELETEALLROW() INLINE ::aItems := NIL, ::aColors := { }, SendMessage( ::Handle, LVM_DELETEALLITEMS, 0, 0 )
    METHOD SELECTALL()    INLINE ListViewSelectAll( ::Handle )
    METHOD SELECTLAST()   INLINE ListViewSelectLastItem( ::handle )
@@ -184,7 +184,7 @@ METHOD Init() CLASS HGridEx
       Listview_Init( ::handle, ::ItemCount, ::lNoLines )
 
       FOR i := 1 TO Len( ::aColumns )
-         Listview_addcolumnEX( ::handle, i, ::aColumns[ i, 1 ], ::aColumns[ i , 2 ], ::aColumns[ i, 3 ], IF( ::aColumns[ i, 4 ] != NIL, ::aColumns[ i, 4 ]  , - 1 ) )
+         Listview_addcolumnEX( ::handle, i, ::aColumns[ i, 1 ], ::aColumns[ i , 2 ], ::aColumns[ i, 3 ], IIF( ::aColumns[ i, 4 ] != NIL, ::aColumns[ i, 4 ]  , - 1 ) )
 
       NEXT
       IF Len( ::aRow ) > 0
@@ -231,12 +231,12 @@ METHOD AddRow( a , bupdate ) CLASS HGRIDEX
    DEFAULT bupdate TO .f.
    FOR n := 1 TO nLen STEP 4
       AAdd( aTmp1, a[ n ] )
-      AAdd( aTmp,  IF( ValType( a[ n + 1 ] ) == "N", a[ n + 1 ], - 1 ) )
+      AAdd( aTmp,  IIF( ValType( a[ n + 1 ] ) == "N", a[ n + 1 ], - 1 ) )
 
-      AAdd( aTmp2,  IF( ValType( a[ n + 2  ] ) == "N", a[ n + 2 ], RGB( 12, 15, 46 ) ) )
+      AAdd( aTmp2,  IIF( ValType( a[ n + 2  ] ) == "N", a[ n + 2 ], RGB( 12, 15, 46 ) ) )
 
 
-      AAdd( aTmp2,  IF( ValType( a[ n + 3  ] ) == "N", a[ n + 3 ], RGB( 192, 192, 192 ) ) )
+      AAdd( aTmp2,  IIF( ValType( a[ n + 3  ] ) == "N", a[ n + 3 ], RGB( 192, 192, 192 ) ) )
 
       AAdd( ::aColors, aTmp2 )
       aTmp2 := { }

@@ -52,7 +52,7 @@ CLASS HPrinter INHERIT HObject
    METHOD SetFont( oFont )  INLINE SelectObject( ::hDC, oFont:handle )
    METHOD SetTextColor( nColor )  INLINE SetTextColor( ::hDC, nColor )
    METHOD SetTBkColor( nColor )   INLINE SetBKColor( ::hDC, nColor )
-   METHOD SetBkmode( lmode )   INLINE SetBkmode( ::hDC, IF( lmode, 1, 0 ) )
+   METHOD SetBkmode( lmode )   INLINE SetBkmode( ::hDC, IIF( lmode, 1, 0 ) )
    METHOD StartDoc( lPreview, cMetaName )
    METHOD EndDoc()
    METHOD StartPage()

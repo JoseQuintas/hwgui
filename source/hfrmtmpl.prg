@@ -277,7 +277,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
          IF nMode == NIL
             lMdi := At( "mdimain", Lower( xProperty ) ) > 0
             lMdiChild := At( "mdichild", Lower( xProperty ) ) > 0
-            nMode := IF( Left( xProperty, 3 ) == "dlg", 2, 1 )
+            nMode := IIF( Left( xProperty, 3 ) == "dlg", 2, 1 )
          ENDIF
       ELSEIF ::aProp[ i, 1 ] == "variables"
          FOR j := 1 TO Len( xProperty )
@@ -342,7 +342,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
       __mvPrivate( ::aVars[ i ] )
    NEXT
 
-   oBmp := IF( ! Empty( cBitmap ), HBitmap():addfile( cBitmap, NIL ), NIL )
+   oBmp := IIF( ! Empty( cBitmap ), HBitmap():addfile( cBitmap, NIL ), NIL )
 
    IF nMode == NIL .OR. nMode == 2
       INIT DIALOG ::oDlg TITLE cTitle         ;
@@ -359,13 +359,13 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
       IF lMdi
          INIT WINDOW ::oDlg MDI TITLE cTitle    ;
                At nLeft, nTop SIZE nWidth, nHeight ;
-               STYLE IF( nstyle > 0 , nstyle, NIL ) ;
+               STYLE IIF( nstyle > 0 , nstyle, NIL ) ;
                FONT oFont ;
                BACKGROUND BITMAP oBmp
       ELSEIF lMdiChild
          INIT WINDOW ::oDlg  MDICHILD TITLE cTitle    ;
                At nLeft, nTop SIZE nWidth, nHeight ;
-               STYLE IF( nstyle > 0 , nstyle, NIL ) ;
+               STYLE IIF( nstyle > 0 , nstyle, NIL ) ;
                FONT oFont ;
                BACKGROUND BITMAP oBmp
       ELSE
@@ -373,7 +373,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
                At nLeft, nTop SIZE nWidth, nHeight ;
                FONT oFont ;
                BACKGROUND BITMAP oBmp ;
-               STYLE IF( nstyle > 0 , nstyle, NIL )
+               STYLE IIF( nstyle > 0 , nstyle, NIL )
       ENDIF
    ENDIF
 

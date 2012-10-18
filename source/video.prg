@@ -39,7 +39,7 @@ METHOD New( nRow, nCol, nWidth, nHeight, cFileName, oWnd, lNoBorder, nid ) CLASS
    ::nLeft     := nCol * VID_CHARPIX_W   // 14
    ::nHeight   := ::nTop  + nHeight - 1
    ::nWidth    := ::nLeft + nWidth + 1
-   ::Style     := hwg_bitOR( WS_CHILD + WS_VISIBLE + WS_TABSTOP, IF( ! lNoBorder, WS_BORDER, 0 ) )
+   ::Style     := hwg_bitOR( WS_CHILD + WS_VISIBLE + WS_TABSTOP, IIF( ! lNoBorder, WS_BORDER, 0 ) )
 
    ::oParent   := IIf( oWnd == NIL, ::oDefaultParent, oWnd )
    ::id        := IIf( nid == NIL, ::NewId(), nid )

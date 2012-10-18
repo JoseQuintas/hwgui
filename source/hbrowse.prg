@@ -3768,14 +3768,14 @@ FUNCTION VScrollPos( oBrw, nType, lEof, nPos )
       ELSEIF ! Empty( oBrw:Alias )
          nrecno := ( oBrw:Alias ) ->( RecNo() )
          Eval( oBrw:bGotop, oBrw )
-         minPos := IF( ( oBrw:Alias ) ->( IndexOrd() ) = 0, ( oBrw:Alias ) ->( RecNo() ), ( oBrw:Alias ) ->( ordkeyno() ) )
+         minPos := IIF( ( oBrw:Alias ) ->( IndexOrd() ) = 0, ( oBrw:Alias ) ->( RecNo() ), ( oBrw:Alias ) ->( ordkeyno() ) )
          Eval( oBrw:bGobot, oBrw )
-         maxPos := IF( ( oBrw:Alias ) ->( IndexOrd() ) = 0, ( oBrw:Alias ) ->( RecNo() ), ( oBrw:Alias ) ->( ordkeyno() ) )
+         maxPos := IIF( ( oBrw:Alias ) ->( IndexOrd() ) = 0, ( oBrw:Alias ) ->( RecNo() ), ( oBrw:Alias ) ->( ordkeyno() ) )
          IF minPos != maxPos
             SetScrollRange( oBrw:handle, SB_VERT, minPos, maxPos )
          ENDIF
          ( oBrw:Alias ) ->( DBGoTo( nrecno ) )
-         SetScrollPos( oBrw:handle, SB_VERT, IF( ( oBrw:Alias ) ->( IndexOrd() ) = 0, ( oBrw:Alias ) ->( RecNo() ), ( oBrw:Alias ) ->( ordkeyno() ) ) )
+         SetScrollPos( oBrw:handle, SB_VERT, IIF( ( oBrw:Alias ) ->( IndexOrd() ) = 0, ( oBrw:Alias ) ->( RecNo() ), ( oBrw:Alias ) ->( ordkeyno() ) ) )
 
 //         SetScrollPos( oBrw:handle, SB_VERT, oBrw:BrwScrollVPos( ) )
       ENDIF

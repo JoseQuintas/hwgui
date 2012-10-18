@@ -487,8 +487,8 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
 //   @ 88,19 EDITBOX oEdit ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
 //        COLOR oColor1 BACKCOLOR oColor2 FONT oFont //Blue to Black  //Added by  por Fernando Athayde
 //       COLOR 16711680 BACKCOLOR 16777215  //Black to Write
-   @ 6, 30 BUTTON "<<"    ON CLICK { || nPage := PrintDosAnt( nPage, oText ) } SIZE 69, 32  STYLE IF( nPage = 1, WS_DISABLED, 0 )
-   @ 6, 80 BUTTON ">>"    ON CLICK { || nPage := PrintDosNext( oPage, nPage, oText ) } SIZE 69, 32 STYLE IF( nPage = 1, WS_DISABLED, 0 )
+   @ 6, 30 BUTTON "<<"    ON CLICK { || nPage := PrintDosAnt( nPage, oText ) } SIZE 69, 32  STYLE IIF( nPage = 1, WS_DISABLED, 0 )
+   @ 6, 80 BUTTON ">>"    ON CLICK { || nPage := PrintDosNext( oPage, nPage, oText ) } SIZE 69, 32 STYLE IIF( nPage = 1, WS_DISABLED, 0 )
    @ 6, 130 BUTTON "Imprimir" ON CLICK { || PrintDosPrint( oText, oPrt ) } SIZE 69, 32
 //   @ 6,180 BUTTON "Grafico" on Click {||EndDialog(),oDos2:TxttoGraphic(fName,2,.t.),oDos2:end()} SIZE 69,32
    @ 6, 230 BUTTON "Fechar" ON CLICK { || EndDialog() } SIZE 69, 32

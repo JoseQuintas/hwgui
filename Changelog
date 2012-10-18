@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-10-18 13:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/hsplit.prg	   
+	 *  METHOD DragAll()
+	   ! minor fix in scrolling 
+
 2012-10-18 16:18 UTC+00200 Alexey Myronenko <m.oleksa/at/ukr.net>
   * source/barcode.prg
   * source/guimain.prg

@@ -130,10 +130,14 @@ METHOD NewId() CLASS HControl
 
 METHOD AddName( cName ) CLASS HControl
 
-   IF !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. ! ":" $ cName .AND. ! "[" $ cName .AND. ! "->"$ cName
+   IF !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. ::oParent != Nil .AND. ! "[" $ cName
+      IF  AT( ":", cName ) > 0 .OR. AT( "->", cName ) > 0
+         cName := SubStr( cName, AtToken( cName, ":" ) )
+         cName := SubStr( cName, AtToken( cName, "->" ) )
+      ENDIF
       ::xName := cName
-         __objAddData( ::oParent, cName )
-       ::oParent: & ( cName ) := Self
+      __objAddData( ::oParent, cName )
+      ::oParent: & ( cName ) := Self
    ENDIF
 
    RETURN NIL
@@ -176,27 +180,6 @@ METHOD INIT() CLASS HControl
 
 /* moved to HCWINDOW
 METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HControl
-
-   IF tcolor != NIL
-      ::tcolor := tcolor
-      IF bColor == NIL .AND. ::bColor == NIL
-         bColor := GetSysColor( COLOR_3DFACE )
-      ENDIF
-   ENDIF
-
-   IF bColor != NIL
-      ::bColor := bColor
-      IF ::brush != NIL
-         ::brush:Release()
-      ENDIF
-      ::brush := HBrush():Add( bColor )
-   ENDIF
-
-   IF lRepaint != NIL .AND. lRepaint
-      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
-   ENDIF
-
-   RETURN NIL
    */
 
 METHOD SetFocus( lValid ) CLASS HControl

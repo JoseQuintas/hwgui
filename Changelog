@@ -9,6 +9,24 @@
 */
 
 2012-10-18 13:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/hcontrol.prg	   
+    * CLASS HControl
+      * METHOD AddName( cName )
+        ! correction to the definition of names derived from tables or others objects	 
+   * source/hdialog.prg
+     * FUNCTION DlgCommand
+	   ! fix  combobox EDIT and BUTTON IDOK
+   * source/hedit.prg
+     * FUNCTION GetSkip
+	   ! minor fix when only one object in form
+     * FUNCTION CheckFocus()		
+	   ! revert change in 2012-09-19 09:30 
+   * source/hupdown.prg	   
+	 * METHOD Valid() CLASS HUpDown  
+	   ! minor fix when WHEN return .F.
+    
+	   
+2012-10-18 13:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hsplit.prg	   
 	 *  METHOD DragAll()
 	   ! minor fix in scrolling 

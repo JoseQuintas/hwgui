@@ -14,7 +14,7 @@ STATIC lFixedColor   := .T.
 STATIC tColorSelect  := 0
 STATIC bColorSelect  := 13434879 //vcolor( 'CCFFFF' )
 STATIC lPersistColorSelect := .F.
-STATIC  bDisablecolor :=  Nil  // GetSysColor( COLOR_BTNHIGHLIGHT )
+STATIC bDisablecolor :=  Nil  // GetSysColor( COLOR_BTNHIGHLIGHT )
 
 #include "windows.ch"
 #include "hbclass.ch"
@@ -1513,9 +1513,12 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
 
    ENDIF
    IF nSkip != 0 .AND. SELFFOCUS( hctrl, nextHandle ) .AND. oCtrl != Nil
-     // necessario para executa um codigo do lostfcosu
-      IF  __ObjHasMsg(oCtrl,"BLOSTFOCUS") .AND. oCtrl:blostfocus != Nil
-         sendmessage( nexthandle, WM_KILLFOCUS, 0,  0)
+      // necessary when FORM have only one object and ! CLIPPER
+      IF  __ObjHasMsg(oCtrl,"BLOSTFOCUS") .AND. oCtrl:blostfocus != Nil .AND. ! oForm:lClipper
+   	     SendMessage( nexthandle, WM_KILLFOCUS, 0,  0)
+   	  ELSE
+         SetFocus( 0 )
+         oCtrl:SetFocus( )
       ENDIF
    ENDIF
    RETURN .T.
@@ -1689,7 +1692,7 @@ FUNCTION SetDisableBackColor( lDef, bcolor )
    //lColorinFocus := lDef
     IF ! lDef
        bDisablecolor := Nil
-      RETURN .F.
+       RETURN .F.
    ENDIF
    IF  Empty( bColor )
       bDisablecolor :=  IIF( Empty( bDisablecolor ), GetSysColor( COLOR_BTNHIGHLIGHT ), bDisablecolor )

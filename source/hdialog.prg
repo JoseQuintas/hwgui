@@ -494,7 +494,8 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
          IF oCtrl != Nil .AND. oCtrl:classname = "HTAB"
             RETURN 1
          ENDIF
-         IF oCtrl != Nil .AND. GetNextDlgTabItem( GetActiveWindow() , hCtrl, 1 ) == hCtrl .OR. SelfFocus( oCtrl:Handle, hCtrl )
+         IF oCtrl != Nil .AND. ( GetNextDlgTabItem( GetActiveWindow() , hCtrl, 1 ) == hCtrl .OR. SelfFocus( oCtrl:Handle, hCtrl ) ) .AND. ;
+             ( oDlg:FindControl( IDOK ) != Nil .OR. ! oDlg:lClipper )
             SendMessage( oCtrl:Handle, WM_KILLFOCUS, 0, 0 )
          ENDIF
          IF oCtrl != Nil .AND. oCtrl:id == IDOK .AND.  __ObjHasMsg( oCtrl,"BCLICK" ) .AND. oCtrl:bClick = Nil

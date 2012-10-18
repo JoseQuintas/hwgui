@@ -155,18 +155,20 @@ METHOD CREATEUPDOWN() CLASS Hupdown
     //ENDIF
    ::nHolder := 0
    IF !::lCreate
-       ::Activate()
-       AddToolTip( ::GetParentForm():handle, ::oEditUpDown:handle, ::tooltip )
-       ::oEditUpDown:SetFont( ::oFont )
-       ::oEditUpDown:DisableBrush := ::DisableBrush  
-       SETWINDOWPOS( ::oEditUpDown:handle, ::Handle, 0, 0, 0, 0, SWP_NOSIZE +  SWP_NOMOVE )
-       DESTROYWINDOW( ::Handle )
+      ::Activate()
+      AddToolTip( ::GetParentForm():handle, ::oEditUpDown:handle, ::tooltip )
+      ::oEditUpDown:SetFont( ::oFont )
+      ::oEditUpDown:DisableBrush := ::DisableBrush
+      SETWINDOWPOS( ::oEditUpDown:handle, ::Handle, 0, 0, 0, 0, SWP_NOSIZE +  SWP_NOMOVE )
+      DESTROYWINDOW( ::Handle )
    ELSEIF ::getParentForm():Type < WND_DLG_RESOURCE .AND. ::oParent:ClassName = "HTAB" //!EMPTY( ::oParent:oParent )
       // MDICHILD WITH TAB
       ::nHolder := 1
       SetWindowObject( ::oEditUpDown:handle, ::oEditUpDown )
       Hwg_InitEditProc( ::oEditUpDown:handle )
-    ENDIF
+   ELSE
+      AddToolTip( ::GetParentForm():handle, ::oEditUpDown:handle, ::tooltip )
+   ENDIF
    ::handle := ::oEditUpDown:handle
    ::hwndUpDown := CreateUpDownControl( ::oParent:handle, ::idUpDown, ;
                                      ::styleUpDown, 0, 0, ::nUpDownWidth, 0, ::handle, -2147483647, 2147483647, Val(::title) )
@@ -243,6 +245,10 @@ METHOD Refresh()  CLASS HUpDown
 
 METHOD Valid() CLASS HUpDown
    LOCAL res
+
+   IF  ::oEditUpDown:lNoValid
+      RETURN .T.
+   ENDIF
 
    /*
    ::title := GetEditText( ::oParent:handle, ::oEditUpDown:id )

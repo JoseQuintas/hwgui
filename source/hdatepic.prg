@@ -14,10 +14,17 @@
 
 #define DTN_DATETIMECHANGE    - 759
 #define DTN_CLOSEUP           - 753
+#define DTM_FIRST             0x1000
+#define DTM_GETSYSTEMTIME     (DTM_FIRST + 1)
+#define DTM_SETSYSTEMTIME     (DTM_FIRST + 2)
 #define DTM_GETMONTHCAL        4104   // 0x1008
 #define DTM_CLOSEMONTHCAL      4109
 #define NM_KILLFOCUS          - 8
 #define NM_SETFOCUS           - 7
+#define GDT_ERROR             - 1
+#define GDT_VALID              0
+#define GDT_NONE               1
+
 
 CLASS HDatePicker INHERIT HControl
 
@@ -42,6 +49,7 @@ CLASS HDatePicker INHERIT HControl
    METHOD When( )
    METHOD Valid( )
    METHOD Value ( Value ) SETGET
+   METHOD Checkvalue ( lValue ) SETGET
 
 ENDCLASS
 
@@ -121,11 +129,13 @@ METHOD Activate() CLASS HDatePicker
 
 METHOD Init() CLASS HDatePicker
    IF ! ::lInit
+   
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       HWG_INITDATEPICKERPROC( ::handle )
-      Super:Init()
       ::Refresh()
+      Super:Init()
+
    ENDIF
 
    RETURN NIL
@@ -157,6 +167,22 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HDatePicker
    ENDIF
 
    RETURN -1
+
+METHOD CheckValue( lValue )  CLASS HDatePicker
+
+   IF HWG_BITAND( ::Style, DTS_SHOWNONE ) = 0
+       RETURN .F.
+   ENDIF
+   IF lValue != Nil
+      IF IIF( SendMessage( ::Handle, DTM_GETSYSTEMTIME, GDT_NONE, 0 ) = GDT_NONE ,.F., .T. ) != lValue
+         IF ! lValue
+            SendMessage( ::Handle, DTM_SETSYSTEMTIME, GDT_NONE, 0 )
+         ELSE
+            SetDatePicker( ::handle, ::dValue, STRTRAN( ::tValue, ":", "" ) )
+         ENDIF
+      ENDIF
+   ENDIF
+   RETURN IIF( SendMessage( ::Handle, DTM_GETSYSTEMTIME, GDT_NONE, 0 ) = GDT_NONE ,.F., .T. )
 
 METHOD Value( Value )  CLASS HDatePicker
 

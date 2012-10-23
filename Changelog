@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-10-18 13:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+    * utils/designer/blddesig.bat
+	  + add CT.LIB in bat compiler
+
 2012-10-22 10:18 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
   * source/hbrowse.prg
     * formatting

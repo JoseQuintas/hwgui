@@ -28,7 +28,6 @@ echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hbxml.lib + >> b32.bc
 if exist %HRB_DIR%\lib\rtl%HB_MT%.lib echo %HRB_DIR%\lib\rtl%HB_MT%.lib + >> b32.bc
-if exist %HRB_DIR%\lib\ct%HB_MT%.lib echo %HRB_DIR%\lib\ct%HB_MT%.lib + >> b32.bc
 if exist %HRB_DIR%\lib\hbrtl%HB_MT%.lib echo %HRB_DIR%\lib\hbrtl%HB_MT%.lib + >> b32.bc
 if exist %HRB_DIR%\lib\vm%HB_MT%.lib echo %HRB_DIR%\lib\vm%HB_MT%.lib + >> b32.bc
 if exist %HRB_DIR%\lib\hbvm.lib echo %HRB_DIR%\lib\hbvm.lib + >> b32.bc

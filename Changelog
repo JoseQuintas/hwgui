@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-10-23 15:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * CLASS HControl
+      * METHOD AddName( cName )
+        ! remove function ATTOKEN and add function RAT sujestion by Maurizio
+   * utils/designer/blddesig.bat
+     * revert change add CT.LIB in bat compiler
+
 2012-10-23 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hdatepic.prg
      + constants DTM_FIRST, DTM_GETSYSTEMTIME, DTM_SETSYSTEMTIME

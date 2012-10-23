@@ -129,11 +129,11 @@ METHOD NewId() CLASS HControl
    RETURN nId
 
 METHOD AddName( cName ) CLASS HControl
-
+   LOCAL nPos
+   
    IF !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. ::oParent != Nil .AND. ! "[" $ cName
-      IF  AT( ":", cName ) > 0 .OR. AT( "->", cName ) > 0
-         cName := SubStr( cName, AtToken( cName, ":" ) )
-         cName := SubStr( cName, AtToken( cName, "->" ) )
+      IF ( nPos :=  RAt( ":", cName ) ) > 0 .OR. ( nPos :=  RAt( ">", cName ) ) > 0
+         cName := SubStr( cName, nPos + 1 )
       ENDIF
       ::xName := cName
       __objAddData( ::oParent, cName )

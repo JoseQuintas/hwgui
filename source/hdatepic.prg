@@ -32,7 +32,6 @@ CLASS HDatePicker INHERIT HControl
    DATA bSetGet
    DATA dValue, tValue
    DATA bChange
-   DATA lnoValid       INIT .F.
    DATA lShowTime      INIT .T.
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -160,9 +159,9 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HDatePicker
          RETURN 0
       ENDIF
    ELSEIF  msg = WM_GETDLGCODE
-      IF wParam = VK_TAB //.AND.  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
-         // GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
-         RETURN DLGC_WANTTAB
+      IF WPARAM = VK_RETURN .OR. wParam = VK_TAB
+          Return DLGC_WANTMESSAGE
+          //RETURN DLGC_WANTTAB
       ENDIF
    ENDIF
 

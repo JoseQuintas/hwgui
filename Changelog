@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-10-25 00:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hdatepic.prg
+     * METHOD ONEVENT
+	   ! fixed in key VK_RETURN when STYLE =  DTS_SHOWNONE 
+
 2012-10-23 15:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * CLASS HControl
       * METHOD AddName( cName )

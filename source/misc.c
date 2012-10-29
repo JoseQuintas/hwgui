@@ -154,7 +154,7 @@ HB_FUNC( HWG_BITANDINVERSE )
                               ( ULONG ) hb_parnl( 1 ) ) & ( ~hb_parnl( 2 ) ) );
 }
 
-HB_FUNC( SETBIT )
+HB_FUNC( HWG_SETBIT )
 {
    if( hb_pcount() < 3 || hb_parni( 3 ) )
       hb_retnl( hb_parnl( 1 ) | ( 1 << ( hb_parni( 2 ) - 1 ) ) );

@@ -2609,7 +2609,7 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
       ::nLeftCol  := ::freeze + 1
    ENDIF
    IF ! ::lAppMode  .OR. ::nLeftCol == 1
-      ::internal[ 1 ] := SetBit( ::internal[ 1 ], 1, 0 )
+      ::internal[ 1 ] := hwg_SetBit( ::internal[ 1 ], 1, 0 )
    ENDIF
 
    IF ::bScrollPos != NIL
@@ -2647,7 +2647,7 @@ METHOD LINEUP() CLASS HBrowse
       ELSEIF ::nRecords > 1
          VScrollPos( Self, 0, .f. )
       ENDIF
-      ::internal[ 1 ] := SetBit( ::internal[ 1 ], 1, 0 )
+      ::internal[ 1 ] := hwg_SetBit( ::internal[ 1 ], 1, 0 )
    ENDIF
   // ::SetFocus() ??
 
@@ -2728,7 +2728,7 @@ METHOD BOTTOM( lPaint ) CLASS HBrowse
       //::SetFocus( )
    ELSE
       //InvalidateRect( ::handle, 0 )
-      ::internal[ 1 ] := SetBit( ::internal[ 1 ], 1, 0 )
+      ::internal[ 1 ] := hwg_SetBit( ::internal[ 1 ], 1, 0 )
    ENDIF
 
    RETURN NIL
@@ -2742,7 +2742,7 @@ METHOD TOP() CLASS HBrowse
 
    //InvalidateRect( ::handle, 0 )
    ::Refresh( ::nFootRows > 0 )
-   ::internal[ 1 ] := SetBit( ::internal[ 1 ], 1, 0 )
+   ::internal[ 1 ] := hwg_SetBit( ::internal[ 1 ], 1, 0 )
    ::SetFocus()
 
    RETURN NIL
@@ -3598,7 +3598,7 @@ METHOD Refresh( lFull, lLineUp ) CLASS HBrowse
       // RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ELSE
       InvalidateRect( ::handle, 0 )
-      ::internal[ 1 ] := SetBit( ::internal[ 1 ], 1, 0 )
+      ::internal[ 1 ] := hwg_SetBit( ::internal[ 1 ], 1, 0 )
       IF ::nCurrent < ::rowCount .AND. ::rowPos <= ::nCurrent .AND. EMPTY( lLineUp )
          ::rowPos := ::nCurrent
       ENDIF

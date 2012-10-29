@@ -2275,7 +2275,7 @@ FUNCTION cFileExt( cFile )
    RETURN SubStr( cFile, At( '.', cFile ) + 1 )
 
 #ifndef __XHARBOUR__
-FUNCTION CStr( xExp )
+STATIC FUNCTION CStr( xExp )
    LOCAL cType
 
    IF xExp == NIL

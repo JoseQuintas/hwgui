@@ -102,7 +102,7 @@ CLASS HTreeNode INHERIT HObject
    DATA lchecked INIT .F.
 
    METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages, lchecked, bClick )
-   METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages )
+   METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages, lCheck, bClick )
    METHOD Delete( lInternal )
    METHOD FindChild( h )
    METHOD GetText()  INLINE TreeGetNodeText( ::oTree:handle, ::handle )
@@ -193,7 +193,7 @@ METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages, lchecked, bC
 
 METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages, lCheck, bClick ) CLASS HTreeNode
    LOCAL oParent := Self
-   LOCAL oNode := HTreeNode():New( ::oTree, oParent, oPrev, oNext, cTitle, bAction, aImages,lCheck, bClick )
+   LOCAL oNode := HTreeNode():New( ::oTree, oParent, oPrev, oNext, cTitle, bAction, aImages, lCheck, bClick )
 
    RETURN oNode
 
@@ -276,7 +276,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
                aImages, lResour, lEditLabels, bAction, nBC, bRClick, bDblClick, lCheckbox,  bCheck, lDragDrop, bDrag, bDrop, bOther )
    METHOD Init()
    METHOD Activate()
-   METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages )
+   METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages, lCheck, bClick )
    METHOD FindChild( h )
    METHOD FindChildPos( oNode, h )
    METHOD GetSelected() INLINE IIF( VALTYPE( ::oItem := TreeGetSelected( ::handle ) ) = "O", ::oItem, Nil )

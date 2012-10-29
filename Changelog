@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-10-29 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/misc.c
+     ! Rename HB_FUNC( SETBIT ) to HB_FUNC( HWG_SETBIT ) conflit com Harbour CT.LIB
+   * source/hbrowse.prg
+     ! Rename SETBIT to HWG_SETBIT 
+   * source/richtext.prg	 
+     ! changed FUNCTION CStr( xExp ) to STATIC FUNCTION CStr( xExp ) avoiding conflit with HARBOUR
 
 2012-10-29 12:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg

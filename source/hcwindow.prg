@@ -823,18 +823,19 @@ STATIC FUNCTION onDrawItem( oWnd, wParam, lParam )
 STATIC FUNCTION onCommand( oWnd, wParam, lParam )
    LOCAL iItem, iParHigh := HIWORD( wParam ), iParLow := LOWORD( wParam )
    LOCAL oForm := oWnd:GetParentForm()
-   
+
    HB_SYMBOL_UNUSED( lParam )
    IF oWnd:aEvents != NIL .AND. ! oForm:lSuspendMsgsHandling .AND. ! oWnd:lSuspendMsgsHandling .AND. ;
       ( iItem := AScan( oWnd:aEvents, { | a | a[ 1 ] == iParHigh .AND. ;
                                         a[ 2 ] == iParLow } ) ) > 0
-
-      IF oForm:Type < WND_DLG_RESOURCE
-         IF SelfFocus( GetParent( GetFocus() ) , oForm:Handle )
-            oForm:nFocus := GetFocus() //lParam
-         ENDIF
+      IF oForm:Type < WND_DLG_RESOURCE .AND. !Empty( oForm:nFocus )
+         oForm:nFocus := IIF( SelfFocus( GetParent( GetFocus() ), oForm:Handle ), GetFocus(), oForm:nFocus )
       ENDIF
       Eval( oWnd:aEvents[ iItem, 3 ], oWnd, iParLow )
+      IF oForm:Type < WND_DLG_RESOURCE .AND. oForm:FindControl( , GetFocus() ) = Nil .AND. ;
+         ! Empty( oForm:nFocus ) .AND. ! SelfFocus( GetActiveWindow() )
+         SetFocus( oForm:nFocus )
+      ENDIF
    ENDIF
 
    RETURN 1

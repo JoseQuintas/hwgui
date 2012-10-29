@@ -16,6 +16,8 @@
 #define LBL_VISITED        2
 #define LBL_MOUSEOVER      3
 #define TRANSPARENT        1
+#define MENU_POPUPITEM     14
+#define MPI_HOT            2
 
 *+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 *+
@@ -122,8 +124,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
       ::backstyle := TRANSPARENT
    ENDIF
 
-   ::Activate()
-
    RETURN Self
 
 METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
@@ -169,15 +169,6 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 METHOD INIT() CLASS HStaticLink
 
    IF ! ::lInit
-
-      /*
-      IF ::GetParentForm():Type <= WND_MDICHILD .OR. ::TYPE = NIL
-         ::nHolder := 1
-         SetWindowObject( ::handle, Self )
-       *  Hwg_InitWinCtrl( ::handle )
-         HWG_INITSTATICPROC( ::handle )
-      ENDIF
-      */
       ::Resize( )
       Super:init()
       IF ::Title != NIL
@@ -190,23 +181,20 @@ METHOD INIT() CLASS HStaticLink
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
 
-   IF msg == WM_PAINT
+   IF ( msg = WM_SETFOCUS .OR. msg = WM_KILLFOCUS ) .AND. Hwg_BitaND( ::sTyle, WS_TABSTOP ) != 0
+      RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      
+   ELSEIF msg == WM_PAINT
       //::PAint( )
       
    ELSEIF msg == WM_MOUSEMOVE
       hwg_SetCursor( ::m_hHyperCursor )
      ::OnMouseMove( wParam, lParam )
-        /*
-         IF ::state != LBL_MOUSEOVER
-            //::allMouseOver := .T.
-      *      ::state := LBL_MOUSEOVER
-            TRACKMOUSEVENT( ::handle )
-          ELSE
-            TRACKMOUSEVENT( ::handle, TME_HOVER + TME_LEAVE  )
-         ENDIF
-        */
    ELSEIF ( msg = WM_MOUSELEAVE .OR. msg = WM_NCMOUSELEAVE )
-        ::state := LBL_NORMAL
+     ::state := LBL_NORMAL
+     InvalidateRect( ::handle, 0 )
+     RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth, ::nHeight )
+
    ELSEIF msg =  WM_MOUSEHOVER
    ELSEIF msg == WM_SETCURSOR
       ::OnSetCursor( msg, wParam, lParam )
@@ -216,8 +204,31 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
       ::OnClicked()
    ELSEIF msg == WM_SIZE
 
-   ENDIF
+   ELSEIF msg = WM_KEYDOWN
 
+      IF ( ( wParam == VK_SPACE ) .OR. ( wParam == VK_RETURN ) )
+         SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
+         RETURN 0
+      ELSEIF wParam = VK_DOWN
+         Getskip( ::oparent, ::handle,, 1 )
+      ELSEIF   wParam = VK_UP
+         Getskip( ::oparent, ::handle,, - 1 )
+      ELSEIF wParam = VK_TAB
+         GetSkip( ::oParent, ::handle, , IIF( IsCtrlShift( .F., .T.), -1, 1 ) )
+      ENDIF
+      RETURN 0
+   ELSEIF msg == WM_KEYUP
+      /*
+      IF ( wParam == VK_SPACE .OR. wParam == VK_RETURN  )
+       *  SendMessage( ::handle, WM_LBUTTONUP, 0, MAKELPARAM( 1, 1 ) )
+       *  msginfo('k')
+         RETURN 0
+      ENDIF
+      */
+   ELSEIF msg = WM_GETDLGCODE
+      RETURN IIF( wParam == VK_RETURN, DLGC_WANTMESSAGE, DLGC_WANTARROWS + DLGC_WANTTAB )
+
+   ENDIF
    RETURN - 1
 
 METHOD GoToLinkUrl( csLink ) CLASS HStaticLink
@@ -274,10 +285,10 @@ METHOD OnClicked() CLASS HStaticLink
          ::GoToLinkUrl( ::m_csUrl )
       ENDIF
       ::m_bVisited := .T.
+      ::state := LBL_NORMAL
+      InvalidateRect( ::handle, 0 )
+      RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT  , ::nLeft, ::nTop, ::nWidth, ::nHeight )
    ENDIF
-   ::state := LBL_NORMAL
-   InvalidateRect( ::handle, 0 )
-   RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT  , ::nLeft, ::nTop, ::nWidth, ::nHeight ) 
    ::SetFocus( )
 
    RETURN NIL
@@ -320,26 +331,28 @@ METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
           res := .T.
       ELSE
         hwg_SetCursor( ::m_hHyperCursor )
-        IF ( !  PtInRect( { 4, 4, ::nWidthover - 6, ::nHeight - 6 }, { xPos, yPos } ) )
-           //ReleaseCapture()
+        IF ( !  PtInRect( { 4, 4, ::nWidthover - 4, ::nHeight - 4 }, { xPos, yPos } ) )
+          // ReleaseCapture()
            res := .T.
         ENDIF
       ENDIF
       IF ( res .AND. ! ::m_bVisited ) .or. ( res .AND. ::m_bVisited )
          ::state := LBL_NORMAL
+         /*
          InvalidateRect( ::handle, 0 )
          RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth, ::nHeight )
+         */
       ENDIF
       IF ( ::state == LBL_NORMAL .AND. ! res ) .or. ;
          ( ::state == LBL_NORMAL .AND. ! res .and. ::m_bVisited )
          ::state := LBL_MOUSEOVER
          InvalidateRect( ::handle, 0 )
-    	   RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth, ::nHeight )
+    	    RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth, ::nHeight )
          //SetCapture( ::handle )
       ENDIF
-
    ENDIF
-
+   TRACKMOUSEVENT( ::handle,  TME_LEAVE )
+   
    RETURN NIL
 
 METHOD PAint( lpDis ) CLASS HStaticLink
@@ -356,29 +369,45 @@ METHOD PAint( lpDis ) CLASS HStaticLink
    LOCAL aBmpSize    := IIF( ! EMPTY( ::hbitmap ), GetBitmapSize( ::hbitmap ),{0,0} )
    LOCAL itemRect    := copyrect( { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] } )
    LOCAL captionRect := { drawInfo[ 4 ]  , drawInfo[ 5 ], drawInfo[ 6 ] , drawInfo[ 7 ]  }
-   LOCAL bmpRect
+   LOCAL bmpRect, focusRect, hTheme
    
    IF ::state == LBL_INIT
       ::State := LBL_NORMAL
    ENDIF
-   rcClient   := CopyRect( { drawInfo[ 4 ] , drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] } )
+   focusrect := CopyRect( { drawInfo[ 4 ] , drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] } )
+   rcClient  := CopyRect( { drawInfo[ 4 ] , drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] } )
    
+   // Draw the focus rect
+   IF SELFFOCUS( ::handle ) .AND. Hwg_BitaND( ::sTyle, WS_TABSTOP ) != 0
+      SetBkMode( dc, TRANSPARENT )
+      DrawFocusRect( dc, focusRect )
+      IF ISTHEMEDLOAD() .AND. ::WindowsManifest
+         hTheme := hb_OpenThemeData( ::handle, "MENU" )
+         hb_DrawThemeBackground( hTheme, dc, MENU_POPUPITEM, MPI_HOT, focusRect, Nil )
+         HB_CLOSETHEMEDATA( htheme )
+      ENDIF
+   ENDIF
+
    IF  ValType( ::hbitmap ) == "N"
       bHasTitle := ValType( strtext ) == "C" .and. ! Empty( strtext )
       itemRect[ 4 ] := aBmpSize[ 2 ] + 1
       bmpRect := PrepareImageRect( ::handle, dc, bHasTitle, @itemRect, @captionRect, , , ::hbitmap, ::iStyle )
       itemRect[ 4 ] := drawInfo[ 7 ]
       IF ::backstyle = TRANSPARENT
-         DrawTransparentBitmap( dc, ::hbitmap, bmpRect[ 1 ], bmpRect[ 2 ] )
+         DrawTransparentBitmap( dc, ::hbitmap, bmpRect[ 1 ], bmpRect[ 2 ] + 1 )
       ELSE
-         DrawBitmap( dc, ::hbitmap, , bmpRect[ 1 ], bmpRect[ 2 ] )
+         DrawBitmap( dc, ::hbitmap, , bmpRect[ 1 ], bmpRect[ 2 ] + 1 )
       ENDIF
       rcclient[ 1 ] +=  IIF( ::iStyle = ST_ALIGN_HORIZ, aBmpSize[ 1 ] + 8, 1 )
+      rcclient[ 2 ] +=  2
+   ELSEIF Hwg_BitaND( ::sTyle, WS_TABSTOP ) != 0
+      rcclient[ 1 ] += 3
+      rcclient[ 2 ] += 1
    ENDIF
    SetBkMode( DC, ::backstyle )
    IF ::backstyle != TRANSPARENT
-       SetBkColor( DC,  IIF( ::bColor = NIL, GetSysColor( COLOR_3DFACE ), ::bcolor ) )
-       FillRect( dc, rcclient[ 1 ], rcclient[ 2 ], rcclient[ 3 ], rcclient[ 4 ] ) //, ::brush:handle )
+      SetBkColor( DC,  IIF( ::bColor = NIL, GetSysColor( COLOR_3DFACE ), ::bcolor ) )
+      FillRect( dc, rcclient[ 1 ], rcclient[ 2 ], rcclient[ 3 ], rcclient[ 4 ] ) //, ::brush:handle )
    ENDIF
    dwFlags    := DT_LEFT + DT_WORDBREAK
    //dwstyle    := ::style

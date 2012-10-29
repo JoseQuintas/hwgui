@@ -225,13 +225,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
       ENDIF
    ELSEIF msg = WM_MENUCHAR
       RETURN onSysCommand( Self, SC_KEYMENU, LoWord( wParam ) )
-    ELSEIF msg = WM_MOVE //.or. msg = 0x216
+   ELSEIF msg = WM_MOVE //.or. msg = 0x216
       aCoors := GetWindowRect( ::handle )
       ::nLeft := aCoors[ 1 ]
          ::nTop  := aCoors[ 2 ]
-    ELSEIF  msg = WM_UPDATEUISTATE .AND. HIWORD( wParam ) != UISF_HIDEFOCUS 
+   ELSEIF  msg = WM_UPDATEUISTATE .AND. HIWORD( wParam ) != UISF_HIDEFOCUS
       // prevent the screen flicker
-       RETURN 1
+      RETURN 1
    ELSEIF ! ::lActivated .AND. msg = WM_NCPAINT  
       /* triggered on activate the modal dialog is visible only when */
       ::lActivated := .T.
@@ -486,16 +486,19 @@ FUNCTION DlgCommand( oDlg, wParam, lParam )
          oCtrl := oDlg:FindControl(, hCtrl )
          IF oCtrl == nil .OR. ! SelfFocus( oCtrl:Handle, hCtrl )
             hCtrl := GetAncestor( hCtrl, GA_PARENT )
+            oCtrl := oDlg:FindControl( , hCtrl )
+            /*
             IF ( oCtrl := oDlg:FindControl( , hCtrl ) ) != Nil
                GetSkip( oCtrl:oParent, hCtrl, , 1 )
             ENDIF
+            */
          ENDIF
 
          IF oCtrl != Nil .AND. oCtrl:classname = "HTAB"
             RETURN 1
          ENDIF
-         IF oCtrl != Nil .AND. ( GetNextDlgTabItem( GetActiveWindow() , hCtrl, 1 ) == hCtrl .OR. SelfFocus( oCtrl:Handle, hCtrl ) ) .AND. ;
-             ( oDlg:FindControl( IDOK ) != Nil .OR. ! oDlg:lClipper )
+         IF oCtrl != Nil .AND. ( GetNextDlgTabItem( GetActiveWindow() , hCtrl, 1 ) == hCtrl .OR. SelfFocus( oCtrl:Handle, hCtrl ) ) .AND. ! oDlg:lClipper
+            // ( oDlg:FindControl( IDOK ) != Nil .OR. ! oDlg:lClipper )
             SendMessage( oCtrl:Handle, WM_KILLFOCUS, 0, 0 )
          ENDIF
          IF oCtrl != Nil .AND. oCtrl:id == IDOK .AND.  __ObjHasMsg( oCtrl,"BCLICK" ) .AND. oCtrl:bClick = Nil

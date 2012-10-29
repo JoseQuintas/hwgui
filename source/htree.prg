@@ -191,9 +191,9 @@ METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages, lchecked, bC
 
    RETURN Self
 
-METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages ) CLASS HTreeNode
+METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages, lCheck, bClick ) CLASS HTreeNode
    LOCAL oParent := Self
-   LOCAL oNode := HTreeNode():New( ::oTree, oParent, oPrev, oNext, cTitle, bAction, aImages )
+   LOCAL oNode := HTreeNode():New( ::oTree, oParent, oPrev, oNext, cTitle, bAction, aImages,lCheck, bClick )
 
    RETURN oNode
 
@@ -268,9 +268,9 @@ CLASS VAR winclass   INIT "SysTreeView32"
    DATA lEditLabels INIT .F. HIDDEN
    DATA lCheckbox   INIT .F. HIDDEN
    DATA lDragDrop   INIT .F. HIDDEN
-
    DATA	lDragging  INIT .F. HIDDEN
-	DATA  hitemDrag, hitemDrop HIDDEN
+   DATA  hitemDrag, hitemDrop HIDDEN
+   DATA hTreeEdit
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, bSize, color, bcolor, ;
                aImages, lResour, lEditLabels, bAction, nBC, bRClick, bDblClick, lCheckbox,  bCheck, lDragDrop, bDrag, bDrop, bOther )
@@ -305,7 +305,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit,
    lCheckBox   := IIf( lCheckBox == Nil, .F., lCheckBox )
    lDragDrop   := IIf( lDragDrop == Nil, .F., lDragDrop )
 
-   nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP  + TVS_FULLROWSELECT + TVS_TRACKSELECT+; //TVS_HASLINES +  ;
+   nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP  + TVS_FULLROWSELECT + ; //TVS_TRACKSELECT+; //TVS_HASLINES +  ;
                             TVS_LINESATROOT + TVS_HASBUTTONS  + TVS_SHOWSELALWAYS + ;
                           IIf( lEditLabels == Nil.OR. ! lEditLabels, 0, TVS_EDITLABELS ) +;
                           IIf( lCheckBox == Nil.OR. ! lCheckBox, 0, TVS_CHECKBOXES ) +;
@@ -375,7 +375,7 @@ METHOD Activate() CLASS HTree
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HTree
    Local nEval, hitemNew, htiParent, htiPrev, htiNext
-
+   
    IF ::bOther != Nil
       IF ( nEval := Eval( ::bOther,Self,msg,wParam,lParam )) != Nil .AND. nEval != - 1
          RETURN 0
@@ -384,14 +384,36 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTree
    IF msg = WM_ERASEBKGND
       RETURN 0
    ELSEIF msg = WM_CHAR
-      IF wParam = 27
+      IF wParam = VK_ESCAPE
          Return DLGC_WANTMESSAGE
       ENDIF
-      RETURN 0
+      IF wParam = VK_RETURN
+         ::oItem := ::oSelected
+         IF ::lEditLabels .AND. ::bDblClick = Nil
+            ::EditLabel( ::oSelected )
+         ELSEIF ::bDblClick != Nil
+            ::SetFocus()
+            Eval( ::bDblClick, ::oItem, Self )
+            //SendMessage( ::handle, WM_LBUTTONDBLCLK, 0, MAKELPARAM( 1, 1 ) )
+            RETURN 0
+         ENDIF
+      ELSEIF wParam = VK_TAB
+         GetSkip( ::oParent, ::handle, , IIF( IsCtrlShift( .F., .T.), - 1, 1 ) )
+         RETURN 0
+      ELSEIF ::bKeyDown != Nil
+         RETURN 0
+      ENDIF
 
+   ELSEIF msg = WM_KEYDOWN
+   
    ELSEIF msg = WM_KEYUP
       IF  ProcKeyList( Self, wParam )
          RETURN 0
+      ENDIF
+
+   ELSEIF msg = WM_GETDLGCODE
+      IF  wParam = VK_RETURN .OR. ::bKeyDown != Nil // ! .AND. ::lEditLabels
+         RETURN DLGC_WANTMESSAGE
       ENDIF
 
    ELSEIF msg == WM_LBUTTONDOWN
@@ -430,7 +452,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTree
             ENDIF
          ENDIF
       ENDIF
-      // fazr a arotina para copias os nodos filhos ao arrastar
       IF  ! IsCtrlShift( .T. )
          IF ::hitemDrop:oParent != Nil
             hitemNew := ::hitemDrop:oParent:AddNode( ::hitemDrag:GetText(), htiPrev ,htiNext, ::hitemDrag:bAction,, ::hitemDrag:lchecked, ::hitemDrag:bClick  ) //, ::hitemDrop:aImages )
@@ -459,8 +480,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTree
    RETURN -1
 
 
-METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages ) CLASS HTree
-   LOCAL oNode := HTreeNode():New( Self, Nil, oPrev, oNext, cTitle, bAction, aImages )
+METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages, lCheck, bClick ) CLASS HTree
+   LOCAL oNode := HTreeNode():New( Self, Nil, oPrev, oNext, cTitle, bAction, aImages, lCheck, bClick )
    ::lEmpty := .F.
    RETURN oNode
 
@@ -557,13 +578,14 @@ METHOD Notify( lParam )  CLASS HTree
       ENDIF
 	
    ELSEIF nCode == TVN_BEGINLABELEDIT .or. nCode == TVN_BEGINLABELEDITW
+      ::hTreeEdit := SendMessage( ::Handle, TVM_GETEDITCONTROL, 0, 0 )
       s_aEvents := aClone( ::oParent:aEvents )
       ::oParent:AddEvent( 0, IDOK, { || SendMessage( ::handle, TVM_ENDEDITLABELNOW , 0, 0 ) } )
       ::oParent:AddEvent( 0, IDCANCEL, { || SendMessage( ::handle, TVM_ENDEDITLABELNOW , 1, 0 ) } )
-
-      // Return 1
+      SendMessage( ::hTreeEdit, WM_KEYDOWN, VK_END, 0 )
 
    ELSEIF nCode == TVN_ENDLABELEDIT  .or. nCode == TVN_ENDLABELEDITW
+      ::hTreeEdit := Nil
       IF ! Empty( cText := Tree_GetNotify( lParam, TREE_GETNOTIFY_EDIT ) )
          oItem := Tree_GetNotify( lParam, TREE_GETNOTIFY_EDITPARAM )
          IF ValType( oItem ) == "O"
@@ -589,7 +611,7 @@ METHOD Notify( lParam )  CLASS HTree
       ::hitemDrag := Tree_GetNotify( lParam, TREE_GETNOTIFY_PARAM )
       ::lDragging := .T.
 
-   ELSEIF nCode = TVN_KEYDOWN
+   ELSEIF nCode = TVN_KEYDOWN .AND. ::oItem != Nil
       IF ::oItem:oTree:bKeyDown != Nil
          Eval( ::oItem:oTree:bKeyDown, ::oItem, nKeyDown, Self )
       ENDIF
@@ -612,9 +634,9 @@ METHOD Notify( lParam )  CLASS HTree
          ENDIF
          RETURN 1   
       ELSEIF ! ::lEditLabels .AND. EMPTY( nHitem )
-         IF ! ::oItem:oTree:lEmpty
-            IF ::oItem:bClick != Nil
-               Eval( ::oItem:bClick, ::oItem, Self )
+         IF ! oItem:oTree:lEmpty
+            IF oItem:bClick != Nil
+               Eval( oItem:bClick, oItem, Self )
             ENDIF
          ENDIF
       ENDIF
@@ -622,6 +644,10 @@ METHOD Notify( lParam )  CLASS HTree
    ELSEIF nCode == NM_DBLCLK
       IF ::bDblClick != Nil
          oItem  := tree_Hittest( ::handle,,, @nAct )
+         IF oItem = Nil
+            oItem := ::oItem
+            *::Select( oItem )
+         ENDIF
          Eval( ::bDblClick, oItem, Self, nAct )
       ENDIF
    ELSEIF nCode == NM_RCLICK

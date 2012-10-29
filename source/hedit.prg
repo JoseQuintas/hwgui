@@ -279,10 +279,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                                 ! oParent:FindControl( IDCANCEL ):IsEnabled()
                    SendMessage( oParent:handle, WM_COMMAND, makewparam( IDCANCEL, 0 ), ::handle )
                ENDIF
-                       IF ( oParent:Type < WND_DLG_RESOURCE .OR. ! oParent:lModal )
-                   SETFOCUS( 0 )
-                   ProcOkCancel( Self, VK_ESCAPE )
-                   RETURN 0
+               IF ( oParent:Type < WND_DLG_RESOURCE .OR. ! oParent:lModal )
+                  SETFOCUS( 0 )
+                  ProcOkCancel( Self, VK_ESCAPE )
+                  RETURN 0
                ENDIF
                RETURN 0 //-1
             ENDIF
@@ -1620,24 +1620,24 @@ STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
    //ENDIF
    RETURN nextHandle
 
-STATIC FUNCTION NextFocusContainer(oParent,hCtrl,nSkip)
+STATIC FUNCTION NextFocusContainer( oParent, hCtrl, nSkip )
    Local nextHandle := NIL,  i, i2, nWindow
    Local lGroup := Hwg_BitAND( HWG_GETWINDOWSTYLE(  hctrl ), WS_GROUP ) != 0
    Local lHradio
    Local lnoTabStop := .f.
 
-   AEVAL(oparent:acontrols,{|o| IIF(Hwg_BitAND( HWG_GETWINDOWSTYLE(  o:handle ), WS_TABSTOP ) != 0, lnoTabStop := .T., .T. ) } )
-   IF !lnoTabStop .OR. empty( hCtrl )
+   AEVAL( oParent:aControls, {| o | IIF(Hwg_BitAND( HWG_GETWINDOWSTYLE(  o:handle ), WS_TABSTOP ) != 0, lnoTabStop := .T., .T. ) } )
+   IF !lnoTabStop .OR. Empty( hCtrl )
       RETURN nil //nexthandle
    ENDIF
    nWindow := oParent:handle
    i := AScan( oparent:acontrols, { | o | PtrtouLong( o:handle ) == PtrtouLong( hCtrl ) } )
-    lHradio :=  i > 0 .AND. oParent:acontrols[ i ]:CLASSNAME = "HRADIOB"
+   lHradio :=  i > 0 .AND. oParent:acontrols[ i ]:CLASSNAME = "HRADIOB"
       // TABs DO resource
    IF oParent:Type = WND_DLG_RESOURCE
       nexthandle := GetNextDlgGroupItem( oParent:handle , hctrl,( nSkip < 0 ) )
    ELSE
-      IF  lHradio .OR.  lGroup
+      IF  lHradio .OR. lGroup
          nextHandle := GetNextDlgGroupItem( nWindow , hCtrl,( nSkip < 0 ) )
          i := AScan( oParent:aControls, { | o | o:Handle == nextHandle } )
          lnoTabStop := !( i > 0 .AND. oParent:aControls[ i ]:CLASSNAME = "HRADIOB")  //Hwg_BitAND( HWG_GETWINDOWSTYLE( nexthandle ), WS_TABSTOP ) = 0
@@ -1646,18 +1646,29 @@ STATIC FUNCTION NextFocusContainer(oParent,hCtrl,nSkip)
          nextHandle := GetNextDlgTabItem ( nWindow , hctrl, ( nSkip < 0 ) )
          lnoTabStop :=  Hwg_BitaND( HWG_GETWINDOWSTYLE( nextHandle ), WS_TABSTOP ) = 0
       ELSE
-        lnoTabStop := .F.
+         lnoTabStop := .F.
       ENDIF
       i2 := AScan( oParent:aControls, { | o | PtrtouLong( o:Handle ) == PtrtouLong( nextHandle ) } )
-      IF ( ( i2 < i .AND. nSkip > 0 ) .OR. ( i2 > i .AND. nSkip < 0 )) .OR. hCtrl == nextHandle
-          RETURN IIF( oParent:oParent:className == "HTAB", NextFocusTab(oParent:oParent, nWindow, nSkip ), ;
-                       NextFocus( oParent:oparent, hCtrl, nSkip ) )
+      IF (( ( i2 < i .AND. nSkip > 0 ) .OR. ( i2 > i .AND. nSkip < 0 ) ) .OR. hCtrl == nextHandle )
+         IF (( i2 > i .OR. hCtrl == nextHandle ) .AND. nSkip < 0 )  .AND.  Hwg_BitaND( HWG_GETWINDOWSTYLE( oParent:Handle ), WS_TABSTOP ) != 0
+            RETURN oParent:Handle
+         ENDIF
+         RETURN IIF( oParent:oParent:className == "HTAB", NextFocusTab(oParent:oParent, nWindow, nSkip ), ;
+                 IIF( oParent:GetParentForm():ClassName == oParent:oParent:Classname, ;
+                   NextFocus( oParent:oparent, hCtrl, nSkip ), NextFocusContainer( oParent:oparent, hCtrl, nSkip ) ) )
       ENDIF
       i := i2
       IF i = 0
          nextHandle := oParent:aControls[ Len( oParent:aControls ) ]:Handle
-      ELSEIF lnoTabStop .OR. ( i > 0 .AND. i <= LEN( oParent:acontrols ).AND. oParent:aControls[i]:classname = "HGROUP") .OR. i = 0
+      ELSEIF lnoTabStop .OR. ( i > 0 .AND. i <= LEN( oParent:acontrols ).AND. oParent:aControls[i]:classname $ "HGROUP") .OR. i = 0
          nextHandle := GetNextDlgTabItem ( nWindow , nextHandle, ( nSkip < 0 ) )
+      ELSEIF nSkip < 0 .AND. Len( oParent:aControls[ i2 ]:aControls ) > 0
+         IF ( nextHandle := RASCAN( oParent:aControls[ i2 ]:aControls, ;
+           {| o | Hwg_BitaND( HWG_GETWINDOWSTYLE( o:Handle ), WS_TABSTOP ) != 0 .AND. ! o:lHide .AND. o:Enabled } ) ) > 0
+            nextHandle := oParent:aControls[ i2 ]:aControls[ nexthandle ]:handle
+         ELSE
+            nextHandle :=  oParent:aControls[ i2 ]:Handle
+         ENDIF
       ENDIF
    ENDIF
    RETURN nextHandle

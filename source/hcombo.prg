@@ -71,7 +71,7 @@ CLASS HComboBox INHERIT HControl
    METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay, nMaxLength, ledit, ltext )
    METHOD INIT()
    METHOD onEvent( msg, wParam, lParam )
-   METHOD Requery()
+   METHOD Requery( aItems, xValue )
    METHOD Refresh()
    METHOD Setitem( nPos )
    METHOD SetValue( xItem )
@@ -441,9 +441,12 @@ METHOD MaxLength( nMaxLength ) CLASS HComboBox
    ENDIF
    RETURN ::nMaxLength
 
-METHOD Requery() CLASS HComboBox
+METHOD Requery( aItems, xValue ) CLASS HComboBox
 
    SendMessage( ::handle, CB_RESETCONTENT, 0, 0 )
+   IF aItems != Nil
+      ::aItems := aItems
+   ENDIF
    ::Populate()
 
    /*
@@ -452,11 +455,13 @@ METHOD Requery() CLASS HComboBox
    NEXT
    */
    //::Refresh()
-   IF  Empty( ::Value ) .AND. LEN( ::aItems ) > 0 .AND. ::bSetGet = Nil .AND. ! ::lEdit
+   IF xValue != Nil
+      ::SetValue( xValue )
+   ELSEIF  Empty( ::Value ) .AND. LEN( ::aItems ) > 0 .AND. ::bSetGet = Nil  .AND. ! ::lEdit
       ::SetItem( 1 )
    ENDIF
 
-RETURN Nil
+   RETURN Nil
 
 METHOD Refresh() CLASS HComboBox
    LOCAL vari
@@ -567,7 +572,8 @@ METHOD GetValue() CLASS HComboBox
    //::value := Iif( ::lText, ::aItems[ nPos ], nPos )
    IF ::lText
        IF ( ::lEdit .OR. Valtype( ::Value ) != "C" ) .AND. nPos <= 1
-          ::Value := GetEditText( ::oParent:handle, ::id )
+          //::Value := GetEditText( ::oParent:handle, ::id )
+          ::Value := GetWindowText( ::handle )
           nPos := SendMessage( ::handle, CB_FINDSTRINGEXACT, -1, ::value ) + 1
        ELSEIF nPos > 0
          ::value := ::aItems[ nPos ]
@@ -619,9 +625,8 @@ METHOD DisplayValue( cValue ) CLASS HComboBox
          ::cDisplayValue := cValue
       ENDIF
    ENDIF
-   RETURN IIF( ! ::lEdit, GetEditText( ::oParent:handle, ::id ), ::cDisplayValue )
-   //RETURN IIF( IsWindow( ::oParent:handle ), GetEditText( ::oParent:handle, ::id ), ::cDisplayValue )
-
+   RETURN IIF( ! ::lEdit, GetWindowText( ::handle ), ::cDisplayValue )
+   //RETURN IIF( ! ::lEdit, GetEditText( ::oParent:handle, ::id ), ::cDisplayValue )
 
 METHOD DeleteItem( xIndex ) CLASS HComboBox
    Local nIndex
@@ -1290,7 +1295,9 @@ METHOD GetAllCheck() CLASS hCheckComboBox
 LOCAL aCheck := { }
 LOCAL n
    FOR n := 1 TO Len( ::aItems )
-      Aadd( aCheck, ::GetCheck( n ) )
+      IF ::GetCheck( n )
+         Aadd( aCheck, n )
+      ENDIF
    NEXT
 RETURN aCheck
 

@@ -146,8 +146,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
    IF msg == WM_PAINT
       InvalidateRect( ::handle, 0 )
       ::Paint()
-   ELSEIF msg == WM_NCPAINT
-      *- RedrawWindow( ::handle, RDW_NOERASE +  RDW_FRAME + RDW_INVALIDATE + RDW_INTERNALPAINT )
+
+   ELSEIF msg == WM_NCPAINT .AND. ! SELFFOCUS( ::GetParentForm():handle, GetActiveWindow() )
+      REDRAWWINDOW( ::Handle, RDW_UPDATENOW )
+
    ELSEIF msg == WM_ERASEBKGND
       IF ::backstyle = OPAQUE
          RETURN ::nrePaint
@@ -162,10 +164,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
             RETURN 1
          ENDIF
          */
-      ELSE
-         SETTRANSPARENTMODE( wParam, .T. )
-         RETURN GetStockObject( NULL_BRUSH )
       ENDIF
+      SETTRANSPARENTMODE( wParam, .T. )
+      RETURN GetStockObject( NULL_BRUSH )
    ELSEIF msg == WM_SIZE
       IF ::oEmbedded != NIL
          ::oEmbedded:Resize( Loword( lParam ), Hiword( lParam ) )
@@ -194,9 +195,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
       GetSkip( ::oParent, ::GetParentForm():nInitFocus , , IIF( SelfFocus( ::GetParentForm():nInitFocus, ::Handle ), 1, 0 ) )
       ::GetParentForm():nInitFocus := 0
    ELSEIF msg = WM_SETFOCUS .AND. EMPTY(::GetParentForm():nInitFocus) .AND. ! ::lSuspendMsgsHandling  //.AND. Hwg_BitaND( ::sTyle, WS_TABSTOP ) > 0 .
-         Getskip( ::oParent, ::handle, , ::nGetSkip )
-   /*
-   ELSEIF msg = WM_KEYUP
+      Getskip( ::oParent, ::handle, , ::nGetSkip )
+
+/*
+   ELSEIF msg = WM_KEYDOWN
        IF wParam = VK_DOWN
           getskip( ::oparent, ::handle, , 1 )
        ELSEIF   wParam = VK_UP

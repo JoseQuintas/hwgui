@@ -729,6 +729,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    nStyles := IIF(Hwg_BitAND( nStyle, WS_BORDER ) != 0, WS_BORDER, 0 )
    nStyles += IIF(Hwg_BitAND( nStyle, WS_DLGFRAME ) != 0, WS_DLGFRAME , 0 )
    nStyles += IIF(Hwg_BitAND( nStyle, WS_DISABLED ) != 0, WS_DISABLED , 0 )
+   nStyles += IIF(Hwg_BitAND( nStyle, WS_TABSTOP ) != 0, WS_TABSTOP , 0 )
    nStyle  := Hwg_BitOr( nStyle, SS_NOTIFY ) - nStyles
    //    ENDIF
    // ENDIF
@@ -857,13 +858,14 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS  HStatic
 
 METHOD SetValue( cValue )  CLASS HStatic
 
-    ::Auto_Size( cValue )
-    IF ::Title != cValue
-       IF ::backstyle = TRANSPARENT .AND. ::Title != cValue .AND. isWindowVisible( ::handle )
-          RedrawWindow( ::oParent:Handle, RDW_NOERASE + RDW_INVALIDATE + RDW_ERASENOW, ::nLeft, ::nTop, ::nWidth , ::nHeight )
-          InvalidateRect( ::oParent:Handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )
-       ENDIF
-       SetDlgItemText( ::oParent:handle, ::id, cValue )
+   ::Auto_Size( cValue )
+   IF ::backstyle = TRANSPARENT .AND. ::Title != cValue .AND. isWindowVisible( ::handle )
+      SetDlgItemText( ::oParent:handle, ::id, cValue )
+      IF ::backstyle = TRANSPARENT .AND. ::Title != cValue .AND. isWindowVisible( ::handle )
+         RedrawWindow( ::oParent:Handle, RDW_NOERASE + RDW_INVALIDATE + RDW_ERASENOW + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth , ::nHeight )
+         *-InvalidateRect( ::oParent:Handle, 0, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )
+         UpdateWindow( ::Handle )
+      ENDIF
    ELSEIF ::backstyle != TRANSPARENT
       SetDlgItemText( ::oParent:handle, ::id, cValue )
    ENDIF

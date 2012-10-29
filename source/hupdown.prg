@@ -264,7 +264,6 @@ METHOD Valid() CLASS HUpDown
       ::oEditUpDown:Refresh()
       SendMessage( ::oEditUpDown:Handle, EM_SETSEL , 0, -1 )
       ::SetFocus()
-        RETURN res
    ENDIF
    Return res
 

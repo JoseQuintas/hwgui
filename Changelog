@@ -8,6 +8,83 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2012-10-29 12:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hbrowse.prg
+     CLASS HBROWSE
+     + DATA cLinkMaster
+	 + METHOD LinkMaster( cLinkMaster ) SETGET
+	 * METHOD InitBrw( )
+	 * METHOD PAINT( )
+	   ! updated and fixed to work with LinkMaster
+     + STATIC FUNCTION aFltSkip( oBrw, nLines )
+     + STATIC FUNCTION aFltGoTop( oBrw )
+     + STATIC FUNCTION aFltGoBottom( oBrw )
+     + STATIC FUNCTION aFltGoTo( oBrw, nRecord )
+     + STATIC FUNCTION aFltRecNo( oBrw )
+     + STATIC FUNCTION AFltEOF( oBrw ) 
+	   ! added new functions for working with filters for arrays
+   * source/hcombo.prg
+     * METHOD Requery( aItems, xValue )
+	   + added two parameters to load items and set the initial value
+	 * METHOD GetValue()
+	 * METHOD DisplayValue( cValue )
+	   ! changed function  GetEditText( ::oParent:handle, ::id ) to GetWindowText( ::handle )
+	     because GetEditText( ::oParent:handle, ::id ) does not work for all PARENT and following MSDN
+     * METHOD GetAllCheck()
+	   ! fixed.
+   * source/hcontrol.prg
+     * CLASS HStatic
+	   * METHOD NEW()
+	     ! added support for WS_TABSTOP to STYLE
+       * METHOD SetValue( cValue )
+         ! minor fix in transparent 	    
+   * source/hcwindow.prg
+     * FUNCTION onCommand
+	   ! minor fix.
+   * source/hdialog.prg
+     * FUNCTION DlgCommand()
+	   ! fixed GetSkip in mode CLIPPER
+   * source/hedit.prg
+     * STATIC FUNCTION NextFocusContainer( oParent, hCtrl, nSkip )
+	   ! fixed navegation!
+   * source/hhyper.prg
+     * METHOD New()
+	   - removed ACTIVATE() because is inherited class HSTATIC
+	 * METHOD INIT()
+	   ! clean code
+	 * METHOD onEvent()
+	 * METHOD PAINT
+	 * METHOD OnMouseMove(
+	   ! added feature to receive focus and navigation when STYLE has WS-TABSTOP
+   * source/hpanel.prg
+     * METHOD onEvent()
+	   ! minor fix in event NCPAINT when the application loses focus and gets a erasebk
+   * source/htree.prg
+     * CLASS HTreeNode 
+       * METHOD New( )
+ 	     + parameters bClick 
+     * CLASS HTree		 
+	   + DATA hTreeEdit
+	   * METHOD onEvent
+	     ! VK_RETURN is processed as double clik not edit mode and starts editing in edit mode
+       * METHOD Notify( )
+	     ! nCode == TVN_BEGINLABELEDIT .or. nCode == TVN_BEGINLABELEDITW
+         ! nCode == TVN_ENDLABELEDIT  .or. nCode == TVN_ENDLABELEDITW
+		   adjusted to the event VK_RETURN
+   * source/hupdown.prg
+     * METHOD Valid()
+	   ! minor fix
+   * source/hwindow.prg
+     + STATIC FUNCTION FindInitFocus( aControls )
+	   ! sets the initial focus
+     * METHOD Activate() CLASS HMainWindow
+	 * METHOD Activate( ) CLASS HChildWindow
+	 * METHOD Activate( ) CLASS HMDIChildWindow
+	   ! minor fix and optimization.
+     * STATIC FUNCTION onSize	   
+       ! minor fix.
+	   
 2012-10-25 00:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hdatepic.prg
      * METHOD ONEVENT

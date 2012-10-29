@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-10-29 18:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hedit.prg
+     * METHOD VALUE()
+	   ! minor fix!
+
 2012-10-29 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/misc.c
      ! Rename HB_FUNC( SETBIT ) to HB_FUNC( HWG_SETBIT ) conflit com Harbour CT.LIB

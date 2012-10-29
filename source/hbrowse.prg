@@ -4143,8 +4143,10 @@ STATIC FUNCTION aFltRecNo( oBrw )
    HB_SYMBOL_UNUSED( oBrw )
    RETURN Eval( oBrw:bRecno, oBrw )
 
+/*
 STATIC FUNCTION AFltEOF( oBrw )
    RETURN IIF( obrw:ncurrent > Len( obrw:aArray ), .T., .F. )
+*/
 
 // End Implementation by Basso
 

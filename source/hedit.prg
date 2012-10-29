@@ -583,7 +583,7 @@ METHOD Value( Value )  CLASS HEdit
        ::Refresh()
    ENDIF
    //vari := ::UnTransform( ::Title )
-   vari := IIF( Empty ::Handle ), ::Title, ::UnTransform( GetWindowText( ::handle ) ) )
+   vari := IIF( Empty( ::Handle ), ::Title, ::UnTransform( GetWindowText( ::handle ) ) )
    IF ::cType == "D"
       vari := CToD( vari )
    ELSEIF ::cType == "N"

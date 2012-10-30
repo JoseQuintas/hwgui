@@ -162,8 +162,10 @@ METHOD Drag( lParam ) CLASS HSplitter
       ::nTop += yPos
       xPos := 0
    ENDIF
-   ::Move( ::nLeft + xPos, ::nTop + yPos, ::nWidth, ::nHeight ) //,  ! ::lScrolling  )
-   InvalidateRect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nleft + ::nWidth , ::nTop + ::nHeight )
+   ::Move( ::nLeft + xPos, ::nTop + yPos, ::nWidth, ::nHeight )
+   IF ! ::lScrolling
+      InvalidateRect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nleft + ::nWidth , ::nTop + ::nHeight )
+   ENDIF
    ::lMoved := .T.
 
    RETURN NIL
@@ -201,11 +203,11 @@ METHOD DragAll( lScroll ) CLASS HSplitter
    NEXT
    //::lMoved := .F.
    IF ! lScroll
-      InvalidateRect( ::oParent:handle, 0, ::nLeft ,::nTop  , ::nLeft + ::nWidth , ::nTop + ::nHeight  )
+      InvalidateRect( ::oParent:handle, 1, ::nLeft ,::nTop  , ::nLeft + ::nWidth , ::nTop + ::nHeight  )
    ELSEIF ::lVertical
-      InvalidateRect( ::oParent:Handle, 0, ::nLeft - ::nWidth - xDiff - 1 , ::nTop , ::nLeft + ::nWidth + xDiff + 1, ::nTop + ::nHeight )
+      InvalidateRect( ::oParent:Handle, 1, ::nLeft - ::nWidth - xDiff - 1 , ::nTop , ::nLeft + ::nWidth + xDiff + 1, ::nTop + ::nHeight )
    ELSE
-      InvalidateRect( ::oParent:Handle, 0, ::nLeft , ::nTop - ::nHeight - yDiff - 1 , ::nLeft + ::nWidth, ::nTop + ::nHeight + yDiff + 1 )
+      InvalidateRect( ::oParent:Handle, 1, ::nLeft , ::nTop - ::nHeight - yDiff - 1 , ::nLeft + ::nWidth, ::nTop + ::nHeight + yDiff + 1 )
    ENDIF
    IF ::bEndDrag != NIL
       Eval( ::bEndDrag,Self )

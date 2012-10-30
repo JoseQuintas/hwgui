@@ -20,6 +20,9 @@ STATIC bDisablecolor :=  Nil  // GetSysColor( COLOR_BTNHIGHLIGHT )
 #include "hbclass.ch"
 #include "hblang.ch"
 #include "guilib.ch"
+#ifdef __XHARBOUR__
+   #xtranslate hb_RAScan([<x,...>])        => RAScan(<x>)
+#endif
 
 #define VK_C  67
 #define VK_V  86

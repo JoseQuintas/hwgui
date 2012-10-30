@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-10-30 19:22 UTC+0100 Maurizio la Cecilia <m.lacecilia at gmail.com>
+   * changelog
+     * just to test svnmailer after a test request by sf staff
+
 2012-10-30 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hsplit.prg
      * METHOD DragAll

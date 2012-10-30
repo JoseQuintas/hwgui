@@ -995,7 +995,7 @@ METHOD DeleteMark( lDeleteMark ) CLASS HBrowse
 METHOD ShowColToolTips( lParam ) CLASS HBrowse
    LOCAL pt, cTip := ""
 
-   IF Ascan( ::aColumns, {| c | c:Hint != .F. .AND. c:Tooltip != NIL } ) = 0
+   IF Ascan( ::aColumns, {| c | c:Hint != .F. .OR. c:Tooltip != Nil } ) = 0
        RETURN NIL
    ENDIF
    pt := ::ButtonDown( lParam, .T. )
@@ -1003,7 +1003,7 @@ METHOD ShowColToolTips( lParam ) CLASS HBrowse
       RETURN NIL
    ELSEIF pt[ 1 ] != 0 .AND. pt[ 2 ] != 0 .AND. ::aColumns[ pt[ 2 ] ]:Hint
       cTip := ::aColumns[ pt[ 2 ] ]:aHints[ pt[ 1 ] ]
-   ELSEIF pt[ 2 ] != 0 .AND. ::aColumns[ pt[ 2 ] ]:ToolTip != NIL
+   ELSEIF pt[ 1 ] = 0 .AND. pt[ 2 ] != 0 .AND. ::aColumns[ pt[ 2 ] ]:ToolTip != Nil
       cTip := ::aColumns[ pt[ 2 ] ]:ToolTip
    ENDIF
    IF ! EMPTY( cTip ) .OR. ! EMPTY( xToolTip )

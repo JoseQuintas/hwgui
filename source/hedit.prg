@@ -1665,7 +1665,7 @@ STATIC FUNCTION NextFocusContainer( oParent, hCtrl, nSkip )
       ELSEIF lnoTabStop .OR. ( i > 0 .AND. i <= LEN( oParent:acontrols ).AND. oParent:aControls[i]:classname $ "HGROUP") .OR. i = 0
          nextHandle := GetNextDlgTabItem ( nWindow , nextHandle, ( nSkip < 0 ) )
       ELSEIF nSkip < 0 .AND. Len( oParent:aControls[ i2 ]:aControls ) > 0
-         IF ( nextHandle := RASCAN( oParent:aControls[ i2 ]:aControls, ;
+         IF ( nextHandle := hb_RASCAN( oParent:aControls[ i2 ]:aControls, ;
            {| o | Hwg_BitaND( HWG_GETWINDOWSTYLE( o:Handle ), WS_TABSTOP ) != 0 .AND. ! o:lHide .AND. o:Enabled } ) ) > 0
             nextHandle := oParent:aControls[ i2 ]:aControls[ nexthandle ]:handle
          ELSE

@@ -12,6 +12,9 @@
    * source/hedit.prg
      ! changed function RASCAN to hb_Rascan for be compatible for two compilers
      + add #ifdef __XHARBOUR__   #xtranslate hb_RAScan([<x,...>])        => RAScan(<x>) #endif
+   * source/hbrowse.prg	 
+	 * METHOD ShowColToolTips( lParam )
+	   ! minor fix in tooltip in header
 	  
 2012-10-29 18:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hedit.prg

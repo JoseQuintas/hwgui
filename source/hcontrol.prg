@@ -720,6 +720,25 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
       bColor, lTransp, bClick, bDblClick, bOther ) CLASS HStatic
 
+
+   nStyle := IIF( nStyle = Nil, 0, nStyle )
+   ::nStyleHS := nStyle - Hwg_BitAND( nStyle,  WS_VISIBLE + WS_DISABLED + WS_CLIPSIBLINGS + ;
+                                               WS_CLIPCHILDREN + WS_BORDER + WS_DLGFRAME + ;
+                                               WS_VSCROLL + WS_HSCROLL + WS_THICKFRAME + WS_TABSTOP )
+   nStyle += SS_NOTIFY + WS_CLIPCHILDREN  //- ::nStyleHS
+
+   ::BackStyle := OPAQUE
+   IF ( lTransp != NIL .AND. lTransp )
+      ::BackStyle := TRANSPARENT
+      ::extStyle += WS_EX_TRANSPARENT
+      bPaint := { | o, p | o:paint( p ) }
+      nStyle += SS_OWNERDRAW - ::nStyleHS
+   ELSEIF ::nStyleHS > 32 .OR. ::nStyleHS = 2
+      bPaint := { | o, p | o:paint( p ) }
+      nStyle +=  SS_OWNERDRAW - ::nStyleHS
+   ENDIF
+   
+   /*
    LOCAL nStyles
    // Enabling style for tooltips
    //IF ValType( cTooltip ) == "C"
@@ -745,9 +764,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       bPaint := { | o, p | o:paint( p ) }
       nStyle := SS_OWNERDRAW + Hwg_Bitand( nStyle, SS_NOTIFY )
    ENDIF
+   */
    ::hBrushDefault := HBrush():Add( GetSysColor( COLOR_BTNFACE ) )
-
-   Super:New( oWndParent, nId, nStyle + nStyles, nLeft, nTop, nWidth, nHeight, oFont, ;
+                                     // + nStyles
+   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
          bInit, bSize, bPaint, cTooltip, tcolor, bColor )
 
    IF ::oParent:oParent != NIL
@@ -862,7 +882,7 @@ METHOD SetValue( cValue )  CLASS HStatic
    IF ::backstyle = TRANSPARENT .AND. ::Title != cValue .AND. isWindowVisible( ::handle )
       SetDlgItemText( ::oParent:handle, ::id, cValue )
       IF ::backstyle = TRANSPARENT .AND. ::Title != cValue .AND. isWindowVisible( ::handle )
-         RedrawWindow( ::oParent:Handle, RDW_NOERASE + RDW_INVALIDATE + RDW_ERASENOW + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth , ::nHeight )
+         RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_ERASENOW + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth , ::nHeight )
          *-InvalidateRect( ::oParent:Handle, 0, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )
          UpdateWindow( ::Handle )
       ENDIF

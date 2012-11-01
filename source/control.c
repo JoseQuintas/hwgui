@@ -166,6 +166,13 @@ HB_FUNC( SETPROGRESSBAR )
          ( WPARAM ) hb_parni( 2 ), 0 );
 }
 
+HB_FUNC( SETRANGEPROGRESSBAR )
+{
+
+   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), PBM_SETRANGE, 0, MAKELPARAM( 0, hb_parni( 2 ) ) );
+   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), PBM_SETSTEP, 1 , 0 ); 
+}   
+
 /*
    CreatePanel( hParentWindow, nPanelControlID, nStyle, x1, y1, nWidth, nHeight )
 */
@@ -513,6 +520,28 @@ HB_FUNC( SHOWTOOLTIP )
 }
 */
 
+
+HB_FUNC( CREATEUPDOWNCONTROL32 )
+{
+   HWND hControl;
+   LONG nStyle = hb_parnl( 7 ) | WS_CHILDWINDOW | WS_VISIBLE | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS | UDS_HOTTRACK;
+
+    hControl = CreateWindowEx( WS_EX_LEFT | WS_EX_LTRREADING,
+                              TEXT( UPDOWN_CLASS ), //TEXT( "UPDOWN" ),
+                              NULL, nStyle,
+                              hb_parni( 3 ), hb_parni( 4 ),  /* x, y       */
+                              hb_parni( 5 ), hb_parni( 6 ),  /* nWidth, nHeight */
+                              ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
+                              ( HMENU ) hb_parni( 2 ),       /* control ID  */
+                              GetModuleHandle( NULL ), NULL );
+
+    SendMessage( hControl, UDM_SETRANGE, 0, MAKELPARAM( hb_parni( 8 ), hb_parni( 9 ) ) );    // Sets the controls direction 
+                                                                           // and range.
+
+    HB_RETHANDLE( hControl );
+}
+
+
 HB_FUNC( CREATEUPDOWNCONTROL )
 {
    HB_RETHANDLE( CreateUpDownControl( WS_CHILD | WS_BORDER | WS_VISIBLE |
@@ -632,11 +661,17 @@ HB_FUNC( SETDATEPICKERNULL )
 HB_FUNC( GETDATEPICKER )
 {
    SYSTEMTIME st;
+   int iret;
+   WPARAM wParam = ( hb_pcount() > 1 ) ? hb_parnl( 2 ):GDT_VALID ;
 
-   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), DTM_GETSYSTEMTIME, 0,
-                ( LPARAM ) & st );
-   hb_retd( st.wYear, st.wMonth, st.wDay );
+   iret = SendMessage( ( HWND ) HB_PARHANDLE( 1 ), DTM_GETSYSTEMTIME,
+                wParam, ( LPARAM ) & st );
+   if ( wParam == GDT_VALID )
+     hb_retd( st.wYear, st.wMonth, st.wDay );
+   else
+     hb_retni( iret );
 }
+
 
 HB_FUNC( GETTIMEPICKER )
 {

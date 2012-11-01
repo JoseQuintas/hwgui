@@ -940,6 +940,9 @@ LOCAL aCoors,  oWndArea
          FillRect( wParam, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ], aCoors[ 4 ], COLOR_3DFACE + 1 )
          RETURN 1
       ENDIF
+   ELSEIF oWnd:type = WND_MDI .AND. isWindowVisible( oWnd:handle )
+      // MINOR flick in MAIND in resize window
+      RETURN 0
    ENDIF
    RETURN - 1
 

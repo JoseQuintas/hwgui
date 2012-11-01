@@ -173,7 +173,7 @@ METHOD CheckValue( lValue )  CLASS HDatePicker
        RETURN .F.
    ENDIF
    IF lValue != Nil
-      IF IIF( SendMessage( ::Handle, DTM_GETSYSTEMTIME, GDT_NONE, 0 ) = GDT_NONE ,.F., .T. ) != lValue
+      IF IIF( GetDatePicker( ::handle, GDT_NONE ) = GDT_NONE ,.F., .T. ) != lValue
          IF ! lValue
             SendMessage( ::Handle, DTM_SETSYSTEMTIME, GDT_NONE, 0 )
          ELSE
@@ -181,7 +181,7 @@ METHOD CheckValue( lValue )  CLASS HDatePicker
          ENDIF
       ENDIF
    ENDIF
-   RETURN IIF( SendMessage( ::Handle, DTM_GETSYSTEMTIME, GDT_NONE, 0 ) = GDT_NONE ,.F., .T. )
+   RETURN IIF( GetDatePicker( ::handle, GDT_NONE ) = GDT_NONE ,.F., .T. )
 
 METHOD Value( Value )  CLASS HDatePicker
 

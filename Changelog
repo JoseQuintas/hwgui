@@ -8,20 +8,25 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-11-02 17:31 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
+  * Changelog
+    - removed doubled empty lines
+    * tested svnmailer
+
 2012-10-01 12:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcontrol.prg
      * METO]HOD NEW()
-	   ! optimization code   
-	 * METHOD SETVALUE()
-	   ! minor fix in transparent mode
-	   
+      ! optimization code
+    * METHOD SETVALUE()
+      ! minor fix in transparent mode
+
 2012-10-01 11:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/control.c
      * HB_FUNC( GETDATEPICKER )
-	   + added new parameter to verify checkbox in style DTS_SHOWNONE
-   * source/hdatepic.prg	   
-	 * METHOD CheckValue( lValue )
-	   ! fixed 
+      + added new parameter to verify checkbox in style DTS_SHOWNONE
+   * source/hdatepic.prg
+    * METHOD CheckValue( lValue )
+      ! fixed
    * source/hwindow.prg
      * FUNCTION onEraseBk(
        ! Return 0 in WIN MDI MAIN to minor flick in resize window
@@ -29,7 +34,7 @@
 2012-10-30 19:52 UTC+0100 Maurizio la Cecilia <m.lacecilia at gmail.com>
    * changelog
      * just another test for svnmailer as previous
-     
+
 2012-10-30 19:22 UTC+0100 Maurizio la Cecilia <m.lacecilia at gmail.com>
    * changelog
      * just to test svnmailer after a test request by sf staff
@@ -37,109 +42,109 @@
 2012-10-30 15:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hsplit.prg
      * METHOD DragAll
-	   ! minor fix in invalidaterect!
+      ! minor fix in invalidaterect!
 
 2012-10-30 09:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hedit.prg
      ! changed function RASCAN to hb_Rascan for be compatible for two compilers
      + add #ifdef __XHARBOUR__   #xtranslate hb_RAScan([<x,...>])        => RAScan(<x>) #endif
-   * source/hbrowse.prg	 
-	 * METHOD ShowColToolTips( lParam )
-	   ! minor fix in tooltip in header
-	  
+   * source/hbrowse.prg
+    * METHOD ShowColToolTips( lParam )
+      ! minor fix in tooltip in header
+
 2012-10-29 18:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hedit.prg
      * METHOD VALUE()
-	   ! minor fix!
+      ! minor fix!
 
 2012-10-29 13:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/misc.c
      ! Rename HB_FUNC( SETBIT ) to HB_FUNC( HWG_SETBIT ) conflit com Harbour CT.LIB
    * source/hbrowse.prg
-     ! Rename SETBIT to HWG_SETBIT 
-   * source/richtext.prg	 
+     ! Rename SETBIT to HWG_SETBIT
+   * source/richtext.prg
      ! changed FUNCTION CStr( xExp ) to STATIC FUNCTION CStr( xExp ) avoiding conflit with HARBOUR
 
 2012-10-29 12:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
      CLASS HBROWSE
      + DATA cLinkMaster
-	 + METHOD LinkMaster( cLinkMaster ) SETGET
-	 * METHOD InitBrw( )
-	 * METHOD PAINT( )
-	   ! updated and fixed to work with LinkMaster
+    + METHOD LinkMaster( cLinkMaster ) SETGET
+    * METHOD InitBrw( )
+    * METHOD PAINT( )
+      ! updated and fixed to work with LinkMaster
      + STATIC FUNCTION aFltSkip( oBrw, nLines )
      + STATIC FUNCTION aFltGoTop( oBrw )
      + STATIC FUNCTION aFltGoBottom( oBrw )
      + STATIC FUNCTION aFltGoTo( oBrw, nRecord )
      + STATIC FUNCTION aFltRecNo( oBrw )
-     + STATIC FUNCTION AFltEOF( oBrw ) 
-	   ! added new functions for working with filters for arrays
+     + STATIC FUNCTION AFltEOF( oBrw )
+      ! added new functions for working with filters for arrays
    * source/hcombo.prg
      * METHOD Requery( aItems, xValue )
-	   + added two parameters to load items and set the initial value
-	 * METHOD GetValue()
-	 * METHOD DisplayValue( cValue )
-	   ! changed function  GetEditText( ::oParent:handle, ::id ) to GetWindowText( ::handle )
-	     because GetEditText( ::oParent:handle, ::id ) does not work for all PARENT and following MSDN
+      + added two parameters to load items and set the initial value
+    * METHOD GetValue()
+    * METHOD DisplayValue( cValue )
+      ! changed function  GetEditText( ::oParent:handle, ::id ) to GetWindowText( ::handle )
+        because GetEditText( ::oParent:handle, ::id ) does not work for all PARENT and following MSDN
      * METHOD GetAllCheck()
-	   ! fixed.
+      ! fixed.
    * source/hcontrol.prg
      * CLASS HStatic
-	   * METHOD NEW()
-	     ! added support for WS_TABSTOP to STYLE
+      * METHOD NEW()
+        ! added support for WS_TABSTOP to STYLE
        * METHOD SetValue( cValue )
-         ! minor fix in transparent 	    
+         ! minor fix in transparent
    * source/hcwindow.prg
      * FUNCTION onCommand
-	   ! minor fix.
+      ! minor fix.
    * source/hdialog.prg
      * FUNCTION DlgCommand()
-	   ! fixed GetSkip in mode CLIPPER
+      ! fixed GetSkip in mode CLIPPER
    * source/hedit.prg
      * STATIC FUNCTION NextFocusContainer( oParent, hCtrl, nSkip )
-	   ! fixed navegation!
+      ! fixed navegation!
    * source/hhyper.prg
      * METHOD New()
-	   - removed ACTIVATE() because is inherited class HSTATIC
-	 * METHOD INIT()
-	   ! clean code
-	 * METHOD onEvent()
-	 * METHOD PAINT
-	 * METHOD OnMouseMove(
-	   ! added feature to receive focus and navigation when STYLE has WS-TABSTOP
+      - removed ACTIVATE() because is inherited class HSTATIC
+    * METHOD INIT()
+      ! clean code
+    * METHOD onEvent()
+    * METHOD PAINT
+    * METHOD OnMouseMove(
+      ! added feature to receive focus and navigation when STYLE has WS-TABSTOP
    * source/hpanel.prg
      * METHOD onEvent()
-	   ! minor fix in event NCPAINT when the application loses focus and gets a erasebk
+      ! minor fix in event NCPAINT when the application loses focus and gets a erasebk
    * source/htree.prg
-     * CLASS HTreeNode 
+     * CLASS HTreeNode
        * METHOD New( )
- 	     + parameters bClick 
-     * CLASS HTree		 
-	   + DATA hTreeEdit
-	   * METHOD onEvent
-	     ! VK_RETURN is processed as double clik not edit mode and starts editing in edit mode
+        + parameters bClick
+     * CLASS HTree
+      + DATA hTreeEdit
+      * METHOD onEvent
+        ! VK_RETURN is processed as double clik not edit mode and starts editing in edit mode
        * METHOD Notify( )
-	     ! nCode == TVN_BEGINLABELEDIT .or. nCode == TVN_BEGINLABELEDITW
+        ! nCode == TVN_BEGINLABELEDIT .or. nCode == TVN_BEGINLABELEDITW
          ! nCode == TVN_ENDLABELEDIT  .or. nCode == TVN_ENDLABELEDITW
-		   adjusted to the event VK_RETURN
+         adjusted to the event VK_RETURN
    * source/hupdown.prg
      * METHOD Valid()
-	   ! minor fix
+      ! minor fix
    * source/hwindow.prg
      + STATIC FUNCTION FindInitFocus( aControls )
-	   ! sets the initial focus
+      ! sets the initial focus
      * METHOD Activate() CLASS HMainWindow
-	 * METHOD Activate( ) CLASS HChildWindow
-	 * METHOD Activate( ) CLASS HMDIChildWindow
-	   ! minor fix and optimization.
-     * STATIC FUNCTION onSize	   
+    * METHOD Activate( ) CLASS HChildWindow
+    * METHOD Activate( ) CLASS HMDIChildWindow
+      ! minor fix and optimization.
+     * STATIC FUNCTION onSize
        ! minor fix.
-	   
+
 2012-10-25 00:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hdatepic.prg
      * METHOD ONEVENT
-	   ! fixed in key VK_RETURN when STYLE =  DTS_SHOWNONE 
+      ! fixed in key VK_RETURN when STYLE =  DTS_SHOWNONE
 
 2012-10-23 15:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * CLASS HControl
@@ -152,12 +157,12 @@
    * source/hdatepic.prg
      + constants DTM_FIRST, DTM_GETSYSTEMTIME, DTM_SETSYSTEMTIME
                  GDT_ERROR, GDT_VALID, GDT_NONE
-	 + METHOD CheckValue( lValue ) 
-	   Set ou Return value from checkbox control when STYLE =  DTS_SHOWNONE 
+    + METHOD CheckValue( lValue )
+      Set ou Return value from checkbox control when STYLE =  DTS_SHOWNONE
 
 2012-10-23 09:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * utils/designer/blddesig.bat
-	  + add CT.LIB in bat compiler
+     + add CT.LIB in bat compiler
 
 2012-10-22 10:18 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
   * source/hbrowse.prg
@@ -179,7 +184,6 @@
    * source/hupdown.prg
     * METHOD Valid() CLASS HUpDown
       ! minor fix when WHEN return .F.
-
 
 2012-10-18 13:30 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/hsplit.prg
@@ -269,7 +273,6 @@
    * source/hsplit.prg
     *  METHOD DragAll()
       ! minor fix in scrolling
-
 
 2012-09-21 11:58 UTC-0300 Marcos Antonio Gambeta <marcosgambeta at uol.com.br>
   * samples\*\*.hbp
@@ -498,7 +501,6 @@
    * source/hupdown.prg
        * METHOD Refresh()
       ! minor fix
-
 
 2012-08-27 22:50 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include/window.ch
@@ -810,7 +812,6 @@
    samples/image/pim.ico
    samples/image/save.bmp
    ! added lower case file name of removed files
-
 
 2012-01-30 09:05 UTC+0200 Alexey Myronenko <vatzct < at > polly.com.ua>
   * source/hpanel.prg

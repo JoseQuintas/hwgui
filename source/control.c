@@ -520,7 +520,7 @@ HB_FUNC( SHOWTOOLTIP )
 }
 */
 
-
+/*   no used
 HB_FUNC( CREATEUPDOWNCONTROL32 )
 {
    HWND hControl;
@@ -529,10 +529,10 @@ HB_FUNC( CREATEUPDOWNCONTROL32 )
     hControl = CreateWindowEx( WS_EX_LEFT | WS_EX_LTRREADING,
                               TEXT( UPDOWN_CLASS ), //TEXT( "UPDOWN" ),
                               NULL, nStyle,
-                              hb_parni( 3 ), hb_parni( 4 ),  /* x, y       */
-                              hb_parni( 5 ), hb_parni( 6 ),  /* nWidth, nHeight */
-                              ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
-                              ( HMENU ) hb_parni( 2 ),       /* control ID  */
+                              hb_parni( 3 ), hb_parni( 4 ),  // x, y
+                              hb_parni( 5 ), hb_parni( 6 ),  // nWidth, nHeight
+                              ( HWND ) HB_PARHANDLE( 1 ),    // parent window
+                              ( HMENU ) hb_parni( 2 ),       // control ID
                               GetModuleHandle( NULL ), NULL );
 
     SendMessage( hControl, UDM_SETRANGE, 0, MAKELPARAM( hb_parni( 8 ), hb_parni( 9 ) ) );    // Sets the controls direction 
@@ -540,7 +540,7 @@ HB_FUNC( CREATEUPDOWNCONTROL32 )
 
     HB_RETHANDLE( hControl );
 }
-
+*/
 
 HB_FUNC( CREATEUPDOWNCONTROL )
 {

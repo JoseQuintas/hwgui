@@ -198,7 +198,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, btnWidth, oFo
    IF __ObjHasMsg( ::oParent,"AOFFSET" ) .AND. ::oParent:type == WND_MDI .AND. ;
         ::oParent:aOffset[ 2 ] + ::oParent:aOffset[ 3 ] = 0
       IF ::nWidth > ::nHeight .OR. ::nWidth == 0
-         ::oParent:aOffset[ 2 ] := ::nHeight
+         ::oParent:aOffset[ 2 ] += ::nHeight
       ELSEIF ::nHeight > ::nWidth .OR. ::nHeight == 0
          IF ::nLeft == 0
             ::oParent:aOffset[ 1 ] += ::nWidth
@@ -355,7 +355,7 @@ METHOD CREATETOOL() CLASS hToolBar
            //  hImage := HBitmap():AddResource( ::aitem[ n, 1 ], LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS + LR_SHARED,,::nSize,::nSize ):handle
       ENDIF
    NEXT
-   IF Len( aButton ) > 0 //.AND. ::lResource
+   IF Len( aButton ) > 0 .AND. ::lResource
       aBmpSize := GetBitmapSize( aButton[ 1 ] )
          /*
          nmax := aBmpSize[ 3 ]

@@ -8,6 +8,65 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-10-06 15:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include/guilib.ch
+     * #xcommand INIT WINDOW <oWnd>
+	 * #xcommand INIT WINDOW <oWnd> MDICHILD [ VAR <vari> ]   ;
+	 * #xcommand INIT WINDOW <oWnd> CHILD  
+	   +   [ BACKGROUND BITMAP <oBmp> [ STRETCH <nStretch>] ] ;
+  * source/control.c
+    * FUNCTION CREATEUPDOWNCONTROL32
+      ! the function CREATEUPDOWNCONTROL32 nots used, comment.
+  * source/draw.c
+    + HB_FUNC( GETUPDATERECT )
+	+ HB_FUNC( GETPPSERASE )
+  * source/drawwidg.prg
+    * CLASS HBitmap
+      + DATA nFlags
+      * METHOD AddResource
+	    ! added nflags as a condition for SHARED BMP
+  * source/hcontrol.prg
+    * CLASS HSTATIC
+      * METHOD SetValue( cValue )
+	    ! minor fix
+  * source/hedit.prg		
+    * METHOD SetText( c )		
+    * METHOD Value( c )		
+	  ! minor fix !
+  * source/hpanel.prg
+    * METHOD ONEVENT
+	  ! minor fix in msg = WM_PAINT
+  * source/hsplit.prg
+    * METHOD Paint( )
+    * METHOD DragAll
+	  ! minor fix
+  * source/htool.prg
+    * METHOD CREATETOOL
+      ! minor fix in imagens
+  * source/hupdown.prg
+    * METHOD INIT()
+     ! adjust in RIGHTMARGIN
+  * source/hwindow.prg
+    * CLASS HWindow
+	  + DATA bmpStretch
+	  + METHOD PAINT()
+	  * METHOD New() 
+	    ! added new parameter nbmpStretch
+    * CLASS HMainWindow 		
+	* CLASS HMDIChildWindow 
+	* CLASS HChildWindow 
+	  * METHOD New() 
+	    ! added new parameter nbmpStretch
+    * METHOD onEvent( )  CLASS HMainWindow
+	* METHOD onEvent( )  CLASS HMDIChildWindow
+	* METHOD onEvent( )  CLASS HChildWindow
+	  ! handling message WM_PAINT
+    * FUNCTION onEraseBk( oWnd, wParam )	  
+	  ! move code coloring background windows to METHOD PAINT and added feature to show images stretched
+  * source/window.c
+    + HB_FUNC( PAINTWINDOW )
+	  ! Coloring the background windows
+
 2012-11-02 17:31 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
   * Changelog
     - removed doubled empty lines

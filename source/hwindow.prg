@@ -45,7 +45,7 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       IF !Empty( oWnd:Screen )
           oWnd:Screen:nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
           oWnd:Screen:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
-          //InvalidateRect( oWnd:Screen:handle, 1 )   // flick in screen in resize window
+         // InvalidateRect( oWnd:Screen:handle, 0 )   // flick in screen in resize window
           SetWindowPos( oWnd:screen:handle, Nil, 0, 0, oWnd:Screen:nWidth, oWnd:Screen:nHeight, SWP_NOACTIVATE + SWP_NOSENDCHANGING + SWP_NOZORDER )
           IF IsWindowVisible( oWnd:screen:handle )
              InvalidateRect( oWnd:Screen:handle, 1 )
@@ -82,6 +82,7 @@ CLASS VAR szAppName  SHARED INIT "HwGUI_App"
    DATA menu, oPopup, hAccel
    DATA oIcon, oBmp
    DATA lBmpCenter INIT .F.
+   DATA bmpStretch INIT  1  // 1-Spread/ISOMETRIC  0-STRETCH  2-CENTER
    DATA nBmpClr
    DATA lUpdated INIT .F.     // TRUE, if any GET is changed
    DATA lClipper INIT .F.
@@ -105,7 +106,8 @@ CLASS VAR szAppName  SHARED INIT "HwGUI_App"
 
    METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
                bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
-               cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bRefresh, lChild, lClipper, lNoClosable, bSetForm )
+               cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bRefresh, lChild, lClipper,;
+               lNoClosable, bSetForm, nBmpStretch )
    METHOD AddItem( oWnd )
    METHOD DelItem( oWnd )
    METHOD FindWindow( hWndTitle )
@@ -120,13 +122,15 @@ CLASS VAR szAppName  SHARED INIT "HwGUI_App"
    METHOD isMaximized() INLINE GetWindowPlacement( ::handle ) == SW_SHOWMAXIMIZED
    METHOD isMinimized() INLINE GetWindowPlacement( ::handle ) == SW_SHOWMINIMIZED
    METHOD isNormal() INLINE GetWindowPlacement( ::handle ) == SW_SHOWNORMAL
+   METHOD Paint()
 
 
 ENDCLASS
 
 METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
             bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
-            cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bRefresh, lChild, lClipper, lNoClosable, bSetForm )  CLASS HWindow
+            cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bRefresh, lChild,;
+           lClipper, lNoClosable, bSetForm, nBmpStretch )  CLASS HWindow
 
    HB_SYMBOL_UNUSED( clr )
    HB_SYMBOL_UNUSED( cMenu )
@@ -137,6 +141,7 @@ METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
    ::style    := IIf( nStyle == Nil, 0, nStyle )
    ::oIcon    := oIcon
    ::oBmp     := oBmp
+   ::bmpStretch := IIF( nBmpStretch = NIL, ::bmpStretch, nBmpStretch )
    ::nTop     := IIf( y == Nil, 0, y )
    ::nLeft    := IIf( x == Nil, 0, x )
    ::nWidth   := IIf( width == Nil, 0, width )
@@ -215,6 +220,12 @@ METHOD GetMain() CLASS HWindow
                     ::aWindows[ 1 ],                  ;
                     IIf( Len( ::aWindows ) > 1, ::aWindows[ 2 ], Nil ) ), Nil )
 
+METHOD Paint() CLASS  HWindow
+
+   IF ::bPaint = Nil .AND. ::oBmp = Nil .AND. ::type != WND_MDI .AND. GetUpdateRect( ::handle ) > 0
+      PaintWindow( ::handle, IIF( ::brush != Nil, ::brush:handle, Nil ) )
+   ENDIF
+   RETURN -1
 
 
 CLASS HMainWindow INHERIT HWindow
@@ -245,7 +256,7 @@ CLASS VAR aMessages INIT { ;
 
    METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,   ;
                oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
-               cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bRefresh, bMdiMenu )
+               cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bRefresh, bMdiMenu, nBmpStretch )
    METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu, cTooltip )
@@ -255,11 +266,11 @@ ENDCLASS
 
 METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,   ;
             oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
-            cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bRefresh, bMdiMenu ) CLASS HMainWindow
+            cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bRefresh, bMdiMenu, nBmpStretch ) CLASS HMainWindow
 
    Super:New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
               bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther,  ;
-              cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bRefresh )
+              cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bRefresh,,,,, nBmpStretch )
    ::Type := lType
 
    IF lType == WND_MDI
@@ -355,6 +366,7 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMa
       ENDIF
       IF ::Screen != Nil
          ::Screen:lBmpCenter := ::lBmpCenter
+         ::Screen:bmpStretch := ::BmpStretch
          /*
          ::Screen:Maximize()
          SetWindowPos( ::Screen:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER +;
@@ -430,6 +442,8 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMainWindow
    IF msg = WM_MENUCHAR
       // PROCESS ACCELERATOR IN CONTROLS
       RETURN onSysCommand( Self, SC_KEYMENU, LoWord( wParam ) )
+   ELSEIF msg = WM_PAINT .AND. ::Type == WND_MAIN
+      RETURN ::Paint( self )
    ENDIF
    // added control MDICHILD MODAL
    IF msg = WM_PARENTNOTIFY
@@ -563,7 +577,6 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
    IF VALTYPE( ::TITLE ) = "N" .AND. ::title = - 1   // screen
       RETURN .T.
    ENDIF
-
    IF lCentered
       ::nLeft := ( ::oClient:nWidth - ::nWidth ) / 2
       ::nTop  := ( ::oClient:nHeight - ::nHeight ) / 2
@@ -637,6 +650,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
          RETURN 0
 
       ENDIF
+   ELSEIF msg = WM_PAINT
+      RETURN ::Paint( self )
+
    ELSEIF msg = WM_MOVING .AND. ::lMaximized
       ::Maximize()
    ELSEIF msg = WM_SETFOCUS .AND. !Empty( nFocus ) .AND. ! SelfFocus( nFocus )
@@ -766,7 +782,10 @@ METHOD Activate( lShow, lMaximized, lMinimized,lCentered, bActivate, lModal ) CL
 METHOD onEvent( msg, wParam, lParam )  CLASS HChildWindow
    LOCAL i, oCtrl
 
-   IF msg == WM_DESTROY
+   IF msg = WM_PAINT
+      RETURN ::Paint( self )
+
+   ELSEIF msg == WM_DESTROY
       RETURN onDestroy( Self )
    ELSEIF msg == WM_SIZE
       RETURN onSize( Self, wParam, lParam )
@@ -919,13 +938,16 @@ LOCAL aCoors,  oWndArea
 
   IF oWnd:oBmp != Nil .AND. oWnd:type != WND_MDI
        oWndArea := IIF( oWnd:type != WND_MAIN, oWnd:oClient, oWnd )
-       IF oWnd:lBmpCenter
-          CenterBitmap( wParam, oWndArea:handle, oWnd:oBmp:handle, , oWnd:nBmpClr )
-       ELSE
+       IF oWnd:bmpStretch = 2 .OR. oWnd:lBmpCenter
+          CenterBitmap( wParam, oWndArea:handle, oWnd:oBmp:handle, , IIF( oWnd:brush = Nil, oWnd:nBmpClr, oWnd:brush:handle ) )
+       ELSEIF oWnd:bmpStretch = 1
           SpreadBitmap( wParam, oWndArea:handle, oWnd:oBmp:handle )
+       ELSEIF oWnd:bmpStretch = 1
+          DrawBitmap( wParam, oWnd:oBmp:handle, , 0, 0, oWndArea:nwidth, oWndArea:nheight )
        ENDIF
        Return 1
   ELSEIF oWnd:type != WND_MDI //.AND. oWnd:type != WND_MAIN
+      /*
       aCoors := GetClientRect( oWnd:handle )
       IF oWnd:brush != Nil
          IF ValType( oWnd:brush ) != "N"
@@ -940,8 +962,10 @@ LOCAL aCoors,  oWndArea
          FillRect( wParam, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ], aCoors[ 4 ], COLOR_3DFACE + 1 )
          RETURN 1
       ENDIF
+      */
+      RETURN 0
    ELSEIF oWnd:type = WND_MDI .AND. isWindowVisible( oWnd:handle )
-      // MINOR flick in MAIND in resize window
+      // MINOR flicker in MAIND in resize window
       RETURN 0
    ENDIF
    RETURN - 1

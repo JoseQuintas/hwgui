@@ -583,10 +583,10 @@ METHOD Value( Value )  CLASS HEdit
 
    IF Value != Nil
        ::SetText( Value )
-       ::Refresh()
+       //::Refresh()
    ENDIF
    //vari := ::UnTransform( ::Title )
-   vari := IIF( Empty( ::Handle ), ::Title, ::UnTransform( GetWindowText( ::handle ) ) )
+   vari := IIF( Empty( ::Handle ), ::Title, ::UnTransform( GetEditText( ::oParent:handle, ::id ) ) )
    IF ::cType == "D"
       vari := CToD( vari )
    ELSEIF ::cType == "N"
@@ -627,8 +627,11 @@ METHOD SetText( c ) CLASS HEdit
          ::title := c
       ENDIF
       //Super:SetText( ::title )
-      //SetWindowText( ::Handle, ::Title )
-      SetDlgItemText( ::oParent:handle, ::id, ::title )
+      //   SetDlgItemText( ::oParent:handle, ::id, ::title )
+      SetWindowText( ::Handle, ::Title )
+      IF isWindowVisible( ::handle ) .AND. ! Empty( GetWindowParent( ::handle ) )
+         RedrawWindow( ::Handle, RDW_NOERASE + RDW_INVALIDATE + RDW_UPDATENOW )
+      ENDIF
       IF ::bSetGet != Nil
          Eval( ::bSetGet, c, Self )
       ENDIF

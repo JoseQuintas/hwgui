@@ -1453,3 +1453,19 @@ HB_FUNC( CLEARKEYBOARD )
 {
    s_ClearKeyboard() ;
 }
+
+HB_FUNC( PAINTWINDOW )
+{
+   PAINTSTRUCT *pps = ( PAINTSTRUCT * ) hb_xgrab( sizeof( PAINTSTRUCT ) );
+   HDC hDC = BeginPaint( ( HWND ) HB_PARHANDLE( 1 ), pps );
+   BOOL fErase = pps->fErase ;
+   RECT rc = pps->rcPaint ;
+   HBRUSH hBrush =   ( HB_ISNIL( 2 ) ) ? ( HBRUSH )
+                     ( COLOR_3DFACE +  1 ) : ( HBRUSH ) HB_PARHANDLE( 2 );
+   if ( fErase == 1 )
+     FillRect( hDC, &rc, hBrush );
+
+   EndPaint( ( HWND ) HB_PARHANDLE( 1 ), pps );
+   hb_xfree( pps );
+}
+

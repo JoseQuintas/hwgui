@@ -84,6 +84,20 @@ HB_FUNC( GETPPSRECT )
    hb_itemRelease( aMetr );
 }
 
+HB_FUNC( GETPPSERASE )
+{
+   PAINTSTRUCT *pps = ( PAINTSTRUCT * ) HB_PARHANDLE( 1 );
+   BOOL fErase = &pps->fErase ;
+   hb_retni( fErase );
+}
+
+HB_FUNC( GETUPDATERECT )
+{
+   HWND hWnd = ( HWND ) HB_PARHANDLE( 1 ) ;
+   BOOL fErase ;
+   fErase =  GetUpdateRect( hWnd, NULL, 0 ) ;
+   hb_retni( fErase );
+}
 
 HB_FUNC( INVALIDATERECT )
 {

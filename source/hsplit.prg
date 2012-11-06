@@ -120,27 +120,30 @@ METHOD Paint() CLASS HSplitter
 
    pps := DefinePaintStru()
    hDC := BeginPaint( ::handle, pps )
-   aCoors := GetClientRect( ::handle )
+   IF GetPPSErase( pps ) > 0
+      //aCoors := GetClientRect( ::handle )
+      aCoors := GETPPSRECT( pps )
 
-   x1 := aCoors[ 1 ] //+ IIf( ::lVertical, 1, 2 )
-   y1 := aCoors[ 2 ] //+ IIf( ::lVertical, 2, 1 )
-   x2 := aCoors[ 3 ] //- IIf( ::lVertical, 0, 3 )
-   y2 := aCoors[ 4 ] //- IIf( ::lVertical, 3, 0 )
+      x1 := aCoors[ 1 ] //+ IIf( ::lVertical, 1, 2 )
+      y1 := aCoors[ 2 ] //+ IIf( ::lVertical, 2, 1 )
+      x2 := aCoors[ 3 ] //- IIf( ::lVertical, 0, 3 )
+      y2 := aCoors[ 4 ] //- IIf( ::lVertical, 3, 0 )
 
-   SetBkMode( hDC, ::backStyle )
-   IF ::bPaint != NIL
-      Eval( ::bPaint, Self )
-   ELSEIF ! ::lScrolling
-      IF ::lCaptured
-         oBrushFill := HBrush():Add( RGB( 156, 156, 156 ) )
-         SelectObject( hDC, oBrushFill:handle )
-         DrawEdge( hDC, x1, y1, x2, y2, EDGE_ETCHED, Iif( ::lVertical,BF_RECT,BF_TOP ) + BF_MIDDLE )
-         FillRect( hDC, x1, y1, x2, y2, oBrushFill:handle )
-      ELSEIF ::BackStyle = OPAQUE
-         DrawEdge( hDC, x1, y1, x2, y2, EDGE_ETCHED, IIf( ::lVertical, BF_LEFT, BF_TOP ) )
+      SetBkMode( hDC, ::backStyle )
+      IF ::bPaint != NIL
+         Eval( ::bPaint, Self )
+      ELSEIF ! ::lScrolling
+        IF ::lCaptured
+           oBrushFill := HBrush():Add( RGB( 156, 156, 156 ) )
+           SelectObject( hDC, oBrushFill:handle )
+           DrawEdge( hDC, x1, y1, x2, y2, EDGE_ETCHED, Iif( ::lVertical,BF_RECT,BF_TOP ) + BF_MIDDLE )
+           FillRect( hDC, x1, y1, x2, y2, oBrushFill:handle )
+        ELSEIF ::BackStyle = OPAQUE
+            DrawEdge( hDC, x1, y1, x2, y2, EDGE_ETCHED, IIf( ::lVertical, BF_LEFT, BF_TOP ) )
+         ENDIF
+      ELSEIF !::lMoved .AND. ::BackStyle = OPAQUE
+         DrawEdge( hDC, x1, y1, x2, y2, EDGE_ETCHED, Iif( ::lVertical,BF_RECT,BF_TOP ) ) //+ BF_MIDDLE )
       ENDIF
-   ELSEIF !::lMoved .AND. ::BackStyle = OPAQUE
-      DrawEdge( hDC, x1, y1, x2, y2, EDGE_ETCHED, Iif( ::lVertical,BF_RECT,BF_TOP ) ) //+ BF_MIDDLE )
    ENDIF
    EndPaint( ::handle, pps )
 
@@ -187,7 +190,9 @@ METHOD DragAll( lScroll ) CLASS HSplitter
          //oCtrl:nHeight -= nDiff
       ENDIF
       oCtrl:Move( oCtrl:nLeft + xDiff, oCtrl:nTop + yDiff, oCtrl:nWidth - xDiff ,oCtrl:nHeight - yDiff, ! lScroll )
-      InvalidateRect( oCtrl:Handle, 0 )
+      IF ( yDiff < 0.OR. xDiff > 0 ) .OR. ! lScroll
+         InvalidateRect( oCtrl:Handle, 0 )
+      ENDIF
    NEXT
    FOR i := 1 TO Len( ::aLeft )
       oCtrl := ::aLeft[ i ]
@@ -199,7 +204,9 @@ METHOD DragAll( lScroll ) CLASS HSplitter
         // oCtrl:nHeight += nDiff
       ENDIF
       oCtrl:Move( oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth + xDiff, oCtrl:nHeight + yDiff , ! lScroll )
-      InvalidateRect( oCtrl:Handle, 0 )
+      IF ( yDiff > 0.OR. xDiff > 0 ) .OR. ! lScroll
+         InvalidateRect( oCtrl:Handle, 0 )
+      ENDIF
    NEXT
    //::lMoved := .F.
    IF ! lScroll

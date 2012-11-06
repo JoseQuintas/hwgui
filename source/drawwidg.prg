@@ -323,6 +323,7 @@ CLASS HBitmap INHERIT HObject
 CLASS VAR aBitmaps   INIT { }
    DATA handle
    DATA name
+   DATA nFlags
    DATA nWidth, nHeight
    DATA nCounter   INIT 1
 
@@ -350,14 +351,14 @@ METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
    ENDIF
    #ifdef __XHARBOUR__
       FOR EACH i  IN  ::aBitmaps
-         IF i:name == name .AND. ( nWidth == nil .OR. nHeight == nil )
+         IF i:name == name .AND. ( nWidth == nil .OR. nHeight == nil ) .AND. i:nFlags == nFlags
             i:nCounter ++
             RETURN i
          ENDIF
       NEXT
    #else
       FOR i := 1 TO Len( ::aBitmaps )
-         IF ::aBitmaps[ i ]:name == name .AND. ( nWidth == nil .OR. nHeight == nil )
+         IF ::aBitmaps[ i ]:name == name .AND. ( nWidth == nil .OR. nHeight == nil ) .AND. i:nFlags == nFlags
             ::aBitmaps[ i ]:nCounter ++
             RETURN ::aBitmaps[ i ]
          ENDIF
@@ -369,10 +370,11 @@ METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
       //::handle := LoadImage( nil, IIf( lPreDefined, Val( name ), name ), IMAGE_BITMAP, nil, nil, nFlags )
       ::handle := LoadImage( nil, IIf( lPreDefined, Val( name ), name ), IMAGE_BITMAP, nWidth, nHeight, nFlags )
    ENDIF
-   ::name   := name
+   ::name    := name
    aBmpSize  := GetBitmapSize( ::handle )
    ::nWidth  := aBmpSize[ 1 ]
    ::nHeight := aBmpSize[ 2 ]
+   ::nFlags  :=  nFlags
    AAdd( ::aBitmaps, Self )
 
    RETURN Self

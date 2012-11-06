@@ -133,9 +133,8 @@ METHOD Init() CLASS HPanel
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       Hwg_InitWinCtrl( ::handle )
-
       ::RedefineScrollbars()
-
+      
    ENDIF
 
    RETURN NIL
@@ -143,8 +142,7 @@ METHOD Init() CLASS HPanel
 METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
    LOCAL nret
 
-   IF msg == WM_PAINT
-      InvalidateRect( ::handle, 0 )
+   IF msg == WM_PAINT .AND. GetUpdateRect( ::Handle ) > 0
       ::Paint()
 
    ELSEIF msg == WM_NCPAINT .AND. ! SELFFOCUS( ::GetParentForm():handle, GetActiveWindow() )
@@ -194,7 +192,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
          SELFFOCUS( GetParent( ::GetParentForm():nInitFocus ), GetParent( ::Handle ) ) )
       GetSkip( ::oParent, ::GetParentForm():nInitFocus , , IIF( SelfFocus( ::GetParentForm():nInitFocus, ::Handle ), 1, 0 ) )
       ::GetParentForm():nInitFocus := 0
-   ELSEIF msg = WM_SETFOCUS .AND. EMPTY(::GetParentForm():nInitFocus) .AND. ! ::lSuspendMsgsHandling  //.AND. Hwg_BitaND( ::sTyle, WS_TABSTOP ) > 0 .
+   ELSEIF msg = WM_SETFOCUS .AND. EMPTY(::GetParentForm():nInitFocus) .AND. ! ::lSuspendMsgsHandling  //.AND. Hwg_BitaND( ::sTyle, WS_TABSTOP ) != 0
       Getskip( ::oParent, ::handle, , ::nGetSkip )
 
 /*
@@ -209,7 +207,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
        RETURN 0
    */
    ELSE
-      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
+      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .OR. ( msg == WM_MOUSEWHEEL ) //.AND. ::nScrollBars >= 2 )
          IF ::nScrollBars != -1 .AND. ::bScroll = NIL
              ::ScrollHV( Self, msg, wParam, lParam )
              IF  msg == WM_MOUSEWHEEL

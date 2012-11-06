@@ -665,7 +665,9 @@ METHOD SetIconPanel( nPart, cIcon, nWidth, nHeight ) CLASS HStatus
    DEFAULT cIcon := ""
 
    IF HB_IsNumeric( cIcon ) .OR. At( ".", cIcon ) = 0
-      oIcon := HIcon():addResource( cIcon, nWidth, nHeight )
+      //oIcon := HIcon():addResource( cIcon, nWidth, nHeight )
+      oIcon := HIcon():addResource( cIcon, nWidth, nHeight, LR_LOADMAP3DCOLORS + ;
+            IIF( Empty( HWG_GETWINDOWTHEME( ::handle ) ), LR_LOADTRANSPARENT, 0 ) )
    ELSE
       oIcon := HIcon():addFile( cIcon, nWidth, nHeight )
    ENDIF
@@ -766,13 +768,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ENDIF
    */
    ::hBrushDefault := HBrush():Add( GetSysColor( COLOR_BTNFACE ) )
-                                     // + nStyles
+
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
          bInit, bSize, bPaint, cTooltip, tcolor, bColor )
 
-   IF ::oParent:oParent != NIL
-   //   bPaint := { | o, p | o:paint( p ) }
-   ENDIF
    ::bOther := bOther
    ::title := cCaption
 
@@ -822,7 +821,6 @@ METHOD Activate() CLASS HStatic
             ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
             ::extStyle )
       ::Init()
-      //::Style := ::nStyleHS
    ENDIF
 
    RETURN NIL
@@ -858,11 +856,11 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS  HStatic
       RETURN 0
    ELSEIF msg = WM_KEYUP
       IF wParam = VK_DOWN
-         getskip( ::oparent, ::handle,, 1 )
+         Getskip( ::oParent, ::handle,, 1 )
       ELSEIF wParam = VK_UP
-         getskip( ::oparent, ::handle,, - 1 )
+         Getskip( ::oParent, ::handle,, - 1 )
       ELSEIF wParam = VK_TAB
-         GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+         GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1 ) )
       ENDIF
       RETURN 0
    ELSEIF msg == WM_SYSKEYUP
@@ -884,7 +882,7 @@ METHOD SetValue( cValue )  CLASS HStatic
       IF ::backstyle = TRANSPARENT .AND. ::Title != cValue .AND. isWindowVisible( ::handle )
          RedrawWindow( ::oParent:Handle, RDW_ERASE + RDW_INVALIDATE + RDW_ERASENOW + RDW_INTERNALPAINT , ::nLeft, ::nTop, ::nWidth , ::nHeight )
          *-InvalidateRect( ::oParent:Handle, 0, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )
-         UpdateWindow( ::Handle )
+         UpdateWindow( ::oParent:Handle )
       ENDIF
    ELSEIF ::backstyle != TRANSPARENT
       SetDlgItemText( ::oParent:handle, ::id, cValue )

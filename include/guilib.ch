@@ -68,7 +68,7 @@
              [ SIZE <width>, <height> ]     ;
              [ ICON <ico> ]                 ;
              [ COLOR <clr> ]                ;
-             [ BACKGROUND BITMAP <oBmp> ]   ;
+             [ BACKGROUND BITMAP <oBmp> [ STRETCH <nStretch>] ] ;
              [ STYLE <nStyle> ]             ;
              [ FONT <oFont> ]               ;
              [ MENU <cMenu> ]               ;
@@ -89,7 +89,8 @@
           <oWnd> := HMainWindow():New( Iif(<.lMdi.>,WND_MDI,WND_MAIN), ;
              <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
              <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>,;
-             <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>, <bCloseQuery>,<bRefresh>,<bMdiMenu>)
+             <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,;
+             <bCloseQuery>,<bRefresh>,<bMdiMenu>,<nStretch>)
 
 #xcommand INIT WINDOW <oWnd> MDICHILD [ VAR <vari> ]   ;
              [ APPNAME <appname> ]          ;
@@ -99,7 +100,7 @@
              [ SIZE <width>, <height> ]     ;
              [ ICON <ico> ]                 ;
              [ COLOR <clr> ]                ;
-             [ BACKGROUND BITMAP <oBmp> ]   ;
+             [ BACKGROUND BITMAP <oBmp> [ STRETCH <nStretch>] ] ;
              [ STYLE <nStyle> ]             ;
              [ FONT <oFont> ]               ;
              [ MENU <cMenu> ]               ;
@@ -119,9 +120,9 @@
           => ;
           <oWnd> := HMdiChildWindow():New( ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
-                   <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
-                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,,;
-									 <bRefresh>,<.lChild.>,<.lClipper.>,<.lnoClosable.>,[{|v|Iif(v==Nil,<vari>,<vari>:=v)}] ) ;;
+                   <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>,<bGfocus>, ;
+                   <bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,,<bRefresh>,;
+									 <.lChild.>,<.lClipper.>,<.lnoClosable.>,[{|v|Iif(v==Nil,<vari>,<vari>:=v)}],<nStretch> ) ;;
         [ <oWnd>:SetParent( <oParent> ) ]            
       
 #xcommand INIT WINDOW <oWnd> CHILD          ;
@@ -131,7 +132,7 @@
              [ SIZE <width>, <height> ]     ;
              [ ICON <ico> ]                 ;
              [ COLOR <clr> ]                ;
-             [ BACKGROUND BITMAP <oBmp> ]   ;
+             [ BACKGROUND BITMAP <oBmp> [ STRETCH <nStretch>] ] ;
              [ STYLE <nStyle> ]             ;
              [ FONT <oFont> ]               ;
              [ MENU <cMenu> ]               ;
@@ -149,7 +150,7 @@
           <oWnd> := HChildWindow():New( ;
              <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
              <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
-             <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,<bRefresh> )
+             <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,<bRefresh>, <nStretch> )
 
 #xcommand INIT DIALOG <oDlg>                ;
              [<res: FROM RESOURCE> <Resid> ];

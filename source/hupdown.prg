@@ -16,6 +16,7 @@
 #define UDN_DELTAPOS            ( UDN_FIRST - 1 )
 #define UDM_SETBUDDY            ( WM_USER + 105 )
 #define UDM_GETBUDDY            ( WM_USER + 106 )
+#define EC_RIGHTMARGIN           2
 
 CLASS HUpDown INHERIT HControl
 
@@ -142,6 +143,7 @@ METHOD Init()  CLASS HUpDown
    IF !::lInit
       Super:Init()
       ::Createupdown()
+      SendMessage( ::oEditUpDown:Handle, EM_SETMARGINS, EC_RIGHTMARGIN,  MAKELPARAM( 0, 1 ) )
       ::DisableBackColor := ::DisablebColor
       ::Refresh()
    ENDIF

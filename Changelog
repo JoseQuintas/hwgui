@@ -48,7 +48,8 @@
      ! adjust in RIGHTMARGIN
   * source/hwindow.prg
     * CLASS HWindow
-	  + DATA bmpStretch
+	  + DATA bmpStretch 
+	    ! values 1-Spread/ISOMETRIC  0-STRETCH   2-CENTER
 	  + METHOD PAINT()
 	  * METHOD New() 
 	    ! added new parameter nbmpStretch

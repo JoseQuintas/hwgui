@@ -934,9 +934,9 @@ FUNCTION onMove( oWnd )
    RETURN - 1
 
 STATIC FUNCTION onEraseBk( oWnd, wParam )
-LOCAL aCoors,  oWndArea
+   LOCAL oWndArea
 
-  IF oWnd:oBmp != Nil .AND. oWnd:type != WND_MDI
+   IF oWnd:oBmp != Nil .AND. oWnd:type != WND_MDI
        oWndArea := IIF( oWnd:type != WND_MAIN, oWnd:oClient, oWnd )
        IF oWnd:bmpStretch = 2 .OR. oWnd:lBmpCenter
           CenterBitmap( wParam, oWndArea:handle, oWnd:oBmp:handle, , IIF( oWnd:brush = Nil, oWnd:nBmpClr, oWnd:brush:handle ) )
@@ -946,7 +946,7 @@ LOCAL aCoors,  oWndArea
           DrawBitmap( wParam, oWnd:oBmp:handle, , 0, 0, oWndArea:nwidth, oWndArea:nheight )
        ENDIF
        Return 1
-  ELSEIF oWnd:type != WND_MDI //.AND. oWnd:type != WND_MAIN
+   ELSEIF oWnd:type != WND_MDI //.AND. oWnd:type != WND_MAIN
       /*
       aCoors := GetClientRect( oWnd:handle )
       IF oWnd:brush != Nil

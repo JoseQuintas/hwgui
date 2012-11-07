@@ -942,7 +942,7 @@ STATIC FUNCTION onEraseBk( oWnd, wParam )
           CenterBitmap( wParam, oWndArea:handle, oWnd:oBmp:handle, , IIF( oWnd:brush = Nil, oWnd:nBmpClr, oWnd:brush:handle ) )
        ELSEIF oWnd:bmpStretch = 1
           SpreadBitmap( wParam, oWndArea:handle, oWnd:oBmp:handle )
-       ELSEIF oWnd:bmpStretch = 1
+       ELSEIF oWnd:bmpStretch = 0
           DrawBitmap( wParam, oWnd:oBmp:handle, , 0, 0, oWndArea:nwidth, oWndArea:nheight )
        ENDIF
        Return 1

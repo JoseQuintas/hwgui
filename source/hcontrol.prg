@@ -1735,14 +1735,14 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
 
    uAlign := 0 //DT_LEFT
    IF ValType( ::hbitmap ) == "N" .OR. ValType( ::hicon ) == "N"
-      uAlign := DT_CENTER + DT_VCENTER
+      uAlign := DT_VCENTER // + DT_CENTER
    ENDIF
    /*
    IF ValType( ::hicon ) == "N"
       uAlign := DT_CENTER
    ENDIF
    */
-   IF uAlign != DT_CENTER + DT_VCENTER
+   IF uAlign = DT_VCENTER  //!= DT_CENTER + DT_VCENTER
       uAlign := IIF( HWG_BITAND( ::Style, BS_TOP ) != 0, DT_TOP, DT_VCENTER )
       uAlign += IIF( HWG_BITAND( ::Style, BS_BOTTOM ) != 0, DT_BOTTOM - DT_VCENTER , 0 )
       uAlign += IIF( HWG_BITAND( ::Style, BS_LEFT ) != 0, DT_LEFT, DT_CENTER )
@@ -1825,6 +1825,9 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
    ELSE
       InflateRect( @captionRect, - 3, - 3 )
    ENDIF
+   captionRect[ 1 ] += IIF( HWG_BITAND( ::Style, BS_LEFT )  != 0, Max( ::PictureMargin, 2 ), 0 )
+   captionRect[ 3 ] -= IIF( HWG_BITAND( ::Style, BS_RIGHT ) != 0, Max( ::PictureMargin, 3 ), 0 )
+
    itemRect1    := aclone( itemRect )
    captionRect1 := aclone( captionRect )
    itemRect     := aclone( itemRectOld )

@@ -8,7 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-10-06 15:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+2012-11-14 13:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hcontrol.prg
+     * CLASS BUTTONEX
+	   * METHOD PAINT()
+	     ! fixed alignment text
+   * source/hbrowse.prg		 
+     * FUNCTION VScrollPos( )
+	   ! fixed SetScrollPos if  lDisableVScrollPos  = .T.
+
+2012-11-06 15:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include/guilib.ch
      * #xcommand INIT WINDOW <oWnd>
 	 * #xcommand INIT WINDOW <oWnd> MDICHILD [ VAR <vari> ]   ;

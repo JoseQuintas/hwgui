@@ -3810,7 +3810,8 @@ FUNCTION VScrollPos( oBrw, nType, lEof, nPos )
             SetScrollRange( oBrw:handle, SB_VERT, minPos, maxPos )
          ENDIF
          ( oBrw:Alias ) -> ( DBGoTo( nrecno ) )
-         SetScrollPos( oBrw:handle, SB_VERT, IIF( ( oBrw:Alias ) ->( IndexOrd() ) = 0, ( oBrw:Alias ) ->( RecNo() ), ( oBrw:Alias ) ->( ordkeyno() ) ) )
+         SetScrollPos( oBrw:handle, SB_VERT, IIF( ( oBrw:Alias ) ->( IndexOrd() ) = 0, ( oBrw:Alias ) ->( RecNo() ), ;
+                    IIF(  oBrw:lDisableVScrollPos, oBrw:nRecCount / 2, ( oBrw:Alias ) ->( ordkeyno() ) ) ) )
          // SetScrollPos( oBrw:handle, SB_VERT, oBrw:BrwScrollVPos( ) )
       ENDIF
    ELSE

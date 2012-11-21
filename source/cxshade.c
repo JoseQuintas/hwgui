@@ -333,10 +333,12 @@ void cxshade_Release( PCXSHADE pshade )
 {
    cxdib_Release( &( pshade->m_dNormal ) );
    cxdib_Release( &( pshade->m_dDown ) );
+   /*
    cxdib_Release( &( pshade->m_dDisabled ) );
    cxdib_Release( &( pshade->m_dOver ) );
    cxdib_Release( &( pshade->m_dh ) );
    cxdib_Release( &( pshade->m_dv ) );
+   */
    hb_xfree( pshade );
 }
 

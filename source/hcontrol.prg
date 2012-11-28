@@ -1061,11 +1061,13 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    //ENDIF
    ::oParent:AddEvent( BN_KILLFOCUS, self, {|| ::onLostFocus()})
    ::bClick  := bClick
-   IF ::id > 2 .OR. ::bClick != NIL
-     IF ::id < 3
-        ::GetParentForm():AddEvent( BN_CLICKED, Self, { || ::onClick() } )
-     ENDIF
-     ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+   IF ::id > IDCANCEL .OR. ::bClick != NIL
+      IF ::id < IDABORT
+         ::GetParentForm():AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+      ENDIF
+      IF ::GetParentForm():Classname != ::oParent:Classname  .OR. ::id > IDCANCEL
+         ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+      ENDIF
    ENDIF
 
    RETURN Self

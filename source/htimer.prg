@@ -56,6 +56,7 @@ METHOD New( oParent, nId, value, bAction ) CLASS HTimer
       SetTimer( oParent:handle, ::id, ::value )
    ENDIF
    */
+   
    ::Init()
    AAdd( ::aTimers, Self )
    ::oParent:AddObject( Self )
@@ -63,10 +64,12 @@ METHOD New( oParent, nId, value, bAction ) CLASS HTimer
    RETURN Self
 
 METHOD Init() CLASS HTimer
-   IF ! ::lInit
+
+   IF ! ::lInit .AND. ! EMPTY( ::oParent:handle )
       IF ::value > 0
          SetTimer( ::oParent:handle, ::id, ::value )
       ENDIF
+      ::lInit := .T.
    ENDIF
 
    RETURN  NIL
@@ -74,10 +77,10 @@ METHOD Init() CLASS HTimer
 METHOD END() CLASS HTimer
    LOCAL i
 
-   IF ::oParent != NIL
-      KillTimer( ::oParent:handle, ::id )
-   ENDIF
    IF ( i := AScan( ::aTimers, { | o | o:id == ::id } ) ) > 0
+      IF ::oParent != NIL
+         KillTimer( ::oParent:handle, ::id )
+      ENDIF
       ADel( ::aTimers, i )
       ASize( ::aTimers, Len( ::aTimers ) - 1 )
    ENDIF

@@ -35,8 +35,9 @@ FUNCTION InitObjects( oWnd )
    ENDIF
    IF pArray != Nil
       FOR i := 1 TO Len( pArray )
-         IF __ObjHasMsg( pArray[ i ], "INIT" )
+         IF __ObjHasMsg( pArray[ i ], "INIT" ) .AND. SelfFocus( oWnd:Handle, pArray[ i ]:oParent:Handle )
             pArray[ i ]:Init( oWnd )
+            pArray[ i ]:lInit := .T.
          ENDIF
       NEXT
    ENDIF

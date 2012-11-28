@@ -143,7 +143,7 @@ METHOD AddName( cName ) CLASS HControl
    RETURN NIL
 
 METHOD INIT() CLASS HControl
-   LOCAL oForm := ::GetParentForm( )
+   LOCAL oForm := ::GetParentForm( ) , aRect
 
    IF ! ::lInit
       //IF ::tooltip != NIL
@@ -1026,11 +1026,13 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       ENDIF
    ENDIF
    */
-   IF ::id > 2 .OR. ::bClick != NIL
-      IF ::id < 3
+   IF ::id > IDCANCEL .OR. ::bClick != NIL
+      IF ::id < IDABORT
          ::GetParentForm():AddEvent( BN_CLICKED, Self, { || ::onClick() } )
       ENDIF
-      ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+      IF ::GetParentForm():Classname != ::oParent:Classname  .OR. ::id > IDCANCEL
+         ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+      ENDIF
    ENDIF
 
    RETURN Self
@@ -1059,8 +1061,11 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    //ENDIF
    ::oParent:AddEvent( BN_KILLFOCUS, self, {|| ::onLostFocus()})
    ::bClick  := bClick
-   IF bClick != NIL
-      ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+   IF ::id > 2 .OR. ::bClick != NIL
+     IF ::id < 3
+        ::GetParentForm():AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+     ENDIF
+     ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
    ENDIF
 
    RETURN Self
@@ -1326,6 +1331,8 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
          cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle, hIcon, bGFocus  )
    ::title := cCaption
    ::Caption := cCaption
+   
+   
 
    RETURN Self
 

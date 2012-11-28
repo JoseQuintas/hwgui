@@ -358,7 +358,7 @@ METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
       NEXT
    #else
       FOR i := 1 TO Len( ::aBitmaps )
-         IF ::aBitmaps[ i ]:name == name .AND. ( nWidth == nil .OR. nHeight == nil ) .AND. i:nFlags == nFlags
+         IF ::aBitmaps[ i ]:name == name .AND. ( nWidth == nil .OR. nHeight == nil ) .AND. ::aBitmaps[ i ]:nFlags == nFlags
             ::aBitmaps[ i ]:nCounter ++
             RETURN ::aBitmaps[ i ]
          ENDIF

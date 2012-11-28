@@ -763,7 +763,9 @@ STATIC FUNCTION onDestroy( oWnd )
    NEXT
    nLen := Len( oWnd:aObjects )
    FOR i := 1 TO nLen
-      oWnd:aObjects[ i ]:END()
+      IF SelfFocus( oWnd:Handle, oWnd:aObjects[ i ]:oParent:Handle )
+         oWnd:aObjects[ i ]:END()
+      ENDIF
    NEXT
    oWnd:END()
 

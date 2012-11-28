@@ -527,6 +527,7 @@ HB_FUNC( GETSCROLLRANGE )
           );
    hb_storni( MinPos, 3 );
    hb_storni( MaxPos, 4 );
+   hb_retni( MinPos + MaxPos );
 }
 
 HB_FUNC( SETSCROLLRANGE )

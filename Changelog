@@ -8,6 +8,30 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-11-28 09:25 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+  * source/drawwidg.prg
+    * CLASS HBitmap
+      * METHOD AddResource()
+        ! minor fix
+  * source/guimain.prg
+    * FUNCTION InitObjects( oWnd ) 
+	  ! fixed INIT only Parent 
+  * source/hcontrol.prg
+    * CLASS HBUTTON
+    * METHOD New()
+    * METHOD REDEFINE()
+	  ! fixed event ONCLICK
+  * source/hcwindow.prg
+    * STATIC FUNCTION onDestroy
+	  ! fixed destroy objects only Parent
+  * source/htimer.prg
+    * METHOD INIT()
+	* METHOD END()
+	  ! minor fix
+  * source/misc.c
+    * HB_FUNC( GETSCROLLRANGE )
+	  ! added return (MinPos + MaxPos)
+
 2012-11-21 09:25 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/cxshade.c
      * void cxshade_Release( PCXSHADE pshade )

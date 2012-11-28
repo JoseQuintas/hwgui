@@ -143,7 +143,7 @@ METHOD AddName( cName ) CLASS HControl
    RETURN NIL
 
 METHOD INIT() CLASS HControl
-   LOCAL oForm := ::GetParentForm( ) , aRect
+   LOCAL oForm := ::GetParentForm( )
 
    IF ! ::lInit
       //IF ::tooltip != NIL

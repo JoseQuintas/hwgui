@@ -1258,13 +1258,7 @@ METHOD onChange( lForce ) CLASS HEdit
    IF ! SelfFocus( ::handle ) .AND. Empty( lForce )
       RETURN Nil
    ENDIF
-   IF ::cType == "N"
-      vari := ::UnTransform( GetEditText( ::oParent:handle, ::id ), 'vali' )
-      vari := Val( LTrim( vari ) )
-   ELSE
-      vari := ::UnTransform( GetEditText( ::oParent:handle, ::id ), 'vali' )
-      // ::Title := vari  // AQUI DA PROBLEMAS NA MASCARA DO CAMPO
-   ENDIF
+   vari := ::Value( )
    IF ::bSetGet != Nil
        Eval( ::bSetGet, vari, Self )
    ENDIF
@@ -1515,7 +1509,19 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
             PostMessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
          ENDIF
       ENDIF
-
+      IF oForm:Type < WND_DLG_RESOURCE
+         oForm:nFocus := NextHandle
+      ENDIF
+	     IF  oParent:nScrollBars > - 1  .OR. oForm:nScrollBars > - 1
+    	    oForm := IIF( oParent:nScrollBars > - 1, oParent, oForm )
+   	     IF ( i := AScan( oparent:acontrols, { | o | o:handle == NEXTHANDLE } ) ) = 0 .AND.  oParent:oParent != Nil
+	   	         i := AScan( oParent:oParent:acontrols, { | o | o:handle == NEXTHANDLE } )
+            oCtrl := IIF( i > 0, oParent:oParent:aControls[i], oParent )
+         ELSE
+            oCtrl := IIF( i > 0, oParent:aControls[i], oParent )
+        ENDIF
+	       GetSkipScroll( oForm, oCtrl )
+   	  ENDIF
    ENDIF
    IF nSkip != 0 .AND. SELFFOCUS( hctrl, nextHandle ) .AND. oCtrl != Nil
       // necessary when FORM have only one object and ! CLIPPER
@@ -1527,6 +1533,61 @@ FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
       ENDIF
    ENDIF
    RETURN .T.
+
+STATIC FUNCTION GetSkipScroll( oForm, oCtrl )
+   LOCAL lScroll := .T.
+   LOCAL nWidthScroll := 2
+
+   IF  oForm:nScrollBars > - 1 .AND. oForm:classname == oCtrl:oParent:classname
+	     DO WHILE lScroll
+         lScroll := .F.
+         // SCROOLL HORIZONTAL
+         IF oForm:nScrollBars != 1
+            IF oCtrl:nLeft + oCtrl:nWidth + 12 >= oForm:nWidth - nWidthScroll + oForm:nHscrollPos * HORZ_PTS .AND. ;
+               oCtrl:nWidth < oForm:nWidth .AND. oCtrl:nLeft > oForm:nWidth - oForm:nHscrollPos * HORZ_PTS - nWidthScroll
+               IF oForm:nHscrollMax / oForm:nHorzInc > 1
+                  oForm:ScrollHV( oForm, WM_HSCROLL, SB_PAGEDOWN, 0 )
+               ELSE
+                  oForm:ScrollHV( oForm, WM_HSCROLL, SB_LINEDOWN, 0 )
+               ENDIF
+               lScroll := .T.
+            ELSEIF ( oCtrl:nLeft <= oForm:nHscrollPos * HORZ_PTS - nWidthScroll ) //( oCtrl:nLeft + oCtrl:nWidth ) > oForm:nWidth
+               IF oForm:nHscrollMax / oForm:nHorzInc > 1
+                  oForm:ScrollHV( oForm, WM_HSCROLL, SB_PAGEUP, 0 )
+               ELSE
+                  oForm:ScrollHV( oForm, WM_HSCROLL, SB_LINEUP, 0 )
+               ENDIF
+               lScroll := .T.
+            ENDIF
+            IF oForm:nHscrollMax * HORZ_PTS < oCtrl:nLeft + oCtrl:nWidth
+               oForm:nHscrollMax := ( oCtrl:nLeft + oCtrl:nWidth ) / HORZ_PTS
+            ENDIF
+         ENDIF
+         // SCROLL VERTICAL
+         IF oForm:nScrollBars >= 1
+            IF oCtrl:nTop + oCtrl:nHeight + 12 >= oForm:nHeight - nWidthScroll + oForm:nVscrollPos * VERT_PTS .AND. ;
+               ( oCtrl:nHeight < oForm:nHeight )
+               IF  oForm:nVscrollMax / oForm:nVertInc > 1    .AND. .F.
+                  oForm:ScrollHV( oForm, WM_VSCROLL, SB_PAGEDOWN, 0 )
+               ELSE
+                  oForm:ScrollHV( oForm, WM_VSCROLL, SB_LINEDOWN, 0 )
+               ENDIF
+               lScroll := .T.
+            ELSEIF  oCtrl:nTop  <= ( oForm:nVscrollPos * VERT_PTS )
+               IF oForm:nVscrollMax / oForm:nVertInc > 1 .AND. .F.
+                  oForm:ScrollHV( oForm, WM_VSCROLL, SB_PAGEUP, 0 )
+               ELSE
+                  oForm:ScrollHV( oForm, WM_VSCROLL, SB_LINEUP, 0 )
+               ENDIF
+               lScroll := .T.
+            ENDIF
+            IF oForm:nVscrollMax * VERT_PTS < oCtrl:nTop + oCtrl:nHeight
+                oForm:nVscrollMax := ( oCtrl:nTop + oCtrl:nHeight ) / VERT_PTS
+            ENDIF
+         ENDIF
+      ENDDO
+   ENDIF
+   RETURN Nil
 
 STATIC FUNCTION NextFocusTab( oParent, hCtrl, nSkip )
    LOCAL nextHandle := NIL, i, nPage, nFirst , nLast , k := 0

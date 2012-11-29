@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-11-29 18:40 UTC+0200 Pavel Tsarenko <tpe2@mail.ru>
+  * include/hwingui.h
+  * source/control.c
+  * source/dialog.c
+  * source/draw.c
+  * source/grid.c
+  * source/misc.c
+  * source/richedit.c
+  * source/window.c
+    * made repacements for both win32 and win64 building:
+      SetWindowLong() -> SetWindowLongPtr(), LONG -> LONG_PTR
+      GWL_WNDPROC -> GWLP_WNDPROC
+      GWP_USERDATA -> GWLP_USERDATA
+
 2012-11-28 09:25 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
   * source/drawwidg.prg
     * CLASS HBitmap

@@ -38,7 +38,7 @@ void writelog( char *s )
 
 HB_FUNC( HWG_SETDLGRESULT )
 {
-   SetWindowLong( ( HWND ) HB_PARHANDLE( 1 ), DWL_MSGRESULT, hb_parni( 2 ) );
+   SetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ), DWLP_MSGRESULT, hb_parni( 2 ) );
 }
 
 HB_FUNC( SETCAPTURE )

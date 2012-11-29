@@ -309,7 +309,7 @@ HB_FUNC( LISTVIEW_SETVIEW )
    // Only set the window style if the view bits have changed.
    if( ( dwStyle & LVS_TYPEMASK ) != dwView )
    {
-      SetWindowLong( hWndListView,
+      SetWindowLongPtr( hWndListView,
             GWL_STYLE, ( dwStyle & ~LVS_TYPEMASK ) | dwView );
       //  RedrawWindow( (HWND) HB_PARHANDLE( 1 ), NULL , NULL , RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW ) ;
    }

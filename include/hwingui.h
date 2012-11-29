@@ -26,6 +26,8 @@
       #define LONG_PTR            LONG
       #define ULONG_PTR           ULONG
       #define GWLP_WNDPROC        GWL_WNDPROC
+      #define GWLP_USERDATA       GWL_USERDATA
+      #define DWLP_MSGRESULT      DWL_MSGRESULT
    #endif
 #endif
 

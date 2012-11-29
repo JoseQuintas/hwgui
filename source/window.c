@@ -568,14 +568,14 @@ HB_FUNC( SETWINDOWOBJECT )
 
 void SetWindowObject( HWND hWnd, PHB_ITEM pObject )
 {
-   SetWindowLongPtr( hWnd, GWL_USERDATA,
+   SetWindowLongPtr( hWnd, GWLP_USERDATA,
          pObject ? ( LPARAM ) hb_itemNew( pObject ) : 0 );
 }
 
 HB_FUNC( GETWINDOWOBJECT )
 {
    hb_itemReturn( ( PHB_ITEM ) GetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ),
-               GWL_USERDATA ) );
+               GWLP_USERDATA ) );
 }
 
 HB_FUNC( SETWINDOWTEXT )
@@ -726,7 +726,7 @@ static LRESULT CALLBACK s_MainWndProc( HWND hWnd, UINT message,
                                        WPARAM wParam, LPARAM lParam )
 {
    long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -755,7 +755,7 @@ static LRESULT CALLBACK s_FrameWndProc( HWND hWnd, UINT message,
                                         WPARAM wParam, LPARAM lParam )
 {
    long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -804,7 +804,7 @@ static LRESULT CALLBACK s_MDIChildWndProc( HWND hWnd, UINT message,
       SetWindowObject( hWnd, *pObj );
    }
 
-   pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -1103,12 +1103,12 @@ HB_FUNC( HWG_DECREASEHOLDERS )
    #endif
 */
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( pObject )
    {
       hb_itemRelease( pObject );
-      SetWindowLongPtr( hWnd, GWL_USERDATA, 0 );
+      SetWindowLongPtr( hWnd, GWLP_USERDATA, 0 );
    }
 }
 
@@ -1325,7 +1325,7 @@ LRESULT CALLBACK KbdHook( int code, WPARAM wp, LPARAM lp )
          {
             LRESULT Res = -200;
             PHB_ITEM pObject =
-                  ( PHB_ITEM ) GetWindowLongPtr( s_hMytoolMenu, GWL_USERDATA );
+                  ( PHB_ITEM ) GetWindowLongPtr( s_hMytoolMenu, GWLP_USERDATA );
 
             if( !pSym_onEven_Tool )
                pSym_onEven_Tool = hb_dynsymFindName( "EXECUTETOOL" );

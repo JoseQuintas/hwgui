@@ -540,7 +540,7 @@ static LRESULT CALLBACK s_ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam,
 
       SetWindowObject( hDlg, ( PHB_ITEM ) lParam );
    }
-   pObject = ( PHB_ITEM ) GetWindowLongPtr( hDlg, GWL_USERDATA );
+   pObject = ( PHB_ITEM ) GetWindowLongPtr( hDlg, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -615,7 +615,7 @@ static LRESULT CALLBACK s_DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
          aDialogs[i] = aDialogs[i + 1];
    }
 
-   pObject = ( PHB_ITEM ) GetWindowLongPtr( hDlg, GWL_USERDATA );
+   pObject = ( PHB_ITEM ) GetWindowLongPtr( hDlg, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -696,7 +696,7 @@ static LRESULT CALLBACK s_PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
          aDialogs[i] = aDialogs[i + 1];
    }
 
-   pObject = ( PHB_ITEM ) GetWindowLongPtr( hDlg, GWL_USERDATA );
+   pObject = ( PHB_ITEM ) GetWindowLongPtr( hDlg, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );

@@ -1315,15 +1315,15 @@ BOOL RegisterWinCtrl( void )    // Added by jamaj - Used by WinCtrl
 
 HB_FUNC( HWG_INITTREEVIEW )
 {
-   wpOrigTreeViewProc = ( WNDPROC ) SetWindowLong( ( HWND ) HB_PARHANDLE( 1 ),
-         GWL_WNDPROC, ( LONG ) TreeViewSubclassProc );
+   wpOrigTreeViewProc = ( WNDPROC ) SetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ),
+         GWLP_WNDPROC, ( LONG_PTR ) TreeViewSubclassProc );
 }
 
 LRESULT APIENTRY TreeViewSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       LPARAM lParam )
 {
    long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -1351,15 +1351,15 @@ LRESULT APIENTRY TreeViewSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
 
 HB_FUNC( HWG_INITWINCTRL )
 {
-   SetWindowLong( ( HWND ) HB_PARHANDLE( 1 ),
-         GWL_WNDPROC, ( LONG ) WinCtrlProc );
+   SetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ),
+         GWLP_WNDPROC, ( LONG_PTR ) WinCtrlProc );
 }
 
 LRESULT CALLBACK WinCtrlProc( HWND hWnd, UINT message, WPARAM wParam,
       LPARAM lParam )
 {
    long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -1385,15 +1385,15 @@ LRESULT CALLBACK WinCtrlProc( HWND hWnd, UINT message, WPARAM wParam,
 
 HB_FUNC( HWG_INITSTATICPROC )
 {
-   wpOrigStaticProc = ( WNDPROC ) SetWindowLong( ( HWND ) HB_PARHANDLE( 1 ),
-         GWL_WNDPROC, ( LONG ) StaticSubclassProc );
+   wpOrigStaticProc = ( WNDPROC ) SetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ),
+         GWLP_WNDPROC, ( LONG_PTR ) StaticSubclassProc );
 }
 
 LRESULT APIENTRY StaticSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       LPARAM lParam )
 {
    long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -1422,15 +1422,15 @@ LRESULT APIENTRY StaticSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
 
 HB_FUNC( HWG_INITEDITPROC )
 {
-   wpOrigEditProc = ( WNDPROC ) SetWindowLong( ( HWND ) HB_PARHANDLE( 1 ),
-         GWL_WNDPROC, ( LONG ) EditSubclassProc );
+   wpOrigEditProc = ( WNDPROC ) SetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ),
+         GWLP_WNDPROC, ( LONG_PTR ) EditSubclassProc );
 }
 
 LRESULT APIENTRY EditSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       LPARAM lParam )
 {
    long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -1470,7 +1470,7 @@ LRESULT APIENTRY ButtonSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       LPARAM lParam )
 {
    long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -1500,7 +1500,7 @@ LRESULT APIENTRY ComboSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       LPARAM lParam )
 {
    long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -1528,8 +1528,8 @@ LRESULT APIENTRY ComboSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
 
 HB_FUNC( HWG_INITCOMBOPROC )
 {
-   wpOrigComboProc = ( WNDPROC ) SetWindowLong( ( HWND ) HB_PARHANDLE( 1 ),
-         GWL_WNDPROC, ( LONG ) ComboSubclassProc );
+   wpOrigComboProc = ( WNDPROC ) SetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ),
+         GWLP_WNDPROC, ( LONG_PTR ) ComboSubclassProc );
 }
 
 
@@ -1537,7 +1537,7 @@ LRESULT APIENTRY ListSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       LPARAM lParam )
 {
    long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -1565,22 +1565,22 @@ LRESULT APIENTRY ListSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
 
 HB_FUNC( HWG_INITLISTPROC )
 {
-   wpOrigListProc = ( WNDPROC ) SetWindowLong( ( HWND ) HB_PARHANDLE( 1 ),
-         GWL_WNDPROC, ( LONG ) ListSubclassProc );
+   wpOrigListProc = ( WNDPROC ) SetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ),
+         GWLP_WNDPROC, ( LONG_PTR ) ListSubclassProc );
 }
 
 
 HB_FUNC( HWG_INITUPDOWNPROC )
 {
-   wpOrigUpDownProc = ( WNDPROC ) SetWindowLong( ( HWND ) HB_PARHANDLE( 1 ),
-         GWL_WNDPROC, ( LONG ) UpDownSubclassProc );
+   wpOrigUpDownProc = ( WNDPROC ) SetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ),
+         GWLP_WNDPROC, ( LONG_PTR ) UpDownSubclassProc );
 }
 
 LRESULT APIENTRY UpDownSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       LPARAM lParam )
 {
    long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -1609,15 +1609,15 @@ LRESULT APIENTRY UpDownSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
 HB_FUNC( HWG_INITDATEPICKERPROC )
 {
    wpOrigDatePickerProc =
-         ( WNDPROC ) SetWindowLong( ( HWND ) HB_PARHANDLE( 1 ), GWL_WNDPROC,
-         ( LONG ) DatePickerSubclassProc );
+         ( WNDPROC ) SetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ), GWLP_WNDPROC,
+         ( LONG_PTR ) DatePickerSubclassProc );
 }
 
 LRESULT APIENTRY DatePickerSubclassProc( HWND hWnd, UINT message,
       WPARAM wParam, LPARAM lParam )
 {
    long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -1645,15 +1645,15 @@ LRESULT APIENTRY DatePickerSubclassProc( HWND hWnd, UINT message,
 
 HB_FUNC( HWG_INITTRACKPROC )
 {
-   wpOrigTrackProc = ( WNDPROC ) SetWindowLong( ( HWND ) HB_PARHANDLE( 1 ),
-         GWL_WNDPROC, ( LONG ) TrackSubclassProc );
+   wpOrigTrackProc = ( WNDPROC ) SetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ),
+         GWLP_WNDPROC, ( LONG_PTR ) TrackSubclassProc );
 }
 
 LRESULT APIENTRY TrackSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       LPARAM lParam )
 {
    long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -1681,15 +1681,15 @@ LRESULT APIENTRY TrackSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
 
 HB_FUNC( HWG_INITTABPROC )
 {
-   wpOrigTabProc = ( WNDPROC ) SetWindowLong( ( HWND ) HB_PARHANDLE( 1 ),
-         GWL_WNDPROC, ( LONG ) TabSubclassProc );
+   wpOrigTabProc = ( WNDPROC ) SetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ),
+         GWLP_WNDPROC, ( LONG_PTR ) TabSubclassProc );
 }
 
 LRESULT APIENTRY TabSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       LPARAM lParam )
 {
    long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWL_USERDATA );
+   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -1782,7 +1782,7 @@ HB_FUNC( TOOLBARADDBUTTONS )
 
    //SendMessage(hWndCtrl, CCM_SETVERSION, (WPARAM) 4, 0);   
 
-   SetWindowLong( hWndCtrl, GWL_STYLE,
+   SetWindowLongPtr( hWndCtrl, GWL_STYLE,
          style | TBSTYLE_TOOLTIPS | TBSTYLE_FLAT );
 
    SendMessage( hWndCtrl, TB_BUTTONSTRUCTSIZE, sizeof( TBBUTTON ), 0L );

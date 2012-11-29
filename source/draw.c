@@ -1190,7 +1190,7 @@ HB_FUNC( MODIFYSTYLE )
    DWORD a = hb_parnl( 2 );
    DWORD b = hb_parnl( 3 );
    DWORD dwNewStyle = ( dwStyle & ~a ) | b;
-   SetWindowLong( hWnd, GWL_STYLE, dwNewStyle );
+   SetWindowLongPtr( hWnd, GWL_STYLE, dwNewStyle );
 }
 
 /*

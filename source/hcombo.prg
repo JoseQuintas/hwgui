@@ -901,23 +901,28 @@ METHOD Populate() CLASS HComboBox
 
 
 //***************************************************
-
+#define TRANSPARENT        1
 CLASS HCheckComboBox INHERIT HComboBox
 
-   CLASS VAR winclass INIT "COMBOBOX"
+   CLASS VAR winclass  INIT "COMBOBOX"
    DATA m_bTextUpdated INIT .f.
 
    DATA m_bItemHeightSet INIT .f.
-   DATA m_hListBox INIT 0
+   DATA m_hListBox   INIT 0
    DATA aCheck
-   DATA nWidthCheck INIT 0
-   DATA m_strText INIT ""
+   DATA nWidthCheck  INIT 0
+   DATA m_strText    INIT ""
+   
+   DATA lCheck
+   DATA nCurPos      INIT 0
+   DATA aHimages, aImages
+      
    METHOD onGetText( wParam, lParam )
    METHOD OnGetTextLength( wParam, lParam )
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-   aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, ;
-   tcolor, bcolor, bValid, acheck, nDisplay, nhItem, ncWidth )
+               aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, ;
+               tcolor, bcolor, bValid, acheck, nDisplay, nhItem, ncWidth, aImages )
    METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
                     bChange, ctooltip, bGFocus, acheck )
    METHOD INIT()
@@ -934,13 +939,20 @@ CLASS HCheckComboBox INHERIT HComboBox
 
    METHOD onEvent( msg, wParam, lParam )
    METHOD GetAllCheck()
+   
+   METHOD EnabledItem( nItem, lEnable )
+   METHOD SkipItems( nNav )
+
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, aItems, oFont, ;
-               bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, bcolor, ;
-               bValid, acheck, nDisplay, nhItem, ncWidth ) CLASS hCheckComboBox
+            bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, bcolor, ;
+            bValid, acheck, nDisplay, nhItem, ncWidth, aImages ) CLASS hCheckComboBox
 
-   ::acheck := Iif( acheck == Nil, {}, acheck )
+   ::acheck := IIF( acheck == Nil, {}, acheck )
+   ::lCheck := IIF( aImages == Nil, .T., .F. )
+   ::aImages := aImages
+
    IF Valtype( nStyle ) == "N"
       nStyle := hwg_multibitor( nStyle, CBS_DROPDOWNLIST, CBS_OWNERDRAWVARIABLE, CBS_HASSTRINGS )
    ELSE
@@ -950,9 +962,10 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    bPaint := { | o, p | o:paint( p ) }
 
    ::Super:New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, aItems, oFont, ;
-                bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, bcolor, bValid,, nDisplay, nhItem, ncWidth )
+                bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, bcolor, ;
+                bValid,, nDisplay, nhItem, ncWidth )
 
-RETURN Self
+   RETURN Self
 
 METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
                     bChange, ctooltip, bGFocus, acheck ) CLASS hCheckComboBox
@@ -962,22 +975,59 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    ::lResource := .T.
    ::acheck    := acheck
 
-RETURN Self
+   RETURN Self
+
+METHOD INIT() CLASS hCheckComboBox
+   LOCAL i, nSize, hImage
+   
+   /*
+   ::nHolder := 1
+   SetWindowObject( ::handle, Self )  // because hcombobox is handling
+   HWG_INITCOMBOPROC( ::handle )
+   */
+   IF !::lInit
+      Super:Init()
+      IF Len( ::acheck ) > 0
+         AEVAL( ::aCheck,{ | a | ::Setcheck( a, .T. ) } )
+      ENDIF
+      IF !EMPTY( ::aItems ) .AND. !EMPTY( ::nhItem )
+         AEVAL( ::aItems,{ | a, i | SendMessage( ::handle, CB_SETITEMHEIGHT , i - 1, ::nhItem ) } )
+      ENDIF
+      ::nCurPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 )
+      // LOAD IMAGES COMBO
+      IF ::aImages != Nil .AND. Len( ::aImages ) > 0
+         ::aHImages := {}
+         nSize := SendMessage( ::handle, CB_GETITEMHEIGHT, - 1, 0 ) - 5
+         FOR i := 1 TO Len( ::aImages )
+            hImage := 0
+            IF ( ValType( ::aImages[ i ] ) == "C" .OR. ::aImages[ i ] > 1 ) .AND. ! EMPTY( ::aImages[ i ] )
+               IF ValType( ::aImages[ i ] ) == "C" .AND. At(".", ::aImages[ i ] ) != 0
+                  IF File( ::aImages[ i ] )
+                     hImage := HBITMAP():AddfILE( ::aImages[ i ],,.T. , 16, nSize ):handle
+                  ENDIF
+               ELSE
+                  hImage := HBitmap():AddResource( ::aImages[ i ], , , 16, nSize ):handle
+               ENDIF
+            ENDIF
+            AAdd( ::aHImages,  hImage )
+         NEXT
+      ENDIF
+   ENDIF
+   RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
-
-LOCAL nIndex
-LOCAL rcItem
-LOCAL rcClient
-LOCAL pt
-LOCAL nItemHeight
-LOCAL nTopIndex
+   LOCAL nIndex
+   LOCAL rcItem, rcClient
+   LOCAL pt
+   LOCAL nItemHeight
+   LOCAL nTopIndex
+   Local nPos
 
    IF msg == WM_RBUTTONDOWN
    ELSEIF msg == LB_GETCURSEL
       RETURN - 1
-   ELSEIF msg == LB_GETCURSEL
-      RETURN - 1
+   //ELSEIF msg == LB_GETCURSEL
+   //   RETURN - 1
 
    ELSEIF msg == WM_MEASUREITEM
       ::MeasureItem( lParam )
@@ -986,12 +1036,23 @@ LOCAL nTopIndex
       RETURN ::OnGetText( wParam, lParam )
 
    ELSEIF msg == WM_GETTEXTLENGTH
-
       RETURN ::OnGetTextLength( wParam, lParam )
+
+   ELSEIF msg = WM_MOUSEWHEEL //.AND. ::oParent:nScrollBars != -1 .AND. ::oParent:bScroll = Nil
+      RETURN ::SkipItems( IIF( HIWORD( wParam ) > 32768, 1, - 1 ) )
+
+   ELSEIF msg = WM_COMMAND
+      IF HIWORD( wParam ) = CBN_SELCHANGE
+         nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 )
+         IF ::Title = "\]" .OR. ::Title = "\-"
+            SendMessage( ::handle, CB_SETCURSEL, ::nCurPos, 0 )
+         ELSE
+            ::nCurPos := nPos
+         ENDIF
+      ENDIF
 
    ELSEIF msg == WM_CHAR
       IF ( wParam == VK_SPACE )
-
          nIndex := SendMessage( ::handle, CB_GETCURSEL, wParam, lParam ) + 1
          rcItem := COMBOGETITEMRECT( ::handle, nIndex - 1 )
          InvalidateRect( ::handle, .f., rcItem[ 1 ], rcItem[ 2 ], rcItem[ 3 ], rcItem[ 4 ] )
@@ -1009,7 +1070,30 @@ LOCAL nTopIndex
       ENDIF
       RETURN 0
    ELSEIF msg = WM_KEYDOWN
+      IF wParam = VK_HOME .OR. wParam = VK_END
+         nPos := IIF( wParam = VK_HOME, ;
+                      Ascan( ::aItems, { | a | ! LEFT( a[ 1 ], 2 ) $ "\-" + CHR( 0 ) + "\]" } ,, ) ,;
+                     RAscan( ::aItems, { | a | ! LEFT( a[ 1 ], 2 ) $ "\-" + CHR( 0 ) + "\]" } ,, ) )
+         SendMessage( ::handle,CB_SETCURSEL, nPos - 1, 0 )
+         ::nCurPos := nPos - 1
+         RETURN 0
+      ENDIF
+      IF wParam = VK_UP .OR. wParam = VK_DOWN
+         RETURN ::SkipItems( IIF( wParam = VK_DOWN, 1, - 1 ) )
+      ENDIF
       ProcKeyList( Self, wParam )
+      
+   ELSEIF msg = WM_KEYUP
+      IF wParam = VK_DOWN .OR. wParam = VK_UP
+         nPos := SendMessage( ::handle,CB_GETCURSEL, 0, 0 )
+         IF ::Title = "\]" .OR. ::Title = "\-"
+          //IF nPos > 0
+          //   SendMessage( ::handle, CB_SETCURSEL, nPos - 1, 0 )
+          //ENDIF
+            RETURN 0
+         ENDIF
+      ENDIF
+
 
    ELSEIF msg == WM_LBUTTONDOWN
 
@@ -1046,47 +1130,39 @@ LOCAL nTopIndex
       RETURN - 1    //0
    ENDIF
 
-RETURN - 1
+   RETURN - 1
 
-METHOD INIT() CLASS hCheckComboBox
-
-LOCAL i
-   //::nHolder := 1
-   //SetWindowObject( ::handle, Self )  // because hcombobox is handling
-   //HWG_INITCOMBOPROC( ::handle )
-   IF !::lInit
-      Super:Init()
-      IF Len( ::acheck ) > 0
-         FOR i := 1 TO Len( ::acheck )
-            ::Setcheck( ::acheck[ i ], .t. )
-         NEXT
-      ENDIF
-   ENDIF
-RETURN Nil
 
 METHOD Requery() CLASS hCheckComboBox
 
-LOCAL i
+   LOCAL i
 
-   ::super:Requery()
+   ::Super:Requery()
+   IF Len( ::acheck ) > 0
+      AEVAL( ::aCheck, { | a | ::Setcheck( a, .t. ) } )
+   ENDIF
+   IF !EMPTY( ::aItems ) .AND. !EMPTY( ::nhItem )
+      AEVAL( ::aItems,{ | a, i | SendMessage( ::handle, CB_SETITEMHEIGHT , i - 1, ::nhItem ) } )
+   ENDIF
+   /*
    IF Len( ::acheck ) > 0
       FOR i := 1 TO Len( ::acheck )
          ::Setcheck( ::acheck[ i ], .t. )
       NEXT
    ENDIF
-
-RETURN Nil
+   */
+   RETURN Nil
 
 METHOD Refresh() CLASS hCheckComboBox
 
 
    ::Super:refresh()
 
-RETURN Nil
+   RETURN Nil
 
 METHOD SetCheck( nIndex, bFlag ) CLASS hCheckComboBox
 
-LOCAL nResult := COMBOBOXSETITEMDATA( ::handle, nIndex - 1, bFlag )
+   LOCAL nResult := COMBOBOXSETITEMDATA( ::handle, nIndex - 1, bFlag )
 
    IF ( nResult < 0 )
       RETURN nResult
@@ -1152,8 +1228,7 @@ LOCAL stritem
             IF !Empty( strtext )
                strtext += strSeparator
             ENDIF
-
-            strtext += stritem
+            //strtext += stritem     // error
          ENDIF
       NEXT
 
@@ -1166,16 +1241,21 @@ RETURN Self
 
 METHOD Paint( lpDis ) CLASS hCheckComboBox
 
-LOCAL drawInfo := GetDrawItemInfo( lpDis )
+   LOCAL drawInfo := GetDrawItemInfo( lpDis )
 
-LOCAL dc := drawInfo[ 3 ]
+   LOCAL dc := drawInfo[ 3 ]
 
-LOCAL rcBitmap := { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] }
-LOCAL rcText   := { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] }
-LOCAL strtext  := ""
-LOCAL ncheck
-LOCAL metrics
-LOCAL nstate
+   LOCAL rcBitmap := { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] }
+   LOCAL rcText   := { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] }
+   LOCAL strtext  := "", cTmp
+   LOCAL ncheck   := 0
+   LOCAL metrics
+   LOCAL nstate
+   LOCAL iStyle  := ST_ALIGN_HORIZ
+   LOCAL nIndent := 1
+   LOCAL hbitmap := 0, bmpRect
+   LOCAL lDroped := SendMessage( ::handle, CB_GETDROPPEDSTATE, 0, 0 ) > 0
+
 
    IF ( drawInfo[ 1 ] < 0 )
 
@@ -1184,24 +1264,47 @@ LOCAL nstate
       strtext := ::m_strText
 
       ncheck := 0
-
+      
    ELSE
       COMBOBOXGETLBTEXT( ::handle, drawInfo[ 1 ], @strtext )
+      
+      IF  ::lCheck
+         ncheck := 1 + ( COMBOBOXGETITEMDATA( ::handle, drawInfo[ 1 ] ) )
+         metrics := GETTEXTMETRIC( dc )
+         rcBitmap[ 1 ] := 0
+         rcBitmap[ 3 ] := rcBitmap[ 1 ] + metrics[ 1 ] + metrics[ 4 ] + 6
+         rcBitmap[ 2 ] += 1
+         rcBitmap[ 4 ] -= 1
 
-      ncheck := 1 + ( COMBOBOXGETITEMDATA( ::handle, drawInfo[ 1 ] ) )
+         rcText[ 1 ]   := rcBitmap[ 3 ]
+         ::nWidthCheck := rcBitmap[ 3 ]
+         
+      ELSEIF ::aHImages != Nil .AND. DrawInfo[ 1 ] + 1 <= Len( ::aHImages ) .AND. ;
+              ! EMPTY( ::aHImages[ DrawInfo[ 1 ] + 1 ] )
+         nIndent := IIF( ! lDroped, 1, ( LEN( strText ) - LEN( LTRIM( strText ) ) ) * TxtRect( "a", Self, ::oFont )[ 1 ] )
+         strtext := Ltrim( strtext )
+         hbitmap := ::aHImages[ DrawInfo[ 1 ] + 1 ]
+         rcBitmap[ 1 ] := nIndent
+         bmpRect := PrepareImageRect( ::handle, dc, .T., @rcBitmap, @rcText, , , hbitmap, iStyle )
+         rcText[ 1 ] :=  IIF( iStyle = ST_ALIGN_HORIZ, nIndent + GetBitmapSize( hbitmap )[ 1 ] + IIF( lDroped, 3, 4 ) , 1 )
+      ENDIF
 
-      metrics := GETTEXTMETRIC( dc )
-
-      rcBitmap[ 1 ] := 0
-      rcBitmap[ 3 ] := rcBitmap[ 1 ] + metrics[ 1 ] + metrics[ 4 ] + 6
-      rcBitmap[ 2 ] += 1
-      rcBitmap[ 4 ] -= 1
-
-      rcText[ 1 ]   := rcBitmap[ 3 ]
-      ::nWidthCheck := rcBitmap[ 3 ]
    ENDIF
 
-   IF ( ncheck > 0 )
+   // Erase and draw
+   IF Empty( strtext )
+      strtext := ""
+   ENDIF
+   ::Title := strtext
+   cTmp := LEFT( ::Title, 2 )
+   
+   IF cTmp == "\]" .OR. cTmp == "\-"
+      IF ! lDroped
+         ExtTextOut( dc, 0, 0, IIF( ::lCheck, rcText[ 1 ], 0 ), rcText[ 2 ], rcText[ 3 ], rcText[ 4 ] )
+         RETURN 0
+      ENDIF
+   ENDIF
+   IF ( ncheck > 0 ) .AND. cTmp != "\-"
       SetBkColor( dc, GetSysColor( COLOR_WINDOW ) )
       SetTextColor( dc, GetSysColor( COLOR_WINDOWTEXT ) )
 
@@ -1218,26 +1321,38 @@ LOCAL nstate
    IF ( hwg_Bitand( drawInfo[ 9 ], ODS_SELECTED ) != 0 )
       SetBkColor( dc, GetSysColor( COLOR_HIGHLIGHT ) )
       SetTextColor( dc, GetSysColor( COLOR_HIGHLIGHTTEXT ) )
-
    ELSE
       SetBkColor( dc, GetSysColor( COLOR_WINDOW ) )
       SetTextColor( dc, GetSysColor( COLOR_WINDOWTEXT ) )
    ENDIF
 
-   // Erase and draw
-   IF Empty( strtext )
-      strtext := ""
+   IF cTmp == "\]"
+      SetTextColor( dc, GetSysColor( COLOR_GRAYTEXT ) )
+      strtext := SUBSTR( strText, 3 )
+   ENDIF
+   IF cTmp == "\-"
+      DrawLine( DC, 1, rcText[ 2 ] + ( rcText[ 4 ] - rcText[ 2 ] ) / 2 ,;
+                       rcText[ 3 ] - 1, ;
+                       rcText[ 2 ] + ( rcText[ 4 ] - rcText[ 2 ] ) / 2 )
+   ELSE
+      ExtTextOut( dc, 0, 0, IIF( ::lCheck, rcText[ 1 ], 0 ), rcText[ 2 ], rcText[ 3 ], rcText[ 4 ] )
+      DrawText( dc, ' ' + strtext, rcText[ 1 ], rcText[ 2 ], rcText[ 3 ], rcText[ 4 ], DT_SINGLELINE + DT_VCENTER + DT_END_ELLIPSIS )
+   ENDIF
+   IF hbitmap != 0
+      SetBkMode( dc, TRANSPARENT )
+      IF cTmp == "\]"
+          DrawGrayBitmap( dc, hbitmap, bmpRect[ 1 ]  , bmpRect[ 2 ] + 1 )
+      ELSE
+          DrawTransparentBitmap( dc, hbitmap, bmpRect[ 1 ]  , bmpRect[ 2 ] + 1 )
+      ENDIF
+   ENDIF
+   IF ( ( hwg_Bitand( DrawInfo[ 9 ], ODS_FOCUS + ODS_SELECTED ) ) == ( ODS_FOCUS + ODS_SELECTED ) )
+      IF  cTmp != "\-"  .AND. ! lDroped
+         DrawFocusRect( dc, IIF( ::lCheck, rcText , rcBitmap ) )
+      ENDIF
    ENDIF
 
-   ExtTextOut( dc, 0, 0, rcText[ 1 ], rcText[ 2 ], rcText[ 3 ], rcText[ 4 ] )
-
-   DrawText( dc, ' ' + strtext, rcText[ 1 ], rcText[ 2 ], rcText[ 3 ], rcText[ 4 ], DT_SINGLELINE + DT_VCENTER + DT_END_ELLIPSIS )
-
-   IF ( ( hwg_Bitand( drawInfo[ 9 ], ODS_FOCUS + ODS_SELECTED ) ) == ( ODS_FOCUS + ODS_SELECTED ) )
-      DrawFocusRect( dc, rcText )
-   ENDIF
-
-RETURN Self
+   RETURN Self
 
 METHOD MeasureItem( l ) CLASS hCheckComboBox
 
@@ -1300,6 +1415,41 @@ LOCAL n
       ENDIF
    NEXT
 RETURN aCheck
+
+METHOD EnabledItem( nItem, lEnabled ) CLASS hCheckComboBox
+   LOCAL i, cItem
+
+   IF lEnabled != Nil
+      IF nItem != Nil .AND. nItem > 0
+         IF lEnabled .AND. ::aItems[ nItem ] = "\]"
+            cItem := SUBSTR( ::aItems[ nItem ], 3 )
+         ELSEIF ! lEnabled .AND. LEFT( ::aItems[ nItem ], 2 ) != "\]" .AND. LEFT( ::aItems[ nItem ], 2 ) != "\-"
+            cItem := "\]" + ::aItems[ nItem ]
+            msginfo(citem)
+         ENDIF
+         IF !EMPTY( cItem )
+            ::aItems[ nItem ] := cItem
+            SendMessage( ::Handle, CB_DELETESTRING, nItem - 1, 0 )
+            ComboInsertString( ::handle, nItem - 1, cItem )
+         ENDIF
+      ENDIF
+   ENDIF
+   RETURN  ! ::aItems[ nItem ] = "\]"
+
+METHOD SkipItems( nNav ) CLASS hCheckComboBox
+   LOCAL nPos := 0, strText := ""
+
+   COMBOBOXGETLBTEXT( ::handle, ::nCurPos + nNav, @strText ) // NEXT
+   IF strText = "\]" .OR. strText = "\-"
+      nPos := IIF( nNav > 0, ;
+                   Ascan(  ::aItems, { | a | ! LEFT( a[ 1 ], 2 ) $ "\-" + CHR(0) + "\]" }, ::nCurPos + 2  ),;
+                   RAscan( ::aItems, { | a | ! LEFT( a[ 1 ], 2 ) $ "\-" + CHR(0) + "\]" }, ::nCurPos - 1, ) )
+      nPos := IIF( nPos = 0, ::nCurPos , nPos - 1 )
+      SendMessage( ::handle, CB_SETCURSEL, nPos , 0 )
+      ::nCurPos := nPos
+      RETURN 0
+   ENDIF
+   RETURN -1
 
 FUNCTION hwg_multibitor( ... )
 

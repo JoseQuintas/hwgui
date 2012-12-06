@@ -1957,14 +1957,15 @@ Added by Marcos Antonio Gambeta
              [ <text: TEXT> ]           ;
              [ WHEN <bWhen> ]           ;
              [ VALID <bValid> ]         ;
-             [CHECK <acheck>];
+             [ CHECK <acheck> ]         ;
+             [ IMAGES <aImages> ]       ;
           => ;
           [<oCombo> := ] HCheckComboBox():New( <oWnd>,<nId>,<vari>,    ;
              {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
              <nStyle>,<x>,<y>,<width>,<height>,      ;
              <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
              <.edit.>,<.text.>,<bWhen>,<color>,<bcolor>, ;
-						 <bValid>,<acheck>,<nDisplay>,<nhItem>,<ncWidth>);;
+						 <bValid>,<acheck>,<nDisplay>,<nhItem>,<ncWidth>, <aImages> );;
           [ <oCombo>:name := <(oCombo)> ]
 
 //Contribution Luis Fernando Basso

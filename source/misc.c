@@ -525,9 +525,12 @@ HB_FUNC( GETSCROLLRANGE )
          &MinPos,               // address of variable that receives minimum position
          &MaxPos                // address of variable that receives maximum position
           );
-   hb_storni( MinPos, 3 );
-   hb_storni( MaxPos, 4 );
-   hb_retni( MinPos + MaxPos );
+   if( hb_pcount() > 2 )
+   {
+     hb_storni( MinPos, 3 );
+     hb_storni( MaxPos, 4 );
+   }
+   hb_retni( MaxPos - MinPos  );
 }
 
 HB_FUNC( SETSCROLLRANGE )

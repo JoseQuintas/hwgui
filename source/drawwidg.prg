@@ -351,14 +351,18 @@ METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
    ENDIF
    #ifdef __XHARBOUR__
       FOR EACH i  IN  ::aBitmaps
-         IF i:name == name .AND. ( nWidth == nil .OR. nHeight == nil ) .AND. i:nFlags == nFlags
+         IF i:name == name .AND. i:nFlags == nFlags .AND. ;
+                                 ( ( nWidth == nil .OR. nHeight == nil ) .OR. ;
+                                   ( i:nWidth == nWidth .AND. i:nHeight == nHeight ) )
             i:nCounter ++
             RETURN i
          ENDIF
       NEXT
    #else
       FOR i := 1 TO Len( ::aBitmaps )
-         IF ::aBitmaps[ i ]:name == name .AND. ( nWidth == nil .OR. nHeight == nil ) .AND. ::aBitmaps[ i ]:nFlags == nFlags
+         IF ::aBitmaps[ i ]:name == name .AND. ::aBitmaps[ i ]:nFlags == nFlags .AND. ;
+                                   ( ( nWidth == nil .OR. nHeight == nil ) .OR. ;
+                                   ( ::aBitmaps[ i ]:nWidth == nWidth .AND. ::aBitmaps[ i ]:nHeight == nHeight ) )
             ::aBitmaps[ i ]:nCounter ++
             RETURN ::aBitmaps[ i ]
          ENDIF

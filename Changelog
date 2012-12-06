@@ -8,6 +8,46 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-12-06 10:25 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * include/guilib.ch
+     * #xcommand @ <x>,<y> GET COMBOBOXEX [ <oCombo> VAR ] <vari> ;
+	   + [ IMAGES <aImages> ]       ;
+   * source/misc.c
+     * HB_FUNC( GETSCROLLRANGE
+	   ! changed return ( MaxPos - MinPos )
+   * source/drawwidg.prg
+     * CLASS HBitmap
+       * METHOD AddResource()
+         ! minor fix in condition shared bitmaps
+   * source/xml/hxmldoc.prg
+     * METHOD Read
+	   ! added to property ::nLastErr := 0 because the return an error occurred due to having null value
+   * source/hcombo.prg
+     * CLASS HCheckComboBox INHERIT HComboBox
+	   + DATA lCheck
+       + DATA nCurPos  // current value combobox
+       + DATA aHimages, aImages
+	   + METHOD EnabledItem( nItem, lEnable )
+       + METHOD SkipItems( nNav )
+	   * METHOD New( )
+	     + added new parameter aImages
+       * METHOD INIT()
+	     ! load images if necessary
+       * METHOD onEvent	
+         + msg = WM_MOUSEWHEEL	   
+		 + msg = WM_COMMAND
+         + msg = WM_KEYUP
+		 ! code necessary to skip disabled items 
+       * METHOD Paint( lpDis ) 
+	     ! added code to display items disabled and line separator
+       + METHOD EnabledItem( nItem, lEnabled ) 		 
+	     ! method to enable or disable items in combo, second parameter = .T. OR .F.
+		   The COMBOBOXEx can work in two ways, with the way current CHECKBOX or how the ComboBox with items that may have images.
+		   add CLAUSULA IMAGES same {},  the ComboboxEX works in the same way that the combobox without the CHECKBOX
+		   Two special caracters define new features:
+		   "\-" = draw one separator line  between items
+		   items beginning with "\]" DiSABLED teh item in COMBOBOX
+ 
 2012-11-29 18:40 UTC+0200 Pavel Tsarenko <tpe2@mail.ru>
   * include/hwingui.h
   * source/control.c

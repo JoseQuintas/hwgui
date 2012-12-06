@@ -215,6 +215,7 @@ Local han
 
    IF fname != Nil
       han := FOpen( fname, FO_READ )
+      ::nLastErr := 0
       IF han != -1
          ::nLastErr := hbxml_GetDoc( Self,han )
          FClose( han )

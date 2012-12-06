@@ -623,8 +623,8 @@ METHOD Notify( lParam ) CLASS HTab
       IF nCode == TCN_SELCHANGE .AND. ::handle != GetFocus() .AND. ::lClick
          SendMessage( ::handle, TCM_SETCURSEL, SendMessage( ::handle, ::nPrevPage - 1, 0, 0 ), 0 )
          RETURN 0
-      ELSEIF nCode == TCN_SELCHANGE
-         SendMessage( ::handle, TCM_SETCURSEL, SendMessage( ::handle, TCM_GETCURFOCUS, 0, 0 ), 0 )
+      ELSEIF nCode == TCN_SELCHANGE .AND. ! ::lClick
+         SendMessage( ::handle, TCM_SETCURSEL, ::nActive  - 1, 0  )
       ENDIF
       ::nPrevPage := nPage
       RETURN 0
@@ -715,12 +715,21 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
       RETURN -1
    ENDIF
    IF msg = WM_LBUTTONDOWN
+      ::lClick := .F.
       IF ::ShowDisablePage( lParam, WM_LBUTTONDOWN  ) = 0
+         ::nPrevPage := - 1
          RETURN 0
       ENDIF
-      ::lClick := .T.
-      ::SetFocus( 0 )
+      //::lClick := .T.
+      IF ! SELFFOCUS( ::Handle )
+         ::SetFocus( 0 )
+      ENDIF
       RETURN -1
+   ELSEIF msg = WM_LBUTTONUP
+      IF SELFFOCUS( ::Handle )
+         ::nPrevPage := IIF( ::nPrevPage = 0, ::nActive, ::nPrevPage )
+         ::lClick := ::nPrevPage != - 1
+      ENDIF
    ELSEIF  msg = WM_MOUSEMOVE //.OR. ( ::nPaintHeight = 0 .AND. msg = WM_NCHITTEST  )
       ::ShowToolTips( lParam )
       RETURN ::ShowDisablePage( lParam )

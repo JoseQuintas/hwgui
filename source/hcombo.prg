@@ -33,10 +33,9 @@ HB_FUNC( COPYDATA )
 }
 #pragma enddump
 
-#ifdef __XHARBOUR__
-   #xtranslate hb_RAScan([<x,...>])        => RAScan(<x>)
+#ifndef __XHARBOUR__
+   #xtranslate RAScan([<x,...>])        => hb_RAScan(<x>)
 #endif
-
 
 CLASS HComboBox INHERIT HControl
 

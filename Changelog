@@ -8,9 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-12-07 10:25 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+2012-12-07 11:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcombo.prg
      ! fixed warnings compiler
+	 + #xtranslate hb_RAScan([<x,...>])        => RAScan(<x>)
 	 
 2012-12-06 15:58 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htab.prg

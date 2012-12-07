@@ -33,6 +33,11 @@ HB_FUNC( COPYDATA )
 }
 #pragma enddump
 
+#ifdef __XHARBOUR__
+   #xtranslate hb_RAScan([<x,...>])        => RAScan(<x>)
+#endif
+
+
 CLASS HComboBox INHERIT HControl
 
    CLASS VAR winclass INIT "COMBOBOX"

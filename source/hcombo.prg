@@ -940,7 +940,7 @@ CLASS HCheckComboBox INHERIT HComboBox
    METHOD onEvent( msg, wParam, lParam )
    METHOD GetAllCheck()
    
-   METHOD EnabledItem( nItem, lEnable )
+   METHOD EnabledItem( nItem, lEnabled )
    METHOD SkipItems( nNav )
 
 ENDCLASS
@@ -978,7 +978,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    RETURN Self
 
 METHOD INIT() CLASS hCheckComboBox
-   LOCAL i, nSize, hImage
+   LOCAL  nSize, hImage
    
    /*
    ::nHolder := 1
@@ -991,7 +991,7 @@ METHOD INIT() CLASS hCheckComboBox
          AEVAL( ::aCheck,{ | a | ::Setcheck( a, .T. ) } )
       ENDIF
       IF !EMPTY( ::aItems ) .AND. !EMPTY( ::nhItem )
-         AEVAL( ::aItems,{ | a, i | SendMessage( ::handle, CB_SETITEMHEIGHT , i - 1, ::nhItem ) } )
+         AEVAL( ::aItems,{ | , i | SendMessage( ::handle, CB_SETITEMHEIGHT , i - 1, ::nhItem ) } )
       ENDIF
       ::nCurPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 )
       // LOAD IMAGES COMBO
@@ -1135,14 +1135,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
 
 METHOD Requery() CLASS hCheckComboBox
 
-   LOCAL i
-
    ::Super:Requery()
    IF Len( ::acheck ) > 0
       AEVAL( ::aCheck, { | a | ::Setcheck( a, .t. ) } )
    ENDIF
    IF !EMPTY( ::aItems ) .AND. !EMPTY( ::nhItem )
-      AEVAL( ::aItems,{ | a, i | SendMessage( ::handle, CB_SETITEMHEIGHT , i - 1, ::nhItem ) } )
+      AEVAL( ::aItems,{ | , i | SendMessage( ::handle, CB_SETITEMHEIGHT , i - 1, ::nhItem ) } )
    ENDIF
    /*
    IF Len( ::acheck ) > 0
@@ -1417,7 +1415,7 @@ LOCAL n
 RETURN aCheck
 
 METHOD EnabledItem( nItem, lEnabled ) CLASS hCheckComboBox
-   LOCAL i, cItem
+   LOCAL cItem
 
    IF lEnabled != Nil
       IF nItem != Nil .AND. nItem > 0
@@ -1437,7 +1435,8 @@ METHOD EnabledItem( nItem, lEnabled ) CLASS hCheckComboBox
    RETURN  ! ::aItems[ nItem ] = "\]"
 
 METHOD SkipItems( nNav ) CLASS hCheckComboBox
-   LOCAL nPos := 0, strText := ""
+   LOCAL nPos
+   LOCAL strText := ""
 
    COMBOBOXGETLBTEXT( ::handle, ::nCurPos + nNav, @strText ) // NEXT
    IF strText = "\]" .OR. strText = "\-"

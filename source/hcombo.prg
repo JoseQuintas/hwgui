@@ -1423,7 +1423,6 @@ METHOD EnabledItem( nItem, lEnabled ) CLASS hCheckComboBox
             cItem := SUBSTR( ::aItems[ nItem ], 3 )
          ELSEIF ! lEnabled .AND. LEFT( ::aItems[ nItem ], 2 ) != "\]" .AND. LEFT( ::aItems[ nItem ], 2 ) != "\-"
             cItem := "\]" + ::aItems[ nItem ]
-            msginfo(citem)
          ENDIF
          IF !EMPTY( cItem )
             ::aItems[ nItem ] := cItem

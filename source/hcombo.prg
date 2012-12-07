@@ -1051,7 +1051,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
       IF HIWORD( wParam ) = CBN_SELCHANGE
          nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 )
          IF ::Title = "\]" .OR. ::Title = "\-"
-            SendMessage( ::handle, CB_SETCURSEL, ::nCurPos, 0 )
+            //SendMessage( ::handle, CB_SETCURSEL, ::nCurPos, 0 )
+            RETURN 0
          ELSE
             ::nCurPos := nPos
          ENDIF
@@ -1080,9 +1081,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
          nPos := IIF( wParam = VK_HOME, ;
                       Ascan( ::aItems, { | a | ! LEFT( a[ 1 ], 2 ) $ "\-" + CHR( 0 ) + "\]" } ,, ) ,;
                      RAscan( ::aItems, { | a | ! LEFT( a[ 1 ], 2 ) $ "\-" + CHR( 0 ) + "\]" } ,, ) )
-         SendMessage( ::handle,CB_SETCURSEL, nPos - 1, 0 )
-         ::nCurPos := nPos - 1
-         RETURN 0
+         IF nPos - 1 != ::nCurPos
+            SendMessage( ::handle,CB_SETCURSEL, nPos - 1, 0 )
+            SendMessage( ::oParent:handle, WM_COMMAND, MAKELONG( ::id, CBN_SELCHANGE ), ::handle )
+            ::nCurPos := nPos - 1
+            RETURN 0
+         ENDIF
       ENDIF
       IF wParam = VK_UP .OR. wParam = VK_DOWN
          RETURN ::SkipItems( IIF( wParam = VK_DOWN, 1, - 1 ) )
@@ -1166,6 +1170,7 @@ METHOD Refresh() CLASS hCheckComboBox
    ::Super:refresh()
 
    RETURN Nil
+   
 
 METHOD SetCheck( nIndex, bFlag ) CLASS hCheckComboBox
 
@@ -1453,6 +1458,7 @@ METHOD SkipItems( nNav ) CLASS hCheckComboBox
                    RAscan( ::aItems, { | a | ! LEFT( a[ 1 ], 2 ) $ "\-" + CHR(0) + "\]" }, ::nCurPos - 1, ) )
       nPos := IIF( nPos = 0, ::nCurPos , nPos - 1 )
       SendMessage( ::handle, CB_SETCURSEL, nPos , 0 )
+      SendMessage( ::oParent:handle, WM_COMMAND, MAKELONG( ::id, CBN_SELCHANGE ), ::handle )
       ::nCurPos := nPos
       RETURN 0
    ENDIF

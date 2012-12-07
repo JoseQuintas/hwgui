@@ -978,7 +978,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    RETURN Self
 
 METHOD INIT() CLASS hCheckComboBox
-   LOCAL  nSize, hImage
+   LOCAL i, nSize, hImage
    
    /*
    ::nHolder := 1
@@ -991,7 +991,9 @@ METHOD INIT() CLASS hCheckComboBox
          AEVAL( ::aCheck,{ | a | ::Setcheck( a, .T. ) } )
       ENDIF
       IF !EMPTY( ::aItems ) .AND. !EMPTY( ::nhItem )
-         AEVAL( ::aItems,{ | , i | SendMessage( ::handle, CB_SETITEMHEIGHT , i - 1, ::nhItem ) } )
+         FOR i := 1 TO Len( ::aItems )
+            SendMessage( ::handle, CB_SETITEMHEIGHT , i - 1, ::nhItem )
+         NEXT
       ENDIF
       ::nCurPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 )
       // LOAD IMAGES COMBO
@@ -1085,7 +1087,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
       
    ELSEIF msg = WM_KEYUP
       IF wParam = VK_DOWN .OR. wParam = VK_UP
-         nPos := SendMessage( ::handle,CB_GETCURSEL, 0, 0 )
+         //nPos := SendMessage( ::handle,CB_GETCURSEL, 0, 0 )
          IF ::Title = "\]" .OR. ::Title = "\-"
           //IF nPos > 0
           //   SendMessage( ::handle, CB_SETCURSEL, nPos - 1, 0 )
@@ -1134,13 +1136,16 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
 
 
 METHOD Requery() CLASS hCheckComboBox
-
+   LOCAL i
+   
    ::Super:Requery()
    IF Len( ::acheck ) > 0
       AEVAL( ::aCheck, { | a | ::Setcheck( a, .t. ) } )
    ENDIF
    IF !EMPTY( ::aItems ) .AND. !EMPTY( ::nhItem )
-      AEVAL( ::aItems,{ | , i | SendMessage( ::handle, CB_SETITEMHEIGHT , i - 1, ::nhItem ) } )
+      FOR i := 1 TO Len( ::aItems )
+         SendMessage( ::handle, CB_SETITEMHEIGHT , i - 1, ::nhItem )
+      NEXT
    ENDIF
    /*
    IF Len( ::acheck ) > 0
@@ -1250,7 +1255,7 @@ METHOD Paint( lpDis ) CLASS hCheckComboBox
    LOCAL metrics
    LOCAL nstate
    LOCAL iStyle  := ST_ALIGN_HORIZ
-   LOCAL nIndent := 1
+   LOCAL nIndent
    LOCAL hbitmap := 0, bmpRect
    LOCAL lDroped := SendMessage( ::handle, CB_GETDROPPEDSTATE, 0, 0 ) > 0
 

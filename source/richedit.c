@@ -45,7 +45,11 @@ HB_FUNC( CREATERICHEDIT )
       hRichEd = LoadLibrary( TEXT( "riched20.dll" ) );
 
    hCtrl = CreateWindowEx( 0,   /* extended style    */
+#ifdef UNICODE
+         TEXT( "RichEdit20W" ), /* predefined class  */
+#else
          TEXT( "RichEdit20A" ), /* predefined class  */
+#endif
          NULL,                  /* title   */
          WS_CHILD | WS_VISIBLE | hb_parnl( 3 ), /* style  */
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y   */

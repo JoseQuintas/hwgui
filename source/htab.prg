@@ -76,6 +76,7 @@ METHOD SetColor( tcolor, bColor ) CLASS HPage
    IF ::oParent = NIL .OR. ( bColor = NIL .AND. tcolor = NIL )
       RETURN NIL
    ENDIF
+   InvalidateRect( ::oParent:Handle, 1 )
    ::oParent:SetPaintSizePos( IIF( bColor = NIL, 1, - 1 ) )
 
    RETURN NIL
@@ -89,7 +90,7 @@ METHOD SetTabText( cText ) CLASS HPage
    SetTabName( ::oParent:Handle, ::PageOrder - 1, cText )
    ::xCaption := cText
    InvalidateRect( ::oParent:handle, 0, ::aItemPos[ 1 ], ::aItemPos[ 2 ], ::aItemPos[ 1 ] + ::aItemPos[ 3 ], ::aItemPos[ 2 ] + ::aItemPos[ 4 ] )
-   InvalidateRect( ::oParent:Handle, 0 )
+   InvalidateRect( ::oParent:Handle, 1 )
    /*
    FOR i =  1 TO Len( ::oParent:Pages )
       ::oParent:Pages[ i ]:aItemPos := TabItemPos( ::oParent:Handle, i - 1 )
@@ -937,11 +938,11 @@ ENDCLASS
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, tcolor, bColor ) CLASS HPaintTab
 
    ::bPaint   := { | o, p | o:paint( p ) }
-   Super:New( oWndParent, nId, SS_OWNERDRAW + WS_DISABLED , nLeft, nTop, nWidth, nHeight, , ;
+   Super:New( oWndParent, nId, SS_OWNERDRAW + WS_DISABLED + WS_CLIPCHILDREN , nLeft, nTop, nWidth, nHeight, , ;
          ,, ::bPaint,, tcolor, bColor )
    ::anchor := 15
    ::brush := NIL
-   ::backstyle := TRANSPARENT
+   //::backstyle := TRANSPARENT
    ::Name := "PaintTab"
 
    ::Activate()

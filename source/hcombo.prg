@@ -1046,7 +1046,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
 
    ELSEIF msg = WM_MOUSEWHEEL //.AND. ::oParent:nScrollBars != -1 .AND. ::oParent:bScroll = Nil
       RETURN ::SkipItems( IIF( HIWORD( wParam ) > 32768, 1, - 1 ) )
-
+      
    ELSEIF msg = WM_COMMAND
       IF HIWORD( wParam ) = CBN_SELCHANGE
          nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 )
@@ -1059,6 +1059,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
       ENDIF
 
    ELSEIF msg == WM_CHAR
+
       IF ( wParam == VK_SPACE )
          nIndex := SendMessage( ::handle, CB_GETCURSEL, wParam, lParam ) + 1
          rcItem := COMBOGETITEMRECT( ::handle, nIndex - 1 )
@@ -1077,29 +1078,26 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
       ENDIF
       RETURN 0
    ELSEIF msg = WM_KEYDOWN
+
       IF wParam = VK_HOME .OR. wParam = VK_END
          nPos := IIF( wParam = VK_HOME, ;
                       Ascan( ::aItems, { | a | ! LEFT( a[ 1 ], 2 ) $ "\-" + CHR( 0 ) + "\]" } ,, ) ,;
                      RAscan( ::aItems, { | a | ! LEFT( a[ 1 ], 2 ) $ "\-" + CHR( 0 ) + "\]" } ,, ) )
          IF nPos - 1 != ::nCurPos
+            SetFocus( Nil )
             SendMessage( ::handle,CB_SETCURSEL, nPos - 1, 0 )
             SendMessage( ::oParent:handle, WM_COMMAND, MAKELONG( ::id, CBN_SELCHANGE ), ::handle )
             ::nCurPos := nPos - 1
             RETURN 0
          ENDIF
-      ENDIF
-      IF wParam = VK_UP .OR. wParam = VK_DOWN
-         RETURN ::SkipItems( IIF( wParam = VK_DOWN, 1, - 1 ) )
+      ELSEIF ( wParam = VK_UP .OR. wParam = VK_DOWN ) //.AND. SendMessage( ::handle, CB_GETDROPPEDSTATE, 0, 0 ) = 0
+          RETURN ::SkipItems( IIF( wParam = VK_DOWN, 1, - 1 ) )
       ENDIF
       ProcKeyList( Self, wParam )
       
    ELSEIF msg = WM_KEYUP
-      IF wParam = VK_DOWN .OR. wParam = VK_UP
-         //nPos := SendMessage( ::handle,CB_GETCURSEL, 0, 0 )
+      IF ( wParam = VK_DOWN .OR. wParam = VK_UP )
          IF ::Title = "\]" .OR. ::Title = "\-"
-          //IF nPos > 0
-          //   SendMessage( ::handle, CB_SETCURSEL, nPos - 1, 0 )
-          //ENDIF
             RETURN 0
          ENDIF
       ENDIF
@@ -1166,7 +1164,6 @@ METHOD Requery() CLASS hCheckComboBox
 
 METHOD Refresh() CLASS hCheckComboBox
 
-
    ::Super:refresh()
 
    RETURN Nil
@@ -1185,18 +1182,18 @@ METHOD SetCheck( nIndex, bFlag ) CLASS hCheckComboBox
    // Redraw the window
    InvalidateRect( ::handle, 0 )
 
-RETURN nResult
+   RETURN nResult
 
 METHOD GetCheck( nIndex ) CLASS hCheckComboBox
 
-LOCAL l := COMBOBOXGETITEMDATA( ::handle, nIndex - 1 )
+   LOCAL l := COMBOBOXGETITEMDATA( ::handle, nIndex - 1 )
 
-RETURN IIF( l == 1, .t., .f. )
+   RETURN IIF( l == 1, .t., .f. )
 
 METHOD SelectAll( bCheck ) CLASS hCheckComboBox
 
-LOCAL nCount
-LOCAL i
+   LOCAL nCount
+   LOCAL i
    DEFAULT bCheck TO .t.
 
    nCount := SendMessage( ::handle, CB_GETCOUNT, 0, 0 )
@@ -1204,15 +1201,15 @@ LOCAL i
    FOR i := 1 TO nCount
       ::SetCheck( i, bCheck )
    NEXT
-RETURN nil
+   RETURN nil
 
 METHOD RecalcText() CLASS hCheckComboBox
-
-LOCAL strtext
-LOCAL ncount
-LOCAL strSeparator
-LOCAL i
-LOCAL stritem
+   LOCAL strtext
+   LOCAL ncount
+   LOCAL strSeparator
+   LOCAL i
+   LOCAL stritem
+   
    IF ( !::m_bTextUpdated )
 
       // Get the list count
@@ -1249,7 +1246,7 @@ LOCAL stritem
 
       ::m_bTextUpdated := TRUE
    ENDIF
-RETURN Self
+   RETURN Self
 
 METHOD Paint( lpDis ) CLASS hCheckComboBox
 
@@ -1367,11 +1364,10 @@ METHOD Paint( lpDis ) CLASS hCheckComboBox
    RETURN Self
 
 METHOD MeasureItem( l ) CLASS hCheckComboBox
-
-LOCAL dc                  := HCLIENTDC():new( ::handle )
-LOCAL lpMeasureItemStruct := GETMEASUREITEMINFO( l )
-LOCAL metrics
-LOCAL pFont
+   LOCAL dc                  := HCLIENTDC():new( ::handle )
+   LOCAL lpMeasureItemStruct := GETMEASUREITEMINFO( l )
+   LOCAL metrics
+   LOCAL pFont
 
    //pFont := dc:SelectObject( IF( ValType( ::oFont ) == "O", ::oFont:handle, ::oParent:oFont:handle ) )
    pFont := dc:SelectObject( Iif( Valtype( ::oFont ) == "O", ::oFont:handle, ;
@@ -1393,7 +1389,7 @@ LOCAL pFont
       dc:SelectObject( pFont )
       dc:END()
    ENDIF
-RETURN Self
+   RETURN Self
 
 METHOD OnGetText( wParam, lParam ) CLASS hCheckComboBox
 
@@ -1406,7 +1402,7 @@ METHOD OnGetText( wParam, lParam ) CLASS hCheckComboBox
    // Copy the 'fake' window text
    copydata( lParam, ::m_strText, wParam )
 
-RETURN Iif( Empty( ::m_strText ), 0, Len( ::m_strText ) )
+   RETURN Iif( Empty( ::m_strText ), 0, Len( ::m_strText ) )
 
 METHOD OnGetTextLength( WPARAM, LPARAM ) CLASS hCheckComboBox
 
@@ -1415,18 +1411,18 @@ METHOD OnGetTextLength( WPARAM, LPARAM ) CLASS hCheckComboBox
 
    ::RecalcText()
 
-RETURN Iif( Empty( ::m_strText ), 0, Len( ::m_strText ) )
+   RETURN Iif( Empty( ::m_strText ), 0, Len( ::m_strText ) )
 
 METHOD GetAllCheck() CLASS hCheckComboBox
-
-LOCAL aCheck := { }
-LOCAL n
+   LOCAL aCheck := { }
+   LOCAL n
+   
    FOR n := 1 TO Len( ::aItems )
       IF ::GetCheck( n )
          Aadd( aCheck, n )
       ENDIF
    NEXT
-RETURN aCheck
+   RETURN aCheck
 
 METHOD EnabledItem( nItem, lEnabled ) CLASS hCheckComboBox
    LOCAL cItem
@@ -1457,8 +1453,11 @@ METHOD SkipItems( nNav ) CLASS hCheckComboBox
                    Ascan(  ::aItems, { | a | ! LEFT( a[ 1 ], 2 ) $ "\-" + CHR(0) + "\]" }, ::nCurPos + 2  ),;
                    RAscan( ::aItems, { | a | ! LEFT( a[ 1 ], 2 ) $ "\-" + CHR(0) + "\]" }, ::nCurPos - 1, ) )
       nPos := IIF( nPos = 0, ::nCurPos , nPos - 1 )
+      SetFocus( Nil )
       SendMessage( ::handle, CB_SETCURSEL, nPos , 0 )
-      SendMessage( ::oParent:handle, WM_COMMAND, MAKELONG( ::id, CBN_SELCHANGE ), ::handle )
+      IF nPos != ::nCurPos
+         SendMessage( ::oParent:handle, WM_COMMAND, MAKELONG( ::id, CBN_SELCHANGE ), ::handle )
+      ENDIF
       ::nCurPos := nPos
       RETURN 0
    ENDIF

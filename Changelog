@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-12-10 18:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hbrowse.prg
+     * METHOD TOP()
+	   - setfocus 	   ! removed unnecessary setfocus
+	 * METHOD REFRES()
+       ! small fix.	 
+	   
 2012-12-09 10:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcombo.prg
      * CLASS hCheckComboBox

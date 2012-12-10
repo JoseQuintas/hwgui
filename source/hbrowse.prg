@@ -2567,7 +2567,7 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
          ::lAppMode := .T.
       ELSE
          Eval( ::bSkip, Self, - 1 )
-         IF !SELFFOCUS( ::handle )
+         IF ! SELFFOCUS( ::handle )
             ::SetFocus()
          ENDIF
          RETURN NIL
@@ -2743,7 +2743,7 @@ METHOD TOP() CLASS HBrowse
    //InvalidateRect( ::handle, 0 )
    ::Refresh( ::nFootRows > 0 )
    ::internal[ 1 ] := hwg_SetBit( ::internal[ 1 ], 1, 0 )
-   ::SetFocus()
+   //::SetFocus()
 
    RETURN NIL
 
@@ -3461,11 +3461,12 @@ METHOD WhenColumn( value, oGet ) CLASS HBROWSE
    IF oColumn:bWhen != NIL
       ::oparent:lSuspendMsgsHandling := .T.
       res := EVAL( oColumn:bWhen, Value, oGet )
-        oGet:lnovalid := res
-        IF ValType( res ) = "L" .AND. ! res
-           ::SetFocus()
-           oGet:oParent:close()
-        ENDIF
+      res := IIF( valtype(res) = "L" , res, .T. )
+      oGet:lnovalid := res
+      IF ValType( res ) = "L" .AND. ! res
+         ::SetFocus()
+         oGet:oParent:close()
+      ENDIF
       ::oparent:lSuspendMsgsHandling := .F.
     ENDIF
 
@@ -3487,6 +3488,7 @@ METHOD ValidColumn( value,oGet, oBtn ) CLASS HBROWSE
       oGet:lnovalid := res
       IF ValType( res ) = "L" .AND. ! res
          oGet:SetFocus()
+         SetFocus( Nil )
       ENDIF
       ::oparent:lSuspendMsgsHandling := .F.
    ENDIF
@@ -3605,7 +3607,11 @@ METHOD Refresh( lFull, lLineUp ) CLASS HBrowse
       // RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ENDIF
    // RedrawWindow( ::handle, RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
-   RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW )  // Force a complete redraw
+   IF isWindowVisible( ::oParent:handle )
+      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW )  // Force a complete redraw
+   ELSE
+      RedrawWindow( ::handle, RDW_NOERASE + RDW_NOINTERNALPAINT )
+   ENDIF
 
    RETURN NIL
 

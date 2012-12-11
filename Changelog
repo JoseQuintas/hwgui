@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-12-11 14:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
+   * source/hupdown.prg
+	 * METHOD NOTIFY()
+       ! minor fix.	 
+
 2012-12-10 23:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hupdown.prg
 	 * METHOD REFRES()

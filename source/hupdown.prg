@@ -312,12 +312,18 @@ METHOD Notify( lParam ) CLASS HeditUpDown
        RETURN 0
    ENDIF
    vari :=  vari + ( ::oUpDown:Increment * idelta )
+   ::oUpDown:SetValue( vari )
+   /*
    ::Title := Transform( vari , ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
    SetDlgItemText( ::oParent:handle, ::id, ::title )
    ::oUpDown:Title := ::Title
    ::oUpDown:SetValue( vari )
    ::SetFocus()
-   IF nCode = UDN_DELTAPOS .AND. ( ::oUpDown:bClickUp != Nil .OR. ::oUpDown:bClickDown != Nil )
+   */
+   
+   ::Refresh()
+   ::oUpDown:Title := ::Title
+      IF nCode = UDN_DELTAPOS .AND. ( ::oUpDown:bClickUp != Nil .OR. ::oUpDown:bClickDown != Nil )
       ::oparent:lSuspendMsgsHandling := .T.
       IF iDelta < 0 .AND. ::oUpDown:bClickDown  != Nil
          res := Eval( ::oUpDown:bClickDown, ::oUpDown, ::oUpDown:nValue, iDelta, ipos )
@@ -341,7 +347,7 @@ METHOD Notify( lParam ) CLASS HeditUpDown
    IF  ::bSetGet != Nil  .AND. ::title != Nil
       ::Title := Transform( vari , ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
    ENDIF
-    SetWindowText( ::Handle, ::Title )
+   SetWindowText( ::Handle, ::Title )
   // SetDlgItemText( ::oParent:handle, ::id, ::title )
 
    RETURN Nil

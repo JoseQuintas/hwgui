@@ -334,14 +334,15 @@ METHOD Notify( lParam ) CLASS HeditUpDown
    ENDIF
    RETURN 0
 
-   METHOD Refresh()  CLASS HeditUpDown
+ METHOD Refresh()  CLASS HeditUpDown
    LOCAL vari
 
-   vari := ::Value
+   vari := IIF( ::oUpDown != Nil, ::oUpDown:nValue, ::Value )
    IF  ::bSetGet != Nil  .AND. ::title != Nil
       ::Title := Transform( vari , ::cPicFunc + IIf( Empty( ::cPicFunc ), "", " " ) + ::cPicMask )
    ENDIF
-   SetDlgItemText( ::oParent:handle, ::id, ::title )
+    SetWindowText( ::Handle, ::Title )
+  // SetDlgItemText( ::oParent:handle, ::id, ::title )
 
    RETURN Nil
 

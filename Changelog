@@ -8,10 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-12-12 12:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/drawwidg.prg
+     * Some code formatting
+     * New CLASS VAR have been introduced for HBitmap and HIcon classes - lSelFile.
+       If it is set to .T. (by default), the AddFile method suggests to select a file with
+       an appropriate dialog box ( calls SelectFile() ) in case of the bitmap file
+       isn't found by File() function. This is as it behaved till now.
+       If the ::lSelFile is set to .F., the SelectFile() isn't called.
+       In my opinion the default value must be .F., the appearance of a Select File dialog
+       to draw a bitmap in application looks very strange for me. But for to not touch
+       those, who accustomed to such :Addfile() behaviour, I've left it as default.
+       In my apps I will simply write HBitmap():lSelFile := .F.
+
 2012-12-12 10:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * samples/bld.bat
    * utils/designer/blddesig.bat
-     ! Some changes to make it more configurable and for Harbour specific libs
+     * Some changes to make it more configurable and for Harbour specific libs
    * samples/all/a.prg
      ! Minor fix - browse "on getfocus" codeblock parameters order was changed
 

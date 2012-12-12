@@ -329,7 +329,7 @@ Local nId
             SIZE 500,300                           ;
             STYLE WS_VSCROLL + WS_HSCROLL          ;
             ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,y)} ;
-            ON GETFOCUS {|o|dbSelectArea(o:alias)}
+            ON GETFOCUS {|n,o|dbSelectArea(o:alias)}
       CreateList( oBrw,.T. )
       oBrw:bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}
       IF oFont != Nil

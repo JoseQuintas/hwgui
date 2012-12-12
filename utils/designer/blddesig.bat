@@ -1,6 +1,7 @@
 @echo off
 
 set HRB_DIR=%HB_Path%
+set HRB_LIBS=%HRB_DIR%\lib
 set HWGUI_INSTALL=..\..
 
 %HRB_DIR%\bin\harbour designer.prg -w -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
@@ -21,59 +22,58 @@ echo editor.obj, + >> b32.bc
 echo designer.exe, + >> b32.bc
 echo designer.map, + >> b32.bc
 
-
-rem echo %HRB_DIR%\lib\richgui.lib + >> b32.bc
-
 echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hbxml.lib + >> b32.bc
-if exist %HRB_DIR%\lib\rtl%HB_MT%.lib echo %HRB_DIR%\lib\rtl%HB_MT%.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbrtl%HB_MT%.lib echo %HRB_DIR%\lib\hbrtl%HB_MT%.lib + >> b32.bc
-if exist %HRB_DIR%\lib\vm%HB_MT%.lib echo %HRB_DIR%\lib\vm%HB_MT%.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbvm.lib echo %HRB_DIR%\lib\hbvm.lib + >> b32.bc
-if exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtgui.lib + >> b32.bc
-if exist %HRB_DIR%\lib\gtwin.lib echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
-if exist %HRB_DIR%\lib\lang.lib echo %HRB_DIR%\lib\lang.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hblang.lib echo %HRB_DIR%\lib\hblang.lib + >> b32.bc
-if exist %HRB_DIR%\lib\codepage.lib echo %HRB_DIR%\lib\codepage.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbcpage.lib echo %HRB_DIR%\lib\hbcpage.lib + >> b32.bc
-if exist %HRB_DIR%\lib\macro%HB_MT%.lib echo %HRB_DIR%\lib\macro%HB_MT% + >> b32.bc
-if exist %HRB_DIR%\lib\hbmacro.lib echo %HRB_DIR%\lib\hbmacro.lib + >> b32.bc
+if exist %HRB_LIBS%\rtl%HB_MT%.lib echo %HRB_LIBS%\rtl%HB_MT%.lib + >> b32.bc
+if exist %HRB_LIBS%\hbrtl%HB_MT%.lib echo %HRB_LIBS%\hbrtl%HB_MT%.lib + >> b32.bc
+if exist %HRB_LIBS%\vm%HB_MT%.lib echo %HRB_LIBS%\vm%HB_MT%.lib + >> b32.bc
+if exist %HRB_LIBS%\hbvm.lib echo %HRB_LIBS%\hbvm.lib + >> b32.bc
+if exist %HRB_LIBS%\gtgui.lib echo %HRB_LIBS%\gtgui.lib + >> b32.bc
+if exist %HRB_LIBS%\gtwin.lib echo %HRB_LIBS%\gtwin.lib + >> b32.bc
+if exist %HRB_LIBS%\lang.lib echo %HRB_LIBS%\lang.lib + >> b32.bc
+if exist %HRB_LIBS%\hblang.lib echo %HRB_LIBS%\hblang.lib + >> b32.bc
+if exist %HRB_LIBS%\codepage.lib echo %HRB_LIBS%\codepage.lib + >> b32.bc
+if exist %HRB_LIBS%\hbcpage.lib echo %HRB_LIBS%\hbcpage.lib + >> b32.bc
+if exist %HRB_LIBS%\macro%HB_MT%.lib echo %HRB_LIBS%\macro%HB_MT% + >> b32.bc
+if exist %HRB_LIBS%\hbmacro.lib echo %HRB_LIBS%\hbmacro.lib + >> b32.bc
 
-rem echo %HRB_DIR%\lib\rddleto.lib + >> b32.bc
+rem echo %HRB_LIBS%\rddleto.lib + >> b32.bc
 
-if exist %HRB_DIR%\lib\rdd%HB_MT%.lib echo %HRB_DIR%\lib\rdd%HB_MT% + >> b32.bc
-if exist %HRB_DIR%\lib\hbrdd.lib echo %HRB_DIR%\lib\hbrdd.lib + >> b32.bc
-if exist %HRB_DIR%\lib\dbfntx%HB_MT%.lib echo %HRB_DIR%\lib\dbfntx%HB_MT% + >> b32.bc
-if exist %HRB_DIR%\lib\rddntx.lib echo %HRB_DIR%\lib\rddntx.lib + >> b32.bc
-if exist %HRB_DIR%\lib\dbfcdx%HB_MT%.lib echo %HRB_DIR%\lib\dbfcdx%HB_MT% + >> b32.bc
-if exist %HRB_DIR%\lib\rddcdx.lib echo %HRB_DIR%\lib\rddcdx.lib + >> b32.bc
-if exist %HRB_DIR%\lib\dbffpt%HB_MT%.lib echo %HRB_DIR%\lib\dbffpt%HB_MT% + >> b32.bc
-if exist %HRB_DIR%\lib\rddfpt.lib echo %HRB_DIR%\lib\rddfpt.lib + >> b32.bc
-if exist %HRB_DIR%\lib\sixcdx%HB_MT%.lib echo %HRB_DIR%\lib\sixcdx%HB_MT% + >> b32.bc
-if exist %HRB_DIR%\lib\hbsix.lib echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
-if exist %HRB_DIR%\lib\common.lib echo %HRB_DIR%\lib\common + >> b32.bc
-if exist %HRB_DIR%\lib\hbcommon.lib echo %HRB_DIR%\lib\hbcommon.lib + >> b32.bc
-if exist %HRB_DIR%\lib\debug.lib echo %HRB_DIR%\lib\debug.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbdebug.lib echo %HRB_DIR%\lib\hbdebug.lib + >> b32.bc
-if exist %HRB_DIR%\lib\pp.lib echo %HRB_DIR%\lib\pp.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbpp.lib echo %HRB_DIR%\lib\hbpp.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hsx.lib echo %HRB_DIR%\lib\hsx.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbhsx.lib echo %HRB_DIR%\lib\hbhsx.lib + >> b32.bc
-echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
+if exist %HRB_LIBS%\rdd%HB_MT%.lib echo %HRB_LIBS%\rdd%HB_MT% + >> b32.bc
+if exist %HRB_LIBS%\hbrdd.lib echo %HRB_LIBS%\hbrdd.lib + >> b32.bc
+if exist %HRB_LIBS%\dbfntx%HB_MT%.lib echo %HRB_LIBS%\dbfntx%HB_MT% + >> b32.bc
+if exist %HRB_LIBS%\rddntx.lib echo %HRB_LIBS%\rddntx.lib + >> b32.bc
+if exist %HRB_LIBS%\dbfcdx%HB_MT%.lib echo %HRB_LIBS%\dbfcdx%HB_MT% + >> b32.bc
+if exist %HRB_LIBS%\rddcdx.lib echo %HRB_LIBS%\rddcdx.lib + >> b32.bc
+if exist %HRB_LIBS%\dbffpt%HB_MT%.lib echo %HRB_LIBS%\dbffpt%HB_MT% + >> b32.bc
+if exist %HRB_LIBS%\rddfpt.lib echo %HRB_LIBS%\rddfpt.lib + >> b32.bc
+if exist %HRB_LIBS%\sixcdx%HB_MT%.lib echo %HRB_LIBS%\sixcdx%HB_MT% + >> b32.bc
+if exist %HRB_LIBS%\hbsix.lib echo %HRB_LIBS%\hbsix.lib + >> b32.bc
+if exist %HRB_LIBS%\rddnsx.lib echo %HRB_LIBS%\rddnsx.lib + >> b32.bc
+if exist %HRB_LIBS%\common.lib echo %HRB_LIBS%\common + >> b32.bc
+if exist %HRB_LIBS%\hbcommon.lib echo %HRB_LIBS%\hbcommon.lib + >> b32.bc
+if exist %HRB_LIBS%\debug.lib echo %HRB_LIBS%\debug.lib + >> b32.bc
+if exist %HRB_LIBS%\hbdebug.lib echo %HRB_LIBS%\hbdebug.lib + >> b32.bc
+if exist %HRB_LIBS%\pp.lib echo %HRB_LIBS%\pp.lib + >> b32.bc
+if exist %HRB_LIBS%\hbpp.lib echo %HRB_LIBS%\hbpp.lib + >> b32.bc
+if exist %HRB_LIBS%\hsx.lib echo %HRB_LIBS%\hsx.lib + >> b32.bc
+if exist %HRB_LIBS%\hbhsx.lib echo %HRB_LIBS%\hbhsx.lib + >> b32.bc
+echo %HRB_LIBS%\hbsix.lib + >> b32.bc
 
-rem echo %HRB_DIR%\lib\rddads.lib + >> b32.bc
+rem echo %HRB_LIBS%\rddads.lib + >> b32.bc
 rem echo ace32.lib + >> b32.bc
 
-if exist %HRB_DIR%\lib\pcrepos.lib echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbpcre.lib echo %HRB_DIR%\lib\hbpcre.lib + >> b32.bc
-if exist %HRB_DIR%\lib\zlib.lib echo %HRB_DIR%\lib\zlib.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbzlib.lib echo %HRB_DIR%\lib\hbzlib.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbw32.lib echo %HRB_DIR%\lib\hbw32.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbwin.lib echo %HRB_DIR%\lib\hbwin.lib + >> b32.bc
-rem echo %HRB_DIR%\lib\libct.lib + >> b32.bc
+if exist %HRB_LIBS%\pcrepos.lib echo %HRB_LIBS%\pcrepos.lib + >> b32.bc
+if exist %HRB_LIBS%\hbpcre.lib echo %HRB_LIBS%\hbpcre.lib + >> b32.bc
+if exist %HRB_LIBS%\zlib.lib echo %HRB_LIBS%\zlib.lib + >> b32.bc
+if exist %HRB_LIBS%\hbzlib.lib echo %HRB_LIBS%\hbzlib.lib + >> b32.bc
+if exist %HRB_LIBS%\hbw32.lib echo %HRB_LIBS%\hbw32.lib + >> b32.bc
+if exist %HRB_LIBS%\hbwin.lib echo %HRB_LIBS%\hbwin.lib + >> b32.bc
+rem echo %HRB_LIBS%\libct.lib + >> b32.bc
 
 echo cw32.lib + >> b32.bc
+echo ws2_32.lib + >> b32.bc
 echo import32.lib, >> b32.bc
 echo designer.res >> b32.bc
 ilink32 -Gn -aa -Tpe @b32.bc

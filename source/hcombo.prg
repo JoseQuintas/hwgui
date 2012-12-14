@@ -1050,7 +1050,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
    ELSEIF msg = WM_COMMAND
       IF HIWORD( wParam ) = CBN_SELCHANGE
          nPos := SendMessage( ::handle, CB_GETCURSEL, 0, 0 )
-         IF ::Title = "\]" .OR. ::Title = "\-"
+         IF LEFT( ::Title, 2 ) == "\]" .OR. LEFT( ::Title, 2 ) == "\-"
             //SendMessage( ::handle, CB_SETCURSEL, ::nCurPos, 0 )
             RETURN 0
          ELSE
@@ -1097,7 +1097,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
       
    ELSEIF msg = WM_KEYUP
       IF ( wParam = VK_DOWN .OR. wParam = VK_UP )
-         IF ::Title = "\]" .OR. ::Title = "\-"
+         IF LEFT( ::Title, 2 ) == "\]" .OR. LEFT( ::Title, 2 ) == "\-"
             RETURN 0
          ENDIF
       ENDIF
@@ -1429,7 +1429,7 @@ METHOD EnabledItem( nItem, lEnabled ) CLASS hCheckComboBox
 
    IF lEnabled != Nil
       IF nItem != Nil .AND. nItem > 0
-         IF lEnabled .AND. ::aItems[ nItem ] = "\]"
+         IF lEnabled .AND. LEFT( ::aItems[ nItem ], 2 ) == "\]"
             cItem := SUBSTR( ::aItems[ nItem ], 3 )
          ELSEIF ! lEnabled .AND. LEFT( ::aItems[ nItem ], 2 ) != "\]" .AND. LEFT( ::aItems[ nItem ], 2 ) != "\-"
             cItem := "\]" + ::aItems[ nItem ]
@@ -1441,14 +1441,14 @@ METHOD EnabledItem( nItem, lEnabled ) CLASS hCheckComboBox
          ENDIF
       ENDIF
    ENDIF
-   RETURN  ! ::aItems[ nItem ] = "\]"
+   RETURN  ! LEFT( ::aItems[ nItem ], 2 ) == "\]"
 
 METHOD SkipItems( nNav ) CLASS hCheckComboBox
    LOCAL nPos
    LOCAL strText := ""
 
    COMBOBOXGETLBTEXT( ::handle, ::nCurPos + nNav, @strText ) // NEXT
-   IF strText = "\]" .OR. strText = "\-"
+   IF LEFT( strText, 2 ) == "\]" .OR. LEFT( strText, 2 ) == "\-"
       nPos := IIF( nNav > 0, ;
                    Ascan(  ::aItems, { | a | ! LEFT( a[ 1 ], 2 ) $ "\-" + CHR(0) + "\]" }, ::nCurPos + 2  ),;
                    RAscan( ::aItems, { | a | ! LEFT( a[ 1 ], 2 ) $ "\-" + CHR(0) + "\]" }, ::nCurPos - 1, ) )

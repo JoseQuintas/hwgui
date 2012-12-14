@@ -1140,3 +1140,8 @@ FUNCTION GetTextWidth( cString, oFont ,hdc)
 RETURN arr
 
 // :END LFB
+
+#ifdef __XHARBOUR__
+FUNCTION hb_At( s1, s2, n )
+RETURN At( s1, s2, n )
+#endif

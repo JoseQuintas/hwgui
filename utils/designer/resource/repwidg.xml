@@ -36,13 +36,13 @@
               SetTransparentMode( hDC,.T. )
               if oCtrl:GetProp( "Multiline" ) == "True"
                 nLines := i := 1
-                do while ( i := At( ";",oCtrl:title,i ) ) > 0
+                do while ( i := hb_At( ";",oCtrl:title,i ) ) > 0
                   i ++
                   nLines ++
                 enddo
                 dy := oCtrl:nHeight / nLines
                 nFirst := i := ny := 1
-                do while ( i := At( ";",oCtrl:title,i ) ) > 0
+                do while ( i := hb_At( ";",oCtrl:title,i ) ) > 0
                   DrawText( hDC,Substr(oCtrl:title,nFirst,i-nFirst),2,2+ny,oCtrl:nWidth,ny+dy,nJust )
                   i ++
                   nFirst := i

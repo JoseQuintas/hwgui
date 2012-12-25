@@ -477,3 +477,96 @@ FUNCTION TxtRect( cTxt, oWin, oFont )
    RETURN ASize
 
 
+FUNCTION ParentGetDialog( o )
+   DO WHILE ( o := o:oParent ) != Nil .and. ! __ObjHasMsg( o, "GETLIST" )
+   ENDDO
+   RETURN o
+
+FUNCTION SetColorinFocus( lDef, tcolor, bcolor, lFixed, lPersist )
+
+   IF ValType( lDef ) <> "L"
+      lDef := ( ValType( lDef ) = "C" .AND. Upper( lDef ) = "ON" )
+   ENDIF
+   lColorinFocus := lDef
+   IF ! lDef
+      RETURN .F.
+   ENDIF
+   lFixedColor   := IIf( lFixed != Nil, ! lFixed, lFixedColor )
+   tcolorselect  := IIf( tcolor != Nil, tcolor, tcolorselect )
+   bcolorselect  := IIf( bcolor != Nil, bcolor, bcolorselect )
+   lPersistColorSelect := IIF( lPersist != Nil,  lPersist, lPersistColorSelect )
+
+   RETURN .T.
+
+FUNCTION SetDisableBackColor( lDef, bcolor )
+
+   IF ValType( lDef ) <> "L"
+      lDef := ( ValType( lDef ) = "C" .AND. Upper( lDef ) = "ON" )
+    ENDIF
+   //lColorinFocus := lDef
+    IF ! lDef
+       bDisablecolor := Nil
+       RETURN .F.
+   ENDIF
+   IF  Empty( bColor )
+      bDisablecolor :=  IIF( Empty( bDisablecolor ), GetSysColor( COLOR_BTNHIGHLIGHT ), bDisablecolor )
+   ELSE
+      bDisablecolor :=  bColor
+   ENDIF
+   RETURN .T.
+
+
+/*
+Luis Fernando Basso contribution
+*/
+
+/** CheckFocus
+* check focus of controls before calling events
+*/
+FUNCTION CheckFocus( oCtrl, lInside )
+   LOCAL oParent := ParentGetDialog( oCtrl )
+   LOCAL hGetFocus := PtrtouLong( GetFocus() ), lModal
+
+   IF ( !EMPTY( oParent ) .AND. ! IsWindowVisible( oParent:handle ) ) .OR. Empty( GetActiveWindow() ) // == 0
+      IF ! lInside .and. Empty( oParent:nInitFocus ) // = 0
+         oParent:Show()
+         SetFocus( oParent:handle )
+         SetFocus( hGetFocus )
+      ELSEIF ! lInside .AND. ! EMPTY( oParent:nInitFocus )
+       //  SetFocus( oParent:handle )
+         RETURN .T.
+     ENDIF
+      RETURN .F.
+   ELSEIF ! lInside .AND. ! oCtrl:lNoWhen
+      oCtrl:lNoWhen := .T.
+   ELSEIF ! lInside
+      RETURN .F.
+   ENDIF
+   IF oParent  != Nil .AND. lInside   // valid
+      lModal :=  oParent:lModal .AND.  oParent:Type >  WND_DLG_RESOURCE
+      IF ( ( ! Empty( hGetFocus ) .AND. lModal .AND. ! SELFFOCUS( GetWindowParent( hGetFocus ), oParent:Handle ) ) .OR. ;
+         (  SELFFOCUS( hGetFocus, oCtrl:oParent:Handle  ) ) ) .AND. ;
+            SELFFOCUS( oParent:handle, oCtrl:oParent:Handle )
+         RETURN .F.
+      ENDIF
+      oCtrl:lNoWhen := .F.
+   ELSE
+      oCtrl:oParent:lGetSkipLostFocus := .F.
+   ENDIF
+
+   RETURN .T.
+
+FUNCTION WhenSetFocus( oCtrl, nSkip )
+
+   IF  SelfFocus( oCtrl:Handle ) .OR. EMPTY( GetFocus() )
+       GetSkip( oCtrl:oParent, oCtrl:handle, , nSkip )
+   ENDIF
+   RETURN Nil
+
+FUNCTION GetWindowParent( nHandle )
+
+   DO WHILE ! Empty( GetParent( nHandle ) ) .AND. ! SelfFocus( nHandle, GetActiveWindow() )
+      nHandle := GetParent( nHandle )
+   ENDDO
+   RETURN PtrtouLong( nHandle )
+

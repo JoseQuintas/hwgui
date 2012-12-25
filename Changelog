@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-12-25 16:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hedit.prg
+  * source/guimain.prg
+    * Functions ParentGetDialog(), SetColorinFocus(), SetDisableBackColor(),
+      CheckFocus(), WhenSetFocus(), GetWindowParent()
+      moved from hedit.prg to guimain.prg, because they relates not to HEdit only.
+
 2012-12-25 16:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   - contrib/menus 
     - directory has been deleted, because it is outdated

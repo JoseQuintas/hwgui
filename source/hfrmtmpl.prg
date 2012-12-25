@@ -82,8 +82,10 @@ REQUEST HEDIT
 REQUEST HGROUP
 REQUEST HSAYBMP
 REQUEST HSAYICON
+#ifndef __LINUX__
 REQUEST HRICHEDIT
 REQUEST HDATEPICKER
+#endif
 REQUEST HUPDOWN
 REQUEST HCOMBOBOX
 REQUEST HLINE
@@ -92,11 +94,13 @@ REQUEST HPANEL
 REQUEST HOWNBUTTON
 REQUEST HBROWSE
 REQUEST HCOLUMN
+#ifndef __LINUX__
 REQUEST HMONTHCALENDAR
 REQUEST HTRACKBAR
+REQUEST HTREE
+#endif
 REQUEST HTAB
 REQUEST HANIMATION
-REQUEST HTREE
 REQUEST HPROGRESSBAR
 REQUEST HSHADEBUTTON
 REQUEST HLISTBOX
@@ -169,7 +173,7 @@ ENDCLASS
 METHOD Read( fname, cId ) CLASS HFormTmpl
    LOCAL oDoc
    LOCAL i, j, nCtrl := 0, aItems, o, aProp := { }, aMethods := { }
-   LOCAL cPre, cName, pp
+   LOCAL cPre, cName
 
    IF cId != NIL .AND. ( o := HFormTmpl():Find( cId ) ) != NIL
       RETURN o
@@ -194,7 +198,7 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
    ::aProp := aProp
    ::aMethods := aMethods
 
-   pp := __pp_init()
+   ppScript( ,.T. )
    AAdd( ::aForms, Self )
    aItems := oDoc:aItems[ 1 ]:aItems
    FOR i := 1 TO Len( aItems )
@@ -212,28 +216,28 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
             ENDIF
          NEXT
       ELSEIF aItems[ i ]:title == "method"
-         Aadd( aMethods, { cName := Lower(aItems[i]:GetAttribute("name")),CompileMethod(pp,aItems[i]:aItems[1]:aItems[1],Self,,cName) } )
+         Aadd( aMethods, { cName := Lower(aItems[i]:GetAttribute("name")),CompileMethod(aItems[i]:aItems[1]:aItems[1],Self,,cName) } )
          IF aMethods[ ( j := Len( aMethods ) ), 1 ] == "common"
             ::aFuncs := ::aMethods[ j, 2, 2 ]
             FOR j := 1 TO Len( ::aFuncs[ 2 ] )
                cPre := "#xtranslate " + ::aFuncs[ 2, j, 1 ] + ;
                      "( <params,...> ) => callfunc('"  + ;
                      Upper( ::aFuncs[ 2, j, 1 ] ) + "',\{ <params> \}, oDlg:oParent:aFuncs )"
-               __pp_process( pp, cPre )
+               ppScript( cPre )
                cPre := "#xtranslate " + ::aFuncs[ 2, j, 1 ] + ;
                      "() => callfunc('"  + ;
                      Upper( ::aFuncs[ 2, j, 1 ] ) + "',, oDlg:oParent:aFuncs )"
-               __pp_process( pp, cPre )
+               ppScript( cPre )
             NEXT
          ENDIF
       ELSEIF aItems[ i ]:title == "part"
          nCtrl ++
          ::nContainer := nCtrl
-         ReadCtrl( pp, aItems[ i ], Self, Self )
+         ReadCtrl( aItems[ i ], Self, Self )
       ENDIF
    NEXT
-   pp := NIL
    SetDebugInfo( .F. )
+   ppScript( ,.F. )
 
    RETURN Self
 
@@ -356,6 +360,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
 
    ELSEIF nMode == 1
 
+#ifndef __LINUX__
       IF lMdi
          INIT WINDOW ::oDlg MDI TITLE cTitle    ;
                At nLeft, nTop SIZE nWidth, nHeight ;
@@ -369,12 +374,15 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
                FONT oFont ;
                BACKGROUND BITMAP oBmp
       ELSE
+#endif
          INIT WINDOW ::oDlg MAIN TITLE cTitle    ;
                At nLeft, nTop SIZE nWidth, nHeight ;
                FONT oFont ;
                BACKGROUND BITMAP oBmp ;
                STYLE IIF( nstyle > 0 , nstyle, NIL )
+#ifndef __LINUX__
       ENDIF
+#endif
    ENDIF
 
    oDlg := ::oDlg
@@ -449,18 +457,18 @@ METHOD Close() CLASS HFormTmpl
 
    RETURN NIL
 
-STATIC FUNCTION ReadTree( pp, oForm, aParent, oDesc )
+STATIC FUNCTION ReadTree( oForm, aParent, oDesc )
    LOCAL i, aTree := { }, oNode, subarr
 
    FOR i := 1 TO Len( oDesc:aItems )
       oNode := oDesc:aItems[ i ]
       IF oNode:Type == HBXML_TYPE_CDATA
-         aParent[ 1 ] := CompileMethod( pp, oNode:aItems[ 1 ], oForm )
+         aParent[ 1 ] := CompileMethod( oNode:aItems[ 1 ], oForm )
       ELSE
          AAdd( aTree, { NIL, oNode:GetAttribute( "name" ), ;
                Val( oNode:GetAttribute( "id" ) ), .T. } )
          IF ! Empty( oNode:aItems )
-            IF ( subarr := ReadTree( pp, oForm, ATail( aTree ), oNode ) ) != NIL
+            IF ( subarr := ReadTree( oForm, ATail( aTree ), oNode ) ) != NIL
                aTree[ Len( aTree ), 1 ] := subarr
             ENDIF
          ENDIF
@@ -501,7 +509,7 @@ FUNCTION ParseMethod( cMethod )
 
    RETURN arr
 
-STATIC FUNCTION CompileMethod( pp, cMethod, oForm, oCtrl, cName )
+STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl, cName )
    LOCAL arr, arrExe, nContainer := 0, cCode1, cCode, bOldError, bRes, cParam, nPos
 
    IF cMethod = NIL .OR. Empty( cMethod )
@@ -528,14 +536,14 @@ STATIC FUNCTION CompileMethod( pp, cMethod, oForm, oCtrl, cName )
       cCode := Iif( Lower( Left(arr[1],6) ) == "return", Ltrim( Substr( arr[1],8 ) ), arr[1] )
       bOldError := ERRORBLOCK( {|e|CompileErr(e,cCode)} )
       BEGIN SEQUENCE
-         bRes := &( "{||" + __pp_process( pp, cCode ) + "}" )
+         bRes := &( "{||" + ppScript( cCode ) + "}" )
       END SEQUENCE
       ERRORBLOCK( bOldError )
       RETURN bRes
    ELSEIF !Empty(arr) .AND. !Empty( cParam )
       IF Len( arr ) == 2
          cCode := Iif( Lower( Left(arr[2],6) ) == "return", Ltrim( Substr( arr[2],8 ) ), arr[2] )
-         cCode := "{|" + cParam + "|" + __pp_process( pp, cCode ) + "}"
+         cCode := "{|" + cParam + "|" + ppScript( cCode ) + "}"
          bOldError := ERRORBLOCK( {|e|CompileErr(e,cCode)} )
          BEGIN SEQUENCE
             bRes := &cCode
@@ -581,7 +589,7 @@ STATIC PROCEDURE CompileErr( e, stroka )
             AllTrim( stroka ), "Script compiling error" )
    BREAK( NIL )
 
-STATIC FUNCTION ReadCtrl( pp, oCtrlDesc, oContainer, oForm )
+STATIC FUNCTION ReadCtrl( oCtrlDesc, oContainer, oForm )
    LOCAL oCtrl := HCtrlTmpl():New( oContainer )
    LOCAL i, j, o, cName, aProp := { }, aMethods := { }, aItems := oCtrlDesc:aItems
 
@@ -602,16 +610,16 @@ STATIC FUNCTION ReadCtrl( pp, oCtrlDesc, oContainer, oForm )
                   AAdd( oForm:aNames, hfrm_GetProperty( o:aItems[ 1 ] ) )
                ENDIF
                IF cName == "atree"
-                  AAdd( aProp, { cName, ReadTree( pp, oForm,, o ) } )
+                  AAdd( aProp, { cName, ReadTree( oForm,, o ) } )
                ELSE
                   AAdd( aProp, { cName, IIf( Empty( o:aItems ), "", o:aItems[ 1 ] ) } )
                ENDIF
             ENDIF
          NEXT
       ELSEIF aItems[ i ]:title == "method"
-         Aadd( aMethods, { cName := Lower(aItems[i]:GetAttribute("name")),CompileMethod(pp,aItems[i]:aItems[1]:aItems[1],oForm,oCtrl,cName) } )
+         Aadd( aMethods, { cName := Lower(aItems[i]:GetAttribute("name")),CompileMethod(aItems[i]:aItems[1]:aItems[1],oForm,oCtrl,cName) } )
       ELSEIF aItems[ i ]:title == "part"
-         ReadCtrl( pp, aItems[ i ], oCtrl, oForm )
+         ReadCtrl( aItems[ i ], oCtrl, oForm )
       ENDIF
    NEXT
 
@@ -1241,7 +1249,7 @@ ENDCLASS
 METHOD Read( fname, cId ) CLASS HRepTmpl
    LOCAL oDoc
    LOCAL i, j, aItems, o, aProp := { }, aMethods := { }
-   LOCAL cPre, cName, pp
+   LOCAL cPre, cName
 
    IF cId != NIL .AND. ( o := HFormTmpl():Find( cId ) ) != NIL
       RETURN o
@@ -1267,7 +1275,7 @@ METHOD Read( fname, cId ) CLASS HRepTmpl
    ::aProp := aProp
    ::aMethods := aMethods
 
-   pp := __pp_init()
+   ppScript( ,.T. )
    AAdd( ::aReports, Self )
    aItems := oDoc:aItems[ 1 ]:aItems
    FOR i := 1 TO Len( aItems )
@@ -1292,19 +1300,19 @@ METHOD Read( fname, cId ) CLASS HRepTmpl
                cPre := "#xtranslate " + ::aFuncs[ 2, j, 1 ] + ;
                      "( <params,...> ) => callfunc('"  + ;
                      Upper( ::aFuncs[ 2, j, 1 ] ) + "',\{ <params> \}, oReport:aFuncs )"
-               __pp_process( pp, cPre )
+               ppScript( cPre )
                cPre := "#xtranslate " + ::aFuncs[ 2, j, 1 ] + ;
                      "() => callfunc('"  + ;
                      Upper( ::aFuncs[ 2, j, 1 ] ) + "',, oReport:aFuncs )"
-               __pp_process( pp, cPre )
+               ppScript( cPre )
             NEXT
          ENDIF
       ELSEIF aItems[ i ]:title == "part"
          ReadRepItem( aItems[ i ], Self )
       ENDIF
    NEXT
-   pp := NIL
    SetDebugInfo( .F. )
+   ppScript( ,.F. )
 
    RETURN Self
 
@@ -1344,7 +1352,11 @@ METHOD Print( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
          NEXT
       ENDIF
    NEXT
+#ifdef __LINUX__
+   xTemp := hwg_gp_GetDeviceArea( oPrinter:hDC )
+#else
    xTemp := GetDeviceArea( oPrinter:hDCPrn )
+#endif
    ::nKoefPix := ( ( xTemp[ 1 ] / xTemp[ 3 ] + xTemp[ 2 ] / xTemp[ 4 ] ) / 2 ) / 3.8
    oPrinter:SetMode( nOrientation )
    ::nKoefX := oPrinter:nWidth / nPWidth
@@ -1501,7 +1513,11 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
          ELSE
             nPenWidth := Round( ::nKoefPix, 0 )
          ENDIF
+#ifdef __LINUX__
+         oItem:oPen := HGP_Pen():Add( nPenWidth )
+#else
          oItem:oPen := HPen():Add( nPenType, nPenWidth )
+#endif
          // writelog( str(nPenWidth) + " " + str(::nKoefY) )
       ENDIF
       IF oItem:cClass == "label"

@@ -89,7 +89,6 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/repexec.o \
    $(OBJ_DIR)/resource.o \
    $(OBJ_DIR)/richedit.o \
-   $(OBJ_DIR)/richtext.o \
    $(OBJ_DIR)/shellapi.o \
    $(OBJ_DIR)/theme.o \
    $(OBJ_DIR)/tmci.o \
@@ -104,7 +103,6 @@ $(LIB_DIR)/libprocmisc.a : \
    $(OBJ_DIR)/blowfish.o \
    $(OBJ_DIR)/procini.o \
    $(OBJ_DIR)/procs7.o \
-   $(OBJ_DIR)/saymoney.o \
    $(OBJ_DIR)/procscri.o \
    $(OBJ_DIR)/scrdebug.o
 	ar rc $@ $^

@@ -176,7 +176,6 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hdc.obj \
    $(HWGUI_OBJ_DIR)\pager.obj \
    $(HWGUI_OBJ_DIR)\hhyper.obj \
-   $(HWGUI_OBJ_DIR)\richtext.obj
 
 #
 # PROCMISC.LIB rules
@@ -187,7 +186,6 @@ PROCMISC_LIB_OBJS = \
    $(PROCMISC_OBJ_DIR)\blowfish.obj \
    $(PROCMISC_OBJ_DIR)\procini.obj \
    $(PROCMISC_OBJ_DIR)\procs7.obj \
-   $(PROCMISC_OBJ_DIR)\saymoney.obj \
    $(PROCMISC_OBJ_DIR)\procscri.obj \
    $(PROCMISC_OBJ_DIR)\scrdebug.obj
 

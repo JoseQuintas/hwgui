@@ -119,7 +119,6 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hdc.o \
    $(OBJ_DIR)/pager.o \
    $(OBJ_DIR)/hhyper.o \
-   $(OBJ_DIR)/richtext.o
 
 $(LIB_DIR)/libprocmisc.a : \
    $(OBJ_DIR)/arr2str.o \

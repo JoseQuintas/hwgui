@@ -47,7 +47,6 @@ PROCMISC_LIB_OBJS = \
    $(OBJ_DIR)\blowfish.obj \
    $(OBJ_DIR)\procini.obj \
    $(OBJ_DIR)\procs7.obj \
-   $(OBJ_DIR)\saymoney.obj \
    $(OBJ_DIR)\procscri.obj \
    $(OBJ_DIR)\scrdebug.obj
 
@@ -108,7 +107,6 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\repexec.obj \
    $(OBJ_DIR)\printdos.obj \
-   $(OBJ_DIR)\richtext.obj \
    $(OBJ_DIR)\hlistbox.obj \
    $(OBJ_DIR)\hsplash.obj \
    $(OBJ_DIR)\hmonthc.obj \
@@ -404,12 +402,6 @@ $(OBJ_DIR)\repexec.c : $(SRC_DIR)\repexec.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\repexec.obj : $(OBJ_DIR)\repexec.c
-   $(CC_EXE) $(CFLAGS) -fo$@ $**
-
-$(OBJ_DIR)\richtext.c : $(SRC_DIR)\richtext.prg
-   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
-
-$(OBJ_DIR)\richtext.obj : $(OBJ_DIR)\richtext.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\tmci.c : $(SRC_DIR)\tmci.prg

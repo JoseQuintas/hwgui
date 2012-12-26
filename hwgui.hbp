@@ -51,6 +51,7 @@ source/hbrowse.prg
 source/hcheck.prg
 source/hcombo.prg
 source/hcontrol.prg
+source/hctrlex.prg
 source/hcwindow.prg
 source/hdatepic.prg
 source/hdialog.prg

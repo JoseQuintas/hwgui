@@ -71,6 +71,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hcheck.obj \
    $(HWGUI_OBJ_DIR)\hcombo.obj \
    $(HWGUI_OBJ_DIR)\hcontrol.obj \
+   $(HWGUI_OBJ_DIR)\hctrlex.obj \
    $(HWGUI_OBJ_DIR)\hcwindow.obj \
    $(HWGUI_OBJ_DIR)\hdatepic.obj \
    $(HWGUI_OBJ_DIR)\hdialog.obj \

@@ -31,6 +31,7 @@ PRG_SOURCES=\
 	hcheck.prg \
 	hcombo.prg \
 	hcontrol.prg \
+	hctrlex.prg \
 	hcwindow.prg \
 	hdatepic.prg \
 	hedit.prg \

@@ -75,7 +75,6 @@ source/hupdown.prg
 source/hwindow.prg
 source/hwinprn.prg
 source/menu.prg
-source/repexec.prg
 source/printdos.prg
 source/hdc.prg
 source/hhyper.prg

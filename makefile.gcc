@@ -85,7 +85,6 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/nice.o \
    $(OBJ_DIR)/pager.o \
    $(OBJ_DIR)/printdos.o \
-   $(OBJ_DIR)/repexec.o \
    $(OBJ_DIR)/resource.o \
    $(OBJ_DIR)/richedit.o \
    $(OBJ_DIR)/shellapi.o \

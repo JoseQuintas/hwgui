@@ -170,7 +170,6 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\menu.obj \
    $(HWGUI_OBJ_DIR)\c_ipaddr.obj \
    $(HWGUI_OBJ_DIR)\listbox.obj \
-   $(HWGUI_OBJ_DIR)\repexec.obj \
    $(HWGUI_OBJ_DIR)\printdos.obj \
    $(HWGUI_OBJ_DIR)\hdc.obj \
    $(HWGUI_OBJ_DIR)\pager.obj \

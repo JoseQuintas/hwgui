@@ -164,7 +164,7 @@ RETURN res
 FUNCTION RecalcForm( aPaintRep, nFormWidth )
    LOCAL hDC, aMetr, aItem, i
    hDC := GetDC( GetActiveWindow() )
-   aMetr := GetDeviceArea( hDC )
+   aMetr := hwg_GetDeviceArea( hDC )
    aPaintRep[ FORM_XKOEF ] := ( aMetr[ 1 ] - XINDENT ) / aPaintRep[ FORM_WIDTH ]
    ReleaseDC( GetActiveWindow(), hDC )
 
@@ -195,7 +195,7 @@ FUNCTION PrintReport( printerName, oPrn, lPreview )
       RETURN .F.
    ENDIF
 
-   aPrnCoors := GetDeviceArea( oPrinter:hDCPrn )
+   aPrnCoors := hwg_GetDeviceArea( oPrinter:hDCPrn )
    prnXCoef := ( aPrnCoors[ 1 ] / aPaintRep[ FORM_WIDTH ] ) / aPaintRep[ FORM_XKOEF ]
    prnYCoef := ( aPrnCoors[ 2 ] / aPaintRep[ FORM_HEIGHT ] ) / aPaintRep[ FORM_XKOEF ]
    // writelog( oPrinter:cPrinterName + str(aPrnCoors[1])+str(aPrnCoors[2])+" / "+str(aPaintRep[FORM_WIDTH])+" "+str(aPaintRep[FORM_HEIGHT])+str(aPaintRep[FORM_XKOEF])+" / "+str(prnXCoef)+str(prnYCoef) )

@@ -23,13 +23,13 @@ Private lAddMode := .F.
       Return .F.
    ENDIF
 
-   aPrnCoors := GetDeviceArea( oPrinter:hDCPrn )
+   aPrnCoors := hwg_GetDeviceArea( oPrinter:hDCPrn )
    prnXCoef := aPrnCoors[1]/aPaintRep[FORM_WIDTH]
    prnYCoef := aPrnCoors[2]/aPaintRep[FORM_HEIGHT]
    // writelog( str(aPrnCoors[1])+str(aPrnCoors[2])+" / "+str(prnXCoef)+str(prnYCoef)+" / "+str(aPaintRep[FORM_XKOEF]) )
 
    hDCwindow := GetDC( Hwindow():GetMain():handle )
-   aMetr := GetDeviceArea( hDCwindow )
+   aMetr := hwg_GetDeviceArea( hDCwindow )
    SelectObject( hDCwindow, oFontStandard:handle )
    aTmetr := GetTextMetric( hDCwindow )
    dKoef := ( aMetr[1]-XINDENT ) / aTmetr[2]

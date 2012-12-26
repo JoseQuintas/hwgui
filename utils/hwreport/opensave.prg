@@ -384,7 +384,7 @@ Static Function WriteRep( han, repName )
 Local i, aItem, oPen, oFont, hDCwindow, aMetr
 
    hDCwindow := GetDC( Hwindow():GetMain():handle )
-   aMetr := GetDeviceArea( hDCwindow )
+   aMetr := hwg_GetDeviceArea( hDCwindow )
    ReleaseDC( Hwindow():GetMain():handle,hDCwindow )
 
    Fwrite( han, "#REPORT "+repName+Chr(10) )
@@ -433,7 +433,7 @@ Static Function WriteToPrg( han, repName )
 Local i, aItem, oPen, oFont, hDCwindow, aMetr, cItem, cQuote, cPen, cFont
 
    hDCwindow := GetDC( Hwindow():GetMain():handle )
-   aMetr := GetDeviceArea( hDCwindow )
+   aMetr := hwg_GetDeviceArea( hDCwindow )
    ReleaseDC( Hwindow():GetMain():handle,hDCwindow )
 
    Fwrite( han, "FUNCTION " + repName + Chr(10) + ;

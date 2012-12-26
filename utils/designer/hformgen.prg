@@ -76,7 +76,7 @@ ENDCLASS
 
 METHOD New() CLASS HFormGen
    LOCAL i := 1, name
-   LOCAL hDCwindow := GetDC( GetActiveWindow() ), aTermMetr := GetDeviceArea( hDCwindow )
+   LOCAL hDCwindow := GetDC( GetActiveWindow() ), aTermMetr := hwg_GetDeviceArea( hDCwindow )
 
    DeleteDC( hDCwindow )
    DO WHILE .T.
@@ -327,7 +327,7 @@ METHOD CreateDialog( aProp ) CLASS HFormGen
 
    IF oDesigner:lReport
       hDC := GetDC( GetActiveWindow() )
-      aMetr := GetDeviceArea( hDC )
+      aMetr := hwg_GetDeviceArea( hDC )
       // writelog( str(aMetr[1])+str(aMetr[2])+str(aMetr[3])+str(aMetr[4])+str(aMetr[5])+str(aMetr[6])+str(aMetr[7])+str(aMetr[8])+str(aMetr[9]) )
       ::nKoeff := ( aMetr[1]/aMetr[3] + aMetr[2]/aMetr[4] ) / 2
       // writelog( str(::nKoeff) )

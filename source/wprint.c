@@ -196,7 +196,7 @@ HB_FUNC( HWG_GETPRINTERS )
 
 }
 
-HB_FUNC( SETPRINTERMODE )
+HB_FUNC( HWG_SETPRINTERMODE )
 {
    void * hPrinterName;
    LPCTSTR lpPrinterName = HB_PARSTR( 1, &hPrinterName, NULL );
@@ -237,7 +237,7 @@ HB_FUNC( SETPRINTERMODE )
    hb_strfree( hPrinterName );
 }
 
-HB_FUNC( CLOSEPRINTER )
+HB_FUNC( HWG_CLOSEPRINTER )
 {
    HANDLE hPrinter = ( HANDLE ) HB_PARHANDLE( 1 );
    ClosePrinter( hPrinter );
@@ -287,7 +287,7 @@ HB_FUNC( HWG_ENDPAGE )
  * LOGPIXELSY	Number of pixels per logical inch along the screen height.
  *
  */
-HB_FUNC( GETDEVICEAREA )
+HB_FUNC( HWG_GETDEVICEAREA )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    PHB_ITEM temp;
@@ -341,7 +341,7 @@ HB_FUNC( GETDEVICEAREA )
    hb_itemRelease( aMetr );
 }
 
-HB_FUNC( CREATEENHMETAFILE )
+HB_FUNC( HWG_CREATEENHMETAFILE )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
    HDC hDCref = GetDC( hWnd ), hDCmeta;
@@ -392,7 +392,7 @@ HB_FUNC( CREATEENHMETAFILE )
    hb_strfree( hFileName );
 }
 
-HB_FUNC( CREATEMETAFILE )
+HB_FUNC( HWG_CREATEMETAFILE )
 {
    HDC hDCref = ( HDC ) HB_PARHANDLE( 1 ), hDCmeta;
    void * hFileName;
@@ -428,18 +428,18 @@ HB_FUNC( CREATEMETAFILE )
    hb_strfree( hFileName );
 }
 
-HB_FUNC( CLOSEENHMETAFILE )
+HB_FUNC( HWG_CLOSEENHMETAFILE )
 {
    HB_RETHANDLE( CloseEnhMetaFile( ( HDC ) HB_PARHANDLE( 1 ) ) );
 }
 
-HB_FUNC( DELETEENHMETAFILE )
+HB_FUNC( HWG_DELETEENHMETAFILE )
 {
    HB_RETHANDLE( ( LONG ) DeleteEnhMetaFile( ( HENHMETAFILE )
                HB_PARHANDLE( 1 ) ) );
 }
 
-HB_FUNC( PLAYENHMETAFILE )
+HB_FUNC( HWG_PLAYENHMETAFILE )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    RECT rc;
@@ -457,29 +457,18 @@ HB_FUNC( PLAYENHMETAFILE )
                ( HENHMETAFILE ) HB_PARHANDLE( 2 ), &rc ) );
 }
 
-HB_FUNC( PRINTENHMETAFILE )
+HB_FUNC( HWG_PRINTENHMETAFILE )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
-   // DOCINFO di;
    RECT rc;
-
-   /*
-      di.cbSize = sizeof(DOCINFO); 
-      di.lpszDocName = hb_parc( 3 );
-      di.lpszOutput = NULL; 
-      di.lpszDatatype = NULL; 
-      di.fwType = 0; 
-    */
 
    SetRect( &rc, 0, 0, GetDeviceCaps( hDC, HORZRES ), GetDeviceCaps( hDC,
                VERTRES ) );
 
-   // StartDoc( hDC, &di );
    StartPage( hDC );
    hb_retnl( ( LONG ) PlayEnhMetaFile( hDC,
                ( HENHMETAFILE ) HB_PARHANDLE( 2 ), &rc ) );
    EndPage( hDC );
-   // EndDoc( hDC );
 }
 
 HB_FUNC( HWG_SETDOCUMENTPROPERTIES )

@@ -6,13 +6,6 @@
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
-
- *
- * ButtonEx class
- *
- * Copyright 2007 Luiz Rafael Culik Guimaraes <luiz at xharbour.com.br >
- * www - http://sites.uol.com.br/culikr/
-
 */
 
 #translate :hBitmap       => :m_csbitmaps\[ 1 \]

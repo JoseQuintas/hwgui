@@ -240,7 +240,7 @@
            Private hDC := GetDC( GetActiveWindow() ), aMetr, aTMetr, o
            oCtrl:oFont := value
            SelectObject( hDC,value:handle )
-           aMetr := GetDeviceArea( hDC )
+           aMetr := hwg_GetDeviceArea( hDC )
            aTMetr:= GetTextMetric( hDC )
            o := Iif( oCtrl:Classname()=="HDIALOG",oCtrl:oParent,oCtrl )
            o:SetProp( "FontH",Ltrim(Str(aTMetr[1]*aMetr[4]/aMetr[2])) )

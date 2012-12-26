@@ -1355,7 +1355,7 @@ METHOD Print( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
 #ifdef __LINUX__
    xTemp := hwg_gp_GetDeviceArea( oPrinter:hDC )
 #else
-   xTemp := GetDeviceArea( oPrinter:hDCPrn )
+   xTemp := hwg_GetDeviceArea( oPrinter:hDCPrn )
 #endif
    ::nKoefPix := ( ( xTemp[ 1 ] / xTemp[ 3 ] + xTemp[ 2 ] / xTemp[ 4 ] ) / 2 ) / 3.8
    oPrinter:SetMode( nOrientation )

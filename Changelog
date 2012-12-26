@@ -8,6 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-12-26 12:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  + include/hwgcompat.ch
+    + this new header file is intended for compatibility, it holds
+      #xtranslate statements for functions, which names will be changed
+      ( prefixed with "hwg_" ). You may include it in your applications
+      if you don't want to change all function calls.
+  * source/wprint.c
+    * All functions, which had not the "hwg_" prefix, has been prefixed with it.
+  * source/hprinter.prg
+  * source/guimain.prg
+  * utils/hwreport/example.prg
+  * utils/hwreport/hwreport.prg
+  * utils/hwreport/opensave.prg
+  * utils/hwreport/printrpt.prg
+  * utils/hwreport/repexec.prg
+    * Changed function calls for functions from wprint.c, prefixed with "hwg_"
+
 2012-12-26 11:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   + contrib/misc/miscfunc.prg
     + added file with 3 functions - Addmethod, AddProperty, RemoveProperty,

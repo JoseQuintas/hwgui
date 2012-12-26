@@ -166,7 +166,7 @@ Local step, kolsteps, nsteps
    aCoors := GetClientRect( hWnd )
 
    IF aPaintRep[FORM_XKOEFCONST] == 0
-      aMetr := GetDeviceArea( hDC )
+      aMetr := hwg_GetDeviceArea( hDC )
       aPaintRep[FORM_XKOEFCONST] := ( aMetr[1]-XINDENT )/aPaintRep[FORM_WIDTH]
    ENDIF
 

@@ -819,8 +819,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
    ::oBrush := IIF( bColor != NIL, ::brush,NIL )
    ::lTransparent := IIF( lTransp != NIL, lTransp, .F. )
    ::backStyle := IIF( ( lTransp != NIL .AND. lTransp ) .OR. ::bColor != NIL , TRANSPARENT, OPAQUE )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
-         oFont, bInit, bSize, bPaint,, tcolor, bColor )
+   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
+         oFont, bInit, bSize, bPaint, tcolor, bColor )
 
    RETURN Self
 

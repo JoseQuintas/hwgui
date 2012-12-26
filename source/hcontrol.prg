@@ -1118,7 +1118,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
 
 RETURN Self
 
-METHOD Activate CLASS HGroup
+METHOD Activate() CLASS HGroup
    IF !Empty( ::oParent:handle )
       ::handle := CreateButton( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth, ::nHeight, ;

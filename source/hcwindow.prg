@@ -117,15 +117,11 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    METHOD AddEvent( nEvent, oCtrl, bAction, lNotify, cMethName )
    METHOD FindControl( nId, nHandle )
    METHOD Hide()              INLINE ( ::lHide := .T., HideWindow( ::handle ) )
-   //METHOD Show( )              INLINE ( ::lHide := .F., ShowWindow( ::handle ) )
-   METHOD Show( nShow )       INLINE ( ::lHide := .F., IIF( nShow = Nil, ShowWindow( ::handle  ),;
-                                       ShowWindow( ::handle, nShow  )  ) )
+   METHOD Show( nShow )       INLINE ( ::lHide := .F., ShowWindow( ::handle, nShow )  )
    METHOD Move( x1, y1, width, height, nRePaint )
    METHOD onEvent( msg, wParam, lParam )
    METHOD END()
    METHOD SetColor( tcolor, bColor, lRepaint )
-   METHOD RefreshCtrl( oCtrl, nSeek )
-   METHOD SetFocusCtrl( oCtrl )
    METHOD Refresh( lAll, oCtrl )
    METHOD Anchor( oCtrl, x, y, w, h )
    METHOD ScrollHV( oForm, msg, wParam, lParam )
@@ -282,39 +278,6 @@ LOCAL aControls, i, nLen
       FOR i := 1 TO nLen
           aControls[ i ]:End()
       NEXT
-   ENDIF
-
-   RETURN NIL
-
-//----------------------------------------------------------------------------//
-
-METHOD RefreshCtrl( oCtrl, nSeek ) CLASS HCustomWindow
-   LOCAL nPos, n
-
-   DEFAULT nSeek := 1
-
-   IF nSeek == 1
-      n := 1
-   ELSE
-      n := 3
-   ENDIF
-
-   nPos := AScan( ::aControls, { | x | x[ n ] == oCtrl } )
-
-   IF nPos > 0
-      ::aControls[ nPos, 2 ]:Refresh()
-   ENDIF
-
-   RETURN NIL
-
-//----------------------------------------------------------------------------//
-METHOD SetFocusCtrl( oCtrl ) CLASS HCustomWindow
-   LOCAL nPos
-
-   nPos := AScan( ::aControls, { | x | x[ 1 ] == oCtrl } )
-
-   IF nPos > 0
-      ::aControls[ nPos, 2 ]:SetFocus()
    ENDIF
 
    RETURN NIL

@@ -482,40 +482,6 @@ FUNCTION ParentGetDialog( o )
    ENDDO
    RETURN o
 
-FUNCTION SetColorinFocus( lDef, tcolor, bcolor, lFixed, lPersist )
-
-   IF ValType( lDef ) <> "L"
-      lDef := ( ValType( lDef ) = "C" .AND. Upper( lDef ) = "ON" )
-   ENDIF
-   lColorinFocus := lDef
-   IF ! lDef
-      RETURN .F.
-   ENDIF
-   lFixedColor   := IIf( lFixed != Nil, ! lFixed, lFixedColor )
-   tcolorselect  := IIf( tcolor != Nil, tcolor, tcolorselect )
-   bcolorselect  := IIf( bcolor != Nil, bcolor, bcolorselect )
-   lPersistColorSelect := IIF( lPersist != Nil,  lPersist, lPersistColorSelect )
-
-   RETURN .T.
-
-FUNCTION SetDisableBackColor( lDef, bcolor )
-
-   IF ValType( lDef ) <> "L"
-      lDef := ( ValType( lDef ) = "C" .AND. Upper( lDef ) = "ON" )
-    ENDIF
-   //lColorinFocus := lDef
-    IF ! lDef
-       bDisablecolor := Nil
-       RETURN .F.
-   ENDIF
-   IF  Empty( bColor )
-      bDisablecolor :=  IIF( Empty( bDisablecolor ), GetSysColor( COLOR_BTNHIGHLIGHT ), bDisablecolor )
-   ELSE
-      bDisablecolor :=  bColor
-   ENDIF
-   RETURN .T.
-
-
 /*
 Luis Fernando Basso contribution
 */

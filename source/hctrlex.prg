@@ -29,6 +29,7 @@
 #define BTNST_MAX_COLORS      6
 #define WM_SYSCOLORCHANGE               0x0015
 #define BS_TYPEMASK SS_TYPEMASK
+#define OFS_X	10 // distance from left/right side to beginning/end of text
 
 CLASS HButtonEX INHERIT HButton
 

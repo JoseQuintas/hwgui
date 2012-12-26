@@ -35,7 +35,6 @@ PRG_SOURCES=\
 	hdatepic.prg \
 	hedit.prg \
 	hfreeimg.prg \
-	hfrmtmpl.prg \
 	hgraph.prg \
 	hownbtn.prg \
 	hpanel.prg \

@@ -139,7 +139,6 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hdialog.obj \
    $(HWGUI_OBJ_DIR)\hedit.obj \
    $(HWGUI_OBJ_DIR)\hfreeimg.obj \
-   $(HWGUI_OBJ_DIR)\hfrmtmpl.obj \
    $(HWGUI_OBJ_DIR)\hgraph.obj \
    $(HWGUI_OBJ_DIR)\hgrid.obj \
    $(HWGUI_OBJ_DIR)\hgridex.obj \
@@ -182,8 +181,8 @@ HWGUI_LIB_OBJS = \
 #
 
 PROCMISC_LIB_OBJS = \
-   $(PROCMISC_OBJ_DIR)\arr2str.obj \
    $(PROCMISC_OBJ_DIR)\blowfish.obj \
+   $(PROCMISC_OBJ_DIR)\hfrmtmpl.obj \
    $(PROCMISC_OBJ_DIR)\procini.obj \
    $(PROCMISC_OBJ_DIR)\procs7.obj \
    $(PROCMISC_OBJ_DIR)\procscri.obj \

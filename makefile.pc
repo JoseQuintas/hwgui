@@ -47,8 +47,8 @@ QHTM_LIB_OBJS = \
    $(OBJ_DIR)\hqhtm.obj
 
 PROCMISC_LIB_OBJS = \
-   $(OBJ_DIR)\arr2str.obj \
    $(OBJ_DIR)\blowfish.obj \
+   $(OBJ_DIR)\hfrmtmpl.obj \
    $(OBJ_DIR)\procini.obj \
    $(OBJ_DIR)\procs7.obj \
    $(OBJ_DIR)\procscri.obj \
@@ -87,7 +87,6 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hdialog.obj \
    $(OBJ_DIR)\hedit.obj \
    $(OBJ_DIR)\hfreeimg.obj \
-   $(OBJ_DIR)\hfrmtmpl.obj \
    $(OBJ_DIR)\hgraph.obj \
    $(OBJ_DIR)\htrackbr.obj \
    $(OBJ_DIR)\hanimat.obj \
@@ -220,12 +219,6 @@ $(OBJ_DIR)\hfreeimg.c : $(SRC_DIR)\hfreeimg.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hfreeimg.obj : $(OBJ_DIR)\hfreeimg.c
-   $(CC_EXE) $(CFLAGS) /Fo$@ $**
-
-$(OBJ_DIR)\hfrmtmpl.c : $(SRC_DIR)\hfrmtmpl.prg
-   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
-
-$(OBJ_DIR)\hfrmtmpl.obj : $(OBJ_DIR)\hfrmtmpl.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\hgraph.c : $(SRC_DIR)\hgraph.prg
@@ -530,10 +523,13 @@ $(OBJ_DIR)\hwg_qhtm.obj : $(SRC_DIR)\qhtm\hwg_qhtm.c
 # ¿ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒŸ€
 #  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 
-$(OBJ_DIR)\arr2str.obj : $(SRC_DIR)\procmisc\arr2str.c
+$(OBJ_DIR)\blowfish.obj : $(SRC_DIR)\procmisc\blowfish.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
-$(OBJ_DIR)\blowfish.obj : $(SRC_DIR)\procmisc\blowfish.c
+$(OBJ_DIR)\hfrmtmpl.c : $(SRC_DIR)\procmisc\hfrmtmpl.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hfrmtmpl.obj : $(OBJ_DIR)\hfrmtmpl.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\procini.c : $(SRC_DIR)\procmisc\procini.prg

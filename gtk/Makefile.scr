@@ -63,7 +63,6 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hcontrol.o \
    $(OBJ_DIR)/hdialog.o \
    $(OBJ_DIR)/hedit.o \
-   $(OBJ_DIR)/hfrmtmpl.o \
    $(OBJ_DIR)/hgraph.o \
    $(OBJ_DIR)/hownbtn.o \
    $(OBJ_DIR)/hpanel.o \
@@ -81,8 +80,8 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hprogres.o
 
 $(LIB_DIR)/libprocmisc.a : \
-   $(OBJ_DIR)/arr2str.o \
    $(OBJ_DIR)/blowfish.o \
+   $(OBJ_DIR)/hfrmtmpl.o \
    $(OBJ_DIR)/procini.o \
    $(OBJ_DIR)/procs7.o \
    $(OBJ_DIR)/procscri.o

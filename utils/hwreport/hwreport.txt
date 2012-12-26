@@ -48,6 +48,8 @@
 
         bldHWRep.bat   -     bat file to build HWReport
 
+        repexec.prg    -     source file, which must be linked to any 
+                               application, which uses HwReport
         example.prg    -     source file of example application
         bldexam.bat    -     bat file to build example application
         example.rpt    -     example report file

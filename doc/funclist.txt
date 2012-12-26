@@ -244,18 +244,6 @@ PRINT.C:
   Playenhmetafile
   Printenhmetafile
 
-PRNALONE.C:
-  Printsetup
-  Openprinter
-  Opendefaultprinter
-  Startdoc
-  Enddoc
-  Startpage
-  Endpage
-  Deletedc
-  Getdevicearea
-  Drawtext
-
 MENU_C.C:
   Checkmenuitem
   Ischeckedmenuitem

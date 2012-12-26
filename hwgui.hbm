@@ -45,7 +45,6 @@ source/hdatepic.prg
 source/hdialog.prg
 source/hedit.prg
 source/hfreeimg.prg
-source/hfrmtmpl.prg
 source/hgraph.prg
 source/hgrid.prg
 source/hgridex.prg

@@ -265,13 +265,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
          RETURN 0
       ENDIF
       IF ( ( wParam == VK_SPACE ) .or. ( wParam == VK_RETURN ) )
-         /*
-         IF ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE )
-            SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
-             ELSE
-            SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
-         ENDIF
-         */
          SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
          RETURN 0
       ENDIF
@@ -353,7 +346,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
       RETURN 0
    ELSEIF msg == WM_GETDLGCODE
       IF wParam = VK_ESCAPE .AND. ( GETDLGMESSAGE( lParam ) = WM_KEYDOWN .OR. GETDLGMESSAGE( lParam ) = WM_KEYUP )
-         oParent := ::GetParentForm()
+         oParent := hwg_GetParentForm(Self)
          IF ! ProcKeyList( Self, wParam )  .AND. ( oParent:Type < WND_DLG_RESOURCE .OR. ! oParent:lModal )
             SendMessage( oParent:handle, WM_COMMAND, makewparam( IDCANCEL, 0 ), ::handle )
          ELSEIF oParent:FindControl( IDCANCEL ) != NIL .AND. ! oParent:FindControl( IDCANCEL ):IsEnabled() .AND. oParent:lExitOnEsc

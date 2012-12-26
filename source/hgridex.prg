@@ -252,7 +252,7 @@ METHOD AddRow( a , bupdate ) CLASS HGRIDEX
 
 METHOD Notify( lParam )  CLASS HGRIDEX
    LOCAL nCode := GetNotifyCode( lParam )
-   LOCAL Res, iSelect, oParent := ::GetParentForm()
+   LOCAL Res, iSelect, oParent := hwg_GetParentForm(Self)
 
    IF nCode == NM_CUSTOMDRAW .and. GETNOTIFYCODEFROM( lParam ) == ::Handle
       Res := PROCESSCUSTU( ::handle, lParam, ::aColors )

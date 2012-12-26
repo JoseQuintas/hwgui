@@ -145,7 +145,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
    IF msg == WM_PAINT .AND. GetUpdateRect( ::Handle ) > 0
       ::Paint()
 
-   ELSEIF msg == WM_NCPAINT .AND. ! SELFFOCUS( ::GetParentForm():handle, GetActiveWindow() )
+   ELSEIF msg == WM_NCPAINT .AND. ! SELFFOCUS( hwg_GetParentForm(Self):handle, GetActiveWindow() )
       REDRAWWINDOW( ::Handle, RDW_UPDATENOW )
 
    ELSEIF msg == WM_ERASEBKGND
@@ -187,25 +187,14 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
          RETURN -1
       ENDIF
    ENDIF
-   IF msg = WM_NCPAINT .AND. ::GetParentForm():nInitFocus > 0 .AND. ;
-         ( SELFFOCUS( GetParent( ::GetParentForm():nInitFocus ), ::Handle  ) .OR. ;
-         SELFFOCUS( GetParent( ::GetParentForm():nInitFocus ), GetParent( ::Handle ) ) )
-      GetSkip( ::oParent, ::GetParentForm():nInitFocus , , IIF( SelfFocus( ::GetParentForm():nInitFocus, ::Handle ), 1, 0 ) )
-      ::GetParentForm():nInitFocus := 0
-   ELSEIF msg = WM_SETFOCUS .AND. EMPTY(::GetParentForm():nInitFocus) .AND. ! ::lSuspendMsgsHandling  //.AND. Hwg_BitaND( ::sTyle, WS_TABSTOP ) != 0
+   IF msg = WM_NCPAINT .AND. hwg_GetParentForm(Self):nInitFocus > 0 .AND. ;
+         ( SELFFOCUS( GetParent( hwg_GetParentForm(Self):nInitFocus ), ::Handle  ) .OR. ;
+         SELFFOCUS( GetParent( hwg_GetParentForm(Self):nInitFocus ), GetParent( ::Handle ) ) )
+      GetSkip( ::oParent, hwg_GetParentForm(Self):nInitFocus , , IIF( SelfFocus( hwg_GetParentForm(Self):nInitFocus, ::Handle ), 1, 0 ) )
+      hwg_GetParentForm(Self):nInitFocus := 0
+   ELSEIF msg = WM_SETFOCUS .AND. EMPTY(hwg_GetParentForm(Self):nInitFocus) .AND. ! ::lSuspendMsgsHandling  //.AND. Hwg_BitaND( ::sTyle, WS_TABSTOP ) != 0
       Getskip( ::oParent, ::handle, , ::nGetSkip )
 
-/*
-   ELSEIF msg = WM_KEYDOWN
-       IF wParam = VK_DOWN
-          getskip( ::oparent, ::handle, , 1 )
-       ELSEIF   wParam = VK_UP
-          getskip( ::oparent, ::handle, , -1 )
-       ELSEIF wParam = VK_TAB
-          GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
-       ENDIF
-       RETURN 0
-   */
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .OR. ( msg == WM_MOUSEWHEEL ) //.AND. ::nScrollBars >= 2 )
          IF ::nScrollBars != -1 .AND. ::bScroll = NIL

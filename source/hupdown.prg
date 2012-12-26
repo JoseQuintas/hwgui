@@ -158,18 +158,17 @@ METHOD CREATEUPDOWN() CLASS Hupdown
    ::nHolder := 0
    IF !::lCreate
       ::Activate()
-      AddToolTip( ::GetParentForm():handle, ::oEditUpDown:handle, ::tooltip )
+      AddToolTip( hwg_GetParentForm(Self):handle, ::oEditUpDown:handle, ::tooltip )
       ::oEditUpDown:SetFont( ::oFont )
       ::oEditUpDown:DisableBrush := ::DisableBrush
       SETWINDOWPOS( ::oEditUpDown:handle, ::Handle, 0, 0, 0, 0, SWP_NOSIZE +  SWP_NOMOVE )
       DESTROYWINDOW( ::Handle )
-   ELSEIF ::getParentForm():Type < WND_DLG_RESOURCE .AND. ::oParent:ClassName = "HTAB" //!EMPTY( ::oParent:oParent )
-      // MDICHILD WITH TAB
+   ELSEIF hwg_getParentForm(Self):Type < WND_DLG_RESOURCE .AND. ::oParent:ClassName = "HTAB" //!EMPTY( ::oParent:oParent )
       ::nHolder := 1
       SetWindowObject( ::oEditUpDown:handle, ::oEditUpDown )
       Hwg_InitEditProc( ::oEditUpDown:handle )
    ELSE
-      AddToolTip( ::GetParentForm():handle, ::oEditUpDown:handle, ::tooltip )
+      AddToolTip( hwg_GetParentForm(Self):handle, ::oEditUpDown:handle, ::tooltip )
    ENDIF
    ::handle := ::oEditUpDown:handle
    ::hwndUpDown := CreateUpDownControl( ::oParent:handle, ::idUpDown, ;
@@ -495,7 +494,7 @@ STATIC FUNCTION __When( oCtrl )
       oCtrl:oParent:lSuspendMsgsHandling := .f.
       oCtrl:lnoValid := ! res
       IF ! res
-         oParent := ParentGetDialog( oCtrl )
+         oParent := hwg_GetParentForm( oCtrl )
          IF oCtrl == ATail( oParent:GetList )
             nSkip := - 1
          ELSEIF oCtrl == oParent:getList[ 1 ]
@@ -521,7 +520,7 @@ STATIC FUNCTION __Valid( oCtrl )
    ENDIF
    oCtrl:oparent:lSuspendMsgsHandling := .t.
    hctrl := getfocus()
-   oDlg := ParentGetDialog( oCtrl )
+   oDlg := hwg_GetParentForm( oCtrl )
    IF oCtrl:bLostFocus != Nil
       res := Eval( oCtrl:bLostFocus, oCtrl:value,  oCtrl )
       res := IIf( res, oCtrl:value <= oCtrl:nUpper .and. ;

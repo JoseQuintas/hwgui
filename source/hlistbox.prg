@@ -299,7 +299,7 @@ METHOD Valid( oCtrl ) CLASS HListBox
       RETURN .t.
    ENDIF
    //nSkip := IIf( GetKeyState( VK_SHIFT ) < 0 , - 1, 1 )
-   IF ( oDlg := ParentGetDialog( Self ) ) == Nil .OR. oDlg:nLastKey != 27
+   IF ( oDlg := hwg_GetParentForm( Self ) ) == Nil .OR. oDlg:nLastKey != 27
       ::value := SendMessage( ::handle, LB_GETCURSEL, 0, 0 ) + 1
       IF ::bSetGet != Nil
          Eval( ::bSetGet, ::value, Self )

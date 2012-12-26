@@ -133,7 +133,6 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    METHOD SetupScrollbars()
    METHOD RedefineScrollbars()
    METHOD SetTextClass ( x ) HIDDEN
-   METHOD GetParentForm( oCtrl )
    METHOD ActiveControl()  INLINE ::FindControl( , GetFocus() )
    METHOD Closable( lClosable ) SETGET
    METHOD Release()        INLINE ::DelControl( Self )
@@ -288,14 +287,6 @@ LOCAL aControls, i, nLen
    RETURN NIL
 
 //----------------------------------------------------------------------------//
-
-METHOD GetParentForm( oCtrl )  CLASS HCustomWindow
-LOCAL oForm := IIF( EMPTY( oCtrl ), Self, oCtrl )
-   DO WHILE ( oForm:oParent ) != Nil .AND. ! __ObjHasMsg( oForm, "GETLIST" )
-      oForm := oForm:oParent
-   ENDDO
-   RETURN IIF( VALTYPE( oForm ) == "O", oForm, ::oParent )
-
 
 METHOD RefreshCtrl( oCtrl, nSeek ) CLASS HCustomWindow
    LOCAL nPos, n
@@ -824,7 +815,7 @@ STATIC FUNCTION onDrawItem( oWnd, wParam, lParam )
 
 STATIC FUNCTION onCommand( oWnd, wParam, lParam )
    LOCAL iItem, iParHigh := HIWORD( wParam ), iParLow := LOWORD( wParam )
-   LOCAL oForm := oWnd:GetParentForm()
+   LOCAL oForm := hwg_GetParentForm( oWnd )
 
    HB_SYMBOL_UNUSED( lParam )
    IF oWnd:aEvents != NIL .AND. ! oForm:lSuspendMsgsHandling .AND. ! oWnd:lSuspendMsgsHandling .AND. ;

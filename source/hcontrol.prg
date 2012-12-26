@@ -59,9 +59,6 @@ CLASS HControl INHERIT HCustomWindow
    METHOD SetToolTip( ctooltip )
    METHOD ControlSource( cControlSource ) SETGET
    METHOD DisableBackColor( DisableBColor ) SETGET
-   METHOD FontBold( lTrue ) SETGET
-   METHOD FontItalic( lTrue ) SETGET
-   METHOD FontUnderline( lTrue ) SETGET
    METHOD END()
 
 ENDCLASS
@@ -120,7 +117,7 @@ METHOD AddName( cName ) CLASS HControl
    RETURN NIL
 
 METHOD INIT() CLASS HControl
-   LOCAL oForm := ::GetParentForm( )
+   LOCAL oForm := hwg_GetParentForm( Self )
 
    IF ! ::lInit
       //IF ::tooltip != NIL
@@ -169,15 +166,15 @@ METHOD SetFocus( lValid ) CLASS HControl
       ::oParent:lSuspendMsgsHandling  := lSuspend
    ELSE
       ::oParent:lSuspendMsgsHandling  := ! Empty( lValid )
-      IF ::GetParentForm():Type < WND_DLG_RESOURCE
+      IF hwg_GetParentForm(Self):Type < WND_DLG_RESOURCE
          SetFocus( ::handle )
       ELSE
          SendMessage( GetActiveWindow(), WM_NEXTDLGCTL, ::handle, 1 )
       ENDIF
       ::oParent:lSuspendMsgsHandling  := lSuspend
    ENDIF
-   IF ::GetParentForm():Type < WND_DLG_RESOURCE
-      ::GetParentForm():nFocus := ::Handle
+   IF hwg_GetParentForm(Self):Type < WND_DLG_RESOURCE
+      hwg_GetParentForm(Self):nFocus := ::Handle
    ENDIF
 
    RETURN NIL
@@ -224,76 +221,10 @@ METHOD SetFont( oFont ) CLASS HControl
 
    RETURN ::oFont
 
-METHOD FontBold( lTrue ) CLASS HControl
-   LOCAL oFont
-
-   IF ::oFont = NIL
-      IF ::GetParentForm() != NIL .AND. ::GetParentForm():oFont != NIL
-         oFont := ::GetParentForm():oFont
-      ELSEIF ::oParent:oFont != NIL
-         oFont := ::oParent:oFont
-      ENDIF
-      IF oFont = NIL .AND. lTrue = NIL
-         RETURN .T.
-      ENDIF
-      ::oFont := IIF( oFont != NIL, HFont():Add( oFont:name, oFont:Width,,,,,), HFont():Add( "", 0, , IIF( !Empty( lTrue ), FW_BOLD, FW_REGULAR ), ,,) )
-   ENDIF
-   IF lTrue != NIL
-      ::oFont := ::oFont:SetFontStyle( lTrue )
-      SendMessage( ::handle, WM_SETFONT, ::oFont:handle, MAKELPARAM( 0, 1 ) )
-      RedrawWindow( ::handle, RDW_NOERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT )
-   ENDIF
-
-   RETURN ::oFont:weight == FW_BOLD
-
-METHOD FontItalic( lTrue ) CLASS HControl
-   LOCAL oFont
-
-   IF ::oFont = NIL
-      IF ::GetParentForm() != NIL .AND. ::GetParentForm():oFont != NIL
-         oFont := ::GetParentForm():oFont
-      ELSEIF ::oParent:oFont != NIL
-         oFont := ::oParent:oFont
-      ENDIF
-      IF oFont = NIL .AND. lTrue = NIL
-         RETURN .F.
-      ENDIF
-      ::oFont := IIF( oFont != NIL, HFont():Add( oFont:name, oFont:width,,,,IIF( lTrue, 1, 0 ) ), HFont():Add( "", 0 ,,,, IIF( lTrue, 1, 0 ) ) )
-   ENDIF
-   IF lTrue != NIL
-      ::oFont := ::oFont:SetFontStyle( ,, lTrue )
-      SendMessage( ::handle, WM_SETFONT, ::oFont:handle, MAKELPARAM( 0, 1 ) )
-      RedrawWindow( ::handle, RDW_NOERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT )
-   ENDIF
-
-   RETURN ::oFont:Italic = 1
-
-METHOD FontUnderline( lTrue ) CLASS HControl
-   LOCAL oFont
-
-   IF ::oFont = NIL
-      IF ::GetParentForm() != NIL .AND. ::GetParentForm():oFont != NIL
-         oFont := ::GetParentForm():oFont
-      ELSEIF ::oParent:oFont != NIL
-         oFont := ::oParent:oFont
-      ENDIF
-      IF oFont = NIL .AND. lTrue = NIL
-         RETURN .F.
-      ENDIF
-      ::oFont := IIF( oFont != NIL, HFont():Add( oFont:name, oFont:width,,,,, IIF( lTrue, 1, 0 ) ), HFont():Add( "", 0, ,,,, IIF( lTrue, 1, 0) ) )
-   ENDIF
-   IF lTrue != NIL
-      ::oFont := ::oFont:SetFontStyle( ,,,lTrue )
-      SendMessage( ::handle, WM_SETFONT, ::oFont:handle, MAKELPARAM( 0, 1 ) )
-      RedrawWindow( ::handle, RDW_NOERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT )
-   ENDIF
-
-   RETURN ::oFont:Underline = 1
-
 METHOD SetToolTip ( cToolTip ) CLASS HControl
 
    IF VALTYPE( cToolTip ) = "C"  .AND. cToolTip != ::ToolTip
-      SETTOOLTIPTITLE( ::GetparentForm():handle, ::handle, ctooltip )
+      SETTOOLTIPTITLE( hwg_GetparentForm(Self):handle, ::handle, ctooltip )
       ::Tooltip := cToolTip
    ENDIF
 
@@ -1004,9 +935,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    */
    IF ::id > IDCANCEL .OR. ::bClick != NIL
       IF ::id < IDABORT
-         ::GetParentForm():AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+         hwg_GetParentForm(Self):AddEvent( BN_CLICKED, Self, { || ::onClick() } )
       ENDIF
-      IF ::GetParentForm():Classname != ::oParent:Classname  .OR. ::id > IDCANCEL
+      IF hwg_GetParentForm(Self):Classname != ::oParent:Classname  .OR. ::id > IDCANCEL
          ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
       ENDIF
    ENDIF
@@ -1037,9 +968,9 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::bClick  := bClick
    IF ::id > IDCANCEL .OR. ::bClick != NIL
       IF ::id < IDABORT
-         ::GetParentForm():AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+         hwg_GetParentForm(Self):AddEvent( BN_CLICKED, Self, { || ::onClick() } )
       ENDIF
-      IF ::GetParentForm():Classname != ::oParent:Classname  .OR. ::id > IDCANCEL
+      IF hwg_GetParentForm(Self):Classname != ::oParent:Classname  .OR. ::id > IDCANCEL
          ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
       ENDIF
    ENDIF
@@ -1049,9 +980,9 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
 METHOD Init() CLASS HButton
 
    IF ! ::lInit
-      IF !( ::GetParentForm( ):classname == ::oParent:classname .AND.;
-            ::GetParentForm( ):Type >= WND_DLG_RESOURCE ) .OR. ;
-            ! ::GetParentForm( ):lModal  .OR. ::nHolder = 1
+      IF !( hwg_GetParentForm(Self):classname == ::oParent:classname .AND.;
+            hwg_GetParentForm(Self):Type >= WND_DLG_RESOURCE ) .OR. ;
+            ! hwg_GetParentForm(Self):lModal  .OR. ::nHolder = 1
          ::nHolder := 1
          SetWindowObject( ::handle, Self )
          HWG_INITBUTTONPROC( ::handle )
@@ -1071,7 +1002,7 @@ METHOD onevent( msg, wParam, lParam ) CLASS HButton
    IF msg = WM_SETFOCUS .AND. ::oParent:oParent = NIL
       // *- SENDMESSAGE( ::handle, BM_SETSTYLE , BS_PUSHBUTTON , 1 )
    ELSEIF msg = WM_KILLFOCUS
-      IF ::GetParentForm():handle != ::oParent:Handle
+      IF hwg_GetParentForm(Self):handle != ::oParent:Handle
          // *- IF ::oParent:oParent != NIL
          InvalidateRect( ::handle, 0 )
          SENDMESSAGE( ::handle, BM_SETSTYLE , BS_PUSHBUTTON , 1 )
@@ -1156,7 +1087,7 @@ METHOD onLostFocus()  CLASS HButton
       InvalidateRect( ::oParent:Handle, 1 , ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )
    ENDIF
    ::lnoWhen := .F.
-   IF ::bLostFocus != NIL .AND. SelfFocus( GetParent( GetFocus() ), ::getparentform():Handle )
+   IF ::bLostFocus != NIL .AND. SelfFocus( GetParent( GetFocus() ), hwg_getparentform(Self):Handle )
       ::oparent:lSuspendMsgsHandling := .t.
       Eval( ::bLostFocus, ::title, Self)
       ::oparent:lSuspendMsgsHandling := .f.

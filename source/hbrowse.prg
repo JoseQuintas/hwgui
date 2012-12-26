@@ -461,8 +461,8 @@ METHOD Init() CLASS HBrowse
       Super:Init()
       ::InitBrw( , .T. )
       //VScrollPos( Self, 0, .F. )
-      IF ::GetParentForm( ):Type < WND_DLG_RESOURCE
-         ::GetParentForm():lDisableCtrlTab := .T.
+      IF hwg_GetParentForm( Self ):Type < WND_DLG_RESOURCE
+         hwg_GetParentForm( Self ):lDisableCtrlTab := .T.
       ENDIF
    ENDIF
 
@@ -574,14 +574,6 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          */
       ELSEIF msg == WM_KILLFOCUS .AND. ! ::lSuspendMsgsHandling
          ::Valid()
-         /*
-         IF ::bLostFocus != NIL
-            Eval( ::bLostFocus, Self )
-         ENDIF
-         IF ::GetParentForm( self ):Type < WND_DLG_RESOURCE
-             SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, 0 ), ::handle )
-         ENDIF
-         */
          ::internal[ 1 ] := 15 //force redraw header,footer and separator
       ELSEIF msg == WM_HSCROLL
          ::DoHScroll( wParam )
@@ -607,17 +599,17 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
       ELSEIF msg == WM_GETDLGCODE
          ::isMouseOver := .F.
          IF wParam = VK_ESCAPE   .AND. ;          // DIALOG MODAL
-               ( oParent := ::GetParentForm:FindControl( IDCANCEL ) ) != NIL .AND. ! oParent:IsEnabled()
+               ( oParent := hwg_GetParentForm(Self):FindControl( IDCANCEL ) ) != NIL .AND. ! oParent:IsEnabled()
             RETURN DLGC_WANTMESSAGE
-         ELSEIF ( wParam = VK_ESCAPE .AND. ::GetParentForm():handle != ::oParent:Handle .AND. ::lEsc ) .OR. ; //! ::lAutoEdit
-               ( wParam = VK_RETURN .AND. ::GetParentForm():FindControl( IDOK ) != NIL )
+         ELSEIF ( wParam = VK_ESCAPE .AND. hwg_GetParentForm(Self):handle != ::oParent:Handle .AND. ::lEsc ) .OR. ; //! ::lAutoEdit
+               ( wParam = VK_RETURN .AND. hwg_GetParentForm(Self):FindControl( IDOK ) != NIL )
             RETURN -1
          ENDIF
          RETURN DLGC_WANTALLKEYS
       ELSEIF msg == WM_COMMAND
          // Super:onEvent( WM_COMMAND )
-         IF ::GetParentForm( self ):Type < WND_DLG_RESOURCE
-            ::GetParentForm( self ):onEvent( msg, wparam, lparam )
+         IF hwg_GetParentForm( Self ):Type < WND_DLG_RESOURCE
+            hwg_GetParentForm( Self ):onEvent( msg, wparam, lparam )
          ELSE
             DlgCommand( Self, wParam, lParam )
          ENDIF
@@ -628,7 +620,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          IF wParam == 16
             ::lShiftPress := .F.
          ENDIF
-         IF wParam == VK_TAB .AND. ::GetParentForm( ):Type < WND_DLG_RESOURCE
+         IF wParam == VK_TAB .AND. hwg_GetParentForm(Self):Type < WND_DLG_RESOURCE
             IF IsCtrlShift(.T.,.F.)
                getskip(::oParent,::handle,, ;
                iif( IsCtrlShift(.f., .t.), -1, 1) )
@@ -783,7 +775,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          ELSEIF wParam == VK_RETURN    // Enter
             ::Edit( VK_RETURN )
          ELSEIF wParam == VK_ESCAPE .AND. ::lESC
-            IF ::GetParentForm( ):Type < WND_DLG_RESOURCE
+            IF hwg_GetParentForm(Self):Type < WND_DLG_RESOURCE
                SendMessage( GetParent( ::handle ), WM_SYSCOMMAND, SC_CLOSE, 0 )
             ELSE
                SendMessage( GetParent( ::handle ), WM_CLOSE, 0, 0 )
@@ -1007,7 +999,7 @@ METHOD ShowColToolTips( lParam ) CLASS HBrowse
       cTip := ::aColumns[ pt[ 2 ] ]:ToolTip
    ENDIF
    IF ! EMPTY( cTip ) .OR. ! EMPTY( xToolTip )
-      SETTOOLTIPTITLE( ::GetparentForm():handle, ::handle, cTip )
+      SETTOOLTIPTITLE( hwg_GetparentForm(Self):handle, ::handle, cTip )
       xToolTip := IIF( ! EMPTY( cTip ), cTip, IIF( ! EMPTY( xToolTip ), NIL, xToolTip ) )
    ENDIF
 
@@ -1019,7 +1011,7 @@ METHOD SetRefresh( nSeconds ) CLASS HBrowse
       IF ::oTimer != NIL
          ::oTimer:Interval := nSeconds * 1000
       ELSEIF nSeconds > 0
-         SET TIMER ::oTimer OF ::GetParentForm() VALUE ( nSeconds * 1000)  ACTION { || IIF( isWindowVisible( ::Handle ),;
+         SET TIMER ::oTimer OF hwg_GetParentForm(Self) VALUE ( nSeconds * 1000)  ACTION { || IIF( isWindowVisible( ::Handle ),;
                ( ::internal[ 1 ] := 12, INVALIDATERect( ::handle, 0,;
                ::x1 , ;
                ::y1 ,;
@@ -1039,7 +1031,7 @@ METHOD InitBrw( nType, lInit )  CLASS HBrowse
    IF EMPTY( lInit )
       ::x1 := ::y1 := ::x2 := ::y2  := ::xAdjRight := 0
       ::height := ::width := 0
-      ::nyHeight := IIF( ::GetParentForm( self ):Type < WND_DLG_RESOURCE ,1 ,0 )
+      ::nyHeight := IIF( hwg_GetParentForm( Self ):Type < WND_DLG_RESOURCE ,1 ,0 )
       ::lDeleteMark := .F.
       ::lShowMark := .T.
       ::nPaintCol := 0
@@ -2876,8 +2868,8 @@ METHOD ButtonDown( lParam, lReturnRowCol ) CLASS HBrowse
          ::lHeadClick := .T.
       ENDIF
    ENDIF
-   IF ( PtrtouLong( GetActiveWindow() ) = PtrtouLong( ::GetParentForm():Handle )  .OR. ;
-      ::GetParentForm( ):Type < WND_DLG_RESOURCE )
+   IF ( PtrtouLong( GetActiveWindow() ) = PtrtouLong( hwg_GetParentForm(Self):Handle )  .OR. ;
+      hwg_GetParentForm(Self):Type < WND_DLG_RESOURCE )
       ::SetFocus()
       ::RefreshLine()
    ENDIF
@@ -2929,12 +2921,6 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
       ::lHeadClick := .F.
       Hwg_SetCursor( downCursor )
    ENDIF
-   /*
-   IF  PtrtouLong( GetActiveWindow() ) = PtrtouLong( ::GetParentForm():Handle )  .OR. ;
-       ::GetParentForm( ):Type < WND_DLG_RESOURCE
-       ::SetFocus()
-   ENDIF
-    */
 
    RETURN NIL
 

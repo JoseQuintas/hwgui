@@ -368,16 +368,16 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
       ::ldropshow := IIF( wParam = 1, .T., ::ldropshow )
    ENDIF
 
-   IF ::bSetGet != Nil .OR. ::GetParentForm( Self ):Type < WND_DLG_RESOURCE
-      IF msg == WM_CHAR .AND. ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE .OR. ;
-          ! ::GetParentForm( Self ) :lModal )
+   IF ::bSetGet != Nil .OR. hwg_GetParentForm( Self ):Type < WND_DLG_RESOURCE
+      IF msg == WM_CHAR .AND. ( hwg_GetParentForm( Self ):Type < WND_DLG_RESOURCE .OR. ;
+          ! hwg_GetParentForm( Self ) :lModal )
          IF wParam = VK_TAB
             GetSkip( ::oParent, ::handle,, Iif( IsCtrlShift( .f., .t. ), - 1, 1 ) )
             RETURN 0
          ELSEIF wParam == VK_RETURN .AND. ;
-            ! ProcOkCancel( Self, wParam, ::GetParentForm():Type >= WND_DLG_RESOURCE ) .AND.;
-                       ( ::GetParentForm():Type < WND_DLG_RESOURCE.OR.;
-                   ! ::GetParentForm():lModal )
+            ! ProcOkCancel( Self, wParam, hwg_GetParentForm(Self):Type >= WND_DLG_RESOURCE ) .AND.;
+                       ( hwg_GetParentForm(Self):Type < WND_DLG_RESOURCE.OR.;
+                   ! hwg_GetParentForm(Self):lModal )
             GetSkip( ::oParent, ::handle,, 1 )
             RETURN 0
          ENDIF
@@ -385,7 +385,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
          IF wParam = VK_RETURN
             RETURN DLGC_WANTMESSAGE
          ELSEIF wParam = VK_ESCAPE  .AND. ;
-                  ( oCtrl := ::GetParentForm:FindControl( IDCANCEL ) ) != Nil .AND. ! oCtrl:IsEnabled()
+                  ( oCtrl := hwg_GetParentForm(Self):FindControl( IDCANCEL ) ) != Nil .AND. ! oCtrl:IsEnabled()
             RETURN DLGC_WANTMESSAGE
          ENDIF
            RETURN  DLGC_WANTCHARS + DLGC_WANTARROWS
@@ -398,7 +398,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
          ELSEIF wparam =  VK_LEFT //.AND. ! ::lEdit
                GetSkip( ::oParent, ::handle, , -1 )
                RETURN 0
-         ELSEIF wParam = VK_ESCAPE .AND.  ::GetParentForm( Self ):Type < WND_DLG_RESOURCE //.OR.;
+         ELSEIF wParam = VK_ESCAPE .AND. hwg_GetParentForm( Self ):Type < WND_DLG_RESOURCE //.OR.;
             RETURN 0
          ENDIF
 
@@ -412,8 +412,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
            IF GETKEYSTATE( VK_RETURN ) < 0
             ::GetValue()
           ENDIF
-         IF ( GETKEYSTATE( VK_RETURN ) < 0 .OR. GETKEYSTATE( VK_ESCAPE ) < 0 ) .AND. ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE .OR.;
-            ! ::GetParentForm( Self ):lModal )
+         IF ( GETKEYSTATE( VK_RETURN ) < 0 .OR. GETKEYSTATE( VK_ESCAPE ) < 0 ) .AND. ( hwg_GetParentForm( Self ):Type < WND_DLG_RESOURCE .OR.;
+            ! hwg_GetParentForm( Self ):lModal )
              ProcOkCancel( Self, IIF( GETKEYSTATE( VK_RETURN ) < 0, VK_RETURN, VK_ESCAPE ) )
           ENDIF
            IF GETKEYSTATE( VK_TAB ) + GETKEYSTATE( VK_DOWN ) < 0 .AND. GetKeyState( VK_SHIFT ) > 0
@@ -429,7 +429,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
             GetSkip( ::oParent, ::handle,, - 1 )
             RETURN 0
          ENDIF
-         IF ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE.OR. ! ::GetParentForm( Self ):lModal )
+         IF ( hwg_GetParentForm( Self ):Type < WND_DLG_RESOURCE.OR. ! hwg_GetParentForm( Self ):lModal )
              RETURN 1
           ENDIF
       ENDIF
@@ -758,7 +758,7 @@ LOCAL res := .t., oParent, nSkip
       ::oParent:lSuspendMsgsHandling := .F.
       ::lnoValid                     := !res
       IF VALTYPE(res) = "L" .AND. ! res
-         oParent := ParentGetDialog( Self )
+         oParent := hwg_GetParentForm( Self )
          IF Self == ATail( oParent:GetList )
             nSkip := - 1
          ELSEIF Self == oParent:getList[ 1 ]
@@ -779,7 +779,7 @@ METHOD Valid( ) CLASS HComboBox
 
    nSkip := Iif( GetKeyState( VK_SHIFT ) < 0, - 1, 1 )
 
-   IF ( oDlg := ParentGetDialog( Self ) ) == Nil .OR. oDlg:nLastKey != VK_ESCAPE
+   IF ( oDlg := hwg_GetParentForm( Self ) ) == Nil .OR. oDlg:nLastKey != VK_ESCAPE
       // end by sauli
       // IF lESC // "if" by Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com.br) 03/06/2006
@@ -1067,7 +1067,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
          ::SetCheck( nIndex, !::GetCheck( nIndex ) )
          SendMessage( ::oParent:handle, WM_COMMAND, MAKELONG( ::id, CBN_SELCHANGE ), ::handle )
       ENDIF
-      IF ( ::GetParentForm( Self ) :Type < WND_DLG_RESOURCE .OR. !::GetParentForm( Self ) :lModal )
+      IF ( hwg_GetParentForm( Self ) :Type < WND_DLG_RESOURCE .OR. !hwg_GetParentForm( Self ) :lModal )
          IF wParam = VK_TAB
             GetSkip( ::oParent, ::handle,, Iif( IsCtrlShift( .F., .T. ), - 1, 1 ) )
             RETURN 0

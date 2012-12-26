@@ -148,7 +148,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCheckButton
       IF wParam = VK_RETURN .OR. wParam = VK_TAB
          RETURN -1
       ELSEIF wParam = VK_ESCAPE  .AND. ;
-            ( oCtrl := ::GetParentForm:FindControl( IDCANCEL ) ) != NIL .AND. ! oCtrl:IsEnabled()
+            ( oCtrl := hwg_GetParentForm(Self):FindControl( IDCANCEL ) ) != NIL .AND. ! oCtrl:IsEnabled()
          RETURN DLGC_WANTMESSAGE
       ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND. wParam != VK_ESCAPE
       ELSEIF GETDLGMESSAGE( lParam ) = WM_CHAR .OR.wParam = VK_ESCAPE .OR.;

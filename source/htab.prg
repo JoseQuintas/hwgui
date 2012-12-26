@@ -264,20 +264,10 @@ METHOD Init() CLASS HTab
       IF ::himl != NIL
          SendMessage( ::handle, TCM_SETIMAGELIST, 0, ::himl )
       ENDIF
-      AddToolTip( ::GetParentForm():handle, ::handle, "" )
+      AddToolTip( hwg_GetParentForm(Self):handle, ::handle, "" )
       Super:Init()
 
       IF Len( ::aPages ) > 0
-         //::Pages[ 1 ]:aItemPos := TabItemPos( ::Handle, 0 )
-         /*
-         IF ASCAN( ::Pages, { | p | p:brush != NIL } ) > 0
-            ::SetPaintSizePos( - 1 )
-         ELSEIF ASCAN( ::Pages, { | p | p:tcolor != NIL } ) > 0
-            ::SetPaintSizePos( 1 )
-         ELSE
-            ::oPaint:nHeight := ::TabHeightSize
-         ENDIF
-         */
          ::SetPaintSizePos( IIF( ASCAN( ::Pages, { | p | p:brush != NIL } ) > 0 , - 1, 1 ) )
          ::nActive := 0
          FOR i := 1 TO Len( ::aPages )
@@ -784,14 +774,14 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
       IF GetFocus() = ::Handle
          InvalidateRect( ::oPaint:handle, 1, 0, 0 , ::nwidth, 30 ) //::TabHeightSize + 2 )
       ENDIF
-      IF ::GetParentForm( self ):Type < WND_DLG_RESOURCE
+      IF hwg_GetParentForm( self ):Type < WND_DLG_RESOURCE
          RETURN ( ::oParent:onEvent( msg, wparam, lparam ) )
       ELSE
          RETURN ( super:onevent(msg, wparam, lparam ) )
       ENDIF
    ELSEIF msg = WM_GETDLGCODE
       IF wparam == VK_RETURN .OR. wParam = VK_ESCAPE  .AND. ;
-            ( ( oCtrl := ::GetParentForm:FindControl( IDCANCEL ) ) != NIL .AND. ! oCtrl:IsEnabled() )
+            ( ( oCtrl := hwg_GetParentForm(Self):FindControl( IDCANCEL ) ) != NIL .AND. ! oCtrl:IsEnabled() )
          RETURN DLGC_WANTMESSAGE
       ENDIF
    ENDIF
@@ -813,11 +803,11 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
       ::oparent:lSuspendMsgsHandling := .f.
    ENDIF
    IF ! ( ( msg = WM_COMMAND .OR. msg = WM_NOTIFY) .AND. ::oParent:lSuspendMsgsHandling .AND. ::lSuspendMsgsHandling )
-      IF msg = WM_NCPAINT .AND. ::GetParentForm():nInitFocus > 0  .AND. PtrtouLong( GetParent( ::GetParentForm():nInitFocus ) ) = PtrtouLong( ::Handle )
-         GetSkip( ::oParent, ::GetParentForm():nInitFocus , , 0 )
-         ::GetParentForm():nInitFocus := 0
+      IF msg = WM_NCPAINT .AND. hwg_GetParentForm(Self):nInitFocus > 0  .AND. PtrtouLong( GetParent( hwg_GetParentForm(Self):nInitFocus ) ) = PtrtouLong( ::Handle )
+         GetSkip( ::oParent, hwg_GetParentForm(Self):nInitFocus , , 0 )
+         hwg_GetParentForm(Self):nInitFocus := 0
       ENDIF
-      IF msg == WM_KILLFOCUS .AND. ::GetParentForm() != NIL  .AND. ::GetParentForm():Type < WND_DLG_RESOURCE
+      IF msg == WM_KILLFOCUS .AND. hwg_GetParentForm(Self) != NIL  .AND. hwg_GetParentForm(Self):Type < WND_DLG_RESOURCE
          SendMessage( ::oParent:handle, WM_COMMAND, makewparam( ::id, 0 ), ::handle )
          ::nPrevPage := 0
       ENDIF

@@ -477,7 +477,7 @@ FUNCTION TxtRect( cTxt, oWin, oFont )
    RETURN ASize
 
 
-FUNCTION ParentGetDialog( o )
+FUNCTION hwg_getParentForm( o )
    DO WHILE ( o := o:oParent ) != Nil .and. ! __ObjHasMsg( o, "GETLIST" )
    ENDDO
    RETURN o
@@ -490,7 +490,7 @@ Luis Fernando Basso contribution
 * check focus of controls before calling events
 */
 FUNCTION CheckFocus( oCtrl, lInside )
-   LOCAL oParent := ParentGetDialog( oCtrl )
+   LOCAL oParent := hwg_GetParentForm( oCtrl )
    LOCAL hGetFocus := PtrtouLong( GetFocus() ), lModal
 
    IF ( !EMPTY( oParent ) .AND. ! IsWindowVisible( oParent:handle ) ) .OR. Empty( GetActiveWindow() ) // == 0
@@ -544,7 +544,7 @@ LOCAL oParent, nCtrl,nPos
       RETURN .F.
    ENDIF
    IF wParam != VK_SHIFT  .AND. wParam != VK_CONTROL .AND. wParam != VK_MENU
-      oParent := IIF( oMain != Nil, oMain, ParentGetDialog( oCtrl ) )
+      oParent := IIF( oMain != Nil, oMain, hwg_GetParentForm( oCtrl ) )
       IF oParent != Nil .AND. ! Empty( oParent:KeyList )
          nctrl := IIf( IsCtrlShift(.t., .f.), FCONTROL, iif(IsCtrlShift(.f., .t.), FSHIFT, 0 ) )
          IF ( nPos := AScan( oParent:KeyList, { | a | a[ 1 ] == nctrl.AND.a[ 2 ] == wParam } ) ) > 0
@@ -559,7 +559,7 @@ LOCAL oParent, nCtrl,nPos
    RETURN .F.
 
 FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
-   Local oWin := oCtrl:GetParentForm(), lEscape
+   Local oWin := hwg_GetParentForm(oCtrl), lEscape
    Local iParHigh := IIF( nKey = VK_RETURN, IDOK, IDCANCEL )
    LOCAL oCtrlFocu := oCtrl
 
@@ -642,23 +642,40 @@ FUNCTION GetBackColorParent( oCtrl, lSelf, lTransparent )
       oCtrl := oCtrl:oParent
    ENDIF
    IF  oCtrl != Nil .AND. oCtrl:Classname = "HTAB"
-       *-brush := HBrush():Add( bColor )
        IF Len( oCtrl:aPages ) > 0 .AND. oCtrl:Pages[ oCtrl:GETACTIVEPAGE() ]:bColor != Nil
-          *-brush := oCtrl:Pages[ oCtrl:GetActivePage() ]:brush
           bColor := oCtrl:Pages[ oCtrl:GetActivePage() ]:bColor
        ELSEIF ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest
-          hTheme := hb_OpenThemeData( oCtrl:handle, "TAB" ) //oCtrl:oParent:WinClass )
+          hTheme := hb_OpenThemeData( oCtrl:handle, "TAB" )
           IF !EMPTY( hTheme )
              bColor := HWG_GETTHEMESYSCOLOR( hTheme, COLOR_WINDOW  )
              HB_CLOSETHEMEDATA( hTheme )
-             *-brush := HBrush():Add( bColor )
           ENDIF
        ENDIF
    ELSEIF oCtrl:bColor != Nil
-       *-brush := oCtrl:brush
        bColor := oCtrl:bColor
-    *-ELSEIF oCtrl:brush = Nil .AND. lTransparent
-    *-   brush := HBrush():Add( bColor )
    ENDIF
    brush := HBrush():Add( bColor ) 
    Return brush
+
+Function  hwg_SetFontStyle( oWnd, lBold, lItalic, lUnderline )
+   LOCAL oFont
+
+   IF oWnd:oFont == NIL
+      IF hwg_GetParentForm(oWnd) != NIL .AND. hwg_GetParentForm(oWnd):oFont != NIL
+         oFont := hwg_GetParentForm(oWnd):oFont
+      ELSEIF oWnd:oParent:oFont != NIL
+         oFont := oWnd:oParent:oFont
+      ENDIF
+      IF oFont == NIL .AND. lBold == NIL .AND. lItalic == NIL .AND. lUnderline == NIL
+         RETURN .T.
+      ENDIF
+      oWnd:oFont := IIF( oFont != NIL, HFont():Add( oFont:name, oFont:Width,,,, Iif(lItalic!=Nil,Iif(lItalic,1,0),NIL),Iif(lUnderline!=Nil,Iif(lUnderline,1,0),NIL) ), ;
+            HFont():Add( "", 0,, Iif(lBold!=Nil,Iif(lBold,FW_BOLD,FW_REGULAR),NIL),,Iif(lItalic!=Nil,Iif(lItalic,1,0),NIL),Iif(lUnderline!=Nil,Iif(lUnderline,1,0),NIL)) )
+   ENDIF
+   IF lBold != NIL .OR. lItalic != NIL .OR. lUnderline != NIL
+      oWnd:oFont := oWnd:oFont:SetFontStyle( lBold,,lItalic,lUnderline )
+      SendMessage( oWnd:handle, WM_SETFONT, oWnd:oFont:handle, MAKELPARAM( 0, 1 ) )
+      RedrawWindow( oWnd:handle, RDW_NOERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT )
+   ENDIF
+
+   RETURN Iif(lBold!=Nil,(oWnd:oFont:weight==FW_BOLD), Iif(lItalic!=Nil,(oWnd:oFont:italic=1),oWnd:oFont:Underline==1))

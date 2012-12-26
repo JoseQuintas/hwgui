@@ -260,23 +260,23 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                ::DeleteChar( .T. )
                RETURN 0
             ELSEIF wParam == VK_RETURN
-               IF ! ProcOkCancel( Self, wParam, ::GetParentForm():Type >= WND_DLG_RESOURCE ) .AND.;
-                       ( ::GetParentForm():Type < WND_DLG_RESOURCE.OR.;
-                   ! ::GetParentForm():lModal )
+               IF ! ProcOkCancel( Self, wParam, hwg_GetParentForm(Self):Type >= WND_DLG_RESOURCE ) .AND.;
+                       ( hwg_GetParentForm(Self):Type < WND_DLG_RESOURCE.OR.;
+                   ! hwg_GetParentForm(Self):lModal )
                    GetSkip( oParent, ::handle, , 1 )
                   RETURN 0
-               ELSEIF  ::GetParentForm():Type < WND_DLG_RESOURCE
+               ELSEIF  hwg_GetParentForm(Self):Type < WND_DLG_RESOURCE
                   RETURN 0
                ENDIF
                RETURN -1
             ELSEIF wParam == VK_TAB
-               IF ( ::GetParentForm( Self ):Type < WND_DLG_RESOURCE.OR.;
-                   ! ::GetParentForm( Self ):lModal )
+               IF ( hwg_GetParentForm( Self ):Type < WND_DLG_RESOURCE.OR.;
+                   ! hwg_GetParentForm( Self ):lModal )
                   *- GetSkip( oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
                ENDIF
                RETURN 0
             ELSEIF wParam == VK_ESCAPE
-               oParent := ::GetParentForm( )
+               oParent := hwg_GetParentForm(Self)
                IF oParent:Handle == ::oParent:Handle .AND. oParent:lExitOnEsc .AND. ;
                                   oParent:FindControl( IDCANCEL ) != Nil .AND. ;
                                 ! oParent:FindControl( IDCANCEL ):IsEnabled()
@@ -407,15 +407,15 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
             RETURN -1
          ELSEIF msg == WM_KEYDOWN
-            IF wParam == VK_TAB .AND. ::GetParentForm():Type >= WND_DLG_RESOURCE    // Tab
+            IF wParam == VK_TAB .AND. hwg_GetParentForm(Self):Type >= WND_DLG_RESOURCE    // Tab
                nexthandle := GetNextDlgTabItem ( GetActiveWindow(), GetFocus(), ;
                                                  IsCtrlShift(.f., .t.) )
                //SetFocus( nexthandle )
                PostMessage( GetActiveWindow(), WM_NEXTDLGCTL, nextHandle, 1 )
                RETURN 0
-            ELSEIF  ( wParam == VK_RETURN .OR. wParam == VK_ESCAPE ).AND. ProcOkCancel( Self, wParam, ::GetParentForm():Type >= WND_DLG_RESOURCE )
+            ELSEIF  ( wParam == VK_RETURN .OR. wParam == VK_ESCAPE ).AND. ProcOkCancel( Self, wParam, hwg_GetParentForm(Self):Type >= WND_DLG_RESOURCE )
                RETURN - 1
-            ELSEIF ( wParam == VK_RETURN .OR. wParam == VK_TAB ) .AND. ::GetParentForm():Type < WND_DLG_RESOURCE
+            ELSEIF ( wParam == VK_RETURN .OR. wParam == VK_TAB ) .AND. hwg_GetParentForm(Self):Type < WND_DLG_RESOURCE
                GetSkip( oParent, ::handle, , 1 )
 
                RETURN 0
@@ -467,18 +467,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          ELSEIF wParam == VK_ESCAPE
             RETURN 0
          ELSEIF wParam == VK_RETURN .AND. ! ::lWantReturn .AND. ::bSetGet != Nil
-                //IF ( ::GetParentForm():Type < WND_DLG_RESOURCE.OR.;
-            //     ! ::GetParentForm():lModal )
                  GetSkip( oParent, ::handle, , 1 )
                  RETURN 0
-            //ENDIF
-            //RETURN -1
          ENDIF
       ELSEIF msg == WM_KEYDOWN
          IF wParam == VK_TAB     // Tab
-        //    GetSkip( oParent, ::handle, , ;
-        //             IIf( IsCtrlShift( .f., .t. ), - 1, 1 ) )
-          //  RETURN 0
          ELSEIF wParam == VK_ESCAPE
             RETURN -1
          ENDIF
@@ -519,7 +512,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       */
    ELSEIF msg == WM_GETDLGCODE
       IF wParam = VK_ESCAPE   .AND. ;          // DIALOG MODAL
-              ( oParent := ::GetParentForm:FindControl( IDCANCEL ) ) != Nil .AND. ! oParent:IsEnabled()
+              ( oParent := hwg_GetParentForm(Self):FindControl( IDCANCEL ) ) != Nil .AND. ! oParent:IsEnabled()
          RETURN DLGC_WANTMESSAGE
       ENDIF
       IF ! ::lMultiLine .OR. wParam = VK_ESCAPE
@@ -1145,14 +1138,6 @@ METHOD When() CLASS HEdit
       ::lnoValid := ! res
       ::oParent:lSuspendMsgsHandling := .F.
       IF ! res
-         /*
-         oParent := ParentGetDialog( Self )
-         IF Self == ATail(oParent:GetList)
-            nSkip := -1
-         ELSEIF Self == oParent:getList[1]
-            nSkip := 1
-         ENDIF
-         */
          WhenSetFocus( Self, nSkip )
       ELSE
          ::SetFocus()
@@ -1163,12 +1148,11 @@ METHOD When() CLASS HEdit
 METHOD Valid( ) CLASS HEdit
    LOCAL res := .T., vari, oDlg
 
-   //IF ::bLostFocus != Nil .AND. ( ::lNoValid .OR. ! CheckFocus( Self, .T. ) )
    IF ( ! CheckFocus( Self, .T. ) .OR. ::lNoValid ) .AND. ::bLostFocus != Nil
       RETURN .t.
    ENDIF
    IF ::bSetGet != Nil
-      IF ( oDlg := ParentGetDialog( Self ) ) == Nil .OR. oDlg:nLastKey != 27
+      IF ( oDlg := hwg_GetParentForm( Self ) ) == Nil .OR. oDlg:nLastKey != 27
          vari := ::UnTransform( GetEditText( ::oParent:handle, ::id ) )
          ::title := vari
          IF ::cType == "D"
@@ -1421,7 +1405,7 @@ METHOD SetGetUpdated() CLASS HEdit
    LOCAL oParent
 
    ::lChanged := .T.
-   IF ( oParent := ParentGetDialog( Self ) ) != Nil
+   IF ( oParent := hwg_GetParentForm( Self ) ) != Nil
       oParent:lUpdated := .T.
    ENDIF
 
@@ -1468,7 +1452,7 @@ FUNCTION CreateGetList( oDlg, oCnt )
 
 FUNCTION GetSkip( oParent, hCtrl, lClipper, nSkip )
    LOCAL i, nextHandle, oCtrl
-   LOCAL oForm := IIF( ( oForm := oParent:GetParentForm() ) = Nil, oParent, oForm )
+   LOCAL oForm := IIF( ( oForm := hwg_GetParentForm(oParent) ) = Nil, oParent, oForm )
 
    DEFAULT nSkip := 1
    IF oParent == Nil .OR. ( lClipper != Nil .AND. lClipper .AND. ! oForm:lClipper )
@@ -1649,7 +1633,7 @@ STATIC FUNCTION NextFocus( oParent, hCtrl, nSkip )
    Local lHradio
    Local lnoTabStop := .T.
 
-   oParent := IIF( oParent:Type = Nil, oParent:GetParentForm(), oParent )
+   oParent := IIF( oParent:Type = Nil, hwg_GetParentForm(oParent), oParent )
    nWindow := IIF( oParent:Type <= WND_DLG_RESOURCE, oParent:Handle, GetActiveWindow() )
 
    i := AScan( oparent:acontrols, { | o | SelfFocus( o:Handle, hCtrl ) } )
@@ -1720,7 +1704,7 @@ STATIC FUNCTION NextFocusContainer( oParent, hCtrl, nSkip )
             RETURN oParent:Handle
          ENDIF
          RETURN IIF( oParent:oParent:className == "HTAB", NextFocusTab(oParent:oParent, nWindow, nSkip ), ;
-                 IIF( oParent:GetParentForm():ClassName == oParent:oParent:Classname, ;
+                 IIF( hwg_GetParentForm(oParent):ClassName == oParent:oParent:Classname, ;
                    NextFocus( oParent:oparent, hCtrl, nSkip ), NextFocusContainer( oParent:oparent, hCtrl, nSkip ) ) )
       ENDIF
       i := i2

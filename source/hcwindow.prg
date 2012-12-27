@@ -320,13 +320,12 @@ METHOD Refresh( lAll, oCtrl ) CLASS HCustomWindow
 METHOD SetTextClass( x ) CLASS HCustomWindow
 
    IF  __ObjHasMsg( Self, "SETVALUE" ) .AND. ::winClass != "STATIC" .AND. ::winclass != "BUTTON" 
-   ELSEIF __ObjHasMsg( Self, "SETTEXT" ) //.AND. ::classname != "HBUTTONEX"
+   ELSEIF __ObjHasMsg( Self, "SETTEXT" )
       ::SetText( x )
    ELSE
       ::title := x
       SENDMESSAGE( ::handle, WM_SETTEXT, 0, ::Title )
    ENDIF
-    //::Refresh()
    RETURN NIL
 
 METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HCustomWindow
@@ -367,7 +366,6 @@ METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
          oCtrl:aControls[ i ]:onAnchor( x, y, w, h )
          IF Len( oCtrl:aControls[ i ]:aControls ) > 0
             ::Anchor( oCtrl:aControls[ i ], x1, y1, oCtrl:aControls[ i ]:nWidth, oCtrl:aControls[ i ]:nHeight )
-            //::Anchor( oCtrl:aControls[ i ], x, y, oCtrl:nWidth, oCtrl:nHeight )
          ENDIF
       ENDIF
    NEXT
@@ -478,7 +476,7 @@ METHOD ScrollHV( oForm, msg,wParam,lParam ) CLASS HCustomWindow
       nInc := max( - oForm:nHscrollPos, min( nInc, oForm:nHscrollMax - oForm:nHscrollPos ) )
       oForm:nHscrollPos += nInc
       nDelta := - HORZ_PTS * nInc
-      ScrollWindow( oForm:handle, nDelta, 0 ) //, Nil, NIL )
+      ScrollWindow( oForm:handle, nDelta, 0 )
       SetScrollPos( oForm:Handle, SB_HORZ, oForm:nHscrollPos, .T. )
    ENDIF 	
    RETURN Nil
@@ -571,68 +569,8 @@ METHOD ResetScrollbars() CLASS HCustomWindow
       ::nHscrollPos := 0
       ::nVscrollPos := 0
    ENDIF
-   /*
-   IF ::nScrollBars = 0 .OR. ::nScrollBars = 2
-      ScrollWindow( ::Handle, 0 * HORZ_PTS, 0 )
-      SetScrollPos( ::Handle, SB_HORZ, 0, .T. )
-   ENDIF
-   IF ::nScrollBars = 1 .OR. ::nScrollBars = 2
-      ScrollWindow( ::Handle, 0, 0 * VERT_PTS )
-      SetScrollPos( ::Handle, SB_VERT, 0, .T. )
-   ENDIF
-   */
    RETURN Nil
 
-/*
-METHOD  ScrollHV( oForm, msg, wParam, lParam ) CLASS HCustomWindow
-   LOCAL nDelta, nMaxPos,  wmsg , nPos
-
-   HB_SYMBOL_UNUSED( lParam )
-
-   nDelta := 0
-   wmsg := LOWORD( wParam )
-
-   IF msg = WM_VSCROLL .OR. msg = WM_HSCROLL
-      nMaxPos := IIf( msg = WM_VSCROLL, oForm:rect[ 4 ] - oForm:nCurHeight, oForm:rect[ 3 ] - oForm:nCurWidth )
-      IF wmsg =  SB_LINEDOWN
-         IF ( oForm:nScrollPos >= nMaxPos )
-            RETURN 0
-         ENDIF
-         nDelta := Min( nMaxPos / 100, nMaxPos - oForm:nScrollPos )
-      ELSEIF wmsg = SB_LINEUP
-         IF ( oForm:nScrollPos <= 0 )
-            RETURN 0
-         ENDIF
-         nDelta := - Min( nMaxPos / 100, oForm:nScrollPos )
-      ELSEIF wmsg = SB_PAGEDOWN
-         IF ( oForm:nScrollPos >= nMaxPos )
-            RETURN 0
-         ENDIF
-         nDelta := Min( nMaxPos / 10, nMaxPos - oForm:nScrollPos )
-      ELSEIF wmsg = SB_THUMBPOSITION
-         nPos := HIWORD( wParam )
-         nDelta := nPos - oForm:nScrollPos
-      ELSEIF wmsg = SB_PAGEUP
-         IF ( oForm:nScrollPos <= 0 )
-            RETURN 0
-         ENDIF
-         nDelta := - Min( nMaxPos / 10, oForm:nScrollPos )
-      ELSE
-         RETURN 0
-      ENDIF
-      oForm:nScrollPos += nDelta
-      IF msg = WM_VSCROLL
-         setscrollpos( oForm:handle, SB_VERT, oForm:nScrollPos )
-         ScrollWindow( oForm:handle, 0, - nDelta )
-      ELSE
-         setscrollpos( oForm:handle, SB_HORZ, oForm:nScrollPos )
-         ScrollWindow( oForm:handle, - nDelta, 0 )
-      ENDIF
-      RETURN - 1
-
-   ENDIF
-   RETURN Nil
-*/
 METHOD Closable( lClosable ) CLASS HCustomWindow
    Local hMenu
 
@@ -653,7 +591,7 @@ METHOD SetAll( cProperty, Value, aControls, cClass ) CLASS HCustomWindow
 // Value Specifies the new setting for the property. The data type of Value depends on the property being set.
  //aControls - property of the Control with objectos inside
  // cClass baseclass hwgui
-   Local nLen , i //, oCtrl
+   Local nLen , i
 
    aControls := IIF( EMPTY( aControls ), ::aControls, aControls )
    nLen := IIF( VALTYPE( aControls ) = "C", Len( ::&aControls ), LEN( aControls ) )
@@ -728,7 +666,6 @@ STATIC FUNCTION onDestroy( oWnd )
 
 STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
    LOCAL oCtrl
-//lParam := HANDLETOPTR( lParam)
    oCtrl := oWnd:FindControl( , lParam )
 
    IF  oCtrl != Nil .AND. VALTYPE( oCtrl ) != "N"
@@ -748,16 +685,10 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
             RETURN oCtrl:oParent:brush:handle
          ENDIF
       ELSEIF oCtrl:BackStyle = TRANSPARENT
-         /*
-         IF ( oCtrl:classname $ "HCHECKBUTTON" .AND. (  ! oCtrl:lnoThemes .AND. ( ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest ) ) ) .OR.;
-            ( oCtrl:classname $ "HGROUP*HRADIOGROUP*HRADIOBUTTON" .AND. ! oCtrl:lnoThemes )
-				    RETURN GetBackColorParent( oCtrl, , .T. ):handle
-				 ENDIF
-				 */
-				 IF  __ObjHasMsg( oCtrl, "PAINT" ) .OR. oCtrl:lnoThemes .OR. ( oCtrl:winClass == "BUTTON"  .AND. oCtrl:classname != "HCHECKBUTTON" )
-				    RETURN GetStockObject( NULL_BRUSH )
-				 ENDIF
-				 RETURN GetBackColorParent( oCtrl, , .T. ):handle
+         IF  __ObjHasMsg( oCtrl, "PAINT" ) .OR. oCtrl:lnoThemes .OR. ( oCtrl:winClass == "BUTTON"  .AND. oCtrl:classname != "HCHECKBUTTON" )
+            RETURN GetStockObject( NULL_BRUSH )
+         ENDIF
+         RETURN GetBackColorParent( oCtrl, , .T. ):handle
       ELSEIF oCtrl:winClass == "BUTTON"  .AND. ( ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest )
          RETURN GetBackColorParent( oCtrl, , .T. ):handle
       ENDIF

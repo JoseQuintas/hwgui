@@ -53,7 +53,6 @@ FUNCTION InitControls( oWnd, lNoActivate )
       FOR i := 1 TO Len( pArray )
          // writelog( "InitControl1"+str(pArray[i]:handle)+"/"+pArray[i]:classname+" "+str(pArray[i]:nWidth)+"/"+str(pArray[i]:nHeight) )
          IF Empty( pArray[ i ]:handle ) .AND. ! lNoActivate
-//         IF empty(pArray[i]:handle ) .AND. !lNoActivate
             lInit := pArray[ i ]:lInit
             pArray[ i ]:lInit := .T.
             pArray[ i ]:Activate()
@@ -61,7 +60,6 @@ FUNCTION InitControls( oWnd, lNoActivate )
          ELSEIF  ! lNoActivate
             pArray[ i ]:lInit := .T.
          ENDIF
-//           IF empty(pArray[i]:handle)// <= 0
          IF IIF( ValType( pArray[ i ]:handle ) == "P", ptrtoulong( pArray[ i ]:handle ), pArray[ i ]:handle ) <= 0
             pArray[ i ]:handle := GetDlgItem( oWnd:handle, pArray[ i ]:id )
 
@@ -153,11 +151,6 @@ FUNCTION VColor( cColor )
 FUNCTION MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cResIni )
    LOCAL oModDlg, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
    LOCAL cRes := IIf( cResIni != Nil, Trim( cResIni ), "" )
-   /*
-   IF ! Empty( cRes )
-      Keyb_Event( VK_END )
-   ENDIF
-   */
    nStyle := IIf( nStyle == Nil, 0, nStyle )
    x := IIf( x == Nil, 210, x )
    y := IIf( y == Nil, 10, y )
@@ -200,10 +193,6 @@ Local hIn, hOut, nRet, hProc
    FClose( hOut )
 
    Return nRet
-//#else
-//  __Run( cRun )
-//   Return 0
-//#endif
 
 FUNCTION WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )
    LOCAL oDlg, oBrw, nChoice := 0, lArray := .T., nField, lNewFont := .F.
@@ -265,7 +254,6 @@ FUNCTION WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel,
         STYLE nStyle            ;
         FONT oFont              ;
         ON INIT { | o | ResetWindowPos( o:handle ), o:nInitFocus := oBrw }
-       //ON INIT {|o|ResetWindowPos(o:handle),oBrw:setfocus()}
    IF lArray
       @ 0, 0 Browse oBrw Array
       oBrw:aArray := arr
@@ -614,13 +602,13 @@ FUNCTION FindAccelerator( oCtrl, lParam )
 
   nlen := LEN( oCtrl:aControls )
   FOR i = 1 to nLen
-	   IF oCtrl:aControls[ i ]:classname = "HTAB"
-	      IF ( pos := FindTabAccelerator( oCtrl:aControls[ i ], lParam ) ) > 0 .AND. ;
-        	  oCtrl:aControls[ i ]:Pages[ pos ]:Enabled
-	          oCtrl:aControls[ i ]:SetTab( pos )
-	          RETURN oCtrl:aControls[ i ]
-	      ENDIF
-	   ENDIF
+     IF oCtrl:aControls[ i ]:classname = "HTAB"
+        IF ( pos := FindTabAccelerator( oCtrl:aControls[ i ], lParam ) ) > 0 .AND. ;
+  	  oCtrl:aControls[ i ]:Pages[ pos ]:Enabled
+            oCtrl:aControls[ i ]:SetTab( pos )
+            RETURN oCtrl:aControls[ i ]
+        ENDIF
+     ENDIF
      IF LEN(oCtrl:aControls[ i ]:aControls ) > 0
          RETURN FindAccelerator( oCtrl:aControls[ i ], lParam)
 	   ENDIF

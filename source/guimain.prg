@@ -667,3 +667,27 @@ Function  hwg_SetFontStyle( oWnd, lBold, lItalic, lUnderline )
    ENDIF
 
    RETURN Iif(lBold!=Nil,(oWnd:oFont:weight==FW_BOLD), Iif(lItalic!=Nil,(oWnd:oFont:italic=1),oWnd:oFont:Underline==1))
+
+Function SetAll( oWnd, cProperty, Value, aControls, cClass )
+// cProperty Specifies the property to be set.
+// Value Specifies the new setting for the property. The data type of Value depends on the property being set.
+ //aControls - property of the Control with objectos inside
+ // cClass baseclass hwgui
+   Local nLen , i
+
+   aControls := IIF( EMPTY( aControls ), oWnd:aControls, aControls )
+   nLen := IIF( VALTYPE( aControls ) = "C", Len( oWnd:&aControls ), LEN( aControls ) )
+   FOR i = 1 TO nLen
+      IF VALTYPE( aControls ) = "C"
+         oWnd:&aControls[ i ]:&cProperty := Value
+      ELSEIF cClass == Nil .OR. UPPER( cClass ) == aControls[ i ]:ClassName
+         IF Value = Nil
+            __mvPrivate( "oCtrl" )
+            &( "oCtrl" ) := aControls[ i ]
+            &( "oCtrl:" + cProperty )
+         ELSE
+            aControls[ i ]:&cProperty := Value
+         ENDIF
+      ENDIF
+   NEXT
+   RETURN Nil

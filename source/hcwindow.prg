@@ -129,7 +129,6 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    METHOD ActiveControl()  INLINE ::FindControl( , GetFocus() )
    METHOD Closable( lClosable ) SETGET
    METHOD Release()        INLINE ::DelControl( Self )
-   METHOD SetAll( cProperty, Value, aControls, cClass )
 
 ENDCLASS
 
@@ -582,33 +581,6 @@ METHOD Closable( lClosable ) CLASS HCustomWindow
       ENDIF
    ENDIF
    RETURN ::lClosable
-
-METHOD SetAll( cProperty, Value, aControls, cClass ) CLASS HCustomWindow
-// cProperty Specifies the property to be set.
-// Value Specifies the new setting for the property. The data type of Value depends on the property being set.
- //aControls - property of the Control with objectos inside
- // cClass baseclass hwgui
-   Local nLen , i
-
-   aControls := IIF( EMPTY( aControls ), ::aControls, aControls )
-   nLen := IIF( VALTYPE( aControls ) = "C", Len( ::&aControls ), LEN( aControls ) )
-	 FOR i = 1 TO nLen
-	    IF VALTYPE( aControls ) = "C"
-	       ::&aControls[ i ]:&cProperty := Value
-	    ELSEIF cClass == Nil .OR. UPPER( cClass ) == aControls[ i ]:ClassName
-	       IF Value = Nil
-	          __mvPrivate( "oCtrl" )
-	          &( "oCtrl" ) := aControls[ i ]
-	          &( "oCtrl:" + cProperty )
-	       ELSE
-	          aControls[ i ]:&cProperty := Value
-	       ENDIF
-      ENDIF
-   NEXT
-   RETURN Nil
-
-
-*---------------------------------------------------------
 
 STATIC FUNCTION onNotify( oWnd, wParam, lParam )
    LOCAL iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res

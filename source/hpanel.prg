@@ -14,7 +14,7 @@
 
 #define TRANSPARENT 1
 
-CLASS HPanel INHERIT HControl
+CLASS HPanel INHERIT HControl, HScrollArea
 
    DATA winclass Init "PANEL"
    DATA oEmbedded
@@ -198,7 +198,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .OR. ( msg == WM_MOUSEWHEEL ) //.AND. ::nScrollBars >= 2 )
          IF ::nScrollBars != -1 .AND. ::bScroll = NIL
-             ::ScrollHV( Self, msg, wParam, lParam )
+             hwg_ScrollHV( Self, msg, wParam, lParam )
              IF  msg == WM_MOUSEWHEEL
                  RETURN 0
              ENDIF

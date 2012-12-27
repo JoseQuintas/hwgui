@@ -1530,16 +1530,16 @@ STATIC FUNCTION GetSkipScroll( oForm, oCtrl )
             IF oCtrl:nLeft + oCtrl:nWidth + 12 >= oForm:nWidth - nWidthScroll + oForm:nHscrollPos * HORZ_PTS .AND. ;
                oCtrl:nWidth < oForm:nWidth .AND. oCtrl:nLeft > oForm:nWidth - oForm:nHscrollPos * HORZ_PTS - nWidthScroll
                IF oForm:nHscrollMax / oForm:nHorzInc > 1
-                  oForm:ScrollHV( oForm, WM_HSCROLL, SB_PAGEDOWN, 0 )
+                  hwg_ScrollHV( oForm, WM_HSCROLL, SB_PAGEDOWN, 0 )
                ELSE
-                  oForm:ScrollHV( oForm, WM_HSCROLL, SB_LINEDOWN, 0 )
+                  hwg_ScrollHV( oForm, WM_HSCROLL, SB_LINEDOWN, 0 )
                ENDIF
                lScroll := .T.
             ELSEIF ( oCtrl:nLeft <= oForm:nHscrollPos * HORZ_PTS - nWidthScroll ) //( oCtrl:nLeft + oCtrl:nWidth ) > oForm:nWidth
                IF oForm:nHscrollMax / oForm:nHorzInc > 1
-                  oForm:ScrollHV( oForm, WM_HSCROLL, SB_PAGEUP, 0 )
+                  hwg_ScrollHV( oForm, WM_HSCROLL, SB_PAGEUP, 0 )
                ELSE
-                  oForm:ScrollHV( oForm, WM_HSCROLL, SB_LINEUP, 0 )
+                  hwg_ScrollHV( oForm, WM_HSCROLL, SB_LINEUP, 0 )
                ENDIF
                lScroll := .T.
             ENDIF
@@ -1552,16 +1552,16 @@ STATIC FUNCTION GetSkipScroll( oForm, oCtrl )
             IF oCtrl:nTop + oCtrl:nHeight + 12 >= oForm:nHeight - nWidthScroll + oForm:nVscrollPos * VERT_PTS .AND. ;
                ( oCtrl:nHeight < oForm:nHeight )
                IF  oForm:nVscrollMax / oForm:nVertInc > 1    .AND. .F.
-                  oForm:ScrollHV( oForm, WM_VSCROLL, SB_PAGEDOWN, 0 )
+                  hwg_ScrollHV( oForm, WM_VSCROLL, SB_PAGEDOWN, 0 )
                ELSE
-                  oForm:ScrollHV( oForm, WM_VSCROLL, SB_LINEDOWN, 0 )
+                  hwg_ScrollHV( oForm, WM_VSCROLL, SB_LINEDOWN, 0 )
                ENDIF
                lScroll := .T.
             ELSEIF  oCtrl:nTop  <= ( oForm:nVscrollPos * VERT_PTS )
                IF oForm:nVscrollMax / oForm:nVertInc > 1 .AND. .F.
-                  oForm:ScrollHV( oForm, WM_VSCROLL, SB_PAGEUP, 0 )
+                  hwg_ScrollHV( oForm, WM_VSCROLL, SB_PAGEUP, 0 )
                ELSE
-                  oForm:ScrollHV( oForm, WM_VSCROLL, SB_LINEUP, 0 )
+                  hwg_ScrollHV( oForm, WM_VSCROLL, SB_LINEUP, 0 )
                ENDIF
                lScroll := .T.
             ENDIF

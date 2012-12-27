@@ -691,3 +691,77 @@ Function SetAll( oWnd, cProperty, Value, aControls, cClass )
       ENDIF
    NEXT
    RETURN Nil
+
+FUNCTION HWG_ScrollHV( oForm, msg,wParam,lParam )
+   Local nDelta, nSBCode , nPos, nInc
+
+   HB_SYMBOL_UNUSED(lParam)
+
+   nSBCode := loword(wParam)
+   IF msg == WM_MOUSEWHEEL
+      nSBCode = IIF( HIWORD( wParam ) > 32768, HIWORD( wParam ) - 65535, HIWORD( wParam ) )
+      nSBCode = IIF( nSBCode < 0, SB_LINEDOWN, SB_LINEUP )
+   ENDIF
+   IF ( msg = WM_VSCROLL ) .OR.msg == WM_MOUSEWHEEL
+     // Handle vertical scrollbar messages
+      Switch (nSBCode)
+         Case SB_TOP
+             nInc := - oForm:nVscrollPos; EXIT
+         Case SB_BOTTOM
+             nInc := oForm:nVscrollMax - oForm:nVscrollPos;  EXIT
+         Case SB_LINEUP
+             nInc := - Int( oForm:nVertInc * 0.05 + 0.49);    EXIT
+         Case SB_LINEDOWN
+             nInc := Int( oForm:nVertInc * 0.05 + 0.49); EXIT
+         Case SB_PAGEUP
+             nInc := min( - 1, - oForm:nVertInc / 2 );  EXIT
+         Case SB_PAGEDOWN
+            nInc := max( 1, oForm:nVertInc / 2 );   EXIT
+         Case SB_THUMBTRACK
+            nPos := hiword( wParam )
+            nInc := nPos - oForm:nVscrollPos ; EXIT
+      #ifdef __XHARBOUR__
+         Default
+      #else
+         Otherwise
+      #endif
+            nInc := 0
+      END
+      nInc := Max( - oForm:nVscrollPos, Min( nInc, oForm:nVscrollMax - oForm:nVscrollPos))
+      oForm:nVscrollPos += nInc
+      nDelta := - VERT_PTS * nInc
+      ScrollWindow( oForm:handle, 0, nDelta ) //, Nil, NIL )
+      SetScrollPos( oForm:Handle, SB_VERT, oForm:nVscrollPos, .T. )
+
+   ELSEIF ( msg = WM_HSCROLL ) //.OR. msg == WM_MOUSEWHEEL
+    // Handle vertical scrollbar messages
+      Switch (nSBCode)
+         Case SB_TOP
+             nInc := - oForm:nHscrollPos; EXIT
+         Case SB_BOTTOM
+             nInc := oForm:nHscrollMax - oForm:nHscrollPos;  EXIT
+         Case SB_LINEUP
+             nInc := -1;    EXIT
+         Case SB_LINEDOWN
+             nInc := 1; EXIT
+         Case SB_PAGEUP
+             nInc := - HORZ_PTS;  EXIT
+         Case SB_PAGEDOWN
+            nInc := HORZ_PTS;   EXIT
+         Case SB_THUMBTRACK
+            nPos := hiword( wParam )
+            nInc := nPos - oForm:nHscrollPos; EXIT
+      #ifdef __XHARBOUR__
+         Default
+      #else
+         Otherwise
+      #endif
+            nInc := 0
+      END
+      nInc := max( - oForm:nHscrollPos, min( nInc, oForm:nHscrollMax - oForm:nHscrollPos ) )
+      oForm:nHscrollPos += nInc
+      nDelta := - HORZ_PTS * nInc
+      ScrollWindow( oForm:handle, nDelta, 0 )
+      SetScrollPos( oForm:Handle, SB_HORZ, oForm:nHscrollPos, .T. )
+   ENDIF 	
+   RETURN Nil

@@ -72,7 +72,7 @@ STATIC FUNCTION onDestroy( oWnd )
 
    RETURN 0
 
-CLASS HWindow INHERIT HCustomWindow
+CLASS HWindow INHERIT HCustomWindow, HScrollArea
 
 CLASS VAR aWindows   SHARED INIT { }
 CLASS VAR szAppName  SHARED INIT "HwGUI_App"
@@ -478,7 +478,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMainWindow
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
          IF ::nScrollBars != -1
-             ::ScrollHV( Self,msg,wParam,lParam )
+             hwg_ScrollHV( Self,msg,wParam,lParam )
          ENDIF
          onTrackScroll( Self, msg, wParam, lParam )
       ENDIF
@@ -674,7 +674,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMDIChildWindow
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .or. msg == WM_MOUSEWHEEL
          IF ::nScrollBars != -1
-             ::ScrollHV( Self,msg,wParam,lParam )
+             hwg_ScrollHV( Self,msg,wParam,lParam )
          ENDIF
          onTrackScroll( Self, msg, wParam, lParam )
       ELSEIF msg = WM_NOTIFY .AND.!::lSuspendMsgsHandling

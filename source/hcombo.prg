@@ -362,7 +362,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
       ENDIF
    ENDIF
    IF msg = WM_MOUSEWHEEL .AND. ::oParent:nScrollBars != -1 .AND. ::oParent:bScroll = Nil
-      super:ScrollHV( ::oParent, msg, wParam, lParam )
+      hwg_ScrollHV( ::oParent, msg, wParam, lParam )
       RETURN 0
    ELSEIF msg = CB_SHOWDROPDOWN
       ::ldropshow := IIF( wParam = 1, .T., ::ldropshow )

@@ -126,7 +126,7 @@ METHOD Enabled( lEnabled ) CLASS HPage
   RETURN ::lEnabled
 
 /*----------------------------------------------------------------------------*/
-CLASS HTab INHERIT HControl
+CLASS HTab INHERIT HControl, HScrollArea
 
    CLASS VAR winclass   INIT "SysTabControl32"
    DATA  aTabs

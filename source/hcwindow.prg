@@ -126,7 +126,6 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    METHOD SetupScrollbars()
    METHOD RedefineScrollbars()
    METHOD SetTextClass ( x ) HIDDEN
-   METHOD ActiveControl()  INLINE ::FindControl( , GetFocus() )
    METHOD Closable( lClosable ) SETGET
    METHOD Release()        INLINE ::DelControl( Self )
 

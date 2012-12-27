@@ -466,7 +466,7 @@ FUNCTION TxtRect( cTxt, oWin, oFont )
 
 
 FUNCTION hwg_getParentForm( o )
-   DO WHILE ( o := o:oParent ) != Nil .and. ! __ObjHasMsg( o, "GETLIST" )
+   DO WHILE o:oParent != Nil .AND. ( o := o:oParent ) != Nil .and. ! __ObjHasMsg( o, "GETLIST" )
    ENDDO
    RETURN o
 

@@ -79,6 +79,9 @@ CLASS VAR aModalDialogs  SHARED INIT { }
    DATA nScrollBars  INIT - 1
    DATA bScroll
    DATA lContainer   INIT .F.
+   DATA nInitFocus    INIT 0  // Keeps the ID of the object to receive focus when dialog is created
+                              // you can change the object that receives focus adding
+                              // ON INIT {|| nInitFocus:=object:[handle] }  to the dialog definition
 
    METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
                bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId,;

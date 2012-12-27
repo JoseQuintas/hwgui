@@ -95,9 +95,6 @@ CLASS VAR WindowsManifest INIT !EMPTY(FindResource( , 1 , RT_MANIFEST ) ) SHARED
    DATA cargo
    DATA HelpId        INIT 0
    DATA nHolder       INIT 0
-   DATA nInitFocus    INIT 0  // Keeps the ID of the object to receive focus when dialog is created
-                              // you can change the object that receives focus adding
-                              // ON INIT {|| nInitFocus:=object:[handle] }  to the dialog definition
    DATA nCurWidth    INIT 0
    DATA nCurHeight   INIT 0
    DATA nVScrollPos   INIT 0

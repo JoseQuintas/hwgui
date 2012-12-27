@@ -103,6 +103,9 @@ CLASS VAR szAppName  SHARED INIT "HwGUI_App"
    DATA oEmbedded
    DATA bScroll
    DATA bSetForm
+   DATA nInitFocus    INIT 0  // Keeps the ID of the object to receive focus when dialog is created
+                              // you can change the object that receives focus adding
+                              // ON INIT {|| nInitFocus:=object:[handle] }  to the dialog definition
 
    METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
                bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;

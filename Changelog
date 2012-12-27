@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-12-27 12:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hcwindow.prg
+  * source/hwindow.prg
+  * source/hdialog.prg
+    * :nInitFocus has been moved from HCustomWindow to HDialog and HWindow,
+      because it is used in these two classes only.
+
 2012-12-27 11:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hcwindow.prg
   * source/guimain.prg

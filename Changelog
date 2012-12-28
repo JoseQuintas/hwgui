@@ -9,6 +9,19 @@
 */
 
 2012-12-28 19:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hcontrol.prg
+  * source/hctrlex.prg
+    * New class HStaticEx created, which inherits from HStatic.
+      HStatic is changed to be more simple and fast
+    * files formatted
+  * source/hhyper.prg
+    * It now inherits from HStaticEx
+  * include/guilib.ch
+    * SAYEX command added for HStaticEx class
+  * install.txt
+    * added info about hbmk2
+
+2012-12-28 19:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hdialog.prg
     ! Small fix ( existence of :nInitFocus is checked now )
     * file formatted

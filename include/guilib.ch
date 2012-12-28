@@ -266,6 +266,40 @@
              [ ON INIT <bInit> ]        ;
              [ ON SIZE <bSize> ]        ;
              [ ON PAINT <bDraw> ]       ;
+             [ STYLE <nStyle> ]         ;
+             [ FONT <oFont> ]           ;
+             [ TOOLTIP <ctoolt> ]       ;
+          => ;
+          [<oSay> := ] HStatic():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>, ;
+             <color>,<bcolor>,<.lTransp.> );;
+          [ <oSay>:name := <(oSay)> ]
+
+#xcommand REDEFINE SAY   [ <oSay> CAPTION ] <cCaption>   ;
+             [ OF <oWnd> ]              ;
+             ID <nId>                   ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [<lTransp: TRANSPARENT>]   ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+             [ ON PAINT <bDraw> ]       ;
+             [ FONT <oFont> ]           ;
+             [ TOOLTIP <ctoolt> ]       ;
+          => ;
+          [<oSay> := ] HStatic():Redefine( <oWnd>,<nId>,<cCaption>, ;
+             <oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lTransp.> )
+
+#xcommand @ <x>,<y> SAYEX [ <oSay> CAPTION ] <caption> ;
+             [ OF <oWnd> ]              ;
+             [ ID <nId> ]               ;
+             [ SIZE <width>, <height> ] ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [<lTransp: TRANSPARENT>]   ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+             [ ON PAINT <bDraw> ]       ;
              [ ON CLICK <bClick> ]      ;
              [ ON DBLCLICK <bDblClick> ];
              [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;
@@ -273,12 +307,12 @@
              [ FONT <oFont> ]           ;
              [ TOOLTIP <ctoolt> ]       ;
           => ;
-          [<oSay> := ] HStatic():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
+          [<oSay> := ] HStaticEx():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
              <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>, ;
              <color>,<bcolor>,<.lTransp.>,<bClick>,<bDblClick>,<bOther> );;
           [ <oSay>:name := <(oSay)> ]
 
-#xcommand REDEFINE SAY   [ <oSay> CAPTION ] <cCaption>   ;
+#xcommand REDEFINE SAYEX  [ <oSay> CAPTION ] <cCaption>   ;
              [ OF <oWnd> ]              ;
              ID <nId>                   ;
              [ COLOR <color> ]          ;
@@ -292,7 +326,7 @@
              [ FONT <oFont> ]           ;
              [ TOOLTIP <ctoolt> ]       ;
           => ;
-          [<oSay> := ] HStatic():Redefine( <oWnd>,<nId>,<cCaption>, ;
+          [<oSay> := ] HStaticEx():Redefine( <oWnd>,<nId>,<cCaption>, ;
              <oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lTransp.>,<bClick>,<bDblClick> )
 
 #xcommand @ <x>,<y> BITMAP [ <oBmp> SHOW ] <bitmap> ;

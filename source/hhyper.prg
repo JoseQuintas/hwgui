@@ -25,7 +25,7 @@
 *+
 *+北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北北
 *+
-CLASS HStaticLink FROM HSTATIC
+CLASS HStaticLink FROM HSTATICEX
 
    DATA state
    DATA m_bFireChild INIT .F.

@@ -32,7 +32,3 @@
        Bld.bat should be executed with prg file name as a parameter:
 
    bld a
-
-   With Harbour you can also build samples, using Hbmk2 utility via the hbmk.bat, just write:
-
-      hbmk.bat a.prg

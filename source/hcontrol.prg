@@ -668,216 +668,72 @@ METHOD Init() CLASS HStatic
 
 CLASS HButton INHERIT HControl
 
-   CLASS VAR winclass   INIT "BUTTON"
+   CLASS VAR winclass INIT "BUTTON"
+
    DATA bClick
-   DATA cNote  HIDDEN
-   DATA lFlat INIT .F.
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
-      tcolor, bColor, bGFocus )
+               cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
+               tcolor, bColor )
    METHOD Activate()
-   METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
-      cTooltip, tcolor, bColor, cCaption, bGFocus )
+   METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
+                    tcolor, bColor, cCaption )
    METHOD Init()
-   METHOD onClick()
-   METHOD onGetFocus()
-   METHOD onLostFocus()
-   METHOD onEvent( msg, wParam, lParam )
-   METHOD NoteCaption( cNote )  SETGET
-
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
-      tcolor, bColor, bGFocus ) CLASS HButton
+            cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
+            tcolor, bColor ) CLASS HButton
 
-   nStyle := Hwg_BitOr( iif( nStyle == NIL, 0, nStyle ), BS_PUSHBUTTON + BS_NOTIFY )
-   ::title := cCaption
-   ::bClick := bClick
-   ::bGetFocus := bGFocus
-   ::lFlat := Hwg_BitAND( nStyle, BS_FLAT ) != 0
+   nStyle := Hwg_BitOr( IIF( nStyle == NIL, 0, nStyle ), BS_PUSHBUTTON )
 
    Super:New( oWndParent, nId, nStyle, nLeft, nTop, ;
-      iif( nWidth  == NIL, 90, nWidth  ), ;
-      iif( nHeight == NIL, 30, nHeight ), ;
-      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
-
+              IIF( nWidth  == NIL, 90, nWidth  ), ;
+              IIF( nHeight == NIL, 30, nHeight ), ;
+              oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
+   ::bClick  := bClick
+   ::title   := cCaption
    ::Activate()
-   //IF bGFocus != NIL
-   ::bGetFocus  := bGFocus
-   ::oParent:AddEvent( BN_SETFOCUS, Self, { || ::onGetFocus() } )
-   ::oParent:AddEvent( BN_KILLFOCUS, self, { || ::onLostFocus() } )
-   //ENDIF
-    /*
-   IF ::oParent:oParent != NIL .and. ::oParent:ClassName == "HTAB"
-      //::oParent:AddEvent( BN_KILLFOCUS, Self, { || ::Notify( WM_KEYDOWN ) } )
-      IF bClick != NIL
-         ::oParent:oParent:AddEvent( 0, Self, { || ::onClick() } )
-      ENDIF
-   ENDIF
-   */
-   IF ::id > IDCANCEL .OR. ::bClick != NIL
-      IF ::id < IDABORT
-         hwg_GetParentForm( Self ):AddEvent( BN_CLICKED, Self, { || ::onClick() } )
-      ENDIF
-      IF hwg_GetParentForm( Self ):Classname != ::oParent:Classname  .OR. ::id > IDCANCEL
-         ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+
+   IF bClick != NIL
+      IF ::oParent:className == "HSTATUS"
+         ::oParent:oParent:AddEvent( 0, ::id, bClick )
+      ELSE
+         ::oParent:AddEvent( 0, ::id, bClick )
       ENDIF
    ENDIF
 
-   RETURN Self
+RETURN Self
 
 METHOD Activate() CLASS HButton
-
-   IF ! Empty( ::oParent:handle )
+   IF ::oParent:handle != 0
       ::handle := CreateButton( ::oParent:handle, ::id, ::style, ;
-         ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
-         ::title )
+                                ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
+                                ::title )
       ::Init()
    ENDIF
-
-   RETURN NIL
+RETURN NIL
 
 METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
-      cTooltip, tcolor, bColor, cCaption, bGFocus ) CLASS HButton
+                 cTooltip, tcolor, bColor, cCaption ) CLASS HButton
 
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
-      bSize, bPaint, cTooltip, tcolor, bColor )
+              bSize, bPaint, cTooltip, tcolor, bColor )
 
    ::title   := cCaption
-   ::bGetFocus  := bGFocus
-   ::oParent:AddEvent( BN_SETFOCUS, Self, { || ::onGetFocus() } )
-   ::oParent:AddEvent( BN_KILLFOCUS, self, { || ::onLostFocus() } )
-   ::bClick  := bClick
-   IF ::id > IDCANCEL .OR. ::bClick != NIL
-      IF ::id < IDABORT
-         hwg_GetParentForm( Self ):AddEvent( BN_CLICKED, Self, { || ::onClick() } )
-      ENDIF
-      IF hwg_GetParentForm( Self ):Classname != ::oParent:Classname  .OR. ::id > IDCANCEL
-         ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
-      ENDIF
-   ENDIF
 
-   RETURN Self
+   IF bClick != NIL
+      ::oParent:AddEvent( 0, ::id, bClick )
+   ENDIF
+RETURN Self
 
 METHOD Init() CLASS HButton
 
-   IF ! ::lInit
-      IF !( hwg_GetParentForm( Self ):classname == ::oParent:classname .AND. ;
-            hwg_GetParentForm( Self ):Type >= WND_DLG_RESOURCE ) .OR. ;
-            ! hwg_GetParentForm( Self ):lModal  .OR. ::nHolder = 1
-         ::nHolder := 1
-         SetWindowObject( ::handle, Self )
-         HWG_INITBUTTONPROC( ::handle )
-      ENDIF
-      ::Super:init()
-      /*
-      IF ::Title != NIL
-         SETWINDOWTEXT( ::handle, ::title )
-      ENDIF
-      */
+   ::super:Init()
+   IF ::title != NIL
+      SetWindowText( ::handle, ::title )
    ENDIF
-
-   RETURN  NIL
-
-METHOD onevent( msg, wParam, lParam ) CLASS HButton
-
-   IF msg = WM_SETFOCUS .AND. ::oParent:oParent = NIL
-      // *- SENDMESSAGE( ::handle, BM_SETSTYLE , BS_PUSHBUTTON , 1 )
-   ELSEIF msg = WM_KILLFOCUS
-      IF hwg_GetParentForm( Self ):handle != ::oParent:Handle
-         // *- IF ::oParent:oParent != NIL
-         InvalidateRect( ::handle, 0 )
-         SENDMESSAGE( ::handle, BM_SETSTYLE , BS_PUSHBUTTON , 1 )
-      ENDIF
-   ELSEIF msg = WM_KEYDOWN
-      IF ( wParam == VK_RETURN   .OR. wParam == VK_SPACE )
-         SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
-         RETURN 0
-      ENDIF
-      IF ! ProcKeyList( Self, wParam )
-         IF wParam = VK_TAB
-            GetSkip( ::oparent, ::handle, , iif( IsCtrlShift( .F. , .T. ), - 1, 1 )  )
-            RETURN 0
-         ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP
-            GetSkip( ::oparent, ::handle, , - 1 )
-            RETURN 0
-         ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN
-            GetSkip( ::oparent, ::handle, , 1 )
-            RETURN 0
-         ENDIF
-      ENDIF
-   ELSEIF msg == WM_KEYUP
-      IF ( wParam == VK_RETURN .OR. wParam == VK_SPACE )
-         SendMessage( ::handle, WM_LBUTTONUP, 0, MAKELPARAM( 1, 1 ) )
-         RETURN 0
-      ENDIF
-   ELSEIF  msg = WM_GETDLGCODE .AND. ! Empty( lParam )
-      IF wParam = VK_RETURN .OR. wParam = VK_TAB
-      ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND. wParam != VK_ESCAPE
-      ELSEIF GETDLGMESSAGE( lParam ) = WM_CHAR .OR. wParam = VK_ESCAPE
-         RETURN - 1
-      ENDIF
-      RETURN DLGC_WANTMESSAGE
-   ENDIF
-
-   RETURN - 1
-
-METHOD onClick()  CLASS HButton
-
-   IF ::bClick != NIL
-      Eval( ::bClick, Self, ::id )
-      ::oParent:lSuspendMsgsHandling := .F.
-   ENDIF
-
-   RETURN NIL
-
-METHOD NoteCaption( cNote )  CLASS HButton
-
-   IF cNote != NIL
-      IF Hwg_BitOr( ::Style, BS_COMMANDLINK ) > 0
-         SENDMESSAGE( ::Handle, BCM_SETNOTE, 0, ANSITOUNICODE( cNote ) )
-      ENDIF
-      ::cNote := cNote
-   ENDIF
-
-   RETURN ::cNote
-
-METHOD onGetFocus()  CLASS HButton
-   LOCAL res := .T. , nSkip
-
-   IF ! CheckFocus( Self, .F. ) .OR. ::bGetFocus = NIL
-      RETURN .T.
-   ENDIF
-   IF ::bGetFocus != NIL
-      nSkip := iif( GetKeyState( VK_UP ) < 0 .OR. ( GetKeyState( VK_TAB ) < 0 .AND. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
-      ::oParent:lSuspendMsgsHandling := .T.
-      res := Eval( ::bGetFocus, ::title, Self )
-      ::oParent:lSuspendMsgsHandling := .F.
-      IF res != NIL .AND.  Empty( res )
-         WhenSetFocus( Self, nSkip )
-         IF ::lflat
-            InvalidateRect( ::oParent:Handle, 1 , ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )
-         ENDIF
-      ENDIF
-   ENDIF
-
-   RETURN res
-
-METHOD onLostFocus()  CLASS HButton
-
-   IF ::lflat
-      InvalidateRect( ::oParent:Handle, 1 , ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )
-   ENDIF
-   ::lnoWhen := .F.
-   IF ::bLostFocus != NIL .AND. SelfFocus( GetParent( GetFocus() ), hwg_getparentform( Self ):Handle )
-      ::oparent:lSuspendMsgsHandling := .T.
-      Eval( ::bLostFocus, ::title, Self )
-      ::oparent:lSuspendMsgsHandling := .F.
-   ENDIF
-
-   RETURN NIL
+RETURN  NIL
 
    // CLASS HGroup
 

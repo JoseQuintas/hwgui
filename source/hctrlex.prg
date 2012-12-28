@@ -106,7 +106,6 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    Super:New( oWndParent, nId, 0, 0, 0, 0, 0, cCaption, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor )
 
-   // ::title := cCaption
    ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
    // Enabling style for tooltips
    ::style := SS_NOTIFY
@@ -263,6 +262,192 @@ METHOD Auto_Size( cValue ) CLASS HStaticEx
 
    RETURN NIL
 
+CLASS HButtonX INHERIT HButton
+
+   CLASS VAR winclass   INIT "BUTTON"
+   DATA bClick
+   DATA cNote  HIDDEN
+   DATA lFlat INIT .F.
+
+   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+      cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
+      tcolor, bColor, bGFocus )
+   METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
+      cTooltip, tcolor, bColor, cCaption, bGFocus )
+   METHOD Init()
+   METHOD onClick()
+   METHOD onGetFocus()
+   METHOD onLostFocus()
+   METHOD onEvent( msg, wParam, lParam )
+   METHOD NoteCaption( cNote )  SETGET
+
+ENDCLASS
+
+METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+      cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
+      tcolor, bColor, bGFocus ) CLASS HButtonX
+
+   nStyle := Hwg_BitOr( iif( nStyle == NIL, 0, nStyle ), BS_PUSHBUTTON + BS_NOTIFY )
+   ::title := cCaption
+   ::bClick := bClick
+   ::bGetFocus := bGFocus
+   ::lFlat := Hwg_BitAND( nStyle, BS_FLAT ) != 0
+
+   HControl():New( oWndParent, nId, nStyle, nLeft, nTop, ;
+      iif( nWidth  == NIL, 90, nWidth  ), ;
+      iif( nHeight == NIL, 30, nHeight ), ;
+      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
+
+   ::Activate()
+   ::bGetFocus  := bGFocus
+   ::oParent:AddEvent( BN_SETFOCUS, Self, { || ::onGetFocus() } )
+   ::oParent:AddEvent( BN_KILLFOCUS, self, { || ::onLostFocus() } )
+
+   IF ::id > IDCANCEL .OR. ::bClick != NIL
+      IF ::id < IDABORT
+         hwg_GetParentForm( Self ):AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+      ENDIF
+      IF hwg_GetParentForm( Self ):Classname != ::oParent:Classname  .OR. ::id > IDCANCEL
+         ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+      ENDIF
+   ENDIF
+
+   RETURN Self
+
+METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
+      cTooltip, tcolor, bColor, cCaption, bGFocus ) CLASS HButtonX
+
+   HControl():New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+      bSize, bPaint, cTooltip, tcolor, bColor )
+
+   ::title   := cCaption
+   ::bGetFocus  := bGFocus
+   ::oParent:AddEvent( BN_SETFOCUS, Self, { || ::onGetFocus() } )
+   ::oParent:AddEvent( BN_KILLFOCUS, self, { || ::onLostFocus() } )
+   ::bClick  := bClick
+   IF ::id > IDCANCEL .OR. ::bClick != NIL
+      IF ::id < IDABORT
+         hwg_GetParentForm( Self ):AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+      ENDIF
+      IF hwg_GetParentForm( Self ):Classname != ::oParent:Classname  .OR. ::id > IDCANCEL
+         ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+      ENDIF
+   ENDIF
+
+   RETURN Self
+
+METHOD Init() CLASS HButtonX
+
+   IF ! ::lInit
+      IF !( hwg_GetParentForm( Self ):classname == ::oParent:classname .AND. ;
+            hwg_GetParentForm( Self ):Type >= WND_DLG_RESOURCE ) .OR. ;
+            ! hwg_GetParentForm( Self ):lModal  .OR. ::nHolder = 1
+         ::nHolder := 1
+         SetWindowObject( ::handle, Self )
+         HWG_INITBUTTONPROC( ::handle )
+      ENDIF
+      ::Super:init()
+   ENDIF
+
+   RETURN  NIL
+
+METHOD onevent( msg, wParam, lParam ) CLASS HButtonX
+
+   IF msg = WM_SETFOCUS .AND. ::oParent:oParent = NIL
+   ELSEIF msg = WM_KILLFOCUS
+      IF hwg_GetParentForm( Self ):handle != ::oParent:Handle
+         InvalidateRect( ::handle, 0 )
+         SENDMESSAGE( ::handle, BM_SETSTYLE , BS_PUSHBUTTON , 1 )
+      ENDIF
+   ELSEIF msg = WM_KEYDOWN
+      IF ( wParam == VK_RETURN   .OR. wParam == VK_SPACE )
+         SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
+         RETURN 0
+      ENDIF
+      IF ! ProcKeyList( Self, wParam )
+         IF wParam = VK_TAB
+            GetSkip( ::oparent, ::handle, , iif( IsCtrlShift( .F. , .T. ), - 1, 1 )  )
+            RETURN 0
+         ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP
+            GetSkip( ::oparent, ::handle, , - 1 )
+            RETURN 0
+         ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN
+            GetSkip( ::oparent, ::handle, , 1 )
+            RETURN 0
+         ENDIF
+      ENDIF
+   ELSEIF msg == WM_KEYUP
+      IF ( wParam == VK_RETURN .OR. wParam == VK_SPACE )
+         SendMessage( ::handle, WM_LBUTTONUP, 0, MAKELPARAM( 1, 1 ) )
+         RETURN 0
+      ENDIF
+   ELSEIF  msg = WM_GETDLGCODE .AND. ! Empty( lParam )
+      IF wParam = VK_RETURN .OR. wParam = VK_TAB
+      ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND. wParam != VK_ESCAPE
+      ELSEIF GETDLGMESSAGE( lParam ) = WM_CHAR .OR. wParam = VK_ESCAPE
+         RETURN - 1
+      ENDIF
+      RETURN DLGC_WANTMESSAGE
+   ENDIF
+
+   RETURN - 1
+
+METHOD onClick()  CLASS HButtonX
+
+   IF ::bClick != NIL
+      Eval( ::bClick, Self, ::id )
+      ::oParent:lSuspendMsgsHandling := .F.
+   ENDIF
+
+   RETURN NIL
+
+METHOD NoteCaption( cNote )  CLASS HButtonX
+
+   IF cNote != NIL
+      IF Hwg_BitOr( ::Style, BS_COMMANDLINK ) > 0
+         SENDMESSAGE( ::Handle, BCM_SETNOTE, 0, ANSITOUNICODE( cNote ) )
+      ENDIF
+      ::cNote := cNote
+   ENDIF
+
+   RETURN ::cNote
+
+METHOD onGetFocus()  CLASS HButtonX
+   LOCAL res := .T. , nSkip
+
+   IF ! CheckFocus( Self, .F. ) .OR. ::bGetFocus = NIL
+      RETURN .T.
+   ENDIF
+   IF ::bGetFocus != NIL
+      nSkip := iif( GetKeyState( VK_UP ) < 0 .OR. ( GetKeyState( VK_TAB ) < 0 .AND. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
+      ::oParent:lSuspendMsgsHandling := .T.
+      res := Eval( ::bGetFocus, ::title, Self )
+      ::oParent:lSuspendMsgsHandling := .F.
+      IF res != NIL .AND.  Empty( res )
+         WhenSetFocus( Self, nSkip )
+         IF ::lflat
+            InvalidateRect( ::oParent:Handle, 1 , ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )
+         ENDIF
+      ENDIF
+   ENDIF
+
+   RETURN res
+
+METHOD onLostFocus()  CLASS HButtonX
+
+   IF ::lflat
+      InvalidateRect( ::oParent:Handle, 1 , ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )
+   ENDIF
+   ::lnoWhen := .F.
+   IF ::bLostFocus != NIL .AND. SelfFocus( GetParent( GetFocus() ), hwg_getparentform( Self ):Handle )
+      ::oparent:lSuspendMsgsHandling := .T.
+      Eval( ::bLostFocus, ::title, Self )
+      ::oparent:lSuspendMsgsHandling := .F.
+   ENDIF
+
+   RETURN NIL
+
+
 CLASS HButtonEX INHERIT HButton
 
    DATA hBitmap
@@ -305,9 +490,7 @@ CLASS HButtonEX INHERIT HButton
    METHOD PaintBk( hdc )
    METHOD Setcolor( tcolor, bcolor ) INLINE ::SetDefaultColor( tcolor, bcolor ) //, ::SetDefaultColor( .T. )
    METHOD SetDefaultColor( tColor, bColor, lPaint )
-   // METHOD SetDefaultColor( lRepaint )
    METHOD SetColorEx( nIndex, nColor, lPaint )
-   //METHOD SetText( c ) INLINE ::title := c, ::caption := c, ;
    METHOD SetText( c ) INLINE ::title := c,  ;
       RedrawWindow( ::Handle, RDW_NOERASE + RDW_INVALIDATE ), ;
       iif( ::oParent != NIL .AND. isWindowVisible( ::Handle ) , ;
@@ -410,10 +593,6 @@ METHOD INIT() CLASS HButtonEx
 
    IF ! ::lInit
       ::nHolder := 1
-      //SetWindowObject( ::handle, Self )
-      //HWG_INITBUTTONPROC( ::handle )
-      // call in HBUTTON CLASS
-      //::SetDefaultColor( ,, .F. )
       IF HB_IsNumeric( ::handle ) .AND. ::handle > 0
          nbs := HWG_GETWINDOWSTYLE( ::handle )
          ::m_nTypeStyle :=  GetTheStyle( nbs , BS_TYPEMASK )
@@ -447,7 +626,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
          IF ValType( ::hTheme ) == "P"
             HB_CLOSETHEMEDATA( ::htheme )
             ::hTheme       := NIL
-            //::m_bFirstTime := .T.
          ENDIF
          ::Themed := .F.
       ENDIF
@@ -638,14 +816,6 @@ METHOD SetDefaultColor( tColor, bColor, lPaint ) CLASS HBUTTONEx
    ::m_crBrush[ BTNST_COLOR_BK_IN ] := HBrush():Add( ::m_crColors[ BTNST_COLOR_BK_IN ] )
    ::m_crBrush[ BTNST_COLOR_BK_OUT ] := HBrush():Add( ::m_crColors[ BTNST_COLOR_BK_OUT ] )
    ::m_crBrush[ BTNST_COLOR_BK_FOCUS ] := HBrush():Add( ::m_crColors[ BTNST_COLOR_BK_FOCUS ] )
-   /*
-   ::m_crColors[ BTNST_COLOR_BK_IN ]    := GetSysColor( COLOR_BTNFACE )
-   ::m_crColors[ BTNST_COLOR_FG_IN ]    := GetSysColor( COLOR_BTNTEXT )
-   ::m_crColors[ BTNST_COLOR_BK_OUT ]   := GetSysColor( COLOR_BTNFACE )
-   ::m_crColors[ BTNST_COLOR_FG_OUT ]   := GetSysColor( COLOR_BTNTEXT )
-   ::m_crColors[ BTNST_COLOR_BK_FOCUS ] := GetSysColor( COLOR_BTNFACE )
-   ::m_crColors[ BTNST_COLOR_FG_FOCUS ] := GetSysColor( COLOR_BTNTEXT )
-   */
    IF lPaint
       Invalidaterect( ::handle, .F. )
    ENDIF
@@ -686,8 +856,6 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
    LOCAL captionRectHeight
    LOCAL centerRectHeight
 
-   //LOCAL captionRectWidth
-   //LOCAL centerRectWidth
    LOCAL uAlign, uStyleTmp
    LOCAL aTxtSize := iif( ! Empty( ::caption ), TxtRect( ::caption, Self ), { 0, 0 } )
    LOCAL aBmpSize := iif( ! Empty( ::hbitmap ), GetBitmapSize( ::hbitmap ), { 0, 0 } )
@@ -765,25 +933,11 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
       ENDIF
    ENDIF
 
-   //      if ::iStyle ==  ST_ALIGN_HORIZ
-   //         uAlign := DT_RIGHT
-   //      else
-   //         uAlign := DT_LEFT
-   //      endif
-   //
-   //      IF VALTYPE( ::hbitmap ) != "N"
-   //         uAlign := DT_CENTER
-   //      ENDIF
-
    uAlign := 0 //DT_LEFT
    IF ValType( ::hbitmap ) == "N" .OR. ValType( ::hicon ) == "N"
       uAlign := DT_VCENTER // + DT_CENTER
    ENDIF
-   /*
-   IF ValType( ::hicon ) == "N"
-      uAlign := DT_CENTER
-   ENDIF
-   */
+
    IF uAlign = DT_VCENTER  //!= DT_CENTER + DT_VCENTER
       uAlign := iif( HWG_BITAND( ::Style, BS_TOP ) != 0, DT_TOP, DT_VCENTER )
       uAlign += iif( HWG_BITAND( ::Style, BS_BOTTOM ) != 0, DT_BOTTOM - DT_VCENTER , 0 )
@@ -793,9 +947,6 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
       uAlign := iif( uAlign = 0, DT_CENTER + DT_VCENTER, uAlign )
    ENDIF
 
-   //             DT_CENTER | DT_VCENTER | DT_SINGLELINE
-   //   uAlign += DT_WORDBREAK + DT_CENTER + DT_CALCRECT +  DT_VCENTER + DT_SINGLELINE  // DT_SINGLELINE + DT_VCENTER + DT_WORDBREAK
-   //  uAlign += DT_VCENTER
    uStyleTmp := HWG_GETWINDOWSTYLE( ::handle )
    itemRectOld := AClone( itemRect )
    IF hb_BitAnd( uStyleTmp, BS_MULTILINE ) != 0 .AND. !Empty( ::caption ) .AND. ;
@@ -899,37 +1050,9 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
          // *- uAlign += DT_CENTER
       ENDIF
 
-      //captionRectWidth  := captionRect[ 3 ] - captionRect[ 1 ]
       captionRectHeight := captionRect[ 4 ] - captionRect[ 2 ]
-      //centerRectWidth   := centerRect[ 3 ] - centerRect[ 1 ]
       centerRectHeight  := centerRect[ 4 ] - centerRect[ 2 ]
-      //ok      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
-      //      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
-      //      OffsetRect( @captionRect, ( centerRectWidth - captionRectWidth ) / 2, ( centerRectHeight - captionRectHeight ) / 2 )
       OffsetRect( @captionRect, 0, ( centerRectHeight - captionRectHeight ) / 2 )
-      /*      SetBkMode( dc, TRANSPARENT )
-      IF ( bIsDisabled )
-         OffsetRect( @captionRect, 1, 1 )
-         SetTextColor( DC, GetSysColor( COLOR_3DHILIGHT ) )
-         DrawText( DC, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], DT_WORDBREAK + DT_CENTER, @captionRect )
-         OffsetRect( @captionRect, - 1, - 1 )
-         SetTextColor( DC, GetSysColor( COLOR_3DSHADOW ) )
-         DrawText( DC, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], DT_WORDBREAK + DT_VCENTER + DT_CENTER, @captionRect )
-      ELSE
-         IF ( ::bMouseOverButton .or. bIsPressed )
-            SetTextColor( DC, ::m_crColors[ BTNST_COLOR_FG_IN ] )
-            SetBkColor( DC, ::m_crColors[ BTNST_COLOR_BK_IN ] )
-         ELSE
-            IF ( bIsFocused )
-               SetTextColor( DC, ::m_crColors[ BTNST_COLOR_FG_FOCUS ] )
-               SetBkColor( DC, ::m_crColors[ BTNST_COLOR_BK_FOCUS ] )
-            ELSE
-               SetTextColor( DC, ::m_crColors[ BTNST_COLOR_FG_OUT ] )
-               SetBkColor( DC, ::m_crColors[ BTNST_COLOR_BK_OUT ] )
-            ENDIF
-         ENDIF
-      ENDIF
-      */
       IF ::Themed
          IF ( ValType( ::hicon ) == "N" .OR. ValType( ::hbitmap ) == "N" )
             IF lMultiLine  .OR. ::iStyle = ST_ALIGN_OVERLAP
@@ -951,11 +1074,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
             OffsetRect( @captionRect, - 1, - 1 )
             SetTextColor( dc, GetSysColor( COLOR_3DSHADOW ) )
             DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign )
-            // if
          ELSE
-            //          SetTextColor( dc, GetSysColor( COLOR_BTNTEXT ) )
-            //            SetBkColor( dc, GetSysColor( COLOR_BTNFACE ) )
-            //            DrawText( dc, ::caption, @captionRect[ 1 ], @captionRect[ 2 ], @captionRect[ 3 ], @captionRect[ 4 ], uAlign )
             IF ( ::bMouseOverButton .OR. bIsPressed )
                SetTextColor( dc, ::m_crColors[ BTNST_COLOR_FG_IN ] )
                SetBkColor( dc, ::m_crColors[ BTNST_COLOR_BK_IN ] )

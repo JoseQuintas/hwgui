@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-12-28 11:30 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
+  * hwgui.hbc
+    - remove hwg_qhtm from list of libs
+  * utils/designer/designer.hbp
+    * use hwgui.hbc to build designer
+
 2012-12-28 19:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hcontrol.prg
   * source/hctrlex.prg
@@ -192,9 +198,9 @@
       moved from hedit.prg to guimain.prg, because they relates not to HEdit only.
 
 2012-12-25 16:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
-  - contrib/menus 
+  - contrib/menus
     - directory has been deleted, because it is outdated
-  + contrib/misc 
+  + contrib/misc
     + directory has been added for miscellaneous code, which doesn't relate
       directly to the purposes of the HwGUI
   - source/procmisc/saymoney.prg
@@ -231,7 +237,7 @@
 2012-12-13 22:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcombo.prg
      * CLASS hCheckComboBox
-	   ! fixed navegation in items disabled regardless of the state of SET EXACT
+      ! fixed navegation in items disabled regardless of the state of SET EXACT
 
 2012-12-12 16:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/hgraph.prg
@@ -259,43 +265,43 @@
 
 2012-12-11 14:40 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hupdown.prg
-	 * METHOD NOTIFY()
-       ! minor fix.	 
+    * METHOD NOTIFY()
+       ! minor fix.
 
 2012-12-10 23:05 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hupdown.prg
-	 * METHOD REFRES()
-       ! minor fix.	 
+    * METHOD REFRES()
+       ! minor fix.
 
 2012-12-10 18:45 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hbrowse.prg
      * METHOD TOP()
-	   - setfocus 	   ! removed unnecessary setfocus
-	 * METHOD REFRES()
-       ! small fix.	 
-	   
+      - setfocus     ! removed unnecessary setfocus
+    * METHOD REFRES()
+       ! small fix.
+
 2012-12-09 10:00 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcombo.prg
      * CLASS hCheckComboBox
-       * METHOD onEvent( msg, wParam, lParam ) 
-	   * METHOD SkipItems( nNav )
+       * METHOD onEvent( msg, wParam, lParam )
+      * METHOD SkipItems( nNav )
          ! minor fix EVENT CBN_SELCHANGE for Disableds items and line items
 
 2012-12-08 10:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
    * source/richedit.c
-     * Small change for #ifdef UNICODE 
+     * Small change for #ifdef UNICODE
 
 2012-12-07 22:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htab.prg
-     * CLASS HPage 
+     * CLASS HPage
      * METHOD SetColor( tcolor, bcolor )
-	   ! minor fix in redraw with new color.
+      ! minor fix in redraw with new color.
 
 2012-12-07 15:59 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcombo.prg
      * CLASS hCheckComboBox
-       * METHOD onEvent( msg, wParam, lParam ) 
-	   * METHOD SkipItems( nNav )
+       * METHOD onEvent( msg, wParam, lParam )
+      * METHOD SkipItems( nNav )
          ! fixed EVENT CBN_SELCHANGE for Disableds items and line items
 
 2012-12-07 20:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
@@ -305,57 +311,57 @@
 2012-12-07 11:10 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcombo.prg
      ! fixed warnings compiler
-	 + #xtranslate hb_RAScan([<x,...>])        => RAScan(<x>)
-	 
+    + #xtranslate hb_RAScan([<x,...>])        => RAScan(<x>)
+
 2012-12-06 15:58 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/htab.prg
      * METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
-	  ! msg = WM_LBUTTONDOWN
-	  + msg = WM_LBUTTONUP
-	    ! fixed event CLICK 
-	 * METHOD Notify( lParam ) 
-	   ! minor fix!
-	   
+     ! msg = WM_LBUTTONDOWN
+     + msg = WM_LBUTTONUP
+       ! fixed event CLICK
+    * METHOD Notify( lParam )
+      ! minor fix!
+
 2012-12-06 10:25 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include/guilib.ch
      * #xcommand @ <x>,<y> GET COMBOBOXEX [ <oCombo> VAR ] <vari> ;
-	   + [ IMAGES <aImages> ]       ;
+      + [ IMAGES <aImages> ]       ;
    * source/misc.c
      * HB_FUNC( GETSCROLLRANGE
-	   ! changed return ( MaxPos - MinPos )
+      ! changed return ( MaxPos - MinPos )
    * source/drawwidg.prg
      * CLASS HBitmap
        * METHOD AddResource()
          ! minor fix in condition shared bitmaps
    * source/xml/hxmldoc.prg
      * METHOD Read
-	   ! added to property ::nLastErr := 0 because the return an error occurred due to having null value
+      ! added to property ::nLastErr := 0 because the return an error occurred due to having null value
    * source/hcombo.prg
      * CLASS HCheckComboBox INHERIT HComboBox
-	   + DATA lCheck
+      + DATA lCheck
        + DATA nCurPos  // current value combobox
        + DATA aHimages, aImages
-	   + METHOD EnabledItem( nItem, lEnable )
+      + METHOD EnabledItem( nItem, lEnable )
        + METHOD SkipItems( nNav )
-	   * METHOD New( )
-	     + added new parameter aImages
+      * METHOD New( )
+        + added new parameter aImages
        * METHOD INIT()
-	     ! load images if necessary
-       * METHOD onEvent	
-         + msg = WM_MOUSEWHEEL	   
-		 + msg = WM_COMMAND
+        ! load images if necessary
+       * METHOD onEvent
+         + msg = WM_MOUSEWHEEL
+       + msg = WM_COMMAND
          + msg = WM_KEYUP
-		 ! code necessary to skip disabled items 
-       * METHOD Paint( lpDis ) 
-	     ! added code to display items disabled and line separator
-       + METHOD EnabledItem( nItem, lEnabled ) 		 
-	     ! method to enable or disable items in combo, second parameter = .T. OR .F.
-		   The COMBOBOXEx can work in two ways, with the way current CHECKBOX or how the ComboBox with items that may have images.
-		   add CLAUSULA IMAGES same {},  the ComboboxEX works in the same way that the combobox without the CHECKBOX
-		   Two special caracters define new features:
-		   "\-" = draw one separator line  between items
-		   items beginning with "\]" DiSABLED teh item in COMBOBOX
- 
+       ! code necessary to skip disabled items
+       * METHOD Paint( lpDis )
+        ! added code to display items disabled and line separator
+       + METHOD EnabledItem( nItem, lEnabled )
+        ! method to enable or disable items in combo, second parameter = .T. OR .F.
+         The COMBOBOXEx can work in two ways, with the way current CHECKBOX or how the ComboBox with items that may have images.
+         add CLAUSULA IMAGES same {},  the ComboboxEX works in the same way that the combobox without the CHECKBOX
+         Two special caracters define new features:
+         "\-" = draw one separator line  between items
+         items beginning with "\]" DiSABLED teh item in COMBOBOX
+
 2012-11-29 18:40 UTC+0200 Pavel Tsarenko <tpe2@mail.ru>
   * include/hwingui.h
   * source/control.c
@@ -376,70 +382,70 @@
       * METHOD AddResource()
         ! minor fix
   * source/guimain.prg
-    * FUNCTION InitObjects( oWnd ) 
-	  ! fixed INIT only Parent 
+    * FUNCTION InitObjects( oWnd )
+     ! fixed INIT only Parent
   * source/hcontrol.prg
     * CLASS HBUTTON
     * METHOD New()
     * METHOD REDEFINE()
-	  ! fixed event ONCLICK
+     ! fixed event ONCLICK
   * source/hcwindow.prg
     * STATIC FUNCTION onDestroy
-	  ! fixed destroy objects only Parent
+     ! fixed destroy objects only Parent
   * source/htimer.prg
     * METHOD INIT()
-	* METHOD END()
-	  ! minor fix
+   * METHOD END()
+     ! minor fix
   * source/misc.c
     * HB_FUNC( GETSCROLLRANGE )
-	  ! added return (MinPos + MaxPos)
+     ! added return (MinPos + MaxPos)
 
 2012-11-21 09:25 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/cxshade.c
      * void cxshade_Release( PCXSHADE pshade )
-	   ! commented code because a GPF occur on these lines. Unsolved cause
+      ! commented code because a GPF occur on these lines. Unsolved cause
 
 2012-11-14 13:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * source/hcontrol.prg
      * CLASS BUTTONEX
-	   * METHOD PAINT()
-	     ! fixed alignment text
-   * source/hbrowse.prg		 
+      * METHOD PAINT()
+        ! fixed alignment text
+   * source/hbrowse.prg
      * FUNCTION VScrollPos( )
-	   ! fixed SetScrollPos if  lDisableVScrollPos  = .T.
+      ! fixed SetScrollPos if  lDisableVScrollPos  = .T.
 
 2012-11-06 15:55 UTC-0300 Luis Fernando Basso <lfbasso at via-rs.net>
    * include/guilib.ch
      * #xcommand INIT WINDOW <oWnd>
-	 * #xcommand INIT WINDOW <oWnd> MDICHILD [ VAR <vari> ]   ;
-	 * #xcommand INIT WINDOW <oWnd> CHILD  
-	   +   [ BACKGROUND BITMAP <oBmp> [ STRETCH <nStretch>] ] ;
+    * #xcommand INIT WINDOW <oWnd> MDICHILD [ VAR <vari> ]   ;
+    * #xcommand INIT WINDOW <oWnd> CHILD
+      +   [ BACKGROUND BITMAP <oBmp> [ STRETCH <nStretch>] ] ;
   * source/control.c
     * FUNCTION CREATEUPDOWNCONTROL32
       ! the function CREATEUPDOWNCONTROL32 nots used, comment.
   * source/draw.c
     + HB_FUNC( GETUPDATERECT )
-	+ HB_FUNC( GETPPSERASE )
+   + HB_FUNC( GETPPSERASE )
   * source/drawwidg.prg
     * CLASS HBitmap
       + DATA nFlags
       * METHOD AddResource
-	    ! added nflags as a condition for SHARED BMP
+       ! added nflags as a condition for SHARED BMP
   * source/hcontrol.prg
     * CLASS HSTATIC
       * METHOD SetValue( cValue )
-	    ! minor fix
-  * source/hedit.prg		
-    * METHOD SetText( c )		
-    * METHOD Value( c )		
-	  ! minor fix !
+       ! minor fix
+  * source/hedit.prg
+    * METHOD SetText( c )
+    * METHOD Value( c )
+     ! minor fix !
   * source/hpanel.prg
     * METHOD ONEVENT
-	  ! minor fix in msg = WM_PAINT
+     ! minor fix in msg = WM_PAINT
   * source/hsplit.prg
     * METHOD Paint( )
     * METHOD DragAll
-	  ! minor fix
+     ! minor fix
   * source/htool.prg
     * METHOD CREATETOOL
       ! minor fix in imagens
@@ -448,25 +454,25 @@
      ! adjust in RIGHTMARGIN
   * source/hwindow.prg
     * CLASS HWindow
-	  + DATA bmpStretch 
-	    ! values 1-Spread/ISOMETRIC  0-STRETCH   2-CENTER
-	  + METHOD PAINT()
-	  * METHOD New() 
-	    ! added new parameter nbmpStretch
-    * CLASS HMainWindow 		
-	* CLASS HMDIChildWindow 
-	* CLASS HChildWindow 
-	  * METHOD New() 
-	    ! added new parameter nbmpStretch
+     + DATA bmpStretch
+       ! values 1-Spread/ISOMETRIC  0-STRETCH   2-CENTER
+     + METHOD PAINT()
+     * METHOD New()
+       ! added new parameter nbmpStretch
+    * CLASS HMainWindow
+   * CLASS HMDIChildWindow
+   * CLASS HChildWindow
+     * METHOD New()
+       ! added new parameter nbmpStretch
     * METHOD onEvent( )  CLASS HMainWindow
-	* METHOD onEvent( )  CLASS HMDIChildWindow
-	* METHOD onEvent( )  CLASS HChildWindow
-	  ! handling message WM_PAINT
-    * FUNCTION onEraseBk( oWnd, wParam )	  
-	  ! move code coloring background windows to METHOD PAINT and added feature to show images stretched
+   * METHOD onEvent( )  CLASS HMDIChildWindow
+   * METHOD onEvent( )  CLASS HChildWindow
+     ! handling message WM_PAINT
+    * FUNCTION onEraseBk( oWnd, wParam )
+     ! move code coloring background windows to METHOD PAINT and added feature to show images stretched
   * source/window.c
     + HB_FUNC( PAINTWINDOW )
-	  ! Coloring the background windows
+     ! Coloring the background windows
 
 2012-11-02 17:31 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
   * Changelog

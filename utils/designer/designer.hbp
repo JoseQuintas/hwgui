@@ -2,16 +2,12 @@
 # $Id$
 #
 
--i..\..\include
--L..\..\lib
--lhwgui.lib
--lprocmisc.lib
--lhbxml.prg
+..\..\hwgui.hbc
 -n -w
--resflag=-r designer.rc
--gui
 designer.prg
 hctrl.prg
 hformgen.prg
 inspect.prg
 editor.prg
+
+designer.rc

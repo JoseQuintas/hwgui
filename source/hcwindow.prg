@@ -527,7 +527,7 @@ FUNCTION onTrackScroll( oWnd, msg, wParam, lParam )
    IF oCtrl != NIL
       msg := LOWORD( wParam )
       IF msg == TB_ENDTRACK
-         IF ISBLOCK( oCtrl:bChange )
+         IF __ObjHasMsg( oCtrl, "BCHANGE" ) .AND. ISBLOCK( oCtrl:bChange )
             Eval( oCtrl:bChange, oCtrl )
             RETURN 0
          ENDIF
@@ -535,7 +535,7 @@ FUNCTION onTrackScroll( oWnd, msg, wParam, lParam )
          msg == TB_PAGEUP     .OR. ;
          msg == TB_PAGEDOWN
 
-         IF ISBLOCK( oCtrl:bThumbDrag )
+         IF __ObjHasMsg( oCtrl, "BTHUMBDRAG" ) .AND. ISBLOCK( oCtrl:bThumbDrag )
             Eval( oCtrl:bThumbDrag, oCtrl )
             RETURN 0
          ENDIF

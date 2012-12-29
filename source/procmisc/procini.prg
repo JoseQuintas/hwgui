@@ -55,7 +55,7 @@
 
 FUNCTION RDINI( fname, prm1, prm2, prm3, prm4 )
 
-LOCAL han, stroka, strfull, kolstr, rez, poz1, vname, i, prblo, lTruncAr
+LOCAL han, stroka, strfull, kolstr, poz1, vname, prblo, lTruncAr
 LOCAL lWinIni  := ( VALTYPE( prm1 ) == "A" )
 LOCAL strbuf := Space(STR_BUFLEN), poz := STR_BUFLEN+1
 LOCAL iniDbf := ( Upper( FilExten( fname ) ) == "DBF" )
@@ -171,19 +171,17 @@ RETURN znc
 
 STATIC FUNCTION RDARR( vname, stroka )
 
-LOCAL poz1, i := 0, lenm, len1, strv, newname
+LOCAL poz1, len1, strv, newname
    poz1 := FIND_Z( SUBSTR( stroka, 2 ), "}" )
-   IF poz1 <> 0
+   IF poz1 != 0
       stroka := SUBSTR( stroka, 2, poz1 - 1 )
-      lenm   := LEN( &vname )
-      DO WHILE poz1 <> 0
+      DO WHILE poz1 != 0
          IF EMPTY( stroka )
             EXIT
          ELSE
-            i ++
             poz1 := FIND_Z( stroka )
             strv := LTRIM( SUBSTR( stroka, 1, IIF( poz1 = 0, 9999, poz1 - 1 ) ) )
-            IF ASC( strv ) = 123 .AND. SUBSTR( strv, 2, 1 ) <> "|"              // {
+            IF ASC( strv ) = 123 .AND. SUBSTR( strv, 2, 1 ) != "|"
                AADD( &vname, {} )
                len1    := LEN( &vname )
                newname := vname + "[" + LTRIM( STR( len1, 3 ) ) + "]"

@@ -288,17 +288,13 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       tcolor, bColor, bGFocus ) CLASS HButtonX
 
    nStyle := Hwg_BitOr( iif( nStyle == NIL, 0, nStyle ), BS_PUSHBUTTON + BS_NOTIFY )
-   ::title := cCaption
-   ::bClick := bClick
-   ::bGetFocus := bGFocus
    ::lFlat := Hwg_BitAND( nStyle, BS_FLAT ) != 0
 
-   HControl():New( oWndParent, nId, nStyle, nLeft, nTop, ;
-      iif( nWidth  == NIL, 90, nWidth  ), ;
-      iif( nHeight == NIL, 30, nHeight ), ;
-      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+      cCaption, oFont, bInit, bSize, bPaint,, cTooltip, ;
+      tcolor, bColor, bGFocus )
 
-   ::Activate()
+   ::bClick := bClick
    ::bGetFocus  := bGFocus
    ::oParent:AddEvent( BN_SETFOCUS, Self, { || ::onGetFocus() } )
    ::oParent:AddEvent( BN_KILLFOCUS, self, { || ::onLostFocus() } )
@@ -448,7 +444,7 @@ METHOD onLostFocus()  CLASS HButtonX
    RETURN NIL
 
 
-CLASS HButtonEX INHERIT HButton
+CLASS HButtonEX INHERIT HButtonX
 
    DATA hBitmap
    DATA hIcon

@@ -706,7 +706,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 RETURN Self
 
 METHOD Activate() CLASS HButton
-   IF ::oParent:handle != 0
+   IF !Empty( ::oParent:handle )
       ::handle := CreateButton( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
                                 ::title )

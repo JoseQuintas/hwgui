@@ -9,13 +9,14 @@ INC_DIR = include
 OBJ_DIR = obj
 LIB_DIR = lib
 SRC_DIR = source
+CONTRIB_DIR = contrib
 CFLAGS = /W3 /nologo /DHWG_USE_POINTER_ITEM
 
 HWGUI_OBJ_DIR      = $(OBJ_DIR)
 PROCMISC_OBJ_DIR   = $(OBJ_DIR)
 HBXML_OBJ_DIR      = $(OBJ_DIR)
-HWGQHTM_OBJ_DIR    = $(OBJ_DIR)
 ACTIVEX_OBJ_DIR    = $(OBJ_DIR)
+CONTRIB_OBJ_DIR    = $(OBJ_DIR)
 
 .SUFFIXES :
 .SUFFIXES : .lib .obj .prg .c
@@ -24,7 +25,7 @@ all: \
    $(LIB_DIR)\hwgui.lib \
    $(LIB_DIR)\procmisc.lib \
    $(LIB_DIR)\hbxml.lib \
-   $(LIB_DIR)\hwg_qhtm.lib
+   $(LIB_DIR)\hwg_contrib.lib
 
 # Cannot compile under MSVC currently
 # \
@@ -139,21 +140,31 @@ $(LIB_DIR)\procmisc.lib : $(PROCMISC_LIB_OBJS)
   lib /out:$@ $**
 
 
-# Rules for html lib
+# Rules for contrib lib
 
-{$(SRC_DIR)\qhtm\}.c{$(OBJ_DIR)\}.obj:
+{$(CONTRIB_DIR)\qhtm\}.c{$(OBJ_DIR)\}.obj:
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 
-{$(SRC_DIR)\qhtm\}.prg{$(OBJ_DIR)\}.obj:
+{$(CONTRIB_DIR)\misc\}.c{$(OBJ_DIR)\}.obj:
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
+
+{$(CONTRIB_DIR)\qhtm\}.prg{$(OBJ_DIR)\}.obj:
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$*.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $*.c
 
+{$(CONTRIB_DIR)\misc\}.prg{$(OBJ_DIR)\}.obj:
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$*.c
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $*.c
 
-HWGQHTM_LIB_OBJS = \
-   $(HWGQHTM_OBJ_DIR)\hwg_qhtm.obj \
-   $(HWGQHTM_OBJ_DIR)\hqhtm.obj
+CONTRIB_LIB_OBJS = \
+   $(CONTRIB_OBJ_DIR)\hwg_qhtm.obj \
+   $(CONTRIB_OBJ_DIR)\hqhtm.obj \
+   $(CONTRIB_OBJ_DIR)\arr2str.obj \
+   $(CONTRIB_OBJ_DIR)\miscfunc.obj \
+   $(CONTRIB_OBJ_DIR)\richtext.obj \
+   $(CONTRIB_OBJ_DIR)\saymoney.obj
 
-$(LIB_DIR)\hwg_qhtm.lib : $(HWGQHTM_LIB_OBJS)
+$(LIB_DIR)\hwg_contrib.lib : $(CONTRIB_LIB_OBJS)
   lib /out:$@ $**
 
 

@@ -1,0 +1,17 @@
+#
+# $Id$
+#
+
+-inc
+
+-hblib
+-olib/hwg_contrib
+
+-n -q0 -w -es2
+
+-iinclude
+
+contrib/qhtm/*.c
+contrib/qhtm/*.prg
+contrib/misc/*.c
+contrib/misc/*.prg

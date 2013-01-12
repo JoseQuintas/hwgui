@@ -7,6 +7,7 @@ INCLUDE_DIR = include;$(HRB_DIR)\include
 OBJ_DIR = obj
 LIB_DIR = lib
 SRC_DIR = source
+CONTRIB_DIR = contrib
 #C_DEFINES= -DHB_THREAD_SUPPORT
 #H_DEFINES= -DHB_THREAD_SUPPORT
 
@@ -26,21 +27,25 @@ DEL = del
 HWGUI_LIB = $(LIB_DIR)\hwgui.lib
 PROCMISC_LIB = $(LIB_DIR)\procmisc.lib
 XML_LIB = $(LIB_DIR)\hbxml.lib
-QHTM_LIB = $(LIB_DIR)\hwg_qhtm.lib
+CONTRIB_LIB = $(LIB_DIR)\hwg_contrib.lib
 
 all: \
    $(HWGUI_LIB) \
    $(PROCMISC_LIB) \
    $(XML_LIB) \
-   $(QHTM_LIB)
+   $(CONTRIB_LIB)
 
 XML_LIB_OBJS = \
    $(OBJ_DIR)\hxmldoc.obj \
    $(OBJ_DIR)\xmlparse.obj
 
-QHTM_LIB_OBJS = \
+CONTRIB_LIB_OBJS = \
    $(OBJ_DIR)\hwg_qhtm.obj \
-   $(OBJ_DIR)\hqhtm.obj
+   $(OBJ_DIR)\hqhtm.obj \
+   $(OBJ_DIR)\arr2str.obj \
+   $(OBJ_DIR)\miscfunc.obj \
+   $(OBJ_DIR)\richtext.obj \
+   $(OBJ_DIR)\saymoney.obj
 
 PROCMISC_LIB_OBJS = \
    $(OBJ_DIR)\blowfish.obj \
@@ -125,7 +130,7 @@ $(HWGUI_LIB) : $(HWGUI_LIB_OBJS)
 $(PROCMISC_LIB) : $(PROCMISC_LIB_OBJS)
    $(LIB_EXE) /nologo /out:$@ $**
 
-$(QHTM_LIB) : $(QHTM_LIB_OBJS)
+$(CONTRIB_LIB) : $(CONTRIB_LIB_OBJS)
    $(LIB_EXE) /nologo /out:$@ $**
 
 $(XML_LIB) : $(XML_LIB_OBJS)
@@ -486,18 +491,40 @@ $(OBJ_DIR)\hhyper.obj : $(OBJ_DIR)\hhyper.c
 
 
 # ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-# ³ QHTM.LIB Dependencies  ³Û
+# ³ HWG_CONTRIB.LIB Dependencies  ³Û
 # ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÛ
 #  ßßßßßßßßßßßßßßßßßßßßßßßßßß
 
-$(OBJ_DIR)\hqhtm.c : $(SRC_DIR)\qhtm\hqhtm.prg
+$(OBJ_DIR)\hqhtm.c : $(CONTRIB_DIR)\qhtm\hqhtm.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\miscfunc.c : $(CONTRIB_DIR)\misc\miscfunc.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\richtext.c : $(CONTRIB_DIR)\misc\richtext.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\saymoney.c : $(CONTRIB_DIR)\misc\saymoney.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hqhtm.obj : $(OBJ_DIR)\hqhtm.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
-$(OBJ_DIR)\hwg_qhtm.obj : $(SRC_DIR)\qhtm\hwg_qhtm.c
+$(OBJ_DIR)\hwg_qhtm.obj : $(CONTRIB_DIR)\qhtm\hwg_qhtm.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\arr2str.obj : $(CONTRIB_DIR)\misc\arr2str.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\miscfunc.obj : $(OBJ_DIR)\miscfunc.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\richtext.obj : $(OBJ_DIR)\richtext.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\saymoney.obj : $(OBJ_DIR)\saymoney.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
 
 # ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 # ³ PROCMISC.LIB Dependencies ³Û

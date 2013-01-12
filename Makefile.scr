@@ -12,8 +12,8 @@ LIB_DIR = lib
 SRC_DIR = source
 PROCMISC_DIR = source/procmisc
 HBXML_DIR    = source/xml
-HWGQHTM_DIR  = source/qhtm
 ACTIVEX_DIR  = source/activex
+CONTRIB_DIR  = contrib
 
 CFLAGS = -W -Wall -O3 -DHWG_USE_POINTER_ITEM
 CFLAGS += -I$(INC_DIR)
@@ -26,8 +26,8 @@ endif
 PRGFLAGS += -I$(INC_DIR)
 PRGFLAGS += $(PRG_USR)
 
-vpath %.c $(SRC_DIR):$(PROCMISC_DIR):$(HBXML_DIR):$(HWGQHTM_DIR):$(ACTIVEX_DIR)
-vpath %.prg $(SRC_DIR):$(PROCMISC_DIR):$(HBXML_DIR):$(HWGQHTM_DIR):$(ACTIVEX_DIR)
+vpath %.c $(SRC_DIR):$(PROCMISC_DIR):$(HBXML_DIR):$(ACTIVEX_DIR):$(CONTRIB_DIR)/qhtm:$(CONTRIB_DIR)/misc
+vpath %.prg $(SRC_DIR):$(PROCMISC_DIR):$(HBXML_DIR):$(ACTIVEX_DIR):$(CONTRIB_DIR)/qhtm:$(CONTRIB_DIR)/misc
 
 $(OBJ_DIR)/%.o : %.prg
 	$(HB_PREF)cmp $(PRGFLAGS) -o$@ $<
@@ -42,7 +42,7 @@ all: \
    $(LIB_DIR)/libhwgui.a \
    $(LIB_DIR)/libprocmisc.a \
    $(LIB_DIR)/libhbxml.a \
-   $(LIB_DIR)/libhwg_qhtm.a \
+   $(LIB_DIR)/libhwg_contrib.a \
 
 #   $(LIB_DIR)/libhbactivex.a
 
@@ -131,14 +131,18 @@ $(LIB_DIR)/libhbxml.a : \
    $(OBJ_DIR)/xmlparse.o \
    $(OBJ_DIR)/hxmldoc.o
 
-$(LIB_DIR)/libhwg_qhtm.a : \
-   $(OBJ_DIR)/hqhtm.o \
-   $(OBJ_DIR)/hwg_qhtm.o
-
 $(LIB_DIR)/libhbactivex.a : \
    $(OBJ_DIR)/htmlcore.o \
    $(OBJ_DIR)/htmlfunc.o \
    $(OBJ_DIR)/hhtml.o
+
+$(LIB_DIR)/libhwg_contrib.a : \
+   $(OBJ_DIR)/hqhtm.o \
+   $(OBJ_DIR)/hwg_qhtm.o \
+   $(OBJ_DIR)/arr2str.o \
+   $(OBJ_DIR)/miscfunc.o \
+   $(OBJ_DIR)/richtext.o \
+   $(OBJ_DIR)/saymoney.o
 
 
 clean:

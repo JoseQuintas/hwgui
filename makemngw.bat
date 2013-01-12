@@ -4,7 +4,8 @@ if "%1" == "CLEAN" goto CLEAN
 
 :BUILD
 
-   rem set path=c:\softools\mingw\bin
+   set CONTRIB_SUPPORT=ON
+   rem set path=d:\softools\mingw\bin
    mingw32-make.exe -f makefile.gcc
    if errorlevel 1 goto BUILD_ERR
 

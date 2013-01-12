@@ -9,15 +9,21 @@ LIB_DIR = lib
 SRC_DIR = source
 PROCMISC_DIR = source\procmisc
 HBXML_DIR    = source\xml
-HWGQHTM_DIR  = source\qhtm
+HWGCONTRIB_DIR  = contrib
 
 CFLAGS = -Wall -mno-cygwin -O3 -march=pentium -DHWG_USE_POINTER_ITEM
 
 all: \
    $(LIB_DIR)/libhwgui.a \
    $(LIB_DIR)/libprocmisc.a \
-   $(LIB_DIR)/libhbxml.a \
-   $(LIB_DIR)/libhwg_qhtm.a
+   $(LIB_DIR)/libhbxml.a
+
+ifneq ($(CONTRIB_SUPPORT),)
+all: \
+   $(all) \
+   $(LIB_DIR)/libhwg_contrib.a
+endif
+
 
 $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/animat.o \
@@ -110,9 +116,13 @@ $(LIB_DIR)/libhbxml.a : \
    $(OBJ_DIR)/hxmldoc.o
 	ar rc $@ $^
 
-$(LIB_DIR)/libhwg_qhtm.a : \
+$(LIB_DIR)/libhwg_contrib.a : \
    $(OBJ_DIR)/hqhtm.o \
-   $(OBJ_DIR)/hwg_qhtm.o
+   $(OBJ_DIR)/hwg_qhtm.o \
+   $(OBJ_DIR)/arr2str.o \
+   $(OBJ_DIR)/miscfunc.o \
+   $(OBJ_DIR)/richtext.o \
+   $(OBJ_DIR)/saymoney.o
 	ar rc $@ $^
 
 .prg.c:
@@ -139,8 +149,14 @@ $(OBJ_DIR)/%.c : $(HBXML_DIR)/%.prg
 $(OBJ_DIR)/%.o : $(HBXML_DIR)/%.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
-$(OBJ_DIR)/%.c : $(HWGQHTM_DIR)/%.prg
+$(OBJ_DIR)/%.c : $(HWGCONTRIB_DIR)/misc/%.prg
 	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
 
-$(OBJ_DIR)/%.o : $(HWGQHTM_DIR)/%.c
+$(OBJ_DIR)/%.c : $(HWGCONTRIB_DIR)/qhtm/%.prg
+	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+
+$(OBJ_DIR)/%.o : $(HWGCONTRIB_DIR)/misc/%.c
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
+$(OBJ_DIR)/%.o : $(HWGCONTRIB_DIR)/qhtm/%.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^

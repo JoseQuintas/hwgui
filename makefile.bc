@@ -36,8 +36,8 @@ LIB_DIR  = lib
 HWGUI_OBJ_DIR      = $(OBJ_DIR)
 PROCMISC_OBJ_DIR   = $(OBJ_DIR)
 HBXML_OBJ_DIR      = $(OBJ_DIR)
-HWGQHTM_OBJ_DIR    = $(OBJ_DIR)
 ACTIVEX_OBJ_DIR    = $(OBJ_DIR)
+CONTRIB_OBJ_DIR    = $(OBJ_DIR)
 
 # This is needed, otherwise the libs may overflow when
 # debug info is requested with -v -y
@@ -56,16 +56,14 @@ ACTIVEX_OBJ_DIR    = $(OBJ_DIR)
 PROCMISC_DIR = source\procmisc
 HWGUI_DIR    = source
 HBXML_DIR    = source\xml
-HWGQHTM_DIR  = source\qhtm
 ACTIVEX_DIR  = source\activex
+CONTRIB_DIR  = contrib
 
 #
 # C compiler definition and C flags. These should never have to change.
 #
 
-#CFLAGS               = -I$(INCLUDE_DIR) -5 -6 -d $(C_USR) $(CFLAGS) -D__WIN32__ -g255 -DHWG_USE_POINTER_ITEM
 CFLAGS               = -I$(INCLUDE_DIR) -5 -6 -d $(C_USR) $(CFLAGS) -D__WIN32__ -g255
-#CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__ -g255
 !if $d(HB_MULTI_GT)
 CFLAGS               = $(CFLAGS) -DHB_MULTI_GT
 !endif
@@ -92,8 +90,8 @@ HB_CMD = $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 HWGUI_LIB    =   $(LIB_DIR)\hwgui$(HB_MT).lib
 PROCMISC_LIB =   $(LIB_DIR)\procmisc.lib
 HBXML_LIB    =   $(LIB_DIR)\hbxml.lib
-HWGQHTM_LIB  =   $(LIB_DIR)\hwg_qhtm.lib
 ACTIVEX_LIB  =   $(LIB_DIR)\hbactivex.lib
+CONTRIB_LIB  =   $(LIB_DIR)\hwg_contrib.lib
 
 #
 # Rules
@@ -189,14 +187,6 @@ PROCMISC_LIB_OBJS = \
    $(PROCMISC_OBJ_DIR)\scrdebug.obj
 
 #
-# HWG_QHTM.LIB rules
-#
-
-HWGQHTM_LIB_OBJS = \
-   $(HWGQHTM_OBJ_DIR)\hwg_qhtm.obj \
-   $(HWGQHTM_OBJ_DIR)\hqhtm.obj
-
-#
 # HBXML.LIB rules
 #
 HBXML_LIB_OBJS = \
@@ -213,6 +203,17 @@ ACTIVEX_LIB_OBJS = \
    $(ACTIVEX_OBJ_DIR)\h_activex.obj \
    $(ACTIVEX_OBJ_DIR)\c_activex.obj
 
+
+#
+# HWG_CONTRIB.LIB rules
+#
+CONTRIB_LIB_OBJS = \
+   $(CONTRIB_OBJ_DIR)\arr2str.obj \
+   $(CONTRIB_OBJ_DIR)\miscfunc.obj \
+   $(CONTRIB_OBJ_DIR)\richtext.obj \
+   $(CONTRIB_OBJ_DIR)\saymoney.obj \
+   $(CONTRIB_OBJ_DIR)\hwg_qhtm.obj \
+   $(CONTRIB_OBJ_DIR)\hqhtm.obj
 
 #
 # Our default target
@@ -234,8 +235,7 @@ PROJECT = \
 PROJECT = \
    $(PROJECT) \
    $(PROCMISC_LIB) \
-   $(HBXML_LIB) \
-   $(HWGQHTM_LIB)
+   $(HBXML_LIB)
 !endif
 
 !if "$(ACTIVEX_SUPPORT)" == "ON"
@@ -244,6 +244,12 @@ PROJECT = \
    $(ACTIVEX_LIB)
 !endif
 
+
+!if "$(CONTRIB_SUPPORT)" == "ON"
+PROJECT = \
+   $(PROJECT) \
+   $(CONTRIB_LIB)
+!endif
 
 ALL: $(PROJECT)
 
@@ -275,17 +281,17 @@ $(HBXML_LIB) : $(HBXML_LIB_OBJS)
 
 !
 
-$(HWGQHTM_LIB) : $(HWGQHTM_LIB_OBJS)
-    IF EXIST "$(HWGQHTM_LIB)" $(DEL) "$(HWGQHTM_LIB)" > NUL
-    $(LINKER) "$(HWGQHTM_LIB)" $(ARFLAGS) @&&!
+$(ACTIVEX_LIB) : $(ACTIVEX_LIB_OBJS)
+    IF EXIST "$(ACTIVEX_LIB)" $(DEL) "$(ACTIVEX_LIB)" > NUL
+    $(LINKER) "$(ACTIVEX_LIB)" $(ARFLAGS) @&&!
 +$(**: = &^
 +)
 
 !
 
-$(ACTIVEX_LIB) : $(ACTIVEX_LIB_OBJS)
-    IF EXIST "$(ACTIVEX_LIB)" $(DEL) "$(ACTIVEX_LIB)" > NUL
-    $(LINKER) "$(ACTIVEX_LIB)" $(ARFLAGS) @&&!
+$(CONTRIB_LIB) : $(CONTRIB_LIB_OBJS)
+    IF EXIST "$(CONTRIB_LIB)" $(DEL) "$(CONTRIB_LIB)" > NUL
+    $(LINKER) "$(CONTRIB_LIB)" $(ARFLAGS) @&&!
 +$(**: = &^
 +)
 
@@ -327,16 +333,6 @@ $(ACTIVEX_LIB) : $(ACTIVEX_LIB_OBJS)
 
 
 #
-# HWG_QHTM.LIB dependencies
-#
-
-{$(HWGQHTM_DIR)}.prg{$(HWGQHTM_OBJ_DIR)}.c:
-    $(HB_CMD)
-
-{$(HWGQHTM_DIR)}.c{$(HWGQHTM_OBJ_DIR)}.obj:
-   $(CC_CMD)
-
-#
 # ACTIVEX.LIB dependencies
 #
 
@@ -346,3 +342,19 @@ $(ACTIVEX_LIB) : $(ACTIVEX_LIB_OBJS)
 {$(ACTIVEX_DIR)}.c{$(ACTIVEX_OBJ_DIR)}.obj:
    $(CC_CMD)
 
+
+#
+# HWG_CONTIB.LIB dependencies
+#
+
+{$(CONTRIB_DIR)/misc}.prg{$(CONTRIB_OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(CONTRIB_DIR)/qhtm}.prg{$(CONTRIB_OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(CONTRIB_DIR)/misc}.c{$(CONTRIB_OBJ_DIR)}.obj:
+   $(CC_CMD)
+
+{$(CONTRIB_DIR)/qhtm}.c{$(CONTRIB_OBJ_DIR)}.obj:
+   $(CC_CMD)

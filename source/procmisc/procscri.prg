@@ -143,7 +143,7 @@ LOCAL rezArray := Iif( lDebugInfo, { "", {}, {} }, { "", {} } )
          Fclose( han )
       ENDIF
       IF !lppNoInit
-         ppScript( ,.T. )
+         ppScript( ,.F. )
       ENDIF
    ELSE
 #ifdef __WINDOWS__

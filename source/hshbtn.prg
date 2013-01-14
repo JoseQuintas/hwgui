@@ -40,7 +40,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       cTooltip, lEnabled, shadeID, palette,         ;
       granularity, highlight, coloring, shcolor ) CLASS HShadeButton
 
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,    ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,    ;
          bInit, bSize, bPaint, bClick, lFlat,             ;
          cText, color, font, xt, yt,,,                    ;
          bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
@@ -80,7 +80,7 @@ METHOD Paint() CLASS HShadeButton
 
 METHOD END() CLASS HShadeButton
 
-   Super:END()
+   ::Super:END()
    shade_Release( ::hShade )
 
    RETURN NIL

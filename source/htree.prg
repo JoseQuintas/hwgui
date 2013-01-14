@@ -285,7 +285,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
    METHOD Select( oNode ) BLOCK { | Self, o | SendMessage( ::handle, TVM_SELECTITEM, TVGN_CARET, o:handle ), ::oItem := TreeGetSelected( ::handle ) }
    METHOD Clean()
    METHOD Notify( lParam )
-   METHOD END()   INLINE ( Super:END(), ReleaseTree( ::aItems ) )
+   METHOD END()   INLINE ( ::Super:END(), ReleaseTree( ::aItems ) )
    METHOD isExpand( oNodo ) INLINE ! CheckBit( oNodo, TVE_EXPAND )
    METHOD onEvent( msg, wParam, lParam )
    METHOD ItemHeight( nHeight ) SETGET
@@ -312,7 +312,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit,
                           IIF( ! lDragDrop, TVS_DISABLEDRAGDROP, 0 ) )
 
    ::sTyle := nStyle
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize,,, color, bcolor )
 
    ::lEditLabels :=  lEditLabels
@@ -350,7 +350,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit,
 METHOD Init() CLASS HTree
 
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       Hwg_InitTreeView( ::handle )

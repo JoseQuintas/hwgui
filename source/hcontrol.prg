@@ -245,7 +245,7 @@ METHOD ControlSource( cControlSource ) CLASS HControl
 
 METHOD END() CLASS HControl
 
-   Super:END()
+   ::Super:END()
    IF ::tooltip != NIL
       DelToolTip( ::oParent:handle, ::handle )
       ::tooltip := NIL
@@ -437,7 +437,7 @@ METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint, bRClic
    bSize  := iif( bSize != NIL, bSize, { | o, x, y | o:Move( 0, y - ::nStatusHeight, x, ::nStatusHeight ) } )
    nStyle := Hwg_BitOr( iif( nStyle == NIL, 0, nStyle ), ;
       WS_CHILD + WS_VISIBLE + WS_OVERLAPPED + WS_CLIPSIBLINGS )
-   Super:New( oWndParent, nId, nStyle, 0, 0, 0, 0, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, nStyle, 0, 0, 0, 0, oFont, bInit, ;
       bSize, bPaint )
    ::nStatusHeight := iif( nHeight = NIL, ::nStatusHeight, nHeight )
    ::aParts    := aParts
@@ -464,7 +464,7 @@ METHOD Init() CLASS HStatus
       IF ! Empty( ::aParts )
          hwg_InitStatus( ::oParent:handle, ::handle, Len( ::aParts ), ::aParts )
       ENDIF
-      Super:Init()
+      ::Super:Init()
    ENDIF
 
    RETURN  NIL
@@ -475,7 +475,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    HB_SYMBOL_UNUSED( cCaption )
    HB_SYMBOL_UNUSED( lTransp )
 
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor )
    HWG_InitCommonControlsEx()
    ::style := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
@@ -609,7 +609,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       ENDIF
    ENDIF
 
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, cTooltip, tcolor, bColor )
 
    ::title := cCaption
@@ -625,7 +625,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
       bSize, bPaint, cTooltip, tcolor, bColor, lTransp ) CLASS HStatic
 
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
       bSize, bPaint, cTooltip, tcolor, bColor )
 
    ::title := cCaption
@@ -656,7 +656,7 @@ METHOD Activate() CLASS HStatic
 METHOD Init() CLASS HStatic
 
    IF !::lInit
-      Super:init()
+      ::Super:init()
       IF ::title != NIL
          SetWindowText( ::handle, ::title )
       ENDIF
@@ -687,7 +687,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    nStyle := Hwg_BitOr( IIF( nStyle == NIL, 0, nStyle ), BS_PUSHBUTTON )
 
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, ;
               IIF( nWidth  == NIL, 90, nWidth  ), ;
               IIF( nHeight == NIL, 30, nHeight ), ;
               oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
@@ -717,7 +717,7 @@ RETURN NIL
 METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
                  cTooltip, tcolor, bColor, cCaption ) CLASS HButton
 
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint, cTooltip, tcolor, bColor )
 
    ::title   := cCaption
@@ -751,7 +751,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
       oFont, bInit, bSize, bPaint, tcolor, bColor ) CLASS HGroup
 
    nStyle := Hwg_BitOr( iif( nStyle == NIL, 0, nStyle ), BS_GROUPBOX )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, , tcolor, bColor )
 
    ::title := cCaption
@@ -788,7 +788,7 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, bInit, tcolor, nHeight, cSlant, nBorder ) CLASS HLine
 
-   Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, , , , bInit, ;
+   ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, , , , bInit, ;
       bSize, { | o, lp | o:Paint( lp ) } , , tcolor )
 
    ::title := ""

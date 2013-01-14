@@ -116,7 +116,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ENDIF
 
    nStyle := Hwg_BitOr( iif( nStyle == Nil, 0, nStyle ), iif( lEdit, CBS_DROPDOWN, CBS_DROPDOWNLIST ) + WS_TABSTOP )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, bSize, bPaint, ctooltip, tcolor, bcolor )
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, bSize, bPaint, ctooltip, tcolor, bcolor )
 
    IF lText == Nil
       lText := .F.
@@ -213,7 +213,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
       nDisplay := 6
    ENDIF
    ::lResource := .T.
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, bSize, bPaint, ctooltip )
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, bSize, bPaint, ctooltip )
 
    ::nDisplay := nDisplay
 
@@ -291,7 +291,7 @@ METHOD INIT() CLASS HComboBox
          NewLongComboWidth := ( LongComboWidth - 2 ) * avgwidth
          SendMessage( ::handle, CB_SETDROPPEDWIDTH, NewLongComboWidth + 50, 0 )
       ENDIF
-      Super:Init()
+      ::Super:Init()
       IF !::lResource
          // HEIGHT Items
          IF !Empty( ::nhItem )
@@ -918,7 +918,7 @@ METHOD INIT() CLASS hCheckComboBox
    LOCAL i, nSize, hImage
 
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
       IF Len( ::acheck ) > 0
          AEval( ::aCheck, { | a | ::Setcheck( a, .T. ) } )
       ENDIF

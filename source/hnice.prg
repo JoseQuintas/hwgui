@@ -58,7 +58,7 @@ ENDCLASS
 METHOD New( oWndParent, nId, nStyle, nStyleEx, nLeft, nTop, nWidth, nHeight, ;
             bInit, bClick, ;
             cText, cTooltip, r, g, b ) CLASS HNiceButton
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,, bInit, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,, bInit, ;
               ,, cTooltip )
    DEFAULT g := ::g
    DEFAULT b := ::b
@@ -88,7 +88,7 @@ METHOD Redefine( oWndParent, nId, nStyleEx, ;
                  bInit, bClick, ;
                  cText, cTooltip, r, g, b ) CLASS HNiceButton
 
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0,, bInit,,, cTooltip )
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0,, bInit,,, cTooltip )
 
    DEFAULT g := ::g
    DEFAULT b := ::b
@@ -120,7 +120,7 @@ METHOD Activate() CLASS HNiceButton
 METHOD INIT() CLASS HNiceButton
 
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
       ::Create()
    ENDIF
    RETURN Nil

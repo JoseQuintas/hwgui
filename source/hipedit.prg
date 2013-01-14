@@ -43,7 +43,7 @@ METHOD New( oWndParent, nId, aValue, bSetGet, nStyle, nLeft, nTop, nWidth, nHeig
             oFont, bGetFocus, bKillFocus ) CLASS HIPedit
 
    nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont )
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont )
 
    ::title   := ""
 
@@ -95,7 +95,7 @@ METHOD Activate() CLASS HIPedit
 METHOD Init() CLASS HIPedit
 
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
       ::SetValue( ::aValue )
       ::lInit := .t.
    ENDIF
@@ -121,7 +121,7 @@ METHOD Clear( ) CLASS HIPedit
 METHOD END() CLASS HIPedit
 
    // Nothing to do here, yet!
-   Super:END()
+   ::Super:END()
 
    RETURN Nil
 

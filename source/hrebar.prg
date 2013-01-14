@@ -48,7 +48,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
 
    DEFAULT  lvert  TO .f.
    nStyle := Hwg_BitOr( IIf( nStyle == NIL, 0,  RBS_BANDBORDERS ), WS_CHILD )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
          bSize, bPaint, ctooltip, tcolor, bcolor )
    ::Title := ""
    HWG_InitCommonControlsEx()
@@ -63,7 +63,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, bSize, bPaint, ;
    HB_SYMBOL_UNUSED( cCaption )
 
    DEFAULT  lVert TO .f.
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, bSize, bPaint, ;
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, bSize, bPaint, ;
          ctooltip, tcolor, bcolor )
    HWG_InitCommonControlsEx()
 
@@ -84,7 +84,7 @@ METHOD Activate() CLASS hrebar
 METHOD INIT() CLASS hrebar
 
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
       ::CreateBands()
       // REBARSETIMAGELIST(::handle,nil)
    ENDIF

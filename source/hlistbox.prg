@@ -48,7 +48,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
             bInit, bSize, bPaint, bChange, cTooltip, tColor, bcolor, bGFocus, bLFocus,bKeydown, bDblclick,bOther )  CLASS HListBox
 
    nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP + WS_VSCROLL + LBS_DISABLENOSCROLL + LBS_NOTIFY + LBS_NOINTEGRALHEIGHT + WS_BORDER )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, cTooltip, tColor, bcolor )
 
    ::value   := IIf( vari == Nil .OR. ValType( vari ) != "N", 0, vari )
@@ -102,7 +102,7 @@ METHOD Activate() CLASS HListBox
 METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
                  bChange, cTooltip, bKeydown, bOther )  CLASS HListBox
 
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint, cTooltip )
 
    ::value   := IIf( vari == Nil .OR. ValType( vari ) != "N", 1, vari )
@@ -129,7 +129,7 @@ METHOD Init() CLASS HListBox
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       HWG_INITLISTPROC( ::handle )
-      Super:Init()
+      ::Super:Init()
       IF ::aItems != Nil
          IF ::value == Nil
             ::value := 1

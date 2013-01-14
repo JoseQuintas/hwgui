@@ -41,7 +41,7 @@ ENDCLASS
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
       bSize, bDraw, color, bcolor, aLeft, aRight, lTransp, lScrolling ) CLASS HSplitter
    //+  WS_CLIPCHILDREN
-   Super:New( oWndParent, nId, WS_VISIBLE + SS_OWNERDRAW , nLeft, nTop, nWidth, nHeight,,, ;
+   ::Super:New( oWndParent, nId, WS_VISIBLE + SS_OWNERDRAW , nLeft, nTop, nWidth, nHeight,,, ;
          bSize, bDraw,, color, bcolor )
 
    ::title := ""
@@ -70,7 +70,7 @@ METHOD Activate() CLASS HSplitter
 METHOD Init() CLASS HSplitter
 
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       Hwg_InitWinCtrl( ::handle )

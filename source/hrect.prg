@@ -76,7 +76,7 @@ ENDCLASS
 //---------------------------------------------------------------------------
 METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, nColor ) CLASS HRect_Line
 
-   Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop,,,,, bSize, { | o, lp | o:Paint( lp ) } )
+   ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop,,,,, bSize, { | o, lp | o:Paint( lp ) } )
 
    //::title := ""
    ::lVert := IIf( lVert == NIL, .F., lVert )
@@ -181,7 +181,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor
    HB_SYMBOL_UNUSED( ncStyle )
 
    ::bPaint   := { | o, p | o:paint( p ) }
-   Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, ,;
+   ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, ,;
          bInit, bSize, ::bPaint, , tcolor, bColor ) //= NIL
 
    //::title := ""
@@ -218,7 +218,7 @@ METHOD Activate() CLASS HDrawShape
 METHOD SetColor( tcolor, bColor, lRedraw ) CLASS HDrawShape
 
    ::brushFill := HBrush():Add( tColor, ::nfstyle )
-   Super:SetColor( tColor, bColor )
+   ::Super:SetColor( tColor, bColor )
    IF ! Empty( lRedraw )
       RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
    ENDIF
@@ -322,7 +322,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ncStyle, bSiz
    ::lTABSTOP :=  nStyle = WS_TABSTOP
    ::bPaint   := { | o, p | o:paint( p ) }
    nStyle := SS_OWNERDRAW + IIF( nStyle = WS_TABSTOP, WS_TABSTOP , 0 ) + Hwg_Bitand( nStyle, SS_NOTIFY )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, , ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, , ;
          bInit, bSize, ::bPaint,, tcolor, bColor )
 
    //::title := ""
@@ -371,7 +371,7 @@ METHOD Activate() CLASS HContainer
 METHOD Init() CLASS HContainer
 
    IF ! ::lInit
-      Super:init()
+      ::Super:init()
       AddToolTip( ::handle, ::handle, "" )
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
@@ -410,7 +410,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HContainer
       ENDIF
    ENDIF
 
-   RETURN Super:onEvent( msg, wParam, lParam )
+   RETURN ::Super:onEvent( msg, wParam, lParam )
 
 METHOD Visible( lVisibled ) CLASS HContainer
 

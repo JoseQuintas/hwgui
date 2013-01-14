@@ -87,7 +87,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ::title := IIF(cCaption != Nil,cCaption ,"HWGUI HomePage")
    ::hbitmap := hbitmap
 
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, bClick )
 
    DEFAULT vColor TO RGB( 5, 34, 143 )
@@ -130,7 +130,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                  bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )  CLASS HStaticLink
    LOCAL oPrevFont
 
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor )
 
    DEFAULT vColor TO RGB( 5, 34, 143 )
@@ -170,7 +170,7 @@ METHOD INIT() CLASS HStaticLink
 
    IF ! ::lInit
       ::Resize( )
-      Super:init()
+      ::Super:init()
       IF ::Title != NIL
          SETWINDOWTEXT( ::handle, ::title )
       ENDIF

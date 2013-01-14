@@ -73,7 +73,7 @@ METHOD ReDefine( nId, cFileName, oDlg, bWhen, bValid ) CLASS TVideo
 //----------------------------------------------------------------------------//
 METHOD Initiate( ) CLASS TVideo
 
-   Super:Init(  )
+   ::Super:Init(  )
    ::oMci:lOpen()
    ::oMci:SetWindow( Self )
 

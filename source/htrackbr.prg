@@ -56,7 +56,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
    nStyle += IIf( lVertical != NIL .AND. lVertical, TBS_VERT, 0 )
    nStyle += TickStyle + TickMarks
 
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,, ;
          bInit, bSize, bPaint, cTooltip )
 
    ::value      := IIf( ValType( vari ) == "N", vari, 0 )
@@ -119,7 +119,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTrackBar
 
 METHOD Init() CLASS HTrackBar
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
       TrackBarSetRange( ::handle, ::nLow, ::nHigh )
       SendMessage( ::handle, TBM_SETPOS, 1, ::value )
       IF ::bPaint != NIL

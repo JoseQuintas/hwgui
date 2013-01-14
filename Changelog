@@ -8,6 +8,46 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-01-14 19:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hanimat.prg
+  * source/hbrowse.prg
+  * source/hcheck.prg
+  * source/hcombo.prg
+  * source/hcontrol.prg
+  * source/hctrlex.prg
+  * source/hdatepic.prg
+  * source/hdialog.prg
+  * source/hedit.prg
+  * source/hfreeimg.prg
+  * source/hgraph.prg
+  * source/hgrid.prg
+  * source/hgridex.prg
+  * source/hhyper.prg
+  * source/hipedit.prg
+  * source/hlistbox.prg
+  * source/hmonthc.prg
+  * source/hnice.prg
+  * source/hownbtn.prg
+  * source/hpager.prg
+  * source/hpanel.prg
+  * source/hprogres.prg
+  * source/hradio.prg
+  * source/hrebar.prg
+  * source/hrect.prg
+  * source/hriched.prg
+  * source/hsayimg.prg
+  * source/hshbtn.prg
+  * source/hsplit.prg
+  * source/htab.prg
+  * source/htool.prg
+  * source/htrackbr.prg
+  * source/htree.prg
+  * source/hupdown.prg
+  * source/hwindow.prg
+  * source/video.prg
+  * source/activex/h_activex.prg
+    * All super: calls was changed to ::super:
+
 2013-01-14 19:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   ! source/procmisc/procscri.prg
     ! Small bug fixed.

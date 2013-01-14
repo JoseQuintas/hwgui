@@ -246,7 +246,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
          ENDIF
          onTrackScroll( Self, msg, wParam, lParam )
       ENDIF
-      RETURN Super:onEvent( msg, wParam, lParam )
+      RETURN ::Super:onEvent( msg, wParam, lParam )
    ENDIF
 
    RETURN 0

@@ -46,7 +46,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit
    ::Style += IIF( nAnimation != NIL .AND. nAnimation > 0, PBS_MARQUEE, 0 )
    ::nAnimation := nAnimation
 
-   Super:New( oWndParent, nId, ::Style, nLeft, nTop, nWidth, nHeight,, bInit, bSize, bPaint, ctooltip )
+   ::Super:New( oWndParent, nId, ::Style, nLeft, nTop, nWidth, nHeight,, bInit, bSize, bPaint, ctooltip )
 
    ::maxPos  := Iif( maxPos != NIL .AND. maxPos != 0, maxPos, 20 )
    ::lNewBox := .F.
@@ -109,7 +109,7 @@ METHOD Activate() CLASS HProgressBar
 METHOD Init()  CLASS HProgressBar
 
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
        IF ::nAnimation != NIL .AND. ::nAnimation > 0
           SendMessage( ::handle, PBM_SETMARQUEE, 1, ::nAnimation )
        ENDIF

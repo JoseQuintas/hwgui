@@ -78,7 +78,7 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
             nItemCount, lNoLines, color, bkcolor, lNoHeader, aBit ) CLASS HGrid
 
    nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), LVS_SHOWSELALWAYS + WS_TABSTOP + IIf( lNoBord, 0, WS_BORDER ) + LVS_REPORT + LVS_OWNERDATA + LVS_SINGLESEL )
-   Super:New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, ;
+   ::Super:New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, ;
               bSize, bPaint )
    DEFAULT aBit TO { }
    ::ItemCount := nItemCount
@@ -120,7 +120,7 @@ METHOD Init() CLASS HGrid
    LOCAL n
 
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
       FOR n := 1 TO Len( ::aBitmaps )
          AAdd( aButton, LoadImage( , ::aBitmaps[ n ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
       NEXT

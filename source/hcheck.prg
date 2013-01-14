@@ -46,7 +46,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lEnter, lTransp, bLFocus ) CLASS HCheckButton
 
    nStyle   := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), BS_NOTIFY + BS_PUSHBUTTON + BS_AUTOCHECKBOX + WS_TABSTOP )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
          bSize, bPaint, ctooltip, tcolor, bcolor )
 
    ::title   := cCaption
@@ -83,7 +83,7 @@ METHOD Activate() CLASS HCheckButton
 
 METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lEnter ) CLASS HCheckButton
 
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
          bSize, bPaint, ctooltip, tcolor, bcolor )
 
    ::lValue   := IIf( vari == NIL .OR. ValType( vari ) != "L", .F., vari )
@@ -105,7 +105,7 @@ METHOD Init() CLASS HCheckButton
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       HWG_INITBUTTONPROC( ::handle )
-      Super:Init()
+      ::Super:Init()
       IF ::lValue
          SendMessage( ::handle, BM_SETCHECK, 1, 0 )
       ENDIF
@@ -196,14 +196,14 @@ METHOD Refresh() CLASS HCheckButton
 /*
 METHOD Disable() CLASS HCheckButton
 
-   Super:Disable()
+   ::Super:Disable()
    SendMessage( ::handle, BM_SETCHECK, BST_INDETERMINATE, 0 )
 
    RETURN NIL
 
 METHOD Enable() CLASS HCheckButton
 
-   Super:Enable()
+   ::Super:Enable()
    SendMessage( ::handle, BM_SETCHECK, IIf( ::lValue, 1, 0 ), 0 )
 
    RETURN NIL

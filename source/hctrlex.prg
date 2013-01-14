@@ -80,7 +80,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::bOther := bOther
    // ::title := cCaption
 
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )
 
    // ::Activate()
@@ -103,7 +103,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
       ::BackStyle := TRANSPARENT
    ENDIF
 
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, cCaption, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, cCaption, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor )
 
    ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
@@ -122,7 +122,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 METHOD Init() CLASS HStaticEx
 
    IF ! ::lInit
-      Super:init()
+      ::Super:init()
       IF ::nHolder != 1
          ::nHolder := 1
          SetWindowObject( ::handle, Self )
@@ -580,7 +580,7 @@ METHOD SetIcon( hIcon ) CLASS HButtonEX
 
 METHOD END() CLASS HButtonEX
 
-   Super:END()
+   ::Super:END()
 
    RETURN Self
 
@@ -1163,7 +1163,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
    ::oBrush := iif( bColor != NIL, ::brush, NIL )
    ::lTransparent := iif( lTransp != NIL, lTransp, .F. )
    ::backStyle := iif( ( lTransp != NIL .AND. lTransp ) .OR. ::bColor != NIL , TRANSPARENT, OPAQUE )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
       oFont, bInit, bSize, bPaint, tcolor, bColor )
 
    RETURN Self
@@ -1172,7 +1172,7 @@ METHOD Init() CLASS HGroupEx
    LOCAL nbs
 
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
       // *-IF ::backStyle = TRANSPARENT .OR. ::bColor != NIL
       IF ::oBrush != NIL .OR. ::backStyle = TRANSPARENT
          nbs := HWG_GETWINDOWSTYLE( ::handle )

@@ -101,7 +101,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       iif( lPassword == Nil .OR. ! lPassword, 0, ES_PASSWORD )  )
 
    bcolor := iif( bcolor == Nil .AND. Hwg_BitAnd( nStyle, WS_DISABLED ) = 0, GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor  )
 
    IF vari != Nil
@@ -178,7 +178,7 @@ METHOD Activate() CLASS HEdit
 METHOD Init()  CLASS HEdit
 
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       Hwg_InitEditProc( ::handle )
@@ -487,7 +487,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
       bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, nMaxLength, lMultiLine, bKeyDown, bChange )  CLASS HEdit
 
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, iif( bcolor == Nil, GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor ) )
    ::bKeyDown := bKeyDown
    IF ValType( lMultiLine ) == "L"

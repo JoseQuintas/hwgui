@@ -399,7 +399,7 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
       iif( lNoBorder = NIL .OR. ! lNoBorder, WS_BORDER, 0 ) +            ;
       iif( ! lNoVScroll, WS_VSCROLL, 0 ) )
    nStyle -= iif( Hwg_BitAND( nStyle, WS_VSCROLL ) > 0 .AND. lNoVScroll, WS_VSCROLL, 0 )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, iif( nWidth == NIL, 0, nWidth ), ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, iif( nWidth == NIL, 0, nWidth ), ;
       iif( nHeight == NIL, 0, nHeight ), oFont, bInit, bSize, bPaint, ctooltip , tColor, bColor )
    ::lNoVScroll := lNoVScroll
    ::Type    := lType
@@ -463,7 +463,7 @@ METHOD Init() CLASS HBrowse
    IF ! ::lInit
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
-      Super:Init()
+      ::Super:Init()
       ::InitBrw( , .T. )
       //VScrollPos( Self, 0, .F. )
       IF hwg_GetParentForm( Self ):Type < WND_DLG_RESOURCE
@@ -837,7 +837,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
 METHOD Redefine( lType, oWndParent, nId, oFont, bInit, bSize, bPaint, bEnter, bGfocus, bLfocus ) CLASS HBrowse
 
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, bSize, bPaint )
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, bSize, bPaint )
 
    ::Type    := lType
    IF oFont == NIL
@@ -936,7 +936,7 @@ METHOD DelColumn( nPos ) CLASS HBrowse
 
 METHOD END() CLASS HBrowse
 
-   Super:END()
+   ::Super:END()
    IF ::brush != NIL
       ::brush:Release()
       ::brush := NIL

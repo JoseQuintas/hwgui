@@ -27,7 +27,7 @@ CLASS HSayImage INHERIT HControl
          bSize, ctooltip, bClick, bDblClick )
    METHOD Redefine( oWndParent, nId, bInit, bSize, ctooltip )
    METHOD Activate()
-   METHOD END()  INLINE ( Super:END(), IIf( ::oImage <> NIL, ::oImage:Release(), ::oImage := NIL ), ::oImage := NIL )
+   METHOD END()  INLINE ( ::Super:END(), IIf( ::oImage <> NIL, ::oImage:Release(), ::oImage := NIL ), ::oImage := NIL )
    METHOD onClick()
    METHOD onDblClick()
 
@@ -37,7 +37,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
       bSize, ctooltip, bClick, bDblClick ) CLASS HSayImage
 
    nStyle := Hwg_BitOr( nStyle, IIF( ISBLOCK( bClick ) .OR. ISBLOCK( bDblClick ), SS_NOTIFY , 0 ) )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop,               ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop,               ;
          IIf( nWidth != NIL, nWidth, 0 ), IIf( nHeight != NIL, nHeight, 0 ),, ;
          bInit, bSize,, ctooltip )
 
@@ -51,7 +51,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
 
 METHOD Redefine( oWndParent, nId, bInit, bSize, ctooltip ) CLASS HSayImage
 
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0,, bInit, bSize,, ctooltip )
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0,, bInit, bSize,, ctooltip )
 
    RETURN Self
 
@@ -107,7 +107,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
       bSize, ctooltip, bClick, bDblClick, lTransp, nStretch, nStyle ) CLASS HSayBmp
 
    nStyle := IIF( nStyle = NIL, 0, nStyle )
-   Super:New( oWndParent, nId, SS_OWNERDRAW + nStyle, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctooltip, bClick, bDblClick )
+   ::Super:New( oWndParent, nId, SS_OWNERDRAW + nStyle, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctooltip, bClick, bDblClick )
 
    ::bPaint := { | o, lpdis | o:Paint( lpdis ) }
    ::nStretch := IIf( nStretch = NIL, 0, nStretch )
@@ -134,7 +134,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
 
 METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip, lTransp ) CLASS HSayBmp
 
-   Super:Redefine( oWndParent, nId, bInit, bSize, ctooltip )
+   ::Super:Redefine( oWndParent, nId, bInit, bSize, ctooltip )
    ::bPaint := { | o, lpdis | o:Paint( lpdis ) }
    IF lTransp != NIL .AND. lTransp
       ::BackStyle := TRANSPARENT
@@ -151,7 +151,7 @@ METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip, lTransp 
 METHOD Init() CLASS HSayBmp
 
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
       IF ::oImage != NIL .AND. !empty( ::oImage:Handle )
          SendMessage( ::handle,STM_SETIMAGE, IMAGE_BITMAP, ::oImage:handle )
       ENDIF
@@ -222,7 +222,7 @@ ENDCLASS
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
       bSize, ctooltip, lOEM, bClick, bDblClick ) CLASS HSayIcon
 
-   Super:New( oWndParent, nId, SS_ICON, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctooltip, bClick, bDblClick )
+   ::Super:New( oWndParent, nId, SS_ICON, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctooltip, bClick, bDblClick )
 
    IF lRes == NIL ; lRes := .F. ; ENDIF
    IF lOEM == NIL ; lOEM := .F. ; ENDIF
@@ -238,7 +238,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
 
 METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip ) CLASS HSayIcon
 
-   Super:Redefine( oWndParent, nId, bInit, bSize, ctooltip )
+   ::Super:Redefine( oWndParent, nId, bInit, bSize, ctooltip )
 
    IF lRes == NIL ; lRes := .F. ; ENDIF
    IF ::oImage == NIL
@@ -253,7 +253,7 @@ METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip ) CLASS H
 METHOD Init() CLASS HSayIcon
 
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
       SendMessage( ::handle, STM_SETIMAGE, IMAGE_ICON, ::oImage:handle )
    ENDIF
 

@@ -53,7 +53,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
    nStyle   += IIf( lNoToday == Nil.OR. ! lNoToday, 0, MCS_NOTODAY )
    nStyle   += IIf( lNoTodayCircle == Nil.OR. ! lNoTodayCircle, 0, MCS_NOTODAYCIRCLE )
    nStyle   += IIf( lWeekNumbers == Nil.OR. ! lWeekNumbers, 0, MCS_WEEKNUMBERS )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               ,, cTooltip )
 
    ::value   := IIf( ValType( vari ) == "D" .And. ! Empty( vari ), vari, Date() )
@@ -90,7 +90,7 @@ METHOD Activate() CLASS HMonthCalendar
 METHOD Init() CLASS HMonthCalendar
 
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
       IF ! Empty( ::value )
          SetMonthCalendarDate( ::handle , ::value )
       ENDIF

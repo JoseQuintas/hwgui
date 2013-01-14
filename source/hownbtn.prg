@@ -73,7 +73,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
             bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
             cTooltip, lEnabled, lCheck, bColor,bGfocus, bLfocus, themed ) CLASS HOwnButton
 
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, cTooltip )
 
 //   HB_SYMBOL_UNUSED( bGFocus )
@@ -210,7 +210,7 @@ METHOD Init() CLASS HOwnButton
    IF ! ::lInit
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
-      Super:Init()
+      ::Super:Init()
    ENDIF
 
    RETURN Nil
@@ -220,7 +220,7 @@ METHOD Redefine( oWndParent, nId, bInit, bSize, bPaint, bClick, lflat, ;
                  bmp, lResour, xb, yb, widthb, heightb, lTr,      ;
                  cTooltip, lEnabled, lCheck ) CLASS HOwnButton
 
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0,, bInit, bSize, bPaint, cTooltip )
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0,, bInit, bSize, bPaint, cTooltip )
 
    ::lflat   := IIf( lflat == Nil, .F., lflat )
    ::bClick  := bClick
@@ -529,7 +529,7 @@ METHOD onClick()  CLASS HOwnButton
 
 METHOD END()  CLASS HOwnButton
 
-   Super:END()
+   ::Super:END()
    ::oFont := Nil
    IF ::oBitmap != Nil
       ::oBitmap:Release()

@@ -61,7 +61,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE + WS_TABSTOP + ; // WS_BORDER )
                         IIf( lNoBorder = Nil.OR. ! lNoBorder, WS_BORDER, 0 ) )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, IIf( bcolor == Nil, GetSysColor( COLOR_BTNHIGHLIGHT ), bcolor ) )
 
    ::title   := vari
@@ -100,7 +100,7 @@ METHOD Init()  CLASS HRichEdit
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
       Hwg_InitRichProc( ::handle )
-      Super:Init()
+      ::Super:Init()
       ::SetColor( ::tColor, ::bColor )
       IF ::bChange != Nil
          SendMessage( ::handle, EM_SETEVENTMASK, 0, ENM_SELCHANGE + ENM_CHANGE )

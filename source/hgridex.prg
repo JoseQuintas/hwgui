@@ -93,7 +93,7 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
 
    //nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_VISIBLE + WS_CHILD + WS_TABSTOP + LVS_REPORT )
    nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP + WS_BORDER   )
-   Super:New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, ;
+   ::Super:New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, ;
               bSize, bPaint )
    DEFAULT aBit TO { }
    ::aItems := aItems
@@ -140,7 +140,7 @@ METHOD Init() CLASS HGridEx
    LOCAL aTemp, aTemp1, nmax
 
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
       ::nHolder := 1
 
       FOR n := 1 TO Len( ::aBitmaps )
@@ -301,7 +301,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    HB_SYMBOL_UNUSED( lTransp )
 
    DEFAULT  aItem TO { }
-   Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor )
    HWG_InitCommonControlsEx()
    ::arow := aItem

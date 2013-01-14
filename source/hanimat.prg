@@ -40,7 +40,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    nStyle     := nStyle + IIf( lAutoPlay == Nil.OR.lAutoPlay, ACS_AUTOPLAY, 0 )
    nStyle     := nStyle + IIf( lCenter == Nil.OR. ! lCenter, 0, ACS_CENTER )
    nStyle     := nStyle + IIf( lTransparent == Nil.OR. ! lTransparent, 0, ACS_TRANSPARENT )
-   Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight )
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight )
    ::xResID    := xResID
    ::cFilename := cFilename
    ::brush     := ::oParent:brush
@@ -60,7 +60,7 @@ METHOD Activate() CLASS HAnimation
 
 METHOD Init() CLASS HAnimation
    IF ! ::lInit
-      Super:Init()
+      ::Super:Init()
       IF ::xResID != Nil
          Animate_OpenEx( ::handle, GetResources(), ::xResID )
       ELSEIF ::cFileName <> Nil

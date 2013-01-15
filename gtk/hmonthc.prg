@@ -45,21 +45,12 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
             oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, ;
             lWeekNumbers ) CLASS HMonthCalendar
 
-//   nStyle := Hwg_BitOr( Iif( nStyle==Nil, 0, nStyle ), WS_TABSTOP )
-//   nStyle   += Iif( lNoToday==Nil.OR.!lNoToday, 0, MCS_NOTODAY )
-//   nStyle   += Iif( lNoTodayCircle==Nil.OR.!lNoTodayCircle, 0, MCS_NOTODAYCIRCLE )
-//   nStyle   += Iif( lWeekNumbers==Nil.OR.!lWeekNumbers, 0, MCS_WEEKNUMBERS )
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   ,,ctooltip )
 
    ::value   := Iif( Valtype(vari)=="D" .And. !Empty(vari), vari, Date() )
 
    ::bChange := bChange
-
-//   If bChange != Nil 
-//      ::oParent:AddEvent( MCN_SELECT, ::id, bChange, .T. ) 
-//      ::oParent:AddEvent( MCN_SELCHANGE, ::id, bChange, .T. ) 
-//   EndIf 
 
    ::Activate()
 Return Self
@@ -84,7 +75,7 @@ Return Nil
 METHOD Init() CLASS HMonthCalendar
 
    If !::lInit
-      Super:Init()
+      ::Super:Init()
       If !Empty( ::value )
          SetMonthCalendarDate( ::handle , ::value )
       EndIf

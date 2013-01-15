@@ -21,14 +21,14 @@ CLASS HSayImage INHERIT HControl
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,bInit, ;
                   bSize,ctoolt )
    METHOD Activate()
-   METHOD End()  INLINE ( Super:End(),iif(::oImage<>Nil,::oImage:Release(),::oImage:=Nil),::oImage := Nil )
+   METHOD End()  INLINE ( ::Super:End(),iif(::oImage<>Nil,::oImage:Release(),::oImage:=Nil),::oImage := Nil )
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,bInit, ;
                   bSize,ctoolt ) CLASS HSayImage
 
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,               ;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,               ;
                Iif( nWidth!=Nil,nWidth,0 ),Iif( nHeight!=Nil,nHeight,0 ),, ;
                bInit,bSize,,ctoolt )
 
@@ -68,7 +68,7 @@ ENDCLASS
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
                   bSize,ctoolt ) CLASS HSayBmp
 
-   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctoolt )
+   ::Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctoolt )
 
    IF Image != Nil
       IF lRes == Nil ; lRes := .F. ; ENDIF
@@ -91,7 +91,7 @@ Return Self
 
 METHOD INIT CLASS HSayBmp
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
       SetWindowObject( ::handle,Self )
    ENDIF
 Return Nil
@@ -144,7 +144,7 @@ ENDCLASS
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, ;
                   bSize,ctoolt ) CLASS HSayIcon
 
-   Super:New( oWndParent,nId,SS_ICON,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctoolt )
+   ::Super:New( oWndParent,nId,SS_ICON,nLeft,nTop,nWidth,nHeight,bInit,bSize,ctoolt )
 
    IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := Iif( lRes .OR. Valtype(Image)=="N",    ;

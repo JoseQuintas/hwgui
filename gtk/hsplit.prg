@@ -40,7 +40,7 @@ ENDCLASS
 METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight, ;
                   bSize,bDraw,color,bcolor,aLeft,aRight ) CLASS HSplitter
 
-   Super:New( oWndParent,nId,WS_CHILD+WS_VISIBLE+SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,,, ;
+   ::Super:New( oWndParent,nId,WS_CHILD+WS_VISIBLE+SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,,, ;
                   bSize,bDraw,,color,bcolor )
 
    ::title   := ""
@@ -90,7 +90,7 @@ Return -1
 METHOD Init CLASS HSplitter
 
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
       SetWindowObject( ::handle,Self )
    ENDIF
 
@@ -111,7 +111,7 @@ Return Nil
 
 METHOD Move( x1,y1,width,height )  CLASS HSplitter
 
-   Super:Move( x1,y1,width,height,.T. )
+   ::Super:Move( x1,y1,width,height,.T. )
 Return Nil
 
 METHOD Drag( lParam ) CLASS HSplitter

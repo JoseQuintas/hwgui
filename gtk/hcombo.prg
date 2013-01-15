@@ -54,7 +54,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,
    if lText == Nil; lText := .f.; endif
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ),Iif( lEdit,CBS_DROPDOWN,CBS_DROPDOWNLIST )+WS_TABSTOP )
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, bSize,bPaint,ctoolt,tcolor,bcolor )
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, bSize,bPaint,ctoolt,tcolor,bcolor )
       
    ::lEdit := lEdit
    ::lText := lText
@@ -133,7 +133,7 @@ METHOD Init() CLASS HComboBox
 Local i
 
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
       IF ::aItems != Nil
 	 hwg_ComboSetArray( ::handle, ::aItems )      
          IF ::value == Nil
@@ -197,7 +197,7 @@ Return Nil
 METHOD End() CLASS HComboBox
 
    hwg_ReleaseObject( ::hEdit )
-   Super:End()
+   ::Super:End()
 
 RETURN Nil
 

@@ -39,7 +39,7 @@ ENDCLASS
 METHOD New( oWndParent,nId,aValues,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bSize,ctoolt,tcolor,bcolor ) CLASS HGraph
 
-   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,oFont,, ;
+   ::Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,nWidth,nHeight,oFont,, ;
                   bSize,{|o,lpdis|o:Paint(lpdis)},ctoolt, ;
                   Iif( tcolor==Nil,Vcolor("FFFFFF"),tcolor ),Iif( bcolor==Nil,0,bcolor ) )
 

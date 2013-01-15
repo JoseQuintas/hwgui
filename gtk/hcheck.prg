@@ -33,7 +33,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaptio
                   bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor,bGFocus ) CLASS HCheckButton
 
    nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_AUTO3STATE+WS_TABSTOP )
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor )
 
    ::title   := cCaption
@@ -66,7 +66,7 @@ Return Nil
 
 METHOD Init() CLASS HCheckButton
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
       IF ::value
          hwg_CheckButton( ::handle,.T. )
       ENDIF

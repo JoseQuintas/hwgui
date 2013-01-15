@@ -73,7 +73,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                 WS_TABSTOP+Iif(lNoBorder==Nil.OR.!lNoBorder,WS_BORDER,0)+;
                 Iif(lPassword==Nil .or. !lPassword, 0, ES_PASSWORD)  )
 
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor )
 
    IF vari != Nil
@@ -253,7 +253,7 @@ Return 0
 METHOD Init()  CLASS HEdit
 
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
       ::Refresh()
    ENDIF
 

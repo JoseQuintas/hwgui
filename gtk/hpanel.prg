@@ -32,7 +32,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
 Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
 
    nStyle := SS_OWNERDRAW
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
                   nHeight,oParent:oFont,bInit, ;
                   bSize,bPaint )
 
@@ -56,7 +56,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HPanel
    IF msg == WM_PAINT
       ::Paint()
    ELSE
-      Return Super:onEvent( msg, wParam, lParam )
+      Return ::Super:onEvent( msg, wParam, lParam )
    ENDIF
 
 Return 0
@@ -72,7 +72,7 @@ METHOD Init CLASS HPanel
          ENDIF
       ENDIF
 
-      Super:Init()
+      ::Super:Init()
       SetWindowObject( ::handle,Self )
    ENDIF
 
@@ -93,6 +93,6 @@ Return Nil
 
 METHOD Move( x1,y1,width,height )  CLASS HPanel
 
-   Super:Move( x1,y1,width,height,.T. )
+   ::Super:Move( x1,y1,width,height,.T. )
 Return Nil
 

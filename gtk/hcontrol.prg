@@ -178,7 +178,7 @@ Return Nil
 
 METHOD End() CLASS HControl
 
-   Super:End()
+   ::Super:End()
    IF ::tooltip != Nil
       // DelToolTip( ::oParent:handle,::handle )
       ::tooltip := Nil
@@ -302,7 +302,7 @@ METHOD New( oWndParent,nId,nStyle,oFont,aParts,bInit,bSize,bPaint ) CLASS HStatu
 
    bSize := Iif( bSize!=Nil, bSize, {|o,x,y|MoveWindow(o:handle,0,y-20,x,y)} )
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_OVERLAPPED+WS_CLIPSIBLINGS )
-   Super:New( oWndParent,nId,nStyle,0,0,0,0,oFont,bInit,bSize,bPaint )
+   ::Super:New( oWndParent,nId,nStyle,0,0,0,0,oFont,bInit,bSize,bPaint )
 
    ::aParts  := aParts
    ::Activate()
@@ -326,7 +326,7 @@ Return Nil
 
 METHOD Init CLASS HStatus
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
    ENDIF
 Return  NIL
 
@@ -346,7 +346,7 @@ ENDCLASS
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor,lTransp ) CLASS HStatic
 
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor )
 
    ::title   := cCaption
@@ -383,7 +383,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
                   bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor ) CLASS HButton
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_PUSHBUTTON )
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,90,nWidth ),;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,90,nWidth ),;
               Iif( nHeight==Nil,30,nHeight ),oFont,bInit, ;
               bSize,bPaint,ctoolt,tcolor,bcolor )
 
@@ -479,7 +479,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption, ;
                   oFont,bInit,bSize,bPaint,tcolor,bcolor ) CLASS HGroup
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_GROUPBOX )
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,,tcolor,bcolor )
 
    ::title   := cCaption
@@ -510,7 +510,7 @@ ENDCLASS
 
 METHOD New( oWndParent,nId,lVert,nLeft,nTop,nLength,bSize ) CLASS hline
 
-   Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,,,,,bSize,{|o,lp|o:Paint(lp)} )
+   ::Super:New( oWndParent,nId,SS_OWNERDRAW,nLeft,nTop,,,,,bSize,{|o,lp|o:Paint(lp)} )
 
    ::title := ""
    ::lVert := Iif( lVert==Nil, .F., lVert )

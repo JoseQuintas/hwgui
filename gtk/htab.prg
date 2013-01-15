@@ -50,7 +50,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC,bClick, bGetFocus, bLostFocus  ) CLASS HTab
 LOCAL i, aBmpSize
 
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint )
 
    ::title   := ""
@@ -82,7 +82,7 @@ METHOD Init() CLASS HTab
 Local i, h
 
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
       FOR i := 1 TO Len( ::aTabs )
          h := AddTab( ::handle, ::aTabs[i] )
 	 Aadd( ::aPages, { 0,0,.F.,h } )

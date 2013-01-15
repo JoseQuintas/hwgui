@@ -147,7 +147,7 @@ Local i
    IF ( i := Ascan( aMessModalDlg, {|a|a[1]==msg} ) ) != 0
       Return Eval( aMessModalDlg[i,2], Self, wParam, lParam )
    ELSE
-      Return Super:onEvent( msg, wParam, lParam )
+      Return ::Super:onEvent( msg, wParam, lParam )
    ENDIF
 
 RETURN 0

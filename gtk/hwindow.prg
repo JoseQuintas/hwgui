@@ -170,7 +170,7 @@ METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
                      oFont,bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, ;
                      cAppName,oBmp,cHelp,nHelpId ) CLASS HMainWindow
 
-   Super:New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
+   ::Super:New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,  ;
                   cAppName,oBmp,cHelp,nHelpId )
    ::type := lType
@@ -227,7 +227,7 @@ Local i
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
          // onTrackScroll( Self,wParam,lParam )
       ENDIF
-      Return Super:onEvent( msg, wParam, lParam )
+      Return ::Super:onEvent( msg, wParam, lParam )
    ENDIF
 
 Return 0
@@ -276,7 +276,7 @@ Local i
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
          onTrackScroll( Self,wParam,lParam )
       ENDIF
-      Return Super:onEvent( msg, wParam, lParam )
+      Return ::Super:onEvent( msg, wParam, lParam )
    ENDIF
 
 Return -1
@@ -296,7 +296,7 @@ METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,;
                   cAppName,oBmp,cHelp,nHelpId ) CLASS HChildWindow
 
-   Super:New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
+   ::Super:New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,  ;
                   cAppName,oBmp,cHelp,nHelpId )
    ::oParent := HWindow():GetMain()
@@ -330,7 +330,7 @@ Local i
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL
          onTrackScroll( Self,wParam,lParam )
       ENDIF
-      Return Super:onEvent( msg, wParam, lParam )
+      Return ::Super:onEvent( msg, wParam, lParam )
    ENDIF
 
 Return -1

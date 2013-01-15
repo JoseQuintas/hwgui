@@ -52,7 +52,7 @@ ENDCLASS
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor,lTransp ,aitem) CLASS hToolBar
    Default  aItem to {}
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )
 
    ::aitem := aItem
@@ -80,26 +80,9 @@ Local oImage
 Local nPos
 Local aItem
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
       For n := 1 TO len( ::aItem )
 
-//         IF Valtype( ::aItem[ n, 7 ] ) == "B"
-//
-//            ::oParent:AddEvent( BN_CLICKED, ::aItem[ n, 2 ], ::aItem[ n ,7 ] )
-//
-//         ENDIF
-
-//         IF Valtype( ::aItem[ n, 9 ] ) == "A"
-//
-//            ::aItem[ n, 10 ] := hwg__CreatePopupMenu()
-//            aTemp := ::aItem[ n, 9 ]
-//
-//            FOR n1 :=1 to Len( aTemp )
-//               hwg__AddMenuItem( ::aItem[ n, 10 ], aTemp[ n1, 1 ], -1, .F., aTemp[ n1, 2 ], , .F. )
-//               ::oParent:AddEvent( BN_CLICKED, aTemp[ n1, 2 ], aTemp[ n1,3 ] )
-//            NEXT
-//
-//         ENDIF
          if valtype( ::aItem[ n, 1 ] ) == "N"
             IF !empty( ::aItem[ n, 1 ] )
                AAdd( aButton, ::aItem[ n , 1 ])
@@ -118,35 +101,6 @@ Local aItem
 
       NEXT n
 
-/*      IF Len(aButton ) >0
-
-          aBmpSize := GetBitmapSize( aButton[1] )
-
-          IF aBmpSize[ 3 ] == 4
-             hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR4 + ILC_MASK )
-          ELSEIF aBmpSize[ 3 ] == 8
-             hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR8 + ILC_MASK )
-          ELSEIF aBmpSize[ 3 ] == 24
-             hIm := CreateImageList( {} ,aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLORDDB + ILC_MASK )
-          ENDIF
-
-          FOR nPos :=1 to len(aButton)
-
-             aBmpSize := GetBitmapSize( aButton[nPos] )
-
-             IF aBmpSize[3] == 24
-//             Imagelist_AddMasked( hIm,aButton[nPos],RGB(236,223,216) )
-                Imagelist_Add( hIm, aButton[ nPos ] )
-             ELSE
-                Imagelist_Add( hIm, aButton[ nPos ] )
-             ENDIF
-
-          NEXT
-
-       SendMessage( ::Handle, TB_SETIMAGELIST, 0, hIm )
-
-      ENDIF
-*/
       if len( ::aItem ) >0
          For Each aItem in ::aItem
 
@@ -154,7 +108,6 @@ Local aItem
 
                aItem[11] := CreateToolBarButton(::handle,aItem[1],aItem[6],.f.)
                aItem[2] := hb_enumindex()
-//               hwg_SetSignal( aItem[11],"clicked",WM_LBUTTONUP,aItem[2],0 )
                TOOLBAR_SETACTION(aItem[11],aItem[7])
                if !empty(aItem[8])
                   AddtoolTip(::handle, aItem[11],aItem[8])
@@ -168,39 +121,7 @@ Local aItem
 
    ENDIF
 RETURN Nil
-/*
-METHOD Notify( lParam ) CLASS hToolBar
 
-    Local nCode :=  GetNotifyCode( lParam )
-    Local nId
-
-    Local nButton
-    Local nPos
-
-    IF nCode == TTN_GETDISPINFO
-
-       nButton :=TOOLBAR_GETDISPINFOID( lParam )
-       nPos := AScan( ::aItem,  { | x | x[ 2 ] == nButton })
-       TOOLBAR_SETDISPINFO( lParam, ::aItem[ nPos, 8 ] )
-
-    ELSEIF nCode == TBN_GETINFOTIP
-
-       nId := TOOLBAR_GETINFOTIPID(lParam)
-       nPos := AScan( ::aItem,  { | x | x[ 2 ] == nId })
-       TOOLBAR_GETINFOTIP( lParam, ::aItem[ nPos, 8 ] )
-
-    ELSEIF nCode == TBN_DROPDOWN
-       if valtype(::aItem[1,9]) ="A"
-       nid := TOOLBAR_SUBMENUEXGETID( lParam )
-       nPos := AScan( ::aItem,  { | x | x[ 2 ] == nId })
-       TOOLBAR_SUBMENUEx( lParam, ::aItem[ nPos, 10 ], ::oParent:handle )
-       else
-              TOOLBAR_SUBMENU(lParam,1,::oParent:handle)
-       endif
-    ENDIF
-
-Return 0
-*/
 METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu) CLASS hToolBar
    Local hMenu := Nil
    DEFAULT nBitIp to -1

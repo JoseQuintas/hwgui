@@ -52,7 +52,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,   ;
                   bmp,lResour,xb,yb,widthb,heightb,lTr,trColor,;
                   cTooltip, lEnabled  ) CLASS HOwnButton
 
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,font,bInit, ;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,font,bInit, ;
                   bSize,bPaint,ctooltip )
 
    ::lFlat   := Iif( lFlat==Nil,.F.,lFlat )
@@ -121,7 +121,7 @@ Return 0
 METHOD Init CLASS HOwnButton
 
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
       SetWindowObject( ::handle,Self )
    ENDIF
 
@@ -249,7 +249,7 @@ Return Nil
 
 METHOD End()  CLASS HOwnButton
 
-   Super:End()
+   ::Super:End()
    IF ::ofont != Nil
        ::ofont:Release()
        ::ofont := Nil

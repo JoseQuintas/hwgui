@@ -206,7 +206,7 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
    nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+ ;
                     Iif(lNoBorder=Nil.OR.!lNoBorder,WS_BORDER,0)+            ;
                     Iif(lNoVScroll=Nil.OR.!lNoVScroll,WS_VSCROLL,0) )
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
              Iif( nHeight==Nil,0,nHeight ),oFont,bInit,bSize,bPaint )
 
    ::type    := lType
@@ -360,7 +360,7 @@ Return retValue
 METHOD Init CLASS HBrowse
 
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
       // SetWindowObject( ::handle,Self )
    ENDIF
 Return Nil
@@ -428,7 +428,7 @@ METHOD End() CLASS HBrowse
       hwg_ReleaseObject( ::hScrollH )
    ENDIF
 
-   Super:End()
+   ::Super:End()
    IF ::brush != Nil
       ::brush:Release()
       ::brushSel:Release()

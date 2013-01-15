@@ -57,7 +57,7 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
       bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,     ;
       lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown ) CLASS PBrowse
 
-   Super:New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
+   ::Super:New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
          bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,       ;
          lNoBorder,lAppend,lAutoedit,bUpdate,bKeyDown )
 

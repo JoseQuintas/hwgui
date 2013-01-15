@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-01-15 15:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * contrib/qhtm/hqhtm.prg
+  * utils/designer/inspect.prg
+    * All super: calls was changed to ::super:
+
 2013-01-15 10:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hbrowse.prg
   * gtk/hcheck.prg

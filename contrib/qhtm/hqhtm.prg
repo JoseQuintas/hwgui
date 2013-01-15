@@ -93,7 +93,7 @@ Return Self
 METHOD Init CLASS HQhtm
 
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
       IF !Empty( ::cText )
          SetWindowText( ::handle,::cText )
       ELSEIF !Empty( ::filename )
@@ -151,7 +151,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
                   bInit,bSize,bClick,ctooltip ) CLASS HQhtmButton
 
    ::cHtml := cCaption
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,"",, ;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,"",, ;
                   bInit,bSize,,bClick,ctooltip )
    // ::classname:= "HQHTMBUTTON"
 
@@ -160,14 +160,14 @@ Return Self
 METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit,bSize,bClick,ctooltip) CLASS HQhtmButton
 
    ::cHtml := cCaption
-   Super:Redefine( oWndParent,nId,,bInit,bSize,,bClick,ctooltip )
+   ::Super:Redefine( oWndParent,nId,,bInit,bSize,,bClick,ctooltip )
    // ::classname:= "HQHTMBUTTON"
 
 Return Self
 
 METHOD Init() CLASS HQhtmButton
 
-   Super:Init()
+   ::Super:Init()
    IF ::oFont == Nil .AND. ::oParent:oFont == Nil
       SetCtrlFont( ::oParent:handle, ::id, GetStockObject(SYSTEM_FONT) )
    ENDIF

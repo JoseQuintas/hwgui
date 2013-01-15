@@ -9,7 +9,6 @@ LIB_DIR = lib
 SRC_DIR = source
 PROCMISC_DIR = source\procmisc
 HBXML_DIR    = source\xml
-HWGQHTM_DIR  = source\qhtm
 
 HARBOUR_EXE = $(HRB_DIR)\bin\harbour.exe
 CC          = bcc32
@@ -97,13 +96,10 @@ $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\printdos.obj \
    $(OBJ_DIR)\hdc.obj \
    $(OBJ_DIR)\hhyper.obj \
-   $(OBJ_DIR)\blowfish.obj \
    $(OBJ_DIR)\procini.obj \
    $(OBJ_DIR)\procs7.obj \
    $(OBJ_DIR)\procscri.obj \
    $(OBJ_DIR)\scrdebug.obj \
-   $(OBJ_DIR)\hwg_qhtm.obj \
-   $(OBJ_DIR)\hqhtm.obj \
    $(OBJ_DIR)\hxmldoc.obj \
    $(OBJ_DIR)\xmlparse.obj
 
@@ -137,10 +133,4 @@ $(LIB_DIR)\hwgui-b32.dll:   \
     $(HB_CMD)
 
 {$(HBXML_DIR)}.c{$(OBJ_DIR)}.obj:
-   $(CC_CMD)
-
-{$(HWGQHTM_DIR)}.prg{$(OBJ_DIR)}.c:
-    $(HB_CMD)
-
-{$(HWGQHTM_DIR)}.c{$(OBJ_DIR)}.obj:
    $(CC_CMD)

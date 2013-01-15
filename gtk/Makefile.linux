@@ -78,7 +78,6 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/menu.o
 
 $(LIB_DIR)/libprocmisc.a : \
-   $(OBJ_DIR)/blowfish.o \
    $(OBJ_DIR)/hfrmtmpl.o \
    $(OBJ_DIR)/procini.o \
    $(OBJ_DIR)/procs7.o \

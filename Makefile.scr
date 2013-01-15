@@ -120,7 +120,6 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hhyper.o \
 
 $(LIB_DIR)/libprocmisc.a : \
-   $(OBJ_DIR)/blowfish.o \
    $(OBJ_DIR)/hfrmtmpl.o \
    $(OBJ_DIR)/procini.o \
    $(OBJ_DIR)/procs7.o \
@@ -140,6 +139,7 @@ $(LIB_DIR)/libhwg_contrib.a : \
    $(OBJ_DIR)/hqhtm.o \
    $(OBJ_DIR)/hwg_qhtm.o \
    $(OBJ_DIR)/arr2str.o \
+   $(OBJ_DIR)/blowfish.o \
    $(OBJ_DIR)/miscfunc.o \
    $(OBJ_DIR)/richtext.o \
    $(OBJ_DIR)/saymoney.o

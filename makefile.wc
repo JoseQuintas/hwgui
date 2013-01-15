@@ -43,12 +43,12 @@ CONTRIB_LIB_OBJS = \
    $(OBJ_DIR)\hwg_qhtm.obj \
    $(OBJ_DIR)\hqhtm.obj \
    $(OBJ_DIR)\arr2str.obj \
+   $(OBJ_DIR)\blowfish.obj \
    $(OBJ_DIR)\miscfunc.obj \
    $(OBJ_DIR)\richtext.obj \
    $(OBJ_DIR)\saymoney.obj
 
 PROCMISC_LIB_OBJS = \
-   $(OBJ_DIR)\blowfish.obj \
    $(OBJ_DIR)\hfrmtmpl.obj \
    $(OBJ_DIR)\procini.obj \
    $(OBJ_DIR)\procs7.obj \
@@ -516,6 +516,9 @@ $(OBJ_DIR)\hwg_qhtm.obj : $(CONTRIB_DIR)\qhtm\hwg_qhtm.c
 $(OBJ_DIR)\arr2str.obj : $(CONTRIB_DIR)\misc\arr2str.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
+$(OBJ_DIR)\blowfish.obj : $(CONTRIB_DIR)\misc\blowfish.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
 $(OBJ_DIR)\miscfunc.obj : $(OBJ_DIR)\miscfunc.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
@@ -530,9 +533,6 @@ $(OBJ_DIR)\saymoney.obj : $(OBJ_DIR)\saymoney.c
 # ≥ PROCMISC.LIB Dependencies ≥€
 # ¿ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒŸ€
 #  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-
-$(OBJ_DIR)\blowfish.obj : $(SRC_DIR)\procmisc\blowfish.c
-   $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\hfrmtmpl.c : $(SRC_DIR)\procmisc\hfrmtmpl.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@

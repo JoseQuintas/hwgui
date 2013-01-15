@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-01-15 10:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  - source/procmisc/blowfish.c
+  + contrib/misc/blowfish.c
+    * file moved to contrib, because it's functions aren't used anywhere in HwGUI code
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * Makefile.scr
+  * makefile.vc
+  * makefile.wc
+    * makefiles has been changed to move blowfish from procmisc.lib to hwg_contrib.lib
+
 2013-01-14 19:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hanimat.prg
   * source/hbrowse.prg

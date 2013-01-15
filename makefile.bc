@@ -179,7 +179,6 @@ HWGUI_LIB_OBJS = \
 #
 
 PROCMISC_LIB_OBJS = \
-   $(PROCMISC_OBJ_DIR)\blowfish.obj \
    $(PROCMISC_OBJ_DIR)\hfrmtmpl.obj \
    $(PROCMISC_OBJ_DIR)\procini.obj \
    $(PROCMISC_OBJ_DIR)\procs7.obj \
@@ -209,6 +208,7 @@ ACTIVEX_LIB_OBJS = \
 #
 CONTRIB_LIB_OBJS = \
    $(CONTRIB_OBJ_DIR)\arr2str.obj \
+   $(CONTRIB_OBJ_DIR)\blowfish.obj \
    $(CONTRIB_OBJ_DIR)\miscfunc.obj \
    $(CONTRIB_OBJ_DIR)\richtext.obj \
    $(CONTRIB_OBJ_DIR)\saymoney.obj \

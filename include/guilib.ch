@@ -256,41 +256,7 @@
              <bSize>,<bDraw>, <bRClick>, <bDblClick>, <nHeight> );;
           [ <oStat>:name := <(oStat)> ]
 
-#xcommand @ <x>,<y> SAY [ <oSay> CAPTION ] <caption> ;
-             [ OF <oWnd> ]              ;
-             [ ID <nId> ]               ;
-             [ SIZE <width>, <height> ] ;
-             [ COLOR <color> ]          ;
-             [ BACKCOLOR <bcolor> ]     ;
-             [<lTransp: TRANSPARENT>]   ;
-             [ ON INIT <bInit> ]        ;
-             [ ON SIZE <bSize> ]        ;
-             [ ON PAINT <bDraw> ]       ;
-             [ STYLE <nStyle> ]         ;
-             [ FONT <oFont> ]           ;
-             [ TOOLTIP <ctoolt> ]       ;
-          => ;
-          [<oSay> := ] HStatic():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>, ;
-             <color>,<bcolor>,<.lTransp.> );;
-          [ <oSay>:name := <(oSay)> ]
-
-#xcommand REDEFINE SAY   [ <oSay> CAPTION ] <cCaption>   ;
-             [ OF <oWnd> ]              ;
-             ID <nId>                   ;
-             [ COLOR <color> ]          ;
-             [ BACKCOLOR <bcolor> ]     ;
-             [<lTransp: TRANSPARENT>]   ;
-             [ ON INIT <bInit> ]        ;
-             [ ON SIZE <bSize> ]        ;
-             [ ON PAINT <bDraw> ]       ;
-             [ FONT <oFont> ]           ;
-             [ TOOLTIP <ctoolt> ]       ;
-          => ;
-          [<oSay> := ] HStatic():Redefine( <oWnd>,<nId>,<cCaption>, ;
-             <oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lTransp.> )
-
-#xcommand @ <x>,<y> SAYEX [ <oSay> CAPTION ] <caption> ;
+#xcommand @ <x>,<y> SAY [ <lExt: EXTENDED,EXT> ] [ <oSay> CAPTION ] <caption> ;
              [ OF <oWnd> ]              ;
              [ ID <nId> ]               ;
              [ SIZE <width>, <height> ] ;
@@ -312,7 +278,25 @@
              <color>,<bcolor>,<.lTransp.>,<bClick>,<bDblClick>,<bOther> );;
           [ <oSay>:name := <(oSay)> ]
 
-#xcommand REDEFINE SAYEX  [ <oSay> CAPTION ] <cCaption>   ;
+#xcommand @ <x>,<y> SAY [ <oSay> CAPTION ] <caption> ;
+             [ OF <oWnd> ]              ;
+             [ ID <nId> ]               ;
+             [ SIZE <width>, <height> ] ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+             [ ON PAINT <bDraw> ]       ;
+             [ STYLE <nStyle> ]         ;
+             [ FONT <oFont> ]           ;
+             [ TOOLTIP <ctoolt> ]       ;
+          => ;
+          [<oSay> := ] HStatic():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>, ;
+             <color>,<bcolor> );;
+          [ <oSay>:name := <(oSay)> ]
+
+#xcommand REDEFINE SAY [ <lExt: EXTENDED,EXT> ] [ <oSay> CAPTION ] <cCaption>   ;
              [ OF <oWnd> ]              ;
              ID <nId>                   ;
              [ COLOR <color> ]          ;
@@ -328,6 +312,20 @@
           => ;
           [<oSay> := ] HStaticEx():Redefine( <oWnd>,<nId>,<cCaption>, ;
              <oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lTransp.>,<bClick>,<bDblClick> )
+
+#xcommand REDEFINE SAY   [ <oSay> CAPTION ] <cCaption>   ;
+             [ OF <oWnd> ]              ;
+             ID <nId>                   ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+             [ ON PAINT <bDraw> ]       ;
+             [ FONT <oFont> ]           ;
+             [ TOOLTIP <ctoolt> ]       ;
+          => ;
+          [<oSay> := ] HStatic():Redefine( <oWnd>,<nId>,<cCaption>, ;
+             <oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor> )
 
 #xcommand @ <x>,<y> BITMAP [ <oBmp> SHOW ] <bitmap> ;
              [<res: FROM RESOURCE>]     ;
@@ -490,25 +488,7 @@
              <bLfocus>,<ctoolt>,<color>,<bcolor>,<bOther>, <.lallowtabs.>,<bChange> );;
           [ <oEdit>:name := <(oEdit)> ]
 
-#xcommand @ <x>,<y> BUTTON [ <oBut> CAPTION ] <caption> ;
-             [ OF <oWnd> ]              ;
-             [ ID <nId> ]               ;
-             [ SIZE <width>, <height> ] ;
-             [ COLOR <color> ]          ;
-             [ BACKCOLOR <bcolor> ]     ;
-             [ ON INIT <bInit> ]        ;
-             [ ON SIZE <bSize> ]        ;
-             [ ON PAINT <bDraw> ]       ;
-             [ ON CLICK <bClick> ]      ;
-             [ STYLE <nStyle> ]         ;
-             [ FONT <oFont> ]           ;
-             [ TOOLTIP <ctoolt> ]       ;
-          => ;
-          [<oBut> := ] HButton():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> );;
-          [ <oBut>:name := <(oBut)> ]
-
-#xcommand @ <x>,<y> BUTTONX [ <oBut> CAPTION ] <caption> ;
+#xcommand @ <x>,<y> BUTTON [ <lExt: EXTENDED,EXT> ] [ <oBut> CAPTION ] <caption> ;
              [ OF <oWnd> ]              ;
              [ ID <nId> ]               ;
              [ SIZE <width>, <height> ] ;
@@ -525,6 +505,24 @@
           => ;
           [<oBut> := ] HButtonX():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
              <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<bGfocus> );;
+          [ <oBut>:name := <(oBut)> ]
+
+#xcommand @ <x>,<y> BUTTON [ <oBut> CAPTION ] <caption> ;
+             [ OF <oWnd> ]              ;
+             [ ID <nId> ]               ;
+             [ SIZE <width>, <height> ] ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+             [ ON PAINT <bDraw> ]       ;
+             [ ON CLICK <bClick> ]      ;
+             [ STYLE <nStyle> ]         ;
+             [ FONT <oFont> ]           ;
+             [ TOOLTIP <ctoolt> ]       ;
+          => ;
+          [<oBut> := ] HButton():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> );;
           [ <oBut>:name := <(oBut)> ]
 
 #xcommand @ <x>,<y> BUTTONEX [ <oBut> CAPTION ] <caption> ;
@@ -556,23 +554,7 @@
           [ <oBut>:name := <(oBut)> ]
 
 
-#xcommand REDEFINE BUTTON [ <oBut> ]   ;
-             [ OF <oWnd> ]              ;
-             ID <nId>                   ;
-             [ CAPTION <cCaption> ]     ;
-             [ COLOR <color> ]          ;
-             [ BACKCOLOR <bcolor> ]     ;
-             [ FONT <oFont> ]           ;
-             [ ON INIT <bInit> ]        ;
-             [ ON SIZE <bSize> ]        ;
-             [ ON PAINT <bDraw> ]       ;
-             [ ON CLICK <bClick> ]      ;
-             [ TOOLTIP <ctoolt> ]       ;
-          => ;
-          [<oBut> := ] HButton():Redefine( <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>, ;
-             <bClick>,<ctoolt>,<color>,<bcolor>,<cCaption> )
-
-#xcommand REDEFINE BUTTONX [ <oBut> ]   ;
+#xcommand REDEFINE BUTTON [ <lExt: EXTENDED,EXT> ] [ <oBut> ]   ;
              [ OF <oWnd> ]              ;
              ID <nId>                   ;
              [ CAPTION <cCaption> ]     ;
@@ -588,6 +570,22 @@
           => ;
           [<oBut> := ] HButtonX():Redefine( <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>, ;
              <bClick>,<ctoolt>,<color>,<bcolor>,<cCaption>,<bGfocus> )
+
+#xcommand REDEFINE BUTTON [ <oBut> ]   ;
+             [ OF <oWnd> ]              ;
+             ID <nId>                   ;
+             [ CAPTION <cCaption> ]     ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [ FONT <oFont> ]           ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+             [ ON PAINT <bDraw> ]       ;
+             [ ON CLICK <bClick> ]      ;
+             [ TOOLTIP <ctoolt> ]       ;
+          => ;
+          [<oBut> := ] HButton():Redefine( <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>, ;
+             <bClick>,<ctoolt>,<color>,<bcolor>,<cCaption> )
 
 #xcommand REDEFINE BUTTONEX [ <oBut> ]   ;
              [ OF <oWnd> ]              ;
@@ -609,23 +607,7 @@
           [<oBut> := ] HButtonEx():Redefine( <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>, ;
              <bClick>,<ctoolt>,<color>,<bcolor>,<cCaption>,<hbit>,<nBStyle>,<bGfocus>,<nMargin>  )
 
-#xcommand @ <x>,<y> GROUPBOX [ <oGroup> CAPTION ] <caption> ;
-             [ OF <oWnd> ]              ;
-             [ ID <nId> ]               ;
-             [ SIZE <width>, <height> ] ;
-             [ COLOR <color> ]          ;
-             [ BACKCOLOR <bcolor> ]     ;
-             [ FONT <oFont> ]           ;
-             [ ON INIT <bInit> ]        ;
-             [ ON SIZE <bSize> ]        ;
-             [ ON PAINT <bDraw> ]       ;
-             [ STYLE <nStyle> ]         ;
-          => ;
-          [<oGroup> := ] HGroup():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<color>,<bcolor> );;
-          [ <oGroup>:name := <(oGroup)> ]
-
-#xcommand @ <x>,<y> GROUPBOXEX [ <oGroup> CAPTION ] <caption> ;
+#xcommand @ <x>,<y> GROUPBOX [ <lExt: EXTENDED,EXT> ] [ <oGroup> CAPTION ] <caption> ;
              [ OF <oWnd> ]              ;
              [ ID <nId> ]               ;
              [ SIZE <width>, <height> ] ;
@@ -640,6 +622,22 @@
           => ;
           [<oGroup> := ] HGroupEx():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
              <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<color>,<bcolor>,<.lTransp.>);;
+          [ <oGroup>:name := <(oGroup)> ]
+
+#xcommand @ <x>,<y> GROUPBOX [ <oGroup> CAPTION ] <caption> ;
+             [ OF <oWnd> ]              ;
+             [ ID <nId> ]               ;
+             [ SIZE <width>, <height> ] ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [ FONT <oFont> ]           ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+             [ ON PAINT <bDraw> ]       ;
+             [ STYLE <nStyle> ]         ;
+          => ;
+          [<oGroup> := ] HGroup():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<color>,<bcolor> );;
           [ <oGroup>:name := <(oGroup)> ]
 
 #xcommand @ <x>,<y> TREE [ <oTree> ]   ;

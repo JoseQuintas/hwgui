@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-01-16 11:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/guilib.ch
+    * commands SAYEX, REDEFINE SAYEX, BUTTONX, REDEFINE BUTTONX, GROUPBOXEX
+      was changed to SAY, REDEFINE SAY, BUTTON, REDEFINE BUTTON, GROUPBOX.
+      If you will use them with clauses, which demands "ex" classes
+      ( HStaticEx, etc. ), they will be preprocessed to these "ex" classes,
+      in other case they will be preprocessed into more simple and fast base 
+      classes ( HStatic, etc. ). If you want them to be preprocessed into
+      "ex" classes independently of used clauses, you need to write them with
+      a word "EXTENDED" or "EXT", for example: 
+      @ 1,1 SAY EXT "Hello" SIZE 100,24
+
 2013-01-15 15:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * contrib/qhtm/hqhtm.prg
   * utils/designer/inspect.prg

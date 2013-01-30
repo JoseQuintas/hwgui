@@ -615,6 +615,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::title := cCaption
 
    IF lTransp != NIL .AND. lTransp
+      ::BackStyle := TRANSPARENT
       ::extStyle := Hwg_BitOr( ::extStyle, WS_EX_TRANSPARENT )
    ENDIF
 

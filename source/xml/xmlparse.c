@@ -537,10 +537,22 @@ HB_FUNC( HBXML_GETDOC )
          hb_itemRelease( pArray );
          HB_SKIPTABSPACES( ptr );
       }
-      if( !memcmp( ptr + 1, "!DOCTYPE", 8 ) )
+      while( HB_TRUE )
       {
-         hbxml_getdoctype( pDoc, &ptr );
-         HB_SKIPTABSPACES( ptr );
+         if( !memcmp( ptr + 1, "!DOCTYPE", 8 ) )
+         {
+            hbxml_getdoctype( pDoc, &ptr );
+            HB_SKIPTABSPACES( ptr );
+         }
+         else if( !memcmp( ptr + 1, "?xml", 4 ) )
+         {
+            while( *ptr != '>' )
+               ptr ++;
+            ptr ++;
+            HB_SKIPTABSPACES( ptr );
+         }
+         else
+            break;
       }
       while( HB_TRUE )
       {

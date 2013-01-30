@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-01-30 14:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+   * source/xml/xmlparse.c
+     * Small changes to accept <?xml-stylesheet> and similar tags.
+
 2013-01-16 11:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/guilib.ch
     * commands SAYEX, REDEFINE SAYEX, BUTTONX, REDEFINE BUTTONX, GROUPBOXEX

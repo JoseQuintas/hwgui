@@ -15,7 +15,7 @@
 
 Static LogInitialPath := ""
 
-PROCEDURE ErrorSys
+PROCEDURE hwg_ErrSys
 
    ErrorBlock( { | oError | DefError( oError ) } )
    LogInitialPath := "/" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "/" )
@@ -51,7 +51,7 @@ STATIC FUNCTION DefError( oError )
       RETURN .F.
    ENDIF
 
-   cMessage := ErrorMessage( oError )
+   cMessage := hwg_ErrMsg( oError )
    IF ! Empty( oError:osCode )
       cDOSError := "(DOS Error " + LTrim( Str( oError:osCode ) ) + ")"
    ENDIF
@@ -77,7 +77,7 @@ STATIC FUNCTION DefError( oError )
 RETURN .F.
 
 
-FUNCTION ErrorMessage( oError )
+FUNCTION hwg_ErrMsg( oError )
    LOCAL cMessage
 
    // start error message

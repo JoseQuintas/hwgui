@@ -309,3 +309,8 @@ Local oCtrl := oWnd:FindControl( , lParam ), msg
    ENDIF
 
 Return 0
+
+INIT PROCEDURE HWGINIT
+
+   hwg_ErrSys()
+   RETURN

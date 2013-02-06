@@ -42,7 +42,7 @@ $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\media_c.obj \
    $(OBJ_DIR)\menu_c.obj \
    $(OBJ_DIR)\message.obj \
-   $(OBJ_DIR)\errorsys.obj \
+   $(OBJ_DIR)\herrsys.obj \
    $(OBJ_DIR)\misc.obj \
    $(OBJ_DIR)\winreg.obj \
    $(OBJ_DIR)\nice.obj \

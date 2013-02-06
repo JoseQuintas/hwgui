@@ -56,7 +56,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\media_c.obj \
    $(HWGUI_OBJ_DIR)\menu_c.obj \
    $(HWGUI_OBJ_DIR)\message.obj \
-   $(HWGUI_OBJ_DIR)\errorsys.obj \
+   $(HWGUI_OBJ_DIR)\herrsys.obj \
    $(HWGUI_OBJ_DIR)\misc.obj \
    $(HWGUI_OBJ_DIR)\nice.obj \
    $(HWGUI_OBJ_DIR)\resource.obj \

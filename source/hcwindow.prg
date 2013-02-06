@@ -18,6 +18,10 @@
 #define EVENTS_ACTIONS  2
 #define RT_MANIFEST  24
 
+#ifndef __XHARBOUR__
+REQUEST HB_GT_GUI_DEFAULT
+#endif
+
 STATIC aCustomEvents := { ;
        { WM_NOTIFY, WM_PAINT, WM_CTLCOLORSTATIC, WM_CTLCOLOREDIT, WM_CTLCOLORBTN, WM_CTLCOLORLISTBOX, ;
          WM_COMMAND, WM_DRAWITEM, WM_SIZE, WM_DESTROY }, ;
@@ -549,9 +553,6 @@ FUNCTION onTrackScroll( oWnd, msg, wParam, lParam )
 
    RETURN - 1
 
-PROCEDURE HB_GT_DEFAULT_NUL()
-   RETURN
-
 CLASS HScrollArea INHERIT HObject
 
    DATA nCurWidth    INIT 0
@@ -661,3 +662,11 @@ METHOD ResetScrollbars() CLASS HScrollArea
       ::nVscrollPos := 0
    ENDIF
    RETURN Nil
+
+PROCEDURE HB_GT_DEFAULT_NUL()
+   RETURN
+
+INIT PROCEDURE HWGINIT
+
+   hwg_ErrSys()
+   RETURN

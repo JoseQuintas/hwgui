@@ -80,7 +80,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\window.obj \
    $(OBJ_DIR)\wprint.obj \
    $(OBJ_DIR)\drawwidg.obj \
-   $(OBJ_DIR)\errorsys.obj \
+   $(OBJ_DIR)\herrsys.obj \
    $(OBJ_DIR)\guimain.obj \
    $(OBJ_DIR)\barcode.obj \
    $(OBJ_DIR)\hbrowse.obj \
@@ -151,10 +151,10 @@ $(OBJ_DIR)\drawwidg.c : $(SRC_DIR)\drawwidg.prg
 $(OBJ_DIR)\drawwidg.obj : $(OBJ_DIR)\drawwidg.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
-$(OBJ_DIR)\errorsys.c : $(SRC_DIR)\errorsys.prg
+$(OBJ_DIR)\herrsys.c : $(SRC_DIR)\herrsys.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
-$(OBJ_DIR)\errorsys.obj : $(OBJ_DIR)\errorsys.c
+$(OBJ_DIR)\herrsys.obj : $(OBJ_DIR)\herrsys.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\guimain.c : $(SRC_DIR)\guimain.prg

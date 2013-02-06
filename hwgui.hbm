@@ -30,7 +30,7 @@ source/c_ipaddr.c
 source/listbox.c
 source/pager.c
 
-source/errorsys.prg
+source/herrsys.prg
 
 source/hipedit.prg
 source/drawwidg.prg

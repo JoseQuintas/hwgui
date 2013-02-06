@@ -585,7 +585,7 @@ STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl, cName )
 
 STATIC PROCEDURE CompileErr( e, stroka )
 
-   MsgStop( ErrorMessage( e ) + Chr( 10 ) + Chr( 13 ) + "in" + Chr( 10 ) + Chr( 13 ) + ;
+   MsgStop( hwg_ErrMsg( e ) + Chr( 10 ) + Chr( 13 ) + "in" + Chr( 10 ) + Chr( 13 ) + ;
             AllTrim( stroka ), "Script compiling error" )
    BREAK( NIL )
 

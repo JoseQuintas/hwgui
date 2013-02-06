@@ -8,9 +8,33 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-02-06 12:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  - source/errorsys.prg
+  + source/herrsys.prg
+  - gtk/errorsys.prg
+  + gtk/herrsys.prg
+    * errorsys.prg renamed to herrsys.prg, Errorsys() -> hwg_ErrSys(),
+      Errormessage() -> hwg_ErrMsg().
+      These is done to prevent problems with few compilers, because
+      errorsys.prg and Errorsys() function are part of Harbour RTL.
+  * source/hcwindow.prg
+  * gtk/hcwindow.prg
+    * INIT PROC, which calls hwg_ErrSys() added.
+  * source/procmisc/hfrmtmpl.prg
+  * source/procmisc/procscri.prg
+  * gtk/hfrmtmpl.prg
+    * Calls of Errormessage() are changed to hwg_ErrMsg()
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * Makefile.scr
+  * makefile.vc
+  * makefile.wc
+    * makefiles has been changed
+
 2013-01-30 14:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
-   * source/xml/xmlparse.c
-     * Small changes to accept <?xml-stylesheet> and similar tags.
+  * source/xml/xmlparse.c
+    * Small changes to accept <?xml-stylesheet> and similar tags.
 
 2013-01-16 11:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/guilib.ch

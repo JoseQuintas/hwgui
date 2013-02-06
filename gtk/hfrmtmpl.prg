@@ -525,7 +525,7 @@ Return arrExe
 STATIC FUNCTION CompileErr( e, stroka )
 Local n
 
-   MsgStop( ErrorMessage( e ) + Chr(10)+Chr(13) + "in" + Chr(10)+Chr(13) + ;
+   MsgStop( hwg_ErrMsg( e ) + Chr(10)+Chr(13) + "in" + Chr(10)+Chr(13) + ;
           AllTrim(stroka),"Script compiling error" )
    BREAK
 RETURN .T.

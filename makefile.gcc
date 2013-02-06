@@ -36,7 +36,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/draw.o \
    $(OBJ_DIR)/drawtext.o \
    $(OBJ_DIR)/drawwidg.o \
-   $(OBJ_DIR)/errorsys.o \
+   $(OBJ_DIR)/herrsys.o \
    $(OBJ_DIR)/freeimg.o \
    $(OBJ_DIR)/grid.o \
    $(OBJ_DIR)/guimain.o \

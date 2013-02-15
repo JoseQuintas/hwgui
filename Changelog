@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-02-15 17:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  ! source/htab.prg
+    ! Bug fixed, reported by Alexey Myronenko
+
 2013-02-15 12:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   ! source/guimain.prg
   ! source/hriched.prg

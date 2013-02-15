@@ -262,9 +262,9 @@ METHOD Init() CLASS HTab
          ::SetPaintSizePos( iif( ASCAN( ::Pages, { | p | p:brush != NIL } ) > 0 , - 1, 1 ) )
          ::nActive := 0
          FOR i := 1 TO Len( ::aPages )
-            ::Pages[ i ]:aItemPos := TabItemPos( ::Handle, i - 1 )
+            ::Pages[ i ]:aItemPos := TabItemPos( ::handle, i - 1 )
             ::HidePage( i )
-            ::nActive := iif( ::nActive = 0 .AND. ::Pages[ i ]:Enabled, i, ::nActive )
+            ::nActive := Iif( ::nActive = 0 .AND. ::Pages[ i ]:Enabled, i, ::nActive )
          NEXT
          SendMessage( ::handle, TCM_SETCURFOCUS, ::nActive - 1, 0 )
          IF ::nActive = 0
@@ -273,9 +273,10 @@ METHOD Init() CLASS HTab
          ELSE
             ::ShowPage( ::nActive )
          ENDIF
-      ELSE
-         ASize( ::aPages, SendMessage( ::handle, TCM_GETITEMCOUNT, 0, 0 ) )
+      ELSEIF ( i := SendMessage( ::handle, TCM_GETITEMCOUNT, 0, 0 ) ) > 0
+         ASize( ::aPages, i )
          AEval( ::aPages, { | a , i | HB_SYMBOL_UNUSED( a ), ::AddPage( HPage():New( "" ,i, .T. , ), "" ) } )
+         ::nActive := 1
       ENDIF
       ::nHolder := 1
       SetWindowObject( ::handle, Self )
@@ -539,7 +540,7 @@ METHOD GetActivePage( nFirst, nEnd ) CLASS HTab
 
    IF ::nActive > 0
       IF ! ::lResourceTab
-         IF ! Empty( ::aPages )
+         IF ! Empty( ::aPages ) .AND. Valtype(::aPages[1]) == "A"
             nFirst := ::aPages[ ::nActive, 1 ] + 1
             nEnd   := ::aPages[ ::nActive, 1 ] + ::aPages[ ::nActive, 2 ]
          ELSE

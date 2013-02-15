@@ -167,7 +167,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
          RE_INSERTTEXT( ::handle, CHR( VK_TAB ) )
           RETURN 0
       ENDIF
-      IF wParam == VK_ESCAPE .AND. hwg_GetParentForm():Handle != ::oParent:handle
+      IF wParam == VK_ESCAPE .AND. hwg_GetParentForm( Self ):Handle != ::oParent:handle
          IF GetParent(::oParent:handle) != Nil
             //SendMessage( GetParent(::oParent:handle),WM_CLOSE,0,0 )
          ENDIF

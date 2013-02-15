@@ -464,9 +464,9 @@ FUNCTION TxtRect( cTxt, oWin, oFont )
    ReleaseDC( oWin:handle, hDC )
    RETURN ASize
 
-
 FUNCTION hwg_getParentForm( o )
-   DO WHILE o:oParent != Nil .AND. ( o := o:oParent ) != Nil .and. ! __ObjHasMsg( o, "GETLIST" )
+   DO WHILE o:oParent != Nil .AND. !__ObjHasMsg( o, "GETLIST" )
+      o := o:oParent
    ENDDO
    RETURN o
 

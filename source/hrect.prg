@@ -292,7 +292,7 @@ FUNCTION Rect( oWndParent, nLeft, nTop, nRight, nBottom, lPress, nST )
    RETURN  HRect():New( oWndParent, nLeft, nTop, nRight, nBottom, lPress, nST )
 
 //---------------------------------------------------------------------------
-CLASS HContainer INHERIT HControl
+CLASS HContainer INHERIT HControl, HScrollArea
 
    CLASS VAR winclass   INIT "STATIC"
    DATA oPen, oBrush

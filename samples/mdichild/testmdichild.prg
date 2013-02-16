@@ -194,7 +194,7 @@ FUNCTION CreateMdiChild(  )
         STYLE SS_CENTER +DT_VCENTER+DT_SINGLELINE+WS_DLGFRAME   ;
         FONT HFont():Add( 'Arial',0,-19,700,,,)
         oLabel21:Anchor := 161
-        oLabel21:FontBold := .T.
+        hwg_SetFontStyle( oLabel21,.T. )  // oLabel21:FontBold := .T.
    @ 10,429 SAY oLabel12 CAPTION "Total Geral"  SIZE 257,62   ;
         FONT HFont():Add( 'Arial',0,-47,400,,,)
         oLabel12:Anchor := 6

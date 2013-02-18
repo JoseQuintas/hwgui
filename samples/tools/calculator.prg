@@ -36,9 +36,9 @@ FUNCTION calculator( )
   INIT DIALOG oDlg TITLE "Calculando" ;
     AT 0, 0 SIZE 415,325 ;
         FONT HFont():Add( 'Verdana',0,-13,400,,,) CLIPPER  NOEXIT  ;
-     STYLE WS_POPUP+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+DS_CENTER 
+     STYLE WS_POPUP+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+DS_CENTER
     Thisform := oDlg
-    
+
    @ 272,63 OWNERBUTTON oOw1  SIZE 106,36   ;
         TEXT 'Calculator'  ;
         COORDINATES 3, 0, 0, 0  ;
@@ -50,7 +50,7 @@ FUNCTION calculator( )
         VALID  {|| thisform:oLabel2:disable( ) } ;
         WHEN  {|| thisform:oLabel2:Enable( ) } ;
         ON KEYDOWN {|This, nKeyPress, nShiftAltCtrl| oValue_onKeyDown( This, nKeyPress, nShiftAltCtrl ) }
-        oValue:FontBold := .T.
+        hwg_SetFontStyle( oValue, .T. )   // oValue:FontBold := .T.
    @ 72,74 SAY oLabel1 CAPTION "Value:"  SIZE 42,21
 
    @ 22,30 GROUPBOX oGroup1 CAPTION "Calculator"  SIZE 368,106 ;

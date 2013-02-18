@@ -45,7 +45,7 @@ METHOD New( cTitle, lCompacta, nLeft, nTop, nWidth, nHeight, bcolor ) CLASS HCal
 
    ::Title := IIF( cTitle == Nil, ::Title, cTitle )
    ::DefineStyle( lCompacta, nLeft, nTop, nWidth, nHeight, bcolor )
-   
+
    RETURN Self
 
 METHOD DefineStyle( lCompacta, nLeft, nTop, nWidth, nHeight, bcolor ) CLASS HCalculator
@@ -100,7 +100,7 @@ METHOD Show( oGet, lCompacta, nLeft, nTop, nWidth, nHeight, bcolor  )  CLASS HCa
         STYLE BS_CENTER    ;
         FONT HFont():Add( 'Verdana',0,-16,700,,,) ;
         ON CLICK {|| ::Calculando( "=") }
-        obtnres:FontBold := .T.
+        hwg_SetFontStyle( obtnres, .T. )  // obtnres:FontBold := .T.
    @ 119,189 BUTTONEX oBtn10 CAPTION "+"   SIZE 34,28 ;
         STYLE BS_CENTER   ;
         FONT HFont():Add( 'Verdana',0,-12,400,,,) ;
@@ -183,7 +183,7 @@ METHOD Show( oGet, lCompacta, nLeft, nTop, nWidth, nHeight, bcolor  )  CLASS HCa
         STYLE BS_CENTER   ;
         FONT HFont():Add( 'System',0,-16,700,,,) ;
         ON CLICK {|| ::Calculando( " ")  }
-        oBtn4:FontBold := .T.
+        hwg_SetFontStyle( oBtn4, .T. ) // oBtn4:FontBold := .T.
    @ 21,24 SAY oVisor CAPTION "0"  SIZE 168,33 ;
         STYLE SS_RIGHT +DT_VCENTER+DT_SINGLELINE;
          BACKCOLOR 16578289  ;
@@ -194,15 +194,15 @@ METHOD Show( oGet, lCompacta, nLeft, nTop, nWidth, nHeight, bcolor  )  CLASS HCa
          COLOR 6250335  BACKCOLOR 16578289  ;
         FONT HFont():Add( 'Arial',0,-13,700,,,)
         oMemory:Anchor := 75
-        oMemory:FontBold := .T.
+        hwg_SetFontStyle( oMemory, .T. )  // oMemory:FontBold := .T.
    @ 7,6 SAY oCalculo CAPTION ""  SIZE 182,17 ;
         STYLE SS_RIGHT ;
          BACKCOLOR 16578289  ;
         FONT HFont():Add( 'Consolas',0,-12,400,,,)
         oCalculo:Anchor := 75
-        
+
    ACTIVATE DIALOG ::oFormCalc NOMODAL
-   
+
    ::nFontSize := TxtRect( "9", ::oFormCalc, ::oFormCalc:oCalculo:oFont )[ 1 ]
    ::Hwnd := ::oFormCalc:Handle
 

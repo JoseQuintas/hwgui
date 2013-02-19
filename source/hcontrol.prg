@@ -256,51 +256,42 @@ METHOD END() CLASS HControl
 METHOD onAnchor( x, y, w, h ) CLASS HControl
    LOCAL nAnchor, nXincRelative, nYincRelative, nXincAbsolute, nYincAbsolute
    LOCAL x1, y1, w1, h1, x9, y9, w9, h9
-   LOCAL nCxv := iif( HWG_BITAND( ::style, WS_VSCROLL ) != 0, GetSystemMetrics( SM_CXVSCROLL ) + 1 , 3 )
-   LOCAL nCyh := iif( HWG_BITAND( ::style, WS_HSCROLL ) != 0, GetSystemMetrics( SM_CYHSCROLL ) + 1 , 3 )
+   LOCAL nCxv, nCyh
 
    nAnchor := ::anchor
-   x9 := ::nLeft
-   y9 := ::nTop
-   w9 := ::nWidth  //- IIF( ::winclass = "EDIT" .AND. __ObjHasMsg( Self,"hwndUpDown" ), GetClientRect( ::hwndUpDown)[ 3 ], 0 )
-   h9 := ::nHeight
-   x1 := ::nLeft
-   y1 := ::nTop
-   w1 := ::nWidth  //- IIF( ::winclass = "EDIT" .AND. __ObjHasMsg( Self,"hwndUpDown" ), GetClientRect( ::hwndUpDown)[ 3 ], 0 )
-   h1 := ::nHeight
+   x9 := x1 := ::nLeft
+   y9 := y1 := ::nTop
+   w9 := w1 := ::nWidth
+   h9 := h1 := ::nHeight
    // *- calculo relativo
-   IF x > 0
-      nXincRelative := w / x
-   ENDIF
-   IF y > 0
-      nYincRelative := h / y
-   ENDIF
+   nXincRelative := Iif( x > 0, w / x, 1 ) 
+   nYincRelative := Iif( y > 0, h / y, 1 )
    // *- calculo ABSOLUTE
    nXincAbsolute := ( w - x )
    nYincAbsolute := ( h - y )
    IF nAnchor >= ANCHOR_VERTFIX
       // *- vertical fixed center
-      nAnchor := nAnchor - ANCHOR_VERTFIX
+      nAnchor -= ANCHOR_VERTFIX
       y1 := y9 + Round( ( h - y ) * ( ( y9 + h9 / 2 ) / y ), 2 )
    ENDIF
    IF nAnchor >= ANCHOR_HORFIX
       // *- horizontal fixed center
-      nAnchor := nAnchor - ANCHOR_HORFIX
+      nAnchor -= ANCHOR_HORFIX
       x1 := x9 + Round( ( w - x ) * ( ( x9 + w9 / 2 ) / x ), 2 )
    ENDIF
    IF nAnchor >= ANCHOR_RIGHTREL
       // relative - RIGHT RELATIVE
-      nAnchor := nAnchor - ANCHOR_RIGHTREL
+      nAnchor -= ANCHOR_RIGHTREL
       x1 := w - Round( ( x - x9 - w9 ) * nXincRelative, 2 ) - w9
    ENDIF
    IF nAnchor >= ANCHOR_BOTTOMREL
       // relative - BOTTOM RELATIVE
-      nAnchor := nAnchor - ANCHOR_BOTTOMREL
+      nAnchor -= ANCHOR_BOTTOMREL
       y1 := h - Round( ( y - y9 - h9 ) * nYincRelative, 2 ) - h9
    ENDIF
    IF nAnchor >= ANCHOR_LEFTREL
       // relative - LEFT RELATIVE
-      nAnchor := nAnchor - ANCHOR_LEFTREL
+      nAnchor -= ANCHOR_LEFTREL
       IF x1 != x9
          w1 := x1 - ( Round( x9 * nXincRelative, 2 ) ) + w9
       ENDIF
@@ -308,7 +299,7 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    ENDIF
    IF nAnchor >= ANCHOR_TOPREL
       // relative  - TOP RELATIVE
-      nAnchor := nAnchor - ANCHOR_TOPREL
+      nAnchor -= ANCHOR_TOPREL
       IF y1 != y9
          h1 := y1 - ( Round( y9 * nYincRelative, 2 ) ) + h9
       ENDIF
@@ -316,7 +307,7 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    ENDIF
    IF nAnchor >= ANCHOR_RIGHTABS
       // Absolute - RIGHT ABSOLUTE
-      nAnchor := nAnchor - ANCHOR_RIGHTABS
+      nAnchor -= ANCHOR_RIGHTABS
       IF HWG_BITAND( ::Anchor, ANCHOR_LEFTREL ) != 0
          w1 := Int( nxIncAbsolute ) - ( x1 - x9 ) + w9
       ELSE
@@ -328,7 +319,7 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    ENDIF
    IF nAnchor >= ANCHOR_BOTTOMABS
       // Absolute - BOTTOM ABSOLUTE
-      nAnchor := nAnchor - ANCHOR_BOTTOMABS
+      nAnchor -= ANCHOR_BOTTOMABS
       IF HWG_BITAND( ::Anchor, ANCHOR_TOPREL ) != 0
          h1 := Int( nyIncAbsolute ) - ( y1 - y9 ) + h9
       ELSE
@@ -340,7 +331,7 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    ENDIF
    IF nAnchor >= ANCHOR_LEFTABS
       // Absolute - LEFT ABSOLUTE
-      nAnchor := nAnchor - ANCHOR_LEFTABS
+      nAnchor -= ANCHOR_LEFTABS
       IF x1 != x9
          w1 := x1 - x9 + w9
       ENDIF
@@ -348,7 +339,6 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    ENDIF
    IF nAnchor >= ANCHOR_TOPABS
       // Absolute - TOP ABSOLUTE
-      // nAnchor := nAnchor - 1
       IF y1 != y9
          h1 := y1 - y9 + h9
       ENDIF
@@ -357,6 +347,8 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    // REDRAW AND INVALIDATE SCREEN
    IF ( x1 != X9 .OR. y1 != y9 .OR. w1 != w9 .OR. h1 != h9 )
       IF isWindowVisible( ::handle )
+         nCxv := iif( HWG_BITAND( ::style, WS_VSCROLL ) != 0, GetSystemMetrics( SM_CXVSCROLL ) + 1 , 3 )
+         nCyh := iif( HWG_BITAND( ::style, WS_HSCROLL ) != 0, GetSystemMetrics( SM_CYHSCROLL ) + 1 , 3 )
          IF ( x1 != x9 .OR. y1 != y9 ) .AND. x9 < ::oParent:nWidth
             InvalidateRect( ::oParent:handle, 1, Max( x9 - 1, 0 ), Max( y9 - 1, 0 ), ;
                x9 + w9 + nCxv, y9 + h9 + nCyh )
@@ -370,7 +362,6 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
                   x1 + w9 + 2 , y1 + h9 + nCYh )
             ENDIF
          ENDIF
-         // * ::Move( x1, y1, w1, h1,  HWG_BITAND( ::Style, WS_CLIPSIBLINGS + WS_CLIPCHILDREN ) = 0 )
          IF ( ( x1 != x9 .OR. y1 != y9 ) .AND. ( ISBLOCK( ::bPaint ) .OR. ;
                x9 + w9 > ::oParent:nWidth ) ) .OR. ( ::backstyle = TRANSPARENT .AND. ;
                ( ::Title != NIL .AND. ! Empty( ::Title ) ) ) .OR. __ObjHasMsg( Self, "oImage" )
@@ -394,19 +385,13 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
          ENDIF
          // redefine new position e new size
          ::Move( x1, y1, w1, h1,  HWG_BITAND( ::Style, WS_CLIPSIBLINGS + WS_CLIPCHILDREN ) = 0 )
-
-         IF ( ::winClass == "ToolbarWindow32" .OR. ::winClass == "msctls_statusbar32" )
-            ::Resize( nXincRelative, w1 != w9, h1 != h9 )
-         ENDIF
       ELSE
          ::Move( x1, y1, w1, h1, 0 )
-         IF ( ::winClass == "ToolbarWindow32" .OR. ::winClass == "msctls_statusbar32" )
-            ::Resize( nXincRelative, w1 != w9, h1 != h9 )
-         ENDIF
       ENDIF
+      RETURN .T.
    ENDIF
 
-   RETURN NIL
+   RETURN .F.
 
    // - HStatus
 
@@ -429,6 +414,7 @@ CLASS HStatus INHERIT HControl
    METHOD SetIconPanel( nPart, cIcon, nWidth, nHeight )
    METHOD StatusHeight( nHeight )
    METHOD Resize( xIncrSize )
+   METHOD onAnchor( x, y, w, h )
 
 ENDCLASS
 
@@ -578,6 +564,14 @@ METHOD Resize( xIncrSize ) CLASS HStatus
    ENDIF
 
    RETURN NIL
+
+METHOD onAnchor( x, y, w, h ) CLASS HStatus
+
+   IF ::Super:onAnchor( x, y, w, h )
+      ::Resize( Iif( x > 0, w / x, 1 ) )
+   ENDIF
+
+   RETURN .T.
 
    // - HStatic
 

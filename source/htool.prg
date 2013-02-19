@@ -155,6 +155,7 @@ CLASS HToolBar INHERIT HControl
    METHOD HideButton( idButton ) INLINE SENDMESSAGE( ::handle, TB_HIDEBUTTON, INT( idButton ), MAKELONG( 1, 0 ) )
    METHOD REFRESH() VIRTUAL
    METHOD RESIZE( xIncrSize, lWidth, lHeight  )
+   METHOD onAnchor( x, y, w, h )
 
 ENDCLASS
 
@@ -527,6 +528,14 @@ METHOD RESIZE( xIncrSize, lWidth, lHeight  ) CLASS hToolBar
 		    SENDMESSAGE( ::handle, WM_SIZE, 0,  0 )
    ENDIF
    RETURN NIL
+
+METHOD onAnchor( x, y, w, h ) CLASS hToolBar
+
+   IF ::Super:onAnchor( x, y, w, h )
+      ::Resize( Iif( x > 0, w / x, 1 ), .T., .T. )
+   ENDIF
+
+   RETURN .T.
 
 
 CLASS HToolBarEX INHERIT HToolBar

@@ -616,7 +616,7 @@ METHOD Notify( lParam ) CLASS HTab
          RETURN 0
       ENDIF
       ::oparent:lSuspendMsgsHandling := .T.
-      Eval( ::bChange, Self, GetCurrentTab( ::handle ) )
+      Eval( ::bChange, GetCurrentTab( ::handle ), Self )
       IF ::bGetFocus != NIL .AND. nPage != ::nPrevPage .AND. ::Pages[ nPage ]:Enabled .AND. ::nActivate > 0
          Eval( ::bGetFocus, GetCurrentTab( ::handle ), Self )
          ::nActivate := 0

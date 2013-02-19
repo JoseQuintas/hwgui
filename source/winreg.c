@@ -1,22 +1,6 @@
-// Registry interface
-
-#include "hwingui.h"
-#include <shlobj.h>
-//#include <commctrl.h>
-
-#include "hbvm.h"
-#include "hbstack.h"
-#include "hbapiitm.h"
-#include "winreg.h"
-
-#if defined(__DMC__)
-__inline long PtrToLong( const void *p )
-{
-   return ( ( long ) p );
-}
-#endif
-
 /*
+ * $Id$
+ *
  * Harbour Project source code:
  * Registry functions for Harbour
  *
@@ -64,7 +48,22 @@ __inline long PtrToLong( const void *p )
  *
  */
 
-HB_FUNC( REGCLOSEKEY )
+#include "hwingui.h"
+#include <shlobj.h>
+
+#include "hbvm.h"
+#include "hbstack.h"
+#include "hbapiitm.h"
+#include "winreg.h"
+
+#if defined(__DMC__)
+__inline long PtrToLong( const void *p )
+{
+   return ( ( long ) p );
+}
+#endif
+
+HB_FUNC( HWG_REGCLOSEKEY )
 {
    HKEY hwHandle = ( HKEY ) hb_parnl( 1 );
 
@@ -78,7 +77,7 @@ HB_FUNC( REGCLOSEKEY )
    }
 }
 
-HB_FUNC( REGOPENKEYEX )
+HB_FUNC( HWG_REGOPENKEYEX )
 {
    HKEY hwKey = ( ( HKEY ) hb_parnl( 1 ) );
    void * hValue;
@@ -100,7 +99,7 @@ HB_FUNC( REGOPENKEYEX )
    hb_strfree( hValue );
 }
 
-HB_FUNC( REGQUERYVALUEEX )
+HB_FUNC( HWG_REGQUERYVALUEEX )
 {
    HKEY hwKey = ( ( HKEY ) hb_parnl( 1 ) );
    LONG lError;
@@ -132,7 +131,7 @@ HB_FUNC( REGQUERYVALUEEX )
 }
 
 
-HB_FUNC( REGENUMKEYEX )
+HB_FUNC( HWG_REGENUMKEYEX )
 {
    FILETIME ft;
    long nErr;
@@ -155,7 +154,7 @@ HB_FUNC( REGENUMKEYEX )
 }
 
 
-HB_FUNC( REGSETVALUEEX )
+HB_FUNC( HWG_REGSETVALUEEX )
 {
    void * hValue;
 
@@ -166,7 +165,7 @@ HB_FUNC( REGSETVALUEEX )
    hb_strfree( hValue );
 }
 
-HB_FUNC( REGCREATEKEY )
+HB_FUNC( HWG_REGCREATEKEY )
 {
    HKEY hKey;
    LONG nErr;
@@ -199,7 +198,7 @@ LONG RegCreateKeyEx(
 
 */
 
-HB_FUNC( REGCREATEKEYEX )
+HB_FUNC( HWG_REGCREATEKEYEX )
 {
    HKEY hkResult;
    DWORD dwDisposition;
@@ -229,7 +228,7 @@ HB_FUNC( REGCREATEKEYEX )
 }
 
 
-HB_FUNC( REGDELETEKEY )
+HB_FUNC( HWG_REGDELETEKEY )
 {
    void * hValue;
 
@@ -241,7 +240,7 @@ HB_FUNC( REGDELETEKEY )
 //  For strange reasons this function is not working properly
 //  May be I am missing something. Pritpal Bedi.
 
-HB_FUNC( REGDELETEVALUE )
+HB_FUNC( HWG_REGDELETEVALUE )
 {
    void * hValue;
 

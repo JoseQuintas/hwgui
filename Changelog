@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-02-19 16:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  ! source/htab.prg
+    ! Parameters order fixed for Eval() call of :bChange. It is necessary 
+      to check all other calls of Eval()
+  ! samples\hello\hello.hbp
+    ! Parameters order fixed.
+  * source/winreg.c
+    * All functions are prefixed with hwg_
+  * include/hwgcompat.ch
+    + added rules for functions from winreg.c
+
 2013-02-18 08:52 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
   ! samples/tools/calculator.prg
   ! samples/tools/hcalculator.prg

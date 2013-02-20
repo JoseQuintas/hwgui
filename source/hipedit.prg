@@ -4,8 +4,8 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * HTab class
  *
- * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Luiz Rafael Culik Guimaraes <culikr@brtrubo.com>
+ * www - http://sites.uol.com.br/culikr/
 */
 
 #include "windows.ch"
@@ -57,27 +57,14 @@ METHOD New( oWndParent, nId, aValue, bSetGet, nStyle, nLeft, nTop, nWidth, nHeig
    ::Activate()
 
 
-   *IF bSetGet != Nil
-      /*
-      ::bGetFocus := bGFocus
-      ::bLostFocus := bLFocus
-      ::oParent:AddEvent( EN_SETFOCUS,self,{|o,id|__When(o:FindControl(id))},.t.,"onGotFocus" )
-      ::oParent:AddEvent( EN_KILLFOCUS,self,{|o,id|__Valid(o:FindControl(id))},.t.,"onLostFocus" )
-      ::oParent:AddEvent( IPN_FIELDCHANGED,self,{|o,id|__Valid(o:FindControl(id))} ,.t.,"onChange")
-      */
-   *ELSE
    IF bGetFocus != Nil
       ::lnoValid := .T.
-        * ::oParent:AddEvent( EN_SETFOCUS,self,::bGetfocus,.t.,"onGotFocus" )
    ENDIF
    IF bKillFocus != Nil
-        * ::oParent:AddEvent( EN_KILLFOCUS,self,::bKillfocus,.t.,"onLostFocus" )
       ::oParent:AddEvent( IPN_FIELDCHANGED, Self, ::bKillFocus, .t., "onChange" )
    ENDIF
-  * ENDIF
 
    // Notificacoes de Ganho e perda de foco
-   *::oParent:AddEvent( IPN_FIELDCHANGED,self,::bKillFocus, .t.,"onChange" )
    ::oParent:AddEvent( EN_SETFOCUS , Self, { | o, id | __GetFocus( o:FindControl( id ) ) },, "onGotFocus" )
    ::oParent:AddEvent( EN_KILLFOCUS, Self, { | o, id | __KillFocus( o:FindControl( id ) ) },, "onLostFocus" )
 
@@ -86,7 +73,7 @@ METHOD New( oWndParent, nId, aValue, bSetGet, nStyle, nLeft, nTop, nWidth, nHeig
 
 METHOD Activate() CLASS HIPedit
    IF ! Empty( ::oParent:handle )
-      ::handle := InitIPAddress ( ::oParent:handle, ::id, ::style , ;
+      ::handle := hwg_InitIPAddress( ::oParent:handle, ::id, ::style , ;
                                   ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
@@ -103,17 +90,17 @@ METHOD Init() CLASS HIPedit
    RETURN Nil
 
 METHOD SetValue( aValue ) CLASS HIPedit
-   SETIPADDRESS( ::handle , aValue[ 1 ], aValue[ 2 ], aValue[ 3 ], aValue[ 4 ] )
+   hwg_SetIpAddress( ::handle , aValue[ 1 ], aValue[ 2 ], aValue[ 3 ], aValue[ 4 ] )
    ::aValue := aValue
    RETURN Nil
 
 
 METHOD GetValue( ) CLASS HIPedit
-   ::aValue := GETIPADDRESS( ::handle )
+   ::aValue := hwg_GetIpAddress( ::handle )
    RETURN ( ::aValue )
 
 METHOD Clear( ) CLASS HIPedit
-   CLEARIPADDRESS( ::handle )
+   hwg_ClearIpAddress( ::handle )
    ::aValue := { 0, 0, 0, 0 }
    RETURN ( ::aValue )
 

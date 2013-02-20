@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-02-20 11:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/hwgcompat.ch
+    + added rules for functions from animat.c and c_ipaddr.c
+  * source/animat.c
+  * source/c_ipaddr.c
+    * All functions are prefixed with hwg_
+  * source/hanimat.prg
+  * source/hipedit.prg
+    * Function calls changed for animat.c and c_ipaddr.c functions
+
 2013-02-19 21:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hcontrol.prg
   * source/htool.prg

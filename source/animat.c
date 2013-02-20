@@ -1,7 +1,17 @@
+/*
+ * $Id$
+ *
+ * HWGUI - Harbour Win32 GUI library source code:
+ * C functions for HAnimation class
+ *
+ * Copyright 2004 Marcos Antonio Gambeta <marcos_gambeta@hotmail.com>
+ * www - http://geocities.yahoo.com.br/marcosgambeta/
+*/
+
 #include "hwingui.h"
 #include <commctrl.h>
 
-HB_FUNC( ANIMATE_CREATE )
+HB_FUNC( HWG_ANIMATE_CREATE )
 {
    HWND hwnd;
 
@@ -12,40 +22,40 @@ HB_FUNC( ANIMATE_CREATE )
    HB_RETHANDLE( hwnd );
 }
 
-HB_FUNC( ANIMATE_OPEN )
+HB_FUNC( HWG_ANIMATE_OPEN )
 {
    void * hStr;
    Animate_Open( ( HWND ) HB_PARHANDLE( 1 ), HB_PARSTR( 2, &hStr, NULL ) );
    hb_strfree( hStr );
 }
 
-HB_FUNC( ANIMATE_PLAY )
+HB_FUNC( HWG_ANIMATE_PLAY )
 {
    Animate_Play( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ), hb_parni( 3 ),
          hb_parni( 4 ) );
 }
 
-HB_FUNC( ANIMATE_SEEK )
+HB_FUNC( HWG_ANIMATE_SEEK )
 {
    Animate_Seek( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ) );
 }
 
-HB_FUNC( ANIMATE_STOP )
+HB_FUNC( HWG_ANIMATE_STOP )
 {
    Animate_Stop( ( HWND ) HB_PARHANDLE( 1 ) );
 }
 
-HB_FUNC( ANIMATE_CLOSE )
+HB_FUNC( HWG_ANIMATE_CLOSE )
 {
    Animate_Close( ( HWND ) HB_PARHANDLE( 1 ) );
 }
 
-HB_FUNC( ANIMATE_DESTROY )
+HB_FUNC( HWG_ANIMATE_DESTROY )
 {
    DestroyWindow( ( HWND ) HB_PARHANDLE( 1 ) );
 }
 
-HB_FUNC( ANIMATE_OPENEX )
+HB_FUNC( HWG_ANIMATE_OPENEX )
 {
 #if defined(__DMC__)
    #define Animate_OpenEx(hwnd, hInst, szName) (BOOL)SNDMSG(hwnd, ACM_OPEN, (WPARAM)hInst, (LPARAM)(LPTSTR)(szName))

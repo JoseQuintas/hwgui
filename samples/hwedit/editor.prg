@@ -268,7 +268,7 @@ FUNCTION Texto()
  LOCAL nlenpos,;
  oCombo
  m_a001:={}
- vText:=SELECTFile("Arquivos Texto","*.PRG",CURDIR())
+ vText:=hwg_SELECTFile("Arquivos Texto","*.PRG",CURDIR())
  oFunc:={}
  oLinha:={}
  if empty(vText)
@@ -626,7 +626,7 @@ local cfile :="temp"
      IF oWindow != Nil
         aControls := oWindow
         If Empty(vText) .or. oOpcao=2
-            fName:=SaveFile("*.prg","Arquivos de Programa (*.prg)","*.prg",curdir())
+            fName:=hwg_SaveFile("*.prg","Arquivos de Programa (*.prg)","*.prg",curdir())
         Else
             fName:=vText
         Endif

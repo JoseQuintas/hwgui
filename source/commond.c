@@ -13,7 +13,7 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 
-HB_FUNC( SELECTFONT )
+HB_FUNC( HWG_SELECTFONT )
 {
 
    CHOOSEFONT cf;
@@ -111,7 +111,7 @@ HB_FUNC( SELECTFONT )
 
 }
 
-HB_FUNC( SELECTFILE )
+HB_FUNC( HWG_SELECTFILE )
 {
    OPENFILENAME ofn;
    TCHAR buffer[1024];
@@ -207,7 +207,7 @@ HB_FUNC( SELECTFILE )
    hb_strfree( hTitle );
 }
 
-HB_FUNC( SAVEFILE )
+HB_FUNC( HWG_SAVEFILE )
 {
    OPENFILENAME ofn;
    TCHAR buffer[1024];
@@ -262,7 +262,7 @@ HB_FUNC( SAVEFILE )
    hb_strfree( hTitle );
 }
 
-HB_FUNC( PRINTSETUP )
+HB_FUNC( HWG_PRINTSETUP )
 {
    PRINTDLG pd;
 
@@ -340,7 +340,7 @@ static unsigned long Get_SerialNumber( LPCTSTR RootPathName )
    return SerialNumber;
 }
 
-HB_FUNC( HDGETSERIAL )
+HB_FUNC( HWG_HDGETSERIAL )
 {
    void * hStr;
    hb_retnl( Get_SerialNumber( HB_PARSTR( 1, &hStr, NULL ) ) );
@@ -355,7 +355,7 @@ HB_FUNC( HDGETSERIAL )
  HB_FUNC( WRITEPRIVATEPROFILESTRING )
 */
 
-HB_FUNC( GETPRIVATEPROFILESTRING )
+HB_FUNC( HWG_GETPRIVATEPROFILESTRING )
 {
    TCHAR buffer[1024];
    DWORD dwLen;
@@ -377,7 +377,7 @@ HB_FUNC( GETPRIVATEPROFILESTRING )
    hb_strfree( hFileName );
 }
 
-HB_FUNC( WRITEPRIVATEPROFILESTRING )
+HB_FUNC( HWG_WRITEPRIVATEPROFILESTRING )
 {
    void * hSection, * hEntry, * hData, * hFileName;
 
@@ -424,7 +424,7 @@ static void StartPrn( void )
    }
 }
 
-HB_FUNC( PRINTPORTNAME )
+HB_FUNC( HWG_PRINTPORTNAME )
 {
    if( !s_fPName && s_pd.hDevNames )
    {
@@ -437,7 +437,7 @@ HB_FUNC( PRINTPORTNAME )
    }
 }
 
-HB_FUNC( PRINTSETUPDOS )
+HB_FUNC( HWG_PRINTSETUPDOS )
 {
 
    StartPrn();
@@ -468,7 +468,7 @@ HB_FUNC( PRINTSETUPDOS )
    }
 }
 
-HB_FUNC( PRINTSETUPEX )
+HB_FUNC( HWG_PRINTSETUPEX )
 {
    PRINTDLG pd;
    DEVMODE *pDevMode;
@@ -490,7 +490,7 @@ HB_FUNC( PRINTSETUPEX )
    }
 }
 
-HB_FUNC( _GETOPENFILENAME )
+HB_FUNC( HWG__GETOPENFILENAME )
 {
    OPENFILENAME ofn;
    TCHAR buffer[ 1024 ];
@@ -538,3 +538,4 @@ HB_FUNC( _GETOPENFILENAME )
    hb_strfree( hInitDir );
    hb_strfree( hDefExt );
 }
+

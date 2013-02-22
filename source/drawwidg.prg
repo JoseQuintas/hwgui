@@ -79,7 +79,7 @@ METHOD Add( fontName, nWidth, nHeight , fnWeight, ;
    RETURN Self
 
 METHOD SELECT( oFont, nCharSet  ) CLASS HFont
-   LOCAL af := SelectFont( oFont )
+   LOCAL af := hwg_SelectFont( oFont )
 
    IF af == Nil
       RETURN Nil
@@ -436,7 +436,7 @@ METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
    name := iif( ! File( name ) .AND. File( cname ), cname, name )
    IF ::lSelFile .AND. !File( name )
       cCurDir  := DiskName() + ':\' + CurDir()
-      name := SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ), FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
+      name := hwg_SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ), FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
       DirChange( cCurDir )
    ENDIF
 
@@ -599,7 +599,7 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
    name := iif( ! File( name ) .AND. File( cname ), cname, name )
    IF ::lSelFile .AND. !File( name )
       cCurDir  := DiskName() + ':\' + CurDir()
-      name := SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ), FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
+      name := hwg_SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ), FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
       DirChange( cCurDir )
    ENDIF
 

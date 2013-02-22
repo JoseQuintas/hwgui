@@ -44,19 +44,19 @@ MENU.PRG:
   BuildMenu( aMenu, hWnd, aWnd, nPosParent )
 
 COMMOND.C:
-  Selectfont
+  hwg_Selectfont
      Calls standard Windows dialog for font selecting, returns font handle
-  Selectfile
+  hwg_Selectfile
      Calls standard Windows dialog for file opening, returns file path and name   
-  Savefile
+  hwg_Savefile
      Calls standard Windows dialog for file saving, returns file path and name
-  Printsetup
-  PrintSetupEx()
+  hwg_Printsetup
+  hwg_PrintSetupEx()
      Return the printer name, useful to use with set printer to
-  GetSerialNumber       
-  HDGetSerial     
-  Getprivateprofilestring
-  Writeprivateprofilestring
+  hwg_GetSerialNumber       
+  hwg_HDGetSerial     
+  hwg_Getprivateprofilestring
+  hwg_Writeprivateprofilestring
 
 CONTROL.C:
   Movewindow

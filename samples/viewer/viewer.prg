@@ -180,9 +180,9 @@ Local fname
 Local aCoors
 
 #ifdef __FREEIMAGE__
-   fname := SelectFile( "Graphic files( *.jpg;*.png;*.psd;*.tif )", "*.jpg;*.png;*.psd;*.tif", mypath )
+   fname := hwg_SelectFile( "Graphic files( *.jpg;*.png;*.psd;*.tif )", "*.jpg;*.png;*.psd;*.tif", mypath )
 #else
-   fname := SelectFile( "Graphic files( *.jpg;*.gif;*.bmp )", "*.jpg;*.gif;*.bmp", mypath )
+   fname := hwg_SelectFile( "Graphic files( *.jpg;*.gif;*.bmp )", "*.jpg;*.gif;*.bmp", mypath )
 #endif
    IF !Empty( fname )
       nKoef := 1

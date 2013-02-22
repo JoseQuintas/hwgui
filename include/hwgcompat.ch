@@ -19,6 +19,18 @@
 #xtranslate GetIpAddress([<n,...>])        => hwg_GetIpAddress(<n>)
 #xtranslate ClearIpAddress([<n,...>])      => hwg_ClearIpAddress(<n>)
 
+#xtranslate Selectfont([<n,...>])          => hwg_Selectfont(<n>)
+#xtranslate Selectfile([<n,...>])          => hwg_Selectfile(<n>)
+#xtranslate Savefile([<n,...>])            => hwg_Savefile(<n>)
+#xtranslate Printsetup([<n,...>])          => hwg_Printsetup(<n>)
+#xtranslate Hdgetserial([<n,...>])         => hwg_Hdgetserial(<n>)
+#xtranslate Getprivateprofilestring([<n,...>])   => hwg_Getprivateprofilestring(<n>)
+#xtranslate Writeprivateprofilestring([<n,...>]) => hwg_Writeprivateprofilestring(<n>)
+#xtranslate Printportname([<n,...>])       => hwg_Printportname(<n>)
+#xtranslate Printsetupdos([<n,...>])       => hwg_Printsetupdos(<n>)
+#xtranslate Printsetupex([<n,...>])        => hwg_Printsetupex(<n>)
+#xtranslate _getopenfilename([<n,...>])    => hwg_getopenfilename(<n>)
+
 #xtranslate setPrinterMode([<n,...>])      => hwg_setPrinterMode(<n>)
 #xtranslate ClosePrinter([<n,...>])        => hwg_ClosePrinter(<n>)
 #xtranslate getDeviceArea([<n,...>])       => hwg_getDeviceArea(<n>)

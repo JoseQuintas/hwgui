@@ -17,7 +17,7 @@ memvar mypath, numdriv
 Static cQuery := ""
 
 Function OpenQuery
-Local fname := SelectFile( "Query files( *.que )", "*.que", mypath )
+Local fname := hwg_SelectFile( "Query files( *.que )", "*.que", mypath )
 
    IF !Empty( fname )
       mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
@@ -126,7 +126,7 @@ Static lConnected := .F.
 Return .T.
 
 Function QuerySave
-Local fname := SaveFile( "*.que","Query files( *.que )", "*.que", mypath )
+Local fname := hwg_SaveFile( "*.que","Query files( *.que )", "*.que", mypath )
    cQuery := GetDlgItemText( getmodalhandle(), IDC_EDITQUERY, 400 )
    IF !Empty( fname )
       MemoWrit( fname,cQuery )

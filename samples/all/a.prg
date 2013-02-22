@@ -306,7 +306,7 @@ Return .T.
 Function FileOpen
 Local oModDlg, oBrw
 Local mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
-Local fname := SelectFile( "xBase files( *.dbf )", "*.dbf", mypath )
+Local fname := hwg_SelectFile( "xBase files( *.dbf )", "*.dbf", mypath )
 Local nId
 
    IF !Empty( fname )

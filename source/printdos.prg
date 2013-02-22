@@ -109,7 +109,7 @@ METHOD New( oPorta ) CLASS PrintDos
       ::oPorta       := "LPT1"
    ELSE
       IF oPorta == "DEFAULT"
-         oPtrName := PrintPortName()
+         oPtrName := hwg_PrintPortName()
          IF oPtrName == Nil
             MsgInfo( "Error, file to:ERROR.TXT" )
             ::oPorta := "Error.txt"
@@ -119,15 +119,15 @@ METHOD New( oPorta ) CLASS PrintDos
       ELSEIF oPorta == "SELECT"
 
          #ifdef __XHARBOUR__
-            oPtrSetup := PrintSetupDos( @::nStartPage, @::nEndPage, @::nCopy )
+            oPtrSetup := hwg_PrintSetupDos( @::nStartPage, @::nEndPage, @::nCopy )
          #else
-            oPtrSetup := PrintSetupDos()
+            oPtrSetup := hwg_PrintSetupDos()
          #endif
          IF oPtrSetup == Nil
             MsgInfo( "Error, file to:ERROR.TXT" )
             ::oPorta := "Error.txt"
          ELSE
-            oPtrName := PrintPortName()
+            oPtrName := hwg_PrintPortName()
             IF oPtrName == Nil
                MsgInfo( "Error, file to:ERROR.TXT" )
                ::oPorta := "Error.txt"

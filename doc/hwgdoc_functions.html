@@ -26,14 +26,14 @@
 <br><strong class="subhead"><A NAME="Functions1" HREF="hwgdoc.html#_Functions1">
 5.1.  Common dialogs</A></strong>
  <UL>
-   <LI><A NAME="_Functions1_1" HREF="#Functions1_1">5.1.1.  SelectFont( oFont )</A>
-   <LI><A NAME="_Functions1_2" HREF="#Functions1_2">5.1.2.  SelectFile( xDescript,xMask,cInitDir,cTitle )</A>
-   <LI><A NAME="_Functions1_3" HREF="#Functions1_3">5.1.3.  SaveFile( cPrompt,cDescript,cMask,cInitDir,cTitle )</A>
-   <LI><A NAME="_Functions1_4" HREF="#Functions1_4">5.1.4.  PrintSetup()</A>
+   <LI><A NAME="_Functions1_1" HREF="#Functions1_1">5.1.1.  hwg_SelectFont( oFont )</A>
+   <LI><A NAME="_Functions1_2" HREF="#Functions1_2">5.1.2.  hwg_SelectFile( xDescript,xMask,cInitDir,cTitle )</A>
+   <LI><A NAME="_Functions1_3" HREF="#Functions1_3">5.1.3.  hwg_SelectfontSaveFile( cPrompt,cDescript,cMask,cInitDir,cTitle )</A>
+   <LI><A NAME="_Functions1_4" HREF="#Functions1_4">5.1.4.  hwg_PrintSetup()</A>
    <LI><A NAME="_Functions1_5" HREF="#Functions1_5">5.1.5.  hwg_ChooseColor( nColorCurrent )</A>
  </UL>
 <br><strong class="subhead"><A NAME="Functions1_1" HREF="#_Functions1_1">
-5.1.1.  SelectFont( [ oFont ] )</A></strong>
+5.1.1.  hwg_SelectFont( [ oFont ] )</A></strong>
 <p>This function calls the standard dialog for font selecting.</p>
 <UL>
   <LI> <b>oFont</b> - optional parameter, the current font object ( HFont instance ).
@@ -44,7 +44,7 @@ Usually it isn't needed to call this function directly, use HFont():Select( oFon
 instead.<br>
 
 <br><strong class="subhead"><A NAME="Functions1_2" HREF="#_Functions1_2">
-5.1.2.  SelectFile( xDescript,xMask,[ cInitDir ], [ cTitle ] )</A></strong>
+5.1.2.  hwg_SelectFile( xDescript,xMask,[ cInitDir ], [ cTitle ] )</A></strong>
 <p>This function calls the standard dialog for file selecting.</p>
 <UL>
   <LI> <b>xDescript</b> - this is a display string that describes the filter (for example, "dBase files")
@@ -61,7 +61,7 @@ instead.<br>
 </UL>
 
 <br><strong class="subhead"><A NAME="Functions1_3" HREF="#_Functions1_3">
-5.1.3.  SaveFile( cPrompt,cDescript,cMask,cInitDir,cTitle )</A></strong>
+5.1.3.  hwg_SaveFile( cPrompt,cDescript,cMask,cInitDir,cTitle )</A></strong>
 <p>This function calls the standard dialog for file saving.</p>
 <UL>
   <LI> <b>cPrompt</b> - this string appears as a prompt of a file name.
@@ -73,7 +73,7 @@ instead.<br>
 </UL>
 
 <br><strong class="subhead"><A NAME="Functions1_4" HREF="#_Functions1_4">
-5.1.4.  PrintSetup( @cPrinterName )</A></strong>
+5.1.4.  hwg_PrintSetup( @cPrinterName )</A></strong>
 <p>This function calls the standard dialog for printer selecting.</p>
 <UL>
   <LI> <b>Return value</b> ( numeric ) - handle to device context ( hDC ) of selected printer, 0 - if printer wasn't selected.

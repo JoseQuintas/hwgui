@@ -374,7 +374,7 @@ Local mask := Iif( numdriv == 1,"*.cdx;*.idx",Iif( numdriv == 2,"*ntx","*.adi" )
 Local fname
 Local oWindow, aControls, i
 
-   IF !Empty( fname := SelectFile( "Index files", mask, mypath ) )
+   IF !Empty( fname := hwg_SelectFile( "Index files", mask, mypath ) )
       mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
       ORDLISTADD( fname )
       oWindow := HMainWindow():GetMdiActive()
@@ -413,7 +413,7 @@ Local aModDlg
    INIT DIALOG aModDlg FROM RESOURCE "DLG_OPEN" ON INIT {|| InitOpen() }
    DIALOG ACTIONS OF aModDlg ;
         ON 0,IDOK         ACTION {|| EndOpen()}  ;
-        ON BN_CLICKED,IDC_BUTTONBRW ACTION {||SetDlgItemText( getmodalhandle(), IDC_EDIT7, SelectFile( "xBase files( *.dbf )", "*.dbf", mypath ) ) }
+        ON BN_CLICKED,IDC_BUTTONBRW ACTION {||SetDlgItemText( getmodalhandle(), IDC_EDIT7, hwg_SelectFile( "xBase files( *.dbf )", "*.dbf", mypath ) ) }
    aModDlg:Activate()
 
 Return Nil
@@ -573,7 +573,7 @@ Local aModDlg
    DIALOG ACTIONS OF aModDlg ;
         ON 0,IDOK         ACTION {|| EndScri(nAct)}   ;
         ON 0,IDCANCEL     ACTION {|| EndDialog( getmodalhandle() ) }  ;
-        ON BN_CLICKED,IDC_PUSHBUTTON1 ACTION {||SetDlgItemText( getmodalhandle(), IDC_EDIT8, SelectFile( "Script files( *.scr )", "*.scr", mypath ) ) }
+        ON BN_CLICKED,IDC_PUSHBUTTON1 ACTION {||SetDlgItemText( getmodalhandle(), IDC_EDIT8, hwg_SelectFile( "Script files( *.scr )", "*.scr", mypath ) ) }
    aModDlg:Activate()
 
 Return Nil

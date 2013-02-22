@@ -145,7 +145,7 @@ Return Nil
 
 Static Function SearchFileName(nName, oGet, oFile)
 Local oTextAnt:=oGet:GetText()
-Local fFile:=SelectFile(nName+" ("+oFile+")", oFile,,,.T. ) 
+Local fFile:=hwg_SelectFile(nName+" ("+oFile+")", oFile,,,.T. ) 
 If !Empty(oTextAnt)
    fFile:=oTextAnt //
 endif   
@@ -157,7 +157,7 @@ Return Nil
 Function ReadBuildFile()
 Local oLibFiles, oBr1:={}, oBr2:={}, oBr3:={}, oBr4:={}, oSel1, oSel2, oSel3, i, oSel4
 Local aPal:=""
-Local oFolderFile:=SelectFile("HwGUI File Build (*.bld)", "*.bld" ) 
+Local oFolderFile:=hwg_SelectFile("HwGUI File Build (*.bld)", "*.bld" ) 
 if empty(oFolderFile); Return Nil; Endif
    
 oExeName:SetText( Hwg_GetIni( 'Config', 'ExeName' , , oFolderFile ))
@@ -209,7 +209,7 @@ Return Nil
 
 Function SaveBuildFile()
 Local oLibFiles, i, oNome, g
-Local oFolderFile:=SaveFile("*.bld", "HwGUI File Build (*.bld)", "*.bld" ) 
+Local oFolderFile:=hwg_SaveFile("*.bld", "HwGUI File Build (*.bld)", "*.bld" ) 
 if empty(oFolderFile); Return Nil; Endif
 if file(oFolderFile)
    If(MsgYesNo("File "+oFolderFile+" EXIT ..Replace?"))

@@ -8,6 +8,46 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-02-22 11:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source\commond.c
+    * All functions are prefixed with hwg_
+    !!! Few widely used function names are changed, including Selectfile, 
+        Savefile, Selectfont, they are now hwg_Selectfile, hwg_Savefile, 
+        hwg_Selectfont. Change them in your program code or #include the
+        hwgcompat.ch
+  * include/hwgcompat.ch
+    + added rules for functions from commond.c
+  * doc\funclist.txt
+  * doc\hwgdoc_functions.html
+  * samples\all\a.prg
+  * samples\build\buildpelles.prg
+  * samples\database\dbview.prg
+  * samples\grid\grid_4.prg
+  * samples\hbrun\hbrun.prg
+  * samples\hwedit\editor.prg
+  * samples\mysql\dbfmysql.scr
+  * samples\mysql\hwmysql.prg
+  * samples\ole\iesample.prg
+  * samples\rtf\testrtf.prg
+  * samples\viewer\viewer.prg
+  * source\drawwidg.prg
+  * source\guimain.prg
+  * source\hprinter.prg
+  * source\printdos.prg
+  * utils\dbc\commands.prg
+  * utils\dbc\dbchw.prg
+  * utils\dbc\modistru.prg
+  * utils\dbc\query.prg
+  * utils\designer\hformgen.prg
+  * utils\designer\inspect.prg
+  * utils\designer\samples\FT\A.xml
+  * utils\designer\samples\FT\FIND_FV.XML
+  * utils\designer\xmlrun\XMLRUN.prg
+  * utils\hwmake\hwmake.prg
+  * utils\hwreport\opensave.prg
+  * utils\hwreport\propert.prg
+    * Function calls changed for commond.c functions
+
 2013-02-20 11:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/hwgcompat.ch
     + added rules for functions from animat.c and c_ipaddr.c

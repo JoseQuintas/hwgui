@@ -558,7 +558,7 @@ oB:AddColumn(oC)]]>
       <property name="BmpTop">5</property>
     </style>
     <method name="onClick">
-      <![CDATA[fname:=selectFile("Find Anuity (*.FA)","*.FA")
+      <![CDATA[fname:=hwg_selectFile("Find Anuity (*.FA)","*.FA")
 if empty(fname)
  return
 endif
@@ -619,7 +619,7 @@ if nPV==0
  return .f.
 endif
 iif(empty(fname),fname:="*.FA")
-fname:=Savefile("*.FA","Find Annuity (*.FA)",@fname, curdir())
+fname:=hwg_Savefile("*.FA","Find Annuity (*.FA)",@fname, curdir())
 fname:= strtran(strtran(fName,".FA",""),".FA","")+".FA"
 aSave:={nPV,nFV,iPa,ipm,nUD,nA,aData}
 SaveArray(@aSave,@fName)]]>

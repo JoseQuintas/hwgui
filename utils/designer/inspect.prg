@@ -135,14 +135,14 @@ METHOD Edit( wParam,lParam ) CLASS PBrowse
             @ x1,y1-2 BUTTON oBtn CAPTION '...' OF oBrw1;
                   SIZE 13,::height+6  ;
                   ON CLICK {|| (varbuf := IIF (aDataDef[ j,1 ] == "filename",;
-                  SelectFile( "Animation Files( *.avi )", "*.avi"),IIF (aDataDef[ j,1 ] == "filedbf", ;
-                  SelectFile( {"xBase Files( *.dbf)"," All Files( *.*)"},{ "*.dbf","*.*"}),;
-                  SelectFile("Imagens Files( *.jpg;*.gif;*.bmp;*.ico )",;
+                  hwg_SelectFile( "Animation Files( *.avi )", "*.avi"),IIF (aDataDef[ j,1 ] == "filedbf", ;
+                  hwg_SelectFile( {"xBase Files( *.dbf)"," All Files( *.*)"},{ "*.dbf","*.*"}),;
+                  hwg_SelectFile("Imagens Files( *.jpg;*.gif;*.bmp;*.ico )",;
                   "*.jpg;*.gif;*.bmp;*.ico")))), ;
                   IIF( !empty(varbuf), oGet:refresh(), NIL ) } //,;
                   *   VldBrwGet(oGet)} //,   PostMessage( oBtn:handle,WM_CLOSE,0,0 )}
             // : END LFB
-            //varbuf := SelectFile( "All files ( *.* )","*.*" )
+            //varbuf := hwg_SelectFile( "All files ( *.* )","*.*" )
             //
             SetFocus( obtn:handle )
             IF varbuf != NIL

@@ -524,9 +524,9 @@ STATIC FUNCTION BrowFile( lOpen,nType,oEdit1, oEdit2 )
    s1 := oDesigner:aFormats[ nType,1 ] + "( " + s2 + " )"
 
    IF lOpen
-      fname := SelectFile( {s1,"All files"}, {s2,"*.*"},oDesigner:ds_mypath )
+      fname := hwg_SelectFile( {s1,"All files"}, {s2,"*.*"},oDesigner:ds_mypath )
    ELSE
-      fname := SaveFile( s2,s1,s2,oDesigner:ds_mypath )
+      fname := hwg_SaveFile( s2,s1,s2,oDesigner:ds_mypath )
    ENDIF
    IF !Empty( fname )
       l_ds_mypath := Lower( FilePath( fname ) )

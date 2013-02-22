@@ -257,7 +257,7 @@ Local aModDlg
    DIALOG ACTIONS OF aModDlg ;
         ON 0,IDOK         ACTION {|| EndApp()}  ;
         ON 0,IDCANCEL     ACTION {|| EndDialog( getmodalhandle() )}  ;
-        ON BN_CLICKED,IDC_BUTTONBRW ACTION {||SetDlgItemText( getmodalhandle(), IDC_EDIT7, SelectFile( "xBase files( *.dbf )", "*.dbf", mypath ) ) } ;
+        ON BN_CLICKED,IDC_BUTTONBRW ACTION {||SetDlgItemText( getmodalhandle(), IDC_EDIT7, hwg_SelectFile( "xBase files( *.dbf )", "*.dbf", mypath ) ) } ;
         ON BN_CLICKED,IDC_RADIOBUTTON11 ACTION {|| DelimEdit() } ;
         ON BN_CLICKED,IDC_RADIOBUTTON10 ACTION {|| DelimDisable() } ;
         ON BN_CLICKED,IDC_RADIOBUTTON9 ACTION {|| DelimDisable() }

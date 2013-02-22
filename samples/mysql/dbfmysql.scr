@@ -1,6 +1,6 @@
 // dbf2mysql
 Private cDbf, cTable, cQuery, i := 1, aStruct, vartmp
-  if !Empty(cDbf:=SelectFile("xBase files( *.dbf )","*.dbf",Nil,"Select table to import")) .and. (cTable:=MsgGet("","Input mySQL table name:"))!=Nil
+  if !Empty(cDbf:=hwg_SelectFile("xBase files( *.dbf )","*.dbf",Nil,"Select table to import")) .and. (cTable:=MsgGet("","Input mySQL table name:"))!=Nil
     use (cDbf)
     aStruct := dbStruct()
     // Building of CREATE TABLE query

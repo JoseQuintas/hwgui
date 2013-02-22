@@ -120,7 +120,7 @@ Local oWindow, aControls
 Local oPBar, nSch := 0
 
    IF lNew
-      IF Empty( fname := SaveFile( "*.dbf","xBase files( *.dbf )", "*.dbf", mypath ) )
+      IF Empty( fname := hwg_SaveFile( "*.dbf","xBase files( *.dbf )", "*.dbf", mypath ) )
          Return Nil
       ENDIF
       mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )

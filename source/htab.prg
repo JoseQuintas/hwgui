@@ -386,7 +386,7 @@ METHOD EndPage() CLASS HTab
       ::nActive := 1
       ::oDefaultParent := ::oTemp
       ::oTemp := NIL
-      ::bChange = { | o, n | o:ChangePage( n ) }
+      ::bChange = { | n, o | o:ChangePage( n ) }
    ELSE
       IF ::handle != NIL .AND. ! Empty( ::handle )
          AddTabDialog( ::handle, ::nActive, ::aTabs[ ::nActive ], ::aPages[ ::nactive, 1 ]:handle )
@@ -397,7 +397,7 @@ METHOD EndPage() CLASS HTab
       ::nActive := 1
       ::oDefaultParent := ::oTemp
       ::oTemp := NIL
-      ::bChange = { | o, n | o:ChangePage( n ) }
+      ::bChange = { | n, o | o:ChangePage( n ) }
    ENDIF
 
    RETURN NIL

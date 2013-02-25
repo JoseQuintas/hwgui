@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-02-25 14:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source\cxshade.c
+    * All functions are prefixed with hwg_
+  * source\hshbtn.prg
+    * Function calls changed for cxshade.c functions
+  * include/hwgcompat.ch
+    + added rules for functions from cxshade.c
+  * source\guimain.prg
+    * Anchor values changed from numeric literals to #defined mnemonics in Msgget()
+  * source\htab.prg
+    ! Small fix
+  * samples\bld.bat
+    * hwg_qhtm.lib is removed, hwg_contrib.lib added
+
 2013-02-22 14:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   ! source\commond.c
     ! Small fix: HWG__GETOPENFILENAME is changed to HWG_GETOPENFILENAME

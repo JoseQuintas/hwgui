@@ -31,6 +31,11 @@
 #xtranslate Printsetupex([<n,...>])        => hwg_Printsetupex(<n>)
 #xtranslate _getopenfilename([<n,...>])    => hwg_getopenfilename(<n>)
 
+#xtranslate Shade_new([<n,...>])           => hwg_Shade_new(<n>)
+#xtranslate Shade_release([<n,...>])       => hwg_Shade_release(<n>)
+#xtranslate Shade_set([<n,...>])           => hwg_Shade_set(<n>)
+#xtranslate Shade_draw([<n,...>])          => hwg_Shade_draw(<n>)
+
 #xtranslate setPrinterMode([<n,...>])      => hwg_setPrinterMode(<n>)
 #xtranslate ClosePrinter([<n,...>])        => hwg_ClosePrinter(<n>)
 #xtranslate getDeviceArea([<n,...>])       => hwg_getDeviceArea(<n>)

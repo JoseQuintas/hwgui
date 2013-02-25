@@ -162,10 +162,11 @@ FUNCTION MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cResIni )
 
    @ 20, 10 SAY cText SIZE 260, 22
    @ 20, 35 GET cRes  SIZE 260, 26 STYLE WS_TABSTOP + ES_AUTOHSCROLL + nStyle
-   oModDlg:aControls[ 2 ]:Anchor := 11
+   oModDlg:aControls[ 2 ]:Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
    @ 20, 95 BUTTON "Ok" ID IDOK SIZE 100, 32
+   oModDlg:aControls[ 3 ]:Anchor := ANCHOR_BOTTOMABS
    @ 180, 95 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
-   oModDlg:aControls[ 4 ]:Anchor := 9
+   oModDlg:aControls[ 4 ]:Anchor := ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
 
    ACTIVATE DIALOG oModDlg ON ACTIVATE { || IIF( ! EMPTY( cRes ), KEYB_EVENT( VK_END ), .T. ) }
 

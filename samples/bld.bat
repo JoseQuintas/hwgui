@@ -31,7 +31,7 @@ echo %1.map, + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hbxml.lib + >> b32.bc
-echo %HWGUI_INSTALL%\lib\hwg_qhtm.lib + >> b32.bc
+echo %HWGUI_INSTALL%\lib\hwg_contrib.lib + >> b32.bc
 if exist %HWGUI_INSTALL%\lib\hbactivex.lib echo %HWGUI_INSTALL%\lib\hbactivex.lib + >> b32.bc
 if exist %HRB_LIBS%\hbvm.lib goto hrb
 

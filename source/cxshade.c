@@ -724,7 +724,7 @@ void cxshade_SetShade( PCXSHADE pshade, UINT shadeID, BYTE palette,
 /*
  * shade_New( nLeft, nTop, nRight, nBottom, lFlat ) -> pshade
  */
-HB_FUNC( SHADE_NEW )
+HB_FUNC( HWG_SHADE_NEW )
 {
    RECT rect;
    PCXSHADE pshade;
@@ -738,7 +738,7 @@ HB_FUNC( SHADE_NEW )
 /*
  * shade_Release( pshade )
  */
-HB_FUNC( SHADE_RELEASE )
+HB_FUNC( HWG_SHADE_RELEASE )
 {
    cxshade_Release( ( PCXSHADE ) HB_PARHANDLE( 1 ) );
 }
@@ -746,7 +746,7 @@ HB_FUNC( SHADE_RELEASE )
 /*
  * shade_Set( pshade, shadeID, palette, granularity, highlight, coloring, color, nLeft, nTop, nRight, nBottom )
  */
-HB_FUNC( SHADE_SET )
+HB_FUNC( HWG_SHADE_SET )
 {
    PCXSHADE pshade = ( PCXSHADE ) HB_PARHANDLE( 1 );
    UINT shadeID = ( HB_ISNIL( 2 ) ) ? SHS_SOFTBUMP : hb_parni( 2 );
@@ -768,8 +768,9 @@ HB_FUNC( SHADE_SET )
 /*
  * shade_Draw( pshade, hDC, nState )
  */
-HB_FUNC( SHADE_DRAW )
+HB_FUNC( HWG_SHADE_DRAW )
 {
    cxshade_Draw( ( PCXSHADE ) HB_PARHANDLE( 1 ), ( HDC ) HB_PARHANDLE( 2 ),
          (short) hb_parni( 3 ) );
 }
+

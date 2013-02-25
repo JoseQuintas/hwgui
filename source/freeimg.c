@@ -174,12 +174,12 @@ static FARPROC s_getFunction( FARPROC h, LPCSTR funcname )
       return h;
 }
 
-HB_FUNC( FI_INIT )
+HB_FUNC( HWG_FI_INIT )
 {
    hb_retl( s_freeImgInit(  ) );
 }
 
-HB_FUNC( FI_END )
+HB_FUNC( HWG_FI_END )
 {
    if( hFreeImageDll )
    {
@@ -225,7 +225,7 @@ HB_FUNC( FI_END )
    }
 }
 
-HB_FUNC( FI_VERSION )
+HB_FUNC( HWG_FI_VERSION )
 {
    FREEIMAGE_GETVERSION pFunc =
          ( FREEIMAGE_GETVERSION ) s_getFunction( NULL,
@@ -234,7 +234,7 @@ HB_FUNC( FI_VERSION )
    hb_retc( ( pFunc ) ? pFunc(  ) : "" );
 }
 
-HB_FUNC( FI_UNLOAD )
+HB_FUNC( HWG_FI_UNLOAD )
 {
    pUnload =
          ( FREEIMAGE_UNLOAD ) s_getFunction( ( FARPROC ) pUnload,
@@ -244,7 +244,7 @@ HB_FUNC( FI_UNLOAD )
       pUnload( ( FIBITMAP * ) hb_parnl( 1 ) );
 }
 
-HB_FUNC( FI_LOAD )
+HB_FUNC( HWG_FI_LOAD )
 {
    pLoad =
          ( FREEIMAGE_LOAD ) s_getFunction( ( FARPROC ) pLoad,
@@ -266,7 +266,7 @@ HB_FUNC( FI_LOAD )
 /* 24/03/2006 - <maurilio.longo@libero.it>
                 As the original freeimage's fi_Load() that has the filetype as first parameter
 */
-HB_FUNC( FI_LOADTYPE )
+HB_FUNC( HWG_FI_LOADTYPE )
 {
    pLoad =
          ( FREEIMAGE_LOAD ) s_getFunction( ( FARPROC ) pLoad,
@@ -282,7 +282,7 @@ HB_FUNC( FI_LOADTYPE )
       hb_retnl( 0 );
 }
 
-HB_FUNC( FI_SAVE )
+HB_FUNC( HWG_FI_SAVE )
 {
    pSave =
          ( FREEIMAGE_SAVE ) s_getFunction( ( FARPROC ) pSave,
@@ -305,7 +305,7 @@ HB_FUNC( FI_SAVE )
 /* 24/03/2006 - <maurilio.longo@libero.it>
                 As the original freeimage's fi_Save() that has the filetype as first parameter
 */
-HB_FUNC( FI_SAVETYPE )
+HB_FUNC( HWG_FI_SAVETYPE )
 {
    pSave =
          ( FREEIMAGE_SAVE ) s_getFunction( ( FARPROC ) pSave,
@@ -322,7 +322,7 @@ HB_FUNC( FI_SAVETYPE )
       hb_retl( FALSE );
 }
 
-HB_FUNC( FI_GETWIDTH )
+HB_FUNC( HWG_FI_GETWIDTH )
 {
    pGetwidth =
          ( FREEIMAGE_GETWIDTH ) s_getFunction( ( FARPROC ) pGetwidth,
@@ -331,7 +331,7 @@ HB_FUNC( FI_GETWIDTH )
    hb_retnl( ( pGetwidth ) ? pGetwidth( ( FIBITMAP * ) hb_parnl( 1 ) ) : 0 );
 }
 
-HB_FUNC( FI_GETHEIGHT )
+HB_FUNC( HWG_FI_GETHEIGHT )
 {
    pGetheight =
          ( FREEIMAGE_GETHEIGHT ) s_getFunction( ( FARPROC ) pGetheight,
@@ -341,7 +341,7 @@ HB_FUNC( FI_GETHEIGHT )
          0 );
 }
 
-HB_FUNC( FI_GETBPP )
+HB_FUNC( HWG_FI_GETBPP )
 {
    pGetBPP =
          ( FREEIMAGE_GETBPP ) s_getFunction( ( FARPROC ) pGetBPP,
@@ -350,7 +350,7 @@ HB_FUNC( FI_GETBPP )
    hb_retnl( ( pGetBPP ) ? pGetBPP( ( FIBITMAP * ) hb_parnl( 1 ) ) : 0 );
 }
 
-HB_FUNC( FI_GETIMAGETYPE )
+HB_FUNC( HWG_FI_GETIMAGETYPE )
 {
    pGetImageType =
          ( FREEIMAGE_GETIMAGETYPE ) s_getFunction( ( FARPROC ) pGetImageType,
@@ -360,7 +360,7 @@ HB_FUNC( FI_GETIMAGETYPE )
          : 0 );
 }
 
-HB_FUNC( FI_2BITMAP )
+HB_FUNC( HWG_FI_2BITMAP )
 {
    FIBITMAP *dib = ( FIBITMAP * ) hb_parnl( 1 );
    HDC hDC = GetDC( 0 );
@@ -460,7 +460,7 @@ static HANDLE CreateDIB( DWORD dwWidth, DWORD dwHeight, WORD wBitCount )
 /* 24/02/2005 - <maurilio.longo@libero.it>
     Converts a FIBITMAP into a DIB, works OK only for 24bpp images, though
 */
-HB_FUNC( FI_FI2DIB )
+HB_FUNC( HWG_FI_FI2DIB )
 {
    FIBITMAP *dib = ( FIBITMAP * ) hb_parnl( 1 );
    HANDLE hdib;
@@ -513,7 +513,7 @@ static void SET_FREEIMAGE_MARKER( BITMAPINFOHEADER * bmih, FIBITMAP * dib )
    bmih->biCompression = 0xFF + pGetImageType( dib );
 }
 
-HB_FUNC( FI_FI2DIBEX )
+HB_FUNC( HWG_FI_FI2DIBEX )
 {
    FIBITMAP *_dib = ( FIBITMAP * ) hb_parnl( 1 );
    HANDLE hMem = NULL;
@@ -595,7 +595,7 @@ HB_FUNC( FI_FI2DIBEX )
    hb_retnl( ( LONG ) hMem );
 }
 
-HB_FUNC( FI_DRAW )
+HB_FUNC( HWG_FI_DRAW )
 {
    FIBITMAP *dib = ( FIBITMAP * ) hb_parnl( 1 );
    HDC hDC = ( HDC ) HB_PARHANDLE( 2 );
@@ -642,7 +642,7 @@ HB_FUNC( FI_DRAW )
    }
 }
 
-HB_FUNC( FI_BMP2FI )
+HB_FUNC( HWG_FI_BMP2FI )
 {
    HBITMAP hbmp = ( HBITMAP ) HB_PARHANDLE( 1 );
 
@@ -721,7 +721,7 @@ static LPBYTE DibBits( LPBITMAPINFOHEADER lpdib )
 /* 19/05/2005 - <maurilio.longo@libero.it>
   Convert a windows DIB into a FIBITMAP
 */
-HB_FUNC( FI_DIB2FI )
+HB_FUNC( HWG_FI_DIB2FI )
 {
    HANDLE hdib = ( HANDLE ) hb_parnl( 1 );
    int i;
@@ -785,7 +785,7 @@ HB_FUNC( FI_DIB2FI )
    hb_retnl( 0 );
 }
 
-HB_FUNC( FI_RESCALE )
+HB_FUNC( HWG_FI_RESCALE )
 {
    pRescale =
          ( FREEIMAGE_RESCALE ) s_getFunction( ( FARPROC ) pRescale,
@@ -797,7 +797,7 @@ HB_FUNC( FI_RESCALE )
 }
 
 /* Channel is an enumerated type from freeimage.h passed as second parameter */
-HB_FUNC( FI_REMOVECHANNEL )
+HB_FUNC( HWG_FI_REMOVECHANNEL )
 {
    FIBITMAP *dib = ( FIBITMAP * ) hb_parnl( 1 );
    FIBITMAP *dib8;
@@ -880,7 +880,7 @@ long DLL_CALLCONV _TellProc( fi_handle handle )
    return ( ( long int ) g_load_address - ( long int ) handle );
 }
 
-HB_FUNC( FI_LOADFROMMEM )
+HB_FUNC( HWG_FI_LOADFROMMEM )
 {
    pLoadFromHandle =
          ( FREEIMAGE_LOADFROMHANDLE ) s_getFunction( ( FARPROC )
@@ -923,7 +923,7 @@ HB_FUNC( FI_LOADFROMMEM )
       hb_retnl( 0 );
 }
 
-HB_FUNC( FI_ROTATECLASSIC )
+HB_FUNC( HWG_FI_ROTATECLASSIC )
 {
    pRotateClassic =
          ( FREEIMAGE_ROTATECLASSIC ) s_getFunction( ( FARPROC ) pRotateClassic,
@@ -933,7 +933,7 @@ HB_FUNC( FI_ROTATECLASSIC )
                hb_parnl( 1 ), hb_parnd( 2 ) ) : 0 );
 }
 
-HB_FUNC( FI_GETDOTSPERMETERX )
+HB_FUNC( HWG_FI_GETDOTSPERMETERX )
 {
    pGetDotsPerMeterX =
          ( FREEIMAGE_GETDOTSPERMETERX ) s_getFunction( ( FARPROC )
@@ -943,7 +943,7 @@ HB_FUNC( FI_GETDOTSPERMETERX )
                hb_parnl( 1 ) ) : 0 );
 }
 
-HB_FUNC( FI_GETDOTSPERMETERY )
+HB_FUNC( HWG_FI_GETDOTSPERMETERY )
 {
    pGetDotsPerMeterY =
          ( FREEIMAGE_GETDOTSPERMETERY ) s_getFunction( ( FARPROC )
@@ -953,7 +953,7 @@ HB_FUNC( FI_GETDOTSPERMETERY )
                hb_parnl( 1 ) ) : 0 );
 }
 
-HB_FUNC( FI_SETDOTSPERMETERX )
+HB_FUNC( HWG_FI_SETDOTSPERMETERX )
 {
    pSetDotsPerMeterX =
          ( FREEIMAGE_SETDOTSPERMETERX ) s_getFunction( ( FARPROC )
@@ -965,7 +965,7 @@ HB_FUNC( FI_SETDOTSPERMETERX )
    hb_ret(  );
 }
 
-HB_FUNC( FI_SETDOTSPERMETERY )
+HB_FUNC( HWG_FI_SETDOTSPERMETERY )
 {
    pSetDotsPerMeterY =
          ( FREEIMAGE_SETDOTSPERMETERY ) s_getFunction( ( FARPROC )
@@ -979,7 +979,7 @@ HB_FUNC( FI_SETDOTSPERMETERY )
 
 
 
-HB_FUNC( FI_ALLOCATE )
+HB_FUNC( HWG_FI_ALLOCATE )
 {
    pAllocate =
          ( FREEIMAGE_ALLOCATE ) s_getFunction( ( FARPROC ) pAllocate,
@@ -992,7 +992,7 @@ HB_FUNC( FI_ALLOCATE )
 
 
 
-HB_FUNC( FI_PASTE )
+HB_FUNC( HWG_FI_PASTE )
 {
    pPaste =
          ( FREEIMAGE_PASTE ) s_getFunction( ( FARPROC ) pPaste,
@@ -1005,7 +1005,7 @@ HB_FUNC( FI_PASTE )
                hb_parnl( 5 ) ) );       // alpha
 }
 
-HB_FUNC( FI_COPY )
+HB_FUNC( HWG_FI_COPY )
 {
    pCopy =
          ( FREEIMAGE_COPY ) s_getFunction( ( FARPROC ) pCopy,
@@ -1019,7 +1019,7 @@ HB_FUNC( FI_COPY )
 }
 
 /* just a test, should receive a RGBQUAD structure, a xharbour array */
-HB_FUNC( FI_SETBACKGROUNDCOLOR )
+HB_FUNC( HWG_FI_SETBACKGROUNDCOLOR )
 {
    RGBQUAD rgbquad = { 255, 255, 255, 255 };
 
@@ -1030,7 +1030,7 @@ HB_FUNC( FI_SETBACKGROUNDCOLOR )
    hb_retl( pSetBackgroundColor( ( FIBITMAP * ) hb_parnl( 1 ), &rgbquad ) );
 }
 
-HB_FUNC( FI_INVERT )
+HB_FUNC( HWG_FI_INVERT )
 {
    pInvert =
          ( FREEIMAGE_INVERT ) s_getFunction( ( FARPROC ) pInvert,
@@ -1039,7 +1039,7 @@ HB_FUNC( FI_INVERT )
    hb_retl( pInvert( ( FIBITMAP * ) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC( FI_GETBITS )
+HB_FUNC( HWG_FI_GETBITS )
 {
    pGetbits =
          ( FREEIMAGE_GETBITS ) s_getFunction( ( FARPROC ) pGetbits,
@@ -1048,7 +1048,7 @@ HB_FUNC( FI_GETBITS )
    hb_retptr( pGetbits( ( FIBITMAP * ) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC( FI_CONVERTTO8BITS )
+HB_FUNC( HWG_FI_CONVERTTO8BITS )
 {
    pConvertTo8Bits =
          ( FREEIMAGE_CONVERTTO8BITS ) s_getFunction( ( FARPROC )
@@ -1057,7 +1057,7 @@ HB_FUNC( FI_CONVERTTO8BITS )
    hb_retnl( ( LONG ) pConvertTo8Bits( ( FIBITMAP * ) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC( FI_CONVERTTOGREYSCALE )
+HB_FUNC( HWG_FI_CONVERTTOGREYSCALE )
 {
    pConvertToGreyscale =
          ( FREEIMAGE_CONVERTTOGREYSCALE ) s_getFunction( ( FARPROC )
@@ -1066,7 +1066,7 @@ HB_FUNC( FI_CONVERTTOGREYSCALE )
    hb_retnl( ( LONG ) pConvertToGreyscale( ( FIBITMAP * ) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC( FI_THRESHOLD )
+HB_FUNC( HWG_FI_THRESHOLD )
 {
    pThreshold =
          ( FREEIMAGE_THRESHOLD ) s_getFunction( ( FARPROC ) pThreshold,
@@ -1076,7 +1076,7 @@ HB_FUNC( FI_THRESHOLD )
                ( BYTE ) hb_parnl( 2 ) ) );
 }
 
-HB_FUNC( FI_FLIPVERTICAL )
+HB_FUNC( HWG_FI_FLIPVERTICAL )
 {
    pFlipVertical =
          ( FREEIMAGE_FLIPVERTICAL ) s_getFunction( ( FARPROC ) pFlipVertical,
@@ -1085,7 +1085,7 @@ HB_FUNC( FI_FLIPVERTICAL )
    hb_retl( pFlipVertical( ( FIBITMAP * ) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC( FI_GETPIXELINDEX )
+HB_FUNC( HWG_FI_GETPIXELINDEX )
 {
    BYTE value = ( BYTE ) - 1;
    BOOL lRes;
@@ -1102,7 +1102,7 @@ HB_FUNC( FI_GETPIXELINDEX )
    hb_retl( lRes );
 }
 
-HB_FUNC( FI_SETPIXELINDEX )
+HB_FUNC( HWG_FI_SETPIXELINDEX )
 {
    BYTE value = hb_parni( 4 );
    pSetPixelIndex =
@@ -1117,3 +1117,4 @@ HB_FUNC( FI_SETPIXELINDEX )
 typedef BOOL ( WINAPI *FREEIMAGE_GETPIXELCOLOR )(FIBITMAP *dib, unsigned x, unsigned y, RGBQUAD *value);
 typedef BOOL ( WINAPI *FREEIMAGE_SETPIXELCOLOR )(FIBITMAP *dib, unsigned x, unsigned y, RGBQUAD *value);
 */
+

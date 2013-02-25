@@ -25,7 +25,7 @@ Private aScreen, nKoef, lScrollV := .F., lScrollH := .F., nStepV := 0, nStepH :=
 Private nVert, nHorz
 
 #ifdef __FREEIMAGE__
-   IF !FI_Init()
+   IF !hwg_Fi_init()
       Return Nil
    ENDIF
 #endif

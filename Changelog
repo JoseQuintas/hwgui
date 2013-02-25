@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-02-25 15:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source\freeimg.c
+    * All functions are prefixed with hwg_
+  * source\hfreeimg.prg
+  * samples\viewer\viewer.prg
+    * Function calls changed for freeimg.c functions
+  * include/hwgcompat.ch
+    + added rules for functions from freeimg.c
+
 2013-02-25 14:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source\cxshade.c
     * All functions are prefixed with hwg_

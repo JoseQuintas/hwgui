@@ -5,7 +5,7 @@
   * HGrid class
   *
   * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
-  * www - http://www.geocities.com/alkresin/
+  * www - http://kresin.belgorod.su
   * Copyright 2004 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
   *
   * Extended function Copyright 2006 Luiz Rafael Culik Guimaraes <luiz@xharbour.com.br>
@@ -46,7 +46,7 @@ typedef struct tagSortInfo
 
 LRESULT ProcessCustomDraw( LPARAM lParam, PHB_ITEM pColor );
 
-HB_FUNC( LISTVIEW_CREATE )
+HB_FUNC( HWG_LISTVIEW_CREATE )
 {
    HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );
    HWND handle;
@@ -70,7 +70,7 @@ HB_FUNC( LISTVIEW_CREATE )
    HB_RETHANDLE( handle );
 }
 
-HB_FUNC( LISTVIEW_INIT )
+HB_FUNC( HWG_LISTVIEW_INIT )
 {
    int style = 0;
 
@@ -87,12 +87,12 @@ HB_FUNC( LISTVIEW_INIT )
    ListView_SetItemCount( ( HWND ) HB_PARHANDLE( 1 ), hb_parnl( 2 ) );
 }
 
-HB_FUNC( LISTVIEW_SETITEMCOUNT )
+HB_FUNC( HWG_LISTVIEW_SETITEMCOUNT )
 {
    ListView_SetItemCount( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ) );
 }
 
-HB_FUNC( LISTVIEW_ADDCOLUMN )
+HB_FUNC( HWG_LISTVIEW_ADDCOLUMN )
 {
    LV_COLUMN COL;
    int iImage = hb_parni( 6 );
@@ -119,7 +119,7 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
    hb_strfree( hText );
 }
 
-HB_FUNC( LISTVIEW_DELETECOLUMN )
+HB_FUNC( HWG_LISTVIEW_DELETECOLUMN )
 {
    ListView_DeleteColumn( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ) - 1 );
    RedrawWindow( ( HWND ) HB_PARHANDLE( 1 ), NULL, NULL,
@@ -127,31 +127,31 @@ HB_FUNC( LISTVIEW_DELETECOLUMN )
                  RDW_UPDATENOW );
 }
 
-HB_FUNC( LISTVIEW_SETBKCOLOR )
+HB_FUNC( HWG_LISTVIEW_SETBKCOLOR )
 {
    ListView_SetBkColor( ( HWND ) HB_PARHANDLE( 1 ),
                         ( COLORREF ) hb_parni( 2 ) );
 }
 
-HB_FUNC( LISTVIEW_SETTEXTBKCOLOR )
+HB_FUNC( HWG_LISTVIEW_SETTEXTBKCOLOR )
 {
    ListView_SetTextBkColor( ( HWND ) HB_PARHANDLE( 1 ),
                             ( COLORREF ) hb_parni( 2 ) );
 }
 
-HB_FUNC( LISTVIEW_SETTEXTCOLOR )
+HB_FUNC( HWG_LISTVIEW_SETTEXTCOLOR )
 {
    ListView_SetTextColor( ( HWND ) HB_PARHANDLE( 1 ),
                           ( COLORREF ) hb_parni( 2 ) );
 }
 
-HB_FUNC( LISTVIEW_GETFIRSTITEM )        // Current Line
+HB_FUNC( HWG_LISTVIEW_GETFIRSTITEM )
 {
    hb_retni( ListView_GetNextItem( ( HWND ) HB_PARHANDLE( 1 ), -1,
                                    LVNI_ALL | LVNI_SELECTED ) + 1 );
 }
 
-HB_FUNC( LISTVIEW_GETDISPINFO )
+HB_FUNC( HWG_LISTVIEW_GETDISPINFO )
 {
    LV_DISPINFO *pDispInfo = ( LV_DISPINFO * ) HB_PARHANDLE( 1 );
 
@@ -163,7 +163,7 @@ HB_FUNC( LISTVIEW_GETDISPINFO )
    hb_storvni( iSubItem + 1, -1, 2 );
 }
 
-HB_FUNC( LISTVIEW_SETDISPINFO )
+HB_FUNC( HWG_LISTVIEW_SETDISPINFO )
 {
    LV_DISPINFO *pDispInfo = ( LV_DISPINFO * ) HB_PARHANDLE( 1 );
 
@@ -179,7 +179,7 @@ HB_FUNC( LISTVIEW_SETDISPINFO )
       pDispInfo->item.state = 2;
 }
 
-HB_FUNC( LISTVIEW_GETGRIDKEY )
+HB_FUNC( HWG_LISTVIEW_GETGRIDKEY )
 {
 #define pnm ((LV_KEYDOWN *) HB_PARHANDLE(1) )
 
@@ -188,35 +188,35 @@ HB_FUNC( LISTVIEW_GETGRIDKEY )
 #undef pnm
 }
 
-HB_FUNC( LISTVIEW_GETTOPINDEX )
+HB_FUNC( HWG_LISTVIEW_GETTOPINDEX )
 {
    hb_retnl( ListView_GetTopIndex( ( HWND ) HB_PARHANDLE( 1 ) ) );
 }
 
-HB_FUNC( LISTVIEW_REDRAWITEMS )
+HB_FUNC( HWG_LISTVIEW_REDRAWITEMS )
 {
    hb_retnl( ListView_RedrawItems( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ),
                hb_parni( 3 ) ) );
 }
 
-HB_FUNC( LISTVIEW_GETCOUNTPERPAGE )
+HB_FUNC( HWG_LISTVIEW_GETCOUNTPERPAGE )
 {
    hb_retnl( ListView_GetCountPerPage( ( HWND ) HB_PARHANDLE( 1 ) ) );
 }
 
-HB_FUNC( LISTVIEW_UPDATE )
+HB_FUNC( HWG_LISTVIEW_UPDATE )
 {
    ListView_Update( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ) - 1 );
 
 }
 
-HB_FUNC( LISTVIEW_SCROLL )
+HB_FUNC( HWG_LISTVIEW_SCROLL )
 {
    ListView_Scroll( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ) - 1,
          hb_parni( 3 ) - 1 );
 }
 
-HB_FUNC( LISTVIEW_HITTEST )
+HB_FUNC( HWG_LISTVIEW_HITTEST )
 {
    POINT point;
    LVHITTESTINFO lvhti;
@@ -242,47 +242,7 @@ HB_FUNC( LISTVIEW_HITTEST )
    }
 }
 
-HB_FUNC( GETWINDOWROW )
-{
-   RECT rect;
-   int y;
-
-   GetWindowRect( ( HWND ) HB_PARHANDLE( 1 ), &rect );
-   y = rect.top;
-
-   hb_retni( y );
-}
-
-HB_FUNC( GETWINDOWCOL )
-{
-   RECT rect;
-   int x;
-
-   GetWindowRect( ( HWND ) HB_PARHANDLE( 1 ), &rect );
-   x = rect.left;
-
-   hb_retni( x );
-}
-
-HB_FUNC( GETCURSORROW )
-{
-   POINT pt;
-
-   GetCursorPos( &pt );
-
-   hb_retni( pt.y );
-}
-
-HB_FUNC( GETCURSORCOL )
-{
-   POINT pt;
-
-   GetCursorPos( &pt );
-
-   hb_retni( pt.x );
-}
-
-HB_FUNC( LISTVIEW_SETIMAGELIST )
+HB_FUNC( HWG_LISTVIEW_SETIMAGELIST )
 {
    HWND hList = ( HWND ) HB_PARHANDLE( 1 );
    HIMAGELIST p = ( HIMAGELIST ) HB_PARHANDLE( 2 );
@@ -299,7 +259,7 @@ HB_FUNC( LISTVIEW_SETIMAGELIST )
 #endif
 }
 
-HB_FUNC( LISTVIEW_SETVIEW )
+HB_FUNC( HWG_LISTVIEW_SETVIEW )
 {
    HWND hWndListView = ( HWND ) HB_PARHANDLE( 1 );
    DWORD dwView = hb_parnl( 2 );
@@ -315,7 +275,7 @@ HB_FUNC( LISTVIEW_SETVIEW )
    }
 }
 
-HB_FUNC( LISTVIEW_ADDCOLUMNEX )
+HB_FUNC( HWG_LISTVIEW_ADDCOLUMNEX )
 {
    HWND hwndListView = ( HWND ) HB_PARHANDLE( 1 );
    LONG lCol = hb_parnl( 2 ) - 1;
@@ -352,7 +312,7 @@ HB_FUNC( LISTVIEW_ADDCOLUMNEX )
    hb_strfree( hText );
 }
 
-HB_FUNC( LISTVIEW_INSERTITEMEX )
+HB_FUNC( HWG_LISTVIEW_INSERTITEMEX )
 {
    HWND hwndListView = ( HWND ) HB_PARHANDLE( 1 );
    LONG lLin = hb_parnl( 2 ) - 1;
@@ -405,7 +365,7 @@ HB_FUNC( LISTVIEW_INSERTITEMEX )
    hb_strfree( hText );
 }
 
-HB_FUNC( LISTVIEWSELECTALL )
+HB_FUNC( HWG_LISTVIEWSELECTALL )
 {
    HWND hList = ( HWND ) HB_PARHANDLE( 1 );
 
@@ -415,7 +375,7 @@ HB_FUNC( LISTVIEWSELECTALL )
    hb_retl( 1 );
 }
 
-HB_FUNC( LISTVIEWSELECTLASTITEM )
+HB_FUNC( HWG_LISTVIEWSELECTLASTITEM )
 {
    HWND hList = ( HWND ) HB_PARHANDLE( 1 );
    int items;
@@ -464,7 +424,7 @@ LRESULT ProcessCustomDraw( LPARAM lParam, PHB_ITEM pArray )
    return CDRF_DODEFAULT;
 }
 
-HB_FUNC( PROCESSCUSTU )
+HB_FUNC( HWG_PROCESSCUSTU )
 {
    /* HWND hWnd = ( HWND ) HB_PARHANDLE( 1 ) ; */
    LPARAM lParam = ( LPARAM ) HB_PARHANDLE( 2 );
@@ -473,7 +433,7 @@ HB_FUNC( PROCESSCUSTU )
    hb_retnl( ( LONG ) ProcessCustomDraw( lParam, pColor ) );
 }
 
-HB_FUNC( LISTVIEWGETITEM )
+HB_FUNC( HWG_LISTVIEWGETITEM )
 {
    HWND hList = ( HWND ) HB_PARHANDLE( 1 );
    int Index = hb_parni( 2 );
@@ -516,7 +476,7 @@ int CALLBACK CompareFunc( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
    return rc;
 }
 
-HB_FUNC( LISTVIEWSORTINFONEW )
+HB_FUNC( HWG_LISTVIEWSORTINFONEW )
 {
    //PSORTINFO p = (PSORTINFO) hb_xgrab(sizeof(SortInfo));
    //LPNMLISTVIEW phdNotify = ( LPNMLISTVIEW ) hb_parnl( 1 ) ;
@@ -538,7 +498,7 @@ HB_FUNC( LISTVIEWSORTINFONEW )
    hb_retptr( ( void * ) p );
 }
 
-HB_FUNC( LISTVIEWSORTINFOFREE )
+HB_FUNC( HWG_LISTVIEWSORTINFOFREE )
 {
    PSORTINFO p = ( PSORTINFO ) hb_parptr( 3 );
 
@@ -546,7 +506,7 @@ HB_FUNC( LISTVIEWSORTINFOFREE )
       hb_xfree( p );
 }
 
-HB_FUNC( LISTVIEWSORT )
+HB_FUNC( HWG_LISTVIEWSORT )
 {
    PSORTINFO p = ( PSORTINFO ) hb_parptr( 3 );
    LPNMLISTVIEW phdNotify = ( LPNMLISTVIEW ) HB_PARHANDLE( 2 );
@@ -561,3 +521,4 @@ HB_FUNC( LISTVIEWSORT )
    p->pListControl = ( HWND ) HB_PARHANDLE( 1 );
    ListView_SortItemsEx( ( HWND ) HB_PARHANDLE( 1 ), CompareFunc, p );
 }
+

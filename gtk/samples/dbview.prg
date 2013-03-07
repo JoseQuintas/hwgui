@@ -79,7 +79,7 @@ Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
        ENDMENU
      ENDMENU
      MENU TITLE "&Help"
-       MENUITEM "&About" ACTION MsgInfo("Dbf Files Browser" + Chr(10) + "2005" )
+       MENUITEM "&About" ACTION hwg_Msginfo("Dbf Files Browser" + Chr(10) + "2005" )
      ENDMENU
    ENDMENU
    
@@ -89,16 +89,16 @@ Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
       FONT oFont                     ;
       ON SIZE {|o,x,y|o:Move(,,x-1,y-28)}
       
-   oBrw:bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}
+   oBrw:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
 
    @ 0,272 PANEL oPanel SIZE 0,26 ON SIZE {|o,x,y|o:Move(0,y-26,x-1,y-8)}
    @ 5,4 SAY oSay1 CAPTION "" OF oPanel SIZE 150,22 FONT oFont
    @ 160,4 SAY oSay2 CAPTION "" OF oPanel SIZE 100,22 FONT oFont
    
-   EnableMenuItem( ,31010,.F. )
-   EnableMenuItem( ,31020,.F. )
-   EnableMenuItem( ,31030,.F. )
-   EnableMenuItem( ,31040,.F. )
+   hwg_EnableMenuItem( ,31010,.F. )
+   hwg_EnableMenuItem( ,31020,.F. )
+   hwg_EnableMenuItem( ,31030,.F. )
+   hwg_EnableMenuItem( ,31040,.F. )
 
    ACTIVATE WINDOW oWndMain
 
@@ -106,7 +106,7 @@ Return Nil
 
 Static Function FileOpen
 Local mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
-Local fname := SelectFile( "xBase files( *.dbf )", "*.dbf", mypath )
+Local fname := hwg_Selectfile( "xBase files( *.dbf )", "*.dbf", mypath )
 Memvar oBrw, oSay1, oSay2, DataCP, currentCP, currFname
 
    IF !Empty( fname )
@@ -122,7 +122,7 @@ Memvar oBrw, oSay1, oSay2, DataCP, currentCP, currFname
       
       oBrw:InitBrw( 2 )
       oBrw:active := .F.
-      CreateList( oBrw,.T. )
+      hwg_CreateList( oBrw,.T. )
       Aadd( oBrw:aColumns,Nil )
       Ains( oBrw:aColumns,1 )
       oBrw:aColumns[1] := HColumn():New( "*",{|v,o|Iif(Deleted(),'*',' ')},"C",1,0 )
@@ -133,10 +133,10 @@ Memvar oBrw, oSay1, oSay2, DataCP, currentCP, currFname
       dbv_cLocate := dbv_cSeek := ""
       dbv_nRec := 0
       
-      EnableMenuItem( ,31010,.T. )
-      EnableMenuItem( ,31020,.T. )
-      EnableMenuItem( ,31030,.T. )
-      EnableMenuItem( ,31040,.T. )
+      hwg_EnableMenuItem( ,31010,.T. )
+      hwg_EnableMenuItem( ,31020,.T. )
+      hwg_EnableMenuItem( ,31030,.T. )
+      hwg_EnableMenuItem( ,31040,.T. )
 
    ENDIF
    
@@ -177,7 +177,7 @@ Memvar oBrw, oFont
       i ++
    ENDDO
 
-   width := Min( oBrw:width * ( iLen + 20 ), GetDesktopWidth() )
+   width := Min( oBrw:width * ( iLen + 20 ), hwg_Getdesktopwidth() )
    height := oBrw:height * ( Len( aIndex ) + 2 )
    
    INIT DIALOG oDlg TITLE "Select Order" ;
@@ -190,7 +190,7 @@ Memvar oBrw, oFont
        FONT oFont                   ;
        STYLE WS_BORDER+WS_VSCROLL + WS_HSCROLL ;
        ON SIZE {|o,x,y|o:Move(,,x,y)} ;
-       ON CLICK {|o|nChoice:=o:nCurrent,EndDialog(o:oParent:handle)}
+       ON CLICK {|o|nChoice:=o:nCurrent,hwg_EndDialog(o:oParent:handle)}
 
    oBrowse:aArray := aIndex
    oBrowse:AddColumn( HColumn():New( "OrdName",{|v,o|o:aArray[o:nCurrent,1]},"C",10,0 ) )
@@ -239,8 +239,8 @@ Memvar oBrw
    @ 10,135 SAY "Condition:" SIZE 100,22
    @ 10,157 GET cCond SIZE 280,24
    
-   @  30,210  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult:=.T.,EndDialog()}
-   @ 170,210 BUTTON "Cancel" SIZE 100, 32 ON CLICK {||EndDialog()}
+   @  30,210  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult:=.T.,hwg_EndDialog()}
+   @ 170,210 BUTTON "Cancel" SIZE 100, 32 ON CLICK {||hwg_EndDialog()}
 
    oDlg:Activate()
    
@@ -265,7 +265,7 @@ Memvar oBrw
          ENDIF
          oMsg:Close()
       ELSE
-         MsgStop( "Fill necessary fields" )
+         hwg_Msgstop( "Fill necessary fields" )
       ENDIF
    ENDIF
    
@@ -273,7 +273,7 @@ Return Nil
 
 Static Function OpenIndex()
 Local mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
-Local fname := SelectFile( "index files( *.cdx )", "*.cdx", mypath )
+Local fname := hwg_Selectfile( "index files( *.cdx )", "*.cdx", mypath )
 Memvar oBrw
 
    IF Len( oBrw:aColumns ) == 0
@@ -387,8 +387,8 @@ Memvar oBrw, currentCP, currFname
    @ 200,270 BUTTON "Change" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,3)}
    @ 290,270 BUTTON "Remove" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,4)}
    
-   @ 280,10  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult:=.T.,EndDialog()}
-   @ 280,50 BUTTON "Cancel" SIZE 100, 32 ON CLICK {||EndDialog()}
+   @ 280,10  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult:=.T.,hwg_EndDialog()}
+   @ 280,50 BUTTON "Cancel" SIZE 100, 32 ON CLICK {||hwg_EndDialog()}
 
    ACTIVATE DIALOG oDlg
    
@@ -448,7 +448,7 @@ Memvar oBrw, currentCP, currFname
          SKIP
       ENDDO
       IF lOverFlow
-         MsgInfo( "There was overflow in Numeric field","Warning!" )
+         hwg_Msginfo( "There was overflow in Numeric field","Warning!" )
       ENDIF
 
       Close All
@@ -543,7 +543,7 @@ Local cKey, nRec
 Memvar oBrw, oSay2
 
    IF OrdNumber() == 0
-      MsgStop( "No active order !","Seek record" )
+      hwg_Msgstop( "No active order !","Seek record" )
    ELSE
       cKey := GetData( dbv_cSeek,"Seek record","Input key:" )
       IF !Empty( cKey )
@@ -584,7 +584,7 @@ Memvar oBrw, oSay2
       ERRORBLOCK( bOldError )
 
       IF cType != "L"
-         MsgStop( "Wrong expression" )
+         hwg_Msgstop( "Wrong expression" )
       ELSE
          EXIT
       ENDIF
@@ -648,7 +648,7 @@ Return cRes
 
 STATIC FUNCTION MacroError( e )
 
-   MsgStop( hwg_ErrMsg(e),"Expression error" )
+   hwg_Msgstop( hwg_ErrMsg(e),"Expression error" )
    BREAK
 RETURN .T.
 
@@ -656,7 +656,7 @@ Static Function dbv_Pack()
 Local oMsg, cTitle := "Packing database"
 Memvar oBrw, oSay1, oSay2
 
-   IF MsgYesNo( "Are you really want it ?",cTitle )
+   IF hwg_Msgyesno( "Are you really want it ?",cTitle )
       oMsg = DlgWait( cTitle )
       PACK
       oMsg:Close()
@@ -671,7 +671,7 @@ Static Function dbv_Zap()
 Local oMsg, cTitle := "Zap database"
 Memvar oBrw, oSay1, oSay2
 
-   IF MsgYesNo( "ALL DATA WILL BE LOST !!! Are you really want it ?",cTitle )
+   IF hwg_Msgyesno( "ALL DATA WILL BE LOST !!! Are you really want it ?",cTitle )
       oMsg = DlgWait( cTitle )
       ZAP
       oMsg:Close()

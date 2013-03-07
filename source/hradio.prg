@@ -99,13 +99,13 @@ METHOD EndGroup( nSelected )  CLASS HRadioGroup
             nSelected, ::oGroupCurrent:nValue )
       IF nSelected != 0 .AND. nSelected <= nLen
          IF ::oGroupCurrent:aButtons[ nLen ]:handle > 0
-            CheckRadioButton( ::oGroupCurrent:aButtons[ nLen ]:oParent:handle, ;
+            hwg_Checkradiobutton( ::oGroupCurrent:aButtons[ nLen ]:oParent:handle, ;
                   ::oGroupCurrent:aButtons[ 1 ]:id,    ;
                   ::oGroupCurrent:aButtons[ nLen ]:id, ;
                   ::oGroupCurrent:aButtons[ nSelected ]:id )
          ELSE
             ::oGroupCurrent:aButtons[ nLen ]:bInit :=                     ;
-                  &( "{|o|CheckRadioButton(o:oParent:handle," +           ;
+                  &( "{|o|hwg_Checkradiobutton(o:oParent:handle," +           ;
                   LTrim( Str( ::oGroupCurrent:aButtons[ 1 ]:id ) ) + "," +    ;
                   LTrim( Str( ::oGroupCurrent:aButtons[ nLen ]:id ) ) + "," + ;
                   LTrim( Str( ::oGroupCurrent:aButtons[ nSelected ]:id ) ) + ")}" )
@@ -138,7 +138,7 @@ METHOD SetValue( nValue )  CLASS HRadioGroup
    LOCAL nLen
 
    IF ( nLen := Len( ::aButtons ) ) > 0 .AND. nValue > 0 .AND. nValue <= nLen
-      CheckRadioButton( ::aButtons[ nLen ]:oParent:handle, ;
+      hwg_Checkradiobutton( ::aButtons[ nLen ]:oParent:handle, ;
             ::aButtons[ 1 ]:id,    ;
             ::aButtons[ nLen ]:id, ;
             ::aButtons[ nValue ]:id )
@@ -147,7 +147,7 @@ METHOD SetValue( nValue )  CLASS HRadioGroup
          Eval( ::bSetGet, ::nValue )
       ENDIF
    ELSEIF nLen > 0
-      CheckRadioButton( ::aButtons[ nlen ]:oParent:handle, ;
+      hwg_Checkradiobutton( ::aButtons[ nlen ]:oParent:handle, ;
             ::aButtons[ 1 ]:id,    ;
             ::aButtons[ nLen ]:id, ;
             0 )
@@ -206,7 +206,7 @@ CLASS HRadioButton INHERIT HControl
    METHOD Activate()
    METHOD Init()
    METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lTransp )
-   METHOD GetValue() INLINE ( SendMessage( ::handle, BM_GETCHECK, 0, 0 ) == 1 )
+   METHOD GetValue() INLINE ( hwg_Sendmessage( ::handle, BM_GETCHECK, 0, 0 ) == 1 )
    // METHOD Notify( lParam )
    METHOD onevent( msg, wParam, lParam )
    METHOD onGotFocus()
@@ -249,7 +249,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
       ::lnoValid := .T.
    ENDIF
 
-   ::oParent:AddEvent( BN_KILLFOCUS, Self, { || CheckFocus( Self, .T. ) } )
+   ::oParent:AddEvent( BN_KILLFOCUS, Self, { || hwg_CheckFocus( Self, .T. ) } )
 
    IF ::oGroup != NIL
       AAdd( ::oGroup:aButtons, Self )
@@ -265,7 +265,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
 METHOD Activate() CLASS HRadioButton
 
    IF ! Empty( ::oParent:handle )
-      ::handle := CreateButton( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createbutton( ::oParent:handle, ::id, ;
             ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::Init()
    ENDIF
@@ -276,7 +276,7 @@ METHOD Init() CLASS HRadioButton
 
    IF !::lInit
       ::nHolder := 1
-      SetWindowObject( ::handle, Self )
+      hwg_Setwindowobject( ::handle, Self )
       HWG_INITBUTTONPROC( ::handle )
       ::Enabled :=  ::oGroup:lEnabled .AND. ::Enabled
       ::Super:Init()
@@ -298,7 +298,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip,
    /*
    ::tcolor  := tcolor
    IF tColor != NIL .AND. bColor == NIL
-      bColor := GetSysColor( COLOR_3DFACE )
+      bColor := hwg_Getsyscolor( COLOR_3DFACE )
    ENDIF
    */
    ::backStyle :=  IIF( lTransp != NIL .AND. lTransp, TRANSPARENT, OPAQUE )
@@ -316,7 +316,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip,
       ::lnoValid := .T.
    ENDIF
    //::oParent:AddEvent( BN_KILLFOCUS, Self, { || ::Notify( WM_KEYDOWN ) } )
-   ::oParent:AddEvent( BN_KILLFOCUS, Self, { || CheckFocus( Self, .T. ) } )
+   ::oParent:AddEvent( BN_KILLFOCUS, Self, { || hwg_CheckFocus( Self, .T. ) } )
    IF ::oGroup != NIL
       AAdd( ::oGroup:aButtons, Self )
       // IF ::oGroup:bSetGet != Nil
@@ -337,29 +337,29 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HRadioButton
       ENDIF
    ENDIF
    IF msg = WM_GETDLGCODE //.AND.  ! EMPTY( wParam )
-      IF wParam = VK_RETURN .AND. ProcOkCancel( Self, wParam, hwg_GetParentForm(Self):Type >= WND_DLG_RESOURCE )
+      IF wParam = VK_RETURN .AND. hwg_ProcOkCancel( Self, wParam, hwg_GetParentForm(Self):Type >= WND_DLG_RESOURCE )
          RETURN 0
       ELSEIF wParam = VK_ESCAPE  .AND. ;
             ( oCtrl := hwg_GetParentForm(Self):FindControl( IDCANCEL ) ) != Nil .AND. ! oCtrl:IsEnabled()
          RETURN DLGC_WANTMESSAGE
-      ELSEIF ( wParam != VK_TAB .AND. GETDLGMESSAGE( lParam ) = WM_CHAR ) .OR. GETDLGMESSAGE( lParam ) = WM_SYSCHAR .OR. ;
+      ELSEIF ( wParam != VK_TAB .AND. hwg_Getdlgmessage( lParam ) = WM_CHAR ) .OR. hwg_Getdlgmessage( lParam ) = WM_SYSCHAR .OR. ;
             wParam = VK_ESCAPE
          RETURN -1
-      ELSEIF GETDLGMESSAGE( lParam ) = WM_KEYDOWN .AND. wParam = VK_RETURN  // DIALOG
+      ELSEIF hwg_Getdlgmessage( lParam ) = WM_KEYDOWN .AND. wParam = VK_RETURN  // DIALOG
          ::VALID( VK_RETURN )   // dialog funciona
          RETURN DLGC_WANTARROWS
       ENDIF
       RETURN DLGC_WANTMESSAGE
    ELSEIF msg = WM_KEYDOWN
-      //IF  ProcKeyList( Self, wParam )
+      //IF  hwg_ProcKeyList( Self, wParam )
       IF wParam = VK_LEFT .OR. wParam = VK_UP
-         GetSkip( ::oparent, ::handle, , -1 )
+         hwg_GetSkip( ::oparent, ::handle, , -1 )
          RETURN 0
       ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN
-         GetSkip( ::oparent, ::handle, , 1 )
+         hwg_GetSkip( ::oparent, ::handle, , 1 )
          RETURN 0
       ELSEIF wParam = VK_TAB //.AND. nType < WND_DLG_RESOURCE
-         GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+         hwg_GetSkip( ::oParent, ::handle, , iif( hwg_IsCtrlShift(.f., .t.), -1, 1) )
          RETURN 0
       ENDIF
       IF ( wParam == VK_RETURN )
@@ -367,7 +367,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HRadioButton
          RETURN 0
       ENDIF
    ELSEIF msg == WM_KEYUP
-      ProcKeyList( Self, wParam )   // working in MDICHILD AND DIALOG
+      hwg_ProcKeyList( Self, wParam )   // working in MDICHILD AND DIALOG
       IF ( wParam == VK_RETURN )
          RETURN 0
       ENDIF
@@ -378,30 +378,30 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HRadioButton
 
 /*
 METHOD Notify( lParam ) CLASS HRadioButton
-   LOCAL ndown := getkeystate( VK_RIGHT ) + getkeystate( VK_DOWN ) + GetKeyState( VK_TAB )
+   LOCAL ndown := hwg_Getkeystate( VK_RIGHT ) + hwg_Getkeystate( VK_DOWN ) + hwg_Getkeystate( VK_TAB )
    LOCAL nSkip := 0
 
-   IF ! CheckFocus( Self, .t. )
+   IF ! hwg_CheckFocus( Self, .t. )
       RETURN 0
    ENDIF
 
-   IF PTRTOULONG( lParam )  = WM_KEYDOWN
-      IF  GetKeyState( VK_RETURN ) < 0 //.AND. ::oGroup:value < Len(::oGroup:aButtons)
+   IF hwg_Ptrtoulong( lParam )  = WM_KEYDOWN
+      IF  hwg_Getkeystate( VK_RETURN ) < 0 //.AND. ::oGroup:value < Len(::oGroup:aButtons)
          ::oParent:lSuspendMsgsHandling := .T.
          __VALID( Self )
          ::oParent:lSuspendMsgsHandling := .F.
       ENDIF
       IF ::oParent:classname = "HTAB"
-         IF getkeystate( VK_LEFT ) + getkeystate( VK_UP ) < 0 .OR. ;
-            ( GetKeyState( VK_TAB ) < 0 .and. GetKeyState( VK_SHIFT ) < 0 )
+         IF hwg_Getkeystate( VK_LEFT ) + hwg_Getkeystate( VK_UP ) < 0 .OR. ;
+            ( hwg_Getkeystate( VK_TAB ) < 0 .and. hwg_Getkeystate( VK_SHIFT ) < 0 )
             nSkip := - 1
          ELSEIF ndown < 0
             nSkip := 1
          ENDIF
          IF nSkip != 0
-            //SETFOCUS(::oParent:handle)
-            ::oParent:SETFOCUS()
-            GetSkip( ::oparent, ::handle, , nSkip )
+            //hwg_Setfocus(::oParent:handle)
+            ::oParent:Setfocus()
+            hwg_GetSkip( ::oparent, ::handle, , nSkip )
          ENDIF
       ENDIF
    ENDIF
@@ -423,11 +423,11 @@ METHOD onClick() CLASS HRadioButton
 METHOD When( ) CLASS HRadioButton
    LOCAL res := .t., nSkip
 
-   IF ! CheckFocus( Self, .f. )
+   IF ! hwg_CheckFocus( Self, .f. )
       RETURN .t.
    ENDIF
-   nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 .and. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
-   ::lwhen := GetKeyState( VK_UP )  + GetKeyState( VK_DOWN ) + GetKeyState( VK_RETURN ) + GetKeyState( VK_TAB ) < 0
+   nSkip := IIf( hwg_Getkeystate( VK_UP ) < 0 .or. ( hwg_Getkeystate( VK_TAB ) < 0 .and. hwg_Getkeystate( VK_SHIFT ) < 0 ), - 1, 1 )
+   ::lwhen := hwg_Getkeystate( VK_UP )  + hwg_Getkeystate( VK_DOWN ) + hwg_Getkeystate( VK_RETURN ) + hwg_Getkeystate( VK_TAB ) < 0
    IF ::bGetFocus != NIL
       ::lnoValid := .T.
       ::oParent:lSuspendMsgsHandling := .t.
@@ -435,9 +435,9 @@ METHOD When( ) CLASS HRadioButton
       ::lnoValid := ! res
       ::oparent:lSuspendMsgsHandling := .f.
       IF ! res
-         WhenSetFocus( Self, nSkip )
+         hwg_WhenSetFocus( Self, nSkip )
       ELSE
-         ::SETfOCUS()
+         ::Setfocus()
       ENDIF
    ENDIF
 
@@ -447,8 +447,8 @@ METHOD Valid( nKey ) CLASS HRadioButton
    LOCAL nEnter := IIF( nKey = NIL, 1, nkey)
    LOCAL hctrl, iValue
 
-   IF ::lnoValid .OR. getkeystate( VK_LEFT ) + getkeystate( VK_RIGHT ) + GetKeyState( VK_UP ) + ;
-         GetKeyState( VK_DOWN ) + GetKeyState( VK_TAB ) < 0 .OR. ::oGroup = Nil .OR. ::lwhen
+   IF ::lnoValid .OR. hwg_Getkeystate( VK_LEFT ) + hwg_Getkeystate( VK_RIGHT ) + hwg_Getkeystate( VK_UP ) + ;
+         hwg_Getkeystate( VK_DOWN ) + hwg_Getkeystate( VK_TAB ) < 0 .OR. ::oGroup = Nil .OR. ::lwhen
       ::lwhen := .F.
       RETURN .T.
    ELSE
@@ -459,9 +459,9 @@ METHOD Valid( nKey ) CLASS HRadioButton
          IF ! ::GetValue()
             ::oGroup:nValue  := iValue
             ::oGroup:SetValue( ::oGroup:nValue )
-            ::SetFocus( .T. )
+            ::Setfocus( .T. )
          ENDIF
-      ELSEIF nEnter = 0 .AND. ! GetKeyState( VK_RETURN ) < 0
+      ELSEIF nEnter = 0 .AND. ! hwg_Getkeystate( VK_RETURN ) < 0
          IF ! ::GetValue()
             ::oGroup:nValue := Ascan( ::oGroup:aButtons, {| o | o:id == ::id } )
             ::oGroup:SetValue( ::oGroup:nValue )
@@ -471,12 +471,12 @@ METHOD Valid( nKey ) CLASS HRadioButton
    IF ::oGroup:bSetGet != NIL
       Eval( ::oGroup:bSetGet, ::oGroup:nValue )
    ENDIF
-   hCtrl := GetFocus()
+   hCtrl := hwg_Getfocus()
    IF ::bLostFocus != NIL .AND. ( nEnter = 0 .OR. iValue = Len( ::oGroup:aButtons ) )
       Eval( ::bLostFocus, Self, ::oGroup:nValue )
    ENDIF
-   IF nEnter = VK_RETURN .AND. SELFFOCUS( hctrl )
-       GetSkip( ::oParent, hCtrl, , 1 )
+   IF nEnter = VK_RETURN .AND. hwg_Selffocus( hctrl )
+       hwg_GetSkip( ::oParent, hCtrl, , 1 )
    ENDIF
    ::oParent:lSuspendMsgsHandling := .F.
 

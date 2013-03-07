@@ -39,7 +39,7 @@ Return Self
 METHOD Activate CLASS HSayImage
 
    IF !Empty( ::oParent:handle )
-      ::handle := CreateStatic( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
@@ -92,7 +92,7 @@ Return Self
 METHOD INIT CLASS HSayBmp
    IF !::lInit
       ::Super:Init()
-      SetWindowObject( ::handle,Self )
+      hwg_Setwindowobject( ::handle,Self )
    ENDIF
 Return Nil
 
@@ -103,18 +103,18 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSayBmp
 Return 0
 
 METHOD Paint() CLASS HSayBmp
-Local hDC := GetDC( ::handle )
+Local hDC := hwg_Getdc( ::handle )
 
    IF ::oImage != Nil
       IF ::nZoom == Nil
-         DrawBitmap( hDC, ::oImage:handle,, ::nOffsetH, ;
+         hwg_Drawbitmap( hDC, ::oImage:handle,, ::nOffsetH, ;
                ::nOffsetV, ::nWidth, ::nHeight )
       ELSE
-         DrawBitmap( hDC, ::oImage:handle,, ::nOffsetH, ;
+         hwg_Drawbitmap( hDC, ::oImage:handle,, ::nOffsetH, ;
                ::nOffsetV, ::oImage:nWidth*::nZoom, ::oImage:nHeight*::nZoom )
       ENDIF
    ENDIF
-   releaseDC( ::handle, hDC )
+   hwg_Releasedc( ::handle, hDC )
 
 Return Nil
 

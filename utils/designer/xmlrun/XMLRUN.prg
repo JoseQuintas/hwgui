@@ -49,31 +49,31 @@ REQUEST __RUN
 
 REQUEST HCtrlTmpl, HFormTmpl
 
-REQUEST DRAWEDGE
-REQUEST DRAWICON
-REQUEST ELLIPSE
-REQUEST SETWINDOWFONT
-REQUEST INITMONTHCALENDAR
-REQUEST INITTRACKBAR
+REQUEST hwg_Drawedge
+REQUEST hwg_Drawicon
+REQUEST hwg_Ellipse
+REQUEST hwg_Setwindowfont
+REQUEST hwg_InitMonthCalendar
+REQUEST hwg_InitTrackbar
 REQUEST BARCODE
 
 
-EXTERNAL HTIMER,  SHELLABOUT, ENDDIALOG
+EXTERNAL HTIMER,  hwg_Shellabout, hwg_EndDialog
 
 REQUEST HMAINWINDOW
 
 EXTERNAL HCHECKBUTTON, HEDIT, HRADIOBUTTON, HTREE
-EXTERNAL HBROWSE, HPANEL, HCOMBOBOX, HOWNBUTTON, HPRINTER, CHECKMENUITEM, ISCHECKEDMENUITEM
-EXTERNAL COPYSTRINGTOCLIPBOARD, ENABLEWINDOW, DESTROYWINDOW, HIDEWINDOW, SHOWWINDOW, ISWINDOWENABLED, SETWINDOWTEXT
+EXTERNAL HBROWSE, HPANEL, HCOMBOBOX, HOWNBUTTON, HPRINTER, hwg_Checkmenuitem, hwg_Ischeckedmenuitem
+EXTERNAL hwg_Copystringtoclipboard, hwg_Enablewindow, hwg_Destroywindow, hwg_Hidewindow, hwg_Showwindow, hwg_Iswindowenabled, hwg_Setwindowtext
 
 EXTERNAL HWG_CREATEENHMETAFILE, HWG_CREATEMETAFILE, HWG_CLOSEENHMETAFILE, HWG_DELETEENHMETAFILE, HWG_PLAYENHMETAFILE
 EXTERNAL HWG_SELECTFONT, HWG_SELECTFILE, HWG_SAVEFILE, HWG_PRINTSETUP
 //EXTERNAL HWG_CONTEXTMENU
 
 EXTERNAL RDINI, HWG_CHOOSECOLOR, OPENREPORT
-EXTERNAL HSAYFIMAGE, MSGYESNO, MSGOKCANCEL, MSGEXCLAMATION, HUPDOWN
-EXTERNAL HTAB, HDATEPICKER, SHELLEXECUTE, SETTOPMOST
-EXTERNAL REMOVETOPMOST, HPROGRESSBAR, HRECT, GETDESKTOPWIDTH
+EXTERNAL HSAYFIMAGE, hwg_Msgyesno, hwg_Msgokcancel, hwg_Msgexclamation, HUPDOWN
+EXTERNAL HTAB, HDATEPICKER, hwg_Shellexecute, hwg_Settopmost
+EXTERNAL hwg_Removetopmost, HPROGRESSBAR, HRECT, hwg_Getdesktopwidth
 
 //REQUEST HB_CODEPAGE_RU866
 //REQUEST HB_CODEPAGE_RUKOI8
@@ -104,9 +104,9 @@ EXTERNAL RDDSYS, RDDINFO, RDDLIST, RDDSETDEFAULT, RDDREGISTER, RDDNAME
 
 EXTERNAL HWINPRN
 EXTERNAL HSPLITTER, HWG_COS, HGRAPH
-EXTERNAL GETDESKTOPHEIGHT, HLISTBOX, HXMLDOC
-EXTERNAL SETMENUCAPTION, HSPLASH, SETTOOLTIPBALLOON, LOADRESOURCE
-EXTERNAL HIPEDIT, RICHTEXT, HRICHEDIT, MSGRETRYCANCEL, HMONTHCALENDAR
+EXTERNAL hwg_Getdesktopheight, HLISTBOX, HXMLDOC
+EXTERNAL hwg_Setmenucaption, HSPLASH, hwg_Settooltipballoon, hwg_Loadresource
+EXTERNAL HIPEDIT, RICHTEXT, HRICHEDIT, hwg_Msgretrycancel, HMONTHCALENDAR
 EXTERNAL PRINTDOS, /*, BARCODE */ HSTATICLINK, CREATEOBJECT
 
 //EXTERNAL TPQSERVER
@@ -114,8 +114,8 @@ EXTERNAL PRINTDOS, /*, BARCODE */ HSTATICLINK, CREATEOBJECT
 //EXTERNAL OSERVER
 //EXTERNAL RUNSCRIPT
 
-EXTERNAL SELECTFOLDER
-REQUEST  PADL, OEMTOANSI
+EXTERNAL hwg_Selectfolder
+REQUEST  PADL, hwg_Oemtoansi
 
 
 //REQUEST SQLCONNECT, SQLSELECTD, SQLQUERY, SQLGETERR, SQLCLOSE, SQLSTORER
@@ -237,7 +237,7 @@ FUNCTION Main(fileXML)
     ENDIF
 
     IF !FILE(filexml)
-    filexml:=SELECTFILE("XML FILE (*.XML)","*.XML")
+    filexml:=hwg_Selectfile("XML FILE (*.XML)","*.XML")
     ENDIF
 
  ELSE
@@ -398,11 +398,11 @@ function filelock(nSeconds)
       endif
       inkey(.5)      // wait 1/2 second
       nSeconds := nSeconds - .5
-      MsgStop("File is in use by another", alias())
+      hwg_Msgstop("File is in use by another", alias())
    enddo
 
 
-   MsgStop("File failed to locked", alias())
+   hwg_Msgstop("File failed to locked", alias())
 
  return .f.
 
@@ -425,14 +425,14 @@ function reclock(nSeconds)
       if DBRLOCK(OldPos)
          return .t.                     // LOCKED
       endif
-      MsgStop("Record is in use exclusive by another", alias()+" #"+str(oldpos,11))
+      hwg_Msgstop("Record is in use exclusive by another", alias()+" #"+str(oldpos,11))
       inkey(.5)      // wait 1/2 second
       nSeconds = nSeconds - .5
    enddo
 
 
 
-   MsgStop("Record failed to locked", alias()+" #"+str(oldpos,11))
+   hwg_Msgstop("Record failed to locked", alias()+" #"+str(oldpos,11))
 
    return .f.                           // NOT LOCKED
 
@@ -469,12 +469,12 @@ function addrec(nSeconds)
       endif
       inkey(.5)                         // WAIT 1/2 SECOND
       nSeconds := nSeconds  - .5
-      MsgStop("Record is in use exclusive by another")
+      hwg_Msgstop("Record is in use exclusive by another")
 
    enddo
 
 
-   MsgStop("Record failed to locked", alias())
+   hwg_Msgstop("Record failed to locked", alias())
 
    return .f.                           // NOT LOCKED
 
@@ -495,7 +495,7 @@ function Usr2infStr(g,lKosong) && usr to informix str
        return .T.
     endif
 
-    MsgInfo("Tidak boleh kosong")
+    hwg_Msginfo("Tidak boleh kosong")
     return .f.
     //return iif(lKosong==NIL,.t.,.f.)
  end
@@ -513,7 +513,7 @@ function Usr2infStr(g,lKosong) && usr to informix str
  *:minimum 6  &  max 9 char
 
  if ((nLen<6) .or. (nLen>9))
-     MsgStop("Pengisian Tanggal Belum Benar!!!")
+     hwg_Msgstop("Pengisian Tanggal Belum Benar!!!")
      return .f.
  end
 
@@ -566,7 +566,7 @@ function Usr2infStr(g,lKosong) && usr to informix str
 	   endif
 
       if  VALTYPE(ctod(dd+mm+yy))!="D"  .or. (ctod(dd+mm+yy)==ctod("  /  /  "))
-          MsgStop("Pengisian Tanggal Belum Benar!!!")
+          hwg_Msgstop("Pengisian Tanggal Belum Benar!!!")
           return .f.
       else
        g:SetGet(d2infstr( ctod(dd+mm+yy) ))

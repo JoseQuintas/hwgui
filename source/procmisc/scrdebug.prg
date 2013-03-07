@@ -118,7 +118,7 @@ Local nFirst, i
          ENDIF
       ENDIF
       aScriptCurr := aScript
-      SetWindowText( oDlgDebug:handle, "Script Debugger - " + aScript[1] )
+      hwg_Setwindowtext( oDlgDebug:handle, "Script Debugger - " + aScript[1] )
    ENDIF
 
    oBrwScript:aArray := aScript[3]
@@ -204,7 +204,7 @@ Local xRes, bCodeblock, bOldError, lRes := .T.
 #ifdef __LINUX__
    IF !Empty( xRes := oEditExpr:GetText() )
 #else
-   IF !Empty( xRes := GetEditText( oEditExpr:oParent:handle, oEditExpr:id ) )
+   IF !Empty( xRes := hwg_Getedittext( oEditExpr:oParent:handle, oEditExpr:id ) )
 #endif
       bOldError := ERRORBLOCK( { | e | MacroError(e) } )
       BEGIN SEQUENCE
@@ -269,7 +269,7 @@ Local xRes, bOldError, lRes := .T., cType
 #ifdef __LINUX__
    IF !Empty( xRes := oEditExpr:GetText() )
 #else
-   IF !Empty( xRes := GetEditText( oEditExpr:oParent:handle, oEditExpr:id ) )
+   IF !Empty( xRes := hwg_Getedittext( oEditExpr:oParent:handle, oEditExpr:id ) )
 #endif
       bOldError := ERRORBLOCK( { | e | MacroError(e) } )
       BEGIN SEQUENCE

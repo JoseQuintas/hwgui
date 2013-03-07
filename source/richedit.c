@@ -35,7 +35,7 @@ HB_FUNC( HWG_INITRICHEDIT )
       hRichEd = LoadLibrary( TEXT( "riched20.dll" ) );
 }
 
-HB_FUNC( CREATERICHEDIT )
+HB_FUNC( HWG_CREATERICHEDIT )
 {
    HWND hCtrl;
    void * hText;
@@ -70,7 +70,7 @@ HB_FUNC( CREATERICHEDIT )
  * re_SetCharFormat( hCtrl, n1, n2, nColor, cName, nHeight, lBold, lItalic, 
            lUnderline, nCharset, lSuperScript/lSubscript(.T./.F.), lProtected )
  */
-HB_FUNC( RE_SETCHARFORMAT )
+HB_FUNC( HWG_RE_SETCHARFORMAT )
 {
    HWND hCtrl = ( HWND ) HB_PARHANDLE( 1 );
    CHARRANGE chrOld, chrNew;
@@ -233,7 +233,7 @@ HB_FUNC( RE_SETCHARFORMAT )
 /*
  * re_SetDefault( hCtrl, nColor, cName, nHeight, lBold, lItalic, lUnderline, nCharset )
  */
-HB_FUNC( RE_SETDEFAULT )
+HB_FUNC( HWG_RE_SETDEFAULT )
 {
    HWND hCtrl = ( HWND ) HB_PARHANDLE( 1 );
    CHARFORMAT2 cf;
@@ -288,7 +288,7 @@ HB_FUNC( RE_SETDEFAULT )
 /*
  * re_CharFromPos( hEdit, xPos, yPos ) --> nPos
  */
-HB_FUNC( RE_CHARFROMPOS )
+HB_FUNC( HWG_RE_CHARFROMPOS )
 {
    HWND hCtrl = ( HWND ) HB_PARHANDLE( 1 );
    int x = hb_parni( 2 );
@@ -305,7 +305,7 @@ HB_FUNC( RE_CHARFROMPOS )
 /*
  * re_GetTextRange( hEdit, n1, n2 )
  */
-HB_FUNC( RE_GETTEXTRANGE )
+HB_FUNC( HWG_RE_GETTEXTRANGE )
 {
    HWND hCtrl = ( HWND ) HB_PARHANDLE( 1 );
    TEXTRANGE tr;
@@ -325,7 +325,7 @@ HB_FUNC( RE_GETTEXTRANGE )
 /*
  * re_GetLine( hEdit, nLine )
  */
-HB_FUNC( RE_GETLINE )
+HB_FUNC( HWG_RE_GETLINE )
 {
    HWND hCtrl = ( HWND ) HB_PARHANDLE( 1 );
    int nLine = hb_parni( 2 );
@@ -339,7 +339,7 @@ HB_FUNC( RE_GETLINE )
    hb_xfree( lpBuf );
 }
 
-HB_FUNC( RE_INSERTTEXT )
+HB_FUNC( HWG_RE_INSERTTEXT )
 {
    void * hString;
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), EM_REPLACESEL, 0,
@@ -350,7 +350,7 @@ HB_FUNC( RE_INSERTTEXT )
 /*
  * re_FindText( hEdit, cFind, nStart, bCase, bWholeWord, bSearchUp )
  */
-HB_FUNC( RE_FINDTEXT )
+HB_FUNC( HWG_RE_FINDTEXT )
 {
    HWND hCtrl = ( HWND ) HB_PARHANDLE( 1 );
    FINDTEXTEX ft;
@@ -370,7 +370,7 @@ HB_FUNC( RE_FINDTEXT )
    hb_retnl( lPos );
 }
 
-HB_FUNC( RE_SETZOOM )
+HB_FUNC( HWG_RE_SETZOOM )
 {
    HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );
    int nNum = hb_parni(2); 
@@ -379,13 +379,13 @@ HB_FUNC( RE_SETZOOM )
 }
 
 
-HB_FUNC( RE_ZOOMOFF )
+HB_FUNC( HWG_RE_ZOOMOFF )
 {
    HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );
    hb_retnl( (BOOL) SendMessage(hwnd, EM_SETZOOM, 0, 0L ) );
 }
 
-HB_FUNC( RE_GETZOOM )
+HB_FUNC( HWG_RE_GETZOOM )
 {
    HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );
    int nNum = hb_parni(2); 
@@ -395,7 +395,7 @@ HB_FUNC( RE_GETZOOM )
    hb_storni( nDen, 3 );
 }
 
-HB_FUNC( PRINTRTF )
+HB_FUNC( HWG_PRINTRTF )
 {
     HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );     
     HDC hdc = ( HDC ) HB_PARHANDLE( 2 );
@@ -492,7 +492,7 @@ static DWORD CALLBACK EditStreamCallback( DWORD_PTR dwCookie, LPBYTE lpBuff, LON
  return ! ReadFile(hFile, lpBuff, cb, ( DWORD * ) pcb, NULL );
 }
 
-HB_FUNC( SAVERICHEDIT )
+HB_FUNC( HWG_SAVERICHEDIT )
 {
 
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
@@ -518,7 +518,7 @@ HB_FUNC( SAVERICHEDIT )
   
 }
 
-HB_FUNC( LOADRICHEDIT )
+HB_FUNC( HWG_LOADRICHEDIT )
 {
 
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
@@ -541,3 +541,4 @@ HB_FUNC( LOADRICHEDIT )
    CloseHandle( hFile );
    HB_RETHANDLE( hFile );  
 }
+

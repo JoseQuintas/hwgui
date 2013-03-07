@@ -15,7 +15,7 @@
 REQUEST ENDWINDOW
 
 Static aMessModalDlg := { ;
-         { WM_COMMAND,{|o,w,l|DlgCommand(o,w,l)} },         ;
+         { WM_COMMAND,{|o,w,l|hwg_DlgCommand(o,w,l)} },         ;
          { WM_SIZE,{|o,w,l|onSize(o,w,l)} },                ;
          { WM_INITDIALOG,{|o,w,l|InitModalDlg(o,w,l)} },    ;
          { WM_ERASEBKGND,{|o,w|onEraseBk(o,w)} },           ;
@@ -79,7 +79,7 @@ CLASS HDialog INHERIT HCustomWindow
    METHOD Restore()  INLINE hwg_WindowRestore( ::handle )
    METHOD Maximize() INLINE hwg_WindowMaximize( ::handle )
    METHOD Minimize() INLINE hwg_WindowMinimize( ::handle )
-   METHOD Close()    INLINE EndDialog( ::handle )
+   METHOD Close()    INLINE hwg_EndDialog( ::handle )
 ENDCLASS
 
 METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
@@ -109,8 +109,8 @@ METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
    ::lExitOnEsc  :=Iif( lExitOnEsc==Nil,.T.,!lExitOnEsc )
 
    IF hwg_BitAnd( ::style, DS_CENTER ) > 0
-      ::nLeft := Int( ( GetDesktopWidth() - ::nWidth ) / 2 )
-      ::nTop  := Int( ( GetDesktopHeight() - ::nHeight ) / 2 )
+      ::nLeft := Int( ( hwg_Getdesktopwidth() - ::nWidth ) / 2 )
+      ::nTop  := Int( ( hwg_Getdesktopheight() - ::nHeight ) / 2 )
    ENDIF
    ::handle := Hwg_CreateDlg( Self )
 
@@ -119,7 +119,7 @@ RETURN Self
 METHOD Activate( lNoModal ) CLASS HDialog
 Local hParent,oWnd
 
-   CreateGetList( Self )
+   hwg_CreateGetList( Self )
 
    IF lNoModal==Nil ; lNoModal:=.F. ; ENDIF
    ::lModal := !lNoModal
@@ -143,7 +143,7 @@ RETURN Nil
 METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
 Local i
 
-   // writelog( str(msg) + str(wParam) + str(lParam) )
+   // hwg_WriteLog( str(msg) + str(wParam) + str(lParam) )
    IF ( i := Ascan( aMessModalDlg, {|a|a[1]==msg} ) ) != 0
       Return Eval( aMessModalDlg[i,2], Self, wParam, lParam )
    ELSE
@@ -176,10 +176,10 @@ METHOD FindDialog( hWnd ) CLASS HDialog
 Local i := Ascan( ::aDialogs, {|o|o:handle==hWnd} )
 Return Iif( i == 0, Nil, ::aDialogs[i] )
 */
-Return GetWindowObject(hWnd)
+Return hwg_Getwindowobject(hWnd)
 
 METHOD GetActive() CLASS HDialog
-Local handle := GetFocus()
+Local handle := hwg_Getfocus()
 Local i := Ascan( ::Getlist,{|o|o:handle==handle} )
 Return Iif( i == 0, Nil, ::Getlist[i] )
 
@@ -189,21 +189,21 @@ Return Iif( i == 0, Nil, ::Getlist[i] )
 Static Function InitModalDlg( oDlg )
 Local iCont
 
-   // writelog( str(oDlg:handle)+" "+oDlg:title )
+   // hwg_WriteLog( str(oDlg:handle)+" "+oDlg:title )
    IF Valtype( oDlg:menu ) == "A"
       hwg__SetMenu( oDlg:handle, oDlg:menu[5] )
    ENDIF
    /*
    IF oDlg:oIcon != Nil
-      SendMessage( oDlg:handle,WM_SETICON,1,oDlg:oIcon:handle )
+      hwg_Sendmessage( oDlg:handle,WM_SETICON,1,oDlg:oIcon:handle )
    ENDIF
    */
    IF oDlg:Title != NIL
-      SetWindowText(oDlg:Handle,oDlg:Title)
+      hwg_Setwindowtext(oDlg:Handle,oDlg:Title)
    ENDIF
    /*
    IF oDlg:oFont != Nil
-      SendMessage( oDlg:handle, WM_SETFONT, oDlg:oFont:handle, 0 )
+      hwg_Sendmessage( oDlg:handle, WM_SETFONT, oDlg:oFont:handle, 0 )
    ENDIF
    */
    IF oDlg:bInit != Nil
@@ -229,16 +229,16 @@ Local aCoors
 /*
    IF __ObjHasMsg( oDlg,"OBMP") 
       IF oDlg:oBmp != Nil
-         SpreadBitmap( hDC, oDlg:handle, oDlg:oBmp:handle )
+         hwg_Spreadbitmap( hDC, oDlg:handle, oDlg:oBmp:handle )
          Return 1
       ELSE
-        aCoors := GetClientRect( oDlg:handle )
+        aCoors := hwg_Getclientrect( oDlg:handle )
         IF oDlg:brush != Nil
            IF Valtype( oDlg:brush ) != "N"
-              FillRect( hDC, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1,oDlg:brush:handle )
+              hwg_Fillrect( hDC, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1,oDlg:brush:handle )
            ENDIF
         ELSE
-           FillRect( hDC, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1,COLOR_3DFACE+1 )
+           hwg_Fillrect( hDC, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1,COLOR_3DFACE+1 )
         ENDIF
         Return 1
       ENDIF
@@ -246,16 +246,17 @@ Local aCoors
 */   
 Return 0
 
-Function DlgCommand( oDlg,wParam,lParam )
-Local iParHigh := HiWord( wParam ), iParLow := LoWord( wParam )
+Function hwg_DlgCommand( oDlg,wParam,lParam )
+
+Local iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )
 Local aMenu, i, hCtrl
 
-   // WriteLog( Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   // hwg_WriteLog( Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF iParHigh == 0
       IF iParLow == IDOK
-         hCtrl := GetFocus()
+         hCtrl := hwg_Getfocus()
          FOR i := Len(oDlg:GetList) TO 1 STEP -1
-            IF !oDlg:GetList[i]:lHide .AND. IsWindowEnabled( oDlg:Getlist[i]:Handle )
+            IF !oDlg:GetList[i]:lHide .AND. hwg_Iswindowenabled( oDlg:Getlist[i]:Handle )
                EXIT
             ENDIF
          NEXT
@@ -264,16 +265,16 @@ Local aMenu, i, hCtrl
                IF Eval( oDlg:GetList[i]:bValid,oDlg:GetList[i] ) .AND. ;
                       oDlg:lExitOnEnter
                   oDlg:lResult := .T.
-                  EndDialog( oDlg:handle )
+                  hwg_EndDialog( oDlg:handle )
                ENDIF
                Return 1
             ENDIF
          ENDIF
          IF oDlg:lClipper
-            IF !GetSkip( oDlg,hCtrl,1 )
+            IF !hwg_GetSkip( oDlg,hCtrl,1 )
                IF oDlg:lExitOnEnter
                   oDlg:lResult := .T.
-                  EndDialog( oDlg:handle )
+                  hwg_EndDialog( oDlg:handle )
                ENDIF
             ENDIF
             Return 1
@@ -294,7 +295,7 @@ Local aMenu, i, hCtrl
       ENDIF
       //Replaced by Sandro
       IF oDlg:lExitOnEsc
-         EndDialog( oDlg:handle )
+         hwg_EndDialog( oDlg:handle )
       ENDIF
    ELSEIF __ObjHasMsg(oDlg,"MENU") .AND. Valtype( oDlg:menu ) == "A" .AND. ;
         ( aMenu := Hwg_FindMenuItem( oDlg:menu,iParLow,@i ) ) != Nil ;
@@ -310,7 +311,7 @@ Return 1
 
 Static Function onSize( oDlg,wParam,lParam )
    LOCAL aControls, iCont , nW1, nH1
-   LOCAL nW := LOWORD( lParam ), nH := HIWORD( lParam )
+   LOCAL nW := hwg_Loword( lParam ), nH := hwg_Hiword( lParam )
    LOCAL nScrollMax
    /*
    IF ( oDlg:nHeight = oDlg:minHeight .AND. nH < oDlg:minHeight ) .OR. ;
@@ -322,13 +323,13 @@ Static Function onSize( oDlg,wParam,lParam )
 
    nW1 := oDlg:nWidth
    nH1 := oDlg:nHeight
-   *aControls := GetWindowRect( oDlg:handle )
-   oDlg:nWidth := LOWORD( lParam )  //aControls[3]-aControls[1]
+   *aControls := hwg_Getwindowrect( oDlg:handle )
+   oDlg:nWidth := hwg_Loword( lParam )  //aControls[3]-aControls[1]
    //
 
    IF oDlg:bSize != Nil .AND. ;
        ( oDlg:oParent == Nil .OR. !__ObjHasMsg( oDlg:oParent,"ACONTROLS" ) )
-      Eval( oDlg:bSize, oDlg, LoWord( lParam ), HiWord( lParam ) )
+      Eval( oDlg:bSize, oDlg, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
    ENDIF
    aControls := oDlg:aControls
    IF aControls != Nil
@@ -336,7 +337,7 @@ Static Function onSize( oDlg,wParam,lParam )
       FOR iCont := 1 TO Len( aControls )
          IF aControls[iCont]:bSize != Nil
             Eval( aControls[iCont]:bSize, ;
-             aControls[iCont], LoWord( lParam ), HiWord( lParam ) )
+             aControls[iCont], hwg_Loword( lParam ), hwg_Hiword( lParam ) )
          ENDIF
       NEXT
    ENDIF
@@ -344,7 +345,7 @@ Static Function onSize( oDlg,wParam,lParam )
 Return 0
 
 Static Function onActivate( oDlg,wParam,lParam )
-Local iParLow := LoWord( wParam )
+Local iParLow := hwg_Loword( wParam )
 
    if iParLow > 0 .AND. oDlg:bGetFocus != Nil
       Eval( oDlg:bGetFocus, oDlg )
@@ -354,37 +355,41 @@ Local iParLow := LoWord( wParam )
 
 Return 0
 
-Function GetModalDlg
+Function hwg_GetModalDlg
+
 Local i := Len( HDialog():aModalDialogs )
 Return Iif( i>0, HDialog():aModalDialogs[i], 0 )
 
-Function GetModalHandle
+Function hwg_GetModalHandle
+
 Local i := Len( HDialog():aModalDialogs )
 Return Iif( i>0, HDialog():aModalDialogs[i]:handle, 0 )
 
-Function EndDialog( handle )
+Function hwg_EndDialog( handle )
+
 Local oDlg
-   // writelog( "EndDialog-0" )
+   // hwg_WriteLog( "EndDialog-0" )
    IF handle == Nil
       IF ( oDlg := Atail( HDialog():aModalDialogs ) ) == Nil
-         // writelog("EndDialog-1")
+         // hwg_WriteLog("EndDialog-1")
          Return Nil
       ENDIF
    ELSE
-      oDlg := GetWindowObject( handle )
+      oDlg := hwg_Getwindowobject( handle )
    ENDIF
 
-   // writelog( "EndDialog-1" )
+   // hwg_WriteLog( "EndDialog-1" )
    IF oDlg:bDestroy != Nil
-      // writelog( "EndDialog-2" )
+      // hwg_WriteLog( "EndDialog-2" )
       Eval( oDlg:bDestroy, oDlg )
       oDlg:bDestroy := Nil
    ENDIF
 
-   // writelog("EndDialog-10")
+   // hwg_WriteLog("EndDialog-10")
 Return  hwg_DestroyWindow( oDlg:handle )
 
-Function SetDlgKey( oDlg, nctrl, nkey, block )
+Function hwg_SetDlgKey( oDlg, nctrl, nkey, block )
+
 Local i, aKeys
 
    IF oDlg == Nil ; oDlg := HCustomWindow():oDefaultParent ; ENDIF
@@ -411,3 +416,4 @@ Local i, aKeys
    ENDIF
 
 Return .T.
+

@@ -22,7 +22,7 @@
 #ifdef __cplusplus
 extern "C" { STDAPI OleLoadPicture(LPSTREAM,LONG,BOOL,REFIID,PVOID*); }
 #else
-STDAPI OleLoadPicture(LPSTREAM,LONG,BOOL,REFIID,PVOID*);
+//STDAPI OleLoadPicture(LPSTREAM,LONG,BOOL,REFIID,PVOID*);
 #endif
 #endif /* __BORLANDC__ */
 
@@ -74,7 +74,7 @@ PHB_ITEM Rect2Array( RECT * rc )
    return aRect;
 }
 
-HB_FUNC( GETPPSRECT )
+HB_FUNC( HWG_GETPPSRECT )
 {
    PAINTSTRUCT *pps = ( PAINTSTRUCT * ) HB_PARHANDLE( 1 );
 
@@ -84,14 +84,14 @@ HB_FUNC( GETPPSRECT )
    hb_itemRelease( aMetr );
 }
 
-HB_FUNC( GETPPSERASE )
+HB_FUNC( HWG_GETPPSERASE )
 {
    PAINTSTRUCT *pps = ( PAINTSTRUCT * ) HB_PARHANDLE( 1 );
    BOOL fErase = &pps->fErase ;
    hb_retni( fErase );
 }
 
-HB_FUNC( GETUPDATERECT )
+HB_FUNC( HWG_GETUPDATERECT )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 ) ;
    BOOL fErase ;
@@ -99,7 +99,7 @@ HB_FUNC( GETUPDATERECT )
    hb_retni( fErase );
 }
 
-HB_FUNC( INVALIDATERECT )
+HB_FUNC( HWG_INVALIDATERECT )
 {
    RECT rc;
 
@@ -117,21 +117,21 @@ HB_FUNC( INVALIDATERECT )
           );
 }
 
-HB_FUNC( MOVETO )
+HB_FUNC( HWG_MOVETO )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
    MoveToEx( hDC, x1, y1, NULL );
 }
 
-HB_FUNC( LINETO )
+HB_FUNC( HWG_LINETO )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
    LineTo( hDC, x1, y1 );
 }
 
-HB_FUNC( RECTANGLE )
+HB_FUNC( HWG_RECTANGLE )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 ), x2 = hb_parni( 4 ), y2 =
@@ -143,7 +143,7 @@ HB_FUNC( RECTANGLE )
    LineTo( hDC, x1, y1 );
 }
 
-HB_FUNC( BOX )
+HB_FUNC( HWG_BOX )
 {
    Rectangle( ( HDC ) HB_PARHANDLE( 1 ),        // handle of device context
          hb_parni( 2 ),         // x-coord. of bounding rectangle's upper-left corner
@@ -155,13 +155,13 @@ HB_FUNC( BOX )
 
 
 
-HB_FUNC( DRAWLINE )
+HB_FUNC( HWG_DRAWLINE )
 {
    MoveToEx( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 2 ), hb_parni( 3 ), NULL );
    LineTo( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 4 ), hb_parni( 5 ) );
 }
 
-HB_FUNC( PIE )
+HB_FUNC( HWG_PIE )
 {
    int res = Pie( ( HDC ) HB_PARHANDLE( 1 ),    // handle to device context
          hb_parni( 2 ),         // x-coord. of bounding rectangle's upper-left corner
@@ -177,7 +177,7 @@ HB_FUNC( PIE )
    hb_retnl( res ? 0 : ( LONG ) GetLastError(  ) );
 }
 
-HB_FUNC( ELLIPSE )
+HB_FUNC( HWG_ELLIPSE )
 {
    int res = Ellipse( ( HDC ) HB_PARHANDLE( 1 ),        // handle to device context
          hb_parni( 2 ),         // x-coord. of bounding rectangle's upper-left corner
@@ -189,7 +189,7 @@ HB_FUNC( ELLIPSE )
    hb_retnl( res ? 0 : ( LONG ) GetLastError(  ) );
 }
 
-HB_FUNC( FILLRECT )
+HB_FUNC( HWG_FILLRECT )
 {
    RECT rc;
 
@@ -204,7 +204,7 @@ HB_FUNC( FILLRECT )
           );
 }
 
-HB_FUNC( ROUNDRECT )
+HB_FUNC( HWG_ROUNDRECT )
 {
    hb_parl( RoundRect( ( HDC ) HB_PARHANDLE( 1 ),       // handle of device context
                hb_parni( 2 ),   // x-coord. of bounding rectangle's upper-left corner
@@ -216,7 +216,7 @@ HB_FUNC( ROUNDRECT )
           ) );
 }
 /*
-HB_FUNC( REDRAWWINDOW )
+HB_FUNC( HWG_REDRAWWINDOW )
 {
    RedrawWindow( ( HWND ) HB_PARHANDLE( 1 ),    // handle of window
          NULL,                  // address of structure with update rectangle
@@ -225,7 +225,7 @@ HB_FUNC( REDRAWWINDOW )
           );
 }
 */
-HB_FUNC( REDRAWWINDOW )
+HB_FUNC( HWG_REDRAWWINDOW )
 {
    RECT rc;
 
@@ -248,7 +248,7 @@ HB_FUNC( REDRAWWINDOW )
    );
 }
 
-HB_FUNC( DRAWBUTTON )
+HB_FUNC( HWG_DRAWBUTTON )
 {
    RECT rc;
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
@@ -293,7 +293,7 @@ HB_FUNC( DRAWBUTTON )
 /*
  * DrawEdge( hDC,x1,y1,x2,y2,nFlag,nBorder )
  */
-HB_FUNC( DRAWEDGE )
+HB_FUNC( HWG_DRAWEDGE )
 {
    RECT rc;
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
@@ -308,7 +308,7 @@ HB_FUNC( DRAWEDGE )
    hb_retl( DrawEdge( hDC, &rc, edge, grfFlags ) );
 }
 
-HB_FUNC( LOADICON )
+HB_FUNC( HWG_LOADICON )
 {
    if( HB_ISNUM( 1 ) )
       HB_RETHANDLE( LoadIcon( NULL, MAKEINTRESOURCE( hb_parni( 1 ) ) ) );
@@ -320,7 +320,7 @@ HB_FUNC( LOADICON )
    }
 }
 
-HB_FUNC( LOADIMAGE )
+HB_FUNC( HWG_LOADIMAGE )
 {
    void * hString = NULL;
 
@@ -334,7 +334,7 @@ HB_FUNC( LOADIMAGE )
    hb_strfree( hString );
 }
 
-HB_FUNC( LOADBITMAP )
+HB_FUNC( HWG_LOADBITMAP )
 {
    if( HB_ISNUM( 1 ) )
    {
@@ -355,7 +355,7 @@ HB_FUNC( LOADBITMAP )
 /*
  * Window2Bitmap( hWnd )
  */
-HB_FUNC( WINDOW2BITMAP )
+HB_FUNC( HWG_WINDOW2BITMAP )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
    BOOL lFull = ( HB_ISNIL( 2 ) ) ? 0 : ( BOOL ) hb_parl( 2 );
@@ -386,7 +386,7 @@ HB_FUNC( WINDOW2BITMAP )
 /*
  * DrawBitmap( hDC, hBitmap, style, x, y, width, height )
  */
-HB_FUNC( DRAWBITMAP )
+HB_FUNC( HWG_DRAWBITMAP )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
@@ -418,7 +418,7 @@ HB_FUNC( DRAWBITMAP )
 /*
  * DrawTransparentBitmap( hDC, hBitmap, x, y [,trColor] )
  */
-HB_FUNC( DRAWTRANSPARENTBITMAP )
+HB_FUNC( HWG_DRAWTRANSPARENTBITMAP )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HBITMAP hBitmap = ( HBITMAP ) HB_PARHANDLE( 2 );
@@ -494,7 +494,7 @@ HB_FUNC( DRAWTRANSPARENTBITMAP )
 
 /*  SpreadBitmap( hDC, hWnd, hBitmap, style )
 */
-HB_FUNC( SPREADBITMAP )
+HB_FUNC( HWG_SPREADBITMAP )
 {
    HDC hDC =
          HB_ISPOINTER( 1 ) ? ( HDC ) HB_PARHANDLE( 1 ) : ( HDC ) hb_parnl( 1 );
@@ -527,7 +527,7 @@ HB_FUNC( SPREADBITMAP )
 /*  CenterBitmap( hDC, hWnd, hBitmap, style, brush )
 */
 
-HB_FUNC( CENTERBITMAP )
+HB_FUNC( HWG_CENTERBITMAP )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
@@ -552,7 +552,7 @@ HB_FUNC( CENTERBITMAP )
 }
 
 
-HB_FUNC( GETBITMAPSIZE )
+HB_FUNC( HWG_GETBITMAPSIZE )
 {
    BITMAP bitmap;
    PHB_ITEM aMetr = hb_itemArrayNew( 4 );
@@ -583,7 +583,7 @@ HB_FUNC( GETBITMAPSIZE )
    hb_itemRelease( aMetr );
 }
 
-HB_FUNC( GETICONSIZE )
+HB_FUNC( HWG_GETICONSIZE )
 {
    ICONINFO iinfo;
    PHB_ITEM aMetr = hb_itemArrayNew( 3 );
@@ -609,7 +609,7 @@ HB_FUNC( GETICONSIZE )
    hb_itemRelease( aMetr );
 }
 
-HB_FUNC( OPENBITMAP )
+HB_FUNC( HWG_OPENBITMAP )
 {
    BITMAPFILEHEADER bmfh;
    BITMAPINFOHEADER bmih;
@@ -710,23 +710,23 @@ HB_FUNC( OPENBITMAP )
    HB_RETHANDLE( hbm );
 }
 
-HB_FUNC( DRAWICON )
+HB_FUNC( HWG_DRAWICON )
 {
    DrawIcon( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 3 ), hb_parni( 4 ),
          ( HICON ) HB_PARHANDLE( 2 ) );
 }
 
-HB_FUNC( GETSYSCOLOR )
+HB_FUNC( HWG_GETSYSCOLOR )
 {
    hb_retnl( ( LONG ) GetSysColor( hb_parni( 1 ) ) );
 }
 
-HB_FUNC( GETSYSCOLORBRUSH )
+HB_FUNC( HWG_GETSYSCOLORBRUSH )
 {
    HB_RETHANDLE( GetSysColorBrush(  hb_parni( 1 ) ) ) ;
 }
 
-HB_FUNC( CREATEPEN )
+HB_FUNC( HWG_CREATEPEN )
 {
    HB_RETHANDLE( CreatePen( hb_parni( 1 ),      // pen style
                hb_parni( 2 ),   // pen width
@@ -734,43 +734,43 @@ HB_FUNC( CREATEPEN )
           ) );
 }
 
-HB_FUNC( CREATESOLIDBRUSH )
+HB_FUNC( HWG_CREATESOLIDBRUSH )
 {
    HB_RETHANDLE( CreateSolidBrush( ( COLORREF ) hb_parnl( 1 )   // brush color
           ) );
 }
 
-HB_FUNC( CREATEHATCHBRUSH )
+HB_FUNC( HWG_CREATEHATCHBRUSH )
 {
    HB_RETHANDLE( CreateHatchBrush( hb_parni( 1 ),
                ( COLORREF ) hb_parnl( 2 ) ) );
 }
 
-HB_FUNC( SELECTOBJECT )
+HB_FUNC( HWG_SELECTOBJECT )
 {
    HB_RETHANDLE( SelectObject( ( HDC ) HB_PARHANDLE( 1 ),       // handle of device context
                ( HGDIOBJ ) HB_PARHANDLE( 2 )    // handle of object
           ) );
 }
 
-HB_FUNC( DELETEOBJECT )
+HB_FUNC( HWG_DELETEOBJECT )
 {
    DeleteObject( ( HGDIOBJ ) HB_PARHANDLE( 1 )  // handle of object
           );
 }
 
-HB_FUNC( GETDC )
+HB_FUNC( HWG_GETDC )
 {
    HB_RETHANDLE( GetDC( ( HWND ) HB_PARHANDLE( 1 ) ) );
 }
 
-HB_FUNC( RELEASEDC )
+HB_FUNC( HWG_RELEASEDC )
 {
    HB_RETHANDLE( ReleaseDC( ( HWND ) HB_PARHANDLE( 1 ),
                ( HDC ) HB_PARHANDLE( 2 ) ) );
 }
 
-HB_FUNC( GETDRAWITEMINFO )
+HB_FUNC( HWG_GETDRAWITEMINFO )
 {
 
    DRAWITEMSTRUCT *lpdis = ( DRAWITEMSTRUCT * ) HB_PARHANDLE( 1 );      //hb_parnl( 1 );
@@ -820,7 +820,7 @@ HB_FUNC( GETDRAWITEMINFO )
 /*
  * DrawGrayBitmap( hDC, hBitmap, x, y )
  */
-HB_FUNC( DRAWGRAYBITMAP )
+HB_FUNC( HWG_DRAWGRAYBITMAP )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HBITMAP hBitmap = ( HBITMAP ) HB_PARHANDLE( 2 );
@@ -870,7 +870,7 @@ HB_FUNC( DRAWGRAYBITMAP )
 #include <ole2.h>
 #include <ocidl.h>
 
-HB_FUNC( OPENIMAGE )
+HB_FUNC( HWG_OPENIMAGE )
 {
    const char *cFileName = hb_parc( 1 );
    BOOL lString = ( HB_ISNIL( 2 ) ) ? 0 : hb_parl( 2 );
@@ -956,23 +956,23 @@ HB_FUNC( OPENIMAGE )
 #endif
 }
 
-HB_FUNC( PATBLT )
+HB_FUNC( HWG_PATBLT )
 {
    hb_retl( PatBlt( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 2 ), hb_parni( 3 ),
                hb_parni( 4 ), hb_parni( 5 ), hb_parnl( 6 ) ) );
 }
 
-HB_FUNC( SAVEDC )
+HB_FUNC( HWG_SAVEDC )
 {
    hb_retl( SaveDC( ( HDC ) HB_PARHANDLE( 1 ) ) );
 }
 
-HB_FUNC( RESTOREDC )
+HB_FUNC( HWG_RESTOREDC )
 {
    hb_retl( RestoreDC( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 2 ) ) );
 }
 
-HB_FUNC( CREATECOMPATIBLEDC )
+HB_FUNC( HWG_CREATECOMPATIBLEDC )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
@@ -980,14 +980,14 @@ HB_FUNC( CREATECOMPATIBLEDC )
    HB_RETHANDLE( hDCmem );
 }
 
-HB_FUNC( SETMAPMODE )
+HB_FUNC( HWG_SETMAPMODE )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
 
    hb_retni( SetMapMode( hDC, hb_parni( 2 ) ) );
 }
 
-HB_FUNC( SETWINDOWORGEX )
+HB_FUNC( HWG_SETWINDOWORGEX )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
 
@@ -995,7 +995,7 @@ HB_FUNC( SETWINDOWORGEX )
    hb_stornl( 0, 4 );
 }
 
-HB_FUNC( SETWINDOWEXTEX )
+HB_FUNC( HWG_SETWINDOWEXTEX )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
 
@@ -1003,7 +1003,7 @@ HB_FUNC( SETWINDOWEXTEX )
    hb_stornl( 0, 4 );
 }
 
-HB_FUNC( SETVIEWPORTORGEX )
+HB_FUNC( HWG_SETVIEWPORTORGEX )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
 
@@ -1011,7 +1011,7 @@ HB_FUNC( SETVIEWPORTORGEX )
    hb_stornl( 0, 4 );
 }
 
-HB_FUNC( SETVIEWPORTEXTEX )
+HB_FUNC( HWG_SETVIEWPORTEXTEX )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
 
@@ -1019,21 +1019,21 @@ HB_FUNC( SETVIEWPORTEXTEX )
    hb_stornl( 0, 4 );
 }
 
-HB_FUNC( SETARCDIRECTION )
+HB_FUNC( HWG_SETARCDIRECTION )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
 
    hb_retni( SetArcDirection( hDC, hb_parni( 2 ) ) );
 }
 
-HB_FUNC( SETROP2 )
+HB_FUNC( HWG_SETROP2 )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
 
    hb_retni( SetROP2( hDC, hb_parni( 2 ) ) );
 }
 
-HB_FUNC( BITBLT )
+HB_FUNC( HWG_BITBLT )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HDC hDC1 = ( HDC ) HB_PARHANDLE( 6 );
@@ -1043,7 +1043,7 @@ HB_FUNC( BITBLT )
                hb_parnl( 9 ) ) );
 }
 
-HB_FUNC( CREATECOMPATIBLEBITMAP )
+HB_FUNC( HWG_CREATECOMPATIBLEBITMAP )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HBITMAP hBitmap;
@@ -1052,7 +1052,7 @@ HB_FUNC( CREATECOMPATIBLEBITMAP )
    HB_RETHANDLE( hBitmap );
 }
 
-HB_FUNC( INFLATERECT )
+HB_FUNC( HWG_INFLATERECT )
 {
    RECT pRect;
    int x = hb_parni( 2 );
@@ -1068,7 +1068,7 @@ HB_FUNC( INFLATERECT )
    hb_storvni( pRect.bottom, 1, 4 );
 }
 
-HB_FUNC( FRAMERECT )
+HB_FUNC( HWG_FRAMERECT )
 {
    HDC hdc = ( HDC ) HB_PARHANDLE( 1 );
    HBRUSH hbr = ( HBRUSH ) HB_PARHANDLE( 3 );
@@ -1080,7 +1080,7 @@ HB_FUNC( FRAMERECT )
    hb_retni( FrameRect( hdc, &pRect, hbr ) );
 }
 
-HB_FUNC( DRAWFRAMECONTROL )
+HB_FUNC( HWG_DRAWFRAMECONTROL )
 {
    HDC hdc = ( HDC ) HB_PARHANDLE( 1 );
    RECT pRect;
@@ -1093,7 +1093,7 @@ HB_FUNC( DRAWFRAMECONTROL )
    hb_retl( DrawFrameControl( hdc, &pRect, uType, uState ) );
 }
 
-HB_FUNC( OFFSETRECT )
+HB_FUNC( HWG_OFFSETRECT )
 {
    RECT pRect;
    int x = hb_parni( 2 );
@@ -1109,7 +1109,7 @@ HB_FUNC( OFFSETRECT )
    hb_storvni( pRect.bottom, 1, 4 );
 }
 
-HB_FUNC( DRAWFOCUSRECT )
+HB_FUNC( HWG_DRAWFOCUSRECT )
 {
    RECT pRect;
    HDC hc = ( HDC ) HB_PARHANDLE( 1 );
@@ -1129,7 +1129,7 @@ BOOL Array2Point( PHB_ITEM aPoint, POINT * pt )
    return FALSE;
 }
 
-HB_FUNC( PTINRECT )
+HB_FUNC( HWG_PTINRECT )
 {
    POINT pt;
    RECT rect;
@@ -1139,7 +1139,7 @@ HB_FUNC( PTINRECT )
    hb_retl( PtInRect( &rect, pt ) );
 }
 
-HB_FUNC( GETMEASUREITEMINFO )
+HB_FUNC( HWG_GETMEASUREITEMINFO )
 {
    MEASUREITEMSTRUCT *lpdis = ( MEASUREITEMSTRUCT * ) HB_PARHANDLE( 1 );        //hb_parnl(1);
    PHB_ITEM aMetr = hb_itemArrayNew( 5 );
@@ -1168,7 +1168,7 @@ HB_FUNC( GETMEASUREITEMINFO )
    hb_itemRelease( aMetr );
 }
 
-HB_FUNC( COPYRECT )
+HB_FUNC( HWG_COPYRECT )
 {
    RECT p;
 
@@ -1176,14 +1176,14 @@ HB_FUNC( COPYRECT )
    hb_itemRelease( hb_itemReturn( Rect2Array( &p ) ) );
 }
 
-HB_FUNC( GETWINDOWDC )
+HB_FUNC( HWG_GETWINDOWDC )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
    HDC hDC = GetWindowDC( hWnd );
    HB_RETHANDLE( hDC );
 }
 
-HB_FUNC( MODIFYSTYLE )
+HB_FUNC( HWG_MODIFYSTYLE )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
    DWORD dwStyle = GetWindowLongPtr( ( HWND ) hWnd, GWL_STYLE );
@@ -1194,9 +1194,10 @@ HB_FUNC( MODIFYSTYLE )
 }
 
 /*
-HB_FUNC(PTRRECT2ARRAY)
+HB_FUNC( HWG_PTRRECT2ARRAY )
 {
    RECT *rect =   (RECT *) HB_PARHANDLE( 1 ) ;
    hb_itemRelease(hb_itemReturn(Rect2Array(&rect)));
 } 
 */
+

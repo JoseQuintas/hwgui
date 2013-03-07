@@ -35,12 +35,12 @@ SET CENT ON
       MENU TITLE "&Demo"
          MENUITEM "&Demo for TAB DBF " ID 303 ACTION Cadastro()
          SEPARATOR
-         MENUITEM "&Exit" ACTION {||dbCloseAll(), EndWindow()}
+         MENUITEM "&Exit" ACTION {||dbCloseAll(), hwg_EndWindow()}
       ENDMENU                                                                                            
 
 
       MENU TITLE "&Help"
-         MENUITEM "&As" ACTION Msginfo("HwGUI Harbour Win32 GUI","Copyright (c) Alexander Kresin")
+         MENUITEM "&As" ACTION hwg_Msginfo("HwGUI Harbour Win32 GUI","Copyright (c) Alexander Kresin")
       ENDMENU
    ENDMENU
 
@@ -72,7 +72,7 @@ Private oBotNew, oBotEdit,oBotRet, oBotNext, oBotSave, oBottop, oBotBott, oBotDe
    CreateGets()
 
 
-    @ 2,3 OWNERBUTTON oBotNew OF Tel_Ferramentas  ON CLICK {|| CreateVariable(), CloseBotons(), Gt_Cod:SetFocus()  } ;
+    @ 2,3 OWNERBUTTON oBotNew OF Tel_Ferramentas  ON CLICK {|| CreateVariable(), CloseBotons(), Gt_Cod:Setfocus()  } ;
        SIZE 44,38 FLAT ;
        TEXT "New"
 
@@ -100,7 +100,7 @@ Private oBotNew, oBotEdit,oBotRet, oBotNext, oBotSave, oBottop, oBotBott, oBotDe
        SIZE 44,38 FLAT ;
        TEXT "|->"
 
-   @304,3 OWNERBUTTON oBotprint OF Tel_Ferramentas  ON CLICK {||MsgInfo("In development")} ;
+   @304,3 OWNERBUTTON oBotprint OF Tel_Ferramentas  ON CLICK {||hwg_Msginfo("In development")} ;
        SIZE 44,38 FLAT ;
        TEXT "Print"
 
@@ -108,7 +108,7 @@ Private oBotNew, oBotEdit,oBotRet, oBotNext, oBotSave, oBottop, oBotBott, oBotDe
        SIZE 44,38 FLAT ;
        TEXT "Delete"
 
-   @390,3 OWNERBUTTON oBotClose OF Tel_Ferramentas  ON CLICK {||EndDialog()} ;
+   @390,3 OWNERBUTTON oBotClose OF Tel_Ferramentas  ON CLICK {||hwg_EndDialog()} ;
        SIZE 44,38 FLAT ;
        TEXT "Close"
 
@@ -171,7 +171,7 @@ Function EditRecord()
 *---------------------------------------------------------------------------------------
 CloseBotons()
 OpenGets()
-Gt_Name:SetFocus()
+Gt_Name:Setfocus()
 Return Nil
 
 *---------------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ Return Nil
 Function GetRefresh()
 *---------------------------------------------------------------------------------------
 
-Local oDlg:=GetModalHandle()
+Local oDlg:=hwg_GetModalHandle()
 Gt_Cod:Refresh()
 Gt_Name:Refresh()
 Gt_Adress:Refresh()
@@ -220,7 +220,7 @@ if oOper=1
    oCod:=StrZero(val(oCod),3)
    Seek oCod
    If Found()
-      MsgInfo("Cod."+oCod+" no valid...","Mensagem")
+      hwg_Msginfo("Cod."+oCod+" no valid...","Mensagem")
       Return Nil
    Endif
    Append Blank
@@ -268,7 +268,7 @@ Function DeleteRecord()
 Select TabDbf
 Seek oCod
 If Found()
-   If MsgYesNo("Delete Cod "+oCod ,"Mensagem")
+   If hwg_Msgyesno("Delete Cod "+oCod ,"Mensagem")
       RLock()
       Delete
       Unlock

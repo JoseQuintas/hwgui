@@ -164,14 +164,14 @@ HB_FUNC( HWG__SETMENU )
                ( HMENU ) HB_PARHANDLE( 2 ) ) );
 }
 
-HB_FUNC( GETMENUHANDLE )
+HB_FUNC( HWG_GETMENUHANDLE )
 {
    HWND handle = ( hb_pcount() > 0 &&
          !HB_ISNIL( 1 ) ) ? ( HWND ) HB_PARHANDLE( 1 ) : aWindows[0];
    HB_RETHANDLE( GetMenu( handle ) );
 }
 
-HB_FUNC( CHECKMENUITEM )
+HB_FUNC( HWG_CHECKMENUITEM )
 {
    HMENU hMenu;
    UINT uCheck = ( hb_pcount() < 3 || !HB_ISLOG( 3 ) ||
@@ -203,7 +203,7 @@ HB_FUNC( CHECKMENUITEM )
    }
 }
 
-HB_FUNC( ISCHECKEDMENUITEM )
+HB_FUNC( HWG_ISCHECKEDMENUITEM )
 {
    HMENU hMenu;
    UINT uCheck;
@@ -234,7 +234,7 @@ HB_FUNC( ISCHECKEDMENUITEM )
    }
 }
 
-HB_FUNC( ENABLEMENUITEM )
+HB_FUNC( HWG_ENABLEMENUITEM )
 {
    HMENU hMenu;                 // = ( hb_pcount()>0 && !HB_ISNIL(1) )? (( HMENU ) HB_PARHANDLE(1)) : GetMenu(aWindows[0]);
    UINT uEnable = ( hb_pcount() < 3 || !HB_ISLOG( 3 ) ||
@@ -271,7 +271,7 @@ HB_FUNC( ENABLEMENUITEM )
    }
 }
 
-HB_FUNC( ISENABLEDMENUITEM )
+HB_FUNC( HWG_ISENABLEDMENUITEM )
 {
    HMENU hMenu;                 // = ( hb_pcount()>0 && !HB_ISNIL(1) )? (( HMENU ) HB_PARHANDLE(1)):GetMenu(aWindows[0]);
    UINT uCheck;
@@ -342,7 +342,7 @@ HB_FUNC( HWG_DESTROYMENU )
 /*
  * CreateAcceleratorTable( _aAccel )
  */
-HB_FUNC( CREATEACCELERATORTABLE )
+HB_FUNC( HWG_CREATEACCELERATORTABLE )
 {
    PHB_ITEM pArray = hb_param( 1, HB_IT_ARRAY ), pSubArr;
    LPACCEL lpaccl;
@@ -368,12 +368,12 @@ HB_FUNC( CREATEACCELERATORTABLE )
 /*
  * DestroyAcceleratorTable( hAccel )
  */
-HB_FUNC( DESTROYACCELERATORTABLE )
+HB_FUNC( HWG_DESTROYACCELERATORTABLE )
 {
    hb_retl( DestroyAcceleratorTable( ( HACCEL ) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC( DRAWMENUBAR )
+HB_FUNC( HWG_DRAWMENUBAR )
 {
    hb_retl( ( BOOL ) DrawMenuBar( ( HWND ) HB_PARHANDLE( 1 ) ) );
 }
@@ -382,7 +382,7 @@ HB_FUNC( DRAWMENUBAR )
  *  GetMenuCaption( hWnd | oWnd, nMenuId )
  */
 
-HB_FUNC( GETMENUCAPTION )
+HB_FUNC( HWG_GETMENUCAPTION )
 {
    HMENU hMenu;
 
@@ -431,7 +431,7 @@ HB_FUNC( GETMENUCAPTION )
 /*
  *  SetMenuCaption( hWnd | oWnd, nMenuId, cCaption )
  */
-HB_FUNC( SETMENUCAPTION )
+HB_FUNC( HWG_SETMENUCAPTION )
 {
    HMENU hMenu;
 
@@ -472,40 +472,40 @@ HB_FUNC( SETMENUCAPTION )
    }
 }
 
-HB_FUNC( SETMENUITEMBITMAPS )
+HB_FUNC( HWG__SETMENUITEMBITMAPS )
 {
    hb_retl( SetMenuItemBitmaps( ( HMENU ) HB_PARHANDLE( 1 ), hb_parni( 2 ),
                                 MF_BYCOMMAND, ( HBITMAP ) HB_PARHANDLE( 3 ),
                                 ( HBITMAP ) HB_PARHANDLE( 4 ) ) );
 }
 
-HB_FUNC( GETMENUCHECKMARKDIMENSIONS )
+HB_FUNC( HWG_GETMENUCHECKMARKDIMENSIONS )
 {
    hb_retnl( ( LONG ) GetMenuCheckMarkDimensions() );
 }
 
 
-HB_FUNC( GETSIZEMENUBITMAPWIDTH )
+HB_FUNC( HWG_GETMENUBITMAPWIDTH )
 {
    hb_retni( GetSystemMetrics( SM_CXMENUSIZE ) );
 }
 
-HB_FUNC( GETSIZEMENUBITMAPHEIGHT )
+HB_FUNC( HWG_GETMENUBITMAPHEIGHT )
 {
    hb_retni( GetSystemMetrics( SM_CYMENUSIZE ) );
 }
 
-HB_FUNC( GETMENUCHECKMARKWIDTH )
+HB_FUNC( HWG_GETMENUCHECKMARKWIDTH )
 {
    hb_retni( GetSystemMetrics( SM_CXMENUCHECK ) );
 }
 
-HB_FUNC( GETMENUCHECKMARKHEIGHT )
+HB_FUNC( HWG_GETMENUCHECKMARKHEIGHT )
 {
    hb_retni( GetSystemMetrics( SM_CYMENUCHECK ) );
 }
 
-HB_FUNC( STRETCHBLT )
+HB_FUNC( HWG_STRETCHBLT )
 {
    hb_retl( StretchBlt( ( HDC ) HB_PARHANDLE( 1 ),
                hb_parni( 2 ),
@@ -531,7 +531,7 @@ HB_FUNC( HWG__INSERTBITMAPMENU )
                                       hb_parni( 2 ), 0, &mii ) );
 }
 
-HB_FUNC( CHANGEMENU )
+HB_FUNC( HWG_CHANGEMENU )
 {
    void * hStr;
    hb_retl( ChangeMenu( ( HMENU ) HB_PARHANDLE( 1 ), ( UINT ) hb_parni( 2 ),
@@ -540,7 +540,7 @@ HB_FUNC( CHANGEMENU )
    hb_strfree( hStr );
 }
 
-HB_FUNC( MODIFYMENU )
+HB_FUNC( HWG_MODIFYMENU )
 {
    void * hStr;
    hb_retl( ModifyMenu( ( HMENU ) HB_PARHANDLE( 1 ), ( UINT ) hb_parni( 2 ),
@@ -550,7 +550,7 @@ HB_FUNC( MODIFYMENU )
 }
 
 
-HB_FUNC( ENABLEMENUSYSTEMITEM )
+HB_FUNC( HWG_ENABLEMENUSYSTEMITEM )
 {
    HMENU hMenu; 
    UINT  uEnable = ( hb_pcount() < 3 || !HB_ISLOG( 3 ) || hb_parl( 3 ) )? MF_ENABLED:MF_GRAYED;
@@ -601,3 +601,4 @@ HB_FUNC( HWG_SETMENUINFO )
       SetMenuInfo( hMenu, &mi );
    } 
 }
+

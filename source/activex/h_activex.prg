@@ -60,32 +60,32 @@ METHOD New( oWnd, cProgId, nTop, nLeft, nWidth, nHeight, bSize ) CLASS HActiveX
    ::Super:New( oWnd, , nStyle, nLeft, nTop, nWidth, nHeight )   // ,,,,bSize)
    ::title = cProgId
 
-   ::handle = CreateActivex(  nExStyle, cClsName, cProgId, ::style, ;
+   ::handle = hwg_Createactivex(  nExStyle, cClsName, cProgId, ::style, ;
                               ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
                               ::oParent:handle, ::Id     ;
                             )
 
    ::Init()
 
-   ::hObj   := AtlAxGetDisp( ::handle )
+   ::hObj   := hwg_Atlaxgetdisp( ::handle )
 
    bErrorBlock := ErrorBlock( { |x| break( x ) } )
    #ifdef __XHARBOUR__
       TRY
          ::oOle := ToleAuto():New( ::hObj )
       CATCH oError
-         MsgInfo( oError:Description )
+         hwg_Msginfo( oError:Description )
       END
    #else
       BEGIN SEQUENCE
          ::oOle := ToleAuto():New( ::hObj )
       RECOVER USING oError
-         MsgInfo( oError:Description )
+         hwg_Msginfo( oError:Description )
       END
    #endif
    ErrorBlock( bErrorBlock )
 
-   SetupConnectionPoint( ::hObj, @hSink, ::aAxEv , ::aAxExec )
+   hwg_Setupconnectionpoint( ::hObj, @hSink, ::aAxEv , ::aAxExec )
    ::hSink := hSink
 
    RETURN SELF
@@ -93,8 +93,8 @@ METHOD New( oWnd, cProgId, nTop, nLeft, nWidth, nHeight, bSize ) CLASS HActiveX
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS HActiveX
 *-----------------------------------------------------------------------------*
-   SHUTDOWNCONNECTIONPOINT( ::hSink )
-   ReleaseDispatch( ::hObj )
+   hwg_Shutdownconnectionpoint( ::hSink )
+   hwg_Releasedispatch( ::hObj )
 Return ::Super:Release()
 
 *-----------------------------------------------------------------------------* 

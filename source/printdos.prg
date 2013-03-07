@@ -111,7 +111,7 @@ METHOD New( oPorta ) CLASS PrintDos
       IF oPorta == "DEFAULT"
          oPtrName := hwg_PrintPortName()
          IF oPtrName == Nil
-            MsgInfo( "Error, file to:ERROR.TXT" )
+            hwg_Msginfo( "Error, file to:ERROR.TXT" )
             ::oPorta := "Error.txt"
          ELSE
             ::oPorta := oPtrName
@@ -124,12 +124,12 @@ METHOD New( oPorta ) CLASS PrintDos
             oPtrSetup := hwg_PrintSetupDos()
          #endif
          IF oPtrSetup == Nil
-            MsgInfo( "Error, file to:ERROR.TXT" )
+            hwg_Msginfo( "Error, file to:ERROR.TXT" )
             ::oPorta := "Error.txt"
          ELSE
             oPtrName := hwg_PrintPortName()
             IF oPtrName == Nil
-               MsgInfo( "Error, file to:ERROR.TXT" )
+               hwg_Msginfo( "Error, file to:ERROR.TXT" )
                ::oPorta := "Error.txt"
             ELSE
                oPtrName := AllTrim( oPtrName )
@@ -328,7 +328,7 @@ METHOD PrinterFile( fname ) CLASS PrintDos
    LOCAL han, nRead
 
    IF ! File( fname )
-      MsgStop( "Error open file " + fname, "Error" )
+      hwg_Msgstop( "Error open file " + fname, "Error" )
       RETURN .F.
    ENDIF
 
@@ -352,20 +352,23 @@ METHOD PrinterFile( fname ) CLASS PrintDos
 
    ELSE
 
-      MsgStop( "Can't Open port" )
+      hwg_Msgstop( "Can't Open port" )
       FClose( han )
 
    ENDIF
 
    RETURN .T.
 
-FUNCTION wProw( oPrinter )
+FUNCTION hwg_wProw( oPrinter )
+
    RETURN oPrinter:nProw
 
-FUNCTION wPCol( oPrinter )
+FUNCTION hwg_wPCol( oPrinter )
+
    RETURN oPrinter:nPcol
 
-FUNCTION wSetPrc( x, y, oPrinter )
+FUNCTION hwg_wSetPrc( x, y, oPrinter )
+
    oPrinter:SetPrc( x, y )
    RETURN Nil
 
@@ -388,7 +391,7 @@ METHOD TxttoGraphic( fName, osize, oPreview ) CLASS PrintDos
    oPrinter:StartDoc( oPreview  )
    oPrinter:StartPage()
 
-   SelectObject( oPrinter:hDC, oFont:handle )
+   hwg_Selectobject( oPrinter:hDC, oFont:handle )
 
    IF han <> - 1
       DO WHILE .T.
@@ -413,7 +416,7 @@ METHOD TxttoGraphic( fName, osize, oPreview ) CLASS PrintDos
       ENDDO
       FClose( han )
    ELSE
-      MsgStop( "Can't open " + fName )
+      hwg_Msgstop( "Can't open " + fName )
       RETURN .F.
    ENDIF
    oPrinter:EndPage()
@@ -453,7 +456,7 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
       ENDDO
       FClose( han )
    ELSE
-      MsgStop( "Can't open " + fName )
+      hwg_Msgstop( "Can't open " + fName )
       RETURN .F.
    ENDIF
 
@@ -470,7 +473,7 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
    IIf( cTitle == Nil, cTitle := "Print Preview", cTitle := cTitle )
 
    INIT DIALOG oDlg TITLE cTitle ;
-        At 0, 0 SIZE GETDESKTOPWIDTH(), GETDESKTOPHEIGHT() on init { || Sendmessage( oedit1:handle, WM_VSCROLL  , SB_TOP, 0 ) }
+        At 0, 0 SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() on init { || hwg_Sendmessage( oedit1:handle, WM_VSCROLL  , SB_TOP, 0 ) }
 
 
 
@@ -478,7 +481,7 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
 *        COLOR oColor1 BACKCOLOR oColor2  //Blue to Black  && Original
 //   @ 88,19 EDITBOX oEdit ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
 //        COLOR oColor1 BACKCOLOR oColor2 FONT oFont //Blue to Black  //Added by  por Fernando Athayde
-   @ 88, 19 EDITBOX oedit1 CAPTION oEdit ID 1001 SIZE GETDESKTOPWIDTH() - 100, GETDESKTOPHEIGHT() - 100 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
+   @ 88, 19 EDITBOX oedit1 CAPTION oEdit ID 1001 SIZE hwg_Getdesktopwidth() - 100, hwg_Getdesktopheight() - 100 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
       COLOR oColor1 BACKCOLOR oColor2 FONT oFont //Blue to Black  //Added by  por Fernando Athayde
 
 
@@ -490,8 +493,8 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
    @ 6, 30 BUTTON "<<"    ON CLICK { || nPage := PrintDosAnt( nPage, oText ) } SIZE 69, 32  STYLE IIF( nPage = 1, WS_DISABLED, 0 )
    @ 6, 80 BUTTON ">>"    ON CLICK { || nPage := PrintDosNext( oPage, nPage, oText ) } SIZE 69, 32 STYLE IIF( nPage = 1, WS_DISABLED, 0 )
    @ 6, 130 BUTTON "Imprimir" ON CLICK { || PrintDosPrint( oText, oPrt ) } SIZE 69, 32
-//   @ 6,180 BUTTON "Grafico" on Click {||EndDialog(),oDos2:TxttoGraphic(fName,2,.t.),oDos2:end()} SIZE 69,32
-   @ 6, 230 BUTTON "Fechar" ON CLICK { || EndDialog() } SIZE 69, 32
+//   @ 6,180 BUTTON "Grafico" on Click {||hwg_EndDialog(),oDos2:TxttoGraphic(fName,2,.t.),oDos2:end()} SIZE 69,32
+   @ 6, 230 BUTTON "Fechar" ON CLICK { || hwg_EndDialog() } SIZE 69, 32
 
    oDlg:Activate()
 
@@ -508,24 +511,25 @@ STATIC FUNCTION PrintDosPrint( oText, oPrt )
 
 
 STATIC FUNCTION PrintDosAnt( nPage, oText )
-   LOCAL oDlg := GetModalhandle()
+   LOCAL oDlg := hwg_GetModalHandle()
    nPage := -- nPage
    IF nPage < 1 ; nPage := 1 ; ENDIF
    IF nPage = 1  //Added by  Por Fernando Exclui 1 byte do oText nao sei de onde ele aparece
-      SetDlgItemText( oDlg, 1001, SUBS( oText[ nPage ], 2 ) )  //Added by  Por Fernando Exclui 1 byte do oText nao sei de onde ele aparece
+      hwg_Setdlgitemtext( oDlg, 1001, SUBS( oText[ nPage ], 2 ) )  //Added by  Por Fernando Exclui 1 byte do oText nao sei de onde ele aparece
    ELSE
-      SetDlgItemText( oDlg, 1001, oText[ nPage ] )
+      hwg_Setdlgitemtext( oDlg, 1001, oText[ nPage ] )
    ENDIF
    RETURN nPage
 
 STATIC FUNCTION PrintDosNext( oPage, nPage, oText )
-   LOCAL oDlg := GetModalhandle()
+   LOCAL oDlg := hwg_GetModalHandle()
    nPage := ++ nPage
    IF nPage > oPage ; nPage := oPage ; ENDIF
-   SetDlgItemText( oDlg, 1001, oText[ nPage ] )
+   hwg_Setdlgitemtext( oDlg, 1001, oText[ nPage ] )
    RETURN nPage
 
-FUNCTION regenfile( o, new )
+FUNCTION hwg_regenfile( o, new )
+
    LOCAL aText := AFillText( o )
    LOCAL stroka
    LOCAL o1 := printdos():new( new )
@@ -647,3 +651,4 @@ HB_FUNC( AFILLTEXT )
 }
 
 #PRAGMA ENDDUMP
+

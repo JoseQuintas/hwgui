@@ -25,7 +25,7 @@ Function Main
    SET DATE BRITISH
    SET CENTURY ON
 
-   SetTooltipBalloon(.t.)
+   hwg_Settooltipballoon(.t.)
 
    INIT WINDOW oWnd MAIN TITLE "Controle MonthCalendar" ;
       AT 100,100 SIZE 640,480
@@ -33,7 +33,7 @@ Function Main
    MENU OF oWnd
       MENUITEM "&Calendário 1" ACTION Dlg1()
       MENUITEM "&Calendário 2" ACTION Dlg2()
-      MENUITEM "&Sair"         ACTION EndWindow()
+      MENUITEM "&Sair"         ACTION hwg_EndWindow()
    ENDMENU
 
    ACTIVATE WINDOW oWnd
@@ -56,13 +56,13 @@ Function Dlg1
    @ 20,20 MONTHCALENDAR oMC ;
       SIZE 250,250 ;
       INIT ctod("01/01/2004") ;
-      ON INIT {||MsgInfo("Evento On Init","MonthCalendar")} ;
-      ON CHANGE {||MsgInfo("Evento On Change","MonthCalendar")} ;
+      ON INIT {||hwg_Msginfo("Evento On Init","MonthCalendar")} ;
+      ON CHANGE {||hwg_Msginfo("Evento On Change","MonthCalendar")} ;
       NOTODAY NOTODAYCIRCLE WEEKNUMBERS ;
       FONT oFont ;
       TOOLTIP "MonthCalendar - NoToday - NoTodayCircle - WeekNumbers"
 
-   @ 300,20 BUTTON "Get Date" ON CLICK {||MsgInfo(dtoc(oMC:GetValue()))} SIZE 100,40
+   @ 300,20 BUTTON "Get Date" ON CLICK {||hwg_Msginfo(dtoc(oMC:GetValue()))} SIZE 100,40
    @ 300,60 BUTTON "Set Date" ON CLICK {||oMC:SetValue(Date())} SIZE 100,40
 
    ACTIVATE DIALOG oDlg
@@ -87,7 +87,7 @@ Function Dlg2
       INIT Date() ;
       FONT oFont
 
-   @ 300,20 BUTTON "Get Date" ON CLICK {||MsgInfo(dtoc(oMC:GetValue()))} SIZE 100,40
+   @ 300,20 BUTTON "Get Date" ON CLICK {||hwg_Msginfo(dtoc(oMC:GetValue()))} SIZE 100,40
    @ 300,60 BUTTON "Set Date" ON CLICK {||oMC:SetValue(Date())} SIZE 100,40
 
    ACTIVATE DIALOG oDlg

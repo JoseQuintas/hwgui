@@ -3,7 +3,7 @@
  * 
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -36,20 +36,20 @@ Private nColor, oBmp2
          SEPARATOR
          MENUITEM "&Font" ACTION oFont:=HFont():Select(oFont)
          MENUITEM "&Color" ACTION (nColor:=Hwg_ChooseColor(nColor,.F.), ;
-                     MsgInfo(Iif(nColor!=Nil,str(nColor),"--"),"Color value"))
+                     hwg_Msginfo(Iif(nColor!=Nil,str(nColor),"--"),"Color value"))
          SEPARATOR
          MENUITEM "&Move Main Window" ACTION oMainWindow:Move(50, 60, 200, 300)
-         MENUITEM "&Exit" ACTION EndWindow()
+         MENUITEM "&Exit" ACTION hwg_EndWindow()
       ENDMENU
       MENU TITLE "&Samples"
          MENUITEM "&Checked" ID 1001 ;
-               ACTION CheckMenuItem( ,1001, !IsCheckedMenuItem( ,1001 ) )
+               ACTION hwg_Checkmenuitem( ,1001, !hwg_Ischeckedmenuitem( ,1001 ) )
          SEPARATOR
          MENUITEM "&Test Tab" ACTION TestTab()
          MENUITEM "&Class HRect" ACTION RRectangle()
          SEPARATOR
          MENUITEM "&MsgGet" ;
-               ACTION CopyStringToClipboard(MsgGet("Dialog Sample","Input table name"))
+               ACTION hwg_Copystringtoclipboard(hwg_MsgGet("Dialog Sample","Input table name"))
          MENUITEM "&Dialog from prg" ACTION DialogFromPrg()
          MENUITEM "&MdiChild from prg" ACTION MdiChildFromPrg( )
          MENUITEM "&DOS print" ACTION PrintDos()
@@ -70,12 +70,12 @@ Private nColor, oBmp2
       MENU TITLE "&Help"
          MENUITEM "&About" ACTION OpenAbout()
          MENUITEM "&Window2Bitmap" ACTION About2()
-         MENUITEM "&Version HwGUI and Compilator" ACTION MsgInfo(HwG_Version(1))
-         MENUITEM "&Version HwGUI" ACTION MsgInfo(HwG_Version())
+         MENUITEM "&Version HwGUI and Compilator" ACTION hwg_Msginfo(HwG_Version(1))
+         MENUITEM "&Version HwGUI" ACTION hwg_Msginfo(HwG_Version())
       ENDMENU
       MENU TITLE "&Windows"
          MENUITEM "&Tile"  ;
-            ACTION  SendMessage(HWindow():GetMain():handle,WM_MDITILE,MDITILE_HORIZONTAL,0)
+            ACTION  hwg_Sendmessage(HWindow():GetMain():handle,WM_MDITILE,MDITILE_HORIZONTAL,0)
       ENDMENU
    ENDMENU
 
@@ -124,7 +124,7 @@ Local e5 := 10320.54
         PICTURE "@e 999,999,999.99"     ;
         SIZE 260, 25
 
-   @ 20,190  BUTTONEX "Ok" SIZE 100, 32 ON CLICK {||( MsgInfo( e1 + chr(10) + chr(13) + ;
+   @ 20,190  BUTTONEX "Ok" SIZE 100, 32 ON CLICK {||( hwg_Msginfo( e1 + chr(10) + chr(13) + ;
                Dtoc(e2) + chr(10) + chr(13) + ;
                Str(e3) + chr(10) + chr(13) +  ;
                e4 + chr(10) + chr(13) +       ;
@@ -147,25 +147,25 @@ Local oCmd1, oCmd2, oCmd3
    AT 210,10  SIZE 350,350                    ;
    FONT oFont                                 ;
    STYLE WS_CHILD+ WS_OVERLAPPEDWINDOW        ;
-   ON EXIT {||MsgYesNo("Really exit ?")}
+   ON EXIT {||hwg_Msgyesno("Really exit ?")}
 
    @ 20,10 SAY cText SIZE 260, 22
    @ 20,35 EDITBOX oEdit CAPTION ""    ;
         STYLE WS_DLGFRAME              ;
-        SIZE 260, 26 COLOR Vcolor("FF0000")
+        SIZE 260, 26 COLOR hwg_VColor("FF0000")
    oEdit:anchor := 11
    
    @ 20,70 CHECKBOX "Check 1" SIZE 90, 20
    @ 20,95 CHECKBOX "Check 2"  ;
-        SIZE 90, 20 COLOR Iif( nColor==Nil,Vcolor("0000FF"),nColor )
+        SIZE 90, 20 COLOR Iif( nColor==Nil,hwg_VColor("0000FF"),nColor )
 
    @ 160,70 GROUPBOX "RadioGroup"  SIZE 130, 75
 
    RADIOGROUP
    @ 180,90 RADIOBUTTON "Radio 1"  ;
-        SIZE 90, 20 ON CLICK {||oEdit:SetColor(Vcolor("0000FF"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oEdit:SetColor(hwg_VColor("0000FF"),,.T.)}
    @ 180,115 RADIOBUTTON "Radio 2" ;
-        SIZE 90, 20 ON CLICK {||oEdit:SetColor(Vcolor("FF0000"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oEdit:SetColor(hwg_VColor("FF0000"),,.T.)}
    END RADIOGROUP SELECTED 2
 
    @ 20,120 COMBOBOX aCombo STYLE WS_TABSTOP ;
@@ -185,7 +185,7 @@ Local oCmd1, oCmd2, oCmd3
    @ 100,220 LINE LENGTH 100
 
    @ 20,240 BUTTONEX oCmd1 CAPTION "Ok" ID IDOK  ;
-        SIZE 100, 32 COLOR Vcolor("FF0000")
+        SIZE 100, 32 COLOR hwg_VColor("FF0000")
    @ 140,240 BUTTONEX oCmd2 CAPTION "11"   ;
         SIZE 20, 32 ON CLICK {|o|CreateC(o)}
    @ 180,240 BUTTONEX oCmd3 CAPTION "Cancel" ID IDCANCEL  ;
@@ -225,7 +225,7 @@ Local oSay
    ON EXIT {||oBmp2 := HBitmap():AddWindow(oBrw),.T.} ;
    FONT oFontDlg
 
-   oModDlg:bActivate := {||MsgInfo("!!")}
+   oModDlg:bActivate := {||hwg_Msginfo("!!")}
       
 
    // @ 20,30 BITMAP "image\OPEN.BMP"
@@ -234,7 +234,7 @@ Local oSay
 
    @ 20,60 SAY "Sample Dialog"        ;
        SIZE 130, 22 STYLE SS_CENTER  ;
-        COLOR Vcolor("0000FF")
+        COLOR hwg_VColor("0000FF")
 
    @ 20,80 SAY "Written as a sample"  ;
         SIZE 130, 22 STYLE SS_CENTER
@@ -246,26 +246,26 @@ Local oSay
    @ 20,140 SAY "Hwgui Page"        ;
    LINK "http://kresin.belgorod.su/hwgui.html" ;
        SIZE 130, 22 STYLE SS_CENTER  ;
-        COLOR Vcolor("0000FF") ;
-        VISITCOLOR RGB(241,249,91)
+        COLOR hwg_VColor("0000FF") ;
+        VISITCOLOR hwg_Rgb(241,249,91)
 
    @ 20,160 SAY "Hwgui international Forum"        ;
    LINK "http://br.groups.yahoo.com/group/hwguibr" ;
        SIZE 200, 22 STYLE SS_CENTER  ;
-        COLOR Vcolor("0000FF") ;
-        VISITCOLOR RGB(241,249,91)
+        COLOR hwg_VColor("0000FF") ;
+        VISITCOLOR hwg_Rgb(241,249,91)
 
 
    @ 160,30 BROWSE oBrw ARRAY SIZE 180,110 ;
         STYLE WS_BORDER + WS_VSCROLL + WS_HSCROLL
 
-   @ 80,180 OWNERBUTTON ON CLICK {|| EndDialog()}        ;
+   @ 80,180 OWNERBUTTON ON CLICK {|| hwg_EndDialog()}        ;
        SIZE 180,35 FLAT                                  ;
-       TEXT "Close" COLOR Vcolor("0000FF") FONT oFontBtn ;
+       TEXT "Close" COLOR hwg_VColor("0000FF") FONT oFontBtn ;
        BITMAP cImageDir+"door.bmp" COORDINATES 40,10,0,0
        // 
 
-   CreateArList( oBrw,aSample )
+   hwg_CREATEARLIST( oBrw,aSample )
    oBrw:bColorSel    := 12507070  // 15149157449
 
    oBmp := HBitmap():AddStandard( OBM_LFARROWI )
@@ -317,25 +317,25 @@ Local nId
 
       INIT DIALOG oModDlg TITLE "1"                    ;
             AT 210,10  SIZE 500,300                    ;
-            ON INIT {|o|SetWindowText(o:handle,fname)} ;
+            ON INIT {|o|hwg_Setwindowtext(o:handle,fname)} ;
             ON EXIT {|o|Fileclose(o)}
 
       MENU OF oModDlg
          MENUITEM "&Font" ACTION ( oBrw:oFont:=HFont():Select(oFont),oBrw:Refresh() )
-         MENUITEM "&Exit" ACTION EndDialog( oModDlg:handle )
+         MENUITEM "&Exit" ACTION hwg_EndDialog( oModDlg:handle )
       ENDMENU
 
       @ 0,0 BROWSE oBrw DATABASE OF oModDlg ID nId ;
             SIZE 500,300                           ;
             STYLE WS_VSCROLL + WS_HSCROLL          ;
-            ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,y)} ;
+            ON SIZE {|o,x,y|hwg_Movewindow(o:handle,0,0,x,y)} ;
             ON GETFOCUS {|n,o|dbSelectArea(o:alias)}
-      CreateList( oBrw,.T. )
-      oBrw:bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}
+      hwg_CreateList( oBrw,.T. )
+      oBrw:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
       IF oFont != Nil
          oBrw:ofont := oFont
       ENDIF
-      AEval(oBrw:aColumns, {|o| o:bHeadClick := {|oB, n| MsgInfo("Column number "+Str(n))}})
+      AEval(oBrw:aColumns, {|o| o:bHeadClick := {|oB, n| hwg_Msginfo("Column number "+Str(n))}})
 
       ACTIVATE DIALOG oModDlg NOMODAL
    ENDIF
@@ -355,7 +355,7 @@ Local han := fcreate( "LPT1",0 )
      fwrite( han, "---------------------------"+Chr(10)+Chr(13)+Chr(12) )
      fclose( han )
   else
-     MsgStop("Can't open printer port!")
+     hwg_Msgstop("Can't open printer port!")
   endif
 return nil
 
@@ -373,7 +373,7 @@ Local oPrinter, oFont
    oPrinter:StartPage()
    oPrinter:SetFont( oFont )
    oPrinter:Box( 5,5,oPrinter:nWidth-5,oPrinter:nHeight-5 )
-   oPrinter:SetTextColor( 2788990 )
+   oPrinter:Settextcolor( 2788990 )
    oPrinter:Say( "Windows printing first sample !", 50,10,165,26,DT_CENTER,oFont  )
    oPrinter:Line( 45,30,170,30 )
    oPrinter:Line( 45,5,45,30 )
@@ -385,7 +385,7 @@ Local oPrinter, oFont
    oPrinter:StartPage()
    oPrinter:SetFont( oFont )
    oPrinter:Box( 5,5,oPrinter:nWidth-5,oPrinter:nHeight-5 )
-   oPrinter:SetTextColor( 2755990 )
+   oPrinter:Settextcolor( 2755990 )
    oPrinter:Say( "Printing second sample !", 50,10,185,26,DT_CENTER,oFont  )
    oPrinter:Line( 45,30,170,30 )
    oPrinter:Line( 45,5,45,30 )
@@ -410,24 +410,24 @@ Local cRes, aCombo := { "First","Second" }, oEdit, vard := "Monday"
    INIT DIALOG oModDlg TITLE cTitle           ;
    AT 210,10  SIZE 300,300                    ;
    FONT oFont                                 ;
-   ON EXIT {||MsgYesNo("Really exit ?")}
+   ON EXIT {||hwg_Msgyesno("Really exit ?")}
 
    @ 20,10 SAY cText SIZE 260, 22
    @ 20,35 EDITBOX oEdit CAPTION ""    ;
         STYLE WS_DLGFRAME              ;
-        SIZE 260, 26 COLOR Vcolor("FF0000")
+        SIZE 260, 26 COLOR hwg_VColor("FF0000")
 
    @ 20,70 CHECKBOX "Check 1" SIZE 90, 20
    @ 20,95 CHECKBOX "Check 2"  ;
-        SIZE 90, 20 COLOR Iif( nColor==Nil,Vcolor("0000FF"),nColor )
+        SIZE 90, 20 COLOR Iif( nColor==Nil,hwg_VColor("0000FF"),nColor )
 
    @ 160,70 GROUPBOX "RadioGroup"  SIZE 130, 75
 
    RADIOGROUP
    @ 180,90 RADIOBUTTON "Radio 1"  ;
-        SIZE 90, 20 ON CLICK {||oEdit:SetColor(Vcolor("0000FF"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oEdit:SetColor(hwg_VColor("0000FF"),,.T.)}
    @ 180,115 RADIOBUTTON "Radio 2" ;
-        SIZE 90, 20 ON CLICK {||oEdit:SetColor(Vcolor("FF0000"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oEdit:SetColor(hwg_VColor("FF0000"),,.T.)}
    END RADIOGROUP SELECTED 2
 
    @ 20,120 COMBOBOX aCombo STYLE WS_TABSTOP ;
@@ -446,7 +446,7 @@ Local cRes, aCombo := { "First","Second" }, oEdit, vard := "Monday"
    @ 100,220 LINE LENGTH 100
 
    @ 20,240 BUTTON "Ok" OF oModDlg ID IDOK  ;
-        SIZE 100, 32 COLOR Vcolor("FF0000")
+        SIZE 100, 32 COLOR hwg_VColor("FF0000")
    @ 140,240 BUTTON "11" OF oModDlg  ;
         SIZE 20, 32 ON CLICK {|o|CreateC(o)}
    @ 180,240 BUTTON "Cancel" OF oModDlg ID IDCANCEL  ;
@@ -464,11 +464,11 @@ Static lFirst := .F., o
       @ 50,200 DATEPICKER o SIZE 80, 24
       lFirst := .T.
    ENDIF
-   SendMessage( o:handle,DTM_SETFORMAT,0,"dd':'MM':'yyyy" )
+   hwg_Sendmessage( o:handle,DTM_SETFORMAT,0,"dd':'MM':'yyyy" )
 Return Nil
 
 Function Sendemail(endereco)
-ShellExecute("rundll32.exe", "open", ;
+hwg_Shellexecute("rundll32.exe", "open", ;
             "url.dll,FileProtocolHandler " + ;
             "mailto:"+endereco+"?cc=&bcc=" + ;
             "&subject=Ref%20:" + ;
@@ -483,8 +483,8 @@ Local oGet3, oGet4, oVar3:="3", oVar4:="4", oGet5, oVar5 := "5"
 INIT DIALOG oDlg CLIPPER NOEXIT AT 0, 0 SIZE 200, 200
 
 @ 10, 10 TAB oTab ITEMS {} SIZE 180, 180 ;
-   ON LOSTFOCUS {||MsgInfo("Lost Focus")};
-   ON INIT  {||SetFocus(oDlg:getlist[1]:handle)}
+   ON LOSTFOCUS {||hwg_Msginfo("Lost Focus")};
+   ON INIT  {||hwg_Setfocus(oDlg:getlist[1]:handle)}
 
 BEGIN PAGE "Page 01" of oTab
 
@@ -508,9 +508,9 @@ return nil
 FUNCTION ActiveTopMost( nHandle, lActive )
     
     if lActive
-       lSucess := SetTopMost(nHandle)    // Set TopMost
+       lSucess := hwg_Settopmost(nHandle)    // Set TopMost
     else   
-       lSucess := RemoveTopMost(nHandle) // Remove TopMost
+       lSucess := hwg_Removetopmost(nHandle) // Remove TopMost
     endif
     
     RETURN lSucess
@@ -530,7 +530,7 @@ INIT DIALOG oDlg TITLE "Progress Bar"    ;
              BARWIDTH 10    ;
              QUANTITY 1000    
 ADD STATUS oStatus TO oDlg PARTS 400
-oBar   := HProgressBar():New(ostatus,,0,2,200,20,200,1000 ,rgb(12,143,243),rgb(243,132,143))
+oBar   := HProgressBar():New(ostatus,,0,2,200,20,200,1000 ,hwg_Rgb(12,143,243),hwg_Rgb(243,132,143))
 oCombo := HComboBox():New(ostatus,,,,65536,0,2,200,20,aCombo,,,,,,,.F.,.F.,,,)
 @ 10, 60  BUTTON "Test" SIZE 100, 32 ON CLICK {|| MudeProg(oBar) }
    
@@ -556,7 +556,7 @@ INIT DIALOG oDlg TITLE "Sample HRect"    ;
        @  10, 10,200,100 RECT oR2 of oDlg RECT_STYLE 3
        @  10,130,100,230 RECT oR3 of oDlg PRESS RECT_STYLE 2
 
-       Rect(oDlg, 10, 250, 590, 320, , 1 )
+       hwg_Rect(oDlg, 10, 250, 590, 320, , 1 )
 
    oDlg:Activate()
 

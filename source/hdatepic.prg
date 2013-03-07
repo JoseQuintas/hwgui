@@ -119,7 +119,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bSize, bInit, ;
 
 METHOD Activate() CLASS HDatePicker
    IF ! Empty( ::oParent:handle )
-      ::handle := CreateDatePicker( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createdatepicker( ::oParent:handle, ::id, ;
             ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
       ::Init()
    ENDIF
@@ -130,7 +130,7 @@ METHOD Init() CLASS HDatePicker
    IF ! ::lInit
    
       ::nHolder := 1
-      SetWindowObject( ::handle, Self )
+      hwg_Setwindowobject( ::handle, Self )
       HWG_INITDATEPICKERPROC( ::handle )
       ::Refresh()
       ::Super:Init()
@@ -148,14 +148,14 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HDatePicker
    ENDIF
    IF msg == WM_CHAR
       IF wParam = VK_TAB
-        GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+        hwg_GetSkip( ::oParent, ::handle, , iif( hwg_IsCtrlShift(.f., .t.), -1, 1) )
         RETURN 0
       ELSEIF wParam == VK_RETURN
-         GetSkip( ::oParent, ::handle, , 1 )
+         hwg_GetSkip( ::oParent, ::handle, , 1 )
          RETURN 0
       ENDIF
    ELSEIF msg = WM_KEYDOWN
-      IF ProcKeyList( Self, wParam )
+      IF hwg_ProcKeyList( Self, wParam )
          RETURN 0
       ENDIF
    ELSEIF  msg = WM_GETDLGCODE
@@ -173,15 +173,15 @@ METHOD CheckValue( lValue )  CLASS HDatePicker
        RETURN .F.
    ENDIF
    IF lValue != Nil
-      IF IIF( GetDatePicker( ::handle, GDT_NONE ) = GDT_NONE ,.F., .T. ) != lValue
+      IF IIF( hwg_Getdatepicker( ::handle, GDT_NONE ) = GDT_NONE ,.F., .T. ) != lValue
          IF ! lValue
-            SendMessage( ::Handle, DTM_SETSYSTEMTIME, GDT_NONE, 0 )
+            hwg_Sendmessage( ::Handle, DTM_SETSYSTEMTIME, GDT_NONE, 0 )
          ELSE
-            SetDatePicker( ::handle, ::dValue, STRTRAN( ::tValue, ":", "" ) )
+            hwg_Setdatepicker( ::handle, ::dValue, STRTRAN( ::tValue, ":", "" ) )
          ENDIF
       ENDIF
    ENDIF
-   RETURN IIF( GetDatePicker( ::handle, GDT_NONE ) = GDT_NONE ,.F., .T. )
+   RETURN IIF( hwg_Getdatepicker( ::handle, GDT_NONE ) = GDT_NONE ,.F., .T. )
 
 METHOD Value( Value )  CLASS HDatePicker
 
@@ -193,19 +193,19 @@ METHOD Value( Value )  CLASS HDatePicker
 
 METHOD GetValue() CLASS HDatePicker
 
-   RETURN IIF( ! ::lShowTime, GetDatePicker( ::handle ), GetTimePicker( ::handle ) )
+   RETURN IIF( ! ::lShowTime, hwg_Getdatepicker( ::handle ), hwg_Gettimepicker( ::handle ) )
 
 METHOD SetValue( xValue ) CLASS HDatePicker
 
    IF Empty( xValue )
-      SetDatePickerNull( ::handle )
+      hwg_Setdatepickernull( ::handle )
    ELSEIF ::lShowTime
-      SetDatePicker( ::handle, Date(), STRTRAN( xValue, ":", "" ) )
+      hwg_Setdatepicker( ::handle, Date(), STRTRAN( xValue, ":", "" ) )
    ELSE
-      SetDatePicker( ::handle, xValue, STRTRAN( ::tValue, ":", "" ) )
+      hwg_Setdatepicker( ::handle, xValue, STRTRAN( ::tValue, ":", "" ) )
    ENDIF
-   ::dValue := GetDatePicker( ::handle )
-   ::tValue := GetTimePicker( ::handle )
+   ::dValue := hwg_Getdatepicker( ::handle )
+   ::tValue := hwg_Gettimepicker( ::handle )
    ::title := IIF( ::lShowTime, ::tValue, ::dValue )
    IF ::bSetGet != NIL
       Eval( ::bSetGet, IIF( ::lShowTime, ::tValue,::dValue ), Self )
@@ -223,8 +223,8 @@ METHOD Refresh() CLASS HDatePicker
       ENDIF
    ENDIF
    IF Empty( ::dValue ) .AND. ! ::lShowTime
-      //SetDatePickerNull( ::handle )
-      SetDatePicker( ::handle, date(), STRTRAN( Time(), ":", "" ) )
+      //hwg_Setdatepickernull( ::handle )
+      hwg_Setdatepicker( ::handle, date(), STRTRAN( Time(), ":", "" ) )
    ELSE
       ::SetValue( IIF( ! ::lShowTime, ::dValue, ::tValue ) )
    ENDIF
@@ -235,14 +235,14 @@ METHOD Refresh() CLASS HDatePicker
 METHOD onChange( nMess ) CLASS HDatePicker
 
    IF ( nMess == DTN_DATETIMECHANGE .AND. ;
-         SendMessage( ::handle, DTM_GETMONTHCAL, 0, 0 ) == 0 ) .OR. ;
+         hwg_Sendmessage( ::handle, DTM_GETMONTHCAL, 0, 0 ) == 0 ) .OR. ;
       nMess == DTN_CLOSEUP
       IF nMess = DTN_CLOSEUP
-         POSTMESSAGE( ::handle, WM_KEYDOWN, VK_RIGHT, 0 )
-         ::SetFocus()
+         hwg_Postmessage( ::handle, WM_KEYDOWN, VK_RIGHT, 0 )
+         ::Setfocus()
       ENDIF
-      ::dValue := GetDatePicker( ::handle )
-      ::tValue := GetTimePicker( ::handle )
+      ::dValue := hwg_Getdatepicker( ::handle )
+      ::tValue := hwg_Gettimepicker( ::handle )
       IF ::bSetGet != NIL
          Eval( ::bSetGet, IIF( ::lShowTime, ::tValue, ::dValue ), Self )
       ENDIF
@@ -258,21 +258,21 @@ METHOD onChange( nMess ) CLASS HDatePicker
 METHOD When( ) CLASS HDatePicker
    LOCAL res := .t.,  nSkip
 
-   IF ! CheckFocus( Self, .f. )
+   IF ! hwg_CheckFocus( Self, .f. )
       RETURN .t.
    ENDIF
    IF ::bGetFocus != NIL
-      nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 .and. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
+      nSkip := IIf( hwg_Getkeystate( VK_UP ) < 0 .or. ( hwg_Getkeystate( VK_TAB ) < 0 .and. hwg_Getkeystate( VK_SHIFT ) < 0 ), - 1, 1 )
       ::oParent:lSuspendMsgsHandling := .T.
       ::lnoValid := .T.
       res :=  Eval( ::bGetFocus, IIF( ::lShowTime, ::tValue, ::dValue ), Self )
       ::lnoValid := ! res
       ::oParent:lSuspendMsgsHandling := .F.
       IF VALTYPE(res) = "L" .AND. ! res
-         WhenSetFocus( Self, nSkip )
-         SendMessage( ::handle, DTM_CLOSEMONTHCAL, 0, 0 )
+         hwg_WhenSetFocus( Self, nSkip )
+         hwg_Sendmessage( ::handle, DTM_CLOSEMONTHCAL, 0, 0 )
       ELSE
-         ::SetFocus()
+         ::Setfocus()
       ENDIF
    ENDIF
 
@@ -281,10 +281,10 @@ METHOD When( ) CLASS HDatePicker
 METHOD Valid( ) CLASS HDatePicker
    LOCAL  res := .t.
 
-   IF ! CheckFocus( Self, .T. ) .OR. ::lnoValid
+   IF ! hwg_CheckFocus( Self, .T. ) .OR. ::lnoValid
       RETURN .T.
    ENDIF
-   ::dValue := GetDatePicker( ::handle )
+   ::dValue := hwg_Getdatepicker( ::handle )
    IF ::bSetGet != NIL
       Eval( ::bSetGet, IIF( ::lShowTime, ::tValue,::dValue ), Self )
    ENDIF
@@ -294,8 +294,8 @@ METHOD Valid( ) CLASS HDatePicker
       res := IIF( ValType( res ) == "L", res, .T. )
       ::oparent:lSuspendMsgsHandling := .F.
       IF ! res
-         POSTMESSAGE( ::handle, WM_KEYDOWN, VK_RIGHT, 0 )
-         ::SetFocus( .T. )
+         hwg_Postmessage( ::handle, WM_KEYDOWN, VK_RIGHT, 0 )
+         ::Setfocus( .T. )
       ENDIF
    ENDIF
 

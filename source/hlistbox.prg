@@ -93,7 +93,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
 METHOD Activate() CLASS HListBox
    IF ! Empty( ::oParent:handle )
-      ::handle := CreateListbox( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createlistbox( ::oParent:handle, ::id, ;
                                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
@@ -127,7 +127,7 @@ METHOD Init() CLASS HListBox
 
    IF ! ::lInit
       ::nHolder := 1
-      SetWindowObject( ::handle, Self )
+      hwg_Setwindowobject( ::handle, Self )
       HWG_INITLISTPROC( ::handle )
       ::Super:Init()
       IF ::aItems != Nil
@@ -135,13 +135,13 @@ METHOD Init() CLASS HListBox
             ::value := 1
          ENDIF
          IF !EMPTY( ::nItemHeight )
-            SendMessage( ::handle, LB_SETITEMHEIGHT , 0, ::nItemHeight )
+            hwg_Sendmessage( ::handle, LB_SETITEMHEIGHT , 0, ::nItemHeight )
          ENDIF
-         SendMessage( ::handle, LB_RESETCONTENT, 0, 0 )
+         hwg_Sendmessage( ::handle, LB_RESETCONTENT, 0, 0 )
          FOR i := 1 TO Len( ::aItems )
-            ListboxAddString( ::handle, ::aItems[ i ] )
+            hwg_Listboxaddstring( ::handle, ::aItems[ i ] )
          NEXT
-         ListboxSetString( ::handle, ::value )
+         hwg_Listboxsetstring( ::handle, ::value )
       ENDIF
    ENDIF
    RETURN Nil
@@ -155,11 +155,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HListBox
       ENDIF
    ENDIF
    IF msg == WM_KEYDOWN
-      IF ProcKeyList( Self, wParam )
+      IF hwg_ProcKeyList( Self, wParam )
          RETURN - 1
       ENDIF
       IF wParam = VK_TAB //.AND. nType < WND_DLG_RESOURCE
-         GetSkip( ::oParent, ::handle, , iif( IsCtrlShift(.f., .t.), -1, 1) )
+         hwg_GetSkip( ::oParent, ::handle, , iif( hwg_IsCtrlShift(.f., .t.), -1, 1) )
         //RETURN 0
       ENDIF
          IF ::bKeyDown != Nil .and. ValType( ::bKeyDown ) == 'B'
@@ -179,11 +179,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HListBox
 METHOD Requery() CLASS HListBox
    Local i
 
-   SendMessage( ::handle, LB_RESETCONTENT, 0, 0)
+   hwg_Sendmessage( ::handle, LB_RESETCONTENT, 0, 0)
    FOR i := 1 TO Len( ::aItems )
-      ListboxAddString( ::handle, ::aItems[i] )
+      hwg_Listboxaddstring( ::handle, ::aItems[i] )
    NEXT
-   ListboxSetString( ::handle, ::value )
+   hwg_Listboxsetstring( ::handle, ::value )
    ::refresh()
    Return Nil
 
@@ -200,7 +200,7 @@ METHOD Refresh() CLASS HListBox
 
 METHOD SetItem( nPos ) CLASS HListBox
    ::value := nPos
-   SendMessage( ::handle, LB_SETCURSEL, nPos - 1, 0 )
+   hwg_Sendmessage( ::handle, LB_SETCURSEL, nPos - 1, 0 )
 
    IF ::bSetGet != Nil
       Eval( ::bSetGet, ::value )
@@ -222,17 +222,17 @@ METHOD onDblClick()  CLASS HListBox
 METHOD AddItems( p ) CLASS HListBox
 // Local i
    AAdd( ::aItems, p )
-   ListboxAddString( ::handle, p )
-//   SendMessage( ::handle, LB_RESETCONTENT, 0, 0)
+   hwg_Listboxaddstring( ::handle, p )
+//   hwg_Sendmessage( ::handle, LB_RESETCONTENT, 0, 0)
 //   FOR i := 1 TO Len( ::aItems )
-//      ListboxAddString( ::handle, ::aItems[i] )
+//      hwg_Listboxaddstring( ::handle, ::aItems[i] )
 //   NEXT
-   ListboxSetString( ::handle, ::value )
+   hwg_Listboxsetstring( ::handle, ::value )
    RETURN Self
 
 METHOD DeleteItem( nPos ) CLASS HListBox
 
-   IF SendMessage( ::handle, LB_DELETESTRING , nPos - 1, 0 ) >= 0 //<= LEN(ocombo:aitems)
+   IF hwg_Sendmessage( ::handle, LB_DELETESTRING , nPos - 1, 0 ) >= 0 //<= LEN(ocombo:aitems)
       ADel( ::Aitems, nPos )
       ASize( ::Aitems, Len( ::aitems ) - 1 )
       ::value := Min( Len( ::aitems ) , ::value )
@@ -246,8 +246,8 @@ METHOD DeleteItem( nPos ) CLASS HListBox
 METHOD Clear() CLASS HListBox
    ::aItems := { }
    ::value := 0
-   SendMessage( ::handle, LB_RESETCONTENT, 0, 0 )
-   ListboxSetString( ::handle, ::value )
+   hwg_Sendmessage( ::handle, LB_RESETCONTENT, 0, 0 )
+   hwg_Listboxsetstring( ::handle, ::value )
    RETURN .T.
 
 
@@ -256,7 +256,7 @@ METHOD onChange( oCtrl ) CLASS HListBox
 
    HB_SYMBOL_UNUSED( oCtrl )
 
-   nPos := SendMessage( ::handle, LB_GETCURSEL, 0, 0 ) + 1
+   nPos := hwg_Sendmessage( ::handle, LB_GETCURSEL, 0, 0 ) + 1
    ::SetItem( nPos )
 
    RETURN Nil
@@ -267,10 +267,10 @@ METHOD When( oCtrl ) CLASS HListBox
 
    HB_SYMBOL_UNUSED( oCtrl )
 
-   IF ! CheckFocus( Self, .f. )
+   IF ! hwg_CheckFocus( Self, .f. )
       RETURN .t.
    ENDIF
-    nSkip := IIf( GetKeyState( VK_UP ) < 0 .or. ( GetKeyState( VK_TAB ) < 0 .AND. GetKeyState( VK_SHIFT ) < 0 ), - 1, 1 )
+    nSkip := IIf( hwg_Getkeystate( VK_UP ) < 0 .or. ( hwg_Getkeystate( VK_TAB ) < 0 .AND. hwg_Getkeystate( VK_SHIFT ) < 0 ), - 1, 1 )
    IF ::bSetGet != Nil
       Eval( ::bSetGet, ::value, Self )
    ENDIF
@@ -281,9 +281,9 @@ METHOD When( oCtrl ) CLASS HListBox
       ::oparent:lSuspendMsgsHandling := .f.
       ::lnoValid := ! res
       IF ! res
-         WhenSetFocus( Self, nSkip )
+         hwg_WhenSetFocus( Self, nSkip )
       ELSE
-         ::SetFocus()      
+         ::Setfocus()      
       ENDIF
    ENDIF
    RETURN res
@@ -291,16 +291,16 @@ METHOD When( oCtrl ) CLASS HListBox
 
 METHOD Valid( oCtrl ) CLASS HListBox
    LOCAL res, oDlg
-   //LOCAL ltab :=  GETKEYSTATE( VK_TAB ) < 0, , nSkip
+   //LOCAL ltab :=  hwg_Getkeystate( VK_TAB ) < 0, , nSkip
 
    HB_SYMBOL_UNUSED( oCtrl )
 
-   IF ! CheckFocus( Self, .t. ) .or. ::lNoValid
+   IF ! hwg_CheckFocus( Self, .t. ) .or. ::lNoValid
       RETURN .t.
    ENDIF
-   //nSkip := IIf( GetKeyState( VK_SHIFT ) < 0 , - 1, 1 )
+   //nSkip := IIf( hwg_Getkeystate( VK_SHIFT ) < 0 , - 1, 1 )
    IF ( oDlg := hwg_GetParentForm( Self ) ) == Nil .OR. oDlg:nLastKey != 27
-      ::value := SendMessage( ::handle, LB_GETCURSEL, 0, 0 ) + 1
+      ::value := hwg_Sendmessage( ::handle, LB_GETCURSEL, 0, 0 ) + 1
       IF ::bSetGet != Nil
          Eval( ::bSetGet, ::value, Self )
       ENDIF
@@ -312,7 +312,7 @@ METHOD Valid( oCtrl ) CLASS HListBox
          res := Eval( ::bLostFocus, ::value, Self )
          ::oparent:lSuspendMsgsHandling := .f.
          IF ! res
-            ::SetFocus( .T. ) //( ::handle )
+            ::Setfocus( .T. ) //( ::handle )
             IF oDlg != Nil
                oDlg:nLastKey := 0
             ENDIF
@@ -323,16 +323,16 @@ METHOD Valid( oCtrl ) CLASS HListBox
          oDlg:nLastKey := 0
       ENDIF
    ENDIF
-   IF Empty( GetFocus() )
-       GetSkip( ::oParent, ::handle,, ::nGetSkip )
+   IF Empty( hwg_Getfocus() )
+       hwg_GetSkip( ::oParent, ::handle,, ::nGetSkip )
    ENDIF
 
    /*
-   IF lTab .AND. GETFOCUS() = ::handle
+   IF lTab .AND. hwg_Getfocus() = ::handle
       IF ::oParent:CLASSNAME = "HTAB"
-         ::oParent:SETFOCUS()
+         ::oParent:Setfocus()
       ENDIF
-      GetSkip( ::oparent, ::handle,, nSkip )
+      hwg_GetSkip( ::oparent, ::handle,, nSkip )
    ENDIF
    */
    RETURN .T.

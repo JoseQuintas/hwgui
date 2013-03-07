@@ -28,15 +28,15 @@ Private lAddMode := .F.
    prnYCoef := aPrnCoors[2]/aPaintRep[FORM_HEIGHT]
    // writelog( str(aPrnCoors[1])+str(aPrnCoors[2])+" / "+str(prnXCoef)+str(prnYCoef)+" / "+str(aPaintRep[FORM_XKOEF]) )
 
-   hDCwindow := GetDC( Hwindow():GetMain():handle )
+   hDCwindow := hwg_Getdc( Hwindow():GetMain():handle )
    aMetr := hwg_GetDeviceArea( hDCwindow )
-   SelectObject( hDCwindow, oFontStandard:handle )
-   aTmetr := GetTextMetric( hDCwindow )
+   hwg_Selectobject( hDCwindow, oFontStandard:handle )
+   aTmetr := hwg_Gettextmetric( hDCwindow )
    dKoef := ( aMetr[1]-XINDENT ) / aTmetr[2]
-   ReleaseDC( Hwindow():GetMain():handle,hDCwindow )
+   hwg_Releasedc( Hwindow():GetMain():handle,hDCwindow )
 
-   SelectObject( oPrinter:hDCPrn, oFontStandard:handle )
-   aPmetr := GetTextMetric( oPrinter:hDCPrn )
+   hwg_Selectobject( oPrinter:hDCPrn, oFontStandard:handle )
+   aPmetr := hwg_Gettextmetric( oPrinter:hDCPrn )
    pKoef := aPrnCoors[1] / aPmetr[2]
    fontKoef := pKoef / dKoef
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )

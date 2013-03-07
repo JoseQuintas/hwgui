@@ -112,7 +112,8 @@ FUNCTION hwg_ErrMsg( oError )
 
    RETURN cMessage
 
-function WriteLog( cText,fname )
+function hwg_WriteLog( cText,fname )
+
 Local nHand
 
   fname := LogInitialPath + Iif( fname == Nil,"a.log",fname )
@@ -137,9 +138,10 @@ Local oDlg, oEdit
    @ 10,10 EDITBOX oEdit CAPTION cMess SIZE 380,340 STYLE WS_VSCROLL+WS_HSCROLL+ES_MULTILINE+ES_READONLY ;
         COLOR 16777088 BACKCOLOR 0
 
-   @ 150,360 BUTTON "Close" ON CLICK {||EndDialog()} SIZE 100,32 
+   @ 150,360 BUTTON "Close" ON CLICK {||hwg_EndDialog()} SIZE 100,32 
 
    oDlg:Activate()
 
 Return Nil 
+
 

@@ -185,10 +185,10 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
    ENDIF
 
    IF Empty( oDoc:aItems )
-      MsgStop( "Can't open " + fname )
+      hwg_Msgstop( "Can't open " + fname )
       RETURN NIL
    ELSEIF oDoc:aItems[ 1 ]:title != "part" .OR. oDoc:aItems[ 1 ]:GetAttribute( "class" ) != "form"
-      MsgStop( "Form description isn't found" )
+      hwg_Msgstop( "Form description isn't found" )
       RETURN NIL
    ENDIF
 
@@ -423,7 +423,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
    NEXT
 
    IF ::lDebug .AND. ( i := HWindow():GetMain() ) != NIL
-      SetFocus( i:handle )
+      hwg_Setfocus( i:handle )
    ENDIF
    ::oDlg:Activate( lModal )
 
@@ -585,7 +585,7 @@ STATIC FUNCTION CompileMethod( cMethod, oForm, oCtrl, cName )
 
 STATIC PROCEDURE CompileErr( e, stroka )
 
-   MsgStop( hwg_ErrMsg( e ) + Chr( 10 ) + Chr( 13 ) + "in" + Chr( 10 ) + Chr( 13 ) + ;
+   hwg_Msgstop( hwg_ErrMsg( e ) + Chr( 10 ) + Chr( 13 ) + "in" + Chr( 10 ) + Chr( 13 ) + ;
             AllTrim( stroka ), "Script compiling error" )
    BREAK( NIL )
 
@@ -740,7 +740,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
    FOR i := 1 TO Len( oCtrlTmpl:aProp )
       xProperty := hfrm_GetProperty( oCtrlTmpl:aProp[ i, 2 ] )
       cPName := oCtrlTmpl:aProp[ i, 1 ]
-      //msginfo(cpname)
+      //hwg_Msginfo(cpname)
       IF cPName == "geometry"
          nLeft   := Val( xProperty[ 1 ] )
          nTop    := Val( xProperty[ 2 ] )
@@ -914,7 +914,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
          ccaption := xProperty
          // FiM NANDO
       ELSEIF cPName == "atree"
-         BuildMenu( xProperty, oForm:oDlg:handle, oForm:oDlg )
+         hwg_BuildMenu( xProperty, oForm:oDlg:handle, oForm:oDlg )
       ELSE
          IF cPName == "tooltip"
             cPName := "c" + cPName
@@ -1262,10 +1262,10 @@ METHOD Read( fname, cId ) CLASS HRepTmpl
    ENDIF
 
    IF Empty( oDoc:aItems )
-      MsgStop( "Can't open " + fname )
+      hwg_Msgstop( "Can't open " + fname )
       RETURN NIL
    ELSEIF oDoc:aItems[ 1 ]:title != "part" .OR. oDoc:aItems[ 1 ]:GetAttribute( "class" ) != "report"
-      MsgStop( "Report description isn't found" )
+      hwg_Msgstop( "Report description isn't found" )
       RETURN NIL
    ENDIF
 
@@ -1543,7 +1543,7 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
                   oItem:obj := hrep_FontFromxml( ::oPrinter, xProperty, aGetSecond( oItem:aProp, "fonth" ) * ::nKoefY )
                ENDIF
             ENDIF
-            SetTransparentMode( ::oPrinter:hDC, .T. )
+            hwg_Settransparentmode( ::oPrinter:hDC, .T. )
             IF ( xProperty := aGetSecond( oItem:aProp, "multiline" ) ) != NIL ;
                   .AND. xProperty
                nLines := i := 1
@@ -1564,7 +1564,7 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
             ELSE
                ::oPrinter:Say( cText, x, y, x2, y2, nJustify, oItem:obj )
             ENDIF
-            SetTransparentMode( ::oPrinter:hDC, .F. )
+            hwg_Settransparentmode( ::oPrinter:hDC, .F. )
             // Writelog( str(x)+" "+str(y)+" "+str(x2)+" "+str(y2)+" "+str(::nAOffSet)+" "+str(::nTOffSet)+" Say: "+cText)
          ENDIF
       ELSEIF oItem:cClass == "box"
@@ -1576,7 +1576,7 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
          ::oPrinter:Line( x, y, x2, y, oItem:oPen )
       ELSEIF oItem:cClass == "bitmap"
          IF oItem:obj == NIL
-            oItem:obj := OpenBitmap( aGetSecond( oItem:aProp, "bitmap" ), ::oPrinter:hDC )
+            oItem:obj := hwg_Openbitmap( aGetSecond( oItem:aProp, "bitmap" ), ::oPrinter:hDC )
          ENDIF
          ::oPrinter:Bitmap( x, y, x2, y2,, oItem:obj )
       ENDIF
@@ -1598,7 +1598,7 @@ METHOD ReleaseObj( aControls ) CLASS HRepTmpl
       ELSE
          IF aControls[ i ]:obj != NIL
             IF aControls[ i ]:cClass == "bitmap"
-               DeleteObject( aControls[ i ]:obj )
+               hwg_Deleteobject( aControls[ i ]:obj )
                aControls[ i ]:obj := NIL
             ELSEIF aControls[ i ]:cClass == "label"
                aControls[ i ]:obj:Release()

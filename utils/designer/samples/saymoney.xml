@@ -79,7 +79,7 @@
       <property name="lResource">.T.</property>
     </style>
     <method name="onClick">
-      <![CDATA[enddialog()]]>
+      <![CDATA[hwg_EndDialog()]]>
     </method>
   </part>
 </part>

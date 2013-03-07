@@ -23,17 +23,17 @@
             <![CDATA[
             Private pArray, nJust, nLines, i, dy, nFirst, ny
             if Empty(oCtrl:title)
-              FillRect( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,1 )
+              hwg_Fillrect( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,1 )
               if oCtrl:GetProp("Border") == "True"
-                Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
+                hwg_Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
               endif
             else
               pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="justify"}),6]
               nJust := Ascan(pArray,oCtrl:GetProp("Justify"))-1
               if oCtrl:GetProp( "Border" ) == "True"
-                Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
+                hwg_Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
               endif
-              SetTransparentMode( hDC,.T. )
+              hwg_Settransparentmode( hDC,.T. )
               if oCtrl:GetProp( "Multiline" ) == "True"
                 nLines := i := 1
                 do while ( i := hb_At( ";",oCtrl:title,i ) ) > 0
@@ -43,16 +43,16 @@
                 dy := oCtrl:nHeight / nLines
                 nFirst := i := ny := 1
                 do while ( i := hb_At( ";",oCtrl:title,i ) ) > 0
-                  DrawText( hDC,Substr(oCtrl:title,nFirst,i-nFirst),2,2+ny,oCtrl:nWidth,ny+dy,nJust )
+                  hwg_Drawtext( hDC,Substr(oCtrl:title,nFirst,i-nFirst),2,2+ny,oCtrl:nWidth,ny+dy,nJust )
                   i ++
                   nFirst := i
                   ny += dy
                 enddo
-                DrawText( hDC,Substr(oCtrl:title,nFirst,Len(oCtrl:title)-nFirst+1),2,ny,oCtrl:nWidth,ny+dy,nJust )
+                hwg_Drawtext( hDC,Substr(oCtrl:title,nFirst,Len(oCtrl:title)-nFirst+1),2,ny,oCtrl:nWidth,ny+dy,nJust )
               else
-                DrawText( hDC,oCtrl:title,2,2,oCtrl:nWidth,oCtrl:nHeight,nJust )
+                hwg_Drawtext( hDC,oCtrl:title,2,2,oCtrl:nWidth,oCtrl:nHeight,nJust )
               endif
-              SetTransparentMode( hDC,.F. )
+              hwg_Settransparentmode( hDC,.F. )
             endif
             ]]>
          </paint>
@@ -80,8 +80,8 @@
             pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="pentype"}),6]
             type := Ascan(pArray,oCtrl:GetProp("PenType"))-1
             width := Val(oCtrl:GetProp("PenWidth"))
-            SelectObject( hDC, HPen():Get( type,width ):handle )
-            Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
+            hwg_Selectobject( hDC, HPen():Get( type,width ):handle )
+            hwg_Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
             ]]>
          </paint>
          <property name="Left" type="N" value="0" />
@@ -103,8 +103,8 @@
             pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="pentype"}),6]
             type := Ascan(pArray,oCtrl:GetProp("PenType"))-1
             width := Val(oCtrl:GetProp("PenWidth"))
-            SelectObject( hDC, HPen():Get( type,width ):handle )
-            DrawLine( hDC,0,1,oCtrl:nWidth,1 )
+            hwg_Selectobject( hDC, HPen():Get( type,width ):handle )
+            hwg_Drawline( hDC,0,1,oCtrl:nWidth,1 )
             ]]>
          </paint>
          <property name="Left" type="N" value="0" />
@@ -127,8 +127,8 @@
             pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="pentype"}),6]
             type := Ascan(pArray,oCtrl:GetProp("PenType"))-1
             width := Val(oCtrl:GetProp("PenWidth"))
-            SelectObject( hDC, HPen():Get( type,width ):handle )
-            DrawLine( hDC,1,0,1,oCtrl:nHeight )
+            hwg_Selectobject( hDC, HPen():Get( type,width ):handle )
+            hwg_Drawline( hDC,1,0,1,oCtrl:nHeight )
             ]]>
          </paint>
          <property name="Left" type="N" value="0" />
@@ -147,9 +147,9 @@
          <paint>
             <![CDATA[
             if oCtrl:oBitmap != Nil
-              DrawBitmap( hDC,oCtrl:oBitmap:handle,,0,0,oCtrl:nWidth,oCtrl:nHeight )
+              hwg_Drawbitmap( hDC,oCtrl:oBitmap:handle,,0,0,oCtrl:nWidth,oCtrl:nHeight )
             else
-              DrawEdge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
+              hwg_Drawedge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
             endif
             ]]>
          </paint>
@@ -171,8 +171,8 @@
             if oPen == Nil
                oPen := HPen():Add( 4,1 )
             endif
-            SelectObject( hDC, oPen:handle )
-            Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
+            hwg_Selectobject( hDC, oPen:handle )
+            hwg_Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
             ]]>
          </paint>
          <property name="Left" type="N" value="0" />
@@ -193,7 +193,7 @@
    <data>
       <property name="Caption">
          <code2><![CDATA[ oCtrl:title := Iif(value==Nil,"",value) ]]></code2>
-         <code3><![CDATA[ SetWindowText( oCtrl:handle,oCtrl:title ) ]]></code3>
+         <code3><![CDATA[ hwg_Setwindowtext( oCtrl:handle,oCtrl:title ) ]]></code3>
       </property>
       <property name="Left">
          <code2><![CDATA[ oCtrl:nLeft := Iif(oCtrl:oParent:Classname=="HPANEL",Round(Val(value)*oCtrl:oParent:oParent:oParent:oParent:nKoeff,0),Val(value)) ]]></code2>
@@ -237,16 +237,16 @@
       </property>
       <property name="Font" dlg="Font">
          <code2><![CDATA[ 
-           Private hDC := GetDC( GetActiveWindow() ), aMetr, aTMetr, o
+           Private hDC := hwg_Getdc( hwg_Getactivewindow() ), aMetr, aTMetr, o
            oCtrl:oFont := value
-           SelectObject( hDC,value:handle )
+           hwg_Selectobject( hDC,value:handle )
            aMetr := hwg_GetDeviceArea( hDC )
-           aTMetr:= GetTextMetric( hDC )
+           aTMetr:= hwg_Gettextmetric( hDC )
            o := Iif( oCtrl:Classname()=="HDIALOG",oCtrl:oParent,oCtrl )
            o:SetProp( "FontH",Ltrim(Str(aTMetr[1]*aMetr[4]/aMetr[2])) )
-           ReleaseDC( GetActiveWindow(),hDC )
+           hwg_Releasedc( hwg_Getactivewindow(),hDC )
           ]]></code2>
-         <code3><![CDATA[ SetWindowFont( oCtrl:handle,oCtrl:oFont:handle,.T. ) ]]></code3>
+         <code3><![CDATA[ hwg_Setwindowfont( oCtrl:handle,oCtrl:oFont:handle,.T. ) ]]></code3>
       </property>
       <property name="Justify" array="Left,Center,Right">
       </property>

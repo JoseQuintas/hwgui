@@ -60,7 +60,7 @@ PUBLIC nQueryWndHandle := 0
    IF nServerType == ADS_REMOTE_SERVER
       IF !AdsConnect( mypath )
           nServerType := ADS_LOCAL_SERVER
-          MsgInfo( "Can't establish connection" )
+          hwg_Msginfo( "Can't establish connection" )
       ENDIF
    ENDIF
    AdsSetServerType( nServerType )
@@ -101,9 +101,9 @@ PUBLIC nQueryWndHandle := 0
        ON IDM_QUEEDIT ACTION  Query(.T.)    ;
        ON IDM_CALCUL  ACTION  Calcul()      ;
        ON IDM_DSCRIPT ACTION  Scripts(2)    ;
-       ON IDM_EXIT    ACTION  EndWindow()   ;
-       ON IDM_TILE    ACTION  SendMessage(HWindow():GetMain():handle,WM_MDITILE,MDITILE_HORIZONTAL,0) ;
-       ON IDM_CASCADE ACTION  SendMessage(HWindow():GetMain():handle,WM_MDICASCADE,0,0)
+       ON IDM_EXIT    ACTION  hwg_EndWindow()   ;
+       ON IDM_TILE    ACTION  hwg_Sendmessage(HWindow():GetMain():handle,WM_MDITILE,MDITILE_HORIZONTAL,0) ;
+       ON IDM_CASCADE ACTION  hwg_Sendmessage(HWindow():GetMain():handle,WM_MDICASCADE,0,0)
 
 /*
     @ 0,0 PANEL oPanel  SIZE 0,28
@@ -117,19 +117,19 @@ PUBLIC nQueryWndHandle := 0
       oBrwFont := HFont():Add( BrwFont[1], BrwFont[2], BrwFont[3] )
    ENDIF
 
-   EnableMenuItem( ,1, .F., .F. )
-   EnableMenuItem( ,2, .F., .F. )
-   EnableMenuItem( ,3, .F., .F. )
-   EnableMenuItem( ,4, .F., .F. )
+   hwg_Enablemenuitem( ,1, .F., .F. )
+   hwg_Enablemenuitem( ,2, .F., .F. )
+   hwg_Enablemenuitem( ,3, .F., .F. )
+   hwg_Enablemenuitem( ,4, .F., .F. )
 
    aMainWindow:Activate()
 
 Return Nil
 
 Function ChildClose
-Local nHandle := SendMessage( HWindow():GetMain():handle, WM_MDIGETACTIVE,0,0 )
+Local nHandle := hwg_Sendmessage( HWindow():GetMain():handle, WM_MDIGETACTIVE,0,0 )
    if nHandle > 0
-      SendMessage( HWindow():GetMain():handle, WM_MDIDESTROY, nHandle, 0 )
+      hwg_Sendmessage( HWindow():GetMain():handle, WM_MDIDESTROY, nHandle, 0 )
    endif
 Return Nil
 
@@ -142,8 +142,8 @@ Local oModDlg, oFont
 
    REDEFINE BITMAP "BITMAP_1" FROM RESOURCE ID IDC_BMP1
    REDEFINE OWNERBUTTON ID IDC_OWNB1  ;
-            ON CLICK {|| EndDialog()} ;
-            FLAT TEXT "Close" COLOR Vcolor("0000FF") FONT oFont
+            ON CLICK {|| hwg_EndDialog()} ;
+            FLAT TEXT "Close" COLOR hwg_VColor("0000FF") FONT oFont
 
    oModDlg:Activate()
 
@@ -168,60 +168,60 @@ Return Nil
 
 Static Function InitConfig
 #ifdef RDD_ADS
-Local hDlg := getmodalhandle()
+Local hDlg := hwg_GetModalHandle()
 Local st := Iif( nServerType == ADS_REMOTE_SERVER,IDC_RADIOBUTTON2,IDC_RADIOBUTTON1 )
 Local nd := Iif( numdriv==1,IDC_RADIOBUTTON3,Iif( numdriv==2,IDC_RADIOBUTTON4,IDC_RADIOBUTTON5 ) )
-   CheckRadioButton( hDlg,IDC_RADIOBUTTON3,IDC_RADIOBUTTON5,nd )
-   CheckRadioButton( hDlg,IDC_RADIOBUTTON1,IDC_RADIOBUTTON2,st )
-   CheckDlgButton( hDlg,IDC_CHECKBOX4,SET( _SET_EXCLUSIVE ) )
-   CheckDlgButton( hDlg,IDC_CHECKBOX5,prrdonly )
-   CheckDlgButton( hDlg,IDC_CHECKBOX6,AdsLocking() )
+   hwg_Checkradiobutton( hDlg,IDC_RADIOBUTTON3,IDC_RADIOBUTTON5,nd )
+   hwg_Checkradiobutton( hDlg,IDC_RADIOBUTTON1,IDC_RADIOBUTTON2,st )
+   hwg_Checkdlgbutton( hDlg,IDC_CHECKBOX4,SET( _SET_EXCLUSIVE ) )
+   hwg_Checkdlgbutton( hDlg,IDC_CHECKBOX5,prrdonly )
+   hwg_Checkdlgbutton( hDlg,IDC_CHECKBOX6,AdsLocking() )
    ServerButton( nServerType - 1 )
 #else
-   MsgInfo("No config in mode DBFCDX")
+   hwg_Msginfo("No config in mode DBFCDX")
 #endif
 Return .T.
 
 Static Function EndConfig()
-Local hDlg := getmodalhandle()
+Local hDlg := hwg_GetModalHandle()
 Local new_numdriv, new_servertype, serverPath
-   new_numdriv := Iif( IsDlgButtonChecked( hDlg,IDC_RADIOBUTTON3 ), 1, ;
-                  Iif( IsDlgButtonChecked( hDlg,IDC_RADIOBUTTON4 ), 2, 3 ) )
+   new_numdriv := Iif( hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON3 ), 1, ;
+                  Iif( hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON4 ), 2, 3 ) )
    IF new_numdriv != numdriv
       numdriv := new_numdriv
       #ifdef RDD_ADS
          AdsSetFileType( Iif( numdriv==1,2,Iif( numdriv==2,1,3 ) ) )
       #endif
    ENDIF
-   IF SET( _SET_EXCLUSIVE ) != IsDlgButtonChecked( hDlg,IDC_CHECKBOX4 )
+   IF SET( _SET_EXCLUSIVE ) != hwg_Isdlgbuttonchecked( hDlg,IDC_CHECKBOX4 )
       SET( _SET_EXCLUSIVE, .NOT. SET( _SET_EXCLUSIVE ) )
    ENDIF
-   IF prrdonly != IsDlgButtonChecked( hDlg,IDC_CHECKBOX5 )
+   IF prrdonly != hwg_Isdlgbuttonchecked( hDlg,IDC_CHECKBOX5 )
       prrdonly := .NOT. prrdonly
    ENDIF
 #ifdef RDD_ADS
-   IF AdsLocking() != IsDlgButtonChecked( hDlg,IDC_CHECKBOX6 )
+   IF AdsLocking() != hwg_Isdlgbuttonchecked( hDlg,IDC_CHECKBOX6 )
       AdsLocking( !AdsLocking() )
    ENDIF
-   dformat := GetDlgItemText( hDlg, IDC_COMBOBOX3, 12 )
+   dformat := hwg_Getdlgitemtext( hDlg, IDC_COMBOBOX3, 12 )
    SET DATE FORMAT dformat
-   new_servertype := Iif( IsDlgButtonChecked( hDlg,IDC_RADIOBUTTON1 ), ;
+   new_servertype := Iif( hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON1 ), ;
                        ADS_LOCAL_SERVER, ADS_REMOTE_SERVER )
    IF new_servertype != nServerType
       nServerType := new_servertype
       AdsSetServerType( nServerType )
       IF nServerType == ADS_REMOTE_SERVER
-         serverPath := GetDlgItemText( hDlg, IDC_EDIT1, 60 )
+         serverPath := hwg_Getdlgitemtext( hDlg, IDC_EDIT1, 60 )
          IF Right( serverPath ) != "/" .AND. Right( serverPath ) != "\"
             serverPath += "\"
          ENDIF
-         SetDlgItemText( hDlg, IDC_TEXT1, "Waiting for connection ..." )
+         hwg_Setdlgitemtext( hDlg, IDC_TEXT1, "Waiting for connection ..." )
          IF Empty( serverPath ) .OR. !AdsConnect( serverPath )
              nServerType := 1
              AdsSetServerType( nServerType )
-             CheckRadioButton( hDlg,IDC_RADIOBUTTON1,IDC_RADIOBUTTON2,IDC_RADIOBUTTON1 )
+             hwg_Checkradiobutton( hDlg,IDC_RADIOBUTTON1,IDC_RADIOBUTTON2,IDC_RADIOBUTTON1 )
              ServerButton( 0 )
-             SetDlgItemText( hDlg, IDC_TEXT1, "Cannot connect to "+serverPath )
+             hwg_Setdlgitemtext( hDlg, IDC_TEXT1, "Cannot connect to "+serverPath )
              Return .F.
          ELSE
              mypath := serverPath
@@ -229,12 +229,12 @@ Local new_numdriv, new_servertype, serverPath
       ENDIF
    ENDIF
 #endif
-   EndDialog( hDlg )
+   hwg_EndDialog( hDlg )
 Return .T.
 
 Static Function ServerButton( iEnable )
-Local hEdit := GetDlgItem( getmodalhandle(),IDC_EDIT1 )
-   SendMessage( hEdit, WM_ENABLE, iEnable, 0 )
+Local hEdit := hwg_Getdlgitem( hwg_GetModalHandle(),IDC_EDIT1 )
+   hwg_Sendmessage( hEdit, WM_ENABLE, iEnable, 0 )
 Return .T.
 
 /* -----------------------  Select Order --------------------- */
@@ -261,7 +261,7 @@ Local indname
    oBrw:AddColumn( HColumn():New( "Expression",{|value,o|o:aArray[o:nCurrent,3] },"C",ordlen,0  ) )
    oBrw:AddColumn( HColumn():New( "File",{|value,o|o:aArray[o:nCurrent,4] },"C",8,0  ) )
   
-   oBrw:bColorSel    := VColor( "800080" )
+   oBrw:bColorSel    := hwg_VColor( "800080" )
    oBrw:ofont := oBrwFont
 
    oModDlg:Activate()
@@ -271,14 +271,14 @@ Static Function SetIndex( oBrw )
 Local oWindow := HMainWindow():GetMdiActive(), aControls, i
 
    SET ORDER TO oBrw:nCurrent - 1
-   WriteStatus( oWindow,2,"Order: "+oBrw:aArray[oBrw:nCurrent,2] )
+   hwg_WriteStatus( oWindow,2,"Order: "+oBrw:aArray[oBrw:nCurrent,2] )
    IF oWindow != Nil
       aControls := oWindow:aControls
       IF ( i := Ascan( aControls, {|o|o:classname()=="HBROWSE"} ) ) > 0
-         RedrawWindow( aControls[i]:handle, RDW_ERASE + RDW_INVALIDATE )
+         hwg_Redrawwindow( aControls[i]:handle, RDW_ERASE + RDW_INVALIDATE )
       ENDIF
    ENDIF
-   EndDialog( getmodalhandle() )
+   hwg_EndDialog( hwg_GetModalHandle() )
 Return Nil
 
 /* -----------------------  Creating New Index --------------------- */
@@ -289,56 +289,56 @@ Local aModDlg
    INIT DIALOG aModDlg FROM RESOURCE "DIALOG_2" ON INIT {|| InitNewIndex() }
    DIALOG ACTIONS OF aModDlg ;
         ON 0,IDOK         ACTION {|| EndNewIndex()}   ;
-        ON 0,IDCANCEL     ACTION {|| EndDialog( getmodalhandle() ) }  ;
+        ON 0,IDCANCEL     ACTION {|| hwg_EndDialog( hwg_GetModalHandle() ) }  ;
         ON BN_CLICKED,IDC_CHECKBOX1 ACTION {|| TagName() }
    aModDlg:Activate()
 
 Return Nil
 
 Static Function InitNewIndex
-Local hDlg := getmodalhandle()
-   SetDlgItemText( hDlg, IDC_EDIT2, CutExten( CutPath( msfile[ improc ] ) ) + INDEXEXT() )
-   CheckDlgButton( hDlg,IDC_CHECKBOX1,.T. )
-   SetFocus( GetDlgItem( hDlg, IDC_EDIT2 ) )
+Local hDlg := hwg_GetModalHandle()
+   hwg_Setdlgitemtext( hDlg, IDC_EDIT2, CutExten( CutPath( msfile[ improc ] ) ) + INDEXEXT() )
+   hwg_Checkdlgbutton( hDlg,IDC_CHECKBOX1,.T. )
+   hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT2 ) )
 Return Nil
 
 Static Function TagName
-Local hDlg := getmodalhandle()
-Local hEdit := GetDlgItem( getmodalhandle(),IDC_EDIT3 )
-   IF IsDlgButtonChecked( hDlg,IDC_CHECKBOX1 )
-      SendMessage( hEdit, WM_ENABLE, 1, 0 )
+Local hDlg := hwg_GetModalHandle()
+Local hEdit := hwg_Getdlgitem( hwg_GetModalHandle(),IDC_EDIT3 )
+   IF hwg_Isdlgbuttonchecked( hDlg,IDC_CHECKBOX1 )
+      hwg_Sendmessage( hEdit, WM_ENABLE, 1, 0 )
    ELSE
-      SendMessage( hEdit, WM_ENABLE, 0, 0 )
+      hwg_Sendmessage( hEdit, WM_ENABLE, 0, 0 )
    ENDIF
 Return Nil
 
 Static Function EndNewIndex()
-Local hDlg := getmodalhandle()
+Local hDlg := hwg_GetModalHandle()
 Local indname, isMulti, isUniq, tagname, expkey, expfor
 Local oWindow, aControls, i
 
-   indname := GetDlgItemText( hDlg, IDC_EDIT2, 20 )
+   indname := hwg_Getdlgitemtext( hDlg, IDC_EDIT2, 20 )
    IF Empty( indname )
-      SetFocus( GetDlgItem( hDlg, IDC_EDIT2 ) )
+      hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT2 ) )
       Return Nil
    ENDIF
-   isMulti := IsDlgButtonChecked( hDlg,IDC_CHECKBOX1 )
+   isMulti := hwg_Isdlgbuttonchecked( hDlg,IDC_CHECKBOX1 )
    IF isMulti
-      tagname := GetDlgItemText( hDlg, IDC_EDIT3, 60 )
+      tagname := hwg_Getdlgitemtext( hDlg, IDC_EDIT3, 60 )
       IF Empty( tagname )
-         SetFocus( GetDlgItem( hDlg, IDC_EDIT3 ) )
+         hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT3 ) )
          Return Nil
       ENDIF
    ENDIF
-   isUniq := IsDlgButtonChecked( hDlg,IDC_CHECKBOX2 )
-   expkey := GetDlgItemText( hDlg, IDC_EDIT4, 60 )
+   isUniq := hwg_Isdlgbuttonchecked( hDlg,IDC_CHECKBOX2 )
+   expkey := hwg_Getdlgitemtext( hDlg, IDC_EDIT4, 60 )
    IF Empty( expkey )
-      SetFocus( GetDlgItem( hDlg, IDC_EDIT4 ) )
+      hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT4 ) )
       Return Nil
    ENDIF
-   expfor := GetDlgItemText( hDlg, IDC_EDIT5, 60 )
+   expfor := hwg_Getdlgitemtext( hDlg, IDC_EDIT5, 60 )
    indname := mypath + indname
-   SetDlgItemText( hDlg, IDC_TEXT2, "Indexing ..." )
+   hwg_Setdlgitemtext( hDlg, IDC_TEXT2, "Indexing ..." )
    IF numdriv = 1 .AND. isMulti
       IF EMPTY( expfor )
          ORDCREATE( RTRIM( indname ), RTRIM( tagname ), RTRIM( expkey ), &( "{||" + RTRIM( expkey ) + "}" ), Iif( isUniq,.T.,Nil ) )
@@ -355,16 +355,16 @@ Local oWindow, aControls, i
       ENDIF
    ENDIF
    oWindow := HMainWindow():GetMdiActive()
-   WriteStatus( oWindow,2,"Order: "+Iif( isMulti,tagname,CutPath(indname) ) )
+   hwg_WriteStatus( oWindow,2,"Order: "+Iif( isMulti,tagname,CutPath(indname) ) )
 
    IF oWindow != Nil
       aControls := oWindow:aControls
       IF ( i := Ascan( aControls, {|o|o:classname()=="HBROWSE"} ) ) > 0
-         RedrawWindow( aControls[i]:handle, RDW_ERASE + RDW_INVALIDATE )
+         hwg_Redrawwindow( aControls[i]:handle, RDW_ERASE + RDW_INVALIDATE )
       ENDIF
    ENDIF
 
-   EndDialog( hDlg )
+   hwg_EndDialog( hDlg )
 Return Nil
 
 /* -----------------------  Open Index file --------------------- */
@@ -381,7 +381,7 @@ Local oWindow, aControls, i
       IF oWindow != Nil
          aControls := oWindow:aControls
          IF ( i := Ascan( aControls, {|o|o:classname()=="HBROWSE"} ) ) > 0
-            RedrawWindow( aControls[i]:handle, RDW_ERASE + RDW_INVALIDATE )
+            hwg_Redrawwindow( aControls[i]:handle, RDW_ERASE + RDW_INVALIDATE )
          ENDIF
       ENDIF
    ENDIF
@@ -399,7 +399,7 @@ Local oWindow, aControls, i
       IF oWindow != Nil
          aControls := oWindow:aControls
          IF ( i := Ascan( aControls, {|o|o:classname()=="HBROWSE"} ) ) > 0
-            RedrawWindow( aControls[i]:handle, RDW_ERASE + RDW_INVALIDATE )
+            hwg_Redrawwindow( aControls[i]:handle, RDW_ERASE + RDW_INVALIDATE )
          ENDIF
       ENDIF
    ENDIF
@@ -413,51 +413,51 @@ Local aModDlg
    INIT DIALOG aModDlg FROM RESOURCE "DLG_OPEN" ON INIT {|| InitOpen() }
    DIALOG ACTIONS OF aModDlg ;
         ON 0,IDOK         ACTION {|| EndOpen()}  ;
-        ON BN_CLICKED,IDC_BUTTONBRW ACTION {||SetDlgItemText( getmodalhandle(), IDC_EDIT7, hwg_SelectFile( "xBase files( *.dbf )", "*.dbf", mypath ) ) }
+        ON BN_CLICKED,IDC_BUTTONBRW ACTION {||hwg_Setdlgitemtext( hwg_GetModalHandle(), IDC_EDIT7, hwg_SelectFile( "xBase files( *.dbf )", "*.dbf", mypath ) ) }
    aModDlg:Activate()
 
 Return Nil
 
 Static Function InitOpen
-Local hDlg := getmodalhandle()
+Local hDlg := hwg_GetModalHandle()
 Local nd := Iif( numdriv==1,IDC_RADIOBUTTON3,Iif( numdriv==2,IDC_RADIOBUTTON4,IDC_RADIOBUTTON5 ) )
-   CheckRadioButton( hDlg,IDC_RADIOBUTTON3,IDC_RADIOBUTTON5,nd )
-   CheckDlgButton( hDlg,IDC_CHECKBOX4,SET( _SET_EXCLUSIVE ) )
-   CheckDlgButton( hDlg,IDC_CHECKBOX5,prrdonly )
+   hwg_Checkradiobutton( hDlg,IDC_RADIOBUTTON3,IDC_RADIOBUTTON5,nd )
+   hwg_Checkdlgbutton( hDlg,IDC_CHECKBOX4,SET( _SET_EXCLUSIVE ) )
+   hwg_Checkdlgbutton( hDlg,IDC_CHECKBOX5,prrdonly )
 #ifdef RDD_ADS
-   CheckDlgButton( hDlg,IDC_CHECKBOX6,AdsLocking() )
+   hwg_Checkdlgbutton( hDlg,IDC_CHECKBOX6,AdsLocking() )
 #endif
-   SetFocus( GetDlgItem( hDlg, IDC_EDIT7 ) )
+   hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT7 ) )
 Return .T.
 
 Static Function EndOpen()
-Local hDlg := getmodalhandle()
+Local hDlg := hwg_GetModalHandle()
 Local new_numdriv, old_numdriv := numdriv, alsName, fname, pass
 Local oldExcl := SET( _SET_EXCLUSIVE ), oldRdonly := prrdonly
 #ifdef RDD_ADS
 Local oldLock := AdsLocking()
 #endif
 
-   fname := GetEditText( hDlg, IDC_EDIT7 )
+   fname := hwg_Getedittext( hDlg, IDC_EDIT7 )
    IF !Empty( fname )
-      alsName := GetEditText( hDlg, IDC_EDIT3 )
-      pass := GetEditText( hDlg, IDC_EDIT4 )
-      new_numdriv := Iif( IsDlgButtonChecked( hDlg,IDC_RADIOBUTTON3 ), 1, ;
-                     Iif( IsDlgButtonChecked( hDlg,IDC_RADIOBUTTON4 ), 2, 3 ) )
+      alsName := hwg_Getedittext( hDlg, IDC_EDIT3 )
+      pass := hwg_Getedittext( hDlg, IDC_EDIT4 )
+      new_numdriv := Iif( hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON3 ), 1, ;
+                     Iif( hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON4 ), 2, 3 ) )
       IF new_numdriv != numdriv
          numdriv := new_numdriv
          #ifdef RDD_ADS
             AdsSetFileType( Iif( numdriv==1,2,Iif( numdriv==2,1,3 ) ) )
          #endif
       ENDIF
-      IF SET( _SET_EXCLUSIVE ) != IsDlgButtonChecked( hDlg,IDC_CHECKBOX4 )
+      IF SET( _SET_EXCLUSIVE ) != hwg_Isdlgbuttonchecked( hDlg,IDC_CHECKBOX4 )
          SET( _SET_EXCLUSIVE, .NOT. SET( _SET_EXCLUSIVE ) )
       ENDIF
-      IF prrdonly != IsDlgButtonChecked( hDlg,IDC_CHECKBOX5 )
+      IF prrdonly != hwg_Isdlgbuttonchecked( hDlg,IDC_CHECKBOX5 )
          prrdonly := .NOT. prrdonly
       ENDIF
 #ifdef RDD_ADS
-      IF AdsLocking() != IsDlgButtonChecked( hDlg,IDC_CHECKBOX6 )
+      IF AdsLocking() != hwg_Isdlgbuttonchecked( hDlg,IDC_CHECKBOX6 )
          AdsLocking( !AdsLocking() )
       ENDIF
 #endif
@@ -473,9 +473,9 @@ Local oldLock := AdsLocking()
 #ifdef RDD_ADS
       AdsLocking( oldLock )
 #endif
-      EndDialog( hDlg )
+      hwg_EndDialog( hDlg )
    ELSE
-      SetFocus( GetDlgItem( hDlg, IDC_EDIT7 ) )
+      hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT7 ) )
    ENDIF
 Return .T.
 
@@ -487,10 +487,10 @@ Local oWindow, aControls, oBrowse, i
    ENDIF
 
    IF Len( HWindow():aWindows ) == 2
-      EnableMenuItem( ,1, .T., .F. )
-      EnableMenuItem( ,2, .T., .F. )
-      EnableMenuItem( ,3, .T., .F. )
-      EnableMenuItem( ,4, .T., .F. )
+      hwg_Enablemenuitem( ,1, .T., .F. )
+      hwg_Enablemenuitem( ,2, .T., .F. )
+      hwg_Enablemenuitem( ,3, .T., .F. )
+      hwg_Enablemenuitem( ,4, .T., .F. )
    ENDIF
    IF hChild == Nil .OR. hChild == 0
       INIT WINDOW oWindow MDICHILD TITLE fname ;
@@ -502,10 +502,10 @@ Local oWindow, aControls, oBrowse, i
       @ 0,0 BROWSE oBrowse DATABASE  ;
            ON SIZE {|o,x,y|ResizeBrwQ(o,x,y)}
 
-      oBrowse:bcolorSel  := VColor( "800080" )
+      oBrowse:bcolorSel  := hwg_VColor( "800080" )
       oBrowse:ofont := oBrwFont
       oBrowse:cargo := improc
-      CreateList( oBrowse,.T. )
+      hwg_CreateList( oBrowse,.T. )
       oBrowse:lAppable := .T.
 
       oWindow:Activate()
@@ -516,16 +516,16 @@ Local oWindow, aControls, oBrowse, i
          IF ( i := Ascan( aControls, {|o|o:classname()=="HBROWSE"} ) ) > 0
             oBrowse := aControls[ i ]
             oBrowse:InitBrw()
-            oBrowse:bcolorSel  := VColor( "800080" )
+            oBrowse:bcolorSel  := hwg_VColor( "800080" )
             oBrowse:ofont := oBrwFont
             oBrowse:cargo := improc
-            SendMessage( HWindow():GetMain():handle, WM_MDIACTIVATE, hChild, 0 )
+            hwg_Sendmessage( HWindow():GetMain():handle, WM_MDIACTIVATE, hChild, 0 )
             oBrowse:Refresh()
          ENDIF
       ENDIF
    ENDIF
-   WriteStatus( oWindow,1,Ltrim(Str(Reccount(),10))+" records" )
-   WriteStatus( oWindow,2,"Order: None",.T. )
+   hwg_WriteStatus( oWindow,1,Ltrim(Str(Reccount(),10))+" records" )
+   hwg_WriteStatus( oWindow,2,"Order: None",.T. )
 Return oWindow:handle
 
 /* -----------------------  Calculator  --------------------- */
@@ -541,24 +541,24 @@ Local oModDlg
 Return Nil
 
 Static Function InitCalc()
-Local hDlg := getmodalhandle()
-   SetFocus( GetDlgItem( hDlg, IDC_EDITCALC ) )
+Local hDlg := hwg_GetModalHandle()
+   hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDITCALC ) )
 Return Nil
 
 Static Function EndCalc()
-Local hDlg := getmodalhandle()
+Local hDlg := hwg_GetModalHandle()
 Local cExpr, res
 
-   cExpr := GetDlgItemText( hDlg, IDC_EDITCALC, 80 )
+   cExpr := hwg_Getdlgitemtext( hDlg, IDC_EDITCALC, 80 )
    IF Empty( cExpr )
-      SetFocus( GetDlgItem( hDlg, IDC_EDITCALC ) )
+      hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDITCALC ) )
       Return Nil
    ENDIF
    IF TYPE( TRIM( cExpr ) ) $ "UEUI"
-      MsgStop( "Wrong expression" )
+      hwg_Msgstop( "Wrong expression" )
    ELSE
       res := &( TRIM( cExpr ) )
-      SetDlgItemText( hDlg, IDC_TEXTMSG, TRANSFORM( res, "@B" ) )
+      hwg_Setdlgitemtext( hDlg, IDC_TEXTMSG, TRANSFORM( res, "@B" ) )
    ENDIF
 
 Return Nil
@@ -569,25 +569,25 @@ Return Nil
 Function Scripts( nAct )
 Local aModDlg
 
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_SCRI" ON INIT {||SetFocus(GetDlgItem(getmodalhandle(),IDC_EDIT8))}
+   INIT DIALOG aModDlg FROM RESOURCE "DLG_SCRI" ON INIT {||hwg_Setfocus(hwg_Getdlgitem(hwg_GetModalHandle(),IDC_EDIT8))}
    DIALOG ACTIONS OF aModDlg ;
         ON 0,IDOK         ACTION {|| EndScri(nAct)}   ;
-        ON 0,IDCANCEL     ACTION {|| EndDialog( getmodalhandle() ) }  ;
-        ON BN_CLICKED,IDC_PUSHBUTTON1 ACTION {||SetDlgItemText( getmodalhandle(), IDC_EDIT8, hwg_SelectFile( "Script files( *.scr )", "*.scr", mypath ) ) }
+        ON 0,IDCANCEL     ACTION {|| hwg_EndDialog( hwg_GetModalHandle() ) }  ;
+        ON BN_CLICKED,IDC_PUSHBUTTON1 ACTION {||hwg_Setdlgitemtext( hwg_GetModalHandle(), IDC_EDIT8, hwg_SelectFile( "Script files( *.scr )", "*.scr", mypath ) ) }
    aModDlg:Activate()
 
 Return Nil
 
 Static Function EndScri( lOk, nAct )
-Local hDlg := getmodalhandle()
+Local hDlg := hwg_GetModalHandle()
 Local fname, arScr, nError, nLineEr, obl
 
-   fname := GetDlgItemText( hDlg, IDC_EDIT8, 80 )
+   fname := hwg_Getdlgitemtext( hDlg, IDC_EDIT8, 80 )
    IF Empty( fname )
-      SetFocus( GetDlgItem( hDlg, IDC_EDIT8 ) )
+      hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT8 ) )
       Return Nil
    ENDIF
-   SetDlgItemText( hDlg, IDC_TEXTMSG, "Wait ..." )
+   hwg_Setdlgitemtext( hDlg, IDC_TEXTMSG, "Wait ..." )
    IF ( arScr := RdScript( fname ) ) <> Nil
       IF nAct == 1
          obl := SELECT()
@@ -600,12 +600,12 @@ Local fname, arScr, nError, nLineEr, obl
       ELSE
          DoScript( arScr )
       ENDIF
-      MsgInfo( "Script executed" )
+      hwg_Msginfo( "Script executed" )
    ELSE
       nError := CompileErr( @nLineEr )
-      MsgStop( "Script error ("+Ltrim(Str(nError))+"), line "+Ltrim(Str(nLineEr)) )
+      hwg_Msgstop( "Script error ("+Ltrim(Str(nError))+"), line "+Ltrim(Str(nLineEr)) )
    ENDIF
-   EndDialog( hDlg )
+   hwg_EndDialog( hDlg )
 
 Return Nil
 
@@ -618,7 +618,7 @@ Local i, aControls, oBrw
          IF Valtype( oBrw:cargo ) == "N"
             Select( oBrw:cargo )
             improc := oBrw:cargo
-            SetFocus( oBrw:handle )
+            hwg_Setfocus( oBrw:handle )
          ENDIF
       ENDIF
    ENDIF
@@ -638,10 +638,10 @@ Local i, aControls, oBrw
             ENDIF
             FiClose()
             IF Len( HWindow():aWindows ) == 3
-               EnableMenuItem( ,1, .F., .F. )
-               EnableMenuItem( ,2, .F., .F. )
-               EnableMenuItem( ,3, .F., .F. )
-               EnableMenuItem( ,4, .F., .F. )
+               hwg_Enablemenuitem( ,1, .F., .F. )
+               hwg_Enablemenuitem( ,2, .F., .F. )
+               hwg_Enablemenuitem( ,3, .F., .F. )
+               hwg_Enablemenuitem( ,4, .F., .F. )
             ENDIF
          ENDIF
       ENDIF
@@ -655,11 +655,11 @@ Local aRect, i, nHbusy := 0
    FOR i := 1 TO Len( aControls )
       IF aControls[i]:classname() == "HSTATUS"
          hWndStatus := aControls[i]:handle
-         aRect := GetClientRect( hWndStatus )
+         aRect := hwg_Getclientrect( hWndStatus )
          nHbusy += aRect[ 4 ]
       ENDIF
    NEXT
-   MoveWindow( oBrw:handle, 0, 0, nWidth, nHeight-nHBusy )
+   hwg_Movewindow( oBrw:handle, 0, 0, nWidth, nHeight-nHBusy )
 Return Nil
 
 FUNCTION Fiopen( fname, alsname, prend, pass )
@@ -681,7 +681,7 @@ LOCAL bOldError, oError
       ENDIF
       IF improc > 15
          improc := oldimp
-         MsgStop( "Too many opened files!" )
+         hwg_Msgstop( "Too many opened files!" )
          RETURN .F.
       ENDIF
       SELECT( improc )
@@ -695,7 +695,7 @@ LOCAL bOldError, oError
             DBUSEAREA(,, fname, alsname,, prrdonly )
          RECOVER USING oError
             IF oError:genCode == EG_BADALIAS .OR. oError:genCode == EG_DUPALIAS
-               IF EMPTY( alsname := MsgGet( "","Bad alias name, input other:" ) )
+               IF EMPTY( alsname := hwg_MsgGet( "","Bad alias name, input other:" ) )
                   res := .F.
                ELSE
                   LOOP
@@ -716,12 +716,12 @@ LOCAL bOldError, oError
             SET( _SET_EXCLUSIVE, .F. )
             DBUSEAREA(,, fname, CutExten( IIF( alsname = Nil, fname, alsname ) ),, prrdonly )
             IF NETERR()
-               MsgStop( strerr )
+               hwg_Msgstop( strerr )
                improc := oldimp
                RETURN .F.
             ENDIF
          ELSE
-            MsgStop( strerr )
+            hwg_Msgstop( strerr )
             improc := oldimp
             RETURN .F.
          ENDIF
@@ -784,7 +784,7 @@ LOCAL fname := msfile[ improc ]
    IF .NOT. msmode[ improc, 1 ]
       USE &fname EXCLUSIVE
       IF NETERR()
-         MsgStop( "File cannot be opened in exclusive mode" )
+         hwg_Msgstop( "File cannot be opened in exclusive mode" )
          USE &fname SHARED
          RETURN .F.
       ELSE
@@ -797,5 +797,5 @@ Function WndOut()
 Return Nil
 
 Function MsgSay( cText )
-   MsgStop( cText )
+   hwg_Msgstop( cText )
 Return Nil

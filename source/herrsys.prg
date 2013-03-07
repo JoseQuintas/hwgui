@@ -74,8 +74,8 @@ STATIC FUNCTION DefError( oError )
    MemoWrit( LogInitialPath + "Error.log", cMessage )
 
    ErrorPreview( cMessage )
-   EndWindow()
-   PostQuitMessage( 0 )
+   hwg_EndWindow()
+   hwg_Postquitmessage( 0 )
 
    RETURN .F.
 
@@ -144,9 +144,9 @@ STATIC FUNCTION ErrorPreview( cMess )
 
    @ 10, 10 EDITBOX oEdit CAPTION cMess SIZE 480, 440 STYLE WS_VSCROLL + WS_HSCROLL + ES_MULTILINE + ES_READONLY ;
       COLOR 16777088 BACKCOLOR 0 ;
-      ON GETFOCUS { || SendMessage( oEdit:handle, EM_SETSEL, 0, 0 ) }
+      ON GETFOCUS { || hwg_Sendmessage( oEdit:handle, EM_SETSEL, 0, 0 ) }
 
-   @ 200, 460 BUTTON "Close" ON CLICK { || EndDialog() } SIZE 100, 32
+   @ 200, 460 BUTTON "Close" ON CLICK { || hwg_EndDialog() } SIZE 100, 32
 
    oDlg:Activate()
    RETURN Nil

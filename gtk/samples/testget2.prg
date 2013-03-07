@@ -43,9 +43,9 @@ Private oSayT
    ON INIT {|| SetTimer(oModDlg,@oTimer)}   
    // FONT oFont  
 
-   SET KEY FSHIFT,VK_F3 TO MsgInfo("Shift-F3") 
-   SET KEY FCONTROL,VK_F3 TO MsgInfo("Ctrl-F3") 
-   SET KEY 0,VK_F3 TO MsgInfo("F3") 
+   SET KEY FSHIFT,VK_F3 TO hwg_Msginfo("Shift-F3") 
+   SET KEY FCONTROL,VK_F3 TO hwg_Msginfo("Ctrl-F3") 
+   SET KEY 0,VK_F3 TO hwg_Msginfo("F3") 
 
    @ 20,10 SAY "Input something:" SIZE 260, 22
 
@@ -84,9 +84,9 @@ Private oSayT
 
    oTimer:End()
 
-   // writelog( "End" )
+   // hwg_WriteLog( "End" )
    IF oModDlg:lResult
-      MsgInfo( e1 + chr(10) + chr(13) +       ;
+      hwg_Msginfo( e1 + chr(10) + chr(13) +       ;
                e6 + chr(10) + chr(13) +       ;
                Dtoc(e2) + chr(10) + chr(13) + ;
                Str(e3) + chr(10) + chr(13) +  ;
@@ -101,7 +101,7 @@ Return Nil
 Static Function SetTimer( oDlg,oTimer )
 
    SET TIMER oTimer OF oDlg VALUE 1000 ACTION {||TimerFunc()}
-//   writelog( valtype( oTimer ) )
+//   hwg_WriteLog( valtype( oTimer ) )
 Return Nil
 
 Static Function TimerFunc()

@@ -84,11 +84,11 @@ Private oIcon := HIcon():AddResource("PIM")
          MENUITEM "&Open"  ACTION ReadBuildFile()
          MENUITEM "&Save"  ACTION  SaveBuildFile() 
          SEPARATOR
-         MENUITEM "&Exit"  ACTION EndDialog() 
+         MENUITEM "&Exit"  ACTION hwg_EndDialog() 
       ENDMENU
       MENU TITLE "&Help"        
          MENUITEM "&About" ACTION OpenAbout()
-         MENUITEM "&Version HwGUI" ACTION MsgInfo(HwG_Version())
+         MENUITEM "&Version HwGUI" ACTION hwg_Msginfo(HwG_Version())
       ENDMENU
    ENDMENU            
    
@@ -121,10 +121,10 @@ Private oIcon := HIcon():AddResource("PIM")
    BEGIN PAGE "Prg (Files)" of oTAB
       @ 21,29 BROWSE oBrowse1 ARRAY of oTAB ON CLICK {||SearchFile(oBrowse1,"*.prg")};
  	            STYLE WS_VSCROLL + WS_HSCROLL   SIZE 341,170  
-      createarlist(oBrowse1,aFiles1)
+      hwg_CREATEARLIST(oBrowse1,aFiles1)
       obrowse1:acolumns[1]:heading := "File Names"
       obrowse1:acolumns[1]:length := 50
-      oBrowse1:bcolorSel := VColor( "800080" )
+      oBrowse1:bcolorSel := hwg_VColor( "800080" )
       oBrowse1:ofont := HFont():Add( 'Arial',0,-12 )
       @ 10, 205 BUTTON "Add"     SIZE 60,25  on click {||SearchFile(oBrowse1, "*.prg")}  
       @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||BrwdelIten(oBrowse1)}
@@ -133,10 +133,10 @@ Private oIcon := HIcon():AddResource("PIM")
    BEGIN PAGE "C (Files)" of oTAB
       @ 21,29 BROWSE oBrowse2 ARRAY of oTAB ON CLICK {||SearchFile(oBrowse2, "*.c")};
  	            STYLE WS_VSCROLL + WS_HSCROLL   SIZE 341,170  
-      createarlist(oBrowse2,aFiles2)
+      hwg_CREATEARLIST(oBrowse2,aFiles2)
       obrowse2:acolumns[1]:heading := "File Names"
       obrowse2:acolumns[1]:length := 50
-      oBrowse2:bcolorSel := VColor( "800080" )
+      oBrowse2:bcolorSel := hwg_VColor( "800080" )
       oBrowse2:ofont := HFont():Add( 'Arial',0,-12 )
       @ 10, 205 BUTTON "Add"     SIZE 60,25  on click {||SearchFile(oBrowse2, "*.c")}  
       @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||BrwdelIten(oBrowse2)}
@@ -144,10 +144,10 @@ Private oIcon := HIcon():AddResource("PIM")
    BEGIN PAGE "Lib (Files)" of oTAB
       @ 21,29 BROWSE oBrowse3 ARRAY of oTAB ON CLICK {||SearchFile(oBrowse3, "*.lib")};
  	            STYLE WS_VSCROLL + WS_HSCROLL   SIZE 341,170  
-      createarlist(oBrowse3,aFiles3)
+      hwg_CREATEARLIST(oBrowse3,aFiles3)
       obrowse3:acolumns[1]:heading := "File Names"
       obrowse3:acolumns[1]:length := 50
-      oBrowse3:bcolorSel := VColor( "800080" )
+      oBrowse3:bcolorSel := hwg_VColor( "800080" )
       oBrowse3:ofont := HFont():Add( 'Arial',0,-12 )
       @ 10, 205 BUTTON "Add"     SIZE 60,25  on click {||SearchFile(oBrowse3, "*.lib")}  
       @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||BrwdelIten(oBrowse3)}
@@ -155,17 +155,17 @@ Private oIcon := HIcon():AddResource("PIM")
    BEGIN PAGE "Resource (Files)" of oTAB
       @ 21,29 BROWSE oBrowse4 ARRAY of oTAB ON CLICK {||SearchFile(oBrowse3, "*.rc")};
  	            STYLE WS_VSCROLL + WS_HSCROLL   SIZE 341,170  
-      createarlist(oBrowse4,aFiles4)
+      hwg_CREATEARLIST(oBrowse4,aFiles4)
       obrowse4:acolumns[1]:heading := "File Names"
       obrowse4:acolumns[1]:length := 50
-      oBrowse4:bcolorSel := VColor( "800080" )
+      oBrowse4:bcolorSel := hwg_VColor( "800080" )
       oBrowse4:ofont := HFont():Add( 'Arial',0,-12 )
       @ 10, 205 BUTTON "Add"     SIZE 60,25  on click {||SearchFile(oBrowse4, "*.rc")}  
       @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||BrwdelIten(oBrowse4)}
    END PAGE of oTAB
    
    @ 419, 20 BUTTONex oBtBuild CAPTION "Build" BITMAP oImgBuild:Handle on Click {||BuildApp()}      SIZE 88,52  
-   @ 419, 80 BUTTONex oBtExit  CAPTION "Exit"  BITMAP oImgExit:Handle  on Click {||EndDialog()}     SIZE 88,52  
+   @ 419, 80 BUTTONex oBtExit  CAPTION "Exit"  BITMAP oImgExit:Handle  on Click {||hwg_EndDialog()}     SIZE 88,52  
    @ 419,140 BUTTONex oBtOpen  CAPTION "Open"  BITMAP oImgOpen:Handle  on Click {||ReadBuildFile()} SIZE 88,52  
    @ 419,200 BUTTONex oBtSave  CAPTION "Save"  BITMAP oImgSave:Handle  on Click {||SaveBuildFile()} SIZE 88,52  
  
@@ -175,7 +175,7 @@ RETURN
 
 Static Function SearchFile(oBrow, oFile)
 Local oTotReg:={}, i
-Local aSelect:=SelectMultipleFiles("xBase Files ("+oFile+")", oFile ) 
+Local aSelect:=hwg_SelectMultipleFiles("xBase Files ("+oFile+")", oFile ) 
 if len(aSelect) ==0
    return Nil
 endif
@@ -305,10 +305,10 @@ Local cLibFiles, i, oNome, g
 Local cFolderFile:=hwg_SaveFile("*.bld", "HwGUI File Build (*.bld)", "*.bld" ) 
 if empty(cFolderFile); Return Nil; Endif
 if file(cFolderFile)
-   If(MsgYesNo("File "+cFolderFile+" EXIT ..Replace?"))
+   If(hwg_Msgyesno("File "+cFolderFile+" EXIT ..Replace?"))
      Erase( cFolderFile )
    Else
-     MsgInfo("No file SAVED.", "HwMake")
+     hwg_Msginfo("No file SAVED.", "HwMake")
      Return Nil
    EndIf
 EndIf     
@@ -357,7 +357,7 @@ if Len(oBrowse4:aArray)>=1
    Next     
 endif   
 
-Msginfo("File "+cFolderFile+" saved","HwGUI Build", "HwMake")
+hwg_Msginfo("File "+cFolderFile+" saved","HwGUI Build", "HwMake")
 Return Nil
 
 Function BuildApp() 
@@ -371,7 +371,7 @@ LOCAL cPrgFileAttr  , nPrgFileSize
 LOCAL dPrgCreateDate, nPrgCreateTime
 LOCAL dPrgChangeDate, nPrgChangeTime
 Local cPrgName
-Local lAll := MsgYesNo("Build All Fontes?", "Attention" )
+Local lAll := hwg_Msgyesno("Build All Fontes?", "Attention" )
 Local lCompile
 Local cList := ""
 Local cMake
@@ -409,7 +409,7 @@ Makedir( cObj )
 
 cExeHarbour := Lower( cHarbour+"\bin\harbour.exe" )
 //If !File( cExeHarbour )
-//   MsgInfo( "Not exist " + cExeHarbour +"!!" )
+//   hwg_Msginfo( "Not exist " + cExeHarbour +"!!" )
 //   Return Nil
 //EndIf
 
@@ -466,7 +466,7 @@ For Each i in oBrowse1:aArray
    EndIf   
    cRun := " -v -y -c " +Alltrim( oCFlag:GetText() ) + " -O2 -tW -M -I"+cHarbour+"\include;"+cHwGUI+"\include;"+cBCC55+"\include " + "-o"+StrTran( cObjName, ".c", ".obj" ) + " " + cObjName
    If ExecuteCommand( cBCC55 + "\bin\bcc32.exe", cRun ) <> 0
-      MsgInfo("No Created Object files!", "HwMake" )
+      hwg_Msginfo("No Created Object files!", "HwMake" )
       Return nil
    EndIF
           
@@ -483,7 +483,7 @@ Next
 //ResourceFiles
 For Each i in oBrowse4:aArray     
    If ExecuteCommand( cBCC55 + "\bin\brc32", "-r "+cFileNoExt(i)+" -fo"+cObj+"\"+cFileNoPath( cFileNoExt( i ) ) ) <> 0
-      MsgInfo("Error in Resource File " + i + "!", "HwMake" )
+      hwg_Msginfo("Error in Resource File " + i + "!", "HwMake" )
       Return Nil
    EndIf   
    cListRes += cObj+"\"+cFileNoPath( cFileNoExt( i ) ) + ".res +" + CRLF
@@ -511,7 +511,7 @@ EndIF
 Memowrit( cMainPrg + ".bc ", cMake )
 
 If ExecuteCommand( cBCC55 + "\bin\ilink32", "-v -Gn -aa -Tpe @"+cMainPrg + ".bc" ) <> 0
-      MsgInfo("No link file " + cMainPrg +"!", "HwMake" ) 
+      hwg_Msginfo("No link file " + cMainPrg +"!", "HwMake" ) 
       Return Nil
 EndIf
 
@@ -587,7 +587,7 @@ If File( cFile )
    fErase( cFile )
 EndIf 
 Memowrit( cFile, cProc + " " + cSend + cLog ) 
-nRet := WaitRun( cFile ) 
+nRet := hwg_WAITRUN( cFile ) 
 If File( cFile )
    fErase( cFile )
 EndIf
@@ -617,23 +617,23 @@ Local oSay
    @ 20,40 SAY "Hwgui Internacional Page"        ;
    LINK "http://www.hwgui.net" ;
        SIZE 230, 22 STYLE SS_CENTER  ;
-        COLOR Vcolor("0000FF") ;
-        VISITCOLOR RGB(241,249,91)
+        COLOR hwg_VColor("0000FF") ;
+        VISITCOLOR hwg_Rgb(241,249,91)
 
 
    @ 20,60 SAY "Hwgui Kresin Page"        ;
    LINK "http://kresin.belgorod.su/hwgui.html" ;
        SIZE 230, 22 STYLE SS_CENTER  ;
-        COLOR Vcolor("0000FF") ;
-        VISITCOLOR RGB(241,249,91)
+        COLOR hwg_VColor("0000FF") ;
+        VISITCOLOR hwg_Rgb(241,249,91)
 
    @ 20,80 SAY "Hwgui international Forum"        ;
    LINK "http://br.groups.yahoo.com/group/hwguibr" ;
        SIZE 230, 22 STYLE SS_CENTER  ;
-        COLOR Vcolor("0000FF") ;
-        VISITCOLOR RGB(241,249,91)
+        COLOR hwg_VColor("0000FF") ;
+        VISITCOLOR hwg_Rgb(241,249,91)
                              
-   @ 40, 120 BUTTONex oBtExit  CAPTION "Close"  BITMAP oImgExit:Handle  on Click {||EndDialog()}    SIZE 180,35  
+   @ 40, 120 BUTTONex oBtExit  CAPTION "Close"  BITMAP oImgExit:Handle  on Click {||hwg_EndDialog()}    SIZE 180,35  
   
    ACTIVATE DIALOG oModDlg
    
@@ -648,9 +648,9 @@ Local oDlg, oEdit
 
    @ 10,10 EDITBOX oEdit CAPTION cMess SIZE 480,440 STYLE WS_VSCROLL+WS_HSCROLL+ES_MULTILINE+ES_READONLY ;
         COLOR 16777088 BACKCOLOR 0 ;
-        ON GETFOCUS {||SendMessage(oEdit:handle,EM_SETSEL,0,0)}
+        ON GETFOCUS {||hwg_Sendmessage(oEdit:handle,EM_SETSEL,0,0)}
 
-   @ 200,460 BUTTON "Close" ON CLICK {||EndDialog()} SIZE 100,32 
+   @ 200,460 BUTTON "Close" ON CLICK {||hwg_EndDialog()} SIZE 100,32 
 
    oDlg:Activate()
 Return Nil 

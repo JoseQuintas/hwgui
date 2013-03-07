@@ -130,7 +130,7 @@ METHOD Edit( wParam,lParam ) CLASS PBrowse
                   SIZE nWidth, ::height+6        ;
                   STYLE ES_AUTOHSCROLL           ;
                   FONT ::oFont                   ;
-                  WHEN {||PostMessage( oBtn:handle,WM_CLOSE,0,0 ),OgET:REFRESH()   ,.T.}
+                  WHEN {||hwg_Postmessage( oBtn:handle,WM_CLOSE,0,0 ),OgET:REFRESH()   ,.T.}
 
             @ x1,y1-2 BUTTON oBtn CAPTION '...' OF oBrw1;
                   SIZE 13,::height+6  ;
@@ -140,11 +140,11 @@ METHOD Edit( wParam,lParam ) CLASS PBrowse
                   hwg_SelectFile("Imagens Files( *.jpg;*.gif;*.bmp;*.ico )",;
                   "*.jpg;*.gif;*.bmp;*.ico")))), ;
                   IIF( !empty(varbuf), oGet:refresh(), NIL ) } //,;
-                  *   VldBrwGet(oGet)} //,   PostMessage( oBtn:handle,WM_CLOSE,0,0 )}
+                  *   VldBrwGet(oGet)} //,   hwg_Postmessage( oBtn:handle,WM_CLOSE,0,0 )}
             // : END LFB
             //varbuf := hwg_SelectFile( "All files ( *.* )","*.*" )
             //
-            SetFocus( obtn:handle )
+            hwg_Setfocus( obtn:handle )
             IF varbuf != NIL
                lRes := .T.
             ENDIF
@@ -167,7 +167,7 @@ METHOD Edit( wParam,lParam ) CLASS PBrowse
                EvalCode( aDataDef[ j,4 ] )
             ENDIF
          ENDIF
-         RedrawWindow( oCtrl:handle,5 )
+         hwg_Redrawwindow( oCtrl:handle,5 )
          HFormGen():oDlgSelected:oParent:lChanged := .T.
          oBrw1:lUpdated := .T.
          oBrw1:Refresh()
@@ -223,7 +223,7 @@ METHOD Edit( wParam,lParam ) CLASS PBrowse
                FONT ::oFont                   ;
                VALID {||VldBrwGet(oGet)}
       ENDIF
-      SetFocus( oGet:handle )
+      hwg_Setfocus( oGet:handle )
    ENDIF
 
    RETURN NIL
@@ -232,8 +232,8 @@ METHOD HeaderOut( hDC ) CLASS PBrowse
    LOCAL i, x, fif, xSize
    LOCAL nRows := Min( ::nRecords,::rowCount ), oColumn
    LOCAL oPen := HPen():Add( PS_SOLID,1,::sepColor )
-   LOCAL oPenLight := HPen():Add( PS_SOLID,1,GetSysColor(COLOR_3DHILIGHT) )
-   LOCAL oPenGray  := HPen():Add( PS_SOLID,1,GetSysColor(COLOR_3DSHADOW) )
+   LOCAL oPenLight := HPen():Add( PS_SOLID,1,hwg_Getsyscolor(COLOR_3DHILIGHT) )
+   LOCAL oPenGray  := HPen():Add( PS_SOLID,1,hwg_Getsyscolor(COLOR_3DSHADOW) )
 
    x := ::x1
    fif := iif( ::freeze > 0, 1, ::nLeftCol )
@@ -245,10 +245,10 @@ METHOD HeaderOut( hDC ) CLASS PBrowse
          xSize := Max( ::x2 - x, xSize )
       ENDIF
       IF x > ::x1
-         SelectObject( hDC, oPenLight:handle )
-         DrawLine( hDC, x-1, ::y1+1, x-1, ::y1+(::height+1)*nRows )
-         SelectObject( hDC, oPenGray:handle )
-         DrawLine( hDC, x-2, ::y1+1, x-2, ::y1+(::height+1)*nRows )
+         hwg_Selectobject( hDC, oPenLight:handle )
+         hwg_Drawline( hDC, x-1, ::y1+1, x-1, ::y1+(::height+1)*nRows )
+         hwg_Selectobject( hDC, oPenGray:handle )
+         hwg_Drawline( hDC, x-2, ::y1+1, x-2, ::y1+(::height+1)*nRows )
       ENDIF
       x += xSize
       fif := IIF( fif = ::freeze, ::nLeftCol, fif + 1 )
@@ -257,9 +257,9 @@ METHOD HeaderOut( hDC ) CLASS PBrowse
       ENDIF
    ENDDO
 
-   SelectObject( hDC, oPen:handle )
+   hwg_Selectobject( hDC, oPen:handle )
    FOR i := 1 TO nRows
-      DrawLine( hDC, ::x1, ::y1+(::height+1)*i, iif(::lAdjRight, ::x2, x), ::y1+(::height+1)*i )
+      hwg_Drawline( hDC, ::x1, ::y1+(::height+1)*i, iif(::lAdjRight, ::x2, x), ::y1+(::height+1)*i )
    NEXT
 
    oPen:Release()
@@ -276,7 +276,7 @@ STATIC FUNCTION VldBrwGet( oGet ,oBtn)
    j := Ascan( oDesigner:aDataDef, {|a|a[1]==cName} )
 
    IF oGet:Classname() == "HCOMBOBOX"
-      vari := SendMessage( oGet:handle,CB_GETCURSEL,0,0 ) + 1
+      vari := hwg_Sendmessage( oGet:handle,CB_GETCURSEL,0,0 ) + 1
       value := aProp[ oBrw1:cargo,2 ] := oGet:aItems[ vari ]
    ELSE
       vari := TRIM(oGet:GetText())   // :LFB -  COLOCOU TRIM
@@ -294,16 +294,16 @@ STATIC FUNCTION VldBrwGet( oGet ,oBtn)
          EvalCode( oDesigner:aDataDef[ j,4 ] )
       ENDIF
    ENDIF
-   RedrawWindow( oCtrl:handle,5 )
+   hwg_Redrawwindow( oCtrl:handle,5 )
    HFormGen():oDlgSelected:oParent:lChanged := .T.
    oBrw1:lUpdated := .T.
    oBrw1:aEvents := {}
    oBrw1:aNotify := {}
    oBrw1:aControls := {}
-   PostMessage( oGet:handle, WM_CLOSE, 0, 0 )
+   hwg_Postmessage( oGet:handle, WM_CLOSE, 0, 0 )
    // :LFB POS
    IF VALTYPE(obtn) = "O"
-      PostMessage( oBtn:handle, WM_CLOSE, 0, 0 )
+      hwg_Postmessage( oBtn:handle, WM_CLOSE, 0, 0 )
    ENDIF
    obrw1:bPosChanged := NIL
    // : END LFB
@@ -326,46 +326,46 @@ FUNCTION InspOpen(lShow)
          AT 0,280  SIZE 220,300       ;
          FONT HFont():Add( "MS Sans Serif",0,-12,400,,,)  ;
          STYLE nStilo;
-         ON INIT {||IIF(!lshow,oDesigner:oDlgInsp:hide(),),MoveWindow(oDesigner:oDlgInsp:handle,0,134,280,410)}   ;
+         ON INIT {||IIF(!lshow,oDesigner:oDlgInsp:hide(),),hwg_Movewindow(oDesigner:oDlgInsp:handle,0,134,280,410)}   ;
          ON GETFOCUS {|o| o:show(),.t.};
-         ON EXIT {|| oDesigner:oDlgInsp := NIL, CheckMenuItem( oDesigner:oMainWnd:handle, 1010, .F. ), .T. } ;
+         ON EXIT {|| oDesigner:oDlgInsp := NIL, hwg_Checkmenuitem( oDesigner:oMainWnd:handle, 1010, .F. ), .T. } ;
          ON OTHER MESSAGES {|o,m,wp,lp| MessagesOthers( o, m, wp, lp ) }
 
    @ 0,0 COMBOBOX oCombo ITEMS {} SIZE 220,22 ;
          STYLE WS_VSCROLL                     ;
-         ON SIZE {|o,x|MoveWindow(o:handle,0,0,x,250)} ;
+         ON SIZE {|o,x|hwg_Movewindow(o:handle,0,0,x,250)} ;
          ON CHANGE {||ComboOnChg()}
 
    @ 0,28 TAB oTab ITEMS {} SIZE 220,250 ;
-         ON SIZE {|o,x,y|MoveWindow(o:handle,0,28,x,y-28)}
+         ON SIZE {|o,x,y|hwg_Movewindow(o:handle,0,28,x,y-28)}
 
    BEGIN PAGE "Properties" OF oTab
       @ 2,30 PBROWSE oBrw1 ARRAY SIZE 214,218 STYLE WS_VSCROLL ;
-            ON SIZE {|o,x,y|MoveWindow(o:handle,2,30,x-6,y-32)}
-            setdlgkey(oDesigner:oDlgInsp,0,VK_DELETE,{|| ResetToDefault(oBrw1)} )
+            ON SIZE {|o,x,y|hwg_Movewindow(o:handle,2,30,x-6,y-32)}
+            hwg_SetDlgKey(oDesigner:oDlgInsp,0,VK_DELETE,{|| ResetToDefault(oBrw1)} )
 
-      oBrw1:tColor := GetSysColor( COLOR_BTNTEXT )
+      oBrw1:tColor := hwg_Getsyscolor( COLOR_BTNTEXT )
       oBrw1:tColorSel := 8404992
-      oBrw1:bColor := oBrw1:bColorSel := GetSysColor( COLOR_BTNFACE )
+      oBrw1:bColor := oBrw1:bColorSel := hwg_Getsyscolor( COLOR_BTNFACE )
       oBrw1:freeze := 1
       oBrw1:lDispHead := .F.
       oBrw1:lSep3d := .T.
-      oBrw1:sepColor  := GetSysColor( COLOR_BTNSHADOW )
+      oBrw1:sepColor  := hwg_Getsyscolor( COLOR_BTNSHADOW )
       oBrw1:aArray := aProp
       oBrw1:AddColumn( HColumn():New( ,{|v,o| HB_SYMBOL_UNUSED( v ),Iif(Empty(o:aArray[o:nCurrent,1]),"","  "+o:aArray[o:nCurrent,1])},"C",12,0,.T. ) )
-      oBrw1:AddColumn( HColumn():New( ,ColumnArBlock(),"U",100,0,.T. ) )
+      oBrw1:AddColumn( HColumn():New( ,hwg_ColumnArBlock(),"U",100,0,.T. ) )
    END PAGE OF oTab
 
    BEGIN PAGE "Events" OF oTab
       @ 2,30 PBROWSE oBrw2 ARRAY SIZE 214,218 STYLE WS_VSCROLL ;
-            ON SIZE {|o,x,y|MoveWindow(o:handle,2,30,x-6,y-32)}
-      oBrw2:tColor := GetSysColor( COLOR_BTNTEXT )
+            ON SIZE {|o,x,y|hwg_Movewindow(o:handle,2,30,x-6,y-32)}
+      oBrw2:tColor := hwg_Getsyscolor( COLOR_BTNTEXT )
       oBrw2:tColorSel := 8404992
-      oBrw2:bColor := oBrw2:bColorSel := GetSysColor( COLOR_BTNFACE )
+      oBrw2:bColor := oBrw2:bColorSel := hwg_Getsyscolor( COLOR_BTNFACE )
       oBrw2:freeze := 1
       oBrw2:lDispHead := .F.
       oBrw2:lSep3d := .T.
-      oBrw2:sepColor  := GetSysColor( COLOR_BTNSHADOW )
+      oBrw2:sepColor  := hwg_Getsyscolor( COLOR_BTNSHADOW )
       oBrw2:aArray := aMethods
       oBrw2:AddColumn( HColumn():New( ,{|v,o|HB_SYMBOL_UNUSED( v ),Iif(Empty(o:aArray[o:nCurrent,1]),"","  "+o:aArray[o:nCurrent,1])},"C",12,0,.T. ) )
       oBrw2:AddColumn( HColumn():New( ,{|v,o|HB_SYMBOL_UNUSED( v ),Iif(Empty(o:aArray[o:nCurrent,2]),"",":"+o:aArray[o:nCurrent,1])},"C",100,0,.T. ) )
@@ -386,7 +386,7 @@ FUNCTION InspOpen(lShow)
     ENDMENU
 
    ACTIVATE DIALOG oDesigner:oDlgInsp NOMODAL
-   CheckMenuItem( oDesigner:oMainWnd:handle, 1010, .T. )
+   hwg_Checkmenuitem( oDesigner:oMainWnd:handle, 1010, .T. )
 
    InspSetCombo()
 
@@ -408,7 +408,7 @@ STATIC FUNCTION DlgCancel()
    IF !Empty( oBrw1:aControls )
       oBrw1:aEvents := {}
       oBrw1:aNotify := {}
-      PostMessage( oBrw1:aControls[1]:handle,WM_CLOSE,0,0 )
+      hwg_Postmessage( oBrw1:aControls[1]:handle,WM_CLOSE,0,0 )
       oBrw1:aControls := {}
       // oBrw1:DelControl( oBrw1:aControls[1] )
       // oBrw1:Refresh()
@@ -482,7 +482,7 @@ STATIC FUNCTION ComboOnChg()
    LOCAL oDlg := HFormGen():oDlgSelected, oCtrl, n
    LOCAL aControls := Iif( oDesigner:lReport,oDlg:aControls[1]:aControls[1]:aControls,oDlg:aControls )
 
-   oCombo:value := SendMessage( oCombo:handle,CB_GETCURSEL,0,0 ) + 1
+   oCombo:value := hwg_Sendmessage( oCombo:handle,CB_GETCURSEL,0,0 ) + 1
    IF oDlg != NIL
       n := oCombo:value - 1
       oCtrl := GetCtrlSelected( oDlg )
@@ -591,7 +591,7 @@ STATIC FUNCTION EditArray( arr )
          ON SIZE {|o,x,y|o:Move(,,x,y-45)}
    oBrw:acolumns:={}
    oBrw:bcolor := 15132390
-   oBrw:bcolorSel := VColor( "008000" )
+   oBrw:bcolorSel := hwg_VColor( "008000" )
    oBrw:lAppable := .T.
    oBrw:aArray := arr
    oBrw:AddColumn( HColumn():New( ,{|v,o| Iif( v!=NIL, o:aArray[o:nCurrent] := v, o:aArray[o:nCurrent] ) }, "C", 100, 0, .T. ) )
@@ -601,7 +601,7 @@ STATIC FUNCTION EditArray( arr )
          ON CLICK {|| onclick_deleteItem(oBrw)}
    @ 151,265 BUTTON "Ok" SIZE 110, 26     ;
          ON SIZE {|o,x,y|HB_SYMBOL_UNUSED( x ),o:Move(,y-30,,)}  ;
-         ON CLICK {||oDlg:lResult:=.T.,EndDialog()}
+         ON CLICK {||oDlg:lResult:=.T.,hwg_EndDialog()}
    @ 276,265 BUTTON "Cancel" ID IDCANCEL SIZE 110, 26 ;
          ON SIZE {|o,x,y|HB_SYMBOL_UNUSED( x ),o:Move(,y-30,,)}
 
@@ -621,7 +621,7 @@ STATIC FUNCTION onclick_deleteitem(oBrw)
    IF oBrw:nCurrent = 1 .AND. oBrw:aArray[oBrw:nCurrent] = ".."
       RETURN NIL
    ENDIF
-   IF len(obrw:aArray) > 0 .AND. msgyesno("Confirm item deleted : [ "+oBrw:aArray[oBrw:nCurrent]+" ] ?","Items")
+   IF len(obrw:aArray) > 0 .AND. hwg_Msgyesno("Confirm item deleted : [ "+oBrw:aArray[oBrw:nCurrent]+" ] ?","Items")
       oBrw:aArray := ADEL(obrw:aArray,oBrw:nCurrent)
       obrw:aArray := ASIZE(obrw:aArray,len(obrw:aArray)-1)
       obrw:refresh()
@@ -670,7 +670,7 @@ FUNCTION ObjInspector(oObject )
    @ nLeft, nTop button oBtn1 ;
          CAPTION "&Exit" ;
          SIZE 80, 25 ;
-         ON CLICK { || EndDialog() }
+         ON CLICK { || hwg_EndDialog() }
 
    @ nLeft + 150, ntop+2 SAY "Object: " + 'oObject'  SIZE 200,24
    nLin = nTop + 30
@@ -679,7 +679,7 @@ FUNCTION ObjInspector(oObject )
    BEGIN PAGE ' Properties ' OF oPage1
       @ 010, nLin browse oBrw array size 570, 300 style WS_VSCROLL + WS_HSCROLL
 
-      CreateArList( oBrw, aClassMsgProp )
+      hwg_CREATEARLIST( oBrw, aClassMsgProp )
 
       oBrw:aColumns[ 1 ]:length = 30
       oBrw:aColumns[ 1 ]:heading = " Property "
@@ -691,7 +691,7 @@ FUNCTION ObjInspector(oObject )
    BEGIN PAGE ' Methods ' OF oPage1
       @ 010, nLin browse oBrw2 array size 570, 300 style WS_VSCROLL + WS_HSCROLL
 
-      CreateArList( oBrw2, aClassMsgMtdo )
+      hwg_CREATEARLIST( oBrw2, aClassMsgMtdo )
 
       oBrw2:aColumns[ 1 ]:length = 10
       oBrw2:aColumns[ 1 ]:heading = "Methods"
@@ -709,21 +709,21 @@ STATIC FUNCTION MessagesOthers( oDlg, msg, wParam, lParam )
 
    // writelog( str(msg)+str(wParam)+str(lParam) )
    IF msg == WM_MOUSEMOVE
-      * MouseMove( oDlg, wParam, LoWord( lParam ), HiWord( lParam ) )
+      * MouseMove( oDlg, wParam, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
       RETURN 1
    ELSEIF msg == WM_LBUTTONDOWN
-      * LButtonDown( oDlg, LoWord( lParam ), HiWord( lParam ) )
+      * LButtonDown( oDlg, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
       RETURN 1
    ELSEIF msg == WM_LBUTTONUP
-      * LButtonUp( oDlg, LoWord( lParam ), HiWord( lParam ) )
+      * LButtonUp( oDlg, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
       RETURN 1
    ELSEIF msg == WM_RBUTTONUP
-      *RButtonUp( oDlg, LoWord( lParam ), HiWord( lParam ) )
+      *RButtonUp( oDlg, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
       oMenuisnp:Show( oDlg,oDlg:nTop+5,oDlg:nLeft+15,.T. )
       RETURN 1
    ELSEIF msg == WM_LBUTTONDBLCLK
       oDlg:hide()
-      *MSGINFO('Futura a‡Æo dos Eventos')
+      *hwg_Msginfo('Futura a‡Æo dos Eventos')
       RETURN 1
    ELSEIF msg == WM_MOVE
    ELSEIF msg == WM_KEYDOWN
@@ -738,12 +738,12 @@ STATIC FUNCTION MessagesOthers( oDlg, msg, wParam, lParam )
 FUNCTION ActiveTopMost( nHandle, lActive )
    LOCAL lSucess   // ,nHandle
 
-   nHandle:=GetActiveWindow()
+   nHandle:=hwg_Getactivewindow()
 
    IF lActive
-      lSucess := SetTopMost(nHandle)    // Set TopMost
+      lSucess := hwg_Settopmost(nHandle)    // Set TopMost
    ELSE
-      lSucess := RemoveTopMost(nHandle) // Remove TopMost
+      lSucess := hwg_Removetopmost(nHandle) // Remove TopMost
    ENDIF
 
    RETURN lSucess
@@ -771,7 +771,7 @@ STATIC FUNCTION resettodefault(oBrw1)
          EvalCode( oDesigner:aDataDef[ j,4 ] )
       ENDIF
    ENDIF
-   RedrawWindow( oCtrl:handle,5 )
+   hwg_Redrawwindow( oCtrl:handle,5 )
    HFormGen():oDlgSelected:oParent:lChanged := .T.
    oBrw1:lUpdated := .T.
    oBrw1:Refresh()

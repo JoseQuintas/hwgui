@@ -28,33 +28,33 @@ Local aModDlg
 Return Nil
 
 Static Function InitMove( nMove )
-Local hDlg := getmodalhandle(), cTitle
-   WriteStatus( HMainWindow():GetMdiActive(),3,"" )
+Local hDlg := hwg_GetModalHandle(), cTitle
+   hwg_WriteStatus( HMainWindow():GetMdiActive(),3,"" )
    IF nMove == 1
       cTitle := "Input locate expression"
-      SetDlgItemText( hDlg, IDC_EDIT6, cLocate )
+      hwg_Setdlgitemtext( hDlg, IDC_EDIT6, cLocate )
    ELSEIF nMove == 2
       cTitle := "Input seek string"
-      SetDlgItemText( hDlg, IDC_EDIT6, cSeek )
+      hwg_Setdlgitemtext( hDlg, IDC_EDIT6, cSeek )
    ELSEIF nMove == 3
       cTitle := "Input filter expression"
-      SetDlgItemText( hDlg, IDC_EDIT6, cFilter )
+      hwg_Setdlgitemtext( hDlg, IDC_EDIT6, cFilter )
    ELSEIF nMove == 4
       cTitle := "Input record number"
    ENDIF
-   SetDlgItemText( hDlg, IDC_TEXTHEAD, cTitle )
-   SetFocus( GetDlgItem( hDlg, IDC_EDIT6 ) )
+   hwg_Setdlgitemtext( hDlg, IDC_TEXTHEAD, cTitle )
+   hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT6 ) )
 Return Nil
 
 Static Function EndMove( lOk, nMove )
-Local hDlg := getmodalhandle()
+Local hDlg := hwg_GetModalHandle()
 Local cExpres, nrec, key
 Local hWnd, oWindow, aControls, iCont
 
    IF lOk
-      cExpres := GetDlgItemText( hDlg, IDC_EDIT6, 80 )
+      cExpres := hwg_Getdlgitemtext( hDlg, IDC_EDIT6, 80 )
       IF Empty( cExpres )
-         SetFocus( GetDlgItem( hDlg, IDC_EDIT6 ) )
+         hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT6 ) )
          Return Nil
       ENDIF
 
@@ -78,9 +78,9 @@ Local hWnd, oWindow, aControls, iCont
          SEEK key
          IF .NOT. FOUND()
             GO nrec
-            MsgStop( "Record not found" )
+            hwg_Msgstop( "Record not found" )
          ELSE
-            WriteStatus( oWindow,3,"Found" )
+            hwg_WriteStatus( oWindow,3,"Found" )
          ENDIF
       ELSEIF nMove == 3
          F_Filter( aControls[iCont], cExpres )
@@ -91,11 +91,11 @@ Local hWnd, oWindow, aControls, iCont
       ENDIF
 
       IF iCont > 0
-         RedrawWindow( aControls[iCont]:handle, RDW_ERASE + RDW_INVALIDATE )
+         hwg_Redrawwindow( aControls[iCont]:handle, RDW_ERASE + RDW_INVALIDATE )
       ENDIF
    ENDIF
 
-   EndDialog( hDlg )
+   hwg_EndDialog( hDlg )
 Return Nil
 
 Function F_Locate( oBrw, cExpres )
@@ -128,15 +128,15 @@ Local nrec, i, res, block
       ENDIF
       IF ( oBrw:prflt .AND. !res ) .OR. ( !oBrw:prflt .AND. .NOT. FOUND() )
          GO nrec
-         MsgStop( "Record not found" )
+         hwg_Msgstop( "Record not found" )
       ELSE
-         WriteStatus( HMainWindow():GetMdiActive(),3,"Found" )
+         hwg_WriteStatus( HMainWindow():GetMdiActive(),3,"Found" )
          IF oBrw:prflt
             oBrw:nCurrent := i
          ENDIF
       ENDIF
    ELSE
-      MsgInfo( "Wrong expression" )
+      hwg_Msginfo( "Wrong expression" )
    ENDIF
 Return Nil
 
@@ -173,7 +173,7 @@ Local i, nrec
          oBrw:bGoBot:= &( "{|o|" + oBrw:alias + "->(FGOBOT(o))}")
          oBrw:bEof  := &( "{|o|" + oBrw:alias + "->(FEOF(o))}" )
          oBrw:bBof  := &( "{|o|" + oBrw:alias + "->(FBOF(o))}" )
-         WriteStatus( HMainWindow():GetMdiActive(),1,Ltrim(Str(oBrw:nRecords,10))+" records filtered" )
+         hwg_WriteStatus( HMainWindow():GetMdiActive(),1,Ltrim(Str(oBrw:nRecords,10))+" records filtered" )
       ELSE
          oBrw:prflt := .F.
          SET FILTER TO
@@ -183,11 +183,11 @@ Local i, nrec
          oBrw:bGoBot:= &( "{||" + oBrw:alias + "->(DBGOBOTTOM())}")
          oBrw:bEof  := &( "{||" + oBrw:alias + "->(EOF())}" )
          oBrw:bBof  := &( "{||" + oBrw:alias + "->(BOF())}" )
-         MsgInfo( "Records not found" )
-         WriteStatus( HMainWindow():GetMdiActive(),1,Ltrim(Str(Reccount(),10))+" records" )
+         hwg_Msginfo( "Records not found" )
+         hwg_WriteStatus( HMainWindow():GetMdiActive(),1,Ltrim(Str(Reccount(),10))+" records" )
       ENDIF
    ELSE
-      MsgInfo( "Wrong expression" )
+      hwg_Msginfo( "Wrong expression" )
    ENDIF
 Return Nil
 

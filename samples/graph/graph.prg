@@ -9,7 +9,7 @@ Local oMainWindow
      AT 200,0 SIZE 400,100
 
    MENU OF oMainWindow
-      MENUITEM "&Exit" ACTION EndWindow()
+      MENUITEM "&Exit" ACTION hwg_EndWindow()
       MENUITEM "&Graph1" ACTION Graph1()
       MENUITEM "&Graph2" ACTION Graph2()
       MENUITEM "&Graph3" ACTION Graph3()
@@ -36,7 +36,7 @@ Local i, aGraph[1]
 
    @ 90,250 BUTTON "Close"  ;
        SIZE 120,30          ;
-       ON CLICK {||EndDialog()}
+       ON CLICK {||hwg_EndDialog()}
 
    ACTIVATE DIALOG oModDlg
 
@@ -60,7 +60,7 @@ Local i, aGraph[1]
 
    @ 90,250 BUTTON "Close"  ;
        SIZE 120,30          ;
-       ON CLICK {||EndDialog()}
+       ON CLICK {||hwg_EndDialog()}
 
    ACTIVATE DIALOG oModDlg
 
@@ -84,7 +84,7 @@ Local i, aGraph[1]
 
    @ 90,250 BUTTON "Close"  ;
        SIZE 120,30          ;
-       ON CLICK {||EndDialog()}
+       ON CLICK {||hwg_EndDialog()}
 */
    ACTIVATE DIALOG oModDlg
 

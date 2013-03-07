@@ -71,7 +71,7 @@ Return Self
 METHOD Activate CLASS HTab
 
    IF !Empty(::oParent:handle )
-      ::handle := CreateTabControl( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createtabcontrol( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
 
       ::Init()
@@ -84,11 +84,11 @@ Local i, h
    IF !::lInit
       ::Super:Init()
       FOR i := 1 TO Len( ::aTabs )
-         h := AddTab( ::handle, ::aTabs[i] )
+         h := hwg_Addtab( ::handle, ::aTabs[i] )
 	 Aadd( ::aPages, { 0,0,.F.,h } )
       NEXT
       
-      SetWindowObject( ::handle,Self )
+      hwg_Setwindowobject( ::handle,Self )
 
       FOR i := 2 TO Len( ::aPages )
          ::HidePage( i )
@@ -98,7 +98,7 @@ Local i, h
 Return Nil
 
 METHOD SetTab( n ) CLASS HTab
-   SendMessage( ::handle, TCM_SETCURFOCUS, n-1, 0 )
+   hwg_Sendmessage( ::handle, TCM_SETCURFOCUS, n-1, 0 )
 Return Nil
 
 METHOD StartPage( cname ) CLASS HTab
@@ -115,7 +115,7 @@ Local lNew := ( i == 0 )
       Aadd( ::aPages, { Len( ::aControls ),0,lNew,0 } )
    ENDDO
    ::nActive := i
-   ::aPages[ i,4 ] := AddTab( ::handle,::aTabs[i] )
+   ::aPages[ i,4 ] := hwg_Addtab( ::handle,::aTabs[i] )
 
 Return Nil
 
@@ -173,7 +173,7 @@ Local i, nFirst, nEnd
    NEXT
    FOR i := nFirst TO nEnd
       IF __ObjHasMsg( ::aControls[i],"BSETGET" ) .AND. ::aControls[i]:bSetGet != Nil
-         SetFocus( ::aControls[i]:handle )
+         hwg_Setfocus( ::aControls[i]:handle )
          Exit
       ENDIF
    NEXT

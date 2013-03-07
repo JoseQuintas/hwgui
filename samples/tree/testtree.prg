@@ -14,7 +14,7 @@ Local oMainWindow
      AT 200,0 SIZE 400,150
 
    MENU OF oMainWindow
-      MENUITEM "&Exit" ACTION EndWindow()
+      MENUITEM "&Exit" ACTION hwg_EndWindow()
       MENUITEM "&Tree" ACTION DlgGet()
    ENDMENU
 
@@ -42,7 +42,7 @@ Local oTree, oSplit, oSay
          DIVIDE {oTree} FROM {oSay} ;
          ON SIZE {|o,x,y|o:Move(,,,y-20)}
 
-   oSplit:bEndDrag := {||RedrawWindow( oSay:handle,RDW_ERASE+RDW_INVALIDATE+RDW_INTERNALPAINT+RDW_UPDATENOW)}
+   oSplit:bEndDrag := {||hwg_Redrawwindow( oSay:handle,RDW_ERASE+RDW_INVALIDATE+RDW_INTERNALPAINT+RDW_UPDATENOW)}
 
    ACTIVATE DIALOG oDlg
    oFont:Release()

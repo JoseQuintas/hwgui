@@ -26,7 +26,7 @@ Function Main ()
    MENU OF oWnd
       MENUITEM "&Dialog 1" ACTION Dlg1()
       MENUITEM "&Dialog 2" ACTION Dlg2()
-      MENUITEM "&Exit"     ACTION EndWindow()
+      MENUITEM "&Exit"     ACTION hwg_EndWindow()
    ENDMENU
 
    @ 20,20 TRACKBAR oTB ;
@@ -35,7 +35,7 @@ Function Main ()
       INIT 5 AUTOTICKS ;
       ON CHANGE {||UpdateSay()}
 
-   @ 300,200 BUTTON "Get Value" ON CLICK {||MsgInfo(str(oTB:GetValue()))} SIZE 100,40
+   @ 300,200 BUTTON "Get Value" ON CLICK {||hwg_Msginfo(str(oTB:GetValue()))} SIZE 100,40
    @ 300,300 BUTTON "Set Value" ON CLICK {||oTB:SetValue(5),UpdateSay()} SIZE 100,40
 
    @ 100,100 SAY oSay CAPTION "5" SIZE 40,40
@@ -63,10 +63,10 @@ Function Dlg1 ()
       SIZE 400,50 ;
       RANGE 0,100 ;
       INIT 25 ;
-      ON INIT {||MsgInfo("On Init","TrackBar")} ;
+      ON INIT {||hwg_Msginfo("On Init","TrackBar")} ;
       ON CHANGE {||UpdateSayDlg1()} AUTOTICKS TOOLTIP "trackbar control"
 
-   @ 300,100 BUTTON "Get Value" ON CLICK {||MsgInfo(str(oTB1:GetValue()))} SIZE 100,40
+   @ 300,100 BUTTON "Get Value" ON CLICK {||hwg_Msginfo(str(oTB1:GetValue()))} SIZE 100,40
    @ 300,200 BUTTON "Set Value" ON CLICK {||oTB1:SetValue(25),UpdateSayDlg1()} SIZE 100,40
 
    @ 100,100 SAY oSayDlg1 CAPTION "25" SIZE 40,40
@@ -98,7 +98,7 @@ Function Dlg2 ()
       VERTICAL AUTOTICKS TOOLTIP "trackbar control" ;
       ON CHANGE {||UpdateSayDlg2()}
 
-   @ 300,060 BUTTON "Get Value" ON CLICK {||MsgInfo(str(oTB2:GetValue()))} SIZE 100,40
+   @ 300,060 BUTTON "Get Value" ON CLICK {||hwg_Msginfo(str(oTB2:GetValue()))} SIZE 100,40
    @ 300,100 BUTTON "Set Value" ON CLICK {||oTB2:SetValue(50),UpdateSayDlg2()} SIZE 100,40
 
    @ 200,100 SAY oSayDlg2 CAPTION "50" SIZE 40,40

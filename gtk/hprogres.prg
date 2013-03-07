@@ -27,7 +27,7 @@ CLASS HProgressBar INHERIT HControl
    METHOD New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,maxPos,nRange, bInit,bSize,bPaint,ctooltip )
    METHOD NewBox( cTitle,nLeft,nTop,nWidth,nHeight,maxPos,nRange,bExit,bInit,bSize,bPaint,ctooltip )
    METHOD Activate()
-   METHOD Increment() INLINE UpdateProgressBar( ::handle )
+   METHOD Increment() INLINE hwg_Updateprogressbar( ::handle )
    METHOD Step()
    METHOD Set( cTitle,nPos )
    METHOD Close()
@@ -83,7 +83,7 @@ Return Self
 METHOD Activate CLASS HProgressBar
 
    IF !empty(::oParent:handle )
-      ::handle := CreateProgressBar( ::oParent:handle, ::maxPos, ;
+      ::handle := hwg_Createprogressbar( ::oParent:handle, ::maxPos, ;
                   ::nLeft, ::nTop, ::nWidth,::nHeight )
       ::Init()
    ENDIF
@@ -94,7 +94,7 @@ METHOD Step()
    ::nCount ++
    IF ::nCount == ::nLimit
       ::nCount := 0
-      UpdateProgressBar( ::handle )
+      hwg_Updateprogressbar( ::handle )
    ENDIF
 
 Return Nil
@@ -102,10 +102,10 @@ Return Nil
 METHOD Set( cTitle,nPos ) CLASS HProgressBar
 
    IF cTitle != Nil
-      SetWindowText( ::oParent:handle,cTitle )
+      hwg_Setwindowtext( ::oParent:handle,cTitle )
    ENDIF
    IF nPos != Nil
-      SetProgressBar( ::handle,nPos )
+      hwg_Setprogressbar( ::handle,nPos )
    ENDIF
 
 Return Nil
@@ -114,7 +114,7 @@ METHOD Close()
 
    HWG_DestroyWindow( ::handle )
    IF ::lNewBox
-      EndDialog( ::oParent:handle )
+      hwg_EndDialog( ::oParent:handle )
    ENDIF
 
 Return Nil

@@ -5,7 +5,7 @@
  * HList class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
  * Listbox class and accompanying code added Feb 22nd, 2004 by
  * Vic McClung
 */
@@ -18,7 +18,7 @@
 #include "hbvm.h"
 #include "hbstack.h"
 
-HB_FUNC( LISTBOXADDSTRING )
+HB_FUNC( HWG_LISTBOXADDSTRING )
 {
    void * hString;
 
@@ -27,7 +27,7 @@ HB_FUNC( LISTBOXADDSTRING )
    hb_strfree( hString );
 }
 
-HB_FUNC( LISTBOXSETSTRING )
+HB_FUNC( HWG_LISTBOXSETSTRING )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), LB_SETCURSEL,
          ( WPARAM ) hb_parni( 2 ) - 1, 0 );
@@ -36,7 +36,7 @@ HB_FUNC( LISTBOXSETSTRING )
 /*
    CreateListbox( hParentWIndow, nListboxID, nStyle, x, y, nWidth, nHeight)
 */
-HB_FUNC( CREATELISTBOX )
+HB_FUNC( HWG_CREATELISTBOX )
 {
    HWND hListbox = CreateWindow( TEXT( "LISTBOX" ),     /* predefined class  */
          TEXT( "" ),                    /*   */
@@ -51,7 +51,8 @@ HB_FUNC( CREATELISTBOX )
    HB_RETHANDLE( hListbox );
 }
 
-HB_FUNC( LISTBOXDELETESTRING )
+HB_FUNC( HWG_LISTBOXDELETESTRING )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), LB_DELETESTRING, 0, ( LPARAM ) 0 );
 }
+

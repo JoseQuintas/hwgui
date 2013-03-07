@@ -30,13 +30,13 @@ CLASS HProgressBar INHERIT HControl
    METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, lPercent )
    METHOD Init()
    METHOD Activate()
-   METHOD Increment() INLINE UpdateProgressBar( ::handle )
+   METHOD Increment() INLINE hwg_Updateprogressbar( ::handle )
    METHOD STEP( cTitle )
    METHOD SET( cTitle, nPos )
    METHOD SetLabel( cCaption )
    METHOD SetAnimation( nAnimation ) SETGET
    METHOD Close()
-   METHOD End() INLINE DestroyWindow( ::handle )
+   METHOD End() INLINE hwg_Destroywindow( ::handle )
 
 ENDCLASS
 
@@ -99,7 +99,7 @@ METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, lPer
 METHOD Activate() CLASS HProgressBar
 
    IF ! Empty( ::oParent:handle )
-      ::handle := CreateProgressBar( ::oParent:handle, ::maxPos, ::style, ;
+      ::handle := hwg_Createprogressbar( ::oParent:handle, ::maxPos, ::style, ;
             ::nLeft, ::nTop, ::nWidth, IIF( ::nHeight = 0, NIL, ::nHeight ) )
       ::Init()
    ENDIF
@@ -111,7 +111,7 @@ METHOD Init()  CLASS HProgressBar
    IF ! ::lInit
       ::Super:Init()
        IF ::nAnimation != NIL .AND. ::nAnimation > 0
-          SendMessage( ::handle, PBM_SETMARQUEE, 1, ::nAnimation )
+          hwg_Sendmessage( ::handle, PBM_SETMARQUEE, 1, ::nAnimation )
        ENDIF
    ENDIF
 
@@ -122,7 +122,7 @@ METHOD STEP( cTitle )
    ::nCount ++
    IF ::nCount == ::nLimit
       ::nCount := 0
-      UpdateProgressBar( ::handle )
+      hwg_Updateprogressbar( ::handle )
       ::SET( cTitle )
       IF ! EMPTY( ::lPercent )
          ::nPercent += ::maxPos  //::nLimit
@@ -136,10 +136,10 @@ METHOD STEP( cTitle )
 METHOD SET( cTitle, nPos ) CLASS HProgressBar
 
    IF cTitle != NIL
-      SetWindowText( ::oParent:handle, cTitle )
+      hwg_Setwindowtext( ::oParent:handle, cTitle )
    ENDIF
    IF nPos != NIL
-      SetProgressBar( ::handle, nPos )
+      hwg_Setprogressbar( ::handle, nPos )
    ENDIF
 
    RETURN NIL
@@ -156,14 +156,14 @@ METHOD SetAnimation( nAnimation ) CLASS HProgressBar
 
    IF nAnimation != NIL
        IF nAnimation <= 0
-          SendMessage( ::handle, PBM_SETMARQUEE, 0, NIL )
-          MODIFYSTYLE( ::Handle, PBS_MARQUEE, 0 )
-          SendMessage( ::handle, PBM_SETPOS, 0, 0)
+          hwg_Sendmessage( ::handle, PBM_SETMARQUEE, 0, NIL )
+          hwg_Modifystyle( ::Handle, PBS_MARQUEE, 0 )
+          hwg_Sendmessage( ::handle, PBM_SETPOS, 0, 0)
        ELSE
          IF Hwg_BitAND( ::Style, PBS_MARQUEE ) = 0
-            MODIFYSTYLE( ::Handle, PBS_MARQUEE, PBS_MARQUEE )
+            hwg_Modifystyle( ::Handle, PBS_MARQUEE, PBS_MARQUEE )
          ENDIF
-         SendMessage( ::handle, PBM_SETMARQUEE, 1, nAnimation)
+         hwg_Sendmessage( ::handle, PBM_SETMARQUEE, 1, nAnimation)
        ENDIF
        ::nAnimation := nAnimation
    ENDIF
@@ -172,9 +172,9 @@ METHOD SetAnimation( nAnimation ) CLASS HProgressBar
 
 METHOD Close()
 
-   DestroyWindow( ::handle )
+   hwg_Destroywindow( ::handle )
    IF ::lNewBox
-      EndDialog( ::oParent:handle )
+      hwg_EndDialog( ::oParent:handle )
    ENDIF
 
    RETURN NIL

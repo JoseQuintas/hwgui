@@ -31,7 +31,7 @@ Private oMainWindow, oChar
    @ 20,20 EDITBOX oEdit CAPTION "Hello, world !" SIZE 260,30 STYLE ES_AUTOHSCROLL
 
    @ 20,200 LINE LENGTH 180
-   @ 260,170 BUTTON "Close"  SIZE 120,30  ON CLICK {||EndWindow()}
+   @ 260,170 BUTTON "Close"  SIZE 120,30  ON CLICK {||hwg_EndWindow()}
 
    ACTIVATE WINDOW oMainWindow
 
@@ -43,11 +43,11 @@ Private oMainWindow, oChar
 Return Nil
 
 Static Function SpeakIt( oEdit )
-Local aTop := ClientToScreen( oMainWindow:handle,0,0 )
-Local cText := GetEditText( oEdit:oParent:handle, oEdit:id )
+Local aTop := hwg_Clienttoscreen( oMainWindow:handle,0,0 )
+Local cText := hwg_Getedittext( oEdit:oParent:handle, oEdit:id )
 
    oChar:Show()
-   oChar:MoveTo( aTop[1]+20, aTop[2]+70 )
+   oChar:Moveto( aTop[1]+20, aTop[2]+70 )
    oChar:LanguageID := Iif( Asc(cText)>122,"&H0419","&H0409" )
    oChar:Speak( cText )
    oChar:Hide()

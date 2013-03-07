@@ -87,7 +87,7 @@ METHOD FromBitmap( oBitmap ) CLASS HFreeImage
 METHOD Draw( hDC, nLeft, nTop, nWidth, nHeight ) CLASS HFreeImage
 
    hwg_Fi_draw( ::handle, hDC, ::nWidth, ::nHeight, nLeft, nTop, nWidth, nHeight )
-   // DrawBitmap( hDC, ::hBitmap,, nLeft, nTop, ::nWidth, ::nHeight )
+   // hwg_Drawbitmap( hDC, ::hBitmap,, nLeft, nTop, ::nWidth, ::nHeight )
    RETURN Nil
 
 METHOD Release() CLASS HFreeImage
@@ -100,7 +100,7 @@ METHOD Release() CLASS HFreeImage
             IF i:handle == ::handle
                hwg_Fi_unload( ::handle )
                IF ::hBitmap != Nil
-                  DeleteObject( ::hBitmap )
+                  hwg_Deleteobject( ::hBitmap )
                ENDIF
                ADel( ::aImages, hB_enumIndex() )
                ASize( ::aImages, nlen - 1 )
@@ -112,7 +112,7 @@ METHOD Release() CLASS HFreeImage
             IF ::aImages[ i ]:handle == ::handle
                hwg_Fi_unload( ::handle )
                IF ::hBitmap != Nil
-                  DeleteObject( ::hBitmap )
+                  hwg_Deleteobject( ::hBitmap )
                ENDIF
                ADel( ::aImages, i )
                ASize( ::aImages, nlen - 1 )
@@ -180,7 +180,7 @@ METHOD ReplaceImage( Image, cType )
    RETURN Nil
 
 METHOD Paint( lpdis ) CLASS HSayFImage
-   LOCAL drawInfo := GetDrawItemInfo( lpdis )
+   LOCAL drawInfo := hwg_Getdrawiteminfo( lpdis )
    LOCAL hDC := drawInfo[ 3 ] // , x1 := drawInfo[ 4 ], y1 := drawInfo[ 5 ], x2 := drawInfo[ 6 ], y2 := drawInfo[ 7 ]
 
    IF ::oImage != Nil
@@ -200,7 +200,7 @@ METHOD Paint( lpdis ) CLASS HSayFImage
    FOR i := 1 TO Len( HFreeImage():aImages )
       hwg_Fi_unload( HFreeImage():aImages[ i ]:handle )
       IF HFreeImage():aImages[ i ]:hBitmap != Nil
-         DeleteObject( HFreeImage():aImages[ i ]:hBitmap )
+         hwg_Deleteobject( HFreeImage():aImages[ i ]:hBitmap )
       ENDIF
    NEXT
    hwg_Fi_end()

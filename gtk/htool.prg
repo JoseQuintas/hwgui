@@ -64,8 +64,8 @@ Return Self
 METHOD Activate CLASS hToolBar
    IF !empty(::oParent:handle )
 
-      ::handle := CREATETOOLBAR(::oParent:handle )
-      SetWindowObject( ::handle,Self )
+      ::handle := hwg_Createtoolbar(::oParent:handle )
+      hwg_Setwindowobject( ::handle,Self )
       ::Init()
    ENDIF
 RETURN Nil
@@ -106,14 +106,14 @@ Local aItem
 
             if aItem[4] == TBSTYLE_BUTTON
 
-               aItem[11] := CreateToolBarButton(::handle,aItem[1],aItem[6],.f.)
+               aItem[11] := hwg_Createtoolbarbutton(::handle,aItem[1],aItem[6],.f.)
                aItem[2] := hb_enumindex()
-               TOOLBAR_SETACTION(aItem[11],aItem[7])
+               hwg_Toolbar_setaction(aItem[11],aItem[7])
                if !empty(aItem[8])
-                  AddtoolTip(::handle, aItem[11],aItem[8])
+                  hwg_Addtooltip(::handle, aItem[11],aItem[8])
                endif
             elseif aitem[4] == TBSTYLE_SEP
-               aItem[11] := CreateToolBarButton(::handle,,,.t.)
+               aItem[11] := hwg_Createtoolbarbutton(::handle,,,.t.)
                aItem[2] := hb_enumindex()
             endif
          next
@@ -154,21 +154,21 @@ return nil
 METHOD EnableAllButtons() class htoolbar
    Local xItem
    For Each xItem in ::aItem
-      EnableWindow( xItem[ 11 ], .T. )
+      hwg_Enablewindow( xItem[ 11 ], .T. )
    Next
 RETURN Self
 
 METHOD DisableAllButtons() class htoolbar
    Local xItem
    For Each xItem in ::aItem
-      EnableWindow( xItem[ 11 ], .F. )
+      hwg_Enablewindow( xItem[ 11 ], .F. )
    Next
 RETURN Self
 
 METHOD EnableButtons(n) class htoolbar
-   EnableWindow( ::aItem[n, 11 ], .T. )
+   hwg_Enablewindow( ::aItem[n, 11 ], .T. )
 RETURN Self
 
 METHOD DisableButtons(n) class htoolbar
-   EnableWindow( ::aItem[n, 11 ], .T. )
+   hwg_Enablewindow( ::aItem[n, 11 ], .T. )
 RETURN Self

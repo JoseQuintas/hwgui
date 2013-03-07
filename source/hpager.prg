@@ -36,18 +36,18 @@ CLASS HPager INHERIT HControl
    METHOD INIT()
 
    METHOD Notify( lParam )
-   METHOD PAGERSETCHILD( b ) INLINE ::hTool := b, PAGERSETCHILD( ::handle, b )
-   METHOD PAGERRECALCSIZE( ) INLINE PAGERRECALCSIZE( ::handle )
-   METHOD PAGERFORWARDMOUSE( b ) INLINE PAGERFORWARDMOUSE( ::handle, b )
-   METHOD PAGERSETBKCOLOR(  b ) INLINE PAGERSETBKCOLOR( ::handle, b )
-   METHOD PAGERGETBKCOLOR( ) INLINE PAGERGETBKCOLOR( ::handle )
-   METHOD PAGERSETBORDER(  b ) INLINE PAGERSETBORDER( ::handle, b )
-   METHOD PAGERGETBORDER( ) INLINE PAGERGETBORDER( ::handle )
-   METHOD PAGERSETPOS(  b ) INLINE PAGERSETPOS( ::handle, b )
-   METHOD PAGERGETPOS(  ) INLINE PAGERGETPOS( ::handle )
-   METHOD PAGERSETBUTTONSIZE(  b ) INLINE PAGERSETBUTTONSIZE( ::handle, b )
-   METHOD PAGERGETBUTTONSIZE( ) INLINE PAGERGETBUTTONSIZE( ::handle )
-   METHOD PAGERGETBUTTONSTATE() INLINE PAGERGETBUTTONSTATE( ::handle )
+   METHOD Pagersetchild( b ) INLINE ::hTool := b, hwg_Pagersetchild( ::handle, b )
+   METHOD Pagerrecalcsize( ) INLINE hwg_Pagerrecalcsize( ::handle )
+   METHOD Pagerforwardmouse( b ) INLINE hwg_Pagerforwardmouse( ::handle, b )
+   METHOD Pagersetbkcolor(  b ) INLINE hwg_Pagersetbkcolor( ::handle, b )
+   METHOD Pagergetbkcolor( ) INLINE hwg_Pagergetbkcolor( ::handle )
+   METHOD Pagersetborder(  b ) INLINE hwg_Pagersetborder( ::handle, b )
+   METHOD Pagergetborder( ) INLINE hwg_Pagergetborder( ::handle )
+   METHOD Pagersetpos(  b ) INLINE hwg_Pagersetpos( ::handle, b )
+   METHOD Pagergetpos(  ) INLINE hwg_Pagergetpos( ::handle )
+   METHOD Pagersetbuttonsize(  b ) INLINE hwg_Pagersetbuttonsize( ::handle, b )
+   METHOD Pagergetbuttonsize( ) INLINE hwg_Pagergetbuttonsize( ::handle )
+   METHOD Pagergetbuttonstate() INLINE hwg_Pagergetbuttonstate( ::handle )
 
 ENDCLASS
 
@@ -91,7 +91,7 @@ METHOD Activate() CLASS HPager
 
    IF ! Empty( ::oParent:handle )
 
-      ::handle := CREATEPAGER( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createpager( ::oParent:handle, ::id, ;
                                ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, IIF( ::lVert, PGS_VERT, PGS_HORZ ) )
 
       ::Init()
@@ -107,12 +107,12 @@ METHOD INIT() CLASS HPager
 
 METHOD Notify( lParam ) CLASS HPager
 
-   LOCAL nCode :=  GetNotifyCode( lParam )
+   LOCAL nCode :=  hwg_Getnotifycode( lParam )
 
    IF nCode == PGN_CALCSIZE
-      PAGERONPAGERCALCSIZE( lParam, ::hTool )
+      hwg_Pageronpagercalcsize( lParam, ::hTool )
    ELSEIF nCode == PGN_SCROLL
-      PAGERONPAGERSCROLL( lParam )
+      hwg_Pageronpagerscroll( lParam )
    ENDIF
 
    RETURN 0

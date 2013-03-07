@@ -35,11 +35,11 @@
  nPinxWidth := 1
  nColText :=0
  cData:="1234567890123"
- nColPane:=RGB( 255, 255, 255 )
+ nColPane:=hwg_Rgb( 255, 255, 255 )
 ]]>
   </method>
   <method name="onDlgInit">
-    <![CDATA[refreshAllGets(oDlg)]]>
+    <![CDATA[hwg_RefreshAllGets(oDlg)]]>
   </method>
   <part class="menu">
     <style>
@@ -52,7 +52,7 @@
           </item>
           <item name="-" id="32003"/>
           <item name="Exit" id="32002">
-            <![CDATA[endDialog()]]>
+            <![CDATA[hwg_EndDialog()]]>
           </item>
         </item>
       </property>
@@ -202,7 +202,7 @@
       </style>
       <method name="onClick">
         <![CDATA[nColText:=hwg_ChooseColor(nColText)
-refreshAllGets(oDlg)]]>
+hwg_RefreshAllGets(oDlg)]]>
       </method>
     </part>
     <part class="editbox">
@@ -234,9 +234,9 @@ refreshAllGets(oDlg)]]>
         <property name="Caption">[Back Color]</property>
       </style>
       <method name="onClick">
-        <![CDATA[//MsgInfo(str(GetSysColor(15)))
+        <![CDATA[//hwg_Msginfo(str(hwg_Getsyscolor(15)))
 nColPane:=hwg_ChooseColor(nColPane)
-refreshAllGets(oDlg)
+hwg_RefreshAllGets(oDlg)
 ]]>
       </method>
     </part>
@@ -265,21 +265,7 @@ refreshAllGets(oDlg)
    oPrinter:StartDoc( .T. )
    oPrinter:StartPage()
    oPrinter:SetFont( oFont )
-
-   //oPrinter:Box( 5,5,oPrinter:nxWidth-5,oPrinter:nxHeight-5 )
-   //oPrinter:Say( "Windows printing first sample !", 50,10,165,26, DT_CENTER ,oFont  )
-   //oPrinter:Line( 45,30,170,30 )
-   //oPrinter:Line( 45,5,45,30 )
-   //oPrinter:Line( 170,5,170,30 )
-   //oPrinter:Say( "----------", 50,120,150,132, DT_CENTER  )
-   //oPrinter:Box( 50,134,160,146 )
-   //oPrinter:Say( "End Of Report", 50,135,160,146,DT_CENTER  )
-
-   //nxLeft:= 50
-   //nxTop:=50
-   //nxWidth:=230
-   //nxHeight:=30
-   
+ 
    oBC:=Barcode():New( oPrinter:hDC , alltrim(cData) , nxLeft, nxTop, nxWidth, nxHeight, nBCodeType,nColText, nColPane, lHorz,lTransparent, nPinxWidth)
    oBc:showBarcode()
 
@@ -295,9 +281,9 @@ refreshAllGets(oDlg)
       <property name="Caption">[Clear]</property>
     </style>
     <method name="onClick">
-      <![CDATA[//invalidaterect(oDlg:handle,0)
-//PostMessage(oDlg:handle,15,0,0, 
-RedrawWindow( oDlg:handle, 4 + 1 + 2 + 256 )]]>
+      <![CDATA[//hwg_Invalidaterect(oDlg:handle,0)
+//hwg_Postmessage(oDlg:handle,15,0,0, 
+hwg_Redrawwindow( oDlg:handle, 4 + 1 + 2 + 256 )]]>
     </method>
   </part>
   <part class="button">
@@ -307,11 +293,11 @@ RedrawWindow( oDlg:handle, 4 + 1 + 2 + 256 )]]>
       <property name="Caption">[Display]</property>
     </style>
     <method name="onClick">
-      <![CDATA[oBC:=Barcode():New( GetDC( oDlg:handle) , alltrim(cData) , nxLeft, nxTop, nxWidth, nxHeight, nBCodeType,nColText, nColPane, lHorz,lTransparent, nPinxWidth)
+      <![CDATA[oBC:=Barcode():New( hwg_Getdc( oDlg:handle) , alltrim(cData) , nxLeft, nxTop, nxWidth, nxHeight, nBCodeType,nColText, nColPane, lHorz,lTransparent, nPinxWidth)
 oBc:showBarcode()
-//DrawText(GetDC( oDlg:handle), alltrim(cData),nxLeft-5, nxTop+nxHeight-12,nxLeft+nxWidth,nxTop+nxHeight, 0)
-setFocus(oEB2:handle)
-//setBkColor(oDlg:handle,0)
+//hwg_Drawtext(hwg_Getdc( oDlg:handle), alltrim(cData),nxLeft-5, nxTop+nxHeight-12,nxLeft+nxWidth,nxTop+nxHeight, 0)
+hwg_Setfocus(oEB2:handle)
+//hwg_Setbkcolor(oDlg:handle,0)
 
 ]]>
     </method>
@@ -326,7 +312,7 @@ setFocus(oEB2:handle)
       <property name="ToolTip">[Exit]</property>
     </style>
     <method name="onClick">
-      <![CDATA[endDialog()]]>
+      <![CDATA[hwg_EndDialog()]]>
     </method>
   </part>
   <part class="label">

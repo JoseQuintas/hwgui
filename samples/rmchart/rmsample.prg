@@ -40,7 +40,7 @@ METHOD New(p1,p2,p3,p4,p5,p6) CLASS RmChart
 RETURN
 
 METHOD Clicked( ... ) CLASS RmChart
-MsgInfo( "Mouse button pressed" , ::winclass )
+hwg_Msginfo( "Mouse button pressed" , ::winclass )
 Return
 
 

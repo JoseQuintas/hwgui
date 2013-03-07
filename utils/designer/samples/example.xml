@@ -45,12 +45,12 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
           </item>
           <item name="-" id="32007"/>
           <item name="Exit" id="32006">
-            <![CDATA[EndWindow()]]>
+            <![CDATA[hwg_EndWindow()]]>
           </item>
         </item>
         <item name="Help" id="32004">
           <item name="About" id="32005">
-            <![CDATA[ShellAbout("HwGUI forms example","")]]>
+            <![CDATA[hwg_Shellabout("HwGUI forms example","")]]>
           </item>
         </item>
       </property>
@@ -145,7 +145,7 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
       <property name="aParts">{120,0}</property>
     </style>
     <method name="onInit">
-      <![CDATA[WriteStatus( oDlg,1,Dtoc(Date()),.T. )
+      <![CDATA[hwg_WriteStatus( oDlg,1,Dtoc(Date()),.T. )
 ]]>
     </method>
   </part>

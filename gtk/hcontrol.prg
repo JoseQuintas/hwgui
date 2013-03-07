@@ -43,14 +43,14 @@ CLASS HControl INHERIT HCustomWindow
    METHOD SetColor( tcolor,bcolor,lRepaint )
    METHOD NewId()
 
-   METHOD Disable()	INLINE EnableWindow( ::handle, .F. )
-   METHOD Enable()	INLINE EnableWindow( ::handle, .T. )
-   METHOD IsEnabled()   INLINE IsWindowEnabled( ::Handle )
-   METHOD SetFocus()	INLINE EnableWindow( ::handle, .T. )
+   METHOD Disable()	INLINE hwg_Enablewindow( ::handle, .F. )
+   METHOD Enable()	INLINE hwg_Enablewindow( ::handle, .T. )
+   METHOD IsEnabled()   INLINE hwg_Iswindowenabled( ::Handle )
+   METHOD Setfocus()	INLINE hwg_Enablewindow( ::handle, .T. )
    METHOD Move( x1,y1,width,height )
    /*
-   METHOD GetText()     INLINE GetWindowText(::handle)
-   METHOD SetText( c )  INLINE SetWindowText( ::Handle, c )
+   METHOD GetText()     INLINE hwg_Getwindowtext(::handle)
+   METHOD SetText( c )  INLINE hwg_Setwindowtext( ::Handle, c )
    */
    METHOD onAnchor( x, y, w, h )
    METHOD End()
@@ -103,7 +103,7 @@ METHOD INIT CLASS HControl
 Local o
 
    IF !::lInit
-      AddToolTip( ::oParent:handle, ::handle, ::tooltip )
+      hwg_Addtooltip( ::oParent:handle, ::handle, ::tooltip )
       IF ::oFont != Nil
          hwg_SetCtrlFont( ::handle, ::oFont:handle )
       ELSEIF ::oParent:oFont != Nil
@@ -117,7 +117,7 @@ Local o
          o := o:oParent
       ENDDO
       if ::tcolor != nil          
-            SETFGCOLOR(::handle,::tcolor)
+            hwg_Setfgcolor(::handle,::tcolor)
       endif	    
       
       
@@ -133,7 +133,7 @@ METHOD SetColor( tcolor,bcolor,lRepaint ) CLASS HControl
    IF tcolor != Nil
       ::tcolor  := tcolor
       IF bColor == Nil .AND. ::bColor == Nil
-         // bColor := GetSysColor( COLOR_3DFACE )
+         // bColor := hwg_Getsyscolor( COLOR_3DFACE )
       ENDIF
    ENDIF
 
@@ -146,7 +146,7 @@ METHOD SetColor( tcolor,bcolor,lRepaint ) CLASS HControl
    ENDIF
 
    IF lRepaint != Nil .AND. lRepaint
-      RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+      hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
    ENDIF
 
 Return Nil
@@ -274,13 +274,13 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
       ENDIF
       y1 := y9
    ENDIF
-   InvalidateRect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+   hwg_Invalidaterect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nWidth, ::nHeight )
    ::Move( ::handle, x1, y1, w1, h1 )
    ::nLeft := x1
    ::nTop := y1
    ::nWidth := w1
    ::nHeight := h1
-   RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+   hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
 
    RETURN Nil
 
@@ -294,13 +294,13 @@ CLASS HStatus INHERIT HControl
    METHOD New( oWndParent,nId,nStyle,oFont,aParts,bInit,bSize,bPaint )
    METHOD Activate()
    METHOD Init()
-   method SetText(t,n) inline  STATUSBARSETTEXT(::handle,n,t)
+   method SetText(t,n) inline  hwg_Statusbarsettext(::handle,n,t)
 
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,oFont,aParts,bInit,bSize,bPaint ) CLASS HStatus
 
-   bSize := Iif( bSize!=Nil, bSize, {|o,x,y|MoveWindow(o:handle,0,y-20,x,y)} )
+   bSize := Iif( bSize!=Nil, bSize, {|o,x,y|hwg_Movewindow(o:handle,0,y-20,x,y)} )
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_OVERLAPPED+WS_CLIPSIBLINGS )
    ::Super:New( oWndParent,nId,nStyle,0,0,0,0,oFont,bInit,bSize,bPaint )
 
@@ -314,11 +314,11 @@ Local aCoors
 
    IF !Empty(::oParent:handle )
 
-      ::handle := CreateStatusWindow( ::oParent:handle, ::id )
+      ::handle := hwg_Createstatuswindow( ::oParent:handle, ::id )
 
       ::Init()
 //      IF __ObjHasMsg( ::oParent,"AOFFSET" )
-//         aCoors := GetWindowRect( ::handle )
+//         aCoors := hwg_Getwindowrect( ::handle )
 //         ::oParent:aOffset[4] := aCoors[4] - aCoors[2]
 //      ENDIF
    ENDIF
@@ -360,7 +360,7 @@ Return Self
 
 METHOD Activate CLASS HStatic
    IF !Empty(::oParent:handle )
-      ::handle := CreateStatic( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::extStyle, ::title )
       ::Init()
    ENDIF
@@ -405,9 +405,9 @@ Return Self
 
 METHOD Activate CLASS HButton
    IF !Empty(::oParent:handle )
-      ::handle := CreateButton( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createbutton( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
-      SetWindowObject( ::handle,Self )
+      hwg_Setwindowobject( ::handle,Self )
       ::Init()
    ENDIF
 Return Nil
@@ -450,16 +450,16 @@ RETURN Self
 METHOD Activate CLASS HButtonEX
    IF !Empty(::oParent:handle )
       if !empty(::hBitmap)
-      ::handle := CreateButton( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createbutton( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title,::hBitmap) 
       elseif !empty(::hIcon)     
-            ::handle := CreateButton( ::oParent:handle, ::id, ;
+            ::handle := hwg_Createbutton( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title,::hIcon) 
       else
-            ::handle := CreateButton( ::oParent:handle, ::id, ;
+            ::handle := hwg_Createbutton( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title,nil) 
       endif		  
-      SetWindowObject( ::handle,Self )
+      hwg_Setwindowobject( ::handle,Self )
       ::Init()
    ENDIF
 Return Nil
@@ -489,7 +489,7 @@ Return Self
 
 METHOD Activate CLASS HGroup
    IF !Empty(::oParent:handle )
-      ::handle := CreateButton( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createbutton( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::Init()
    ENDIF

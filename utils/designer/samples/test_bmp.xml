@@ -20,8 +20,8 @@
     <property name="Clipchildren">.F.</property>
   </style>
   <method name="onDlgInit">
-    <![CDATA[WriteStatus(oDlg,1,"Demo Using Resource\bmp\*.bmp", .t.)
-WriteStatus(oDlg,2,"HwGUI Designer", .t.)
+    <![CDATA[hwg_WriteStatus(oDlg,1,"Demo Using Resource\bmp\*.bmp", .t.)
+hwg_WriteStatus(oDlg,2,"HwGUI Designer", .t.)
 
 ]]>
   </method>
@@ -32,7 +32,7 @@ WriteStatus(oDlg,2,"HwGUI Designer", .t.)
       <property name="atree">
         <item name="File" id="32000">
           <item name="New" id="32001">
-            <![CDATA[msgInfo("Call for New ")]]>
+            <![CDATA[hwg_Msginfo("Call for New ")]]>
           </item>
           <item name="-" id="32002"/>
           <item name="Exit" id="32003">

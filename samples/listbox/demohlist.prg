@@ -7,7 +7,7 @@ Function Main
 Local oMainWindow
 
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
-     AT 0,0 SIZE GetDesktopWidth(), GetDesktopHeight() - 28
+     AT 0,0 SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
    MENU OF oMainWindow
       MENUITEM "&Exit" ACTION oMainWindow:Close()
@@ -29,7 +29,7 @@ Local oList, oItems:={"Item01","Item02","Item03","Item04"}
              OF oModDlg                  ;
              INIT 1 ;
              SIZE 210, 220            ;
-             ON INIT {||MsgInfo("Teste")} ;
+             ON INIT {||hwg_Msginfo("Teste")} ;
              TOOLTIP "Test ListBox"       
 
    @  10,280 BUTTON "Ok" ID IDOK  SIZE 50, 32

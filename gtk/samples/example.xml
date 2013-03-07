@@ -21,12 +21,12 @@
           </item>
           <item name="-" id="32007"/>
           <item name="Exit" id="32006">
-            <![CDATA[EndWindow()]]>
+            <![CDATA[hwg_EndWindow()]]>
           </item>
         </item>
         <item name="Help" id="32004">
           <item name="About" id="32005">
-            <![CDATA[MsgInfo("HwGUI forms example","")]]>
+            <![CDATA[hwg_Msginfo("HwGUI forms example","")]]>
           </item>
         </item>
       </property>

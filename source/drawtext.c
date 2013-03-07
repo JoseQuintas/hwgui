@@ -5,7 +5,7 @@
  * C level text functions
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #define OEMRESOURCE
@@ -19,32 +19,32 @@ HB_FUNC_EXTERN( HB_OEMTOANSI );
 HB_FUNC_EXTERN( HB_ANSITOOEM );
 
 
-HB_FUNC( DEFINEPAINTSTRU )
+HB_FUNC( HWG_DEFINEPAINTSTRU )
 {
    PAINTSTRUCT *pps = ( PAINTSTRUCT * ) hb_xgrab( sizeof( PAINTSTRUCT ) );
    HB_RETHANDLE( pps );
 }
 
-HB_FUNC( BEGINPAINT )
+HB_FUNC( HWG_BEGINPAINT )
 {
    PAINTSTRUCT *pps = ( PAINTSTRUCT * ) HB_PARHANDLE( 2 );
    HDC hDC = BeginPaint( ( HWND ) HB_PARHANDLE( 1 ), pps );
    HB_RETHANDLE( hDC );
 }
 
-HB_FUNC( ENDPAINT )
+HB_FUNC( HWG_ENDPAINT )
 {
    PAINTSTRUCT *pps = ( PAINTSTRUCT * ) HB_PARHANDLE( 2 );
    EndPaint( ( HWND ) HB_PARHANDLE( 1 ), pps );
    hb_xfree( pps );
 }
 
-HB_FUNC( DELETEDC )
+HB_FUNC( HWG_DELETEDC )
 {
    DeleteDC( ( HDC ) HB_PARHANDLE( 1 ) );
 }
 
-HB_FUNC( TEXTOUT )
+HB_FUNC( HWG_TEXTOUT )
 {
    void * hText;
    HB_SIZE nLen;
@@ -59,7 +59,7 @@ HB_FUNC( TEXTOUT )
    hb_strfree( hText );
 }
 
-HB_FUNC( DRAWTEXT )
+HB_FUNC( HWG_DRAWTEXT )
 {
    void * hText;
    HB_SIZE nLen;
@@ -102,7 +102,7 @@ HB_FUNC( DRAWTEXT )
 
 }
 
-HB_FUNC( GETTEXTMETRIC )
+HB_FUNC( HWG_GETTEXTMETRIC )
 {
    TEXTMETRIC tm;
    PHB_ITEM aMetr = hb_itemArrayNew( 8 );
@@ -148,7 +148,7 @@ HB_FUNC( GETTEXTMETRIC )
    hb_itemRelease( aMetr );
 }
 
-HB_FUNC( GETTEXTSIZE )
+HB_FUNC( HWG_GETTEXTSIZE )
 {
 
    void * hText;
@@ -173,7 +173,7 @@ HB_FUNC( GETTEXTSIZE )
    hb_itemRelease( aMetr );
 }
 
-HB_FUNC( GETCLIENTRECT )
+HB_FUNC( HWG_GETCLIENTRECT )
 {
    RECT rc;
    PHB_ITEM aMetr = hb_itemArrayNew( 4 );
@@ -201,7 +201,7 @@ HB_FUNC( GETCLIENTRECT )
    hb_itemRelease( aMetr );
 }
 
-HB_FUNC( GETWINDOWRECT )
+HB_FUNC( HWG_GETWINDOWRECT )
 {
    RECT rc;
    PHB_ITEM aMetr = hb_itemArrayNew( 4 );
@@ -229,7 +229,7 @@ HB_FUNC( GETWINDOWRECT )
    hb_itemRelease( aMetr );
 }
 
-HB_FUNC( GETCLIENTAREA )
+HB_FUNC( HWG_GETCLIENTAREA )
 {
    PAINTSTRUCT *pps = ( PAINTSTRUCT * ) HB_PARHANDLE( 1 );
    PHB_ITEM aMetr = hb_itemArrayNew( 4 );
@@ -255,7 +255,7 @@ HB_FUNC( GETCLIENTAREA )
    hb_itemRelease( aMetr );
 }
 
-HB_FUNC( SETTEXTCOLOR )
+HB_FUNC( HWG_SETTEXTCOLOR )
 {
    COLORREF crColor = SetTextColor( ( HDC ) HB_PARHANDLE( 1 ),  // handle of device context
          ( COLORREF ) hb_parnl( 2 )     // text color
@@ -263,7 +263,7 @@ HB_FUNC( SETTEXTCOLOR )
    hb_retnl( ( LONG ) crColor );
 }
 
-HB_FUNC( SETBKCOLOR )
+HB_FUNC( HWG_SETBKCOLOR )
 {
    COLORREF crColor = SetBkColor( ( HDC ) HB_PARHANDLE( 1 ),    // handle of device context
          ( COLORREF ) hb_parnl( 2 )     // text color
@@ -271,25 +271,25 @@ HB_FUNC( SETBKCOLOR )
    hb_retnl( ( LONG ) crColor );
 }
 
-HB_FUNC( SETTRANSPARENTMODE )
+HB_FUNC( HWG_SETTRANSPARENTMODE )
 {
    int iMode = SetBkMode( ( HDC ) HB_PARHANDLE( 1 ),    // handle of device context
          ( hb_parl( 2 ) ) ? TRANSPARENT : OPAQUE );
    hb_retl( iMode == TRANSPARENT );
 }
 
-HB_FUNC( GETTEXTCOLOR )
+HB_FUNC( HWG_GETTEXTCOLOR )
 {
    hb_retnl( ( LONG ) GetTextColor( ( HDC ) HB_PARHANDLE( 1 ) ) );
 }
 
-HB_FUNC( GETBKCOLOR )
+HB_FUNC( HWG_GETBKCOLOR )
 {
    hb_retnl( ( LONG ) GetBkColor( ( HDC ) HB_PARHANDLE( 1 ) ) );
 }
 
 /*
-HB_FUNC( GETTEXTSIZE )
+HB_FUNC( HWG_GETTEXTSIZE )
 {
 
    HDC hdc = GetDC( (HWND)HB_PARHANDLE(1) );
@@ -319,7 +319,7 @@ HB_FUNC( GETTEXTSIZE )
 }
 */
 
-HB_FUNC( EXTTEXTOUT )
+HB_FUNC( HWG_EXTTEXTOUT )
 {
 
    RECT rc;
@@ -344,7 +344,7 @@ HB_FUNC( EXTTEXTOUT )
    hb_strfree( hText );
 }
 
-HB_FUNC( WRITESTATUSWINDOW )
+HB_FUNC( HWG_WRITESTATUSWINDOW )
 {
    void * hString;
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), SB_SETTEXT, hb_parni( 2 ),
@@ -352,7 +352,7 @@ HB_FUNC( WRITESTATUSWINDOW )
    hb_strfree( hString );
 }
 
-HB_FUNC( WINDOWFROMDC )
+HB_FUNC( HWG_WINDOWFROMDC )
 {
    HB_RETHANDLE( WindowFromDC( ( HDC ) HB_PARHANDLE( 1 ) ) );
 }
@@ -360,7 +360,7 @@ HB_FUNC( WINDOWFROMDC )
 /* CreateFont( fontName, nWidth, hHeight [,fnWeight] [,fdwCharSet],
                [,fdwItalic] [,fdwUnderline] [,fdwStrikeOut]  )
 */
-HB_FUNC( CREATEFONT )
+HB_FUNC( HWG_CREATEFONT )
 {
    HFONT hFont;
    int fnWeight = ( HB_ISNIL( 4 ) ) ? 0 : hb_parni( 4 );
@@ -392,23 +392,23 @@ HB_FUNC( CREATEFONT )
 /*
  * SetCtrlFont( hWnd, ctrlId, hFont )
 */
-HB_FUNC( SETCTRLFONT )
+HB_FUNC( HWG_SETCTRLFONT )
 {
    SendDlgItemMessage( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ), WM_SETFONT,
          ( WPARAM ) HB_PARHANDLE( 3 ), 0L );
 }
 
-HB_FUNC( OEMTOANSI )
+HB_FUNC( HWG_OEMTOANSI )
 {
    HB_FUNC_EXEC( HB_OEMTOANSI );
 }
 
-HB_FUNC( ANSITOOEM )
+HB_FUNC( HWG_ANSITOOEM )
 {
    HB_FUNC_EXEC( HB_ANSITOOEM );
 }
 
-HB_FUNC( CREATERECTRGN )
+HB_FUNC( HWG_CREATERECTRGN )
 {
    HRGN reg;
 
@@ -419,7 +419,7 @@ HB_FUNC( CREATERECTRGN )
 }
 
 
-HB_FUNC( CREATERECTRGNINDIRECT )
+HB_FUNC( HWG_CREATERECTRGNINDIRECT )
 {
    HRGN reg;
    RECT rc;
@@ -434,20 +434,20 @@ HB_FUNC( CREATERECTRGNINDIRECT )
 }
 
 
-HB_FUNC( EXTSELECTCLIPRGN )
+HB_FUNC( HWG_EXTSELECTCLIPRGN )
 {
    hb_retni( ExtSelectClipRgn( ( HDC ) HB_PARHANDLE( 1 ),
                ( HRGN ) HB_PARHANDLE( 2 ), hb_parni( 3 ) ) );
 }
 
-HB_FUNC( SELECTCLIPRGN )
+HB_FUNC( HWG_SELECTCLIPRGN )
 {
    hb_retni( SelectClipRgn( ( HDC ) HB_PARHANDLE( 1 ),
                ( HRGN ) HB_PARHANDLE( 2 ) ) );
 }
 
 
-HB_FUNC( CREATEFONTINDIRECT )
+HB_FUNC( HWG_CREATEFONTINDIRECT )
 {
    LOGFONT lf;
    HFONT f;
@@ -461,3 +461,4 @@ HB_FUNC( CREATEFONTINDIRECT )
    f = CreateFontIndirect( &lf );
    HB_RETHANDLE( f );
 }
+

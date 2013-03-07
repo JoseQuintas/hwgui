@@ -45,7 +45,7 @@ Return Self
 METHOD Activate CLASS HPanel
 
    IF !Empty( ::oParent:handle )
-      ::handle := CreatePanel( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createpanel( ::oParent:handle, ::id, ;
                    ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
@@ -73,7 +73,7 @@ METHOD Init CLASS HPanel
       ENDIF
 
       ::Super:Init()
-      SetWindowObject( ::handle,Self )
+      hwg_Setwindowobject( ::handle,Self )
    ENDIF
 
 Return Nil
@@ -84,9 +84,9 @@ Local hDC, aCoors, oPenLight, oPenGray
    IF ::bPaint != Nil
       Eval( ::bPaint,Self )
    ELSE
-      hDC := GetDC( ::handle )
-      DrawButton( hDC, 0,0,::nWidth-1,::nHeight-1,5 )
-      releaseDC( ::handle, hDC )
+      hDC := hwg_Getdc( ::handle )
+      hwg_Drawbutton( hDC, 0,0,::nWidth-1,::nHeight-1,5 )
+      hwg_Releasedc( ::handle, hDC )
    ENDIF
 
 Return Nil

@@ -15,7 +15,7 @@ Function Main
         
         INIT WINDOW oMain MAIN TITLE "Browse Example - Database - Delphi Style" ;
              AT 0,0 ;
-             SIZE GetDesktopWidth(), GetDesktopHeight() - 28
+             SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
                 MENU OF oMain
                         MENUITEM "&Exit"   ACTION oMain:Close()
@@ -176,7 +176,7 @@ Function DBNavigator( oCtrl, nLeft, nTop, aAction, aHide )
         @ nLeft, nTop OWNERBUTTON SIZE 24,25 ;
                   BITMAP "t_delete" FROM RESOURCE TRANSPARENT ;
                   TOOLTIP "Delete" ;
-                  ON CLICK iif( Empty(aAction[6]), {|| IIF( Msgyesno("Confirma exclusão ?", "Exclusão"), DBDelete(), NIL ), oCtrl:top(), oCtrl:refresh() }, aAction[6] )
+                  ON CLICK iif( Empty(aAction[6]), {|| IIF( hwg_Msgyesno("Confirma exclusão ?", "Exclusão"), DBDelete(), NIL ), oCtrl:top(), oCtrl:refresh() }, aAction[6] )
 
         nLeft += 24
 
@@ -239,7 +239,7 @@ Return Nil
 Function ReplaceIndex(oPos)
 
 if  ! oBrowse:lAppMode
-  Msginfo("Key press in col "+str(oPos))
+  hwg_Msginfo("Key press in col "+str(oPos))
   if oPos==1
     Set Order to 1
   Else

@@ -91,7 +91,7 @@ FUNCTION main
    nWidth    := 200
    nHeight   := 40
 
-   oBC := Barcode():New( GetDC( oMainWindow:handle ) , "993198042124", nTop, nLeft, ;
+   oBC := Barcode():New( hwg_Getdc( oMainWindow:handle ) , "993198042124", nTop, nLeft, ;
                          nWidth, nHeight, nBCodeType, ;
                          nColText, nColPane, lHorz, ;
                          lTransparent, nPinWidth )
@@ -171,13 +171,13 @@ METHOD New( hDC, cText, nTop, nLeft, nWidth, nHeight, nBCodeType, ;
    DEFAULT nHeight      := 20
 
    DEFAULT nColText     := 0
-   DEFAULT nColPane     := RGB( 255, 255, 255 )
+   DEFAULT nColPane     := hwg_Rgb( 255, 255, 255 )
    DEFAULT lHorz        := .T.
    DEFAULT lTransparent := .F.
    DEFAULT nPinWidth    := 1
 
 
-   //DEFAULT hDC    := GetDC(GetActiveWindow())
+   //DEFAULT hDC    := hwg_Getdc(hwg_Getactivewindow())
 
    ::hDC          := hDC
    ::cText        := cText
@@ -267,7 +267,7 @@ METHOD CreateBarcode( cCode ) CLASS BarCode
    //nX    := ::nLeft
    //nY    := ::nTop
 
-   IF ::lTransparent = .F. .AND. ::nColPane <> RGB( 255, 255, 255 )
+   IF ::lTransparent = .F. .AND. ::nColPane <> hwg_Rgb( 255, 255, 255 )
 
       IF ::lHorizontal = .F.
          RICH_Rectangle( ::hDC, nX, nY, nX + ::nHeight, nY + Min( Len( cCode ) * ::nPinWidth, ::nWidth ) )
@@ -304,30 +304,10 @@ METHOD CreateBarcode( cCode ) CLASS BarCode
 
    NEXT
 
-   /*
-   FOR i := 1 TO LEN( cCode )
-
-      IF SUBSTR( cCode, i, 1 ) = "1"
-         IF ::lHorizontal = .T.
-            Rectangle( ::hDC, nX, nY, nX + ::nHeight, ( nY += ::nPinWidth ) )
-         ELSE
-            Rectangle( ::hDC, nX, nY, ( nX += ::nPinWidth ), nY + ::nWidth )
-         ENDIF
-      ELSE
-         IF ::lHorizontal = .T.
-            nY += ::nPinWidth
-         ELSE
-            nX += ::nPinWidth
-         ENDIF
-      ENDIF
-
-   NEXT
-   */
-
    Rich_SelectObject( ::hDC, hOldPen )
-   DeleteObject( hPen )
+   hwg_Deleteobject( hPen )
    Rich_SelectObject( ::hDC, hOldBrush )
-   DeleteObject( hBrush )
+   hwg_Deleteobject( hBrush )
 
    RETURN ( NIL )
 
@@ -449,7 +429,7 @@ METHOD InitCode128( cMode ) CLASS BarCode
 
    // Errors
    IF ValType( cCode ) <> "C"
-      MsgInfo( "Barcode Code 128 requires a character value." )
+      hwg_Msginfo( "Barcode Code 128 requires a character value." )
       RETURN NIL
    ENDIF
 
@@ -457,7 +437,7 @@ METHOD InitCode128( cMode ) CLASS BarCode
       IF ValType( cMode ) = "C" .AND. Upper( cMode ) $ "ABC"
          cMode := Upper( cMode )
       ELSE
-         MsgInfo( "Code 128 modes are A,B o C. Character values." )
+         hwg_Msginfo( "Code 128 modes are A,B o C. Character values." )
       ENDIF
    ENDIF
 
@@ -913,7 +893,7 @@ METHOD InitMatrix25( lCheck ) CLASS BarCode
 
 #include "hwingui.h"
 
-HB_FUNC( RICH_RECTANGLE )
+HB_FUNC_STATIC( RICH_RECTANGLE )
 {
    hb_retl( Rectangle( (HDC) HB_PARHANDLE( 1 ),
                        hb_parni( 2 )      ,
@@ -924,7 +904,7 @@ HB_FUNC( RICH_RECTANGLE )
 }
 
 
-HB_FUNC( RICH_CREATEPEN )
+HB_FUNC_STATIC( RICH_CREATEPEN )
 {
    HB_RETHANDLE( CreatePen( hb_parni( 1 ),   // pen style
                             hb_parni( 2 ),   // pen width
@@ -933,14 +913,14 @@ HB_FUNC( RICH_CREATEPEN )
 }
 
 
-HB_FUNC( RICH_SELECTOBJECT )
+HB_FUNC_STATIC( RICH_SELECTOBJECT )
 {
    HB_RETHANDLE( SelectObject( (HDC) HB_PARHANDLE( 1 ), (HGDIOBJ) HB_PARHANDLE( 2 ) ) ) ;
 }
 
 
 
-HB_FUNC( RICH_CREATESOLIDBRUSH )
+HB_FUNC_STATIC( RICH_CREATESOLIDBRUSH )
 {
    HB_RETHANDLE( CreateSolidBrush( (COLORREF) hb_parnl( 1 ) ) ) ;    // brush color
 }

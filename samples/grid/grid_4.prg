@@ -5,7 +5,7 @@
  * HGrid class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
  * Copyright 2004 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
  *
 */
@@ -27,7 +27,7 @@ Function Main()
                         
         INIT WINDOW oMain MAIN TITLE "File Viewer" ;
              AT 0,0 ;
-             SIZE GetDesktopWidth(), GetDesktopHeight() - 28
+             SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
                 MENU OF oMain
                         MENUITEM "&Exit" ACTION oMain:Close()

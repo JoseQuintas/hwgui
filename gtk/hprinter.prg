@@ -70,7 +70,7 @@ Local aPrnCoors
       ::nPHeight := Iif( ::lmm, aPrnCoors[9], aPrnCoors[2] )
       ::nHRes   := aPrnCoors[1] / aPrnCoors[3]
       ::nVRes   := aPrnCoors[2] / aPrnCoors[4]
-      // writelog( ::cPrinterName + str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6])+str(aPrnCoors[8])+str(aPrnCoors[9]) )
+      // hwg_WriteLog( ::cPrinterName + str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6])+str(aPrnCoors[8])+str(aPrnCoors[9]) )
    ENDIF
 
 Return Self
@@ -79,7 +79,7 @@ METHOD SetMode( nOrientation ) CLASS HPrinter
 Local x
 
    IF ( nOrientation == 1 .OR. nOrientation == 2 ) .AND. nOrientation != ::nOrient
-      SetPrinterMode( ::hDC, nOrientation )
+      hwg_Setprintermode( ::hDC, nOrientation )
       x := ::nHRes
       ::nHRes := ::nVRes
       ::nVRes := x
@@ -203,7 +203,7 @@ METHOD Bitmap( x1,y1,x2,y2,nOpt,hBitmap ) CLASS HPrinter
       y2 *= ::nVRes
    ENDIF 
 
-   // DrawBitmap( ::hDC,hBitmap,Iif(nOpt==Nil,SRCAND,nOpt),x1,y1,x2-x1+1,y2-y1+1 )
+   // hwg_Drawbitmap( ::hDC,hBitmap,Iif(nOpt==Nil,SRCAND,nOpt),x1,y1,x2-x1+1,y2-y1+1 )
 
 Return Nil
 

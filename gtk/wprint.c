@@ -141,7 +141,7 @@ HB_FUNC( HWG_GETPRINTERS )
  * SetPrinterMode( print, nOrientation )
  */
 
-HB_FUNC( SETPRINTERMODE )
+HB_FUNC( HWG_SETPRINTERMODE )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
 
@@ -150,7 +150,7 @@ HB_FUNC( SETPRINTERMODE )
             (hb_parni(2)==1)? (const guchar*)"R0":(const guchar*)"R270" );
 }
 
-HB_FUNC( CLOSEPRINTER )
+HB_FUNC( HWG_CLOSEPRINTER )
 {
    // HANDLE hPrinter = (HANDLE)hb_parnl(1);
    // ClosePrinter( hPrinter );
@@ -422,3 +422,4 @@ HB_FUNC( HWG_GP_SETLINEWIDTH )
 }
 
 #endif
+

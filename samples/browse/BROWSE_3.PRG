@@ -62,7 +62,7 @@ INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Teste";
    @  9, 8 BROWSE oBrowse DATABASE SIZE 466,196 STYLE   WS_VSCROLL + WS_HSCROLL;
     ON KEYDOWN {|o,key| BrowseKey(o, key) } ;
    
-   @ 393,214 BUTTON oSai CAPTION "Sair"  ON CLICK {||EndDialog()} SIZE 80,32  
+   @ 393,214 BUTTON oSai CAPTION "Sair"  ON CLICK {||hwg_EndDialog()} SIZE 80,32  
 
    oBrowse:alias   := "Teste"
    oBrowse:aColumns := {}
@@ -103,6 +103,6 @@ Static Function BrowseKey( oBr, key )
    IF key == 112 //.and. lHelp == .T.      && f1
       //D_HELP()
    ELSE
-     MsgInfo(Str(key))
+     hwg_Msginfo(Str(key))
    ENDIF
 Return .T.

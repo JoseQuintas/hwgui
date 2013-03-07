@@ -23,12 +23,12 @@
 STATIC lOmmitMenuFile := .F.
 STATIC oMenuTool, oDlgx
 
-REQUEST DRAWEDGE
-REQUEST DRAWICON
-REQUEST ELLIPSE
-REQUEST SETWINDOWFONT
-REQUEST INITMONTHCALENDAR
-REQUEST INITTRACKBAR
+REQUEST HWG_DRAWEDGE
+REQUEST HWG_DRAWICON
+REQUEST HWG_ELLIPSE
+REQUEST HWG_SETWINDOWFONT
+REQUEST HWG_INITMONTHCALENDAR
+REQUEST HWG_INITTRACKBAR
 REQUEST HTIMER, DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK
 REQUEST BARCODE
 
@@ -52,6 +52,7 @@ FUNCTION _AppMain( p0, p1, p2 )
    RDDSETDEFAULT("DBFCDX")   // Set up DBFNTX as default driver
    // :END LFB
 
+   // hb_cdpSelect( "RU1251" )
    oDesigner := HDesigner():New()
 
    IF p0 != NIL .AND. ( p0 == "-r" .OR. p0 == "/r" )
@@ -79,7 +80,7 @@ FUNCTION _AppMain( p0, p1, p2 )
    //ENDIF
 
    IF Valtype( cCurDir ) != "C"
-      cCurDir := GetCurrentDir() + "\"
+      cCurDir := hwg_Getcurrentdir() + "\"
    ENDIF
    oDesigner:ds_mypath := cCurDir
 
@@ -89,11 +90,11 @@ FUNCTION _AppMain( p0, p1, p2 )
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
    IF Valtype( crossCursor ) != "N"
-      crossCursor := LoadCursor( IDC_CROSS )
-      horzCursor  := LoadCursor( IDC_SIZEWE )
-      vertCursor  := LoadCursor( IDC_SIZENS )
+      crossCursor := hwg_Loadcursor( IDC_CROSS )
+      horzCursor  := hwg_Loadcursor( IDC_SIZEWE )
+      vertCursor  := hwg_Loadcursor( IDC_SIZENS )
       // :LFB
-      handCursor   := LoadCursor( IDC_HAND )  //65581
+      handCursor   := hwg_Loadcursor( IDC_HAND )  //65581
       // :END LFB
    ENDIF
 
@@ -119,9 +120,9 @@ FUNCTION _AppMain( p0, p1, p2 )
             MENUITEM "&New "+iif(!oDesigner:lReport,"Form","Report")  ACTION HFormGen():New()
             MENUITEM "&Open "+iif(!oDesigner:lReport,"Form","Report") ACTION HFormGen():Open()
             SEPARATOR
-            MENUITEM "&Save "+iif(!oDesigner:lReport,"Form","Report")   ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(),MsgStop("No Form in use!", "Designer"))
-            MENUITEM "&Save as ..." ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(.T.),MsgStop("No Form in use!"))
-            MENUITEM "&Close "+iif(!oDesigner:lReport,"Form","Report")  ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:End(),MsgStop("No Form in use!", "Designer"))
+            MENUITEM "&Save "+iif(!oDesigner:lReport,"Form","Report")   ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(),hwg_Msgstop("No Form in use!", "Designer"))
+            MENUITEM "&Save as ..." ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(.T.),hwg_Msgstop("No Form in use!"))
+            MENUITEM "&Close "+iif(!oDesigner:lReport,"Form","Report")  ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:End(),hwg_Msgstop("No Form in use!", "Designer"))
          ELSE
             IF !lOmmitMenuFile
                MENUITEM "&Open "+iif(!oDesigner:lReport,"Form","Report") ACTION HFormGen():OpenR()
@@ -144,7 +145,7 @@ FUNCTION _AppMain( p0, p1, p2 )
          MENUITEM If(!lOmmitMenuFile,"&Exit","&Close Designer") ACTION oDesigner:oMainWnd:Close()
       ENDMENU
       MENU TITLE "&Edit"
-         MENUITEM "&Copy control" ACTION (oDesigner:oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oDesigner:oClipBrd!=Nil,EnableMenuItem(,1012,.T.,.T.),.F.))
+         MENUITEM "&Copy control" ACTION (oDesigner:oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oDesigner:oClipBrd!=Nil,hwg_Enablemenuitem(,1012,.T.,.T.),.F.))
          MENUITEM "&Paste" ID 1012 ACTION oDesigner:addItem := oDesigner:oClipbrd
       ENDMENU
       MENU TITLE "&View"
@@ -152,7 +153,7 @@ FUNCTION _AppMain( p0, p1, p2 )
          SEPARATOR
          MENUITEM "&Show Grid 5px" ID 1050 ACTION ShowGrid5px()
          MENUITEM "&Show Grid 10px" ID 1052 ACTION ShowGrid10px()
-         MENUITEM "S&nap to Grid" ID 1051 ACTION CheckMenuItem(oDesigner:oMainWnd:handle,1051,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1051))
+         MENUITEM "S&nap to Grid" ID 1051 ACTION hwg_Checkmenuitem(oDesigner:oMainWnd:handle,1051,!hwg_Ischeckedmenuitem(oDesigner:oMainWnd:handle,1051))
          SEPARATOR
          MENUITEM "&Preview"  ACTION DoPreview()
          SEPARATOR
@@ -162,20 +163,20 @@ FUNCTION _AppMain( p0, p1, p2 )
          MENUITEM "&Delete"  ACTION DeleteCtrl()
       ENDMENU
       MENU TITLE "&Options"
-         MENUITEM "&AutoAdjust" ID 1011 ACTION CheckMenuItem(oDesigner:oMainWnd:handle,1011,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1011))
+         MENUITEM "&AutoAdjust" ID 1011 ACTION hwg_Checkmenuitem(oDesigner:oMainWnd:handle,1011,!hwg_Ischeckedmenuitem(oDesigner:oMainWnd:handle,1011))
       ENDMENU
       MENU TITLE "&Help"
-         MENUITEM "&About" ACTION MsgInfo("Visual Designer", "Designer")
+         MENUITEM "&About" ACTION hwg_Msginfo("Visual Designer", "Designer")
       ENDMENU
    ENDMENU
 
    IF ( oDesigner:nPixelGrid == 12 )
-       CheckMenuItem(oDesigner:oMainWnd:handle,1050,.T.)
+       hwg_Checkmenuitem(oDesigner:oMainWnd:handle,1050,.T.)
    ELSE
-       CheckMenuItem(oDesigner:oMainWnd:handle,1052,.T.)
+       hwg_Checkmenuitem(oDesigner:oMainWnd:handle,1052,.T.)
    ENDIF
 
-   @ 0,0 PANEL oPanel SIZE 280,200 ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,y-21),statusbarmsg('')}
+   @ 0,0 PANEL oPanel SIZE 280,200 ON SIZE {|o,x,y|hwg_Movewindow(o:handle,0,0,x,y-21),statusbarmsg('')}
 
    IF !oDesigner:lSingleForm
       @ 2,3 OWNERBUTTON OF oPanel       ;
@@ -192,7 +193,7 @@ FUNCTION _AppMain( p0, p1, p2 )
       @ 55,6 LINE LENGTH 18 VERTICAL
 
       @ 60,3 OWNERBUTTON OF oPanel       ;
-          ON CLICK {||Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(),MsgStop("No Form in use!"))} ;
+          ON CLICK {||Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(),hwg_Msgstop("No Form in use!"))} ;
           SIZE 24,24 FLAT                ;
           BITMAP "BMP_SAVE" FROM RESOURCE TRANSPARENT COORDINATES 0,4,0,0  ;
           TOOLTIP "Save Form"
@@ -264,7 +265,7 @@ FUNCTION _AppMain( p0, p1, p2 )
    BuildSet( oTab )
 
    CONTEXT MENU oDesigner:oCtrlMenu
-      MENUITEM "Copy"   ACTION (oDesigner:oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oDesigner:oClipBrd!=Nil,EnableMenuItem(,1012,.T.,.T.),.F.))
+      MENUITEM "Copy"   ACTION (oDesigner:oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oDesigner:oClipBrd!=Nil,hwg_Enablemenuitem(,1012,.T.,.T.),.F.))
       SEPARATOR
       MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.T.,.F.,.F.,.F. )
       MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.T.,.F.,.F. )
@@ -298,7 +299,7 @@ FUNCTION _AppMain( p0, p1, p2 )
       MENUITEM "Next Page" ACTION Page_Next( GetCtrlSelected(HFormGen():oDlgSelected) )
       MENUITEM "Previous Page" ACTION Page_Prev( GetCtrlSelected(HFormGen():oDlgSelected) )
       SEPARATOR
-      MENUITEM "Copy"   ACTION (oDesigner:oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oDesigner:oClipBrd!=Nil,EnableMenuItem(,1012,.T.,.T.),.F.))
+      MENUITEM "Copy"   ACTION (oDesigner:oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oDesigner:oClipBrd!=Nil,hwg_Enablemenuitem(,1012,.T.,.T.),.F.))
       MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.T.,.F.,.F.,.F. )
       MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.T.,.F.,.F. )
       MENUITEM "Adjust to right" ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.F.,.T.,.F. )
@@ -353,9 +354,9 @@ STATIC FUNCTION ShowGrid10px()
    // local nForm, nForms
    MEMVAR oDesigner
    IF ( oDesigner:oDlgInsp == NIL )
-      CheckMenuItem(oDesigner:oMainWnd:handle,1052,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1052))
-      CheckMenuItem(oDesigner:oMainWnd:handle,1050,.F.)
-      IF (IsCheckedMenuItem(oDesigner:oMainWnd:handle,1052))
+      hwg_Checkmenuitem(oDesigner:oMainWnd:handle,1052,!hwg_Ischeckedmenuitem(oDesigner:oMainWnd:handle,1052))
+      hwg_Checkmenuitem(oDesigner:oMainWnd:handle,1050,.F.)
+      IF (hwg_Ischeckedmenuitem(oDesigner:oMainWnd:handle,1052))
          oDesigner:nPixelGrid := 18
          oDesigner:lShowGrid  := .T.
       ELSE
@@ -363,7 +364,7 @@ STATIC FUNCTION ShowGrid10px()
          oDesigner:lShowGrid  := .F.
       ENDIF
    ELSE
-      msginfo( "Close the form(s) first to change the grid status","Warning")
+      hwg_Msginfo( "Close the form(s) first to change the grid status","Warning")
    ENDIF
    RETURN ( NIL )
 
@@ -371,9 +372,9 @@ STATIC FUNCTION ShowGrid5px()
    //local nForm, nForms
    MEMVAR oDesigner
    IF ( oDesigner:oDlgInsp == NIL )
-      CheckMenuItem(oDesigner:oMainWnd:handle,1050,!IsCheckedMenuItem(oDesigner:oMainWnd:handle,1050))
-      CheckMenuItem(oDesigner:oMainWnd:handle,1052,.F.)
-      IF (IsCheckedMenuItem(oDesigner:oMainWnd:handle,1050))
+      hwg_Checkmenuitem(oDesigner:oMainWnd:handle,1050,!hwg_Ischeckedmenuitem(oDesigner:oMainWnd:handle,1050))
+      hwg_Checkmenuitem(oDesigner:oMainWnd:handle,1052,.F.)
+      IF (hwg_Ischeckedmenuitem(oDesigner:oMainWnd:handle,1050))
          oDesigner:nPixelGrid := 12
          oDesigner:lShowGrid  := .T.
       ELSE
@@ -381,7 +382,7 @@ STATIC FUNCTION ShowGrid5px()
          oDesigner:lShowGrid  := .F.
       ENDIF
    ELSE
-      msginfo( "Close the form first to change the grid status","Warning")
+      hwg_Msginfo( "Close the form first to change the grid status","Warning")
    ENDIF
 
    RETURN ( NIL )
@@ -414,7 +415,7 @@ ENDCLASS
 
 STATIC FUNCTION StartDes( oDlg,p1,cForm )
 
-   MoveWindow( oDlg:handle,0,0,oDlg:nWidth+10,oDlg:nHeight )
+   hwg_Movewindow( oDlg:handle,0,0,oDlg:nWidth+10,oDlg:nHeight )
 
    IF p1 != Nil .AND. Left( p1,1 ) $ "-/"
       IF ( p1 := Substr( p1,2,1 ) ) == "n"
@@ -434,7 +435,7 @@ STATIC FUNCTION StartDes( oDlg,p1,cForm )
             HFormGen():Open( ,cForm )
          ENDIF
          Hwg_SetForegroundWindow( HFormGen():aForms[1]:oDlg:handle )
-         SetFocus( HFormGen():aForms[1]:oDlg:handle )
+         hwg_Setfocus( HFormGen():aForms[1]:oDlg:handle )
 // #endif
 #endif
       ENDIF
@@ -497,7 +498,7 @@ STATIC FUNCTION ReadIniFiles()
       oDesigner:oWidgetsSet := HXMLDoc():Read( cCurDir + cWidgetsFileName )
    ENDIF
    IF oDesigner:oWidgetsSet == Nil .OR. Empty( oDesigner:oWidgetsSet:aItems )
-      MsgStop( "Widgets file isn't found!","Designer error" )
+      hwg_Msgstop( "Widgets file isn't found!","Designer error" )
       RETURN .F.
    ENDIF
 
@@ -710,7 +711,7 @@ STATIC FUNCTION EndIde
    MEMVAR oDesigner, cCurDir
 
    IF alen > 0
-      IF MsgYesNo( "Do you really want to quit ?", "Designer" )
+      IF hwg_Msgyesno( "Do you really want to quit ?", "Designer" )
          FOR i := Len( HFormGen():aForms ) TO 1 STEP -1
             HFormGen():aForms[i]:End( ,.F. )
          NEXT
@@ -780,14 +781,14 @@ FUNCTION StatusBarMsg(cfile,cpos,ctam)
    cpos := IIF(cpos = Nil,'',cpos)
    ctam := IIF(ctam = Nil,'',ctam)
    IF cFile != Nil
-      WriteStatus( oDesigner:oMainWnd,1,"File: "+cfile ,.T.)
+      hwg_WriteStatus( oDesigner:oMainWnd,1,"File: "+cfile ,.T.)
    ENDIF
-   WriteStatus( oDesigner:oMainWnd,2,cpos ,.T.)
-   WriteStatus(oDesigner:oMainWnd,3,ctam ,.T.)
+   hwg_WriteStatus( oDesigner:oMainWnd,2,cpos ,.T.)
+   hwg_WriteStatus(oDesigner:oMainWnd,3,ctam ,.T.)
 
-   *WriteStatus( OdLG,4,"INS" ,.T.)
-   WriteStatus(oDesigner:oMainWnd,5,IIF(IsNUmLockActive(),"NUM" ,"   "),.T.)
-   WriteStatus(oDesigner:oMainWnd,6,IIF(IsCapsLockActive(),"CAPS","    ") ,.T.)
+   *hwg_WriteStatus( OdLG,4,"INS" ,.T.)
+   hwg_WriteStatus(oDesigner:oMainWnd,5,IIF(hwg_Isnumlockactive(),"NUM" ,"   "),.T.)
+   hwg_WriteStatus(oDesigner:oMainWnd,6,IIF(hwg_Iscapslockactive(),"CAPS","    ") ,.T.)
 
    RETURN NIL
 
@@ -796,8 +797,8 @@ FUNCTION SoControles
    LOCAL oFont
 
    IF !empty(hwg_findwindow(0,"Toolbars - Classes ") )// > 0
-      Showwindow(oDlgx:handle)
-      SetFocus( oDlgx:handle )
+      hwg_Showwindow(oDlgx:handle)
+      hwg_Setfocus( oDlgx:handle )
       RETURN NIL
    ENDIF
 
@@ -810,7 +811,7 @@ FUNCTION SoControles
 
    //ON OTHER MESSAGES {|o,m,wp,lp|MessagesOthers(o,m,wp,lp)}
 
-   @ 0,0 PANEL oPanelx SIZE 395,98 ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x+4,y+20)}
+   @ 0,0 PANEL oPanelx SIZE 395,98 ON SIZE {|o,x,y|hwg_Movewindow(o:handle,0,0,x+4,y+20)}
    @ 1,1 TAB oTabx ITEMS {} OF oPanelx SIZE 390,98 FONT oFont ;
       ON SIZE {|o,x,y|ArrangeBtn(o,x,y)}
 
@@ -839,7 +840,7 @@ FUNCTION InspShow()
    RETURN NIL
 
 FUNCTION HWLASTKEY
-   LOCAL ckeyb := GETKEYBOARDSTATE() ,i
+   LOCAL ckeyb := hwg_Getkeyboardstate() ,i
    FOR i= 1 to 255
       IF Asc(Substr(ckeyb,i,1)) >= 128
          RETURN i - 1

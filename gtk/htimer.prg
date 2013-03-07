@@ -92,12 +92,13 @@ METHOD Init CLASS HTimer
 
 METHOD onAction()
 
-   TimerProc( , ::id, ::interval )
+   hwg_TimerProc( , ::id, ::interval )
    
 RETURN Nil
 
 
-Function TimerProc( hWnd, idTimer, Time ) 
+Function hwg_TimerProc( hWnd, idTimer, Time ) 
+
    LOCAL i := AScan( HTimer():aTimers, { | o | o:id == idTimer } )
 
    HB_SYMBOL_UNUSED( hWnd )
@@ -118,3 +119,4 @@ Local oTimer, i
    NEXT
 
 Return
+

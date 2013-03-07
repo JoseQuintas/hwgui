@@ -73,7 +73,7 @@ static void _Ax_Init( void )
    }
 }
 
-HB_FUNC( CREATEACTIVEX )
+HB_FUNC( HWG_CREATEACTIVEX )
 {
    HWND hWndCtrl;
 
@@ -96,7 +96,7 @@ HB_FUNC( CREATEACTIVEX )
 }
 
 
-HB_FUNC( ATLAXGETDISP )         // hWnd -> pDisp
+HB_FUNC( HWG_ATLAXGETDISP )
 {
    IUnknown *pUnk;
    IDispatch *pDisp;
@@ -544,7 +544,7 @@ typedef IEventHandler device_interface;
    // Hash  // SetupConnectionPoint( oOle:hObj, @hSink, hEvents )             -> nError
    // Array // SetupConnectionPoint( oOle:hObj, @hSink, aEvents, aExecEvent ) -> nError
 
-HB_FUNC( SETUPCONNECTIONPOINT )
+HB_FUNC( HWG_SETUPCONNECTIONPOINT )
 {
    IConnectionPointContainer *pIConnectionPointContainerTemp = NULL;
    IUnknown *pIUnknown = NULL;
@@ -679,7 +679,7 @@ HB_FUNC( SETUPCONNECTIONPOINT )
 }
 
 //------------------------------------------------------------------------------
-HB_FUNC( SHUTDOWNCONNECTIONPOINT )
+HB_FUNC( HWG_SHUTDOWNCONNECTIONPOINT )
 {
    MyRealIEventHandler *this = ( MyRealIEventHandler * ) HB_PARHANDLE( 1 );
    if( this->pIConnectionPoint )
@@ -693,9 +693,10 @@ HB_FUNC( SHUTDOWNCONNECTIONPOINT )
 }
 
 //------------------------------------------------------------------------------
-HB_FUNC( RELEASEDISPATCH )
+HB_FUNC( HWG_RELEASEDISPATCH )
 {
    IDispatch *pObj;
    pObj = ( IDispatch * ) HB_PARHANDLE( 1 );
    pObj->lpVtbl->Release( pObj );
 }
+

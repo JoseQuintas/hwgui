@@ -15,7 +15,7 @@ Function Main ()
 
    INIT WINDOW oMain MAIN TITLE "Calculator Sample" ;
       AT 0,0 ;
-      SIZE GetDesktopWidth() - 100, GetDesktopHeight() - 78
+      SIZE hwg_Getdesktopwidth() - 100, hwg_Getdesktopheight() - 78
 
       MENU OF oMain
          MENUITEM "&Exit" ACTION oMain:Close()

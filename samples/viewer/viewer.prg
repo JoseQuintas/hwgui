@@ -37,13 +37,13 @@ Private nVert, nHorz
      AT 200,0 SIZE 400,150                      ;
      FONT oFont                                 ;
      ON OTHER MESSAGES {|o,m,wp,lp|MessagesProc(o,m,wp,lp)}
-     //      ON PAINT {|o|PaintWindow(o)}               ;
+     //      ON PAINT {|o|hwg_Paintwindow(o)}               ;
 
    MENU OF oMainWindow
       MENU TITLE "&File"
          MENUITEM "&Open" ACTION FileOpen( oMainWindow )
          SEPARATOR
-         MENUITEM "&Exit"+Chr(9)+"Alt+x" ACTION EndWindow() ;
+         MENUITEM "&Exit"+Chr(9)+"Alt+x" ACTION hwg_EndWindow() ;
            ACCELERATOR FALT,Asc("X")
       ENDMENU
       MENU TITLE "&View"
@@ -52,12 +52,12 @@ Private nVert, nHorz
          MENUITEM "Ori&ginal size" ACTION Zoom( oMainWindow,0 )
       ENDMENU
       MENU TITLE "&Help"
-         MENUITEM "&About" ACTION MsgInfo("About")
+         MENUITEM "&About" ACTION hwg_Msginfo("About")
       ENDMENU
    ENDMENU
 
    @ 0,0 PANEL oToolBar SIZE oMainWindow:nWidth,28 ;
-      ON SIZE {|o,x,y|MoveWindow(o:handle,0,0,x,o:nHeight)}
+      ON SIZE {|o,x,y|hwg_Movewindow(o:handle,0,0,x,o:nHeight)}
 
 
 
@@ -94,9 +94,9 @@ Static Function MessagesProc( oWnd, msg, wParam, lParam )
 Local i, aItem
 
    IF msg == WM_VSCROLL
-      Vscroll( oWnd,LoWord( wParam ),HiWord( wParam ) )
+      Vscroll( oWnd,hwg_Loword( wParam ),hwg_Hiword( wParam ) )
    ELSEIF msg == WM_HSCROLL
-      Hscroll( oWnd,LoWord( wParam ),HiWord( wParam ) )
+      Hscroll( oWnd,hwg_Loword( wParam ),hwg_Hiword( wParam ) )
    ELSEIF msg == WM_KEYUP
       IF wParam == 40        // Down
         VScroll( oWnd, SB_LINEDOWN )
@@ -119,24 +119,24 @@ Local stepV
          nStepV ++
          stepV := Round( ( Round( oImage:nHeight * nKoef,0 ) - ( oWnd:nHeight-oToolbar:nHeight-nVert ) ) / SCROLLVRANGE, 0 )
          oSayMain:nOffsetV := - nStepV * stepV
-         SetScrollInfo( oWnd:handle, SB_VERT, 1, nStepV+1, 1, SCROLLVRANGE )
-         RedrawWindow( oSayMain:handle, RDW_ERASE + RDW_INVALIDATE )
+         hwg_Setscrollinfo( oWnd:handle, SB_VERT, 1, nStepV+1, 1, SCROLLVRANGE )
+         hwg_Redrawwindow( oSayMain:handle, RDW_ERASE + RDW_INVALIDATE )
       ENDIF
    ELSEIF nScrollCode == SB_LINEUP
       IF nStepV > 0
          nStepV --
          stepV := Round( ( Round( oImage:nHeight * nKoef,0 ) - ( oWnd:nHeight-oToolbar:nHeight-nVert ) ) / SCROLLVRANGE, 0 )
          oSayMain:nOffsetV := - nStepV * stepV
-         SetScrollInfo( oWnd:handle, SB_VERT, 1, nStepV+1, 1, SCROLLVRANGE )
-         RedrawWindow( oSayMain:handle, RDW_ERASE + RDW_INVALIDATE )
+         hwg_Setscrollinfo( oWnd:handle, SB_VERT, 1, nStepV+1, 1, SCROLLVRANGE )
+         hwg_Redrawwindow( oSayMain:handle, RDW_ERASE + RDW_INVALIDATE )
       ENDIF
    ELSEIF nScrollCode == SB_THUMBTRACK
       IF --nNewPos != nStepV
          nStepV := nNewPos
          stepV := Round( ( Round( oImage:nHeight * nKoef,0 ) - ( oWnd:nHeight-oToolbar:nHeight-nVert ) ) / SCROLLVRANGE, 0 )
          oSayMain:nOffsetV := - nStepV * stepV
-         SetScrollInfo( oWnd:handle, SB_VERT, 1, nStepV+1, 1, SCROLLVRANGE )
-         RedrawWindow( oSayMain:handle, RDW_ERASE + RDW_INVALIDATE )
+         hwg_Setscrollinfo( oWnd:handle, SB_VERT, 1, nStepV+1, 1, SCROLLVRANGE )
+         hwg_Redrawwindow( oSayMain:handle, RDW_ERASE + RDW_INVALIDATE )
       ENDIF
    ENDIF
 
@@ -150,24 +150,24 @@ Local stepH
          nStepH ++
          stepH := Round( Round( oImage:nWidth * nKoef - ( oWnd:nWidth-nHorz ),0 ) / SCROLLVRANGE, 0 )
          oSayMain:nOffsetH := - nStepH * stepH
-         SetScrollInfo( oWnd:handle, SB_HORZ, 1, nStepH+1, 1, SCROLLHRANGE )
-         RedrawWindow( oSayMain:handle, RDW_ERASE + RDW_INVALIDATE )
+         hwg_Setscrollinfo( oWnd:handle, SB_HORZ, 1, nStepH+1, 1, SCROLLHRANGE )
+         hwg_Redrawwindow( oSayMain:handle, RDW_ERASE + RDW_INVALIDATE )
       ENDIF
    ELSEIF nScrollCode == SB_LINEUP
       IF nStepH > 0
          nStepH --
          stepH := Round( Round( oImage:nWidth * nKoef - ( oWnd:nWidth-nHorz ),0 ) / SCROLLVRANGE, 0 )
          oSayMain:nOffsetH := - nStepH * stepH
-         SetScrollInfo( oWnd:handle, SB_HORZ, 1, nStepH+1, 1, SCROLLHRANGE )
-         RedrawWindow( oSayMain:handle, RDW_ERASE + RDW_INVALIDATE )
+         hwg_Setscrollinfo( oWnd:handle, SB_HORZ, 1, nStepH+1, 1, SCROLLHRANGE )
+         hwg_Redrawwindow( oSayMain:handle, RDW_ERASE + RDW_INVALIDATE )
       ENDIF
    ELSEIF nScrollCode == SB_THUMBTRACK
       IF --nNewPos != nStepH
          nStepH := nNewPos
          stepH := Round( Round( oImage:nWidth * nKoef - ( oWnd:nWidth-nHorz ),0 ) / SCROLLVRANGE, 0 )
          oSayMain:nOffsetH := - nStepH * stepH
-         SetScrollInfo( oWnd:handle, SB_HORZ, 1, nStepH+1, 1, SCROLLHRANGE )
-         RedrawWindow( oSayMain:handle, RDW_ERASE + RDW_INVALIDATE )
+         hwg_Setscrollinfo( oWnd:handle, SB_HORZ, 1, nStepH+1, 1, SCROLLHRANGE )
+         hwg_Redrawwindow( oSayMain:handle, RDW_ERASE + RDW_INVALIDATE )
       ENDIF
 
    ENDIF
@@ -188,10 +188,10 @@ Local aCoors
       nKoef := 1
       nStepV := nStepH := 0
       IF lScrollH
-         SetScrollInfo( oWnd:handle, SB_HORZ, 1, nStepH+1, 1, SCROLLHRANGE )
+         hwg_Setscrollinfo( oWnd:handle, SB_HORZ, 1, nStepH+1, 1, SCROLLHRANGE )
       ENDIF
       IF lScrollV
-         SetScrollInfo( oWnd:handle, SB_VERT, 1, nStepV+1, 1, SCROLLVRANGE )
+         hwg_Setscrollinfo( oWnd:handle, SB_VERT, 1, nStepV+1, 1, SCROLLVRANGE )
       ENDIF
       /*
       IF oImage != Nil
@@ -209,10 +209,10 @@ Local aCoors
       oSayMain:nOffsetH := oSayMain:nOffsetV := 0
 
       lScrollV := lScrollH := .F.
-      ShowScrollBar( oWnd:handle,SB_HORZ,lScrollH )
-      ShowScrollBar( oWnd:handle,SB_VERT,lScrollV )
+      hwg_Showscrollbar( oWnd:handle,SB_HORZ,lScrollH )
+      hwg_Showscrollbar( oWnd:handle,SB_VERT,lScrollV )
 
-      aCoors := GetClientRect( oWnd:handle )
+      aCoors := hwg_Getclientrect( oWnd:handle )
       nVert := ( oWnd:nHeight - aCoors[4] )
       nHorz := ( oWnd:nWidth-aCoors[3] )
       DO WHILE .T.
@@ -238,9 +238,9 @@ Local aCoors
       ENDIF
 
       // writelog( "Window: "+str(oWnd:nWidth) + str(oWnd:nHeight) + str(nKoef)+str(oImage:nWidth) + str(oImage:nHeight) )
-      MoveWindow( oWnd:handle,oWnd:nLeft,oWnd:nTop,oWnd:nWidth,oWnd:nHeight )
+      hwg_Movewindow( oWnd:handle,oWnd:nLeft,oWnd:nTop,oWnd:nWidth,oWnd:nHeight )
       oSayMain:nZoom := nKoef
-      InvalidateRect( oSayMain:handle, 0 )
+      hwg_Invalidaterect( oSayMain:handle, 0 )
       oSayMain:Move( ,,oWnd:nWidth-nHorz,oWnd:nHeight-nVert-oToolBar:nHeight )
       oSayScale:SetValue( Str(nKoef*100,4)+" %" )
    ENDIF
@@ -254,7 +254,7 @@ Local stepV, stepH
    IF oImage == Nil
       Return Nil
    ENDIF
-   aCoors := GetClientRect( oWnd:handle )
+   aCoors := hwg_Getclientrect( oWnd:handle )
    nVert := ( oWnd:nHeight - aCoors[4] )
    nHorz := ( oWnd:nWidth-aCoors[3] )
 
@@ -295,21 +295,21 @@ Local stepV, stepH
 
    oSayMain:nZoom := nKoef
    oSayScale:SetValue( Str(nKoef*100,4)+" %" )
-   InvalidateRect( oWnd:handle, 0 )
+   hwg_Invalidaterect( oWnd:handle, 0 )
    // writelog( "Window: "+str(oWnd:nWidth) + str(oWnd:nHeight) + str(nKoef)+str(oImage:nWidth) + str(oImage:nHeight) )
-   MoveWindow( oWnd:handle,oWnd:nLeft,oWnd:nTop,oWnd:nWidth,oWnd:nHeight )
+   hwg_Movewindow( oWnd:handle,oWnd:nLeft,oWnd:nTop,oWnd:nWidth,oWnd:nHeight )
    stepV := Round( ( Round( oImage:nHeight * nKoef,0 ) - ( oWnd:nHeight-oToolbar:nHeight-nVert ) ) / SCROLLVRANGE, 0 )
    stepH := Round( Round( oImage:nWidth * nKoef - ( oWnd:nWidth-nHorz ),0 ) / SCROLLVRANGE, 0 )
    oSayMain:nOffsetV := - nStepV * stepV
    oSayMain:nOffsetH := - nStepH * stepH
    oSayMain:Move( ,,oWnd:nWidth-nHorz,oWnd:nHeight-nVert-oToolBar:nHeight )
-   ShowScrollBar( oWnd:handle,SB_HORZ,lScrollH )
-   ShowScrollBar( oWnd:handle,SB_VERT,lScrollV )
+   hwg_Showscrollbar( oWnd:handle,SB_HORZ,lScrollH )
+   hwg_Showscrollbar( oWnd:handle,SB_VERT,lScrollV )
 
 Return Nil
 
 /*
-Static Function PaintWindow( oWnd )
+Static Function hwg_Paintwindow( oWnd )
 Local stepV, stepH
 Local nOffsV, nOffsH
 
@@ -322,20 +322,20 @@ Local nOffsV, nOffsH
    nOffsV := nStepV * stepV
    nOffsH := nStepH * stepH
 
-   pps := DefinePaintStru()
-   hDC := BeginPaint( oWnd:handle, pps )
+   pps := hwg_Definepaintstru()
+   hDC := hwg_Beginpaint( oWnd:handle, pps )
 
    // writelog( "Paint: "+str(Round( oImage:nWidth * nKoef,0 )) + str(Round( oImage:nHeight * nKoef,0 )) )
 #ifdef __FREEIMAGE__
    oImage:Draw( hDC, -nOffsH, oToolbar:nHeight-nOffsV, Round( oImage:nWidth * nKoef,0 ), Round( oImage:nHeight * nKoef,0 ) )
 #else
-   DrawBitmap( hDC, oImage:handle,, -nOffsH, oToolbar:nHeight-nOffsV, Round( oImage:nWidth * nKoef,0 ), Round( oImage:nHeight * nKoef,0 ) )
+   hwg_Drawbitmap( hDC, oImage:handle,, -nOffsH, oToolbar:nHeight-nOffsV, Round( oImage:nWidth * nKoef,0 ), Round( oImage:nHeight * nKoef,0 ) )
 #endif
 
    IF lScrollV
-      SetScrollInfo( oWnd:handle, SB_VERT, 1, nStepV+1, 1, SCROLLVRANGE )
+      hwg_Setscrollinfo( oWnd:handle, SB_VERT, 1, nStepV+1, 1, SCROLLVRANGE )
    ENDIF
-   EndPaint( oWnd:handle, pps )
+   hwg_Endpaint( oWnd:handle, pps )
 
 Return 0
 */

@@ -5,7 +5,7 @@
  * HGrid class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
  * Copyright 2004 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
  *
  * This sample show how to edit records with grid control
@@ -41,7 +41,7 @@ Static oMain, oForm, oBrowse
 Function Main()
         INIT WINDOW oMain MAIN TITLE "Grid Edition Sample" ;
              AT 0,0 ;
-             SIZE GetDesktopWidth(), GetDesktopHeight() - 28
+             SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
                 MENU OF oMain
                         MENUITEM "&Exit"   ACTION oMain:Close()
@@ -178,8 +178,8 @@ Function GridEdit(cAlias, aFields, lAppend, bChange)
     INIT DIALOG oForm CLIPPER TITLE "Teste";
         FONT oFont ;
         AT 0, 0 ;
-        SIZE Min( GetDesktopWidth() - 50, (nSay + nGet) * nGetSize + nGetSize ), ;
-             Min( GetDesktopHeight() - 28, nheight ) ;
+        SIZE Min( hwg_Getdesktopwidth() - 50, (nSay + nGet) * nGetSize + nGetSize ), ;
+             Min( hwg_Getdesktopheight() - 28, nheight ) ;
         STYLE DS_CENTER + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU
 
         For i := 1 to len(aFields)
@@ -278,7 +278,7 @@ Function GridEdit(cAlias, aFields, lAppend, bChange)
         @ oForm:nWidth - 160, oForm:nHeight - 30 BUTTON "Ok"     ID IDOK SIZE 75,25 
         @ oForm:nWidth -  80, oForm:nHeight - 30 BUTTON "Cancel" ID IDCANCEL SIZE 75,25 ON CLICK {|| oForm:Close() }
         
-        oForm:bActivate := {|| SetFocus(aFields[1, GET_OBJECT]:handle)}
+        oForm:bActivate := {|| hwg_Setfocus(aFields[1, GET_OBJECT]:handle)}
         
     ACTIVATE DIALOG oForm                
     
@@ -313,7 +313,7 @@ static Function __valid(value, oCtrl, aFields, bChange)
                 result := .F.            
                 oGet := aFields[n, GET_OBJECT]
             
-                oGet:setfocus()
+                oGet:Setfocus()
             endif
         endif    
     
@@ -357,7 +357,7 @@ Static Function OnKey( o, k, aItems )
         else
             MyDelete()
         endif
-    elseif k == VK_DELETE .and. MsgYesNo("Delete this record ?", "Warning")                   
+    elseif k == VK_DELETE .and. hwg_Msgyesno("Delete this record ?", "Warning")                   
         MyDelete()
     endif        
 return nil    

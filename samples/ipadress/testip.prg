@@ -8,7 +8,7 @@ Local oMainWindow
      AT 200,0 SIZE 400,150
 
    MENU OF oMainWindow
-      MENUITEM "&Exit" ACTION EndWindow()
+      MENUITEM "&Exit" ACTION hwg_EndWindow()
       MENUITEM "&Get a value" ACTION DlgGet()
    ENDMENU
 
@@ -30,19 +30,19 @@ Local aIP := { 10,1,2,3 }
    @ 20,10 SAY "Input something:" SIZE 260, 22
    @ 20,35 GET oGet VAR e1  ;
         STYLE WS_DLGFRAME   ;
-        SIZE 260, 26 COLOR Vcolor("FF0000")
+        SIZE 260, 26 COLOR hwg_VColor("FF0000")
 
    @ 20,70 GET CHECKBOX c1 CAPTION "Check 1" SIZE 90, 20
-   @ 20,95 GET CHECKBOX c2 CAPTION "Check 2" SIZE 90, 20 COLOR Vcolor("0000FF")
+   @ 20,95 GET CHECKBOX c2 CAPTION "Check 2" SIZE 90, 20 COLOR hwg_VColor("0000FF")
 
 
    @ 160,70 GROUPBOX "RadioGroup" SIZE 130, 75
 
    GET RADIOGROUP r1
    @ 180,90 RADIOBUTTON "Radio 1"  ;
-        SIZE 90, 20 ON CLICK {||oGet:SetColor(Vcolor("0000FF"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_VColor("0000FF"),,.T.)}
    @ 180,115 RADIOBUTTON "Radio 2" ;
-        SIZE 90, 20 ON CLICK {||oGet:SetColor(Vcolor("FF0000"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_VColor("FF0000"),,.T.)}
    END RADIOGROUP
 
    @ 20,120 GET COMBOBOX cm ITEMS aCombo SIZE 100, 150
@@ -59,7 +59,7 @@ Local aIP := { 10,1,2,3 }
    oFont:Release()
 
    IF oModDlg:lResult
-      MsgInfo( e1 + chr(10) + chr(13) +                               ;
+      hwg_Msginfo( e1 + chr(10) + chr(13) +                               ;
                "Check1 - " + Iif(c1,"On","Off") + chr(10) + chr(13) + ;
                "Check2 - " + Iif(c2,"On","Off") + chr(10) + chr(13) + ;
                "Radio: " + Str(r1,1) + chr(10) + chr(13) +            ;
@@ -73,9 +73,9 @@ Return Nil
 
 
 function IpGetFocus()
-   MsgInfo("GetFocus")
+   hwg_Msginfo("GetFocus")
 return (NIL)
 
 function IpLostFocus()
-   MsgInfo("LostFocus")
+   hwg_Msginfo("LostFocus")
 return (NIL)

@@ -55,8 +55,8 @@ METHOD Paint() CLASS HShadeButton
    LOCAL pps, hDC
    LOCAL nState
 
-   pps := DefinePaintStru()
-   hDC := BeginPaint( ::handle, pps )
+   pps := hwg_Definepaintstru()
+   hDC := hwg_Beginpaint( ::handle, pps )
 
    IF ::state == OBTN_INIT
       ::state := OBTN_NORMAL
@@ -65,7 +65,7 @@ METHOD Paint() CLASS HShadeButton
    IF ::lEnabled
       nState := IIf( ::state == OBTN_PRESSED, STATE_SELECTED, STATE_DEFAULT + ;
             IIf( ::state == OBTN_MOUSOVER, STATE_OVER, 0 ) ) + ;
-            IIf( GetFocus() == ::handle, STATE_FOCUS, 0 )
+            IIf( hwg_Getfocus() == ::handle, STATE_FOCUS, 0 )
    ELSE
       nState := STATE_DISABLED
    ENDIF
@@ -74,7 +74,7 @@ METHOD Paint() CLASS HShadeButton
 
    ::DrawItems( hDC )
 
-   EndPaint( ::handle, pps )
+   hwg_Endpaint( ::handle, pps )
 
    RETURN NIL
 

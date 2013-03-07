@@ -5,7 +5,7 @@
  * C level menu functions
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
  * Copyright 2004 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
  * Demo for use Bitmap in menu
 */
@@ -20,14 +20,14 @@ Private oMenu
 
         INIT WINDOW oMain MAIN TITLE "Teste" ;
              AT 0,0 ;//BACKGROUND BITMAP OBMP;
-             SIZE GetDesktopWidth(), GetDesktopHeight() - 28
+             SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
                MENU OF oMain
                   MENU TITLE "Samples"
                      MENUITEM "&Exit"    ID 1001 ACTION oMain:Close()   BITMAP "\hwgui\samples\image\exit_m.bmp" 
                      SEPARATOR                      
-                     MENUITEM "&New "    ID 1002 ACTION msginfo("New")  BITMAP "\hwgui\samples\image\new_m.bmp"  
-                     MENUITEM "&Open"    ID 1003 ACTION msginfo("Open") BITMAP "\hwgui\samples\image\open_m.bmp" 
+                     MENUITEM "&New "    ID 1002 ACTION hwg_Msginfo("New")  BITMAP "\hwgui\samples\image\new_m.bmp"  
+                     MENUITEM "&Open"    ID 1003 ACTION hwg_Msginfo("Open") BITMAP "\hwgui\samples\image\open_m.bmp" 
                      MENUITEM "&Demo"    ID 1004 ACTION Test()
                      separator
                      MENUITEM "&Bitmap and a Text"  ID 1005 ACTION Test()
@@ -40,7 +40,7 @@ Private oMenu
 Return Nil
 
 Function Test()
-MsgInfo("Test")
+hwg_Msginfo("Test")
 Return Nil
 
  

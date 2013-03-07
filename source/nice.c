@@ -136,7 +136,7 @@ LRESULT CALLBACK NiceButtProc( HWND hWnd, UINT message, WPARAM wParam,
 {
    long int res;
    PHB_DYNS pSymTest;
-   if( ( pSymTest = hb_dynsymFind( "NICEBUTTPROC" ) ) != NULL )
+   if( ( pSymTest = hb_dynsymFind( "HWG_NICEBUTTPROC" ) ) != NULL )
    {
       hb_vmPushSymbol( hb_dynsymSymbol( pSymTest ) );
       hb_vmPushNil(  );         /* places NIL at self */
@@ -156,7 +156,7 @@ LRESULT CALLBACK NiceButtProc( HWND hWnd, UINT message, WPARAM wParam,
 }
 
 
-HB_FUNC( CREATEROUNDRECTRGN )
+HB_FUNC( HWG_CREATEROUNDRECTRGN )
 {
    HRGN Res = CreateRoundRectRgn( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ),
          hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) );
@@ -164,7 +164,7 @@ HB_FUNC( CREATEROUNDRECTRGN )
 }
 
 
-HB_FUNC( SETWINDOWRGN )
+HB_FUNC( HWG_SETWINDOWRGN )
 {
    hb_retni( SetWindowRgn( ( HWND ) HB_PARHANDLE( 1 ), ( HRGN ) hb_parnl( 2 ),
                hb_parl( 3 ) ) );
@@ -202,7 +202,7 @@ HB_FUNC( HWG_REGNICE )
 }
 
 
-HB_FUNC( CREATENICEBTN )
+HB_FUNC( HWG_CREATENICEBTN )
 {
    HWND hWndPanel;
    ULONG ulStyle = HB_ISNUM( 3 ) ? hb_parnl( 3 ) : WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
@@ -221,7 +221,7 @@ HB_FUNC( CREATENICEBTN )
    HB_RETHANDLE( hWndPanel );
 }
 
-HB_FUNC( ISMOUSEOVER )
+HB_FUNC( HWG_ISMOUSEOVER )
 {
    RECT Rect;
    POINT Pt;
@@ -231,19 +231,19 @@ HB_FUNC( ISMOUSEOVER )
 }
 
 
-HB_FUNC( RGB )
+HB_FUNC( HWG_RGB )
 {
    hb_retnl( RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) );
 }
 
-HB_FUNC( DRAW_GRADIENT )
+HB_FUNC( HWG_DRAW_GRADIENT )
 {
    Draw_Gradient( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 2 ), hb_parni( 3 ),
          hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),
          hb_parni( 8 ) );
 }
 
-HB_FUNC( GRADIENT )
+HB_FUNC( HWG_GRADIENT )
 {
    if( s_pGradientfill == NULL )
       s_pGradientfill = ( GRADIENTFILL )
@@ -258,19 +258,20 @@ HB_FUNC( GRADIENT )
            ( hb_pcount() > 7 && ! HB_ISNIL( 8 ) ) ? hb_parni( 8 ): 0 )  ;
 }
 
-HB_FUNC( MAKELONG )
+HB_FUNC( HWG_MAKELONG )
 {
    hb_retnl( ( LONG ) MAKELONG( ( WORD ) hb_parnl( 1 ),
                ( WORD ) hb_parnl( 2 ) ) );
 }
 
 
-HB_FUNC( GETWINDOWLONG )
+HB_FUNC( HWG_GETWINDOWLONG )
 {
    hb_retnl( GetWindowLong( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ) ) );
 }
 
-HB_FUNC( SETBKMODE )
+HB_FUNC( HWG_SETBKMODE )
 {
    hb_retni( SetBkMode( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 2 ) ) );
 }
+

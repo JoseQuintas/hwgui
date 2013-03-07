@@ -137,7 +137,7 @@ FUNCTION ABRW2TXT
 //aSession:= saveSession()
 n:=len(aData)
 IF n<=1
-   MsgInfo("Isi Field terlebih dulu")
+   hwg_Msginfo("Isi Field terlebih dulu")
    RETURN .F.
 ENDIF
 
@@ -218,15 +218,15 @@ nI:=0
 nA:=0
 nN:=1
 lFixed:= .f.
-SETcOLORiNFOCUS(.T.)
+hwg_SetColorinFocus(.T.)
 ]]>
   </method>
   <method name="onDlgInit">
-    <![CDATA[WriteStatus(oDlg,1," I.H.K 1.01a", .t.)
-//WriteStatus(oDlg,2, rich_tgln(date(),"H P, D M Y"), .t.)
-WriteStatus(oDlg,2, DTOC(date()), .t.)
-WriteStatus(oDlg,4," (c)2006 Richard Roesnadi", .t.)
-SetFocus(oPv:handle)
+    <![CDATA[hwg_WriteStatus(oDlg,1," I.H.K 1.01a", .t.)
+//hwg_WriteStatus(oDlg,2, rich_tgln(date(),"H P, D M Y"), .t.)
+hwg_WriteStatus(oDlg,2, DTOC(date()), .t.)
+hwg_WriteStatus(oDlg,4," (c)2006 Richard Roesnadi", .t.)
+hwg_Setfocus(oPv:handle)
 ]]>
   </method>
   <part class="editbox">
@@ -372,7 +372,7 @@ return .t.
       <![CDATA[Private iVal, i, aSum,z,y,w,pkt
 
 if (nPV==0  .OR. val(iPa)==0  .OR. Val(iPm)==0  )
-  msgStop("Field * harus diisi","Perhatian")
+  hwg_Msgstop("Field * harus diisi","Perhatian")
 else
 
 // FindAnnuity()
@@ -425,8 +425,8 @@ oB:aColumns[5]:footing:=trans(aSum[2],"@EZ 99,999,999,999.99")
 oB:aColumns[7]:footing:=trans(aSum[3],"@EZ 99,999,999,999.99")
 oB:aColumns[8]:footing:=trans(aSum[4],"@EZ 99,999,999,999.99")
 oB:refresh()
-WriteStatus(oDlg,3," Result Annuity : Rp"+trans(nA, "@EZ 999,999,999,999.999999"))
-refreshAllGets(oDlg)
+hwg_WriteStatus(oDlg,3," Result Annuity : Rp"+trans(nA, "@EZ 999,999,999,999.999999"))
+hwg_RefreshAllGets(oDlg)
 
 endif
 return .t.]]>
@@ -509,7 +509,7 @@ nFV:=0
 nA:=0
 iPa:=""
 iPm:=""
-RefreshAllGets(oDlg)
+hwg_RefreshAllGets(oDlg)
 ]]>
     </method>
   </part>
@@ -581,7 +581,7 @@ nUD:=aSave[5]
 //   aSum[3]+= aData[i,7]
 //   aSum[4]+= aData[i,8]
 //enddo
-refreshAllGets(oDlg)
+hwg_RefreshAllGets(oDlg)
 findAnnuity()
 
 //oB:aColumns[4]:footing:=trans(aSum[1],"@EZ 99,999,999,999.99")
@@ -615,7 +615,7 @@ findAnnuity()
     <method name="onClick">
       <![CDATA[
 if nPV==0
- MsgInfo("Belum ada yang Hasil..")
+ hwg_Msginfo("Belum ada yang Hasil..")
  return .f.
 endif
 iif(empty(fname),fname:="*.FA")
@@ -657,7 +657,7 @@ ABRW2TXT()
       <property name="BmpTop">5</property>
     </style>
     <method name="onClick">
-      <![CDATA[MsgInfo("Reserved (Next Version)")
+      <![CDATA[hwg_Msginfo("Reserved (Next Version)")
 ]]>
     </method>
   </part>
@@ -674,7 +674,7 @@ ABRW2TXT()
       <property name="BmpTop">5</property>
     </style>
     <method name="onClick">
-      <![CDATA[MsgInfo("1.Entry Present Value (nilai kontan)"+chr(13)+"2.Entry Interest (bunga %) pa=pertahun pm=per bulan"+chr(13)+"3.Entry Period (periode/jangka waktu)"+chr(13)+"Then"+chr(13)+"Click Annuity Button","Hint:Find annuity/cari angsuran")
+      <![CDATA[hwg_Msginfo("1.Entry Present Value (nilai kontan)"+chr(13)+"2.Entry Interest (bunga %) pa=pertahun pm=per bulan"+chr(13)+"3.Entry Period (periode/jangka waktu)"+chr(13)+"Then"+chr(13)+"Click Annuity Button","Hint:Find annuity/cari angsuran")
 
 ]]>
     </method>
@@ -699,7 +699,7 @@ ABRW2TXT()
       <property name="BmpTop">5</property>
     </style>
     <method name="onClick">
-      <![CDATA[enddialog(oDlg:handle)]]>
+      <![CDATA[hwg_EndDialog(oDlg:handle)]]>
     </method>
   </part>
   <part class="ownerbutton">
@@ -740,7 +740,7 @@ ABRW2TXT()
       <property name="varName">[lIndonesia]</property>
     </style>
     <method name="onClick">
-      <![CDATA[//MsgInfo( iif(lIndonesia,"Indonesia","English") )
+      <![CDATA[//hwg_Msginfo( iif(lIndonesia,"Indonesia","English") )
 if lIndonesia
  oLabel1:SetText("Nilai Kontan")
  oLabel2:SetText("Nilai Akhir")
@@ -766,7 +766,7 @@ if lIndonesia
  oB:aColumns[5]:Heading:="Angsuran (Rp)"
  oB:aColumns[6]:Heading:="Saldo (Rp)"
 
- SetWindowText(oDlg:handle,"Mencari Angsuran")
+ hwg_Setwindowtext(oDlg:handle,"Mencari Angsuran")
 
 else
  oLabel1:SetText("Present Value")
@@ -790,18 +790,18 @@ else
  oB:aColumns[4]:Heading:="Interest (Rp)"
  oB:aColumns[5]:Heading:="Annuity (Rp)"
  oB:aColumns[6]:Heading:="Balance (Rp)"
- SetWindowText(oDlg:handle,"Find Annuity")
+ hwg_Setwindowtext(oDlg:handle,"Find Annuity")
 
 endif
 
- RedrawWindow(oBtnA:handle,5)
- RedrawWindow(oBtn1:handle,5)
- RedrawWindow(oBtn2:handle,5)
- RedrawWindow(oBtn3:handle,5)
- RedrawWindow(oBtn4:handle,5)
- RedrawWindow(oBtn5:handle,5)
- RedrawWindow(oBtn6:handle,5)
- RedrawWindow(oBtn7:handle,5)
+ hwg_Redrawwindow(oBtnA:handle,5)
+ hwg_Redrawwindow(oBtn1:handle,5)
+ hwg_Redrawwindow(oBtn2:handle,5)
+ hwg_Redrawwindow(oBtn3:handle,5)
+ hwg_Redrawwindow(oBtn4:handle,5)
+ hwg_Redrawwindow(oBtn5:handle,5)
+ hwg_Redrawwindow(oBtn6:handle,5)
+ hwg_Redrawwindow(oBtn7:handle,5)
  oB:Refresh()
 return .t.]]>
     </method>

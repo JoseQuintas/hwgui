@@ -5,7 +5,7 @@
  * HGrid class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
  * Copyright 2004 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
  *
  * This Sample use Postgres Library, you need to link libpq.lib and libhbpg.lib
@@ -16,7 +16,7 @@
 #include "guilib.ch"
 #include "common.ch"
 
-#translate RGB( <nRed>, <nGreen>, <nBlue> ) => ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
+#translate hwg_Rgb( <nRed>, <nGreen>, <nBlue> ) => ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
 
 Static oMain, oForm, oFont, oGrid, oServer, oQuery
 
@@ -26,7 +26,7 @@ Function Main()
         
         INIT WINDOW oMain MAIN TITLE "Grid Postgres Sample Using TPostgres" ;
              AT 0,0 ;
-             SIZE GetDesktopWidth(), GetDesktopHeight() - 28
+             SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
                 MENU OF oMain
                         MENUITEM "&Exit"   ACTION oMain:Close()
@@ -49,8 +49,8 @@ Function Test()
                 
              @ 10,10 GRID oGrid OF oForm SIZE 680,375;
                      ITEMCOUNT oQuery:Lastrec() ;
-                     COLOR VColor('D3D3D3');
-                     BACKCOLOR RGB(220,220,220) ;
+                     COLOR hwg_VColor('D3D3D3');
+                     BACKCOLOR hwg_Rgb(220,220,220) ;
                      ON DISPINFO {|oCtrl, nRow, nCol| valtoprg(oQuery:FieldGet( nRow, nCol )) } 
 
              ADD COLUMN TO GRID oGrid HEADER "Column 1" WIDTH  50

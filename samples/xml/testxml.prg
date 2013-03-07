@@ -38,11 +38,11 @@ Private oMainWindow, oFont
             NEXT
             SEPARATOR
          ENDIF
-         MENUITEM "Exit" ACTION EndWindow()
+         MENUITEM "Exit" ACTION hwg_EndWindow()
       ENDMENU
 
       MENU TITLE "Help"
-         MENUITEM "About" ACTION ShellAbout("","")
+         MENUITEM "About" ACTION hwg_Shellabout("","")
       ENDMENU
    ENDMENU
 
@@ -82,7 +82,7 @@ Local cName, cInfo
    @ 20,50 SAY "Info:" SIZE 60, 22
    @ 80,50 GET cInfo SIZE 150, 26
 
-   @ 20,110  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult:=.T.,EndDialog()}
+   @ 20,110  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult:=.T.,hwg_EndDialog()}
    @ 180,110 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
 
    ACTIVATE DIALOG oDlg
@@ -104,7 +104,7 @@ Local cName, cInfo
          IF oXmlNode:GetAttribute( "name" ) != cName
             oXmlNode:SetAttribute( "name", cName )
             lIniChanged := .T.
-            SetMenuCaption( , 1020+nItem, cName )
+            hwg_Setmenucaption( , 1020+nItem, cName )
          ENDIF
          FOR i := 1 TO Len( oXmlNode:aItems )
             IF Valtype( oXmlNode:aItems[i] ) == "C"

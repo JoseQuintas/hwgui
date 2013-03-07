@@ -75,7 +75,7 @@ Return Self
 
 METHOD Activate CLASS HUpDown
    IF !Empty(::oParent:handle )
-      ::handle := CreateUpDownControl( ::oParent:handle, ;
+      ::handle := hwg_Createupdowncontrol( ::oParent:handle, ;
           ::nLeft,::nTop,::nWidth,::nHeight,Val(::title),::nLower,::nUpper )
       ::Init()
    ENDIF
@@ -114,7 +114,7 @@ Static Function __Valid( oCtrl )
    ENDIF
    IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl ) .OR. ;
          oCtrl:value > oCtrl:nUpper .OR. oCtrl:value < oCtrl:nLower
-      SetFocus( oCtrl:handle )
+      hwg_Setfocus( oCtrl:handle )
    ENDIF
 
 Return .T.

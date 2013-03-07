@@ -63,7 +63,7 @@ GtkFixed * getFixedBox( GObject * handle )
 /*
    CreateStatic( hParentWindow, nControlID, nStyle, x, y, nWidth, nHeight, nExtStyle, cTitle )
 */
-HB_FUNC( CREATESTATIC )
+HB_FUNC( HWG_CREATESTATIC )
 {
    HB_ULONG ulStyle = hb_parnl(3);
    const char * cTitle = ( hb_pcount() > 8 )? hb_parc(9) : "";
@@ -116,7 +116,7 @@ HB_FUNC( HWG_STATIC_SETTEXT )
    CreateButton( hParentWindow, nButtonID, nStyle, x, y, nWidth, nHeight,
                  cCaption )
 */
-HB_FUNC( CREATEBUTTON )
+HB_FUNC( HWG_CREATEBUTTON )
 {
    GtkWidget * hCtrl,* img;
    HB_ULONG ulStyle = hb_parnl( 3 );
@@ -169,7 +169,7 @@ HB_FUNC( HWG_ISBUTTONCHECKED )
    CreateEdit( hParentWIndow, nEditControlID, nStyle, x, y, nWidth, nHeight,
                cInitialString )
 */
-HB_FUNC( CREATEEDIT )
+HB_FUNC( HWG_CREATEEDIT )
 {
    GtkWidget * hCtrl;
    const char * cTitle = ( hb_pcount() > 7 )? hb_parc(8) : "";
@@ -266,7 +266,7 @@ HB_FUNC( HWG_EDIT_GETPOS )
 /*
    CreateCombo( hParentWIndow, nComboID, nStyle, x, y, nWidth, nHeight )
 */
-HB_FUNC( CREATECOMBO )
+HB_FUNC( HWG_CREATECOMBO )
 {
    GtkWidget * hCtrl = gtk_combo_new();
    GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
@@ -316,7 +316,7 @@ HB_FUNC( HWG_COMBOGETSTRING )
 }
 */
 
-HB_FUNC( CREATEUPDOWNCONTROL )
+HB_FUNC( HWG_CREATEUPDOWNCONTROL )
 {
    GtkObject * adj = gtk_adjustment_new( (gdouble) hb_parnl(6),  // value
                              (gdouble) hb_parnl(7),  // lower
@@ -346,7 +346,7 @@ HB_FUNC( HWG_GETUPDOWN )
 #define WS_VSCROLL          2097152    // 0x00200000L
 #define WS_HSCROLL          1048576    // 0x00100000L
 
-HB_FUNC( CREATEBROWSE )
+HB_FUNC( HWG_CREATEBROWSE )
 {
    GtkWidget *vbox, *hbox;
    GtkWidget *vscroll, *hscroll;
@@ -486,7 +486,7 @@ HB_FUNC( HWG_SETADJOPTIONS )
       gtk_adjustment_changed( adj );
 }
 
-HB_FUNC( CREATETABCONTROL )
+HB_FUNC( HWG_CREATETABCONTROL )
 {
    GtkWidget * hCtrl = gtk_notebook_new();
 
@@ -499,7 +499,7 @@ HB_FUNC( CREATETABCONTROL )
 
 }
 
-HB_FUNC( ADDTAB )
+HB_FUNC( HWG_ADDTAB )
 {
    GtkNotebook * nb = (GtkNotebook*) HB_PARHANDLE(1);
    GtkWidget * box = gtk_fixed_new();
@@ -516,7 +516,7 @@ HB_FUNC( ADDTAB )
    HB_RETHANDLE( nb );
 }
 
-HB_FUNC( GETCURRENTTAB )
+HB_FUNC( HWG_GETCURRENTTAB )
 {
    hb_retni( gtk_notebook_get_current_page( (GtkNotebook*)HB_PARHANDLE(1) ) + 1 );
 }
@@ -542,7 +542,7 @@ HB_FUNC( HWG_CREATESEP )
 /*
    CreatePanel( hParentWindow, nControlID, nStyle, x, y, nWidth, nHeight, nExtStyle, cTitle )
 */
-HB_FUNC( CREATEPANEL )
+HB_FUNC( HWG_CREATEPANEL )
 {
    GtkWidget *hCtrl;
    GtkFixed *box, *fbox;
@@ -573,7 +573,7 @@ HB_FUNC( CREATEPANEL )
 
 }
 
-HB_FUNC( DESTROYPANEL )
+HB_FUNC( HWG_DESTROYPANEL )
 {
    GtkFixed *box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
    if( box )
@@ -583,7 +583,7 @@ HB_FUNC( DESTROYPANEL )
 /*
    CreateOwnBtn( hParentWindow, nControlID, x, y, nWidth, nHeight )
 */
-HB_FUNC( CREATEOWNBTN )
+HB_FUNC( HWG_CREATEOWNBTN )
 {
    GtkWidget * hCtrl;
    GtkFixed * box;
@@ -610,7 +610,7 @@ HB_FUNC( CREATEOWNBTN )
 }
 
 
-HB_FUNC( ADDTOOLTIP )
+HB_FUNC( HWG_ADDTOOLTIP )
 {
    if( !pTooltip )
       pTooltip = gtk_tooltips_new();
@@ -624,7 +624,7 @@ static gint cb_timer( gchar * data )
    sscanf( (char*)data,"%ld",&p1 );
 
    if( !pSymTimerProc )
-      pSymTimerProc = hb_dynsymFind( "TIMERPROC" );
+      pSymTimerProc = hb_dynsymFind( "HWG_TIMERPROC" );
 
    if( pSymTimerProc )
    {
@@ -656,12 +656,12 @@ HB_FUNC( HWG_KILLTIMER )
    gtk_timeout_remove( (gint) hb_parni(1) );
 }
 
-HB_FUNC( GETPARENT )
+HB_FUNC( HWG_GETPARENT )
 {
    hb_retptr( (void*) ( (GtkWidget*) HB_PARHANDLE(1) )->parent );
 }
 
-HB_FUNC( LOADCURSOR )
+HB_FUNC( HWG_LOADCURSOR )
 {
    if( HB_ISCHAR(1) )
    {
@@ -708,7 +708,7 @@ HB_FUNC( HWG_MOVEWIDGET )
    }
 }
 
-HB_FUNC(CREATEPROGRESSBAR)
+HB_FUNC( HWG_CREATEPROGRESSBAR )
 {
    GtkWidget * hCtrl;
    GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
@@ -720,13 +720,13 @@ HB_FUNC(CREATEPROGRESSBAR)
    HB_RETHANDLE( hCtrl );
 }
 
-HB_FUNC( UPDATEPROGRESSBAR )
+HB_FUNC( HWG_UPDATEPROGRESSBAR )
 {
   // SendMessage( (HWND) hb_parnl(1), PBM_STEPIT, 0, 0 );
   gtk_progress_bar_pulse((GtkProgressBar*)HB_PARHANDLE(1));
 }
 
-HB_FUNC( SETPROGRESSBAR )
+HB_FUNC( HWG_SETPROGRESSBAR )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);   
    gdouble b= (gdouble) hb_parnd( 2) ;
@@ -736,7 +736,7 @@ HB_FUNC( SETPROGRESSBAR )
 
 }
 
-HB_FUNC( CREATESTATUSWINDOW )
+HB_FUNC( HWG_CREATESTATUSWINDOW )
 {
    GtkWidget * w;
    GObject * handle = (GObject*) HB_PARHANDLE(1);
@@ -749,7 +749,7 @@ HB_FUNC( CREATESTATUSWINDOW )
   HB_RETHANDLE( w);
 }
 
-HB_FUNC( STATUSBARSETTEXT )
+HB_FUNC( HWG_STATUSBARSETTEXT )
 {
    gchar *gcTitle = hwg_convert_to_utf8( hb_parcx(3) );
    GtkWidget *w = (GtkWidget *) hb_parptr(1);
@@ -761,7 +761,7 @@ HB_FUNC( STATUSBARSETTEXT )
 /* ------------------------------------------------------------------------ */
 
 /* void gtk_statusbar_pop (GtkStatusbar *statusbar, guint context_id); */
-HB_FUNC( STATUSBARREMOVETEXT )
+HB_FUNC( HWG_STATUSBARREMOVETEXT )
 {
    GtkWidget *w = (GtkWidget *) HB_PARHANDLE(1);
    int iStatus = hb_parni(2-1);
@@ -776,7 +776,7 @@ static void toolbar_clicked( GtkWidget *item,
   HB_SYMBOL_UNUSED( item );
 }
 
-HB_FUNC(CREATETOOLBAR)
+HB_FUNC( HWG_CREATETOOLBAR )
 {
    GtkWidget * hCtrl = gtk_toolbar_new ();
 
@@ -792,7 +792,7 @@ HB_FUNC(CREATETOOLBAR)
    HB_RETHANDLE( hCtrl );
 }
 
-HB_FUNC(CREATETOOLBARBUTTON)
+HB_FUNC( HWG_CREATETOOLBARBUTTON )
 {
 #if GTK_CHECK_VERSION(2,4,1)
   GtkWidget *toolbutton1,*img;   
@@ -835,7 +835,7 @@ HB_FUNC(CREATETOOLBARBUTTON)
 }
 
 
-HB_FUNC(TOOLBAR_SETACTION)
+HB_FUNC( HWG_TOOLBAR_SETACTION )
 {
   GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
   PHB_ITEM pItem = hb_itemParam( 2 ) ;
@@ -872,7 +872,7 @@ static void tabchange_clicked(GtkNotebook *item,
 //}
 
 
-HB_FUNC(TAB_SETACTION  )
+HB_FUNC( HWG_TAB_SETACTION )
 {
   GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
 //  gpointer dwNewLong = g_object_get_data( (GObject*) HB_PARHANDLE(1), "obj" );  
@@ -881,7 +881,7 @@ HB_FUNC(TAB_SETACTION  )
 			    G_CALLBACK (tabchange_clicked), (void*) pItem);		    
 }
 
-HB_FUNC(INITMONTHCALENDAR)
+HB_FUNC( HWG_INITMONTHCALENDAR )
 {
    GtkWidget * hCtrl;
    GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
@@ -894,7 +894,7 @@ HB_FUNC(INITMONTHCALENDAR)
    HB_RETHANDLE( hCtrl );
 }
 
-HB_FUNC ( SETMONTHCALENDARDATE ) // adaptation of function SetDatePicker of file Control.c
+HB_FUNC( HWG_SETMONTHCALENDARDATE )
 {
    PHB_ITEM pDate = hb_param( 2, HB_IT_DATE );
 
@@ -916,7 +916,7 @@ HB_FUNC ( SETMONTHCALENDARDATE ) // adaptation of function SetDatePicker of file
    }
 }
 
-HB_FUNC( GETMONTHCALENDARDATE )
+HB_FUNC( HWG_GETMONTHCALENDARDATE )
 {
    GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);    
    char szDate[9];
@@ -935,7 +935,7 @@ HB_FUNC( GETMONTHCALENDARDATE )
 }   
 
 
-HB_FUNC( CREATEIMAGE )
+HB_FUNC( HWG_CREATEIMAGE )
 {
    GtkWidget * hCtrl;
    GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
@@ -950,7 +950,7 @@ HB_FUNC( CREATEIMAGE )
    HB_RETHANDLE( hCtrl );
 }
 
-HB_FUNC( MONTHCALENDAR_SETACTION )
+HB_FUNC( HWG_MONTHCALENDAR_SETACTION )
 {
    GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
    PHB_ITEM pItem = hb_itemParam( 2 ) ;
@@ -960,7 +960,7 @@ HB_FUNC( MONTHCALENDAR_SETACTION )
 
 void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor );
 
-HB_FUNC( SETFGCOLOR )
+HB_FUNC( HWG_SETFGCOLOR )
 {
    GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
    GdkColor fColor;
@@ -981,7 +981,7 @@ HB_FUNC( SETFGCOLOR )
    }
 }  
 
-HB_FUNC(SETBGCOLOR)
+HB_FUNC( HWG_SETBGCOLOR )
 {
   GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE(1);
   GdkColor fColor;
@@ -1005,7 +1005,7 @@ HB_FUNC(SETBGCOLOR)
 /*
    CreateSplitter( hParentWindow, nControlID, nStyle, x, y, nWidth, nHeight )
 */
-HB_FUNC( CREATESPLITTER )
+HB_FUNC( HWG_CREATESPLITTER )
 {
    HB_ULONG ulStyle = hb_parnl(3);
    GtkWidget * hCtrl;
@@ -1038,3 +1038,4 @@ HB_FUNC( CREATESPLITTER )
    HB_RETHANDLE( hCtrl );
 
 }
+

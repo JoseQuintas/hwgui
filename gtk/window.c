@@ -605,12 +605,12 @@ GtkWidget * GetActiveWindow( void )
    return ( pList )? pList->data : NULL;
 }
 
-HB_FUNC( GETACTIVEWINDOW )
+HB_FUNC( HWG_GETACTIVEWINDOW )
 {
    HB_RETHANDLE( GetActiveWindow() );
 }
 
-HB_FUNC( SETWINDOWOBJECT )
+HB_FUNC( HWG_SETWINDOWOBJECT )
 {
    SetWindowObject( (GtkWidget *) HB_PARHANDLE(1),hb_param(2,HB_IT_OBJECT) );
 }
@@ -633,7 +633,7 @@ void SetWindowObject( GtkWidget * hWnd, PHB_ITEM pObject )
    }
 }
 
-HB_FUNC( GETWINDOWOBJECT )
+HB_FUNC( HWG_GETWINDOWOBJECT )
 {
    gpointer dwNewLong = g_object_get_data( (GObject*) HB_PARHANDLE(1), "obj" );
 
@@ -647,33 +647,33 @@ HB_FUNC( GETWINDOWOBJECT )
    }
 }
 
-HB_FUNC( SETWINDOWTEXT )
+HB_FUNC( HWG_SETWINDOWTEXT )
 {
    gchar * gcTitle = hwg_convert_to_utf8( hb_parcx(2) );
    gtk_window_set_title( GTK_WINDOW( HB_PARHANDLE(1) ), gcTitle );
    g_free( gcTitle );
 }
 
-HB_FUNC( GETWINDOWTEXT )
+HB_FUNC( HWG_GETWINDOWTEXT )
 {
    char * cTitle = (char*) gtk_window_get_title( GTK_WINDOW( HB_PARHANDLE(1) ) );
 
    hb_retc( cTitle );
 }
 
-HB_FUNC( ENABLEWINDOW )
+HB_FUNC( HWG_ENABLEWINDOW )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE( 1 );
    HB_BOOL lEnable = hb_parl( 2 );
    gtk_widget_set_sensitive( widget, lEnable );
 }
 
-HB_FUNC( ISWINDOWENABLED )
+HB_FUNC( HWG_ISWINDOWENABLED )
 {
    hb_retl( GTK_WIDGET_IS_SENSITIVE( (GtkWidget*) HB_PARHANDLE(1) ) );
 }
 
-HB_FUNC( MOVEWINDOW )
+HB_FUNC( HWG_MOVEWINDOW )
 {
    GtkWidget * hWnd = (GtkWidget*)HB_PARHANDLE(1);
 
@@ -732,12 +732,12 @@ HB_FUNC( HWG_RELEASEOBJECT )
    }
 }
 
-HB_FUNC( SETFOCUS )
+HB_FUNC( HWG_SETFOCUS )
 {
    gtk_widget_grab_focus( (GtkWidget*) HB_PARHANDLE( 1 ) );
 }
 
-HB_FUNC( GETFOCUS )
+HB_FUNC( HWG_GETFOCUS )
 {
    GtkWidget * hCtrl;
    hCtrl = gtk_window_get_focus( gtk_window_list_toplevels()->data );
@@ -755,7 +755,7 @@ HB_FUNC( HWG_SET_MODAL )
       gtk_window_set_transient_for( (GtkWindow *) HB_PARHANDLE(1), (GtkWindow *) HB_PARHANDLE(2) );
 }
 
-HB_FUNC( WINDOWSETRESIZE )
+HB_FUNC( HWG_WINDOWSETRESIZE )
 {
   gtk_window_set_resizable( (GtkWindow*) HB_PARHANDLE(1) ,hb_parl(2));
 }
@@ -781,3 +781,4 @@ HB_FUNC( HWG_SETAPPLOCALE )
    memcpy( szAppLocale, hb_parc(1), hb_parclen(1) );
    szAppLocale[hb_parclen(1)] = '\0';
 }
+

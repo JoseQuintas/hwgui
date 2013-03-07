@@ -1,5 +1,5 @@
 /*
- *$Id:$
+ *$Id$
  */
 
 FUNCTION ADDMETHOD( oObjectName, cMethodName, pFunction )    

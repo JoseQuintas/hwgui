@@ -20,7 +20,7 @@ Function FileDlg( lOpen )
 Local oDlg
 
    IF !lOpen .AND. ( aPaintRep == Nil .OR. Empty( aPaintRep[FORM_ITEMS] ) )
-      MsgStop( "Nothing to save" )
+      hwg_Msgstop( "Nothing to save" )
       Return Nil
    ELSEIF lOpen
       CloseReport()
@@ -29,24 +29,24 @@ Local oDlg
    INIT DIALOG oDlg FROM RESOURCE "DLG_FILE" ON INIT {|| InitOpen(lOpen) }
    DIALOG ACTIONS OF oDlg ;
         ON 0,IDOK         ACTION {|| EndOpen(lOpen)}  ;
-        ON BN_CLICKED,IDC_RADIOBUTTON1 ACTION {||SetDlgItemText(oDlg:handle,IDC_TEXT1,"Report Name:")} ;
-        ON BN_CLICKED,IDC_RADIOBUTTON2 ACTION {||SetDlgItemText(oDlg:handle,IDC_TEXT1,"Function Name:")} ;
+        ON BN_CLICKED,IDC_RADIOBUTTON1 ACTION {||hwg_Setdlgitemtext(oDlg:handle,IDC_TEXT1,"Report Name:")} ;
+        ON BN_CLICKED,IDC_RADIOBUTTON2 ACTION {||hwg_Setdlgitemtext(oDlg:handle,IDC_TEXT1,"Function Name:")} ;
         ON BN_CLICKED,IDC_BUTTONBRW ACTION {||BrowFile(lOpen)}
    oDlg:Activate()
 
 Return Nil
 
 Static Function InitOpen( lOpen )
-Local hDlg := getmodalhandle()
-   CheckRadioButton( hDlg,IDC_RADIOBUTTON1,IDC_RADIOBUTTON3,IDC_RADIOBUTTON1 )
-   SetWindowText( hDlg, Iif( lOpen,"Open report","Save report" ) )
-   SetFocus( GetDlgItem( hDlg, IDC_EDIT1 ) )
+Local hDlg := hwg_GetModalHandle()
+   hwg_Checkradiobutton( hDlg,IDC_RADIOBUTTON1,IDC_RADIOBUTTON3,IDC_RADIOBUTTON1 )
+   hwg_Setwindowtext( hDlg, Iif( lOpen,"Open report","Save report" ) )
+   hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT1 ) )
 Return .T.
 
 Static Function BrowFile( lOpen )
-Local hDlg := getmodalhandle()
+Local hDlg := hwg_GetModalHandle()
 Local fname, s1, s2
-   IF IsDlgButtonChecked( hDlg,IDC_RADIOBUTTON1 )
+   IF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON1 )
       s1 := "Report files( *.rpt )"
       s2 := "*.rpt"
    ELSE
@@ -58,27 +58,27 @@ Local fname, s1, s2
    ELSE
       fname := hwg_SaveFile( s2,s1,s2,mypath )
    ENDIF
-   SetDlgItemText( hDlg, IDC_EDIT1, fname )
-   SetFocus( GetDlgItem( hDlg, IDC_EDIT2 ) )
+   hwg_Setdlgitemtext( hDlg, IDC_EDIT1, fname )
+   hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT2 ) )
 Return Nil
 
 Static Function EndOpen( lOpen )
-Local hDlg := getmodalhandle()
+Local hDlg := hwg_GetModalHandle()
 Local fname, repName
 Local res := .T.
 
-   fname := GetEditText( hDlg, IDC_EDIT1 )
+   fname := hwg_Getedittext( hDlg, IDC_EDIT1 )
    IF !Empty( fname )
-      repName := GetEditText( hDlg, IDC_EDIT2 )
+      repName := hwg_Getedittext( hDlg, IDC_EDIT2 )
 
       IF lOpen
          IF ( res := OpenFile( fname,@repName ) )
             aPaintRep[FORM_Y] := 0
-            EnableMenuItem( ,1, .T., .F. )
-            RedrawWindow( Hwindow():GetMain():handle, RDW_ERASE + RDW_INVALIDATE )
+            hwg_Enablemenuitem( ,1, .T., .F. )
+            hwg_Redrawwindow( Hwindow():GetMain():handle, RDW_ERASE + RDW_INVALIDATE )
          ELSE
             aPaintRep := Nil
-            EnableMenuItem( ,1, .F., .F. )
+            hwg_Enablemenuitem( ,1, .F., .F. )
          ENDIF
       ELSE
          res := SaveRFile( fname,repName )
@@ -87,10 +87,10 @@ Local res := .T.
       ENDIF
 
       IF res
-         EndDialog( hDlg )
+         hwg_EndDialog( hDlg )
       ENDIF
    ELSE
-      SetFocus( GetDlgItem( hDlg, IDC_EDIT1 ) )
+      hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT1 ) )
    ENDIF
 Return .T.
 
@@ -98,7 +98,7 @@ Function CloseReport
 Local i, aItem
    IF aPaintRep != Nil
       IF aPaintRep[FORM_CHANGED] == .T.
-         IF MsgYesNo( "Report was changed. Are you want to save it ?" )
+         IF hwg_Msgyesno( "Report was changed. Are you want to save it ?" )
             SaveReport()
          ENDIF
       ENDIF
@@ -109,9 +109,9 @@ Local i, aItem
          ENDIF
       NEXT
       aPaintRep := Nil
-      ShowScrollBar( Hwindow():GetMain():handle,SB_VERT,.F. )
-      RedrawWindow( Hwindow():GetMain():handle, RDW_ERASE + RDW_INVALIDATE )
-      EnableMenuItem( ,1, .F., .F. )
+      hwg_Showscrollbar( Hwindow():GetMain():handle,SB_VERT,.F. )
+      hwg_Redrawwindow( Hwindow():GetMain():handle, RDW_ERASE + RDW_INVALIDATE )
+      hwg_Enablemenuitem( ,1, .F., .F. )
    ENDIF
 Return .T.
 
@@ -119,7 +119,7 @@ Function SaveReport
 Local fname
 
    IF ( aPaintRep == Nil .OR. Empty( aPaintRep[FORM_ITEMS] ) )
-      MsgStop( "Nothing to save" )
+      hwg_Msgstop( "Nothing to save" )
       Return Nil
    ENDIF
    IF Empty( aPaintRep[FORM_FILENAME] )
@@ -196,7 +196,7 @@ Local lPrg := ( Upper(FilExten(fname))=="PRG" ), cSource := "", vDummy, nFormWid
                      aItem[ITEM_Y1] == Nil .OR. aItem[ITEM_Y1] == 0 .OR. ;
                      aItem[ITEM_WIDTH] == Nil .OR. aItem[ITEM_WIDTH] == 0 .OR. ;
                      aItem[ITEM_HEIGHT] == Nil .OR. aItem[ITEM_HEIGHT] == 0
-                     MsgStop( "Error: "+stroka )
+                     hwg_Msgstop( "Error: "+stroka )
                      res := .F.
                      EXIT
                   ENDIF
@@ -212,7 +212,7 @@ Local lPrg := ( Upper(FilExten(fname))=="PRG" ), cSource := "", vDummy, nFormWid
                      aItem[ITEM_Y1] == Nil .OR. aItem[ITEM_Y1] == 0 .OR. ;
                      aItem[ITEM_WIDTH] == Nil .OR. aItem[ITEM_WIDTH] == 0 .OR. ;
                      aItem[ITEM_HEIGHT] == Nil .OR. aItem[ITEM_HEIGHT] == 0
-                     MsgStop( "Error: "+stroka )
+                     hwg_Msgstop( "Error: "+stroka )
                      res := .F.
                      EXIT
                   ENDIF
@@ -227,7 +227,7 @@ Local lPrg := ( Upper(FilExten(fname))=="PRG" ), cSource := "", vDummy, nFormWid
                      aItem[ITEM_Y1] == Nil .OR. aItem[ITEM_Y1] == 0 .OR. ;
                      aItem[ITEM_WIDTH] == Nil .OR. aItem[ITEM_WIDTH] == 0 .OR. ;
                      aItem[ITEM_HEIGHT] == Nil .OR. aItem[ITEM_HEIGHT] == 0
-                     MsgStop( "Error: "+stroka )
+                     hwg_Msgstop( "Error: "+stroka )
                      res := .F.
                      EXIT
                   ENDIF
@@ -253,7 +253,7 @@ Local lPrg := ( Upper(FilExten(fname))=="PRG" ), cSource := "", vDummy, nFormWid
             IF UPPER( Left( stroka,15 ) ) == "LOCAL APAINTREP"
                nMode := 11
             ELSE
-               MsgStop( "Wrong function "+repname )
+               hwg_Msgstop( "Wrong function "+repname )
                Fclose( han )
                Return .F.
             ENDIF
@@ -274,26 +274,26 @@ Local lPrg := ( Upper(FilExten(fname))=="PRG" ), cSource := "", vDummy, nFormWid
       ENDDO
       Fclose( han )
    ELSE
-      MsgStop( "Can't open "+fname )
+      hwg_Msgstop( "Can't open "+fname )
       Return .F.
    ENDIF
    IF aPaintRep == Nil .OR. Empty( aPaintRep[FORM_ITEMS] )
-      MsgStop( repname+" not found or empty!" )
+      hwg_Msgstop( repname+" not found or empty!" )
       res := .F.
    ELSE
-      EnableMenuItem( ,IDM_CLOSE, .T., .T. )
-      EnableMenuItem( ,IDM_SAVE, .T., .T. )
-      EnableMenuItem( ,IDM_SAVEAS, .T., .T. )
-      EnableMenuItem( ,IDM_PRINT, .T., .T. )
-      EnableMenuItem( ,IDM_PREVIEW, .T., .T. )
-      EnableMenuItem( ,IDM_FOPT, .T., .T. )
+      hwg_Enablemenuitem( ,IDM_CLOSE, .T., .T. )
+      hwg_Enablemenuitem( ,IDM_SAVE, .T., .T. )
+      hwg_Enablemenuitem( ,IDM_SAVEAS, .T., .T. )
+      hwg_Enablemenuitem( ,IDM_PRINT, .T., .T. )
+      hwg_Enablemenuitem( ,IDM_PREVIEW, .T., .T. )
+      hwg_Enablemenuitem( ,IDM_FOPT, .T., .T. )
 
       aPaintRep[FORM_ITEMS] := Asort( aPaintRep[FORM_ITEMS],,, {|z,y|z[ITEM_Y1]<y[ITEM_Y1].OR.(z[ITEM_Y1]==y[ITEM_Y1].AND.z[ITEM_X1]<y[ITEM_X1]).OR.(z[ITEM_Y1]==y[ITEM_Y1].AND.z[ITEM_X1]==y[ITEM_X1].AND.(z[ITEM_WIDTH]<y[ITEM_WIDTH].OR.z[ITEM_HEIGHT]<y[ITEM_HEIGHT]))} )
       IF !lPrg
          RecalcForm( aPaintRep,nFormWidth )
       ENDIF
 
-      WriteStatus( Hwindow():GetMain(),2,Ltrim(Str(aPaintRep[FORM_WIDTH],4))+"x"+ ;
+      hwg_WriteStatus( Hwindow():GetMain(),2,Ltrim(Str(aPaintRep[FORM_WIDTH],4))+"x"+ ;
                  Ltrim(Str(aPaintRep[FORM_HEIGHT],4))+"  Items: "+Ltrim(Str(Len(aPaintRep[FORM_ITEMS]))) )
    ENDIF
 Return res
@@ -341,7 +341,7 @@ Local lPrg := ( Upper(FilExten(fname))=="PRG" )
                Fclose( hanOut )
                Fclose( han )
                IF Ferase( fname ) == -1 .OR. Frename( mypath+"__rpt.tmp",fname ) == -1
-                  MsgStop( "Can't rename __rpt.tmp" )
+                  hwg_Msgstop( "Can't rename __rpt.tmp" )
                ELSE
                   res := .T.
                ENDIF
@@ -358,11 +358,11 @@ Local lPrg := ( Upper(FilExten(fname))=="PRG" )
                res := .T.
             ENDIF
          ELSE
-            MsgStop( "Can't create __rpt.tmp" )
+            hwg_Msgstop( "Can't create __rpt.tmp" )
             Fclose( han )
          ENDIF
       ELSE
-         MsgStop( "Can't open "+fname )
+         hwg_Msgstop( "Can't open "+fname )
       ENDIF
    ELSE
       han := Fcreate( fname )
@@ -383,9 +383,9 @@ Return res
 Static Function WriteRep( han, repName )
 Local i, aItem, oPen, oFont, hDCwindow, aMetr
 
-   hDCwindow := GetDC( Hwindow():GetMain():handle )
+   hDCwindow := hwg_Getdc( Hwindow():GetMain():handle )
    aMetr := hwg_GetDeviceArea( hDCwindow )
-   ReleaseDC( Hwindow():GetMain():handle,hDCwindow )
+   hwg_Releasedc( Hwindow():GetMain():handle,hDCwindow )
 
    Fwrite( han, "#REPORT "+repName+Chr(10) )
    Fwrite( han, "FORM;"+ Ltrim(Str(aPaintRep[FORM_WIDTH])) + ";" + ;
@@ -432,9 +432,9 @@ Return Nil
 Static Function WriteToPrg( han, repName )
 Local i, aItem, oPen, oFont, hDCwindow, aMetr, cItem, cQuote, cPen, cFont
 
-   hDCwindow := GetDC( Hwindow():GetMain():handle )
+   hDCwindow := hwg_Getdc( Hwindow():GetMain():handle )
    aMetr := hwg_GetDeviceArea( hDCwindow )
-   ReleaseDC( Hwindow():GetMain():handle,hDCwindow )
+   hwg_Releasedc( Hwindow():GetMain():handle,hDCwindow )
 
    Fwrite( han, "FUNCTION " + repName + Chr(10) + ;
          "LOCAL aPaintRep" + Chr(10) )

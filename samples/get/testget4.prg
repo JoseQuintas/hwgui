@@ -3,7 +3,7 @@
  * 
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 
 THIS IS A REGRESSION TEST FOR THE GET SYSTEM
 
@@ -20,7 +20,7 @@ Local oMain
 
    INIT WINDOW oMain MAIN TITLE "Browse Example - Database" ;
      AT 0,0 ;
-     SIZE GetDesktopWidth(), GetDesktopHeight() - 28
+     SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
    MENU OF oMain
       MENUITEM "&Exit"     ACTION oMain:Close()
@@ -54,18 +54,18 @@ wfracao := 1
 wcodigo := "XXXX"
 wnome   := "Nome"
 
-   bInit := {|o|MoveWindow(o:handle,x1,y1,nWidth,o:nHeight+1)}
+   bInit := {|o|hwg_Movewindow(o:handle,x1,y1,nWidth,o:nHeight+1)}
 
    INIT DIALOG oModDlg CLIPPER NOEXIT TITLE cTitle           ;
      STYLE DS_CENTER + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU  ;
      AT 210,10  SIZE 300,300                    ;
      FONT oFont                                 ;
-     ON EXIT {||MsgYesNo("Really exit ?")}
+     ON EXIT {||hwg_Msgyesno("Really exit ?")}
 
    @ 20,35 GET ocodigo VAR wcodigo PICTURE "@!" SIZE 100,22 ;
      NOBORDER STYLE ES_AUTOHSCROLL ;
-     WHEN {|| msginfo("WHEN codigo"), .T.  } ;
-     VALID {|| msginfo("VALID codigo"), .F.  }
+     WHEN {|| hwg_Msginfo("WHEN codigo"), .T.  } ;
+     VALID {|| hwg_Msginfo("VALID codigo"), .F.  }
 
    ACTIVATE DIALOG oModDlg
 

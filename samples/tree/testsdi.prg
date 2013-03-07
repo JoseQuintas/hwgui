@@ -19,12 +19,12 @@ Local oTree, oSplit, oTab
 
    MENU OF oMainWindow 
       MENU TITLE "&File"
-         MENUITEM "&New" ACTION msginfo("New")
-         MENUITEM "&Open" ACTION msginfo("Open")
+         MENUITEM "&New" ACTION hwg_Msginfo("New")
+         MENUITEM "&Open" ACTION hwg_Msginfo("Open")
          SEPARATOR
-         MENUITEM "&Font" ACTION msginfo("font")
+         MENUITEM "&Font" ACTION hwg_Msginfo("font")
          SEPARATOR
-         MENUITEM "&Exit" ACTION EndWindow()
+         MENUITEM "&Exit" ACTION hwg_EndWindow()
       ENDMENU
    ENDMENU
 
@@ -33,21 +33,21 @@ Local oTree, oSplit, oTab
         BITMAP { "..\image\cl_fl.bmp","..\image\op_fl.bmp" } ;
         ON SIZE {|o,x,y|o:Move(,,,y-20)}
 
-   @ 214,10 EDITBOX oGet CAPTION "Command" SIZE 106, 20 COLOR Vcolor("FF0000") ;
+   @ 214,10 EDITBOX oGet CAPTION "Command" SIZE 106, 20 COLOR hwg_VColor("FF0000") ;
         ON SIZE {|o,x,y|o:Move(,,x-oSplit:nLeft-oSplit:nWidth-50)}
 
    @ 214,35 TAB oTab ITEMS {} SIZE 206, 280 ;
         ON SIZE {|o,x,y|o:Move(,,x-oSplit:nLeft-oSplit:nWidth-10,y-20)} ;
-        ON CHANGE { |o| msginfo( str( len( o:aPages ) ) ) }
+        ON CHANGE { |o| hwg_Msginfo( str( len( o:aPages ) ) ) }
 
-   @ 414,10 BUTTON "X" SIZE 24, 24 ON CLICK {|| msginfo( "Delete " + str(oTab:GetActivePage()) ), oTab:DeletePage( oTab:GetActivePage() ) } ;
+   @ 414,10 BUTTON "X" SIZE 24, 24 ON CLICK {|| hwg_Msginfo( "Delete " + str(oTab:GetActivePage()) ), oTab:DeletePage( oTab:GetActivePage() ) } ;
         ON SIZE {|o,x,y| o:Move( oTab:nLeft+oTab:nWidth-26 )} ;
  
    @ 210,10 SPLITTER oSplit SIZE 4,260 ;
          DIVIDE {oTree} FROM {oTab,oGet} ;
          ON SIZE {|o,x,y|o:Move(,,,y-20)}
 
-   oSplit:bEndDrag := {||RedrawWindow( oTab:handle,RDW_ERASE+RDW_INVALIDATE+RDW_INTERNALPAINT+RDW_UPDATENOW)}
+   oSplit:bEndDrag := {||hwg_Redrawwindow( oTab:handle,RDW_ERASE+RDW_INVALIDATE+RDW_INTERNALPAINT+RDW_UPDATENOW)}
 
    BuildTree(oMainWindow,oTree,oTab)
 

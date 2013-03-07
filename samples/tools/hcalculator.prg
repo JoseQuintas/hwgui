@@ -24,7 +24,7 @@ CLASS HCalculator
    DATA aOperando
    DATA lClear
    DATA nMemory
-   DATA bColor        INIT RGB( 255, 255, 255 )
+   DATA bColor        INIT hwg_Rgb( 255, 255, 255 )
    DATA nLeft         INIT 0
    DATA nTop          INIT 0
    DATA nWidth        INIT 196
@@ -38,7 +38,7 @@ CLASS HCalculator
    METHOD Show( oGet, lCompacta, nLeft, nTop, nWidth, nHeight, bcolor  )
    METHOD Calculando( cNumero )
    METHOD GetRefresh( )
-   METHOD End() INLINE  ::GetRefresh(), IIf( ::lCompacta, PostMessage( ::oFormCalc:Handle, WM_CLOSE, 0, 0 ),  )
+   METHOD End() INLINE  ::GetRefresh(), IIf( ::lCompacta, hwg_Postmessage( ::oFormCalc:Handle, WM_CLOSE, 0, 0 ),  )
 ENDCLASS
 
 METHOD New( cTitle, lCompacta, nLeft, nTop, nWidth, nHeight, bcolor ) CLASS HCalculator
@@ -70,12 +70,12 @@ METHOD Show( oGet, lCompacta, nLeft, nTop, nWidth, nHeight, bcolor  )  CLASS HCa
         , oBtn11, oBtn21, oBtn22, oBtn3, oBtn5, oBtn6 ;
         , oBtn7, oBtn10, obtnres, oBtn23, oMemory
 
-   LOCAL hWin := GetActiveWindow()
+   LOCAL hWin := hwg_Getactivewindow()
    ::oCurrGet := oGet
    ::DefineStyle( lCompacta, nLeft, nTop, nWidth, nHeight, bcolor )
 
    IF !::lCompacta .AND. ::Hwnd != Nil
-      SetWindowPos( ::Hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE + SWP_FRAMECHANGED )
+      hwg_Setwindowpos( ::Hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE + SWP_FRAMECHANGED )
       RETURN Nil
    ENDIF
    INIT DIALOG ::oFormCalc TITLE ::Title ;
@@ -203,7 +203,7 @@ METHOD Show( oGet, lCompacta, nLeft, nTop, nWidth, nHeight, bcolor  )  CLASS HCa
 
    ACTIVATE DIALOG ::oFormCalc NOMODAL
 
-   ::nFontSize := TxtRect( "9", ::oFormCalc, ::oFormCalc:oCalculo:oFont )[ 1 ]
+   ::nFontSize := hwg_TxtRect( "9", ::oFormCalc, ::oFormCalc:oCalculo:oFont )[ 1 ]
    ::Hwnd := ::oFormCalc:Handle
 
    RETURN 0
@@ -216,7 +216,7 @@ METHOD Calculando( cNumero ) CLASS HCalculator
    Local nLen := Len( oForm:oVisor:Caption ), nCars
    Private nCalculo1 , ncalculo2
 
-   IF IsCtrlShift( .F., .T. ) .AND. ( cNumero = "5" .OR. cNumero = "8" )
+   IF hwg_IsCtrlShift( .F., .T. ) .AND. ( cNumero = "5" .OR. cNumero = "8" )
       cNumero := IIF( cNumero = "8", "*", IIF( cNumero = "5", "%", cNumero ) )
    ENDIF
    If cNumero $ "/*-+%="
@@ -300,7 +300,7 @@ METHOD Calculando( cNumero ) CLASS HCalculator
          RETURN Nil
       EndIf
    EndIf
-   oForm:oBtnRes:SetFocus( )
+   oForm:oBtnRes:Setfocus( )
 
   Return Nil
 
@@ -308,36 +308,36 @@ METHOD Calculando( cNumero ) CLASS HCalculator
 METHOD INIT( ) CLASS HCalculator
    LOCAL aCoors
 
-   SETDLGKEY( ::oFormCalc ,,8,{|| ::Calculando( " ") })
-   SETDLGKEY( ::oFormCalc ,,46,{|| ::Calculando( "") })
-   SETDLGKEY( ::oFormCalc ,,110,{|| ::Calculando( ",") })
-   SETDLGKEY( ::oFormCalc ,,188,{|| ::Calculando( ",") })
-   SETDLGKEY( ::oFormCalc ,,190,{|| ::Calculando( ".") })
-   SETDLGKEY( ::oFormCalc ,,194,{|| ::Calculando( ".") })
-   SETDLGKEY( ::oFormCalc ,,106,{|| ::Calculando( "*") })
-   SETDLGKEY( ::oFormCalc ,,107,{|| ::Calculando( "+") })
-   SETDLGKEY( ::oFormCalc ,FSHIFT,187,{|| ::Calculando( "+") })
-   SETDLGKEY( ::oFormCalc ,,109,{|| ::Calculando( "-") })
-   SETDLGKEY( ::oFormCalc ,,189,{|| ::Calculando( "-") })
-   SETDLGKEY( ::oFormCalc ,,111,{|| ::Calculando( "/") })
-   SETDLGKEY( ::oFormCalc ,,193,{|| ::Calculando( "/") })
-   SETDLGKEY( ::oFormCalc ,,187,{|| ::Calculando( "=") })
-   SETDLGKEY( ::oFormCalc ,,13,{|| ::Calculando( "=") })
+   hwg_SetDlgKey( ::oFormCalc ,,8,{|| ::Calculando( " ") })
+   hwg_SetDlgKey( ::oFormCalc ,,46,{|| ::Calculando( "") })
+   hwg_SetDlgKey( ::oFormCalc ,,110,{|| ::Calculando( ",") })
+   hwg_SetDlgKey( ::oFormCalc ,,188,{|| ::Calculando( ",") })
+   hwg_SetDlgKey( ::oFormCalc ,,190,{|| ::Calculando( ".") })
+   hwg_SetDlgKey( ::oFormCalc ,,194,{|| ::Calculando( ".") })
+   hwg_SetDlgKey( ::oFormCalc ,,106,{|| ::Calculando( "*") })
+   hwg_SetDlgKey( ::oFormCalc ,,107,{|| ::Calculando( "+") })
+   hwg_SetDlgKey( ::oFormCalc ,FSHIFT,187,{|| ::Calculando( "+") })
+   hwg_SetDlgKey( ::oFormCalc ,,109,{|| ::Calculando( "-") })
+   hwg_SetDlgKey( ::oFormCalc ,,189,{|| ::Calculando( "-") })
+   hwg_SetDlgKey( ::oFormCalc ,,111,{|| ::Calculando( "/") })
+   hwg_SetDlgKey( ::oFormCalc ,,193,{|| ::Calculando( "/") })
+   hwg_SetDlgKey( ::oFormCalc ,,187,{|| ::Calculando( "=") })
+   hwg_SetDlgKey( ::oFormCalc ,,13,{|| ::Calculando( "=") })
 
    ::lClear := .t.
    ::aOperando := { , , 0 }
 
-   ::oFormCalc:SetAll( "anchor", 240, , "hbuttonex" )
-  // ::oFormCalc:setall( "lflat", ::lCompacta, , "hbuttonex" )
+   ::oFormCalc:hwg_SetAll( "anchor", 240, , "hbuttonex" )
+  // ::oFormCalc:hwg_SetAll( "lflat", ::lCompacta, , "hbuttonex" )
 
    If ::oCurrGet != Nil
       ::oFormCalc:oVisor:Caption := ALLTRIM( STR( ::oCurrGet:Value ) )
       ::lClear := ::oFormCalc:oVisor:Caption = "0"
       IF ::oFormCalc:Type >= WND_DLG_RESOURCE
-         aCoors := GetWindowRect( ::oCurrGet:handle )
+         aCoors := hwg_Getwindowrect( ::oCurrGet:handle )
       ELSE
          aCoors := { ::oCurrGet:oParent:nLeft + ::oCurrGet:nLeft + 8 , ;
-          ::oCurrGet:oParent:nTop + ::oCurrGet:nTop + GETSYSTEMMETRICS( SM_CYCAPTION ) + 8, 0,0 }
+          ::oCurrGet:oParent:nTop + ::oCurrGet:nTop + hwg_Getsystemmetrics( SM_CYCAPTION ) + 8, 0,0 }
       ENDIF
       aCoors[ 3 ] := IIF( ::lCompacta, MAX( 130, ::oCurrGet:nWidth + 8 ), ::nWidth )
       ::oFormCalc:Move( aCoors[ 1 ] + 1, aCoors[ 2 ] + ::oCurrGet:nHeight + 1 , aCoors[ 3 ], 180, 0 )
@@ -352,7 +352,7 @@ METHOD GetRefresh( ) CLASS HCalculator
    If ::oCurrGet != Nil
       If  Value != Nil
          ::oCurrGet:Value := Value
-         //::oCurrGet:SetFocus()
+         //::oCurrGet:Setfocus()
       EndIf
    EndIf
    RETURN .T.

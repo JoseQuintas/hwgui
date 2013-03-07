@@ -72,7 +72,7 @@ for g := 1 to len(nom_arq)
      //
      texto:=upper(rd_text)
      //
-     //msginfo(linha)
+     //hwg_Msginfo(linha)
      if at (texto,linha) # 0
          resultado:=resultado+str(lin,6)+':'+linha +chr(13)+chr(10)
          get01:refresh()

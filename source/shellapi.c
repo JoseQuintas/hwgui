@@ -49,7 +49,7 @@ static int ( CALLBACK BrowseCallbackProc ) (  HWND hwnd,  UINT uMsg,  LPARAM lPa
  *  SelectFolder( cTitle )
  */
 
-HB_FUNC( SELECTFOLDER )
+HB_FUNC( HWG_SELECTFOLDER )
 {
    BROWSEINFO bi;
    TCHAR lpBuffer[ MAX_PATH ];
@@ -86,7 +86,7 @@ HB_FUNC( SELECTFOLDER )
  *  ShellNotifyIcon( lAdd, hWnd, hIcon, cTooltip )
  */
 
-HB_FUNC( SHELLNOTIFYICON )
+HB_FUNC( HWG_SHELLNOTIFYICON )
 {
    NOTIFYICONDATA tnid;
 
@@ -110,7 +110,7 @@ HB_FUNC( SHELLNOTIFYICON )
   *  ShellModifyIcon( hWnd, hIcon, cTooltip )
   */
 
-HB_FUNC( SHELLMODIFYICON )
+HB_FUNC( HWG_SHELLMODIFYICON )
 {
    NOTIFYICONDATA tnid;
 
@@ -136,7 +136,7 @@ HB_FUNC( SHELLMODIFYICON )
 /*
  * ShellExecute( cFile, cOperation, cParams, cDir, nFlag )
  */
-HB_FUNC( SHELLEXECUTE )
+HB_FUNC( HWG_SHELLEXECUTE )
 {
 #if defined( HB_OS_WIN_CE )
    hb_retni( -1 );
@@ -164,3 +164,4 @@ HB_FUNC( SHELLEXECUTE )
    hb_strfree( hDirectory );
 #endif
 }
+

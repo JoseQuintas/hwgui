@@ -18,7 +18,7 @@ Private cCaption, x, y, nWidth, nHeight, x2, y2, nAlign, oFont, cFont, nVar, xKo
 Private cWidth, aVars
 
   IF han == - 1
-    MsgStop( "Can't open "+oForm:path+oForm:filename )
+    hwg_Msgstop( "Can't open "+oForm:path+oForm:filename )
     Return
   ENDIF
   DO WHILE .T.

@@ -78,7 +78,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
 METHOD Activate() CLASS HMonthCalendar
 
    IF ! Empty( ::oParent:handle )
-      ::handle := InitMonthCalendar ( ::oParent:handle, ::id, ::style, ;
+      ::handle := hwg_InitMonthCalendar ( ::oParent:handle, ::id, ::style, ;
                                       ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
@@ -92,7 +92,7 @@ METHOD Init() CLASS HMonthCalendar
    IF ! ::lInit
       ::Super:Init()
       IF ! Empty( ::value )
-         SetMonthCalendarDate( ::handle , ::value )
+         hwg_SetMonthCalendardate( ::handle , ::value )
       ENDIF
       ::oParent:AddEvent( MCN_SELECT, Self, { || ::onSelect() }, .T., "onSelect" )
       ::oParent:AddEvent( MCN_SELCHANGE, Self, { || ::onChange() },.T. , "onChange" )
@@ -106,7 +106,7 @@ METHOD Init() CLASS HMonthCalendar
 METHOD SetValue( dValue ) CLASS HMonthCalendar
 
    IF ValType( dValue ) == "D" .And. ! Empty( dValue )
-      SetMonthCalendarDate( ::handle, dValue )
+      hwg_SetMonthCalendardate( ::handle, dValue )
       ::value := dValue
    ENDIF
 
@@ -116,14 +116,14 @@ METHOD SetValue( dValue ) CLASS HMonthCalendar
 
 METHOD GetValue() CLASS HMonthCalendar
 
-   ::value := GetMonthCalendarDate( ::handle )
+   ::value := hwg_GetMonthCalendardate( ::handle )
 
    RETURN ( ::value )
 
 METHOD onChange( ) CLASS HMonthCalendar
 
    IF ::bChange != Nil .AND. ! ::oparent:lSuspendMsgsHandling
-      SendMessage( ::handle, WM_LBUTTONDOWN, 0, MAKELPARAM( 1, 1 ) )
+      hwg_Sendmessage( ::handle, WM_LBUTTONDOWN, 0, hwg_Makelparam( 1, 1 ) )
       ::oparent:lSuspendMsgsHandling := .T.
       Eval( ::bChange, ::value, Self )
       ::oparent:lSuspendMsgsHandling := .F.
@@ -153,7 +153,7 @@ METHOD onSelect( ) CLASS HMonthCalendar
 #include "missing.h"
 #endif
 
-HB_FUNC ( INITMONTHCALENDAR )
+HB_FUNC ( HWG_INITMONTHCALENDAR )
 {
    HWND hMC;
    RECT rc;
@@ -171,13 +171,12 @@ HB_FUNC ( INITMONTHCALENDAR )
 
    MonthCal_GetMinReqRect( hMC, &rc );
 
-   //SetWindowPos( hMC, NULL, hb_parni(4), hb_parni(5), rc.right, rc.bottom, SWP_NOZORDER );
    SetWindowPos( hMC, NULL, hb_parni(4), hb_parni(5), hb_parni(6),hb_parni(7), SWP_NOZORDER );
 
     HB_RETHANDLE(  hMC );
 }
 
-HB_FUNC ( SETMONTHCALENDARDATE ) // adaptation of function SetDatePicker of file Control.c
+HB_FUNC ( HWG_SETMONTHCALENDARDATE ) // adaptation of function SetDatePicker of file Control.c
 {
    PHB_ITEM pDate = hb_param( 2, HB_IT_DATE );
 
@@ -206,7 +205,7 @@ HB_FUNC ( SETMONTHCALENDARDATE ) // adaptation of function SetDatePicker of file
    }
 }
 
-HB_FUNC ( GETMONTHCALENDARDATE ) // adaptation of function GetDatePicker of file Control.c
+HB_FUNC ( HWG_GETMONTHCALENDARDATE ) // adaptation of function GetDatePicker of file Control.c
 {
    SYSTEMTIME st;
    char szDate[9];

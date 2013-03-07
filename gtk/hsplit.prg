@@ -54,7 +54,7 @@ Return Self
 
 METHOD Activate() CLASS HSplitter
    IF !Empty( ::oParent:handle )
-      ::handle := CreateSplitter( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createsplitter( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
@@ -64,7 +64,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
 
    IF msg == WM_MOUSEMOVE
       IF ::hCursor == Nil
-         ::hCursor := LoadCursor( GDK_HAND1 )
+         ::hCursor := hwg_Loadcursor( GDK_HAND1 )
       ENDIF
       Hwg_SetCursor( ::hCursor,::handle )
       IF ::lCaptured
@@ -91,7 +91,7 @@ METHOD Init CLASS HSplitter
 
    IF !::lInit
       ::Super:Init()
-      SetWindowObject( ::handle,Self )
+      hwg_Setwindowobject( ::handle,Self )
    ENDIF
 
 Return Nil
@@ -102,9 +102,9 @@ Local hDC
    IF ::bPaint != Nil
       Eval( ::bPaint,Self )
    ELSE
-      hDC := GetDC( ::handle )
-      DrawButton( hDC, 0,0,::nWidth-1,::nHeight-1,6 )
-      releaseDC( ::handle, hDC )
+      hDC := hwg_Getdc( ::handle )
+      hwg_Drawbutton( hDC, 0,0,::nWidth-1,::nHeight-1,6 )
+      hwg_Releasedc( ::handle, hDC )
    ENDIF
 
 Return Nil
@@ -115,7 +115,7 @@ METHOD Move( x1,y1,width,height )  CLASS HSplitter
 Return Nil
 
 METHOD Drag( lParam ) CLASS HSplitter
-Local xPos := Loword( lParam ), yPos := Hiword( lParam )
+Local xPos := hwg_Loword( lParam ), yPos := hwg_Hiword( lParam )
 
    IF ::lVertical
       IF xPos > 32000

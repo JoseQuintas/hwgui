@@ -5,7 +5,7 @@
  * 
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
  *
  * Copyright 2004 Sandro <sandrorrfreire@yahoo.com.br>
  * 
@@ -30,7 +30,7 @@ Private oFont := Nil
          MENUITEM "&Minimize   " ACTION oMain:Minimize()
          MENUITEM "&Restore    " ACTION oMain:Restore()
          MENUITEM "&Center     " ACTION oMain:Center()
-         MENUITEM "&Sair" ACTION EndWindow()
+         MENUITEM "&Sair" ACTION hwg_EndWindow()
 
       ENDMENU
     ENDMENU

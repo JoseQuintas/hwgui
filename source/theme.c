@@ -1329,7 +1329,7 @@ static int image_top( int cy, const RECT * Rect, DWORD style )
    return ( y );
 }
 
-HB_FUNC( INITTHEMELIB )
+HB_FUNC( HWG_INITTHEMELIB )
 {
    m_hThemeDll = LoadLibrary( TEXT( "UxTheme.dll" ) );
 
@@ -1337,7 +1337,7 @@ HB_FUNC( INITTHEMELIB )
       ThemeLibLoaded = TRUE;
 }
 
-HB_FUNC( ENDTHEMELIB )
+HB_FUNC( HWG_ENDTHEMELIB )
 {
    if( m_hThemeDll != NULL )
       FreeLibrary( m_hThemeDll );
@@ -1346,7 +1346,7 @@ HB_FUNC( ENDTHEMELIB )
    ThemeLibLoaded = FALSE;
 }
 
-HB_FUNC( ONNOTIFYCUSTOMDRAW )
+HB_FUNC( HWG_ONNOTIFYCUSTOMDRAW )
 {
    // HWND hWnd = ( HWND ) hb_parnl( 1 ) ;
    LPARAM lParam = ( LPARAM ) hb_parnl( 1 );
@@ -1767,7 +1767,7 @@ static void DrawTheIcon( HWND hButtonWnd, HDC dc, BOOL bHasTitle,
 
 }                               // End of DrawTheIcon
 
-HB_FUNC( HB_OPENTHEMEDATA )
+HB_FUNC( HWG_OPENTHEMEDATA )
 {
    HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );
    LPCSTR pText = hb_parc( 2 );
@@ -1783,12 +1783,12 @@ HB_FUNC( HB_OPENTHEMEDATA )
    hb_retptr( ( void * ) p );
 }
 
-HB_FUNC( ISTHEMEDLOAD )
+HB_FUNC( HWG_ISTHEMEDLOAD )
 {
    hb_retl( ThemeLibLoaded );
 }
 
-HB_FUNC( HB_DRAWTHEMEBACKGROUND )
+HB_FUNC( HWG_DRAWTHEMEBACKGROUND )
 {
    HTHEME hTheme = ( HTHEME ) hb_parptr( 1 );
    HDC hdc = ( HDC ) HB_PARHANDLE( 2 );
@@ -1806,7 +1806,7 @@ HB_FUNC( HB_DRAWTHEMEBACKGROUND )
                iPartId, iStateId, &pRect, NULL ) );
 }
 
-HB_FUNC( DRAWTHEICON )
+HB_FUNC( HWG_DRAWTHEICON )
 {
    HWND hButtonWnd = ( HWND ) HB_PARHANDLE( 1 );
    HDC dc = ( HDC ) HB_PARHANDLE( 2 );
@@ -1843,7 +1843,7 @@ HB_FUNC( DRAWTHEICON )
 //PrepareImageRect( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, ::hIcon, ::hbitmap, ::iStyle )
 */
 
-HB_FUNC( PREPAREIMAGERECT )
+HB_FUNC( HWG_PREPAREIMAGERECT )
 {
 
    HWND hButtonWnd = (HWND) HB_PARHANDLE( 1 ) ;
@@ -1889,7 +1889,7 @@ HB_FUNC( PREPAREIMAGERECT )
 
 }
 
-HB_FUNC( HB_DRAWTHEMETEXT )
+HB_FUNC( HWG_DRAWTHEMETEXT )
 {
    HTHEME hTheme = ( HTHEME ) hb_parptr( 1 );
    HDC hdc = ( HDC ) HB_PARHANDLE( 2 );
@@ -1911,13 +1911,13 @@ HB_FUNC( HB_DRAWTHEMETEXT )
    hb_xfree( output );
 }
 
-HB_FUNC( HB_CLOSETHEMEDATA )
+HB_FUNC( HWG_CLOSETHEMEDATA )
 {
    HTHEME hTheme = ( HTHEME ) hb_parptr( 1 );
    hb_CloseThemeData( hTheme );
 }
 
-HB_FUNC( TRACKMOUSEVENT )
+HB_FUNC( HWG_TRACKMOUSEVENT )
 {
    HWND m_hWnd = ( HWND ) HB_PARHANDLE( 1 );
    DWORD dwFlags = ( DWORD ) hb_parnl( 2 );
@@ -1931,7 +1931,7 @@ HB_FUNC( TRACKMOUSEVENT )
    _TrackMouseEvent( &csTME );
 }
 
-HB_FUNC( BUTTONEXONSETSTYLE )
+HB_FUNC( HWG_BUTTONEXONSETSTYLE )
 {
    WPARAM wParam = ( WPARAM ) hb_parnl( 1 );
    LPARAM lParam = ( LPARAM ) hb_parnl( 2 );
@@ -1960,14 +1960,14 @@ HB_FUNC( BUTTONEXONSETSTYLE )
 }                               // End of OnSetStyle
 
 
-HB_FUNC( GETTHESTYLE )
+HB_FUNC( HWG_GETTHESTYLE )
 {
    LONG nBS = hb_parnl( 1 );
    LONG nBS1 = hb_parnl( 2 );
    hb_retnl( nBS & nBS1 );
 }
 
-HB_FUNC( MODSTYLE )
+HB_FUNC( HWG_MODSTYLE )
 {
    LONG nbs = hb_parnl( 1 );
    LONG b = hb_parnl( 2 );
@@ -1975,7 +1975,7 @@ HB_FUNC( MODSTYLE )
    hb_retnl( ( nbs & ~b ) | c );
 }
 
-HB_FUNC( HB_DRAWTHEMEPARENTBACKGROUND )
+HB_FUNC( HWG_DRAWTHEMEPARENTBACKGROUND )
 {
    HWND hTheme = ( HWND ) HB_PARHANDLE( 1 );
    HDC hdc = ( HDC ) HB_PARHANDLE( 2 );
@@ -1987,7 +1987,7 @@ HB_FUNC( HB_DRAWTHEMEPARENTBACKGROUND )
    hb_retnl( hb_DrawThemeParentBackground( hTheme, hdc, &pRect ) );
 }
 
-HB_FUNC( ISTHEMEACTIVE )
+HB_FUNC( HWG_ISTHEMEACTIVE )
 {
    hb_retl( hb_IsThemeActive(  ) );
 }
@@ -2045,3 +2045,4 @@ HB_FUNC( HWG_GETWINDOWTHEME )
    else
       HB_RETHANDLE ( 0 );
 }
+

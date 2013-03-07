@@ -24,7 +24,7 @@ LOCAL oWinMain
     @ 10 ,10 BROWSE oBrw ARRAY SIZE 180, 325 ;
 	   AUTOEDIT  NO VSCROLL
 
-    CreateArList( oBrw, { { "1","a" }, { "2","b" }, { "3","c" }, { "4","d" } } )
+    hwg_CREATEARLIST( oBrw, { { "1","a" }, { "2","b" }, { "3","c" }, { "4","d" } } )
 
     oBrw:aColumns[1]:length := 5
     oBrw:aColumns[2]:length := 5
@@ -37,14 +37,14 @@ LOCAL oWinMain
 
     oBrw:aColumns[2]:lEditable = .T.
 
-    oBrw:tColor := GetSysColor( COLOR_BTNTEXT )
+    oBrw:tColor := hwg_Getsyscolor( COLOR_BTNTEXT )
     oBrw:tColorSel := 8404992
-    oBrw:bColor := oBrw:bColorSel := GetSysColor( COLOR_BTNFACE )
+    oBrw:bColor := oBrw:bColorSel := hwg_Getsyscolor( COLOR_BTNFACE )
     oBrw:freeze := 1
     oBrw:lDispHead := .T.
     oBrw:lSep3d := .T.
     oBrw:lAdjRight := .F.
-    oBrw:sepColor  := GetSysColor( COLOR_BTNSHADOW )
+    oBrw:sepColor  := hwg_Getsyscolor( COLOR_BTNSHADOW )
     oBrw:colpos  := 2
 
     readexit(.T.) 

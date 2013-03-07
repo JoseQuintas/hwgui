@@ -24,10 +24,10 @@ Private nColor, oBmp2
       MENU TITLE "&File"
          MENUITEM "&Test RTF" ACTION TestRTF()
          SEPARATOR
-         MENUITEM "&Exit" ACTION EndWindow()
+         MENUITEM "&Exit" ACTION hwg_EndWindow()
       ENDMENU
       MENU TITLE "&Help"
-         MENUITEM "&About" ACTION ShellAbout("Info","RTF Demo")
+         MENUITEM "&About" ACTION hwg_Shellabout("Info","RTF Demo")
       ENDMENU
    ENDMENU
 
@@ -43,7 +43,7 @@ LOCAL j, aMarca, lFormato := .F.
    IF Empty( cOutFile )
       Return Nil
    ENDIF
-   IF File( cOutFile ) .AND. !MsgYesNo( "Recreate it ?",cOutFile+" already exists!" )
+   IF File( cOutFile ) .AND. !hwg_Msgyesno( "Recreate it ?",cOutFile+" already exists!" )
       Return Nil
    ENDIF
 
@@ -179,7 +179,7 @@ LOCAL j, aMarca, lFormato := .F.
 
    CLOSE RTF oRtf
 
-   MsgInfo( cOutFile + " is created !" )
+   hwg_Msginfo( cOutFile + " is created !" )
 
 RETURN NIL
 

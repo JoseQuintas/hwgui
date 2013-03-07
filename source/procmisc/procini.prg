@@ -5,7 +5,7 @@
  * Ini files reading
  *
  * Author: Alexander S.Kresin <alex@belacy.belgorod.su>
- *         www - http://www.geocities.com/alkresin/
+ *         www - http://kresin.belgorod.su
 */
 
 /*

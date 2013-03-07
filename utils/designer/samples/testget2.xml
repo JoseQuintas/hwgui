@@ -16,7 +16,7 @@ e2:= Date()
 e3:= 10320.54
 e4:= "11222333444455"
 e5 := 10320.54
-SetDlgKey(,4,0x72, Codeblock( 'MsgInfo("Shift-F3")' ) )
+hwg_SetDlgKey(,4,0x72, Codeblock( 'MsgInfo("Shift-F3")' ) )
 ]]>
   </method>
   <method name="onDlgInit">
@@ -24,7 +24,7 @@ SetDlgKey(,4,0x72, Codeblock( 'MsgInfo("Shift-F3")' ) )
   </method>
   <method name="onDlgExit">
     <![CDATA[oTimer:End()
-MsgInfo( e1 + chr(10) + chr(13) + Dtoc(e2) + chr(10) + chr(13) ;
+hwg_Msginfo( e1 + chr(10) + chr(13) + Dtoc(e2) + chr(10) + chr(13) ;
     + Str(e3) + chr(10) + chr(13) + e4 + chr(10) + chr(13) ;
     + Str(e5) + chr(10) + chr(13), "Results:" )
 Return .T.]]>
@@ -75,7 +75,7 @@ Return .T.]]>
       <property name="Caption">[Ok]</property>
     </style>
     <method name="onClick">
-      <![CDATA[EndDialog()]]>
+      <![CDATA[hwg_EndDialog()]]>
     </method>
   </part>
   <part class="button">
@@ -84,7 +84,7 @@ Return .T.]]>
       <property name="Caption">[Cancel]</property>
     </style>
     <method name="onClick">
-      <![CDATA[EndDialog()
+      <![CDATA[hwg_EndDialog()
 ]]>
     </method>
   </part>

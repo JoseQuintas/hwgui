@@ -5,7 +5,7 @@
  * C level messages functions
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "hwingui.h"
@@ -27,52 +27,52 @@ static int s_msgbox( UINT uType )
    return iResult;
 }
 
-HB_FUNC( MSGINFO )
+HB_FUNC( HWG_MSGINFO )
 {
    s_msgbox( MB_OK | MB_ICONINFORMATION );
 }
 
-HB_FUNC( MSGSTOP )
+HB_FUNC( HWG_MSGSTOP )
 {
    s_msgbox( MB_OK | MB_ICONSTOP );
 }
 
-HB_FUNC( MSGOKCANCEL )
+HB_FUNC( HWG_MSGOKCANCEL )
 {
    hb_retni( s_msgbox( MB_OKCANCEL | MB_ICONQUESTION ) );
 }
 
-HB_FUNC( MSGYESNO )
+HB_FUNC( HWG_MSGYESNO )
 {
    hb_retl( s_msgbox( MB_YESNO | MB_ICONQUESTION ) == IDYES );
 }
 
-HB_FUNC( MSGNOYES )
+HB_FUNC( HWG_MSGNOYES )
 {
    hb_retl( s_msgbox( MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 ) == IDYES );
 }
 
-HB_FUNC( MSGYESNOCANCEL )
+HB_FUNC( HWG_MSGYESNOCANCEL )
 {
    hb_retni( s_msgbox( MB_YESNOCANCEL | MB_ICONQUESTION ) );
 }
 
-HB_FUNC( MSGEXCLAMATION )
+HB_FUNC( HWG_MSGEXCLAMATION )
 {
    s_msgbox( MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
 }
 
-HB_FUNC( MSGRETRYCANCEL )
+HB_FUNC( HWG_MSGRETRYCANCEL )
 {
    hb_retni( s_msgbox( MB_RETRYCANCEL | MB_ICONQUESTION | MB_ICONQUESTION ) );
 }
 
-HB_FUNC( MSGBEEP )
+HB_FUNC( HWG_MSGBEEP )
 {
    MessageBeep( ( hb_pcount() == 0 ) ? ( LONG ) 0xFFFFFFFF : hb_parnl( 1 ) );
 }
 
-HB_FUNC( MSGTEMP )
+HB_FUNC( HWG_MSGTEMP )
 {
    char cres[ 60 ];
    LPCTSTR msg;
@@ -96,3 +96,4 @@ HB_FUNC( MSGTEMP )
                             MB_OKCANCEL | MB_ICONQUESTION ) );
    }
 }
+

@@ -27,7 +27,7 @@ Function Main
      AT 200,0 SIZE 400,150
 
    MENU OF oMainWindow
-      MENUITEM "&Exit" ACTION EndWindow()
+      MENUITEM "&Exit" ACTION hwg_EndWindow()
       MENUITEM "&Read Ini" ACTION ReadIni()
    ENDMENU
 
@@ -36,7 +36,7 @@ Return Nil
 
 Function ReadIni()
 Local cIniFile:="HwGui.ini"
-MsgInfo( Hwg_GetIni( 'Config', 'WallParer' ,, cIniFile ) )
-MsgInfo( Hwg_GetIni( 'Config', 'DirHwGUima',, cIniFile ) )
-MsgInfo( Hwg_GetIni( 'Print',  'Spoll'     ,, cIniFile ) )
+hwg_Msginfo( Hwg_GetIni( 'Config', 'WallParer' ,, cIniFile ) )
+hwg_Msginfo( Hwg_GetIni( 'Config', 'DirHwGUima',, cIniFile ) )
+hwg_Msginfo( Hwg_GetIni( 'Print',  'Spoll'     ,, cIniFile ) )
 Return Nil

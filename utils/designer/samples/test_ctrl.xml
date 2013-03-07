@@ -44,7 +44,7 @@ ns := 1]]>
 while ct<1000
   oP1:Step()
   ++ct
- Sleep(ns)
+ hwg_Sleep(ns)
 EndDo]]>
     </method>
   </part>

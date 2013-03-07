@@ -25,11 +25,11 @@ CLASS TMci
    METHOD New( cDevice, cFileName )  CONSTRUCTOR
    METHOD lOpen()
    METHOD Play( nFrom, nTo, hWnd ) INLINE ; 
-         ::nError := nMciPlay( ::nId, nFrom, nTo, hWnd )
+         ::nError := hwg_Nmciplay( ::nId, nFrom, nTo, hWnd )
    METHOD cGetError()
    METHOD SetWindow( oWnd ) INLINE ;
          ::oWnd := oWnd, ;
-         ::nError := nMciWindow( ::nId, oWnd:handle )
+         ::nError := hwg_Nmciwindow( ::nId, oWnd:handle )
    METHOD SendStr( cMciStr )
 
 ENDCLASS
@@ -52,7 +52,7 @@ METHOD SendStr( cMciStr ) CLASS TMci
 
    LOCAL cBuffer := ::cBuffer
 
-   MciSendString( cMciStr, @cBuffer, ::oWnd:hWnd )
+   hwg_Mcisendstring( cMciStr, @cBuffer, ::oWnd:hWnd )
    ::cBuffer = cBuffer
 
    RETURN NIL
@@ -60,13 +60,13 @@ METHOD SendStr( cMciStr ) CLASS TMci
 //----------------------------------------------------------------------------//
 METHOD lOpen() CLASS TMci
    LOCAL nId
-   ::nError := nMciOpen( ::cType, ::cFileName, @nId )
+   ::nError := hwg_Nmciopen( ::cType, ::cFileName, @nId )
    ::nId := nId
 
    RETURN ::nError == 0
 
 METHOD cGetError() CLASS Tmci
    LOCAL cError
-   mciGetErrorString( ::nError, @cError )
+   hwg_Mcigeterrorstring( ::nError, @cError )
 
    RETURN    cError

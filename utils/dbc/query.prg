@@ -44,27 +44,27 @@ Local aModDlg
 Return Nil
 
 Static Function InitQuery()
-Local hDlg := getmodalhandle()
-   SetDlgItemText( hDlg, IDC_EDITQUERY, cQuery )
-   SetFocus( GetDlgItem( hDlg, IDC_EDITQUERY ) )
+Local hDlg := hwg_GetModalHandle()
+   hwg_Setdlgitemtext( hDlg, IDC_EDITQUERY, cQuery )
+   hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDITQUERY ) )
 Return Nil
 
 Static Function EndQuery( lOk )
-Local hDlg := getmodalhandle()
+Local hDlg := hwg_GetModalHandle()
 Local oldArea := Alias(), tmpdriv, tmprdonly
 Local id1
 Local aChildWnd, hChild
 Static lConnected := .F.
 
    IF lOk
-      cQuery := GetEditText( hDlg, IDC_EDITQUERY )
+      cQuery := hwg_Getedittext( hDlg, IDC_EDITQUERY )
       IF Empty( cQuery )
-         SetFocus( GetDlgItem( hDlg, IDC_EDITQUERY ) )
+         hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDITQUERY ) )
          Return Nil
       ENDIF
 
       IF numdriv == 2
-         MsgStop( "You shoud switch to ADS_CDX or ADS_ADT to run query" )
+         hwg_Msgstop( "You shoud switch to ADS_CDX or ADS_ADT to run query" )
          Return .F.
       ENDIF
 #ifdef RDD_ADS
@@ -83,15 +83,15 @@ Static lConnected := .F.
          SELECT 0
       ENDIF
       IF !AdsCreateSqlStatement( ,Iif( numdriv==1,2,3 ) )
-         MsgStop( "Cannot create SQL statement" )
+         hwg_Msgstop( "Cannot create SQL statement" )
          IF !Empty( oldArea )
             Select( oldArea )
          ENDIF
          Return .F.
       ENDIF
-      SetDlgItemText( hDlg, IDC_TEXTMSG, "Wait ..." )
+      hwg_Setdlgitemtext( hDlg, IDC_TEXTMSG, "Wait ..." )
       IF !AdsExecuteSqlDirect( cQuery )
-         MsgStop( "SQL execution failed" )
+         hwg_Msgstop( "SQL execution failed" )
          IF !Empty( oldArea )
             Select( oldArea )
          ENDIF
@@ -115,19 +115,19 @@ Static lConnected := .F.
             IF !Empty( oldArea )
                Select( oldArea )
             ENDIF
-            MsgStop( "Statement doesn't returns cursor" )
+            hwg_Msgstop( "Statement doesn't returns cursor" )
             Return .F.
          ENDIF
       ENDIF
 #endif
    ENDIF
 
-   EndDialog( hDlg )
+   hwg_EndDialog( hDlg )
 Return .T.
 
 Function QuerySave
 Local fname := hwg_SaveFile( "*.que","Query files( *.que )", "*.que", mypath )
-   cQuery := GetDlgItemText( getmodalhandle(), IDC_EDITQUERY, 400 )
+   cQuery := hwg_Getdlgitemtext( hwg_GetModalHandle(), IDC_EDITQUERY, 400 )
    IF !Empty( fname )
       MemoWrit( fname,cQuery )
    ENDIF

@@ -5,7 +5,7 @@
  * HGrid class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
  * Copyright 2004 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
  *
 */
@@ -19,7 +19,7 @@ Function Main()
 
         INIT WINDOW oMain MAIN TITLE "Grid Sample" ;
              AT 0,0 ;
-             SIZE GetDesktopWidth(), GetDesktopHeight() - 28
+             SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
                 MENU OF oMain
                         MENUITEM "&Exit"      ACTION oMain:Close()
@@ -43,8 +43,8 @@ Function Test()
                      ON POSCHANGE {|oCtrl, nRow| OnPoschange(oCtrl, nRow) } ;
                      ON CLICK {|oCtrl| OnClick(oCtrl) } ;
                      ON DISPINFO {|oCtrl, nRow, nCol| OnDispInfo( oCtrl, nRow, nCol ) } ;
-                     COLOR VColor('D3D3D3');
-                     BACKCOLOR VColor('BEBEBE') 
+                     COLOR hwg_VColor('D3D3D3');
+                     BACKCOLOR hwg_VColor('BEBEBE') 
 
              ADD COLUMN TO GRID oGrid HEADER "Column 1" WIDTH 150
              ADD COLUMN TO GRID oGrid HEADER "Column 2" WIDTH 150
@@ -57,15 +57,15 @@ Function Test()
 Return Nil
 
 Function OnKey( o, k )
-//    msginfo(str(k))
+//    hwg_Msginfo(str(k))
 return nil    
 
 Function OnPosChange( o, row )
-//    msginfo( str(row) )
+//    hwg_Msginfo( str(row) )
 return nil    
 
 Function OnClick( o )
-//    msginfo( 'click' )
+//    hwg_Msginfo( 'click' )
 return nil    
 
 Function OnDispInfo( o, x, y )

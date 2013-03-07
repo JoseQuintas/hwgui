@@ -55,7 +55,7 @@ INIT WINDOW oWinMain MAIN  ;
 
    MENU OF oWinMain
       MENU TITLE "&Arquivo"
-          MENUITEM "&Sair"              ACTION EndWindow()
+          MENUITEM "&Sair"              ACTION hwg_EndWindow()
       ENDMENU
       MENU TITLE "&Browse"
          MENUITEM "&Database"           ACTION BrwDbs(.f.)
@@ -109,7 +109,7 @@ LOCAL nLast := 0
   END
 
    @ 260,410 BUTTON oBtn1 CAPTION "&OK " SIZE 80,26 ;
-         ON CLICK {|| EndDialog()}
+         ON CLICK {|| hwg_EndDialog()}
 
    @ 0, 445 PANEL oTbar1 SIZE 600, 26
 
@@ -227,7 +227,7 @@ ELSEIF cType == "Array"
 END
 oBrw:Refresh()
 
-SETFOCUS(oBrw:handle)
+hwg_Setfocus(oBrw:handle)
 
 RETURN(.T.)
 
@@ -317,7 +317,7 @@ LOCAL nI
   END
 
    @ 260,410 BUTTON oBtn1 CAPTION "&OK " SIZE 80,26 ;
-         ON CLICK {|| EndDialog()}
+         ON CLICK {|| hwg_EndDialog()}
 
    @ 0, 445 PANEL oTbar1 SIZE 600, 26
 
@@ -350,7 +350,7 @@ LOCAL nI
         ON CLICK {|| BrowseMove(oBrwArr, "End", oEdGoto, "Array" ) } ;
         TOOLTIP "Last Record"
 
-       CreateArList( oBrwArr, aArrayTst )
+       hwg_CREATEARLIST( oBrwArr, aArrayTst )
 
         oBrwArr:bcolorSel := x_BLUE
 
@@ -458,6 +458,6 @@ FUNCTION MsgD( cV1, cV2, cV3, cV4, cV5, cV6, cV7, cV8, cV9, cV10 )
        ENDIF
        cVar += "/"
    NEXT
-   MsgInfo(LEFT(cVar, LEN(cVar) - 1))
+   hwg_Msginfo(LEFT(cVar, LEN(cVar) - 1))
 RETURN NIL
 

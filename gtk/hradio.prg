@@ -95,7 +95,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
    ::tcolor  := tcolor
    /*
    IF tColor != Nil .AND. bColor == Nil
-      bColor := GetSysColor( COLOR_3DFACE )
+      bColor := hwg_Getsyscolor( COLOR_3DFACE )
    ENDIF
    ::bcolor  := bcolor
    IF bColor != Nil
@@ -122,10 +122,10 @@ METHOD Activate CLASS HRadioButton
 Local groupHandle := ::oGroup:handle
 
    IF !Empty(::oParent:handle )
-      ::handle := CreateButton( ::oParent:handle, @groupHandle, ;
+      ::handle := hwg_Createbutton( ::oParent:handle, @groupHandle, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::oGroup:handle := groupHandle
-      SetWindowObject( ::handle,Self )
+      hwg_Setwindowobject( ::handle,Self )
       ::Init()
    ENDIF
 Return Nil

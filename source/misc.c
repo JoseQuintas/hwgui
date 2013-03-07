@@ -5,7 +5,7 @@
  * Miscellaneous functions
  *
  * Copyright 2003 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #define OEMRESOURCE
@@ -41,17 +41,17 @@ HB_FUNC( HWG_SETDLGRESULT )
    SetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ), DWLP_MSGRESULT, hb_parni( 2 ) );
 }
 
-HB_FUNC( SETCAPTURE )
+HB_FUNC( HWG_SETCAPTURE )
 {
    hb_retnl( ( LONG ) SetCapture( ( HWND ) HB_PARHANDLE( 1 ) ) );
 }
 
-HB_FUNC( RELEASECAPTURE )
+HB_FUNC( HWG_RELEASECAPTURE )
 {
    hb_retl( ReleaseCapture() );
 }
 
-HB_FUNC( COPYSTRINGTOCLIPBOARD )
+HB_FUNC( HWG_COPYSTRINGTOCLIPBOARD )
 {
    if( OpenClipboard( GetActiveWindow() ) )
    {
@@ -85,7 +85,7 @@ HB_FUNC( COPYSTRINGTOCLIPBOARD )
    }
 }
 
-HB_FUNC( GETCLIPBOARDTEXT )
+HB_FUNC( HWG_GETCLIPBOARDTEXT )
 {
    HWND hWnd = ( HWND ) hb_parnl( 1 );
    LPTSTR lpText = NULL;
@@ -119,18 +119,18 @@ HB_FUNC( GETCLIPBOARDTEXT )
       hb_xfree( lpText );
 }
 
-HB_FUNC( GETSTOCKOBJECT )
+HB_FUNC( HWG_GETSTOCKOBJECT )
 {
    HB_RETHANDLE( GetStockObject( hb_parni( 1 ) ) );
 }
 
-HB_FUNC( LOWORD )
+HB_FUNC( HWG_LOWORD )
 {
    hb_retni( ( int ) ( ( HB_ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
                               ( ULONG ) hb_parnl( 1 ) ) & 0xFFFF ) );
 }
 
-HB_FUNC( HIWORD )
+HB_FUNC( HWG_HIWORD )
 {
    hb_retni( ( int ) ( ( ( HB_ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :
                               ( ULONG ) hb_parnl( 1 ) ) >> 16 ) & 0xFFFF ) );
@@ -162,7 +162,7 @@ HB_FUNC( HWG_SETBIT )
       hb_retnl( hb_parnl( 1 ) & ~( 1 << ( hb_parni( 2 ) - 1 ) ) );
 }
 
-HB_FUNC( CHECKBIT )
+HB_FUNC( HWG_CHECKBIT )
 {
    hb_retl (    ( HB_ISPOINTER( 1 ) ? PtrToUlong( hb_parptr( 1 ) ) :( ULONG ) hb_parnl( 1 ) ) & ( 1 << (  hb_parni( 2 ) - 1 )   )    );
 }
@@ -177,7 +177,7 @@ HB_FUNC( HWG_COS )
    hb_retnd( cos( hb_parnd( 1 ) ) );
 }
 
-HB_FUNC( CLIENTTOSCREEN )
+HB_FUNC( HWG_CLIENTTOSCREEN )
 {
    POINT pt;
    PHB_ITEM aPoint = hb_itemArrayNew( 2 );
@@ -199,7 +199,7 @@ HB_FUNC( CLIENTTOSCREEN )
    hb_itemRelease( aPoint );
 }
 
-HB_FUNC( SCREENTOCLIENT )
+HB_FUNC( HWG_SCREENTOCLIENT )
 {
    POINT pt;
    RECT R;
@@ -265,7 +265,7 @@ HB_FUNC( HWG_SETCURSORPOS )
    SetCursorPos( x, y );
 }   
 
-HB_FUNC( GETCURRENTDIR )
+HB_FUNC( HWG_GETCURRENTDIR )
 {
    TCHAR buffer[ HB_PATH_MAX ];
 
@@ -273,12 +273,12 @@ HB_FUNC( GETCURRENTDIR )
    HB_RETSTR( buffer );
 }
 
-HB_FUNC( WINEXEC )
+HB_FUNC( HWG_WINEXEC )
 {
    hb_retni( WinExec( hb_parc( 1 ), ( UINT ) hb_parni( 2 ) ) );
 }
 
-HB_FUNC( GETKEYBOARDSTATE )
+HB_FUNC( HWG_GETKEYBOARDSTATE )
 {
    BYTE lpbKeyState[256];
    GetKeyboardState( lpbKeyState );
@@ -286,12 +286,12 @@ HB_FUNC( GETKEYBOARDSTATE )
    hb_retclen( ( char * ) lpbKeyState, 255 );
 }
 
-HB_FUNC( GETKEYSTATE )
+HB_FUNC( HWG_GETKEYSTATE )
 {
    hb_retni( GetKeyState( hb_parni( 1 ) ) );
 }
 
-HB_FUNC( GETKEYNAMETEXT )
+HB_FUNC( HWG_GETKEYNAMETEXT )
 {
    TCHAR cText[ MAX_PATH ];
    int iRet = GetKeyNameText( hb_parnl( 1 ), cText, MAX_PATH );
@@ -300,7 +300,7 @@ HB_FUNC( GETKEYNAMETEXT )
       HB_RETSTRLEN( cText, iRet );
 }
 
-HB_FUNC( ACTIVATEKEYBOARDLAYOUT )
+HB_FUNC( HWG_ACTIVATEKEYBOARDLAYOUT )
 {
    void * hLayout;
    LPCTSTR lpLayout = HB_PARSTR( 1, &hLayout, NULL );
@@ -329,7 +329,7 @@ HB_FUNC( ACTIVATEKEYBOARDLAYOUT )
  * Conversion from points to pixels, provided by Vic McClung.
  */
 
-HB_FUNC( PTS2PIX )
+HB_FUNC( HWG_PTS2PIX )
 {
 
    HDC hDC;
@@ -350,7 +350,7 @@ HB_FUNC( PTS2PIX )
 
 /* Functions Contributed  By Luiz Rafael Culik Guimaraes( culikr@uol.com.br) */
 
-HB_FUNC( GETWINDOWSDIR )
+HB_FUNC( HWG_GETWINDOWSDIR )
 {
    TCHAR szBuffer[ MAX_PATH + 1 ] = { 0 };
 
@@ -358,7 +358,7 @@ HB_FUNC( GETWINDOWSDIR )
    HB_RETSTR( szBuffer );
 }
 
-HB_FUNC( GETSYSTEMDIR )
+HB_FUNC( HWG_GETSYSTEMDIR )
 {
    TCHAR szBuffer[ MAX_PATH + 1 ] = { 0 };
 
@@ -366,7 +366,7 @@ HB_FUNC( GETSYSTEMDIR )
    HB_RETSTR( szBuffer );
 }
 
-HB_FUNC( GETTEMPDIR )
+HB_FUNC( HWG_GETTEMPDIR )
 {
    TCHAR szBuffer[ MAX_PATH + 1 ] = { 0 };
 
@@ -374,7 +374,7 @@ HB_FUNC( GETTEMPDIR )
    HB_RETSTR( szBuffer );
 }
 
-HB_FUNC( POSTQUITMESSAGE )
+HB_FUNC( HWG_POSTQUITMESSAGE )
 {
    PostQuitMessage( hb_parni( 1 ) );
 }
@@ -383,7 +383,7 @@ HB_FUNC( POSTQUITMESSAGE )
 Contributed by Rodrigo Moreno rodrigo_moreno@yahoo.com base upon code minigui
 */
 
-HB_FUNC( SHELLABOUT )
+HB_FUNC( HWG_SHELLABOUT )
 {
    void * hStr1, * hStr2;
 
@@ -396,22 +396,22 @@ HB_FUNC( SHELLABOUT )
 }
 
 
-HB_FUNC( GETDESKTOPWIDTH )
+HB_FUNC( HWG_GETDESKTOPWIDTH )
 {
    hb_retni( GetSystemMetrics( SM_CXSCREEN ) );
 }
 
-HB_FUNC( GETDESKTOPHEIGHT )
+HB_FUNC( HWG_GETDESKTOPHEIGHT )
 {
    hb_retni( GetSystemMetrics( SM_CYSCREEN ) );
 }
 
-HB_FUNC( GETHELPDATA )
+HB_FUNC( HWG_GETHELPDATA )
 {
    hb_retnl( ( LONG ) ( ( ( HELPINFO FAR * ) hb_parnl( 1 ) )->hItemHandle ) );
 }
 
-HB_FUNC( WINHELP )
+HB_FUNC( HWG_WINHELP )
 {
    DWORD context;
    UINT style;
@@ -443,19 +443,19 @@ HB_FUNC( WINHELP )
    hb_strfree( hStr );
 }
 
-HB_FUNC( GETNEXTDLGTABITEM )
+HB_FUNC( HWG_GETNEXTDLGTABITEM )
 {
    HB_RETHANDLE( GetNextDlgTabItem( ( HWND ) HB_PARHANDLE( 1 ),
                ( HWND ) HB_PARHANDLE( 2 ), hb_parl( 3 ) ) );
 }
 
-HB_FUNC( SLEEP )
+HB_FUNC( HWG_SLEEP )
 {
    if( hb_parinfo( 1 ) )
       Sleep( hb_parnl( 1 ) );
 }
 
-HB_FUNC( KEYB_EVENT )
+HB_FUNC( HWG_KEYB_EVENT )
 {
    DWORD dwFlags = ( !( HB_ISNIL( 2 ) ) &&
          hb_parl( 2 ) ) ? KEYEVENTF_EXTENDEDKEY : 0;
@@ -483,7 +483,7 @@ HB_FUNC( KEYB_EVENT )
 
 /* SetScrollInfo( hWnd, nType, nRedraw, nPos, nPage, nmax )
 */
-HB_FUNC( SETSCROLLINFO )
+HB_FUNC( HWG_SETSCROLLINFO )
 {
    SCROLLINFO si;
    UINT fMask = ( hb_pcount() < 4 ) ? SIF_DISABLENOSCROLL : 0;
@@ -516,7 +516,7 @@ HB_FUNC( SETSCROLLINFO )
           );
 }
 
-HB_FUNC( GETSCROLLRANGE )
+HB_FUNC( HWG_GETSCROLLRANGE )
 {
    int MinPos, MaxPos;
 
@@ -533,28 +533,28 @@ HB_FUNC( GETSCROLLRANGE )
    hb_retni( MaxPos - MinPos  );
 }
 
-HB_FUNC( SETSCROLLRANGE )
+HB_FUNC( HWG_SETSCROLLRANGE )
 {
    hb_retl( SetScrollRange( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ),
                hb_parni( 3 ), hb_parni( 4 ), hb_parl( 5 ) ) );
 }
 
 
-HB_FUNC( GETSCROLLPOS )
+HB_FUNC( HWG_GETSCROLLPOS )
 {
    hb_retni( GetScrollPos( ( HWND ) HB_PARHANDLE( 1 ),  // handle of window with scroll bar
                hb_parni( 2 )    // scroll bar flags
           ) );
 }
 
-HB_FUNC( SETSCROLLPOS )
+HB_FUNC( HWG_SETSCROLLPOS )
 {
    SetScrollPos( ( HWND ) HB_PARHANDLE( 1 ),    // handle of window with scroll bar
          hb_parni( 2 ),         // scroll bar flags
          hb_parni( 3 ), TRUE );
 }
 
-HB_FUNC( SHOWSCROLLBAR )
+HB_FUNC( HWG_SHOWSCROLLBAR )
 {
    ShowScrollBar( ( HWND ) HB_PARHANDLE( 1 ),   // handle of window with scroll bar
          hb_parni( 2 ),         // scroll bar flags
@@ -562,24 +562,24 @@ HB_FUNC( SHOWSCROLLBAR )
           );
 }
 
-HB_FUNC( SCROLLWINDOW )
+HB_FUNC( HWG_SCROLLWINDOW )
 {
    ScrollWindow( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ), hb_parni( 3 ),
          NULL, NULL );
 }
 
 
-HB_FUNC( ISCAPSLOCKACTIVE )
+HB_FUNC( HWG_ISCAPSLOCKACTIVE )
 {
    hb_retl( GetKeyState( VK_CAPITAL ) );
 }
 
-HB_FUNC( ISNUMLOCKACTIVE )
+HB_FUNC( HWG_ISNUMLOCKACTIVE )
 {
    hb_retl( GetKeyState( VK_NUMLOCK ) );
 }
 
-HB_FUNC( ISSCROLLLOCKACTIVE )
+HB_FUNC( HWG_ISSCROLLLOCKACTIVE )
 {
    hb_retl( GetKeyState( VK_SCROLL ) );
 }
@@ -652,17 +652,17 @@ HB_FUNC( HWG_GETUSERNAME )
 }
 
 
-HB_FUNC( ISDOWNPRESSESED )
+HB_FUNC( HWG_ISDOWNPRESSESED )
 {
    hb_retl( HIWORD( GetKeyState( VK_DOWN ) ) > 0 );
 }
 
-HB_FUNC( ISPGDOWNPRESSESED )
+HB_FUNC( HWG_ISPGDOWNPRESSESED )
 {
    hb_retl( HIWORD( GetKeyState( VK_NEXT ) ) > 0 );
 }
 
-HB_FUNC( EDIT1UPDATECTRL )
+HB_FUNC( HWG_EDIT1UPDATECTRL )
 {
    HWND hChild = ( HWND ) HB_PARHANDLE( 1 );
    HWND hParent = ( HWND ) HB_PARHANDLE( 2 );
@@ -676,7 +676,7 @@ HB_FUNC( EDIT1UPDATECTRL )
    UpdateWindow( hParent );
 }
 
-HB_FUNC( BUTTON1GETSCREENCLIENT )
+HB_FUNC( HWG_BUTTON1GETSCREENCLIENT )
 {
    HWND hChild = ( HWND ) HB_PARHANDLE( 1 );
    HWND hParent = ( HWND ) HB_PARHANDLE( 2 );
@@ -688,7 +688,7 @@ HB_FUNC( BUTTON1GETSCREENCLIENT )
    hb_itemRelease( hb_itemReturn( Rect2Array( rect ) ) );
 }
 
-HB_FUNC( HEDITEX_CTLCOLOR )
+HB_FUNC( HWG_HEDITEX_CTLCOLOR )
 {
    HDC hdc = ( HDC ) HB_PARHANDLE( 1 );
    //UINT h = hb_parni( 2 ) ;
@@ -733,33 +733,33 @@ HB_FUNC( HEDITEX_CTLCOLOR )
    HB_RETHANDLE( hBrush );
 }
 
-HB_FUNC( GETKEYBOARDCOUNT )
+HB_FUNC( HWG_GETKEYBOARDCOUNT )
 {
    LPARAM lParam = ( LPARAM ) hb_parnl( 1 );
 
    hb_retni( ( WORD ) lParam );
 }
 
-HB_FUNC( GETNEXTDLGGROUPITEM )
+HB_FUNC( HWG_GETNEXTDLGGROUPITEM )
 {
    HB_RETHANDLE( GetNextDlgGroupItem( ( HWND ) HB_PARHANDLE( 1 ),
                  ( HWND ) HB_PARHANDLE( 2 ), hb_parl( 3 ) ) );
 }
 
-HB_FUNC( PTRTOULONG )
+HB_FUNC( HWG_PTRTOULONG )
 {
    hb_retnl( HB_ISPOINTER( 1 ) ? ( LONG ) PtrToUlong( hb_parptr( 1 ) ) :
                                  hb_parnl( 1 ) );
 }
 
-HB_FUNC( OUTPUTDEBUGSTRING )
+HB_FUNC( HWG_OUTPUTDEBUGSTRING )
 {
    void * hStr;
    OutputDebugString( HB_PARSTRDEF( 1, &hStr, NULL ) );
    hb_strfree( hStr );
 }
 
-HB_FUNC( GETSYSTEMMETRICS )
+HB_FUNC( HWG_GETSYSTEMMETRICS )
 {
    hb_retni( GetSystemMetrics( hb_parni( 1 ) ) );
 }
@@ -790,3 +790,4 @@ HB_FUNC( HWG_ISWIN7 )
    GetVersionEx(&ovi);
    hb_retl (ovi.dwMajorVersion >= 6 && ovi.dwMinorVersion==1) ;
 }
+

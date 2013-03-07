@@ -75,12 +75,12 @@ HB_FUNC( HWG_CREATEDIALOG )
    HB_RETHANDLE( hDlg );
 }
 
-HB_FUNC( HWG_ENDDIALOG )
+HB_FUNC( HWG__ENDDIALOG )
 {
    EndDialog( ( HWND ) HB_PARHANDLE( 1 ), TRUE );
 }
 
-HB_FUNC( GETDLGITEM )
+HB_FUNC( HWG_GETDLGITEM )
 {
    HWND hWnd = GetDlgItem( ( HWND ) HB_PARHANDLE( 1 ),  // handle of dialog box
          hb_parni( 2 )          // identifier of control
@@ -88,12 +88,12 @@ HB_FUNC( GETDLGITEM )
    HB_RETHANDLE( hWnd );
 }
 
-HB_FUNC( GETDLGCTRLID )
+HB_FUNC( HWG_GETDLGCTRLID )
 {
    hb_retni( GetDlgCtrlID( ( HWND ) HB_PARHANDLE( 1 ) ) );
 }
 
-HB_FUNC( SETDLGITEMTEXT )
+HB_FUNC( HWG_SETDLGITEMTEXT )
 {
    void * hText;
 
@@ -104,7 +104,7 @@ HB_FUNC( SETDLGITEMTEXT )
    hb_strfree( hText );
 }
 
-HB_FUNC( SETDLGITEMINT )
+HB_FUNC( HWG_SETDLGITEMINT )
 {
    SetDlgItemInt( ( HWND ) HB_PARHANDLE( 1 ),   // handle of dialog box
                   hb_parni( 2 ),                // identifier of control
@@ -112,7 +112,7 @@ HB_FUNC( SETDLGITEMINT )
                   ( hb_pcount(  ) < 4 || HB_ISNIL( 4 ) || !hb_parl( 4 ) ) ? 0 : 1 );
 }
 
-HB_FUNC( GETDLGITEMTEXT )
+HB_FUNC( HWG_GETDLGITEMTEXT )
 {
    USHORT uiLen = hb_parni( 3 );
    LPTSTR lpText = ( LPTSTR ) hb_xgrab( ( uiLen + 1 ) * sizeof( TCHAR ) );
@@ -126,7 +126,7 @@ HB_FUNC( GETDLGITEMTEXT )
    hb_xfree( lpText );
 }
 
-HB_FUNC( GETEDITTEXT )
+HB_FUNC( HWG_GETEDITTEXT )
 {
    HWND hDlg = ( HWND ) HB_PARHANDLE( 1 );
    int id = hb_parni( 2 );
@@ -143,7 +143,7 @@ HB_FUNC( GETEDITTEXT )
    hb_xfree( lpText );
 }
 
-HB_FUNC( CHECKDLGBUTTON )
+HB_FUNC( HWG_CHECKDLGBUTTON )
 {
    CheckDlgButton( ( HWND ) HB_PARHANDLE( 1 ),  // handle of dialog box
          hb_parni( 2 ),         // identifier of control
@@ -151,7 +151,7 @@ HB_FUNC( CHECKDLGBUTTON )
           );
 }
 
-HB_FUNC( CHECKRADIOBUTTON )
+HB_FUNC( HWG_CHECKRADIOBUTTON )
 {
    CheckRadioButton( ( HWND ) HB_PARHANDLE( 1 ),// handle of dialog box
                      hb_parni( 2 ),             // identifier of first radio button in group
@@ -160,7 +160,7 @@ HB_FUNC( CHECKRADIOBUTTON )
                    );
 }
 
-HB_FUNC( ISDLGBUTTONCHECKED )
+HB_FUNC( HWG_ISDLGBUTTONCHECKED )
 {
    UINT nRes = IsDlgButtonChecked( ( HWND ) HB_PARHANDLE( 1 ), // handle of dialog box
                                    hb_parni( 2 )               // button identifier
@@ -168,7 +168,7 @@ HB_FUNC( ISDLGBUTTONCHECKED )
    hb_retl( nRes == BST_CHECKED );
 }
 
-HB_FUNC( COMBOADDSTRING )
+HB_FUNC( HWG_COMBOADDSTRING )
 {
    void * hText;
 
@@ -177,7 +177,7 @@ HB_FUNC( COMBOADDSTRING )
    hb_strfree( hText );
 }
 
-HB_FUNC( COMBOINSERTSTRING )
+HB_FUNC( HWG_COMBOINSERTSTRING )
 {
    void * hText;
 
@@ -187,13 +187,13 @@ HB_FUNC( COMBOINSERTSTRING )
 }
 
 
-HB_FUNC( COMBOSETSTRING )
+HB_FUNC( HWG_COMBOSETSTRING )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), CB_SETCURSEL,
                 ( WPARAM ) hb_parni( 2 ) - 1, 0 );
 }
 
-HB_FUNC( GETNOTIFYCODE )
+HB_FUNC( HWG_GETNOTIFYCODE )
 {
    hb_retnl( ( LONG ) ( ( ( NMHDR * ) HB_PARHANDLE( 1 ) )->code ) );
 }
@@ -347,14 +347,14 @@ static void s_ReleaseDlgTemplate( LPDLGTEMPLATE pdlgtemplate )
    GlobalFree( ( HGLOBAL ) pdlgtemplate );
 }
 
-HB_FUNC( CREATEDLGTEMPLATE )
+HB_FUNC( HWG_CREATEDLGTEMPLATE )
 {
    hb_retnl( ( LONG ) s_CreateDlgTemplate( hb_param( 1, HB_IT_OBJECT ),
              hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
              ( ULONG ) hb_parnd( 6 ) ) );
 }
 
-HB_FUNC( RELEASEDLGTEMPLATE )
+HB_FUNC( HWG_RELEASEDLGTEMPLATE )
 {
    s_ReleaseDlgTemplate( ( LPDLGTEMPLATE ) hb_parnl( 1 ) );
 }
@@ -362,7 +362,7 @@ HB_FUNC( RELEASEDLGTEMPLATE )
 /*
  *  _CreatePropertySheetPage( aDlg, x1, y1, nWidth, nHeight, nStyle ) --> hPage
  */
-HB_FUNC( _CREATEPROPERTYSHEETPAGE )
+HB_FUNC( HWG__CREATEPROPERTYSHEETPAGE )
 {
    PROPSHEETPAGE psp;
    PHB_ITEM pObj = hb_param( 1, HB_IT_OBJECT ), temp;
@@ -427,7 +427,7 @@ HB_FUNC( _CREATEPROPERTYSHEETPAGE )
  * _PropertySheet( hWndParent, aPageHandles, nPageHandles, cTitle, 
  *                [ lModeless ], [ lNoApply ], [ lWizard ] ) --> hPropertySheet
  */
-HB_FUNC( _PROPERTYSHEET )
+HB_FUNC( HWG__PROPERTYSHEET )
 {
    PHB_ITEM pArr = hb_param( 2, HB_IT_ARRAY );
    int nPages = hb_parni( 3 ), i;
@@ -514,7 +514,7 @@ HB_FUNC( HWG_DLGBOXINDIRECT )
    s_ReleaseDlgTemplate( pdlgtemplate );
 }
 
-HB_FUNC( DIALOGBASEUNITS )
+HB_FUNC( HWG_DIALOGBASEUNITS )
 {
    hb_retnl( GetDialogBaseUnits(  ) );
 }
@@ -741,12 +741,13 @@ static LRESULT CALLBACK s_PSPProcRelease( HWND hwnd, UINT uMsg, LPPROPSHEETPAGE 
    return 0;
 }
 
-HB_FUNC( GETNOTIFYCODEFROM )
+HB_FUNC( HWG_GETNOTIFYCODEFROM )
 {
    HB_RETHANDLE( ( ( ( NMHDR * ) HB_PARHANDLE( 1 ) )->hwndFrom ) );
 }
 
-HB_FUNC( GETNOTIFYIDFROM )
+HB_FUNC( HWG_GETNOTIFYIDFROM )
 {
    hb_retnl( ( LONG ) ( ( ( NMHDR * ) HB_PARHANDLE( 1 ) )->idFrom ) );
 }
+

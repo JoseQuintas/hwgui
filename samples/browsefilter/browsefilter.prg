@@ -13,7 +13,7 @@ FUNCTION Main()
   INIT WINDOW frmTesteBrowse MAIN TITLE "Teste HBrowse com filtro" ;
     COLOR COLOR_3DLIGHT+1 ;
   	AT 0,0 ;
-  	SIZE GetDesktopWidth(), GetDesktopHeight() - 28 ;
+  	SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28 ;
   	FONT HFont():Add("MS Sans Serif", 0, -12)
   	
   USE MESAS NEW SHARED

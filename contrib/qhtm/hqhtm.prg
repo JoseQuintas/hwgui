@@ -95,7 +95,7 @@ METHOD Init CLASS HQhtm
    IF !::lInit
       ::Super:Init()
       IF !Empty( ::cText )
-         SetWindowText( ::handle,::cText )
+         hwg_Setwindowtext( ::handle,::cText )
       ELSEIF !Empty( ::filename )
          QHTM_LoadFile( ::handle,::filename )
       ELSEIF !Empty( ::resname )
@@ -116,7 +116,7 @@ Local cLink := QHTM_GetNotify( lParam )
          IF File( cLink )
             QHTM_LoadFile( ::handle,cLink )
          ELSE
-            MsgStop( cLink,"File not found" )
+            hwg_Msgstop( cLink,"File not found" )
          ENDIF
       ENDIF
    ENDIF
@@ -124,7 +124,7 @@ Local cLink := QHTM_GetNotify( lParam )
 Return 0
 
 Function QhtmFormProc( hCtrl,cMethod,cAction,cName,aFields )
-Local oCtrl := FindSelf( hCtrl )
+Local oCtrl := hwg_FindSelf( hCtrl )
 
    IF oCtrl != Nil
       IF oCtrl:bSubmit != Nil
@@ -169,9 +169,9 @@ METHOD Init() CLASS HQhtmButton
 
    ::Super:Init()
    IF ::oFont == Nil .AND. ::oParent:oFont == Nil
-      SetCtrlFont( ::oParent:handle, ::id, GetStockObject(SYSTEM_FONT) )
+      hwg_Setctrlfont( ::oParent:handle, ::id, hwg_Getstockobject(SYSTEM_FONT) )
    ENDIF
-   SetWindowText( ::handle,::cHtml )
+   hwg_Setwindowtext( ::handle,::cHtml )
    QHTM_SetHtmlButton( ::handle )
 
 Return Nil

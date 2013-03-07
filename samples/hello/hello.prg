@@ -15,11 +15,11 @@ Private aGetsTab := { "","","","","","","","","","","","","","" }
      COLOR COLOR_3DLIGHT+1                       ;
      AT 200,0 SIZE 420,300                       ;
      FONT oFont                                  ;
-     ON EXIT {||MsgYesNo("Really want to quit ?")}
+     ON EXIT {||hwg_Msgyesno("Really want to quit ?")}
 
    @ 20,10 RICHEDIT oEdit TEXT "Hello, world !"  SIZE 200,30
 
-   re_SetCharFormat( oEdit:handle, { { 1,6,,,,.T. }, { 8,13,255,,,,,.T. } } )
+   hwg_Re_setcharformat( oEdit:handle, { { 1,6,,,,.T. }, { 8,13,255,,,,,.T. } } )
 
    @ 270,10 COMBOBOX aCombo  SIZE 100, 150 TOOLTIP "Combobox"
 
@@ -29,7 +29,7 @@ Private aGetsTab := { "","","","","","","","","","","","","","" }
          STYLE TCS_FIXEDWIDTH+TCS_FORCELABELLEFT  ;
          ON CHANGE {|n,o|ChangeTab(o,oGetTab,n)}
 
-   SetTabSize( oTab:handle,20,20 )
+   hwg_Settabsize( oTab:handle,20,20 )
    @ 10,30 RICHEDIT oGetTab TEXT "" OF oTab SIZE 120,60 ;
           STYLE ES_MULTILINE
 
@@ -44,37 +44,37 @@ Private aGetsTab := { "","","","","","","","","","","","","","" }
    oTree:AddNode( "Forth" )
 
 
-   @ 100,180 BUTTON "Close"  SIZE 150,30  ON CLICK {||EndWindow()}
+   @ 100,180 BUTTON "Close"  SIZE 150,30  ON CLICK {||hwg_EndWindow()}
 
    MENU OF oMainWindow
       MENU TITLE "File"
          MENUITEM "Ps" ACTION Ps1(oMainWindow)
          SEPARATOR
-         MENUITEM "YYYYY" ACTION MsgGet( "Example","Input anything")
+         MENUITEM "YYYYY" ACTION hwg_MsgGet( "Example","Input anything")
       ENDMENU
       MENU TITLE "Help"
-         MENUITEM "About" ACTION MsgInfo("About")
-         MENUITEM "Info" ACTION MsgTemp("")
+         MENUITEM "About" ACTION hwg_Msginfo("About")
+         MENUITEM "Info" ACTION hwg_Msgtemp("")
       ENDMENU
       MENU TITLE "Third"
-         MENUITEM "Wchoice" ACTION Wchoice( acho,"Select",,,,,15132390,,VColor( "008000" ) )
-         MENUITEM "SelectFolder" ACTION MsgInfo( SelectFolder("!!!") )
+         MENUITEM "Wchoice" ACTION hwg_WChoice( acho,"Select",,,,,15132390,,hwg_VColor( "008000" ) )
+         MENUITEM "SelectFolder" ACTION hwg_Msginfo( hwg_Selectfolder("!!!") )
          MENU TITLE "Submenu"
-            MENUITEM "ShellExecute" ACTION (ShellExecute("d:\temp\podst.doc"),MsgInfo(str(oMainWindow:handle)))
-            MENUITEM "S2" ACTION MsgStop("S2")
+            MENUITEM "ShellExecute" ACTION (hwg_Shellexecute("d:\temp\podst.doc"),hwg_Msginfo(str(oMainWindow:handle)))
+            MENUITEM "S2" ACTION hwg_Msgstop("S2")
          ENDMENU
       ENDMENU
    ENDMENU
 
 /*   
    aMenu := { ;
-     { { { {||MsgInfo("Xxxx")},"XXXXX",130 }, ;
+     { { { {||hwg_Msginfo("Xxxx")},"XXXXX",130 }, ;
          { ,,131 }, ;
-         { {||MsgInfo("Yyyy")},"YYYYY",132 } ;
+         { {||hwg_Msginfo("Yyyy")},"YYYYY",132 } ;
        },"File",120 }, ;
-     { {||MsgInfo("Help")},"Help",121 } ;
+     { {||hwg_Msginfo("Help")},"Help",121 } ;
    }
-   BuildMenu( aMenu,hWnd,aMainWindow )
+   hwg_BuildMenu( aMenu,hWnd,aMainWindow )
 */
 
    ACTIVATE WINDOW oMainWindow
@@ -83,8 +83,8 @@ Return nil
 
 Static Function ChangeTab( oWnd,oGet,n )
 Static lastTab := 1
-   aGetsTab[lastTab] := GetEditText( oGet:oParent:handle,oGet:id )
-   SetDlgItemText( oGet:oParent:handle,oGet:id,aGetsTab[n] )
+   aGetsTab[lastTab] := hwg_Getedittext( oGet:oParent:handle,oGet:id )
+   hwg_Setdlgitemtext( oGet:oParent:handle,oGet:id,aGetsTab[n] )
    lastTab := n
 Return Nil
 
@@ -98,6 +98,6 @@ Local oDlg1, oDlg2
    INIT DIALOG oDlg2 TITLE "PAGE_2" STYLE WS_CHILD + WS_VISIBLE + WS_BORDER
    @ 20,35 EDITBOX "" SIZE 160, 26 STYLE WS_BORDER
 
-   PropertySheet( GetActiveWindow(), { oDlg1, oDlg2 }, "Sheet Example",210,10,300,300 )
+   hwg_PropertySheet( hwg_Getactivewindow(), { oDlg1, oDlg2 }, "Sheet Example",210,10,300,300 )
 
 Return

@@ -14,7 +14,7 @@ TODO: 1) In line edit
       2) Imagelist
          The way is using the ListView_SetImageList
       3) Checkbox
-         The way is using the NM_CUSTOMDRAW and DrawFrameControl()
+         The way is using the NM_CUSTOMDRAW and hwg_Drawframecontrol()
 
 */
 
@@ -66,9 +66,9 @@ CLASS VAR winclass INIT "SYSLISTVIEW32"
    METHOD Init()
    METHOD AddColumn( cHeader, nWidth, nJusHead, nBit ) INLINE AAdd( ::aColumns, { cHeader, nWidth, nJusHead, nBit } )
    METHOD Refresh()
-   METHOD RefreshLine()                          INLINE Listview_update( ::handle, Listview_getfirstitem( ::handle ) )
-   METHOD SetItemCount( nItem )                    INLINE Listview_setitemcount( ::handle, nItem )
-   METHOD Row()                                  INLINE Listview_getfirstitem( ::handle )
+   METHOD RefreshLine()                          INLINE hwg_Listview_update( ::handle, hwg_Listview_getfirstitem( ::handle ) )
+   METHOD SetItemCount( nItem )                    INLINE hwg_Listview_setitemcount( ::handle, nItem )
+   METHOD Row()                                  INLINE hwg_Listview_getfirstitem( ::handle )
    METHOD Notify( lParam )
 ENDCLASS
 
@@ -107,7 +107,7 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
 
 METHOD Activate() CLASS HGrid
    IF ! Empty( ::oParent:handle )
-      ::handle := ListView_Create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll )
+      ::handle := hwg_Listview_create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll )
 
       ::Init()
    ENDIF
@@ -122,52 +122,52 @@ METHOD Init() CLASS HGrid
    IF ! ::lInit
       ::Super:Init()
       FOR n := 1 TO Len( ::aBitmaps )
-         AAdd( aButton, LoadImage( , ::aBitmaps[ n ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
+         AAdd( aButton, hwg_Loadimage( , ::aBitmaps[ n ] , IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE + LR_CREATEDIBSECTION ) )
       NEXT
 
       IF Len( aButton ) > 0
 
-         aBmpSize := GetBitmapSize( aButton[ 1 ] )
+         aBmpSize := hwg_Getbitmapsize( aButton[ 1 ] )
 
          IF aBmpSize[ 3 ] == 4
-            ::hIm := CreateImageList( { } , aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR4 + ILC_MASK )
+            ::hIm := hwg_Createimagelist( { } , aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR4 + ILC_MASK )
          ELSEIF aBmpSize[ 3 ] == 8
-            ::hIm := CreateImageList( { } , aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR8 + ILC_MASK )
+            ::hIm := hwg_Createimagelist( { } , aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLOR8 + ILC_MASK )
          ELSEIF aBmpSize[ 3 ] == 24
-            ::hIm := CreateImageList( { } , aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLORDDB + ILC_MASK )
+            ::hIm := hwg_Createimagelist( { } , aBmpSize[ 1 ], aBmpSize[ 2 ], 1, ILC_COLORDDB + ILC_MASK )
          ENDIF
 
          FOR nPos := 1 TO Len( aButton )
 
-            aBmpSize := GetBitmapSize( aButton[ nPos ] )
+            aBmpSize := hwg_Getbitmapsize( aButton[ nPos ] )
 
             IF aBmpSize[ 3 ] == 24
-//             Imagelist_AddMasked( ::hIm,aButton[nPos],RGB(236,223,216) )
-               Imagelist_Add( ::hIm, aButton[ nPos ] )
+//             hwg_Imagelist_addmasked( ::hIm,aButton[nPos],hwg_Rgb(236,223,216) )
+               hwg_Imagelist_add( ::hIm, aButton[ nPos ] )
             ELSE
-               Imagelist_Add( ::hIm, aButton[ nPos ] )
+               hwg_Imagelist_add( ::hIm, aButton[ nPos ] )
             ENDIF
 
          NEXT
 
-         Listview_setimagelist( ::handle, ::him )
+         hwg_Listview_setimagelist( ::handle, ::him )
 
       ENDIF
 
-      Listview_Init( ::handle, ::ItemCount, ::lNoLines )
+      hwg_Listview_init( ::handle, ::ItemCount, ::lNoLines )
 
       FOR i := 1 TO Len( ::aColumns )
-         Listview_addcolumn( ::handle, i, ::aColumns[ i, 2 ], ::aColumns[ i, 1 ], ::aColumns[ i, 3 ], IIF( ::aColumns[ i, 4 ] != nil, ::aColumns[ i, 4 ], 0 ) )
+         hwg_Listview_addcolumn( ::handle, i, ::aColumns[ i, 2 ], ::aColumns[ i, 1 ], ::aColumns[ i, 3 ], IIF( ::aColumns[ i, 4 ] != nil, ::aColumns[ i, 4 ], 0 ) )
       NEXT
 
       IF ::color != nil
-         ListView_SetTextColor( ::handle, ::color )
+         hwg_Listview_settextcolor( ::handle, ::color )
 
       ENDIF
 
       IF ::bkcolor != nil
-         Listview_setbkcolor( ::handle, ::bkcolor )
-         Listview_settextbkcolor( ::handle, ::bkcolor )
+         hwg_Listview_setbkcolor( ::handle, ::bkcolor )
+         hwg_Listview_settextbkcolor( ::handle, ::bkcolor )
       ENDIF
    ENDIF
    RETURN Nil
@@ -175,51 +175,53 @@ METHOD Init() CLASS HGrid
 METHOD Refresh() CLASS HGrid
    LOCAL iFirst, iLast
 
-   iFirst := ListView_GetTopIndex( ::handle )
+   iFirst := hwg_Listview_gettopindex( ::handle )
 
-   iLast := iFirst + ListView_GetCountPerPage( ::handle )
+   iLast := iFirst + hwg_Listview_getcountperpage( ::handle )
 
-   ListView_RedrawItems( ::handle , iFirst, iLast )
+   hwg_Listview_redrawitems( ::handle , iFirst, iLast )
    RETURN Nil
 
 METHOD Notify( lParam ) CLASS HGrid
-   RETURN ListViewNotify( Self, lParam )
+   RETURN hwg_ListViewNotify( Self, lParam )
 
-FUNCTION ListViewNotify( oCtrl, lParam )
+FUNCTION hwg_ListViewNotify( oCtrl, lParam )
+
    LOCAL aCord
 
-   IF GetNotifyCode ( lParam ) = LVN_KEYDOWN .and. oCtrl:bKeydown != nil
-      Eval( oCtrl:bKeyDown, oCtrl, Listview_GetGridKey( lParam ) )
+   IF hwg_Getnotifycode ( lParam ) = LVN_KEYDOWN .and. oCtrl:bKeydown != nil
+      Eval( oCtrl:bKeyDown, oCtrl, hwg_Listview_getgridkey( lParam ) )
 
-   ELSEIF GetNotifyCode ( lParam ) == NM_DBLCLK .and. oCtrl:bEnter != nil
-      aCord := Listview_Hittest( oCtrl:handle, GetCursorRow() - GetWindowRow ( oCtrl:handle ), ;
-                                 GetCursorCol() - GetWindowCol ( oCtrl:handle ) )
+   ELSEIF hwg_Getnotifycode ( lParam ) == NM_DBLCLK .and. oCtrl:bEnter != nil
+      aCord := hwg_Listview_hittest( oCtrl:handle, hwg_GetCursorPos()[2] - hwg_GetWindowRect(oCtrl:handle)[2], ;
+                                 hwg_GetCursorPos()[1] - hwg_GetWindowRect(oCtrl:handle)[1] )
       oCtrl:nRow := aCord[ 1 ]
       oCtrl:nCol := aCord[ 2 ]
 
       Eval( oCtrl:bEnter, oCtrl )
 
-   ELSEIF GetNotifyCode ( lParam ) == NM_SETFOCUS .and. oCtrl:bGfocus != nil
+   ELSEIF hwg_Getnotifycode ( lParam ) == NM_SETFOCUS .and. oCtrl:bGfocus != nil
       Eval( oCtrl:bGfocus, oCtrl )
 
-   ELSEIF GetNotifyCode ( lParam ) == NM_KILLFOCUS .and. oCtrl:bLfocus != nil
+   ELSEIF hwg_Getnotifycode ( lParam ) == NM_KILLFOCUS .and. oCtrl:bLfocus != nil
       Eval( oCtrl:bLfocus, oCtrl )
 
-   ELSEIF GetNotifyCode ( lParam ) = LVN_ITEMCHANGED
+   ELSEIF hwg_Getnotifycode ( lParam ) = LVN_ITEMCHANGED
       oCtrl:nRow := oCtrl:Row()
 
       IF oCtrl:bPosChg != nil
-         Eval( oCtrl:bPosChg, oCtrl, Listview_getfirstitem( oCtrl:handle ) )
+         Eval( oCtrl:bPosChg, oCtrl, hwg_Listview_getfirstitem( oCtrl:handle ) )
       ENDIF
 
-   ELSEIF GetNotifyCode ( lParam ) = LVN_GETDISPINFO .and. oCtrl:bDispInfo != nil
-      aCord := Listview_getdispinfo( lParam )
+   ELSEIF hwg_Getnotifycode ( lParam ) = LVN_GETDISPINFO .and. oCtrl:bDispInfo != nil
+      aCord := hwg_Listview_getdispinfo( lParam )
 
       oCtrl:nRow := aCord[ 1 ]
       oCtrl:nCol := aCord[ 2 ]
 
-      Listview_setdispinfo( lParam, Eval( oCtrl:bDispInfo, oCtrl, oCtrl:nRow, oCtrl:nCol ) )
+      hwg_Listview_setdispinfo( lParam, Eval( oCtrl:bDispInfo, oCtrl, oCtrl:nRow, oCtrl:nCol ) )
 
    ENDIF
    RETURN 0
+
 

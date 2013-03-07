@@ -38,7 +38,7 @@ CLASS HTrackBar INHERIT HControl
    METHOD Init()
    METHOD SetValue( nValue )
    METHOD GetValue()
-   METHOD GetNumTics()  INLINE SendMessage( ::handle, TBM_GETNUMTICS, 0, 0 )
+   METHOD GetNumTics()  INLINE hwg_Sendmessage( ::handle, TBM_GETNUMTICS, 0, 0 )
 
 ENDCLASS
 
@@ -72,7 +72,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
 METHOD Activate() CLASS HTrackBar
    IF ! Empty( ::oParent:handle )
-      ::handle := InitTrackBar ( ::oParent:handle, ::id, ::style, ;
+      ::handle := hwg_InitTrackbar ( ::oParent:handle, ::id, ::style, ;
             ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
             ::nLow, ::nHigh )
       ::Init()
@@ -94,8 +94,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTrackBar
       ENDIF
    ELSEIF msg == WM_ERASEBKGND
       IF ::brush != NIL
-         aCoors := GetClientRect( ::handle )
-         FillRect( wParam, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ] + 1, ;
+         aCoors := hwg_Getclientrect( ::handle )
+         hwg_Fillrect( wParam, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ] + 1, ;
                aCoors[ 4 ] + 1, ::brush:handle )
          RETURN 1
       ENDIF
@@ -103,12 +103,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTrackBar
       ::END()
    ELSEIF msg == WM_CHAR
       IF wParam = VK_TAB
-         GetSkip( ::oParent, ::handle, , ;
-               iif( IsCtrlShift(.f., .t.), -1, 1) )
+         hwg_GetSkip( ::oParent, ::handle, , ;
+               iif( hwg_IsCtrlShift(.f., .t.), -1, 1) )
          RETURN 0
       ENDIF
     ELSEIF msg = WM_KEYDOWN
-       IF ProcKeyList( Self, wParam )
+       IF hwg_ProcKeyList( Self, wParam )
           RETURN 0
       ENDIF
    ELSEIF ::bOther != NIL
@@ -120,11 +120,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTrackBar
 METHOD Init() CLASS HTrackBar
    IF ! ::lInit
       ::Super:Init()
-      TrackBarSetRange( ::handle, ::nLow, ::nHigh )
-      SendMessage( ::handle, TBM_SETPOS, 1, ::value )
+      hwg_TrackbarSetrange( ::handle, ::nLow, ::nHigh )
+      hwg_Sendmessage( ::handle, TBM_SETPOS, 1, ::value )
       IF ::bPaint != NIL
          ::nHolder := 1
-         SetWindowObject( ::handle, Self )
+         hwg_Setwindowobject( ::handle, Self )
          Hwg_InitTrackProc( ::handle )
       ENDIF
    ENDIF
@@ -133,14 +133,14 @@ METHOD Init() CLASS HTrackBar
 
 METHOD SetValue( nValue ) CLASS HTrackBar
    IF ValType( nValue ) == "N"
-      SendMessage( ::handle, TBM_SETPOS, 1, nValue )
+      hwg_Sendmessage( ::handle, TBM_SETPOS, 1, nValue )
       ::value := nValue
    ENDIF
 
    RETURN NIL
 
 METHOD GetValue() CLASS HTrackBar
-   ::value := SendMessage( ::handle, TBM_GETPOS, 0, 0 )
+   ::value := hwg_Sendmessage( ::handle, TBM_GETPOS, 0, 0 )
 
    RETURN ( ::value )
 
@@ -149,7 +149,7 @@ METHOD GetValue() CLASS HTrackBar
 #include "hwingui.h"
 #include <commctrl.h>
 
-HB_FUNC ( INITTRACKBAR )
+HB_FUNC ( HWG_INITTRACKBAR )
 {
     HWND hTrackBar;
 
@@ -168,7 +168,7 @@ HB_FUNC ( INITTRACKBAR )
     HB_RETHANDLE(  hTrackBar );
 }
 
-HB_FUNC ( TRACKBARSETRANGE )
+HB_FUNC ( HWG_TRACKBARSETRANGE )
 {
     SendMessage( (HWND) HB_PARHANDLE( 1 ), TBM_SETRANGE, TRUE,
                   MAKELONG( hb_parni( 2 ), hb_parni( 3 ) ) );

@@ -112,9 +112,9 @@ Return Self
 METHOD Activate CLASS HEdit
 
    IF !Empty(::oParent:handle )
-      ::handle := CreateEdit( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createedit( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-      SetWindowObject( ::handle,Self )
+      hwg_Setwindowobject( ::handle,Self )
       ::Init()
    ENDIF
 Return Nil
@@ -122,7 +122,7 @@ Return Nil
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 Local oParent := ::oParent, nPos, nctrl, cKeyb
 
-   // WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   // hwg_WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::bAnyEvent != Nil .AND. Eval( ::bAnyEvent,Self,msg,wParam,lParam ) != 0
       Return 0
    ENDIF
@@ -172,7 +172,7 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
          ::nLastKey := wParam
          IF wParam == GDK_BackSpace
             ::lFirst := .F.
-            SetGetUpdated( Self )
+            hwg_SetGetUpdated( Self )
             IF ::lPicComplex
                DeleteChar( Self,.T. )
                Return 1
@@ -180,12 +180,12 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
             Return 0
          ELSEIF wParam == GDK_Down     // KeyDown
             IF lParam == 0
-               GetSkip( oParent,::handle,1 )
+               hwg_GetSkip( oParent,::handle,1 )
                Return 1
             ENDIF
          ELSEIF wParam == GDK_Up     // KeyUp
             IF lParam == 0
-               GetSkip( oParent,::handle,-1 )
+               hwg_GetSkip( oParent,::handle,-1 )
                Return 1
             ENDIF
          ELSEIF wParam == GDK_Right     // KeyRight
@@ -213,20 +213,20 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
             ENDIF
          ELSEIF wParam == GDK_Delete     // Del
             ::lFirst := .F.
-            SetGetUpdated( Self )
+            hwg_SetGetUpdated( Self )
             IF ::lPicComplex
                DeleteChar( Self,.F. )
                Return 1
             ENDIF
          ELSEIF wParam == GDK_Tab     // Tab
-            IF CheckBit( lParam,1 )
-               GetSkip( oParent,::handle,-1 )
+            IF hwg_Checkbit( lParam,1 )
+               hwg_GetSkip( oParent,::handle,-1 )
             ELSE
-               GetSkip( oParent,::handle,1 )
+               hwg_GetSkip( oParent,::handle,1 )
             ENDIF
             Return 1
          ELSEIF wParam == GDK_Return  // Enter
-            IF !GetSkip( oParent,::handle,1,.T. ) .AND. ::bSetGet != Nil
+            IF !hwg_GetSkip( oParent,::handle,1,.T. ) .AND. ::bSetGet != Nil
 	       __Valid( Self )
 	    ENDIF
             Return 1
@@ -240,10 +240,10 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
    ELSE
 
       IF msg == WM_MOUSEWHEEL
-         nPos := HiWord( wParam )
+         nPos := hwg_Hiword( wParam )
          nPos := Iif( nPos > 32768, nPos - 65535, nPos )
-         // SendMessage( ::handle,EM_SCROLL, Iif(nPos>0,SB_LINEUP,SB_LINEDOWN), 0 )
-         // SendMessage( ::handle,EM_SCROLL, Iif(nPos>0,SB_LINEUP,SB_LINEDOWN), 0 )
+         // hwg_Sendmessage( ::handle,EM_SCROLL, Iif(nPos>0,SB_LINEUP,SB_LINEDOWN), 0 )
+         // hwg_Sendmessage( ::handle,EM_SCROLL, Iif(nPos>0,SB_LINEUP,SB_LINEDOWN), 0 )
       ENDIF
 
    ENDIF
@@ -398,7 +398,7 @@ Local i, masklen, newpos, vari
       masklen := Len( oEdit:cPicMask ) 
       DO WHILE nPos <= masklen
          IF IsEditable( oEdit,++nPos )
-            // writelog( "KeyRight-2 "+str(nPos) )
+            // hwg_WriteLog( "KeyRight-2 "+str(nPos) )
             hwg_edit_Setpos( oEdit:handle, nPos-1 )
             EXIT
          ENDIF
@@ -409,7 +409,7 @@ Local i, masklen, newpos, vari
 
    IF !Empty( oEdit:cPicMask )
         newPos:=Len(oEdit:cPicMask)
-        //writelog( "KeyRight-2 "+str(nPos) + " " +str(newPos) )
+        //hwg_WriteLog( "KeyRight-2 "+str(nPos) + " " +str(newPos) )
         IF nPos>newPos .and. !empty(TRIM(oEdit:Title))
             hwg_edit_Setpos( oEdit:handle, newPos )
         ENDIF
@@ -529,7 +529,7 @@ Local nPos, nGetLen, nLen, vari, i, x, newPos
 
    x := hwg_edit_Getpos( oEdit:handle )
 
-   // writelog( "GetApplyKey "+str(asc(ckey)) )
+   // hwg_WriteLog( "GetApplyKey "+str(asc(ckey)) )
    oEdit:title := hwg_edit_Gettext( oEdit:handle )
    IF oEdit:cType == "N" .and. cKey $ ".," .AND. ;
                      ( nPos := At( ".",oEdit:cPicMask ) ) != 0
@@ -564,8 +564,8 @@ Local nPos, nGetLen, nLen, vari, i, x, newPos
       ENDIF
       cKey := Input( oEdit,cKey,nPos )
       IF cKey != Nil
-         SetGetUpdated( oEdit )         
-         IF Set( _SET_INSERT ) // .or. HiWord(x) != LoWord(x)
+         hwg_SetGetUpdated( oEdit )         
+         IF Set( _SET_INSERT ) // .or. hwg_Hiword(x) != hwg_Loword(x)
             IF oEdit:lPicComplex
                nGetLen := Len( oEdit:cPicMask )
                FOR nLen := 0 TO nGetLen
@@ -587,7 +587,7 @@ Local nPos, nGetLen, nLen, vari, i, x, newPos
             oEdit:title := Left( oEdit:title,nPos-1 ) + cKey + SubStr( oEdit:title,nPos+1 )
          ENDIF
          hwg_edit_Settext( oEdit:handle, oEdit:title )
-         // writelog( "GetApplyKey "+oEdit:title+str(nPos-1) )
+         // hwg_WriteLog( "GetApplyKey "+oEdit:title+str(nPos-1) )
          KeyRight( oEdit,nPos )
          //Added By Sandro Freire
          IF oEdit:cType == "N"
@@ -613,7 +613,7 @@ Local res
    IF oCtrl:bGetFocus != Nil 
       res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
       IF !res
-         GetSkip( oCtrl:oParent,oCtrl:handle,1 )
+         hwg_GetSkip( oCtrl:oParent,oCtrl:handle,1 )
       ENDIF
       Return res
    ENDIF
@@ -624,12 +624,12 @@ Static Function __valid( oCtrl )
 Local vari, oDlg
 
     IF oCtrl:bSetGet != Nil
-      IF ( oDlg := ParentGetDialog( oCtrl ) ) == Nil .OR. oDlg:nLastKey != 27
+      IF ( oDlg := hwg_ParentGetDialog( oCtrl ) ) == Nil .OR. oDlg:nLastKey != 27
          vari := UnTransform( oCtrl,hwg_Edit_GetText( oCtrl:handle ) )
          oCtrl:title := vari
          IF oCtrl:cType == "D"
             IF IsBadDate( vari )
-               SetFocus( oCtrl:handle )
+               hwg_Setfocus( oCtrl:handle )
 	       hwg_edit_SetPos( oCtrl:handle,0 )
                Return .F.
             ENDIF
@@ -645,7 +645,7 @@ Local vari, oDlg
             oDlg:nLastKey := 27
          ENDIF
          IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, vari, oCtrl )
-            SetFocus( oCtrl:handle )
+            hwg_Setfocus( oCtrl:handle )
 	      hwg_edit_SetPos( oCtrl:handle,0 )
             IF oDlg != Nil
                oDlg:nLastKey := 0
@@ -793,7 +793,8 @@ Local i, nLen
    NEXT
 Return .F.
 
-Function CreateGetList( oDlg )
+Function hwg_CreateGetList( oDlg )
+
 Local i, j, aLen1 := Len( oDlg:aControls ), aLen2
 
    FOR i := 1 TO aLen1
@@ -810,7 +811,8 @@ Local i, j, aLen1 := Len( oDlg:aControls ), aLen2
    NEXT
 Return Nil
 
-Function GetSkip( oParent,hCtrl,nSkip,lClipper )
+Function hwg_GetSkip( oParent,hCtrl,nSkip,lClipper )
+
 Local i, aLen
 
    DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
@@ -826,8 +828,8 @@ Local i, aLen
       IF ( aLen := Len( oParent:Getlist ) ) > 1
          IF nSkip > 0
             DO WHILE ( i := i+nSkip ) <= aLen
-               IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
-                  SetFocus( oParent:Getlist[i]:handle )
+               IF !oParent:Getlist[i]:lHide .AND. hwg_Iswindowenabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
+                  hwg_Setfocus( oParent:Getlist[i]:handle )
                   IF oParent:Getlist[i]:winclass == "EDIT"
        	         hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
                   ENDIF
@@ -836,8 +838,8 @@ Local i, aLen
             ENDDO
          ELSE
             DO WHILE ( i := i+nSkip ) > 0
-               IF !oParent:Getlist[i]:lHide .AND. IsWindowEnabled( oParent:Getlist[i]:Handle )
-                  SetFocus( oParent:Getlist[i]:handle )
+               IF !oParent:Getlist[i]:lHide .AND. hwg_Iswindowenabled( oParent:Getlist[i]:Handle )
+                  hwg_Setfocus( oParent:Getlist[i]:handle )
                   IF oParent:Getlist[i]:winclass == "EDIT"
    	               hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
                   ENDIF
@@ -850,16 +852,18 @@ Local i, aLen
 
 Return .F.
 
-Function SetGetUpdated( o )
+Function hwg_SetGetUpdated( o )
+
 
    o:lChanged := .T.
-   IF ( o := ParentGetDialog( o ) ) != Nil
+   IF ( o := hwg_ParentGetDialog( o ) ) != Nil
       o:lUpdated := .T.
    ENDIF
 
 Return Nil
 
-Function ParentGetDialog( o )
+Function hwg_ParentGetDialog( o )
+
    DO WHILE .T.
       o := o:oParent
       IF o == Nil
@@ -871,4 +875,5 @@ Function ParentGetDialog( o )
       ENDIF
    ENDDO
 Return o
+
 

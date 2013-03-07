@@ -47,7 +47,7 @@
       <method name="onClick">
         <![CDATA[oOwn1:oBitmap:=HBitmap():addResource("smClose")
 oOwn1:title:="Close"
-SetCapture(oOwn1:handle)
+hwg_Setcapture(oOwn1:handle)
 ]]>
       </method>
     </part>
@@ -63,7 +63,7 @@ SetCapture(oOwn1:handle)
       <method name="onClick">
         <![CDATA[oOwn1:oBitmap:=HBitmap():addResource("smNew")
 oOwn1:title:="New"
-SetCapture(oOwn1:handle)
+hwg_Setcapture(oOwn1:handle)
 ]]>
       </method>
     </part>
@@ -79,7 +79,7 @@ SetCapture(oOwn1:handle)
       <method name="onClick">
         <![CDATA[oOwn1:oBitmap:=HBitmap():addResource("smOpen")
 oOwn1:title:="Open"
-SetCapture(oOwn1:handle)
+hwg_Setcapture(oOwn1:handle)
 ]]>
       </method>
     </part>

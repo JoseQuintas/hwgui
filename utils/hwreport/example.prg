@@ -23,24 +23,24 @@ PRIVATE aTermMetr := { 800 }
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -12
 
    INIT WINDOW oMainWindow MAIN TITLE "HWReport example" ;
-         ON SIZE {|o|MoveWindow(o:handle,0,0,aTermMetr[1],80)}
+         ON SIZE {|o|hwg_Movewindow(o:handle,0,0,aTermMetr[1],80)}
 
    @ 0,0 PANEL oPanel OF oMainWindow ID IDCW_PANEL ;
-        ON SIZE {|o,x|MoveWindow(o:handle,0,0,x,48)}
+        ON SIZE {|o,x|hwg_Movewindow(o:handle,0,0,x,48)}
 
-    @ 2,3  OWNERBUTTON OF oPanel ID 113 ON CLICK {||EndWindow()} ;
+    @ 2,3  OWNERBUTTON OF oPanel ID 113 ON CLICK {||hwg_EndWindow()} ;
         SIZE 80,44 FLAT ;
-        TEXT "Exit" COLOR Vcolor("0000FF") FONT oFont
+        TEXT "Exit" COLOR hwg_VColor("0000FF") FONT oFont
     @ 82,3 OWNERBUTTON OF oPanel ID 108 ON CLICK {||Print1()} ;
         SIZE 120,22 FLAT ;
-        TEXT "Print Example.rpt" COLOR Vcolor("FF0000") FONT oFont
+        TEXT "Print Example.rpt" COLOR hwg_VColor("FF0000") FONT oFont
     @ 82,25 OWNERBUTTON OF oPanel ID 109 ON CLICK {||Print2()} ;
         SIZE 120,22 FLAT ;
-        TEXT "Print MyReport()" COLOR Vcolor("E60099") FONT oFont
+        TEXT "Print MyReport()" COLOR hwg_VColor("E60099") FONT oFont
 
-   hDCwindow := GetDC( oMainWindow:handle )
+   hDCwindow := hwg_Getdc( oMainWindow:handle )
    aTermMetr := hwg_GetDeviceArea( hDCwindow )
-   DeleteDC( hDCwindow )
+   hwg_Deletedc( hDCwindow )
 
    oMainWindow:Activate()
 

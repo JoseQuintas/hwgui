@@ -5,7 +5,7 @@
  * HTimer class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -29,7 +29,7 @@ CLASS HTimer INHERIT HObject
    ASSIGN Name( cName )  INLINE IIF( !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. ! ":" $ cName .AND. ! "[" $ cName,;
          ( ::xName := cName, __objAddData( ::oParent, cName ), ::oParent: & ( cName ) := Self), Nil)
    ACCESS Interval       INLINE ::value
-   ASSIGN Interval( x )  INLINE ::value := x, SetTimer( ::oParent:handle, ::id, ::value )
+   ASSIGN Interval( x )  INLINE ::value := x, hwg_Settimer( ::oParent:handle, ::id, ::value )
 
    METHOD New( oParent, nId, value, bAction )
    METHOD Init()
@@ -53,7 +53,7 @@ METHOD New( oParent, nId, value, bAction ) CLASS HTimer
    ::bAction := bAction
    /*
    IF ::value > 0
-      SetTimer( oParent:handle, ::id, ::value )
+      hwg_Settimer( oParent:handle, ::id, ::value )
    ENDIF
    */
    
@@ -67,7 +67,7 @@ METHOD Init() CLASS HTimer
 
    IF ! ::lInit .AND. ! EMPTY( ::oParent:handle )
       IF ::value > 0
-         SetTimer( ::oParent:handle, ::id, ::value )
+         hwg_Settimer( ::oParent:handle, ::id, ::value )
       ENDIF
       ::lInit := .T.
    ENDIF
@@ -79,7 +79,7 @@ METHOD END() CLASS HTimer
 
    IF ( i := AScan( ::aTimers, { | o | o:id == ::id } ) ) > 0
       IF ::oParent != NIL
-         KillTimer( ::oParent:handle, ::id )
+         hwg_Killtimer( ::oParent:handle, ::id )
       ENDIF
       ADel( ::aTimers, i )
       ASize( ::aTimers, Len( ::aTimers ) - 1 )
@@ -89,12 +89,13 @@ METHOD END() CLASS HTimer
 
 METHOD onAction()
 
-   TimerProc( , ::id, ::interval )
+   hwg_TimerProc( , ::id, ::interval )
 
    RETURN NIL
 
 
-FUNCTION TimerProc( hWnd, idTimer, Time )
+FUNCTION hwg_TimerProc( hWnd, idTimer, Time )
+
    LOCAL i := AScan( HTimer():aTimers, { | o | o:id == idTimer } )
 
    HB_SYMBOL_UNUSED( hWnd )
@@ -111,7 +112,8 @@ EXIT PROCEDURE CleanTimers
 
    FOR i := 1 TO Len( HTimer():aTimers )
       oTimer := HTimer():aTimers[ i ]
-      KillTimer( oTimer:oParent:handle, oTimer:id )
+      hwg_Killtimer( oTimer:oParent:handle, oTimer:id )
    NEXT
 
    RETURN
+

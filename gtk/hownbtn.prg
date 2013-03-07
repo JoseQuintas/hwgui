@@ -91,11 +91,11 @@ Return Self
 
 METHOD Activate CLASS HOwnButton
    IF !Empty( ::oParent:handle )
-      ::handle := CreateOwnBtn( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createownbtn( ::oParent:handle, ::id, ;
                   ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    if !::lEnabled
-      EnableWindow( ::handle, .f. )
+      hwg_Enablewindow( ::handle, .f. )
       ::Disable()
    EndIf
 
@@ -122,35 +122,35 @@ METHOD Init CLASS HOwnButton
 
    IF !::lInit
       ::Super:Init()
-      SetWindowObject( ::handle,Self )
+      hwg_Setwindowobject( ::handle,Self )
    ENDIF
 
 Return Nil
 
 METHOD Paint() CLASS HOwnButton
-Local hDC := GetDC( ::handle )
+Local hDC := hwg_Getdc( ::handle )
 Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
 
-   aCoors := GetClientRect( ::handle )
+   aCoors := hwg_Getclientrect( ::handle )
 
-   // oldBkColor := SetBkColor( hDC,GetSysColor(COLOR_3DFACE) )
+   // oldBkColor := hwg_Setbkcolor( hDC,hwg_Getsyscolor(COLOR_3DFACE) )
    IF ::state == OBTN_INIT
       ::state := OBTN_NORMAL
    ENDIF
 
    IF ::lFlat
       IF ::state == OBTN_NORMAL
-         DrawButton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],0 )
+         hwg_Drawbutton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],0 )
       ELSEIF ::state == OBTN_MOUSOVER
-         DrawButton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],1 )
+         hwg_Drawbutton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],1 )
       ELSEIF ::state == OBTN_PRESSED
-         DrawButton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],2 )
+         hwg_Drawbutton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],2 )
       ENDIF
    ELSE
       IF ::state == OBTN_NORMAL
-         DrawButton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],5 )
+         hwg_Drawbutton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],5 )
       ELSEIF ::state == OBTN_PRESSED
-         DrawButton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],6 )
+         hwg_Drawbutton( hDC, aCoors[1],aCoors[2],aCoors[3],aCoors[4],6 )
       ENDIF
    ENDIF
 
@@ -168,24 +168,24 @@ Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
             ::bitmap:handle:=::oBitmap
             ::oBitmap:=Nil
          EndIf
-         DrawBitmap( hDC, ::bitmap:handle,, x1, y1, ::widthb, ::heightb )
+         hwg_Drawbitmap( hDC, ::bitmap:handle,, x1, y1, ::widthb, ::heightb )
       Else
          ::oBitmap:=::bitmap:handle
-         DrawGrayBitmap( hDC, ::bitmap:handle, x1, y1 )
+         hwg_Drawgraybitmap( hDC, ::bitmap:handle, x1, y1 )
       EndIf
    ENDIF
 
    IF ::text != Nil
       IF ::ofont != Nil
-         SelectObject( hDC, ::ofont:handle )
+         hwg_Selectobject( hDC, ::ofont:handle )
       ELSEIF ::oParent:oFont != Nil
-         SelectObject( hDC, ::oParent:ofont:handle )
+         hwg_Selectobject( hDC, ::oParent:ofont:handle )
       ENDIF
-      aMetr := GetTextMetric( hDC )
+      aMetr := hwg_Gettextmetric( hDC )
       if ::lEnabled //if button is enabled
-         SetTextColor( hDC,::tcolor )
+         hwg_Settextcolor( hDC,::tcolor )
       Else
-         SetTextColor( hDC, 0 )
+         hwg_Settextcolor( hDC, 0 )
       EndIf
       x1 := Iif( ::xt!=Nil .AND. ::xt!=0, ::xt, aCoors[1]+2 )
       y1 := Iif( ::yt!=Nil .AND. ::yt!=0, ::yt, ;
@@ -194,12 +194,12 @@ Local aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
                           ::xt+::widtht-1, aCoors[3]-2 )
       y2 := Iif( ::heightt!=Nil .AND. ::heightt!=0, ;
                  ::yt+::heightt-1, y1+aMetr[1] )
-      // SetTransparentMode( hDC,.T. )
-      DrawText( hDC, ::text, x1, y1, x2, y2, Iif( ::xt!=Nil.AND.::xt!=0,DT_LEFT,DT_CENTER ) )
-      // SetTransparentMode( hDC,.F. )
+      // hwg_Settransparentmode( hDC,.T. )
+      hwg_Drawtext( hDC, ::text, x1, y1, x2, y2, Iif( ::xt!=Nil.AND.::xt!=0,DT_LEFT,DT_CENTER ) )
+      // hwg_Settransparentmode( hDC,.F. )
    ENDIF
-   // SetBkColor( hDC,oldBkColor )
-   releaseDC( ::handle, hDC )
+   // hwg_Setbkcolor( hDC,oldBkColor )
+   hwg_Releasedc( ::handle, hDC )
 
 Return Nil
 
@@ -210,11 +210,11 @@ Local res := .F.
    IF ::state != OBTN_INIT
       IF !lEnter .AND. !::lPress
          ::state := OBTN_NORMAL
-         RedrawWindow( ::handle )
+         hwg_Redrawwindow( ::handle )
       ENDIF
       IF lEnter .AND. ::state == OBTN_NORMAL
          ::state := OBTN_MOUSOVER
-         RedrawWindow( ::handle )
+         hwg_Redrawwindow( ::handle )
       ENDIF
    ENDIF
    
@@ -223,8 +223,8 @@ Return Nil
 METHOD MDown()  CLASS HOwnButton
    IF ::state != OBTN_PRESSED
       ::state := OBTN_PRESSED
-      RedrawWindow( ::handle )
-      SetFocus( ::handle )
+      hwg_Redrawwindow( ::handle )
+      hwg_Setfocus( ::handle )
    ENDIF
 Return Nil
 
@@ -232,7 +232,7 @@ METHOD MUp() CLASS HOwnButton
    IF ::state == OBTN_PRESSED
       IF !::lPress
          ::state := OBTN_NORMAL
-         RedrawWindow( ::handle )
+         hwg_Redrawwindow( ::handle )
       ENDIF
       IF ::bClick != Nil
          Eval( ::bClick, ::oParent, ::id )
@@ -244,7 +244,7 @@ Return Nil
 METHOD Release()  CLASS HOwnButton
    ::lPress := .F.
    ::state := OBTN_NORMAL
-   RedrawWindow( ::handle )
+   hwg_Redrawwindow( ::handle )
 Return Nil
 
 METHOD End()  CLASS HOwnButton
@@ -263,9 +263,9 @@ Return Nil
 
 METHOD Enable() CLASS HOwnButton
 
-   EnableWindow( ::handle, .T. )
+   hwg_Enablewindow( ::handle, .T. )
    ::lEnabled:=.T.
-   RedrawWindow( ::handle )
+   hwg_Redrawwindow( ::handle )
 
 Return Nil
 
@@ -273,8 +273,8 @@ METHOD Disable() CLASS HOwnButton
 
    ::state   := OBTN_INIT
    ::lEnabled:=.F.
-   RedrawWindow( ::handle )
-   EnableWindow( ::handle, .F. )
+   hwg_Redrawwindow( ::handle )
+   hwg_Enablewindow( ::handle, .F. )
 
 Return Nil
 

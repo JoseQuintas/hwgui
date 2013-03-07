@@ -96,7 +96,7 @@ HB_FUNC( HWG_INITCOMMONCONTROLSEX )
    }
 }
 
-HB_FUNC( MOVEWINDOW )
+HB_FUNC( HWG_MOVEWINDOW )
 {
    RECT rc;
 
@@ -113,7 +113,7 @@ HB_FUNC( MOVEWINDOW )
 /*
    CreateProgressBar( hParentWindow, nRange )
 */
-HB_FUNC( CREATEPROGRESSBAR )
+HB_FUNC( HWG_CREATEPROGRESSBAR )
 {
    HWND hPBar, hParentWindow = ( HWND ) HB_PARHANDLE( 1 );
    RECT rcClient;
@@ -155,18 +155,18 @@ HB_FUNC( CREATEPROGRESSBAR )
 /*
    UpdateProgressBar( hPBar )
 */
-HB_FUNC( UPDATEPROGRESSBAR )
+HB_FUNC( HWG_UPDATEPROGRESSBAR )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), PBM_STEPIT, 0, 0 );
 }
 
-HB_FUNC( SETPROGRESSBAR )
+HB_FUNC( HWG_SETPROGRESSBAR )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), PBM_SETPOS,
          ( WPARAM ) hb_parni( 2 ), 0 );
 }
 
-HB_FUNC( SETRANGEPROGRESSBAR )
+HB_FUNC( HWG_SETRANGEPROGRESSBAR )
 {
 
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), PBM_SETRANGE, 0, MAKELPARAM( 0, hb_parni( 2 ) ) );
@@ -176,7 +176,7 @@ HB_FUNC( SETRANGEPROGRESSBAR )
 /*
    CreatePanel( hParentWindow, nPanelControlID, nStyle, x1, y1, nWidth, nHeight )
 */
-HB_FUNC( CREATEPANEL )
+HB_FUNC( HWG_CREATEPANEL )
 {
    HWND hWndPanel;
    hWndPanel = CreateWindow( TEXT( "PANEL" ),   /* predefined class  */
@@ -195,7 +195,7 @@ HB_FUNC( CREATEPANEL )
 /*
    CreateOwnBtn( hParentWIndow, nBtnControlID, x, y, nWidth, nHeight )
 */
-HB_FUNC( CREATEOWNBTN )
+HB_FUNC( HWG_CREATEOWNBTN )
 {
    HWND hWndPanel;
    hWndPanel = CreateWindow( TEXT( "OWNBTN" ),  /* predefined class  */
@@ -213,7 +213,7 @@ HB_FUNC( CREATEOWNBTN )
 /*
    CreateStatic( hParentWyndow, nControlID, nStyle, x, y, nWidth, nHeight )
 */
-HB_FUNC( CREATESTATIC )
+HB_FUNC( HWG_CREATESTATIC )
 {
    ULONG ulStyle = hb_parnl( 3 );
    ULONG ulExStyle =
@@ -251,7 +251,7 @@ HB_FUNC( CREATESTATIC )
    CreateButton( hParentWIndow, nButtonID, nStyle, x, y, nWidth, nHeight,
                  cCaption )
 */
-HB_FUNC( CREATEBUTTON )
+HB_FUNC( HWG_CREATEBUTTON )
 {
    void * hStr;
    HWND hBtn = CreateWindow( TEXT( "BUTTON" ),  /* predefined class  */
@@ -273,7 +273,7 @@ HB_FUNC( CREATEBUTTON )
    CreateEdit( hParentWIndow, nEditControlID, nStyle, x, y, nWidth, nHeight,
                cInitialString )
 */
-HB_FUNC( CREATEEDIT )
+HB_FUNC( HWG_CREATEEDIT )
 {
    ULONG ulStyle = hb_parnl( 3 );
    ULONG ulStyleEx = ( ulStyle & WS_BORDER ) ? WS_EX_CLIENTEDGE : 0;
@@ -307,7 +307,7 @@ HB_FUNC( CREATEEDIT )
    CreateCombo( hParentWIndow, nComboID, nStyle, x, y, nWidth, nHeight,
                 cInitialString )
 */
-HB_FUNC( CREATECOMBO )
+HB_FUNC( HWG_CREATECOMBO )
 {
    HWND hCombo = CreateWindow( TEXT( "COMBOBOX" ),    /* predefined class  */
          TEXT( "" ),                    /*   */
@@ -328,7 +328,7 @@ HB_FUNC( CREATECOMBO )
    CreateBrowse( hParentWIndow, nControlID, nStyle, x, y, nWidth, nHeight,
                cTitle )
 */
-HB_FUNC( CREATEBROWSE )
+HB_FUNC( HWG_CREATEBROWSE )
 {
    HWND hWndBrw;
    DWORD dwStyle = hb_parnl( 3 );
@@ -358,7 +358,7 @@ HB_FUNC( CREATEBROWSE )
  pArray - Array with Lengths of parts, if first item == 0, status window
           will be divided into equal parts.
 */
-HB_FUNC( CREATESTATUSWINDOW )
+HB_FUNC( HWG_CREATESTATUSWINDOW )
 {
    HWND hwndStatus, hwndParent = ( HWND ) HB_PARHANDLE( 1 );
 
@@ -430,12 +430,12 @@ HB_FUNC( HWG_INITSTATUS )
    LocalFree( hloc );
 }
 
-HB_FUNC( GETNOTIFYSBPARTS )
+HB_FUNC( HWG_GETNOTIFYSBPARTS )
 {
    hb_retnl( ( LONG ) ((( NMMOUSE * ) HB_PARHANDLE( 1 ))->dwItemSpec ) );
 }
 
-HB_FUNC( ADDTOOLTIP )           // changed by MAG
+HB_FUNC( HWG_ADDTOOLTIP )
 {
    TOOLINFO ti;
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
@@ -468,7 +468,7 @@ HB_FUNC( ADDTOOLTIP )           // changed by MAG
    hb_strfree( hStr );
 }
 
-HB_FUNC( DELTOOLTIP )
+HB_FUNC( HWG_DELTOOLTIP )
 {
    TOOLINFO ti;
 
@@ -485,7 +485,7 @@ HB_FUNC( DELTOOLTIP )
    }
 }
 
-HB_FUNC( SETTOOLTIPTITLE )
+HB_FUNC( HWG_SETTOOLTIPTITLE )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
 
@@ -508,7 +508,7 @@ HB_FUNC( SETTOOLTIPTITLE )
 }
 
 /*
-HB_FUNC( SHOWTOOLTIP )
+HB_FUNC( HWG_SHOWTOOLTIP )
 {
    MSG msg;
 
@@ -521,7 +521,7 @@ HB_FUNC( SHOWTOOLTIP )
 */
 
 /*   no used
-HB_FUNC( CREATEUPDOWNCONTROL32 )
+HB_FUNC( HWG_CREATEUPDOWNCONTROL32 )
 {
    HWND hControl;
    LONG nStyle = hb_parnl( 7 ) | WS_CHILDWINDOW | WS_VISIBLE | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS | UDS_HOTTRACK;
@@ -542,7 +542,7 @@ HB_FUNC( CREATEUPDOWNCONTROL32 )
 }
 */
 
-HB_FUNC( CREATEUPDOWNCONTROL )
+HB_FUNC( HWG_CREATEUPDOWNCONTROL )
 {
    HB_RETHANDLE( CreateUpDownControl( WS_CHILD | WS_BORDER | WS_VISIBLE |
                hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
@@ -551,18 +551,18 @@ HB_FUNC( CREATEUPDOWNCONTROL )
                hb_parni( 9 ), hb_parni( 10 ), hb_parni( 11 ) ) );
 }
 
-HB_FUNC( SETUPDOWN )
+HB_FUNC( HWG_SETUPDOWN )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), UDM_SETPOS, 0, hb_parnl( 2 ) );
 }
 
-HB_FUNC( SETRANGEUPDOWN )
+HB_FUNC( HWG_SETRANGEUPDOWN )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), UDM_SETRANGE32, hb_parnl( 2 ), hb_parnl( 3 ) );
 }
 
 
-HB_FUNC( GETNOTIFYDELTAPOS )
+HB_FUNC( HWG_GETNOTIFYDELTAPOS )
 {
    int iItem = hb_parnl( 2 ) ;
    if ( iItem < 2 )
@@ -571,7 +571,7 @@ HB_FUNC( GETNOTIFYDELTAPOS )
       hb_retni( (LONG) (((NMUPDOWN *) HB_PARHANDLE( 1 ) )->iDelta ) );
 }
 
-HB_FUNC( CREATEDATEPICKER )
+HB_FUNC( HWG_CREATEDATEPICKER )
 {
    HWND hCtrl;
    LONG nStyle = hb_parnl( 7 ) | WS_CHILD | WS_VISIBLE | WS_TABSTOP;
@@ -587,7 +587,7 @@ HB_FUNC( CREATEDATEPICKER )
    HB_RETHANDLE( hCtrl );
 }
 
-HB_FUNC( SETDATEPICKER )
+HB_FUNC( HWG_SETDATEPICKER )
 {
    PHB_ITEM pDate = hb_param( 2, HB_IT_DATE );
    ULONG ulLen;
@@ -652,13 +652,13 @@ HB_FUNC( SETDATEPICKER )
    }
 }
 
-HB_FUNC( SETDATEPICKERNULL )
+HB_FUNC( HWG_SETDATEPICKERNULL )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), DTM_SETSYSTEMTIME, GDT_NONE,
                 ( LPARAM ) 0 );
 }
 
-HB_FUNC( GETDATEPICKER )
+HB_FUNC( HWG_GETDATEPICKER )
 {
    SYSTEMTIME st;
    int iret;
@@ -673,7 +673,7 @@ HB_FUNC( GETDATEPICKER )
 }
 
 
-HB_FUNC( GETTIMEPICKER )
+HB_FUNC( HWG_GETTIMEPICKER )
 {
    SYSTEMTIME st;
    char szTime[9];
@@ -689,7 +689,7 @@ HB_FUNC( GETTIMEPICKER )
    hb_retc( szTime ) ;
 }
 
-HB_FUNC( CREATETABCONTROL )
+HB_FUNC( HWG_CREATETABCONTROL )
 {
    HWND hTab;
 
@@ -702,7 +702,7 @@ HB_FUNC( CREATETABCONTROL )
 
 }
 
-HB_FUNC( INITTABCONTROL )
+HB_FUNC( HWG_INITTABCONTROL )
 {
    HWND hTab = ( HWND ) HB_PARHANDLE( 1 );
    PHB_ITEM pArr = hb_param( 2, HB_IT_ARRAY );
@@ -733,7 +733,7 @@ HB_FUNC( INITTABCONTROL )
    }
 }
 
-HB_FUNC( ADDTAB )
+HB_FUNC( HWG_ADDTAB )
 {
    TC_ITEM tie;
    void * hStr;
@@ -745,7 +745,7 @@ HB_FUNC( ADDTAB )
    hb_strfree( hStr );
 }
 
-HB_FUNC( ADDTABDIALOG )
+HB_FUNC( HWG_ADDTABDIALOG )
 {
    TC_ITEM tie;
    void * hStr;
@@ -759,24 +759,24 @@ HB_FUNC( ADDTABDIALOG )
    hb_strfree( hStr );
 }
 
-HB_FUNC( DELETETAB )
+HB_FUNC( HWG_DELETETAB )
 {
    TabCtrl_DeleteItem( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ) );
 }
 
 
-HB_FUNC( GETCURRENTTAB )
+HB_FUNC( HWG_GETCURRENTTAB )
 {
    hb_retni( TabCtrl_GetCurSel( ( HWND ) HB_PARHANDLE( 1 ) ) + 1 );
 }
 
-HB_FUNC( SETTABSIZE )
+HB_FUNC( HWG_SETTABSIZE )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), TCM_SETITEMSIZE, 0,
                 MAKELPARAM( hb_parni( 2 ), hb_parni( 3 ) ) );
 }
 
-HB_FUNC( SETTABNAME )
+HB_FUNC( HWG_SETTABNAME )
 {
    TC_ITEM tie;
    void * hStr;
@@ -788,7 +788,7 @@ HB_FUNC( SETTABNAME )
    hb_strfree( hStr );
 }
 
-HB_FUNC( TAB_HITTEST )
+HB_FUNC( HWG_TAB_HITTEST )
 {
    TC_HITTESTINFO ht;
    HWND hTab = ( HWND ) HB_PARHANDLE( 1 );
@@ -811,12 +811,12 @@ HB_FUNC( TAB_HITTEST )
    hb_retni( res );
 }
 
-HB_FUNC( GETNOTIFYKEYDOWN )
+HB_FUNC( HWG_GETNOTIFYKEYDOWN )
 {
    hb_retni( ( WORD ) ( ( ( TC_KEYDOWN * ) HB_PARHANDLE( 1 ) )->wVKey ) );
 }
 
-HB_FUNC( CREATETREE )
+HB_FUNC( HWG_CREATETREE )
 {
    HWND hCtrl;
 
@@ -836,7 +836,7 @@ HB_FUNC( CREATETREE )
    HB_RETHANDLE( hCtrl );
 }
 
-HB_FUNC( TREEADDNODE )
+HB_FUNC( HWG_TREEADDNODE )
 {
    TV_ITEM tvi;
    TV_INSERTSTRUCT is;
@@ -890,20 +890,20 @@ HB_FUNC( TREEADDNODE )
 }
 
 /*
-HB_FUNC( TREEDELNODE )
+HB_FUNC( HWG_TREEDELNODE )
 {
 
    hb_parl( TreeView_DeleteItem( (HWND)HB_PARHANDLE(1), (HTREEITEM)HB_PARHANDLE(2) ) );
 }
 
-HB_FUNC( TREEDELALLNODES )
+HB_FUNC( HWG_TREEDELALLNODES )
 {
 
    TreeView_DeleteAllItems( (HWND)HB_PARHANDLE(1) );
 }
 */
 
-HB_FUNC( TREEGETSELECTED )
+HB_FUNC( HWG_TREEGETSELECTED )
 {
    TV_ITEM TreeItem;
 
@@ -922,7 +922,7 @@ HB_FUNC( TREEGETSELECTED )
 }
 
 /*
-HB_FUNC( TREENODEHASCHILDREN )
+HB_FUNC( HWG_TREENODEHASCHILDREN )
 {
 
    TV_ITEM TreeItem;
@@ -937,7 +937,7 @@ HB_FUNC( TREENODEHASCHILDREN )
 
 */
 
-HB_FUNC( TREEGETNODETEXT )
+HB_FUNC( HWG_TREEGETNODETEXT )
 {
    TV_ITEM TreeItem;
    TCHAR ItemText[256] = { 0 };
@@ -956,7 +956,7 @@ HB_FUNC( TREEGETNODETEXT )
 #define TREE_SETITEM_TEXT       1
 #define TREE_SETITEM_CHECK      2
 
-HB_FUNC( TREESETITEM )
+HB_FUNC( HWG_TREESETITEM )
 {
    TV_ITEM TreeItem;
    int iType = hb_parni( 3 );
@@ -991,7 +991,7 @@ HB_FUNC( TREESETITEM )
 #define TREE_GETNOTIFY_ACTION       5
 #define TREE_GETNOTIFY_OLDPARAM     6
 
-HB_FUNC( TREE_GETNOTIFY )
+HB_FUNC( HWG_TREE_GETNOTIFY )
 {
    int iType = hb_parni( 2 );
 
@@ -1035,7 +1035,7 @@ HB_FUNC( TREE_GETNOTIFY )
 /*
  * Tree_Hittest( hTree, x, y ) --> oNode
  */
-HB_FUNC( TREE_HITTEST )
+HB_FUNC( HWG_TREE_HITTEST )
 {
    TV_HITTESTINFO ht;
    HWND hTree = ( HWND ) HB_PARHANDLE( 1 );
@@ -1072,7 +1072,7 @@ HB_FUNC( TREE_HITTEST )
       hb_ret(  );
 }
 
-HB_FUNC( TREE_RELEASENODE )
+HB_FUNC( HWG_TREE_RELEASENODE )
 {
    TV_ITEM TreeItem;
 
@@ -1095,7 +1095,7 @@ HB_FUNC( TREE_RELEASENODE )
 /*
  * CreateImagelist( array, cx, cy, nGrow, flags )
 */
-HB_FUNC( CREATEIMAGELIST )
+HB_FUNC( HWG_CREATEIMAGELIST )
 {
    PHB_ITEM pArray = hb_param( 1, HB_IT_ARRAY );
    UINT flags = ( HB_ISNIL( 5 ) ) ? ILC_COLOR : hb_parni( 5 );
@@ -1116,13 +1116,13 @@ HB_FUNC( CREATEIMAGELIST )
    HB_RETHANDLE( himl );
 }
 
-HB_FUNC( IMAGELIST_ADD )
+HB_FUNC( HWG_IMAGELIST_ADD )
 {
    hb_retnl( ImageList_Add( ( HIMAGELIST ) HB_PARHANDLE( 1 ),
                ( HBITMAP ) HB_PARHANDLE( 2 ), ( HBITMAP ) NULL ) );
 }
 
-HB_FUNC( IMAGELIST_ADDMASKED )
+HB_FUNC( HWG_IMAGELIST_ADDMASKED )
 {
    hb_retnl( ImageList_AddMasked( ( HIMAGELIST ) HB_PARHANDLE( 1 ),
                ( HBITMAP ) HB_PARHANDLE( 2 ), ( COLORREF ) hb_parnl( 3 ) ) );
@@ -1137,7 +1137,7 @@ HB_FUNC( IMAGELIST_ADDMASKED )
       the TimerProc, this way I can receive WM_TIMER messages
       inside an ON OTHER MESSAGES code block
 */
-HB_FUNC( SETTIMER )
+HB_FUNC( HWG_SETTIMER )
 {
    SetTimer( ( HWND ) HB_PARHANDLE( 1 ), ( UINT ) hb_parni( 2 ),
              ( UINT ) hb_parni( 3 ),
@@ -1148,22 +1148,22 @@ HB_FUNC( SETTIMER )
  *  KillTimer( hWnd, idTimer )
  */
 
-HB_FUNC( KILLTIMER )
+HB_FUNC( HWG_KILLTIMER )
 {
    hb_retl( KillTimer( ( HWND ) HB_PARHANDLE( 1 ), ( UINT ) hb_parni( 2 ) ) );
 }
 
-HB_FUNC( GETPARENT )
+HB_FUNC( HWG_GETPARENT )
 {
    HB_RETHANDLE( GetParent( ( HWND ) HB_PARHANDLE( 1 ) ) );
 }
 
-HB_FUNC( GETANCESTOR )
+HB_FUNC( HWG_GETANCESTOR )
 {
    HB_RETHANDLE( GetAncestor( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ) ) );
 }
 
-HB_FUNC( LOADCURSOR )
+HB_FUNC( HWG_LOADCURSOR )
 {
    void * hStr;
    LPCTSTR lpStr = HB_PARSTR( 1, &hStr, NULL );
@@ -1185,18 +1185,18 @@ HB_FUNC( HWG_GETCURSOR )
    HB_RETHANDLE( GetCursor() );
 }
 
-HB_FUNC( GETTOOLTIPHANDLE )     // added by MAG
+HB_FUNC( HWG_GETTOOLTIPHANDLE )
 {
    HB_RETHANDLE( hWndTT );
 }
 
-HB_FUNC( SETTOOLTIPBALLOON )    // added by MAG
+HB_FUNC( HWG_SETTOOLTIPBALLOON )
 {
    lToolTipBalloon = hb_parl( 1 );
    hWndTT = 0;
 }
 
-HB_FUNC( GETTOOLTIPBALLOON )    // added by MAG
+HB_FUNC( HWG_GETTOOLTIPBALLOON )
 {
    hb_retl( lToolTipBalloon );
 }
@@ -1282,7 +1282,7 @@ static void CALLBACK s_timerProc( HWND hWnd, UINT message, UINT idTimer, DWORD d
    HB_SYMBOL_UNUSED( message );
 
    if( s_pSymTest == NULL )
-      s_pSymTest = hb_dynsymGetCase( "TIMERPROC" );
+      s_pSymTest = hb_dynsymGetCase( "HWG_TIMERPROC" );
 
    if( hb_dynsymIsFunction( s_pSymTest ) )
    {
@@ -1742,7 +1742,7 @@ typedef struct tagNMTBGETINFOTIPW
 
 #endif
 
-HB_FUNC( CREATETOOLBAR )
+HB_FUNC( HWG_CREATETOOLBAR )
 {
 
    ULONG ulStyle = hb_parnl( 3 );
@@ -1765,7 +1765,7 @@ HB_FUNC( CREATETOOLBAR )
 
 }
 
-HB_FUNC( TOOLBARADDBUTTONS )
+HB_FUNC( HWG_TOOLBARADDBUTTONS )
 {
 
    HWND hWndCtrl = ( HWND ) HB_PARHANDLE( 1 );
@@ -1814,7 +1814,7 @@ HB_FUNC( TOOLBARADDBUTTONS )
 }
 
 
-HB_FUNC( TOOLBAR_SETBUTTONINFO )
+HB_FUNC( HWG_TOOLBAR_SETBUTTONINFO )
 {
    TBBUTTONINFO tb;
    HWND hWndCtrl = ( HWND ) HB_PARHANDLE( 1 );
@@ -1829,7 +1829,7 @@ HB_FUNC( TOOLBAR_SETBUTTONINFO )
    SendMessage( hWndCtrl, TB_SETBUTTONINFO, iIDB, ( LPARAM ) & tb );
 }
 
-HB_FUNC( TOOLBAR_LOADIMAGE )
+HB_FUNC( HWG_TOOLBAR_LOADIMAGE )
 {
    TBADDBITMAP tbab;
    HWND hWndCtrl = ( HWND ) HB_PARHANDLE( 1 );
@@ -1841,7 +1841,7 @@ HB_FUNC( TOOLBAR_LOADIMAGE )
    SendMessage( hWndCtrl, TB_ADDBITMAP, 0, ( LPARAM ) & tbab );
 }
 
-HB_FUNC( TOOLBAR_LOADSTANDARTIMAGE )
+HB_FUNC( HWG_TOOLBAR_LOADSTANDARTIMAGE )
 {
    TBADDBITMAP tbab;
    HWND hWndCtrl = ( HWND ) HB_PARHANDLE( 1 );
@@ -1856,13 +1856,13 @@ HB_FUNC( TOOLBAR_LOADSTANDARTIMAGE )
    hb_retni( ( int ) ImageList_GetImageCount( himl ) );
 }
 
-HB_FUNC( ImageList_GetImageCount )
+HB_FUNC( HWG_IMAGELIST_GETIMAGECOUNT )
 {
    HIMAGELIST hWndCtrl = ( HIMAGELIST ) HB_PARHANDLE( 1 );
    hb_retni( ImageList_GetImageCount( hWndCtrl ) );
 }
 
-HB_FUNC( TOOLBAR_SETDISPINFO )
+HB_FUNC( HWG_TOOLBAR_SETDISPINFO )
 {
    //LPTOOLTIPTEXT pDispInfo = ( LPTOOLTIPTEXT ) HB_PARHANDLE( 1 );
    LPNMTTDISPINFO pDispInfo = ( LPNMTTDISPINFO ) HB_PARHANDLE( 1 );
@@ -1880,7 +1880,7 @@ HB_FUNC( TOOLBAR_SETDISPINFO )
    }
 }
 
-HB_FUNC( TOOLBAR_GETDISPINFOID )
+HB_FUNC( HWG_TOOLBAR_GETDISPINFOID )
 {
    //LPTOOLTIPTEXT pDispInfo = ( LPTOOLTIPTEXT ) hb_parnl( 1 );
    LPNMTTDISPINFO pDispInfo = ( LPNMTTDISPINFO ) HB_PARHANDLE( 1 );
@@ -1888,7 +1888,7 @@ HB_FUNC( TOOLBAR_GETDISPINFOID )
    hb_retnl( idButton );
 }
 
-HB_FUNC( TOOLBAR_GETINFOTIP )
+HB_FUNC( HWG_TOOLBAR_GETINFOTIP )
 {
    LPNMTBGETINFOTIP pDispInfo = ( LPNMTBGETINFOTIP ) HB_PARHANDLE( 1 );
    if( pDispInfo && pDispInfo->cchTextMax > 0 )
@@ -1899,7 +1899,7 @@ HB_FUNC( TOOLBAR_GETINFOTIP )
    }
 }
 
-HB_FUNC( TOOLBAR_GETINFOTIPID )
+HB_FUNC( HWG_TOOLBAR_GETINFOTIPID )
 {
    LPNMTBGETINFOTIP pDispInfo = ( LPNMTBGETINFOTIP ) HB_PARHANDLE( 1 );
    DWORD idButton = pDispInfo->iItem;
@@ -1907,7 +1907,7 @@ HB_FUNC( TOOLBAR_GETINFOTIPID )
 }
 
 
-HB_FUNC( TOOLBAR_IDCLICK )
+HB_FUNC( HWG_TOOLBAR_IDCLICK )
 {
    LPNMMOUSE pDispInfo = ( LPNMMOUSE ) HB_PARHANDLE( 1 );
    DWORD idButton = pDispInfo->dwItemSpec;
@@ -1915,7 +1915,7 @@ HB_FUNC( TOOLBAR_IDCLICK )
 }
 
 
-HB_FUNC( TOOLBAR_SUBMENU )
+HB_FUNC( HWG_TOOLBAR_SUBMENU )
 {
    LPNMTOOLBAR lpnmTB = ( LPNMTOOLBAR ) HB_PARHANDLE( 1 );
    RECT rc = { 0, 0, 0, 0 };
@@ -1951,7 +1951,7 @@ HB_FUNC( TOOLBAR_SUBMENU )
 
 }
 
-HB_FUNC( TOOLBAR_SUBMENUEX )
+HB_FUNC( HWG_TOOLBAR_SUBMENUEX )
 {
    LPNMTOOLBAR lpnmTB = ( LPNMTOOLBAR ) HB_PARHANDLE( 1 );
    RECT rc = { 0, 0, 0, 0 };
@@ -1977,7 +1977,7 @@ HB_FUNC( TOOLBAR_SUBMENUEX )
 
 }
 
-HB_FUNC( TOOLBAR_SUBMENUEXGETID )
+HB_FUNC( HWG_TOOLBAR_SUBMENUEXGETID )
 {
 
    LPNMTOOLBAR lpnmTB = ( LPNMTOOLBAR ) HB_PARHANDLE( 1 );
@@ -1985,7 +1985,7 @@ HB_FUNC( TOOLBAR_SUBMENUEXGETID )
 }
 
 
-HB_FUNC( CREATEPAGER )
+HB_FUNC( HWG_CREATEPAGER )
 {
    HWND hWndPanel;
    BOOL bVert = hb_parl( 8 );
@@ -2005,7 +2005,7 @@ HB_FUNC( CREATEPAGER )
 
 
 
-HB_FUNC( CREATEREBAR )
+HB_FUNC( HWG_CREATEREBAR )
 {
    ULONG ulStyle = hb_parnl( 3 );
    ULONG ulExStyle =
@@ -2028,7 +2028,7 @@ HB_FUNC( CREATEREBAR )
 }
 
 
-HB_FUNC( REBARSETIMAGELIST )
+HB_FUNC( HWG_REBARSETIMAGELIST )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
    HIMAGELIST p = ( HB_ISNUM( 2 ) ||
@@ -2107,7 +2107,7 @@ static BOOL AddBar1( HWND pParent, HWND pBar, COLORREF clrFore, COLORREF clrBack
    return _AddBar( pParent, pBar, &rbBand );
 }
 
-HB_FUNC( ADDBARBITMAP )
+HB_FUNC( HWG_ADDBARBITMAP )
 {
    HWND pParent = ( HWND ) HB_PARHANDLE( 1 );
    HWND pBar = ( HWND ) HB_PARHANDLE( 2 );
@@ -2119,7 +2119,7 @@ HB_FUNC( ADDBARBITMAP )
    hb_strfree( hStr );
 }
 
-HB_FUNC( ADDBARCOLORS )
+HB_FUNC( HWG_ADDBARCOLORS )
 {
    HWND pParent = ( HWND ) HB_PARHANDLE( 1 );
    HWND pBar = ( HWND ) HB_PARHANDLE( 2 );
@@ -2135,12 +2135,12 @@ HB_FUNC( ADDBARCOLORS )
 
 //Combo Box Procedure
 
-HB_FUNC( GETCOMBOWNDPROC )
+HB_FUNC( HWG_GETCOMBOWNDPROC )
 {
    hb_retnl( ( LONG ) wpOrigComboProc );
 }
 
-HB_FUNC( COMBOGETITEMRECT )
+HB_FUNC( HWG_COMBOGETITEMRECT )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
 
@@ -2150,7 +2150,7 @@ HB_FUNC( COMBOGETITEMRECT )
    hb_itemRelease( hb_itemReturn( Rect2Array( &rcItem ) ) );
 }
 
-HB_FUNC( COMBOBOXGETITEMDATA )
+HB_FUNC( HWG_COMBOBOXGETITEMDATA )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
    int nIndex = hb_parnl( 2 );
@@ -2160,7 +2160,7 @@ HB_FUNC( COMBOBOXGETITEMDATA )
 
 }
 
-HB_FUNC( COMBOBOXSETITEMDATA )
+HB_FUNC( HWG_COMBOBOXSETITEMDATA )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
    int nIndex = hb_parnl( 2 );
@@ -2169,7 +2169,7 @@ HB_FUNC( COMBOBOXSETITEMDATA )
                ( LPARAM ) dwItemData ) );
 }
 
-HB_FUNC( GETLOCALEINFO )
+HB_FUNC( HWG_GETLOCALEINFO )
 {
    TCHAR szBuffer[10] = { 0 };
    GetLocaleInfo( LOCALE_USER_DEFAULT, LOCALE_SLIST, szBuffer,
@@ -2178,7 +2178,7 @@ HB_FUNC( GETLOCALEINFO )
 }
 
 
-HB_FUNC( COMBOBOXGETLBTEXT )
+HB_FUNC( HWG_COMBOBOXGETLBTEXT )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
    int nIndex = hb_parnl( 2 );
@@ -2188,7 +2188,7 @@ HB_FUNC( COMBOBOXGETLBTEXT )
    HB_STORSTR( lpszText, 3 );
 }
 
-HB_FUNC( DEFWINDOWPROC )
+HB_FUNC( HWG_DEFWINDOWPROC )
 {
 //   WNDPROC wpProc = (WNDPROC) hb_parnl(1);
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
@@ -2200,7 +2200,7 @@ HB_FUNC( DEFWINDOWPROC )
 }
 
 
-HB_FUNC( CALLWINDOWPROC )
+HB_FUNC( HWG_CALLWINDOWPROC )
 {
    WNDPROC wpProc = ( WNDPROC ) hb_parnl( 1 );
    HWND hWnd = ( HWND ) HB_PARHANDLE( 2 );
@@ -2212,7 +2212,7 @@ HB_FUNC( CALLWINDOWPROC )
 }
 
 
-HB_FUNC( BUTTONGETDLGCODE )
+HB_FUNC( HWG_BUTTONGETDLGCODE )
 {
    LPARAM lParam = ( LPARAM ) HB_PARHANDLE( 1 );
    if( lParam )
@@ -2233,7 +2233,7 @@ HB_FUNC( BUTTONGETDLGCODE )
 }
 
 
-HB_FUNC( GETDLGMESSAGE )
+HB_FUNC( HWG_GETDLGMESSAGE )
 {
    LPARAM lParam = ( LPARAM ) HB_PARHANDLE( 1 );
    if( lParam )
@@ -2249,7 +2249,7 @@ HB_FUNC( GETDLGMESSAGE )
    hb_retnl( 0 );
 }
 
-HB_FUNC( HANDLETOPTR )
+HB_FUNC( HWG_HANDLETOPTR )
 {
    DWORD h = hb_parnl( 1 );
 #ifdef HWG_USE_POINTER_ITEM
@@ -2260,14 +2260,14 @@ HB_FUNC( HANDLETOPTR )
 }
 
 
-HB_FUNC( TABITEMPOS )
+HB_FUNC( HWG_TABITEMPOS )
 {
    RECT pRect;
    TabCtrl_GetItemRect( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ), &pRect );
    hb_itemRelease( hb_itemReturn( Rect2Array( &pRect ) ) );
 }
 
-HB_FUNC( GETTABNAME )
+HB_FUNC( HWG_GETTABNAME )
 {
    TC_ITEM tie;
    TCHAR d[255] = { 0 };
@@ -2279,3 +2279,4 @@ HB_FUNC( GETTABNAME )
                     ( LPTCITEM ) &tie );
    HB_RETSTR( tie.pszText );
 }
+

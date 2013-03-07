@@ -40,7 +40,7 @@ METHOD Show( oWnd, xPos, yPos, lWnd ) CLASS HMenu
       ENDIF
       Hwg_trackmenu( ::handle, xPos, yPos, oWnd:handle )
    ELSE
-      aCoor := ClientToScreen( oWnd:handle, xPos, yPos )
+      aCoor := hwg_Clienttoscreen( oWnd:handle, xPos, yPos )
       Hwg_trackmenu( ::handle, aCoor[ 1 ], aCoor[ 2 ], oWnd:handle )
    ENDIF
 
@@ -126,7 +126,8 @@ FUNCTION Hwg_GetSubMenuHandle( aMenu, nId )
 
    RETURN IIf( aSubMenu == Nil, 0, aSubMenu[ 5 ] )
 
-FUNCTION BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
+FUNCTION hwg_BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
+
    LOCAL hMenu, nPos, aMenu, oBmp
 
    IF nPosParent == Nil
@@ -153,7 +154,7 @@ FUNCTION BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
    nPos := 1
    DO WHILE nPos <= Len( aMenu[ 1 ] )
       IF ValType( aMenu[ 1, nPos, 1 ] ) == "A"
-         BuildMenu( aMenu,,, nPos )
+         hwg_BuildMenu( aMenu,,, nPos )
       ELSE
          IF aMenu[ 1, nPos, 1 ] == Nil .OR. aMenu[ 1, nPos, 2 ] != Nil
             /* This code just for sure menu runtime hfrmtmpl.prg is enable */
@@ -162,7 +163,7 @@ FUNCTION BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
                               aMenu[ 1, nPos, 3 ], aMenu[ 1, nPos, 4 ], .F. )
             oBmp := Hwg_SearchPosBitmap( aMenu[ 1, nPos, 3 ] )
             IF oBmp[ 1 ]
-               SetMenuItemBitmaps( hMenu, aMenu[ 1, nPos, 3 ], oBmp[ 2 ], "" )
+               hwg__SetMenuItemBitmaps( hMenu, aMenu[ 1, nPos, 3 ], oBmp[ 2 ], "" )
             ENDIF
 
          ENDIF
@@ -190,8 +191,8 @@ FUNCTION Hwg_BeginMenu( oWnd, nId, cTitle, nbkColor, nWidthBmp, nHeightBmp )
       _oMenu    := Nil
       _nLevel   := 0
       _Id       := IIf( nId == Nil, MENU_FIRST_ID, nId )
-      s_nWidthBmp  := IIF( nWidthBmp = Nil .OR. ! HWG_ISWIN7(), GETSYSTEMMETRICS( SM_CXMENUCHECK ), nWidthBmp )
-      s_nHeightBmp := IIF( nHeightBmp = Nil .OR. ! HWG_ISWIN7(), GETSYSTEMMETRICS( SM_CYMENUCHECK ), nHeightBmp )
+      s_nWidthBmp  := IIF( nWidthBmp = Nil .OR. ! HWG_ISWIN7(), hwg_Getsystemmetrics( SM_CXMENUCHECK ), nWidthBmp )
+      s_nHeightBmp := IIF( nHeightBmp = Nil .OR. ! HWG_ISWIN7(), hwg_Getsystemmetrics( SM_CYMENUCHECK ), nHeightBmp )
       s_nbkColor   := nbkColor 
    ELSE
       nId   := IIf( nId == Nil, ++ _Id, nId )
@@ -217,10 +218,10 @@ FUNCTION Hwg_EndMenu()
    IF _nLevel > 0
       _nLevel --
    ELSE
-      BuildMenu( AClone( _aMenuDef ), IIf( _oWnd != Nil, _oWnd:handle, Nil ), ;
+      hwg_BuildMenu( AClone( _aMenuDef ), IIf( _oWnd != Nil, _oWnd:handle, Nil ), ;
                  _oWnd,, IIf( _oWnd != Nil, .F., .T. ) )
       IF _oWnd != Nil .AND. _aAccel != Nil .AND. ! Empty( _aAccel )
-         _oWnd:hAccel := CreateAcceleratorTable( _aAccel )
+         _oWnd:hAccel := hwg_Createacceleratortable( _aAccel )
       ENDIF
       _aMenuDef := Nil
       _oBitmap  := Nil
@@ -279,7 +280,7 @@ FUNCTION Hwg_SetMenuItemBitmaps( aMenu, nId, abmp1, abmp2 )
    LOCAL oMenu
 
    oMenu := IIf( aSubMenu == Nil, 0, aSubMenu[ 5 ] )
-   SetMenuItemBitmaps( oMenu, nId, abmp1, abmp2 )
+   hwg__SetMenuItemBitmaps( oMenu, nId, abmp1, abmp2 )
    RETURN Nil
 
 FUNCTION Hwg_InsertBitmapMenu( aMenu, nId, lBitmap, oResource )
@@ -314,13 +315,15 @@ FUNCTION Hwg_SearchPosBitmap( nPos_Id )
 
    RETURN lBmp
 
-FUNCTION DeleteMenuItem( oWnd, nId )
+FUNCTION hwg_DeleteMenuItem( oWnd, nId )
+
    LOCAL aSubMenu, nPos
 
    IF ( aSubMenu := Hwg_FindMenuItem( oWnd:menu, nId, @nPos ) ) != Nil
       ADel( aSubMenu[ 1 ], nPos )
       ASize( aSubMenu[ 1 ], Len( aSubMenu[ 1 ] ) - 1 )
 
-      hwg_DeleteMenu( GetMenuHandle( oWnd:handle ), nId )
+      hwg_DeleteMenu( hwg_Getmenuhandle( oWnd:handle ), nId )
    ENDIF
    RETURN Nil
+

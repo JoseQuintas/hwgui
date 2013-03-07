@@ -15,12 +15,12 @@ Function Main
         
         INIT WINDOW oMain MAIN TITLE "Browse Example - Database" ;
              AT 0,0 ;
-             SIZE GetDesktopWidth(), GetDesktopHeight() - 28
+             SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
                 MENU OF oMain
                         MENUITEM "&Exit"   ACTION oMain:Close()
                         MENUITEM "&Browse" ACTION BrowseTest()
-                        MENUITEM "&Count"  ACTION MsgInfo(str(nCount))
+                        MENUITEM "&Count"  ACTION hwg_Msginfo(str(nCount))
                 ENDMENU
 
         ACTIVATE WINDOW oMain
@@ -29,7 +29,7 @@ Return Nil
 Function BrowseTest()
         Local oForm, oFont
 
-        SetToolTipBalloon(.t.)
+        hwg_Settooltipballoon(.t.)
 
         PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT -11
              
@@ -86,20 +86,20 @@ Function BrowseTest()
 Return Nil
 
 Static Function BrowseWhen()
-        MsgExclamation("When Event")
+        hwg_Msgexclamation("When Event")
 Return .T.
 
 Static Function BrowseValid()
-        MsgExclamation("Valid Event"+STR(TENTA))
+        hwg_Msgexclamation("Valid Event"+STR(TENTA))
         ++TENTA
 Return .T.
 
 Static Function BrowseMove()
-        MsgInfo("Going to record " + ltrim(str(recno())))
+        hwg_Msginfo("Going to record " + ltrim(str(recno())))
 return Nil
         
 Static Function BrowseUpdate( oBrow, colpos)
-        MsgExclamation("Column " + ltrim(str(colpos)) + " Changed")
+        hwg_Msgexclamation("Column " + ltrim(str(colpos)) + " Changed")
         
         if colpos == 2
                 oBrow:Append()

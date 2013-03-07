@@ -75,7 +75,7 @@ LOCAL aFormCode, aFormName
             Aadd( aFormName, SUBSTR( stroka, i+1 ) )
          ELSEIF rejim == -1 .AND. LEFT( stroka, 9 ) == "#ENDBLOCK"
 #ifdef __WINDOWS__
-            i := WCHOICE( aFormName )
+            i := hwg_WChoice( aFormName )
 #else
             i := FCHOICE( aFormName )
 #endif
@@ -90,7 +90,7 @@ LOCAL aFormCode, aFormName
       FCLOSE( han )
    ELSE
 #ifdef __WINDOWS__
-      MsgStop( fname + " can't be opened " )
+      hwg_Msgstop( fname + " can't be opened " )
 #else
       ALERT( fname + " can't be opened " )
 #endif
@@ -147,7 +147,7 @@ LOCAL rezArray := Iif( lDebugInfo, { "", {}, {} }, { "", {} } )
       ENDIF
    ELSE
 #ifdef __WINDOWS__
-      MsgStop( "Can't open " + scrSource )
+      hwg_Msgstop( "Can't open " + scrSource )
 #else
       WndOut( "Can't open " + scrSource )
       WAIT ""
@@ -342,8 +342,8 @@ Local n, cTitle
       cTitle := "Script execution error"
    ENDIF
    stroka += Chr(13)+Chr(10) + Chr(13)+Chr(10) + "Continue ?"
-   IF !msgYesNo( stroka, cTitle )
-      EndWindow()
+   IF !hwg_Msgyesno( stroka, cTitle )
+      hwg_EndWindow()
       QUIT
    ENDIF
 #else

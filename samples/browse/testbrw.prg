@@ -8,7 +8,7 @@ Local oMainWindow
      AT 200,0 SIZE 400,150
 
    MENU OF oMainWindow
-      MENUITEM "&Exit" ACTION EndWindow()
+      MENUITEM "&Exit" ACTION hwg_EndWindow()
       MENUITEM "&Dialog" ACTION DlgGet()
    ENDMENU
 
@@ -29,13 +29,13 @@ Local aSample2 := { {.t.,"Line 1",10}, {.t.,"Line 2",22}, {.f.,"Line 3",40} }
    @ 210,30 BROWSE oBrw2 ARRAY SIZE 180,110 ;
         STYLE WS_BORDER + WS_VSCROLL + WS_HSCROLL
 
-   @ 80,180 OWNERBUTTON ON CLICK {|| EndDialog()} ;
+   @ 80,180 OWNERBUTTON ON CLICK {|| hwg_EndDialog()} ;
        SIZE 180,35 FLAT                                  ;
-       TEXT "Close" COLOR Vcolor("0000FF")
+       TEXT "Close" COLOR hwg_VColor("0000FF")
 
-   CreateArList( oBrw1,aSample1 )
+   hwg_CREATEARLIST( oBrw1,aSample1 )
 
-   CreateArList( oBrw2,aSample2 )
+   hwg_CREATEARLIST( oBrw2,aSample2 )
    oBmp := HBitmap():AddResource( OBM_CHECK )
    oBrw2:aColumns[1]:aBitmaps := { ;
       { {|l|l}, oBmp } ;

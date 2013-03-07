@@ -58,7 +58,7 @@ METHOD Redefine( oWndParent, nId, bInit, bSize, ctooltip ) CLASS HSayImage
 METHOD Activate() CLASS HSayImage
 
    IF ! Empty( ::oParent:handle )
-      ::handle := CreateStatic( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
             ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::extStyle )
       ::Init()
    ENDIF
@@ -98,8 +98,8 @@ CLASS HSayBmp INHERIT HSayImage
    METHOD Init()
    METHOD Paint( lpdis )
    METHOD ReplaceBitmap( Image, lRes )
-   //METHOD REFRESH() INLINE ::HIDE(), SENDMESSAGE( ::handle, WM_PAINT, 0, 0 ), ::SHOW()
-   METHOD Refresh() INLINE RedrawWindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_UPDATENOW )
+   //METHOD REFRESH() INLINE ::HIDE(), hwg_Sendmessage( ::handle, WM_PAINT, 0, 0 ), ::SHOW()
+   METHOD Refresh() INLINE hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_UPDATENOW )
 
 ENDCLASS
 
@@ -153,42 +153,42 @@ METHOD Init() CLASS HSayBmp
    IF !::lInit
       ::Super:Init()
       IF ::oImage != NIL .AND. !empty( ::oImage:Handle )
-         SendMessage( ::handle,STM_SETIMAGE, IMAGE_BITMAP, ::oImage:handle )
+         hwg_Sendmessage( ::handle,STM_SETIMAGE, IMAGE_BITMAP, ::oImage:handle )
       ENDIF
    ENDIF
 
    Return NIL
 
 METHOD Paint( lpdis ) CLASS HSayBmp
-   LOCAL drawInfo := GetDrawItemInfo( lpdis )
+   LOCAL drawInfo := hwg_Getdrawiteminfo( lpdis )
 
    IF ::oImage != NIL .AND. !empty( ::oImage:Handle )
       IF ::nZoom == NIL
          IF ::BackStyle = TRANSPARENT
             IF ::nStretch = 1  // isometric
-               DrawTransparentBitmap( drawInfo[ 3 ], ::oImage:handle, drawInfo[ 4 ] + ::nOffsetH, ;
+               hwg_Drawtransparentbitmap( drawInfo[ 3 ], ::oImage:handle, drawInfo[ 4 ] + ::nOffsetH, ;
                      drawInfo[ 5 ] + ::nOffsetV,, ) // ::nWidth+1, ::nHeight+1 )
             ELSEIF ::nStretch = 2  // CLIP
-               DrawTransparentBitmap( drawInfo[ 3 ], ::oImage:handle, drawInfo[ 4 ] + ::nOffsetH, ;
+               hwg_Drawtransparentbitmap( drawInfo[ 3 ], ::oImage:handle, drawInfo[ 4 ] + ::nOffsetH, ;
                      drawInfo[ 5 ] + ::nOffsetV,, ::nWidth + 1, ::nHeight + 1 )
             ELSE // stretch (DEFAULT)
-               DrawTransparentBitmap( drawInfo[ 3 ], ::oImage:handle, drawInfo[ 4 ] + ::nOffsetH, ;
+               hwg_Drawtransparentbitmap( drawInfo[ 3 ], ::oImage:handle, drawInfo[ 4 ] + ::nOffsetH, ;
                      drawInfo[ 5 ] + ::nOffsetV,, drawInfo[ 6 ] - drawInfo[ 4 ] + 1, drawInfo[ 7 ] - drawInfo[ 5 ] + 1  )
             ENDIF
          ELSE
             IF ::nStretch = 1  // isometric
-               DrawBitmap( drawInfo[ 3 ], ::oImage:handle,, drawInfo[ 4 ] + ::nOffsetH, ;
+               hwg_Drawbitmap( drawInfo[ 3 ], ::oImage:handle,, drawInfo[ 4 ] + ::nOffsetH, ;
                      drawInfo[ 5 ] + ::nOffsetV ) //, ::nWidth+1, ::nHeight+1 )
             ELSEIF ::nStretch = 2  // CLIP
-               DrawBitmap( drawInfo[ 3 ], ::oImage:handle,, drawInfo[ 4 ] + ::nOffsetH, ;
+               hwg_Drawbitmap( drawInfo[ 3 ], ::oImage:handle,, drawInfo[ 4 ] + ::nOffsetH, ;
                      drawInfo[ 5 ] + ::nOffsetV, ::nWidth + 1, ::nHeight + 1 )
             ELSE // stretch (DEFAULT)
-               DrawBitmap( drawInfo[ 3 ], ::oImage:handle,, drawInfo[ 4 ] + ::nOffsetH, ;
+               hwg_Drawbitmap( drawInfo[ 3 ], ::oImage:handle,, drawInfo[ 4 ] + ::nOffsetH, ;
                      drawInfo[ 5 ] + ::nOffsetV, drawInfo[ 6 ] - drawInfo[ 4 ] + 1, drawInfo[ 7 ] - drawInfo[ 5 ] + 1 )
             ENDIF
          ENDIF
       ELSE
-         DrawBitmap( drawInfo[ 3 ], ::oImage:handle,, drawInfo[ 4 ] + ::nOffsetH, ;
+         hwg_Drawbitmap( drawInfo[ 3 ], ::oImage:handle,, drawInfo[ 4 ] + ::nOffsetH, ;
                drawInfo[ 5 ] + ::nOffsetV, ::oImage:nWidth * ::nZoom, ::oImage:nHeight * ::nZoom )
       ENDIF
    ENDIF
@@ -215,7 +215,7 @@ CLASS HSayIcon INHERIT HSayImage
          bSize, ctooltip, lOEM, bClick, bDblClick )
    METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip )
    METHOD Init()
-   METHOD REFRESH() INLINE SendMessage( ::handle, STM_SETIMAGE, IMAGE_ICON, ::oImage:handle )
+   METHOD REFRESH() INLINE hwg_Sendmessage( ::handle, STM_SETIMAGE, IMAGE_ICON, ::oImage:handle )
 
 ENDCLASS
 
@@ -254,7 +254,7 @@ METHOD Init() CLASS HSayIcon
 
    IF ! ::lInit
       ::Super:Init()
-      SendMessage( ::handle, STM_SETIMAGE, IMAGE_ICON, ::oImage:handle )
+      hwg_Sendmessage( ::handle, STM_SETIMAGE, IMAGE_ICON, ::oImage:handle )
    ENDIF
 
    RETURN NIL

@@ -32,7 +32,7 @@ void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor )
    gdk_color_parse( color,pColor );
 }
 
-HB_FUNC( INVALIDATERECT )
+HB_FUNC( HWG_INVALIDATERECT )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
    int x1, y1, x2, y2;
@@ -68,7 +68,7 @@ HB_FUNC( INVALIDATERECT )
 */
 }
 
-HB_FUNC( RECTANGLE )
+HB_FUNC( HWG_RECTANGLE )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
@@ -76,13 +76,13 @@ HB_FUNC( RECTANGLE )
    gdk_draw_rectangle( hDC->window, hDC->gc, 0, x1, y1, hb_parni(4)-x1+1, hb_parni(5)-y1+1 );
 }
 
-HB_FUNC( DRAWLINE )
+HB_FUNC( HWG_DRAWLINE )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    gdk_draw_line( hDC->window, hDC->gc, hb_parni(2), hb_parni(3), hb_parni(4), hb_parni(5) );
 }
 
-HB_FUNC( PIE )
+HB_FUNC( HWG_PIE )
 {
 /*
    int res = Pie(
@@ -103,7 +103,7 @@ HB_FUNC( PIE )
 */     
 }
 
-HB_FUNC( ELLIPSE )
+HB_FUNC( HWG_ELLIPSE )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
@@ -111,7 +111,7 @@ HB_FUNC( ELLIPSE )
    gdk_draw_arc( hDC->window, hDC->gc, 0, x1, y1, hb_parni(4)-x1+1, hb_parni(5)-y1+1, 0, 360*64 );
 }
 
-HB_FUNC( FILLRECT )
+HB_FUNC( HWG_FILLRECT )
 {
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
@@ -126,7 +126,7 @@ HB_FUNC( FILLRECT )
 
 }
 
-HB_FUNC( ROUNDRECT )
+HB_FUNC( HWG_ROUNDRECT )
 {
 /*
    hb_parl( RoundRect(
@@ -141,7 +141,7 @@ HB_FUNC( ROUNDRECT )
 */   
 }
 
-HB_FUNC( REDRAWWINDOW )
+HB_FUNC( HWG_REDRAWWINDOW )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
 /*
@@ -160,7 +160,7 @@ HB_FUNC( REDRAWWINDOW )
         widget->allocation.width, widget->allocation.height );
 }
 
-HB_FUNC( DRAWBUTTON )
+HB_FUNC( HWG_DRAWBUTTON )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    int left = hb_parni( 2 );
@@ -212,7 +212,7 @@ HB_FUNC( DRAWBUTTON )
 /*
  * DrawEdge( hDC,x1,y1,x2,y2,nFlag,nBorder )
  */
-HB_FUNC( DRAWEDGE )
+HB_FUNC( HWG_DRAWEDGE )
 {
 /*
    RECT rc;
@@ -229,7 +229,7 @@ HB_FUNC( DRAWEDGE )
 */   
 }
 
-HB_FUNC( LOADICON )
+HB_FUNC( HWG_LOADICON )
 {
 /*
    if( HB_ISNUM(1) )
@@ -239,7 +239,7 @@ HB_FUNC( LOADICON )
 */      
 }
 
-HB_FUNC( LOADIMAGE )
+HB_FUNC( HWG_LOADIMAGE )
 {
 /*
    hb_retnl( (HB_LONG) 
@@ -253,7 +253,7 @@ HB_FUNC( LOADIMAGE )
 */   
 }
 
-HB_FUNC( LOADBITMAP )
+HB_FUNC( HWG_LOADBITMAP )
 {
 /*
    if( HB_ISNUM(1) )
@@ -266,14 +266,14 @@ HB_FUNC( LOADBITMAP )
 /*
  * Window2Bitmap( hWnd )
  */
-HB_FUNC( WINDOW2BITMAP )
+HB_FUNC( HWG_WINDOW2BITMAP )
 {
 }
 
 /*
  * DrawBitmap( hDC, hBitmap, style, x, y, width, height )
  */
-HB_FUNC( DRAWBITMAP )
+HB_FUNC( HWG_DRAWBITMAP )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) HB_PARHANDLE(2);
@@ -290,17 +290,17 @@ HB_FUNC( DRAWBITMAP )
 /*
  * DrawTransparentBitmap( hDC, hBitmap, x, y )
  */
-HB_FUNC( DRAWTRANSPARENTBITMAP )
+HB_FUNC( HWG_DRAWTRANSPARENTBITMAP )
 {
 }
 
 /*  SpreadBitmap( hDC, hWnd, hBitmap, style )
 */
-HB_FUNC( SPREADBITMAP )
+HB_FUNC( HWG_SPREADBITMAP )
 {
 }
 
-HB_FUNC( GETBITMAPSIZE )
+HB_FUNC( HWG_GETBITMAPSIZE )
 {
    PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) HB_PARHANDLE(1);
    PHB_ITEM aMetr = _itemArrayNew( 2 );
@@ -319,7 +319,7 @@ HB_FUNC( GETBITMAPSIZE )
    
 }
 
-HB_FUNC( OPENBITMAP )
+HB_FUNC( HWG_OPENBITMAP )
 {
    PHWGUI_PIXBUF hpix;
    GdkPixbuf * handle = gdk_pixbuf_new_from_file( hb_parc(1), NULL );
@@ -333,7 +333,7 @@ HB_FUNC( OPENBITMAP )
    }
 }
 
-HB_FUNC( OPENIMAGE )
+HB_FUNC( HWG_OPENIMAGE )
 {
    PHWGUI_PIXBUF hpix;
    GdkPixbuf * handle = gdk_pixbuf_new_from_file( hb_parc(1), NULL );
@@ -375,19 +375,19 @@ HB_FUNC( HWG_ALPHA2PIXBUF )
    
 }
 
-HB_FUNC( DRAWICON )
+HB_FUNC( HWG_DRAWICON )
 {
    // DrawIcon( (HDC)hb_parnl( 1 ), hb_parni( 3 ), hb_parni( 4 ), (HICON)hb_parnl( 2 ) );
 }
 
-HB_FUNC( GETSYSCOLOR )
+HB_FUNC( HWG_GETSYSCOLOR )
 {
    hb_retnl( 0 );  // (HB_LONG) GetSysColor( hb_parni( 1 ) ) );
 }
 
 #define  PS_SOLID   0
 
-HB_FUNC( CREATEPEN )
+HB_FUNC( HWG_CREATEPEN )
 {
    PHWGUI_PEN hpen = (PHWGUI_PEN) hb_xgrab( sizeof(HWGUI_PEN) );
    HB_ULONG ncolor = (HB_ULONG) hb_parnl(3);
@@ -401,7 +401,7 @@ HB_FUNC( CREATEPEN )
    HB_RETHANDLE( hpen );
 }
 
-HB_FUNC( CREATESOLIDBRUSH )
+HB_FUNC( HWG_CREATESOLIDBRUSH )
 {
    PHWGUI_BRUSH hbrush = (PHWGUI_BRUSH) hb_xgrab( sizeof(HWGUI_BRUSH) );
    HB_ULONG ncolor = (HB_ULONG) hb_parnl(1);
@@ -414,7 +414,7 @@ HB_FUNC( CREATESOLIDBRUSH )
    HB_RETHANDLE( hbrush );
 }
 
-HB_FUNC( SELECTOBJECT )
+HB_FUNC( HWG_SELECTOBJECT )
 {
    HWGUI_HDC_OBJECT * obj = (HWGUI_HDC_OBJECT*) HB_PARHANDLE(2);
 
@@ -443,7 +443,7 @@ HB_FUNC( SELECTOBJECT )
    HB_RETHANDLE( NULL );
 }
 
-HB_FUNC( DELETEOBJECT )
+HB_FUNC( HWG_DELETEOBJECT )
 {
    HWGUI_HDC_OBJECT * obj = (HWGUI_HDC_OBJECT*) HB_PARHANDLE(1);
 
@@ -468,7 +468,7 @@ HB_FUNC( DELETEOBJECT )
 
 }
 
-HB_FUNC( DEFINEPAINTSTRU )
+HB_FUNC( HWG_DEFINEPAINTSTRU )
 {
    PHWGUI_PPS pps = (PHWGUI_PPS) hb_xgrab( sizeof(HWGUI_PPS) );
    
@@ -476,7 +476,7 @@ HB_FUNC( DEFINEPAINTSTRU )
    HB_RETHANDLE( pps );
 }
 
-HB_FUNC( BEGINPAINT )
+HB_FUNC( HWG_BEGINPAINT )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
    PHWGUI_PPS pps = (PHWGUI_PPS) HB_PARHANDLE(2);
@@ -494,7 +494,7 @@ HB_FUNC( BEGINPAINT )
    HB_RETHANDLE( hDC );
 }
 
-HB_FUNC( ENDPAINT )
+HB_FUNC( HWG_ENDPAINT )
 {
    PHWGUI_PPS pps = (PHWGUI_PPS) HB_PARHANDLE(2);
    PHWGUI_HDC hDC = pps->hDC;
@@ -506,7 +506,7 @@ HB_FUNC( ENDPAINT )
    hb_xfree( pps );
 }
 
-HB_FUNC( GETDC )
+HB_FUNC( HWG_GETDC )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) hb_xgrab( sizeof(HWGUI_HDC) );
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
@@ -521,7 +521,7 @@ HB_FUNC( GETDC )
    HB_RETHANDLE( hDC );
 }
 
-HB_FUNC( RELEASEDC )
+HB_FUNC( HWG_RELEASEDC )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(2);
 
@@ -531,7 +531,7 @@ HB_FUNC( RELEASEDC )
    hb_xfree( hDC );
 }
 
-HB_FUNC( GETDRAWITEMINFO )
+HB_FUNC( HWG_GETDRAWITEMINFO )
 {
 /*
    DRAWITEMSTRUCT * lpdis = (DRAWITEMSTRUCT*)hb_parnl(1);
@@ -574,11 +574,11 @@ HB_FUNC( GETDRAWITEMINFO )
 /*
  * DrawGrayBitmap( hDC, hBitmap, x, y )
  */
-HB_FUNC( DRAWGRAYBITMAP )
+HB_FUNC( HWG_DRAWGRAYBITMAP )
 {
 }
 
-HB_FUNC( GETCLIENTRECT )
+HB_FUNC( HWG_GETCLIENTRECT )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
    PHB_ITEM aMetr = hb_itemArrayNew( 4 );    
@@ -590,7 +590,7 @@ HB_FUNC( GETCLIENTRECT )
    hb_itemRelease( hb_itemReturn( aMetr ) );
 }
 
-HB_FUNC( GETWINDOWRECT )
+HB_FUNC( HWG_GETWINDOWRECT )
 {
 /*
    RECT rc;
@@ -619,3 +619,4 @@ HB_FUNC( GETWINDOWRECT )
    _itemRelease( aMetr );
 */   
 }
+

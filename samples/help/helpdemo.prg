@@ -6,7 +6,7 @@ Function Main()
         
     INIT WINDOW oMain MAIN TITLE "Help Demo" HELP "helpdemo.hlp";
          AT 0,0 ;
-         SIZE GetDesktopWidth(), GetDesktopHeight() - 28
+         SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
             MENU OF oMain
                     MENUITEM "&Exit"        ACTION oMain:Close()
@@ -26,7 +26,7 @@ Static Function Test()
         AT 210,10  SIZE 300,300 HELPID 3        
         
         @ 20,10 SAY "Input something:" SIZE 260, 22 
-        @ 20,35 GET oVar VAR cVar SIZE 260, 26 COLOR Vcolor("FF0000") TOOLTIP "Set focus on this control and press help"
+        @ 20,35 GET oVar VAR cVar SIZE 260, 26 COLOR hwg_VColor("FF0000") TOOLTIP "Set focus on this control and press help"
 
         @ 160,170 GET xVar SIZE 80, 20 TOOLTIP "Set focus on this control and press help"
 

@@ -60,7 +60,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
 
 METHOD Activate() CLASS HSplitter
    IF ! Empty( ::oParent:handle )
-      ::handle := CreateStatic( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
             ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::extStyle )
       ::Init()
    ENDIF
@@ -72,7 +72,7 @@ METHOD Init() CLASS HSplitter
    IF ! ::lInit
       ::Super:Init()
       ::nHolder := 1
-      SetWindowObject( ::handle, Self )
+      hwg_Setwindowobject( ::handle, Self )
       Hwg_InitWinCtrl( ::handle )
    ENDIF
 
@@ -84,7 +84,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
 
    IF msg == WM_MOUSEMOVE
       IF ::hCursor == NIL
-         ::hCursor := LoadCursor( IIf( ::lVertical, IDC_SIZEWE, IDC_SIZENS ) )
+         ::hCursor := hwg_Loadcursor( IIf( ::lVertical, IDC_SIZEWE, IDC_SIZENS ) )
       ENDIF
       Hwg_SetCursor( ::hCursor )
       IF ::lCaptured
@@ -98,11 +98,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
    ELSEIF msg == WM_ERASEBKGND
    ELSEIF msg == WM_LBUTTONDOWN
       Hwg_SetCursor( ::hCursor )
-      SetCapture( ::handle )
+      hwg_Setcapture( ::handle )
       ::lCaptured := .T.
-      InvalidateRect( ::handle, 1 )
+      hwg_Invalidaterect( ::handle, 1 )
    ELSEIF msg == WM_LBUTTONUP
-      ReleaseCapture()
+      hwg_Releasecapture()
       ::lCaptured := .F.
       ::lMoved := .F.
       ::DragAll( .F. )
@@ -118,39 +118,39 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
 METHOD Paint() CLASS HSplitter
    LOCAL pps, hDC, aCoors, x1, y1, x2, y2, oBrushFill
 
-   pps := DefinePaintStru()
-   hDC := BeginPaint( ::handle, pps )
-   IF GetPPSErase( pps ) > 0
-      //aCoors := GetClientRect( ::handle )
-      aCoors := GETPPSRECT( pps )
+   pps := hwg_Definepaintstru()
+   hDC := hwg_Beginpaint( ::handle, pps )
+   IF hwg_Getppserase( pps ) > 0
+      //aCoors := hwg_Getclientrect( ::handle )
+      aCoors := hwg_Getppsrect( pps )
 
       x1 := aCoors[ 1 ] //+ IIf( ::lVertical, 1, 2 )
       y1 := aCoors[ 2 ] //+ IIf( ::lVertical, 2, 1 )
       x2 := aCoors[ 3 ] //- IIf( ::lVertical, 0, 3 )
       y2 := aCoors[ 4 ] //- IIf( ::lVertical, 3, 0 )
 
-      SetBkMode( hDC, ::backStyle )
+      hwg_Setbkmode( hDC, ::backStyle )
       IF ::bPaint != NIL
          Eval( ::bPaint, Self )
       ELSEIF ! ::lScrolling
         IF ::lCaptured
-           oBrushFill := HBrush():Add( RGB( 156, 156, 156 ) )
-           SelectObject( hDC, oBrushFill:handle )
-           DrawEdge( hDC, x1, y1, x2, y2, EDGE_ETCHED, Iif( ::lVertical,BF_RECT,BF_TOP ) + BF_MIDDLE )
-           FillRect( hDC, x1, y1, x2, y2, oBrushFill:handle )
+           oBrushFill := HBrush():Add( hwg_Rgb( 156, 156, 156 ) )
+           hwg_Selectobject( hDC, oBrushFill:handle )
+           hwg_Drawedge( hDC, x1, y1, x2, y2, EDGE_ETCHED, Iif( ::lVertical,BF_RECT,BF_TOP ) + BF_MIDDLE )
+           hwg_Fillrect( hDC, x1, y1, x2, y2, oBrushFill:handle )
         ELSEIF ::BackStyle = OPAQUE
-            DrawEdge( hDC, x1, y1, x2, y2, EDGE_ETCHED, IIf( ::lVertical, BF_LEFT, BF_TOP ) )
+            hwg_Drawedge( hDC, x1, y1, x2, y2, EDGE_ETCHED, IIf( ::lVertical, BF_LEFT, BF_TOP ) )
          ENDIF
       ELSEIF !::lMoved .AND. ::BackStyle = OPAQUE
-         DrawEdge( hDC, x1, y1, x2, y2, EDGE_ETCHED, Iif( ::lVertical,BF_RECT,BF_TOP ) ) //+ BF_MIDDLE )
+         hwg_Drawedge( hDC, x1, y1, x2, y2, EDGE_ETCHED, Iif( ::lVertical,BF_RECT,BF_TOP ) ) //+ BF_MIDDLE )
       ENDIF
    ENDIF
-   EndPaint( ::handle, pps )
+   hwg_Endpaint( ::handle, pps )
 
    RETURN NIL
 
 METHOD Drag( lParam ) CLASS HSplitter
-   LOCAL xPos := LOWORD( lParam ), yPos := HIWORD( lParam )
+   LOCAL xPos := hwg_Loword( lParam ), yPos := hwg_Hiword( lParam )
 
    IF ::lVertical
       IF xPos > 32000
@@ -167,7 +167,7 @@ METHOD Drag( lParam ) CLASS HSplitter
    ENDIF
    ::Move( ::nLeft + xPos, ::nTop + yPos, ::nWidth, ::nHeight )
    IF ! ::lScrolling
-      InvalidateRect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nleft + ::nWidth , ::nTop + ::nHeight )
+      hwg_Invalidaterect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nleft + ::nWidth , ::nTop + ::nHeight )
    ENDIF
    ::lMoved := .T.
 
@@ -191,7 +191,7 @@ METHOD DragAll( lScroll ) CLASS HSplitter
       ENDIF
       oCtrl:Move( oCtrl:nLeft + xDiff, oCtrl:nTop + yDiff, oCtrl:nWidth - xDiff ,oCtrl:nHeight - yDiff, ! lScroll )
       IF ( yDiff < 0.OR. xDiff > 0 ) .OR. ! lScroll
-         InvalidateRect( oCtrl:Handle, 0 )
+         hwg_Invalidaterect( oCtrl:Handle, 0 )
       ENDIF
    NEXT
    FOR i := 1 TO Len( ::aLeft )
@@ -205,16 +205,16 @@ METHOD DragAll( lScroll ) CLASS HSplitter
       ENDIF
       oCtrl:Move( oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth + xDiff, oCtrl:nHeight + yDiff , ! lScroll )
       IF ( yDiff > 0.OR. xDiff > 0 ) .OR. ! lScroll
-         InvalidateRect( oCtrl:Handle, 0 )
+         hwg_Invalidaterect( oCtrl:Handle, 0 )
       ENDIF
    NEXT
    //::lMoved := .F.
    IF ! lScroll
-      InvalidateRect( ::oParent:handle, 1, ::nLeft ,::nTop  , ::nLeft + ::nWidth , ::nTop + ::nHeight  )
+      hwg_Invalidaterect( ::oParent:handle, 1, ::nLeft ,::nTop  , ::nLeft + ::nWidth , ::nTop + ::nHeight  )
    ELSEIF ::lVertical
-      InvalidateRect( ::oParent:Handle, 1, ::nLeft - ::nWidth - xDiff - 1 , ::nTop , ::nLeft + ::nWidth + xDiff + 1, ::nTop + ::nHeight )
+      hwg_Invalidaterect( ::oParent:Handle, 1, ::nLeft - ::nWidth - xDiff - 1 , ::nTop , ::nLeft + ::nWidth + xDiff + 1, ::nTop + ::nHeight )
    ELSE
-      InvalidateRect( ::oParent:Handle, 1, ::nLeft , ::nTop - ::nHeight - yDiff - 1 , ::nLeft + ::nWidth, ::nTop + ::nHeight + yDiff + 1 )
+      hwg_Invalidaterect( ::oParent:Handle, 1, ::nLeft , ::nTop - ::nHeight - yDiff - 1 , ::nLeft + ::nWidth, ::nTop + ::nHeight + yDiff + 1 )
    ENDIF
    IF ::bEndDrag != NIL
       Eval( ::bEndDrag,Self )

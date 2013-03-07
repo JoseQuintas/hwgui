@@ -44,36 +44,36 @@ LOCAL af, oBrw
    oBrw:AddColumn( HColumn():New( "Type",{|value,o|o:aArray[o:nCurrent,2] },"C",4,0  ) )
    oBrw:AddColumn( HColumn():New( "Length",{|value,o|o:aArray[o:nCurrent,3] },"N",4,0  ) )
    oBrw:AddColumn( HColumn():New( "Dec",{|value,o|o:aArray[o:nCurrent,4] },"N",2,0  ) )
-   oBrw:bcolorSel := VColor( "800080" )
+   oBrw:bcolorSel := hwg_VColor( "800080" )
    oBrw:ofont      := oBrwFont
 
    oModDlg:Activate()
 Return Nil
 
 Static Function SetField( oBrw )
-Local hDlg := getmodalhandle(), i
-   SetDlgItemText( hDlg, IDC_EDIT2, oBrw:aArray[oBrw:nCurrent,1] )
+Local hDlg := hwg_GetModalHandle(), i
+   hwg_Setdlgitemtext( hDlg, IDC_EDIT2, oBrw:aArray[oBrw:nCurrent,1] )
    IF ( i := At( oBrw:aArray[oBrw:nCurrent,2], "CNDLM" ) ) != 0
-      ComboSetString( GetDlgItem( hDlg, IDC_COMBOBOX2 ), i )
+      hwg_Combosetstring( hwg_Getdlgitem( hDlg, IDC_COMBOBOX2 ), i )
    ENDIF
-   SetDlgItemText( hDlg, IDC_EDIT3, Ltrim( Str( oBrw:aArray[oBrw:nCurrent,3] ) ) )
-   SetDlgItemText( hDlg, IDC_EDIT4, Ltrim( Str( oBrw:aArray[oBrw:nCurrent,4] ) ) )
+   hwg_Setdlgitemtext( hDlg, IDC_EDIT3, Ltrim( Str( oBrw:aArray[oBrw:nCurrent,3] ) ) )
+   hwg_Setdlgitemtext( hDlg, IDC_EDIT4, Ltrim( Str( oBrw:aArray[oBrw:nCurrent,4] ) ) )
 Return Nil
 
 Static Function ModiStru( nOper )
-Local oDlg := getmodalDlg(), hDlg := oDlg:handle
+Local oDlg := hwg_GetModalDlg(), hDlg := oDlg:handle
 Local oBrowse := oDlg:FindControl( ID_BROWSE )
 Local cName, cType, nLen, nDec := 0
 
    IF nOper < 4
-      cName := GetDlgItemText( hDlg, IDC_EDIT2, 10 )
+      cName := hwg_Getdlgitemtext( hDlg, IDC_EDIT2, 10 )
       IF Empty( cName )
-         SetFocus( GetDlgItem( hDlg, IDC_EDIT2 ) )
+         hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT2 ) )
          Return Nil
       ENDIF
-      cType := Left( GetDlgItemText( hDlg, IDC_COMBOBOX2, 10 ), 1 )
+      cType := Left( hwg_Getdlgitemtext( hDlg, IDC_COMBOBOX2, 10 ), 1 )
       IF Empty( cType )
-         SetFocus( GetDlgItem( hDlg, IDC_COMBOBOX2 ) )
+         hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_COMBOBOX2 ) )
          Return Nil
       ENDIF
       IF cType == "D" 
@@ -83,13 +83,13 @@ Local cName, cType, nLen, nDec := 0
       ELSEIF cType == "M" 
          nLen := 10
       ELSE
-         nLen  := Val( GetDlgItemText( hDlg, IDC_EDIT3, 10 ) )
+         nLen  := Val( hwg_Getdlgitemtext( hDlg, IDC_EDIT3, 10 ) )
          IF nLen == 0
-            SetFocus( GetDlgItem( hDlg, IDC_EDIT3 ) )
+            hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT3 ) )
             Return Nil
          ENDIF
          IF cType == "N" 
-            nDec  := Val( GetDlgItemText( hDlg, IDC_EDIT4, 10 ) )
+            nDec  := Val( hwg_Getdlgitemtext( hDlg, IDC_EDIT4, 10 ) )
          ENDIF
       ENDIF
       IF nOper == 3 .OR. ( oBrowse:nRecords == 1 .AND. Empty( oBrowse:aArray[1,1] ) )
@@ -108,7 +108,7 @@ Local cName, cType, nLen, nDec := 0
       Asize( oBrowse:aArray,Len( oBrowse:aArray ) - 1 )
       oBrowse:nRecords --
    ENDIF
-   RedrawWindow( oBrowse:handle, RDW_ERASE + RDW_INVALIDATE )
+   hwg_Redrawwindow( oBrowse:handle, RDW_ERASE + RDW_INVALIDATE )
 Return Nil
 
 Static Function EndStru( oDlg,lNew )
@@ -207,10 +207,10 @@ Local oPBar, nSch := 0
          aControls := oWindow:aControls
          IF ( i := Ascan( aControls, {|o|o:classname()=="HBROWSE"} ) ) > 0
             oBrowse := aControls[ i ]
-            CreateList( oBrowse,.T. )
+            hwg_CreateList( oBrowse,.T. )
          ENDIF
       ENDIF
    ENDIF
-   EndDialog( getmodalhandle() )
+   hwg_EndDialog( hwg_GetModalHandle() )
 Return Nil
 

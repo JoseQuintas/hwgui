@@ -98,11 +98,11 @@ Return Self
 METHOD Activate CLASS HComboBox
 
    IF !Empty(::oParent:handle )
-      ::handle := CreateCombo( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createcombo( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::hEdit := hwg_ComboGetEdit( ::handle )
       ::Init()
-      SetWindowObject( ::hEdit,Self )      
+      hwg_Setwindowobject( ::hEdit,Self )      
    ENDIF
 Return Nil
 
@@ -227,7 +227,7 @@ Local res
    IF oCtrl:bGetFocus != Nil 
       res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
       IF !res
-         GetSkip( oCtrl:oParent,oCtrl:handle,1 )
+         hwg_GetSkip( oCtrl:oParent,oCtrl:handle,1 )
       ENDIF
       Return res
    ENDIF

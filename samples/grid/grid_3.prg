@@ -5,7 +5,7 @@
  * HGrid class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
  * Copyright 2004 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
  *
  * This Sample use Postgres Library, you need to link libpq.lib and libhbpg.lib
@@ -16,7 +16,7 @@
 #include "guilib.ch"
 #include "common.ch"
 
-#translate RGB( <nRed>, <nGreen>, <nBlue> ) => ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
+#translate hwg_Rgb( <nRed>, <nGreen>, <nBlue> ) => ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
 
 Static oMain, oForm, oFont, oGrid
 Static nCount := 50, conn, leof := .F.
@@ -28,7 +28,7 @@ Function Main()
         
         INIT WINDOW oMain MAIN TITLE "Postgres Sample Using low level functions" ;
              AT 0,0 ;
-             SIZE GetDesktopWidth(), GetDesktopHeight() - 28
+             SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
                 MENU OF oMain
                         MENUITEM "&Exit"   ACTION oMain:Close()
@@ -61,12 +61,12 @@ Function Test()
                      ON POSCHANGE {|oCtrl, nRow| OnPoschange(oCtrl, nRow) } ;
                      ON CLICK {|oCtrl| OnClick(oCtrl) } ;
                      ON DISPINFO {|oCtrl, nRow, nCol| OnDispInfo( oCtrl, nRow, nCol ) } ;
-                     COLOR VColor('D3D3D3');
-                     BACKCOLOR VColor('BEBEBE') 
+                     COLOR hwg_VColor('D3D3D3');
+                     BACKCOLOR hwg_VColor('BEBEBE') 
                      
                      /*
-                     ON LOSTFOCUS {|| msginfo('lost focus') } ;
-                     ON GETFOCUS {|| msginfo('get focus')  }                     
+                     ON LOSTFOCUS {|| hwg_Msginfo('lost focus') } ;
+                     ON GETFOCUS {|| hwg_Msginfo('get focus')  }                     
                      */
 
              ADD COLUMN TO GRID oGrid HEADER "Code" WIDTH 50
@@ -80,15 +80,15 @@ Function Test()
 Return Nil
 
 Function OnKey( o, k )
-//    msginfo(str(k))
+//    hwg_Msginfo(str(k))
 return nil    
 
 Function OnPosChange( o, row )
-//    msginfo( str(row) )
+//    hwg_Msginfo( str(row) )
 return nil    
 
 Function OnClick( o )
-//    msginfo( 'click' )
+//    hwg_Msginfo( 'click' )
 return nil    
 
 Function OnDispInfo( o, x, y )
@@ -113,7 +113,7 @@ Function OnDispInfo( o, x, y )
         else
             lEof := .T.
             
-            msginfo(res)
+            hwg_Msginfo(res)
         
         endif
         PQclear(res)              
@@ -147,7 +147,7 @@ Function CriaBase()
         conn := PQConnect('test', 'localhost', 'Rodrigo', 'moreno', 5432)
         
         if ISCHARACTER(conn)
-            msginfo(conn)
+            hwg_Msginfo(conn)
             quit
         endif
 

@@ -26,7 +26,7 @@ Private han := FOPEN( oForm:path+oForm:filename )
 Private cCaption, x, y, nWidth, nHeight, nStyle, lClipper, oFont, tColor, bColor, cFont
 
    IF han == - 1
-      MsgStop( "Can't open "+oForm:path+oForm:filename )
+      hwg_Msgstop( "Can't open "+oForm:path+oForm:filename )
       Return
    ENDIF
    DO WHILE .T.
@@ -63,7 +63,7 @@ Private cCaption, x, y, nWidth, nHeight, nStyle, lClipper, oFont, tColor, bColor
          ELSE           
             itemName := CnvCtrlName( NextItem( stroka,.T. ) )
             IF itemName == Nil
-               MsgStop( "Wrong item name: " + NextItem( stroka,.T. ) )
+               hwg_Msgstop( "Wrong item name: " + NextItem( stroka,.T. ) )
                Return
             ENDIF
             cCaption := NextItem( stroka )

@@ -19,7 +19,8 @@
 
 STATIC _winwait
 
-FUNCTION InitObjects( oWnd )
+FUNCTION hwg_InitObjects( oWnd )
+
    LOCAL i, pArray := oWnd:aObjects
    LOCAL LoadArray := HObject():aObjects
 
@@ -35,7 +36,7 @@ FUNCTION InitObjects( oWnd )
    ENDIF
    IF pArray != Nil
       FOR i := 1 TO Len( pArray )
-         IF __ObjHasMsg( pArray[ i ], "INIT" ) .AND. SelfFocus( oWnd:Handle, pArray[ i ]:oParent:Handle )
+         IF __ObjHasMsg( pArray[ i ], "INIT" ) .AND. hwg_Selffocus( oWnd:Handle, pArray[ i ]:oParent:Handle )
             pArray[ i ]:Init( oWnd )
             pArray[ i ]:lInit := .T.
          ENDIF
@@ -44,7 +45,8 @@ FUNCTION InitObjects( oWnd )
    HObject():aObjects := {}
    RETURN .T.
 
-FUNCTION InitControls( oWnd, lNoActivate )
+FUNCTION hwg_InitControls( oWnd, lNoActivate )
+
    LOCAL i, pArray := oWnd:aControls, lInit
 
    lNoActivate := IIf( lNoActivate == Nil, .F., lNoActivate )
@@ -60,13 +62,13 @@ FUNCTION InitControls( oWnd, lNoActivate )
          ELSEIF  ! lNoActivate
             pArray[ i ]:lInit := .T.
          ENDIF
-         IF IIF( ValType( pArray[ i ]:handle ) == "P", ptrtoulong( pArray[ i ]:handle ), pArray[ i ]:handle ) <= 0
-            pArray[ i ]:handle := GetDlgItem( oWnd:handle, pArray[ i ]:id )
+         IF IIF( ValType( pArray[ i ]:handle ) == "P", hwg_Ptrtoulong( pArray[ i ]:handle ), pArray[ i ]:handle ) <= 0
+            pArray[ i ]:handle := hwg_Getdlgitem( oWnd:handle, pArray[ i ]:id )
 
             // writelog( "InitControl2"+str(pArray[i]:handle)+"/"+pArray[i]:classname )
          ENDIF
          IF ! Empty( pArray[ i ]:aControls )
-            InitControls( pArray[ i ] )
+            hwg_InitControls( pArray[ i ] )
          ENDIF
          pArray[ i ]:Init()
           // nando required to classes that inherit the class of patterns hwgui
@@ -78,8 +80,9 @@ FUNCTION InitControls( oWnd, lNoActivate )
 
    RETURN .T.
 
-FUNCTION FindParent( hCtrl, nLevel )
-   LOCAL i, oParent, hParent := GetParent( hCtrl )
+FUNCTION hwg_FindParent( hCtrl, nLevel )
+
+   LOCAL i, oParent, hParent := hwg_Getparent( hCtrl )
    IF hParent > 0
       IF ( i := AScan( HDialog():aModalDialogs, { | o | o:handle == hParent } ) ) != 0
          RETURN HDialog():aModalDialogs[ i ]
@@ -91,45 +94,49 @@ FUNCTION FindParent( hCtrl, nLevel )
    ENDIF
    IF nLevel == Nil ; nLevel := 0 ; ENDIF
    IF nLevel < 2
-      IF ( oParent := FindParent( hParent, nLevel + 1 ) ) != Nil
+      IF ( oParent := hwg_FindParent( hParent, nLevel + 1 ) ) != Nil
          RETURN oParent:FindControl( , hParent )
       ENDIF
    ENDIF
    RETURN Nil
 
-FUNCTION FindSelf( hCtrl )
+FUNCTION hwg_FindSelf( hCtrl )
+
    LOCAL oParent
-   oParent := FindParent( hCtrl )
+   oParent := hwg_FindParent( hCtrl )
    IF oParent == Nil
-      oParent := GetAncestor( hCtrl, GA_PARENT )
+      oParent := hwg_Getancestor( hCtrl, GA_PARENT )
    ENDIF
    IF oParent != Nil  .AND. VALTYPE( oParent ) != "N"
       RETURN oParent:FindControl( , hCtrl )
    ENDIF
    RETURN Nil
 
-FUNCTION WriteStatus( oWnd, nPart, cText, lRedraw )
+FUNCTION hwg_WriteStatus( oWnd, nPart, cText, lRedraw )
+
    LOCAL aControls, i
    aControls := oWnd:aControls
    IF ( i := AScan( aControls, { | o | o:ClassName() == "HSTATUS" } ) ) > 0
-      WriteStatusWindow( aControls[ i ]:handle, nPart - 1, cText )
+      hwg_Writestatuswindow( aControls[ i ]:handle, nPart - 1, cText )
       IF lRedraw != Nil .AND. lRedraw
-         RedrawWindow( aControls[ i ]:handle, RDW_ERASE + RDW_INVALIDATE )
+         hwg_Redrawwindow( aControls[ i ]:handle, RDW_ERASE + RDW_INVALIDATE )
       ENDIF
    ENDIF
    RETURN Nil
 
-FUNCTION ReadStatus( oWnd, nPart )
+FUNCTION hwg_ReadStatus( oWnd, nPart )
+
    LOCAL aControls, i, ntxtLen, cText := ""
    aControls := oWnd:aControls
    IF ( i := AScan( aControls, { | o | o:ClassName() == "HSTATUS" } ) ) > 0
-      ntxtLen := SendMessage( aControls[ i ]:handle, SB_GETTEXTLENGTH, nPart - 1, 0 )
+      ntxtLen := hwg_Sendmessage( aControls[ i ]:handle, SB_GETTEXTLENGTH, nPart - 1, 0 )
       cText := Replicate( Chr( 0 ), ntxtLen )
-      SendMessage( aControls[ i ]:handle, SB_GETTEXT, nPart - 1, @cText )
+      hwg_Sendmessage( aControls[ i ]:handle, SB_GETTEXT, nPart - 1, @cText )
    ENDIF
    RETURN cText
 
-FUNCTION VColor( cColor )
+FUNCTION hwg_VColor( cColor )
+
    LOCAL i, res := 0, n := 1, iValue
    cColor := Trim( cColor )
    FOR i := 1 TO Len( cColor )
@@ -148,7 +155,8 @@ FUNCTION VColor( cColor )
    NEXT
    RETURN res
 
-FUNCTION MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cResIni )
+FUNCTION hwg_MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cResIni )
+
    LOCAL oModDlg, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
    LOCAL cRes := IIf( cResIni != Nil, Trim( cResIni ), "" )
    nStyle := IIf( nStyle == Nil, 0, nStyle )
@@ -168,7 +176,7 @@ FUNCTION MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cResIni )
    @ 180, 95 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
    oModDlg:aControls[ 4 ]:Anchor := ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
 
-   ACTIVATE DIALOG oModDlg ON ACTIVATE { || IIF( ! EMPTY( cRes ), KEYB_EVENT( VK_END ), .T. ) }
+   ACTIVATE DIALOG oModDlg ON ACTIVATE { || IIF( ! EMPTY( cRes ), hwg_Keyb_event( VK_END ), .T. ) }
 
    oFont:Release()
    IF oModDlg:lResult
@@ -179,7 +187,8 @@ FUNCTION MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cResIni )
 
    RETURN cRes
 
-FUNCTION WAITRUN( cRun )
+FUNCTION hwg_WAITRUN( cRun )
+
 //#ifdef __XHARBOUR__
 Local hIn, hOut, nRet, hProc
    // "Launching process", cProc
@@ -195,7 +204,8 @@ Local hIn, hOut, nRet, hProc
 
    Return nRet
 
-FUNCTION WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )
+FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )
+
    LOCAL oDlg, oBrw, nChoice := 0, lArray := .T., nField, lNewFont := .F.
    LOCAL i, aLen, nLen := 0, addX := 20, addY := 20, minWidth := 0, x1
    LOCAL hDC, aMetr, width, height, aArea, aRect
@@ -237,12 +247,12 @@ FUNCTION WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel,
       ENDIF
    ENDIF
 
-   hDC := GetDC( GetActiveWindow() )
-   SelectObject( hDC, oFont:handle )
-   aMetr := GetTextMetric( hDC )
+   hDC := hwg_Getdc( hwg_Getactivewindow() )
+   hwg_Selectobject( hDC, oFont:handle )
+   aMetr := hwg_Gettextmetric( hDC )
    aArea := hwg_GetDeviceArea( hDC )
-   aRect := GetWindowRect( GetActiveWindow() )
-   ReleaseDC( GetActiveWindow(), hDC )
+   aRect := hwg_Getwindowrect( hwg_Getactivewindow() )
+   hwg_Releasedc( hwg_Getactivewindow(), hDC )
    height := ( aMetr[ 1 ] + 1 ) * aLen + 4 + addY + 8
    IF height > aArea[ 2 ] - aRect[ 2 ] - nTop - 60
       height := aArea[ 2 ] - aRect[ 2 ] - nTop - 60
@@ -254,7 +264,7 @@ FUNCTION WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel,
         SIZE width, height       ;
         STYLE nStyle            ;
         FONT oFont              ;
-        ON INIT { | o | ResetWindowPos( o:handle ), o:nInitFocus := oBrw }
+        ON INIT { | o | hwg_Resetwindowpos( o:handle ), o:nInitFocus := oBrw }
    IF lArray
       @ 0, 0 Browse oBrw Array
       oBrw:aArray := arr
@@ -269,9 +279,9 @@ FUNCTION WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel,
    ENDIF
 
    oBrw:oFont  := oFont
-   oBrw:bSize  := { | o, x, y | MoveWindow( o:handle, addX / 2, 10, x - addX, y - addY ) }
-   oBrw:bEnter := { | o | nChoice := o:nCurrent, EndDialog( o:oParent:handle ) }
-   oBrw:bKeyDown := {|o,key|HB_SYMBOL_UNUSED(o),Iif(key==27,(EndDialog(oDlg:handle),.F.),.T.)}
+   oBrw:bSize  := { | o, x, y | hwg_Movewindow( o:handle, addX / 2, 10, x - addX, y - addY ) }
+   oBrw:bEnter := { | o | nChoice := o:nCurrent, hwg_EndDialog( o:oParent:handle ) }
+   oBrw:bKeyDown := {|o,key|HB_SYMBOL_UNUSED(o),Iif(key==27,(hwg_EndDialog(oDlg:handle),.F.),.T.)}
 
    oBrw:lDispHead := .F.
    IF clrT != Nil
@@ -289,9 +299,9 @@ FUNCTION WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel,
 
    IF cOk != Nil
       x1 := Int( width / 2 ) - IIf( cCancel != Nil, 90, 40 )
-      @ x1, height - 36 BUTTON cOk SIZE 80, 30 ON CLICK { || nChoice := oBrw:nCurrent, EndDialog( oDlg:handle ) }
+      @ x1, height - 36 BUTTON cOk SIZE 80, 30 ON CLICK { || nChoice := oBrw:nCurrent, hwg_EndDialog( oDlg:handle ) }
       IF cCancel != Nil
-         @ x1 + 100, height - 36 BUTTON cCancel SIZE 80, 30 ON CLICK { || nChoice := 0, EndDialog( oDlg:handle ) }
+         @ x1 + 100, height - 36 BUTTON cCancel SIZE 80, 30 ON CLICK { || nChoice := 0, hwg_EndDialog( oDlg:handle ) }
       ENDIF
    ENDIF
 
@@ -302,7 +312,8 @@ FUNCTION WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel,
 
    RETURN nChoice
 
-FUNCTION ShowProgress( nStep, maxPos, nRange, cTitle, oWnd, x1, y1, width, height )
+FUNCTION hwg_ShowProgress( nStep, maxPos, nRange, cTitle, oWnd, x1, y1, width, height )
+
    LOCAL nStyle := WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX
    STATIC oDlg, hPBar, iCou, nLimit
 
@@ -318,43 +329,45 @@ FUNCTION ShowProgress( nStep, maxPos, nRange, cTitle, oWnd, x1, y1, width, heigh
       ENDIF
       IF oWnd != Nil
          oDlg := Nil
-         hPBar := CreateProgressBar( oWnd:handle, maxPos, 20, 25, width - 40, 20 )
+         hPBar := hwg_Createprogressbar( oWnd:handle, maxPos, 20, 25, width - 40, 20 )
       ELSE
          INIT DIALOG oDlg TITLE cTitle   ;
               At x1, y1 SIZE width, height ;
               STYLE nStyle               ;
-              ON INIT { | o | hPBar := CreateProgressBar( o:handle, maxPos, 20, 25, width - 40, 20 ) }
+              ON INIT { | o | hPBar := hwg_Createprogressbar( o:handle, maxPos, 20, 25, width - 40, 20 ) }
          ACTIVATE DIALOG oDlg NOMODAL
       ENDIF
    ELSEIF nStep == 1
       iCou ++
       IF iCou == nLimit
          iCou := 0
-         UpdateProgressBar( hPBar )
+         hwg_Updateprogressbar( hPBar )
       ENDIF
    ELSEIF nStep == 2
-      UpdateProgressBar( hPBar )
+      hwg_Updateprogressbar( hPBar )
    ELSEIF nStep == 3
-      SetWindowText( oDlg:handle, cTitle )
+      hwg_Setwindowtext( oDlg:handle, cTitle )
       IF maxPos != Nil
-         SetProgressBar( hPBar, maxPos )
+         hwg_Setprogressbar( hPBar, maxPos )
       ENDIF
    ELSE
-      DestroyWindow( hPBar )
+      hwg_Destroywindow( hPBar )
       IF oDlg != Nil
-         EndDialog( oDlg:handle )
+         hwg_EndDialog( oDlg:handle )
       ENDIF
    ENDIF
 
    RETURN Nil
 
-FUNCTION EndWindow()
+FUNCTION hwg_EndWindow()
+
    IF HWindow():GetMain() != Nil
-      SendMessage( HWindow():aWindows[ 1 ]:handle, WM_SYSCOMMAND, SC_CLOSE, 0 )
+      hwg_Sendmessage( HWindow():aWindows[ 1 ]:handle, WM_SYSCOMMAND, SC_CLOSE, 0 )
    ENDIF
    RETURN Nil
 
-FUNCTION HdSerial( cDrive )
+FUNCTION hwg_HdSerial( cDrive )
+
 
    LOCAL n       :=  hwg_HDGETSERIAL( cDrive )
    LOCAL cHex    :=  HB_NUMTOHEX( n )
@@ -369,7 +382,8 @@ FUNCTION Hwg_GetIni( cSection, cEntry, cDefault, cFile )
 FUNCTION Hwg_WriteIni( cSection, cEntry, cValue, cFile )
    RETURN( hwg_WritePrivateProfileString( cSection, cEntry, cValue, cFile ) )
 
-FUNCTION SetHelpFileName ( cNewName )
+FUNCTION hwg_SetHelpFileName ( cNewName )
+
    STATIC cName := ""
    LOCAL cOldName := cName
    IF cNewName <> Nil
@@ -377,7 +391,8 @@ FUNCTION SetHelpFileName ( cNewName )
    ENDIF
    RETURN cOldName
 
-FUNCTION RefreshAllGets( oDlg )
+FUNCTION hwg_RefreshAllGets( oDlg )
+
 
    AEval( oDlg:GetList, { | o | o:Refresh() } )
    RETURN Nil
@@ -391,7 +406,8 @@ cInitDir: Initial directory
 
 */
 
-FUNCTION SelectMultipleFiles( cDescr, cTip, cIniDir, cTitle )
+FUNCTION hwg_SelectMultipleFiles( cDescr, cTip, cIniDir, cTitle )
+
 
    LOCAL aFiles, cPath, cFile, cFilter, nAt
    LOCAL hWnd := 0
@@ -443,7 +459,8 @@ FUNCTION HWG_Version( oTip )
    ENDIF
    RETURN oVersion
 
-FUNCTION TxtRect( cTxt, oWin, oFont )
+FUNCTION hwg_TxtRect( cTxt, oWin, oFont )
+
 
    LOCAL hDC
    LOCAL ASize
@@ -451,18 +468,18 @@ FUNCTION TxtRect( cTxt, oWin, oFont )
 
    oFont := IIF( oFont != Nil, oFont, oWin:oFont )
 
-   hDC       := GetDC( oWin:handle )
+   hDC       := hwg_Getdc( oWin:handle )
    IF oFont == Nil .AND. oWin:oParent != Nil
       oFont := oWin:oParent:oFont
    ENDIF
    IF oFont != Nil
-      hFont := SelectObject( hDC, oFont:handle )
+      hFont := hwg_Selectobject( hDC, oFont:handle )
    ENDIF
-   ASize     := GetTextSize( hDC, cTxt )
+   ASize     := hwg_Gettextsize( hDC, cTxt )
    IF oFont != Nil
-      SelectObject( hDC, hFont )
+      hwg_Selectobject( hDC, hFont )
    ENDIF
-   ReleaseDC( oWin:handle, hDC )
+   hwg_Releasedc( oWin:handle, hDC )
    RETURN ASize
 
 FUNCTION hwg_getParentForm( o )
@@ -478,17 +495,18 @@ Luis Fernando Basso contribution
 /** CheckFocus
 * check focus of controls before calling events
 */
-FUNCTION CheckFocus( oCtrl, lInside )
-   LOCAL oParent := hwg_GetParentForm( oCtrl )
-   LOCAL hGetFocus := PtrtouLong( GetFocus() ), lModal
+FUNCTION hwg_CheckFocus( oCtrl, lInside )
 
-   IF ( !EMPTY( oParent ) .AND. ! IsWindowVisible( oParent:handle ) ) .OR. Empty( GetActiveWindow() ) // == 0
+   LOCAL oParent := hwg_GetParentForm( oCtrl )
+   LOCAL hGetFocus := hwg_Ptrtoulong( hwg_Getfocus() ), lModal
+
+   IF ( !EMPTY( oParent ) .AND. ! hwg_Iswindowvisible( oParent:handle ) ) .OR. Empty( hwg_Getactivewindow() ) // == 0
       IF ! lInside .and. Empty( oParent:nInitFocus ) // = 0
          oParent:Show()
-         SetFocus( oParent:handle )
-         SetFocus( hGetFocus )
+         hwg_Setfocus( oParent:handle )
+         hwg_Setfocus( hGetFocus )
       ELSEIF ! lInside .AND. ! EMPTY( oParent:nInitFocus )
-       //  SetFocus( oParent:handle )
+       //  hwg_Setfocus( oParent:handle )
          RETURN .T.
      ENDIF
       RETURN .F.
@@ -499,9 +517,9 @@ FUNCTION CheckFocus( oCtrl, lInside )
    ENDIF
    IF oParent  != Nil .AND. lInside   // valid
       lModal :=  oParent:lModal .AND.  oParent:Type >  WND_DLG_RESOURCE
-      IF ( ( ! Empty( hGetFocus ) .AND. lModal .AND. ! SELFFOCUS( GetWindowParent( hGetFocus ), oParent:Handle ) ) .OR. ;
-         (  SELFFOCUS( hGetFocus, oCtrl:oParent:Handle  ) ) ) .AND. ;
-            SELFFOCUS( oParent:handle, oCtrl:oParent:Handle )
+      IF ( ( ! Empty( hGetFocus ) .AND. lModal .AND. ! hwg_Selffocus( hwg_GetWindowParent( hGetFocus ), oParent:Handle ) ) .OR. ;
+         (  hwg_Selffocus( hGetFocus, oCtrl:oParent:Handle  ) ) ) .AND. ;
+            hwg_Selffocus( oParent:handle, oCtrl:oParent:Handle )
          RETURN .F.
       ENDIF
       oCtrl:lNoWhen := .F.
@@ -511,43 +529,47 @@ FUNCTION CheckFocus( oCtrl, lInside )
 
    RETURN .T.
 
-FUNCTION WhenSetFocus( oCtrl, nSkip )
+FUNCTION hwg_WhenSetFocus( oCtrl, nSkip )
 
-   IF  SelfFocus( oCtrl:Handle ) .OR. EMPTY( GetFocus() )
-       GetSkip( oCtrl:oParent, oCtrl:handle, , nSkip )
+
+   IF  hwg_Selffocus( oCtrl:Handle ) .OR. EMPTY( hwg_Getfocus() )
+       hwg_GetSkip( oCtrl:oParent, oCtrl:handle, , nSkip )
    ENDIF
    RETURN Nil
 
-FUNCTION GetWindowParent( nHandle )
+FUNCTION hwg_GetWindowParent( nHandle )
 
-   DO WHILE ! Empty( GetParent( nHandle ) ) .AND. ! SelfFocus( nHandle, GetActiveWindow() )
-      nHandle := GetParent( nHandle )
+
+   DO WHILE ! Empty( hwg_Getparent( nHandle ) ) .AND. ! hwg_Selffocus( nHandle, hwg_Getactivewindow() )
+      nHandle := hwg_Getparent( nHandle )
    ENDDO
-   RETURN PtrtouLong( nHandle )
+   RETURN hwg_Ptrtoulong( nHandle )
 
 
-FUNCTION ProcKeyList( oCtrl, wParam, oMain )
+FUNCTION hwg_ProcKeyList( oCtrl, wParam, oMain )
+
 LOCAL oParent, nCtrl,nPos
 
-   IF ( wParam = VK_RETURN .OR. wParam = VK_ESCAPE ) .AND. ProcOkCancel( oCtrl, wParam )
+   IF ( wParam = VK_RETURN .OR. wParam = VK_ESCAPE ) .AND. hwg_ProcOkCancel( oCtrl, wParam )
       RETURN .F.
    ENDIF
    IF wParam != VK_SHIFT  .AND. wParam != VK_CONTROL .AND. wParam != VK_MENU
       oParent := IIF( oMain != Nil, oMain, hwg_GetParentForm( oCtrl ) )
       IF oParent != Nil .AND. ! Empty( oParent:KeyList )
-         nctrl := IIf( IsCtrlShift(.t., .f.), FCONTROL, iif(IsCtrlShift(.f., .t.), FSHIFT, 0 ) )
+         nctrl := IIf( hwg_IsCtrlShift(.t., .f.), FCONTROL, iif(hwg_IsCtrlShift(.f., .t.), FSHIFT, 0 ) )
          IF ( nPos := AScan( oParent:KeyList, { | a | a[ 1 ] == nctrl.AND.a[ 2 ] == wParam } ) ) > 0
             Eval( oParent:KeyList[ nPos, 3 ], oCtrl )
             RETURN .T.
          ENDIF
       ENDIF
       IF oParent != Nil .AND. oMain = Nil .AND. HWindow():GetMain() != Nil
-          ProcKeyList( oCtrl, wParam, HWindow():GetMain():aWindows[ 1 ] )
+          hwg_ProcKeyList( oCtrl, wParam, HWindow():GetMain():aWindows[ 1 ] )
       ENDIF
    ENDIF
    RETURN .F.
 
-FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
+FUNCTION hwg_ProcOkCancel( oCtrl, nKey, lForce )
+
    Local oWin := hwg_GetParentForm(oCtrl), lEscape
    Local iParHigh := IIF( nKey = VK_RETURN, IDOK, IDCANCEL )
    LOCAL oCtrlFocu := oCtrl
@@ -559,29 +581,29 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
 	 ENDIF
    IF iParHigh == IDOK
       IF ( oCtrl := oWin:FindControl( IDOK ) ) != Nil .AND. oCtrl:IsEnabled()
-         oCtrl:SetFocus()
+         oCtrl:Setfocus()
   	     oWin:lResult := .T.
   	     IF lForce
 	       ELSEIF ISBLOCK( oCtrl:bClick ) .AND. ! lForce
-	          SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
+	          hwg_Sendmessage( oCtrl:oParent:handle, WM_COMMAND, hwg_Makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
 	       ELSEIF oWin:lExitOnEnter
             oWin:close()
          ELSE
-            SendMessage( oWin:handle, WM_COMMAND, makewparam( IDOK, 0 ), oCtrlFocu:handle )      
+            hwg_Sendmessage( oWin:handle, WM_COMMAND, hwg_Makewparam( IDOK, 0 ), oCtrlFocu:handle )      
          ENDIF
          RETURN .T.
       ENDIF
    ELSEIF iParHigh == IDCANCEL
       IF ( oCtrl := oWin:FindControl( IDCANCEL ) ) != Nil .AND. oCtrl:IsEnabled() 
-         oCtrl:SetFocus()
+         oCtrl:Setfocus()
          oWin:lResult := .F.
-         SendMessage( oCtrl:oParent:handle, WM_COMMAND, makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
+         hwg_Sendmessage( oCtrl:oParent:handle, WM_COMMAND, hwg_Makewparam( oCtrl:id, BN_CLICKED ), oCtrl:handle )
       ELSEIF oWin:lGetSkiponEsc
          oCtrl := oCtrlFocu
          IF oCtrl  != Nil .AND.  __ObjHasMsg( oCtrl, "OGROUP" )  .AND. oCtrl:oGroup:oHGroup != Nil
              oCtrl := oCtrl:oGroup:oHGroup
          ENDIF
-         IF oCtrl  != Nil .and. GetSkip( oCtrl:oParent, oCtrl:Handle, , - 1 )
+         IF oCtrl  != Nil .and. hwg_GetSkip( oCtrl:oParent, oCtrl:Handle, , - 1 )
             IF AScan( oWin:GetList, { | o | o:handle == oCtrl:Handle } ) > 1
                RETURN .T.
             ENDIF
@@ -590,7 +612,7 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
           oWin:close()
       ELSEIF ! oWin:lExitOnEsc
          oWin:nLastKey := 0
-         SendMessage( oWin:handle, WM_COMMAND, makewparam( IDCANCEL, 0 ), oCtrlFocu:handle )
+         hwg_Sendmessage( oWin:handle, WM_COMMAND, hwg_Makewparam( IDCANCEL, 0 ), oCtrlFocu:handle )
          RETURN .F.
       ENDIF
       RETURN .T.
@@ -598,23 +620,24 @@ FUNCTION ProcOkCancel( oCtrl, nKey, lForce )
    RETURN .F.
 
 
-FUNCTION FindAccelerator( oCtrl, lParam )
+FUNCTION hwg_FindAccelerator( oCtrl, lParam )
+
   Local nlen , i ,pos
 
   nlen := LEN( oCtrl:aControls )
   FOR i = 1 to nLen
      IF oCtrl:aControls[ i ]:classname = "HTAB"
-        IF ( pos := FindTabAccelerator( oCtrl:aControls[ i ], lParam ) ) > 0 .AND. ;
+        IF ( pos := hwg_FindTabAccelerator( oCtrl:aControls[ i ], lParam ) ) > 0 .AND. ;
   	  oCtrl:aControls[ i ]:Pages[ pos ]:Enabled
             oCtrl:aControls[ i ]:SetTab( pos )
             RETURN oCtrl:aControls[ i ]
         ENDIF
      ENDIF
      IF LEN(oCtrl:aControls[ i ]:aControls ) > 0
-         RETURN FindAccelerator( oCtrl:aControls[ i ], lParam)
+         RETURN hwg_FindAccelerator( oCtrl:aControls[ i ], lParam)
 	   ENDIF
      IF __ObjHasMsg( oCtrl:aControls[ i ],"TITLE") .AND. VALTYPE( oCtrl:aControls[ i ]:title) = "C" .AND. ;
-         ! oCtrl:aControls[ i ]:lHide .AND. IsWindowEnabled( oCtrl:aControls[ i ]:handle )
+         ! oCtrl:aControls[ i ]:lHide .AND. hwg_Iswindowenabled( oCtrl:aControls[ i ]:handle )
         IF ( pos := At( "&", oCtrl:aControls[ i ]:title ) ) > 0 .AND.  Upper( Chr( lParam)) ==  Upper( SubStr( oCtrl:aControls[ i ]:title, ++ pos, 1 ) )
            RETURN oCtrl:aControls[ i ]
         ENDIF
@@ -622,8 +645,9 @@ FUNCTION FindAccelerator( oCtrl, lParam )
    NEXT
    RETURN Nil
 
-FUNCTION GetBackColorParent( oCtrl, lSelf, lTransparent )
-   Local bColor := GetSysColor( COLOR_BTNFACE ), hTheme
+FUNCTION hwg_GetBackColorParent( oCtrl, lSelf, lTransparent )
+
+   Local bColor := hwg_Getsyscolor( COLOR_BTNFACE ), hTheme
    Local brush := nil
 
    DEFAULT lTransparent := .F.
@@ -633,11 +657,11 @@ FUNCTION GetBackColorParent( oCtrl, lSelf, lTransparent )
    IF  oCtrl != Nil .AND. oCtrl:Classname = "HTAB"
        IF Len( oCtrl:aPages ) > 0 .AND. oCtrl:Pages[ oCtrl:GETACTIVEPAGE() ]:bColor != Nil
           bColor := oCtrl:Pages[ oCtrl:GetActivePage() ]:bColor
-       ELSEIF ISTHEMEACTIVE() .AND. oCtrl:WindowsManifest
-          hTheme := hb_OpenThemeData( oCtrl:handle, "TAB" )
+       ELSEIF hwg_Isthemeactive() .AND. oCtrl:WindowsManifest
+          hTheme := hwg_openthemedata( oCtrl:handle, "TAB" )
           IF !EMPTY( hTheme )
              bColor := HWG_GETTHEMESYSCOLOR( hTheme, COLOR_WINDOW  )
-             HB_CLOSETHEMEDATA( hTheme )
+             hwg_closethemedata( hTheme )
           ENDIF
        ENDIF
    ELSEIF oCtrl:bColor != Nil
@@ -663,13 +687,14 @@ Function  hwg_SetFontStyle( oWnd, lBold, lItalic, lUnderline )
    ENDIF
    IF lBold != NIL .OR. lItalic != NIL .OR. lUnderline != NIL
       oWnd:oFont := oWnd:oFont:SetFontStyle( lBold,,lItalic,lUnderline )
-      SendMessage( oWnd:handle, WM_SETFONT, oWnd:oFont:handle, MAKELPARAM( 0, 1 ) )
-      RedrawWindow( oWnd:handle, RDW_NOERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT )
+      hwg_Sendmessage( oWnd:handle, WM_SETFONT, oWnd:oFont:handle, hwg_Makelparam( 0, 1 ) )
+      hwg_Redrawwindow( oWnd:handle, RDW_NOERASE + RDW_INVALIDATE + RDW_FRAME + RDW_INTERNALPAINT )
    ENDIF
 
    RETURN Iif(lBold!=Nil,(oWnd:oFont:weight==FW_BOLD), Iif(lItalic!=Nil,(oWnd:oFont:italic=1),oWnd:oFont:Underline==1))
 
-Function SetAll( oWnd, cProperty, Value, aControls, cClass )
+Function hwg_SetAll( oWnd, cProperty, Value, aControls, cClass )
+
 // cProperty Specifies the property to be set.
 // Value Specifies the new setting for the property. The data type of Value depends on the property being set.
  //aControls - property of the Control with objectos inside
@@ -698,9 +723,9 @@ FUNCTION HWG_ScrollHV( oForm, msg,wParam,lParam )
 
    HB_SYMBOL_UNUSED(lParam)
 
-   nSBCode := loword(wParam)
+   nSBCode := hwg_Loword(wParam)
    IF msg == WM_MOUSEWHEEL
-      nSBCode = IIF( HIWORD( wParam ) > 32768, HIWORD( wParam ) - 65535, HIWORD( wParam ) )
+      nSBCode = IIF( hwg_Hiword( wParam ) > 32768, hwg_Hiword( wParam ) - 65535, hwg_Hiword( wParam ) )
       nSBCode = IIF( nSBCode < 0, SB_LINEDOWN, SB_LINEUP )
    ENDIF
    IF ( msg = WM_VSCROLL ) .OR.msg == WM_MOUSEWHEEL
@@ -719,7 +744,7 @@ FUNCTION HWG_ScrollHV( oForm, msg,wParam,lParam )
          Case SB_PAGEDOWN
             nInc := max( 1, oForm:nVertInc / 2 );   EXIT
          Case SB_THUMBTRACK
-            nPos := hiword( wParam )
+            nPos := hwg_Hiword( wParam )
             nInc := nPos - oForm:nVscrollPos ; EXIT
       #ifdef __XHARBOUR__
          Default
@@ -731,8 +756,8 @@ FUNCTION HWG_ScrollHV( oForm, msg,wParam,lParam )
       nInc := Max( - oForm:nVscrollPos, Min( nInc, oForm:nVscrollMax - oForm:nVscrollPos))
       oForm:nVscrollPos += nInc
       nDelta := - VERT_PTS * nInc
-      ScrollWindow( oForm:handle, 0, nDelta ) //, Nil, NIL )
-      SetScrollPos( oForm:Handle, SB_VERT, oForm:nVscrollPos, .T. )
+      hwg_Scrollwindow( oForm:handle, 0, nDelta ) //, Nil, NIL )
+      hwg_Setscrollpos( oForm:Handle, SB_VERT, oForm:nVscrollPos, .T. )
 
    ELSEIF ( msg = WM_HSCROLL ) //.OR. msg == WM_MOUSEWHEEL
     // Handle vertical scrollbar messages
@@ -750,7 +775,7 @@ FUNCTION HWG_ScrollHV( oForm, msg,wParam,lParam )
          Case SB_PAGEDOWN
             nInc := HORZ_PTS;   EXIT
          Case SB_THUMBTRACK
-            nPos := hiword( wParam )
+            nPos := hwg_Hiword( wParam )
             nInc := nPos - oForm:nHscrollPos; EXIT
       #ifdef __XHARBOUR__
          Default
@@ -762,7 +787,8 @@ FUNCTION HWG_ScrollHV( oForm, msg,wParam,lParam )
       nInc := max( - oForm:nHscrollPos, min( nInc, oForm:nHscrollMax - oForm:nHscrollPos ) )
       oForm:nHscrollPos += nInc
       nDelta := - HORZ_PTS * nInc
-      ScrollWindow( oForm:handle, nDelta, 0 )
-      SetScrollPos( oForm:Handle, SB_HORZ, oForm:nHscrollPos, .T. )
+      hwg_Scrollwindow( oForm:handle, nDelta, 0 )
+      hwg_Setscrollpos( oForm:Handle, SB_HORZ, oForm:nHscrollPos, .T. )
    ENDIF 	
    RETURN Nil
+

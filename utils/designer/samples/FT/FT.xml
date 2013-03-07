@@ -67,7 +67,7 @@
       <property name="BtnBitmap">[SMeXIT]</property>
     </style>
     <method name="onClick">
-      <![CDATA[ENDDIALOG()]]>
+      <![CDATA[hwg_EndDialog()]]>
     </method>
   </part>
 </part>

@@ -34,7 +34,7 @@ nValue:=0
         COORDINATES 0, 0, 0, 0  ;
         BITMAP HBitmap():AddFile('smExit')  FROM RESOURCE  TRANSPARENT  ;
         COORDINATES 0, 0, 0, 0  ;
-        ON CLICK {|| enddialog() }
+        ON CLICK {|| hwg_EndDialog() }
 
    ACTIVATE DIALOG oDlg
 RETURN oDlg:lresult

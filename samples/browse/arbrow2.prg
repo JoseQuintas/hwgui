@@ -36,7 +36,7 @@ local i, a, b
     next
 
     oBrw1:aArray := a
-    CreateArList( oBrw1, a )
+    hwg_CREATEARLIST( oBrw1, a )
     oBrw1:aColumns[1]:length := 5
     oBrw1:aColumns[2]:length := 5
     oBrw1:aColumns[1]:width := 50
@@ -48,7 +48,7 @@ local i, a, b
     next
 
     oBrw2:aArray := b
-    CreateArList( oBrw2, b )
+    hwg_CREATEARLIST( oBrw2, b )
     oBrw2:lAdjRight := .F.
     oBrw2:aColumns[1]:length := 5
     oBrw2:aColumns[2]:length := 5
@@ -58,7 +58,7 @@ local i, a, b
 
 
     oBrw1:aColumns[1]:bColorFoot := {|| { x_BLUE, x_RED } }
-    oBrw1:aColumns[1]:bHeadClick := {|| msginfo( "HeadClick") }
+    oBrw1:aColumns[1]:bHeadClick := {|| hwg_Msginfo( "HeadClick") }
     oBrw1:aColumns[1]:heading := "Header 1;second line"
     oBrw1:aColumns[2]:heading := "Header 2"
     oBrw1:aColumns[1]:footing := "Footer 1;F1L2"

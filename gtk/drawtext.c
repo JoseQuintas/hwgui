@@ -25,7 +25,7 @@
 
 void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor );
 
-HB_FUNC( DELETEDC )
+HB_FUNC( HWG_DELETEDC )
 {
    // DeleteDC( (HDC) hb_parnl( 1 ) );
 }
@@ -33,7 +33,7 @@ HB_FUNC( DELETEDC )
 /*
  * TextOut( hDC, x, y, cText )
  */
-HB_FUNC( TEXTOUT )
+HB_FUNC( HWG_TEXTOUT )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    char * cText = hwg_convert_to_utf8( hb_parc(4) );
@@ -56,7 +56,7 @@ HB_FUNC( TEXTOUT )
    g_free( cText );
 }
 
-HB_FUNC( DRAWTEXT )
+HB_FUNC( HWG_DRAWTEXT )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    char * cText = hwg_convert_to_utf8( hb_parc(2) );
@@ -95,7 +95,7 @@ HB_FUNC( DRAWTEXT )
 
 }
 
-HB_FUNC( GETTEXTMETRIC )
+HB_FUNC( HWG_GETTEXTMETRIC )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    PangoContext * context;
@@ -136,7 +136,7 @@ HB_FUNC( GETTEXTMETRIC )
    
 }
 
-HB_FUNC( GETTEXTSIZE )
+HB_FUNC( HWG_GETTEXTSIZE )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    char * cText = hwg_convert_to_utf8( hb_parc( 2 ) );
@@ -153,7 +153,7 @@ HB_FUNC( GETTEXTSIZE )
    g_free( cText );
 }
 
-HB_FUNC( GETCLIENTAREA )
+HB_FUNC( HWG_GETCLIENTAREA )
 {
 /*
    PAINTSTRUCT *pps = (PAINTSTRUCT*) hb_parnl( 1 );
@@ -181,7 +181,7 @@ HB_FUNC( GETCLIENTAREA )
 */   
 }
 
-HB_FUNC( SETTEXTCOLOR )
+HB_FUNC( HWG_SETTEXTCOLOR )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
 
@@ -190,7 +190,7 @@ HB_FUNC( SETTEXTCOLOR )
 
 }
 
-HB_FUNC( SETBKCOLOR )
+HB_FUNC( HWG_SETBKCOLOR )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
 
@@ -199,7 +199,7 @@ HB_FUNC( SETBKCOLOR )
 
 }
 
-HB_FUNC( SETTRANSPARENTMODE )
+HB_FUNC( HWG_SETTRANSPARENTMODE )
 {
 /*
    int iMode = SetBkMode(
@@ -209,18 +209,18 @@ HB_FUNC( SETTRANSPARENTMODE )
 */   
 }
 
-HB_FUNC( GETTEXTCOLOR )
+HB_FUNC( HWG_GETTEXTCOLOR )
 {
    // hb_retnl( (HB_LONG) GetTextColor( (HDC) hb_parnl( 1 ) ) );
 }
 
-HB_FUNC( GETBKCOLOR )
+HB_FUNC( HWG_GETBKCOLOR )
 {
    // hb_retnl( (HB_LONG) GetBkColor( (HDC) hb_parnl( 1 ) ) );
 }
 
 
-HB_FUNC( EXTTEXTOUT )
+HB_FUNC( HWG_EXTTEXTOUT )
 {
 /*
    RECT rc;
@@ -244,7 +244,7 @@ HB_FUNC( EXTTEXTOUT )
 */   
 }
 
-HB_FUNC( WRITESTATUSWINDOW )
+HB_FUNC( HWG_WRITESTATUSWINDOW )
 {
    // SendMessage( (HWND) hb_parnl( 1 ), SB_SETTEXT, hb_parni( 2 ), (LPARAM) hb_parc( 3 ) );
    char *cText = hwg_convert_to_utf8( hb_parcx(3) );
@@ -255,7 +255,7 @@ HB_FUNC( WRITESTATUSWINDOW )
    g_free( cText );
 }
 
-HB_FUNC( WINDOWFROMDC )
+HB_FUNC( HWG_WINDOWFROMDC )
 {
    // hb_retnl( (HB_LONG) WindowFromDC( (HDC) hb_parnl( 1 ) ) );
 }
@@ -263,7 +263,7 @@ HB_FUNC( WINDOWFROMDC )
 /* CreateFont( fontName, nWidth, hHeight [,fnWeight] [,fdwCharSet], 
                [,fdwItalic] [,fdwUnderline] [,fdwStrikeOut]  )
 */
-HB_FUNC( CREATEFONT )
+HB_FUNC( HWG_CREATEFONT )
 {
    PangoFontDescription *  hFont;
    PHWGUI_FONT h = (PHWGUI_FONT) hb_xgrab( sizeof(HWGUI_FONT) );
@@ -301,3 +301,4 @@ HB_FUNC( HWG_SETCTRLFONT )
    gtk_widget_set_style( hCtrl, style );
 
 }
+

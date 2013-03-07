@@ -2183,7 +2183,7 @@ FUNCTION LoadPicture(cName,nWidth,nHeight,ScreenResX,ScreenResy)
    FreeLib32(hDll)
    oWnd:=GetWndDefault()
    hWnd:=oWnd:hWnd
-   hdc:=GetDc(hWnd)
+   hdc:=hwg_Getdc(hWnd)
    ScreenResX:=GETDEVICEC(hdc,88)
    ScreenResY:=GETDEVICEC(hdc,90)
 
@@ -2206,7 +2206,7 @@ METHOD Bmp2Wmf(cName,aSize,nPercent) CLASS RichText
    lHecho := .F.
    cDir := GetEnv( "TEMP" )
    temp := cDir + "\tmp" + padl( ALLTRIM( STR( ::nFile, 4, 0 ) ), 4, "0" ) + ".wmf"
-   hDCOut := CreateMetaFile( temp )
+   hDCOut := hwg_CreateMetafile( temp )
    hDib := DibRead( cName )
    IF hDib > 0
       // Dimensiones en pixels
@@ -2232,7 +2232,7 @@ METHOD Bmp2Wmf(cName,aSize,nPercent) CLASS RichText
       aInches[ 2 ] := ROUND( aInches[ 2 ] * 1440, 0 )
       // initialize the metafile
       SETWNDEX( hDCOut, 0, 0 )
-      SetWindowExtEx( hDCOut, nWidth, nHeight );
+      hwg_Setwindowextex( hDCOut, nWidth, nHeight );
 
       DibDraw( hDCOut, hDib, hPal, 0, 0, nWidth, nHeight, nRaster )
       GlobalFree( hDib )

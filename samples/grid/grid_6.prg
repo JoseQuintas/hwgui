@@ -5,7 +5,7 @@
  * HGrid class
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
  * Copyright 2004 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
  *
 */
@@ -23,7 +23,7 @@ Function Main()
 
         INIT WINDOW oMain MAIN TITLE "Grid Sample" ;
              AT 0,0 ;
-             SIZE GetDesktopWidth(), GetDesktopHeight() - 28
+             SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
                 MENU OF oMain
                         MENUITEM "&Exit"      ACTION oMain:Close()
@@ -63,9 +63,9 @@ enddo
                      ON KEYDOWN {|oCtrl, key| OnKey(oCtrl, key) } ;
                      ON POSCHANGE {|oCtrl, nRow| OnPoschange(oCtrl, nRow) } ;
                      ON CLICK {|oCtrl| OnClick(oCtrl) } ;
-                     COLOR VColor('D3D3D3');
+                     COLOR hwg_VColor('D3D3D3');
                      ON DISPINFO {|oCtrl, nRow, nCol| OnDispInfo( oCtrl, nRow, nCol ) } ;
-                     BACKCOLOR VColor('BEBEBE')  ;
+                     BACKCOLOR hwg_VColor('BEBEBE')  ;
                      BITMAP { 2, 3, 4, 5 }   ITEMS aItems
 
              ADD COLUMN TO GRID oGrid HEADER aHead[1] WIDTH 150  bitmap 1
@@ -74,13 +74,13 @@ enddo
              ADD COLUMN TO GRID oGrid HEADER aHead[4] WIDTH 150  bitmap 4
 
              for n:=1 to len(aItems)
-                ADDROWEX TO GRID  oGrid header aItems[n,1] bitmap 0 color rgb(255,12,123) backcolor rgb(192,0,255) ,header aItems[n,2]  ,header aItems[n,3] bitmap 3  ,header aItems[n,1] bitmap 1 color rgb(123,122,123)  backcolor rgb(192,0,255)
+                ADDROWEX TO GRID  oGrid header aItems[n,1] bitmap 0 color hwg_Rgb(255,12,123) backcolor hwg_Rgb(192,0,255) ,header aItems[n,2]  ,header aItems[n,3] bitmap 3  ,header aItems[n,1] bitmap 1 color hwg_Rgb(123,122,123)  backcolor hwg_Rgb(192,0,255)
              next
 
-             @ 0, 395 button "LVS_REPORT" size 95,25 on click  {|| LISTVIEW_SETVIEW(oGrid:handle,LVS_REPORT)}
-             @ 100, 395 button "LVS_ICON" size 95,25 on click  {|| LISTVIEW_SETVIEW(oGrid:handle,LVS_ICON)}
-             @ 200, 395 button "LVS_SMALLICON" size 95,25 on click  {|| LISTVIEW_SETVIEW(oGrid:handle,LVS_SMALLICON)}
-             @ 300, 395 button "LVS_LIST" size 95,25 on click  {|| LISTVIEW_SETVIEW(oGrid:handle,LVS_LIST)}
+             @ 0, 395 button "LVS_REPORT" size 95,25 on click  {|| hwg_Listview_setview(oGrid:handle,LVS_REPORT)}
+             @ 100, 395 button "LVS_ICON" size 95,25 on click  {|| hwg_Listview_setview(oGrid:handle,LVS_ICON)}
+             @ 200, 395 button "LVS_SMALLICON" size 95,25 on click  {|| hwg_Listview_setview(oGrid:handle,LVS_SMALLICON)}
+             @ 300, 395 button "LVS_LIST" size 95,25 on click  {|| hwg_Listview_setview(oGrid:handle,LVS_LIST)}
              @ 700, 395 BUTTON 'Close' SIZE 95,25 ON CLICK {|| oForm:Close() }                            
              
         ACTIVATE DIALOG oForm 
@@ -88,15 +88,15 @@ enddo
 Return Nil
 
 Function OnKey( o, k )
-//    msginfo(str(k))
+//    hwg_Msginfo(str(k))
 return nil    
 
 Function OnPosChange( o, row )
-//    msginfo( str(row) )
+//    hwg_Msginfo( str(row) )
 return nil    
 
 Function OnClick( o )
-//    msginfo( 'click' )
+//    hwg_Msginfo( 'click' )
 return nil    
 
 Function OnDispInfo( o, x, y )

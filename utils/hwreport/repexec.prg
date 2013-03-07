@@ -94,7 +94,7 @@ FUNCTION OpenReport( fname, repName )
                   aItem[ ITEM_Y1 ] == Nil .OR. aItem[ ITEM_Y1 ] == 0 .OR. ;
                   aItem[ ITEM_WIDTH ] == Nil .OR. aItem[ ITEM_WIDTH ] == 0 .OR. ;
                   aItem[ ITEM_HEIGHT ] == Nil .OR. aItem[ ITEM_HEIGHT ] == 0
-                  MsgStop( "Error: " + stroka )
+                  hwg_Msgstop( "Error: " + stroka )
                   res := .F.
                   EXIT
                ENDIF
@@ -110,7 +110,7 @@ FUNCTION OpenReport( fname, repName )
                aItem[ ITEM_Y1 ] == Nil .OR. aItem[ ITEM_Y1 ] == 0 .OR. ;
                aItem[ ITEM_WIDTH ] == Nil .OR. aItem[ ITEM_WIDTH ] == 0 .OR. ;
                aItem[ ITEM_HEIGHT ] == Nil .OR. aItem[ ITEM_HEIGHT ] == 0
-               MsgStop( "Error: " + stroka )
+               hwg_Msgstop( "Error: " + stroka )
                res := .F.
                EXIT
             ENDIF
@@ -124,7 +124,7 @@ FUNCTION OpenReport( fname, repName )
                aItem[ ITEM_Y1 ] == Nil .OR. aItem[ ITEM_Y1 ] == 0 .OR. ;
                aItem[ ITEM_WIDTH ] == Nil .OR. aItem[ ITEM_WIDTH ] == 0 .OR. ;
                aItem[ ITEM_HEIGHT ] == Nil .OR. aItem[ ITEM_HEIGHT ] == 0
-               MsgStop( "Error: " + stroka )
+               hwg_Msgstop( "Error: " + stroka )
                res := .F.
                EXIT
             ENDIF
@@ -150,11 +150,11 @@ FUNCTION OpenReport( fname, repName )
 ENDDO
 FClose( han )
 ELSE
-   MsgStop( "Can't open " + fname )
+   hwg_Msgstop( "Can't open " + fname )
    RETURN .F.
 ENDIF
 IF Empty( aPaintRep[ FORM_ITEMS ] )
-   MsgStop( repName + " not found or empty!" )
+   hwg_Msgstop( repName + " not found or empty!" )
    res := .F.
 ELSE
    aPaintRep[ FORM_ITEMS ] := ASort( aPaintRep[ FORM_ITEMS ],,, { | z, y | z[ ITEM_Y1 ] < y[ ITEM_Y1 ] .OR.( z[ ITEM_Y1 ] == y[ ITEM_Y1 ] .AND.z[ ITEM_X1 ] < y[ ITEM_X1 ] ) .OR.( z[ ITEM_Y1 ] == y[ ITEM_Y1 ] .AND.z[ ITEM_X1 ] == y[ ITEM_X1 ] .AND.( z[ ITEM_WIDTH ] < y[ ITEM_WIDTH ] .OR.z[ ITEM_HEIGHT ] < y[ ITEM_HEIGHT ] ) ) } )
@@ -163,10 +163,10 @@ RETURN res
 
 FUNCTION RecalcForm( aPaintRep, nFormWidth )
    LOCAL hDC, aMetr, aItem, i
-   hDC := GetDC( GetActiveWindow() )
+   hDC := hwg_Getdc( hwg_Getactivewindow() )
    aMetr := hwg_GetDeviceArea( hDC )
    aPaintRep[ FORM_XKOEF ] := ( aMetr[ 1 ] - XINDENT ) / aPaintRep[ FORM_WIDTH ]
-   ReleaseDC( GetActiveWindow(), hDC )
+   hwg_Releasedc( hwg_Getactivewindow(), hDC )
 
    IF nFormWidth != aMetr[ 1 ] - XINDENT
       FOR i := 1 TO Len( aPaintRep[ FORM_ITEMS ] )
@@ -256,19 +256,19 @@ FUNCTION PrintReport( printerName, oPrn, lPreview )
       ENDIF
    NEXT
    IF iPH > 0 .AND. iSL == 0
-      MsgStop( "'Start Line' marker is absent" )
+      hwg_Msgstop( "'Start Line' marker is absent" )
       oPrinter:END()
       RETURN .F.
    ELSEIF iSL > 0 .AND. iEL == 0
-      MsgStop( "'End Line' marker is absent" )
+      hwg_Msgstop( "'End Line' marker is absent" )
       oPrinter:END()
       RETURN .F.
    ELSEIF iPF > 0 .AND. iEPF == 0
-      MsgStop( "'End of Page Footer' marker is absent" )
+      hwg_Msgstop( "'End of Page Footer' marker is absent" )
       oPrinter:END()
       RETURN .F.
    ELSEIF iSL > 0 .AND. iPF == 0 .AND. iDF == 0
-      MsgStop( "'Page Footer' and 'Document Footer' markers are absent" )
+      hwg_Msgstop( "'Page Footer' and 'Document Footer' markers are absent" )
       oPrinter:END()
       RETURN .F.
    ENDIF
@@ -485,11 +485,11 @@ FUNCTION PrintItem( oPrinter, aPaintRep, aItem, prnXCoef, prnYCoef, nYadd, lCalc
       ELSEIF aItem[ ITEM_TYPE ] == TYPE_BOX
          oPrinter:Box( x1, y1, x2, y2, aItem[ ITEM_PEN ] )
       ELSEIF aItem[ ITEM_TYPE ] == TYPE_BITMAP
-         hBitmap := OpenBitmap( aItem[ ITEM_CAPTION ], oPrinter:hDC )
+         hBitmap := hwg_Openbitmap( aItem[ ITEM_CAPTION ], oPrinter:hDC )
          // writelog( "hBitmap: "+str(hBitmap) )
          oPrinter:Bitmap( x1, y1, x2, y2,, hBitmap )
-         DeleteObject( hBitmap )
-         // DrawBitmap( hDC, aItem[ITEM_BITMAP],SRCAND, x1, y1, x2-x1+1, y2-y1+1 )
+         hwg_Deleteobject( hBitmap )
+         // hwg_Drawbitmap( hDC, aItem[ITEM_BITMAP],SRCAND, x1, y1, x2-x1+1, y2-y1+1 )
       ENDIF
    #endif
    RETURN Nil
@@ -500,7 +500,7 @@ STATIC FUNCTION ScriptExecute( aItem )
       IF ValType( aItem[ ITEM_SCRIPT ] ) == "C"
          IF ( aItem[ ITEM_SCRIPT ] := RdScript( , aItem[ ITEM_SCRIPT ] ) ) == Nil
             nError := CompileErr( @nLineEr )
-            MsgStop( "Script error (" + LTrim( Str( nError ) ) + "), line " + LTrim( Str( nLineEr ) ) )
+            hwg_Msgstop( "Script error (" + LTrim( Str( nError ) ) + "), line " + LTrim( Str( nLineEr ) ) )
             RETURN .F.
          ENDIF
       ENDIF

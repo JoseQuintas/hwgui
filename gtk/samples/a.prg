@@ -34,10 +34,10 @@ Private nColor, oBmp2
          SEPARATOR
          MENUITEM "&Font" ACTION oFont:=HFont():Select(oFont)
          MENUITEM "&Color" ACTION (nColor:=Hwg_ChooseColor(nColor,.F.), ;
-                     MsgInfo(Iif(nColor!=Nil,str(nColor),"--"),"Color value"))
+                     hwg_Msginfo(Iif(nColor!=Nil,str(nColor),"--"),"Color value"))
          SEPARATOR
          MENUITEM "&Move Main Window" ACTION oMainWindow:Move(50, 60, 200, 300)
-         MENUITEM "&Exit" ACTION EndWindow()
+         MENUITEM "&Exit" ACTION hwg_EndWindow()
       ENDMENU
       MENU TITLE "&Samples"
          MENUITEMCHECK "&Checked" ID 1001 
@@ -45,7 +45,7 @@ Private nColor, oBmp2
          MENUITEM "&Test Tab" ACTION TestTab()
          SEPARATOR
          MENUITEM "&MsgGet" ;
-               ACTION CopyStringToClipboard(MsgGet("Dialog Sample","Input table name"))
+               ACTION hwg_Copystringtoclipboard(hwg_MsgGet("Dialog Sample","Input table name"))
          MENUITEM "&Dialog from prg" ACTION DialogFromPrg()
          #ifdef TEST_PRINT         
          SEPARATOR
@@ -62,7 +62,7 @@ return nil
 Function FileOpen
 Local oModDlg, oBrw
 Local mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
-Local fname := SelectFile( "xBase files( *.dbf )", "*.dbf", mypath )
+Local fname := hwg_Selectfile( "xBase files( *.dbf )", "*.dbf", mypath )
 Local nId
 
    IF !Empty( fname )
@@ -73,12 +73,12 @@ Local nId
 
       INIT DIALOG oModDlg TITLE "1"                    ;
             AT 210,10  SIZE 500,300                    ;
-            ON INIT {|o|SetWindowText(o:handle,fname)} ;
+            ON INIT {|o|hwg_Setwindowtext(o:handle,fname)} ;
             ON EXIT {|o|Fileclose(o)}
 /*
       MENU OF oModDlg
          MENUITEM "&Font" ACTION ( oBrw:oFont:=HFont():Select(oFont),oBrw:Refresh() )
-         MENUITEM "&Exit" ACTION EndDialog( oModDlg:handle )
+         MENUITEM "&Exit" ACTION hwg_EndDialog( oModDlg:handle )
       ENDMENU
 */
       @ 0,0 BROWSE oBrw DATABASE OF oModDlg ID nId ;
@@ -86,12 +86,12 @@ Local nId
             STYLE WS_VSCROLL + WS_HSCROLL          ;
             ON SIZE {|o,x,y|o:Move(,,x,y)}         ;
             ON GETFOCUS {|o|dbSelectArea(o:alias)}
-      CreateList( oBrw,.T. )
-      oBrw:bScrollPos := {|o,n,lEof,nPos|VScrollPos(o,n,lEof,nPos)}
+      hwg_CreateList( oBrw,.T. )
+      oBrw:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
       IF oFont != Nil
          oBrw:ofont := oFont
       ENDIF
-      AEval(oBrw:aColumns, {|o| o:bHeadClick := {|oB, n| MsgInfo("Column number "+Str(n))}})
+      AEval(oBrw:aColumns, {|o| o:bHeadClick := {|oB, n| hwg_Msginfo("Column number "+Str(n))}})
 
       ACTIVATE DIALOG oModDlg NOMODAL
    ENDIF
@@ -111,7 +111,7 @@ Local han := fcreate( "LPT1",0 )
      fwrite( han, "---------------------------"+Chr(10)+Chr(13)+Chr(12) )
      fclose( han )
   else
-     MsgStop("Can't open printer port!")
+     hwg_Msgstop("Can't open printer port!")
   endif
 return nil
 
@@ -120,29 +120,29 @@ Local cTitle := "Dialog from prg", cText := "Input something"
 Local oModDlg, oFont := HFont():Add( "Serif",0,-13 ), oTab
 Local cRes, aCombo := { "First","Second" }, oEdit, vard := "Monday"
 
-   CheckMenuItem( ,1001, !IsCheckedMenuItem( ,1001 ) )
+   hwg_CheckMenuItem( ,1001, !hwg_IsCheckedMenuItem( ,1001 ) )
    
    INIT DIALOG oModDlg TITLE cTitle           ;
    AT 210,10  SIZE 300,300                    ;
    FONT oFont                                 ;
-   ON EXIT {||MsgYesNo("Really exit ?")}
+   ON EXIT {||hwg_Msgyesno("Really exit ?")}
 
    @ 20,10 SAY cText SIZE 260, 22
    @ 20,35 EDITBOX oEdit CAPTION ""    ;
         STYLE WS_DLGFRAME              ;
-        SIZE 260, 26 COLOR Vcolor("FF0000")
+        SIZE 260, 26 COLOR hwg_VColor("FF0000")
 
    @ 20,70 CHECKBOX "Check 1" SIZE 90, 20
    @ 20,95 CHECKBOX "Check 2"  ;
-        SIZE 90, 20 COLOR Iif( nColor==Nil,Vcolor("0000FF"),nColor )
+        SIZE 90, 20 COLOR Iif( nColor==Nil,hwg_VColor("0000FF"),nColor )
 
    @ 160,70 GROUPBOX "RadioGroup"  SIZE 130, 75
 
    RADIOGROUP
    @ 180,90 RADIOBUTTON "Radio 1"  ;
-        SIZE 90, 20 ON CLICK {||oEdit:SetColor(Vcolor("0000FF"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oEdit:SetColor(hwg_VColor("0000FF"),,.T.)}
    @ 180,115 RADIOBUTTON "Radio 2" ;
-        SIZE 90, 20 ON CLICK {||oEdit:SetColor(Vcolor("FF0000"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oEdit:SetColor(hwg_VColor("FF0000"),,.T.)}
    END RADIOGROUP SELECTED 2
 
    @ 20,120 COMBOBOX aCombo STYLE WS_TABSTOP ;
@@ -161,7 +161,7 @@ Local cRes, aCombo := { "First","Second" }, oEdit, vard := "Monday"
    @ 100,220 LINE LENGTH 100
 
    @ 20,240 BUTTON "Ok" OF oModDlg ID IDOK  ;
-        SIZE 100, 32 COLOR Vcolor("FF0000")
+        SIZE 100, 32 COLOR hwg_VColor("FF0000")
    @ 180,240 BUTTON "Cancel" OF oModDlg ID IDCANCEL  ;
         SIZE 100, 32
 
@@ -177,10 +177,10 @@ Local oGet1, oGet2, oVar1:="1", oVar2:="2"
 Local oGet3, oGet4, oVar3:="3", oVar4:="4", oGet5, oVar5 := "5"
 
 INIT DIALOG oDlg CLIPPER NOEXIT AT 0, 0 SIZE 200, 200 ;
-   ON INIT  {||SetFocus(oDlg:getlist[1]:handle)}
+   ON INIT  {||hwg_Setfocus(oDlg:getlist[1]:handle)}
 
 @ 10, 10 TAB oTab ITEMS {} SIZE 180, 180 ;
-   ON LOSTFOCUS {||MsgInfo("Lost Focus")}
+   ON LOSTFOCUS {||hwg_Msginfo("Lost Focus")}
 
 
 BEGIN PAGE "Page 01" of oTab

@@ -21,12 +21,12 @@
 
 HMODULE hModule;
 
-HB_FUNC( GETRESOURCES )
+HB_FUNC( HWG_GETRESOURCES )
 {
    hb_retnl( ( LONG ) hModule );
 }
 
-HB_FUNC( LOADSTRING )
+HB_FUNC( HWG_LOADSTRING )
 {
    TCHAR buffer[ 2048 ];
    int iBuffRet = LoadString( ( HINSTANCE ) hModule, ( UINT ) hb_parnl( 2 ),
@@ -34,7 +34,7 @@ HB_FUNC( LOADSTRING )
    HB_RETSTRLEN( buffer, iBuffRet );
 }
 
-HB_FUNC( LOADRESOURCE )
+HB_FUNC( HWG_LOADRESOURCE )
 {
    void * hString;
    hModule = GetModuleHandle( HB_PARSTR( 1, &hString, NULL ) );
@@ -66,7 +66,7 @@ HB_CALL_ON_STARTUP_END( _hwgui_module_init_ )
    #pragma data_seg()
 #endif
 
-HB_FUNC( FINDRESOURCE )
+HB_FUNC( HWG_FINDRESOURCE )
 {
    HRSRC hHRSRC;
    int iName = hb_parni( 2 ); // "WindowsXP.Manifest";
@@ -86,3 +86,4 @@ HB_FUNC( FINDRESOURCE )
    else
       HB_RETHANDLE( 0 );
 }
+

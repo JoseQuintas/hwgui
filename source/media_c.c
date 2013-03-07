@@ -5,7 +5,7 @@
  * C level media functions
  *
  * Copyright 2003 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "hwingui.h"
@@ -18,7 +18,7 @@
 /*
  *  PlaySound( cName, lSync, lLoop )
  */
-HB_FUNC( PLAYSOUND )
+HB_FUNC( HWG_PLAYSOUND )
 {
    void * hSound;
    LPCTSTR lpSound = HB_PARSTR( 1, &hSound, NULL );
@@ -39,7 +39,7 @@ HB_FUNC( PLAYSOUND )
    hb_strfree( hSound );
 }
 
-HB_FUNC( MCISENDSTRING )
+HB_FUNC( HWG_MCISENDSTRING )
 {
    TCHAR cBuffer[ 256 ] = { 0 };
    void * hCommand;
@@ -57,7 +57,7 @@ HB_FUNC( MCISENDSTRING )
 
 /* Functions bellow for play video's and wav's*/
 
-HB_FUNC( MCISENDCOMMAND )       // ()
+HB_FUNC( HWG_MCISENDCOMMAND )
 {
    hb_retnl( mciSendCommand( hb_parni( 1 ),     // Device ID
                              hb_parni( 2 ),     // Command Message
@@ -68,7 +68,7 @@ HB_FUNC( MCISENDCOMMAND )       // ()
 //----------------------------------------------------------------------------//
 
 
-HB_FUNC( MCIGETERRORSTRING )    // ()
+HB_FUNC( HWG_MCIGETERRORSTRING )
 {
    TCHAR cBuffer[ 256 ] = { 0 };
 
@@ -79,7 +79,7 @@ HB_FUNC( MCIGETERRORSTRING )    // ()
 
 //----------------------------------------------------------------------------//
 
-HB_FUNC( NMCIOPEN )
+HB_FUNC( HWG_NMCIOPEN )
 {
    MCI_OPEN_PARMS mciOpenParms;
    DWORD dwFlags = MCI_OPEN_ELEMENT;
@@ -102,7 +102,7 @@ HB_FUNC( NMCIOPEN )
 
 //----------------------------------------------------------------------------//
 
-HB_FUNC( NMCIPLAY )
+HB_FUNC( HWG_NMCIPLAY )
 {
    MCI_PLAY_PARMS mciPlayParms;
    DWORD dwFlags = 0;
@@ -125,7 +125,7 @@ HB_FUNC( NMCIPLAY )
 
 //----------------------------------------------------------------------------//
 
-HB_FUNC( NMCIWINDOW )
+HB_FUNC( HWG_NMCIWINDOW )
 {
    MCI_ANIM_WINDOW_PARMS mciWindowParms;
    HWND hWnd = ( HWND ) HB_PARHANDLE( 2 );
@@ -136,4 +136,5 @@ HB_FUNC( NMCIWINDOW )
                MCI_ANIM_WINDOW_HWND | MCI_ANIM_WINDOW_DISABLE_STRETCH,
                ( LONG ) ( LPMCI_ANIM_WINDOW_PARMS ) & mciWindowParms ) );
 }
+
 

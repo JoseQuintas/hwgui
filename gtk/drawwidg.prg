@@ -5,7 +5,7 @@
  * Pens, brushes, fonts, bitmaps, icons handling
  *
  * Copyright 2005 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://www.geocities.com/alkresin/
+ * www - http://kresin.belgorod.su
 */
 
 #include "hbclass.ch"
@@ -64,14 +64,14 @@ Local i, nlen := Len( ::aFonts )
 
          ::aFonts[i]:nCounter ++
          IF nHandle != Nil
-            DeleteObject( nHandle )
+            hwg_Deleteobject( nHandle )
          ENDIF
          Return ::aFonts[i]
       ENDIF
    NEXT
 
    IF nHandle == Nil
-      ::handle := CreateFont( fontName, nWidth, nHeight*1024 ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut )
+      ::handle := hwg_Createfont( fontName, nWidth, nHeight*1024 ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut )
    ELSE
       ::handle := nHandle
       nHeight := nHeight / 1024
@@ -91,7 +91,7 @@ Local i, nlen := Len( ::aFonts )
 Return Self
 
 METHOD Select( oFont ) CLASS HFont
-Local af := SelectFont( oFont )
+Local af := hwg_Selectfont( oFont )
 
    IF af == Nil
       Return Nil
@@ -107,7 +107,7 @@ Local i, nlen := Len( ::aFonts )
    #ifdef __XHARBOUR__
       For EACH i in ::aFonts
          IF i:handle == ::handle
-            DeleteObject( ::handle )
+            hwg_Deleteobject( ::handle )
             Adel( ::aFonts,hb_enumindex() )
             Asize( ::aFonts,nlen-1 )
             Exit
@@ -116,7 +116,7 @@ Local i, nlen := Len( ::aFonts )
    #else
       For i := 1 TO nlen
          IF ::aFonts[i]:handle == ::handle
-            DeleteObject( ::handle )
+            hwg_Deleteobject( ::handle )
             Adel( ::aFonts,i )
             Asize( ::aFonts,nlen-1 )
             Exit
@@ -146,7 +146,7 @@ Local i
 
    nStyle := Iif( nStyle == Nil,BS_SOLID,nStyle )
    nWidth := Iif( nWidth == Nil,1,nWidth )
-   nColor := Iif( nColor == Nil,Vcolor("000000"),nColor )
+   nColor := Iif( nColor == Nil,hwg_VColor("000000"),nColor )
 
    #ifdef __XHARBOUR__
    For EACH i in ::aPens 
@@ -170,7 +170,7 @@ Local i
    NEXT
    #endif
 
-   ::handle := CreatePen( nStyle,nWidth,nColor )
+   ::handle := hwg_Createpen( nStyle,nWidth,nColor )
    ::style  := nStyle
    ::width  := nWidth
    ::color  := nColor
@@ -183,7 +183,7 @@ Local i
 
    nStyle := Iif( nStyle == Nil,PS_SOLID,nStyle )
    nWidth := Iif( nWidth == Nil,1,nWidth )
-   nColor := Iif( nColor == Nil,Vcolor("000000"),nColor )
+   nColor := Iif( nColor == Nil,hwg_VColor("000000"),nColor )
 
    #ifdef __XHARBOUR__
    For EACH i in ::aPens 
@@ -215,7 +215,7 @@ Local i, nlen := Len( ::aPens )
    #ifdef __XHARBOUR__
       For EACH i  in ::aPens 
          IF i:handle == ::handle
-            DeleteObject( ::handle )
+            hwg_Deleteobject( ::handle )
             Adel( ::aPens,hb_EnumIndex() )
             Asize( ::aPens,nlen-1 )
             Exit
@@ -224,7 +224,7 @@ Local i, nlen := Len( ::aPens )
    #else
       For i := 1 TO nlen
          IF ::aPens[i]:handle == ::handle
-            DeleteObject( ::handle )
+            hwg_Deleteobject( ::handle )
             Adel( ::aPens,i )
             Asize( ::aPens,nlen-1 )
             Exit
@@ -267,7 +267,7 @@ Local i
       ENDIF
    NEXT
    #endif
-   ::handle := CreateSolidBrush( nColor )
+   ::handle := hwg_Createsolidbrush( nColor )
    ::color  := nColor
    Aadd( ::aBrushes,Self )
 
@@ -281,7 +281,7 @@ Local i, nlen := Len( ::aBrushes )
    #ifdef __XHARBOUR__
       For EACH i IN ::aBrushes 
          IF i:handle == ::handle
-            DeleteObject( ::handle )
+            hwg_Deleteobject( ::handle )
             Adel( ::aBrushes,hb_EnumIndex() )
             Asize( ::aBrushes,nlen-1 )
             Exit
@@ -290,7 +290,7 @@ Local i, nlen := Len( ::aBrushes )
    #else
       For i := 1 TO nlen
          IF ::aBrushes[i]:handle == ::handle
-            DeleteObject( ::handle )
+            hwg_Deleteobject( ::handle )
             Adel( ::aBrushes,i )
             Asize( ::aBrushes,nlen-1 )
             Exit
@@ -340,10 +340,10 @@ Local lPreDefined := .F., i, aBmpSize
       ENDIF
    NEXT
    #endif
-   ::handle :=   LoadBitmap( Iif( lPreDefined, Val(name),name ) )
+   ::handle :=   hwg_Loadbitmap( Iif( lPreDefined, Val(name),name ) )
    IF !Empty( ::handle )
       ::name   := name
-      aBmpSize  := GetBitmapSize( ::handle )
+      aBmpSize  := hwg_Getbitmapsize( ::handle )
       ::nWidth  := aBmpSize[1]
       ::nHeight := aBmpSize[2]
       Aadd( ::aBitmaps,Self )
@@ -371,10 +371,10 @@ Local i, aBmpSize
       ENDIF
    NEXT
    #endif
-   ::handle := OpenImage( name )
+   ::handle := hwg_Openimage( name )
    IF !Empty( ::handle )
       ::name := name
-      aBmpSize  := GetBitmapSize( ::handle )
+      aBmpSize  := hwg_Getbitmapsize( ::handle )
       ::nWidth  := aBmpSize[1]
       ::nHeight := aBmpSize[2]
       Aadd( ::aBitmaps,Self )
@@ -387,9 +387,9 @@ Return Self
 METHOD AddWindow( oWnd,lFull ) CLASS HBitmap
 Local i, aBmpSize
 
-   // ::handle := Window2Bitmap( oWnd:handle,lFull )
+   // ::handle := hwg_Window2bitmap( oWnd:handle,lFull )
    ::name := Ltrim( Str( oWnd:handle ) )
-   aBmpSize  := GetBitmapSize( ::handle )
+   aBmpSize  := hwg_Getbitmapsize( ::handle )
    ::nWidth  := aBmpSize[1]
    ::nHeight := aBmpSize[2]
    Aadd( ::aBitmaps,Self )
@@ -404,7 +404,7 @@ Local i, nlen := Len( ::aBitmaps )
    #ifdef __XHARBOUR__
       For EACH i IN ::aBitmaps
          IF i:handle == ::handle
-            DeleteObject( ::handle )
+            hwg_Deleteobject( ::handle )
             Adel( ::aBitmaps,hb_EnumIndex() )
             Asize( ::aBitmaps,nlen-1 )
             Exit
@@ -413,7 +413,7 @@ Local i, nlen := Len( ::aBitmaps )
    #else
       For i := 1 TO nlen
          IF ::aBitmaps[i]:handle == ::handle
-            DeleteObject( ::handle )
+            hwg_Deleteobject( ::handle )
             Adel( ::aBitmaps,i )
             Asize( ::aBitmaps,nlen-1 )
             Exit
@@ -462,7 +462,7 @@ Local lPreDefined := .F., i
       ENDIF
    NEXT
    #endif
-   // ::handle :=   LoadIcon( Iif( lPreDefined, Val(name),name ) )
+   // ::handle :=   hwg_Loadicon( Iif( lPreDefined, Val(name),name ) )
    ::name   := name
    Aadd( ::aIcons,Self )
 
@@ -486,16 +486,16 @@ Local i, aBmpSize
       ENDIF
    NEXT
 #endif
-//   ::handle := LoadImage( 0, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE+LR_LOADFROMFILE )
-//   ::handle := OpenImage( name )
+//   ::handle := hwg_Loadimage( 0, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE+LR_LOADFROMFILE )
+//   ::handle := hwg_Openimage( name )
 //   ::name := name
 //   Aadd( ::aIcons,Self )
 //  Tracelog("name = ",name)
-   ::handle := OpenImage( name )
+   ::handle := hwg_Openimage( name )
 //   tracelog("handle = ",::handle)
    IF !Empty( ::handle )
       ::name := name
-      aBmpSize  := GetBitmapSize( ::handle )
+      aBmpSize  := hwg_Getbitmapsize( ::handle )
       ::nWidth  := aBmpSize[1]
       ::nHeight := aBmpSize[2]
       Aadd( ::aIcons,Self )
@@ -513,7 +513,7 @@ Local i, nlen := Len( ::aIcons )
    #ifdef __XHARBOUR__
       For EACH i IN ::aIcons
          IF i:handle == ::handle
-            DeleteObject( ::handle )
+            hwg_Deleteobject( ::handle )
             Adel( ::aIcons,hb_EnumIndex() )
             Asize( ::aIcons,nlen-1 )
             Exit
@@ -522,7 +522,7 @@ Local i, nlen := Len( ::aIcons )
    #else
       For i := 1 TO nlen
          IF ::aIcons[i]:handle == ::handle
-            DeleteObject( ::handle )
+            hwg_Deleteobject( ::handle )
             Adel( ::aIcons,i )
             Asize( ::aIcons,nlen-1 )
             Exit
@@ -537,19 +537,19 @@ EXIT PROCEDURE CleanDrawWidg
 Local i
 
    For i := 1 TO Len( HPen():aPens )
-      DeleteObject( HPen():aPens[i]:handle )
+      hwg_Deleteobject( HPen():aPens[i]:handle )
    NEXT
    For i := 1 TO Len( HBrush():aBrushes )
-      DeleteObject( HBrush():aBrushes[i]:handle )
+      hwg_Deleteobject( HBrush():aBrushes[i]:handle )
    NEXT
    For i := 1 TO Len( HFont():aFonts )
-      DeleteObject( HFont():aFonts[i]:handle )
+      hwg_Deleteobject( HFont():aFonts[i]:handle )
    NEXT
    For i := 1 TO Len( HBitmap():aBitmaps )
-      DeleteObject( HBitmap():aBitmaps[i]:handle )
+      hwg_Deleteobject( HBitmap():aBitmaps[i]:handle )
    NEXT
    For i := 1 TO Len( HIcon():aIcons )
-      // DeleteObject( HIcon():aIcons[i]:handle )
+      // hwg_Deleteobject( HIcon():aIcons[i]:handle )
    NEXT
 
 Return

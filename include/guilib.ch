@@ -1432,7 +1432,7 @@
 
 #xcommand SAY <value> TO <oDlg> ID <id> ;
           => ;
-          SetDlgItemText( <oDlg>:handle, <id>, <value> )
+          hwg_Setdlgitemtext( <oDlg>:handle, <id>, <value> )
 
 /*   Menu system     */
 
@@ -1484,7 +1484,7 @@
 
 #xcommand SET KEY <nctrl>,<nkey> [ OF <oDlg> ] [ TO <func> ] ;
           => ;
-          SetDlgKey( <oDlg>, <nctrl>, <nkey>, <{func}> )
+          hwg_SetDlgKey( <oDlg>, <nctrl>, <nkey>, <{func}> )
 
 #translate LastKey( )  =>  HWG_LASTKEY( )
 
@@ -1504,17 +1504,17 @@
           [ <oGraph>:name := <(oGraph)> ]
 
 /* open an .dll resource */
-#xcommand SET RESOURCES TO <cName1> => LoadResource( <cName1> )
+#xcommand SET RESOURCES TO <cName1> => hwg_Loadresource( <cName1> )
 
-#xcommand SET RESOURCES TO => LOADRESOURCE( NIL )
+#xcommand SET RESOURCES TO => hwg_Loadresource( NIL )
 
 #xcommand SET COLORFOCUS <x:ON,OFF,&> [COLOR [<tColor>],[<bColor>]] [< lFixed : NOFIXED >] [< lPersistent : PERSISTENT >];
           => ;
-          SetColorinFocus( <(x)> , <tColor>, <bColor>, <.lFixed.>, <.lPersistent.> )
+          hwg_SetColorinFocus( <(x)> , <tColor>, <bColor>, <.lFixed.>, <.lPersistent.> )
 
 #xcommand SET DISABLEBACKCOLOR <x:ON,OFF,&> [COLOR [<bColor>]] ;
           => ;
-          SetDisableBackColor( <(x)> , <bColor> )
+          hwg_SetDisableBackColor( <(x)> , <bColor> )
 
 // Addded by jamaj
 #xcommand DEFAULT <uVar1> := <uVal1> ;
@@ -1992,7 +1992,7 @@ Added by Marcos Antonio Gambeta
              [BITMAP <b> ]  ;
              [STYLE <nstyle>] [TEXT <t>] ;
           => ;
-          <opage>:ADDBARBITMAP(<hWnd>,<t>,<b>,<nstyle>)
+          <opage>:Addbarbitmap(<hWnd>,<t>,<b>,<nstyle>)
 
 #xcommand @ <x>,<y> GET LISTBOX [ <oListbox> VAR ]  <vari> ;
              ITEMS  <aItems>            ;

@@ -22,7 +22,7 @@
 #ifdef __cplusplus
 extern "C" { STDAPI OleLoadPicture(LPSTREAM,LONG,BOOL,REFIID,PVOID*); }
 #else
-//STDAPI OleLoadPicture(LPSTREAM,LONG,BOOL,REFIID,PVOID*);
+STDAPI OleLoadPicture(LPSTREAM,LONG,BOOL,REFIID,PVOID*);
 #endif
 #endif /* __BORLANDC__ */
 
@@ -87,7 +87,7 @@ HB_FUNC( HWG_GETPPSRECT )
 HB_FUNC( HWG_GETPPSERASE )
 {
    PAINTSTRUCT *pps = ( PAINTSTRUCT * ) HB_PARHANDLE( 1 );
-   BOOL fErase = &pps->fErase ;
+   BOOL fErase = (BOOL)(&pps->fErase) ;
    hb_retni( fErase );
 }
 

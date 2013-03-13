@@ -24,7 +24,6 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
    IF oWnd:oEmbedded != Nil
       oWnd:oEmbedded:Resize( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
    ENDIF
-   //hwg_Invalidaterect( oWnd:handle, 0 )
    oWnd:Super:onEvent( WM_SIZE, wParam, lParam )
 
    oWnd:nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
@@ -35,8 +34,6 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
    ENDIF
    IF oWnd:Type == WND_MDI .AND. Len( HWindow():aWindows ) > 1
       aCoors := hwg_Getclientrect( oWnd:handle )
-      //hwg_Movewindow( HWindow():aWindows[ 2 ]:handle, oWnd:aOffset[ 1 ], oWnd:aOffset[ 2 ], aCoors[ 3 ] - oWnd:aOffset[ 1 ] - oWnd:aOffset[ 3 ], aCoors[ 4 ] - oWnd:aOffset[ 2 ] - oWnd:aOffset[ 4 ] )
-      //aCoors := hwg_Getclientrect(HWindow():aWindows[ 2 ]:handle )
       hwg_Setwindowpos( HWindow():aWindows[ 2 ]:handle, Nil, oWnd:aOffset[ 1 ], oWnd:aOffset[ 2 ], aCoors[ 3 ] - oWnd:aOffset[ 1 ] - oWnd:aOffset[ 3 ], aCoors[ 4 ] - oWnd:aOffset[ 2 ] - oWnd:aOffset[ 4 ] , SWP_NOZORDER + SWP_NOACTIVATE + SWP_NOSENDCHANGING )
       aCoors := hwg_Getwindowrect( HWindow():aWindows[ 2 ]:handle )
       HWindow():aWindows[ 2 ]:nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
@@ -45,7 +42,6 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       IF !Empty( oWnd:Screen )
           oWnd:Screen:nWidth  := aCoors[ 3 ] - aCoors[ 1 ]
           oWnd:Screen:nHeight := aCoors[ 4 ] - aCoors[ 2 ]
-         // hwg_Invalidaterect( oWnd:Screen:handle, 0 )   // flick in screen in resize window
           hwg_Setwindowpos( oWnd:screen:handle, Nil, 0, 0, oWnd:Screen:nWidth, oWnd:Screen:nHeight, SWP_NOACTIVATE + SWP_NOSENDCHANGING + SWP_NOZORDER )
           IF hwg_Iswindowvisible( oWnd:screen:handle )
              hwg_Invalidaterect( oWnd:Screen:handle, 1 )
@@ -54,15 +50,14 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
       IF ! Empty( oWnd := oWnd:GetMdiActive() ) .AND.oWnd:type = WND_MDICHILD .AND. oWnd:lMaximized .AND.;
            ( oWnd:lModal .OR. oWnd:lChild )
          oWnd:lMaximized := .F.
-         *-hwg_Sendmessage( oWnd:handle, WM_SYSCOMMAND, SC_MAXIMIZE, 0 )
       ENDIF
       //
       RETURN 0
    ENDIF
 
-   RETURN - 1
+   RETURN -1
 
-STATIC FUNCTION onDestroy( oWnd )
+FUNCTION hwg_onDestroy( oWnd )
 
    IF oWnd:oEmbedded != Nil
       oWnd:oEmbedded:END()
@@ -234,23 +229,23 @@ METHOD Paint() CLASS  HWindow
 CLASS HMainWindow INHERIT HWindow
 
 CLASS VAR aMessages INIT { ;
-                           { WM_COMMAND, WM_ERASEBKGND, WM_MOVE, WM_SIZE, WM_SYSCOMMAND, ;
-                             WM_NOTIFYICON, WM_ENTERIDLE, WM_CLOSE, WM_DESTROY, WM_ENDSESSION, WM_ACTIVATE, WM_HELP }, ;
-                           { ;
-                             { | o, w, l | onCommand( o, w, l ) },        ;
-                             { | o, w | onEraseBk( o, w ) },              ;
-                             { | o | hwg_onMove( o ) },                       ;
-                             { | o, w, l | onSize( o, w, l ) },           ;
-                             { | o, w, l | onSysCommand( o, w, l ) },     ;
-                             { | o, w, l | onNotifyIcon( o, w, l ) },     ;
-                             { | o, w, l | onEnterIdle( o, w, l ) },      ;
-                             { | o | onCloseQuery( o ) },                 ;
-                             { | o | onDestroy( o ) },                    ;
-                             { | o, w | onEndSession( o, w ) },           ;
-                             { | o, w, l | onActivate( o, w, l ) },       ;
-                             { | o, w, l | hwg_onHelp( o, w, l ) }            ;
-                           } ;
-                         }
+      { WM_COMMAND, WM_ERASEBKGND, WM_MOVE, WM_SIZE, WM_SYSCOMMAND, ;
+        WM_NOTIFYICON, WM_ENTERIDLE, WM_CLOSE, WM_DESTROY, WM_ENDSESSION, WM_ACTIVATE, WM_HELP }, ;
+      { ;
+        {|o,w,l| onCommand( o, w, l ) },        ;
+        {|o,w| onEraseBk( o, w ) },             ;
+        {|o| hwg_onMove( o ) },                 ;
+        {|o,w,l| onSize( o, w, l ) },           ;
+        {|o,w,l| onSysCommand( o, w, l ) },     ;
+        {|o,w,l| onNotifyIcon( o, w, l ) },     ;
+        {|o,w,l| onEnterIdle( o, w, l ) },      ;
+        {|o| onCloseQuery( o ) },               ;
+        {|o| hwg_onDestroy( o ) },              ;
+        {|o,w| onEndSession( o, w ) },          ;
+        {|o,w,l| onActivate( o, w, l ) },       ;
+        {|o,w,l| hwg_onHelp( o, w, l ) }        ;
+      } ;
+   }
 
    DATA  nMenuPos
    DATA  bMdiMenu
@@ -501,21 +496,21 @@ METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu, cTooltip ) CLASS HMainWindow
 CLASS HMDIChildWindow INHERIT HWindow
 
 CLASS VAR aMessages INIT { ;
-                           { WM_CREATE, WM_COMMAND,WM_ERASEBKGND,WM_MOVE, WM_SIZE, WM_NCACTIVATE, ;
-                             WM_SYSCOMMAND, WM_ENTERIDLE, WM_MDIACTIVATE, WM_DESTROY }, ;
-                           { ;
-                             { | o, w, l | HB_SYMBOL_UNUSED( w ), onMdiCreate( o, l ) },        ;
-                             { | o, w | onMdiCommand( o, w ) },         ;
-                             { | o, w | onEraseBk( o, w ) },            ;
-                             { | o | hwg_onMove( o ) },                   ;
-                             { | o, w, l | onSize( o, w, l ) },           ;
-                             { | o, w | onMdiNcActivate( o, w ) },      ;
-                             { | o, w, l | onSysCommand( o, w, l ) },         ;
-                             { | o, w, l | onEnterIdle( o, w, l ) },      ;
-                             { | o, w, l | onMdiActivate( o, w, l ) },     ;
-                             { | o | onDestroy( o ) }                 ;
-                           } ;
-                         }
+        { WM_CREATE, WM_COMMAND,WM_ERASEBKGND,WM_MOVE, WM_SIZE, WM_NCACTIVATE, ;
+          WM_SYSCOMMAND, WM_ENTERIDLE, WM_MDIACTIVATE, WM_DESTROY }, ;
+        { ;
+          {|o,w,l| HB_SYMBOL_UNUSED( w ), onMdiCreate( o, l ) }, ;
+          {|o,w| onMdiCommand( o, w ) },         ;
+          {|o,w| onEraseBk( o, w ) },            ;
+          {|o| hwg_onMove( o ) },                ;
+          {|o,w,l| onSize( o, w, l ) },          ;
+          {|o,w| onMdiNcActivate( o, w ) },      ;
+          {|o,w,l| onSysCommand( o, w, l ) },    ;
+          {|o,w,l| onEnterIdle( o, w, l ) },     ;
+          {|o,w,l| onMdiActivate( o, w, l ) },   ;
+          {|o| hwg_onDestroy( o ) }              ;
+        } ;
+   }
    DATA aRectSave
    DATA oWndParent
    DATA lMaximized  INIT .F.
@@ -789,7 +784,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HChildWindow
       RETURN ::Paint( self )
 
    ELSEIF msg == WM_DESTROY
-      RETURN onDestroy( Self )
+      RETURN hwg_onDestroy( Self )
    ELSEIF msg == WM_SIZE
       RETURN onSize( Self, wParam, lParam )
    ELSEIF msg = WM_SETFOCUS .AND. !Empty( ::nFocus )

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-03-13 20:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source\hwindow.prg
+  * source\hdialog.prg
+    * WM_DESTROY handling is united for HWindow and HDialog
+
 2013-03-13 16:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source\hbrowse.prg
   * source\hdialog.prg

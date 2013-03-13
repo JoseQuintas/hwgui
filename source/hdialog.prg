@@ -22,26 +22,13 @@ STATIC aMessModalDlg := { ;
       { WM_SIZE, { |o,w,l| onSize( o, w, l ) } },                ;
       { WM_INITDIALOG, { |o,w,l| InitModalDlg( o, w, l ) } },    ;
       { WM_ERASEBKGND, { |o,w| onEraseBk( o, w ) } },            ;
-      { WM_DESTROY, { |o| onDestroy( o ) } },                    ;
+      { WM_DESTROY, { |o| hwg_onDestroy( o ) } },                ;
       { WM_ENTERIDLE, { |o,w,l| onEnterIdle( o, w, l ) } },      ;
       { WM_ACTIVATE, { | o, w,l| onActivate( o, w, l ) } },      ;
       { WM_PSPNOTIFY, { |o,w,l| onPspNotify( o, w, l ) } },      ;
       { WM_HELP, { |o,w,l| hwg_onHelp( o, w, l ) } },            ;
       { WM_CTLCOLORDLG, { |o,w,l| onDlgColor( o, w, l ) } }      ;
       }
-
-STATIC FUNCTION onDestroy( oDlg )
-
-   IF oDlg:oEmbedded != Nil
-      oDlg:oEmbedded:END()
-   ENDIF
-   // IN CLASS INHERIT DIALOG DESTROY APLICATION
-   IF oDlg:oDefaultParent:CLASSNAME = "HDIALOG"  .AND. HWindow():GetMain() == Nil
-      oDlg:Super:onEvent( WM_DESTROY )
-   ENDIF
-   oDlg:DelItem()
-
-   RETURN 0
 
    // Class HDialog
 
@@ -58,7 +45,6 @@ CLASS HDialog INHERIT HWindow
    DATA xResourceID
    DATA bOnActivate
    DATA lOnActivated INIT .F.
-   DATA WindowState  INIT 0
    DATA lContainer   INIT .F.
    DATA nInitFocus    INIT 0  // Keeps the ID of the object to receive focus when dialog is created
    // you can change the object that receives focus adding

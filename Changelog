@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-03-13 16:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source\hbrowse.prg
+  * source\hdialog.prg
+    * HDialog now inherits from HWindow. This allows to simplify HDialog code,
+      to remove some data and methods, which are the same in HWindow
+
 2013-03-13 14:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * hcontrol.prg
   * hpanel.prg

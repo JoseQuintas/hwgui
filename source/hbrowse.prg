@@ -520,7 +520,7 @@ METHOD SetRowHeight( nPixels ) CLASS HBrowse
    //----------------------------------------------------//
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
-   LOCAL oParent, cKeyb, nCtrl, nPos, lBEof
+   LOCAL oParent, cKeyb, nCtrl, nPos, lBEof, iParHigh, iParLow
    LOCAL nRecStart, nRecStop, nRet, nShiftAltCtrl
 
    IF ::active .AND. ! Empty( ::aColumns )
@@ -611,8 +611,14 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
       ELSEIF msg == WM_COMMAND
          IF hwg_GetParentForm( Self ):Type < WND_DLG_RESOURCE
             hwg_GetParentForm( Self ):onEvent( msg, wparam, lparam )
-         ELSE
-            hwg_DlgCommand( Self, wParam, lParam )
+         ELSEIF ::aEvents != Nil
+            iParHigh := hwg_Hiword( wParam )
+            iParLow  := hwg_Loword( wParam )           
+            IF ( nPos := AScan( ::aEvents, {|a|a[1] == iParHigh .AND. a[2] == iParLow } ) ) > 0
+               IF ! ::lSuspendMsgsHandling
+                  Eval( ::aEvents[nPos,3], Self, iParLow )
+               ENDIF
+            ENDIF
          ENDIF
       ELSEIF msg == WM_KEYUP
          IF wParam == 17

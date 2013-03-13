@@ -17,17 +17,17 @@
 
 STATIC aSheet := Nil
 STATIC aMessModalDlg := { ;
-      { WM_COMMAND, { | o, w, l | hwg_DlgCommand( o, w, l ) } },         ;
-      { WM_SYSCOMMAND, { | o, w, l | onSysCommand( o, w, l ) } },    ;
-      { WM_SIZE, { | o, w, l | onSize( o, w, l ) } },                ;
-      { WM_INITDIALOG, { | o, w, l | InitModalDlg( o, w, l ) } },    ;
-      { WM_ERASEBKGND, { | o, w | onEraseBk( o, w ) } },             ;
-      { WM_DESTROY, { | o | onDestroy( o ) } },                      ;
-      { WM_ENTERIDLE, { | o, w, l | onEnterIdle( o, w, l ) } },      ;
-      { WM_ACTIVATE, { | o, w, l | onActivate( o, w, l ) } },        ;
-      { WM_PSPNOTIFY, { | o, w, l | onPspNotify( o, w, l ) } },      ;
-      { WM_HELP, { | o, w, l | hwg_onHelp( o, w, l ) } },                ;
-      { WM_CTLCOLORDLG, { | o, w, l | onDlgColor( o, w, l ) } }       ;
+      { WM_COMMAND, { |o,w,l| onDlgCommand( o, w, l ) } },       ;
+      { WM_SYSCOMMAND, { |o,w,l| onSysCommand( o, w, l ) } },    ;
+      { WM_SIZE, { |o,w,l| onSize( o, w, l ) } },                ;
+      { WM_INITDIALOG, { |o,w,l| InitModalDlg( o, w, l ) } },    ;
+      { WM_ERASEBKGND, { |o,w| onEraseBk( o, w ) } },            ;
+      { WM_DESTROY, { |o| onDestroy( o ) } },                    ;
+      { WM_ENTERIDLE, { |o,w,l| onEnterIdle( o, w, l ) } },      ;
+      { WM_ACTIVATE, { | o, w,l| onActivate( o, w, l ) } },      ;
+      { WM_PSPNOTIFY, { |o,w,l| onPspNotify( o, w, l ) } },      ;
+      { WM_HELP, { |o,w,l| hwg_onHelp( o, w, l ) } },            ;
+      { WM_CTLCOLORDLG, { |o,w,l| onDlgColor( o, w, l ) } }      ;
       }
 
 STATIC FUNCTION onDestroy( oDlg )
@@ -39,45 +39,26 @@ STATIC FUNCTION onDestroy( oDlg )
    IF oDlg:oDefaultParent:CLASSNAME = "HDIALOG"  .AND. HWindow():GetMain() == Nil
       oDlg:Super:onEvent( WM_DESTROY )
    ENDIF
-   oDlg:Del()
+   oDlg:DelItem()
 
    RETURN 0
 
    // Class HDialog
 
-CLASS HDialog INHERIT HCustomWindow, HScrollArea
+CLASS HDialog INHERIT HWindow
 
    CLASS VAR aDialogs       SHARED INIT { }
    CLASS VAR aModalDialogs  SHARED INIT { }
 
-   DATA menu , hAccel
-   DATA oPopup                // Context menu for a dialog
-   DATA lBmpCenter INIT .F.
-   DATA nBmpClr
-
    DATA lModal   INIT .T.
    DATA lResult  INIT .F.     // Becomes TRUE if the OK button is pressed
-   DATA lUpdated INIT .F.     // TRUE, if any GET is changed
-   DATA lClipper INIT .F.     // Set it to TRUE for moving between GETs with ENTER key
-   DATA GetList  INIT { }      // The array of GET items in the dialog
-   DATA KeyList  INIT { }      // The array of keys ( as Clipper's SET KEY )
-   DATA lExitOnEnter INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key,
-   // Added by Sandro Freire
-   DATA lExitOnEsc   INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key,
-   // Added by Sandro Freire
-   DATA lGetSkiponEsc  INIT .F.  // add by Basso - pressing ESC back focus , if first DEFAULT ESC EVENT
    DATA lRouteCommand  INIT .F.
-   DATA nLastKey INIT 0
-   DATA oIcon, oBmp
    DATA bActivate
    DATA lActivated   INIT .F.
    DATA xResourceID
-   DATA oEmbedded
    DATA bOnActivate
    DATA lOnActivated INIT .F.
    DATA WindowState  INIT 0
-   DATA nScrollBars  INIT - 1
-   DATA bScroll
    DATA lContainer   INIT .F.
    DATA nInitFocus    INIT 0  // Keeps the ID of the object to receive focus when dialog is created
    // you can change the object that receives focus adding
@@ -88,14 +69,10 @@ CLASS HDialog INHERIT HCustomWindow, HScrollArea
       xResourceID, lExitOnEsc, bcolor, bRefresh, lNoClosable )
    METHOD Activate( lNoModal, bOnActivate, nShow )
    METHOD onEvent( msg, wParam, lParam )
-   METHOD Add()      INLINE AAdd( iif( ::lModal, ::aModalDialogs, ::aDialogs ), Self )
-   METHOD Del()
+   METHOD AddItem()      INLINE AAdd( iif( ::lModal, ::aModalDialogs, ::aDialogs ), Self )
+   METHOD DelItem()
    METHOD FindDialog( hWndTitle, lAll )
    METHOD GetActive()
-   METHOD Center()   INLINE Hwg_CenterWindow( ::handle , ::Type )
-   METHOD RESTORE()  INLINE hwg_Sendmessage( ::handle,  WM_SYSCOMMAND, SC_RESTORE, 0 )
-   METHOD Maximize() INLINE hwg_Sendmessage( ::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0 )
-   METHOD Minimize() INLINE hwg_Sendmessage( ::handle,  WM_SYSCOMMAND, SC_MINIMIZE, 0 )
    METHOD CLOSE()    INLINE hwg_EndDialog( ::handle )
    METHOD RELEASE()  INLINE ::Close( ), Self := Nil
 
@@ -161,26 +138,26 @@ METHOD Activate( lNoModal, bOnActivate, nShow ) CLASS HDialog
    IF ::Type == WND_DLG_RESOURCE
       IF lNoModal == Nil .OR. ! lNoModal
          ::lModal := .T.
-         ::Add()
+         ::AddItem()
          Hwg_DialogBox( hwg_Getactivewindow(), Self )
       ELSE
          ::lModal  := .F.
          ::handle  := 0
          ::lResult := .F.
-         ::Add()
+         ::AddItem()
          Hwg_CreateDialog( hParent, Self )
       ENDIF
 
    ELSEIF ::Type == WND_DLG_NORESOURCE
       IF lNoModal == Nil .OR. ! lNoModal
          ::lModal := .T.
-         ::Add()
+         ::AddItem()
          Hwg_DlgBoxIndirect( hwg_Getactivewindow(), Self, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
       ELSE
          ::lModal  := .F.
          ::handle  := 0
          ::lResult := .F.
-         ::Add()
+         ::AddItem()
          Hwg_CreateDlgIndirect( hParent, Self, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
          IF  ::WindowState > SW_HIDE
             hwg_Setwindowpos( ::Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE + SWP_FRAMECHANGED )
@@ -251,7 +228,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
 
    RETURN 0
 
-METHOD Del() CLASS HDialog
+METHOD DelItem() CLASS HDialog
    LOCAL i
 
    IF ::lModal
@@ -438,7 +415,7 @@ STATIC FUNCTION onEraseBk( oDlg, hDC )
 
 #define  FLAG_CHECK      2
 
-FUNCTION hwg_DlgCommand( oDlg, wParam, lParam )
+STATIC FUNCTION onDlgCommand( oDlg, wParam, lParam )
 
    LOCAL iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )
    LOCAL aMenu, i, hCtrl, oCtrl, nEsc := .F.
@@ -839,4 +816,3 @@ STATIC FUNCTION onSysCommand( oDlg, wParam, lParam )
    Hwg_ExitProc()
 
    RETURN
-

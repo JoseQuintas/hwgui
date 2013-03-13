@@ -292,7 +292,11 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip,
    ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
    ::oFont   := oFont
    ::bInit   := bInit
-   ::bSize   := bSize
+   IF Valtype( bSize ) == "N"
+      ::Anchor := bSize
+   ELSE
+      ::bSize   := bSize
+   ENDIF
    ::bPaint  := bPaint
    ::tooltip := ctooltip
    /*

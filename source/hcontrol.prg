@@ -74,7 +74,11 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
    ::nHeight := iif( nHeight = NIL , 0, nHeight )
    ::oFont   := oFont
    ::bInit   := bInit
-   ::bSize   := bSize
+   IF Valtype( bSize ) == "N"
+      ::Anchor := bSize
+   ELSE
+      ::bSize   := bSize
+   ENDIF
    ::bPaint  := bPaint
    ::tooltip := cTooltip
    ::Setcolor( tcolor, bColor )

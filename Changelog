@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-03-13 14:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * hcontrol.prg
+  * hpanel.prg
+  * hradio.prg
+    * Now you can set Anchor value in ON SIZE clause. If ON SIZE have the 
+      numeric type value, it is assigned to :Anchor, if it is codeblock -
+      to the :bSize.
+  * guimain.prg
+    * hwg_MsgGet() is changed to show how to use ON SIZE and Anchor.
+
 2013-03-12 10:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source\draw.c
     ! Warning fixed.

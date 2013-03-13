@@ -122,7 +122,7 @@ METHOD Activate() CLASS HPanel
 METHOD Init() CLASS HPanel
 
    IF !::lInit
-      IF ::bSize == NIL
+      IF ::bSize == NIL .AND. Empty( ::Anchor )
          ::bSize := { | o, x, y | o:Move( Iif( ::nLeft > 0, x - ::nLeft, 0 ), ;
                Iif( ::nTop > 0, y - ::nHeight, 0 ), ;
                Iif( ::nWidth == 0 .OR. ::lResizeX, x, ::nWidth ), ;

@@ -207,7 +207,7 @@ METHOD Delete( lInternal ) CLASS HTreeNode
          ::aItems[ j ] := Nil
       NEXT
    ENDIF
-   hwg_Tree_releasenode( ::oTree:handle, ::handle )
+   hwg_Treereleasenode( ::oTree:handle, ::handle )
    hwg_Sendmessage( ::oTree:handle, TVM_DELETEITEM, 0, ::handle )
    IF lInternal == Nil
       aItems := IIf( ::oParent == Nil, ::oTree:aItems, ::oParent:aItems )
@@ -554,7 +554,7 @@ METHOD Notify( lParam )  CLASS HTree
    LOCAL nkeyDown := hwg_Getnotifykeydown( lParam )
     
 	IF ncode = NM_SETCURSOR .AND. ::lDragging
-	   ::hitemDrop := hwg_Tree_hittest( ::handle,,, @nAct )
+	   ::hitemDrop := hwg_Treehittest( ::handle,,, @nAct )
 	   IF ::hitemDrop != Nil
 	      hwg_Sendmessage( ::handle, TVM_SELECTITEM, TVGN_DROPHILITE, ::hitemDrop:handle )
 	   ENDIF
@@ -563,8 +563,8 @@ METHOD Notify( lParam )  CLASS HTree
 	IF nCode == TVN_SELCHANGING  //.AND. ::oitem != Nil // .OR. NCODE = -500
 
    ELSEIF nCode == TVN_SELCHANGED //.OR. nCode == TVN_ITEMCHANGEDW
-      ::oItemOld := hwg_Tree_getnotify( lParam, TREE_GETNOTIFY_OLDPARAM )
-      oItem := hwg_Tree_getnotify( lParam, TREE_GETNOTIFY_PARAM )
+      ::oItemOld := hwg_Treegetnotify( lParam, TREE_GETNOTIFY_OLDPARAM )
+      oItem := hwg_Treegetnotify( lParam, TREE_GETNOTIFY_PARAM )
       IF ValType( oItem ) == "O"
          oItem:oTree:oSelected := oItem
          IF oItem != Nil .AND. ! oItem:oTree:lEmpty
@@ -586,8 +586,8 @@ METHOD Notify( lParam )  CLASS HTree
 
    ELSEIF nCode == TVN_ENDLABELEDIT  .or. nCode == TVN_ENDLABELEDITW
       ::hTreeEdit := Nil
-      IF ! Empty( cText := hwg_Tree_getnotify( lParam, TREE_GETNOTIFY_EDIT ) )
-         oItem := hwg_Tree_getnotify( lParam, TREE_GETNOTIFY_EDITPARAM )
+      IF ! Empty( cText := hwg_Treegetnotify( lParam, TREE_GETNOTIFY_EDIT ) )
+         oItem := hwg_Treegetnotify( lParam, TREE_GETNOTIFY_EDITPARAM )
          IF ValType( oItem ) == "O"
             IF ! cText ==  oItem:GetText()  .AND. ;
                ( oItem:oTree:bItemChange == Nil .OR. Eval( oItem:oTree:bItemChange, oItem, cText ) )
@@ -598,17 +598,17 @@ METHOD Notify( lParam )  CLASS HTree
       ::oParent:aEvents := s_aEvents
       
    ELSEIF nCode == TVN_ITEMEXPANDING .or. nCode == TVN_ITEMEXPANDINGW
-      oItem := hwg_Tree_getnotify( lParam, TREE_GETNOTIFY_PARAM )
+      oItem := hwg_Treegetnotify( lParam, TREE_GETNOTIFY_PARAM )
       IF ValType( oItem ) == "O"
          IF ::bExpand != Nil
             RETURN IIf( Eval( oItem:oTree:bExpand, oItem, ;
-                              hwg_Checkbit( hwg_Tree_getnotify( lParam, TREE_GETNOTIFY_ACTION ), TVE_EXPAND ) ), ;
+                              hwg_Checkbit( hwg_Treegetnotify( lParam, TREE_GETNOTIFY_ACTION ), TVE_EXPAND ) ), ;
                         0, 1 )
          ENDIF
       ENDIF
 
    ELSEIF nCode = TVN_BEGINDRAG .AND. ::lDragDrop
-      ::hitemDrag := hwg_Tree_getnotify( lParam, TREE_GETNOTIFY_PARAM )
+      ::hitemDrag := hwg_Treegetnotify( lParam, TREE_GETNOTIFY_PARAM )
       ::lDragging := .T.
 
    ELSEIF nCode = TVN_KEYDOWN .AND. ::oItem != Nil
@@ -617,9 +617,9 @@ METHOD Notify( lParam )  CLASS HTree
       ENDIF
 
 	 ELSEIF nCode = NM_CLICK  //.AND. ::oitem != Nil // .AND. !::lEditLabels
-	    nHitem :=  hwg_Tree_getnotify( lParam, 1 )
+	    nHitem :=  hwg_Treegetnotify( lParam, 1 )
 	    //nHitem :=  hwg_Getnotifycode( lParam )
-	    oItem  := hwg_Tree_hittest( ::handle,,, @nAct )
+	    oItem  := hwg_Treehittest( ::handle,,, @nAct )
 	    IF nAct = TVHT_ONITEMSTATEICON
 	       IF ::oItem == Nil .OR. oItem:Handle != ::oitem:Handle 
             ::Select( oItem )
@@ -643,7 +643,7 @@ METHOD Notify( lParam )  CLASS HTree
 	
    ELSEIF nCode == NM_DBLCLK
       IF ::bDblClick != Nil
-         oItem  := hwg_Tree_hittest( ::handle,,, @nAct )
+         oItem  := hwg_Treehittest( ::handle,,, @nAct )
          IF oItem = Nil
             oItem := ::oItem
             *::Select( oItem )
@@ -652,13 +652,13 @@ METHOD Notify( lParam )  CLASS HTree
       ENDIF
    ELSEIF nCode == NM_RCLICK
       IF ::bRClick != Nil
-         oItem  := hwg_Tree_hittest( ::handle,,, @nAct )
+         oItem  := hwg_Treehittest( ::handle,,, @nAct )
          Eval( ::bRClick, oItem, Self, nAct )
       ENDIF
       
       /* working only windows 7
    ELSEIF nCode == - 24 .and. ::oitem != Nil
-      //nhitem := hwg_Tree_hittest( ::handle,,, @nAct )
+      //nhitem := hwg_Treehittest( ::handle,,, @nAct )
       IF ::bCheck != Nil
          lEval := Eval( ::bCheck, ! ::oItem:checked, ::oItem, Self )
       ENDIF
@@ -706,7 +706,7 @@ STATIC PROCEDURE ReleaseTree( aItems )
    LOCAL i, iLen := Len( aItems )
 
    FOR i := 1 TO iLen
-      hwg_Tree_releasenode( aItems[ i ]:oTree:handle, aItems[ i ]:handle )
+      hwg_Treereleasenode( aItems[ i ]:oTree:handle, aItems[ i ]:handle )
       ReleaseTree( aItems[ i ]:aItems )
       // hwg_DecreaseHolders( aItems[i]:handle )
    NEXT

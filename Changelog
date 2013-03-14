@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-03-14 10:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include\hwgcompat.ch
+  * source\control.c
+  * source\htree.prg
+    * hwg_Tree_getnotify, hwg_Tree_hittest, hwg_Tree_releasenode are renamed to
+      hwg_Treegetnotify, hwg_Treehittest, hwg_Treereleasenode just to be like
+      other hwg_tree* functions. These are internal functions and usually aren't
+      used in end programs.
+
 2013-03-13 20:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source\hwindow.prg
   * source\hdialog.prg

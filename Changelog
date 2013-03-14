@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-03-14 12:50 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
+  * utils/designer/samples/example.prg
+  * utils/designer/samples/example2.prg
+    * prefix HWG_ added to sleep and shellabout
+
 2013-03-14 10:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include\hwgcompat.ch
   * source\control.c
@@ -32,7 +37,7 @@
   * hcontrol.prg
   * hpanel.prg
   * hradio.prg
-    * Now you can set Anchor value in ON SIZE clause. If ON SIZE have the 
+    * Now you can set Anchor value in ON SIZE clause. If ON SIZE have the
       numeric type value, it is assigned to :Anchor, if it is codeblock -
       to the :bSize.
   * guimain.prg
@@ -44,7 +49,7 @@
 
 2013-03-11 14:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include\guilib.ch
-    * Prefixes for functions calls changed. I forget to add it while the last commit. 
+    * Prefixes for functions calls changed. I forget to add it while the last commit.
 
 2013-03-07 13:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * contrib\misc\richtext.prg
@@ -271,7 +276,7 @@
   * include\hwgcompat.ch
     + added rules for functions
 
-    * ATTENTION. Many function names has been changed. You can include 
+    * ATTENTION. Many function names has been changed. You can include
       hwgcompat.ch or gtkcompat.ch to your source files, but it is much
       better to really change all HwgUI functions calls in sources.
       I recommend you to use my utility snr2 for this task, I used it
@@ -308,8 +313,8 @@
 2013-02-22 11:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source\commond.c
     * All functions are prefixed with hwg_
-    !!! Few widely used function names are changed, including Selectfile, 
-        Savefile, Selectfont, they are now hwg_Selectfile, hwg_Savefile, 
+    !!! Few widely used function names are changed, including Selectfile,
+        Savefile, Selectfont, they are now hwg_Selectfile, hwg_Savefile,
         hwg_Selectfont. Change them in your program code or #include the
         hwgcompat.ch
   * include/hwgcompat.ch
@@ -362,7 +367,7 @@
 
 2013-02-19 16:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   ! source/htab.prg
-    ! Parameters order fixed for Eval() call of :bChange. It is necessary 
+    ! Parameters order fixed for Eval() call of :bChange. It is necessary
       to check all other calls of Eval()
   ! samples\hello\hello.hbp
     ! Parameters order fixed.

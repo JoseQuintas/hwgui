@@ -63,7 +63,7 @@ FUNCTION hwg_onDestroy( oWnd )
       oWnd:oEmbedded:END()
    ENDIF
    oWnd:Super:onEvent( WM_DESTROY )
-   HWindow():DelItem( oWnd )
+   oWnd:DelItem( oWnd )
 
    RETURN 0
 
@@ -309,11 +309,6 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
 
    ENDIF
    ::rect := hwg_Getwindowrect( ::handle )
-   /*
-   IF ::bInit != Nil
-      Eval( ::bInit, Self )
-   ENDIF
-    */
    RETURN Self
 
 METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMainWindow
@@ -580,16 +575,6 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
       ::nTop  := ( ::oClient:nHeight - ::nHeight ) / 2
    ENDIF
 
-   // is necessary for set zorder control
-   //hwg_InitControls( Self )  ??? maybe
-
-   /*  in ONMDICREATE
-   /*
-   hwg_InitObjects( Self,.T. )
-   IF ::bInit != Nil
-      Eval( ::bInit,Self )
-   ENDIF
-   */
    IF l3D
       // does not allow resizing
       ::minWidth  := ::nWidth
@@ -607,23 +592,11 @@ METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate, lModal ) C
          ::Maximize()
          hwg_Showwindow( ::Handle, SW_SHOWDEFAULT )
       ENDIF
-      //::show()
-      *-hwg_Updatewindow( ::handle )
    ELSE
       hwg_Setwindowpos( ::handle, Nil, ::nLeft, ::nTop, ::nWidth, ::nHeight, SWP_NOREDRAW + SWP_NOACTIVATE + SWP_NOZORDER )
    ENDIF
 
-   // SCROLLSBARS
    ::RedefineScrollbars()
-   /*
-   IF ::nScrollBars > - 1
-      AEval( ::aControls, { | o | ::ncurHeight := max( o:nTop + o:nHeight + hwg_Getsystemmetrics( SM_CYMENU ) + hwg_Getsystemmetrics( SM_CYCAPTION ) + 12 , ::ncurHeight ) } )
-      AEval( ::aControls, { | o | ::ncurWidth := max( o:nLeft + o:nWidth  + 24 , ::ncurWidth ) } )
-      ::ResetScrollbars()
-      ::SetupScrollbars()
-   ENDIF
-   */
-
 
    IF bActivate != NIL
       Eval( bActivate, Self )
@@ -891,24 +864,7 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
       Eval( aMenu[ 1, iCont, 1 ], iCont, wParam )
    ELSEIF  wParam != SC_CLOSE .AND. wParam != SC_MINIMIZE .AND. wParam != SC_MAXIMIZE .AND.;
            wParam != SC_RESTORE .AND. oWnd:Type = WND_MDI //.AND. oWnd:bMdiMenu != Nil
-      /*
-      // ADDED
-      IF ! Empty( oWnd:Screen )
-         IF wParam = FIRST_MDICHILD_ID  // first menu
-            IF hwg_Iswindowenabled( oWnd:Screen:Handle )
-               hwg_Setwindowpos( oWnd:Screen:HANDLE, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER + ;
-                                                                          SWP_NOOWNERZORDER + SWP_FRAMECHANGED)
-            ENDIF
-            RETURN -1
-         ENDIF
-      ENDIF
-      // menu MDICHILD
-         IF oWnd:bMdiMenu != Nil
-         Eval( oWnd:bMdiMenu, oWnd:GetMdiActive(), wParam  )
-      ENDIF
-      */
       RETURN IIF( ! Empty( oWnd:Screen ) , -1 , 0 )
-      // end added
    ENDIF
 
    RETURN 0
@@ -947,22 +903,6 @@ STATIC FUNCTION onEraseBk( oWnd, wParam )
        ENDIF
        Return 1
    ELSEIF oWnd:type != WND_MDI //.AND. oWnd:type != WND_MAIN
-      /*
-      aCoors := hwg_Getclientrect( oWnd:handle )
-      IF oWnd:brush != Nil
-         IF ValType( oWnd:brush ) != "N"
-            hwg_Fillrect( wParam, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ], aCoors[ 4 ], oWnd:brush:handle )
-            IF !Empty( oWnd:Screen ) .AND. hwg_Selffocus( oWnd:handle, oWnd:Screen:Handle )
-               hwg_Setwindowpos( oWnd:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOREDRAW + SWP_NOACTIVATE + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER +;
-                                                         SWP_NOOWNERZORDER )
-            ENDIF
-            RETURN 1
-         ENDIF
-      ELSEIF oWnd:Type != WND_MAIN
-         hwg_Fillrect( wParam, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ], aCoors[ 4 ], COLOR_3DFACE + 1 )
-         RETURN 1
-      ENDIF
-      */
       RETURN 0
    ELSEIF oWnd:type = WND_MDI .AND. hwg_Iswindowvisible( oWnd:handle )
       // MINOR flicker in MAIND in resize window
@@ -1083,13 +1023,6 @@ STATIC FUNCTION onNotifyIcon( oWnd, wParam, lParam )
             Eval( oWnd:bNotify )
          ENDIF
       ELSEIF hwg_Ptrtoulong(lParam) == WM_MOUSEMOVE
-         /*
-         IF ISBLOCK( oWnd:bNotify )
-            oWnd:lSuspendMsgsHandling := .T.
-            Eval( oWnd:bNotify )
-            oWnd:lSuspendMsgsHandling := .F.
-         ENDIF
-         */
       ELSEIF hwg_Ptrtoulong(lParam) == WM_RBUTTONDOWN
          IF oWnd:oNotifyMenu != Nil
             ar := hwg_GetCursorPos()
@@ -1213,14 +1146,10 @@ Static Function onMdiActivate( oWnd,wParam, lParam )
 
    IF  lScreen .AND. ( Empty( lParam ) .OR. ;
        hwg_Selffocus( lParam, oWnd:Screen:Handle ) ) .AND. !lConf //wParam != oWnd:Handle
-      *-hwg_Setwindowpos( oWnd:Screen:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE )
       RETURN 0
    ELSEIF lConf //oWnd:Handle = wParam
       IF  ! hwg_Selffocus( oWnd:Screen:handle, wParam ) .AND. oWnd:bLostFocus != Nil //.AND.wParam == 0
          oWnd:lSuspendMsgsHandling := .t.
-         //IF oWnd:Screen:handle = lParam
-         //   hwg_Setwindowpos( oWnd:Screen:Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOOWNERZORDER + SWP_NOSIZE + SWP_NOMOVE )
-         //ENDIF
          Eval( oWnd:bLostFocus, oWnd )
          oWnd:lSuspendMsgsHandling := .f.
       ENDIF

@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-03-19 16:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  ! source\procmisc\hfrmtmpl.prg
+    ! Bug fixed with database alias in browse
+
 2013-03-17 14:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   ! source\hwindow.prg
     ! Small bug fixed, reported by Itamar M. Lins Jr.

@@ -1039,7 +1039,6 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
       oCtrl:Type := brwType
       IF brwType = BRW_DATABASE          //oCtrl:type = 1
          // CRIAR AS RELA€OES E O LINK
-         oCtrl:Alias := cAliasdbf
          IF ! Empty( cKey )
             &( oCtrl:Alias ) ->( DBSetOrder( cKey ) )
             cKey := ( oCtrl:Alias ) ->( ordkey( cKey ) )

@@ -1451,7 +1451,21 @@ HB_FUNC( HWG_ANSITOUNICODE )
 
 HB_FUNC( HWG_CLEARKEYBOARD )
 {
-   s_ClearKeyboard() ;
+   BYTE kbBuffer[ 256 ];
+   int i = 1 ;
+   int lClear = TRUE;
+
+   while( lClear == TRUE )
+   {
+      GetKeyboardState( kbBuffer );
+      lClear = FALSE;
+      for( i = 0; i < 256; i ++ )
+         if( kbBuffer[ i ] & 0x80 )
+         {
+            s_ClearKeyboard() ;
+            lClear = TRUE ;
+         }
+   }
 }
 
 HB_FUNC( HWG_PAINTWINDOW )

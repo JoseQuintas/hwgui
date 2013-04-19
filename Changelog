@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-04-19 10:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/dbc/dbchw.prg
+    ! Some fixes
+
 2013-04-19 10:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   - utils/dbc/bitmaps.rc
   - utils/dbc/files.txt

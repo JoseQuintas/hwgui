@@ -1065,31 +1065,39 @@ Static Function Options()
    Return Nil
 
 STATIC FUNCTION EditRec()
-   LOCAL oDlg, oBrowse, af := Array( FCount(), 2 ), i
+   LOCAL oDlg, oBrowse, af := Array( FCount(), 2 ), i, cTYpe
 
    FOR i := 1 TO Len( af )
-      af[1] := dbFieldInfo( 1, i )
-      af[2] := FieldGet( i )
+      af[i,1] := dbFieldInfo( 1, i )
+      af[i,2] := FieldGet( i )
+      IF ( cType := dbFieldInfo( 2, i ) ) $ "NIBYZ842+^"
+         af[i,2] := Str( af[i,2], dbFieldInfo(3,i), dbFieldInfo(4,i) )
+      ELSEIF cType == "D"
+         af[i,2] := Dtoc( af[i,2] )
+      ELSEIF cType == "L"
+         af[i,2] := Iif( af[i,2], "T", "L" )
+      ENDIF
    NEXT
 
    INIT DIALOG oDlg TITLE "Edit record" ;
       AT 0, 0         ;
-      SIZE 320, 320   ;
+      SIZE 440, 320   ;
       FONT oMainFont
 
    @ 20,20 BROWSE oBrowse ARRAY   ;
-       SIZE 320,190               ;
-       STYLE WS_BORDER+WS_VSCROLL
+       SIZE 400,230               ;
+       STYLE WS_BORDER+WS_VSCROLL ;
+       ON SIZE ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_BOTTOMABS+ANCHOR_RIGHTABS
 
    oBrowse:aArray := af
    oBrowse:AddColumn( HColumn():New( "",{|v,o|o:nCurrent},"N",4,0 ) )
    oBrowse:AddColumn( HColumn():New( "Field",{|v,o|o:aArray[o:nCurrent,1]},"C",14,0 ) )
-   oBrowse:AddColumn( HColumn():New( "Value",{|v,o|o:aArray[o:nCurrent,2]},"C",40,0,T. ) )
+   oBrowse:AddColumn( HColumn():New( "Value",{|v,o|o:aArray[o:nCurrent,2]},"C",40,0,.T. ) )
 
    oBrowse:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
 
-   @  30, 268  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
-   @ 170, 268 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+   @  30, 268 BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() } ON SIZE ANCHOR_LEFTABS+ANCHOR_BOTTOMABS
+   @ 310, 268 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() } ON SIZE ANCHOR_RIGHTABS+ANCHOR_BOTTOMABS
 
    oDlg:Activate()
 

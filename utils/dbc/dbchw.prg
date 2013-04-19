@@ -14,7 +14,6 @@
 #include "ads.ch"
 #endif
 
-
 REQUEST  HB_CODEPAGE_BG866, HB_CODEPAGE_BGISO, HB_CODEPAGE_BGMIK, HB_CODEPAGE_BGWIN
 REQUEST  HB_CODEPAGE_CS852, HB_CODEPAGE_CSISO, HB_CODEPAGE_CSWIN, HB_CODEPAGE_DE850
 REQUEST  HB_CODEPAGE_DE850M,HB_CODEPAGE_DEISO, HB_CODEPAGE_DEWIN, HB_CODEPAGE_DK865
@@ -22,74 +21,25 @@ REQUEST  HB_CODEPAGE_EL437, HB_CODEPAGE_EL737, HB_CODEPAGE_ELISO, HB_CODEPAGE_EL
 REQUEST  HB_CODEPAGE_EN,    HB_CODEPAGE_ES850, HB_CODEPAGE_ES850C,HB_CODEPAGE_ES850M
 REQUEST  HB_CODEPAGE_ESISO, HB_CODEPAGE_ESMWIN,HB_CODEPAGE_ESWIN, HB_CODEPAGE_FI850
 REQUEST  HB_CODEPAGE_FR850, HB_CODEPAGE_FR850M,HB_CODEPAGE_FRISO, HB_CODEPAGE_FRWIN
-REQUEST  HB_CODEPAGE_HR646
-REQUEST  HB_CODEPAGE_HR852
-REQUEST  HB_CODEPAGE_HRISO
-REQUEST  HB_CODEPAGE_HRWIN
-REQUEST  HB_CODEPAGE_HU852
-REQUEST  HB_CODEPAGE_HU852C
-REQUEST  HB_CODEPAGE_HUISO
-REQUEST  HB_CODEPAGE_HUWIN
-REQUEST  HB_CODEPAGE_IS850
-REQUEST  HB_CODEPAGE_IS861
-REQUEST  HB_CODEPAGE_IT437
-REQUEST  HB_CODEPAGE_IT850
-REQUEST  HB_CODEPAGE_IT850M
-REQUEST  HB_CODEPAGE_ITISB
-REQUEST  HB_CODEPAGE_ITISO
-REQUEST  HB_CODEPAGE_ITWIN
-REQUEST  HB_CODEPAGE_LTWIN
-REQUEST  HB_CODEPAGE_NL850
-REQUEST  HB_CODEPAGE_NL850M
-REQUEST  HB_CODEPAGE_NO865
-REQUEST  HB_CODEPAGE_PL852
-REQUEST  HB_CODEPAGE_PLISO
-REQUEST  HB_CODEPAGE_PLMAZ
-REQUEST  HB_CODEPAGE_PLWIN
-REQUEST  HB_CODEPAGE_PT850
-REQUEST  HB_CODEPAGE_PT860
-REQUEST  HB_CODEPAGE_PTISO
-REQUEST  HB_CODEPAGE_RO852
-REQUEST  HB_CODEPAGE_ROISO
-REQUEST  HB_CODEPAGE_ROWIN
-REQUEST  HB_CODEPAGE_RU1251
-REQUEST  HB_CODEPAGE_RU866
-REQUEST  HB_CODEPAGE_RUISO
-REQUEST  HB_CODEPAGE_RUKOI8
-REQUEST  HB_CODEPAGE_SK852
-REQUEST  HB_CODEPAGE_SKISO
-REQUEST  HB_CODEPAGE_SKWIN
-REQUEST  HB_CODEPAGE_SL646
-REQUEST  HB_CODEPAGE_SL852
-REQUEST  HB_CODEPAGE_SLISO
-REQUEST  HB_CODEPAGE_SLWIN
-REQUEST  HB_CODEPAGE_SRWIN
-REQUEST  HB_CODEPAGE_SV437C
-REQUEST  HB_CODEPAGE_SV850
-REQUEST  HB_CODEPAGE_SV850M
-REQUEST  HB_CODEPAGE_SVISO
-REQUEST  HB_CODEPAGE_SVWIN
-REQUEST  HB_CODEPAGE_TR857
-REQUEST  HB_CODEPAGE_TRISO
-REQUEST  HB_CODEPAGE_TRWIN
-REQUEST  HB_CODEPAGE_UA1125
-REQUEST  HB_CODEPAGE_UA1251
-REQUEST  HB_CODEPAGE_UA866
-REQUEST  HB_CODEPAGE_UAKOI8
+REQUEST  HB_CODEPAGE_HR646, HB_CODEPAGE_HR852, HB_CODEPAGE_HRISO, HB_CODEPAGE_HRWIN
+REQUEST  HB_CODEPAGE_HU852, HB_CODEPAGE_HU852C,HB_CODEPAGE_HUISO, HB_CODEPAGE_HUWIN
+REQUEST  HB_CODEPAGE_IS850, HB_CODEPAGE_IS861, HB_CODEPAGE_IT437, HB_CODEPAGE_IT850
+REQUEST  HB_CODEPAGE_IT850M,HB_CODEPAGE_ITISB, HB_CODEPAGE_ITISO, HB_CODEPAGE_ITWIN
+REQUEST  HB_CODEPAGE_LTWIN, HB_CODEPAGE_NL850, HB_CODEPAGE_NL850M,HB_CODEPAGE_NO865
+REQUEST  HB_CODEPAGE_PL852, HB_CODEPAGE_PLISO, HB_CODEPAGE_PLMAZ, HB_CODEPAGE_PLWIN
+REQUEST  HB_CODEPAGE_PT850, HB_CODEPAGE_PT860, HB_CODEPAGE_PTISO, HB_CODEPAGE_RO852
+REQUEST  HB_CODEPAGE_ROISO, HB_CODEPAGE_ROWIN, HB_CODEPAGE_RU1251,HB_CODEPAGE_RU866
+REQUEST  HB_CODEPAGE_RUISO, HB_CODEPAGE_RUKOI8,HB_CODEPAGE_SK852, HB_CODEPAGE_SKISO
+REQUEST  HB_CODEPAGE_SKWIN, HB_CODEPAGE_SL646, HB_CODEPAGE_SL852, HB_CODEPAGE_SLISO
+REQUEST  HB_CODEPAGE_SLWIN, HB_CODEPAGE_SRWIN, HB_CODEPAGE_SV437C,HB_CODEPAGE_SV850
+REQUEST  HB_CODEPAGE_SV850M,HB_CODEPAGE_SVISO, HB_CODEPAGE_SVWIN, HB_CODEPAGE_TR857
+REQUEST  HB_CODEPAGE_TRISO, HB_CODEPAGE_TRWIN, HB_CODEPAGE_UA1125,HB_CODEPAGE_UA1251
+REQUEST  HB_CODEPAGE_UA866, HB_CODEPAGE_UAKOI8
 
 #if defined( HB_VER_MAJOR ) .AND. HB_VER_MAJOR > 2
-REQUEST  HB_CODEPAGE_CS852C
-REQUEST  HB_CODEPAGE_CSKAMC
-REQUEST  HB_CODEPAGE_HE862
-REQUEST  HB_CODEPAGE_HEWIN
-REQUEST  HB_CODEPAGE_LT775
-REQUEST  HB_CODEPAGE_SK852C
-REQUEST  HB_CODEPAGE_SKKAMC
-REQUEST  HB_CODEPAGE_SR646
-REQUEST  HB_CODEPAGE_SR646C
-REQUEST  HB_CODEPAGE_UTF16LE
-REQUEST  HB_CODEPAGE_UTF8
-REQUEST  HB_CODEPAGE_UTF8EX
+REQUEST  HB_CODEPAGE_CS852C,HB_CODEPAGE_CSKAMC,HB_CODEPAGE_HE862, HB_CODEPAGE_HEWIN
+REQUEST  HB_CODEPAGE_LT775, HB_CODEPAGE_SK852C,HB_CODEPAGE_SKKAMC,HB_CODEPAGE_SR646
+REQUEST  HB_CODEPAGE_SR646C,HB_CODEPAGE_UTF16LE,HB_CODEPAGE_UTF8, HB_CODEPAGE_UTF8EX
 #endif
 
 REQUEST ORDKEYNO
@@ -121,6 +71,8 @@ STATIC aCPInfo := { "Bulgarian CP-866","Bulgarian ISO-8859-5","Bulgarian MIK", ;
       "UTF-8","UTF-8 extended" }
 
 #define OPENED_FILES_LIMIT   15
+
+#define COLOR_SELE      8388736
 
 FUNCTION Main( ... )
    LOCAL oWndMain, oPanel, aParams := hb_aParams()
@@ -197,7 +149,7 @@ FUNCTION Main( ... )
    MENU OF oWndMain
       MENU TITLE "&File"
          MENUITEM "&New" ACTION StruMan( .T. )
-         MENUITEM "&Open" ACTION OpenFile()
+         MENUITEM "&Open"+Chr(9)+"Ctrl+O" ACTION OpenFile() ACCELERATOR FCONTROL,Asc("O")
          MENUITEM "&Close" ACTION ChildClose()
          SEPARATOR
          MENUITEM "&Print" ACTION .T.
@@ -222,14 +174,14 @@ FUNCTION Main( ... )
          MENU TITLE "Fie&lds"
          MENUITEM "&Modify structure" ACTION StruMan( .F. )
          SEPARATOR
-         MENUITEM "&Edit record" ACTION EditRec()
+         MENUITEM "&Edit record"+Chr(9)+"Ctrl+E" ACTION EditRec() ACCELERATOR FCONTROL,Asc("E")
       ENDMENU
       MENU TITLE  "&Move"
          MENUITEM "&Locate" ACTION  Move( 1 )
          MENUITEM "&Continue" ACTION .T.
-         MENUITEM "&Seek" ACTION  Move( 2 )
-         MENUITEM "&Filter" ACTION  Move( 3 )
-         MENUITEM "&Go To" ACTION  Move( 4 )
+         MENUITEM "&Seek"+Chr(9)+"Ctrl+S" ACTION  Move( 2 ) ACCELERATOR FCONTROL,Asc("S")
+         MENUITEM "&Filter"+Chr(9)+"Ctrl+F" ACTION  Move( 3 ) ACCELERATOR FCONTROL,Asc("F")
+         MENUITEM "&Go To"+Chr(9)+"Ctrl+G" ACTION  Move( 4 ) ACCELERATOR FCONTROL,Asc("G")
       ENDMENU
       MENU TITLE  "&Commands"
          MENUITEM "&Replace" ACTION  C_Repl()
@@ -669,6 +621,7 @@ Local bFileBtn := {||
 #endif
 #ifdef RDD_LETO
       rddSetDefault( Iif( lRemote, "LETO", "DBFCDX" ) )
+      nServerType := Iif( lRemote, REMOTE_SERVER, LOCAL_SERVER )
 #endif
 #if !defined ( RDD_ADS ) .AND. !defined( RDD_LETO )
       rddSetDefault( Iif( ( numdriv := r1 ) == 1, "DBFCDX","DBFNTX" ) )
@@ -711,7 +664,7 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
          ON SIZE { |o, x, y|ResizeBrwQ( o, x, y ) } ;
          ON POSCHANGE {|o|hwg_WriteStatus(o:oParent,1,LTrim(Str(Eval(o:bRecno,o)))+"/"+LTrim(Str(Eval(o:bRcou,o))))}
 
-      oBrowse:bcolorSel  := hwg_VColor( "800080" )
+      oBrowse:bcolorSel := COLOR_SELE
       oBrowse:ofont := oBrwFont
       oBrowse:cargo := improc
       hwg_CreateList( oBrowse, .T. )
@@ -727,7 +680,7 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
          IF ( i := Ascan( aControls, { |o|o:classname() == "HBROWSE" } ) ) > 0
             oBrowse := aControls[ i ]
             oBrowse:InitBrw()
-            oBrowse:bcolorSel  := hwg_VColor( "800080" )
+            oBrowse:bcolorSel := COLOR_SELE
             oBrowse:ofont := oBrwFont
             oBrowse:cargo := improc
             hwg_Sendmessage( HWindow():GetMain():handle, WM_MDIACTIVATE, hChild, 0 )
@@ -1065,16 +1018,16 @@ Static Function Options()
    Return Nil
 
 STATIC FUNCTION EditRec()
-   LOCAL oDlg, oBrowse, af := Array( FCount(), 2 ), i, cTYpe
+   LOCAL oDlg, oBrowse, af := Array( FCount(), 3 ), i, nFile := improc, oBrwM
 
    FOR i := 1 TO Len( af )
       af[i,1] := dbFieldInfo( 1, i )
       af[i,2] := FieldGet( i )
-      IF ( cType := dbFieldInfo( 2, i ) ) $ "NIBYZ842+^"
+      IF ( af[i,3] := dbFieldInfo( 2, i ) ) $ "NIBYZ842+^"
          af[i,2] := Str( af[i,2], dbFieldInfo(3,i), dbFieldInfo(4,i) )
-      ELSEIF cType == "D"
+      ELSEIF af[i,3] == "D"
          af[i,2] := Dtoc( af[i,2] )
-      ELSEIF cType == "L"
+      ELSEIF af[i,3] == "L"
          af[i,2] := Iif( af[i,2], "T", "L" )
       ENDIF
    NEXT
@@ -1082,19 +1035,22 @@ STATIC FUNCTION EditRec()
    INIT DIALOG oDlg TITLE "Edit record" ;
       AT 0, 0         ;
       SIZE 440, 320   ;
-      FONT oMainFont
+      FONT oBrwFont
 
    @ 20,20 BROWSE oBrowse ARRAY   ;
        SIZE 400,230               ;
        STYLE WS_BORDER+WS_VSCROLL ;
+       FONT oBrwFont              ;
        ON SIZE ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_BOTTOMABS+ANCHOR_RIGHTABS
 
    oBrowse:aArray := af
    oBrowse:AddColumn( HColumn():New( "",{|v,o|o:nCurrent},"N",4,0 ) )
-   oBrowse:AddColumn( HColumn():New( "Field",{|v,o|o:aArray[o:nCurrent,1]},"C",14,0 ) )
-   oBrowse:AddColumn( HColumn():New( "Value",{|v,o|o:aArray[o:nCurrent,2]},"C",40,0,.T. ) )
-
+   oBrowse:AddColumn( HColumn():New( "Field",{|v,o|o:aArray[o:nCurrent,1]},"C",12,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Value",{|v,o|Iif(v==Nil,o:aArray[o:nCurrent,2],o:aArray[o:nCurrent,2]:=v)},"C",40,0,.T. ) )
    oBrowse:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
+
+   oBrowse:bcolorSel := COLOR_SELE
+   oBrowse:bEnter := {|o,n|EdRec(o,n,nFile)}
 
    @  30, 268 BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() } ON SIZE ANCHOR_LEFTABS+ANCHOR_BOTTOMABS
    @ 310, 268 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() } ON SIZE ANCHOR_RIGHTABS+ANCHOR_BOTTOMABS
@@ -1102,6 +1058,119 @@ STATIC FUNCTION EditRec()
    oDlg:Activate()
 
    IF oDlg:lResult
+      oBrwM := aFiles[ nFile, AF_BRW ]
+
+      IF !aFiles[ nFile, AF_EXCLU ]
+         (oBrwM:Alias)->( RLock() )
+      ENDIF
+
+      FOR i := 1 TO Len( af )
+
+         IF af[i,3] == "N"
+            af[i,2] := Val( af[i,2] )
+         ELSEIF af[i,3] == "D"
+            af[i,2] := Ctod( af[i,2] )
+         ELSEIF af[i,3] == "L"
+            af[i,2] := ( af[i,2] == "T" )
+         ENDIF
+         (oBrwM:Alias)->( FieldPut( i, af[i,2] ) )
+      NEXT
+
+      IF !aFiles[ nFile, AF_EXCLU ]
+         (oBrwM:Alias)->( dbUnLock() )
+      ENDIF
+      hwg_Invalidaterect( oBrwM:handle, 0, oBrwM:x1, oBrwM:y1 + ( oBrwM:height + 1 ) * ( oBrwM:rowPos - 2 ), oBrwM:x2, oBrwM:y1 + ( oBrwM:height + 1 ) * oBrwM:rowPos )
+      oBrwM:RefreshLine()
+
    ENDIF
 
    Return Nil
+
+STATIC FUNCTION EdRec( oBrw, n, nFile )
+LOCAL oDlg, oBrwM, oColumn, nField, aCoors, cBuff, x1, y1, nWidth, lReadExit
+LOCAL cType, nLen, nDec, cPicture
+
+   IF n != 3 .OR. aFiles[ nFile, AF_RDONLY ]
+      Return .T.
+   ENDIF
+
+   oBrwM := aFiles[ nFile, AF_BRW ]
+   oColumn := oBrw:aColumns[n]
+   nField := oBrw:nCurrent
+   cBuff := oBrw:aArray[nField,2]
+
+   nLen := (oBrwM:Alias)->( dbFieldInfo( 3, nField ) )
+   nDec := (oBrwM:Alias)->( dbFieldInfo( 4, nField ) )
+
+   IF ( cType := oBrw:aArray[nField,3] ) == "C"
+      cPicture := Replicate( "X", nLen )
+   ELSEIF cType == "N"
+      cPicture := Iif( nDec==0, Replicate("9",nLen), Replicate("9",nLen-1-nDec)+"."+Replicate("9",nDec) )
+      cBuff := Val( cBuff )
+   ELSEIF cType == "D"
+      cPicture := "@D"
+      cBuff := Ctod( cBuff )
+   ELSEIF cType == "L"
+      cPicture := "L"
+   ENDIF
+
+   x1 := oBrw:x1 
+   y1 := oBrw:nLeftCol - 1
+   DO WHILE ++y1 < n
+      x1 += oBrw:aColumns[y1]:width
+   ENDDO
+   nWidth := Min( oColumn:width, oBrw:x2 - x1 - 1 )
+   rowPos := oBrw:rowPos - 1
+   y1 := oBrw:y1 + ( oBrw:height + 1 ) * ( oBrw:rowPos - 1 )
+
+   aCoors := hwg_Clienttoscreen( oBrw:handle, x1, y1 )
+   x1 := aCoors[1]
+   y1 := aCoors[2]
+
+   lReadExit := Set( _SET_EXIT, .T. ) 
+
+   IF cType != "M"
+      INIT DIALOG oDlg AT x1, y1 - 1 ;
+         STYLE WS_POPUP + 1 + WS_BORDER  ;
+         SIZE nWidth, oBrw:height + iif( oColumn:aList == Nil, 1, 0 ) ;
+         ON INIT { |o|hwg_Movewindow( o:handle,x1,y1,nWidth,o:nHeight + 1 ) }
+   ELSE
+      INIT DIALOG oDlg TITLE "Memo edit" AT 0, 0 SIZE 400, 300 ON INIT { |o|o:center() }
+   ENDIF
+
+   IF cType != "M"
+      @ 0, 0 GET oGet VAR cBuff         ;
+         SIZE nWidth, oBrw:height + 1   ;
+         NOBORDER                       ;
+         STYLE ES_AUTOHSCROLL           ;
+         FONT oBrw:oFont                ;
+         PICTURE oColumn:picture        ;
+         VALID oColumn:bValid
+   ELSE
+      @ 10, 10 GET cBuff SIZE oDlg:nWidth - 20, 240 FONT oBrw:oFont STYLE WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid
+      @ 10, 252 OWNERBUTTON TEXT "Save" SIZE 80, 24 ON CLICK { ||oDlg:Close(), oDlg:lResult := .T. }
+      @ 100, 252 OWNERBUTTON TEXT "Close" SIZE 80, 24 ON CLICK { ||oDlg:Close() }
+   ENDIF
+
+   ACTIVATE DIALOG oDlg
+
+   IF oDlg:lResult
+
+      IF cType == "C"
+         oBrw:aArray[nField,2] := cBuff
+      ELSEIF cType == "N"
+         oBrw:aArray[nField,2] := Str( cBuff,nLen,nDec )
+      ELSEIF cType == "D"
+         oBrw:aArray[nField,2] := Dtoc( cBuff )
+      ELSEIF cType == "L"
+         oBrw:aArray[nField,2] := Iif( cBuff $ "YT", "T", "L" )
+      ENDIF
+
+      hwg_Invalidaterect( oBrw:handle, 0, oBrw:x1, oBrw:y1 + ( oBrw:height + 1 ) * ( oBrw:rowPos - 2 ), oBrw:x2, oBrw:y1 + ( oBrw:height + 1 ) * oBrw:rowPos )
+      oBrw:RefreshLine()
+
+   ENDIF
+   hwg_Setfocus( oBrw:handle )
+   SET( _SET_EXIT, lReadExit )
+
+   Return .T.

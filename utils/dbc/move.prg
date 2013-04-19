@@ -1,9 +1,10 @@
 /*
+ * $Id$
  * DBCHW - DBC ( Harbour + HWGUI )
  * Move functions ( Locate, seek, ... )
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * www - http://www.kresin.ru
 */
 
 #include "windows.ch"
@@ -13,220 +14,209 @@
 #include "ads.ch"
 #endif
 
-Static cLocate := "", cFilter := "", cSeek := ""
-Static klrecf := 200
+STATIC cLocate := "", cFilter := "", cSeek := ""
 
-Function Move( nMove )
-Local aModDlg
+FUNCTION Move( nMove )
+   LOCAL oDlg, aTitle := { "Locate", "Seek", "Filter", "Go to" }, aSay := { "locate expression", "seek key", "filter expression", "record number" }
+   LOCAL cExpr := "", oBrw, nRec, key
 
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_MOVE" ON INIT {|| InitMove( nMove ) }
-   DIALOG ACTIONS OF aModDlg ;
-        ON 0,IDOK         ACTION {|| EndMove(.T., nMove)}   ;
-        ON 0,IDCANCEL     ACTION {|| EndMove(.F., nMove) }
-   aModDlg:Activate()
-
-Return Nil
-
-Static Function InitMove( nMove )
-Local hDlg := hwg_GetModalHandle(), cTitle
-   hwg_WriteStatus( HMainWindow():GetMdiActive(),3,"" )
-   IF nMove == 1
-      cTitle := "Input locate expression"
-      hwg_Setdlgitemtext( hDlg, IDC_EDIT6, cLocate )
-   ELSEIF nMove == 2
-      cTitle := "Input seek string"
-      hwg_Setdlgitemtext( hDlg, IDC_EDIT6, cSeek )
-   ELSEIF nMove == 3
-      cTitle := "Input filter expression"
-      hwg_Setdlgitemtext( hDlg, IDC_EDIT6, cFilter )
-   ELSEIF nMove == 4
-      cTitle := "Input record number"
+   IF Empty( oBrw := GetBrwActive() )
+      RETURN Nil
    ENDIF
-   hwg_Setdlgitemtext( hDlg, IDC_TEXTHEAD, cTitle )
-   hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT6 ) )
-Return Nil
 
-Static Function EndMove( lOk, nMove )
-Local hDlg := hwg_GetModalHandle()
-Local cExpres, nrec, key
-Local hWnd, oWindow, aControls, iCont
+   INIT DIALOG oDlg TITLE aTitle[nMove] ;
+      AT 0, 0         ;
+      SIZE 400, 140   ;
+      FONT oMainFont
 
-   IF lOk
-      cExpres := hwg_Getdlgitemtext( hDlg, IDC_EDIT6, 80 )
-      IF Empty( cExpres )
-         hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT6 ) )
-         Return Nil
-      ENDIF
+   IF nMove == 1
+      cExpr := cLocate
+   ELSEIF nMove == 2
+      cExpr := cSeek
+   ELSEIF nMove == 3
+      cExpr := cFilter
+   ENDIF
 
-      oWindow := HMainWindow():GetMdiActive()
-      IF oWindow != Nil
-         aControls := oWindow:aControls
-         iCont := Ascan( aControls, {|o|o:classname()=="HBROWSE"} )
-      ENDIF
+   @ 10, 10 SAY "Input " + aSay[nMove] SIZE 140, 22
+   @ 10, 32 GET cExpr SIZE 380, 24
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @  30, 90  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 270, 90 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+
+   oDlg:Activate()
+
+   IF oDlg:lResult
+
       IF nMove == 1
-         F_Locate( aControls[iCont], cExpres )
+         F_Locate( oBrw, cExpr )
       ELSEIF nMove == 2
-         cSeek := cExpres
-         nrec := RECNO()
-         IF TYPE( ORDKEY() ) == "N"
-            key := VAL( cSeek )
-         ELSEIF TYPE( ORDKEY() ) = "D"
-            key := CTOD( Trim( cSeek ) )
+         cSeek := cExpr
+         nrec := RecNo()
+         IF Type( OrdKey() ) == "N"
+            key := Val( cExpr )
+         ELSEIF Type( OrdKey() ) = "D"
+            key := CToD( Trim( cExpr ) )
          ELSE
-            key := cSeek
+            key := cExpr
          ENDIF
-         SEEK key
-         IF .NOT. FOUND()
+         SEEK KEY
+         IF !Found()
             GO nrec
             hwg_Msgstop( "Record not found" )
          ELSE
-            hwg_WriteStatus( oWindow,3,"Found" )
+            hwg_WriteStatus( oBrw:oParent, 3, "Found" )
          ENDIF
       ELSEIF nMove == 3
-         F_Filter( aControls[iCont], cExpres )
+         F_Filter( oBrw, cExpr )
       ELSEIF nMove == 4
-         IF ( nrec := VAL( cExpres ) ) != 0
+         IF ( nrec := Val( cExpr ) ) != 0
             GO nrec
          ENDIF
       ENDIF
+      UpdBrowse()
 
-      IF iCont > 0
-         hwg_Redrawwindow( aControls[iCont]:handle, RDW_ERASE + RDW_INVALIDATE )
-      ENDIF
    ENDIF
 
-   hwg_EndDialog( hDlg )
-Return Nil
+   RETURN Nil
 
-Function F_Locate( oBrw, cExpres )
-Local nrec, i, res, block
+FUNCTION F_Locate( oBrw, cExpres )
+   LOCAL nrec, i, res
+
    cLocate := cExpres
-   IF VALTYPE( &cLocate ) == "L"
-      nrec := RECNO()
+   IF ValType( &cLocate ) == "L"
+      nrec := RecNo()
       block := &( "{||" + cLocate + "}" )
-      IF oBrw:prflt
-         FOR i := 1 TO Min( oBrw:nRecords,klrecf-1 )
-            GO oBrw:aArray[ i ]
+      IF aFiles[ improc,AF_LFLT ]
+         Fgotop( oBrw )
+         DO WHILE !Feof( oBrw )
             IF Eval( block )
                res := .T.
                EXIT
             ENDIF
-         NEXT
-         IF !res .AND. i < oBrw:nRecords
-            SKIP
-            DO WHILE !Eof()
-               IF Eval( block )
-                  res := .T.
-                  EXIT
-               ENDIF
-               i ++
-               SKIP
-            ENDDO
-         ENDIF
+            Fskip( oBrw, 1 )
+         ENDDO
       ELSE
-         __dbLocate( block,,,, .F. )
+         __dbLocate( block, , , , .F. )
       ENDIF
-      IF ( oBrw:prflt .AND. !res ) .OR. ( !oBrw:prflt .AND. .NOT. FOUND() )
+      IF ( aFiles[ improc,AF_LFLT ] .AND. !res ) .OR. ( !aFiles[ improc,AF_LFLT ] .AND. !Found() )
          GO nrec
          hwg_Msgstop( "Record not found" )
       ELSE
-         hwg_WriteStatus( HMainWindow():GetMdiActive(),3,"Found" )
-         IF oBrw:prflt
+         hwg_WriteStatus( HMainWindow():GetMdiActive(), 3, "Found" )
+         IF aFiles[ improc,AF_LFLT ]
             oBrw:nCurrent := i
          ENDIF
       ENDIF
+      UpdBrowse()
    ELSE
       hwg_Msginfo( "Wrong expression" )
    ENDIF
-Return Nil
 
-Function F_Filter( oBrw, cExpres )
-Local i, nrec
+   RETURN Nil
+
+FUNCTION F_Filter( oBrw, cExpres )
+   LOCAL i, nrec, cArr, lRes := .F.
+
    cFilter := cExpres
-   IF VALTYPE( &cFilter ) == "L"
-      nrec := RECNO()
-      dbSetFilter( &( "{||"+ cFilter + "}" ), cFilter )
-      GO TOP
-      i       := 1
-      oBrw:nRecords := 0
-      IF oBrw:aArray == Nil
-         oBrw:aArray := Array( klrecf )
-      ENDIF
-      DO WHILE .NOT. EOF()
-         oBrw:aArray[ i ] = RECNO()
-         IF i < klrecf
-            i ++
+   IF !Empty( cFilter ) .AND. !( Type( cFilter ) $ "UEUI" )
+      IF ValType( &cFilter ) == "L"
+         nrec := RecNo()
+         dbSetFilter( &( "{||" + cFilter + "}" ), cFilter )
+
+         GO TOP
+         oBrw:nRecords := 0
+         cArr := carr_Init( cArr, 512 )
+         DO WHILE !Eof()
+            oBrw:nRecords ++
+            carr_Put( @cArr, Recno(), oBrw:nRecords )
+            SKIP
+         ENDDO
+
+         IF oBrw:nRecords > 0
+            oBrw:aArray := cArr
+            Fgotop( oBrw )
+            aFiles[ improc,AF_LFLT ] := .T.
+            oBrw:bSkip :=  {|o,x| (o:alias)->(fSkip(o,x))}
+            oBrw:bGoTop := {|o|   (o:alias)->(fGotop(o))}
+            oBrw:bGoBot := {|o|   (o:alias)->(fGobot(o))}
+            oBrw:bGoto :=  {|o,x| (o:alias)->(fGoto(o,x))}
+            oBrw:bEof  :=  {|o| FEof(o) }
+            oBrw:bBof  :=  {|o| FBof(o) }
+            oBrw:bRecno := {|o| o:nCurrent }
+            hwg_WriteStatus( HMainWindow():GetMdiActive(), 1, LTrim( Str(oBrw:nRecords,10 ) ) + " records filtered" )
+            lRes := .T.
+         ELSE
+            GO nrec
+            hwg_Msginfo( "Records not found" )
          ENDIF
-         oBrw:nRecords ++
-         IF INKEY() = 27
-            oBrw:nRecords := 0
-            EXIT
-         ENDIF
-         SKIP
-      ENDDO
-      oBrw:nCurrent := 1
-      IF oBrw:nRecords > 0
-         GO oBrw:aArray[ 1 ]
-         oBrw:prflt := .T.
-         oBrw:bSkip := &( "{|o,x|" + oBrw:alias + "->(FSKIP(o,x))}" )
-         oBrw:bGoTop:= &( "{|o|" + oBrw:alias + "->(FGOTOP(o))}" )
-         oBrw:bGoBot:= &( "{|o|" + oBrw:alias + "->(FGOBOT(o))}")
-         oBrw:bEof  := &( "{|o|" + oBrw:alias + "->(FEOF(o))}" )
-         oBrw:bBof  := &( "{|o|" + oBrw:alias + "->(FBOF(o))}" )
-         hwg_WriteStatus( HMainWindow():GetMdiActive(),1,Ltrim(Str(oBrw:nRecords,10))+" records filtered" )
+         UpdBrowse()
       ELSE
-         oBrw:prflt := .F.
-         SET FILTER TO
-         GO nrec
-         oBrw:bSkip := &( "{|a,x|" + oBrw:alias + "->(DBSKIP(x))}" )
-         oBrw:bGoTop:= &( "{||" + oBrw:alias + "->(DBGOTOP())}" )
-         oBrw:bGoBot:= &( "{||" + oBrw:alias + "->(DBGOBOTTOM())}")
-         oBrw:bEof  := &( "{||" + oBrw:alias + "->(EOF())}" )
-         oBrw:bBof  := &( "{||" + oBrw:alias + "->(BOF())}" )
-         hwg_Msginfo( "Records not found" )
-         hwg_WriteStatus( HMainWindow():GetMdiActive(),1,Ltrim(Str(Reccount(),10))+" records" )
+         hwg_Msginfo( "Wrong expression" )
       ENDIF
-   ELSE
-      hwg_Msginfo( "Wrong expression" )
    ENDIF
-Return Nil
+   IF !lRes
+      oBrw:aArray := Nil
+      aFiles[ improc,AF_LFLT ] := .F.
+      SET FILTER TO
+      oBrw:bSkip  := {|o,x|(o:alias)->(dbSkip(x))}
+      oBrw:bGoTop := {|o|  (o:alias)->(dbGotop())}
+      oBrw:bGoBot := {|o|  (o:alias)->(dbGobottom())}
+      oBrw:bEof   := {|o|  (o:alias)->(Eof())}
+      oBrw:bBof   := {|o|  (o:alias)->(Bof())}
+      oBrw:bGoTo  := {|o,n|(o:alias)->(dbGoto(n) ) }
+      oBrw:bRecno := {|o|  (o:alias)->(RecNo()) }     
+      hwg_WriteStatus( HMainWindow():GetMdiActive(), 1, LTrim( Str(RecCount(),10 ) ) + " records" )
+   ENDIF
+
+   RETURN Nil
 
 FUNCTION FGOTOP( oBrw )
+
    IF oBrw:nRecords > 0
       oBrw:nCurrent := 1
-      GO oBrw:aArray[ 1 ]
+      GO carr_Get( oBrw:aArray, 1 )
    ENDIF
 RETURN Nil
 
 FUNCTION FGOBOT( oBrw )
+
    oBrw:nCurrent := oBrw:nRecords
-   GO IIF( oBrw:nRecords < klrecf, oBrw:aArray[ oBrw:nRecords ], oBrw:aArray[ klrecf ] )
+   GO carr_Get( oBrw:aArray, oBrw:nRecords )
+RETURN Nil
+
+FUNCTION FGOTO( oBrw, nRec )
+
+   IF oBrw:nRecords >= nRec .AND. nRec > 0
+      oBrw:nCurrent := nRec
+      GO carr_Get( oBrw:aArray, nRec )
+   ENDIF
 RETURN Nil
 
 PROCEDURE FSKIP( oBrw, kolskip )
+
 LOCAL tekzp1
-   IF oBrw:nRecords = 0
+
+   IF oBrw:nRecords == 0
       RETURN
    ENDIF
-   tekzp1   := oBrw:nCurrent
-   oBrw:nCurrent := oBrw:nCurrent + kolskip + IIF( tekzp1 = 0, 1, 0 )
+   tekzp1 := oBrw:nCurrent
+   oBrw:nCurrent += kolskip + Iif( tekzp1 = 0, 1, 0 )
    IF oBrw:nCurrent < 1
       oBrw:nCurrent := 0
-      GO oBrw:aArray[ 1 ]
+      GO carr_Get( oBrw:aArray, 1 )
+
    ELSEIF oBrw:nCurrent > oBrw:nRecords
       oBrw:nCurrent := oBrw:nRecords + 1
-      GO IIF( oBrw:nRecords < klrecf, oBrw:aArray[ oBrw:nRecords ], oBrw:aArray[ klrecf ] )
+      GO carr_Get( oBrw:aArray, oBrw:nRecords )
+
    ELSE
-      IF oBrw:nCurrent > klrecf - 1
-         SKIP IIF( tekzp1 = oBrw:nRecords + 1, kolskip + 1, kolskip )
-      ELSE
-         GO oBrw:aArray[ oBrw:nCurrent ]
-      ENDIF
+      GO carr_Get( oBrw:aArray, oBrw:nCurrent )
    ENDIF
 RETURN
 
-FUNCTION FBOF( oBrw )
-RETURN IIF( oBrw:nCurrent = 0, .T., .F. )
+FUNCTION FBof( oBrw )
+RETURN ( oBrw:nCurrent == 0 )
 
-FUNCTION FEOF( oBrw )
-RETURN IIF( oBrw:nCurrent > oBrw:nRecords, .T., .F. )
+FUNCTION FEof( oBrw )
+RETURN ( oBrw:nCurrent > oBrw:nRecords )

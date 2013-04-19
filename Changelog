@@ -8,6 +8,29 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-04-19 10:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  - utils/dbc/bitmaps.rc
+  - utils/dbc/files.txt
+  - utils/dbc/bld.bat
+  + utils/dbc/dbc.bmp
+  + utils/dbc/dbc.ico
+  + utils/dbc/procs_c.c
+  + utils/dbc/bldads.bat
+  + samples/image/top.bmp
+  + samples/image/bottom.bmp
+  + samples/image/next.bmp
+  + samples/image/previous.bmp
+  * utils/dbc/bldcdx.bat
+  * utils/dbc/dbchw.prg
+  * utils/dbc/commands.prg
+  * utils/dbc/modistru.prg
+  * utils/dbc/query.prg
+  * utils/dbc/move.prg
+  * utils/dbc/dbc.ini
+  * utils/dbc/dbchw.h
+  * utils/dbc/dbchw.rc
+    * Dbchw utility rewritten
+
 2013-03-21 09:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/window.c
     * hwg_clearkeyboard() changed, code provided by Luis Basso

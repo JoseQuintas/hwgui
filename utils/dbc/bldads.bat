@@ -2,26 +2,27 @@
 
 set HRB_DIR=%HB_PATH%
 set HWGUI_INSTALL=..\..
+set RDD_ADS_INC=%HRB_DIR%\contrib\rdd_ads
 
-%HRB_DIR%\bin\harbour dbchw.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
-%HRB_DIR%\bin\harbour commands.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
-%HRB_DIR%\bin\harbour modistru.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
-%HRB_DIR%\bin\harbour move.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour dbchw.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include;%RDD_ADS_INC% -dRDD_ADS
+%HRB_DIR%\bin\harbour commands.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include;%RDD_ADS_INC% -dRDD_ADS
+%HRB_DIR%\bin\harbour modistru.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include;%RDD_ADS_INC% -dRDD_ADS
+%HRB_DIR%\bin\harbour move.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include;%RDD_ADS_INC% -dRDD_ADS
+%HRB_DIR%\bin\harbour query.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include;%RDD_ADS_INC% -dRDD_ADS
 
-   bcc32 -c -O2 -tW -M -I%HRB_DIR%\include dbchw.c commands.c modistru.c move.c procs_c.c
+   bcc32 -c -O2 -tW -M -I%HRB_DIR%\include dbchw.c commands.c modistru.c move.c query.c procs_c.c
 
    brc32 -r dbchw.rc
-   echo 1 24 "..\..\image\WindowsXP.Manifest" > hwgui_xp.rc
-   brc32 -r hwgui_xp -fohwgui_xp
 
 echo c0w32.obj + > b32.bc
 echo dbchw.obj + >> b32.bc
 echo commands.obj + >> b32.bc
 echo modistru.obj + >> b32.bc
 echo move.obj + >> b32.bc
+echo query.obj + >> b32.bc
 echo procs_c.obj, + >> b32.bc
-echo dbchw.exe, + >> b32.bc
-echo dbchw.map, + >> b32.bc
+echo dbchwx.exe, + >> b32.bc
+echo dbchwx.map, + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
 
@@ -66,14 +67,16 @@ echo %HRB_DIR%\lib\hbdebug.lib + >> b32.bc
 echo %HRB_DIR%\lib\hbpp.lib + >> b32.bc
 echo %HRB_DIR%\lib\hbhsx.lib + >> b32.bc
 echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
-echo %HRB_DIR%\lib\hbpcre.lib + >> b32.bc
+if exist %HRB_DIR%\lib\hbpcre.lib echo %HRB_DIR%\lib\hbpcre.lib + >> b32.bc
 
 :common
 
+echo %HRB_DIR%\lib\rddads.lib + >> b32.bc
+echo %HRB_DIR%\lib\ace32.lib + >> b32.bc
+
 echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc
-echo dbchw.res + >> b32.bc
-echo hwgui_xp.res >> b32.bc
+echo dbchw.res >> b32.bc
 ilink32 -Gn -aa -Tpe @b32.bc
 
 del *.tds
@@ -81,6 +84,7 @@ del dbchw.c
 del commands.c
 del modistru.c
 del move.c
+del query.c
 del *.map
 del *.obj
 del *.res

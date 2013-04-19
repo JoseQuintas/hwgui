@@ -1,360 +1,446 @@
 /*
+ * $Id$
  * DBCHW - DBC ( Harbour + HWGUI )
  * Commands ( Replace, delete, ... )
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * www - http://www.kresin.ru
 */
 
 #include "windows.ch"
 #include "guilib.ch"
 #include "dbchw.h"
-// #include "ads.ch"
 
-MEMVAR finame, cValue, cFor, nSum, mypath, improc, msmode
-/* -----------------------  Replace --------------------- */
+   /* -----------------------  Replace --------------------- */
 
-Function C_REPL
-Local aModDlg
-Local af := Array( Fcount() )
-   Afields( af )
+FUNCTION C_REPL
+   LOCAL oDlg, oMsg, nRec
+   LOCAL af := Array( FCount() ), nField := 0
+   LOCAL cVal := "", xVal, r1 := 1, nNext := 0, cFor := "", bFor
+   LOCAL oBrw := GetBrwActive()
 
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_REPLACE" ON INIT {|| InitRepl() }
+   AFields( af )
+   improc := oBrw:cargo
 
-   REDEFINE COMBOBOX af OF aModDlg ID IDC_COMBOBOX1
-
-   DIALOG ACTIONS OF aModDlg ;
-        ON 0,IDOK         ACTION {|| EndRepl()}   ;
-        ON BN_CLICKED,IDC_RADIOBUTTON7 ACTION {|| RecNumberEdit() } ;
-        ON BN_CLICKED,IDC_RADIOBUTTON6 ACTION {|| RecNumberDisable() } ;
-        ON BN_CLICKED,IDC_RADIOBUTTON8 ACTION {|| RecNumberDisable() }
-
-   aModDlg:Activate()
-
-Return Nil
-
-Static Function RecNumberEdit
-Local hDlg := hwg_GetModalHandle()
-Local hEdit := hwg_Getdlgitem( hDlg,IDC_EDITRECN )
-   hwg_Sendmessage( hEdit, WM_ENABLE, 1, 0 )
-   hwg_Setdlgitemtext( hDlg, IDC_EDITRECN, "1" )
-   hwg_Setfocus( hEdit )
-Return Nil
-
-Static Function RecNumberDisable
-Local hEdit := hwg_Getdlgitem( hwg_GetModalHandle(),IDC_EDITRECN )
-   hwg_Sendmessage( hEdit, WM_ENABLE, 0, 0 )
-Return Nil
-
-Static Function InitRepl()
-Local hDlg := hwg_GetModalHandle()
-
-   RecNumberDisable()
-   hwg_Checkradiobutton( hDlg,IDC_RADIOBUTTON6,IDC_RADIOBUTTON8,IDC_RADIOBUTTON6 )
-   hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_COMBOBOX1 ) )
-Return Nil
-
-Static Function EndRepl()
-Local hDlg := hwg_GetModalHandle()
-Local nrest, nrec
-Local oWindow, aControls, i
-Private finame, cValue, cFor
-
-   oWindow := HMainWindow():GetMdiActive()
-
-   finame := hwg_Getdlgitemtext( hDlg, IDC_COMBOBOX1, 12 )
-   IF Empty( finame )
-      hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_COMBOBOX1 ) )
-      Return Nil
+   IF aFiles[ improc, AF_RDONLY ]
+      hwg_Msgstop( "File is opened in readonly mode" )
+      RETURN Nil
    ENDIF
-   cValue := hwg_Getdlgitemtext( hDlg, IDC_EDIT7, 60 )
-   IF Empty( cValue )
-      hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT7 ) )
-      Return Nil
+
+   INIT DIALOG oDlg TITLE aFiles[improc,AF_ALIAS]+": Replace" ;
+      AT 0, 0         ;
+      SIZE 320, 250   ;
+      FONT oMainFont
+
+   @ 10,10 GET COMBOBOX nField ITEMS af SIZE 120, 150
+
+   @ 140,10 GROUPBOX "" SIZE 160, 80
+   GET RADIOGROUP r1
+   @ 150,24 RADIOBUTTON "All" SIZE 60, 20 
+   @ 150,44 RADIOBUTTON "Next" SIZE 60, 20 
+   @ 150,64 RADIOBUTTON "Rest" SIZE 60, 20 
+   END RADIOGROUP
+   @ 210,44 GET nNext SIZE 50, 24 PICTURE "9999"
+
+   @ 10, 80 SAY "with value: " SIZE 100, 22
+   @ 10, 104 GET cVal SIZE 300, 24
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @ 10, 130 SAY "For: " SIZE 100, 22
+   @ 10, 154 GET cFor SIZE 300, 24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @  30, 210  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 190, 210 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+
+   oDlg:Activate()
+
+   IF oDlg:lResult
+      IF !Empty( cFor ) .AND. Type( cFor ) != "L"
+         hwg_Msgstop( "Wrong expression!" )
+      ELSE
+         IF !Empty( cFor )
+            bFor := &( "{||" + cFor + "}" )
+         ENDIF
+         nrec := RecNo()
+         oMsg := DlgWait( "Replacing" )
+
+         xVal := &cVal
+         IF r1 == 1
+            Eval( oBrw:bGoTop, oBrw )
+         ENDIF
+         DO WHILE !Eval( oBrw:bEof, oBrw ) .AND. Iif( r1==2, nNext-- > 0, .T. )
+            IF Empty( cFor ) .OR. Eval( bFor )
+               IF !aFiles[improc,AF_EXCLU]
+                  rlock()
+               ENDIF
+               Fieldput( nField, xVal )
+               IF !aFiles[improc,AF_EXCLU]
+                  UNLOCK
+               ENDIF
+            ENDIF
+            Eval( oBrw:bSkip, oBrw, 1 )
+         ENDDO
+
+         GO nrec
+         oMsg:Close()
+         UpdBrowse()
+      ENDIF
    ENDIF
-   cFor := hwg_Getdlgitemtext( hDlg, IDC_EDITFOR, 60 )
-   IF .NOT. EMPTY( cFor ) .AND. TYPE( cFor ) <> "L"
-      hwg_Msgstop( "Wrong expression!" )
-   ELSE
-      IF EMPTY( cFor )
-         cFor := ".T."
+
+   RETURN Nil
+
+
+   /* -----------------------  Delete, recall, count --------------------- */
+
+FUNCTION C_4( nAct )
+   LOCAL oDlg, aTitle := { "Delete", "Recall", "Count", "Sum" }
+   LOCAL cExpr := "", r1 := 1, nNext := 0, cFor := "", bFor, bSum
+   LOCAL oBrw := GetBrwActive(), nCount := 0
+
+   INIT DIALOG oDlg TITLE aTitle[nAct] ;
+      AT 0, 0         ;
+      SIZE 320, 250   ;
+      FONT oMainFont
+
+   IF nAct <= 2 .AND. aFiles[ improc, AF_RDONLY ]
+      hwg_Msgstop( "File is opened in readonly mode" )
+      RETURN Nil
+   ENDIF
+
+   IF nAct == 4
+      @ 10, 10 SAY "Sum: " SIZE 40, 22
+      @ 50, 10 GET cExpr SIZE 260, 24
+      Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+   ENDIF
+
+   @ 20,40 GROUPBOX "" SIZE 160, 80
+   GET RADIOGROUP r1
+   @ 30,50 RADIOBUTTON "All" SIZE 60, 20 
+   @ 30,70 RADIOBUTTON "Next" SIZE 60, 20 
+   @ 30,90 RADIOBUTTON "Rest" SIZE 60, 20 
+   END RADIOGROUP
+   @ 96,70 GET nNext SIZE 50, 24 PICTURE "9999"
+
+   @ 10, 130 SAY "For: " SIZE 60, 22
+   @ 10, 152 GET cFor SIZE 300, 24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @  30, 210  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 190, 210 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+
+   oDlg:Activate()
+
+   IF oDlg:lResult
+
+      IF !Empty( cFor ) .AND. Type( cFor ) != "L"
+         hwg_Msgstop( "Wrong 'FOR' expression!" )
+         RETURN Nil
       ENDIF
-      nrec := Recno()
-      hwg_Setdlgitemtext( hDlg, IDC_TEXTMSG, "Wait ..." )
-      IF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON6 )
-         REPLACE ALL &finame WITH &cValue FOR &cFor
-      ELSEIF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON7 )
-         nrest := Val( hwg_Getdlgitemtext( hDlg, IDC_EDITRECN, 10 ) )
-         REPLACE NEXT nrest &finame WITH &cValue FOR &cFor
-      ELSEIF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON8 )
-         REPLACE REST &finame WITH &cValue FOR &cFor
-      ENDIF
-      Go nrec
-      hwg_Setdlgitemtext( hDlg, IDC_TEXTMSG, "Done !" )
-      IF oWindow != Nil
-         aControls := oWindow:aControls
-         IF ( i := Ascan( aControls, {|o|o:ClassName()=="HBROWSE"} ) ) > 0
-            aControls[i]:Refresh()
+      IF nAct == 4 
+         IF Empty( cExpr ) .AND. Type( cExpr ) != "N"
+            hwg_Msgstop( "Wrong 'SUM' expression!" )
+            RETURN Nil
+         ELSE
+            bSum := &( "{||" + cExpr + "}" )
          ENDIF
       ENDIF
-   ENDIF
-Return Nil
 
-/* -----------------------  Delete, recall, count --------------------- */
-
-Function C_DELE( nAct )
-Local aModDlg
-
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_DEL" ON INIT {|| InitDele(nAct) }
-   DIALOG ACTIONS OF aModDlg ;
-        ON 0,IDOK         ACTION {|| EndDele(nAct)}   ;
-        ON 0,IDCANCEL     ACTION {|| hwg_EndDialog( hwg_GetModalHandle() )}  ;
-        ON BN_CLICKED,IDC_RADIOBUTTON7 ACTION {|| RecNumberEdit() } ;
-        ON BN_CLICKED,IDC_RADIOBUTTON6 ACTION {|| RecNumberDisable() } ;
-        ON BN_CLICKED,IDC_RADIOBUTTON8 ACTION {|| RecNumberDisable() }
-   aModDlg:Activate()
-
-Return Nil
-
-Static Function InitDele(nAct)
-Local hDlg := hwg_GetModalHandle()
-   IF nAct == 2
-      hwg_Setwindowtext( hDlg,"Recall")
-   ELSEIF nAct == 3
-      hwg_Setwindowtext( hDlg,"Count")
-   ENDIF
-   RecNumberDisable()
-   hwg_Checkradiobutton( hDlg,IDC_RADIOBUTTON6,IDC_RADIOBUTTON8,IDC_RADIOBUTTON6 )
-   hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDITFOR ) )
-Return Nil
-
-Static Function EndDele( nAct )
-Local hDlg := hwg_GetModalHandle()
-Local nrest, nsum, nRec := Recno()
-Local oWindow, aControls, i
-Private cFor
-
-   oWindow := HMainWindow():GetMdiActive()
-
-   cFor := hwg_Getdlgitemtext( hDlg, IDC_EDITFOR, 60 )
-   IF .NOT. EMPTY( cFor ) .AND. TYPE( cFor ) <> "L"
-      hwg_Msgstop( "Wrong expression!" )
-   ELSE
-      IF EMPTY( cFor )
-         cFor := ".T."
+      IF !Empty( cFor )
+         bFor := &( "{||" + cFor + "}" )
       ENDIF
-      hwg_Setdlgitemtext( hDlg, IDC_TEXTMSG, "Wait ..." )
+      nrec := RecNo()
+      oMsg := DlgWait( aTitle[nAct] )
+
+      IF r1 == 1
+         Eval( oBrw:bGoTop, oBrw )
+      ENDIF
+      DO WHILE !Eval( oBrw:bEof, oBrw ) .AND. Iif( r1==2, nNext-- > 0, .T. )
+         IF Empty( cFor ) .OR. Eval( bFor )
+            IF nAct == 1
+               IF !aFiles[improc,AF_EXCLU]
+                  rlock()
+               ENDIF
+               DELETE
+               IF !aFiles[improc,AF_EXCLU]
+                  UNLOCK
+               ENDIF
+            ELSEIF nAct == 2
+               IF !aFiles[improc,AF_EXCLU]
+                  rlock()
+               ENDIF
+               RECALL
+               IF !aFiles[improc,AF_EXCLU]
+                  UNLOCK
+               ENDIF
+            ELSEIF nAct == 3
+               nCount ++
+            ELSEIF nAct == 4
+               nCount += Eval( bSum )
+            ENDIF
+         ENDIF
+         Eval( oBrw:bSkip, oBrw, 1 )
+      ENDDO
+
+      GO nrec
+      oMsg:Close()
+      IF nAct > 2
+         hwg_MsgInfo( Ltrim(Str(nCount)), "Result" )
+      ELSE
+         UpdBrowse()
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
+   /* -----------------------  Append from --------------------- */
+
+FUNCTION C_APPEND()
+   LOCAL oDlg, oMsg, cFile := "", cFields := "", cFor := "", cDelim := ""
+   LOCAL r1 := 1, bFor, af, cPath := cServerPath
+#ifdef RDD_ADS
+   LOCAL lRemote := (nServerType == 6)
+#else
+   LOCAL lRemote := (nServerType == REMOTE_SERVER)
+#endif
+   LOCAL oBrw := GetBrwActive()
+   Local oBtnFile, bBtnDis := {||Iif(lRemote,oBtnFile:Disable(),oBtnFile:Enable()),.T.}
+   LOCAL bFileBtn := {||
+   cFile := hwg_Selectfile( "dbf files( *.dbf )", "*.dbf", hb_curDrive()+":\"+Curdir() )
+   hwg_RefreshAllGets( oDlg )
+   Return .T.
+   }
+
+   IF aFiles[ improc, AF_RDONLY ]
+      hwg_Msgstop( "File is opened in readonly mode" )
+      RETURN Nil
+   ENDIF
+
+   INIT DIALOG oDlg TITLE aFiles[improc,AF_ALIAS]+": Append" ;
+      AT 0, 0         ;
+      SIZE 400, 320   ;
+      FONT oMainFont ON INIT bBtnDis
+
+#if defined( RDD_ADS ) .OR. defined( RDD_LETO )
+   @ 10,10 SAY "Server " SIZE 60,22 STYLE SS_RIGHT
+   @ 70,10 GET CHECKBOX lRemote CAPTION "Remote:" SIZE 80, 20 ON CLICK bBtnDis
+   @ 150,10 GET cPath SIZE 240,24
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS
+#endif
+
+   @ 10,34 SAY "File name: " SIZE 80,22 STYLE SS_RIGHT
+   @ 90,34 GET cFile SIZE 220,24 PICTURE "@S128" STYLE ES_AUTOHSCROLL
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS
+   @ 310,34 BUTTON oBtnFile CAPTION "Browse" SIZE 80, 26 ON CLICK bFileBtn ON SIZE ANCHOR_RIGHTABS
+
+   @ 10,60 SAY "Fields: " SIZE 80,22 STYLE SS_RIGHT
+   @ 90,60 GET cFields SIZE 220,24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS
+
+   @ 10, 92 GROUPBOX "" SIZE 168, 88
+   GET RADIOGROUP r1
+   @ 20,104 RADIOBUTTON "Dbf" SIZE 90, 20 
+   @ 20,128 RADIOBUTTON "Sdf" SIZE 90, 20 
+   @ 20,152 RADIOBUTTON "Delimited with" SIZE 112, 20 
+   END RADIOGROUP
+   @ 132,152 GET cDelim SIZE 30, 24 PICTURE "XX"
+
+   @ 10, 200 SAY "For: " SIZE 100, 22
+   @ 10, 222 GET cFor SIZE 380, 24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @  30, 268  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 190, 268 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+
+   oDlg:Activate()
+
+   IF oDlg:lResult
+
+      IF Empty( cFile )
+         hwg_Msgstop( "File name is absent" )
+         RETURN Nil
+      ENDIF
+      IF !Empty( cFor ) .AND. Type( cFor ) != "L"
+         hwg_Msgstop( "Wrong 'FOR' expression!" )
+         RETURN Nil
+      ENDIF
+      IF !Empty( cFor )
+         bFor := &( "{||" + cFor + "}" )
+      ENDIF
+      IF !Empty( cFields )
+         af := hb_aTokens( Trim(cFields), "," )
+      ENDIF
+
+      oMsg := DlgWait( "Append" )
+      cFile := Iif( lRemote, Trim( cServerPath ), "" ) + Trim( cFile )
+      IF r1 == 1
+#ifdef RDD_ADS
+         AdsSetServerType( nServerType := Iif( lRemote, 6, ADS_LOCAL_SERVER ) )
+         __dbApp( cFile, af, bfor,,,, .F. )
+#else
+         __dbApp( cFile, af, bfor,,,, .F., Iif( lRemote,"LETO","DBFCDX" ),, cDataCPage )
+#endif
+      ELSEIF r1 == 2
+         __dbSdf( .F., cFile, af, bfor,,,, .F. )
+      ELSE
+         __dbDelim( .F., cFile, Iif( Empty(cdelim), "blank", Trim(cdelim) ), af, bfor,,,, .F. )
+      ENDIF
+      oMsg:Close()
+      UpdBrowse()
+   ENDIF
+
+   RETURN Nil
+
+FUNCTION C_COPY()
+   LOCAL oDlg, oMsg, cFile := "", cFields := "", cFor := "", cDelim := ""
+   LOCAL r1 := 1, r2 := 1, bFor, af, nNext := 0, cPath := cServerPath
+#ifdef RDD_ADS
+   LOCAL lRemote := (nServerType == 6)
+#else
+   LOCAL lRemote := (nServerType == REMOTE_SERVER)
+#endif
+   LOCAL oBtnFile, bBtnDis := {||Iif(lRemote,oBtnFile:Disable(),oBtnFile:Enable()),.T.}
+   LOCAL bFileBtn := {||
+   cFile := hwg_Savefile( "*.dbf","xBase files( *.dbf )", "*.dbf", mypath )
+   hwg_RefreshAllGets( oDlg )
+   Return .T.
+   }
+
+   INIT DIALOG oDlg TITLE aFiles[improc,AF_ALIAS]+": Copy" ;
+      AT 0, 0         ;
+      SIZE 400, 320   ;
+      FONT oMainFont ON INIT bBtnDis
+
+#if defined( RDD_ADS ) .OR. defined( RDD_LETO )
+   @ 10,10 SAY "Server " SIZE 60,22 STYLE SS_RIGHT
+   @ 70,10 GET CHECKBOX lRemote CAPTION "Remote:" SIZE 80, 20 ON CLICK bBtnDis
+   @ 150,10 GET cPath SIZE 240,24
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS
+#endif
+
+   @ 10,34 SAY "File name: " SIZE 80,22 STYLE SS_RIGHT
+   @ 90,34 GET cFile SIZE 220,24 PICTURE "@S128" STYLE ES_AUTOHSCROLL
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS
+   @ 310,34 BUTTON oBtnFile CAPTION "Browse" SIZE 80, 26 ON CLICK bFileBtn ON SIZE ANCHOR_RIGHTABS
+
+   @ 10,60 SAY "Fields: " SIZE 80,22 STYLE SS_RIGHT
+   @ 90,60 GET cFields SIZE 220,24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS
+
+   @ 10, 92 GROUPBOX "" SIZE 168, 88
+   GET RADIOGROUP r1
+   @ 20,104 RADIOBUTTON "Dbf" SIZE 90, 20 
+   @ 20,128 RADIOBUTTON "Sdf" SIZE 90, 20 
+   @ 20,152 RADIOBUTTON "Delimited with" SIZE 112, 20 
+   END RADIOGROUP
+   @ 132,152 GET cDelim SIZE 30, 24 PICTURE "XX"
+
+   @ 200, 92 GROUPBOX "" SIZE 168, 88
+   GET RADIOGROUP r2
+   @ 210,104 RADIOBUTTON "All" SIZE 90, 20 
+   @ 210,128 RADIOBUTTON "Next" SIZE 90, 20 
+   @ 210,152 RADIOBUTTON "Rest" SIZE 90, 20 
+   END RADIOGROUP
+   @ 300,128 GET nNext SIZE 40, 24 PICTURE "9999"
+
+   @ 10, 200 SAY "For: " SIZE 100, 22
+   @ 10, 222 GET cFor SIZE 380, 24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @  30, 268  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 190, 268 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+
+   oDlg:Activate()
+
+   IF oDlg:lResult
+
+      IF Empty( cFile )
+         hwg_Msgstop( "File name is absent" )
+         RETURN Nil
+      ENDIF
+      IF !Empty( cFor ) .AND. Type( cFor ) != "L"
+         hwg_Msgstop( "Wrong 'FOR' expression!" )
+         RETURN Nil
+      ENDIF
+      IF !Empty( cFor )
+         bFor := &( "{||" + cFor + "}" )
+      ENDIF
+      IF !Empty( cFields )
+         af := hb_aTokens( Trim(cFields), "," )
+      ENDIF
+
+      oMsg := DlgWait( "Append" )
+      cFile := Iif( lRemote, Trim( cServerPath ), "" ) + Trim( cFile )
+      IF r1 == 1 .AND. r2 == 1
+#ifdef RDD_ADS
+          AdsSetServerType( nServerType := Iif( lRemote, 6, ADS_LOCAL_SERVER ) )
+         __dbApp( cFile, af, bfor,,,, .F. )
+#else
+         __dbCopy( cFile, af, bFor,,,, .F., Iif( lRemote,"LETO","DBFCDX" ),, cDataCPage )
+#endif
+      ELSEIF r1 == 1 .AND. r2 == 2
+#ifdef RDD_ADS
+          AdsSetServerType( nServerType := Iif( lRemote, 6, ADS_LOCAL_SERVER ) )
+         __dbCopy( cFile, af, bFor,, nNext,, .F. )
+#else
+         __dbCopy( cFile, af, bFor,, nNext,, .F., Iif( lRemote,"LETO","DBFCDX" ),, cDataCPage )
+#endif
+      ELSEIF r1 == 1 .AND. r2 == 3
+#ifdef RDD_ADS
+          AdsSetServerType( nServerType := Iif( lRemote, 6, ADS_LOCAL_SERVER ) )
+         __dbCopy( cFile, af, bFor,,,, .T. )
+#else
+         __dbCopy( cFile, af, bFor,,,, .T., Iif( lRemote,"LETO","DBFCDX" ),, cDataCPage )
+#endif
+      ELSEIF r1 == 2 .AND. r2 == 1
+         __dbSdf( .T., cFile, af, bFor,,,, .F. )
+      ELSEIF r1 == 2 .AND. r2 == 2
+         __dbSdf( .T., cFile, af, bFor,, nrest,, .F. )
+      ELSEIF r1 == 2 .AND. r2 == 3
+         __dbSdf( .T., cFile, af, bFor,,,, .T. )
+      ELSEIF r1 == 3 .AND. r2 == 1
+         __dbDelim( .T., cFile, Iif( Empty(cdelim), "blank", cdelim ), af, bFor,,,, .F. )
+      ELSEIF r1 == 3 .AND. r2 == 2
+         __dbDelim( .T., cFile, Iif( Empty(cdelim), "blank", cdelim ), af, bFor,, nrest,, .F. )
+      ELSEIF r1 == 3 .AND. r2 == 3
+         __dbDelim( .T., cFile, Iif( Empty(cdelim), "blank", cdelim ), af, bFor,,,, .T. )
+      ENDIF
+      oMsg:Close()
+      UpdBrowse()
+   ENDIF
+
+   RETURN Nil
+
+   /* -----------------------  Reindex, pack, zap --------------------- */
+
+FUNCTION C_RPZ( nAct )
+   LOCAL oMsg, aTitle := { "Reindex", "Pack", "Zap" }
+   LOCAL oBrw := GetBrwActive()
+
+   improc := oBrw:cargo
+
+   IF !aFiles[ improc, AF_EXCLU ]
+      hwg_Msgstop( "File must be opened in exclusive mode" )
+      RETURN Nil
+   ENDIF
+   IF aFiles[ improc, AF_RDONLY ]
+      hwg_Msgstop( "File is opened in readonly mode" )
+      RETURN Nil
+   ENDIF
+
+   IF hwg_MsgYesNo( "Really " + aTitle[nAct] + " " + aFiles[improc,AF_ALIAS] + "?", "Attention!" )
+
+      oMsg := DlgWait( aTitle[nAct] )
       IF nAct == 1
-         IF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON6 )
-            DELETE ALL FOR &cFor
-         ELSEIF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON7 )
-            nrest := Val( hwg_Getdlgitemtext( hDlg, IDC_EDITRECN, 10 ) )
-            DELETE NEXT nrest FOR &cFor
-         ELSEIF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON8 )
-            DELETE REST FOR &cFor
-         ENDIF
+         REINDEX
       ELSEIF nAct == 2
-         IF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON6 )
-            RECALL ALL FOR &cFor
-         ELSEIF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON7 )
-            nrest := Val( hwg_Getdlgitemtext( hDlg, IDC_EDITRECN, 10 ) )
-            RECALL NEXT nrest FOR &cFor
-         ELSEIF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON8 )
-            RECALL REST FOR &cFor
-         ENDIF
+         PACK
       ELSEIF nAct == 3
-         IF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON6 )
-            COUNT TO nsum ALL FOR &cFor
-         ELSEIF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON7 )
-            nrest := Val( hwg_Getdlgitemtext( hDlg, IDC_EDITRECN, 10 ) )
-            COUNT TO nsum NEXT nrest FOR &cFor
-         ELSEIF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON8 )
-            COUNT TO nsum REST FOR &cFor
-         ENDIF
-         hwg_Setdlgitemtext( hDlg, IDC_TEXTMSG, "Result: "+Str( nsum ) )
-         Go nrec
-         Return Nil
+         ZAP
       ENDIF
-      Go nrec
-      hwg_WriteStatus( oWindow,3,"Done" )
-      IF oWindow != Nil
-         aControls := oWindow:aControls
-         IF ( i := Ascan( aControls, {|o|o:ClassName()=="HBROWSE"} ) ) > 0
-            hwg_Redrawwindow( aControls[i]:handle, RDW_ERASE + RDW_INVALIDATE )
-         ENDIF
-      ENDIF
+      oMsg:Close()
+      UpdBrowse()
    ENDIF
 
-   hwg_EndDialog( hDlg )
-Return Nil
+   RETURN Nil
 
-/* -----------------------  Sum --------------------- */
-
-Function C_SUM()
-Local aModDlg
-
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_SUM" ON INIT {|| InitSum() }
-   DIALOG ACTIONS OF aModDlg ;
-        ON 0,IDOK         ACTION {|| EndSum()}   ;
-        ON 0,IDCANCEL     ACTION {|| hwg_EndDialog( hwg_GetModalHandle() )}  ;
-        ON BN_CLICKED,IDC_RADIOBUTTON7 ACTION {|| RecNumberEdit() } ;
-        ON BN_CLICKED,IDC_RADIOBUTTON6 ACTION {|| RecNumberDisable() } ;
-        ON BN_CLICKED,IDC_RADIOBUTTON8 ACTION {|| RecNumberDisable() }
-   aModDlg:Activate()
-
-Return Nil
-
-Static Function InitSum()
-Local hDlg := hwg_GetModalHandle()
-   RecNumberDisable()
-   hwg_Checkradiobutton( hDlg,IDC_RADIOBUTTON6,IDC_RADIOBUTTON8,IDC_RADIOBUTTON6 )
-   hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT7 ) )
-Return Nil
-
-Static Function EndSum()
-Local hDlg := hwg_GetModalHandle()
-Local cSumf, cFor, nrest, blsum, blfor, nRec := Recno()
-Private nsum := 0
-
-   cSumf := hwg_Getdlgitemtext( hDlg, IDC_EDIT7, 60 )
-   IF EMPTY( cSumf )
-      hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT7 ) )
-      Return Nil
-   ENDIF
-
-   cFor := hwg_Getdlgitemtext( hDlg, IDC_EDITFOR, 60 )
-   IF ( !EMPTY( cFor ) .AND. TYPE( cFor ) <> "L" ) .OR. TYPE( cSumf ) <> "N"
-      hwg_Msgstop( "Wrong expression!" )
-   ELSE
-      IF EMPTY( cFor )
-         cFor := ".T."
-      ENDIF
-      hwg_Setdlgitemtext( hDlg, IDC_TEXTMSG, "Wait ..." )
-      blsum := &( "{||nsum:=nsum+" + cSumf + "}" )
-      blfor := &( "{||" + cFor + "}" )
-      IF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON6 )
-         DBEVAL( blsum, blfor )
-      ELSEIF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON7 )
-         nrest := Val( hwg_Getdlgitemtext( hDlg, IDC_EDITRECN, 10 ) )
-         DBEVAL( blsum, blfor,, nrest )
-      ELSEIF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON8 )
-         DBEVAL( blsum, blfor,,,, .T. )
-      ENDIF
-      Go nrec
-      hwg_Setdlgitemtext( hDlg, IDC_TEXTMSG, "Result: "+Str( nsum ) )
-      Return Nil
-   ENDIF
-
-   hwg_EndDialog( hDlg )
-Return Nil
-
-/* -----------------------  Append from --------------------- */
-
-Function C_APPEND()
-Local aModDlg
-
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_APFROM" ON INIT {|| InitApp() }
-   DIALOG ACTIONS OF aModDlg ;
-        ON 0,IDOK         ACTION {|| EndApp()}  ;
-        ON 0,IDCANCEL     ACTION {|| hwg_EndDialog( hwg_GetModalHandle() )}  ;
-        ON BN_CLICKED,IDC_BUTTONBRW ACTION {||hwg_Setdlgitemtext( hwg_GetModalHandle(), IDC_EDIT7, hwg_SelectFile( "xBase files( *.dbf )", "*.dbf", mypath ) ) } ;
-        ON BN_CLICKED,IDC_RADIOBUTTON11 ACTION {|| DelimEdit() } ;
-        ON BN_CLICKED,IDC_RADIOBUTTON10 ACTION {|| DelimDisable() } ;
-        ON BN_CLICKED,IDC_RADIOBUTTON9 ACTION {|| DelimDisable() }
-   aModDlg:Activate()
-
-Return Nil
-
-Static Function DelimEdit
-Local hDlg := hwg_GetModalHandle()
-Local hEdit := hwg_Getdlgitem( hDlg,IDC_EDITDWITH )
-   hwg_Sendmessage( hEdit, WM_ENABLE, 1, 0 )
-   hwg_Setdlgitemtext( hDlg, IDC_EDITDWITH, " " )
-   hwg_Setfocus( hEdit )
-Return Nil
-
-Static Function DelimDisable
-Local hEdit := hwg_Getdlgitem( hwg_GetModalHandle(),IDC_EDITDWITH )
-   hwg_Sendmessage( hEdit, WM_ENABLE, 0, 0 )
-Return Nil
-
-Static Function InitApp()
-Local hDlg := hwg_GetModalHandle()
-   DelimDisable()
-   hwg_Checkradiobutton( hDlg,IDC_RADIOBUTTON9,IDC_RADIOBUTTON9,IDC_RADIOBUTTON11 )
-   hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT7 ) )
-Return Nil
-
-Static Function EndApp()
-Local hDlg := hwg_GetModalHandle()
-Local fname, nRec := Recno()
-
-   fname := hwg_Getdlgitemtext( hDlg, IDC_EDIT7, 60 )
-   IF EMPTY( fname )
-      hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT7 ) )
-      Return Nil
-   ENDIF
-
-   hwg_Setdlgitemtext( hDlg, IDC_TEXTMSG, "Wait ..." )
-   IF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON6 )
-      // DBEVAL( blsum, blfor )
-   ELSEIF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON7 )
-      // nrest := Val( hwg_Getdlgitemtext( hDlg, IDC_EDITRECN, 10 ) )
-      // DBEVAL( blsum, blfor,, nrest )
-   ELSEIF hwg_Isdlgbuttonchecked( hDlg,IDC_RADIOBUTTON8 )
-      // DBEVAL( blsum, blfor,,,, .T. )
-   ENDIF
-   Go nrec
-
-   hwg_EndDialog( hDlg )
-Return Nil
-
-/* -----------------------  Reindex, pack, zap --------------------- */
-
-Function C_RPZ( nAct )
-Local aModDlg
-
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_OKCANCEL" ON INIT {|| InitRPZ(nAct) }
-   DIALOG ACTIONS OF aModDlg ;
-        ON 0,IDOK         ACTION {|| EndRPZ(nAct)}   ;
-        ON 0,IDCANCEL     ACTION {|| hwg_EndDialog( hwg_GetModalHandle() ) }
-   aModDlg:Activate()
-
-Return Nil
-
-Static Function InitRPZ( nAct )
-Local hDlg := hwg_GetModalHandle()
-   hwg_Setdlgitemtext( hDlg, IDC_TEXTHEAD, Iif( nAct==1,"Reindex ?", ;
-                                       Iif( nAct==2,"Pack ?", "Zap ?" ) ) )
-Return Nil
-
-Static Function EndRPZ( nAct )
-Local hDlg := hwg_GetModalHandle()
-Local hWnd, oWindow, aControls, i
-
-   IF .NOT. msmode[ improc, 1 ]
-      IF .NOT. FileLock()
-         hwg_EndDialog( hDlg )
-         Return Nil
-      ENDIF
-   ENDIF
-   hwg_Setdlgitemtext( hDlg, IDC_TEXTMSG, "Wait ..." )
-   IF nAct == 1
-      Reindex
-   ELSEIF nAct == 2
-      Pack
-   ELSEIF nAct == 3
-      Zap
-   ENDIF
-
-   hWnd := hwg_Sendmessage( HWindow():GetMain():handle, WM_MDIGETACTIVE,0,0 )
-   oWindow := HWindow():FindWindow( hWnd )
-   IF oWindow != Nil
-      aControls := oWindow:aControls
-      IF ( i := Ascan( aControls, {|o|o:ClassName()=="HBROWSE"} ) ) > 0
-         hwg_Redrawwindow( aControls[i]:handle, RDW_ERASE + RDW_INVALIDATE )
-      ENDIF
-   ENDIF
-
-   hwg_EndDialog( hDlg )
-Return Nil

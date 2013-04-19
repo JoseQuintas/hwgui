@@ -1,9 +1,10 @@
 /*
+ * $Id$
  * DBCHW - DBC ( Harbour + HWGUI )
  * Database structure handling
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * www - http://www.kresin.ru
 */
 
 #include "windows.ch"
@@ -13,204 +14,198 @@
 #include "ads.ch"
 #endif
 
-memvar mypath, obrwfont, improc,msfile
+Memvar oBrw, currentCP, currFname
+
+Static aFieldTypes := { "C","N","D","L" }
 
 Function StruMan( lNew )
-Local oModDlg
-Local at := { "Character", "Numeric", "Date", "Logical", "Memo" }
-LOCAL af, oBrw
+Local oDlg, oBrowse, oMsg 
+Local oGet1, oGet2, oGet3, oGet4
+Local af, af0, cName := "", nType := 1, cLen := "0", cDec := "0", i
+Local aTypes := { "Character","Numeric","Date","Logical" }
+Local fname, cAlias, nRec, nOrd, lOverFlow := .F., xValue
+LOCAL oBrw := GetBrwActive()
+Local bChgPos := {|o|
+   oGet1:SetGet( o:aArray[o:nCurrent,1] )
+   oGet2:SetItem( Ascan(aFieldTypes,o:aArray[o:nCurrent,2]) )
+   oGet3:SetGet( Ltrim(Str(o:aArray[o:nCurrent,3])) )
+   oGet4:SetGet( Ltrim(Str(o:aArray[o:nCurrent,4])) )
+   hwg_RefreshAllGets( oDlg )
+   }
 
    IF lNew
       af := { {"","",0,0} }
    ELSE
-      af := dbStruct()
+      af0 := dbStruct()
+      af  := dbStruct()
+      FOR i := 1 TO Len(af)
+         Aadd( af[i],i )
+      NEXT
    ENDIF
 
-   INIT DIALOG oModDlg FROM RESOURCE "DLG_STRU"
+   INIT DIALOG oDlg TITLE "Modify structure" ;
+         AT 0,0                  ;
+         SIZE 460,330            ;
+         FONT oMainFont
 
-   REDEFINE BROWSE oBrw ARRAY OF oModDlg ID ID_BROWSE  ;
-       ON CLICK {|o|SetField(o)}
-   REDEFINE COMBOBOX at OF oModDlg ID IDC_COMBOBOX2
+   @ 20,20 BROWSE oBrowse ARRAY   ;
+       SIZE 308,190               ;
+       STYLE WS_BORDER+WS_VSCROLL ;
+       ON POSCHANGE bChgPos
 
-   DIALOG ACTIONS OF oModDlg ;
-          ON 0,IDOK        ACTION {|o| EndStru(o,lNew)}   ;
-          ON BN_CLICKED,IDC_PUSHBUTTON2 ACTION {|| ModiStru(1) }  ;
-          ON BN_CLICKED,IDC_PUSHBUTTON3 ACTION {|| ModiStru(2) }  ;
-          ON BN_CLICKED,IDC_PUSHBUTTON4 ACTION {|| ModiStru(3) }  ;
-          ON BN_CLICKED,IDC_PUSHBUTTON5 ACTION {|| ModiStru(4) }
+   oBrowse:aArray := af
+   oBrowse:AddColumn( HColumn():New( "",{|v,o|o:nCurrent},"N",4,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Name",{|v,o|o:aArray[o:nCurrent,1]},"C",14,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Type",{|v,o|o:aArray[o:nCurrent,2]},"C",1,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Length",{|v,o|o:aArray[o:nCurrent,3]},"N",5,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Dec",{|v,o|o:aArray[o:nCurrent,4]},"N",2,0 ) )
+   
+   @ 20,230 GET oGet1 VAR cName SIZE 100,24
+   @ 130,230 GET COMBOBOX oGet2 VAR nType ITEMS aTypes SIZE 100,24
+   @ 240,230 GET oGet3 VAR cLen SIZE 50,24
+   @ 300,230 GET oGet4 VAR cDec SIZE 40,24
 
-   oBrw:aArray := af
-   oBrw:AddColumn( HColumn():New( "Name",{|value,o|o:aArray[o:nCurrent,1] },"C",10,0  ) )
-   oBrw:AddColumn( HColumn():New( "Type",{|value,o|o:aArray[o:nCurrent,2] },"C",4,0  ) )
-   oBrw:AddColumn( HColumn():New( "Length",{|value,o|o:aArray[o:nCurrent,3] },"N",4,0  ) )
-   oBrw:AddColumn( HColumn():New( "Dec",{|value,o|o:aArray[o:nCurrent,4] },"N",2,0  ) )
-   oBrw:bcolorSel := hwg_VColor( "800080" )
-   oBrw:ofont      := oBrwFont
+   IF ( lNew .AND. nServerType == LOCAL_SERVER ) .OR. ;
+         ( !lNew .AND. aFiles[improc,AF_EXCLU] .AND. !aFiles[improc,AF_RDONLY] .AND. aFiles[improc,AF_LOCAL] )
 
-   oModDlg:Activate()
-Return Nil
+      @ 28,270 BUTTON "Add" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,1)}
+      @ 136,270 BUTTON "Insert" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,2)}
+      @ 246,270 BUTTON "Replace" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,3)}
+      @ 356,270 BUTTON "Remove" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,4)}
 
-Static Function SetField( oBrw )
-Local hDlg := hwg_GetModalHandle(), i
-   hwg_Setdlgitemtext( hDlg, IDC_EDIT2, oBrw:aArray[oBrw:nCurrent,1] )
-   IF ( i := At( oBrw:aArray[oBrw:nCurrent,2], "CNDLM" ) ) != 0
-      hwg_Combosetstring( hwg_Getdlgitem( hDlg, IDC_COMBOBOX2 ), i )
+      @ 344,40 BUTTON Iif( lNew, "Create", "Modify" ) SIZE 100, 40 ON CLICK {||oDlg:lResult:=.T.,hwg_EndDialog()}
    ENDIF
-   hwg_Setdlgitemtext( hDlg, IDC_EDIT3, Ltrim( Str( oBrw:aArray[oBrw:nCurrent,3] ) ) )
-   hwg_Setdlgitemtext( hDlg, IDC_EDIT4, Ltrim( Str( oBrw:aArray[oBrw:nCurrent,4] ) ) )
-Return Nil
+   @ 344,100 BUTTON "Close" SIZE 100, 40 ON CLICK {||hwg_EndDialog()}
 
-Static Function ModiStru( nOper )
-Local oDlg := hwg_GetModalDlg(), hDlg := oDlg:handle
-Local oBrowse := oDlg:FindControl( ID_BROWSE )
-Local cName, cType, nLen, nDec := 0
+   ACTIVATE DIALOG oDlg
+   
+   IF oDlg:lResult
 
-   IF nOper < 4
-      cName := hwg_Getdlgitemtext( hDlg, IDC_EDIT2, 10 )
-      IF Empty( cName )
-         hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT2 ) )
-         Return Nil
-      ENDIF
-      cType := Left( hwg_Getdlgitemtext( hDlg, IDC_COMBOBOX2, 10 ), 1 )
-      IF Empty( cType )
-         hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_COMBOBOX2 ) )
-         Return Nil
-      ENDIF
-      IF cType == "D" 
-         nLen := 8
-      ELSEIF cType == "L" 
-         nLen := 1
-      ELSEIF cType == "M" 
-         nLen := 10
-      ELSE
-         nLen  := Val( hwg_Getdlgitemtext( hDlg, IDC_EDIT3, 10 ) )
-         IF nLen == 0
-            hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDIT3 ) )
+      oMsg = DlgWait("Restructuring")
+      IF lNew
+         CLOSE ALL
+         fname := hwg_MsgGet("File creation","Input new file name")
+         IF Empty( fname )
             Return Nil
          ENDIF
-         IF cType == "N" 
-            nDec  := Val( hwg_Getdlgitemtext( hDlg, IDC_EDIT4, 10 ) )
+         dbCreate( fname,af )
+         OpenDbf( fname )
+      ELSE
+         cAlias := Alias()
+         nOrd := ordNumber()
+         nRec := RecNo()
+         SET ORDER TO 0
+         GO TOP
+         
+         fname := "a0_new"
+         dbCreate( fname,af )
+         IF currentCP != Nil
+            use (fname) new codepage (currentCP)
+         ELSE
+            use (fname) new
          ENDIF
+         dbSelectArea( cAlias )
+         
+         DO WHILE !Eof()
+            dbSelectArea( fname )
+            APPEND BLANK
+            FOR i := 1 TO Len(af)
+               IF Len(af[i]) > 4
+                  xValue := (cAlias)->(FieldGet(af[i,5]))
+                  IF af[i,2] == af0[af[i,5],2] .AND. af[i,3] == af0[af[i,5],3]
+                     FieldPut( i, xValue )
+                  ELSE
+                     IF af[i,2] != af0[af[i,5],2]
+                        IF af[i,2] == "C" .AND. af0[af[i,5],2] == "N"
+                           xValue := Str( xValue,af0[af[i,5],3],af0[af[i,5],4] )
+                        ELSEIF af[i,2] == "N" .AND. af0[af[i,5],2] == "C"
+                           xValue := Val( Ltrim( xValue ) )
+                        ELSE
+                           LOOP
+                        ENDIF
+                     ENDIF
+                     IF af[i,3] >= af0[af[i,5],3]
+                        FieldPut( i, xValue )
+                     ELSE
+                        IF af[i,2] =="C"
+                           FieldPut( i, Left( xValue,af[i,3] ) )
+                        ELSEIF af[i,2] =="N"
+                           FieldPut( i, 0 )
+                           lOverFlow := .T.
+                        ENDIF
+                     ENDIF
+                  ENDIF
+               ENDIF
+            NEXT
+            IF (cAlias)->(Deleted())
+               DELETE
+            ENDIF
+            dbSelectArea( cAlias )
+            SKIP
+         ENDDO
+         IF lOverFlow
+            hwg_Msginfo( "There was overflow in Numeric field","Warning!" )
+         ENDIF
+
+         Close All
+         Ferase( currFname+".bak" )
+         Frename( currFname + ".dbf", currFname + ".bak" )
+         Frename( "a0_new.dbf", currFname + ".dbf" )
+         IF File( "a0_new.fpt" )
+            Frename( "a0_new.fpt", currFname + ".fpt" )
+         ENDIF
+
+         use (currFname)
+         REINDEX
+
+         GO nRec
+         SET ORDER TO nOrd
+         hwg_CreateList( oBrw, .T. )
       ENDIF
-      IF nOper == 3 .OR. ( oBrowse:nRecords == 1 .AND. Empty( oBrowse:aArray[1,1] ) )
-         oBrowse:aArray[ oBrowse:nCurrent ] := { cName, cType, nLen, nDec }
-      ELSEIF nOper == 1
-         Aadd( oBrowse:aArray, { cName, cType, nLen, nDec } )
-         oBrowse:nRecords ++
-      ELSEIF nOper == 2
-         Aadd( oBrowse:aArray, Nil )
-         Ains( oBrowse:aArray, oBrowse:nCurrent )
-         oBrowse:aArray[ oBrowse:nCurrent ] := { cName, cType, nLen, nDec }
-         oBrowse:nRecords ++
-      ENDIF
-   ELSEIF nOper == 4
-      Adel( oBrowse:aArray,oBrowse:nCurrent )
-      Asize( oBrowse:aArray,Len( oBrowse:aArray ) - 1 )
-      oBrowse:nRecords --
+      oMsg:Close()
+      oBrw:Refresh()
+
    ENDIF
-   hwg_Redrawwindow( oBrowse:handle, RDW_ERASE + RDW_INVALIDATE )
+
 Return Nil
 
-Static Function EndStru( oDlg,lNew )
-Local fname, alsname
-Local A1,A2,A3,A4,B1,B2,B3,B4,C1,C2
-Local fi1, kolf, i, j
-Local oBrowse := oDlg:FindControl( ID_BROWSE )
-Local oWindow, aControls
-Local oPBar, nSch := 0
-
-   IF lNew
-      IF Empty( fname := hwg_SaveFile( "*.dbf","xBase files( *.dbf )", "*.dbf", mypath ) )
+Static Function UpdStru( oBrowse, oGet1, oGet2, oGet3, oGet4, nOperation )
+Local cName, cType, nLen, nDec
+   IF nOperation == 4
+      IF oBrowse:nRecords > 1
+         Adel( oBrowse:aArray,oBrowse:nCurrent )
+         oBrowse:aArray := Asize( oBrowse:aArray, Len(oBrowse:aArray)-1 )
+         IF oBrowse:nCurrent < Len(oBrowse:aArray) .AND. oBrowse:nCurrent > 1
+            oBrowse:nCurrent --
+            oBrowse:RowPos --
+         ENDIF
+         oBrowse:nRecords --
+      ENDIF
+   ELSE
+      IF Empty( cName := oGet1:SetGet() )
          Return Nil
       ENDIF
-      mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
-      dbCreate( fname, oBrowse:aArray )
-      OpenDbf( fname )
-   ELSE
-      alsname := Alias()
-      kolf := Fcount()
-      A1   := ARRAY( kolf )
-      A2   := ARRAY( kolf )
-      A3   := ARRAY( kolf )
-      A4   := ARRAY( kolf )
-      AFIELDS( A1, A2, A3, A4 )
-      SELECT 20
-      fi1 := mypath + "a0_new"
-      dbCreate( fi1, oBrowse:aArray )
-      USE ( fi1 )
-      kolf := Fcount()
-      B1   := ARRAY( kolf )
-      B2   := ARRAY( kolf )
-      B3   := ARRAY( kolf )
-      B4   := ARRAY( kolf )
-      C1   := ARRAY( kolf )
-      C2   := ARRAY( kolf )
-      AFIELDS( B1, B2, B3, B4 )
-      FOR i := 1 TO kolf
-         j := ASCAN( A1, B1[ i ] )
-         IF j > 0
-            C2[ i ] = j
-            IF B2[ i ] = A2[ j ] .AND. B3[ i ] = A3[ j ] .AND. B4[ i ] = A4[ j ]
-               IF C1[ i ] = Nil
-                  C1[ i ] := &( "{|param|param}" )
-               ENDIF
-            ELSE
-               IF C1[ i ] = Nil
-                  DO CASE
-                  CASE A2[ j ] = "C" .AND. B2[ i ] = "N"
-                     C1[ i ] := &( "{|param|VAL(param)}" )
-                  CASE A2[ j ] = "N" .AND. B2[ i ] = "C"
-                     C1[ i ] := &( "{|param|LTRIM(STR(param," + LTRIM( STR( A3[ j ], 2 ) ) + "," + LTRIM( STR( A4[ j ], 2 ) ) + "))}" )
-                  CASE A2[ j ] = "C" .AND. B2[ i ] = "C"
-                     C1[ i ] := &( "{|param|SUBSTR(param,1," + LTRIM( STR( A3[ j ], 4 ) ) + ")}" )
-                  CASE A2[ j ] = "N" .AND. B2[ i ] = "N"
-                     C1[ i ] := &( "{|param|param}" )
-                  OTHERWISE
-                     //           C1[i] := &("{|param|param}")
-                  ENDCASE
-               ENDIF
-            ENDIF
-         ENDIF
-      NEXT
-      SELECT( improc )
-      oPBar := HProgressBar():NewBox( "Structure updating ...",,,,,10,RecCount() )
-      GO TOP
-      DO WHILE .NOT. EOF()
-         SELECT 20
-         APPEND BLANK
-         FOR i := 1 TO kolf
-            IF C1[ i ] <> Nil
-               FIELDPUT( i, EVAL( C1[ i ], (alsname)->( FIELDGET( C2[ i ] ) ) ) )
-            ENDIF
-         NEXT
-         SELECT( improc )
-         SKIP
-         oPBar:Step()
-      ENDDO
-      oPBar:Close()
-      SELECT( improc )
-      USE
-      SELECT 20
-      USE
-      fi1 := Cutexten( msfile[ improc ] )
-      ERASE &(fi1+".bak")
-      FRENAME( fi1 + ".dbf", fi1 + ".bak" )
-      FRENAME( mypath + "a0_new.DBF", fi1 + ".dbf" )
-      IF FILE( mypath + "a0_new.fpt" )
-         FRENAME( mypath + "a0_new.fpt", fi1 + ".fpt" )
+      cType := aFieldTypes[ Eval(oGet2:bSetGet,,oGet2) ]
+      nLen  := Val( oGet3:SetGet() )
+      nDec  := Val( oGet4:SetGet() )
+      IF oBrowse:nRecords == 1 .AND. Empty( oBrowse:aArray[oBrowse:nCurrent,1] )
+         nOperation := 3
       ENDIF
-      SELECT( improc )
-      USE (fi1)
-
-      oWindow := HMainWindow():GetMdiActive()
-      IF oWindow != Nil
-         aControls := oWindow:aControls
-         IF ( i := Ascan( aControls, {|o|o:classname()=="HBROWSE"} ) ) > 0
-            oBrowse := aControls[ i ]
-            hwg_CreateList( oBrowse,.T. )
+      IF nOperation == 1
+         Aadd( oBrowse:aArray,{ cName,cType,nLen,nDec } )
+      ELSE
+         IF nOperation == 2
+            Aadd( oBrowse:aArray, Nil )
+            Ains( oBrowse:aArray,oBrowse:nCurrent )
+            oBrowse:aArray[oBrowse:nCurrent] := { "","",0,0 }
          ENDIF
+         oBrowse:aArray[oBrowse:nCurrent,1] := cName
+         oBrowse:aArray[oBrowse:nCurrent,2] := cType
+         oBrowse:aArray[oBrowse:nCurrent,3] := nLen
+         oBrowse:aArray[oBrowse:nCurrent,4] := nDec
       ENDIF
    ENDIF
-   hwg_EndDialog( hwg_GetModalHandle() )
+   oBrowse:Refresh()
+   
 Return Nil
 

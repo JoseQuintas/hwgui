@@ -1,9 +1,10 @@
 /*
+ * $Id$
  * DBCHW - DBC ( Harbour + HWGUI )
  * SQL queries
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * www - http://www.kresin.ru
 */
 
 #include "windows.ch"
@@ -13,11 +14,10 @@
 #include "ads.ch"
 #endif
 
-memvar mypath, numdriv
 Static cQuery := ""
 
 Function OpenQuery
-Local fname := hwg_SelectFile( "Query files( *.que )", "*.que", mypath )
+Local fname := hwg_Selectfile( "Query files( *.que )", "*.que", mypath )
 
    IF !Empty( fname )
       mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
@@ -28,38 +28,38 @@ Local fname := hwg_SelectFile( "Query files( *.que )", "*.que", mypath )
 Return Nil
 
 Function Query( lEdit )
-Local aModDlg
-
-   IF !lEdit
-      cQuery := ""
+Local oDlg
+Local bBtnSave := {||
+   Local fname := hwg_Savefile( "*.que","Query files( *.que )", "*.que", mypath )
+   IF !Empty( fname )
+      hb_MemoWrit( fname,cQuery )
    ENDIF
-
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_QUERY" ON INIT {|| InitQuery() }
-   DIALOG ACTIONS OF aModDlg ;
-        ON 0,IDCANCEL     ACTION {|| EndQuery(.F.) }  ;
-        ON BN_CLICKED,IDC_BTNEXEC ACTION {|| EndQuery(.T.) } ;
-        ON BN_CLICKED,IDC_BTNSAVE ACTION {|| QuerySave() }
-   aModDlg:Activate()
-
-Return Nil
-
-Static Function InitQuery()
-Local hDlg := hwg_GetModalHandle()
-   hwg_Setdlgitemtext( hDlg, IDC_EDITQUERY, cQuery )
-   hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDITQUERY ) )
-Return Nil
-
-Static Function EndQuery( lOk )
-Local hDlg := hwg_GetModalHandle()
+   }
 Local oldArea := Alias(), tmpdriv, tmprdonly
 Local id1
 Local aChildWnd, hChild
 Static lConnected := .F.
 
-   IF lOk
-      cQuery := hwg_Getedittext( hDlg, IDC_EDITQUERY )
+   IF !lEdit
+      cQuery := ""
+   ENDIF
+
+   INIT DIALOG oDlg TITLE Iif( lEdit, "Edit", "New" ) + " query" ;
+      AT 0, 0         ;
+      SIZE 420, 250   ;
+      FONT oMainFont
+
+   @ 10, 10 GET cQuery SIZE 410, 180 STYLE ES_MULTILINE + ES_AUTOVSCROLL
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @  30, 210 BUTTON "Execute" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 160, 210 BUTTON "Save" SIZE 100, 32 ON CLICK bBtnSave
+   @ 290, 210 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+
+   oDlg:Activate()
+
+   IF oDlg:lResult
       IF Empty( cQuery )
-         hwg_Setfocus( hwg_Getdlgitem( hDlg, IDC_EDITQUERY ) )
          Return Nil
       ENDIF
 
@@ -89,7 +89,6 @@ Static lConnected := .F.
          ENDIF
          Return .F.
       ENDIF
-      hwg_Setdlgitemtext( hDlg, IDC_TEXTMSG, "Wait ..." )
       IF !AdsExecuteSqlDirect( cQuery )
          hwg_Msgstop( "SQL execution failed" )
          IF !Empty( oldArea )
@@ -99,11 +98,10 @@ Static lConnected := .F.
       ELSE
          IF Alias() == "ADSSQL"
             improc := Select( "ADSSQL" )
-            tmpdriv := numdriv; tmprdonly := prrdonly
-            numdriv := 3; prrdonly := .T.
-            // Fiopen()
+            tmpdriv := numdriv; tmprdonly := lRdonly
+            numdriv := 3; lRdonly := .T.
             nQueryWndHandle := OpenDbf( ,"ADSSQL",nQueryWndHandle )
-            numdriv := tmpdriv; prrdonly := tmprdonly
+            numdriv := tmpdriv; lRdonly := tmprdonly
             /*
             SET CHARTYPE TO ANSI
             __dbCopy( mypath+"_dbc_que.dbf",,,,,, .F. )
@@ -121,14 +119,5 @@ Static lConnected := .F.
       ENDIF
 #endif
    ENDIF
-
-   hwg_EndDialog( hDlg )
-Return .T.
-
-Function QuerySave
-Local fname := hwg_SaveFile( "*.que","Query files( *.que )", "*.que", mypath )
-   cQuery := hwg_Getdlgitemtext( hwg_GetModalHandle(), IDC_EDITQUERY, 400 )
-   IF !Empty( fname )
-      MemoWrit( fname,cQuery )
-   ENDIF
 Return Nil
+

@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-04-21 17:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/gtkmain.prg
+    * hwg_wchoice() - more close to windows version
+
 2013-04-21 17:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   - gtk/Makefile
   * gtk/hwindow.prg

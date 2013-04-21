@@ -67,16 +67,26 @@ Local cRes := ""
 
 Return cRes
 
-Function hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel )
+Function hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )
 
-Local oDlg, oBrw
-Local nChoice := 0, i, aLen := Len( arr ), nLen := 0, addX := 20, addY := 30
+Local oDlg, oBrw, lNewFont := .F.
+Local nChoice := 0, i, aLen := Len( arr ), nLen := 0, addX := 20, addY := 30, minWidth := 0, x1
 Local hDC, aMetr, width, height, screenh
 
    IF cTitle == Nil; cTitle := ""; ENDIF
    IF nLeft == Nil; nLeft := 10; ENDIF
    IF nTop == Nil; nTop := 10; ENDIF
-   IF oFont == Nil; oFont := HFont():Add( "Times",0,12 ); ENDIF
+   IF oFont == Nil
+      oFont := HFont():Add( "Times",0,14 )
+      lNewFont := .T.
+   ENDIF
+   IF cOk != Nil
+      minWidth += 120
+      IF cCancel != Nil
+         minWidth += 100
+      ENDIF
+      addY += 30
+   ENDIF
 
    IF Valtype( arr[1] ) == "A"
       FOR i := 1 TO aLen
@@ -98,18 +108,18 @@ Local hDC, aMetr, width, height, screenh
       height := Int( screenh *2/3 )
       addX := addY := 0
    ENDIF
-   width := ( Round( (aMetr[3]+aMetr[2]) / 2,0 ) + 3 ) * nLen + addX
+   width := Min( minWidth, ( Round( (aMetr[3]+aMetr[2]) / 2,0 ) + 3 ) * nLen + addX )
 
    INIT DIALOG oDlg TITLE cTitle ;
          AT nLeft,nTop           ;
-         SIZE width,height  ;
+         SIZE width,height       ;
          FONT oFont
 
    @ 0,0 BROWSE oBrw ARRAY          ;
-       SIZE  width,height           ;
+       SIZE  width,height-addY      ;
        FONT oFont                   ;
        STYLE WS_BORDER              ;
-       ON SIZE {|o,x,y|o:Move(,,x,y)} ;
+       ON SIZE {|o,x,y|o:Move(,,x,y-addY)} ;
        ON CLICK {|o|nChoice:=o:nCurrent,hwg_EndDialog(o:oParent:handle)}
 
    IF Valtype( arr[1] ) == "A"
@@ -132,8 +142,18 @@ Local hDC, aMetr, width, height, screenh
       oBrw:bcolorSel := clrBSel
    ENDIF
 
+   IF cOk != Nil
+      x1 := Int( width/2 ) - iif( cCancel != Nil, 90, 40 )
+      @ x1, height - 36 BUTTON cOk SIZE 80, 30 ON CLICK { ||nChoice := oBrw:nCurrent, hwg_EndDialog( oDlg:handle ) }
+      IF cCancel != Nil
+         @ x1 + 100, height - 36 BUTTON cCancel SIZE 80, 30 ON CLICK { ||hwg_EndDialog( oDlg:handle ) }
+      ENDIF
+   ENDIF
+
    oDlg:Activate()
-   oFont:Release()
+   IF lNewFont
+      oFont:Release()
+   ENDIF
 
 Return nChoice
 

@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-04-21 17:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  - gtk/Makefile
+  * gtk/hwindow.prg
+  * gtk/hcontrol.prg
+  * gtk/hdialog.prg
+  * gtk/hownbtn.prg
+  * gtk/drawwidg.prg
+    ! Some fixes and enhancements
+
 2013-04-21 16:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/dbc/dbchw.h
   * utils/dbc/dbchw.prg

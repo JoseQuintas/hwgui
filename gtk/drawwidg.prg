@@ -313,6 +313,7 @@ CLASS HBitmap INHERIT HObject
 
    METHOD AddResource( name )
    METHOD AddFile( name,HDC )
+   METHOD Transparent( trColor )
    METHOD AddWindow( oWnd,lFull )
    METHOD Release()
 
@@ -383,6 +384,11 @@ Local i, aBmpSize
    ENDIF
 
 Return Self
+
+METHOD Transparent( trColor )
+
+   hwg_alpha2pixbuf( ::handle, trColor )
+Return Nil
 
 METHOD AddWindow( oWnd,lFull ) CLASS HBitmap
 Local i, aBmpSize
@@ -486,13 +492,7 @@ Local i, aBmpSize
       ENDIF
    NEXT
 #endif
-//   ::handle := hwg_Loadimage( 0, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE+LR_LOADFROMFILE )
-//   ::handle := hwg_Openimage( name )
-//   ::name := name
-//   Aadd( ::aIcons,Self )
-//  Tracelog("name = ",name)
    ::handle := hwg_Openimage( name )
-//   tracelog("handle = ",::handle)
    IF !Empty( ::handle )
       ::name := name
       aBmpSize  := hwg_Getbitmapsize( ::handle )

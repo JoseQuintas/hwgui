@@ -11,7 +11,7 @@
 #include "hbclass.ch"
 #include "hwgui.ch"
 
-REQUEST ENDWINDOW
+REQUEST HWG_ENDWINDOW
 
 #define  FIRST_MDICHILD_ID     501
 #define  MAX_MDICHILD_WINDOWS   18

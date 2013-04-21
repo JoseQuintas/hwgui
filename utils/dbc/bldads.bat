@@ -9,8 +9,9 @@ set RDD_ADS_INC=%HRB_DIR%\contrib\rdd_ads
 %HRB_DIR%\bin\harbour modistru.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include;%RDD_ADS_INC% -dRDD_ADS
 %HRB_DIR%\bin\harbour move.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include;%RDD_ADS_INC% -dRDD_ADS
 %HRB_DIR%\bin\harbour query.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include;%RDD_ADS_INC% -dRDD_ADS
+%HRB_DIR%\bin\harbour view.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include;%RDD_ADS_INC% -dRDD_ADS
 
-   bcc32 -c -O2 -tW -M -I%HRB_DIR%\include dbchw.c commands.c modistru.c move.c query.c procs_c.c
+   bcc32 -c -O2 -tW -M -I%HRB_DIR%\include dbchw.c commands.c modistru.c move.c query.c view.c procs_c.c
 
    brc32 -r dbchw.rc
 
@@ -19,6 +20,7 @@ echo dbchw.obj + >> b32.bc
 echo commands.obj + >> b32.bc
 echo modistru.obj + >> b32.bc
 echo move.obj + >> b32.bc
+echo view.obj + >> b32.bc
 echo query.obj + >> b32.bc
 echo procs_c.obj, + >> b32.bc
 echo dbchwx.exe, + >> b32.bc

@@ -7,8 +7,9 @@ set HWGUI_INSTALL=..\..
 %HRB_DIR%\bin\harbour commands.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
 %HRB_DIR%\bin\harbour modistru.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
 %HRB_DIR%\bin\harbour move.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour view.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
 
-   bcc32 -c -O2 -tW -M -I%HRB_DIR%\include dbchw.c commands.c modistru.c move.c procs_c.c
+   bcc32 -c -O2 -tW -M -I%HRB_DIR%\include dbchw.c commands.c modistru.c move.c view.c procs_c.c
 
    brc32 -r dbchw.rc
    echo 1 24 "..\..\image\WindowsXP.Manifest" > hwgui_xp.rc
@@ -19,6 +20,7 @@ echo dbchw.obj + >> b32.bc
 echo commands.obj + >> b32.bc
 echo modistru.obj + >> b32.bc
 echo move.obj + >> b32.bc
+echo view.obj + >> b32.bc
 echo procs_c.obj, + >> b32.bc
 echo dbchw.exe, + >> b32.bc
 echo dbchw.map, + >> b32.bc

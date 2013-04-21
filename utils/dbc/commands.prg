@@ -444,3 +444,63 @@ FUNCTION C_RPZ( nAct )
 
    RETURN Nil
 
+FUNCTION C_REL
+   LOCAL oDlg, oBrowse, arel := {}, aals := {}, nAlias := 1, i := 0, cExpr
+   LOCAL bClear := {||
+      dbClearRelation()
+      oBrowse:aArray := arel := {}
+      hwg_Invalidaterect( oBrowse:handle, 1 )
+      oBrowse:Refresh()
+      }
+   LOCAL bAdd := {||
+      LOCAL cTmp
+      dbSetRelation( aals[nAlias], &( "{||"+Trim(cExpr)+"}" ), Trim(cExpr) )
+      oBrowse:aArray := aRel := {}
+      i := 0
+      DO WHILE !Empty( cTmp := dbRelation( ++i ) )
+         Aadd( arel, { cTmp, Alias( dbRselect(i) ) } )
+      ENDDO
+      hwg_Invalidaterect( oBrowse:handle, 1 )
+      oBrowse:Refresh()
+      }
+
+   DO WHILE !Empty( cExpr := dbRelation( ++i ) )
+      Aadd( arel, { cExpr, Alias( dbRselect(i) ) } )
+   ENDDO
+   FOR i := 1 TO Len( aFiles )
+      IF aFiles[ i,AF_NAME ] != Nil .AND. i != improc
+         Aadd( aals, aFiles[ i,AF_ALIAS ] )
+      ENDIF
+   NEXT
+
+   INIT DIALOG oDlg TITLE "Relations" ;
+      AT 0, 0         ;
+      SIZE 400, 280   ;
+      FONT oMainFont
+
+   @ 20,20 BROWSE oBrowse ARRAY   ;
+       SIZE 360,120               ;
+       STYLE WS_BORDER+WS_VSCROLL ;
+       ON SIZE ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_BOTTOMABS+ANCHOR_RIGHTABS
+
+   oBrowse:aArray := arel
+   oBrowse:AddColumn( HColumn():New( "",{|v,o|o:nCurrent},"N",4,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Expression",{|v,o|o:aArray[o:nCurrent,1]},"C",30,0 ) )
+   oBrowse:AddColumn( HColumn():New( "Child",{|v,o|o:aArray[o:nCurrent,2]},"C",10,0 ) )
+   oBrowse:bcolorSel := COLOR_SELE
+
+   cExpr := ""
+   @ 10,160 SAY "Expression: " SIZE 90, 22
+   @ 100,160 GET cExpr SIZE 280, 24 STYLE ES_AUTOHSCROLL
+   Atail( oDlg:aControls ):Anchor := ANCHOR_BOTTOMABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @ 10,184 SAY "To area: " SIZE 90, 22
+   @ 100,184 GET COMBOBOX nAlias ITEMS aals SIZE 120, 150
+
+   @ 40,230 BUTTON "Add" SIZE 80,30 ON CLICK bAdd ON SIZE ANCHOR_LEFTABS+ANCHOR_BOTTOMABS
+   @ 160,230 BUTTON "Clear all" SIZE 80,30 ON CLICK bClear ON SIZE ANCHOR_LEFTABS+ANCHOR_BOTTOMABS
+   @ 280,230 BUTTON "Close" SIZE 80,30 ON CLICK {||hwg_EndDialog()} ON SIZE ANCHOR_BOTTOMABS+ANCHOR_RIGHTABS
+
+   oDlg:Activate()
+
+   RETURN Nil

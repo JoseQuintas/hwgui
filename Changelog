@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-04-21 16:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/dbc/dbchw.h
+  * utils/dbc/dbchw.prg
+  * utils/dbc/commands.prg
+    * Some enhancements
+  + utils/dbc/view.prg
+    + Views load/save functions added
+  * utils/dbc/bldads.bat
+  * utils/dbc/bldcdx.bat
+
 2013-04-19 14:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/dbc/dbchw.prg
     * Some enhancements

@@ -1,3 +1,7 @@
+/*
+ * $Id$
+ */
+
 #define AF_LEN                9
 #define AF_NAME               1
 #define AF_EXCLU              2
@@ -9,6 +13,9 @@
 #define AF_LFLT               8
 #define AF_BRW                9
 
+#define OPENED_FILES_LIMIT   15
+
 #define LOCAL_SERVER          1
 #define REMOTE_SERVER         2
 
+#define COLOR_SELE      8388736

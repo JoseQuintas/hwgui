@@ -70,10 +70,6 @@ STATIC aCPInfo := { "Bulgarian CP-866","Bulgarian ISO-8859-5","Bulgarian MIK", ;
       "Ukrainian Windows-1251","Ukrainian CP-866","Ukrainian KOI8-U","UTF-16 little endian", ;
       "UTF-8","UTF-8 extended" }
 
-#define OPENED_FILES_LIMIT   15
-
-#define COLOR_SELE      8388736
-
 FUNCTION Main( ... )
    LOCAL oWndMain, oPanel, aParams := hb_aParams()
    PUBLIC aBrwFont := { "MS Sans Serif", "0", "-13" }, oBrwFont, oMainFont
@@ -86,6 +82,9 @@ FUNCTION Main( ... )
    PUBLIC lWinChar := .F.
 #ifdef RDD_ADS
    PUBLIC nQueryWndHandle := 0
+   PUBLIC aDrivers := { "ADS_CDX", "ADS_NTX", "ADS_ADT" }
+#else
+   PUBLIC aDrivers := { "DBFCDX", "DBFNTX" }
 #endif
    PUBLIC nServerType := LOCAL_SERVER
    PUBLIC cServerPath := ""
@@ -197,11 +196,11 @@ FUNCTION Main( ... )
          SEPARATOR
          MENUITEM "D&o script" ACTION  Scripts( 1 )
          MENUITEM "&Memo" ACTION .T.
-         MENUITEM "Set Relatio&n" ACTION .T.
+         MENUITEM "Set Relatio&n" ACTION C_Rel()
       ENDMENU
       MENU TITLE  "V&iews"
-         MENUITEM "&Open view" ACTION .T.
-         MENUITEM "&Save view" ACTION .T.
+         MENUITEM "&Open view" ACTION RdView()
+         MENUITEM "&Save view" ACTION WrView()
       ENDMENU
       MENU TITLE  "&More..."
          MENUITEM "&Calculator" ACTION  Calcul()
@@ -317,11 +316,11 @@ STATIC FUNCTION ReadIni( cPath )
    RETURN Nil
 
 STATIC FUNCTION ReadParams( aParams )
-   LOCAL i
+   LOCAL i, cExt
 
    FOR i := 1 TO Len( aParams )
       IF Left( aParams[i],1 ) $ "-/"
-      ELSEIF Lower( FilExten( aParams[i] ) ) == "dbf"
+      ELSEIF ( cExt := Lower( FilExten( aParams[i] ) ) ) == "dbf"
          hb_cdpSelect( cAppCpage )
          Set( _SET_EXCLUSIVE, !lShared )
          IF nServerType != LOCAL_SERVER
@@ -329,6 +328,9 @@ STATIC FUNCTION ReadParams( aParams )
          ELSE
             OpenDbf( aParams[i] )
          ENDIF
+      ELSEIF cExt == "vew"
+         hb_cdpSelect( cAppCpage )
+         RdView( aParams[i] )
       ENDIF
    NEXT
    RETURN Nil
@@ -352,7 +354,7 @@ STATIC FUNCTION About
    @ 288, 0 GROUPBOX "" SIZE 170, 92
    @ 290, 12 SAY "xBase files management" SIZE 166, 18 STYLE SS_CENTER
    @ 290, 30 SAY "utility" SIZE 166, 18 STYLE SS_CENTER
-   @ 290, 48 SAY "version 2.0" SIZE 166, 20 STYLE SS_CENTER
+   @ 290, 48 SAY "version 2.2" SIZE 166, 20 STYLE SS_CENTER
    sv := hb_version()
    nPos := At( "(", sv )
    @ 290, 68 SAY Left( sv, nPos-1 ) SIZE 166, 20 STYLE SS_CENTER
@@ -637,6 +639,20 @@ Return Nil
 
 FUNCTION OpenDbf( fname, alsname, hChild, pass )
    LOCAL oWindow, aControls, oBrowse, i
+   LOCAL bPosChg := {|o|
+      LOCAL j := 0, j1, cAls
+      hwg_WriteStatus( o:oParent,1,LTrim(Str(Eval(o:bRecno,o)))+"/"+LTrim(Str(Eval(o:bRcou,o))) )
+      DO WHILE !Empty( dbRelation( ++j ) )
+         cAls := Lower( Alias( dbRselect(j) ) )
+         FOR j1 := 1 TO Len( aFiles )
+            IF !Empty(aFiles[j1,AF_NAME]) .AND. Lower( aFiles[j1,AF_ALIAS] ) == cAls
+               hwg_Invalidaterect( aFiles[j1,AF_BRW]:handle, 1 )
+               aFiles[j1,AF_BRW]:Refresh()
+               EXIT
+            ENDIF
+         NEXT
+      ENDDO
+   }
 
    IF !FiOpen( fname, alsname, pass )
       RETURN 0
@@ -662,7 +678,7 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
       ADD STATUS PARTS 140, 360, 0
       @ 0, 0 BROWSE oBrowse DATABASE  ;
          ON SIZE { |o, x, y|ResizeBrwQ( o, x, y ) } ;
-         ON POSCHANGE {|o|hwg_WriteStatus(o:oParent,1,LTrim(Str(Eval(o:bRecno,o)))+"/"+LTrim(Str(Eval(o:bRcou,o))))}
+         ON POSCHANGE bPosChg
 
       oBrowse:bcolorSel := COLOR_SELE
       oBrowse:ofont := oBrwFont

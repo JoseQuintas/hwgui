@@ -56,18 +56,7 @@ CLASS HCustomWindow INHERIT HObject
    DATA bLostFocus
    DATA bOther
    DATA cargo
-   DATA HelpId   INIT 0
-   DATA nCurWidth    INIT 0
-   DATA nCurHeight   INIT 0
-   DATA nScrollPos   INIT 0
-   DATA rect
-   DATA nScrollBars INIT -1
-   DATA minWidth   INIT - 1
-   DATA maxWidth   INIT - 1
-   DATA minHeight  INIT - 1
-   DATA maxHeight  INIT - 1
-
-   
+   DATA HelpId   INIT 0  
    
    METHOD AddControl( oCtrl ) INLINE Aadd( ::aControls,oCtrl )
    METHOD DelControl( oCtrl )

@@ -64,8 +64,6 @@ CLASS HDialog INHERIT HCustomWindow
    DATA xResourceID
    DATA lModal
    DATA lActivated INIT .F.
-   DATA nScrollBars INIT - 1
-   
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
                   bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc )
@@ -310,22 +308,13 @@ Local aMenu, i, hCtrl
 Return 1
 
 Static Function onSize( oDlg,wParam,lParam )
-   LOCAL aControls, iCont , nW1, nH1
-   LOCAL nW := hwg_Loword( lParam ), nH := hwg_Hiword( lParam )
+   LOCAL aControls, iCont
+   LOCAL nW := hwg_Loword( lParam ), nH := hwg_Hiword( lParam ), nW1, nH1
    LOCAL nScrollMax
-   /*
-   IF ( oDlg:nHeight = oDlg:minHeight .AND. nH < oDlg:minHeight ) .OR. ;
-      ( oDlg:nHeight = oDlg:maxHeight .AND. nH > oDlg:maxHeight ) .OR. ;
-      ( oDlg:nWidth = oDlg:minWidth .AND. nW < oDlg:minWidth ) .OR. ;
-      ( oDlg:nWidth = oDlg:maxWidth .AND. nW > oDlg:maxWidth )
-      RETURN 0
-   ENDIF*/
 
    nW1 := oDlg:nWidth
    nH1 := oDlg:nHeight
-   *aControls := hwg_Getwindowrect( oDlg:handle )
    oDlg:nWidth := hwg_Loword( lParam )  //aControls[3]-aControls[1]
-   //
 
    IF oDlg:bSize != Nil .AND. ;
        ( oDlg:oParent == Nil .OR. !__ObjHasMsg( oDlg:oParent,"ACONTROLS" ) )

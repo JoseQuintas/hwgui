@@ -232,14 +232,15 @@ CLASS HBrowse INHERIT HControl
    DATA colPos     INIT 1                       // Current column position
    DATA nColumns   INIT 0                       // Number of visible data columns
    DATA nLeftCol                                // Leftmost column
-   DATA freeze       INIT 0                     // Number of columns to freeze
-   DATA nRecords     INIT 0                     // Number of records in browse
-   DATA nCurrent     INIT 1                     // Current record
+   DATA freeze     INIT 0                       // Number of columns to freeze
+   DATA nRecords   INIT 0                       // Number of records in browse
+   DATA nCurrent   INIT 1                       // Current record
    DATA aArray                                  // An array browsed if this is BROWSE ARRAY
-   DATA recCurr      INIT 0
+   DATA recCurr    INIT 0
    DATA headColor                               // Header text color
-   DATA sepColor       INIT 12632256            // Separators color
-   DATA lSep3d        INIT .F.
+   DATA sepColor   INIT 12632256                // Separators color
+   DATA lSep3d     INIT .F.
+   DATA lInFocus   INIT .F.                     // Set focus in :Paint()
    DATA varbuf                                  // Used on Edit()
    DATA tcolorSel, bcolorSel, brushSel, htbColor, httColor // Hilite Text Back Color
    DATA bSkip, bGoTo, bGoTop, bGoBot, bEof, bBof
@@ -1588,6 +1589,11 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
       ELSE
          hwg_VScrollPos( Self, 0, .F. )
       ENDIF
+   ENDIF
+
+   IF ::lInFocus .AND. ( ( tmp := hwg_Getfocus() ) == ::oParent:handle ;
+         .OR. ::oParent:FindControl(,tmp) != Nil )
+      hwg_Setfocus( ::handle )
    ENDIF
 
    RETURN NIL

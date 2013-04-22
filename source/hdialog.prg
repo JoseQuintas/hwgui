@@ -23,7 +23,6 @@ STATIC aMessModalDlg := { ;
       { WM_INITDIALOG, { |o,w,l| InitModalDlg( o, w, l ) } },    ;
       { WM_ERASEBKGND, { |o,w| onEraseBk( o, w ) } },            ;
       { WM_DESTROY, { |o| hwg_onDestroy( o ) } },                ;
-      { WM_ENTERIDLE, { |o,w,l| onEnterIdle( o, w, l ) } },      ;
       { WM_ACTIVATE, { | o, w,l| onActivate( o, w, l ) } },      ;
       { WM_PSPNOTIFY, { |o,w,l| onPspNotify( o, w, l ) } },      ;
       { WM_HELP, { |o,w,l| hwg_onHelp( o, w, l ) } },            ;
@@ -40,8 +39,6 @@ CLASS HDialog INHERIT HWindow
    DATA lModal   INIT .T.
    DATA lResult  INIT .F.     // Becomes TRUE if the OK button is pressed
    DATA lRouteCommand  INIT .F.
-   DATA bActivate
-   DATA lActivated   INIT .F.
    DATA xResourceID
    DATA bOnActivate
    DATA lOnActivated INIT .F.
@@ -179,7 +176,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
       RETURN 1
    ELSEIF ! ::lActivated .AND. msg = WM_NCPAINT
       /* triggered on activate the modal dialog is visible only when */
-      ::lActivated := .T.
+      // ::lActivated := .T.
       IF ::lModal .AND. ValType( ::bOnActivate ) == "B"
          hwg_Postmessage( ::Handle, WM_ACTIVATE, hwg_Makewparam( WA_ACTIVE, 0 ), ::handle )
       ENDIF
@@ -359,21 +356,6 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    ENDIF
 
    RETURN nReturn
-
-STATIC FUNCTION onEnterIdle( oDlg, wParam, lParam )
-   LOCAL oItem
-
-   HB_SYMBOL_UNUSED( oDlg )
-
-   IF wParam == 0 .AND. ( oItem := ATail( HDialog():aModalDialogs ) ) != Nil ;
-         .AND. oItem:handle == lParam .AND. ! oItem:lActivated
-      oItem:lActivated := .T.
-      IF oItem:bActivate != Nil
-         Eval( oItem:bActivate, oItem )
-      ENDIF
-   ENDIF
-
-   RETURN 0
 
 STATIC FUNCTION onDlgColor( oDlg, wParam, lParam )
 

@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-04-22 11:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/hdialog.prg
+  * source/hwindow.prg
+    * Handling of :bActivate is moved to HWindow
+  * source/hbrowse.prg
+    * Added :lInFocus variable to handle setting focus to browse after painting
+
 2013-04-21 18:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hcwindow.prg
   * gtk/hdialog.prg

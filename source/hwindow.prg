@@ -84,6 +84,8 @@ CLASS VAR szAppName  SHARED INIT "HwGUI_App"
    DATA GetList  INIT { }      // The array of GET items in the dialog
    DATA KeyList  INIT { }      // The array of keys ( as Clipper's SET KEY )
    DATA nLastKey INIT 0
+   DATA bActivate
+   DATA lActivated INIT .F.
    DATA lExitOnEnter INIT .F.
    DATA lExitOnEsc INIT .T.
    DATA lGetSkiponEsc INIT .F.
@@ -230,7 +232,7 @@ CLASS HMainWindow INHERIT HWindow
 
 CLASS VAR aMessages INIT { ;
       { WM_COMMAND, WM_ERASEBKGND, WM_MOVE, WM_SIZE, WM_SYSCOMMAND, ;
-        WM_NOTIFYICON, WM_ENTERIDLE, WM_CLOSE, WM_DESTROY, WM_ENDSESSION, WM_ACTIVATE, WM_HELP }, ;
+        WM_NOTIFYICON, WM_ENTERIDLE, WM_ACTIVATEAPP, WM_CLOSE, WM_DESTROY, WM_ENDSESSION, WM_ACTIVATE, WM_HELP }, ;
       { ;
         {|o,w,l| onCommand( o, w, l ) },        ;
         {|o,w| onEraseBk( o, w ) },             ;
@@ -238,6 +240,7 @@ CLASS VAR aMessages INIT { ;
         {|o,w,l| onSize( o, w, l ) },           ;
         {|o,w,l| onSysCommand( o, w, l ) },     ;
         {|o,w,l| onNotifyIcon( o, w, l ) },     ;
+        {|o,w,l| onEnterIdle( o, w, l ) },      ;
         {|o,w,l| onEnterIdle( o, w, l ) },      ;
         {|o| onCloseQuery( o ) },               ;
         {|o| hwg_onDestroy( o ) },              ;
@@ -1182,14 +1185,16 @@ Static Function onMdiActivate( oWnd,wParam, lParam )
 
 STATIC FUNCTION onEnterIdle( oDlg, wParam, lParam )
    LOCAL oItem
-
-   HB_SYMBOL_UNUSED( oDlg )
-
-   IF wParam == 0 .AND. ( oItem := ATail( HDialog():aModalDialogs ) ) != Nil ;
-                          .AND. oItem:handle == lParam .AND. ! oItem:lActivated
-      oItem:lActivated := .T.
-      IF oItem:bActivate != Nil
-         Eval( oItem:bActivate, oItem )
+   IF ( wParam == 0 .AND. ( oItem := Atail( HDialog():aModalDialogs ) ) != Nil ;
+         .AND. oItem:handle == lParam )
+      oDlg := oItem
+   ENDIF
+   IF __ObjHasMsg( oDlg, "LACTIVATED" )
+      IF  !oDlg:lActivated
+         oDlg:lActivated := .T.
+         IF oDlg:bActivate != Nil
+            Eval( oDlg:bActivate, oDlg )
+         ENDIF
       ENDIF
    ENDIF
    RETURN 0

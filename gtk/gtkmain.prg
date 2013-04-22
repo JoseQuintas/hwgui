@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Main prg level functions
  *
- * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "hwgui.ch"
@@ -52,9 +52,10 @@ Local cRes := ""
 
    @ 20,10 SAY cText SIZE 260,22
    @ 20,35 GET cres  SIZE 260,26 STYLE WS_DLGFRAME + WS_TABSTOP + nStyle
+   Atail( oModDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
-   @ 20,95 BUTTON "Ok" ID IDOK SIZE 100,32 ON CLICK {||oModDlg:lResult:=.T.,hwg_EndDialog()}
-   @ 180,95 BUTTON "Cancel" ID IDCANCEL SIZE 100,32 ON CLICK {||hwg_EndDialog()}
+   @ 20, 95 BUTTON "Ok" ID IDOK SIZE 100, 32 ON CLICK {||oModDlg:lResult:=.T.,hwg_EndDialog()} ON SIZE ANCHOR_BOTTOMABS
+   @ 180, 95 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32 ON CLICK {||hwg_EndDialog()} ON SIZE ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
 
    ACTIVATE DIALOG oModDlg
 

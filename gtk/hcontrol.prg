@@ -29,17 +29,12 @@ CLASS HControl INHERIT HCustomWindow
    DATA id
    DATA tooltip
    DATA lInit    INIT .F.
+   DATA Anchor   INIT 0
    DATA name
-   DATA Anchor          INIT 0
-   DATA   xName           HIDDEN
-   ACCESS Name            INLINE ::xName
-   ASSIGN Name( cName )   INLINE ::AddName( cName ) 
-
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor )
    METHOD Init()
-   METHOD AddName( cName ) HIDDEN
    METHOD SetColor( tcolor,bcolor,lRepaint )
    METHOD NewId()
 
@@ -69,7 +64,11 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
    ::nWidth  := nWidth
    ::nHeight := nHeight
    ::bInit   := bInit
-   ::bSize   := bSize
+   IF Valtype( bSize ) == "N"
+      ::Anchor := bSize
+   ELSE
+      ::bSize   := bSize
+   ENDIF
    ::bPaint  := bPaint
    ::tooltip := ctoolt
    ::SetColor( tcolor,bcolor )
@@ -88,16 +87,6 @@ Local nId := CONTROL_FIRST_ID + Len( ::oParent:aControls )
       ENDDO
    ENDIF
 Return nId
-
-METHOD AddName( cName ) CLASS HControl
-
-   IF !EMPTY( cName ) .AND. VALTYPE( cName) == "C" .AND. ! ":" $ cName .AND. ! "[" $ cName
-      ::xName := cName
-			__objAddData( ::oParent, cName )
-	    ::oParent: & ( cName ) := Self
-   ENDIF	    
-   
-RETURN Nil
 
 METHOD INIT CLASS HControl
 Local o
@@ -275,7 +264,7 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
       y1 := y9
    ENDIF
    hwg_Invalidaterect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-   ::Move( ::handle, x1, y1, w1, h1 )
+   ::Move( x1, y1, w1, h1 )
    ::nLeft := x1
    ::nTop := y1
    ::nWidth := w1
@@ -283,7 +272,6 @@ METHOD onAnchor( x, y, w, h ) CLASS HControl
    hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
 
    RETURN Nil
-
 
 
 //- HStatus
@@ -317,10 +305,6 @@ Local aCoors
       ::handle := hwg_Createstatuswindow( ::oParent:handle, ::id )
 
       ::Init()
-//      IF __ObjHasMsg( ::oParent,"AOFFSET" )
-//         aCoors := hwg_Getwindowrect( ::handle )
-//         ::oParent:aOffset[4] := aCoors[4] - aCoors[2]
-//      ENDIF
    ENDIF
 Return Nil
 
@@ -340,7 +324,6 @@ CLASS HStatic INHERIT HControl
                   bSize,bPaint,ctoolt,tcolor,bcolor,lTransp )
    METHOD Activate()
    METHOD SetValue(value) INLINE hwg_static_SetText( ::handle,value )
-   METHOD SetText(value) INLINE hwg_static_SetText( ::handle,value )
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;

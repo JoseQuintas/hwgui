@@ -4,8 +4,8 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * HCustomWindow class
  *
- * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "windows.ch"
@@ -56,7 +56,7 @@ CLASS HCustomWindow INHERIT HObject
    DATA bLostFocus
    DATA bOther
    DATA cargo
-   DATA HelpId   INIT 0  
+   DATA HelpId   INIT 0
    
    METHOD AddControl( oCtrl ) INLINE Aadd( ::aControls,oCtrl )
    METHOD DelControl( oCtrl )
@@ -68,7 +68,6 @@ CLASS HCustomWindow INHERIT HObject
    METHOD Move( x1,y1,width,height )
    METHOD onEvent( msg, wParam, lParam )
    METHOD End()
-   METHOD Anchor( oCtrl, x, y, w, h )
 
 ENDCLASS
 
@@ -141,23 +140,6 @@ Local i
    ENDIF
 
 Return 0
-
-METHOD Anchor( oCtrl, x, y, w, h ) CLASS HCustomWindow
-   LOCAL nlen , i, x1, y1
-   nlen := Len( oCtrl:aControls )
-   FOR i = 1 TO nlen
-      IF __ObjHasMsg( oCtrl:aControls[ i ], "ANCHOR" ) .AND. oCtrl:aControls[ i ]:anchor > 0
-         x1 := oCtrl:aControls[ i ]:nWidth
-         y1 := oCtrl:aControls[ i ]:nHeight
-         oCtrl:aControls[ i ]:onAnchor( x, y, w, h )
-         IF Len( oCtrl:aControls[ i ]:aControls ) > 0
-            //::Anchor( oCtrl:aControls[ i ], x1, y1, oCtrl:nWidth, oCtrl:nHeight )
-            ::Anchor( oCtrl:aControls[ i ], x, y, oCtrl:nWidth, oCtrl:nHeight )
-         ENDIF
-      ENDIF
-   NEXT
-   RETURN .T.
-
 
 METHOD End()  CLASS HCustomWindow
 Local aControls := ::aControls
@@ -258,25 +240,13 @@ Local iItem, iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )
 Return 1
 
 Static Function onSize( oWnd,wParam,lParam )
-Local aControls := oWnd:aControls, nControls := Len( aControls )
-Local oItem, iCont
+Local aControls := oWnd:aControls, oItem
 
-   #ifdef __XHARBOUR__
-   FOR each oItem in aControls
+   FOR EACH oItem in aControls
        IF oItem:bSize != Nil
-          Eval( oItem:bSize, ;
-           oItem, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+          Eval( oItem:bSize, oItem, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
        ENDIF
    NEXT
-   #else
-   FOR iCont := 1 TO nControls
-       IF aControls[iCont]:bSize != Nil
-          Eval( aControls[iCont]:bSize, ;
-           aControls[iCont], hwg_Loword( lParam ), hwg_Hiword( lParam ) )
-       ENDIF
-   NEXT
-   #endif
-
 Return 0
 
 Function hwg_onTrackScroll( oWnd,wParam,lParam )

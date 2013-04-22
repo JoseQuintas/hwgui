@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HDialog class
  *
- * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "windows.ch"
@@ -15,12 +15,10 @@
 REQUEST HWG_ENDWINDOW
 
 Static aMessModalDlg := { ;
-         { WM_COMMAND,{|o,w,l|hwg_DlgCommand(o,w,l)} },         ;
-         { WM_SIZE,{|o,w,l|onSize(o,w,l)} },                ;
+         { WM_COMMAND,{|o,w,l|hwg_DlgCommand(o,w,l)} },     ;
+         { WM_SIZE,{|o,w,l|hwg_onWndSize(o,w,l)} },         ;
          { WM_INITDIALOG,{|o,w,l|InitModalDlg(o,w,l)} },    ;
-         { WM_ERASEBKGND,{|o,w|onEraseBk(o,w)} },           ;
          { WM_DESTROY,{|o|onDestroy(o)} },                  ;
-         { WM_ENTERIDLE,{|o,w,l|onEnterIdle(o,w,l)} },      ;
          { WM_ACTIVATE,{|o,w,l|onActivate(o,w,l)} }         ;
       }
 
@@ -40,24 +38,18 @@ Return 0
 
 // Class HDialog
 
-CLASS HDialog INHERIT HCustomWindow
+CLASS HDialog INHERIT HWindow
 
    CLASS VAR aDialogs       SHARED INIT {}
    CLASS VAR aModalDialogs  SHARED INIT {}
 
    DATA fbox
-   DATA menu
-   DATA oPopup                // Context menu for a dialog
    DATA lResult  INIT .F.     // Becomes TRUE if the OK button is pressed
    DATA lUpdated INIT .F.     // TRUE, if any GET is changed
-   DATA lClipper INIT .F.     // Set it to TRUE for moving between GETs with ENTER key
-   DATA GetList  INIT {}      // The array of GET items in the dialog
-   DATA KeyList  INIT {}      // The array of keys ( as Clipper's SET KEY )
    DATA lExitOnEnter INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key,
                               // Added by Sandro Freire 
    DATA lExitOnEsc   INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key,
                               // Added by Sandro Freire 
-   DATA nLastKey INIT 0
    DATA oIcon, oBmp
    DATA bActivate
    DATA lActivated INIT .F.
@@ -74,9 +66,6 @@ CLASS HDialog INHERIT HCustomWindow
    METHOD FindDialog( hWnd )
    METHOD GetActive()
    METHOD Center()   INLINE Hwg_CenterWindow( Self )
-   METHOD Restore()  INLINE hwg_WindowRestore( ::handle )
-   METHOD Maximize() INLINE hwg_WindowMaximize( ::handle )
-   METHOD Minimize() INLINE hwg_WindowMinimize( ::handle )
    METHOD Close()    INLINE hwg_EndDialog( ::handle )
 ENDCLASS
 
@@ -210,40 +199,6 @@ Local iCont
 
 Return 1
 
-Static Function onEnterIdle( oDlg, wParam, lParam )
-Local oItem
-
-   IF wParam == 0 .AND. ( oItem := Atail( HDialog():aModalDialogs ) ) != Nil ;
-         .AND. oItem:handle == lParam .AND. !oItem:lActivated
-      oItem:lActivated := .T.
-      IF oItem:bActivate != Nil
-         Eval( oItem:bActivate, oItem )
-      ENDIF
-   ENDIF
-Return 0
-
-Static Function onEraseBk( oDlg,hDC )
-Local aCoors
-/*
-   IF __ObjHasMsg( oDlg,"OBMP") 
-      IF oDlg:oBmp != Nil
-         hwg_Spreadbitmap( hDC, oDlg:handle, oDlg:oBmp:handle )
-         Return 1
-      ELSE
-        aCoors := hwg_Getclientrect( oDlg:handle )
-        IF oDlg:brush != Nil
-           IF Valtype( oDlg:brush ) != "N"
-              hwg_Fillrect( hDC, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1,oDlg:brush:handle )
-           ENDIF
-        ELSE
-           hwg_Fillrect( hDC, aCoors[1],aCoors[2],aCoors[3]+1,aCoors[4]+1,COLOR_3DFACE+1 )
-        ENDIF
-        Return 1
-      ENDIF
-   ENDIF
-*/   
-Return 0
-
 Function hwg_DlgCommand( oDlg,wParam,lParam )
 
 Local iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )
@@ -306,32 +261,6 @@ Local aMenu, i, hCtrl
    ENDIF
 
 Return 1
-
-Static Function onSize( oDlg,wParam,lParam )
-   LOCAL aControls, iCont
-   LOCAL nW := hwg_Loword( lParam ), nH := hwg_Hiword( lParam ), nW1, nH1
-   LOCAL nScrollMax
-
-   nW1 := oDlg:nWidth
-   nH1 := oDlg:nHeight
-   oDlg:nWidth := hwg_Loword( lParam )  //aControls[3]-aControls[1]
-
-   IF oDlg:bSize != Nil .AND. ;
-       ( oDlg:oParent == Nil .OR. !__ObjHasMsg( oDlg:oParent,"ACONTROLS" ) )
-      Eval( oDlg:bSize, oDlg, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
-   ENDIF
-   aControls := oDlg:aControls
-   IF aControls != Nil
-      oDlg:Anchor( oDlg, nW1, nH1, oDlg:nWidth, oDlg:nHeight )
-      FOR iCont := 1 TO Len( aControls )
-         IF aControls[iCont]:bSize != Nil
-            Eval( aControls[iCont]:bSize, ;
-             aControls[iCont], hwg_Loword( lParam ), hwg_Hiword( lParam ) )
-         ENDIF
-      NEXT
-   ENDIF
-
-Return 0
 
 Static Function onActivate( oDlg,wParam,lParam )
 Local iParLow := hwg_Loword( wParam )

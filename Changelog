@@ -8,6 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-04-22 15:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/draw.c
+    * Some cleanup
+  * gtk/drawwidg.prg
+  * gtk/gtkmain.prg
+  * gtk/hcontrol.prg
+  * gtk/hcwindow.prg
+  * gtk/hdialog.prg
+  * gtk/hownbtn.prg
+  * gtk/hpanel.prg
+  * gtk/hradio.prg
+  * gtk/hwindow.prg
+    * Fixes and improvements, related to Anchors implementation.
+    * HDialog now inherits from HWindow, as in Windows version.
+  * gtk/samples\dbview.prg
+    * hb_setcodepage() calls changed to hb_cdpSelect()
+
 2013-04-22 11:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hdialog.prg
   * source/hwindow.prg

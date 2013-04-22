@@ -67,9 +67,9 @@ Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
      MENU TITLE "&View"
        MENUITEM "&Font" ACTION ChangeFont()
        MENU TITLE "&Local codepage"
-          MENUITEMCHECK "EN" ACTION hb_SetCodepage( "EN" )
-          MENUITEMCHECK "RUKOI8" ACTION hb_SetCodepage( "RUKOI8" )
-          MENUITEMCHECK "RU1251" ACTION hb_SetCodepage( "RU1251" )
+          MENUITEMCHECK "EN" ACTION hb_CdpSelect( "EN" )
+          MENUITEMCHECK "RUKOI8" ACTION hb_CdpSelect( "RUKOI8" )
+          MENUITEMCHECK "RU1251" ACTION hb_CdpSelect( "RU1251" )
        ENDMENU
        MENU TITLE "&Data's codepage"
           MENUITEMCHECK "EN" ACTION SetDataCP( "EN" )

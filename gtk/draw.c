@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level painting functions
  *
- * Copyright 2005 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "guilib.h"
@@ -533,42 +533,6 @@ HB_FUNC( HWG_RELEASEDC )
 
 HB_FUNC( HWG_GETDRAWITEMINFO )
 {
-/*
-   DRAWITEMSTRUCT * lpdis = (DRAWITEMSTRUCT*)hb_parnl(1);
-   PHB_ITEM aMetr = _itemArrayNew( 7 );
-   PHB_ITEM temp;
-
-   temp = _itemPutNL( NULL, lpdis->itemID );
-   _itemArrayPut( aMetr, 1, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, lpdis->itemAction );
-   _itemArrayPut( aMetr, 2, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, (HB_LONG)lpdis->hDC );
-   _itemArrayPut( aMetr, 3, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, lpdis->rcItem.left );
-   _itemArrayPut( aMetr, 4, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, lpdis->rcItem.top );
-   _itemArrayPut( aMetr, 5, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, lpdis->rcItem.right );
-   _itemArrayPut( aMetr, 6, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, lpdis->rcItem.bottom );
-   _itemArrayPut( aMetr, 7, temp );
-   _itemRelease( temp );
-
-   _itemReturn( aMetr );
-   _itemRelease( aMetr );
-*/
 }
 
 /*
@@ -592,31 +556,5 @@ HB_FUNC( HWG_GETCLIENTRECT )
 
 HB_FUNC( HWG_GETWINDOWRECT )
 {
-/*
-   RECT rc;
-   PHB_ITEM aMetr = _itemArrayNew( 4 );
-   PHB_ITEM temp;
-
-   GetWindowRect( (HWND) hb_parnl( 1 ),	&rc );
-
-   temp = _itemPutNL( NULL, rc.left );
-   _itemArrayPut( aMetr, 1, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, rc.top );
-   _itemArrayPut( aMetr, 2, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, rc.right );
-   _itemArrayPut( aMetr, 3, temp );
-   _itemRelease( temp );
-
-   temp = _itemPutNL( NULL, rc.bottom );
-   _itemArrayPut( aMetr, 4, temp );
-   _itemRelease( temp );
-
-   _itemReturn( aMetr );
-   _itemRelease( aMetr );
-*/   
 }
 

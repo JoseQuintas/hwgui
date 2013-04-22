@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HRadioButton class
  *
- * Copyright 2005 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "windows.ch"
@@ -89,19 +89,14 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
    ::nWidth  := nWidth
    ::nHeight := nHeight
    ::bInit   := bInit
-   ::bSize   := bSize
+   IF Valtype( bSize ) == "N"
+      ::Anchor := bSize
+   ELSE
+      ::bSize   := bSize
+   ENDIF
    ::bPaint  := bPaint
    ::tooltip := ctoolt
    ::tcolor  := tcolor
-   /*
-   IF tColor != Nil .AND. bColor == Nil
-      bColor := hwg_Getsyscolor( COLOR_3DFACE )
-   ENDIF
-   ::bcolor  := bcolor
-   IF bColor != Nil
-      ::brush := HBrush():Add( bcolor )
-   ENDIF
-   */
 
    ::Activate()
    ::oParent:AddControl( Self )

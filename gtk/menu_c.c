@@ -110,6 +110,7 @@ HB_FUNC( HWG__SETMENU )
    GtkFixed * box = getFixedBox( handle );
    GtkWidget * vbox = ( (GtkWidget*)box )->parent;
    gtk_box_pack_start( GTK_BOX (vbox), (GtkWidget*)HB_PARHANDLE(2), FALSE, FALSE, 0);
+   gtk_box_reorder_child(GTK_BOX(vbox), (GtkWidget*)HB_PARHANDLE(2), 0);
    hb_retl(1);
 }
 

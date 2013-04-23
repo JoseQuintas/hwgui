@@ -740,11 +740,9 @@ HB_FUNC( HWG_CREATESTATUSWINDOW )
 {
    GtkWidget * w;
    GObject * handle = (GObject*) HB_PARHANDLE(1);
-   GtkFixed * box = getFixedBox( handle );
-   GtkWidget * vbox = ( (GtkWidget*)box )->parent;
-   w  = gtk_statusbar_new() ;   
-   gtk_box_pack_end( GTK_BOX (vbox), (GtkWidget*)w, FALSE, FALSE, 0);     
-   gtk_box_reorder_child(GTK_BOX(vbox) ,w,9999);
+   GtkWidget * vbox = (GtkWidget*) g_object_get_data( handle, "vbox" );
+   w  = gtk_statusbar_new() ;
+   gtk_box_pack_start( GTK_BOX (vbox), (GtkWidget*)w, FALSE, FALSE, 0);
 
   HB_RETHANDLE( w);
 }

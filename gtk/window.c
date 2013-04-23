@@ -110,11 +110,9 @@ HB_FUNC( HWG_INITMAINWINDOW )
 
    vbox = gtk_vbox_new (FALSE, 0);
    gtk_container_add (GTK_CONTAINER(hWnd), vbox);
-   // gtk_widget_show (vbox);
 
    box = (GtkFixed*)gtk_fixed_new();
-   // gtk_container_add( GTK_CONTAINER(hWnd), (GtkWidget*)box );
-   gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
+   gtk_box_pack_start( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
 
    temp = HB_PUTHANDLE( NULL, box );
    SetObjectVar( pObject, "_FBOX", temp );
@@ -122,6 +120,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    hb_itemRelease( temp );
    
    SetWindowObject( hWnd, pObject );
+   g_object_set_data( (GObject*) hWnd, "vbox", (gpointer) vbox );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
    all_signal_connect( G_OBJECT (hWnd) );
    g_signal_connect_after( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );

@@ -4,8 +4,8 @@
  * HWGUI - Harbour Win32 and Linux (GTK) GUI library
  * dbview.prg - dbf browsing sample
  *
- * Copyright 2005 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
  */
 
 
@@ -22,6 +22,9 @@ REQUEST DBFFPT
 REQUEST ORDKEYNO
 REQUEST ORDKEYCOUNT
 
+ANNOUNCE HB_GTSYS
+REQUEST HB_GT_CGI_DEFAULT
+
 Static aFieldTypes := { "C","N","D","L" }
 Static dbv_cLocate, dbv_nRec, dbv_cSeek
 
@@ -31,7 +34,8 @@ Memvar oBrw, oFont
 Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
 
    RDDSETDEFAULT( "DBFCDX" )
-   
+   // hwg_SetAppLocale( "KOI8-R" )
+
    oFont := HFont():Add( "Courier",0,-14 )
    INIT WINDOW oWndMain MAIN TITLE "Dbf browse" AT 200,100 SIZE 300,300
 

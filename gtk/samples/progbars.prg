@@ -4,14 +4,17 @@
  * HWGUI - Harbour Win32 GUI library
  * Sample of using HProgressBar class
  *
- * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
  * Copyright 2004 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
  *
 */
 
 #include "windows.ch"
 #include "guilib.ch"
+
+ANNOUNCE HB_GTSYS
+REQUEST HB_GT_CGI_DEFAULT
 
 Static oMain, oForm, oFont, oBar := Nil
 Static n :=0

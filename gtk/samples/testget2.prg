@@ -4,12 +4,15 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code: 
  * testget2.prg - GET system and Timer in dialog box sample
  *
- * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
  */
 
 #include "windows.ch"
 #include "guilib.ch"
+
+ANNOUNCE HB_GTSYS
+REQUEST HB_GT_CGI_DEFAULT
 
 Function Main
 Local oMainWindow

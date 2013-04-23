@@ -24,7 +24,7 @@ vpath %.c $(OBJ_DIR):$(PROCMISC_DIR):$(XML_DIR):$(SRC_DIR)
 vpath %.prg $(PROCMISC_DIR):$(XML_DIR):$(SRC_DIR)
 
 $(OBJ_DIR)/%.c : %.prg
-	$(HRB_DIR)/bin/harbour -n -w -es2 $(HB_FLAGS) -I$(HRB_DIR)/include -I$(INC_DIR) -o$@ $<
+	$(HRB_DIR)/bin/linux/gcc/harbour -n -w -es2 $(HB_FLAGS) -I$(HRB_DIR)/include -I$(INC_DIR) -o$@ $<
 
 %.o : %.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags libgnomeprint-2.2` `pkg-config --cflags gtk+-2.0` -o $@ $<
@@ -52,7 +52,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/message.o \
    $(OBJ_DIR)/misc.o \
    $(OBJ_DIR)/drawwidg.o \
-   $(OBJ_DIR)/errorsys.o \
+   $(OBJ_DIR)/herrsys.o \
    $(OBJ_DIR)/gtkmain.o \
    $(OBJ_DIR)/hbrowse.o \
    $(OBJ_DIR)/hcwindow.o \
@@ -61,6 +61,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hcontrol.o \
    $(OBJ_DIR)/hdialog.o \
    $(OBJ_DIR)/hedit.o \
+   $(OBJ_DIR)/hfrmtmpl.o \
    $(OBJ_DIR)/hgraph.o \
    $(OBJ_DIR)/hownbtn.o \
    $(OBJ_DIR)/hpanel.o \
@@ -78,7 +79,6 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/menu.o
 
 $(LIB_DIR)/libprocmisc.a : \
-   $(OBJ_DIR)/hfrmtmpl.o \
    $(OBJ_DIR)/procini.o \
    $(OBJ_DIR)/procs7.o \
    $(OBJ_DIR)/procscri.o \

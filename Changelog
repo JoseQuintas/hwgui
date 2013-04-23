@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-04-23 10:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/hfrmtmpl.prg
+  * gtk/Makefile.linux
+  * gtk/Makefile.scr
+    ! Some fixes. Synchronized with 2.16c
+
 2013-04-22 15:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/draw.c
     * Some cleanup

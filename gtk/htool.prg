@@ -107,14 +107,22 @@ Local aItem
             if aItem[4] == TBSTYLE_BUTTON
 
                aItem[11] := hwg_Createtoolbarbutton(::handle,aItem[1],aItem[6],.f.)
+               #ifdef __XHARBOUR__
                aItem[2] := hb_enumindex()
+               #else
+               aItem[2] := aItem:__enumIndex()
+               #endif
                hwg_Toolbar_setaction(aItem[11],aItem[7])
                if !empty(aItem[8])
                   hwg_Addtooltip(::handle, aItem[11],aItem[8])
                endif
             elseif aitem[4] == TBSTYLE_SEP
                aItem[11] := hwg_Createtoolbarbutton(::handle,,,.t.)
+               #ifdef __XHARBOUR__
                aItem[2] := hb_enumindex()
+               #else
+               aItem[2] := aItem:__enumIndex()
+               #endif
             endif
          next
       endif

@@ -3,12 +3,15 @@
  * HWGUI using sample
  * 
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "windows.ch"
 #include "guilib.ch"
+
+ANNOUNCE HB_GTSYS
+REQUEST HB_GT_CGI_DEFAULT
 
 #define TEST_PRINT
 
@@ -16,8 +19,6 @@ Function Main
 Local oMainWindow,oPanel
 Private oFont := Nil, cImageDir := "/"+Curdir()+"/../../image/"
 Private nColor, oBmp2
-
-   // hb_SetCodepage( "RU1251" )
 
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
      AT 200,0 SIZE 400,150

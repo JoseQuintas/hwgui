@@ -8,6 +8,22 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-04-23 12:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  ! gtk/htool.prg
+    ! Fixed.
+  * gtk/Makefile.linux
+  * gtk/Makefile.scr
+    * htool.prg included now in Makefiles
+  + gtk/samples/graph.prg
+  * gtk/samples/a.prg
+  * gtk/samples/dbview.prg
+  * gtk/samples/escrita.prg
+  * gtk/samples/example.prg
+  * gtk/samples/progbars.prg
+  * gtk/samples/testget2.prg
+  * gtk/samples/build.sh
+    * gttrm excluded from build process, appropriate changes added to the samples
+
 2013-04-23 11:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/control.c
   * gtk/menu_c.c

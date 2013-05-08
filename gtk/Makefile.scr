@@ -15,7 +15,7 @@ PROCMISC_DIR=../source/procmisc
 XML_DIR=../source/xml
 
 CFLAGS = -W -Wall -O3 -DHWG_USE_POINTER_ITEM
-CFLAGS += `pkg-config --cflags libgnomeprint-2.2` `pkg-config --cflags gtk+-2.0`
+CFLAGS += `pkg-config --cflags gtk+-2.0`
 CFLAGS += -I$(INC_DIR)
 CFLAGS += $(C_USR)
 

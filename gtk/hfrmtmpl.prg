@@ -12,6 +12,7 @@
 #xtranslate HB_AT(<x,...>) => AT(<x>)
 #endif
 
+#ifndef G_CONSOLE_MODE
 STATIC aClass := { "label", "button", "checkbox",       ;
       "radiobutton", "editbox", "group", "radiogroup",  ;
       "bitmap", "icon",                                 ;
@@ -46,6 +47,7 @@ STATIC aCtrls := { ;
       ".F.", ;
       "HAnimation():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,Filename,AutoPlay,Center,Transparent)" ;
       }
+#endif
 
 #include "windows.ch"
 #include "hbclass.ch"
@@ -57,6 +59,7 @@ STATIC aCtrls := { ;
 STATIC aPenType  := { "SOLID", "DASH", "DOT", "DASHDOT", "DASHDOTDOT" }
 STATIC aJustify  := { "Left", "Center", "Right" }
 
+#ifndef G_CONSOLE_MODE
 REQUEST HSTATIC
 REQUEST HBUTTON
 REQUEST HCHECKBUTTON
@@ -78,17 +81,18 @@ REQUEST HBROWSE
 #ifndef __LINUX__
 REQUEST HMONTHCALENDAR
 REQUEST HTRACKBAR
-
-   //REQUEST HANIMATION
-   REQUEST HTREE
+REQUEST HTREE
 #endif
-   REQUEST HTAB
+REQUEST HTAB
+#endif
 
-   REQUEST DBUSEAREA
-   REQUEST RECNO
-   REQUEST DBSKIP
-   REQUEST DBGOTOP
-   REQUEST DBCLOSEAREA
+REQUEST DBUSEAREA
+REQUEST RECNO
+REQUEST DBSKIP
+REQUEST DBGOTOP
+REQUEST DBCLOSEAREA
+
+#ifndef G_CONSOLE_MODE
 
 CLASS HCtrlTmpl
 
@@ -846,6 +850,8 @@ FUNCTION hwg_hfrm_FontFromXML( oXmlNode )
       width, height, weight, charset,   ;
       ita, under )
 
+#endif  // G_CONSOLE_MODE
+
 FUNCTION hwg_hfrm_Str2Arr( stroka )
 
    LOCAL arr := {}, pos1 := 2, pos2 := 1
@@ -928,6 +934,7 @@ CLASS HRepTmpl
    DATA lDebug        INIT .F.
    DATA id
    DATA cId
+   DATA cMetafile
 
    DATA nKoefX, nKoefY, nKoefPix
    DATA nTOffset, nAOffSet, ny
@@ -940,6 +947,7 @@ CLASS HRepTmpl
    METHOD ReleaseObj( aControls )
    METHOD Find( cId )
    METHOD CLOSE()
+   METHOD SetMetaFile( cMetafile )    INLINE ::cMetafile := cMetafile
 
 ENDCLASS
 
@@ -959,10 +967,18 @@ METHOD READ( fname, cId ) CLASS HRepTmpl
    ENDIF
 
    IF Empty( oDoc:aItems )
+#ifdef G_CONSOLE_MODE
+      Alert( "Can't open " + fname )
+#else
       hwg_Msgstop( "Can't open " + fname )
+#endif
       RETURN Nil
    ELSEIF oDoc:aItems[1]:title != "part" .OR. oDoc:aItems[1]:GetAttribute( "class" ) != "report"
+#ifdef G_CONSOLE_MODE
+      Alert( "Report description isn't found" )
+#else
       hwg_Msgstop( "Report description isn't found" )
+#endif
       RETURN Nil
    ENDIF
 
@@ -1014,7 +1030,7 @@ METHOD READ( fname, cId ) CLASS HRepTmpl
    RETURN Self
 
 METHOD PRINT( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
-   LOCAL oPrinter := iif( printer != Nil, iif( ValType(printer ) == "O",printer,HPrinter():New(printer, .T. ) ), HPrinter():New( , .T. ) )
+   LOCAL oPrinter := Iif( printer != Nil, Iif( ValType(printer ) == "O",printer,HPrinter():New(printer, .T. ) ), HPrinter():New( , .T. ) )
    LOCAL i, j, aMethod, xProperty, oFont, xTemp, nPWidth, nPHeight, nOrientation := 1
    MEMVAR oReport
    PRIVATE oReport := Self
@@ -1024,6 +1040,7 @@ METHOD PRINT( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
    ENDIF
    SetDebugInfo( ::lDebug )
    SetDebugger( ::lDebug )
+   oPrinter:cMetafile := ::cMetafile
 
    FOR i := 1 TO Len( ::aProp )
       IF ::aProp[ i,1 ] == "paper size"
@@ -1056,8 +1073,8 @@ METHOD PRINT( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
 #endif
    ::nKoefPix := ( ( xTemp[1]/xTemp[3] + xTemp[2]/xTemp[4] ) / 2 ) / 3.8
    oPrinter:SetMode( nOrientation )
-   ::nKoefX := oPrinter:nWidth / nPWidth
-   ::nKoefY := oPrinter:nHeight / nPHeight
+   ::nKoefX := oPrinter:nWidth / ( nPWidth + 12 )
+   ::nKoefY := oPrinter:nHeight / ( nPHeight + 12 )
    IF ( aMethod := aGetSecond( ::aMethods,"onrepinit" ) ) != Nil
       DoScript( aMethod, { p1, p2, p3 } )
    ENDIF
@@ -1065,7 +1082,7 @@ METHOD PRINT( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
       oFont := hrep_FontFromxml( oPrinter, xProperty, aGetSecond( ::aProp,"fonth" ) * ::nKoefY )
    ENDIF
 
-   oPrinter:StartDoc( lPreview ) // ,"/tmp/a1.ps" )
+   oPrinter:StartDoc( lPreview )
    ::lNextPage := .F.
 
    ::lFinish := .T.
@@ -1077,7 +1094,6 @@ METHOD PRINT( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
          oPrinter:SetFont( oFont )
       ENDIF
       ::nTOffset := ::nAOffSet := ::ny := 0
-      // hwg_WriteLog( "Print-1 "+ str(oPrinter:nPage) )
       FOR i := 1 TO Len( ::aControls )
          ::PrintItem( ::aControls[i] )
       NEXT

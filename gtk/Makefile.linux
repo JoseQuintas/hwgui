@@ -27,10 +27,10 @@ $(OBJ_DIR)/%.c : %.prg
 	$(HRB_DIR)/bin/linux/gcc/harbour -n -w -es2 $(HB_FLAGS) -I$(HRB_DIR)/include -I$(INC_DIR) -o$@ $<
 
 %.o : %.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags libgnomeprint-2.2` `pkg-config --cflags gtk+-2.0` -o $@ $<
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $<
 
 $(OBJ_DIR)/%.o : %.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags libgnomeprint-2.2` `pkg-config --cflags gtk+-2.0` -o $@ $<
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $<
 
 
 $(LIB_DIR)/%.a ::

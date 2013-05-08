@@ -203,7 +203,6 @@ ACTIVATE DIALOG oDlg
 
 return nil
 
-#ifdef TEST_PRINT
 Function PrnTest
 Local oPrinter, oFont
 
@@ -212,9 +211,9 @@ Local oPrinter, oFont
       Return Nil         
    ENDIF            
                               
-   oFont := oPrinter:AddFont( "Courier Regular",10 )
+   oFont := oPrinter:AddFont( "sans",10 )
                   
-   oPrinter:StartDoc( .T.,"/tmp/_a.ps" )
+   oPrinter:StartDoc()
    oPrinter:StartPage()
    oPrinter:SetFont( oFont )
    oPrinter:Box( 5,5,oPrinter:nWidth-5,oPrinter:nHeight-5 )
@@ -231,5 +230,4 @@ Local oPrinter, oFont
    oPrinter:End()
 
 Return Nil
-#endif                                                               
                                                                

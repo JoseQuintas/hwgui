@@ -130,7 +130,7 @@ CLASS HBrowse INHERIT HControl
    DATA sepColor INIT 12632256                 // Separators color
    DATA lSep3d  INIT .F.
    DATA varbuf                                 // Used on Edit()
-   DATA tcolorSel,bcolorSel,brushSel
+   DATA tcolorSel, bcolorSel, brushSel, htbColor, httColor
    DATA bSkip,bGoTo,bGoTop,bGoBot,bEof,bBof
    DATA bRcou,bRecno,bRecnoLog
    DATA bPosChanged, bLineOut, bScrollPos
@@ -226,6 +226,11 @@ METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
    IF lMultiSelect != Nil .AND. lMultiSelect
       ::aSelected := {}
    ENDIF
+
+   ::tcolor := 0
+   ::bcolor := hwg_VColor( "FFFFFF" )
+   ::tcolorSel := ::httColor := hwg_VColor( "FFFFFF" )
+   ::bcolorSel := ::htbColor := hwg_VColor( "808080" )
 
    ::InitBrw()
    ::Activate()
@@ -555,11 +560,6 @@ Local oldBkColor, oldTColor
       Return Nil
    ENDIF
 
-   IF ::tcolor == Nil ; ::tcolor := 0 ; ENDIF
-   IF ::bcolor == Nil ; ::bcolor := hwg_VColor( "FFFFFF" ) ; ENDIF
-   IF ::tcolorSel == Nil ; ::tcolorSel := hwg_VColor( "FFFFFF" ) ; ENDIF
-   IF ::bcolorSel == Nil ; ::bcolorSel := hwg_VColor( "808080" ) ; ENDIF
-
    hDC := hwg_Getdc( ::area )
 
    if ::ofont != Nil
@@ -838,7 +838,7 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
 Local x, dx, i := 1, shablon, sviv, fif, fldname, slen, xSize
 Local j, ob, bw, bh, y1, hBReal
 Local oldBkColor, oldTColor, oldBk1Color, oldT1Color
-Local oLineBrush := Iif( lSelected, ::brushSel,::brush )
+Local oLineBrush := Iif( vybfld >= 1, HBrush():Add( ::htbColor ), Iif( lSelected, ::brushSel,::brush ) )
 Local lColumnFont := .F.
 Local aCores
 
@@ -849,8 +849,8 @@ Local aCores
       Eval( ::bLineOut,Self,lSelected )
    ENDIF
    IF ::nRecords > 0
-      oldBkColor := hwg_Setbkcolor( hDC, Iif( lSelected,::bcolorSel,::bcolor ) )
-      oldTColor  := hwg_Settextcolor( hDC, Iif( lSelected,::tcolorSel,::tcolor ) )
+      oldBkColor := hwg_Setbkcolor(   hDC, iif( vybfld >= 1,::htbcolor, iif( lSelected,::bcolorSel,::bcolor ) ) )
+      oldTColor  := hwg_Settextcolor( hDC, iif( vybfld >= 1,::httcolor, iif( lSelected,::tcolorSel,::tcolor ) ) )
       fldname := SPACE( 8 )
       fif     := IIF( ::freeze > 0, 1, ::nLeftCol )
 

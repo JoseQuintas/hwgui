@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-05-21 14:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/hbrowse.prg
+    * :httcolor, :htbcolor has been added for Windows version compatibility
+
 2013-05-21 14:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   ! gtk/hedit.prg
     ! Handling of SET KEY has been fixed.

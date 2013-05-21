@@ -124,6 +124,7 @@ CLASS HBrowse INHERIT HControl
    DATA nRecords                               // Number of records in browse
    DATA nCurrent      INIT 1                   // Current record
    DATA aArray                                 // An array browsed if this is BROWSE ARRAY
+   DATA lInFocus   INIT .F.                    // Set focus in :Paint()
    DATA recCurr INIT 0
    DATA headColor                              // Header text color
    DATA sepColor INIT 12632256                 // Separators color
@@ -443,6 +444,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::type := nType
    else
       ::aColumns := {}
+      ::nRecords := 0
       ::rowPos    := ::nCurrent  := ::colpos := ::nLeftCol := 1
       ::freeze  := ::height := 0
       ::internal  := { 15,1 }
@@ -679,7 +681,7 @@ Local oldBkColor, oldTColor
       ::Edit()
    ENDIF
 
-   IF ::oGet == Nil .AND. ( ( tmp := hwg_Getfocus() ) == ::oParent:handle .OR. ;
+   IF ::lInFocus .AND. ::oGet == Nil .AND. ( ( tmp := hwg_Getfocus() ) == ::oParent:handle .OR. ;
          ::oParent:FindControl(,tmp) != Nil )
       hwg_Setfocus( ::area )
    ENDIF

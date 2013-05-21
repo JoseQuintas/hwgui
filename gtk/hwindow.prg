@@ -53,6 +53,11 @@ LOCAL aControls := oWnd:aControls, oItem, w, h
 
 Static Function onDestroy( oWnd )
 
+   IF oWnd:bDestroy != Nil
+      Eval( oWnd:bDestroy, oWnd )
+      oWnd:bDestroy := Nil
+   ENDIF
+
    oWnd:Super:onEvent( WM_DESTROY )
    HWindow():DelItem( oWnd )
    hwg_gtk_exit()  

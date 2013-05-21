@@ -738,8 +738,7 @@ HB_FUNC( HWG_SETFOCUS )
 
 HB_FUNC( HWG_GETFOCUS )
 {
-   GtkWidget * hCtrl;
-   hCtrl = gtk_window_get_focus( gtk_window_list_toplevels()->data );
+   HB_RETHANDLE( gtk_window_get_focus( gtk_window_list_toplevels()->data ) );
 }
 
 HB_FUNC( HWG_DESTROYWINDOW )

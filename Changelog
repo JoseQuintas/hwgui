@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-05-21 14:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  ! gtk/hedit.prg
+    ! Handling of SET KEY has been fixed.
+      TODO: catch the CTRL, SHIFT, ALT pressing
+  * gtk/hwindow.prg
+    * Handling of ON EXIT has been added.
+  ! gtk/window.c
+    ! hwg_getfocus() has been fixed
+  * gtk/hbrowse.prg
+     * :lInFocus variable added to handle the browse focus
+  * gtk/gtkmain.prg
+  * gtk/menu_c.c.prg
+    * An Empty hwg_drawmenubar() has been added for Windows version compatibility
+
 2013-05-08 09:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hfrmtmpl.prg
   * gtk/hprinter.prg

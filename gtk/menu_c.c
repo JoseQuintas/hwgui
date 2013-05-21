@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level menu functions
  *
- * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
  */
 
 #include "guilib.h"
@@ -35,7 +35,7 @@ HB_FUNC( HWG__CREATEMENU )
 
 HB_FUNC( HWG__CREATEPOPUPMENU )
 {
-   // hb_retnl( (HB_LONG) CreatePopupMenu() );
+   HB_RETHANDLE( gtk_menu_new() );
 }
 
 /*
@@ -229,3 +229,6 @@ HB_FUNC( HWG_SETMENUCAPTION )
 */      
 }
 
+HB_FUNC( HWG_DRAWMENUBAR )
+{
+}

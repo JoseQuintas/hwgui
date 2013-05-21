@@ -10,75 +10,78 @@
 
 #include "hwgui.ch"
 
-Function hwg_EndWindow()
+FUNCTION hwg_EndWindow()
 
    IF HWindow():GetMain() != Nil
       HWindow():aWindows[1]:Close()
    ENDIF
-Return Nil
 
-Function hwg_VColor( cColor )
+   RETURN Nil
 
-Local i,res := 0, n := 1, iValue
-   cColor := Trim(cColor)
-   for i := 1 to Len( cColor )
-      iValue := Asc( Substr( cColor,Len(cColor)-i+1,1 ) )
-      if iValue < 58 .and. iValue > 47
+FUNCTION hwg_VColor( cColor )
+
+   LOCAL i, res := 0, n := 1, iValue
+
+   cColor := Trim( cColor )
+   for i := 1 TO Len( cColor )
+      iValue := Asc( SubStr( cColor,Len(cColor ) - i + 1,1 ) )
+      IF iValue < 58 .AND. iValue > 47
          iValue -= 48
-      elseif iValue >= 65 .and. iValue <= 70
+      ELSEIF iValue >= 65 .AND. iValue <= 70
          iValue -= 55
-      elseif iValue >= 97 .and. iValue <= 102
+      ELSEIF iValue >= 97 .AND. iValue <= 102
          iValue -= 87
-      else
-        Return 0
-      endif
+      ELSE
+         RETURN 0
+      ENDIF
       res += iValue * n
       n *= 16
    next
-Return res
 
-Function hwg_MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle )
+   RETURN res
 
-Local oModDlg, oFont := HFont():Add( "Sans",0,12 )
-Local cRes := ""
+FUNCTION hwg_MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle )
 
-   nStyle := Iif( nStyle == Nil, 0, nStyle )
-   x := Iif( x == Nil, 210, x )
-   y := Iif( y == Nil, 10, y )
-   nDlgStyle := Iif( nDlgStyle == Nil, 0, nDlgStyle )
+   LOCAL oModDlg, oFont := HFont():Add( "Sans", 0, 12 )
+   LOCAL cRes := ""
 
-   INIT DIALOG oModDlg TITLE cTitle AT x,y SIZE 300,140 ;
-        FONT oFont CLIPPER STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+nDlgStyle
+   nStyle := iif( nStyle == Nil, 0, nStyle )
+   x := iif( x == Nil, 210, x )
+   y := iif( y == Nil, 10, y )
+   nDlgStyle := iif( nDlgStyle == Nil, 0, nDlgStyle )
 
-   @ 20,10 SAY cText SIZE 260,22
-   @ 20,35 GET cres  SIZE 260,26 STYLE WS_DLGFRAME + WS_TABSTOP + nStyle
+   INIT DIALOG oModDlg TITLE cTitle AT x, y SIZE 300, 140 ;
+      FONT oFont CLIPPER STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + nDlgStyle
+
+   @ 20, 10 SAY cText SIZE 260, 22
+   @ 20, 35 GET cres  SIZE 260, 26 STYLE WS_DLGFRAME + WS_TABSTOP + nStyle
    Atail( oModDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
-   @ 20, 95 BUTTON "Ok" ID IDOK SIZE 100, 32 ON CLICK {||oModDlg:lResult:=.T.,hwg_EndDialog()} ON SIZE ANCHOR_BOTTOMABS
-   @ 180, 95 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32 ON CLICK {||hwg_EndDialog()} ON SIZE ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
+   @ 20, 95 BUTTON "Ok" ID IDOK SIZE 100, 32 ON CLICK { ||oModDlg:lResult := .T. , hwg_EndDialog() } ON SIZE ANCHOR_BOTTOMABS
+   @ 180, 95 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32 ON CLICK { ||hwg_EndDialog() } ON SIZE ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
 
    ACTIVATE DIALOG oModDlg
 
    oFont:Release()
    IF oModDlg:lResult
-      Return Trim( cRes )
+      RETURN Trim( cRes )
    ELSE
       cRes := ""
    ENDIF
 
-Return cRes
+   RETURN cRes
 
-Function hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )
+FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )
 
-Local oDlg, oBrw, lNewFont := .F.
-Local nChoice := 0, i, aLen := Len( arr ), nLen := 0, addX := 20, addY := 30, minWidth := 0, x1
-Local hDC, aMetr, width, height, screenh
+   LOCAL oDlg, oBrw, lNewFont := .F.
+   LOCAL nChoice := 0, i, aLen := Len( arr ), nLen := 0, addX := 20, addY := 30, minWidth := 0, x1
+   LOCAL hDC, aMetr, width, height, screenh
 
    IF cTitle == Nil; cTitle := ""; ENDIF
    IF nLeft == Nil; nLeft := 10; ENDIF
    IF nTop == Nil; nTop := 10; ENDIF
    IF oFont == Nil
-      oFont := HFont():Add( "Times",0,14 )
+      oFont := HFont():Add( "Times", 0, 14 )
       lNewFont := .T.
    ENDIF
    IF cOk != Nil
@@ -89,44 +92,44 @@ Local hDC, aMetr, width, height, screenh
       addY += 30
    ENDIF
 
-   IF Valtype( arr[1] ) == "A"
+   IF ValType( arr[1] ) == "A"
       FOR i := 1 TO aLen
-         nLen := Max( nLen,Len(arr[i,1]) )
+         nLen := Max( nLen, Len( arr[i,1] ) )
       NEXT
    ELSE
       FOR i := 1 TO aLen
-         nLen := Max( nLen,Len(arr[i]) )
+         nLen := Max( nLen, Len( arr[i] ) )
       NEXT
    ENDIF
 
    hDC := hwg_Getdc( hwg_Getactivewindow() )
    hwg_Selectobject( hDC, ofont:handle )
    aMetr := hwg_Gettextmetric( hDC )
-   hwg_Releasedc( hwg_Getactivewindow(),hDC )
-   height := (aMetr[1]+1)*aLen+4+addY
+   hwg_Releasedc( hwg_Getactivewindow(), hDC )
+   height := ( aMetr[1] + 1 ) * aLen + 4 + addY
    screenh := hwg_Getdesktopheight()
    IF height > screenh * 2/3
-      height := Int( screenh *2/3 )
+      height := Int( screenh * 2/3 )
       addX := addY := 0
    ENDIF
-   width := Min( minWidth, ( Round( (aMetr[3]+aMetr[2]) / 2,0 ) + 3 ) * nLen + addX )
+   width := Min( minWidth, ( Round( (aMetr[3] + aMetr[2] ) / 2,0 ) + 3 ) * nLen + addX )
 
    INIT DIALOG oDlg TITLE cTitle ;
-         AT nLeft,nTop           ;
-         SIZE width,height       ;
-         FONT oFont
+      AT nLeft, nTop           ;
+      SIZE width, height       ;
+      FONT oFont
 
-   @ 0,0 BROWSE oBrw ARRAY          ;
-       SIZE  width,height-addY      ;
-       FONT oFont                   ;
-       STYLE WS_BORDER              ;
-       ON SIZE {|o,x,y|o:Move(,,x,y-addY)} ;
-       ON CLICK {|o|nChoice:=o:nCurrent,hwg_EndDialog(o:oParent:handle)}
+   @ 0, 0 BROWSE oBrw ARRAY          ;
+      SIZE  width, height - addY      ;
+      FONT oFont                   ;
+      STYLE WS_BORDER              ;
+      ON SIZE { |o, x, y|o:Move( , , x, y - addY ) } ;
+      ON CLICK { |o|nChoice := o:nCurrent, hwg_EndDialog( o:oParent:handle ) }
 
-   IF Valtype( arr[1] ) == "A"
-      oBrw:AddColumn( HColumn():New( ,{|value,o|o:aArray[o:nCurrent,1]},"C",nLen ) )
+   IF ValType( arr[1] ) == "A"
+      oBrw:AddColumn( HColumn():New( ,{ |value,o|o:aArray[o:nCurrent,1] },"C",nLen ) )
    ELSE
-      oBrw:AddColumn( HColumn():New( ,{|value,o|o:aArray[o:nCurrent]},"C",nLen ) )
+      oBrw:AddColumn( HColumn():New( ,{ |value,o|o:aArray[o:nCurrent] },"C",nLen ) )
    ENDIF
    hwg_CREATEARLIST( oBrw, arr )
    oBrw:lDispHead := .F.
@@ -156,35 +159,45 @@ Local hDC, aMetr, width, height, screenh
       oFont:Release()
    ENDIF
 
-Return nChoice
+   RETURN nChoice
 
+FUNCTION hwg_RefreshAllGets( oDlg )
 
-INIT PROCEDURE GTKINIT()
+   AEval( oDlg:GetList, { |o|o:Refresh() } )
+
+   RETURN Nil
+
+FUNCTION HWG_Version( n )
+
+   IF !Empty( n )
+      IF n == 1
+         RETURN HWG_VERSION
+      ELSEIF n == 2
+         RETURN HWG_BUILD
+      ENDIF
+   ENDIF
+
+   RETURN "HWGUI " + HWG_VERSION + " Build " + LTrim( Str( HWG_BUILD ) )
+
+FUNCTION hwg_WriteStatus( oWnd, nPart, cText, lRedraw )
+
+   LOCAL aControls, i
+
+   aControls := oWnd:aControls
+   IF ( i := Ascan( aControls, { |o|o:ClassName() == "HSTATUS" } ) ) > 0
+      hwg_Writestatuswindow( aControls[i]:handle, nPart - 1, cText )
+
+   ENDIF
+
+   RETURN Nil
+
+   INIT PROCEDURE GTKINIT()
    hwg_gtk_init()
-Return
+
+   RETURN
 
 /*
 EXIT PROCEDURE GTKEXIT()
    hwg_gtk_exit()
 Return
 */
-
-Function hwg_RefreshAllGets( oDlg )
-
-
-   AEval( oDlg:GetList, {|o|o:Refresh()} )
-Return Nil
-
-FUNCTION HWG_Version(oTip)
-RETURN "HwGUI " + HWG_VERSION + Iif( oTip==1," "+Version(), "" )
-
-Function hwg_WriteStatus( oWnd, nPart, cText, lRedraw )
-
-Local aControls, i
-   aControls := oWnd:aControls
-   IF ( i := Ascan( aControls, {|o|o:ClassName()=="HSTATUS"} ) ) > 0
-      hwg_Writestatuswindow( aControls[i]:handle,nPart-1,cText )
-
-   ENDIF
-Return Nil
-

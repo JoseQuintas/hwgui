@@ -188,6 +188,7 @@ static void draw_page( cairo_t *cr, char * cpage )
    double x1, y1, x2, y2;
    int iOpt, i1, i2;
    long int li;
+   GdkPixbuf* pixbuf;
    cairo_text_extents_t exten;
 
    cairo_set_source_rgb( cr, 0, 0, 0 );
@@ -322,7 +323,20 @@ static void draw_page( cairo_t *cr, char * cpage )
          memcpy( cBuf, ptr, ptre-ptr );
          cBuf[ptre-ptr] = '\0';
 
-         iPathExist = 1;
+         if( iPathExist )
+         {
+            cairo_stroke( cr );
+            iPathExist = 0;
+         }
+
+         pixbuf = gdk_pixbuf_new_from_file( cBuf, NULL );
+         if( pixbuf )
+         {
+            pixbuf = gdk_pixbuf_scale_simple( pixbuf, x2-x1-1, y2-y1-1, GDK_INTERP_HYPER );
+            gdk_cairo_set_source_pixbuf( cr, pixbuf, x1, y1 );
+            cairo_paint( cr );
+            g_object_unref( pixbuf );
+         }
       }
 
       while( *ptr != '\r' ) ptr ++;

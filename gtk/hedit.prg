@@ -127,19 +127,19 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
       Return 0
    ENDIF
    
-   IF msg == WM_KEYUP  
+   IF msg == WM_KEYDOWN
       IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
          DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
             oParent := oParent:oParent
          ENDDO
          IF oParent != Nil .AND. !Empty( oParent:KeyList )
-	    /*
-            cKeyb := GetKeyboardState()
-            nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
+            // cKeyb := GetKeyboardState()
+            // nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
+            nctrl := 0
             IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nctrl.AND.a[2]==wParam} ) ) > 0
                Eval( oParent:KeyList[ nPos,3 ] )
+               Return 0
             ENDIF
-	    */
          ENDIF
       ENDIF
    ELSEIF msg == WM_SETFOCUS

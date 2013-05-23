@@ -1,0 +1,12 @@
+#
+# $Id: $
+#
+
+-i..\..\include
+-L..\..\lib
+-lhwgui.lib
+-lprocmisc.lib
+-lhbxml.prg
+-n -w
+-gui
+hwgdebug.prg

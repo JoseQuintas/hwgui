@@ -1,11 +1,3 @@
-/*
- * $Id$
- *
- * Debugger
- *
- * Copyright 2013 Alexander S.Kresin <alex@kresin.ru>
- * www - http://www.kresin.ru
-*/
 
 #include "hwgui.ch"
 #include "fileio.ch"
@@ -346,7 +338,9 @@ Static nLastSec := 0
                      nLine1 := oBrwText:nCurrent - oBrwText:rowPos + 1
                      IF nCurrLine < nLine1 .OR. nCurrLine > nLine1 + oBrwText:rowCount - 1
                         oBrwText:nCurrent := nCurrLine
-                        oBrwText:rowPos := Int( oBrwText:rowCount / 2 )
+                        IF ( oBrwText:rowPos := Int( oBrwText:rowCount / 2 ) ) > nCurrLine
+                           oBrwText:rowPos := nCurrLine
+                        ENDIF
                      ENDIF
                      hwg_VScrollPos( oBrwText, 0, .F. )
                      oBrwText:Refresh()

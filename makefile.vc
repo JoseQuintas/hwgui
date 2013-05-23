@@ -15,6 +15,7 @@ CFLAGS = /W3 /nologo /DHWG_USE_POINTER_ITEM
 HWGUI_OBJ_DIR      = $(OBJ_DIR)
 PROCMISC_OBJ_DIR   = $(OBJ_DIR)
 HBXML_OBJ_DIR      = $(OBJ_DIR)
+HWGDEBUG_OBJ_DIR   = $(OBJ_DIR)
 ACTIVEX_OBJ_DIR    = $(OBJ_DIR)
 CONTRIB_OBJ_DIR    = $(OBJ_DIR)
 
@@ -25,6 +26,7 @@ all: \
    $(LIB_DIR)\hwgui.lib \
    $(LIB_DIR)\procmisc.lib \
    $(LIB_DIR)\hbxml.lib \
+   $(LIB_DIR)\hwgdebug.lib \
    $(LIB_DIR)\hwg_contrib.lib
 
 # Cannot compile under MSVC currently
@@ -185,6 +187,14 @@ HBXML_LIB_OBJS = \
 $(LIB_DIR)\hbxml.lib : $(HBXML_LIB_OBJS)
   lib /out:$@ $**
 
+
+HWGDEBUG_LIB_OBJS = \
+   $(HWGDEBUG_OBJ_DIR)\debugger.obj \
+   $(HWGDEBUG_OBJ_DIR)\dbgconnect.obj \
+   $(HWGDEBUG_OBJ_DIR)\dbgentry.obj
+
+$(LIB_DIR)\hwgdebug.lib : $(HWGDEBUG_LIB_OBJS)
+  lib /out:$@ $**
 
 # Rules for activex lib
 

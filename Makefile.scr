@@ -12,6 +12,7 @@ LIB_DIR = lib
 SRC_DIR = source
 PROCMISC_DIR = source/procmisc
 HBXML_DIR    = source/xml
+HWGDEBUG_DIR = source/debug
 ACTIVEX_DIR  = source/activex
 CONTRIB_DIR  = contrib
 
@@ -26,8 +27,8 @@ endif
 PRGFLAGS += -I$(INC_DIR)
 PRGFLAGS += $(PRG_USR)
 
-vpath %.c $(SRC_DIR):$(PROCMISC_DIR):$(HBXML_DIR):$(ACTIVEX_DIR):$(CONTRIB_DIR)/qhtm:$(CONTRIB_DIR)/misc
-vpath %.prg $(SRC_DIR):$(PROCMISC_DIR):$(HBXML_DIR):$(ACTIVEX_DIR):$(CONTRIB_DIR)/qhtm:$(CONTRIB_DIR)/misc
+vpath %.c $(SRC_DIR):$(PROCMISC_DIR):$(HBXML_DIR):$(HWGDEBUG_DIR):$(ACTIVEX_DIR):$(CONTRIB_DIR)/qhtm:$(CONTRIB_DIR)/misc
+vpath %.prg $(SRC_DIR):$(PROCMISC_DIR):$(HBXML_DIR):$(HWGDEBUG_DIR):$(ACTIVEX_DIR):$(CONTRIB_DIR)/qhtm:$(CONTRIB_DIR)/misc
 
 $(OBJ_DIR)/%.o : %.prg
 	$(HB_PREF)cmp $(PRGFLAGS) -o$@ $<
@@ -42,6 +43,7 @@ all: \
    $(LIB_DIR)/libhwgui.a \
    $(LIB_DIR)/libprocmisc.a \
    $(LIB_DIR)/libhbxml.a \
+   $(LIB_DIR)/libhwgdebug.a \
    $(LIB_DIR)/libhwg_contrib.a \
 
 #   $(LIB_DIR)/libhbactivex.a
@@ -129,6 +131,11 @@ $(LIB_DIR)/libprocmisc.a : \
 $(LIB_DIR)/libhbxml.a : \
    $(OBJ_DIR)/xmlparse.o \
    $(OBJ_DIR)/hxmldoc.o
+
+$(LIB_DIR)/libhwgdebug.a : \
+   $(OBJ_DIR)/dbgentry.o \
+   $(OBJ_DIR)/dbgconnect.o \
+   $(OBJ_DIR)/debugger.o
 
 $(LIB_DIR)/libhbactivex.a : \
    $(OBJ_DIR)/htmlcore.o \

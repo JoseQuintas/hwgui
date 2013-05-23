@@ -31,17 +31,24 @@ DEL = del
 HWGUI_LIB = $(LIB_DIR)\hwgui.lib
 PROCMISC_LIB = $(LIB_DIR)\procmisc.lib
 XML_LIB = $(LIB_DIR)\hbxml.lib
+DEBUG_LIB = $(LIB_DIR)\hwgdebug.lib
 CONTRIB_LIB = $(LIB_DIR)\hwg_contrib.lib
 
 all: \
    $(HWGUI_LIB) \
    $(PROCMISC_LIB) \
    $(XML_LIB) \
+   $(DEBUG_LIB) \
    $(CONTRIB_LIB)
 
 XML_LIB_OBJS = \
    $(OBJ_DIR)\hxmldoc.obj \
    $(OBJ_DIR)\xmlparse.obj
+
+DEBUG_LIB_OBJS = \
+   $(OBJ_DIR)\dbgentry.obj \
+   $(OBJ_DIR)\dbgconnect.obj \
+   $(OBJ_DIR)\debugger.obj
 
 CONTRIB_LIB_OBJS = \
    $(OBJ_DIR)\hwg_qhtm.obj \
@@ -594,4 +601,24 @@ $(OBJ_DIR)\hxmldoc.obj : $(OBJ_DIR)\hxmldoc.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\xmlparse.obj : $(SRC_DIR)\xml\xmlparse.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+# ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+# ³ HWGDEBUG.LIB Dependencies   ³Û
+# ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÛ
+#  ßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+
+$(OBJ_DIR)\debugger.c : $(SRC_DIR)\xml\debugger.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\debugger.obj : $(OBJ_DIR)\debugger.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\dbgconnect.c : $(SRC_DIR)\xml\dbgconnect.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\dbgconnectr.obj : $(OBJ_DIR)\dbgconnect.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\dbgentry.obj : $(SRC_DIR)\xml\dbgentry.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**

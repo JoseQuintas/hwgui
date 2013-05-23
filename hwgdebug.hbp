@@ -1,0 +1,15 @@
+#
+# $Id: $
+#
+
+-inc
+
+-hblib
+-olib/hwgdebug
+
+-n -q0 -w -es2
+
+-iinclude
+
+source/debug/*.c
+source/debug/*.prg

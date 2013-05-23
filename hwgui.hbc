@@ -10,5 +10,5 @@
 
 {win}gt=gtgui
 
-{win}libs=hwgui procmisc hbxml
+{win}libs=hwgui procmisc hbxml hwgdebug
 {win&!allmingw}libs=hbactivex

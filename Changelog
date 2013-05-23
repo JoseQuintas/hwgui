@@ -8,6 +8,30 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-05-23 10:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  + source/debugger
+  + source/debugger/dbgentry.c
+  + source/debugger/dbgconnect.prg
+  + source/debugger/debugger.prg
+    + hwgdebug.lib source added
+  + utils/debugger
+  + utils/debugger/hwgdebug.prg
+  + utils/debugger/hwgdebug.hbp
+  + utils/debugger/bld.bat
+  + utils/debugger/readme.rus
+  + utils/debugger/readme.eng
+    + HwGUI debugger added
+  + hwgdebug.hbp
+  * hwgui.hbc
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * makefile.vc
+  * makefile.wc
+  * Makefile.scr
+    * Makefiles changed to build the hwgdebug.lib
+
+
 2013-05-21 16:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/htimer.prg
     * Some cleanup

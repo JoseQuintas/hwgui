@@ -36,6 +36,7 @@ LIB_DIR  = lib
 HWGUI_OBJ_DIR      = $(OBJ_DIR)
 PROCMISC_OBJ_DIR   = $(OBJ_DIR)
 HBXML_OBJ_DIR      = $(OBJ_DIR)
+DEBUG_OBJ_DIR      = $(OBJ_DIR)
 ACTIVEX_OBJ_DIR    = $(OBJ_DIR)
 CONTRIB_OBJ_DIR    = $(OBJ_DIR)
 
@@ -56,6 +57,7 @@ CONTRIB_OBJ_DIR    = $(OBJ_DIR)
 PROCMISC_DIR = source\procmisc
 HWGUI_DIR    = source
 HBXML_DIR    = source\xml
+DEBUG_DIR    = source\debug
 ACTIVEX_DIR  = source\activex
 CONTRIB_DIR  = contrib
 
@@ -90,6 +92,7 @@ HB_CMD = $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 HWGUI_LIB    =   $(LIB_DIR)\hwgui$(HB_MT).lib
 PROCMISC_LIB =   $(LIB_DIR)\procmisc.lib
 HBXML_LIB    =   $(LIB_DIR)\hbxml.lib
+DEBUG_LIB    =   $(LIB_DIR)\hwgdebug.lib
 ACTIVEX_LIB  =   $(LIB_DIR)\hbactivex.lib
 CONTRIB_LIB  =   $(LIB_DIR)\hwg_contrib.lib
 
@@ -193,6 +196,14 @@ HBXML_LIB_OBJS = \
    $(HBXML_OBJ_DIR)\xmlparse.obj
 
 #
+# HWGDEBUG.LIB rules
+#
+DEBUG_LIB_OBJS = \
+   $(DEBUG_OBJ_DIR)\dbgentry.obj    \
+   $(DEBUG_OBJ_DIR)\dbgconnect.obj   \
+   $(DEBUG_OBJ_DIR)\debugger.obj
+
+#
 # HBACTIVEX.LIB rules
 #
 ACTIVEX_LIB_OBJS = \
@@ -235,6 +246,7 @@ PROJECT = \
 PROJECT = \
    $(PROJECT) \
    $(PROCMISC_LIB) \
+   $(DEBUG_LIB) \
    $(HBXML_LIB)
 !endif
 
@@ -276,6 +288,14 @@ $(PROCMISC_LIB) : $(PROCMISC_LIB_OBJS)
 $(HBXML_LIB) : $(HBXML_LIB_OBJS)
     IF EXIST "$(HBXML_LIB)" $(DEL) "$(HBXML_LIB)" > NUL
     $(LINKER) "$(HBXML_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+$(DEBUG_LIB) : $(DEBUG_LIB_OBJS)
+    IF EXIST "$(DEBUG_LIB)" $(DEL) "$(DEBUG_LIB)" > NUL
+    $(LINKER) "$(DEBUG_LIB)" $(ARFLAGS) @&&!
 +$(**: = &^
 +)
 
@@ -331,6 +351,15 @@ $(CONTRIB_LIB) : $(CONTRIB_LIB_OBJS)
 {$(HBXML_DIR)}.c{$(HBXML_OBJ_DIR)}.obj:
    $(CC_CMD)
 
+#
+# HWGDEBUG.LIB dependencies
+#
+
+{$(DEBUG_DIR)}.prg{$(DEBUG_OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(DEBUG_DIR)}.c{$(DEBUG_OBJ_DIR)}.obj:
+   $(CC_CMD)
 
 #
 # ACTIVEX.LIB dependencies

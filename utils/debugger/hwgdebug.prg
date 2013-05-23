@@ -55,6 +55,7 @@ STATIC handl1 := -1, handl2, cBuffer
 STATIC nId1 := 0, nId2 := -1
 
 STATIC cPrgName, cCurrPath := ""
+STATIC cTextLocate, nLineLocate
 
 STATIC oTimer, oSayState, oEditExpr, oBtnExp
 STATIC oBrwRes
@@ -92,6 +93,13 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
          SEPARATOR
          MENUITEM "&Close debugger" ID MENU_EXIT ACTION DoCommand( CMD_EXIT )
          MENUITEM "&Exit and terminate program" ID MENU_QUIT ACTION DoCommand( CMD_QUIT )
+      ENDMENU
+      MENU TITLE "&Locate"
+         MENUITEM "&Find"+Chr(9)+"Ctrl+F" ACTION Locate( 0 ) ACCELERATOR FCONTROL,Asc("F")
+         MENUITEM "&Next" +Chr(9)+"F3" ACTION Locate( 1 ) ACCELERATOR 0,VK_F3
+         MENUITEM "&Previous" ACTION Locate( -1 )
+         SEPARATOR
+         MENUITEM "Functions &list" ACTION Funclist()
       ENDMENU
       MENU ID MENU_VIEW TITLE "&View"
          MENUITEM "&Stack" ID MENU_STACK ACTION StackToggle()
@@ -281,9 +289,86 @@ Local n, s := "", arr
    ENDDO
 Return Nil
 
+Static Function SetCurrLine( nLine )
+Local nLine1 := oBrwText:nCurrent - oBrwText:rowPos + 1
+   oBrwText:nCurrent := nLine
+   IF nLine < nLine1 .OR. nLine > nLine1 + oBrwText:rowCount - 1
+      IF ( oBrwText:rowPos := Int( oBrwText:rowCount / 2 ) ) > nLine
+         oBrwText:rowPos := nLine
+      ENDIF
+   ENDIF
+   hwg_VScrollPos( oBrwText, 0, .F. )
+   oBrwText:Refresh()
+Return Nil
+
+Static Function Locate( nDir )
+Local i, arr := oBrwText:aArray
+
+   IF Empty( arr )
+      Return Nil
+   ENDIF
+   IF nDir == 0 .OR. nDir > 0
+      IF nDir == 0
+         cTextLocate := hu_Get( "Search string", "@S256", "" )
+         nLineLocate := 0
+      ELSEIF Empty( nLineLocate )
+         Return Nil
+      ENDIF
+      IF !Empty( cTextLocate )
+         cTextLocate := Lower( cTextLocate )
+         FOR i := nLineLocate+1 TO Len( arr )
+            IF cTextLocate $ Lower( arr[i] )
+               nLineLocate := i
+               EXIT
+            ENDIF
+         NEXT
+         IF i > Len( arr )
+            hwg_MsgStop( "String isn't found" )
+         ELSE
+            SetCurrLine( nLineLocate )
+         ENDIF
+      ENDIF
+   ELSEIF nDir < 0
+       IF !Empty( cTextLocate ) .AND. !Empty( nLineLocate )
+         FOR i := nLineLocate-1 TO 1 STEP -1
+            IF cTextLocate $ Lower( arr[i] )
+               nLineLocate := i
+               EXIT
+            ENDIF
+         NEXT
+       ENDIF
+       IF i == 0
+          hwg_MsgStop( "String isn't found" )
+       ELSE
+          SetCurrLine( nLineLocate )
+       ENDIF
+   ENDIF
+Return Nil
+
+Static Function Funclist()
+Local i, arr := oBrwText:aArray, cLine, cfirst, cSecond, nSkip, arrfnc := {}
+
+   IF Empty( arr )
+      Return Nil
+   ENDIF
+   FOR i := 1 TO Len( arr )
+      cLine := Lower( Ltrim( arr[i] ) )
+      nSkip := 0
+      cfirst := hb_TokenPtr( cLine, @nSkip )
+      IF cfirst == "function" .OR. cfirst == "procedure" .OR. ;
+            cfirst == "method" .OR. cfirst == "func" .OR. cfirst == "proc" .OR. ;
+            ( cfirst == "static" .AND. ( ( cSecond := hb_TokenPtr( cLine, @nSkip ) ) == "function" .OR. ;
+            cSecond == "procedure" .OR. cSecond == "func" .OR. cSecond == "proc" ) )
+         Aadd( arrfnc, { arr[i], i } )
+      ENDIF
+   NEXT
+   IF !Empty( arrfnc ) .AND. ( i := hwg_WChoice( arrfnc, "Functions list",,,HWindow():GetMain():oFont ) ) != 0
+      SetCurrLine( arrfnc[i,2] )
+   ENDIF
+Return Nil
+
 Static Function TimerProc()
 Local n, arr, lRes := .F.
-Local nLine1
 Static nLastSec := 0
 
    IF nMode != MODE_INPUT
@@ -335,15 +420,7 @@ Static nLastSec := 0
                   ENDIF
                   nCurrLine := Val( arr[3] )
                   IF !Empty( oBrwText:aArray )
-                     nLine1 := oBrwText:nCurrent - oBrwText:rowPos + 1
-                     IF nCurrLine < nLine1 .OR. nCurrLine > nLine1 + oBrwText:rowCount - 1
-                        oBrwText:nCurrent := nCurrLine
-                        IF ( oBrwText:rowPos := Int( oBrwText:rowCount / 2 ) ) > nCurrLine
-                           oBrwText:rowPos := nCurrLine
-                        ENDIF
-                     ENDIF
-                     hwg_VScrollPos( oBrwText, 0, .F. )
-                     oBrwText:Refresh()
+                     SetCurrLine( nCurrLine )
                   ENDIF
                   n := 4
                   DO WHILE .T.

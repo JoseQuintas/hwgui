@@ -316,6 +316,7 @@ Local i, aKeys
    IF !__ObjHasMsg( oDlg,"KEYLIST" )
       Return .F.
    ENDIF
+   nKey := hwg_gtk_convertkey( nKey )
    aKeys := oDlg:KeyList
    IF block == Nil
 

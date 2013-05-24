@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-05-24 14:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/hdialog.prg
+  * gtk/hwindow.prg
+  * gtk/menu.prg
+  * gtk/menu_c.c
+    * Menu accelerators has been implemented for gtk version, SET KEY
+      handling is improved ( key codes conversion from Windows to GTK
+      implemented ).
+      hwg__addmenuitem() changed. Now you can use standard GTK images
+      in menu items - the name for a menu item should begin with % and
+      after it should be the predefined GTK stock item name, for example:
+      "%gtk-quit"
+
 2013-05-24 11:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/menu.prg
   * gtk/menu_c.c

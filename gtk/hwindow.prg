@@ -57,6 +57,9 @@ Static Function onDestroy( oWnd )
       Eval( oWnd:bDestroy, oWnd )
       oWnd:bDestroy := Nil
    ENDIF
+   IF __ObjHasMsg( oWnd, "HACCEL" ) .AND. oWnd:hAccel != Nil
+      hwg_Destroyacceleratortable( oWnd:hAccel )
+   ENDIF
 
    oWnd:Super:onEvent( WM_DESTROY )
    HWindow():DelItem( oWnd )

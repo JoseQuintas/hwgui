@@ -45,23 +45,26 @@ HB_FUNC( HWG__CREATEPOPUPMENU )
 HB_FUNC( HWG__ADDMENUITEM )
 {
    GtkWidget * hMenu;
-   HB_BOOL lString = HB_FALSE, lCheck = HB_FALSE;
+   HB_BOOL lString = HB_FALSE, lCheck = HB_FALSE, lStock = FALSE;
    const char * lpNewItem = NULL;
 
    if( HB_ISCHAR( 2 ) )
    {
       const char * ptr;
-      lpNewItem	 = hb_parc(2);
+      lpNewItem	= hb_parc(2);
       ptr = lpNewItem;
-      while( *ptr )
-      {
-         if( *ptr != ' ' && *ptr != '-' )
+      if( *ptr == '%' )
+         lStock = TRUE;
+      else
+         while( *ptr )
          {
-            lString = TRUE;
-            break;
+            if( *ptr != ' ' && *ptr != '-' )
+            {
+               lString = TRUE;
+               break;
+            }
+            ptr ++;
          }
-         ptr ++;
-      }
    }
    if( !HB_ISNIL(6) && ( hb_parni(6) & FLAG_CHECK ) )
       lCheck = TRUE;
@@ -71,6 +74,10 @@ HB_FUNC( HWG__ADDMENUITEM )
       gchar * gcptr = hwg_convert_to_utf8( lpNewItem );
       hMenu = gtk_check_menu_item_new_with_mnemonic( gcptr );
       g_free( gcptr );
+   }
+   else if( lStock )
+   {
+      hMenu = (GtkWidget *) gtk_image_menu_item_new_from_stock( lpNewItem+1,NULL );
    }
    else if( lString )
    {
@@ -174,31 +181,33 @@ HB_FUNC( HWG_DESTROYMENU )
 }
 
 /*
- * CreateAcceleratorTable( _aAccel )
+ * hwg__CreateAcceleratorTable( hWnd )
  */
-HB_FUNC( HWG_CREATEACCELERATORTABLE )
+HB_FUNC( HWG__CREATEACCELERATORTABLE )
 {
+   GtkAccelGroup *accel_group = gtk_accel_group_new();
+
+   gtk_window_add_accel_group( GTK_WINDOW( HB_PARHANDLE(1) ), accel_group );
+   HB_RETHANDLE( accel_group );
+}
+
+#define FSHIFT    4
+#define FCONTROL  8
+#define FALT     16
+
 /*
-   PHB_ITEM pArray = hb_param( 1, HB_IT_ARRAY ), pSubArr;
-   LPACCEL lpaccl;
-   int cEntries = (int) pArray->item.asArray.value->ulLen;
-   int i;
-   HACCEL h;
+ * hwg__AddAccelerator( hAccelTable, hMenuitem, nControl, nKey )
+ */
+HB_FUNC( HWG__ADDACCELERATOR )
+{
 
-   lpaccl = (LPACCEL) hb_xgrab( sizeof(ACCEL)*cEntries );
+   int iControl = hb_parni( 3 );
+   GdkModifierType nType = (iControl==FSHIFT)? GDK_SHIFT_MASK : 
+         ( (iControl==FCONTROL)? GDK_CONTROL_MASK : ( (iControl==FALT)? GDK_MOD1_MASK : 0 ) );
 
-   for( i=0; i<cEntries; i++ )
-   {
-      pSubArr = pArray->item.asArray.value->pItems + i;
-      lpaccl[i].fVirt = (BYTE) hb_itemGetNL( pSubArr->item.asArray.value->pItems ) | FNOINVERT | FVIRTKEY;
-      lpaccl[i].key = (WORD) hb_itemGetNL( pSubArr->item.asArray.value->pItems + 1 );
-      lpaccl[i].cmd = (WORD) hb_itemGetNL( pSubArr->item.asArray.value->pItems + 2 );
-   }
-   h = CreateAcceleratorTable( lpaccl,cEntries );
-
-   hb_xfree( lpaccl );
-   hb_retnl( (HB_LONG) h );
-*/   
+   gtk_widget_add_accelerator( (GtkWidget *) HB_PARHANDLE(2), "activate", 
+         (GtkAccelGroup *)HB_PARHANDLE(1), 
+         (guint)hb_parni(4), nType, 0 );
 }
 
 /*
@@ -206,7 +215,7 @@ HB_FUNC( HWG_CREATEACCELERATORTABLE )
  */
 HB_FUNC( HWG_DESTROYACCELERATORTABLE )
 {
-   // hb_retl( DestroyAcceleratorTable( (HACCEL) hb_parnl(1) ) );
+   g_object_unref( G_OBJECT( HB_PARHANDLE(1) ) );
 }
 
 HB_FUNC( HWG__SETMENUCAPTION )

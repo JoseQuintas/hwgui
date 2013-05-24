@@ -120,6 +120,7 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
          MENUITEM "&Add"+Chr(9)+"F9" ACTION AddBreakPoint() ACCELERATOR 0,VK_F9
          MENUITEM "&Delete"+Chr(9)+"F9" ACTION AddBreakPoint()
       ENDMENU
+      MENUITEM "&About" ACTION About()
    ENDMENU
 
    @ 0,0 BROWSE oBrwText ARRAY SIZE 600,436  ;
@@ -984,6 +985,27 @@ Local oBrw, arr1, i, j, nAreas := Val( arr[n] ), nAItems := Val( Hex2Str(arr[++n
       Eval( oBrw:bPosChanged, oBrw )
       oBrw:Refresh()
    ENDIF
+Return Nil
+
+Static FUNCTION About()
+
+   INIT DIALOG oDlg TITLE "About" AT 0, 0 SIZE 340, 170 ;
+        FONT HWindow():GetMain():oFont ;
+        STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + DS_CENTER
+
+   @ 20,30 SAY "HwGUI Debugger" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+   @ 20,60 SAY "Version 1.01" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+#if !defined( __PLATFORM__UNIX )
+   @ 20,90 SAY "http://www.kresin.ru/debugger.html" ;
+           LINK "http://www.kresin.ru/debugger.html" ;
+           SIZE 300, 24 STYLE SS_CENTER  ;
+           COLOR hwg_VColor("0000FF") ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+#endif
+   @ 120, 130 BUTTON "Ok" ID IDOK SIZE 100, 28 ON SIZE ANCHOR_BOTTOMABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   ACTIVATE DIALOG oDlg
+
 Return Nil
 
 Static FUNCTION hu_Get( cTitle, tpict, txget )

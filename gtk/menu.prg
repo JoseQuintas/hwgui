@@ -377,3 +377,29 @@ Local aMenu, aSubMenu, nPos
    
 Return Nil
 
+/*
+ *  hwg_SetMenuCaption( hMenu, nMenuId, cCaption )
+ */
+Function hwg_SetMenuCaption( hWnd, nId, cText )
+
+Local aMenu, aSubMenu, nPos
+
+   aMenu := GetMenuByHandle( hWnd )   
+   IF aMenu != Nil
+      IF ( aSubMenu := Hwg_FindMenuItem( aMenu, nId, @nPos ) ) != Nil
+         hwg__SetMenuCaption( aSubmenu[1,nPos,5], cText )
+      ENDIF   
+   ENDIF
+   
+Return Nil
+
+FUNCTION hwg_DeleteMenuItem( oWnd, nId )
+
+   LOCAL aSubMenu, nPos
+
+   IF ( aSubMenu := Hwg_FindMenuItem( oWnd:menu, nId, @nPos ) ) != Nil
+      hwg__DeleteMenu( aSubmenu[1,nPos,5], nId )
+      ADel( aSubMenu[ 1 ], nPos )
+      ASize( aSubMenu[ 1 ], Len( aSubMenu[ 1 ] ) - 1 )
+   ENDIF
+   RETURN Nil

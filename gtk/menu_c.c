@@ -209,24 +209,20 @@ HB_FUNC( HWG_DESTROYACCELERATORTABLE )
    // hb_retl( DestroyAcceleratorTable( (HACCEL) hb_parnl(1) ) );
 }
 
-/*
- *  SetMenuCaption( hMenu, nMenuId, cCaption )
- */
-HB_FUNC( HWG_SETMENUCAPTION )
+HB_FUNC( HWG__SETMENUCAPTION )
 {
-/*
-   MENUITEMINFO mii;
+   GtkMenuItem * menu_item = (GtkMenuItem *) HB_PARHANDLE(1);
+   gchar * gcptr = hwg_convert_to_utf8( hb_parc(2) );
 
-   mii.cbSize = sizeof( MENUITEMINFO );
-   mii.fMask = MIIM_TYPE;
-   mii.fType = MFT_STRING;
-   mii.dwTypeData = hb_parc( 3 );
+   gtk_label_set_text( GTK_BIN (menu_item)->child, gcptr );
+   g_free( gcptr );
+}
 
-   if( SetMenuItemInfo( ( HMENU ) hb_parnl( 1 ), hb_parni( 2 ), 0, &mii ) )
-      hb_retl( 1 );
-   else
-      hb_retl( 0 );
-*/      
+HB_FUNC( HWG__DELETEMENU )
+{
+   GtkMenuItem * menu_item = (GtkMenuItem *) HB_PARHANDLE(1);
+
+   gtk_container_remove( ((GtkWidget*)menu_item)->parent, (GtkWidget*)menu_item );
 }
 
 HB_FUNC( HWG_DRAWMENUBAR )

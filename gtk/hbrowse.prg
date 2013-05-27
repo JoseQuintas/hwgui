@@ -574,10 +574,10 @@ Local oldBkColor, oldTColor
    
    ::width := aMetr[ 2 ]
    ::height := Max( aMetr[ 1 ], ::minHeight )
-   ::x1 := aCoors[ 1 ]
-   ::y1 := aCoors[ 2 ] + Iif( ::lDispHead, ::height*::nHeadRows, 0 )
-   ::x2 := aCoors[ 3 ]
-   ::y2 := aCoors[ 4 ]
+   ::x1 := aCoors[ 1 ] + 1
+   ::y1 := aCoors[ 2 ] + 1 + Iif( ::lDispHead, ::height*::nHeadRows, 0 )
+   ::x2 := aCoors[ 3 ] - 1
+   ::y2 := aCoors[ 4 ] - 1
 
    ::nRecords := eval( ::bRcou,Self )
    IF ::nCurrent > ::nRecords .AND. ::nRecords > 0

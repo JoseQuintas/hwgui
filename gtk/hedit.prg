@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HEdit class 
  *
- * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "hbclass.ch"
@@ -242,8 +242,6 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
       IF msg == WM_MOUSEWHEEL
          nPos := hwg_Hiword( wParam )
          nPos := Iif( nPos > 32768, nPos - 65535, nPos )
-         // hwg_Sendmessage( ::handle,EM_SCROLL, Iif(nPos>0,SB_LINEUP,SB_LINEDOWN), 0 )
-         // hwg_Sendmessage( ::handle,EM_SCROLL, Iif(nPos>0,SB_LINEUP,SB_LINEDOWN), 0 )
       ENDIF
 
    ENDIF
@@ -254,6 +252,12 @@ METHOD Init()  CLASS HEdit
 
    IF !::lInit
       ::Super:Init()
+      IF ::oFont != Nil
+         hwg_SetCtrlFont( ::handle, ::oFont:handle )
+      ELSEIF ::oParent:oFont != Nil
+         hwg_SetCtrlFont( ::handle, ::oParent:oFont:handle )
+      ENDIF
+
       ::Refresh()
    ENDIF
 

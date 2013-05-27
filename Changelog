@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-05-27 12:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/gtkmain.prg
+  * gtk/hbrowse.prg
+  * gtk/hcontrol.prg
+  * gtk/hedit.prg
+  * gtk/hupdown.prg
+    * Some enhancements
+    * hwg_SetCtrlFont() is called now individually for few controls,
+      because for buttons it causes change of a style and doesn't
+      work.
+
 2013-05-24 14:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hdialog.prg
   * gtk/hwindow.prg

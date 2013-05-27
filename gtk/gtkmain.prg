@@ -74,7 +74,7 @@ FUNCTION hwg_MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle )
 FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )
 
    LOCAL oDlg, oBrw, lNewFont := .F.
-   LOCAL nChoice := 0, i, aLen := Len( arr ), nLen := 0, addX := 20, addY := 30, minWidth := 0, x1
+   LOCAL nChoice := 0, i, aLen := Len( arr ), nLen := 0, addX := 20, addY := 20, minWidth := 0, x1
    LOCAL hDC, aMetr, width, height, screenh
 
    IF cTitle == Nil; cTitle := ""; ENDIF
@@ -112,18 +112,18 @@ FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrB
       height := Int( screenh * 2/3 )
       addX := addY := 0
    ENDIF
-   width := Min( minWidth, ( Round( (aMetr[3] + aMetr[2] ) / 2,0 ) + 3 ) * nLen + addX )
+   width := Max( minWidth, aMetr[2] * 2 * nLen + addX )
 
    INIT DIALOG oDlg TITLE cTitle ;
       AT nLeft, nTop           ;
       SIZE width, height       ;
       FONT oFont
 
-   @ 0, 0 BROWSE oBrw ARRAY          ;
-      SIZE  width, height - addY      ;
+   @ 0, 0 BROWSE oBrw ARRAY        ;
+      SIZE  width, height - addY   ;
       FONT oFont                   ;
       STYLE WS_BORDER              ;
-      ON SIZE { |o, x, y|o:Move( , , x, y - addY ) } ;
+      ON SIZE {|o,x,y|o:Move( addX/2, 10, x - addX, y - addY )} ;
       ON CLICK { |o|nChoice := o:nCurrent, hwg_EndDialog( o:oParent:handle ) }
 
    IF ValType( arr[1] ) == "A"

@@ -94,11 +94,6 @@ METHOD INIT CLASS HControl
 
    IF !::lInit
       hwg_Addtooltip( ::oParent:handle, ::handle, ::tooltip )
-      IF ::oFont != Nil
-         hwg_SetCtrlFont( ::handle, ::oFont:handle )
-      ELSEIF ::oParent:oFont != Nil
-         hwg_SetCtrlFont( ::handle, ::oParent:oFont:handle )
-      ENDIF
       IF ISBLOCK( ::bInit )
          Eval( ::bInit, Self )
       ENDIF
@@ -106,10 +101,9 @@ METHOD INIT CLASS HControl
       DO WHILE o != Nil .AND. !__ObjHasMsg( o, "LACTIVATED" )
          o := o:oParent
       ENDDO
-      if ::tcolor != nil
+      IF ::tcolor != nil
          hwg_Setfgcolor( ::handle, ::tcolor )
-      endif 
-
+      ENDIF 
 
       IF o != Nil .AND. o:lActivated
          hwg_ShowAll( o:handle )
@@ -330,6 +324,7 @@ CLASS HStatic INHERIT HControl
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
       bSize, bPaint, ctoolt, tcolor, bcolor, lTransp )
    METHOD Activate()
+   METHOD Init()
    METHOD SetValue( value ) INLINE hwg_static_SetText( ::handle, value )
 
 ENDCLASS
@@ -357,6 +352,18 @@ METHOD Activate CLASS HStatic
       ::Init()
    ENDIF
 
+   RETURN Nil
+
+METHOD Init()  CLASS HStatic
+
+   IF !::lInit
+      ::Super:Init()
+      IF ::oFont != Nil
+         hwg_SetCtrlFont( ::handle, ::oFont:handle )
+      ELSEIF ::oParent:oFont != Nil
+         hwg_SetCtrlFont( ::handle, ::oParent:oFont:handle )
+      ENDIF
+   ENDIF
    RETURN Nil
 
    //- HButton
@@ -390,7 +397,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
       bClick := { ||::oParent:Close() }
    ENDIF
    IF bClick != Nil
-      // ::oParent:AddEvent( 0,::id,bClick )
       ::bClick := bClick
       hwg_SetSignal( ::handle, "clicked", WM_LBUTTONUP, 0, 0 )
    ENDIF
@@ -435,8 +441,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
       tcolor, bColor, hBitmap, iStyle, hicon, Transp ) CLASS HButtonEx
 
-   ::hBitmap                            := hBitmap
-   ::hIcon                              := hIcon
+   ::hBitmap := hBitmap
+   ::hIcon   := hIcon
 
    ::super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
@@ -508,7 +514,7 @@ CLASS HLine INHERIT HControl
 
 ENDCLASS
 
-METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize ) CLASS hline
+METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize ) CLASS HLine
 
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, , , , , bSize, { |o, lp|o:Paint( lp ) } )
 
@@ -526,7 +532,7 @@ METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize ) CLASS hline
 
    RETURN Self
 
-METHOD Activate CLASS hline
+METHOD Activate CLASS HLine
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_CreateSep( ::oParent:handle, ::lVert, ::nLeft, ::nTop, ;

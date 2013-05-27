@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HUpDown class 
  *
- * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "windows.ch"
@@ -77,6 +77,11 @@ METHOD Activate CLASS HUpDown
    IF !Empty(::oParent:handle )
       ::handle := hwg_Createupdowncontrol( ::oParent:handle, ;
           ::nLeft,::nTop,::nWidth,::nHeight,Val(::title),::nLower,::nUpper )
+      IF ::oFont != Nil
+         hwg_SetCtrlFont( ::handle, ::oFont:handle )
+      ELSEIF ::oParent:oFont != Nil
+         hwg_SetCtrlFont( ::handle, ::oParent:oFont:handle )
+      ENDIF
       ::Init()
    ENDIF
 Return Nil

@@ -677,8 +677,10 @@ Local o
          Calc( o )
       ELSEIF nKey == VK_UP
          PrevExpr( 1 )
+         hwg_Setfocus( oEditExpr:handle )
       ELSEIF nKey == VK_DOWN
          PrevExpr( -1 )
+         hwg_Setfocus( oEditExpr:handle )
       ENDIF
    ENDIF
 
@@ -738,7 +740,7 @@ Local bClose := {||
             SIZE 340,120                       ;
             FONT HWindow():GetMain():oFont     ;
             STYLE WS_VSCROLL                   ;
-            ON SIZE {|o,x,y|hwg_Movewindow(o:handle,0,0,x,y)}
+            ON SIZE {|o,x,y|o:Move(0,0,x,y)}
 
       oBrw:aArray := {}
       oBrw:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,1]},"C",16,0 ) )
@@ -797,7 +799,7 @@ Local bClose := {||
             SIZE 340,120                       ;
             FONT HWindow():GetMain():oFont     ;
             STYLE WS_VSCROLL                   ;
-            ON SIZE {|o,x,y|hwg_Movewindow(o:handle,0,0,x,y)}
+            ON SIZE {|o,x,y|o:Move(0,0,x,y)}
 
       oBrw:aArray := {}
       oBrw:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,1]},"C",16,0 ) )
@@ -860,7 +862,7 @@ Local bClose := {||
             SIZE 340,120                       ;
             FONT HWindow():GetMain():oFont     ;
             STYLE WS_VSCROLL                   ;
-            ON SIZE {|o,x,y|hwg_Movewindow(o:handle,0,0,x,y)}
+            ON SIZE {|o,x,y|o:Move(0,0,x,y)}
 
       oBrw:aArray := aWatches
       oBrw:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,1]},"C",16,0 ) )

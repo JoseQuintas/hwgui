@@ -9,6 +9,10 @@
 */
 
 2013-05-27 15:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/debugger/hwgdebug.prg
+    * Small changes for GTK version
+
+2013-05-27 15:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/gtkmain.prg
   * gtk/hbrowse.prg
   * gtk/control.c

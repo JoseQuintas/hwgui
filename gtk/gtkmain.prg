@@ -148,9 +148,13 @@ FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrB
 
    IF cOk != Nil
       x1 := Int( width/2 ) - iif( cCancel != Nil, 90, 40 )
-      @ x1, height - 36 BUTTON cOk SIZE 80, 30 ON CLICK { ||nChoice := oBrw:nCurrent, hwg_EndDialog( oDlg:handle ) }
+      @ x1, height - 36 BUTTON cOk SIZE 80, 30 ;
+            ON CLICK { ||nChoice := oBrw:nCurrent, hwg_EndDialog( oDlg:handle ) } ;
+            ON SIZE ANCHOR_BOTTOMABS
       IF cCancel != Nil
-         @ x1 + 100, height - 36 BUTTON cCancel SIZE 80, 30 ON CLICK { ||hwg_EndDialog( oDlg:handle ) }
+         @ x1 + 100, height - 36 BUTTON cCancel SIZE 80, 30 ;
+            ON CLICK { ||hwg_EndDialog( oDlg:handle ) } ;
+            ON SIZE ANCHOR_BOTTOMABS
       ENDIF
    ENDIF
 

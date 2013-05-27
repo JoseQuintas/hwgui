@@ -569,15 +569,16 @@ Local oldBkColor, oldTColor
       ::Rebuild(hDC)
    ENDIF
    aCoors := hwg_Getclientrect( ::handle )
-   hwg_Rectangle( hDC, aCoors[1],aCoors[2],aCoors[3]-1,aCoors[4]-1 )
+   //hwg_Rectangle( hDC, aCoors[1],aCoors[2],aCoors[3]-1,aCoors[4]-1 )
+   hwg_gtk_drawedge( hDC, aCoors[1],aCoors[2],aCoors[3]-1,aCoors[4]-1,6 )
    aMetr := hwg_Gettextmetric( hDC )
    
    ::width := aMetr[ 2 ]
    ::height := Max( aMetr[ 1 ], ::minHeight )
-   ::x1 := aCoors[ 1 ] + 1
-   ::y1 := aCoors[ 2 ] + 1 + Iif( ::lDispHead, ::height*::nHeadRows, 0 )
-   ::x2 := aCoors[ 3 ] - 1
-   ::y2 := aCoors[ 4 ] - 1
+   ::x1 := aCoors[ 1 ] + 2
+   ::y1 := aCoors[ 2 ] + 2 + Iif( ::lDispHead, ::height*::nHeadRows, 0 )
+   ::x2 := aCoors[ 3 ] - 2
+   ::y2 := aCoors[ 4 ] - 2
 
    ::nRecords := eval( ::bRcou,Self )
    IF ::nCurrent > ::nRecords .AND. ::nRecords > 0
@@ -702,7 +703,7 @@ Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
    ENDIF
    */
    IF ::lDispSep
-      oPen := HPen():Add( PS_SOLID,1,::sepColor )
+      oPen := HPen():Add( PS_SOLID,0.6,::sepColor )
       hwg_Selectobject( hDC, oPen:handle ) 
    ENDIF
 
@@ -724,7 +725,7 @@ Local oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
          else
             hwg_Drawbutton( hDC, x-1,::y1-::height*::nHeadRows,x+xSize-1,::y1+1,0 )
             if oPenHdr == nil
-               oPenHdr := HPen():Add( BS_SOLID,1,0 )
+               oPenHdr := HPen():Add( BS_SOLID,0.6,0 )
             endif
             hwg_Selectobject( hDC, oPenHdr:handle )
             cStr := oColumn:cGrid + ';'
@@ -798,7 +799,7 @@ Local i, x, fif, xSize, oPen, nLine, cStr
 Local oColumn
 
    IF ::lDispSep
-      oPen := HPen():Add( BS_SOLID,1,::sepColor )
+      oPen := HPen():Add( BS_SOLID,0.6,::sepColor )
       hwg_Selectobject( hDC, oPen:handle )
    ENDIF
 

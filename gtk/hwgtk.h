@@ -6,7 +6,8 @@
 typedef struct HWGUI_HDC_STRU
 {
   GtkWidget * widget;
-  GdkDrawable * window;
+  GtkWidget * window;
+  cairo_t *cr;
   GdkGC * gc;
   PangoFontDescription * hFont;
   PangoLayout * layout;
@@ -31,15 +32,15 @@ typedef struct HWGUI_HDC_OBJECT_STRU
 typedef struct HWGUI_PEN_STRU
 {
    short int type;
-   gint width;
+   gdouble width;
    GdkLineStyle style;
-   GdkColor color;
+   long int  color;
 } HWGUI_PEN, * PHWGUI_PEN;
 
 typedef struct HWGUI_BRUSH_STRU
 {
    short int type;
-   GdkColor color;
+   long int color;
 } HWGUI_BRUSH, * PHWGUI_BRUSH;
 
 typedef struct HWGUI_FONT_STRU

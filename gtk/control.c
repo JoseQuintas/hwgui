@@ -19,7 +19,10 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "item.api"
+
+#include <cairo.h>
 #include "gtk/gtk.h"
+
 #include "hwgtk.h"
 #include "hbdate.h"
 #ifdef __XHARBOUR__
@@ -74,7 +77,7 @@ HB_FUNC( HWG_CREATESTATIC )
    HB_ULONG ulExtStyle = hb_parnl( 8 );
 
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
-      hCtrl = gtk_drawing_area_new(  );
+      hCtrl = gtk_drawing_area_new();
    else
    {
       gchar *gcTitle = hwg_convert_to_utf8( cTitle );

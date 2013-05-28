@@ -93,6 +93,11 @@ METHOD INIT CLASS HControl
    LOCAL o
 
    IF !::lInit
+      IF ::oFont != Nil
+         hwg_SetCtrlFont( ::handle, ::oFont:handle )
+      ELSEIF ::oParent:oFont != Nil
+         hwg_SetCtrlFont( ::handle, ::oParent:oFont:handle )
+      ENDIF
       hwg_Addtooltip( ::oParent:handle, ::handle, ::tooltip )
       IF ISBLOCK( ::bInit )
          Eval( ::bInit, Self )
@@ -358,11 +363,6 @@ METHOD Init()  CLASS HStatic
 
    IF !::lInit
       ::Super:Init()
-      IF ::oFont != Nil
-         hwg_SetCtrlFont( ::handle, ::oFont:handle )
-      ELSEIF ::oParent:oFont != Nil
-         hwg_SetCtrlFont( ::handle, ::oParent:oFont:handle )
-      ENDIF
    ENDIF
    RETURN Nil
 

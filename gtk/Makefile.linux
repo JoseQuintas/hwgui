@@ -13,15 +13,16 @@ LIB_DIR = lib
 
 PROCMISC_DIR=../source/procmisc
 XML_DIR=../source/xml
+DEBUG_DIR=../source/debug
 SRC_DIR=../source
 
-CFLAGS = -Wall -O3 -mcpu=pentium -DHWG_USE_POINTER_ITEM
+CFLAGS = -Wall -O3 -DHWG_USE_POINTER_ITEM
 HB_FLAGS = -d__LINUX__
 
 vpath %.a $(LIB_DIR)
 vpath %.o $(OBJ_DIR)
-vpath %.c $(OBJ_DIR):$(PROCMISC_DIR):$(XML_DIR):$(SRC_DIR)
-vpath %.prg $(PROCMISC_DIR):$(XML_DIR):$(SRC_DIR)
+vpath %.c $(OBJ_DIR):$(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(SRC_DIR)
+vpath %.prg $(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(SRC_DIR)
 
 $(OBJ_DIR)/%.c : %.prg
 	$(HRB_DIR)/bin/linux/gcc/harbour -n -w -es2 $(HB_FLAGS) -I$(HRB_DIR)/include -I$(INC_DIR) -o$@ $<
@@ -39,7 +40,8 @@ $(LIB_DIR)/%.a ::
 all: \
    $(LIB_DIR)/libhwgui.a \
    $(LIB_DIR)/libprocmisc.a \
-   $(LIB_DIR)/libhbxml.a
+   $(LIB_DIR)/libhbxml.a \
+   $(LIB_DIR)/libhwgdebug.a
 
 $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/commond.o \
@@ -88,6 +90,11 @@ $(LIB_DIR)/libprocmisc.a : \
 $(LIB_DIR)/libhbxml.a : \
    $(OBJ_DIR)/xmlparse.o \
    $(OBJ_DIR)/hxmldoc.o
+
+$(LIB_DIR)/libhwgdebug.a : \
+   $(OBJ_DIR)/dbgentry.o \
+   $(OBJ_DIR)/debugger.o \
+   $(OBJ_DIR)/dbgconnect.o
 
 clean:
 	-(rm -fR obj/ lib/)

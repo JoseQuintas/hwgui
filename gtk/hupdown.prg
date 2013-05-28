@@ -77,11 +77,6 @@ METHOD Activate CLASS HUpDown
    IF !Empty(::oParent:handle )
       ::handle := hwg_Createupdowncontrol( ::oParent:handle, ;
           ::nLeft,::nTop,::nWidth,::nHeight,Val(::title),::nLower,::nUpper )
-      IF ::oFont != Nil
-         hwg_SetCtrlFont( ::handle, ::oFont:handle )
-      ELSEIF ::oParent:oFont != Nil
-         hwg_SetCtrlFont( ::handle, ::oParent:oFont:handle )
-      ENDIF
       ::Init()
    ENDIF
 Return Nil

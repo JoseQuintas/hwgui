@@ -252,11 +252,6 @@ METHOD Init()  CLASS HEdit
 
    IF !::lInit
       ::Super:Init()
-      IF ::oFont != Nil
-         hwg_SetCtrlFont( ::handle, ::oFont:handle )
-      ELSEIF ::oParent:oFont != Nil
-         hwg_SetCtrlFont( ::handle, ::oParent:oFont:handle )
-      ENDIF
 
       ::Refresh()
    ENDIF

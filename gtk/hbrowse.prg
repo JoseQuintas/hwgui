@@ -113,7 +113,7 @@ CLASS HBrowse INHERIT HControl
    DATA lDispHead  INIT .T.                    // Should I display headers ?
    DATA lDispSep   INIT .T.                    // Should I display separators ?
    DATA aColumns                               // HColumn's array
-   DATA rowCount                               // Number of visible data rows
+   DATA rowCount   INIT 2                      // Number of visible data rows
    DATA rowPos     INIT 1                      // Current row position
    DATA rowCurrCount INIT 0                    // Current number of rows
    DATA colPos     INIT 1                      // Current column position
@@ -917,7 +917,9 @@ Local aCores
                      hwg_Selectobject( hDC, ::aColumns[fif]:oFont:handle )
                      lColumnFont := .T.
                   ELSEIF lColumnFont
-                     hwg_Selectobject( hDC, ::ofont:handle )
+                     IF ::oFont != Nil
+                        hwg_Selectobject( hDC, ::ofont:handle )
+                     ENDIF
                      lColumnFont := .F.
                   ENDIF
                   hwg_Drawtext( hDC, sviv, x, ::y1+(::height+1)*(nstroka-1)+1, x+xSize-2,::y1+(::height+1)*nstroka-1, ::aColumns[fif]:nJusLin )

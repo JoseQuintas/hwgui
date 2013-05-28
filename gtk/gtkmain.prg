@@ -102,7 +102,7 @@ FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrB
       NEXT
    ENDIF
 
-   hDC := hwg_Getdc( hwg_Getactivewindow() )
+   hDC := hwg_Getdc( HWindow():GetMain():handle )
    hwg_Selectobject( hDC, ofont:handle )
    aMetr := hwg_Gettextmetric( hDC )
    hwg_Releasedc( hwg_Getactivewindow(), hDC )

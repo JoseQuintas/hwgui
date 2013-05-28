@@ -1,5 +1,7 @@
                       HWGUI - Harbour Win32 GUI library
 
+   1) Windows
+
    Installation procedure is very simple.
 
    There are few bat files to build HwGUI with C compiler of your choice:
@@ -21,9 +23,10 @@
 
    With Harbour you can also build libraries, using Hbmk2 utility, just write:
 
-      hbmk2 hwgui.hbp procmisc.hbp hbxml.hbp hbactivex.hbp hwg_qhtm.hbp
+      hbmk2 hwgui.hbp procmisc.hbp hbxml.hbp hbactivex.hbp hwg_contrib.hbp hwgdebug.hbp
 
-   You may omit hbactivex.hbp and hwg_qhtm.hbp, if you don't need these libraries.
+   You may omit hbactivex.hbp, hwg_contrib.hbp and hwgdebug.hbp, if you 
+   don't need these libraries.
 
        To build samples you need to run appropriate .bat files, fixing environment
    variables there.
@@ -32,3 +35,25 @@
        Bld.bat should be executed with prg file name as a parameter:
 
    bld a
+
+   2) Linux
+
+   	Sources for the Linux GTK version are located in the gtk/ directory. 
+   There is a shell file build.sh, which is intended for building HwGUI Linux 
+   libraries. The environment variable HB_ROOT is set there, based on the 
+   assumption, that HwGUI directory is within the Harbour directory. If no,
+   you need to write the correct path to your Harbour directory, for example:
+
+      export HB_ROOT=/home/me/harbour
+
+        Then just run the build.sh and four libraries must appear in the gtk/lib:
+
+      libhbxml.a
+      libhwgui.a
+      libhwgdebug.a
+      libprocmisc.a
+
+   You will find few samples in gtk/samples directory and a shell file build.sh.
+   The environment variable HB_ROOT is set there, based on the assumption, that
+   HwGUI directory is within the Harbour directory. If no, you need to write the
+   correct path to your Harbour directory.

@@ -101,8 +101,8 @@ METHOD SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight ) CLASS 
    nheight   := iif( nheight = Nil, ::height, nheight )
    nCharSet  := iif( nCharSet = Nil, ::CharSet, nCharSet )
 
-   RETURN ::Add( ::name, ::width, nheight, weight, ;
-      nCharSet, Italic, Underline, StrikeOut ) // ::handle )
+   RETURN HFont():Add( ::name, ::width, nheight, weight, ;
+      nCharSet, Italic, Underline, StrikeOut )
 
 METHOD RELEASE() CLASS HFont
    LOCAL i, nlen := Len( ::aFonts )

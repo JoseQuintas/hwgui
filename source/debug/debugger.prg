@@ -113,7 +113,11 @@
 
 #define VAR_MAX_LEN            72
 
+#ifndef __XHARBOUR__
 THREAD STATIC t_oDebugger
+#else
+STATIC t_oDebugger
+#endif 
 
 PROCEDURE __dbgAltDEntry()
 
@@ -240,11 +244,12 @@ METHOD CodeblockTrace()
 METHOD GetExprValue( xExpr, lValid ) CLASS HBDebugger
 
    LOCAL xResult
-   LOCAL oErr
+   LOCAL bOldError, oErr
 
    lValid := .F.
 
-   BEGIN SEQUENCE WITH {| oErr | Break( oErr ) }
+   bOldError := Errorblock( {|oErr|Break(oErr)} ) 
+   BEGIN SEQUENCE
       xResult := __dbgGetExprValue( ::pInfo, xExpr, @lValid )
       IF ! lValid
          xResult := "Syntax error"
@@ -257,6 +262,7 @@ METHOD GetExprValue( xExpr, lValid ) CLASS HBDebugger
       ENDIF
       lValid := .F.
    END SEQUENCE
+   Errorblock( bOldError ) 
 
    RETURN xResult
 

@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-05-28 11:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/debugger/hwgdebug.prg
+    * Some improvements
+  * source/debugger/debugger.prg
+    * Small changes for xHarbour
+  * source/drawwidg.prg
+    ! Small fix
+
 2013-05-28 11:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/drawtext.c
   * gtk/drawwidg.prg

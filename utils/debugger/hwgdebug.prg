@@ -129,16 +129,9 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
        
    oBrwText:aArray := {}
 
-#ifdef __LINUX__
-  oBrwText:rowCount := 5
-  oBrwText:AddColumn( HColumn():New( "",{|v,o|Iif(o:nCurrent==nCurrLine,'>',Iif(getBP(o:nCurrent)!=0,'*',' '))},"C",1,0 ) )
-#else
-   oBmpCurr := HBitmap():AddStandard(OBM_RGARROWD)
-   oBmpPoint:= HBitmap():AddStandard(OBM_CHECK)
-   oBrwText:AddColumn( HColumn():New( "", ;
-      {|v,o|Iif(o:nCurrent==nCurrLine,1,Iif(getBP(o:nCurrent)!=0,2,0))},"N",1,0 ) )
-   oBrwText:aColumns[1]:aBitmaps := { { {|n|n==1},oBmpCurr },{ {|n|n==2},oBmpPoint } }
-#endif
+   oBrwText:AddColumn( HColumn():New( "",{|v,o|Iif(o:nCurrent==nCurrLine,'>',Iif(getBP(o:nCurrent)!=0,'#',' '))},"C",1,0 ) )
+   oBrwText:aColumns[1]:oFont := oFont:SetFontStyle( .T. )
+   oBrwText:aColumns[1]:bColorBlock := {||Iif(getBP(oBrwText:nCurrent)!=0, { 65535, 255, 16777215, 255 }, { oBrwText:tColor, oBrwText:bColor, oBrwText:tColorSel, oBrwText:bColorSel } )}
 
    oBrwText:AddColumn( HColumn():New( "",{|v,o|o:nCurrent},"N",5,0 ) )
    oBrwText:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent]},"C",80,0 ) )
@@ -294,9 +287,10 @@ Static Function SetCurrLine( nLine )
 Local nLine1 := oBrwText:nCurrent - oBrwText:rowPos + 1
    oBrwText:nCurrent := nLine
    IF nLine < nLine1 .OR. nLine > nLine1 + oBrwText:rowCount - 1
-      IF ( oBrwText:rowPos := Int( oBrwText:rowCount / 2 ) ) > nLine
-         oBrwText:rowPos := nLine
-      ENDIF
+      oBrwText:rowPos := Int( oBrwText:rowCount / 2 )
+   ENDIF
+   IF oBrwText:rowPos > nLine
+      oBrwText:rowPos := nLine
    ENDIF
    hwg_VScrollPos( oBrwText, 0, .F. )
    oBrwText:Refresh()

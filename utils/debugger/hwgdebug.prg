@@ -1,5 +1,6 @@
 
 #include "hwgui.ch"
+#include "hxml.ch"
 #include "fileio.ch"
 
 #define MODE_INPUT      1
@@ -51,13 +52,18 @@ ANNOUNCE HB_GTSYS
 REQUEST HB_GT_CGI_DEFAULT
 #endif
 
+#ifdef __XHARBOUR__
+#xtranslate HB_PROCESSOPEN([<n,...>]) =>  HB_OPENPROCESS(<n>)
+#endif
+
 STATIC handl1 := -1, handl2, cBuffer
 STATIC nId1 := 0, nId2 := -1
 
-STATIC cPrgName, cCurrPath := ""
+STATIC oIni, cIniPath
+STATIC cPrgName := "", cCurrPath := ""
 STATIC cTextLocate, nLineLocate
 
-STATIC oTimer, oSayState, oEditExpr, oBtnExp
+STATIC oTimer, oSayState, oEditExpr, oBtnExp, oMainFont
 STATIC oBrwRes
 STATIC oStackDlg, oLocalsDlg, oWatchDlg, oAreasDlg
 STATIC oBrwText
@@ -74,14 +80,18 @@ STATIC nExitMode := 1
 STATIC cVerProto := 0
 
 Function Main( ... )
-Local oMainW, oFont, oBmpPoint, oBmpCurr
+Local oMainW, oBmpPoint, oBmpCurr
 Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
 
-   PREPARE FONT oFont NAME "Georgia" WIDTH 0 HEIGHT -17 CHARSET 4
+   ReadIni( cIniPath := FilePath( hb_ArgV( 0 ) ) )
+
+   IF Empty( oMainFont )
+      PREPARE FONT oMainFont NAME "Georgia" WIDTH 0 HEIGHT -17 CHARSET 4
+   ENDIF
 
    INIT WINDOW oMainW MAIN TITLE "Debugger" ;
      AT 200,0 SIZE 600,544                  ;
-     FONT oFont                             ;
+     FONT oMainFont                         ;
      ON EXIT {|| ExitDbg()}
 
    MENU OF oMainW
@@ -120,17 +130,22 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
          MENUITEM "&Add"+Chr(9)+"F9" ACTION AddBreakPoint() ACCELERATOR 0,VK_F9
          MENUITEM "&Delete"+Chr(9)+"F9" ACTION AddBreakPoint()
       ENDMENU
+      MENU TITLE "&Options"
+         MENUITEM "&Font" ACTION SetFont()
+         SEPARATOR
+         MENUITEM "&Save Settings" ACTION SaveIni()
+      ENDMENU
       MENUITEM "&About" ACTION About()
    ENDMENU
 
    @ 0,0 BROWSE oBrwText ARRAY SIZE 600,436  ;
-       FONT oFont STYLE WS_BORDER+WS_VSCROLL ;
+       FONT oMainFont STYLE WS_BORDER+WS_VSCROLL ;
        ON SIZE {|o,x,y|o:Move(,,x,y-108)}
        
    oBrwText:aArray := {}
 
-   oBrwText:AddColumn( HColumn():New( "",{|v,o|Iif(o:nCurrent==nCurrLine,'>',Iif(getBP(o:nCurrent)!=0,'#',' '))},"C",1,0 ) )
-   oBrwText:aColumns[1]:oFont := oFont:SetFontStyle( .T. )
+   oBrwText:AddColumn( HColumn():New( "",{|v,o|Iif(o:nCurrent==nCurrLine,'>',Iif(getBP(o:nCurrent)!=0,'#',' '))},"C",2,0 ) )
+   oBrwText:aColumns[1]:oFont := oMainFont:SetFontStyle( .T. )
    oBrwText:aColumns[1]:bColorBlock := {||Iif(getBP(oBrwText:nCurrent)!=0, { 65535, 255, 16777215, 255 }, { oBrwText:tColor, oBrwText:bColor, oBrwText:tColorSel, oBrwText:bColorSel } )}
 
    oBrwText:AddColumn( HColumn():New( "",{|v,o|o:nCurrent},"N",5,0 ) )
@@ -198,6 +213,54 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
    ACTIVATE WINDOW oMainW
 
 Return Nil
+
+Static Function ReadIni( cDir )
+Local oInit, oModule
+Local i, j, aChn, aBoxes := {}, cValue, cTitle, cPass
+
+   oIni := HXMLDoc():Read( cDir + "hwgdebug.xml" )
+   IF !Empty( oIni:aItems ) .AND. oIni:aItems[1]:title == "init"
+      oInit := oIni:aItems[1]
+      FOR i := 1 TO Len( oInit:aItems )
+         IF oInit:aItems[i]:title == "module"
+            oModule := oInit:aItems[i]
+         ELSEIF oInit:aItems[i]:title == "path"
+            cPaths := oInit:aItems[i]:aItems[1]
+            IF Left( cPaths,1 ) != ";"
+               cPaths := ";" + cPaths
+            ENDIF
+         ELSEIF oInit:aItems[i]:title == "font"
+            oMainFont := hwg_hfrm_FontFromXML( oInit:aItems[i] )
+         ENDIF
+      NEXT
+   ENDIF
+
+Return Nil
+
+Static Function SaveIni( cDir )
+Local oInit, oNode
+
+   IF Empty( oIni ) .OR. Empty( oIni:aItems )
+      oIni := HXMLDoc():New( "windows-1251" )
+      oIni:Add( oInit := HXMLNode():New( "init" ) )
+   ELSE
+      oInit := oIni:aItems[1]
+   ENDIF
+
+   IF !Empty( oNode := oInit:Find( "path" ) )
+      oNode:aItems[1] := cPaths
+   ELSE
+      oInit:Add( HXMLNode():New( "path",,,cPaths ) )
+   ENDIF
+   IF !Empty( oNode := oInit:Find( "font" ) )
+      oNode:aAttr := Font2Attr( oMainFont )
+   ELSE
+      oInit:Add( HXMLNode():New( "font", HBXML_TYPE_SINGLE, Font2Attr( oMainFont ) ) )
+   ENDIF
+
+   oIni:Save( cIniPath + "hwgdebug.xml" )
+Return Nil
+
 
 Static Function DebugNewExe( cExe )
 Local hProcess, lFromMenu := .F.
@@ -585,7 +648,7 @@ Local arr, i, cFull
    IF !Empty( cRes ) .OR. !Empty( cRes := hu_Get( "Path to source files", "@S256", cPaths ) )
       cPaths := Iif( Left( cRes,1 ) != ";", ";" + cRes, cRes )
       arr := hb_aTokens( cPaths, ";" )
-      IF Empty( oBrwText:aArray )
+      IF Empty( oBrwText:aArray ) .AND. !Empty( cPrgName )
          FOR i := 1 TO Len( arr )
             cFull := arr[i] + ;
                Iif( Right( arr[i],1 ) $ "\/", "", hb_OsPathSeparator() ) + cPrgName
@@ -607,7 +670,7 @@ Local cFile := hwg_Selectfile( "Source files( *.prg )", "*.prg", cCurrPath )
 Return Nil
 
 Static Function SetBrwText( cName, lClear )
-Local cBuff, cNewLine := Chr(13)+Chr(10)
+Local cBuff, cNewLine := Chr(13)+Chr(10), i
 
    IF cName == Nil; cName := cPrgName; ENDIF
 
@@ -618,6 +681,11 @@ Local cBuff, cNewLine := Chr(13)+Chr(10)
       cCurrPath := FilePath( cName )
       cPrgName := CutPath( cName )
       oBrwText:aArray := hb_aTokens( cBuff, cNewLine )
+      FOR i := 1 TO Len( oBrwText:aArray )
+         IF Chr(9) $ oBrwText:aArray[i]
+            oBrwText:aArray[i] := StrTran( oBrwText:aArray[i], Chr(9), Space(4) )
+         ENDIF
+      NEXT
       hwg_Invalidaterect( oBrwText:handle, 1 )
       oBrwText:Refresh()
       Return .T.
@@ -983,6 +1051,18 @@ Local oBrw, arr1, i, j, nAreas := Val( arr[n] ), nAItems := Val( Hex2Str(arr[++n
    ENDIF
 Return Nil
 
+Static FUNCTION SetFont( oFont )
+
+   IF !Empty( oFont ) .OR. !Empty( oFont := HFont():Select( HWindow():GetMain():oFont ) )
+      oMainFont := oBrwText:oFont := oBrwRes:oFont := HWindow():GetMain():oFont := oFont
+      oBrwText:lChanged := .T.
+      oBrwText:Refresh()
+      oBrwRes:lChanged := .T.
+      oBrwRes:lChanged := .T.
+      oBrwRes:Refresh()
+   ENDIF
+Return Nil
+
 Static FUNCTION About()
 
    INIT DIALOG oDlg TITLE "About" AT 0, 0 SIZE 340, 170 ;
@@ -990,7 +1070,7 @@ Static FUNCTION About()
         STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + DS_CENTER
 
    @ 20,30 SAY "HwGUI Debugger" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
-   @ 20,60 SAY "Version 1.01" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+   @ 20,60 SAY "Version 1.02" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
 #if !defined( __PLATFORM__UNIX )
    @ 20,90 SAY "http://www.kresin.ru/debugger.html" ;
@@ -1003,6 +1083,27 @@ Static FUNCTION About()
    ACTIVATE DIALOG oDlg
 
 Return Nil
+
+Function Font2Attr( oFont )
+Local aAttr := {}
+
+   Aadd( aAttr, { "name",oFont:name } )
+   Aadd( aAttr, { "width",Ltrim(Str(oFont:width,5)) } )
+   Aadd( aAttr, { "height",Ltrim(Str(oFont:height,5)) } )
+   IF oFont:weight != 0
+      Aadd( aAttr, { "weight",Ltrim(Str(oFont:weight,5)) } )
+   ENDIF
+   IF oFont:charset != 0
+      Aadd( aAttr, { "charset",Ltrim(Str(oFont:charset,5)) } )
+   ENDIF
+   IF oFont:Italic != 0
+      Aadd( aAttr, { "italic",Ltrim(Str(oFont:Italic,5)) } )
+   ENDIF
+   IF oFont:Underline != 0
+      Aadd( aAttr, { "underline",Ltrim(Str(oFont:Underline,5)) } )
+   ENDIF
+
+Return aAttr
 
 Static FUNCTION hu_Get( cTitle, tpict, txget )
 LOCAL oDlg

@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
  *
- * Copyright 2005 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2005 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "hbclass.ch"
@@ -34,6 +34,7 @@ CLASS HFont INHERIT HObject
    METHOD Add( fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut, nHandle, lLinux )
    METHOD Select( oFont )
    METHOD Release()
+   METHOD SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight )
 
 ENDCLASS
 
@@ -125,6 +126,23 @@ Local i, nlen := Len( ::aFonts )
    #endif
    ENDIF
 Return Nil
+
+METHOD SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight ) CLASS HFont
+   LOCAL  weight, Italic, Underline, StrikeOut
+
+   IF lBold != Nil
+      weight = iif( lBold, FW_BOLD, FW_REGULAR )
+   ELSE
+      weight := ::weight
+   ENDIF
+   Italic    := iif( lItalic = Nil, ::Italic, iif( lItalic, 1, 0 ) )
+   Underline := iif( lUnder  = Nil, ::Underline, iif( lUnder , 1, 0 ) )
+   StrikeOut := iif( lStrike = Nil, ::StrikeOut, iif( lStrike , 1, 0 ) )
+   nheight   := iif( nheight = Nil, ::height, nheight )
+   nCharSet  := iif( nCharSet = Nil, ::CharSet, nCharSet )
+
+   RETURN HFont():Add( ::name, ::width, nheight, weight, ;
+      nCharSet, Italic, Underline, StrikeOut )
 
 //- HPen
 

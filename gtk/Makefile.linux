@@ -14,7 +14,7 @@ LIB_DIR = lib
 PROCMISC_DIR=../source/procmisc
 XML_DIR=../source/xml
 DEBUG_DIR=../source/debug
-SRC_DIR=../source
+SRC_DIR=./
 
 CFLAGS = -Wall -O3 -DHWG_USE_POINTER_ITEM
 HB_FLAGS = -d__LINUX__

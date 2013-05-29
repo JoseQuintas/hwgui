@@ -793,7 +793,7 @@ HB_FUNC( HWG_WRITESTATUSWINDOW )
    GtkWidget *w = ( GtkWidget * ) hb_parptr( 1 );
 
    //hb_retni( gtk_statusbar_push( GTK_STATUSBAR(w), iStatus, cText ) );
-   gtk_label_set_text( w, cText );
+   gtk_label_set_text( (GtkLabel *)w, cText );
    g_free( cText );
 }
 
@@ -992,43 +992,40 @@ void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor );
 HB_FUNC( HWG_SETFGCOLOR )
 {
    GtkWidget *hCtrl = ( GtkWidget * ) HB_PARHANDLE( 1 );
-   GdkColor fColor;
+
    GtkWidget *label;
    HB_ULONG hColor = hb_parnl( 2 );
 
    if( GTK_IS_BUTTON( hCtrl ) )
+   {
       label = gtk_bin_get_child( GTK_BIN( hCtrl ) );
+   }
    else if( GTK_IS_EVENT_BOX( hCtrl ) )
       label = gtk_bin_get_child( GTK_BIN( hCtrl ) );
    else
-      label = g_object_get_data( ( GObject * ) hCtrl, "label" );
+   {
+      label = hCtrl; //g_object_get_data( ( GObject * ) hCtrl, "label" );
+   }
 
    if( label )
    {
-      hwg_parse_color( hColor, &fColor );
-      gtk_widget_modify_fg( label, GTK_STATE_NORMAL, &fColor );
+      GtkStyle * style = gtk_style_copy( gtk_widget_get_style( label ) );
+      hwg_parse_color( hColor, &(style->fg[GTK_STATE_NORMAL]) );
+      hwg_parse_color( hColor, &(style->text[GTK_STATE_NORMAL]) );
+      gtk_widget_set_style( label, style );
    }
 }
 
 HB_FUNC( HWG_SETBGCOLOR )
 {
    GtkWidget *hCtrl = ( GtkWidget * ) HB_PARHANDLE( 1 );
-   GdkColor fColor;
-   GtkWidget *label;
    HB_ULONG hColor = hb_parnl( 2 );
-//  TraceLog("cor.txt","cor = %lu control = %lu\n" , hColor,hCtrl);
-   hwg_parse_color( hColor, &fColor );
-//  label = g_object_get_data( (GObject*) hCtrl, "label" );  
-   if( GTK_IS_BUTTON( hCtrl ) )
-      label = gtk_bin_get_child( GTK_BIN( hCtrl ) );
-   else if( GTK_IS_EVENT_BOX( hCtrl ) )
-      label = gtk_bin_get_child( GTK_BIN( hCtrl ) );
-   else
-      label = g_object_get_data( ( GObject * ) hCtrl, "label" );
-//  gtk_widget_modify_bg(hCtrl,GTK_STATE_NORMAL,&fColor);
-   gtk_widget_modify_bg( label, GTK_STATE_NORMAL, &fColor );
-//  gtk_widget_modify_bg(hCtrl,GTK_STATE_ACTIVE,&fColor);
-//  gtk_widget_modify_bg(hCtrl,GTK_STATE_PRELIGHT,&fColor);    
+   GtkStyle * style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
+
+   hwg_parse_color( hColor, &(style->bg[GTK_STATE_NORMAL]) );
+   hwg_parse_color( hColor, &(style->base[GTK_STATE_NORMAL]) );
+   gtk_widget_set_style( hCtrl, style );
+
 }
 
 /*
@@ -1036,7 +1033,7 @@ HB_FUNC( HWG_SETBGCOLOR )
 */
 HB_FUNC( HWG_CREATESPLITTER )
 {
-   HB_ULONG ulStyle = hb_parnl( 3 );
+   // HB_ULONG ulStyle = hb_parnl( 3 );
    GtkWidget *hCtrl;
    GtkFixed *box, *fbox;
 

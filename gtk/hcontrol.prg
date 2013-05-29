@@ -71,7 +71,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit,
    ENDIF
    ::bPaint  := bPaint
    ::tooltip := ctoolt
-   ::Setcolor( tcolor, bcolor )
+   ::tColor := tColor
+   ::bColor := bColor
 
    ::oParent:AddControl( Self )
 
@@ -106,9 +107,7 @@ METHOD INIT CLASS HControl
       DO WHILE o != Nil .AND. !__ObjHasMsg( o, "LACTIVATED" )
          o := o:oParent
       ENDDO
-      IF ::tcolor != nil
-         hwg_Setfgcolor( ::handle, ::tcolor )
-      ENDIF 
+      ::Setcolor( ::tcolor, ::bcolor )
 
       IF o != Nil .AND. o:lActivated
          hwg_ShowAll( o:handle )
@@ -122,6 +121,7 @@ METHOD Setcolor( tcolor, bcolor, lRepaint ) CLASS HControl
 
    IF tcolor != Nil
       ::tcolor  := tcolor
+      hwg_Setfgcolor( ::handle, ::tcolor )
       IF bColor == Nil .AND. ::bColor == Nil
          // bColor := hwg_Getsyscolor( COLOR_3DFACE )
       ENDIF
@@ -129,6 +129,7 @@ METHOD Setcolor( tcolor, bcolor, lRepaint ) CLASS HControl
 
    IF bcolor != Nil
       ::bcolor  := bcolor
+      hwg_Setbgcolor( ::handle, ::bcolor )
       IF ::brush != Nil
          ::brush:Release()
       ENDIF

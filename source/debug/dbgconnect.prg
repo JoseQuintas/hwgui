@@ -361,15 +361,17 @@ Function hwg_dbg_Msg( cMessage )
 Return Nil
 
 Function hwg_dbg_Alert( cMessage )
-Local bCode := &( Iif( Type( "hwg_msginfo()" ) == "UI", "{|s|hwg_msginfo(s)}", "{|s|alert(s)}" ) )
+Local bCode := &( Iif( Type( "hwg_msginfo()" ) == "UI", "{|s|hwg_msginfo(s)}", ;
+       Iif( Type( "msginfo()" ) == "UI", "{|s|msginfo(s)}", "{|s|alert(s)}" ) ) )
 
-   Eval( bCode, cMessage )
+Eval( bCode, cMessage )
 Return Nil
 
 Function hwg_dbg_Quit()
-Local bCode := &( Iif( Type( "hwg_endwindow()" ) == "UI", "{|s|hwg_endwindow()}", "{||__Quit()}" ) )
+Local bCode := &( Iif( Type( "hwg_endwindow()" ) == "UI", "{|s|hwg_endwindow()}", ;
+      Iif( Type( "ReleaseAllWindows()" ) == "UI","{||ReleaseAllWindows()}", "{||__Quit()}" ) )  )
 
-   Eval( bCode )
+Eval( bCode )
 Return Nil
 
 Static Function Hex2Int( stroka )

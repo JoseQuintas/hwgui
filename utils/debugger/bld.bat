@@ -15,6 +15,7 @@ echo hwgdebug.obj, + >> b32.bc
 echo hwgdebug.exe, + >> b32.bc
 echo hwgdebug.map, + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
+echo %HWGUI_INSTALL%\lib\hbxml.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
 
 if exist %HRB_DIR%\lib\hbvm.lib goto hrb

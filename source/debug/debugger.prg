@@ -119,6 +119,33 @@ THREAD STATIC t_oDebugger
 STATIC t_oDebugger
 #endif 
 
+#ifdef __XHARBOUR__
+#xtranslate __DBGADDBREAK([<n,...>]) =>  HB_DBG_ADDBREAK(<n>)
+#xtranslate __DBGDELBREAK([<n,...>]) =>  HB_DBG_DELBREAK(<n>)
+#xtranslate __DBGADDWATCH([<n,...>]) =>  HB_DBG_ADDWATCH(<n>)
+#xtranslate __DBGDELWATCH([<n,...>]) =>  HB_DBG_DELWATCH(<n>)
+#xtranslate __DBGISVALIDSTOPLINE([<n,...>]) =>  HB_DBG_ISVALIDSTOPLINE(<n>)
+#xtranslate __DBGSETTOCURSOR([<n,...>]) =>  HB_DBG_SETTOCURSOR(<n>)
+#xtranslate __DBGSETTRACE([<n,...>]) =>  HB_DBG_SETTRACE(<n>)
+#xtranslate __DBGSETNEXTROUTINE([<n,...>]) =>  HB_DBG_SETNEXTROUTINE(<n>)
+#xtranslate __DBGSETCBTRACE([<n,...>]) =>  HB_DBG_SETCBTRACE(<n>)
+#xtranslate __DBGGETEXPRVALUE([<n,...>]) =>  HB_DBG_GETEXPRVALUE(<n>)
+#xtranslate __DBGGETSOURCEFILES([<n,...>]) =>  HB_DBG_GETSOURCEFILES(<n>)
+#xtranslate __DBGSETQUIT([<n,...>]) =>  HB_DBG_SETQUIT(<n>)
+#xtranslate __DBGSETGO([<n,...>]) =>  HB_DBG_SETGO(<n>)
+#xtranslate __DBGSETENTRY([<n,...>]) =>  HB_DBG_SETENTRY(<n>)
+
+#xtranslate __DBGVMVARLSET([<n,...>]) =>  HB_DBG_VMVARLSET(<n>)
+#xtranslate __DBGVMVARLGET([<n,...>]) =>  HB_DBG_VMVARLGET(<n>)
+#xtranslate __DBGVMVARSGET([<n,...>]) =>  HB_DBG_VMVARSGET(<n>)
+#xtranslate __DBGVMVARSSET([<n,...>]) =>  HB_DBG_VMVARSSET(<n>)
+#xtranslate __DBGVMVARGGET([<n,...>]) =>  HB_DBG_VMVARGGET(<n>)
+#xtranslate __DBGVMVARGSET([<n,...>]) =>  HB_DBG_VMVARGSET(<n>)
+#xtranslate __DBGPROCLEVEL([<n,...>]) =>  HB_DBG_PROCLEVEL(<n>)
+#xtranslate __DBGINVOKEDEBUG([<n,...>]) =>  HB_DBG_INVOKEDEBUG(<n>)
+#endif
+
+
 PROCEDURE __dbgAltDEntry()
 
    /* do not activate the debugger imediatelly because the module
@@ -634,7 +661,9 @@ FUNCTION __dbgValToStr( uVal )
    CASE cType $ "CM" ; RETURN '"' + uVal + '"'
    CASE cType == "L" ; RETURN Iif( uVal, ".T.", ".F." )
    CASE cType == "D" ; RETURN DToC( uVal )
+#ifndef __XHARBOUR__
    CASE cType == "T" ; RETURN hb_TToC( uVal )
+#endif
    CASE cType == "N" ; RETURN Str( uVal )
    CASE cType == "O" ; RETURN "Class " + uVal:ClassName() + " object"
    CASE cType == "H" ; RETURN "Hash(" + hb_ntos( Len( uVal ) ) + ")"

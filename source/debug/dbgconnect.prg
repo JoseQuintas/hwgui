@@ -76,6 +76,13 @@
 #define CMD_WDEL               15
 #define CMD_AREAS              16
 
+#ifdef __XHARBOUR__
+#xtranslate HB_AT([<n,...>]) =>  AT(<n>)
+#xtranslate HB_PROGNAME([<n,...>]) =>  EXENAME(<n>)
+#xtranslate HB_PROCESSOPEN([<n,...>]) =>  HB_OPENPROCESS(<n>)
+#xtranslate HB_DIRTEMP([<n,...>]) =>  ""
+#endif
+
 Static lDebugRun := .F., handl1, handl2, cBuffer
 Static nId1 := -1, nId2 := 0
 
@@ -107,6 +114,7 @@ Function hwg_dbg_New()
    ENDIF
 
    IF File( cFile + ".d1" ) .AND. File( cFile + ".d2" )
+   
       IF ( handl1 := FOpen( cFile + ".d1", FO_READ + FO_SHARED ) ) != -1
          IF ( i := FRead( handl1, @cBuffer, Len( cBuffer ) ) ) > 0 .AND. ;
                Left( cBuffer,4 ) == "init"
@@ -115,9 +123,10 @@ Function hwg_dbg_New()
                lDebugRun := .T.
                Return Nil
             ENDIF
-         ENDIF
+         ENDIF      
          FClose( handl1 )
       ENDIF
+    
    ENDIF
 
    IF !Empty( cDir)
@@ -162,7 +171,7 @@ Function hwg_dbg_New()
    lRun := ( ( hProcess := hb_processOpen( cExe + ' -c"' + cFile + '"' ) ) > 0 )
 #endif
    IF !lRun
-      hwg_dbg_Alert( cDebugger + " isn't available..." )
+      hwg_dbg_Alert( cExe + " isn't available..." )
    ELSE
       handl1 := FOpen( cFile + ".d1", FO_READ + FO_SHARED )
       handl2 := FOpen( cFile + ".d2", FO_READWRITE + FO_SHARED )
@@ -406,3 +415,15 @@ Local cRes := "", i := 1, nLen := Len( stroka )
       i += 2
    ENDDO
 Return cRes
+
+#ifdef __XHARBOUR__
+#pragma BEGINDUMP
+#include "hbapi.h"
+#include "hbapiitm.h"
+
+HB_FUNC( HB_RELEASECPU )
+{
+   hb_releaseCPU(0);
+}
+#pragma ENDDUMP
+#endif

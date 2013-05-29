@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-05-29 12:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/debugger/dbgconnect.prg
+  * source/debugger/debugger.prg
+  * makefile.bc
+  * make_b32.bat
+    * Some changes for compatibility with xHarbour. Now, to build hwgdebug.lib
+      with xHarbour, you need to set the environment variable in make_b32.bat
+      ( it is commented by default )   
+
 2013-05-29 10:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hwgtk.h
   * gtk/draw.c

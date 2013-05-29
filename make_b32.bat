@@ -8,6 +8,7 @@ if not exist obj\b32 md obj\b32
 if not exist obj\b32\mt md obj\b32\mt
 :BUILD
 
+rem set __XHARBOUR__=ON
 set ACTIVEX_SUPPORT=ON
 set CONTRIB_SUPPORT=ON
 make -l EXE_OBJ_DIR=obj\b32\bin OBJ_DIR=obj\b32 -fmakefile.bc %1 %2 %3 > make_b32.log

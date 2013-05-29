@@ -198,10 +198,16 @@ HBXML_LIB_OBJS = \
 #
 # HWGDEBUG.LIB rules
 #
+!if $d(__XHARBOUR__)
+DEBUG_LIB_OBJS = \
+   $(DEBUG_OBJ_DIR)\dbgconnect.obj   \
+   $(DEBUG_OBJ_DIR)\debugger.obj
+!else
 DEBUG_LIB_OBJS = \
    $(DEBUG_OBJ_DIR)\dbgentry.obj    \
    $(DEBUG_OBJ_DIR)\dbgconnect.obj   \
    $(DEBUG_OBJ_DIR)\debugger.obj
+!endif
 
 #
 # HBACTIVEX.LIB rules

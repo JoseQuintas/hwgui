@@ -8,6 +8,76 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-05-30 13:45 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
+  * samples/all/a.hbp
+  * samples/all/test1.hbp
+  * samples/animation/animation.hbp
+  * samples/browse/arbrow1.hbp
+  * samples/browse/arbrow2.hbp
+  * samples/browse/browse_1.hbp
+  * samples/browse/browse_2.hbp
+  * samples/browse/browse_3.hbp
+  * samples/browse/browse_4.hbp
+  * samples/browse/colrbloc.hbp
+  * samples/browse/testbrw.hbp
+  * samples/browsefilter/browsefilter.hbp
+  * samples/build/buildpelles.hbp
+  * samples/combobox/combobox.hbp
+  * samples/database/dbview.hbp
+  * samples/database/demodbf.hbp
+  * samples/flash/flashocx.hbp
+  * samples/get/testget1.hbp
+  * samples/get/testget2.hbp
+  * samples/get/testget3.hbp
+  * samples/get/testget4.hbp
+  * samples/graph/graph.hbp
+  * samples/grid/grid_1.hbp
+  * samples/grid/grid_2.hbp
+  * samples/grid/grid_3.hbp
+  * samples/grid/grid_4.hbp
+  * samples/grid/grid_5.hbp
+  * samples/grid/grid_6.hbp
+  * samples/hbrun/hbrun.hbp
+  * samples/hello/hello.hbp
+  * samples/help/helpdemo.hbp
+  * samples/hsplash/tstsplash.hbp
+  * samples/hwedit/editor.hbp
+  * samples/ini/testini.hbp
+  * samples/ipadress/testip.hbp
+  * samples/listbox/demohlist.hbp
+  * samples/maximize/demomaximize.hbp
+  * samples/mdichild/testmdichild.hbp
+  * samples/menu/testmenubitmap.hbp
+  * samples/monthcalendar/testhmonth.hbp
+  * samples/mysql/hwmysql.hbp
+  * samples/nicebutton/nice.hbp
+  * samples/nicebutton/nice2.hbp
+  * samples/ole/hole.hbp
+  * samples/ole/iesample.hbp
+  * samples/pdf/pdfreader.hbp
+  * samples/printdos/tstprdos.hbp
+  * samples/progressbar/progbars.hbp
+  * samples/propsh/propsh.hbp
+  * samples/rmchart/rmsample.hbp
+  * samples/rtf/testrtf.hbp
+  * samples/scrollbar/tstscrlbar.hbp
+  * samples/shadebtn/shadebtn.hbp
+  * samples/spliter/testspli.hbp
+  * samples/tab/tab.hbp
+  * samples/tab/tab3.hbp
+  * samples/trackbar/trackbar.hbp
+  * samples/trayicon/testtray.hbp
+  * samples/tree/testsdi.hbp
+  * samples/tree/testtree.hbp
+  * samples/viewer/viewer.hbp
+  * samples/winchild/testchild.hbp
+  * samples/winprn/winprn.hbp
+  * samples/xml/testxml.hbp
+  * utils/debugger/hwgdebug.hbp
+    * use hwgui.hbc instead of sets list of libs
+  * utils/dbc/dbchw.rc
+    * fixed, for compatibility with mingw also
+
 2013-05-30 11:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/procmisc/hfrmtmpl.prg
   * utils/designer/editor.prg
@@ -31,7 +101,7 @@
   * make_b32.bat
     * Some changes for compatibility with xHarbour. Now, to build hwgdebug.lib
       with xHarbour, you need to set the environment variable in make_b32.bat
-      ( it is commented by default )   
+      ( it is commented by default )
 
 2013-05-29 10:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/hwgtk.h
@@ -177,7 +247,7 @@
   * gtk/hprinter.prg
   * gtk/hwinprn.prg
   * gtk/wprint.c
-    * Print engine has been rewritten, it uses now native gtk print and cairo 
+    * Print engine has been rewritten, it uses now native gtk print and cairo
       instead of gnomeprint. The above 4 files, compiled with -dG_CONSOLE_MODE
       may be used without hwgui library to print from Linux console applications.
   * gtk/samples/build.sh

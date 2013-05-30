@@ -4,9 +4,4 @@ ft_funcs.prg
 ffile1.prg
 pesqtext.prg
 #editor.rc
--i..\..\include
--lhwgui
--lprocmisc
--lhbxml
--L..\..\lib
--gui
+..\..\hwgui.hbc

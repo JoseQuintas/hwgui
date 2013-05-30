@@ -1,7 +1,2 @@
 dbview.prg
--i..\..\include
--lhwgui
--lprocmisc
--lhbxml
--L..\..\lib
--gui
+..\..\hwgui.hbc

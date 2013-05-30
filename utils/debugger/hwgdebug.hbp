@@ -2,11 +2,6 @@
 # $Id: $
 #
 
--i..\..\include
--L..\..\lib
--lhwgui.lib
--lprocmisc.lib
--lhbxml.prg
+..\..\hwgui.hbc
 -n -w
--gui
 hwgdebug.prg

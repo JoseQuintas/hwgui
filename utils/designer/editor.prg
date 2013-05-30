@@ -45,9 +45,9 @@ FUNCTION LoadEdOptions( cFileName )
    oOptDesc := oIni:aItems[1]
    FOR i := 1 TO Len( oOptDesc:aItems )
       IF oOptDesc:aItems[i]:title == "font"
-         HDTheme():oFont := hfrm_FontFromxml( oOptDesc:aItems[i] )
+         HDTheme():oFont := hwg_hfrm_FontFromxml( oOptDesc:aItems[i] )
       ELSEIF oOptDesc:aItems[i]:title == "keywords"
-         HDTheme():aKeyWords := hfrm_Str2Arr( oOptDesc:aItems[i]:aItems[1] )
+         HDTheme():aKeyWords := hwg_hfrm_Str2Arr( oOptDesc:aItems[i]:aItems[1] )
       ELSEIF oOptDesc:aItems[i]:title == "themes"
          cTheme := oOptDesc:aItems[i]:GetAttribute( "selected" )
          FOR j := 1 TO Len( oOptDesc:aItems[i]:aItems )

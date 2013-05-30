@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-05-30 11:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/procmisc/hfrmtmpl.prg
+  * utils/designer/editor.prg
+  * utils/designer/hformgen.prg
+    * Few function names has been changed ( Hfrm_... to hwg_hfrm_... )
+
 2013-05-29 18:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/debugger/dbgconnect.prg
     * Small changes for debuggibg Minigui projects

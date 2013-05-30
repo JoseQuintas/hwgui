@@ -572,7 +572,7 @@ STATIC FUNCTION ReadCtrls( oDlg, oCtrlDesc, oContainer, nPage )
             IF o:title == "property"
                cPropertyName := o:GetAttribute( "name" )
                IF Lower( cPropertyName ) == "geometry"
-                  aRect := hfrm_Str2Arr( o:aItems[1] )
+                  aRect := hwg_hfrm_Str2Arr( o:aItems[1] )
                   Aadd( aProp, { "Left", aRect[1] } )
                   Aadd( aProp, { "Top", aRect[2] } )
                   Aadd( aProp, { "Width", aRect[3] } )
@@ -582,7 +582,7 @@ STATIC FUNCTION ReadCtrls( oDlg, oCtrlDesc, oContainer, nPage )
                      Aadd( aProp, { "Bottom", aRect[6] } )
                   ENDIF
                ELSEIF Lower( cPropertyName ) == "font"
-                  Aadd( aProp, { cPropertyName,hfrm_FontFromxml( o:aItems[1] ) } )
+                  Aadd( aProp, { cPropertyName,hwg_hfrm_FontFromxml( o:aItems[1] ) } )
                ELSEIF Lower( cPropertyName ) == "atree"
                   Aadd( aProp, { cPropertyName,ReadTree( ,o ) } )
                ELSEIF !Empty(o:aItems)
@@ -592,7 +592,7 @@ STATIC FUNCTION ReadCtrls( oDlg, oCtrlDesc, oContainer, nPage )
                   ELSEIF cProperty == '.'
                      cProperty := Iif( Substr(o:aItems[1],2,1)=="T","True","False" )
                   ELSEIF cProperty == '{'
-                     cProperty := hfrm_Str2Arr( o:aItems[1] )
+                     cProperty := hwg_hfrm_Str2Arr( o:aItems[1] )
                   ELSE
                      cProperty := o:aItems[1]
                   ENDIF
@@ -661,13 +661,13 @@ STATIC FUNCTION ReadForm( oForm,cForm )
             IF o:title == "property"
                cPropertyName := o:GetAttribute( "name" )
                IF Lower( cPropertyName ) == "geometry"
-                  aRect := hfrm_Str2Arr( o:aItems[1] )
+                  aRect := hwg_hfrm_Str2Arr( o:aItems[1] )
                   Aadd( aProp, { "Left", aRect[1] } )
                   Aadd( aProp, { "Top", aRect[2] } )
                   Aadd( aProp, { "Width", aRect[3] } )
                   Aadd( aProp, { "Height", aRect[4] } )
                ELSEIF Lower( cPropertyName ) == "font"
-                  Aadd( aProp, { cPropertyName,hfrm_FontFromxml( o:aItems[1] ) } )
+                  Aadd( aProp, { cPropertyName,hwg_hfrm_FontFromxml( o:aItems[1] ) } )
                ELSEIF !Empty(o:aItems)
                   cProperty := Left( o:aItems[1],1 )
                   IF cProperty == '['
@@ -675,7 +675,7 @@ STATIC FUNCTION ReadForm( oForm,cForm )
                   ELSEIF cProperty == '.'
                      cProperty := Iif( Substr(o:aItems[1],2,1)=="T","True","False" )
                   ELSEIF cProperty == '{'
-                     cProperty := hfrm_Str2Arr( o:aItems[1] )
+                     cProperty := hwg_hfrm_Str2Arr( o:aItems[1] )
                   ELSE
                      cProperty := o:aItems[1]
                   ENDIF
@@ -755,10 +755,10 @@ STATIC Function WriteCtrl( oParent,oCtrl,lRoot )
       oStyle := oNode:Add( HXMLNode():New( "style" ) )
       IF oDesigner:lReport
          oStyle:Add( HXMLNode():New( "property",,{ { "name","Geometry" } }, ;
-            hfrm_Arr2Str( { oCtrl:GetProp("Left"),oCtrl:GetProp("Top"),oCtrl:GetProp("Width"),oCtrl:GetProp("Height"),oCtrl:GetProp("Right"),oCtrl:GetProp("Bottom") } ) ) )
+            hwg_hfrm_Arr2Str( { oCtrl:GetProp("Left"),oCtrl:GetProp("Top"),oCtrl:GetProp("Width"),oCtrl:GetProp("Height"),oCtrl:GetProp("Right"),oCtrl:GetProp("Bottom") } ) ) )
       ELSE
          oStyle:Add( HXMLNode():New( "property",,{ { "name","Geometry" } }, ;
-            hfrm_Arr2Str( { oCtrl:GetProp("Left"),oCtrl:GetProp("Top"),oCtrl:GetProp("Width"),oCtrl:GetProp("Height") } ) ) )
+            hwg_hfrm_Arr2Str( { oCtrl:GetProp("Left"),oCtrl:GetProp("Top"),oCtrl:GetProp("Width"),oCtrl:GetProp("Height") } ) ) )
       ENDIF
       FOR j := 1 TO Len( oCtrl:aProp )
          cPropertyName := Lower(oCtrl:aProp[j,1])
@@ -791,7 +791,7 @@ STATIC Function WriteCtrl( oParent,oCtrl,lRoot )
                ELSEIF oCtrl:aProp[j,3] == "L"
                   cProperty := Iif( Lower( oCtrl:aProp[j,2] ) == "true",".T.",".F." )
                ELSEIF oCtrl:aProp[j,3] == "A"
-                  cProperty := hfrm_Arr2Str( oCtrl:aProp[j,2] )
+                  cProperty := hwg_hfrm_Arr2Str( oCtrl:aProp[j,2] )
                ELSE
                   cProperty := ""
                ENDIF
@@ -835,7 +835,7 @@ STATIC FUNCTION WriteForm( oForm )
    oNode := oDoc:Add( HXMLNode():New( "part",,{ { "class",Iif(oDesigner:lReport,"report","form") } } ) )
    oStyle := oNode:Add( HXMLNode():New( "style" ) )
    oStyle:Add( HXMLNode():New( "property",,{ { "name","Geometry" } }, ;
-         hfrm_Arr2Str( { oForm:oDlg:nLeft,oForm:oDlg:nTop,oForm:oDlg:nWidth,oForm:oDlg:nHeight } ) ) )
+         hwg_hfrm_Arr2Str( { oForm:oDlg:nLeft,oForm:oDlg:nTop,oForm:oDlg:nWidth,oForm:oDlg:nHeight } ) ) )
    FOR i := 1 TO Len( oForm:aProp )
       IF Ascan( aG, Lower(oForm:aProp[i,1]) ) == 0
          IF Lower(oForm:aProp[i,1]) == "font"
@@ -851,7 +851,7 @@ STATIC FUNCTION WriteForm( oForm )
             ELSEIF oForm:aProp[i,3] == "L"
                cProperty := Iif( Lower( oForm:aProp[i,2] ) == "true",".T.",".F." )
             ELSEIF oForm:aProp[i,3] == "A"
-               cProperty := hfrm_Arr2Str( oForm:aProp[i,2] )
+               cProperty := hwg_hfrm_Arr2Str( oForm:aProp[i,2] )
             ELSE
                cProperty := ""
             ENDIF

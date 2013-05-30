@@ -208,7 +208,7 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
             IF o:title == "property"
                IF ! Empty( o:aItems )
                   AAdd( aProp, { Lower( o:GetAttribute( "name" ) ), o:aItems[ 1 ] } )
-                  IF Atail(aProp)[1] == "ldebug" .AND. hfrm_GetProperty( Atail(aProp)[2] )
+                  IF Atail(aProp)[1] == "ldebug" .AND. hwg_hfrm_GetProperty( Atail(aProp)[2] )
                      ::lDebug := .T.
                      SetDebugInfo( .T. )
                   ENDIF
@@ -258,7 +258,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
    nstyle := DS_ABSALIGN + WS_VISIBLE + WS_SYSMENU + WS_SIZEBOX
 
    FOR i := 1 TO Len( ::aProp )
-      xProperty := hfrm_GetProperty( ::aProp[ i, 2 ] )
+      xProperty := hwg_hfrm_GetProperty( ::aProp[ i, 2 ] )
 
       IF ::aProp[ i, 1 ] == "geometry"
          nLeft   := Val( xProperty[ 1 ] )
@@ -268,7 +268,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
       ELSEIF ::aProp[ i, 1 ] == "caption"
          cTitle := xProperty
       ELSEIF ::aProp[ i, 1 ] == "font"
-         oFont := hfrm_FontFromxml( xProperty )
+         oFont := hwg_hfrm_FontFromxml( xProperty )
       ELSEIF ::aProp[ i, 1 ] == "lclipper"
          lClipper := xProperty
       ELSEIF ::aProp[ i, 1 ] == "lexitonenter"
@@ -605,9 +605,9 @@ STATIC FUNCTION ReadCtrl( oCtrlDesc, oContainer, oForm )
             o := aItems[ i ]:aItems[ j ]
             IF o:title == "property"
                IF ( cName := Lower( o:GetAttribute( "name" ) ) ) == "varname"
-                  AAdd( oForm:aVars, hfrm_GetProperty( o:aItems[ 1 ] ) )
+                  AAdd( oForm:aVars, hwg_hfrm_GetProperty( o:aItems[ 1 ] ) )
                ELSEIF cName == "name"
-                  AAdd( oForm:aNames, hfrm_GetProperty( o:aItems[ 1 ] ) )
+                  AAdd( oForm:aNames, hwg_hfrm_GetProperty( o:aItems[ 1 ] ) )
                ENDIF
                IF cName == "atree"
                   AAdd( aProp, { cName, ReadTree( oForm,, o ) } )
@@ -738,7 +738,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
    shcolor := 0
 
    FOR i := 1 TO Len( oCtrlTmpl:aProp )
-      xProperty := hfrm_GetProperty( oCtrlTmpl:aProp[ i, 2 ] )
+      xProperty := hwg_hfrm_GetProperty( oCtrlTmpl:aProp[ i, 2 ] )
       cPName := oCtrlTmpl:aProp[ i, 1 ]
       //hwg_Msginfo(cpname)
       IF cPName == "geometry"
@@ -755,7 +755,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
             ENDIF
          ENDIF
       ELSEIF cPName == "font"
-         oFont := hfrm_FontFromxml( xProperty )
+         oFont := hwg_hfrm_FontFromxml( xProperty )
       ELSEIF cPName == "border"
          IF xProperty
             nStyle += WS_BORDER
@@ -1123,7 +1123,7 @@ FUNCTION Font2XML( oFont )
 
    RETURN HXMLNode():New( "font", HBXML_TYPE_SINGLE, aAttr )
 
-FUNCTION hfrm_FontFromXML( oXmlNode )
+FUNCTION hwg_hfrm_FontFromXML( oXmlNode )
    LOCAL width  := oXmlNode:GetAttribute( "width" )
    LOCAL height := oXmlNode:GetAttribute( "height" )
    LOCAL weight := oXmlNode:GetAttribute( "weight" )
@@ -1153,7 +1153,7 @@ FUNCTION hfrm_FontFromXML( oXmlNode )
    RETURN HFont():Add( oXmlNode:GetAttribute( "name" ),  ;
          width, height, weight, charset, ita, under )
 
-FUNCTION hfrm_Str2Arr( stroka )
+FUNCTION hwg_hfrm_Str2Arr( stroka )
    LOCAL arr := { }, pos1 := 2, pos2 := 1
 
    IF Len( stroka ) > 2
@@ -1167,7 +1167,7 @@ FUNCTION hfrm_Str2Arr( stroka )
 
    RETURN arr
 
-FUNCTION hfrm_Arr2Str( arr )
+FUNCTION hwg_hfrm_Arr2Str( arr )
    LOCAL stroka := "{", i, cType
 
    FOR i := 1 TO Len( arr )
@@ -1184,7 +1184,7 @@ FUNCTION hfrm_Arr2Str( arr )
 
    RETURN stroka + "}"
 
-FUNCTION hfrm_GetProperty( xProp )
+FUNCTION hwg_hfrm_GetProperty( xProp )
    LOCAL c
 
    IF ValType( xProp ) == "C"
@@ -1194,7 +1194,7 @@ FUNCTION hfrm_GetProperty( xProp )
       ELSEIF c == "."
          xProp := ( SubStr( xProp, 2, 1 ) == "T" )
       ELSEIF c == "{"
-         xProp := hfrm_Str2Arr( xProp )
+         xProp := hwg_hfrm_Str2Arr( xProp )
       ELSE
          xProp := Val( xProp )
       ENDIF
@@ -1283,8 +1283,8 @@ METHOD Read( fname, cId ) CLASS HRepTmpl
             o := aItems[ i ]:aItems[ j ]
             IF o:title == "property"
                IF ! Empty( o:aItems )
-                  AAdd( aProp, { Lower( o:GetAttribute( "name" ) ), hfrm_GetProperty( o:aItems[ 1 ] ) } )
-                  IF Atail(aProp)[1] == "ldebug" .AND. hfrm_GetProperty( Atail(aProp)[2] )
+                  AAdd( aProp, { Lower( o:GetAttribute( "name" ) ), hwg_hfrm_GetProperty( o:aItems[ 1 ] ) } )
+                  IF Atail(aProp)[1] == "ldebug" .AND. hwg_hfrm_GetProperty( Atail(aProp)[2] )
                      ::lDebug := .T.
                      SetDebugInfo( .T. )
                   ENDIF
@@ -1641,7 +1641,7 @@ STATIC FUNCTION ReadRepItem( oCtrlDesc, oContainer )
          FOR j := 1 TO Len( aItems[ i ]:aItems )
             o := aItems[ i ]:aItems[ j ]
             IF o:title == "property"
-               AAdd( aProp, { Lower( o:GetAttribute( "name" ) ), IIf( Empty( o:aItems ), "", hfrm_GetProperty( o:aItems[ 1 ] ) ) } )
+               AAdd( aProp, { Lower( o:GetAttribute( "name" ) ), IIf( Empty( o:aItems ), "", hwg_hfrm_GetProperty( o:aItems[ 1 ] ) ) } )
             ENDIF
          NEXT
       ELSEIF aItems[ i ]:title == "method"

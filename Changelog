@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-05-30 16:48 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/debugger/hwgdebug.prg
+    ! Small fix
+
 2013-05-30 13:45 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
   * samples/all/a.hbp
   * samples/all/test1.hbp

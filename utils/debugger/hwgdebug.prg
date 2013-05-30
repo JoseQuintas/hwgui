@@ -474,7 +474,7 @@ Static nLastSec := 0
                ELSE
                   IF !( cPrgName == arr[2] )
                      cPrgName := arr[2]
-                     SetBrwText()
+                     SetPath( cPaths )
                   ENDIF
                   nCurrLine := Val( arr[3] )
                   IF !Empty( oBrwText:aArray )

@@ -437,8 +437,10 @@ METHOD End() CLASS HBrowse
    ::Super:End()
    IF ::brush != Nil
       ::brush:Release()
+   ENDIF
+   IF ::brushSel != Nil
       ::brushSel:Release()
-   ENDIF  
+   ENDIF
 
 RETURN Nil
 

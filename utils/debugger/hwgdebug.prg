@@ -60,7 +60,7 @@ STATIC handl1 := -1, handl2, cBuffer
 STATIC nId1 := 0, nId2 := -1
 
 STATIC oIni, cIniPath
-STATIC cPrgName := "", cCurrPath := ""
+STATIC cAppName, cPrgName := "", cCurrPath := ""
 STATIC cTextLocate, nLineLocate
 
 STATIC oTimer, oSayState, oEditExpr, oBtnExp, oMainFont
@@ -74,6 +74,7 @@ STATIC aWatches := {}
 STATIC aExpr := {}
 STATIC nCurrLine := 0
 STATIC nMode, nAnsType
+STATIC aBPLoad, nBPLoad
 STATIC lAnimate := .F., nAnimate := 3
 
 STATIC nExitMode := 1
@@ -134,6 +135,9 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
          MENUITEM "&Font" ACTION SetFont()
          SEPARATOR
          MENUITEM "&Save Settings" ACTION SaveIni()
+         SEPARATOR
+         MENUITEM "Save &breakpoints" ACTION SaveBreaks()
+         MENUITEM "&Load breakpoints" ACTION LoadBreaks()
       ENDMENU
       MENUITEM "&About" ACTION About()
    ENDMENU
@@ -198,6 +202,7 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
       handl1 := FOpen( cFile + ".d1", FO_READWRITE + FO_SHARED )
       handl2 := FOpen( cFile + ".d2", FO_READ + FO_SHARED )
       IF handl1 != -1 .AND. handl2 != -1
+         cAppName := Lower( CutPath( cFile ) )
       ELSE
          handl1 := handl2 := -1
          hwg_MsgStop( "No connection" )
@@ -261,6 +266,74 @@ Local oInit, oNode
    oIni:Save( cIniPath + "hwgdebug.xml" )
 Return Nil
 
+Static Function SaveBreaks()
+Local oInit, oNode, n := 0, lFound := .F.
+
+   IF Empty( cAppName )
+      Return Nil
+   ENDIF
+   IF Empty( oIni ) .OR. Empty( oIni:aItems )
+      oIni := HXMLDoc():New( "windows-1251" )
+      oIni:Add( oInit := HXMLNode():New( "init" ) )
+   ELSE
+      oInit := oIni:aItems[1]
+   ENDIF
+
+   DO WHILE .T.
+      n ++
+      IF Empty( oNode := oInit:Find( "app", @n ) )
+         EXIT
+      ELSEIF oNode:GetAttribute( "name" ) == cAppName
+         lFound := .T.
+         oNode:aItems := {}
+         EXIT
+      ENDIF
+   ENDDO
+   IF !lFound
+      oInit:Add( oNode := HXMLNode():New( "app",, { { "name",cAppName } } ) )
+   ENDIF
+   FOR n := 1 TO Len( aBP )
+      oNode:Add( HXMLNode():New( "brp", HBXML_TYPE_SINGLE, { { "prg",aBP[n,2] }, { "line",Ltrim(Str(aBP[n,1])) } } ) )
+   NEXT
+   oIni:Save( cIniPath + "hwgdebug.xml" )
+
+Return Nil
+
+Static Function LoadBreaks()
+Local oInit, oNode, n := 0, nLine, cPrg
+
+   IF Empty( cAppName )
+      Return Nil
+   ENDIF
+   IF Empty( oIni ) .OR. Empty( oIni:aItems )
+      Return Nil
+   ENDIF
+
+   oInit := oIni:aItems[1]
+   DO WHILE .T.
+      n ++
+      IF Empty( oNode := oInit:Find( "app", @n ) )
+         EXIT
+      ELSEIF oNode:GetAttribute( "name" ) == cAppName
+         aBPLoad := {}
+         FOR n := 1 TO Len( oNode:aItems )
+            IF oNode:aItems[n]:title == "brp"
+               nLine := Val( oNode:aItems[n]:GetAttribute( "line" ) )
+               cPrg := oNode:aItems[n]:GetAttribute( "prg" )
+               IF getBP( nLine, cPrg ) == 0
+                  Aadd( aBPLoad, { nLine, cPrg } )
+               ENDIF
+            ENDIF
+         NEXT
+         IF !Empty( aBPLoad )
+            nBPLoad := 1
+            AddBreakPoint( aBPLoad[1,2], aBPLoad[1,1] )
+         ENDIF
+         EXIT
+      ENDIF
+   ENDDO
+
+Return Nil
 
 Static Function DebugNewExe( cExe )
 Local hProcess, lFromMenu := .F.
@@ -299,6 +372,7 @@ Local hProcess, lFromMenu := .F.
    handl2 := FOpen( cExe + ".d2", FO_READ + FO_SHARED )
    IF handl1 != -1 .AND. handl2 != -1
       hwg_Enablemenuitem( ,MENU_INIT, .F., .T. )
+      cAppName := Lower( CutPath( cExe ) )
    ELSE
       handl1 := handl2 := -1
       hwg_MsgStop( "No connection" )
@@ -444,6 +518,14 @@ Static nLastSec := 0
                      oEditExpr:SetText( "-- BAD LINE --" )
                   ELSE
                      ToggleBreakPoint( arr[2], arr[3] )
+                  ENDIF
+                  IF !Empty( aBPLoad )
+                     IF ++nBPLoad <= Len(aBPLoad)
+                        AddBreakPoint( aBPLoad[nBPLoad,2], aBPLoad[nBPLoad,1] )
+                        Return Nil
+                     ELSE
+                        aBPLoad := Nil
+                     ENDIF
                   ENDIF
                ELSEIF nAnsType == ANS_STACK
                   IF arr[2] == "stack"
@@ -622,23 +704,31 @@ Local nLine := Val( cLine ), i
    oBrwText:Refresh()
 Return Nil
 
-Static Function AddBreakPoint()
-Local i, nLine := oBrwText:nCurrent
+Static Function AddBreakPoint( cPrg, nLine )
+Local i
 
-   IF nMode != MODE_INPUT
+   IF nMode != MODE_INPUT .AND. Empty( aBPLoad )
       Return Nil
    ENDIF
    IF lAnimate
       lAnimate := .F.
       Return Nil
    ENDIF
-   IF ( i := getBP( nLine ) ) == 0
-      Send( "brp", "add", cPrgName, Ltrim(Str(nLine)) )
-   ELSE
-      Send( "brp", "del", cPrgName, Ltrim(Str(nLine)) )
+   IF cPrg == Nil
+      cPrg := cPrgName
    ENDIF
-   nAnsType := ANS_BRP
-   SetMode( MODE_WAIT_ANS )
+   IF nLine == Nil
+      nLine := oBrwText:nCurrent
+   ENDIF
+   IF ( i := getBP( nLine, cPrg ) ) == 0
+      Send( "brp", "add", cPrg, Ltrim(Str(nLine)) )
+   ELSE
+      Send( "brp", "del", cPrg, Ltrim(Str(nLine)) )
+   ENDIF
+   IF nMode != MODE_WAIT_ANS
+      nAnsType := ANS_BRP
+      SetMode( MODE_WAIT_ANS )
+   ENDIF
    
 Return Nil
 

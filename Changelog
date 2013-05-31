@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-05-31 13:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk\hbrowse.prg
+  * gtk\htimer.prg
+  * gtk\htool.prg
+  * gtk\samples\dbview.prg
+    * Some fixes ( thanks to Alain Aupeix )
+  * utils\debugger\hwgdebug.prg
+    ! Small fix
+    * Save/Load breakpoints added.
+
 2013-05-31 10:01 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
   * samples/database/dbview.prg
     ! fix the hb_SetCodepage -> HB_CDPSELECT, ErrorMessage -> hwg_ErrMsg

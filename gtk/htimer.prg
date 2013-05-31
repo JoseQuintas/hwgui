@@ -21,6 +21,7 @@ CLASS HTimer INHERIT HObject
    DATA value
    DATA oParent
    DATA bAction
+   DATA name
 
    METHOD New( oParent, id, value, bAction )
    METHOD End()

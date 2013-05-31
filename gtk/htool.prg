@@ -26,6 +26,7 @@ CLASS HToolBar INHERIT HControl
    Data bClick, cTooltip
 
    DATA lPress INIT .F.
+   DATA lVertical  INIT .F.
    DATA lFlat
    DATA nOrder
    Data aItem init {}
@@ -49,13 +50,15 @@ CLASS HToolBar INHERIT HControl
 ENDCLASS
 
 
-METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp ,aitem) CLASS hToolBar
+METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
+                  bSize, bPaint, ctooltip, tcolor, bcolor, lTransp , lVertical, aItem ) CLASS hToolBar
+
    Default  aItem to {}
    ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )
 
-   ::aitem := aItem
+   ::aItem := aItem
+   ::lVertical := IIF( lVertical != NIL .AND. VALTYPE( lVertical ) = "L", lVertical, ::lVertical )
 
    ::Activate()
 

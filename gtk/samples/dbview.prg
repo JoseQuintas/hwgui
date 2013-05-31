@@ -113,7 +113,7 @@ Local mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
 Local fname := hwg_Selectfile( "xBase files( *.dbf )", "*.dbf", mypath )
 Memvar oBrw, oSay1, oSay2, DataCP, currentCP, currFname
 
-   IF !Empty( fname )
+   IF Valtype( fname ) == "C"
       close all
       
       IF DataCP != Nil

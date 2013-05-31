@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-05-31 10:01 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
+  * samples/database/dbview.prg
+    ! fix the hb_SetCodepage -> HB_CDPSELECT, ErrorMessage -> hwg_ErrMsg
+
 2013-05-30 16:48 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/debugger/hwgdebug.prg
     ! Small fix

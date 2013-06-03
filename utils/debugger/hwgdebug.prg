@@ -860,7 +860,7 @@ Local cExp := Trim( oEditExpr:GetText() )
 Return Nil
 
 Static FUNCTION StackToggle()
-Local lStack := hwg_Ischeckedmenuitem( ,MENU_STACK )
+Local oBrw, lStack := hwg_Ischeckedmenuitem( ,MENU_STACK )
 Local bEnter := {|o| 
    IF Lower(cPrgName) != Lower(o:aArray[o:nCurrent,1])
       cPrgName := o:aArray[o:nCurrent,1]
@@ -872,6 +872,7 @@ Local bEnter := {|o|
       hwg_VScrollPos( oBrwText, 0, .F. )
       oBrwText:Refresh()
    ENDIF
+   Return .T.
    }
 Local bClose := {|| 
    hwg_Checkmenuitem(,MENU_STACK,.F.)
@@ -931,7 +932,7 @@ Local oBrw, i, nLen := Val( arr[n] )
 Return Nil
 
 Static FUNCTION LocalsToggle()
-Local lLocals := hwg_Ischeckedmenuitem( ,MENU_LOCAL )
+Local oBrw, lLocals := hwg_Ischeckedmenuitem( ,MENU_LOCAL )
 Local bClose := {|| 
    hwg_Checkmenuitem(,MENU_LOCAL,.F.)
    oLocalsDlg := Nil
@@ -989,7 +990,7 @@ Local oBrw, i, nLen := Val( arr[n] )
 Return Nil
 
 Static FUNCTION WatchesToggle()
-Local lWatches := hwg_Ischeckedmenuitem( ,MENU_LOCAL )
+Local oBrw, lWatches := hwg_Ischeckedmenuitem( ,MENU_WATCH )
 Local bClose := {|| 
    hwg_Checkmenuitem(,MENU_WATCH,.F.)
    oWatchDlg := Nil
@@ -1073,7 +1074,7 @@ Local n := oWatchDlg:aControls[1]:nCurrent
 Return Nil
 
 Static FUNCTION AreasToggle()
-Local oSayRdd
+Local oBrw, oSayRdd
 Local bChgPos := {|o|
    IF Empty( o:aArray )
       oSayRdd:SetValue( "No Workareas in use..." )
@@ -1083,6 +1084,7 @@ Local bChgPos := {|o|
             "Filter: " + o:aArray[o:nCurrent,10] + Chr(13)+Chr(10) +  ;
             "Order: " + o:aArray[o:nCurrent,11] + ", " + o:aArray[o:nCurrent,12] )
    ENDIF
+   Return .T.
    }
 
    IF !Empty( oAreasDlg )
@@ -1154,6 +1156,7 @@ Static FUNCTION SetFont( oFont )
 Return Nil
 
 Static FUNCTION About()
+Local oDlg
 
    INIT DIALOG oDlg TITLE "About" AT 0, 0 SIZE 340, 170 ;
         FONT HWindow():GetMain():oFont ;

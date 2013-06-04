@@ -738,7 +738,7 @@ Local arr, i, cFull
    IF !Empty( cRes ) .OR. !Empty( cRes := hu_Get( "Path to source files", "@S256", cPaths ) )
       cPaths := Iif( Left( cRes,1 ) != ";", ";" + cRes, cRes )
       arr := hb_aTokens( cPaths, ";" )
-      IF Empty( oBrwText:aArray ) .AND. !Empty( cPrgName )
+      IF !Empty( cPrgName )
          FOR i := 1 TO Len( arr )
             cFull := arr[i] + ;
                Iif( Right( arr[i],1 ) $ "\/", "", hb_OsPathSeparator() ) + cPrgName
@@ -764,6 +764,9 @@ Local cBuff, cNewLine := Chr(13)+Chr(10), i
 
    IF cName == Nil; cName := cPrgName; ENDIF
 
+   IF ( oBrwText:cargo == cName )
+      Return .T.
+   ENDIF
    IF File( cName ) .AND. !Empty( cBuff := MemoRead( cName ) )
       IF !( cNewLine $ cBuff )
          cNewLine := Chr(10)
@@ -778,11 +781,13 @@ Local cBuff, cNewLine := Chr(13)+Chr(10), i
       NEXT
       hwg_Invalidaterect( oBrwText:handle, 1 )
       oBrwText:Refresh()
+      oBrwText:cargo := cName
       Return .T.
    ELSEIF !Empty( lClear )
       oBrwText:aArray := {}
       hwg_Invalidaterect( oBrwText:handle, 1 )
       oBrwText:Refresh()
+      oBrwText:cargo := ""
    ENDIF
 
 Return .F.

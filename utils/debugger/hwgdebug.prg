@@ -742,7 +742,7 @@ Local arr, i, cFull
       IF !Empty( cPrgName )
          FOR i := 1 TO Len( arr )
             cFull := arr[i] + ;
-               Iif( Right( arr[i],1 ) $ "\/", "", hb_OsPathSeparator() ) + cPrgName
+               Iif( Empty(arr[i]).OR.Right( arr[i],1 ) $ "\/", "", hb_OsPathSeparator() ) + cPrgName
             IF SetBrwText( cFull, lClear )
                EXIT
             ENDIF
@@ -1164,7 +1164,7 @@ Local oDlg
         STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + DS_CENTER
 
    @ 20,30 SAY "HwGUI Debugger" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
-   @ 20,60 SAY "Version 1.02" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+   @ 20,60 SAY "Version 1.03" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
 #if !defined( __PLATFORM__UNIX )
    @ 20,90 SAY "http://www.kresin.ru/debugger.html" ;

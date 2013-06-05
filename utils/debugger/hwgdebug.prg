@@ -66,7 +66,7 @@ STATIC cTextLocate, nLineLocate
 STATIC oTimer, oSayState, oEditExpr, oBtnExp, oMainFont
 STATIC oBrwRes
 STATIC oStackDlg, oLocalsDlg, oWatchDlg, oAreasDlg
-STATIC oBrwText
+STATIC oText
 STATIC cPaths := ";"
 
 STATIC aBP := {}
@@ -142,23 +142,23 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
       MENUITEM "&About" ACTION About()
    ENDMENU
 
-   @ 0,0 BROWSE oBrwText ARRAY SIZE 600,436  ;
+   @ 0,0 BROWSE oText ARRAY SIZE 600,436  ;
        FONT oMainFont STYLE WS_BORDER+WS_VSCROLL ;
        ON SIZE {|o,x,y|o:Move(,,x,y-108)}
        
-   oBrwText:aArray := {}
+   oText:aArray := {}
 
-   oBrwText:AddColumn( HColumn():New( "",{|v,o|Iif(o:nCurrent==nCurrLine,'>',Iif(getBP(o:nCurrent)!=0,'#',' '))},"C",2,0 ) )
-   oBrwText:aColumns[1]:oFont := oMainFont:SetFontStyle( .T. )
-   oBrwText:aColumns[1]:bColorBlock := {||Iif(getBP(oBrwText:nCurrent)!=0, { 65535, 255, 16777215, 255 }, { oBrwText:tColor, oBrwText:bColor, oBrwText:tColorSel, oBrwText:bColorSel } )}
+   oText:AddColumn( HColumn():New( "",{|v,o|Iif(o:nCurrent==nCurrLine,'>',Iif(getBP(o:nCurrent)!=0,'#',' '))},"C",2,0 ) )
+   oText:aColumns[1]:oFont := oMainFont:SetFontStyle( .T. )
+   oText:aColumns[1]:bColorBlock := {||Iif(getBP(oText:nCurrent)!=0, { 65535, 255, 16777215, 255 }, { oText:tColor, oText:bColor, oText:tColorSel, oText:bColorSel } )}
 
-   oBrwText:AddColumn( HColumn():New( "",{|v,o|o:nCurrent},"N",5,0 ) )
-   oBrwText:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent]},"C",80,0 ) )
+   oText:AddColumn( HColumn():New( "",{|v,o|o:nCurrent},"N",5,0 ) )
+   oText:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent]},"C",80,0 ) )
 
-   oBrwText:bEnter:= {||AddBreakPoint()}
-   oBrwText:lDispHead := .F.
-   oBrwText:bcolorSel := oBrwText:htbcolor := CLR_LGREEN
-   oBrwText:tcolorSel := 0
+   oText:bEnter:= {||AddBreakPoint()}
+   oText:lDispHead := .F.
+   oText:bcolorSel := oText:htbcolor := CLR_LGREEN
+   oText:tcolorSel := 0
 
    @ 4,444 BROWSE oBrwRes ARRAY SIZE 592,72 STYLE WS_BORDER + WS_VSCROLL ;
        ON SIZE {|o,x,y|o:Move(,y-104,x-8)}
@@ -421,20 +421,24 @@ Local n, s := "", arr
 Return Nil
 
 Static Function SetCurrLine( nLine )
-Local nLine1 := oBrwText:nCurrent - oBrwText:rowPos + 1
-   oBrwText:nCurrent := nLine
-   IF nLine < nLine1 .OR. nLine > nLine1 + oBrwText:rowCount - 1
-      oBrwText:rowPos := Int( oBrwText:rowCount / 2 )
+Local nLine1
+
+   IF !Empty( oText:aArray )
+      nLine1 := oText:nCurrent - oText:rowPos + 1
+      oText:nCurrent := nLine
+      IF nLine < nLine1 .OR. nLine > nLine1 + oText:rowCount - 1
+         oText:rowPos := Int( oText:rowCount / 2 )
+      ENDIF
+      IF oText:rowPos > nLine
+         oText:rowPos := nLine
+      ENDIF
+      hwg_VScrollPos( oText, 0, .F. )
+      oText:Refresh()
    ENDIF
-   IF oBrwText:rowPos > nLine
-      oBrwText:rowPos := nLine
-   ENDIF
-   hwg_VScrollPos( oBrwText, 0, .F. )
-   oBrwText:Refresh()
 Return Nil
 
 Static Function Locate( nDir )
-Local i, arr := oBrwText:aArray
+Local i, arr := oText:aArray
 
    IF Empty( arr )
       Return Nil
@@ -478,7 +482,7 @@ Local i, arr := oBrwText:aArray
 Return Nil
 
 Static Function Funclist()
-Local i, arr := oBrwText:aArray, cLine, cfirst, cSecond, nSkip, arrfnc := {}
+Local i, arr := oText:aArray, cLine, cfirst, cSecond, nSkip, arrfnc := {}
 
    IF Empty( arr )
       Return Nil
@@ -558,10 +562,7 @@ Static nLastSec := 0
                      cPrgName := arr[2]
                      SetPath( cPaths )
                   ENDIF
-                  nCurrLine := Val( arr[3] )
-                  IF !Empty( oBrwText:aArray )
-                     SetCurrLine( nCurrLine )
-                  ENDIF
+                  SetCurrLine( nCurrLine := Val( arr[3] ) )
                   n := 4
                   DO WHILE .T.
                      IF arr[n] == "ver"
@@ -616,7 +617,7 @@ Local aStates := { { "Input",16711680,CLR_LGREEN }, { "Init",16777215,CLR_DBLUE 
       IF newMode == MODE_WAIT_ANS .OR. newMode == MODE_WAIT_BR
          IF newMode == MODE_WAIT_BR
             nCurrLine := 0
-            oBrwText:Refresh()
+            oText:Refresh()
          ENDIF
       ENDIF
    ENDIF
@@ -655,7 +656,7 @@ Static Function DoCommand( nCmd )
       ELSEIF nCmd == CMD_STEP
          Send( "cmd", "step" )
       ELSEIF nCmd == CMD_TOCURS
-         Send( "cmd", "to", cPrgName, Ltrim(Str(oBrwText:nCurrent)) )
+         Send( "cmd", "to", cPrgName, Ltrim(Str(oText:nCurrent)) )
       ELSEIF nCmd == CMD_TRACE
          Send( "cmd", "trace" )
       ELSEIF nCmd == CMD_NEXTR
@@ -701,7 +702,7 @@ Local nLine := Val( cLine ), i
          aBP[i,1] := 0
       ENDIF
    ENDIF
-   oBrwText:Refresh()
+   oText:Refresh()
 Return Nil
 
 Static Function AddBreakPoint( cPrg, nLine )
@@ -718,7 +719,7 @@ Local i
       cPrg := cPrgName
    ENDIF
    IF nLine == Nil
-      nLine := oBrwText:nCurrent
+      nLine := oText:nCurrent
    ENDIF
    IF ( i := getBP( nLine, cPrg ) ) == 0
       Send( "brp", "add", cPrg, Ltrim(Str(nLine)) )
@@ -764,7 +765,7 @@ Local cBuff, cNewLine := Chr(13)+Chr(10), i
 
    IF cName == Nil; cName := cPrgName; ENDIF
 
-   IF ( oBrwText:cargo == cName )
+   IF ( oText:cargo == cName )
       Return .T.
    ENDIF
    IF File( cName ) .AND. !Empty( cBuff := MemoRead( cName ) )
@@ -773,21 +774,21 @@ Local cBuff, cNewLine := Chr(13)+Chr(10), i
       ENDIF
       cCurrPath := FilePath( cName )
       cPrgName := CutPath( cName )
-      oBrwText:aArray := hb_aTokens( cBuff, cNewLine )
-      FOR i := 1 TO Len( oBrwText:aArray )
-         IF Chr(9) $ oBrwText:aArray[i]
-            oBrwText:aArray[i] := StrTran( oBrwText:aArray[i], Chr(9), Space(4) )
+      oText:aArray := hb_aTokens( cBuff, cNewLine )
+      FOR i := 1 TO Len( oText:aArray )
+         IF Chr(9) $ oText:aArray[i]
+            oText:aArray[i] := StrTran( oText:aArray[i], Chr(9), Space(4) )
          ENDIF
       NEXT
-      hwg_Invalidaterect( oBrwText:handle, 1 )
-      oBrwText:Refresh()
-      oBrwText:cargo := cName
+      hwg_Invalidaterect( oText:handle, 1 )
+      oText:Refresh()
+      oText:cargo := cName
       Return .T.
    ELSEIF !Empty( lClear )
-      oBrwText:aArray := {}
-      hwg_Invalidaterect( oBrwText:handle, 1 )
-      oBrwText:Refresh()
-      oBrwText:cargo := ""
+      oText:aArray := {}
+      hwg_Invalidaterect( oText:handle, 1 )
+      oText:Refresh()
+      oText:cargo := ""
    ENDIF
 
 Return .F.
@@ -871,12 +872,7 @@ Local bEnter := {|o|
       cPrgName := o:aArray[o:nCurrent,1]
       SetPath( cPaths,.T. )
    ENDIF
-   IF !Empty( oBrwText:aArray )
-      oBrwText:nCurrent := Val( o:aArray[o:nCurrent,3] )
-      oBrwText:rowPos := Int( oBrwText:rowCount / 2 )
-      hwg_VScrollPos( oBrwText, 0, .F. )
-      oBrwText:Refresh()
-   ENDIF
+   SetCurrLine( Val( o:aArray[o:nCurrent,3] ) )
    Return .T.
    }
 Local bClose := {|| 
@@ -1151,9 +1147,9 @@ Return Nil
 Static FUNCTION SetFont( oFont )
 
    IF !Empty( oFont ) .OR. !Empty( oFont := HFont():Select( HWindow():GetMain():oFont ) )
-      oMainFont := oBrwText:oFont := oBrwRes:oFont := HWindow():GetMain():oFont := oFont
-      oBrwText:lChanged := .T.
-      oBrwText:Refresh()
+      oMainFont := oText:oFont := oBrwRes:oFont := HWindow():GetMain():oFont := oFont
+      oText:lChanged := .T.
+      oText:Refresh()
       oBrwRes:lChanged := .T.
       oBrwRes:lChanged := .T.
       oBrwRes:Refresh()

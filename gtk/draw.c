@@ -103,9 +103,9 @@ HB_FUNC( HWG_PIE )
 HB_FUNC( HWG_ELLIPSE )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
-   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
+   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 ), x2 = hb_parni( 4 ), y2 = hb_parni( 5 );
 
-   cairo_arc( hDC->cr, (double)x1, (double)y1, (double) hb_parni(4)-x1+1, 2 * 3.14, 2 * 3.14 );
+   cairo_arc( hDC->cr, (double)x1+(x2-x1)/2, (double)y1+(y2-y1)/2, (double) (x2-x1)/2, 0, 6.28 );
    cairo_stroke( hDC->cr );
 }
 

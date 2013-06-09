@@ -23,6 +23,10 @@
 #define CMD_TOCURS      6
 #define CMD_EXIT        7
 #define CMD_STACK       8
+#define CMD_EXP         9
+#define CMD_LOCAL      10
+#define CMD_WATCH      11
+#define CMD_AREA       12
 
 #define BUFF_LEN     1024
 #define RES_LEN       100
@@ -77,6 +81,7 @@ STATIC nMode, nAnsType
 STATIC aBPLoad, nBPLoad
 STATIC lAnimate := .F., nAnimate := 3
 
+STATIC lDebugging := .F.
 STATIC nExitMode := 1
 STATIC cVerProto := 0
 
@@ -101,7 +106,6 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
       MENU TITLE "&File"
          MENUITEM "Debug program" ID MENU_INIT ACTION DebugNewExe()
          SEPARATOR
-         MENUITEM "Set Path" ACTION SetPath()
          MENUITEM "Open prg" ACTION OpenPrg()
          SEPARATOR
          MENUITEM "&Close debugger" ID MENU_EXIT ACTION DoCommand( CMD_EXIT )
@@ -122,18 +126,20 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
          MENUITEM "Work&Areas"+Chr(9)+"F6" ACTION AreasToggle() ACCELERATOR 0,VK_F6
       ENDMENU
       MENU ID MENU_RUN TITLE "&Run"
-         MENUITEM "&Animate" ACTION Animate()
          MENUITEM "&Go"+Chr(9)+"F5" ACTION DoCommand( CMD_GO ) ACCELERATOR 0,VK_F5
          MENUITEM "&Step"+Chr(9)+"F8" ACTION DoCommand( CMD_STEP ) ACCELERATOR 0,VK_F8
          MENUITEM "To &cursor"+Chr(9)+"F7" ACTION DoCommand( CMD_TOCURS ) ACCELERATOR 0,VK_F7
          MENUITEM "&Trace"+Chr(9)+"F10" ACTION DoCommand( CMD_TRACE ) ACCELERATOR 0,VK_F10
          MENUITEM "&Next Routine"+Chr(9)+"Ctrl+F5" ACTION DoCommand( CMD_NEXTR ) ACCELERATOR FCONTROL,VK_F5
+         SEPARATOR
+         MENUITEM "&Animate" ACTION Animate()
       ENDMENU
       MENU ID MENU_BRP TITLE "&BreakPoints"
          MENUITEM "&Add"+Chr(9)+"F9" ACTION AddBreakPoint() ACCELERATOR 0,VK_F9
          MENUITEM "&Delete"+Chr(9)+"F9" ACTION AddBreakPoint()
       ENDMENU
       MENU TITLE "&Options"
+         MENUITEM "Set Path" ACTION SetPath()
          MENUITEM "&Font" ACTION SetFont()
          SEPARATOR
          MENUITEM "&Save Settings" ACTION SaveIni()
@@ -184,7 +190,6 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
    NEXT
 
    IF !Empty( cFile )
-      hwg_Enablemenuitem( ,MENU_INIT, .F., .T. )
       handl1 := FOpen( cFile + ".d1", FO_READWRITE + FO_SHARED )
       handl2 := FOpen( cFile + ".d2", FO_READ + FO_SHARED )
       IF handl1 != -1 .AND. handl2 != -1
@@ -357,7 +362,6 @@ Local hProcess, lFromMenu := .F.
    handl1 := FOpen( cExe + ".d1", FO_READWRITE + FO_SHARED )
    handl2 := FOpen( cExe + ".d2", FO_READ + FO_SHARED )
    IF handl1 != -1 .AND. handl2 != -1
-      hwg_Enablemenuitem( ,MENU_INIT, .F., .T. )
       cAppName := Lower( CutPath( cExe ) )
    ELSE
       handl1 := handl2 := -1
@@ -382,7 +386,6 @@ Local lFromMenu := .F.
    handl1 := FOpen( cDir + ".d1", FO_READWRITE + FO_SHARED )
    handl2 := FOpen( cDir + ".d2", FO_READ + FO_SHARED )
    IF handl1 != -1 .AND. handl2 != -1
-      hwg_Enablemenuitem( ,MENU_INIT, .F., .T. )
    ELSE
       handl1 := handl2 := -1
       hwg_MsgStop( "No connection" )
@@ -412,9 +415,9 @@ Static Function CreateTextCtrl
    //@ 0, 0 HCEDIT oText SIZE 600, 436 FONT oMainFont STYLE WS_BORDER
    oText := HCEdit():New( ,,, 0, 0, 600, 436, oMainFont )
 
+   oText:lReadOnly := .T.
    oText:bSize := {|o,x,y|o:Move(,,x,y-108)}
-   oText:oHili := Hilight():New( cIniPath+"hilight.xml", "prg" )
-   oText:lReadOnly := oText:lShowNumbers := .T.
+   oText:oHili := Hilight():New( cIniPath+"hilight.xml", "prg" )  
    oText:bPaint := {|o,h,n,y1,y2| onTxtPaint( o,h,n,y1,y2 ) }
    oText:bKeyDown:= {|o,n|Iif(n==120.or.n==13,AddBreakPoint(),.T.)}
    oText:bClickDoub:= {||AddBreakPoint()}
@@ -444,6 +447,11 @@ Local y
 Return Nil
 
 Static Function SetCurrLine( nLine )
+    IF !lDebugging
+       lDebugging := .T.
+       oText:lShowNumbers := .T.
+    ENDIF
+
 Return oText:GoTo( nLine )
 
 Static Function SetText( cName, lClear )
@@ -503,6 +511,10 @@ Return Nil
 
 Static Function SetCurrLine( nLine )
 Local nLine1
+
+   IF !lDebugging
+      lDebugging := .T.
+   ENDIF
 
    IF !Empty( oText:aArray )
       nLine1 := oText:nCurrent - oText:rowPos + 1
@@ -763,39 +775,80 @@ Local n := hu_Get( "Seconds:", "9", nAnimate )
    IF !Empty( n )
       nAnimate := n
       lAnimate := .T.
-      Send( "cmd", "step" )
-      SetMode( MODE_WAIT_BR )
+      DoCommand( CMD_STEP )
    ENDIF
 Return Nil
 
-Static Function DoCommand( nCmd )
+Static Function DoCommand( nCmd, cDop, cDop2 )
 
    IF nMode == MODE_INPUT
       lAnimate := .F.
       IF nCmd == CMD_GO
          hwg_Setwindowtext( HWindow():GetMain():handle, "Debugger ("+cPrgName+")" )
          Send( "cmd", "go" )
+
       ELSEIF nCmd == CMD_STEP
          Send( "cmd", "step" )
+
       ELSEIF nCmd == CMD_TOCURS
          Send( "cmd", "to", cPrgName, Ltrim(Str(GetCurrLine())) )
+
       ELSEIF nCmd == CMD_TRACE
          Send( "cmd", "trace" )
+
       ELSEIF nCmd == CMD_NEXTR
          Send( "cmd", "nextr" )
+
+      ELSEIF nCmd == CMD_EXP
+         Send( "exp", cDop )
+         nAnsType := ANS_CALC
+         SetMode( MODE_WAIT_ANS )
+         Return Nil
+
+      ELSEIF nCmd == CMD_STACK
+         Send( "view", "stack", cDop )
+         nAnsType := ANS_STACK
+         SetMode( MODE_WAIT_ANS )
+         Return Nil
+
+      ELSEIF nCmd == CMD_LOCAL
+         Send( "view", "local", cDop )
+         nAnsType := ANS_LOCAL
+         SetMode( MODE_WAIT_ANS )
+         Return Nil
+
+      ELSEIF nCmd == CMD_WATCH
+         IF Empty( cDop2 )
+            Send( "view", "watch", cDop )
+         ELSE
+            Send( "watch", cDop, cDop2 )
+         ENDIF
+         nAnsType := ANS_WATCH
+         SetMode( MODE_WAIT_ANS )
+         Return Nil
+
+      ELSEIF nCmd == CMD_AREA
+         Send( "view", "areas" )
+         nAnsType := ANS_AREAS
+         SetMode( MODE_WAIT_ANS )
+         Return Nil
+
       ELSEIF nCmd == CMD_QUIT
          nExitMode := 2
          hwg_EndWindow()
          Return Nil
+
       ELSEIF nCmd == CMD_EXIT
          nExitMode := 1
          hwg_EndWindow()
          Return Nil
+
       ENDIF
       SetMode( MODE_WAIT_BR )
    ELSEIF nCmd == CMD_EXIT
       nExitMode := 1
       hwg_EndWindow()
+
    ENDIF
 Return Nil
 
@@ -946,10 +999,8 @@ Local cExp := Trim( oEditExpr:GetText() )
          oBrwRes:aArray[RES_LEN] := { "", cExp }
       ENDIF
       PrevExpr( 0 )
-      Send( "exp", Str2Hex( cExp ) )
       oEditExpr:SetText( "" )
-      nAnsType := ANS_CALC
-      SetMode( MODE_WAIT_ANS )
+      DoCommand( CMD_EXP, Str2Hex( cExp ) )
    ENDIF
 
 Return Nil
@@ -967,9 +1018,7 @@ Local bEnter := {|o|
 Local bClose := {|| 
    hwg_Checkmenuitem(,MENU_STACK,.F.)
    oStackDlg:=Nil
-   Send( "view", "stack", "off" )
-   nAnsType := ANS_STACK
-   SetMode( MODE_WAIT_ANS )
+   DoCommand( CMD_STACK, "off" )
    Return .T.
    }
 
@@ -996,9 +1045,7 @@ Local bClose := {||
 
       ACTIVATE DIALOG oStackDlg NOMODAL
 
-      Send( "view", "stack", "on" )
-      nAnsType := ANS_STACK
-      SetMode( MODE_WAIT_ANS )
+      DoCommand( CMD_STACK, "on" )
       hwg_Checkmenuitem( ,MENU_STACK, .T. )
    ENDIF
 
@@ -1026,9 +1073,7 @@ Local oBrw, lLocals := hwg_Ischeckedmenuitem( ,MENU_LOCAL )
 Local bClose := {|| 
    hwg_Checkmenuitem(,MENU_LOCAL,.F.)
    oLocalsDlg := Nil
-   Send( "view", "local", "off" )
-   nAnsType := ANS_LOCAL
-   SetMode( MODE_WAIT_ANS )
+   DoCommand( CMD_LOCAL, "off" )
    Return .T.
    }
 
@@ -1054,9 +1099,7 @@ Local bClose := {||
 
       ACTIVATE DIALOG oLocalsDlg NOMODAL
 
-      Send( "view", "local", "on" )
-      nAnsType := ANS_LOCAL
-      SetMode( MODE_WAIT_ANS )
+      DoCommand( CMD_LOCAL, "on" )
       hwg_Checkmenuitem( ,MENU_LOCAL, .T. )
    ENDIF
 
@@ -1084,9 +1127,7 @@ Local oBrw, lWatches := hwg_Ischeckedmenuitem( ,MENU_WATCH )
 Local bClose := {|| 
    hwg_Checkmenuitem(,MENU_WATCH,.F.)
    oWatchDlg := Nil
-   Send( "view", "watch", "off" )
-   nAnsType := ANS_WATCH
-   SetMode( MODE_WAIT_ANS )
+   DoCommand( CMD_WATCH, "off" )
    Return .T.
    }
 
@@ -1116,9 +1157,7 @@ Local bClose := {||
 
       ACTIVATE DIALOG oWatchDlg NOMODAL
 
-      Send( "view", "watch", "on" )
-      nAnsType := ANS_WATCH
-      SetMode( MODE_WAIT_ANS )
+      DoCommand( CMD_WATCH, "on" )
       hwg_Checkmenuitem( ,MENU_WATCH, .T. )
    ENDIF
 
@@ -1141,9 +1180,7 @@ Local cExpr
 
    IF !Empty( cExpr := hu_Get( "Watch expression", "@S256", "" ) )
       Aadd( aWatches, { cExpr, "" } )
-      Send( "watch", "add", Str2Hex( cExpr ) )
-      nAnsType := ANS_WATCH
-      SetMode( MODE_WAIT_ANS )
+      DoCommand( CMD_WATCH, "add", Str2Hex( cExpr ) )
    ENDIF
 Return Nil
 
@@ -1157,9 +1194,7 @@ Local n := oWatchDlg:aControls[1]:nCurrent
          ADel( aWatches, n )
          oWatchDlg:aControls[1]:aArray := ASize( aWatches, Len( aWatches ) - 1 )
       ENDIF
-      Send( "watch", "del", Ltrim(Str( n )) )
-      nAnsType := ANS_WATCH
-      SetMode( MODE_WAIT_ANS )
+      DoCommand( CMD_WATCH, "del", Ltrim(Str( n )) )
    ENDIF
 Return Nil
 
@@ -1205,14 +1240,12 @@ Local bChgPos := {|o|
 
    @ 10,264 SAY oSayRdd CAPTION "" SIZE 460,80 STYLE WS_BORDER BACKCOLOR CLR_LIGHT1 ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
 
-   @ 60, 360 BUTTON "Refresh" ON CLICK {|| Send("view","areas"),nAnsType:=ANS_AREAS,SetMode(MODE_WAIT_ANS) } SIZE 100, 28 ON SIZE ANCHOR_BOTTOMABS
+   @ 60, 360 BUTTON "Refresh" ON CLICK {|| DoCommand( CMD_AREA ) } SIZE 100, 28 ON SIZE ANCHOR_BOTTOMABS
    @ 320, 360 BUTTON "Close" ON CLICK {|| oAreasDlg:Close() } SIZE 100, 28 ON SIZE ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
 
    ACTIVATE DIALOG oAreasDlg NOMODAL
 
-   Send( "view", "areas" )
-   nAnsType := ANS_AREAS
-   SetMode( MODE_WAIT_ANS )
+   DoCommand( CMD_AREA )
 
 Return Nil
 

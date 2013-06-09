@@ -1,4 +1,5 @@
                             Debugger for Harbour
+                                Version 1.02
                             ~~~~~~~~~~~~~~~~~~~~
 
          1. Introduction
@@ -129,6 +130,12 @@
   if you double click on any line in the input window appears appropriate for 
   this outcome expression.
 
+         Hwgdebug.xml is created in the same directory as the
+  executable hwgdebug.exe, when you do a menu item Options/Save Settings or
+  Options/Save Breakpoints.
+  For now the path to the source files and font are saved there 
+  ( and is read when you start the debugger ). Also, you may save breakpoints
+  and then load them.
 
 Alexander S.Kresin
 alex@kresin.ru

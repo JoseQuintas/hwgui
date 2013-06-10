@@ -240,11 +240,19 @@ Local iItem, iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )
 Return 1
 
 Static Function onSize( oWnd,wParam,lParam )
-Local aControls := oWnd:aControls, oItem
+Local aControls := oWnd:aControls, oItem, x, y
 
    FOR EACH oItem in aControls
        IF oItem:bSize != Nil
-          Eval( oItem:bSize, oItem, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+          IF wParam != 0
+             x := wParam
+             y := lParam
+          ELSE
+             x := hwg_Loword( lParam )
+             y := hwg_Hiword( lParam )
+          ENDIF
+          Eval( oItem:bSize, oItem, x, y )
+          onSize( oItem, oItem:nWidth, oItem:nHeight )
        ENDIF
    NEXT
 Return 0

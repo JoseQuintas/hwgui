@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HTab class
  *
- * Copyright 2005 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2005 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "hwgui.ch"
@@ -28,9 +28,9 @@ CLASS HTab INHERIT HControl
    DATA  oTemp
    DATA  bAction
 
-   METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC,;
-                  bClick, bGetFocus, bLostFocus )
+   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+      oFont, bInit, bSize, bPaint, aTabs, bChange, aImages, lResour, nBC, ;
+      bClick, bGetFocus, bLostFocus )
    METHOD Activate()
    METHOD Init()
    METHOD SetTab( n )
@@ -39,85 +39,89 @@ CLASS HTab INHERIT HControl
    METHOD ChangePage( nPage )
    METHOD HidePage( nPage )
    METHOD ShowPage( nPage )
-   METHOD GetActivePage( nFirst,nEnd )
+   METHOD GetActivePage( nFirst, nEnd )
+   METHOD DeletePage( nPage )
 
    HIDDEN:
-     DATA  nActive  INIT 0         // Active Page
+   DATA  nActive  INIT 0         // Active Page
 
 ENDCLASS
 
-METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  oFont,bInit,bSize,bPaint,aTabs,bChange,aImages,lResour,nBC,bClick, bGetFocus, bLostFocus  ) CLASS HTab
-LOCAL i, aBmpSize
+METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+      oFont, bInit, bSize, bPaint, aTabs, bChange, aImages, lResour, nBC, bClick, bGetFocus, bLostFocus  ) CLASS HTab
+   LOCAL i, aBmpSize
 
-   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  bSize,bPaint )
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+      bSize, bPaint )
 
    ::title   := ""
-   ::oFont   := Iif( oFont==Nil, ::oParent:oFont, oFont )
-   ::aTabs   := Iif( aTabs==Nil,{},aTabs )
+   ::oFont   := iif( oFont == Nil, ::oParent:oFont, oFont )
+   ::aTabs   := iif( aTabs == Nil, {}, aTabs )
    ::bChange := bChange
 
    ::bChange2 := bChange
 
-   ::bGetFocus :=IIf( bGetFocus==Nil, Nil, bGetFocus)
-   ::bLostFocus:=IIf( bLostFocus==Nil, Nil, bLostFocus)
-   ::bAction   :=IIf( bClick==Nil, Nil, bClick)
+   ::bGetFocus := iif( bGetFocus == Nil, Nil, bGetFocus )
+   ::bLostFocus := iif( bLostFocus == Nil, Nil, bLostFocus )
+   ::bAction   := iif( bClick == Nil, Nil, bClick )
 
    ::Activate()
 
-Return Self
+   RETURN Self
 
 METHOD Activate CLASS HTab
 
-   IF !Empty(::oParent:handle )
+   IF !Empty( ::oParent:handle )
       ::handle := hwg_Createtabcontrol( ::oParent:handle, ::id, ;
-                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+         ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
 
       ::Init()
    ENDIF
-Return Nil
+
+   RETURN Nil
 
 METHOD Init() CLASS HTab
-Local i, h
+   LOCAL i, h
 
    IF !::lInit
       ::Super:Init()
       FOR i := 1 TO Len( ::aTabs )
          h := hwg_Addtab( ::handle, ::aTabs[i] )
-	 Aadd( ::aPages, { 0,0,.F.,h } )
+         AAdd( ::aPages, { 0, 0, .F. , h } )
       NEXT
-      
-      hwg_Setwindowobject( ::handle,Self )
+
+      hwg_Setwindowobject( ::handle, Self )
 
       FOR i := 2 TO Len( ::aPages )
          ::HidePage( i )
       NEXT
    ENDIF
 
-Return Nil
+   RETURN Nil
 
 METHOD SetTab( n ) CLASS HTab
-   hwg_Sendmessage( ::handle, TCM_SETCURFOCUS, n-1, 0 )
-Return Nil
+
+   hwg_SetCurrentTab( ::handle, n )
+
+   RETURN Nil
 
 METHOD StartPage( cname ) CLASS HTab
-Local i := Iif( cName==Nil, Len(::aPages)+1, Ascan( ::aTabs,cname ) )
-Local lNew := ( i == 0 )
+   LOCAL i := iif( cName == Nil, Len( ::aPages ) + 1, Ascan( ::aTabs,cname ) )
+   LOCAL lNew := ( i == 0 )
 
    ::oTemp := ::oDefaultParent
    ::oDefaultParent := Self
    IF lNew
-      Aadd( ::aTabs,cname )
+      AAdd( ::aTabs, cname )
       i := Len( ::aTabs )
    ENDIF
    DO WHILE Len( ::aPages ) < i
-      Aadd( ::aPages, { Len( ::aControls ),0,lNew,0 } )
+      AAdd( ::aPages, { Len( ::aControls ), 0, lNew, 0 } )
    ENDDO
    ::nActive := i
-   ::aPages[ i,4 ] := hwg_Addtab( ::handle,::aTabs[i] )
+   ::aPages[ i,4 ] := hwg_Addtab( ::handle, ::aTabs[i] )
 
-Return Nil
+   RETURN Nil
 
 METHOD EndPage() CLASS HTab
 
@@ -130,9 +134,9 @@ METHOD EndPage() CLASS HTab
    ::oDefaultParent := ::oTemp
    ::oTemp := Nil
 
-   ::bChange = {|o,n|o:ChangePage(n)}
+   ::bChange = { |o, n|o:ChangePage( n ) }
 
-Return Nil
+   RETURN Nil
 
 METHOD ChangePage( nPage ) CLASS HTab
 
@@ -147,13 +151,13 @@ METHOD ChangePage( nPage ) CLASS HTab
    ENDIF
 
    IF ::bChange2 != Nil
-      Eval( ::bChange2,Self,nPage )
+      Eval( ::bChange2, Self, nPage )
    ENDIF
 
-Return Nil
+   RETURN Nil
 
 METHOD HidePage( nPage ) CLASS HTab
-Local i, nFirst, nEnd
+   LOCAL i, nFirst, nEnd
 
    nFirst := ::aPages[ nPage,1 ] + 1
    nEnd   := ::aPages[ nPage,1 ] + ::aPages[ nPage,2 ]
@@ -161,10 +165,10 @@ Local i, nFirst, nEnd
       ::aControls[i]:Hide()
    NEXT
 
-Return Nil
+   RETURN Nil
 
 METHOD ShowPage( nPage ) CLASS HTab
-Local i, nFirst, nEnd
+   LOCAL i, nFirst, nEnd
 
    nFirst := ::aPages[ nPage,1 ] + 1
    nEnd   := ::aPages[ nPage,1 ] + ::aPages[ nPage,2 ]
@@ -172,15 +176,15 @@ Local i, nFirst, nEnd
       ::aControls[i]:Show()
    NEXT
    FOR i := nFirst TO nEnd
-      IF __ObjHasMsg( ::aControls[i],"BSETGET" ) .AND. ::aControls[i]:bSetGet != Nil
+      IF __ObjHasMsg( ::aControls[i], "BSETGET" ) .AND. ::aControls[i]:bSetGet != Nil
          hwg_Setfocus( ::aControls[i]:handle )
-         Exit
+         EXIT
       ENDIF
    NEXT
 
-Return Nil
+   RETURN Nil
 
-METHOD GetActivePage( nFirst,nEnd ) CLASS HTab
+METHOD GetActivePage( nFirst, nEnd ) CLASS HTab
 
    IF !Empty( ::aPages )
       nFirst := ::aPages[ ::nActive,1 ] + 1
@@ -190,5 +194,22 @@ METHOD GetActivePage( nFirst,nEnd ) CLASS HTab
       nEnd   := Len( ::aControls )
    ENDIF
 
-Return ::nActive
+   Return ::nActive
 
+METHOD DeletePage( nPage ) CLASS HTab
+
+   hwg_Deletetab( ::handle, nPage )
+
+   ADel( ::aPages, nPage )
+
+   ASize( ::aPages, Len( ::aPages ) - 1 )
+
+   IF nPage > 1
+      ::nActive := nPage - 1
+      ::SetTab( ::nActive )
+   ELSEIF Len( ::aPages ) > 0
+      ::nActive := 1
+      ::SetTab( 1 )
+   ENDIF
+
+   Return ::nActive

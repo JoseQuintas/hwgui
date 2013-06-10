@@ -536,6 +536,28 @@ HB_FUNC( HWG_ADDTAB )
    HB_RETHANDLE( nb );
 }
 
+HB_FUNC( HWG_DELETETAB )
+{
+   gtk_notebook_remove_page( (GtkNotebook *) HB_PARHANDLE( 1 ),
+         hb_parni(2)-1 );
+}
+
+HB_FUNC( HWG_SETTABNAME )
+{
+   GtkNotebook *nb = ( GtkNotebook * ) HB_PARHANDLE( 1 );
+   gchar *gcTitle = hwg_convert_to_utf8( hb_parc(3) );
+
+   gtk_notebook_set_tab_label_text( nb,
+         gtk_notebook_get_nth_page( nb, hb_parni(2)-1 ), gcTitle );
+   g_free( gcTitle );
+}
+
+HB_FUNC( HWG_SETCURRENTTAB )
+{
+   gtk_notebook_set_current_page( (GtkNotebook *) HB_PARHANDLE( 1 ),
+         hb_parni(2)-1 );
+}
+
 HB_FUNC( HWG_GETCURRENTTAB )
 {
    hb_retni( gtk_notebook_get_current_page( ( GtkNotebook * )
@@ -885,25 +907,12 @@ static void tabchange_clicked( GtkNotebook * item,
    hb_itemRelease( Disk );
 }
 
-//static void tabchange_clicked1(GtkNotebook *item,
-//                               gint pagenum,
-//                               gpointer user_data)
-//{
-//  PHB_ITEM pData = (PHB_ITEM) user_data;
-//  gpointer dwNewLong = g_object_get_data( (GObject*) item, "obj" );
-//  PHB_ITEM pObject = (PHB_ITEM) dwNewLong ;
-//  PHB_ITEM Disk=hb_itemPutNL( NULL, pagenum);
-//  hb_vmEvalBlockV( ( PHB_ITEM ) pData ,2,pObject,Disk);           
-//  hb_vmEvalBlockV( ChangeDiskBlock, 1, Disk  );
-//  hb_itemRelease( Disk );
-//}
-
 
 HB_FUNC( HWG_TAB_SETACTION )
 {
    GtkWidget *hCtrl = ( GtkWidget * ) HB_PARHANDLE( 1 );
-//  gpointer dwNewLong = g_object_get_data( (GObject*) HB_PARHANDLE(1), "obj" );  
    PHB_ITEM pItem = hb_itemParam( 2 );
+
    g_signal_connect( hCtrl, "switch-page",
          G_CALLBACK( tabchange_clicked ), ( void * ) pItem );
 }

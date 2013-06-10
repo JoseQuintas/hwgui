@@ -556,12 +556,22 @@ METHOD GetActivePage( nFirst, nEnd ) CLASS HTab
    RETURN ::nActive
 
 METHOD DeletePage( nPage ) CLASS HTab
+Local nFirst, nEnd, i
 
    IF ::lResourceTab
       ADel( ::m_arrayStatusTab, nPage, , .T. )
       hwg_Deletetab( ::handle, nPage )
       ::nActive := nPage - 1
    ELSE
+      nFirst := ::aPages[ nPage,1 ] + 1
+      nEnd   := ::aPages[ nPage,1 ] + ::aPages[ nPage,2 ]
+      FOR i := nFirst TO nEnd
+         ::DelControl( ::aControls[i] )
+      NEXT
+      FOR i := nPage + 1 TO Len( ::aPages )
+         ::aPages[ i,1 ] -= ( nEnd-nFirst+1 )
+      NEXT
+
       hwg_Deletetab( ::handle, nPage - 1 )
       ADel( ::aPages, nPage )
       ADel( ::Pages, nPage )

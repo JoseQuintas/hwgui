@@ -8,11 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-10 15:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * gtk/htab.prg
+  * source/htab.prg
+    * ::DeletePage() fixed
+
 2013-06-10 12:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/control.c
     * new functions added for tab control: hwg_deletetab(), hwg_settabname(),
       hwg_setcurrenttab()
-  * gtk/tab.prg
+  * gtk/htab.prg
     * ::DeletePage() added, ::SetTab() fixed
   * gtk/hcwindow.prg
     * onSize changed for bSize codeblocks may work in controls,

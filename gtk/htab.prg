@@ -118,6 +118,9 @@ METHOD StartPage( cname ) CLASS HTab
    DO WHILE Len( ::aPages ) < i
       AAdd( ::aPages, { Len( ::aControls ), 0, lNew, 0 } )
    ENDDO
+   IF ::nActive > 1 .AND. !Empty( ::handle )
+      ::HidePage( ::nActive )
+   ENDIF
    ::nActive := i
    ::aPages[ i,4 ] := hwg_Addtab( ::handle, ::aTabs[i] )
 
@@ -126,7 +129,7 @@ METHOD StartPage( cname ) CLASS HTab
 METHOD EndPage() CLASS HTab
 
    ::aPages[ ::nActive,2 ] := Len( ::aControls ) - ::aPages[ ::nActive,1 ]
-   IF ::nActive > 1 .AND. ::handle != Nil .AND. !Empty( ::handle )
+   IF ::nActive > 1 .AND. !Empty( ::handle )
       ::HidePage( ::nActive )
    ENDIF
    ::nActive := 1

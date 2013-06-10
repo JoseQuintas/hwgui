@@ -341,6 +341,9 @@ METHOD StartPage( cname, oDlg, lEnabled, tColor, bColor, cTooltip  ) CLASS HTab
       AAdd( ::aPages, { Len( ::aControls ), 0 } )
    ENDIF
    ::AddPage( HPage():New( cname ,Len( ::aPages ), lEnabled,  tColor, bcolor, cTooltip  ), cName )
+   IF ::nActive > 1 .AND. !Empty( ::handle )
+      ::HidePage( ::nActive )
+   ENDIF
    ::nActive := Len( ::aPages )
    ::Pages[ ::nActive ]:aItemPos := { 0, 0, 0, 0 }
 

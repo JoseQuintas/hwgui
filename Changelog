@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-10 16:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  ! gtk/htab.prg
+  ! source/htab.prg
+    ! Some fixes
+
 2013-06-10 15:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * gtk/htab.prg
   * source/htab.prg

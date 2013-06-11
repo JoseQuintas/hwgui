@@ -1,5 +1,5 @@
                             Debugger for Harbour
-                                Version 1.02
+                                Version 2.0
                             ~~~~~~~~~~~~~~~~~~~~
 
          1. Introduction
@@ -133,9 +133,11 @@
          Hwgdebug.xml is created in the same directory as the
   executable hwgdebug.exe, when you do a menu item Options/Save Settings or
   Options/Save Breakpoints.
-  For now the path to the source files and font are saved there 
-  ( and is read when you start the debugger ). Also, you may save breakpoints
-  and then load them.
+         For now the path to the source files, font and max number of tabs are
+  saved there ( and is read when you start the debugger ). Also, you may save
+  breakpoints and then load them.
+         In the same directory with the hwgdebug.exe should be yet another xml 
+  file - hilight.xml - configuration file for syntax highlighting.
 
 Alexander S.Kresin
 alex@kresin.ru

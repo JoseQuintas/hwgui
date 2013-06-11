@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-11 14:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils\debugger\hwgdebug.prg
+    * Tabbed text window support.
+  * utils/debugger/readme.rus
+  * utils/debugger/readme.eng
+    * readme updated
+
 2013-06-10 16:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   ! gtk/htab.prg
   ! source/htab.prg

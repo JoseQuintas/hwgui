@@ -70,14 +70,14 @@ STATIC cTextLocate, nLineLocate
 STATIC oTimer, oSayState, oEditExpr, oBtnExp, oMainFont
 STATIC oBrwRes
 STATIC oStackDlg, oLocalsDlg, oWatchDlg, oAreasDlg
-STATIC oText
+STATIC oTabMain, nTabsMax := 5
 STATIC cPaths := ";"
 
 STATIC aBP := {}
 STATIC aWatches := {}
 STATIC aExpr := {}
 STATIC nCurrLine := 0
-STATIC nMode, nAnsType
+STATIC nMode, nAnsType, cPrgBP
 STATIC aBPLoad, nBPLoad
 STATIC lAnimate := .F., nAnimate := 3
 
@@ -106,7 +106,8 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
       MENU TITLE "&File"
          MENUITEM "Debug program" ID MENU_INIT ACTION DebugNewExe()
          SEPARATOR
-         MENUITEM "Open prg" ACTION OpenPrg()
+         MENUITEM "Open source file" ACTION OpenPrg()
+         MENUITEM "Close source file" ACTION oTabMain:DeletePage( oTabMain:GetActivePage() )
          SEPARATOR
          MENUITEM "&Close debugger" ID MENU_EXIT ACTION DoCommand( CMD_EXIT )
          MENUITEM "&Exit and terminate program" ID MENU_QUIT ACTION DoCommand( CMD_QUIT )
@@ -115,6 +116,8 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
          MENUITEM "&Find"+Chr(9)+"Ctrl+F" ACTION Locate( 0 ) ACCELERATOR FCONTROL,Asc("F")
          MENUITEM "&Next" +Chr(9)+"F3" ACTION Locate( 1 ) ACCELERATOR 0,VK_F3
          MENUITEM "&Previous" ACTION Locate( -1 )
+         SEPARATOR
+         MENUITEM "&Current position" ACTION SetCurrLine( nCurrLine,cPrgName )
          SEPARATOR
          MENUITEM "Functions &list" ACTION Funclist()
       ENDMENU
@@ -139,8 +142,9 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
          MENUITEM "&Delete"+Chr(9)+"F9" ACTION AddBreakPoint()
       ENDMENU
       MENU TITLE "&Options"
-         MENUITEM "Set Path" ACTION SetPath()
+         MENUITEM "Set &Path" ACTION SetPath( ,cPrgName )
          MENUITEM "&Font" ACTION SetFont()
+         MENUITEM "&Max Tabs" ACTION ( nTabsMax := Iif( !Empty(i:=hu_Get( "Max number of tabs:","99",nTabsMax)), i, nTabsMax ) )
          SEPARATOR
          MENUITEM "&Save Settings" ACTION SaveIni()
          SEPARATOR
@@ -150,6 +154,8 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
       MENUITEM "&About" ACTION About()
    ENDMENU
 
+   @ 0, 0 TAB oTabMain ITEMS {} SIZE 600,436 ON SIZE {|o,x,y|o:Move(,,x,y-108)}
+   oTabMain:bChange2 := {|o,n|hwg_setfocus(o:acontrols[n]:handle)}
    CreateTextCtrl()
 
    @ 4,444 BROWSE oBrwRes ARRAY SIZE 592,72 STYLE WS_BORDER + WS_VSCROLL ;
@@ -227,6 +233,8 @@ Local i, j, aChn, aBoxes := {}, cValue, cTitle, cPass
             ENDIF
          ELSEIF oInit:aItems[i]:title == "font"
             oMainFont := hwg_hfrm_FontFromXML( oInit:aItems[i] )
+         ELSEIF oInit:aItems[i]:title == "maxtabs"
+            nTabsMax := Val(oInit:aItems[i]:aItems[1])
          ENDIF
       NEXT
    ENDIF
@@ -252,6 +260,11 @@ Local oInit, oNode
       oNode:aAttr := Font2Attr( oMainFont )
    ELSE
       oInit:Add( HXMLNode():New( "font", HBXML_TYPE_SINGLE, Font2Attr( oMainFont ) ) )
+   ENDIF
+   IF !Empty( oNode := oInit:Find( "maxtabs" ) )
+      oNode:aItems[1] := Ltrim(Str(nTabsMax))
+   ELSE
+      oInit:Add( HXMLNode():New( "maxtabs",,,Ltrim(Str(nTabsMax)) ) )
    ENDIF
 
    oIni:Save( cIniPath + "hwgdebug.xml" )
@@ -409,22 +422,45 @@ Local n, s := "", arr
    ENDDO
 Return Nil
 
+Static Function GetTextObj( cName, nTab )
+Local i, oText
+
+   IF Empty( cName )
+      oText := oTabMain:aControls[ nTab := oTabMain:GetActivePage() ]
+   ELSE
+      FOR i := 1 TO Len( oTabMain:aControls )
+         IF oTabMain:aControls[i]:cargo == cName
+            oText := oTabMain:aControls[i]
+            nTab := i
+            EXIT
+         ENDIF
+      NEXT
+   ENDIF
+
+Return oText
+
 #ifdef __HCEDIT__
-Static Function CreateTextCtrl
+Static Function CreateTextCtrl()
+Local oText
 
-   //@ 0, 0 HCEDIT oText SIZE 600, 436 FONT oMainFont STYLE WS_BORDER
-   oText := HCEdit():New( ,,, 0, 0, 600, 436, oMainFont )
+   BEGIN PAGE "Empty" of oTabMain
+      oText := HCEdit():New( oTabMain,,, 10, 30, oTabMain:nWidth-20, oTabMain:nHeight-36, oMainFont,, ;
+            {|o,x,y|o:Move(,,x-20,y-36)},,,,,,,.T. )
+   END PAGE of oTabMain
 
-   oText:lReadOnly := .T.
-   oText:bSize := {|o,x,y|o:Move(,,x,y-108)}
-   oText:oHili := Hilight():New( cIniPath+"hilight.xml", "prg" )  
+   oText:lReadOnly := oText:lShowNumbers := .T.
    oText:bPaint := {|o,h,n,y1,y2| onTxtPaint( o,h,n,y1,y2 ) }
    oText:bKeyDown:= {|o,n|Iif(n==120.or.n==13,AddBreakPoint(),.T.)}
    oText:bClickDoub:= {||AddBreakPoint()}
-   oPenCurr := HPen():Add( , 2, 8388608 )
-   oPenBP := HPen():Add( , 2, 255 )
+   IF Empty( oPenCurr )
+      oPenCurr := HPen():Add( , 2, 8388608 )
+      oPenBP := HPen():Add( , 2, 255 )
+      oText:oHili := Hilight():New( cIniPath+"hilight.xml", "prg" )  
+   ELSE
+      oText:oHili := oTabMain:aControls[1]:oHili
+   ENDIF
 
-Return Nil
+Return oText
 
 Static Function onTxtPaint( oText, hDC, nLine, y1, y2 )
 Local y
@@ -433,11 +469,14 @@ Local y
       oText:n4Separ += 12
    ELSE     
       IF nCurrLine == nLine
+         IF !( cPrgName == oText:cargo )
+            Return Nil
+         ENDIF
          y := y1 + Int( (y2-y1)/2 )
          hwg_Selectobject( hDC, oPenCurr:handle )
          hwg_Drawline( hDC, oText:n4Separ-12, y-3, oText:n4Separ-4, y )
          hwg_Drawline( hDC, oText:n4Separ-12, y+3, oText:n4Separ-4, y )
-      ELSEIF getBP( nLine ) != 0
+      ELSEIF getBP( nLine,oText:cargo ) != 0
          hwg_Selectobject( hDC, oPenBP:handle )
          y := y1 + Int( (y2-y1)/2 )
          hwg_Ellipse( hDC, oText:n4Separ-12, y-4, oText:n4Separ-4, y+4 )
@@ -446,57 +485,91 @@ Local y
    ENDIF
 Return Nil
 
-Static Function SetCurrLine( nLine )
-    IF !lDebugging
-       lDebugging := .T.
-       oText:lShowNumbers := .T.
-    ENDIF
+Static Function SetCurrLine( nLine, cName )
+Local nTab, oText := GetTextObj( cName, @nTab )
 
-Return oText:GoTo( nLine )
+   IF !lDebugging
+      lDebugging := .T.
+   ENDIF
+
+   IF !Empty( oText )
+      IF !Empty( nLine )
+         oTabMain:SetTab( nTab )
+         oText:GoTo( nLine )
+      ELSE
+         oText:Refresh()
+      ENDIF
+   ENDIF
+
+Return Nil
 
 Static Function SetText( cName, lClear )
-Local cBuff, i
+Local oText, nTab, cBuff, i
 
    IF cName == Nil; cName := cPrgName; ENDIF
 
-   IF ( oText:cargo == cName )
+   IF !Empty( oText := GetTextObj( CutPath( cName ) ) )
       Return .T.
    ENDIF
+   IF Empty( oTabMain:aControls[1]:cargo )
+      oText := oTabMain:aControls[1]
+      nTab := 1
+   ELSEIF Len( oTabMain:aControls ) < nTabsMax
+      oText := CreateTextCtrl()
+      nTab := Len( oTabMain:aControls )
+   ELSE
+      oText := oTabMain:aControls[nTabsMax]
+      nTab := nTabsMax
+   ENDIF
+
+   oTabMain:SetTab( nTab )
    IF File( cName ) .AND. !Empty( cBuff := MemoRead( cName ) )
       cCurrPath := FilePath( cName )
-      cPrgName := CutPath( cName )
       oText:SetText( cBuff )
       FOR i := 1 TO Len( oText:aText )
          IF Chr(9) $ oText:aText[i]
             oText:aText[i] := StrTran( oText:aText[i], Chr(9), Space(4) )
          ENDIF
       NEXT
-      oText:cargo := cName
+      hwg_SetTabName( oTabMain:handle, nTab, oText:cargo := CutPath( cName ) )
       Return .T.
    ELSEIF !Empty( lClear )
       oText:SetText( "" )
       oText:cargo := ""
+      hwg_SetTabName( oTabMain:handle, nTab, "Empty" )
    ENDIF
 
 Return .F.
 
+Static Function SetTextFont( oFont )
+Local oText := oTabMain:aControls[ oTabMain:GetActivePage() ]
+
+Return Iif( Empty(oText), Nil, oText:SetFont( oFont ) )
+
 Static Function GetTextArr()
-Return oText:aText
+Local oText := oTabMain:aControls[ oTabMain:GetActivePage() ]
+
+Return Iif( Empty(oText), Nil, oText:aText )
 
 Static Function GetCurrLine()
-Return oText:nLineF + oText:nLineC - 1
+Local oText := oTabMain:aControls[ oTabMain:GetActivePage() ]
+
+Return Iif( Empty(oText), 0, oText:nLineF + oText:nLineC - 1 )
 
 #else
 
-Static Function CreateTextCtrl
+Static Function CreateTextCtrl()
+Local oText
 
-   @ 0,0 BROWSE oText ARRAY SIZE 600,436  ;
-       FONT oMainFont STYLE WS_BORDER+WS_VSCROLL ;
-       ON SIZE {|o,x,y|o:Move(,,x,y-108)}
-       
+   BEGIN PAGE "Empty" of oTabMain
+      @ 10,30 BROWSE oText OF oTabMain ARRAY SIZE oTabMain:nWidth-20, oTabMain:nHeight-36  ;
+          FONT oMainFont NO BORDER ;
+          ON SIZE {|o,x,y|o:Move(,,x-20,y-36)}
+   END PAGE of oTabMain
+          
    oText:aArray := {}
 
-   oText:AddColumn( HColumn():New( "",{|v,o|Iif(o:nCurrent==nCurrLine,'>',Iif(getBP(o:nCurrent)!=0,'#',' '))},"C",2,0 ) )
+   oText:AddColumn( HColumn():New( "",{|v,o|Iif(cPrgName==o:cargo,Iif(o:nCurrent==nCurrLine,'>',Iif(getBP(o:nCurrent)!=0,'#',' ')),' ')},"C",2,0 ) )
    oText:aColumns[1]:oFont := oMainFont:SetFontStyle( .T. )
    oText:aColumns[1]:bColorBlock := {||Iif(getBP(oText:nCurrent)!=0, { 65535, 255, 16777215, 255 }, { oText:tColor, oText:bColor, oText:tColorSel, oText:bColorSel } )}
 
@@ -507,43 +580,57 @@ Static Function CreateTextCtrl
    oText:lDispHead := .F.
    oText:bcolorSel := oText:htbcolor := CLR_LGREEN
    oText:tcolorSel := 0
-Return Nil
 
-Static Function SetCurrLine( nLine )
-Local nLine1
+Return oText
+
+Static Function SetCurrLine( nLine, cName )
+Local nLine1, nTab, oText := GetTextObj( cName, @nTab )
 
    IF !lDebugging
       lDebugging := .T.
    ENDIF
 
-   IF !Empty( oText:aArray )
-      nLine1 := oText:nCurrent - oText:rowPos + 1
-      oText:nCurrent := nLine
-      IF nLine < nLine1 .OR. nLine > nLine1 + oText:rowCount - 1
-         oText:rowPos := Int( oText:rowCount / 2 )
+   IF !Empty( oText) .AND. !Empty( oText:aArray )
+      IF !Empty( nLine )
+         oTabMain:SetTab( nTab )
+         nLine1 := oText:nCurrent - oText:rowPos + 1
+         oText:nCurrent := nLine
+         IF nLine < nLine1 .OR. nLine > nLine1 + oText:rowCount - 1
+            oText:rowPos := Int( oText:rowCount / 2 )
+         ENDIF
+         IF oText:rowPos > nLine
+            oText:rowPos := nLine
+         ENDIF
+         hwg_VScrollPos( oText, 0, .F. )
       ENDIF
-      IF oText:rowPos > nLine
-         oText:rowPos := nLine
-      ENDIF
-      hwg_VScrollPos( oText, 0, .F. )
       oText:Refresh()
    ENDIF
 Return Nil
 
 Static Function SetText( cName, lClear )
-Local cBuff, cNewLine := Chr(13)+Chr(10), i
+Local oText, nTab, cBuff, cNewLine := Chr(13)+Chr(10), i
 
    IF cName == Nil; cName := cPrgName; ENDIF
 
-   IF ( oText:cargo == cName )
+   IF !Empty( oText := GetTextObj( CutPath( cName ) ) )
       Return .T.
    ENDIF
+   IF Empty( oTabMain:aControls[1]:cargo )
+      oText := oTabMain:aControls[1]
+      nTab := 1
+   ELSEIF Len( oTabMain:aControls ) < nTabsMax
+      oText := CreateTextCtrl()
+      nTab := Len( oTabMain:aControls )
+   ELSE
+      oText := oTabMain:aControls[nTabsMax]
+      nTab := nTabsMax
+   ENDIF
+
    IF File( cName ) .AND. !Empty( cBuff := MemoRead( cName ) )
       IF !( cNewLine $ cBuff )
          cNewLine := Chr(10)
       ENDIF
       cCurrPath := FilePath( cName )
-      cPrgName := CutPath( cName )
       oText:aArray := hb_aTokens( cBuff, cNewLine )
       FOR i := 1 TO Len( oText:aArray )
          IF Chr(9) $ oText:aArray[i]
@@ -552,22 +639,38 @@ Local cBuff, cNewLine := Chr(13)+Chr(10), i
       NEXT
       hwg_Invalidaterect( oText:handle, 1 )
       oText:Refresh()
-      oText:cargo := cName
+      hwg_SetTabName( oTabMain:handle, nTab, oText:cargo := CutPath( cName ) )
+      oTabMain:SetTab( nTab )
       Return .T.
    ELSEIF !Empty( lClear )
       oText:aArray := {}
       hwg_Invalidaterect( oText:handle, 1 )
       oText:Refresh()
       oText:cargo := ""
+      hwg_SetTabName( oTabMain:handle, nTab, "Empty" )
+      oTabMain:SetTab( nTab )
    ENDIF
 
 Return .F.
 
+Static Function SetTextFont( oFont )
+Local oText := oTabMain:aControls[ oTabMain:GetActivePage() ]
+
+   IF !Empty( oText )
+      oText:oFont := oFont
+      oText:Refresh()
+   ENDIF
+Return Nil
+
 Static Function GetTextArr()
-Return oText:aArray
+Local oText := oTabMain:aControls[ oTabMain:GetActivePage() ]
+
+Return Iif( Empty(oText), Nil, oText:aArray )
 
 Static Function GetCurrLine()
-Return oText:nCurrent
+
+Local oText := oTabMain:aControls[ oTabMain:GetActivePage() ]
+Return Iif( Empty(oText), 0, oText:nCurrent )
 
 #endif
 
@@ -694,9 +797,9 @@ Static nLastSec := 0
                ELSE
                   IF !( cPrgName == arr[2] )
                      cPrgName := arr[2]
-                     SetPath( cPaths )
+                     SetPath( cPaths, cPrgName )
                   ENDIF
-                  SetCurrLine( nCurrLine := Val( arr[3] ) )
+                  SetCurrLine( nCurrLine := Val( arr[3] ),cPrgName )
                   n := 4
                   DO WHILE .T.
                      IF arr[n] == "ver"
@@ -751,7 +854,7 @@ Local aStates := { { "Input",16711680,CLR_LGREEN }, { "Init",16777215,CLR_DBLUE 
       IF newMode == MODE_WAIT_ANS .OR. newMode == MODE_WAIT_BR
          IF newMode == MODE_WAIT_BR
             nCurrLine := 0
-            oText:Refresh()
+            SetCurrLine()
          ENDIF
       ENDIF
    ENDIF
@@ -868,20 +971,20 @@ Local nLine := Val( cLine ), i
          ENDIF
       NEXT
       IF i > Len(aBP)
-         Aadd( aBP, { nLine, cPrgName } )
+         Aadd( aBP, { nLine, cPrgBP } )
       ENDIF
    ELSE
-      IF ( i := getBP( nLine ) ) == 0
+      IF ( i := getBP( nLine, cPrgBP ) ) == 0
          hwg_MsgInfo( "Error deleting BP line " + cLine )
       ELSE
          aBP[i,1] := 0
       ENDIF
    ENDIF
-   oText:Refresh()
+   SetCurrLine()
 Return Nil
 
 Static Function AddBreakPoint( cPrg, nLine )
-Local i
+Local i, oText
 
    IF nMode != MODE_INPUT .AND. Empty( aBPLoad )
       Return Nil
@@ -890,31 +993,36 @@ Local i
       lAnimate := .F.
       Return Nil
    ENDIF
-   IF cPrg == Nil
-      cPrg := cPrgName
-   ENDIF
    IF nLine == Nil
       nLine := GetCurrLine()
    ENDIF
-   IF ( i := getBP( nLine, cPrg ) ) == 0
-      Send( "brp", "add", cPrg, Ltrim(Str(nLine)) )
-   ELSE
-      Send( "brp", "del", cPrg, Ltrim(Str(nLine)) )
+   IF !Empty( oText := oTabMain:aControls[oTabMain:GetActivePage()] ) .AND. ;
+         !Empty( oText:cargo )
+
+      IF cPrg == Nil
+         cPrg := oText:cargo
+      ENDIF
+
+      IF ( i := getBP( nLine, cPrg ) ) == 0
+         Send( "brp", "add", cPrg, Ltrim(Str(nLine)) )
+      ELSE
+         Send( "brp", "del", cPrg, Ltrim(Str(nLine)) )
+      ENDIF
+      IF nMode != MODE_WAIT_ANS
+         nAnsType := ANS_BRP
+         cPrgBP := cPrg
+         SetMode( MODE_WAIT_ANS )
+      ENDIF
    ENDIF
-   IF nMode != MODE_WAIT_ANS
-      nAnsType := ANS_BRP
-      SetMode( MODE_WAIT_ANS )
-   ENDIF
-   
 Return Nil
 
-Static Function SetPath( cRes, lClear )
+Static Function SetPath( cRes, cName, lClear )
 Local arr, i, cFull
 
    IF !Empty( cRes ) .OR. !Empty( cRes := hu_Get( "Path to source files", "@S256", cPaths ) )
       cPaths := Iif( Left( cRes,1 ) != ";", ";" + cRes, cRes )
       arr := hb_aTokens( cPaths, ";" )
-      IF !Empty( cPrgName )
+      IF !Empty( cName )
          FOR i := 1 TO Len( arr )
             cFull := arr[i] + ;
                Iif( Empty(arr[i]).OR.Right( arr[i],1 ) $ "\/", "", hb_OsPathSeparator() ) + cPrgName
@@ -1009,10 +1117,9 @@ Static FUNCTION StackToggle()
 Local oBrw, lStack := hwg_Ischeckedmenuitem( ,MENU_STACK )
 Local bEnter := {|o| 
    IF Lower(cPrgName) != Lower(o:aArray[o:nCurrent,1])
-      cPrgName := o:aArray[o:nCurrent,1]
-      SetPath( cPaths,.T. )
+      SetPath( cPaths, o:aArray[o:nCurrent,1], .T. )
    ENDIF
-   SetCurrLine( Val( o:aArray[o:nCurrent,3] ) )
+   SetCurrLine( Val( o:aArray[o:nCurrent,3] ),o:aArray[o:nCurrent,1] )
    Return .T.
    }
 Local bClose := {|| 
@@ -1269,9 +1376,8 @@ Return Nil
 Static FUNCTION SetFont( oFont )
 
    IF !Empty( oFont ) .OR. !Empty( oFont := HFont():Select( HWindow():GetMain():oFont ) )
-      oMainFont := oText:oFont := oBrwRes:oFont := HWindow():GetMain():oFont := oFont
-      //oText:lChanged := .T.
-      oText:Refresh()
+      oMainFont := oBrwRes:oFont := HWindow():GetMain():oFont := oFont
+      SetTextFont( oFont )
       oBrwRes:lChanged := .T.
       oBrwRes:lChanged := .T.
       oBrwRes:Refresh()
@@ -1286,7 +1392,7 @@ Local oDlg
         STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + DS_CENTER
 
    @ 20,30 SAY "HwGUI Debugger" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
-   @ 20,60 SAY "Version 1.03" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+   @ 20,60 SAY "Version 2.0" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
 #if !defined( __PLATFORM__UNIX )
    @ 20,90 SAY "http://www.kresin.ru/debugger.html" ;

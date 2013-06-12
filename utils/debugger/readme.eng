@@ -1,5 +1,5 @@
                             Debugger for Harbour
-                                Version 2.0
+                                Version 2.01
                             ~~~~~~~~~~~~~~~~~~~~
 
          1. Introduction
@@ -53,10 +53,11 @@
   2) Run debugger itself and then run the debugged application from it,
      using the menu File/Debug program.
 
-  3) Start the debugger, specifying the name of the program being debugged at the command prompt,
+  3) Start the debugger, specifying the name of the program being debugged and passed
+     parameters at the command prompt,
      for example:
 
-         hwgdebug.exe c:\myapps\someapp.exe
+         hwgdebug.exe c:\myapps\someapp.exe param1 param2 ...
 
      In this case, as in the previous case, the application runs on debug immediately.
 

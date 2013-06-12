@@ -60,10 +60,12 @@ REQUEST HB_GT_CGI_DEFAULT
 #xtranslate HB_PROCESSOPEN([<n,...>]) =>  HB_OPENPROCESS(<n>)
 #endif
 
+STATIC lModeIde := .T.
+STATIC lDebugging := .F.
 STATIC handl1 := -1, handl2, cBuffer
 STATIC nId1 := 0, nId2 := -1
 
-STATIC oIni, cIniPath
+STATIC oIni, cIniPath, cHrbPath := "hrb"
 STATIC cAppName, cPrgName := "", cCurrPath := ""
 STATIC cTextLocate, nLineLocate
 
@@ -81,17 +83,37 @@ STATIC nMode, nAnsType, cPrgBP
 STATIC aBPLoad, nBPLoad
 STATIC lAnimate := .F., nAnimate := 3
 
-STATIC lDebugging := .F.
 STATIC nExitMode := 1
 STATIC cVerProto := 0
 
-STATIC oPenCurr, oPenBP
 
 Function Main( ... )
-Local oMainW, oBmpPoint, oBmpCurr
-Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
+Local oMainW
+Local aParams := hb_aParams(), i, j, cFile, cExe, cParams, cDirWait
 
-   ReadIni( cIniPath := FilePath( hb_ArgV( 0 ) ) )
+   cIniPath := FilePath( hb_ArgV( 0 ) )
+
+   FOR i := 1 TO Len( aParams)
+      IF Left( aParams[i],1 ) == "-"
+         IF Left( aParams[i],2 ) == "-c"
+            cFile := Substr( aParams[i], 3 )
+            lModeIde := .F.
+         ELSEIF Left( aParams[i],2 ) == "-w"
+            cDirWait := Substr( aParams[i], 3 )
+            lModeIde := .F.
+         ENDIF        
+      ELSE
+         lModeIde := .F.
+         cExe := aParams[i]
+         cParams := ""
+         FOR j := i+1 TO Len( aParams)
+            cParams += " " + aParams[j]
+         NEXT
+         EXIT
+      ENDIF
+   NEXT
+
+   ReadIni()
 
    IF Empty( oMainFont )
       PREPARE FONT oMainFont NAME "Georgia" WIDTH 0 HEIGHT -17 CHARSET 4
@@ -183,18 +205,6 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
 
    cBuffer := Space( BUFF_LEN )
 
-   FOR i := 1 TO Len( aParams)
-      IF Left( aParams[i],1 ) == "-"
-         IF Left( aParams[i],2 ) == "-c"
-            cFile := Substr( aParams[i], 3 )
-         ELSEIF Left( aParams[i],2 ) == "-w"
-            cDirWait := Substr( aParams[i], 3 )
-         ENDIF        
-      ELSE
-         cExe := aParams[i]
-      ENDIF
-   NEXT
-
    IF !Empty( cFile )
       handl1 := FOpen( cFile + ".d1", FO_READWRITE + FO_SHARED )
       handl2 := FOpen( cFile + ".d2", FO_READ + FO_SHARED )
@@ -205,7 +215,7 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
          hwg_MsgStop( "No connection" )
       ENDIF
    ELSEIF !Empty( cExe )
-      DebugNewExe( cExe )
+      DebugNewExe( cExe, cParams )
    ELSEIF !Empty( cDirWait )
       Wait4Conn( cDirWait )
    ENDIF
@@ -216,16 +226,14 @@ Local aParams := hb_aParams(), i, cFile, cExe, cDirWait
 
 Return Nil
 
-Static Function ReadIni( cDir )
-Local oInit, oModule
-Local i, j, aChn, aBoxes := {}, cValue, cTitle, cPass
+Static Function ReadIni()
+Local oInit, i
 
-   oIni := HXMLDoc():Read( cDir + "hwgdebug.xml" )
+   oIni := HXMLDoc():Read( cIniPath + "hwgdebug.xml" )
    IF !Empty( oIni:aItems ) .AND. oIni:aItems[1]:title == "init"
       oInit := oIni:aItems[1]
       FOR i := 1 TO Len( oInit:aItems )
          IF oInit:aItems[i]:title == "module"
-            oModule := oInit:aItems[i]
          ELSEIF oInit:aItems[i]:title == "path"
             cPaths := oInit:aItems[i]:aItems[1]
             IF Left( cPaths,1 ) != ";"
@@ -235,13 +243,15 @@ Local i, j, aChn, aBoxes := {}, cValue, cTitle, cPass
             oMainFont := hwg_hfrm_FontFromXML( oInit:aItems[i] )
          ELSEIF oInit:aItems[i]:title == "maxtabs"
             nTabsMax := Val(oInit:aItems[i]:aItems[1])
+         ELSEIF oInit:aItems[i]:title == "hrbpath"
+            cHrbPath := oInit:aItems[i]:aItems[1]
          ENDIF
       NEXT
    ENDIF
 
 Return Nil
 
-Static Function SaveIni( cDir )
+Static Function SaveIni()
 Local oInit, oNode
 
    IF Empty( oIni ) .OR. Empty( oIni:aItems )
@@ -339,12 +349,10 @@ Local oInit, oNode, n := 0, nLine, cPrg
 
 Return Nil
 
-Static Function DebugNewExe( cExe )
-Local hProcess, lFromMenu := .F.
+Static Function DebugNewExe( cExe, cParams )
 
    IF cExe == Nil
       IF !Empty( cExe := hwg_Selectfile( "Executable files( *.exe )", "*.exe", Curdir() ) )
-         lFromMenu := .T.
          aBP := {}
          aWatches := {}
          aExpr := {}
@@ -370,7 +378,7 @@ Local hProcess, lFromMenu := .F.
    handl2 := FCreate( cExe + ".d2" )
    FClose( handl2 )
 
-   hProcess := hb_processOpen( cExe )
+   hb_processOpen( cExe + Iif( !Empty( cParams ), cParams, "" ) )
 
    handl1 := FOpen( cExe + ".d1", FO_READWRITE + FO_SHARED )
    handl2 := FOpen( cExe + ".d2", FO_READ + FO_SHARED )
@@ -384,7 +392,6 @@ Local hProcess, lFromMenu := .F.
 Return Nil
 
 Static Function Wait4Conn( cDir )
-Local lFromMenu := .F.
 
    cDir += Iif( Right( cDir,1 ) $ "\/", "", hb_OsPathSeparator() ) + "hwgdebug"
    FErase( cDir + ".d1" )
@@ -422,6 +429,236 @@ Local n, s := "", arr
    ENDDO
 Return Nil
 
+Static Function Send( ... )
+Local arr := hb_aParams(), i, s := ""
+
+   FSeek( handl1, 0, 0 )
+   FOR i := 1 TO Len( arr )
+      s += arr[i] + ","
+   NEXT
+   FWrite( handl1, Ltrim(Str(++nId1)) + "," + s + Ltrim(Str(nId1)) + ",!" )
+
+Return Nil
+
+Static Function TimerProc()
+Local n, arr
+Static nLastSec := 0
+
+   IF nMode != MODE_INPUT
+      IF !Empty( arr := dbgRead() )
+         IF nMode == MODE_WAIT_ANS
+            IF Left(arr[1],1) == "b" .AND. ( n := Val( Substr(arr[1],2) ) ) == nId1
+               IF nAnsType == ANS_CALC
+                  IF arr[2] == "value"
+                     SetResult( Hex2Str( arr[3] ) )
+                  ELSE
+                     oEditExpr:SetText( "-- BAD ANSWER --" )
+                  ENDIF
+               ELSEIF nAnsType == ANS_BRP
+                  IF arr[2] == "err"
+                     oEditExpr:SetText( "-- BAD LINE --" )
+                  ELSE
+                     ToggleBreakPoint( arr[2], arr[3] )
+                  ENDIF
+                  IF !Empty( aBPLoad )
+                     IF ++nBPLoad <= Len(aBPLoad)
+                        AddBreakPoint( aBPLoad[nBPLoad,2], aBPLoad[nBPLoad,1] )
+                        Return Nil
+                     ELSE
+                        aBPLoad := Nil
+                     ENDIF
+                  ENDIF
+               ELSEIF nAnsType == ANS_STACK
+                  IF arr[2] == "stack"
+                     ShowStack( arr, 3 )
+                  ENDIF
+               ELSEIF nAnsType == ANS_LOCAL
+                  IF arr[2] == "valuelocal"
+                     ShowLocals( arr, 3 )
+                  ENDIF
+               ELSEIF nAnsType == ANS_WATCH
+                  IF arr[2] == "valuewatch"
+                     ShowWatch( arr, 3 )
+                  ENDIF
+               ELSEIF nAnsType == ANS_AREAS
+                  IF arr[2] == "valueareas"
+                     ShowAreas( arr, 3 )
+                  ENDIF
+               ENDIF
+               SetMode( MODE_INPUT )
+            ENDIF
+         ELSE
+            IF Left(arr[1],1) == "a" .AND. ( n := Val( Substr(arr[1],2) ) ) > nId2
+               nId2 := n
+               IF arr[2] == "."
+                  oEditExpr:SetText( "-- BAD LINE --" )
+               ELSE
+                  IF !( cPrgName == arr[2] )
+                     cPrgName := arr[2]
+                     SetPath( cPaths, cPrgName )
+                  ENDIF
+                  SetCurrLine( nCurrLine := Val( arr[3] ),cPrgName )
+                  n := 4
+                  DO WHILE .T.
+                     IF arr[n] == "ver"
+                        cVerProto := Val( arr[n+1] )
+                        n += 2
+                     ELSEIF arr[n] == "stack"
+                        ShowStack( arr, n+1 )
+                        n += 2 + Val( arr[n+1] ) * 3
+                     ELSEIF arr[n] == "valuelocal"
+                        ShowLocals( arr, n+1 )
+                        n += 2 + Val( arr[n+1] ) * 3
+                     ELSEIF arr[n] == "valuewatch"
+                        ShowWatch( arr, n+1 )
+                        n += 2 + Val( arr[n+1] )
+                     ELSE
+                        EXIT
+                     ENDIF
+                  ENDDO
+                  hwg_Setwindowtext( HWindow():GetMain():handle, "Debugger ("+arr[2]+", line "+arr[3]+")" )
+               ENDIF
+               SetMode( MODE_INPUT )
+               nLastSec := Seconds()
+            ENDIF
+         ENDIF
+      ENDIF
+   ELSEIF lAnimate .AND. Seconds() - nLastSec > nAnimate
+      Send( "cmd", "step" )
+      SetMode( MODE_WAIT_BR )
+   ENDIF
+
+Return Nil
+
+Static Function SetMode( newMode )
+Local aStates := { { "Input",16711680,CLR_LGREEN }, { "Init",16777215,CLR_DBLUE }, { "Wait",16777215,255 }, { "Run",16777215,0 } }
+
+   nMode := newMode
+   hwg_Enablemenuitem( ,MENU_RUN, (newmode==MODE_INPUT), .T. )
+   hwg_Enablemenuitem( ,MENU_VIEW, (newmode==MODE_INPUT), .T. )
+   hwg_Enablemenuitem( ,MENU_BRP, (newmode==MODE_INPUT), .T. )
+   hwg_Enablemenuitem( ,MENU_QUIT, (newmode==MODE_INPUT), .T. )
+   hwg_Drawmenubar( HWindow():GetMain():handle )
+   oSayState:SetValue( aStates[ newMode,1 ] )
+   oSayState:SetColor( aStates[ newMode,2 ], aStates[ newMode,3 ], .T. )
+   IF newMode == MODE_INPUT
+      oBtnExp:Enable()
+#if defined( __PLATFORM__UNIX )
+#else
+      hwg_SetForeGroundWindow( HWindow():GetMain():handle )
+#endif
+   ELSE
+      oBtnExp:Disable()
+      IF newMode == MODE_WAIT_ANS .OR. newMode == MODE_WAIT_BR
+         IF newMode == MODE_WAIT_BR
+            nCurrLine := 0
+            SetCurrLine()
+         ENDIF
+      ENDIF
+   ENDIF
+
+Return Nil
+
+Static Function DoCommand( nCmd, cDop, cDop2 )
+
+   IF nMode == MODE_INPUT
+      lAnimate := .F.
+      IF nCmd == CMD_GO
+         hwg_Setwindowtext( HWindow():GetMain():handle, "Debugger ("+cPrgName+")" )
+         Send( "cmd", "go" )
+
+      ELSEIF nCmd == CMD_STEP
+         Send( "cmd", "step" )
+
+      ELSEIF nCmd == CMD_TOCURS
+         Send( "cmd", "to", cPrgName, Ltrim(Str(GetCurrLine())) )
+
+      ELSEIF nCmd == CMD_TRACE
+         Send( "cmd", "trace" )
+
+      ELSEIF nCmd == CMD_NEXTR
+         Send( "cmd", "nextr" )
+
+      ELSEIF nCmd == CMD_EXP
+         Send( "exp", cDop )
+         nAnsType := ANS_CALC
+         SetMode( MODE_WAIT_ANS )
+         Return Nil
+
+      ELSEIF nCmd == CMD_STACK
+         Send( "view", "stack", cDop )
+         nAnsType := ANS_STACK
+         SetMode( MODE_WAIT_ANS )
+         Return Nil
+
+      ELSEIF nCmd == CMD_LOCAL
+         Send( "view", "local", cDop )
+         nAnsType := ANS_LOCAL
+         SetMode( MODE_WAIT_ANS )
+         Return Nil
+
+      ELSEIF nCmd == CMD_WATCH
+         IF Empty( cDop2 )
+            Send( "view", "watch", cDop )
+         ELSE
+            Send( "watch", cDop, cDop2 )
+         ENDIF
+         nAnsType := ANS_WATCH
+         SetMode( MODE_WAIT_ANS )
+         Return Nil
+
+      ELSEIF nCmd == CMD_AREA
+         Send( "view", "areas" )
+         nAnsType := ANS_AREAS
+         SetMode( MODE_WAIT_ANS )
+         Return Nil
+
+      ELSEIF nCmd == CMD_QUIT
+         nExitMode := 2
+         hwg_EndWindow()
+         Return Nil
+
+      ELSEIF nCmd == CMD_EXIT
+         nExitMode := 1
+         hwg_EndWindow()
+         Return Nil
+
+      ENDIF
+      SetMode( MODE_WAIT_BR )
+   ELSEIF nCmd == CMD_EXIT
+      nExitMode := 1
+      hwg_EndWindow()
+
+   ENDIF
+Return Nil
+
+Static Function SetPath( cRes, cName, lClear )
+Local arr, i, cFull
+
+   IF !Empty( cRes ) .OR. !Empty( cRes := hu_Get( "Path to source files", "@S256", cPaths ) )
+      cPaths := Iif( Left( cRes,1 ) != ";", ";" + cRes, cRes )
+      arr := hb_aTokens( cPaths, ";" )
+      IF !Empty( cName )
+         FOR i := 1 TO Len( arr )
+            cFull := arr[i] + ;
+               Iif( Empty(arr[i]).OR.Right( arr[i],1 ) $ "\/", "", hb_OsPathSeparator() ) + cPrgName
+            IF SetText( cFull, lClear )
+               EXIT
+            ENDIF
+         NEXT
+      ENDIF
+   ENDIF
+
+Return Nil
+
+Static Function OpenPrg()
+Local cFile := hwg_Selectfile( "Source files( *.prg )", "*.prg", cCurrPath )
+
+   IF !Empty( cFile )
+      SetText( cFile )
+   ENDIF
+Return Nil
+
 Static Function GetTextObj( cName, nTab )
 Local i, oText
 
@@ -452,9 +689,7 @@ Local oText
    oText:bPaint := {|o,h,n,y1,y2| onTxtPaint( o,h,n,y1,y2 ) }
    oText:bKeyDown:= {|o,n|Iif(n==120.or.n==13,AddBreakPoint(),.T.)}
    oText:bClickDoub:= {||AddBreakPoint()}
-   IF Empty( oPenCurr )
-      oPenCurr := HPen():Add( , 2, 8388608 )
-      oPenBP := HPen():Add( , 2, 255 )
+   IF Empty( oText:oHili )
       oText:oHili := Hilight():New( cIniPath+"hilight.xml", "prg" )  
    ELSE
       oText:oHili := oTabMain:aControls[1]:oHili
@@ -464,6 +699,7 @@ Return oText
 
 Static Function onTxtPaint( oText, hDC, nLine, y1, y2 )
 Local y
+STATIC oPenCurr, oPenBP
 
    IF nLine == Nil
       oText:n4Separ += 12
@@ -471,6 +707,10 @@ Local y
       IF nCurrLine == nLine
          IF !( cPrgName == oText:cargo )
             Return Nil
+         ENDIF
+         IF Empty( oPenCurr )
+            oPenCurr := HPen():Add( , 2, 8388608 )
+            oPenBP := HPen():Add( , 2, 255 )
          ENDIF
          y := y1 + Int( (y2-y1)/2 )
          hwg_Selectobject( hDC, oPenCurr:handle )
@@ -489,6 +729,7 @@ Static Function SetCurrLine( nLine, cName )
 Local nTab, oText := GetTextObj( cName, @nTab )
 
    IF !lDebugging
+      hwg_Enablemenuitem( ,MENU_INIT, .F., .T. )
       lDebugging := .T.
    ENDIF
 
@@ -508,7 +749,7 @@ Local oText, nTab, cBuff, i
 
    IF cName == Nil; cName := cPrgName; ENDIF
 
-   IF !Empty( oText := GetTextObj( CutPath( cName ) ) )
+   IF !Empty( GetTextObj( CutPath( cName ) ) )
       Return .T.
    ENDIF
    IF Empty( oTabMain:aControls[1]:cargo )
@@ -563,7 +804,7 @@ Local oText
 
    BEGIN PAGE "Empty" of oTabMain
       @ 10,30 BROWSE oText OF oTabMain ARRAY SIZE oTabMain:nWidth-20, oTabMain:nHeight-36  ;
-          FONT oMainFont NO BORDER ;
+          FONT oMainFont NOBORDER ;
           ON SIZE {|o,x,y|o:Move(,,x-20,y-36)}
    END PAGE of oTabMain
           
@@ -587,6 +828,7 @@ Static Function SetCurrLine( nLine, cName )
 Local nLine1, nTab, oText := GetTextObj( cName, @nTab )
 
    IF !lDebugging
+      hwg_Enablemenuitem( ,MENU_INIT, .F., .T. )
       lDebugging := .T.
    ENDIF
 
@@ -740,138 +982,6 @@ Local i, arr := GetTextArr(), cLine, cfirst, cSecond, nSkip, arrfnc := {}
    ENDIF
 Return Nil
 
-Static Function TimerProc()
-Local n, arr, lRes := .F.
-Static nLastSec := 0
-
-   IF nMode != MODE_INPUT
-      IF !Empty( arr := dbgRead() )
-         IF nMode == MODE_WAIT_ANS
-            IF Left(arr[1],1) == "b" .AND. ( n := Val( Substr(arr[1],2) ) ) == nId1
-               IF nAnsType == ANS_CALC
-                  IF arr[2] == "value"
-                     SetResult( Hex2Str( arr[3] ) )
-                  ELSE
-                     oEditExpr:SetText( "-- BAD ANSWER --" )
-                  ENDIF
-               ELSEIF nAnsType == ANS_BRP
-                  IF arr[2] == "err"
-                     oEditExpr:SetText( "-- BAD LINE --" )
-                  ELSE
-                     ToggleBreakPoint( arr[2], arr[3] )
-                  ENDIF
-                  IF !Empty( aBPLoad )
-                     IF ++nBPLoad <= Len(aBPLoad)
-                        AddBreakPoint( aBPLoad[nBPLoad,2], aBPLoad[nBPLoad,1] )
-                        Return Nil
-                     ELSE
-                        aBPLoad := Nil
-                     ENDIF
-                  ENDIF
-               ELSEIF nAnsType == ANS_STACK
-                  IF arr[2] == "stack"
-                     ShowStack( arr, 3 )
-                  ENDIF
-               ELSEIF nAnsType == ANS_LOCAL
-                  IF arr[2] == "valuelocal"
-                     ShowLocals( arr, 3 )
-                  ENDIF
-               ELSEIF nAnsType == ANS_WATCH
-                  IF arr[2] == "valuewatch"
-                     ShowWatch( arr, 3 )
-                  ENDIF
-               ELSEIF nAnsType == ANS_AREAS
-                  IF arr[2] == "valueareas"
-                     ShowAreas( arr, 3 )
-                  ENDIF
-               ENDIF
-               lRes := .T.
-               SetMode( MODE_INPUT )
-            ENDIF
-         ELSE
-            IF Left(arr[1],1) == "a" .AND. ( n := Val( Substr(arr[1],2) ) ) > nId2
-               lRes := .T.
-               nId2 := n
-               IF arr[2] == "."
-                  oEditExpr:SetText( "-- BAD LINE --" )
-               ELSE
-                  IF !( cPrgName == arr[2] )
-                     cPrgName := arr[2]
-                     SetPath( cPaths, cPrgName )
-                  ENDIF
-                  SetCurrLine( nCurrLine := Val( arr[3] ),cPrgName )
-                  n := 4
-                  DO WHILE .T.
-                     IF arr[n] == "ver"
-                        cVerProto := Val( arr[n+1] )
-                        n += 2
-                     ELSEIF arr[n] == "stack"
-                        ShowStack( arr, n+1 )
-                        n += 2 + Val( arr[n+1] ) * 3
-                     ELSEIF arr[n] == "valuelocal"
-                        ShowLocals( arr, n+1 )
-                        n += 2 + Val( arr[n+1] ) * 3
-                     ELSEIF arr[n] == "valuewatch"
-                        ShowWatch( arr, n+1 )
-                        n += 2 + Val( arr[n+1] )
-                     ELSE
-                        EXIT
-                     ENDIF
-                  ENDDO
-                  hwg_Setwindowtext( HWindow():GetMain():handle, "Debugger ("+arr[2]+", line "+arr[3]+")" )
-               ENDIF
-               SetMode( MODE_INPUT )
-               nLastSec := Seconds()
-            ENDIF
-         ENDIF
-      ENDIF
-   ELSEIF lAnimate .AND. Seconds() - nLastSec > nAnimate
-      Send( "cmd", "step" )
-      SetMode( MODE_WAIT_BR )
-   ENDIF
-
-Return Nil
-
-Static Function SetMode( newMode )
-Local aStates := { { "Input",16711680,CLR_LGREEN }, { "Init",16777215,CLR_DBLUE }, { "Wait",16777215,255 }, { "Run",16777215,0 } }
-
-   nMode := newMode
-   hwg_Enablemenuitem( ,MENU_RUN, (newmode==MODE_INPUT), .T. )
-   hwg_Enablemenuitem( ,MENU_VIEW, (newmode==MODE_INPUT), .T. )
-   hwg_Enablemenuitem( ,MENU_BRP, (newmode==MODE_INPUT), .T. )
-   hwg_Enablemenuitem( ,MENU_QUIT, (newmode==MODE_INPUT), .T. )
-   hwg_Drawmenubar( HWindow():GetMain():handle )
-   oSayState:SetValue( aStates[ newMode,1 ] )
-   oSayState:SetColor( aStates[ newMode,2 ], aStates[ newMode,3 ], .T. )
-   IF newMode == MODE_INPUT
-      oBtnExp:Enable()
-#if defined( __PLATFORM__UNIX )
-#else
-      hwg_SetForeGroundWindow( HWindow():GetMain():handle )
-#endif
-   ELSE
-      oBtnExp:Disable()
-      IF newMode == MODE_WAIT_ANS .OR. newMode == MODE_WAIT_BR
-         IF newMode == MODE_WAIT_BR
-            nCurrLine := 0
-            SetCurrLine()
-         ENDIF
-      ENDIF
-   ENDIF
-
-Return Nil
-
-Static Function Send( ... )
-Local arr := hb_aParams(), i, s := ""
-
-   FSeek( handl1, 0, 0 )
-   FOR i := 1 TO Len( arr )
-      s += arr[i] + ","
-   NEXT
-   FWrite( handl1, Ltrim(Str(++nId1)) + "," + s + Ltrim(Str(nId1)) + ",!" )
-
-Return Nil
-
 Static Function Animate()
 Local n := hu_Get( "Seconds:", "9", nAnimate )
 
@@ -879,79 +989,6 @@ Local n := hu_Get( "Seconds:", "9", nAnimate )
       nAnimate := n
       lAnimate := .T.
       DoCommand( CMD_STEP )
-   ENDIF
-Return Nil
-
-Static Function DoCommand( nCmd, cDop, cDop2 )
-
-   IF nMode == MODE_INPUT
-      lAnimate := .F.
-      IF nCmd == CMD_GO
-         hwg_Setwindowtext( HWindow():GetMain():handle, "Debugger ("+cPrgName+")" )
-         Send( "cmd", "go" )
-
-      ELSEIF nCmd == CMD_STEP
-         Send( "cmd", "step" )
-
-      ELSEIF nCmd == CMD_TOCURS
-         Send( "cmd", "to", cPrgName, Ltrim(Str(GetCurrLine())) )
-
-      ELSEIF nCmd == CMD_TRACE
-         Send( "cmd", "trace" )
-
-      ELSEIF nCmd == CMD_NEXTR
-         Send( "cmd", "nextr" )
-
-      ELSEIF nCmd == CMD_EXP
-         Send( "exp", cDop )
-         nAnsType := ANS_CALC
-         SetMode( MODE_WAIT_ANS )
-         Return Nil
-
-      ELSEIF nCmd == CMD_STACK
-         Send( "view", "stack", cDop )
-         nAnsType := ANS_STACK
-         SetMode( MODE_WAIT_ANS )
-         Return Nil
-
-      ELSEIF nCmd == CMD_LOCAL
-         Send( "view", "local", cDop )
-         nAnsType := ANS_LOCAL
-         SetMode( MODE_WAIT_ANS )
-         Return Nil
-
-      ELSEIF nCmd == CMD_WATCH
-         IF Empty( cDop2 )
-            Send( "view", "watch", cDop )
-         ELSE
-            Send( "watch", cDop, cDop2 )
-         ENDIF
-         nAnsType := ANS_WATCH
-         SetMode( MODE_WAIT_ANS )
-         Return Nil
-
-      ELSEIF nCmd == CMD_AREA
-         Send( "view", "areas" )
-         nAnsType := ANS_AREAS
-         SetMode( MODE_WAIT_ANS )
-         Return Nil
-
-      ELSEIF nCmd == CMD_QUIT
-         nExitMode := 2
-         hwg_EndWindow()
-         Return Nil
-
-      ELSEIF nCmd == CMD_EXIT
-         nExitMode := 1
-         hwg_EndWindow()
-         Return Nil
-
-      ENDIF
-      SetMode( MODE_WAIT_BR )
-   ELSEIF nCmd == CMD_EXIT
-      nExitMode := 1
-      hwg_EndWindow()
-
    ENDIF
 Return Nil
 
@@ -984,7 +1021,7 @@ Local nLine := Val( cLine ), i
 Return Nil
 
 Static Function AddBreakPoint( cPrg, nLine )
-Local i, oText
+Local oText
 
    IF nMode != MODE_INPUT .AND. Empty( aBPLoad )
       Return Nil
@@ -1003,7 +1040,7 @@ Local i, oText
          cPrg := oText:cargo
       ENDIF
 
-      IF ( i := getBP( nLine, cPrg ) ) == 0
+      IF getBP( nLine, cPrg ) == 0
          Send( "brp", "add", cPrg, Ltrim(Str(nLine)) )
       ELSE
          Send( "brp", "del", cPrg, Ltrim(Str(nLine)) )
@@ -1013,33 +1050,6 @@ Local i, oText
          cPrgBP := cPrg
          SetMode( MODE_WAIT_ANS )
       ENDIF
-   ENDIF
-Return Nil
-
-Static Function SetPath( cRes, cName, lClear )
-Local arr, i, cFull
-
-   IF !Empty( cRes ) .OR. !Empty( cRes := hu_Get( "Path to source files", "@S256", cPaths ) )
-      cPaths := Iif( Left( cRes,1 ) != ";", ";" + cRes, cRes )
-      arr := hb_aTokens( cPaths, ";" )
-      IF !Empty( cName )
-         FOR i := 1 TO Len( arr )
-            cFull := arr[i] + ;
-               Iif( Empty(arr[i]).OR.Right( arr[i],1 ) $ "\/", "", hb_OsPathSeparator() ) + cPrgName
-            IF SetText( cFull, lClear )
-               EXIT
-            ENDIF
-         NEXT
-      ENDIF
-   ENDIF
-
-Return Nil
-
-Static Function OpenPrg()
-Local cFile := hwg_Selectfile( "Source files( *.prg )", "*.prg", cCurrPath )
-
-   IF !Empty( cFile )
-      SetText( cFile )
    ENDIF
 Return Nil
 
@@ -1392,7 +1402,7 @@ Local oDlg
         STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + DS_CENTER
 
    @ 20,30 SAY "HwGUI Debugger" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
-   @ 20,60 SAY "Version 2.0" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+   @ 20,60 SAY "Version 2.01" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
 #if !defined( __PLATFORM__UNIX )
    @ 20,90 SAY "http://www.kresin.ru/debugger.html" ;

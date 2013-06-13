@@ -92,7 +92,7 @@ HB_FUNC( HBXML_SETENTITY )
    else
    {
       pArray = hb_param( 1, HB_IT_ARRAY );
-      ulLen = ( ULONG ) hb_arrayLen( pArray );
+      ulLen = ( HB_ULONG ) hb_arrayLen( pArray );
 
       nPredefsKol = ulLen;
       pEntity1 = (unsigned char **) hb_xgrab( ulLen * sizeof(unsigned char *) );

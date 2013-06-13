@@ -8,6 +8,82 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-13 17:37 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/include/guilib.ch
+    * added workaround for some ancient Harbour and xHarbour compilers
+      which may not define __PLATFORM__UNIX
+    * define __GTK__ for *nix builds
+
+  * hwgui/gtk/hwinprn.prg
+  * hwgui/gtk/hprinter.prg
+  * hwgui/gtk/hfrmtmpl.prg
+  * hwgui/source/procmisc/scrdebug.prg
+  * hwgui/source/procmisc/hfrmtmpl.prg
+  * hwgui/utils/debugger/hwgdebug.prg
+    * use __GTK__ macro instead of __LINUX__
+
+  * hwgui/source/procmisc/procscri.prg
+  * hwgui/source/debug/dbgconnect.prg
+    * use __PLATFORM__UNIX macro supported by Harbour and xHarbour
+      instead of manually defined __LINUX__ macro
+
+  * hwgui/source/hwinprn.prg
+    * use __GTK__ macro instead of __PLATFORM__Linux__
+      Please verify me. such macro never existed in Harbour
+      and xHarbour (only __PLATFORM__Linux) so maybe code
+      covered by it should be removed?
+
+  * hwgui/samples/winprn/winprn.prg
+    * use __PLATFORM__UNIX macro supported by Harbour and xHarbuor
+      instead of __PLATFORM__Linux__
+      Please verify me. such macro never existed in Harbour
+      and xHarbour (only __PLATFORM__Linux) so maybe code
+      covered by it should be removed?
+
+  * hwgui/hwgui.hbm
+  * hwgui/hwgui.hbp
+  * hwgui/hwgui.hbc
+  * hwgui/hwguidyn.hbp
+  * hwgui/hbxml.hbp
+  * hwgui/procmisc.hbp
+  * hwgui/hwg_contrib.hbp
+  * hwgui/hwgdebug.hbp
+  * hwgui/hbactivex.hbp
+    * updated to work with unix GTK builds
+    ! set HWG_USE_POINTER_ITEM in all builds
+    ; WARNING: for -cflag=`pkg-config --cflags gtk+-2.0` in .hbp files
+               it's necessary to use HBMK2 from current Harbour devel
+               code
+
+  * hwgui/hwg_contrib.hbp
+  * hwgui/gtk/samples/graph.prg
+  * hwgui/make_b32pointer.bat
+  * hwgui/source/debug/debugger.prg
+  * hwgui/source/debug/dbgconnect.prg
+  * hwgui/source/debug/dbgentry.c
+  * hwgui/source/hctrlex.prg
+  * hwgui/activex.txt
+  * hwgui/include/hwgcompat.ch
+  * hwgui/include/gtkcompat.ch
+  * hwgui/contrib/misc/miscfunc.prg
+  * hwgui/utils/dbc/view.prg
+  * hwgui/utils/dbc/procs_c.c
+  * hwgui/utils/dbc/dbchw.h
+  * hwgui/utils/dbc/bldads.bat
+  * hwgui/utils/debugger/hwgdebug.prg
+  * hwgui/utils/debugger/hwgdebug.hbp
+  * hwgui/utils/debugger/bld.bat
+  * hwgui/utils/debugger/bld_hbmk.bat
+  * hwgui/samples/tools/calculator.prg
+  * hwgui/samples/tools/hcalculator.prg
+  * hwgui/samples/winchild/testchild.prg
+  * hwgui/samples/winchild/testchild.hbp
+  * hwgui/samples/winchild/bld.bat
+  * hwgui/samples/mdichild/testmdichild.prg
+  * hwgui/samples/mdichild/testmdichild.hbp
+  * hwgui/hwgdebug.hbp
+    ! fixed SVN properties: keywords, attributes and EOLs
+
 2013-06-13 16:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   ! source/xml/xmlparse.c
     ! Small fix

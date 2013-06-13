@@ -11,7 +11,9 @@
 
 -iinclude
 
-contrib/qhtm/*.c
-contrib/qhtm/*.prg
+-cflag=-DHWG_USE_POINTER_ITEM
+
+{win}contrib/qhtm/*.c
+{win}contrib/qhtm/*.prg
 contrib/misc/*.c
 contrib/misc/*.prg

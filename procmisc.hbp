@@ -11,5 +11,7 @@
 
 -iinclude
 
+-cflag=-DHWG_USE_POINTER_ITEM
+
 source/procmisc/*.c
 source/procmisc/*.prg

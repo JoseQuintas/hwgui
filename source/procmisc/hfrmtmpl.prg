@@ -82,7 +82,7 @@ REQUEST HEDIT
 REQUEST HGROUP
 REQUEST HSAYBMP
 REQUEST HSAYICON
-#ifndef __LINUX__
+#ifndef __GTK__
 REQUEST HRICHEDIT
 REQUEST HDATEPICKER
 #endif
@@ -94,7 +94,7 @@ REQUEST HPANEL
 REQUEST HOWNBUTTON
 REQUEST HBROWSE
 REQUEST HCOLUMN
-#ifndef __LINUX__
+#ifndef __GTK__
 REQUEST HMONTHCALENDAR
 REQUEST HTRACKBAR
 REQUEST HTREE
@@ -360,7 +360,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
 
    ELSEIF nMode == 1
 
-#ifndef __LINUX__
+#ifndef __GTK__
       IF lMdi
          INIT WINDOW ::oDlg MDI TITLE cTitle    ;
                At nLeft, nTop SIZE nWidth, nHeight ;
@@ -380,7 +380,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
                FONT oFont ;
                BACKGROUND BITMAP oBmp ;
                STYLE IIF( nstyle > 0 , nstyle, NIL )
-#ifndef __LINUX__
+#ifndef __GTK__
       ENDIF
 #endif
    ENDIF
@@ -1351,7 +1351,7 @@ METHOD Print( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
          NEXT
       ENDIF
    NEXT
-#ifdef __LINUX__
+#ifdef __GTK__
    xTemp := hwg_gp_GetDeviceArea( oPrinter:hDC )
 #else
    xTemp := hwg_GetDeviceArea( oPrinter:hDCPrn )
@@ -1512,7 +1512,7 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
          ELSE
             nPenWidth := Round( ::nKoefPix, 0 )
          ENDIF
-#ifdef __LINUX__
+#ifdef __GTK__
          oItem:oPen := HGP_Pen():Add( nPenWidth )
 #else
          oItem:oPen := HPen():Add( nPenType, nPenWidth )

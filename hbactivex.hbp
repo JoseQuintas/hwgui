@@ -11,6 +11,8 @@
 
 -iinclude
 
+-cflag=-DHWG_USE_POINTER_ITEM
+
 source/activex/*.c
 source/activex/*.prg
 

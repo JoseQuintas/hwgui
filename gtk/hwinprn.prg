@@ -93,7 +93,7 @@ METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder ) CLASS HWin
 
 METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder ) CLASS HWinPrn
 
-#ifdef __LINUX__
+#ifdef __GTK__
    LOCAL cFont := "monospace"
 #else
    LOCAL cFont := "Lucida Console"

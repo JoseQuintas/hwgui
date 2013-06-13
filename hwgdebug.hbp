@@ -1,5 +1,5 @@
 #
-# $Id: $
+# $Id$
 #
 
 -inc
@@ -10,6 +10,9 @@
 -n -q0 -w -es2
 
 -iinclude
+
+-cflag=-DHWG_USE_POINTER_ITEM
+{unix}-cflag=`pkg-config --cflags gtk+-2.0`
 
 source/debug/*.c
 source/debug/*.prg

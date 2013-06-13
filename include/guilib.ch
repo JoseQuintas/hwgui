@@ -48,9 +48,22 @@
 #define VERT_PTS 12
 
 #ifdef __XHARBOUR__
-  #ifndef HB_SYMBOL_UNUSED
-     #define HB_SYMBOL_UNUSED( x )    ( (x) := (x) )
-  #endif
+   #ifndef HB_SYMBOL_UNUSED
+      #define HB_SYMBOL_UNUSED( x )    ( (x) := (x) )
+   #endif
+#endif
+
+#ifdef __LINUX__
+   /* for some ancient [x]Harbour versions which do not set __PLATFORM__UNIX */
+   #ifndef __PLATFORM__UNIX
+      #define  __PLATFORM__UNIX
+   #endif
+#endif
+
+#ifndef __GTK__
+   #ifdef __PLATFORM__UNIX
+      #define __GTK__
+   #endif
 #endif
 
 // Allow the definition of different classes without defining a new command

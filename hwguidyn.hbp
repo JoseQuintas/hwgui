@@ -4,17 +4,18 @@
 
 -inc
 
--hbdyn
--nohblib-
+-hbdynvm
+-shared
 -o{bcc}lib/hwguidyn-bcc
 -o{!bcc}lib/hwguidyn
--nohbc
 -lhbxml
 -lprocmisc
 -Llib
 
 -n1 -q0 -w -es2
 
+-cflag=-DHWG_USE_POINTER_ITEM
+{unix}-cflag=`pkg-config --cflags gtk+-2.0`
 -cflag={bcc}-a8
 -cflag=-D__EXPORT__
 

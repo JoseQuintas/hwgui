@@ -89,7 +89,7 @@ METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder ) CLASS HWin
 Return Nil
 
 METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder ) CLASS HWinPrn
-#ifdef __PLATFORM__Linux__
+#ifdef __GTK__
 Local cFont := "Monospace "
 #else
 Local cFont := "Lucida Console"
@@ -108,7 +108,7 @@ Local nMode := 0, oFont, nWidth, nPWidth
          IF nPWidth > 210 .OR. nPWidth < 190
             nPWidth := 200
          ENDIF
-#ifdef __PLATFORM__Linux__
+#ifdef __GTK__
          oFont := ::oPrinter:AddFont( cFont+"Regular", ::nStdHeight * ::oPrinter:nVRes )
 #else
          oFont := ::oPrinter:AddFont( cFont, ::nStdHeight * ::oPrinter:nVRes )
@@ -127,7 +127,7 @@ Local nMode := 0, oFont, nWidth, nPWidth
       ::nLineHeight := ( ::nStdHeight / aKoef[nMode+1] ) * ::oPrinter:nVRes
       ::nLined := ( 25.4 * ::oPrinter:nVRes ) / ::nLineInch - ::nLineHeight
 
-#ifdef __PLATFORM__Linux__
+#ifdef __GTK__
       IF ::lBold; cFont += "Bold"; ENDIF
       IF ::lItalic; cFont += "Italic"; ENDIF
       IF !::lBold .AND. !::lItalic; cFont += "Regular"; ENDIF

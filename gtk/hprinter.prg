@@ -16,7 +16,7 @@ STATIC crlf := e"\r\n"
 
 CLASS HPrinter
 
-#if defined( __LINUX__ ) .AND. defined( __RUSSIAN__ )
+#if defined( __GTK__ ) .AND. defined( __RUSSIAN__ )
    CLASS VAR cdp       SHARED  INIT "RUKOI8"
 #else
    CLASS VAR cdp       SHARED

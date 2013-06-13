@@ -20,7 +20,7 @@ REQUEST HB_CODEPAGE_RU1251
 Function Main
 Local oWinPrn, i
 
-#ifdef __PLATFORM__Linux__
+#ifdef __PLATFORM__UNIX
    oWinPrn := HWinPrn():New( ,"RU866","RUKOI8" )
    oWinPrn:StartDoc( .T.,"/apps/a2.ps" )
 #else

@@ -42,7 +42,7 @@ Local nFirst, i
 
       oDlgFont := HFont():Add( "Georgia",0,-15,,204 )
       oScrFont := HFont():Add( "Courier New",0,-15,,204 )
-#ifndef __LINUX__
+#ifndef __GTK__
       oBmpCurr := HBitmap():AddStandard(OBM_RGARROWD)
       oBmpPoint:= HBitmap():AddStandard(OBM_CHECK)
 #endif
@@ -76,7 +76,7 @@ Local nFirst, i
           ON SIZE {|o,x,y|o:Move(,,x)}
           
       oBrwScript:aArray := aScript[3]
-#ifdef __LINUX__
+#ifdef __GTK__
       oBrwScript:rowCount := 5
       oBrwScript:AddColumn( HColumn():New( "",{|v,o|Iif(o:nCurrent==i_scr,'>',Iif(aBreakPoints!=Nil.AND.Ascan(aBreakPoints[2],oBrwScript:nCurrent)!=0,'*',' '))},"C",1,0 ) )      
 #else
@@ -91,7 +91,7 @@ Local nFirst, i
       @ 0,240 PANEL oPanel OF oDlgDebug SIZE oDlgDebug:nWidth,64 ;
           ON SIZE {|o,x,y|o:Move(,y-64,x)}
 
-#ifdef __LINUX__
+#ifdef __GTK__
       @ 10,10 OWNERBUTTON TEXT "Add" SIZE 100, 24 OF oPanel ON CLICK {||AddWatch()}
       @ 10,36 OWNERBUTTON TEXT "Calculate" SIZE 100, 24 OF oPanel ON CLICK {||Calculate()}
 #else
@@ -168,7 +168,7 @@ Static Function dlgDebugClose()
    aWatches := {}
    oScrFont:Release()
    oDlgFont:Release()
-#ifndef __LINUX__
+#ifndef __GTK__
    oBmpCurr:Release()
    oBmpPoint:Release()
 #endif
@@ -201,7 +201,7 @@ Return .T.
 Static Function AddWatch()
 Local xRes, bCodeblock, bOldError, lRes := .T.
 
-#ifdef __LINUX__
+#ifdef __GTK__
    IF !Empty( xRes := oEditExpr:GetText() )
 #else
    IF !Empty( xRes := hwg_Getedittext( oEditExpr:oParent:handle, oEditExpr:id ) )
@@ -266,7 +266,7 @@ Return .T.
 Static Function Calculate()
 Local xRes, bOldError, lRes := .T., cType
 
-#ifdef __LINUX__
+#ifdef __GTK__
    IF !Empty( xRes := oEditExpr:GetText() )
 #else
    IF !Empty( xRes := hwg_Getedittext( oEditExpr:oParent:handle, oEditExpr:id ) )

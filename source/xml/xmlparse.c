@@ -76,7 +76,7 @@ HB_FUNC( HBXML_SETENTITY )
 
    if( pEntity1 && predefinedEntity1 != pEntity1 )
    {
-      for( ul = 0; ul < nPredefsKol; ul++ )
+      for( ul = 0; ul < ( HB_ULONG ) nPredefsKol; ul++ )
          hb_xfree( pEntity1[ul] );
 
       hb_xfree( pEntity1 );
@@ -94,7 +94,7 @@ HB_FUNC( HBXML_SETENTITY )
       pArray = hb_param( 1, HB_IT_ARRAY );
       ulLen = ( HB_ULONG ) hb_arrayLen( pArray );
 
-      nPredefsKol = ulLen;
+      nPredefsKol = (int) ulLen;
       pEntity1 = (unsigned char **) hb_xgrab( ulLen * sizeof(unsigned char *) );
       pEntity2 = (unsigned char *) hb_xgrab( ulLen+1 );
       pEntity2[ulLen] = '\0';

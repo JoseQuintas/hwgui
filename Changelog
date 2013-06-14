@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-14 12:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  ! source/dialog.c
+  ! source/xml/xmlparse.c
+    ! Few warnings fixed, thanks to Maurizio la Cecilia
+
 2013-06-14 11:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/debugger/hwgdebug.prg
   * source/debug/dbgconnect.prg

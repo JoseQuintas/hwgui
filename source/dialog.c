@@ -551,18 +551,17 @@ static LRESULT CALLBACK s_ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam,
       hb_vmPush( pObject );
       hb_vmPushLong( ( LONG ) uMsg );
       hb_vmPushLong( ( LONG ) wParam );
-//      hb_vmPushLong( (LONG )  lParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
       #ifdef HWG_USE_POINTER_ITEM
       if ( uMsg ==  WM_CTLCOLORSTATIC  || uMsg == WM_CTLCOLOREDIT || uMsg == WM_CTLCOLORBTN || uMsg == WM_CTLCOLORLISTBOX || uMsg == WM_CTLCOLORDLG) 
       {
-         res = hb_parptr( -1 ) ;
-         return (INT_PTR) res ;
+         return (INT_PTR) hb_parptr( -1 ) ;
       }
       else
       #endif
          res = hb_parnl( -1 );
+
       if( res == -1 )
          return FALSE;
       else
@@ -626,19 +625,17 @@ static LRESULT CALLBACK s_DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
       hb_vmPush( pObject );
       hb_vmPushLong( ( LONG ) uMsg );
       hb_vmPushLong( ( LONG ) wParam );
-//      hb_vmPushLong( (LONG ) lParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
       #ifdef HWG_USE_POINTER_ITEM
       if ( uMsg ==  WM_CTLCOLORSTATIC  || uMsg == WM_CTLCOLOREDIT || uMsg == WM_CTLCOLORBTN || uMsg == WM_CTLCOLORLISTBOX || uMsg == WM_CTLCOLORDLG) 
       {
-         res = hb_parptr( -1 ) ;
-         return (INT_PTR) res ;
+         return (INT_PTR)hb_parptr( -1 ) ;
       }
       else
-      #endif
-      
-      res = hb_parnl( -1 );
+      #endif    
+         res = hb_parnl( -1 );
+
       if( res == -1 )
          return FALSE;
       else

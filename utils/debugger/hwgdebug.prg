@@ -1,3 +1,59 @@
+/*
+ * $Id$
+ */
+
+/*
+ * HWGUI - Harbour Win32 GUI library source code:
+ * The GUI Debugger
+ *
+ * Copyright 2013 Alexander Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version, with one exception:
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.  If not, write to
+ * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ *
+ * As a special exception, the Harbour Project gives permission for
+ * additional uses of the text contained in its release of Harbour.
+ *
+ * The exception is that, if you link the Harbour libraries with other
+ * files to produce an executable, this does not by itself cause the
+ * resulting executable to be covered by the GNU General Public License.
+ * Your use of that executable is in no way restricted on account of
+ * linking the Harbour library code into it.
+ *
+ * This exception does not however invalidate any other reasons why
+ * the executable file might be covered by the GNU General Public License.
+ *
+ * This exception applies only to the code released by the Harbour
+ * Project under the name Harbour.  If you copy code from other
+ * Harbour Project or Free Software Foundation releases into a copy of
+ * Harbour, as the General Public License permits, the exception does
+ * not apply to the code that you add in this way.  To avoid misleading
+ * anyone as to the status of such modified files, you must delete
+ * this exception notice from them.
+ *
+ * If you write modifications of your own for Harbour, it is your choice
+ * whether to permit this exception to apply to your modifications.
+ * If you do not wish that, delete this exception notice.
+ *
+ */
 
 #include "hwgui.ch"
 #include "hxml.ch"
@@ -62,6 +118,7 @@ REQUEST HB_GT_CGI_DEFAULT
 
 STATIC lModeIde := .T.
 STATIC lDebugging := .F.
+STATIC hHrbProj
 STATIC handl1 := -1, handl2, cBuffer
 STATIC nId1 := 0, nId2 := -1
 
@@ -114,6 +171,7 @@ Local aParams := hb_aParams(), i, j, cFile, cExe, cParams, cDirWait
    NEXT
 
    ReadIni()
+   ReadHrb()
 
    IF Empty( oMainFont )
       PREPARE FONT oMainFont NAME "Georgia" WIDTH 0 HEIGHT -17 CHARSET 4
@@ -129,11 +187,18 @@ Local aParams := hb_aParams(), i, j, cFile, cExe, cParams, cDirWait
          MENUITEM "Debug program" ID MENU_INIT ACTION DebugNewExe()
          SEPARATOR
          MENUITEM "Open source file" ACTION OpenPrg()
+         SEPARATOR
          MENUITEM "Close source file" ACTION oTabMain:DeletePage( oTabMain:GetActivePage() )
+         IF lModeIde
+            Do( hb_hrbGetFunsym( hHrbProj, "proj_menu_save" ) )
+         ENDIF
          SEPARATOR
          MENUITEM "&Close debugger" ID MENU_EXIT ACTION DoCommand( CMD_EXIT )
          MENUITEM "&Exit and terminate program" ID MENU_QUIT ACTION DoCommand( CMD_QUIT )
       ENDMENU
+      IF lModeIde
+         Do( hb_hrbGetFunsym( hHrbProj, "proj_menu" ) )
+      ENDIF
       MENU TITLE "&Locate"
          MENUITEM "&Find"+Chr(9)+"Ctrl+F" ACTION Locate( 0 ) ACCELERATOR FCONTROL,Asc("F")
          MENUITEM "&Next" +Chr(9)+"F3" ACTION Locate( 1 ) ACCELERATOR 0,VK_F3
@@ -224,6 +289,18 @@ Local aParams := hb_aParams(), i, j, cFile, cExe, cParams, cDirWait
 
    ACTIVATE WINDOW oMainW
 
+Return Nil
+
+Static Function ReadHrb()
+Local cHrb
+
+   IF lModeIde
+      cHrb := cHrbPath + Iif( Right(cHrbPath,1) $ "/\", "", hb_OsPathSeparator() ) + ;
+            "hwg_project.hrb"
+      IF !File( cHrb ) .OR. Empty( hHrbProj := hb_hrbLoad( cHrb ) )
+         lModeIde := .F.
+      ENDIF
+   ENDIF
 Return Nil
 
 Static Function ReadIni()
@@ -446,6 +523,10 @@ Static nLastSec := 0
 
    IF nMode != MODE_INPUT
       IF !Empty( arr := dbgRead() )
+         IF arr[1] == "quit"
+            SetMode( MODE_INIT )
+            Return Nil
+         ENDIF
          IF nMode == MODE_WAIT_ANS
             IF Left(arr[1],1) == "b" .AND. ( n := Val( Substr(arr[1],2) ) ) == nId1
                IF nAnsType == ANS_CALC
@@ -543,7 +624,7 @@ Local aStates := { { "Input",16711680,CLR_LGREEN }, { "Init",16777215,CLR_DBLUE 
    oSayState:SetColor( aStates[ newMode,2 ], aStates[ newMode,3 ], .T. )
    IF newMode == MODE_INPUT
       oBtnExp:Enable()
-#if defined( __GTK__ )
+#if defined( __PLATFORM__UNIX )
 #else
       hwg_SetForeGroundWindow( HWindow():GetMain():handle )
 #endif
@@ -554,6 +635,9 @@ Local aStates := { { "Input",16711680,CLR_LGREEN }, { "Init",16777215,CLR_DBLUE 
             nCurrLine := 0
             SetCurrLine()
          ENDIF
+      ELSEIF newMode == MODE_INIT
+         hwg_Enablemenuitem( ,MENU_INIT, .T., .T. )
+         lDebugging := .F.
       ENDIF
    ENDIF
 
@@ -659,7 +743,7 @@ Local cFile := hwg_Selectfile( "Source files( *.prg )", "*.prg", cCurrPath )
    ENDIF
 Return Nil
 
-Static Function GetTextObj( cName, nTab )
+Function GetTextObj( cName, nTab )
 Local i, oText
 
    IF Empty( cName )
@@ -681,11 +765,16 @@ Static Function CreateTextCtrl()
 Local oText
 
    BEGIN PAGE "Empty" of oTabMain
+#ifdef __GTK__
+      oText := HCEdit():New( oTabMain,,, 4, 4, 592, 426, oMainFont,,{|o,x,y|o:Move(,,x-8,y-10)} )
+#else
       oText := HCEdit():New( oTabMain,,, 10, 30, oTabMain:nWidth-20, oTabMain:nHeight-36, oMainFont,, ;
             {|o,x,y|o:Move(,,x-20,y-36)},,,,,,,.T. )
+#endif
    END PAGE of oTabMain
 
-   oText:lReadOnly := oText:lShowNumbers := .T.
+   oText:lReadOnly := !lModeIde
+   oText:lShowNumbers := .T.
    oText:bPaint := {|o,h,n,y1,y2| onTxtPaint( o,h,n,y1,y2 ) }
    oText:bKeyDown:= {|o,n|Iif(n==120.or.n==13,AddBreakPoint(),.T.)}
    oText:bClickDoub:= {||AddBreakPoint()}
@@ -803,9 +892,15 @@ Static Function CreateTextCtrl()
 Local oText
 
    BEGIN PAGE "Empty" of oTabMain
+#ifdef __GTK__
+      @ 4,4 BROWSE oText OF oTabMain ARRAY SIZE 592,426  ;
+          FONT oMainFont STYLE WS_BORDER+WS_VSCROLL ;
+          ON SIZE {|o,x,y|o:Move(,,x-8,y-32)}
+#else
       @ 10,30 BROWSE oText OF oTabMain ARRAY SIZE oTabMain:nWidth-20, oTabMain:nHeight-36  ;
           FONT oMainFont NOBORDER ;
           ON SIZE {|o,x,y|o:Move(,,x-20,y-36)}
+#endif
    END PAGE of oTabMain
           
    oText:aArray := {}
@@ -1404,7 +1499,7 @@ Local oDlg
    @ 20,30 SAY "HwGUI Debugger" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
    @ 20,60 SAY "Version 2.01" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
-#if !defined( __GTK__ )
+#if !defined( __PLATFORM__UNIX )
    @ 20,90 SAY "http://www.kresin.ru/debugger.html" ;
            LINK "http://www.kresin.ru/debugger.html" ;
            SIZE 300, 24 STYLE SS_CENTER  ;

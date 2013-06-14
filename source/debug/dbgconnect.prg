@@ -418,6 +418,14 @@ Local cRes := "", i := 1, nLen := Len( stroka )
    ENDDO
 Return cRes
 
+EXIT PROCEDURE hwg_dbg_exit
+
+   hwg_dbg_Send( "quit" )
+   FClose( handl1 )
+   FClose( handl2 )
+Return
+
+
 #ifdef __XHARBOUR__
 #pragma BEGINDUMP
 #include "hbapi.h"

@@ -187,7 +187,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
          RETURN -1
       ENDIF
    ENDIF
-   IF msg = WM_NCPAINT .AND. hwg_GetParentForm(Self):nInitFocus > 0 .AND. ;
+   IF msg = WM_NCPAINT .AND. !Empty( hwg_GetParentForm(Self):nInitFocus ) .AND. ;
          ( hwg_Selffocus( hwg_Getparent( hwg_GetParentForm(Self):nInitFocus ), ::Handle  ) .OR. ;
          hwg_Selffocus( hwg_Getparent( hwg_GetParentForm(Self):nInitFocus ), hwg_Getparent( ::Handle ) ) )
       hwg_GetSkip( ::oParent, hwg_GetParentForm(Self):nInitFocus , , IIF( hwg_Selffocus( hwg_GetParentForm(Self):nInitFocus, ::Handle ), 1, 0 ) )

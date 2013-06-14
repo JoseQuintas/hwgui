@@ -777,7 +777,7 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS HTab
       ::oparent:lSuspendMsgsHandling := .F.
    ENDIF
    IF ! ( ( msg = WM_COMMAND .OR. msg = WM_NOTIFY ) .AND. ::oParent:lSuspendMsgsHandling .AND. ::lSuspendMsgsHandling )
-      IF msg = WM_NCPAINT .AND. hwg_GetParentForm( Self ):nInitFocus > 0  .AND. hwg_Ptrtoulong( hwg_Getparent( hwg_GetParentForm(Self ):nInitFocus ) ) = hwg_Ptrtoulong( ::Handle )
+      IF msg = WM_NCPAINT .AND. !Empty( hwg_GetParentForm( Self ):nInitFocus )  .AND. hwg_Ptrtoulong( hwg_Getparent( hwg_GetParentForm(Self ):nInitFocus ) ) = hwg_Ptrtoulong( ::Handle )
          hwg_GetSkip( ::oParent, hwg_GetParentForm( Self ):nInitFocus , , 0 )
          hwg_GetParentForm( Self ):nInitFocus := 0
       ENDIF

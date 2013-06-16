@@ -4,8 +4,8 @@
  * Harbour XML Library
  * HXmlDoc class
  *
- * Copyright 2003 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2003 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "hbclass.ch"
@@ -28,7 +28,7 @@ CLASS HXMLNode
 
    METHOD New( cTitle, type, aAttr )
    METHOD Add( xItem )
-   METHOD GetAttribute( cName )
+   METHOD GetAttribute( cName, cType, xDefault )
    METHOD SetAttribute( cName,cValue )
    METHOD DelAttribute( cName )
    METHOD Save( handle,level )
@@ -50,10 +50,19 @@ METHOD Add( xItem ) CLASS HXMLNode
    Aadd( ::aItems, xItem )
 Return xItem
 
-METHOD GetAttribute( cName ) CLASS HXMLNode
+METHOD GetAttribute( cName, cType, xDefault ) CLASS HXMLNode
 Local i := Ascan( ::aAttr,{|a|a[1]==cName} )
 
-Return Iif( i==0, Nil, ::aAttr[ i,2 ] )
+   IF i != 0
+      IF cType == Nil .OR. cType == "C"
+         Return ::aAttr[ i,2 ]
+      ELSEIF cType == "N"
+         Return Val( ::aAttr[ i,2 ] )
+      ELSEIF cType == "L"
+         Return ( Lower( ::aAttr[ i,2 ] ) $ ".t.;on.yes" )
+      ENDIF
+   ENDIF
+Return xDefault
 
 METHOD SetAttribute( cName,cValue ) CLASS HXMLNode
 Local i := Ascan( ::aAttr,{|a|a[1]==cName} )

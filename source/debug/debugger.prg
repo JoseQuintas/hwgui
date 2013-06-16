@@ -56,6 +56,12 @@
  * If you do not wish that, delete this exception notice.
  *
  */
+/*
+ * ALTD() debuger function
+ *
+ * Copyright 2003 Przemyslaw Czerpak <druzus@acn.waw.pl>
+ * www - http://www.xharbour.org
+ */
 
 #pragma DEBUGINFO=OFF
 
@@ -672,3 +678,21 @@ FUNCTION __dbgValToStr( uVal )
 
    RETURN "U"
 
+#ifdef __XHARBOUR__
+#define ALTD_DISABLE   0
+#define ALTD_ENABLE    1
+
+function ALTD( nAction )
+   if pcount() == 0
+      if SET( _SET_DEBUG ) .AND. TYPE( "__DBGALTDENTRY()" ) == "UI"
+         &("__DBGALTDENTRY()")
+      endif
+   elseif valtype( nAction ) == "N"
+      if nAction == ALTD_DISABLE
+         SET( _SET_DEBUG, .F. )
+      elseif nAction == ALTD_ENABLE
+         SET( _SET_DEBUG, .T. )
+      endif
+   endif
+return nil
+#endif

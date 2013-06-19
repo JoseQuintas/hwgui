@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-19 15:13 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/hwgui.hbp
+  * hwgui/hwgdebug.hbp
+  * hwgui/hwguidyn.hbp
+    ! fixed dynamic -cflag to work with hbmk2 which do not support
+      reverted backslashes as quoting delimiters
+
 2013-06-18 10:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   ! source/guimain.prg
     ! Problem fixed in hwg_Checkfocus(), related to using of -DHWG_USE_POINTER_ITEM

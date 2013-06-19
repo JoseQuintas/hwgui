@@ -791,3 +791,88 @@ HB_FUNC( HWG_ISWIN7 )
    hb_retl (ovi.dwMajorVersion >= 6 && ovi.dwMinorVersion==1) ;
 }
 
+#define BUFSIZE  1024
+
+HB_FUNC( HWG_RUNCONSOLEAPP )
+{
+   SECURITY_ATTRIBUTES sa; 
+   HANDLE g_hChildStd_OUT_Rd = NULL;
+   HANDLE g_hChildStd_OUT_Wr = NULL;
+   PROCESS_INFORMATION pi;
+   STARTUPINFO si;
+   BOOL bSuccess;
+
+   DWORD dwRead, dwWritten; 
+   CHAR chBuf[BUFSIZE]; 
+   HANDLE hOut;
+
+   sa.nLength = sizeof(SECURITY_ATTRIBUTES); 
+   sa.bInheritHandle = TRUE; 
+   sa.lpSecurityDescriptor = NULL; 
+
+   // Create a pipe for the child process's STDOUT. 
+   if( ! CreatePipe( &g_hChildStd_OUT_Rd, &g_hChildStd_OUT_Wr, &sa, 0 ) )
+   {
+      hb_retl(0);
+      return;
+   }
+
+   // Ensure the read handle to the pipe for STDOUT is not inherited.
+   if( ! SetHandleInformation( g_hChildStd_OUT_Rd, HANDLE_FLAG_INHERIT, 0 ) )
+   {
+      hb_retl(0);
+      return;
+   }
+
+   // Set up members of the PROCESS_INFORMATION structure. 
+   ZeroMemory( &pi, sizeof(PROCESS_INFORMATION) );
+ 
+   // Set up members of the STARTUPINFO structure. 
+   // This structure specifies the STDIN and STDOUT handles for redirection.
+   ZeroMemory( &si, sizeof(si) );
+   si.cb = sizeof(si);
+   si.wShowWindow = SW_HIDE;
+   si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+   si.hStdOutput = g_hChildStd_OUT_Wr;
+   si.hStdError = g_hChildStd_OUT_Wr;
+
+   bSuccess = CreateProcess( NULL, (LPTSTR)hb_parc(1), NULL, NULL,
+      TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi);
+   
+   if ( ! bSuccess ) 
+   {
+      hb_retl(0);
+      return;
+   }
+
+   WaitForSingleObject( pi.hProcess, INFINITE );
+   CloseHandle( pi.hProcess );
+   CloseHandle( pi.hThread );
+   CloseHandle( g_hChildStd_OUT_Wr );
+
+   if( !HB_ISNIL(2) )
+      hOut = CreateFile( hb_parc(2), GENERIC_WRITE, 0, 0,
+             CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0 );
+   while( 1 ) 
+   { 
+      bSuccess = ReadFile( g_hChildStd_OUT_Rd, chBuf, BUFSIZE, &dwRead, NULL );
+      if( ! bSuccess || dwRead == 0 ) break; 
+
+      if( !HB_ISNIL(2) )
+      {
+         bSuccess = WriteFile( hOut, chBuf, dwRead, &dwWritten, NULL );
+         if( ! bSuccess ) break; 
+      }
+   } 
+
+   if( !HB_ISNIL(2) )
+      CloseHandle( hOut );
+   CloseHandle( g_hChildStd_OUT_Rd );
+
+   hb_retl(1);
+}
+
+HB_FUNC( HWG_RUNAPP )
+{
+   hb_retni( WinExec( hb_parc( 1 ), (HB_ISNIL(2))? SW_SHOW : ( UINT ) hb_parni( 2 ) ) );
+}

@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-18 10:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  ! source/guimain.prg
+    ! Problem fixed in hwg_Checkfocus(), related to using of -DHWG_USE_POINTER_ITEM
+  * source/misc.c
+  * gtk/misc.c
+    * Two functions added: hwg_RunConsoleApp() and hwg_RunApp()
+
 2013-06-16 15:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/debug/debugger.prg
     * Added Altd() function for xHarbour, where it is placed in debug.lib,

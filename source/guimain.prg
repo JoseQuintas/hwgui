@@ -504,7 +504,7 @@ FUNCTION hwg_CheckFocus( oCtrl, lInside )
          hwg_Setfocus( oParent:handle )
          hwg_Setfocus( hGetFocus )
       ELSEIF ! lInside .AND. ! EMPTY( oParent:nInitFocus )
-       //  hwg_Setfocus( oParent:handle )
+       //  hwg_Setfocus( oParent:handle )        
          RETURN .T.
      ENDIF
       RETURN .F.
@@ -515,7 +515,9 @@ FUNCTION hwg_CheckFocus( oCtrl, lInside )
    ENDIF
    IF oParent  != Nil .AND. lInside   // valid
       lModal :=  oParent:lModal .AND.  oParent:Type >  WND_DLG_RESOURCE
-      IF ( ( ! Empty( hGetFocus ) .AND. lModal .AND. ! hwg_Selffocus( hwg_GetWindowParent( hGetFocus ), oParent:Handle ) ) .OR. ;
+
+      IF ( ( ! Empty( hGetFocus ) .AND. lModal .AND. ;
+         ! hwg_Selffocus( hwg_GetWindowParent( hGetFocus ), hwg_Ptrtoulong(oParent:Handle) ) ) .OR. ;
          (  hwg_Selffocus( hGetFocus, oCtrl:oParent:Handle  ) ) ) .AND. ;
             hwg_Selffocus( oParent:handle, oCtrl:oParent:Handle )
          RETURN .F.

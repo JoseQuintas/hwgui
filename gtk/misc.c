@@ -17,24 +17,30 @@
 #include "item.api"
 #include "gtk/gtk.h"
 
-void hwg_writelog( char* s )
+void hwg_writelog( const char * sFile, const char * sTraceMsg, ... )
 {
-#ifdef __XHARBOUR__
-   FHANDLE handle;
-#else
-   HB_FHANDLE handle;
-#endif
+   FILE *hFile;
 
-   if( hb_fsFile( "ac.log" ) )
-      handle = hb_fsOpen( "ac.log", FO_WRITE );
+   if( sFile == NULL )
+   {
+      hFile = hb_fopen( "ac.log", "a" );
+   }
    else
-      handle = hb_fsCreate( "ac.log", 0 );
+   {
+      hFile = hb_fopen( sFile, "a" );
+   }
 
-   hb_fsSeek( handle,0, SEEK_END );
-   hb_fsWrite( handle, (unsigned char *) s, strlen(s) );
-   hb_fsWrite( handle, (unsigned char *) "\n\r", 2 );
+   if( hFile )
+   {
+      va_list ap;
 
-   hb_fsClose( handle );
+      va_start( ap, sTraceMsg );
+      vfprintf( hFile, sTraceMsg, ap );
+      va_end( ap );
+
+      fclose( hFile );
+   }
+
 }
 
 HB_FUNC( HWG_SETDLGRESULT )
@@ -183,3 +189,43 @@ HB_FUNC( HWG_LISTVIEWNOTIFY )
 }
 
 
+#define CHUNK_LEN 1024
+
+HB_FUNC( HWG_RUNCONSOLEAPP ) 
+{ 
+    /* Ensure that output of command does interfere with stdout */
+    fflush(stdin);
+    FILE *cmd_file = (FILE *) popen( hb_parc(1), "r" );
+    FILE *hOut = -1;
+    char buf[CHUNK_LEN];
+    int bytes_read;
+
+    if( !cmd_file )
+    {
+        hb_retl( 0 );
+        return;
+    }
+
+    if( !HB_ISNIL(2) )
+       hOut = fopen( hb_parc(2), "w" );
+
+    do
+    {
+        bytes_read = fread( buf, sizeof(char), CHUNK_LEN, cmd_file );
+        if( hOut != -1 )
+           fwrite( buf, 1, bytes_read, hOut );
+    } while (bytes_read == CHUNK_LEN);
+ 
+    pclose(cmd_file);
+    if( hOut != -1 )
+       fclose( hOut );
+
+    hb_retl( 1 ); 
+}
+
+HB_FUNC( HWG_RUNAPP )
+{
+   char * argv[] = { (char *) hb_parc(1), (char *) hb_parc(2), NULL };
+   hb_retl( g_spawn_async( NULL, argv,
+         NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL ) );
+}

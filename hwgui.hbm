@@ -47,6 +47,7 @@
 {win}source/winapi/hdialog.prg
 {win}source/winapi/hedit.prg
 {win}source/winapi/hfreeimg.prg
+{win}source/winapi/hfrmtmpl.prg
 {win}source/winapi/hgraph.prg
 {win}source/winapi/hgrid.prg
 {win}source/winapi/hlistbox.prg

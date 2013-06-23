@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-23 20:28 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  + source/common/editor
+  + source/common/editor/hcedit.prg
+  + source/common/editor/hcedit_w.c
+  + source/common/editor/hilight.prg
+    + Added implementation of edit control, which is used in debugger and will be used
+      in designer.
+
 2013-06-23 17:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * samples/*
     * changed with 2.16c version

@@ -1,0 +1,16 @@
+#
+# $Id: $
+#
+
+-inc
+
+-hblib
+-o../lib/hwg_extctrl
+
+-n -q0 -w -es2
+
+-i../include
+
+-cflag=-DHWG_USE_POINTER_ITEM
+
+ext_controls/*.prg

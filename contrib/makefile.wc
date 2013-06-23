@@ -1,0 +1,53 @@
+# $Id: makefile.wc,v 1.14 2007/03/27 21:07:02 richardroesnadi Exp $
+# makefile for Borland C/C++ 32 bits
+# Building of hwgui.lib - Harbour Win32 GUI library
+
+HRB_DIR = $(HB_PATH)
+INCLUDE_DIR = include;$(HRB_DIR)\include
+OBJ_DIR = obj
+LIB_DIR = ../lib
+QHTM_DIR = qhtm
+#C_DEFINES= -DHB_THREAD_SUPPORT
+#H_DEFINES= -DHB_THREAD_SUPPORT
+
+HARBOUR_EXE = HARBOUR
+CC_EXE = WPP386
+LIB_EXE = LIB386
+HARBOURFLAGS = -i$(INCLUDE_DIR) -n1 -q0 -w -es2 -gc0
+CFLAGS = -j -w3 -d0 -5 -fp5 -s -onaehtzr -oi+ -ei -zp8 -zq -zt0 -mf -bt=NT -i$(INCLUDE_DIR)
+
+!ifndef ECHO
+ECHO = echo.
+!endif
+!ifndef DEL
+DEL = del
+!endif
+
+QHTM_LIB = $(LIB_DIR)\hwg_qhtm.lib
+
+all: \
+   $(QHTM_LIB)
+
+QHTM_LIB_OBJS = \
+   $(OBJ_DIR)\hwg_qhtm.obj \
+   $(OBJ_DIR)\hqhtm.obj
+
+
+$(QHTM_LIB) : $(QHTM_LIB_OBJS)
+   $(LIB_EXE) /nologo /out:$@ $**
+
+
+# ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+# ³ QHTM.LIB Dependencies  ³Û
+# ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÛ
+#  ßßßßßßßßßßßßßßßßßßßßßßßßßß
+
+$(OBJ_DIR)\hqhtm.c : $(QHTM_DIR)\hqhtm.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hqhtm.obj : $(OBJ_DIR)\hqhtm.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hwg_qhtm.obj : $(QHTM_DIR)\hwg_qhtm.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+

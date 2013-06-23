@@ -1,0 +1,38 @@
+# $Id: makefile.vc,v 1.22 2007/04/18 09:15:43 alexstrickland Exp $
+# makefile for Visual C++ 32 bits
+# Building of hwgui.lib - Harbour Win32 GUI library
+
+#.SUFFIXESS: .prg .lib .c .obj
+
+!IFNDEF HRB_DIR
+HRB_DIR = \harbour
+!ENDIF
+INC_DIR = include
+OBJ_DIR = obj/vc
+LIB_DIR = ../lib/vc
+QHTM_DIR = qhtm
+CFLAGS = /TP /W3 /nologo
+
+all: \
+   $(LIB_DIR)\hwg_qhtm.lib
+
+
+$(LIB_DIR)\hwg_qhtm.lib : \
+   $(OBJ_DIR)\hqhtm.obj \
+   $(OBJ_DIR)\hwg_qhtm.obj
+  lib /out:$@ $**
+
+$(OBJ_DIR)\hqhtm.c    : $(QHTM_DIR)\hqhtm.prg
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+
+$(OBJ_DIR)\hqhtm.obj  : $(OBJ_DIR)\hqhtm.c
+$(OBJ_DIR)\hwg_qhtm.obj  : $(QHTM_DIR)\hwg_qhtm.c
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
+
+
+.prg.c:
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+
+.c.obj:
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
+

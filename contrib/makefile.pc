@@ -1,0 +1,58 @@
+# $Id: makefile.pc,v 1.16 2007/03/27 21:07:02 richardroesnadi Exp $
+# makefile for Pelles C 32 bits
+# Building of hwgui.lib - Harbour Win32 GUI library
+
+# Comment the following for HARBOUR
+__XHARBOUR__ = 1
+
+HRB_DIR = $(HB_PATH)
+INCLUDE_DIR = ..\include;$(HRB_DIR)\include
+OBJ_DIR = obj
+LIB_DIR = ..\lib
+QHTM_DIR = contrib\qhtm
+
+HARBOUR_EXE = HARBOUR
+CC_EXE = $(POCCMAIN)\BIN\POCC.EXE
+LIB_EXE = $(POCCMAIN)\BIN\POLIB.EXE
+HARBOURFLAGS = -i$(INCLUDE_DIR) -n1 -q0 -w -es2 -gc0
+CFLAGS = /Ze /I"INCLUDE" /I"$(HRB_DIR)\INCLUDE" /I"$(POCCMAIN)\INCLUDE" /I"$(POCCMAIN)\INCLUDE\WIN" /I"$(POCCMAIN)\INCLUDE\MSVC" /D"HB_STATIC_STARTUP" /c
+
+# Please Note that /Op and /Go requires POCC version 2.80 or later
+CFLAGS = $(CFLAGS) /Op /Go
+
+!ifndef ECHO
+ECHO = echo.
+!endif
+!ifndef DEL
+DEL = del
+!endif
+
+QHTM_LIB = $(LIB_DIR)\hwg_qhtm.lib
+
+all: \
+   $(QHTM_LIB)
+
+
+QHTM_LIB_OBJS = \
+   $(OBJ_DIR)\hwg_qhtm.obj \
+   $(OBJ_DIR)\hqhtm.obj
+
+
+$(QHTM_LIB) : $(QHTM_LIB_OBJS)
+   $(LIB_EXE) /out:$@ $**
+
+
+# здддддддддддддддддддддддд©
+# Ё QHTM.LIB Dependencies  Ёш
+# юддддддддддддддддддддддддыш
+#  ъъъъъъъъъъъъъъъъъъъъъъъъъъ
+
+$(OBJ_DIR)\hqhtm.c : $(SRC_DIR)\qhtm\hqhtm.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hqhtm.obj : $(OBJ_DIR)\hqhtm.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hwg_qhtm.obj : $(SRC_DIR)\qhtm\hwg_qhtm.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+

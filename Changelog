@@ -8,6 +8,33 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-23 16:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  rm contrib/qhtm/Makefile
+  mkdir contrib/ext_controls
+  mv source/hctrlex.prg contrib/ext_controls/hctrlex.prg
+  mv source/hgridex.prg contrib/ext_controls/hgridex.prg
+  mv source/activex contrib/activex
+  mkdir source/common
+  mkdir source/winapi
+  mv source/procmisc source/common/procmisc
+  mv source/xml source/common/xml
+  mv source/debug source/common/debug
+  mv gtk source/gtk
+  mv source/* source/winapi
+  + contrib/hbactivex.hbp
+  + contrib/hwg_extctrl.hbp
+  + contrib/hwg_qhtm.hbp
+  + contrib/make_b32.bat
+  + contrib/make_pc.bat
+  + contrib/make_vc.bat
+  + contrib/make_w32.bat
+  + contrib/makefile.bc
+  + contrib/makefile.gcc
+  + contrib/makefile.pc
+  + contrib/makefile.vc
+  + contrib/makefile.wc
+  + contrib/makemngw.bat
+
 2013-06-19 15:13 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
   * hwgui/hwgui.hbp
   * hwgui/hwgdebug.hbp

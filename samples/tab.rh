@@ -1,0 +1,23 @@
+/****************************************************************************
+
+
+tab.rh
+
+produced by Borland Resource Workshop
+
+
+*****************************************************************************/
+
+#define DIALOG_1	1
+#define IDC_1	101
+#define IDC_COMBOBOX1	101
+#define IDC_CHECKBOX3	102
+#define IDC_CHECKBOX1	101
+#define IDC_CHECKBOX2	102
+#define IDC_EDIT1       103
+#define IDC_EDIT3	105
+#define IDC_EDIT2	104
+#define ID_BROWSE1      104
+#define ID_BROWSE2      105
+#define PAGE_1 3
+#define PAGE_2 4

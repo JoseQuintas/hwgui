@@ -1,0 +1,26 @@
+/****************************************************************************
+
+
+testget.rc
+
+produced by Borland Resource Workshop
+
+
+*****************************************************************************/
+
+#include "testget.rh"
+
+2 BITMAP "..\image\open.bmp"
+
+3 BITMAP "..\image\exit.bmp"
+
+MENU_1 MENU 
+{
+ POPUP ""
+ {
+  MENUITEM "Teste", CM_POPUPITEM
+  MENUITEM "Teste2", CM_ITEM
+ }
+
+}
+

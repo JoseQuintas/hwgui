@@ -14,5 +14,5 @@
 -cflag=-DHWG_USE_POINTER_ITEM
 "{unix}-cflag=`pkg-config --cflags gtk+-2.0`"
 
-source/debug/*.c
-source/debug/*.prg
+source/common/debug/*.c
+source/common/debug/*.prg

@@ -25,10 +25,8 @@ SLY_OUTPUTFOLDER =
 STARTIN = 
 TARGETFOLDER = 
 
-[\hwgui\source\*.*]
+[\hwgui\source\winapi\*.*]
 
-[\hwgui\source\procmisc\*.*]
+[\hwgui\source\common\procmisc\*.*]
 
-[\hwgui\source\xml\*.*]
-
-[\hwgui\source\qhtm\*.*]
+[\hwgui\source\common\xml\*.*]

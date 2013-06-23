@@ -10,9 +10,9 @@
 
 /*
 TODO: 1) In line edit
-         The better way is using listview_hittest to determine the item and subitem position
+         The better way is using hwg_Listview_hittest to determine the item and subitem position
       2) Imagelist
-         The way is using the ListView_SetImageList
+         The way is using the hwg_Listview_setimagelist
       3) Checkbox
          The way is using the NM_CUSTOMDRAW and hwg_Drawframecontrol()
 
@@ -105,7 +105,7 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
 
    RETURN Self
 
-METHOD Activate() CLASS HGrid
+METHOD Activate CLASS HGrid
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Listview_create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll )
 
@@ -157,7 +157,7 @@ METHOD Init() CLASS HGrid
       hwg_Listview_init( ::handle, ::ItemCount, ::lNoLines )
 
       FOR i := 1 TO Len( ::aColumns )
-         hwg_Listview_addcolumn( ::handle, i, ::aColumns[ i, 2 ], ::aColumns[ i, 1 ], ::aColumns[ i, 3 ], IIF( ::aColumns[ i, 4 ] != nil, ::aColumns[ i, 4 ], 0 ) )
+         hwg_Listview_addcolumn( ::handle, i, ::aColumns[ i, 2 ], ::aColumns[ i, 1 ], ::aColumns[ i, 3 ], IF( ::aColumns[ i, 4 ] != nil, ::aColumns[ i, 4 ], 0 ) )
       NEXT
 
       IF ::color != nil

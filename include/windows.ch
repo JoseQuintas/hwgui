@@ -20,7 +20,6 @@
 #define WM_ERASEBKGND                   20   // 0x0014
 #define WM_ENDSESSION                   22   // 0x0016
 #define WM_ACTIVATEAPP                  28
-#DEFINE WM_MOUSEACTIVATE                33
 #define WM_GETMINMAXINFO                36   // 0x0024
 #define WM_NEXTDLGCTL                   40   // 0x0028
 #define WM_DRAWITEM                     43   // 0x002B
@@ -31,7 +30,6 @@
 
 #define WM_NOTIFY                       78   // 0x004E
 #define WM_HELP                         83
-#define WM_NOTIFYFORMAT                 85
 #define WM_SETICON                      128    // 0x0080
 
 #define WM_NCCREATE                     129
@@ -47,7 +45,7 @@
 #define WM_CHAR                         258    // 0x0102
 #define WM_SYSKEYDOWN                   260    // 0x0104
 #define WM_SYSKEYUP                     261    // 0x0105
-#define WM_SYSCHAR                      262    //= &H106
+*#define WM_SYSCHAR                      = &H106
 
 #define WM_INITDIALOG                   272
 #define WM_COMMAND                      273
@@ -64,7 +62,6 @@
 #define WM_ENTERIDLE                    289
 #define WM_CHANGEUISTATE                295   //0x127 
 #define WM_UPDATEUISTATE                296   //0x128
-#define WM_QUERYUISTATE                 297   //0x0129
 
 #define WM_CTLCOLORMSGBOX               306     // 0x0132
 #define WM_CTLCOLOREDIT                 307     // 0x0133
@@ -80,13 +77,8 @@
 #define WM_LBUTTONDBLCLK                515    // 0x0203
 #define WM_RBUTTONDOWN                  516    // 0x0204
 #define WM_RBUTTONUP                    517    // 0x0205
-#define WM_MBUTTONUP	                   520    // 0x0208
-#define WM_MOUSEWHEEL                   522    // 0x020A
+#define WM_MBUTTONUP	                520    // 0x0208
 #define WM_PARENTNOTIFY                 528    // 0x0210
-#define WM_NEXTMENU                     531    // 0x0213
-#define WM_SIZING                       532    // 0x0214
-#define WM_CAPTURECHANGED               533     // 0x0215
-#define	WM_MOVING                       534     //  0x0216,
 #define WM_MDICREATE                    544     // 0x0220
 #define WM_MDIDESTROY                   545     // 0x0221
 #define WM_MDIACTIVATE                  546     // 0x0222
@@ -106,29 +98,12 @@
 #define WM_PASTE                        770     // 0x0302
 #define WM_CLEAR                        771     // 0x0303
 
-#DEFINE WM_PRINT                        791
-#DEFINE	WM_PRINTCLIENT                  792
-
 #define WM_USER                        1024    // 0x0400
 
-#define SC_SIZE                       61440   // &HF000
 #define SC_MINIMIZE                   61472   // 0xF020
 #define SC_MAXIMIZE                   61488   // 0xF030
-#define SC_MAXIMIZE2                  61490   // 0xF032, Sent when form maximizes because of doubcle click on caption
 #define SC_CLOSE                      61536   // 0xF060
 #define SC_RESTORE                    61728   // 0xF120
-#define SC_RESTORE2                   61730   // 0xF122 Sent when form maximizes because of doubcle click on caption
-#define SC_KEYMENU                    61696	  // HF100
-#define SC_NEXTWINDOW                 61504   // &HF040
-#define SC_PREVWINDOW                 61520   // &HF050
-#define SC_HOTKEY                     61776   // &HF150
-#define SC_MOUSEMENU                  61584   //  HF090
-#define SC_SEPARATOR                  61455  // 0xF00F
-#define SC_MENU                       61589   // &HF095
-
-
-#define GWL_ID                        - 12
-#define GWL_STYLE                     - 16
 
 /*
 * CONSTANTS TO   WM_CHANGEUISTATE
@@ -137,20 +112,6 @@
 #define UIS_INITIALIZE     3
 #define UISF_HIDEACCEL     2
 #define UISF_HIDEFOCUS     3
-
-/* CONSTANTS TO   WM_PRINT */
-#DEFINE PRF_CHECKVISIBLE         1
-#DEFINE PRF_CLIENT               4
-#DEFINE PRF_ERASEBKGND           8
-#DEFINE PRF_CHILDREN            16
-#DEFINE PRF_OWNED               32
-
-/* CONSTANTS TO TRACKMOUSEEVENT */
-#DEFINE  TME_CANCEL            0x80000000 
-#DEFINE  TME_HOVER             1
-#DEFINE  TME_LEAVE             2 
-
-
 
 /*
  * Dialog Box Command IDs
@@ -162,7 +123,6 @@
 #define IDIGNORE            5
 #define IDYES               6
 #define IDNO                7
-#define IDHELP              9
 
 #define DS_ABSALIGN         1        // 0x01L
 #define DS_SYSMODAL         2        // 0x02L
@@ -223,14 +183,8 @@
 #define CB_FINDSTRING               332
 #define CB_SELECTSTRING             333
 #define CB_SETCURSEL                334
-#DEFINE CB_SHOWDROPDOWN             335
 #define CB_SETITEMHEIGHT            0x0153
 #define CB_GETITEMHEIGHT            0x0154
-#define CB_GETDROPPEDSTATE          343
-#define CB_FINDSTRINGEXACT          344
-#define CB_SETDROPPEDWIDTH          0x0160
-#define CB_SETCUEBANNER             5891 // 0x1703
-
 
 /* Brush Styles */
 #define BS_SOLID            0
@@ -256,9 +210,6 @@
 #define PS_USERSTYLE        7
 #define PS_ALTERNATE        8
 #define PS_STYLE_MASK       15
-
-/* SETBKMODE */
-#define OPAQUE 2
 
 #define COLOR_SCROLLBAR                 0
 #define COLOR_BACKGROUND                1
@@ -373,7 +324,6 @@
 */
 
 #define DTS_SHOWNONE        2          // 0x0002
-#define DTS_TIMEFORMAT      9 
 
 /*
  * Window Styles
@@ -554,17 +504,12 @@
 #define TCM_FIRST               4864     // Tab control messages
 #define TCM_SETIMAGELIST        4867     // (TCM_FIRST + 3)
 #define TCM_GETITEMCOUNT        4868     // (TCM_FIRST + 4)
-#define TCM_GETITEMRECT         ( TCM_FIRST + 10 )
 #define TCM_GETCURSEL           4875		 // TCM_FIRST + 11)
 #define TCM_SETCURSEL           4876     // (TCM_FIRST + 12)
-#define TCM_HITTEST             ( TCM_FIRST + 13 )
-#define TCM_SETITEMSIZE         ( TCM_FIRST + 41 )
-#define TCM_SETPADDING          ( TCM_FIRST + 43 )
-#define TCM_GETROWCOUNT         4908     // (TCM_FIRST + 44)
 #define TCM_GETCURFOCUS         4911     // (TCM_FIRST + 47)
 #define TCM_SETCURFOCUS         4912     // (TCM_FIRST + 48)
-#define TCM_SETMINTABWIDTH      ( TCM_FIRST + 49 )
 #define TCM_DESELECTALL         4914        //(TCM_FIRST + 50)
+
 
 /*
  * Combo Box styles
@@ -583,25 +528,7 @@
 #define CBS_UPPERCASE         8192 //$2000
 #define CBS_LOWERCASE         16384 //$4000
 
-/*
- * Tree styles
- */
-#define TVS_HASBUTTONS          1   // 0x0001
-#define TVS_HASLINES            2   // 0x0002
-#define TVS_LINESATROOT         4   // 0x0004
-#define TVS_EDITLABELS          8   // 0x0008
-#define TVS_DISABLEDRAGDROP    16   // 0x0010
-#define TVS_SHOWSELALWAYS      32   // 0x0020
-#define TVS_RTLREADING         64   // 0x0040
-#define TVS_NOTOOLTIPS        128   // 0x0080
-#define TVS_CHECKBOXES        256   // 0x0100
-#define TVS_TRACKSELECT       512   // 0x0200
-#define TVS_SINGLEEXPAND     1024   // 0x0400
-#define TVS_INFOTIP          2048   // 0x0800
-#define TVS_FULLROWSELECT    4096   // 0x1000
-#define TVS_NOSCROLL         8192   // 0x2000
-#define TVS_NONEVENHEIGHT   16384   // 0x4000
-#define TVS_NOHSCROLL       32768   // 0x8000  // TVS_NOSCROLL overrides this
+
 
 /*
  * MessageBox() Flags
@@ -738,11 +665,8 @@
 #define EM_GETLIMITTEXT         213     // 0x00D5
 #define EM_POSFROMCHAR          214     // 0x00D6
 #define EM_CHARFROMPOS          215     // 0x00D7
-#define EM_HIDESELECTION        1087
-#define EM_SETBKGNDCOLOR        1091
-#define EM_SETCHARFORMAT        1092     // (WM_USER + 68)
-#define EM_SETEVENTMASK         1093     // (WM_USER + 69)
-
+#define EM_SETBKGNDCOLOR       1091
+#define EM_SETEVENTMASK        1093     // (WM_USER + 69)
 
 #define ENM_CHANGE             1        // 0x00000001
 #define ENM_SELCHANGE          524288   // 0x00080000
@@ -838,6 +762,10 @@
 #define VK_BACK           0x08
 #define VK_TAB            0x09
 #define VK_RETURN         0x0D
+#define VK_LEFT           0x25
+#define VK_UP             0x26
+#define VK_RIGHT          0x27
+#define VK_DOWN           0x28
 #define VK_SHIFT          0x10
 #define VK_CONTROL        0x11
 #define VK_MENU           0x12
@@ -850,10 +778,6 @@
 #define VK_NEXT           0x22
 #define VK_END            0x23
 #define VK_HOME           0x24
-#define VK_LEFT           0x25
-#define VK_UP             0x26
-#define VK_RIGHT          0x27
-#define VK_DOWN           0x28
 #define VK_SELECT         0x29
 #define VK_PRINT          0x2A
 #define VK_EXECUTE        0x2B
@@ -1027,6 +951,13 @@
 // #define BS_NOTIFY               16384   // 0x00004000L
 
 // more messages
+#define WM_NEXTMENU                     0x0213
+#define WM_SIZING                       0x0214
+#define WM_CAPTURECHANGED               0x0215
+#define WM_MOVING                       0x0216
+#define GWL_ID (-12)
+
+#define WM_MOUSEWHEEL  0x020A
 
 #define TB_LINEUP               0
 #define TB_LINEDOWN             1
@@ -1107,14 +1038,12 @@
 #define TBSTYLE_CHECK           0x0002
 #define TBSTYLE_GROUP           0x0004
 #define TBSTYLE_CHECKGROUP      0x0006
-#define TBSTYLE_EX_MIXEDBUTTONS 0x00000008
 
 #define BTNS_BUTTON     TBSTYLE_BUTTON      // 0x0000
 #define BTNS_SEP        TBSTYLE_SEP         // 0x0001
 #define BTNS_CHECK      TBSTYLE_CHECK       // 0x0002
 #define BTNS_GROUP      TBSTYLE_GROUP       // 0x0004
 #define BTNS_CHECKGROUP TBSTYLE_CHECKGROUP  // (TBSTYLE_GROUP | TBSTYLE_CHECK)
-#define BTNS_WHOLEDROPDOWN      0x0080
 
 #define TB_ENABLEBUTTON         (WM_USER + 1)
 #define TB_HIDEBUTTON           (WM_USER + 4)
@@ -1122,11 +1051,6 @@
 #define TB_SETSTATE             (WM_USER + 17)
 #define TB_SETSTYLE             (WM_USER + 56)
 #define TB_GETSTYLE             (WM_USER + 57)
-#define TB_GETSTATE             (WM_USER + 18)
-#define TB_SETBITMAPSIZE        (WM_USER + 32)
-#define TB_SETINDENT            (WM_USER + 47)
-#define TB_GETBUTTONSIZE        (WM_USER + 58)
-#define TB_SETBUTTONWIDTH       (WM_USER + 59)
 
 #define TTN_FIRST -520
 #define TTN_LAST  -549
@@ -1165,103 +1089,6 @@
 #define TB_GETRECT              (WM_USER + 51) // wParam is the Cmd instead of index
 #define TB_SETHOTIMAGELIST      (WM_USER + 52)
 #define TB_GETHOTIMAGELIST      (WM_USER + 53)
-
-// GETSYSTEMMETRICS constants
-//--------------------------
-
-#define SM_CXSCREEN 0
-#define SM_CYSCREEN 1
-#define SM_CXVSCROLL 2
-#define SM_CYHSCROLL 3
-#define SM_CYCAPTION 4
-#define SM_CXBORDER 5
-#define SM_CYBORDER 6
-#define SM_CXDLGFRAME 7
-#define SM_CXFIXEDFRAME 7
-#define SM_CYDLGFRAME 8
-#define SM_CYFIXEDFRAME 8
-#define SM_CYVTHUMB 9
-#define SM_CXHTHUMB 10
-#define SM_CXICON 11
-#define SM_CYICON 12
-#define SM_CXCURSOR 13
-#define SM_CYCURSOR 14
-#define SM_CYMENU 15
-#define SM_CXFULLSCREEN 16
-#define SM_CYFULLSCREEN 17
-#define SM_CYKANJIWINDOW 18
-#define SM_MOUSEPRESENT 19
-#define SM_CYVSCROLL 20
-#define SM_CXHSCROLL 21
-#define SM_DEBUG 22
-#define SM_SWAPBUTTON 23
-#define SM_RESERVED1 24
-#define SM_RESERVED2 25
-#define SM_RESERVED3 26
-#define SM_RESERVED4 27
-#define SM_CXMIN 28
-#define SM_CYMIN 29
-#define SM_CXSIZE 30
-#define SM_CYSIZE 31
-#define SM_CXSIZEFRAME 32
-#define SM_CXFRAME 32
-#define SM_CYSIZEFRAME 33
-#define SM_CYFRAME 33
-#define SM_CXMINTRACK 34
-#define SM_CYMINTRACK 35
-#define SM_CXDOUBLECLK 36
-#define SM_CYDOUBLECLK 37
-#define SM_CXICONSPACING 38
-#define SM_CYICONSPACING 39
-#define SM_MENUDROPALIGNMENT 40
-#define SM_PENWINDOWS 41
-#define SM_DBCSENABLED 42
-#define SM_CMOUSEBUTTONS 43
-#define SM_SECURE 44
-#define SM_CXEDGE 45
-#define SM_CYEDGE 46
-#define SM_CXMINSPACING 47
-#define SM_CYMINSPACING 48
-#define SM_CXSMICON 49
-#define SM_CYSMICON 50
-#define SM_CYSMCAPTION 51
-#define SM_CXSMSIZE 52
-#define SM_CYSMSIZE 53
-#define SM_CXMENUSIZE 54
-#define SM_CYMENUSIZE 55
-#define SM_ARRANGE 56
-#define SM_CXMINIMIZED 57
-#define SM_CYMINIMIZED 58
-#define SM_CXMAXTRACK 59
-#define SM_CYMAXTRACK 60
-#define SM_CXMAXIMIZED 61
-#define SM_CYMAXIMIZED 62
-#define SM_NETWORK 63
-#define SM_CLEANBOOT 67
-#define SM_CXDRAG 68
-#define SM_CYDRAG 69
-#define SM_SHOWSOUNDS 70
-#define SM_CXMENUCHECK 71
-#define SM_CYMENUCHECK 72
-#define SM_SLOWMACHINE 73
-#define SM_MIDEASTENABLED 74
-#define SM_MOUSEWHEELPRESENT 75
-#define SM_XVIRTUALSCREEN 76
-#define SM_YVIRTUALSCREEN 77
-#define SM_CXVIRTUALSCREEN 78
-#define SM_CYVIRTUALSCREEN 79
-#define SM_CMONITORS 80
-#define SM_SAMEDISPLAYFORMAT 81
-#define SM_IMMENABLED 82
-#define SM_CXFOCUSBORDER 83
-#define SM_CYFOCUSBORDER 84
-#define SM_TABLETPC 86
-#define SM_MEDIACENTER 87
-#define SM_STARTER 88
-#define SM_SERVERR2 89
-
-
-
 
 //--------------
 // Font Weights
@@ -1486,7 +1313,7 @@
 #define ST_ALIGN_HORIZ_RIGHT 2           // Icon/bitmap on the right, text on the left
 #define ST_ALIGN_OVERLAP     3           // Icon/bitmap on the same space as text
 
-#define WM_THEMECHANGED     0x031A 
+#define WM_THEMECHANGED     0x031
 
 #define TPM_LEFTALIGN       0x0000
 #define TPM_CENTERALIGN     0x0004
@@ -1532,6 +1359,7 @@
 
 #define _SRCCOPY                0x00CC0020 /* dest = source                   */
 #define _SRCPAINT               0x00EE0086 /* dest = source OR dest           */
+#define CB_SETDROPPEDWIDTH      0x0160
 
 
 #define DLGC_WANTARROWS      0x0001      /* Control wants arrow keys         */
@@ -1620,3 +1448,99 @@ ComboBox
 #define CBN_CLOSEUP         8
 #define CBN_SELENDOK        9
 #define CBN_SELENDCANCEL   10
+
+// GETSYSTEMMETRICS constants
+//--------------------------
+
+#define SM_CXSCREEN 0
+#define SM_CYSCREEN 1
+#define SM_CXVSCROLL 2
+#define SM_CYHSCROLL 3
+#define SM_CYCAPTION 4
+#define SM_CXBORDER 5
+#define SM_CYBORDER 6
+#define SM_CXDLGFRAME 7
+#define SM_CXFIXEDFRAME 7
+#define SM_CYDLGFRAME 8
+#define SM_CYFIXEDFRAME 8
+#define SM_CYVTHUMB 9
+#define SM_CXHTHUMB 10
+#define SM_CXICON 11
+#define SM_CYICON 12
+#define SM_CXCURSOR 13
+#define SM_CYCURSOR 14
+#define SM_CYMENU 15
+#define SM_CXFULLSCREEN 16
+#define SM_CYFULLSCREEN 17
+#define SM_CYKANJIWINDOW 18
+#define SM_MOUSEPRESENT 19
+#define SM_CYVSCROLL 20
+#define SM_CXHSCROLL 21
+#define SM_DEBUG 22
+#define SM_SWAPBUTTON 23
+#define SM_RESERVED1 24
+#define SM_RESERVED2 25
+#define SM_RESERVED3 26
+#define SM_RESERVED4 27
+#define SM_CXMIN 28
+#define SM_CYMIN 29
+#define SM_CXSIZE 30
+#define SM_CYSIZE 31
+#define SM_CXSIZEFRAME 32
+#define SM_CXFRAME 32
+#define SM_CYSIZEFRAME 33
+#define SM_CYFRAME 33
+#define SM_CXMINTRACK 34
+#define SM_CYMINTRACK 35
+#define SM_CXDOUBLECLK 36
+#define SM_CYDOUBLECLK 37
+#define SM_CXICONSPACING 38
+#define SM_CYICONSPACING 39
+#define SM_MENUDROPALIGNMENT 40
+#define SM_PENWINDOWS 41
+#define SM_DBCSENABLED 42
+#define SM_CMOUSEBUTTONS 43
+#define SM_SECURE 44
+#define SM_CXEDGE 45
+#define SM_CYEDGE 46
+#define SM_CXMINSPACING 47
+#define SM_CYMINSPACING 48
+#define SM_CXSMICON 49
+#define SM_CYSMICON 50
+#define SM_CYSMCAPTION 51
+#define SM_CXSMSIZE 52
+#define SM_CYSMSIZE 53
+#define SM_CXMENUSIZE 54
+#define SM_CYMENUSIZE 55
+#define SM_ARRANGE 56
+#define SM_CXMINIMIZED 57
+#define SM_CYMINIMIZED 58
+#define SM_CXMAXTRACK 59
+#define SM_CYMAXTRACK 60
+#define SM_CXMAXIMIZED 61
+#define SM_CYMAXIMIZED 62
+#define SM_NETWORK 63
+#define SM_CLEANBOOT 67
+#define SM_CXDRAG 68
+#define SM_CYDRAG 69
+#define SM_SHOWSOUNDS 70
+#define SM_CXMENUCHECK 71
+#define SM_CYMENUCHECK 72
+#define SM_SLOWMACHINE 73
+#define SM_MIDEASTENABLED 74
+#define SM_MOUSEWHEELPRESENT 75
+#define SM_XVIRTUALSCREEN 76
+#define SM_YVIRTUALSCREEN 77
+#define SM_CXVIRTUALSCREEN 78
+#define SM_CYVIRTUALSCREEN 79
+#define SM_CMONITORS 80
+#define SM_SAMEDISPLAYFORMAT 81
+#define SM_IMMENABLED 82
+#define SM_CXFOCUSBORDER 83
+#define SM_CYFOCUSBORDER 84
+#define SM_TABLETPC 86
+#define SM_MEDIACENTER 87
+#define SM_STARTER 88
+#define SM_SERVERR2 89
+
+#define OPAQUE 2

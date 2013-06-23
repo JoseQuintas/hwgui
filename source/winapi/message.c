@@ -4,8 +4,8 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * C level messages functions
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2001 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "hwingui.h"
@@ -14,13 +14,12 @@
 
 static int s_msgbox( UINT uType )
 {
-   void * hText, * hTitle;
+   void *hText, *hTitle;
    int iResult;
 
-   iResult = MessageBox( GetActiveWindow(),
-                         HB_PARSTR( 1, &hText, NULL ),
-                         HB_PARSTRDEF( 2, &hTitle, NULL ),
-                         uType );
+   iResult = MessageBox( GetActiveWindow(  ),
+         HB_PARSTR( 1, &hText, NULL ),
+         HB_PARSTRDEF( 2, &hTitle, NULL ), uType );
    hb_strfree( hText );
    hb_strfree( hTitle );
 
@@ -69,31 +68,34 @@ HB_FUNC( HWG_MSGRETRYCANCEL )
 
 HB_FUNC( HWG_MSGBEEP )
 {
-   MessageBeep( ( hb_pcount() == 0 ) ? ( LONG ) 0xFFFFFFFF : hb_parnl( 1 ) );
+   MessageBeep( ( hb_pcount(  ) ==
+               0 ) ? ( LONG ) 0xFFFFFFFF : hb_parnl( 1 ) );
 }
 
 HB_FUNC( HWG_MSGTEMP )
 {
-   char cres[ 60 ];
+   char cres[60];
    LPCTSTR msg;
 
 #if __HARBOUR__ - 0 >= 0x010100
-   hb_snprintf( cres, sizeof( cres ), "WS_OVERLAPPEDWINDOW: %lx NM_FIRST: %d ",
-                ( LONG ) WS_OVERLAPPEDWINDOW, NM_FIRST );
+   hb_snprintf( cres, sizeof( cres ),
+         "WS_OVERLAPPEDWINDOW: %lx NM_FIRST: %d ",
+         ( LONG ) WS_OVERLAPPEDWINDOW, NM_FIRST );
 #else
    sprintf( cres, "WS_OVERLAPPEDWINDOW: %lx NM_FIRST: %d ",
-            ( LONG ) WS_OVERLAPPEDWINDOW, NM_FIRST );
+         ( LONG ) WS_OVERLAPPEDWINDOW, NM_FIRST );
 #endif
    {
 #ifdef UNICODE
-      TCHAR wcres[ 60 ];
-      MultiByteToWideChar( CP_ACP, 0, cres, -1, wcres, HB_SIZEOFARRAY( wcres ) );
+      TCHAR wcres[60];
+      MultiByteToWideChar( CP_ACP, 0, cres, -1, wcres,
+            HB_SIZEOFARRAY( wcres ) );
       msg = wcres;
 #else
       msg = cres;
 #endif
-      hb_retni( MessageBox( GetActiveWindow(), msg, TEXT( "DialogBaseUnits" ),
-                            MB_OKCANCEL | MB_ICONQUESTION ) );
+      hb_retni( MessageBox( GetActiveWindow(  ), msg,
+                  TEXT( "DialogBaseUnits" ),
+                  MB_OKCANCEL | MB_ICONQUESTION ) );
    }
 }
-

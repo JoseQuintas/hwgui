@@ -4,8 +4,8 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * Prg level menu functions
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2001 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "windows.ch"
@@ -18,7 +18,6 @@
 #define  FLAG_CHECK      2
 
 STATIC _aMenuDef, _oWnd, _aAccel, _nLevel, _Id, _oMenu, _oBitmap
-STATIC s_nWidthBmp, s_nHeightBmp,s_nbkColor  
 
 CLASS HMenu INHERIT HObject
    DATA handle
@@ -163,7 +162,7 @@ FUNCTION hwg_BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
                               aMenu[ 1, nPos, 3 ], aMenu[ 1, nPos, 4 ], .F. )
             oBmp := Hwg_SearchPosBitmap( aMenu[ 1, nPos, 3 ] )
             IF oBmp[ 1 ]
-               hwg__SetMenuItemBitmaps( hMenu, aMenu[ 1, nPos, 3 ], oBmp[ 2 ], "" )
+               hwg__Setmenuitembitmaps( hMenu, aMenu[ 1, nPos, 3 ], oBmp[ 2 ], "" )
             ENDIF
 
          ENDIF
@@ -172,16 +171,13 @@ FUNCTION hwg_BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
    ENDDO
    IF hWnd != Nil .AND. oWnd != Nil
       Hwg_SetMenu( oWnd, aMenu )
-      IF s_nbkColor != Nil
-         Hwg_SetMenuInfo( oWnd:Handle, s_nbkColor )
-      ENDIF   
    ELSEIF _oMenu != Nil
       _oMenu:handle := aMenu[ 5 ]
       _oMenu:aMenu := aMenu
    ENDIF
    RETURN Nil
 
-FUNCTION Hwg_BeginMenu( oWnd, nId, cTitle, nbkColor, nWidthBmp, nHeightBmp )
+FUNCTION Hwg_BeginMenu( oWnd, nId, cTitle )
    LOCAL aMenu, i
    IF oWnd != Nil
       _aMenuDef := { }
@@ -191,9 +187,6 @@ FUNCTION Hwg_BeginMenu( oWnd, nId, cTitle, nbkColor, nWidthBmp, nHeightBmp )
       _oMenu    := Nil
       _nLevel   := 0
       _Id       := IIf( nId == Nil, MENU_FIRST_ID, nId )
-      s_nWidthBmp  := IIF( nWidthBmp = Nil .OR. ! HWG_ISWIN7(), hwg_Getsystemmetrics( SM_CXMENUCHECK ), nWidthBmp )
-      s_nHeightBmp := IIF( nHeightBmp = Nil .OR. ! HWG_ISWIN7(), hwg_Getsystemmetrics( SM_CYMENUCHECK ), nHeightBmp )
-      s_nbkColor   := nbkColor 
    ELSE
       nId   := IIf( nId == Nil, ++ _Id, nId )
       aMenu := _aMenuDef
@@ -249,10 +242,10 @@ FUNCTION Hwg_DefineMenuItem( cItem, nId, bItem, lDisabled, accFlag, accKey, lBit
    AAdd( aMenu, { bItem, cItem, nId, nFlag } )
    IF lBitmap != Nil .or. ! Empty( lBitmap )
       IF lResource == Nil ;lResource := .F. ; ENDIF
-      IF lResource .OR. AT("." ,lBitmap ) = 0
-         oBmp := HBitmap():AddResource( lBitmap, LR_LOADMAP3DCOLORS + LR_SHARED + LR_LOADTRANSPARENT , ,s_nWidthBmp, s_nHeightBmp  )
+      IF ! lResource
+         oBmp := HBitmap():AddFile( lBitmap )
       ELSE
-         oBmp := HBitmap():AddFile( lBitmap, , .T. , s_nWidthBmp, s_nHeightBmp  )
+         oBmp := HBitmap():AddResource( lBitmap )
       ENDIF
       AAdd( _oBitmap, { .t., oBmp:Handle, cItem, nId } )
    ELSE
@@ -277,15 +270,15 @@ FUNCTION Hwg_DefineAccelItem( nId, bItem, accFlag, accKey )
 
 FUNCTION Hwg_SetMenuItemBitmaps( aMenu, nId, abmp1, abmp2 )
    LOCAL aSubMenu := Hwg_FindMenuItem( aMenu, nId )
-   LOCAL oMenu
+   LOCAL oMenu := aSubMenu
 
    oMenu := IIf( aSubMenu == Nil, 0, aSubMenu[ 5 ] )
-   hwg__SetMenuItemBitmaps( oMenu, nId, abmp1, abmp2 )
+   hwg__Setmenuitembitmaps( oMenu, nId, abmp1, abmp2 )
    RETURN Nil
 
 FUNCTION Hwg_InsertBitmapMenu( aMenu, nId, lBitmap, oResource )
    LOCAL aSubMenu := Hwg_FindMenuItem( aMenu, nId )
-   LOCAL oMenu, oBmp
+   LOCAL oMenu := aSubMenu, oBmp
 
    //Serge(seohic) sugest
    IF oResource == Nil .or. ! oResource

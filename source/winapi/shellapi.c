@@ -4,8 +4,8 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * Shell API wrappers
  *
- * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2002 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "hwingui.h"
@@ -27,22 +27,23 @@
 #define BIF_EDITBOX            0x0010   // Add an editbox to the dialog
 #endif
 
-static int ( CALLBACK BrowseCallbackProc ) (  HWND hwnd,  UINT uMsg,  LPARAM lParam,  LPARAM lpData )
+static int ( CALLBACK BrowseCallbackProc ) ( HWND hwnd, UINT uMsg,
+      LPARAM lParam, LPARAM lpData )
 {
-	// If the BFFM_INITIALIZED message is received
-	// set the path to the start path.
-	lParam = TRUE;
-	switch ( uMsg )
-	{
-		case BFFM_INITIALIZED:
-		{
-			if ( lpData  != (LPARAM)NULL )
-			{
-				SendMessage( hwnd, BFFM_SETSELECTION, lParam, lpData );
-			}
-		}
-	}
-	return 0; // The function should always return 0.
+   // If the BFFM_INITIALIZED message is received
+   // set the path to the start path.
+   lParam = TRUE;
+   switch ( uMsg )
+   {
+      case BFFM_INITIALIZED:
+      {
+         if( lpData != ( LPARAM ) NULL )
+         {
+            SendMessage( hwnd, BFFM_SETSELECTION, lParam, lpData );
+         }
+      }
+   }
+   return 0;                    // The function should always return 0.
 }
 
 /*
@@ -52,21 +53,21 @@ static int ( CALLBACK BrowseCallbackProc ) (  HWND hwnd,  UINT uMsg,  LPARAM lPa
 HB_FUNC( HWG_SELECTFOLDER )
 {
    BROWSEINFO bi;
-   TCHAR lpBuffer[ MAX_PATH ];
+   TCHAR lpBuffer[MAX_PATH];
    LPCTSTR lpResult = NULL;
    LPITEMIDLIST pidlBrowse;     // PIDL selected by user 
-   void * hTitle;
-   void * hFolderName;
+   void *hTitle;
+   void *hFolderName;
    LPCTSTR lpFolderName;
 
-   lpFolderName = HB_PARSTR( 2, &hFolderName, NULL ) ;
-   bi.hwndOwner = GetActiveWindow();
-   bi.pidlRoot = NULL ;
+   lpFolderName = HB_PARSTR( 2, &hFolderName, NULL );
+   bi.hwndOwner = GetActiveWindow(  );
+   bi.pidlRoot = NULL;
    bi.pszDisplayName = lpBuffer;
    bi.lpszTitle = HB_PARSTRDEF( 1, &hTitle, NULL );
    bi.ulFlags = BIF_USENEWUI | BIF_NEWDIALOGSTYLE;
-   bi.lpfn = BrowseCallbackProc ; // = NULL;
-   bi.lParam = lpFolderName ? ( LPARAM ) lpFolderName : 0 ;
+   bi.lpfn = BrowseCallbackProc;        // = NULL;
+   bi.lParam = lpFolderName ? ( LPARAM ) lpFolderName : 0;
    bi.iImage = 0;
 
    // Browse for a folder and return its PIDL. 
@@ -98,7 +99,8 @@ HB_FUNC( HWG_SHELLNOTIFYICON )
    tnid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
    tnid.uCallbackMessage = WM_NOTIFYICON;
    tnid.hIcon = ( HICON ) HB_PARHANDLE( 3 );
-   HB_ITEMCOPYSTR( hb_param( 4, HB_IT_ANY ), tnid.szTip, HB_SIZEOFARRAY( tnid.szTip ) );
+   HB_ITEMCOPYSTR( hb_param( 4, HB_IT_ANY ), tnid.szTip,
+         HB_SIZEOFARRAY( tnid.szTip ) );
 
    if( ( BOOL ) hb_parl( 1 ) )
       Shell_NotifyIcon( NIM_ADD, &tnid );
@@ -125,7 +127,7 @@ HB_FUNC( HWG_SHELLMODIFYICON )
       tnid.hIcon = ( HICON ) HB_PARHANDLE( 2 );
    }
    if( HB_ITEMCOPYSTR( hb_param( 3, HB_IT_ANY ),
-                       tnid.szTip, HB_SIZEOFARRAY( tnid.szTip ) ) > 0 )
+               tnid.szTip, HB_SIZEOFARRAY( tnid.szTip ) ) > 0 )
    {
       tnid.uFlags |= NIF_TIP;
    }
@@ -141,22 +143,21 @@ HB_FUNC( HWG_SHELLEXECUTE )
 #if defined( HB_OS_WIN_CE )
    hb_retni( -1 );
 #else
-   void * hOperation;
-   void * hFile;
-   void * hParameters;
-   void * hDirectory;
+   void *hOperation;
+   void *hFile;
+   void *hParameters;
+   void *hDirectory;
    LPCTSTR lpDirectory;
 
-   lpDirectory = HB_PARSTR( 4, &hDirectory , NULL );
+   lpDirectory = HB_PARSTR( 4, &hDirectory, NULL );
    if( lpDirectory == NULL )
       lpDirectory = TEXT( "C:\\" );
 
-   hb_retnl( ( LONG ) ShellExecute( GetActiveWindow(),
-                  HB_PARSTRDEF( 2, &hOperation, NULL ),
-                  HB_PARSTR( 1, &hFile, NULL ),
-                  HB_PARSTR( 3, &hParameters, NULL ),
-                  lpDirectory,
-                  HB_ISNUM( 5 ) ? hb_parni( 5 ) : SW_SHOWNORMAL ) );
+   hb_retnl( ( LONG ) ShellExecute( GetActiveWindow(  ),
+               HB_PARSTRDEF( 2, &hOperation, NULL ),
+               HB_PARSTR( 1, &hFile, NULL ),
+               HB_PARSTR( 3, &hParameters, NULL ),
+               lpDirectory, HB_ISNUM( 5 ) ? hb_parni( 5 ) : SW_SHOWNORMAL ) );
 
    hb_strfree( hOperation );
    hb_strfree( hFile );
@@ -164,4 +165,3 @@ HB_FUNC( HWG_SHELLEXECUTE )
    hb_strfree( hDirectory );
 #endif
 }
-

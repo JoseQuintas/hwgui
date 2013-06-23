@@ -28,18 +28,14 @@ CLASS VAR winclass   INIT "SysMonthCal32"
 
    DATA value
    DATA bChange
-   DATA bSelect
 
    METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, ;
-               lWeekNumbers, bSelect )
+               lWeekNumbers )
    METHOD Activate()
    METHOD Init()
    METHOD SetValue( dValue )
    METHOD GetValue()
-   METHOD onChange( )
-   METHOD onSelect( )
-
 
 ENDCLASS
 
@@ -47,9 +43,9 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
             oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, ;
-            lWeekNumbers, bSelect ) CLASS HMonthCalendar
+            lWeekNumbers ) CLASS HMonthCalendar
 
-   nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), 0 ) //WS_TABSTOP )
+   nStyle := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_TABSTOP )
    nStyle   += IIf( lNoToday == Nil.OR. ! lNoToday, 0, MCS_NOTODAY )
    nStyle   += IIf( lNoTodayCircle == Nil.OR. ! lNoTodayCircle, 0, MCS_NOTODAYCIRCLE )
    nStyle   += IIf( lWeekNumbers == Nil.OR. ! lWeekNumbers, 0, MCS_WEEKNUMBERS )
@@ -59,26 +55,24 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::value   := IIf( ValType( vari ) == "D" .And. ! Empty( vari ), vari, Date() )
 
    ::bChange := bChange
-   ::bSelect := bSelect
 
    HWG_InitCommonControlsEx()
 
-   /*
+
    IF bChange != Nil
-      ::oParent:AddEvent( MCN_SELECT, Self, bChange, .T., "onChange" )
-      ::oParent:AddEvent( MCN_SELCHANGE, Self, bChange, .T., "onChange" )
+      ::oParent:AddEvent( MCN_SELECT, ::id, bChange, .T., "onChange" )
+      ::oParent:AddEvent( MCN_SELCHANGE, ::id, bChange, .T., "onChange" )
    ENDIF
-   */
 
    ::Activate()
    RETURN Self
 
 //--------------------------------------------------------------------------//
 
-METHOD Activate() CLASS HMonthCalendar
+METHOD Activate CLASS HMonthCalendar
 
    IF ! Empty( ::oParent:handle )
-      ::handle := hwg_InitMonthCalendar ( ::oParent:handle, ::id, ::style, ;
+      ::handle := hwg_initmonthcalendar ( ::oParent:handle, ::id, ::style, ;
                                       ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
@@ -92,11 +86,8 @@ METHOD Init() CLASS HMonthCalendar
    IF ! ::lInit
       ::Super:Init()
       IF ! Empty( ::value )
-         hwg_SetMonthCalendardate( ::handle , ::value )
+         hwg_setmonthcalendardate( ::handle , ::value )
       ENDIF
-      ::oParent:AddEvent( MCN_SELECT, Self, { || ::onSelect() }, .T., "onSelect" )
-      ::oParent:AddEvent( MCN_SELCHANGE, Self, { || ::onChange() },.T. , "onChange" )
-
    ENDIF
 
    RETURN Nil
@@ -106,7 +97,7 @@ METHOD Init() CLASS HMonthCalendar
 METHOD SetValue( dValue ) CLASS HMonthCalendar
 
    IF ValType( dValue ) == "D" .And. ! Empty( dValue )
-      hwg_SetMonthCalendardate( ::handle, dValue )
+      hwg_setmonthcalendardate( ::handle, dValue )
       ::value := dValue
    ENDIF
 
@@ -116,53 +107,39 @@ METHOD SetValue( dValue ) CLASS HMonthCalendar
 
 METHOD GetValue() CLASS HMonthCalendar
 
-   ::value := hwg_GetMonthCalendardate( ::handle )
+   ::value := hwg_getmonthcalendardate( ::handle )
 
    RETURN ( ::value )
-
-METHOD onChange( ) CLASS HMonthCalendar
-
-   IF ::bChange != Nil .AND. ! ::oparent:lSuspendMsgsHandling
-      hwg_Sendmessage( ::handle, WM_LBUTTONDOWN, 0, hwg_Makelparam( 1, 1 ) )
-      ::oparent:lSuspendMsgsHandling := .T.
-      Eval( ::bChange, ::value, Self )
-      ::oparent:lSuspendMsgsHandling := .F.
-    ENDIF
-
-   RETURN 0
-
-METHOD onSelect( ) CLASS HMonthCalendar
-
-   IF ::bSelect != Nil .AND. ! ::oparent:lSuspendMsgsHandling
-      ::oparent:lSuspendMsgsHandling := .T.
-      Eval( ::bSelect, ::value, Self )
-      ::oparent:lSuspendMsgsHandling := .F.
-    ENDIF
-
-   RETURN Nil
 
 //--------------------------------------------------------------------------//
 
 #pragma BEGINDUMP
 
-#include "hwingui.h"
+#define _WIN32_IE      0x0500
+#define HB_OS_WIN_32_USED
+#define _WIN32_WINNT   0x0400
+#include "guilib.h"
+#include <windows.h>
 #include <commctrl.h>
+
+#include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbdate.h"
+
 #if defined(__DMC__)
 #include "missing.h"
 #endif
 
-HB_FUNC ( HWG_INITMONTHCALENDAR )
+HB_FUNC( HWG_INITMONTHCALENDAR )
 {
    HWND hMC;
    RECT rc;
 
    hMC = CreateWindowEx( 0,
                          MONTHCAL_CLASS,
-                         TEXT( "" ),
+                         "",
                          (LONG) hb_parnl(3), /* 0,0,0,0, */
-                         hb_parni(4), hb_parni(5),      /* x, y       */
+                         hb_parni(4), hb_parni(5),      /* x, y       */   
                          hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
                          (HWND) HB_PARHANDLE(1),
                          (HMENU) hb_parni(2),
@@ -171,12 +148,13 @@ HB_FUNC ( HWG_INITMONTHCALENDAR )
 
    MonthCal_GetMinReqRect( hMC, &rc );
 
-   SetWindowPos( hMC, NULL, hb_parni(4), hb_parni(5), hb_parni(6),hb_parni(7), SWP_NOZORDER );
+   //Setwindowpos( hMC, NULL, hb_parni(4), hb_parni(5), rc.right, rc.bottom, SWP_NOZORDER );
+   SetWindowPos( hMC, NULL, hb_parni(4), hb_parni(5), hb_parni(6),hb_parni(7), SWP_NOZORDER ); 
 
     HB_RETHANDLE(  hMC );
 }
 
-HB_FUNC ( HWG_SETMONTHCALENDARDATE ) // adaptation of function SetDatePicker of file Control.c
+HB_FUNC( HWG_SETMONTHCALENDARDATE ) // adaptation of function hwg_Setdatepicker of file Control.c
 {
    PHB_ITEM pDate = hb_param( 2, HB_IT_DATE );
 
@@ -205,7 +183,7 @@ HB_FUNC ( HWG_SETMONTHCALENDARDATE ) // adaptation of function SetDatePicker of 
    }
 }
 
-HB_FUNC ( HWG_GETMONTHCALENDARDATE ) // adaptation of function GetDatePicker of file Control.c
+HB_FUNC( HWG_GETMONTHCALENDARDATE ) // adaptation of function hwg_Getdatepicker of file Control.c
 {
    SYSTEMTIME st;
    char szDate[9];

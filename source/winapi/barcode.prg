@@ -304,6 +304,26 @@ METHOD CreateBarcode( cCode ) CLASS BarCode
 
    NEXT
 
+   /*
+   FOR i := 1 TO LEN( cCode )
+
+      IF SUBSTR( cCode, i, 1 ) = "1"
+         IF ::lHorizontal = .T.
+            hwg_Rectangle( ::hDC, nX, nY, nX + ::nHeight, ( nY += ::nPinWidth ) )
+         ELSE
+            hwg_Rectangle( ::hDC, nX, nY, ( nX += ::nPinWidth ), nY + ::nWidth )
+         ENDIF
+      ELSE
+         IF ::lHorizontal = .T.
+            nY += ::nPinWidth
+         ELSE
+            nX += ::nPinWidth
+         ENDIF
+      ENDIF
+
+   NEXT
+   */
+
    Rich_SelectObject( ::hDC, hOldPen )
    hwg_Deleteobject( hPen )
    Rich_SelectObject( ::hDC, hOldBrush )

@@ -2,18 +2,22 @@
 # Building of libhwgui.a - Harbour Linux (GTK) GUI library
 
 ifeq ($(HB_ROOT),)
-HRB_DIR = /apps/harbour
+HRB_BIN = /usr/local/bin
+HRB_INC = /usr/local/include/harbour
+HRB_LIB = /usr/local/lib/harbour
 else
-HRB_DIR = $(HB_ROOT)
+HRB_BIN = $(HB_ROOT)/bin
+HRB_INC = $(HB_ROOT)/include
+HRB_LIB = $(HB_ROOT)/lib
 endif
 
-INC_DIR = ../include
-OBJ_DIR = obj
-LIB_DIR = lib
+INC_DIR = ../../include
+OBJ_DIR = ../../obj
+LIB_DIR = ../../lib
 
-PROCMISC_DIR=../source/procmisc
-XML_DIR=../source/xml
-DEBUG_DIR=../source/debug
+PROCMISC_DIR=../common/procmisc
+XML_DIR=../common/xml
+DEBUG_DIR=../common/debug
 SRC_DIR=./
 
 CFLAGS = -Wall -O3 -DHWG_USE_POINTER_ITEM
@@ -25,13 +29,13 @@ vpath %.c $(OBJ_DIR):$(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(SRC_DIR)
 vpath %.prg $(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(SRC_DIR)
 
 $(OBJ_DIR)/%.c : %.prg
-	$(HRB_DIR)/bin/linux/gcc/harbour -n -w -es2 $(HB_FLAGS) -I$(HRB_DIR)/include -I$(INC_DIR) -o$@ $<
+	$(HRB_BIN)/harbour -n -w -es2 $(HB_FLAGS) -I$(HRB_INC) -I$(INC_DIR) -o$@ $<
 
 %.o : %.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $<
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_INC) `pkg-config --cflags gtk+-2.0` -o $@ $<
 
 $(OBJ_DIR)/%.o : %.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $<
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_INC) `pkg-config --cflags gtk+-2.0` -o $@ $<
 
 
 $(LIB_DIR)/%.a ::

@@ -4,8 +4,8 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * HList class
  *
- * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2002 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
  * Listbox class and accompanying code added Feb 22nd, 2004 by
  * Vic McClung
 */
@@ -55,4 +55,3 @@ HB_FUNC( HWG_LISTBOXDELETESTRING )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), LB_DELETESTRING, 0, ( LPARAM ) 0 );
 }
-

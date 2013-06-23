@@ -4,8 +4,8 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * C level text functions
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2001 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #define OEMRESOURCE
@@ -46,28 +46,28 @@ HB_FUNC( HWG_DELETEDC )
 
 HB_FUNC( HWG_TEXTOUT )
 {
-   void * hText;
+   void *hText;
    HB_SIZE nLen;
    LPCTSTR lpText = HB_PARSTR( 4, &hText, &nLen );
 
    TextOut( ( HDC ) HB_PARHANDLE( 1 ),  // handle of device context
-            hb_parni( 2 ),         // x-coordinate of starting position
-            hb_parni( 3 ),         // y-coordinate of starting position
-            lpText,                // address of string
-            nLen                   // number of characters in string
+         hb_parni( 2 ),         // x-coordinate of starting position
+         hb_parni( 3 ),         // y-coordinate of starting position
+         lpText,                // address of string
+         nLen                   // number of characters in string
           );
    hb_strfree( hText );
 }
 
 HB_FUNC( HWG_DRAWTEXT )
 {
-   void * hText;
+   void *hText;
    HB_SIZE nLen;
    LPCTSTR lpText = HB_PARSTR( 2, &hText, &nLen );
    RECT rc;
    UINT uFormat = ( hb_pcount(  ) == 4 ? hb_parni( 4 ) : hb_parni( 7 ) );
    // int uiPos = ( hb_pcount(  ) == 4 ? 3 : hb_parni( 8 ) );
-   int heigh ;
+   int heigh;
 
    if( hb_pcount(  ) > 4 )
    {
@@ -85,9 +85,9 @@ HB_FUNC( HWG_DRAWTEXT )
 
 
    heigh = DrawText( ( HDC ) HB_PARHANDLE( 1 ), // handle of device context
-                     lpText,    // address of string
-                     nLen,      // number of characters in string
-                     &rc, uFormat );
+         lpText,                // address of string
+         nLen,                  // number of characters in string
+         &rc, uFormat );
    hb_strfree( hText );
 
    //if( HB_ISBYREF( uiPos ) )
@@ -98,7 +98,7 @@ HB_FUNC( HWG_DRAWTEXT )
       hb_storvni( rc.right, 8, 3 );
       hb_storvni( rc.bottom, 8, 4 );
    }
-   hb_retni( heigh ) ;
+   hb_retni( heigh );
 
 }
 
@@ -151,7 +151,7 @@ HB_FUNC( HWG_GETTEXTMETRIC )
 HB_FUNC( HWG_GETTEXTSIZE )
 {
 
-   void * hText;
+   void *hText;
    HB_SIZE nLen;
    LPCTSTR lpText = HB_PARSTR( 2, &hText, &nLen );
    SIZE sz;
@@ -323,7 +323,7 @@ HB_FUNC( HWG_EXTTEXTOUT )
 {
 
    RECT rc;
-   void * hText;
+   void *hText;
    HB_SIZE nLen;
    LPCTSTR lpText = HB_PARSTR( 8, &hText, &nLen );
 
@@ -346,9 +346,9 @@ HB_FUNC( HWG_EXTTEXTOUT )
 
 HB_FUNC( HWG_WRITESTATUSWINDOW )
 {
-   void * hString;
+   void *hString;
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), SB_SETTEXT, hb_parni( 2 ),
-                ( LPARAM ) HB_PARSTR( 3, &hString, NULL ) );
+         ( LPARAM ) HB_PARSTR( 3, &hString, NULL ) );
    hb_strfree( hString );
 }
 
@@ -368,7 +368,7 @@ HB_FUNC( HWG_CREATEFONT )
    DWORD fdwItalic = ( HB_ISNIL( 6 ) ) ? 0 : hb_parni( 6 );
    DWORD fdwUnderline = ( HB_ISNIL( 7 ) ) ? 0 : hb_parni( 7 );
    DWORD fdwStrikeOut = ( HB_ISNIL( 8 ) ) ? 0 : hb_parni( 8 );
-   void * hString;
+   void *hString;
 
    hFont = CreateFont( hb_parni( 3 ),   // logical height of font
          hb_parni( 2 ),         // logical average character width
@@ -383,7 +383,7 @@ HB_FUNC( HWG_CREATEFONT )
          0,                     // clipping precision
          0,                     // output quality
          0,                     // pitch and family
-         HB_PARSTR( 1, &hString, NULL )   // pointer to typeface name string
+         HB_PARSTR( 1, &hString, NULL ) // pointer to typeface name string
           );
    hb_strfree( hString );
    HB_RETHANDLE( hFont );
@@ -455,10 +455,10 @@ HB_FUNC( HWG_CREATEFONTINDIRECT )
    lf.lfQuality = hb_parni( 4 );
    lf.lfHeight = hb_parni( 3 );
    lf.lfWeight = hb_parni( 2 );
-   HB_ITEMCOPYSTR( hb_param( 1, HB_IT_ANY ), lf.lfFaceName, HB_SIZEOFARRAY( lf.lfFaceName ) );
-   lf.lfFaceName[ HB_SIZEOFARRAY( lf.lfFaceName ) - 1 ] = '\0';
+   HB_ITEMCOPYSTR( hb_param( 1, HB_IT_ANY ), lf.lfFaceName,
+         HB_SIZEOFARRAY( lf.lfFaceName ) );
+   lf.lfFaceName[HB_SIZEOFARRAY( lf.lfFaceName ) - 1] = '\0';
 
    f = CreateFontIndirect( &lf );
    HB_RETHANDLE( f );
 }
-

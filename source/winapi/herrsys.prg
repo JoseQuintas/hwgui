@@ -4,8 +4,8 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * Windows errorsys replacement
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2001 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "common.ch"
@@ -66,7 +66,7 @@ STATIC FUNCTION DefError( oError )
 
    cMessage += Chr( 13 ) + Chr( 10 )
 
-   cMessage += Chr( 13 ) + Chr( 10 ) + hwg_version( 1 )
+   cMessage += Chr( 13 ) + Chr( 10 ) + hwg_version() + " " + hb_Version()
    cMessage += Chr( 13 ) + Chr( 10 ) + "Date:" + DToC( Date() )
    cMessage += Chr( 13 ) + Chr( 10 ) + "Time:" + Time()
 

@@ -9,8 +9,8 @@
  * Authors: Floris van den Berg (flvdberg@wxs.nl) and
  *          Hervé Drolon (drolon@infonie.fr)
  *
- * Copyright 2003 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2003 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "hbclass.ch"
@@ -164,6 +164,7 @@ METHOD Redefine( oWndParent, nId, Image, bInit, bSize, ctooltip ) CLASS HSayFIma
    ::oImage := IIf( ValType( Image ) == "C", HFreeImage():AddFile( Image ), Image )
 
    ::Super:Redefine( oWndParent, nId, bInit, bSize, ctooltip )
+   // ::classname:= "HSAYFIMAGE"
 
    ::bPaint  := { | o, lpdis | o:Paint( lpdis ) }
 

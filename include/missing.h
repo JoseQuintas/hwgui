@@ -15,7 +15,6 @@
 
 #if defined(__DMC__)
 
-#define PtrToUlong(p)                ((ULONG)(ULONG_PTR)(p))
 #define DWORD_PTR                    DWORD
 #define LV_COLUMN                    LVCOLUMN
 
@@ -260,35 +259,6 @@ typedef struct tagINITCOMMONCONTROLSEX {
    DWORD dwICC;
 }   INITCOMMONCONTROLSEX, *LPINITCOMMONCONTROLSEX;
 
-#define NMUPDOWN      NM_UPDOWN
-#define LPNMUPDOWN  LPNM_UPDOWN
-
-typedef struct tagNMMOUSE {
-    NMHDR   hdr;
-    DWORD   dwItemSpec;
-    DWORD   dwItemData;
-    POINT   pt;
-    DWORD   dwHitInfo; // any specifics about where on the item or control the mouse is
-} NMMOUSE, FAR* LPNMMOUSE;
-
-typedef struct tagTCITEM
-{
-    UINT mask;
-#if (_WIN32_IE >= 0x0300)
-    DWORD dwState;
-    DWORD dwStateMask;
-#else
-    UINT lpReserved1;
-    UINT lpReserved2;
-#endif
-    LPSTR pszText;
-    int cchTextMax;
-    int iImage;
-
-    LPARAM lParam;
-} TCITEM, FAR *LPTCITEM;
-
-#if 0
 typedef struct tagPAINTSTRUCT {
     HDC         hdc;
     BOOL        fErase;
@@ -297,7 +267,6 @@ typedef struct tagPAINTSTRUCT {
     BOOL        fIncUpdate;
     BYTE        rgbReserved[32];
 } PAINTSTRUCT, *PPAINTSTRUCT, *NPPAINTSTRUCT, *LPPAINTSTRUCT;
-#endif
 
 #ifdef __cplusplus
    extern "C" {
@@ -326,20 +295,6 @@ typedef struct tagNMTBGETINFOTIP
    LPARAM   lParam;
 }   NMTBGETINFOTIP, *LPNMTBGETINFOTIP;
 
-#ifdef __DRAW_C__
-typedef struct _TBBUTTON {
-    int iBitmap;
-    int idCommand;
-    BYTE fsState;
-    BYTE fsStyle;
-#ifdef _WIN32
-    BYTE bReserved[2];
-#endif
-    DWORD dwData;
-    int iString;
-} TBBUTTON, NEAR* PTBBUTTON, FAR* LPTBBUTTON;
-#endif
-
 typedef struct tagNMTOOLBAR {
    NMHDR      hdr;
    int      iItem;
@@ -350,9 +305,6 @@ typedef struct tagNMTOOLBAR {
    RECT      rcButton;
 #endif
 }   NMTOOLBAR, FAR* LPNMTOOLBAR;
-
-struct _IMAGELIST;
-typedef struct _IMAGELIST *HIMAGELIST;
 
 typedef struct tagREBARINFO
 {
@@ -409,57 +361,7 @@ typedef struct {
    int   iScroll;
 }   NMPGSCROLL, *LPNMPGSCROLL;
 
+
 #endif /* __DMC__ */
-
-#if !defined(_MSC_VER)
-#if (( defined(__WATCOMC__)&&(__WATCOMC__<1280) ) || defined(__DMC__) )
-#define Pager_SetChild(hwnd, hwndChild) \
-        (void)SNDMSG((hwnd), PGM_SETCHILD, 0, (LPARAM)(hwndChild))
-
-#define Pager_RecalcSize(hwnd) \
-        (void)SNDMSG((hwnd), PGM_RECALCSIZE, 0, 0)
-
-#define Pager_ForwardMouse(hwnd, bForward) \
-        (void)SNDMSG((hwnd), PGM_FORWARDMOUSE, (WPARAM)(bForward), 0)
-
-#define Pager_SetBkColor(hwnd, clr) \
-        (COLORREF)SNDMSG((hwnd), PGM_SETBKCOLOR, 0, (LPARAM)(clr))
-
-#define Pager_GetBkColor(hwnd) \
-        (COLORREF)SNDMSG((hwnd), PGM_GETBKCOLOR, 0, 0)
-
-#define Pager_SetBorder(hwnd, iBorder) \
-        (int)SNDMSG((hwnd), PGM_SETBORDER, 0, (LPARAM)(iBorder))
-
-#define Pager_GetBorder(hwnd) \
-        (int)SNDMSG((hwnd), PGM_GETBORDER, 0, 0)
-
-#define Pager_SetPos(hwnd, iPos) \
-        (int)SNDMSG((hwnd), PGM_SETPOS, 0, (LPARAM)(iPos))
-
-#define Pager_GetPos(hwnd) \
-        (int)SNDMSG((hwnd), PGM_GETPOS, 0, 0)
-
-#define Pager_SetButtonSize(hwnd, iSize) \
-        (int)SNDMSG((hwnd), PGM_SETBUTTONSIZE, 0, (LPARAM)(iSize))
-
-#define Pager_GetButtonSize(hwnd) \
-        (int)SNDMSG((hwnd), PGM_GETBUTTONSIZE, 0,0)
-
-#define Pager_GetButtonState(hwnd, iButton) \
-        (DWORD)SNDMSG((hwnd), PGM_GETBUTTONSTATE, 0, (LPARAM)(iButton))
-
-#define Pager_GetDropTarget(hwnd, ppdt) \
-        (void)SNDMSG((hwnd), PGM_GETDROPTARGET, 0, (LPARAM)(ppdt))
-#endif /* __WATCOMC__ */
-#endif /* _MSC_VER */
-
-#ifndef PGF_CALCWIDTH
-#define PGF_CALCWIDTH                1
-#endif
-
-#ifndef PGF_CALCHEIGHT
-#define PGF_CALCHEIGHT               2
-#endif
 
 #endif /* ___MISSING_H___ */

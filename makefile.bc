@@ -1,4 +1,3 @@
-# $Id$
 # makefile for Borland C/C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
@@ -37,8 +36,6 @@ HWGUI_OBJ_DIR      = $(OBJ_DIR)
 PROCMISC_OBJ_DIR   = $(OBJ_DIR)
 HBXML_OBJ_DIR      = $(OBJ_DIR)
 DEBUG_OBJ_DIR      = $(OBJ_DIR)
-ACTIVEX_OBJ_DIR    = $(OBJ_DIR)
-CONTRIB_OBJ_DIR    = $(OBJ_DIR)
 
 # This is needed, otherwise the libs may overflow when
 # debug info is requested with -v -y
@@ -54,18 +51,17 @@ CONTRIB_OBJ_DIR    = $(OBJ_DIR)
 #
 # Directory macros. These should never have to change.
 #
-PROCMISC_DIR = source\procmisc
-HWGUI_DIR    = source
-HBXML_DIR    = source\xml
-DEBUG_DIR    = source\debug
-ACTIVEX_DIR  = source\activex
-CONTRIB_DIR  = contrib
+PROCMISC_DIR = source\common\procmisc
+HWGUI_DIR    = source\winapi
+HBXML_DIR    = source\common\xml
+DEBUG_DIR    = source\common\debug
 
 #
 # C compiler definition and C flags. These should never have to change.
 #
 
-CFLAGS               = -I$(INCLUDE_DIR) -5 -6 -d $(C_USR) $(CFLAGS) -D__WIN32__ -g255
+#CFLAGS               = -I$(INCLUDE_DIR) -5 -6 -d $(C_USR) $(CFLAGS) -D__WIN32__
+CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__
 !if $d(HB_MULTI_GT)
 CFLAGS               = $(CFLAGS) -DHB_MULTI_GT
 !endif
@@ -93,8 +89,6 @@ HWGUI_LIB    =   $(LIB_DIR)\hwgui$(HB_MT).lib
 PROCMISC_LIB =   $(LIB_DIR)\procmisc.lib
 HBXML_LIB    =   $(LIB_DIR)\hbxml.lib
 DEBUG_LIB    =   $(LIB_DIR)\hwgdebug.lib
-ACTIVEX_LIB  =   $(LIB_DIR)\hbactivex.lib
-CONTRIB_LIB  =   $(LIB_DIR)\hwg_contrib.lib
 
 #
 # Rules
@@ -106,13 +100,11 @@ CONTRIB_LIB  =   $(LIB_DIR)\hwg_contrib.lib
 
 HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hipedit.obj \
-   $(HWGUI_OBJ_DIR)\animat.obj \
    $(HWGUI_OBJ_DIR)\commond.obj \
    $(HWGUI_OBJ_DIR)\control.obj \
    $(HWGUI_OBJ_DIR)\cxshade.obj \
    $(HWGUI_OBJ_DIR)\dialog.obj  \
    $(HWGUI_OBJ_DIR)\draw.obj \
-   $(HWGUI_OBJ_DIR)\winreg.obj \
    $(HWGUI_OBJ_DIR)\drawtext.obj \
    $(HWGUI_OBJ_DIR)\freeimg.obj \
    $(HWGUI_OBJ_DIR)\grid.obj \
@@ -121,11 +113,11 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\message.obj \
    $(HWGUI_OBJ_DIR)\herrsys.obj \
    $(HWGUI_OBJ_DIR)\misc.obj \
+   $(HWGUI_OBJ_DIR)\registry.obj \
    $(HWGUI_OBJ_DIR)\nice.obj \
    $(HWGUI_OBJ_DIR)\resource.obj \
    $(HWGUI_OBJ_DIR)\richedit.obj \
    $(HWGUI_OBJ_DIR)\shellapi.obj  \
-   $(HWGUI_OBJ_DIR)\theme.obj \
    $(HWGUI_OBJ_DIR)\window.obj \
    $(HWGUI_OBJ_DIR)\wprint.obj \
    $(HWGUI_OBJ_DIR)\drawwidg.obj \
@@ -135,20 +127,18 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hcheck.obj \
    $(HWGUI_OBJ_DIR)\hcombo.obj \
    $(HWGUI_OBJ_DIR)\hcontrol.obj \
-   $(HWGUI_OBJ_DIR)\hctrlex.obj \
    $(HWGUI_OBJ_DIR)\hcwindow.obj \
    $(HWGUI_OBJ_DIR)\hdatepic.obj \
    $(HWGUI_OBJ_DIR)\hdialog.obj \
    $(HWGUI_OBJ_DIR)\hedit.obj \
    $(HWGUI_OBJ_DIR)\hfreeimg.obj \
+   $(HWGUI_OBJ_DIR)\hfrmtmpl.obj \
    $(HWGUI_OBJ_DIR)\hgraph.obj \
    $(HWGUI_OBJ_DIR)\hgrid.obj \
-   $(HWGUI_OBJ_DIR)\hgridex.obj \
    $(HWGUI_OBJ_DIR)\hlistbox.obj \
    $(HWGUI_OBJ_DIR)\htool.obj \
    $(HWGUI_OBJ_DIR)\hmonthc.obj \
    $(HWGUI_OBJ_DIR)\htrackbr.obj \
-   $(HWGUI_OBJ_DIR)\hanimat.obj \
    $(HWGUI_OBJ_DIR)\hnice.obj \
    $(HWGUI_OBJ_DIR)\hownbtn.obj \
    $(HWGUI_OBJ_DIR)\hpanel.obj \
@@ -172,17 +162,17 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\menu.obj \
    $(HWGUI_OBJ_DIR)\c_ipaddr.obj \
    $(HWGUI_OBJ_DIR)\listbox.obj \
+   $(HWGUI_OBJ_DIR)\repexec.obj \
    $(HWGUI_OBJ_DIR)\printdos.obj \
    $(HWGUI_OBJ_DIR)\hdc.obj \
    $(HWGUI_OBJ_DIR)\pager.obj \
-   $(HWGUI_OBJ_DIR)\hhyper.obj \
+   $(HWGUI_OBJ_DIR)\hhyper.obj
 
 #
 # PROCMISC.LIB rules
 #
 
 PROCMISC_LIB_OBJS = \
-   $(PROCMISC_OBJ_DIR)\hfrmtmpl.obj \
    $(PROCMISC_OBJ_DIR)\procini.obj \
    $(PROCMISC_OBJ_DIR)\procs7.obj \
    $(PROCMISC_OBJ_DIR)\procscri.obj \
@@ -210,29 +200,6 @@ DEBUG_LIB_OBJS = \
 !endif
 
 #
-# HBACTIVEX.LIB rules
-#
-ACTIVEX_LIB_OBJS = \
-   $(ACTIVEX_OBJ_DIR)\htmlcore.obj \
-   $(ACTIVEX_OBJ_DIR)\htmlfunc.obj \
-   $(ACTIVEX_OBJ_DIR)\hhtml.obj \
-   $(ACTIVEX_OBJ_DIR)\h_activex.obj \
-   $(ACTIVEX_OBJ_DIR)\c_activex.obj
-
-
-#
-# HWG_CONTRIB.LIB rules
-#
-CONTRIB_LIB_OBJS = \
-   $(CONTRIB_OBJ_DIR)\arr2str.obj \
-   $(CONTRIB_OBJ_DIR)\blowfish.obj \
-   $(CONTRIB_OBJ_DIR)\miscfunc.obj \
-   $(CONTRIB_OBJ_DIR)\richtext.obj \
-   $(CONTRIB_OBJ_DIR)\saymoney.obj \
-   $(CONTRIB_OBJ_DIR)\hwg_qhtm.obj \
-   $(CONTRIB_OBJ_DIR)\hqhtm.obj
-
-#
 # Our default target
 #
 
@@ -252,21 +219,8 @@ PROJECT = \
 PROJECT = \
    $(PROJECT) \
    $(PROCMISC_LIB) \
-   $(DEBUG_LIB) \
-   $(HBXML_LIB)
-!endif
-
-!if "$(ACTIVEX_SUPPORT)" == "ON"
-PROJECT = \
-   $(PROJECT) \
-   $(ACTIVEX_LIB)
-!endif
-
-
-!if "$(CONTRIB_SUPPORT)" == "ON"
-PROJECT = \
-   $(PROJECT) \
-   $(CONTRIB_LIB)
+   $(HBXML_LIB) \
+   $(DEBUG_LIB)
 !endif
 
 ALL: $(PROJECT)
@@ -302,22 +256,6 @@ $(HBXML_LIB) : $(HBXML_LIB_OBJS)
 $(DEBUG_LIB) : $(DEBUG_LIB_OBJS)
     IF EXIST "$(DEBUG_LIB)" $(DEL) "$(DEBUG_LIB)" > NUL
     $(LINKER) "$(DEBUG_LIB)" $(ARFLAGS) @&&!
-+$(**: = &^
-+)
-
-!
-
-$(ACTIVEX_LIB) : $(ACTIVEX_LIB_OBJS)
-    IF EXIST "$(ACTIVEX_LIB)" $(DEL) "$(ACTIVEX_LIB)" > NUL
-    $(LINKER) "$(ACTIVEX_LIB)" $(ARFLAGS) @&&!
-+$(**: = &^
-+)
-
-!
-
-$(CONTRIB_LIB) : $(CONTRIB_LIB_OBJS)
-    IF EXIST "$(CONTRIB_LIB)" $(DEL) "$(CONTRIB_LIB)" > NUL
-    $(LINKER) "$(CONTRIB_LIB)" $(ARFLAGS) @&&!
 +$(**: = &^
 +)
 
@@ -365,31 +303,4 @@ $(CONTRIB_LIB) : $(CONTRIB_LIB_OBJS)
     $(HB_CMD)
 
 {$(DEBUG_DIR)}.c{$(DEBUG_OBJ_DIR)}.obj:
-   $(CC_CMD)
-
-#
-# ACTIVEX.LIB dependencies
-#
-
-{$(ACTIVEX_DIR)}.prg{$(ACTIVEX_OBJ_DIR)}.c:
-    $(HB_CMD)
-
-{$(ACTIVEX_DIR)}.c{$(ACTIVEX_OBJ_DIR)}.obj:
-   $(CC_CMD)
-
-
-#
-# HWG_CONTIB.LIB dependencies
-#
-
-{$(CONTRIB_DIR)/misc}.prg{$(CONTRIB_OBJ_DIR)}.c:
-    $(HB_CMD)
-
-{$(CONTRIB_DIR)/qhtm}.prg{$(CONTRIB_OBJ_DIR)}.c:
-    $(HB_CMD)
-
-{$(CONTRIB_DIR)/misc}.c{$(CONTRIB_OBJ_DIR)}.obj:
-   $(CC_CMD)
-
-{$(CONTRIB_DIR)/qhtm}.c{$(CONTRIB_OBJ_DIR)}.obj:
    $(CC_CMD)

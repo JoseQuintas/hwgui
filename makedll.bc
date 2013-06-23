@@ -6,9 +6,9 @@ HRB_DIR = $(HB_PATH)
 INCLUDE_DIR = include;$(HRB_DIR)\include
 OBJ_DIR = obj\dll
 LIB_DIR = lib
-SRC_DIR = source
-PROCMISC_DIR = source\procmisc
-HBXML_DIR    = source\xml
+SRC_DIR = source\winapi
+PROCMISC_DIR = source\common\procmisc
+HBXML_DIR    = source\common\xml
 
 HARBOUR_EXE = $(HRB_DIR)\bin\harbour.exe
 CC          = bcc32
@@ -31,7 +31,6 @@ $(LIB_DIR)\hwgui-b32.lib: \
 
 $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\hipedit.obj \
-   $(OBJ_DIR)\animat.obj \
    $(OBJ_DIR)\commond.obj \
    $(OBJ_DIR)\control.obj \
    $(OBJ_DIR)\dialog.obj  \
@@ -44,7 +43,7 @@ $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\message.obj \
    $(OBJ_DIR)\herrsys.obj \
    $(OBJ_DIR)\misc.obj \
-   $(OBJ_DIR)\winreg.obj \
+   $(OBJ_DIR)\registry.obj \
    $(OBJ_DIR)\nice.obj \
    $(OBJ_DIR)\resource.obj \
    $(OBJ_DIR)\richedit.obj \
@@ -57,7 +56,6 @@ $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\hcheck.obj \
    $(OBJ_DIR)\hcombo.obj \
    $(OBJ_DIR)\hcontrol.obj \
-   $(OBJ_DIR)\hctrlex.obj \
    $(OBJ_DIR)\hcwindow.obj \
    $(OBJ_DIR)\hdatepic.obj \
    $(OBJ_DIR)\hdialog.obj \
@@ -66,7 +64,6 @@ $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\hfrmtmpl.obj \
    $(OBJ_DIR)\hgraph.obj \
    $(OBJ_DIR)\hgrid.obj \
-   $(OBJ_DIR)\hgridex.obj \
    $(OBJ_DIR)\hlistbox.obj \
    $(OBJ_DIR)\htool.obj \
    $(OBJ_DIR)\hmonthc.obj \
@@ -93,13 +90,13 @@ $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\barcode.obj \
    $(OBJ_DIR)\c_ipaddr.obj \
    $(OBJ_DIR)\listbox.obj \
+   $(OBJ_DIR)\repexec.obj \
    $(OBJ_DIR)\printdos.obj \
    $(OBJ_DIR)\hdc.obj \
    $(OBJ_DIR)\hhyper.obj \
    $(OBJ_DIR)\procini.obj \
    $(OBJ_DIR)\procs7.obj \
    $(OBJ_DIR)\procscri.obj \
-   $(OBJ_DIR)\scrdebug.obj \
    $(OBJ_DIR)\hxmldoc.obj \
    $(OBJ_DIR)\xmlparse.obj
 
@@ -133,4 +130,10 @@ $(LIB_DIR)\hwgui-b32.dll:   \
     $(HB_CMD)
 
 {$(HBXML_DIR)}.c{$(OBJ_DIR)}.obj:
+   $(CC_CMD)
+
+{$(HWGQHTM_DIR)}.prg{$(OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(HWGQHTM_DIR)}.c{$(OBJ_DIR)}.obj:
    $(CC_CMD)

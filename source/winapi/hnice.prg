@@ -108,7 +108,7 @@ METHOD Redefine( oWndParent, nId, nStyleEx, ;
 
    RETURN Self
 
-METHOD Activate() CLASS HNiceButton
+METHOD Activate CLASS HNiceButton
 
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createnicebtn( ::oParent:handle, ::id, ;
@@ -117,7 +117,7 @@ METHOD Activate() CLASS HNiceButton
    ENDIF
    RETURN Nil
 
-METHOD INIT() CLASS HNiceButton
+METHOD INIT CLASS HNiceButton
 
    IF ! ::lInit
       ::Super:Init()
@@ -159,10 +159,14 @@ METHOD Create( ) CLASS HNICEButton
 
    LOCAL Region
    LOCAL Rct
+   LOCAL x
+   LOCAL y
    LOCAL w
    LOCAL h
 
    Rct    := hwg_Getclientrect( ::handle )
+   x      := Rct[ 1 ]
+   y      := Rct[ 2 ]
    w      := Rct[ 3 ] - Rct[ 1 ]
    h      := Rct[ 4 ] - Rct[ 2 ]
    Region := hwg_Createroundrectrgn( 0, 0, w, h, h * 0.90, h * 0.90 )
@@ -187,10 +191,12 @@ METHOD Moving( ) CLASS HNICEButton
 
 METHOD MouseMove( wParam, lParam ) CLASS HNICEButton
 
+   LOCAL aCoors
+   LOCAL xPos
+   LOCAL yPos
    LOCAL otmp
 
    HB_SYMBOL_UNUSED( wParam )
-   HB_SYMBOL_UNUSED( lParam )
 
    IF ::lFlat .AND. ::state != OBTN_INIT
       otmp := hwg_SetNiceBtnSelected()
@@ -201,6 +207,10 @@ METHOD MouseMove( wParam, lParam ) CLASS HNICEButton
          hwg_Postmessage( otmp:handle, WM_PAINT, 0, 0 )
          hwg_SetNiceBtnSelected( Nil )
       ENDIF
+
+      aCoors := hwg_Getclientrect( ::handle )
+      xPos   := hwg_Loword( lParam )
+      yPos   := hwg_Hiword( lParam )
 
       IF ::state == OBTN_NORMAL
          ::state := OBTN_MOUSOVER
@@ -250,13 +260,14 @@ METHOD PAINT() CLASS HNICEButton
    LOCAL hDC       := hwg_Beginpaint( ::Handle, ps )
    LOCAL Rct
    LOCAL Size
-   LOCAL T
+   LOCAL T         := Space( 2048 )
    LOCAL XCtr
    LOCAL YCtr
    LOCAL x
    LOCAL y
    LOCAL w
    LOCAL h
+   LOCAL p
    //  *******************
 
    Rct  := hwg_Getclientrect( ::Handle )
@@ -281,10 +292,10 @@ METHOD PAINT() CLASS HNICEButton
    hwg_Setbkmode( hDC, TRANSPARENT )
 
    IF ( ::State == OBTN_MOUSOVER )
-      hwg_Settextcolor( hDC, hwg_VColor( "FF0000" ) )
+      p := hwg_Settextcolor( hDC, hwg_VColor( "FF0000" ) )
       hwg_Textout( hDC, XCtr - ( Size[ 1 ] / 2 ) + 1, YCtr - ( Size[ 2 ] / 2 ) + 1, T )
    ELSE
-      hwg_Settextcolor( hDC, hwg_VColor( "0000FF" ) )
+      p := hwg_Settextcolor( hDC, hwg_VColor( "0000FF" ) )
       hwg_Textout( hDC, XCtr - Size[ 1 ] / 2, YCtr - Size[ 2 ] / 2, T )
    ENDIF
 

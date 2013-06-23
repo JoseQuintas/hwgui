@@ -4,8 +4,8 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * HGraph class
  *
- * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2002 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "windows.ch"
@@ -41,8 +41,8 @@ CLASS VAR winclass   INIT "STATIC"
                     bSize, ctooltip, tcolor, bcolor )
    METHOD Init()
    METHOD CalcMinMax()
-   METHOD Paint( lpDis )
-   METHOD Rebuild( aValues, nType )
+   METHOD Paint()
+   METHOD Rebuild( aValues )
 
 ENDCLASS
 
@@ -72,7 +72,7 @@ METHOD Redefine( oWndParent, nId, aValues, oFont, ;
 
    RETURN Self
 
-METHOD Activate() CLASS HGraph
+METHOD Activate CLASS HGraph
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )

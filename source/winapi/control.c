@@ -4,8 +4,8 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * C level controls functions
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2001 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #define HB_OS_WIN_32_USED
@@ -58,8 +58,6 @@ LRESULT APIENTRY StaticSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
 LRESULT APIENTRY EditSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
       LPARAM lParam );
 LRESULT APIENTRY ButtonSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
-      LPARAM lParam );
-LRESULT APIENTRY ComboSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
       LPARAM lParam );
 LRESULT APIENTRY ListSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
       LPARAM lParam );
@@ -784,7 +782,7 @@ HB_FUNC( HWG_SETTABNAME )
    tie.mask = TCIF_TEXT;
    tie.pszText = ( LPTSTR ) HB_PARSTR( 3, &hStr, NULL );
 
-   TabCtrl_SetItem( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ), &tie );
+   TabCtrl_SetItem( ( HWND ) HB_PARHANDLE( 1 ), hb_parni(2)-1, &tie );
    hb_strfree( hStr );
 }
 
@@ -1333,8 +1331,9 @@ LRESULT APIENTRY TreeViewSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( ( LONG ) message );
-      hb_vmPushLong( ( LONG ) wParam );
+//      hb_vmPushLong( ( LONG ) wParam );
 //      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
@@ -1369,8 +1368,9 @@ LRESULT CALLBACK WinCtrlProc( HWND hWnd, UINT message, WPARAM wParam,
       hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( ( LONG ) message );
-      hb_vmPushLong( ( LONG ) wParam );
+//      hb_vmPushLong( ( LONG ) wParam );
 //      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
@@ -1403,8 +1403,9 @@ LRESULT APIENTRY StaticSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( ( LONG ) message );
-      hb_vmPushLong( ( LONG ) wParam );
+//      hb_vmPushLong( ( LONG ) wParam );
 //      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
@@ -1440,8 +1441,9 @@ LRESULT APIENTRY EditSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( ( LONG ) message );
-      hb_vmPushLong( ( LONG ) wParam );
+//      hb_vmPushLong( ( LONG ) wParam );
 //      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
@@ -1480,8 +1482,9 @@ LRESULT APIENTRY ButtonSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( ( LONG ) message );
-      hb_vmPushLong( ( LONG ) wParam );
+//      hb_vmPushLong( ( LONG ) wParam );
 //      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
@@ -1495,43 +1498,6 @@ LRESULT APIENTRY ButtonSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       return ( CallWindowProc( ( WNDPROC ) wpOrigButtonProc, hWnd, message,
                   wParam, lParam ) );
 }
-
-LRESULT APIENTRY ComboSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
-      LPARAM lParam )
-{
-   long int res;
-   PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
-
-   if( !pSym_onEvent )
-      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
-
-   if( pSym_onEvent && pObject )
-   {
-      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
-      hb_vmPush( pObject );
-      hb_vmPushLong( ( LONG ) message );
-      hb_vmPushLong( ( LONG ) wParam );
-//      hb_vmPushLong( (LONG ) lParam );
-      HB_PUSHITEM( lParam );
-      hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return ( CallWindowProc( wpOrigComboProc, hWnd, message, wParam,
-                     lParam ) );
-      else
-         return res;
-   }
-   else
-      return ( CallWindowProc( wpOrigComboProc, hWnd, message, wParam,
-                  lParam ) );
-}
-
-HB_FUNC( HWG_INITCOMBOPROC )
-{
-   wpOrigComboProc = ( WNDPROC ) SetWindowLongPtr( ( HWND ) HB_PARHANDLE( 1 ),
-         GWLP_WNDPROC, ( LONG_PTR ) ComboSubclassProc );
-}
-
 
 LRESULT APIENTRY ListSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       LPARAM lParam )
@@ -1547,8 +1513,9 @@ LRESULT APIENTRY ListSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( ( LONG ) message );
-      hb_vmPushLong( ( LONG ) wParam );
+//      hb_vmPushLong( ( LONG ) wParam );
 //      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
@@ -1590,8 +1557,9 @@ LRESULT APIENTRY UpDownSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( ( LONG ) message );
-      hb_vmPushLong( ( LONG ) wParam );
+//      hb_vmPushLong( ( LONG ) wParam );
 //      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
@@ -1627,8 +1595,9 @@ LRESULT APIENTRY DatePickerSubclassProc( HWND hWnd, UINT message,
       hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( ( LONG ) message );
-      hb_vmPushLong( ( LONG ) wParam );
+//      hb_vmPushLong( ( LONG ) wParam );
 //      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
@@ -1663,8 +1632,9 @@ LRESULT APIENTRY TrackSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( ( LONG ) message );
-      hb_vmPushLong( ( LONG ) wParam );
+//      hb_vmPushLong( ( LONG ) wParam );
 //      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );
@@ -1699,8 +1669,9 @@ LRESULT APIENTRY TabSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( pObject );
       hb_vmPushLong( ( LONG ) message );
-      hb_vmPushLong( ( LONG ) wParam );
+//      hb_vmPushLong( ( LONG ) wParam );
 //      hb_vmPushLong( (LONG ) lParam );
+      HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
       res = hb_parnl( -1 );

@@ -49,9 +49,9 @@ CLASS PrintDos
 
    METHOD New( oPorta ) CONSTRUCTOR
 
-   METHOD Say( oPRow, oPCol, oTexto, oPicture )
+   METHOD Say( oProw, oCol, oTexto, oPicture )
 
-   METHOD SetCols( nPRow, nPCol )
+   METHOD SetCols( nRow, nCol )
 
    METHOD gWrite( oText )
 
@@ -69,14 +69,13 @@ CLASS PrintDos
 
    METHOD UnBold()     //Added by  por Fernando Athayde
 
-   METHOD Comando( oComm1, oComm2, oComm3, oComm4, oComm5, oComm6, oComm7, ;
-                oComm8, oComm9, oComm10 )
+   METHOD Comando()
 
    METHOD SetPrc( x, y )
 
-   METHOD PrinterFile( fName )
+   METHOD PrinterFile( oFile )
 
-   METHOD TxttoGraphic( fName, osize, oPreview )
+   METHOD TxttoGraphic( oFile, osize, oPreview )
 
    METHOD Preview( fname, cTitle )
 
@@ -109,7 +108,7 @@ METHOD New( oPorta ) CLASS PrintDos
       ::oPorta       := "LPT1"
    ELSE
       IF oPorta == "DEFAULT"
-         oPtrName := hwg_PrintPortName()
+         oPtrName := hwg_Printportname()
          IF oPtrName == Nil
             hwg_Msginfo( "Error, file to:ERROR.TXT" )
             ::oPorta := "Error.txt"
@@ -119,15 +118,15 @@ METHOD New( oPorta ) CLASS PrintDos
       ELSEIF oPorta == "SELECT"
 
          #ifdef __XHARBOUR__
-            oPtrSetup := hwg_PrintSetupDos( @::nStartPage, @::nEndPage, @::nCopy )
+            oPtrSetup := hwg_Printsetupdos( @::nStartPage, @::nEndPage, @::nCopy )
          #else
-            oPtrSetup := hwg_PrintSetupDos()
+            oPtrSetup := hwg_Printsetupdos()
          #endif
          IF oPtrSetup == Nil
             hwg_Msginfo( "Error, file to:ERROR.TXT" )
             ::oPorta := "Error.txt"
          ELSE
-            oPtrName := hwg_PrintPortName()
+            oPtrName := hwg_Printportname()
             IF oPtrName == Nil
                hwg_Msginfo( "Error, file to:ERROR.TXT" )
                ::oPorta := "Error.txt"
@@ -239,7 +238,7 @@ METHOD DesCompress() CLASS PrintDos
 
    RETURN Nil
 
-/* *** Contribution Fernando Athayde *** */
+//*** Contribution Fernando Athayde ***
 
 METHOD Bold() CLASS PrintDos
 
@@ -376,7 +375,7 @@ METHOD TxttoGraphic( fName, osize, oPreview ) CLASS PrintDos
 
    LOCAL strbuf := Space( 2052 ), poz := 2052, stroka
    LOCAL han := FOpen( fName, FO_READ + FO_SHARED )
-   LOCAL oCol := 0 //Added by  Por Fernando Athayde
+   LOCAL oCol := 0, oPage := 1  //Added by  Por Fernando Athayde
    LOCAL oPrinter
    LOCAL oFont
 
@@ -410,6 +409,7 @@ METHOD TxttoGraphic( fName, osize, oPreview ) CLASS PrintDos
          IF Left( stroka, 1 ) == Chr( 12 )
             oPrinter:EndPage()
             oPrinter:StartPage()
+            ++ oPage
             oCol := 0  //Added by  Por Fernando Athayde
          ENDIF
 
@@ -431,7 +431,7 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
    LOCAL oedit1
    LOCAL strbuf := Space( 2052 ), poz := 2052, stroka
    LOCAL han := FOpen( fName, FO_READ + FO_SHARED )
-   LOCAL oPage := 1, nPage := 1
+   LOCAL oCol := 10, oPage := 1, nPage := 1
    LOCAL oFont := HFont():Add( "Courier New", 0, - 13 )
    LOCAL oText := { "" }
    LOCAL oDlg, oColor1, oColor2
@@ -453,6 +453,7 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
             AAdd( oText, "" )
             ++ oPage
          ENDIF
+         oCol := oCol + 30
       ENDDO
       FClose( han )
    ELSE
@@ -490,8 +491,8 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
 //   @ 88,19 EDITBOX oEdit ID 1001 SIZE 548,465 STYLE WS_VSCROLL + WS_HSCROLL + ES_AUTOHSCROLL + ES_MULTILINE ;
 //        COLOR oColor1 BACKCOLOR oColor2 FONT oFont //Blue to Black  //Added by  por Fernando Athayde
 //       COLOR 16711680 BACKCOLOR 16777215  //Black to Write
-   @ 6, 30 BUTTON "<<"    ON CLICK { || nPage := PrintDosAnt( nPage, oText ) } SIZE 69, 32  STYLE IIF( nPage = 1, WS_DISABLED, 0 )
-   @ 6, 80 BUTTON ">>"    ON CLICK { || nPage := PrintDosNext( oPage, nPage, oText ) } SIZE 69, 32 STYLE IIF( nPage = 1, WS_DISABLED, 0 )
+   @ 6, 30 BUTTON "<<"    ON CLICK { || nPage := PrintDosAnt( nPage, oText ) } SIZE 69, 32  STYLE IF( nPage = 1, WS_DISABLED, 0 )
+   @ 6, 80 BUTTON ">>"    ON CLICK { || nPage := PrintDosNext( oPage, nPage, oText ) } SIZE 69, 32 STYLE IF( nPage = 1, WS_DISABLED, 0 )
    @ 6, 130 BUTTON "Imprimir" ON CLICK { || PrintDosPrint( oText, oPrt ) } SIZE 69, 32
 //   @ 6,180 BUTTON "Grafico" on Click {||hwg_EndDialog(),oDos2:TxttoGraphic(fName,2,.t.),oDos2:end()} SIZE 69,32
    @ 6, 230 BUTTON "Fechar" ON CLICK { || hwg_EndDialog() } SIZE 69, 32
@@ -534,7 +535,7 @@ FUNCTION hwg_regenfile( o, new )
    LOCAL stroka
    LOCAL o1 := printdos():new( new )
    LOCAL nLine := 0
-   LOCAL nChr12
+   LOCAL nChr12 := 0
    LOCAL i
 
    FOR i := 1 TO Len( aText )
@@ -564,7 +565,7 @@ FUNCTION hwg_regenfile( o, new )
    NTXTLINE( cFile )  -> nLines
 */
 
-#include "guilib.h"
+#include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbstack.h"
 #ifdef __XHARBOUR__
@@ -577,7 +578,7 @@ FUNCTION hwg_regenfile( o, new )
 // #define LINE_MAX 16384
 #define LINE_MAX    0x20000
 //----------------------------------------------------------------------------//
-static HB_BOOL file_read ( FILE *stream, char *string )
+static int file_read ( FILE *stream, char *string )
 {
    int ch, cnbr = 0;
 
@@ -603,16 +604,16 @@ static HB_BOOL file_read ( FILE *stream, char *string )
       if (cnbr >= LINE_MAX)
       {
          string [LINE_MAX] = '\0';
-         return (HB_TRUE);
+         return (1);
       }
    }
 }
 
 //----------------------------------------------------------------------------//
-HB_FUNC( AFILLTEXT )
+HB_FUNC_STATIC( AFILLTEXT )
 {
    FILE *inFile ;
-   const char *pSrc = hb_parc(1) ;
+   char *pSrc = hb_parc(1) ;
    PHB_ITEM pArray = hb_itemNew(NULL);
    PHB_ITEM pTemp = hb_itemNew(NULL);
    char *string ;
@@ -641,12 +642,13 @@ HB_FUNC( AFILLTEXT )
 
    while ( file_read ( inFile, string ) )
    {
-      hb_arrayAddForward( pArray, hb_itemPutC( pTemp, string ));
+     hb_arrayAddForward( pArray, hb_itemPutC( pTemp, string ));
    }
 
-   hb_itemRelease( hb_itemReturn( pArray ) );
-   hb_itemRelease( pTemp );
+   hb_itemForwardValue( hb_stackReturnItem(), pArray );
    hb_xfree( string );
+   hb_itemRelease( pArray );
+   hb_itemRelease( pTemp );
    fclose( inFile );
 }
 

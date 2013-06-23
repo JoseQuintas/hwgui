@@ -3,8 +3,8 @@
  *
  * FreeImage wrappers for Harbour/HwGUI
  *
- * Copyright 2003 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2003 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "hwingui.h"
@@ -153,8 +153,8 @@ BOOL s_freeImgInit( void )
       hFreeImageDll = LoadLibrary( TEXT( "FreeImage.dll" ) );
       if( !hFreeImageDll )
       {
-         MessageBox( GetActiveWindow(), TEXT( "Library not loaded" ),
-                     TEXT( "FreeImage.dll" ), MB_OK | MB_ICONSTOP );
+         MessageBox( GetActiveWindow(  ), TEXT( "Library not loaded" ),
+               TEXT( "FreeImage.dll" ), MB_OK | MB_ICONSTOP );
          return 0;
       }
    }
@@ -165,7 +165,7 @@ static FARPROC s_getFunction( FARPROC h, LPCSTR funcname )
 {
    if( !h )
    {
-      if( !hFreeImageDll && !s_freeImgInit() )
+      if( !hFreeImageDll && !s_freeImgInit(  ) )
          return ( FARPROC ) NULL;
       else
          return GetProcAddress( hFreeImageDll, funcname );
@@ -227,8 +227,7 @@ HB_FUNC( HWG_FI_END )
 
 HB_FUNC( HWG_FI_VERSION )
 {
-   FREEIMAGE_GETVERSION pFunc =
-         ( FREEIMAGE_GETVERSION ) s_getFunction( NULL,
+   FREEIMAGE_GETVERSION pFunc = ( FREEIMAGE_GETVERSION ) s_getFunction( NULL,
          "_FreeImage_GetVersion@0" );
 
    hb_retc( ( pFunc ) ? pFunc(  ) : "" );
@@ -425,7 +424,7 @@ static HANDLE CreateDIB( DWORD dwWidth, DWORD dwHeight, WORD wBitCount )
 
    /*  only 24 bit DIBs supported */
    dwLen = bi.biSize + 0 /* PaletteSize((LPSTR)&bi) */  +
-           ( dwBytesPerLine * dwHeight );
+         ( dwBytesPerLine * dwHeight );
 
    /* 24/02/2005 - <maurilio.longo@libero.it>
       needed to copy bits afterward */
@@ -481,7 +480,8 @@ HB_FUNC( HWG_FI_FI2DIB )
          ( FREEIMAGE_GETBITS ) s_getFunction( ( FARPROC ) pGetbits,
          "_FreeImage_GetBits@4" );
 
-   hdib = CreateDIB( (WORD) pGetwidth( dib ), (WORD) pGetheight( dib ), (WORD) pGetBPP( dib ) );
+   hdib = CreateDIB( ( WORD ) pGetwidth( dib ), ( WORD ) pGetheight( dib ),
+         ( WORD ) pGetBPP( dib ) );
 
    if( hdib )
    {
@@ -519,8 +519,8 @@ HB_FUNC( HWG_FI_FI2DIBEX )
    HANDLE hMem = NULL;
 
    pGetColorsUsed =
-         ( FREEIMAGE_GETCOLORSUSED ) s_getFunction( ( FARPROC ) pGetColorsUsed,
-         "_FreeImage_GetColorsUsed@4" );
+         ( FREEIMAGE_GETCOLORSUSED ) s_getFunction( ( FARPROC )
+         pGetColorsUsed, "_FreeImage_GetColorsUsed@4" );
    pGetwidth =
          ( FREEIMAGE_GETWIDTH ) s_getFunction( ( FARPROC ) pGetwidth,
          "_FreeImage_GetWidth@4" );
@@ -668,7 +668,7 @@ HB_FUNC( HWG_FI_BMP2FI )
       {
          HDC hDC = GetDC( NULL );
 
-         GetObject( hbmp, sizeof( BITMAP ), ( LPVOID ) &bm );
+         GetObject( hbmp, sizeof( BITMAP ), ( LPVOID ) & bm );
          dib = pAllocate( bm.bmWidth, bm.bmHeight, bm.bmBitsPixel, 0, 0, 0 );
          GetDIBits( hDC, hbmp, 0, pGetheight( dib ),
                pGetbits( dib ), pGetinfo( dib ), DIB_RGB_COLORS );
@@ -926,8 +926,8 @@ HB_FUNC( HWG_FI_LOADFROMMEM )
 HB_FUNC( HWG_FI_ROTATECLASSIC )
 {
    pRotateClassic =
-         ( FREEIMAGE_ROTATECLASSIC ) s_getFunction( ( FARPROC ) pRotateClassic,
-         "_FreeImage_RotateClassic@12" );
+         ( FREEIMAGE_ROTATECLASSIC ) s_getFunction( ( FARPROC )
+         pRotateClassic, "_FreeImage_RotateClassic@12" );
 
    hb_retnl( ( pRotateClassic ) ? ( LONG ) pRotateClassic( ( FIBITMAP * )
                hb_parnl( 1 ), hb_parnd( 2 ) ) : 0 );
@@ -1090,8 +1090,8 @@ HB_FUNC( HWG_FI_GETPIXELINDEX )
    BYTE value = ( BYTE ) - 1;
    BOOL lRes;
    pGetPixelIndex =
-         ( FREEIMAGE_GETPIXELINDEX ) s_getFunction( ( FARPROC ) pGetPixelIndex,
-         "_FreeImage_GetPixelIndex@16" );
+         ( FREEIMAGE_GETPIXELINDEX ) s_getFunction( ( FARPROC )
+         pGetPixelIndex, "_FreeImage_GetPixelIndex@16" );
 
    lRes = pGetPixelIndex( ( FIBITMAP * ) hb_parnl( 1 ), hb_parni( 2 ),
          hb_parni( 3 ), &value );
@@ -1106,8 +1106,8 @@ HB_FUNC( HWG_FI_SETPIXELINDEX )
 {
    BYTE value = hb_parni( 4 );
    pSetPixelIndex =
-         ( FREEIMAGE_SETPIXELINDEX ) s_getFunction( ( FARPROC ) pSetPixelIndex,
-         "_FreeImage_SetPixelIndex@16" );
+         ( FREEIMAGE_SETPIXELINDEX ) s_getFunction( ( FARPROC )
+         pSetPixelIndex, "_FreeImage_SetPixelIndex@16" );
 
    hb_retl( pSetPixelIndex( ( FIBITMAP * ) hb_parnl( 1 ), hb_parni( 2 ),
                hb_parni( 3 ), &value ) );
@@ -1117,4 +1117,3 @@ HB_FUNC( HWG_FI_SETPIXELINDEX )
 typedef BOOL ( WINAPI *FREEIMAGE_GETPIXELCOLOR )(FIBITMAP *dib, unsigned x, unsigned y, RGBQUAD *value);
 typedef BOOL ( WINAPI *FREEIMAGE_SETPIXELCOLOR )(FIBITMAP *dib, unsigned x, unsigned y, RGBQUAD *value);
 */
-

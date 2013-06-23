@@ -16,42 +16,32 @@
 CLASS HSplash
 
    DATA oTimer
-   DATA oDlg
 
-   METHOD Create( cFile, oTime, oResource, nWidth, nHeight, nStyle ) CONSTRUCTOR
+   METHOD Create( cFile, oTime, oResource ) CONSTRUCTOR
    METHOD CountSeconds( oTime, oDlg )
-   METHOD Release() INLINE ::oDlg:Close()
 
 ENDCLASS
 
-METHOD Create( cFile, oTime, oResource, nWidth, nHeight, nStyle ) CLASS HSplash
+METHOD Create( cFile, oTime, oResource ) CLASS HSplash
    LOCAL aWidth, aHeigth
-   LOCAL bitmap
+   LOCAL bitmap, oDlg
 
-   IIf( Empty( oTime ) .or. oTime == NIL, oTime := 2000, oTime := oTime )
+   IIf( Empty( oTime ) .or. oTime == Nil, oTime := 2000, oTime := oTime )
 
-   IF oResource == NIL .or. ! oResource
-      bitmap  := HBitmap():AddFile( cFile,,, nWidth, nHeight )
+   IF oResource == Nil .or. ! oResource
+      bitmap  := HBitmap():AddFile( cFile )
    ELSE
-      bitmap  := HBitmap():AddResource( cFile,,, nWidth, nHeight )
+      bitmap  := HBitmap():AddResource( cFile )
    ENDIF
 
-   aWidth := IIF( nWidth = NIL, bitmap:nWidth, nWidth )
-   aHeigth := IIF( nHeight = NIL, bitmap:nHeight, nHeight )
+   aWidth := bitmap:nWidth
+   aHeigth := bitmap:nHeight
 
-   IF nWidth = NIL .OR. nHeight = NIL
-      INIT DIALOG ::oDlg TITLE "" ;
-            At 0, 0 SIZE aWidth, aHeigth  STYLE WS_POPUP + DS_CENTER + WS_VISIBLE + WS_DLGFRAME ;
-            BACKGROUND bitmap bitmap ON INIT { || ::CountSeconds( oTime, ::oDlg ) }
-      //oDlg:lBmpCenter := .T.
-   ELSE
-      INIT DIALOG ::oDlg TITLE "" ;
-            At 0, 0 SIZE aWidth, aHeigth  STYLE WS_POPUP + DS_CENTER + WS_VISIBLE + WS_DLGFRAME ;
-            ON INIT { || ::CountSeconds( oTime, ::oDlg ) }
-      @ 0,0 BITMAP Bitmap SHOW cFile STRETCH 0 SIZE nWidth, nHeight STYLE nStyle
-   ENDIF
+   INIT DIALOG oDlg TITLE "" ;
+        At 0, 0 SIZE aWidth, aHeigth  STYLE WS_POPUP + DS_CENTER + WS_VISIBLE + WS_DLGFRAME ;
+        BACKGROUND bitmap bitmap ON INIT { || ::CountSeconds( oTime, oDlg ) }
 
-   ::oDlg:Activate( otime < 0 )
+   oDlg:Activate()
    ::oTimer:END()
 
    RETURN Self
@@ -60,4 +50,8 @@ METHOD CountSeconds( oTime, oDlg )
 
    SET TIMER ::oTimer OF oDlg VALUE oTime  ACTION { || hwg_EndDialog( hwg_GetModalHandle() ) }
 
-   RETURN NIL
+   RETURN Nil
+
+
+
+

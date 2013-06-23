@@ -4,8 +4,8 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * C level richedit control functions
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2001 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "hwingui.h"
@@ -38,7 +38,7 @@ HB_FUNC( HWG_INITRICHEDIT )
 HB_FUNC( HWG_CREATERICHEDIT )
 {
    HWND hCtrl;
-   void * hText;
+   void *hText;
    LPCTSTR lpText;
 
    if( !hRichEd )
@@ -105,8 +105,8 @@ HB_FUNC( HWG_RE_SETCHARFORMAT )
                hb_itemType( hb_arrayGetItemPtr( pArr1, 4 ) ) != HB_IT_NIL )
          {
             HB_ITEMCOPYSTR( hb_arrayGetItemPtr( pArr1, 4 ),
-                            cf.szFaceName, HB_SIZEOFARRAY( cf.szFaceName ) );
-            cf.szFaceName[ HB_SIZEOFARRAY( cf.szFaceName ) - 1 ] = '\0';
+                  cf.szFaceName, HB_SIZEOFARRAY( cf.szFaceName ) );
+            cf.szFaceName[HB_SIZEOFARRAY( cf.szFaceName ) - 1] = '\0';
             cf.dwMask |= CFM_FACE;
          }
          if( ulLen1 > 4 &&
@@ -178,8 +178,8 @@ HB_FUNC( HWG_RE_SETCHARFORMAT )
       if( !HB_ISNIL( 5 ) )
       {
          HB_ITEMCOPYSTR( hb_param( 5, HB_IT_ANY ),
-                         cf.szFaceName, HB_SIZEOFARRAY( cf.szFaceName ) );
-         cf.szFaceName[ HB_SIZEOFARRAY( cf.szFaceName ) - 1 ] = '\0';
+               cf.szFaceName, HB_SIZEOFARRAY( cf.szFaceName ) );
+         cf.szFaceName[HB_SIZEOFARRAY( cf.szFaceName ) - 1] = '\0';
          cf.dwMask |= CFM_FACE;
       }
       if( !HB_ISNIL( 6 ) )
@@ -249,8 +249,8 @@ HB_FUNC( HWG_RE_SETDEFAULT )
    if( HB_ISCHAR( 3 ) )
    {
       HB_ITEMCOPYSTR( hb_param( 3, HB_IT_ANY ),
-                      cf.szFaceName, HB_SIZEOFARRAY( cf.szFaceName ) );
-      cf.szFaceName[ HB_SIZEOFARRAY( cf.szFaceName ) - 1 ] = '\0';
+            cf.szFaceName, HB_SIZEOFARRAY( cf.szFaceName ) );
+      cf.szFaceName[HB_SIZEOFARRAY( cf.szFaceName ) - 1] = '\0';
       cf.dwMask |= CFM_FACE;
    }
 
@@ -315,7 +315,7 @@ HB_FUNC( HWG_RE_GETTEXTRANGE )
    tr.chrg.cpMax = hb_parnl( 3 ) - 1;
 
    tr.lpstrText = ( LPTSTR ) hb_xgrab( ( tr.chrg.cpMax - tr.chrg.cpMin + 2 ) *
-                                       sizeof( TCHAR ) );
+         sizeof( TCHAR ) );
    ul = SendMessage( hCtrl, EM_GETTEXTRANGE, 0, ( LPARAM ) & tr );
    HB_RETSTRLEN( tr.lpstrText, ul );
    hb_xfree( tr.lpstrText );
@@ -341,9 +341,9 @@ HB_FUNC( HWG_RE_GETLINE )
 
 HB_FUNC( HWG_RE_INSERTTEXT )
 {
-   void * hString;
+   void *hString;
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), EM_REPLACESEL, 0,
-                ( LPARAM ) HB_PARSTR( 2, &hString, NULL ) );
+         ( LPARAM ) HB_PARSTR( 2, &hString, NULL ) );
    hb_strfree( hString );
 }
 
@@ -358,14 +358,14 @@ HB_FUNC( HWG_RE_FINDTEXT )
    LONG lFlag = ( ( HB_ISNIL( 4 ) || !hb_parl( 4 ) ) ? 0 : FR_MATCHCASE ) |
          ( ( HB_ISNIL( 5 ) || !hb_parl( 5 ) ) ? 0 : FR_WHOLEWORD ) |
          ( ( HB_ISNIL( 6 ) || !hb_parl( 6 ) ) ? FR_DOWN : 0 );
-   void * hString;
+   void *hString;
 
    ft.chrg.cpMin = ( HB_ISNIL( 3 ) ) ? 0 : hb_parnl( 3 );
    ft.chrg.cpMax = -1;
    ft.lpstrText = ( LPTSTR ) HB_PARSTR( 2, &hString, NULL );
 
    lPos = ( LONG ) SendMessage( hCtrl, EM_FINDTEXTEX, ( WPARAM ) lFlag,
-                                ( LPARAM ) & ft );
+         ( LPARAM ) & ft );
    hb_strfree( hString );
    hb_retnl( lPos );
 }
@@ -373,69 +373,71 @@ HB_FUNC( HWG_RE_FINDTEXT )
 HB_FUNC( HWG_RE_SETZOOM )
 {
    HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );
-   int nNum = hb_parni(2); 
-   int nDen = hb_parni(3); 
-   hb_retnl( (BOOL) SendMessage(hwnd, EM_SETZOOM, nNum, nDen) );
+   int nNum = hb_parni( 2 );
+   int nDen = hb_parni( 3 );
+   hb_retnl( ( BOOL ) SendMessage( hwnd, EM_SETZOOM, nNum, nDen ) );
 }
 
 
 HB_FUNC( HWG_RE_ZOOMOFF )
 {
    HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );
-   hb_retnl( (BOOL) SendMessage(hwnd, EM_SETZOOM, 0, 0L ) );
+   hb_retnl( ( BOOL ) SendMessage( hwnd, EM_SETZOOM, 0, 0L ) );
 }
 
 HB_FUNC( HWG_RE_GETZOOM )
 {
    HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );
-   int nNum = hb_parni(2); 
-   int nDen = hb_parni(3); 
-   hb_retnl( (BOOL) SendMessage(hwnd, EM_GETZOOM, (WPARAM)&nNum, (LPARAM)&nDen) );
+   int nNum = hb_parni( 2 );
+   int nDen = hb_parni( 3 );
+   hb_retnl( ( BOOL ) SendMessage( hwnd, EM_GETZOOM, ( WPARAM ) & nNum,
+               ( LPARAM ) & nDen ) );
    hb_storni( nNum, 2 );
    hb_storni( nDen, 3 );
 }
 
 HB_FUNC( HWG_PRINTRTF )
 {
-    HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );     
-    HDC hdc = ( HDC ) HB_PARHANDLE( 2 );
-    FORMATRANGE fr;
-    BOOL fSuccess = TRUE;
-    int cxPhysOffset = GetDeviceCaps(hdc, PHYSICALOFFSETX);
-    int cyPhysOffset = GetDeviceCaps(hdc, PHYSICALOFFSETY);
-    int cxPhys = GetDeviceCaps(hdc, PHYSICALWIDTH);
-    int cyPhys = GetDeviceCaps(hdc, PHYSICALHEIGHT);
-    int ppi_x = GetDeviceCaps(hdc,LOGPIXELSX);
-    int ppi_y = GetDeviceCaps(hdc,LOGPIXELSX);
-    int cpMin;
+   HWND hwnd = ( HWND ) HB_PARHANDLE( 1 );
+   HDC hdc = ( HDC ) HB_PARHANDLE( 2 );
+   FORMATRANGE fr;
+   BOOL fSuccess = TRUE;
+   int cxPhysOffset = GetDeviceCaps( hdc, PHYSICALOFFSETX );
+   int cyPhysOffset = GetDeviceCaps( hdc, PHYSICALOFFSETY );
+   int cxPhys = GetDeviceCaps( hdc, PHYSICALWIDTH );
+   int cyPhys = GetDeviceCaps( hdc, PHYSICALHEIGHT );
+   int ppi_x = GetDeviceCaps( hdc, LOGPIXELSX );
+   int ppi_y = GetDeviceCaps( hdc, LOGPIXELSX );
+   int cpMin;
 
-    SendMessage(hwnd, EM_SETTARGETDEVICE, (WPARAM)hdc, cxPhys/2);
-    fr.hdc = hdc;
-    fr.hdcTarget = hdc;
-    fr.rc.left = 1440 * cxPhysOffset/ppi_x;
-    fr.rc.right = 1440 * (cxPhysOffset + cxPhys)/ppi_x;
-    fr.rc.top = 1440* cyPhysOffset/ppi_y;
-    fr.rc.bottom = 1440 * (cyPhysOffset + cyPhys)/ppi_y;
+   SendMessage( hwnd, EM_SETTARGETDEVICE, ( WPARAM ) hdc, cxPhys / 2 );
+   fr.hdc = hdc;
+   fr.hdcTarget = hdc;
+   fr.rc.left = 1440 * cxPhysOffset / ppi_x;
+   fr.rc.right = 1440 * ( cxPhysOffset + cxPhys ) / ppi_x;
+   fr.rc.top = 1440 * cyPhysOffset / ppi_y;
+   fr.rc.bottom = 1440 * ( cyPhysOffset + cyPhys ) / ppi_y;
 
-    SendMessage(hwnd, EM_SETSEL, 0, (LPARAM) -1 );
-    SendMessage(hwnd, EM_EXGETSEL, 0, (LPARAM)&fr.chrg);
-    while (fr.chrg.cpMin < fr.chrg.cpMax && fSuccess) 
-    {
-        fSuccess = StartPage(hdc) > 0;
-        if (!fSuccess) break;
-        cpMin = SendMessage(hwnd, EM_FORMATRANGE, TRUE, (LPARAM)&fr);
-        if (cpMin <= fr.chrg.cpMin) 
-        {
-            fSuccess = FALSE;
-            break;
-        }
-        fr.chrg.cpMin = cpMin;
-        fSuccess = EndPage(hdc) > 0;
-    }
-    SendMessage( hwnd, EM_FORMATRANGE, FALSE, 0);
-    SendMessage( hwnd, EM_EXSETSEL, 0, ( LPARAM ) &fr.chrg );
-    SendMessage( hwnd, EM_HIDESELECTION, 0, 0 );
-    hb_retnl( (BOOL) fSuccess);
+   SendMessage( hwnd, EM_SETSEL, 0, ( LPARAM ) - 1 );
+   SendMessage( hwnd, EM_EXGETSEL, 0, ( LPARAM ) & fr.chrg );
+   while( fr.chrg.cpMin < fr.chrg.cpMax && fSuccess )
+   {
+      fSuccess = StartPage( hdc ) > 0;
+      if( !fSuccess )
+         break;
+      cpMin = SendMessage( hwnd, EM_FORMATRANGE, TRUE, ( LPARAM ) & fr );
+      if( cpMin <= fr.chrg.cpMin )
+      {
+         fSuccess = FALSE;
+         break;
+      }
+      fr.chrg.cpMin = cpMin;
+      fSuccess = EndPage( hdc ) > 0;
+   }
+   SendMessage( hwnd, EM_FORMATRANGE, FALSE, 0 );
+   SendMessage( hwnd, EM_EXSETSEL, 0, ( LPARAM ) & fr.chrg );
+   SendMessage( hwnd, EM_HIDESELECTION, 0, 0 );
+   hb_retnl( ( BOOL ) fSuccess );
 }
 
 HB_FUNC( HWG_INITRICHPROC )
@@ -473,72 +475,78 @@ LRESULT APIENTRY RichSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
                   lParam ) );
 }
 
-static DWORD CALLBACK RichStreamOutCallback( DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+static DWORD CALLBACK RichStreamOutCallback( DWORD dwCookie, LPBYTE pbBuff,
+      LONG cb, LONG * pcb )
 {
    HANDLE pFile = ( HANDLE ) dwCookie;
    DWORD dwW;
    HB_SYMBOL_UNUSED( pcb );
-   
-   if ( pFile == INVALID_HANDLE_VALUE )
+
+   if( pFile == INVALID_HANDLE_VALUE )
       return 0;
-      
-   WriteFile( pFile, pbBuff, cb, &dwW,NULL );   
+
+   WriteFile( pFile, pbBuff, cb, &dwW, NULL );
    return 0;
 }
 
-static DWORD CALLBACK EditStreamCallback( DWORD_PTR dwCookie, LPBYTE lpBuff, LONG cb, PLONG pcb )
+static DWORD CALLBACK EditStreamCallback( DWORD_PTR dwCookie, LPBYTE lpBuff,
+      LONG cb, PLONG pcb )
 {
- HANDLE hFile = (HANDLE)dwCookie;
- return ! ReadFile(hFile, lpBuff, cb, ( DWORD * ) pcb, NULL );
+   HANDLE hFile = ( HANDLE ) dwCookie;
+   return !ReadFile( hFile, lpBuff, cb, ( DWORD * ) pcb, NULL );
 }
 
 HB_FUNC( HWG_SAVERICHEDIT )
 {
 
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
-   HANDLE hFile ;
+   HANDLE hFile;
    EDITSTREAM es;
-   void * hFileName; 
+   void *hFileName;
    LPCTSTR lpFileName;
-   HB_SIZE nSize ;
-   
+   HB_SIZE nSize;
+
    lpFileName = HB_PARSTR( 2, &hFileName, &nSize );
-   hFile = CreateFile( lpFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL ) ;
-   if ( hFile == INVALID_HANDLE_VALUE )
+   hFile =
+         CreateFile( lpFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+         FILE_ATTRIBUTE_NORMAL, NULL );
+   if( hFile == INVALID_HANDLE_VALUE )
    {
       hb_retni( 0 );
       return;
-   }   
+   }
    es.dwCookie = ( DWORD ) hFile;
-   es.pfnCallback = RichStreamOutCallback; 
+   es.pfnCallback = RichStreamOutCallback;
 
-   SendMessage( hWnd, EM_STREAMOUT, ( WPARAM ) SF_RTF, ( LPARAM )&es) ;
+   SendMessage( hWnd, EM_STREAMOUT, ( WPARAM ) SF_RTF, ( LPARAM ) & es );
    CloseHandle( hFile );
    HB_RETHANDLE( hFile );
-  
+
 }
 
 HB_FUNC( HWG_LOADRICHEDIT )
 {
 
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
-   HANDLE hFile ;
+   HANDLE hFile;
    EDITSTREAM es;
-   void * hFileName; 
+   void *hFileName;
    LPCTSTR lpFileName;
-   HB_SIZE nSize ;
-   
+   HB_SIZE nSize;
+
    lpFileName = HB_PARSTR( 2, &hFileName, &nSize );
-   hFile = CreateFile( lpFileName, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
-   if ( hFile == INVALID_HANDLE_VALUE )
+   hFile =
+         CreateFile( lpFileName, GENERIC_READ, FILE_SHARE_READ, 0,
+         OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL );
+   if( hFile == INVALID_HANDLE_VALUE )
    {
       hb_retni( 0 );
       return;
    }
    es.dwCookie = ( DWORD ) hFile;
-   es.pfnCallback = EditStreamCallback; 
-   SendMessage( hWnd, EM_STREAMIN, ( WPARAM ) SF_RTF, ( LPARAM )&es) ;
+   es.pfnCallback = EditStreamCallback;
+   SendMessage( hWnd, EM_STREAMIN, ( WPARAM ) SF_RTF, ( LPARAM ) & es );
    CloseHandle( hFile );
-   HB_RETHANDLE( hFile );  
+   HB_RETHANDLE( hFile );
 }
 

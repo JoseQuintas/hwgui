@@ -33,15 +33,6 @@
    #define HB_SIZEOFARRAY( var )    ( sizeof( var ) / sizeof( *var ) )
 #endif
 
-#if defined( HARBOUR_2005 )
-   #define hb_dynsymSymbol( h )     ( ( h )->pSymbol )
-#endif
-#if defined( HARBOUR_2005 ) || \
-    ( defined( __XHARBOUR__ ) && !defined( hb_itemPutCLPtr ) )
-   #define hb_dynsymIsFunction( h ) ( ( h )->pSymbol->value.pFunPtr != NULL )
-   #define hb_itemPutCLPtr( pItem, szText, ulLen ) hb_itemPutCPtr( pItem, szText, ulLen )
-#endif
-
 #ifndef HB_PATH_MAX
    #define HB_PATH_MAX 264
 #endif

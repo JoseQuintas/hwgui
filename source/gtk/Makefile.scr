@@ -7,12 +7,12 @@ ifeq ($(HB_PREF),)
 HB_PREF=hb
 endif
 
-INC_DIR = ../include
-OBJ_DIR = obj
-LIB_DIR = lib
+INC_DIR = ../../include
+OBJ_DIR = ../../obj
+LIB_DIR = ../../lib
 
-PROCMISC_DIR=../source/procmisc
-XML_DIR=../source/xml
+PROCMISC_DIR=../common/procmisc
+XML_DIR=../common/xml
 
 CFLAGS = -W -Wall -O3 -DHWG_USE_POINTER_ITEM
 CFLAGS += `pkg-config --cflags gtk+-2.0`
@@ -82,8 +82,6 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hprogres.o
 
 $(LIB_DIR)/libprocmisc.a : \
-   $(OBJ_DIR)/arr2str.o \
-   $(OBJ_DIR)/blowfish.o \
    $(OBJ_DIR)/procini.o \
    $(OBJ_DIR)/procs7.o \
    $(OBJ_DIR)/procscri.o

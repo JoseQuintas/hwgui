@@ -53,10 +53,10 @@ CLASS HDC
    METHOD fillsolidrect( lpRect, clr )
    METHOD Fillrect( lpRect, clr )
    METHOD Selectcliprgn( pRgn )
-   METHOD Settextcolor( xColor )
+   METHOD Settextcolor( x )
    METHOD Setbkmode( xMode )
    METHOD Setbkcolor(  clr ) INLINE    hwg_Setbkcolor( ::m_hDC, clr )
-   METHOD Selectobject( xMode )
+   METHOD Selectobject( xObject )
    METHOD Drawtext( strText, Rect, dwFlags )
    METHOD Createcompatibledc( x )
    METHOD Patblt( a, s, d, f, g ) INLINE hwg_Patblt( ::m_hDc, a, s, d, f, g )
@@ -85,12 +85,10 @@ METHOD NEW( ) CLASS HDC
 
 METHOD Moveto( x1, y1 ) CLASS HDC
    hwg_Moveto( ::m_hDC, x1, y1 )
-
    RETURN Self
 
 METHOD Lineto( x1, y1 ) CLASS HDC
    hwg_Lineto( ::m_hDC, x1, y1 )
-
    RETURN Self
 
 METHOD Attach( hDC ) CLASS HDC
@@ -102,20 +100,17 @@ METHOD Attach( hDC ) CLASS HDC
    ::m_hDC := hDC
 
    ::SetAttribDC( ::m_hDC )
-
-   RETURN .T.
+   return.T.
 
 METHOD Deletedc(  ) CLASS HDC
    hwg_Deletedc( ::m_hDC )
-   ::m_hDC := NIL
-   ::m_hAttribDC := NIL
-
-   RETURN NIL
+   ::m_hDC := nil
+   ::m_hAttribDC := nil
+   RETURN nil
 
 METHOD SetAttribDC( hDC ) CLASS HDC
 
    ::m_hAttribDC := hDC
-
    RETURN NIL
 
 METHOD Selectcliprgn( pRgn ) CLASS HDC
@@ -163,8 +158,8 @@ METHOD Fillrect( lpRect, clr ) CLASS HDC
 
    RETURN NIL
 
-METHOD Createcompatibledc( x ) CLASS HDC
 
+METHOD Createcompatibledc( x ) CLASS HDC
    RETURN ::Attach( hwg_Createcompatibledc( x ) )
 
 METHOD Savedc() CLASS HDC
@@ -176,21 +171,19 @@ METHOD Savedc() CLASS HDC
    IF ( ::m_hDC != ::m_hAttribDC .and. hwg_Savedc( ::m_hDC ) != 0 )
       nRetVal := - 1   // -1 is the only valid restore value for complex DCs
    ENDIF
-
    RETURN nRetVal
 
 METHOD Restoredc( nSavedDC ) CLASS HDC
+
    // if two distinct DCs, nSavedDC can only be -1
 
    LOCAL bRetVal := .T.
-
    IF ( ::m_hDC != ::m_hAttribDC )
       bRetVal := hwg_Restoredc( ::m_hDC, nSavedDC )
    ENDIF
    IF ( ! Empty( ::m_hAttribDC ) )
       bRetVal := ( bRetVal .and. hwg_Restoredc( ::m_hAttribDC, nSavedDC ) )
    ENDIF
-
    RETURN bRetVal
 
 METHOD Setmapmode( nMapMode ) CLASS HDC
@@ -203,10 +196,13 @@ METHOD Setmapmode( nMapMode ) CLASS HDC
    IF ! Empty( ::m_hAttribDC )
       nRetVal := hwg_Setmapmode( ::m_hAttribDC, nMapMode )
    ENDIF
-
    RETURN nRetVal
 
+
+
 METHOD SetWindowOrg( x, y ) CLASS HDC
+
+
    LOCAL point
 
    IF ( ::m_hDC != ::m_hAttribDC )
@@ -215,10 +211,12 @@ METHOD SetWindowOrg( x, y ) CLASS HDC
    IF ! Empty( ::m_hAttribDC )
       hwg_Setwindoworgex( ::m_hAttribDC, x, y, @point )
    ENDIF
-
    RETURN point
 
+
 METHOD SetWindowExt( x, y ) CLASS HDC
+
+
    LOCAL point
 
    IF ( ::m_hDC != ::m_hAttribDC )
@@ -227,10 +225,12 @@ METHOD SetWindowExt( x, y ) CLASS HDC
    IF ! Empty( ::m_hAttribDC )
       hwg_Setwindowextex( ::m_hAttribDC, x, y, @point )
    ENDIF
-
    RETURN point
 
+
 METHOD SetViewportOrg( x, y ) CLASS HDC
+
+
    LOCAL point
 
    IF ( ::m_hDC != ::m_hAttribDC )
@@ -239,10 +239,11 @@ METHOD SetViewportOrg( x, y ) CLASS HDC
    IF ! Empty( ::m_hAttribDC )
       hwg_Setviewportorgex( ::m_hAttribDC, x, y, @point )
    ENDIF
-
    RETURN point
 
+
 METHOD SetViewportExt( x, y ) CLASS HDC
+
    LOCAL point
 
    IF ( ::m_hDC != ::m_hAttribDC )
@@ -251,27 +252,28 @@ METHOD SetViewportExt( x, y ) CLASS HDC
    IF ! Empty( ::m_hAttribDC )
       hwg_Setviewportextex( ::m_hAttribDC, x, y, @point )
    ENDIF
-
    RETURN point
 
-METHOD Setarcdirection( nArcDirection )
-   LOCAL nResult := 0
 
+METHOD Setarcdirection( nArcDirection )
+
+
+   LOCAL nResult := 0
    IF ( ::m_hDC != ::m_hAttribDC )
       nResult = hwg_Setarcdirection( ::m_hDC, nArcDirection )
    ENDIF
    IF ! Empty( ::m_hAttribDC )
       nResult = hwg_Setarcdirection( ::m_hAttribDC, nArcDirection )
    ENDIF
-
    RETURN nResult
 
 
 METHOD Pie( arect, apt1, apt2 )
-
    RETURN hwg_Pie( ::m_hdc, arect[ 1 ], arect[ 2 ], arect[ 3 ], arect[ 4 ], apt1[ 1 ], apt1[ 2 ], apt2[ 1 ], apt2[ 2 ] )
 
 METHOD Setrop2( nDrawMode )
+
+
    LOCAL nRetVal := 0
 
    IF ( ::m_hDC != ::m_hAttribDC )
@@ -280,8 +282,9 @@ METHOD Setrop2( nDrawMode )
    IF ! Empty( ::m_hAttribDC )
       nRetVal := hwg_Setrop2( ::m_hAttribDC, nDrawMode )
    ENDIF
-
    RETURN nRetVal
+
+
 
 CLASS HCLIENTDC FROM HDC
 

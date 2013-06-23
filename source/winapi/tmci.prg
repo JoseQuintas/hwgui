@@ -8,6 +8,7 @@
  * www - http://sites.uol.com.br/culikr/
 */
 
+
 #include "hbclass.ch"
 #include "windows.ch"
 #include "guilib.ch"
@@ -15,6 +16,7 @@
 #define BUF_SIZE  200
 
 //----------------------------------------------------------------------------//
+
 CLASS TMci
 
    DATA   nError, nId
@@ -23,18 +25,25 @@ CLASS TMci
    DATA   cBuffer
 
    METHOD New( cDevice, cFileName )  CONSTRUCTOR
+
    METHOD lOpen()
-   METHOD Play( nFrom, nTo, hWnd ) INLINE ; 
-         ::nError := hwg_Nmciplay( ::nId, nFrom, nTo, hWnd )
+
+   METHOD Play( nFrom, nTo, hWnd ) INLINE ;
+   ::nError := hwg_Nmciplay( ::nId, nFrom, nTo, hWnd )
+
    METHOD cGetError()
+
+
    METHOD SetWindow( oWnd ) INLINE ;
-         ::oWnd := oWnd, ;
-         ::nError := hwg_Nmciwindow( ::nId, oWnd:handle )
+   ::oWnd := oWnd, ;
+   ::nError := hwg_Nmciwindow( ::nId, oWnd:handle )
+
    METHOD SendStr( cMciStr )
 
 ENDCLASS
 
 //----------------------------------------------------------------------------//
+
 METHOD New( cDevice, cFileName ) CLASS TMci
 
    DEFAULT cDevice TO ""
@@ -48,6 +57,7 @@ METHOD New( cDevice, cFileName ) CLASS TMci
    RETURN Self
 
 //----------------------------------------------------------------------------//
+
 METHOD SendStr( cMciStr ) CLASS TMci
 
    LOCAL cBuffer := ::cBuffer
@@ -55,18 +65,16 @@ METHOD SendStr( cMciStr ) CLASS TMci
    hwg_Mcisendstring( cMciStr, @cBuffer, ::oWnd:hWnd )
    ::cBuffer = cBuffer
 
-   RETURN NIL
+   RETURN nil
 
 //----------------------------------------------------------------------------//
 METHOD lOpen() CLASS TMci
    LOCAL nId
    ::nError := hwg_Nmciopen( ::cType, ::cFileName, @nId )
    ::nId := nId
-
    RETURN ::nError == 0
 
 METHOD cGetError() CLASS Tmci
    LOCAL cError
    hwg_Mcigeterrorstring( ::nError, @cError )
-
    RETURN    cError

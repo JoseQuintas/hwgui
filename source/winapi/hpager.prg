@@ -29,7 +29,7 @@ CLASS HPager INHERIT HControl
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
                bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
-   METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
+   METHOD Redefine( oWndParent, nId, oFont, bInit, ;
                     bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
    METHOD SetScrollArea( nWidth, nHeight ) INLINE  ::m_nWidth := nWidth, ::m_nHeight := nHeight
    METHOD Activate()
@@ -60,7 +60,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    DEFAULT  lvert  TO .f.
    ::lvert := lvert
    nStyle   := Hwg_BitOr( IIf( nStyle == NIL, 0, nStyle ), ;
-                          WS_VISIBLE + WS_CHILD + IIF( lvert, PGS_VERT, PGS_HORZ ) )
+                          WS_VISIBLE + WS_CHILD + IF( lvert, PGS_VERT, PGS_HORZ ) )
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize, bPaint, ctooltip, tcolor, bcolor )
    HWG_InitCommonControlsEx()
@@ -87,18 +87,18 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    RETURN Self
 
 
-METHOD Activate() CLASS HPager
+METHOD Activate CLASS HPager
 
    IF ! Empty( ::oParent:handle )
 
       ::handle := hwg_Createpager( ::oParent:handle, ::id, ;
-                               ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, IIF( ::lVert, PGS_VERT, PGS_HORZ ) )
+                               ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, IF( ::lVert, PGS_VERT, PGS_HORZ ) )
 
       ::Init()
    ENDIF
    RETURN Nil
 
-METHOD INIT() CLASS HPager
+METHOD INIT CLASS HPager
 
    IF ! ::lInit
       ::Super:Init()

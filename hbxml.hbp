@@ -11,7 +11,5 @@
 
 -iinclude
 
--cflag=-DHWG_USE_POINTER_ITEM
-
-source/xml/*.c
-source/xml/*.prg
+source/common/xml/*.c
+source/common/xml/*.prg

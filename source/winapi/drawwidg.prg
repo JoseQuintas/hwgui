@@ -4,8 +4,8 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * Pens, brushes, fonts, bitmaps, icons handling
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2001 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "hbclass.ch"
@@ -79,7 +79,7 @@ METHOD Add( fontName, nWidth, nHeight , fnWeight, ;
    RETURN Self
 
 METHOD SELECT( oFont, nCharSet  ) CLASS HFont
-   LOCAL af := hwg_SelectFont( oFont )
+   LOCAL af := hwg_Selectfont( oFont )
 
    IF af == Nil
       RETURN Nil
@@ -102,7 +102,7 @@ METHOD SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight ) CLASS 
    nCharSet  := iif( nCharSet = Nil, ::CharSet, nCharSet )
 
    RETURN HFont():Add( ::name, ::width, nheight, weight, ;
-      nCharSet, Italic, Underline, StrikeOut )
+      nCharSet, Italic, Underline, StrikeOut ) // ::handle )
 
 METHOD RELEASE() CLASS HFont
    LOCAL i, nlen := Len( ::aFonts )
@@ -262,9 +262,11 @@ METHOD Add( nColor, nHatch ) CLASS HBrush
    IF nHatch == Nil
       nHatch := 99
    ENDIF
+   /*
    IF ValType( nColor ) == "P"
       nColor := hwg_Ptrtoulong( nColor )
    ENDIF
+   */
 #ifdef __XHARBOUR__
    FOR EACH i IN ::aBrushes
 
@@ -324,7 +326,7 @@ METHOD RELEASE() CLASS HBrush
 CLASS HBitmap INHERIT HObject
 
    CLASS VAR aBitmaps   INIT { }
-   CLASS VAR lSelFile   INIT .T.
+   CLASS VAR lSelFile   INIT .F.
    DATA handle
    DATA name
    DATA nFlags
@@ -436,7 +438,7 @@ METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
    name := iif( ! File( name ) .AND. File( cname ), cname, name )
    IF ::lSelFile .AND. !File( name )
       cCurDir  := DiskName() + ':\' + CurDir()
-      name := hwg_SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ), FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
+      name := hwg_Selectfile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ), FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
       DirChange( cCurDir )
    ENDIF
 
@@ -509,7 +511,7 @@ METHOD RELEASE() CLASS HBitmap
 CLASS HIcon INHERIT HObject
 
    CLASS VAR aIcons   INIT { }
-   CLASS VAR lSelFile   INIT .T.
+   CLASS VAR lSelFile   INIT .F.
    DATA handle
    DATA name
    DATA nWidth, nHeight
@@ -599,7 +601,7 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
    name := iif( ! File( name ) .AND. File( cname ), cname, name )
    IF ::lSelFile .AND. !File( name )
       cCurDir  := DiskName() + ':\' + CurDir()
-      name := hwg_SelectFile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ), FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
+      name := hwg_Selectfile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ), FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
       DirChange( cCurDir )
    ENDIF
 

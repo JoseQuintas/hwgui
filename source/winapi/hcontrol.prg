@@ -302,6 +302,8 @@ CLASS HStatic INHERIT HControl
 
    CLASS VAR winclass   INIT "STATIC"
 
+   DATA   nStyleDraw
+
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
                bColor, lTransp )
@@ -311,11 +313,19 @@ CLASS HStatic INHERIT HControl
    METHOD SetValue( value ) INLINE hwg_Setdlgitemtext( ::oParent:handle, ::id, ;
                                                    value )
    METHOD Init()
+   METHOD Paint( lpDis )
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
             cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
             bColor, lTransp ) CLASS HStatic
+
+   IF lTransp != NIL .AND. lTransp
+      ::extStyle += WS_EX_TRANSPARENT
+      ::nStyleDraw := Iif( Empty(nStyle), 0, nStyle )
+      nStyle := SS_OWNERDRAW
+      bPaint := {|o,p| o:paint(p) }
+   ENDIF
 
    // Enabling style for tooltips
    IF ValType( cTooltip ) == "C"
@@ -330,10 +340,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
               bInit, bSize, bPaint, cTooltip, tcolor, bColor )
 
    ::title := cCaption
-
-   IF lTransp != NIL .AND. lTransp
-      ::extStyle += WS_EX_TRANSPARENT
-   ENDIF
 
    ::Activate()
 
@@ -376,6 +382,21 @@ METHOD Init CLASS HStatic
       ENDIF
    ENDIF
 RETURN  NIL
+
+METHOD Paint( lpDis ) CLASS HStatic
+   LOCAL drawInfo := hwg_Getdrawiteminfo( lpDis )
+   LOCAL hDC := drawInfo[ 3 ], x1 := drawInfo[ 4 ], y1 := drawInfo[ 5 ], x2 := drawInfo[ 6 ], y2 := drawInfo[ 7 ]
+
+   IF ::tcolor != NIL
+      hwg_Settextcolor( hDC, ::tcolor )
+   ENDIF
+
+   hwg_Settransparentmode( hDC, .T. )
+   hwg_Drawtext( hDC, ::title, x1, y1, x2, y2, ::nStyleDraw )
+   hwg_Settransparentmode( hDC, .F. )
+
+   RETURN NIL
+
 
 //- HButton
 

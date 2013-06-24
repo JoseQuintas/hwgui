@@ -63,10 +63,10 @@ Return Nil
 METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
 Local nDelta
 
-   // writelog( str(msg) + str(wParam) + str(lParam) )
    IF msg == WM_CHAR
       ::lChanged := .T.
    ELSEIF msg == WM_KEYDOWN
+      wParam := hwg_PtrToUlong( wParam )
       IF wParam == 27 // ESC 
          IF hwg_Getparent(::oParent:handle) != Nil 
             hwg_Sendmessage( hwg_Getparent(::oParent:handle),WM_CLOSE,0,0 ) 

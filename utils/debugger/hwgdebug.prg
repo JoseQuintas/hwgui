@@ -83,6 +83,7 @@
 #define CMD_LOCAL      10
 #define CMD_WATCH      11
 #define CMD_AREA       12
+#define CMD_TERMINATE  13
 
 #define BUFF_LEN     1024
 #define RES_LEN       100
@@ -107,6 +108,11 @@
 #define MENU_EXIT        1908
 #define MENU_BRP         1909
 
+REQUEST HWG_SAVEFILE, HWG_SELECTFOLDER
+REQUEST GETENV, HB_FGETDATETIME
+REQUEST HB_OSPATHLISTSEPARATOR
+REQUEST HWG_RUNCONSOLEAPP, HWG_RUNAPP
+
 #if defined( __PLATFORM__UNIX )
 ANNOUNCE HB_GTSYS
 REQUEST HB_GT_CGI_DEFAULT
@@ -122,7 +128,7 @@ STATIC hHrbProj
 STATIC handl1 := -1, handl2, cBuffer
 STATIC nId1 := 0, nId2 := -1
 
-STATIC oIni, cIniPath, cHrbPath := "hrb"
+STATIC oIni, cHrbPath := "hrb"
 STATIC cAppName, cPrgName := "", cCurrPath := ""
 STATIC cTextLocate, nLineLocate
 
@@ -143,12 +149,12 @@ STATIC lAnimate := .F., nAnimate := 3
 STATIC nExitMode := 1
 STATIC cVerProto := 0
 
+Memvar cIniPath
 
 Function Main( ... )
 Local oMainW
 Local aParams := hb_aParams(), i, j, cFile, cExe, cParams, cDirWait
-
-   cIniPath := FilePath( hb_ArgV( 0 ) )
+Public cIniPath := FilePath( hb_ArgV( 0 ) )
 
    FOR i := 1 TO Len( aParams)
       IF Left( aParams[i],1 ) == "-"
@@ -199,7 +205,7 @@ Local aParams := hb_aParams(), i, j, cFile, cExe, cParams, cDirWait
       IF lModeIde
          Do( hb_hrbGetFunsym( hHrbProj, "proj_menu" ) )
       ENDIF
-      MENU TITLE "&Locate"
+      MENU TITLE "&Search"
          MENUITEM "&Find"+Chr(9)+"Ctrl+F" ACTION Locate( 0 ) ACCELERATOR FCONTROL,Asc("F")
          MENUITEM "&Next" +Chr(9)+"F3" ACTION Locate( 1 ) ACCELERATOR 0,VK_F3
          MENUITEM "&Previous" ACTION Locate( -1 )
@@ -223,6 +229,8 @@ Local aParams := hb_aParams(), i, j, cFile, cExe, cParams, cDirWait
          MENUITEM "&Next Routine"+Chr(9)+"Ctrl+F5" ACTION DoCommand( CMD_NEXTR ) ACCELERATOR FCONTROL,VK_F5
          SEPARATOR
          MENUITEM "&Animate" ACTION Animate()
+         SEPARATOR
+         MENUITEM "T&erminate program" ACTION DoCommand( CMD_TERMINATE )
       ENDMENU
       MENU ID MENU_BRP TITLE "&BreakPoints"
          MENUITEM "&Add"+Chr(9)+"F9" ACTION AddBreakPoint() ACCELERATOR 0,VK_F9
@@ -299,6 +307,8 @@ Local cHrb
             "hwg_project.hrb"
       IF !File( cHrb ) .OR. Empty( hHrbProj := hb_hrbLoad( cHrb ) )
          lModeIde := .F.
+      ELSE
+         Do( hb_hrbGetFunsym( hHrbProj, "proj_RdIni" ) )
       ENDIF
    ENDIF
 Return Nil
@@ -426,7 +436,7 @@ Local oInit, oNode, n := 0, nLine, cPrg
 
 Return Nil
 
-Static Function DebugNewExe( cExe, cParams )
+Function DebugNewExe( cExe, cParams )
 
    IF cExe == Nil
       IF !Empty( cExe := hwg_Selectfile( "Executable files( *.exe )", "*.exe", Curdir() ) )
@@ -525,6 +535,7 @@ Static nLastSec := 0
       IF !Empty( arr := dbgRead() )
          IF arr[1] == "quit"
             SetMode( MODE_INIT )
+            StopDebug()
             Return Nil
          ENDIF
          IF nMode == MODE_WAIT_ANS
@@ -707,6 +718,11 @@ Static Function DoCommand( nCmd, cDop, cDop2 )
          hwg_EndWindow()
          Return Nil
 
+      ELSEIF nCmd == CMD_TERMINATE
+         Send( "cmd", "quit" )
+         lDebugging := .F.
+         StopDebug()
+
       ENDIF
       SetMode( MODE_WAIT_BR )
    ELSEIF nCmd == CMD_EXIT
@@ -823,7 +839,7 @@ Local nTab, oText := GetTextObj( cName, @nTab )
    ENDIF
 
    IF !Empty( oText )
-      IF !Empty( nLine )
+      IF !Empty( nLine ) .AND. oText:nTextLen >= nLine
          oTabMain:SetTab( nTab )
          oText:GoTo( nLine )
       ELSE
@@ -834,28 +850,34 @@ Local nTab, oText := GetTextObj( cName, @nTab )
 Return Nil
 
 Static Function SetText( cName, lClear )
-Local oText, nTab, cBuff, i
+Local oText, nTab, i
 
    IF cName == Nil; cName := cPrgName; ENDIF
 
    IF !Empty( GetTextObj( CutPath( cName ) ) )
       Return .T.
    ENDIF
-   IF Empty( oTabMain:aControls[1]:cargo )
-      oText := oTabMain:aControls[1]
-      nTab := 1
-   ELSEIF Len( oTabMain:aControls ) < nTabsMax
-      oText := CreateTextCtrl()
-      nTab := Len( oTabMain:aControls )
-   ELSE
-      oText := oTabMain:aControls[nTabsMax]
-      nTab := nTabsMax
+   FOR i := Len( oTabMain:aControls ) TO 1 STEP -1
+      IF Empty( oTabMain:aControls[i]:cargo ) .AND. oTabMain:aControls[i]:nTextLen <= 1
+         oText := oTabMain:aControls[i]
+         nTab := i
+         EXIT
+      ENDIF
+   NEXT
+   IF Empty( oText )
+      IF Len( oTabMain:aControls ) < nTabsMax
+         oText := CreateTextCtrl()
+         nTab := Len( oTabMain:aControls )
+      ELSE
+         oText := oTabMain:aControls[nTabsMax]
+         nTab := nTabsMax
+      ENDIF
    ENDIF
 
    oTabMain:SetTab( nTab )
-   IF File( cName ) .AND. !Empty( cBuff := MemoRead( cName ) )
+   IF File( cName )
       cCurrPath := FilePath( cName )
-      oText:SetText( cBuff )
+      oText:Open( cName )
       FOR i := 1 TO Len( oText:aText )
          IF Chr(9) $ oText:aText[i]
             oText:aText[i] := StrTran( oText:aText[i], Chr(9), Space(4) )
@@ -949,18 +971,25 @@ Local oText, nTab, cBuff, cNewLine := Chr(13)+Chr(10), i
 
    IF cName == Nil; cName := cPrgName; ENDIF
 
-   IF !Empty( oText := GetTextObj( CutPath( cName ) ) )
+   IF !Empty( GetTextObj( CutPath( cName ) ) )
       Return .T.
    ENDIF
-   IF Empty( oTabMain:aControls[1]:cargo )
-      oText := oTabMain:aControls[1]
-      nTab := 1
-   ELSEIF Len( oTabMain:aControls ) < nTabsMax
-      oText := CreateTextCtrl()
-      nTab := Len( oTabMain:aControls )
-   ELSE
-      oText := oTabMain:aControls[nTabsMax]
-      nTab := nTabsMax
+
+   FOR i := Len( oTabMain:aControls ) TO 1 STEP -1
+      IF Empty( oTabMain:aControls[i]:cargo )
+         oText := oTabMain:aControls[i]
+         nTab := i
+         EXIT
+      ENDIF
+   NEXT
+   IF Empty( oText )
+      IF Len( oTabMain:aControls ) < nTabsMax
+         oText := CreateTextCtrl()
+         nTab := Len( oTabMain:aControls )
+      ELSE
+         oText := oTabMain:aControls[nTabsMax]
+         nTab := nTabsMax
+      ENDIF
    ENDIF
 
    IF File( cName ) .AND. !Empty( cBuff := MemoRead( cName ) )
@@ -1230,7 +1259,9 @@ Local bEnter := {|o|
 Local bClose := {|| 
    hwg_Checkmenuitem(,MENU_STACK,.F.)
    oStackDlg:=Nil
-   DoCommand( CMD_STACK, "off" )
+   IF lDebugging
+      DoCommand( CMD_STACK, "off" )
+   ENDIF
    Return .T.
    }
 
@@ -1285,7 +1316,9 @@ Local oBrw, lLocals := hwg_Ischeckedmenuitem( ,MENU_LOCAL )
 Local bClose := {|| 
    hwg_Checkmenuitem(,MENU_LOCAL,.F.)
    oLocalsDlg := Nil
-   DoCommand( CMD_LOCAL, "off" )
+   IF lDebugging
+      DoCommand( CMD_LOCAL, "off" )
+   ENDIF
    Return .T.
    }
 
@@ -1320,7 +1353,7 @@ Return Nil
 Static FUNCTION ShowLocals( arr, n )
 Local oBrw, i, nLen := Val( arr[n] )
 
-   IF !Empty(  oLocalsDlg )
+   IF !Empty( oLocalsDlg )
       oBrw := oLocalsDlg:aControls[1]
       IF Empty( oBrw:aArray ) .OR. Len( oBrw:aArray ) != nLen
          oBrw:aArray := Array( nLen,3 )
@@ -1339,7 +1372,9 @@ Local oBrw, lWatches := hwg_Ischeckedmenuitem( ,MENU_WATCH )
 Local bClose := {|| 
    hwg_Checkmenuitem(,MENU_WATCH,.F.)
    oWatchDlg := Nil
-   DoCommand( CMD_WATCH, "off" )
+   IF lDebugging
+      DoCommand( CMD_WATCH, "off" )
+   ENDIF
    Return .T.
    }
 
@@ -1597,6 +1632,28 @@ Local cRes := "", i := 1, nLen := Len( stroka )
    ENDDO
 Return cRes
 
+Static Function StopDebug()
+
+   IF !Empty( oLocalsDlg )
+      oLocalsDlg:Close()
+   ENDIF
+   IF !Empty( oStackDlg )
+      oStackDlg:Close()
+   ENDIF
+   IF !Empty( oWatchDlg )
+      oWatchDlg:Close()
+   ENDIF
+   IF !Empty( oAreasDlg )
+      oAreasDlg:Close()
+   ENDIF
+
+   IF handl1 != -1
+      FClose( handl1 )
+      FClose( handl2 )
+      handl1 := -1
+   ENDIF
+Return Nil
+
 Static Function ExitDbg()
 
    IF nExitMode == 1
@@ -1606,9 +1663,11 @@ Static Function ExitDbg()
    ELSEIF nExitMode == 2
       Send( "cmd", "quit" )
    ENDIF
+   lDebugging := .F.
+   StopDebug()
 
-   HWindow():GetMain():bOther := Nil
-   FClose( handl1 )
-   FClose( handl2 )
-   handl1 := -1
+   IF lModeIde
+      Do( hb_hrbGetFunsym( hHrbProj, "proj_WrIni" ) )
+   ENDIF
+
 Return .T.

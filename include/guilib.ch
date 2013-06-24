@@ -611,10 +611,11 @@
             [ TOOLTIP <ctoolt> ]       ;
             [ <edit: EDIT> ]           ;
             [ <text: TEXT> ]           ;
+            [ DISPLAYCOUNT <nDisplay>] ;
           => ;
     [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
                   <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,;
-                  <.edit.>,<.text.>,,<color>,<bcolor> )
+                  <.edit.>,<.text.>,,<color>,<bcolor>,,<nDisplay> )
 
 #xcommand REDEFINE COMBOBOX [ <oCombo> ITEMS ] <aItems> ;
             [ OF <oWnd> ]              ;
@@ -1021,12 +1022,13 @@
             [ <text: TEXT> ]           ;
             [ WHEN <bWhen> ]           ;
             [ VALID <bValid> ]         ;
+            [ DISPLAYCOUNT <nDisplay>] ;
           => ;
     [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<vari>,    ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
                     <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
-                    <.edit.>,<.text.>,<bWhen>,<color>,<bcolor>,<bValid> )
+                    <.edit.>,<.text.>,<bWhen>,<color>,<bcolor>,<bValid>,<nDisplay> )
 
 #xcommand REDEFINE GET COMBOBOX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;

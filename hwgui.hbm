@@ -12,7 +12,6 @@
 {win}source/winapi/cxshade.c
 {win}source/winapi/dialog.c
 {win}source/winapi/draw.c
-{win}source/winapi/registry.c
 {win}source/winapi/drawtext.c
 {win}source/winapi/freeimg.c
 {win}source/winapi/grid.c
@@ -21,6 +20,7 @@
 {win}source/winapi/message.c
 {win}source/winapi/misc.c
 {win}source/winapi/nice.c
+{win}source/winapi/registry.c
 {win}source/winapi/resource.c
 {win}source/winapi/richedit.c
 {win}source/winapi/shellapi.c
@@ -41,7 +41,6 @@
 {win}source/winapi/hcheck.prg
 {win}source/winapi/hcombo.prg
 {win}source/winapi/hcontrol.prg
-{win}source/winapi/hctrlex.prg
 {win}source/winapi/hcwindow.prg
 {win}source/winapi/hdatepic.prg
 {win}source/winapi/hdialog.prg

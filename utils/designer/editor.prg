@@ -4,15 +4,14 @@
  * Designer
  * Simple code editor
  *
- * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
-#include "hbclass.ch"
+#include "HBClass.ch"
 #include "windows.ch"
 #include "guilib.ch"
 #include "hxml.ch"
-#include "common.ch"
 
 #define ES_SAVESEL 0x00008000
 
@@ -37,15 +36,15 @@ CLASS HDTheme
    METHOD Add( name )  INLINE ( ::name:=name,Aadd(::aThemes,Self),Self )
 ENDCLASS
 
-FUNCTION LoadEdOptions( cFileName )
-   LOCAL oIni := HXMLDoc():Read( cFileName )
-   LOCAL i, j, j1, cTheme, oTheme, oThemeXML, arr, oOptDesc
+Function LoadEdOptions( cFileName )
+Local oIni := HXMLDoc():Read( cFileName )
+Local i, j, j1, cTheme, oTheme, oThemeXML, arr
 
    cIniName := cFileName
    oOptDesc := oIni:aItems[1]
    FOR i := 1 TO Len( oOptDesc:aItems )
       IF oOptDesc:aItems[i]:title == "font"
-         HDTheme():oFont := hwg_hfrm_FontFromxml( oOptDesc:aItems[i] )
+         HDTheme():oFont := hwg_hfrm_FontFromXML( oOptDesc:aItems[i] )
       ELSEIF oOptDesc:aItems[i]:title == "keywords"
          HDTheme():aKeyWords := hwg_hfrm_Str2Arr( oOptDesc:aItems[i]:aItems[1] )
       ELSEIF oOptDesc:aItems[i]:title == "themes"
@@ -84,21 +83,18 @@ FUNCTION LoadEdOptions( cFileName )
          NEXT
       ENDIF
    NEXT
+Return Nil
 
-   RETURN NIL
-
-FUNCTION SaveEdOptions( oOptDesc )
-   LOCAL oIni := HXMLDoc():Read( m->cCurDir+cIniName )
-   LOCAL i, oNode, nStart, oThemeDesc, aAttr
-
-   HB_SYMBOL_UNUSED( oOptDesc )
+Function SaveEdOptions( oOptDesc )
+Local oIni := HXMLDoc():Read( cCurDir+cIniName )
+Local i, j, oNode, nStart, oThemeDesc, aAttr
 
    oNode := oIni:aItems[1]
    nStart := 1
    IF oNode:Find( "font",@nStart ) == Nil
-      oNode:Add( Font2XML( HDTheme():oFont ) )
+      oNode:Add( hwg_Font2XML( HDTheme():oFont ) )
    ELSE
-      oNode:aItems[nStart] := Font2XML( HDTheme():oFont )
+      oNode:aItems[nStart] := hwg_Font2XML( HDTheme():oFont )
    ENDIF
    IF oNode:Find( "themes",@nStart ) != Nil
       oNode := oNode:aItems[nStart]
@@ -154,24 +150,22 @@ FUNCTION SaveEdOptions( oOptDesc )
 
       NEXT
    ENDIF
-   oIni:Save( m->cCurDir+cIniName )
+   oIni:Save( cCurDir+cIniName )
 
-   RETURN NIL
+Return Nil
 
-FUNCTION EditMethod( cMethName, cMethod )
-   LOCAL i, lRes := .F., dummy
-   LOCAL oFont := HDTheme():oFont
-   LOCAL cParamString
-   MEMVAR oDesigner
+Function EditMethod( cMethName, cMethod )
+Local i, lRes := .F.
+Local oFont := HDTheme():oFont
+Local cParamString
 
    i := Ascan( oDesigner:aMethDef, {|a|a[1]==Lower(cMethName)} )
    cParamString := Iif( i == 0, "", oDesigner:aMethDef[i,2] )
-
    INIT DIALOG oDlg TITLE "Edit '"+cMethName+"' method"          ;
       AT 100,240  SIZE 600,300  FONT oDesigner:oMainWnd:oFont    ;
       STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_MAXIMIZEBOX+WS_SIZEBOX ;
       ON INIT {||hwg_Movewindow(oDlg:handle,100,240,600,310)}        ;
-      ON EXIT {|| dummy := Iif(lRes:=(oEdit:lChanged.AND.hwg_Msgyesno("Code was changed! Save it?", "Designer")),cMethod:=oEdit:GetText(),.F.),.T.}
+      ON EXIT {||Iif(lRes:=(oEdit:lChanged.AND.hwg_Msgyesno("Code was changed! Save it?", "Designer")),cMethod:=oEdit:GetText(),.F.),.T.}
 
    MENU OF oDlg
       MENU TITLE "&Options"
@@ -183,42 +177,36 @@ FUNCTION EditMethod( cMethName, cMethod )
          ENDMENU
          MENUITEM "&Configure" ACTION EditColors()
       ENDMENU
-
       MENUITEM "&Parameters" ACTION Iif(!Empty(cParamString).and.Upper(Left(oEdit:Gettext(),10))!="PARAMETERS",(editShow("Parameters "+cParamString+Chr(10)+oEdit:Gettext()),oEdit:lChanged:=.T.),.F.)
-
-      MENU TITLE "&Templates "+cMethName
-
-         MENUITEM "&Insert Field"     ACTION InsertField(1)
-         MENUITEM "&Field:=xVarField" ACTION InsertField(0)
-
-      ENDMENU
-
       MENUITEM "&Exit" ACTION oDlg:Close()
    ENDMENU
 
    @ 0,0 RICHEDIT oEdit TEXT cMethod SIZE 400,oDlg:nHeight            ;
-       STYLE WS_HSCROLL+WS_VSCROLL+ES_LEFT+ES_MULTILINE+ES_WANTRETURN ;
+       STYLE ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL+ES_WANTRETURN ;
        ON INIT {||ChangeTheme( HDTheme():nSelected )}                 ;
        ON GETFOCUS {||Iif(oEdit:cargo,(hwg_Sendmessage(oEdit:handle,EM_SETSEL,0,0),oEdit:cargo:=.F.),.F.)} ;
        ON SIZE {|o,x,y|o:Move(,,x,y)}                                 ;
        FONT oFont
-   //           STYLE ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL+ES_WANTRETURN+WS_VSCROLL+WS_HSCROLL
    oEdit:cargo := .T.
 
    // oEdit:oParent:AddEvent( EN_SELCHANGE,oEdit:id,{||EnChange(1)},.T. )
 
-   // oEdit:title := cMethod
-   *-hwg_SetDlgKey( odlg, 0,VK_TAB, {hwg_Msginfo('tab')})
-         *-{hwg_Sendmessage(oEdit:handle,EM_SETTABSTOPS  ,space(2),0)})
+   // oEdit:title := cMethod  
+   /*
+   @ 60,265 BUTTON "Ok" SIZE 100, 32     ;
+       ON SIZE {|o,x,y|o:Move(,y-35,,)}  ;
+       ON CLICK {||cMethod:=oEdit:GetText(),lRes:=.T.,hwg_EndDialog()}
+   @ 240,265 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32 ;
+       ON SIZE {|o,x,y|o:Move(,y-35,,)}
+   */
    ACTIVATE DIALOG oDlg
-   *-hwg_SetDlgKey( oEdit, 0,9)
+
    IF lRes
-      RETURN cMethod
+      Return cMethod
    ENDIF
+Return Nil
 
-   RETURN NIL
-
-FUNCTION ChangeTheme( nTheme )
+Function ChangeTheme( nTheme )
 
    IF HDTheme():nSelected != Nil
       hwg_Checkmenuitem( oDlg:handle,1020+HDTheme():nSelected, .F. )
@@ -226,28 +214,26 @@ FUNCTION ChangeTheme( nTheme )
    hwg_Checkmenuitem( oDlg:handle,1020+nTheme, .T. )
    HDTheme():nSelected := nTheme
    editShow( ,.T. )
+Return Nil
 
-   RETURN NIL
-
-STATIC FUNCTION editChgFont()
-   LOCAL oFont
+Static Function editChgFont()
+Local oFont
 
    IF ( oFont := HFont():Select( oEdit:oFont ) ) != Nil
-      oEdit:oFont := oFont
-      hwg_Setwindowfont( oEdit:handle,oFont:handle )
-      editShow( ,.T. )
-      // hwg_Redrawwindow( oEdit:handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
-      HDTheme():oFont := oFont
-      HDTheme():lChanged := .T.
+       oEdit:oFont := oFont
+       hwg_Setwindowfont( oEdit:handle,oFont:handle )
+       editShow( ,.T. )
+       // hwg_Redrawwindow( oEdit:handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+       HDTheme():oFont := oFont
+       HDTheme():lChanged := .T.
    ENDIF
-
-   RETURN NIL
+Return Nil
 
 // hwg_Re_setdefault( hCtrl, nColor, cName, nHeight, lBold, lItalic, lUnderline, nCharset )
 // hwg_Re_setcharformat( hCtrl, n1, n2, nColor, cName, nHeight, lBold, lItalic, lUnderline )
 
-STATIC FUNCTION editShow( cText,lRedraw )
-   LOCAL arrHi, oTheme := HDTheme():aThemes[HDTheme():nSelected]
+Static Function editShow( cText,lRedraw )
+Local arrHi, oTheme := HDTheme():aThemes[HDTheme():nSelected]
 
    IF lRedraw != Nil .AND. lRedraw
       // cText := oEdit:Gettext()
@@ -265,19 +251,24 @@ STATIC FUNCTION editShow( cText,lRedraw )
    oEdit:SetText( cText )
    cText := hwg_Re_gettextrange( oEdit:handle,1,nTextLength )
    IF !Empty( arrHi := CreateHiLight( cText ) )
+      /*
+      writelog( "hwg_Re_setcharformat "+Str(Len(arrhi)) )
+      for i := 1 to len( arrhi )
+         writelog( str(arrhi[i,1])+" "+str(arrhi[i,2])+": "+str(arrhi[i,3])+iif(arrhi[i,6]!=Nil.AND.arrhi[i,6]," T","") )
+      next
+      */
       hwg_Re_setcharformat( oEdit:handle,arrHi )
    ENDIF
    hwg_Sendmessage( oEdit:handle, EM_SETEVENTMASK, 0, ENM_CHANGE + ENM_SELCHANGE )
    oEdit:oParent:AddEvent( EN_CHANGE,oEdit:id,{||EnChange(2)} )
 
-   RETURN NIL
+Return Nil
 
-STATIC FUNCTION EnChange( nEvent )
-   LOCAL pos := hwg_Sendmessage( oEdit:handle, EM_GETSEL, 0, 0 )
-   LOCAL nLength, pos1 := hwg_Loword(pos)+1, pos2 := hwg_Hiword(pos)+1
-   LOCAL cBuffer, nLine, arr := {}, nLinePos
-   LOCAL oTheme := HDTheme():aThemes[HDTheme():nSelected]
-   LOCAL  nEditPos1, nEditPos2
+Static Function EnChange( nEvent )
+Local pos := hwg_Sendmessage( oEdit:handle, EM_GETSEL, 0, 0 )
+Local nLength, pos1 := hwg_Loword(pos)+1, pos2 := hwg_Hiword(pos)+1
+Local cBuffer, nLine, arr := {}, nLinePos
+Local oTheme := HDTheme():aThemes[HDTheme():nSelected]
 
    IF nEvent == 1        // EN_SELCHANGE
       nEditPos1 := pos1
@@ -285,7 +276,7 @@ STATIC FUNCTION EnChange( nEvent )
    ELSE                  // EN_CHANGE
       hwg_Sendmessage( oEdit:handle, EM_SETEVENTMASK, 0, 0 )
       nLength := hwg_Sendmessage( oEdit:handle, WM_GETTEXTLENGTH, 0, 0 )
-      IF nLength - nTextLength > 2
+      IF nLength - nTextLength > 2 
          // writelog( "1: "+str(nLength,5)+" "+str(nTextLength,5) )
       ELSE
          nLine := hwg_Sendmessage( oEdit:handle, EM_LINEFROMCHAR, -1, 0 )
@@ -295,6 +286,12 @@ STATIC FUNCTION EnChange( nEvent )
          Aadd( arr, { nLinePos,nLinePos+Len(cBuffer), ;
             oTheme:normal[1],,,oTheme:normal[3],oTheme:normal[4], } )
          HiLightString( cBuffer, arr, nLinePos )
+         /*
+         writelog( "hwg_Re_setcharformat "+Str(Len(arr)) )
+         for i := 1 to len( arr )
+            writelog( str(arr[i,1])+" "+str(arr[i,2])+": "+str(arr[i,3])+iif(arr[i,6]!=Nil.AND.arr[i,6]," T","") )
+         next
+         */
          IF !Empty( arr )
             hwg_Re_setcharformat( oEdit:handle,arr )
          ENDIF
@@ -303,20 +300,16 @@ STATIC FUNCTION EnChange( nEvent )
          oEdit:lChanged := .T.
       ENDIF
       nTextLength := nLength
-      hwg_Sendmessage( oEdit:handle, EM_SETEVENTMASK, 0, ENM_CHANGE + ENM_SELCHANGE )
+      hwg_Sendmessage( oEdit:handle, EM_SETEVENTMASK, 0, ENM_CHANGE + ENM_SELCHANGE )     
    ENDIF
    // writelog( "EnChange "+str(pos1)+" "+str(pos2) ) // +" Length: "+str(nLength) )
-   RETURN NIL
+Return Nil
 
-STATIC FUNCTION CreateHilight( cText,oTheme )
-   LOCAL arr := {}, nPos, nLinePos := 1
+Static Function CreateHilight( cText,oTheme )
+Local arr := {}, stroka, nPos, nLinePos := 1
 
    DO WHILE .T.
-      #ifdef __XHARBOUR__
-      IF ( nPos := At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := At( Chr(13), cText, nLinePos ) ) != 0
-      #else
-      IF ( nPos := HB_At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := HB_At( Chr(13), cText, nLinePos ) ) != 0
-      #endif
+      IF ( nPos := hb_At( Chr(10), cText, nLinePos ) ) != 0 .OR. ( nPos := hb_At( Chr(13), cText, nLinePos ) ) != 0
          HiLightString( SubStr( cText,nLinePos,nPos-nLinePos ), arr, nLinePos,oTheme )
          nLinePos := nPos + 1
       ELSE
@@ -324,20 +317,19 @@ STATIC FUNCTION CreateHilight( cText,oTheme )
          EXIT
       ENDIF
    ENDDO
+Return arr
 
-   RETURN arr
+Static Function HiLightString( stroka, arr, nLinePos, oTheme )
+Local nStart, nPos := 1, sLen := Len( stroka ), cWord
 
-STATIC FUNCTION HiLightString( stroka, arr, nLinePos, oTheme )
-   LOCAL nStart, nPos := 1, sLen := Len( stroka ), cWord
-
-   IF oTheme == NIL
+   IF oTheme == Nil
       oTheme := HDTheme():aThemes[HDTheme():nSelected]
    ENDIF
 
    IF Left( Ltrim( stroka ), 2 ) == "//"
       Aadd( arr, { nLinePos,nLinePos+Len(stroka), ;
           oTheme:comment[1],,,oTheme:comment[3],oTheme:comment[4], } )
-      RETURN arr
+      Return arr
    ENDIF
    SET EXACT ON
    DO WHILE nPos < sLen
@@ -358,21 +350,17 @@ STATIC FUNCTION HiLightString( stroka, arr, nLinePos, oTheme )
    ENDDO
    SET EXACT OFF
 
-   RETURN arr
+Return arr
 
-STATIC FUNCTION EditColors()
-   LOCAL oDlg, i, j, temp, oBtn2
-   LOCAL cText := "// The code sample" + Chr(10) + ;
+Static Function EditColors()
+Local oDlg, i, j, temp, oBtn2
+Local cText := "// The code sample" + Chr(10) + ;
                "do while ++nItem < 120"+ Chr(10) + ;
                "  if aItems[ nItem ] == 'scheme'"+ Chr(10) + ;
                "    nFactor := 22.5"+ Chr(10) + ;
                "  endif"
-
-   MEMVAR oBrw, oEditC, oSayT, oCheckB, oCheckI, oSayB, aSchemes
-   MEMVAR nScheme, nType, oTheme, cScheme, oDesigner
-
-   PRIVATE oBrw, oEditC, oSayT, oCheckB, oCheckI, oSayB, aSchemes := Array( Len( HDTheme():aThemes ) )
-   PRIVATE nScheme, nType := 2, oTheme := HDTheme():New(), cScheme := ""
+Private oBrw, oEditC, oSayT, oCheckB, oCheckI, oSayB, aSchemes := Array( Len( HDTheme():aThemes ) )
+Private nScheme, nType := 2, oTheme := HDTheme():New(), cScheme := ""
 
    FOR i := 1 TO Len( aSchemes )
       aSchemes[i] := { HDTheme():aThemes[i]:name, HDTheme():aThemes[i]:normal, ;
@@ -389,7 +377,7 @@ STATIC FUNCTION EditColors()
    @ 140,10 BROWSE oBrw ARRAY SIZE 130,80
    oBrw:bPosChanged := {||nScheme:=oBrw:nCurrent,UpdSample()}
    oBrw:aArray := aSchemes
-   oBrw:AddColumn( HColumn():New( ,{|v,o|HB_SYMBOL_UNUSED( v ),o:aArray[o:nCurrent,1]},"C",15,0,.T. ) )
+   oBrw:AddColumn( HColumn():New( ,{|v,o|o:aArray[o:nCurrent,1]},"C",15,0,.T. ) )
    oBrw:lDispHead := .F.
    nScheme := oBrw:nCurrent := oBrw:rowPos := HDTheme():nSelected
 
@@ -444,17 +432,15 @@ STATIC FUNCTION EditColors()
       HDTheme():lChanged := .T.
    ENDIF
 
-   RETURN NIL
+Return Nil
 
-STATIC FUNCTION UpdSample( nAction )
-   MEMVAR aSchemes, nScheme, oBRW, cScheme, oSayT, nType, oSayB
-   MEMVAR oTheme, oCheckB, oCheckI, oEditC
+Static Function UpdSample( nAction )
 
    IF nAction != Nil
       IF nAction == 1
          IF Len( aSchemes ) == 1
             hwg_Msgstop( "Can't delete the only theme !", "Designer" )
-            RETURN NIL
+            Return Nil
          ENDIF
          IF hwg_Msgyesno( "Really delete the '" + aSchemes[nScheme,1] + "' theme ?", "Designer" )
             Adel( aSchemes,nScheme )
@@ -462,12 +448,12 @@ STATIC FUNCTION UpdSample( nAction )
             nScheme := oBrw:nCurrent := oBrw:rowPos := 1
             oBrw:Refresh()
          ELSE
-            RETURN NIL
+            Return Nil
          ENDIF
       ELSEIF nAction == 2
          IF Empty( cScheme )
             hwg_Msgstop( "You must specify the theme name !", "Designer" )
-            RETURN NIL
+            Return Nil
          ENDIF
          IF Ascan( aSchemes,{|a|Lower(a[1])==Lower(cScheme)} ) == 0
             Aadd( aSchemes,{ cScheme, AClone(aSchemes[nScheme,2]), ;
@@ -476,7 +462,7 @@ STATIC FUNCTION UpdSample( nAction )
             oBrw:Refresh()
          ELSE
             hwg_Msgstop( "The " + cScheme + " theme exists already !", "Designer" )
-            RETURN NIL
+            Return Nil
          ENDIF
       ENDIF
    ENDIF
@@ -494,23 +480,7 @@ STATIC FUNCTION UpdSample( nAction )
    hwg_Re_setdefault( oEditC:handle,oTheme:normal[1],,,oTheme:normal[3],oTheme:normal[4] )
    hwg_Sendmessage( oEditC:handle,EM_SETBKGNDCOLOR,0,oTheme:normal[2] )
    hwg_Re_setcharformat( oEditC:handle,CreateHiLight(oEditC:GetText(),oTheme) )
-
-   RETURN NIL
-
-
-STATIC FUNCTION InsertField(nModus)
-
-   LOCAL cDBF:=hwg_MsgGet("DBF Name","input table name")
-
-   HB_SYMBOL_UNUSED( nModus )
-
-   IF FILE(cDBF)
-      hwg_Msginfo("later..")
-   ELSE
-        hwg_Msginfo(cDBF+chr(13)+"Not Found")
-   ENDIF
-
-   RETURN (NIL)
+Return Nil
 
 #pragma BEGINDUMP
 
@@ -540,7 +510,7 @@ int At_Any( char* cFind, char* cStr, int* nPos)
 HB_FUNC( NEXTWORD )
 {
    char *cSep = " \t,.()[]+-/%";
-   char * cStr  = (char*) hb_parc( 1 );
+   char * cStr  = hb_parc( 1 );
    char * ptr, * ptr1;
    int nPos = hb_parni( 2 ) - 1;
 

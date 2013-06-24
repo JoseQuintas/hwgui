@@ -1,4 +1,4 @@
-                      HWGUI - Harbour Win32 GUI library
+                      HWGUI - Harbour GUI library
 
    1) Windows
 
@@ -18,27 +18,25 @@
 
       SET HB_PATH=c:\harbour
 
-   Then run the selected bat file and you'll get hwgui.lib, procmisc.lib,
-   hbxml.lib  and qhtm.lib in lib/ directory.
+   Then run the selected bat file and you'll get hwgui.lib, hwguimt.lib ( hwgui.lib for
+   multithread mode ),  procmisc.lib, hbxml.lib and hwgdebug.lib in lib/ directory.
 
    With Harbour you can also build libraries, using Hbmk2 utility, just write:
 
-      hbmk2 hwgui.hbp procmisc.hbp hbxml.hbp hbactivex.hbp hwg_contrib.hbp hwgdebug.hbp
+      hbmk2 hwgui.hbp procmisc.hbp hbxml.hbp hwgdebug.hbp
 
-   You may omit hbactivex.hbp, hwg_contrib.hbp and hwgdebug.hbp, if you 
-   don't need these libraries.
+   In contrib/ directory you'll find similar .bat and .hbp files for hwg_qhtm, hbactivex
+   and hwg_extctrl libraries.
 
        To build samples you need to run appropriate .bat files, fixing environment
    variables there.
-       For Dbc you should have rddads.lib and ace32.lib ( by default - in 
-   harbour/lib/ directory.
        Bld.bat should be executed with prg file name as a parameter:
 
    bld a
 
    2) Linux
 
-   	Sources for the Linux GTK version are located in the gtk/ directory. 
+   	Sources for the Linux GTK version are located in the source/gtk/ directory. 
    There is a shell file build.sh, which is intended for building HwGUI Linux 
    libraries. The environment variable HB_ROOT is set there, based on the 
    assumption, that HwGUI directory is within the Harbour directory. If no,
@@ -46,14 +44,14 @@
 
       export HB_ROOT=/home/me/harbour
 
-        Then just run the build.sh and four libraries must appear in the gtk/lib:
+        Then just run the build.sh and four libraries must appear in the lib/ directory:
 
       libhbxml.a
       libhwgui.a
       libhwgdebug.a
       libprocmisc.a
 
-   You will find few samples in gtk/samples directory and a shell file build.sh.
+   You will find few samples in samples/gtk_samples directory and a shell file build.sh.
    The environment variable HB_ROOT is set there, based on the assumption, that
    HwGUI directory is within the Harbour directory. If no, you need to write the
    correct path to your Harbour directory.

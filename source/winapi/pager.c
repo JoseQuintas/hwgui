@@ -9,45 +9,6 @@
 #include "missing.h"
 #endif
 
-#define Pager_SetChild(hwnd, hwndChild) \
-        (void)SNDMSG((hwnd), PGM_SETCHILD, 0, (LPARAM)(hwndChild))
-
-#define Pager_RecalcSize(hwnd) \
-        (void)SNDMSG((hwnd), PGM_RECALCSIZE, 0, 0)
-
-#define Pager_ForwardMouse(hwnd, bForward) \
-        (void)SNDMSG((hwnd), PGM_FORWARDMOUSE, (WPARAM)(bForward), 0)
-
-#define Pager_SetBkColor(hwnd, clr) \
-        (COLORREF)SNDMSG((hwnd), PGM_SETBKCOLOR, 0, (LPARAM)(clr))
-
-#define Pager_GetBkColor(hwnd) \
-        (COLORREF)SNDMSG((hwnd), PGM_GETBKCOLOR, 0, 0)
-
-#define Pager_SetBorder(hwnd, iBorder) \
-        (int)SNDMSG((hwnd), PGM_SETBORDER, 0, (LPARAM)(iBorder))
-
-#define Pager_GetBorder(hwnd) \
-        (int)SNDMSG((hwnd), PGM_GETBORDER, 0, 0)
-
-#define Pager_SetPos(hwnd, iPos) \
-        (int)SNDMSG((hwnd), PGM_SETPOS, 0, (LPARAM)(iPos))
-
-#define Pager_GetPos(hwnd) \
-        (int)SNDMSG((hwnd), PGM_GETPOS, 0, 0)
-
-#define Pager_SetButtonSize(hwnd, iSize) \
-        (int)SNDMSG((hwnd), PGM_SETBUTTONSIZE, 0, (LPARAM)(iSize))
-
-#define Pager_GetButtonSize(hwnd) \
-        (int)SNDMSG((hwnd), PGM_GETBUTTONSIZE, 0,0)
-
-#define Pager_GetButtonState(hwnd, iButton) \
-        (DWORD)SNDMSG((hwnd), PGM_GETBUTTONSTATE, 0, (LPARAM)(iButton))
-
-#define Pager_GetDropTarget(hwnd, ppdt) \
-        (void)SNDMSG((hwnd), PGM_GETDROPTARGET, 0, (LPARAM)(ppdt))
-
 HB_FUNC( HWG_PAGERSETCHILD )
 {
    HWND m_hWnd = ( HWND ) HB_PARHANDLE( 1 );

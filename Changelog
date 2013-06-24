@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-24 21:00 UTC+0200 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/winapi/pager.c
+    ! deleted defines already done in commctrl.h
+
 2013-06-24 19:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/build.sh
     ! Small fix

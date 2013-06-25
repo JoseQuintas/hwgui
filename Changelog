@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-25 11:11 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
+  * Changelog
+    ! fix my last log entry (wrong date)
+
 2013-06-25 11:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/hmonthc.prg
   * source/winapi/htrackbr.prg
@@ -24,7 +28,7 @@
   + contrib/hwmake
     * hwmake is moved from utils to contrib
 
-2013-06-34 09:26 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
+2013-06-25 09:26 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
   * samples/a.prg
     * comment hwg_OpenReport, hwg_PrintReport, uses only in hwreport
 

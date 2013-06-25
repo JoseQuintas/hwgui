@@ -107,13 +107,16 @@
 #define MENU_QUIT        1907
 #define MENU_EXIT        1908
 #define MENU_BRP         1909
+#define MENU_CMDLINE     1910
 
+#ifndef __PLATFORM__UNIX
 REQUEST HWG_SAVEFILE, HWG_SELECTFOLDER
+#endif
 REQUEST GETENV, HB_FGETDATETIME
 REQUEST HB_OSPATHLISTSEPARATOR
 REQUEST HWG_RUNCONSOLEAPP, HWG_RUNAPP
 
-#if defined( __PLATFORM__UNIX )
+#ifdef __PLATFORM__UNIX
 ANNOUNCE HB_GTSYS
 REQUEST HB_GT_CGI_DEFAULT
 #endif
@@ -135,6 +138,7 @@ STATIC cTextLocate, nLineLocate
 STATIC oTimer, oSayState, oEditExpr, oBtnExp, oMainFont
 STATIC oBrwRes
 STATIC oStackDlg, oLocalsDlg, oWatchDlg, oAreasDlg
+STATIC lViewCmd := .T.
 STATIC oTabMain, nTabsMax := 5
 STATIC cPaths := ";"
 
@@ -210,7 +214,7 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) )
          MENUITEM "&Next" +Chr(9)+"F3" ACTION Locate( 1 ) ACCELERATOR 0,VK_F3
          MENUITEM "&Previous" ACTION Locate( -1 )
          SEPARATOR
-         MENUITEM "&Current position" ACTION SetCurrLine( nCurrLine,cPrgName )
+         MENUITEM "&Current position" ACTION Iif( lDebugging, SetCurrLine( nCurrLine,cPrgName ), .T. )
          SEPARATOR
          MENUITEM "Functions &list" ACTION Funclist()
       ENDMENU
@@ -220,6 +224,8 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) )
          MENUITEM "&Watches" ID MENU_WATCH ACTION WatchesToggle()
          SEPARATOR
          MENUITEM "Work&Areas"+Chr(9)+"F6" ACTION AreasToggle() ACCELERATOR 0,VK_F6
+         SEPARATOR
+         //MENUITEM "&Commands" ID MENU_CMDLINE ACTION ViewCmdLine()
       ENDMENU
       MENU ID MENU_RUN TITLE "&Run"
          MENUITEM "&Go"+Chr(9)+"F5" ACTION DoCommand( CMD_GO ) ACCELERATOR 0,VK_F5
@@ -293,6 +299,7 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) )
       Wait4Conn( cDirWait )
    ENDIF
 
+   hwg_Checkmenuitem( ,MENU_CMDLINE, lViewCmd )
    SET TIMER oTimer OF oMainW VALUE 30 ACTION {||TimerProc()}
 
    ACTIVATE WINDOW oMainW
@@ -1511,6 +1518,23 @@ Local oBrw, arr1, i, j, nAreas := Val( arr[n] ), nAItems := Val( Hex2Str(arr[++n
       Eval( oBrw:bPosChanged, oBrw )
       oBrw:Refresh()
    ENDIF
+Return Nil
+
+Static FUNCTION ViewCmdLine()
+Local aControls := HWindow():GetMain():aControls
+Local i := Ascan( aControls, { |o| hwg_isPtrEq( o:handle,oBrwRes:handle) } ), j := 7
+
+   lViewCmd := !lViewCmd
+   hwg_Checkmenuitem( ,MENU_CMDLINE, lViewCmd )
+   DO WHILE --j > 0
+      IF lViewCmd
+         aControls[i]:Show()
+      ELSE
+         aControls[i]:Hide()
+      ENDIF
+      i ++
+   ENDDO
+
 Return Nil
 
 Static FUNCTION SetFont( oFont )

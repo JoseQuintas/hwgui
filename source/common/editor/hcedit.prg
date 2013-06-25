@@ -224,7 +224,7 @@ Return Nil
 
 METHOD Activate() CLASS HCEdit
 
-   IF ::oParent:handle != 0
+   IF !Empty( ::oParent:handle )
       ::hEdit := hced_CreateTextEdit( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::handle := hced_GetHandle( ::hEdit )

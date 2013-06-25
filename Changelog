@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-25 16:53 UTC+0200 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * source/winapi/misc.c
+    ! pacified a warning
+
 2013-06-25 16:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/control.c
   * source/winapi/dialog.c

@@ -913,7 +913,7 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
 
    DWORD dwRead, dwWritten; 
    CHAR chBuf[BUFSIZE]; 
-   HANDLE hOut;
+   HANDLE hOut = NULL;
 
    sa.nLength = sizeof(SECURITY_ATTRIBUTES); 
    sa.bInheritHandle = TRUE; 

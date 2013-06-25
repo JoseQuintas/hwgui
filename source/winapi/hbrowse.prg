@@ -337,6 +337,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          ENDIF
 
       ELSEIF msg == WM_KEYUP
+         wParam := hwg_PtrToUlong( wParam )
          // inicio bloco sauli
          IF wParam == 17
             ::lCtrlPress := .F.
@@ -359,6 +360,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          RETURN 1
 
       ELSEIF msg == WM_KEYDOWN
+         wParam := hwg_PtrToUlong( wParam )
          IF ::bKeyDown != Nil
             IF !Eval( ::bKeyDown, Self, wParam )
                RETURN 1

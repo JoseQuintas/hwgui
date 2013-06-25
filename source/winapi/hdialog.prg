@@ -99,10 +99,10 @@ METHOD Activate( lNoModal, bOnActivate ) CLASS HDialog
 
    ::bOnActivate := bOnActivate
    hwg_CreateGetList( Self )
-   hParent := iif( ::oParent != Nil .AND. ;
+   hParent := Iif( ::oParent != Nil .AND. ;
       __ObjHasMsg( ::oParent, "HANDLE" ) .AND. ::oParent:handle != Nil .AND. ;
-      ::oParent:handle > 0, ::oParent:handle,    ;
-      iif( ( oWnd := HWindow():GetMain() ) != Nil, ;
+      !Empty( ::oParent:handle ), ::oParent:handle, ;
+      Iif( ( oWnd := HWindow():GetMain() ) != Nil,  ;
       oWnd:handle, hwg_Getactivewindow() ) )
 
    IF ::type == WND_DLG_RESOURCE

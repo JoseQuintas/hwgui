@@ -768,11 +768,6 @@ HB_FUNC( HWG_ISPTREQ )
    hb_retl( HB_PARHANDLE( 1 ) == HB_PARHANDLE( 2 ) );
 }
 
-HB_FUNC( HWG_ISPTRNEG1 )
-{
-   hb_retl( HB_PARHANDLE( 1 ) == -1 );
-}
-
 HB_FUNC( HWG_OUTPUTDEBUGSTRING )
 {
    void *hStr;

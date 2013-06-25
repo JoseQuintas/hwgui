@@ -4,8 +4,8 @@
  * Designer
  * HControlGen class
  *
- * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
- * www - http://www.kresin.ru
+ * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
+ * www - http://kresin.belgorod.su
 */
 
 #include "windows.ch"
@@ -155,7 +155,7 @@ Return Self
 
 METHOD Activate() CLASS HControlGen
 
-   IF ::oParent != Nil .AND. ::oParent:handle != 0
+   IF ::oParent != Nil .AND. !Empty( ::oParent:handle )
       IF ::cCreate != Nil
          Private oCtrl := Self
          ::handle := &( ::cCreate )

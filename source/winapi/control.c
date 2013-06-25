@@ -2220,17 +2220,6 @@ HB_FUNC( HWG_GETDLGMESSAGE )
    hb_retnl( 0 );
 }
 
-HB_FUNC( HWG_HANDLETOPTR )
-{
-   DWORD h = hb_parnl( 1 );
-#ifdef HWG_USE_POINTER_ITEM
-   hb_retptr( ULongToPtr( h ) );
-   return;
-#endif
-   hb_retnl( ( LONG ) h );
-}
-
-
 HB_FUNC( HWG_TABITEMPOS )
 {
    RECT pRect;

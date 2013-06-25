@@ -1,6 +1,6 @@
 /*
  * HWGUI using sample
- * 
+ *
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
@@ -20,7 +20,7 @@ Private nColor, oBmp2
    // hb_SetCodepage( "RU1251" )
 
    INIT WINDOW oMainWindow MDI TITLE "Example" SIZE 800,500 ;
-         MENUPOS 3 COLOR HBrush():Add(16744703):handle 
+         MENUPOS 3 COLOR HBrush():Add(16744703):handle
 
    @ 0,0 PANEL oPanel SIZE 800,32 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
    @ 2,3 OWNERBUTTON OF oPanel ON CLICK {||CreateChildWindow()} ;
@@ -54,8 +54,8 @@ Private nColor, oBmp2
                ACTION hwg_Copystringtoclipboard(hwg_MsgGet("Dialog Sample","Input table name"))
          MENUITEM "&Dialog from prg" ACTION DialogFromPrg()
          MENUITEM "&DOS print" ACTION PrintDos()
-         MENUITEM "&Windows print" ;
-               ACTION Iif( hwg_OpenReport("a.rpt","Simple"),hwg_PrintReport(,,.T.),.F.)
+         // MENUITEM "&Windows print" ;
+         //      ACTION Iif( hwg_OpenReport("a.rpt","Simple"),hwg_PrintReport(,,.T.),.F.)
          MENUITEM "&Print Preview" ACTION PrnTest()
          MENUITEM "&Sending e-mail using Outlook" ACTION Sendemail("test@test.com")
          MENUITEM "&Command ProgressBar" ACTION TestProgres()
@@ -143,7 +143,7 @@ Local oDlg, oGet, vGet:="Dialog if no close in ENTER or EXIT"
    AT 190,10  SIZE 360,240   NOEXIT NOEXITESC
    @ 10, 10 GET oGet VAR vGET SIZE 200, 32
    @ 20,190  BUTTON "Ok" SIZE 100, 32;
-   ON CLICK {|| oDlg:Close()} 
+   ON CLICK {|| oDlg:Close()}
    oDlg:Activate()
 Return Nil
 
@@ -163,7 +163,7 @@ Local oSay
    FONT oFontDlg
 
    oModDlg:bActivate := {||hwg_Msginfo("!!")}
-      
+
    altd(1)
    altd()
    // @ 20,30 BITMAP "image\OPEN.BMP"
@@ -201,7 +201,7 @@ Local oSay
        SIZE 180,35 FLAT                                  ;
        TEXT "Close" COLOR hwg_VColor("0000FF") FONT oFontBtn ;
        BITMAP cImageDir+"door.bmp" COORDINATES 40,10,0,0
-       // 
+       //
 
    hwg_CREATEARLIST( oBrw,aSample )
    oBrw:bColorSel    := 12507070  // 15149157449
@@ -432,13 +432,13 @@ ACTIVATE DIALOG oDlg
 return nil
 
 FUNCTION ActiveTopMost( nHandle, lActive )
-    
+
     if lActive
        lSucess := hwg_Settopmost(nHandle)    // Set TopMost
-    else   
+    else
        lSucess := hwg_Removetopmost(nHandle) // Remove TopMost
     endif
-    
+
     RETURN lSucess
 
 
@@ -448,19 +448,19 @@ Local cRes, aCombo := { "First","Second" }
 Private oProg
 
 INIT DIALOG oDlg TITLE "Progress Bar"    ;
-   AT 190,10  SIZE 360,240               
+   AT 190,10  SIZE 360,240
 
 @ 10, 10 PROGRESSBAR oProg  ;
              OF oDlg        ;
              SIZE 200,25    ;
              BARWIDTH 10    ;
-             QUANTITY 1000    
+             QUANTITY 1000
 ADD STATUS oStatus TO oDlg PARTS 400
 oBar   := HProgressBar():New(ostatus,,0,2,200,20,200,1000 ,hwg_Rgb(12,143,243),hwg_Rgb(243,132,143))
 oCombo := HComboBox():New(ostatus,,,,65536,0,2,200,20,aCombo,,,,,,,.F.,.F.,,,)
 @ 10, 60  BUTTON "Test" SIZE 100, 32 ON CLICK {|| MudeProg(oBar) }
-   
-   oDlg:Activate() 
+
+   oDlg:Activate()
 
 Function MudeProg(ostatus)
 Local ct:=1
@@ -473,11 +473,11 @@ Return Nil
 
 
 function RRectangle()
-Local oDlg, oR1, oR2, oR3   
+Local oDlg, oR1, oR2, oR3
 
 INIT DIALOG oDlg TITLE "Sample HRect"    ;
-   AT 190,10  SIZE 600,400               
-  
+   AT 190,10  SIZE 600,400
+
        @ 230, 10,400,100 RECT oR1 of oDlg PRESS
        @  10, 10,200,100 RECT oR2 of oDlg RECT_STYLE 3
        @  10,130,100,230 RECT oR3 of oDlg PRESS RECT_STYLE 2

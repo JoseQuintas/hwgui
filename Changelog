@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-34 09:26 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
+  * samples/a.prg
+    * comment hwg_OpenReport, hwg_PrintReport, uses only in hwreport
+
 2013-06-24 23:12 UTC+0200 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/winapi/printdos.prg
     ! pacified the warnings

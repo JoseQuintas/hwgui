@@ -1336,12 +1336,17 @@ LRESULT APIENTRY TreeViewSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return ( CallWindowProc( wpOrigTreeViewProc, hWnd, message, wParam,
-                     lParam ) );
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return ( CallWindowProc( wpOrigTreeViewProc, hWnd, message, wParam,
+                        lParam ) );
+         else
+            return res;
+      }
    }
    else
       return ( CallWindowProc( wpOrigTreeViewProc, hWnd, message, wParam,
@@ -1373,11 +1378,16 @@ LRESULT CALLBACK WinCtrlProc( HWND hWnd, UINT message, WPARAM wParam,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return ( DefWindowProc( hWnd, message, wParam, lParam ) );
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return ( DefWindowProc( hWnd, message, wParam, lParam ) );
+         else
+            return res;
+      }
    }
    else
       return ( DefWindowProc( hWnd, message, wParam, lParam ) );
@@ -1408,12 +1418,17 @@ LRESULT APIENTRY StaticSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return ( CallWindowProc( wpOrigStaticProc, hWnd, message, wParam,
-                     lParam ) );
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return ( CallWindowProc( wpOrigStaticProc, hWnd, message, wParam,
+                        lParam ) );
+         else
+            return res;
+      }
    }
    else
       return ( CallWindowProc( wpOrigStaticProc, hWnd, message, wParam,
@@ -1446,12 +1461,17 @@ LRESULT APIENTRY EditSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return ( CallWindowProc( wpOrigEditProc, hWnd, message, wParam,
-                     lParam ) );
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return ( CallWindowProc( wpOrigEditProc, hWnd, message, wParam,
+                        lParam ) );
+         else
+            return res;
+      }
    }
    else
       return ( CallWindowProc( wpOrigEditProc, hWnd, message, wParam,
@@ -1487,12 +1507,17 @@ LRESULT APIENTRY ButtonSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return ( CallWindowProc( ( WNDPROC ) wpOrigButtonProc, hWnd, message,
-                     wParam, lParam ) );
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return ( CallWindowProc( ( WNDPROC ) wpOrigButtonProc, hWnd, message,
+                        wParam, lParam ) );
+         else
+            return res;
+      }
    }
    else
       return ( CallWindowProc( ( WNDPROC ) wpOrigButtonProc, hWnd, message,
@@ -1518,12 +1543,17 @@ LRESULT APIENTRY ListSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return ( CallWindowProc( wpOrigListProc, hWnd, message, wParam,
-                     lParam ) );
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return ( CallWindowProc( wpOrigListProc, hWnd, message, wParam,
+                        lParam ) );
+         else
+            return res;
+      }
    }
    else
       return ( CallWindowProc( wpOrigListProc, hWnd, message, wParam,
@@ -1562,12 +1592,17 @@ LRESULT APIENTRY UpDownSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return ( CallWindowProc( wpOrigUpDownProc, hWnd, message, wParam,
-                     lParam ) );
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return ( CallWindowProc( wpOrigUpDownProc, hWnd, message, wParam,
+                        lParam ) );
+         else
+            return res;
+      }
    }
    else
       return ( CallWindowProc( wpOrigUpDownProc, hWnd, message, wParam,
@@ -1600,12 +1635,17 @@ LRESULT APIENTRY DatePickerSubclassProc( HWND hWnd, UINT message,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return ( CallWindowProc( wpOrigDatePickerProc, hWnd, message, wParam,
-                     lParam ) );
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return ( CallWindowProc( wpOrigDatePickerProc, hWnd, message, wParam,
+                        lParam ) );
+         else
+            return res;
+      }
    }
    else
       return ( CallWindowProc( wpOrigDatePickerProc, hWnd, message, wParam,
@@ -1637,12 +1677,17 @@ LRESULT APIENTRY TrackSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return ( CallWindowProc( wpOrigTrackProc, hWnd, message, wParam,
-                     lParam ) );
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return ( CallWindowProc( wpOrigTrackProc, hWnd, message, wParam,
+                        lParam ) );
+         else
+            return res;
+      }
    }
    else
       return ( CallWindowProc( wpOrigTrackProc, hWnd, message, wParam,
@@ -1674,12 +1719,17 @@ LRESULT APIENTRY TabSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return ( CallWindowProc( wpOrigTabProc, hWnd, message, wParam,
-                     lParam ) );
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return ( CallWindowProc( wpOrigTabProc, hWnd, message, wParam,
+                        lParam ) );
+         else
+            return res;
+      }
    }
    else
       return ( CallWindowProc( wpOrigTabProc, hWnd, message, wParam,
@@ -2239,4 +2289,3 @@ HB_FUNC( HWG_GETTABNAME )
                     ( LPTCITEM ) &tie );
    HB_RETSTR( tie.pszText );
 }
-

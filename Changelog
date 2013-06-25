@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-25 16:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/winapi/control.c
+  * source/winapi/dialog.c
+  * source/winapi/window.c
+    ! Yet another fixes, related to using of HWG_USE_POINTER_ITEM
+
 2013-06-25 15:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/window.c
     ! Some fixes, related to using of HWG_USE_POINTER_ITEM

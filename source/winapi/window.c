@@ -751,11 +751,16 @@ static LRESULT CALLBACK s_MainWndProc( HWND hWnd, UINT message,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return DefWindowProc( hWnd, message, wParam, lParam );
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return DefWindowProc( hWnd, message, wParam, lParam );
+         else
+            return res;
+      }
    }
    else
       return DefWindowProc( hWnd, message, wParam, lParam );
@@ -780,11 +785,16 @@ static LRESULT CALLBACK s_FrameWndProc( HWND hWnd, UINT message,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return DefFrameProc( hWnd, aWindows[1], message, wParam, lParam );
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return DefFrameProc( hWnd, aWindows[1], message, wParam, lParam );
+         else
+            return res;
+      }
    }
    else
       return DefFrameProc( hWnd, aWindows[1], message, wParam, lParam );
@@ -830,11 +840,16 @@ static LRESULT CALLBACK s_MDIChildWndProc( HWND hWnd, UINT message,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return DefMDIChildProc( hWnd, message, wParam, lParam );
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return DefMDIChildProc( hWnd, message, wParam, lParam );
+         else
+            return res;
+      }
    }
    else
       return DefMDIChildProc( hWnd, message, wParam, lParam );

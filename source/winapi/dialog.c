@@ -566,20 +566,16 @@ static LRESULT CALLBACK s_ModalDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-#ifdef HWG_USE_POINTER_ITEM
-      if( uMsg == WM_CTLCOLORSTATIC || uMsg == WM_CTLCOLOREDIT ||
-            uMsg == WM_CTLCOLORBTN || uMsg == WM_CTLCOLORLISTBOX ||
-            uMsg == WM_CTLCOLORDLG )
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
+      else
       {
-         return (INT_PTR) hb_parptr( -1 ) ;
-      }
-      else
-#endif
          res = hb_parnl( -1 );
-      if( res == -1 )
-         return FALSE;
-      else
-         return res;
+         if( res == -1 )
+            return FALSE;
+         else
+            return res;
+      }
    }
    else
       return FALSE;
@@ -644,21 +640,16 @@ static LRESULT CALLBACK s_DlgProc( HWND hDlg, UINT uMsg, WPARAM wParam,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-#ifdef HWG_USE_POINTER_ITEM
-      if( uMsg == WM_CTLCOLORSTATIC || uMsg == WM_CTLCOLOREDIT ||
-            uMsg == WM_CTLCOLORBTN || uMsg == WM_CTLCOLORLISTBOX ||
-            uMsg == WM_CTLCOLORDLG )
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
+      else
       {
-         return (INT_PTR) hb_parptr( -1 ) ;
-      }
-      else
-#endif
-
          res = hb_parnl( -1 );
-      if( res == -1 )
-         return FALSE;
-      else
-         return res;
+         if( res == -1 )
+            return FALSE;
+         else
+            return res;
+      }
    }
    else
       return FALSE;
@@ -728,11 +719,16 @@ static LRESULT CALLBACK s_PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam,
       HB_PUSHITEM( wParam );
       HB_PUSHITEM( lParam );
       hb_vmSend( 3 );
-      res = hb_parnl( -1 );
-      if( res == -1 )
-         return FALSE;
+      if( HB_ISPOINTER( -1 ) )
+         return (LRESULT) HB_PARHANDLE( -1 );
       else
-         return res;
+      {
+         res = hb_parnl( -1 );
+         if( res == -1 )
+            return FALSE;
+         else
+            return res;
+      }
    }
    else
       return FALSE;
@@ -769,3 +765,4 @@ HB_FUNC( HWG_GETNOTIFYIDFROM )
 {
    hb_retnl( ( LONG ) ( ( ( NMHDR * ) HB_PARHANDLE( 1 ) )->idFrom ) );
 }
+

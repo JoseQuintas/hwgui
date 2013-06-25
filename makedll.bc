@@ -90,7 +90,6 @@ $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\barcode.obj \
    $(OBJ_DIR)\c_ipaddr.obj \
    $(OBJ_DIR)\listbox.obj \
-   $(OBJ_DIR)\repexec.obj \
    $(OBJ_DIR)\printdos.obj \
    $(OBJ_DIR)\hdc.obj \
    $(OBJ_DIR)\hhyper.obj \

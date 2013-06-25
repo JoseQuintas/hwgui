@@ -104,7 +104,6 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\c_ipaddr.obj \
    $(OBJ_DIR)\listbox.obj \
    $(OBJ_DIR)\resource.obj \
-   $(OBJ_DIR)\repexec.obj \
    $(OBJ_DIR)\printdos.obj \
    $(OBJ_DIR)\hlistbox.obj \
    $(OBJ_DIR)\hsplash.obj \
@@ -391,12 +390,6 @@ $(OBJ_DIR)\printdos.c : $(SRC_DIR)\printdos.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\printdos.obj : $(OBJ_DIR)\printdos.c
-   $(CC_EXE) $(CFLAGS) -fo$@ $**
-
-$(OBJ_DIR)\repexec.c : $(SRC_DIR)\repexec.prg
-   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
-
-$(OBJ_DIR)\repexec.obj : $(OBJ_DIR)\repexec.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\tmci.c : $(SRC_DIR)\tmci.prg

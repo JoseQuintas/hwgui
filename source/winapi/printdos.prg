@@ -610,7 +610,7 @@ static int file_read ( FILE *stream, char *string )
 }
 
 //----------------------------------------------------------------------------//
-HB_FUNC_STATIC( AFILLTEXT )
+HB_FUNC( AFILLTEXT )
 {
    FILE *inFile ;
    const char *pSrc = hb_parc(1) ;
@@ -642,13 +642,12 @@ HB_FUNC_STATIC( AFILLTEXT )
 
    while ( file_read ( inFile, string ) )
    {
-     hb_arrayAddForward( pArray, hb_itemPutC( pTemp, string ));
+      hb_arrayAddForward( pArray, hb_itemPutC( pTemp, string ));
    }
 
-   hb_itemMove( hb_stackReturnItem(), pArray );
-   hb_xfree( string );
-   hb_itemRelease( pArray );
+   hb_itemRelease( hb_itemReturn( pArray ) );
    hb_itemRelease( pTemp );
+   hb_xfree( string );
    fclose( inFile );
 }
 

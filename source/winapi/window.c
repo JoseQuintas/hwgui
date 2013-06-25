@@ -209,7 +209,7 @@ void ProcessMdiMessage( HWND hJanBase, HWND hJanClient, MSG msg,
  */
 HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 {
-   HACCEL hAcceler = ( HB_ISNIL( 2 ) ) ? NULL : ( HACCEL ) hb_parnl( 2 );
+   HACCEL hAcceler = ( HB_ISNIL( 2 ) ) ? NULL : ( HACCEL ) HB_PARHANDLE( 2 );
    MSG msg;
 
    if( hb_parl( 1 ) )
@@ -458,7 +458,7 @@ HB_FUNC( HWG_INITCLIENTWINDOW )
 
 HB_FUNC( HWG_ACTIVATEMDIWINDOW )
 {
-   HACCEL hAcceler = ( HB_ISNIL( 2 ) ) ? NULL : ( HACCEL ) hb_parnl( 2 );
+   HACCEL hAcceler = ( HB_ISNIL( 2 ) ) ? NULL : ( HACCEL ) HB_PARHANDLE( 2 );
    MSG msg;
 
    if( hb_parl( 1 ) )
@@ -535,8 +535,8 @@ HB_FUNC( HWG_SENDMESSAGE )
 
    hb_retnl( ( LONG ) SendMessage( ( HWND ) HB_PARHANDLE( 1 ),  // handle of destination window
                ( UINT ) hb_parni( 2 ),  // message to send
-               ( WPARAM ) hb_parnl( 3 ),        // first message parameter
-               lpText ? ( LPARAM ) lpText : HB_ISPOINTER( 4 ) ? ( LPARAM ) HB_PARHANDLE( 4 ) : ( LPARAM ) hb_parnl( 4 ) // second message parameter
+               HB_ISPOINTER( 3 ) ? ( LPARAM ) HB_PARHANDLE( 3 ) : ( LPARAM ) hb_parnl( 3 ),
+               lpText ? ( LPARAM ) lpText : ( HB_ISPOINTER( 4 ) ? ( LPARAM ) HB_PARHANDLE( 4 ) : ( LPARAM ) hb_parnl( 4 ) )
           ) );
    hb_strfree( hText );
 }
@@ -546,8 +546,8 @@ HB_FUNC( HWG_POSTMESSAGE )
 
    hb_retnl( ( LONG ) PostMessage( ( HWND ) HB_PARHANDLE( 1 ),  // handle of destination window
                ( UINT ) hb_parni( 2 ),  // message to send
-               HB_ISPOINTER( 3 ) ? ( WPARAM ) HB_PARHANDLE( 3 ) : ( WPARAM ) hb_parnl( 3 ),     // first message parameter
-               ( LPARAM ) hb_parnl( 4 ) // second message parameter
+               HB_ISPOINTER( 3 ) ? ( WPARAM ) HB_PARHANDLE( 3 ) : ( WPARAM ) hb_parnl( 3 ),
+               HB_ISPOINTER( 4 ) ? ( LPARAM ) HB_PARHANDLE( 4 ) : ( LPARAM ) hb_parnl( 4 )
           ) );
 
 }

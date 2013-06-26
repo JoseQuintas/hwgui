@@ -224,9 +224,7 @@ METHOD Paint( lpDis ) CLASS HStaticEx
 METHOD onClick()  CLASS HStaticEx
 
    IF ::bClick != NIL
-      //::oParent:lSuspendMsgsHandling := .T.
       Eval( ::bClick, Self, ::id )
-      ::oParent:lSuspendMsgsHandling := .F.
    ENDIF
 
    RETURN NIL
@@ -235,7 +233,6 @@ METHOD onDblClick()  CLASS HStaticEx
 
    IF ::bDblClick != NIL
       Eval( ::bDblClick, Self, ::id )
-      ::oParent:lSuspendMsgsHandling := .F.
    ENDIF
 
    RETURN NIL
@@ -395,7 +392,6 @@ METHOD onClick()  CLASS HButtonX
 
    IF ::bClick != NIL
       Eval( ::bClick, Self, ::id )
-      ::oParent:lSuspendMsgsHandling := .F.
    ENDIF
 
    RETURN NIL
@@ -421,9 +417,7 @@ METHOD onGetFocus()  CLASS HButtonX
    */
    IF ::bGetFocus != NIL
       nSkip := iif( hwg_Getkeystate( VK_UP ) < 0 .OR. ( hwg_Getkeystate( VK_TAB ) < 0 .AND. hwg_Getkeystate( VK_SHIFT ) < 0 ), - 1, 1 )
-      ::oParent:lSuspendMsgsHandling := .T.
       res := Eval( ::bGetFocus, ::title, Self )
-      ::oParent:lSuspendMsgsHandling := .F.
       IF res != NIL .AND.  Empty( res )
          /*
          hwg_WhenSetFocus( Self, nSkip )
@@ -443,9 +437,7 @@ METHOD onLostFocus()  CLASS HButtonX
    ENDIF
    ::lnoWhen := .F.
    IF ::bLostFocus != NIL .AND. hwg_Selffocus( hwg_Getparent( hwg_Getfocus() ), hwg_getparentform( Self ):Handle )
-      ::oparent:lSuspendMsgsHandling := .T.
       Eval( ::bLostFocus, ::title, Self )
-      ::oparent:lSuspendMsgsHandling := .F.
    ENDIF
 
    RETURN NIL

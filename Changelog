@@ -8,6 +8,21 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-26 11:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hcedit_w.c
+    ! Small fixes
+  * makedll.bc
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * makefile.vc
+  * makefile.wc
+  * procmisc.hbp
+    * source/common/editor/* files has been included in procmisc.lib
+  * source/winapi/hsayimg.prg
+    * formatting
+
 2013-06-26 10:17 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
   * samples/test_bot.prg
     ! small fix

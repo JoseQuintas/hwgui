@@ -642,7 +642,7 @@ HB_FUNC( HCED_SETCARETPOS )
 HB_FUNC( HCED_EXACTCARETPOS )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   char * szText = hb_parc(2);
+   char * szText = ( char * ) hb_parc(2);
    int x1 = hb_parni(3);
    int xpos = hb_parni(4);
    int y1 = hb_parni(5);
@@ -717,7 +717,7 @@ HB_FUNC( HCED_LINEOUT )
    HB_BOOL bCalcOnly = (HB_ISNIL(8))? 0 : hb_parl(8);
 
    hb_retni( ted_LineOut( pted, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
-         hb_parc( 5 ), hb_parni( 6 ), hb_parni(7), bCalcOnly ) );
+         ( char * )hb_parc( 5 ), hb_parni( 6 ), hb_parni(7), bCalcOnly ) );
    if( !bCalcOnly )
    {
       hb_storni( pted->x1, 2 );

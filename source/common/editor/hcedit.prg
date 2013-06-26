@@ -290,11 +290,11 @@ Local n, nPages, arr, lRes := -1
    ELSEIF msg == WM_CHAR
       // If not readonly mode and Ctrl key isn't pressed
       IF !(Asc(Substr(hwg_GetKeyboardState(),VK_CONTROL+1,1)) >= 128)
-         ::putChar( wParam )
+         ::putChar( hwg_PtrToUlong( wParam ) )
       ENDIF
 
    ELSEIF msg == WM_KEYDOWN
-      lRes := ::onKeyDown( wParam )
+      lRes := ::onKeyDown( hwg_PtrToUlong( wParam ) )
 
    ELSEIF msg == WM_LBUTTONDOWN
       IF !Empty( ::aPointM2[1] )

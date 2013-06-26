@@ -225,7 +225,7 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) )
          SEPARATOR
          MENUITEM "Work&Areas"+Chr(9)+"F6" ACTION AreasToggle() ACCELERATOR 0,VK_F6
          SEPARATOR
-         //MENUITEM "&Commands" ID MENU_CMDLINE ACTION ViewCmdLine()
+         MENUITEM "&Commands" ID MENU_CMDLINE ACTION ViewCmdLine()
       ENDMENU
       MENU ID MENU_RUN TITLE "&Run"
          MENUITEM "&Go"+Chr(9)+"F5" ACTION DoCommand( CMD_GO ) ACCELERATOR 0,VK_F5
@@ -299,7 +299,11 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) )
       Wait4Conn( cDirWait )
    ENDIF
 
-   hwg_Checkmenuitem( ,MENU_CMDLINE, lViewCmd )
+   IF lModeIde
+      ViewCmdLine( .F. )
+   ELSE
+      hwg_Checkmenuitem( ,MENU_CMDLINE, lViewCmd )
+   ENDIF
    SET TIMER oTimer OF oMainW VALUE 30 ACTION {||TimerProc()}
 
    ACTIVATE WINDOW oMainW
@@ -841,8 +845,11 @@ Static Function SetCurrLine( nLine, cName )
 Local nTab, oText := GetTextObj( cName, @nTab )
 
    IF !lDebugging
+      IF !lViewCmd
+         ViewCmdLine( .T. )
+      ENDIF
       hwg_Enablemenuitem( ,MENU_INIT, .F., .T. )
-      lDebugging := .T.
+      oText:lReadOnly := lDebugging := .T.
    ENDIF
 
    IF !Empty( oText )
@@ -952,6 +959,9 @@ Static Function SetCurrLine( nLine, cName )
 Local nLine1, nTab, oText := GetTextObj( cName, @nTab )
 
    IF !lDebugging
+      IF !lViewCmd
+         ViewCmdLine( .T. )
+      ENDIF
       hwg_Enablemenuitem( ,MENU_INIT, .F., .T. )
       lDebugging := .T.
    ENDIF
@@ -1010,18 +1020,18 @@ Local oText, nTab, cBuff, cNewLine := Chr(13)+Chr(10), i
             oText:aArray[i] := StrTran( oText:aArray[i], Chr(9), Space(4) )
          ENDIF
       NEXT
-      hwg_Invalidaterect( oText:handle, 1 )
-      oText:Refresh()
       hwg_SetTabName( oTabMain:handle, nTab, oText:cargo := CutPath( cName ) )
       oTabMain:SetTab( nTab )
+      hwg_Invalidaterect( oText:handle, 1 )
+      oText:Refresh()
       Return .T.
    ELSEIF !Empty( lClear )
       oText:aArray := {}
-      hwg_Invalidaterect( oText:handle, 1 )
-      oText:Refresh()
       oText:cargo := ""
       hwg_SetTabName( oTabMain:handle, nTab, "Empty" )
       oTabMain:SetTab( nTab )
+      hwg_Invalidaterect( oText:handle, 1 )
+      oText:Refresh()
    ENDIF
 
 Return .F.
@@ -1520,11 +1530,11 @@ Local oBrw, arr1, i, j, nAreas := Val( arr[n] ), nAItems := Val( Hex2Str(arr[++n
    ENDIF
 Return Nil
 
-Static FUNCTION ViewCmdLine()
-Local aControls := HWindow():GetMain():aControls
+Static FUNCTION ViewCmdLine( lView )
+Local oMain := HWindow():GetMain(), aControls := oMain:aControls
 Local i := Ascan( aControls, { |o| hwg_isPtrEq( o:handle,oBrwRes:handle) } ), j := 7
 
-   lViewCmd := !lViewCmd
+   lViewCmd := Iif( lView!=Nil, lView, !lViewCmd )
    hwg_Checkmenuitem( ,MENU_CMDLINE, lViewCmd )
    DO WHILE --j > 0
       IF lViewCmd
@@ -1534,6 +1544,15 @@ Local i := Ascan( aControls, { |o| hwg_isPtrEq( o:handle,oBrwRes:handle) } ), j 
       ENDIF
       i ++
    ENDDO
+   IF lViewCmd
+      oTabMain:bSize := {|o,x,y|o:Move(,,x,y-108)}
+      //oTabMain:Move( ,,,oMain:nHeight-108 )
+      oMain:Move( ,,,oMain:nHeight+24 )
+   ELSE
+      oTabMain:bSize := {|o,x,y|o:Move(,,x,y)}
+      //oTabMain:Move( ,,,oMain:nHeight )
+      oMain:Move( ,,,oMain:nHeight+12 )
+   ENDIF
 
 Return Nil
 

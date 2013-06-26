@@ -8,6 +8,24 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-26 13:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/winapi/hdialog.prg
+  * source/winapi/hedit.prg
+  * source/common/hcedit.prg
+    ! Small fixes
+  - source/winapi/theme.c
+  + contrib/ext_controls/theme.c
+    * file moved to contrib, because for now it is used for ext controls only
+  * contrib/ext_controls/hctrlex.prg
+    ! Some fixes
+  * contrib/hwg_extctrl.hbp
+  * contrib/makefile.bc
+    * theme.c included
+  * hwgui.hbm
+    * theme.c excluded
+  + include/hwg_extctrl.ch
+    + Header file for ext controls has been added
+
 2013-06-26 11:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/common/editor/hcedit.prg
   * source/common/editor/hcedit_w.c

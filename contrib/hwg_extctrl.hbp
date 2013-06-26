@@ -13,4 +13,5 @@
 
 -cflag=-DHWG_USE_POINTER_ITEM
 
+ext_controls/*.c
 ext_controls/*.prg

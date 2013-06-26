@@ -200,15 +200,12 @@ METHOD GetActive() CLASS HDialog
 
    RETURN iif( i == 0, Nil, ::Getlist[i] )
 
-   // End of class
-   // ------------------------------------
 
 STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
 
    LOCAL nReturn := 1
    LOCAL aCoors
 
-   // hwg_writelog( str(oDlg:handle)+" "+oDlg:title )
    IF ValType( oDlg:menu ) == "A"
       hwg__SetMenu( oDlg:handle, oDlg:menu[5] )
    ENDIF
@@ -322,7 +319,7 @@ STATIC FUNCTION onDlgCommand( oDlg, wParam, lParam )
          Eval( aMenu[ 1,i,1 ] )
       ENDIF
    ELSEIF __ObjHasMsg( oDlg, "OPOPUP" ) .AND. oDlg:oPopup != Nil .AND. ;
-         ( aMenu := Hwg_FindMenuItem( oDlg:oPopup:aMenu,wParam,@i ) ) != Nil ;
+         ( aMenu := Hwg_FindMenuItem( oDlg:oPopup:aMenu,iParLow,@i ) ) != Nil ;
          .AND. aMenu[ 1,i,1 ] != Nil
       Eval( aMenu[ 1,i,1 ] )
    ENDIF
@@ -414,7 +411,6 @@ FUNCTION hwg_PropertySheet( hParentWindow, aPages, cTitle, x1, y1, width, height
          aHandles[i] := hwg__createpropertysheetpage( aPages[i], aTemplates[i] )
       ENDIF
       aSheet[i] := { aHandles[i], aPages[i] }
-      // Writelog( "h: "+str(aHandles[i]) )
    NEXT
    hSheet := hwg__propertysheet( hParentWindow, aHandles, Len( aHandles ), cTitle, ;
       lModeless, lNoApply, lWizard )

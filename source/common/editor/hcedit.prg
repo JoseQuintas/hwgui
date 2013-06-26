@@ -182,7 +182,7 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                     Iif(lNoBorder=Nil.OR.!lNoBorder,WS_BORDER,0)+          ;
                     Iif(::lVScroll,WS_VSCROLL,0) )
 
-   Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
+   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
              Iif( nHeight==Nil,0,nHeight ),oFont,bInit,bSize,bPaint,, ;
              Iif( tcolor==Nil,0,tcolor ),Iif( bcolor==Nil,16777215,bcolor ) )
 
@@ -244,7 +244,7 @@ Return Nil
 METHOD Init() CLASS HCEdit
 
    IF !::lInit
-      Super:Init()
+      ::Super:Init()
       ::nHolder := 1
       hwg_Setwindowobject( ::handle,Self )
    ENDIF

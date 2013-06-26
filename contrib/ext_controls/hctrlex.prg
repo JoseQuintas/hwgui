@@ -87,10 +87,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    ::bClick := bClick
    IF ::id > 2
-      ::oParent:AddEvent( STN_CLICKED, Self, { || ::onClick() } )
+      ::oParent:AddEvent( STN_CLICKED, ::id, { || ::onClick() } )
    ENDIF
    ::bDblClick := bDblClick
-   ::oParent:AddEvent( STN_DBLCLK, Self, { || ::onDblClick() } )
+   ::oParent:AddEvent( STN_DBLCLK, ::id, { || ::onDblClick() } )
 
    RETURN Self
 
@@ -112,10 +112,10 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    ::bOther := bOther
    ::bClick := bClick
    IF ::id > 2
-      ::oParent:AddEvent( STN_CLICKED, Self, { || ::onClick() } )
+      ::oParent:AddEvent( STN_CLICKED, ::id, { || ::onClick() } )
    ENDIF
    ::bDblClick := bDblClick
-   ::oParent:AddEvent( STN_DBLCLK, Self, { || ::onDblClick() } )
+   ::oParent:AddEvent( STN_DBLCLK, ::id, { || ::onDblClick() } )
 
    RETURN Self
 
@@ -268,6 +268,7 @@ CLASS HButtonX INHERIT HButton
    DATA bClick
    DATA cNote  HIDDEN
    DATA lFlat INIT .F.
+   DATA lnoWhen
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
@@ -296,15 +297,15 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    ::bClick := bClick
    ::bGetFocus  := bGFocus
-   ::oParent:AddEvent( BN_SETFOCUS, Self, { || ::onGetFocus() } )
-   ::oParent:AddEvent( BN_KILLFOCUS, self, { || ::onLostFocus() } )
+   ::oParent:AddEvent( BN_SETFOCUS, ::id, { || ::onGetFocus() } )
+   ::oParent:AddEvent( BN_KILLFOCUS, ::id, { || ::onLostFocus() } )
 
    IF ::id > IDCANCEL .OR. ::bClick != NIL
       IF ::id < IDABORT
-         hwg_GetParentForm( Self ):AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+         hwg_GetParentForm( Self ):AddEvent( BN_CLICKED, ::id, { || ::onClick() } )
       ENDIF
       IF hwg_GetParentForm( Self ):Classname != ::oParent:Classname  .OR. ::id > IDCANCEL
-         ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+         ::oParent:AddEvent( BN_CLICKED, ::id, { || ::onClick() } )
       ENDIF
    ENDIF
 
@@ -318,15 +319,15 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
 
    ::title   := cCaption
    ::bGetFocus  := bGFocus
-   ::oParent:AddEvent( BN_SETFOCUS, Self, { || ::onGetFocus() } )
-   ::oParent:AddEvent( BN_KILLFOCUS, self, { || ::onLostFocus() } )
+   ::oParent:AddEvent( BN_SETFOCUS, ::id, { || ::onGetFocus() } )
+   ::oParent:AddEvent( BN_KILLFOCUS, ::id, { || ::onLostFocus() } )
    ::bClick  := bClick
    IF ::id > IDCANCEL .OR. ::bClick != NIL
       IF ::id < IDABORT
-         hwg_GetParentForm( Self ):AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+         hwg_GetParentForm( Self ):AddEvent( BN_CLICKED, ::id, { || ::onClick() } )
       ENDIF
       IF hwg_GetParentForm( Self ):Classname != ::oParent:Classname  .OR. ::id > IDCANCEL
-         ::oParent:AddEvent( BN_CLICKED, Self, { || ::onClick() } )
+         ::oParent:AddEvent( BN_CLICKED, ::id, { || ::onClick() } )
       ENDIF
    ENDIF
 
@@ -360,6 +361,7 @@ METHOD onevent( msg, wParam, lParam ) CLASS HButtonX
          hwg_Sendmessage( ::handle, WM_LBUTTONDOWN, 0, hwg_Makelparam( 1, 1 ) )
          RETURN 0
       ENDIF
+      /*
       IF ! hwg_ProcKeyList( Self, wParam )
          IF wParam = VK_TAB
             hwg_GetSkip( ::oparent, ::handle, , iif( hwg_IsCtrlShift( .F. , .T. ), - 1, 1 )  )
@@ -372,6 +374,7 @@ METHOD onevent( msg, wParam, lParam ) CLASS HButtonX
             RETURN 0
          ENDIF
       ENDIF
+      */
    ELSEIF msg == WM_KEYUP
       IF ( wParam == VK_RETURN .OR. wParam == VK_SPACE )
          hwg_Sendmessage( ::handle, WM_LBUTTONUP, 0, hwg_Makelparam( 1, 1 ) )
@@ -411,16 +414,20 @@ METHOD NoteCaption( cNote )  CLASS HButtonX
 METHOD onGetFocus()  CLASS HButtonX
    LOCAL res := .T. , nSkip
 
+   /*
    IF ! hwg_CheckFocus( Self, .F. ) .OR. ::bGetFocus = NIL
       RETURN .T.
    ENDIF
+   */
    IF ::bGetFocus != NIL
       nSkip := iif( hwg_Getkeystate( VK_UP ) < 0 .OR. ( hwg_Getkeystate( VK_TAB ) < 0 .AND. hwg_Getkeystate( VK_SHIFT ) < 0 ), - 1, 1 )
       ::oParent:lSuspendMsgsHandling := .T.
       res := Eval( ::bGetFocus, ::title, Self )
       ::oParent:lSuspendMsgsHandling := .F.
       IF res != NIL .AND.  Empty( res )
+         /*
          hwg_WhenSetFocus( Self, nSkip )
+         */
          IF ::lflat
             hwg_Invalidaterect( ::oParent:Handle, 1 , ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight  )
          ENDIF
@@ -454,7 +461,7 @@ CLASS HButtonEX INHERIT HButtonX
    DATA m_crColors INIT Array( 6 )
    DATA m_crBrush INIT Array( 6 )
    DATA hTheme
-   // DATA Caption
+   DATA Caption
    DATA state
    DATA m_bIsDefault INIT .F.
    DATA m_nTypeStyle  init 0
@@ -470,6 +477,7 @@ CLASS HButtonEX INHERIT HButtonX
    DATA iStyle
    DATA m_bmpBk, m_pbmpOldBk
    DATA bMouseOverButton INIT .F.
+   DATA lnoThemes
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
@@ -617,6 +625,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
    LOCAL pt := { , }, rectButton, acoor
    LOCAL pos, nID, oParent, nEval
 
+   wParam := hwg_PtrToUlong( wParam )
    IF msg == WM_THEMECHANGED
       IF ::Themed
          IF ValType( ::hTheme ) == "P"
@@ -660,11 +669,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
       ENDIF
    ENDIF
    IF msg == WM_KEYDOWN
-#ifdef __XHARBOUR__
-      IF hb_BitIsSet( hwg_Ptrtoulong( lParam ), 30 )  // the key was down before ?
-#else
-      IF hb_BitTest( lParam, 30 )   // the key was down before ?
-#endif
+      IF hwg_CheckBit( hwg_Ptrtoulong( lParam ), 30 )  // the key was down before ?
          RETURN 0
       ENDIF
       IF ( ( wParam == VK_SPACE ) .OR. ( wParam == VK_RETURN ) )
@@ -680,7 +685,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
       ELSEIF  wParam = VK_TAB
          hwg_GetSkip( ::oparent, ::handle, , iif( hwg_IsCtrlShift( .F. , .T. ), - 1, 1 )  )
       ENDIF
+      /*
       hwg_ProcKeyList( Self, wParam )
+      */
    ELSEIF msg == WM_SYSKEYUP .OR. ( msg == WM_KEYUP .AND. ;
          ASCAN( { VK_SPACE, VK_RETURN, VK_ESCAPE }, wParam ) = 0 )
       IF hwg_Checkbit( lParam, 23 ) .AND. ( wParam > 95 .AND. wParam < 106 )
@@ -750,9 +757,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
    ELSEIF msg == WM_GETDLGCODE
       IF wParam = VK_ESCAPE .AND. ( hwg_Getdlgmessage( lParam ) = WM_KEYDOWN .OR. hwg_Getdlgmessage( lParam ) = WM_KEYUP )
          oParent := hwg_GetParentForm( Self )
+         /*
          IF ! hwg_ProcKeyList( Self, wParam )  .AND. ( oParent:Type < WND_DLG_RESOURCE .OR. ! oParent:lModal )
             hwg_Sendmessage( oParent:handle, WM_COMMAND, hwg_Makewparam( IDCANCEL, 0 ), ::handle )
-         ELSEIF oParent:FindControl( IDCANCEL ) != NIL .AND. ! oParent:FindControl( IDCANCEL ):IsEnabled() .AND. oParent:lExitOnEsc
+         ELSE
+         */
+         IF oParent:FindControl( IDCANCEL ) != NIL .AND. ! oParent:FindControl( IDCANCEL ):IsEnabled() .AND. oParent:lExitOnEsc
             hwg_Sendmessage( oParent:handle, WM_COMMAND, hwg_Makewparam( IDCANCEL, 0 ), ::handle )
             RETURN 0
          ENDIF
@@ -1173,7 +1183,6 @@ METHOD Init() CLASS HGroupEx
 
    IF ! ::lInit
       ::Super:Init()
-      // *-IF ::backStyle = TRANSPARENT .OR. ::bColor != NIL
       IF ::oBrush != NIL .OR. ::backStyle = TRANSPARENT
          nbs := HWG_GETWINDOWSTYLE( ::handle )
          nbs := hwg_Modstyle( nbs, BS_TYPEMASK , BS_OWNERDRAW + WS_DISABLED )
@@ -1226,7 +1235,6 @@ METHOD PAINT( lpdis ) CLASS HGroupEx
    hwg_Setbkmode( dc, TRANSPARENT )
 
    IF Hwg_BitAND( dwStyle, BS_FLAT ) != 0  // "flat" frame
-      //pnFrmDark  := hwg_Createpen( PS_SOLID, 1, hwg_Rgb(0, 0, 0) ) )
       pnFrmDark  := HPen():Add( PS_SOLID, 1,  hwg_Rgb( 64, 64, 64 ) )
       pnFrmLight := HPen():Add( PS_SOLID, 1, hwg_Getsyscolor( COLOR_3DHILIGHT ) )
       ppnOldPen := hwg_Selectobject( dc, pnFrmDark:Handle )
@@ -1264,7 +1272,7 @@ METHOD PAINT( lpdis ) CLASS HGroupEx
       hwg_Lineto( dc, rcText[ 3 ], rcText[ 4 ] + 1 )
    ENDIF
    // draw text (if any)
-   IF !Empty( szText ) // !(dwExStyle & (BS_ICON|BS_BITMAP)))
+   IF !Empty( szText )
       hwg_Setbkmode( dc, TRANSPARENT )
       IF ::oBrush != NIL
          hwg_Fillrect( DC, rc[ 1 ] + 2, rc[ 2 ] + iUpDist + 2 , rc[ 3 ] - 2, rc[ 4 ] - 2 , ::brush:handle )
@@ -1280,3 +1288,26 @@ METHOD PAINT( lpdis ) CLASS HGroupEx
    hwg_Selectobject( dc, ppnOldPen )
 
    RETURN NIL
+
+Static FUNCTION hwg_TxtRect( cTxt, oWin, oFont )
+
+
+   LOCAL hDC
+   LOCAL ASize
+   LOCAL hFont
+
+   oFont := IIF( oFont != Nil, oFont, oWin:oFont )
+
+   hDC       := hwg_Getdc( oWin:handle )
+   IF oFont == Nil .AND. oWin:oParent != Nil
+      oFont := oWin:oParent:oFont
+   ENDIF
+   IF oFont != Nil
+      hFont := hwg_Selectobject( hDC, oFont:handle )
+   ENDIF
+   ASize     := hwg_Gettextsize( hDC, cTxt )
+   IF oFont != Nil
+      hwg_Selectobject( hDC, hFont )
+   ENDIF
+   hwg_Releasedc( oWin:handle, hDC )
+   RETURN ASize

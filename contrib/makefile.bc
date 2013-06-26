@@ -98,7 +98,8 @@ ACTIVEX_LIB_OBJS = \
 
 EXTCONTROLS_LIB_OBJS = \
    $(OBJ_DIR)\hctrlex.obj \
-   $(OBJ_DIR)\hgridex.obj
+   $(OBJ_DIR)\hgridex.obj \
+   $(OBJ_DIR)\theme.obj
 
 #
 # Our default target

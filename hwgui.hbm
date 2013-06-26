@@ -25,7 +25,6 @@
 {win}source/winapi/resource.c
 {win}source/winapi/richedit.c
 {win}source/winapi/shellapi.c
-{win}source/winapi/theme.c
 {win}source/winapi/window.c
 {win}source/winapi/wprint.c
 {win}source/winapi/c_ipaddr.c

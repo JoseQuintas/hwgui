@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-26 10:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/guilib.ch
+    * STRETCH and TRANSPARENT clauses are added to @ .. BITMAP command
+      as in 2.17
+  * source/winapi/hanimat.prg
+    * Function calls are fixed due to their names in animate.c
+  * hwgui.hbm
+    * animat.c has been added
+
 2013-06-25 16:53 UTC+0200 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/winapi/misc.c
     ! pacified a warning

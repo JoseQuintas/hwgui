@@ -18,8 +18,8 @@ FUNCTION OnOtherMessages( Sender, WinMsg, WParam, LParam )
   local nKey
 
   IF WinMsg == WM_KEYUP
-	 nKey := WParam
-	 hwg_Msginfo( "Keyup " + chr( nKey ) + " " + str( nKey ) )
+    nKey := WParam
+    hwg_Msginfo( "Keyup " + chr( hwg_Loword( nKey ) ) + " " + str( hwg_Loword( nKey ) ) )
   endif
 
 RETURN( -1 )

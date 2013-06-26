@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-26 10:17 UTC+0200 Alexey Myronenko <m.oleksa/at/ukr.net>
+  * samples/test_bot.prg
+    ! small fix
+
 2013-06-26 10:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/guilib.ch
     * STRETCH and TRANSPARENT clauses are added to @ .. BITMAP command

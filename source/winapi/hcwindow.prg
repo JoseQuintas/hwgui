@@ -86,7 +86,7 @@ ENDCLASS
 
 METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
    LOCAL i := iif( nId != NIL, Ascan( ::aControls, { |o| o:id == nId } ), ;
-      Ascan( ::aControls, { |o| o:handle == nHandle } ) )
+      Ascan( ::aControls, { |o| hwg_Isptreq( o:handle,nHandle) } ) )
 
    RETURN iif( i == 0, NIL, ::aControls[ i ] )
 

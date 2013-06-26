@@ -52,6 +52,7 @@ DEBUG_OBJ_DIR      = $(OBJ_DIR)
 # Directory macros. These should never have to change.
 #
 PROCMISC_DIR = source\common\procmisc
+EDITOR_DIR   = source\common\editor
 HWGUI_DIR    = source\winapi
 HBXML_DIR    = source\common\xml
 DEBUG_DIR    = source\common\debug
@@ -60,8 +61,8 @@ DEBUG_DIR    = source\common\debug
 # C compiler definition and C flags. These should never have to change.
 #
 
-#CFLAGS               = -I$(INCLUDE_DIR) -5 -6 -d $(C_USR) $(CFLAGS) -D__WIN32__
-CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__
+#CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__
+CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__ -DHWG_USE_POINTER_ITEM
 !if $d(HB_MULTI_GT)
 CFLAGS               = $(CFLAGS) -DHB_MULTI_GT
 !endif
@@ -175,7 +176,10 @@ PROCMISC_LIB_OBJS = \
    $(PROCMISC_OBJ_DIR)\procini.obj \
    $(PROCMISC_OBJ_DIR)\procs7.obj \
    $(PROCMISC_OBJ_DIR)\procscri.obj \
-   $(PROCMISC_OBJ_DIR)\scrdebug.obj
+   $(PROCMISC_OBJ_DIR)\scrdebug.obj \
+   $(PROCMISC_OBJ_DIR)\hcedit.obj \
+   $(PROCMISC_OBJ_DIR)\hcedit_w.obj \
+   $(PROCMISC_OBJ_DIR)\hilight.obj
 
 #
 # HBXML.LIB rules
@@ -282,6 +286,12 @@ $(DEBUG_LIB) : $(DEBUG_LIB_OBJS)
     $(HB_CMD)
 
 {$(PROCMISC_DIR)}.c{$(PROCMISC_OBJ_DIR)}.obj:
+   $(CC_CMD)
+
+{$(EDITOR_DIR)}.prg{$(PROCMISC_OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(EDITOR_DIR)}.c{$(PROCMISC_OBJ_DIR)}.obj:
    $(CC_CMD)
 
 #

@@ -8,6 +8,7 @@ OBJ_DIR = obj
 LIB_DIR = lib
 SRC_DIR = source\winapi
 PROCMISC_DIR = source\common\procmisc
+EDITOR_DIR = source\common\editor
 HBXML_DIR    = source\common\xml
 HWGDEBUG_DIR = source\common\debug
 
@@ -87,7 +88,10 @@ $(LIB_DIR)/libprocmisc.a : \
    $(OBJ_DIR)/procini.o \
    $(OBJ_DIR)/procs7.o \
    $(OBJ_DIR)/procscri.o \
-   $(OBJ_DIR)/scrdebug.o
+   $(OBJ_DIR)/scrdebug.o \
+   $(OBJ_DIR)/hcedit.o \
+   $(OBJ_DIR)/hcedit_w.o \
+   $(OBJ_DIR)/hilight.o
 	ar rc $@ $^
 
 $(LIB_DIR)/libhbxml.a : \
@@ -117,6 +121,12 @@ $(OBJ_DIR)/%.c : $(PROCMISC_DIR)/%.prg
 	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
 
 $(OBJ_DIR)/%.o : $(PROCMISC_DIR)/%.c
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
+$(OBJ_DIR)/%.c : $(EDITOR_DIR)/%.prg
+	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+
+$(OBJ_DIR)/%.o : $(EDITOR_DIR)/%.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 $(OBJ_DIR)/%.c : $(HBXML_DIR)/%.prg

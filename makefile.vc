@@ -12,6 +12,7 @@ OBJ_DIR = obj/vc
 LIB_DIR = lib/vc
 SRC_DIR = source/winapi
 PROCMISC_DIR = source/common/procmisc
+EDITOR_DIR = source/common/procmisc
 XML_DIR = source/common/hbxml
 DEBUG_DIR = source/common/debug
 CFLAGS = /TP /W3 /nologo
@@ -284,7 +285,10 @@ $(LIB_DIR)\procmisc.lib : \
    $(OBJ_DIR)\procini.obj \
    $(OBJ_DIR)\procs7.obj \
    $(OBJ_DIR)\procscri.obj\
-   $(OBJ_DIR)\scrdebug.obj
+   $(OBJ_DIR)\scrdebug.obj\
+   $(OBJ_DIR)\hcedit.obj\
+   $(OBJ_DIR)\hcedit_w.obj\
+   $(OBJ_DIR)\hilight.prg.obj
   lib /out:$@ $**
 
 $(OBJ_DIR)\procini.c    : $(PROCMISC_DIR)\procini.prg
@@ -295,11 +299,18 @@ $(OBJ_DIR)\procscri.c   : $(PROCMISC_DIR)\procscri.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\scrdebug.c   : $(PROCMISC_DIR)\scrdebug.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hcedit.c    : $(EDITOR_DIR)\hcedit.prg
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hilight.c    : $(EDITOR_DIR)\hilight.prg
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 
 $(OBJ_DIR)\procini.obj  : $(OBJ_DIR)\procini.c
 $(OBJ_DIR)\procs7.obj   : $(OBJ_DIR)\procs7.c
 $(OBJ_DIR)\procscri.obj : $(OBJ_DIR)\procscri.c
 $(OBJ_DIR)\scrdebug.obj : $(OBJ_DIR)\scrdebug.c
+$(OBJ_DIR)\hcedit.obj : $(OBJ_DIR)\hcedit.c
+$(OBJ_DIR)\hilight.obj : $(OBJ_DIR)\hilight.c
+$(OBJ_DIR)\hcedit_w.obj : $(EDITOR_DIR)\hcedit_w.c
 
 $(OBJ_DIR)\hxmldoc.c    : $(XML_DIR)\hxmldoc.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@

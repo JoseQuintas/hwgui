@@ -8,6 +8,7 @@ OBJ_DIR = obj\dll
 LIB_DIR = lib
 SRC_DIR = source\winapi
 PROCMISC_DIR = source\common\procmisc
+EDITOR_DIR = source\common\editor
 HBXML_DIR    = source\common\xml
 
 HARBOUR_EXE = $(HRB_DIR)\bin\harbour.exe
@@ -123,6 +124,12 @@ $(LIB_DIR)\hwgui-b32.dll:   \
     $(HB_CMD)
 
 {$(PROCMISC_DIR)}.c{$(OBJ_DIR)}.obj:
+   $(CC_CMD)
+
+{$(EDITOR_DIR)}.prg{$(OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(EDITOR_DIR)}.c{$(OBJ_DIR)}.obj:
    $(CC_CMD)
 
 {$(HBXML_DIR)}.prg{$(OBJ_DIR)}.c:

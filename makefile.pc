@@ -10,7 +10,8 @@ INCLUDE_DIR = include;$(HRB_DIR)\include
 OBJ_DIR = obj
 LIB_DIR = lib
 SRC_DIR = source\winapi
-
+PROCMISC_DIR = source\common\procmisc
+EDITOR_DIR = source\common\editor
 HARBOUR_EXE = HARBOUR
 CC_EXE = $(POCCMAIN)\BIN\POCC.EXE
 LIB_EXE = $(POCCMAIN)\BIN\POLIB.EXE
@@ -51,7 +52,10 @@ PROCMISC_LIB_OBJS = \
    $(OBJ_DIR)\procini.obj \
    $(OBJ_DIR)\procs7.obj \
    $(OBJ_DIR)\procscri.obj \
-   $(OBJ_DIR)\scrdebug.obj
+   $(OBJ_DIR)\scrdebug.obj \
+   $(OBJ_DIR)\hcedit.obj \
+   $(OBJ_DIR)\hcedit_w.obj \
+   $(OBJ_DIR)\hilight.obj
 
 HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hipedit.obj \
@@ -493,25 +497,37 @@ $(OBJ_DIR)\hhyper.obj : $(OBJ_DIR)\hhyper.c
 # ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÛ
 #  ßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 
-$(OBJ_DIR)\blowfish.obj : $(SRC_DIR)\procmisc\blowfish.c
-   $(CC_EXE) $(CFLAGS) /Fo$@ $**
-
-$(OBJ_DIR)\procini.c : $(SRC_DIR)\procmisc\procini.prg
+$(OBJ_DIR)\procini.c : $(PROCMISC_DIR)\procini.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\procini.obj : $(OBJ_DIR)\procini.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
-$(OBJ_DIR)\procs7.c : $(SRC_DIR)\procmisc\procs7.prg
+$(OBJ_DIR)\procs7.c : $(PROCMISC_DIR)\procs7.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\procs7.obj : $(OBJ_DIR)\procs7.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
-$(OBJ_DIR)\procscri.c : $(SRC_DIR)\procmisc\procscri.prg
+$(OBJ_DIR)\procscri.c : $(PROCMISC_DIR)\procscri.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\procscri.obj : $(OBJ_DIR)\procscri.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hcedit_w.obj : $(EDITOR_DIR)\hcedit_w.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hcedit.c : $(EDITOR_DIR)\hcedit.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hcedit.obj : $(OBJ_DIR)\hcedit.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hilight.c : $(EDITOR_DIR)\hilight.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hilight.obj : $(OBJ_DIR)\hilight.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 # ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿

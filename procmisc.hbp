@@ -15,3 +15,5 @@
 
 source/common/procmisc/*.c
 source/common/procmisc/*.prg
+source/common/editor/*.c
+source/common/editor/*.prg

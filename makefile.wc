@@ -8,6 +8,7 @@ OBJ_DIR = obj
 LIB_DIR = lib
 SRC_DIR = source\winapi
 PROCMISC_DIR = source\common\procmisc
+EDITOR_DIR = source\common\editor
 XML_DIR = source\common\xml
 DEBUG_DIR = source\common\debug
 
@@ -48,7 +49,10 @@ PROCMISC_LIB_OBJS = \
    $(OBJ_DIR)\procini.obj \
    $(OBJ_DIR)\procs7.obj \
    $(OBJ_DIR)\procscri.obj\
-   $(OBJ_DIR)\scrdebug.obj
+   $(OBJ_DIR)\scrdebug.obj\
+   $(OBJ_DIR)\hcedit.obj\
+   $(OBJ_DIR)\hcedit_w.obj\
+   $(OBJ_DIR)\hilight.obj
 
 HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hipedit.obj \
@@ -504,6 +508,21 @@ $(OBJ_DIR)\scrdebug.c : $(PROCMISC_DIR)\scrdebug.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\scrdebug.obj : $(OBJ_DIR)\scrdebug.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hcedit.c : $(EDITOR_DIR)\hcedit.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hcedit.obj : $(OBJ_DIR)\hcedit.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hilight.c : $(EDITOR_DIR)\hilight.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hilight.obj : $(OBJ_DIR)\hilight.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hcedit_w.obj : $(EDITOR_DIR)\hcedit_w.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 # 旼컴컴컴컴컴컴컴컴컴컴컴컴커

@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-27 15:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  + include/hwgextern.ch
+    + Header file with HwGUI classes and functions request
+  - samples/hbrun.prg
+  + samples/hwgrun.prg
+  * utils/debugger/hwgdebug.prg
+    * Small changes
+
 2013-06-27 09:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/hbrowse.prg
   * include/guilib.ch

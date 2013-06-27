@@ -132,7 +132,7 @@ STATIC handl1 := -1, handl2, cBuffer
 STATIC nId1 := 0, nId2 := -1
 
 STATIC oIni, cHrbPath := "hrb"
-STATIC cAppName, cPrgName := "", cCurrPath := ""
+STATIC cAppName, cPrgName := ""
 STATIC cTextLocate, nLineLocate
 
 STATIC oTimer, oSayState, oEditExpr, oBtnExp, oMainFont
@@ -153,12 +153,12 @@ STATIC lAnimate := .F., nAnimate := 3
 STATIC nExitMode := 1
 STATIC cVerProto := 0
 
-Memvar cIniPath
+Memvar cIniPath, cCurrPath
 
 Function Main( ... )
 Local oMainW
 Local aParams := hb_aParams(), i, j, cFile, cExe, cParams, cDirWait
-Public cIniPath := FilePath( hb_ArgV( 0 ) )
+Public cIniPath := FilePath( hb_ArgV( 0 ) ), cCurrPath := ""
 
    FOR i := 1 TO Len( aParams)
       IF Left( aParams[i],1 ) == "-"
@@ -184,7 +184,7 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) )
    ReadHrb()
 
    IF Empty( oMainFont )
-      PREPARE FONT oMainFont NAME "Georgia" WIDTH 0 HEIGHT -17 CHARSET 4
+      PREPARE FONT oMainFont NAME "Georgia" WIDTH 0 HEIGHT -15 CHARSET 4
    ENDIF
 
    INIT WINDOW oMainW MAIN TITLE "Debugger" ;

@@ -150,7 +150,7 @@ STATIC t_oDebugger
 #xtranslate __DBGPROCLEVEL([<n,...>]) =>  HB_DBG_PROCLEVEL(<n>)
 #xtranslate __DBGINVOKEDEBUG([<n,...>]) =>  HB_DBG_INVOKEDEBUG(<n>)
 
-#xtranslate hb_ntos([<n,...>]) =>  Ltrim(Str((<n>))
+#xtranslate hb_ntos([<n,...>]) =>  Ltrim(Str((<n>)))
 #endif
 
 

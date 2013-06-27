@@ -8,6 +8,21 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-27 18:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  - samples/browse_2.prg
+  - samples/browse_2.rc
+  - samples/makefile.gcc
+  - samples/test1.prg
+  - samples/testget3.prg
+  - samples/testget3.rc
+  - samples/testget.rh
+  - samples/grid_6.rc
+  - samples/grid_6.prg      
+    - The above files deleted from samples/, because they didn't work normally
+  * samples/hwgrun.prg
+    * Small changes. Now it is possible to execute HwGUI prgs directly, without 
+      compiling to .hrb
+
 2013-06-27 16:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/common/debugger.prg
     ! Minor fix for xHarbour compatibility

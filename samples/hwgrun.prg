@@ -50,7 +50,7 @@
 #include "hwgextern.ch"
 
 FUNCTION __Main( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar8, cPar9 )
-   LOCAL xRetVal
+   LOCAL xRetVal, cHrb
 
    IF Empty( cHRBFile )
       hwg_Msginfo( "Harbour Runner - HwGUI version" + HB_OSNewLine() +;
@@ -60,7 +60,14 @@ FUNCTION __Main( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar
               HB_OSNewLine() +;
               "Note:  Linked with " + Version() + HB_OSNewLine() )
    ELSE
-      xRetVal := hb_hrbRun( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar8, cPar9 )
+      IF Lower( Right( cHRBFile,4 ) ) == ".prg"
+         IF !Empty( cHrb := hb_compileBuf( "harbour", cHRBFile, "/n","/I..\include" ) )
+            hb_Memowrit( "__tmp.hrb", cHrb )
+            xRetVal := hb_hrbRun( "__tmp.hrb", cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar8, cPar9 )
+         ENDIF
+      ELSE
+         xRetVal := hb_hrbRun( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar8, cPar9 )
+      ENDIF
    ENDIF
 
    RETURN xRetVal

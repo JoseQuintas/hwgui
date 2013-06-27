@@ -66,7 +66,7 @@ STATIC FUNCTION DefError( oError )
 
    cMessage += Chr( 13 ) + Chr( 10 )
 
-   cMessage += Chr( 13 ) + Chr( 10 ) + hwg_version() + " " + hb_Version()
+   cMessage += Chr( 13 ) + Chr( 10 ) + hwg_version()
    cMessage += Chr( 13 ) + Chr( 10 ) + "Date:" + DToC( Date() )
    cMessage += Chr( 13 ) + Chr( 10 ) + "Time:" + Time()
 

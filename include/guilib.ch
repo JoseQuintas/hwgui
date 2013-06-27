@@ -59,6 +59,17 @@
    #endif
 #endif
 
+#ifdef __XHARBOUR__
+  #ifndef HB_SYMBOL_UNUSED
+     #define HB_SYMBOL_UNUSED( x )    ( (x) := (x) )
+  #endif
+#endif
+
+// Allow the definition of different classes without defining a new command
+
+#xtranslate __IIF(.T., [<true>], [<false>]) => <true>
+#xtranslate __IIF(.F., [<true>], [<false>]) => <false>
+
 // Commands for windows, dialogs handling
 
 #xcommand INIT WINDOW <oWnd>                ;
@@ -687,6 +698,7 @@
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ ON CLICK <bEnter> ]      ;
+            [ ON RIGHTCLICK <bRClick> ];
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
             [ STYLE <nStyle> ]         ;
@@ -709,7 +721,7 @@
         <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>, ;
         <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.>, <.lAppend.>,;
         <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg>, <.lMulti.>, <.lDescend.>,;
-        <bWhile>, <bFirst>, <bLast>, <bFor> )
+        <bWhile>, <bFirst>, <bLast>, <bFor>, <bRClick> )
 
 #xcommand REDEFINE BROWSE [ <oBrw> ]   ;
             [ <lArr: ARRAY> ]          ;

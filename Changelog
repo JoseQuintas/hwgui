@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-27 09:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/winapi/hbrowse.prg
+  * include/guilib.ch
+    * ON RIGHTCLICK clause implemented
+  * source/common/hcedit_w.c
+    ! Few warnings fixed, reported by Itamar M. Lins Jr.
+  * source/common/debugger.prg
+  * source/winapi/herrsys.prg
+  * include/guilib.h
+    ! Some fixes for xHarbour compatibility
+
 2013-06-26 16:38 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/hcwindow.prg
     * hwg_IsptrEq() instead of comparison of handles ( == )

@@ -252,7 +252,7 @@ int ted_CalcSize( TEDIT * pted, char *szText, TEDATTR * pattr, int *iRealLen,
 int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
       int iMaxAscent, char *szText, TEDATTR * pattr, int iLen )
 {
-   int i, yoff;
+   int yoff;
    RECT rect;
    SIZE sz;
    COLORREF fg, bg;
@@ -528,9 +528,10 @@ HB_FUNC( HCED_SETATTR )
 HB_FUNC( HCED_SETVSCROLL )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   SCROLLINFO si = { sizeof(si) };
+   SCROLLINFO si;
    int iPages = hb_parni(4);
 
+   si.cbSize = sizeof( SCROLLINFO );
    si.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_DISABLENOSCROLL;
 
    si.nPos  = hb_parni(2);
@@ -650,7 +651,6 @@ HB_FUNC( HCED_EXACTCARETPOS )
    int i, lasti, iRealLen, iPrinted = 0, iLen = hb_parclen(2);
    TEDATTR *pattr = pted->pattr;
    SIZE sz;
-   TEDFONT *font;
 
    if( iLen > 0 )
    {

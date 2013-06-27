@@ -145,7 +145,7 @@ CLASS HBrowse INHERIT HControl
    DATA bPosChanged, bLineOut
    DATA bScrollPos                             // Called when user move browse through vertical scroll bar
    DATA bHScrollPos                            // Called when user move browse through horizontal scroll bar
-   DATA bEnter, bKeyDown, bUpdate
+   DATA bEnter, bKeyDown, bUpdate, bRClick
    DATA internal
    DATA ALIAS                                  // Alias name of browsed database
    DATA x1, y1, x2, y2, width, height
@@ -175,7 +175,7 @@ CLASS HBrowse INHERIT HControl
 
    METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, lNoBorder, ;
-      lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, bFirst, bWhile, bFor  )
+      lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, bFirst, bWhile, bFor, bRClick )
    METHOD InitBrw( nType )
    METHOD Rebuild()
    METHOD Activate()
@@ -201,6 +201,7 @@ CLASS HBrowse INHERIT HControl
    METHOD Top()
    METHOD Home()  INLINE ::DoHScroll( SB_LEFT )
    METHOD ButtonDown( lParam )
+   METHOD ButtonRDown( lParam )
    METHOD ButtonUp( lParam )
    METHOD ButtonDbl( lParam )
    METHOD MouseMove( wParam, lParam )
@@ -219,7 +220,7 @@ ENDCLASS
 METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, ;
       lNoBorder, lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, ;
-      lDescend, bWhile, bFirst, bLast, bFor  ) CLASS HBrowse
+      lDescend, bWhile, bFirst, bLast, bFor, bRClick ) CLASS HBrowse
 
    nStyle   := Hwg_BitOr( iif( nStyle == Nil,0,nStyle ), WS_CHILD + WS_VISIBLE +  ;
       iif( lNoBorder = Nil .OR. !lNoBorder, WS_BORDER, 0 ) +            ;
@@ -233,6 +234,7 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
       ::oFont := ::oParent:oFont
    ENDIF
    ::bEnter  := bEnter
+   ::bRClick := bRClick
    ::bGetFocus   := bGFocus
    ::bLostFocus  := bLFocus
 
@@ -406,6 +408,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
       ELSEIF msg == WM_LBUTTONDOWN
          ::ButtonDown( lParam )
+
+      ELSEIF msg == WM_RBUTTONDOWN
+         ::ButtonRDown( lParam )
 
       ELSEIF msg == WM_LBUTTONUP
          ::ButtonUp( lParam )
@@ -1543,7 +1548,26 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
+METHOD ButtonRDown( lParam ) CLASS HBrowse
+
+   LOCAL nLine := Int( hwg_Hiword( lParam )/ (::height + 1 ) + iif(::lDispHead,1 - ::nHeadRows,1 ) )
+   LOCAL xm := hwg_Loword( lParam ), x1, fif
+
+   IF ::bRClick == NIL
+      Return Nil
+   ENDIF
+
+   x1  := ::x1
+   fif := iif( ::freeze > 0, 1, ::nLeftCol )
+
+   DO WHILE fif < ( ::nLeftCol + ::nColumns ) .AND. x1 + ::aColumns[ fif ]:width < xm
+      x1 += ::aColumns[ fif ]:width
+      fif := iif( fif == ::freeze, ::nLeftCol, fif + 1 )
+   ENDDO
+
+   Eval( ::bRClick, Self, nLine, fif )
+
+   RETURN Nil
 
 METHOD ButtonUp( lParam ) CLASS HBrowse
 

@@ -73,3 +73,8 @@
    #define HB_ISHASH( n )        ISHASH( n )
    #define HB_ISSYMBOL( n )      ISSYMBOL( n )
 #endif
+
+#if defined( __XHARBOUR__ ) && !defined( hb_itemPutCLPtr )
+   #define hb_dynsymIsFunction( h ) ( ( h )->pSymbol->value.pFunPtr != NULL )
+   #define hb_itemPutCLPtr( pItem, szText, ulLen ) hb_itemPutCPtr( pItem, szText, ulLen )
+#endif

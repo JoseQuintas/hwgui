@@ -456,8 +456,7 @@ HB_FUNC( HWG_ADDTOOLTIP )
    }
    ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
    ti.hwnd = hWnd;
-   ti.uId = ( UINT ) hb_parnl( 2 );
-   // ti.uId = (UINT) GetDlgItem( hWnd, hb_parni( 2 ) );
+   ti.uId = ( UINT_PTR ) HB_PARHANDLE( 2 );
    ti.hinst = GetModuleHandle( NULL );
    ti.lpszText = ( LPTSTR ) HB_PARSTR( 3, &hStr, NULL );
 
@@ -475,8 +474,7 @@ HB_FUNC( HWG_DELTOOLTIP )
       ti.cbSize = sizeof( TOOLINFO );
       ti.uFlags = TTF_IDISHWND;
       ti.hwnd = ( HWND ) HB_PARHANDLE( 1 );
-      ti.uId = ( UINT ) hb_parnl( 2 );
-      // ti.uId = (UINT) GetDlgItem( hWnd, hb_parni( 2 ) );
+      ti.uId = ( UINT_PTR ) HB_PARHANDLE( 1 );
       ti.hinst = GetModuleHandle( NULL );
 
       SendMessage( hWndTT, TTM_DELTOOL, 0, ( LPARAM ) ( LPTOOLINFO ) & ti );
@@ -495,7 +493,7 @@ HB_FUNC( HWG_SETTOOLTIPTITLE )
       ti.cbSize = sizeof( TOOLINFO );
       ti.uFlags = TTF_IDISHWND;
       ti.hwnd = hWnd;
-      ti.uId = ( UINT ) hb_parnl( 2 );
+      ti.uId = ( UINT_PTR ) HB_PARHANDLE( 2 );
       ti.hinst = GetModuleHandle( NULL );
       ti.lpszText = ( LPTSTR ) HB_PARSTR( 3, &hStr, NULL );
 
@@ -505,40 +503,6 @@ HB_FUNC( HWG_SETTOOLTIPTITLE )
    }
 }
 
-/*
-HB_FUNC( HWG_SHOWTOOLTIP )
-{
-   MSG msg;
-
-   msg.lParam = hb_parnl( 3 );
-   msg.wParam = hb_parnl( 2 );
-   msg.message = WM_MOUSEMOVE;
-   msg.hwnd = (HWND) HB_PARHANDLE( 1 );
-   hb_retnl( SendMessage( hWndTT, TTM_RELAYEVENT, 0, (LPARAM) (LPMSG) &msg ) );
-}
-*/
-
-/*   no used
-HB_FUNC( HWG_CREATEUPDOWNCONTROL32 )
-{
-   HWND hControl;
-   LONG nStyle = hb_parnl( 7 ) | WS_CHILDWINDOW | WS_VISIBLE | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS | UDS_HOTTRACK;
-
-    hControl = CreateWindowEx( WS_EX_LEFT | WS_EX_LTRREADING,
-                              TEXT( UPDOWN_CLASS ), //TEXT( "UPDOWN" ),
-                              NULL, nStyle,
-                              hb_parni( 3 ), hb_parni( 4 ),  // x, y
-                              hb_parni( 5 ), hb_parni( 6 ),  // nWidth, nHeight
-                              ( HWND ) HB_PARHANDLE( 1 ),    // parent window
-                              ( HMENU ) hb_parni( 2 ),       // control ID
-                              GetModuleHandle( NULL ), NULL );
-
-    SendMessage( hControl, UDM_SETRANGE, 0, MAKELPARAM( hb_parni( 8 ), hb_parni( 9 ) ) );    // Sets the controls direction 
-                                                                           // and range.
-
-    HB_RETHANDLE( hControl );
-}
-*/
 
 HB_FUNC( HWG_CREATEUPDOWNCONTROL )
 {

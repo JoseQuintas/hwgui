@@ -12,7 +12,7 @@ EDITOR_DIR = source\common\editor
 HBXML_DIR    = source\common\xml
 HWGDEBUG_DIR = source\common\debug
 
-CFLAGS = -Wall -O3 -march=pentium
+CFLAGS = -Wall -O3 -march=pentium -DHWG_USE_POINTER_ITEM
 
 all: \
    $(LIB_DIR)/libhwgui.a \
@@ -29,11 +29,13 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/drawtext.o \
    $(OBJ_DIR)/freeimg.o \
    $(OBJ_DIR)/grid.o \
+   $(OBJ_DIR)/listbox.o \
    $(OBJ_DIR)/media_c.o \
    $(OBJ_DIR)/menu_c.o \
    $(OBJ_DIR)/message.o \
    $(OBJ_DIR)/misc.o \
    $(OBJ_DIR)/nice.o \
+   $(OBJ_DIR)/pager.o \
    $(OBJ_DIR)/registry.o \
    $(OBJ_DIR)/resource.o \
    $(OBJ_DIR)/richedit.o \
@@ -58,13 +60,16 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hgrid.o \
    $(OBJ_DIR)/htrackbr.o \
    $(OBJ_DIR)/hanimat.o \
-   $(OBJ_DIR)/hnice.o \
+   $(OBJ_DIR)/hlistbox.o \
    $(OBJ_DIR)/hmonthc.o \
+   $(OBJ_DIR)/hnice.o \
    $(OBJ_DIR)/hownbtn.o \
    $(OBJ_DIR)/hpanel.o \
+   $(OBJ_DIR)/hpager.o \
    $(OBJ_DIR)/hprinter.o \
    $(OBJ_DIR)/hprogres.o \
    $(OBJ_DIR)/hradio.o \
+   $(OBJ_DIR)/hrebar.o \
    $(OBJ_DIR)/hriched.o \
    $(OBJ_DIR)/hsayimg.o \
    $(OBJ_DIR)/hshbtn.o \

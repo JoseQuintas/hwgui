@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-28 13:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/winapi/control.c
+    ! Some fixes, related to using of HWG_USE_POINTER_ITEM
+  * samples/bldhw.bat
+    * -lwinmm added
+  * makefile.gcc
+    * listbox.c, pager.c, hlisbox.prg, hrebar.prg, hpager.prg added
+
 2013-06-28 10:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/hdialog.prg
   * source/winapi/hprogres.prg

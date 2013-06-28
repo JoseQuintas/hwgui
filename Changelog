@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-28 10:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/winapi/hdialog.prg
+  * source/winapi/hprogres.prg
+    ! Small fixes
+
 2013-06-28 10:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * samples/hwgrun.prg
   * include/hwgextern.ch

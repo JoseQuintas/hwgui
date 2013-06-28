@@ -502,7 +502,7 @@ STATIC FUNCTION onSysCommand( oDlg, wParam )
 
    wParam := hwg_PtrToUlong( wParam )
    IF wParam == SC_CLOSE
-      IF !oDlg:Closable
+      IF !oDlg:lClosable
          RETURN 1
       ENDIF
    ENDIF

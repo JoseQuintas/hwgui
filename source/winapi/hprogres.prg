@@ -99,7 +99,6 @@ METHOD Activate CLASS HProgressBar
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createprogressbar( ::oParent:handle, ::maxPos, ::style, ;
             ::nLeft, ::nTop, ::nWidth, IIF( ::nHeight = 0, Nil, ::nHeight ) )
-      hwg_writelog("Create")
       ::Init()
    ENDIF
    RETURN Nil
@@ -124,7 +123,6 @@ METHOD STEP( cTitle )
    IF ::nCount == ::nLimit
       ::nCount := 0
       hwg_Updateprogressbar( ::handle )
-      hwg_writelog("Uodate")
       ::SET( cTitle ) 
       IF ! EMPTY( ::lPercent )
          ::nPercent += ::maxPos  //::nLimit

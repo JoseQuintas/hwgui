@@ -164,9 +164,11 @@
              [ BACKGROUND BITMAP <oBmp> ]   ;
              [ STYLE <nStyle> ]             ;
              [ FONT <oFont> ]               ;
+             [ COLOR <bColor> ]             ;
              [<lClipper: CLIPPER>]          ;
              [<lExitOnEnter: NOEXIT>]       ; //Modified By Sandro
              [<lExitOnEsc: NOEXITESC>]      ; //Modified By Sandro
+             [ <lnoClosable: NOCLOSABLE> ]  ;
              [ ON INIT <bInit> ]            ;
              [ ON SIZE <bSize> ]            ;
              [ ON PAINT <bPaint> ]          ;
@@ -177,16 +179,18 @@
              [ HELPID <nHelpId> ]           ;
           => ;
    <oDlg> := HDialog():New( Iif(<.res.>,WND_DLG_RESOURCE,WND_DLG_NORESOURCE), ;
-                   <nStyle>,<x>,<y>,<width>,<height>,<cTitle>,<oFont>,<bInit>,<bExit>,;
-                   <bSize>, <bPaint>,<bGfocus>,<bLfocus>,<bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.>,<nHelpId>,<Resid>,<.lExitOnEsc.> )
+                   <nStyle>,<x>,<y>,<width>,<height>,<cTitle>,<oFont>,;
+                   <bInit>,<bExit>,<bSize>, <bPaint>,<bGfocus>,<bLfocus>,;
+                   <bOther>,<.lClipper.>,<oBmp>,<ico>,<.lExitOnEnter.>,<nHelpId>,<Resid>,<.lExitOnEsc.>,<bColor>,<.lnoClosable.> )
 
 #xcommand ACTIVATE WINDOW <oWnd> ;
                [<lNoShow: NOSHOW>] ;
                [<lMaximized: MAXIMIZED>] ;
                [<lMinimized: MINIMIZED>] ;
-               [ ON ACTIVATE <bInit> ]            ;
+               [<lCenter: CENTER>]       ;
+               [ ON ACTIVATE <bInit> ]   ;
            => ;
-      <oWnd>:Activate( !<.lNoShow.>, <.lMaximized.>, <.lMinimized.>,<bInit> )
+      <oWnd>:Activate( !<.lNoShow.>, <.lMaximized.>, <.lMinimized.>, <.lCenter.>, <bInit> )
 
 #xcommand CENTER WINDOW <oWnd> ;
 	=>;

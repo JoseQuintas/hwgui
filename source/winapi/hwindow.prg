@@ -273,7 +273,7 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
 
    RETURN Self
 
-METHOD Activate( lShow, lMaximized, lMinimized, bActivate ) CLASS HMainWindow
+METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMainWindow
 
    LOCAL oWndClient, handle
 
@@ -286,10 +286,16 @@ METHOD Activate( lShow, lMaximized, lMinimized, bActivate ) CLASS HMainWindow
       handle := Hwg_InitClientWindow( oWndClient, ::nMenuPos, ::nLeft, ::nTop + 60, ::nWidth, ::nHeight )
       oWndClient:handle = handle
 
+      IF !Empty( lCentered )
+         ::Center()
+      ENDIF
       Hwg_ActivateMdiWindow( ( lShow == Nil .OR. lShow ), ::hAccel, lMaximized, lMinimized )
 
    ELSEIF ::type == WND_MAIN
 
+      IF !Empty( lCentered )
+         ::Center()
+      ENDIF
       Hwg_ActivateMainWindow( ( lShow == Nil .OR. lShow ), ::hAccel, lMaximized, lMinimized )
    ENDIF
 

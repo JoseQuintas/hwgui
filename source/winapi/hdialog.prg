@@ -17,6 +17,7 @@
 STATIC aSheet := Nil
 STATIC aMessModalDlg := { ;
       { WM_COMMAND, { |o,w,l|onDlgCommand( o,w,l ) } },       ;
+      { WM_SYSCOMMAND, { |o,w,l| onSysCommand( o, w, l ) } }, ;
       { WM_SIZE, { |o,w,l|hwg_onWndSize( o,w,l ) } },         ;
       { WM_ERASEBKGND, { |o,w|onEraseBk( o,w ) } },           ;
       { WM_PSPNOTIFY, { |o,w,l|onPspNotify( o,w,l ) } },      ;
@@ -42,9 +43,10 @@ CLASS HDialog INHERIT HWindow
    DATA lRouteCommand  INIT .F.
    DATA xResourceID
    DATA bOnActivate
+   DATA lClosable    INIT .T.
 
    METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
-      bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc )
+      bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bColor, lNoClosable )
    METHOD Activate( lNoModal, bOnActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD AddItem()      INLINE AAdd( iif( ::lModal,::aModalDialogs,::aDialogs ), Self )
@@ -56,7 +58,7 @@ CLASS HDialog INHERIT HWindow
 ENDCLASS
 
 METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
-      bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc ) CLASS HDialog
+      bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bColor, lNoClosable ) CLASS HDialog
 
    ::oDefaultParent := Self
    ::xResourceID := xResourceID
@@ -77,9 +79,14 @@ METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
    ::bGetFocus  := bGFocus
    ::bLostFocus := bLFocus
    ::bOther     := bOther
-   ::lClipper   := iif( lClipper == Nil, .F. , lClipper )
-   ::lExitOnEnter := iif( lExitOnEnter == Nil, .T. , !lExitOnEnter )
-   ::lExitOnEsc  := iif( lExitOnEsc == Nil, .T. , !lExitOnEsc )
+   ::lClipper   := Iif( lClipper == Nil, .F. , lClipper )
+   ::lExitOnEnter := Iif( lExitOnEnter == Nil, .T. , !lExitOnEnter )
+   ::lExitOnEsc := Iif( lExitOnEsc == Nil, .T. , !lExitOnEsc )
+   ::lClosable  := Iif( lNoClosable == Nil, .T. , !lNoClosable )
+
+   IF bColor != Nil
+      ::brush := HBrush():Add( bColor )
+   ENDIF
 
    IF nHelpId != nil
       ::HelpId := nHelpId
@@ -218,6 +225,9 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    ENDIF
    IF oDlg:oFont != Nil
       hwg_Sendmessage( oDlg:handle, WM_SETFONT, oDlg:oFont:handle, 0 )
+   ENDIF
+   IF !oDlg:lClosable
+      hwg_Enablemenusystemitem( oDlg:handle, SC_CLOSE, .F. )
    ENDIF
 
    IF oDlg:bInit != Nil
@@ -488,7 +498,18 @@ FUNCTION hwg_SetDlgKey( oDlg, nctrl, nkey, block )
 
    RETURN .T.
 
-   EXIT PROCEDURE Hwg_ExitProcedure
+STATIC FUNCTION onSysCommand( oDlg, wParam )
+
+   wParam := hwg_PtrToUlong( wParam )
+   IF wParam == SC_CLOSE
+      IF !oDlg:Closable
+         RETURN 1
+      ENDIF
+   ENDIF
+
+   RETURN - 1
+
+EXIT PROCEDURE Hwg_ExitProcedure
    Hwg_ExitProc()
 
    RETURN

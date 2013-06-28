@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-06-28 10:25 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * samples/hwgrun.prg
+  * include/hwgextern.ch
+    * A number of REQUEST added
+  * include/guilib.ch
+  * source/winapi/hdialog.prg
+  * source/winapi/hwindow.prg
+    * Few features from 2.17 has been added:
+      COLOR and NOCLOSABLE for INIT DIALOG and CENTER for ACTIVATE WINDOW
+  * source/winapi/hprogres.prg
+    ! Bug fixed
+
 2013-06-27 18:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   - samples/browse_2.prg
   - samples/browse_2.rc

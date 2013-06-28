@@ -49,6 +49,18 @@
 
 #include "hwgextern.ch"
 
+EXTERNAL DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK, DBCLOSEAREA, DBSELECTAREA, DBUNLOCK, DBUNLOCKALL
+EXTERNAL BOF, EOF, DBF, DBAPPEND, DBCLOSEALL, DBCLOSEAREA, DBCOMMIT,DBCOMMITALL, DBCREATE
+EXTERNAL DBDELETE, DBFILTER, DBSETFILTER, DBGOBOTTOM, DBGOTO, DBGOTOP, DBRLOCK, DBRECALL, DBDROP, DBEXISTS
+EXTERNAL DBRLOCKLIST, DBRUNLOCK, LOCK, RECNO,  DBSETFILTER, DBFILEGET, DBFILEPUT, FIELDBLOCK
+EXTERNAL DBSKIP, DBSTRUCT, DBTABLEEXT, DELETED, DBINFO, DBORDERINFO, DBRECORDINFO
+EXTERNAL FCOUNT, FIELDDEC, FIELDGET, FIELDNAME, FIELDLEN, FIELDPOS, FIELDPUT
+EXTERNAL FIELDTYPE, FLOCK, FOUND, HEADER, LASTREC, LUPDATE, NETERR, AFIELDS
+EXTERNAL RECCOUNT, RECSIZE, SELECT, ALIAS, RLOCK
+EXTERNAL __DBZAP, USED, RDDSETDEFAULT, __DBPACK, __DBAPP, __DBCOPY
+EXTERNAL DBFCDX, DBFFPT
+EXTERNAL FOPEN, FCLOSE, FSEEK, FREAD, FWRITE, FERASE
+
 FUNCTION __Main( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar8, cPar9 )
    LOCAL xRetVal, cHrb
 
@@ -61,7 +73,9 @@ FUNCTION __Main( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar
               "Note:  Linked with " + Version() + HB_OSNewLine() )
    ELSE
       IF Lower( Right( cHRBFile,4 ) ) == ".prg"
-         IF !Empty( cHrb := hb_compileBuf( "harbour", cHRBFile, "/n","/I..\include" ) )
+         IF Empty( cHrb := hb_compileBuf( "harbour", cHRBFile, "/n","/I..\include" ) )
+            hwg_MsgStop( "Error while compiling " + cHRBFile )
+         ELSE
             hb_Memowrit( "__tmp.hrb", cHrb )
             xRetVal := hb_hrbRun( "__tmp.hrb", cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar8, cPar9 )
          ENDIF

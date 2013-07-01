@@ -33,7 +33,7 @@ CLASS HEdit INHERIT HControl
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
-      tcolor, bcolor, cPicture, lNoBorder, lMaxLength, lPassword, bChange )
+      tcolor, bcolor, cPicture, lNoBorder, lMaxLength, lPassword, bKeyDown, bChange )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Redefine( oWnd, nId, vari, bSetGet, oFont, bInit, bSize, bDraw, bGfocus, ;
@@ -47,7 +47,7 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
-      tcolor, bcolor, cPicture, lNoBorder, lMaxLength, lPassword, bChange ) CLASS HEdit
+      tcolor, bcolor, cPicture, lNoBorder, lMaxLength, lPassword, bKeyDown, bChange ) CLASS HEdit
 
    nStyle := Hwg_BitOr( iif( nStyle == Nil,0,nStyle ), ;
       WS_TABSTOP + iif( lNoBorder == Nil .OR. !lNoBorder, WS_BORDER, 0 ) + ;
@@ -63,6 +63,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::title := vari
    ENDIF
    ::bSetGet := bSetGet
+   ::bKeyDown := bKeyDown
 
    IF Hwg_BitAnd( nStyle, ES_MULTILINE ) != 0
       ::style := Hwg_BitOr( ::style, ES_WANTRETURN )
@@ -119,7 +120,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
       IF ::bSetGet != Nil
          IF msg == WM_CHAR
-            IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, msg, wParam, lParam ) ) != -1
+            IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, wParam, lParam ) ) != -1
                RETURN nPos
             ENDIF
             IF wParam == VK_BACK
@@ -144,7 +145,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
          ELSEIF msg == WM_KEYDOWN
 
-            IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, msg, wParam, lParam ) ) != -1
+            IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, wParam, lParam ) ) != -1
                RETURN nPos
             ENDIF
             IF wParam == 40     // KeyDown
@@ -221,7 +222,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          /* Added by Sauli */
       ELSE
          IF msg == WM_KEYDOWN
-            IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, msg, wParam, lParam ) ) != -1
+            IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, wParam, lParam ) ) != -1
                RETURN nPos
             ENDIF
 
@@ -258,7 +259,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ENDIF
       //******  Tab  MULTILINE - Paulo Flecha
       IF msg == WM_KEYDOWN
-         IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, msg, wParam, lParam ) ) != -1
+         IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, wParam, lParam ) ) != -1
             RETURN nPos
          ENDIF
          IF wParam == VK_TAB     // Tab

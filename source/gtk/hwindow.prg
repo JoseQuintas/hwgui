@@ -80,6 +80,8 @@ CLASS HWindow INHERIT HCustomWindow
    DATA GetList  INIT {}      // The array of GET items in the dialog
    DATA KeyList  INIT {}      // The array of keys ( as Clipper's SET KEY )
    DATA nLastKey INIT 0
+   DATA bActivate
+   DATA lActivated  INIT .F.
 
    DATA aOffset
 
@@ -176,7 +178,6 @@ CLASS HMainWindow INHERIT HWindow
    DATA   nMenuPos
    DATA oNotifyIcon, bNotify, oNotifyMenu
    DATA lTray       INIT .F.
-   DATA lActivated  INIT .F.
 
    METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
                      oFont,bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, ;
@@ -209,15 +210,19 @@ METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
 
 Return Self
 
-METHOD Activate( lShow, lMaximize, lMinimize ) CLASS HMainWindow
+METHOD Activate( lShow, lMaximize, lMinimize, lCentered, bActivate ) CLASS HMainWindow
 Local oWndClient, handle
 
-   // hwg_CreateGetList( Self )
-
-   IF ::type == WND_MDI
-   ELSEIF ::type == WND_MAIN
+   IF ::type == WND_MAIN
 
       ::lActivated := .T.
+      IF ::bActivate != Nil
+         Eval( ::bActivate, Self )
+      ENDIF
+
+      IF !Empty( lCentered )
+         ::Center()
+      ENDIF
       Hwg_ActivateMainWindow( ::handle,::hAccel, lMaximize, lMinimize )
 
    ENDIF

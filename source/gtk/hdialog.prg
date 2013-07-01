@@ -51,11 +51,8 @@ CLASS HDialog INHERIT HWindow
    DATA lExitOnEsc   INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key,
                               // Added by Sandro Freire 
    DATA oIcon, oBmp
-   DATA bActivate
-   DATA lActivated INIT .F.
    DATA xResourceID
    DATA lModal
-   DATA lActivated INIT .F.
 
    METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
                   bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID, lExitOnEsc )
@@ -103,7 +100,7 @@ METHOD New( lType,nStyle,x,y,width,height,cTitle,oFont,bInit,bExit,bSize, ;
 
 RETURN Self
 
-METHOD Activate( lNoModal ) CLASS HDialog
+METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS HDialog
 Local hParent,oWnd
 
    hwg_CreateGetList( Self )
@@ -123,6 +120,16 @@ Local hParent,oWnd
    hwg_ShowAll( ::handle )
    InitModalDlg( Self )
    ::lActivated := .T.
+   IF !Empty( lMinimized )
+      ::Minimize()
+   ELSEIF !Empty( lMaximized )
+      ::Maximize()
+   ELSEIF !Empty( lCentered )
+      ::Center()
+   ENDIF
+   IF ::bActivate != Nil
+      Eval( ::bActivate, Self )
+   ENDIF
    hwg_ActivateDialog( ::handle,lNoModal  )
 
 RETURN Nil

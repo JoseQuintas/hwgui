@@ -35,6 +35,15 @@ decide to change this location, you will need to change this path.
 file above "tutor_eng.xml" is an English language version. If there
 is some other with a language of your choice, edit that tag.
 
+     You may edit also the path to harbour header files:
+
+     <harbour_inc path="c:\harbour\include" />
+
+if you will include harbour headers in sample code, and a path to
+harbour binaries, if you use xHarbour:
+
+     <harbour_bin path="c:\xharbour\bin" />
+
      Thanks for your attention.
      HwGUI team.
       ]]>

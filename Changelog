@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-01 14:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/guilib.ch
+  * source/winapi/hedit.prg
+    * Added ON CHANGE clause to EDITBOX and GET commands
+    * Added handling of bKeyDown and bOther for HEdit
+  * source/winapi/hwindow.prg
+    * Added automatic destroying of timers for windows and dialogs
+
 2013-07-01 13:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/guilib.ch
   * source/winapi/hdialog.prg

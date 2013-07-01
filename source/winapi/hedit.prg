@@ -29,9 +29,11 @@ CLASS HEdit INHERIT HControl
    DATA lChanged     INIT .F.
    DATA lMaxLength   INIT Nil
    DATA nColorinFocus INIT hwg_VColor( 'CCFFFF' )
+   DATA bkeydown, bkeyup, bchange
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, lNoBorder, lMaxLength, lPassword )
+      oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
+      tcolor, bcolor, cPicture, lNoBorder, lMaxLength, lPassword, bChange )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Redefine( oWnd, nId, vari, bSetGet, oFont, bInit, bSize, bDraw, bGfocus, ;
@@ -45,7 +47,7 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
-      tcolor, bcolor, cPicture, lNoBorder, lMaxLength, lPassword ) CLASS HEdit
+      tcolor, bcolor, cPicture, lNoBorder, lMaxLength, lPassword, bChange ) CLASS HEdit
 
    nStyle := Hwg_BitOr( iif( nStyle == Nil,0,nStyle ), ;
       WS_TABSTOP + iif( lNoBorder == Nil .OR. !lNoBorder, WS_BORDER, 0 ) + ;
@@ -88,6 +90,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
          ::oParent:AddEvent( EN_KILLFOCUS, ::id, bLfocus )
       ENDIF
    ENDIF
+   IF bChange != Nil
+      ::oParent:AddEvent( EN_CHANGE, ::id, bChange  )
+   ENDIF
 
    RETURN Self
 
@@ -105,13 +110,18 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    LOCAL oParent := ::oParent, nPos, nctrl, cKeyb
    LOCAL nexthandle
 
+   IF ::bOther != Nil .AND. ( nPos := Eval( ::bOther, Self, msg, wParam, lParam ) ) != - 1
+      RETURN nPos
+   ENDIF
    wParam := hwg_PtrToUlong( wParam )
    // WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF !::lMultiLine
 
       IF ::bSetGet != Nil
          IF msg == WM_CHAR
-
+            IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, msg, wParam, lParam ) ) != -1
+               RETURN nPos
+            ENDIF
             IF wParam == VK_BACK
                ::lFirst := .F.
                hwg_SetGetUpdated( Self )
@@ -134,6 +144,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
          ELSEIF msg == WM_KEYDOWN
 
+            IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, msg, wParam, lParam ) ) != -1
+               RETURN nPos
+            ENDIF
             IF wParam == 40     // KeyDown
                IF !hwg_IsCtrlShift()
                   hwg_GetSkip( oParent, ::handle, 1 )
@@ -208,6 +221,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          /* Added by Sauli */
       ELSE
          IF msg == WM_KEYDOWN
+            IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, msg, wParam, lParam ) ) != -1
+               RETURN nPos
+            ENDIF
+
             IF wParam == VK_TAB     // Tab
                IF Asc( SubStr( hwg_Getkeyboardstate(), VK_SHIFT + 1, 1 ) ) >= 128
                   nextHandle := hwg_Getnextdlgtabitem ( hwg_Getactivewindow() , hwg_Getfocus() , .T. )
@@ -241,6 +258,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ENDIF
       //******  Tab  MULTILINE - Paulo Flecha
       IF msg == WM_KEYDOWN
+         IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, msg, wParam, lParam ) ) != -1
+            RETURN nPos
+         ENDIF
          IF wParam == VK_TAB     // Tab
             IF Asc( SubStr( hwg_Getkeyboardstate(), VK_SHIFT + 1, 1 ) ) >= 128
                IF !hwg_GetSkip( oParent, ::handle, - 1 ) // First Get
@@ -260,6 +280,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    ENDIF
 
    IF msg == WM_KEYUP .OR. msg == WM_SYSKEYUP
+      IF ::bKeyUp != Nil .AND. ( nPos := Eval( ::bKeyUp, Self, msg, wParam, lParam ) ) != -1
+         RETURN nPos
+      ENDIF
       IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
          DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
             oParent := oParent:oParent

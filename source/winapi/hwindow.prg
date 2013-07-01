@@ -87,11 +87,17 @@ STATIC FUNCTION hwg_onEnterIdle( oDlg, wParam, lParam )
    RETURN 0
 
 FUNCTION hwg_onDestroy( oWnd )
+Local i, nHandle := oWnd:handle
 
    IF oWnd:oEmbedded != Nil
       oWnd:oEmbedded:End()
       oWnd:oEmbedded := Nil
    ENDIF
+
+   IF ( i := Ascan( HTimer():aTimers,{|o|hwg_Isptreq( o:oParent:handle,nHandle )} ) ) != 0
+      HTimer():aTimers[i]:End()
+   ENDIF
+
    oWnd:Super:onEvent( WM_DESTROY )
    oWnd:DelItem( oWnd )
 

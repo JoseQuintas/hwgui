@@ -42,12 +42,12 @@ CLASS HDialog INHERIT HWindow
    // Added by Sandro Freire
    DATA lRouteCommand  INIT .F.
    DATA xResourceID
-   DATA bOnActivate
    DATA lClosable    INIT .T.
+   DATA nInitState
 
    METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
       bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bColor, lNoClosable )
-   METHOD Activate( lNoModal, bOnActivate )
+   METHOD Activate( lNoModal, bActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD AddItem()      INLINE AAdd( iif( ::lModal,::aModalDialogs,::aDialogs ), Self )
    METHOD DelItem()
@@ -100,18 +100,19 @@ METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
 
    RETURN Self
 
-METHOD Activate( lNoModal, bOnActivate ) CLASS HDialog
+METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS HDialog
 
    LOCAL oWnd, hParent
 
-   ::bOnActivate := bOnActivate
+   ::bActivate := bActivate
    hwg_CreateGetList( Self )
    hParent := Iif( ::oParent != Nil .AND. ;
-      __ObjHasMsg( ::oParent, "HANDLE" ) .AND. ::oParent:handle != Nil .AND. ;
-      !Empty( ::oParent:handle ), ::oParent:handle, ;
-      Iif( ( oWnd := HWindow():GetMain() ) != Nil,  ;
+      __ObjHasMsg( ::oParent, "HANDLE" ) .AND. !Empty( ::oParent:handle ), ;
+      ::oParent:handle, Iif( ( oWnd := HWindow():GetMain() ) != Nil,  ;
       oWnd:handle, hwg_Getactivewindow() ) )
 
+   ::nInitState := Iif( !Empty(lMaximized), SW_SHOWMAXIMIZED, ;
+         Iif( !Empty(lMinimized), SW_SHOWMINIMIZED, Iif( !Empty(lCentered), 16, 0 ) ) )
    IF ::type == WND_DLG_RESOURCE
       IF lNoModal == Nil .OR. !lNoModal
          ::lModal := .T.
@@ -136,6 +137,19 @@ METHOD Activate( lNoModal, bOnActivate ) CLASS HDialog
          ::lResult := .F.
          ::AddItem()
          Hwg_CreateDlgIndirect( hParent, Self, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
+      ENDIF
+   ENDIF
+   IF  !::lActivated .AND. !::lModal
+      ::lActivated := .T.
+      IF ::nInitState == SW_SHOWMINIMIZED
+         ::Minimize()
+      ELSEIF ::nInitState == SW_SHOWMAXIMIZED
+         ::Maximize()
+      ELSEIF ::nInitState == 16
+         ::Center()
+      ENDIF
+      IF ::bActivate != Nil
+         Eval( ::bActivate, Self )
       ENDIF
    ENDIF
 
@@ -230,14 +244,20 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       hwg_Enablemenusystemitem( oDlg:handle, SC_CLOSE, .F. )
    ENDIF
 
+   IF oDlg:nInitState == SW_SHOWMINIMIZED
+      oDlg:Minimize()
+   ELSEIF oDlg:nInitState == SW_SHOWMAXIMIZED
+      oDlg:Maximize()
+   ELSEIF oDlg:nInitState == 16
+      oDlg:Center()
+   ENDIF
+
    IF oDlg:bInit != Nil
       IF ValType( nReturn := Eval( oDlg:bInit, oDlg ) ) != "N"
          nReturn := 1
       ENDIF
    ENDIF
-   IF ValType( oDlg:bOnActivate ) == "B"
-      Eval( oDlg:bOnActivate )
-   ENDIF
+
    aCoors := hwg_Getwindowrect( oDlg:handle )
    oDlg:nWidth  := aCoors[3] - aCoors[1]
    oDlg:nHeight := aCoors[4] - aCoors[2]

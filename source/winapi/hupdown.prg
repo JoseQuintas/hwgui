@@ -11,10 +11,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
-/*
-#define UDS_SETBUDDYINT     2
-#define UDS_ALIGNRIGHT      4
-*/
+
 CLASS HUpDown INHERIT HControl
 
    CLASS VAR winclass   INIT "EDIT"
@@ -26,33 +23,34 @@ CLASS HUpDown INHERIT HControl
    DATA nUpDownWidth INIT 12
    DATA lChanged    INIT .F.
 
-   METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor,nUpDWidth,nLower,nUpper )
+   METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
+      oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, nUpDWidth, nLower, nUpper )
    METHOD Activate()
    METHOD Init()
+   METHOD GetValue()   INLINE Val( LTrim( ::title := hwg_Getedittext( ::oParent:handle, ::id ) ) )
    METHOD Refresh()
 
 ENDCLASS
 
-METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor,   ;
-         nUpDWidth,nLower,nUpper ) CLASS HUpDown
+METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
+      oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor,   ;
+      nUpDWidth, nLower, nUpper ) CLASS HUpDown
 
-   nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_TABSTOP )
-   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor )
+   nStyle   := Hwg_BitOr( iif( nStyle == Nil,0,nStyle ), WS_TABSTOP )
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+      bSize, bPaint, ctooltip, tcolor, bcolor )
 
    ::idUpDown := ::NewId()
    IF vari != Nil
-      IF Valtype(vari) != "N"
+      IF ValType( vari ) != "N"
          vari := 0
-         Eval( bSetGet,vari )
+         Eval( bSetGet, vari )
       ENDIF
-      ::title := Str(vari)
+      ::title := Str( vari )
    ENDIF
    ::bSetGet := bSetGet
 
-   ::styleUpDown := UDS_SETBUDDYINT+UDS_ALIGNRIGHT
+   ::styleUpDown := UDS_SETBUDDYINT + UDS_ALIGNRIGHT
 
    IF nLower != Nil ; ::nLower := nLower ; ENDIF
    IF nUpper != Nil ; ::nUpper := nUpper ; ENDIF
@@ -63,69 +61,72 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
    IF bSetGet != Nil
       ::bGetFocus := bGFocus
       ::bLostFocus := bLFocus
-      ::oParent:AddEvent( EN_SETFOCUS,::id,{|o,id|__When(o:FindControl(id))} )
-      ::oParent:AddEvent( EN_KILLFOCUS,::id,{|o,id|__Valid(o:FindControl(id))} )
+      ::oParent:AddEvent( EN_SETFOCUS, ::id, { |o, id|__When( o:FindControl(id ) ) } )
+      ::oParent:AddEvent( EN_KILLFOCUS, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
    ELSE
       IF bGfocus != Nil
-         ::oParent:AddEvent( EN_SETFOCUS,::id,bGfocus )
+         ::oParent:AddEvent( EN_SETFOCUS, ::id, bGfocus )
       ENDIF
       IF bLfocus != Nil
-         ::oParent:AddEvent( EN_KILLFOCUS,::id,bLfocus )
+         ::oParent:AddEvent( EN_KILLFOCUS, ::id, bLfocus )
       ENDIF
    ENDIF
 
-Return Self
+   RETURN Self
 
 METHOD Activate CLASS HUpDown
+
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createedit( ::oParent:handle, ::id, ;
-                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
+         ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::Init()
    ENDIF
-Return Nil
+
+   RETURN Nil
 
 METHOD Init()  CLASS HUpDown
+
    IF !::lInit
       ::Super:Init()
       ::hUpDown := hwg_Createupdowncontrol( ::oParent:handle, ::idUpDown, ;
-          ::styleUpDown,0,0,::nUpDownWidth,0,::handle,::nUpper,::nLower,Val(::title) )
+         ::styleUpDown, 0, 0, ::nUpDownWidth, 0, ::handle, ::nUpper, ::nLower, Val( ::title ) )
    ENDIF
-Return Nil
+
+   RETURN Nil
 
 METHOD Refresh()  CLASS HUpDown
-Local vari
+   LOCAL vari
 
    IF ::bSetGet != Nil
       ::value := Eval( ::bSetGet )
-      IF Str(::value) != ::title
+      IF Str( ::value ) != ::title
          ::title := Str( ::value )
          hwg_Setupdown( ::hUpDown, ::value )
       ENDIF
    ELSE
-      hwg_Setupdown( ::hUpDown, Val(::title) )
+      hwg_Setupdown( ::hUpDown, Val( ::title ) )
    ENDIF
 
-Return Nil
+   RETURN Nil
 
-Static Function __When( oCtrl )
+STATIC FUNCTION __When( oCtrl )
 
    oCtrl:Refresh()
    IF oCtrl:bGetFocus != Nil
-      Return Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet ), oCtrl )
+      RETURN Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet ), oCtrl )
    ENDIF
 
-Return .T.
+   RETURN .T.
 
-Static Function __Valid( oCtrl )
+STATIC FUNCTION __Valid( oCtrl )
 
-   oCtrl:title := hwg_Getedittext( oCtrl:oParent:handle, oCtrl:id )
-   oCtrl:value := Val( Ltrim( oCtrl:title ) )
+   oCtrl:value := oCtrl:GetValue()
    IF oCtrl:bSetGet != Nil
-      Eval( oCtrl:bSetGet,oCtrl:value )
+      Eval( oCtrl:bSetGet, oCtrl:value )
    ENDIF
    IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl ) .OR. ;
          oCtrl:value > oCtrl:nUpper .OR. oCtrl:value < oCtrl:nLower
       hwg_Setfocus( oCtrl:handle )
    ENDIF
 
-Return .T.
+   RETURN .T.

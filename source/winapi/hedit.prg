@@ -31,7 +31,7 @@ CLASS HEdit INHERIT HControl
    DATA nColorinFocus INIT hwg_VColor( 'CCFFFF' )
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, lNoBorder, lMaxLength )
+      oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, lNoBorder, lMaxLength, lPassword )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Redefine( oWnd, nId, vari, bSetGet, oFont, bInit, bSize, bDraw, bGfocus, ;
@@ -70,11 +70,6 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF !Empty( cPicture ) .OR. cPicture == Nil .AND. lMaxLength != Nil .OR. !Empty( lMaxLength )
       ::lMaxLength := lMaxLength
    ENDIF
-/*   IF ::lMaxLength != Nil .and. !Empty(::lMaxLength)
-      IF !Empty(cPicture) .or. cPicture==Nil
-         cPicture:=Replicate("X",::lMaxLength)
-      ENDIF
-   ENDIF                                        ------commented by Maurizio la Cecilia */
 
    ParsePict( Self, cPicture, vari )
    ::Activate()
@@ -264,8 +259,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       //******  End Tab  MULTILINE
    ENDIF
 
-   //IF msg == WM_KEYDOWN
-   IF msg == WM_KEYUP .OR. msg == WM_SYSKEYUP     /* BETTER FOR DESIGNER */
+   IF msg == WM_KEYUP .OR. msg == WM_SYSKEYUP
       IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
          DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
             oParent := oParent:oParent
@@ -302,11 +296,6 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
    IF !Empty( cPicture ) .OR. cPicture == Nil .AND. lMaxLength != Nil .OR. !Empty( lMaxLength )
       ::lMaxLength := lMaxLength
    ENDIF
-/*   IF ::lMaxLength != Nil .and. !Empty(::lMaxLength)
-      IF !Empty(cPicture) .or. cPicture==Nil
-         cPicture:=Replicate("X",::lMaxLength)
-      ENDIF
-   ENDIF                                        ------ commented by Maurizio la Cecilia */
 
    ParsePict( Self, cPicture, vari )
 

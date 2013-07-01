@@ -61,7 +61,7 @@ EXTERNAL __DBZAP, USED, RDDSETDEFAULT, __DBPACK, __DBAPP, __DBCOPY
 EXTERNAL DBFCDX, DBFFPT
 EXTERNAL FOPEN, FCLOSE, FSEEK, FREAD, FWRITE, FERASE
 
-FUNCTION __Main( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar8, cPar9 )
+FUNCTION _APPMAIN( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar8, cPar9 )
    LOCAL xRetVal, cHrb
 
    IF Empty( cHRBFile )
@@ -73,16 +73,17 @@ FUNCTION __Main( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar
               "Note:  Linked with " + Version() + HB_OSNewLine() )
    ELSE
       IF Lower( Right( cHRBFile,4 ) ) == ".prg"
+#ifndef __XHARBOUR__
          IF Empty( cHrb := hb_compileBuf( "harbour", cHRBFile, "/n","/I..\include" ) )
             hwg_MsgStop( "Error while compiling " + cHRBFile )
          ELSE
             hb_Memowrit( "__tmp.hrb", cHrb )
             xRetVal := hb_hrbRun( "__tmp.hrb", cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar8, cPar9 )
          ENDIF
+#endif
       ELSE
          xRetVal := hb_hrbRun( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar8, cPar9 )
       ENDIF
    ENDIF
 
    RETURN xRetVal
-

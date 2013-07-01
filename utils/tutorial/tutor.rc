@@ -1,0 +1,8 @@
+CL_FL BITMAP "../../image/cl_fl.bmp"
+OP_FL BITMAP "../../image/op_fl.bmp"
+BOOK BITMAP "../../image/book.bmp"
+NEXT BITMAP "../../image/next.bmp"
+PREV BITMAP "../../image/previous.bmp"
+TOP BITMAP "../../image/top.bmp"
+BOTTOM BITMAP "../../image/bottom.bmp"
+1 24 "../../image/WindowsXP.Manifest"

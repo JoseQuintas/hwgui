@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-01 15:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  + utils/tutorial
+  + utils/tutorial/bld.bat
+  + utils/tutorial/bldgw.bat
+  + utils/tutorial/tutor.prg
+  + utils/tutorial/tutor.rc
+  + utils/tutorial/tutor.xml
+  + utils/tutorial/tutor_eng.xml
+  - samples/hwgrun.prg
+  + utils/tutorial/hwgrun.prg
+    + New utility has been added - HwGUI Tutorial
+
 2013-07-01 14:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/guilib.ch
   * source/winapi/hedit.prg

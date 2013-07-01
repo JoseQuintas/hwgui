@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<init>
+  <chapter name="Introduction" >
+    <comment>
+      <![CDATA[    Hello!
+
+     Here is a HwGUI interactive tutorial, interactive - because you
+can not only read the code and comments, but execute it. Moreover,
+you can edit the code and then execute it immedeately to see the
+results of your changes.
+
+     The tutorial is very simple to navigate, it has minimum of tools.
+Just click on a tree node to see appropriate content is a text editor.
+If this is a code fragment, double clicking on this tree node or 
+clicking on a button, which is in a right top corner of a window above
+the editor will execute this code. That's all.
+
+     There is a configuration file, tutor.xml, which, possible, you
+will need to tune.
+     It contains a tag with a path to HwGUI directory:
+     
+     <hwgui_dir path="..\.." />
+
+     This path is needed for internal compiler to find the HwGUI 
+include/ directory with header file hwgui.ch, if the path is wrong,
+you will get a message "compile error", when you will try to execute
+a code. By default it is set to "..\.." due to the default location
+of this program ( hwgui\utils\tutorial ). If you for some reason
+decide to change this location, you will need to change this path.
+     Yet another tag, which you, probably, may want to change is:
+
+     <tutorial file="tutor_eng.xml" />
+
+     This is a name of a file with tutorial content. The default
+file above "tutor_eng.xml" is an English language version. If there
+is some other with a language of your choice, edit that tag.
+
+     Thanks for your attention.
+     HwGUI team.
+      ]]>
+    </comment>
+  </chapter>
+  <chapter name="Getting started" >
+    <module name="Just a main window" >
+      <![CDATA[// Every HwGUI application must include hwgui.ch header file
+#include "hwgui.ch"
+Function Test
+   Local oMain
+
+   // Most of GUI applications creates the main window:
+   INIT WINDOW oMain MAIN TITLE "My First HwGUI sample" AT 100, 100 SIZE 400, 300
+
+   /*   Here you can place definitions of menu and window controls
+    *   Then the window must be activated - it appears on the screen
+    *   and the application goes to the main loop of handling messages.
+    */
+   ACTIVATE WINDOW oMain
+  
+Return Nil
+      ]]>
+    </module>
+    <module name="Window with a menu" >
+      <![CDATA[#include "hwgui.ch"
+Function Test
+   Local oMain
+
+   INIT WINDOW oMain MAIN TITLE "My Second HwGUI sample" AT 100, 100 SIZE 400, 300
+
+   // Menu should be defined between the INIT WINDOW and ACTIVATE WINDOW
+   MENU OF oMain
+      MENU TITLE "&File"
+
+         /* "&Message" - the title of menu item, '&' defines the letter after it
+            as a hot key, used with 'Alt' key to activate this item.
+            ACTION clause defines the code, aasociated with this menu item.
+            In the following item it is hwg_Msginfo() - HwGUI function, which is used
+            for a popup message dialog box */
+         MENUITEM "&Message" ACTION hwg_Msginfo( "Just a test", "Message" )
+
+         // The following command creates a horizontal line, which separates groups
+         // of menu items
+         SEPARATOR
+
+         // :Close() method, called for a main window, teminates the application.
+         MENUITEM "&Exit" ACTION oMain:Close()
+
+      ENDMENU
+      MENU TITLE "&Help"
+         MENUITEM "&About" ACTION hwg_Msginfo( HwG_Version(), "About" )
+      ENDMENU
+   ENDMENU
+
+   ACTIVATE WINDOW oMain
+  
+Return Nil
+      ]]>
+    </module>
+    <module name="Add controls to the window" >
+      <![CDATA[#include "hwgui.ch"
+Function Test
+Local oMain, oFont
+Local aCombo := {"First","Second" }
+
+   // This creates a font object ( oFont ) to use it for windows and controls
+   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+
+   /* We see here, how the oFont may be used;
+      ON EXIT clause defines a codeblock, which is called while window closing,
+      this codeblock must return .T. to allow closing, or .F. to prevent it.
+      hwg_MsgYesNo() - HwGUI function, which creates popup dialog box with "Yes"
+      and "No" buttons */
+   INIT WINDOW oMain TITLE "Example" ;
+      SIZE 420,180 FONT oFont ;
+      ON EXIT {||hwg_MsgYesNo("Really want to quit ?")}
+
+   // Add few controls to the window
+
+   @ 20,10 EDITBOX "Hello, World!" SIZE 200,26
+
+   @ 270,10 COMBOBOX aCombo SIZE 100, 150 TOOLTIP "Combobox"
+
+   @ 120,60 BUTTON "Close" SIZE 150,30 ON CLICK {||oMain:Close()}
+
+   MENU OF oMain
+      MENUITEM "About" ACTION hwg_MsgInfo("First HwGUI Application")
+   ENDMENU
+
+   ACTIVATE WINDOW oMain
+
+Return Nil
+      ]]>
+    </module>
+    <module name="Maximize/minimize/..." >
+      <![CDATA[/* Here is a demonstration, how to change a window location on the screen,
+ * using methods of the class HWindow */
+#include "hwgui.ch"
+Function Test
+Local oMain
+ 
+  INIT WINDOW oMain MAIN TITLE "Maximized"
+        
+  MENU OF oMain
+    MENU TITLE "&Action"
+       // Note a hwg_SetWindowText() HwGUI function, which changes a window title
+       MENUITEM "&Maximize" ACTION ( oMain:Maximize(), hwg_SetWindowText(oMain:handle,"Maximized") )
+       MENUITEM "&Minimize" ACTION ( oMain:Minimize(), hwg_SetWindowText(oMain:handle,"Minimized") )
+       MENUITEM "&Restore"  ACTION ( oMain:Restore(), hwg_SetWindowText(oMain:handle,"Restored") )
+       MENUITEM "&Center"   ACTION ( oMain:Center(), hwg_SetWindowText(oMain:handle,"Centered") )
+       MENUITEM "&Move"     ACTION ( oMain:Move( 400,200,200,100 ), hwg_SetWindowText(oMain:handle,"Moved") )
+       SEPARATOR
+       MENUITEM "&Exit"     ACTION oMain:Close()
+    ENDMENU
+  ENDMENU
+
+  // The window is actived maximized
+  ACTIVATE WINDOW oMain MAXIMIZED
+ 
+Return Nil
+      ]]>
+    </module>
+    <module name="Modal dialog" >
+      <![CDATA[/* A dialog box is a temporary window an application creates to
+get user input. An application typically uses dialog boxes to prompt the user
+for some information. A dialog box usually contains one or more controls,
+with which the user enters text and chooses options.
+A modal dialog box becomes active after creation and neither the
+user nor the application can make the owner window active until this dialog
+box is destroyed. */
+#include "hwgui.ch"
+Function Test
+   Local oDlg, oFont, oEdit1
+
+   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+
+   INIT DIALOG oDlg TITLE "Modal dialog" AT 100, 100 SIZE 300, 150 FONT oFont
+
+   @ 100,100 BUTTON "Close" SIZE 100,30 ;
+         ON CLICK {|| oDlg:Close() }
+
+   ACTIVATE DIALOG oDlg
+  
+Return Nil
+      ]]>
+    </module>
+    <module name="Modeless dialog" >
+      <![CDATA[// Modeless dialog doesn't prevent any other window to become active.
+#include "hwgui.ch"
+Function Test
+   Local oDlg, oFont, oEdit1
+
+   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+
+   INIT DIALOG oDlg TITLE "Modeless dialog" AT 100, 100 SIZE 300, 150 FONT oFont
+
+   @ 20,20 SAY "Input: " SIZE 60, 24
+   // The ON SIZE clause in EDITBOX definition handles the control's
+   //  behaviour while the parent window resizing. More details will be later.
+   @ 80,20 EDITBOX oEdit1 CAPTION "" SIZE 200,26 ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @ 100,100 BUTTON "Close" SIZE 100,30 ;
+         ON CLICK {|| hwg_MsgInfo( oEdit1:Gettext(), "Edit value" ), oDlg:Close() }
+
+   // You see, we add here a magic word NOMODAL
+   ACTIVATE DIALOG oDlg NOMODAL
+  
+Return Nil
+      ]]>
+    </module>
+    <module name="Base controls" >
+      <![CDATA[#include "hwgui.ch"
+Function Test
+   Local oDlg, oFont, oEdit1, oCheck1, oCheck2, oCombo, oUpd
+   Local nChoic := 1, aCombo := { "First","Second" }, cr := Chr(13)+Chr(10)
+   // Retrieve data from controls while closing the dialog box
+   Local bExit := {|| hwg_MsgInfo( oEdit1:Gettext() + cr + ;
+      "Check1: " + Iif( oCheck1:GetValue(),"On","Off" ) + ;
+      "  Check2: " + Iif( oCheck2:GetValue(),"On","Off" ) + cr + ;
+      "Radio: "  + Str(nChoic,1) + cr + ;
+      "Combo: " + aCombo[oCombo:GetValue()] + cr + ;
+      "UpDown: " + Ltrim(Str(oUpd:GetValue())) ;
+      , "Edit value" ), oDlg:Close() }
+
+   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+
+   INIT DIALOG oDlg TITLE "Modal dialog" AT 100, 100 SIZE 300, 260 FONT oFont
+
+   // SAY is a Label control, we've seen is already
+   @ 20,20 SAY "Input: " SIZE 60, 24
+
+   // EDITBOX - an Edit control, designed to input some text
+   @ 80,20 EDITBOX oEdit1 CAPTION "" SIZE 200,26 ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   // Just a rectangle with a label to group few other controls
+   // Below are checkboxex, sure, you know what it is
+   @ 10,50 GROUPBOX "CheckGroup"  SIZE 130, 76
+
+   @ 28,70 CHECKBOX oCheck1 CAPTION "Check 1" SIZE 90, 20
+   @ 28,92 CHECKBOX oCheck2 CAPTION "Check 2" SIZE 90, 20
+
+   @ 150,50 GROUPBOX "RadioGroup"  SIZE 130, 76
+
+   // RADIOGROUP ... END RADIOGROUP is a virtual control, which unites
+   // a group of radiobuttons. SELECTED clause sets, which one of the
+   // radiobuttons is selected at start.
+   RADIOGROUP
+   @ 168,70 RADIOBUTTON "Radio 1" SIZE 90, 20 ON CLICK {||nChoic := 1}
+   @ 168,92 RADIOBUTTON "Radio 2" SIZE 90, 20 ON CLICK {||nChoic := 2}
+   END RADIOGROUP SELECTED 1
+
+   // Combo box is a well known control, which combines much of the 
+   // functionality of a list box and an edit control. 
+   @ 20,150 COMBOBOX oCombo ITEMS aCombo SIZE 100, 150
+
+   // An up-down control is an edit control, combined with a pair of
+   // arrow buttons that the user can click to increment or decrement
+   // an edit control value.
+   @ 168,150 UPDOWN oUpd INIT 10 RANGE -10,50 SIZE 50,28 STYLE WS_BORDER
+
+   // A line, static control, which separates one part of a box from other
+   @ 20, 190 LINE LENGTH 260
+
+   @ 100,220 BUTTON "Close" SIZE 100,30 ON CLICK bExit
+
+   ACTIVATE DIALOG oDlg
+  
+Return Nil
+      ]]>
+    </module>
+  </chapter>
+  <chapter name="Controls" >
+    <module name="Panel and Ownerbuttons" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oPanel
+
+   INIT DIALOG oDlg TITLE "Panel and Ownerbuttons";
+         AT 0, 0 SIZE 320, 120 COLOR 12632256 ;
+         FONT HFont():Add( "MS Sans Serif",0,-13 )
+
+   @ 0,0 PANEL oPanel SIZE 320,32 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @ 2,3 OWNERBUTTON OF oPanel ON CLICK {||hwg_MsgInfo("Next")} ;
+       SIZE 32,26 FLAT ;
+       BITMAP "NEXT" FROM RESOURCE TRANSPARENT COLOR 12632256
+
+   @ 34,3 OWNERBUTTON OF oPanel ON CLICK {||hwg_MsgInfo("Last")} ;
+       SIZE 32,26 FLAT ;
+       BITMAP "BOTTOM" FROM RESOURCE TRANSPARENT COLOR 12632256
+
+   @ 66,3 OWNERBUTTON OF oPanel ON CLICK {||hwg_MsgInfo("First")} ;
+       SIZE 32,26 FLAT ;
+       BITMAP "TOP" FROM RESOURCE TRANSPARENT COLOR 12632256
+
+   @ 98,3 OWNERBUTTON OF oPanel ON CLICK {||hwg_MsgInfo("Previous")} ;
+       SIZE 32,26 FLAT ;
+       BITMAP "PREV" FROM RESOURCE TRANSPARENT COLOR 12632256
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+      ]]>
+    </module>
+    <module name="Progress bar" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oBar
+
+   INIT DIALOG oDlg TITLE "Progress Bar Demo";
+         AT 0, 0 SIZE 320, 120 ;
+         FONT HFont():Add( "MS Sans Serif",0,-13 ) ;
+         ON EXIT {||Iif(oBar==Nil,.T.,(oBar:Close(),.T.))}
+
+   @ 20, 30 BUTTON 'Step' SIZE 80,28 ;
+         ON CLICK {|| Iif(oBar==Nil,.F.,oBar:Step() ) }
+   @ 120,30 BUTTON 'Create Bar' SIZE 80,28 ;
+         ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",,,,, 10,10 ) }
+   @ 220,30 BUTTON 'Close' SIZE 80,28 ON CLICK {|| oDlg:Close() }
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+      ]]>
+    </module>
+    <module name="Browse" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oBrw
+Local aSample := { {"Alex",17,1200}, {"Victor",42,1600}, {"John",31,1000} }
+
+   INIT DIALOG oDlg TITLE "Browse array";
+         AT 0, 0 SIZE 300, 230 ;
+         FONT HFont():Add( "MS Sans Serif",0,-13 )
+
+   @ 10,20 BROWSE oBrw ARRAY SIZE 280,140 STYLE WS_BORDER + WS_VSCROLL ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+
+   hwg_CreateArList( oBrw, aSample )
+
+   @ 100,180 BUTTON 'Close' SIZE 100,28 ON CLICK {|| oDlg:Close() } ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+
+   ACTIVATE DIALOG oDlg
+      ]]>
+    </module>
+    <module name="TreeView" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oTree, oSay
+
+   INIT DIALOG oDlg TITLE "Tree";
+         AT 0, 0 SIZE 300, 220 ;
+         FONT HFont():Add( "MS Sans Serif",0,-15 ) ;
+         ON INIT {||BuildTree( oTree, oSay )}
+
+   @ 80,20 TREE oTree SIZE 140,120 EDITABLE
+
+   @ 80,160 SAY oSay CAPTION "..." SIZE 140, 24 STYLE SS_CENTER
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+
+Static Function BuildTree( oTree, oSay )
+Local oItem 
+
+   INSERT NODE "First" TO oTree ON CLICK {||oSay:SetValue("First")}
+   INSERT NODE "Second" TO oTree ON CLICK {||oSay:SetValue("Second")}
+   INSERT NODE oItem CAPTION "Third" TO oTree ON CLICK {||oSay:SetValue("Third")}
+   INSERT NODE "Third-1" TO oItem ON CLICK {||oSay:SetValue("Third-1")}
+   INSERT NODE "Forth" TO oTree ON CLICK {||oSay:SetValue("Forth")}
+Return Nil
+      ]]>
+    </module>
+    <module name="Splitter" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oSplitV, oSplitH, oEdit1, oEdit2, oEdit3
+
+   INIT DIALOG oDlg TITLE "Splitters";
+         AT 0, 0 SIZE 380, 260 ;
+         FONT HFont():Add( "MS Sans Serif",0,-13 )
+
+   @ 20,10 EDITBOX oEdit1 CAPTION "First edit control" SIZE 140,100 STYLE ES_MULTILINE
+
+   @ 163,10 EDITBOX oEdit2 CAPTION "Second edit control" SIZE 200,100 ;
+         STYLE ES_MULTILINE ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   // This vertical splitter separates oEdit1 from oEdit2 and allows to move the border
+   // between them with the help of a mouse
+   @ 160,10 SPLITTER oSplitV SIZE 3,100 DIVIDE {oEdit1} FROM {oEdit2}
+
+   @ 20,113 EDITBOX oEdit3 CAPTION "Example" SIZE 344,130 STYLE ES_MULTILINE ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+
+   // This horizontal splitter separates twp edot controls and vertical splitter
+   // from the third edit control
+   @ 20,110 SPLITTER oSplitH SIZE 344,3 DIVIDE {oEdit1,oEdit2,oSplitV} FROM {oEdit3} ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS 
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+      ]]>
+    </module>
+  </chapter>
+  <chapter name="Get system" >
+    <module name="Dialog with various Gets" >
+      <![CDATA[#include "hwgui.ch"
+Function DlgGet
+Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
+Local cRes, oCombo, aCombo := { "First","Second" }
+Local oGet
+Local e1 := "Dialog from prg", c1 := .F., c2 := .T., r1 := 2, cm := 1
+Local upd := 12, d1 := Date()+1
+
+   INIT DIALOG oDlg TITLE "Get a value"  ;
+         AT 210,10  SIZE 300,300         ;
+         FONT oFont NOEXIT
+
+   SET KEY 0,VK_F3 TO hwg_Msginfo("F3")   
+
+   @ 20,10 SAY "Input something:" SIZE 260, 22
+   @ 20,35 GET oGet VAR e1  ;
+        STYLE WS_DLGFRAME   ;
+        SIZE 260, 26 COLOR hwg_VColor("FF0000")
+
+   @ 20,70 GET CHECKBOX c1 CAPTION "Check 1" SIZE 90, 20
+   @ 20,95 GET CHECKBOX c2 CAPTION "Check 2" SIZE 90, 20 COLOR hwg_VColor("0000FF")
+
+   @ 160,70 GROUPBOX "RadioGroup" SIZE 130, 75
+
+   GET RADIOGROUP r1
+   @ 180,90 RADIOBUTTON "Radio 1"  ;
+        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_VColor("0000FF"),,.T.)}
+   @ 180,115 RADIOBUTTON "Radio 2" ;
+        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_VColor("FF0000"),,.T.)}
+   END RADIOGROUP
+
+   @ 20,120 GET COMBOBOX oCombo VAR cm ITEMS aCombo SIZE 100, 150
+
+   @ 20,170 GET UPDOWN upd RANGE 0,80 SIZE 50,30
+   @ 160,170 GET DATEPICKER d1 SIZE 80, 20
+
+   @ 20,240 BUTTON "Ok" ID IDOK  SIZE 100, 32
+   @ 180,240 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32
+
+   ACTIVATE DIALOG oDlg
+   oFont:Release()
+
+   IF oDlg:lResult
+      hwg_Msginfo( e1 + chr(10) + chr(13) +                           ;
+               "Check1 - " + Iif(c1,"On","Off") + chr(10) + chr(13) + ;
+               "Check2 - " + Iif(c2,"On","Off") + chr(10) + chr(13) + ;
+               "Radio: " + Str(r1,1) + chr(10) + chr(13) +            ;
+               "Combo: " + aCombo[cm] + chr(10) + chr(13) +           ;
+               "UpDown: "+Str(upd) + chr(10) + chr(13) +              ;
+               "DatePicker: "+Dtoc(d1)                                ;
+               ,"Results:" )
+   ENDIF
+Return Nil
+      ]]>
+    </module>
+    <module name="Dialog with text Gets" >
+      <![CDATA[#include "hwgui.ch"
+Function DlgGet()
+Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 ), oTimer
+Local e1 := "Dialog from prg"
+Local e2 := Date()
+Local e3 := 10320.54
+Local e4:="11222333444455"
+Local e5 := 10320.54
+Local e6 := "Max Lenght = 15"
+Local e7 := "Password"
+
+   INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Get a value"  ;
+         AT 210,10  SIZE 300,320 FONT oFont
+
+   SET KEY FSHIFT,VK_F3 TO hwg_Msginfo("Shift-F3") 
+   SET KEY FCONTROL,VK_F3 TO hwg_Msginfo("Ctrl-F3") 
+   SET KEY 0,VK_F3 TO hwg_Msginfo("F3") 
+   SET KEY 0,VK_RETURN TO hwg_Msginfo("Return") 
+   
+   @ 20,10 SAY "Input something:" SIZE 260, 22
+
+   @ 20,35 GET e1 PICTURE "XXXXXXXXXXXXXXX" ;
+        SIZE 260, 26
+
+   @ 20,65 GET e6 MAXLENGTH 15 SIZE 260, 26
+
+   @ 20,95 GET e2  SIZE 260, 26
+
+   @ 20,125 GET e3  SIZE 260, 26
+
+   @ 20,155 GET e4 PICTURE "@R 99.999.999/9999-99" ;
+        SIZE 260, 26
+
+   @ 20,185 GET e5 PICTURE "@e 999,999,999.9999" ;
+        SIZE 260, 26
+
+   @ 20,215 GET e7 PASSWORD SIZE 260, 26
+
+   @  20,250  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult:=.T.,hwg_EndDialog()}
+   @ 180,250 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
+
+   ACTIVATE DIALOG oDlg
+
+   IF oDlg:lResult
+      hwg_Msginfo( e1 + chr(10) + chr(13) +   ;
+               e6 + chr(10) + chr(13) +       ;
+               Dtoc(e2) + chr(10) + chr(13) + ;
+               Str(e3) + chr(10) + chr(13) +  ;
+               e4 + chr(10) + chr(13) +       ;
+               Str(e5) + chr(10) + chr(13) +  ;
+               e7 + chr(10) + chr(13)         ;
+               ,"Results:" )
+   ENDIF
+
+Return Nil
+      ]]>
+    </module>
+  </chapter>
+  <chapter name="Drawing" >
+  </chapter>
+</init>
+

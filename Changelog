@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-02 21:49 UTC+0200 Przemyslaw Czerpak (druzus/at/priv.onet.pl)
+  * hwgui/source/common/debug/dbgentry.c
+    * reformatted keeping the same rules as used to format dbgentry.c in
+      Harbour GIT repository.
+
 2013-07-02 10:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/guilib.ch
   * source/winapi/hcheck.prg

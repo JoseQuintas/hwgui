@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
  *
- * Copyright 2005 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "inkey.ch"
@@ -142,7 +142,6 @@ METHOD Paint() CLASS HOwnButton
 
    aCoors := hwg_Getclientrect( ::handle )
 
-   // oldBkColor := hwg_Setbkcolor( hDC,hwg_Getsyscolor(COLOR_3DFACE) )
    IF ::state == OBTN_INIT
       ::state := OBTN_NORMAL
    ENDIF

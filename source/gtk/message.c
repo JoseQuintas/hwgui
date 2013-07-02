@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Message box functions
  *
- * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
  */
 
 #include "guilib.h"
@@ -74,5 +74,4 @@ HB_FUNC( HWG_MSGEXCLAMATION )
    const char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
    MessageBox( hb_parc(1), cTitle, GTK_MESSAGE_WARNING, GTK_BUTTONS_CLOSE );
 }
-
 

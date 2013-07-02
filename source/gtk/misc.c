@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Miscellaneous functions
  *
- * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include <math.h>
@@ -45,7 +45,6 @@ void hwg_writelog( const char * sFile, const char * sTraceMsg, ... )
 
 HB_FUNC( HWG_SETDLGRESULT )
 {
-   // SetWindowLong( (HWND) hb_parnl(1), DWL_MSGRESULT, hb_parni(2) );
 }
 
 HB_FUNC( HWG_SETCAPTURE )

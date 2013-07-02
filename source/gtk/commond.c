@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * Common dialog functions
  *
- * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "guilib.h"
@@ -156,12 +156,9 @@ void store_color( gpointer colorseldlg )
 {
    GtkColorSelection *colorsel;
    GdkColor color;
-   // char ss[50];   
 
    colorsel = GTK_COLOR_SELECTION( GTK_COLOR_SELECTION_DIALOG (colorseldlg)->colorsel );
    gtk_color_selection_get_current_color (colorsel, &color);
-   // sprintf( ss,"%ld %ld %ld %ld \n\r",color.pixel,color.red,color.green,color.blue );
-   // g_print(ss);
 
    hb_retnl( (HB_ULONG) ( (color.red>>8) + (color.green&0xff00) + ((color.blue&0xff00)<<8) ) );
    gtk_widget_destroy( (GtkWidget*) colorseldlg );
@@ -179,23 +176,9 @@ HB_FUNC( HWG_CHOOSECOLOR )
 
    if( hb_pcount() > 0 && !HB_ISNIL(1) )
    {
-      // char ss[30]={0};
       HB_ULONG ulColor = (HB_ULONG) hb_parnl(1);
       GdkColor color;
       hwg_parse_color( ulColor, &color );
-      /*
-      color.pixel = 0;
-      color.blue =  ( ulColor % 256 ) * 256;
-      color.green = ( ulColor % 65536 );
-      color.red =   ( ulColor % 16777216 ) / 256;
-      */
-      /*
-      color.red = ulColor % 256;
-      color.green = ( ( ulColor-color.red ) % 65536 ) / 256;
-      color.blue = ( ulColor-color.green*256-color.red ) / 65536;
-      */
-      // sprintf( ss,"%ld %d %d %d \n\r",hb_parnl(1),color.red,color.green,color.blue );
-      // g_print(ss);
       gtk_color_selection_set_previous_color( colorsel, &color );
       gtk_color_selection_set_current_color( colorsel, &color );
    }

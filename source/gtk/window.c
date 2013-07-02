@@ -4,8 +4,8 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * C level windows functions
  *
- * Copyright 2004 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 #include "guilib.h"
@@ -63,7 +63,6 @@ static gchar szAppLocale[] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 
 HB_FUNC( HWG_GTK_INIT )
 {
-   /* gtk_set_locale();  temporary - for sbtuch and etc. */
    gtk_init( 0,0 );
    setlocale( LC_NUMERIC, "C" );
    setlocale( LC_CTYPE, "" );
@@ -83,10 +82,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    GtkWidget *vbox;   
    GtkFixed * box;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
-   // char *szAppName = hb_parc(2);
    gchar *gcTitle = hwg_convert_to_utf8( hb_parcx( 3 ) );
-   // HB_LONG nStyle =  hb_parnl(7);
-   // char *cMenu = hb_parc( 4 );
    int x = hb_parnl(8);
    int y = hb_parnl(9);
    int width = hb_parnl(10);
@@ -233,9 +229,6 @@ gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data
       HB_LONG p3 = ( (HB_ULONG)(allocation->width) & 0xFFFF ) |
                  ( ( (HB_ULONG)(allocation->height) << 16 ) & 0xFFFF0000 );
 
-      /* g_signal_handlers_block_matched( (gpointer)widget, G_SIGNAL_MATCH_FUNC,
-          0, 0, 0, G_CALLBACK (cb_signal_size), 0 ); */
-
       hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
       hb_vmPush( ( PHB_ITEM ) gObject );
       hb_vmPushLong( WM_SIZE );
@@ -243,8 +236,6 @@ gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data
       hb_vmPushLong( p3 );
       hb_vmSend( 3 );
 
-      /* g_signal_handlers_unblock_matched( (gpointer)widget, G_SIGNAL_MATCH_FUNC,
-          0, 0, 0, G_CALLBACK (cb_signal_size), 0 ); */   
    }
    return 0;
 }

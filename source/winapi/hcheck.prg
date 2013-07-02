@@ -23,7 +23,7 @@ CLASS HCheckButton INHERIT HControl
    DATA value
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
-                  bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor,bGFocus )
+                  bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor,bGFocus,lTransp )
    METHOD Activate()
    METHOD Redefine( oWnd,nId,vari,bSetGet,oFont,bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor,bGFocus )
    METHOD Init()
@@ -36,8 +36,11 @@ CLASS HCheckButton INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, ;
-                  bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor,bGFocus ) CLASS HCheckButton
+                  bInit,bSize,bPaint,bClick,ctooltip,tcolor,bcolor,bGFocus,lTransp ) CLASS HCheckButton
 
+   IF !Empty( lTransp )
+      ::extStyle := WS_EX_TRANSPARENT
+   ENDIF
    nStyle   := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), BS_AUTO3STATE+WS_TABSTOP )
    ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )

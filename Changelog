@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-03 12:12 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  + utils/debugger/protocol.txt
+    + A description of an exchange protocol between the debugger and
+      debugged program has been added.
+
 2013-07-03 10:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/drawtext.c
     * hwg_getTextWidth() function added

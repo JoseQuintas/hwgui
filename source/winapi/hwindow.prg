@@ -75,12 +75,10 @@ STATIC FUNCTION hwg_onEnterIdle( oDlg, wParam, lParam )
          .AND. oItem:handle == lParam )
       oDlg := oItem
    ENDIF
-   IF __ObjHasMsg( oDlg, "LACTIVATED" )
-      IF  !oDlg:lActivated
-         oDlg:lActivated := .T.
-         IF oDlg:bActivate != Nil
-            Eval( oDlg:bActivate, oDlg )
-         ENDIF
+   IF __ObjHasMsg( oDlg, "BACTIVATE" )
+      IF oDlg:bActivate != Nil
+         Eval( oDlg:bActivate, oDlg )
+         oDlg:bActivate := Nil
       ENDIF
    ENDIF
 
@@ -117,7 +115,6 @@ CLASS HWindow INHERIT HCustomWindow, HScrollArea
    DATA nLastKey INIT 0
    DATA bCloseQuery
    DATA bActivate
-   DATA lActivated INIT .F.
 
    DATA aOffset
    DATA oEmbedded
@@ -282,6 +279,10 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
 METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMainWindow
 
    LOCAL oWndClient, handle
+
+   IF bActivate != Nil
+      ::bActivate := bActivate
+   ENDIF
 
    hwg_CreateGetList( Self )
 

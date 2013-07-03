@@ -104,7 +104,10 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
 
    LOCAL oWnd, hParent
 
-   ::bActivate := bActivate
+   IF bActivate != Nil
+      ::bActivate := bActivate
+   ENDIF
+
    hwg_CreateGetList( Self )
    hParent := Iif( ::oParent != Nil .AND. ;
       __ObjHasMsg( ::oParent, "HANDLE" ) .AND. !Empty( ::oParent:handle ), ;
@@ -139,8 +142,7 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
          Hwg_CreateDlgIndirect( hParent, Self, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
       ENDIF
    ENDIF
-   IF  !::lActivated .AND. !::lModal
-      ::lActivated := .T.
+   IF !::lModal
       IF ::nInitState == SW_SHOWMINIMIZED
          ::Minimize()
       ELSEIF ::nInitState == SW_SHOWMAXIMIZED

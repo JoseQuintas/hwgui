@@ -35,15 +35,6 @@ decide to change this location, you will need to change this path.
 file above "tutor_eng.xml" is an English language version. If there
 is some other with a language of your choice, edit that tag.
 
-     You may edit also the path to harbour header files:
-
-     <harbour_inc path="c:\harbour\include" />
-
-if you will include harbour headers in sample code, and a path to
-harbour binaries, if you use xHarbour:
-
-     <harbour_bin path="c:\xharbour\bin" />
-
      Thanks for your attention.
      HwGUI team.
       ]]>
@@ -164,6 +155,45 @@ Local oMain
   // The window is actived maximized
   ACTIVATE WINDOW oMain MAXIMIZED
  
+Return Nil
+      ]]>
+    </module>
+    <module name="Mdi window" >
+      <![CDATA[#include "hwgui.ch"
+Function Test
+   Local oMain
+
+   /* MENUPOS clause sets the submenu, where items with child windows names
+      will appear. It is set by position, starting with 0. */
+   INIT WINDOW oMain MDI TITLE "MDI window" AT 100, 100 SIZE 400, 300 ;
+         MENUPOS 1
+
+   MENU OF oMain
+      MENU TITLE "&File"
+         MENUITEM "&Create Child" ACTION CreateChildWindow()
+         SEPARATOR
+         MENUITEM "&Exit" ACTION oMain:Close()
+      ENDMENU
+      MENU TITLE "&Windows"
+         // Rearrange child windows
+         MENUITEM "&Tile" ACTION hwg_Sendmessage(HWindow():GetMain():handle,WM_MDITILE,MDITILE_HORIZONTAL,0)
+      ENDMENU
+      MENU TITLE "&Help"
+         MENUITEM "&About" ACTION hwg_Msginfo( HwG_Version(), "About" )
+      ENDMENU
+   ENDMENU
+
+   ACTIVATE WINDOW oMain
+  
+Return Nil
+
+Function CreateChildWindow
+Local oChildWnd
+
+   INIT WINDOW oChildWnd MDICHILD TITLE "Child "+Time()
+
+     // Here may be any controls...
+   oChildWnd:Activate()
 Return Nil
       ]]>
     </module>

@@ -496,11 +496,8 @@ HB_FUNC( HWG_CREATEMDICHILDWINDOW )
    LPCTSTR lpTitle =
          HB_ITEMGETSTR( GetObjectVar( pObj, "TITLE" ), &hTitle, NULL );
 
-   //if( !style )
-   //   style = WS_VISIBLE | WS_OVERLAPPEDWINDOW | WS_MAXIMIZE;
-
    if( !style )
-      style = WS_CHILD | WS_OVERLAPPEDWINDOW | ( int ) hb_parnl( 2 );   //WS_VISIBLE | WS_MAXIMIZE;
+      style = WS_VISIBLE | WS_CHILD | WS_OVERLAPPEDWINDOW | ( int ) hb_parnl( 2 );   //WS_VISIBLE | WS_MAXIMIZE;
    else
       style = style | ( int ) hb_parnl( 2 );
 
@@ -1510,6 +1507,5 @@ HB_FUNC( HWG_PAINTWINDOW )
 
 HB_FUNC( HWG_GETBACKBRUSH )
 {
-   // HB_RETHANDLE( GetClassLong( (HWND) HB_PARHANDLE(1), GCL_HBRBACKGROUND ) );
    HB_RETHANDLE( GetCurrentObject( GetDC( ( HWND ) HB_PARHANDLE( 1 ) ), OBJ_BRUSH ) );
 }

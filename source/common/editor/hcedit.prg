@@ -93,6 +93,7 @@ Static cNewLine := e"\r\n"
 
 CLASS HCEdit INHERIT HControl
 
+   CLASS VAR winclass   INIT "STATIC"
    DATA   hEdit
    DATA   cFileName
    DATA   aText, nTextLen
@@ -885,6 +886,10 @@ Local nLine
          hwg_Invalidaterect( ::handle, 0 )
       ENDIF
    ELSEIF nKeyCode == 46    // Delete
+      IF nCtrl == FSHIFT .AND. !Empty( ::aPointM2[1] )
+         cLine := ::GetText( ::aPointM1, ::aPointM2 )
+         hwg_Copystringtoclipboard( cLine )
+      ENDIF
       ::putChar( 7 )
 
    ELSEIF nKeyCode == VK_INSERT
@@ -1243,7 +1248,7 @@ Local i, Pstart := Array( P_LENGTH ), Pend := Array( P_LENGTH )
       i := Pstart[P_Y]
       oEdit:aText[i] := Left( oEdit:aText[i], Pstart[P_X]-1 ) + Substr( oEdit:aText[i], Pend[P_X] )
    ELSE
-      FOR i := Pstart[P_Y] TO Pend[P_Y]
+      FOR i := Pend[P_Y] TO Pstart[P_Y] STEP -1
          IF i == Pstart[P_Y]
             oEdit:aText[i] := Left( oEdit:aText[i], Pstart[P_X]-1 )
          ELSEIF i == Pend[P_Y]

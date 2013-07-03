@@ -82,9 +82,6 @@ typedef struct
    HFONT hFont;
    TEXTMETRIC tm;
 
-   // dimensions needed for control-character 'bitmaps'
-   int nInternalLeading;
-   int nDescent;
    int iWidth;
 
 } TEDFONT;
@@ -108,7 +105,7 @@ typedef struct
    HDC           hDCPrn;
    double        dKoeff;
    int           iWidth;
-   HB_BOOL           bWrap;
+   HB_BOOL        bWrap;
    COLORREF          fg;
    COLORREF          bg;
    COLORREF     fg_curr;

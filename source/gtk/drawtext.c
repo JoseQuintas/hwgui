@@ -67,16 +67,13 @@ HB_FUNC( HWG_DRAWTEXT )
          ( rc.width < ( iWidth-10 ) ) )
    {
       pango_layout_set_width( hDC->layout, iWidth*PANGO_SCALE );
-      // pango_layout_set_wrap( hDC->layout, PANGO_WRAP_CHAR );
       pango_layout_set_alignment( hDC->layout, 
           (hb_parni(7) & DT_CENTER)? PANGO_ALIGN_CENTER : PANGO_ALIGN_RIGHT );
    }
 
    hwg_setcolor( hDC->cr, (hDC->fcolor != -1)? hDC->fcolor : 0 );
-
    cairo_move_to( hDC->cr, (gdouble)hb_parni(3), (gdouble)hb_parni(4) );
    pango_cairo_show_layout( hDC->cr, hDC->layout );
-
    g_free( cText );
 
 }
@@ -136,6 +133,20 @@ HB_FUNC( HWG_GETTEXTSIZE )
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 1 ), rc.width );
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 2 ), rc.height );
    hb_itemRelease( hb_itemReturn( aMetr ) );
+   g_free( cText );
+}
+
+HB_FUNC( HWG_GETTEXTWIDTH )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   char * cText = hwg_convert_to_utf8( hb_parc( 2 ) );
+   PangoRectangle rc;
+
+   if( HB_ISCHAR(2) )
+      pango_layout_set_text( hDC->layout, cText, -1 );
+   pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
+
+   hb_retnl( rc.width );
    g_free( cText );
 }
 

@@ -74,6 +74,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/htab.o \
    $(OBJ_DIR)/htimer.o \
    $(OBJ_DIR)/htool.o \
+   $(OBJ_DIR)/htree.o \
    $(OBJ_DIR)/hupdown.o \
    $(OBJ_DIR)/hwindow.o \
    $(OBJ_DIR)/hwinprn.o \

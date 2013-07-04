@@ -136,6 +136,13 @@ CLASS HCEdit INHERIT HControl
    DATA   nClientWidth
 
    DATA   oHili, aHili
+#ifdef __PLATFORM__UNIX
+   DATA area
+   DATA hScrollV  INIT Nil
+   DATA hScrollH  INIT Nil
+   DATA nScrollV  INIT 0
+   DATA nScrollH  INIT 0
+#endif
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
                   bInit,bSize,bPaint,tcolor,bcolor,bGfocus,bLfocus,lNoVScroll,lNoBorder )
@@ -226,8 +233,12 @@ Return Nil
 METHOD Activate() CLASS HCEdit
 
    IF !Empty( ::oParent:handle )
+#ifdef __PLATFORM__UNIX
+      ::hEdit := hced_CreateTextEdit( Self )
+#else
       ::hEdit := hced_CreateTextEdit( ::oParent:handle, ::id, ;
                   ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+#endif
       ::handle := hced_GetHandle( ::hEdit )
       ::Init()
 
@@ -246,7 +257,9 @@ METHOD Init() CLASS HCEdit
 
    IF !::lInit
       ::Super:Init()
+#ifndef __PLATFORM__UNIX
       ::nHolder := 1
+#endif
       hwg_Setwindowobject( ::handle,Self )
    ENDIF
 
@@ -427,10 +440,18 @@ Local pps, hDCReal, hDC, nLine := 0, yPos := 0, yNew, i, lComm  // , hBitmap
 
    IF lReal == Nil .OR. lReal
       pps := hwg_DefinePaintStru()
+#ifdef __PLATFORM__UNIX
+      hDCReal := hwg_BeginPaint( ::area, pps )
+#else
       hDCReal := hwg_BeginPaint( ::handle, pps )
+#endif
       lReal := .T.
    ELSE
+#ifdef __PLATFORM__UNIX
+      hDCReal := hwg_Getdc( ::area )
+#else
       hDCReal := hwg_Getdc( ::handle )
+#endif
    ENDIF
 
    //hdc := hwg_CreateCompatibleDC( hDCReal )
@@ -441,6 +462,7 @@ Local pps, hDCReal, hDC, nLine := 0, yPos := 0, yNew, i, lComm  // , hBitmap
    hced_Setcolor( ::hEdit, ::tcolor, ::bColor )
 
    hced_SetPaint( ::hEdit, hDC,, ::nClientWidth, ::lWrap )
+
    IF lReal 
       hced_FillRect( ::hEdit, 0, 0, ::nClientWidth, ::nHeight )
    ENDIF

@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-04 16:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/winapi/hprinter.prg
+    ! Small fix
+  * source/winapi/hfrmtmpl.prg
+  * source/gtk/hfrmtmpl.prg
+    * number of parameters to :Print() increased to 5
+  * source/common/editor/hcedit.prg
+    * Some changes
+
 2013-07-03 19:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/hdialog.prg
   * source/winapi/hwindow.prg

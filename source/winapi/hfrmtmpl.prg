@@ -943,7 +943,7 @@ CLASS HRepTmpl
    DATA oPrinter
 
    METHOD Read( fname,cId )
-   METHOD Print( printer, lPreview, p1, p2, p3 )
+   METHOD Print( printer, lPreview, p1, p2, p3, p4, p5 )
    METHOD PrintItem( oItem )
    METHOD ReleaseObj( aControls )
    METHOD Find( cId )
@@ -1021,7 +1021,7 @@ Local cPre, cName
 
 Return Self
 
-METHOD Print( printer, lPreview, p1, p2, p3 ) CLASS HRepTmpl
+METHOD Print( printer, lPreview, p1, p2, p3, p4, p5 ) CLASS HRepTmpl
 Local oPrinter := Iif( printer != Nil, Iif( Valtype(printer)=="O",printer,HPrinter():New(printer,.T.) ), HPrinter():New(,.T.) )
 Local i, j, aMethod, xProperty, oFont, xTemp, nPWidth, nPHeight, nOrientation := 1
 Memvar oReport
@@ -1067,7 +1067,7 @@ Private oReport := Self
    ::nKoefX := oPrinter:nWidth / nPWidth
    ::nKoefY := oPrinter:nHeight / nPHeight
    IF ( aMethod := aGetSecond( ::aMethods,"onrepinit" ) ) != Nil
-      DoScript( aMethod,{ p1,p2,p3 } )
+      DoScript( aMethod,{ p1,p2,p3,p4,p5 } )
    ENDIF
    IF xProperty != Nil
       oFont := hrep_FontFromxml( oPrinter,xProperty,aGetSecond(::aProp,"fonth")*::nKoefY )

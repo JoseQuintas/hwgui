@@ -157,7 +157,7 @@ METHOD SetMode( nOrientation ) CLASS HPrinter
 
    hDC := hwg_Setprintermode( ::cPrinterName, @hPrinter, nOrientation )
    IF hDC != Nil
-      IF ::hDCPrn != 0
+      IF !Empty( ::hDCPrn )
          hwg_Deletedc( ::hDCPrn )
       ENDIF
       ::hDCPrn := hDC

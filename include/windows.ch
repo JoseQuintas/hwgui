@@ -1044,13 +1044,20 @@
 #define BTNS_CHECK      TBSTYLE_CHECK       // 0x0002
 #define BTNS_GROUP      TBSTYLE_GROUP       // 0x0004
 #define BTNS_CHECKGROUP TBSTYLE_CHECKGROUP  // (TBSTYLE_GROUP | TBSTYLE_CHECK)
+#define BTNS_WHOLEDROPDOWN      0x0080
 
 #define TB_ENABLEBUTTON         (WM_USER + 1)
 #define TB_HIDEBUTTON           (WM_USER + 4)
-#define TB_SETBUTTONSIZE        (WM_USER + 31)
 #define TB_SETSTATE             (WM_USER + 17)
+#define TB_GETSTATE             (WM_USER + 18)
+#define TB_SETBUTTONSIZE        (WM_USER + 31)
+#define TB_SETBITMAPSIZE        (WM_USER + 32)
+#define TB_SETINDENT            (WM_USER + 47)
 #define TB_SETSTYLE             (WM_USER + 56)
 #define TB_GETSTYLE             (WM_USER + 57)
+#define TB_GETBUTTONSIZE        (WM_USER + 58)
+#define TB_SETBUTTONWIDTH       (WM_USER + 59)
+
 
 #define TTN_FIRST -520
 #define TTN_LAST  -549
@@ -1063,6 +1070,7 @@
 #define TBSTYLE_DROPDOWN        0x0008
 #define BTNS_DROPDOWN           TBSTYLE_DROPDOWN
 #define TBSTYLE_EX_DRAWDDARROWS 0x00000001
+#define TBSTYLE_EX_MIXEDBUTTONS 0x00000008
 #define TB_SETEXTENDEDSTYLE     (WM_USER + 84)  // For TBSTYLE_EX_*
 #define TB_GETEXTENDEDSTYLE     (WM_USER + 85)  // For TBSTYLE_EX_*
 #define TBN_FIRST               (-700)       // toolbar

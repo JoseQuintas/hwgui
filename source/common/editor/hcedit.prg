@@ -91,6 +91,44 @@
 
 Static cNewLine := e"\r\n"
 
+#ifdef __PLATFORM__UNIX
+
+#define GDK_BackSpace       0xFF08
+#define GDK_Tab             0xFF09
+#define GDK_Return          0xFF0D
+#define GDK_Escape          0xFF1B
+#define GDK_Delete          0xFFFF
+#define GDK_Home            0xFF50
+#define GDK_Left            0xFF51
+#define GDK_Up              0xFF52
+#define GDK_Right           0xFF53
+#define GDK_Down            0xFF54
+#define GDK_Page_Up         0xFF55
+#define GDK_Page_Down       0xFF56
+#define GDK_End             0xFF57
+#define GDK_Insert          0xFF63
+#define GDK_Control_L       0xFFE3
+#define GDK_Control_R       0xFFE4
+
+#define  KEY_RIGHT   GDK_Right
+#define  KEY_LEFT    GDK_Left
+#define  KEY_HOME    GDK_Home
+#define  KEY_END     GDK_End
+#define  KEY_DOWN    GDK_Down
+#define  KEY_UP      GDK_Up
+#define  KEY_PGDN    GDK_Page_Down
+#define  KEY_PGUP    GDK_Page_Up
+#else
+#define  KEY_RIGHT   VK_RIGHT
+#define  KEY_LEFT    VK_LEFT
+#define  KEY_HOME    VK_HOME
+#define  KEY_END     VK_END
+#define  KEY_DOWN    VK_DOWN
+#define  KEY_UP      VK_UP
+#define  KEY_PGDN    VK_PRIOR
+#define  KEY_PGUP    VK_NEXT
+#endif
+
 CLASS HCEdit INHERIT HControl
 
    CLASS VAR winclass   INIT "STATIC"
@@ -163,7 +201,7 @@ CLASS HCEdit INHERIT HControl
    METHOD SetFont( oFont )
    METHOD Line4Pos( yPos )
    METHOD SetCaretPos( nType, p1, p2 )
-   METHOD onKeyDown( nKeyCode )
+   METHOD onKeyDown( nKeyCode, lParam )
    METHOD PutChar( nKeyCode )
    METHOD LineDown()
    METHOD LineUp()
@@ -283,7 +321,7 @@ Return Nil
 METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 Local n, nPages, arr, lRes := -1
 
-   //HWG_WriteLog( str(Seconds())+" tedit: "+Str(::handle,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   //HWG_WriteLog( "tedit: " + Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF msg == WM_MOUSEMOVE .OR. msg == WM_LBUTTONDOWN .OR. msg == WM_RBUTTONDOWN
       ::nXPosM := hwg_LoWord( lParam )
       ::nYPosM := hwg_HiWord( lParam )
@@ -303,12 +341,12 @@ Local n, nPages, arr, lRes := -1
 
    ELSEIF msg == WM_CHAR
       // If not readonly mode and Ctrl key isn't pressed
-      IF !(Asc(Substr(hwg_GetKeyboardState(),VK_CONTROL+1,1)) >= 128)
+      IF !(Asc(Substr(hwg_GetKeyboardState( lParam ),VK_CONTROL+1,1)) >= 128)
          ::putChar( hwg_PtrToUlong( wParam ) )
       ENDIF
 
    ELSEIF msg == WM_KEYDOWN
-      lRes := ::onKeyDown( hwg_PtrToUlong( wParam ) )
+      lRes := ::onKeyDown( hwg_PtrToUlong( wParam ), lParam )
 
    ELSEIF msg == WM_LBUTTONDOWN
       IF !Empty( ::aPointM2[1] )
@@ -795,12 +833,11 @@ Local lSet := .T., x1, y1, xPos, cLine, nLinePrev := ::nLineC
    
 RETURN Nil
 
-METHOD onKeyDown( nKeyCode ) CLASS HCEdit
-Local cKeyb := hwg_Getkeyboardstate(), cLine, lUnsel := .T.
+METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
+Local cKeyb := hwg_Getkeyboardstate( lParam ), cLine, lUnsel := .T.
 Local nCtrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
 Local nLine
 
-   //hwg_writelog( "onKeyDown: " + str(nKeyCode) )
    IF ::bKeyDown != Nil
       Eval( ::bKeyDown, Self, nKeyCode )
    ENDIF
@@ -813,10 +850,10 @@ Local nLine
       hced_ShowCaret( ::hEdit )
    ENDIF
    IF nCtrl == FSHIFT .AND. Empty( ::aPointM2[1] ) .AND. ;
-          Ascan( {VK_RIGHT,VK_LEFT,VK_HOME,VK_END,VK_DOWN,VK_UP,33,34}, nKeyCode ) != 0
+          Ascan( {KEY_RIGHT,KEY_LEFT,KEY_HOME,KEY_END,KEY_DOWN,KEY_UP,KEY_PGUP,KEY_PGDN}, nKeyCode ) != 0
       ::PCopy( ::aPointC, ::aPointM1 )
    ENDIF
-   IF nKeyCode == VK_RIGHT
+   IF nKeyCode == KEY_RIGHT
       IF ::nPosC < ::aLines[nLine,AL_NCHARS]
       ELSE
          ::nPosF ++
@@ -831,7 +868,7 @@ Local nLine
          hwg_Invalidaterect( ::handle, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
-   ELSEIF nKeyCode == VK_LEFT
+   ELSEIF nKeyCode == KEY_LEFT
       IF ::nPosC > 0
          ::SetCaretPos( SETC_LEFT )
       ELSEIF ::nPosF > 0
@@ -844,7 +881,7 @@ Local nLine
          hwg_Invalidaterect( ::handle, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
-   ELSEIF nKeyCode == VK_HOME
+   ELSEIF nKeyCode == KEY_HOME
       IF ::nPosF > 0
          ::nPosF := 0
          ::Paint( .F. )
@@ -856,7 +893,7 @@ Local nLine
          hwg_Invalidaterect( ::handle, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
-   ELSEIF nKeyCode == VK_END
+   ELSEIF nKeyCode == KEY_END
       IF ::aLines[nLine,AL_NCHARS] < Len( ::aText[::nLineF+nLine-1] )
          ::nPosF := Int( ( ( Len( ::aText[::nLineF+nLine-1] ) - ;
                ::aLines[nLine,AL_NCHARS] ) ) * 7 / 6 )
@@ -869,7 +906,7 @@ Local nLine
          hwg_Invalidaterect( ::handle, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
-   ELSEIF nKeyCode == VK_UP
+   ELSEIF nKeyCode == KEY_UP
       ::LineUp()
       IF nCtrl == FSHIFT
          ::PCopy( ::aPointC, ::aPointM2 )
@@ -877,7 +914,7 @@ Local nLine
          hwg_Invalidaterect( ::handle, 0, 0, ::aLines[::nLineC+::nLineF-1,AL_Y1], ::nClientWidth, ;
                ::aLines[::nLineC+::nLineF,AL_Y2] )
       ENDIF
-   ELSEIF nKeyCode == VK_DOWN
+   ELSEIF nKeyCode == KEY_DOWN
       ::LineDown()
       IF nCtrl == FSHIFT
          ::PCopy( ::aPointC, ::aPointM2 )
@@ -885,7 +922,7 @@ Local nLine
          hwg_Invalidaterect( ::handle, 0, 0, ::aLines[::nLineC+::nLineF-2,AL_Y1], ::nClientWidth, ;
                ::aLines[::nLineC+::nLineF-1,AL_Y2] )
       ENDIF
-   ELSEIF nKeyCode == 34    // Page Down
+   ELSEIF nKeyCode == KEY_PGDN    // Page Down
       IF nCtrl == FCONTROL
          ::Bottom()
       ELSE
@@ -896,7 +933,7 @@ Local nLine
          lUnSel := .F.
          hwg_Invalidaterect( ::handle, 0 )
       ENDIF
-   ELSEIF nKeyCode == 33    // Page Up
+   ELSEIF nKeyCode == KEY_PGUP    // Page Up
       IF nCtrl == FCONTROL
          ::Top()
       ELSE

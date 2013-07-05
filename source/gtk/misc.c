@@ -59,6 +59,31 @@ HB_FUNC( HWG_COPYSTRINGTOCLIPBOARD )
 {
 }
 
+HB_FUNC( HWG_GETCLIPBOARDTEXT )
+{
+}
+
+#define VK_SHIFT          0x10
+#define VK_CONTROL        0x11
+#define VK_MENU           0x12
+
+HB_FUNC( HWG_GETKEYBOARDSTATE )
+{
+   BYTE lpbKeyState[256];
+   HB_ULONG ulState = hb_parnl( 1 );
+
+   memset( lpbKeyState, 0, 255 );
+   if( ulState & 1 )
+      lpbKeyState[ VK_SHIFT ] = 0x80;
+   if( ulState & 2 )
+      lpbKeyState[ VK_CONTROL ] = 0x80;
+   if( ulState & 4 )
+      lpbKeyState[ VK_MENU ] = 0x80;
+
+   hb_retclen( ( char * ) lpbKeyState, 255 );
+}
+
+
 HB_FUNC( HWG_LOWORD )
 {
    hb_retni( (int) ( hb_parnl( 1 ) & 0xFFFF ) );
@@ -96,6 +121,16 @@ HB_FUNC( HWG_SETBIT )
 HB_FUNC( HWG_CHECKBIT )
 {
    hb_retl( hb_parnl(1) & ( 1 << (hb_parni(2)-1) ) );
+}
+
+HB_FUNC( HWG_PTRTOULONG )
+{
+   hb_retnl( hb_parnl( 1 ) );
+}
+
+HB_FUNC( HWG_ISPTREQ )
+{
+   hb_retl( HB_PARHANDLE( 1 ) == HB_PARHANDLE( 2 ) );
 }
 
 HB_FUNC( HWG_SIN )

@@ -683,12 +683,13 @@
             [ OF <oWnd> ]              ;
             [ ID <nId> ]               ;
             [ SIZE <width>, <height> ] ;
+            [ BACKCOLOR <bcolor> ]     ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ STYLE <nStyle> ]         ;
           => ;
-    [<oPanel> :=] HPanel():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<bInit>,<bSize>,<bDraw> )
+    [<oPanel> :=] HPanel():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<bInit>,<bSize>,<bDraw>,<bcolor> )
 
 #xcommand REDEFINE PANEL [ <oPanel> ]  ;
             [ OF <oWnd> ]              ;
@@ -1431,6 +1432,7 @@ Added by Marcos Antonio Gambeta
     [<oSay> := ] HStaticLink():Redefine( <oWnd>, <nId>, <cCaption>, ;
         <oFont>, <bInit>, <bSize>, <bDraw>, <ctoolt>, <color>, <bcolor>,;
         <.lTransp.>, <cLink>, <vcolor>, <lcolor>, <hcolor> )
+
 #xcommand TOOLBUTTON  <O> ;
           ID <nId> ;
           [ BITMAP <nBitIp> ];
@@ -1562,3 +1564,19 @@ Added by Marcos Antonio Gambeta
           [STYLE <nstyle>] [TEXT <t>] ;
           => <opage>:ADDBARBITMAP(<hWnd>,<b>,<t>,<nstyle>)
 
+
+#xcommand @ <x>, <y>  SHAPE [<oShape>] [OF <oWnd>] ;
+             [ ID <nId> ]               ;
+             [ SIZE <width>, <height> ] ;
+             [ BORDERWIDTH <nBorder> ]  ;
+             [ CURVATURE <nCurvature>]  ;
+             [ COLOR <tcolor> ]         ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [ BORDERSTYLE <nbStyle>]   ;
+             [ FILLSTYLE <nfStyle>]     ;
+             [ BACKSTYLE <nbackStyle>]  ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+          => ;
+          [ <oShape> := ] HShape():New(<oWnd>, <nId>, <x>, <y>, <width>, <height>, ;
+             <nBorder>, <nCurvature>, <nbStyle>,<nfStyle>, <tcolor>, <bcolor>, <bSize>,<bInit>,<nbackStyle>);;

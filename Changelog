@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-05 14:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/winapi/control.c
+    * snprintf() call is changed to sprintf()
+  * source/winapi/hpanel.prg
+  * include/guilib.ch
+    * Added SHAPE command from 2.17 and BACKCOLOR clause to PANEL
+  * source/gtk/draw.c
+  * source/gtk/hwgtk.h
+    ! Small fix
+
 2013-07-05 10:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/htool.prg
     * copied from 2.17 and formatted

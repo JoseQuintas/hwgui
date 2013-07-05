@@ -39,7 +39,7 @@ LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, Iif( nWidth == Nil, 0, nWidth ), ;
               Iif( nHeight == Nil, 0, nHeight ), oParent:oFont, bInit, ;
-              bSize, bPaint )
+              bSize, bPaint,,, bcolor )
 
    IF bcolor != NIL
       ::brush  := HBrush():Add( bcolor )
@@ -129,7 +129,7 @@ LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
 
    ::Super:New( oWndParent, nId, 0, 0, 0, Iif( nWidth == Nil, 0, nWidth ), ;
               Iif( nHeight != Nil, nHeight, 0 ), oParent:oFont, bInit, ;
-              bSize, bPaint )
+              bSize, bPaint,,, bcolor )
 
    IF bcolor != NIL
       ::brush  := HBrush():Add( bcolor )

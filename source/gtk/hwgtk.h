@@ -8,7 +8,6 @@ typedef struct HWGUI_HDC_STRU
   GtkWidget * widget;
   GdkWindow * window;
   cairo_t *cr;
-  GdkGC * gc;
   PangoFontDescription * hFont;
   PangoLayout * layout;
   long fcolor, bcolor;

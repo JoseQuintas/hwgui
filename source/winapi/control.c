@@ -45,9 +45,11 @@ HB_EXTERN_END
    #define TB_GETIMAGELIST         (WM_USER + 49)
 #endif
 
+/*
 #if _MSC_VER
 #define snprintf _snprintf
 #endif
+*/
 
 // LRESULT CALLBACK OwnBtnProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK WinCtrlProc( HWND, UINT, WPARAM, LPARAM );
@@ -643,11 +645,14 @@ HB_FUNC( HWG_GETTIMEPICKER )
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), DTM_GETSYSTEMTIME, 0,
                 ( LPARAM ) & st );
 
+/*
    #if __HARBOUR__ - 0 >= 0x010100
       hb_snprintf( szTime, 9, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
    #else
       snprintf( szTime, 9, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
    #endif
+*/
+   sprintf( szTime, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
    hb_retc( szTime ) ;
 }
 

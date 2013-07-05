@@ -476,7 +476,6 @@ HB_FUNC( HWG_ENDPAINT )
 
    if( hDC->layout )
       g_object_unref( (GObject*) hDC->layout );
-   g_object_unref( (GObject*) hDC->gc );
    hb_xfree( hDC );
    hb_xfree( pps );
 }

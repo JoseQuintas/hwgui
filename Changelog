@@ -8,6 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-09 15:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  - source/common/debug/dbgentry.c
+    - dbgentry.c removed, the standard will be used
+  + source/common/debug/dbgdop.c
+    + a couple of C-level routines from dbgentry.c and dbgconnect.prg has been added
+  * source/common/debug/dbgconnect.prg
+    * A C routine has been moved to dbgdop.c
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hcedit_w.c
+    * Some changes for future gtk version compatibility
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * makefile.vc
+  * makefile.wc
+    * dbgentry.c removed, dbgdop.c added
+
 2013-07-05 14:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/control.c
     * snprintf() call is changed to sprintf()
@@ -26,7 +43,7 @@
   * source/gtk/misc.c
     * hwg_getkeyboardstate() added for winapi version compatibility
   * source/common/editor/hcedit.prg
-    * SOme changes for future gtk version compatibility
+    * Some changes for future gtk version compatibility
 
 2013-07-04 16:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/hprinter.prg

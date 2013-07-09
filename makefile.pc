@@ -44,7 +44,7 @@ XML_LIB_OBJS = \
    $(OBJ_DIR)\xmlparse.obj
 
 DEBUG_LIB_OBJS = \
-   $(OBJ_DIR)\dbgentry.obj \
+   $(OBJ_DIR)\dbgdop.obj \
    $(OBJ_DIR)\dbgconnect.obj \
    $(OBJ_DIR)\debugger.obj
 
@@ -561,5 +561,5 @@ $(OBJ_DIR)\dbgconnect.c : $(SRC_DIR)\xml\dbgconnect.prg
 $(OBJ_DIR)\dbgconnectr.obj : $(OBJ_DIR)\dbgconnect.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
-$(OBJ_DIR)\dbgentry.obj : $(SRC_DIR)\xml\dbgentry.c
+$(OBJ_DIR)\dbgdop.obj : $(SRC_DIR)\xml\dbgdop.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**

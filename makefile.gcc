@@ -105,7 +105,7 @@ $(LIB_DIR)/libhbxml.a : \
 	ar rc $@ $^
 
 $(LIB_DIR)/libhwgdebug.a : \
-   $(OBJ_DIR)/dbgentry.o \
+   $(OBJ_DIR)/dbgdop.o \
    $(OBJ_DIR)/dbgconnect.o \
    $(OBJ_DIR)/debugger.o
 	ar rc $@ $^

@@ -163,7 +163,9 @@ Function hwg_dbg_New()
    IF Empty( cExe )
       cExe := Iif( File(cDebugger), "./", "" ) + cDebugger
    ENDIF
-   lRun := __dbgProcessRun( cExe, "-c" + cFile )
+   // lRun := __dbgProcessRun( cExe, "-c" + cFile )
+   hProcess := hb_processOpen( cExe + ' -c' + cFile )
+   lRun := ( hProcess != -1 .AND. hb_processValue( hProcess, .F. ) == -1 )
 #else
    IF Empty( cExe )
       cExe := cDebugger
@@ -425,15 +427,3 @@ EXIT PROCEDURE hwg_dbg_exit
    FClose( handl2 )
 Return
 
-
-#ifdef __XHARBOUR__
-#pragma BEGINDUMP
-#include "hbapi.h"
-#include "hbapiitm.h"
-
-HB_FUNC( HB_RELEASECPU )
-{
-   hb_releaseCPU(0);
-}
-#pragma ENDDUMP
-#endif

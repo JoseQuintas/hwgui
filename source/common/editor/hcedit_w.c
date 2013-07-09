@@ -705,6 +705,25 @@ HB_FUNC( HCED_EXACTCARETPOS )
 
 }
 
+HB_FUNC( HCED_INVALIDATERECT )
+{
+   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
+   RECT rc;
+
+   if( hb_pcount(  ) > 2 )
+   {
+      rc.left = hb_parni( 3 );
+      rc.top = hb_parni( 4 );
+      rc.right = hb_parni( 5 );
+      rc.bottom = hb_parni( 6 );
+   }
+
+   InvalidateRect( pted->handle,  // handle of window with changed update region
+         ( hb_pcount(  ) > 2 ) ? &rc : NULL,    // address of rectangle coordinates
+         hb_parni( 2 )          // erase-background flag
+          );
+}
+
 /*
  * hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, Len(cLine), nAlign, lPaint )
  */

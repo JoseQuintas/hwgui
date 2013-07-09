@@ -322,7 +322,7 @@ $(OBJ_DIR)\xmlparse.obj  : $(XML_DIR)\xmlparse.c
 $(LIB_DIR)\hwgdebug.lib : \
    $(OBJ_DIR)\debugger.obj \
    $(OBJ_DIR)\dbgconnect.obj \
-   $(OBJ_DIR)\dbgentry.obj
+   $(OBJ_DIR)\dbgdop.obj
   lib /out:$@ $**
 
 $(OBJ_DIR)\debugger.c    : $(DEBUG_DIR)\debugger.prg
@@ -333,7 +333,7 @@ $(OBJ_DIR)\dbgconnect.c    : $(DEBUG_DIR)\dbgconnect.prg
 
 $(OBJ_DIR)\debugger.obj  : $(OBJ_DIR)\debugger.c
 $(OBJ_DIR)\dbgconnect.obj  : $(OBJ_DIR)\dbgconnect.c
-$(OBJ_DIR)\dbgentry.obj  : $(DEBUG_DIR)\dbgentry.c
+$(OBJ_DIR)\dbgdop.obj  : $(DEBUG_DIR)\dbgdop.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 
 .prg.c:

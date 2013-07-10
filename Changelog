@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-10 14:57 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * procmisc.hbp
+    ! hcedit_w.c is prefixed with {win}, hcedit_l.c - with {unix}
+
 2013-07-10 12:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * makefile.bc
   * source/winapi/htool.prg

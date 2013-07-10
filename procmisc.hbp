@@ -15,5 +15,6 @@
 
 source/common/procmisc/*.c
 source/common/procmisc/*.prg
-source/common/editor/*.c
+{win}source/common/editor/hcedit_w.c
+{unix}source/common/editor/hcedit_l.c
 source/common/editor/*.prg

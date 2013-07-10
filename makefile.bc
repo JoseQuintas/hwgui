@@ -61,8 +61,8 @@ DEBUG_DIR    = source\common\debug
 # C compiler definition and C flags. These should never have to change.
 #
 
-#CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__
-CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__ -DHWG_USE_POINTER_ITEM
+CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__
+#CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__ -DHWG_USE_POINTER_ITEM
 !if $d(HB_MULTI_GT)
 CFLAGS               = $(CFLAGS) -DHB_MULTI_GT
 !endif

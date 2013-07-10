@@ -144,6 +144,7 @@ CLASS HToolBar INHERIT HControl
    DATA nIndent
    DATA nwSize, nHSize
    DATA nDrop
+   DATA lNoThemes   INIT .F.
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, btnWidth, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, lVertical , aItem, nWSize, nHSize, nIndent, nIDB )
@@ -188,7 +189,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, btnWidth, oFo
    ::nIndent := iif( nIndent != NIL , nIndent, 1 )
    ::nwSize := iif( nwSize != NIL .AND. nwSize > 11 , nwSize, 16 )
    ::nhSize := iif( nhSize != NIL .AND. nhSize > 11 , nhSize, ::nwSize - 1 )
-   ::lnoThemes := ! hwg_Isthemeactive() .OR. ! ::WindowsManifest
+   //::lnoThemes := ! hwg_Isthemeactive() .OR. ! ::WindowsManifest
    IF Hwg_BitAnd( ::Style, WS_DLGFRAME + WS_BORDER + CCS_NODIVIDER ) = 0
       IF ! ::lVertical
          ::Line := HLine():New( oWndParent, , , nLeft, nTop + nHeight + ;

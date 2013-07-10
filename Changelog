@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-10 11:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  + source/common/editor/hcedit_l.c
+    + gtk version of hc_edit_w.c
+  * source/common/editor/hcedit_w.c
+    * Some changes for gtk version compatibility
+  * source/winapi/hradio.prg
+    ! Small fix
+
 2013-07-09 15:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   - source/common/debug/dbgentry.c
     - dbgentry.c removed, the standard will be used

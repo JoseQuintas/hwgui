@@ -123,6 +123,7 @@ Static cNewLine := e"\r\n"
 #define  KEY_TAB     GDK_Tab
 #define  KEY_ESCAPE  GDK_Escape
 #define  KEY_BACK    GDK_BackSpace
+#define  KEY_DELETE  GDK_Delete
 #else
 #define  KEY_RIGHT   VK_RIGHT
 #define  KEY_LEFT    VK_LEFT
@@ -137,6 +138,7 @@ Static cNewLine := e"\r\n"
 #define  KEY_TAB     VK_TAB
 #define  KEY_ESCAPE  VK_ESCAPE
 #define  KEY_BACK    VK_BACK
+#define  KEY_DELETE  VK_DELETE
 #endif
 
 CLASS HCEdit INHERIT HControl
@@ -157,7 +159,7 @@ CLASS HCEdit INHERIT HControl
    DATA   n4Number     INIT 0
    DATA   n4Separ      INIT 0
    DATA   bColorCur    INIT 16449510
-   DATA   tcolorSel    INIT 255  //16777215
+   DATA   tcolorSel    INIT 16777215
    DATA   bcolorSel    INIT 16744448
 
    DATA   nLineF       INIT 1
@@ -664,11 +666,6 @@ Local x1, x2, bColor, i, aStru, nL := ::nLineF+nLine-1, P1, P2
       ENDIF
       hced_setAttr( ::hEdit, x1, x2-x1, -1, ::tColorSel, ::bColorSel )
    ENDIF
-#ifdef __PLATFORM__UNIX
-   IF ::aPointC[P_Y] == nLine
-      hced_setAttr( ::hEdit, ::aPointC[P_X], 1, -1, ::tColorSel, ::bColorSel )
-   ENDIF
-#endif
 Return Nil
 
 METHOD End() CLASS HCEdit
@@ -844,6 +841,11 @@ Local lSet := .T., x1, y1, xPos, cLine, nLinePrev := ::nLineC
       ENDIF
       hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ::nClientWidth, ;
          ::aLines[::nLineC,AL_Y2] )
+#ifdef __PLATFORM__UNIX
+      ELSE
+         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLinePrev,AL_Y1], ::nClientWidth, ;
+            ::aLines[nLinePrev,AL_Y2] )
+#endif
    ENDIF
    
 RETURN Nil
@@ -853,6 +855,7 @@ Local cKeyb := hwg_Getkeyboardstate( lParam ), cLine, lUnsel := .T.
 Local nCtrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
 Local nLine
 
+   //hwg_writelog( "keydown: " + str(nKeyCode) )
    IF ::bKeyDown != Nil
       Eval( ::bKeyDown, Self, nKeyCode )
    ENDIF
@@ -959,7 +962,7 @@ Local nLine
          lUnSel := .F.
          hced_Invalidaterect( ::hEdit, 0 )
       ENDIF
-   ELSEIF nKeyCode == 46    // Delete
+   ELSEIF nKeyCode == KEY_DELETE
       IF nCtrl == FSHIFT .AND. !Empty( ::aPointM2[1] )
          cLine := ::GetText( ::aPointM1, ::aPointM2 )
          hwg_Copystringtoclipboard( cLine )
@@ -984,13 +987,17 @@ Local nLine
                   ::nHeight )
          ENDIF
       ENDIF
-   ELSEIF nKeyCode == 65
+   ELSEIF nKeyCode == 65      // 'A'
       IF nCtrl == FCONTROL
          ::Pcopy( { 1, 1 }, ::aPointM1 )
          ::Pcopy( { Len(::aText[::nTextLen])+1, ::nTextLen }, ::aPointM2 )
          lUnSel := .F.
          hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
       ENDIF
+#ifdef __PLATFORM__UNIX
+   ELSE
+      ::putChar( nKeyCode )
+#endif
    ENDIF
    IF !Empty( ::aPointM2[1] ) .AND. nKeyCode >= 32 .AND. lUnSel
       hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::aPointM1[P_Y]-::nLineF+1,AL_Y1], ;

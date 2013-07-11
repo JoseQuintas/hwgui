@@ -448,8 +448,8 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
    gpointer gObject = g_object_get_data( (GObject*) widget, "obj" );
    HB_LONG lRes;
    gunichar uchar;   
-   gchar* tmpbuf;
-   gchar *res = NULL;
+   //gchar* tmpbuf;
+   //gchar *res = NULL;
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
@@ -480,10 +480,10 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
             }
          }
 
-         tmpbuf=g_new0(gchar,7);
-         g_unichar_to_utf8( uchar,tmpbuf );
-         res = hwg_convert_to_utf8( tmpbuf );
-         g_free(tmpbuf);	 
+         //tmpbuf=g_new0(gchar,7);
+         //g_unichar_to_utf8( uchar,tmpbuf );
+         //res = hwg_convert_to_utf8( tmpbuf );
+         //g_free(tmpbuf);	 
          p3 = ( ( ((GdkEventKey*)event)->state & GDK_SHIFT_MASK )? 1 : 0 ) |
               ( ( ((GdkEventKey*)event)->state & GDK_CONTROL_MASK )? 2 : 0 ) |
               ( ( ((GdkEventKey*)event)->state & GDK_MOD1_MASK )? 4 : 0 );
@@ -771,3 +771,13 @@ HB_FUNC( HWG_SETAPPLOCALE )
    szAppLocale[hb_parclen(1)] = '\0';
 }
 
+HB_FUNC( HWG_KEYVAL2UTF8 )
+{
+  gunichar uchar = gdk_keyval_to_unicode( (guint) hb_parnl(1) );
+  gchar* tmpbuf = (gchar*) hb_xgrab( 7 );
+
+  memset( tmpbuf, 0, 7 );
+  g_unichar_to_utf8( uchar,tmpbuf );
+  hb_retc_buffer( (char*) tmpbuf );
+
+}

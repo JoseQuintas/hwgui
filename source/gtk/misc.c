@@ -61,6 +61,7 @@ HB_FUNC( HWG_COPYSTRINGTOCLIPBOARD )
 
 HB_FUNC( HWG_GETCLIPBOARDTEXT )
 {
+   hb_retc( "" );
 }
 
 #define VK_SHIFT          0x10
@@ -69,7 +70,7 @@ HB_FUNC( HWG_GETCLIPBOARDTEXT )
 
 HB_FUNC( HWG_GETKEYBOARDSTATE )
 {
-   BYTE lpbKeyState[256];
+   char lpbKeyState[256];
    HB_ULONG ulState = hb_parnl( 1 );
 
    memset( lpbKeyState, 0, 255 );
@@ -80,7 +81,7 @@ HB_FUNC( HWG_GETKEYBOARDSTATE )
    if( ulState & 4 )
       lpbKeyState[ VK_MENU ] = 0x80;
 
-   hb_retclen( ( char * ) lpbKeyState, 255 );
+   hb_retclen( lpbKeyState, 255 );
 }
 
 
@@ -230,9 +231,9 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
     /* Ensure that output of command does interfere with stdout */
     fflush(stdin);
     FILE *cmd_file = (FILE *) popen( hb_parc(1), "r" );
-    FILE *hOut = -1;
+    FILE *hOut;
     char buf[CHUNK_LEN];
-    int bytes_read;
+    int bytes_read, iOutExist = 0;
 
     if( !cmd_file )
     {
@@ -241,17 +242,20 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
     }
 
     if( !HB_ISNIL(2) )
+    {
        hOut = fopen( hb_parc(2), "w" );
+       iOutExist = 1;
+    }
 
     do
     {
         bytes_read = fread( buf, sizeof(char), CHUNK_LEN, cmd_file );
-        if( hOut != -1 )
+        if( iOutExist )
            fwrite( buf, 1, bytes_read, hOut );
     } while (bytes_read == CHUNK_LEN);
  
     pclose(cmd_file);
-    if( hOut != -1 )
+    if( iOutExist )
        fclose( hOut );
 
     hb_retl( 1 ); 

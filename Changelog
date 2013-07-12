@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-12 15:18 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/gtk/Makefile.linux
+    * source/common/editor files included
+
 2013-07-12 14:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/common/editor/hcedit.prg
   * source/common/editor/hcedit_l.c

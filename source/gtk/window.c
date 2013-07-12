@@ -447,7 +447,7 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
 {
    gpointer gObject = g_object_get_data( (GObject*) widget, "obj" );
    HB_LONG lRes;
-   gunichar uchar;   
+   //gunichar uchar;   
    //gchar* tmpbuf;
    //gchar *res = NULL;
 
@@ -464,7 +464,7 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       {
          p1 = (event->type==GDK_KEY_PRESS)? WM_KEYDOWN : WM_KEYUP;
          p2 = ((GdkEventKey*)event)->keyval;
-         uchar= gdk_keyval_to_unicode(((GdkEventKey*)event)->keyval);
+         //uchar= gdk_keyval_to_unicode(((GdkEventKey*)event)->keyval);
          if ( p2 == GDK_asciitilde  ||  p2 == GDK_asciicircum  ||  p2 == GDK_grave ||  p2 == GDK_acute ||  p2 == GDK_diaeresis || p2 == GDK_dead_acute ||	 p2 ==GDK_dead_tilde || p2==GDK_dead_circumflex || p2==GDK_dead_grave || p2 == GDK_dead_diaeresis)	
          {
             prevp2 = p2 ;
@@ -475,7 +475,7 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
             if ( prevp2 != -1 )
             {
                p2 = ToKey(prevp2,(HB_LONG)p2);
-               uchar= gdk_keyval_to_unicode(p2);
+               //uchar= gdk_keyval_to_unicode(p2);
                prevp2=-1;
             }
          }
@@ -558,7 +558,7 @@ void set_signal( gpointer handle, char * cSignal, long int p1, long int p2, long
 HB_FUNC( HWG_SETSIGNAL )
 {
    gpointer p = (gpointer) HB_PARHANDLE(1);
-   set_signal( (gpointer)p, hb_parc(2), hb_parnl(3), hb_parnl(4), ( long int ) HB_PARHANDLE( 5 ) );
+   set_signal( (gpointer)p, (char*)hb_parc(2), hb_parnl(3), hb_parnl(4), ( long int ) HB_PARHANDLE( 5 ) );
 }
 
 void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 )
@@ -573,7 +573,7 @@ void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long 
 HB_FUNC( HWG_SETEVENT )
 {
    gpointer p = (gpointer) HB_PARHANDLE(1);
-   set_event( p, hb_parc(2), hb_parnl(3), hb_parnl(4), hb_parnl(5) );
+   set_event( p, (char*)hb_parc(2), hb_parnl(3), hb_parnl(4), hb_parnl(5) );
 }
 
 void all_signal_connect( gpointer hWnd )

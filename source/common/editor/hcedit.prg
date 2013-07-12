@@ -873,7 +873,7 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
    ELSE
       cLine := iif( x1 == 0, "", hced_Substr( Self, ::aText[::nLineF+::nLineC-1],::nPosF + 1,x1 + 1 ) )
       x1 := hced_ExactCaretPos( ::hEdit, ;
-         iif( hced_Len( Self, cLine ) <= x1, cLine, hced_Left( Self, cLine,hced_Len( Self,cLine ) - 1 ) ), ;
+         iif( hced_Len( Self, cLine ) <= x1, cLine, hced_Left( Self, cLine, x1 ) ), ;
          ::aLines[::nLineC,AL_X1], - 1, ::aLines[::nLineC,AL_Y1], lSet )
    ENDIF
    ::nPosC := x1 - 1

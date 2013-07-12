@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-12 14:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hcedit_l.c
+    * Some changes for UTF8 support
+  * source/gtk/window.c
+    ! Warnings fixed.
+  * source/gtk/Makefile.linux
+    * dbgentry removed, dbgdop inserted.
+
 2013-07-11 13:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/common/editor/hcedit.prg
     * New changes for gtk version compatibility and UTF8 support

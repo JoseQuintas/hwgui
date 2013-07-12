@@ -97,7 +97,7 @@ $(LIB_DIR)/libhbxml.a : \
    $(OBJ_DIR)/hxmldoc.o
 
 $(LIB_DIR)/libhwgdebug.a : \
-   $(OBJ_DIR)/dbgentry.o \
+   $(OBJ_DIR)/dbgdop.o \
    $(OBJ_DIR)/debugger.o \
    $(OBJ_DIR)/dbgconnect.o
 

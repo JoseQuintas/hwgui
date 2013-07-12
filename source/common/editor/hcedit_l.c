@@ -166,6 +166,16 @@ void wrlog( const char * sFile, const char * sTraceMsg, ... )
 
 }
 
+int hced_utf8bytes( char * szText, int iLen )
+{
+   char * ptr = szText;
+
+   while( iLen -- && *ptr )
+      ptr = g_utf8_next_char( ptr );
+
+   return ( ptr - szText );
+}
+
 TEDFONT * ted_setfont( TEDIT * pted, PHWGUI_FONT hwg_font, int iNum, HB_BOOL bPrn  )
 {
    TEDFONT * pFont;
@@ -210,14 +220,14 @@ int ted_CalcSize( PangoLayout * layout, char *szText, TEDFONT *font, int *iRealL
       pango_layout_set_text( layout, "  a", 3 );
       pango_layout_get_pixel_extents( layout, &rc, NULL );
       font->iSpace = PANGO_LBEARING(rc)/2;
-      //wrlog( NULL, "ixAdd = %d\r\n",font->ixAdd );
+      wrlog( NULL, "iWidth = %d iHeight= %d \r\n",font->iWidth,font->iHeight );
    }
 
    iReal = iWidth / font->iWidth;
    if( iReal > *iRealLen )
       iReal = *iRealLen;
 
-   pango_layout_set_text( layout, szText, iReal );
+   pango_layout_set_text( layout, szText, hced_utf8bytes( szText, iReal ) );
    pango_layout_get_pixel_extents( layout, &rc, NULL );
    iTextWidth = PANGO_RBEARING(rc) + font->ixAdd;
 
@@ -235,7 +245,7 @@ int ted_CalcSize( PangoLayout * layout, char *szText, TEDFONT *font, int *iRealL
                break;
             }
          }
-         pango_layout_set_text( layout, szText, i );
+         pango_layout_set_text( layout, szText, hced_utf8bytes( szText, i ) );
          pango_layout_get_pixel_extents( layout, &rc, NULL );
          iTextWidth = PANGO_RBEARING(rc) + font->ixAdd;
          if( iTextWidth <= iWidth )
@@ -263,7 +273,7 @@ int ted_CalcSize( PangoLayout * layout, char *szText, TEDFONT *font, int *iRealL
          {
             while( i < *iRealLen && !strchr( szDelimiters,*(szText+i) ) ) i ++;
          }
-         pango_layout_set_text( layout, szText, i );
+         pango_layout_set_text( layout, szText, hced_utf8bytes( szText, i ) );
          pango_layout_get_pixel_extents( layout, &rc, NULL );
          iTextWidth = PANGO_RBEARING(rc) + font->ixAdd;
          if( iTextWidth > iWidth )
@@ -307,7 +317,7 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
    //yoff = iMaxAscent - font->tm.tmAscent;
 
    // get size of text
-   pango_layout_set_text( hDC->layout, szText, iLen );
+   pango_layout_set_text( hDC->layout, szText, hced_utf8bytes( szText, iLen ) );
    pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
    iWidth = PANGO_RBEARING(rc) + font->ixAdd;
    // Wrap mode off
@@ -353,8 +363,8 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, int x2, char *szText, int iLen,
                ( pattr + lasti )->iFont;
 
          iReqLen = i - lasti;
-         ptr = szText + lasti;
-         while( ptr > szText && *(ptr-1) == ' ' )
+         ptr = szText + hced_utf8bytes( szText, lasti );
+         while( ptr > szText && *(g_utf8_prev_char(ptr)) == ' ' )
          {
             ptr --; iReqLen ++;
          }
@@ -397,8 +407,8 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, int x2, char *szText, int iLen,
             else
                iReqLen = iPrinted - lasti;
             //wrlog( NULL, "x1 = %u ypos= %u len = %u \r\n", x1, ypos, iReqLen );
-            ptr = szText + lasti;
-            while( ptr > szText && *(ptr-1) == ' ' )
+            ptr = szText + hced_utf8bytes( szText, lasti );
+            while( ptr > szText && *(g_utf8_prev_char(ptr)) == ' ' )
             {
                ptr --; iReqLen ++;
             }
@@ -744,7 +754,8 @@ HB_FUNC( HCED_EXACTCARETPOS )
    int xpos = hb_parni(4);
    int y1 = hb_parni(5);
    HB_BOOL bSet = (HB_ISNIL(6))? 1 : hb_parl(6);
-   int i, j, lasti, iReqLen, iRealLen, iPrinted = 0, iLen = hb_parclen(2), iTextWidth;
+   int i, j, lasti, iReqLen, iRealLen, iPrinted = 0, iTextWidth;
+   int iLen = g_utf8_strlen( szText, hb_parclen(2) );
    TEDATTR *pattr = pted->pattr;
    cairo_t *cr;
    PangoLayout * layout;
@@ -759,22 +770,29 @@ HB_FUNC( HCED_EXACTCARETPOS )
          xpos = pted->iWidth + 1;
       if( xpos < x1 )
          xpos = x1;
+      //wrlog( NULL, "---" );
       for( i = 0, lasti = 0; i <= iLen; i++ )
       {
          if( i == iLen || ( pattr + i )->iFont != ( pattr + lasti )->iFont )
          {
             iReqLen = i - lasti;
-            ptr = szText + lasti;
-            while( ptr > szText && *(ptr-1) == ' ' )
+            ptr = szText + hced_utf8bytes( szText, lasti );
+            //wrlog( NULL, "0 lasti = %u diff = %u i = %u iReal = %u ", lasti, ptr-szText, i, iReqLen );
+            /*
+            while( ptr > szText && *(g_utf8_prev_char(ptr)) == ' ' )
             {
+               wrlog( NULL, " ++ " );
                ptr --; iReqLen ++;
             }
+            */
             iRealLen = iReqLen;
+            wrlog( NULL, "1 iReal = %u ", iRealLen );
             x1 += ted_CalcSize( layout, ptr, 
                   pted->pFontsScr + (pattr + lasti)->iFont, &iRealLen,
                   xpos - x1, 0, i == iLen );
+            //wrlog( NULL, "2 iReal = %u \r\n", iRealLen );
             j = iRealLen - 1;
-            while( j >= 0 && *( ptr+j ) == ' ' )
+            while( j >= 0 && *( ptr+hced_utf8bytes(ptr,j) ) == ' ' )
             {
                j --; x1 += (pted->pFontsScr + (pattr + iPrinted)->iFont)->iSpace;
             }
@@ -787,13 +805,15 @@ HB_FUNC( HCED_EXACTCARETPOS )
       if( xpos <= pted->iWidth )
          if( *(szText+iPrinted) )
          {
-            pango_layout_set_text( layout, szText+iPrinted, 1 );
+            ptr = szText + hced_utf8bytes( szText,iPrinted );
+            pango_layout_set_text( layout, ptr, hced_utf8bytes( ptr,1 ) );
             pango_layout_get_pixel_extents( layout, &rc, NULL );
             iTextWidth = PANGO_RBEARING(rc) + (pted->pFontsScr + (pattr + iPrinted)->iFont)->ixAdd;
             if( (x1 + iTextWidth - xpos) < ( xpos - x1 ) )
             {
                x1 += iTextWidth;
                iPrinted ++;
+               //wrlog( NULL, "3 \r\n" );
             }
          }
       g_object_unref( (GObject*) layout );
@@ -807,7 +827,8 @@ HB_FUNC( HCED_EXACTCARETPOS )
       pted->iyCaretPos = y1;
       // wrlog( NULL, "x = %u y = %u\r\n", x1, y1 );
    }
-
+   
+   //wrlog( NULL, "End iPrinted = %u \r\n", iPrinted );
    hb_retni( iPrinted );
 
 }

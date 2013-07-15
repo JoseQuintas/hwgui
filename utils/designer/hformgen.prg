@@ -902,10 +902,12 @@ Local oCtrl, aCoors, nShift
          oDlg:oParent:lChanged := .T.
       ENDIF
    ELSEIF msg == WM_KEYDOWN
+      wParam := hwg_PtrToUlong( wParam )
       IF wParam == 46    // Del
          DeleteCtrl()
       ENDIF
    ELSEIF msg == WM_KEYUP
+      wParam := hwg_PtrToUlong( wParam )
       nShift := Iif( hwg_Getkeystate(17)<0,10,1 )
       oCtrl := GetCtrlSelected( Iif(oDlg:oParent:Classname()=="HDIALOG",oDlg:oParent,oDlg) )
       IF wParam == 40        // Down

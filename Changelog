@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-20 16:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/guilib.ch
+    * call of hwg_SetCtrlName( oCtrl, cName ) added for each control, if the name
+      of control object is defined
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+    * :objName added to HControl and function hwg_SetCtrlName( oCtrl, cName ),
+      which set this data
+  * source/gtk/hcwindow.prg
+  * source/winapi/hcwindow.prg
+    * ERROR HANDLER OnError() added to HCustomWindow to handle calls of controls
+      by their :objName properties
+    The above changes reproduce appropriate functionality of ver.2.17, but in other way.
+
 2013-07-15 12:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/misc.c
   * source/winapi/drawtext.c

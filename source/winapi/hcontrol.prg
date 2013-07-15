@@ -14,12 +14,24 @@
 
 #define  CONTROL_FIRST_ID   34000
 
+Function hwg_SetCtrlName( oCtrl, cName )
+   LOCAL nPos
+
+   IF !Empty( cName ) .AND. ValType( cName ) == "C" .AND. oCtrl:oParent != Nil .AND. ! "[" $ cName
+      IF ( nPos :=  RAt( ":", cName ) ) > 0 .OR. ( nPos :=  RAt( ">", cName ) ) > 0
+         cName := SubStr( cName, nPos + 1 )
+      ENDIF
+      oCtrl:objName := Upper( cName )
+   ENDIF
+
+   RETURN Nil
 
 //- HControl
 
 CLASS HControl INHERIT HCustomWindow
 
    DATA   id
+   DATA   objName
    DATA   tooltip
    DATA   lInit      INIT .F.
    DATA   Anchor     INIT 0

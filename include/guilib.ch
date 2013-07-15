@@ -247,7 +247,8 @@
             [ QUANTITY <nRange> ]               ;
             =>                                  ;
             <oPBar> :=  HProgressBar():New( <oWnd>,<nId>,<x>,<y>,<nWidth>, ;
-                       <nHeight>,<maxpos>,<nRange> )
+                       <nHeight>,<maxpos>,<nRange> );
+            [; hwg_SetCtrlName( <oPBar>,<(oPBar)> )]
 
 #xcommand ADD STATUS [<oStat>] [ TO <oWnd> ] ;
             [ ID <nId> ]           ;
@@ -259,7 +260,8 @@
             [ PARTS <aparts,...> ] ;
           => ;
             [ <oStat> := ] HStatus():New( <oWnd>,<nId>,<nStyle>,<oFont>,\{<aparts>\},<bInit>,;
-                                          <bSize>,<bDraw> )
+                                          <bSize>,<bDraw> );
+            [; hwg_SetCtrlName( <oStat>,<(oStat)> )]
 
 
 #xcommand @ <x>,<y> SAY [ <oSay> CAPTION ] <caption> ;
@@ -277,7 +279,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oSay> := ] HStatic():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-        <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lTransp.> )
+        <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lTransp.> );
+    [; hwg_SetCtrlName( <oSay>,<(oSay)> )]
 
 #xcommand REDEFINE SAY   [ <oSay> CAPTION ] <cCaption>   ;
             [ OF <oWnd> ]              ;
@@ -292,7 +295,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oSay> := ] HStatic():Redefine( <oWnd>,<nId>,<cCaption>, ;
-        <oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lTransp.> )
+        <oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lTransp.> );
+    [; hwg_SetCtrlName( <oSay>,<(oSay)> )]
 
 
 #xcommand @ <x>,<y> BITMAP [ <oBmp> SHOW ] <bitmap> ;
@@ -307,7 +311,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oBmp> := ] HSayBmp():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-        <height>,<bitmap>,<.res.>,<bInit>,<bSize>,<ctoolt>,,,<.lTransp.>,<nStretch> )
+        <height>,<bitmap>,<.res.>,<bInit>,<bSize>,<ctoolt>,,,<.lTransp.>,<nStretch> );
+    [; hwg_SetCtrlName( <oBmp>,<(oBmp)> )]
 
 #xcommand REDEFINE BITMAP [ <oBmp> SHOW ] <bitmap> ;
             [<res: FROM RESOURCE>]     ;
@@ -318,7 +323,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oBmp> := ] HSayBmp():Redefine( <oWnd>,<nId>,<bitmap>,<.res.>, ;
-        <bInit>,<bSize>,<ctoolt> )
+        <bInit>,<bSize>,<ctoolt> );
+    [; hwg_SetCtrlName( <oBmp>,<(oBmp)> )]
 
 #xcommand @ <x>,<y> ICON [ <oIco> SHOW ] <icon> ;
             [<res: FROM RESOURCE>]     ;
@@ -330,7 +336,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oIco> := ] HSayIcon():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-        <height>,<icon>,<.res.>,<bInit>,<bSize>,<ctoolt> )
+        <height>,<icon>,<.res.>,<bInit>,<bSize>,<ctoolt> );
+    [; hwg_SetCtrlName( <oIco>,<(oIco)> )]
 
 #xcommand REDEFINE ICON [ <oIco> SHOW ] <icon> ;
             [<res: FROM RESOURCE>]     ;
@@ -341,7 +348,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oIco> := ] HSayIcon():Redefine( <oWnd>,<nId>,<icon>,<.res.>, ;
-        <bInit>,<bSize>,<ctoolt> )
+        <bInit>,<bSize>,<ctoolt> );
+    [; hwg_SetCtrlName( <oIco>,<(oIco)> )]
 
 #xcommand @ <x>,<y> IMAGE [ <oImage> SHOW ] <image> ;
             [ OF <oWnd> ]              ;
@@ -353,7 +361,8 @@
             [ TYPE <ctype>     ]       ;
           => ;
     [<oImage> := ] HSayFImage():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-        <height>,<image>,<bInit>,<bSize>,<ctoolt>,<ctype> )
+        <height>,<image>,<bInit>,<bSize>,<ctoolt>,<ctype> );
+    [; hwg_SetCtrlName( <oImage>,<(oImage)> )]
 
 #xcommand REDEFINE IMAGE [ <oImage> SHOW ] <image> ;
             [ OF <oWnd> ]              ;
@@ -363,7 +372,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oImage> := ] HSayFImage():Redefine( <oWnd>,<nId>,<image>, ;
-        <bInit>,<bSize>,<ctoolt> )
+        <bInit>,<bSize>,<ctoolt> );
+    [; hwg_SetCtrlName( <oImage>,<(oImage)> )]
 
 
 #xcommand @ <x>,<y> LINE [ <oLine> ]   ;
@@ -373,7 +383,8 @@
             [<lVert: VERTICAL>]        ;
             [ ON SIZE <bSize> ]        ;
           => ;
-    [<oLine> := ] HLine():New( <oWnd>,<nId>,<.lVert.>,<x>,<y>,<length>,<bSize> )
+    [<oLine> := ] HLine():New( <oWnd>,<nId>,<.lVert.>,<x>,<y>,<length>,<bSize> );
+    [; hwg_SetCtrlName( <oLine>,<(oLine)> )]
 
 #xcommand @ <x>,<y> EDITBOX [ <oEdit> CAPTION ] <caption> ;
             [ OF <oWnd> ]              ;
@@ -396,7 +407,8 @@
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<caption>,,<nStyle>,<x>,<y>,<width>, ;
                     <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
-                    <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.>,,<.lPassword.>, <bKeyDown>, <bChange> )
+                    <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.>,,<.lPassword.>, <bKeyDown>, <bChange> );
+    [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 
 
 #xcommand REDEFINE EDITBOX [ <oEdit> ] ;
@@ -413,7 +425,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oEdit> := ] HEdit():Redefine( <oWnd>,<nId>,,,<oFont>,<bInit>,<bSize>,<bDraw>, ;
-                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor> )
+                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor> );
+    [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 
 #xcommand @ <x>,<y> RICHEDIT [ <oEdit> TEXT ] <vari> ;
             [ OF <oWnd> ]              ;
@@ -432,7 +445,8 @@
           => ;
     [<oEdit> := ] HRichEdit():New( <oWnd>,<nId>,<vari>,<nStyle>,<x>,<y>,<width>, ;
                     <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
-                    <bLfocus>,<ctoolt>,<color>,<bcolor> )
+                    <bLfocus>,<ctoolt>,<color>,<bcolor> );
+    [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 
 
 #xcommand @ <x>,<y> BUTTON [ <oBut> CAPTION ] <caption> ;
@@ -450,7 +464,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oBut> := ] HButton():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> )
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> );
+    [; hwg_SetCtrlName( <oBut>,<(oBut)> )]
 
 #xcommand REDEFINE BUTTON [ <oBut> ]   ;
             [ OF <oWnd> ]              ;
@@ -466,7 +481,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oBut> := ] HButton():Redefine( <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>, ;
-                    <bClick>,<ctoolt>,<color>,<bcolor>,<cCaption> )
+                    <bClick>,<ctoolt>,<color>,<bcolor>,<cCaption> );
+    [; hwg_SetCtrlName( <oBut>,<(oBut)> )]
 
 #xcommand @ <x>,<y> GROUPBOX [ <oGroup> CAPTION ] <caption> ;
             [ OF <oWnd> ]              ;
@@ -481,7 +497,8 @@
             [ STYLE <nStyle> ]         ;
           => ;
     [<oGroup> := ] HGroup():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<color>,<bcolor> )
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<color>,<bcolor> );
+    [; hwg_SetCtrlName( <oGroup>,<(oGroup)> )]
 
 #xcommand @ <x>,<y> TREE [ <oTree> ]   ;
             [ OF <oWnd> ]              ;
@@ -498,7 +515,8 @@
             [ BITMAP <aBmp>  [<res: FROM RESOURCE>] [ BITCOUNT <nBC> ] ]  ;
           => ;
     [<oTree> := ] HTree():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<oFont>,<bInit>,<bSize>,<color>,<bcolor>,<aBmp>,<.res.>,<.lEdit.>,<bClick>,<nBC> )
+             <height>,<oFont>,<bInit>,<bSize>,<color>,<bcolor>,<aBmp>,<.res.>,<.lEdit.>,<bClick>,<nBC> );
+    [; hwg_SetCtrlName( <oTree>,<(oTree)> )]
 
 #xcommand INSERT NODE [ <oNode> CAPTION ] <cTitle>  ;
             TO <oTree>                            ;
@@ -526,7 +544,8 @@
           => ;
     [<oTab> := ] HTab():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
              <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<aItems>,<bChange>, <aBmp>, <.res.>,<nBC>,;
-             <bClick>, <bGetFocus>, <bLostFocus> )
+             <bClick>, <bGetFocus>, <bLostFocus> );
+    [; hwg_SetCtrlName( <oTab>,<(oTab)> )]
 
 #xcommand BEGIN PAGE <cname> OF <oTab> ;
           => ;
@@ -559,7 +578,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oCheck> := ] HCheckButton():New( <oWnd>,<nId>,<lInit>,,<nStyle>,<x>,<y>, ;
-         <width>,<height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<bGfocus>,<.lTransp.> )
+         <width>,<height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<bGfocus>,<.lTransp.> );
+    [; hwg_SetCtrlName( <oCheck>,<(oCheck)> )]
 
 #xcommand REDEFINE CHECKBOX [ <oCheck> ] ;
             [ OF <oWnd> ]              ;
@@ -575,7 +595,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oCheck> := ] HCheckButton():Redefine( <oWnd>,<nId>,<lInit>,,<oFont>, ;
-          <bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> )
+          <bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> );
+    [; hwg_SetCtrlName( <oCheck>,<(oCheck)> )]
 
 
 #xcommand RADIOGROUP  ;
@@ -602,7 +623,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oRadio> := ] HRadioButton():New( <oWnd>,<nId>,<nStyle>,<x>,<y>, ;
-         <width>,<height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> )
+         <width>,<height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> );
+    [; hwg_SetCtrlName( <oRadio>,<(oRadio)> )]
 
 #xcommand REDEFINE RADIOBUTTON [ <oRadio> ] ;
             [ OF <oWnd> ]              ;
@@ -617,7 +639,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oRadio> := ] HRadioButton():Redefine( <oWnd>,<nId>,<oFont>,<bInit>,<bSize>, ;
-          <bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> )
+          <bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> );
+    [; hwg_SetCtrlName( <oRadio>,<(oRadio)> )]
 
 
 #xcommand @ <x>,<y> COMBOBOX [ <oCombo> ITEMS ] <aItems> ;
@@ -640,7 +663,8 @@
           => ;
     [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
                   <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt>,;
-                  <.edit.>,<.text.>,,<color>,<bcolor>,,<nDisplay> )
+                  <.edit.>,<.text.>,,<color>,<bcolor>,,<nDisplay> );
+    [; hwg_SetCtrlName( <oCombo>,<(oCombo)> )]
 
 #xcommand REDEFINE COMBOBOX [ <oCombo> ITEMS ] <aItems> ;
             [ OF <oWnd> ]              ;
@@ -654,7 +678,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oCombo> := ] HComboBox():Redefine( <oWnd>,<nId>,<nInit>,,<aItems>,<oFont>,<bInit>, ;
-             <bSize>,<bDraw>,<bChange>,<ctoolt> )
+             <bSize>,<bDraw>,<bChange>,<ctoolt> );
+    [; hwg_SetCtrlName( <oCombo>,<(oCombo)> )]
 
 
 #xcommand @ <x>,<y> UPDOWN [ <oUpd> INIT ] <nInit> ;
@@ -676,7 +701,8 @@
           => ;
     [<oUpd> := ] HUpDown():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
                     <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>,         ;
-                    <bLfocus>,<ctoolt>,<color>,<bcolor>,<nUpDWidth>,<nLower>,<nUpper> )
+                    <bLfocus>,<ctoolt>,<color>,<bcolor>,<nUpDWidth>,<nLower>,<nUpper> );
+    [; hwg_SetCtrlName( <oUpd>,<(oUpd)> )]
 
 
 #xcommand @ <x>,<y> PANEL [ <oPanel> ] ;
@@ -689,7 +715,8 @@
             [ ON PAINT <bDraw> ]       ;
             [ STYLE <nStyle> ]         ;
           => ;
-    [<oPanel> :=] HPanel():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<bInit>,<bSize>,<bDraw>,<bcolor> )
+    [<oPanel> :=] HPanel():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<bInit>,<bSize>,<bDraw>,<bcolor> );
+    [; hwg_SetCtrlName( <oPanel>,<(oPanel)> )]
 
 #xcommand REDEFINE PANEL [ <oPanel> ]  ;
             [ OF <oWnd> ]              ;
@@ -699,7 +726,8 @@
             [ ON PAINT <bDraw> ]       ;
             [ HEIGHT <nHeight> ]       ;
           => ;
-    [<oPanel> :=] HPanel():Redefine( <oWnd>,<nId>,<nHeight>,<bInit>,<bSize>,<bDraw> )
+    [<oPanel> :=] HPanel():Redefine( <oWnd>,<nId>,<nHeight>,<bInit>,<bSize>,<bDraw> );
+    [; hwg_SetCtrlName( <oPanel>,<(oPanel)> )]
 
 #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;
             [ <lArr: ARRAY> ]          ;
@@ -734,7 +762,8 @@
         <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>, ;
         <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.>, <.lAppend.>,;
         <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg>, <.lMulti.>, <.lDescend.>,;
-        <bWhile>, <bFirst>, <bLast>, <bFor>, <bRClick> )
+        <bWhile>, <bFirst>, <bLast>, <bFor>, <bRClick> );
+    [; hwg_SetCtrlName( <oBrw>,<(oBrw)> )]
 
 #xcommand REDEFINE BROWSE [ <oBrw> ]   ;
             [ <lArr: ARRAY> ]          ;
@@ -751,7 +780,8 @@
             [ FONT <oFont> ]           ;
           => ;
     [<oBrw> :=] HBrowse():Redefine( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,Iif(<.lFlt.>,BRW_FILTER,0))),;
-        <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>,<bEnter>,<bGfocus>,<bLfocus> )
+        <oWnd>,<nId>,<oFont>,<bInit>,<bSize>,<bDraw>,<bEnter>,<bGfocus>,<bLfocus> );
+    [; hwg_SetCtrlName( <oBrw>,<(oBrw)> )]
 
 #xcommand ADD COLUMN <block> TO <oBrw> ;
             [ HEADER <cHeader> ]       ;
@@ -818,7 +848,8 @@
                             <oFont>, <{bInit}>, <{bSize}>, <{bPaint}>, <{bEnter}>,;
                             <{bGfocus}>, <{bLfocus}>, <.lNoScroll.>, <.lNoBord.>,;
                             <{bKeyDown}>, <{bPosChg}>, <{bDispInfo}>, <nItemCount>,;
-                             <.lNoLines.>, <color>, <bkcolor>, <.lNoHeader.> ,<aBit>)
+                             <.lNoLines.>, <color>, <bkcolor>, <.lNoHeader.> ,<aBit>);
+    [; hwg_SetCtrlName( <oGrid>,<(oGrid)> )]
 
 #xcommand ADD COLUMN TO GRID <oGrid>    ;
             [ HEADER <cHeader> ]        ;
@@ -853,7 +884,8 @@
           <height>,<bInit>,<bSize>,<bDraw>, ;
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>,<widtht>,<heightt>, ;
-              <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>,<trcolor>, <ctoolt>,!<.enable.> )
+              <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>,<trcolor>, <ctoolt>,!<.enable.> );
+    [; hwg_SetCtrlName( <oOwnBtn>,<(oOwnBtn)> )]
 
 
 #xcommand REDEFINE OWNERBUTTON [ <oOwnBtn> ]  ;
@@ -878,7 +910,8 @@
           <bInit>,<bSize>,<bDraw>, ;
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>,<widtht>,<heightt>, ;
-              <bmp>,<.res.>,<xb>, <yb>,<widthb>,<heightb>,<.ltr.>, <ctoolt>, !<.enable.>)
+              <bmp>,<.res.>,<xb>, <yb>,<widthb>,<heightb>,<.ltr.>, <ctoolt>, !<.enable.>);
+    [; hwg_SetCtrlName( <oOwnBtn>,<(oOwnBtn)> )]
 
 #xcommand @ <x>,<y> SHADEBUTTON [ <oShBtn> ]  ;
             [ OF <oWnd> ]              ;
@@ -908,7 +941,8 @@
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>, ;
               <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>,<trcolor>, ;
-              <ctoolt>,!<.enable.>,<shadeID>,<palet>,<granul>,<highl>,<coloring>,<shcolor> )
+              <ctoolt>,!<.enable.>,<shadeID>,<palet>,<granul>,<highl>,<coloring>,<shcolor> );
+    [; hwg_SetCtrlName( <oShBtn>,<(oShBtn)> )]
 
 #xcommand @ <x>,<y> DATEPICKER [ <oPick> ]  ;
             [ OF <oWnd> ]              ;
@@ -927,7 +961,8 @@
           => ;
     [<oPick> :=] HDatePicker():New( <oWnd>,<nId>,<dInit>,,<nStyle>,<x>,<y>, ;
         <width>,<height>,<oFont>,<bInit>,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>, ;
-        <color>,<bcolor> )
+        <color>,<bcolor> );
+    [; hwg_SetCtrlName( <oPick>,<(oPick)> )]
 
 
 #xcommand @ <x>,<y> SPLITTER [ <oSplit> ] ;
@@ -940,7 +975,8 @@
             [ ON PAINT <bDraw> ]       ;
             [ DIVIDE <aLeft> FROM <aRight> ] ;
           => ;
-    [<oSplit> :=] HSplitter():New( <oWnd>,<nId>,<x>,<y>,<width>,<height>,<bSize>,<bDraw>,<color>,<bcolor>,<aLeft>,<aRight> )
+    [<oSplit> :=] HSplitter():New( <oWnd>,<nId>,<x>,<y>,<width>,<height>,<bSize>,<bDraw>,<color>,<bcolor>,<aLeft>,<aRight> );
+    [; hwg_SetCtrlName( <oSplit>,<(oSplit)> )]
 
 
 #xcommand PREPARE FONT <oFont>       ;
@@ -985,7 +1021,8 @@
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<vari>,               ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;
                    <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,,,  ;
-                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<.lnoborder.>,<nMaxLength>,<.lPassword.>,<bKeyDown>,<bChange> )
+                   <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<.lnoborder.>,<nMaxLength>,<.lPassword.>,<bKeyDown>,<bChange> );
+    [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 
 #xcommand REDEFINE GET [ <oEdit> VAR ] <vari>  ;
             [ OF <oWnd> ]              ;
@@ -1001,7 +1038,8 @@
           => ;
     [<oEdit> := ] HEdit():Redefine( <oWnd>,<nId>,<vari>, ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},    ;
-                   <oFont>,,,,<{bGfocus}>,<{bLfocus}>,<ctoolt>,<color>,<bcolor>,<cPicture>,<nMaxLength>,<(vari)> )
+                   <oFont>,,,,<{bGfocus}>,<{bLfocus}>,<ctoolt>,<color>,<bcolor>,<cPicture>,<nMaxLength>,<(vari)> );
+    [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 
 
 #xcommand @ <x>,<y> GET CHECKBOX [ <oCheck> VAR ] <vari>  ;
@@ -1021,7 +1059,8 @@
     [<oCheck> := ] HCheckButton():New( <oWnd>,<nId>,<vari>,              ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},                   ;
                     <nStyle>,<x>,<y>,<width>,<height>,<caption>,<oFont>, ;
-                    ,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen>,<.lTransp.> )
+                    ,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen>,<.lTransp.> );
+    [; hwg_SetCtrlName( <oCheck>,<(oCheck)> )]
 
 #xcommand REDEFINE GET CHECKBOX [ <oCheck> VAR ] <vari>  ;
             [ OF <oWnd> ]              ;
@@ -1035,7 +1074,8 @@
           => ;
     [<oCheck> := ] HCheckButton():Redefine( <oWnd>,<nId>,<vari>, ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},           ;
-                    <oFont>,,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen> )
+                    <oFont>,,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen> );
+    [; hwg_SetCtrlName( <oCheck>,<(oCheck)> )]
 
 #xcommand @ <x>,<y> GET COMBOBOX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;
@@ -1058,7 +1098,8 @@
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
                     <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
-                    <.edit.>,<.text.>,<bWhen>,<color>,<bcolor>,<bValid>,<nDisplay> )
+                    <.edit.>,<.text.>,<bWhen>,<color>,<bcolor>,<bValid>,<nDisplay> );
+    [; hwg_SetCtrlName( <oCombo>,<(oCombo)> )]
 
 #xcommand REDEFINE GET COMBOBOX [ <oCombo> VAR ] <vari> ;
             ITEMS  <aItems>            ;
@@ -1071,7 +1112,8 @@
           => ;
     [<oCombo> := ] HComboBox():Redefine( <oWnd>,<nId>,<vari>, ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},        ;
-                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>, <bWhen> )
+                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>, <bWhen> );
+    [; hwg_SetCtrlName( <oCombo>,<(oCombo)> )]
 
 #xcommand @ <x>,<y> GET UPDOWN [ <oUpd> VAR ]  <vari>  ;
             RANGE <nLower>,<nUpper>    ;
@@ -1092,7 +1134,8 @@
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},              ;
                     <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,,,  ;
                     <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>, ;
-                    <nUpDWidth>,<nLower>,<nUpper> )
+                    <nUpDWidth>,<nLower>,<nUpper> );
+    [; hwg_SetCtrlName( <oUpd>,<(oUpd)> )]
 
 
 #xcommand @ <x>,<y> GET DATEPICKER [ <oPick> VAR ] <vari> ;
@@ -1111,7 +1154,8 @@
     [<oPick> :=] HDatePicker():New( <oWnd>,<nId>,<vari>,    ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
-                    <oFont>,,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>,<color>,<bcolor> )
+                    <oFont>,,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>,<color>,<bcolor> );
+    [; hwg_SetCtrlName( <oPick>,<(oPick)> )]
 
 
 #xcommand SAY <value> TO <oDlg> ID <id> ;
@@ -1182,7 +1226,8 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oGraph> := ] HGraph():New( <oWnd>,<nId>,<aData>,<x>,<y>,<width>, ;
-        <height>,<oFont>,<bSize>,<ctoolt>,<color>,<bcolor> )
+        <height>,<oFont>,<bSize>,<ctoolt>,<color>,<bcolor> );
+    [; hwg_SetCtrlName( <oGraph>,<(oGraph)> )]
 
 /* open an .dll resource */
 #xcommand SET RESOURCES TO <cName1> ;
@@ -1207,7 +1252,8 @@
             [ ON GETFOCUS <bGfocus> ]      ;
             [ ON LOSTFOCUS <bLfocus> ]     ;
           => ;
-    [<oIp> := ] HIpEdit():New( <oWnd>,<nId>,<vari>,{|v| iif(v==Nil,<vari>,<vari>:=v)},<nStyle>,<x>,<y>,<width>,<height>,<oFont>, <bGfocus>, <bLfocus> )
+    [<oIp> := ] HIpEdit():New( <oWnd>,<nId>,<vari>,{|v| iif(v==Nil,<vari>,<vari>:=v)},<nStyle>,<x>,<y>,<width>,<height>,<oFont>, <bGfocus>, <bLfocus> );
+    [; hwg_SetCtrlName( <oIp>,<(oIp)> )]
 
 #define ISOBJECT(c)    ( Valtype(c) == "O" )
 #define ISBLOCK(c)    ( Valtype(c) == "B" )
@@ -1244,7 +1290,6 @@
           =>  ;
           <oPrinter> := HPrinter():New( "",!<.lPixel.> )
 
-
 /*
 Command for MonthCalendar Class
 Added by Marcos Antonio Gambeta
@@ -1266,8 +1311,8 @@ Added by Marcos Antonio Gambeta
           => ;
     [<oMonthCalendar> :=] HMonthCalendar():New( <oWnd>,<nId>,<dInit>,<nStyle>,;
         <x>,<y>,<nWidth>,<nHeight>,<oFont>,<bInit>,<bChange>,<cTooltip>,;
-        <.notoday.>,<.notodaycircle.>,<.weeknumbers.>)
-
+        <.notoday.>,<.notodaycircle.>,<.weeknumbers.>);
+    [; hwg_SetCtrlName( <oMonthCalendar>,<(oMonthCalendar)> )]
 
 /*By Vitor Maclung */
 // Commands for Listbox handling
@@ -1287,7 +1332,8 @@ Added by Marcos Antonio Gambeta
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oListbox> := ] HListBox():New( <oWnd>,<nId>,<nInit>,,<nStyle>,<x>,<y>,<width>, ;
-                  <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt> )
+                  <height>,<aItems>,<oFont>,<bInit>,<bSize>,<bDraw>,<bChange>,<ctoolt> );
+    [; hwg_SetCtrlName( <oListbox>,<(oListbox)> )]
 
 #xcommand REDEFINE LISTBOX [ <oListbox> ITEMS ] <aItems> ;
             [ OF <oWnd> ]              ;
@@ -1301,7 +1347,8 @@ Added by Marcos Antonio Gambeta
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oListbox> := ] HListBox():Redefine( <oWnd>,<nId>,<nInit>,,<aItems>,<oFont>,<bInit>, ;
-             <bSize>,<bDraw>,<bChange>,<ctoolt> )
+             <bSize>,<bDraw>,<bChange>,<ctoolt> );
+    [; hwg_SetCtrlName( <oListbox>,<(oListbox)> )]
 
 /* Add Sandro R. R. Freire */
 
@@ -1311,7 +1358,8 @@ Added by Marcos Antonio Gambeta
             [WIDTH <w>];
             [HEIGHT <h>];
           => ;
-   [ <osplash> := ] HSplash():Create(<oBitmap>,<otime>,<.res.>,<w>,<h>)
+   [ <osplash> := ] HSplash():Create(<oBitmap>,<otime>,<.res.>,<w>,<h>);
+   [; hwg_SetCtrlName( <osplash>,<(osplash)> )]
 
 // Nice Buttons by Luiz Rafael
 #xcommand @ <x>,<y> NICEBUTTON [ <oBut> CAPTION ] <caption> ;
@@ -1328,7 +1376,8 @@ Added by Marcos Antonio Gambeta
             [ BLUE <b> ];
           => ;
     [<oBut> := ] HNicebutton():New( <oWnd>,<nId>,<nStyle>,<nStyleEx>,<x>,<y>,<width>, ;
-             <height>,<bInit>,<bClick>,<caption>,<ctoolt>,<r>,<g>,<b> )
+             <height>,<bInit>,<bClick>,<caption>,<ctoolt>,<r>,<g>,<b> );
+    [; hwg_SetCtrlName( <oBut>,<(oBut)> )]
 
 
 #xcommand REDEFINE NICEBUTTON [ <oBut> CAPTION ] <caption> ;
@@ -1343,7 +1392,8 @@ Added by Marcos Antonio Gambeta
             [ BLUE <b> ];
           => ;
     [<oBut> := ] HNicebutton():Redefine( <oWnd>,<nId>,<nStyleEx>, ;
-             <bInit>,<bClick>,<caption>,<ctoolt>,<r>,<g>,<b> )
+             <bInit>,<bClick>,<caption>,<ctoolt>,<r>,<g>,<b> );
+    [; hwg_SetCtrlName( <oBut>,<(oBut)> )]
 
 // trackbar control
 #xcommand @ <x>,<y> TRACKBAR [ <oTrackBar> ]  ;
@@ -1369,7 +1419,8 @@ Added by Marcos Antonio Gambeta
     [<oTrackBar> :=] HTrackBar():New( <oWnd>,<nId>,<nInit>,<nStyle>,<x>,<y>,      ;
         <width>,<height>,<bInit>,<bSize>,<bDraw>,<cTooltip>,<bChange>,<bDrag>,<nLow>,<nHigh>,<.vertical.>,;
         Iif(<.autoticks.>,1,Iif(<.noticks.>,16,0)), ;
-        Iif(<.both.>,8,Iif(<.top.>.or.<.left.>,4,0)) )
+        Iif(<.both.>,8,Iif(<.top.>.or.<.left.>,4,0)) );
+    [; hwg_SetCtrlName( <oTrackBar>,<(oTrackBar)> )]
 
 // animation control
 #xcommand @ <x>,<y>  ANIMATION [ <oAnimation> ] ;
@@ -1383,11 +1434,13 @@ Added by Marcos Antonio Gambeta
             [ < transparent: TRANSPARENT > ]    ;
 	=>;
     [<oAnimation> :=] HAnimation():New( <oWnd>,<nId>,<nStyle>,<x>,<y>, ;
-        <nWidth>,<nHeight>,<cFile>,<.autoplay.>,<.center.>,<.transparent.>)
+        <nWidth>,<nHeight>,<cFile>,<.autoplay.>,<.center.>,<.transparent.>);
+    [; hwg_SetCtrlName( <oAnimation>,<(oAnimation)> )]
 
 //Contribution   Ricardo de Moura Marques
 #xcommand @ <X>, <Y>, <X2>, <Y2> RECT <oRect> [<lPress: PRESS>] [OF <oWnd>] [RECT_STYLE <nST>];
-          => <oRect> := HRect():New(<oWnd>,<X>,<Y>,<X2>,<Y2>, <.lPress.>, <nST> )
+          => <oRect> := HRect():New(<oWnd>,<X>,<Y>,<X2>,<Y2>, <.lPress.>, <nST> );
+          [; hwg_SetCtrlName( <oRect>,<(oRect)> )]
 
 //New Control
 #xcommand @ <x>,<y> SAY [ <oSay> CAPTION ] <caption> ;
@@ -1410,7 +1463,8 @@ Added by Marcos Antonio Gambeta
           => ;
     [<oSay> := ] HStaticLink():New( <oWnd>, <nId>, <nStyle>, <x>, <y>, <width>, ;
         <height>, <caption>, <oFont>, <bInit>, <bSize>, <bDraw>, <ctoolt>, ;
-        <color>, <bcolor>, <.lTransp.>, <cLink>, <vcolor>, <lcolor>, <hcolor> )
+        <color>, <bcolor>, <.lTransp.>, <cLink>, <vcolor>, <lcolor>, <hcolor> );
+    [; hwg_SetCtrlName( <oSay>,<(oSay)> )]
 
 
 #xcommand REDEFINE SAY [ <oSay> CAPTION ] <cCaption>      ;
@@ -1431,7 +1485,8 @@ Added by Marcos Antonio Gambeta
           => ;
     [<oSay> := ] HStaticLink():Redefine( <oWnd>, <nId>, <cCaption>, ;
         <oFont>, <bInit>, <bSize>, <bDraw>, <ctoolt>, <color>, <bcolor>,;
-        <.lTransp.>, <cLink>, <vcolor>, <lcolor>, <hcolor> )
+        <.lTransp.>, <cLink>, <vcolor>, <lcolor>, <hcolor> );
+    [; hwg_SetCtrlName( <oSay>,<(oSay)> )]
 
 #xcommand TOOLBUTTON  <O> ;
           ID <nId> ;
@@ -1452,9 +1507,10 @@ Added by Marcos Antonio Gambeta
             [ STYLE <nStyle> ]         ;
             [ ITEMS <aItems> ] ;
           => ;
-    [<oTool> := ] Htoolbar():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,,,,<aItems>  )
+    [<oTool> := ] Htoolbar():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,,,,<aItems>  );
+    [; hwg_SetCtrlName( <oTool>,<(oTool)> )]
 
-#xcommand REDEFINE TOOLBAR  <oSay>  ;
+#xcommand REDEFINE TOOLBAR  <oTool>    ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
             [ ON INIT <bInit> ]        ;
@@ -1462,7 +1518,8 @@ Added by Marcos Antonio Gambeta
             [ ON PAINT <bDraw> ]       ;
             [ ITEM <aitem>];
           => ;
-    [<oSay> := ] Htoolbar():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<aitem> )
+    [<oTool> := ] Htoolbar():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<aitem> );
+    [; hwg_SetCtrlName( <oTool>,<(oTool)> )]
 
 #xcommand CREATE MENUBAR <o> => <o> := \{ \}
 
@@ -1504,7 +1561,7 @@ Added by Marcos Antonio Gambeta
             => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> [, <cHeadern>, <nn>,<colorn>,<bkcolorn> ]\})
 
 
-#xcommand REDEFINE TAB  <oSay>  ;
+#xcommand REDEFINE TAB  <oTab>  ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
             [ ON INIT <bInit> ]        ;
@@ -1512,7 +1569,8 @@ Added by Marcos Antonio Gambeta
             [ ON PAINT <bDraw> ]       ;
             [ ON CHANGE <bChange> ]    ;
           => ;
-    [<oSay> := ] Htab():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<bChange> )
+    [<oTab> := ] Htab():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<bChange> );
+    [; hwg_SetCtrlName( <oTab>,<(oTab)> )]
 
 
 #xcommand REDEFINE STATUS  <oSay>  ;
@@ -1523,7 +1581,8 @@ Added by Marcos Antonio Gambeta
             [ ON PAINT <bDraw> ]       ;
             [ PARTS <bChange,...> ]    ;
           => ;
-    [<oSay> := ] HStatus():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,\{<bChange>\} ) 
+    [<oSay> := ] HStatus():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,\{<bChange>\} ) ;
+    [; hwg_SetCtrlName( <oSay>,<(oSay)> )]
                                                                                       
 
 #xcommand REDEFINE GRID  <oSay>  ;
@@ -1534,7 +1593,8 @@ Added by Marcos Antonio Gambeta
             [ ON PAINT <bDraw> ]       ;
             [ ITEM <aitem>];
           => ;
-    [<oSay> := ] HGRIDex():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<aitem> )
+    [<oSay> := ] HGRIDex():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<aitem> );
+    [; hwg_SetCtrlName( <oSay>,<(oSay)> )]
 
 
 #xcommand @ <x>,<y> PAGER [ <oTool> ] ;
@@ -1544,7 +1604,8 @@ Added by Marcos Antonio Gambeta
             [ STYLE <nStyle> ]         ;
             [ <lVert: VERTICAL> ] ;
           => ;
-    [<oTool> := ]        HPager():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,,<.lVert.>)
+    [<oTool> := ] HPager():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,,<.lVert.>);
+    [; hwg_SetCtrlName( <oTool>,<(oTool)> )]
 
 #xcommand @ <x>,<y> REBAR [ <oTool> ] ;
             [ OF <oWnd> ]              ;
@@ -1552,7 +1613,8 @@ Added by Marcos Antonio Gambeta
             [ SIZE <width>, <height> ] ;
             [ STYLE <nStyle> ]         ;
           => ;
-    [<oTool> := ]        HREBAR():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,)
+    [<oTool> := ] HREBAR():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, <height>,,,,,,,,);
+    [; hwg_SetCtrlName( <oTool>,<(oTool)> )]
 
 #xcommand ADDBAND <hWnd> to <opage> ;
           [BACKCOLOR <b> ] [FORECOLOR <f>] ;
@@ -1579,4 +1641,5 @@ Added by Marcos Antonio Gambeta
              [ ON SIZE <bSize> ]        ;
           => ;
           [ <oShape> := ] HShape():New(<oWnd>, <nId>, <x>, <y>, <width>, <height>, ;
-             <nBorder>, <nCurvature>, <nbStyle>,<nfStyle>, <tcolor>, <bcolor>, <bSize>,<bInit>,<nbackStyle>);;
+             <nBorder>, <nCurvature>, <nbStyle>,<nfStyle>, <tcolor>, <bcolor>, <bSize>,<bInit>,<nbackStyle>);
+          [; hwg_SetCtrlName( <oShape>,<(oShape)> )]

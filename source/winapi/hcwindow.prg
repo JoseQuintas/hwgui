@@ -11,6 +11,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#include "error.ch"
 
 #define EVENTS_MESSAGES 1
 #define EVENTS_ACTIONS  2
@@ -81,6 +82,7 @@ CLASS HCustomWindow INHERIT HObject
    METHOD Move( x1, y1, width, height )
    METHOD onEvent( msg, wParam, lParam )
    METHOD End()
+   ERROR HANDLER OnError()
 
 ENDCLASS
 
@@ -172,6 +174,34 @@ METHOD End()  CLASS HCustomWindow
          aControls[ i ]:End()
       NEXT
    ENDIF
+
+   RETURN NIL
+
+METHOD OnError() CLASS HCustomWindow
+
+   LOCAL cMsg := __GetMessage()
+   LOCAL oError
+   LOCAL aControls := ::aControls, oItem
+
+   FOR EACH oItem IN aControls
+      IF !Empty( oItem:objname ) .AND. oItem:objname == cMsg
+         RETURN oItem
+      ENDIF
+   NEXT
+
+   oError := ErrorNew()
+   oError:severity    := ES_ERROR
+   oError:genCode     := EG_LIMIT
+   oError:subSystem   := "HCUSTOMWINDOW"
+   oError:subCode     := 0
+   oError:description := "Invalid class member"
+   oError:canRetry    := .F.
+   oError:canDefault  := .F.
+   oError:fileName    := ""
+   oError:osCode      := 0
+
+   Eval( ErrorBlock(), oError )
+   __errInHandler()
 
    RETURN NIL
 

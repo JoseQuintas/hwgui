@@ -11,6 +11,7 @@
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#include "error.ch"
 
 static aCustomEvents := { ;
       { WM_NOTIFY,WM_PAINT,WM_CTLCOLORSTATIC,WM_CTLCOLOREDIT,WM_CTLCOLORBTN, ;
@@ -68,6 +69,7 @@ CLASS HCustomWindow INHERIT HObject
    METHOD Move( x1,y1,width,height )
    METHOD onEvent( msg, wParam, lParam )
    METHOD End()
+   ERROR HANDLER OnError()
 
 ENDCLASS
 
@@ -152,6 +154,35 @@ Local i, nLen := Len( aControls )
    hwg_ReleaseObject( ::handle )
 
 Return Nil
+
+METHOD OnError() CLASS HCustomWindow
+
+   LOCAL cMsg := __GetMessage()
+   LOCAL oError
+   LOCAL aControls := ::aControls, oItem
+
+   FOR EACH oItem IN aControls
+      IF !Empty( oItem:objname ) .AND. oItem:objname == cMsg
+         RETURN oItem
+      ENDIF
+   NEXT
+
+   oError := ErrorNew()
+   oError:severity    := ES_ERROR
+   oError:genCode     := EG_LIMIT
+   oError:subSystem   := "HCUSTOMWINDOW"
+   oError:subCode     := 0
+   oError:description := "Invalid class member"
+   oError:canRetry    := .F.
+   oError:canDefault  := .F.
+   oError:fileName    := ""
+   oError:osCode      := 0
+
+   Eval( ErrorBlock(), oError )
+   __errInHandler()
+
+   RETURN NIL
+
 
 Static Function onNotify( oWnd,wParam,lParam )
 Local iItem, oCtrl := oWnd:FindControl( wParam ), nCode, res, handle, oItem

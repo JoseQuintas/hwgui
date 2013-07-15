@@ -106,7 +106,6 @@
 #xtranslate Hiword([<n,...>])                 => hwg_Hiword(<n>)
 #xtranslate Setbit([<n,...>])                 => hwg_Setbit(<n>)
 #xtranslate Checkbit([<n,...>])               => hwg_Checkbit(<n>)
-#xtranslate Numtohex([<n,...>])               => hwg_Numtohex(<n>)
 #xtranslate Getdesktopwidth([<n,...>])        => hwg_Getdesktopwidth(<n>)
 #xtranslate Getdesktopheight([<n,...>])       => hwg_Getdesktopheight(<n>)
 #xtranslate Hidewindow([<n,...>])             => hwg_Hidewindow(<n>)

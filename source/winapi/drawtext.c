@@ -15,10 +15,6 @@
 #include "hbvm.h"
 #include "hbstack.h"
 
-HB_FUNC_EXTERN( HB_OEMTOANSI );
-HB_FUNC_EXTERN( HB_ANSITOOEM );
-
-
 HB_FUNC( HWG_DEFINEPAINTSTRU )
 {
    PAINTSTRUCT *pps = ( PAINTSTRUCT * ) hb_xgrab( sizeof( PAINTSTRUCT ) );
@@ -396,16 +392,6 @@ HB_FUNC( HWG_SETCTRLFONT )
 {
    SendDlgItemMessage( ( HWND ) HB_PARHANDLE( 1 ), hb_parni( 2 ), WM_SETFONT,
          ( WPARAM ) HB_PARHANDLE( 3 ), 0L );
-}
-
-HB_FUNC( HWG_OEMTOANSI )
-{
-   HB_FUNC_EXEC( HB_OEMTOANSI );
-}
-
-HB_FUNC( HWG_ANSITOOEM )
-{
-   HB_FUNC_EXEC( HB_ANSITOOEM );
 }
 
 HB_FUNC( HWG_CREATERECTRGN )

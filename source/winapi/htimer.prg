@@ -22,53 +22,57 @@ CLASS HTimer INHERIT HObject
    DATA oParent
    DATA bAction
 
-   METHOD New( oParent,id,value,bAction )
+   METHOD New( oParent, id, value, bAction )
    METHOD End()
 
 ENDCLASS
 
-METHOD New( oParent,nId,value,bAction ) CLASS HTimer
+METHOD New( oParent, nId, value, bAction ) CLASS HTimer
 
-   ::oParent := Iif( oParent==Nil, HWindow():GetMain(), oParent )
-   ::id      := Iif( nId==Nil, TIMER_FIRST_ID + Len( ::oParent:aControls ), ;
-                         nId )
+   ::oParent := iif( oParent == Nil, HWindow():GetMain(), oParent )
+   ::id      := iif( nId == Nil, TIMER_FIRST_ID + Len( ::oParent:aControls ), ;
+      nId )
    ::value   := value
    ::bAction := bAction
 
    hwg_Settimer( oParent:handle, ::id, ::value )
-   Aadd( ::aTimers,Self )
+   AAdd( ::aTimers, Self )
 
-Return Self
+   RETURN Self
 
 METHOD End() CLASS HTimer
-Local i
+   LOCAL i
 
-   hwg_Killtimer( ::oParent:handle,::id )
-   i := Ascan( ::aTimers,{|o|o:id==::id} )
+   hwg_Killtimer( ::oParent:handle, ::id )
+   i := Ascan( ::aTimers, { |o|o:id == ::id } )
    IF i != 0
-      Adel( ::aTimers,i )
-      Asize( ::aTimers,Len( ::aTimers )-1 )
+      ADel( ::aTimers, i )
+      ASize( ::aTimers, Len( ::aTimers ) - 1 )
    ENDIF
 
-Return Nil
+   RETURN Nil
 
-Function hwg_TimerProc( hWnd, idTimer, time )
+FUNCTION hwg_TimerProc( hWnd, idTimer, time )
 
-Local i := Ascan( HTimer():aTimers,{|o|o:id==idTimer} )
+   LOCAL i := Ascan( HTimer():aTimers, { |o|o:id == idTimer } )
 
    IF i != 0
-      Eval( HTimer():aTimers[i]:bAction,time )
+      Eval( HTimer():aTimers[i]:bAction, time )
    ENDIF
 
-Return Nil
+   RETURN Nil
 
-EXIT PROCEDURE CleanTimers
-Local oTimer, i
+FUNCTION hwg_ReleaseTimers()
+   LOCAL oTimer, i
 
    For i := 1 TO Len( HTimer():aTimers )
       oTimer := HTimer():aTimers[i]
-      hwg_Killtimer( oTimer:oParent:handle,oTimer:id )
+      hwg_Killtimer( oTimer:oParent:handle, oTimer:id )
    NEXT
 
-Return
+   RETURN Nil
 
+   EXIT PROCEDURE CleanTimers
+   hwg_ReleaseTimers()
+
+   RETURN

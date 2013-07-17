@@ -73,6 +73,7 @@ STATIC FUNCTION DefError( oError )
 
    MemoWrit( LogInitialPath + "Error.log", cMessage )
 
+   hwg_ReleaseTimers()
    ErrorPreview( cMessage )
    hwg_EndWindow()
    hwg_Postquitmessage( 0 )

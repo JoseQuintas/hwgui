@@ -16,6 +16,7 @@
 #define TRANSPARENT 1
 #define IDTOOLBAR 700
 #define IDMAXBUTTONTOOLBAR 64
+#define RT_MANIFEST  24
 
 CLASS HToolButton INHERIT HObject
 
@@ -121,6 +122,7 @@ METHOD Checked( lcheck ) CLASS HToolButton
 
 CLASS HToolBar INHERIT HControl
 
+   CLASS VAR WindowsManifest INIT !EMPTY(hwg_Findresource( , 1 , RT_MANIFEST ) ) SHARED
    DATA winclass INIT "ToolbarWindow32"
    DATA TEXT, id, nTop, nLeft, nwidth, nheight
    CLASSDATA oSelected INIT Nil

@@ -57,7 +57,7 @@
 
 #include "fileio.ch"
 
-#define DEBUG_PROTO_VERSION     1
+#define DEBUG_PROTO_VERSION     2
 
 #define CMD_GO                  1
 #define CMD_STEP                2
@@ -71,10 +71,12 @@
 #define CMD_CALC               10
 #define CMD_STACK              11
 #define CMD_LOCAL              12
-#define CMD_WATCH              13
-#define CMD_WADD               14
-#define CMD_WDEL               15
-#define CMD_AREAS              16
+#define CMD_PRIVATE            13
+#define CMD_PUBLIC             14
+#define CMD_WATCH              15
+#define CMD_WADD               16
+#define CMD_WDEL               17
+#define CMD_AREAS              18
 
 #ifdef __XHARBOUR__
 #xtranslate HB_AT([<n,...>]) =>  AT(<n>)
@@ -220,7 +222,7 @@ Local arr := hb_aParams(), i, s := ""
 Return Nil
 
 
-Function hwg_dbg_SetActiveLine( cPrgName, nLine, aStack, aLocals, aWatch )
+Function hwg_dbg_SetActiveLine( cPrgName, nLine, aStack, aVars, aWatch, nVarType )
 Local i, s := cPrgName + "," + Ltrim(Str(nLine)), nLen
 
    IF !lDebugRun ; Return Nil; ENDIF
@@ -235,11 +237,12 @@ Local i, s := cPrgName + "," + Ltrim(Str(nLine)), nLen
          s += "," + aStack[i]
       NEXT
    ENDIF
-   IF aLocals != Nil
-      s += ",valuelocal," + aLocals[1]
-      nLen := Len( aLocals )
+   IF aVars != Nil
+      s += Iif( nVarType==1, ",valuelocal,", ;
+            Iif( nVarType==2, ",valuepriv,", ",valuepubl," ) ) + aVars[1]
+      nLen := Len( aVars )
       FOR i := 2 TO nLen
-         s += "," + Str2Hex(aLocals[i])
+         s += "," + Str2Hex(aVars[i])
       NEXT
    ENDIF
    IF aWatch != Nil
@@ -317,6 +320,12 @@ Local n, cmd, arr
                ELSEIF arr[3] == "local"
                   p1 := arr[4]
                   Return CMD_LOCAL
+               ELSEIF arr[3] == "priv"
+                  p1 := arr[4]
+                  Return CMD_PRIVATE
+               ELSEIF arr[3] == "publ"
+                  p1 := arr[4]
+                  Return CMD_PUBLIC
                ELSEIF arr[3] == "watch"
                   p1 := arr[4]
                   Return CMD_WATCH

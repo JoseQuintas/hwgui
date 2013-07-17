@@ -112,10 +112,12 @@
 #define CMD_CALC               10
 #define CMD_STACK              11
 #define CMD_LOCAL              12
-#define CMD_WATCH              13
-#define CMD_WADD               14
-#define CMD_WDEL               15
-#define CMD_AREAS              16
+#define CMD_PRIVATE            13
+#define CMD_PUBLIC             14
+#define CMD_WATCH              15
+#define CMD_WADD               16
+#define CMD_WDEL               17
+#define CMD_AREAS              18
 
 #define VAR_MAX_LEN            72
 
@@ -216,6 +218,8 @@ CLASS HBDebugger
 
    VAR lViewStack        INIT .F.
    VAR lShowLocals       INIT .F.
+   VAR lShowPrivate      INIT .F.
+   VAR lShowPublic       INIT .F.
    VAR lShowWatch        INIT .F.
    VAR lGo                          // stores if GO was requested
    VAR lActive           INIT .F.
@@ -397,9 +401,30 @@ METHOD HandleEvent() CLASS HBDebugger
       CASE nKey == CMD_LOCAL
          IF p1 == "on"
             ::lShowLocals := .T.
+            ::lShowPrivate := ::lShowPublic := .F.
             hwg_dbg_Answer( "valuelocal", SendLocal() )
          ELSE
-            ::lShowLocals := .F.
+            ::lShowLocals := ::lShowPrivate := ::lShowPublic := .F.
+            hwg_dbg_Answer( "ok" )
+         ENDIF
+
+      CASE nKey == CMD_PRIVATE
+         IF p1 == "on"
+            ::lShowPrivate := .T.
+            ::lShowLocals := ::lShowPublic := .F.
+            hwg_dbg_Answer( "valuepriv", SendPrivate() )
+         ELSE
+            ::lShowLocals := ::lShowPrivate := ::lShowPublic := .F.
+            hwg_dbg_Answer( "ok" )
+         ENDIF
+
+      CASE nKey == CMD_PUBLIC
+         IF p1 == "on"
+            ::lShowPublic := .T.
+            ::lShowPrivate := ::lShowLocals := .F.
+            hwg_dbg_Answer( "valuepubl", SendPublic() )
+         ELSE
+            ::lShowLocals := ::lShowPrivate := ::lShowPublic := .F.
             hwg_dbg_Answer( "ok" )
          ENDIF
 
@@ -485,8 +510,13 @@ METHOD ShowCodeLine( nProc ) CLASS HBDebugger
       IF ! Empty( cPrgName )
          hwg_dbg_SetActiveLine( cPrgName, nLine, ;
                Iif( ::lViewStack, SendStack(), Nil ),  ;
-               Iif( ::lShowLocals, SendLocal(), Nil ), ;
-               Iif( ::lShowWatch .AND. (::nWatches > 0), SendWatch(), Nil ) )
+               Iif( ::lShowLocals, SendLocal(), ;
+                  Iif( ::lShowPrivate, SendPrivate(), ;
+                     Iif( ::lShowPublic, SendPublic(), Nil ) ) ), ;
+               Iif( ::lShowWatch .AND. (::nWatches > 0), SendWatch(), Nil ), ;
+               Iif( ::lShowLocals, 1, ;
+                  Iif( ::lShowPrivate, 2, ;
+                     Iif( ::lShowPublic, 3, Nil ) ) ) )
       ENDIF
    ENDIF
 
@@ -578,6 +608,40 @@ Local arr := Array( Len( aVars ) * 3 + 1 ), i, j := 1, xVal
       xVal := __dbgvmVarLGet( __dbgprocLevel() - aVars[i,VAR_LEVEL], aVars[i,VAR_POS] )
       arr[++j] := Valtype( xVal )
       arr[++j] := __dbgValToStr( xVal )
+      IF Len( arr[j] ) > VAR_MAX_LEN
+         arr[j] := Left( arr[j], VAR_MAX_LEN )
+      ENDIF
+   NEXT
+
+   RETURN arr
+
+STATIC FUNCTION SendPrivate()
+Local nCount := __mvDbgInfo( HB_MV_PRIVATE )
+Local arr := Array( nCount * 3 + 1 ), cName, xValue, i, j := 1
+
+   arr[1] := Ltrim( Str( nCount ) )
+   FOR i := 1 TO nCount
+      xValue := __mvDbgInfo( HB_MV_PRIVATE, i, @cName )
+      arr[++j] := cName
+      arr[++j] := Valtype( xValue )
+      arr[++j] := __dbgValToStr( xValue )
+      IF Len( arr[j] ) > VAR_MAX_LEN
+         arr[j] := Left( arr[j], VAR_MAX_LEN )
+      ENDIF
+   NEXT
+
+   RETURN arr
+
+STATIC FUNCTION SendPublic()
+Local nCount := __mvDbgInfo( HB_MV_PUBLIC )
+Local arr := Array( nCount * 3 + 1 ), cName, xValue, i, j := 1
+
+   arr[1] := Ltrim( Str( nCount ) )
+   FOR i := 1 TO nCount
+      xValue := __mvDbgInfo( HB_MV_PUBLIC, i, @cName )
+      arr[++j] := cName
+      arr[++j] := Valtype( xValue )
+      arr[++j] := __dbgValToStr( xValue )
       IF Len( arr[j] ) > VAR_MAX_LEN
          arr[j] := Left( arr[j], VAR_MAX_LEN )
       ENDIF

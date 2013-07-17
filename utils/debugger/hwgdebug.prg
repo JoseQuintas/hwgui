@@ -81,9 +81,11 @@
 #define CMD_STACK       8
 #define CMD_EXP         9
 #define CMD_LOCAL      10
-#define CMD_WATCH      11
-#define CMD_AREA       12
-#define CMD_TERMINATE  13
+#define CMD_PRIV       11
+#define CMD_PUBL       12
+#define CMD_WATCH      13
+#define CMD_AREA       14
+#define CMD_TERMINATE  15
 
 #define BUFF_LEN     1024
 #define RES_LEN       100
@@ -100,7 +102,7 @@
 
 #define MENU_VIEW        1901
 #define MENU_STACK       1902
-#define MENU_LOCAL       1903
+#define MENU_VARS       1903
 #define MENU_WATCH       1904
 #define MENU_RUN         1905
 #define MENU_INIT        1906
@@ -137,7 +139,7 @@ STATIC cTextLocate, nLineLocate
 
 STATIC oTimer, oSayState, oEditExpr, oBtnExp, oMainFont
 STATIC oBrwRes
-STATIC oStackDlg, oLocalsDlg, oWatchDlg, oAreasDlg
+STATIC oStackDlg, oVarsDlg, oWatchDlg, oAreasDlg
 STATIC lViewCmd := .T.
 STATIC oTabMain, nTabsMax := 5
 STATIC cPaths := ";"
@@ -151,7 +153,8 @@ STATIC aBPLoad, nBPLoad
 STATIC lAnimate := .F., nAnimate := 3
 
 STATIC nExitMode := 1
-STATIC cVerProto := 0
+STATIC nVerProto := 0
+STATIC cMsgNotSupp := "Command isn't supported"
 
 Memvar cIniPath, cCurrPath
 
@@ -220,7 +223,7 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) ), cCurrPath := ""
       ENDMENU
       MENU ID MENU_VIEW TITLE "&View"
          MENUITEM "&Stack" ID MENU_STACK ACTION StackToggle()
-         MENUITEM "&Local vars" ID MENU_LOCAL ACTION LocalsToggle()
+         MENUITEM "&Variables" ID MENU_VARS ACTION VarsToggle()
          MENUITEM "&Watches" ID MENU_WATCH ACTION WatchesToggle()
          SEPARATOR
          MENUITEM "Work&Areas"+Chr(9)+"F6" ACTION AreasToggle() ACCELERATOR 0,VK_F6
@@ -304,6 +307,10 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) ), cCurrPath := ""
    ELSE
       hwg_Checkmenuitem( ,MENU_CMDLINE, lViewCmd )
    ENDIF
+   //hwg_Checkmenuitem( ,MENU_STACK, .F. )
+   //hwg_Checkmenuitem( ,MENU_VARS, .F. )
+   //hwg_Checkmenuitem( ,MENU_WATCH, .F. )
+
    SET TIMER oTimer OF oMainW VALUE 30 ACTION {||TimerProc()}
 
    ACTIVATE WINDOW oMainW
@@ -314,7 +321,7 @@ Static Function ReadHrb()
 Local cHrb
 
    IF lModeIde
-      cHrb := cHrbPath + Iif( Right(cHrbPath,1) $ "/\", "", hb_OsPathSeparator() ) + ;
+      cHrb := cHrbPath + Iif( Right(cHrbPath,1) $ "\/", "", hb_OsPathSeparator() ) + ;
             "hwg_project.hrb"
       IF !File( cHrb ) .OR. Empty( hHrbProj := hb_hrbLoad( cHrb ) )
          lModeIde := .F.
@@ -577,7 +584,11 @@ Static nLastSec := 0
                   ENDIF
                ELSEIF nAnsType == ANS_LOCAL
                   IF arr[2] == "valuelocal"
-                     ShowLocals( arr, 3 )
+                     ShowVars( arr, 3, 1 )
+                  ELSEIF arr[2] == "valuepriv"
+                     ShowVars( arr, 3, 2 )
+                  ELSEIF arr[2] == "valuepubl"
+                     ShowVars( arr, 3, 3 )
                   ENDIF
                ELSEIF nAnsType == ANS_WATCH
                   IF arr[2] == "valuewatch"
@@ -604,13 +615,19 @@ Static nLastSec := 0
                   n := 4
                   DO WHILE .T.
                      IF arr[n] == "ver"
-                        cVerProto := Val( arr[n+1] )
+                        nVerProto := Val( arr[n+1] )
                         n += 2
                      ELSEIF arr[n] == "stack"
                         ShowStack( arr, n+1 )
                         n += 2 + Val( arr[n+1] ) * 3
                      ELSEIF arr[n] == "valuelocal"
-                        ShowLocals( arr, n+1 )
+                        ShowVars( arr, n+1, 1 )
+                        n += 2 + Val( arr[n+1] ) * 3
+                     ELSEIF arr[n] == "valuepriv"
+                        ShowVars( arr, n+1, 2 )
+                        n += 2 + Val( arr[n+1] ) * 3
+                     ELSEIF arr[n] == "valuepubl"
+                        ShowVars( arr, n+1, 3 )
                         n += 2 + Val( arr[n+1] ) * 3
                      ELSEIF arr[n] == "valuewatch"
                         ShowWatch( arr, n+1 )
@@ -701,6 +718,26 @@ Static Function DoCommand( nCmd, cDop, cDop2 )
          Send( "view", "local", cDop )
          nAnsType := ANS_LOCAL
          SetMode( MODE_WAIT_ANS )
+         Return Nil
+
+      ELSEIF nCmd == CMD_PRIV
+         IF nVerProto > 1
+            Send( "view", "priv", cDop )
+            nAnsType := ANS_LOCAL
+            SetMode( MODE_WAIT_ANS )
+         ELSE
+            hwg_MsgStop( cMsgNotSupp )
+         ENDIF
+         Return Nil
+
+      ELSEIF nCmd == CMD_PUBL
+         IF nVerProto > 1
+            Send( "view", "publ", cDop )
+            nAnsType := ANS_LOCAL
+            SetMode( MODE_WAIT_ANS )
+         ELSE
+            hwg_MsgStop( cMsgNotSupp )
+         ENDIF
          Return Nil
 
       ELSEIF nCmd == CMD_WATCH
@@ -849,7 +886,10 @@ Local nTab, oText := GetTextObj( cName, @nTab )
          ViewCmdLine( .T. )
       ENDIF
       hwg_Enablemenuitem( ,MENU_INIT, .F., .T. )
-      oText:lReadOnly := lDebugging := .T.
+      lDebugging := .T.
+      IF !Empty( oText )
+         oText:lReadOnly := .T.
+      ENDIF
    ENDIF
 
    IF !Empty( oText )
@@ -1328,50 +1368,110 @@ Local oBrw, i, nLen := Val( arr[n] )
    ENDIF
 Return Nil
 
-Static FUNCTION LocalsToggle()
-Local oBrw, lLocals := hwg_Ischeckedmenuitem( ,MENU_LOCAL )
+Static FUNCTION VarsToggle()
+Local oTab, oBrwL, oBrwR, oBrwU, y1
 Local bClose := {|| 
-   hwg_Checkmenuitem(,MENU_LOCAL,.F.)
-   oLocalsDlg := Nil
+   hwg_Checkmenuitem(,MENU_VARS,.F.)
+   oVarsDlg := Nil
    IF lDebugging
       DoCommand( CMD_LOCAL, "off" )
    ENDIF
    Return .T.
    }
+Local bTbChange := {|o,n|
+   IF lDebugging
+      IF n == 1
+         DoCommand( CMD_LOCAL, "on" )
+      ELSEIF n == 2
+         DoCommand( CMD_PRIV, "on" )
+      ELSE
+         DoCommand( CMD_PUBL, "on" )
+      ENDIF
+   ENDIF
+   Return .T.
+   }
 
-   IF lLocals
-      oLocalsDlg:Close()
+   IF hwg_Ischeckedmenuitem( ,MENU_VARS )
+      oVarsDlg:Close()
    ELSE
-      INIT DIALOG oLocalsDlg TITLE "Local variables" AT 10, 10 SIZE 340, 120 ;
+      INIT DIALOG oVarsDlg TITLE "Local variables" AT 10, 10 SIZE 360, 180 ;
         FONT HWindow():GetMain():oFont ON EXIT bClose
 
-      @ 0,0 BROWSE oBrw ARRAY OF oLocalsDlg    ;
-            SIZE 340,120                       ;
+      @ 0, 0 TAB oTab ITEMS {} SIZE 360,180 ON SIZE {|o,x,y|o:Move(,,x,y)}
+      oTab:bChange2 := bTbChange
+#ifdef __GTK__
+   y1 := 4
+#else
+   y1 := 30
+#endif
+
+      BEGIN PAGE "Local" of oTab
+
+      @ 8,y1 BROWSE oBrwL ARRAY OF oTab        ;
+            SIZE 344,142                       ;
             FONT HWindow():GetMain():oFont     ;
             STYLE WS_VSCROLL                   ;
-            ON SIZE {|o,x,y|o:Move(0,0,x,y)}
+            ON SIZE {|o,x,y|o:Move(,,x-16,y-38)}
 
-      oBrw:aArray := {}
-      oBrw:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,1]},"C",16,0 ) )
-      oBrw:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,2]},"C",2,0 ) )
-      oBrw:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,3]},"C",60,0 ) )
+      oBrwL:aArray := {}
+      oBrwL:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,1]},"C",16,0 ) )
+      oBrwL:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,2]},"C",2,0 ) )
+      oBrwL:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,3]},"C",60,0 ) )
 
-      oBrw:bcolorSel := oBrw:htbcolor := CLR_LGREEN
-      oBrw:tcolorSel := oBrw:httcolor := 0
+      oBrwL:bcolorSel := oBrwL:htbcolor := CLR_LGREEN
+      oBrwL:tcolorSel := oBrwL:httcolor := 0
 
-      ACTIVATE DIALOG oLocalsDlg NOMODAL
+      END PAGE of oTab
+
+      BEGIN PAGE "Private" of oTab
+
+      @ 8,y1 BROWSE oBrwR ARRAY OF oTab        ;
+            SIZE 344,142                       ;
+            FONT HWindow():GetMain():oFont     ;
+            STYLE WS_VSCROLL                   ;
+            ON SIZE {|o,x,y|o:Move(,,x-16,y-38)}
+
+      oBrwR:aArray := {}
+      oBrwR:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,1]},"C",16,0 ) )
+      oBrwR:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,2]},"C",2,0 ) )
+      oBrwR:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,3]},"C",60,0 ) )
+
+      oBrwR:bcolorSel := oBrwR:htbcolor := CLR_LGREEN
+      oBrwR:tcolorSel := oBrwR:httcolor := 0
+
+      END PAGE of oTab
+
+      BEGIN PAGE "Public" of oTab
+
+      @ 8,y1 BROWSE oBrwU ARRAY OF oTab        ;
+            SIZE 344,142                       ;
+            FONT HWindow():GetMain():oFont     ;
+            STYLE WS_VSCROLL                   ;
+            ON SIZE {|o,x,y|o:Move(,,x-16,y-38)}
+
+      oBrwU:aArray := {}
+      oBrwU:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,1]},"C",16,0 ) )
+      oBrwU:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,2]},"C",2,0 ) )
+      oBrwU:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,3]},"C",60,0 ) )
+
+      oBrwU:bcolorSel := oBrwU:htbcolor := CLR_LGREEN
+      oBrwU:tcolorSel := oBrwU:httcolor := 0
+
+      END PAGE of oTab
+
+      ACTIVATE DIALOG oVarsDlg NOMODAL
 
       DoCommand( CMD_LOCAL, "on" )
-      hwg_Checkmenuitem( ,MENU_LOCAL, .T. )
+      hwg_Checkmenuitem( ,MENU_VARS, .T. )
    ENDIF
 
 Return Nil
 
-Static FUNCTION ShowLocals( arr, n )
+Static FUNCTION ShowVars( arr, n, nVarType )
 Local oBrw, i, nLen := Val( arr[n] )
 
-   IF !Empty( oLocalsDlg )
-      oBrw := oLocalsDlg:aControls[1]
+   IF !Empty( oVarsDlg )
+      oBrw := oVarsDlg:aControls[1]:aControls[nVarType]
       IF Empty( oBrw:aArray ) .OR. Len( oBrw:aArray ) != nLen
          oBrw:aArray := Array( nLen,3 )
       ENDIF
@@ -1677,8 +1777,8 @@ Return cRes
 
 Static Function StopDebug()
 
-   IF !Empty( oLocalsDlg )
-      oLocalsDlg:Close()
+   IF !Empty( oVarsDlg )
+      oVarsDlg:Close()
    ENDIF
    IF !Empty( oStackDlg )
       oStackDlg:Close()

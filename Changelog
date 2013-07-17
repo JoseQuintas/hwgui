@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-17 13:43 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/common/debugger.prg
+  * source/common/dbgconnect.prg
+  * utils/debugger/hwgdebug.prg
+    * Added view of private and public variables
+
 2013-07-17 09:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/herrsys.prg
   * source/gtk/htimer.prg

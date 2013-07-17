@@ -259,7 +259,7 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) ), cCurrPath := ""
    ENDMENU
 
    @ 0, 0 TAB oTabMain ITEMS {} SIZE 600,436 ON SIZE {|o,x,y|o:Move(,,x,y-108)}
-   oTabMain:bChange2 := {|o,n|hwg_setfocus(o:acontrols[n]:handle)}
+   oTabMain:bChange2 := {|o,n|Iif(Len(o:aControls)>=n,hwg_setfocus(o:acontrols[n]:handle),.T.)}
    CreateTextCtrl()
 
    @ 4,444 BROWSE oBrwRes ARRAY SIZE 592,72 STYLE WS_BORDER + WS_VSCROLL ;
@@ -307,9 +307,6 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) ), cCurrPath := ""
    ELSE
       hwg_Checkmenuitem( ,MENU_CMDLINE, lViewCmd )
    ENDIF
-   //hwg_Checkmenuitem( ,MENU_STACK, .F. )
-   //hwg_Checkmenuitem( ,MENU_VARS, .F. )
-   //hwg_Checkmenuitem( ,MENU_WATCH, .F. )
 
    SET TIMER oTimer OF oMainW VALUE 30 ACTION {||TimerProc()}
 

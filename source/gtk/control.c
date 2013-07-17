@@ -44,6 +44,7 @@
 #define WM_PAINT            15
 #define WM_HSCROLL         276
 #define WM_VSCROLL         277
+#define WM_USER           1024
 #define WS_EX_TRANSPARENT   32
 
 extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char *varname );
@@ -59,6 +60,8 @@ extern GtkWidget *GetActiveWindow( void );
 extern GdkPixbuf *alpha2pixbuf( GdkPixbuf * hPixIn, long int nColor );
 static GtkTooltips *pTooltip = NULL;
 static PHB_DYNS pSymTimerProc = NULL;
+
+static PHB_DYNS pSym_onEvent = NULL;
 
 GtkFixed *getFixedBox( GObject * handle )
 {
@@ -506,6 +509,25 @@ HB_FUNC( HWG_SETADJOPTIONS )
       gtk_adjustment_changed( adj );
 }
 
+void cb_signal_tab( GtkNotebook *notebook, GtkNotebookPage *page,
+      guint page_num, gpointer user_data )
+{
+   gpointer gObject = g_object_get_data( (GObject*) notebook, "obj" );
+
+   if( !pSym_onEvent )
+      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
+
+   if( pSym_onEvent && gObject )
+   {
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
+      hb_vmPush( ( PHB_ITEM ) gObject );
+      hb_vmPushLong( WM_USER );
+      hb_vmPushLong( (HB_LONG) page_num+1 );
+      hb_vmPushLong( (HB_LONG) 0 );
+      hb_vmSend( 3 );
+   }
+}
+
 HB_FUNC( HWG_CREATETABCONTROL )
 {
    GtkWidget *hCtrl = gtk_notebook_new(  );
@@ -514,6 +536,9 @@ HB_FUNC( HWG_CREATETABCONTROL )
    if( box )
       gtk_fixed_put( box, hCtrl, hb_parni( 4 ), hb_parni( 5 ) );
    gtk_widget_set_size_request( hCtrl, hb_parni( 6 ), hb_parni( 7 ) );
+
+   g_signal_connect( hCtrl, "switch-page",
+                      G_CALLBACK (cb_signal_tab), NULL );
 
    HB_RETHANDLE( hCtrl );
 

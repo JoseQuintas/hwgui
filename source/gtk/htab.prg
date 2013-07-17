@@ -33,6 +33,7 @@ CLASS HTab INHERIT HControl
       bClick, bGetFocus, bLostFocus )
    METHOD Activate()
    METHOD Init()
+   METHOD onEvent( msg, wParam, lParam )
    METHOD SetTab( n )
    METHOD StartPage( cname )
    METHOD EndPage()
@@ -98,6 +99,16 @@ METHOD Init() CLASS HTab
    ENDIF
 
    RETURN Nil
+
+METHOD onEvent( msg, wParam, lParam ) CLASS HTab
+
+   IF msg == WM_USER
+      IF ::bChange2 != Nil
+         Eval( ::bChange2, Self, wParam )
+      ENDIF
+   ENDIF
+
+   RETURN 0
 
 METHOD SetTab( n ) CLASS HTab
 

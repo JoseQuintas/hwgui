@@ -70,6 +70,7 @@
 #define ANS_LOCAL       4
 #define ANS_WATCH       5
 #define ANS_AREAS       6
+#define ANS_REC         7
 
 #define CMD_QUIT        1
 #define CMD_GO          2
@@ -85,7 +86,8 @@
 #define CMD_PUBL       12
 #define CMD_WATCH      13
 #define CMD_AREA       14
-#define CMD_TERMINATE  15
+#define CMD_REC        15
+#define CMD_TERMINATE  16
 
 #define BUFF_LEN     1024
 #define RES_LEN       100
@@ -140,6 +142,7 @@ STATIC cTextLocate, nLineLocate
 STATIC oTimer, oSayState, oEditExpr, oBtnExp, oMainFont
 STATIC oBrwRes
 STATIC oStackDlg, oVarsDlg, oWatchDlg, oAreasDlg
+STATIC oInspectDlg
 STATIC lViewCmd := .T.
 STATIC oTabMain, nTabsMax := 5
 STATIC cPaths := ";"
@@ -226,7 +229,7 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) ), cCurrPath := ""
          MENUITEMCHECK "&Variables" ID MENU_VARS ACTION VarsToggle()
          MENUITEMCHECK "&Watches" ID MENU_WATCH ACTION WatchesToggle()
          SEPARATOR
-         MENUITEM "Work&Areas"+Chr(9)+"F6" ACTION AreasToggle() ACCELERATOR 0,VK_F6
+         MENUITEM "Work&Areas"+Chr(9)+"F6" ACTION InspectAreas() ACCELERATOR 0,VK_F6
          SEPARATOR
          MENUITEMCHECK "&Commands" ID MENU_CMDLINE ACTION ViewCmdLine()
       ENDMENU
@@ -595,6 +598,10 @@ Static nLastSec := 0
                   IF arr[2] == "valueareas"
                      ShowAreas( arr, 3 )
                   ENDIF
+               ELSEIF nAnsType == ANS_REC
+                  IF arr[2] == "valuerec"
+                     ShowRec( arr, 3 )
+                  ENDIF
                ENDIF
                SetMode( MODE_INPUT )
             ENDIF
@@ -751,6 +758,16 @@ Static Function DoCommand( nCmd, cDop, cDop2 )
          Send( "view", "areas" )
          nAnsType := ANS_AREAS
          SetMode( MODE_WAIT_ANS )
+         Return Nil
+
+      ELSEIF nCmd == CMD_REC
+         IF nVerProto > 1
+            Send( "insp", "rec", cDop )
+            nAnsType := ANS_REC
+            SetMode( MODE_WAIT_ANS )
+         ELSE
+            hwg_MsgStop( cMsgNotSupp )
+         ENDIF
          Return Nil
 
       ELSEIF nCmd == CMD_QUIT
@@ -1560,13 +1577,13 @@ Local n := oWatchDlg:aControls[1]:nCurrent
    ENDIF
 Return Nil
 
-Static FUNCTION AreasToggle()
+Static FUNCTION InspectAreas()
 Local oBrw, oSayRdd
 Local bChgPos := {|o|
    IF Empty( o:aArray )
       oSayRdd:SetValue( "No Workareas in use..." )
    ELSE
-      oSayRdd:SetValue( "Rdd: " + o:aArray[o:nCurrent,3] + ;
+      oSayRdd:SetValue( o:aArray[o:nCurrent,1] + " rdd: " + o:aArray[o:nCurrent,3] + ;
             "  area N: " + o:aArray[o:nCurrent,2] + Chr(13)+Chr(10) + ;
             "Filter: " + o:aArray[o:nCurrent,10] + Chr(13)+Chr(10) +  ;
             "Order: " + o:aArray[o:nCurrent,11] + ", " + o:aArray[o:nCurrent,12] )
@@ -1602,8 +1619,9 @@ Local bChgPos := {|o|
 
    @ 10,264 SAY oSayRdd CAPTION "" SIZE 460,80 STYLE WS_BORDER BACKCOLOR CLR_LIGHT1 ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
 
-   @ 60, 360 BUTTON "Refresh" ON CLICK {|| DoCommand( CMD_AREA ) } SIZE 100, 28 ON SIZE ANCHOR_BOTTOMABS
-   @ 320, 360 BUTTON "Close" ON CLICK {|| oAreasDlg:Close() } SIZE 100, 28 ON SIZE ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
+   @ 45, 360 BUTTON "Refresh" ON CLICK {|| DoCommand( CMD_AREA ) } SIZE 100, 28 ON SIZE ANCHOR_BOTTOMABS
+   @ 190, 360 BUTTON "Inspect" ON CLICK {|| Iif(!Empty(oBrw:aArray),InspectRec(oBrw:aArray[oBrw:nCurrent,1]),.T.) } SIZE 100, 28 ON SIZE ANCHOR_BOTTOMABS
+   @ 335, 360 BUTTON "Close" ON CLICK {|| oAreasDlg:Close() } SIZE 100, 28 ON SIZE ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
 
    ACTIVATE DIALOG oAreasDlg NOMODAL
 
@@ -1625,6 +1643,59 @@ Local oBrw, arr1, i, j, nAreas := Val( arr[n] ), nAItems := Val( Hex2Str(arr[++n
       oBrw:aArray := arr1
       Eval( oBrw:bPosChanged, oBrw )
       oBrw:Refresh()
+   ENDIF
+Return Nil
+
+Static FUNCTION InspectRec( cAlias )
+Local oDlg, oBrw
+
+   IF Left( cAlias,1 ) == '*'
+      cAlias := Substr( cAlias,2 )
+   ENDIF
+
+   INIT DIALOG oDlg TITLE cAlias AT 30, 30 SIZE 480, 400 ;
+     FONT HWindow():GetMain():oFont
+
+   @ 0,0 BROWSE oBrw ARRAY OF oDlg          ;
+         SIZE 480,340                       ;
+         FONT HWindow():GetMain():oFont     ;
+         STYLE WS_VSCROLL                   ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
+
+   oBrw:aArray := {}
+   oBrw:AddColumn( HColumn():New( "Name",{|v,o|o:aArray[o:nCurrent,1]},"C",12,0 ) )
+   oBrw:AddColumn( HColumn():New( "Type",{|v,o|o:aArray[o:nCurrent,2]},"C",2,0 ) )
+   oBrw:AddColumn( HColumn():New( "Len",{|v,o|o:aArray[o:nCurrent,3]},"C",4,0 ) )
+   oBrw:AddColumn( HColumn():New( "Value",{|v,o|o:aArray[o:nCurrent,4]},"C",60,0 ) )
+
+   oBrw:bcolorSel := oBrw:htbcolor := CLR_LGREEN
+   oBrw:tcolorSel := oBrw:httcolor := 0
+
+   @ 45, 360 BUTTON "Refresh" ON CLICK {|| oInspectDlg:=oDlg,DoCommand(CMD_REC,cAlias) } SIZE 100, 28 ON SIZE ANCHOR_BOTTOMABS
+   @ 335, 360 BUTTON "Close" ON CLICK {|| oDlg:Close() } SIZE 100, 28 ON SIZE ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
+
+   ACTIVATE DIALOG oDlg NOMODAL
+
+   oInspectDlg := oDlg
+   DoCommand( CMD_REC, cAlias )
+
+Return Nil
+
+Static FUNCTION ShowRec( arr, n )
+Local oBrw, arr1, i, j, nFields := Val( arr[n] )
+
+   IF !Empty( oInspectDlg )
+      hwg_Setwindowtext( oInspectDlg:handle, oInspectDlg:title+", rec."+Hex2Str(arr[++n]) )
+      oBrw := oInspectDlg:aControls[1]
+      arr1 := Array( nFields, 4 )
+      FOR i := 1 TO nFields
+         FOR j := 1 TO 4
+            arr1[i,j] := Hex2Str( arr[ ++n ] )
+         NEXT
+      NEXT
+      oBrw:aArray := arr1
+      oBrw:Refresh()
+      oInspectDlg := Nil
    ENDIF
 Return Nil
 

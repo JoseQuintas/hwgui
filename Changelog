@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-18 21:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/debugger/hwgdebug.prg
+  * source/common/debugger/debugger.prg
+  * source/common/debugger/dbgconnect.prg
+    * Added record inspector - view the current record of an opened database
+
 2013-07-18 14:34 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/debugger/hwgdebug.prg
     * Few MENUITEM declarations are changed to MENUITEMCHECK to work better

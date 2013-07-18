@@ -118,6 +118,7 @@
 #define CMD_WADD               16
 #define CMD_WDEL               17
 #define CMD_AREAS              18
+#define CMD_REC                19
 
 #define VAR_MAX_LEN            72
 
@@ -444,6 +445,9 @@ METHOD HandleEvent() CLASS HBDebugger
       CASE nKey == CMD_AREAS
             hwg_dbg_Answer( "valueareas", SendAreas() )
 
+      CASE nKey == CMD_REC
+            hwg_dbg_Answer( "valuerec", SendRec( p1 ) )
+
       CASE nKey == CMD_CALC
          IF Left( p1,1 ) == "?"
             p1 := Ltrim( Substr( p1, Iif( Left(p1,2) == "??",3,2 ) ) )
@@ -695,6 +699,29 @@ Local arr, arr1[512], n, i, nAreas := 0, nAlias
 
    RETURN arr
 
+STATIC FUNCTION SendRec( cAlias )
+Local af, nCount, arr, i, j := 2
+
+   IF ( i := Select( cAlias ) ) == 0
+      Return { "0", "0" }
+   ENDIF
+   af := (cAlias)->(dbStruct())
+   nCount := Len( af )
+   arr := Array( nCount * 4 + 2 )
+
+   arr[1] := Ltrim( Str( nCount ) )
+   arr[2] := Ltrim( Str( (cAlias)->(Recno()) ) )
+   FOR i := 1 TO nCount
+      arr[++j] := af[i,1]
+      arr[++j] := af[i,2]
+      arr[++j] := Ltrim( Str( af[i,3] ) )
+      arr[++j] := __dbgValToStr( (cAlias)->( FieldGet(i) ) )
+      IF Len( arr[j] ) > VAR_MAX_LEN
+         arr[j] := Left( arr[j], VAR_MAX_LEN )
+      ENDIF
+   NEXT
+
+   RETURN arr
 
 /* Check if a string starts with another string */
 STATIC FUNCTION starts( cLine, cStart )

@@ -77,6 +77,7 @@
 #define CMD_WADD               16
 #define CMD_WDEL               17
 #define CMD_AREAS              18
+#define CMD_REC                19
 
 #ifdef __XHARBOUR__
 #xtranslate HB_AT([<n,...>]) =>  AT(<n>)
@@ -331,6 +332,11 @@ Local n, cmd, arr
                   Return CMD_WATCH
                ELSEIF arr[3] == "areas"
                   Return CMD_AREAS
+               ENDIF
+            ELSEIF arr[2] == "insp"
+               IF arr[3] == "rec"
+                  p1 := arr[4]
+                  Return CMD_REC
                ENDIF
             ENDIF
             hwg_dbg_Send( "e"+Ltrim(Str(++nId2)) )

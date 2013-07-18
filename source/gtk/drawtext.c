@@ -70,6 +70,8 @@ HB_FUNC( HWG_DRAWTEXT )
       pango_layout_set_alignment( hDC->layout, 
           (hb_parni(7) & DT_CENTER)? PANGO_ALIGN_CENTER : PANGO_ALIGN_RIGHT );
    }
+   else
+      pango_layout_set_alignment( hDC->layout, PANGO_ALIGN_LEFT );
 
    hwg_setcolor( hDC->cr, (hDC->fcolor != -1)? hDC->fcolor : 0 );
    cairo_move_to( hDC->cr, (gdouble)hb_parni(3), (gdouble)hb_parni(4) );

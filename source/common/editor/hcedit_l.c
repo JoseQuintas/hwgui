@@ -351,6 +351,7 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, int x2, char *szText, int iLen,
    char * ptr;
 
    //wrlog( NULL, "Lineout-1\r\n" );
+   pango_layout_set_alignment( pted->hDCScr->layout, PANGO_ALIGN_LEFT );
    for( i = 0, lasti = 0, iSegs = 0; i <= iLen; i++, iSegs++ )
    {
       // if the colour or font changes, then need to output 

@@ -154,7 +154,6 @@ METHOD Add( nStyle, nWidth, nColor ) CLASS HPen
    nWidth := iif( nWidth == Nil, 1, nWidth )
    nColor := iif( nColor == Nil, 0, nColor )
 
-#ifdef __XHARBOUR__
    FOR EACH i IN ::aPens
       IF i:style == nStyle .AND. ;
             i:width == nWidth .AND. ;
@@ -164,17 +163,6 @@ METHOD Add( nStyle, nWidth, nColor ) CLASS HPen
          RETURN i
       ENDIF
    NEXT
-#else
-   FOR i := 1 TO Len( ::aPens )
-      IF ::aPens[ i ]:style == nStyle .AND. ;
-            ::aPens[ i ]:width == nWidth .AND. ;
-            ::aPens[ i ]:color == nColor
-
-         ::aPens[ i ]:nCounter ++
-         RETURN ::aPens[ i ]
-      ENDIF
-   NEXT
-#endif
 
    ::handle := hwg_Createpen( nStyle, nWidth, nColor )
    ::style  := nStyle
@@ -191,7 +179,6 @@ METHOD Get( nStyle, nWidth, nColor ) CLASS HPen
    nWidth := iif( nWidth == Nil, 1, nWidth )
    nColor := iif( nColor == Nil, 0, nColor )
 
-#ifdef __XHARBOUR__
    FOR EACH i IN ::aPens
       IF i:style == nStyle .AND. ;
             i:width == nWidth .AND. ;
@@ -200,16 +187,6 @@ METHOD Get( nStyle, nWidth, nColor ) CLASS HPen
          RETURN i
       ENDIF
    NEXT
-#else
-   FOR i := 1 TO Len( ::aPens )
-      IF ::aPens[ i ]:style == nStyle .AND. ;
-            ::aPens[ i ]:width == nWidth .AND. ;
-            ::aPens[ i ]:color == nColor
-
-         RETURN ::aPens[ i ]
-      ENDIF
-   NEXT
-#endif
 
    RETURN Nil
 
@@ -262,12 +239,7 @@ METHOD Add( nColor, nHatch ) CLASS HBrush
    IF nHatch == Nil
       nHatch := 99
    ENDIF
-   /*
-   IF ValType( nColor ) == "P"
-      nColor := hwg_Ptrtoulong( nColor )
-   ENDIF
-   */
-#ifdef __XHARBOUR__
+
    FOR EACH i IN ::aBrushes
 
       IF i:color == nColor .AND. i:nHatch == nHatch
@@ -275,14 +247,7 @@ METHOD Add( nColor, nHatch ) CLASS HBrush
          RETURN i
       ENDIF
    NEXT
-#else
-   FOR i := 1 TO Len( ::aBrushes )
-      IF ::aBrushes[ i ]:color == nColor .AND. ::aBrushes[ i ]:nHatch == nHatch
-         ::aBrushes[ i ]:nCounter ++
-         RETURN ::aBrushes[ i ]
-      ENDIF
-   NEXT
-#endif
+
    IF nHatch != 99
       ::handle := hwg_Createhatchbrush( nHatch, nColor )
    ELSE
@@ -355,7 +320,6 @@ METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
       name := LTrim( Str( name ) )
       lPreDefined := .T.
    ENDIF
-#ifdef __XHARBOUR__
    FOR EACH i  IN  ::aBitmaps
       IF i:name == name .AND. i:nFlags == nFlags .AND. ;
             ( ( nWidth == nil .OR. nHeight == nil ) .OR. ;
@@ -364,16 +328,7 @@ METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
          RETURN i
       ENDIF
    NEXT
-#else
-   FOR i := 1 TO Len( ::aBitmaps )
-      IF ::aBitmaps[ i ]:name == name .AND. ::aBitmaps[ i ]:nFlags == nFlags .AND. ;
-            ( ( nWidth == nil .OR. nHeight == nil ) .OR. ;
-            ( ::aBitmaps[ i ]:nWidth == nWidth .AND. ::aBitmaps[ i ]:nHeight == nHeight ) )
-         ::aBitmaps[ i ]:nCounter ++
-         RETURN ::aBitmaps[ i ]
-      ENDIF
-   NEXT
-#endif
+
    IF lOEM
       ::handle := hwg_Loadimage( 0, Val( name ), IMAGE_BITMAP, nil, nil, Hwg_bitor( nFlags, LR_SHARED ) )
    ELSE
@@ -392,22 +347,13 @@ METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
 METHOD AddStandard( nId ) CLASS HBitmap
    LOCAL i, aBmpSize, name := "s" + LTrim( Str( nId ) )
 
-#ifdef __XHARBOUR__
-
    FOR EACH i  IN  ::aBitmaps
       IF i:name == name
          i:nCounter ++
          RETURN i
       ENDIF
    NEXT
-#else
-   FOR i := 1 TO Len( ::aBitmaps )
-      IF ::aBitmaps[ i ]:name == name
-         ::aBitmaps[ i ]:nCounter ++
-         RETURN ::aBitmaps[ i ]
-      ENDIF
-   NEXT
-#endif
+
    ::handle :=   hwg_Loadbitmap( nId, .T. )
    ::name   := name
    aBmpSize  := hwg_Getbitmapsize( ::handle )
@@ -420,21 +366,13 @@ METHOD AddStandard( nId ) CLASS HBitmap
 METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
    LOCAL i, aBmpSize, cname := CutPath( name ), cCurDir
 
-#ifdef __XHARBOUR__
    FOR EACH i IN ::aBitmaps
       IF i:name == cname .AND. ( nWidth == nil .OR. nHeight == nil )
          i:nCounter ++
          RETURN i
       ENDIF
    NEXT
-#else
-   FOR i := 1 TO Len( ::aBitmaps )
-      IF ::aBitmaps[ i ]:name == cname .AND. ( nWidth == nil .OR. nHeight == nil )
-         ::aBitmaps[ i ]:nCounter ++
-         RETURN ::aBitmaps[ i ]
-      ENDIF
-   NEXT
-#endif
+
    name := iif( ! File( name ) .AND. File( cname ), cname, name )
    IF ::lSelFile .AND. !File( name )
       cCurDir  := DiskName() + ':\' + CurDir()
@@ -543,21 +481,12 @@ METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
       name := LTrim( Str( name ) )
       lPreDefined := .T.
    ENDIF
-#ifdef __XHARBOUR__
    FOR EACH i IN ::aIcons
       IF i:name == name
          i:nCounter ++
          RETURN i
       ENDIF
    NEXT
-#else
-   FOR i := 1 TO Len( ::aIcons )
-      IF ::aIcons[ i ]:name == name
-         ::aIcons[ i ]:nCounter ++
-         RETURN ::aIcons[ i ]
-      ENDIF
-   NEXT
-#endif
    // ::classname:= "HICON"
    IF lOEM // LR_SHARED is required for OEM images
       ::handle := hwg_Loadimage( 0, Val( name ), IMAGE_ICON, nWidth, nHeight, Hwg_bitor( nFlags, LR_SHARED ) )
@@ -582,21 +511,12 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
    IF nHeight == nil
       nHeight := 0
    ENDIF
-#ifdef __XHARBOUR__
    FOR EACH i IN  ::aIcons
       IF i:name == cname
          i:nCounter ++
          RETURN i
       ENDIF
    NEXT
-#else
-   FOR i := 1 TO Len( ::aIcons )
-      IF ::aIcons[ i ]:name == cname
-         ::aIcons[ i ]:nCounter ++
-         RETURN ::aIcons[ i ]
-      ENDIF
-   NEXT
-#endif
    // ::classname:= "HICON"
    name := iif( ! File( name ) .AND. File( cname ), cname, name )
    IF ::lSelFile .AND. !File( name )

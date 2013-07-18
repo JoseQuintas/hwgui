@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-18 11:48 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/gtk/drawwidg.prg
+  * source/gtk/hcwindow.prg
+  * source/gtk/misc.c
+  * source/winapi/drawwidg.prg
+    * Cleanup and formatting
+
 2013-07-17 14:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/htab.prg
   * source/gtk/control.c

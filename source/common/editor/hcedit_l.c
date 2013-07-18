@@ -596,8 +596,10 @@ HB_FUNC( HCED_SETCOLOR )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
 
-   pted->fg = (long) hb_parnl(2);
-   pted->bg = (long) hb_parnl(3);
+   if( HB_ISNUM(2) )
+      pted->fg = (long) hb_parnl(2);
+   if( HB_ISNUM(3) )
+      pted->bg = (long) hb_parnl(3);
 }
 
 HB_FUNC( HCED_CLEARATTR )

@@ -11,14 +11,6 @@
 #include "hwgui.ch"
 #include "hbclass.ch"
 
-#ifndef TCM_SETCURSEL
-#define TCM_SETCURSEL           4876     // (TCM_FIRST + 12)
-#define TCM_SETCURFOCUS         4912     // (TCM_FIRST + 48)
-#define TCM_GETCURFOCUS         4911     // (TCM_FIRST + 47)
-#define TCM_GETITEMCOUNT        4868     // (TCM_FIRST + 4)
-#define TCM_SETIMAGELIST        4867
-#endif
-
 CLASS HTab INHERIT HControl
 
    CLASS VAR winclass   INIT "SysTabControl32"
@@ -37,7 +29,6 @@ CLASS HTab INHERIT HControl
    METHOD SetTab( n )
    METHOD StartPage( cname )
    METHOD EndPage()
-   METHOD ChangePage( nPage )
    METHOD HidePage( nPage )
    METHOD ShowPage( nPage )
    METHOD GetActivePage( nFirst, nEnd )
@@ -149,24 +140,6 @@ METHOD EndPage() CLASS HTab
    ::oTemp := Nil
 
    ::bChange = { |o, n|o:ChangePage( n ) }
-
-   RETURN Nil
-
-METHOD ChangePage( nPage ) CLASS HTab
-
-   IF !Empty( ::aPages )
-
-      ::HidePage( ::nActive )
-
-      ::nActive := nPage
-
-      ::ShowPage( ::nActive )
-
-   ENDIF
-
-   IF ::bChange2 != Nil
-      Eval( ::bChange2, Self, nPage )
-   ENDIF
 
    RETURN Nil
 

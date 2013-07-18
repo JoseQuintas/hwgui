@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-18 14:34 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/debugger/hwgdebug.prg
+    * Few MENUITEM declarations are changed to MENUITEMCHECK to work better
+      in GTK version
+    ! Handling of oText:lReadonly has been fixed.
+
 2013-07-18 14:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/drawtext.c
   * source/common/editor/hcedit_l.c

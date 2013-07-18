@@ -102,7 +102,7 @@
 
 #define MENU_VIEW        1901
 #define MENU_STACK       1902
-#define MENU_VARS       1903
+#define MENU_VARS        1903
 #define MENU_WATCH       1904
 #define MENU_RUN         1905
 #define MENU_INIT        1906
@@ -222,13 +222,13 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) ), cCurrPath := ""
          MENUITEM "Functions &list" ACTION Funclist()
       ENDMENU
       MENU ID MENU_VIEW TITLE "&View"
-         MENUITEM "&Stack" ID MENU_STACK ACTION StackToggle()
-         MENUITEM "&Variables" ID MENU_VARS ACTION VarsToggle()
-         MENUITEM "&Watches" ID MENU_WATCH ACTION WatchesToggle()
+         MENUITEMCHECK "&Stack" ID MENU_STACK ACTION StackToggle()
+         MENUITEMCHECK "&Variables" ID MENU_VARS ACTION VarsToggle()
+         MENUITEMCHECK "&Watches" ID MENU_WATCH ACTION WatchesToggle()
          SEPARATOR
          MENUITEM "Work&Areas"+Chr(9)+"F6" ACTION AreasToggle() ACCELERATOR 0,VK_F6
          SEPARATOR
-         MENUITEM "&Commands" ID MENU_CMDLINE ACTION ViewCmdLine()
+         MENUITEMCHECK "&Commands" ID MENU_CMDLINE ACTION ViewCmdLine()
       ENDMENU
       MENU ID MENU_RUN TITLE "&Run"
          MENUITEM "&Go"+Chr(9)+"F5" ACTION DoCommand( CMD_GO ) ACCELERATOR 0,VK_F5
@@ -934,6 +934,7 @@ Local oText, nTab, i
             oText:aText[i] := StrTran( oText:aText[i], Chr(9), Space(4) )
          ENDIF
       NEXT
+      oText:lReadOnly := lDebugging
       hwg_SetTabName( oTabMain:handle, nTab, oText:cargo := CutPath( cName ) )
       Return .T.
    ELSEIF !Empty( lClear )
@@ -1302,7 +1303,7 @@ Local cExp := Trim( oEditExpr:GetText() )
 Return Nil
 
 Static FUNCTION StackToggle()
-Local oBrw, lStack := hwg_Ischeckedmenuitem( ,MENU_STACK )
+Local oBrw
 Local bEnter := {|o| 
    IF Lower(cPrgName) != Lower(o:aArray[o:nCurrent,1])
       SetPath( cPaths, o:aArray[o:nCurrent,1], .T. )
@@ -1319,7 +1320,7 @@ Local bClose := {||
    Return .T.
    }
 
-   IF lStack     
+   IF !Empty( oStackDlg )
       oStackDlg:Close()
    ELSE
       INIT DIALOG oStackDlg TITLE "Stack" AT 0, 0 SIZE 340, 120 ;
@@ -1343,7 +1344,7 @@ Local bClose := {||
       ACTIVATE DIALOG oStackDlg NOMODAL
 
       DoCommand( CMD_STACK, "on" )
-      hwg_Checkmenuitem( ,MENU_STACK, .T. )
+      //hwg_Checkmenuitem( ,MENU_STACK, .T. )
    ENDIF
 
 Return Nil
@@ -1388,7 +1389,7 @@ Local bTbChange := {|o,n|
    Return .T.
    }
 
-   IF hwg_Ischeckedmenuitem( ,MENU_VARS )
+   IF !Empty( oVarsDlg ) //hwg_Ischeckedmenuitem( ,MENU_VARS )
       oVarsDlg:Close()
    ELSE
       INIT DIALOG oVarsDlg TITLE "Local variables" AT 10, 10 SIZE 360, 180 ;
@@ -1459,7 +1460,7 @@ Local bTbChange := {|o,n|
       ACTIVATE DIALOG oVarsDlg NOMODAL
 
       DoCommand( CMD_LOCAL, "on" )
-      hwg_Checkmenuitem( ,MENU_VARS, .T. )
+      //hwg_Checkmenuitem( ,MENU_VARS, .T. )
    ENDIF
 
 Return Nil
@@ -1482,7 +1483,7 @@ Local oBrw, i, nLen := Val( arr[n] )
 Return Nil
 
 Static FUNCTION WatchesToggle()
-Local oBrw, lWatches := hwg_Ischeckedmenuitem( ,MENU_WATCH )
+Local oBrw
 Local bClose := {|| 
    hwg_Checkmenuitem(,MENU_WATCH,.F.)
    oWatchDlg := Nil
@@ -1492,7 +1493,7 @@ Local bClose := {||
    Return .T.
    }
 
-   IF lWatches
+   IF !Empty( oWatchDlg )
       oWatchDlg:Close()
    ELSE
       INIT DIALOG oWatchDlg TITLE "Watch expressions" AT 20, 20 SIZE 340, 120 ;
@@ -1519,7 +1520,7 @@ Local bClose := {||
       ACTIVATE DIALOG oWatchDlg NOMODAL
 
       DoCommand( CMD_WATCH, "on" )
-      hwg_Checkmenuitem( ,MENU_WATCH, .T. )
+      //hwg_Checkmenuitem( ,MENU_WATCH, .T. )
    ENDIF
 
 Return Nil

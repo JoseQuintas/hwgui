@@ -9,6 +9,12 @@
 [*] Changes
 
 
+HWGUI 2.18 ( 19.07.2013 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] There was a lot of changes since last release, I can't now make
+    a well structured list of them, maybe, later ...
+    For now, see the Changelog.
+
 HWGUI 2.16 ( 14.09.2006 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [+] Native Win32 Toolbar, extended Grid control (HGridEX) has been added.

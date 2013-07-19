@@ -114,11 +114,12 @@
 #define CMD_LOCAL              12
 #define CMD_PRIVATE            13
 #define CMD_PUBLIC             14
-#define CMD_WATCH              15
-#define CMD_WADD               16
-#define CMD_WDEL               17
-#define CMD_AREAS              18
-#define CMD_REC                19
+#define CMD_STATIC             15
+#define CMD_WATCH              16
+#define CMD_WADD               17
+#define CMD_WDEL               18
+#define CMD_AREAS              19
+#define CMD_REC                20
 
 #define VAR_MAX_LEN            72
 
@@ -221,6 +222,7 @@ CLASS HBDebugger
    VAR lShowLocals       INIT .F.
    VAR lShowPrivate      INIT .F.
    VAR lShowPublic       INIT .F.
+   VAR lShowStatic       INIT .F.
    VAR lShowWatch        INIT .F.
    VAR lGo                          // stores if GO was requested
    VAR lActive           INIT .F.
@@ -402,30 +404,40 @@ METHOD HandleEvent() CLASS HBDebugger
       CASE nKey == CMD_LOCAL
          IF p1 == "on"
             ::lShowLocals := .T.
-            ::lShowPrivate := ::lShowPublic := .F.
+            ::lShowStatic := ::lShowPrivate := ::lShowPublic := .F.
             hwg_dbg_Answer( "valuelocal", SendLocal() )
          ELSE
-            ::lShowLocals := ::lShowPrivate := ::lShowPublic := .F.
+            ::lShowStatic := ::lShowLocals := ::lShowPrivate := ::lShowPublic := .F.
             hwg_dbg_Answer( "ok" )
          ENDIF
 
       CASE nKey == CMD_PRIVATE
          IF p1 == "on"
             ::lShowPrivate := .T.
-            ::lShowLocals := ::lShowPublic := .F.
+            ::lShowStatic := ::lShowLocals := ::lShowPublic := .F.
             hwg_dbg_Answer( "valuepriv", SendPrivate() )
          ELSE
-            ::lShowLocals := ::lShowPrivate := ::lShowPublic := .F.
+            ::lShowStatic := ::lShowLocals := ::lShowPrivate := ::lShowPublic := .F.
             hwg_dbg_Answer( "ok" )
          ENDIF
 
       CASE nKey == CMD_PUBLIC
          IF p1 == "on"
             ::lShowPublic := .T.
-            ::lShowPrivate := ::lShowLocals := .F.
+            ::lShowStatic := ::lShowPrivate := ::lShowLocals := .F.
             hwg_dbg_Answer( "valuepubl", SendPublic() )
          ELSE
+            ::lShowStatic := ::lShowLocals := ::lShowPrivate := ::lShowPublic := .F.
+            hwg_dbg_Answer( "ok" )
+         ENDIF
+
+      CASE nKey == CMD_STATIC
+         IF p1 == "on"
+            ::lShowStatic := .T.
             ::lShowLocals := ::lShowPrivate := ::lShowPublic := .F.
+            hwg_dbg_Answer( "valuestatic", SendStatic() )
+         ELSE
+            ::lShowStatic := ::lShowLocals := ::lShowPrivate := ::lShowPublic := .F.
             hwg_dbg_Answer( "ok" )
          ENDIF
 
@@ -515,12 +527,14 @@ METHOD ShowCodeLine( nProc ) CLASS HBDebugger
          hwg_dbg_SetActiveLine( cPrgName, nLine, ;
                Iif( ::lViewStack, SendStack(), Nil ),  ;
                Iif( ::lShowLocals, SendLocal(), ;
-                  Iif( ::lShowPrivate, SendPrivate(), ;
-                     Iif( ::lShowPublic, SendPublic(), Nil ) ) ), ;
+                  Iif( ::lShowStatic, SendStatic(), ;
+                     Iif( ::lShowPrivate, SendPrivate(), ;
+                        Iif( ::lShowPublic, SendPublic(), Nil ) ) ) ), ;
                Iif( ::lShowWatch .AND. (::nWatches > 0), SendWatch(), Nil ), ;
                Iif( ::lShowLocals, 1, ;
                   Iif( ::lShowPrivate, 2, ;
-                     Iif( ::lShowPublic, 3, Nil ) ) ) )
+                     Iif( ::lShowPublic, 3, ;
+                        Iif( ::lShowStatic, 4, Nil ) ) ) ) )
       ENDIF
    ENDIF
 
@@ -646,6 +660,47 @@ Local arr := Array( nCount * 3 + 1 ), cName, xValue, i, j := 1
       arr[++j] := cName
       arr[++j] := Valtype( xValue )
       arr[++j] := __dbgValToStr( xValue )
+      IF Len( arr[j] ) > VAR_MAX_LEN
+         arr[j] := Left( arr[j], VAR_MAX_LEN )
+      ENDIF
+   NEXT
+
+   RETURN arr
+
+STATIC FUNCTION SendStatic()
+Local aVars, nAll := 0
+Local arr, i, j := 1, xVal
+
+   xVal := t_oDebugger:aProcStack[ 1,CSTACK_MODULE ]
+   i := AScan( t_oDebugger:aModules, {|a| hb_FileMatch( a[MODULE_NAME], xVal ) } )
+   IF i > 0
+      aVars := t_oDebugger:aModules[ i,MODULE_STATICS ]
+      nAll := Len( aVars )
+   ENDIF
+
+   nAll += Len( t_oDebugger:aProcStack[1,CSTACK_STATICS] )
+   arr := Array( nAll * 3 + 1 )
+
+   arr[1] := Ltrim( Str( nAll ) )
+
+   IF !Empty( aVars )
+      FOR i := 1 TO Len( aVars )
+         arr[++j] := aVars[ i,VAR_NAME ]
+         xVal := __dbgVMVarSGet( aVarS[ i,VAR_LEVEL ], aVarS[ i,VAR_POS ] )
+         arr[++j] := Valtype( xVal )
+         arr[++j] := __dbgValToStr( xVal )
+         IF Len( arr[j] ) > VAR_MAX_LEN
+            arr[j] := Left( arr[j], VAR_MAX_LEN )
+         ENDIF
+      NEXT
+   ENDIF
+
+   aVars := t_oDebugger:aProcStack[1,CSTACK_STATICS]
+   FOR i := 1 TO Len( aVars )
+      arr[++j] := aVars[ i,VAR_NAME ]
+      xVal := __dbgVMVarSGet( aVarS[ i,VAR_LEVEL ], aVarS[ i,VAR_POS ] )
+      arr[++j] := Valtype( xVal )
+      arr[++j] := __dbgValToStr( xVal )
       IF Len( arr[j] ) > VAR_MAX_LEN
          arr[j] := Left( arr[j], VAR_MAX_LEN )
       ENDIF

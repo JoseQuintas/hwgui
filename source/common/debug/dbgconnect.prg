@@ -73,11 +73,12 @@
 #define CMD_LOCAL              12
 #define CMD_PRIVATE            13
 #define CMD_PUBLIC             14
-#define CMD_WATCH              15
-#define CMD_WADD               16
-#define CMD_WDEL               17
-#define CMD_AREAS              18
-#define CMD_REC                19
+#define CMD_STATIC             15
+#define CMD_WATCH              16
+#define CMD_WADD               17
+#define CMD_WDEL               18
+#define CMD_AREAS              19
+#define CMD_REC                20
 
 #ifdef __XHARBOUR__
 #xtranslate HB_AT([<n,...>]) =>  AT(<n>)
@@ -240,7 +241,7 @@ Local i, s := cPrgName + "," + Ltrim(Str(nLine)), nLen
    ENDIF
    IF aVars != Nil
       s += Iif( nVarType==1, ",valuelocal,", ;
-            Iif( nVarType==2, ",valuepriv,", ",valuepubl," ) ) + aVars[1]
+            Iif( nVarType==2, ",valuepriv,", Iif( nVarType==3, ",valuepubl,", ",valuestatic," ) ) ) + aVars[1]
       nLen := Len( aVars )
       FOR i := 2 TO nLen
          s += "," + Str2Hex(aVars[i])
@@ -327,6 +328,9 @@ Local n, cmd, arr
                ELSEIF arr[3] == "publ"
                   p1 := arr[4]
                   Return CMD_PUBLIC
+               ELSEIF arr[3] == "static"
+                  p1 := arr[4]
+                  Return CMD_STATIC
                ELSEIF arr[3] == "watch"
                   p1 := arr[4]
                   Return CMD_WATCH

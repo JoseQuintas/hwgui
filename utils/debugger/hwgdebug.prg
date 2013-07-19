@@ -82,12 +82,13 @@
 #define CMD_STACK       8
 #define CMD_EXP         9
 #define CMD_LOCAL      10
-#define CMD_PRIV       11
-#define CMD_PUBL       12
-#define CMD_WATCH      13
-#define CMD_AREA       14
-#define CMD_REC        15
-#define CMD_TERMINATE  16
+#define CMD_STATIC     11
+#define CMD_PRIV       12
+#define CMD_PUBL       13
+#define CMD_WATCH      14
+#define CMD_AREA       15
+#define CMD_REC        16
+#define CMD_TERMINATE  17
 
 #define BUFF_LEN     1024
 #define RES_LEN       100
@@ -589,6 +590,8 @@ Static nLastSec := 0
                      ShowVars( arr, 3, 2 )
                   ELSEIF arr[2] == "valuepubl"
                      ShowVars( arr, 3, 3 )
+                  ELSEIF arr[2] == "valuestatic"
+                     ShowVars( arr, 3, 4 )
                   ENDIF
                ELSEIF nAnsType == ANS_WATCH
                   IF arr[2] == "valuewatch"
@@ -632,6 +635,9 @@ Static nLastSec := 0
                         n += 2 + Val( arr[n+1] ) * 3
                      ELSEIF arr[n] == "valuepubl"
                         ShowVars( arr, n+1, 3 )
+                        n += 2 + Val( arr[n+1] ) * 3
+                     ELSEIF arr[n] == "valuestatic"
+                        ShowVars( arr, n+1, 4 )
                         n += 2 + Val( arr[n+1] ) * 3
                      ELSEIF arr[n] == "valuewatch"
                         ShowWatch( arr, n+1 )
@@ -737,6 +743,16 @@ Static Function DoCommand( nCmd, cDop, cDop2 )
       ELSEIF nCmd == CMD_PUBL
          IF nVerProto > 1
             Send( "view", "publ", cDop )
+            nAnsType := ANS_LOCAL
+            SetMode( MODE_WAIT_ANS )
+         ELSE
+            hwg_MsgStop( cMsgNotSupp )
+         ENDIF
+         Return Nil
+
+      ELSEIF nCmd == CMD_STATIC
+         IF nVerProto > 1
+            Send( "view", "static", cDop )
             nAnsType := ANS_LOCAL
             SetMode( MODE_WAIT_ANS )
          ELSE
@@ -1384,7 +1400,7 @@ Local oBrw, i, nLen := Val( arr[n] )
 Return Nil
 
 Static FUNCTION VarsToggle()
-Local oTab, oBrwL, oBrwR, oBrwU, y1
+Local oTab, oBrwL, oBrwR, oBrwU, oBrwS, y1
 Local bClose := {|| 
    hwg_Checkmenuitem(,MENU_VARS,.F.)
    oVarsDlg := Nil
@@ -1399,8 +1415,10 @@ Local bTbChange := {|o,n|
          DoCommand( CMD_LOCAL, "on" )
       ELSEIF n == 2
          DoCommand( CMD_PRIV, "on" )
-      ELSE
+      ELSEIF n == 3
          DoCommand( CMD_PUBL, "on" )
+      ELSE
+         DoCommand( CMD_STATIC, "on" )
       ENDIF
    ENDIF
    Return .T.
@@ -1471,6 +1489,24 @@ Local bTbChange := {|o,n|
 
       oBrwU:bcolorSel := oBrwU:htbcolor := CLR_LGREEN
       oBrwU:tcolorSel := oBrwU:httcolor := 0
+
+      END PAGE of oTab
+
+      BEGIN PAGE "Static" of oTab
+
+      @ 8,y1 BROWSE oBrwS ARRAY OF oTab        ;
+            SIZE 344,142                       ;
+            FONT HWindow():GetMain():oFont     ;
+            STYLE WS_VSCROLL                   ;
+            ON SIZE {|o,x,y|o:Move(,,x-16,y-38)}
+
+      oBrwS:aArray := {}
+      oBrwS:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,1]},"C",16,0 ) )
+      oBrwS:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,2]},"C",2,0 ) )
+      oBrwS:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,3]},"C",60,0 ) )
+
+      oBrwS:bcolorSel := oBrwS:htbcolor := CLR_LGREEN
+      oBrwS:tcolorSel := oBrwS:httcolor := 0
 
       END PAGE of oTab
 

@@ -759,17 +759,21 @@ Local arr, arr1[512], n, i, nAreas := 0, nAlias
    RETURN arr
 
 STATIC FUNCTION SendRec( cAlias )
-Local af, nCount, arr, i, j := 2
+Local af, nCount, arr, i, j := 3
 
-   IF ( i := Select( cAlias ) ) == 0
-      Return { "0", "0" }
+   IF Empty( cAlias )
+      cAlias := Alias()
+   ENDIF
+   IF Empty( cAlias ) .OR. ( i := Select( cAlias ) ) == 0
+      Return { "0", "", "0" }
    ENDIF
    af := (cAlias)->(dbStruct())
    nCount := Len( af )
-   arr := Array( nCount * 4 + 2 )
+   arr := Array( nCount * 4 + 3 )
 
    arr[1] := Ltrim( Str( nCount ) )
-   arr[2] := Ltrim( Str( (cAlias)->(Recno()) ) )
+   arr[2] := cAlias
+   arr[3] := Ltrim( Str( (cAlias)->(Recno()) ) )
    FOR i := 1 TO nCount
       arr[++j] := af[i,1]
       arr[++j] := af[i,2]

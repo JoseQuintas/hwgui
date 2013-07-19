@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-19 12:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/debugger/hwgdebug.prg
+  * source/common/debugger/debugger.prg
+    * Added possibility to input commands in the edit window for expression.
+      The first letter of a command is ':'. For now two commands have been added:
+      :inspect and :record, you may input any number of letters of a command
+      ( :i for example ).
+      :inspect objname - inspect an object <objname>
+      :record cAlias - inspect a current record of a table with alias <cAlias>,
+      if cAlias is empty, the current workarea will be used.
+
 2013-07-19 10:23 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/debugger/hwgdebug.prg
   * source/common/debugger/debugger.prg

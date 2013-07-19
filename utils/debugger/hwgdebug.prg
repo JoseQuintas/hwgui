@@ -146,6 +146,7 @@ STATIC oTimer, oSayState, oEditExpr, oBtnExp, oMainFont
 STATIC oBrwRes
 STATIC oStackDlg, oVarsDlg, oWatchDlg, oAreasDlg
 STATIC oInspectDlg
+STATIC cInspectVar
 STATIC lViewCmd := .T.
 STATIC oTabMain, nTabsMax := 5
 STATIC cPaths := ";"
@@ -549,7 +550,7 @@ Local arr := hb_aParams(), i, s := ""
 Return Nil
 
 Static Function TimerProc()
-Local n, arr
+Local n, arr, xTmp
 Static nLastSec := 0
 
    IF nMode != MODE_INPUT
@@ -563,10 +564,21 @@ Static nLastSec := 0
             IF Left(arr[1],1) == "b" .AND. ( n := Val( Substr(arr[1],2) ) ) == nId1
                IF nAnsType == ANS_CALC
                   IF arr[2] == "value"
-                     SetResult( Hex2Str( arr[3] ) )
+                     IF !Empty( cInspectVar )
+                        IF ( xTmp := Substr( Hex2Str(arr[3]),2,1 ) ) == "O"
+                           nMode := MODE_INPUT
+                           InspectObject( cInspectVar )
+                           cInspectVar := Nil
+                           Return Nil
+                        ELSE
+                           oEditExpr:SetText( cInspectVar + " isn't an object" )
+                        ENDIF
+                     ELSE
+                        SetResult( Hex2Str( arr[3] ) )
+                     ENDIF
                   ELSE
                      oEditExpr:SetText( "-- BAD ANSWER --" )
-                  ENDIF
+                  ENDIF                 
                ELSEIF nAnsType == ANS_BRP
                   IF arr[2] == "err"
                      oEditExpr:SetText( "-- BAD LINE --" )
@@ -1334,19 +1346,33 @@ Return Nil
 
 Static Function Calc()
 Local cExp := Trim( oEditExpr:GetText() )
+Local arr, cmd
 
    IF !Empty( cExp )
-
-      IF Len( oBrwRes:aArray ) < RES_LEN
-         Aadd( oBrwRes:aArray, { "", cExp } )
-         oBrwRes:nRecords ++
-      ELSE
-         Adel( oBrwRes:aArray, 1 )
-         oBrwRes:aArray[RES_LEN] := { "", cExp }
-      ENDIF
-      PrevExpr( 0 )
       oEditExpr:SetText( "" )
-      DoCommand( CMD_EXP, Str2Hex( cExp ) )
+      IF Left( cExp,1 ) == ":" .AND. Substr( cExp,2,1 ) != ":"
+         arr := hb_aTokens( Substr( cExp,2 ), " " )
+         cmd := Lower( arr[1] )
+         IF "inspect" = cmd
+            IF Len( arr ) > 1 .AND. !Empty( arr[2] )
+               cInspectVar := arr[2]
+               DoCommand( CMD_EXP, Str2Hex( "Valtype("+arr[2]+")" ) )
+            ENDIF
+         ELSEIF "record" = cmd
+            InspectRec( Iif( Len(arr)>1, arr[2], "" ) )
+         ENDIF
+      ELSE
+         IF Len( oBrwRes:aArray ) < RES_LEN
+            Aadd( oBrwRes:aArray, { "", cExp } )
+            oBrwRes:nRecords ++
+         ELSE
+            Adel( oBrwRes:aArray, 1 )
+            oBrwRes:aArray[RES_LEN] := { "", cExp }
+         ENDIF
+         PrevExpr( 0 )
+         cInspectVar := Nil
+         DoCommand( CMD_EXP, Str2Hex( cExp ) )
+      ENDIF
    ENDIF
 
 Return Nil
@@ -1726,9 +1752,9 @@ Local oDlg, oBrw
          ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
 
    oBrw:aArray := {}
-   oBrw:AddColumn( HColumn():New( "Name",{|v,o|o:aArray[o:nCurrent,1]},"C",12,0 ) )
+   oBrw:AddColumn( HColumn():New( "Name",{|v,o|o:aArray[o:nCurrent,1]},"C",14,0 ) )
    oBrw:AddColumn( HColumn():New( "Type",{|v,o|o:aArray[o:nCurrent,2]},"C",2,0 ) )
-   oBrw:AddColumn( HColumn():New( "Len",{|v,o|o:aArray[o:nCurrent,3]},"C",4,0 ) )
+   oBrw:AddColumn( HColumn():New( "Len",{|v,o|o:aArray[o:nCurrent,3]},"C",6,0 ) )
    oBrw:AddColumn( HColumn():New( "Value",{|v,o|o:aArray[o:nCurrent,4]},"C",60,0 ) )
 
    oBrw:bcolorSel := oBrw:htbcolor := CLR_LGREEN
@@ -1748,7 +1774,7 @@ Static FUNCTION ShowRec( arr, n )
 Local oBrw, arr1, i, j, nFields := Val( arr[n] )
 
    IF !Empty( oInspectDlg )
-      hwg_Setwindowtext( oInspectDlg:handle, "Record inspector ("+oInspectDlg:title+", rec."+Hex2Str(arr[++n])+")" )
+      hwg_Setwindowtext( oInspectDlg:handle, "Record inspector ("+Hex2Str(arr[++n])+", rec."+Hex2Str(arr[++n])+")" )
       oBrw := oInspectDlg:aControls[1]
       arr1 := Array( nFields, 4 )
       FOR i := 1 TO nFields

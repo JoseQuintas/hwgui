@@ -120,6 +120,7 @@
 #define CMD_WDEL               18
 #define CMD_AREAS              19
 #define CMD_REC                20
+#define CMD_OBJECT             21
 
 #define VAR_MAX_LEN            72
 
@@ -460,6 +461,9 @@ METHOD HandleEvent() CLASS HBDebugger
       CASE nKey == CMD_REC
             hwg_dbg_Answer( "valuerec", SendRec( p1 ) )
 
+      CASE nKey == CMD_OBJECT
+            hwg_dbg_Answer( "valueobj", SendObject( p1 ) )
+
       CASE nKey == CMD_CALC
          IF Left( p1,1 ) == "?"
             p1 := Ltrim( Substr( p1, Iif( Left(p1,2) == "??",3,2 ) ) )
@@ -777,6 +781,37 @@ Local af, nCount, arr, i, j := 2
    NEXT
 
    RETURN arr
+
+STATIC FUNCTION SendObject( cObjName )
+Local aVars, aMethods, arr, obj, i, j := 1
+
+   obj := t_oDebugger:GetExprValue( cObjName )
+   IF Valtype( obj ) == "O"
+      aVars := __objGetValueList( obj )
+      aMethods := __objGetMethodList( obj )
+      arr := Array( ( Len(aVars)+Len(aMethods) ) * 3 + 1 )
+      arr[1] := Ltrim( Str( Len(aVars)+Len(aMethods) ) )
+
+      FOR i := 1 TO Len( aVars )
+         arr[++j] := aVars[ i,1 ]
+         arr[++j] := Valtype( aVars[ i,2 ] )
+         arr[++j] := __dbgValToStr( aVars[ i,2 ] )
+         IF Len( arr[j] ) > VAR_MAX_LEN
+            arr[j] := Left( arr[j], VAR_MAX_LEN )
+         ENDIF
+      NEXT
+      FOR i := 1 TO Len( aMethods )
+         arr[++j] := aMethods[ i ]
+         arr[++j] := ""
+         arr[++j] := "Method"
+      NEXT
+
+   ELSE
+      Return { "0" }
+   ENDIF
+
+   RETURN arr
+
 
 /* Check if a string starts with another string */
 STATIC FUNCTION starts( cLine, cStart )

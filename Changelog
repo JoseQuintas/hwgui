@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-19 10:23 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/debugger/hwgdebug.prg
+  * source/common/debugger/debugger.prg
+  * source/common/debugger/dbgconnect.prg
+    * Added object inspector - it is opened, if you double click or
+      press ENTER on a line with an object variable in variables list.
+
 2013-07-19 09:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/debugger/hwgdebug.prg
   * source/common/debugger/debugger.prg

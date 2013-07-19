@@ -79,6 +79,7 @@
 #define CMD_WDEL               18
 #define CMD_AREAS              19
 #define CMD_REC                20
+#define CMD_OBJECT             21
 
 #ifdef __XHARBOUR__
 #xtranslate HB_AT([<n,...>]) =>  AT(<n>)
@@ -341,6 +342,9 @@ Local n, cmd, arr
                IF arr[3] == "rec"
                   p1 := arr[4]
                   Return CMD_REC
+               ELSEIF arr[3] == "obj"
+                  p1 := arr[4]
+                  Return CMD_OBJECT
                ENDIF
             ENDIF
             hwg_dbg_Send( "e"+Ltrim(Str(++nId2)) )

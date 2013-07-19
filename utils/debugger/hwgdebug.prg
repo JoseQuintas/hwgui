@@ -71,6 +71,7 @@
 #define ANS_WATCH       5
 #define ANS_AREAS       6
 #define ANS_REC         7
+#define ANS_OBJECT      8
 
 #define CMD_QUIT        1
 #define CMD_GO          2
@@ -88,7 +89,8 @@
 #define CMD_WATCH      14
 #define CMD_AREA       15
 #define CMD_REC        16
-#define CMD_TERMINATE  17
+#define CMD_OBJECT     17
+#define CMD_TERMINATE  18
 
 #define BUFF_LEN     1024
 #define RES_LEN       100
@@ -605,6 +607,10 @@ Static nLastSec := 0
                   IF arr[2] == "valuerec"
                      ShowRec( arr, 3 )
                   ENDIF
+               ELSEIF nAnsType == ANS_OBJECT
+                  IF arr[2] == "valueobj"
+                     ShowObject( arr, 3 )
+                  ENDIF
                ENDIF
                SetMode( MODE_INPUT )
             ENDIF
@@ -780,6 +786,16 @@ Static Function DoCommand( nCmd, cDop, cDop2 )
          IF nVerProto > 1
             Send( "insp", "rec", cDop )
             nAnsType := ANS_REC
+            SetMode( MODE_WAIT_ANS )
+         ELSE
+            hwg_MsgStop( cMsgNotSupp )
+         ENDIF
+         Return Nil
+
+      ELSEIF nCmd == CMD_OBJECT
+         IF nVerProto > 1
+            Send( "insp", "obj", cDop )
+            nAnsType := ANS_OBJECT
             SetMode( MODE_WAIT_ANS )
          ELSE
             hwg_MsgStop( cMsgNotSupp )
@@ -1453,6 +1469,7 @@ Local bTbChange := {|o,n|
 
       oBrwL:bcolorSel := oBrwL:htbcolor := CLR_LGREEN
       oBrwL:tcolorSel := oBrwL:httcolor := 0
+      oBrwL:bEnter:= {||ViewVar( oBrwL:aArray[oBrwL:nCurrent] )}
 
       END PAGE of oTab
 
@@ -1471,6 +1488,7 @@ Local bTbChange := {|o,n|
 
       oBrwR:bcolorSel := oBrwR:htbcolor := CLR_LGREEN
       oBrwR:tcolorSel := oBrwR:httcolor := 0
+      oBrwR:bEnter:= {||ViewVar( oBrwR:aArray[oBrwR:nCurrent] )}
 
       END PAGE of oTab
 
@@ -1489,6 +1507,7 @@ Local bTbChange := {|o,n|
 
       oBrwU:bcolorSel := oBrwU:htbcolor := CLR_LGREEN
       oBrwU:tcolorSel := oBrwU:httcolor := 0
+      oBrwU:bEnter:= {||ViewVar( oBrwU:aArray[oBrwU:nCurrent] )}
 
       END PAGE of oTab
 
@@ -1507,6 +1526,7 @@ Local bTbChange := {|o,n|
 
       oBrwS:bcolorSel := oBrwS:htbcolor := CLR_LGREEN
       oBrwS:tcolorSel := oBrwS:httcolor := 0
+      oBrwS:bEnter:= {||ViewVar( oBrwS:aArray[oBrwS:nCurrent] )}
 
       END PAGE of oTab
 
@@ -1532,6 +1552,13 @@ Local oBrw, i, nLen := Val( arr[n] )
          oBrw:aArray[i,3] := Hex2Str( arr[ ++n ] )
       NEXT
       oBrw:Refresh()
+   ENDIF
+Return Nil
+
+Static FUNCTION ViewVar( aLine )
+
+   IF aLine[2] == "O"
+      InspectObject( aLine[1] )
    ENDIF
 Return Nil
 
@@ -1721,11 +1748,58 @@ Static FUNCTION ShowRec( arr, n )
 Local oBrw, arr1, i, j, nFields := Val( arr[n] )
 
    IF !Empty( oInspectDlg )
-      hwg_Setwindowtext( oInspectDlg:handle, oInspectDlg:title+", rec."+Hex2Str(arr[++n]) )
+      hwg_Setwindowtext( oInspectDlg:handle, "Record inspector ("+oInspectDlg:title+", rec."+Hex2Str(arr[++n])+")" )
       oBrw := oInspectDlg:aControls[1]
       arr1 := Array( nFields, 4 )
       FOR i := 1 TO nFields
          FOR j := 1 TO 4
+            arr1[i,j] := Hex2Str( arr[ ++n ] )
+         NEXT
+      NEXT
+      oBrw:aArray := arr1
+      oBrw:Refresh()
+      oInspectDlg := Nil
+   ENDIF
+Return Nil
+
+Static FUNCTION InspectObject( cObjName )
+Local oDlg, oBrw
+
+   INIT DIALOG oDlg TITLE "Object inspector ("+cObjName+")" AT 30, 30 SIZE 480, 400 ;
+     FONT HWindow():GetMain():oFont
+
+   @ 0,0 BROWSE oBrw ARRAY OF oDlg          ;
+         SIZE 480,340                       ;
+         FONT HWindow():GetMain():oFont     ;
+         STYLE WS_VSCROLL                   ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
+
+   oBrw:aArray := {}
+   oBrw:AddColumn( HColumn():New( "Name",{|v,o|o:aArray[o:nCurrent,1]},"C",12,0 ) )
+   oBrw:AddColumn( HColumn():New( "Type",{|v,o|o:aArray[o:nCurrent,2]},"C",2,0 ) )
+   oBrw:AddColumn( HColumn():New( "Value",{|v,o|o:aArray[o:nCurrent,3]},"C",60,0 ) )
+
+   oBrw:bcolorSel := oBrw:htbcolor := CLR_LGREEN
+   oBrw:tcolorSel := oBrw:httcolor := 0
+
+   @ 45, 360 BUTTON "Refresh" ON CLICK {|| oInspectDlg:=oDlg,DoCommand(CMD_OBJECT,cObjName) } SIZE 100, 28 ON SIZE ANCHOR_BOTTOMABS
+   @ 335, 360 BUTTON "Close" ON CLICK {|| oDlg:Close() } SIZE 100, 28 ON SIZE ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
+
+   ACTIVATE DIALOG oDlg NOMODAL
+
+   oInspectDlg := oDlg
+   DoCommand( CMD_OBJECT, cObjName )
+
+Return Nil
+
+Static FUNCTION ShowObject( arr, n )
+Local oBrw, arr1, i, j, nLen := Val( arr[n] )
+
+   IF !Empty( oInspectDlg )
+      oBrw := oInspectDlg:aControls[1]
+      arr1 := Array( nLen, 3 )
+      FOR i := 1 TO nLen
+         FOR j := 1 TO 3
             arr1[i,j] := Hex2Str( arr[ ++n ] )
          NEXT
       NEXT

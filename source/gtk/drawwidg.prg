@@ -294,6 +294,7 @@ METHOD RELEASE() CLASS HBrush
 
 CLASS HBitmap INHERIT HObject
 
+   CLASS VAR cPath SHARED
    CLASS VAR aBitmaps   INIT {}
    DATA handle
    DATA name
@@ -345,6 +346,13 @@ METHOD AddFile( name, HDC ) CLASS HBitmap
          RETURN i
       ENDIF
    NEXT
+
+   IF Empty( FilePath(name) ) .AND. !Empty( ::cPath )
+      IF !( Right( ::cPath,1 ) $ "\/" )
+         ::cPath += "/"
+      ENDIF
+      name := ::cPath + name
+   ENDIF
 
    ::handle := hwg_Openimage( name )
    IF !Empty( ::handle )
@@ -409,6 +417,7 @@ METHOD RELEASE() CLASS HBitmap
 
 CLASS HIcon INHERIT HObject
 
+   CLASS VAR cPath SHARED
    CLASS VAR aIcons   INIT {}
    DATA handle
    DATA name
@@ -450,6 +459,13 @@ METHOD AddFile( name ) CLASS HIcon
          RETURN i
       ENDIF
    NEXT
+
+   IF Empty( FilePath(name) ) .AND. !Empty( ::cPath )
+      IF !( Right( ::cPath,1 ) $ "\/" )
+         ::cPath += "/"
+      ENDIF
+      name := ::cPath + name
+   ENDIF
 
    ::handle := hwg_Openimage( name )
    IF !Empty( ::handle )

@@ -290,6 +290,7 @@ METHOD RELEASE() CLASS HBrush
 
 CLASS HBitmap INHERIT HObject
 
+   CLASS VAR cPath SHARED
    CLASS VAR aBitmaps   INIT { }
    CLASS VAR lSelFile   INIT .F.
    DATA handle
@@ -373,6 +374,12 @@ METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
       ENDIF
    NEXT
 
+   IF Empty( FilePath(name) ) .AND. !Empty( ::cPath )
+      IF !( Right( ::cPath,1 ) $ "\/" )
+         ::cPath += "\"
+      ENDIF
+      name := ::cPath + name
+   ENDIF
    name := iif( ! File( name ) .AND. File( cname ), cname, name )
    IF ::lSelFile .AND. !File( name )
       cCurDir  := DiskName() + ':\' + CurDir()
@@ -448,7 +455,8 @@ METHOD RELEASE() CLASS HBitmap
 
 CLASS HIcon INHERIT HObject
 
-   CLASS VAR aIcons   INIT { }
+   CLASS VAR cPath SHARED
+   CLASS VAR aIcons     INIT { }
    CLASS VAR lSelFile   INIT .F.
    DATA handle
    DATA name
@@ -517,7 +525,14 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
          RETURN i
       ENDIF
    NEXT
-   // ::classname:= "HICON"
+
+   IF Empty( FilePath(name) ) .AND. !Empty( ::cPath )
+      IF !( Right( ::cPath,1 ) $ "\/" )
+         ::cPath += "\"
+      ENDIF
+      name := ::cPath + name
+   ENDIF
+
    name := iif( ! File( name ) .AND. File( cname ), cname, name )
    IF ::lSelFile .AND. !File( name )
       cCurDir  := DiskName() + ':\' + CurDir()

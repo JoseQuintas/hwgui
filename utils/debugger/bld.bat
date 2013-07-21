@@ -7,7 +7,7 @@ set HWGUI_INSTALL=..\..
 
    bcc32 -c -O2 -tW -M -I%HRB_DIR%\include hwgdebug.c
 
-   echo 1 24 "..\..\samples\image\WindowsXP.Manifest" > hwgui_xp.rc
+   echo 1 24 "..\..\image\WindowsXP.Manifest" > hwgui_xp.rc
    brc32 -r hwgui_xp -fohwgui_xp
 
 echo c0w32.obj + > b32.bc

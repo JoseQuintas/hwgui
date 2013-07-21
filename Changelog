@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-21 11:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/debugger/bld.bat
+  * utils/debugger/bld_hbmk.bat
+  * samples/hbmk.bat
+    ! Small fixes
+
 2013-07-19 14:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * Whatsnew.txt
     * Just few words about release 2.18

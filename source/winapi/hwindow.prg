@@ -190,7 +190,7 @@ METHOD DelItem( oWnd ) CLASS HWindow
 
    LOCAL i, h := oWnd:handle
 
-   IF ( i := Ascan( ::aWindows,{ |o|o:handle == h } ) ) > 0
+   IF ( i := Ascan( ::aWindows,{ |o|hwg_Isptreq( o:handle,h) } ) ) > 0
       ADel( ::aWindows, i )
       ASize( ::aWindows, Len( ::aWindows ) - 1 )
    ENDIF
@@ -199,7 +199,7 @@ METHOD DelItem( oWnd ) CLASS HWindow
 
 METHOD FindWindow( hWnd ) CLASS HWindow
 
-   LOCAL i := Ascan( ::aWindows, { |o|o:handle == hWnd } )
+   LOCAL i := Ascan( ::aWindows, { |o|hwg_Isptreq( o:handle,hWnd) } )
 
    RETURN iif( i == 0, Nil, ::aWindows[i] )
 

@@ -94,7 +94,7 @@ METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
 
 METHOD DelControl( oCtrl ) CLASS HCustomWindow
    LOCAL h := oCtrl:handle, id := oCtrl:id
-   LOCAL i := Ascan( ::aControls, { |o| o:handle == h } )
+   LOCAL i := Ascan( ::aControls, { |o| hwg_Isptreq( o:handle,h ) } )
 
    hwg_Sendmessage( h, WM_CLOSE, 0, 0 )
    IF i != 0

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-22 16:30 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/common/debugger/debugger.prg
+  * source/common/debugger/dbgconnect.prg
+    * Added code, which sends to debugger array content.
+
 2013-07-22 15:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/hcwindow.prg
   * source/winapi/hwindow.prg

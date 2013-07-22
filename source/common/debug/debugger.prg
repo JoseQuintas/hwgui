@@ -121,6 +121,7 @@
 #define CMD_AREAS              19
 #define CMD_REC                20
 #define CMD_OBJECT             21
+#define CMD_ARRAY              22
 
 #define VAR_MAX_LEN            72
 
@@ -323,11 +324,11 @@ METHOD Go() CLASS HBDebugger
 
 METHOD HandleEvent() CLASS HBDebugger
 
-   LOCAL nKey, p1, p2, xResult, nAt
+   LOCAL nKey, p1, p2, p3, xResult, nAt
 
    DO WHILE .T.
 
-      nKey := hwg_dbg_Input( @p1, @p2 )
+      nKey := hwg_dbg_Input( @p1, @p2, @p3 )
 
       DO CASE
       CASE nKey == CMD_QUIT
@@ -463,6 +464,9 @@ METHOD HandleEvent() CLASS HBDebugger
 
       CASE nKey == CMD_OBJECT
             hwg_dbg_Answer( "valueobj", SendObject( p1 ) )
+
+      CASE nKey == CMD_ARRAY
+            hwg_dbg_Answer( "valuearr", SendArray( p1,Val(p2),Val(p3) ) )
 
       CASE nKey == CMD_CALC
          IF Left( p1,1 ) == "?"
@@ -812,6 +816,30 @@ Local aVars, aMethods, arr, obj, i, j := 1
 
    ELSE
       Return { "0" }
+   ENDIF
+
+   RETURN arr
+
+STATIC FUNCTION SendArray( cArrName, nFirst, nCount )
+Local arr, arrFrom, xValue, i, j := 2
+
+   arrFrom := t_oDebugger:GetExprValue( cArrName )
+   IF Valtype( arrFrom ) == "A"
+      IF Len( arrFrom ) < nFirst + nCount - 1
+         nCount := Len( arrFrom ) - nFirst + 1
+      ENDIF
+      arr := Array( nCount * 2 + 2 )
+      arr[1] := Ltrim( Str( nCount ) )
+      arr[2] := Ltrim( Str( nFirst ) )
+      FOR i := 1 TO nCount
+         arr[++j] := Valtype( arrFrom[nFirst+i-1] )
+         arr[++j] := __dbgValToStr( arrFrom[nFirst+i-1] )
+         IF Len( arr[j] ) > VAR_MAX_LEN
+            arr[j] := Left( arr[j], VAR_MAX_LEN )
+         ENDIF
+      NEXT
+   ELSE
+      Return { "0", "0" }
    ENDIF
 
    RETURN arr

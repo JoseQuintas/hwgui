@@ -80,6 +80,7 @@
 #define CMD_AREAS              19
 #define CMD_REC                20
 #define CMD_OBJECT             21
+#define CMD_ARRAY              22
 
 #ifdef __XHARBOUR__
 #xtranslate HB_AT([<n,...>]) =>  AT(<n>)
@@ -266,7 +267,7 @@ Function hwg_dbg_Wait( nWait )
 
 Return Nil
 
-Function hwg_dbg_Input( p1, p2 )
+Function hwg_dbg_Input( p1, p2, p3 )
 Local n, cmd, arr
 
    IF !lDebugRun ; Return CMD_GO; ENDIF
@@ -345,6 +346,11 @@ Local n, cmd, arr
                ELSEIF arr[3] == "obj"
                   p1 := arr[4]
                   Return CMD_OBJECT
+               ELSEIF arr[3] == "arr"
+                  p1 := arr[4]
+                  p2 := arr[5]
+                  p3 := arr[6]
+                  Return CMD_ARRAY
                ENDIF
             ENDIF
             hwg_dbg_Send( "e"+Ltrim(Str(++nId2)) )

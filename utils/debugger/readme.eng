@@ -1,5 +1,5 @@
                             Debugger for Harbour
-                                Version 2.01
+                                Version 2.02
                             ~~~~~~~~~~~~~~~~~~~~
 
          1. Introduction
@@ -116,10 +116,18 @@
   removing of breakpoints ( to do this, you can double-click on the relevant
   line ), viewing Workareas - for them, there are the same shortcuts.
 
-         View local variables, the adding of the so-called Watch  - expressions,
-  which values are calculated at each iteration, view the call stack procedures
-  ( double-clicking on any of them, we switch window with the text of the program on
-  this procedure ).
+         View variables ( local, private, public and static ), the adding of
+  the so-called Watch  - expressions, which values are calculated at each
+  iteration, view the call stack procedures ( double-clicking on any of them,
+  we switch window with the text of the program on this procedure ).
+
+         Record Inspector - view of the current record of the opened database,
+  to show it press Inspect button in the Workareas dialog window, or input
+  the command :record ( see below ).
+
+         Object inspector - view of the variables and methods of a chosen
+  object, to open it doubleclick ( or press Enter ) on appropriate line in
+  a Variables dialog window, or input the command :inspect ( see below ).
 
          Evaluation of expressions during debug - enter the expression in the
   input window at the bottom of the main window of the debugger and click OK
@@ -130,6 +138,21 @@
   row in the window above. You may move through the results of expressions, 
   if you double click on any line in the input window appears appropriate for 
   this outcome expression.
+         In this window we can input special commands, they must begin with a
+  colon. By now, two commands are implemented:
+
+        :record [<cAlias>]
+        :inspect <cObjectName>
+
+         The :record command opens the Record Inspector - the dialog box
+  with a list of fields of a current record of a database, determined with
+  an alias <cAlias>. If the alias isn't designated, the current workarea is
+  used.
+         The :inspect command opens the Object Inspector - the dialog box
+  with a list of variables and methods of an object <cObjectName>.
+         It is possible to input only first letters of a command, even an one
+  letter. So, to view a current record of a current workarea, it's enough
+  to input :r.
 
          Hwgdebug.xml is created in the same directory as the
   executable hwgdebug.exe, when you do a menu item Options/Save Settings or

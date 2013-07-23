@@ -220,7 +220,7 @@ int ted_CalcSize( PangoLayout * layout, char *szText, TEDFONT *font, int *iRealL
       pango_layout_set_text( layout, "  a", 3 );
       pango_layout_get_pixel_extents( layout, &rc, NULL );
       font->iSpace = PANGO_LBEARING(rc)/2;
-      wrlog( NULL, "iWidth = %d iHeight= %d \r\n",font->iWidth,font->iHeight );
+      // wrlog( NULL, "iWidth = %d iHeight= %d \r\n",font->iWidth,font->iHeight );
    }
 
    iReal = iWidth / font->iWidth;
@@ -318,10 +318,10 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
 
    // get size of text
    pango_layout_set_text( hDC->layout, szText, hced_utf8bytes( szText, iLen ) );
-   pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
-   iWidth = PANGO_RBEARING(rc) + font->ixAdd;
    // Wrap mode off
    pango_layout_set_width( hDC->layout, -1 );
+   pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
+   iWidth = PANGO_RBEARING(rc) + font->ixAdd;
 
    if( hDC->bcolor != -1 )
    {

@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-23 13:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/debugger/protocol.txt
+    * Description updated
+  * source/common/editor/hcedit_l.c
+    ! Some fixes
+
 2013-07-23 11:48 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/common/debugger/debugger.prg
   * source/common/debugger/dbgconnect.prg

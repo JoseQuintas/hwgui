@@ -1,6 +1,6 @@
   $Id$
 
-  The debugger protocol version 1
+  The debugger protocol version 3
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
      Debugger and debugged program exchange messages via files. Debugger writes
@@ -21,7 +21,7 @@
   After stopping the program ( on next line, on breakpoint, etc. ) it sends
   to a debugger the following message:
 
-                                   =>    a<id2>,<cPrgName>,<nLine>[,ver,<nProtoVer>][stack,<nStackDepth>,<cModule>,<cFunc>,<nLine>,...][valuelocal,<nVars>,<HEX(cVarName)>,<HEX(cVarType)>,<HEX(cVarValue)>,...][valuewatch,<nWatches>,<HEX(cValue)>,...],<id2>,!
+                                   =>    a<id2>,<cPrgName>,<nLine>[,ver,<nProtoVer>][stack,<nStackDepth>,<cModule>,<cFunc>,<nLine>,...][valuelocal|valuepriv|valuepubl|valuestatic,<nVars>,<HEX(cVarName)>,<HEX(cVarType)>,<HEX(cVarValue)>,...][valuewatch,<nWatches>,<HEX(cValue)>,...],<id2>,!
 
   You see, there is a "a" symbol before the <id2>. Version number is sent in
   a first message only, the following groups of elements ( stack, locals and
@@ -49,9 +49,6 @@
   Calculate an expression cexp:
   <id>,exp,<HEX(cexp)>,<id>,!                 =>    b<id>,value,<HEX(cResult)>,<id>,!
 
-  View workareas:
-  <id>,view,areas,<id>,!                      =>    b<id>,valueareas,<nAreas>,<HEX(nItemsPerArea)>,<HEX(Alias)>,<HEX(nArea)>,<HEX(rddName)>,<HEX(reccount)>,<HEX(recno)>,<HEX(bof)>,<HEX(eof)>,<HEX(found)>,<HEX(deleted)>,<HEX(dbfilterHEX(>,<HEX(ordname)>,<HEX(ordkey)>,...,<id>,!
-
   View the stack:
   <id>,view,stack,on,<id>,!                   =>    b<id>,stack,<nStackDepth>,<cModule>,<cFunc>,<nLine>,...,<id>,!
 
@@ -60,6 +57,15 @@
 
   View the local vars:
   <id>,view,local,on,<id>,!                   =>    b<id>,valuelocal,<nVars>,<HEX(cVarName)>,<HEX(cVarType)>,<HEX(cVarValue)>,...,<id>,!
+
+  View the private vars:
+  <id>,view,priv,on,<id>,!                    =>    b<id>,valuepriv,<nVars>,<HEX(cVarName)>,<HEX(cVarType)>,<HEX(cVarValue)>,...,<id>,!
+
+  View the public vars:
+  <id>,view,publ,on,<id>,!                    =>    b<id>,valuepubl,<nVars>,<HEX(cVarName)>,<HEX(cVarType)>,<HEX(cVarValue)>,...,<id>,!
+
+  View the static vars:
+  <id>,view,static,on,<id>,!                  =>    b<id>,valuestatic,<nVars>,<HEX(cVarName)>,<HEX(cVarType)>,<HEX(cVarValue)>,...,<id>,!
 
   Shut off viewing the local vars:
   <id>,view,local,off,<id>,!                  =>    b<id>,ok,<id>,!
@@ -75,6 +81,18 @@
 
   Delete watch:
   <id>,watch,del,<nWatch>,<id>,!              =>    b<id>,
+
+  View workareas:
+  <id>,view,areas,<id>,!                      =>    b<id>,valueareas,<nAreas>,<HEX(nItemsPerArea)>,<HEX(Alias)>,<HEX(nArea)>,<HEX(rddName)>,<HEX(reccount)>,<HEX(recno)>,<HEX(bof)>,<HEX(eof)>,<HEX(found)>,<HEX(deleted)>,<HEX(dbfilterHEX(>,<HEX(ordname)>,<HEX(ordkey)>,...,<id>,!
+
+  Inspect record:
+  <id>,insp,rec,<cAlias>,<id>,!               =>    b<id>,valuerec,<nFields>,<HEX(cAlias)>,<HEX(nRecno)>,<HEX(fieldname)>,<HEX(fieldtype)>,<HEX(fieldvalue)>,...,<id>,!
+
+  Inspect object:
+  <id>,insp,obj,<cVarName>,<id>,!             =>    b<id>,valueobj,<nItems>,<HEX(name)>,<HEX(type)>,<HEX(value)>,...,<id>,!
+
+  Inspect array:
+  <id>,insp,arr,<cVarName>,<nFirst>,<nItems>,<id>,!  =>    b<id>,valuearr,<nItems>,<HEX(nFirst)>,<HEX(nArrLen)>,<HEX(type)>,<HEX(value)>,...,<id>,!
 
   Add breakpoint:
   <id>,brp,add,<cPrgName>,<nLine>,<id>,!      =>    b<id>,line,<nLine>,<id>,!

@@ -57,7 +57,7 @@
 
 #include "fileio.ch"
 
-#define DEBUG_PROTO_VERSION     2
+#define DEBUG_PROTO_VERSION     3
 
 #define CMD_GO                  1
 #define CMD_STEP                2

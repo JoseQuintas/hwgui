@@ -72,6 +72,7 @@
 #define ANS_AREAS       6
 #define ANS_REC         7
 #define ANS_OBJECT      8
+#define ANS_ARRAY       9
 
 #define CMD_QUIT        1
 #define CMD_GO          2
@@ -90,10 +91,12 @@
 #define CMD_AREA       15
 #define CMD_REC        16
 #define CMD_OBJECT     17
-#define CMD_TERMINATE  18
+#define CMD_ARRAY      18
+#define CMD_TERMINATE  19
 
 #define BUFF_LEN     1024
 #define RES_LEN       100
+#define ARR_LEN       100
 
 #define  CLR_LGREEN  12507070
 #define  CLR_GREEN      32768
@@ -570,6 +573,11 @@ Static nLastSec := 0
                            InspectObject( cInspectVar )
                            cInspectVar := Nil
                            Return Nil
+                        ELSEIF xTmp == "A"
+                           nMode := MODE_INPUT
+                           InspectArray( cInspectVar )
+                           cInspectVar := Nil
+                           Return Nil
                         ELSE
                            oEditExpr:SetText( cInspectVar + " isn't an object" )
                         ENDIF
@@ -623,6 +631,10 @@ Static nLastSec := 0
                   IF arr[2] == "valueobj"
                      ShowObject( arr, 3 )
                   ENDIF
+               ELSEIF nAnsType == ANS_ARRAY
+                  IF arr[2] == "valuearr"
+                     ShowArray( arr, 3 )
+                  ENDIF
                ENDIF
                SetMode( MODE_INPUT )
             ENDIF
@@ -664,6 +676,14 @@ Static nLastSec := 0
                         EXIT
                      ENDIF
                   ENDDO
+                  // Set Inspectors to nonactual state
+                  FOR n := 1 TO Len( HDialog():aDialogs )
+                     IF Valtype( xTmp := HDialog():aDialogs[n]:cargo ) == "A" .AND. ;
+                           !Empty( xTmp ) .AND. Valtype( xTmp[1] ) == "C" .AND. xTmp[1] == "f"
+                        xTmp[2] := .F.
+                        HDialog():aDialogs[n]:aControls[2]:SetColor( 0, 255, .T. )
+                     ENDIF
+                  NEXT
                   hwg_Setwindowtext( HWindow():GetMain():handle, "Debugger ("+arr[2]+", line "+arr[3]+")" )
                ENDIF
                SetMode( MODE_INPUT )
@@ -710,7 +730,7 @@ Local aStates := { { "Input",16711680,CLR_LGREEN }, { "Init",16777215,CLR_DBLUE 
 
 Return Nil
 
-Static Function DoCommand( nCmd, cDop, cDop2 )
+Static Function DoCommand( nCmd, cDop, cDop2, cDop3 )
 
    IF nMode == MODE_INPUT
       lAnimate := .F.
@@ -808,6 +828,16 @@ Static Function DoCommand( nCmd, cDop, cDop2 )
          IF nVerProto > 1
             Send( "insp", "obj", cDop )
             nAnsType := ANS_OBJECT
+            SetMode( MODE_WAIT_ANS )
+         ELSE
+            hwg_MsgStop( cMsgNotSupp )
+         ENDIF
+         Return Nil
+
+      ELSEIF nCmd == CMD_ARRAY
+         IF nVerProto > 2
+            Send( "insp", "arr", cDop, cDop2, cDop3 )
+            nAnsType := ANS_ARRAY
             SetMode( MODE_WAIT_ANS )
          ELSE
             hwg_MsgStop( cMsgNotSupp )
@@ -1585,6 +1615,8 @@ Static FUNCTION ViewVar( aLine )
 
    IF aLine[2] == "O"
       InspectObject( aLine[1] )
+   ELSEIF aLine[2] == "A"
+      InspectArray( aLine[1] )
    ENDIF
 Return Nil
 
@@ -1835,6 +1867,105 @@ Local oBrw, arr1, i, j, nLen := Val( arr[n] )
    ENDIF
 Return Nil
 
+Static FUNCTION InspectArray( cArrName )
+Local oDlg, oBrw, i
+Local bRefresh := {||
+   Local n1, n2, lRefr := .F.
+   IF nMode == MODE_INPUT
+      n1 := oBrw:nCurrent-oBrw:rowPos+1
+      n2 := n1+oBrw:rowCount-1
+      IF !oDlg:cargo[2]
+         lRefr := .T.
+      ELSE
+         FOR i := n1 TO n2
+            IF oBrw:aArray[i,1] == "-"
+               lRefr := .T.
+               EXIT
+            ENDIF
+         NEXT
+      ENDIF
+      IF lRefr
+         oInspectDlg := oDlg
+         DoCommand( CMD_ARRAY, cArrName, Ltrim(Str(Max(1,n1-10))), Ltrim(Str(ARR_LEN)) )
+      ENDIF
+   ENDIF
+   Return .T.
+   }
+Local bChgPos := {||
+   Local n1, n2
+   IF nMode == MODE_INPUT .AND. !Empty(oBrw:aArray)
+      n1 := oBrw:nCurrent-oBrw:rowPos+1
+      n2 := n1+oBrw:rowCount-1
+      FOR i := n1 TO n2
+         IF oBrw:aArray[i,1] == "-"
+            oInspectDlg := oDlg
+            DoCommand( CMD_ARRAY, cArrName, Ltrim(Str(i)), Ltrim(Str(ARR_LEN)) )
+            EXIT
+         ENDIF
+      NEXT
+   ENDIF
+   Return .T.
+   }
+
+   INIT DIALOG oDlg TITLE "Array inspector - "+cArrName AT 30, 30 SIZE 480, 400 ;
+     FONT HWindow():GetMain():oFont
+   oDlg:cargo := { "f",.F. }
+
+   @ 0,0 BROWSE oBrw ARRAY OF oDlg          ;
+         SIZE 480,340                       ;
+         FONT HWindow():GetMain():oFont     ;
+         STYLE WS_VSCROLL                   ;
+         ON POSCHANGE bChgPos               ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
+
+   oBrw:aArray := {}
+   oBrw:AddColumn( HColumn():New( "Index",{|v,o|"["+Ltrim(Str(o:nCurrent))+"]"},"C",12,0 ) )
+   oBrw:AddColumn( HColumn():New( "Type",{|v,o|o:aArray[o:nCurrent,1]},"C",2,0 ) )
+   oBrw:AddColumn( HColumn():New( "Value",{|v,o|o:aArray[o:nCurrent,2]},"C",60,0 ) )
+
+   oBrw:bcolorSel := oBrw:htbcolor := CLR_LGREEN
+   oBrw:tcolorSel := oBrw:httcolor := 0
+
+   @ 12, 366 SAY "" SIZE 16,16 STYLE WS_BORDER BACKCOLOR 255 ON SIZE ANCHOR_BOTTOMABS
+   @ 45, 360 BUTTON "Refresh" ON CLICK bRefresh SIZE 100, 28 ON SIZE ANCHOR_BOTTOMABS
+   @ 335, 360 BUTTON "Close" ON CLICK {|| oDlg:Close() } SIZE 100, 28 ON SIZE ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
+
+   ACTIVATE DIALOG oDlg NOMODAL
+
+   oInspectDlg := oDlg
+   DoCommand( CMD_ARRAY, cArrName, "1", Ltrim(Str(ARR_LEN)) )
+
+Return Nil
+
+Static FUNCTION ShowArray( arr, n )
+Local oBrw, i, j, nItems := Val( arr[n] ), nFirst := Val( Hex2Str(arr[++n]) )
+Local nLen := Val( Hex2Str(arr[++n]) )
+
+   IF !Empty( oInspectDlg )
+      hwg_Setwindowtext( oInspectDlg:handle, oInspectDlg:title+"("+Ltrim(Str(nLen))+")" )
+      oBrw := oInspectDlg:aControls[1]
+      IF Len( oBrw:aArray ) != nLen .OR. !oInspectDlg:cargo[2]
+         IF Len( oBrw:aArray ) != nLen
+            oBrw:aArray := Array( nLen, 2 )
+         ENDIF
+         FOR i := 1 TO nLen
+            oBrw:aArray[i,1] := "-"
+            oBrw:aArray[i,2] := ""
+         NEXT
+      ENDIF
+      nItems += nFirst - 1
+      FOR i := nFirst TO nItems
+         FOR j := 1 TO 2
+            oBrw:aArray[i,j] := Hex2Str( arr[ ++n ] )
+         NEXT
+      NEXT
+      oInspectDlg:cargo[2] := .T.
+      oInspectDlg:aControls[2]:SetColor( 0, CLR_GREEN, .T. )
+      oBrw:Refresh()
+      oInspectDlg := Nil
+   ENDIF
+Return Nil
+
 Static FUNCTION ViewCmdLine( lView )
 Local oMain := HWindow():GetMain(), aControls := oMain:aControls
 Local i := Ascan( aControls, { |o| hwg_isPtrEq( o:handle,oBrwRes:handle) } ), j := 7
@@ -1851,11 +1982,9 @@ Local i := Ascan( aControls, { |o| hwg_isPtrEq( o:handle,oBrwRes:handle) } ), j 
    ENDDO
    IF lViewCmd
       oTabMain:bSize := {|o,x,y|o:Move(,,x,y-108)}
-      //oTabMain:Move( ,,,oMain:nHeight-108 )
       oMain:Move( ,,,oMain:nHeight+24 )
    ELSE
       oTabMain:bSize := {|o,x,y|o:Move(,,x,y)}
-      //oTabMain:Move( ,,,oMain:nHeight )
       oMain:Move( ,,,oMain:nHeight+12 )
    ENDIF
 

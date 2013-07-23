@@ -821,16 +821,17 @@ Local aVars, aMethods, arr, obj, i, j := 1
    RETURN arr
 
 STATIC FUNCTION SendArray( cArrName, nFirst, nCount )
-Local arr, arrFrom, xValue, i, j := 2
+Local arr, arrFrom, xValue, i, j := 3
 
    arrFrom := t_oDebugger:GetExprValue( cArrName )
    IF Valtype( arrFrom ) == "A"
       IF Len( arrFrom ) < nFirst + nCount - 1
          nCount := Len( arrFrom ) - nFirst + 1
       ENDIF
-      arr := Array( nCount * 2 + 2 )
+      arr := Array( nCount * 2 + 3 )
       arr[1] := Ltrim( Str( nCount ) )
       arr[2] := Ltrim( Str( nFirst ) )
+      arr[3] := Ltrim( Str( Len(arrFrom) ) )
       FOR i := 1 TO nCount
          arr[++j] := Valtype( arrFrom[nFirst+i-1] )
          arr[++j] := __dbgValToStr( arrFrom[nFirst+i-1] )
@@ -839,7 +840,7 @@ Local arr, arrFrom, xValue, i, j := 2
          ENDIF
       NEXT
    ELSE
-      Return { "0", "0" }
+      Return { "0", "0", "0" }
    ENDIF
 
    RETURN arr

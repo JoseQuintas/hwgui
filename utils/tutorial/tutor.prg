@@ -11,11 +11,12 @@
 #include "hwgextern.ch"
 
 Static oIni
-Static cIniPath
+Static cIniPath, cTutor
 Static oText, oHilight
 Static oBtnRun
 Static lHwgrun
 Static cHwg_include_dir := "..\..\include"
+Static cHwg_image_dir := "..\..\image"
 Static cHrb_inc_dir := "", cHrb_bin_dir
 
 Function Main
@@ -24,6 +25,8 @@ Local oTree, oSplit
 
    cIniPath := FilePath( hb_ArgV( 0 ) )
    lHwgrun := isFileInPath()
+   ReadIni()
+   HBitmap():cPath := cHwg_image_dir
 
    INIT WINDOW oMain MAIN TITLE "HwGUI Tutorial" ;
      AT 200,0 SIZE 800,600 FONT oFont
@@ -31,13 +34,13 @@ Local oTree, oSplit
    @ 0,0 PANEL oPanel SIZE 800,32 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
    @ 760,3 OWNERBUTTON oBtnRun OF oPanel ON CLICK {||RunSample()} ;
        SIZE 32,26 FLAT ;
-       BITMAP "NEXT" FROM RESOURCE TRANSPARENT COLOR 12632256 ;
+       BITMAP "next.bmp" TRANSPARENT COLOR 12632256 ;
        TOOLTIP "Run sample" ON SIZE ANCHOR_RIGHTABS
    oBtnRun:Disable()
 
    @ 0,32 TREE oTree SIZE 270,568 ;
         EDITABLE ;
-        BITMAP { "CL_FL","OP_FL" } FROM RESOURCE ;
+        BITMAP { "cl_fl.bmp","op_fl.bmp" } ;
         ON SIZE {|o,x,y|o:Move(,,,y-32)}
 
    oTree:bDblClick := {|oTree,oItem|RunSample(oItem)}
@@ -55,9 +58,8 @@ Local oTree, oSplit
    ACTIVATE WINDOW oMain
 Return Nil
 
-Static Function BuildTree( oTree )
-Local oTreeNode1, oTreeNode2, oTNode
-Local oIniTut, oInit, i, j, j1, oNode1, oNode2, oNode3, cTutor, cHwgui_dir
+Static Function ReadIni()
+Local oInit, i, oNode1, cHwgui_dir
 
    oIni := HXMLDoc():Read( cIniPath + "tutor.xml" )
    IF !Empty( oIni:aItems ) .AND. oIni:aItems[1]:title == "init"
@@ -69,6 +71,7 @@ Local oIniTut, oInit, i, j, j1, oNode1, oNode2, oNode3, cTutor, cHwgui_dir
          ELSEIF oNode1:title == "hwgui_dir"
             IF !Empty( cHwgui_dir := oNode1:GetAttribute( "path",,"" ) )
                cHwg_include_dir := cHwgui_dir + "\include"
+               cHwg_image_dir := cHwgui_dir + "\image"
             ENDIF
          ELSEIF oNode1:title == "harbour_bin"
             cHrb_bin_dir := oNode1:GetAttribute( "path",,"" )
@@ -81,6 +84,12 @@ Local oIniTut, oInit, i, j, j1, oNode1, oNode2, oNode3, cTutor, cHwgui_dir
          ENDIF
       NEXT
    ENDIF
+
+Return Nil
+
+Static Function BuildTree( oTree )
+Local oTreeNode1, oTreeNode2, oTNode
+Local oIniTut, oInit, i, j, j1, oNode1, oNode2, oNode3
 
    oIniTut := HXMLDoc():Read( cIniPath + cTutor )
    IF !Empty( oIniTut:aItems ) .AND. oIniTut:aItems[1]:title == "init"
@@ -98,7 +107,7 @@ Local oIniTut, oInit, i, j, j1, oNode1, oNode2, oNode3, cTutor, cHwgui_dir
                   FOR j1 := 1 TO Len( oNode2:aItems )
                      oNode3 := oNode2:aItems[j1]
                      IF oNode3:title == "module"
-                        INSERT NODE oTNode CAPTION oNode3:GetAttribute( "name",,"" ) TO oTreeNode2 BITMAP {"BOOK"} ON CLICK {|o|NodeOut(o)}
+                        INSERT NODE oTNode CAPTION oNode3:GetAttribute( "name",,"" ) TO oTreeNode2 BITMAP {"book.bmp"} ON CLICK {|o|NodeOut(o)}
                         oTNode:cargo := { .T., "" }
                         IF Empty( oTNode:cargo[2] := oNode3:GetAttribute( "file",,"" ) )
                            IF !Empty( oNode3:aItems ) .AND. Valtype( oNode3:aItems[1] ) == "O"
@@ -112,7 +121,7 @@ Local oIniTut, oInit, i, j, j1, oNode1, oNode2, oNode3, cTutor, cHwgui_dir
                      ENDIF
                   NEXT
                ELSEIF oNode2:title == "module"
-                  INSERT NODE oTNode CAPTION oNode2:GetAttribute( "name",,"" ) TO oTreeNode1 BITMAP {"BOOK"} ON CLICK {|o|NodeOut(o)}
+                  INSERT NODE oTNode CAPTION oNode2:GetAttribute( "name",,"" ) TO oTreeNode1 BITMAP {"book.bmp"} ON CLICK {|o|NodeOut(o)}
                   oTNode:cargo := { .T., "" }
                   IF Empty( oTNode:cargo[2] := oNode2:GetAttribute( "file",,"" ) )
                      IF !Empty( oNode2:aItems ) .AND. Valtype( oNode2:aItems[1] ) == "O"
@@ -126,7 +135,7 @@ Local oIniTut, oInit, i, j, j1, oNode1, oNode2, oNode3, cTutor, cHwgui_dir
                ENDIF
             NEXT
          ELSEIF oNode1:title == "module"
-            INSERT NODE oTNode CAPTION oNode1:GetAttribute( "name",,"" ) TO oTree BITMAP {"BOOK"} ON CLICK {|o|NodeOut(o)}
+            INSERT NODE oTNode CAPTION oNode1:GetAttribute( "name",,"" ) TO oTree BITMAP {"book.bmp"} ON CLICK {|o|NodeOut(o)}
             oTNode:cargo := { .T., "" }
             IF Empty( oTNode:cargo[2] := oNode1:GetAttribute( "file",,"" ) )
                IF !Empty( oNode1:aItems ) .AND. Valtype( oNode1:aItems[1] ) == "O"

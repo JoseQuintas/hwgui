@@ -374,12 +374,7 @@ METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
       ENDIF
    NEXT
 
-   IF Empty( FilePath(name) ) .AND. !Empty( ::cPath )
-      IF !( Right( ::cPath,1 ) $ "\/" )
-         ::cPath += "\"
-      ENDIF
-      name := ::cPath + name
-   ENDIF
+   name := AddPath( name, ::cPath )
    name := iif( ! File( name ) .AND. File( cname ), cname, name )
    IF ::lSelFile .AND. !File( name )
       cCurDir  := DiskName() + ':\' + CurDir()
@@ -526,13 +521,7 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
       ENDIF
    NEXT
 
-   IF Empty( FilePath(name) ) .AND. !Empty( ::cPath )
-      IF !( Right( ::cPath,1 ) $ "\/" )
-         ::cPath += "\"
-      ENDIF
-      name := ::cPath + name
-   ENDIF
-
+   name := AddPath( name, ::cPath )
    name := iif( ! File( name ) .AND. File( cname ), cname, name )
    IF ::lSelFile .AND. !File( name )
       cCurDir  := DiskName() + ':\' + CurDir()

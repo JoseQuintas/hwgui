@@ -347,13 +347,7 @@ METHOD AddFile( name, HDC ) CLASS HBitmap
       ENDIF
    NEXT
 
-   IF Empty( FilePath(name) ) .AND. !Empty( ::cPath )
-      IF !( Right( ::cPath,1 ) $ "\/" )
-         ::cPath += "/"
-      ENDIF
-      name := ::cPath + name
-   ENDIF
-
+   name := AddPath( name, ::cPath )
    ::handle := hwg_Openimage( name )
    IF !Empty( ::handle )
       ::name := name
@@ -460,13 +454,7 @@ METHOD AddFile( name ) CLASS HIcon
       ENDIF
    NEXT
 
-   IF Empty( FilePath(name) ) .AND. !Empty( ::cPath )
-      IF !( Right( ::cPath,1 ) $ "\/" )
-         ::cPath += "/"
-      ENDIF
-      name := ::cPath + name
-   ENDIF
-
+   name := AddPath( name, ::cPath )
    ::handle := hwg_Openimage( name )
    IF !Empty( ::handle )
       ::name := name

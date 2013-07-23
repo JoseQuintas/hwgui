@@ -8,6 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-23 15:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/common/procmisc/procs7.prg
+    * AddPath() function added
+  * source/winapi/drawwidg.prg
+  * source/gtk/drawwidg.prg
+    * AddPath() replaces few lines of code
+  * source/winapi/htree.prg
+  * source/gtk/htree.prg
+    * htree now respects the HBitmap():cPath setting
+  * utils/tutorial/bld.bat
+  * utils/tutorial/bldgw.bat
+  * utils/tutorial/tutor.prg
+  * utils/tutorial/tutor_eng.xml
+  - utils/tutorial/tutor.rc
+    * Bitmaps handling is changed to get rid of the resource file tutor.rc
+      ( to make the tutorial gtk compatible ).
+
 2013-07-23 13:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/debugger/protocol.txt
     * Description updated

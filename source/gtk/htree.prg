@@ -79,7 +79,7 @@ METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages ) CLASS HTree
    IF aImages != Nil .AND. !Empty( aImages )
       ::aImages := {}
       FOR i := 1 TO Len( aImages )
-         AAdd( ::aImages, hwg_Openimage( aImages[i] ) )
+         AAdd( ::aImages, hwg_Openimage( AddPath( aImages[i],HBitmap():cPath ) ) )
       NEXT
    ENDIF
 
@@ -261,7 +261,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
    IF aImages != Nil .AND. !Empty( aImages )
       ::aImages := {}
       FOR i := 1 TO Len( aImages )
-         AAdd( ::aImages, hwg_Openimage( aImages[i] ) )
+         AAdd( ::aImages, hwg_Openimage( AddPath( aImages[i],HBitmap():cPath ) ) )
       NEXT
    ENDIF
 

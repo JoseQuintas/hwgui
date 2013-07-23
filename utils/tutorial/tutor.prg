@@ -10,6 +10,11 @@
 #include "hwgui.ch"
 #include "hwgextern.ch"
 
+#ifdef __PLATFORM__UNIX
+ANNOUNCE HB_GTSYS
+REQUEST HB_GT_CGI_DEFAULT
+#endif
+
 Static oIni
 Static cIniPath, cTutor
 Static oText, oHilight

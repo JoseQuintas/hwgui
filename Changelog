@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-23 16:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/gtk/gtkmain.prg
+  * include/hwgextern.ch
+  * utils/tutorial/tutor.prg
+    * Some changes for gtk version compatibility
+
 2013-07-23 15:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/common/procmisc/procs7.prg
     * AddPath() function added

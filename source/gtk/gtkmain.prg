@@ -195,6 +195,39 @@ FUNCTION hwg_WriteStatus( oWnd, nPart, cText, lRedraw )
 
    RETURN Nil
 
+FUNCTION hwg_FindParent( hCtrl, nLevel )
+
+   LOCAL i, oParent, hParent := hwg_Getparent( hCtrl )
+
+   IF hParent > 0
+      IF ( i := Ascan( HDialog():aModalDialogs,{ |o|o:handle == hParent } ) ) != 0
+         RETURN HDialog():aModalDialogs[i]
+      ELSEIF ( oParent := HDialog():FindDialog( hParent ) ) != Nil
+         RETURN oParent
+      ELSEIF ( oParent := HWindow():FindWindow( hParent ) ) != Nil
+         RETURN oParent
+      ENDIF
+   ENDIF
+   IF nLevel == Nil; nLevel := 0; ENDIF
+   IF nLevel < 2
+      IF ( oParent := hwg_FindParent( hParent,nLevel + 1 ) ) != Nil
+         RETURN oParent:FindControl( , hParent )
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
+FUNCTION hwg_FindSelf( hCtrl )
+
+   LOCAL oParent
+
+   oParent := hwg_FindParent( hCtrl )
+   IF oParent != Nil
+      RETURN oParent:FindControl( , hCtrl )
+   ENDIF
+
+   RETURN Nil
+
    INIT PROCEDURE GTKINIT()
    hwg_gtk_init()
 

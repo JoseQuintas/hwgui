@@ -23,7 +23,9 @@
           => ;
           [<oBut> := ] HButtonEx():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
              <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<hbit>, ;
-             <nBStyle>,<hIco>, <.lTransp.>,<bGfocus>,<nMargin>,<.lnoTheme.>, <bOther> );;
+             <nBStyle>,<hIco>, <.lTransp.>,<bGfocus>,<nMargin>,<.lnoTheme.>, <bOther> );
+          [; hwg_SetCtrlName( <oBut>,<(oBut)> )]
+
 
 #xcommand @ <x>,<y> GRIDEX <oGrid>        ;
             [ OF <oWnd> ]               ;

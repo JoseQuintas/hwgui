@@ -867,6 +867,9 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
       ELSEIF p1 == X_LAST
          y1 := ::nLineC
          xPos := ::nWidth
+      ELSE
+         x1 := p1
+         y1 := p2
       ENDIF
    ENDIF
 
@@ -983,16 +986,16 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
       IF nCtrl == FSHIFT
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC+::nLineF-1,AL_Y1], ::nClientWidth, ;
-            ::aLines[::nLineC+::nLineF,AL_Y2] )
+         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC-1,AL_Y1], ::nClientWidth, ;
+            ::aLines[::nLineC,AL_Y2] )
       ENDIF
    ELSEIF nKeyCode == KEY_DOWN
       ::LineDown()
       IF nCtrl == FSHIFT
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC+::nLineF-2,AL_Y1], ::nClientWidth, ;
-            ::aLines[::nLineC+::nLineF-1,AL_Y2] )
+         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC-2,AL_Y1], ::nClientWidth, ;
+            ::aLines[::nLineC-1,AL_Y2] )
       ENDIF
    ELSEIF nKeyCode == KEY_PGDN    // Page Down
       IF nCtrl == FCONTROL
@@ -1104,13 +1107,21 @@ METHOD PutChar( nKeyCode ) CLASS HCEdit
          IF !Empty( ::aPointM2[1] )
             // there is text selected
             hced_DelText( Self, ::aPointM1, ::aPointM2 )
-            ::nLineC := ::aPointM1[P_Y] - ::nLineF + 1
+            IF ::aPointM1[P_Y] >= ::nLineF
+               ::nLineC := ::aPointM1[P_Y] - ::nLineF + 1
+            ELSE
+               ::nLineC := 1
+               ::nLineF := ::aPointM1[P_Y]
+            ENDIF
             ::nPosC :=  ::aPointM1[P_X] - ::nPosF - 1
             IF ::aPointM1[P_Y] != ::aPointM2[P_Y]
                hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ;
                   ::nClientWidth, ::nHeight )
             ENDIF
             ::Pcopy( , ::aPointM2 )
+            ::SetCaretPos( SETC_XY, ::nPosC, ::nLineC )
+            ::lUpdated := .T.
+            RETURN Nil
          ELSE
             IF nKeyCode == KEY_BACK
                IF ::nPosC == 0

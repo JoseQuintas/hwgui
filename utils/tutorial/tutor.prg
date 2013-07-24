@@ -31,6 +31,12 @@ Local oTree, oSplit
    cIniPath := FilePath( hb_ArgV( 0 ) )
    lHwgrun := isFileInPath()
    ReadIni()
+
+#ifdef __PLATFORM__UNIX
+   cHwg_image_dir := StrTran( cHwg_image_dir, '\', '/' )
+   cHwg_include_dir := StrTran( cHwg_include_dir, '\', '/' )
+#endif
+
    HBitmap():cPath := cHwg_image_dir
 
    INIT WINDOW oMain MAIN TITLE "HwGUI Tutorial" ;

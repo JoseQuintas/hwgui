@@ -8,6 +8,21 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-24 12:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/tutorial/tutor.prg
+    * Some changes for gtk version compatibility
+  * utils/debugger/readme.rus
+  * utils/debugger/readme.eng
+    * Debugger description has been updated.
+  * source/gtk/drawwidg.prg
+    ! Small fix
+  * source/gtk/hcwindow.prg
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcwindow.prg
+  * source/winapi/hcontrol.prg
+    * SetColor() method moved from HControl to HCustomWindow for compatibility
+      with 2.17
+
 2013-07-23 16:50 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/gtkmain.prg
   * include/hwgextern.ch

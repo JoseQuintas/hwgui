@@ -80,6 +80,7 @@ CLASS HCustomWindow INHERIT HObject
    METHOD Hide()              INLINE ( ::lHide := .T. , hwg_Hidewindow( ::handle ) )
    METHOD Show()              INLINE ( ::lHide := .F. , hwg_Showwindow( ::handle ) )
    METHOD Move( x1, y1, width, height )
+   METHOD SetColor( tcolor, bColor, lRepaint )
    METHOD onEvent( msg, wParam, lParam )
    METHOD End()
    ERROR HANDLER OnError()
@@ -128,7 +129,7 @@ METHOD DelControl( oCtrl ) CLASS HCustomWindow
 
    RETURN NIL
 
-METHOD Move( x1, y1, width, height )  CLASS HCustomWindow
+METHOD Move( x1, y1, width, height ) CLASS HCustomWindow
 
    IF x1     != NIL
       ::nLeft   := x1
@@ -145,6 +146,30 @@ METHOD Move( x1, y1, width, height )  CLASS HCustomWindow
    hwg_Movewindow( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
 
    RETURN NIL
+
+METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HCustomWindow
+
+   IF tcolor != NIL
+      ::tcolor := tcolor
+      IF bColor == NIL .AND. ::bColor == NIL
+         bColor := hwg_Getsyscolor( COLOR_3DFACE )
+      ENDIF
+   ENDIF
+
+   IF bColor != NIL
+      ::bColor := bColor
+      IF ::brush != NIL
+         ::brush:Release()
+      ENDIF
+      ::brush := HBrush():Add( bColor )
+   ENDIF
+
+   IF lRepaint != NIL .AND. lRepaint
+      hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+   ENDIF
+
+   RETURN NIL
+
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HCustomWindow
    LOCAL i

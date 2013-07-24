@@ -13,7 +13,7 @@
          The debugger consists of two parts:
 
   1) Library hwgdebug.lib, which should be linked to the application,
-     that you are going to debug, instead of the standard hbdebug.lib. Its
+     that you are going to debug, before the standard hbdebug.lib. Its
      sources are in hwgui/source/debug, it is part of the HwGUI
      project, but does not contain calls of HwGUI functions and classes and therefore
      can be used with console applications, and GUI applications

@@ -63,6 +63,7 @@ CLASS HCustomWindow INHERIT HObject
    METHOD Hide() INLINE ( ::lHide := .T. , hwg_Hidewindow( ::handle ) )
    METHOD Show() INLINE ( ::lHide := .F. , hwg_Showwindow( ::handle ) )
    METHOD Move( x1, y1, width, height )
+   METHOD Setcolor( tcolor, bcolor, lRepaint )
    METHOD onEvent( msg, wParam, lParam )
    METHOD End()
    ERROR HANDLER OnError()
@@ -129,7 +130,32 @@ METHOD Move( x1, y1, width, height )  CLASS HCustomWindow
 
    RETURN Nil
 
-METHOD onEvent( msg, wParam, lParam )  CLASS HCustomWindow
+METHOD Setcolor( tcolor, bcolor, lRepaint ) CLASS HCustomWindow
+
+   IF tcolor != Nil
+      ::tcolor  := tcolor
+      hwg_Setfgcolor( ::handle, ::tcolor )
+      IF bColor == Nil .AND. ::bColor == Nil
+         // bColor := hwg_Getsyscolor( COLOR_3DFACE )
+      ENDIF
+   ENDIF
+
+   IF bcolor != Nil
+      ::bcolor  := bcolor
+      hwg_Setbgcolor( ::handle, ::bcolor )
+      IF ::brush != Nil
+         ::brush:Release()
+      ENDIF
+      ::brush := HBrush():Add( bcolor )
+   ENDIF
+
+   IF lRepaint != Nil .AND. lRepaint
+      hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
+   ENDIF
+
+   RETURN Nil
+
+METHOD onEvent( msg, wParam, lParam ) CLASS HCustomWindow
    LOCAL i
 
    // hwg_WriteLog( "== "+::Classname()+Str(msg)+Iif(wParam!=Nil,Str(wParam),"Nil")+Iif(lParam!=Nil,Str(lParam),"Nil") )

@@ -44,9 +44,9 @@ METHOD Add( fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, ;
    LOCAL i, nlen := Len( ::aFonts )
 
    nHeight  := iif( nHeight == Nil, 13, Abs( nHeight ) )
-   //IF lLinux == Nil .OR. !lLinux
-   //   nHeight -= 3
-   //ENDIF
+   IF lLinux == Nil .OR. !lLinux
+      nHeight -= 3
+   ENDIF
    fnWeight := iif( fnWeight == Nil, 0, fnWeight )
    fdwCharSet := iif( fdwCharSet == Nil, 0, fdwCharSet )
    fdwItalic := iif( fdwItalic == Nil, 0, fdwItalic )
@@ -143,7 +143,7 @@ METHOD SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight ) CLASS 
    nCharSet  := iif( nCharSet = Nil, ::CharSet, nCharSet )
 
    RETURN HFont():Add( ::name, ::width, nheight, weight, ;
-      nCharSet, Italic, Underline, StrikeOut )
+      nCharSet, Italic, Underline, StrikeOut,,(nHeight==::height) )
 
    //- HPen
 

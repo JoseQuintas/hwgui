@@ -39,7 +39,6 @@ CLASS HControl INHERIT HCustomWindow
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
    METHOD Init()
-   METHOD SetColor( tcolor, bColor, lRepaint )
    METHOD NewId()
 
    METHOD Disable()     INLINE hwg_Enablewindow( ::handle, .F. )
@@ -110,29 +109,6 @@ METHOD INIT CLASS HControl
       ENDIF
       ::lInit := .T.
    ENDIF
-RETURN NIL
-
-METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HControl
-
-   IF tcolor != NIL
-      ::tcolor := tcolor
-      IF bColor == NIL .AND. ::bColor == NIL
-         bColor := hwg_Getsyscolor( COLOR_3DFACE )
-      ENDIF
-   ENDIF
-
-   IF bColor != NIL
-      ::bColor := bColor
-      IF ::brush != NIL
-         ::brush:Release()
-      ENDIF
-      ::brush := HBrush():Add( bColor )
-   ENDIF
-
-   IF lRepaint != NIL .AND. lRepaint
-      hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE )
-   ENDIF
-
 RETURN NIL
 
 METHOD End() CLASS HControl

@@ -179,6 +179,7 @@ CLASS HCEdit INHERIT HControl
 
    DATA   nCaret       INIT 0
    DATA   lChgCaret    INIT .F.
+   DATA   lSetFocus    INIT .F.
    DATA   bChangePos, bKeyDown, bClickDoub
 
    DATA   lMDown       INIT .F.
@@ -372,6 +373,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       lRes := ::onKeyDown( hwg_PtrToUlong( wParam ), lParam )
 
    ELSEIF msg == WM_LBUTTONDOWN
+#ifdef __PLATFORM__UNIX
+      hced_SetFocus( ::hEdit )
+#endif
       IF !Empty( ::aPointM2[1] )
          ::PCopy( , ::aPointM2 )
          hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
@@ -436,7 +440,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       RETURN ::onVScroll( wParam )
 
    ELSEIF msg == WM_MOUSEACTIVATE
-      hwg_SetFocus( ::handle )
+      hced_SetFocus( ::hEdit )
       lRes := MA_ACTIVATE
 
    ELSEIF msg == WM_SETFOCUS
@@ -589,6 +593,10 @@ METHOD Paint( lReal ) CLASS HCEdit
    ELSE
       hwg_Releasedc( ::handle, hDCReal )
    ENDIF
+   IF ::lSetFocus
+      hced_SetFocus( ::hEdit )
+      ::lSetFocus := .F.
+   ENDIF
 
    RETURN Nil
 
@@ -728,8 +736,8 @@ METHOD SetText( cText, cPageIn, cPageOut ) CLASS HCEdit
    ::nLineC := 1
    ::nPosF := ::nPosC := 0
    ::PCopy( { ::nPosC + 1, ::nLineC }, ::aPointC )
+   ::lSetFocus := .T.
    hced_Invalidaterect( ::hEdit, 0 )
-   hwg_Setfocus( ::handle )
 
    RETURN Nil
 
@@ -901,6 +909,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
    LOCAL nLine
 
    //hwg_writelog( "keydown: " + str(nKeyCode) )
+   ::lSetFocus := .T.
    IF ::bKeyDown != Nil
       Eval( ::bKeyDown, Self, nKeyCode )
    ENDIF
@@ -1049,6 +1058,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          ::nClientWidth, ::aLines[::aPointM2[P_Y] - ::nLineF + 1, AL_Y1] )
       ::Pcopy( , ::aPointM2 )
    ENDIF
+   ::lSetFocus := .T.
 
    RETURN 0
 

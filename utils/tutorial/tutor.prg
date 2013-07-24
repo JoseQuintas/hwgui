@@ -201,7 +201,7 @@ Local cText := "", cLine, i, cHrb, lWnd := .F.
       hwg_MsgStop( "Compile error" )
    ENDIF
 #else
-   IF !Empty( cHrb := hb_compileFromBuf( cText, "harbour","/n","/I"+cHwg_include_dir+cHrb_inc_dir ) )
+   IF !Empty( cHrb := hb_compileFromBuf( cText, "harbour","-n","-I"+cHwg_include_dir+cHrb_inc_dir ) )
       IF lWnd
         IF lHwgrun
            hb_Memowrit( "__tmp.hrb", cHrb )

@@ -724,6 +724,12 @@ HB_FUNC( HCED_INVALIDATERECT )
           );
 }
 
+HB_FUNC( HCED_SETFOCUS )
+{
+   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
+   SetFocus( ( HWND ) pted->handle );
+}
+
 /*
  * hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, Len(cLine), nAlign, lPaint )
  */

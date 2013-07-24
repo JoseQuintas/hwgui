@@ -789,7 +789,7 @@ HB_FUNC( HCED_EXACTCARETPOS )
             }
             */
             iRealLen = iReqLen;
-            wrlog( NULL, "1 iReal = %u ", iRealLen );
+            // wrlog( NULL, "1 iReal = %u ", iRealLen );
             x1 += ted_CalcSize( layout, ptr, 
                   pted->pFontsScr + (pattr + lasti)->iFont, &iRealLen,
                   xpos - x1, 0, i == iLen );
@@ -859,6 +859,13 @@ HB_FUNC( HCED_INVALIDATERECT )
         x2 - x1 + 1, y2 - y1 + 1 );
    
 }
+
+HB_FUNC( HCED_SETFOCUS )
+{
+   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
+   gtk_widget_grab_focus( (GtkWidget*) pted->area );
+}
+
 
 /*
  * hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, Len(cLine), nAlign, lPaint )

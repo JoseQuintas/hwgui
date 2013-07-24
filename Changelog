@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-24 14:24 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/common/editor/hcedit_l.c
+  * source/common/editor/hcedit_w.c
+  * source/common/editor/hcedit.prg
+    * Handling of keyboard focus fixed for gtk version
+  * utils/tutorial/tutor.prg
+    * Some changes for gtk version compatibility
+
 2013-07-24 12:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/tutorial/tutor.prg
     * Some changes for gtk version compatibility

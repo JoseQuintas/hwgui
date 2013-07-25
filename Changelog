@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-25 16:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * samples/gtk_samples/build.sh
+  * utils/debugger/build.sh
+    * scripts changed, they are made now as source/gtk/Makefile.linux -
+      you need to set or comment the HB_ROOT variable only.
+  + utils/tutorial/build.sh
+    + script added to build tutorial gtk version
+
 2013-07-25 15:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/common/editor/hcedit.prg
     ! Few bugs fixed

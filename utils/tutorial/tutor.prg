@@ -19,7 +19,7 @@ Static oIni
 Static cIniPath, cTutor
 Static oText, oHilight
 Static oBtnRun
-Static lHwgrun
+Static cHwgrunPath
 Static cHwg_include_dir := "..\..\include"
 Static cHwg_image_dir := "..\..\image"
 Static cHrb_inc_dir := "", cHrb_bin_dir
@@ -29,7 +29,7 @@ Local oMain, oPanel, oFont := HFont():Add( "Georgia",0,-15 )
 Local oTree, oSplit
 
    cIniPath := FilePath( hb_ArgV( 0 ) )
-   lHwgrun := isFileInPath()
+   cHwgrunPath := isFileInPath()
    ReadIni()
 
 #ifdef __PLATFORM__UNIX
@@ -100,8 +100,12 @@ Return Nil
 
 Static Function BuildTree( oTree )
 Local oTreeNode1, oTreeNode2, oTNode
-Local oIniTut, oInit, i, j, j1, oNode1, oNode2, oNode3
-
+Local oIniTut, oInit, i, j, j1, oNode1, oNode2, oNode3, cTemp
+#ifdef __PLATFORM__UNIX
+Local cVer := "gtk"
+#else
+Local cVer := "win"
+#endif
    oIniTut := HXMLDoc():Read( cIniPath + cTutor )
    IF !Empty( oIniTut:aItems ) .AND. oIniTut:aItems[1]:title == "init"
       oInit := oIniTut:aItems[1]
@@ -118,11 +122,13 @@ Local oIniTut, oInit, i, j, j1, oNode1, oNode2, oNode3
                   FOR j1 := 1 TO Len( oNode2:aItems )
                      oNode3 := oNode2:aItems[j1]
                      IF oNode3:title == "module"
-                        INSERT NODE oTNode CAPTION oNode3:GetAttribute( "name",,"" ) TO oTreeNode2 BITMAP {"book.bmp"} ON CLICK {|o|NodeOut(o)}
-                        oTNode:cargo := { .T., "" }
-                        IF Empty( oTNode:cargo[2] := oNode3:GetAttribute( "file",,"" ) )
-                           IF !Empty( oNode3:aItems ) .AND. Valtype( oNode3:aItems[1] ) == "O"
-                              oTNode:cargo[2] := oNode3:aItems[1]:aItems[1]
+                        IF Empty( cTemp := oNode3:GetAttribute( "ver",,"" ) ) .OR. cTemp == cVer
+                           INSERT NODE oTNode CAPTION oNode3:GetAttribute( "name",,"" ) TO oTreeNode2 BITMAP {"book.bmp"} ON CLICK {|o|NodeOut(o)}
+                           oTNode:cargo := { .T., "" }
+                           IF Empty( oTNode:cargo[2] := oNode3:GetAttribute( "file",,"" ) )
+                              IF !Empty( oNode3:aItems ) .AND. Valtype( oNode3:aItems[1] ) == "O"
+                                 oTNode:cargo[2] := oNode3:aItems[1]:aItems[1]
+                              ENDIF
                            ENDIF
                         ENDIF
                      ELSEIF oNode3:title == "comment"
@@ -132,11 +138,13 @@ Local oIniTut, oInit, i, j, j1, oNode1, oNode2, oNode3
                      ENDIF
                   NEXT
                ELSEIF oNode2:title == "module"
-                  INSERT NODE oTNode CAPTION oNode2:GetAttribute( "name",,"" ) TO oTreeNode1 BITMAP {"book.bmp"} ON CLICK {|o|NodeOut(o)}
-                  oTNode:cargo := { .T., "" }
-                  IF Empty( oTNode:cargo[2] := oNode2:GetAttribute( "file",,"" ) )
-                     IF !Empty( oNode2:aItems ) .AND. Valtype( oNode2:aItems[1] ) == "O"
-                        oTNode:cargo[2] := oNode2:aItems[1]:aItems[1]
+                  IF Empty( cTemp := oNode2:GetAttribute( "ver",,"" ) ) .OR. cTemp == cVer
+                     INSERT NODE oTNode CAPTION oNode2:GetAttribute( "name",,"" ) TO oTreeNode1 BITMAP {"book.bmp"} ON CLICK {|o|NodeOut(o)}
+                     oTNode:cargo := { .T., "" }
+                     IF Empty( oTNode:cargo[2] := oNode2:GetAttribute( "file",,"" ) )
+                        IF !Empty( oNode2:aItems ) .AND. Valtype( oNode2:aItems[1] ) == "O"
+                           oTNode:cargo[2] := oNode2:aItems[1]:aItems[1]
+                        ENDIF
                      ENDIF
                   ENDIF
                ELSEIF oNode2:title == "comment"
@@ -146,11 +154,13 @@ Local oIniTut, oInit, i, j, j1, oNode1, oNode2, oNode3
                ENDIF
             NEXT
          ELSEIF oNode1:title == "module"
-            INSERT NODE oTNode CAPTION oNode1:GetAttribute( "name",,"" ) TO oTree BITMAP {"book.bmp"} ON CLICK {|o|NodeOut(o)}
-            oTNode:cargo := { .T., "" }
-            IF Empty( oTNode:cargo[2] := oNode1:GetAttribute( "file",,"" ) )
-               IF !Empty( oNode1:aItems ) .AND. Valtype( oNode1:aItems[1] ) == "O"
-                  oTNode:cargo[2] := oNode1:aItems[1]:aItems[1]
+            IF Empty( cTemp := oNode1:GetAttribute( "ver",,"" ) ) .OR. cTemp == cVer
+               INSERT NODE oTNode CAPTION oNode1:GetAttribute( "name",,"" ) TO oTree BITMAP {"book.bmp"} ON CLICK {|o|NodeOut(o)}
+               oTNode:cargo := { .T., "" }
+               IF Empty( oTNode:cargo[2] := oNode1:GetAttribute( "file",,"" ) )
+                  IF !Empty( oNode1:aItems ) .AND. Valtype( oNode1:aItems[1] ) == "O"
+                     oTNode:cargo[2] := oNode1:aItems[1]:aItems[1]
+                  ENDIF
                ENDIF
             ENDIF
          ENDIF
@@ -195,17 +205,29 @@ Local cText := "", cLine, i, cHrb, lWnd := .F.
 #ifdef __XHARBOUR__
    FErase( "__tmp.hrb" )
    oText:Save( "__tmp.prg" )
-   IF hwg_RunConsoleApp( cHrb_bin_dir+"harbour "+ "__tmp.prg /n /gh /I" + cHwg_include_dir+cHrb_inc_dir ) .AND. File( "__tmp.hrb" )
-      hwg_RunApp( "hwgrun __tmp.hrb" )
+   IF hwg_RunConsoleApp( cHrb_bin_dir+"harbour "+ "__tmp.prg -n -gh -I" + cHwg_include_dir+cHrb_inc_dir ) .AND. File( "__tmp.hrb" )
+      IF !Empty( cHwgrunPath )
+#ifdef __PLATFORM__UNIX
+           hwg_RunApp( cHwgrunPath + "hwgrun","__tmp.hrb" )
+#else
+           hwg_RunApp( cHwgrunPath + "hwgrun __tmp.hrb" )
+#endif
+      ELSE
+         hwg_MsgStop( "HwgRun is absent, you need to compile it at first." )
+      ENDIF
    ELSE
       hwg_MsgStop( "Compile error" )
    ENDIF
 #else
    IF !Empty( cHrb := hb_compileFromBuf( cText, "harbour","-n","-I"+cHwg_include_dir+cHrb_inc_dir ) )
       IF lWnd
-        IF lHwgrun
+        IF !Empty( cHwgrunPath )
            hb_Memowrit( "__tmp.hrb", cHrb )
-           hwg_RunApp( "hwgrun __tmp.hrb" )
+#ifdef __PLATFORM__UNIX
+           hwg_RunApp( cHwgrunPath + "hwgrun","__tmp.hrb" )
+#else
+           hwg_RunApp( cHwgrunPath + "hwgrun __tmp.hrb" )
+#endif
         ELSE
            hwg_MsgStop( "HwgRun is absent, you need to compile it at first." )
         ENDIF
@@ -234,8 +256,8 @@ Local cHwgRun := "hwgrun.exe"
       cPath := arr[i] + Iif( Empty(arr[i]).OR.Right( arr[i],1 ) $ "\/", ;
             "", cDefSep )
       IF File( cPath + cHwgRun )
-         Return .T.
+         Return cPath
       ENDIF
    NEXT
 
-Return .F.
+Return ""

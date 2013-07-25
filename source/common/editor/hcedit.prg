@@ -140,6 +140,7 @@ STATIC cNewLine := e"\r\n"
 #define  KEY_BACK    VK_BACK
 #define  KEY_DELETE  VK_DELETE
 #endif
+#define  KEY_Y       89
 
 #ifdef __PLATFORM__UNIX
 REQUEST  HB_CODEPAGE_UTF8
@@ -376,7 +377,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 #ifdef __PLATFORM__UNIX
       hced_SetFocus( ::hEdit )
 #endif
-      IF !Empty( ::aPointM2[1] )
+      IF !Empty( ::aPointM2[P_Y] )
          ::PCopy( , ::aPointM2 )
          hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
       ENDIF
@@ -394,7 +395,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 
    ELSEIF msg == WM_LBUTTONUP
       ::lMDown := .F.
-      IF Empty( ::aPointM2[1] ) .OR. ::PCmp( ::aPointM1, ::aPointM2 ) == 0
+      IF Empty( ::aPointM2[P_Y] ) .OR. ::PCmp( ::aPointM1, ::aPointM2 ) == 0
          hced_ShowCaret( ::hEdit )
       ENDIF
 
@@ -662,7 +663,7 @@ METHOD MarkLine( nLine ) CLASS HCEdit
       ENDIF
    ENDIF
 
-   IF !Empty( ::aPointM2[1] )
+   IF !Empty( ::aPointM2[P_Y] )
       IF ( ::aPointM1[P_Y] == ::aPointM2[P_Y] )
          IF ::aPointM1[P_Y] == nL
             x1 := Min( ::aPointM1[P_X], ::aPointM2[P_X] ) - ::nPosF
@@ -671,8 +672,8 @@ METHOD MarkLine( nLine ) CLASS HCEdit
             RETURN Nil
          ENDIF
       ELSE
-         P1 := iif( ::aPointM1[P_Y] < ::aPointM2[P_Y], ::aPointM1, ::aPointM2[P_Y] )
-         P2 := iif( ::aPointM1[P_Y] < ::aPointM2[P_Y], ::aPointM2, ::aPointM1[P_Y] )
+         P1 := iif( ::aPointM1[P_Y] < ::aPointM2[P_Y], ::aPointM1, ::aPointM2 )
+         P2 := iif( ::aPointM1[P_Y] < ::aPointM2[P_Y], ::aPointM2, ::aPointM1 )
          IF P1[P_Y] == nL
             x1 := P1[P_X] - ::nPosF
             x2 := hced_Len( Self, ::aText[nL] ) - ::nPosF + 1
@@ -924,7 +925,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
       ::nCaret := 1
       hced_ShowCaret( ::hEdit )
    ENDIF
-   IF nCtrl == FSHIFT .AND. Empty( ::aPointM2[1] ) .AND. ;
+   IF nCtrl == FSHIFT .AND. Empty( ::aPointM2[P_Y] ) .AND. ;
          Ascan( { KEY_RIGHT, KEY_LEFT, KEY_HOME, KEY_END, KEY_DOWN, KEY_UP, KEY_PGUP, KEY_PGDN }, nKeyCode ) != 0
       ::PCopy( ::aPointC, ::aPointM1 )
    ENDIF
@@ -1022,7 +1023,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          hced_Invalidaterect( ::hEdit, 0 )
       ENDIF
    ELSEIF nKeyCode == KEY_DELETE
-      IF nCtrl == FSHIFT .AND. !Empty( ::aPointM2[1] )
+      IF nCtrl == FSHIFT .AND. !Empty( ::aPointM2[P_Y] )
          cLine := ::GetText( ::aPointM1, ::aPointM2 )
          hwg_Copystringtoclipboard( cLine )
       ENDIF
@@ -1046,6 +1047,12 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
                ::nHeight )
          ENDIF
       ENDIF
+   ELSEIF nKeyCode == KEY_Y
+      IF nCtrl == FCONTROL
+         ::DelLine( ::nLineF+nLine-1 )
+         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
+            ::nHeight )
+      ENDIF
    ELSEIF nKeyCode == 65      // 'A'
       IF nCtrl == FCONTROL
          ::Pcopy( { 1, 1 }, ::aPointM1 )
@@ -1058,7 +1065,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
       ::putChar( nKeyCode )
 #endif
    ENDIF
-   IF !Empty( ::aPointM2[1] ) .AND. nKeyCode >= 32 .AND. nKeyCode < 0xFE00 .AND. lUnSel
+   IF !Empty( ::aPointM2[P_Y] ) .AND. nKeyCode >= 32 .AND. nKeyCode < 0xFE00 .AND. lUnSel
       hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::aPointM1[P_Y] - ::nLineF + 1, AL_Y1], ;
          ::nClientWidth, ::aLines[::aPointM2[P_Y] - ::nLineF + 1, AL_Y1] )
       ::Pcopy( , ::aPointM2 )
@@ -1068,7 +1075,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
    RETURN 0
 
 METHOD PutChar( nKeyCode ) CLASS HCEdit
-   LOCAL nLine, lInvAll := .F.
+   LOCAL nLine, lInvAll := .F., P1
 
    //hwg_writelog( "putchar: " + str(nKeyCode) )
    IF ::lReadOnly
@@ -1106,20 +1113,19 @@ METHOD PutChar( nKeyCode ) CLASS HCEdit
 
    ELSE
       IF nKeyCode == KEY_BACK .OR. nKeyCode == 7
-         IF !Empty( ::aPointM2[1] )
+         IF !Empty( ::aPointM2[P_Y] )
             // there is text selected
             hced_DelText( Self, ::aPointM1, ::aPointM2 )
-            IF ::aPointM1[P_Y] >= ::nLineF
-               ::nLineC := ::aPointM1[P_Y] - ::nLineF + 1
+            P1 := Iif( ::Pcmp( ::aPointM1, ::aPointM2 ) < 0, ::aPointM1, ::aPointM2 )
+            IF P1[P_Y] >= ::nLineF
+               ::nLineC := P1[P_Y] - ::nLineF + 1
             ELSE
                ::nLineC := 1
-               ::nLineF := ::aPointM1[P_Y]
+               ::nLineF := P1[P_Y]
             ENDIF
-            ::nPosC :=  ::aPointM1[P_X] - ::nPosF - 1
-            IF ::aPointM1[P_Y] != ::aPointM2[P_Y]
-               hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ;
-                  ::nClientWidth, ::nHeight )
-            ENDIF
+            ::nPosC := P1[P_X] - ::nPosF - 1
+            hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ;
+               ::nClientWidth, ::nHeight )
             ::Pcopy( , ::aPointM2 )
             ::SetCaretPos( SETC_XY, ::nPosC, ::nLineC )
             ::lUpdated := .T.
@@ -1348,7 +1354,7 @@ METHOD PCmp( P1, P2 ) CLASS HCEdit
 METHOD GetText( P1, P2 ) CLASS HCEdit
    LOCAL cText := "", Pstart := Array( P_LENGTH ), Pend := Array( P_LENGTH ), i, nPos1
 
-   IF Empty( P1[1] ) .OR. Empty( P2[1] )
+   IF Empty( P1[P_Y] ) .OR. Empty( P2[P_Y] )
       RETURN ""
    ENDIF
    IF ::Pcmp( P1, P2 ) < 0
@@ -1361,7 +1367,7 @@ METHOD GetText( P1, P2 ) CLASS HCEdit
    FOR i := Pstart[P_Y] TO Pend[P_Y]
       cText += hced_Substr( Self, ::aText[i], ;
          nPos1 := iif( i == Pstart[P_Y], Pstart[P_X], 1 ), ;
-         iif( i == Pend[P_Y], Pend[P_X], hced_Len( Self, ::aText[i] ) ) - nPos1 + 1 )
+         iif( i == Pend[P_Y], Pend[P_X], hced_Len( Self, ::aText[i] ) ) - nPos1 )
       IF i != Pend[P_Y]
          cText += cNewLine
       ENDIF
@@ -1411,9 +1417,17 @@ FUNCTION hced_DelText( oEdit, P1, P2 )
    ELSE
       FOR i := Pend[P_Y] TO Pstart[P_Y] STEP - 1
          IF i == Pstart[P_Y]
-            oEdit:aText[i] := hced_Left( oEdit, oEdit:aText[i], Pstart[P_X] - 1 )
+            IF Pstart[P_X] == 1
+               oEdit:DelLine( i )
+            ELSE
+               oEdit:aText[i] := hced_Left( oEdit, oEdit:aText[i], Pstart[P_X] - 1 )
+            ENDIF
          ELSEIF i == Pend[P_Y]
-            oEdit:aText[i] := hced_Substr( oEdit, oEdit:aText[i], Pend[P_X] )
+            IF Pend[P_X] > Len( oEdit:aText[i] )
+               oEdit:DelLine( i )
+            ELSE
+               oEdit:aText[i] := hced_Substr( oEdit, oEdit:aText[i], Pend[P_X] )
+            ENDIF
          ELSE
             oEdit:DelLine( i )
          ENDIF

@@ -158,7 +158,7 @@ Local oMain
 Return Nil
       ]]>
     </module>
-    <module name="Mdi window" >
+    <module name="Mdi window" ver="win">
       <![CDATA[#include "hwgui.ch"
 Function Test
    Local oMain
@@ -444,7 +444,7 @@ Return Nil
     </module>
   </chapter>
   <chapter name="Get system" >
-    <module name="Dialog with various Gets" >
+    <module name="Dialog with various Gets" ver="win">
       <![CDATA[#include "hwgui.ch"
 Function DlgGet
 Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
